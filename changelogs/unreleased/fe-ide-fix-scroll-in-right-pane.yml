@@ -1,5 +1,0 @@
----
-title: Fix no scroll when overflow in IDE right pane
-merge_request: 31961
-author:
-type: fixed

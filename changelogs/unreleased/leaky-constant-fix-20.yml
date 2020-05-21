@@ -1,5 +1,0 @@
----
-title: Fix leaky constant issue in nulls pt2 spec
-merge_request: 32058
-author: Rajendra Kadam
-type: fixed

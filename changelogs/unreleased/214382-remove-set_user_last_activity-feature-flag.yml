@@ -1,5 +1,0 @@
----
-title: Remove set_user_last_activity feature flag.
-merge_request: 31795
-author: Gilang Gumilar
-type: removed

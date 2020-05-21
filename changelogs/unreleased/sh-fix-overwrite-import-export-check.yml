@@ -1,5 +1,0 @@
----
-title: Fix overwrite check in GitLab import/export
-merge_request: 31439
-author:
-type: fixed

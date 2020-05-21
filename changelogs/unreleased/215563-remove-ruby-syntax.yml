@@ -1,6 +1,0 @@
----
-title: Remove support for Ruby format variable interpolation (`%{variable}`) in custom
-  dashboards
-merge_request: 31581
-author:
-type: removed

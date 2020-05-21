@@ -1,5 +1,0 @@
----
-title: Destroy Dropzone hidden input when form is destroyed
-merge_request: 29882
-author:
-type: fixed

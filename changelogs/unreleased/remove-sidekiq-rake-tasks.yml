@@ -1,5 +1,0 @@
----
-title: Remove deprecated Sidekiq rake tasks
-merge_request:
-author:
-type: removed

@@ -1,5 +1,0 @@
----
-title: Add class stubs and fix leaky constant cop alert
-merge_request: 31938
-author: Rajendra Kadam
-type: fixed

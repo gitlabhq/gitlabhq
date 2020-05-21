@@ -1,5 +1,0 @@
----
-title: Remove ruby_memory_bytes metric, duplicate of ruby_process_resident_memory_bytes
-merge_request: 31705
-author:
-type: removed

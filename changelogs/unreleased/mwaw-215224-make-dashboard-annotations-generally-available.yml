@@ -1,6 +1,0 @@
----
-title: Add metrics dashboard annotations feature, which enables marking interesting
-  events over metrics dashboard charts
-merge_request: 30371
-author:
-type: added

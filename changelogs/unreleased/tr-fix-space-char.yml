@@ -1,5 +1,0 @@
----
-title: Fix missing space character in alert header
-merge_request: 32395
-author:
-type: fixed

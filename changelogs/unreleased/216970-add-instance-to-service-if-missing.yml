@@ -1,5 +1,0 @@
----
-title: Add instance column to services table if it's missing
-merge_request: 31631
-author:
-type: fixed

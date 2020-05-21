@@ -1,5 +1,0 @@
----
-title: Migrate from Vue event hub to Mitt in issuables list
-merge_request: 31652
-author: Arun Kumar Mohan
-type: changed

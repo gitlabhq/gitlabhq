@@ -1,5 +1,0 @@
----
-title: Update deprecated slot syntax in ./app/assets/javascripts/issue_show/components/fields/description.vue
-merge_request: 31979
-author: Gilang Gumilar
-type: other

@@ -1,5 +1,0 @@
----
-title: 'Disable Docker-in-Docker for SAST by default'
-merge_request: 31589
-author:
-type: changed

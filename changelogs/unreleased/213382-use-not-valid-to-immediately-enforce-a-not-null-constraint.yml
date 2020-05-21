@@ -1,5 +1,0 @@
----
-title: Use NOT VALID to enforce a not null constraint on file store columns
-merge_request: 31261
-author:
-type: performance

@@ -1,5 +1,0 @@
----
-title: Remove project_list_show_issue_count feature flag.
-merge_request: 31793
-author: Gilang Gumilar
-type: removed

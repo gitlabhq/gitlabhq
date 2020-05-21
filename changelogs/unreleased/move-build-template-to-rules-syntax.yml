@@ -1,5 +1,0 @@
----
-title: Move Build.gitlab-ci.yml to `rules` syntax
-merge_request: 30895
-author:
-type: changed

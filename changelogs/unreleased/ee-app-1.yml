@@ -1,5 +1,0 @@
----
-title: Move include_if_ee to last line in ee/app 1
-merge_request: 31832
-author: Rajendra Kadam
-type: fixed

@@ -1,5 +1,0 @@
----
-title: Update cron job schedule to have a random time generated on page load
-merge_request: 30729
-author:
-type: changed

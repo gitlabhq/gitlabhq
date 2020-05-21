@@ -1,5 +1,0 @@
----
-title: Fix leaky constant issue in retry build service check
-merge_request: 32038
-author: Rajendra Kadam
-type: fixed

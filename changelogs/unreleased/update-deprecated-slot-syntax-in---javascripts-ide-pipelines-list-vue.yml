@@ -1,5 +1,0 @@
----
-title: Update deprecated slot syntax in ./app/assets/javascripts/ide/components/pipelines/list.vue
-merge_request: 32027
-author: Gilang Gumilar
-type: other

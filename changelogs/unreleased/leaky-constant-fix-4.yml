@@ -1,5 +1,0 @@
----
-title: Add class stubs and fix leaky constant alert in query recorder spec
-merge_request: 31954
-author: Rajendra Kadam
-type: fixed

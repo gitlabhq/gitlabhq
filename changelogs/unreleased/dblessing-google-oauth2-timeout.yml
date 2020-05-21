@@ -1,5 +1,0 @@
----
-title: Set timeout for Google OAuth to prevent 503 error
-merge_request: 30653
-author:
-type: fixed

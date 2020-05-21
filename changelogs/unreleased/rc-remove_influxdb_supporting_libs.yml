@@ -1,5 +1,0 @@
----
-title: Remove rake task `gitlab:track_deployment`
-merge_request: 31404
-author:
-type: removed

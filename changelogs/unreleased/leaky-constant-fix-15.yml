@@ -1,5 +1,0 @@
----
-title: Fix leaky constant issue in merge request policy spec
-merge_request: 32044
-author: Rajendra Kadam
-type: fixed

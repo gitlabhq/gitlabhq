@@ -1,5 +1,0 @@
----
-title: Propagation of service templates also covers services with separate data tables.
-merge_request: 29805
-author:
-type: fixed

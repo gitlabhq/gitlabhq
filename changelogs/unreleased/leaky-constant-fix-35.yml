@@ -1,5 +1,0 @@
----
-title: Fix leaky constant issue connection, master check and attr config spec
-merge_request: 32144
-author: Rajendra Kadam
-type: fixed

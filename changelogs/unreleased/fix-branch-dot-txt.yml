@@ -1,5 +1,0 @@
----
-title: Fix API requests for branch names ending in .txt
-merge_request: 31446
-author: Daniel Stone
-type: fixed

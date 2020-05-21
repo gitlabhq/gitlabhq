@@ -1,5 +1,0 @@
----
-title: Externalize i18n aria-label strings from ./app/views/shared/*
-merge_request: 32142
-author: Gilang Gumilar
-type: changed

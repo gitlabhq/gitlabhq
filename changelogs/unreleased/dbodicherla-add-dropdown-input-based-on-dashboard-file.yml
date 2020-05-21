@@ -1,6 +1,0 @@
----
-title: Render dropdown and text elements based on variables defined in monitoring
-  dashboard yml file
-merge_request: 31524
-author:
-type: added

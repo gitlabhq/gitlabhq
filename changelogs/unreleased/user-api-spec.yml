@@ -1,5 +1,0 @@
----
-title: Replace let! with let_it_be in user api spec
-merge_request: 31901
-author: Rajendra Kadam
-type: fixed

@@ -1,5 +1,0 @@
----
-title: Externalize i18n strings from ./app/views/shared/_delete_label_modal.html.haml
-merge_request: 32138
-author: Gilang Gumilar
-type: changed

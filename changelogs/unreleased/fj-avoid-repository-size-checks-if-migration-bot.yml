@@ -1,5 +1,0 @@
----
-title: Avoid repository size checkings in snippet migrations for migration bot
-merge_request: 31473
-author:
-type: fixed

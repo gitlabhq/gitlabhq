@@ -1,5 +1,0 @@
----
-title: Disable schema dumping after migrations in production
-merge_request: 30812
-author:
-type: fixed

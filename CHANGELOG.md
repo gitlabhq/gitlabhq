@@ -2,6 +2,575 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 13.0.0 (2020-05-22)
+
+### Removed (20 changes, 5 of them are from the community)
+
+- Remove project routes that were deprecated before 12.1. !26808
+- Drop x-y-stable version pinning for Secure templates. !29603
+- Remove logs from the admin pages. !30485
+- Remove deprecated /admin/application_settings redirect. !30532
+- Drop support for License-Management CI template. !30645
+- Remove deprecated InfluxDB. !30786
+- Remove deprecated Release Evidence endpoints. !30975
+- Remove deprecated Release Evidence endpoints documentation. !30978
+- Drop support for `license_management` artifact. !31247
+- Remove deprecated container scanning report parser. !31294
+- Remove rake task `gitlab:track_deployment`. !31404
+- Remove token attribute from Runners API. !31448
+- Remove support for Ruby format variable interpolation (`%{variable}`) in custom dashboards. !31581
+- Remove JenkinsDeprecatedService. !31607 (tnwx)
+- Remove ruby_memory_bytes metric, duplicate of ruby_process_resident_memory_bytes. !31705
+- Remove project_list_show_mr_count feature flag. !31789 (Gilang Gumilar)
+- Remove project_list_show_issue_count feature flag. !31793 (Gilang Gumilar)
+- Remove set_user_last_activity feature flag. !31795 (Gilang Gumilar)
+- Remove registrations_recaptcha feature flag. !31797 (Gilang Gumilar)
+- Remove deprecated Sidekiq rake tasks.
+
+### Fixed (171 changes, 54 of them are from the community)
+
+- Allow public access to pipeline schedules. !20806 (Lee Tickett)
+- Add user last_activity logging in GraphQL. !23063
+- Render TestReport parsing errors back to pipeline test summary. !24188
+- Add user popovers to system notes. !24241
+- Fix missing RSS feed events. !28054
+- Resolve Text for future Release date grammatically incorrect. !28075
+- Fix number of approvals given calculation. !28293 (Steffen Köhler)
+- Always display new subgroup button when permission is granted. !28309 (Mattias Michaux)
+- Correct the permission according to docs. !28657
+- Fix duplicated activity and events on deletion of tag. !28861 (Sashi Kumar)
+- Fix init.d script to correctly set web server PID. !29164
+- Honor per_page in Search API. !29197
+- fix: use the source project to generate commit links for un-persisted merge requests. !29243 (Chieh-Min Wang)
+- Fix display of some overflowing merge request diffs. !29267
+- Move prepend to last line in helper files. !29327 (Rajendra Kadam)
+- Prevent duplicate tooltips when hovering over status emoji in comments. !29356
+- Update Elastic Stack chart to 2.0.0 to support kubernetes 1.16. !29601
+- Fix minor spacing issue at Snippet blob viewer. !29625 (Karthick Venkatesan)
+- Eliminate errors in wiki controller during edit. !29645
+- Fixed copy as GFM not copying upload links. !29683
+- Bump max search depth from 2 to 4 when looking for files SAST analyzers can handle. !29732
+- Move snippet raw_url attribute to base entity. !29776
+- Return content from repo in snippet raw endpoint. !29781
+- Return file name from repo in snippet endpoints. !29785
+- Propagation of service templates also covers services with separate data tables. !29805
+- Fix bug in personal snippets when somebody is mentioned. !29835 (Sashi Kumar)
+- Embed metrics charts for both /metrics and /metrics_dashboard routes. !29838
+- Fix admin mode access on GraphiQL controller. !29845 (Diego Louzán)
+- Exclude html entities from haml lint. !29847 (Lee Tickett)
+- Fixed JS error for anonymous views of a snippet. !29854
+- Destroy Dropzone hidden input when form is destroyed. !29882
+- Move prepend to last line in lib/gitlab files. !29938 (Rajendra)
+- Match Jira keys with trailing characters. !29953
+- Fixed Cancel action on Snippet edit for existing snippets. !29993
+- Warn user before losing wiki content. !30037
+- Move prepend to last line in lib/gitlab files. !30070 (Rajendra Kadam)
+- Fix an issue where the Search dropdown results would not be clickable. !30087 (mbergeron)
+- Capture all errors when updating repository storage. !30119
+- Move alert management behind a feature flag. !30133
+- Fix bug when services appear active even though they are not. !30160
+- Fix moving an issue when there is a group reference. !30185
+- Move prepend to last line in lib/gitlab files. !30194 (Rajendra Kadam)
+- Move prepend to last line in lib/gitlab files. !30289 (Rajendra Kadam)
+- Move prepend to last line in lib/gitlab files. !30291 (Rajendra Kadam)
+- Set NULL `lock_version` values to 0 for CI objects. !30305
+- Fix errors creating project with active Prometheus service template. !30340
+- Add Activity icons for Wiki updated and destroyed events. !30349
+- Gracefully handle orphaned member invites. !30355
+- Fix incorrect commits number in commits list. !30412
+- Fix second 500 error with NULL restricted visibility levels. !30414
+- Move prepend to last line in ee/services. !30425 (Rajendra Kadam)
+- Add LFS badge feature flag to RefsController#logs_tree. !30442
+- Fix mirror repos docs link. !30443
+- Added right margin to Clone Snippet button. !30471
+- Fix blob link for the code search. !30473
+- Use Jira import owner as the issue author when importing issues from Jira. !30504
+- Correctly count wiki pages in sidebar. !30508
+- Stretch heatmap metrics full column size. !30524
+- Upgrade Unicorn to v5.5.1. !30541
+- Avoid copying diffs as Markdown tables. !30572
+- Fixes overlapping tooltips when clicking copy buttons. !30622
+- Fix 500 error for non-existing snippet on graphql mutations. !30632 (Sashi Kumar)
+- Change validation rules for profile email addresses. !30633
+- Set timeout for Google OAuth to prevent 503 error. !30653
+- Remove extra sleep when obtaining exclusive lease. !30654
+- Fix GitLab CI/CD Scala template. !30667
+- Fix checkmark position on dropdowns. !30685
+- Remove Visibility from terraform widget. !30737
+- Use migration bot user in snippet migration. !30762
+- Fix discard button not showing for new empty files in Web IDE. !30767
+- Disable schema dumping after migrations in production. !30812
+- Fix mapping group membets as Jira issues authors/assignees. !30820
+- Align styling of snippet search results. !30837
+- Move daily create users statistics cronjob to CE. !30843
+- Fixed alignment of Snippet Clone copy buttons. !30897
+- Increase constrast ratio of text in some tables. !30903
+- Ignore .gitattributes if they contain invalid byte sequences. !30922
+- Fix bug in Snippet BlobViewer GraphQL definition. !30927
+- Fix layout in issue view, on large screen some buttons were misaligned. !30947 (Michele (macno) Azzolari)
+- Fix error renaming files using web IDE. !30969
+- Handle Snippet file name errors in backfill. !30981
+- Correctly track the store that external MR diffs are placed on. !31005
+- Fix duplicate index removal on ci_pipelines.project_id. !31043
+- Update recursive-open-struct to 1.1.1 to make it compatible with ruby 2.7. !31047
+- Revert CODEOWNERS validation of Web requests in diff check. !31087
+- Wrap wiki blob search result in its own object. !31155
+- Allow multiple usage of EE extension/inclusion on last lines. !31183 (Rajendra Kadam)
+- Fix 500 error loading environments index. !31184
+- Fix 500 on creating an invalid domains and verification. !31190
+- Fix redirect loop on .com when 2FA is required. !31229
+- Fix regression and allow SCIM to create SAML identity. !31238
+- Fix incorrect number of errors returned when querying sentry errors. !31252
+- Fix RST rendering hanging on large files. !31287
+- Trim whitespace in directory names in the Web IDE. !31305
+- Fix 'not enough data' in Value Stream Analytics when low median values are returned. !31315
+- Add tooltip to container registry tags last update column. !31317
+- Fix Istio broken Istio metrics installation. !31382
+- Link to subgroup milestones correctly from group milestones page. !31383
+- Remove kwargs from storage move worker. !31412
+- Make edit board text sentence case. !31418
+- Katex render and vscode output improvements for markdown. !31433 (Reinhold Gschweicher <pyro4hell@gmail.com>)
+- Fix overwrite check in GitLab import/export. !31439
+- Fix API requests for branch names ending in .txt. !31446 (Daniel Stone)
+- Avoid repository size checkings in snippet migrations for migration bot. !31473
+- Use iso 8601 timestamp format in metrics dashboard annotations graphql resource to assure multi browser compatibility. !31474
+- In WebIDE get files with relative path instead of web_url. !31478
+- Fix snippet migration when user has invalid info. !31488
+- Add elipsis to container registry tag name. !31584
+- Add instance column to services table if it's missing. !31631
+- Fix issue with broken images in Web IDE markdown. !31638
+- Fixes bug where variables were not protected by default when using the correct CI/CD admin setting. !31655
+- Decode dashboard_path when creating annotations. !31665
+- Fix "how to checkout MR" help link. !31688
+- Fixed redirection when deleting a project snippet. !31709
+- Fix templates API endpoint when project name has dots. !31758
+- Remove detection of file in Dependency Scanning template. !31819
+- Move prepend to last line in app models. !31826 (Rajendra Kadam)
+- Move prepend to last line in app models 2. !31827 (Rajendra Kadam)
+- Move prepend to last line in app models 3. !31829 (Rajendra Kadam)
+- Move include_if_ee to last line in ee/app 1. !31832 (Rajendra Kadam)
+- Restore original sort order of the metrics dashboard select list. !31859
+- Fix Snippet update error bug losing changes. !31873
+- Replace the outdated link. !31874 (Renamoo)
+- Replace let! with let_it_be in user api spec. !31901 (Rajendra Kadam)
+- Replace let! with let_it_be in merge request spec. !31909 (Rajendra Kadam)
+- angelog Replace let! with let_it_be in pipelines spec. !31916 (Rajendra Kadam)
+- Fix public metrics dashboard visibility bug. !31925
+- Add nested file detection for Dependency Scanning. !31932
+- Add class stubs and fix leaky constant cop alert. !31938 (Rajendra Kadam)
+- Add class stubs and fix leaky constant alert in content whitelist spec. !31946 (Rajendra Kadam)
+- Fix broken heading of Vue 3 migration guide doc. !31951 (Gilang Gumilar)
+- Add class stubs and fix leaky constant alert in query recorder spec. !31954 (Rajendra Kadam)
+- Fix no scroll when overflow in IDE right pane. !31961
+- Fix leaky constant cop issue in clone dashboard service spec. !31962 (Rajendra Kadam)
+- Stub class constant in resolve discussion spec. !31965 (Rajendra Kadam)
+- Fix leaky constant issue in upgrade progress service check. !31969 (Rajendra Kadam)
+- Clear merge request error on push to source branch. !32001
+- Allow only users with `adminNote` permission to edit the design note. !32035
+- Fix leaky constant issue in retry build service check. !32038 (Rajendra Kadam)
+- Fix leaky constant issue in env assignment spec. !32040 (Rajendra Kadam)
+- Fix leaky constant issue in statistics api spec. !32042 (Rajendra Kadam)
+- Fix leaky constant issue in merge request policy spec. !32044 (Rajendra Kadam)
+- Fix leaky constant issue in tree spec. !32045 (Rajendra Kadam)
+- Fix leaky constant issue in mentionable spec. !32049 (Rajendra Kadam)
+- Fix leaky constant issue in json serialization spec. !32051 (Rajendra Kadam)
+- Fix leaky constant issue in cluster spec. !32053 (Rajendra Kadam)
+- Fix bug in Groups API when statistics are requested in an unauthenticated API call. !32057
+- Fix leaky constant issue in nulls pt2 spec. !32058 (Rajendra Kadam)
+- Fix leaky constant issue in application settings encrypt spec. !32066 (Rajendra Kadam)
+- Fix leaky constant issue in system check spec. !32080 (Rajendra Kadam)
+- Fix leaky constant issue in simple executor spec. !32082 (Rajendra Kadam)
+- Fix leaky constant issue in jwt spec. !32093 (Rajendra Kadam)
+- Update android template. !32096
+- Fix leaky constant issue in factory spec. !32099 (Rajendra Kadam)
+- Fix leaky constant issue in sidekiq middleware spec. !32101 (Rajendra Kadam)
+- Fix leaky constant issue connection, master check and attr config spec. !32144 (Rajendra Kadam)
+- Fix updating of Markdown fields when Markdown cache version is incremented. !32219
+- Fix incorrect regex used in FileUploader#extract_dynamic_path. !32271
+- Improve responses in the snippet create/update API endpoints. !32282
+- Send Devise emails triggered from the 'Email' model asynchronously. !32286
+- Re-enable negative filters for Boards. !32348
+- Fix missing space character in alert header. !32395
+- Fix display of embedded snippets. !32411 (Jan Beckmann)
+- Fixed redirection to project snippets. !32530
+- Rake task gitlab:cleanup:orphan_lfs_files should clear the cached value or repository size. !32541
+- Fixed enabled merge button incorrectly showing to users who can't merge.
+- Fixed misaligned avatar in commit discussion form.
+- Fixed cancel reply button not alerting the user.
+- Fixes commit message emojis not rendering in Vue file list.
+- Fix logging of username in /jwt/auth.
+- Fixes branch name not getting escaped correctly on frontend.
+
+### Deprecated (2 changes)
+
+- Deprecate /plugins directory. !29678
+- Implement external database checker in dashboard controller. !30389
+
+### Changed (121 changes, 42 of them are from the community)
+
+- Support limits for offset based pagination. !28460
+- Redirect issues routes under /-/ scope. !28655
+- Add Fluentd into cluster apps page. !28847
+- Disallow developers to delete builds of protected branches. !28881 (Alexander Kutelev)
+- Store status of repository storage moves. !29095
+- Update the example regex in the image expiration policy UI. !29348
+- Add WAF and Cilium Log column for Fluentd table. !29457
+- Update Fluentd model to support multiple logs. !29458
+- Add Cilium to Fluentd UI controls on the Cluster Application page. !29511
+- Use alerts instead of toasts in Image Repository details. !29685
+- Avoid commit when snippet file_name and content are not present. !29761
+- Recreate foreign key in project settings to use nullify instead of cascade. !29767
+- Surface alerts add sidebar link. !29775
+- Make setting alerts on the monitoring dashboard available to GitLab Core users. !29789
+- Keep latest artifact for each ref. !29802
+- Change placeholder in search input for Analytics features. !29858 (Gilang Gumilar)
+- Test Jira connection before running import. !29926
+- Remove snippet file_name from snippet lists. !29937
+- Add new keep regex to expiration policy settings ui. !29940
+- Alert management can user enable. !30024
+- Expose the updated_at attribute in the todos API. !30035
+- Update GitLab-managed helm from 2.16.3 to 2.16.6, improving the reliability of GitLab's Kubernetes integration. !30067
+- Show correct label and count on Jira import form. !30072
+- Copy pipelines routing under - scope. !30159
+- Return validation errors for invalid pod name or container name when viewing pod logs. !30165 (Sashi Kumar)
+- Move global autocomplete routes to /-/ scope. !30173
+- Update the cancel comment note text to a less ambiguous statement. !30189
+- Use stricter regex for broadcast target path. !30210
+- Change wording of merge request threads counter. !30217
+- Indicate topics are optional. !30264 (Ben Bodenmiller)
+- Rename Client Side Evaluation to Live Preview. !30309
+- Decouple partial clone config from max input size. !30354 (Son Luong Ngoc)
+- Update managed jupyter chart to 0.9.0 (stable). !30393
+- Hide broadcast messages until the end of the period. !30432
+- Add severity icons for alert management. !30472
+- Move to supported Elastic helm charts. !30528
+- Updated snippet view to show path instead of name for a blob. !30550
+- Handle possible RSA key exceptions when generating CI_JOB_JWT. !30702
+- Update sidebar packages name. !30712
+- Update cron job schedule to have a random time generated on page load. !30729
+- Migrate Container-Scanning template to rules syntax. !30775
+- Migrate DAST CI template to rules syntax. !30776
+- Migrate License-Scanning CI template to rules syntax. !30784
+- Code review analytics: Change margin between title and description. !30834
+- Productivity Analytics: Remove separator and cleanup title margins. !30839
+- Move Auto DevOps Test.gitlab-ci.yml template to rules syntax instead of only/except. !30876
+- Change Var to Variable text. !30878
+- Move Build.gitlab-ci.yml to `rules` syntax. !30895
+- Move Code-Quality.gitlab-ci.yml to `rules` syntax. !30896
+- Migrate Dependency-Scanning CI template to rules syntax. !30907
+- Apply shared integrations view to project level. !30971
+- Exposes description, hosts, details, and timestamps for Alert Management Alert GraphQL. !31091
+- Update the example regex in the image expiration policy UI. !31104
+- Add clear explanation to the MR widget when no CI is available and Pipeline must succeed option is activated. !31112
+- Migrate SAST CI template to rules syntax. !31127
+- Update style of buttons on the Releases page. !31129 (Özgür Adem Işıklı @iozguradem)
+- Changed test success calculation to exclude skipped tests. !31154
+- app:gitlab:check rake task now warns when projects are not in hashed storage. !31172
+- Moves embedded metrics for Prometheus alerts to Core. !31203
+- Move Deploy.gitlab-ci.yml to `rules` syntax. !31290
+- Modify Snippet git path errors to be more helpful. !31333
+- Move Browser-Perfomance-Testing.gitlab-ci.yml to `rules` syntax. !31413
+- Use gsub instead of the Liquid gem for variable substitution in the Prometheus proxy API. !31482
+- Changed terminology of security scanner status from configure to enable. !31503
+- Update auto-deploy-image to v0.14.0 with helm 2.16.6, --atomic deployments and improved kubernetes 1.16 support. !31505
+- Add ability to add or remove MR labels via API. !31522 (Lee Tickett)
+- Disable Docker-in-Docker for Dependency Scanning by default. !31588
+- Disable Docker-in-Docker for SAST by default. !31589
+- Add migration to import changes to the system dashboard Prometheus queries into DB. !31618
+- Ensure links generated by the copy link feature contain variables. !31636
+- Migrate from Vue event hub to Mitt in issuables list. !31652 (Arun Kumar Mohan)
+- URL params in the monitoring dashboard update variable values defined in yml file. !31662
+- Migrate from Vue event hub to Mitt. !31666 (Arun Kumar Mohan)
+- Add prefix to template variables in URL in the monitoring dashboard. !31690
+- Add fields to GraphQL snippet blob type. !31710
+- Make protected_ci_variables setting enabled by default. !31715
+- Prepare group import feature to use ndjson. !31741
+- Prepare group export feature to use ndjson. !31742
+- Remove a lonely dot in Batch Comments. !31783 (Gilang Gumilar)
+- Update auto-deploy-image to v0.15.0, with an upgraded PostgreSQL chart used by default for Auto DevOps deployments. !31799
+- Force hashed storage to always be enabled. !31801
+- Add alert counts by status to GraphQL API. !31818
+- Show warning message to user if raw text search is used when filtering pipelines. !31942
+- Update deprecated slot syntax in ./app/assets/javascripts/pages/milestones/shared/components/delete_milestone_modal.vue. !31990 (Gilang Gumilar)
+- Update deprecated slot syntax in ./app/assets/javascripts/confidential_merge_request/components/dropdown.vue. !31999 (Gilang Gumilar)
+- Update deprecated slot syntax in ./app/assets/javascripts/diffs/components/diff_discussions.vue. !32004 (Gilang Gumilar)
+- Update deprecated slot syntax in ./app/assets/javascripts/boards/components/board_form.vue. !32005 (Gilang Gumilar)
+- Update deprecated slot syntax in ./app/assets/javascripts/repository/components/breadcrumbs.vue. !32017 (Gilang Gumilar)
+- Externalize i18n strings from ./app/views/users/calendar_activities.html.haml. !32094 (Gilang Gumilar)
+- Externalize i18n strings from ./app/views/users/_deletion_guidance.html.haml. !32097 (Gilang Gumilar)
+- Externalize i18n strings from ./app/views/shared/_ref_dropdown.html.haml. !32102 (Gilang Gumilar)
+- Externalize i18n strings from ./app/views/shared/_recaptcha_form.html.haml. !32106 (Gilang Gumilar)
+- Externalize i18n strings from ./app/views/shared/_project_limit.html.haml. !32110 (Gilang Gumilar)
+- Externalize i18n strings from ./app/views/shared/_personal_access_tokens_table.html.haml. !32116 (Gilang Gumilar)
+- Externalize i18n strings from ./app/views/shared/_milestones_filter.html.haml. !32120 (Gilang Gumilar)
+- Externalize i18n strings from ./app/views/shared/_milestone_expired.html.haml. !32121 (Gilang Gumilar)
+- Externalize i18n strings from ./app/views/shared/_label_row.html.haml. !32124 (Gilang Gumilar)
+- Externalize i18n strings from ./app/views/shared/_group_tips.html.haml. !32127 (Gilang Gumilar)
+- Externalize i18n strings from ./app/views/shared/_group_form.html.haml. !32132 (Gilang Gumilar)
+- Externalize i18n strings from ./app/views/shared/_field.html.haml. !32136 (Gilang Gumilar)
+- Externalize i18n strings from ./app/views/shared/_delete_label_modal.html.haml. !32138 (Gilang Gumilar)
+- Externalize i18n strings from ./app/views/shared/_commit_message_container.html.haml. !32139 (Gilang Gumilar)
+- Externalize i18n aria-label strings from ./app/views/shared/*. !32142 (Gilang Gumilar)
+- Externalize i18n strings from ./app/views/shared/milestones/_top.html.haml. !32148 (Gilang Gumilar)
+- Externalize i18n strings from ./app/views/shared/milestones/_milestone.html.haml. !32154 (Gilang Gumilar)
+- Externalize i18n strings from ./app/views/shared/milestones/_merge_requests_tab.haml. !32158 (Gilang Gumilar)
+- Externalize i18n strings from ./app/views/shared/milestones/_labels_tab.html.haml. !32159 (Gilang Gumilar)
+- Externalize i18n strings from ./app/views/shared/milestones/_issues_tab.html.haml. !32160 (Gilang Gumilar)
+- Externalize i18n strings from ./app/views/shared/milestones/_issuable.html.haml. !32161 (Gilang Gumilar)
+- Externalize i18n strings from ./app/views/shared/issuable/_sidebar.html.haml. !32164 (Gilang Gumilar)
+- Externalize i18n strings from ./app/views/shared/issuable/_nav.html.haml. !32165 (Gilang Gumilar)
+- Externalize i18n strings from ./app/views/shared/issuable/_label_*. !32167 (Gilang Gumilar)
+- Externalize i18n strings from ./app/views/shared/issuable/_close_reopen_report_toggle.html.haml. !32168 (Gilang Gumilar)
+- Externalize i18n strings from ./app/views/shared/issuable/_close_reopen_button.html.haml. !32172 (Gilang Gumilar)
+- Externalize i18n strings from ./app/views/shared/issuable/_bulk_update_sidebar.html.haml. !32173 (Gilang Gumilar)
+- Add files param to snippet create mutation. !32309
+- Cluster index refactor: Add missing pagination. !32338
+- Refactored render errors for blob to Vue. !32345
+- Format the alert payload into a table view. !32423
+- Add presence validation to content and title in snippet rest endpoints. !32522
+- Fix jump to definition linking to same file opening a new tab.
+
+### Performance (15 changes, 2 of them are from the community)
+
+- Speed up NOT Issue filters. !27639
+- Add indexes on ingress, enabled clusters and successful deployments. !28331
+- Add clusters index to improve usage data queries. !28626
+- Uses Kubernetes API conventions to create or update a resource leandrogs. !29010 (Leandro Silva)
+- Cache TreeSummary response for logs_tree. !29828
+- Move release notification from model callbacks to service. !29853 (Ravishankar)
+- Delete orphaned rows in application_settings table. !29981
+- Improve cacheability of monaco-editor code. !30032
+- Project import queries are now partially batched. !30057
+- Upgrade json gem to 2.3.0. !30852
+- Use process-wide cache for application settings and performance bar. !31135
+- Record usage ping finish time. !31222
+- Use NOT VALID to enforce a not null constraint on file store columns. !31261
+- Enable ref name caching for merge request diffs. !31530
+- Skip mergeability check when listing MRs in the API. !31890
+
+### Added (146 changes, 13 of them are from the community)
+
+- Graphql query for issues can now be sorted by priority. !18901
+- Add test report API route. !24648
+- Add GraphQL support for querying a board's lists. !24812
+- Define remove_label quick action as alias of unlabel. !24962 (Jacopo Beschi @jacopo-beschi)
+- Create Wiki activity events on pushes to Wiki git repository. !26624
+- Allow users to download a CSV of the recent daily code coverage values per job. !27094
+- Display x509 signed tags. !27211 (Roger Meier)
+- Enabling git versioned snippets. !27705
+- Add option to hide the default "thumbs up" and "thumbs down" buttons on issues, merge requests, and snippets. !27734 (Steve Mokris)
+- Add sorting issues by label priority to graphQL endpoint. !27936
+- Add certification revocation list download and certificate revoke. !28336 (Roger Meier)
+- Add WebIDE Dark Theme Support. !28407
+- Add secure binaries template. !28566
+- LDAP authentication support for admin mode. !28572 (Diego Louzán)
+- Add UI for exporting group data to the group settings. !28573
+- Allow to assign milestones to a release on the "Edit Release page". !28583
+- Add Previous and Next buttons for commit-by-commit navigation. !28596
+- Add the global var SECURE_ANALYZERS_PREFIX. !28617
+- Allow users to retry obtaining Let's Encrypt certificates for GitLab Pages. !28784
+- Add support for cluster applications CI artifact report. !28866
+- Add resource_state_events table. !28926
+- Migration to add partitioned_foreign_keys table that tracks foreign keys for partitioned tables. !29064
+- Collect object store config in usage data. !29149
+- Add freeze period model. !29162
+- Moved issue board focus mode to Core and available for for everyone. !29200
+- Add freeze periods via CI_DEPLOY_FREEZE variable. !29244
+- Add intermediate CAs capability to S/MIME email signature. !29352 (Diego Louzán)
+- Add responding to ChatOps jobs triggered in Mattermost. !29366 (Brian Kintz)
+- Expose Freeze Periods in REST API. !29382
+- Add read/write_package_registry to deploy_tokens. !29383
+- Add public API for feature flag user lists. !29415
+- Create cluster annotations API endpoint. !29502
+- Add ability to change metrics dashboard visibility. !29634
+- Add percentage of actors feature flag rollout. !29698
+- Add metric dashboard public visibility toggle. !29718
+- Route to feature flags based on internal id. !29740
+- Send email notification for unknown sign-ins. !29741
+- Add search by name to registry image repositories. !29763
+- Surface alerts add empty state. !29775
+- Enable uploadpack filters by default. !29787
+- Select the first option if there is only one metric option on alerts dropdown. !29857 (Gilang Gumilar)
+- Add table for Alert Management alerts. !29864
+- Add policies for managing 'default_branch_protection' setting in groups. !29879
+- Add comment_detail column to services. !29891
+- Add option to add custom profile image guidelines. !29894 (Roger Meier)
+- View a details of a panel in 'full screen mode'. !29902
+- Add database relation to preserve users starred metrics dashboard information. !29912
+- Add jira imports to usage data. !29925
+- Add issues_create_limit to settings api. !29960
+- Map labels from Jira to labels in GitLab. !29970
+- Add Deployment to ECS process to AutoDevOps. !29971
+- GraphQL issue queries can now be sorted by milestone due date. !29992
+- Add table for tracking issues published to status page. !29994
+- Create Sprints table and barebones model. !30125
+- When viewing a single panel, return to a full dashboard by pressing the Escape key. !30126
+- Flesh out Sprints relationships and constraints. !30127
+- Add GraphQL type for reading Alert Management Alerts. !30140
+- Add ability to query Projects using GraphQL API. !30146
+- Add `web_url` to branch API response. !30147
+- Fix Jira importer URLs. !30155
+- Add migrations for global CI variables. !30156
+- Add vue routes support to Static Site Editor. !30163
+- Integrate CI instance variables in the build process. !30186
+- Add raw_blob_request_limit to Application Settings API. !30211
+- Empty state for alerts list. !30215
+- Create operations_strategies_user_lists table. !30243
+- Adds URL parameter for confidential new issue creation. !30250
+- Update Jira comment to include more information. !30258
+- Add scheduled_at field to jira_imports table. !30284
+- Alerts list loading & error state. !30315
+- Deploy token authentication for API with Maven endpoints. !30332
+- Add metrics dashboard annotations feature, which enables marking interesting events over metrics dashboard charts. !30371
+- Add non_archived argument to issues API endpoint. !30381
+- Add admin controller actions for interacting with instance variables. !30385
+- Add mutation to create a new branch in GraphQL. !30388
+- Introduce API for fetching shared projects in a group. !30461
+- Display expanded dashboard from a panel's "Link to chart" URL. !30476
+- Resolve Design Comment: Edit Comment text. !30479
+- Map Jira issue assignee and author. !30498
+- Add email notification on group export complete. !30522
+- Add option to restrict emails that match a configured regular expression. !30548
+- In metrics dashboard use custom variables from URL in queries. !30560
+- Add mutation for AlertManagement's Alert status. !30576
+- Multiple metrics edit navigates to prom edit page. !30666
+- Update metrics dashboard url when a panel is expanded or contracted. !30704
+- Add migration bot user. !30738
+- Issues Analytics: Add title to page. !30836
+- Contribution Analytics: Add title to page. !30842
+- Insights Analytics: Add title to page. !30853
+- Repository Analytics: Add title to page. !30855
+- CI / CD Analytics: Add title to page. !30891
+- Enable Monaco for editing Snippets by default. !30892
+- Disabled Edit button for binary snippets. !30904
+- Monokai and Solarized Dark syntax highlighting theme for Web IDE. !30931
+- Updated deprecated buttons in release page. !30941 (Özgür Adem Işıklı @iozguradem)
+- Add sorting to AlertManagement Alert Graphql. !30964
+- Web IDE: Introduce syntax highlighting for .vue files. !30986
+- Solarized light syntax highlighting theme for the Web IDE. !30989
+- Deploy tokens can be used in the API with Basic Auth Headers enabling NuGet and PyPI to be used with deploy tokens. !31035
+- Skip spam check for GitLab team members on gitlab.com. !31052
+- None syntax highlighting theme for Web IDE. !31056
+- Issues Analytics: Add title to group-level page. !31057
+- Display metrics dashboards starred by user at the top of dashboard select field. !31059
+- Add WYSIWYG editor to the Static Site Editor. !31099
+- Conan registry is accessible using deploy tokens. !31114
+- Add container registry settings to application_settings table. !31125
+- Added provider icon to cluster index display. !31134
+- Add a CI variable CI_KUBERNETES_ACTIVE as an alternative to only:kubernetes/except:kubernetes that works with the rules syntax. !31146
+- Enable Alert Management functionality. !31171
+- Allow monitoring dashboard users to open single panels in a new tab. !31206
+- Create dashboard annotations via Graphql. !31249
+- Enable deploy token authentication for the NPM registry. !31264
+- Add read and write package registry scopes to deploy tokens. !31267
+- Read only storage move API. !31285
+- Add Design Management (via Designs tab on Issues) to GitLab FOSS. !31309
+- Exposes issue IID in Alert Management Alert's GraphQL endpoint. !31313
+- New API endpoint for starring metrics dashboards. !31316
+- Add search bar to container registry image list. !31322
+- Highlight focused Design discussion in image markers. !31323
+- Allow showing merge request diffs compared to current version of target branch. !31325
+- Add alert on project issues page to show Jira import is in progress. !31329
+- Add API CRUD actions for instance-level CI/CD variables. !31342
+- Add alert on project issues page to show Jira import has finished. !31375
+- Filter pipelines by trigger author and branch name. !31386
+- Add incident_labeled_issues to usage ping. !31406
+- Refactored Snippet view to Vue. !31450
+- Make report-type artifacts available for download. !31513
+- Render dropdown and text elements based on variables defined in monitoring dashboard yml file. !31524
+- Add expunge deleted messages option to mailroom. !31531 (Diego Louzán)
+- Log Cloudflare request headers. !31532
+- Allow Web IDE markdown to preview uncommitted images. !31540
+- Add Webex Teams project integration service. !31543 (Sebastian Leuser)
+- Add Rubocop cop to flag keyword arguments usage in Sidekiq workers. !31551 (Arun Kumar Mohan)
+- Allow users to star/unstar dashboards which will appear at the top of their dashboards options. !31597
+- Add ability to create merge request from vulnerability page. !31620
+- Add confidential status support for comment and replies. !31622
+- Add Web IDE pipelines usage counter. !31658
+- Ruby metrics now include USS and PSS memory readings. !31707
+- Add issues_created_gitlab_alerts to usage ping. !31802
+- Add Alert Detail view. !31877
+- New API endpoint for removing stars from metrics dashboards. !31892
+- View raw file of any zip artifacts. !31912
+- Add search to Alert Management Alerts GraphQL query. !32047
+- Add "Keep divergent refs" option for push mirrors. !32381
+- Add fields to Alert Details view. !32392
+- Update GitLab Pages to 1.18.0.
+
+### Other (70 changes, 25 of them are from the community)
+
+- Remove Admin -> Settings -> Geo navigation. !21005 (Lee Tickett)
+- removes store logic from issue board models. !21400 (nuwe1)
+- removes store logic from issue board models. !21408 (nuwe1)
+- Moves updateIssue from issue model to board store. !21414 (nuwe1)
+- Improve error handling of squash and rebase. !23740
+- Remove obsolete bot_type column. !27076
+- Remove obsolete columns from resource_milestone_events. !28536
+- Add index to issue_id and created_at of resource_weight_events. !28930
+- Clean up & Re-arrange the keyboard shortcuts modal. !28992
+- Remove ci_expose_arbitrary_artifacts_in_mr feature flag. !29363 (Lee Tickett)
+- Remove git_archive_path feature flag. !29369 (Lee Tickett)
+- Rename Snippet search results title. !29599
+- Update to Rails 6.0.2.2. !29743
+- Log server responses of API bad requests in api_json.log. !29839
+- Clean up refresh fix for cancel automatic merge. !29844
+- Add snippet repository backfilling migration. !29927
+- Remove the SIDEKIQ_REQUEST_STORE configuration. !29955
+- Increase label list label column width. !29963
+- Refactor count queries to single query on Projects::EnvironmentsController. !30073 (Sashi Kumar)
+- Update text on self-managed sign in page. !30135
+- Remove namespaces.plan_id column. !30351
+- Migrate models and policies specs to consider admin mode. !30430 (Diego Louzán)
+- Upgrade Nokogiri to v1.10.9. !30435
+- Add snippet migration rake tasks. !30489
+- Error tracking target blank empty state. !30525
+- Remove elasticsearch_experimental_indexer column. !30628
+- Update the template for Static Site Editor / Middleman. !30642
+- Remove unused cluster configuration workers. !30695
+- Remove deprecated Snippet `code` attribute from Project Snippets API. !30739
+- Update merge request widget question mark icons. !30759
+- Value Stream Analytics: Add title and remove separator. !30841
+- Remove mention of github-markup in Wiki clone help. !30962
+- Alert Management mobile styling. !31082
+- Allow Auto DevOps Test stage to start immediately. !31185
+- Enable async_merge_request_check_mergeability by default. !31196
+- Cleanup background migration for populating user_highest_roles table. !31218
+- Add docs for alert management list. !31225
+- Remove extra spaces from markdown toolbar items. !31288
+- Use cookies with metadata to prevent reuse as another cookie. !31311
+- Add inherit_from_id column to services table. !31320
+- Organize package models by package type. !31346 (Sashi Kumar)
+- Apply active class on active link element in HAML pagination. !31396
+- Update GitLab Runner Helm Chart to 0.16.1. !31492
+- Log when container registry permissions are denied. !31536
+- Add epic_id to resource_state_events. !31587
+- Update doorkeeper to latest version 5.0.3. !31673
+- Add Foreign Key on projects.namespaces_id. !31675
+- Fix misalignment of author dropdown on the commits search page. !31686
+- Update css-loader ^1.0.0 -> ^2.1.1. !31743 (Pirate Praveen)
+- Fix database schema inconsistency with not-null checks. !31930
+- Removes create_confidential_merge_request feature flag leandrogs. !31968 (Leandro Silva)
+- Update deprecated slot syntax in ./app/assets/javascripts/issue_show/components/fields/description.vue. !31979 (Gilang Gumilar)
+- Update deprecated slot syntax in ./app/assets/javascripts/pages/milestones/shared/components/promote_milestone_modal.vue. !31980 (Gilang Gumilar)
+- Update group and project export info messages. !31981 (briankabiro)
+- Relocate Nuget presenter helpers to presenters module. !31985 (Sashi Kumar)
+- Update deprecated slot syntax in ./app/assets/javascripts/pages/admin/users/components/delete_user_modal.vue. !31992 (Gilang Gumilar)
+- Update deprecated slot syntax in ./app/assets/javascripts/performance_bar/components/detailed_metric.vue. !32006 (Gilang Gumilar)
+- Update deprecated slot syntax in ./app/assets/javascripts/profile/account/components/delete_account_modal.vue. !32007 (Gilang Gumilar)
+- Update deprecated slot syntax in ./app/assets/javascripts/environments/components/stop_environment_modal.vue. !32012 (Gilang Gumilar)
+- Update deprecated slot syntax in ./app/assets/javascripts/serverless/components/area.vue. !32015 (Gilang Gumilar)
+- Update deprecated slot syntax in ./app/assets/javascripts/releases/components/app_edit.vue. !32018 (Gilang Gumilar)
+- Update deprecated slot syntax in ./app/assets/javascripts/releases/components/evidence_block.vue. !32019 (Gilang Gumilar)
+- Update deprecated slot syntax in ./app/assets/javascripts/ide/components/ide_review.vue. !32025 (Gilang Gumilar)
+- Update deprecated slot syntax in ./app/assets/javascripts/ide/components/pipelines/list.vue. !32027 (Gilang Gumilar)
+- Update alert management table background colour to correct gray. !32068
+- Validate package types in package metadatum models. !32091 (Sashi Kumar)
+- Update error tracking table background colour to correct gray. !32133
+- Update GitLab Elasticsearch Indexer to v2.3.0. !32199
+- Update asciidoctor-plantuml gem to v0.0.12. !32376
+- Use visitUrl in Alert management. !32414
+
+
 ## 12.10.5 (2020-05-13)
 
 ### Added (1 change)

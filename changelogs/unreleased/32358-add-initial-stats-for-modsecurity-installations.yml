@@ -1,5 +1,0 @@
----
-title: Add indexes on ingress, enabled clusters and successful deployments
-merge_request: 28331
-author:
-type: performance

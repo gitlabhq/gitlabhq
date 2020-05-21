@@ -1,5 +1,0 @@
----
-title: Bump max search depth from 2 to 4 when looking for files SAST analyzers can handle
-merge_request: 29732
-author:
-type: fixed

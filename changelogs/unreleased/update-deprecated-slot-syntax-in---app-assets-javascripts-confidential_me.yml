@@ -1,5 +1,0 @@
----
-title: Update deprecated slot syntax in ./app/assets/javascripts/confidential_merge_request/components/dropdown.vue
-merge_request: 31999
-author: Gilang Gumilar
-type: changed

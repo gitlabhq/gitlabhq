@@ -1,5 +1,0 @@
----
-title: Update deprecated slot syntax in ./app/assets/javascripts/environments/components/stop_environment_modal.vue
-merge_request: 32012
-author: Gilang Gumilar
-type: other

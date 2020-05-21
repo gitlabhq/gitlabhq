@@ -1,5 +1,0 @@
----
-title: Update deprecated slot syntax in ./app/assets/javascripts/boards/components/board_form.vue
-merge_request: 32005
-author: Gilang Gumilar
-type: changed

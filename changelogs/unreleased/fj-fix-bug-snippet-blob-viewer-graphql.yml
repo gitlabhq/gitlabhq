@@ -1,5 +1,0 @@
----
-title: Fix bug in Snippet BlobViewer GraphQL definition
-merge_request: 30927
-author:
-type: fixed

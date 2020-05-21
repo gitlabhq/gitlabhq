@@ -1,5 +1,0 @@
----
-title: Externalize i18n strings from ./app/views/shared/_personal_access_tokens_table.html.haml
-merge_request: 32116
-author: Gilang Gumilar
-type: changed

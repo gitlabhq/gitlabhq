@@ -1,5 +1,0 @@
----
-title: Make protected_ci_variables setting enabled by default
-merge_request: 31715
-author:
-type: changed

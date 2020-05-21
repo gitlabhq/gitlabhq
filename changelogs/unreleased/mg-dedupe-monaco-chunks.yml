@@ -1,5 +1,0 @@
----
-title: Improve cacheability of monaco-editor code
-merge_request: 30032
-author:
-type: performance

@@ -1,5 +1,0 @@
----
-title: Avoid commit when snippet file_name and content are not present
-merge_request: 29761
-author:
-type: changed

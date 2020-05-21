@@ -1,5 +1,0 @@
----
-title: Log server responses of API bad requests in api_json.log
-merge_request: 29839
-author:
-type: other

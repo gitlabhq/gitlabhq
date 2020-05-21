@@ -1,5 +1,0 @@
----
-title: Remove detection of file in Dependency Scanning template
-merge_request: 31819
-author:
-type: fixed
