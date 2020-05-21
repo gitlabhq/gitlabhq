@@ -85,9 +85,16 @@ end
 RSpec::Matchers.define :have_graphql_arguments do |*expected|
   include GraphqlHelpers
 
+  def expected_names
+    @names ||= Array.wrap(expected).map { |name| GraphqlHelpers.fieldnamerize(name) }
+  end
+
   match do |field|
-    argument_names = expected.map { |name| GraphqlHelpers.fieldnamerize(name) }
-    expect(field.arguments.keys).to contain_exactly(*argument_names)
+    expect(field.arguments.keys).to contain_exactly(*expected_names)
+  end
+
+  failure_message do |field|
+    "expected that #{field.name} would have the following fields: #{expected_names.inspect}, but it has #{field.arguments.keys.inspect}."
   end
 end
 

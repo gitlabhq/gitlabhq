@@ -1,3 +1,9 @@
+---
+stage: Growth
+group: Telemetry
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+---
+
 # Snowplow Guide
 
 This guide provides a details about how Snowplow works. It includes the following sections:

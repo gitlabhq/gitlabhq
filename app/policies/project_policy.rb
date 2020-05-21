@@ -278,7 +278,6 @@ class ProjectPolicy < BasePolicy
 
   rule { can?(:metrics_dashboard) }.policy do
     enable :read_prometheus
-    enable :read_environment
     enable :read_deployment
   end
 
@@ -429,25 +428,9 @@ class ProjectPolicy < BasePolicy
   rule { builds_disabled | repository_disabled }.policy do
     prevent(*create_read_update_admin_destroy(:build))
     prevent(*create_read_update_admin_destroy(:pipeline_schedule))
+    prevent(*create_read_update_admin_destroy(:environment))
     prevent(*create_read_update_admin_destroy(:cluster))
     prevent(*create_read_update_admin_destroy(:deployment))
-  end
-
-  # Enabling `read_environment` specifically for the condition of `metrics_dashboard_allowed` is
-  # necessary due to the route for metrics dashboard requiring an environment id.
-  # This will be addressed in https://gitlab.com/gitlab-org/gitlab/-/issues/213833 when
-  # environments and metrics are decoupled and these rules will be removed.
-
-  rule { (builds_disabled | repository_disabled) & ~metrics_dashboard_allowed}.policy do
-    prevent(*create_read_update_admin_destroy(:environment))
-  end
-
-  rule { (builds_disabled | repository_disabled) & metrics_dashboard_allowed}.policy do
-    prevent :create_environment
-    prevent :update_environment
-    prevent :admin_environment
-    prevent :destroy_environment
-    enable :read_environment
   end
 
   # There's two separate cases when builds_disabled is true:

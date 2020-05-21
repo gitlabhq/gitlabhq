@@ -10,7 +10,7 @@ class Projects::EnvironmentsController < Projects::ApplicationController
 
     push_frontend_feature_flag(:prometheus_computed_alerts)
   end
-  before_action :authorize_read_environment!
+  before_action :authorize_read_environment!, except: [:metrics, :additional_metrics, :metrics_dashboard, :metrics_redirect]
   before_action :authorize_create_environment!, only: [:new, :create]
   before_action :authorize_stop_environment!, only: [:stop]
   before_action :authorize_update_environment!, only: [:edit, :update, :cancel_auto_stop]

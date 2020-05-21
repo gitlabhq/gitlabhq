@@ -24326,6 +24326,9 @@ msgstr ""
 msgid "Warning: Displaying this diagram might cause performance issues on this page."
 msgstr ""
 
+msgid "We are currently unable to fetch data for this graph."
+msgstr ""
+
 msgid "We could not determine the path to remove the epic"
 msgstr ""
 

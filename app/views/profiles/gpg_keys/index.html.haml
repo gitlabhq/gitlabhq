@@ -3,12 +3,12 @@
 
 .row.prepend-top-default
   .col-lg-4.profile-settings-sidebar
-    %h4.prepend-top-0
+    %h4.gl-mt-0
       = page_title
     %p
       = _('GPG keys allow you to verify signed commits.')
   .col-lg-8
-    %h5.prepend-top-0
+    %h5.gl-mt-0
       = _('Add a GPG key')
     %p.profile-settings-content
       - help_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: help_page_path('user/project/repository/gpg_signed_commits/index.md') }

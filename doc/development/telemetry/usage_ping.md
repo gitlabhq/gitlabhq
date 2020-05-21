@@ -1,19 +1,17 @@
+---
+stage: Growth
+group: Telemetry
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+---
+
 # Usage Ping Guide
 
-> - [Introduced][ee-557] in GitLab Enterprise Edition 8.10.
-> - More statistics [were added][ee-735] in GitLab Enterprise Edition 8.12.
-> - [Moved to GitLab Core][ce-23361] in 9.1.
-> - More statistics [were added][ee-6602] in GitLab Ultimate 11.2.
+> - Introduced in GitLab Enterprise Edition 8.10.
+> - More statistics were added in GitLab Enterprise Edition 8.12.
+> - Moved to GitLab Core in 9.1.
+> - More statistics were added in GitLab Ultimate 11.2.
 
-This guide provides a details about how usage ping works. It includes the following sections:
-
-1. [What is Usage Ping](#what-is-usage-ping)
-1. [Usage Ping payload](#usage-ping-payload)
-1. [Disabling Usage Ping](#disabling-usage-ping)
-1. [Usage Ping request flow](#usage-ping-request-flow)
-1. [How Usage Ping works](#how-usage-ping-works)
-1. [Implementing Usage Ping](#implementing-usage-ping)
-1. [Developing and testing usage ping](#developing-and-testing-usage-ping)
+This guide describes Usage Ping's purpose and how it's implemented.
 
 For more information about Telemetry, see:
 
@@ -27,38 +25,40 @@ More useful links:
 - [Data for Product Managers](https://about.gitlab.com/handbook/business-ops/data-team/data-for-product-managers/)
 - [Data Infrastructure](https://about.gitlab.com/handbook/business-ops/data-team/data-infrastructure/)
 
-## What is Usage Ping
+## What is Usage Ping?
 
-- GitLab sends a weekly payload containing usage data to GitLab Inc. The usage ping uses high-level data to help our product, support, and sales teams. It does not send any project names, usernames, or any other specific data. The information from the usage ping is not anonymous, it is linked to the hostname of the instance. Sending usage ping is optional, and any instance can disable analytics.
+- GitLab sends a weekly payload containing usage data to GitLab Inc. Usage Ping provides high-level data to help our product, support, and sales teams. It does not send any project names, usernames, or any other specific data. The information from the usage ping is not anonymous, it is linked to the hostname of the instance. Sending usage ping is optional, and any instance can disable analytics.
 - The usage data is primarily composed of row counts for different tables in the instance’s database. By comparing these counts month over month (or week over week), we can get a rough sense for how an instance is using the different features within the product.
-- Usage ping is important to GitLab as we use it to calculate our and Stage Monthly Active Users (SMAU) which helps us measure the success of our stages and features.
+- Usage ping is important to GitLab as we use it to calculate our Stage Monthly Active Users (SMAU) which helps us measure the success of our stages and features.
 - Once usage ping is enabled, GitLab will gather data from the other instances and will be able to show usage statistics of your instance to your users.
 
-### Why Should We Enable Usage Ping?
+### Why should we enable Usage Ping?
 
-- The main purpose of Usage Ping is to build a better GitLab. Data about how GitLab is used is collected to better understand feature/stage adoption and usage, which helps us understand how GitLab is adding value and helps our team better understand the reasons why people use GitLab and with this knowledge we are able to make better product decisions.
+- The main purpose of Usage Ping is to build a better GitLab. Data about how GitLab is used is collected to better understand feature/stage adoption and usage, which helps us understand how GitLab is adding value and helps our team better understand the reasons why people use GitLab and with this knowledge we're able to make better product decisions.
 - As a benefit of having the usage ping active, GitLab lets you analyze the users’ activities over time of your GitLab installation.
 - As a benefit of having the usage ping active, GitLab provides you with The DevOps Score,which gives you an overview of your entire instance’s adoption of Concurrent DevOps from planning to monitoring.
 - You will get better, more proactive support. (assuming that our TAMs and support organization used the data to deliver more value)
 - You will get insight and advice into how to get the most value out of your investment in GitLab. Wouldn't you want to know that a number of features or values are not being adopted in your organization?
 - You get a report that illustrates how you compare against other similar organizations (anonymized), with specific advice and recommendations on how to improve your DevOps processes.
+- Usage Ping is enabled by default. To disable it, see [Disable Usage Ping](#disable-usage-ping).
 
 ### Limitations
 
-- Usage Ping does not track frontend events things like page views, link clicks, or user sessions and only focuses on aggregated backend events.
+- Usage Ping does not track frontend events things like page views, link clicks, or user sessions, and only focuses on aggregated backend events.
 - Because of these limitations we recommend instrumenting your products with Snowplow for more detailed analytics on GitLab.com and use Usage Ping to track aggregated backend events on self-managed.
 
 ## Usage Ping payload
 
 You can view the exact JSON payload sent to GitLab Inc. in the administration panel. To view the payload:
 
-1. Navigate to the **Admin Area > Settings > Metrics and profiling**.
+1. Navigate to **Admin Area > Settings > Metrics and profiling**.
 1. Expand the **Usage statistics** section.
 1. Click the **Preview payload** button.
 
-Here is an example of the payload structure
+<details>
+<summary>Click to view an example of the payload structure.</summary>
 
-``` json
+```json
 {
   "uuid": "0000000-0000-0000-0000-000000000000",
   "hostname": "example.com",
@@ -247,17 +247,19 @@ Here is an example of the payload structure
 }
 ```
 
-## Disabling usage ping
+</details>
 
-The usage ping is opt-out. If you want to deactivate this feature, go to the Settings page of your administration panel and uncheck the Usage Ping checkbox.
+## Disable Usage Ping
 
-To disable the usage ping and prevent it from being configured in future through the administration panel, Omnibus installs can set the following in [`gitlab.rb`](https://docs.gitlab.com/omnibus/settings/configuration.html#configuration-options):
+To disable Usage Ping in the GitLab UI, go to the **Settings** page of your administration panel and uncheck the **Usage Ping** checkbox.
+
+To disable Usage Ping and prevent it from being configured in the future through the administration panel, Omnibus installs can set the following in [`gitlab.rb`](https://docs.gitlab.com/omnibus/settings/configuration.html#configuration-options):
 
 ```ruby
 gitlab_rails['usage_ping_enabled'] = false
 ```
 
-And source installs can set the following in `gitlab.yml`:
+Source installations can set the following in `gitlab.yml`:
 
 ```yaml
 production: &base
@@ -267,9 +269,9 @@ production: &base
     usage_ping_enabled: false
 ```
 
-## Usage Ping Request Flow
+## Usage Ping request flow
 
-The following example shows a basic request/response flow between a GitLab Instance, the Versions Application, the License Application, Salesforce, GitLab's S3 Bucket, GitLab's Snowflake Data Warehouse, and Sisense.:
+The following example shows a basic request/response flow between a GitLab instance, the Versions Application, the License Application, Salesforce, GitLab's S3 Bucket, GitLab's Snowflake Data Warehouse, and Sisense:
 
 ```mermaid
 sequenceDiagram
@@ -317,13 +319,14 @@ Usage Ping consists of four types of counters which are all found in `usage_data
 - **Alternative Counters:** Used for settings and configurations
 - **Redis Counters:** Used for in-memory counts. This method is being deprecated due to data inaccuracies and will be replaced with a persistent method.
 
-Note: Only use the provided counter methods. Each counter method contains a built in fail safe to isolate each counter to avoid breaking the entire Usage Ping.
+NOTE: **Note:**
+Only use the provided counter methods. Each counter method contains a built in fail safe to isolate each counter to avoid breaking the entire Usage Ping.
 
 ### Why batch counting
 
 For large tables, PostgreSQL can take a long time to count rows due to MVCC [(Multi-version Concurrency Control)](https://en.wikipedia.org/wiki/Multiversion_concurrency_control). Batch counting is a counting method where a single large query is broken into multiple smaller queries. For example, instead of a single query querying 1,000,000 records, with batch counting, you can execute 100 queries of 10,000 records each. Batch counting is useful for avoiding database timeouts as each batch query is significantly shorter than one single long running query.
 
-For GitLab.com, there are extremely large tables with 15 second query timeouts, so, we use batch counting to avoid encountering timeouts. Here are the sizes of some GitLab.com tables:
+For GitLab.com, there are extremely large tables with 15 second query timeouts, so we use batch counting to avoid encountering timeouts. Here are the sizes of some GitLab.com tables:
 
 | Table | Row counts in millions |
 | ------ | ------ |
@@ -413,8 +416,8 @@ Method: `alt_usage_data(value = nil, fallback: -1, &block)`
 
 Arguments:
 
-- `value`: a simple static value in wich case the value is simply returned.
-- or a `block`: wich is evaluated
+- `value`: a simple static value in which case the value is simply returned.
+- or a `block`: which is evaluated
 - `fallback: -1`: the common value used for any metrics that are failing.
 
 Example of usage:
@@ -441,7 +444,7 @@ Gitlab::UsageData.distinct_count(::Note.with_suggestions.where(time_period), :au
 
 ### 2. Generate the SQL query
 
-Your Rails console will give back the generated SQL queries.
+Your Rails console will return the generated SQL queries.
 
 Example:
 
@@ -457,27 +460,21 @@ Example:
 
 Paste the SQL query into `#database-lab` to see how the query performs at scale.
 
-- #database-lab is a Slack channel which uses a production-sized environment to test your queries
+- `#database-lab` is a Slack channel which uses a production-sized environment to test your queries.
 - GitLab.com’s production database has a 15 second timeout.
-- For each query we require an execution time of under 1 second due do cold caches which can 10x this time.
-- Add a specialized index on columns involved to reduce your the execution time.
+- For each query we require an execution time of under 1 second due to cold caches which can 10x this time.
+- Add a specialized index on columns involved to reduce the execution time.
 
-In order to have an understanding of the queries execution we add in the MR description the following information
+In order to have an understanding of the query's execution we add in the MR description the following information:
 
-For counters that have a `time_period` test and add information for both cases.
+- For counters that have a `time_period` test we add information for both cases:
+  - `time_period = {}` for all time periods
+  - `time_period = { created_at: 28.days.ago..Time.current }` for last 28 days period
+- Execution plan and query time before and after optimization
+- Query generated for the index and time
+- Migration output for up and down execution
 
-- with `time_period = {}` for all time period
-- and `time_period = { created_at: 28.days.ago..Time.current }` for last 28 days period
-
-Execution plan and query time before and after optimization
-
-Using database-lab and [explain.depesz.com](https://explain.depesz.com/) see more details in [database review guide](../database_review.md#preparation-when-adding-or-modifying-queries)
-
-Query generated for the index and time
-
-Using database-lab
-
-Migration output for up and down execution
+We also use `#database-lab` and [explain.depesz.com](https://explain.depesz.com/). For more details, see the [database review guide](../database_review.md#preparation-when-adding-or-modifying-queries).
 
 Examples of query optimization work:
 
@@ -486,4 +483,4 @@ Examples of query optimization work:
 
 ### 4. Ask for a Telemetry Review
 
-On GitLab.com, we have DangerBot setup to monitor Telemetry related files and DangerBot will recommend a Telemetry review. Simply `@gitlab-org/growth/telemetry/engineers` in your MR for a review.
+On GitLab.com, we have DangerBot setup to monitor Telemetry related files and DangerBot will recommend a Telemetry review. Mention `@gitlab-org/growth/telemetry/engineers` in your MR for a review.

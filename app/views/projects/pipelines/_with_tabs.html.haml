@@ -6,14 +6,14 @@
     %li.js-pipeline-tab-link
       = link_to project_pipeline_path(@project, @pipeline), data: { target: '#js-tab-pipeline', action: 'pipelines', toggle: 'tab' }, class: 'pipeline-tab' do
         = _('Pipeline')
-    %li.js-builds-tab-link
-      = link_to builds_project_pipeline_path(@project, @pipeline), data: { target: '#js-tab-builds', action: 'builds', toggle: 'tab' }, class: 'builds-tab' do
-        = _('Jobs')
-        %span.badge.badge-pill.js-builds-counter= pipeline.total_size
     - if dag_pipeline_tab_enabled
       %li.js-dag-tab-link
         = link_to dag_project_pipeline_path(@project, @pipeline), data: { target: '#js-tab-dag', action: 'dag', toggle: 'tab' }, class: 'dag-tab' do
           = _('DAG')
+    %li.js-builds-tab-link
+      = link_to builds_project_pipeline_path(@project, @pipeline), data: { target: '#js-tab-builds', action: 'builds', toggle: 'tab' }, class: 'builds-tab' do
+        = _('Jobs')
+        %span.badge.badge-pill.js-builds-counter= pipeline.total_size
     - if @pipeline.failed_builds.present?
       %li.js-failures-tab-link
         = link_to failures_project_pipeline_path(@project, @pipeline), data: { target: '#js-tab-failures', action: 'failures', toggle: 'tab' }, class: 'failures-tab' do

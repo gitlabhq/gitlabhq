@@ -1,3 +1,9 @@
+---
+stage: Growth
+group: Telemetry
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+---
+
 # Telemetry Guide
 
 At GitLab, we collect telemetry for the purpose of helping us build a better GitLab. Data about how GitLab is used is collected to better understand what parts of GitLab needs improvement and what features to build next. Telemetry also helps our team better understand the reasons why people use GitLab and with this knowledge we are able to make better product decisions.
@@ -19,11 +25,11 @@ Telemetry Guide:
 
   1. [What is Usage Ping](usage_ping.md#what-is-usage-ping)
   1. [Usage Ping payload](usage_ping.md#usage-ping-payload)
-  1. [Disabling Usage Ping](usage_ping.md#disabling-usage-ping)
+  1. [Disable Usage Ping](usage_ping.md#disable-usage-ping)
   1. [Usage Ping request flow](usage_ping.md#usage-ping-request-flow)
   1. [How Usage Ping works](usage_ping.md#how-usage-ping-works)
   1. [Implementing Usage Ping](usage_ping.md#implementing-usage-ping)
-  1. [Developing and testing usage ping](usage_ping.md#developing-and-testing-usage-ping)
+  1. [Developing and testing Usage Ping](usage_ping.md#developing-and-testing-usage-ping)
 
 [Snowplow Guide](snowplow.md)
 
@@ -44,7 +50,7 @@ More useful links:
 
 ## Our tracking tools
 
-In this section we will explain the six different technologies we use to gather product usage data.
+We use several different technologies to gather product usage data.
 
 ### Snowplow JS (Frontend)
 
@@ -58,7 +64,7 @@ Snowplow is an enterprise-grade marketing and product analytics platform which h
 
 Usage Ping is a method for GitLab Inc to collect usage data on a GitLab instance. Usage Ping is primarily composed of row counts for different tables in the instance’s database. By comparing these counts month over month (or week over week), we can get a rough sense for how an instance is using the different features within the product. This high-level data is used to help our product, support, and sales teams.
 
-Read more about how this works in the [Usage Ping guide](usage_ping.md)
+For more details, read the [Usage Ping](usage_ping.md) guide.
 
 ### Database import
 
@@ -72,51 +78,51 @@ System logs are the application logs generated from running the GitLab Rails app
 
 Our different tracking tools allows us to track different types of events. The event types and examples of what data can be tracked are outlined below.
 
-| Event Type | Snowplow JS (Frontend) | Snowplow Ruby (Backend) | Usage Ping | Database import | Log system |
-| ------ | ------ | ------ | ------ | ------ | ------ |
-| Database counts | ❌ | ❌ | ✅ | ✅ | ❌ |
-| Pageview events | ✅ | ✅ | ❌ | ❌ | ❌ |
-| UI events | ✅ | ❌ | ❌ | ❌ | ❌ |
-| CRUD and API events | ❌ | ✅ | ❌ | ❌ | ❌ |
-| Event funnels | ✅ | ✅ | ❌ | ❌ | ❌ |
-| PostgreSQL Data | ❌ | ❌ | ❌ | ✅ | ❌ |
-| Logs  | ❌ | ❌ | ❌ | ❌ | ✅ |
-| External services | ❌ | ❌ | ❌ | ❌ | ❌ |
+| Event Type          | Snowplow JS (Frontend) | Snowplow Ruby (Backend) | Usage Ping          | Database import     | Log system          |
+|---------------------|------------------------|-------------------------|---------------------|---------------------|---------------------|
+| Database counts     | **{dotted-circle}**    | **{dotted-circle}**     | **{check-circle}**  | **{check-circle}**  | **{dotted-circle}** |
+| Pageview events     | **{check-circle}**     | **{check-circle}**      | **{dotted-circle}** | **{dotted-circle}** | **{dotted-circle}** |
+| UI events           | **{check-circle}**     | **{dotted-circle}**     | **{dotted-circle}** | **{dotted-circle}** | **{dotted-circle}** |
+| CRUD and API events | **{dotted-circle}**    | **{check-circle}**      | **{dotted-circle}** | **{dotted-circle}** | **{dotted-circle}** |
+| Event funnels       | **{check-circle}**     | **{check-circle}**      | **{dotted-circle}** | **{dotted-circle}** | **{dotted-circle}** |
+| PostgreSQL Data     | **{dotted-circle}**    | **{dotted-circle}**     | **{dotted-circle}** | **{check-circle}**  | **{dotted-circle}** |
+| Logs                | **{dotted-circle}**    | **{dotted-circle}**     | **{dotted-circle}** | **{dotted-circle}** | **{check-circle}**  |
+| External services   | **{dotted-circle}**    | **{dotted-circle}**     | **{dotted-circle}** | **{dotted-circle}** | **{dotted-circle}** |
 
 ### Database counts
 
-- How many Projects have been created by unique users
-- How many users logged in the past 28 day
+- Number of Projects created by unique users
+- Number of users logged in the past 28 day
 
-Database counts are row counts for different tables in an instance’s database. These are SQL count queries which have been filtered, grouped, or aggregated which provide high level usage data. The full list of available tables can be found in [structure.sql](https://gitlab.com/gitlab-org/gitlab/-/blob/master/db/structure.sql)
+Database counts are row counts for different tables in an instance’s database. These are SQL count queries which have been filtered, grouped, or aggregated which provide high level usage data. The full list of available tables can be found in [structure.sql](https://gitlab.com/gitlab-org/gitlab/-/blob/master/db/structure.sql).
 
 ### Pageview events
 
-- How many sessions visited the /dashboard/groups page
+- Number of sessions that visited the /dashboard/groups page
 
 ### UI Events
 
-- How many sessions clicked on a button or link
-- How many sessions closed a modal
+- Number of sessions that clicked on a button or link
+- Number of sessions that closed a modal
 
 UI events are any interface-driven actions from the browser including click data.
 
 ### CRUD or API events
 
-- How many Git pushes were made
-- How many GraphQL queries were made
-- How many requests were made to a Rails action or controller.
+- Number of Git pushes
+- Number of GraphQL queries
+- Number of requests to a Rails action or controller
 
 These are backend events that include the creation, read, update, deletion of records, and other events that might be triggered from layers other than those available in the interface.
 
 ### Event funnels
 
-- How many sessions performed action A, B, then C
-- What is our conversion rate from step A to B?
+- Number of sessions that performed action A, B, then C
+- Conversion rate from step A to B
 
 ### PostgreSQL data
 
-These are raw database records which can be explored using business intelligence tools like Sisense. The full list of available tables can be found in [structure.sql](https://gitlab.com/gitlab-org/gitlab/-/blob/master/db/structure.sql)
+These are raw database records which can be explored using business intelligence tools like Sisense. The full list of available tables can be found in [structure.sql](https://gitlab.com/gitlab-org/gitlab/-/blob/master/db/structure.sql).
 
 ### Logs
 
@@ -157,9 +163,9 @@ As shown by the green lines, on GitLab.com system logs flow into GitLab Inc's mo
 
 The differences between GitLab.com and self-managed are summarized below:
 
-| Environment | Snowplow JS (Frontend) | Snowplow Ruby (Backend) | Usage Ping | Database import | Logs system |
-| ------ | ------ | ------ | ------ | ------ | ------ |
-| GitLab.com | ✅ | ✅ | ✅ | ✅ | ✅ |
-| Self-Managed | ❌(1) | ❌(1) | ✅ | ❌ | ❌ |
+| Environment  | Snowplow JS (Frontend) | Snowplow Ruby (Backend) | Usage Ping         | Database import     | Logs system         |
+|--------------|------------------------|-------------------------|--------------------|---------------------|---------------------|
+| GitLab.com   | **{check-circle}**     | **{check-circle}**      | **{check-circle}** | **{check-circle}**  | **{check-circle}**  |
+| Self-Managed | **{dotted-circle}**(1) | **{dotted-circle}**(1)  | **{check-circle}** | **{dotted-circle}** | **{dotted-circle}** |
 
 Note (1): Snowplow JS and Snowplow Ruby are available on self-managed, however, the Snowplow Collector endpoint is set to a self-managed Snowplow Collector which GitLab Inc does not have access to.

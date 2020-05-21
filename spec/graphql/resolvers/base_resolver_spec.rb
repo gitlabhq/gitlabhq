@@ -41,9 +41,35 @@ describe Resolvers::BaseResolver do
     end
   end
 
+  context 'when the resolver returns early' do
+    let(:resolver) do
+      Class.new(described_class) do
+        def ready?(**args)
+          [false, %w(early return)]
+        end
+
+        def resolve(**args)
+          raise 'Should not get here'
+        end
+      end
+    end
+
+    it 'runs correctly in our test framework' do
+      expect(resolve(resolver)).to contain_exactly('early', 'return')
+    end
+
+    it 'single selects the first early return value' do
+      expect(resolve(resolver.single)).to eq('early')
+    end
+
+    it 'last selects the last early return value' do
+      expect(resolve(resolver.last)).to eq('return')
+    end
+  end
+
   describe '.last' do
     it 'returns a subclass from the resolver' do
-      expect(last_resolver.last.superclass).to eq(last_resolver)
+      expect(last_resolver.last.ancestors).to include(last_resolver)
     end
 
     it 'returns the same subclass every time' do
@@ -93,6 +119,30 @@ describe Resolvers::BaseResolver do
 
         resolve(resolver, obj: UserPresenter.new(user))
       end
+    end
+  end
+
+  describe '#synchronized_object' do
+    let(:object) { double(foo: :the_foo) }
+
+    let(:resolver) do
+      Class.new(described_class) do
+        def resolve(**args)
+          [synchronized_object.foo]
+        end
+      end
+    end
+
+    it 'handles raw objects' do
+      expect(resolve(resolver, obj: object)).to contain_exactly(:the_foo)
+    end
+
+    it 'handles lazy objects' do
+      delayed = BatchLoader::GraphQL.for(1).batch do |_, loader|
+        loader.call(1, object)
+      end
+
+      expect(resolve(resolver, obj: delayed)).to contain_exactly(:the_foo)
     end
   end
 end

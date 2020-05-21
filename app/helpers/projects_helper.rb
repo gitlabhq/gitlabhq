@@ -410,7 +410,7 @@ module ProjectsHelper
       nav_tabs << :pipelines
     end
 
-    if can?(current_user, :read_environment, project) || can?(current_user, :read_cluster, project)
+    if can_view_operations_tab?(current_user, project)
       nav_tabs << :operations
     end
 
@@ -438,20 +438,27 @@ module ProjectsHelper
 
   def tab_ability_map
     {
-      environments:     :read_environment,
-      milestones:       :read_milestone,
-      snippets:         :read_snippet,
-      settings:         :admin_project,
-      builds:           :read_build,
-      clusters:         :read_cluster,
-      serverless:       :read_cluster,
-      error_tracking:   :read_sentry_issue,
-      alert_management: :read_alert_management_alert,
-      labels:           :read_label,
-      issues:           :read_issue,
-      project_members:  :read_project_member,
-      wiki:             :read_wiki
+      environments:       :read_environment,
+      metrics_dashboards: :metrics_dashboard,
+      milestones:         :read_milestone,
+      snippets:           :read_snippet,
+      settings:           :admin_project,
+      builds:             :read_build,
+      clusters:           :read_cluster,
+      serverless:         :read_cluster,
+      error_tracking:     :read_sentry_issue,
+      alert_management:   :read_alert_management_alert,
+      labels:             :read_label,
+      issues:             :read_issue,
+      project_members:    :read_project_member,
+      wiki:               :read_wiki
     }
+  end
+
+  def can_view_operations_tab?(current_user, project)
+    [:read_environment, :read_cluster, :metrics_dashboard].any? do |ability|
+      can?(current_user, ability, project)
+    end
   end
 
   def search_tab_ability_map

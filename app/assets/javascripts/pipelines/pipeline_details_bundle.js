@@ -4,6 +4,7 @@ import Translate from '~/vue_shared/translate';
 import { __ } from '~/locale';
 import { setUrlFragment, redirectTo } from '~/lib/utils/url_utility';
 import pipelineGraph from './components/graph/graph_component.vue';
+import Dag from './components/dag/dag.vue';
 import GraphBundleMixin from './mixins/graph_pipeline_bundle_mixin';
 import PipelinesMediator from './pipeline_details_mediator';
 import pipelineHeader from './components/header_component.vue';
@@ -144,6 +145,25 @@ const createTestDetails = detailsEndpoint => {
     .catch(() => {});
 };
 
+const createDagApp = () => {
+  const el = document.querySelector('#js-pipeline-dag-vue');
+  const graphUrl = el.dataset?.pipelineDataPath;
+  // eslint-disable-next-line no-new
+  new Vue({
+    el,
+    components: {
+      Dag,
+    },
+    render(createElement) {
+      return createElement('dag', {
+        props: {
+          graphUrl,
+        },
+      });
+    },
+  });
+};
+
 export default () => {
   const { dataset } = document.querySelector('.js-pipeline-details-vue');
   const mediator = new PipelinesMediator({ endpoint: dataset.endpoint });
@@ -153,4 +173,5 @@ export default () => {
   createPipelineHeaderApp(mediator);
   createPipelinesTabs(dataset);
   createTestDetails(dataset.testReportsCountEndpoint);
+  createDagApp();
 };

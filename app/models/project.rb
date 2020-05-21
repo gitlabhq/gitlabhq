@@ -1267,16 +1267,7 @@ class Project < ApplicationRecord
   def find_or_initialize_service(name)
     return if disabled_services.include?(name)
 
-    service = find_service(services, name)
-    return service if service
-
-    template = find_service(services_templates, name)
-
-    if template
-      Service.build_from_integration(id, template)
-    else
-      public_send("build_#{name}_service") # rubocop:disable GitlabSecurity/PublicSend
-    end
+    find_service(services, name) || build_from_instance_or_template(name) || public_send("build_#{name}_service") # rubocop:disable GitlabSecurity/PublicSend
   end
 
   # rubocop: disable CodeReuse/ServiceClass
@@ -2444,6 +2435,22 @@ class Project < ApplicationRecord
     services.find { |service| service.to_param == name }
   end
 
+  def build_from_instance_or_template(name)
+    instance = find_service(services_instances, name)
+    return Service.build_from_integration(id, instance) if instance
+
+    template = find_service(services_templates, name)
+    return Service.build_from_integration(id, template) if template
+  end
+
+  def services_templates
+    @services_templates ||= Service.templates
+  end
+
+  def services_instances
+    @services_instances ||= Service.instances
+  end
+
   def closest_namespace_setting(name)
     namespace.closest_setting(name)
   end
@@ -2570,10 +2577,6 @@ class Project < ApplicationRecord
         end
       end
     end
-  end
-
-  def services_templates
-    @services_templates ||= Service.where(template: true)
   end
 
   def ensure_pages_metadatum

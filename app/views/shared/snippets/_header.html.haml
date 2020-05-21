@@ -17,7 +17,7 @@
       = render "snippets/actions"
 
 .snippet-header.limited-header-width
-  %h2.snippet-title.prepend-top-0.mb-3{ data: { qa_selector: 'snippet_title' } }
+  %h2.snippet-title.gl-mt-0.mb-3{ data: { qa_selector: 'snippet_title' } }
     = markdown_field(@snippet, :title)
 
   - if @snippet.description.present?

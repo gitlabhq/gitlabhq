@@ -11,7 +11,7 @@
 = form_tag import_phabricator_path, class: 'new_project', method: :post do
   = render 'import/shared/new_project_form'
 
-  %h4.prepend-top-0= _('Enter in your Phabricator Server URL and personal access token below')
+  %h4.gl-mt-0= _('Enter in your Phabricator Server URL and personal access token below')
 
   .form-group.row
     = label_tag :phabricator_server_url, _('Phabricator Server URL'), class: 'col-form-label col-md-2'

@@ -24,7 +24,6 @@ export default class SidebarMilestone {
             humanTimeEstimate,
             humanTimeSpent,
             limitToHours: parseBoolean(limitToHours),
-            rootPath: '/',
           },
         }),
     });

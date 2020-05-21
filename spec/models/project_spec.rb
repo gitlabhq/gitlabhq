@@ -5241,12 +5241,10 @@ describe Project do
     end
   end
 
-  describe "#find_or_initialize_services" do
-    subject { build(:project) }
-
+  describe '#find_or_initialize_services' do
     it 'returns only enabled services' do
-      allow(Service).to receive(:available_services_names).and_return(%w(prometheus pushover))
-      allow(subject).to receive(:disabled_services).and_return(%w(prometheus))
+      allow(Service).to receive(:available_services_names).and_return(%w[prometheus pushover])
+      allow(subject).to receive(:disabled_services).and_return(%w[prometheus])
 
       services = subject.find_or_initialize_services
 
@@ -5255,11 +5253,9 @@ describe Project do
     end
   end
 
-  describe "#find_or_initialize_service" do
-    subject { build(:project) }
-
+  describe '#find_or_initialize_service' do
     it 'avoids N+1 database queries' do
-      allow(Service).to receive(:available_services_names).and_return(%w(prometheus pushover))
+      allow(Service).to receive(:available_services_names).and_return(%w[prometheus pushover])
 
       control_count = ActiveRecord::QueryRecorder.new { subject.find_or_initialize_service('prometheus') }.count
 
@@ -5268,10 +5264,50 @@ describe Project do
       expect { subject.find_or_initialize_service('prometheus') }.not_to exceed_query_limit(control_count)
     end
 
-    it 'returns nil if service is disabled' do
-      allow(subject).to receive(:disabled_services).and_return(%w(prometheus))
+    it 'returns nil if integration is disabled' do
+      allow(subject).to receive(:disabled_services).and_return(%w[prometheus])
 
       expect(subject.find_or_initialize_service('prometheus')).to be_nil
+    end
+
+    context 'with an existing integration' do
+      subject { create(:project) }
+
+      before do
+        create(:prometheus_service, project: subject, api_url: 'https://prometheus.project.com/')
+      end
+
+      it 'retrieves the integration' do
+        expect(subject.find_or_initialize_service('prometheus').api_url).to eq('https://prometheus.project.com/')
+      end
+    end
+
+    context 'with an instance-level and template integrations' do
+      before do
+        create(:prometheus_service, :instance, api_url: 'https://prometheus.instance.com/')
+        create(:prometheus_service, :template, api_url: 'https://prometheus.template.com/')
+      end
+
+      it 'builds the service from the instance if exists' do
+        expect(subject.find_or_initialize_service('prometheus').api_url).to eq('https://prometheus.instance.com/')
+      end
+    end
+
+    context 'with an instance-level and template integrations' do
+      before do
+        create(:prometheus_service, :template, api_url: 'https://prometheus.template.com/')
+      end
+
+      it 'builds the service from the template if instance does not exists' do
+        expect(subject.find_or_initialize_service('prometheus').api_url).to eq('https://prometheus.template.com/')
+      end
+    end
+
+    context 'without an exisiting integration, nor instance-level or template' do
+      it 'builds the service if instance or template does not exists' do
+        expect(subject.find_or_initialize_service('prometheus')).to be_a(PrometheusService)
+        expect(subject.find_or_initialize_service('prometheus').api_url).to be_nil
+      end
     end
   end
 
