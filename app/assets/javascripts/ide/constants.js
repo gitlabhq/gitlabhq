@@ -92,3 +92,6 @@ export const commitActionTypes = {
 };
 
 export const packageJsonPath = 'package.json';
+
+export const SIDE_LEFT = 'left';
+export const SIDE_RIGHT = 'right';

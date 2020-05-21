@@ -2,6 +2,7 @@ import { createLocalVue, shallowMount } from '@vue/test-utils';
 import { createStore } from '~/ide/stores';
 import paneModule from '~/ide/stores/modules/pane';
 import CollapsibleSidebar from '~/ide/components/panes/collapsible_sidebar.vue';
+import IdeSidebarNav from '~/ide/components/ide_sidebar_nav.vue';
 import Vuex from 'vuex';
 
 const localVue = createLocalVue();
@@ -24,19 +25,15 @@ describe('ide/components/panes/collapsible_sidebar.vue', () => {
         width,
         ...props,
       },
-      slots: {
-        'header-icon': '<div class=".header-icon-slot">SLOT ICON</div>',
-        header: '<div class=".header-slot"/>',
-        footer: '<div class=".footer-slot"/>',
-      },
     });
   };
 
-  const findTabButton = () => wrapper.find(`[data-qa-selector="${fakeComponentName}_tab_button"]`);
+  const findSidebarNav = () => wrapper.find(IdeSidebarNav);
 
   beforeEach(() => {
     store = createStore();
     store.registerModule('leftPane', paneModule());
+    jest.spyOn(store, 'dispatch').mockImplementation();
   });
 
   afterEach(() => {
@@ -75,92 +72,60 @@ describe('ide/components/panes/collapsible_sidebar.vue', () => {
       ${'left'}
       ${'right'}
     `('when side=$side', ({ side }) => {
-      it('correctly renders side specific attributes', () => {
+      beforeEach(() => {
         createComponent({ extensionTabs, side });
-        const button = findTabButton();
+      });
 
-        return wrapper.vm.$nextTick().then(() => {
-          expect(wrapper.classes()).toContain('multi-file-commit-panel');
-          expect(wrapper.classes()).toContain(`ide-${side}-sidebar`);
-          expect(wrapper.find('.multi-file-commit-panel-inner')).not.toBe(null);
-          expect(wrapper.find(`.ide-${side}-sidebar-${fakeComponentName}`)).not.toBe(null);
-          expect(button.attributes('data-placement')).toEqual(side === 'left' ? 'right' : 'left');
-          if (side === 'right') {
-            // this class is only needed on the right side; there is no 'is-left'
-            expect(button.classes()).toContain('is-right');
-          } else {
-            expect(button.classes()).not.toContain('is-right');
-          }
-        });
+      it('correctly renders side specific attributes', () => {
+        expect(wrapper.classes()).toContain('multi-file-commit-panel');
+        expect(wrapper.classes()).toContain(`ide-${side}-sidebar`);
+        expect(wrapper.find('.multi-file-commit-panel-inner')).not.toBe(null);
+        expect(wrapper.find(`.ide-${side}-sidebar-${fakeComponentName}`)).not.toBe(null);
+        expect(findSidebarNav().props('side')).toBe(side);
+      });
+
+      it('nothing is dispatched', () => {
+        expect(store.dispatch).not.toHaveBeenCalled();
+      });
+
+      it('when sidebar emits open, dispatch open', () => {
+        const view = 'lorem-view';
+
+        findSidebarNav().vm.$emit('open', view);
+
+        expect(store.dispatch).toHaveBeenCalledWith(`${side}Pane/open`, view);
+      });
+
+      it('when sidebar emits close, dispatch toggleOpen', () => {
+        findSidebarNav().vm.$emit('close');
+
+        expect(store.dispatch).toHaveBeenCalledWith(`${side}Pane/toggleOpen`);
       });
     });
 
-    describe('when default side', () => {
-      let button;
-
+    describe.each`
+      isOpen
+      ${true}
+      ${false}
+    `('when isOpen=$isOpen', ({ isOpen }) => {
       beforeEach(() => {
+        store.state.rightPane.isOpen = isOpen;
+        store.state.rightPane.currentView = fakeComponentName;
+
         createComponent({ extensionTabs });
-
-        button = findTabButton();
       });
 
-      it('correctly renders tab-specific classes', () => {
-        store.state.rightPane.currentView = fakeComponentName;
+      it(`tab view is shown=${isOpen}`, () => {
+        expect(wrapper.find('.js-tab-view').exists()).toBe(isOpen);
+      });
 
-        return wrapper.vm.$nextTick().then(() => {
-          expect(button.classes()).toContain('button-class-1');
-          expect(button.classes()).toContain('button-class-2');
+      it('renders sidebar nav', () => {
+        expect(findSidebarNav().props()).toEqual({
+          tabs: extensionTabs,
+          side: 'right',
+          currentView: fakeComponentName,
+          isOpen,
         });
-      });
-
-      it('can show an open pane tab with an active view', () => {
-        store.state.rightPane.isOpen = true;
-        store.state.rightPane.currentView = fakeComponentName;
-
-        return wrapper.vm.$nextTick().then(() => {
-          expect(button.classes()).toEqual(expect.arrayContaining(['ide-sidebar-link', 'active']));
-          expect(button.attributes('data-original-title')).toEqual(fakeComponentName);
-          expect(wrapper.find('.js-tab-view').exists()).toBe(true);
-        });
-      });
-
-      it('does not show a pane which is not open', () => {
-        store.state.rightPane.isOpen = false;
-        store.state.rightPane.currentView = fakeComponentName;
-
-        return wrapper.vm.$nextTick().then(() => {
-          expect(button.classes()).not.toEqual(
-            expect.arrayContaining(['ide-sidebar-link', 'active']),
-          );
-          expect(wrapper.find('.js-tab-view').exists()).toBe(false);
-        });
-      });
-
-      describe('when button is clicked', () => {
-        it('opens view', () => {
-          button.trigger('click');
-          expect(store.state.rightPane.isOpen).toBeTruthy();
-        });
-
-        it('toggles open view if tab is currently active', () => {
-          button.trigger('click');
-          expect(store.state.rightPane.isOpen).toBeTruthy();
-
-          button.trigger('click');
-          expect(store.state.rightPane.isOpen).toBeFalsy();
-        });
-      });
-
-      it('shows header-icon', () => {
-        expect(wrapper.find('.header-icon-slot')).not.toBeNull();
-      });
-
-      it('shows header', () => {
-        expect(wrapper.find('.header-slot')).not.toBeNull();
-      });
-
-      it('shows footer', () => {
-        expect(wrapper.find('.footer-slot')).not.toBeNull();
       });
     });
   });

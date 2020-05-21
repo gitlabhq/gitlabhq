@@ -1,3 +1,4 @@
+import { SIDE_LEFT, SIDE_RIGHT } from './constants';
 import { languages } from 'monaco-editor';
 import { flatten } from 'lodash';
 
@@ -73,3 +74,5 @@ export function registerLanguages(def, ...defs) {
   languages.setMonarchTokensProvider(languageId, def.language);
   languages.setLanguageConfiguration(languageId, def.conf);
 }
+
+export const otherSide = side => (side === SIDE_RIGHT ? SIDE_LEFT : SIDE_RIGHT);

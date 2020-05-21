@@ -147,7 +147,7 @@ export default {
           )
         }}</span>
       </template>
-      <template slot="modal-footer">
+      <template #modal-footer>
         <gl-deprecated-button variant="secondary" @click="handleCancel">{{
           s__('Cancel')
         }}</gl-deprecated-button>

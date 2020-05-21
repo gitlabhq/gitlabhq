@@ -10,14 +10,16 @@ import {
   GlDropdownItem,
   GlTabs,
   GlTab,
+  GlBadge,
 } from '@gitlab/ui';
 import createFlash from '~/flash';
 import { s__ } from '~/locale';
 import { joinPaths, visitUrl } from '~/lib/utils/url_utility';
+import { fetchPolicies } from '~/lib/graphql';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
-import getAlerts from '../graphql/queries/getAlerts.query.graphql';
+import getAlerts from '../graphql/queries/get_alerts.query.graphql';
+import getAlertsCountByStatus from '../graphql/queries/get_count_by_status.query.graphql';
 import { ALERTS_STATUS, ALERTS_STATUS_TABS, ALERTS_SEVERITY_LABELS } from '../constants';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import updateAlertStatus from '../graphql/mutations/update_alert_status.graphql';
 import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
 
@@ -88,8 +90,8 @@ export default {
     GlIcon,
     GlTabs,
     GlTab,
+    GlBadge,
   },
-  mixins: [glFeatureFlagsMixin()],
   props: {
     projectPath: {
       type: String,
@@ -114,6 +116,7 @@ export default {
   },
   apollo: {
     alerts: {
+      fetchPolicy: fetchPolicies.CACHE_AND_NETWORK,
       query: getAlerts,
       variables() {
         return {
@@ -122,10 +125,21 @@ export default {
         };
       },
       update(data) {
-        return data.project.alertManagementAlerts.nodes;
+        return data.project?.alertManagementAlerts?.nodes;
       },
       error() {
         this.errored = true;
+      },
+    },
+    alertsCount: {
+      query: getAlertsCountByStatus,
+      variables() {
+        return {
+          projectPath: this.projectPath,
+        };
+      },
+      update(data) {
+        return data.project?.alertManagementAlertStatusCounts;
       },
     },
   },
@@ -139,7 +153,9 @@ export default {
   },
   computed: {
     showNoAlertsMsg() {
-      return !this.errored && !this.loading && !this.alerts?.length && !this.isAlertDismissed;
+      return (
+        !this.errored && !this.loading && this.alertsCount?.all === 0 && !this.isAlertDismissed
+      );
     },
     showErrorMsg() {
       return this.errored && !this.isErrorAlertDismissed;
@@ -171,6 +187,7 @@ export default {
         })
         .then(() => {
           this.$apollo.queries.alerts.refetch();
+          this.$apollo.queries.alertsCount.refetch();
         })
         .catch(() => {
           createFlash(
@@ -196,10 +213,13 @@ export default {
         {{ $options.i18n.errorMsg }}
       </gl-alert>
 
-      <gl-tabs v-if="glFeatures.alertListStatusFilteringEnabled" @input="filterAlertsByStatus">
+      <gl-tabs @input="filterAlertsByStatus">
         <gl-tab v-for="tab in $options.statusTabs" :key="tab.status">
           <template slot="title">
             <span>{{ tab.title }}</span>
+            <gl-badge v-if="alertsCount" pill size="sm" class="gl-tab-counter-badge">
+              {{ alertsCount[tab.status.toLowerCase()] }}
+            </gl-badge>
           </template>
         </gl-tab>
       </gl-tabs>

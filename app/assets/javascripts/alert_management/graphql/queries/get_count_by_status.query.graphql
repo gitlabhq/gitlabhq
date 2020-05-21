@@ -1,0 +1,11 @@
+query getAlertsCount($projectPath: ID!) {
+    project(fullPath: $projectPath) {
+        alertManagementAlertStatusCounts {
+            all
+            open
+            acknowledged
+            resolved
+            triggered
+        }
+    }
+}
