@@ -1,5 +1,0 @@
----
-title: Externalize i18n strings from ./app/views/users/_deletion_guidance.html.haml
-merge_request: 32097
-author: Gilang Gumilar
-type: changed

@@ -1,5 +1,0 @@
----
-title: Fix updating of Markdown fields when Markdown cache version is incremented
-merge_request: 32219
-author:
-type: fixed

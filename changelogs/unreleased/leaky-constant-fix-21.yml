@@ -1,5 +1,0 @@
----
-title: Fix leaky constant issue in application settings encrypt spec
-merge_request: 32066
-author: Rajendra Kadam
-type: fixed

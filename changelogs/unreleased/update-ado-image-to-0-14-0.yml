@@ -1,6 +1,0 @@
----
-title: Update auto-deploy-image to v0.14.0 with helm 2.16.6, --atomic deployments
-  and improved kubernetes 1.16 support
-merge_request: 31505
-author:
-type: changed

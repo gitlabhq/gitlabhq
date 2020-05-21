@@ -1,5 +1,0 @@
----
-title: Add WAF and Cilium Log column for Fluentd table
-merge_request: 29457
-author:
-type: changed

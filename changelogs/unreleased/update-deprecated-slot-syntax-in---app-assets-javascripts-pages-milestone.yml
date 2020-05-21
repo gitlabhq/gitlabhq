@@ -1,5 +1,0 @@
----
-title: Update deprecated slot syntax in ./app/assets/javascripts/pages/milestones/shared/components/delete_milestone_modal.vue
-merge_request: 31990
-author: Gilang Gumilar
-type: changed

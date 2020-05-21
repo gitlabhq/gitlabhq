@@ -1,5 +1,0 @@
----
-title: Remove project_list_show_mr_count feature flag.
-merge_request: 31789
-author: Gilang Gumilar
-type: removed

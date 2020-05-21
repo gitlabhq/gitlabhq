@@ -1,5 +1,0 @@
----
-title: Fix leaky constant issue in system check spec
-merge_request: 32080
-author: Rajendra Kadam
-type: fixed

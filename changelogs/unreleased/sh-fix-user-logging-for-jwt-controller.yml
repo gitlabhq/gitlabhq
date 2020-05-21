@@ -1,5 +1,0 @@
----
-title: Fix logging of username in /jwt/auth
-merge_request:
-author:
-type: fixed

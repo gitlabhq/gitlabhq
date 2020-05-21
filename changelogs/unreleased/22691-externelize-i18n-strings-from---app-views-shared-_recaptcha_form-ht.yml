@@ -1,5 +1,0 @@
----
-title: Externalize i18n strings from ./app/views/shared/_recaptcha_form.html.haml
-merge_request: 32106
-author: Gilang Gumilar
-type: changed

@@ -1,5 +1,0 @@
----
-title: Move Code-Quality.gitlab-ci.yml to `rules` syntax
-merge_request: 30896
-author:
-type: changed

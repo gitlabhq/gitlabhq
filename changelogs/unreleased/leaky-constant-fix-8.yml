@@ -1,5 +1,0 @@
----
-title: Fix leaky constant issue in upgrade progress service check
-merge_request: 31969
-author: Rajendra Kadam
-type: fixed

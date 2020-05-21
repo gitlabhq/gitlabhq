@@ -1,5 +1,0 @@
----
-title: Fix leaky constant issue in sidekiq middleware spec
-merge_request: 32101
-author: Rajendra Kadam
-type: fixed

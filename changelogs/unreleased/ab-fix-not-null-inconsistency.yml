@@ -1,5 +1,0 @@
----
-title: Fix database schema inconsistency with not-null checks
-merge_request: 31930
-author:
-type: other

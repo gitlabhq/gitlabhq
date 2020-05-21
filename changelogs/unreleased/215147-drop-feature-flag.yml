@@ -1,5 +1,0 @@
----
-title: 'Project import queries are now partially batched'
-merge_request: 30057
-author:
-type: performance

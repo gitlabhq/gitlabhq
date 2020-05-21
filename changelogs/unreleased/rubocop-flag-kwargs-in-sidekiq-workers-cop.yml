@@ -1,5 +1,0 @@
----
-title: Add Rubocop cop to flag keyword arguments usage in Sidekiq workers
-merge_request: 31551
-author: Arun Kumar Mohan
-type: added

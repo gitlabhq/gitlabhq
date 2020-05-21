@@ -1,5 +1,0 @@
----
-title: Rake task gitlab:cleanup:orphan_lfs_files should clear the cached value or repository size
-merge_request: 32541
-author:
-type: fixed

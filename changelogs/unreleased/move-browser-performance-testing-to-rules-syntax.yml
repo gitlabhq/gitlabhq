@@ -1,5 +1,0 @@
----
-title: Move Browser-Perfomance-Testing.gitlab-ci.yml to `rules` syntax
-merge_request: 31413
-author:
-type: changed

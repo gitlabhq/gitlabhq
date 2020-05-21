@@ -1,5 +1,0 @@
----
-title: Fix regression and allow SCIM to create SAML identity
-merge_request: 31238
-author:
-type: fixed

@@ -1,5 +1,0 @@
----
-title: Update deprecated slot syntax in ./app/assets/javascripts/repository/components/breadcrumbs.vue
-merge_request: 32017
-author: Gilang Gumilar
-type: changed

@@ -1,5 +1,0 @@
----
-title: Clear merge request error on push to source branch
-merge_request: 32001
-author:
-type: fixed

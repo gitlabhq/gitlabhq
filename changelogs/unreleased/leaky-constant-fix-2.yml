@@ -1,5 +1,0 @@
----
-title: Add class stubs and fix leaky constant alert in content whitelist spec
-merge_request: 31946
-author: Rajendra Kadam
-type: fixed

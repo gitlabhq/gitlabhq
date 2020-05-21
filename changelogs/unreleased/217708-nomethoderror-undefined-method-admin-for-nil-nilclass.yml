@@ -1,6 +1,0 @@
----
-title: Fix bug in Groups API when statistics are requested in an unauthenticated
-  API call
-merge_request: 32057
-author:
-type: fixed

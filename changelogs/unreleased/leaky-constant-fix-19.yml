@@ -1,5 +1,0 @@
----
-title: Fix leaky constant issue in cluster spec
-merge_request: 32053
-author: Rajendra Kadam
-type: fixed

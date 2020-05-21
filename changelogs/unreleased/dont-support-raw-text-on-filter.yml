@@ -1,5 +1,0 @@
----
-title: Show warning message to user if raw text search is used when filtering pipelines
-merge_request: 31942
-author:
-type: changed

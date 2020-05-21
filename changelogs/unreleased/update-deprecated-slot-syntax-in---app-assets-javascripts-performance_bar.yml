@@ -1,5 +1,0 @@
----
-title: Update deprecated slot syntax in ./app/assets/javascripts/performance_bar/components/detailed_metric.vue
-merge_request: 32006
-author: Gilang Gumilar
-type: other

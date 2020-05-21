@@ -1,5 +1,0 @@
----
-title: Fix bug when services appear active even though they are not
-merge_request: 30160
-author:
-type: fixed

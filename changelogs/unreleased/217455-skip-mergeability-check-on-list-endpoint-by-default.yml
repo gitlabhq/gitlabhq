@@ -1,5 +1,0 @@
----
-title: Skip mergeability check when listing MRs in the API
-merge_request: 31890
-author:
-type: performance

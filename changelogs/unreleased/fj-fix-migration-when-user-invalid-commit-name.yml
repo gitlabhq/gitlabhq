@@ -1,5 +1,0 @@
----
-title: Fix snippet migration when user has invalid info
-merge_request: 31488
-author:
-type: fixed

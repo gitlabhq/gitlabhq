@@ -1,5 +1,0 @@
----
-title: Enable deploy token authentication for the NPM registry
-merge_request: 31264
-author:
-type: added

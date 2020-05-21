@@ -1,5 +1,0 @@
----
-title: app:gitlab:check rake task now warns when projects are not in hashed storage
-merge_request: 31172
-author:
-type: changed
