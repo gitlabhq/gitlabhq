@@ -44,7 +44,7 @@ terraform {
 
 Finally, you need to run `terraform init` on your local machine and pass in the following options. The below example is using GitLab.com:
 
-```bash
+```shell
 terraform init \
     -backend-config="address=https://gitlab.com/api/v4/projects/<YOUR-PROJECT-ID>/terraform/state/<YOUR-PROJECT-NAME>" \
     -backend-config="lock_address=https://gitlab.com/api/v4/projects/<YOUR-PROJECT-ID>/terraform/state/<YOUR-PROJECT-NAME>/lock" \

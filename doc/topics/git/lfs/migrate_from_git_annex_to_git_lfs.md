@@ -1,7 +1,7 @@
 # Migration guide from Git Annex to Git LFS
 
 >**Note:**
-Git Annex support [has been removed](https://gitlab.com/gitlab-org/gitlab/issues/1648) in GitLab Enterprise
+Git Annex support [has been removed](https://gitlab.com/gitlab-org/gitlab/-/issues/1648) in GitLab Enterprise
 Edition 9.0 (2017/03/22).
 
 Both [Git Annex](http://git-annex.branchable.com/) and [Git LFS](https://git-lfs.github.com/) are tools to manage large files in Git.

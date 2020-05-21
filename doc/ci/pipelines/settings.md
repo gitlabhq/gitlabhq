@@ -69,7 +69,7 @@ For information about setting a maximum artifact size for a project, see
 ## Custom CI configuration path
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/12509) in GitLab 9.4.
-> - [Support for external `.gitlab-ci.yml` locations](https://gitlab.com/gitlab-org/gitlab/issues/14376) introduced in GitLab 12.6.
+> - [Support for external `.gitlab-ci.yml` locations](https://gitlab.com/gitlab-org/gitlab/-/issues/14376) introduced in GitLab 12.6.
 
 By default we look for the `.gitlab-ci.yml` file in the project's root
 directory. If needed, you can specify an alternate path and file name, including locations outside the project.
@@ -208,7 +208,7 @@ you can enable this in the project settings:
 
 ## Skip outdated deployment jobs
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/25276) in GitLab 12.9.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/25276) in GitLab 12.9.
 
 Your project may have multiple concurrent deployment jobs that are
 scheduled to run within the same time frame.
@@ -290,7 +290,7 @@ https://example.gitlab.com/<namespace>/<project>/badges/<branch>/coverage.svg?st
 
 #### Flat square
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/30120) in GitLab 11.8.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/30120) in GitLab 11.8.
 
 ```plaintext
 https://example.gitlab.com/<namespace>/<project>/badges/<branch>/coverage.svg?style=flat-square

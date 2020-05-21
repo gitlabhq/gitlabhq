@@ -7,7 +7,7 @@ type: reference, howto
 
 # Vault Authentication with GitLab OpenID Connect
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/22323) in GitLab 9.0
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/22323) in GitLab 9.0
 
 [Vault](https://www.vaultproject.io/) is a secrets management application offered by HashiCorp.
 It allows you to store and manage sensitive information such as secret environment variables, encryption keys, and authentication tokens.

@@ -63,4 +63,4 @@ Activating a user will change the user's state to active and it consumes a
 [seat](../../subscriptions/index.md#choosing-the-number-of-users).
 
 TIP: **Tip:**
-A deactivated user can also activate their account by themselves by simply logging back via the UI.
+A deactivated user can also activate their account themselves by simply logging back in via the UI.

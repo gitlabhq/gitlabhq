@@ -5,7 +5,7 @@ last_update: 2019-07-03
 
 # Pipelines for Merged Results **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/7380) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.10.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/7380) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.10.
 
 When you submit a merge request, you are requesting to merge changes from a
 source branch into a target branch. By default, the CI pipeline runs jobs
@@ -44,7 +44,7 @@ To enable pipelines for merge results:
 - You must have maintainer [permissions](../../../user/permissions.md).
 - You must be using [GitLab Runner](https://gitlab.com/gitlab-org/gitlab-runner) 11.9 or later.
 - You must not be forking or using cross-repo workflows. To follow progress,
-  see [#11934](https://gitlab.com/gitlab-org/gitlab/issues/11934).
+  see [#11934](https://gitlab.com/gitlab-org/gitlab/-/issues/11934).
 - You must not be using
   [fast forward merges](../../../user/project/merge_requests/fast_forward_merge.md) yet.
   To follow progress, see [#58226](https://gitlab.com/gitlab-org/gitlab/-/issues/26996).
@@ -78,7 +78,7 @@ For more information, read the [documentation on Merge Trains](merge_trains/inde
 
 ## Automatic pipeline cancelation
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/12996) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.3.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12996) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.3.
 
 GitLab CI/CD can detect the presence of redundant pipelines,
 and will cancel them automatically in order to conserve CI resources.

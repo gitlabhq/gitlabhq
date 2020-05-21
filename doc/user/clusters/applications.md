@@ -1157,7 +1157,7 @@ GitLab provides [Invocation Metrics](../project/clusters/serverless/index.md#inv
 1. Knative and Prometheus managed applications installed on your cluster.
 1. Manually applied the custom metrics on your cluster by running the following command:
 
-   ```bash
+   ```shell
    kubectl apply -f https://gitlab.com/gitlab-org/cluster-integration/cluster-applications/-/raw/02c8231e30ef5b6725e6ba368bc63863ceb3c07d/src/default-data/knative/istio-metrics.yaml
    ```
 
@@ -1166,7 +1166,7 @@ GitLab provides [Invocation Metrics](../project/clusters/serverless/index.md#inv
 To uninstall Knative, you must first manually remove any custom metrics you have added
 by running the following command:
 
-```bash
+```shell
 kubectl delete -f https://gitlab.com/gitlab-org/cluster-integration/cluster-applications/-/raw/02c8231e30ef5b6725e6ba368bc63863ceb3c07d/src/default-data/knative/istio-metrics.yaml
 ```
 

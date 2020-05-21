@@ -1,0 +1,58 @@
+# Checks for unexpanded acronyms.
+#
+# For a list of all options, see https://errata-ai.github.io/vale/styles/
+extends: conditional
+message: "'%s' has no definition."
+link: https://about.gitlab.com/handbook/marketing/corporate-marketing/content/editorial-team/#acronyms
+level: warning
+ignorecase: false
+# Ensures that the existence of 'first' implies the existence of 'second'.
+first: '\b([A-Z]{3,5})\b'
+second: '(?:\b[A-Z][a-z]+ )+\(([A-Z]{3,5})\)'
+# ... with the exception of these:
+exceptions:
+  - API
+  - ASCII
+  - AWS
+  - CNAME
+  - CSS
+  - DNS
+  - GET
+  - GNU
+  - GPG
+  - GPL
+  - HTML
+  - HTTP
+  - HTTPS
+  - IDE
+  - JSON
+  - LDAP
+  - LDAPS
+  - LESS
+  - LFS
+  - NGINX
+  - NOTE
+  - ONLY
+  - PGP
+  - PHP
+  - POST
+  - PUT
+  - RSA
+  - SAML
+  - SCP
+  - SCSS
+  - SHA
+  - SQL
+  - SSH
+  - SSL
+  - SSO
+  - TIP
+  - TLS
+  - TODO
+  - URI
+  - URL
+  - VPC
+  - WIP
+  - XML
+  - YAML
+  

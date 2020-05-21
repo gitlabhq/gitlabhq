@@ -543,23 +543,23 @@ ensure that it can reach your private repository. Here is an example configurati
 1. Update `setup.py` to create a `dependency_links` attribute pointing at your private repository for each
    dependency in the `install_requires` list:
 
-    ```python
-    install_requires=['pyparsing>=2.0.3'],
-    dependency_links=['https://pypi.example.com/simple/pyparsing'],
-    ```
+   ```python
+   install_requires=['pyparsing>=2.0.3'],
+   dependency_links=['https://pypi.example.com/simple/pyparsing'],
+   ```
 
 1. Fetch the certificate from your repository URL and add it to the project:
 
-    ```bash
-    echo -n | openssl s_client -connect pypi.example.com:443 | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' > internal.crt
-    ```
+   ```shell
+   echo -n | openssl s_client -connect pypi.example.com:443 | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' > internal.crt
+   ```
 
 1. Point `setup.py` at the newly downloaded certificate:
 
-    ```python
-    import setuptools.ssl_support
-    setuptools.ssl_support.cert_paths = ['internal.crt']
-    ```
+   ```python
+   import setuptools.ssl_support
+   setuptools.ssl_support.cert_paths = ['internal.crt']
+   ```
 
 ## Limitations
 

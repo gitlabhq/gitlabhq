@@ -93,7 +93,7 @@ groups or subgroups from the project's group hierarchy as potential code owners.
 
 For example, consider the following hierarchy for a given project:
 
-```text
+```plaintext
 group >> sub-group >> sub-subgroup >> myproject >> file.md
 ```
 

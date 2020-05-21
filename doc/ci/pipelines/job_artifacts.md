@@ -103,7 +103,7 @@ combination thereof (`junit: [rspec.xml, test-results/TEST-*.xml]`).
 
 #### `artifacts:reports:dotenv`
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/17066) in GitLab 12.9.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/17066) in GitLab 12.9.
 > - Requires GitLab Runner 11.5 and later.
 
 The `dotenv` report collects a set of environment variables as artifacts.
@@ -122,7 +122,7 @@ There are a couple of limitations on top of the [original dotenv rules](https://
 
 #### `artifacts:reports:cobertura`
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/3708) in GitLab 12.9.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/3708) in GitLab 12.9.
 > - Requires [GitLab Runner](https://docs.gitlab.com/runner/) 11.5 and above.
 
 The `cobertura` report collects [Cobertura coverage XML files](../../user/project/merge_requests/test_coverage_visualization.md).

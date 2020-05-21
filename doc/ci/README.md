@@ -207,19 +207,19 @@ been necessary. These are:
 #### 12.0
 
 - [Use refspec to clone/fetch Git
-  repository](https://gitlab.com/gitlab-org/gitlab-runner/issues/4069).
+  repository](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/4069).
 - [Old cache
-  configuration](https://gitlab.com/gitlab-org/gitlab-runner/issues/4070).
+  configuration](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/4070).
 - [Old metrics server
-  configuration](https://gitlab.com/gitlab-org/gitlab-runner/issues/4072).
+  configuration](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/4072).
 - [Remove
-  `FF_K8S_USE_ENTRYPOINT_OVER_COMMAND`](https://gitlab.com/gitlab-org/gitlab-runner/issues/4073).
+  `FF_K8S_USE_ENTRYPOINT_OVER_COMMAND`](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/4073).
 - [Remove Linux distributions that reach
   EOL](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/1130).
 - [Update command line API for helper
-  images](https://gitlab.com/gitlab-org/gitlab-runner/issues/4013).
+  images](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/4013).
 - [Remove old `git clean`
-  flow](https://gitlab.com/gitlab-org/gitlab-runner/issues/4175).
+  flow](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/4175).
 
 #### 11.0
 

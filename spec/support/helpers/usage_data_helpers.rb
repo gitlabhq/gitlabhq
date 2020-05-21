@@ -118,6 +118,7 @@ module UsageDataHelpers
       projects_with_expiration_policy_enabled_with_cadence_set_to_1month
       projects_with_expiration_policy_enabled_with_cadence_set_to_3month
       projects_with_terraform_reports
+      projects_with_terraform_states
       pages_domains
       protected_branches
       releases
@@ -125,6 +126,7 @@ module UsageDataHelpers
       snippets
       suggestions
       terraform_reports
+      terraform_states
       todos
       uploads
       web_hooks

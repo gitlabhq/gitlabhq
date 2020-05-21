@@ -440,7 +440,7 @@ The new subscription tier is active when the license file is uploaded.
 
 ## Subscription expiry
 
-When your subscription or trial expires, GitLab does not delete your data, but it may become inaccessible, depending on the tier at expiry. Some features may not behave as expected if you're not prepared for the expiry. For example, [environment specific variables not being passed](https://gitlab.com/gitlab-org/gitlab/issues/24759).
+When your subscription or trial expires, GitLab does not delete your data, but it may become inaccessible, depending on the tier at expiry. Some features may not behave as expected if you're not prepared for the expiry. For example, [environment specific variables not being passed](https://gitlab.com/gitlab-org/gitlab/-/issues/24759).
 
 If you renew or upgrade, your data will again be accessible.
 
@@ -508,7 +508,7 @@ Be aware that:
 ## Contact Support
 
 We also encourage all users to search our project trackers for known issues and
-existing feature requests in the [GitLab](https://gitlab.com/gitlab-org/gitlab/issues/) project.
+existing feature requests in the [GitLab](https://gitlab.com/gitlab-org/gitlab/-/issues/) project.
 
 These issues are the best avenue for getting updates on specific product plans
 and for communicating directly with the relevant GitLab team members.

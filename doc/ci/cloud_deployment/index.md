@@ -15,7 +15,7 @@ cloud provider more easily.
 
 ## AWS
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/31167) in GitLab 12.6.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/31167) in GitLab 12.6.
 
 GitLab's AWS Docker image provides the [AWS Command Line Interface](https://aws.amazon.com/cli/),
 which enables you to run `aws` commands. As part of your deployment strategy, you can run `aws` commands directly from
@@ -67,7 +67,7 @@ path to point to your ECR.
 
 ### Deploy your application to AWS Elastic Container Service (ECS)
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/207962) in GitLab 12.9.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/207962) in GitLab 12.9.
 
 GitLab provides a series of [CI templates that you can include in your project](../yaml/README.md#include).
 To automate deployments of your application to your [Amazon Elastic Container Service](https://aws.amazon.com/ecs/) (AWS ECS)

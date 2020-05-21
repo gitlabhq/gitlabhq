@@ -5,8 +5,8 @@ last_update: 2019-07-03
 
 # Merge Trains **(PREMIUM)**
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/9186) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.0.
-> - [Squash and merge](../../../../user/project/merge_requests/squash_and_merge.md) support [introduced](https://gitlab.com/gitlab-org/gitlab/issues/13001) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.6.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/9186) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.0.
+> - [Squash and merge](../../../../user/project/merge_requests/squash_and_merge.md) support [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13001) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.6.
 
 When [pipelines for merged results](../index.md#pipelines-for-merged-results-premium) are
 enabled, the pipeline jobs run as if the changes from your source branch have already
@@ -164,7 +164,7 @@ To check the reason:
 [Merge When Pipeline Succeeds](../../../../user/project/merge_requests/merge_when_pipeline_succeeds.md)
 is currently unavailable when Merge Trains are enabled.
 
-See [the related issue](https://gitlab.com/gitlab-org/gitlab/issues/12267)
+See [the related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/12267)
 for more information.
 
 ### Merge Train Pipeline cannot be retried
@@ -191,7 +191,7 @@ Trains, you can create a new pipeline for merged results when this error occurs 
 going to the **Pipelines** tab and clicking **Run pipeline**. Then click
 **Start/Add to merge train when pipeline succeeds**.
 
-See [the related issue](https://gitlab.com/gitlab-org/gitlab/issues/35135)
+See [the related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/35135)
 for more information.
 
 ### Merge Trains feature flag **(PREMIUM ONLY)**

@@ -24,7 +24,7 @@ Banners are shown on the top of a page and in Git remote responses.
 
 ![Broadcast Message Banner](img/broadcast_messages_banner_v12_10.png)
 
-```bash
+```shell
 $ git push
 ...
 remote:

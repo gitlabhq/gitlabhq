@@ -600,7 +600,7 @@ sudo cp -R /etc/ssh/* /etc/ssh_static
 
 In `/etc/ssh/sshd_config` update the following:
 
-```bash
+```shell
 # HostKeys for protocol version 2
 HostKey /etc/ssh_static/ssh_host_rsa_key
 HostKey /etc/ssh_static/ssh_host_dsa_key
@@ -620,7 +620,7 @@ Remember to run `sudo gitlab-ctl reconfigure` after saving the changes to the `g
 NOTE: **Note:**
 One current feature of GitLab that still requires a shared directory (NFS) is
 [GitLab Pages](../../user/project/pages/index.md).
-There is [work in progress](https://gitlab.com/gitlab-org/gitlab-pages/issues/196)
+There is [work in progress](https://gitlab.com/gitlab-org/gitlab-pages/-/issues/196)
 to eliminate the need for NFS to support GitLab Pages.
 
 ---
@@ -774,7 +774,7 @@ And the more complex the solution, the more work is involved in setting up and
 maintaining it.
 
 Have a read through these other resources and feel free to
-[open an issue](https://gitlab.com/gitlab-org/gitlab/issues/new)
+[open an issue](https://gitlab.com/gitlab-org/gitlab/-/issues/new)
 to request additional material:
 
 - [Scaling GitLab](../../administration/reference_architectures/index.md):

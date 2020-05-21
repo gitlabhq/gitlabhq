@@ -88,7 +88,7 @@ Clicking a pipeline will bring you to the **Pipeline Details** page and show
 the jobs that were run for that pipeline. From here you can cancel a running pipeline,
 retry jobs on a failed pipeline, or [delete a pipeline](#delete-a-pipeline).
 
-[Starting in GitLab 12.3](https://gitlab.com/gitlab-org/gitlab-foss/issues/50499), a link to the
+[Starting in GitLab 12.3](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/50499), a link to the
 latest pipeline for the last commit of a given branch is available at `/project/pipelines/[branch]/latest`.
 Also, `/project/pipelines/latest` will redirect you to the latest pipeline for the last commit
 on the project's default branch.
@@ -119,7 +119,7 @@ The pipeline will execute the jobs as configured.
 
 ### Run a pipeline by using a URL query string
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/24146) in GitLab 12.5.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/24146) in GitLab 12.5.
 
 You can use a query string to pre-populate the **Run Pipeline** page. For example, the query string
 `.../pipelines/new?ref=my_branch&var[foo]=bar&file_var[file_foo]=file_bar` will pre-populate the
@@ -179,7 +179,7 @@ This functionality is only available:
 
 ### Delete a pipeline
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/24851) in GitLab 12.7.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/24851) in GitLab 12.7.
 
 Users with [owner permissions](../../user/permissions.md) in a project can delete a pipeline
 by clicking on the pipeline in the **CI/CD > Pipelines** to get to the **Pipeline Details**
@@ -403,7 +403,7 @@ For example, if you start rolling out new code and:
 
 ### Expand and collapse job log sections
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/14664) in GitLab 12.0.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/14664) in GitLab 12.0.
 
 Job logs are divided into sections that can be collapsed or expanded. Each section will display
 the duration.
@@ -500,7 +500,7 @@ Stages in pipeline mini graphs are collapsible. Hover your mouse over them and c
 ### Pipeline success and duration charts
 
 > - Introduced in GitLab 3.1.1 as Commit Stats, and later renamed to Pipeline Charts.
-> - [Renamed](https://gitlab.com/gitlab-org/gitlab/issues/38318) to CI / CD Analytics in GitLab 12.8.
+> - [Renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/38318) to CI / CD Analytics in GitLab 12.8.
 
 GitLab tracks the history of your pipeline successes and failures, as well as how long each pipeline ran. To view this information, go to **Analytics > CI / CD Analytics**.
 

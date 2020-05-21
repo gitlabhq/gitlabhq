@@ -4,7 +4,7 @@ type: reference
 
 # Interactive Web Terminals
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/50144) in GitLab 11.3.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/50144) in GitLab 11.3.
 
 Interactive web terminals give the user access to a terminal in GitLab for
 running one-off commands for their CI pipeline. Since this is giving the user
@@ -41,7 +41,7 @@ NOTE: **Note:** Not all executors are
 NOTE: **Note:** The `docker` executor does not keep running
 after the build script is finished. At that point, the terminal will automatically
 disconnect and will not wait for the user to finish. Please follow [this
-issue](https://gitlab.com/gitlab-org/gitlab-runner/issues/3605) for updates on
+issue](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/3605) for updates on
 improving this behavior.
 
 Sometimes, when a job is running, things don't go as you would expect, and it

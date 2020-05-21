@@ -296,7 +296,7 @@ If the user is blocked via LDAP, `state` will be `ldap_blocked`.
 }
 ```
 
-`owner_name` and `owner_email` are always `null`. Please see <https://gitlab.com/gitlab-org/gitlab/issues/20011>.
+`owner_name` and `owner_email` are always `null`. Please see <https://gitlab.com/gitlab-org/gitlab/-/issues/20011>.
 
 **Group removed:**
 
@@ -313,7 +313,7 @@ If the user is blocked via LDAP, `state` will be `ldap_blocked`.
 }
 ```
 
-`owner_name` and `owner_email` are always `null`. Please see <https://gitlab.com/gitlab-org/gitlab/issues/20011>.
+`owner_name` and `owner_email` are always `null`. Please see <https://gitlab.com/gitlab-org/gitlab/-/issues/20011>.
 
 **Group renamed:**
 
@@ -333,7 +333,7 @@ If the user is blocked via LDAP, `state` will be `ldap_blocked`.
 }
 ```
 
-`owner_name` and `owner_email` are always `null`. Please see <https://gitlab.com/gitlab-org/gitlab/issues/20011>.
+`owner_name` and `owner_email` are always `null`. Please see <https://gitlab.com/gitlab-org/gitlab/-/issues/20011>.
 
 **New Group Member:**
 

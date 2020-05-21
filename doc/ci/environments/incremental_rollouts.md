@@ -34,7 +34,7 @@ use as examples to build your own:
 
 ## Manual Rollouts
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/5415) in GitLab 10.8.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/5415) in GitLab 10.8.
 
 It is possible to configure GitLab to do incremental rollouts manually through `.gitlab-ci.yml`. Manual configuration
 allows more control over the this feature. The steps in an incremental rollout depend on the
@@ -74,7 +74,7 @@ available, demonstrating manually triggered incremental rollouts.
 
 ## Timed Rollouts
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/7545) in GitLab 11.4.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/7545) in GitLab 11.4.
 
 Timed rollouts behave in the same way as manual rollouts, except that each job is defined with a delay
 in minutes before it will deploy. Clicking on the job will reveal the countdown.

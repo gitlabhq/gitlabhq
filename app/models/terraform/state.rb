@@ -2,6 +2,8 @@
 
 module Terraform
   class State < ApplicationRecord
+    include UsageStatistics
+
     DEFAULT = '{"version":1}'.freeze
     HEX_REGEXP = %r{\A\h+\z}.freeze
     UUID_LENGTH = 32

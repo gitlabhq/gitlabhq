@@ -74,7 +74,7 @@ persisted in your image. See
 
 ## Passing secrets to `docker build`
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/25514) in GitLab 12.3, but available in versions 11.9 and above.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/25514) in GitLab 12.3, but available in versions 11.9 and above.
 
 CI environment variables can be passed as
 [build secrets](https://docs.docker.com/develop/develop-images/build_enhancements/#new-docker-build-secret-information) to the `docker build` command by listing them
@@ -128,7 +128,7 @@ repository or by specifying a project variable:
 
 ## Customize values for Helm Chart
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/30628) in GitLab 12.6, `.gitlab/auto-deploy-values.yaml` will be used by default for Helm upgrades.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30628) in GitLab 12.6, `.gitlab/auto-deploy-values.yaml` will be used by default for Helm upgrades.
 
 You can override the default values in the `values.yaml` file in the
 [default Helm chart](https://gitlab.com/gitlab-org/charts/auto-deploy-app) by either:
@@ -175,7 +175,7 @@ into your project and edit it as needed.
 
 ## Customizing the Kubernetes namespace
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/27630) in GitLab 12.6.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/27630) in GitLab 12.6.
 
 For clusters not managed by GitLab, you can customize the namespace in
 `.gitlab-ci.yml` by specifying
@@ -368,7 +368,7 @@ The following table lists variables used to disable jobs.
 
 ### Application secret variables
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/49056) in GitLab 11.7.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/49056) in GitLab 11.7.
 
 Some applications need to define secret variables that are accessible by the deployed
 application. Auto DevOps detects variables starting with `K8S_SECRET_`, and makes
@@ -506,7 +506,7 @@ If you define `CANARY_ENABLED` in your project, such as setting `CANARY_ENABLED`
 
 ### Incremental rollout to production **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/5415) in GitLab 10.8.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/5415) in GitLab 10.8.
 
 TIP: **Tip:**
 You can also set this inside your [project's settings](index.md#deployment-strategy).
@@ -563,7 +563,7 @@ removed in the future.
 
 ### Timed incremental rollout to production **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/7545) in GitLab 11.4.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/7545) in GitLab 11.4.
 
 TIP: **Tip:**
 You can also set this inside your [project's settings](index.md#deployment-strategy).

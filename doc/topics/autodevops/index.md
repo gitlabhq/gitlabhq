@@ -1,6 +1,6 @@
 # Auto DevOps
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/37115) in GitLab 10.0.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/37115) in GitLab 10.0.
 > - Generally available on GitLab 11.0.
 
 Auto DevOps provides pre-defined CI/CD configuration allowing you to automatically
@@ -27,7 +27,7 @@ For an introduction to Auto DevOps, watch [AutoDevOps in GitLab 11.0](https://yo
 
 ## Enabled by default
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/41729) in GitLab 11.3.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/41729) in GitLab 11.3.
 
 Auto DevOps is enabled by default for all projects and attempts to run on all pipelines
 in each project. An instance administrator can enable or disable this default in the
@@ -35,7 +35,7 @@ in each project. An instance administrator can enable or disable this default in
 Auto DevOps automatically disables in individual projects on their first pipeline failure,
 if it has not been explicitly enabled for the project.
 
-Since [GitLab 12.7](https://gitlab.com/gitlab-org/gitlab/issues/26655), Auto DevOps
+Since [GitLab 12.7](https://gitlab.com/gitlab-org/gitlab/-/issues/26655), Auto DevOps
 runs on pipelines automatically only if a [`Dockerfile` or matching buildpack](stages.md#auto-build)
 exists.
 
@@ -256,9 +256,9 @@ the URL endpoint should be automatically configured for you. All you must do
 is use its value for the `KUBE_INGRESS_BASE_DOMAIN` variable.
 
 NOTE: **Note:**
-`AUTO_DEVOPS_DOMAIN` was [deprecated in GitLab 11.8](https://gitlab.com/gitlab-org/gitlab-foss/issues/52363)
+`AUTO_DEVOPS_DOMAIN` was [deprecated in GitLab 11.8](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/52363)
 and replaced with `KUBE_INGRESS_BASE_DOMAIN`, and removed in
-[GitLab 12.0](https://gitlab.com/gitlab-org/gitlab-foss/issues/56959).
+[GitLab 12.0](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/56959).
 
 Auto DevOps requires a wildcard DNS A record matching the base domain(s). For
 a base domain of `example.com`, you'd need a DNS entry like:
@@ -305,7 +305,7 @@ After enabling the feature, an Auto DevOps pipeline is triggered on the default 
 
 ### At the group level
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/52447) in GitLab 11.10.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/52447) in GitLab 11.10.
 
 Only administrators and group owners can enable or disable Auto DevOps at the group level.
 
@@ -342,7 +342,7 @@ Feature.get(:force_autodevops_on_by_default).enable_percentage_of_actors(10)
 
 ### Deployment strategy
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/38542) in GitLab 11.0.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/38542) in GitLab 11.0.
 
 You can change the deployment strategy used by Auto DevOps by going to your
 project's **{settings}** **Settings > CI/CD > Auto DevOps**. The following options

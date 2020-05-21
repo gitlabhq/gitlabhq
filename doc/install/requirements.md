@@ -35,7 +35,7 @@ Please see the [installation from source guide](installation.md) and the [instal
 ### Microsoft Windows
 
 GitLab is developed for Linux-based operating systems.
-It does **not** run on Microsoft Windows, and we have no plans to support it in the near future. For the latest development status view this [issue](https://gitlab.com/gitlab-org/gitlab/issues/22337).
+It does **not** run on Microsoft Windows, and we have no plans to support it in the near future. For the latest development status view this [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/22337).
 Please consider using a virtual machine to run GitLab.
 
 ## Software requirements
@@ -55,7 +55,7 @@ The minimum required Go version is 1.12.
 ### Git versions
 
 GitLab 11.11 and higher only supports Git 2.21.x and newer, and
-[dropped support for older versions](https://gitlab.com/gitlab-org/gitlab-foss/issues/54255).
+[dropped support for older versions](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/54255).
 
 ### Node.js versions
 
@@ -284,7 +284,7 @@ For reference, GitLab.com's [auto-scaling shared runner](../user/gitlab_com/inde
 
 CAUTION: **Caution:** With GitLab 13.0 (May 2020) we are removing official support for Internet Explorer 11.
 With the release of GitLab 13.4 (September 2020) we will remove all code that supports Internet Explorer 11.
-You can provide feedback [on this issue](https://gitlab.com/gitlab-org/gitlab/issues/197987) or via your usual support channels.
+You can provide feedback [on this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/197987) or via your usual support channels.
 
 GitLab supports the following web browsers:
 

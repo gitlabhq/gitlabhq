@@ -260,7 +260,7 @@ easier to debug.
 
 For example:
 
-```go
+```golang
 // Wrap the error
 return nil, fmt.Errorf("get cache %s: %w", f.Name, err)
 

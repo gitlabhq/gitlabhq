@@ -95,7 +95,7 @@ GitLab uses [RE2 syntax](https://github.com/google/re2/wiki/Syntax) for regular 
 
 ## Prevent pushing secrets to the repository
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/385) in [GitLab Starter](https://about.gitlab.com/pricing/) 8.12.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/385) in [GitLab Starter](https://about.gitlab.com/pricing/) 8.12.
 
 Secrets such as credential files, SSH private keys, and other files containing secrets should never be committed to source control.
 GitLab allows you to turn on a predefined blacklist of files which won't be allowed to be

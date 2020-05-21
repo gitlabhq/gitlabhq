@@ -21,7 +21,7 @@ Pinning tests help you ensure that you don't unintentionally change the output o
 
 Leaving in the commits for adding and removing pins helps others checkout and verify the result of the test.
 
-```bash
+```shell
 AAAAAA Add pinning tests to funky_foo
 BBBBBB Refactor funky_foo into nice_foo
 CCCCCC Remove pinning tests for funky_foo
@@ -31,13 +31,13 @@ Then you can leave a reviewer instructions on how to run the pinning test in you
 
 > First revert the commit which removes the pin.
 >
-> ```bash
+> ```shell
 > git revert --no-commit $(git log -1 --grep="Remove pinning test for funky_foo" --pretty=format:"%H")
 > ```
 >
 > Then run the test
 >
-> ```bash
+> ```shell
 > yarn run jest path/to/funky_foo_pin_spec.js
 > ```
 

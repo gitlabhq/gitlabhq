@@ -370,7 +370,7 @@ status.
 - [Filter issues](#filter-issues) that appear across your issue board.
 - [Create workflows](#create-workflows).
 - [Drag issues between lists](#drag-issues-between-lists).
-- [Mulit-select issue cards](#multi-select-issue-cards).
+- [Multi-select issue cards](#multi-select-issue-cards).
 - [Re-order issues in lists](#issue-ordering-in-a-list).
 - Drag and reorder the lists.
 - Change issue labels (by dragging an issue between lists).

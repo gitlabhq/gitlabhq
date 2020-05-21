@@ -133,7 +133,7 @@ The output will be:
 
 ### Custom environment variables of type Variable
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/46806) in GitLab 11.11.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/46806) in GitLab 11.11.
 
 For variables with the type **Variable**, the Runner creates an environment variable
 that uses the key for the name and the value for the value.
@@ -143,7 +143,7 @@ which may be further validated. They appear when you add or update a variable in
 
 ### Custom environment variables of type File
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/46806) in GitLab 11.11.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/46806) in GitLab 11.11.
 
 For variables with the type **File**, the Runner creates an environment variable that uses the key for the name.
 For the value, the Runner writes the variable value to a temporary file and uses this path.
@@ -175,7 +175,7 @@ kubectl config set-cluster e2e --server="$KUBE_URL" --certificate-authority="$KU
 
 ### Mask a custom variable
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/13784) in GitLab 11.10
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/13784) in GitLab 11.10
 
 Variables can be masked so that the value of the variable will be hidden in job logs.
 
@@ -195,7 +195,7 @@ The value of the variable must:
 - Be at least 8 characters long.
 - Not be a predefined or custom environment variable.
 - Consist only of characters from the Base64 alphabet (RFC4648).
-  [In GitLab 12.2](https://gitlab.com/gitlab-org/gitlab-foss/issues/63043)
+  [In GitLab 12.2](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/63043)
   and newer, `@` and `:` are also valid values.
 
 You can't mask variables that don't meet these requirements.
@@ -518,7 +518,7 @@ An example integration that defines deployment variables is the
 
 ### Auto DevOps environment variables
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/49056) in GitLab 11.7.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/49056) in GitLab 11.7.
 
 You can configure [Auto DevOps](../../topics/autodevops/index.md) to
 pass CI variables to the running application by prefixing the key of the
@@ -535,7 +535,7 @@ limitations with the current Auto DevOps scripting environment.
 
 ### Override a variable by manually running a pipeline
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/44059) in GitLab 10.8.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/44059) in GitLab 10.8.
 
 You can override the value of a current variable by
 [running a pipeline manually](../pipelines/index.md#run-a-pipeline-manually).
@@ -555,8 +555,8 @@ value for this specific pipeline.
 
 ## Environment variables expressions
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/37397) in GitLab 10.7 for [the `only` and `except` CI keywords](../yaml/README.md#onlyexcept-advanced)
-> - [Expanded](https://gitlab.com/gitlab-org/gitlab/issues/27863) in GitLab 12.3 with [the `rules` keyword](../yaml/README.md#rules)
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/37397) in GitLab 10.7 for [the `only` and `except` CI keywords](../yaml/README.md#onlyexcept-advanced)
+> - [Expanded](https://gitlab.com/gitlab-org/gitlab/-/issues/27863) in GitLab 12.3 with [the `rules` keyword](../yaml/README.md#rules)
 
 Use variable expressions to limit which jobs are created
 within a pipeline after changes are pushed to GitLab.
@@ -652,7 +652,7 @@ Below you can find supported syntax reference:
    Examples:
 
    - `=~`: True if pattern is matched. Ex: `$VARIABLE =~ /^content.*/`
-   - `!~`: True if pattern is not matched. Ex: `$VARIABLE_1 !~ /^content.*/` ([Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/61900) in GitLab 11.11)
+   - `!~`: True if pattern is not matched. Ex: `$VARIABLE_1 !~ /^content.*/` ([Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/61900) in GitLab 11.11)
 
    Variable pattern matching with regular expressions uses the
    [RE2 regular expression syntax](https://github.com/google/re2/wiki/Syntax).
@@ -694,7 +694,7 @@ deploy_staging:
 ```
 
 NOTE: **Note:**
-The available regular expression syntax is limited. See [related issue](https://gitlab.com/gitlab-org/gitlab/issues/35438)
+The available regular expression syntax is limited. See [related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/35438)
 for more details.
 
 If needed, you can use a test pipeline to determine whether a regular expression will

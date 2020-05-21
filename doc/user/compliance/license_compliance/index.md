@@ -339,7 +339,7 @@ setting to specify its location.
 
 For example:
 
-```text
+```plaintext
 npmRegistryServer: "https://npm.example.com"
 ```
 
