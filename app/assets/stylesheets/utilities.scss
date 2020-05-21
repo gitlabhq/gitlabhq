@@ -81,6 +81,12 @@
 .gl-h-32 { height: px-to-rem($grid-size * 4); }
 .gl-h-64 { height: px-to-rem($grid-size * 8); }
 
+.d-sm-table-column {
+  @include media-breakpoint-up(sm) {
+    display: table-column !important;
+  }
+}
+
 .gl-shim-h-2 {
   height: px-to-rem(4px);
 }
@@ -98,46 +104,4 @@
 }
 
 .gl-text-purple { color: $purple; }
-.gl-text-gray-800 { color: $gray-800; }
 .gl-bg-purple-light { background-color: $purple-light; }
-
-// Classes using mixins coming from @gitlab-ui
-// can be removed once the mixins are added.
-// See https://gitlab.com/gitlab-org/gitlab/issues/36857 for more details.
-.gl-bg-blue-50 { @include gl-bg-blue-50; }
-.gl-bg-red-100 { @include gl-bg-red-100; }
-.gl-bg-orange-100 { @include gl-bg-orange-100; }
-.gl-bg-gray-50 { @include gl-bg-gray-50; }
-.gl-bg-gray-100 { @include gl-bg-gray-100; }
-.gl-bg-green-100 { @include gl-bg-green-100;}
-.gl-bg-blue-500 { @include gl-bg-blue-500; }
-.gl-bg-green-500 { @include gl-bg-green-500; }
-.gl-bg-theme-indigo-500 { @include gl-bg-theme-indigo-500; }
-.gl-bg-red-500 { @include gl-bg-red-500; }
-.gl-bg-orange-500 { @include gl-bg-orange-500; }
-
-.gl-text-blue-500 { @include gl-text-blue-500; }
-.gl-text-gray-500 { @include gl-text-gray-500; }
-.gl-text-gray-700 { @include gl-text-gray-700; }
-.gl-text-gray-900 { @include gl-text-gray-900; }
-.gl-text-red-700 { @include gl-text-red-700; }
-.gl-text-red-900 { @include gl-text-red-900; }
-.gl-text-orange-400 { @include gl-text-orange-400; }
-.gl-text-orange-500 { @include gl-text-orange-500; }
-.gl-text-orange-600 { @include gl-text-orange-600; }
-.gl-text-orange-700 { @include gl-text-orange-700; }
-.gl-text-green-500 { @include gl-text-green-500; }
-.gl-text-green-700 { @include gl-text-green-700; }
-
-.gl-align-items-center { @include gl-align-items-center; }
-
-.d-sm-table-column {
-  @include media-breakpoint-up(sm) {
-    display: table-column !important;
-  }
-}
-
-.gl-white-space-normal { @include gl-white-space-normal; }
-.gl-word-break-all { @include gl-word-break-all; }
-.gl-reset-line-height { @include gl-reset-line-height; }
-.gl-reset-text-align { @include gl-reset-text-align; }

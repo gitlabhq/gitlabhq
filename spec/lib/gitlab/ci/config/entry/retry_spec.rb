@@ -94,7 +94,7 @@ describe Gitlab::Ci::Config::Entry::Retry do
         # sure this is catched, check explicitly that all of the documented
         # values are valid. If they are not it means the documentation and this
         # array must be updated.
-        RETRY_WHEN_IN_DOCUMENTATION = %w[
+        retry_when_in_documentation = %w[
           always
           unknown_failure
           script_failure
@@ -111,7 +111,7 @@ describe Gitlab::Ci::Config::Entry::Retry do
           data_integrity_failure
         ].freeze
 
-        RETRY_WHEN_IN_DOCUMENTATION.each do |reason|
+        retry_when_in_documentation.each do |reason|
           context "with when from documentation `#{reason}`" do
             let(:when) { reason }
 

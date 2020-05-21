@@ -116,6 +116,73 @@ For instance:
 - endpoint = expose_path(api_v4_projects_issues_related_merge_requests_path(id: @project.id, issue_iid: @issue.iid))
 ```
 
+## Custom Validators
+
+In order to validate some parameters in the API request, we validate them
+before sending them further (say Gitaly). The following are the
+[custom validators](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/api/validations/validators),
+which we have added so far and how to use them. We also wrote a
+guide on how you can add a new custom validator.
+
+### Using custom validators
+
+- `FilePath`:
+
+  GitLab supports various functionalities where we need to traverse a file path.
+  The [`FilePath` validator](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/api/validations/validators/file_path.rb)
+  validates the parameter value for different cases. Mainly, it checks whether a
+  path is relative and does it contain `../../` relative traversal using
+  `File::Separator` or not, and whether the path is absolute, for example
+  `/etc/passwd/`.
+
+- `Git SHA`:
+
+  The [`Git SHA` validator](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/api/validations/validators/git_sha.rb)
+  checks whether the Git SHA parameter is a valid SHA.
+  It checks by using the regex mentioned in [`commit.rb`](https://gitlab.com/gitlab-org/gitlab/-/commit/b9857d8b662a2dbbf54f46ecdcecb44702affe55#d1c10892daedb4d4dd3d4b12b6d071091eea83df_30_30) file.
+
+- `Absence`:
+
+  The [`Absence` validator](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/api/validations/validators/absence.rb)
+  checks whether a particular parameter is absent in a given parameters hash.
+
+- `IntegerNoneAny`:
+
+  The [`IntegerNoneAny` validator](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/api/validations/validators/integer_none_any.rb)
+  checks if the value of the given parameter is either an `Integer`, `None`, or `Any`.
+  It allows only either of these mentioned values to move forward in the request.
+
+- `ArrayNoneAny`:
+
+  The [`ArrayNoneAny` validator](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/api/validations/validators/array_none_any.rb)
+  checks if the value of the given parameter is either an `Array`, `None`, or `Any`.
+  It allows only either of these mentioned values to move forward in the request.
+
+### Adding a new custom validator
+
+Custom validators are a great way to validate parameters before sending
+them to platform for further processing. It saves some back-and-forth
+from the server to the platform if we identify invalid parameters at the beginning.
+
+If you need to add a custom validator, it would be added to
+it's own file in the [`validators`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/api/validations/validators) directory.
+Since we use [Grape](https://github.com/ruby-grape/grape) to add our API
+we inherit from the `Grape::Validations::Base` class in our validator class.
+Now, all you have to do is define the `validate_param!` method which takes
+in two parameters: the `params` hash and the `param` name to validate.
+
+The body of the method does the hard work of validating the parameter value
+and returns appropriate error messages to the caller method.
+
+Lastly, we register the validator using the line below:
+
+```ruby
+Grape::Validations.register_validator(<validator name as symbol>, ::API::Helpers::CustomValidators::<YourCustomValidatorClassName>)
+```
+
+Once you add the validator, make sure you add the `rspec`s for it into
+it's own file in the [`validators`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/lib/api/validations/validators) directory.
+
 ## Internal API
 
 The [internal API](./internal_api.md) is documented for internal use. Please keep it up to date so we know what endpoints

@@ -350,10 +350,6 @@ RSpec/LeakyConstantDeclaration:
   Exclude:
     - 'spec/db/schema_spec.rb'
     - 'spec/lib/feature_spec.rb'
-    - 'spec/lib/gitlab/ci/build/credentials/factory_spec.rb'
-    - 'spec/lib/gitlab/ci/config/entry/retry_spec.rb'
-    - 'spec/lib/gitlab/cluster/mixins/puma_cluster_spec.rb'
-    - 'spec/lib/gitlab/cluster/mixins/unicorn_http_server_spec.rb'
     - 'spec/lib/gitlab/config/entry/simplifiable_spec.rb'
     - 'spec/lib/gitlab/database/migration_helpers_spec.rb'
     - 'spec/lib/gitlab/database/obsolete_ignored_columns_spec.rb'
@@ -361,7 +357,6 @@ RSpec/LeakyConstantDeclaration:
     - 'spec/lib/gitlab/git/diff_collection_spec.rb'
     - 'spec/lib/gitlab/import_export/import_test_coverage_spec.rb'
     - 'spec/lib/gitlab/import_export/project/relation_factory_spec.rb'
-    - 'spec/lib/gitlab/path_regex_spec.rb'
     - 'spec/lib/gitlab/quick_actions/dsl_spec.rb'
     - 'spec/lib/marginalia_spec.rb'
     - 'spec/mailers/notify_spec.rb'
@@ -374,7 +369,6 @@ RSpec/LeakyConstantDeclaration:
     - 'spec/services/clusters/applications/check_installation_progress_service_spec.rb'
     - 'spec/services/clusters/applications/check_uninstall_progress_service_spec.rb'
     - 'spec/support/shared_examples/quick_actions/issuable/issuable_quick_actions_shared_examples.rb'
-    - 'spec/support_specs/matchers/exceed_query_limit_helpers_spec.rb'
 
 RSpec/EmptyLineAfterHook:
   Enabled: false
