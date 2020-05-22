@@ -147,6 +147,7 @@ if Gitlab::Metrics.enabled? && !Rails.env.test? && !(Rails.env.development? && d
   Gitlab::Application.configure do |config|
     config.middleware.use(Gitlab::Metrics::RackMiddleware)
     config.middleware.use(Gitlab::Middleware::RailsQueueDuration)
+    config.middleware.use(Gitlab::Metrics::RedisRackMiddleware)
   end
 
   Sidekiq.configure_server do |config|

@@ -78,7 +78,8 @@ module Backup
       return if status.compact.all?(&:success?)
 
       regex = /^g?tar: \.: Cannot mkdir: No such file or directory$/
-      raise Backup::Error, 'Backup failed' unless err_r.read =~ regex
+      error = err_r.read
+      raise Backup::Error, "Backup failed. #{error}" unless error =~ regex
     end
   end
 end

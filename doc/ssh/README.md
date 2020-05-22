@@ -119,7 +119,7 @@ Enter file in which to save the key (/home/user/.ssh/id_rsa):
 For guidance, proceed to the [common steps](#common-steps-for-generating-an-ssh-key-pair).
 
 NOTE: **Note:**
-If your have OpenSSH version 7.8 or below, consider the problems associated
+If you have OpenSSH version 7.8 or below, consider the problems associated
 with [encoding](#rsa-keys-and-openssh-from-versions-65-to-78).
 
 ### Common steps for generating an SSH key pair
@@ -370,80 +370,7 @@ git remote set-url origin git@<user_1.gitlab.com>:gitlab-org/gitlab.git
 
 ## Deploy keys
 
-Deploy keys allow read-only or read-write (if enabled) access to one or
-multiple repositories with a single SSH key pair.
-
-This is useful for cloning repositories to your Continuous
-Integration (CI) server. By using deploy keys, you don't have to set up a
-dummy user account.
-
-If you don't have a key pair, you might want to use a
-[deploy token](../user/project/deploy_tokens/index.md#deploy-tokens) instead.
-
-### Per-repository deploy keys
-
-Project maintainers and owners can add a deploy key for a repository.
-
-1. Navigate to the project's **Settings > Repository** page.
-1. Expand the **Deploy Keys** section.
-1. Specify a title for the new deploy key and paste a public SSH key.
-
-After this, the machine that uses the corresponding private SSH key has read-only or
-read-write (if enabled) access to the project.
-
-You can't add the same deploy key twice using the form.
-If you want to add the same key to another project, please enable it in the
-list that says **Deploy keys from projects available to you**. All the deploy
-keys of all the projects you have access to are available. This project
-access can happen through being a direct member of the project, or through
-a group.
-
-Deploy keys can be shared between projects, you just need to add them to each
-project.
-
-### Global shared deploy keys
-
-Global Shared Deploy keys allow read-only or read-write access to
-any repository in the entire GitLab installation.
-
-This is useful for integrating repositories to secured, shared Continuous
-Integration (CI) services or other shared services.
-GitLab administrators can set up the Global Shared Deploy key in GitLab and
-add the private key to any shared systems. Individual repositories opt into
-exposing their repository using these keys when a project maintainers (or higher)
-authorizes a Global Shared Deploy key to be used with their project.
-
-Global Shared Keys can provide greater security compared to Per-Project Deploy
-Keys since an administrator of the target integrated system is the only one
-who needs to know and configure the private key.
-
-GitLab administrators set up Global Deploy keys in the Admin Area under the
-section **Deploy Keys**. Ensure keys have a meaningful title as that will be
-the primary way for project maintainers and owners to identify the correct Global
-Deploy key to add. For instance, if the key gives access to a SaaS CI instance,
-use the name of that service in the key name if that is all it is used for.
-When creating Global Shared Deploy keys, give some thought to the granularity
-of keys - they could be of very narrow usage such as just a specific service or
-of broader usage for something like "Anywhere you need to give read access to
-your repository".
-
-Once a GitLab administrator adds the Global Deployment key, project maintainers
-and owners can add it by:
-
-1. Navigate to the project's **Settings > Repository** page.
-1. Expanding the **Deploy Keys** section.
-1. Clicking **Enable** next to the appropriate key listed under
-   **Public deploy keys available to any project**.
-
-NOTE: **Note:**
-The heading **Public deploy keys available to any project** only appears
-if there is at least one Global Deploy Key configured.
-
-CAUTION: **Warning:**
-Defining Global Deploy Keys does not expose any given repository via
-the key until that repository adds the Global Deploy Key to their project.
-In this way the Global Deploy Keys enable access by other systems, but do
-not implicitly give any access just by setting them up.
+Read the [documentation on Deploy Keys](../user/project/deploy_keys/index.md).
 
 ## Applications
 
