@@ -113,7 +113,7 @@ class Projects::ArtifactsController < Projects::ApplicationController
 
   def build
     @build ||= begin
-      build = build_from_id || build_from_ref
+      build = build_from_id || build_from_sha || build_from_ref
       build&.present(current_user: current_user)
     end
   end
@@ -127,13 +127,21 @@ class Projects::ArtifactsController < Projects::ApplicationController
     project.builds.find_by_id(params[:job_id]) if params[:job_id]
   end
 
-  def build_from_ref
+  def build_from_sha
+    return if params[:job].blank?
     return unless @ref_name
 
     commit = project.commit(@ref_name)
     return unless commit
 
     project.latest_successful_build_for_sha(params[:job], commit.id)
+  end
+
+  def build_from_ref
+    return if params[:job].blank?
+    return unless @ref_name
+
+    project.latest_successful_build_for_ref(params[:job], @ref_name)
   end
 
   def artifacts_file

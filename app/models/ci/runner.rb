@@ -273,7 +273,7 @@ module Ci
 
     def update_cached_info(values)
       values = values&.slice(:version, :revision, :platform, :architecture, :ip_address) || {}
-      values[:contacted_at] = Time.now
+      values[:contacted_at] = Time.current
 
       cache_attributes(values)
 
@@ -309,7 +309,7 @@ module Ci
 
       real_contacted_at = read_attribute(:contacted_at)
       real_contacted_at.nil? ||
-        (Time.now - real_contacted_at) >= contacted_at_max_age
+        (Time.current - real_contacted_at) >= contacted_at_max_age
     end
 
     def tag_constraints

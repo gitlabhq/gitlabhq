@@ -414,7 +414,7 @@ describe Todo do
       create(:todo, :pending)
 
       Timecop.freeze(1.day.from_now) do
-        expected_update_date = Time.now.utc
+        expected_update_date = Time.current.utc
 
         ids = described_class.update_state(:done)
 

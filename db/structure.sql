@@ -441,7 +441,10 @@ CREATE TABLE public.application_settings (
     container_registry_vendor text DEFAULT ''::text NOT NULL,
     container_registry_version text DEFAULT ''::text NOT NULL,
     container_registry_features text[] DEFAULT '{}'::text[] NOT NULL,
+    spam_check_endpoint_url text,
+    spam_check_endpoint_enabled boolean DEFAULT false NOT NULL,
     CONSTRAINT check_d03919528d CHECK ((char_length(container_registry_vendor) <= 255)),
+    CONSTRAINT check_d820146492 CHECK ((char_length(spam_check_endpoint_url) <= 255)),
     CONSTRAINT check_e5aba18f02 CHECK ((char_length(container_registry_version) <= 255))
 );
 
@@ -13880,6 +13883,7 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200506125731
 20200506154421
 20200507221434
+20200508050301
 20200508091106
 20200511080113
 20200511083541

@@ -727,6 +727,12 @@ Rails migration example:
 add_column(:projects, :foo, :integer, default: 10, limit: 8)
 ```
 
+## Strings and the Text data type
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30453) in GitLab 13.0.
+
+See the [text data type](database/strings_and_the_text_data_type.md) style guide for more information.
+
 ## Timestamp column type
 
 By default, Rails uses the `timestamp` data type that stores timestamp data

@@ -1,4 +1,10 @@
-import { isTextFile, registerLanguages, trimPathComponents } from '~/ide/utils';
+import {
+  isTextFile,
+  registerLanguages,
+  trimPathComponents,
+  addFinalNewline,
+  getPathParents,
+} from '~/ide/utils';
 import { languages } from 'monaco-editor';
 
 describe('WebIDE utils', () => {
@@ -146,6 +152,41 @@ describe('WebIDE utils', () => {
         ['js', { comments: { blockComment: ['/*', '*/'] } }],
         ['html', { comments: { blockComment: ['<!--', '-->'] } }],
       ]);
+    });
+  });
+
+  describe('addFinalNewline', () => {
+    it.each`
+      input              | output
+      ${'some text'}     | ${'some text\n'}
+      ${'some text\n'}   | ${'some text\n'}
+      ${'some text\n\n'} | ${'some text\n\n'}
+      ${'some\n text'}   | ${'some\n text\n'}
+    `('adds a newline if it doesnt already exist for input: $input', ({ input, output }) => {
+      expect(addFinalNewline(input)).toEqual(output);
+    });
+
+    it.each`
+      input                  | output
+      ${'some text'}         | ${'some text\r\n'}
+      ${'some text\r\n'}     | ${'some text\r\n'}
+      ${'some text\n'}       | ${'some text\n\r\n'}
+      ${'some text\r\n\r\n'} | ${'some text\r\n\r\n'}
+      ${'some\r\n text'}     | ${'some\r\n text\r\n'}
+    `('works with CRLF newline style; input: $input', ({ input, output }) => {
+      expect(addFinalNewline(input, '\r\n')).toEqual(output);
+    });
+  });
+
+  describe('getPathParents', () => {
+    it.each`
+      path                                  | parents
+      ${'foo/bar/baz/index.md'}             | ${['foo/bar/baz', 'foo/bar', 'foo']}
+      ${'foo/bar/baz'}                      | ${['foo/bar', 'foo']}
+      ${'index.md'}                         | ${[]}
+      ${'path with/spaces to/something.md'} | ${['path with/spaces to', 'path with']}
+    `('gets all parent directory names for path: $path', ({ path, parents }) => {
+      expect(getPathParents(path)).toEqual(parents);
     });
   });
 });

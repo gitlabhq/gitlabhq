@@ -282,11 +282,13 @@ describe 'Admin updates settings', :clean_gitlab_redis_shared_state, :do_not_moc
         visit reporting_admin_application_settings_path
 
         page.within('.as-spam') do
-          check 'Enable reCAPTCHA'
-          check 'Enable reCAPTCHA for login'
           fill_in 'reCAPTCHA Site Key', with: 'key'
           fill_in 'reCAPTCHA Private Key', with: 'key'
+          check 'Enable reCAPTCHA'
+          check 'Enable reCAPTCHA for login'
           fill_in 'IPs per user', with: 15
+          check 'Enable Spam Check via external API endpoint'
+          fill_in 'URL of the external Spam Check endpoint', with: 'https://www.example.com/spamcheck'
           click_button 'Save changes'
         end
 
@@ -294,6 +296,8 @@ describe 'Admin updates settings', :clean_gitlab_redis_shared_state, :do_not_moc
         expect(current_settings.recaptcha_enabled).to be true
         expect(current_settings.login_recaptcha_protection_enabled).to be true
         expect(current_settings.unique_ips_limit_per_user).to eq(15)
+        expect(current_settings.spam_check_endpoint_enabled).to be true
+        expect(current_settings.spam_check_endpoint_url).to eq 'https://www.example.com/spamcheck'
       end
     end
 

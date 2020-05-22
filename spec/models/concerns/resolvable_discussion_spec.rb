@@ -536,7 +536,7 @@ describe Discussion, ResolvableDiscussion do
 
   describe "#last_resolved_note" do
     let(:current_user) { create(:user) }
-    let(:time) { Time.now.utc }
+    let(:time) { Time.current.utc }
 
     before do
       Timecop.freeze(time - 1.second) do

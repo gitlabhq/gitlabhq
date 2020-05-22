@@ -76,3 +76,21 @@ export function registerLanguages(def, ...defs) {
 }
 
 export const otherSide = side => (side === SIDE_RIGHT ? SIDE_LEFT : SIDE_RIGHT);
+
+export function addFinalNewline(content, eol = '\n') {
+  return content.slice(-eol.length) !== eol ? `${content}${eol}` : content;
+}
+
+export function getPathParents(path) {
+  const pathComponents = path.split('/');
+  const paths = [];
+  while (pathComponents.length) {
+    pathComponents.pop();
+
+    let parentPath = pathComponents.join('/');
+    if (parentPath.startsWith('/')) parentPath = parentPath.slice(1);
+    if (parentPath) paths.push(parentPath);
+  }
+
+  return paths;
+}

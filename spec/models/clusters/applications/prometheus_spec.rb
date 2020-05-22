@@ -47,7 +47,7 @@ describe Clusters::Applications::Prometheus do
 
     it 'sets last_update_started_at to now' do
       Timecop.freeze do
-        expect { subject.make_updating }.to change { subject.reload.last_update_started_at }.to be_within(1.second).of(Time.now)
+        expect { subject.make_updating }.to change { subject.reload.last_update_started_at }.to be_within(1.second).of(Time.current)
       end
     end
   end
@@ -347,14 +347,14 @@ describe Clusters::Applications::Prometheus do
   describe '#updated_since?' do
     let(:cluster) { create(:cluster) }
     let(:prometheus_app) { build(:clusters_applications_prometheus, cluster: cluster) }
-    let(:timestamp) { Time.now - 5.minutes }
+    let(:timestamp) { Time.current - 5.minutes }
 
     around do |example|
       Timecop.freeze { example.run }
     end
 
     before do
-      prometheus_app.last_update_started_at = Time.now
+      prometheus_app.last_update_started_at = Time.current
     end
 
     context 'when app does not have status failed' do
@@ -363,7 +363,7 @@ describe Clusters::Applications::Prometheus do
       end
 
       it 'returns false when last update started before the timestamp' do
-        expect(prometheus_app.updated_since?(Time.now + 5.minutes)).to be false
+        expect(prometheus_app.updated_since?(Time.current + 5.minutes)).to be false
       end
     end
 

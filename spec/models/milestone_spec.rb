@@ -81,7 +81,7 @@ describe Milestone do
   end
 
   it_behaves_like 'within_timeframe scope' do
-    let_it_be(:now) { Time.now }
+    let_it_be(:now) { Time.current }
     let_it_be(:project) { create(:project, :empty_repo) }
     let_it_be(:resource_1) { create(:milestone, project: project, start_date: now - 1.day, due_date: now + 1.day) }
     let_it_be(:resource_2) { create(:milestone, project: project, start_date: now + 2.days, due_date: now + 3.days) }
@@ -130,7 +130,7 @@ describe Milestone do
 
   describe '#upcoming?' do
     it 'returns true when start_date is in the future' do
-      milestone = build(:milestone, start_date: Time.now + 1.month)
+      milestone = build(:milestone, start_date: Time.current + 1.month)
       expect(milestone.upcoming?).to be_truthy
     end
 
@@ -297,30 +297,30 @@ describe Milestone do
     let(:group_3) { create(:group) }
     let(:groups) { [group_1, group_2, group_3] }
 
-    let!(:past_milestone_group_1) { create(:milestone, group: group_1, due_date: Time.now - 1.day) }
-    let!(:current_milestone_group_1) { create(:milestone, group: group_1, due_date: Time.now + 1.day) }
-    let!(:future_milestone_group_1) { create(:milestone, group: group_1, due_date: Time.now + 2.days) }
+    let!(:past_milestone_group_1) { create(:milestone, group: group_1, due_date: Time.current - 1.day) }
+    let!(:current_milestone_group_1) { create(:milestone, group: group_1, due_date: Time.current + 1.day) }
+    let!(:future_milestone_group_1) { create(:milestone, group: group_1, due_date: Time.current + 2.days) }
 
-    let!(:past_milestone_group_2) { create(:milestone, group: group_2, due_date: Time.now - 1.day) }
-    let!(:closed_milestone_group_2) { create(:milestone, :closed, group: group_2, due_date: Time.now + 1.day) }
-    let!(:current_milestone_group_2) { create(:milestone, group: group_2, due_date: Time.now + 2.days) }
+    let!(:past_milestone_group_2) { create(:milestone, group: group_2, due_date: Time.current - 1.day) }
+    let!(:closed_milestone_group_2) { create(:milestone, :closed, group: group_2, due_date: Time.current + 1.day) }
+    let!(:current_milestone_group_2) { create(:milestone, group: group_2, due_date: Time.current + 2.days) }
 
-    let!(:past_milestone_group_3) { create(:milestone, group: group_3, due_date: Time.now - 1.day) }
+    let!(:past_milestone_group_3) { create(:milestone, group: group_3, due_date: Time.current - 1.day) }
 
     let(:project_1) { create(:project) }
     let(:project_2) { create(:project) }
     let(:project_3) { create(:project) }
     let(:projects) { [project_1, project_2, project_3] }
 
-    let!(:past_milestone_project_1) { create(:milestone, project: project_1, due_date: Time.now - 1.day) }
-    let!(:current_milestone_project_1) { create(:milestone, project: project_1, due_date: Time.now + 1.day) }
-    let!(:future_milestone_project_1) { create(:milestone, project: project_1, due_date: Time.now + 2.days) }
+    let!(:past_milestone_project_1) { create(:milestone, project: project_1, due_date: Time.current - 1.day) }
+    let!(:current_milestone_project_1) { create(:milestone, project: project_1, due_date: Time.current + 1.day) }
+    let!(:future_milestone_project_1) { create(:milestone, project: project_1, due_date: Time.current + 2.days) }
 
-    let!(:past_milestone_project_2) { create(:milestone, project: project_2, due_date: Time.now - 1.day) }
-    let!(:closed_milestone_project_2) { create(:milestone, :closed, project: project_2, due_date: Time.now + 1.day) }
-    let!(:current_milestone_project_2) { create(:milestone, project: project_2, due_date: Time.now + 2.days) }
+    let!(:past_milestone_project_2) { create(:milestone, project: project_2, due_date: Time.current - 1.day) }
+    let!(:closed_milestone_project_2) { create(:milestone, :closed, project: project_2, due_date: Time.current + 1.day) }
+    let!(:current_milestone_project_2) { create(:milestone, project: project_2, due_date: Time.current + 2.days) }
 
-    let!(:past_milestone_project_3) { create(:milestone, project: project_3, due_date: Time.now - 1.day) }
+    let!(:past_milestone_project_3) { create(:milestone, project: project_3, due_date: Time.current - 1.day) }
 
     let(:milestone_ids) { described_class.upcoming_ids(projects, groups).map(&:id) }
 

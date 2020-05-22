@@ -2018,7 +2018,7 @@ describe MergeRequest do
   describe '#can_be_reverted?' do
     context 'when there is no merge_commit for the MR' do
       before do
-        subject.metrics.update!(merged_at: Time.now.utc)
+        subject.metrics.update!(merged_at: Time.current.utc)
       end
 
       it 'returns false' do

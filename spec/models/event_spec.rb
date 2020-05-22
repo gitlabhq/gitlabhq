@@ -37,7 +37,7 @@ describe Event do
 
           project.reload
 
-          expect(project.last_repository_updated_at).to be_within(1.minute).of(Time.now)
+          expect(project.last_repository_updated_at).to be_within(1.minute).of(Time.current)
         end
       end
 
@@ -665,7 +665,7 @@ describe Event do
 
     context 'when a project was updated less than 1 hour ago' do
       it 'does not update the project' do
-        project.update(last_activity_at: Time.now)
+        project.update(last_activity_at: Time.current)
 
         expect(project).not_to receive(:update_column)
           .with(:last_activity_at, a_kind_of(Time))
@@ -682,7 +682,7 @@ describe Event do
 
         project.reload
 
-        expect(project.last_activity_at).to be_within(1.minute).of(Time.now)
+        expect(project.last_activity_at).to be_within(1.minute).of(Time.current)
       end
     end
   end

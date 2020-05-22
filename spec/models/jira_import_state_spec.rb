@@ -124,7 +124,7 @@ describe JiraImportState do
         jira_import.schedule
 
         expect(jira_import.jid).to eq('some-job-id')
-        expect(jira_import.scheduled_at).to be_within(1.second).of(Time.now)
+        expect(jira_import.scheduled_at).to be_within(1.second).of(Time.current)
       end
     end
 

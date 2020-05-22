@@ -14,7 +14,7 @@ class BoardProjectRecentVisit < ApplicationRecord
 
   def self.visited!(user, board)
     visit = find_or_create_by(user: user, project: board.project, board: board)
-    visit.touch if visit.updated_at < Time.now
+    visit.touch if visit.updated_at < Time.current
   rescue ActiveRecord::RecordNotUnique
     retry
   end

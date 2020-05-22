@@ -32,5 +32,11 @@ describe "User downloads artifacts" do
 
       it_behaves_like "downloading"
     end
+
+    context "via SHA" do
+      let(:url) { latest_succeeded_project_artifacts_path(project, "#{pipeline.sha}/download", job: job.name) }
+
+      it_behaves_like "downloading"
+    end
   end
 end

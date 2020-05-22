@@ -363,13 +363,13 @@ describe Ci::JobArtifact do
     it { is_expected.to be_nil }
 
     context 'when expire_at is specified' do
-      let(:expire_at) { Time.now + 7.days }
+      let(:expire_at) { Time.current + 7.days }
 
       before do
         artifact.expire_at = expire_at
       end
 
-      it { is_expected.to be_within(5).of(expire_at - Time.now) }
+      it { is_expected.to be_within(5).of(expire_at - Time.current) }
     end
   end
 

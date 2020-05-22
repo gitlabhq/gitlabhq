@@ -422,7 +422,7 @@ describe Issuable do
 
     context 'total_time_spent is updated' do
       before do
-        issue.spend_time(duration: 2, user_id: user.id, spent_at: Time.now)
+        issue.spend_time(duration: 2, user_id: user.id, spent_at: Time.current)
         issue.save
         expect(Gitlab::HookData::IssuableBuilder)
           .to receive(:new).with(issue).and_return(builder)
@@ -572,8 +572,8 @@ describe Issuable do
       second_priority = create(:label, project: project, priority: 2)
       no_priority = create(:label, project: project)
 
-      first_milestone = create(:milestone, project: project, due_date: Time.now)
-      second_milestone = create(:milestone, project: project, due_date: Time.now + 1.month)
+      first_milestone = create(:milestone, project: project, due_date: Time.current)
+      second_milestone = create(:milestone, project: project, due_date: Time.current + 1.month)
       third_milestone = create(:milestone, project: project)
 
       # The issues here are ordered by label priority, to ensure that we don't

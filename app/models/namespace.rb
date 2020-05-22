@@ -277,7 +277,7 @@ class Namespace < ApplicationRecord
   end
 
   def has_parent?
-    parent.present?
+    parent_id.present? || parent.present?
   end
 
   def root_ancestor

@@ -136,15 +136,15 @@ class CommitStatus < ApplicationRecord
     end
 
     before_transition [:created, :waiting_for_resource, :preparing, :skipped, :manual, :scheduled] => :pending do |commit_status|
-      commit_status.queued_at = Time.now
+      commit_status.queued_at = Time.current
     end
 
     before_transition [:created, :preparing, :pending] => :running do |commit_status|
-      commit_status.started_at = Time.now
+      commit_status.started_at = Time.current
     end
 
     before_transition any => [:success, :failed, :canceled] do |commit_status|
-      commit_status.finished_at = Time.now
+      commit_status.finished_at = Time.current
     end
 
     before_transition any => :failed do |commit_status, transition|

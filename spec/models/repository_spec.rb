@@ -88,8 +88,8 @@ describe Repository do
         subject { repository.tags_sorted_by('updated_desc').map(&:name) }
 
         before do
-          double_first = double(committed_date: Time.now)
-          double_last = double(committed_date: Time.now - 1.second)
+          double_first = double(committed_date: Time.current)
+          double_last = double(committed_date: Time.current - 1.second)
 
           allow(tag_a).to receive(:dereferenced_target).and_return(double_first)
           allow(tag_b).to receive(:dereferenced_target).and_return(double_last)
@@ -103,8 +103,8 @@ describe Repository do
         subject { repository.tags_sorted_by('updated_asc').map(&:name) }
 
         before do
-          double_first = double(committed_date: Time.now - 1.second)
-          double_last = double(committed_date: Time.now)
+          double_first = double(committed_date: Time.current - 1.second)
+          double_last = double(committed_date: Time.current)
 
           allow(tag_a).to receive(:dereferenced_target).and_return(double_last)
           allow(tag_b).to receive(:dereferenced_target).and_return(double_first)
@@ -125,8 +125,8 @@ describe Repository do
 
           rugged_repo(repository).tags.create(annotated_tag_name, 'a48e4fc218069f68ef2e769dd8dfea3991362175', options)
 
-          double_first = double(committed_date: Time.now - 1.second)
-          double_last = double(committed_date: Time.now)
+          double_first = double(committed_date: Time.current - 1.second)
+          double_last = double(committed_date: Time.current)
 
           allow(tag_a).to receive(:dereferenced_target).and_return(double_last)
           allow(tag_b).to receive(:dereferenced_target).and_return(double_first)
@@ -227,7 +227,7 @@ describe Repository do
         tree_builder = Rugged::Tree::Builder.new(rugged)
         tree_builder.insert({ oid: blob_id, name: "hello\x80world", filemode: 0100644 })
         tree_id = tree_builder.write
-        user = { email: "jcai@gitlab.com", time: Time.now, name: "John Cai" }
+        user = { email: "jcai@gitlab.com", time: Time.current.to_time, name: "John Cai" }
 
         Rugged::Commit.create(rugged, message: 'some commit message', parents: [rugged.head.target.oid], tree: tree_id, committer: user, author: user)
       end

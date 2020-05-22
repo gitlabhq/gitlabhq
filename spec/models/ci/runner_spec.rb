@@ -605,7 +605,7 @@ describe Ci::Runner do
 
     context 'when database was updated recently' do
       before do
-        runner.contacted_at = Time.now
+        runner.contacted_at = Time.current
       end
 
       it 'updates cache' do

@@ -121,9 +121,9 @@ module Gitlab
 
       def plain_gitlab_fingerprint
         if gitlab_managed?
-          [metric_id, starts_at].join('/')
+          [metric_id, starts_at_raw].join('/')
         else # self managed
-          [starts_at, title, full_query].join('/')
+          [starts_at_raw, title, full_query].join('/')
         end
       end
 

@@ -152,6 +152,30 @@ describe ApplicationSetting do
       end
     end
 
+    describe 'spam_check_endpoint' do
+      context 'when spam_check_endpoint is enabled' do
+        before do
+          setting.spam_check_endpoint_enabled = true
+        end
+
+        it { is_expected.to allow_value('https://example.org/spam_check').for(:spam_check_endpoint_url) }
+        it { is_expected.not_to allow_value('nonsense').for(:spam_check_endpoint_url) }
+        it { is_expected.not_to allow_value(nil).for(:spam_check_endpoint_url) }
+        it { is_expected.not_to allow_value('').for(:spam_check_endpoint_url) }
+      end
+
+      context 'when spam_check_endpoint is NOT enabled' do
+        before do
+          setting.spam_check_endpoint_enabled = false
+        end
+
+        it { is_expected.to allow_value('https://example.org/spam_check').for(:spam_check_endpoint_url) }
+        it { is_expected.not_to allow_value('nonsense').for(:spam_check_endpoint_url) }
+        it { is_expected.to allow_value(nil).for(:spam_check_endpoint_url) }
+        it { is_expected.to allow_value('').for(:spam_check_endpoint_url) }
+      end
+    end
+
     context 'when snowplow is enabled' do
       before do
         setting.snowplow_enabled = true

@@ -4,7 +4,7 @@ import eventHub from '../../eventhub';
 import service from '../../services';
 import * as types from '../mutation_types';
 import router from '../../ide_router';
-import { addFinalNewlineIfNeeded, setPageTitleForFile } from '../utils';
+import { setPageTitleForFile } from '../utils';
 import { viewerTypes, stageKeys } from '../../constants';
 
 export const closeFile = ({ commit, state, dispatch }, file) => {
@@ -152,7 +152,7 @@ export const changeFileContent = ({ commit, state, getters }, { path, content })
   const file = state.entries[path];
   commit(types.UPDATE_FILE_CONTENT, {
     path,
-    content: addFinalNewlineIfNeeded(content),
+    content,
   });
 
   const indexOfChangedFile = state.changedFiles.findIndex(f => f.path === path);

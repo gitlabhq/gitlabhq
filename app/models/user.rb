@@ -688,7 +688,7 @@ class User < ApplicationRecord
     @reset_token, enc = Devise.token_generator.generate(self.class, :reset_password_token)
 
     self.reset_password_token   = enc
-    self.reset_password_sent_at = Time.now.utc
+    self.reset_password_sent_at = Time.current.utc
 
     @reset_token
   end
@@ -1126,7 +1126,7 @@ class User < ApplicationRecord
     if !Gitlab.config.ldap.enabled
       false
     elsif ldap_user?
-      !last_credential_check_at || (last_credential_check_at + ldap_sync_time) < Time.now
+      !last_credential_check_at || (last_credential_check_at + ldap_sync_time) < Time.current
     else
       false
     end
@@ -1373,7 +1373,7 @@ class User < ApplicationRecord
   def contributed_projects
     events = Event.select(:project_id)
       .contributions.where(author_id: self)
-      .where("created_at > ?", Time.now - 1.year)
+      .where("created_at > ?", Time.current - 1.year)
       .distinct
       .reorder(nil)
 
@@ -1646,7 +1646,7 @@ class User < ApplicationRecord
   end
 
   def password_expired?
-    !!(password_expires_at && password_expires_at < Time.now)
+    !!(password_expires_at && password_expires_at < Time.current)
   end
 
   def can_be_deactivated?

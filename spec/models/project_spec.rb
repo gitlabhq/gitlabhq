@@ -770,7 +770,7 @@ describe Project do
 
     describe 'last_activity_date' do
       it 'returns the creation date of the project\'s last event if present' do
-        new_event = create(:event, :closed, project: project, created_at: Time.now)
+        new_event = create(:event, :closed, project: project, created_at: Time.current)
 
         project.reload
         expect(project.last_activity_at.to_i).to eq(new_event.created_at.to_i)
@@ -3620,7 +3620,7 @@ describe Project do
       expect(project).not_to receive(:visibility_level_allowed_as_fork).and_call_original
       expect(project).not_to receive(:visibility_level_allowed_by_group).and_call_original
 
-      project.update(updated_at: Time.now)
+      project.update(updated_at: Time.current)
     end
   end
 

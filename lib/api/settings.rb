@@ -132,6 +132,10 @@ module API
       given sourcegraph_enabled: ->(val) { val } do
         requires :sourcegraph_url, type: String, desc: 'The configured Sourcegraph instance URL'
       end
+      optional :spam_check_endpoint_enabled, type: Boolean, desc: 'Enable Spam Check via external API endpoint'
+      given spam_check_endpoint_enabled: ->(val) { val } do
+        requires :spam_check_endpoint_url, type: String, desc: 'The URL of the external Spam Check service endpoint'
+      end
       optional :terminal_max_session_time, type: Integer, desc: 'Maximum time for web terminal websocket connection (in seconds). Set to 0 for unlimited time.'
       optional :usage_ping_enabled, type: Boolean, desc: 'Every week GitLab will report license usage back to GitLab, Inc.'
       optional :instance_statistics_visibility_private, type: Boolean, desc: 'When set to `true` Instance statistics will only be available to admins'

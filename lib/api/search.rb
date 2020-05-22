@@ -21,7 +21,8 @@ module API
       }.freeze
 
       SCOPE_PRELOAD_METHOD = {
-          merge_requests: :with_api_entity_associations
+          merge_requests: :with_api_entity_associations,
+          projects: :with_api_entity_associations
       }.freeze
 
       def search(additional_params = {})

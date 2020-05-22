@@ -3,7 +3,7 @@
 class PagesDomainAcmeOrder < ApplicationRecord
   belongs_to :pages_domain
 
-  scope :expired, -> { where("expires_at < ?", Time.now) }
+  scope :expired, -> { where("expires_at < ?", Time.current) }
 
   validates :pages_domain, presence: true
   validates :expires_at, presence: true

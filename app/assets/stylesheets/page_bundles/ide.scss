@@ -899,7 +899,7 @@ $ide-commit-header-height: 48px;
   @include ide-trace-view();
 
   svg {
-    --svg-status-bg: var(--ide-background, $white);
+    --svg-status-bg: var(--ide-background, #{$white});
   }
 
   .empty-state {

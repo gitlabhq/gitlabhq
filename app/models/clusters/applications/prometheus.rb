@@ -37,7 +37,7 @@ module Clusters
         end
 
         after_transition any => :updating do |application|
-          application.update(last_update_started_at: Time.now)
+          application.update(last_update_started_at: Time.current)
         end
       end
 

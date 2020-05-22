@@ -728,17 +728,6 @@ Each line contains a JSON line that can be ingested by Elasticsearch. For exampl
   "severity": "ERROR",
   "time": "2019-12-17T11:49:29.485Z",
   "correlation_id": "AbDVUrrTvM1",
-  "extra.server": {
-    "os": {
-      "name": "Darwin",
-      "version": "Darwin Kernel Version 19.2.0",
-      "build": "19.2.0",
-    },
-    "runtime": {
-      "name": "ruby",
-      "version": "ruby 2.6.5p114 (2019-10-01 revision 67812) [x86_64-darwin18]"
-    }
-  },
   "extra.project_id": 55,
   "extra.relation_key": "milestones",
   "extra.relation_index": 1,

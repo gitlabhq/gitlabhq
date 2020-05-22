@@ -76,7 +76,7 @@ NOTE: **Note:** We will flag any significant differences between Redcarpet and C
 If you have a large volume of Markdown files, it can be tedious to determine
 if they will display correctly or not. You can use the
 [diff_redcarpet_cmark](https://gitlab.com/digitalmoksha/diff_redcarpet_cmark)
-tool (not an officially supported product) to generate a list of files, and the
+tool (not an officially supported product) to generate a list of files and the
 differences between how RedCarpet and CommonMark render the files. It can give
 an indication if anything needs to be changed - often nothing will need
 to change.
@@ -253,7 +253,7 @@ Consult the [Emoji Cheat Sheet](https://www.webfx.com/tools/emoji-cheat-sheet/) 
 > **Note:** The emoji example above uses hard-coded images for this documentation. The emoji,
 when rendered within GitLab, may appear different depending on the OS and browser used.
 
-Most emoji are natively supported on macOS, Windows, iOS, Android and will fallback to image-based emoji where there is lack of support.
+Most emoji are natively supported on macOS, Windows, iOS, Android, and will fall back on image-based emoji where there is no support.
 
 NOTE: **Note:** On Linux, you can download [Noto Color Emoji](https://www.google.com/get/noto/help/emoji/)
 to get full native emoji support. Ubuntu 18.04 (like many modern Linux distributions) has
@@ -272,7 +272,7 @@ in a box at the top of the document, before the rendered HTML content. To view a
 you can toggle between the source and rendered version of a [GitLab documentation file](https://gitlab.com/gitlab-org/gitlab/blob/master/doc/README.md).
 
 In GitLab, front matter is only used in Markdown files and wiki pages, not the other
-places where Markdown formatting is supported. It must be at the very top of the document,
+places where Markdown formatting is supported. It must be at the very top of the document
 and must be between delimiters, as explained below.
 
 The following delimiters are supported:
@@ -405,7 +405,7 @@ GFM recognizes special GitLab related references. For example, you can easily re
 an issue, a commit, a team member, or even the whole team within a project. GFM will turn
 that reference into a link so you can navigate between them easily.
 
-Additionally, GFM recognizes certain cross-project references, and also has a shorthand
+Additionally, GFM recognizes certain cross-project references and also has a shorthand
 version to reference other projects from the same namespace.
 
 GFM will recognize the following:

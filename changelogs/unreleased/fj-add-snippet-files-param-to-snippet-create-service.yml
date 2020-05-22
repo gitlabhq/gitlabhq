@@ -1,0 +1,5 @@
+---
+title: Allow the snippet create service to accept an array of files
+merge_request: 32649
+author:
+type: changed

@@ -1061,7 +1061,7 @@ describe Environment, :use_clean_rails_memory_store_caching do
       end
 
       context 'when time window arguments are provided' do
-        let(:metric_params) { [1552642245.067, Time.now] }
+        let(:metric_params) { [1552642245.067, Time.current] }
 
         it 'queries with the expected parameters' do
           expect(environment.prometheus_adapter)

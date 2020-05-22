@@ -160,7 +160,7 @@ module HasStatus
     if started_at && finished_at
       finished_at - started_at
     elsif started_at
-      Time.now - started_at
+      Time.current - started_at
     end
   end
 end

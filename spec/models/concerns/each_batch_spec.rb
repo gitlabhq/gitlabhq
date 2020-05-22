@@ -44,7 +44,7 @@ describe EachBatch do
       end
 
       it 'allows updating of the yielded relations' do
-        time = Time.now
+        time = Time.current
 
         model.each_batch do |relation|
           relation.update_all(updated_at: time)

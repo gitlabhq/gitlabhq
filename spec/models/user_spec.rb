@@ -1253,7 +1253,7 @@ describe User do
     end
 
     it 'is true when sent less than one minute ago' do
-      user = build_stubbed(:user, reset_password_sent_at: Time.now)
+      user = build_stubbed(:user, reset_password_sent_at: Time.current)
 
       expect(user.recently_sent_password_reset?).to eq true
     end
@@ -2029,7 +2029,7 @@ describe User do
 
   describe '#all_emails' do
     let(:user) { create(:user) }
-    let!(:email_confirmed) { create :email, user: user, confirmed_at: Time.now }
+    let!(:email_confirmed) { create :email, user: user, confirmed_at: Time.current }
     let!(:email_unconfirmed) { create :email, user: user }
 
     context 'when `include_private_email` is true' do
@@ -2058,7 +2058,7 @@ describe User do
     let(:user) { create(:user) }
 
     it 'returns only confirmed emails' do
-      email_confirmed = create :email, user: user, confirmed_at: Time.now
+      email_confirmed = create :email, user: user, confirmed_at: Time.current
       create :email, user: user
 
       expect(user.verified_emails).to contain_exactly(
@@ -2073,7 +2073,7 @@ describe User do
     let(:user) { create(:user) }
 
     it 'returns true when the email is verified/confirmed' do
-      email_confirmed = create :email, user: user, confirmed_at: Time.now
+      email_confirmed = create :email, user: user, confirmed_at: Time.current
       create :email, user: user
       user.reload
 

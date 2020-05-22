@@ -109,7 +109,7 @@ describe Snippets::CreateService do
         expect(snippet.repository.exists?).to be_truthy
       end
 
-      it 'commit the files to the repository' do
+      it 'commits the files to the repository' do
         subject
 
         blob = snippet.repository.blob_at('master', base_opts[:file_name])
@@ -230,6 +230,61 @@ describe Snippets::CreateService do
       end
     end
 
+    shared_examples 'when snippet_files param is present' do
+      let(:file_path) { 'snippet_file_path.rb' }
+      let(:content) { 'snippet_content' }
+      let(:snippet_files) { [{ action: 'create', file_path: file_path, content: content }] }
+      let(:base_opts) do
+        {
+          title: 'Test snippet',
+          visibility_level: Gitlab::VisibilityLevel::PRIVATE,
+          snippet_files: snippet_files
+        }
+      end
+
+      it 'creates a snippet with the provided attributes' do
+        expect(snippet.title).to eq(opts[:title])
+        expect(snippet.visibility_level).to eq(opts[:visibility_level])
+        expect(snippet.file_name).to eq(file_path)
+        expect(snippet.content).to eq(content)
+      end
+
+      it 'commit the files to the repository' do
+        subject
+
+        blob = snippet.repository.blob_at('master', file_path)
+
+        expect(blob.data).to eq content
+      end
+
+      context 'when content or file_name params are present' do
+        let(:extra_opts) { { content: 'foo', file_name: 'path' } }
+
+        it 'a validation error is raised' do
+          response = subject
+          snippet = response.payload[:snippet]
+
+          expect(response).to be_error
+          expect(snippet.errors.full_messages_for(:content)).to eq ['Content and snippet files cannot be used together']
+          expect(snippet.errors.full_messages_for(:file_name)).to eq ['File name and snippet files cannot be used together']
+          expect(snippet.repository.exists?).to be_falsey
+        end
+      end
+
+      context 'when snippet_files param is invalid' do
+        let(:snippet_files) { [{ action: 'invalid_action', file_path: 'snippet_file_path.rb', content: 'snippet_content' }] }
+
+        it 'a validation error is raised' do
+          response = subject
+          snippet = response.payload[:snippet]
+
+          expect(response).to be_error
+          expect(snippet.errors.full_messages_for(:snippet_files)).to eq ['Snippet files have invalid data']
+          expect(snippet.repository.exists?).to be_falsey
+        end
+      end
+    end
+
     context 'when ProjectSnippet' do
       let_it_be(:project) { create(:project) }
 
@@ -244,6 +299,7 @@ describe Snippets::CreateService do
       it_behaves_like 'an error service response when save fails'
       it_behaves_like 'creates repository and files'
       it_behaves_like 'after_save callback to store_mentions', ProjectSnippet
+      it_behaves_like 'when snippet_files param is present'
 
       context 'when uploaded files are passed to the service' do
         let(:extra_opts) { { files: ['foo'] } }
@@ -270,6 +326,7 @@ describe Snippets::CreateService do
       it_behaves_like 'an error service response when save fails'
       it_behaves_like 'creates repository and files'
       it_behaves_like 'after_save callback to store_mentions', PersonalSnippet
+      it_behaves_like 'when snippet_files param is present'
 
       context 'when the snippet description contains files' do
         include FileMoverHelpers

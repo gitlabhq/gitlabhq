@@ -506,6 +506,10 @@ class Project < ApplicationRecord
     left_outer_joins(:pages_metadatum)
       .where(project_pages_metadata: { project_id: nil })
   end
+  scope :with_api_entity_associations, -> {
+    preload(:project_feature, :route, :tags,
+            group: :ip_restrictions, namespace: [:route, :owner])
+  }
 
   enum auto_cancel_pending_pipelines: { disabled: 0, enabled: 1 }
 
@@ -1036,7 +1040,7 @@ class Project < ApplicationRecord
     remote_mirrors.stuck.update_all(
       update_status: :failed,
       last_error: _('The remote mirror took to long to complete.'),
-      last_update_at: Time.now
+      last_update_at: Time.current
     )
   end
 

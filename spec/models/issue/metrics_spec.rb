@@ -23,7 +23,7 @@ describe Issue::Metrics do
   describe '.with_first_mention_not_earlier_than' do
     subject(:scope) { described_class.with_first_mention_not_earlier_than(timestamp) }
 
-    let(:timestamp) { DateTime.now }
+    let(:timestamp) { DateTime.current }
 
     it 'returns metrics without mentioning in commit or with mentioning after given timestamp' do
       issue1 = create(:issue)
@@ -37,7 +37,7 @@ describe Issue::Metrics do
   describe "when recording the default set of issue metrics on issue save" do
     context "milestones" do
       it "records the first time an issue is associated with a milestone" do
-        time = Time.now
+        time = Time.current
         Timecop.freeze(time) { subject.update(milestone: create(:milestone, project: project)) }
         metrics = subject.metrics
 
@@ -46,7 +46,7 @@ describe Issue::Metrics do
       end
 
       it "does not record the second time an issue is associated with a milestone" do
-        time = Time.now
+        time = Time.current
         Timecop.freeze(time) { subject.update(milestone: create(:milestone, project: project)) }
         Timecop.freeze(time + 2.hours) { subject.update(milestone: nil) }
         Timecop.freeze(time + 6.hours) { subject.update(milestone: create(:milestone, project: project)) }
@@ -60,7 +60,7 @@ describe Issue::Metrics do
     context "list labels" do
       it "records the first time an issue is associated with a list label" do
         list_label = create(:list).label
-        time = Time.now
+        time = Time.current
         Timecop.freeze(time) { subject.update(label_ids: [list_label.id]) }
         metrics = subject.metrics
 
@@ -69,7 +69,7 @@ describe Issue::Metrics do
       end
 
       it "does not record the second time an issue is associated with a list label" do
-        time = Time.now
+        time = Time.current
         first_list_label = create(:list).label
         Timecop.freeze(time) { subject.update(label_ids: [first_list_label.id]) }
         second_list_label = create(:list).label

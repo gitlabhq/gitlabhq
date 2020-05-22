@@ -215,14 +215,6 @@ Test:
         - ./**/*test-result.xml
 ```
 
-## Limitations
-
-Currently, the following tools might not work because their XML formats are unsupported in GitLab.
-
-|Case|Tool|Issue|
-|---|---|---|
-|`<testcase>` does not have `classname` attribute|ESlint, sass-lint|<https://gitlab.com/gitlab-org/gitlab-foss/-/issues/50964>|
-
 ## Viewing JUnit test reports on GitLab
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/24792) in GitLab 12.5.

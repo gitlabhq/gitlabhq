@@ -39,7 +39,7 @@ class LicenseTemplate
   end
 
   # Populate placeholders in the LicenseTemplate content
-  def resolve!(project_name: nil, fullname: nil, year: Time.now.year.to_s)
+  def resolve!(project_name: nil, fullname: nil, year: Time.current.year.to_s)
     # Ensure the string isn't shared with any other instance of LicenseTemplate
     new_content = content.dup
     new_content.gsub!(YEAR_TEMPLATE_REGEX, year) if year.present?

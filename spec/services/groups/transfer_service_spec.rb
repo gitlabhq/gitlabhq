@@ -216,6 +216,15 @@ describe Groups::TransferService do
         end
       end
 
+      context 'when a group is transferred to its subgroup' do
+        let(:new_parent_group) { create(:group, parent: group) }
+
+        it 'does not execute the transfer' do
+          expect(transfer_service.execute(new_parent_group)).to be_falsy
+          expect(transfer_service.error).to match(/Cannot transfer group to one of its subgroup/)
+        end
+      end
+
       context 'when transferring a group with group descendants' do
         let!(:subgroup1) { create(:group, :private, parent: group) }
         let!(:subgroup2) { create(:group, :internal, parent: group) }

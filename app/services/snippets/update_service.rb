@@ -8,7 +8,7 @@ module Snippets
 
     def execute(snippet)
       if visibility_changed?(snippet) && !visibility_allowed?(snippet, visibility_level)
-        return error_forbidden_visibility(snippet)
+        return forbidden_visibility_error(snippet)
       end
 
       snippet.assign_attributes(params)

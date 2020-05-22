@@ -114,6 +114,16 @@ For exact parameters accepted by
 for [`git clean`](https://git-scm.com/docs/git-clean). The available parameters
 are dependent on Git version.
 
+## Git fetch extra flags
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/4142) in GitLab Runner 13.1.
+
+[`GIT_FETCH_EXTRA_FLAGS`](../yaml/README.md#git-fetch-extra-flags) allows you
+to modify `git fetch` behavior by passing extra flags.
+
+See the [`GIT_FETCH_EXTRA_FLAGS` documentation](../yaml/README.md#git-fetch-extra-flags)
+for more information.
+
 ## Fork-based workflow
 
 > Introduced in GitLab Runner 11.10.

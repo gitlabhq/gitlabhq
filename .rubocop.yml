@@ -435,4 +435,7 @@ Rails/TimeZone:
     - 'ee/app/services/**/*'
     - 'ee/spec/controllers/**/*'
     - 'ee/spec/services/**/*'
-
+    - 'app/models/**/*'
+    - 'spec/models/**/*'
+    - 'ee/app/models/**/*'
+    - 'ee/spec/models/**/*'

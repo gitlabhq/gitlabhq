@@ -120,7 +120,7 @@ class WikiPage
     end
 
     def insert_slugs(strings, is_new, canonical_slug)
-      creation = Time.now.utc
+      creation = Time.current.utc
 
       slug_attrs = strings.map do |slug|
         {

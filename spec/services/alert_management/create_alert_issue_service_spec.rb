@@ -94,11 +94,7 @@ RSpec.describe AlertManagement::CreateAlertIssueService do
       end
 
       context 'when alert cannot be updated' do
-        before do
-          # invalidate alert
-          too_many_hosts = Array.new(AlertManagement::Alert::HOSTS_MAX_LENGTH + 1) { |_| 'host' }
-          alert.update_columns(hosts: too_many_hosts)
-        end
+        let(:alert) { create(:alert_management_alert, :with_validation_errors, :triggered, project: project, payload: payload) }
 
         it 'responds with error' do
           expect(execute).to be_error

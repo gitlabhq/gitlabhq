@@ -301,6 +301,13 @@ class ApplicationSetting < ApplicationRecord
             numericality: { greater_than: 0, less_than_or_equal_to: 10 },
             if: :external_authorization_service_enabled
 
+  validates :spam_check_endpoint_url,
+            addressable_url: true, allow_blank: true
+
+  validates :spam_check_endpoint_url,
+            presence: true,
+            if: :spam_check_endpoint_enabled
+
   validates :external_auth_client_key,
             presence: true,
             if: -> (setting) { setting.external_auth_client_cert.present? }

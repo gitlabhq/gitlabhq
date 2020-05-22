@@ -89,9 +89,9 @@ describe Projects::Prometheus::Alerts::CreateEventsService do
     context 'with a resolved payload' do
       let(:started_at) { truncate_to_second(Time.current) }
       let(:ended_at) { started_at + 1 }
-      let(:payload_key) { PrometheusAlertEvent.payload_key_for(alert.prometheus_metric_id, utc_rfc3339(started_at)) }
       let(:resolved_event) { alert_payload(status: 'resolved', started_at: started_at, ended_at: ended_at) }
       let(:alerts_payload) { { 'alerts' => [resolved_event] } }
+      let(:payload_key) { Gitlab::Alerting::Alert.new(project: project, payload: resolved_event).gitlab_fingerprint }
 
       context 'with a matching firing event' do
         before do

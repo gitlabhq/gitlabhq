@@ -285,7 +285,7 @@ describe Note do
   end
 
   describe "edited?" do
-    let(:note) { build(:note, updated_by_id: nil, created_at: Time.now, updated_at: Time.now + 5.hours) }
+    let(:note) { build(:note, updated_by_id: nil, created_at: Time.current, updated_at: Time.current + 5.hours) }
 
     context "with updated_by" do
       it "returns true" do

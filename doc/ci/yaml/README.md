@@ -3459,6 +3459,43 @@ script:
   - ls -al cache/
 ```
 
+### Git fetch extra flags
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/4142) in GitLab Runner 13.1.
+
+The `GIT_FETCH_EXTRA_FLAGS` variable is used to control the behavior of
+`git fetch`. You can set it globally or per-job in the [`variables`](#variables) section.
+
+`GIT_FETCH_EXTRA_FLAGS` accepts all possible options of the [`git fetch`](https://git-scm.com/docs/git-fetch) command, but please note that `GIT_FETCH_EXTRA_FLAGS` flags will be appended after the default flags that can't be modified.
+
+The default flags are:
+
+- [GIT_DEPTH](#shallow-cloning).
+- The list of [refspecs](https://git-scm.com/book/en/v2/Git-Internals-The-Refspec).
+- A remote called `origin`.
+
+If `GIT_FETCH_EXTRA_FLAGS` is:
+
+- Not specified, `git fetch` flags default to `--prune --quiet` along with the default flags.
+- Given the value `none`, `git fetch` is executed only with the default flags.
+  
+For example, the default flags are `--prune --quiet`, so you can make `git fetch` more verbose by overriding this with just `--prune`:
+
+```yaml
+variables:
+  GIT_FETCH_EXTRA_FLAGS: --prune
+script:
+  - ls -al cache/
+```
+
+The configurtion above will result in `git fetch` being called this way:
+
+```shell
+git fetch origin $REFSPECS --depth 50  --prune
+```
+
+Where `$REFSPECS` is a value provided to the Runner internally by GitLab.
+
 ### Job stages attempts
 
 > Introduced in GitLab, it requires GitLab Runner v1.9+.

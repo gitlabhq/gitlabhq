@@ -126,7 +126,7 @@ available when needed.
 
 Our [Memory Team](https://about.gitlab.com/handbook/engineering/development/enablement/memory/) is actively working to reduce the memory requirement.
 
-NOTE: **Note:** The 25 workers of Sidekiq will show up as separate processes in your process overview (such as `top` or `htop`) but they share the same RAM allocation since Sidekiq is a multithreaded application. Please see the section below about Unicorn workers for information about how many you need for those.
+NOTE: **Note:** The 25 workers of Sidekiq will show up as separate processes in your process overview (such as `top` or `htop`). However, they share the same RAM allocation, as Sidekiq is a multi-threaded application. See the section below about Unicorn workers for information about how many you need for those.
 
 ## Database
 

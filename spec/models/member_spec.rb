@@ -494,7 +494,7 @@ describe Member do
   end
 
   describe '#accept_request' do
-    let(:member) { create(:project_member, requested_at: Time.now.utc) }
+    let(:member) { create(:project_member, requested_at: Time.current.utc) }
 
     it { expect(member.accept_request).to be_truthy }
 
@@ -518,14 +518,14 @@ describe Member do
   end
 
   describe '#request?' do
-    subject { create(:project_member, requested_at: Time.now.utc) }
+    subject { create(:project_member, requested_at: Time.current.utc) }
 
     it { is_expected.to be_request }
   end
 
   describe '#pending?' do
     let(:invited_member) { create(:project_member, invite_email: "user@example.com", user: nil) }
-    let(:requester) { create(:project_member, requested_at: Time.now.utc) }
+    let(:requester) { create(:project_member, requested_at: Time.current.utc) }
 
     it { expect(invited_member).to be_invite }
     it { expect(requester).to be_pending }

@@ -17,7 +17,7 @@ module EachBatch
     # Example:
     #
     #     User.each_batch do |relation|
-    #       relation.update_all(updated_at: Time.now)
+    #       relation.update_all(updated_at: Time.current)
     #     end
     #
     # The supplied block is also passed an optional batch index:

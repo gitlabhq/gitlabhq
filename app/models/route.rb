@@ -42,7 +42,7 @@ class Route < ApplicationRecord
         old_path = route.path
 
         # Callbacks must be run manually
-        route.update_columns(attributes.merge(updated_at: Time.now))
+        route.update_columns(attributes.merge(updated_at: Time.current))
 
         # We are not calling route.delete_conflicting_redirects here, in hopes
         # of avoiding deadlocks. The parent (self, in this method) already

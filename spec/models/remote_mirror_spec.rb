@@ -306,7 +306,7 @@ describe RemoteMirror, :mailer do
 
         context 'when it did not update in the last minute' do
           it 'schedules a RepositoryUpdateRemoteMirrorWorker to run now' do
-            expect(RepositoryUpdateRemoteMirrorWorker).to receive(:perform_async).with(remote_mirror.id, Time.now)
+            expect(RepositoryUpdateRemoteMirrorWorker).to receive(:perform_async).with(remote_mirror.id, Time.current)
 
             remote_mirror.sync
           end
@@ -314,9 +314,9 @@ describe RemoteMirror, :mailer do
 
         context 'when it did update in the last minute' do
           it 'schedules a RepositoryUpdateRemoteMirrorWorker to run in the next minute' do
-            remote_mirror.last_update_started_at = Time.now - 30.seconds
+            remote_mirror.last_update_started_at = Time.current - 30.seconds
 
-            expect(RepositoryUpdateRemoteMirrorWorker).to receive(:perform_in).with(RemoteMirror::PROTECTED_BACKOFF_DELAY, remote_mirror.id, Time.now)
+            expect(RepositoryUpdateRemoteMirrorWorker).to receive(:perform_in).with(RemoteMirror::PROTECTED_BACKOFF_DELAY, remote_mirror.id, Time.current)
 
             remote_mirror.sync
           end
@@ -330,7 +330,7 @@ describe RemoteMirror, :mailer do
 
         context 'when it did not update in the last 5 minutes' do
           it 'schedules a RepositoryUpdateRemoteMirrorWorker to run now' do
-            expect(RepositoryUpdateRemoteMirrorWorker).to receive(:perform_async).with(remote_mirror.id, Time.now)
+            expect(RepositoryUpdateRemoteMirrorWorker).to receive(:perform_async).with(remote_mirror.id, Time.current)
 
             remote_mirror.sync
           end
@@ -338,9 +338,9 @@ describe RemoteMirror, :mailer do
 
         context 'when it did update within the last 5 minutes' do
           it 'schedules a RepositoryUpdateRemoteMirrorWorker to run in the next 5 minutes' do
-            remote_mirror.last_update_started_at = Time.now - 30.seconds
+            remote_mirror.last_update_started_at = Time.current - 30.seconds
 
-            expect(RepositoryUpdateRemoteMirrorWorker).to receive(:perform_in).with(RemoteMirror::UNPROTECTED_BACKOFF_DELAY, remote_mirror.id, Time.now)
+            expect(RepositoryUpdateRemoteMirrorWorker).to receive(:perform_in).with(RemoteMirror::UNPROTECTED_BACKOFF_DELAY, remote_mirror.id, Time.current)
 
             remote_mirror.sync
           end
@@ -377,9 +377,9 @@ describe RemoteMirror, :mailer do
     let(:remote_mirror) { create(:project, :repository, :remote_mirror).remote_mirrors.first }
 
     it 'resets all the columns when URL changes' do
-      remote_mirror.update(last_error: Time.now,
-                           last_update_at: Time.now,
-                           last_successful_update_at: Time.now,
+      remote_mirror.update(last_error: Time.current,
+                           last_update_at: Time.current,
+                           last_successful_update_at: Time.current,
                            update_status: 'started',
                            error_notification_sent: true)
 
@@ -394,14 +394,14 @@ describe RemoteMirror, :mailer do
 
   describe '#updated_since?' do
     let(:remote_mirror) { create(:project, :repository, :remote_mirror).remote_mirrors.first }
-    let(:timestamp) { Time.now - 5.minutes }
+    let(:timestamp) { Time.current - 5.minutes }
 
     around do |example|
       Timecop.freeze { example.run }
     end
 
     before do
-      remote_mirror.update(last_update_started_at: Time.now)
+      remote_mirror.update(last_update_started_at: Time.current)
     end
 
     context 'when remote mirror does not have status failed' do
@@ -410,7 +410,7 @@ describe RemoteMirror, :mailer do
       end
 
       it 'returns false when last update started before the timestamp' do
-        expect(remote_mirror.updated_since?(Time.now + 5.minutes)).to be false
+        expect(remote_mirror.updated_since?(Time.current + 5.minutes)).to be false
       end
     end
 

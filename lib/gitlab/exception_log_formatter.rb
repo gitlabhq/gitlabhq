@@ -12,6 +12,8 @@ module Gitlab
         'exception.message' => exception.message
       )
 
+      payload.delete('extra.server')
+
       if exception.backtrace
         payload['exception.backtrace'] = Gitlab::BacktraceCleaner.clean_backtrace(exception.backtrace)
       end

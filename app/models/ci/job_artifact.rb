@@ -148,7 +148,7 @@ module Ci
       where(file_type: types)
     end
 
-    scope :expired, -> (limit) { where('expire_at < ?', Time.now).limit(limit) }
+    scope :expired, -> (limit) { where('expire_at < ?', Time.current).limit(limit) }
     scope :locked, -> { where(locked: true) }
     scope :unlocked, -> { where(locked: [false, nil]) }
 
@@ -244,7 +244,7 @@ module Ci
     end
 
     def expire_in
-      expire_at - Time.now if expire_at
+      expire_at - Time.current if expire_at
     end
 
     def expire_in=(value)

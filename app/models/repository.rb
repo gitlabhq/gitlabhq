@@ -1171,7 +1171,7 @@ class Repository
       if target
         target.committed_date
       else
-        Time.now
+        Time.current
       end
     end
   end
