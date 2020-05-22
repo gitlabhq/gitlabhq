@@ -387,7 +387,7 @@ $ide-commit-header-height: 48px;
 
   &:hover,
   &:focus {
-    background: var(--ide-background, $gray-100);
+    background: var(--ide-background, $gray-50);
 
     outline: 0;
   }
@@ -559,7 +559,7 @@ $ide-commit-header-height: 48px;
 
   &:hover {
     color: var(--ide-text-color, $gl-text-color);
-    background-color: var(--ide-background-hover, $gray-100);
+    background-color: var(--ide-background-hover, $gray-50);
   }
 
   &:focus {
@@ -1041,7 +1041,7 @@ $ide-commit-header-height: 48px;
 .ide-entry-dropdown-toggle {
   padding: $gl-padding-4;
   color: var(--ide-text-color, $gl-text-color);
-  background-color: var(--ide-background, $gray-100);
+  background-color: var(--ide-background, $gray-50);
 
   &:hover {
     background-color: var(--ide-file-row-btn-hover-background, $gray-200);
@@ -1142,12 +1142,12 @@ $ide-commit-header-height: 48px;
 }
 
 .file-row.is-active {
-  background: var(--ide-background, $gray-100);
+  background: var(--ide-background, $gray-50);
 }
 
 .file-row:hover,
 .file-row:focus {
-  background: var(--ide-background, $gray-100);
+  background: var(--ide-background, $gray-50);
 
   .ide-new-btn {
     display: block;

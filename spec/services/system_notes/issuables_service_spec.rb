@@ -157,7 +157,18 @@ describe ::SystemNotes::IssuablesService do
   describe '#change_status' do
     subject { service.change_status(status, source) }
 
+    context 'when resource state event tracking is enabled' do
+      let(:status) { 'reopened' }
+      let(:source) { nil }
+
+      it { is_expected.to be_nil }
+    end
+
     context 'with status reopened' do
+      before do
+        stub_feature_flags(track_resource_state_change_events: false)
+      end
+
       let(:status) { 'reopened' }
       let(:source) { nil }
 
@@ -169,6 +180,10 @@ describe ::SystemNotes::IssuablesService do
     end
 
     context 'with a source' do
+      before do
+        stub_feature_flags(track_resource_state_change_events: false)
+      end
+
       let(:status) { 'opened' }
       let(:source) { double('commit', gfm_reference: 'commit 123456') }
 

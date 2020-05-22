@@ -8,7 +8,7 @@ RSpec.shared_examples 'diff file base entity' do
                                :file_hash, :file_path, :old_path, :new_path,
                                :viewer, :diff_refs, :stored_externally,
                                :external_storage, :renamed_file, :deleted_file,
-                               :a_mode, :b_mode, :new_file)
+                               :a_mode, :b_mode, :new_file, :file_identifier_hash)
   end
 
   # Converted diff files from GitHub import does not contain blob file

@@ -67,10 +67,8 @@ class DiffFileBaseEntity < Grape::Entity
     end
   end
 
-  expose :file_hash do |diff_file|
-    Digest::SHA1.hexdigest(diff_file.file_path)
-  end
-
+  expose :file_identifier_hash
+  expose :file_hash
   expose :file_path
   expose :old_path
   expose :new_path

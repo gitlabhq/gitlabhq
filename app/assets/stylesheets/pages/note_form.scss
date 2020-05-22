@@ -253,11 +253,11 @@ table {
     background-color: $gray-light;
     border-radius: 0 0 3px 3px;
     padding: $gl-padding;
-    border-top: 1px solid $gray-100;
+    border-top: 1px solid $gray-50;
 
     + .new-note {
       background-color: $gray-light;
-      border-top: 1px solid $gray-100;
+      border-top: 1px solid $gray-50;
     }
 
     &.is-replying {

@@ -940,7 +940,7 @@ header.header-content .dropdown-menu.frequent-items-dropdown-menu {
       position: absolute;
       top: 13px;
       right: 25px;
-      color: $gray-100;
+      color: $gray-50;
     }
   }
 
@@ -979,7 +979,7 @@ header.header-content .dropdown-menu.frequent-items-dropdown-menu {
 
   &:hover {
     .frequent-items-item-avatar-container .avatar {
-      border-color: $gray-100;
+      border-color: $gray-50;
     }
   }
 

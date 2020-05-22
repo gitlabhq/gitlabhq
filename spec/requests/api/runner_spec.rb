@@ -1634,6 +1634,31 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
           end
         end
 
+        context 'authorize uploading of an lsif artifact' do
+          it 'adds ProcessLsif header' do
+            authorize_artifacts_with_token_in_headers(artifact_type: :lsif)
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response['ProcessLsif']).to be_truthy
+          end
+
+          it 'fails to authorize too large artifact' do
+            authorize_artifacts_with_token_in_headers(artifact_type: :lsif, filesize: 30.megabytes)
+
+            expect(response).to have_gitlab_http_status(:payload_too_large)
+          end
+
+          context 'code_navigation feature flag is disabled' do
+            it 'does not add ProcessLsif header' do
+              stub_feature_flags(code_navigation: false)
+
+              authorize_artifacts_with_token_in_headers(artifact_type: :lsif)
+
+              expect(response).to have_gitlab_http_status(:forbidden)
+            end
+          end
+        end
+
         def authorize_artifacts(params = {}, request_headers = headers)
           post api("/jobs/#{job.id}/artifacts/authorize"), params: params, headers: request_headers
         end

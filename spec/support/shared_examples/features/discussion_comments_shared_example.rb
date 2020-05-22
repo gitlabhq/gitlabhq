@@ -30,6 +30,8 @@ RSpec.shared_examples 'thread comments' do |resource_name|
 
       click_button 'Comment & close issue'
 
+      wait_for_all_requests
+
       expect(page).to have_content(comment)
       expect(page).to have_content "@#{user.username} closed"
 

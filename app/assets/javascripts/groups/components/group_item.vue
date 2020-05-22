@@ -150,7 +150,7 @@ export default {
           class="metadata align-items-md-center d-flex flex-grow-1 flex-shrink-0 flex-wrap justify-content-md-between"
         >
           <item-actions v-if="isGroup" :group="group" :parent-group="parentGroup" />
-          <item-stats :item="group" class="group-stats prepend-top-2 d-none d-md-flex" />
+          <item-stats :item="group" class="group-stats gl-mt-2 d-none d-md-flex" />
         </div>
       </div>
     </div>

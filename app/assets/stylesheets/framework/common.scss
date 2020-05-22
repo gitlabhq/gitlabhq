@@ -396,7 +396,6 @@ img.emoji {
   🚨 Do not use these classes — they are deprecated and being removed. 🚨
   See https://gitlab.com/gitlab-org/gitlab/-/issues/217418 for more details.
 **/
-.prepend-top-2 { margin-top: 2px; }
 .prepend-top-4 { margin-top: $gl-padding-4; }
 .prepend-top-5 { margin-top: 5px; }
 .prepend-top-8 { margin-top: $grid-size; }
@@ -576,7 +575,7 @@ img.emoji {
   bottom: 40px;
   right: 40px;
   font-size: $gl-font-size-small;
-  background: $gray-100;
+  background: $gray-50;
   width: 200px;
   border-radius: 24px;
   box-shadow: 0 2px 4px $issue-boards-card-shadow;

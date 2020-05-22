@@ -314,12 +314,12 @@ body {
       $gray-800,
       $gray-700,
       $gray-700,
-      $gray-100,
+      $gray-50,
       $gray-700
     );
 
     .navbar-gitlab {
-      background-color: $gray-100;
+      background-color: $gray-50;
       box-shadow: 0 1px 0 0 $border-color;
 
       .logo-text svg {

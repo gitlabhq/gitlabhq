@@ -65,16 +65,24 @@ describe Gitlab::Email::Handler::CreateNoteHandler do
         end
       end
 
-      context 'and current user can update noteable' do
-        before do
-          project.add_developer(user)
-        end
+      [true, false].each do |state_tracking_enabled|
+        context "and current user can update noteable #{state_tracking_enabled ? 'enabled' : 'disabled'}" do
+          before do
+            stub_feature_flags(track_resource_state_change_events: state_tracking_enabled)
 
-        it 'does not raise an error' do
-          # One system note is created for the 'close' event
-          expect { receiver.execute }.to change { noteable.notes.count }.by(1)
+            project.add_developer(user)
+          end
 
-          expect(noteable.reload).to be_closed
+          it 'does not raise an error' do
+            if state_tracking_enabled
+              expect { receiver.execute }.to change { noteable.resource_state_events.count }.by(1)
+            else
+              # One system note is created for the 'close' event
+              expect { receiver.execute }.to change { noteable.notes.count }.by(1)
+            end
+
+            expect(noteable.reload).to be_closed
+          end
         end
       end
     end

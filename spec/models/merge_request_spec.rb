@@ -2157,7 +2157,34 @@ describe MergeRequest do
       end
     end
 
-    context 'when merging note is persisted, but no metrics or merge event exists' do
+    context 'when state event tracking is disabled' do
+      before do
+        stub_feature_flags(track_resource_state_change_events: false)
+      end
+
+      context 'when merging note is persisted, but no metrics or merge event exists' do
+        let(:user) { create(:user) }
+        let(:merge_request) { create(:merge_request, :merged) }
+
+        before do
+          merge_request.metrics.destroy!
+
+          SystemNoteService.change_status(merge_request,
+                                          merge_request.target_project,
+                                          user,
+                                          merge_request.state, nil)
+        end
+
+        it 'returns merging note creation date' do
+          expect(merge_request.reload.metrics).to be_nil
+          expect(merge_request.merge_event).to be_nil
+          expect(merge_request.notes.count).to eq(1)
+          expect(merge_request.merged_at).to eq(merge_request.notes.first.created_at)
+        end
+      end
+    end
+
+    context 'when state event tracking is enabled' do
       let(:user) { create(:user) }
       let(:merge_request) { create(:merge_request, :merged) }
 
@@ -2170,11 +2197,8 @@ describe MergeRequest do
                                         merge_request.state, nil)
       end
 
-      it 'returns merging note creation date' do
-        expect(merge_request.reload.metrics).to be_nil
-        expect(merge_request.merge_event).to be_nil
-        expect(merge_request.notes.count).to eq(1)
-        expect(merge_request.merged_at).to eq(merge_request.notes.first.created_at)
+      it 'does not create a system note' do
+        expect(merge_request.notes).to be_empty
       end
     end
   end

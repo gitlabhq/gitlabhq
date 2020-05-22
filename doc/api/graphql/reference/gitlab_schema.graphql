@@ -5531,11 +5531,93 @@ type JiraImportStartPayload {
   jiraImport: JiraImport
 }
 
+type JiraProject {
+  """
+  Key of the Jira project
+  """
+  key: String!
+
+  """
+  Name of the Jira project
+  """
+  name: String
+
+  """
+  ID of the Jira project
+  """
+  projectId: Int!
+}
+
+"""
+The connection type for JiraProject.
+"""
+type JiraProjectConnection {
+  """
+  A list of edges.
+  """
+  edges: [JiraProjectEdge]
+
+  """
+  A list of nodes.
+  """
+  nodes: [JiraProject]
+
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: PageInfo!
+}
+
+"""
+An edge in a connection.
+"""
+type JiraProjectEdge {
+  """
+  A cursor for use in pagination.
+  """
+  cursor: String!
+
+  """
+  The item at the end of the edge.
+  """
+  node: JiraProject
+}
+
 type JiraService implements Service {
   """
   Indicates if the service is active
   """
   active: Boolean
+
+  """
+  List of Jira projects fetched through Jira REST API
+  """
+  projects(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+
+    """
+    Project name or key
+    """
+    name: String
+  ): JiraProjectConnection
 
   """
   Class name of the service

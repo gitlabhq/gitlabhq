@@ -7,7 +7,6 @@ class DiffFileMetadataEntity < Grape::Entity
   expose :old_path
   expose :new_file?, as: :new_file
   expose :deleted_file?, as: :deleted_file
-  expose :file_hash do |diff_file|
-    Digest::SHA1.hexdigest(diff_file.file_path)
-  end
+  expose :file_identifier_hash
+  expose :file_hash
 end

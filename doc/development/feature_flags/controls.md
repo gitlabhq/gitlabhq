@@ -113,16 +113,57 @@ When you begin to enable the feature, please link to the relevant
 Feature Flag Rollout Issue within a Slack thread of the first `/chatops`
 command you make so people can understand the change if they need to.
 
-To enable a feature for 25% of all users, run the following in Slack:
+To enable a feature for 25% of the time, run the following in Slack:
 
 ```shell
 /chatops run feature set new_navigation_bar 25
+```
+
+This sets a feature flag to `true` based on the following formula:
+
+```ruby
+feature_flag_state = rand < (25 / 100.0)
 ```
 
 This will enable the feature for GitLab.com, with `new_navigation_bar` being the
 name of the feature.
 This command does *not* enable the feature for 25% of the total users.
 Instead, when the feature is checked with `enabled?`, it will return `true` 25% of the time.
+
+To enable a feature for 25% of actors such as users, projects, or groups,
+run the following in Slack:
+
+```shell
+/chatops run feature set some_feature 25 --actors
+```
+
+This sets a feature flag to `true` based on the following formula:
+
+```ruby
+feature_flag_state = Zlib.crc32("some_feature<Actor>:#{actor.id}") % (100 * 1_000) < 25 * 1_000]
+# where <Actor>: is a `User`, `Group`, `Project` and actor is an instance
+```
+
+During development, based on the nature of the feature, an actor choice
+should be made.
+
+For user focused features:
+
+```ruby
+Feature.enabled?(:feature_cool_avatars, current_user)
+```
+
+For group or namespace level features:
+
+```ruby
+Feature.enabled?(:feature_cooler_groups, group)
+```
+
+For project level features:
+
+```ruby
+Feature.enabled?(:feature_ice_cold_projects, project)
+```
 
 If you are not certain what percentages to use, simply use the following steps:
 
@@ -158,15 +199,21 @@ you run these 2 commands:
 
 ```shell
 /chatops run feature set --project=gitlab-org/gitlab some_feature true
-/chatops run feature set some_feature 25
+/chatops run feature set some_feature 25 --actors
 ```
 
-Then `some_feature` will be enabled for both 25% of users and all users interacting with
-`gitlab-org/gitlab`.
+Then `some_feature` will be enabled for both 25% of actors and always when interacting with
+`gitlab-org/gitlab`. This is a good idea if the feature flag development makes use of group
+actors.
 
-NOTE: **Note:**
+```ruby
+Feature.enabled?(:some_feature, group)
+```
+
+NOTE:
+
 **Percentage of time** rollout is not a good idea if what you want is to make sure a feature
-is always on or off to the users.
+is always on or off to the users. In that case, **Percentage of actors** rollout is a better method.
 
 ### Feature flag change logging
 

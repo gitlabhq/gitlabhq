@@ -177,7 +177,7 @@ a {
 
   [class^='skeleton-line-'] {
     position: relative;
-    background-color: $gray-100;
+    background-color: $gray-50;
     height: 10px;
     overflow: hidden;
 
@@ -192,10 +192,10 @@ a {
       background-repeat: no-repeat;
       background-size: cover;
       background-image: linear-gradient(to right,
-      $gray-100 0%,
+      $gray-50 0%,
       $gray-10 20%,
-      $gray-100 40%,
-      $gray-100 100%);
+      $gray-50 40%,
+      $gray-50 100%);
       height: 10px;
     }
   }

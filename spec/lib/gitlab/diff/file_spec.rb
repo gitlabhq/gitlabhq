@@ -282,6 +282,18 @@ describe Gitlab::Diff::File do
     end
   end
 
+  describe '#file_hash' do
+    it 'returns a hash of file_path' do
+      expect(diff_file.file_hash).to eq(Digest::SHA1.hexdigest(diff_file.file_path))
+    end
+  end
+
+  describe '#file_identifier_hash' do
+    it 'returns a hash of file_identifier' do
+      expect(diff_file.file_identifier_hash).to eq(Digest::SHA1.hexdigest(diff_file.file_identifier))
+    end
+  end
+
   context 'diff file stats' do
     let(:diff_file) do
       described_class.new(diff,

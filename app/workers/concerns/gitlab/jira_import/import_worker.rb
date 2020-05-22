@@ -7,6 +7,7 @@ module Gitlab
 
       included do
         include ApplicationWorker
+        include ProjectImportOptions
         include Gitlab::JiraImport::QueueOptions
       end
 

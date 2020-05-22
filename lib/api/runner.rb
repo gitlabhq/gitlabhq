@@ -220,6 +220,8 @@ module API
         requires :id, type: Integer, desc: %q(Job's ID)
         optional :token, type: String, desc: %q(Job's authentication token)
         optional :filesize, type: Integer, desc: %q(Artifacts filesize)
+        optional :artifact_type, type: String, desc: %q(The type of artifact),
+                                 default: 'archive', values: Ci::JobArtifact.file_types.keys
       end
       post '/:id/artifacts/authorize' do
         not_allowed! unless Gitlab.config.artifacts.enabled
@@ -229,16 +231,14 @@ module API
         job = authenticate_job!
         forbidden!('Job is not running') unless job.running?
 
-        max_size = max_artifacts_size(job)
+        service = Ci::AuthorizeJobArtifactService.new(job, params, max_size: max_artifacts_size(job))
 
-        if params[:filesize]
-          file_size = params[:filesize].to_i
-          file_too_large! unless file_size < max_size
-        end
+        forbidden! if service.forbidden?
+        file_too_large! if service.too_large?
 
         status 200
         content_type Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE
-        JobArtifactUploader.workhorse_authorize(has_length: false, maximum_size: max_size)
+        service.headers
       end
 
       desc 'Upload artifacts for job' do
