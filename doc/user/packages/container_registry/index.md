@@ -493,7 +493,7 @@ older tags and images are regularly removed from the Container Registry.
 
 ## Expiration policy
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/15398) in GitLab 12.8.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15398) in GitLab 12.8.
 
 NOTE: **Note:**
 Expiration policies for projects created before GitLab 12.8 may be enabled by an

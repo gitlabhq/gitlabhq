@@ -228,14 +228,14 @@ To remove a project:
 This action either:
 
 - Removes a project including all associated resources (issues, merge requests etc).
-- Since [GitLab 12.6](https://gitlab.com/gitlab-org/gitlab/issues/32935), on
+- Since [GitLab 12.6](https://gitlab.com/gitlab-org/gitlab/-/issues/32935), on
   [GitLab Premium or GitLab.com Silver](https://about.gitlab.com/pricing/) or higher tiers, marks a project for
   deletion. The deletion will happen 7 days later by default, but this can be changed in the
   [instance settings](../../admin_area/settings/visibility_and_access_controls.md#default-deletion-adjourned-period-premium-only).
 
 #### Restore a project **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/32935) in GitLab 12.6.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/32935) in GitLab 12.6.
 
 To restore a project marked for deletion:
 

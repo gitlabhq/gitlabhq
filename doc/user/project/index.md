@@ -250,14 +250,14 @@ password <personal_access_token>
 
 ## Access project page with project ID
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/53671) in GitLab 11.8.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/53671) in GitLab 11.8.
 
 To quickly access a project from the GitLab UI using the project ID,
 visit the `/projects/:id` URL in your browser or other tool accessing the project.
 
 ## Project aliases **(PREMIUM ONLY)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/3264) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.1.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/3264) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.1.
 
 When migrating repositories to GitLab and they are being accessed by other systems,
 it's very useful to be able to access them using the same name especially when

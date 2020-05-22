@@ -71,7 +71,7 @@ If a toggle is off, that feature flag is disabled for every environment.
 
 ## Define environment specs
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/8621) in GitLab 11.8.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/8621) in GitLab 11.8.
 
 In general, an application is deployed to multiple environments, such as
 production, staging and [review apps](../../../ci/review_apps/index.md).
@@ -141,7 +141,7 @@ Supported strategies for GitLab Feature Flags are described below.
 
 ### Rollout strategy
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/8240) in GitLab 12.2.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/8240) in GitLab 12.2.
 
 The selected rollout strategy affects which users will experience the feature enabled.
 
@@ -172,7 +172,7 @@ ID for the feature to be enabled. See the [Ruby example](#ruby-application-examp
 
 #### User IDs
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/8240) in GitLab 12.2. [Updated](https://gitlab.com/gitlab-org/gitlab/issues/34363) to be defined per environment in GitLab 12.6.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/8240) in GitLab 12.2. [Updated](https://gitlab.com/gitlab-org/gitlab/-/issues/34363) to be defined per environment in GitLab 12.6.
 
 A feature flag may be enabled for a list of target users. It is implemented
 using the Unleash [`userWithId`](https://unleash.github.io/docs/activation_strategy#userwithid)

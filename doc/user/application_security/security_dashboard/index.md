@@ -36,7 +36,7 @@ To use the instance, group, project, or pipeline security dashboard:
 
 ## Pipeline Security
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/13496) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.3.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13496) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.3.
 
 At the pipeline level, the Security section displays the vulnerabilities present in the branch of the project the pipeline was run against.
 
@@ -49,7 +49,7 @@ A pipeline consists of multiple jobs, including SAST and DAST scanning. If any j
 
 ## Project Security Dashboard
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/6165) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.1.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/6165) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.1.
 
 At the project level, the Security Dashboard displays the latest security reports for your project.
 Use it to find and fix vulnerabilities.
@@ -70,7 +70,7 @@ of thousands of vulnerabilities. Do not close the page until the download finish
 
 ## Group Security Dashboard
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/6709) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.5.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/6709) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.5.
 
 The group Security Dashboard gives an overview of the vulnerabilities of all the
 projects in a group and its subgroups.
@@ -122,7 +122,7 @@ Read more on how to [interact with the vulnerabilities](../index.md#interacting-
 
 ## Instance Security Dashboard
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/6953) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.8.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/6953) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.8.
 
 At the instance level, the Security Dashboard displays the vulnerabilities
 present in all of the projects that you have added to it. It includes all

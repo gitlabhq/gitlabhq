@@ -48,7 +48,7 @@ to address feedback and lets you hide threads that are no longer relevant.
 
 ### Commit threads in the context of a merge request
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/31847) in GitLab 10.3.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/31847) in GitLab 10.3.
 
 For reviewers with commit-based workflow, it may be useful to add threads to
 specific commit diffs in the context of a merge request. These threads will
@@ -364,7 +364,7 @@ Replying to this email will, consequentially, create a new comment on the associ
 
 ## Filtering notes
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/26723) in GitLab 11.5.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/26723) in GitLab 11.5.
 
 For issues with many comments like activity notes and user comments, sometimes
 finding useful information can be hard. There is a way to filter comments from single notes and threads for merge requests and issues.
@@ -384,7 +384,7 @@ from any device you're logged into.
 
 ## Suggest Changes
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/18008) in GitLab 11.6.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/18008) in GitLab 11.6.
 
 As a reviewer, you're able to suggest code changes with a simple
 Markdown syntax in Merge Request Diff threads. Then, the
@@ -419,7 +419,7 @@ branch. [Developer permission](../permissions.md) is required to do so.
 
 ### Multi-line Suggestions
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/53310) in GitLab 11.10.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/53310) in GitLab 11.10.
 
 Reviewers can also suggest changes to multiple lines with a single Suggestion
 within merge request diff threads by adjusting the range offsets. The
@@ -451,7 +451,7 @@ instead of the usual three.
 
 ### Configure the commit message for applied Suggestions
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/13086) in GitLab 12.7.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13086) in GitLab 12.7.
 
 GitLab uses `Apply suggestion to %{file_path}` by default as commit messages
 when applying Suggestions. This commit message can be customized to
@@ -478,11 +478,11 @@ For example, to customize the commit message to output
 
 NOTE: **Note:**
 Custom commit messages for each applied Suggestion will be
-introduced by [#25381](https://gitlab.com/gitlab-org/gitlab/issues/25381).
+introduced by [#25381](https://gitlab.com/gitlab-org/gitlab/-/issues/25381).
 
 ## Start a thread by replying to a standard comment
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/30299) in GitLab 11.9
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/30299) in GitLab 11.9
 
 To reply to a standard (non-thread) comment, you can use the **Reply to comment** button.
 

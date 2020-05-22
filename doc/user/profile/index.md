@@ -147,7 +147,7 @@ To add links to other accounts:
 
 ## Private contributions
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/14078) in GitLab 11.3.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/14078) in GitLab 11.3.
 
 Enabling private contributions will include contributions to private projects, in the user contribution calendar graph and user recent activity.
 

@@ -6,10 +6,10 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Kubernetes clusters
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/35954) in GitLab 10.1 for projects.
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/34758) in
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/35954) in GitLab 10.1 for projects.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/34758) in
 >   GitLab 11.6 for [groups](../../group/clusters/index.md).
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/39840) in
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/39840) in
 >   GitLab 11.11 for [instances](../../instance/clusters/index.md).
 
 GitLab provides many features with a Kubernetes integration. Kubernetes can be
@@ -171,7 +171,7 @@ Note the following with GitLab and clusters:
 
 #### Clearing the cluster cache
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/31759) in GitLab 12.6.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/31759) in GitLab 12.6.
 
 If you choose to allow GitLab to manage your cluster for you, GitLab stores a cached
 version of the namespaces and service accounts it creates for your projects. If you
@@ -314,7 +314,7 @@ If your cluster was created before GitLab 12.2, default `KUBE_NAMESPACE` will be
 
 ### Custom namespace
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/27630) in GitLab 12.6.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/27630) in GitLab 12.6.
 
 The Kubernetes integration defaults to project-environment-specific namespaces
 of the form `<project_name>-<project_id>-<environment>` (see [Deployment
@@ -326,7 +326,7 @@ in `.gitlab-ci.yml`.
 
 NOTE: **Note:** When using a [GitLab-managed cluster](#gitlab-managed-clusters), the
 namespaces are created automatically prior to deployment and [can not be
-customized](https://gitlab.com/gitlab-org/gitlab/issues/38054).
+customized](https://gitlab.com/gitlab-org/gitlab/-/issues/38054).
 
 ### Troubleshooting
 

@@ -7,7 +7,7 @@ type: reference, howto
 
 # Dynamic Application Security Testing (DAST) **(ULTIMATE)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/4348) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 10.4.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/4348) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 10.4.
 
 NOTE: **4 of the top 6 attacks were application based.**
 Download our whitepaper,
@@ -490,9 +490,9 @@ dast:
 
 ### Custom ZAProxy configuration
 
-The ZAProxy server contains many [useful configurable values](https://gitlab.com/gitlab-org/gitlab/issues/36437#note_245801885).
+The ZAProxy server contains many [useful configurable values](https://gitlab.com/gitlab-org/gitlab/-/issues/36437#note_245801885).
 Many key/values for `-config` remain undocumented, but there is an untested list of
-[possible keys](https://gitlab.com/gitlab-org/gitlab/issues/36437#note_244981023).
+[possible keys](https://gitlab.com/gitlab-org/gitlab/-/issues/36437#note_244981023).
 Note that these options are not supported by DAST, and may break the DAST scan
 when used. An example of how to rewrite the Authorization header value with `TOKEN` follows:
 

@@ -63,7 +63,7 @@ merge request from the UI, until you make all relevant jobs pass.
 
 When this setting is enabled, a merge request is prevented from being merged if there is no pipeline. This may conflict with some use cases where [`only/except`](../../../ci/yaml/README.md#onlyexcept-advanced) rules are used and they don't generate any pipelines.
 
-Users that expect to be able to merge a merge request in this scenario should ensure that [there is always a pipeline](https://gitlab.com/gitlab-org/gitlab-foss/issues/54226) and that it's successful.
+Users that expect to be able to merge a merge request in this scenario should ensure that [there is always a pipeline](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/54226) and that it's successful.
 
 For example, to that on merge requests there is always a passing job even though `only/except` rules may not generate any other jobs:
 

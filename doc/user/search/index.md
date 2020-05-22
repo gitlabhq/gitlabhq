@@ -49,7 +49,7 @@ groups:
 1. Select or type the operator to use for filtering the attribute. The following operators are
    available:
    - `=`: Is
-   - `!=`: Is not ([Introduced](https://gitlab.com/gitlab-org/gitlab/issues/18059) in GitLab 12.7)
+   - `!=`: Is not ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/18059) in GitLab 12.7)
 1. Enter the text to filter the attribute by.
 1. Repeat this process to filter by multiple attributes. Multiple attributes are joined by a logical
    `AND`.
@@ -86,7 +86,7 @@ You can filter issues and merge requests by specific terms included in titles or
 
 ### Filtering by ID
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/39908) in GitLab 12.1.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/39908) in GitLab 12.1.
 
 You can filter the **Issues** list to individual instances by their ID. For example, enter filter `#10` to return only issue 10. The same applies to the **Merge Requests** list. Enter filter `#30` to return only merge request 30.
 

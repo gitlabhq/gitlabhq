@@ -1,6 +1,6 @@
 # Project import/export
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/3050) in GitLab 8.9.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/3050) in GitLab 8.9.
 > - From GitLab 10.0, administrators can disable the project export option on the GitLab instance.
 
 Existing projects running on any GitLab instance or GitLab.com can be exported with all their related

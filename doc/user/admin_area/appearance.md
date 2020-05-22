@@ -38,8 +38,8 @@ of the page to activate it in the GitLab instance.
 
 ## System header and footer messages
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/5023) in [GitLab Premium](https://about.gitlab.com/pricing/) 10.7.
-> - [Added](https://gitlab.com/gitlab-org/gitlab-foss/issues/55057) to [GitLab Core](https://about.gitlab.com/pricing/) in 11.9.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/5023) in [GitLab Premium](https://about.gitlab.com/pricing/) 10.7.
+> - [Added](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/55057) to [GitLab Core](https://about.gitlab.com/pricing/) in 11.9.
 
 You can add a small header message, a small footer message, or both, to the interface
 of your GitLab instance. These messages will appear on all projects and pages of the

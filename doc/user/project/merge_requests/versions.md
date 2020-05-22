@@ -37,7 +37,7 @@ changes appears as a system note.
 
 ## Find the merge request that introduced a change
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/2383) in GitLab 10.5.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/2383) in GitLab 10.5.
 
 When viewing the commit details page, GitLab will link to the merge request (or
 merge requests, if it's in more than one) containing that commit.
@@ -48,7 +48,7 @@ request, they will not be linked.
 
 ## `HEAD` comparison mode for Merge Requests
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/27008) in GitLab 12.10.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/27008) in GitLab 12.10.
 
 Merge Requests, particularly the **Changes** tab, is where source code
 is reviewed and discussed. In circumstances where the target branch was
@@ -62,7 +62,7 @@ shows a diff calculated by simulating how it would look like once merged - a mor
 representation of the changes rather than using the base of the two
 branches. The new mode is available from the comparison target drop down
 by selecting **master (HEAD)**. In the future it will
-[replace](https://gitlab.com/gitlab-org/gitlab/issues/198458) the
+[replace](https://gitlab.com/gitlab-org/gitlab/-/issues/198458) the
 current default comparison.
 
 ![Merge request versions compare HEAD](img/versions_compare_head_v12_10.png)

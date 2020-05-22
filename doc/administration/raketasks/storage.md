@@ -104,7 +104,7 @@ You can monitor the progress in the **{admin}** **Admin Area > Monitoring > Back
 There is a specific queue you can watch to see how long it will take to finish:
 `hashed_storage:hashed_storage_project_migrate`.
 
-After it reaches zero, you can confirm every project has been migrated by running the commands bellow.
+After it reaches zero, you can confirm every project has been migrated by running the commands below.
 If you find it necessary, you can run this migration script again to schedule missing projects.
 
 Any error or warning will be logged in Sidekiq's log file.

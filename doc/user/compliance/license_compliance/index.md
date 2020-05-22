@@ -4,7 +4,7 @@ type: reference, howto
 
 # License Compliance **(ULTIMATE)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/5483) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.0.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/5483) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.0.
 
 ## Overview
 
@@ -242,7 +242,7 @@ generate a key store file, see the
 ### Selecting the version of Python
 
 > - [Introduced](https://gitlab.com/gitlab-org/security-products/license-management/-/merge_requests/36) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.0.
-> - In [GitLab 12.2](https://gitlab.com/gitlab-org/gitlab/issues/12032), Python 3.5 became the default.
+> - In [GitLab 12.2](https://gitlab.com/gitlab-org/gitlab/-/issues/12032), Python 3.5 became the default.
 > - In [GitLab 12.7](https://gitlab.com/gitlab-org/security-products/license-management/-/merge_requests/101), Python 3.8 became the default.
 
 License Compliance uses Python 3.8 and pip 19.1 by default.
@@ -458,7 +458,7 @@ when running in an offline environment ([see related issue](https://gitlab.com/g
 
 ## Project policies for License Compliance
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/5940) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.4.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/5940) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.4.
 
 From the project's settings:
 
@@ -496,7 +496,7 @@ Searching for Licenses:
 
 ## License Compliance report under pipelines
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/5491) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.2.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/5491) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.2.
 
 From your project's left sidebar, navigate to **CI/CD > Pipelines** and click on the
 pipeline ID that has a `license_scanning` job to see the Licenses tab with the listed
@@ -518,7 +518,7 @@ but commented out to help encourage others to add to it in the future. -->
 
 ## License list
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/13582) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.7.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13582) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.7.
 
 The License list allows you to see your project's licenses and key
 details about them.

@@ -32,7 +32,7 @@ The maximum size of the [job artifacts](../../../administration/job_artifacts.md
 can be set at:
 
 - The instance level.
-- [From GitLab 12.4](https://gitlab.com/gitlab-org/gitlab/issues/21688), the project and group level.
+- [From GitLab 12.4](https://gitlab.com/gitlab-org/gitlab/-/issues/21688), the project and group level.
 
 The value is:
 
@@ -169,7 +169,7 @@ but commented out to help encourage others to add to it in the future. -->
 
 CAUTION: **Caution:**
 This feature is being re-evaluated in favor of a different
-[compliance solution](https://gitlab.com/gitlab-org/gitlab/issues/34830).
+[compliance solution](https://gitlab.com/gitlab-org/gitlab/-/issues/34830).
 We recommend that users who haven't yet implemented this feature wait for
 the new solution.
 

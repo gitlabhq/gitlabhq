@@ -5,8 +5,8 @@ type: reference
 # Roadmap **(PREMIUM)**
 
 > - Introduced in [GitLab Ultimate](https://about.gitlab.com/pricing/) 10.5.
-> - In [GitLab 12.9](https://gitlab.com/gitlab-org/gitlab/issues/198062), Roadmaps were moved to the Premium tier.
-> - In [GitLab 12.9](https://gitlab.com/gitlab-org/gitlab/issues/5164) and later, the epic bars show epics' title, progress, and completed weight percentage.
+> - In [GitLab 12.9](https://gitlab.com/gitlab-org/gitlab/-/issues/198062), Roadmaps were moved to the Premium tier.
+> - In [GitLab 12.9](https://gitlab.com/gitlab-org/gitlab/-/issues/5164) and later, the epic bars show epics' title, progress, and completed weight percentage.
 > - Milestones appear in roadmaps in [GitLab 12.10](https://gitlab.com/gitlab-org/gitlab/-/issues/6802), and later.
 > - Feature flag for milestones visible in roadmaps removed in [GitLab 13.0](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/29641).
 
@@ -45,7 +45,7 @@ Roadmaps can also be [visualized inside an epic](../epics/index.md#roadmap-in-ep
 ## Timeline duration
 
 > - Introduced in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.0.
-> - In [GitLab 12.9](https://gitlab.com/gitlab-org/gitlab/issues/198062), Timelines were moved to the Premium tier.
+> - In [GitLab 12.9](https://gitlab.com/gitlab-org/gitlab/-/issues/198062), Timelines were moved to the Premium tier.
 
 Roadmap supports the following date ranges:
 

@@ -8,7 +8,7 @@ To determine the technical writer assigned to the Stage/Group associated with th
 # Value Stream Analytics
 
 > - Introduced as Cycle Analytics prior to GitLab 12.3 at the project level.
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/12077) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.3 at the group level.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12077) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.3 at the group level.
 > - [Renamed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/23427) from Cycle Analytics to Value Stream Analytics in GitLab 12.8.
 
 Value Stream Analytics measures the time spent to go from an
@@ -47,11 +47,11 @@ There are seven stages that are tracked as part of the Value Stream Analytics ca
 - **Staging** (Continuous Deployment)
   - Time between merging and deploying to production
 - **Total** (Total)
-  - Total lifecycle time. That is, the velocity of the project or team. [Previously known](https://gitlab.com/gitlab-org/gitlab/issues/38317) as **Production**.
+  - Total lifecycle time. That is, the velocity of the project or team. [Previously known](https://gitlab.com/gitlab-org/gitlab/-/issues/38317) as **Production**.
 
 ## Date ranges
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/13216) in GitLab 12.4.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13216) in GitLab 12.4.
 
 GitLab provides the ability to filter analytics based on a date range. To filter results:
 
@@ -79,7 +79,7 @@ Each stage of Value Stream Analytics is further described in the table below.
 | Test      | Measures the median time to run the entire pipeline for that project. It's related to the time GitLab CI/CD takes to run every job for the commits pushed to that merge request defined in the previous stage. It is basically the start->finish time for all pipelines. |
 | Review    | Measures the median time taken to review the merge request that has a closing issue pattern, between its creation and until it's merged. |
 | Staging   | Measures the median time between merging the merge request with a closing issue pattern until the very first deployment to production. It's tracked by the environment set to `production` or matching `production/*` (case-sensitive, `Production` won't work) in your GitLab CI/CD configuration. If there isn't a production environment, this is not tracked. |
-| Total | The sum of all time (medians) taken to run the entire process, from issue creation to deploying the code to production. [Previously known](https://gitlab.com/gitlab-org/gitlab/issues/38317) as **Production**. |
+| Total | The sum of all time (medians) taken to run the entire process, from issue creation to deploying the code to production. [Previously known](https://gitlab.com/gitlab-org/gitlab/-/issues/38317) as **Production**. |
 
 How this works, behind the scenes:
 
@@ -274,7 +274,7 @@ from within the chart itself.
 
 ### Chart median line
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/36675) in GitLab 12.7.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/36675) in GitLab 12.7.
 
 The median line on the chart displays data that is offset by the number of days selected.
 For example, if 30 days worth of data has been selected (for example, 2019-12-16 to 2020-01-15) the

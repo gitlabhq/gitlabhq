@@ -190,7 +190,7 @@ as shown in the following table:
 ### Multiple issue boards
 
 > - [Introduced](https://about.gitlab.com/releases/2016/10/22/gitlab-8-13-released/) in GitLab 8.13.
-> - Multiple issue boards per project [moved](https://gitlab.com/gitlab-org/gitlab-foss/issues/53811) to [GitLab Core](https://about.gitlab.com/pricing/) in GitLab 12.1.
+> - Multiple issue boards per project [moved](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/53811) to [GitLab Core](https://about.gitlab.com/pricing/) in GitLab 12.1.
 > - Multiple issue boards per group are available in [GitLab Premium](https://about.gitlab.com/pricing/).
 
 Multiple issue boards allow for more than one issue board for a given project or group.
@@ -290,7 +290,7 @@ Multiple group issue boards were originally [introduced](https://about.gitlab.co
 
 ### Assignee lists **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/5784) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.0.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/5784) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.0.
 
 Like in a regular list that shows all issues with a chosen label, you can add
 an assignee list that shows all issues assigned to a user.
@@ -311,7 +311,7 @@ To remove an assignee list, just as with a label list, click the trash icon.
 
 ### Milestone lists **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/6469) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.2.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/6469) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.2.
 
 You're also able to create lists of a milestone. These are lists that filter issues by the assigned
 milestone, giving you more freedom and visibility on the issue board. To add a milestone list:
@@ -330,7 +330,7 @@ As in other list types, click the trash icon to remove a list.
 
 ## Work In Progress limits **(STARTER)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/11403) in GitLab 12.7
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/11403) in GitLab 12.7
 
 You can set Work In Progress (WIP) limits per issues list. When a limit is set, the list's header
 shows the number of issues in the list and the soft limit of issues.
@@ -352,7 +352,7 @@ To set a WIP limit for a list:
 
 ## Blocked issues
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/34723) in GitLab 12.8.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/34723) in GitLab 12.8.
 
 If an issue is blocked by another issue, an icon appears next to its title to indicate its blocked
 status.
@@ -501,7 +501,7 @@ When dragging issues between lists, different behavior occurs depending on the s
 
 ### Multi-select issue cards
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/18954) in GitLab 12.4.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/18954) in GitLab 12.4.
 
 You can select multiple issue cards, then drag the group to another position within the list, or to another list. This makes it faster to reorder many issues at once.
 

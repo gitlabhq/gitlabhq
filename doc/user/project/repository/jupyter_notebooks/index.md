@@ -1,6 +1,6 @@
 # Jupyter Notebook Files
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/2508/) in GitLab 9.1.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/2508/) in GitLab 9.1.
 
 [Jupyter](https://jupyter.org/) Notebook (previously IPython Notebook) files are used for
 interactive computing in many fields and contain a complete record of the

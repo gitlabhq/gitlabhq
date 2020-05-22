@@ -136,7 +136,7 @@ The `gitlab-shared-runners-manager-X.gitlab.com` fleet of Runners are dedicated 
 
 Jobs handled by the shared Runners on GitLab.com (`shared-runners-manager-X.gitlab.com`),
 **will be timed out after 3 hours**, regardless of the timeout configured in a
-project. Check the issues [4010](https://gitlab.com/gitlab-com/infrastructure/issues/4010) and [4070](https://gitlab.com/gitlab-com/infrastructure/issues/4070) for the reference.
+project. Check the issues [4010](https://gitlab.com/gitlab-com/infrastructure/-/issues/4010) and [4070](https://gitlab.com/gitlab-com/infrastructure/-/issues/4070) for the reference.
 
 Below are the shared Runners settings.
 
@@ -219,7 +219,7 @@ sentry_dsn = "X"
       "google-tags=gitlab-com,srm",
       "google-use-internal-ip",
       "google-zone=us-east1-d",
-      "engine-opt=mtu=1460", # Set MTU for container interface, for more information check https://gitlab.com/gitlab-org/gitlab-runner/issues/3214#note_82892928
+      "engine-opt=mtu=1460", # Set MTU for container interface, for more information check https://gitlab.com/gitlab-org/gitlab-runner/-/issues/3214#note_82892928
       "google-machine-image=PROJECT/global/images/IMAGE",
       "engine-opt=ipv6", # This will create IPv6 interfaces in the containers.
       "engine-opt=fixed-cidr-v6=fc00::/7",
@@ -243,7 +243,7 @@ During the beta period, the
 [shared runner pipeline quota](../admin_area/settings/continuous_integration.md#shared-runners-pipeline-minutes-quota-starter-only)
 will apply for groups and projects in the same way as Linux Runners.
 This may change when the beta period ends, as discussed in this
-[related issue](https://gitlab.com/gitlab-org/gitlab/issues/30834).
+[related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/30834).
 
 Windows Shared Runners on GitLab.com automatically autoscale by
 launching virtual machines on the Google Cloud Platform. This solution uses
@@ -450,9 +450,9 @@ The list of GitLab.com specific settings (and their defaults) is as follows:
 Some of these settings are in the process being adjusted. For example, the value
 for `shared_buffers` is quite high and as such we are looking into adjusting it.
 More information on this particular change can be found at
-<https://gitlab.com/gitlab-com/infrastructure/issues/1555>. An up to date list
+<https://gitlab.com/gitlab-com/infrastructure/-/issues/1555>. An up to date list
 of proposed changes can be found at
-<https://gitlab.com/gitlab-com/infrastructure/issues?scope=all&utf8=%E2%9C%93&state=opened&label_name[]=database&label_name[]=change>.
+<https://gitlab.com/gitlab-com/infrastructure/-/issues?scope=all&utf8=%E2%9C%93&state=opened&label_name[]=database&label_name[]=change>.
 
 ## Unicorn
 
@@ -553,7 +553,7 @@ GitLab.com:
 
 On GitLab.com, projects, groups, and snippets created
 As of GitLab 12.2 (July 2019), projects, groups, and snippets have the
-[**Internal** visibility](../../public_access/public_access.md#internal-projects) setting [disabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/issues/12388).
+[**Internal** visibility](../../public_access/public_access.md#internal-projects) setting [disabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/12388).
 
 ### SSH maximum number of connections
 

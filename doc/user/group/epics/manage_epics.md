@@ -92,7 +92,7 @@ link in the issue sidebar.
 ## Search for an epic from epics list page
 
 > - Introduced in [GitLab Ultimate](https://about.gitlab.com/pricing/) 10.5.
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/issues/37081) to the [Premium](https://about.gitlab.com/pricing/) tier in GitLab 12.8.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/37081) to the [Premium](https://about.gitlab.com/pricing/) tier in GitLab 12.8.
 
 You can search for an epic from the list of epics using filtered search bar (similar to
 that of Issues and Merge Requests) based on following parameters:
@@ -175,14 +175,14 @@ To add an issue to an epic:
 1. Identify the issue to be added, using either of the following methods:
    - Paste the link of the issue.
    - Search for the desired issue by entering part of the issue's title, then selecting the desired
-     match (introduced in [GitLab 12.5](https://gitlab.com/gitlab-org/gitlab/issues/9126)).
+     match (introduced in [GitLab 12.5](https://gitlab.com/gitlab-org/gitlab/-/issues/9126)).
 
    If there are multiple issues to be added, press <kbd>Spacebar</kbd> and repeat this step.
 1. Click **Add**.
 
 #### Create an issue from an epic
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/5419) in GitLab 12.7.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/5419) in GitLab 12.7.
 
 Creating an issue from an epic enables you to maintain focus on the broader context of the epic
 while dividing work into smaller parts.
@@ -202,7 +202,7 @@ To remove an issue from an epic:
 
 ### Reorder issues assigned to an epic
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/9367) in GitLab 12.5.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/9367) in GitLab 12.5.
 
 New issues are added to the top of their list in the **Epics and Issues** tab.
 You can reorder the list of issues. Issues and child epics cannot be intermingled.
@@ -231,8 +231,8 @@ To move an issue to another epic:
 
 ### Promote an issue to an epic
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/3777) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.6.
-> - In [GitLab 12.8](https://gitlab.com/gitlab-org/gitlab/issues/37081), it was moved to the Premium tier.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/3777) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.6.
+> - In [GitLab 12.8](https://gitlab.com/gitlab-org/gitlab/-/issues/37081), it was moved to the Premium tier.
 
 If you have [permissions](../../permissions.md) to close an issue and create an
 epic in the parent group, you can promote an issue to an epic with the `/promote`
@@ -263,7 +263,7 @@ To add a child epic to an epic:
 1. Click **Add an epic**.
 1. Identify the epic to be added, using either of the following methods:
    - Paste the link of the epic.
-   - Search for the desired issue by entering part of the epic's title, then selecting the desired match (introduced in [GitLab 12.5](https://gitlab.com/gitlab-org/gitlab/issues/9126)).
+   - Search for the desired issue by entering part of the epic's title, then selecting the desired match (introduced in [GitLab 12.5](https://gitlab.com/gitlab-org/gitlab/-/issues/9126)).
 
    If there are multiple epics to be added, press <kbd>Spacebar</kbd> and repeat this step.
 1. Click **Add**.
@@ -284,7 +284,7 @@ To move child epics to another epic:
 
 ### Reorder child epics assigned to an epic
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/9367) in GitLab 12.5.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/9367) in GitLab 12.5.
 
 New child epics are added to the top of their list in the **Epics and Issues** tab.
 You can reorder the list of child epics. Issues and child epics cannot be intermingled.

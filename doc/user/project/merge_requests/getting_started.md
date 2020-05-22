@@ -86,7 +86,7 @@ and the merge request will be added to their
 
 #### Multiple assignees **(STARTER)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/2004) in [GitLab Starter 11.11](https://about.gitlab.com/pricing/).
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/2004) in [GitLab Starter 11.11](https://about.gitlab.com/pricing/).
 
 Multiple people often review merge requests at the same time.
 GitLab allows you to have multiple assignees for merge requests

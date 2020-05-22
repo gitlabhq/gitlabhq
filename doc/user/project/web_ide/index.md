@@ -1,7 +1,7 @@
 # Web IDE
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/4539) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 10.4.
-> - [Brought to GitLab Core](https://gitlab.com/gitlab-org/gitlab-foss/issues/44157) in 10.7.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/4539) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 10.4.
+> - [Brought to GitLab Core](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/44157) in 10.7.
 
 The Web IDE editor makes it faster and easier to contribute changes to your
 projects by providing an advanced editor with commit staging.
@@ -59,8 +59,8 @@ which applies to the entire Web IDE screen.
 
 ## Commit changes
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/4539) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 10.4 and [brought to GitLab Core](https://gitlab.com/gitlab-org/gitlab-foss/issues/44157) in 10.7.
-> - From [GitLab 12.7 onward](https://gitlab.com/gitlab-org/gitlab/issues/33441), files were automatically staged.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/4539) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 10.4 and [brought to GitLab Core](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/44157) in 10.7.
+> - From [GitLab 12.7 onward](https://gitlab.com/gitlab-org/gitlab/-/issues/33441), files were automatically staged.
 > - From [GitLab 12.9 onward](https://gitlab.com/gitlab-org/gitlab/-/issues/196609), support for staging files was removed to prevent loss of unstaged data. All your current changes necessarily have to be committed or discarded.
 
 After making your changes, click the **Commit** button on the bottom-left to
@@ -154,7 +154,7 @@ below.
 
 ## Interactive Web Terminals for the Web IDE **(ULTIMATE ONLY)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/5426) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.6.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/5426) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.6.
 
 CAUTION: **Warning:**
 Interactive Web Terminals for the Web IDE is currently in **Beta**.
@@ -252,7 +252,7 @@ click **Restart Terminal** to start a new terminal session.
 
 ### File syncing to web terminal
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/5276) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.0.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/5276) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.0.
 
 File changes in the Web IDE can be synced to a running web terminal.
 This enables users to test their code changes in a preconfigured terminal

@@ -332,7 +332,7 @@ Updating [Ingress](#ingress) to the most recent version enables you to take adva
 
 ##### Viewing Web Application Firewall traffic
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/14707) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.9.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/14707) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.9.
 
 You can view Web Application Firewall traffic by navigating to your project's
 **Security & Compliance > Threat Monitoring** page.
@@ -458,7 +458,7 @@ file.
 
 ### Crossplane
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/34702) in GitLab 12.5 for project-level clusters.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/34702) in GitLab 12.5 for project-level clusters.
 
 [Crossplane](https://crossplane.github.io/docs/v0.9/) is a multi-cloud control plane useful for
 managing applications and infrastructure across multiple clouds. It extends the
@@ -915,7 +915,7 @@ metrics:
 
 ### Install Vault using GitLab CI/CD
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/9982) in GitLab 12.9.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/9982) in GitLab 12.9.
 
 [Hashicorp Vault](https://www.vaultproject.io/) is a secrets management solution which
 can be used to safely manage and store passwords, credentials, certificates and more. A Vault
@@ -1080,7 +1080,7 @@ In this alpha implementation of installing Elastic Stack through CI, reading the
 
 ### Install Crossplane using GitLab CI/CD
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/35675) in GitLab 12.9.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/35675) in GitLab 12.9.
 
 Crossplane is installed using GitLab CI/CD by defining configuration in
 `.gitlab/managed-apps/config.yaml`.
@@ -1197,7 +1197,7 @@ chart plus the values set by
 
 ## Uninstalling applications
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/60665) in GitLab 11.11.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/60665) in GitLab 11.11.
 
 The applications below can be uninstalled.
 

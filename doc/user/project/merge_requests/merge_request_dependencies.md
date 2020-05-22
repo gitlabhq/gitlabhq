@@ -4,7 +4,7 @@ type: reference, concepts
 
 # Merge Request dependencies **(PREMIUM)**
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/9688) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.2.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/9688) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.2.
 > - [Renamed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/17291) from "Cross-project dependencies" to "Merge Requests dependencies" in [GitLab Premium](https://about.gitlab.com/pricing/) 12.4.
 > - Intra-project MR dependencies were [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/16799) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.4.
 
@@ -94,9 +94,9 @@ merge.
 
 ## Limitations
 
-- API support: [issue #12551](https://gitlab.com/gitlab-org/gitlab/issues/12551)
-- Dependencies are not preserved across project export/import: [issue #12549](https://gitlab.com/gitlab-org/gitlab/issues/12549)
-- Complex merge order dependencies are not supported: [issue #11393](https://gitlab.com/gitlab-org/gitlab/issues/11393)
+- API support: [issue #12551](https://gitlab.com/gitlab-org/gitlab/-/issues/12551)
+- Dependencies are not preserved across project export/import: [issue #12549](https://gitlab.com/gitlab-org/gitlab/-/issues/12549)
+- Complex merge order dependencies are not supported: [issue #11393](https://gitlab.com/gitlab-org/gitlab/-/issues/11393)
 
 The last item merits a little more explanation. Dependencies between merge
 requests can be described as a graph of relationships. The simplest possible

@@ -435,7 +435,7 @@ GFM will recognize the following:
 In addition to this, links to some objects are also recognized and formatted. Some examples of these are:
 
 - Comments on issues: `"https://gitlab.com/gitlab-org/gitlab/-/issues/1234#note_101075757"`, which will be rendered as `#1234 (note1)`
-- The issues designs tab: `"https://gitlab.com/gitlab-org/gitlab/issues/1234/designs"`, which will be rendered as `#1234 (designs)`.
+- The issues designs tab: `"https://gitlab.com/gitlab-org/gitlab/-/issues/1234/designs"`, which will be rendered as `#1234 (designs)`.
   **(PREMIUM)**
 
 ### Task lists
@@ -825,7 +825,7 @@ Regardless of the tag names, the relative order of the reference tags determines
 numbering.
 
 Reference tags can use letters and other characters. Avoid using lowercase `w` or an underscore
-(`_`) in footnote tag names until [this bug](https://gitlab.com/gitlab-org/gitlab/issues/24423) is
+(`_`) in footnote tag names until [this bug](https://gitlab.com/gitlab-org/gitlab/-/issues/24423) is
 resolved.
 
 <!--
@@ -1443,7 +1443,7 @@ to the sides of the "dash" lines in the second row. This will affect every cell 
 
 #### Copy from spreadsheet and paste in Markdown
 
-[Introduced](https://gitlab.com/gitlab-org/gitlab/issues/27205) in GitLab 12.7.
+[Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/27205) in GitLab 12.7.
 
 If you're working in spreadsheet software (for example, Microsoft Excel, Google
 Sheets, or Apple Numbers), you can copy from a spreadsheet, and GitLab will

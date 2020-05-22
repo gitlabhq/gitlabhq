@@ -1,6 +1,6 @@
 # Import Phabricator tasks into a GitLab project
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/60562) in GitLab 12.0.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/60562) in GitLab 12.0.
 
 GitLab allows you to import all tasks from a Phabricator instance into
 GitLab issues. The import creates a single project with the

@@ -99,7 +99,7 @@ nginx['client_max_body_size'] = "200m"
 
 ## Limiting lifetime of personal access tokens **(ULTIMATE ONLY)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/3649) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.6.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/3649) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.6.
 
 Users can optionally specify an expiration date for
 [personal access tokens](../../profile/personal_access_tokens.md).
@@ -131,7 +131,7 @@ Once a lifetime for personal access tokens is set, GitLab will:
 
 ## Disabling user profile name changes **(PREMIUM ONLY)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/24605) in GitLab 12.7.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/24605) in GitLab 12.7.
 
 To maintain integrity of user details in [Audit Events](../../../administration/audit_events.md), GitLab administrators can choose to disable a user's ability to change their profile name.
 

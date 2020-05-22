@@ -114,7 +114,7 @@ all matching branches:
 
 ## Creating a protected branch
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/53361) in GitLab 11.9.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/53361) in GitLab 11.9.
 
 When a protected branch or wildcard protected branches are set to
 [**No one** is **Allowed to push**](#using-the-allowed-to-merge-and-allowed-to-push-settings),
@@ -134,7 +134,7 @@ To create a new branch through the user interface:
 
 ## Deleting a protected branch
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/21393) in GitLab 9.3.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/21393) in GitLab 9.3.
 
 From time to time, it may be required to delete or clean up branches that are
 protected.
@@ -155,7 +155,7 @@ command line or a Git client application.
 
 ## Protected Branches approval by Code Owners **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/13251) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.4.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13251) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.4.
 
 It is possible to require at least one approval by a
 [Code Owner](code_owners.md) to a file changed by the
@@ -194,11 +194,11 @@ for details about the pipelines security model.
 
 **11.9**
 
-- [Allow protected branches to be created](https://gitlab.com/gitlab-org/gitlab-foss/issues/53361) by Developers (and users with higher permission levels) through the API and the user interface.
+- [Allow protected branches to be created](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/53361) by Developers (and users with higher permission levels) through the API and the user interface.
 
 **9.2**
 
-- Allow deletion of protected branches via the web interface ([issue #21393](https://gitlab.com/gitlab-org/gitlab-foss/issues/21393)).
+- Allow deletion of protected branches via the web interface ([issue #21393](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/21393)).
 
 **8.11**
 

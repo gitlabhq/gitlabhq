@@ -163,7 +163,7 @@ In most of the below cases, the notification will be sent to:
 - Custom: Users with notification level "custom" who turned on notifications for any of the events present in the table below
 
 NOTE: **Note:**
-To minimize the number of notifications that do not require any action, from [GitLab 12.9 onwards](https://gitlab.com/gitlab-org/gitlab/issues/616), eligible approvers are no longer notified for all the activities in their projects. To receive them they have to change their user notification settings to **Watch** instead.
+To minimize the number of notifications that do not require any action, from [GitLab 12.9 onwards](https://gitlab.com/gitlab-org/gitlab/-/issues/616), eligible approvers are no longer notified for all the activities in their projects. To receive them they have to change their user notification settings to **Watch** instead.
 
 | Event                  | Sent to |
 |------------------------|---------|
@@ -237,4 +237,4 @@ reason `assigned` will have this sentence in the footer:
 - `You are receiving this email because you have been assigned an item on <configured GitLab hostname>.`
 
 NOTE: **Note:**
-Notification of other events is being considered for inclusion in the `X-GitLab-NotificationReason` header. For details, see this [related issue](https://gitlab.com/gitlab-org/gitlab/issues/20689).
+Notification of other events is being considered for inclusion in the `X-GitLab-NotificationReason` header. For details, see this [related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/20689).

@@ -4,7 +4,7 @@ type: reference, howto
 
 # Compliance Dashboard **(ULTIMATE)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/36524) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.8.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/36524) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.8.
 
 The Compliance Dashboard gives you the ability to see a group's Merge Request activity
 by providing a high-level view for all projects in the group. For example, code approved

@@ -7,7 +7,7 @@ type: reference, howto
 
 # Static Application Security Testing (SAST) **(ULTIMATE)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/3775) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 10.3.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/3775) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 10.3.
 
 NOTE: **4 of the top 6 attacks were application based.**
 Download our whitepaper,
@@ -199,7 +199,7 @@ jobs.
 
 #### Enabling Kubesec analyzer
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/12752) in GitLab Ultimate 12.6.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12752) in GitLab Ultimate 12.6.
 
 You need to set `SCAN_KUBERNETES_MANIFESTS` to `"true"` to enable the
 Kubesec analyzer. In `.gitlab-ci.yml`, define:
@@ -562,4 +562,4 @@ security reports without requiring internet access.
 This error occurs when the Docker version that runs the SAST job is `19.03.0`.
 Consider updating to Docker `19.03.1` or greater. Older versions are not
 affected. Read more in
-[this issue](https://gitlab.com/gitlab-org/gitlab/issues/13830#note_211354992 "Current SAST container fails").
+[this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/13830#note_211354992 "Current SAST container fails").

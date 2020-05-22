@@ -4,7 +4,7 @@ type: reference
 
 # External authorization control **(CORE ONLY)**
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/4216) in [GitLab Premium](https://about.gitlab.com/pricing/) 10.6.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/4216) in [GitLab Premium](https://about.gitlab.com/pricing/) 10.6.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/27056) to [GitLab Core](https://about.gitlab.com/pricing/) in 11.10.
 
 In highly controlled environments, it may be necessary for access policy to be

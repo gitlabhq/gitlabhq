@@ -185,7 +185,7 @@ The plain text title and description of the issue fill the top center of the iss
 The description fully supports [GitLab Flavored Markdown](../../markdown.md#gitlab-flavored-markdown-gfm),
 allowing many formatting options.
 
-> [Since GitLab 12.6](https://gitlab.com/gitlab-org/gitlab/issues/10103), changes to an issue's description are listed in the [issue history](#issue-history).**(STARTER)**
+> [Since GitLab 12.6](https://gitlab.com/gitlab-org/gitlab/-/issues/10103), changes to an issue's description are listed in the [issue history](#issue-history).**(STARTER)**
 
 ### Mentions
 
@@ -296,7 +296,7 @@ You can also close the issue from here, so you don't need to scroll to the top o
 
 ### Zoom meetings
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/31103) in GitLab 12.3.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/31103) in GitLab 12.3.
 
 You can attach and remove Zoom meetings to issues using the `/zoom` and `/remove_zoom` [quick actions](../quick_actions.md) as part of
 [GitLab Flavored Markdown](../../markdown.md#gitlab-flavored-markdown-gfm).

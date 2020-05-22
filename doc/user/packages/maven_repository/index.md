@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # GitLab Maven Repository **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/5811) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.3.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/5811) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.3.
 
 With the GitLab [Maven](https://maven.apache.org) Repository, every
 project can have its own space to store its Maven artifacts.

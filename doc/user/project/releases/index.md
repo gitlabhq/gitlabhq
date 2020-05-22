@@ -7,7 +7,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Releases
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/41766) in GitLab 11.7.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/41766) in GitLab 11.7.
 
 It is typical to create a [Git tag](../../../university/training/topics/tags.md) at
 the moment of release to introduce a checkpoint in your source code
@@ -69,7 +69,7 @@ links from your GitLab instance.
 
 #### Permanent links to Release assets
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/27300) in GitLab 12.9.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/27300) in GitLab 12.9.
 
 The assets associated with a Release are accessible through a permanent URL.
 GitLab will always redirect this URL to the actual asset
@@ -105,7 +105,7 @@ The physical location of the asset can change at any time and the direct link wi
 
 ### Releases associated with milestones
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/29020) in GitLab 12.5.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/29020) in GitLab 12.5.
 > - [Updated](https://gitlab.com/gitlab-org/gitlab/-/issues/39467) to edit milestones in the UI in GitLab 13.0.
 
 Releases can optionally be associated with one or more
@@ -141,7 +141,7 @@ project.
 
 ### Number of Releases
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/36667) in GitLab 12.8.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/36667) in GitLab 12.8.
 
 The incremental number of Releases is displayed on the project's details page. When clicked,
 it takes you to the list of Releases.
@@ -154,7 +154,7 @@ it is displayed to every user regardless of their permission level.
 
 ### Upcoming Releases
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/38105) in GitLab 12.1.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/38105) in GitLab 12.1.
 
 A Release may be created ahead of time by specifying a future `released_at` date. Until
 the `released_at` date and time is reached, an **Upcoming Release** badge will appear next to the
@@ -186,7 +186,7 @@ we recommend doing this as one of the last steps in your CI/CD release pipeline.
 
 ## Editing a release
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/26016) in GitLab 12.6. Asset link editing was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/9427) in GitLab 12.10.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/26016) in GitLab 12.6. Asset link editing was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/9427) in GitLab 12.10.
 
 To edit the details of a release, navigate to **Project overview > Releases** and click
 the edit button (pencil icon) in the top-right corner of the release you want to modify.
@@ -205,7 +205,7 @@ through the **Edit Release** page is planned for a future version of GitLab.
 
 ## Notification for Releases
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/26001) in GitLab 12.4.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/26001) in GitLab 12.4.
 
 You can be notified by email when a new Release is created for your project.
 
@@ -243,7 +243,7 @@ You can also edit an existing tag to add release notes:
 
 ## Release Evidence
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/26019) in GitLab 12.6.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/26019) in GitLab 12.6.
 
 Each time a release is created, GitLab takes a snapshot of data that's related to it.
 This data is called Release Evidence. It includes linked milestones and issues, and

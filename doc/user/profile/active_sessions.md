@@ -19,7 +19,7 @@ review the sessions, and revoke any you don't recognize.
 
 ## Active sessions limit
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/31611) in GitLab 12.6.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/31611) in GitLab 12.6.
 
 GitLab allows users to have up to 100 active sessions at once. If the number of active sessions
 exceeds 100, the oldest ones are deleted.

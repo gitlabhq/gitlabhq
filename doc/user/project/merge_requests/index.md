@@ -54,7 +54,7 @@ To get started, read the [introduction to merge requests](getting_started.md).
 
 ## Merge request navigation tabs at the top
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/33813) in GitLab 12.6. This positioning is experimental.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/33813) in GitLab 12.6. This positioning is experimental.
 
 So far, the navigation tabs present in merge requests to display **Discussion**,
 **Commits**, **Pipelines**, and **Changes** were located after the merge request

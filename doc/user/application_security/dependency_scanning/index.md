@@ -4,7 +4,7 @@ type: reference, howto
 
 # Dependency Scanning **(ULTIMATE)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/5105) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 10.7.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/5105) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 10.7.
 
 Dependency Scanning helps to automatically find security vulnerabilities in your dependencies
 while you're developing and testing your applications, such as when your
@@ -59,11 +59,11 @@ The following languages and dependency managers are supported.
 | JavaScript ([npm](https://www.npmjs.com/), [yarn](https://classic.yarnpkg.com/en/)) | yes | [Gemnasium](https://gitlab.com/gitlab-org/security-products/gemnasium), [Retire.js](https://retirejs.github.io/retire.js/)         |
 | PHP ([Composer](https://getcomposer.org/))  | yes | [Gemnasium](https://gitlab.com/gitlab-org/security-products/gemnasium) |
 | Python ([pip](https://pip.pypa.io/en/stable/)) | yes | [Gemnasium](https://gitlab.com/gitlab-org/security-products/gemnasium) |
-| Python ([Pipfile](https://pipenv.kennethreitz.org/en/latest/basics/)) | not currently ([issue](https://gitlab.com/gitlab-org/gitlab/issues/11756 "Pipfile.lock support for Dependency Scanning"))| not available |
-| Python ([poetry](https://python-poetry.org/)) | not currently ([issue](https://gitlab.com/gitlab-org/gitlab/issues/7006 "Support Poetry in Dependency Scanning")) | not available |
+| Python ([Pipfile](https://pipenv.kennethreitz.org/en/latest/basics/)) | not currently ([issue](https://gitlab.com/gitlab-org/gitlab/-/issues/11756 "Pipfile.lock support for Dependency Scanning"))| not available |
+| Python ([poetry](https://python-poetry.org/)) | not currently ([issue](https://gitlab.com/gitlab-org/gitlab/-/issues/7006 "Support Poetry in Dependency Scanning")) | not available |
 | Ruby ([gem](https://rubygems.org/)) | yes | [Gemnasium](https://gitlab.com/gitlab-org/security-products/gemnasium), [bundler-audit](https://github.com/rubysec/bundler-audit) |
 | Scala ([sbt](https://www.scala-sbt.org/)) | yes | [Gemnasium](https://gitlab.com/gitlab-org/security-products/gemnasium) |
-| Go ([Go Modules](https://github.com/golang/go/wiki/Modules)) | yes ([alpha](https://gitlab.com/gitlab-org/gitlab/issues/7132)) | [Gemnasium](https://gitlab.com/gitlab-org/security-products/gemnasium) |
+| Go ([Go Modules](https://github.com/golang/go/wiki/Modules)) | yes ([alpha](https://gitlab.com/gitlab-org/gitlab/-/issues/7132)) | [Gemnasium](https://gitlab.com/gitlab-org/security-products/gemnasium) |
 
 ## Contribute your scanner
 
@@ -173,9 +173,9 @@ The following variables are used for configuring specific analyzers (used for a 
 | `PIP_INDEX_URL`                         | `gemnasium-python` | `https://pypi.org/simple`    | Base URL of Python Package Index. |
 | `PIP_EXTRA_INDEX_URL`                   | `gemnasium-python` |                              | Array of [extra URLs](https://pip.pypa.io/en/stable/reference/pip_install/#cmdoption-extra-index-url) of package indexes to use in addition to `PIP_INDEX_URL`. Comma-separated. |
 | `PIP_REQUIREMENTS_FILE`                 | `gemnasium-python` |                              | Pip requirements file to be scanned. |
-| `DS_PIP_VERSION`                        | `gemnasium-python` |                              | Force the install of a specific pip version (example: `"19.3"`), otherwise the pip installed in the Docker image is used. ([Introduced](https://gitlab.com/gitlab-org/gitlab/issues/12811) in GitLab 12.7) |
-| `DS_PIP_DEPENDENCY_PATH`                | `gemnasium-python` |                              | Path to load Python pip dependencies from. ([Introduced](https://gitlab.com/gitlab-org/gitlab/issues/12412) in GitLab 12.2) |
-| `DS_PYTHON_VERSION`                     | `retire.js`        |                              | Version of Python. If set to 2, dependencies are installed using Python 2.7 instead of Python 3.6. ([Introduced](https://gitlab.com/gitlab-org/gitlab/issues/12296) in GitLab 12.1)|
+| `DS_PIP_VERSION`                        | `gemnasium-python` |                              | Force the install of a specific pip version (example: `"19.3"`), otherwise the pip installed in the Docker image is used. ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12811) in GitLab 12.7) |
+| `DS_PIP_DEPENDENCY_PATH`                | `gemnasium-python` |                              | Path to load Python pip dependencies from. ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12412) in GitLab 12.2) |
+| `DS_PYTHON_VERSION`                     | `retire.js`        |                              | Version of Python. If set to 2, dependencies are installed using Python 2.7 instead of Python 3.6. ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12296) in GitLab 12.1)|
 | `MAVEN_CLI_OPTS`                        | `gemnasium-maven`  | `"-DskipTests --batch-mode"` | List of command line arguments that will be passed to `maven` by the analyzer. See an example for [using private repositories](../index.md#using-private-maven-repos). |
 | `GRADLE_CLI_OPTS`                       | `gemnasium-maven`  |                              | List of command line arguments that will be passed to `gradle` by the analyzer. |
 | `SBT_CLI_OPTS`                          | `gemnasium-maven`  |                              | List of command-line arguments that the analyzer will pass to `sbt`. |
@@ -195,7 +195,7 @@ Read more on [how to use private Maven repositories](../index.md#using-private-m
 
 ### Enabling Docker-in-Docker
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/12487) in GitLab Ultimate 12.5.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12487) in GitLab Ultimate 12.5.
 
 If needed, you can enable Docker-in-Docker to restore the Dependency Scanning behavior that existed
 prior to GitLab 13.0. Follow these steps to do so:
@@ -584,4 +584,4 @@ As a workaround, remove the [`retire.js`](analyzers.md#selecting-specific-analyz
 This error occurs when the Docker version that runs the Dependency Scanning job is `19.03.00`.
 Consider updating to Docker `19.03.1` or greater. Older versions are not
 affected. Read more in
-[this issue](https://gitlab.com/gitlab-org/gitlab/issues/13830#note_211354992 "Current SAST container fails").
+[this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/13830#note_211354992 "Current SAST container fails").

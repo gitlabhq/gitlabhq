@@ -52,7 +52,7 @@ When you're ready, click the **Create page** and the new page will be created.
 
 ### Attachment storage
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/33475) in GitLab 11.3.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/33475) in GitLab 11.3.
 
 Starting with GitLab 11.3, any file that is uploaded to the wiki via GitLab's
 interface will be stored in the wiki Git repository, and it will be available

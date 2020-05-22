@@ -1,6 +1,6 @@
 # Dependency List **(ULTIMATE)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/10075) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.0.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/10075) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.0.
 
 The Dependency list allows you to see your project's dependencies, and key
 details about them, including their known vulnerabilities. To see it,
@@ -39,7 +39,7 @@ vulnerability, its severity and description then appears below it.
 
 ## Licenses
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/10536) in GitLab Ultimate 12.3.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/10536) in GitLab Ultimate 12.3.
 
 If the [License Compliance](../../compliance/license_compliance/index.md) CI job is configured,
 the [discovered licenses](../../compliance/license_compliance/index.md#supported-languages-and-package-managers) will be displayed on this page.

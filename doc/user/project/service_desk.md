@@ -1,6 +1,6 @@
 # Service Desk **(STARTER)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/149) in [GitLab Premium 9.1](https://about.gitlab.com/releases/2017/04/22/gitlab-9-1-released/#service-desk-eep).
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/149) in [GitLab Premium 9.1](https://about.gitlab.com/releases/2017/04/22/gitlab-9-1-released/#service-desk-eep).
 
 ## Overview
 
@@ -83,7 +83,7 @@ navigation's **Issues** menu.
 
 ### Using customized email templates
 
- > [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/2460) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.7.
+ > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/2460) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.7.
 
 When a user submits a new issue using Service Desk, or when a new note is created on a Service Desk issue, an email is sent to the author.
 
@@ -110,14 +110,14 @@ in the email, `%{ISSUE_PATH}` placeholder which will be replaced by
 
 ### Using custom email display name
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/7529) in GitLab 12.8.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/7529) in GitLab 12.8.
 
 You can customize the email display name. Emails sent from Service Desk will have
 this name in the `From` header. The default display name is `GitLab Support Bot`.
 
 ### Using custom email address
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/2201) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.0.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/2201) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.0.
 
 NOTE: **Note:**
 This feature is disabled by default. For steps to enable it, see [Enable custom email address](#enable-custom-email-address).

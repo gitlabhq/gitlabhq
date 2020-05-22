@@ -125,7 +125,7 @@ Key metrics are automatically extracted and shown in the merge request widget.
 
 ### Configuring degradation threshold
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/27599) in GitLab 13.0.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/27599) in GitLab 13.0.
 
 You can configure the sensitivity of degradation alerts to avoid getting alerts for minor drops in metrics.
 This is done by setting the `DEGRADATION_THRESHOLD` variable. In the example below, the alert will only show up

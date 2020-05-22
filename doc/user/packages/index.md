@@ -110,20 +110,20 @@ are adding support for [PHP](https://gitlab.com/gitlab-org/gitlab/-/merge_reques
 
 | Format | Use case |
 | ------ | ------ |
-| [Cargo](https://gitlab.com/gitlab-org/gitlab/issues/33060) | Cargo is the Rust package manager. Build, publish and share Rust packages  |
-| [Chef](https://gitlab.com/gitlab-org/gitlab/issues/36889) | Configuration management with Chef using all the benefits of a repository manager. |
-| [CocoaPods](https://gitlab.com/gitlab-org/gitlab/issues/36890) | Speed up development with Xcode and CocoaPods. |
-| [Conda](https://gitlab.com/gitlab-org/gitlab/issues/36891) | Secure and private local Conda repositories. |
-| [CRAN](https://gitlab.com/gitlab-org/gitlab/issues/36892) | Deploy and resolve CRAN packages for the R language. |
-| [Debian](https://gitlab.com/gitlab-org/gitlab/issues/5835) | Host and provision Debian packages. |
-| [Go](https://gitlab.com/gitlab-org/gitlab/issues/9773) | Resolve Go dependencies from and publish your Go packages to GitLab.  |
-| [Opkg](https://gitlab.com/gitlab-org/gitlab/issues/36894) | Optimize your work with OpenWrt using Opkg repositories. |
-| [P2](https://gitlab.com/gitlab-org/gitlab/issues/36895) | Host all your Eclipse plugins in your own GitLab P2 repository. |
-| [Puppet](https://gitlab.com/gitlab-org/gitlab/issues/36897) | Configuration management meets repository management with Puppet repositories. |
-| [RPM](https://gitlab.com/gitlab-org/gitlab/issues/5932) | Distribute RPMs directly from GitLab. |
-| [RubyGems](https://gitlab.com/gitlab-org/gitlab/issues/803) | Use GitLab to host your own gems. |
-| [SBT](https://gitlab.com/gitlab-org/gitlab/issues/36898) | Resolve dependencies from and deploy build output to SBT repositories when running SBT builds. |
-| [Vagrant](https://gitlab.com/gitlab-org/gitlab/issues/36899) | Securely host your Vagrant boxes in local repositories. |
+| [Cargo](https://gitlab.com/gitlab-org/gitlab/-/issues/33060) | Cargo is the Rust package manager. Build, publish and share Rust packages  |
+| [Chef](https://gitlab.com/gitlab-org/gitlab/-/issues/36889) | Configuration management with Chef using all the benefits of a repository manager. |
+| [CocoaPods](https://gitlab.com/gitlab-org/gitlab/-/issues/36890) | Speed up development with Xcode and CocoaPods. |
+| [Conda](https://gitlab.com/gitlab-org/gitlab/-/issues/36891) | Secure and private local Conda repositories. |
+| [CRAN](https://gitlab.com/gitlab-org/gitlab/-/issues/36892) | Deploy and resolve CRAN packages for the R language. |
+| [Debian](https://gitlab.com/gitlab-org/gitlab/-/issues/5835) | Host and provision Debian packages. |
+| [Go](https://gitlab.com/gitlab-org/gitlab/-/issues/9773) | Resolve Go dependencies from and publish your Go packages to GitLab.  |
+| [Opkg](https://gitlab.com/gitlab-org/gitlab/-/issues/36894) | Optimize your work with OpenWrt using Opkg repositories. |
+| [P2](https://gitlab.com/gitlab-org/gitlab/-/issues/36895) | Host all your Eclipse plugins in your own GitLab P2 repository. |
+| [Puppet](https://gitlab.com/gitlab-org/gitlab/-/issues/36897) | Configuration management meets repository management with Puppet repositories. |
+| [RPM](https://gitlab.com/gitlab-org/gitlab/-/issues/5932) | Distribute RPMs directly from GitLab. |
+| [RubyGems](https://gitlab.com/gitlab-org/gitlab/-/issues/803) | Use GitLab to host your own gems. |
+| [SBT](https://gitlab.com/gitlab-org/gitlab/-/issues/36898) | Resolve dependencies from and deploy build output to SBT repositories when running SBT builds. |
+| [Vagrant](https://gitlab.com/gitlab-org/gitlab/-/issues/36899) | Securely host your Vagrant boxes in local repositories. |
 
 ## Package workflows
 

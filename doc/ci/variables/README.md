@@ -106,7 +106,7 @@ From within the UI, you can add or update custom environment variables:
 1. Go to your project's **Settings > CI/CD** and expand the **Variables** section.
 1. Click the **Add Variable** button. In the **Add variable** modal, fill in the details:
 
-    - **Key**: Must be one line, with no spaces, using only letters, numbers, `-` or `_`.
+    - **Key**: Must be one line, with no spaces, using only letters, numbers, or `_`.
     - **Value**: No limitations.
     - **Type**: `File` or `Variable`.
     - **Environment scope**: `All`, or specific environments.

@@ -129,7 +129,7 @@ different visibility level from the dropdown menu.
 
 ## Snippet comments
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/12910) in GitLab 9.2.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/12910) in GitLab 9.2.
 
 With GitLab Snippets you engage in a conversation about that piece of code,
 facilitating the collaboration among users.

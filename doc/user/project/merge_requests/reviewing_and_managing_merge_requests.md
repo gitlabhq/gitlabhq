@@ -100,7 +100,7 @@ whitespace changes.
 
 ## Perform inline code reviews
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/13950) in GitLab 11.5.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/13950) in GitLab 11.5.
 
 GitLab provides a way of leaving comments in any part of the file being changed
 in a Merge Request. To do so, click the **...** button in the gutter of the Merge Request diff UI to expand the diff lines and leave a comment, just as you would for a changed line.

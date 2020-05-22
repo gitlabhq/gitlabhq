@@ -4,7 +4,7 @@ type: reference
 
 # Push event activities limit and bulk push events
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/31007) in GitLab 12.4.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/31007) in GitLab 12.4.
 
 This allows you to set the number of changes (branches or tags) in a single push
 to determine whether individual push events or bulk push event will be created.

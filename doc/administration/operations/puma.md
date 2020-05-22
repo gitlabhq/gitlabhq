@@ -23,10 +23,11 @@ Beginning with GitLab 13.0, Puma is the default application server. We plan to r
 Unicorn in GitLab 14.0.
 
 When switching to Puma, Unicorn server configuration
-will _not_ carry over automatically, due to differences between the two application servers.
+will _not_ carry over automatically, due to differences between the two application servers. For Omnibus-based
+deployments, see [Configuring Puma Settings](https://docs.gitlab.com/omnibus/settings/puma.html#configuring-puma-settings).
+For Helm based deployments, see the [Webservice Chart documentation](https://docs.gitlab.com/charts/charts/gitlab/webservice/index.html).
 
-For Omnibus-based deployments, see [Configuring Puma Settings](https://docs.gitlab.com/omnibus/settings/puma.html#configuring-puma-settings). For Helm
-based deployments, see the [Webservice Chart documentation](https://docs.gitlab.com/charts/charts/gitlab/webservice/index.html).
+Additionally we strongly recommend that multi-node deployments [configure their load balancers to utilize the readiness check](../high_availability/load_balancer.md#readiness-check) due to a difference between Unicorn and Puma in how they handle connections during a restart of the service.
 
 ## Performance caveat when using Puma with Rugged
 

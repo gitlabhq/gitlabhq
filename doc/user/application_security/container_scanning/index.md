@@ -486,4 +486,4 @@ docker: Error response from daemon: failed to copy xattrs: failed to set xattr "
 This is a result of a bug in Docker which is now [fixed](https://github.com/containerd/continuity/pull/138 "fs: add WithAllowXAttrErrors CopyOpt").
 To prevent the error, ensure the Docker version that the Runner is using is
 `18.09.03` or higher. For more information, see
-[issue #10241](https://gitlab.com/gitlab-org/gitlab/issues/10241 "Investigate why Container Scanning is not working with NFS mounts").
+[issue #10241](https://gitlab.com/gitlab-org/gitlab/-/issues/10241 "Investigate why Container Scanning is not working with NFS mounts").

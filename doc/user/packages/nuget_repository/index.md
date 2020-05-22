@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # GitLab NuGet Repository **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/20050) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.8.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/20050) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.8.
 
 With the GitLab NuGet Repository, every project can have its own space to store NuGet packages.
 

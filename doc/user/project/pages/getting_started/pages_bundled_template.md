@@ -7,7 +7,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # New Pages website from a bundled template
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/47857) in GitLab 11.8.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/47857) in GitLab 11.8.
 
 The simplest way to create a GitLab Pages site is to use one of the most
 popular templates, which come already bundled with GitLab and are ready to go.

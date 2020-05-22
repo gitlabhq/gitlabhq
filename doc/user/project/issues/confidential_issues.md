@@ -80,7 +80,7 @@ project's search results respectively.
 
 ## Merge Requests for Confidential Issues
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/58583) in GitLab 12.1.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/58583) in GitLab 12.1.
 
 To help prevent confidential information being leaked from a public project
 in the process of resolving a confidential issue, confidential issues can be

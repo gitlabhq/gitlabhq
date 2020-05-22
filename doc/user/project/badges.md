@@ -1,6 +1,6 @@
 # Badges
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/41174) in GitLab 10.7.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/41174) in GitLab 10.7.
 
 Badges are a unified way to present condensed pieces of information about your
 projects. They consist of a small image and additionally a URL that the image

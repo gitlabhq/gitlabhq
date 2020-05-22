@@ -8,7 +8,7 @@ The GitLab Slack application is only configurable for GitLab.com. It will **not*
 work for on-premises installations where you can configure the
 [Slack slash commands](slack_slash_commands.md) service instead. We're planning
 to make this configurable for all GitLab installations, but there's
-no ETA - see [#28164](https://gitlab.com/gitlab-org/gitlab/issues/28164).
+no ETA - see [#28164](https://gitlab.com/gitlab-org/gitlab/-/issues/28164).
 
 Slack provides a native application which you can enable via your project's
 integrations on GitLab.com.

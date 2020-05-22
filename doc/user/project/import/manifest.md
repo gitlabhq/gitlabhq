@@ -1,6 +1,6 @@
 # Import multiple repositories by uploading a manifest file
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/28811) in GitLab 11.2.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/28811) in GitLab 11.2.
 
 GitLab allows you to import all the required Git repositories
 based on a manifest file like the one used by the

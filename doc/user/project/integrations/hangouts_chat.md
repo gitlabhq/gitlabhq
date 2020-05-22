@@ -1,6 +1,6 @@
 # Hangouts Chat service
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/43756) in GitLab 11.2.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/43756) in GitLab 11.2.
 
 The Hangouts Chat service sends notifications from GitLab to the room for which the webhook was created.
 

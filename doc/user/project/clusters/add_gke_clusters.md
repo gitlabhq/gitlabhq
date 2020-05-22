@@ -21,7 +21,7 @@ requirements are met:
 
 ## New GKE cluster
 
-Starting from [GitLab 12.4](https://gitlab.com/gitlab-org/gitlab/issues/25925), all the GKE clusters
+Starting from [GitLab 12.4](https://gitlab.com/gitlab-org/gitlab/-/issues/25925), all the GKE clusters
 provisioned by GitLab are [VPC-native](https://cloud.google.com/kubernetes-engine/docs/how-to/alias-ips).
 
 ### Important notes
@@ -31,7 +31,7 @@ Note the following:
 - The [Google authentication integration](../../../integration/google.md) must be enabled in GitLab
   at the instance level. If that's not the case, ask your GitLab administrator to enable it. On
   GitLab.com, this is enabled.
-- Starting from [GitLab 12.1](https://gitlab.com/gitlab-org/gitlab-foss/issues/55902), all GKE clusters
+- Starting from [GitLab 12.1](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/55902), all GKE clusters
   created by GitLab are RBAC-enabled. Take a look at the [RBAC section](add_remove_clusters.md#rbac-cluster-resources) for
   more information.
 - Starting from [GitLab 12.5](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/18341), the
@@ -39,7 +39,7 @@ Note the following:
   notation.
 - GitLab requires basic authentication enabled and a client certificate issued for the cluster to
   set up an [initial service account](add_remove_clusters.md#access-controls). Starting from [GitLab
-  11.10](https://gitlab.com/gitlab-org/gitlab-foss/issues/58208), the cluster creation process will
+  11.10](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/58208), the cluster creation process will
   explicitly request that basic authentication and client certificate is enabled.
 
 ### Creating the cluster on GKE

@@ -61,7 +61,7 @@ This page has:
 - A link to the Sentry issue.
 - A link to the GitLab commit if the Sentry [release ID/version](https://docs.sentry.io/workflow/releases/?platform=javascript#configure-sdk) on the Sentry Issue's first release matches a commit SHA in your GitLab hosted project.
 - Other details about the issue, including a full stack trace.
-- In [GitLab 12.7 and newer](https://gitlab.com/gitlab-org/gitlab/issues/36246), language and urgency are displayed.
+- In [GitLab 12.7 and newer](https://gitlab.com/gitlab-org/gitlab/-/issues/36246), language and urgency are displayed.
 
 By default, a **Create issue** button is displayed:
 
@@ -77,7 +77,7 @@ You can take action on Sentry Errors from within the GitLab UI.
 
 ### Ignoring errors
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/39665) in GitLab 12.7.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/39665) in GitLab 12.7.
 
 From within the [Error Details](#error-details) page you can ignore a Sentry error by simply clicking the **Ignore** button near the top of the page.
 
@@ -85,7 +85,7 @@ Ignoring an error will prevent it from appearing in the [Error Tracking List](#e
 
 ### Resolving errors
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/39825) in GitLab 12.7.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/39825) in GitLab 12.7.
 
 From within the [Error Details](#error-details) page you can resolve a Sentry error by
 clicking the **Resolve** button near the top of the page.

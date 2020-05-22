@@ -4,7 +4,7 @@ type: reference, concepts
 
 # Instance-level merge request approval rules **(PREMIUM ONLY)**
 
-> Introduced in [GitLab Premium](https://gitlab.com/gitlab-org/gitlab/issues/39060) 12.8.
+> Introduced in [GitLab Premium](https://gitlab.com/gitlab-org/gitlab/-/issues/39060) 12.8.
 
 Merge request approvals rules prevent users overriding certain settings on a project
 level. When configured, only administrators can change these settings on a project level

@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # GitLab Conan Repository **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/8248) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.6.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/8248) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.6.
 
 With the GitLab Conan Repository, every
 project can have its own space to store Conan packages.
@@ -190,7 +190,7 @@ it is not possible due to a naming collision. For example:
 | `gitlab-org/gitlab-ce`             | `my-package/1.0.0@foo/stable`                   | No        |
 
 NOTE: **Note:**
-A future iteration will extend support to [project and group level](https://gitlab.com/gitlab-org/gitlab/issues/11679) remotes which will allow for more flexible naming conventions.
+A future iteration will extend support to [project and group level](https://gitlab.com/gitlab-org/gitlab/-/issues/11679) remotes which will allow for more flexible naming conventions.
 
 ## Installing a package
 
@@ -277,7 +277,7 @@ The GitLab Conan repository supports the following Conan CLI commands:
 
 ## Using GitLab CI with Conan packages
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/11678) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.7.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/11678) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.7.
 
 To work with Conan commands within [GitLab CI/CD](./../../../ci/README.md), you can use
 `CI_JOB_TOKEN` in place of the personal access token in your commands.

@@ -4,7 +4,7 @@ type: reference, howto
 
 # Standalone Vulnerability pages
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/13561) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.0.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13561) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.0.
 
 Each security vulnerability in the [Vulnerability List](../dependency_list/index.md) has its own standalone
 page.

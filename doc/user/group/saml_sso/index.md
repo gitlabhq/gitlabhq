@@ -54,14 +54,14 @@ We recommend setting the NameID format to `Persistent` unless using a field (suc
 
 ### SSO enforcement
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/5291) in GitLab 11.8.
-- [Improved](https://gitlab.com/gitlab-org/gitlab/issues/9255) in GitLab 11.11 with ongoing enforcement in the GitLab UI.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/5291) in GitLab 11.8.
+- [Improved](https://gitlab.com/gitlab-org/gitlab/-/issues/9255) in GitLab 11.11 with ongoing enforcement in the GitLab UI.
 
 With this option enabled, users must use your group's GitLab single sign on URL to be added to the group or be added via SCIM. Users cannot be added manually, and may only access project/group resources via the UI by signing in through the SSO URL.
 
 However, users will not be prompted to log via SSO on each visit. GitLab will check whether a user has authenticated through the SSO link, and will only prompt the user to login via SSO if the session has expired.
 
-We intend to add a similar SSO requirement for [Git and API activity](https://gitlab.com/gitlab-org/gitlab/issues/9152) in the future.
+We intend to add a similar SSO requirement for [Git and API activity](https://gitlab.com/gitlab-org/gitlab/-/issues/9152) in the future.
 
 When SSO enforcement is enabled for a group, users cannot share a project in the group outside the top-level group, even if the project is forked.
 
@@ -82,7 +82,7 @@ When this option is enabled:
 Upon successful authentication, GitLab prompts the user with options, based on the email address received from the configured identity provider:
 
 - To create a unique account with the newly received email address.
-- If the received email address matches one of the user's verified GitLab email addresses, the option to convert the existing account to a group-managed account. ([Introduced in GitLab 12.9](https://gitlab.com/gitlab-org/gitlab/issues/13481).)
+- If the received email address matches one of the user's verified GitLab email addresses, the option to convert the existing account to a group-managed account. ([Introduced in GitLab 12.9](https://gitlab.com/gitlab-org/gitlab/-/issues/13481).)
 
 Since use of the group-managed account requires the use of SSO, users of group-managed accounts will lose access to these accounts when they are no longer able to authenticate with the connected identity provider. In the case of an offboarded employee who has been removed from your identity provider:
 
@@ -100,7 +100,7 @@ Feature.enable(:group_managed_accounts)
 
 ##### Credentials inventory for Group-managed accounts **(ULTIMATE)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/38133) in GitLab 12.8.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/38133) in GitLab 12.8.
 
 Owners who manage user accounts in a group can view the following details of personal access tokens and SSH keys:
 
@@ -140,7 +140,7 @@ Once a lifetime for personal access tokens is set, GitLab will:
 
 ##### Outer forks restriction for Group-managed accounts
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/34648) in GitLab 12.9.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/34648) in GitLab 12.9.
 
 Groups with group-managed accounts can disallow forking of projects to destinations outside the group.
 To do so, enable the "Prohibit outer forks" option in **Settings > SAML SSO**.
@@ -148,7 +148,7 @@ When enabled, projects within the group can only be forked to other destinations
 
 ##### Other restrictions for Group-managed accounts
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/12420) in GitLab 12.9.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12420) in GitLab 12.9.
 
 Projects within groups with enabled group-managed accounts are not to be shared with:
 

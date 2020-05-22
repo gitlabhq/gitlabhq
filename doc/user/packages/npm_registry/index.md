@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # GitLab NPM Registry **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/5934) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.7.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/5934) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.7.
 
 With the GitLab NPM Registry, every
 project can have its own space to store NPM packages.
@@ -165,7 +165,7 @@ Then, you could run `npm publish` either locally or via GitLab CI/CD:
 
 ### Authenticating with a CI job token
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/9104) in GitLab Premium 12.5.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/9104) in GitLab Premium 12.5.
 
 If you’re using NPM with GitLab CI/CD, a CI job token can be used instead of a personal access token or deploy token.
 The token will inherit the permissions of the user that generates the pipeline.
@@ -278,7 +278,7 @@ yarn add @my-project-scope/my-package
 
 ### Forwarding requests to npmjs.org
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/55344) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.9.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/55344) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.9.
 
 By default, when an NPM package is not found in the GitLab NPM Registry, the request will be forwarded to [npmjs.com](https://www.npmjs.com/).
 
@@ -380,7 +380,7 @@ NPM_TOKEN=<your_token> npm install
 
 ## NPM dependencies metadata
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/11867) in GitLab Premium 12.6.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/11867) in GitLab Premium 12.6.
 
 Starting from GitLab 12.6, new packages published to the GitLab NPM Registry expose the following attributes to the NPM client:
 
@@ -396,7 +396,7 @@ Starting from GitLab 12.6, new packages published to the GitLab NPM Registry exp
 
 ## NPM distribution tags
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/9425) in GitLab Premium 12.8.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/9425) in GitLab Premium 12.8.
 
 You can add [distribution tags](https://docs.npmjs.com/cli/dist-tag) for newly published packages.
 They follow NPM's convention where they are optional, and each tag can only be assigned to one
