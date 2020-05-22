@@ -81,8 +81,14 @@ module Types
           description: 'Default merge commit message of the merge request'
     field :merge_ongoing, GraphQL::BOOLEAN_TYPE, method: :merge_ongoing?, null: false,
           description: 'Indicates if a merge is currently occurring'
-    field :source_branch_exists, GraphQL::BOOLEAN_TYPE, method: :source_branch_exists?, null: false,
+    field :source_branch_exists, GraphQL::BOOLEAN_TYPE,
+          null: false, calls_gitaly: true,
+          method: :source_branch_exists?,
           description: 'Indicates if the source branch of the merge request exists'
+    field :target_branch_exists, GraphQL::BOOLEAN_TYPE,
+          null: false, calls_gitaly: true,
+          method: :target_branch_exists?,
+          description: 'Indicates if the target branch of the merge request exists'
     field :mergeable_discussions_state, GraphQL::BOOLEAN_TYPE, null: true,
           description: 'Indicates if all discussions in the merge request have been resolved, allowing the merge request to be merged'
     field :web_url, GraphQL::STRING_TYPE, null: true,

@@ -1,27 +1,23 @@
 # frozen_string_literal: true
 
-# For hardening usage ping and make it easier to add measures there is in place
-#   * alt_usage_data method
-#     handles StandardError and fallbacks into -1 this way not all measures fail if we encounter one exception
+# When developing usage data metrics use the below usage data interface methods
+# unless you have good reasons to implement custom usage data
+# See `lib/gitlab/utils/usage_data.rb`
 #
-#     Examples:
-#     alt_usage_data { Gitlab::VERSION }
-#     alt_usage_data { Gitlab::CurrentSettings.uuid }
-#
-#   * redis_usage_data method
-#     handles ::Redis::CommandError, Gitlab::UsageDataCounters::BaseCounter::UnknownEvent
-#     returns -1 when a block is sent or hash with all values -1 when a counter is sent
-#     different behaviour due to 2 different implementations of redis counter
-#
-#     Examples:
-#     redis_usage_data(Gitlab::UsageDataCounters::WikiPageCounter)
-#     redis_usage_data { ::Gitlab::UsageCounters::PodLogs.usage_totals[:total] }
+# Examples
+#   issues_using_zoom_quick_actions: distinct_count(ZoomMeeting, :issue_id),
+#   active_user_count: count(User.active)
+#   alt_usage_data { Gitlab::VERSION }
+#   redis_usage_data(Gitlab::UsageDataCounters::WikiPageCounter)
+#   redis_usage_data { ::Gitlab::UsageCounters::PodLogs.usage_totals[:total] }
+
 module Gitlab
   class UsageData
     BATCH_SIZE = 100
-    FALLBACK = -1
 
     class << self
+      include Gitlab::Utils::UsageData
+
       def data(force_refresh: false)
         Rails.cache.fetch('usage_data', force: force_refresh, expires_in: 2.weeks) do
           uncached_data
@@ -384,58 +380,6 @@ module Gitlab
 
       def user_preferences_usage
         {} # augmented in EE
-      end
-
-      def count(relation, column = nil, batch: true, start: nil, finish: nil)
-        if batch && Feature.enabled?(:usage_ping_batch_counter, default_enabled: true)
-          Gitlab::Database::BatchCount.batch_count(relation, column, start: start, finish: finish)
-        else
-          relation.count
-        end
-      rescue ActiveRecord::StatementInvalid
-        FALLBACK
-      end
-
-      def distinct_count(relation, column = nil, batch: true, start: nil, finish: nil)
-        if batch && Feature.enabled?(:usage_ping_batch_counter, default_enabled: true)
-          Gitlab::Database::BatchCount.batch_distinct_count(relation, column, start: start, finish: finish)
-        else
-          relation.distinct_count_by(column)
-        end
-      rescue ActiveRecord::StatementInvalid
-        FALLBACK
-      end
-
-      def alt_usage_data(value = nil, fallback: FALLBACK, &block)
-        if block_given?
-          yield
-        else
-          value
-        end
-      rescue
-        fallback
-      end
-
-      def redis_usage_data(counter = nil, &block)
-        if block_given?
-          redis_usage_counter(&block)
-        elsif counter.present?
-          redis_usage_data_totals(counter)
-        end
-      end
-
-      private
-
-      def redis_usage_counter
-        yield
-      rescue ::Redis::CommandError, Gitlab::UsageDataCounters::BaseCounter::UnknownEvent
-        FALLBACK
-      end
-
-      def redis_usage_data_totals(counter)
-        counter.totals
-      rescue ::Redis::CommandError, Gitlab::UsageDataCounters::BaseCounter::UnknownEvent
-        counter.fallback_totals
       end
 
       def installation_type

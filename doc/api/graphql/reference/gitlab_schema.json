@@ -16718,6 +16718,24 @@
               "deprecationReason": null
             },
             {
+              "name": "targetBranchExists",
+              "description": "Indicates if the target branch of the merge request exists",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "targetProject",
               "description": "Target project of the merge request",
               "args": [
@@ -23270,26 +23288,12 @@
                   "name": "iid",
                   "description": "IID of the merge request, for example `1`",
                   "type": {
-                    "kind": "SCALAR",
-                    "name": "String",
-                    "ofType": null
-                  },
-                  "defaultValue": null
-                },
-                {
-                  "name": "iids",
-                  "description": "Array of IIDs of merge requests, for example `[1, 2]`",
-                  "type": {
-                    "kind": "LIST",
+                    "kind": "NON_NULL",
                     "name": null,
                     "ofType": {
-                      "kind": "NON_NULL",
-                      "name": null,
-                      "ofType": {
-                        "kind": "SCALAR",
-                        "name": "String",
-                        "ofType": null
-                      }
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
                     }
                   },
                   "defaultValue": null
@@ -23308,18 +23312,72 @@
               "description": "Merge requests of the project",
               "args": [
                 {
-                  "name": "iid",
-                  "description": "IID of the merge request, for example `1`",
+                  "name": "iids",
+                  "description": "Array of IIDs of merge requests, for example `[1, 2]`",
                   "type": {
-                    "kind": "SCALAR",
-                    "name": "String",
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "String",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "sourceBranches",
+                  "description": "Array of source branch names. All resolved merge requests will have one of these branches as their source.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "String",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "targetBranches",
+                  "description": "Array of target branch names. All resolved merge requests will have one of these branches as their target.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "String",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "state",
+                  "description": "A merge request state. If provided, all resolved merge requests will have this state.",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "MergeRequestState",
                     "ofType": null
                   },
                   "defaultValue": null
                 },
                 {
-                  "name": "iids",
-                  "description": "Array of IIDs of merge requests, for example `[1, 2]`",
+                  "name": "labels",
+                  "description": "Array of label names. All resolved merge requests will have all of these labels.",
                   "type": {
                     "kind": "LIST",
                     "name": null,

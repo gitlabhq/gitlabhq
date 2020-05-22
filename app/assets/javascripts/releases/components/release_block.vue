@@ -109,7 +109,7 @@ export default {
       <evidence-block v-if="hasEvidence && shouldShowEvidence" :release="release" />
 
       <div ref="gfm-content" class="card-text prepend-top-default">
-        <div v-html="release.descriptionHtml"></div>
+        <div class="md" v-html="release.descriptionHtml"></div>
       </div>
     </div>
 

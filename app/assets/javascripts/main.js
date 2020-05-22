@@ -28,7 +28,7 @@ import initLayoutNav from './layout_nav';
 import './feature_highlight/feature_highlight_options';
 import LazyLoader from './lazy_loader';
 import initLogoAnimation from './logo';
-import './frequent_items';
+import initFrequentItemDropdowns from './frequent_items';
 import initBreadcrumbs from './breadcrumb';
 import initUsagePingConsent from './usage_ping_consent';
 import initPerformanceBar from './performance_bar';
@@ -107,6 +107,7 @@ function deferredInitialisation() {
   initUsagePingConsent();
   initUserPopovers();
   initBroadcastNotifications();
+  initFrequentItemDropdowns();
 
   const recoverySettingsCallout = document.querySelector('.js-recovery-settings-callout');
   PersistentUserCallout.factory(recoverySettingsCallout);

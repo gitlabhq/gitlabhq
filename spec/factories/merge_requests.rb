@@ -133,6 +133,11 @@ FactoryBot.define do
       end
     end
 
+    trait :unique_branches do
+      source_branch { generate(:branch) }
+      target_branch { generate(:branch) }
+    end
+
     trait :with_coverage_reports do
       after(:build) do |merge_request|
         merge_request.head_pipeline = build(

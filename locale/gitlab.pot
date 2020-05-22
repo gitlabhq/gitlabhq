@@ -11263,6 +11263,9 @@ msgstr ""
 msgid "History of authentications"
 msgstr ""
 
+msgid "Homepage"
+msgstr ""
+
 msgid "Hook execution failed. Ensure the group has a project with commits."
 msgstr ""
 
@@ -15371,6 +15374,9 @@ msgstr ""
 msgid "Performance optimization"
 msgstr ""
 
+msgid "PerformanceBar|Bullet notifications"
+msgstr ""
+
 msgid "PerformanceBar|Download"
 msgstr ""
 
@@ -18168,6 +18174,9 @@ msgid "Requested design version does not exist."
 msgstr ""
 
 msgid "Requested states are invalid"
+msgstr ""
+
+msgid "Requests"
 msgstr ""
 
 msgid "Requests Profiles"

@@ -45,18 +45,32 @@ describe GitlabSchema.types['Project'] do
     it { is_expected.to have_graphql_resolver(Resolvers::IssuesResolver) }
   end
 
-  describe 'merge_requests field' do
+  describe 'merge_request field' do
     subject { described_class.fields['mergeRequest'] }
 
     it { is_expected.to have_graphql_type(Types::MergeRequestType) }
     it { is_expected.to have_graphql_resolver(Resolvers::MergeRequestsResolver.single) }
+    it { is_expected.to have_graphql_arguments(:iid) }
   end
 
-  describe 'merge_request field' do
+  describe 'merge_requests field' do
     subject { described_class.fields['mergeRequests'] }
 
     it { is_expected.to have_graphql_type(Types::MergeRequestType.connection_type) }
     it { is_expected.to have_graphql_resolver(Resolvers::MergeRequestsResolver) }
+
+    it do
+      is_expected.to have_graphql_arguments(:iids,
+                                            :source_branches,
+                                            :target_branches,
+                                            :state,
+                                            :labels,
+                                            :before,
+                                            :after,
+                                            :first,
+                                            :last
+                                           )
+    end
   end
 
   describe 'snippets field' do

@@ -49,6 +49,8 @@ module Releases
 
       notify_create_release(release)
 
+      create_evidence!(release)
+
       success(tag: tag, release: release)
     rescue => e
       error(e.message, 400)
@@ -69,6 +71,16 @@ module Releases
         links_attributes: params.dig(:assets, 'links') || [],
         milestones: milestones
       )
+    end
+
+    def create_evidence!(release)
+      return if release.historical_release?
+
+      if release.upcoming_release?
+        CreateEvidenceWorker.perform_at(release.released_at, release.id)
+      else
+        CreateEvidenceWorker.perform_async(release.id)
+      end
     end
   end
 end

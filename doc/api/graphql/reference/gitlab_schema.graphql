@@ -6006,6 +6006,11 @@ type MergeRequest implements Noteable {
   targetBranch: String!
 
   """
+  Indicates if the target branch of the merge request exists
+  """
+  targetBranchExists: Boolean!
+
+  """
   Target project of the merge request
   """
   targetProject: Project!
@@ -7871,12 +7876,7 @@ type Project {
     """
     IID of the merge request, for example `1`
     """
-    iid: String
-
-    """
-    Array of IIDs of merge requests, for example `[1, 2]`
-    """
-    iids: [String!]
+    iid: String!
   ): MergeRequest
 
   """
@@ -7899,19 +7899,34 @@ type Project {
     first: Int
 
     """
-    IID of the merge request, for example `1`
-    """
-    iid: String
-
-    """
     Array of IIDs of merge requests, for example `[1, 2]`
     """
     iids: [String!]
 
     """
+    Array of label names. All resolved merge requests will have all of these labels.
+    """
+    labels: [String!]
+
+    """
     Returns the last _n_ elements from the list.
     """
     last: Int
+
+    """
+    Array of source branch names. All resolved merge requests will have one of these branches as their source.
+    """
+    sourceBranches: [String!]
+
+    """
+    A merge request state. If provided, all resolved merge requests will have this state.
+    """
+    state: MergeRequestState
+
+    """
+    Array of target branch names. All resolved merge requests will have one of these branches as their target.
+    """
+    targetBranches: [String!]
   ): MergeRequestConnection
 
   """

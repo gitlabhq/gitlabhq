@@ -84,7 +84,7 @@ module Gitlab
           elsif resolved_type.is_a? Array
             # A simple list of rendered types  each object being an object to authorize
             resolved_type.select do |single_object_type|
-              allowed_access?(current_user, single_object_type.object)
+              allowed_access?(current_user, unpromise(single_object_type).object)
             end
           else
             raise "Can't authorize #{@field}"
@@ -112,6 +112,17 @@ module Gitlab
 
         def scalar_type?
           node_type_for_basic_connection(@field.type).kind.scalar?
+        end
+
+        # Sometimes we get promises, and have to resolve them. The dedicated way
+        # of doing this (GitlabSchema.after_lazy) is a private framework method,
+        # and so we use duck-typing interface inference here instead.
+        def unpromise(maybe_promise)
+          if maybe_promise.respond_to?(:value) && !maybe_promise.respond_to?(:object)
+            maybe_promise.value
+          else
+            maybe_promise
+          end
         end
       end
     end

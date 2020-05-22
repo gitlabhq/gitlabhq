@@ -304,6 +304,22 @@ module GraphqlHelpers
     graphql_data.fetch(GraphqlHelpers.fieldnamerize(mutation_name))
   end
 
+  def scalar_fields_of(type_name)
+    GitlabSchema.types[type_name].fields.map do |name, field|
+      next if nested_fields?(field) || required_arguments?(field)
+
+      name
+    end.compact
+  end
+
+  def nested_fields_of(type_name)
+    GitlabSchema.types[type_name].fields.map do |name, field|
+      next if !nested_fields?(field) || required_arguments?(field)
+
+      [name, field]
+    end.compact
+  end
+
   def nested_fields?(field)
     !scalar?(field) && !enum?(field)
   end

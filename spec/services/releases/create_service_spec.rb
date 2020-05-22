@@ -186,4 +186,107 @@ describe Releases::CreateService do
       end
     end
   end
+
+  context 'Evidence collection' do
+    let(:params) do
+      {
+        name: 'New release',
+        ref: 'master',
+        tag: 'v0.1',
+        description: 'Super nice release',
+        released_at: released_at
+      }.compact
+    end
+    let(:last_release) { project.releases.last }
+
+    around do |example|
+      Timecop.freeze { example.run }
+    end
+
+    subject { service.execute }
+
+    context 'historical release' do
+      let(:released_at) { 3.weeks.ago }
+
+      it 'does not execute CreateEvidenceWorker' do
+        expect { subject }.not_to change(CreateEvidenceWorker.jobs, :size)
+      end
+
+      it 'does not create an Evidence object', :sidekiq_inline do
+        expect { subject }.not_to change(Releases::Evidence, :count)
+      end
+
+      it 'is a historical release' do
+        subject
+
+        expect(last_release.historical_release?).to be_truthy
+      end
+
+      it 'is not an upcoming release' do
+        subject
+
+        expect(last_release.upcoming_release?).to be_falsy
+      end
+    end
+
+    context 'immediate release' do
+      let(:released_at) { nil }
+
+      it 'sets `released_at` to the current dttm' do
+        subject
+
+        expect(last_release.updated_at).to be_like_time(Time.current)
+      end
+
+      it 'queues CreateEvidenceWorker' do
+        expect { subject }.to change(CreateEvidenceWorker.jobs, :size).by(1)
+      end
+
+      it 'creates Evidence', :sidekiq_inline do
+        expect { subject }.to change(Releases::Evidence, :count).by(1)
+      end
+
+      it 'is not a historical release' do
+        subject
+
+        expect(last_release.historical_release?).to be_falsy
+      end
+
+      it 'is not an upcoming release' do
+        subject
+
+        expect(last_release.upcoming_release?).to be_falsy
+      end
+    end
+
+    context 'upcoming release' do
+      let(:released_at) { 1.day.from_now }
+
+      it 'queues CreateEvidenceWorker' do
+        expect { subject }.to change(CreateEvidenceWorker.jobs, :size).by(1)
+      end
+
+      it 'queues CreateEvidenceWorker at the released_at timestamp' do
+        subject
+
+        expect(CreateEvidenceWorker.jobs.last['at'].to_i).to eq(released_at.to_i)
+      end
+
+      it 'creates Evidence', :sidekiq_inline do
+        expect { subject }.to change(Releases::Evidence, :count).by(1)
+      end
+
+      it 'is not a historical release' do
+        subject
+
+        expect(last_release.historical_release?).to be_falsy
+      end
+
+      it 'is an upcoming release' do
+        subject
+
+        expect(last_release.upcoming_release?).to be_truthy
+      end
+    end
+  end
 end
