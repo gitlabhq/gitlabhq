@@ -418,14 +418,14 @@ describe('Monitoring mutations', () => {
     });
   });
 
-  describe('UPDATE_VARIABLE_VALUES', () => {
+  describe('UPDATE_VARIABLES', () => {
     afterEach(() => {
       mutations[types.SET_VARIABLES](stateCopy, {});
     });
 
     it('updates only the value of the variable in variables', () => {
       mutations[types.SET_VARIABLES](stateCopy, { environment: { value: 'prod', type: 'text' } });
-      mutations[types.UPDATE_VARIABLE_VALUES](stateCopy, { key: 'environment', value: 'new prod' });
+      mutations[types.UPDATE_VARIABLES](stateCopy, { key: 'environment', value: 'new prod' });
 
       expect(stateCopy.variables).toEqual({ environment: { value: 'new prod', type: 'text' } });
     });

@@ -13,20 +13,18 @@ export default {
     ...mapState('monitoringDashboard', ['variables']),
   },
   methods: {
-    ...mapActions('monitoringDashboard', ['fetchDashboardData', 'updateVariableValues']),
+    ...mapActions('monitoringDashboard', ['updateVariablesAndFetchData']),
     refreshDashboard(variable, value) {
       if (this.variables[variable].value !== value) {
         const changedVariable = { key: variable, value };
         // update the Vuex store
-        this.updateVariableValues(changedVariable);
+        this.updateVariablesAndFetchData(changedVariable);
         // the below calls can ideally be moved out of the
         // component and into the actions and let the
         // mutation respond directly.
         // This can be further investigate in
         // https://gitlab.com/gitlab-org/gitlab/-/issues/217713
         setCustomVariablesFromUrl(this.variables);
-        // fetch data
-        this.fetchDashboardData();
       }
     },
     variableComponent(type) {

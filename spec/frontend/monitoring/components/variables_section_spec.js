@@ -57,8 +57,7 @@ describe('Metrics dashboard/variables section component', () => {
   });
 
   describe('when changing the variable inputs', () => {
-    const fetchDashboardData = jest.fn();
-    const updateVariableValues = jest.fn();
+    const updateVariablesAndFetchData = jest.fn();
 
     beforeEach(() => {
       store = new Vuex.Store({
@@ -70,8 +69,7 @@ describe('Metrics dashboard/variables section component', () => {
               variables: sampleVariables,
             },
             actions: {
-              fetchDashboardData,
-              updateVariableValues,
+              updateVariablesAndFetchData,
             },
           },
         },
@@ -86,13 +84,12 @@ describe('Metrics dashboard/variables section component', () => {
       firstInput.vm.$emit('onUpdate', 'label1', 'test');
 
       return wrapper.vm.$nextTick(() => {
-        expect(updateVariableValues).toHaveBeenCalled();
+        expect(updateVariablesAndFetchData).toHaveBeenCalled();
         expect(mergeUrlParams).toHaveBeenCalledWith(
           convertVariablesForURL(sampleVariables),
           window.location.href,
         );
         expect(updateHistory).toHaveBeenCalled();
-        expect(fetchDashboardData).toHaveBeenCalled();
       });
     });
 
@@ -102,13 +99,12 @@ describe('Metrics dashboard/variables section component', () => {
       firstInput.vm.$emit('onUpdate', 'label1', 'test');
 
       return wrapper.vm.$nextTick(() => {
-        expect(updateVariableValues).toHaveBeenCalled();
+        expect(updateVariablesAndFetchData).toHaveBeenCalled();
         expect(mergeUrlParams).toHaveBeenCalledWith(
           convertVariablesForURL(sampleVariables),
           window.location.href,
         );
         expect(updateHistory).toHaveBeenCalled();
-        expect(fetchDashboardData).toHaveBeenCalled();
       });
     });
 
@@ -117,10 +113,9 @@ describe('Metrics dashboard/variables section component', () => {
 
       firstInput.vm.$emit('onUpdate', 'label1', 'Simple text');
 
-      expect(updateVariableValues).not.toHaveBeenCalled();
+      expect(updateVariablesAndFetchData).not.toHaveBeenCalled();
       expect(mergeUrlParams).not.toHaveBeenCalled();
       expect(updateHistory).not.toHaveBeenCalled();
-      expect(fetchDashboardData).not.toHaveBeenCalled();
     });
   });
 });

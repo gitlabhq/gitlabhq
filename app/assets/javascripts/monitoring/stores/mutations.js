@@ -191,7 +191,7 @@ export default {
   [types.SET_VARIABLES](state, variables) {
     state.variables = variables;
   },
-  [types.UPDATE_VARIABLE_VALUES](state, updatedVariable) {
+  [types.UPDATE_VARIABLES](state, updatedVariable) {
     Object.assign(state.variables[updatedVariable.key], {
       ...state.variables[updatedVariable.key],
       value: updatedVariable.value,

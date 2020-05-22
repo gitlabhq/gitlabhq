@@ -10065,6 +10065,12 @@ msgstr ""
 msgid "GeoNodes|secondary nodes"
 msgstr ""
 
+msgid "Geo|%{label} can't be blank"
+msgstr ""
+
+msgid "Geo|%{label} should be between 1-999"
+msgstr ""
+
 msgid "Geo|%{name} is scheduled for forced re-download"
 msgstr ""
 
@@ -10126,6 +10132,12 @@ msgid "Geo|Never"
 msgstr ""
 
 msgid "Geo|Next sync scheduled at"
+msgstr ""
+
+msgid "Geo|Node name can't be blank"
+msgstr ""
+
+msgid "Geo|Node name should be between 1 and 255 characters"
 msgstr ""
 
 msgid "Geo|Not synced yet"
@@ -10210,6 +10222,12 @@ msgid "Geo|Tracking entry for project (%{project_id}) was successfully removed."
 msgstr ""
 
 msgid "Geo|Tracking entry for upload (%{type}/%{id}) was successfully removed."
+msgstr ""
+
+msgid "Geo|URL can't be blank"
+msgstr ""
+
+msgid "Geo|URL must be a valid url (ex: https://gitlab.com)"
 msgstr ""
 
 msgid "Geo|Unknown state"
@@ -14045,9 +14063,6 @@ msgid "Name"
 msgstr ""
 
 msgid "Name has already been taken"
-msgstr ""
-
-msgid "Name must be between 1 and 255 characters"
 msgstr ""
 
 msgid "Name new label"
@@ -23105,9 +23120,6 @@ msgid "URL"
 msgstr ""
 
 msgid "URL is required"
-msgstr ""
-
-msgid "URL must be a valid url (ex: https://gitlab.com)"
 msgstr ""
 
 msgid "URL must start with %{codeStart}http://%{codeEnd}, %{codeStart}https://%{codeEnd}, or %{codeStart}ftp://%{codeEnd}"

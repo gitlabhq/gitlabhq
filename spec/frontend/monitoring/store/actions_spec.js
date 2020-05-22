@@ -26,7 +26,7 @@ import {
   clearExpandedPanel,
   setGettingStartedEmptyState,
   duplicateSystemDashboard,
-  updateVariableValues,
+  updateVariablesAndFetchData,
 } from '~/monitoring/stores/actions';
 import {
   gqClient,
@@ -417,19 +417,23 @@ describe('Monitoring store actions', () => {
     });
   });
 
-  describe('updateVariableValues', () => {
-    it('should commit UPDATE_VARIABLE_VALUES mutation', done => {
+  describe('updateVariablesAndFetchData', () => {
+    it('should commit UPDATE_VARIABLES mutation and fetch data', done => {
       testAction(
-        updateVariableValues,
+        updateVariablesAndFetchData,
         { pod: 'POD' },
         state,
         [
           {
-            type: types.UPDATE_VARIABLE_VALUES,
+            type: types.UPDATE_VARIABLES,
             payload: { pod: 'POD' },
           },
         ],
-        [],
+        [
+          {
+            type: 'fetchDashboardData',
+          },
+        ],
         done,
       );
     });

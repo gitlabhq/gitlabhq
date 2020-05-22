@@ -1,0 +1,5 @@
+---
+title: Fix Geo replication for design thumbnails
+merge_request: 32703
+author:
+type: fixed

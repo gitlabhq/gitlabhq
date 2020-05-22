@@ -2,6 +2,8 @@
 
 module Gitlab
   class GitAccessWiki < GitAccess
+    prepend_if_ee('EE::Gitlab::GitAccessWiki') # rubocop: disable Cop/InjectEnterpriseEditionModule
+
     ERROR_MESSAGES = {
       read_only:     "You can't push code to a read-only GitLab instance.",
       write_to_wiki: "You are not allowed to write to this project's wiki."
@@ -31,8 +33,10 @@ module Gitlab
       ERROR_MESSAGES[:read_only]
     end
 
-    def container
-      project.wiki
+    private
+
+    def repository
+      project.wiki.repository
     end
   end
 end

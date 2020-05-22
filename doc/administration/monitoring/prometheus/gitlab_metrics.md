@@ -178,6 +178,30 @@ The following metrics are available:
 |:--------------------------------- |:--------- |:------------------------------------------------------------- |:-------------------------------------- |
 | `db_load_balancing_hosts`         | Gauge     | [12.3](https://gitlab.com/gitlab-org/gitlab/-/issues/13630)     | Current number of load balancing hosts |
 
+## Connection pool metrics
+
+These metrics record the status of the database [connection pools](https://api.rubyonrails.org/classes/ActiveRecord/ConnectionAdapters/ConnectionPool.html).
+
+They all have these labels:
+
+1. `class` - the Ruby class being recorded.
+    1. `ActiveRecord::Base` is the main database connection.
+    1. `Geo::TrackingBase` is the connection to the Geo tracking database, if
+       enabled.
+    1. `Gitlab::Database::LoadBalancing::Host` is a connection used by [database
+       load balancing](../../database_load_balancing.md), if enabled.
+1. `host` - the host name used to connect to the database.
+1. `port` - the port used to connect to the database.
+
+| Metric                                        | Type  | Since | Description                                       |
+|:----------------------------------------------|:------|:------|:--------------------------------------------------|
+| `gitlab_database_connection_pool_size`        | Gauge | 13.0  | Total connection pool capacity                    |
+| `gitlab_database_connection_pool_connections` | Gauge | 13.0  | Current connections in the pool                   |
+| `gitlab_database_connection_pool_busy`        | Gauge | 13.0  | Connections in use where the owner is still alive |
+| `gitlab_database_connection_pool_dead`        | Gauge | 13.0  | Connections in use where the owner is not alive   |
+| `gitlab_database_connection_pool_idle`        | Gauge | 13.0  | Connections not in use                            |
+| `gitlab_database_connection_pool_waiting`     | Gauge | 13.0  | Threads currently waiting on this queue           |
+
 ## Ruby metrics
 
 Some basic Ruby runtime metrics are available:
