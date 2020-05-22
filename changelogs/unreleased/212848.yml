@@ -1,0 +1,5 @@
+---
+title: Removed UltraAuth integration for OmniAuth
+merge_request: 29330
+author: Kartikey Tanna
+type: removed

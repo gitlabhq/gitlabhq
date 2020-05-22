@@ -311,6 +311,6 @@ end
 You can create, update, read, and delete Feature Flags via API
 to control them in an automated flow:
 
-- [Feature Flags API](../../../api/feature_flags.md)
+- [Legacy Feature Flags API](../../../api/feature_flags_legacy.md)
 - [Feature Flag Specs API](../../../api/feature_flag_specs.md)
 - [Feature Flag User Lists API](../../../api/feature_flag_user_lists.md)

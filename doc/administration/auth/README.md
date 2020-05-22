@@ -32,4 +32,3 @@ providers:
 - [Shibboleth](../../integration/shibboleth.md)
 - [Smartcard](smartcard.md) **(PREMIUM ONLY)**
 - [Twitter](../../integration/twitter.md)
-- [UltraAuth](../../integration/ultra_auth.md)

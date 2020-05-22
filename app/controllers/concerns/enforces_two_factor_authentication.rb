@@ -23,8 +23,7 @@ module EnforcesTwoFactorAuthentication
 
   def two_factor_authentication_required?
     Gitlab::CurrentSettings.require_two_factor_authentication? ||
-      current_user.try(:require_two_factor_authentication_from_group?) ||
-      current_user.try(:ultraauth_user?)
+      current_user.try(:require_two_factor_authentication_from_group?)
   end
 
   def current_user_requires_two_factor?

@@ -722,8 +722,6 @@ GEM
     omniauth-twitter (1.4.0)
       omniauth-oauth (~> 1.1)
       rack
-    omniauth-ultraauth (0.0.2)
-      omniauth_openid_connect (~> 0.3.0)
     omniauth_crowd (2.2.3)
       activesupport
       nokogiri (>= 1.4.4)
@@ -1317,7 +1315,6 @@ DEPENDENCIES
   omniauth-saml (~> 1.10)
   omniauth-shibboleth (~> 1.3.0)
   omniauth-twitter (~> 1.4)
-  omniauth-ultraauth (~> 0.0.2)
   omniauth_crowd (~> 2.2.0)
   omniauth_openid_connect (~> 0.3.3)
   org-ruby (~> 0.9.12)

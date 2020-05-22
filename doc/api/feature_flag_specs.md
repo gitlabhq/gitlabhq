@@ -2,7 +2,10 @@
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/9566) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.5.
 
-The API for creating, updating, reading and deleting [Feature Flag Specs](../user/project/operations/feature_flags.md#define-environment-specs).
+CAUTION: **Deprecation**
+This API is deprecated and [scheduled for removal in GitLab 14.0](https://gitlab.com/gitlab-org/gitlab/-/issues/213369).
+
+The API for creating, updating, reading and deleting Feature Flag Specs.
 Automation engineers benefit from this API by being able to modify Feature Flag Specs without accessing user interface.
 To manage the [Feature Flag](../user/project/operations/feature_flags.md) resources via public API, please refer to the [Feature Flags API](feature_flags.md) document.
 
