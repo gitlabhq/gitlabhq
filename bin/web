@@ -3,7 +3,6 @@
 set -e
 
 cd $(dirname $0)/..
-app_root=$(pwd)
 
 case "$USE_WEB_SERVER" in
     puma|"") # and the "" defines default

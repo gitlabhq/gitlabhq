@@ -314,8 +314,7 @@ export const receiveEnvironmentsDataFailure = ({ commit }) => {
 
 export const fetchAnnotations = ({ state, dispatch }) => {
   const { start } = convertToFixedRange(state.timeRange);
-  const dashboardPath =
-    state.currentDashboard === '' ? DEFAULT_DASHBOARD_PATH : state.currentDashboard;
+  const dashboardPath = state.currentDashboard || DEFAULT_DASHBOARD_PATH;
   return gqClient
     .mutate({
       mutation: getAnnotations,

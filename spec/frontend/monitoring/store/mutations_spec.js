@@ -128,13 +128,11 @@ describe('Monitoring mutations', () => {
   describe('SET_INITIAL_STATE', () => {
     it('should set all the endpoints', () => {
       mutations[types.SET_INITIAL_STATE](stateCopy, {
-        metricsEndpoint: 'additional_metrics.json',
         deploymentsEndpoint: 'deployments.json',
         dashboardEndpoint: 'dashboard.json',
         projectPath: '/gitlab-org/gitlab-foss',
         currentEnvironmentName: 'production',
       });
-      expect(stateCopy.metricsEndpoint).toEqual('additional_metrics.json');
       expect(stateCopy.deploymentsEndpoint).toEqual('deployments.json');
       expect(stateCopy.dashboardEndpoint).toEqual('dashboard.json');
       expect(stateCopy.projectPath).toEqual('/gitlab-org/gitlab-foss');
@@ -179,12 +177,10 @@ describe('Monitoring mutations', () => {
   describe('SET_ENDPOINTS', () => {
     it('should set all the endpoints', () => {
       mutations[types.SET_ENDPOINTS](stateCopy, {
-        metricsEndpoint: 'additional_metrics.json',
         deploymentsEndpoint: 'deployments.json',
         dashboardEndpoint: 'dashboard.json',
         projectPath: '/gitlab-org/gitlab-foss',
       });
-      expect(stateCopy.metricsEndpoint).toEqual('additional_metrics.json');
       expect(stateCopy.deploymentsEndpoint).toEqual('deployments.json');
       expect(stateCopy.dashboardEndpoint).toEqual('dashboard.json');
       expect(stateCopy.projectPath).toEqual('/gitlab-org/gitlab-foss');

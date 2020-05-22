@@ -140,7 +140,6 @@ export const dateFormats = {
  * Currently used in `receiveMetricsDashboardSuccess` action.
  */
 export const endpointKeys = [
-  'metricsEndpoint',
   'deploymentsEndpoint',
   'dashboardEndpoint',
   'dashboardsEndpoint',

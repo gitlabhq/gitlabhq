@@ -116,7 +116,7 @@ expose the Registry on a port so that you can reuse the existing GitLab TLS
 certificate.
 
 Assuming that the GitLab domain is `https://gitlab.example.com` and the port the
-Registry is exposed to the outside world is `4567`, here is what you need to set
+Registry is exposed to the outside world is `5050`, here is what you need to set
 in `gitlab.rb` or `gitlab.yml` if you are using Omnibus GitLab or installed
 GitLab from source respectively.
 
@@ -130,7 +130,7 @@ otherwise you will run into conflicts.
    path to the existing TLS certificate and key used by GitLab:
 
    ```ruby
-   registry_external_url 'https://gitlab.example.com:4567'
+   registry_external_url 'https://gitlab.example.com:5050'
    ```
 
    Note how the `registry_external_url` is listening on HTTPS under the
@@ -151,7 +151,7 @@ otherwise you will run into conflicts.
 1. Validate using:
 
    ```shell
-   openssl s_client -showcerts -servername gitlab.example.com -connect gitlab.example.com:443 > cacert.pem
+   openssl s_client -showcerts -servername gitlab.example.com -connect gitlab.example.com:5050 > cacert.pem
    ```
 
 NOTE: **Note:**
@@ -166,7 +166,7 @@ If your certificate provider provides the CA Bundle certificates, append them to
    registry:
      enabled: true
      host: gitlab.example.com
-     port: 4567
+     port: 5050
    ```
 
 1. Save the file and [restart GitLab](../restart_gitlab.md#installations-from-source) for the changes to take effect.
@@ -176,7 +176,7 @@ Users should now be able to login to the Container Registry with their GitLab
 credentials using:
 
 ```shell
-docker login gitlab.example.com:4567
+docker login gitlab.example.com:5050
 ```
 
 ### Configure Container Registry under its own domain
@@ -1062,7 +1062,7 @@ A user attempted to enable an S3-backed Registry. The `docker login` step went
 fine. However, when pushing an image, the output showed:
 
 ```plaintext
-The push refers to a repository [s3-testing.myregistry.com:4567/root/docker-test/docker-image]
+The push refers to a repository [s3-testing.myregistry.com:5050/root/docker-test/docker-image]
 dc5e59c14160: Pushing [==================================================>] 14.85 kB
 03c20c1a019a: Pushing [==================================================>] 2.048 kB
 a08f14ef632e: Pushing [==================================================>] 2.048 kB
@@ -1154,8 +1154,8 @@ Now that we have mitmproxy and Docker running, we can attempt to login and push
 a container image. You may need to run as root to do this. For example:
 
 ```shell
-docker login s3-testing.myregistry.com:4567
-docker push s3-testing.myregistry.com:4567/root/docker-test/docker-image
+docker login s3-testing.myregistry.com:5050
+docker push s3-testing.myregistry.com:5050/root/docker-test/docker-image
 ```
 
 In the example above, we see the following trace on the mitmproxy window:

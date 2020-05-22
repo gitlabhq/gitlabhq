@@ -14,7 +14,9 @@ describe('Dashboard template', () => {
   let mock;
 
   beforeEach(() => {
-    store = createStore();
+    store = createStore({
+      currentEnvironmentName: 'production',
+    });
     mock = new MockAdapter(axios);
 
     setupAllDashboards(store);

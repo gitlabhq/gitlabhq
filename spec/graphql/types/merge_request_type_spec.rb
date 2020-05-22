@@ -23,7 +23,7 @@ describe GitlabSchema.types['MergeRequest'] do
       source_branch_exists target_branch_exists
       upvotes downvotes head_pipeline pipelines task_completion_status
       milestone assignees participants subscribed labels discussion_locked time_estimate
-      total_time_spent reference
+      total_time_spent reference author merged_at
     ]
 
     expect(described_class).to have_graphql_fields(*expected_fields)

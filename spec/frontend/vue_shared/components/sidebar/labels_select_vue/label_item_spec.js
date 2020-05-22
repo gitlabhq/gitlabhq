@@ -4,10 +4,13 @@ import { GlIcon, GlLink } from '@gitlab/ui';
 import LabelItem from '~/vue_shared/components/sidebar/labels_select_vue/label_item.vue';
 import { mockRegularLabel } from './mock_data';
 
-const createComponent = ({ label = mockRegularLabel, highlight = true } = {}) =>
+const mockLabel = { ...mockRegularLabel, set: true };
+
+const createComponent = ({ label = mockLabel, highlight = true } = {}) =>
   shallowMount(LabelItem, {
     propsData: {
       label,
+      isLabelSet: label.set,
       highlight,
     },
   });
@@ -28,9 +31,25 @@ describe('LabelItem', () => {
       it('returns an object containing `backgroundColor` based on `label` prop', () => {
         expect(wrapper.vm.labelBoxStyle).toEqual(
           expect.objectContaining({
-            backgroundColor: mockRegularLabel.color,
+            backgroundColor: mockLabel.color,
           }),
         );
+      });
+    });
+  });
+
+  describe('watchers', () => {
+    describe('isLabelSet', () => {
+      it('sets value of `isLabelSet` to `isSet` data prop', () => {
+        expect(wrapper.vm.isSet).toBe(true);
+
+        wrapper.setProps({
+          isLabelSet: false,
+        });
+
+        return wrapper.vm.$nextTick(() => {
+          expect(wrapper.vm.isSet).toBe(false);
+        });
       });
     });
   });
@@ -52,7 +71,7 @@ describe('LabelItem', () => {
         wrapper.vm.handleClick();
 
         expect(wrapper.emitted('clickLabel')).toBeTruthy();
-        expect(wrapper.emitted('clickLabel')[0]).toEqual([mockRegularLabel]);
+        expect(wrapper.emitted('clickLabel')[0]).toEqual([mockLabel]);
       });
     });
   });
@@ -105,7 +124,7 @@ describe('LabelItem', () => {
     });
 
     it('renders label title', () => {
-      expect(wrapper.text()).toContain(mockRegularLabel.title);
+      expect(wrapper.text()).toContain(mockLabel.title);
     });
   });
 });

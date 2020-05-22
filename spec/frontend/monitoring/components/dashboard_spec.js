@@ -6,7 +6,6 @@ import { objectToQuery } from '~/lib/utils/url_utility';
 import VueDraggable from 'vuedraggable';
 import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
-import statusCodes from '~/lib/utils/http_status';
 import { metricStates } from '~/monitoring/constants';
 import Dashboard from '~/monitoring/components/dashboard.vue';
 
@@ -79,19 +78,6 @@ describe('Dashboard', () => {
 
     it('shows the environment selector', () => {
       expect(findEnvironmentsDropdown().exists()).toBe(true);
-    });
-
-    it('sets initial state', () => {
-      expect(store.dispatch).toHaveBeenCalledWith('monitoringDashboard/setInitialState', {
-        currentDashboard: '',
-        currentEnvironmentName: 'production',
-        dashboardEndpoint: 'https://invalid',
-        dashboardsEndpoint: 'https://invalid',
-        deploymentsEndpoint: null,
-        logsPath: '/path/to/logs',
-        metricsEndpoint: 'http://test.host/monitoring/mock',
-        projectPath: '/path/to/project',
-      });
     });
   });
 
@@ -288,7 +274,10 @@ describe('Dashboard', () => {
     it('URL is updated with panel parameters and custom dashboard', () => {
       const dashboard = 'dashboard.yml';
 
-      createMountedWrapper({ hasMetrics: true, currentDashboard: dashboard });
+      store.commit(`monitoringDashboard/${types.SET_INITIAL_STATE}`, {
+        currentDashboard: dashboard,
+      });
+      createMountedWrapper({ hasMetrics: true });
       expandPanel(group, panel);
 
       const expectedSearch = objectToQuery({
@@ -326,8 +315,10 @@ describe('Dashboard', () => {
 
   describe('when all requests have been commited by the store', () => {
     beforeEach(() => {
+      store.commit(`monitoringDashboard/${types.SET_INITIAL_STATE}`, {
+        currentEnvironmentName: 'production',
+      });
       createMountedWrapper({ hasMetrics: true });
-
       setupStoreWithData(store);
 
       return wrapper.vm.$nextTick();
@@ -785,7 +776,6 @@ describe('Dashboard', () => {
 
   describe('cluster health', () => {
     beforeEach(() => {
-      mock.onGet(propsData.metricsEndpoint).reply(statusCodes.OK, JSON.stringify({}));
       createShallowWrapper({ hasMetrics: true, showHeader: false });
 
       // all_dashboards is not defined in health dashboards
@@ -877,7 +867,10 @@ describe('Dashboard', () => {
 
     beforeEach(() => {
       setupStoreWithData(store);
-      createShallowWrapper({ hasMetrics: true, currentDashboard });
+      store.commit(`monitoringDashboard/${types.SET_INITIAL_STATE}`, {
+        currentDashboard,
+      });
+      createShallowWrapper({ hasMetrics: true });
 
       return wrapper.vm.$nextTick();
     });

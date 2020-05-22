@@ -111,27 +111,9 @@ export default {
       type: String,
       required: true,
     },
-    projectPath: {
-      type: String,
-      required: true,
-    },
-    logsPath: {
-      type: String,
-      required: false,
-      default: invalidUrl,
-    },
     defaultBranch: {
       type: String,
       required: true,
-    },
-    metricsEndpoint: {
-      type: String,
-      required: true,
-    },
-    deploymentsEndpoint: {
-      type: String,
-      required: false,
-      default: null,
     },
     emptyGettingStartedSvgPath: {
       type: String,
@@ -153,10 +135,6 @@ export default {
       type: String,
       required: true,
     },
-    currentEnvironmentName: {
-      type: String,
-      required: true,
-    },
     customMetricsAvailable: {
       type: Boolean,
       required: false,
@@ -171,21 +149,6 @@ export default {
       type: String,
       required: false,
       default: invalidUrl,
-    },
-    dashboardEndpoint: {
-      type: String,
-      required: false,
-      default: invalidUrl,
-    },
-    dashboardsEndpoint: {
-      type: String,
-      required: false,
-      default: invalidUrl,
-    },
-    currentDashboard: {
-      type: String,
-      required: false,
-      default: '',
     },
     smallEmptyState: {
       type: Boolean,
@@ -228,6 +191,8 @@ export default {
       'expandedPanel',
       'variables',
       'isUpdatingStarredValue',
+      'currentDashboard',
+      'currentEnvironmentName',
     ]),
     ...mapGetters('monitoringDashboard', [
       'selectedDashboard',
@@ -281,16 +246,6 @@ export default {
     },
   },
   created() {
-    this.setInitialState({
-      metricsEndpoint: this.metricsEndpoint,
-      deploymentsEndpoint: this.deploymentsEndpoint,
-      dashboardEndpoint: this.dashboardEndpoint,
-      dashboardsEndpoint: this.dashboardsEndpoint,
-      currentDashboard: this.currentDashboard,
-      projectPath: this.projectPath,
-      logsPath: this.logsPath,
-      currentEnvironmentName: this.currentEnvironmentName,
-    });
     window.addEventListener('keyup', this.onKeyup);
   },
   destroyed() {
@@ -310,7 +265,6 @@ export default {
       'fetchData',
       'fetchDashboardData',
       'setGettingStartedEmptyState',
-      'setInitialState',
       'setPanelGroupMetrics',
       'filterEnvironments',
       'setExpandedPanel',

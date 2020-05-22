@@ -11,6 +11,10 @@ export default {
       type: Object,
       required: true,
     },
+    isLabelSet: {
+      type: Boolean,
+      required: true,
+    },
     highlight: {
       type: Boolean,
       required: false,
@@ -19,7 +23,7 @@ export default {
   },
   data() {
     return {
-      isSet: this.label.set,
+      isSet: this.isLabelSet,
     };
   },
   computed: {
@@ -27,6 +31,16 @@ export default {
       return {
         backgroundColor: this.label.color,
       };
+    },
+  },
+  watch: {
+    /**
+     * This watcher assures that if user used
+     * `Enter` key to set/unset label, changes
+     * are reflected here too.
+     */
+    isLabelSet(value) {
+      this.isSet = value;
     },
   },
   methods: {

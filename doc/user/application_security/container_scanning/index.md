@@ -8,35 +8,28 @@ type: reference, howto
 
 ## Overview
 
-If you are using [GitLab CI/CD](../../../ci/README.md), you can check your Docker
-images (or more precisely the containers) for known vulnerabilities by using
-[Clair](https://github.com/quay/clair) and [klar](https://github.com/optiopay/klar),
-two open source tools for Vulnerability Static Analysis for containers.
+Your application's Docker image may itself be based on Docker images that contain known
+vulnerabilities. By including an extra job in your pipeline that scans for those vulnerabilities and
+displays them in a merge request, you can use GitLab to audit your Docker-based apps.
+By default, container scanning in GitLab is based on [Clair](https://github.com/quay/clair) and
+[Klar](https://github.com/optiopay/klar), which are open-source tools for vulnerability static analysis in
+containers. [GitLab's Klar analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/klar/)
+scans the containers and serves as a wrapper for Clair.
 
-You can take advantage of Container Scanning by either [including the CI job](#configuration) in
-your existing `.gitlab-ci.yml` file or by implicitly using
-[Auto Container Scanning](../../../topics/autodevops/stages.md#auto-container-scanning-ultimate)
-that is provided by [Auto DevOps](../../../topics/autodevops/index.md).
+NOTE: **Note:**
+To integrate security scanners other than Clair and Klar into GitLab, see
+[Security scanner integration](../../../development/integrations/secure.md).
 
-GitLab checks the Container Scanning report, compares the found vulnerabilities
-between the source and target branches, and shows the information right on the
-merge request.
+You can enable container scanning by doing one of the following:
+
+- [Include the CI job](#configuration) in your existing `.gitlab-ci.yml` file.
+- Implicitly use [Auto Container Scanning](../../../topics/autodevops/stages.md#auto-container-scanning-ultimate)
+  provided by [Auto DevOps](../../../topics/autodevops/index.md).
+
+GitLab compares the found vulnerabilities between the source and target branches, and shows the
+information directly in the merge request.
 
 ![Container Scanning Widget](img/container_scanning_v13_0.png)
-
-## Contribute your scanner
-
-The [Security Scanner Integration](../../../development/integrations/secure.md) documentation explains how to integrate other security scanners into GitLab.
-
-## Use cases
-
-If you distribute your application with Docker, then there's a great chance
-that your image is based on other Docker images that may in turn contain some
-known vulnerabilities that could be exploited.
-
-Having an extra job in your pipeline that checks for those vulnerabilities,
-and the fact that they are displayed inside a merge request, makes it very easy
-to perform audits for your Docker-based apps.
 
 <!-- NOTE: The container scanning tool references the following heading in the code, so if you
            make a change to this heading, make sure to update the documentation URLs used in the
@@ -44,26 +37,21 @@ to perform audits for your Docker-based apps.
 
 ## Requirements
 
-To enable Container Scanning in your pipeline, you need:
+To enable Container Scanning in your pipeline, you need the following:
 
-- A GitLab Runner with the
-  [`docker`](https://docs.gitlab.com/runner/executors/docker.html) or
-  [`kubernetes`](https://docs.gitlab.com/runner/install/kubernetes.html)
-  executor.
-- Docker `18.09.03` or higher installed on the machine where the Runners are
-  running. If you're using the shared Runners on GitLab.com, this is already
-  the case.
-- To [build and push](../../packages/container_registry/index.md#container-registry-examples-with-gitlab-cicd)
-  your Docker image to your project's Container Registry.
-  The name of the Docker image should use the following
-  [predefined environment variables](../../../ci/variables/predefined_variables.md)
-  as defined below:
+- [GitLab Runner](https://docs.gitlab.com/runner/) with the [Docker](https://docs.gitlab.com/runner/executors/docker.html)
+  or [Kubernetes](https://docs.gitlab.com/runner/install/kubernetes.html) executor.
+- Docker `18.09.03` or higher installed on the same computer as the Runner. If you're using the
+  shared Runners on GitLab.com, then this is already the case.
+- [Build and push](../../packages/container_registry/index.md#container-registry-examples-with-gitlab-cicd)
+  your Docker image to your project's container registry. The name of the Docker image should use
+  the following [predefined environment variables](../../../ci/variables/predefined_variables.md):
 
   ```plaintext
   $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG:$CI_COMMIT_SHA
   ```
 
-  These can be used directly in your `.gitlab-ci.yml` file:
+  You can use these directly in your `.gitlab-ci.yml` file:
 
   ```yaml
   build:
@@ -81,37 +69,35 @@ To enable Container Scanning in your pipeline, you need:
 
 ## Configuration
 
-For GitLab 11.9 and later, to enable Container Scanning, you must
-[include](../../../ci/yaml/README.md#includetemplate) the
-[`Container-Scanning.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Security/Container-Scanning.gitlab-ci.yml)
-that's provided as a part of your GitLab installation.
-For GitLab versions earlier than 11.9, you can copy and use the job as defined
-in that template.
+How you enable Container Scanning depends on your GitLab version:
 
-Add the following to your `.gitlab-ci.yml` file:
+- GitLab 11.9 and later: [Include](../../../ci/yaml/README.md#includetemplate) the
+  [`Container-Scanning.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Security/Container-Scanning.gitlab-ci.yml)
+  that comes with your GitLab installation.
+- GitLab versions earlier than 11.9: Copy and use the job from the
+  [`Container-Scanning.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Security/Container-Scanning.gitlab-ci.yml).
+
+To include the `Container-Scanning.gitlab-ci.yml` template (GitLab 11.9 and later), add the
+following to your `.gitlab-ci.yml` file:
 
 ```yaml
 include:
   - template: Container-Scanning.gitlab-ci.yml
 ```
 
-The included template will:
+The included template:
 
-1. Create a `container_scanning` job in your CI/CD pipeline.
-1. Pull the already built Docker image from your project's
-   [Container Registry](../../packages/container_registry/index.md) (see [requirements](#requirements))
-   and scan it for possible vulnerabilities.
+- Creates a `container_scanning` job in your CI/CD pipeline.
+- Pulls the built Docker image from your project's [Container Registry](../../packages/container_registry/index.md)
+  (see [requirements](#requirements)) and scans it for possible vulnerabilities.
 
-The results will be saved as a
+GitLab saves the results as a
 [Container Scanning report artifact](../../../ci/pipelines/job_artifacts.md#artifactsreportscontainer_scanning-ultimate)
-that you can later download and analyze.
-Due to implementation limitations, we always take the latest Container Scanning
-artifact available. Behind the scenes, the
-[GitLab Klar analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/klar/)
-is used and runs the scans.
+that you can download and analyze later. When downloading, you always receive the most-recent
+artifact.
 
-The following is a sample `.gitlab-ci.yml` that will build your Docker image,
-push it to the Container Registry, and run Container Scanning:
+The following is a sample `.gitlab-ci.yml` that builds your Docker image, pushes it to the Container
+Registry, and scans the containers:
 
 ```yaml
 variables:
@@ -141,11 +127,15 @@ include:
 
 ### Customizing the Container Scanning settings
 
-You can change container scanning settings by using the [`variables`](../../../ci/yaml/README.md#variables)
-parameter in your `.gitlab-ci.yml` to change [environment variables](#available-variables).
+There may be cases where you want to customize how GitLab scans your containers. For example, you
+may want to enable more verbose output from Clair or Klar, access a Docker registry that requires
+authentication, and more. To change such settings, use the [`variables`](../../../ci/yaml/README.md#variables)
+parameter in your `.gitlab-ci.yml` to set [environment variables](#available-variables).
+The environment variables you set in your `.gitlab-ci.yml` overwrite those in
+`Container-Scanning.gitlab-ci.yml`.
 
-In the following example, we [include](../../../ci/yaml/README.md#include) the template and also
-set the `CLAIR_OUTPUT` variable to `High`:
+This example [includes](../../../ci/yaml/README.md#include) the Container Scanning template and
+enables verbose output from Clair by setting the `CLAIR_OUTPUT` environment variable to `High`:
 
 ```yaml
 include:
@@ -154,9 +144,6 @@ include:
 variables:
   CLAIR_OUTPUT: High
 ```
-
-The `CLAIR_OUTPUT` variable defined in the main `gitlab-ci.yml` will overwrite what's
-defined in `Container-Scanning.gitlab-ci.yml`, changing the Container Scanning behavior.
 
 <!-- NOTE: The container scanning tool references the following heading in the code, so if you"
      make a change to this heading, make sure to update the documentation URLs used in the"
@@ -188,13 +175,9 @@ using environment variables.
 
 ### Overriding the Container Scanning template
 
-CAUTION: **Deprecation:**
-Beginning in GitLab 13.0, the use of [`only` and `except`](../../../ci/yaml/README.md#onlyexcept-basic)
-is no longer supported. When overriding the template, you must use [`rules`](../../../ci/yaml/README.md#rules) instead.
-
-If you want to override the job definition (for example, change properties like
-`variables`), you need to declare a `container_scanning` job after the
-template inclusion and specify any additional keys under it. For example:
+If you want to override the job definition (for example, to change properties like `variables`), you
+must declare a `container_scanning` job after the template inclusion, and then
+specify any additional keys. For example:
 
 ```yaml
 include:
@@ -205,15 +188,20 @@ container_scanning:
     GIT_STRATEGY: fetch
 ```
 
+CAUTION: **Deprecated:**
+GitLab 13.0 and later doesn't support [`only` and `except`](../../../ci/yaml/README.md#onlyexcept-basic).
+When overriding the template, you must use [`rules`](../../../ci/yaml/README.md#rules)
+instead.
+
 ### Vulnerability whitelisting
 
-If you want to whitelist specific vulnerabilities, you'll need to:
+To whitelist specific vulnerabilities, follow these steps:
 
-1. Set `GIT_STRATEGY: fetch` in your `.gitlab-ci.yml` file by following the instructions described in the
-   [overriding the Container Scanning template](#overriding-the-container-scanning-template) section of this document.
-1. Define the whitelisted vulnerabilities in a YAML file named `clair-whitelist.yml` which must use the format described
-   in the [whitelist example file](https://github.com/arminc/clair-scanner/blob/v12/example-whitelist.yaml).
-1. Add the `clair-whitelist.yml` file to the Git repository of your project.
+1. Set `GIT_STRATEGY: fetch` in your `.gitlab-ci.yml` file by following the instructions in
+   [overriding the Container Scanning template](#overriding-the-container-scanning-template).
+1. Define the whitelisted vulnerabilities in a YAML file named `clair-whitelist.yml`. This must use
+   the format described in the [whitelist example file](https://github.com/arminc/clair-scanner/blob/v12/example-whitelist.yaml).
+1. Add the `clair-whitelist.yml` file to your project's Git repository.
 
 ### Running Container Scanning in an offline environment
 

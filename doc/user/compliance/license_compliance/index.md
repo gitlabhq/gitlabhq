@@ -348,6 +348,32 @@ npmRegistryServer: "https://npm.example.com"
 You can supply a custom root certificate to complete TLS verification by using the
 `ADDITIONAL_CA_CERT_BUNDLE` [environment variable](#available-variables).
 
+### Configuring Bower projects
+
+You can configure Bower projects by using a [`.bowerrc`](https://bower.io/docs/config/#bowerrc-specification)
+file.
+
+#### Using private Bower registries
+
+If you have a private Bower registry you can use the
+[`registry`](https://bower.io/docs/config/#bowerrc-specification)
+setting to specify its location.
+
+For example:
+
+```plaintext
+{
+  "registry": "https://registry.bower.io"
+}
+```
+
+#### Custom root certificates for Bower
+
+You can supply a custom root certificate to complete TLS verification by using the
+`ADDITIONAL_CA_CERT_BUNDLE` [environment variable](#available-variables), or by
+specifying a `ca` setting in a [`.bowerrc`](https://bower.io/docs/config/#bowerrc-specification)
+file.
+
 ### Migration from `license_management` to `license_scanning`
 
 In GitLab 12.8 a new name for `license_management` job was introduced. This change was made to improve clarity around the purpose of the scan, which is to scan and collect the types of licenses present in a projects dependencies.
@@ -451,6 +477,7 @@ The License Compliance job should now use local copies of the License Compliance
 your code and generate security reports, without requiring internet access.
 
 Additional configuration may be needed for connecting to [private Maven repositories](#using-private-maven-repos),
+[private Bower registries](#using-private-bower-registries),
 [private NPM registries](#using-private-npm-registries), [private Yarn registries](#using-private-yarn-registries), and [private Python repositories](#using-private-python-repos).
 
 Exact name matches are required for [project policies](#project-policies-for-license-compliance)

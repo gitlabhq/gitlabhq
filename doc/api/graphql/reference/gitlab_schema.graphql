@@ -5768,6 +5768,11 @@ type MergeRequest implements Noteable {
   ): UserConnection
 
   """
+  User who created this merge request
+  """
+  author: User
+
+  """
   Timestamp of when the merge request was created
   """
   createdAt: Time!
@@ -5916,6 +5921,11 @@ type MergeRequest implements Noteable {
   Indicates if all discussions in the merge request have been resolved, allowing the merge request to be merged
   """
   mergeableDiscussionsState: Boolean
+
+  """
+  Timestamp of when the merge request was merged, null if not merged
+  """
+  mergedAt: Time
 
   """
   The milestone of the merge request

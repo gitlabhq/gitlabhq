@@ -55,199 +55,7 @@ You can view the exact JSON payload sent to GitLab Inc. in the administration pa
 1. Expand the **Usage statistics** section.
 1. Click the **Preview payload** button.
 
-<details>
-<summary>Click to view an example of the payload structure.</summary>
-
-```json
-{
-  "uuid": "0000000-0000-0000-0000-000000000000",
-  "hostname": "example.com",
-  "version": "12.10.0-pre",
-  "installation_type": "omnibus-gitlab",
-  "active_user_count": 999,
-  "recorded_at": "2020-04-17T07:43:54.162+00:00",
-  "edition": "EEU",
-  "license_md5": "00000000000000000000000000000000",
-  "license_id": null,
-  "historical_max_users": 999,
-  "licensee": {
-    "Name": "ABC, Inc.",
-    "Email": "email@example.com",
-    "Company": "ABC, Inc."
-  },
-  "license_user_count": 999,
-  "license_starts_at": "2020-01-01",
-  "license_expires_at": "2021-01-01",
-  "license_plan": "ultimate",
-  "license_add_ons": {
-  },
-  "license_trial": false,
-  "counts": {
-    "assignee_lists": 999,
-    "boards": 999,
-    "ci_builds": 999,
-    ...
-  },
-  "container_registry_enabled": true,
-  "dependency_proxy_enabled": false,
-  "gitlab_shared_runners_enabled": true,
-  "gravatar_enabled": true,
-  "influxdb_metrics_enabled": true,
-  "ldap_enabled": false,
-  "mattermost_enabled": false,
-  "omniauth_enabled": true,
-  "prometheus_metrics_enabled": false,
-  "reply_by_email_enabled": "incoming+%{key}@incoming.gitlab.com",
-  "signup_enabled": true,
-  "web_ide_clientside_preview_enabled": true,
-  "ingress_modsecurity_enabled": true,
-  "projects_with_expiration_policy_disabled": 999,
-  "projects_with_expiration_policy_enabled": 999,
-  ...
-  "elasticsearch_enabled": true,
-  "license_trial_ends_on": null,
-  "geo_enabled": false,
-  "git": {
-    "version": {
-      "major": 2,
-      "minor": 26,
-      "patch": 1
-    }
-  },
-  "gitaly": {
-    "version": "12.10.0-rc1-93-g40980d40",
-    "servers": 56,
-    "filesystems": [
-      "EXT_2_3_4"
-    ]
-  },
-  "gitlab_pages": {
-    "enabled": true,
-    "version": "1.17.0"
-  },
-  "database": {
-    "adapter": "postgresql",
-    "version": "9.6.15"
-  },
-  "app_server": {
-    "type": "console"
-  },
-  "avg_cycle_analytics": {
-    "issue": {
-      "average": 999,
-      "sd": 999,
-      "missing": 999
-    },
-    "plan": {
-      "average": null,
-      "sd": 999,
-      "missing": 999
-    },
-    "code": {
-      "average": null,
-      "sd": 999,
-      "missing": 999
-    },
-    "test": {
-      "average": null,
-      "sd": 999,
-      "missing": 999
-    },
-    "review": {
-      "average": null,
-      "sd": 999,
-      "missing": 999
-    },
-    "staging": {
-      "average": null,
-      "sd": 999,
-      "missing": 999
-    },
-    "production": {
-      "average": null,
-      "sd": 999,
-      "missing": 999
-    },
-    "total": 999
-  },
-  "usage_activity_by_stage": {
-    "configure": {
-      "project_clusters_enabled": 999,
-      ...
-    },
-    "create": {
-      "merge_requests": 999,
-      ...
-    },
-    "manage": {
-      "events": 999,
-      ...
-    },
-    "monitor": {
-      "clusters": 999,
-      ...
-    },
-    "package": {
-      "projects_with_packages": 999
-    },
-    "plan": {
-      "issues": 999,
-      ...
-    },
-    "release": {
-      "deployments": 999,
-      ...
-    },
-    "secure": {
-      "user_container_scanning_jobs": 999,
-      ...
-    },
-    "verify": {
-      "ci_builds": 999,
-      ...
-    }
-  },
-  "usage_activity_by_stage_monthly": {
-    "configure": {
-      "project_clusters_enabled": 999,
-      ...
-    },
-    "create": {
-      "merge_requests": 999,
-      ...
-    },
-    "manage": {
-      "events": 999,
-      ...
-    },
-    "monitor": {
-      "clusters": 999,
-      ...
-    },
-    "package": {
-      "projects_with_packages": 999
-    },
-    "plan": {
-      "issues": 999,
-      ...
-    },
-    "release": {
-      "deployments": 999,
-      ...
-    },
-    "secure": {
-      "user_container_scanning_jobs": 999,
-      ...
-    },
-    "verify": {
-      "ci_builds": 999,
-      ...
-    }
-  }
-}
-```
-
-</details>
+For an example payload, see [Example Usage Ping payload](#example-usage-ping-payload).
 
 ## Disable Usage Ping
 
@@ -484,3 +292,196 @@ Examples of query optimization work:
 ### 4. Ask for a Telemetry Review
 
 On GitLab.com, we have DangerBot setup to monitor Telemetry related files and DangerBot will recommend a Telemetry review. Mention `@gitlab-org/growth/telemetry/engineers` in your MR for a review.
+
+## Example Usage Ping payload
+
+The following is example content of the Usage Ping payload.
+
+```json
+{
+  "uuid": "0000000-0000-0000-0000-000000000000",
+  "hostname": "example.com",
+  "version": "12.10.0-pre",
+  "installation_type": "omnibus-gitlab",
+  "active_user_count": 999,
+  "recorded_at": "2020-04-17T07:43:54.162+00:00",
+  "edition": "EEU",
+  "license_md5": "00000000000000000000000000000000",
+  "license_id": null,
+  "historical_max_users": 999,
+  "licensee": {
+    "Name": "ABC, Inc.",
+    "Email": "email@example.com",
+    "Company": "ABC, Inc."
+  },
+  "license_user_count": 999,
+  "license_starts_at": "2020-01-01",
+  "license_expires_at": "2021-01-01",
+  "license_plan": "ultimate",
+  "license_add_ons": {
+  },
+  "license_trial": false,
+  "counts": {
+    "assignee_lists": 999,
+    "boards": 999,
+    "ci_builds": 999,
+    ...
+  },
+  "container_registry_enabled": true,
+  "dependency_proxy_enabled": false,
+  "gitlab_shared_runners_enabled": true,
+  "gravatar_enabled": true,
+  "influxdb_metrics_enabled": true,
+  "ldap_enabled": false,
+  "mattermost_enabled": false,
+  "omniauth_enabled": true,
+  "prometheus_metrics_enabled": false,
+  "reply_by_email_enabled": "incoming+%{key}@incoming.gitlab.com",
+  "signup_enabled": true,
+  "web_ide_clientside_preview_enabled": true,
+  "ingress_modsecurity_enabled": true,
+  "projects_with_expiration_policy_disabled": 999,
+  "projects_with_expiration_policy_enabled": 999,
+  ...
+  "elasticsearch_enabled": true,
+  "license_trial_ends_on": null,
+  "geo_enabled": false,
+  "git": {
+    "version": {
+      "major": 2,
+      "minor": 26,
+      "patch": 1
+    }
+  },
+  "gitaly": {
+    "version": "12.10.0-rc1-93-g40980d40",
+    "servers": 56,
+    "filesystems": [
+      "EXT_2_3_4"
+    ]
+  },
+  "gitlab_pages": {
+    "enabled": true,
+    "version": "1.17.0"
+  },
+  "database": {
+    "adapter": "postgresql",
+    "version": "9.6.15"
+  },
+  "app_server": {
+    "type": "console"
+  },
+  "avg_cycle_analytics": {
+    "issue": {
+      "average": 999,
+      "sd": 999,
+      "missing": 999
+    },
+    "plan": {
+      "average": null,
+      "sd": 999,
+      "missing": 999
+    },
+    "code": {
+      "average": null,
+      "sd": 999,
+      "missing": 999
+    },
+    "test": {
+      "average": null,
+      "sd": 999,
+      "missing": 999
+    },
+    "review": {
+      "average": null,
+      "sd": 999,
+      "missing": 999
+    },
+    "staging": {
+      "average": null,
+      "sd": 999,
+      "missing": 999
+    },
+    "production": {
+      "average": null,
+      "sd": 999,
+      "missing": 999
+    },
+    "total": 999
+  },
+  "usage_activity_by_stage": {
+    "configure": {
+      "project_clusters_enabled": 999,
+      ...
+    },
+    "create": {
+      "merge_requests": 999,
+      ...
+    },
+    "manage": {
+      "events": 999,
+      ...
+    },
+    "monitor": {
+      "clusters": 999,
+      ...
+    },
+    "package": {
+      "projects_with_packages": 999
+    },
+    "plan": {
+      "issues": 999,
+      ...
+    },
+    "release": {
+      "deployments": 999,
+      ...
+    },
+    "secure": {
+      "user_container_scanning_jobs": 999,
+      ...
+    },
+    "verify": {
+      "ci_builds": 999,
+      ...
+    }
+  },
+  "usage_activity_by_stage_monthly": {
+    "configure": {
+      "project_clusters_enabled": 999,
+      ...
+    },
+    "create": {
+      "merge_requests": 999,
+      ...
+    },
+    "manage": {
+      "events": 999,
+      ...
+    },
+    "monitor": {
+      "clusters": 999,
+      ...
+    },
+    "package": {
+      "projects_with_packages": 999
+    },
+    "plan": {
+      "issues": 999,
+      ...
+    },
+    "release": {
+      "deployments": 999,
+      ...
+    },
+    "secure": {
+      "user_container_scanning_jobs": 999,
+      ...
+    },
+    "verify": {
+      "ci_builds": 999,
+      ...
+    }
+  }
+}
+```
