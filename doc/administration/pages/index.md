@@ -98,7 +98,8 @@ You should not use the GitLab domain to serve user pages. For more information s
 ## Configuration
 
 Depending on your needs, you can set up GitLab Pages in 4 different ways.
-The following options are listed from the easiest setup to the most
+
+The following examples are listed from the easiest setup to the most
 advanced one. The absolute minimum requirement is to set up the wildcard DNS
 since that is needed in all configurations.
 
@@ -174,6 +175,63 @@ behavior:
 NOTE: **Note:**
 `inplace_chroot` option might not work with the other features, such as [Pages Access Control](#access-control).
 The [GitLab Pages README](https://gitlab.com/gitlab-org/gitlab-pages#caveats) has more information about caveats and workarounds.
+
+### Global settings
+
+Below is a table of all configuration settings known to Pages in Omnibus GitLab,
+and what they do. These options can be adjusted in `/etc/gitlab/gitlab.rb`,
+and will take effect after you [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
+Most of these settings don't need to be configured manually unless you need more granular
+control over how the Pages daemon runs and serves content in your environment.
+
+| Setting | Description |
+| ------- | ----------- |
+| `pages_external_url` | The URL where GitLab Pages is accessible, including protocol (HTTP / HTTPS). If `https://` is used, you must also set `gitlab_pages['ssl_certificate']` and `gitlab_pages['ssl_certificate_key']`.
+| **gitlab_pages[]** | |
+| `access_control` |  Whether to enable [access control](index.md#access-control).
+| `api_secret_key`  | Full path to file with secret key used to authenticate with the GitLab API. Auto-generated when left unset.
+| `artifacts_server` |  Enable viewing [artifacts](../job_artifacts.md) in GitLab Pages.
+| `artifacts_server_timeout` |  Timeout (in seconds) for a proxied request to the artifacts server.
+| `artifacts_server_url` |  API URL to proxy artifact requests to. Defaults to GitLab `external URL` + `/api/v4`, for example `https://gitlab.com/api/v4`.
+| `auth_redirect_uri` |  Callback URL for authenticating with GitLab. Defaults to project's subdomain of `pages_external_url` + `/auth`.
+| `auth_secret` |  Secret key for signing authentication requests. Leave blank to pull automatically from GitLab during OAuth registration.
+| `dir` |  Working directory for config and secrets files.
+| `enable` |  Enable or disable GitLab Pages on the current system.
+| `external_http` |  Configure Pages to bind to one or more secondary IP addresses, serving HTTP requests. Multiple addresses can be given as an array, along with exact ports, for example `['1.2.3.4', '1.2.3.5:8063']`. Sets value for `listen_http`.
+| `external_https` |  Configure Pages to bind to one or more secondary IP addresses, serving HTTPS requests. Multiple addresses can be given as an array, along with exact ports, for example `['1.2.3.4', '1.2.3.5:8063']`. Sets value for `listen_https`.
+| `gitlab_client_http_timeout`  | GitLab API HTTP client connection timeout in seconds (default: 10s).
+| `gitlab_client_jwt_expiry`  | JWT Token expiry time in seconds (default: 30s).
+| `gitlab_id` |  The OAuth application public ID. Leave blank to automatically fill when Pages authenticates with GitLab.
+| `gitlab_secret` |  The OAuth application secret. Leave blank to automatically fill when Pages authenticates with GitLab.
+| `gitlab_server` |  Server to use for authentication when access control is enabled; defaults to GitLab `external_url`.
+| `headers` |  Specify any additional http headers that should be sent to the client with each response.
+| `http_proxy` |  Configure GitLab Pages to use an HTTP Proxy to mediate traffic between Pages and GitLab. Sets an environment variable `http_proxy` when starting Pages daemon.
+| `inplace_chroot` |  On [systems that don't support bind-mounts](index.md#additional-configuration-for-docker-container), this instructs GitLab Pages to chroot into its `pages_path` directory. Some caveats exist when using inplace chroot; refer to the GitLab Pages [README](https://gitlab.com/gitlab-org/gitlab-pages/blob/master/README.md#caveats) for more information.
+| `insecure_ciphers` |  Use default list of cipher suites, may contain insecure ones like 3DES and RC4.
+| `internal_gitlab_server` | Internal GitLab server address used exclusively for API requests. Useful if you want to send that traffic over an internal load balancer. Defaults to GitLab `external_url`.
+| `listen_proxy` |  The addresses to listen on for reverse-proxy requests. Pages will bind to these addresses' network socket and receives incoming requests from it. Sets the value of `proxy_pass` in `$nginx-dir/conf/gitlab-pages.conf`.
+| `log_directory` |  Absolute path to a log directory.
+| `log_format` |  The log output format: 'text' or 'json'.
+| `log_verbose` |  Verbose logging, true/false.
+| `max_connections` |  Limit on the number of concurrent connections to the HTTP, HTTPS or proxy listeners.
+| `metrics_address` |  The address to listen on for metrics requests.
+| `redirect_http` |  Redirect pages from HTTP to HTTPS, true/false.
+| `sentry_dsn` |  The address for sending Sentry crash reporting to.
+| `sentry_enabled` |  Enable reporting and logging with Sentry, true/false.
+| `sentry_environment` |  The environment for Sentry crash reporting.
+| `status_uri` |  The URL path for a status page, for example, `/@status`.
+| `tls_max_version` |  Specifies the maximum SSL/TLS version ("ssl3", "tls1.0", "tls1.1" or "tls1.2").
+| `tls_min_version` |  Specifies the minimum SSL/TLS version ("ssl3", "tls1.0", "tls1.1" or "tls1.2").
+| `use_http2` |  Enable HTTP2 support.
+| **gitlab_rails[]** | |
+| `pages_domain_verification_cron_worker` | Schedule for verifying custom GitLab Pages domains.
+| `pages_domain_ssl_renewal_cron_worker` | Schedule for obtaining and renewing SSL certificates through Let's Encrypt for GitLab Pages domains.
+| `pages_domain_removal_cron_worker` | Schedule for removing unverified custom GitLab Pages domains.
+| `pages_path` | The directory on disk where pages are stored, defaults to `GITLAB-RAILS/shared/pages`.
+| **pages_nginx[]** | |
+| `enable` | Include a virtual host `server{}` block for Pages inside NGINX. Needed for NGINX to proxy traffic back to the Pages daemon. Set to `false` if the Pages daemon should directly receive all requests, for example, when using [custom domains](index.md#custom-domains).
+
+---
 
 ## Advanced configuration
 
