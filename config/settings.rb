@@ -66,6 +66,12 @@ class Settings < Settingslogic
       (base_url(gitlab) + [gitlab.relative_url_root]).join('')
     end
 
+    def build_gitlab_go_url
+      # "Go package paths are not URLs, and do not include port numbers"
+      # https://github.com/golang/go/issues/38213#issuecomment-607851460
+      "#{gitlab.host}#{gitlab.relative_url_root}"
+    end
+
     def kerberos_protocol
       kerberos.https ? "https" : "http"
     end
