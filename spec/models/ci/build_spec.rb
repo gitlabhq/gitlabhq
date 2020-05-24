@@ -3612,7 +3612,7 @@ describe Ci::Build do
             .to receive(:execute)
             .with(subject)
             .and_raise(Gitlab::Access::AccessDeniedError)
-          allow(Rails.logger).to receive(:error)
+          allow(Gitlab::AppLogger).to receive(:error)
         end
 
         it 'handles raised exception' do
@@ -3622,7 +3622,7 @@ describe Ci::Build do
         it 'logs the error' do
           subject.drop!
 
-          expect(Rails.logger)
+          expect(Gitlab::AppLogger)
             .to have_received(:error)
             .with(a_string_matching("Unable to auto-retry job #{subject.id}"))
         end

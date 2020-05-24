@@ -107,7 +107,7 @@ class SshHostKey
     if status.success? && !errors.present?
       { known_hosts: known_hosts }
     else
-      Rails.logger.debug("Failed to detect SSH host keys for #{id}: #{errors}") # rubocop:disable Gitlab/RailsLogger
+      Gitlab::AppLogger.debug("Failed to detect SSH host keys for #{id}: #{errors}")
 
       { error: 'Failed to detect SSH host keys' }
     end

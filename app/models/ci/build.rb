@@ -352,7 +352,7 @@ module Ci
           begin
             Ci::Build.retry(build, build.user)
           rescue Gitlab::Access::AccessDeniedError => ex
-            Rails.logger.error "Unable to auto-retry job #{build.id}: #{ex}" # rubocop:disable Gitlab/RailsLogger
+            Gitlab::AppLogger.error "Unable to auto-retry job #{build.id}: #{ex}"
           end
         end
       end

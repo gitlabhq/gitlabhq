@@ -351,7 +351,6 @@ RSpec/LeakyConstantDeclaration:
     - 'spec/db/schema_spec.rb'
     - 'spec/lib/feature_spec.rb'
     - 'spec/lib/gitlab/config/entry/simplifiable_spec.rb'
-    - 'spec/lib/gitlab/git/diff_collection_spec.rb'
     - 'spec/lib/gitlab/import_export/import_test_coverage_spec.rb'
     - 'spec/lib/gitlab/quick_actions/dsl_spec.rb'
     - 'spec/lib/marginalia_spec.rb'
@@ -363,7 +362,6 @@ RSpec/LeakyConstantDeclaration:
     - 'spec/models/concerns/triggerable_hooks_spec.rb'
     - 'spec/models/repository_spec.rb'
     - 'spec/services/clusters/applications/check_installation_progress_service_spec.rb'
-    - 'spec/services/clusters/applications/check_uninstall_progress_service_spec.rb'
     - 'spec/support/shared_examples/quick_actions/issuable/issuable_quick_actions_shared_examples.rb'
 
 RSpec/EmptyLineAfterHook:

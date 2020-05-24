@@ -3,6 +3,31 @@
 require 'spec_helper'
 
 describe Gitlab::Git::DiffCollection, :seed_helper do
+  before do
+    stub_const('MutatingConstantIterator', Class.new)
+
+    MutatingConstantIterator.class_eval do
+      include Enumerable
+
+      def initialize(count, value)
+        @count = count
+        @value = value
+      end
+
+      def each
+        return enum_for(:each) unless block_given?
+
+        loop do
+          break if @count.zero?
+
+          # It is critical to decrement before yielding. We may never reach the lines after 'yield'.
+          @count -= 1
+          yield @value
+        end
+      end
+    end
+  end
+
   subject do
     Gitlab::Git::DiffCollection.new(
       iterator,
@@ -658,26 +683,5 @@ describe Gitlab::Git::DiffCollection, :seed_helper do
 
   def fake_diff(line_length, line_count)
     { 'diff' => "#{'a' * line_length}\n" * line_count }
-  end
-
-  class MutatingConstantIterator
-    include Enumerable
-
-    def initialize(count, value)
-      @count = count
-      @value = value
-    end
-
-    def each
-      return enum_for(:each) unless block_given?
-
-      loop do
-        break if @count.zero?
-
-        # It is critical to decrement before yielding. We may never reach the lines after 'yield'.
-        @count -= 1
-        yield @value
-      end
-    end
   end
 end
