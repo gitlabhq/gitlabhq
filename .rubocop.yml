@@ -351,7 +351,6 @@ RSpec/LeakyConstantDeclaration:
     - 'spec/db/schema_spec.rb'
     - 'spec/lib/feature_spec.rb'
     - 'spec/lib/gitlab/config/entry/simplifiable_spec.rb'
-    - 'spec/lib/gitlab/import_export/import_test_coverage_spec.rb'
     - 'spec/lib/gitlab/quick_actions/dsl_spec.rb'
     - 'spec/lib/marginalia_spec.rb'
     - 'spec/mailers/notify_spec.rb'

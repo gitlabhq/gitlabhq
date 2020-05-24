@@ -1,3 +1,9 @@
+---
+stage: Package
+group: Package
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+---
+
 # GitLab Dependency Proxy administration **(PREMIUM ONLY)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/7934) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.11.
