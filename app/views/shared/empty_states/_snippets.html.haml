@@ -3,7 +3,7 @@
 .row.empty-state.mt-0
   .col-12
     .svg-content
-      = image_tag 'illustrations/snippets_empty.svg'
+      = image_tag 'illustrations/snippets_empty.svg', data: { qa_selector: 'svg_content' }
     .text-content.text-center.pt-0
       - if current_user
         %h4
@@ -12,7 +12,7 @@
           = s_('SnippetsEmptyState|Store, share, and embed small pieces of code and text.')
         .mt-2<
           - if button_path
-            = link_to s_('SnippetsEmptyState|New snippet'), button_path, class: 'btn btn-success', title: s_('SnippetsEmptyState|New snippet'), id: 'new_snippet_link'
+            = link_to s_('SnippetsEmptyState|New snippet'), button_path, class: 'btn btn-success', title: s_('SnippetsEmptyState|New snippet'), id: 'new_snippet_link', data: { qa_selector: 'create_first_snippet_link' }
           = link_to s_('SnippetsEmptyState|Documentation'), help_page_path('user/snippets.md'), class: 'btn btn-default', title: s_('SnippetsEmptyState|Documentation')
       - else
         %h4.text-center= s_('SnippetsEmptyState|There are no snippets to show.')

@@ -1,8 +1,15 @@
 import { diffLines } from 'diff';
+import { defaultDiffOptions } from '../editor_options';
 
+// See: https://gitlab.com/gitlab-org/frontend/rfcs/-/issues/20
 // eslint-disable-next-line import/prefer-default-export
 export const computeDiff = (originalContent, newContent) => {
-  const changes = diffLines(originalContent, newContent);
+  // prevent EOL changes from highlighting the entire file
+  const changes = diffLines(
+    originalContent.replace(/\r\n/g, '\n'),
+    newContent.replace(/\r\n/g, '\n'),
+    defaultDiffOptions,
+  );
 
   let lineNumber = 1;
   return changes.reduce((acc, change) => {

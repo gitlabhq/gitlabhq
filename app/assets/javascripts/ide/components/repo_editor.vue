@@ -14,7 +14,6 @@ import Editor from '../lib/editor';
 import FileTemplatesBar from './file_templates/bar.vue';
 import { __ } from '~/locale';
 import { extractMarkdownImagesFromEntries } from '../stores/utils';
-import { addFinalNewline } from '../utils';
 
 export default {
   components: {
@@ -32,7 +31,6 @@ export default {
     return {
       content: '',
       images: {},
-      addFinalNewline: true,
     };
   },
   computed: {
@@ -253,10 +251,8 @@ export default {
 
         const monacoModel = model.getModel();
         const content = monacoModel.getValue();
-        this.changeFileContent({
-          path: file.path,
-          content: this.addFinalNewline ? addFinalNewline(content, monacoModel.getEOL()) : content,
-        });
+        this.changeFileContent({ path: file.path, content });
+        this.setFileEOL({ eol: this.model.eol });
       });
 
       // Handle Cursor Position

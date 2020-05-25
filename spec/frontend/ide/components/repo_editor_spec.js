@@ -283,25 +283,13 @@ describe('RepoEditor', () => {
       expect(vm.model.events.size).toBe(2);
     });
 
-    it.each`
-      insertFinalNewline | input              | eol       | output
-      ${true}            | ${'testing 123\n'} | ${'\n'}   | ${'testing 123\n'}
-      ${true}            | ${'testing 123'}   | ${'\n'}   | ${'testing 123\n'}
-      ${false}           | ${'testing 123'}   | ${'\n'}   | ${'testing 123'}
-      ${true}            | ${'testing 123'}   | ${'\r\n'} | ${'testing 123\r\n'}
-      ${false}           | ${'testing 123'}   | ${'\r\n'} | ${'testing 123'}
-    `(
-      'updates state with "$output" if `this.insertFinalNewline` is $insertFinalNewline',
-      ({ insertFinalNewline, input, eol, output }) => {
-        jest.spyOn(vm.model.getModel(), 'getEOL').mockReturnValue(eol);
+    it('updates state with the value of the model', () => {
+      vm.model.setValue('testing 1234');
 
-        vm.addFinalNewline = insertFinalNewline;
+      vm.setupEditor();
 
-        vm.model.setValue(input);
-
-        expect(vm.file.content).toBe(output);
-      },
-    );
+      expect(vm.file.content).toBe('testing 1234');
+    });
 
     it('sets head model as staged file', () => {
       jest.spyOn(vm.editor, 'createModel');

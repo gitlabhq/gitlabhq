@@ -54,6 +54,14 @@ describe Gitlab::Gfm::UploadsRewriter do
           expect(new_paths).not_to include image_uploader.secret
           expect(new_paths).not_to include zip_uploader.secret
         end
+
+        it 'skips nil files do' do
+          allow_next_instance_of(UploaderFinder) do |finder|
+            allow(finder).to receive(:execute).and_return(nil)
+          end
+
+          expect(new_files).to be_empty
+        end
       end
     end
 
@@ -66,16 +74,6 @@ describe Gitlab::Gfm::UploadsRewriter do
 
       expect(moved_text.scan(/!\[.*?\]/).count).to eq(1)
       expect(moved_text.scan(/\A\[.*?\]/).count).to eq(1)
-    end
-
-    context 'path traversal in file name' do
-      let(:text) do
-        "![a](/uploads/11111111111111111111111111111111/../../../../../../../../../../../../../../etc/passwd)"
-      end
-
-      it 'throw an error' do
-        expect { rewriter.rewrite(new_project) }.to raise_error(an_instance_of(StandardError).and(having_attributes(message: "Invalid path")))
-      end
     end
 
     context "file are stored locally" do

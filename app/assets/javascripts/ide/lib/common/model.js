@@ -1,6 +1,8 @@
 import { editor as monacoEditor, Uri } from 'monaco-editor';
 import Disposable from './disposable';
 import eventHub from '../../eventhub';
+import { trimTrailingWhitespace, insertFinalNewline } from '../../utils';
+import { defaultModelOptions } from '../editor_options';
 
 export default class Model {
   constructor(file, head = null) {
@@ -8,6 +10,7 @@ export default class Model {
     this.file = file;
     this.head = head;
     this.content = file.content !== '' || file.deleted ? file.content : file.raw;
+    this.options = { ...defaultModelOptions };
 
     this.disposable.add(
       (this.originalModel = monacoEditor.createModel(
@@ -94,8 +97,32 @@ export default class Model {
     this.getModel().setValue(content);
   }
 
+  updateOptions(obj = {}) {
+    Object.assign(this.options, obj);
+    this.model.updateOptions(obj);
+    this.applyCustomOptions();
+  }
+
+  applyCustomOptions() {
+    this.updateNewContent(
+      Object.entries(this.options).reduce((content, [key, value]) => {
+        switch (key) {
+          case 'endOfLine':
+            this.model.pushEOL(value);
+            return this.model.getValue();
+          case 'insertFinalNewline':
+            return value ? insertFinalNewline(content) : content;
+          case 'trimTrailingWhitespace':
+            return value ? trimTrailingWhitespace(content) : content;
+          default:
+            return content;
+        }
+      }, this.model.getValue()),
+    );
+  }
+
   dispose() {
-    this.disposable.dispose();
+    if (!this.model.isDisposed()) this.applyCustomOptions();
 
     this.events.forEach(cb => {
       if (typeof cb === 'function') cb();
@@ -106,5 +133,7 @@ export default class Model {
     eventHub.$off(`editor.update.model.dispose.${this.file.key}`, this.dispose);
     eventHub.$off(`editor.update.model.content.${this.file.key}`, this.updateContent);
     eventHub.$off(`editor.update.model.new.content.${this.file.key}`, this.updateNewContent);
+
+    this.disposable.dispose();
   }
 }

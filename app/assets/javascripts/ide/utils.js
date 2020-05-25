@@ -77,7 +77,11 @@ export function registerLanguages(def, ...defs) {
 
 export const otherSide = side => (side === SIDE_RIGHT ? SIDE_LEFT : SIDE_RIGHT);
 
-export function addFinalNewline(content, eol = '\n') {
+export function trimTrailingWhitespace(content) {
+  return content.replace(/[^\S\r\n]+$/gm, '');
+}
+
+export function insertFinalNewline(content, eol = '\n') {
   return content.slice(-eol.length) !== eol ? `${content}${eol}` : content;
 }
 

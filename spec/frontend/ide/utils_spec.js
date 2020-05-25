@@ -2,7 +2,8 @@ import {
   isTextFile,
   registerLanguages,
   trimPathComponents,
-  addFinalNewline,
+  insertFinalNewline,
+  trimTrailingWhitespace,
   getPathParents,
 } from '~/ide/utils';
 import { languages } from 'monaco-editor';
@@ -155,6 +156,20 @@ describe('WebIDE utils', () => {
     });
   });
 
+  describe('trimTrailingWhitespace', () => {
+    it.each`
+      input                                                            | output
+      ${'text     \n   more text   \n'}                                | ${'text\n   more text\n'}
+      ${'text     \n   more text   \n\n   \n'}                         | ${'text\n   more text\n\n\n'}
+      ${'text  \t\t   \n   more text   \n\t\ttext\n   \n\t\t'}         | ${'text\n   more text\n\t\ttext\n\n'}
+      ${'text     \r\n   more text   \r\n'}                            | ${'text\r\n   more text\r\n'}
+      ${'text     \r\n   more text   \r\n\r\n   \r\n'}                 | ${'text\r\n   more text\r\n\r\n\r\n'}
+      ${'text  \t\t   \r\n   more text   \r\n\t\ttext\r\n   \r\n\t\t'} | ${'text\r\n   more text\r\n\t\ttext\r\n\r\n'}
+    `("trims trailing whitespace in each line of file's contents: $input", ({ input, output }) => {
+      expect(trimTrailingWhitespace(input)).toBe(output);
+    });
+  });
+
   describe('addFinalNewline', () => {
     it.each`
       input              | output
@@ -163,7 +178,7 @@ describe('WebIDE utils', () => {
       ${'some text\n\n'} | ${'some text\n\n'}
       ${'some\n text'}   | ${'some\n text\n'}
     `('adds a newline if it doesnt already exist for input: $input', ({ input, output }) => {
-      expect(addFinalNewline(input)).toEqual(output);
+      expect(insertFinalNewline(input)).toBe(output);
     });
 
     it.each`
@@ -174,7 +189,7 @@ describe('WebIDE utils', () => {
       ${'some text\r\n\r\n'} | ${'some text\r\n\r\n'}
       ${'some\r\n text'}     | ${'some\r\n text\r\n'}
     `('works with CRLF newline style; input: $input', ({ input, output }) => {
-      expect(addFinalNewline(input, '\r\n')).toEqual(output);
+      expect(insertFinalNewline(input, '\r\n')).toBe(output);
     });
   });
 

@@ -4,7 +4,7 @@ class Admin::RunnersController < Admin::ApplicationController
   before_action :runner, except: [:index, :tag_list]
 
   def index
-    finder = Admin::RunnersFinder.new(params: params)
+    finder = Ci::RunnersFinder.new(current_user: current_user, params: params)
     @runners = finder.execute
     @active_runners_count = Ci::Runner.online.count
     @sort = finder.sort_key

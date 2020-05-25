@@ -319,7 +319,7 @@
 
       - if project_nav_tab? :snippets
         = nav_link(controller: :snippets) do
-          = link_to project_snippets_path(@project), class: 'shortcuts-snippets' do
+          = link_to project_snippets_path(@project), class: 'shortcuts-snippets', data: { qa_selector: 'snippets_link' } do
             .nav-icon-container
               = sprite_icon('snippet')
             %span.nav-item-name

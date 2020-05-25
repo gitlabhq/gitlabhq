@@ -72,6 +72,7 @@ describe('Multi-file editor library', () => {
 
       expect(monacoEditor.createDiffEditor).toHaveBeenCalledWith(holder, {
         ...defaultEditorOptions,
+        ignoreTrimWhitespace: false,
         quickSuggestions: false,
         occurrencesHighlight: false,
         renderSideBySide: false,

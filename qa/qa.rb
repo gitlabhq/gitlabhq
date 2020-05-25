@@ -86,6 +86,7 @@ module QA
     autoload :Snippet, 'qa/resource/snippet'
     autoload :Tag, 'qa/resource/tag'
     autoload :ProjectMember, 'qa/resource/project_member'
+    autoload :ProjectSnippet, 'qa/resource/project_snippet'
     autoload :UserGPG, 'qa/resource/user_gpg'
     autoload :Visibility, 'qa/resource/visibility'
 
@@ -331,6 +332,10 @@ module QA
 
       module WebIDE
         autoload :Edit, 'qa/page/project/web_ide/edit'
+      end
+
+      module Snippet
+        autoload :New, 'qa/page/project/snippet/new'
       end
     end
 
