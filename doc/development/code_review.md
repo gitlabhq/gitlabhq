@@ -358,8 +358,8 @@ When ready to merge:
   - If the **latest [Pipeline for Merged Results](../ci/merge_request_pipelines/pipelines_for_merged_results/#pipelines-for-merged-results-premium)** finished less than 2 hours ago, you
     might merge without starting a new pipeline as the merge request is close
     enough to `master`.
-  - If the merge request is from a fork, check how far behind `master` the
-    source branch is. If it's more than 100 commits behind, ask the author to
+  - If the **merge request is from a fork**, we can't use [Pipelines for Merged Results](../ci/merge_request_pipelines/pipelines_for_merged_results/index.md#prerequisites), therefore, they're more prone to breaking `master`.
+    Check how far behind `master` the source branch is. If it's more than 100 commits behind, ask the author to
     rebase it before merging.
   - If [master is broken](https://about.gitlab.com/handbook/engineering/workflow/#broken-master),
     in addition to the two above rules, check that any failure also happens

@@ -54,6 +54,29 @@ RSpec.shared_examples 'returns repositories for allowed users' do |user_type, sc
         expect(response).to match_response_schema('registry/repositories')
       end
     end
+
+    context 'with tags_count param' do
+      let(:url) { "/#{scope}s/#{object.id}/registry/repositories?tags_count=true" }
+
+      before do
+        stub_container_registry_tags(repository: root_repository.path, tags: %w(rootA latest), with_manifest: true)
+        stub_container_registry_tags(repository: test_repository.path, tags: %w(rootA latest), with_manifest: true)
+      end
+
+      it 'returns a list of repositories and their tags_count' do
+        subject
+
+        expect(response.body).to include('tags_count')
+        expect(json_response[0]['tags_count']).to eq(2)
+      end
+
+      it 'returns a matching schema' do
+        subject
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to match_response_schema('registry/repositories')
+      end
+    end
   end
 end
 

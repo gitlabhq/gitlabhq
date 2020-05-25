@@ -226,6 +226,8 @@ when used from the command line with `git commit -m`.
 
 #### Disabling automatic issue closing
 
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/19754) in GitLab 12.7.
+
 The automatic issue closing feature can be disabled on a per-project basis
 within the [project's repository settings](../settings/index.md). Referenced
 issues will still be displayed as such but won't be closed automatically.

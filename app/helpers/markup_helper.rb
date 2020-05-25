@@ -129,7 +129,7 @@ module MarkupHelper
     context.merge!(
       pipeline: :wiki,
       project: @project,
-      project_wiki: @project_wiki,
+      wiki: @project_wiki,
       repository: @project_wiki.repository,
       page_slug: wiki_page.slug,
       issuable_state_filter_enabled: true

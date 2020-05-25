@@ -317,7 +317,7 @@ describe MarkupHelper do
     let(:wiki_repository) { double('Repository') }
     let(:context) do
       {
-        pipeline: :wiki, project: project, project_wiki: wiki,
+        pipeline: :wiki, project: project, wiki: wiki,
         page_slug: 'nested/page', issuable_state_filter_enabled: true,
         repository: wiki_repository
       }

@@ -30,7 +30,7 @@ module Banzai
     # Note: the table of contents tag is now handled by TableOfContentsTagFilter
     #
     # Context options:
-    #   :project_wiki (required) - Current project wiki.
+    #   :wiki [Wiki] (required) - Current wiki instance.
     #
     class GollumTagsFilter < HTML::Pipeline::Filter
       include ActionView::Helpers::TagHelper
@@ -100,8 +100,8 @@ module Banzai
 
         if url?(content)
           path = content
-        elsif file = project_wiki.find_file(content)
-          path = ::File.join project_wiki_base_path, file.path
+        elsif file = wiki.find_file(content)
+          path = ::File.join(wiki_base_path, file.path)
         end
 
         if path
@@ -134,25 +134,25 @@ module Banzai
           if url?(reference)
             reference
           else
-            ::File.join(project_wiki_base_path, reference)
+            ::File.join(wiki_base_path, reference)
           end
 
         content_tag(:a, name || reference, href: href, class: 'gfm')
       end
 
-      def project_wiki
-        context[:project_wiki]
+      def wiki
+        context[:wiki]
       end
 
-      def project_wiki_base_path
-        project_wiki && project_wiki.wiki_base_path
+      def wiki_base_path
+        wiki&.wiki_base_path
       end
 
-      # Ensure that a :project_wiki key exists in context
+      # Ensure that a :wiki key exists in context
       #
       # Note that while the key might exist, its value could be nil!
       def validate
-        needs :project_wiki
+        needs :wiki
       end
     end
   end

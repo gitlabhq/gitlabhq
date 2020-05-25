@@ -8,7 +8,7 @@ describe Groups::Registry::RepositoriesController do
 
   before do
     stub_container_registry_config(enabled: true)
-
+    stub_container_registry_tags(repository: :any, tags: [])
     group.add_reporter(user)
     login_as(user)
   end

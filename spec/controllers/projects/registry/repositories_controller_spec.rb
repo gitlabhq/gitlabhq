@@ -46,7 +46,7 @@ describe Projects::Registry::RepositoriesController do
       context 'when root container repository is not created' do
         context 'when there are tags for this repository' do
           before do
-            stub_container_registry_tags(repository: project.full_path,
+            stub_container_registry_tags(repository: :any,
                                          tags: %w[rc1 latest])
           end
 

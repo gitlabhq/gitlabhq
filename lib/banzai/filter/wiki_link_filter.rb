@@ -6,12 +6,12 @@ module Banzai
     # Rewrite rules are documented in the `WikiPipeline` spec.
     #
     # Context options:
-    #   :project_wiki
+    #   :wiki
     class WikiLinkFilter < HTML::Pipeline::Filter
       include Gitlab::Utils::SanitizeNodeLink
 
       def call
-        return doc unless project_wiki?
+        return doc unless wiki?
 
         doc.search('a:not(.gfm)').each { |el| process_link(el.attribute('href'), el) }
 
@@ -33,8 +33,8 @@ module Banzai
         remove_unsafe_links({ node: node }, remove_invalid_links: false)
       end
 
-      def project_wiki?
-        !context[:project_wiki].nil?
+      def wiki?
+        !context[:wiki].nil?
       end
 
       def process_link_attr(html_attr)
@@ -46,7 +46,7 @@ module Banzai
       end
 
       def apply_rewrite_rules(link_string)
-        Rewriter.new(link_string, wiki: context[:project_wiki], slug: context[:page_slug]).apply_rules
+        Rewriter.new(link_string, wiki: context[:wiki], slug: context[:page_slug]).apply_rules
       end
     end
   end

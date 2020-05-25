@@ -7,11 +7,11 @@ describe Banzai::Filter::GollumTagsFilter do
 
   let(:project) { create(:project) }
   let(:user) { double }
-  let(:project_wiki) { ProjectWiki.new(project, user) }
+  let(:wiki) { ProjectWiki.new(project, user) }
 
   describe 'validation' do
-    it 'ensure that a :project_wiki key exists in context' do
-      expect { filter("See [[images/image.jpg]]", {}) }.to raise_error ArgumentError, "Missing context keys for Banzai::Filter::GollumTagsFilter: :project_wiki"
+    it 'ensure that a :wiki key exists in context' do
+      expect { filter("See [[images/image.jpg]]", {}) }.to raise_error ArgumentError, "Missing context keys for Banzai::Filter::GollumTagsFilter: :wiki"
     end
   end
 
@@ -23,19 +23,19 @@ describe Banzai::Filter::GollumTagsFilter do
                                   path: 'images/image.jpg',
                                   raw_data: '')
       wiki_file = Gitlab::Git::WikiFile.new(gollum_file_double)
-      expect(project_wiki).to receive(:find_file).with('images/image.jpg').and_return(wiki_file)
+      expect(wiki).to receive(:find_file).with('images/image.jpg').and_return(wiki_file)
 
       tag = '[[images/image.jpg]]'
-      doc = filter("See #{tag}", project_wiki: project_wiki)
+      doc = filter("See #{tag}", wiki: wiki)
 
-      expect(doc.at_css('img')['data-src']).to eq "#{project_wiki.wiki_base_path}/images/image.jpg"
+      expect(doc.at_css('img')['data-src']).to eq "#{wiki.wiki_base_path}/images/image.jpg"
     end
 
     it 'does not creates img tag if image does not exist' do
-      expect(project_wiki).to receive(:find_file).with('images/image.jpg').and_return(nil)
+      expect(wiki).to receive(:find_file).with('images/image.jpg').and_return(nil)
 
       tag = '[[images/image.jpg]]'
-      doc = filter("See #{tag}", project_wiki: project_wiki)
+      doc = filter("See #{tag}", wiki: wiki)
 
       expect(doc.css('img').size).to eq 0
     end
@@ -44,14 +44,14 @@ describe Banzai::Filter::GollumTagsFilter do
   context 'linking external images' do
     it 'creates img tag for valid URL' do
       tag = '[[http://example.com/image.jpg]]'
-      doc = filter("See #{tag}", project_wiki: project_wiki)
+      doc = filter("See #{tag}", wiki: wiki)
 
       expect(doc.at_css('img')['data-src']).to eq "http://example.com/image.jpg"
     end
 
     it 'does not creates img tag for invalid URL' do
       tag = '[[http://example.com/image.pdf]]'
-      doc = filter("See #{tag}", project_wiki: project_wiki)
+      doc = filter("See #{tag}", wiki: wiki)
 
       expect(doc.css('img').size).to eq 0
     end
@@ -60,7 +60,7 @@ describe Banzai::Filter::GollumTagsFilter do
   context 'linking external resources' do
     it "the created link's text will be equal to the resource's text" do
       tag = '[[http://example.com]]'
-      doc = filter("See #{tag}", project_wiki: project_wiki)
+      doc = filter("See #{tag}", wiki: wiki)
 
       expect(doc.at_css('a').text).to eq 'http://example.com'
       expect(doc.at_css('a')['href']).to eq 'http://example.com'
@@ -68,7 +68,7 @@ describe Banzai::Filter::GollumTagsFilter do
 
     it "the created link's text will be link-text" do
       tag = '[[link-text|http://example.com/pdfs/gollum.pdf]]'
-      doc = filter("See #{tag}", project_wiki: project_wiki)
+      doc = filter("See #{tag}", wiki: wiki)
 
       expect(doc.at_css('a').text).to eq 'link-text'
       expect(doc.at_css('a')['href']).to eq 'http://example.com/pdfs/gollum.pdf'
@@ -78,8 +78,8 @@ describe Banzai::Filter::GollumTagsFilter do
   context 'linking internal resources' do
     it "the created link's text includes the resource's text and wiki base path" do
       tag = '[[wiki-slug]]'
-      doc = filter("See #{tag}", project_wiki: project_wiki)
-      expected_path = ::File.join(project_wiki.wiki_base_path, 'wiki-slug')
+      doc = filter("See #{tag}", wiki: wiki)
+      expected_path = ::File.join(wiki.wiki_base_path, 'wiki-slug')
 
       expect(doc.at_css('a').text).to eq 'wiki-slug'
       expect(doc.at_css('a')['href']).to eq expected_path
@@ -87,15 +87,15 @@ describe Banzai::Filter::GollumTagsFilter do
 
     it "the created link's text will be link-text" do
       tag = '[[link-text|wiki-slug]]'
-      doc = filter("See #{tag}", project_wiki: project_wiki)
-      expected_path = ::File.join(project_wiki.wiki_base_path, 'wiki-slug')
+      doc = filter("See #{tag}", wiki: wiki)
+      expected_path = ::File.join(wiki.wiki_base_path, 'wiki-slug')
 
       expect(doc.at_css('a').text).to eq 'link-text'
       expect(doc.at_css('a')['href']).to eq expected_path
     end
 
     it "inside back ticks will be exempt from linkification" do
-      doc = filter('<code>[[link-in-backticks]]</code>', project_wiki: project_wiki)
+      doc = filter('<code>[[link-in-backticks]]</code>', wiki: wiki)
 
       expect(doc.at_css('code').text).to eq '[[link-in-backticks]]'
     end

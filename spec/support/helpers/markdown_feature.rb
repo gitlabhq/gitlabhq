@@ -36,12 +36,12 @@ class MarkdownFeature
     end
   end
 
-  def project_wiki
-    @project_wiki ||= ProjectWiki.new(project, user)
+  def wiki
+    @wiki ||= ProjectWiki.new(project, user)
   end
 
-  def project_wiki_page
-    @project_wiki_page ||= build(:wiki_page, wiki: project_wiki)
+  def wiki_page
+    @wiki_page ||= build(:wiki_page, wiki: wiki)
   end
 
   def issue

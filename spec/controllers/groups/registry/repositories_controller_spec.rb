@@ -17,6 +17,7 @@ describe Groups::Registry::RepositoriesController do
 
   before do
     stub_container_registry_config(enabled: true)
+    stub_container_registry_tags(repository: :any, tags: [])
     group.add_owner(user)
     group.add_guest(guest)
     sign_in(user)

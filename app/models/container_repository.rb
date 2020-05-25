@@ -67,6 +67,12 @@ class ContainerRepository < ApplicationRecord
     end
   end
 
+  def tags_count
+    return 0 unless manifest && manifest['tags']
+
+    manifest['tags'].size
+  end
+
   def blob(config)
     ContainerRegistry::Blob.new(self, config)
   end

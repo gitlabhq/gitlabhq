@@ -19,6 +19,7 @@ GET /projects/:id/registry/repositories
 | `id`      | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) accessible by the authenticated user. |
 | `tags`      | boolean | no | If the parameter is included as true, each repository will include an array of `"tags"` in the response. |
 | `name`      | string | no | Returns a list of repositories with a name that matches the value. ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/29763) in GitLab 13.0). |
+| `tags_count` | boolean | no | If the parameter is included as true, each repository will include `"tags_count"` in the response ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/32141) in GitLab 13.1). |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/registry/repositories"
@@ -60,9 +61,10 @@ GET /groups/:id/registry/repositories
 | `id`      | integer/string | yes | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) accessible by the authenticated user. |
 | `tags`      | boolean | no | If the parameter is included as true, each repository will include an array of `"tags"` in the response. |
 | `name`      | string | no | Returns a list of repositories with a name that matches the value. ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/29763) in GitLab 13.0). |
+| `tags_count` | boolean | no | If the parameter is included as true, each repository will include `"tags_count"` in the response ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/32141) in GitLab 13.1). |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/2/registry/repositories?tags=1"
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/2/registry/repositories?tags=1&tags_count=true"
 ```
 
 Example response:
@@ -76,6 +78,7 @@ Example response:
     "project_id": 9,
     "location": "gitlab.example.com:5000/group/project",
     "created_at": "2019-01-10T13:38:57.391Z",
+    "tags_count": 1,
     "tags": [
       {
         "name": "0.0.1",
@@ -91,6 +94,7 @@ Example response:
     "project_id": 11,
     "location": "gitlab.example.com:5000/group/other_project",
     "created_at": "2019-01-10T13:39:08.229Z",
+    "tags_count": 3,
     "tags": [
       {
         "name": "0.0.1",

@@ -10,7 +10,7 @@ module Banzai
     #   :commit
     #   :current_user
     #   :project
-    #   :project_wiki
+    #   :wiki
     #   :ref
     #   :requested_path
     #   :system_note
@@ -53,7 +53,7 @@ module Banzai
 
       def linkable_files?
         strong_memoize(:linkable_files) do
-          context[:project_wiki].nil? && repository.try(:exists?) && !repository.empty?
+          context[:wiki].nil? && repository.try(:exists?) && !repository.empty?
         end
       end
 

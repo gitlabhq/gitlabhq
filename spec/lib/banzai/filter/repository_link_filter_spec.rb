@@ -12,7 +12,7 @@ describe Banzai::Filter::RepositoryLinkFilter do
       project:        project,
       current_user:   user,
       group:          group,
-      project_wiki:   project_wiki,
+      wiki:           wiki,
       ref:            ref,
       requested_path: requested_path,
       only_path:      only_path
@@ -53,7 +53,7 @@ describe Banzai::Filter::RepositoryLinkFilter do
   let(:project_path)   { project.full_path }
   let(:ref)            { 'markdown' }
   let(:commit)         { project.commit(ref) }
-  let(:project_wiki)   { nil }
+  let(:wiki)           { nil }
   let(:requested_path) { '/' }
   let(:only_path)      { true }
 
@@ -94,8 +94,8 @@ describe Banzai::Filter::RepositoryLinkFilter do
     end
   end
 
-  context 'with a project_wiki' do
-    let(:project_wiki) { double('ProjectWiki') }
+  context 'with a wiki' do
+    let(:wiki) { double('ProjectWiki') }
 
     include_examples :preserve_unchanged
   end

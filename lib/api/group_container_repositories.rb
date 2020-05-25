@@ -20,6 +20,7 @@ module API
       params do
         use :pagination
         optional :tags, type: Boolean, default: false, desc: 'Determines if tags should be included'
+        optional :tags_count, type: Boolean, default: false, desc: 'Determines if the tags count should be included'
       end
       get ':id/registry/repositories' do
         repositories = ContainerRepositoriesFinder.new(
@@ -28,7 +29,7 @@ module API
 
         track_event('list_repositories')
 
-        present paginate(repositories), with: Entities::ContainerRegistry::Repository, tags: params[:tags]
+        present paginate(repositories), with: Entities::ContainerRegistry::Repository, tags: params[:tags], tags_count: params[:tags_count]
       end
     end
 

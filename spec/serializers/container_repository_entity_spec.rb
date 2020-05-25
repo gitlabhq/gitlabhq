@@ -13,12 +13,14 @@ describe ContainerRepositoryEntity do
 
   before do
     stub_container_registry_config(enabled: true)
+    stub_container_registry_tags(repository: :any,
+      tags: %w[stable latest])
     allow(request).to receive(:project).and_return(project)
     allow(request).to receive(:current_user).and_return(user)
   end
 
   it 'exposes required informations' do
-    expect(subject).to include(:id, :path, :location, :tags_path)
+    expect(subject).to include(:id, :path, :location, :tags_path, :tags_count)
   end
 
   context 'when project is not preset in the request' do

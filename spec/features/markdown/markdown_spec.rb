@@ -269,15 +269,15 @@ describe 'GitLab Markdown', :aggregate_failures do
 
   context 'wiki pipeline' do
     before do
-      @project_wiki = @feat.project_wiki
-      @project_wiki_page = @feat.project_wiki_page
+      @wiki = @feat.wiki
+      @wiki_page = @feat.wiki_page
 
       path = 'images/example.jpg'
       gitaly_wiki_file = Gitlab::GitalyClient::WikiFile.new(path: path)
-      expect(@project_wiki).to receive(:find_file).with(path).and_return(Gitlab::Git::WikiFile.new(gitaly_wiki_file))
-      allow(@project_wiki).to receive(:wiki_base_path) { '/namespace1/gitlabhq/wikis' }
+      expect(@wiki).to receive(:find_file).with(path).and_return(Gitlab::Git::WikiFile.new(gitaly_wiki_file))
+      allow(@wiki).to receive(:wiki_base_path) { '/namespace1/gitlabhq/wikis' }
 
-      @html = markdown(@feat.raw_markdown, { pipeline: :wiki, project_wiki: @project_wiki, page_slug: @project_wiki_page.slug })
+      @html = markdown(@feat.raw_markdown, { pipeline: :wiki, wiki: @wiki, page_slug: @wiki_page.slug })
     end
 
     it_behaves_like 'all pipelines'

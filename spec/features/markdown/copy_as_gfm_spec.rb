@@ -157,7 +157,7 @@ describe 'Copy as GFM', :js do
         GFM
 
         pipeline: :wiki,
-        project_wiki: @project.wiki
+        wiki: @project.wiki
       )
 
       verify(
