@@ -431,7 +431,7 @@ documentation](index.md#3-gitaly-server-configuration).
    gitlab_workhorse['enable'] = false
    prometheus_monitoring['enable'] = false
 
-   # Enable only the Praefect service
+   # Enable only the Gitaly service
    gitaly['enable'] = true
 
    # Prevent database connections during 'gitlab-ctl reconfigure'

@@ -3849,6 +3849,9 @@ msgstr ""
 msgid "Changes are shown as if the <b>source</b> revision was being merged into the <b>target</b> revision."
 msgstr ""
 
+msgid "Changes are still tracked. Useful for cluster/index migrations."
+msgstr ""
+
 msgid "Changes are unknown"
 msgstr ""
 

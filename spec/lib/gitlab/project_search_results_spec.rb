@@ -34,7 +34,7 @@ describe Gitlab::ProjectSearchResults do
       'blobs'      | :limited_blobs_count    | max_limited_count
       'notes'      | :limited_notes_count    | max_limited_count
       'wiki_blobs' | :wiki_blobs_count       | '1234'
-      'commits'    | :commits_count          | '1234'
+      'commits'    | :commits_count          | max_limited_count
       'projects'   | :limited_projects_count | max_limited_count
       'unknown'    | nil                     | nil
     end
@@ -386,6 +386,19 @@ describe Gitlab::ProjectSearchResults do
     end
   end
 
+  describe '#commits_count' do
+    let(:project) { create(:project, :public, :repository) }
+
+    it 'limits the number of commits requested' do
+      expect(project.repository)
+        .to receive(:find_commits_by_message)
+        .with(anything, anything, anything, described_class::COUNT_LIMIT)
+        .and_call_original
+
+      described_class.new(user, project, '.').commits_count
+    end
+  end
+
   # Examples for commit access level test
   #
   # params:
@@ -452,6 +465,54 @@ describe Gitlab::ProjectSearchResults do
   end
 
   describe 'commit search' do
+    context 'pagination' do
+      let(:project) { create(:project, :public, :repository) }
+
+      it 'returns the correct results for each page' do
+        expect(results_page(1)).to contain_exactly(commit('b83d6e391c22777fca1ed3012fce84f633d7fed0'))
+
+        expect(results_page(2)).to contain_exactly(commit('498214de67004b1da3d820901307bed2a68a8ef6'))
+
+        expect(results_page(3)).to contain_exactly(commit('1b12f15a11fc6e62177bef08f47bc7b5ce50b141'))
+      end
+
+      it 'returns the correct number of pages' do
+        expect(results_page(1).total_pages).to eq(project.repository.commit_count)
+      end
+
+      context 'limiting requested commits' do
+        context 'on page 1' do
+          it "limits to #{described_class::COUNT_LIMIT}" do
+            expect(project.repository)
+              .to receive(:find_commits_by_message)
+              .with(anything, anything, anything, described_class::COUNT_LIMIT)
+              .and_call_original
+
+            results_page(1)
+          end
+        end
+
+        context 'on subsequent pages' do
+          it "limits to #{described_class::COUNT_LIMIT} plus page offset" do
+            expect(project.repository)
+              .to receive(:find_commits_by_message)
+              .with(anything, anything, anything, described_class::COUNT_LIMIT + 1)
+              .and_call_original
+
+            results_page(2)
+          end
+        end
+      end
+
+      def results_page(page)
+        described_class.new(user, project, '.').objects('commits', per_page: 1, page: page)
+      end
+
+      def commit(hash)
+        project.repository.commit(hash)
+      end
+    end
+
     context 'by commit message' do
       let(:project) { create(:project, :public, :repository) }
       let(:commit) { project.repository.commit('59e29889be61e6e0e5e223bfa9ac2721d31605b8') }

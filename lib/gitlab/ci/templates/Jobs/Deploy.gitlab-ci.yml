@@ -176,6 +176,7 @@ production_manual:
 .manual_rollout_template: &manual_rollout_template
   <<: *rollout_template
   stage: production
+  resource_group: production
   rules:
     - if: '$CI_KUBERNETES_ACTIVE == null || $CI_KUBERNETES_ACTIVE == ""'
       when: never
