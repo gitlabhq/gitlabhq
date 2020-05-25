@@ -718,7 +718,7 @@ describe Projects::PipelinesController do
       end
 
       shared_examples 'creates a pipeline' do
-        it do
+        specify do
           expect { post_request }.to change { project.ci_pipelines.count }.by(1)
 
           pipeline = project.ci_pipelines.last

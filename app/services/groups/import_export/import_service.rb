@@ -9,6 +9,7 @@ module Groups
         @group = group
         @current_user = user
         @shared = Gitlab::ImportExport::Shared.new(@group)
+        @logger = Gitlab::Import::Logger.build
       end
 
       def async_execute
@@ -81,7 +82,7 @@ module Groups
       end
 
       def notify_success
-        @shared.logger.info(
+        @logger.info(
           group_id:   @group.id,
           group_name: @group.name,
           message:    'Group Import/Export: Import succeeded'
@@ -89,7 +90,7 @@ module Groups
       end
 
       def notify_error
-        @shared.logger.error(
+        @logger.error(
           group_id:   @group.id,
           group_name: @group.name,
           message:    "Group Import/Export: Errors occurred, see '#{Gitlab::ErrorTracking::Logger.file_name}' for details"

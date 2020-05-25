@@ -28,8 +28,19 @@
 
       td,
       th {
-        @include gl-p-5;
+        // TODO:  There is no gl-pl-9 utlity for this padding, to be done and then removed.
+        padding-left: 1.25rem;
+        @include gl-py-5;
+        @include gl-outline-none;
         border: 0; // Remove cell border styling so that we can set border styling per row
+
+        &.event-count {
+          @include gl-pr-9;
+        }
+
+        &.alert-title {
+          @include gl-pointer-events-none;
+        }
       }
 
       th {

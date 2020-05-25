@@ -782,15 +782,15 @@
     eslint-plugin-vue "^6.2.1"
     vue-eslint-parser "^7.0.0"
 
-"@gitlab/svgs@1.128.0":
-  version "1.128.0"
-  resolved "https://registry.yarnpkg.com/@gitlab/svgs/-/svgs-1.128.0.tgz#c510050d5646d73b52e684248a186dbd1f55cbb0"
-  integrity sha512-RqgF6k2xPptbz58RB1nNgeo6gy3l1u7+1rxXvALzIAsazmrAw708NYCT3PALg2RoyH0G/fpUa6yPQ0HbR+OtEg==
+"@gitlab/svgs@1.130.0":
+  version "1.130.0"
+  resolved "https://registry.yarnpkg.com/@gitlab/svgs/-/svgs-1.130.0.tgz#0c2f3cdc0a4b0f54c47b2861c8fa31b2a58c570a"
+  integrity sha512-azJ1E9PBk6fGOaP6816BSr8oYrQu3m3BbYZwWOCUp8AfbZuf0ZOZVYmlR9i/eAOhoqqqmwF8hYCK2VjAklbpPA==
 
-"@gitlab/ui@14.14.2":
-  version "14.14.2"
-  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-14.14.2.tgz#7cc81d90d5b5394345d6781ff02e974e24b97387"
-  integrity sha512-Fq7fGjhofnN64xckTuuuX4EE23ZXcndwCfFBFrCTCbDfrDSa0l0xkmkrvYCSrNNTp6CyL5Ec/LWgGcnGCPWaFw==
+"@gitlab/ui@14.17.0":
+  version "14.17.0"
+  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-14.17.0.tgz#668f08318e9ef4d36a05c1ec13d531a8e46983b4"
+  integrity sha512-p75/lFQ0w5Mlg0DMdF2g/LW8DTJoSua4Xoh9BQO80o+Kw3ALQFOvvZAx17AW/MbgRD775I7Yv3V84H+s/xUqwg==
   dependencies:
     "@babel/standalone" "^7.0.0"
     "@gitlab/vue-toasted" "^1.3.0"

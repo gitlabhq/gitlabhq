@@ -280,7 +280,10 @@ We need a security group for our database that will allow inbound traffic from t
 1. From the EC2 dashboard, select **Security Groups** from the left menu bar.
 1. Click **Create security group**.
 1. Give it a name (we'll use `gitlab-rds-sec-group`), a description, and select the `gitlab-vpc` from the **VPC** dropdown.
-1. In the **Inbound rules** section, click **Add rule** and add a **PostgreSQL** rule, and set the "Custom" source as the `gitlab-loadbalancer-sec-group` we created earlier. The default PostgreSQL port is `5432`, which we'll also use when creating our database below.
+1. In the **Inbound rules** section, click **Add rule** and set the following:
+   1. **Type:** search for and select the **PostgreSQL** rule.
+   1. **Source type:** set as "Custom".
+   1. **Source:** select the `gitlab-loadbalancer-sec-group` we created earlier.
 1. When done, click **Create security group**.
 
 ### RDS Subnet Group
@@ -288,10 +291,9 @@ We need a security group for our database that will allow inbound traffic from t
 1. Navigate to the RDS dashboard and select **Subnet Groups** from the left menu.
 1. Click on **Create DB Subnet Group**.
 1. Under **Subnet group details**, enter a name (we'll use `gitlab-rds-group`), a description, and choose the `gitlab-vpc` from the VPC dropdown.
-1. Under **Add subnets**, click **Add all the subnets related to this VPC** and remove the public ones, we only want the **private subnets**. In the end, you should see `10.0.1.0/24` and `10.0.3.0/24` (as we defined them in the [subnets section](#subnets)).
+1. From the **Availability Zones** dropdown, select the Availability Zones that include the subnets you've configured. In our case, we'll add `eu-west-2a` and `eu-west-2b`.
+1. From the **Subnets** dropdown, select the two private subnets (`10.0.1.0/24` and `10.0.3.0/24`) as we defined them in the [subnets section](#subnets).
 1. Click **Create** when ready.
-
-   ![RDS Subnet Group](img/rds_subnet_group.png)
 
 ### Create the database
 
@@ -301,7 +303,7 @@ Now, it's time to create the database:
 
 1. Navigate to the RDS dashboard, select **Databases** from the left menu, and click **Create database**.
 1. Select **Standard Create** for the database creation method.
-1. Select **PostgreSQL** as the database engine and select **PostgreSQL 10.9-R1** from the version dropdown menu (check the [database requirements](../../install/requirements.md#postgresql-requirements) to see if there are any updates on this for your chosen version of GitLab).
+1. Select **PostgreSQL** as the database engine and select the minimum PostgreSQL version as defined for your GitLab version in our [database requirements](../../install/requirements.md#postgresql-requirements).
 1. Since this is a production server, let's choose **Production** from the **Templates** section.
 1. Under **Settings**, set a DB instance identifier, a master username, and a master password. We'll use `gitlab-db-ha`, `gitlab`, and a very secure password respectively. Make a note of these as we'll need them later.
 1. For the DB instance size, select **Standard classes** and select an instance size that meets your requirements from the dropdown menu. We'll use a `db.m4.large` instance.
@@ -329,7 +331,7 @@ Now that the database is created, let's move on to setting up Redis with ElastiC
 ## Redis with ElastiCache
 
 ElastiCache is an in-memory hosted caching solution. Redis maintains its own
-persistence and is used for certain types of the GitLab application.
+persistence and is used to store session data, temporary cache information, and background job queues for the GitLab application.
 
 ### Create a Redis Security Group
 

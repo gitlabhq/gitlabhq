@@ -155,6 +155,11 @@ FactoryBot.define do
         source_sha { merge_request.source_branch_sha }
         target_sha { merge_request.target_branch_sha }
       end
+
+      trait :webide do
+        source { :webide }
+        config_source { :webide_source }
+      end
     end
   end
 end

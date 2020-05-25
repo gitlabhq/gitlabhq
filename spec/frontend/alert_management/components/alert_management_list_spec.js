@@ -38,6 +38,7 @@ describe('AlertManagementList', () => {
   const findDateFields = () => wrapper.findAll(TimeAgo);
   const findFirstStatusOption = () => findStatusDropdown().find(GlDropdownItem);
   const findSeverityFields = () => wrapper.findAll('[data-testid="severityField"]');
+  const findSeverityColumnHeader = () => wrapper.findAll('th').at(0);
 
   const alertsCount = {
     acknowledged: 6,
@@ -80,7 +81,10 @@ describe('AlertManagementList', () => {
     });
   }
 
+  const mockStartedAtCol = {};
+
   beforeEach(() => {
+    jest.spyOn(document, 'querySelector').mockReturnValue(mockStartedAtCol);
     mountComponent();
   });
 
@@ -281,6 +285,34 @@ describe('AlertManagementList', () => {
         });
         expect(findDateFields().exists()).toBe(false);
       });
+    });
+  });
+
+  describe('sorting the alert list by column', () => {
+    beforeEach(() => {
+      mountComponent({
+        props: { alertManagementEnabled: true, userCanEnableAlertManagement: true },
+        data: { alerts: mockAlerts, errored: false, sort: 'START_TIME_ASC', alertsCount },
+        loading: false,
+      });
+    });
+
+    it('updates sort with new direction and column key', () => {
+      findSeverityColumnHeader().trigger('click');
+
+      expect(wrapper.vm.$data.sort).toEqual('SEVERITY_ASC');
+
+      findSeverityColumnHeader().trigger('click');
+
+      expect(wrapper.vm.$data.sort).toEqual('SEVERITY_DESC');
+    });
+
+    it('updates the `ariaSort` attribute so the sort icon appears in the proper column', () => {
+      expect(mockStartedAtCol.ariaSort).toEqual('ascending');
+
+      findSeverityColumnHeader().trigger('click');
+
+      expect(mockStartedAtCol.ariaSort).toEqual('none');
     });
   });
 

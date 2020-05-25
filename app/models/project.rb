@@ -328,6 +328,8 @@ class Project < ApplicationRecord
 
   has_many :repository_storage_moves, class_name: 'ProjectRepositoryStorageMove'
 
+  has_many :webide_pipelines, -> { webide_source }, class_name: 'Ci::Pipeline', inverse_of: :project
+
   accepts_nested_attributes_for :variables, allow_destroy: true
   accepts_nested_attributes_for :project_feature, update_only: true
   accepts_nested_attributes_for :project_setting, update_only: true
@@ -731,6 +733,10 @@ class Project < ApplicationRecord
     else
       super.external
     end
+  end
+
+  def active_webide_pipelines(user:)
+    webide_pipelines.running_or_pending.for_user(user)
   end
 
   def autoclose_referenced_issues

@@ -103,12 +103,14 @@ describe Groups::ImportExport::ExportService do
       end
 
       it 'logs the error' do
-        expect(shared.logger).to receive(:error).with(
-          group_id:   group.id,
-          group_name: group.name,
-          error:      expected_message,
-          message:    'Group Import/Export: Export failed'
-        )
+        expect_next_instance_of(Gitlab::Export::Logger) do |logger|
+          expect(logger).to receive(:error).with(
+            group_id: group.id,
+            group_name: group.name,
+            errors: expected_message,
+            message: 'Group Export failed'
+          )
+        end
 
         expect { service.execute }.to raise_error(Gitlab::ImportExport::Error)
       end
@@ -162,7 +164,8 @@ describe Groups::ImportExport::ExportService do
 
         it 'notifies logger' do
           allow(service).to receive_message_chain(:tree_exporter, :save).and_return(false)
-          expect(shared.logger).to receive(:error)
+
+          expect(service.instance_variable_get(:@logger)).to receive(:error)
 
           expect { service.execute }.to raise_error(Gitlab::ImportExport::Error)
         end

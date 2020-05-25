@@ -4977,6 +4977,9 @@ msgstr ""
 msgid "ClusterIntegration|No deployment cluster found for this job"
 msgstr ""
 
+msgid "ClusterIntegration|No deployment found for this job"
+msgstr ""
+
 msgid "ClusterIntegration|No instance type found"
 msgstr ""
 

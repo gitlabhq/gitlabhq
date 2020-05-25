@@ -27,6 +27,7 @@ module Ci
         # https://gitlab.com/gitlab-org/gitlab/issues/195991
         pipeline: 7,
         chat: 8,
+        webide: 9,
         merge_request_event: 10,
         external_pull_request_event: 11,
         parent_pipeline: 12
@@ -40,6 +41,7 @@ module Ci
         unknown_source: nil,
         repository_source: 1,
         auto_devops_source: 2,
+        webide_source: 3,
         remote_source: 4,
         external_project_source: 5,
         bridge_source: 6

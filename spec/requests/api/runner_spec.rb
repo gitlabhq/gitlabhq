@@ -1055,6 +1055,65 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
           post api('/jobs/request'), params: new_params, headers: { 'User-Agent' => user_agent }
         end
       end
+
+      context 'for web-ide job' do
+        let_it_be(:user) { create(:user) }
+        let_it_be(:project) { create(:project, :repository) }
+
+        let(:runner) { create(:ci_runner, :project, projects: [project]) }
+        let(:service) { Ci::CreateWebIdeTerminalService.new(project, user, ref: 'master').execute }
+        let(:pipeline) { service[:pipeline] }
+        let(:build) { pipeline.builds.first }
+        let(:job) { {} }
+        let(:config_content) do
+          'terminal: { image: ruby, services: [mysql], before_script: [ls], tags: [tag-1], variables: { KEY: value } }'
+        end
+
+        before do
+          stub_webide_config_file(config_content)
+          project.add_maintainer(user)
+
+          pipeline
+        end
+
+        context 'when runner has matching tag' do
+          before do
+            runner.update!(tag_list: ['tag-1'])
+          end
+
+          it 'successfully picks job' do
+            request_job
+
+            build.reload
+
+            expect(build).to be_running
+            expect(build.runner).to eq(runner)
+
+            expect(response).to have_gitlab_http_status(:created)
+            expect(json_response).to include(
+              "id" => build.id,
+              "variables" => include("key" => 'KEY', "value" => 'value', "public" => true, "masked" => false),
+              "image" => a_hash_including("name" => 'ruby'),
+              "services" => all(a_hash_including("name" => 'mysql')),
+              "job_info" => a_hash_including("name" => 'terminal', "stage" => 'terminal'))
+          end
+        end
+
+        context 'when runner does not have matching tags' do
+          it 'does not pick a job' do
+            request_job
+
+            build.reload
+
+            expect(build).to be_pending
+            expect(response).to have_gitlab_http_status(:no_content)
+          end
+        end
+
+        def request_job(token = runner.token, **params)
+          post api('/jobs/request'), params: params.merge(token: token)
+        end
+      end
     end
 
     describe 'PUT /api/v4/jobs/:id' do

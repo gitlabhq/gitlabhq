@@ -597,6 +597,16 @@ installations from source.
 
 It logs the progress of the import process.
 
+## `exporter.log`
+
+> Introduced in GitLab 13.1.
+
+This file lives in `/var/log/gitlab/gitlab-rails/exporter.log` for
+Omnibus GitLab packages or in `/home/git/gitlab/log/exporter.log` for
+installations from source.
+
+It logs the progress of the export process.
+
 ## `auth.log`
 
 > Introduced in GitLab 12.0.

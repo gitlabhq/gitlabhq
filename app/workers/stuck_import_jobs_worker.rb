@@ -45,7 +45,11 @@ class StuckImportJobsWorker # rubocop:disable Scalability/IdempotentWorker
     completed_import_states = enqueued_import_states_with_jid.where(id: completed_import_state_ids)
 
     completed_import_state_jids = completed_import_states.map { |import_state| import_state.jid }.join(', ')
-    Rails.logger.info("Marked stuck import jobs as failed. JIDs: #{completed_import_state_jids}") # rubocop:disable Gitlab/RailsLogger
+
+    Gitlab::Import::Logger.info(
+      message: 'Marked stuck import jobs as failed',
+      job_ids: completed_import_state_jids
+    )
 
     completed_import_states.each do |import_state|
       import_state.mark_as_failed(error_message)

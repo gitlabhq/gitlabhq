@@ -21,11 +21,12 @@ import getAlerts from '../graphql/queries/get_alerts.query.graphql';
 import getAlertsCountByStatus from '../graphql/queries/get_count_by_status.query.graphql';
 import { ALERTS_STATUS, ALERTS_STATUS_TABS, ALERTS_SEVERITY_LABELS } from '../constants';
 import updateAlertStatus from '../graphql/mutations/update_alert_status.graphql';
-import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
+import { capitalizeFirstCharacter, convertToSnakeCase } from '~/lib/utils/text_utility';
 
 const tdClass = 'table-col d-flex d-md-table-cell align-items-center';
 const bodyTrClass =
   'gl-border-1 gl-border-t-solid gl-border-gray-100 hover-bg-blue-50 hover-gl-cursor-pointer hover-gl-border-b-solid hover-gl-border-blue-200';
+const findDefaultSortColumn = () => document.querySelector('.js-started-at');
 
 export default {
   i18n: {
@@ -41,34 +42,41 @@ export default {
       key: 'severity',
       label: s__('AlertManagement|Severity'),
       tdClass: `${tdClass} rounded-top text-capitalize`,
+      sortable: true,
     },
     {
-      key: 'startedAt',
+      key: 'startTime',
       label: s__('AlertManagement|Start time'),
+      thClass: 'js-started-at',
       tdClass,
+      sortable: true,
     },
     {
-      key: 'endedAt',
+      key: 'endTime',
       label: s__('AlertManagement|End time'),
       tdClass,
+      sortable: true,
     },
     {
       key: 'title',
       label: s__('AlertManagement|Alert'),
-      thClass: 'w-30p',
+      thClass: 'w-30p alert-title',
       tdClass,
+      sortable: false,
     },
     {
-      key: 'eventCount',
+      key: 'eventsCount',
       label: s__('AlertManagement|Events'),
-      thClass: 'text-right gl-pr-9',
+      thClass: 'text-right gl-pr-9 w-3rem',
       tdClass: `${tdClass} text-md-right`,
+      sortable: true,
     },
     {
       key: 'status',
       thClass: 'w-15p',
       label: s__('AlertManagement|Status'),
       tdClass: `${tdClass} rounded-bottom`,
+      sortable: true,
     },
   ],
   statuses: {
@@ -122,6 +130,7 @@ export default {
         return {
           projectPath: this.projectPath,
           statuses: this.statusFilter,
+          sort: this.sort,
         };
       },
       update(data) {
@@ -148,6 +157,7 @@ export default {
       errored: false,
       isAlertDismissed: false,
       isErrorAlertDismissed: false,
+      sort: 'START_TIME_ASC',
       statusFilter: this.$options.statusTabs[4].filters,
     };
   },
@@ -170,9 +180,21 @@ export default {
       return !this.loading && this.hasAlerts ? bodyTrClass : '';
     },
   },
+  mounted() {
+    findDefaultSortColumn().ariaSort = 'ascending';
+  },
   methods: {
     filterAlertsByStatus(tabIndex) {
       this.statusFilter = this.$options.statusTabs[tabIndex].filters;
+    },
+    fetchSortedData({ sortBy, sortDesc }) {
+      const sortDirection = sortDesc ? 'DESC' : 'ASC';
+      const sortColumn = convertToSnakeCase(sortBy).toUpperCase();
+
+      if (sortBy !== 'startTime') {
+        findDefaultSortColumn().ariaSort = 'none';
+      }
+      this.sort = `${sortColumn}_${sortDirection}`;
     },
     capitalizeFirstCharacter,
     updateAlertStatus(status, iid) {
@@ -235,7 +257,10 @@ export default {
         :busy="loading"
         stacked="md"
         :tbody-tr-class="tbodyTrClass"
+        :no-local-sorting="true"
+        sort-icon-left
         @row-clicked="navigateToAlertDetails"
+        @sort-changed="fetchSortedData"
       >
         <template #cell(severity)="{ item }">
           <div
@@ -252,12 +277,16 @@ export default {
           </div>
         </template>
 
-        <template #cell(startedAt)="{ item }">
+        <template #cell(startTime)="{ item }">
           <time-ago v-if="item.startedAt" :time="item.startedAt" />
         </template>
 
-        <template #cell(endedAt)="{ item }">
+        <template #cell(endTime)="{ item }">
           <time-ago v-if="item.endedAt" :time="item.endedAt" />
+        </template>
+        <!-- TODO: Remove after: https://gitlab.com/gitlab-org/gitlab/-/issues/218467 -->
+        <template #cell(eventsCount)="{ item }">
+          {{ item.eventCount }}
         </template>
 
         <template #cell(title)="{ item }">

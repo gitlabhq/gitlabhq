@@ -119,9 +119,7 @@ describe Projects::ImportExport::ExportService do
         end
 
         it 'notifies logger' do
-          allow(Gitlab::AppLogger).to receive(:error)
-
-          expect(Gitlab::AppLogger).to receive(:error)
+          expect(service.instance_variable_get(:@logger)).to receive(:error)
         end
       end
     end
@@ -149,7 +147,7 @@ describe Projects::ImportExport::ExportService do
       end
 
       it 'notifies logger' do
-        expect(Gitlab::AppLogger).to receive(:error)
+        expect(service.instance_variable_get(:@logger)).to receive(:error)
       end
 
       it 'does not call the export strategy' do

@@ -1,6 +1,7 @@
 # Service Desk **(STARTER)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/149) in [GitLab Premium 9.1](https://about.gitlab.com/releases/2017/04/22/gitlab-9-1-released/#service-desk-eep).
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/149) in [GitLab Premium](https://about.gitlab.com/pricing/) 9.1.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/214839) to [GitLab Starter](https://about.gitlab.com/pricing/) in 13.0.
 
 ## Overview
 
@@ -28,14 +29,19 @@ with GitLab CI/CD.
 
 Here's how Service Desk will work for you:
 
-1. You'll provide a project-specific email address to your paying customers, who can email you directly from within the app
-1. Each email they send creates an issue in the appropriate project
-1. Your team members navigate to the Service Desk issue tracker, where they can see new support requests and respond inside associated issues
-1. Your team communicates back and forth with the customer to understand the request
-1. Your team starts working on implementing code to solve your customer's problem
-1. When your team finishes the implementation, whereupon the merge request is merged and the issue is closed automatically
-1. The customer will have been attended successfully via email, without having real access to your GitLab instance
-1. Your team saved time by not having to leave GitLab (or setup any integrations) to follow up with your customer
+1. You provide a project-specific email address to your paying customers, who can email you directly
+   from within the app.
+1. Each email they send creates an issue in the appropriate project.
+1. Your team members navigate to the Service Desk issue tracker, where they can see new support
+   requests and respond inside associated issues.
+1. Your team communicates back and forth with the customer to understand the request.
+1. Your team starts working on implementing code to solve your customer's problem.
+1. When your team finishes the implementation, whereupon the merge request is merged and the issue
+   is closed automatically.
+1. The customer will have been attended successfully via email, without having real access to your
+   GitLab instance.
+1. Your team saved time by not having to leave GitLab (or setup any integrations) to follow up with
+   your customer.
 
 ## How it works
 

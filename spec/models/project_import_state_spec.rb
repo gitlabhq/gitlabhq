@@ -62,11 +62,16 @@ describe ProjectImportState, type: :model do
 
     it 'logs error when update column fails' do
       allow(import_state).to receive(:update_column).and_raise(ActiveRecord::ActiveRecordError)
-      allow(Gitlab::AppLogger).to receive(:error)
+
+      expect_next_instance_of(Gitlab::Import::Logger) do |logger|
+        expect(logger).to receive(:error).with(
+          error: 'ActiveRecord::ActiveRecordError',
+          message: 'Error setting import status to failed',
+          original_error: error_message
+        )
+      end
 
       import_state.mark_as_failed(error_message)
-
-      expect(Gitlab::AppLogger).to have_received(:error)
     end
 
     it 'updates last_error with error message' do

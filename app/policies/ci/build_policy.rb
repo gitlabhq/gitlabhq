@@ -36,6 +36,10 @@ module Ci
       @subject.has_terminal?
     end
 
+    condition(:is_web_ide_terminal, scope: :subject) do
+      @subject.pipeline.webide?
+    end
+
     rule { protected_ref | archived }.policy do
       prevent :update_build
       prevent :update_commit_status
@@ -50,6 +54,24 @@ module Ci
     end
 
     rule { can?(:update_build) & terminal }.enable :create_build_terminal
+
+    rule { is_web_ide_terminal & can?(:create_web_ide_terminal) & (admin | owner_of_job) }.policy do
+      enable :read_web_ide_terminal
+      enable :update_web_ide_terminal
+    end
+
+    rule { is_web_ide_terminal & ~can?(:update_web_ide_terminal) }.policy do
+      prevent :create_build_terminal
+    end
+
+    rule { can?(:update_web_ide_terminal) & terminal }.policy do
+      enable :create_build_terminal
+      enable :create_build_service_proxy
+    end
+
+    rule { ~can?(:build_service_proxy_enabled) }.policy do
+      prevent :create_build_service_proxy
+    end
   end
 end
 

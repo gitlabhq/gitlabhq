@@ -65,18 +65,18 @@ subgraph "gitlab-qa-mirror pipeline"
     end
 ```
 
-1. Developer triggers a manual action, that can be found in CE / EE merge
+1. Developer triggers a manual action, that can be found in GitLab merge
    requests. This starts a chain of pipelines in multiple projects.
 
 1. The script being executed triggers a pipeline in
-   [Omnibus GitLab Mirror](https://gitlab.com/gitlab-org/omnibus-gitlab-mirror)
+   [Omnibus GitLab Mirror](https://gitlab.com/gitlab-org/build/omnibus-gitlab-mirror)
    and waits for the resulting status. We call this a _status attribution_.
 
-1. GitLab packages are being built in the [Omnibus GitLab](https://gitlab.com/gitlab-org/omnibus-gitlab)
+1. GitLab packages are being built in the [Omnibus GitLab Mirror](https://gitlab.com/gitlab-org/build/omnibus-gitlab-mirror)
    pipeline. Packages are then pushed to its Container Registry.
 
 1. When packages are ready, and available in the registry, a final step in the
-   [Omnibus GitLab](https://gitlab.com/gitlab-org/omnibus-gitlab) pipeline, triggers a new
+   [Omnibus GitLab Mirror](https://gitlab.com/gitlab-org/build/omnibus-gitlab-mirror) pipeline, triggers a new
    GitLab QA pipeline (those with access can view them at `https://gitlab.com/gitlab-org/gitlab-qa-mirror/pipelines`). It also waits for a resulting status.
 
 1. GitLab QA pulls images from the registry, spins-up containers and runs tests
@@ -84,7 +84,7 @@ subgraph "gitlab-qa-mirror pipeline"
    tool.
 
 1. The result of the GitLab QA pipeline is being
-   propagated upstream, through Omnibus, back to the CE / EE merge request.
+   propagated upstream, through Omnibus, back to the GitLab merge request.
 
 Please note, we plan to [add more specific information](https://gitlab.com/gitlab-org/quality/team-tasks/issues/156)
 about the tests included in each job/scenario that runs in `gitlab-qa-mirror`.

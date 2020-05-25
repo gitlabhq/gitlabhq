@@ -742,4 +742,62 @@ describe ProjectPolicy do
       it { is_expected.to be_disallowed(:destroy_package) }
     end
   end
+
+  describe 'create_web_ide_terminal' do
+    subject { described_class.new(current_user, project) }
+
+    context 'with admin' do
+      let(:current_user) { admin }
+
+      context 'when admin mode enabled', :enable_admin_mode do
+        it { is_expected.to be_allowed(:create_web_ide_terminal) }
+      end
+
+      context 'when admin mode disabled' do
+        it { is_expected.to be_disallowed(:create_web_ide_terminal) }
+      end
+    end
+
+    context 'with owner' do
+      let(:current_user) { owner }
+
+      it { is_expected.to be_allowed(:create_web_ide_terminal) }
+    end
+
+    context 'with maintainer' do
+      let(:current_user) { maintainer }
+
+      it { is_expected.to be_allowed(:create_web_ide_terminal) }
+    end
+
+    context 'with developer' do
+      let(:current_user) { developer }
+
+      it { is_expected.to be_disallowed(:create_web_ide_terminal) }
+    end
+
+    context 'with reporter' do
+      let(:current_user) { reporter }
+
+      it { is_expected.to be_disallowed(:create_web_ide_terminal) }
+    end
+
+    context 'with guest' do
+      let(:current_user) { guest }
+
+      it { is_expected.to be_disallowed(:create_web_ide_terminal) }
+    end
+
+    context 'with non member' do
+      let(:current_user) { create(:user) }
+
+      it { is_expected.to be_disallowed(:create_web_ide_terminal) }
+    end
+
+    context 'with anonymous' do
+      let(:current_user) { nil }
+
+      it { is_expected.to be_disallowed(:create_web_ide_terminal) }
+    end
+  end
 end

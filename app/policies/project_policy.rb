@@ -147,6 +147,10 @@ class ProjectPolicy < BasePolicy
     @user && @user.confirmed?
   end
 
+  condition(:build_service_proxy_enabled) do
+    ::Feature.enabled?(:build_service_proxy, @subject)
+  end
+
   features = %w[
     merge_requests
     issues
@@ -558,6 +562,10 @@ class ProjectPolicy < BasePolicy
     enable :create_package
     enable :read_project
   end
+
+  rule { can?(:create_pipeline) & can?(:maintainer_access) }.enable :create_web_ide_terminal
+
+  rule { build_service_proxy_enabled }.enable :build_service_proxy_enabled
 
   private
 

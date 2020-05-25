@@ -29,7 +29,10 @@ module Gitlab
             yield object
           end
         rescue StandardError => e
-          Rails.logger.error("The Lfs import process failed. #{e.message}") # rubocop:disable Gitlab/RailsLogger
+          Gitlab::Import::Logger.error(
+            message: 'The Lfs import process failed',
+            error: e.message
+          )
         end
       end
     end

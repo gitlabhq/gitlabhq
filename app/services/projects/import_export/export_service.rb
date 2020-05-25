@@ -9,6 +9,7 @@ module Projects
         super
 
         @shared = project.import_export_shared
+        @logger = Gitlab::Export::Logger.build
       end
 
       def execute(after_export_strategy = nil)
@@ -115,11 +116,20 @@ module Projects
       end
 
       def notify_success
-        Gitlab::AppLogger.info("Import/Export - Project #{project.name} with ID: #{project.id} successfully exported")
+        @logger.info(
+          message: 'Project successfully exported',
+          project_name: project.name,
+          project_id: project.id
+        )
       end
 
       def notify_error
-        Gitlab::AppLogger.error("Import/Export - Project #{project.name} with ID: #{project.id} export error - #{shared.errors.join(', ')}")
+        @logger.error(
+          message: 'Project export error',
+          export_errors: shared.errors.join(', '),
+          project_name: project.name,
+          project_id: project.id
+        )
 
         notification_service.project_not_exported(project, current_user, shared.errors)
       end

@@ -85,8 +85,20 @@ describe Clusters::ParseClusterApplicationsArtifactService do
         end
       end
 
-      context 'job has no deployment cluster' do
+      context 'job has no deployment' do
         let(:job) { build(:ci_build) }
+
+        it 'returns an error' do
+          result = described_class.new(job, user).execute(artifact)
+
+          expect(result[:status]).to eq(:error)
+          expect(result[:message]).to eq('No deployment found for this job')
+        end
+      end
+
+      context 'job has no deployment cluster' do
+        let(:deployment) { create(:deployment) }
+        let(:job) { deployment.deployable }
 
         it 'returns an error' do
           result = described_class.new(job, user).execute(artifact)

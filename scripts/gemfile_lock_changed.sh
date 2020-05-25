@@ -2,7 +2,7 @@
 
 gemfile_lock_changed() {
   if [ -n "$(git diff --name-only -- Gemfile.lock)" ]; then
-  cat << EOF
+    cat <<EOF
   Gemfile was updated but Gemfile.lock was not updated.
 
   Usually, when Gemfile is updated, you should run
