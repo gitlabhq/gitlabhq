@@ -32,7 +32,8 @@ describe Gitlab::AlertManagement::AlertParams do
         severity: 'critical',
         hosts: ['gitlab.com'],
         payload: payload,
-        started_at: started_at
+        started_at: started_at,
+        fingerprint: nil
       )
     end
 

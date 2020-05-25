@@ -8799,6 +8799,9 @@ msgstr ""
 msgid "Errors:"
 msgstr ""
 
+msgid "Estimate"
+msgstr ""
+
 msgid "Estimated"
 msgstr ""
 

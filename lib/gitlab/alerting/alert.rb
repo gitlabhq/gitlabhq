@@ -106,7 +106,7 @@ module Gitlab
       end
 
       def gitlab_fingerprint
-        Digest::SHA1.hexdigest(plain_gitlab_fingerprint)
+        Gitlab::AlertManagement::Fingerprint.generate(plain_gitlab_fingerprint)
       end
 
       def valid?

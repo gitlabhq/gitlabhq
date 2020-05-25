@@ -10,7 +10,7 @@ module Projects
         return forbidden unless alerts_service_activated?
         return unauthorized unless valid_token?(token)
 
-        alert = create_alert
+        alert = process_alert
         return bad_request unless alert.persisted?
 
         process_incident_issues(alert) if process_issues?
@@ -26,11 +26,27 @@ module Projects
       delegate :alerts_service, :alerts_service_activated?, to: :project
 
       def am_alert_params
-        Gitlab::AlertManagement::AlertParams.from_generic_alert(project: project, payload: params.to_h)
+        strong_memoize(:am_alert_params) do
+          Gitlab::AlertManagement::AlertParams.from_generic_alert(project: project, payload: params.to_h)
+        end
+      end
+
+      def process_alert
+        if alert = find_alert_by_fingerprint(am_alert_params[:fingerprint])
+          alert.register_new_event!
+        else
+          create_alert
+        end
       end
 
       def create_alert
         AlertManagement::Alert.create(am_alert_params)
+      end
+
+      def find_alert_by_fingerprint(fingerprint)
+        return unless fingerprint
+
+        AlertManagement::Alert.for_fingerprint(project, fingerprint).first
       end
 
       def send_email?

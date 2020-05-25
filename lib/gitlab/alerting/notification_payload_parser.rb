@@ -35,6 +35,10 @@ module Gitlab
         payload[:severity].presence || DEFAULT_SEVERITY
       end
 
+      def fingerprint
+        Gitlab::AlertManagement::Fingerprint.generate(payload[:fingerprint])
+      end
+
       def annotations
         primary_params
           .reverse_merge(flatten_secondary_params)
@@ -49,7 +53,8 @@ module Gitlab
           'monitoring_tool' => payload[:monitoring_tool],
           'service' => payload[:service],
           'hosts' => hosts.presence,
-          'severity' => severity
+          'severity' => severity,
+          'fingerprint' => fingerprint
         }
       end
 

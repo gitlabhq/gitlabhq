@@ -3880,11 +3880,11 @@ if using Git 2.10 or newer.
 
 ## Processing Git pushes
 
-GitLab will create at most 4 branch and tags pipelines when
-doing pushing multiple changes in single `git push` invocation.
+GitLab will create at most 4 branch and tag pipelines when
+pushing multiple changes in single `git push` invocation.
 
-This limitation does not affect any of the updated Merge Request pipelines,
-all updated Merge Requests will have a pipeline created when using
+This limitation does not affect any of the updated Merge Request pipelines.
+All updated Merge Requests will have a pipeline created when using
 [pipelines for merge requests](../merge_request_pipelines/index.md).
 
 ## Deprecated parameters

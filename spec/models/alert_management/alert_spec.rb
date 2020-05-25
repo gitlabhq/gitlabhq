@@ -317,4 +317,14 @@ describe AlertManagement::Alert do
       expect { subject }.to change { alert.reload.ended_at }.to nil
     end
   end
+
+  describe '#register_new_event!' do
+    subject { alert.register_new_event! }
+
+    let(:alert) { create(:alert_management_alert) }
+
+    it 'increments the events count by 1' do
+      expect { subject }.to change { alert.events}.by(1)
+    end
+  end
 end

@@ -35,6 +35,7 @@ Disallow: /snippets/*/raw
 User-Agent: *
 Disallow: /*/*.git
 Disallow: /*/*/fork/new
+Disallow: /*/-/archive/
 Disallow: /*/*/repository/archive*
 Disallow: /*/*/activity
 Disallow: /*/*/new

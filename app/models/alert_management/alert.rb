@@ -135,6 +135,10 @@ module AlertManagement
       monitoring_tool == Gitlab::AlertManagement::AlertParams::MONITORING_TOOLS[:prometheus]
     end
 
+    def register_new_event!
+      increment!(:events, 1)
+    end
+
     private
 
     def hosts_length

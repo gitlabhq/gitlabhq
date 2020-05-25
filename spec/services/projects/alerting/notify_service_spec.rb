@@ -73,6 +73,7 @@ describe Projects::Alerting::NotifyService do
   describe '#execute' do
     let(:token) { 'invalid-token' }
     let(:starts_at) { Time.current.change(usec: 0) }
+    let(:fingerprint) { 'testing' }
     let(:service) { described_class.new(project, nil, payload) }
     let(:payload_raw) do
       {
@@ -82,7 +83,8 @@ describe Projects::Alerting::NotifyService do
         monitoring_tool: 'GitLab RSpec',
         service: 'GitLab Test Suite',
         description: 'Very detailed description',
-        hosts: ['1.1.1.1', '2.2.2.2']
+        hosts: ['1.1.1.1', '2.2.2.2'],
+        fingerprint: fingerprint
       }.with_indifferent_access
     end
     let(:payload) { ActionController::Parameters.new(payload_raw).permit! }
@@ -131,9 +133,21 @@ describe Projects::Alerting::NotifyService do
               description: payload_raw.fetch(:description),
               monitoring_tool: payload_raw.fetch(:monitoring_tool),
               service: payload_raw.fetch(:service),
-              fingerprint: nil,
+              fingerprint: Digest::SHA1.hexdigest(fingerprint),
               ended_at: nil
             )
+          end
+
+          context 'existing alert with same fingerprint' do
+            let!(:existing_alert) { create(:alert_management_alert, project: project, fingerprint: Digest::SHA1.hexdigest(fingerprint)) }
+
+            it 'does not create AlertManagement::Alert' do
+              expect { subject }.not_to change(AlertManagement::Alert, :count)
+            end
+
+            it 'increments the existing alert count' do
+              expect { subject }.to change { existing_alert.reload.events }.from(1).to(2)
+            end
           end
 
           context 'with a minimal payload' do

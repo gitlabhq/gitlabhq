@@ -41,8 +41,11 @@ are:
   process jobs using a [FIFO](https://en.wikipedia.org/wiki/FIFO_(computing_and_electronics)) queue.
 
 A Runner that is specific only runs for the specified project(s). A shared Runner
-can run jobs for every project that has enabled the option **Allow shared Runners**
-under **Settings > CI/CD**.
+can run jobs for every project that allows shared Runners. To allow shared Runners on a project:
+
+1. Navigate to the project's **{settings}** **Settings > CI/CD**.
+1. Expand the **Runners** section.
+1. Click on **Allow shared Runners**.
 
 Projects with high demand of CI activity can also benefit from using specific
 Runners. By having dedicated Runners you are guaranteed that the Runner is not
@@ -68,7 +71,7 @@ You can only register a shared Runner if you are an admin of the GitLab instance
 
 Shared Runners are enabled by default as of GitLab 8.2, but can be disabled
 with the **Disable shared Runners** button which is present under each project's
-**Settings > CI/CD** page. Previous versions of GitLab defaulted shared
+**{settings}** **Settings > CI/CD** page. Previous versions of GitLab defaulted shared
 Runners to disabled.
 
 ## Registering a specific Runner
@@ -83,7 +86,7 @@ Registering a specific Runner can be done in two ways:
 To create a specific Runner without having admin rights to the GitLab instance,
 visit the project you want to make the Runner work for in GitLab:
 
-1. Go to **Settings > CI/CD** to obtain the token
+1. Go to **{settings}** **Settings > CI/CD** to obtain the token
 1. [Register the Runner](https://docs.gitlab.com/runner/register/)
 
 ## Registering a group Runner
@@ -91,7 +94,7 @@ visit the project you want to make the Runner work for in GitLab:
 Creating a group Runner requires Owner permissions for the group. To create a
 group Runner visit the group you want to make the Runner work for in GitLab:
 
-1. Go to **Settings > CI/CD** to obtain the token
+1. Go to **{settings}** **Settings > CI/CD** to obtain the token
 1. [Register the Runner](https://docs.gitlab.com/runner/register/)
 
 ### Making an existing shared Runner specific
@@ -100,7 +103,7 @@ If you are an admin on your GitLab instance, you can turn any shared Runner into
 a specific one, but not the other way around. Keep in mind that this is a one
 way transition.
 
-1. Go to the Runners in the **Admin Area > Overview > Runners** (`/admin/runners`)
+1. Go to the Runners in the **{admin}** **Admin Area > Overview > Runners** (`/admin/runners`)
    and find your Runner
 1. Enable any projects under **Restrict projects for this Runner** to be used
    with the Runner
@@ -116,7 +119,7 @@ can be changed afterwards under each Runner's settings.
 
 To lock/unlock a Runner:
 
-1. Visit your project's **Settings > CI/CD**
+1. Visit your project's **{settings}** **Settings > CI/CD**
 1. Find the Runner you wish to lock/unlock and make sure it's enabled
 1. Click the pencil button
 1. Check the **Lock to current projects** option
@@ -130,7 +133,7 @@ you can enable the Runner also on any other project where you have Owner permiss
 
 To enable/disable a Runner in your project:
 
-1. Visit your project's **Settings > CI/CD**
+1. Visit your project's **{settings}** **Settings > CI/CD**
 1. Find the Runner you wish to enable/disable
 1. Click **Enable for this project** or **Disable for this project**
 
@@ -164,7 +167,7 @@ Whenever a Runner is protected, the Runner picks only jobs created on
 
 To protect/unprotect Runners:
 
-1. Visit your project's **Settings > CI/CD**
+1. Visit your project's **{settings}** **Settings > CI/CD**
 1. Find a Runner you want to protect/unprotect and make sure it's enabled
 1. Click the pencil button besides the Runner name
 1. Check the **Protected** option
@@ -254,7 +257,7 @@ Runner settings.
 
 To make a Runner pick untagged jobs:
 
-1. Visit your project's **Settings > CI/CD > Runners**.
+1. Visit your project's **{settings}** **Settings > CI/CD > Runners**.
 1. Find the Runner you want to pick untagged jobs and make sure it's enabled.
 1. Click the pencil button.
 1. Check the **Run untagged jobs** option.
@@ -372,7 +375,7 @@ attacker.
 
 To reset the token:
 
-1. Go to **Settings > CI/CD** for a specified Project.
+1. Go to **{settings}** **Settings > CI/CD** for a specified Project.
 1. Expand the **General pipelines settings** section.
 1. Find the **Runner token** form field and click the **Reveal value** button.
 1. Delete the value and save the form.
@@ -402,7 +405,7 @@ different places.
 To view the IP address of a shared Runner you must have admin access to
 the GitLab instance. To determine this:
 
-1. Visit **Admin Area > Overview > Runners**
+1. Visit **{admin}** **Admin Area > Overview > Runners**
 1. Look for the Runner in the table and you should see a column for "IP Address"
 
 ![shared Runner IP address](img/shared_runner_ip_address.png)
@@ -411,7 +414,7 @@ the GitLab instance. To determine this:
 
 You can find the IP address of a Runner for a specific project by:
 
-1. Visit your project's **Settings > CI/CD**
+1. Visit your project's **{settings}** **Settings > CI/CD**
 1. Find the Runner and click on it's ID which links you to the details page
 1. On the details page you should see a row for "IP Address"
 

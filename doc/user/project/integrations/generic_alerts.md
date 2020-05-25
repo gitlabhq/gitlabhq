@@ -28,7 +28,7 @@ To set up the generic alerts integration:
 
 ## Customizing the payload
 
-You can customize the payload by sending the following parameters. All fields are optional:
+You can customize the payload by sending the following parameters. All fields other than `title` are optional:
 
 | Property | Type | Description |
 | -------- | ---- | ----------- |
@@ -39,6 +39,7 @@ You can customize the payload by sending the following parameters. All fields ar
 | `monitoring_tool` | String |  The name of the associated monitoring tool. |
 | `hosts` | String or Array | One or more hosts, as to where this incident occurred. |
 | `severity` | String | The severity of the alert. Must be one of `critical`, `high`, `medium`, `low`, `info`, `unknown`. Default is `critical`. |
+| `fingerprint` | String or Array | The unique identifier of the alert. This can be used to group occurrences of the same alert. |
 
 TIP: **Payload size:**
 Ensure your requests are smaller than the [payload application limits](../../../administration/instance_limits.md#generic-alert-json-payloads).
@@ -65,5 +66,7 @@ Example payload:
   "service": "service affected",
   "monitoring_tool": "value",
   "hosts": "value",
+  "severity": "high",
+  "fingerprint": "d19381d4e8ebca87b55cda6e8eee7385"
 }
 ```
