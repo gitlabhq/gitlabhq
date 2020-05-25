@@ -260,8 +260,22 @@ n_("%{project_name}", "%d projects selected", count) % { project_name: 'GitLab' 
 
 ### Namespaces
 
-Sometimes you need to add some context to the text that you want to translate
-(if the word occurs in a sentence and/or the word is ambiguous).
+A namespace is a way to group translations that belong together. They provide context to our translators by adding a prefix followed by the bar symbol (`|`). For example:
+
+```ruby
+_('Namespace|Translated string')
+```
+
+A namespace provide the following benefits:
+
+- It addresses ambiguity in words, for example: `Promotions|Promote` vs `Epic|Promote`
+- It allows translators to focus on translating externalized strings that belong to the same product area rather than arbitrary ones.
+- It gives a linguistic context to help the translator.
+
+In some cases, namespaces don't make sense, for example,
+for ubiquitous UI words and phrases such as "Cancel" or phrases like "Save changes" a namespace could
+be counterproductive.
+
 Namespaces should be PascalCase.
 
 - In Ruby/HAML:

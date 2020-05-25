@@ -324,7 +324,6 @@ linters:
       - "ee/app/views/admin/geo/projects/_registry_never.html.haml"
       - "ee/app/views/admin/licenses/_upload_trial_license.html.haml"
       - "ee/app/views/admin/licenses/new.html.haml"
-      - "ee/app/views/admin/licenses/show.html.haml"
       - "ee/app/views/admin/monitoring/ee/_nav.html.haml"
       - "ee/app/views/admin/projects/_shared_runner_status.html.haml"
       - "ee/app/views/admin/users/_auditor_access_level_radio.html.haml"

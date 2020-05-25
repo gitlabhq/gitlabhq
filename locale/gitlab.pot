@@ -1151,6 +1151,9 @@ msgstr ""
 msgid "Active Users:"
 msgstr ""
 
+msgid "Active users"
+msgstr ""
+
 msgid "Activity"
 msgstr ""
 
@@ -2690,6 +2693,9 @@ msgstr ""
 msgid "Are you sure you want to remove the attachment?"
 msgstr ""
 
+msgid "Are you sure you want to remove the license?"
+msgstr ""
+
 msgid "Are you sure you want to remove this identity?"
 msgstr ""
 
@@ -3559,6 +3565,9 @@ msgid "Business"
 msgstr ""
 
 msgid "Business metrics (Custom)"
+msgstr ""
+
+msgid "Buy License"
 msgstr ""
 
 msgid "Buy more Pipeline minutes"
@@ -6631,6 +6640,9 @@ msgstr ""
 msgid "CustomCycleAnalytics|Update stage"
 msgstr ""
 
+msgid "Customer Portal"
+msgstr ""
+
 msgid "Customize colors"
 msgstr ""
 
@@ -8973,6 +8985,9 @@ msgstr ""
 msgid "Expired %{expiredOn}"
 msgstr ""
 
+msgid "Expired:"
+msgstr ""
+
 msgid "Expires"
 msgstr ""
 
@@ -8980,6 +8995,9 @@ msgid "Expires at"
 msgstr ""
 
 msgid "Expires in %{expires_at}"
+msgstr ""
+
+msgid "Expires on"
 msgstr ""
 
 msgid "Expires:"
@@ -11467,6 +11485,9 @@ msgstr ""
 msgid "If enabled, and if object storage is enabled, GitLab will handle Object Storage replication using Geo"
 msgstr ""
 
+msgid "If there is no previous license or if the previous license has expired, some GitLab functionality will be blocked until a new, valid license is uploaded."
+msgstr ""
+
 msgid "If this was a mistake you can %{leave_link_start}leave the %{source_type}%{link_end}."
 msgstr ""
 
@@ -11489,6 +11510,9 @@ msgid "If you reach 100%% storage capacity, you will not be able to: %{base_mess
 msgstr ""
 
 msgid "If you recently signed in and recognize the IP address, you may disregard this email."
+msgstr ""
+
+msgid "If you remove this license, GitLab will fall back on the previous license, if any."
 msgstr ""
 
 msgid "If your HTTP repository is not publicly accessible, add your credentials."
@@ -12687,6 +12711,9 @@ msgid "License"
 msgstr ""
 
 msgid "License Compliance"
+msgstr ""
+
+msgid "License History"
 msgstr ""
 
 msgid "License-Check"
@@ -15761,6 +15788,12 @@ msgstr ""
 msgid "Plain diff"
 msgstr ""
 
+msgid "Plan"
+msgstr ""
+
+msgid "Plan:"
+msgstr ""
+
 msgid "PlantUML"
 msgstr ""
 
@@ -17881,6 +17914,9 @@ msgid "Remove from epic"
 msgstr ""
 
 msgid "Remove group"
+msgstr ""
+
+msgid "Remove license"
 msgstr ""
 
 msgid "Remove limit"
@@ -20580,6 +20616,9 @@ msgstr ""
 msgid "Started asynchronous removal of all repository check states."
 msgstr ""
 
+msgid "Started:"
+msgstr ""
+
 msgid "Starting..."
 msgstr ""
 
@@ -20707,6 +20746,9 @@ msgid "StatusPage|your status page frontend."
 msgstr ""
 
 msgid "Stay updated about the performance and health of your environment by configuring Prometheus to monitor your deployments."
+msgstr ""
+
+msgid "Still, we recommend keeping a backup saved somewhere. Otherwise, if you ever need it and have lost it, you will need to request GitLab Inc. to send it to you again."
 msgstr ""
 
 msgid "Stop Terminal"
@@ -23476,6 +23518,9 @@ msgstr ""
 msgid "Upload New File"
 msgstr ""
 
+msgid "Upload New License"
+msgstr ""
+
 msgid "Upload a certificate for your domain with all intermediates"
 msgstr ""
 
@@ -23492,6 +23537,9 @@ msgid "UploadLink|click to upload"
 msgstr ""
 
 msgid "Uploaded on"
+msgstr ""
+
+msgid "Uploaded:"
 msgstr ""
 
 msgid "Uploading changes to terminal"
@@ -23987,6 +24035,9 @@ msgid "Using %{code_start}::%{code_end} denotes a %{link_start}scoped label set%
 msgstr ""
 
 msgid "Using required encryption strategy when encrypted field is missing!"
+msgstr ""
+
+msgid "Valid from"
 msgstr ""
 
 msgid "Validate"
@@ -25039,7 +25090,7 @@ msgstr ""
 msgid "You don’t have access to Value Stream Analytics for this group"
 msgstr ""
 
-msgid "You have a license(s) that activates at a future date. Please see the License History table below."
+msgid "You have a license that activates at a future date. Please see the License History table below."
 msgstr ""
 
 msgid "You have been granted %{access_level} access to the %{source_link} %{source_type}."
@@ -25273,6 +25324,9 @@ msgstr ""
 msgid "Your Groups"
 msgstr ""
 
+msgid "Your License"
+msgstr ""
+
 msgid "Your Personal Access Tokens will expire in %{days_to_expire} days or less"
 msgstr ""
 
@@ -25373,6 +25427,9 @@ msgid "Your issues will be imported in the background. Once finished, you'll get
 msgstr ""
 
 msgid "Your license is valid from"
+msgstr ""
+
+msgid "Your license will be included in your GitLab backup and will survive upgrades, so in normal usage you should never need to re-upload your <code>.gitlab-license</code> file."
 msgstr ""
 
 msgid "Your message here"

@@ -147,7 +147,9 @@ successfully, you must replicate their data using some other means.
 | [Conan Repository](../../../user/packages/conan_repository/index.md) | [No](https://gitlab.com/groups/gitlab-org/-/epics/2346)  | No                                                      |                                                                                                            |
 | [NuGet Repository](../../../user/packages/nuget_repository/index.md) | [No](https://gitlab.com/groups/gitlab-org/-/epics/2346)  | No                                                      |                                                                                                            |
 | [PyPi Repository](../../../user/packages/pypi_repository/index.md)   | [No](https://gitlab.com/groups/gitlab-org/-/epics/2554)  | No                                                      |                                                                                                            |
-| [External merge request diffs](../../merge_request_diffs.md)         | [No](https://gitlab.com/gitlab-org/gitlab/-/issues/33817)  | No                                                      |                                                                                                            |
+| [External merge request diffs](../../merge_request_diffs.md)         | [No](https://gitlab.com/gitlab-org/gitlab/-/issues/33817)  | No                                                      |                                           |
+| [Terraform State](../../terraform_state.md)                                                                  | [No](https://gitlab.com/groups/gitlab-org/-/epics/3112)(*3*) | No                                                        |                                                                                                            |
+| [Vulnerability Export](../../../user/application_security/security_dashboard/#export-vulnerabilities-1)      | [No](https://gitlab.com/groups/gitlab-org/-/epics/3111)(*3*) | No                                                        |                                                                                                            |                                                                                                            |
 | Content in object storage                                            | **Yes**                                                  | No                                                      |                                                                                                            |
 
 - (*1*): The integrity can be verified manually using
@@ -155,3 +157,5 @@ successfully, you must replicate their data using some other means.
   the output between them.
 - (*2*): GitLab versions 11.11.x and 12.0.x are affected by [a bug that prevents any new
   LFS objects from replicating](https://gitlab.com/gitlab-org/gitlab/-/issues/32696).
+- (*3*): If you are using Object Storage, the replication can be performed by the
+  Object Storage provider if supported. Please see [Geo with Object Storage](object_storage.md)

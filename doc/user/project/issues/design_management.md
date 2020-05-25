@@ -3,10 +3,6 @@
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/660) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.2.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/212566) to GitLab Core in 13.0.
 
-CAUTION: **Warning:**
-This an **alpha** feature and is subject to change at any time without
-prior notice.
-
 ## Overview
 
 Design Management allows you to upload design assets (wireframes, mockups, etc.)
