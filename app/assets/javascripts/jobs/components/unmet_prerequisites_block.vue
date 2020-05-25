@@ -17,7 +17,7 @@ export default {
 </script>
 <template>
   <div class="bs-callout bs-callout-danger">
-    <p class="js-failed-unmet-prerequisites append-bottom-0">
+    <p class="js-failed-unmet-prerequisites gl-mb-0">
       {{
         s__(`Job|This job failed because the necessary resources were not successfully created.`)
       }}

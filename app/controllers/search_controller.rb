@@ -33,7 +33,7 @@ class SearchController < ApplicationController
     render_commits if @scope == 'commits'
     eager_load_user_status if @scope == 'users'
 
-    increment_navbar_searches_counter
+    increment_search_counters
 
     check_single_commit_result
   end
@@ -98,9 +98,11 @@ class SearchController < ApplicationController
     end
   end
 
-  def increment_navbar_searches_counter
+  def increment_search_counters
+    Gitlab::UsageDataCounters::SearchCounter.count(:all_searches)
+
     return if params[:nav_source] != 'navbar'
 
-    Gitlab::UsageDataCounters::SearchCounter.increment_navbar_searches_count
+    Gitlab::UsageDataCounters::SearchCounter.count(:navbar_searches)
   end
 end

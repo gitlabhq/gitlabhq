@@ -53,6 +53,6 @@ export default {
       </span>
     </p>
 
-    <p class="append-bottom-0">{{ commit.title }}</p>
+    <p class="gl-mb-0">{{ commit.title }}</p>
   </div>
 </template>

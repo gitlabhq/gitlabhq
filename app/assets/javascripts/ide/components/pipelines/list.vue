@@ -82,9 +82,9 @@ export default {
         class="mb-auto mt-auto"
       />
       <div v-else-if="latestPipeline.yamlError" class="bs-callout bs-callout-danger">
-        <p class="append-bottom-0">{{ __('Found errors in your .gitlab-ci.yml:') }}</p>
-        <p class="append-bottom-0 break-word">{{ latestPipeline.yamlError }}</p>
-        <p class="append-bottom-0" v-html="ciLintText"></p>
+        <p class="gl-mb-0">{{ __('Found errors in your .gitlab-ci.yml:') }}</p>
+        <p class="gl-mb-0 break-word">{{ latestPipeline.yamlError }}</p>
+        <p class="gl-mb-0" v-html="ciLintText"></p>
       </div>
       <tabs v-else class="ide-pipeline-list">
         <tab :active="!pipelineFailed">

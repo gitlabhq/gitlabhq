@@ -8,100 +8,73 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/7433) in GitLab 11.4.
 
-Feature flags allow you to ship a project in different flavors by
-dynamically toggling certain functionality.
+With Feature Flags, you can deploy your application's new features to production in smaller batches.
+You can toggle a feature on and off to subsets of users, helping you achieve Continuous Delivery.
+Feature flags help reduce risk, allowing you to do controlled testing, and separate feature
+delivery from customer launch.
 
-## Overview
-
-Feature Flags offer a feature toggle system for your application. They enable teams
-to achieve Continuous Delivery by deploying new features to production at smaller
-batches for controlled testing, separating feature delivery from customer launch.
-This helps reducing risk and allows you to easily manage which features to enable.
-
-GitLab offers a Feature Flags interface that allows you to create, toggle and
-remove feature flags.
-
-<div class="video-fallback">
-  <a href="https://www.youtube.com/watch?v=5tw2p6lwXxo">Watch</a> a use case between Feature Flags and Sentry Error Tracking
-</div>
-<figure class="video-container">
-  <iframe src="https://www.youtube.com/embed/5tw2p6lwXxo" frameborder="0" allowfullscreen="true"> </iframe>
-</figure>
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+For an example of feature flags in action, see [GitLab for Deploys, Feature Flags, and Error Tracking](https://www.youtube.com/embed/5tw2p6lwXxo).
 
 ## How it works
 
-Underneath, GitLab uses [unleash](https://github.com/Unleash/unleash), a feature
-toggle service. GitLab provides an API where your application can talk to and get the
-list of feature flags you set in GitLab.
+GitLab uses [Unleash](https://github.com/Unleash/unleash), a feature
+toggle service.
 
-The application must be configured to talk to GitLab, so that's up to the
-developers to use a compatible [client library](#client-libraries) and
-integrate it in their app.
+By enabling or disabling a flag in GitLab, your application
+can determine which features to enable or disable.
 
-By setting a flag active or inactive via GitLab, your application will automatically
-know which features to enable or disable respectively.
+You can create feature flags in GitLab and use the API from your application
+to get the list of feature flags and their statuses. The application must be configured to communicate
+with GitLab, so it's up to developers to use a compatible client library and
+[integrate the feature flags in your app](#integrate-feature-flags-with-your-application).
 
-## Adding a new feature flag
+## Create a feature flag
 
-To add a new feature flag:
+To create and enable a feature flag:
 
 1. Navigate to your project's **Operations > Feature Flags**.
-1. Click on the **New Feature Flag** button.
-1. Give it a name.
-
-   NOTE: **Note:**
-   A name can contain only lowercase letters, digits, underscores (`_`)
-   and dashes (`-`), must start with a letter, and cannot end with a dash (`-`)
-   or an underscore (`_`).
-
-1. Give it a description (optional, 255 characters max).
-1. Define environment [specs](#define-environment-specs). If you want the flag on by default, enable the catch-all [wildcard spec (`*`)](#define-environment-specs)
+1. Click the **New feature flag** button.
+1. Enter a name that starts with a letter and contains only lowercase letters, digits, underscores (`_`)
+   and dashes (`-`), and does not end with a dash (`-`) or underscore (`_`).
+1. Enter a description (optional, 255 characters max).
+1. Enter details about how the flag should be applied:
+   - In GitLab 13.0 and earlier: Enter an environment spec,
+     enable or disable the flag in this environment, and select a rollout strategy.
+   - In GitLab 13.1 and later (when [this feature flag](#feature-flag-behavior-change-in-130) is enabled): Select a strategy and then
+     the environments to apply the strategy to.
 1. Click **Create feature flag**.
 
-Once a feature flag is created, the list of existing feature flags will be presented
-with ability to edit or remove them.
+The feature flag is displayed in the list. It is enabled by default.
 
-To make a feature flag active or inactive, click the pencil icon to edit it,
-and toggle the status for each [spec](#define-environment-specs).
+## Disable a feature flag for a specific environment
 
-The toggles next to each feature flag on the list page function as global shutoff switches.
-If a toggle is off, that feature flag is disabled for every environment.
-
-![Feature flags list](img/feature_flags_list_v12_7.png)
-
-## Define environment specs
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/8621) in GitLab 11.8.
-
-In general, an application is deployed to multiple environments, such as
-production, staging and [review apps](../../../ci/review_apps/index.md).
-For example, you may not want to enable a feature flag on production until your QA team has
-first confirmed that the feature is working correctly on testing environments.
-
-To handle these situations, you can enable a feature flag on a particular environment
-with [Environment specs](../../../ci/environments/index.md#scoping-environments-with-specs).
-You can define multiple specs per flag so that you can control your feature flag more granularly.
-
-To define specs for each environment:
+In [GitLab 13.0 and earlier](https://gitlab.com/gitlab-org/gitlab/-/issues/8621),
+to disable a feature flag for a specific environment:
 
 1. Navigate to your project's **Operations > Feature Flags**.
-1. Click on the **New Feature Flag** button or edit an existing flag.
-1. Set the status of the default [spec](../../../ci/environments/index.md#scoping-environments-with-specs) (`*`). Choose a rollout strategy. This status and rollout strategy combination will be used for _all_ environments.
-1. If you want to enable/disable the feature on a specific environment, create a new [spec](../../../ci/environments/index.md#scoping-environments-with-specs) and type the environment name.
-1. Set the status and rollout strategy of the additional spec. This status and rollout strategy combination takes precedence over the default spec since we always use the most specific match available.
-1. Click **Create feature flag** or **Update feature flag**.
+1. For the feature flag you want to disable, click the Pencil icon.
+1. To disable the flag:
+   - In GitLab 13.0 and earlier: Slide the Status toggle for the environment. Or, to delete the
+     environment spec, on the right, click the **Remove (X)** icon.
+   - In GitLab 13.1 and later (when [this feature flag](#feature-flag-behavior-change-in-130) is
+     enabled): For each strategy it applies to, under **Environments**, delete the environment.
+1. Click **Save changes**.
 
-![Feature flag specs list](img/specs_list_v12_6.png)
+## Disable a feature flag for all environments
 
-NOTE: **NOTE**
-We'd highly recommend you to use the [Environment](../../../ci/environments/index.md)
-feature in order to quickly assess which flag is enabled per environment.
+To disable a feature flag for all environments:
+
+1. Navigate to your project's **Operations > Feature Flags**.
+1. For the feature flag you want to disable, slide the Status toggle to **Disabled**.
+
+The feature flag is displayed on the **Disabled** tab.
 
 ## Feature flag behavior change in 13.0
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/35555) in GitLab 13.0.
 
-Starting in GitLab 13.0, you can apply a feature flag strategy across multiple environment specs,
+Starting in GitLab 13.0, you can apply a feature flag strategy across multiple environments,
 without defining the strategy multiple times.
 
 This feature is under development and not ready for production use. It is
@@ -121,21 +94,10 @@ To disable it:
 Feature.disable(:feature_flags_new_version)
 ```
 
-### Applying a strategy to environments
+## Feature flag strategies
 
-After a strategy is defined, it applies to **All Environments** by default. To
-make a strategy apply to a specific environment spec:
-
-1. Click the **Add Environment** button.
-1. Create a new
-   [spec](../../../ci/environments/index.md#scoping-environments-with-specs).
-
-To apply the strategy to multiple environment specs, repeat these steps.
-
-## Feature Flag strategies
-
-GitLab Feature Flag adopts [Unleash](https://unleash.github.io)
-as the feature flag engine. In unleash, there is a concept of rulesets for granular feature flag controls,
+GitLab Feature Flag uses [Unleash](https://unleash.github.io)
+as the feature flag engine. In Unleash, there is a concept of rulesets for granular feature flag controls,
 called [strategies](https://unleash.github.io/docs/activation_strategy).
 Supported strategies for GitLab Feature Flags are described below.
 
@@ -143,7 +105,7 @@ Supported strategies for GitLab Feature Flags are described below.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/8240) in GitLab 12.2.
 
-The selected rollout strategy affects which users will experience the feature enabled.
+The selected rollout strategy affects which users will experience the feature as enabled.
 
 The status of an environment spec ultimately determines whether or not a feature is enabled at all.
 For instance, a feature will always be disabled for every user if the matching environment spec has a disabled status, regardless of the chosen rollout strategy.
@@ -178,30 +140,28 @@ A feature flag may be enabled for a list of target users. It is implemented
 using the Unleash [`userWithId`](https://unleash.github.io/docs/activation_strategy#userwithid)
 activation strategy.
 
-User IDs should be a comma separated list of values. For example, `user@example.com, user2@example.com`, or `username1,username2,username3`, etc.
+User IDs should be a comma-separated list of values. For example, `user@example.com, user2@example.com`, or `username1,username2,username3`, etc.
 
 CAUTION: **Caution:**
 The Unleash client **must** be given a user ID for the feature to be enabled for
 target users. See the [Ruby example](#ruby-application-example) below.
 
-## Integrating with your application
+## Integrate feature flags with your application
 
-In order to use Feature Flags, you need to first
-[get the access credentials](#configuring-feature-flags) from GitLab and then
-prepare your application and hook it with a [client library](#client-libraries).
+To use feature flags with your application, get access credentials from GitLab.
+Then prepare your application with a client library.
 
-## Configuring Feature Flags
+### Get access credentials
 
-To get the access credentials that your application will need to talk to GitLab:
+To get the access credentials that your application needs to communicate with GitLab:
 
 1. Navigate to your project's **Operations > Feature Flags**.
-1. Click on the **Configure** button to see the values:
+1. Click the **Configure** button to view the following:
    - **API URL**: URL where the client (application) connects to get a list of feature flags.
    - **Instance ID**: Unique token that authorizes the retrieval of the feature flags.
    - **Application name**: The name of the running environment. For instance,
-     if the application runs for a production server, application name would be
-     `production` or similar. This value is used for
-     [the environment spec evaluation](#define-environment-specs).
+     if the application runs for a production server, the application name would be
+     `production` or similar. This value is used for the environment spec evaluation.
 
 NOTE: **Note:**
 The meaning of these fields might change over time. For example, we are not sure
@@ -209,17 +169,17 @@ if **Instance ID** will be single token or multiple tokens, assigned to the
 **Environment**. Also, **Application name** could describe the version of
 application instead of the running environment.
 
-## Client libraries
+### Choose a client library
 
-GitLab currently implements a single backend that is compatible with
+GitLab implements a single backend that is compatible with
 [Unleash](https://github.com/Unleash/unleash#client-implementations) clients.
 
-Unleash clients allow the developers to define in the app's code the default
-values for flags. Each feature flag evaluation can express the desired
-outcome in case the flag isn't present on the provided configuration file.
+With the Unleash client, developers can define, in the application code, the default values for flags.
+Each feature flag evaluation can express the desired outcome if the flag isn't present in the
+provided configuration file.
 
-Unleash currently offers a number of official SDKs for various frameworks and
-a number of community contributed libraries.
+Unleash currently offers several official SDKs for various frameworks and
+several community-contributed libraries.
 
 Official clients:
 
@@ -234,9 +194,18 @@ Community contributed clients:
 - [Unofficial .Net Core Unleash client](https://github.com/onybo/unleash-client-core)
 - [Unleash client for Python 3](https://github.com/aes/unleash-client-python)
 
-## Golang application example
+### Feature flags API information
 
-Here's an example of how to integrate the feature flags in a Golang application:
+For API content, see:
+
+- [Feature Flags API](../../../api/feature_flags.md)
+- [Feature Flag Specs API](../../../api/feature_flag_specs.md) (Deprecated and [scheduled for removal in GitLab 14.0](https://gitlab.com/gitlab-org/gitlab/-/issues/213369).)
+- [Feature Flag User Lists API](../../../api/feature_flag_user_lists.md)
+- [Legacy Feature Flags API](../../../api/feature_flags_legacy.md)
+
+### Golang application example
+
+Here's an example of how to integrate feature flags in a Golang application:
 
 ```golang
 package main
@@ -275,9 +244,9 @@ func main() {
 }
 ```
 
-## Ruby application example
+### Ruby application example
 
-Here's an example of how to integrate the feature flags in a Ruby application.
+Here's an example of how to integrate feature flags in a Ruby application.
 
 The Unleash client is given a user ID for use with a **Percent rollout (logged in users)** rollout strategy or a list of **Target Users**.
 
@@ -305,12 +274,3 @@ else
   puts "hello, world!"
 end
 ```
-
-## Feature Flags API
-
-You can create, update, read, and delete Feature Flags via API
-to control them in an automated flow:
-
-- [Legacy Feature Flags API](../../../api/feature_flags_legacy.md)
-- [Feature Flag Specs API](../../../api/feature_flag_specs.md)
-- [Feature Flag User Lists API](../../../api/feature_flag_user_lists.md)

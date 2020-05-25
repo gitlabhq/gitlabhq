@@ -33,13 +33,13 @@
             = raw @qr_code
           .col-md-8
             .account-well
-              %p.gl-mt-0.append-bottom-0
+              %p.gl-mt-0.gl-mb-0
                 = _("Can't scan the code?")
-              %p.gl-mt-0.append-bottom-0
+              %p.gl-mt-0.gl-mb-0
                 = _('To add the entry manually, provide the following details to the application on your phone.')
-              %p.gl-mt-0.append-bottom-0
+              %p.gl-mt-0.gl-mb-0
                 = _('Account: %{account}') % { account: @account_string }
-              %p.gl-mt-0.append-bottom-0
+              %p.gl-mt-0.gl-mb-0
                 = _('Key: %{key}') %{ key: current_user.otp_secret.scan(/.{4}/).join(' ') }
               %p.two-factor-new-manual-content
                 = _('Time based: Yes')

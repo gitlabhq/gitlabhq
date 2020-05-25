@@ -14,7 +14,7 @@
     = link_to _('Submit as spam'), mark_as_spam_project_snippet_path(@project, @snippet), method: :post, class: 'btn btn-grouped btn-spam', title: _('Submit as spam')
 - if can?(current_user, :create_snippet, @project) || can?(current_user, :update_snippet, @snippet)
   .d-block.d-sm-none.dropdown
-    %button.btn.btn-default.btn-block.append-bottom-0.prepend-top-5{ data: { toggle: "dropdown" } }
+    %button.btn.btn-default.btn-block.gl-mb-0.prepend-top-5{ data: { toggle: "dropdown" } }
       = _('Options')
       = icon('caret-down')
     .dropdown-menu.dropdown-menu-full-width

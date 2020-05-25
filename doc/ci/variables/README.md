@@ -394,7 +394,7 @@ Once you set them, they will be available for all subsequent pipelines. Any grou
 
 ![CI/CD settings - inherited variables](img/inherited_group_variables_v12_5.png)
 
-### Inherit environment variables
+## Inherit environment variables
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/22638) in GitLab 13.0.
 > - It's deployed behind a feature flag (`ci_dependency_variables`), disabled by default.

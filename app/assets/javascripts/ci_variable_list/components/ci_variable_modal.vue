@@ -249,7 +249,7 @@ export default {
           <gl-link href="/help/ci/variables/README#masked-variables">
             <gl-icon name="question" :size="12" />
           </gl-link>
-          <p class="prepend-top-4 append-bottom-0 text-secondary">
+          <p class="prepend-top-4 gl-mb-0 text-secondary">
             {{ __('Variable will be masked in job logs.') }}
             <span
               :class="{

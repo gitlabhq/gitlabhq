@@ -322,7 +322,7 @@ export default {
         ></span>
         <slot name="description"></slot>
         <div v-if="hasError" class="cluster-application-error text-danger prepend-top-10">
-          <p class="js-cluster-application-general-error-message append-bottom-0">
+          <p class="js-cluster-application-general-error-message gl-mb-0">
             {{ generalErrorDescription }}
           </p>
           <ul v-if="statusReason || requestReason">

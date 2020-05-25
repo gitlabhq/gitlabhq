@@ -98,7 +98,7 @@ export default {
         </div>
       </div>
     </header>
-    <ul v-if="filesLength" class="multi-file-commit-list list-unstyled append-bottom-0">
+    <ul v-if="filesLength" class="multi-file-commit-list list-unstyled gl-mb-0">
       <li v-for="file in fileList" :key="file.key">
         <list-item
           :file="file"

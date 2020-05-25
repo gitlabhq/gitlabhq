@@ -2,28 +2,20 @@
 
 module Gitlab
   module UsageDataCounters
-    class SearchCounter
-      extend RedisCounter
-
-      NAVBAR_SEARCHES_COUNT_KEY = 'NAVBAR_SEARCHES_COUNT'
+    class SearchCounter < BaseCounter
+      KNOWN_EVENTS = %w[all_searches navbar_searches].freeze
 
       class << self
-        def increment_navbar_searches_count
-          increment(NAVBAR_SEARCHES_COUNT_KEY)
+        def redis_key(event)
+          require_known_event(event)
+
+          "#{event}_COUNT".upcase
         end
 
-        def total_navbar_searches_count
-          total_count(NAVBAR_SEARCHES_COUNT_KEY)
-        end
+        private
 
-        def totals
-          {
-            navbar_searches: total_navbar_searches_count
-          }
-        end
-
-        def fallback_totals
-          { navbar_searches: -1 }
+        def counter_key(event)
+          "#{event}".to_sym
         end
       end
     end

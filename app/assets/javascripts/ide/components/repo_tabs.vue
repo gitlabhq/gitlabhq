@@ -49,7 +49,7 @@ export default {
 
 <template>
   <div class="multi-file-tabs">
-    <ul ref="tabsScroller" class="list-unstyled append-bottom-0">
+    <ul ref="tabsScroller" class="list-unstyled gl-mb-0">
       <repo-tab v-for="tab in files" :key="tab.key" :tab="tab" />
     </ul>
   </div>

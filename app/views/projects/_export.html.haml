@@ -7,7 +7,7 @@
   %p= _('Export this project with all its related data in order to move your project to a new GitLab instance. Once the export is finished, you can import the file from the "New Project" page.')
 
   .bs-callout.bs-callout-info
-    %p.append-bottom-0
+    %p.gl-mb-0
       %p= _('The following items will be exported:')
       %ul
         - project_export_descriptions.each do |desc|
