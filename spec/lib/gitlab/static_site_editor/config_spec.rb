@@ -65,5 +65,23 @@ describe Gitlab::StaticSiteEditor::Config do
 
       it { is_expected.to include(is_supported_content: 'false') }
     end
+
+    context 'when return_url is not a valid URL' do
+      let(:return_url) { 'example.com' }
+
+      it { is_expected.to include(return_url: nil) }
+    end
+
+    context 'when return_url has a javascript scheme' do
+      let(:return_url) { 'javascript:alert(document.domain)' }
+
+      it { is_expected.to include(return_url: nil) }
+    end
+
+    context 'when return_url is missing' do
+      let(:return_url) { nil }
+
+      it { is_expected.to include(return_url: nil) }
+    end
   end
 end
