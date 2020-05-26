@@ -237,9 +237,10 @@ class User < ApplicationRecord
     if previous_changes.key?('email')
       # Grab previous_email here since previous_changes changes after
       # #update_emails_with_primary_email and #update_notification_email are called
+      previous_confirmed_at = previous_changes.key?('confirmed_at') ? previous_changes['confirmed_at'][0] : confirmed_at
       previous_email = previous_changes[:email][0]
 
-      update_emails_with_primary_email(previous_email)
+      update_emails_with_primary_email(previous_confirmed_at, previous_email)
       update_invalid_gpg_signatures
 
       if previous_email == notification_email
@@ -811,13 +812,15 @@ class User < ApplicationRecord
   # By using an `after_commit` instead of `after_update`, we avoid the recursive callback
   # scenario, though it then requires us to use the `previous_changes` hash
   # rubocop: disable CodeReuse/ServiceClass
-  def update_emails_with_primary_email(previous_email)
+  def update_emails_with_primary_email(previous_confirmed_at, previous_email)
     primary_email_record = emails.find_by(email: email)
     Emails::DestroyService.new(self, user: self).execute(primary_email_record) if primary_email_record
 
     # the original primary email was confirmed, and we want that to carry over.  We don't
     # have access to the original confirmation values at this point, so just set confirmed_at
-    Emails::CreateService.new(self, user: self, email: previous_email).execute(confirmed_at: confirmed_at)
+    Emails::CreateService.new(self, user: self, email: previous_email).execute(confirmed_at: previous_confirmed_at)
+
+    update_columns(confirmed_at: primary_email_record.confirmed_at) if primary_email_record&.confirmed_at
   end
   # rubocop: enable CodeReuse/ServiceClass
 

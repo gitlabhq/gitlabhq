@@ -48,6 +48,10 @@ FactoryBot.define do
       after(:build) { |user, _| user.block! }
     end
 
+    trait :unconfirmed do
+      confirmed_at { nil }
+    end
+
     trait :with_avatar do
       avatar { fixture_file_upload('spec/fixtures/dk.png') }
     end
