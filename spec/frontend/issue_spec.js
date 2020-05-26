@@ -18,6 +18,7 @@ describe('Issue', () => {
   preloadFixtures('issues/closed-issue.html');
   preloadFixtures('issues/issue-with-task-list.html');
   preloadFixtures('issues/open-issue.html');
+  preloadFixtures('static/issue_with_mermaid_graph.html');
 
   function expectErrorMessage() {
     const $flashMessage = $('div.flash-alert');
@@ -225,6 +226,32 @@ describe('Issue', () => {
 
           done();
         });
+      });
+    });
+  });
+
+  describe('when not displaying blocked warning', () => {
+    describe('when clicking a mermaid graph inside an issue description', () => {
+      let mock;
+      let spy;
+
+      beforeEach(() => {
+        loadFixtures('static/issue_with_mermaid_graph.html');
+        mock = new MockAdapter(axios);
+        spy = jest.spyOn(axios, 'put');
+      });
+
+      afterEach(() => {
+        mock.restore();
+        jest.clearAllMocks();
+      });
+
+      it('does not make a PUT request', () => {
+        Issue.prototype.initIssueBtnEventListeners();
+
+        $('svg a.js-issuable-actions').trigger('click');
+
+        expect(spy).not.toHaveBeenCalled();
       });
     });
   });
