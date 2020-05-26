@@ -101,7 +101,7 @@ Where:
 For example:
 
 ```shell
-nuget source Add -Name "GitLab" -Source "https//gitlab.example/api/v4/projects/10/packages/nuget/index.json" -UserName carol -Password 12345678asdf
+nuget source Add -Name "GitLab" -Source "https://gitlab.example/api/v4/projects/10/packages/nuget/index.json" -UserName carol -Password 12345678asdf
 ```
 
 ### Add NuGet Repository source with Visual Studio

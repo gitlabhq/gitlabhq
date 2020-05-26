@@ -1,0 +1,5 @@
+---
+title: Adds PostHog as a CI/CD Managed Application
+merge_request: 32856
+author:
+type: added

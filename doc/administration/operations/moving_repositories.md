@@ -85,8 +85,8 @@ not included in GitLab so you need to install it yourself with apt
 or yum. Also note that the GitLab scripts we used below were added
 in GitLab 8.1.
 
-** This process does not clean up repositories at the target location that no
-longer exist at the source. ** If you start using your GitLab instance with
+**This process does not clean up repositories at the target location that no
+longer exist at the source.** If you start using your GitLab instance with
 `/mnt/gitlab/repositories`, you need to run `gitlab-rake gitlab:cleanup:repos`
 after switching to the new repository storage directory.
 

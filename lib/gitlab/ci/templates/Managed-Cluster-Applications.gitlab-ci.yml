@@ -1,6 +1,6 @@
 apply:
   stage: deploy
-  image: "registry.gitlab.com/gitlab-org/cluster-integration/cluster-applications:v0.15.0"
+  image: "registry.gitlab.com/gitlab-org/cluster-integration/cluster-applications:v0.16.0"
   environment:
     name: production
   variables:
@@ -19,6 +19,7 @@ apply:
     CROSSPLANE_VALUES_FILE: $CI_PROJECT_DIR/.gitlab/managed-apps/crossplane/values.yaml
     FLUENTD_VALUES_FILE: $CI_PROJECT_DIR/.gitlab/managed-apps/fluentd/values.yaml
     KNATIVE_VALUES_FILE: $CI_PROJECT_DIR/.gitlab/managed-apps/knative/values.yaml
+    POSTHOG_VALUES_FILE: $CI_PROJECT_DIR/.gitlab/managed-apps/posthog/values.yaml
   script:
     - gitlab-managed-apps /usr/local/share/gitlab-managed-apps/helmfile.yaml
   only:
