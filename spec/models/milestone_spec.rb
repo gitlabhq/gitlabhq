@@ -498,4 +498,23 @@ describe Milestone do
       end
     end
   end
+
+  describe '#subgroup_milestone' do
+    context 'parent is subgroup' do
+      it 'returns true' do
+        group = create(:group)
+        subgroup = create(:group, :private, parent: group)
+
+        expect(build(:milestone, group: subgroup).subgroup_milestone?).to eq(true)
+      end
+    end
+
+    context 'parent is not subgroup' do
+      it 'returns false' do
+        group = create(:group)
+
+        expect(build(:milestone, group: group).subgroup_milestone?).to eq(false)
+      end
+    end
+  end
 end

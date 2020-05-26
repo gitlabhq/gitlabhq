@@ -9,7 +9,6 @@ class Projects::BlobController < Projects::ApplicationController
   include ActionView::Helpers::SanitizeHelper
   include RedirectsForMissingPathOnTree
   include SourcegraphDecorator
-  include CheckCodeownerRules
 
   prepend_before_action :authenticate_user!, only: [:edit]
 
@@ -29,7 +28,6 @@ class Projects::BlobController < Projects::ApplicationController
   before_action :editor_variables, except: [:show, :preview, :diff]
   before_action :validate_diff_params, only: :diff
   before_action :set_last_commit_sha, only: [:edit, :update]
-  before_action :validate_codeowner_rules, only: [:create, :update]
 
   before_action only: :show do
     push_frontend_feature_flag(:code_navigation, @project)
@@ -118,18 +116,7 @@ class Projects::BlobController < Projects::ApplicationController
 
   private
 
-  def validate_codeowner_rules
-    return if params[:file_path].blank?
-
-    codeowners_error = codeowners_check_error(@project, @branch_name, params[:file_path])
-
-    if codeowners_error.present?
-      flash.now[:alert] = codeowners_error
-      view = params[:action] == 'update' ? :edit : :new
-
-      render view
-    end
-  end
+  attr_reader :branch_name
 
   def blob
     @blob ||= @repository.blob_at(@commit.id, @path)
@@ -270,3 +257,5 @@ class Projects::BlobController < Projects::ApplicationController
     params.permit(:full, :since, :to, :bottom, :unfold, :offset, :indent)
   end
 end
+
+Projects::BlobController.prepend_if_ee('EE::Projects::BlobController')

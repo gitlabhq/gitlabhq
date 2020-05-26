@@ -451,7 +451,7 @@ class IssuableFinder
     if params.filter_by_no_label?
       items.without_label
     elsif params.filter_by_any_label?
-      items.any_label
+      items.any_label(params[:sort])
     else
       items.with_label(params.label_names, params[:sort])
     end
