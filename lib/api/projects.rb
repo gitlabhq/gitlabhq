@@ -441,6 +441,8 @@ module API
 
         not_found!("Source Project") unless fork_from_project
 
+        authorize! :fork_project, fork_from_project
+
         result = ::Projects::ForkService.new(fork_from_project, current_user).execute(user_project)
 
         if result
