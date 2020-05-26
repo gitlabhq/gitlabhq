@@ -442,7 +442,7 @@ DAST can be [configured](#customizing-the-dast-settings) using environment varia
 
 | Environment variable        | Required   | Description                                                                    |
 |-----------------------------| -----------|--------------------------------------------------------------------------------|
-| `SECURE_ANALYZERS_PREFIX`   | no         | Set the Docker registry base address from which to download the analyzer.            |
+| `SECURE_ANALYZERS_PREFIX`   | no | Set the Docker registry base address from which to download the analyzer. |
 | `DAST_WEBSITE`  | no| The URL of the website to scan. `DAST_API_SPECIFICATION` must be specified if this is omitted. |
 | `DAST_API_SPECIFICATION`  | no | The API specification to import. `DAST_WEBSITE` must be specified if this is omitted. |
 | `DAST_AUTH_URL` | no | The authentication URL of the website to scan. Not supported for API scans. |
@@ -458,7 +458,17 @@ DAST can be [configured](#customizing-the-dast-settings) using environment varia
 | `DAST_API_HOST_OVERRIDE` | no | Used to override domains defined in API specification files. |
 | `DAST_EXCLUDE_RULES` | no | Set to a comma-separated list of Vulnerability Rule IDs to exclude them from the scan report. Currently, excluded rules will get executed but the alerts from them will be suppressed. Rule IDs are numbers and can be found from the DAST log or on the [ZAP project](https://github.com/zaproxy/zaproxy/blob/develop/docs/scanners.md). For example, `HTTP Parameter Override` has a rule ID of `10026`. |
 | `DAST_REQUEST_HEADERS` | no | Set to a comma-separated list of request header names and values. For example, `Cache-control: no-cache,User-Agent: DAST/1.0` |
-| `DAST_ZAP_USE_AJAX_SPIDER` | no | Use the AJAX spider in addition to the traditional spider, useful for crawling sites that require JavaScript. Boolean. `true`, `True`, or `1` are considered as true value, otherwise false. Defaults to `false`. |
+| `DAST_DEBUG` | no | Enable debug message output. Boolean. `true`, `True`, or `1` are considered as true value, otherwise false. Defaults to `false`. |
+| `DAST_SPIDER_MINS` | no | The maximum duration of the spider scan in minutes. Set to zero for unlimited. Defaults to one minute, or unlimited when the scan is a full scan. |
+| `DAST_HTML_REPORT` | no | The file name of the HTML report written at the end of a scan. |
+| `DAST_MARKDOWN_REPORT` | no | The file name of the Markdown report written at the end of a scan. |
+| `DAST_XML_REPORT` | no | The file name of the XML report written at the end of a scan. |
+| `DAST_INCLUDE_ALPHA_VULNERABILITIES` | no | Include alpha passive and active scan rules. Boolean. `true`, `True`, or `1` are considered as true value, otherwise false. Defaults to `false`. |
+| `DAST_USE_AJAX_SPIDER` | no | Use the AJAX spider in addition to the traditional spider, useful for crawling sites that require JavaScript. Boolean. `true`, `True`, or `1` are considered as true value, otherwise false. Defaults to `false`. |
+| `DAST_ZAP_CLI_OPTIONS` | no | ZAP Server command-line options. For example, `-Xmx3072m` would set the Java maximum memory allocation pool size. |
+| `DAST_ZAP_GENERATE_CONFIG` | no | Generate sample ZAP config file for use with `DAST_ZAP_CONFIG_FILE`. Boolean. `true`, `True`, or `1` are considered as true value, otherwise false. Defaults to `false`. |
+| `DAST_ZAP_CONFIG_FILE` | no | Name of config file used to determine thresholds of vulnerability rules. |
+| `DAST_ZAP_CONFIG_URL` | no | URL of config file used to determine thresholds of vulnerability rules. |
 
 ### DAST command-line options
 
@@ -475,8 +485,9 @@ dast:
     - /analyze --help
 ```
 
-You must then overwrite the `script` command to pass in the appropriate argument.
-For example, debug messages can be enabled by using `-d`, as shown in the following configuration:
+You must then overwrite the `script` command to pass in the appropriate
+argument. For example, passive scanning can be delayed using option `-D`. The following
+configuration delays passive scanning by five minutes:
 
 ```yaml
 include:
@@ -485,7 +496,7 @@ include:
 dast:
   script:
     - export DAST_WEBSITE=${DAST_WEBSITE:-$(cat environment_url.txt)}
-    - /analyze -d -t $DAST_WEBSITE
+    - /analyze -D 300 -t $DAST_WEBSITE
 ```
 
 ### Custom ZAProxy configuration
@@ -500,10 +511,8 @@ when used. An example of how to rewrite the Authorization header value with `TOK
 include:
   template: DAST.gitlab-ci.yml
 
-dast:
-  script:
-    - export DAST_WEBSITE=${DAST_WEBSITE:-$(cat environment_url.txt)}
-    - /analyze -z"-config replacer.full_list\(0\).description=auth -config replacer.full_list\(0\).enabled=true -config replacer.full_list\(0\).matchtype=REQ_HEADER -config replacer.full_list\(0\).matchstr=Authorization -config replacer.full_list\(0\).regex=false -config replacer.full_list\(0\).replacement=TOKEN" -t $DAST_WEBSITE
+variables:
+  DAST_ZAP_CLI_OPTIONS: "-config replacer.full_list(0).description=auth -config replacer.full_list(0).enabled=true -config replacer.full_list(0).matchtype=REQ_HEADER -config replacer.full_list(0).matchstr=Authorization -config replacer.full_list(0).regex=false -config replacer.full_list(0).replacement=TOKEN"
 ```
 
 ### Cloning the project's repository
@@ -625,18 +634,18 @@ vulnerabilities in your groups, projects and pipelines. Read more about the
 
 ## Bleeding-edge vulnerability definitions
 
-ZAProxy first creates rules in the `alpha` class. After a testing period with the
-community, they are promoted to `beta`. DAST uses `beta` definitions by default.
-To request `alpha` definitions, use `-a` as shown in the following configuration:
+ZAP first creates rules in the `alpha` class. After a testing period with
+the community, they are promoted to `beta`. DAST uses `beta` definitions by
+default. To request `alpha` definitions, use the
+`DAST_INCLUDE_ALPHA_VULNERABILITIES` environment variable as shown in the
+following configuration:
 
 ```yaml
 include:
   template: DAST.gitlab-ci.yml
 
-dast:
-  script:
-    - export DAST_WEBSITE=${DAST_WEBSITE:-$(cat environment_url.txt)}
-    - /analyze -a -t $DAST_WEBSITE
+variables:
+  DAST_INCLUDE_ALPHA_VULNERABILITIES: true
 ```
 
 ## Interacting with the vulnerabilities
@@ -688,16 +697,14 @@ This results in the following error:
 ```
 
 Fortunately, it's straightforward to increase the amount of memory available
-for DAST by overwriting the `script` key in the DAST template:
+for DAST by using the `DAST_ZAP_CLI_OPTIONS` environment variable:
 
 ```yaml
 include:
   - template: DAST.gitlab-ci.yml
 
-dast:
-  script:
-    - export DAST_WEBSITE=${DAST_WEBSITE:-$(cat environment_url.txt)}
-    - /analyze -t $DAST_WEBSITE -z"-Xmx3072m"
+variables:
+  DAST_ZAP_CLI_OPTIONS: "-Xmx3072m"
 ```
 
 Here, DAST is being allocated 3072 MB.

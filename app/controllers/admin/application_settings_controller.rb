@@ -214,6 +214,7 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
     [
       *::ApplicationSettingsHelper.visible_attributes,
       *::ApplicationSettingsHelper.external_authorization_service_attributes,
+      *ApplicationSetting.repository_storages_weighted_attributes,
       :lets_encrypt_notification_email,
       :lets_encrypt_terms_of_service_accepted,
       :domain_blacklist_file,

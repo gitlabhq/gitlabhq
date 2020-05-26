@@ -265,6 +265,20 @@ database: gitlabhq_production
    up     migration_id    migration_name
 ```
 
+## Run incomplete database migrations
+
+Database migrations can be stuck in an incomplete state. That is, they'll have a `down`
+status in the output of the `sudo gitlab-rake db:migrate:status` command.
+
+To complete these migrations, use the following Rake task:
+
+```shell
+sudo gitlab-rake db:migrate
+```
+
+After the command completes, run `sudo gitlab-rake db:migrate:status` to check if all
+migrations are completed (have an `up` status).
+
 ## Import common metrics
 
 Sometimes you may need to re-import the common metrics that power the Metrics dashboards.

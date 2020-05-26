@@ -120,6 +120,13 @@ describe Admin::ApplicationSettingsController do
       expect(ApplicationSetting.current.namespace_storage_size_limit).not_to eq(-100)
     end
 
+    it 'updates repository_storages_weighted setting' do
+      put :update, params: { application_setting: { repository_storages_weighted_default: 75 } }
+
+      expect(response).to redirect_to(general_admin_application_settings_path)
+      expect(ApplicationSetting.current.repository_storages_weighted_default).to eq(75)
+    end
+
     context 'external policy classification settings' do
       let(:settings) do
         {

@@ -440,6 +440,7 @@ CREATE TABLE public.application_settings (
     group_owners_can_manage_default_branch_protection boolean DEFAULT true NOT NULL,
     container_registry_vendor text DEFAULT ''::text NOT NULL,
     container_registry_version text DEFAULT ''::text NOT NULL,
+    repository_storages_weighted jsonb DEFAULT '{}'::jsonb NOT NULL,
     container_registry_features text[] DEFAULT '{}'::text[] NOT NULL,
     spam_check_endpoint_url text,
     spam_check_endpoint_enabled boolean DEFAULT false NOT NULL,
@@ -13888,6 +13889,7 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200508050301
 20200508091106
 20200508140959
+20200508203901
 20200511080113
 20200511083541
 20200511092246

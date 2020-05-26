@@ -19,6 +19,12 @@ class ApplicationSetting < ApplicationRecord
 
   belongs_to :instance_administrators_group, class_name: "Group"
 
+  def self.repository_storages_weighted_attributes
+    @repository_storages_weighted_atributes ||= Gitlab.config.repositories.storages.keys.map { |k| "repository_storages_weighted_#{k}".to_sym }.freeze
+  end
+
+  store_accessor :repository_storages_weighted, *Gitlab.config.repositories.storages.keys, prefix: true
+
   # Include here so it can override methods from
   # `add_authentication_token_field`
   # We don't prepend for now because otherwise we'll need to
@@ -39,6 +45,7 @@ class ApplicationSetting < ApplicationRecord
   cache_markdown_field :after_sign_up_text
 
   default_value_for :id, 1
+  default_value_for :repository_storages_weighted, {}
 
   chronic_duration_attr_writer :archive_builds_in_human_readable, :archive_builds_in_seconds
 
@@ -152,6 +159,7 @@ class ApplicationSetting < ApplicationRecord
 
   validates :repository_storages, presence: true
   validate :check_repository_storages
+  validate :check_repository_storages_weighted
 
   validates :auto_devops_domain,
             allow_blank: true,
@@ -270,6 +278,10 @@ class ApplicationSetting < ApplicationRecord
   end
 
   validates :allowed_key_types, presence: true
+
+  repository_storages_weighted_attributes.each do |attribute|
+    validates attribute, allow_nil: true, numericality: { only_integer: true, greater_than_or_equal_to: 0, less_than_or_equal_to: 100 }
+  end
 
   validates_each :restricted_visibility_levels do |record, attr, value|
     value&.each do |level|
@@ -432,6 +444,12 @@ class ApplicationSetting < ApplicationRecord
 
   def recaptcha_or_login_protection_enabled
     recaptcha_enabled || login_recaptcha_protection_enabled
+  end
+
+  repository_storages_weighted_attributes.each do |attribute|
+    define_method :"#{attribute}=" do |value|
+      super(value.to_i)
+    end
   end
 
   private
