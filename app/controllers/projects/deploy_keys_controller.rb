@@ -37,6 +37,8 @@ class Projects::DeployKeysController < Projects::ApplicationController
   end
 
   def update
+    access_denied! unless deploy_key
+
     if deploy_key.update(update_params)
       flash[:notice] = _('Deploy key was successfully updated.')
       redirect_to_repository
@@ -85,10 +87,12 @@ class Projects::DeployKeysController < Projects::ApplicationController
   end
 
   def update_params
-    permitted_params = [deploy_keys_projects_attributes: [:id, :can_push]]
+    permitted_params = [deploy_keys_projects_attributes: [:can_push]]
     permitted_params << :title if can?(current_user, :update_deploy_key, deploy_key)
 
-    params.require(:deploy_key).permit(*permitted_params)
+    key_update_params = params.require(:deploy_key).permit(*permitted_params)
+    key_update_params.dig(:deploy_keys_projects_attributes, '0')&.merge!(id: deploy_keys_project.id)
+    key_update_params
   end
 
   def authorize_update_deploy_key!

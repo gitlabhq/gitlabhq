@@ -1,6 +1,6 @@
 - form = local_assigns.fetch(:form)
 .form-group
   = form.label :notification_email, class: "label-bold"
-  = form.select :notification_email, @user.all_public_emails, { include_blank: false }, class: "select2", disabled: local_assigns.fetch(:email_change_disabled, nil)
+  = form.select :notification_email, @user.public_verified_emails, { include_blank: false }, class: "select2", disabled: local_assigns.fetch(:email_change_disabled, nil)
   .help-block
     = local_assigns.fetch(:help_text, nil)
