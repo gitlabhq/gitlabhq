@@ -3,9 +3,17 @@ import DuplicateDashboardForm from '~/monitoring/components/duplicate_dashboard_
 
 import { dashboardGitResponse } from '../mock_data';
 
-describe('DuplicateDashboardForm', () => {
-  let wrapper;
+let wrapper;
 
+const createMountedWrapper = (props = {}) => {
+  // Use `mount` to render native input elements
+  wrapper = mount(DuplicateDashboardForm, {
+    propsData: { ...props },
+    sync: false,
+  });
+};
+
+describe('DuplicateDashboardForm', () => {
   const defaultBranch = 'master';
 
   const findByRef = ref => wrapper.find({ ref });
@@ -20,14 +28,7 @@ describe('DuplicateDashboardForm', () => {
   };
 
   beforeEach(() => {
-    // Use `mount` to render native input elements
-    wrapper = mount(DuplicateDashboardForm, {
-      propsData: {
-        dashboard: dashboardGitResponse[0],
-        defaultBranch,
-      },
-      sync: false,
-    });
+    createMountedWrapper({ dashboard: dashboardGitResponse[0], defaultBranch });
   });
 
   it('renders correctly', () => {
@@ -144,5 +145,20 @@ describe('DuplicateDashboardForm', () => {
         expect(findByRef('branchName').is(':focus')).toBe(true);
       });
     });
+  });
+});
+
+describe('DuplicateDashboardForm escapes elements', () => {
+  const branchToEscape = "<img/src='x'onerror=alert(document.domain)>";
+
+  beforeEach(() => {
+    createMountedWrapper({ dashboard: dashboardGitResponse[0], defaultBranch: branchToEscape });
+  });
+
+  it('should escape branch name data', () => {
+    const branchOptionHtml = wrapper.vm.branchOptions[0].html;
+    const escapedBranch = '&lt;img/src=&#39;x&#39;onerror=alert(document.domain)&gt';
+
+    expect(branchOptionHtml).toEqual(expect.stringContaining(escapedBranch));
   });
 });

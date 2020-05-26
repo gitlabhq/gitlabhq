@@ -10,6 +10,12 @@ module Clusters
 
     def execute(cluster)
       if validate_params(cluster)
+        token = params.dig(:platform_kubernetes_attributes, :token)
+
+        if token.blank?
+          params[:platform_kubernetes_attributes]&.delete(:token)
+        end
+
         cluster.update(params)
       else
         false
