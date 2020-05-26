@@ -36,6 +36,7 @@ en:
         access_denied: 'The resource owner or authorization server denied the request.'
         invalid_scope: 'The requested scope is invalid, unknown, or malformed.'
         server_error: 'The authorization server encountered an unexpected condition which prevented it from fulfilling the request.'
+        unconfirmed_email: 'Verify the email address in your account profile before you sign in.'
         temporarily_unavailable: 'The authorization server is currently unable to handle the request due to a temporary overloading or maintenance of the server.'
 
         #configuration error messages
