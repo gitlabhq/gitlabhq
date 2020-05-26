@@ -1,0 +1,5 @@
+---
+title: Check forked project permissions before allowing fork
+merge_request:
+author:
+type: security
