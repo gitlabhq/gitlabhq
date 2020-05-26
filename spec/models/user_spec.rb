@@ -914,6 +914,108 @@ describe User, :do_not_mock_admin_mode do
         expect(@user.emails.count).to eq 1
         expect(@user.emails.first.confirmed_at).not_to eq nil
       end
+
+      context 'when the first email was unconfirmed and the second email gets confirmed' do
+        let_it_be(:user) { create(:user, :unconfirmed, email: 'should-be-unconfirmed@test.com') }
+
+        before do
+          user.update!(email: 'should-be-confirmed@test.com')
+          user.confirm
+        end
+
+        it 'updates user.email' do
+          expect(user.email).to eq('should-be-confirmed@test.com')
+        end
+
+        it 'confirms user.email' do
+          expect(user).to be_confirmed
+        end
+
+        it 'keeps the unconfirmed email unconfirmed' do
+          email = user.emails.first
+
+          expect(email.email).to eq('should-be-unconfirmed@test.com')
+          expect(email).not_to be_confirmed
+        end
+
+        it 'has only one email association' do
+          expect(user.emails.size).to be(1)
+        end
+      end
+    end
+
+    context 'when an existing email record is set as primary' do
+      let(:user) { create(:user, email: 'confirmed@test.com') }
+
+      context 'when it is unconfirmed' do
+        let(:originally_unconfirmed_email) { 'should-stay-unconfirmed@test.com' }
+
+        before do
+          user.emails << create(:email, email: originally_unconfirmed_email, confirmed_at: nil)
+
+          user.update!(email: originally_unconfirmed_email)
+        end
+
+        it 'keeps the user confirmed' do
+          expect(user).to be_confirmed
+        end
+
+        it 'keeps the original email' do
+          expect(user.email).to eq('confirmed@test.com')
+        end
+
+        context 'when the email gets confirmed' do
+          before do
+            user.confirm
+          end
+
+          it 'keeps the user confirmed' do
+            expect(user).to be_confirmed
+          end
+
+          it 'updates the email' do
+            expect(user.email).to eq(originally_unconfirmed_email)
+          end
+        end
+      end
+
+      context 'when it is confirmed' do
+        let!(:old_confirmed_email) { user.email }
+        let(:confirmed_email) { 'already-confirmed@test.com' }
+
+        before do
+          user.emails << create(:email, :confirmed, email: confirmed_email)
+
+          user.update!(email: confirmed_email)
+        end
+
+        it 'keeps the user confirmed' do
+          expect(user).to be_confirmed
+        end
+
+        it 'updates the email' do
+          expect(user.email).to eq(confirmed_email)
+        end
+
+        it 'moves the old email' do
+          email = user.reload.emails.first
+
+          expect(email.email).to eq(old_confirmed_email)
+          expect(email).to be_confirmed
+        end
+      end
+    end
+
+    context 'when unconfirmed user deletes a confirmed additional email' do
+      let(:user) { create(:user, :unconfirmed) }
+
+      before do
+        user.emails << create(:email, :confirmed)
+      end
+
+      it 'does not affect the confirmed status' do
+        expect { user.emails.confirmed.destroy_all }.not_to change { user.confirmed? } # rubocop: disable Cop/DestroyAll
+      end
     end
 
     describe '#update_notification_email' do
