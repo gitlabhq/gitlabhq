@@ -552,6 +552,63 @@ describe Projects::UpdateService do
         end
       end
     end
+
+    describe 'when changing repository_storage' do
+      let(:repository_read_only) { false }
+      let(:project) { create(:project, :repository, repository_read_only: repository_read_only) }
+      let(:opts) { { repository_storage: 'test_second_storage' } }
+
+      before do
+        stub_storage_settings('test_second_storage' => { 'path' => 'tmp/tests/extra_storage' })
+      end
+
+      shared_examples 'the transfer was not scheduled' do
+        it 'does not schedule the transfer' do
+          expect do
+            update_project(project, user, opts)
+          end.not_to change(project.repository_storage_moves, :count)
+        end
+      end
+
+      context 'authenticated as admin' do
+        let(:user) { create(:admin) }
+
+        it 'schedules the transfer of the repository to the new storage and locks the project' do
+          update_project(project, admin, opts)
+
+          expect(project).to be_repository_read_only
+          expect(project.repository_storage_moves.last).to have_attributes(
+            state: ::ProjectRepositoryStorageMove.state_machines[:state].states[:scheduled].value,
+            source_storage_name: 'default',
+            destination_storage_name: 'test_second_storage'
+          )
+        end
+
+        context 'the repository is read-only' do
+          let(:repository_read_only) { true }
+
+          it_behaves_like 'the transfer was not scheduled'
+        end
+
+        context 'the storage has not changed' do
+          let(:opts) { { repository_storage: 'default' } }
+
+          it_behaves_like 'the transfer was not scheduled'
+        end
+
+        context 'the storage does not exist' do
+          let(:opts) { { repository_storage: 'nonexistent' } }
+
+          it_behaves_like 'the transfer was not scheduled'
+        end
+      end
+
+      context 'authenticated as user' do
+        let(:user) { create(:user) }
+
+        it_behaves_like 'the transfer was not scheduled'
+      end
+    end
   end
 
   describe '#run_auto_devops_pipeline?' do
@@ -608,25 +665,6 @@ describe Projects::UpdateService do
 
         it { is_expected.to eq(false) }
       end
-    end
-  end
-
-  describe 'repository_storage' do
-    let(:admin) { create(:admin) }
-    let(:user) { create(:user) }
-    let(:project) { create(:project, :repository) }
-    let(:opts) { { repository_storage: 'test_second_storage' } }
-
-    it 'calls the change repository storage method if the storage changed' do
-      expect(project).to receive(:change_repository_storage).with('test_second_storage')
-
-      update_project(project, admin, opts).inspect
-    end
-
-    it "doesn't call the change repository storage for non-admin users" do
-      expect(project).not_to receive(:change_repository_storage)
-
-      update_project(project, user, opts).inspect
     end
   end
 

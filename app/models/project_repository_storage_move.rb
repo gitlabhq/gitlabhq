@@ -18,6 +18,7 @@ class ProjectRepositoryStorageMove < ApplicationRecord
     on: :create,
     presence: true,
     inclusion: { in: ->(_) { Gitlab.config.repositories.storages.keys } }
+  validate :project_repository_writable, on: :create
 
   state_machine initial: :initial do
     event :schedule do
@@ -36,7 +37,9 @@ class ProjectRepositoryStorageMove < ApplicationRecord
       transition [:initial, :scheduled, :started] => :failed
     end
 
-    after_transition initial: :scheduled do |storage_move, _|
+    after_transition initial: :scheduled do |storage_move|
+      storage_move.project.update_column(:repository_read_only, true)
+
       storage_move.run_after_commit do
         ProjectUpdateRepositoryStorageWorker.perform_async(
           storage_move.project_id,
@@ -44,6 +47,17 @@ class ProjectRepositoryStorageMove < ApplicationRecord
           storage_move.id
         )
       end
+    end
+
+    after_transition started: :finished do |storage_move|
+      storage_move.project.update_columns(
+        repository_read_only: false,
+        repository_storage: storage_move.destination_storage_name
+      )
+    end
+
+    after_transition started: :failed do |storage_move|
+      storage_move.project.update_column(:repository_read_only, false)
     end
 
     state :initial, value: 1
@@ -55,4 +69,10 @@ class ProjectRepositoryStorageMove < ApplicationRecord
 
   scope :order_created_at_desc, -> { order(created_at: :desc) }
   scope :with_projects, -> { includes(project: :route) }
+
+  private
+
+  def project_repository_writable
+    errors.add(:project, _('is read only')) if project&.repository_read_only?
+  end
 end

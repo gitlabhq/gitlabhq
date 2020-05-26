@@ -588,7 +588,7 @@ Sidekiq is a Ruby background job processor that pulls jobs from the Redis queue 
 #### LDAP Authentication
 
 - Configuration:
-  - [Omnibus](../administration/auth/ldap.md)
+  - [Omnibus](../administration/auth/ldap/index.md)
   - [Charts](https://docs.gitlab.com/charts/charts/globals.html#ldap)
   - [Source](https://gitlab.com/gitlab-org/gitlab/blob/master/config/gitlab.yml.example)
   - [GDK](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/master/doc/howto/ldap.md)

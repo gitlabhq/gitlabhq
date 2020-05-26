@@ -187,7 +187,7 @@ h3.popover-header {
 
 // Add to .label so that old system notes that are saved to the db
 // will still receive the correct styling
-.badge,
+.badge:not(.gl-badge),
 .label {
   padding: 4px 5px;
   font-size: 12px;

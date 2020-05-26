@@ -10,5 +10,9 @@ FactoryBot.define do
     trait :scheduled do
       state { ProjectRepositoryStorageMove.state_machines[:state].states[:scheduled].value }
     end
+
+    trait :started do
+      state { ProjectRepositoryStorageMove.state_machines[:state].states[:started].value }
+    end
   end
 end

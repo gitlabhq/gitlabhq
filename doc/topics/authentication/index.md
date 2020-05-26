@@ -16,12 +16,9 @@ This page gathers all the resources for the topic **Authentication** within GitL
 
 ## GitLab administrators
 
-- [LDAP (Community Edition)](../../administration/auth/ldap.md)
-- [LDAP (Enterprise Edition)](../../administration/auth/ldap-ee.md) **(STARTER)**
+- [LDAP](../../administration/auth/ldap/index.md)
 - [Enforce Two-factor Authentication (2FA)](../../security/two_factor_authentication.md#enforce-two-factor-authentication-2fa)
 - **Articles:**
-  - [How to Configure LDAP with GitLab CE](../../administration/auth/how_to_configure_ldap_gitlab_ce/index.md)
-  - [How to Configure LDAP with GitLab EE](../../administration/auth/how_to_configure_ldap_gitlab_ee/index.md) **(STARTER)**
   - [Feature Highlight: LDAP Integration](https://about.gitlab.com/blog/2014/07/10/feature-highlight-ldap-sync/)
   - [Debugging LDAP](https://about.gitlab.com/handbook/support/workflows/debugging_ldap.html)
 - **Integrations:**

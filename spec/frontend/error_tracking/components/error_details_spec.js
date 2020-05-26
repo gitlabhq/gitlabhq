@@ -248,7 +248,7 @@ describe('ErrorDetails', () => {
             },
           });
           return wrapper.vm.$nextTick().then(() => {
-            expect(wrapper.find(GlBadge).attributes('variant')).toEqual(
+            expect(wrapper.find(GlBadge).props('variant')).toEqual(
               severityLevelVariant[severityLevel[level]],
             );
           });
@@ -262,7 +262,7 @@ describe('ErrorDetails', () => {
           },
         });
         return wrapper.vm.$nextTick().then(() => {
-          expect(wrapper.find(GlBadge).attributes('variant')).toEqual(
+          expect(wrapper.find(GlBadge).props('variant')).toEqual(
             severityLevelVariant[severityLevel.ERROR],
           );
         });

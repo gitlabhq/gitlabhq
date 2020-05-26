@@ -316,7 +316,7 @@ module Gitlab
       # conflict with the methods defined in `project_url_helpers`, and we want
       # these methods available in the same places.
       Gitlab::Routing.add_helpers(project_url_helpers)
-      Gitlab::Routing.add_helpers(MilestonesRoutingHelper)
+      Gitlab::Routing.add_helpers(TimeboxesRoutingHelper)
     end
   end
 end

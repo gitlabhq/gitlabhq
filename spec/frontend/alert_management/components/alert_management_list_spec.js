@@ -8,7 +8,7 @@ import {
   GlDropdownItem,
   GlIcon,
   GlTab,
-  GlBadge,
+  GlDeprecatedBadge as GlBadge,
 } from '@gitlab/ui';
 import { visitUrl } from '~/lib/utils/url_utility';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';

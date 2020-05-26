@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module MilestonesRoutingHelper
+module TimeboxesRoutingHelper
   def milestone_path(milestone, *args)
     if milestone.group_milestone?
       group_milestone_path(milestone.group, milestone, *args)
@@ -17,3 +17,5 @@ module MilestonesRoutingHelper
     end
   end
 end
+
+TimeboxesRoutingHelper.prepend_if_ee('EE::TimeboxesRoutingHelper')

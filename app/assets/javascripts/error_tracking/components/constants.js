@@ -8,10 +8,10 @@ export const severityLevel = {
 
 export const severityLevelVariant = {
   [severityLevel.FATAL]: 'danger',
-  [severityLevel.ERROR]: 'dark',
+  [severityLevel.ERROR]: 'neutral',
   [severityLevel.WARNING]: 'warning',
   [severityLevel.INFO]: 'info',
-  [severityLevel.DEBUG]: 'light',
+  [severityLevel.DEBUG]: 'muted',
 };
 
 export const errorStatus = {

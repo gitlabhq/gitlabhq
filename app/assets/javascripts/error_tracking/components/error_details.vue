@@ -363,16 +363,10 @@ export default {
           <h2 class="text-truncate">{{ error.title }}</h2>
         </tooltip-on-truncate>
         <template v-if="error.tags">
-          <gl-badge
-            v-if="error.tags.level"
-            :variant="errorSeverityVariant"
-            class="rounded-pill mr-2"
-          >
+          <gl-badge v-if="error.tags.level" :variant="errorSeverityVariant" class="mr-2">
             {{ errorLevel }}
           </gl-badge>
-          <gl-badge v-if="error.tags.logger" variant="light" class="rounded-pill"
-            >{{ error.tags.logger }}
-          </gl-badge>
+          <gl-badge v-if="error.tags.logger" variant="muted">{{ error.tags.logger }} </gl-badge>
         </template>
         <ul>
           <li v-if="error.gitlabCommit">

@@ -24,7 +24,7 @@ module Projects
         mark_old_paths_for_archive
 
         repository_storage_move.finish!
-        project.update!(repository_storage: destination_storage_name, repository_read_only: false)
+
         project.leave_pool_repository
         project.track_project_repository
       end
@@ -34,10 +34,7 @@ module Projects
       ServiceResponse.success
 
     rescue StandardError => e
-      project.transaction do
-        repository_storage_move.do_fail!
-        project.update!(repository_read_only: false)
-      end
+      repository_storage_move.do_fail!
 
       Gitlab::ErrorTracking.track_exception(e, project_path: project.full_path)
 

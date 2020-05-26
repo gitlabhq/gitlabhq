@@ -7,7 +7,6 @@ shared_examples_for 'snippet editor' do
     stub_feature_flags(snippets_vue: false)
     stub_feature_flags(snippets_edit_vue: false)
     sign_in(user)
-    visit new_snippet_path
   end
 
   def description_field
@@ -28,6 +27,8 @@ shared_examples_for 'snippet editor' do
   end
 
   it 'Authenticated user creates a snippet' do
+    visit new_snippet_path
+
     fill_form
 
     click_button('Create snippet')
@@ -42,6 +43,8 @@ shared_examples_for 'snippet editor' do
   end
 
   it 'previews a snippet with file' do
+    visit new_snippet_path
+
     # Click placeholder first to expand full description field
     description_field.click
     fill_in 'personal_snippet_description', with: 'My Snippet'
@@ -62,6 +65,8 @@ shared_examples_for 'snippet editor' do
   end
 
   it 'uploads a file when dragging into textarea' do
+    visit new_snippet_path
+
     fill_form
 
     dropzone_file Rails.root.join('spec', 'fixtures', 'banana_sample.gif')
@@ -86,6 +91,8 @@ shared_examples_for 'snippet editor' do
         allow(instance).to receive(:create_commit).and_raise(StandardError, error)
       end
 
+      visit new_snippet_path
+
       fill_form
 
       click_button('Create snippet')
@@ -107,6 +114,8 @@ shared_examples_for 'snippet editor' do
   end
 
   it 'validation fails for the first time' do
+    visit new_snippet_path
+
     fill_in 'personal_snippet_title', with: 'My Snippet Title'
     click_button('Create snippet')
 
@@ -132,6 +141,8 @@ shared_examples_for 'snippet editor' do
   end
 
   it 'Authenticated user creates a snippet with + in filename' do
+    visit new_snippet_path
+
     fill_in 'personal_snippet_title', with: 'My Snippet Title'
     page.within('.file-editor') do
       find(:xpath, "//input[@id='personal_snippet_file_name']").set 'snippet+file+name'
@@ -145,6 +156,27 @@ shared_examples_for 'snippet editor' do
     expect(page).to have_content('My Snippet Title')
     expect(page).to have_content('snippet+file+name')
     expect(page).to have_content('Hello World!')
+  end
+
+  context 'when snippets default visibility level is restricted' do
+    before do
+      stub_application_setting(restricted_visibility_levels: [Gitlab::VisibilityLevel::PRIVATE],
+                              default_snippet_visibility: Gitlab::VisibilityLevel::PRIVATE)
+    end
+
+    it 'creates a snippet using the lowest available visibility level as default' do
+      visit new_snippet_path
+
+      fill_form
+
+      click_button('Create snippet')
+      wait_for_requests
+
+      visit snippets_path
+      click_link('Internal')
+
+      expect(page).to have_content('My Snippet Title')
+    end
   end
 end
 

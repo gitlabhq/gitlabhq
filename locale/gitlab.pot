@@ -3761,7 +3761,7 @@ msgstr ""
 msgid "Cannot promote issue due to insufficient permissions."
 msgstr ""
 
-msgid "Cannot refer to a group milestone by an internal id!"
+msgid "Cannot refer to a group %{timebox_type} by an internal id!"
 msgstr ""
 
 msgid "Cannot set confidential epic for not-confidential issue"
@@ -26099,6 +26099,9 @@ msgid "is not an email you own"
 msgstr ""
 
 msgid "is not in the group enforcing Group Managed Account"
+msgstr ""
+
+msgid "is read only"
 msgstr ""
 
 msgid "is too long (%{current_value}). The maximum size is %{max_size}."

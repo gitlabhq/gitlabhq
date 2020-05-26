@@ -306,8 +306,50 @@ All the members of the 'Engineering' group will have been added to 'Frontend'.
 
 ## Manage group memberships via LDAP
 
-In GitLab Enterprise Edition, it is possible to manage GitLab group memberships using LDAP groups.
-See [the GitLab Enterprise Edition documentation](../../integration/ldap.md) for more information.
+Group syncing allows LDAP groups to be mapped to GitLab groups. This provides more control over per-group user management. To configure group syncing edit the `group_base` **DN** (`'OU=Global Groups,OU=GitLab INT,DC=GitLab,DC=org'`). This **OU** contains all groups that will be associated with GitLab groups.
+
+Group links can be created using either a CN or a filter. These group links are created on the **Group Settings -> LDAP Synchronization** page. After configuring the link, it may take over an hour for the users to sync with the GitLab group.
+
+For more information on the administration of LDAP and group sync, refer to the [main LDAP documentation](../../administration/auth/ldap/index.md#group-sync-starter-only).
+
+NOTE: **Note:**
+If an LDAP user is a group member when LDAP Synchronization is added, and they are not part of the LDAP group, they will be removed from the group.
+
+### Creating group links via CN **(STARTER ONLY)**
+
+To create group links via CN:
+
+1. Select the **LDAP Server** for the link.
+1. Select `LDAP Group cn` as the **Sync method**.
+1. In the **LDAP Group cn** text input box, begin typing the CN of the group. There will be a dropdown menu with matching CNs within the configured `group_base`. Select your CN from this list.
+1. In the **LDAP Access** section, select the [permission level](../permissions.md) for users synced in this group.
+1. Click the `Add Synchronization` button to save this group link.
+
+![Creating group links via CN](img/ldap_sync_cn_v13_1.png)
+
+### Creating group links via filter **(PREMIUM ONLY)**
+
+To create group links via filter:
+
+1. Select the **LDAP Server** for the link.
+1. Select `LDAP user filter` as the **Sync method**.
+1. Input your filter in the **LDAP User filter** box. Follow the [documentation on user filters](../../administration/auth/ldap/index.md#set-up-ldap-user-filter-core-only).
+1. In the **LDAP Access** section, select the [permission level](../permissions.md) for users synced in this group.
+1. Click the `Add Synchronization` button to save this group link.
+
+![Creating group links via filter](img/ldap_sync_filter_v13_1.png)
+
+### Overriding user permissions **(STARTER ONLY)**
+
+Since GitLab [v8.15](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/822) LDAP user permissions can now be manually overridden by an admin user. To override a user's permissions:
+
+1. Go to your group's **Members** page.
+1. Select the pencil icon in the row for the user you are editing.
+1. Select the orange `Change permissions` button.
+
+![Setting manual permissions](img/manual_permissions_v13_1.png)
+
+Now you will be able to edit the user's permissions from the **Members** page.
 
 ## Epics **(ULTIMATE)**
 

@@ -1,6 +1,12 @@
 <script>
 import { mapState, mapActions } from 'vuex';
-import { GlBadge, GlLink, GlLoadingIcon, GlPagination, GlTable } from '@gitlab/ui';
+import {
+  GlDeprecatedBadge as GlBadge,
+  GlLink,
+  GlLoadingIcon,
+  GlPagination,
+  GlTable,
+} from '@gitlab/ui';
 import tooltip from '~/vue_shared/directives/tooltip';
 import { CLUSTER_TYPES, STATUSES } from '../constants';
 import { __, sprintf } from '~/locale';

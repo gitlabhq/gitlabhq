@@ -32,5 +32,5 @@ You can also [create users through the API](../../../api/users.md) as an admin.
 
 Users will be:
 
-- Automatically created upon first login with the [LDAP integration](../../../administration/auth/ldap.md).
+- Automatically created upon first login with the [LDAP integration](../../../administration/auth/ldap/index.md).
 - Created when first logging in via an [OmniAuth provider](../../../integration/omniauth.md) if the `allow_single_sign_on` setting is present.

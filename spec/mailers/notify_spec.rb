@@ -104,7 +104,11 @@ describe Notify do
 
         it 'contains a link to issue author' do
           is_expected.to have_body_text(issue.author_name)
-          is_expected.to have_body_text 'created an issue:'
+          is_expected.to have_body_text 'created an issue'
+        end
+
+        it 'contains a link to the issue' do
+          is_expected.to have_body_text(issue.to_reference(full: false))
         end
       end
 

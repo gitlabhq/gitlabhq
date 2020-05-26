@@ -1,0 +1,5 @@
+---
+title: Fix "Broadcast Messages" table overflow and button alignment
+merge_request: 32801
+author:
+type: fixed

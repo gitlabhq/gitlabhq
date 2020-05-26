@@ -6,10 +6,6 @@ describe Iteration do
   let_it_be(:project) { create(:project) }
   let_it_be(:group) { create(:group) }
 
-  it_behaves_like 'a timebox', :iteration do
-    let(:timebox_table_name) { described_class.table_name.to_sym }
-  end
-
   describe "#iid" do
     it "is properly scoped on project and group" do
       iteration1 = create(:iteration, project: project)

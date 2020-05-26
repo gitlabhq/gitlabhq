@@ -2466,11 +2466,11 @@ describe API::Projects do
 
         let(:admin) { create(:admin) }
 
-        it 'returns 500 when repository storage is unknown' do
+        it 'returns 400 when repository storage is unknown' do
           put(api("/projects/#{new_project.id}", admin), params: { repository_storage: unknown_storage })
 
-          expect(response).to have_gitlab_http_status(:internal_server_error)
-          expect(json_response['message']).to match('ArgumentError')
+          expect(response).to have_gitlab_http_status(:bad_request)
+          expect(json_response['message']['repository_storage_moves']).to eq(['is invalid'])
         end
 
         it 'returns 200 when repository storage has changed' do

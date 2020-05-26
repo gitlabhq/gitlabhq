@@ -1,5 +1,5 @@
 %p.details
-  #{link_to @issue.author_name, user_url(@issue.author)} created an issue:
+  #{link_to @issue.author_name, user_url(@issue.author)} created an issue #{link_to @issue.to_reference(full: false), issue_url(@issue)}:
 
 - if @issue.assignees.any?
   %p

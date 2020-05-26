@@ -30,25 +30,36 @@ RSpec.describe ProjectRepositoryStorageMove, type: :model do
         expect(subject.errors[:destination_storage_name].first).to match(/is not included in the list/)
       end
     end
+
+    context 'project repository read-only' do
+      subject { build(:project_repository_storage_move, project: project) }
+
+      let(:project) { build(:project, repository_read_only: true) }
+
+      it "does not allow the project to be read-only on create" do
+        expect(subject).not_to be_valid
+        expect(subject.errors[:project].first).to match(/is read only/)
+      end
+    end
   end
 
   describe 'state transitions' do
-    using RSpec::Parameterized::TableSyntax
+    let(:project) { create(:project) }
+
+    before do
+      stub_storage_settings('test_second_storage' => { 'path' => 'tmp/tests/extra_storage' })
+    end
 
     context 'when in the default state' do
       subject(:storage_move) { create(:project_repository_storage_move, project: project, destination_storage_name: 'test_second_storage') }
-
-      let(:project) { create(:project) }
-
-      before do
-        stub_storage_settings('test_second_storage' => { 'path' => 'tmp/tests/extra_storage' })
-      end
 
       context 'and transits to scheduled' do
         it 'triggers ProjectUpdateRepositoryStorageWorker' do
           expect(ProjectUpdateRepositoryStorageWorker).to receive(:perform_async).with(project.id, 'test_second_storage', storage_move.id)
 
           storage_move.schedule!
+
+          expect(project).to be_repository_read_only
         end
       end
 
@@ -56,6 +67,27 @@ RSpec.describe ProjectRepositoryStorageMove, type: :model do
         it 'does not allow the transition' do
           expect { storage_move.start! }
             .to raise_error(StateMachines::InvalidTransition)
+        end
+      end
+    end
+
+    context 'when started' do
+      subject(:storage_move) { create(:project_repository_storage_move, :started, project: project, destination_storage_name: 'test_second_storage') }
+
+      context 'and transits to finished' do
+        it 'sets the repository storage and marks the project as writable' do
+          storage_move.finish!
+
+          expect(project.repository_storage).to eq('test_second_storage')
+          expect(project).not_to be_repository_read_only
+        end
+      end
+
+      context 'and transits to failed' do
+        it 'marks the project as writable' do
+          storage_move.do_fail!
+
+          expect(project).not_to be_repository_read_only
         end
       end
     end

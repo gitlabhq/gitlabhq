@@ -373,8 +373,8 @@ To proceed with configuring Group SAML SSO instead, you'll need to enable the `g
 Group SAML on a self-managed instance is limited when compared to the recommended
 [instance-wide SAML](../../../integration/saml.md). The recommended solution allows you to take advantage of:
 
-- [LDAP compatibility](../../../administration/auth/ldap.md).
-- [LDAP group Sync](../../../administration/auth/how_to_configure_ldap_gitlab_ee/index.md#group-sync).
+- [LDAP compatibility](../../../administration/auth/ldap/index.md).
+- [LDAP Group Sync](../index.md#manage-group-memberships-via-ldap)
 - [Required groups](../../../integration/saml.md#required-groups-starter-only).
 - [Admin groups](../../../integration/saml.md#admin-groups-starter-only).
 - [Auditor groups](../../../integration/saml.md#auditor-groups-starter-only).

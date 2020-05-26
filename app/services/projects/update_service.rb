@@ -13,8 +13,12 @@ module Projects
 
       ensure_wiki_exists if enabling_wiki?
 
-      if changing_storage_size?
-        project.change_repository_storage(params.delete(:repository_storage))
+      if changing_repository_storage?
+        storage_move = project.repository_storage_moves.build(
+          source_storage_name: project.repository_storage,
+          destination_storage_name: params.delete(:repository_storage)
+        )
+        storage_move.schedule
       end
 
       yield if block_given?
@@ -145,10 +149,11 @@ module Projects
       project.previous_changes.include?(:pages_https_only)
     end
 
-    def changing_storage_size?
+    def changing_repository_storage?
       new_repository_storage = params[:repository_storage]
 
       new_repository_storage && project.repository.exists? &&
+        project.repository_storage != new_repository_storage &&
         can?(current_user, :change_repository_storage, project)
     end
   end
