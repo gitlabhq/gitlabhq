@@ -11,7 +11,7 @@ describe API::GroupImport do
   let(:file) { File.join('spec', 'fixtures', 'group_export.tar.gz') }
   let(:export_path) { "#{Dir.tmpdir}/group_export_spec" }
   let(:workhorse_token) { JWT.encode({ 'iss' => 'gitlab-workhorse' }, Gitlab::Workhorse.secret, 'HS256') }
-  let(:workhorse_header) { { 'GitLab-Workhorse' => '1.0', Gitlab::Workhorse::INTERNAL_API_REQUEST_HEADER => workhorse_token } }
+  let(:workhorse_headers) { { 'GitLab-Workhorse' => '1.0', Gitlab::Workhorse::INTERNAL_API_REQUEST_HEADER => workhorse_token } }
 
   before do
     allow_next_instance_of(Gitlab::ImportExport) do |import_export|
@@ -35,7 +35,7 @@ describe API::GroupImport do
       }
     end
 
-    subject { post api('/groups/import', user), params: params, headers: workhorse_header }
+    subject { upload_archive(file_upload, workhorse_headers, params) }
 
     shared_examples 'when all params are correct' do
       context 'when user is authorized to create new group' do
@@ -151,7 +151,7 @@ describe API::GroupImport do
             params[:file] = file_upload
 
             expect do
-              post api('/groups/import', user), params: params, headers: workhorse_header
+              upload_archive(file_upload, workhorse_headers, params)
             end.not_to change { Group.count }.from(1)
 
             expect(response).to have_gitlab_http_status(:bad_request)
@@ -171,7 +171,7 @@ describe API::GroupImport do
 
       context 'without a file from workhorse' do
         it 'rejects the request' do
-          subject
+          upload_archive(nil, workhorse_headers, params)
 
           expect(response).to have_gitlab_http_status(:bad_request)
         end
@@ -179,7 +179,7 @@ describe API::GroupImport do
 
       context 'without a workhorse header' do
         it 'rejects request without a workhorse header' do
-          post api('/groups/import', user), params: params
+          upload_archive(file_upload, {}, params)
 
           expect(response).to have_gitlab_http_status(:forbidden)
         end
@@ -189,9 +189,7 @@ describe API::GroupImport do
         let(:params) do
           {
             path: 'test-import-group',
-            name: 'test-import-group',
-            'file.path' => file_upload.path,
-            'file.name' => file_upload.original_filename
+            name: 'test-import-group'
           }
         end
 
@@ -229,9 +227,7 @@ describe API::GroupImport do
           {
             path: 'test-import-group',
             name: 'test-import-group',
-            file: fog_file,
-            'file.remote_id' => file_name,
-            'file.size' => fog_file.size
+            file: fog_file
           }
         end
 
@@ -245,10 +241,21 @@ describe API::GroupImport do
         include_examples 'when some params are missing'
       end
     end
+
+    def upload_archive(file, headers = {}, params = {})
+      workhorse_finalize(
+        api('/groups/import', user),
+        method: :post,
+        file_key: :file,
+        params: params.merge(file: file),
+        headers: headers,
+        send_rewritten_field: true
+      )
+    end
   end
 
   describe 'POST /groups/import/authorize' do
-    subject { post api('/groups/import/authorize', user), headers: workhorse_header }
+    subject { post api('/groups/import/authorize', user), headers: workhorse_headers }
 
     it 'authorizes importing group with workhorse header' do
       subject
@@ -258,7 +265,7 @@ describe API::GroupImport do
     end
 
     it 'rejects requests that bypassed gitlab-workhorse' do
-      workhorse_header.delete(Gitlab::Workhorse::INTERNAL_API_REQUEST_HEADER)
+      workhorse_headers.delete(Gitlab::Workhorse::INTERNAL_API_REQUEST_HEADER)
 
       subject
 
