@@ -2413,6 +2413,8 @@ describe NotificationService, :mailer do
               group = create(:group)
 
               project.update(group: group)
+
+              create(:email, :confirmed, user: u_custom_notification_enabled, email: group_notification_email)
               create(:notification_setting, user: u_custom_notification_enabled, source: group, notification_email: group_notification_email)
             end
 
@@ -2447,6 +2449,7 @@ describe NotificationService, :mailer do
               group = create(:group)
 
               project.update(group: group)
+              create(:email, :confirmed, user: u_member, email: group_notification_email)
               create(:notification_setting, user: u_member, source: group, notification_email: group_notification_email)
             end
 
@@ -2540,6 +2543,7 @@ describe NotificationService, :mailer do
               group = create(:group)
 
               project.update(group: group)
+              create(:email, :confirmed, user: u_member, email: group_notification_email)
               create(:notification_setting, user: u_member, source: group, notification_email: group_notification_email)
             end
 

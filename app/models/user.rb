@@ -747,15 +747,15 @@ class User < ApplicationRecord
   end
 
   def owns_notification_email
-    return if temp_oauth_email?
+    return if new_record? || temp_oauth_email?
 
-    errors.add(:notification_email, _("is not an email you own")) unless all_emails.include?(notification_email)
+    errors.add(:notification_email, _("is not an email you own")) unless verified_emails.include?(notification_email)
   end
 
   def owns_public_email
     return if public_email.blank?
 
-    errors.add(:public_email, _("is not an email you own")) unless all_emails.include?(public_email)
+    errors.add(:public_email, _("is not an email you own")) unless verified_emails.include?(public_email)
   end
 
   def owns_commit_email
@@ -1203,16 +1203,18 @@ class User < ApplicationRecord
     all_emails
   end
 
-  def all_public_emails
-    all_emails(include_private_email: false)
-  end
-
-  def verified_emails
+  def verified_emails(include_private_email: true)
     verified_emails = []
     verified_emails << email if primary_email_verified?
-    verified_emails << private_commit_email
+    verified_emails << private_commit_email if include_private_email
     verified_emails.concat(emails.confirmed.pluck(:email))
     verified_emails
+  end
+
+  def public_verified_emails
+    emails = verified_emails(include_private_email: false)
+    emails << email unless temp_oauth_email?
+    emails.uniq
   end
 
   def any_email?(check_email)

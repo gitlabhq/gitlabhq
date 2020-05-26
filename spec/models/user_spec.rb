@@ -235,7 +235,7 @@ describe User, :do_not_mock_admin_mode do
     end
 
     it_behaves_like 'an object with email-formated attributes', :public_email, :notification_email do
-      subject { build(:user).tap { |user| user.emails << build(:email, email: email_value) } }
+      subject { create(:user).tap { |user| user.emails << build(:email, email: email_value, confirmed_at: Time.current) } }
     end
 
     describe '#commit_email' do
@@ -503,6 +503,32 @@ describe User, :do_not_mock_admin_mode do
         it 'accepts temp_oauth_email emails' do
           user = build(:user, email: "temp-email-for-oauth@example.com")
           expect(user).to be_valid
+        end
+
+        it 'does not accept not verified emails' do
+          email = create(:email)
+          user = email.user
+          user.update(notification_email: email.email)
+
+          expect(user).to be_invalid
+        end
+      end
+
+      context 'owns_public_email' do
+        it 'accepts verified emails' do
+          email = create(:email, :confirmed, email: 'test@test.com')
+          user = email.user
+          user.update(public_email: email.email)
+
+          expect(user).to be_valid
+        end
+
+        it 'does not accept not verified emails' do
+          email = create(:email)
+          user = email.user
+          user.update(public_email: email.email)
+
+          expect(user).to be_invalid
         end
       end
 
@@ -2149,6 +2175,31 @@ describe User, :do_not_mock_admin_mode do
       expect(user.verified_emails).to contain_exactly(
         user.email,
         user.private_commit_email,
+        email_confirmed.email
+      )
+    end
+  end
+
+  describe '#public_verified_emails' do
+    let(:user) { create(:user) }
+
+    it 'returns only confirmed public emails' do
+      email_confirmed = create :email, user: user, confirmed_at: Time.current
+      create :email, user: user
+
+      expect(user.public_verified_emails).to contain_exactly(
+        user.email,
+        email_confirmed.email
+      )
+    end
+
+    it 'returns confirmed public emails plus main user email when user is not confirmed' do
+      user = create(:user, confirmed_at: nil)
+      email_confirmed = create :email, user: user, confirmed_at: Time.current
+      create :email, user: user
+
+      expect(user.public_verified_emails).to contain_exactly(
+        user.email,
         email_confirmed.email
       )
     end
@@ -4191,9 +4242,10 @@ describe User, :do_not_mock_admin_mode do
           context 'when an ancestor has a level other than Global' do
             let(:ancestor) { create(:group) }
             let(:group) { create(:group, parent: ancestor) }
+            let(:email) { create(:email, :confirmed, email: 'ancestor@example.com', user: user) }
 
             before do
-              create(:notification_setting, user: user, source: ancestor, level: 'participating', notification_email: 'ancestor@example.com')
+              create(:notification_setting, user: user, source: ancestor, level: 'participating', notification_email: email.email)
             end
 
             it 'has the same level set' do
@@ -4218,10 +4270,12 @@ describe User, :do_not_mock_admin_mode do
             let(:grand_ancestor) { create(:group) }
             let(:ancestor) { create(:group, parent: grand_ancestor) }
             let(:group) { create(:group, parent: ancestor) }
+            let(:ancestor_email) { create(:email, :confirmed, email: 'ancestor@example.com', user: user) }
+            let(:grand_email) { create(:email, :confirmed, email: 'grand@example.com', user: user) }
 
             before do
-              create(:notification_setting, user: user, source: grand_ancestor, level: 'participating', notification_email: 'grand@example.com')
-              create(:notification_setting, user: user, source: ancestor, level: 'global', notification_email: 'ancestor@example.com')
+              create(:notification_setting, user: user, source: grand_ancestor, level: 'participating', notification_email: grand_email.email)
+              create(:notification_setting, user: user, source: ancestor, level: 'global', notification_email: ancestor_email.email)
             end
 
             it 'has the same email set' do
@@ -4259,7 +4313,7 @@ describe User, :do_not_mock_admin_mode do
     context 'when group has notification email set' do
       it 'returns group notification email' do
         group_notification_email = 'user+group@example.com'
-
+        create(:email, :confirmed, user: user, email: group_notification_email)
         create(:notification_setting, user: user, source: group, notification_email: group_notification_email)
 
         is_expected.to eq(group_notification_email)
