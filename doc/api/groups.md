@@ -20,6 +20,7 @@ Parameters:
 | `with_custom_attributes` | boolean           | no       | Include [custom attributes](custom_attributes.md) in response (admins only) |
 | `owned`                  | boolean           | no       | Limit to groups explicitly owned by the current user |
 | `min_access_level`       | integer           | no       | Limit to groups where current user has at least this [access level](members.md) |
+| `top_level_only`         | boolean           | no       | Limit to top level groups, excluding all subgroups |
 
 ```plaintext
 GET /groups

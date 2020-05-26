@@ -536,7 +536,7 @@ describe Projects::IssuesController do
         before do
           stub_application_setting(recaptcha_enabled: true)
           expect_next_instance_of(Spam::SpamVerdictService) do |verdict_service|
-            expect(verdict_service).to receive(:execute).and_return(REQUIRE_RECAPTCHA)
+            expect(verdict_service).to receive(:execute).and_return(CONDITIONAL_ALLOW)
           end
         end
 
@@ -851,7 +851,7 @@ describe Projects::IssuesController do
           context 'when recaptcha is not verified' do
             before do
               expect_next_instance_of(Spam::SpamVerdictService) do |verdict_service|
-                expect(verdict_service).to receive(:execute).and_return(REQUIRE_RECAPTCHA)
+                expect(verdict_service).to receive(:execute).and_return(CONDITIONAL_ALLOW)
               end
             end
 
@@ -1103,7 +1103,7 @@ describe Projects::IssuesController do
         context 'when captcha is not verified' do
           before do
             expect_next_instance_of(Spam::SpamVerdictService) do |verdict_service|
-              expect(verdict_service).to receive(:execute).and_return(REQUIRE_RECAPTCHA)
+              expect(verdict_service).to receive(:execute).and_return(CONDITIONAL_ALLOW)
             end
           end
 

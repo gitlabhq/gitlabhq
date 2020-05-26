@@ -74,6 +74,12 @@ describe GroupsFinder do
       let!(:internal_subgroup) { create(:group, :internal, parent: parent_group) }
       let!(:private_subgroup) { create(:group, :private, parent: parent_group) }
 
+      context 'with [nil] parent' do
+        it 'returns only top-level groups' do
+          expect(described_class.new(user, parent: [nil]).execute).to contain_exactly(parent_group)
+        end
+      end
+
       context 'without a user' do
         it 'only returns parent and public subgroups' do
           expect(described_class.new(nil).execute).to contain_exactly(parent_group, public_subgroup)

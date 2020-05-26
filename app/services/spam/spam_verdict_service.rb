@@ -31,7 +31,7 @@ module Spam
 
     def akismet_verdict
       if akismet.spam?
-        Gitlab::Recaptcha.enabled? ? REQUIRE_RECAPTCHA : DISALLOW
+        Gitlab::Recaptcha.enabled? ? CONDITIONAL_ALLOW : DISALLOW
       else
         ALLOW
       end

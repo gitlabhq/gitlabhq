@@ -249,9 +249,7 @@ module Projects
   end
 end
 
-# rubocop: disable Cop/InjectEnterpriseEditionModule
 Projects::CreateService.prepend_if_ee('EE::Projects::CreateService')
-# rubocop: enable Cop/InjectEnterpriseEditionModule
 
 # Measurable should be at the bottom of the ancestor chain, so it will measure execution of EE::Projects::CreateService as well
 Projects::CreateService.prepend(Measurable)

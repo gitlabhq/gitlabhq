@@ -3790,7 +3790,7 @@ Example:
 
 .something_after: &something_after
 - echo 'something after'
-
+- echo 'another thing after'
 
 job_name:
   before_script:

@@ -123,8 +123,8 @@ describe Spam::SpamVerdictService do
             stub_application_setting(recaptcha_enabled: true)
           end
 
-          it 'returns require reCAPTCHA verdict' do
-            expect(subject).to eq REQUIRE_RECAPTCHA
+          it 'returns conditionally allow verdict' do
+            expect(subject).to eq CONDITIONAL_ALLOW
           end
         end
 

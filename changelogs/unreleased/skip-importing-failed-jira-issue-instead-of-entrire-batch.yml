@@ -1,0 +1,5 @@
+---
+title: Skip the individual JIRA issues if failed to import vs failing the whole batch
+merge_request: 32673
+author:
+type: fixed

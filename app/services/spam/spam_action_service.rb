@@ -49,7 +49,8 @@ module Spam
       # ask the SpamVerdictService what to do with the target.
       spam_verdict_service.execute.tap do |result|
         case result
-        when REQUIRE_RECAPTCHA
+        when CONDITIONAL_ALLOW
+          # at the moment, this means "ask for reCAPTCHA"
           create_spam_log(api)
 
           break if target.allow_possible_spam?

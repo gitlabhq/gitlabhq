@@ -23,13 +23,20 @@ module API
         optional :order_by, type: String, values: %w[name path id], default: 'name', desc: 'Order by name, path or id'
         optional :sort, type: String, values: %w[asc desc], default: 'asc', desc: 'Sort by asc (ascending) or desc (descending)'
         optional :min_access_level, type: Integer, values: Gitlab::Access.all_values, desc: 'Minimum access level of authenticated user'
+        optional :top_level_only, type: Boolean, desc: 'Only include top level groups'
         use :pagination
       end
 
       # rubocop: disable CodeReuse/ActiveRecord
       def find_groups(params, parent_id = nil)
         find_params = params.slice(:all_available, :custom_attributes, :owned, :min_access_level)
-        find_params[:parent] = find_group!(parent_id) if parent_id
+
+        find_params[:parent] = if params[:top_level_only]
+                                 [nil]
+                               elsif parent_id
+                                 find_group!(parent_id)
+                               end
+
         find_params[:all_available] =
           find_params.fetch(:all_available, current_user&.can_read_all_resources?)
 

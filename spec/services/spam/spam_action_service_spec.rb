@@ -163,9 +163,9 @@ describe Spam::SpamActionService do
           end
         end
 
-        context 'when spam verdict service requires reCAPTCHA' do
+        context 'when spam verdict service conditionally allows' do
           before do
-            allow(fake_verdict_service).to receive(:execute).and_return(REQUIRE_RECAPTCHA)
+            allow(fake_verdict_service).to receive(:execute).and_return(CONDITIONAL_ALLOW)
           end
 
           context 'when allow_possible_spam feature flag is false' do

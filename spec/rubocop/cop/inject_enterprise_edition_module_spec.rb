@@ -170,6 +170,20 @@ describe RuboCop::Cop::InjectEnterpriseEditionModule do
     SOURCE
   end
 
+  it 'does not flag the use of `prepend_if_ee EE` as long as all injections are at the end of the file' do
+    expect_no_offenses(<<~SOURCE)
+    class Foo
+    end
+
+    Foo.include_if_ee('EE::Foo')
+    Foo.prepend_if_ee('EE::Foo')
+
+    Foo.include(Bar)
+    # comment on prepending Bar
+    Foo.prepend(Bar)
+    SOURCE
+  end
+
   it 'autocorrects offenses by just disabling the Cop' do
     source = <<~SOURCE
     class Foo

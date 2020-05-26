@@ -231,6 +231,27 @@ describe API::Groups do
       end
     end
 
+    context "when using top_level_only" do
+      let(:top_level_group) { create(:group, name: 'top-level-group') }
+      let(:subgroup) { create(:group, :nested, name: 'subgroup') }
+      let(:response_groups) { json_response.map { |group| group['name'] } }
+
+      before do
+        top_level_group.add_owner(user1)
+        subgroup.add_owner(user1)
+      end
+
+      it "doesn't return subgroups" do
+        get api("/groups", user1), params: { top_level_only: true }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to include_pagination_headers
+        expect(json_response).to be_an Array
+        expect(response_groups).to include(top_level_group.name)
+        expect(response_groups).not_to include(subgroup.name)
+      end
+    end
+
     context "when using sorting" do
       let(:group3) { create(:group, name: "a#{group1.name}", path: "z#{group1.path}") }
       let(:group4) { create(:group, name: "same-name", path: "y#{group1.path}") }

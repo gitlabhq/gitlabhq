@@ -111,6 +111,14 @@ module WorkerAttributes
         1
     end
 
+    def tags(*values)
+      worker_attributes[:tags] = values
+    end
+
+    def get_tags
+      Array(worker_attributes[:tags])
+    end
+
     protected
 
     # Returns a worker attribute declared on this class or its parent class.

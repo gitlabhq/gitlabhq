@@ -6,7 +6,7 @@ module Gitlab
       include Comparable
 
       attr_reader :klass
-      delegate :feature_category_not_owned?, :get_feature_category,
+      delegate :feature_category_not_owned?, :get_feature_category, :get_tags,
                :get_urgency, :get_weight, :get_worker_resource_boundary,
                :idempotent?, :queue, :queue_namespace,
                :worker_has_external_dependencies?,
@@ -52,7 +52,8 @@ module Gitlab
           urgency: get_urgency,
           resource_boundary: get_worker_resource_boundary,
           weight: get_weight,
-          idempotent: idempotent?
+          idempotent: idempotent?,
+          tags: get_tags
         }
       end
 

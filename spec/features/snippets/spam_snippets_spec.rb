@@ -68,7 +68,7 @@ shared_examples_for 'snippet editor' do
   context 'when SpamVerdictService requires recaptcha' do
     before do
       expect_next_instance_of(Spam::SpamVerdictService) do |verdict_service|
-        expect(verdict_service).to receive(:execute).and_return(REQUIRE_RECAPTCHA)
+        expect(verdict_service).to receive(:execute).and_return(CONDITIONAL_ALLOW)
       end
     end
 

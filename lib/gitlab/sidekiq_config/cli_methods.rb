@@ -28,6 +28,7 @@ module Gitlab
         has_external_dependencies: lambda { |value| value == 'true' },
         name: :to_s,
         resource_boundary: :to_sym,
+        tags: :to_sym,
         urgency: :to_sym
       }.freeze
 
@@ -117,7 +118,11 @@ module Gitlab
 
         raise UnknownPredicate.new("Unknown predicate: #{lhs}") unless values_block
 
-        lambda { |queue| values.map(&values_block).include?(queue[lhs.to_sym]) }
+        lambda do |queue|
+          comparator = Array(queue[lhs.to_sym]).to_set
+
+          values.map(&values_block).to_set.intersect?(comparator)
+        end
       end
     end
   end

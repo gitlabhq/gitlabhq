@@ -605,24 +605,22 @@ There are two formats of data in the JSON report that are used side by side:
 
 ### Other formats
 
-Reports can also be generated in Markdown, HTML, and XML.
-
-Reports can be published as artifacts using the following configuration:
+Reports can also be generated in Markdown, HTML, and XML. These can be published as artifacts using the following configuration:
 
 ```yaml
 include:
   template: DAST.gitlab-ci.yml
 
 dast:
-  script:
-    - export DAST_WEBSITE=${DAST_WEBSITE:-$(cat environment_url.txt)}
-    - /analyze -r report.html -w report.md -x report.xml -t $DAST_WEBSITE
-    - cp /zap/wrk/report.{html,md,xml} "$PWD"
+  variables:
+    DAST_HTML_REPORT: report.html
+    DAST_MARKDOWN_REPORT: report.md
+    DAST_XML_REPORT: report.xml
   artifacts:
     paths:
-      - report.html
-      - report.md
-      - report.xml
+      - $DAST_HTML_REPORT
+      - $DAST_MARKDOWN_REPORT
+      - $DAST_XML_REPORT
       - gl-dast-report.json
 ```
 

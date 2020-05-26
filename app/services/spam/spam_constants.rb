@@ -2,7 +2,7 @@
 
 module Spam
   module SpamConstants
-    REQUIRE_RECAPTCHA = "recaptcha"
+    CONDITIONAL_ALLOW = "conditional_allow"
     DISALLOW = "disallow"
     ALLOW = "allow"
     BLOCK_USER = "block"
@@ -14,7 +14,7 @@ module Spam
       DISALLOW => {
         priority: 2
       },
-      REQUIRE_RECAPTCHA => {
+      CONDITIONAL_ALLOW => {
         priority: 3
       },
       ALLOW => {

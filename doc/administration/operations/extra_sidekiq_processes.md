@@ -126,6 +126,8 @@ in a more general way using the following components:
 
 ### Available attributes
 
+- [Introduced](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/261) in GitLab 13.1, `tags`.
+
 From the [list of all available
 attributes](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/workers/all_queues.yml),
 `experimental_queue_selector` allows selecting of queues by the
@@ -144,13 +146,20 @@ following attributes:
 - `name` - the queue name. The other attributes are typically more useful as
   they are more general, but this is available in case a particular queue needs
   to be selected.
-- `resource_boundary` - if the worker is bound by `cpu`, `memory`, or
+- `resource_boundary` - if the queue is bound by `cpu`, `memory`, or
   `unknown`. For example, the `project_export` queue is memory bound as it has
   to load data in memory before saving it for export.
+- `tags` - short-lived annotations for queues. These are expected to frequently
+  change from release to release, and may be removed entirely.
 
 `has_external_dependencies` is a boolean attribute: only the exact
 string `true` is considered true, and everything else is considered
 false.
+
+`tags` is a set, which means that `=` checks for intersecting sets, and
+`!=` checks for disjoint sets. For example, `tags=a,b` selects queues
+that have tags `a`, `b`, or both. `tags!=a,b` selects queues that have
+neither of those tags.
 
 ### Available operators
 

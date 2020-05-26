@@ -42,12 +42,19 @@ describe Gitlab::JiraImport::IssuesImporter do
       jira_issue = Struct.new(:id)
       let_it_be(:jira_issues) { [jira_issue.new(1), jira_issue.new(2)] }
 
-      def mock_issue_serializer(count)
+      def mock_issue_serializer(count, raise_exception_on_even_mocks: false)
         serializer = instance_double(Gitlab::JiraImport::IssueSerializer, execute: { key: 'data' })
+        next_iid = project.issues.maximum(:iid).to_i
 
         count.times do |i|
-          expect(Gitlab::JiraImport::IssueSerializer).to receive(:new)
-            .with(project, jira_issues[i], current_user.id, { iid: i + 1 }).and_return(serializer)
+          if raise_exception_on_even_mocks && i.even?
+            expect(Gitlab::JiraImport::IssueSerializer).to receive(:new)
+             .with(project, jira_issues[i], current_user.id, { iid: next_iid + 1 }).and_raise('Some error')
+          else
+            next_iid += 1
+            expect(Gitlab::JiraImport::IssueSerializer).to receive(:new)
+              .with(project, jira_issues[i], current_user.id, { iid: next_iid }).and_return(serializer)
+          end
         end
       end
 
@@ -70,21 +77,22 @@ describe Gitlab::JiraImport::IssuesImporter do
         end
       end
 
-      context 'when there is more than one page of results' do
+      context 'when importing some issue raises an exception' do
         before do
-          stub_const("#{described_class.name}::BATCH_SIZE", 2)
+          stub_const("#{described_class.name}::BATCH_SIZE", 3)
         end
 
-        it 'schedules 3 import jobs' do
+        it 'schedules 2 import jobs' do
           expect(subject).to receive(:fetch_issues).with(0).and_return([jira_issues[0], jira_issues[1]])
-          expect(Gitlab::JiraImport::ImportIssueWorker).to receive(:perform_async).twice.times
-          expect(Gitlab::Cache::Import::Caching).to receive(:set_add).twice.times.and_call_original
-          expect(Gitlab::Cache::Import::Caching).to receive(:set_includes?).twice.times.and_call_original
-          mock_issue_serializer(2)
+          expect(Gitlab::JiraImport::ImportIssueWorker).to receive(:perform_async).once
+          expect(Gitlab::Cache::Import::Caching).to receive(:set_add).once.and_call_original
+          expect(Gitlab::Cache::Import::Caching).to receive(:set_includes?).twice.and_call_original
+          expect(Gitlab::ErrorTracking).to receive(:track_exception).once
+          mock_issue_serializer(2, raise_exception_on_even_mocks: true)
 
           job_waiter = subject.execute
 
-          expect(job_waiter.jobs_remaining).to eq(2)
+          expect(job_waiter.jobs_remaining).to eq(1)
           expect(Gitlab::JiraImport.get_issues_next_start_at(project.id)).to eq(2)
         end
       end
