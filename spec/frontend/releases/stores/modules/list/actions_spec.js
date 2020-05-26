@@ -1,4 +1,4 @@
-import testAction from 'spec/helpers/vuex_action_helper';
+import testAction from 'helpers/vuex_action_helper';
 import {
   requestReleases,
   fetchReleases,
@@ -31,7 +31,7 @@ describe('Releases State actions', () => {
   describe('fetchReleases', () => {
     describe('success', () => {
       it('dispatches requestReleases and receiveReleasesSuccess', done => {
-        spyOn(api, 'releases').and.callFake((id, options) => {
+        jest.spyOn(api, 'releases').mockImplementation((id, options) => {
           expect(id).toEqual(1);
           expect(options.page).toEqual('1');
           return Promise.resolve({ data: releases, headers: pageInfoHeadersWithoutPagination });
@@ -56,7 +56,7 @@ describe('Releases State actions', () => {
       });
 
       it('dispatches requestReleases and receiveReleasesSuccess on page two', done => {
-        spyOn(api, 'releases').and.callFake((_, options) => {
+        jest.spyOn(api, 'releases').mockImplementation((_, options) => {
           expect(options.page).toEqual('2');
           return Promise.resolve({ data: releases, headers: pageInfoHeadersWithoutPagination });
         });
@@ -82,7 +82,7 @@ describe('Releases State actions', () => {
 
     describe('error', () => {
       it('dispatches requestReleases and receiveReleasesError', done => {
-        spyOn(api, 'releases').and.returnValue(Promise.reject());
+        jest.spyOn(api, 'releases').mockReturnValue(Promise.reject());
 
         testAction(
           fetchReleases,

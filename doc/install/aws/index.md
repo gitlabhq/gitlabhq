@@ -237,7 +237,9 @@ On the EC2 dashboard, look for Load Balancer in the left navigation bar:
 1. Click **Assign Security Groups** and select **Create a new security group**, give it a name
    (we'll use `gitlab-loadbalancer-sec-group`) and description, and allow both HTTP and HTTPS traffic
    from anywhere (`0.0.0.0/0, ::/0`). Also allow SSH traffic from a single IP address or an IP address range in CIDR notation.
-1. Click **Configure Security Settings** and select an SSL/TLS certificate from ACM or upload a certificate to IAM.
+1. Click **Configure Security Settings** and set the following:
+   1. Select an SSL/TLS certificate from ACM or upload a certificate to IAM.
+   1. Under **Select a Cipher**, pick a predefined security policy from the dropdown. You can see a breakdown of [Predefined SSL Security Policies for Classic Load Balancers](https://docs.aws.amazon.com/elasticloadbalancing/latest/classic/elb-security-policy-table.html) in the AWS docs. Check the GitLab codebase for a list of [supported SSL ciphers and protocols](https://gitlab.com/gitlab-org/gitlab/-/blob/9ee7ad433269b37251e0dd5b5e00a0f00d8126b4/lib/support/nginx/gitlab-ssl#L97-99).
 1. Click **Configure Health Check** and set up a health check for your EC2 instances.
    1. For **Ping Protocol**, select HTTP.
    1. For **Ping Port**, enter 80.

@@ -808,10 +808,6 @@ class Project < ApplicationRecord
     Feature.enabled?(:context_commits, default_enabled: true)
   end
 
-  def jira_issues_import_feature_flag_enabled?
-    Feature.enabled?(:jira_issue_import, self, default_enabled: true)
-  end
-
   # LFS and hashed repository storage are required for using Design Management.
   def design_management_enabled?
     lfs_enabled? && hashed_storage?(:repository)
@@ -900,7 +896,6 @@ class Project < ApplicationRecord
   end
 
   def validate_jira_import_settings!(user: nil)
-    raise Projects::ImportService::Error, _('Jira import feature is disabled.') unless jira_issues_import_feature_flag_enabled?
     raise Projects::ImportService::Error, _('Jira integration not configured.') unless jira_service&.active?
 
     if user
@@ -1015,7 +1010,7 @@ class Project < ApplicationRecord
   end
 
   def jira_import?
-    import_type == 'jira' && latest_jira_import.present? && jira_issues_import_feature_flag_enabled?
+    import_type == 'jira' && latest_jira_import.present?
   end
 
   def gitlab_project_import?

@@ -14,7 +14,6 @@ describe Gitlab::JiraImport::IssuesImporter do
   subject { described_class.new(project) }
 
   before do
-    stub_feature_flags(jira_issue_import: true)
     stub_jira_service_test
   end
 

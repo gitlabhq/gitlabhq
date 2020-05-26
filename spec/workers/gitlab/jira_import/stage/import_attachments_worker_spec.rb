@@ -10,34 +10,19 @@ describe Gitlab::JiraImport::Stage::ImportAttachmentsWorker do
   end
 
   describe '#perform' do
-    context 'when feature flag disabled' do
-      before do
-        stub_feature_flags(jira_issue_import: false)
-      end
+    let_it_be(:jira_import) { create(:jira_import_state, :scheduled, project: project) }
 
+    context 'when import did not start' do
       it_behaves_like 'cannot do Jira import'
       it_behaves_like 'does not advance to next stage'
     end
 
-    context 'when feature flag enabled' do
-      let_it_be(:jira_import) { create(:jira_import_state, :scheduled, project: project) }
-
+    context 'when import started' do
       before do
-        stub_feature_flags(jira_issue_import: true)
+        jira_import.start!
       end
 
-      context 'when import did not start' do
-        it_behaves_like 'cannot do Jira import'
-        it_behaves_like 'does not advance to next stage'
-      end
-
-      context 'when import started' do
-        before do
-          jira_import.start!
-        end
-
-        it_behaves_like 'advance to next stage', :notes
-      end
+      it_behaves_like 'advance to next stage', :notes
     end
   end
 end

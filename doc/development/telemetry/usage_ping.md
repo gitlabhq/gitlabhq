@@ -257,11 +257,11 @@ Your Rails console will return the generated SQL queries.
 Example:
 
 ```ruby
- pry(main)> Gitlab::UsageData.count(User.active)
-   (0.4ms)  SELECT "features"."key" FROM "features"
-   (0.7ms)  SELECT MIN("users"."id") FROM "users" WHERE ("users"."state" IN ('active')) AND (ghost IS NOT TRUE) AND ("users"."user_type" IS NULL OR "users"."user_type" NOT IN (2, 1, 3))
-   (0.6ms)  SELECT MAX("users"."id") FROM "users" WHERE ("users"."state" IN ('active')) AND (ghost IS NOT TRUE) AND ("users"."user_type" IS NULL OR "users"."user_type" NOT IN (2, 1, 3))
-   (0.5ms)  SELECT COUNT("users"."id") FROM "users" WHERE ("users"."state" IN ('active')) AND (ghost IS NOT TRUE) AND ("users"."user_type" IS NULL OR "users"."user_type" NOT IN (2, 1, 3)) AND "users"."id" BETWEEN 0 AND 99999
+pry(main)> Gitlab::UsageData.count(User.active)
+   (2.6ms)  SELECT "features"."key" FROM "features"
+   (15.3ms)  SELECT MIN("users"."id") FROM "users" WHERE ("users"."state" IN ('active')) AND ("users"."user_type" IS NULL OR "users"."user_type" IN (6, 4))
+   (2.4ms)  SELECT MAX("users"."id") FROM "users" WHERE ("users"."state" IN ('active')) AND ("users"."user_type" IS NULL OR "users"."user_type" IN (6, 4))
+   (1.9ms)  SELECT COUNT("users"."id") FROM "users" WHERE ("users"."state" IN ('active')) AND ("users"."user_type" IS NULL OR "users"."user_type" IN (6, 4)) AND "users"."id" BETWEEN 1 AND 100000
 ```
 
 ### 3. Optimize queries with #database-lab

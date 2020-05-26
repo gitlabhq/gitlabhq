@@ -8,24 +8,10 @@ describe Gitlab::JiraImport::BaseImporter do
   let(:project) { create(:project) }
 
   describe 'with any inheriting class' do
-    context 'when an error is returned from the project validation' do
-      before do
-        stub_feature_flags(jira_issue_import: false)
-
-        allow(project).to receive(:validate_jira_import_settings!)
-          .and_raise(Projects::ImportService::Error, 'Jira import feature is disabled.')
-      end
-
-      it 'raises exception' do
-        expect { described_class.new(project) }.to raise_error(Projects::ImportService::Error, 'Jira import feature is disabled.')
-      end
-    end
-
     context 'when project validation is ok' do
       let!(:jira_service) { create(:jira_service, project: project) }
 
       before do
-        stub_feature_flags(jira_issue_import: true)
         stub_jira_service_test
 
         allow(project).to receive(:validate_jira_import_settings!)

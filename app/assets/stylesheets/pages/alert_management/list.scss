@@ -1,22 +1,4 @@
 .alert-management-list {
-  // consider adding these stateful variants to @gitlab-ui
-  // https://gitlab.com/gitlab-org/gitlab-ui/-/merge_requests/1178
-  .hover-bg-blue-50:hover {
-    background-color: $blue-50;
-  }
-
-  .hover-gl-cursor-pointer:hover {
-    cursor: pointer;
-  }
-
-  .hover-gl-border-b-solid:hover {
-    @include gl-border-b-solid;
-  }
-
-  .hover-gl-border-blue-200:hover {
-    border-color: $blue-200;
-  }
-
   // these styles need to be deleted once GlTable component looks in GitLab same as in @gitlab/ui
   table {
     color: $gray-700;

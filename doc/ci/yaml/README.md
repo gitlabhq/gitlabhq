@@ -310,7 +310,6 @@ include:
   - template: 'Workflows/Branch-Pipelines.gitlab-ci.yml'
 ```
 
-The [`MergeRequest-Pipelines` include](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/gitlab/ci/templates/Workflows/MergeRequest-Pipelines.gitlab-ci.yml) sets your pipelines to run for the default branch (usually `master`), tags, and
 The [`MergeRequest-Pipelines` template](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/gitlab/ci/templates/Workflows/MergeRequest-Pipelines.gitlab-ci.yml)
 makes your pipelines run for the default branch (usually `master`), tags, and
 all types of merge request pipelines. Use this template if you use any of the

@@ -87,6 +87,17 @@ describe('Blob Header Default Actions', () => {
         expect(wrapper.text()).toContain(slotContent);
       });
     });
+
+    it('passes information about render error down to default actions', () => {
+      createComponent(
+        {},
+        {},
+        {
+          hasRenderError: true,
+        },
+      );
+      expect(wrapper.find(DefaultActions).props('hasRenderError')).toBe(true);
+    });
   });
 
   describe('functionality', () => {

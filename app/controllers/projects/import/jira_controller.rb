@@ -6,7 +6,6 @@ module Projects
       before_action :authenticate_user!
       before_action :check_issues_available!
       before_action :authorize_read_project!
-      before_action :jira_import_enabled?
       before_action :jira_integration_configured?
       before_action :authorize_admin_project!, only: [:import]
 
@@ -43,12 +42,6 @@ module Projects
       end
 
       private
-
-      def jira_import_enabled?
-        return if @project.jira_issues_import_feature_flag_enabled?
-
-        redirect_to project_issues_path(@project)
-      end
 
       def jira_integration_configured?
         return if Feature.enabled?(:jira_issue_import_vue, @project, default_enabled: true)

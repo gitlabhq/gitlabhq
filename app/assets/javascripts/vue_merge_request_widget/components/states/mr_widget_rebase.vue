@@ -127,7 +127,7 @@ export default {
           </button>
           <span v-if="!rebasingError" class="bold">{{
             __(
-              'Fast-forward merge is not possible. Rebase the source branch onto the target branch or merge target branch into source branch to allow this merge request to be merged.',
+              'Fast-forward merge is not possible. Rebase the source branch onto the target branch.',
             )
           }}</span>
           <span v-else class="bold danger">{{ rebasingError }}</span>

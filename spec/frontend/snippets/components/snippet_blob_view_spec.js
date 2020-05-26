@@ -3,7 +3,11 @@ import SnippetBlobView from '~/snippets/components/snippet_blob_view.vue';
 import BlobHeader from '~/blob/components/blob_header.vue';
 import BlobEmbeddable from '~/blob/components/blob_embeddable.vue';
 import BlobContent from '~/blob/components/blob_content.vue';
-import { BLOB_RENDER_EVENT_LOAD, BLOB_RENDER_EVENT_SHOW_SOURCE } from '~/blob/components/constants';
+import {
+  BLOB_RENDER_EVENT_LOAD,
+  BLOB_RENDER_EVENT_SHOW_SOURCE,
+  BLOB_RENDER_ERRORS,
+} from '~/blob/components/constants';
 import { RichViewer, SimpleViewer } from '~/vue_shared/components/blob_viewers';
 import {
   SNIPPET_VISIBILITY_PRIVATE,
@@ -107,6 +111,20 @@ describe('Blob Embeddable', () => {
         .then(() => {
           expect(wrapper.find(SimpleViewer).exists()).toBe(true);
         });
+    });
+
+    it('passes information about render error down to blob header', () => {
+      createComponent({
+        blob: {
+          ...BlobMock,
+          simpleViewer: {
+            ...SimpleViewerMock,
+            renderError: BLOB_RENDER_ERRORS.REASONS.COLLAPSED.id,
+          },
+        },
+      });
+
+      expect(wrapper.find(BlobHeader).props('hasRenderError')).toBe(true);
     });
 
     describe('URLS with hash', () => {

@@ -5699,9 +5699,6 @@ msgstr ""
 msgid "Configure Prometheus"
 msgstr ""
 
-msgid "Configure Security %{wordBreakOpportunity}and Compliance"
-msgstr ""
-
 msgid "Configure Tracing"
 msgstr ""
 
@@ -9291,7 +9288,7 @@ msgstr ""
 msgid "Fast-forward merge is not possible. Rebase the source branch onto %{targetBranch} to allow this merge request to be merged."
 msgstr ""
 
-msgid "Fast-forward merge is not possible. Rebase the source branch onto the target branch or merge target branch into source branch to allow this merge request to be merged."
+msgid "Fast-forward merge is not possible. Rebase the source branch onto the target branch."
 msgstr ""
 
 msgid "Fast-forward merge without a merge commit"
@@ -12202,9 +12199,6 @@ msgid "January"
 msgstr ""
 
 msgid "Jira Issue Import"
-msgstr ""
-
-msgid "Jira import feature is disabled."
 msgstr ""
 
 msgid "Jira import is already running."
@@ -18994,9 +18988,6 @@ msgstr ""
 msgid "Security Dashboard"
 msgstr ""
 
-msgid "Security configuration help link"
-msgstr ""
-
 msgid "Security dashboard"
 msgstr ""
 
@@ -19009,19 +19000,19 @@ msgstr ""
 msgid "SecurityConfiguration|Enabled"
 msgstr ""
 
-msgid "SecurityConfiguration|Feature"
-msgstr ""
-
 msgid "SecurityConfiguration|Feature documentation for %{featureName}"
 msgstr ""
 
 msgid "SecurityConfiguration|Not yet enabled"
 msgstr ""
 
-msgid "SecurityConfiguration|Secure features"
+msgid "SecurityConfiguration|Security Control"
 msgstr ""
 
 msgid "SecurityConfiguration|Status"
+msgstr ""
+
+msgid "SecurityConfiguration|Testing & Compliance"
 msgstr ""
 
 msgid "SecurityReports|%{firstProject} and %{secondProject}"

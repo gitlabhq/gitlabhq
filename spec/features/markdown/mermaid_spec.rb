@@ -118,10 +118,7 @@ describe 'Mermaid rendering', :js do
 
     visit project_issue_path(project, issue)
 
-    svg = page.find('svg.mermaid')
-    expect(svg[:style]).to match(/max-width/)
-    expect(svg[:width].to_i).to eq(100)
-    expect(svg[:height].to_i).to eq(0)
+    expect(page).to have_css('svg.mermaid[style*="max-width"][width="100%"]')
   end
 
   it 'display button when diagram exceeds length', :js do

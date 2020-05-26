@@ -1818,7 +1818,7 @@ class User < ApplicationRecord
   def update_highest_role?
     return false unless persisted?
 
-    (previous_changes.keys & %w(state user_type ghost)).any?
+    (previous_changes.keys & %w(state user_type)).any?
   end
 
   def update_highest_role_attribute

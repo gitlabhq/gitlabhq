@@ -45,10 +45,8 @@ describe('Merge request widget rebase component', () => {
 
       expect(text).toContain('Fast-forward merge is not possible.');
       expect(text.replace(/\s\s+/g, ' ')).toContain(
-        'Rebase the source branch onto the target branch or merge target',
+        'Rebase the source branch onto the target branch.',
       );
-
-      expect(text).toContain('branch into source branch to allow this merge request to be merged.');
     });
 
     it('it should render error message when it fails', done => {

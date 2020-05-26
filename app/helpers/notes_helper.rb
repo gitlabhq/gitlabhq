@@ -3,6 +3,13 @@
 module NotesHelper
   MAX_PRERENDERED_NOTES = 10
 
+  def note_target_title(note)
+    # The design title is already present in `Event#note_target_reference`.
+    return if note.nil? || note.for_design?
+
+    note.title
+  end
+
   def note_target_fields(note)
     if note.noteable
       hidden_field_tag(:target_type, note.noteable.class.name.underscore) +

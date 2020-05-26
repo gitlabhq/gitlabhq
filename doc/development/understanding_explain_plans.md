@@ -315,25 +315,30 @@ the `Indexes:` section:
 ```sql
 Indexes:
     "users_pkey" PRIMARY KEY, btree (id)
-    "users_confirmation_token_key" UNIQUE CONSTRAINT, btree (confirmation_token)
-    "users_email_key" UNIQUE CONSTRAINT, btree (email)
-    "users_reset_password_token_key" UNIQUE CONSTRAINT, btree (reset_password_token)
-    "index_on_users_lower_email" btree (lower(email::text))
-    "index_on_users_lower_username" btree (lower(username::text))
+    "index_users_on_confirmation_token" UNIQUE, btree (confirmation_token)
+    "index_users_on_email" UNIQUE, btree (email)
+    "index_users_on_reset_password_token" UNIQUE, btree (reset_password_token)
+    "index_users_on_static_object_token" UNIQUE, btree (static_object_token)
+    "index_users_on_unlock_token" UNIQUE, btree (unlock_token)
     "index_on_users_name_lower" btree (lower(name::text))
+    "index_users_on_accepted_term_id" btree (accepted_term_id)
     "index_users_on_admin" btree (admin)
     "index_users_on_created_at" btree (created_at)
     "index_users_on_email_trigram" gin (email gin_trgm_ops)
     "index_users_on_feed_token" btree (feed_token)
-    "index_users_on_ghost" btree (ghost)
+    "index_users_on_group_view" btree (group_view)
     "index_users_on_incoming_email_token" btree (incoming_email_token)
+    "index_users_on_managing_group_id" btree (managing_group_id)
     "index_users_on_name" btree (name)
     "index_users_on_name_trigram" gin (name gin_trgm_ops)
+    "index_users_on_public_email" btree (public_email) WHERE public_email::text <> ''::text
     "index_users_on_state" btree (state)
-    "index_users_on_state_and_internal_attrs" btree (state) WHERE ghost <> true AND support_bot <> true
-    "index_users_on_support_bot" btree (support_bot)
+    "index_users_on_state_and_user_type" btree (state, user_type)
+    "index_users_on_unconfirmed_email" btree (unconfirmed_email) WHERE unconfirmed_email IS NOT NULL
+    "index_users_on_user_type" btree (user_type)
     "index_users_on_username" btree (username)
     "index_users_on_username_trigram" gin (username gin_trgm_ops)
+    "tmp_idx_on_user_id_where_bio_is_filled" btree (id) WHERE COALESCE(bio, ''::character varying)::text IS DISTINCT FROM ''::text
 ```
 
 Here we can see there is no index on the `twitter` column, which means

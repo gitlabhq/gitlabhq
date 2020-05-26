@@ -89,7 +89,7 @@ describe TodosHelper do
 
     context 'when given a non-design todo' do
       let(:todo) do
-        create(:todo, :assigned,
+        build_stubbed(:todo, :assigned,
         user: user,
         project: issue.project,
         target: issue,

@@ -1,0 +1,5 @@
+---
+title: Remove obsolete users.ghost column
+merge_request: 32957
+author:
+type: other

@@ -199,6 +199,7 @@ authentication](https://gitlab.com/gitlab-org/gitaly/blob/master/doc/configurati
    sidekiq['enable'] = false
    gitlab_workhorse['enable'] = false
    grafana['enable'] = false
+   gitlab_exporter['enable'] = false
 
    # If you run a separate monitoring node you can disable these services
    alertmanager['enable'] = false
@@ -211,7 +212,6 @@ authentication](https://gitlab.com/gitlab-org/gitaly/blob/master/doc/configurati
    # prometheus['monitor_kubernetes'] = false
 
    # If you don't want to run monitoring services uncomment the following (not recommended)
-   # gitlab_exporter['enable'] = false
    # node_exporter['enable'] = false
 
    # Prevent database connections during 'gitlab-ctl reconfigure'

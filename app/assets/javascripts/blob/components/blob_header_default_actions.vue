@@ -27,6 +27,11 @@ export default {
       default: SIMPLE_BLOB_VIEWER,
       required: false,
     },
+    hasRenderError: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   computed: {
     downloadUrl() {
@@ -44,11 +49,13 @@ export default {
 <template>
   <gl-button-group>
     <gl-deprecated-button
+      v-if="!hasRenderError"
       v-gl-tooltip.hover
       :aria-label="$options.BTN_COPY_CONTENTS_TITLE"
       :title="$options.BTN_COPY_CONTENTS_TITLE"
       :disabled="copyDisabled"
       data-clipboard-target="#blob-code-content"
+      data-testid="copyContentsButton"
     >
       <gl-icon name="copy-to-clipboard" :size="14" />
     </gl-deprecated-button>
