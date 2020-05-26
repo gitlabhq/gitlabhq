@@ -26,6 +26,7 @@ module Groups
         end
 
       ensure
+        remove_base_tmp_dir
         remove_import_file
       end
 
@@ -101,6 +102,10 @@ module Groups
         notify_error
 
         raise Gitlab::ImportExport::Error.new(@shared.errors.to_sentence)
+      end
+
+      def remove_base_tmp_dir
+        FileUtils.rm_rf(@shared.base_path)
       end
     end
   end

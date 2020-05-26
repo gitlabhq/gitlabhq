@@ -682,10 +682,20 @@ const boardsStore = {
       ...this.multiSelect.list.slice(index + 1),
     ];
   },
+  removeIssueAssignee(issue, removeAssignee) {
+    if (removeAssignee) {
+      issue.assignees = issue.assignees.filter(assignee => assignee.id !== removeAssignee.id);
+    }
+  },
 
   clearMultiSelect() {
     this.multiSelect.list = [];
   },
+
+  removeAllIssueAssignees(issue) {
+    issue.assignees = [];
+  },
+
   refreshIssueData(issue, obj) {
     issue.id = obj.id;
     issue.iid = obj.iid;

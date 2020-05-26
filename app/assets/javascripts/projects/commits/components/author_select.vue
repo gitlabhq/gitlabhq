@@ -110,8 +110,8 @@ export default {
     <gl-new-dropdown
       :text="dropdownText"
       :disabled="hasSearchParam"
-      toggle-class="gl-py-3"
-      class="gl-dropdown w-100 mt-2 mt-sm-0"
+      toggle-class="gl-py-3 gl-border-0"
+      class="w-100 mt-2 mt-sm-0"
     >
       <gl-new-dropdown-header>
         {{ __('Search by author') }}

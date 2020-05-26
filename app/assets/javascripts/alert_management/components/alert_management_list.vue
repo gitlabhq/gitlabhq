@@ -19,13 +19,20 @@ import { fetchPolicies } from '~/lib/graphql';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
 import getAlerts from '../graphql/queries/get_alerts.query.graphql';
 import getAlertsCountByStatus from '../graphql/queries/get_count_by_status.query.graphql';
-import { ALERTS_STATUS, ALERTS_STATUS_TABS, ALERTS_SEVERITY_LABELS } from '../constants';
+import {
+  ALERTS_STATUS,
+  ALERTS_STATUS_TABS,
+  ALERTS_SEVERITY_LABELS,
+  trackAlertListViewsOptions,
+  trackAlertStatusUpdateOptions,
+} from '../constants';
 import updateAlertStatus from '../graphql/mutations/update_alert_status.graphql';
 import { capitalizeFirstCharacter, convertToSnakeCase } from '~/lib/utils/text_utility';
+import Tracking from '~/tracking';
 
 const tdClass = 'table-col d-flex d-md-table-cell align-items-center';
 const bodyTrClass =
-  'gl-border-1 gl-border-t-solid gl-border-gray-100 hover-bg-blue-50 hover-gl-cursor-pointer hover-gl-border-b-solid hover-gl-border-blue-200';
+  'gl-border-1 gl-border-t-solid gl-border-gray-100 gl-hover-bg-blue-50 gl-hover-cursor-pointer gl-hover-border-b-solid gl-hover-border-blue-200';
 const findDefaultSortColumn = () => document.querySelector('.js-started-at');
 
 export default {
@@ -182,6 +189,7 @@ export default {
   },
   mounted() {
     findDefaultSortColumn().ariaSort = 'ascending';
+    this.trackPageViews();
   },
   methods: {
     filterAlertsByStatus(tabIndex) {
@@ -208,6 +216,7 @@ export default {
           },
         })
         .then(() => {
+          this.trackStatusUpdate(status);
           this.$apollo.queries.alerts.refetch();
           this.$apollo.queries.alertsCount.refetch();
         })
@@ -221,6 +230,14 @@ export default {
     },
     navigateToAlertDetails({ iid }) {
       return visitUrl(joinPaths(window.location.pathname, iid, 'details'));
+    },
+    trackPageViews() {
+      const { category, action } = trackAlertListViewsOptions;
+      Tracking.event(category, action);
+    },
+    trackStatusUpdate(status) {
+      const { category, action, label } = trackAlertStatusUpdateOptions;
+      Tracking.event(category, action, { label, property: status });
     },
   },
 };

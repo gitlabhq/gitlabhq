@@ -401,7 +401,7 @@ module Ci
         # The `Ci::Stage` contains all up-to date data
         # as atomic processing updates all data in-bulk
         stages
-      elsif Feature.enabled?(:ci_pipeline_persisted_stages, default_enabled: true) && complete?
+      elsif complete?
         # The `Ci::Stage` contains up-to date data only for `completed` pipelines
         # this is due to asynchronous processing of pipeline, and stages possibly
         # not updated inline with processing of pipeline

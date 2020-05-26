@@ -25,7 +25,7 @@ RSpec.shared_examples 'thread comments' do |resource_name|
   end
 
   if resource_name == 'issue'
-    it "clicking 'Comment & close #{resource_name}' will post a comment and close the #{resource_name}", quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/218757' do
+    it "clicking 'Comment & close #{resource_name}' will post a comment and close the #{resource_name}" do
       find("#{form_selector} .note-textarea").send_keys(comment)
 
       click_button 'Comment & close issue'
@@ -206,7 +206,7 @@ RSpec.shared_examples 'thread comments' do |resource_name|
       end
 
       if resource_name == 'issue'
-        it "clicking 'Start thread & close #{resource_name}' will post a thread and close the #{resource_name}", quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/218757' do
+        it "clicking 'Start thread & close #{resource_name}' will post a thread and close the #{resource_name}" do
           click_button 'Start thread & close issue'
 
           expect(page).to have_content(comment)

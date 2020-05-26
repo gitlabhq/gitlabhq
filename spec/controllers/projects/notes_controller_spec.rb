@@ -37,13 +37,17 @@ describe Projects::NotesController do
       project.add_developer(user)
     end
 
-    it 'passes last_fetched_at from headers to NotesFinder' do
+    it 'passes last_fetched_at from headers to NotesFinder and MergeIntoNotesService' do
       last_fetched_at = 3.hours.ago.to_i
 
       request.headers['X-Last-Fetched-At'] = last_fetched_at
 
       expect(NotesFinder).to receive(:new)
         .with(anything, hash_including(last_fetched_at: last_fetched_at))
+        .and_call_original
+
+      expect(ResourceEvents::MergeIntoNotesService).to receive(:new)
+        .with(anything, anything, hash_including(last_fetched_at: last_fetched_at))
         .and_call_original
 
       get :index, params: request_params

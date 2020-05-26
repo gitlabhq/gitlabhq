@@ -18,10 +18,15 @@ import query from '../graphql/queries/details.query.graphql';
 import { fetchPolicies } from '~/lib/graphql';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import { ALERTS_SEVERITY_LABELS } from '../constants';
+import {
+  ALERTS_SEVERITY_LABELS,
+  trackAlertsDetailsViewsOptions,
+  trackAlertStatusUpdateOptions,
+} from '../constants';
 import updateAlertStatus from '../graphql/mutations/update_alert_status.graphql';
 import createIssueQuery from '../graphql/mutations/create_issue_from_alert.graphql';
 import { visitUrl, joinPaths } from '~/lib/utils/url_utility';
+import Tracking from '~/tracking';
 
 export default {
   statuses: {
@@ -108,6 +113,9 @@ export default {
       return this.errored && !this.isErrorDismissed;
     },
   },
+  mounted() {
+    this.trackPageViews();
+  },
   methods: {
     dismissError() {
       this.isErrorDismissed = true;
@@ -121,6 +129,9 @@ export default {
             status: status.toUpperCase(),
             projectPath: this.projectPath,
           },
+        })
+        .then(() => {
+          this.trackStatusUpdate(status);
         })
         .catch(() => {
           createFlash(
@@ -156,6 +167,14 @@ export default {
     },
     issuePath(issueId) {
       return joinPaths(this.projectIssuesPath, issueId);
+    },
+    trackPageViews() {
+      const { category, action } = trackAlertsDetailsViewsOptions;
+      Tracking.event(category, action);
+    },
+    trackStatusUpdate(status) {
+      const { category, action, label } = trackAlertStatusUpdateOptions;
+      Tracking.event(category, action, { label, property: status });
     },
   },
 };

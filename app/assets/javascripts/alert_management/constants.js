@@ -44,3 +44,30 @@ export const ALERTS_STATUS_TABS = [
     filters: [ALERTS_STATUS.TRIGGERED, ALERTS_STATUS.ACKNOWLEDGED, ALERTS_STATUS.RESOLVED],
   },
 ];
+
+/* eslint-disable @gitlab/require-i18n-strings */
+
+/**
+ * Tracks snowplow event when user views alerts list
+ */
+export const trackAlertListViewsOptions = {
+  category: 'Alert Management',
+  action: 'view_alerts_list',
+};
+
+/**
+ * Tracks snowplow event when user views alert details
+ */
+export const trackAlertsDetailsViewsOptions = {
+  category: 'Alert Management',
+  action: 'view_alert_details',
+};
+
+/**
+ * Tracks snowplow event when alert status is updated
+ */
+export const trackAlertStatusUpdateOptions = {
+  category: 'Alert Management',
+  action: 'update_alert_status',
+  label: 'Status',
+};

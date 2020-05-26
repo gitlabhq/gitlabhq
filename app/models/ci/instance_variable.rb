@@ -13,6 +13,11 @@ module Ci
       message: "(%{value}) has already been taken"
     }
 
+    validates :encrypted_value, length: {
+      maximum: 1024,
+      too_long: 'The encrypted value of the provided variable exceeds %{count} bytes. Variables over 700 characters risk exceeding the limit.'
+    }
+
     scope :unprotected, -> { where(protected: false) }
 
     after_commit { self.class.invalidate_memory_cache(:ci_instance_variable_data) }

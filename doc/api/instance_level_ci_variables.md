@@ -77,7 +77,7 @@ POST /admin/ci/variables
 | Attribute       | Type    | required | Description           |
 |-----------------|---------|----------|-----------------------|
 | `key`           | string  | yes      | The `key` of a variable. Max 255 characters, only `A-Z`, `a-z`, `0-9`, and `_` are allowed. |
-| `value`         | string  | yes      | The `value` of a variable. |
+| `value`         | string  | yes      | The `value` of a variable. Around 700 characters allowed. |
 | `variable_type` | string  | no       | The type of a variable. Available types are: `env_var` (default) and `file`. |
 | `protected`     | boolean | no       | Whether the variable is protected. |
 | `masked`        | boolean | no       | Whether the variable is masked. |

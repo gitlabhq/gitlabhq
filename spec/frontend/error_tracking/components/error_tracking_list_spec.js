@@ -4,7 +4,9 @@ import { GlEmptyState, GlLoadingIcon, GlFormInput, GlPagination, GlDropdown } fr
 import stubChildren from 'helpers/stub_children';
 import ErrorTrackingList from '~/error_tracking/components/error_tracking_list.vue';
 import ErrorTrackingActions from '~/error_tracking/components/error_tracking_actions.vue';
+import { trackErrorListViewsOptions, trackErrorStatusUpdateOptions } from '~/error_tracking/utils';
 import errorsList from './list_mock.json';
+import Tracking from '~/tracking';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
@@ -456,6 +458,43 @@ describe('ErrorTrackingList', () => {
             'nextCursor',
             undefined,
           );
+        });
+      });
+    });
+  });
+
+  describe('Snowplow tracking', () => {
+    beforeEach(() => {
+      jest.spyOn(Tracking, 'event');
+      store.state.list.loading = false;
+      store.state.list.errors = errorsList;
+      mountComponent({
+        stubs: {
+          GlTable: false,
+          GlLink: false,
+          GlDeprecatedButton: false,
+        },
+      });
+    });
+
+    it('should track list views', () => {
+      const { category, action } = trackErrorListViewsOptions;
+      expect(Tracking.event).toHaveBeenCalledWith(category, action);
+    });
+
+    it('should track status updates', () => {
+      Tracking.event.mockClear();
+      const status = 'ignored';
+      findErrorActions().vm.$emit('update-issue-status', {
+        errorId: 1,
+        status,
+      });
+
+      setImmediate(() => {
+        const { category, action, label } = trackErrorStatusUpdateOptions;
+        expect(Tracking.event).toHaveBeenCalledWith(category, action, {
+          label,
+          property: status,
         });
       });
     });

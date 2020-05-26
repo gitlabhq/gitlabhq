@@ -21,6 +21,7 @@ class Event < ApplicationRecord
   LEFT      = 9 # User left project
   DESTROYED = 10
   EXPIRED   = 11 # User left project due to expiry
+  APPROVED  = 12
 
   ACTIONS = HashWithIndifferentAccess.new(
     created:    CREATED,
@@ -33,7 +34,8 @@ class Event < ApplicationRecord
     joined:     JOINED,
     left:       LEFT,
     destroyed:  DESTROYED,
-    expired:    EXPIRED
+    expired:    EXPIRED,
+    approved:   APPROVED
   ).freeze
 
   WIKI_ACTIONS = [CREATED, UPDATED, DESTROYED].freeze

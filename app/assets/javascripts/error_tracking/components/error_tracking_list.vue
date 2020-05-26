@@ -19,6 +19,8 @@ import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
 import { __ } from '~/locale';
 import { isEmpty } from 'lodash';
 import ErrorTrackingActions from './error_tracking_actions.vue';
+import Tracking from '~/tracking';
+import { trackErrorListViewsOptions, trackErrorStatusUpdateOptions } from '../utils';
 
 export const tableDataClass = 'table-col d-flex d-md-table-cell align-items-center';
 
@@ -150,6 +152,9 @@ export default {
       this.startPolling();
     }
   },
+  mounted() {
+    this.trackPageViews();
+  },
   methods: {
     ...mapActions('list', [
       'startPolling',
@@ -197,12 +202,24 @@ export default {
       this.filterValue = label;
       return this.filterByStatus(status);
     },
-    updateIssueStatus({ errorId, status }) {
+    updateErrosStatus({ errorId, status }) {
+      // eslint-disable-next-line promise/catch-or-return
       this.updateStatus({
         endpoint: this.getIssueUpdatePath(errorId),
         status,
+      }).then(() => {
+        this.trackStatusUpdate(status);
       });
+
       this.removeIgnoredResolvedErrors(errorId);
+    },
+    trackPageViews() {
+      const { category, action } = trackErrorListViewsOptions;
+      Tracking.event(category, action);
+    },
+    trackStatusUpdate(status) {
+      const { category, action, label } = trackErrorStatusUpdateOptions;
+      Tracking.event(category, action, { label, property: status });
     },
   },
 };
@@ -359,7 +376,7 @@ export default {
             </div>
           </template>
           <template #cell(status)="errors">
-            <error-tracking-actions :error="errors.item" @update-issue-status="updateIssueStatus" />
+            <error-tracking-actions :error="errors.item" @update-issue-status="updateErrosStatus" />
           </template>
           <template #empty>
             {{ __('No errors to display.') }}

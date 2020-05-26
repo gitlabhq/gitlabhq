@@ -9,6 +9,7 @@ describe Ci::InstanceVariable do
 
   it { is_expected.to include_module(Ci::Maskable) }
   it { is_expected.to validate_uniqueness_of(:key).with_message(/\(\w+\) has already been taken/) }
+  it { is_expected.to validate_length_of(:encrypted_value).is_at_most(1024).with_message(/Variables over 700 characters risk exceeding the limit/) }
 
   describe '.unprotected' do
     subject { described_class.unprotected }

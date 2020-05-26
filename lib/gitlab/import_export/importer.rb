@@ -26,6 +26,7 @@ module Gitlab
       rescue => e
         raise Projects::ImportService::Error.new(e.message)
       ensure
+        remove_base_tmp_dir
         remove_import_file
       end
 
@@ -147,6 +148,10 @@ module Gitlab
         strong_memoize(:project_to_overwrite) do
           ::Project.find_by_full_path("#{project.namespace.full_path}/#{original_path}")
         end
+      end
+
+      def remove_base_tmp_dir
+        FileUtils.rm_rf(@shared.base_path)
       end
     end
   end

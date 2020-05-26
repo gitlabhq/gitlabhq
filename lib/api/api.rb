@@ -170,6 +170,7 @@ module API
       mount ::API::Notes
       mount ::API::Discussions
       mount ::API::ResourceLabelEvents
+      mount ::API::ResourceMilestoneEvents
       mount ::API::NotificationSettings
       mount ::API::Pages
       mount ::API::PagesDomains

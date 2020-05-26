@@ -91,6 +91,7 @@ describe Groups::ImportExport::ImportService do
         allow(Gitlab::Import::Logger).to receive(:build).and_return(import_logger)
         allow(import_logger).to receive(:error)
         allow(import_logger).to receive(:info)
+        allow(FileUtils).to receive(:rm_rf).and_call_original
       end
 
       context 'when user has correct permissions' do
@@ -102,6 +103,16 @@ describe Groups::ImportExport::ImportService do
           subject
 
           expect(group.import_export_upload.import_file.file).to be_nil
+        end
+
+        it 'removes tmp files' do
+          shared = Gitlab::ImportExport::Shared.new(group)
+          allow(Gitlab::ImportExport::Shared).to receive(:new).and_return(shared)
+
+          subject
+
+          expect(FileUtils).to have_received(:rm_rf).with(shared.base_path)
+          expect(Dir.exist?(shared.base_path)).to eq(false)
         end
 
         it 'logs the import success' do
@@ -191,6 +202,7 @@ describe Groups::ImportExport::ImportService do
         allow(Gitlab::Import::Logger).to receive(:build).and_return(import_logger)
         allow(import_logger).to receive(:error)
         allow(import_logger).to receive(:info)
+        allow(FileUtils).to receive(:rm_rf).and_call_original
       end
 
       context 'when user has correct permissions' do
@@ -202,6 +214,16 @@ describe Groups::ImportExport::ImportService do
           subject
 
           expect(group.import_export_upload.import_file.file).to be_nil
+        end
+
+        it 'removes tmp files' do
+          shared = Gitlab::ImportExport::Shared.new(group)
+          allow(Gitlab::ImportExport::Shared).to receive(:new).and_return(shared)
+
+          subject
+
+          expect(FileUtils).to have_received(:rm_rf).with(shared.base_path)
+          expect(Dir.exist?(shared.base_path)).to eq(false)
         end
 
         it 'logs the import success' do

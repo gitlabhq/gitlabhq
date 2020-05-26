@@ -18,6 +18,7 @@ describe Gitlab::ImportExport::Importer do
 
     FileUtils.mkdir_p(shared.export_path)
     ImportExportUpload.create(project: project, import_file: import_file)
+    allow(FileUtils).to receive(:rm_rf).and_call_original
   end
 
   after do
@@ -76,6 +77,13 @@ describe Gitlab::ImportExport::Importer do
         importer.execute
 
         expect(project.import_export_upload.import_file&.file).to be_nil
+      end
+
+      it 'removes tmp files' do
+        importer.execute
+
+        expect(FileUtils).to have_received(:rm_rf).with(shared.base_path)
+        expect(Dir.exist?(shared.base_path)).to eq(false)
       end
 
       it 'sets the correct visibility_level when visibility level is a string' do

@@ -1,0 +1,5 @@
+---
+title: Conan package registry support for the conan_export.tgz file
+merge_request: 32866
+author:
+type: fixed

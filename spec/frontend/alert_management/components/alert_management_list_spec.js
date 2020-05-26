@@ -14,9 +14,14 @@ import { visitUrl } from '~/lib/utils/url_utility';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
 import createFlash from '~/flash';
 import AlertManagementList from '~/alert_management/components/alert_management_list.vue';
-import { ALERTS_STATUS_TABS } from '../../../../app/assets/javascripts/alert_management/constants';
+import {
+  ALERTS_STATUS_TABS,
+  trackAlertListViewsOptions,
+  trackAlertStatusUpdateOptions,
+} from '~/alert_management/constants';
 import updateAlertStatus from '~/alert_management/graphql/mutations/update_alert_status.graphql';
 import mockAlerts from '../mocks/alerts.json';
+import Tracking from '~/tracking';
 
 jest.mock('~/flash');
 
@@ -94,7 +99,7 @@ describe('AlertManagementList', () => {
     }
   });
 
-  describe('alert management feature renders empty state', () => {
+  describe('Empty state', () => {
     it('shows empty state', () => {
       expect(wrapper.find(GlEmptyState).exists()).toBe(true);
     });
@@ -137,7 +142,7 @@ describe('AlertManagementList', () => {
         findAlerts()
           .at(0)
           .classes(),
-      ).not.toContain('hover-bg-blue-50');
+      ).not.toContain('gl-hover-bg-blue-50');
     });
 
     it('error state', () => {
@@ -154,7 +159,7 @@ describe('AlertManagementList', () => {
         findAlerts()
           .at(0)
           .classes(),
-      ).not.toContain('hover-bg-blue-50');
+      ).not.toContain('gl-hover-bg-blue-50');
     });
 
     it('empty state', () => {
@@ -171,7 +176,7 @@ describe('AlertManagementList', () => {
         findAlerts()
           .at(0)
           .classes(),
-      ).not.toContain('hover-bg-blue-50');
+      ).not.toContain('gl-hover-bg-blue-50');
     });
 
     it('has data state', () => {
@@ -187,7 +192,7 @@ describe('AlertManagementList', () => {
         findAlerts()
           .at(0)
           .classes(),
-      ).toContain('hover-bg-blue-50');
+      ).toContain('gl-hover-bg-blue-50');
     });
 
     it('displays status dropdown', () => {
@@ -360,6 +365,33 @@ describe('AlertManagementList', () => {
         expect(createFlash).toHaveBeenCalledWith(
           'There was an error while updating the status of the alert. Please try again.',
         );
+      });
+    });
+  });
+
+  describe('Snowplow tracking', () => {
+    beforeEach(() => {
+      jest.spyOn(Tracking, 'event');
+      mountComponent({
+        props: { alertManagementEnabled: true, userCanEnableAlertManagement: true },
+        data: { alerts: mockAlerts, alertsCount },
+        loading: false,
+      });
+    });
+
+    it('should track alert list page views', () => {
+      const { category, action } = trackAlertListViewsOptions;
+      expect(Tracking.event).toHaveBeenCalledWith(category, action);
+    });
+
+    it('should track alert status updates', () => {
+      Tracking.event.mockClear();
+      jest.spyOn(wrapper.vm.$apollo, 'mutate').mockResolvedValue({});
+      findFirstStatusOption().vm.$emit('click');
+      const status = findFirstStatusOption().text();
+      setImmediate(() => {
+        const { category, action, label } = trackAlertStatusUpdateOptions;
+        expect(Tracking.event).toHaveBeenCalledWith(category, action, { label, property: status });
       });
     });
   });

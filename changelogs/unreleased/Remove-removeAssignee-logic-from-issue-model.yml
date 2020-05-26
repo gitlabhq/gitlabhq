@@ -1,0 +1,5 @@
+---
+title: Remove removeAssignee logic from issue model
+merge_request: 32248
+author: nuwe1
+type: other

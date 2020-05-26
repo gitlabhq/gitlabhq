@@ -5,6 +5,11 @@ import updateAlertStatus from '~/alert_management/graphql/mutations/update_alert
 import createIssueQuery from '~/alert_management/graphql/mutations/create_issue_from_alert.graphql';
 import createFlash from '~/flash';
 import { joinPaths } from '~/lib/utils/url_utility';
+import {
+  trackAlertsDetailsViewsOptions,
+  trackAlertStatusUpdateOptions,
+} from '~/alert_management/constants';
+import Tracking from '~/tracking';
 
 import mockAlerts from '../mocks/alerts.json';
 
@@ -253,7 +258,7 @@ describe('AlertDetails', () => {
     });
   });
 
-  describe('updating the alert status', () => {
+  describe('Updating the alert status', () => {
     const mockUpdatedMutationResult = {
       data: {
         updateAlertStatus: {
@@ -295,6 +300,33 @@ describe('AlertDetails', () => {
         expect(createFlash).toHaveBeenCalledWith(
           'There was an error while updating the status of the alert. Please try again.',
         );
+      });
+    });
+  });
+
+  describe('Snowplow tracking', () => {
+    beforeEach(() => {
+      jest.spyOn(Tracking, 'event');
+      mountComponent({
+        props: { alertManagementEnabled: true, userCanEnableAlertManagement: true },
+        data: { alert: mockAlert },
+        loading: false,
+      });
+    });
+
+    it('should track alert details page views', () => {
+      const { category, action } = trackAlertsDetailsViewsOptions;
+      expect(Tracking.event).toHaveBeenCalledWith(category, action);
+    });
+
+    it('should track alert status updates', () => {
+      Tracking.event.mockClear();
+      jest.spyOn(wrapper.vm.$apollo, 'mutate').mockResolvedValue({});
+      findStatusDropdownItem().vm.$emit('click');
+      const status = findStatusDropdownItem().text();
+      setImmediate(() => {
+        const { category, action, label } = trackAlertStatusUpdateOptions;
+        expect(Tracking.event).toHaveBeenCalledWith(category, action, { label, property: status });
       });
     });
   });

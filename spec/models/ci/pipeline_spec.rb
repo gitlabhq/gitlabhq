@@ -1007,19 +1007,6 @@ describe Ci::Pipeline, :mailer do
 
       subject { pipeline.ordered_stages }
 
-      context 'when using legacy stages' do
-        before do
-          stub_feature_flags(
-            ci_pipeline_persisted_stages: false,
-            ci_atomic_processing: false
-          )
-        end
-
-        it 'returns legacy stages in valid order' do
-          expect(subject.map(&:name)).to eq %w[build test]
-        end
-      end
-
       context 'when using atomic processing' do
         before do
           stub_feature_flags(
@@ -1051,7 +1038,6 @@ describe Ci::Pipeline, :mailer do
       context 'when using persisted stages' do
         before do
           stub_feature_flags(
-            ci_pipeline_persisted_stages: true,
             ci_atomic_processing: false
           )
         end

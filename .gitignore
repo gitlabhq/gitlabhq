@@ -92,3 +92,4 @@ jsdoc/
 webpack-dev-server.json
 /.nvimrc
 .solargraph.yml
+apollo.config.js

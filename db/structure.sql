@@ -10647,9 +10647,9 @@ CREATE INDEX index_services_on_type ON public.services USING btree (type);
 
 CREATE INDEX index_services_on_type_and_id_and_template_when_active ON public.services USING btree (type, id, template) WHERE (active = true);
 
-CREATE UNIQUE INDEX index_services_on_type_and_instance ON public.services USING btree (type, instance) WHERE (instance IS TRUE);
+CREATE UNIQUE INDEX index_services_on_type_and_instance_partial ON public.services USING btree (type, instance) WHERE (instance = true);
 
-CREATE UNIQUE INDEX index_services_on_type_and_template ON public.services USING btree (type, template) WHERE (template IS TRUE);
+CREATE UNIQUE INDEX index_services_on_type_and_template_partial ON public.services USING btree (type, template) WHERE (template = true);
 
 CREATE UNIQUE INDEX index_shards_on_name ON public.shards USING btree (name);
 
@@ -13934,5 +13934,6 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200519171058
 20200525114553
 20200525121014
+20200526120714
 \.
 

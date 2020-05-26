@@ -16,8 +16,6 @@ module Gitlab
 
       def save
         if compress_and_save
-          remove_export_path
-
           Gitlab::Export::Logger.info(
             message: 'Export archive saved',
             exportable_class: @exportable.class.to_s,
@@ -33,8 +31,7 @@ module Gitlab
         @shared.error(e)
         false
       ensure
-        remove_archive
-        remove_export_path
+        remove_base_tmp_dir
       end
 
       private
@@ -43,12 +40,8 @@ module Gitlab
         tar_czf(archive: archive_file, dir: @shared.export_path)
       end
 
-      def remove_export_path
-        FileUtils.rm_rf(@shared.export_path)
-      end
-
-      def remove_archive
-        FileUtils.rm_rf(@shared.archive_path)
+      def remove_base_tmp_dir
+        FileUtils.rm_rf(@shared.base_path)
       end
 
       def archive_file
