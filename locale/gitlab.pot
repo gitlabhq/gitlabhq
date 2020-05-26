@@ -24201,6 +24201,9 @@ msgstr ""
 msgid "Your projects"
 msgstr ""
 
+msgid "Your request for access could not be processed: %{error_meesage}"
+msgstr ""
+
 msgid "Your request for access has been queued for review."
 msgstr ""
 
@@ -24616,6 +24619,9 @@ msgid "element is not a hierarchy"
 msgstr ""
 
 msgid "email '%{email}' does not match the allowed domain of '%{email_domain}'"
+msgstr ""
+
+msgid "email '%{email}' is not a verified email."
 msgstr ""
 
 msgid "enabled"
