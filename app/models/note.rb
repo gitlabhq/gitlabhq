@@ -72,6 +72,7 @@ class Note < ApplicationRecord
   belongs_to :author, class_name: "User"
   belongs_to :updated_by, class_name: "User"
   belongs_to :last_edited_by, class_name: 'User'
+  belongs_to :review, inverse_of: :notes
 
   has_many :todos
 

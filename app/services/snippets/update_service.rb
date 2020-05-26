@@ -7,11 +7,13 @@ module Snippets
     UpdateError = Class.new(StandardError)
 
     def execute(snippet)
+      return invalid_params_error(snippet) unless valid_params?
+
       if visibility_changed?(snippet) && !visibility_allowed?(snippet, visibility_level)
         return forbidden_visibility_error(snippet)
       end
 
-      snippet.assign_attributes(params)
+      update_snippet_attributes(snippet)
       spam_check(snippet, current_user)
 
       if save_and_commit(snippet)
@@ -27,6 +29,19 @@ module Snippets
 
     def visibility_changed?(snippet)
       visibility_level && visibility_level.to_i != snippet.visibility_level
+    end
+
+    def update_snippet_attributes(snippet)
+      # We can remove the following condition once
+      # https://gitlab.com/gitlab-org/gitlab/-/issues/217801
+      # is implemented.
+      # Once we can perform different operations through this service
+      # we won't need to keep track of the `content` and `file_name` fields
+      if snippet_files.any?
+        params.merge!(content: snippet_files[0].content, file_name: snippet_files[0].file_path)
+      end
+
+      snippet.assign_attributes(params)
     end
 
     def save_and_commit(snippet)
@@ -81,13 +96,7 @@ module Snippets
         message: 'Update snippet'
       }
 
-      snippet.snippet_repository.multi_files_action(current_user, snippet_files(snippet), commit_attrs)
-    end
-
-    def snippet_files(snippet)
-      [{ previous_path: snippet.file_name_on_repo,
-         file_path: params[:file_name],
-         content: params[:content] }]
+      snippet.snippet_repository.multi_files_action(current_user, files_to_commit(snippet), commit_attrs)
     end
 
     # Because we are removing repositories we don't want to remove
@@ -99,7 +108,13 @@ module Snippets
     end
 
     def committable_attributes?
-      (params.stringify_keys.keys & COMMITTABLE_ATTRIBUTES).present?
+      (params.stringify_keys.keys & COMMITTABLE_ATTRIBUTES).present? || snippet_files.any?
+    end
+
+    def build_actions_from_params(snippet)
+      [{ previous_path: snippet.file_name_on_repo,
+         file_path: params[:file_name],
+         content: params[:content] }]
     end
   end
 end

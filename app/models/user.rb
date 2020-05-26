@@ -180,6 +180,8 @@ class User < ApplicationRecord
   has_one :user_highest_role
   has_one :user_canonical_email
 
+  has_many :reviews, foreign_key: :author_id, inverse_of: :author
+
   #
   # Validations
   #

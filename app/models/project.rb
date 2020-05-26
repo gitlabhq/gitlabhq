@@ -329,6 +329,7 @@ class Project < ApplicationRecord
   has_many :repository_storage_moves, class_name: 'ProjectRepositoryStorageMove'
 
   has_many :webide_pipelines, -> { webide_source }, class_name: 'Ci::Pipeline', inverse_of: :project
+  has_many :reviews, inverse_of: :project
 
   accepts_nested_attributes_for :variables, allow_destroy: true
   accepts_nested_attributes_for :project_feature, update_only: true

@@ -8,8 +8,9 @@ import identicon from '../../vue_shared/components/identicon.vue';
 import loadingButton from '../../vue_shared/components/loading_button.vue';
 import UninstallApplicationButton from './uninstall_application_button.vue';
 import UninstallApplicationConfirmationModal from './uninstall_application_confirmation_modal.vue';
+import UpdateApplicationConfirmationModal from './update_application_confirmation_modal.vue';
 
-import { APPLICATION_STATUS } from '../constants';
+import { APPLICATION_STATUS, ELASTIC_STACK } from '../constants';
 
 export default {
   components: {
@@ -18,6 +19,7 @@ export default {
     GlLink,
     UninstallApplicationButton,
     UninstallApplicationConfirmationModal,
+    UpdateApplicationConfirmationModal,
   },
   directives: {
     GlModalDirective,
@@ -233,6 +235,17 @@ export default {
 
       return label;
     },
+    updatingNeedsConfirmation() {
+      if (this.version) {
+        const majorVersion = parseInt(this.version.split('.')[0], 10);
+
+        if (!Number.isNaN(majorVersion)) {
+          return this.id === ELASTIC_STACK && majorVersion < 3;
+        }
+      }
+
+      return false;
+    },
     isUpdating() {
       // Since upgrading is handled asynchronously on the backend we need this check to prevent any delay on the frontend
       return this.status === APPLICATION_STATUS.UPDATING;
@@ -247,6 +260,12 @@ export default {
       return sprintf(s__('ClusterIntegration|%{title} uninstalled successfully.'), {
         title: this.title,
       });
+    },
+    updateModalId() {
+      return `update-${this.id}`;
+    },
+    uninstallModalId() {
+      return `uninstall-${this.id}`;
     },
   },
   watch: {
@@ -268,7 +287,7 @@ export default {
         params: this.installApplicationRequestParams,
       });
     },
-    updateClicked() {
+    updateConfirmed() {
       eventHub.$emit('updateApplication', {
         id: this.id,
         params: this.installApplicationRequestParams,
@@ -356,14 +375,36 @@ export default {
           >
             {{ updateFailureDescription }}
           </div>
-          <loading-button
-            v-if="updateAvailable || updateFailed || isUpdating"
-            class="btn btn-primary js-cluster-application-update-button mt-2"
-            :loading="isUpdating"
-            :disabled="isUpdating"
-            :label="updateButtonLabel"
-            @click="updateClicked"
-          />
+          <template v-if="updateAvailable || updateFailed || isUpdating">
+            <template v-if="updatingNeedsConfirmation">
+              <loading-button
+                v-gl-modal-directive="updateModalId"
+                class="btn btn-primary js-cluster-application-update-button mt-2"
+                :loading="isUpdating"
+                :disabled="isUpdating"
+                :label="updateButtonLabel"
+                data-qa-selector="update_button_with_confirmation"
+                :data-qa-application="id"
+              />
+
+              <update-application-confirmation-modal
+                :application="id"
+                :application-title="title"
+                @confirm="updateConfirmed()"
+              />
+            </template>
+
+            <loading-button
+              v-else
+              class="btn btn-primary js-cluster-application-update-button mt-2"
+              :loading="isUpdating"
+              :disabled="isUpdating"
+              :label="updateButtonLabel"
+              data-qa-selector="update_button"
+              :data-qa-application="id"
+              @click="updateConfirmed"
+            />
+          </template>
         </div>
       </div>
       <div
@@ -389,7 +430,7 @@ export default {
           />
           <uninstall-application-button
             v-if="displayUninstallButton"
-            v-gl-modal-directive="'uninstall-' + id"
+            v-gl-modal-directive="uninstallModalId"
             :status="status"
             data-qa-selector="uninstall_button"
             :data-qa-application="id"

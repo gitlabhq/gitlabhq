@@ -2,9 +2,10 @@ import Vue from 'vue';
 import { shallowMount } from '@vue/test-utils';
 import mountComponent from 'helpers/vue_mount_component_helper';
 import eventHub from '~/clusters/event_hub';
-import { APPLICATION_STATUS } from '~/clusters/constants';
+import { APPLICATION_STATUS, ELASTIC_STACK } from '~/clusters/constants';
 import applicationRow from '~/clusters/components/application_row.vue';
 import UninstallApplicationConfirmationModal from '~/clusters/components/uninstall_application_confirmation_modal.vue';
+import UpdateApplicationConfirmationModal from '~/clusters/components/update_application_confirmation_modal.vue';
 
 import { DEFAULT_APPLICATION_STATE } from '../services/mock_data';
 
@@ -348,6 +349,126 @@ describe('Application Row', () => {
 
       return vm.$nextTick(() => {
         expect(vm.$toast.show).toHaveBeenCalledWith('GitLab Runner updated successfully.');
+      });
+    });
+
+    describe('when updating does not require confirmation', () => {
+      let wrapper;
+
+      beforeEach(() => {
+        wrapper = shallowMount(ApplicationRow, {
+          propsData: {
+            ...DEFAULT_APPLICATION_STATE,
+            updateAvailable: true,
+          },
+        });
+      });
+
+      afterEach(() => {
+        wrapper.destroy();
+      });
+
+      it('the modal is not rendered', () => {
+        expect(wrapper.contains(UpdateApplicationConfirmationModal)).toBe(false);
+      });
+
+      it('the correct button is rendered', () => {
+        expect(wrapper.contains("[data-qa-selector='update_button']")).toBe(true);
+      });
+    });
+
+    describe('when updating requires confirmation', () => {
+      let wrapper;
+
+      beforeEach(() => {
+        wrapper = shallowMount(ApplicationRow, {
+          propsData: {
+            ...DEFAULT_APPLICATION_STATE,
+            updateAvailable: true,
+            id: ELASTIC_STACK,
+            version: '1.1.2',
+          },
+        });
+      });
+
+      afterEach(() => {
+        wrapper.destroy();
+      });
+
+      it('displays a modal', () => {
+        expect(wrapper.contains(UpdateApplicationConfirmationModal)).toBe(true);
+      });
+
+      it('the correct button is rendered', () => {
+        expect(wrapper.contains("[data-qa-selector='update_button_with_confirmation']")).toBe(true);
+      });
+
+      it('triggers updateApplication event', () => {
+        jest.spyOn(eventHub, '$emit');
+        wrapper.find(UpdateApplicationConfirmationModal).vm.$emit('confirm');
+
+        expect(eventHub.$emit).toHaveBeenCalledWith('updateApplication', {
+          id: ELASTIC_STACK,
+          params: {},
+        });
+      });
+    });
+
+    describe('updating Elastic Stack special case', () => {
+      let wrapper;
+
+      afterEach(() => {
+        wrapper.destroy();
+      });
+
+      it('needs confirmation if version is lower than 3.0.0', () => {
+        wrapper = shallowMount(ApplicationRow, {
+          propsData: {
+            ...DEFAULT_APPLICATION_STATE,
+            updateAvailable: true,
+            id: ELASTIC_STACK,
+            version: '1.1.2',
+          },
+        });
+
+        wrapper.vm.$nextTick(() => {
+          expect(wrapper.contains("[data-qa-selector='update_button_with_confirmation']")).toBe(
+            true,
+          );
+          expect(wrapper.contains(UpdateApplicationConfirmationModal)).toBe(true);
+        });
+      });
+
+      it('does not need confirmation is version is 3.0.0', () => {
+        wrapper = shallowMount(ApplicationRow, {
+          propsData: {
+            ...DEFAULT_APPLICATION_STATE,
+            updateAvailable: true,
+            id: ELASTIC_STACK,
+            version: '3.0.0',
+          },
+        });
+
+        wrapper.vm.$nextTick(() => {
+          expect(wrapper.contains("[data-qa-selector='update_button']")).toBe(true);
+          expect(wrapper.contains(UpdateApplicationConfirmationModal)).toBe(false);
+        });
+      });
+
+      it('does not need confirmation if version is higher than 3.0.0', () => {
+        wrapper = shallowMount(ApplicationRow, {
+          propsData: {
+            ...DEFAULT_APPLICATION_STATE,
+            updateAvailable: true,
+            id: ELASTIC_STACK,
+            version: '5.2.1',
+          },
+        });
+
+        wrapper.vm.$nextTick(() => {
+          expect(wrapper.contains("[data-qa-selector='update_button']")).toBe(true);
+          expect(wrapper.contains(UpdateApplicationConfirmationModal)).toBe(false);
+        });
       });
     });
   });

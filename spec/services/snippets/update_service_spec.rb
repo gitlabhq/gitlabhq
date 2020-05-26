@@ -302,6 +302,82 @@ describe Snippets::UpdateService do
       end
     end
 
+    shared_examples 'when snippet_files param is present' do
+      let(:file_path) { 'CHANGELOG' }
+      let(:content) { 'snippet_content' }
+      let(:new_title) { 'New title' }
+      let(:snippet_files) { [{ action: 'update', previous_path: file_path, file_path: file_path, content: content }] }
+      let(:base_opts) do
+        {
+          title: new_title,
+          snippet_files: snippet_files
+        }
+      end
+
+      it 'updates a snippet with the provided attributes' do
+        file_path = 'foo'
+        snippet_files[0][:action] = 'move'
+        snippet_files[0][:file_path] = file_path
+
+        response = subject
+        snippet = response.payload[:snippet]
+
+        expect(response).to be_success
+        expect(snippet.title).to eq(new_title)
+        expect(snippet.file_name).to eq(file_path)
+        expect(snippet.content).to eq(content)
+      end
+
+      it 'commit the files to the repository' do
+        subject
+
+        blob = snippet.repository.blob_at('master', file_path)
+
+        expect(blob.data).to eq content
+      end
+
+      context 'when content or file_name params are present' do
+        let(:extra_opts) { { content: 'foo', file_name: 'path' } }
+
+        it 'raises a validation error' do
+          response = subject
+          snippet = response.payload[:snippet]
+
+          expect(response).to be_error
+          expect(snippet.errors.full_messages_for(:content)).to eq ['Content and snippet files cannot be used together']
+          expect(snippet.errors.full_messages_for(:file_name)).to eq ['File name and snippet files cannot be used together']
+        end
+      end
+
+      context 'when snippet_files param is invalid' do
+        let(:snippet_files) { [{ action: 'invalid_action' }] }
+
+        it 'raises a validation error' do
+          response = subject
+          snippet = response.payload[:snippet]
+
+          expect(response).to be_error
+          expect(snippet.errors.full_messages_for(:snippet_files)).to eq ['Snippet files have invalid data']
+        end
+      end
+
+      context 'when an error is raised committing the file' do
+        it 'keeps any snippet modifications' do
+          expect_next_instance_of(described_class) do |instance|
+            expect(instance).to receive(:create_repository_for).and_raise(StandardError)
+          end
+
+          response = subject
+          snippet = response.payload[:snippet]
+
+          expect(response).to be_error
+          expect(snippet.title).to eq(new_title)
+          expect(snippet.file_name).to eq(file_path)
+          expect(snippet.content).to eq(content)
+        end
+      end
+    end
+
     context 'when Project Snippet' do
       let_it_be(:project) { create(:project) }
       let!(:snippet) { create(:project_snippet, :repository, author: user, project: project) }
@@ -316,6 +392,7 @@ describe Snippets::UpdateService do
       it_behaves_like 'updates repository content'
       it_behaves_like 'commit operation fails'
       it_behaves_like 'committable attributes'
+      it_behaves_like 'when snippet_files param is present'
       it_behaves_like 'snippets spam check is performed' do
         before do
           subject
@@ -340,6 +417,7 @@ describe Snippets::UpdateService do
       it_behaves_like 'updates repository content'
       it_behaves_like 'commit operation fails'
       it_behaves_like 'committable attributes'
+      it_behaves_like 'when snippet_files param is present'
       it_behaves_like 'snippets spam check is performed' do
         before do
           subject

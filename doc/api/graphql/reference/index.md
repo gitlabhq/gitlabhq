@@ -1276,6 +1276,7 @@ Information about pagination in a connection.
 
 | Name  | Type  | Description |
 | ---   |  ---- | ----------  |
+| `assets` | ReleaseAssets | Assets of the release |
 | `author` | User | User that created the release |
 | `commit` | Commit | The commit associated with the release |
 | `createdAt` | Time | Timestamp of when the release was created |
@@ -1285,6 +1286,28 @@ Information about pagination in a connection.
 | `releasedAt` | Time | Timestamp of when the release was released |
 | `tagName` | String! | Name of the tag associated with the release |
 | `tagPath` | String | Relative web path to the tag associated with the release |
+
+## ReleaseAssets
+
+| Name  | Type  | Description |
+| ---   |  ---- | ----------  |
+| `assetsCount` | Int | Number of assets of the release |
+
+## ReleaseLink
+
+| Name  | Type  | Description |
+| ---   |  ---- | ----------  |
+| `external` | Boolean | Indicates the link points to an external resource |
+| `id` | ID! | ID of the link |
+| `name` | String | Name of the link |
+| `url` | String | URL of the link |
+
+## ReleaseSource
+
+| Name  | Type  | Description |
+| ---   |  ---- | ----------  |
+| `format` | String | Format of the source |
+| `url` | String | Download URL of the source |
 
 ## RemoveAwardEmojiPayload
 

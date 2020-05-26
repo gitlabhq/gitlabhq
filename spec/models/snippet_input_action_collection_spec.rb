@@ -8,6 +8,8 @@ describe SnippetInputActionCollection do
   let(:data)           { [action, action] }
 
   it { is_expected.to delegate_method(:empty?).to(:actions) }
+  it { is_expected.to delegate_method(:any?).to(:actions) }
+  it { is_expected.to delegate_method(:[]).to(:actions) }
 
   describe '#to_commit_actions' do
     subject { described_class.new(data).to_commit_actions}

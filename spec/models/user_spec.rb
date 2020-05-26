@@ -56,6 +56,7 @@ describe User do
     it { is_expected.to have_many(:custom_attributes).class_name('UserCustomAttribute') }
     it { is_expected.to have_many(:releases).dependent(:nullify) }
     it { is_expected.to have_many(:metrics_users_starred_dashboards).inverse_of(:user) }
+    it { is_expected.to have_many(:reviews).inverse_of(:author) }
 
     describe "#bio" do
       it 'syncs bio with `user_details.bio` on create' do

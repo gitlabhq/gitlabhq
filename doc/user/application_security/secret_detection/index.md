@@ -1,5 +1,8 @@
 ---
 type: reference, howto
+stage: Secure
+group: Static Analysis
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 ---
 
 # Secret Detection **(ULTIMATE)**

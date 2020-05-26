@@ -72,11 +72,11 @@ module Snippets
       message
     end
 
-    def files_to_commit
-      snippet_files.to_commit_actions.presence || build_actions_from_params
+    def files_to_commit(snippet)
+      snippet_files.to_commit_actions.presence || build_actions_from_params(snippet)
     end
 
-    def build_actions_from_params
+    def build_actions_from_params(snippet)
       raise NotImplementedError
     end
   end

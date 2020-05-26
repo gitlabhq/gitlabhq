@@ -11,6 +11,7 @@ describe Note do
     it { is_expected.to belong_to(:author).class_name('User') }
 
     it { is_expected.to have_many(:todos) }
+    it { is_expected.to belong_to(:review).inverse_of(:notes) }
   end
 
   describe 'modules' do

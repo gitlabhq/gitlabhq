@@ -87,6 +87,10 @@ this method you can expose the state of a feature flag as follows:
 
 ```ruby
 before_action do
+  # Prefer to scope it per project or user e.g.
+  push_frontend_feature_flag(:vim_bindings, project)
+
+  # Avoid, if possible
   push_frontend_feature_flag(:vim_bindings)
 end
 

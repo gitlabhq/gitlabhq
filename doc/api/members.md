@@ -59,6 +59,7 @@ Example response:
     "web_url": "http://192.168.1.8:3000/root",
     "expires_at": "2012-10-22T14:13:35Z",
     "access_level": 30,
+    "email": "john@example.com",
     "group_saml_identity": {
       "extern_uid":"ABC-1234567890",
       "provider": "group_saml",
@@ -116,6 +117,7 @@ Example response:
     "web_url": "http://192.168.1.8:3000/root",
     "expires_at": "2012-10-22T14:13:35Z",
     "access_level": 30
+    "email": "john@example.com",
     "group_saml_identity": {
       "extern_uid":"ABC-1234567890",
       "provider": "group_saml",

@@ -5,7 +5,7 @@ class ReleasePresenter < Gitlab::View::Presenter::Delegated
 
   presents :release
 
-  delegate :project, :tag, to: :release
+  delegate :project, :tag, :assets_count, to: :release
 
   def commit_path
     return unless release.commit && can_download_code?

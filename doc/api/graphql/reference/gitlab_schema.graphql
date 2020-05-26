@@ -9094,6 +9094,11 @@ enum RegistryState {
 
 type Release {
   """
+  Assets of the release
+  """
+  assets: ReleaseAssets
+
+  """
   User that created the release
   """
   author: User
@@ -9164,6 +9169,63 @@ type Release {
   tagPath: String
 }
 
+type ReleaseAssets {
+  """
+  Number of assets of the release
+  """
+  assetsCount: Int
+
+  """
+  Asset links of the release
+  """
+  links(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+  ): ReleaseLinkConnection
+
+  """
+  Sources of the release
+  """
+  sources(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+  ): ReleaseSourceConnection
+}
+
 """
 The connection type for Release.
 """
@@ -9197,6 +9259,110 @@ type ReleaseEdge {
   The item at the end of the edge.
   """
   node: Release
+}
+
+type ReleaseLink {
+  """
+  Indicates the link points to an external resource
+  """
+  external: Boolean
+
+  """
+  ID of the link
+  """
+  id: ID!
+
+  """
+  Name of the link
+  """
+  name: String
+
+  """
+  URL of the link
+  """
+  url: String
+}
+
+"""
+The connection type for ReleaseLink.
+"""
+type ReleaseLinkConnection {
+  """
+  A list of edges.
+  """
+  edges: [ReleaseLinkEdge]
+
+  """
+  A list of nodes.
+  """
+  nodes: [ReleaseLink]
+
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: PageInfo!
+}
+
+"""
+An edge in a connection.
+"""
+type ReleaseLinkEdge {
+  """
+  A cursor for use in pagination.
+  """
+  cursor: String!
+
+  """
+  The item at the end of the edge.
+  """
+  node: ReleaseLink
+}
+
+type ReleaseSource {
+  """
+  Format of the source
+  """
+  format: String
+
+  """
+  Download URL of the source
+  """
+  url: String
+}
+
+"""
+The connection type for ReleaseSource.
+"""
+type ReleaseSourceConnection {
+  """
+  A list of edges.
+  """
+  edges: [ReleaseSourceEdge]
+
+  """
+  A list of nodes.
+  """
+  nodes: [ReleaseSource]
+
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: PageInfo!
+}
+
+"""
+An edge in a connection.
+"""
+type ReleaseSourceEdge {
+  """
+  A cursor for use in pagination.
+  """
+  cursor: String!
+
+  """
+  The item at the end of the edge.
+  """
+  node: ReleaseSource
 }
 
 """

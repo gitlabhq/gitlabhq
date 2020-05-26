@@ -8,4 +8,4 @@
   - personal_projects_count = user.personal_projects.count
   - unless personal_projects_count.zero?
     %li
-      = n_('personal project will be removed and cannot be restored', '%d personal projects will be removed and cannot be restored', personal_projects_count)
+      = n_('%d personal project will be removed and cannot be restored.', '%d personal projects will be removed and cannot be restored.', personal_projects_count) % personal_projects_count

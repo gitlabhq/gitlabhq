@@ -43,9 +43,7 @@ module Snippets
     def create_params
       return params if snippet_files.empty?
 
-      first_file = snippet_files.actions.first
-
-      params.merge(content: first_file.content, file_name: first_file.file_path)
+      params.merge(content: snippet_files[0].content, file_name: snippet_files[0].file_path)
     end
 
     def save_and_commit
@@ -88,7 +86,7 @@ module Snippets
         message: 'Initial commit'
       }
 
-      @snippet.snippet_repository.multi_files_action(current_user, files_to_commit, commit_attrs)
+      @snippet.snippet_repository.multi_files_action(current_user, files_to_commit(@snippet), commit_attrs)
     end
 
     def move_temporary_files
@@ -99,7 +97,7 @@ module Snippets
       end
     end
 
-    def build_actions_from_params
+    def build_actions_from_params(_snippet)
       [{ file_path: params[:file_name], content: params[:content] }]
     end
   end

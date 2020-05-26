@@ -189,6 +189,11 @@ msgid_plural "%d more comments"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "%d personal project will be removed and cannot be restored."
+msgid_plural "%d personal projects will be removed and cannot be restored."
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%d project"
 msgid_plural "%d projects"
 msgstr[0] ""
@@ -5304,6 +5309,9 @@ msgstr ""
 msgid "ClusterIntegration|Uninstall %{appTitle}"
 msgstr ""
 
+msgid "ClusterIntegration|Update %{appTitle}"
+msgstr ""
+
 msgid "ClusterIntegration|Update failed. Please check the logs and try again."
 msgstr ""
 
@@ -5334,6 +5342,9 @@ msgstr ""
 msgid "ClusterIntegration|You are about to uninstall %{appTitle} from your cluster."
 msgstr ""
 
+msgid "ClusterIntegration|You are about to update %{appTitle} on your cluster."
+msgstr ""
+
 msgid "ClusterIntegration|You must first install Helm Tiller before installing the applications below"
 msgstr ""
 
@@ -5344,6 +5355,9 @@ msgid "ClusterIntegration|You must have an RBAC-enabled cluster to install Knati
 msgstr ""
 
 msgid "ClusterIntegration|You should select at least two subnets"
+msgstr ""
+
+msgid "ClusterIntegration|Your Elasticsearch cluster will be re-created during this upgrade. Your logs will be re-indexed, and you will lose historical logs from hosts terminated in the last 30 days."
 msgstr ""
 
 msgid "ClusterIntegration|Your account must have %{link_to_kubernetes_engine}"
@@ -26572,11 +26586,6 @@ msgstr ""
 
 msgid "personal access tokens"
 msgstr ""
-
-msgid "personal project will be removed and cannot be restored"
-msgid_plural "%d personal projects will be removed and cannot be restored"
-msgstr[0] ""
-msgstr[1] ""
 
 msgid "pipeline"
 msgstr ""

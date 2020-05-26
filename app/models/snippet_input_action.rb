@@ -28,9 +28,17 @@ class SnippetInputAction
   def to_commit_action
     {
       action: action&.to_sym,
-      previous_path: previous_path,
+      previous_path: build_previous_path,
       file_path: file_path,
       content: content
     }
+  end
+
+  private
+
+  def build_previous_path
+    return previous_path unless update_action?
+
+    previous_path.presence || file_path
   end
 end

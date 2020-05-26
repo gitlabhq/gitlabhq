@@ -30,16 +30,36 @@ describe SnippetInputAction do
   end
 
   describe '#to_commit_action' do
-    let(:action)        { 'create' }
-    let(:file_path)     { 'foo' }
-    let(:content)       { 'bar' }
-    let(:previous_path) { 'previous_path' }
-    let(:options)       { { action: action, file_path: file_path, content: content, previous_path: previous_path } }
+    let(:action)           { 'create' }
+    let(:file_path)        { 'foo' }
+    let(:content)          { 'bar' }
+    let(:previous_path)    { 'previous_path' }
+    let(:options)          { { action: action, file_path: file_path, content: content, previous_path: previous_path } }
+    let(:expected_options) { options.merge(action: action.to_sym) }
 
     subject { described_class.new(options).to_commit_action }
 
     it 'transforms attributes to commit action' do
-      expect(subject).to eq(options.merge(action: action.to_sym))
+      expect(subject).to eq(expected_options)
+    end
+
+    context 'action is update' do
+      let(:action) { 'update' }
+
+      context 'when previous_path is present' do
+        it 'returns the existing previous_path' do
+          expect(subject).to eq(expected_options)
+        end
+      end
+
+      context 'when previous_path is not present' do
+        let(:previous_path) { nil }
+        let(:expected_options) { options.merge(action: action.to_sym, previous_path: file_path) }
+
+        it 'assigns the file_path to the previous_path' do
+          expect(subject).to eq(expected_options)
+        end
+      end
     end
   end
 end

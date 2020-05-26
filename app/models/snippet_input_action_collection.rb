@@ -5,7 +5,7 @@ class SnippetInputActionCollection
 
   attr_reader :actions
 
-  delegate :empty?, to: :actions
+  delegate :empty?, :any?, :[], to: :actions
 
   def initialize(actions = [])
     @actions = actions.map { |action| SnippetInputAction.new(action) }
