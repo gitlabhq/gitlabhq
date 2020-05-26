@@ -8,7 +8,7 @@
 
 .float-left.btn-group.prepend-left-10.issuable-close-dropdown.droplab-dropdown.js-issuable-close-dropdown
   = link_to "#{display_button_action} #{display_issuable_type}", close_reopen_issuable_path(issuable),
-            method: button_method, class: "#{button_class} btn-#{button_action}", title: "#{display_button_action} #{display_issuable_type}"
+            method: button_method, class: "#{button_class} btn-#{button_action}", title: "#{display_button_action} #{display_issuable_type}", data: { 'close-reopen-url': close_reopen_issuable_path(issuable) }
 
   = button_tag type: 'button', class: "#{toggle_class} btn-#{button_action}-color",
                data: { 'dropdown-trigger' => '#issuable-close-menu' }, 'aria-label' => 'Toggle dropdown' do

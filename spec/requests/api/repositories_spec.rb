@@ -177,6 +177,12 @@ describe API::Repositories do
         expect(headers['Content-Disposition']).to eq 'inline'
       end
 
+      it_behaves_like 'uncached response' do
+        before do
+          get api(route, current_user)
+        end
+      end
+
       context 'when sha does not exist' do
         it_behaves_like '404 response' do
           let(:request) { get api(route.sub(sample_blob.oid, '123456'), current_user) }

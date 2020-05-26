@@ -25,16 +25,10 @@
     label: s_('ClusterIntegration|CA Certificate'), label_class: 'label-bold',
     input_group_class: 'gl-field-error-anchor', append: copy_ca_cert_btn
 
-    - show_token_btn = (platform_field.button s_('ClusterIntegration|Show'),
-      type: 'button', class: 'js-show-cluster-token btn btn-default')
-    - copy_token_btn = clipboard_button(text: platform.token, title: s_('ClusterIntegration|Copy Service Token'),
-      class: 'input-group-text btn-default') if cluster.read_only_kubernetes_platform_fields?
-
-    = platform_field.text_field :token, type: 'password', class: 'js-select-on-focus js-cluster-token',
-    required: true, title: s_('ClusterIntegration|Service token is required.'),
-    readonly: cluster.read_only_kubernetes_platform_fields?,
-    label: s_('ClusterIntegration|Service Token'), label_class: 'label-bold',
-    input_group_class: 'gl-field-error-anchor', append: show_token_btn + copy_token_btn
+    = platform_field.password_field :token, type: 'password', class: 'js-select-on-focus js-cluster-token',
+    readonly: cluster.read_only_kubernetes_platform_fields?, autocomplete: 'new-password',
+    label: s_('ClusterIntegration|Enter new Service Token'), label_class: 'label-bold',
+    input_group_class: 'gl-field-error-anchor'
 
     = platform_field.form_group :authorization_type do
       = platform_field.check_box :authorization_type, { disabled: true, label: s_('ClusterIntegration|RBAC-enabled cluster'),
