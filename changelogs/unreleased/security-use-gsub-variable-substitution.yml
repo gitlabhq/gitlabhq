@@ -1,0 +1,5 @@
+---
+title: Use `gsub` instead of the Ruby `%` operator to perform variable substitution in Prometheus proxy API
+merge_request:
+author:
+type: security
