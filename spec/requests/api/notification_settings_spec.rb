@@ -19,7 +19,7 @@ describe API::NotificationSettings do
   end
 
   describe "PUT /notification_settings" do
-    let(:email) { create(:email, user: user) }
+    let(:email) { create(:email, :confirmed, user: user) }
 
     it "updates global notification settings for the current user" do
       put api("/notification_settings", user), params: { level: 'watch', notification_email: email.email }

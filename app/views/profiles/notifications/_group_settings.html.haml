@@ -13,4 +13,4 @@
 
   .table-section.section-30
     = form_for setting, url: profile_notifications_group_path(group), method: :put, html: { class: 'update-notifications' } do |f|
-      = f.select :notification_email, @user.all_public_emails, { include_blank: 'Global notification email' }, class: 'select2 js-group-notification-email'
+      = f.select :notification_email, @user.public_verified_emails, { include_blank: 'Global notification email' }, class: 'select2 js-group-notification-email'

@@ -1,0 +1,5 @@
+---
+title: Added data integrity check before updating a deploy key.
+merge_request:
+author:
+type: security

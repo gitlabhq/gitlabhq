@@ -14,6 +14,7 @@ class NotificationSetting < ApplicationRecord
   validates :user_id, uniqueness: { scope: [:source_type, :source_id],
                                     message: "already exists in source",
                                     allow_nil: true }
+  validate :owns_notification_email, if: :notification_email_changed?
 
   scope :for_groups, -> { where(source_type: 'Namespace') }
 
@@ -96,6 +97,13 @@ class NotificationSetting < ApplicationRecord
 
   def event_enabled?(event)
     respond_to?(event) && !!public_send(event) # rubocop:disable GitlabSecurity/PublicSend
+  end
+
+  def owns_notification_email
+    return if user.temp_oauth_email?
+    return if notification_email.empty?
+
+    errors.add(:notification_email, _("is not an email you own")) unless user.verified_emails.include?(notification_email)
   end
 end
 
