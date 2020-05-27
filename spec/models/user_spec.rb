@@ -881,7 +881,7 @@ describe User, :do_not_mock_admin_mode do
       end
 
       context 'when the first email was unconfirmed and the second email gets confirmed' do
-        let_it_be(:user) { create(:user, :unconfirmed, email: 'should-be-unconfirmed@test.com') }
+        let(:user) { create(:user, :unconfirmed, email: 'should-be-unconfirmed@test.com') }
 
         before do
           user.update!(email: 'should-be-confirmed@test.com')
