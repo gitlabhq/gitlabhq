@@ -1,5 +1,0 @@
----
-title: Disable caching on repo/blobs/[sha]/raw endpoint
-merge_request:
-author:
-type: security

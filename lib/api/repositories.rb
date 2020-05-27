@@ -6,8 +6,6 @@ module API
   class Repositories < Grape::API
     include PaginationParams
 
-    helpers ::API::Helpers::HeadersHelpers
-
     before { authorize! :download_code, user_project }
 
     params do
@@ -66,8 +64,6 @@ module API
       end
       get ':id/repository/blobs/:sha/raw' do
         assign_blob_vars!
-
-        no_cache_headers
 
         send_git_blob @repo, @blob
       end
