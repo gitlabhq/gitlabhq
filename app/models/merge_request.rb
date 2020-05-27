@@ -1579,6 +1579,10 @@ class MergeRequest < ApplicationRecord
     deployments.visible.includes(:environment).order(id: :desc).limit(10)
   end
 
+  def banzai_render_context(field)
+    super.merge(label_url_method: :project_merge_requests_url)
+  end
+
   private
 
   def with_rebase_lock

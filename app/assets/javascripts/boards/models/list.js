@@ -93,10 +93,7 @@ class List {
   }
 
   update() {
-    const collapsed = !this.isExpanded;
-    return boardsStore.updateList(this.id, this.position, collapsed).catch(() => {
-      // TODO: handle request error
-    });
+    return boardsStore.updateListFunc(this);
   }
 
   nextPage() {
@@ -114,13 +111,7 @@ class List {
   }
 
   newIssue(issue) {
-    this.addIssue(issue, null, 0);
-    this.issuesSize += 1;
-
-    return boardsStore
-      .newIssue(this.id, issue)
-      .then(res => res.data)
-      .then(data => this.onNewIssueResponse(issue, data));
+    return boardsStore.newListIssue(this, issue);
   }
 
   createIssues(data) {
@@ -138,12 +129,7 @@ class List {
   }
 
   moveIssue(issue, oldIndex, newIndex, moveBeforeId, moveAfterId) {
-    this.issues.splice(oldIndex, 1);
-    this.issues.splice(newIndex, 0, issue);
-
-    boardsStore.moveIssue(issue.id, null, null, moveBeforeId, moveAfterId).catch(() => {
-      // TODO: handle request error
-    });
+    boardsStore.moveListIssues(this, issue, oldIndex, newIndex, moveBeforeId, moveAfterId);
   }
 
   moveMultipleIssues({ issues, oldIndicies, newIndex, moveBeforeId, moveAfterId }) {
@@ -182,7 +168,7 @@ class List {
   }
 
   findIssue(id) {
-    return this.issues.find(issue => issue.id === id);
+    return boardsStore.findListIssue(this, id);
   }
 
   removeMultipleIssues(removeIssues) {
@@ -201,16 +187,7 @@ class List {
   }
 
   removeIssue(removeIssue) {
-    this.issues = this.issues.filter(issue => {
-      const matchesRemove = removeIssue.id === issue.id;
-
-      if (matchesRemove) {
-        this.issuesSize -= 1;
-        issue.removeLabel(this.label);
-      }
-
-      return !matchesRemove;
-    });
+    return boardsStore.removeListIssues(this, removeIssue);
   }
 
   getTypeInfo(type) {

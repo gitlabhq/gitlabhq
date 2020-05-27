@@ -6,8 +6,9 @@ import {
   GlResizeObserverDirective,
   GlIcon,
   GlLoadingIcon,
-  GlDropdown,
-  GlDropdownItem,
+  GlNewDropdown as GlDropdown,
+  GlNewDropdownItem as GlDropdownItem,
+  GlNewDropdownDivider as GlDropdownDivider,
   GlModal,
   GlModalDirective,
   GlTooltip,
@@ -28,6 +29,7 @@ import MonitorStackedColumnChart from './charts/stacked_column.vue';
 import TrackEventDirective from '~/vue_shared/directives/track_event';
 import AlertWidget from './alert_widget.vue';
 import { timeRangeToUrl, downloadCSVOptions, generateLinkToChartOptions } from '../utils';
+import { isSafeURL } from '~/lib/utils/url_utility';
 
 const events = {
   timeRangeZoom: 'timerangezoom',
@@ -43,6 +45,7 @@ export default {
     GlTooltip,
     GlDropdown,
     GlDropdownItem,
+    GlDropdownDivider,
     GlModal,
   },
   directives: {
@@ -117,6 +120,9 @@ export default {
       },
       metricsSavedToDb(state, getters) {
         return getters[`${this.namespace}/metricsSavedToDb`];
+      },
+      selectedDashboard(state, getters) {
+        return getters[`${this.namespace}/selectedDashboard`];
       },
     }),
     title() {
@@ -266,6 +272,9 @@ export default {
         this.$delete(this.allAlerts, alertPath);
       }
     },
+    safeUrl(url) {
+      return isSafeURL(url) ? url : '#';
+    },
   },
   panelTypes,
 };
@@ -305,14 +314,13 @@ export default {
         <div class="d-flex align-items-center">
           <gl-dropdown
             v-gl-tooltip
-            toggle-class="btn btn-transparent border-0"
+            toggle-class="shadow-none border-0"
             data-qa-selector="prometheus_widgets_dropdown"
             right
-            no-caret
             :title="__('More actions')"
           >
             <template slot="button-content">
-              <gl-icon name="ellipsis_v" class="text-secondary" />
+              <gl-icon name="ellipsis_v" class="dropdown-icon text-secondary" />
             </template>
             <gl-dropdown-item
               v-if="expandBtnAvailable"
@@ -363,6 +371,23 @@ export default {
             >
               {{ __('Alerts') }}
             </gl-dropdown-item>
+
+            <template v-if="graphData.links.length">
+              <gl-dropdown-divider />
+              <gl-dropdown-item
+                v-for="(link, index) in graphData.links"
+                :key="index"
+                :href="safeUrl(link.url)"
+                class="text-break"
+                >{{ link.title }}</gl-dropdown-item
+              >
+            </template>
+            <template v-if="selectedDashboard && selectedDashboard.can_edit">
+              <gl-dropdown-divider />
+              <gl-dropdown-item ref="manageLinksItem" :href="selectedDashboard.project_blob_path">{{
+                s__('Metrics|Manage chart links')
+              }}</gl-dropdown-item>
+            </template>
           </gl-dropdown>
         </div>
       </div>

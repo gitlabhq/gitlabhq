@@ -39,28 +39,30 @@ describe Gitlab::Kubernetes::NetworkPolicy do
 
   describe '.from_yaml' do
     let(:manifest) do
-      <<-POLICY
-apiVersion: networking.k8s.io/v1
-kind: NetworkPolicy
-metadata:
-  name: example-name
-  namespace: example-namespace
-spec:
-  podSelector:
-    matchLabels:
-      role: db
-  policyTypes:
-  - Ingress
-  ingress:
-  - from:
-    - namespaceSelector:
-        matchLabels:
-          project: myproject
+      <<~POLICY
+        apiVersion: networking.k8s.io/v1
+        kind: NetworkPolicy
+        metadata:
+          name: example-name
+          namespace: example-namespace
+          labels:
+            app: foo
+        spec:
+          podSelector:
+            matchLabels:
+              role: db
+          policyTypes:
+          - Ingress
+          ingress:
+          - from:
+            - namespaceSelector:
+                matchLabels:
+                  project: myproject
       POLICY
     end
     let(:resource) do
       ::Kubeclient::Resource.new(
-        metadata: { name: name, namespace: namespace },
+        metadata: { name: name, namespace: namespace, labels: { app: 'foo' } },
         spec: { podSelector: pod_selector, policyTypes: %w(Ingress), ingress: ingress, egress: nil }
       )
     end
@@ -83,20 +85,20 @@ spec:
 
     context 'with manifest without metadata' do
       let(:manifest) do
-        <<-POLICY
-apiVersion: networking.k8s.io/v1
-kind: NetworkPolicy
-spec:
-  podSelector:
-    matchLabels:
-      role: db
-  policyTypes:
-  - Ingress
-  ingress:
-  - from:
-    - namespaceSelector:
-        matchLabels:
-          project: myproject
+        <<~POLICY
+        apiVersion: networking.k8s.io/v1
+        kind: NetworkPolicy
+        spec:
+          podSelector:
+            matchLabels:
+              role: db
+          policyTypes:
+          - Ingress
+          ingress:
+          - from:
+            - namespaceSelector:
+                matchLabels:
+                  project: myproject
         POLICY
       end
 
@@ -105,12 +107,12 @@ spec:
 
     context 'with manifest without spec' do
       let(:manifest) do
-        <<-POLICY
-apiVersion: networking.k8s.io/v1
-kind: NetworkPolicy
-metadata:
-  name: example-name
-  namespace: example-namespace
+        <<~POLICY
+        apiVersion: networking.k8s.io/v1
+        kind: NetworkPolicy
+        metadata:
+          name: example-name
+          namespace: example-namespace
         POLICY
       end
 
@@ -119,24 +121,24 @@ metadata:
 
     context 'with disallowed class' do
       let(:manifest) do
-        <<-POLICY
-apiVersion: networking.k8s.io/v1
-kind: NetworkPolicy
-metadata:
-  name: example-name
-  namespace: example-namespace
-  creationTimestamp: 2020-04-14T00:08:30Z
-spec:
-  podSelector:
-    matchLabels:
-      role: db
-  policyTypes:
-  - Ingress
-  ingress:
-  - from:
-    - namespaceSelector:
-        matchLabels:
-          project: myproject
+        <<~POLICY
+        apiVersion: networking.k8s.io/v1
+        kind: NetworkPolicy
+        metadata:
+          name: example-name
+          namespace: example-namespace
+          creationTimestamp: 2020-04-14T00:08:30Z
+        spec:
+          podSelector:
+            matchLabels:
+              role: db
+          policyTypes:
+          - Ingress
+          ingress:
+          - from:
+            - namespaceSelector:
+                matchLabels:
+                  project: myproject
         POLICY
       end
 
@@ -147,13 +149,16 @@ spec:
   describe '.from_resource' do
     let(:resource) do
       ::Kubeclient::Resource.new(
-        metadata: { name: name, namespace: namespace, creationTimestamp: '2020-04-14T00:08:30Z', resourceVersion: '4990' },
+        metadata: {
+          name: name, namespace: namespace, creationTimestamp: '2020-04-14T00:08:30Z',
+          labels: { app: 'foo' }, resourceVersion: '4990'
+        },
         spec: { podSelector: pod_selector, policyTypes: %w(Ingress), ingress: ingress, egress: nil }
       )
     end
     let(:generated_resource) do
       ::Kubeclient::Resource.new(
-        metadata: { name: name, namespace: namespace },
+        metadata: { name: name, namespace: namespace, labels: { app: 'foo' } },
         spec: { podSelector: pod_selector, policyTypes: %w(Ingress), ingress: ingress, egress: nil }
       )
     end
@@ -213,12 +218,42 @@ spec:
             metadata: { name: name, namespace: namespace },
             spec: { podSelector: pod_selector, policyTypes: %w(Ingress Egress), ingress: ingress, egress: egress }
           }.deep_stringify_keys
-        )
+        ),
+        is_autodevops: false
       }
     end
 
     subject { policy.as_json }
 
     it { is_expected.to eq(json_policy) }
+  end
+
+  describe '#autodevops?' do
+    subject { policy.autodevops? }
+
+    let(:chart) { nil }
+    let(:policy) do
+      described_class.new(
+        name: name,
+        namespace: namespace,
+        labels: { chart: chart },
+        pod_selector: pod_selector,
+        ingress: ingress
+      )
+    end
+
+    it { is_expected.to be false }
+
+    context 'with non-autodevops chart' do
+      let(:chart) { 'foo' }
+
+      it { is_expected.to be false }
+    end
+
+    context 'with autodevops chart' do
+      let(:chart) { 'auto-deploy-app-0.6.0' }
+
+      it { is_expected.to be true }
+    end
   end
 end

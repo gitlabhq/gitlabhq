@@ -1085,4 +1085,15 @@ describe Issue do
       expect(subject).not_to include(labeled_issue)
     end
   end
+
+  describe 'banzai_render_context' do
+    let(:project) { build(:project_empty_repo) }
+    let(:issue) { build :issue, project: project }
+
+    subject(:context) { issue.banzai_render_context(:title) }
+
+    it 'sets the label_url_method in the context' do
+      expect(context[:label_url_method]).to eq(:project_issues_url)
+    end
+  end
 end

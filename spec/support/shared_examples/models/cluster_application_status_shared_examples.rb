@@ -197,10 +197,71 @@ RSpec.shared_examples 'cluster application status specs' do |application_name|
     describe '#make_externally_installed' do
       subject { create(application_name, :installing) }
 
+      let(:old_helm) { create(:clusters_applications_helm, version: '1.2.3') }
+
       it 'is installed' do
         subject.make_externally_installed
 
         expect(subject).to be_installed
+      end
+
+      context 'local tiller flag enabled' do
+        before do
+          stub_feature_flags(managed_apps_local_tiller: true)
+        end
+
+        context 'helm record does not exist' do
+          subject { build(application_name, :installing, :no_helm_installed) }
+
+          it 'does not create a helm record' do
+            subject.make_externally_installed!
+
+            subject.cluster.reload
+            expect(subject.cluster.application_helm).to be_nil
+          end
+        end
+
+        context 'helm record exists' do
+          subject { build(application_name, :installing, cluster: old_helm.cluster) }
+
+          it 'does not update helm version' do
+            subject.make_externally_installed!
+
+            subject.cluster.application_helm.reload
+
+            expect(subject.cluster.application_helm.version).to eq('1.2.3')
+          end
+        end
+      end
+
+      context 'local tiller flag disabled' do
+        before do
+          stub_feature_flags(managed_apps_local_tiller: false)
+        end
+
+        context 'helm record does not exist' do
+          subject { build(application_name, :installing, :no_helm_installed) }
+
+          it 'creates a helm record' do
+            subject.make_externally_installed!
+
+            subject.cluster.reload
+            expect(subject.cluster.application_helm).to be_present
+            expect(subject.cluster.application_helm).to be_persisted
+          end
+        end
+
+        context 'helm record exists' do
+          subject { build(application_name, :installing, cluster: old_helm.cluster) }
+
+          it 'does not update helm version' do
+            subject.make_externally_installed!
+
+            subject.cluster.application_helm.reload
+
+            expect(subject.cluster.application_helm.version).to eq('1.2.3')
+          end
+        end
       end
 
       context 'application is updated' do

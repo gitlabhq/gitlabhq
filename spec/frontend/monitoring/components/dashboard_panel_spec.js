@@ -4,7 +4,7 @@ import AxiosMockAdapter from 'axios-mock-adapter';
 import { setTestTimeout } from 'helpers/timeout';
 import invalidUrl from '~/lib/utils/invalid_url';
 import axios from '~/lib/utils/axios_utils';
-import { GlDropdownItem } from '@gitlab/ui';
+import { GlNewDropdownItem as GlDropdownItem } from '@gitlab/ui';
 import AlertWidget from '~/monitoring/components/alert_widget.vue';
 
 import DashboardPanel from '~/monitoring/components/dashboard_panel.vue';
@@ -55,7 +55,9 @@ describe('Dashboard Panel', () => {
   const findCopyLink = () => wrapper.find({ ref: 'copyChartLink' });
   const findTimeChart = () => wrapper.find({ ref: 'timeSeriesChart' });
   const findTitle = () => wrapper.find({ ref: 'graphTitle' });
-  const findContextualMenu = () => wrapper.find({ ref: 'contextualMenu' });
+  const findCtxMenu = () => wrapper.find({ ref: 'contextualMenu' });
+  const findMenuItems = () => wrapper.findAll(GlDropdownItem);
+  const findMenuItemByText = text => findMenuItems().filter(i => i.text() === text);
 
   const createWrapper = (props, options) => {
     wrapper = shallowMount(DashboardPanel, {
@@ -67,6 +69,15 @@ describe('Dashboard Panel', () => {
       store,
       mocks,
       ...options,
+    });
+  };
+
+  const mockGetterReturnValue = (getter, value) => {
+    jest.spyOn(monitoringDashboard.getters, getter).mockReturnValue(value);
+    store = new Vuex.Store({
+      modules: {
+        monitoringDashboard,
+      },
     });
   };
 
@@ -119,7 +130,7 @@ describe('Dashboard Panel', () => {
     });
 
     it('does not contain graph widgets', () => {
-      expect(findContextualMenu().exists()).toBe(false);
+      expect(findCtxMenu().exists()).toBe(false);
     });
 
     it('The Empty Chart component is rendered and is a Vue instance', () => {
@@ -152,7 +163,7 @@ describe('Dashboard Panel', () => {
     });
 
     it('does not contain graph widgets', () => {
-      expect(findContextualMenu().exists()).toBe(false);
+      expect(findCtxMenu().exists()).toBe(false);
     });
 
     it('The Empty Chart component is rendered and is a Vue instance', () => {
@@ -175,7 +186,7 @@ describe('Dashboard Panel', () => {
     });
 
     it('contains graph widgets', () => {
-      expect(findContextualMenu().exists()).toBe(true);
+      expect(findCtxMenu().exists()).toBe(true);
       expect(wrapper.find({ ref: 'downloadCsvLink' }).exists()).toBe(true);
     });
 
@@ -371,7 +382,7 @@ describe('Dashboard Panel', () => {
     });
   });
 
-  describe('when cliboard data is available', () => {
+  describe('when clipboard data is available', () => {
     const clipboardText = 'A value to copy.';
 
     beforeEach(() => {
@@ -396,7 +407,7 @@ describe('Dashboard Panel', () => {
     });
   });
 
-  describe('when cliboard data is not available', () => {
+  describe('when clipboard data is not available', () => {
     it('there is no "copy to clipboard" link for a null value', () => {
       createWrapper({ clipboardText: null });
       expect(findCopyLink().exists()).toBe(false);
@@ -534,17 +545,9 @@ describe('Dashboard Panel', () => {
     const setMetricsSavedToDb = val =>
       monitoringDashboard.getters.metricsSavedToDb.mockReturnValue(val);
     const findAlertsWidget = () => wrapper.find(AlertWidget);
-    const findMenuItemAlert = () =>
-      wrapper.findAll(GlDropdownItem).filter(i => i.text() === 'Alerts');
 
     beforeEach(() => {
-      jest.spyOn(monitoringDashboard.getters, 'metricsSavedToDb').mockReturnValue([]);
-
-      store = new Vuex.Store({
-        modules: {
-          monitoringDashboard,
-        },
-      });
+      mockGetterReturnValue('metricsSavedToDb', []);
 
       createWrapper();
     });
@@ -573,8 +576,99 @@ describe('Dashboard Panel', () => {
       });
 
       it(`${showsDesc} alert configuration`, () => {
-        expect(findMenuItemAlert().exists()).toBe(isShown);
+        expect(findMenuItemByText('Alerts').exists()).toBe(isShown);
       });
+    });
+  });
+
+  describe('When graphData contains links', () => {
+    const findManageLinksItem = () => wrapper.find({ ref: 'manageLinksItem' });
+    const mockLinks = [
+      {
+        url: 'https://example.com',
+        title: 'Example 1',
+      },
+      {
+        url: 'https://gitlab.com',
+        title: 'Example 2',
+      },
+    ];
+    const createWrapperWithLinks = (links = mockLinks) => {
+      createWrapper({
+        graphData: {
+          ...graphData,
+          links,
+        },
+      });
+    };
+
+    it('custom links are shown', () => {
+      createWrapperWithLinks();
+
+      mockLinks.forEach(({ url, title }) => {
+        const link = findMenuItemByText(title).at(0);
+
+        expect(link.exists()).toBe(true);
+        expect(link.attributes('href')).toBe(url);
+      });
+    });
+
+    it("custom links don't show unsecure content", () => {
+      createWrapperWithLinks([
+        {
+          title: '<script>alert("XSS")</script>',
+          url: 'http://example.com',
+        },
+      ]);
+
+      expect(findMenuItems().at(1).element.innerHTML).toBe(
+        '&lt;script&gt;alert("XSS")&lt;/script&gt;',
+      );
+    });
+
+    it("custom links don't show unsecure href attributes", () => {
+      const title = 'Owned!';
+
+      createWrapperWithLinks([
+        {
+          title,
+          // eslint-disable-next-line no-script-url
+          url: 'javascript:alert("Evil")',
+        },
+      ]);
+
+      const link = findMenuItemByText(title).at(0);
+      expect(link.attributes('href')).toBe('#');
+    });
+
+    it('when an editable dashboard is selected, shows `Manage chart links` link to the blob path', () => {
+      const editUrl = '/edit';
+      mockGetterReturnValue('selectedDashboard', {
+        can_edit: true,
+        project_blob_path: editUrl,
+      });
+      createWrapperWithLinks();
+
+      expect(findManageLinksItem().exists()).toBe(true);
+      expect(findManageLinksItem().attributes('href')).toBe(editUrl);
+    });
+
+    it('when no dashboard is selected, does not show `Manage chart links`', () => {
+      mockGetterReturnValue('selectedDashboard', null);
+      createWrapperWithLinks();
+
+      expect(findManageLinksItem().exists()).toBe(false);
+    });
+
+    it('when non-editable dashboard is selected, does not show `Manage chart links`', () => {
+      const editUrl = '/edit';
+      mockGetterReturnValue('selectedDashboard', {
+        can_edit: false,
+        project_blob_path: editUrl,
+      });
+      createWrapperWithLinks();
+
+      expect(findManageLinksItem().exists()).toBe(false);
     });
   });
 });

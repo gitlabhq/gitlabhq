@@ -133,6 +133,10 @@ const boardsStore = {
       path: '',
     });
   },
+
+  findIssueLabel(issue, findLabel) {
+    return issue.labels.find(label => label.id === findLabel.id);
+  },
   addListIssue(list, issue, listFrom, newIndex) {
     let moveBeforeId = null;
     let moveAfterId = null;
@@ -177,6 +181,10 @@ const boardsStore = {
       }
     }
   },
+  findListIssue(list, id) {
+    return list.issues.find(issue => issue.id === id);
+  },
+
   welcomeIsHidden() {
     return parseBoolean(Cookies.get('issue_board_welcome_hidden'));
   },
@@ -241,6 +249,19 @@ const boardsStore = {
         list.updateMultipleIssues(issues, listFrom, moveBeforeId, moveAfterId);
       }
     }
+  },
+
+  removeListIssues(list, removeIssue) {
+    list.issues = list.issues.filter(issue => {
+      const matchesRemove = removeIssue.id === issue.id;
+
+      if (matchesRemove) {
+        list.issuesSize -= 1;
+        issue.removeLabel(list.label);
+      }
+
+      return !matchesRemove;
+    });
   },
 
   startMoving(list, issue) {
@@ -516,6 +537,13 @@ const boardsStore = {
     });
   },
 
+  updateListFunc(list) {
+    const collapsed = !list.isExpanded;
+    return this.updateList(list.id, list.position, collapsed).catch(() => {
+      // TODO: handle request error
+    });
+  },
+
   destroyList(id) {
     return axios.delete(`${this.state.endpoints.listsEndpoint}/${id}`);
   },
@@ -591,6 +619,15 @@ const boardsStore = {
     });
   },
 
+  moveListIssues(list, issue, oldIndex, newIndex, moveBeforeId, moveAfterId) {
+    list.issues.splice(oldIndex, 1);
+    list.issues.splice(newIndex, 0, issue);
+
+    this.moveIssue(issue.id, null, null, moveBeforeId, moveAfterId).catch(() => {
+      // TODO: handle request error
+    });
+  },
+
   moveMultipleIssues({ ids, fromListId, toListId, moveBeforeId, moveAfterId }) {
     return axios.put(this.generateMultiDragPath(this.state.endpoints.boardId), {
       from_list_id: fromListId,
@@ -607,6 +644,15 @@ const boardsStore = {
     });
   },
 
+  newListIssue(list, issue) {
+    list.addIssue(issue, null, 0);
+    list.issuesSize += 1;
+
+    return this.newIssue(list.id, issue)
+      .then(res => res.data)
+      .then(data => list.onNewIssueResponse(issue, data));
+  },
+
   getBacklog(data) {
     return axios.get(
       mergeUrlParams(
@@ -614,6 +660,12 @@ const boardsStore = {
         `${gon.relative_url_root}/-/boards/${this.state.endpoints.boardId}/issues.json`,
       ),
     );
+  },
+
+  addIssueAssignee(issue, assignee) {
+    if (!issue.findAssignee(assignee)) {
+      issue.assignees.push(new ListAssignee(assignee));
+    }
   },
 
   bulkUpdate(issueIds, extraData = {}) {

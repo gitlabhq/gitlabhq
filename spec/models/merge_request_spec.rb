@@ -3926,4 +3926,15 @@ describe MergeRequest do
       expect(count).to eq(0)
     end
   end
+
+  describe 'banzai_render_context' do
+    let(:project) { build(:project_empty_repo) }
+    let(:merge_request) { build :merge_request, target_project: project, source_project: project }
+
+    subject(:context) { merge_request.banzai_render_context(:title) }
+
+    it 'sets the label_url_method in the context' do
+      expect(context[:label_url_method]).to eq(:project_merge_requests_url)
+    end
+  end
 end

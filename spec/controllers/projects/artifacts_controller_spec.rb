@@ -371,10 +371,9 @@ describe Projects::ArtifactsController do
         end
 
         context 'when the artifact is zip' do
-          let!(:artifact) { create(:ci_job_artifact, :lsif, job: job, file_path: Rails.root.join("spec/fixtures/#{file_name}")) }
+          let!(:artifact) { create(:ci_job_artifact, :lsif, job: job) }
           let(:path) { 'lsif/main.go.json' }
-          let(:file_name) { 'lsif.json.zip' }
-          let(:archive_matcher) { file_name }
+          let(:archive_matcher) { 'lsif.json.zip' }
           let(:query_params) { super().merge(file_type: :lsif, path: path) }
 
           it_behaves_like 'a valid file' do

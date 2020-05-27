@@ -35,7 +35,6 @@ eslint-report.html
 /config/gitlab.yml
 /config/gitlab_ci.yml
 /config/Gitlab.gitlab-license
-/config/initializers/rack_attack.rb
 /config/initializers/smtp_settings.rb
 /config/initializers/relative_url.rb
 /config/resque.yml

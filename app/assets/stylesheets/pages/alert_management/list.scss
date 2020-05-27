@@ -14,11 +14,6 @@
         padding-left: 1.25rem;
         @include gl-py-5;
         @include gl-outline-none;
-        border: 0; // Remove cell border styling so that we can set border styling per row
-
-        &.event-count {
-          @include gl-pr-9;
-        }
 
         &.alert-title {
           @include gl-pointer-events-none;
@@ -30,10 +25,14 @@
         font-weight: $gl-font-weight-bold;
         color: $gl-gray-600;
       }
+    }
 
-      &:last-child {
-        td {
-          @include gl-border-0;
+    @include media-breakpoint-up(md) {
+      tr {
+        &:last-child {
+          td {
+            @include gl-border-0;
+          }
         }
       }
     }
@@ -41,20 +40,30 @@
 
   @include media-breakpoint-down(sm) {
     .alert-management-table {
-      .table-col {
-        min-height: 68px;
+      tr {
+        border-top: 0;
 
-        &:last-child {
-          background-color: $gray-10;
+        .table-col {
+          min-height: 68px;
 
-          &::before {
-            content: none !important;
+          &:last-child {
+            background-color: $gray-10;
+
+            &::before {
+              content: none !important;
+            }
+
+            div {
+              width: 100% !important;
+              padding: 0 !important;
+            }
           }
+        }
 
-          div {
-            width: 100% !important;
-            padding: 0 !important;
-          }
+        &:hover {
+          background-color: $white;
+          border-color: $white;
+          border-bottom-style: none;
         }
       }
     }

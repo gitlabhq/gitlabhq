@@ -620,10 +620,26 @@ Gitlab::CurrentSettings.current_application_settings.runners_registration_token
 
 ## License
 
-### See license plan name (since v9.3.0-ee)
+### See current license information
 
 ```ruby
+# License information (name, company, email address)
+License.current.licensee
+
+# Plan:
 License.current.plan
+
+# Uploaded:
+License.current.created_at
+
+# Started:
+License.current.starts_at
+
+# Expires at:
+License.current.expires_at
+
+# Is this a trial license?
+License.current.trial?
 ```
 
 ### Check if a project feature is available on the instance

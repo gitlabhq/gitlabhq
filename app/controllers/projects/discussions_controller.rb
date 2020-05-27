@@ -10,7 +10,7 @@ class Projects::DiscussionsController < Projects::ApplicationController
   before_action :authorize_resolve_discussion!, only: [:resolve, :unresolve]
 
   def resolve
-    Discussions::ResolveService.new(project, current_user, merge_request: merge_request).execute(discussion)
+    Discussions::ResolveService.new(project, current_user, one_or_more_discussions: discussion).execute
 
     render_discussion
   end

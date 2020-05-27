@@ -13735,6 +13735,9 @@ msgstr ""
 msgid "Metrics|Link contains invalid chart information, please verify the link to see the expanded panel."
 msgstr ""
 
+msgid "Metrics|Manage chart links"
+msgstr ""
+
 msgid "Metrics|Max"
 msgstr ""
 

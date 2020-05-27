@@ -344,6 +344,10 @@ class Issue < ApplicationRecord
     previous_changes['updated_at']&.first || updated_at
   end
 
+  def banzai_render_context(field)
+    super.merge(label_url_method: :project_issues_url)
+  end
+
   def design_collection
     @design_collection ||= ::DesignManagement::DesignCollection.new(self)
   end

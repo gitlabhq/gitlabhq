@@ -1353,4 +1353,28 @@ describe Note do
       end
     end
   end
+
+  describe 'banzai_render_context' do
+    let(:project) { build(:project_empty_repo) }
+
+    context 'when noteable is a merge request' do
+      let(:noteable) { build :merge_request, target_project: project, source_project: project }
+
+      subject(:context) { noteable.banzai_render_context(:title) }
+
+      it 'sets the label_url_method in the context' do
+        expect(context[:label_url_method]).to eq(:project_merge_requests_url)
+      end
+    end
+
+    context 'when noteable is an issue' do
+      let(:noteable) { build :issue, project: project }
+
+      subject(:context) { noteable.banzai_render_context(:title) }
+
+      it 'sets the label_url_method in the context' do
+        expect(context[:label_url_method]).to eq(:project_issues_url)
+      end
+    end
+  end
 end

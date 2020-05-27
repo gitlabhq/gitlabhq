@@ -63,6 +63,7 @@ describe('mapToDashboardViewModel', () => {
                 format: 'engineering',
                 precision: 2,
               },
+              links: [],
               metrics: [],
             },
           ],
@@ -147,6 +148,7 @@ describe('mapToDashboardViewModel', () => {
           format: SUPPORTED_FORMATS.engineering,
           precision: 2,
         },
+        links: [],
         metrics: [],
       });
     });
@@ -170,6 +172,7 @@ describe('mapToDashboardViewModel', () => {
           format: SUPPORTED_FORMATS.engineering,
           precision: 2,
         },
+        links: [],
         metrics: [],
       });
     });
@@ -237,6 +240,77 @@ describe('mapToDashboardViewModel', () => {
       });
 
       expect(getMappedPanel().maxValue).toBe(100);
+    });
+
+    describe('panel with links', () => {
+      const title = 'Example';
+      const url = 'https://example.com';
+
+      it('maps an empty link collection', () => {
+        setupWithPanel({
+          links: undefined,
+        });
+
+        expect(getMappedPanel().links).toEqual([]);
+      });
+
+      it('maps a link', () => {
+        setupWithPanel({ links: [{ title, url }] });
+
+        expect(getMappedPanel().links).toEqual([{ title, url }]);
+      });
+
+      it('maps a link without a title', () => {
+        setupWithPanel({
+          links: [{ url }],
+        });
+
+        expect(getMappedPanel().links).toEqual([{ title: url, url }]);
+      });
+
+      it('maps a link without a url', () => {
+        setupWithPanel({
+          links: [{ title }],
+        });
+
+        expect(getMappedPanel().links).toEqual([{ title, url: '#' }]);
+      });
+
+      it('maps a link without a url or title', () => {
+        setupWithPanel({
+          links: [{}],
+        });
+
+        expect(getMappedPanel().links).toEqual([{ title: 'null', url: '#' }]);
+      });
+
+      it('maps a link with an unsafe url safely', () => {
+        // eslint-disable-next-line no-script-url
+        const unsafeUrl = 'javascript:alert("XSS")';
+
+        setupWithPanel({
+          links: [
+            {
+              title,
+              url: unsafeUrl,
+            },
+          ],
+        });
+
+        expect(getMappedPanel().links).toEqual([{ title, url: '#' }]);
+      });
+
+      it('maps multple links', () => {
+        setupWithPanel({
+          links: [{ title, url }, { url }, { title }],
+        });
+
+        expect(getMappedPanel().links).toEqual([
+          { title, url },
+          { title: url, url },
+          { title, url: '#' },
+        ]);
+      });
     });
   });
 
