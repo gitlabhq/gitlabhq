@@ -101,7 +101,11 @@ export default class Issue {
 
         this.disableCloseReopenButton($button);
 
-        const url = $button.attr('href');
+        const url = $button.data('close-reopen-url');
+        if (!url) {
+          return;
+        }
+
         return axios
           .put(url)
           .then(({ data }) => {

@@ -4362,9 +4362,6 @@ msgstr ""
 msgid "ClusterIntegration|Copy Kubernetes cluster name"
 msgstr ""
 
-msgid "ClusterIntegration|Copy Service Token"
-msgstr ""
-
 msgid "ClusterIntegration|Could not load IAM roles"
 msgstr ""
 
@@ -4443,6 +4440,9 @@ msgstr ""
 msgid "ClusterIntegration|Enabled stack"
 msgstr ""
 
+msgid "ClusterIntegration|Enter new Service Token"
+msgstr ""
+
 msgid "ClusterIntegration|Enter the details for your Amazon EKS Kubernetes cluster"
 msgstr ""
 
@@ -4516,9 +4516,6 @@ msgid "ClusterIntegration|Helm Tiller"
 msgstr ""
 
 msgid "ClusterIntegration|Helm streamlines installing and managing Kubernetes applications. Tiller runs inside of your Kubernetes Cluster, and manages releases of your charts."
-msgstr ""
-
-msgid "ClusterIntegration|Hide"
 msgstr ""
 
 msgid "ClusterIntegration|If you are setting up multiple clusters and are using Auto DevOps, %{help_link_start}read this first%{help_link_end}."
@@ -4894,9 +4891,6 @@ msgid "ClusterIntegration|Set a prefix for your namespaces. If not set, defaults
 msgstr ""
 
 msgid "ClusterIntegration|Set the global mode for the WAF in this cluster. This can be overridden at the environmental level."
-msgstr ""
-
-msgid "ClusterIntegration|Show"
 msgstr ""
 
 msgid "ClusterIntegration|Something went wrong on our end."
@@ -12438,9 +12432,6 @@ msgid "Make sure you're logged into the account that owns the projects you'd lik
 msgstr ""
 
 msgid "Makes this issue confidential."
-msgstr ""
-
-msgid "Malformed string"
 msgstr ""
 
 msgid "Manage"
@@ -21248,9 +21239,6 @@ msgstr ""
 msgid "This user will be the author of all events in the activity feed that are the result of an update, like new branches being created or new commits being pushed to existing branches."
 msgstr ""
 
-msgid "This user will be the author of all events in the activity feed that are the result of an update, like new branches being created or new commits being pushed to existing branches. Upon creation or when reassigning you can only assign yourself to be the mirror user."
-msgstr ""
-
 msgid "This variable can not be masked."
 msgstr ""
 
@@ -23973,6 +23961,9 @@ msgstr ""
 msgid "You will be removed from existing projects/groups"
 msgstr ""
 
+msgid "You will be the author of all events in the activity feed that are the result of an update, like new branches being created or new commits being pushed to existing branches."
+msgstr ""
+
 msgid "You will first need to set up Jira Integration to use this feature."
 msgstr ""
 
@@ -24205,6 +24196,9 @@ msgid "Your project limit is %{limit} projects! Please contact your administrato
 msgstr ""
 
 msgid "Your projects"
+msgstr ""
+
+msgid "Your request for access could not be processed: %{error_meesage}"
 msgstr ""
 
 msgid "Your request for access has been queued for review."
@@ -24622,6 +24616,9 @@ msgid "element is not a hierarchy"
 msgstr ""
 
 msgid "email '%{email}' does not match the allowed domain of '%{email_domain}'"
+msgstr ""
+
+msgid "email '%{email}' is not a verified email."
 msgstr ""
 
 msgid "enabled"
