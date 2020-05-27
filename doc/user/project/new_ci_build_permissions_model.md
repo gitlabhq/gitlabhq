@@ -178,7 +178,7 @@ git clone https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.com/<user>/<mydependent
 ```
 
 It can also be used for system-wide authentication
-(only do this in a docker container, it will overwrite ~/.netrc):
+(only do this in a Docker container, it will overwrite ~/.netrc):
 
 ```shell
 echo -e "machine gitlab.com\nlogin gitlab-ci-token\npassword ${CI_JOB_TOKEN}" > ~/.netrc

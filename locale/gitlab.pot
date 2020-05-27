@@ -1775,10 +1775,16 @@ msgstr ""
 msgid "AlertManagement|Alert details"
 msgstr ""
 
+msgid "AlertManagement|Alert status: %{status}"
+msgstr ""
+
 msgid "AlertManagement|Alerts"
 msgstr ""
 
 msgid "AlertManagement|All alerts"
+msgstr ""
+
+msgid "AlertManagement|Assign status"
 msgstr ""
 
 msgid "AlertManagement|Authorize external service"
@@ -1791,6 +1797,9 @@ msgid "AlertManagement|Critical"
 msgstr ""
 
 msgid "AlertManagement|Display alerts from all your monitoring tools directly within GitLab. Streamline the investigation of your alerts and the escalation of alerts to incidents."
+msgstr ""
+
+msgid "AlertManagement|Edit"
 msgstr ""
 
 msgid "AlertManagement|End time"
@@ -1821,6 +1830,9 @@ msgid "AlertManagement|No alerts available to display. If you think you're seein
 msgstr ""
 
 msgid "AlertManagement|No alerts to display."
+msgstr ""
+
+msgid "AlertManagement|None"
 msgstr ""
 
 msgid "AlertManagement|Open"
@@ -17636,6 +17648,9 @@ msgid "Query is valid"
 msgstr ""
 
 msgid "Queued"
+msgstr ""
+
+msgid "Quick actions"
 msgstr ""
 
 msgid "Quick actions can be used in the issues description and comment boxes."

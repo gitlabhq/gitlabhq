@@ -62,30 +62,15 @@ The single docs version must be created before the release merge request, but
 this needs to happen when the stable branches for all products have been created.
 
 1. Make sure you're in the root path of the `gitlab-docs` repository.
-1. Make sure your `master` is updated:
-
-   ```shell
-   git pull origin master
-   ```
-
 1. Run the Rake task to create the single version:
 
    ```shell
    ./bin/rake "release:single[12.0]"
    ```
 
-    A new `Dockerfile.12.0` should have been created and committed to a new branch.
-
-1. Edit `.gitlab-ci.yml` and replace the `BRANCH_` variables with their respective
-   upstream stable branch. For example, 12.6 would look like:
-
-   ```yaml
-   variables:
-     BRANCH_EE: '12-6-stable-ee'
-     BRANCH_OMNIBUS: '12-6-stable'
-     BRANCH_RUNNER: '12-6-stable'
-     BRANCH_CHARTS: '2-6-stable'
-   ```
+    A new `Dockerfile.12.0` should have been created and `.gitlab-ci.yml` should
+    have the branches variables updated into a new branch. They will be automatically
+    committed.
 
 1. Push the newly created branch, but **don't create a merge request**.
    Once you push, the `image:docker-singe` job will create a new Docker image
@@ -105,6 +90,9 @@ docker run -it --rm -p 4000:4000 docs:12.0
 Visit `http://localhost:4000/12.0/` to see if everything works correctly.
 
 ### 3. Create the release merge request
+
+NOTE: **Note:**
+To be [automated](https://gitlab.com/gitlab-org/gitlab-docs/-/issues/750).
 
 Now it's time to create the monthly release merge request that adds the new
 version and rotates the old one:
@@ -161,7 +149,7 @@ versions:
 1. Run the Rake task that will create all the respective merge requests needed to
    update the dropdowns and will be set to automatically be merged when their
    pipelines succeed. The `release-X-Y` branch needs to be present locally,
-   otherwise the Rake task will fail:
+   and you need to have switched to it, otherwise the Rake task will fail:
 
    ```shell
    ./bin/rake release:dropdowns

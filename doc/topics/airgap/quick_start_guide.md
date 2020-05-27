@@ -74,7 +74,7 @@ Follow these steps to enable the container registry. Note that these steps refle
    sudo gitlab-ctl reconfigure
    ```
 
-## Allow the docker daemon to trust the registry and GitLab Runner
+## Allow the Docker daemon to trust the registry and GitLab Runner
 
 Provide your Docker daemon with your certs by
 [following the steps for using trusted certificates with your registry](../../administration/packages/container_registry.md#using-self-signed-certificates-with-container-registry):
@@ -125,7 +125,7 @@ Now we must add some additional configuration to our runner:
 
 Make the following changes to `/etc/gitlab-runner/config.toml`:
 
-- Add docker socket to volumes `volumes = ["/var/run/docker.sock:/var/run/docker.sock", "/cache"]`
+- Add Docker socket to volumes `volumes = ["/var/run/docker.sock:/var/run/docker.sock", "/cache"]`
 - Add `pull_policy = "if-not-present"` to the executor configuration
 
 Now we can start our Runner:

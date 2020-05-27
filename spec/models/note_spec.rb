@@ -305,11 +305,22 @@ describe Note do
 
   describe '#confidential?' do
     context 'when note is not confidential' do
-      it 'is true when a noteable is confidential' do
-        issue = create(:issue, :confidential)
-        note = build(:note, noteable: issue, project: issue.project)
+      context 'when include_noteable is set to true' do
+        it 'is true when a noteable is confidential ' do
+          issue = create(:issue, :confidential)
+          note = build(:note, noteable: issue, project: issue.project)
 
-        expect(note.confidential?).to be_truthy
+          expect(note.confidential?(include_noteable: true)).to be_truthy
+        end
+      end
+
+      context 'when include_noteable is not set to true' do
+        it 'is false when a noteable is confidential ' do
+          issue = create(:issue, :confidential)
+          note = build(:note, noteable: issue, project: issue.project)
+
+          expect(note.confidential?).to be_falsey
+        end
       end
 
       it 'is false when a noteable is not confidential' do
@@ -319,7 +330,7 @@ describe Note do
         expect(note.confidential?).to be_falsy
       end
 
-      it "is falsey when noteable can't be confidential" do
+      it "is false when noteable can't be confidential" do
         commit_note = build(:note_on_commit)
 
         expect(commit_note.confidential?).to be_falsy

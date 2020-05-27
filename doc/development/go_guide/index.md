@@ -390,7 +390,7 @@ builds](https://docs.docker.com/develop/develop-images/multistage-build/):
   dependencies.
 - They generate a small, self-contained image, derived from `Scratch`.
 
-Generated docker images should have the program at their `Entrypoint` to create
+Generated Docker images should have the program at their `Entrypoint` to create
 portable commands. That way, anyone can run the image, and without parameters
 it will display its help message (if `cli` has been used).
 

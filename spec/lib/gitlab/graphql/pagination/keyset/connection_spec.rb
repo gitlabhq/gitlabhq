@@ -9,14 +9,6 @@ describe Gitlab::Graphql::Pagination::Keyset::Connection do
   let(:schema) { GraphQL::Schema.define(query: query_type, mutation: nil)}
   let(:context) { GraphQL::Query::Context.new(query: OpenStruct.new(schema: schema), values: nil, object: nil) }
 
-  before do
-    stub_const('NoPrimaryKey', Class.new(ActiveRecord::Base))
-    NoPrimaryKey.class_eval do
-      self.table_name  = 'no_primary_key'
-      self.primary_key = nil
-    end
-  end
-
   subject(:connection) do
     described_class.new(nodes, { context: context, max_page_size: 3 }.merge(arguments))
   end
@@ -303,6 +295,14 @@ describe Gitlab::Graphql::Pagination::Keyset::Connection do
     end
 
     context 'when there is no primary key' do
+      before do
+        stub_const('NoPrimaryKey', Class.new(ActiveRecord::Base))
+        NoPrimaryKey.class_eval do
+          self.table_name  = 'no_primary_key'
+          self.primary_key = nil
+        end
+      end
+
       let(:nodes) { NoPrimaryKey.all }
 
       it 'raises an error' do

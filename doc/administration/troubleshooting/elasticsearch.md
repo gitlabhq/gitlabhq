@@ -330,10 +330,10 @@ feel free to update that page with issues you encounter and solutions.
 
 Setting up Elasticsearch isn't too bad, but it can be a bit finicky and time consuming.
 
-The easiest method is to spin up a docker container with the required version and
+The easiest method is to spin up a Docker container with the required version and
 bind ports 9200/9300 so it can be used.
 
-The following is an example of running a docker container of Elasticsearch v7.2.0:
+The following is an example of running a Docker container of Elasticsearch v7.2.0:
 
 ```shell
 docker pull docker.elastic.co/elasticsearch/elasticsearch:7.2.0
@@ -342,7 +342,7 @@ docker run -p 9200:9200 -p 9300:9300 -e "discovery.type=single-node" docker.elas
 
 From here, you can:
 
-- Grab the IP of the docker container (use `docker inspect <container_id>`)
+- Grab the IP of the Docker container (use `docker inspect <container_id>`)
 - Use `<IP.add.re.ss:9200>` to communicate with it.
 
 This is a quick method to test out Elasticsearch, but by no means is this a

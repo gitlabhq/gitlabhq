@@ -462,7 +462,7 @@ Read more about the [solutions for vulnerabilities](../index.md#solutions-for-vu
 
 ## Troubleshooting
 
-### docker: Error response from daemon: failed to copy xattrs
+### `docker: Error response from daemon: failed to copy xattrs`
 
 When the GitLab Runner uses the Docker executor and NFS is used
 (for example, `/var/lib/docker` is on an NFS mount), Container Scanning might fail with

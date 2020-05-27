@@ -19,7 +19,7 @@ The current stages are:
   <https://gitlab.com/gitlab-org/gitlab-foss>.
 - `prepare`: This stage includes jobs that prepare artifacts that are needed by
   jobs in subsequent stages.
-- `build-images`: This stage includes jobs that prepare docker images
+- `build-images`: This stage includes jobs that prepare Docker images
   that are needed by jobs in subsequent stages or downstream pipelines.
 - `fixtures`: This stage includes jobs that prepare fixtures needed by frontend tests.
 - `test`: This stage includes most of the tests, DB/migration jobs, and static analysis jobs.

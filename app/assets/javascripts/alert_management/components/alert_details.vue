@@ -4,36 +4,27 @@ import {
   GlAlert,
   GlIcon,
   GlLoadingIcon,
-  GlDropdown,
-  GlDropdownItem,
   GlSprintf,
   GlTabs,
   GlTab,
   GlButton,
   GlTable,
 } from '@gitlab/ui';
-import createFlash from '~/flash';
 import { s__ } from '~/locale';
 import query from '../graphql/queries/details.query.graphql';
 import { fetchPolicies } from '~/lib/graphql';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import {
-  ALERTS_SEVERITY_LABELS,
-  trackAlertsDetailsViewsOptions,
-  trackAlertStatusUpdateOptions,
-} from '../constants';
-import updateAlertStatus from '../graphql/mutations/update_alert_status.graphql';
+import { ALERTS_SEVERITY_LABELS, trackAlertsDetailsViewsOptions } from '../constants';
 import createIssueQuery from '../graphql/mutations/create_issue_from_alert.graphql';
 import { visitUrl, joinPaths } from '~/lib/utils/url_utility';
 import Tracking from '~/tracking';
+import { toggleContainerClasses } from '~/lib/utils/dom_utils';
+import AlertSidebar from './alert_sidebar.vue';
+
+const containerEl = document.querySelector('.page-with-contextual-sidebar');
 
 export default {
-  statuses: {
-    TRIGGERED: s__('AlertManagement|Triggered'),
-    ACKNOWLEDGED: s__('AlertManagement|Acknowledged'),
-    RESOLVED: s__('AlertManagement|Resolved'),
-  },
   i18n: {
     errorMsg: s__(
       'AlertManagement|There was an error displaying the alert. Please refresh the page to try again.',
@@ -49,13 +40,12 @@ export default {
     GlIcon,
     GlLoadingIcon,
     GlSprintf,
-    GlDropdown,
-    GlDropdownItem,
     GlTab,
     GlTabs,
     GlButton,
     GlTable,
     TimeAgoTooltip,
+    AlertSidebar,
   },
   mixins: [glFeatureFlagsMixin()],
   props: {
@@ -98,6 +88,8 @@ export default {
       isErrorDismissed: false,
       createIssueError: '',
       issueCreationInProgress: false,
+      sidebarCollapsed: false,
+      sidebarErrorMessage: '',
     };
   },
   computed: {
@@ -115,31 +107,26 @@ export default {
   },
   mounted() {
     this.trackPageViews();
+    toggleContainerClasses(containerEl, {
+      'issuable-bulk-update-sidebar': true,
+      'right-sidebar-expanded': true,
+    });
   },
   methods: {
     dismissError() {
       this.isErrorDismissed = true;
+      this.sidebarErrorMessage = '';
     },
-    updateAlertStatus(status) {
-      this.$apollo
-        .mutate({
-          mutation: updateAlertStatus,
-          variables: {
-            iid: this.alertId,
-            status: status.toUpperCase(),
-            projectPath: this.projectPath,
-          },
-        })
-        .then(() => {
-          this.trackStatusUpdate(status);
-        })
-        .catch(() => {
-          createFlash(
-            s__(
-              'AlertManagement|There was an error while updating the status of the alert. Please try again.',
-            ),
-          );
-        });
+    toggleSidebar() {
+      this.sidebarCollapsed = !this.sidebarCollapsed;
+      toggleContainerClasses(containerEl, {
+        'right-sidebar-collapsed': this.sidebarCollapsed,
+        'right-sidebar-expanded': !this.sidebarCollapsed,
+      });
+    },
+    handleAlertSidebarError(errorMessage) {
+      this.errored = true;
+      this.sidebarErrorMessage = errorMessage;
     },
     createIssue() {
       this.issueCreationInProgress = true;
@@ -172,17 +159,14 @@ export default {
       const { category, action } = trackAlertsDetailsViewsOptions;
       Tracking.event(category, action);
     },
-    trackStatusUpdate(status) {
-      const { category, action, label } = trackAlertStatusUpdateOptions;
-      Tracking.event(category, action, { label, property: status });
-    },
   },
 };
 </script>
+
 <template>
   <div>
     <gl-alert v-if="showErrorMsg" variant="danger" @dismiss="dismissError">
-      {{ $options.i18n.errorMsg }}
+      {{ sidebarErrorMessage || $options.i18n.errorMsg }}
     </gl-alert>
     <gl-alert
       v-if="createIssueError"
@@ -243,6 +227,16 @@ export default {
             {{ s__('AlertManagement|Create issue') }}
           </gl-button>
         </div>
+        <gl-button
+          :aria-label="__('Toggle sidebar')"
+          category="primary"
+          variant="default"
+          class="d-sm-none position-absolute toggle-sidebar-mobile-button"
+          type="button"
+          @click="toggleSidebar"
+        >
+          <i class="fa fa-angle-double-left"></i>
+        </gl-button>
       </div>
       <div
         v-if="alert"
@@ -250,24 +244,6 @@ export default {
       >
         <h2 data-testid="title">{{ alert.title }}</h2>
       </div>
-      <gl-dropdown :text="$options.statuses[alert.status]" class="gl-absolute gl-right-0" right>
-        <gl-dropdown-item
-          v-for="(label, field) in $options.statuses"
-          :key="field"
-          data-testid="statusDropdownItem"
-          class="gl-vertical-align-middle"
-          @click="updateAlertStatus(label)"
-        >
-          <span class="d-flex">
-            <gl-icon
-              class="flex-shrink-0 append-right-4"
-              :class="{ invisible: label.toUpperCase() !== alert.status }"
-              name="mobile-issue-close"
-            />
-            {{ label }}
-          </span>
-        </gl-dropdown-item>
-      </gl-dropdown>
       <gl-tabs v-if="alert" data-testid="alertDetailsTabs">
         <gl-tab data-testid="overviewTab" :title="$options.i18n.overviewTitle">
           <ul class="pl-4 mb-n1">
@@ -306,6 +282,13 @@ export default {
           </gl-table>
         </gl-tab>
       </gl-tabs>
+      <alert-sidebar
+        :project-path="projectPath"
+        :alert="alert"
+        :sidebar-collapsed="sidebarCollapsed"
+        @toggle-sidebar="toggleSidebar"
+        @alert-sidebar-error="handleAlertSidebarError"
+      />
     </div>
   </div>
 </template>

@@ -262,7 +262,7 @@ project.
   our application? This virtual machine must have all dependencies to run our application. This is
   where a Docker image is needed. The correct image will provide the entire system for us.
 
-  As we are focusing on testing (not deploying), you can use the [elixir:latest](https://hub.docker.com/_/elixir) docker image, which already has the
+  As we are focusing on testing (not deploying), you can use the [elixir:latest](https://hub.docker.com/_/elixir) Docker image, which already has the
   dependencies for running Phoenix tests installed, such as Elixir and Erlang:
 
   ```yaml

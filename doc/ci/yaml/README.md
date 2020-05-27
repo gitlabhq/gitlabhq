@@ -93,8 +93,8 @@ The following table lists available parameters for jobs:
 | Keyword                                            | Description                                                                                                                                                                         |
 |:---------------------------------------------------|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | [`script`](#script)                                | Shell script which is executed by Runner.                                                                                                                                           |
-| [`image`](#image)                                  | Use docker images. Also available: `image:name` and `image:entrypoint`.                                                                                                             |
-| [`services`](#services)                            | Use docker services images. Also available: `services:name`, `services:alias`, `services:entrypoint`, and `services:command`.                                                       |
+| [`image`](#image)                                  | Use Docker images. Also available: `image:name` and `image:entrypoint`.                                                                                                             |
+| [`services`](#services)                            | Use Docker services images. Also available: `services:name`, `services:alias`, `services:entrypoint`, and `services:command`.                                                       |
 | [`before_script`](#before_script-and-after_script) | Override a set of commands that are executed before job.                                                                                                                            |
 | [`after_script`](#before_script-and-after_script)  | Override a set of commands that are executed after job.                                                                                                                             |
 | [`stage`](#stage)                                  | Defines a job stage (default: `test`).                                                                                                                                              |
@@ -521,13 +521,13 @@ For:
 
 #### `image:name`
 
-An [extended docker configuration option](../docker/using_docker_images.md#extended-docker-configuration-options).
+An [extended Docker configuration option](../docker/using_docker_images.md#extended-docker-configuration-options).
 
 For more information, see [Available settings for `image`](../docker/using_docker_images.md#available-settings-for-image).
 
 #### `image:entrypoint`
 
-An [extended docker configuration option](../docker/using_docker_images.md#extended-docker-configuration-options).
+An [extended Docker configuration option](../docker/using_docker_images.md#extended-docker-configuration-options).
 
 For more information, see [Available settings for `image`](../docker/using_docker_images.md#available-settings-for-image).
 
@@ -543,25 +543,25 @@ For:
 
 ##### `services:name`
 
-An [extended docker configuration option](../docker/using_docker_images.md#extended-docker-configuration-options).
+An [extended Docker configuration option](../docker/using_docker_images.md#extended-docker-configuration-options).
 
 For more information, see [Available settings for `services`](../docker/using_docker_images.md#available-settings-for-services).
 
 ##### `services:alias`
 
-An [extended docker configuration option](../docker/using_docker_images.md#extended-docker-configuration-options).
+An [extended Docker configuration option](../docker/using_docker_images.md#extended-docker-configuration-options).
 
 For more information, see [Available settings for `services`](../docker/using_docker_images.md#available-settings-for-services).
 
 ##### `services:entrypoint`
 
-An [extended docker configuration option](../docker/using_docker_images.md#extended-docker-configuration-options).
+An [extended Docker configuration option](../docker/using_docker_images.md#extended-docker-configuration-options).
 
 For more information, see [Available settings for `services`](../docker/using_docker_images.md#available-settings-for-services).
 
 ##### `services:command`
 
-An [extended docker configuration option](../docker/using_docker_images.md#extended-docker-configuration-options).
+An [extended Docker configuration option](../docker/using_docker_images.md#extended-docker-configuration-options).
 
 For more information, see [Available settings for `services`](../docker/using_docker_images.md#available-settings-for-services).
 
@@ -3477,7 +3477,7 @@ If `GIT_FETCH_EXTRA_FLAGS` is:
 
 - Not specified, `git fetch` flags default to `--prune --quiet` along with the default flags.
 - Given the value `none`, `git fetch` is executed only with the default flags.
-  
+
 For example, the default flags are `--prune --quiet`, so you can make `git fetch` more verbose by overriding this with just `--prune`:
 
 ```yaml

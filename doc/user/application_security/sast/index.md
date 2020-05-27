@@ -557,7 +557,7 @@ security reports without requiring internet access.
 
 ## Troubleshooting
 
-### Error response from daemon: error processing tar file: docker-tar: relocation error
+### `Error response from daemon: error processing tar file: docker-tar: relocation error`
 
 This error occurs when the Docker version that runs the SAST job is `19.03.0`.
 Consider updating to Docker `19.03.1` or greater. Older versions are not

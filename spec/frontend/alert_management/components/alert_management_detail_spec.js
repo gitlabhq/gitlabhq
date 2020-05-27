@@ -1,27 +1,20 @@
 import { mount, shallowMount } from '@vue/test-utils';
-import { GlAlert, GlLoadingIcon, GlDropdownItem, GlTable } from '@gitlab/ui';
+import { GlAlert, GlLoadingIcon, GlTable } from '@gitlab/ui';
 import AlertDetails from '~/alert_management/components/alert_details.vue';
-import updateAlertStatus from '~/alert_management/graphql/mutations/update_alert_status.graphql';
 import createIssueQuery from '~/alert_management/graphql/mutations/create_issue_from_alert.graphql';
-import createFlash from '~/flash';
 import { joinPaths } from '~/lib/utils/url_utility';
-import {
-  trackAlertsDetailsViewsOptions,
-  trackAlertStatusUpdateOptions,
-} from '~/alert_management/constants';
+import { trackAlertsDetailsViewsOptions } from '~/alert_management/constants';
 import Tracking from '~/tracking';
 
 import mockAlerts from '../mocks/alerts.json';
 
 const mockAlert = mockAlerts[0];
-jest.mock('~/flash');
 
 describe('AlertDetails', () => {
   let wrapper;
   const projectPath = 'root/alerts';
   const projectIssuesPath = 'root/alerts/-/issues';
 
-  const findStatusDropdownItem = () => wrapper.find(GlDropdownItem);
   const findDetailsTable = () => wrapper.find(GlTable);
 
   function mountComponent({
@@ -258,52 +251,6 @@ describe('AlertDetails', () => {
     });
   });
 
-  describe('Updating the alert status', () => {
-    const mockUpdatedMutationResult = {
-      data: {
-        updateAlertStatus: {
-          errors: [],
-          alert: {
-            status: 'acknowledged',
-          },
-        },
-      },
-    };
-
-    beforeEach(() => {
-      mountComponent({
-        props: { alertManagementEnabled: true, userCanEnableAlertManagement: true },
-        data: { alert: mockAlert },
-        loading: false,
-      });
-    });
-
-    it('calls `$apollo.mutate` with `updateAlertStatus` mutation and variables containing `iid`, `status`, & `projectPath`', () => {
-      jest.spyOn(wrapper.vm.$apollo, 'mutate').mockResolvedValue(mockUpdatedMutationResult);
-      findStatusDropdownItem().vm.$emit('click');
-
-      expect(wrapper.vm.$apollo.mutate).toHaveBeenCalledWith({
-        mutation: updateAlertStatus,
-        variables: {
-          iid: 'alertId',
-          status: 'TRIGGERED',
-          projectPath,
-        },
-      });
-    });
-
-    it('calls `createFlash` when request fails', () => {
-      jest.spyOn(wrapper.vm.$apollo, 'mutate').mockReturnValue(Promise.reject(new Error()));
-      findStatusDropdownItem().vm.$emit('click');
-
-      setImmediate(() => {
-        expect(createFlash).toHaveBeenCalledWith(
-          'There was an error while updating the status of the alert. Please try again.',
-        );
-      });
-    });
-  });
-
   describe('Snowplow tracking', () => {
     beforeEach(() => {
       jest.spyOn(Tracking, 'event');
@@ -317,17 +264,6 @@ describe('AlertDetails', () => {
     it('should track alert details page views', () => {
       const { category, action } = trackAlertsDetailsViewsOptions;
       expect(Tracking.event).toHaveBeenCalledWith(category, action);
-    });
-
-    it('should track alert status updates', () => {
-      Tracking.event.mockClear();
-      jest.spyOn(wrapper.vm.$apollo, 'mutate').mockResolvedValue({});
-      findStatusDropdownItem().vm.$emit('click');
-      const status = findStatusDropdownItem().text();
-      setImmediate(() => {
-        const { category, action, label } = trackAlertStatusUpdateOptions;
-        expect(Tracking.event).toHaveBeenCalledWith(category, action, { label, property: status });
-      });
     });
   });
 });

@@ -165,8 +165,6 @@ There are a few gotchas with it:
     end
   ```
 
-  This would require updating CE first, or make sure this is back ported to CE.
-
 When prepending, place them in the `ee/` specific sub-directory, and
 wrap class or module in `module EE` to avoid naming conflicts.
 

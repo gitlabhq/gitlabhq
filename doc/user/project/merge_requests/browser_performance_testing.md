@@ -60,7 +60,7 @@ on your code by using GitLab CI/CD and [sitespeed.io](https://www.sitespeed.io)
 using Docker-in-Docker.
 
 1. First, set up GitLab Runner with a
-   [docker-in-docker build](../../../ci/docker/using_docker_build.md#use-docker-in-docker-workflow-with-docker-executor).
+   [Docker-in-Docker build](../../../ci/docker/using_docker_build.md#use-docker-in-docker-workflow-with-docker-executor).
 1. After configuring the Runner, add a new job to `.gitlab-ci.yml` that generates
    the expected report.
 1. Define the `performance` job according to your version of GitLab:

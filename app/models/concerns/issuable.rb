@@ -184,6 +184,10 @@ module Issuable
       assignees.count > 1
     end
 
+    def supports_weight?
+      false
+    end
+
     private
 
     def description_max_length_for_new_records_is_valid

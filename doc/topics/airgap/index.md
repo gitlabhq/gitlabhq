@@ -89,7 +89,7 @@ template:
 | `SECURE_BINARIES_DOWNLOAD_IMAGES`         | Used to disable jobs                          | `"true"`                          |
 | `SECURE_BINARIES_PUSH_IMAGES`             | Push files to the project registry            | `"true"`                          |
 | `SECURE_BINARIES_SAVE_ARTIFACTS`          | Also save image archives as artifacts         | `"false"`                         |
-| `SECURE_BINARIES_ANALYZER_VERSION`        | Default analyzer version (docker tag)         | `"2"`                             |
+| `SECURE_BINARIES_ANALYZER_VERSION`        | Default analyzer version (Docker tag)         | `"2"`                             |
 
 ### Alternate way without the official template
 

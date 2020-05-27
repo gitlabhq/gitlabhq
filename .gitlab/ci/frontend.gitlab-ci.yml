@@ -21,7 +21,6 @@
     NODE_ENV: "production"
     RAILS_ENV: "production"
     SETUP_DB: "false"
-    SKIP_STORAGE_VALIDATION: "true"
     WEBPACK_REPORT: "true"
     # we override the max_old_space_size to prevent OOM errors
     NODE_OPTIONS: --max_old_space_size=3584

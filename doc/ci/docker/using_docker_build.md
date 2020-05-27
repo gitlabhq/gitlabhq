@@ -4,7 +4,7 @@ type: concepts, howto
 
 # Building Docker images with GitLab CI/CD
 
-GitLab CI/CD allows you to use Docker Engine to build and test docker-based projects.
+GitLab CI/CD allows you to use Docker Engine to build and test Docker-based projects.
 
 One of the new trends in Continuous Integration/Deployment is to:
 
@@ -91,15 +91,15 @@ NOTE: **Note:**
 By adding `gitlab-runner` to the `docker` group you are effectively granting `gitlab-runner` full root permissions.
 For more information please read [On Docker security: `docker` group considered harmful](https://www.andreas-jung.com/contents/on-docker-security-docker-group-considered-harmful).
 
-### Use docker-in-docker workflow with Docker executor
+### Use Docker-in-Docker workflow with Docker executor
 
-The second approach is to use the special docker-in-docker (dind)
+The second approach is to use the special Docker-in-Docker (dind)
 [Docker image](https://hub.docker.com/_/docker/) with all tools installed
 (`docker`) and run the job script in context of that
 image in privileged mode.
 
 NOTE: **Note:**
-`docker-compose` is not part of docker-in-docker (dind). To use `docker-compose` in your
+`docker-compose` is not part of Docker-in-Docker (dind). To use `docker-compose` in your
 CI builds, follow the `docker-compose`
 [installation instructions](https://docs.docker.com/compose/install/).
 
@@ -113,7 +113,7 @@ out the official Docker documentation on
 Docker-in-Docker works well, and is the recommended configuration, but it is
 not without its own challenges:
 
-- When using docker-in-docker, each job is in a clean environment without the past
+- When using Docker-in-Docker, each job is in a clean environment without the past
   history. Concurrent jobs work fine because every build gets its own
   instance of Docker engine so they won't conflict with each other. But this
   also means that jobs can be slower because there's no caching of layers.
@@ -156,7 +156,7 @@ details.
 
 The Docker daemon supports connection over TLS and it's done by default
 for Docker 19.03.8 or higher. This is the **suggested** way to use the
-docker-in-docker service and
+Docker-in-Docker service and
 [GitLab.com Shared Runners](../../user/gitlab_com/index.md#shared-runners)
 support this.
 
@@ -179,11 +179,11 @@ support this.
    The above command will register a new Runner to use the special
    `docker:19.03.8` image, which is provided by Docker. **Notice that it's
    using the `privileged` mode to start the build and service
-   containers.** If you want to use [docker-in-docker](https://www.docker.com/blog/docker-can-now-run-within-docker/) mode, you always
+   containers.** If you want to use [Docker-in-Docker](https://www.docker.com/blog/docker-can-now-run-within-docker/) mode, you always
    have to use `privileged = true` in your Docker containers.
 
    This will also mount `/certs/client` for the service and build
-   container, which is needed for the docker client to use the
+   container, which is needed for the Docker client to use the
    certificates inside of that directory. For more information how
    Docker with TLS works check <https://hub.docker.com/_/docker/#tls>.
 
@@ -377,7 +377,7 @@ In order to do that, follow the steps:
 While the above method avoids using Docker in privileged mode, you should be
 aware of the following implications:
 
-- By sharing the docker daemon, you are effectively disabling all
+- By sharing the Docker daemon, you are effectively disabling all
   the security mechanisms of containers and exposing your host to privilege
   escalation which can lead to container breakout. For example, if a project
   ran `docker rm -f $(docker ps -a -q)` it would remove the GitLab Runner
@@ -392,9 +392,9 @@ aware of the following implications:
    docker run --rm -t -i -v $(pwd)/src:/home/app/src test-image:latest run_app_tests
    ```
 
-## Making docker-in-docker builds faster with Docker layer caching
+## Making Docker-in-Docker builds faster with Docker layer caching
 
-When using docker-in-docker, Docker will download all layers of your image every
+When using Docker-in-Docker, Docker will download all layers of your image every
 time you create a build. Recent versions of Docker (Docker 1.13 and above) can
 use a pre-existing image as a cache during the `docker build` step, considerably
 speeding up the build process.
@@ -514,7 +514,7 @@ Once you've built a Docker image, you can push it up to the built-in
 
 ## Troubleshooting
 
-### docker: Cannot connect to the Docker daemon at tcp://docker:2375. Is the docker daemon running?
+### `docker: Cannot connect to the Docker daemon at tcp://docker:2375. Is the docker daemon running?`
 
 This is a common error when you are using
 [Docker in Docker](#use-docker-in-docker-workflow-with-docker-executor)

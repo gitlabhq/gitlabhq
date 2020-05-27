@@ -1,0 +1,13 @@
+---
+# Error: gitlab.MergeConflictMarkers
+#
+# Checks for the presence of merge conflict markers.
+#
+# For a list of all options, see https://errata-ai.github.io/vale/styles/
+extends: existence
+message: 'Merge conflict marker "%s" found.'
+link: https://docs.gitlab.com/ee/development/code_review.html#merging-a-merge-request
+level: error
+scope: raw
+raw:
+  - '\n<<<<<<< .+\n|\n=======\n|\n>>>>>>> .+\n'

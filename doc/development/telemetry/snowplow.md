@@ -336,7 +336,7 @@ Snowplow Inspector Chrome Extension is a browser extension for testing frontend 
 
 Snowplow Micro is a very small version of a full Snowplow data collection pipeline: small enough that it can be launched by a test suite. Events can be recorded into Snowplow Micro just as they can a full Snowplow pipeline. Micro then exposes an API that can be queried.
 
-Snowplow Micro is a docker-based solution for testing frontend and backend events in a local development environment. You need to modify GDK using the instructions below to set this up.
+Snowplow Micro is a Docker-based solution for testing frontend and backend events in a local development environment. You need to modify GDK using the instructions below to set this up.
 
 - Read [Introducing Snowplow Micro](https://snowplowanalytics.com/blog/2019/07/17/introducing-snowplow-micro/)
 - Look at the [Snowplow Micro repo](https://github.com/snowplow-incubator/snowplow-micro)

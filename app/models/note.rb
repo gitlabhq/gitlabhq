@@ -351,8 +351,10 @@ class Note < ApplicationRecord
     self.special_role = Note::SpecialRole::FIRST_TIME_CONTRIBUTOR
   end
 
-  def confidential?
-    confidential || noteable.try(:confidential?)
+  def confidential?(include_noteable: false)
+    return true if confidential
+
+    include_noteable && noteable.try(:confidential?)
   end
 
   def editable?

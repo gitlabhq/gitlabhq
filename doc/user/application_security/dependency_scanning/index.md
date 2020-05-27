@@ -546,7 +546,7 @@ As a workaround, remove the [`retire.js`](analyzers.md#selecting-specific-analyz
 
 ## Troubleshooting
 
-### Error response from daemon: error processing tar file: docker-tar: relocation error
+### `Error response from daemon: error processing tar file: docker-tar: relocation error`
 
 This error occurs when the Docker version that runs the Dependency Scanning job is `19.03.00`.
 Consider updating to Docker `19.03.1` or greater. Older versions are not

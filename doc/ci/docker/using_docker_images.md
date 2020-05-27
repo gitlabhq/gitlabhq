@@ -744,7 +744,7 @@ To configure access for `aws_account_id.dkr.ecr.region.amazonaws.com`, follow th
      }
      ```
 
-     This configures docker to use the credential helper for a specific registry.
+     This configures Docker to use the credential helper for a specific registry.
 
      or
 
@@ -754,7 +754,7 @@ To configure access for `aws_account_id.dkr.ecr.region.amazonaws.com`, follow th
      }
      ```
 
-     This configures docker to use the credential helper for all Amazon ECR registries.
+     This configures Docker to use the credential helper for all Amazon ECR registries.
 
    - Or, if you are running self-managed Runners,
      add the above JSON to `${GITLAB_RUNNER_HOME}/.docker/config.json`.

@@ -832,7 +832,7 @@ version of GitLab, the restore command will abort with an error. Install the
 
 For GitLab installations using the Docker image or the GitLab Helm chart on
 a Kubernetes cluster, the restore task expects the restore directories to be empty.
-However, with docker and Kubernetes volume mounts, some system level directories
+However, with Docker and Kubernetes volume mounts, some system level directories
 may be created at the volume roots, like `lost+found` directory found in Linux
 operating systems. These directories are usually owned by `root`, which can
 cause access permission errors since the restore Rake task runs as `git` user.
@@ -842,7 +842,7 @@ directories are empty.
 For both these installation types, the backup tarball has to be available in the
 backup location (default location is `/var/opt/gitlab/backups`).
 
-For docker installations, the restore task can be run from host:
+For Docker installations, the restore task can be run from host:
 
 ```shell
 docker exec -it <name of container> gitlab-backup restore

@@ -10,12 +10,12 @@ type: howto
 container images from a Dockerfile, inside a container or Kubernetes cluster.
 
 kaniko solves two problems with using the
-[docker-in-docker
+[Docker-in-Docker
 build](using_docker_build.md#use-docker-in-docker-workflow-with-docker-executor) method:
 
-- Docker-in-docker requires [privileged mode](https://docs.docker.com/engine/reference/run/#runtime-privilege-and-linux-capabilities)
+- Docker-in-Docker requires [privileged mode](https://docs.docker.com/engine/reference/run/#runtime-privilege-and-linux-capabilities)
   in order to function, which is a significant security concern.
-- Docker-in-docker generally incurs a performance penalty and can be quite slow.
+- Docker-in-Docker generally incurs a performance penalty and can be quite slow.
 
 ## Requirements
 
