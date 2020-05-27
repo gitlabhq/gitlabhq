@@ -104,7 +104,7 @@ generate a short-lived JWT that is pull-only-capable to access the
 
    ```ruby
    gitlab_rails['geo_registry_replication_enabled'] = true
-   gitlab_rails['geo_registry_replication_primary_api_url'] = 'http://primary.example.com:4567/' # Primary registry address, it will be used by the secondary node to directly communicate to primary registry
+   gitlab_rails['geo_registry_replication_primary_api_url'] = 'https://primary.example.com:5050/' # Primary registry address, it will be used by the secondary node to directly communicate to primary registry
    ```
 
 1. Reconfigure the **secondary** node for the change to take effect:

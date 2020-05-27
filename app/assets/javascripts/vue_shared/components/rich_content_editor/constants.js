@@ -1,5 +1,9 @@
 import { __ } from '~/locale';
-import { generateToolbarItem } from './toolbar_service';
+import { generateToolbarItem } from './editor_service';
+
+export const CUSTOM_EVENTS = {
+  openAddImageModal: 'gl_openAddImageModal',
+};
 
 /* eslint-disable @gitlab/require-i18n-strings */
 const TOOLBAR_ITEM_CONFIGS = [

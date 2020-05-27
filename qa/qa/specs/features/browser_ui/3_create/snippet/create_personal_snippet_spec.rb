@@ -2,8 +2,8 @@
 
 module QA
   context 'Create', :smoke do
-    describe 'Snippet creation' do
-      it 'User creates a snippet' do
+    describe 'Personal snippet creation' do
+      it 'User creates a personal snippet' do
         Flow::Login.sign_in
 
         Page::Main::Menu.perform(&:go_to_snippets)

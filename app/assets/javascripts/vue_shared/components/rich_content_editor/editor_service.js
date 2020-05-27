@@ -12,7 +12,6 @@ const buildWrapper = propsData => {
   return instance.$el;
 };
 
-// eslint-disable-next-line import/prefer-default-export
 export const generateToolbarItem = config => {
   const { icon, classes, event, command, tooltip, isDivider } = config;
 
@@ -29,4 +28,9 @@ export const generateToolbarItem = config => {
       tooltip,
     },
   };
+};
+
+export const addCustomEventListener = (editorInstance, event, handler) => {
+  editorInstance.eventManager.addEventType(event);
+  editorInstance.eventManager.listen(event, handler);
 };

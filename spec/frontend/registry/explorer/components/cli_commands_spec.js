@@ -3,7 +3,7 @@ import { mount, createLocalVue } from '@vue/test-utils';
 import { GlDropdown, GlFormGroup, GlFormInputGroup } from '@gitlab/ui';
 import Tracking from '~/tracking';
 import * as getters from '~/registry/explorer/stores/getters';
-import QuickstartDropdown from '~/registry/explorer/components/quickstart_dropdown.vue';
+import QuickstartDropdown from '~/registry/explorer/components/cli_commands.vue';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 
 import {
@@ -19,7 +19,7 @@ import {
 const localVue = createLocalVue();
 localVue.use(Vuex);
 
-describe('quickstart_dropdown', () => {
+describe('cli_commands', () => {
   let wrapper;
   let store;
 

@@ -5839,6 +5839,11 @@ msgstr ""
 msgid "ContainerRegistry| Please visit the %{linkStart}administration settings%{linkEnd} to enable this feature."
 msgstr ""
 
+msgid "ContainerRegistry|%{count} Image repository"
+msgid_plural "ContainerRegistry|%{count} Image repositories"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "ContainerRegistry|%{imageName} tags"
 msgstr ""
 
@@ -5849,6 +5854,9 @@ msgid "ContainerRegistry|Automatically remove extra images that aren't designed 
 msgstr ""
 
 msgid "ContainerRegistry|Build an image"
+msgstr ""
+
+msgid "ContainerRegistry|CLI Commands"
 msgstr ""
 
 msgid "ContainerRegistry|Compressed Size"
@@ -5875,13 +5883,19 @@ msgstr ""
 msgid "ContainerRegistry|Docker tag expiration policy is %{toggleStatus}"
 msgstr ""
 
-msgid "ContainerRegistry|Edit Settings"
-msgstr ""
-
 msgid "ContainerRegistry|Expiration interval:"
 msgstr ""
 
+msgid "ContainerRegistry|Expiration policies help manage the storage space used by the Container Registry, but the expiration policies for this registry are disabled. Contact your administrator to enable. %{docLinkStart}More information%{docLinkEnd}"
+msgstr ""
+
+msgid "ContainerRegistry|Expiration policy is disabled"
+msgstr ""
+
 msgid "ContainerRegistry|Expiration policy successfully saved."
+msgstr ""
+
+msgid "ContainerRegistry|Expiration policy will run in %{time}"
 msgstr ""
 
 msgid "ContainerRegistry|Expiration policy:"
@@ -5923,9 +5937,6 @@ msgstr ""
 msgid "ContainerRegistry|Push an image"
 msgstr ""
 
-msgid "ContainerRegistry|Quick Start"
-msgstr ""
-
 msgid "ContainerRegistry|Regular expressions such as %{codeStart}.*-master%{codeEnd} or %{codeStart}release-.*%{codeEnd} are supported"
 msgstr ""
 
@@ -5945,9 +5956,6 @@ msgid "ContainerRegistry|Remove tag"
 msgid_plural "ContainerRegistry|Remove tags"
 msgstr[0] ""
 msgstr[1] ""
-
-msgid "ContainerRegistry|Retention policy has been Enabled"
-msgstr ""
 
 msgid "ContainerRegistry|Something went wrong while fetching the expiration policy."
 msgstr ""
@@ -6000,12 +6008,6 @@ msgstr ""
 msgid "ContainerRegistry|The last tag related to this image was recently removed. This empty image and any associated data will be automatically removed as part of the regular Garbage Collection process. If you have any questions, contact your administrator."
 msgstr ""
 
-msgid "ContainerRegistry|The retention and expiration policy for this Container Registry has been enabled and will run in %{days}. For more information visit the %{linkStart}documentation%{linkEnd}"
-msgstr ""
-
-msgid "ContainerRegistry|The retention and expiration policy for this Container Registry has been enabled. For more information visit the %{linkStart}documentation%{linkEnd}"
-msgstr ""
-
 msgid "ContainerRegistry|The value of this input should be less than 255 characters"
 msgstr ""
 
@@ -6027,7 +6029,7 @@ msgstr ""
 msgid "ContainerRegistry|To widen your search, change or remove the filters above."
 msgstr ""
 
-msgid "ContainerRegistry|We are having trouble connecting to Docker, which could be due to an issue with your project name or path. %{docLinkStart}More Information%{docLinkEnd}"
+msgid "ContainerRegistry|We are having trouble connecting to the Registry, which could be due to an issue with your project name or path. %{docLinkStart}More information%{docLinkEnd}"
 msgstr ""
 
 msgid "ContainerRegistry|With the Container Registry, every project can have its own space to store its Docker images. %{docLinkStart}More Information%{docLinkEnd}"
@@ -6036,7 +6038,7 @@ msgstr ""
 msgid "ContainerRegistry|With the Container Registry, every project can have its own space to store its Docker images. Push at least one Docker image in one of this group's projects in order to show up here. %{docLinkStart}More Information%{docLinkEnd}"
 msgstr ""
 
-msgid "ContainerRegistry|With the Docker Container Registry integrated into GitLab, every project can have its own space to store its Docker images. %{docLinkStart}More Information%{docLinkEnd}"
+msgid "ContainerRegistry|With the GitLab Container Registry, every project can have its own space to store images. %{docLinkStart}More information%{docLinkEnd}"
 msgstr ""
 
 msgid "ContainerRegistry|You are about to remove %{item} tags. Are you sure?"
@@ -22386,6 +22388,9 @@ msgid "This project"
 msgstr ""
 
 msgid "This project does not belong to a group and can therefore not make use of group Runners."
+msgstr ""
+
+msgid "This project does not have %{service_desk_link_start}Service Desk%{service_desk_link_end} enabled, so the user who created the issue will no longer receive email notifications about new activity."
 msgstr ""
 
 msgid "This project does not have a wiki homepage yet"

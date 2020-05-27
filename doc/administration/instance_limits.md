@@ -235,7 +235,7 @@ Kubernetes won't be shown.
 
 Reports that go over the 20 MB limit won't be loaded. Affected reports:
 
-- [Merge Request security reports](../user/project/merge_requests/index.md#security-reports-ultimate)
+- [Merge Request security reports](../user/project/merge_requests/testing_and_reports_in_merge_requests.md#security-reports-ultimate)
 - [CI/CD parameter `artifacts:expose_as`](../ci/yaml/README.md#artifactsexpose_as)
 - [JUnit test reports](../ci/junit_test_reports.md)
 

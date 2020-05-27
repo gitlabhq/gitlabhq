@@ -14,17 +14,15 @@ import Tracking from '~/tracking';
 
 import ProjectEmptyState from '../components/project_empty_state.vue';
 import GroupEmptyState from '../components/group_empty_state.vue';
-import ProjectPolicyAlert from '../components/project_policy_alert.vue';
-import QuickstartDropdown from '../components/quickstart_dropdown.vue';
+import RegistryHeader from '../components/registry_header.vue';
 import ImageList from '../components/image_list.vue';
+import CliCommands from '../components/cli_commands.vue';
 
 import {
   DELETE_IMAGE_SUCCESS_MESSAGE,
   DELETE_IMAGE_ERROR_MESSAGE,
-  CONTAINER_REGISTRY_TITLE,
   CONNECTION_ERROR_TITLE,
   CONNECTION_ERROR_MESSAGE,
-  LIST_INTRO_TEXT,
   REMOVE_REPOSITORY_MODAL_TEXT,
   REMOVE_REPOSITORY_LABEL,
   SEARCH_PLACEHOLDER_TEXT,
@@ -39,8 +37,6 @@ export default {
     GlEmptyState,
     ProjectEmptyState,
     GroupEmptyState,
-    ProjectPolicyAlert,
-    QuickstartDropdown,
     ImageList,
     GlModal,
     GlSprintf,
@@ -48,6 +44,8 @@ export default {
     GlAlert,
     GlSkeletonLoader,
     GlSearchBoxByClick,
+    RegistryHeader,
+    CliCommands,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -59,10 +57,8 @@ export default {
     height: 40,
   },
   i18n: {
-    CONTAINER_REGISTRY_TITLE,
     CONNECTION_ERROR_TITLE,
     CONNECTION_ERROR_MESSAGE,
-    LIST_INTRO_TEXT,
     REMOVE_REPOSITORY_MODAL_TEXT,
     REMOVE_REPOSITORY_LABEL,
     SEARCH_PLACEHOLDER_TEXT,
@@ -85,7 +81,7 @@ export default {
         label: 'registry_repository_delete',
       };
     },
-    showQuickStartDropdown() {
+    showCommands() {
       return Boolean(!this.isLoading && !this.config?.isGroupPage && this.images?.length);
     },
     showDeleteAlert() {
@@ -149,8 +145,6 @@ export default {
       </gl-sprintf>
     </gl-alert>
 
-    <project-policy-alert v-if="!config.isGroupPage" class="mt-2" />
-
     <gl-empty-state
       v-if="config.characterError"
       :title="$options.i18n.CONNECTION_ERROR_TITLE"
@@ -170,21 +164,17 @@ export default {
     </gl-empty-state>
 
     <template v-else>
-      <div>
-        <div class="d-flex justify-content-between align-items-center">
-          <h4>{{ $options.i18n.CONTAINER_REGISTRY_TITLE }}</h4>
-          <quickstart-dropdown v-if="showQuickStartDropdown" class="d-none d-sm-block" />
-        </div>
-        <p>
-          <gl-sprintf :message="$options.i18n.LIST_INTRO_TEXT">
-            <template #docLink="{content}">
-              <gl-link :href="config.helpPagePath" target="_blank">
-                {{ content }}
-              </gl-link>
-            </template>
-          </gl-sprintf>
-        </p>
-      </div>
+      <registry-header
+        :images-count="pagination.total"
+        :expiration-policy="config.expirationPolicy"
+        :help-page-path="config.helpPagePath"
+        :expiration-policy-help-page-path="config.expirationPolicyHelpPagePath"
+        :hide-expiration-policy-data="config.isGroupPage"
+      >
+        <template #commands>
+          <cli-commands v-if="showCommands" />
+        </template>
+      </registry-header>
 
       <div v-if="isLoading" class="mt-2">
         <gl-skeleton-loader
@@ -201,7 +191,7 @@ export default {
       </div>
       <template v-else>
         <template v-if="!isEmpty">
-          <div class="gl-display-flex gl-p-1" data-testid="listHeader">
+          <div class="gl-display-flex gl-p-1 gl-mt-3" data-testid="listHeader">
             <div class="gl-flex-fill-1">
               <h5>{{ $options.i18n.IMAGE_REPOSITORY_LIST_LABEL }}</h5>
             </div>

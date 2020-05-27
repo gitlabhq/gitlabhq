@@ -2,7 +2,15 @@
 import 'codemirror/lib/codemirror.css';
 import '@toast-ui/editor/dist/toastui-editor.css';
 
-import { EDITOR_OPTIONS, EDITOR_TYPES, EDITOR_HEIGHT, EDITOR_PREVIEW_STYLE } from './constants';
+import {
+  EDITOR_OPTIONS,
+  EDITOR_TYPES,
+  EDITOR_HEIGHT,
+  EDITOR_PREVIEW_STYLE,
+  CUSTOM_EVENTS,
+} from './constants';
+
+import { addCustomEventListener } from './editor_service';
 
 export default {
   components: {
@@ -49,6 +57,16 @@ export default {
     getMarkdown() {
       return this.$refs.editor.invoke('getMarkdown');
     },
+    onLoad(editorInstance) {
+      addCustomEventListener(
+        editorInstance,
+        CUSTOM_EVENTS.openAddImageModal,
+        this.onOpenAddImageModal,
+      );
+    },
+    onOpenAddImageModal() {
+      // TODO - add image modal (next MR)
+    },
   },
 };
 </script>
@@ -61,5 +79,6 @@ export default {
     :initial-edit-type="initialEditType"
     :height="height"
     @change="onContentChanged"
+    @load="onLoad"
   />
 </template>

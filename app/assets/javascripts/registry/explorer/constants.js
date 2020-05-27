@@ -5,10 +5,10 @@ import { s__ } from '~/locale';
 export const CONTAINER_REGISTRY_TITLE = s__('ContainerRegistry|Container Registry');
 export const CONNECTION_ERROR_TITLE = s__('ContainerRegistry|Docker connection error');
 export const CONNECTION_ERROR_MESSAGE = s__(
-  `ContainerRegistry|We are having trouble connecting to Docker, which could be due to an issue with your project name or path. %{docLinkStart}More Information%{docLinkEnd}`,
+  `ContainerRegistry|We are having trouble connecting to the Registry, which could be due to an issue with your project name or path. %{docLinkStart}More information%{docLinkEnd}`,
 );
 export const LIST_INTRO_TEXT = s__(
-  `ContainerRegistry|With the Docker Container Registry integrated into GitLab, every project can have its own space to store its Docker images. %{docLinkStart}More Information%{docLinkEnd}`,
+  `ContainerRegistry|With the GitLab Container Registry, every project can have its own space to store images. %{docLinkStart}More information%{docLinkEnd}`,
 );
 
 export const LIST_DELETE_BUTTON_DISABLED = s__(
@@ -103,20 +103,21 @@ export const ADMIN_GARBAGE_COLLECTION_TIP = s__(
 
 // Expiration policies
 
-export const EXPIRATION_POLICY_ALERT_TITLE = s__(
-  'ContainerRegistry|Retention policy has been Enabled',
+export const EXPIRATION_POLICY_WILL_RUN_IN = s__(
+  'ContainerRegistry|Expiration policy will run in %{time}',
 );
-export const EXPIRATION_POLICY_ALERT_PRIMARY_BUTTON = s__('ContainerRegistry|Edit Settings');
-export const EXPIRATION_POLICY_ALERT_FULL_MESSAGE = s__(
-  'ContainerRegistry|The retention and expiration policy for this Container Registry has been enabled and will run in %{days}. For more information visit the %{linkStart}documentation%{linkEnd}',
+
+export const EXPIRATION_POLICY_DISABLED_TEXT = s__(
+  'ContainerRegistry|Expiration policy is disabled',
 );
-export const EXPIRATION_POLICY_ALERT_SHORT_MESSAGE = s__(
-  'ContainerRegistry|The retention and expiration policy for this Container Registry has been enabled. For more information visit the %{linkStart}documentation%{linkEnd}',
+
+export const EXPIRATION_POLICY_DISABLED_MESSAGE = s__(
+  'ContainerRegistry|Expiration policies help manage the storage space used by the Container Registry, but the expiration policies for this registry are disabled. Contact your administrator to enable. %{docLinkStart}More information%{docLinkEnd}',
 );
 
 // Quick Start
 
-export const QUICK_START = s__('ContainerRegistry|Quick Start');
+export const QUICK_START = s__('ContainerRegistry|CLI Commands');
 export const LOGIN_COMMAND_LABEL = s__('ContainerRegistry|Login');
 export const COPY_LOGIN_TITLE = s__('ContainerRegistry|Copy login command');
 export const BUILD_COMMAND_LABEL = s__('ContainerRegistry|Build an image');

@@ -66,6 +66,7 @@ export default {
         ref="contentViewer"
         :content="content"
         :type="activeViewer.fileType"
+        data-qa-selector="file_content"
       />
     </template>
   </div>

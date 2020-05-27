@@ -3,10 +3,10 @@ import { GlSkeletonLoader, GlSprintf, GlAlert, GlSearchBoxByClick } from '@gitla
 import Tracking from '~/tracking';
 import waitForPromises from 'helpers/wait_for_promises';
 import component from '~/registry/explorer/pages/list.vue';
-import QuickstartDropdown from '~/registry/explorer/components/quickstart_dropdown.vue';
+import CliCommands from '~/registry/explorer/components/cli_commands.vue';
 import GroupEmptyState from '~/registry/explorer/components/group_empty_state.vue';
 import ProjectEmptyState from '~/registry/explorer/components/project_empty_state.vue';
-import ProjectPolicyAlert from '~/registry/explorer/components/project_policy_alert.vue';
+import RegistryHeader from '~/registry/explorer/components/registry_header.vue';
 import ImageList from '~/registry/explorer/components/image_list.vue';
 import { createStore } from '~/registry/explorer/stores/';
 import {
@@ -32,14 +32,14 @@ describe('List Page', () => {
 
   const findDeleteModal = () => wrapper.find(GlModal);
   const findSkeletonLoader = () => wrapper.find(GlSkeletonLoader);
-  const findImagesList = () => wrapper.find({ ref: 'imagesList' });
 
   const findEmptyState = () => wrapper.find(GlEmptyState);
 
-  const findQuickStartDropdown = () => wrapper.find(QuickstartDropdown);
+  const findCliCommands = () => wrapper.find(CliCommands);
   const findProjectEmptyState = () => wrapper.find(ProjectEmptyState);
   const findGroupEmptyState = () => wrapper.find(GroupEmptyState);
-  const findProjectPolicyAlert = () => wrapper.find(ProjectPolicyAlert);
+  const findRegistryHeader = () => wrapper.find(RegistryHeader);
+
   const findDeleteAlert = () => wrapper.find(GlAlert);
   const findImageList = () => wrapper.find(ImageList);
   const findListHeader = () => wrapper.find('[data-testid="listHeader"]');
@@ -53,6 +53,7 @@ describe('List Page', () => {
         GlModal,
         GlEmptyState,
         GlSprintf,
+        RegistryHeader,
       },
       mocks: {
         $toast,
@@ -76,21 +77,6 @@ describe('List Page', () => {
     wrapper.destroy();
   });
 
-  describe('Expiration policy notification', () => {
-    beforeEach(() => {
-      mountComponent();
-    });
-    it('shows up on project page', () => {
-      expect(findProjectPolicyAlert().exists()).toBe(true);
-    });
-    it('does show up on group page', () => {
-      store.commit(SET_INITIAL_STATE, { isGroupPage: true });
-      return wrapper.vm.$nextTick().then(() => {
-        expect(findProjectPolicyAlert().exists()).toBe(false);
-      });
-    });
-  });
-
   describe('API calls', () => {
     it.each`
       imageList                  | name         | called
@@ -107,6 +93,11 @@ describe('List Page', () => {
         expect(dispatchSpy.mock.calls[0]).toEqual(called);
       },
     );
+  });
+
+  it('contains registry header', () => {
+    mountComponent();
+    expect(findRegistryHeader().exists()).toBe(true);
   });
 
   describe('connection error', () => {
@@ -139,7 +130,7 @@ describe('List Page', () => {
 
     it('should not show the loading or default state', () => {
       expect(findSkeletonLoader().exists()).toBe(false);
-      expect(findImagesList().exists()).toBe(false);
+      expect(findImageList().exists()).toBe(false);
     });
   });
 
@@ -156,11 +147,11 @@ describe('List Page', () => {
     });
 
     it('imagesList is not visible', () => {
-      expect(findImagesList().exists()).toBe(false);
+      expect(findImageList().exists()).toBe(false);
     });
 
-    it('quick start is not visible', () => {
-      expect(findQuickStartDropdown().exists()).toBe(false);
+    it('cli commands is not visible', () => {
+      expect(findCliCommands().exists()).toBe(false);
     });
   });
 
@@ -171,8 +162,8 @@ describe('List Page', () => {
       return waitForPromises();
     });
 
-    it('quick start is not visible', () => {
-      expect(findQuickStartDropdown().exists()).toBe(false);
+    it('cli commands is not visible', () => {
+      expect(findCliCommands().exists()).toBe(false);
     });
 
     it('project empty state is visible', () => {
@@ -193,8 +184,8 @@ describe('List Page', () => {
         expect(findGroupEmptyState().exists()).toBe(true);
       });
 
-      it('quick start is not visible', () => {
-        expect(findQuickStartDropdown().exists()).toBe(false);
+      it('cli commands is not visible', () => {
+        expect(findCliCommands().exists()).toBe(false);
       });
 
       it('list header is not visible', () => {
@@ -210,7 +201,7 @@ describe('List Page', () => {
       });
 
       it('quick start is visible', () => {
-        expect(findQuickStartDropdown().exists()).toBe(true);
+        expect(findCliCommands().exists()).toBe(true);
       });
 
       it('list component is visible', () => {

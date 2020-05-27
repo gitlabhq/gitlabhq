@@ -69,24 +69,19 @@ describe('IDE commit form', () => {
       });
     });
 
-    it('collapses if lastCommitMsg is set to empty and current view is not commit view', () => {
+    it('collapses if lastCommitMsg is set to empty and current view is not commit view', async () => {
       store.state.lastCommitMsg = 'abc';
       store.state.currentActivityView = leftSidebarViews.edit.name;
+      await vm.$nextTick();
 
-      return vm
-        .$nextTick()
-        .then(() => {
-          // if commit message is set, form is uncollapsed
-          expect(vm.isCompact).toBe(false);
+      // if commit message is set, form is uncollapsed
+      expect(vm.isCompact).toBe(false);
 
-          store.state.lastCommitMsg = '';
+      store.state.lastCommitMsg = '';
+      await vm.$nextTick();
 
-          return vm.$nextTick();
-        })
-        .then(() => {
-          // collapsed when set to empty
-          expect(vm.isCompact).toBe(true);
-        });
+      // collapsed when set to empty
+      expect(vm.isCompact).toBe(true);
     });
   });
 

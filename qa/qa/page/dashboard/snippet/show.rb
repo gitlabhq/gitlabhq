@@ -35,6 +35,10 @@ module QA
             element :file_content
           end
 
+          view 'app/assets/javascripts/blob/components/blob_content.vue' do
+            element :file_content
+          end
+
           view 'app/assets/javascripts/snippets/components/snippet_header.vue' do
             element :snippet_action_button
             element :delete_snippet_button
@@ -55,6 +59,10 @@ module QA
 
           def has_snippet_description?(snippet_description)
             has_element? :snippet_description_field, text: snippet_description
+          end
+
+          def has_no_snippet_description?
+            has_no_element?(:snippet_description_field)
           end
 
           def has_visibility_type?(visibility_type)

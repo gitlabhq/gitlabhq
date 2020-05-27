@@ -30,10 +30,10 @@ describe 'Container Registry', :js do
       expect(page).to have_content _('There are no container images stored for this project')
     end
 
-    it 'list page has quickstart' do
+    it 'list page has cli commands' do
       visit_container_registry
 
-      expect(page).to have_content _('Quick Start')
+      expect(page).to have_content _('CLI Commands')
     end
   end
 

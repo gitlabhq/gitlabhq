@@ -9338,8 +9338,6 @@ CREATE INDEX index_ci_pipeline_schedules_on_owner_id ON public.ci_pipeline_sched
 
 CREATE INDEX index_ci_pipeline_schedules_on_project_id ON public.ci_pipeline_schedules USING btree (project_id);
 
-CREATE INDEX index_ci_pipeline_variables_on_pipeline_id ON public.ci_pipeline_variables USING btree (pipeline_id) WHERE ((key)::text = 'AUTO_DEVOPS_MODSECURITY_SEC_RULE_ENGINE'::text);
-
 CREATE UNIQUE INDEX index_ci_pipeline_variables_on_pipeline_id_and_key ON public.ci_pipeline_variables USING btree (pipeline_id, key);
 
 CREATE INDEX index_ci_pipelines_config_on_pipeline_id ON public.ci_pipelines_config USING btree (pipeline_id);
@@ -9435,8 +9433,6 @@ CREATE INDEX index_ci_trigger_requests_on_trigger_id_and_id ON public.ci_trigger
 CREATE INDEX index_ci_triggers_on_owner_id ON public.ci_triggers USING btree (owner_id);
 
 CREATE INDEX index_ci_triggers_on_project_id ON public.ci_triggers USING btree (project_id);
-
-CREATE INDEX index_ci_variables_on_project_id ON public.ci_variables USING btree (project_id) WHERE ((key)::text = 'AUTO_DEVOPS_MODSECURITY_SEC_RULE_ENGINE'::text);
 
 CREATE UNIQUE INDEX index_ci_variables_on_project_id_and_key_and_environment_scope ON public.ci_variables USING btree (project_id, key, environment_scope);
 
@@ -13885,6 +13881,8 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200420172752
 20200420172927
 20200420201933
+20200421054930
+20200421054948
 20200421092907
 20200421111005
 20200421233150

@@ -109,31 +109,21 @@ describe 'Creating a Snippet' do
       context 'when the project path is invalid' do
         let(:project_path) { 'foobar' }
 
-        it 'returns an an error' do
-          subject
-          errors = json_response['errors']
-
-          expect(errors.first['message']).to eq(Gitlab::Graphql::Authorize::AuthorizeResource::RESOURCE_ACCESS_ERROR)
-        end
+        it_behaves_like 'a mutation that returns top-level errors',
+                        errors: [Gitlab::Graphql::Authorize::AuthorizeResource::RESOURCE_ACCESS_ERROR]
       end
 
       context 'when the feature is disabled' do
-        it 'returns an an error' do
+        before do
           project.project_feature.update_attribute(:snippets_access_level, ProjectFeature::DISABLED)
-
-          subject
-          errors = json_response['errors']
-
-          expect(errors.first['message']).to eq(Gitlab::Graphql::Authorize::AuthorizeResource::RESOURCE_ACCESS_ERROR)
         end
+
+        it_behaves_like 'a mutation that returns top-level errors',
+                        errors: [Gitlab::Graphql::Authorize::AuthorizeResource::RESOURCE_ACCESS_ERROR]
       end
     end
 
-    context 'when there are ActiveRecord validation errors' do
-      let(:title) { '' }
-
-      it_behaves_like 'a mutation that returns errors in the response', errors: ["Title can't be blank"]
-
+    shared_examples 'does not create snippet' do
       it 'does not create the Snippet' do
         expect do
           subject
@@ -147,7 +137,21 @@ describe 'Creating a Snippet' do
       end
     end
 
-    context 'when there uploaded files' do
+    context 'when there are ActiveRecord validation errors' do
+      let(:title) { '' }
+
+      it_behaves_like 'a mutation that returns errors in the response', errors: ["Title can't be blank"]
+      it_behaves_like 'does not create snippet'
+    end
+
+    context 'when there non ActiveRecord errors' do
+      let(:file_name) { 'invalid://file/path' }
+
+      it_behaves_like 'a mutation that returns errors in the response', errors: ['Repository Error creating the snippet - Invalid file name']
+      it_behaves_like 'does not create snippet'
+    end
+
+    context 'when there are uploaded files' do
       shared_examples 'expected files argument' do |file_value, expected_value|
         let(:uploaded_files) { file_value }
 

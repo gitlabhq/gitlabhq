@@ -5,7 +5,6 @@
   .row.registry-placeholder.prepend-bottom-10
     .col-12
       #js-container-registry{ data: { endpoint: project_container_registry_index_path(@project),
-        settings_path: project_settings_ci_cd_path(@project),
         expiration_policy: @project.container_expiration_policy.to_json,
         "help_page_path" => help_page_path('user/packages/container_registry/index'),
         "two_factor_auth_help_link" => help_page_path('user/profile/account/two_factor_authentication'),

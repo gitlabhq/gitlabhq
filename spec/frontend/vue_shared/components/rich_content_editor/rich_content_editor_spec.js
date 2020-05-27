@@ -5,7 +5,15 @@ import {
   EDITOR_TYPES,
   EDITOR_HEIGHT,
   EDITOR_PREVIEW_STYLE,
+  CUSTOM_EVENTS,
 } from '~/vue_shared/components/rich_content_editor/constants';
+
+import { addCustomEventListener } from '~/vue_shared/components/rich_content_editor/editor_service';
+
+jest.mock('~/vue_shared/components/rich_content_editor/editor_service', () => ({
+  ...jest.requireActual('~/vue_shared/components/rich_content_editor/editor_service'),
+  addCustomEventListener: jest.fn(),
+}));
 
 describe('Rich Content Editor', () => {
   let wrapper;
@@ -54,6 +62,19 @@ describe('Rich Content Editor', () => {
       findEditor().vm.$emit('change');
 
       expect(wrapper.emitted().input[0][0]).toBe(changedMarkdown);
+    });
+  });
+
+  describe('when editor is loaded', () => {
+    it('adds the CUSTOM_EVENTS.openAddImageModal custom event listener', () => {
+      const mockInstance = { eventManager: { addEventType: jest.fn(), listen: jest.fn() } };
+      findEditor().vm.$emit('load', mockInstance);
+
+      expect(addCustomEventListener).toHaveBeenCalledWith(
+        mockInstance,
+        CUSTOM_EVENTS.openAddImageModal,
+        wrapper.vm.onOpenAddImageModal,
+      );
     });
   });
 });

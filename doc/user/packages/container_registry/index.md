@@ -26,7 +26,7 @@ have its own space to store its Docker images.
 
 You can read more about Docker Registry at <https://docs.docker.com/registry/introduction/>.
 
-![Container Registry repositories](img/container_registry_repositories_v13_0.png)
+![Container Registry repositories](img/container_registry_repositories_v13_1.png)
 
 ## Enable the Container Registry for your project
 
@@ -62,7 +62,7 @@ for both projects and groups.
 
 Navigate to your project's **{package}** **Packages & Registries > Container Registry**.
 
-![Container Registry project repositories](img/container_registry_repositories_with_quickstart_v13_0.png)
+![Container Registry project repositories](img/container_registry_repositories_with_quickstart_v13_1.png)
 
 This view will:
 
@@ -77,7 +77,7 @@ This view will:
 
 Navigate to your groups's **{package}** **Packages & Registries > Container Registry**.
 
-![Container Registry group repositories](img/container_registry_group_repositories_v13_0.png)
+![Container Registry group repositories](img/container_registry_group_repositories_v13_1.png)
 
 This view will:
 
