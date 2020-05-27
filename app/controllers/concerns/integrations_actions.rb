@@ -16,7 +16,7 @@ module IntegrationsActions
 
   def update
     saved = integration.update(service_params[:service])
-    overwrite = ActiveRecord::Type::Boolean.new.cast(params[:overwrite])
+    overwrite = Gitlab::Utils.to_boolean(params[:overwrite])
 
     respond_to do |format|
       format.html do

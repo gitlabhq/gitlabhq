@@ -1,3 +1,9 @@
+---
+stage: Plan
+group: Portfolio Management
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+---
+
 # Epics API **(PREMIUM)**
 
 > - Introduced in [GitLab Ultimate](https://about.gitlab.com/pricing/) 10.2.

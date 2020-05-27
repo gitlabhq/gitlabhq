@@ -1,3 +1,9 @@
+---
+stage: Plan
+group: Portfolio Management
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+---
+
 # Epic Issues API **(ULTIMATE)**
 
 Every API call to epic_issues must be authenticated.

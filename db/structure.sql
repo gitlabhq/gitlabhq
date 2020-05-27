@@ -442,11 +442,11 @@ CREATE TABLE public.application_settings (
     group_owners_can_manage_default_branch_protection boolean DEFAULT true NOT NULL,
     container_registry_vendor text DEFAULT ''::text NOT NULL,
     container_registry_version text DEFAULT ''::text NOT NULL,
-    repository_storages_weighted jsonb DEFAULT '{}'::jsonb NOT NULL,
     container_registry_features text[] DEFAULT '{}'::text[] NOT NULL,
     spam_check_endpoint_url text,
     spam_check_endpoint_enabled boolean DEFAULT false NOT NULL,
     elasticsearch_pause_indexing boolean DEFAULT false NOT NULL,
+    repository_storages_weighted jsonb DEFAULT '{}'::jsonb NOT NULL,
     CONSTRAINT check_d03919528d CHECK ((char_length(container_registry_vendor) <= 255)),
     CONSTRAINT check_d820146492 CHECK ((char_length(spam_check_endpoint_url) <= 255)),
     CONSTRAINT check_e5aba18f02 CHECK ((char_length(container_registry_version) <= 255))

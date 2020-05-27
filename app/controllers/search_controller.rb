@@ -5,6 +5,10 @@ class SearchController < ApplicationController
   include SearchHelper
   include RendersCommits
 
+  SCOPE_PRELOAD_METHOD = {
+    projects: :with_web_entity_associations
+  }.freeze
+
   around_action :allow_gitaly_ref_name_caching
 
   skip_before_action :authenticate_user!
@@ -28,7 +32,7 @@ class SearchController < ApplicationController
     @scope = search_service.scope
     @show_snippets = search_service.show_snippets?
     @search_results = search_service.search_results
-    @search_objects = search_service.search_objects
+    @search_objects = search_service.search_objects(preload_method)
 
     render_commits if @scope == 'commits'
     eager_load_user_status if @scope == 'users'
@@ -63,6 +67,10 @@ class SearchController < ApplicationController
   # rubocop: enable CodeReuse/ActiveRecord
 
   private
+
+  def preload_method
+    SCOPE_PRELOAD_METHOD[@scope.to_sym]
+  end
 
   def search_term_valid?
     unless search_service.valid_query_length?

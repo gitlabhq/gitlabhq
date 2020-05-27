@@ -114,23 +114,21 @@ module Admin
       integration.type == 'ExternalWikiService'
     end
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def project_ids_without_integration
-      Project.connection.select_values(
-        <<-SQL
-          SELECT id
-          FROM projects
-          WHERE NOT EXISTS (
-            SELECT true
-            FROM services
-            WHERE services.project_id = projects.id
-            AND services.type = #{ActiveRecord::Base.connection.quote(integration.type)}
-          )
-          AND projects.pending_delete = false
-          AND projects.archived = false
-          LIMIT #{BATCH_SIZE}
-        SQL
-      )
+      services = Service
+        .select('1')
+        .where('services.project_id = projects.id')
+        .where(type: integration.type)
+
+      Project
+        .where('NOT EXISTS (?)', services)
+        .where(pending_delete: false)
+        .where(archived: false)
+        .limit(BATCH_SIZE)
+        .pluck(:id)
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def service_hash
       @service_hash ||= integration.to_service_hash

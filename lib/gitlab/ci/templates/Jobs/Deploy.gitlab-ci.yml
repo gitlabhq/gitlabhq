@@ -86,6 +86,7 @@ staging:
 canary:
   extends: .auto-deploy
   stage: canary
+  allow_failure: true
   script:
     - auto-deploy check_kube_domain
     - auto-deploy download_chart
@@ -177,6 +178,7 @@ production_manual:
   <<: *rollout_template
   stage: production
   resource_group: production
+  allow_failure: true
   rules:
     - if: '$CI_KUBERNETES_ACTIVE == null || $CI_KUBERNETES_ACTIVE == ""'
       when: never
