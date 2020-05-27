@@ -83,12 +83,15 @@ The incident detail page shows detailed information about a particular incident.
 
 To publish an Incident, you first need to create an issue in the Project you enabled the Status Page settings in.
 
-Once this issue is created, a background worker will publish the issue onto the Status Page using the credentials you provided during setup.
+Issues are not published to the Status Page by default. Use the `/publish` [quick action](../quick_actions.md) in an issue to publish the issue. Only [project or group owners](../../permissions.md) are permitted to publish issues.
+
+After the quick action is used, a background worker publishes the issue onto the Status Page using the credentials you provided during setup.
+
 Since all incidents are published publicly, user and group mentions are anonymized with `Incident Responder`,
 and titles of non-public [GitLab references](../../markdown.md#special-gitlab-references) are removed.
 
 NOTE: **Note:**
-Confidential issues are not published. If a published issue is made confidential it will be unpublished.
+Confidential issues can't be published. If you make a published issue confidential, it will be unpublished.
 
 ### Publishing updates
 

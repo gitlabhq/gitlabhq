@@ -125,7 +125,7 @@ the database. The following instructions can be used to build OpenSSH 7.5:
    ```shell
    sudo su -
    cd /tmp
-   curl --remote-name https://mirrors.evowise.com/pub/OpenBSD/OpenSSH/portable/openssh-7.5p1.tar.gz
+   curl --remote-name https://cdn.openbsd.org/pub/OpenBSD/OpenSSH/portable/openssh-7.5p1.tar.gz
    tar xzvf openssh-7.5p1.tar.gz
    yum install rpm-build gcc make wget openssl-devel krb5-devel pam-devel libX11-devel xmkmf libXt-devel
    ```

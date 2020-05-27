@@ -5,7 +5,7 @@
 - help_text = email_change_disabled ? s_("Your account uses dedicated credentials for the \"%{group_name}\" group and can only be updated through SSO.") % { group_name: @user.managing_group.name } : read_only_help_text
 
 = form.text_field :email, required: true, class: 'input-lg', value: (@user.email unless @user.temp_oauth_email?), help: help_text.html_safe, readonly: readonly || email_change_disabled
-= form.select :public_email, options_for_select(@user.all_public_emails, selected: @user.public_email),
+= form.select :public_email, options_for_select(@user.public_verified_emails, selected: @user.public_email),
   { help: s_("Profiles|This email will be displayed on your public profile"), include_blank: s_("Profiles|Do not show on profile") },
   control_class: 'select2 input-lg', disabled: email_change_disabled
 - commit_email_link_url = help_page_path('user/profile/index', anchor: 'commit-email', target: '_blank')

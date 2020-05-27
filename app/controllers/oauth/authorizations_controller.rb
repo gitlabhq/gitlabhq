@@ -4,6 +4,8 @@ class Oauth::AuthorizationsController < Doorkeeper::AuthorizationsController
   include Gitlab::Experimentation::ControllerConcern
   include InitializesCurrentUserMode
 
+  before_action :verify_confirmed_email!, only: [:new]
+
   layout 'profile'
 
   # Overridden from Doorkeeper::AuthorizationsController to
@@ -20,5 +22,14 @@ class Oauth::AuthorizationsController < Doorkeeper::AuthorizationsController
     else
       render "doorkeeper/authorizations/error"
     end
+  end
+
+  private
+
+  def verify_confirmed_email!
+    return if current_user&.confirmed?
+
+    pre_auth.error = :unconfirmed_email
+    render "doorkeeper/authorizations/error"
   end
 end

@@ -15,9 +15,9 @@ module PersonalAccessTokens
         with_context(user: user) do
           notification_service.access_token_about_to_expire(user)
 
-          Rails.logger.info "#{self.class}: Notifying User #{user.id} about expiring tokens" # rubocop:disable Gitlab/RailsLogger
+          Gitlab::AppLogger.info "#{self.class}: Notifying User #{user.id} about expiring tokens"
 
-          user.personal_access_tokens.expiring_and_not_notified(limit_date).update_all(expire_notification_delivered: true)
+          user.personal_access_tokens.without_impersonation.expiring_and_not_notified(limit_date).update_all(expire_notification_delivered: true)
         end
       end
     end

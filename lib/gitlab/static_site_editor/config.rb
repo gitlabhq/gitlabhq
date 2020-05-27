@@ -21,7 +21,7 @@ module Gitlab
           project_id: project.id,
           project: project.path,
           namespace: project.namespace.path,
-          return_url: return_url,
+          return_url: sanitize_url(return_url),
           is_supported_content: supported_content?.to_s,
           base_url: Gitlab::Routing.url_helpers.project_show_sse_path(project, full_path)
         }
@@ -51,6 +51,10 @@ module Gitlab
 
       def full_path
         "#{ref}/#{file_path}"
+      end
+
+      def sanitize_url(url)
+        url if Gitlab::UrlSanitizer.valid_web?(url)
       end
     end
   end

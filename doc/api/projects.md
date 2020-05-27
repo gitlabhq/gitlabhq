@@ -1204,7 +1204,7 @@ PUT /projects/:id
 | `approvals_before_merge` | integer | no | **(STARTER)** How many approvers should approve merge request by default |
 | `external_authorization_classification_label` | string | no | **(PREMIUM)** The classification label for the project |
 | `mirror` | boolean | no | **(STARTER)** Enables pull mirroring in a project |
-| `mirror_user_id` | integer | no | **(STARTER)** User responsible for all the activity surrounding a pull mirror event |
+| `mirror_user_id` | integer | no | **(STARTER)** User responsible for all the activity surrounding a pull mirror event. Can only be set by admins. |
 | `mirror_trigger_builds` | boolean | no | **(STARTER)** Pull mirroring triggers builds |
 | `only_mirror_protected_branches` | boolean | no | **(STARTER)** Only mirror protected branches |
 | `mirror_overwrites_diverged_branches` | boolean | no | **(STARTER)** Pull mirror overwrites diverged branches |

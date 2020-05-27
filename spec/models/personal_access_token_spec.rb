@@ -178,6 +178,15 @@ describe PersonalAccessToken do
         end
       end
     end
+
+    describe '.without_impersonation' do
+      let_it_be(:impersonation_token) { create(:personal_access_token, :impersonation) }
+      let_it_be(:personal_access_token) { create(:personal_access_token) }
+
+      it 'returns only non-impersonation tokens' do
+        expect(described_class.without_impersonation).to contain_exactly(personal_access_token)
+      end
+    end
   end
 
   describe '.simple_sorts' do

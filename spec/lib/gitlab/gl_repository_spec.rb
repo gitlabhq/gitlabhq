@@ -5,14 +5,19 @@ require 'spec_helper'
 describe ::Gitlab::GlRepository do
   describe '.parse' do
     let_it_be(:project) { create(:project, :repository) }
+    let_it_be(:group) { create(:group) }
     let_it_be(:snippet) { create(:personal_snippet) }
 
     it 'parses a project gl_repository' do
       expect(described_class.parse("project-#{project.id}")).to eq([project, project, Gitlab::GlRepository::PROJECT])
     end
 
-    it 'parses a wiki gl_repository' do
+    it 'parses a project wiki gl_repository' do
       expect(described_class.parse("wiki-#{project.id}")).to eq([project, project, Gitlab::GlRepository::WIKI])
+    end
+
+    it 'parses a group wiki gl_repository' do
+      expect(described_class.parse("group-#{group.id}-wiki")).to eq([group, nil, Gitlab::GlRepository::WIKI])
     end
 
     it 'parses a snippet gl_repository' do

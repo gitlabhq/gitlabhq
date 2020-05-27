@@ -1,5 +1,14 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 13.0.1 (2020-05-27)
+
+### Security (3 changes)
+
+- Change the mirror user along with pull mirror settings.
+- Allow only users with a verified email to be member of a group when the group has restricted membership based on email domain.
+- Do not auto-confirm email in Trial registration.
+
+
 ## 13.0.0 (2020-05-22)
 
 ### Security (1 change)
@@ -326,6 +335,15 @@ Please view this file on the master branch, on stable branches it's out of date.
 - Translate unauthenticated user string for Audit Event. !31856 (Sashi Kumar)
 
 
+## 12.10.7 (2020-05-27)
+
+### Security (3 changes)
+
+- Change the mirror user along with pull mirror settings.
+- Allow only users with a verified email to be member of a group when the group has restricted membership based on email domain.
+- Do not auto-confirm email in Trial registration.
+
+
 ## 12.10.6 (2020-05-15)
 
 - No changes.
@@ -398,6 +416,15 @@ Please view this file on the master branch, on stable branches it's out of date.
 ### Other (1 change)
 
 - Add health status counts to usage data. !28964
+
+
+## 12.9.8 (2020-05-27)
+
+### Security (3 changes)
+
+- Change the mirror user along with pull mirror settings.
+- Allow only users with a verified email to be member of a group when the group has restricted membership based on email domain.
+- Do not auto-confirm email in Trial registration.
 
 
 ## 12.9.6 (2020-05-05)

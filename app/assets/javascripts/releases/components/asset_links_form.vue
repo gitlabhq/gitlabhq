@@ -172,13 +172,15 @@ export default {
       <div class="mb-5 mb-sm-3 mt-sm-4 col col-sm-auto">
         <gl-button
           v-gl-tooltip
-          class="remove-button w-100"
+          class="remove-button w-100 form-control"
           :aria-label="__('Remove asset link')"
           :title="__('Remove asset link')"
           @click="onRemoveClicked(link.id)"
         >
-          <gl-icon class="mr-1 mr-sm-0 mb-1" :size="16" name="remove" />
-          <span class="d-inline d-sm-none">{{ __('Remove asset link') }}</span>
+          <div class="d-flex">
+            <gl-icon class="mr-1 mr-sm-0" :size="16" name="remove" />
+            <span class="d-inline d-sm-none">{{ __('Remove asset link') }}</span>
+          </div>
         </gl-button>
       </div>
     </div>

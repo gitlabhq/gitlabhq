@@ -73,11 +73,11 @@ following desktop browsers:
 
 - Chrome
 - Edge
-- Firefox (disabled by default)
+- Firefox 67+
 - Opera
 
 NOTE: **Note:**
-For Firefox, you can enable the FIDO U2F API in
+For Firefox 47-66, you can enable the FIDO U2F API in
 [about:config](https://support.mozilla.org/en-US/kb/about-config-editor-firefox).
 Search for `security.webauth.u2f` and double click on it to toggle to `true`.
 

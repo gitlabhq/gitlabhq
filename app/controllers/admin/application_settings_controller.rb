@@ -191,8 +191,10 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
 
     params[:application_setting][:import_sources]&.delete("")
     params[:application_setting][:restricted_visibility_levels]&.delete("")
-    params[:application_setting].delete(:elasticsearch_aws_secret_access_key) if params[:application_setting][:elasticsearch_aws_secret_access_key].blank?
     params[:application_setting][:required_instance_ci_template] = nil if params[:application_setting][:required_instance_ci_template].blank?
+
+    remove_blank_params_for!(:elasticsearch_aws_secret_access_key, :eks_secret_access_key)
+
     # TODO Remove domain_blacklist_raw in APIv5 (See https://gitlab.com/gitlab-org/gitlab-foss/issues/67204)
     params.delete(:domain_blacklist_raw) if params[:domain_blacklist_file]
     params.delete(:domain_blacklist_raw) if params[:domain_blacklist]
@@ -260,6 +262,10 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
     flash[:alert] = _('Application settings update failed')
 
     render action
+  end
+
+  def remove_blank_params_for!(*keys)
+    params[:application_setting].delete_if { |setting, value| setting.to_sym.in?(keys) && value.blank? }
   end
 
   # overridden in EE

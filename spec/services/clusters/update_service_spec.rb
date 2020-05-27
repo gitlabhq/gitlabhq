@@ -47,6 +47,39 @@ describe Clusters::UpdateService do
           expect(cluster.platform.namespace).to eq('custom-namespace')
         end
       end
+
+      context 'when service token is empty' do
+        let(:params) do
+          {
+              platform_kubernetes_attributes: {
+                  token: ''
+              }
+          }
+        end
+
+        it 'does not update the token' do
+          current_token = cluster.platform.token
+          is_expected.to eq(true)
+          cluster.platform.reload
+
+          expect(cluster.platform.token).to eq(current_token)
+        end
+      end
+
+      context 'when service token is not empty' do
+        let(:params) do
+          {
+              platform_kubernetes_attributes: {
+                  token: 'new secret token'
+              }
+          }
+        end
+
+        it 'updates the token' do
+          is_expected.to eq(true)
+          expect(cluster.platform.token).to eq('new secret token')
+        end
+      end
     end
 
     context 'when invalid params' do

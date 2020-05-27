@@ -9666,6 +9666,8 @@ CREATE INDEX index_events_on_target_type_and_target_id ON public.events USING bt
 
 CREATE INDEX index_evidences_on_release_id ON public.evidences USING btree (release_id);
 
+CREATE INDEX index_expired_and_not_notified_personal_access_tokens ON public.personal_access_tokens USING btree (id, expires_at) WHERE ((impersonation = false) AND (revoked = false) AND (expire_notification_delivered = false));
+
 CREATE UNIQUE INDEX index_external_pull_requests_on_project_and_branches ON public.external_pull_requests USING btree (project_id, source_branch, target_branch);
 
 CREATE UNIQUE INDEX index_feature_flag_scopes_on_flag_id_and_environment_scope ON public.operations_feature_flag_scopes USING btree (feature_flag_id, environment_scope);
@@ -13947,6 +13949,7 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200514000132
 20200514000340
 20200515155620
+20200518091745
 20200519115908
 20200519171058
 20200519194042
