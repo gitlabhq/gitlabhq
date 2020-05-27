@@ -787,7 +787,7 @@
   resolved "https://registry.yarnpkg.com/@gitlab/svgs/-/svgs-1.130.0.tgz#0c2f3cdc0a4b0f54c47b2861c8fa31b2a58c570a"
   integrity sha512-azJ1E9PBk6fGOaP6816BSr8oYrQu3m3BbYZwWOCUp8AfbZuf0ZOZVYmlR9i/eAOhoqqqmwF8hYCK2VjAklbpPA==
 
-"@gitlab/ui@16.0":
+"@gitlab/ui@16.0.0":
   version "16.0.0"
   resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-16.0.0.tgz#0e2d19b85c47f45a052caf6cd0367613cbab8e8e"
   integrity sha512-xSWXtFWWQzGtL35dGexc5LGqAJXYjLMEFQyPLzCBX3yY9tkI9s9rVMX053tnKYb9kgEmL+R/xGiW7D9nb58VmQ==

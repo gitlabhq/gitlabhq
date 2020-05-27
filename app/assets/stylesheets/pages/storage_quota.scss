@@ -9,14 +9,8 @@
     @include gl-rounded-bottom-right-base;
   }
 
-  &:not(:first-child) {
-    @include gl-border-l-1;
-    @include gl-border-l-solid;
-    @include gl-border-white;
-  }
-
   &:not(:last-child) {
-    @include gl-border-r-1;
+    @include gl-border-r-2;
     @include gl-border-r-solid;
     @include gl-border-white;
   }

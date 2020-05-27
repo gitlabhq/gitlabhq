@@ -189,8 +189,10 @@ class CommitStatus < ApplicationRecord
   end
 
   def self.update_as_processed!
-    # Marks items as processed, and increases `lock_version` (Optimisitc Locking)
-    update_all('processed=TRUE, lock_version=COALESCE(lock_version,0)+1')
+    # Marks items as processed
+    # we do not increase `lock_version`, as we are the one
+    # holding given lock_version (Optimisitc Locking)
+    update_all(processed: true)
   end
 
   def self.locking_enabled?

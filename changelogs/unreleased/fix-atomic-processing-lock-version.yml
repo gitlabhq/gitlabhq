@@ -1,0 +1,5 @@
+---
+title: Fix atomic processing bumping a lock_version
+merge_request: 32914
+author:
+type: fixed

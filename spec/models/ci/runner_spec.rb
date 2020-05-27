@@ -263,7 +263,7 @@ describe Ci::Runner do
     subject { described_class.online }
 
     before do
-      @runner1 = create(:ci_runner, :instance, contacted_at: 1.hour.ago)
+      @runner1 = create(:ci_runner, :instance, contacted_at: 2.hours.ago)
       @runner2 = create(:ci_runner, :instance, contacted_at: 1.second.ago)
     end
 
@@ -344,7 +344,7 @@ describe Ci::Runner do
     subject { described_class.offline }
 
     before do
-      @runner1 = create(:ci_runner, :instance, contacted_at: 1.hour.ago)
+      @runner1 = create(:ci_runner, :instance, contacted_at: 2.hours.ago)
       @runner2 = create(:ci_runner, :instance, contacted_at: 1.second.ago)
     end
 
@@ -598,10 +598,10 @@ describe Ci::Runner do
     end
   end
 
-  describe '#update_cached_info' do
+  describe '#heartbeat' do
     let(:runner) { create(:ci_runner, :project) }
 
-    subject { runner.update_cached_info(architecture: '18-bit') }
+    subject { runner.heartbeat(architecture: '18-bit') }
 
     context 'when database was updated recently' do
       before do

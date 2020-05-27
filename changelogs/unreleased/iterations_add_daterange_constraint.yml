@@ -1,5 +1,0 @@
----
-title: Add btree_gist PGSQL extension and add DB constraints for Iteration date ranges
-merge_request: 32335
-author:
-type: added

@@ -367,6 +367,8 @@ migration involves one of the high-traffic tables:
 - `users`
 - `projects`
 - `namespaces`
+- `issues`
+- `merge_requests`
 - `ci_pipelines`
 - `ci_builds`
 - `notes`

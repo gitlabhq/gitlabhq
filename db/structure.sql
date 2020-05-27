@@ -2,8 +2,6 @@ SET search_path=public;
 
 CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
 
-CREATE EXTENSION IF NOT EXISTS btree_gist WITH SCHEMA public;
-
 CREATE EXTENSION IF NOT EXISTS pg_trgm WITH SCHEMA public;
 
 CREATE TABLE public.abuse_reports (
@@ -8427,12 +8425,6 @@ ALTER TABLE ONLY public.issue_user_mentions
 ALTER TABLE ONLY public.issues
     ADD CONSTRAINT issues_pkey PRIMARY KEY (id);
 
-ALTER TABLE ONLY public.sprints
-    ADD CONSTRAINT iteration_start_and_due_daterange_group_id_constraint EXCLUDE USING gist (group_id WITH =, daterange(start_date, due_date, '[]'::text) WITH &&) WHERE ((group_id IS NOT NULL));
-
-ALTER TABLE ONLY public.sprints
-    ADD CONSTRAINT iteration_start_and_due_daterange_project_id_constraint EXCLUDE USING gist (project_id WITH =, daterange(start_date, due_date, '[]'::text) WITH &&) WHERE ((project_id IS NOT NULL));
-
 ALTER TABLE ONLY public.jira_connect_installations
     ADD CONSTRAINT jira_connect_installations_pkey PRIMARY KEY (id);
 
@@ -13953,8 +13945,6 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200514000009
 20200514000132
 20200514000340
-20200515152649
-20200515153633
 20200515155620
 20200519115908
 20200519171058

@@ -563,6 +563,10 @@ If more than the maximum number of allowed connections occur concurrently, they 
 dropped and users get
 [an `ssh_exchange_identification` error](../../topics/git/troubleshooting_git.md#ssh_exchange_identification-error).
 
+### Import/export
+
+To help avoid abuse, project and group imports, exports, and export downloads are rate limited. See [Project import/export rate limits](../../user/project/settings/import_export.md#rate-limits) and [Group import/export rate limits](../../user/group/settings/import_export.md#rate-limits) for details.
+
 ## GitLab.com Logging
 
 We use [Fluentd](https://gitlab.com/gitlab-com/runbooks/tree/master/logging/doc#fluentd) to parse our logs. Fluentd sends our logs to

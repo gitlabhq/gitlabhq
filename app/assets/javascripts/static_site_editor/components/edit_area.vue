@@ -47,7 +47,7 @@ export default {
 };
 </script>
 <template>
-  <div class="d-flex flex-grow-1 flex-column">
+  <div class="d-flex flex-grow-1 flex-column h-100">
     <edit-header class="py-2" :title="title" />
     <rich-content-editor v-model="editableContent" class="mb-9" />
     <publish-toolbar

@@ -23,10 +23,17 @@ module Ci
       project_type: 3
     }
 
-    ONLINE_CONTACT_TIMEOUT = 1.hour
+    # This `ONLINE_CONTACT_TIMEOUT` needs to be larger than
+    #   `RUNNER_QUEUE_EXPIRY_TIME+UPDATE_CONTACT_COLUMN_EVERY`
+    #
+    ONLINE_CONTACT_TIMEOUT = 2.hours
+
+    # The `RUNNER_QUEUE_EXPIRY_TIME` indicates the longest interval that
+    #   Runner request needs to be refreshed by Rails instead of being handled
+    #   by Workhorse
     RUNNER_QUEUE_EXPIRY_TIME = 1.hour
 
-    # This needs to be less than `ONLINE_CONTACT_TIMEOUT`
+    # The `UPDATE_CONTACT_COLUMN_EVERY` defines how often the Runner DB entry can be updated
     UPDATE_CONTACT_COLUMN_EVERY = (40.minutes..55.minutes).freeze
 
     AVAILABLE_TYPES_LEGACY = %w[specific shared].freeze
@@ -282,7 +289,7 @@ module Ci
       ensure_runner_queue_value == value if value.present?
     end
 
-    def update_cached_info(values)
+    def heartbeat(values)
       values = values&.slice(:version, :revision, :platform, :architecture, :ip_address) || {}
       values[:contacted_at] = Time.current
 

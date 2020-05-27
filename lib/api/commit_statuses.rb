@@ -106,7 +106,7 @@ module API
             status.enqueue!
           when 'running'
             status.enqueue
-            Gitlab::OptimisticLocking.retry_lock(status, &:run!)
+            status.run!
           when 'success'
             status.success!
           when 'failed'

@@ -23,6 +23,7 @@ class Clusters::ClustersController < Clusters::BaseController
     respond_to do |format|
       format.html
       format.json do
+        Gitlab::PollingInterval.set_header(response, interval: STATUS_POLLING_INTERVAL)
         serializer = ClusterSerializer.new(current_user: current_user)
 
         render json: {

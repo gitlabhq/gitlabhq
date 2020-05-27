@@ -314,8 +314,7 @@ class ProjectsController < Projects::ApplicationController
         @wiki_home = @project_wiki.find_page('home', params[:version_id])
       elsif @project.feature_available?(:issues, current_user)
         @issues = issuables_collection.page(params[:page])
-        @collection_type = 'Issue'
-        @issuable_meta_data = issuable_meta_data(@issues, @collection_type, current_user)
+        @issuable_meta_data = Gitlab::IssuableMetadata.new(current_user, @issues).data
       end
 
       render :show

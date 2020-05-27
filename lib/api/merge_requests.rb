@@ -8,7 +8,6 @@ module API
 
     before { authenticate_non_get! }
 
-    helpers ::Gitlab::IssuableMetadata
     helpers Helpers::MergeRequestsHelpers
 
     # EE::API::MergeRequests would override the following helpers
@@ -92,7 +91,7 @@ module API
         if params[:view] == 'simple'
           options[:with] = Entities::MergeRequestSimple
         else
-          options[:issuable_metadata] = issuable_meta_data(merge_requests, 'MergeRequest', current_user)
+          options[:issuable_metadata] = Gitlab::IssuableMetadata.new(current_user, merge_requests).data
           if Feature.enabled?(:mr_list_api_skip_merge_status_recheck, default_enabled: true)
             options[:skip_merge_status_recheck] = !declared_params[:with_merge_status_recheck]
           end

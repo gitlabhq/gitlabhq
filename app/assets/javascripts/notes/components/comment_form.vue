@@ -412,7 +412,7 @@ js-gfm-input js-autosize markdown-area js-vue-textarea qa-comment-input"
             </gl-alert>
             <div class="note-form-actions">
               <div
-                class="float-left btn-group
+                class="btn-group
 append-right-10 comment-type-dropdown js-comment-type-dropdown droplab-dropdown"
               >
                 <button

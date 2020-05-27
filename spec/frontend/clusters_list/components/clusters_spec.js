@@ -28,13 +28,17 @@ describe('Clusters', () => {
     return axios.waitForAll();
   };
 
+  const paginationHeader = (total = apiData.clusters.length, perPage = 20, currentPage = 1) => {
+    return {
+      'x-total': total,
+      'x-per-page': perPage,
+      'x-page': currentPage,
+    };
+  };
+
   beforeEach(() => {
     mock = new MockAdapter(axios);
-    mockPollingApi(200, apiData, {
-      'x-total': apiData.clusters.length,
-      'x-per-page': 20,
-      'x-page': 1,
-    });
+    mockPollingApi(200, apiData, paginationHeader());
 
     return mountWrapper();
   });
@@ -99,17 +103,30 @@ describe('Clusters', () => {
     });
   });
 
+  describe('nodes present', () => {
+    it.each`
+      nodeSize     | lineNumber
+      ${'Unknown'} | ${0}
+      ${'1'}       | ${1}
+      ${'2'}       | ${2}
+      ${'Unknown'} | ${3}
+      ${'Unknown'} | ${4}
+      ${'Unknown'} | ${5}
+    `('renders node size for each cluster', ({ nodeSize, lineNumber }) => {
+      const sizes = findTable().findAll('td:nth-child(3)');
+      const size = sizes.at(lineNumber);
+
+      expect(size.text()).toBe(nodeSize);
+    });
+  });
+
   describe('pagination', () => {
     const perPage = apiData.clusters.length;
     const totalFirstPage = 100;
     const totalSecondPage = 500;
 
     beforeEach(() => {
-      mockPollingApi(200, apiData, {
-        'x-total': totalFirstPage,
-        'x-per-page': perPage,
-        'x-page': 1,
-      });
+      mockPollingApi(200, apiData, paginationHeader(totalFirstPage, perPage, 1));
       return mountWrapper();
     });
 
@@ -123,11 +140,7 @@ describe('Clusters', () => {
 
     describe('when updating currentPage', () => {
       beforeEach(() => {
-        mockPollingApi(200, apiData, {
-          'x-total': totalSecondPage,
-          'x-per-page': perPage,
-          'x-page': 2,
-        });
+        mockPollingApi(200, apiData, paginationHeader(totalSecondPage, perPage, 2));
         wrapper.setData({ currentPage: 2 });
         return axios.waitForAll();
       });

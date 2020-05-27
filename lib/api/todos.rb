@@ -6,8 +6,6 @@ module API
 
     before { authenticate! }
 
-    helpers ::Gitlab::IssuableMetadata
-
     ISSUABLE_TYPES = {
       'merge_requests' => ->(iid) { find_merge_request_with_access(iid) },
       'issues' => ->(iid) { find_project_issue(iid) }
@@ -65,7 +63,7 @@ module API
             next unless collection
 
             targets = collection.map(&:target)
-            options[type] = { issuable_metadata: issuable_meta_data(targets, type, current_user) }
+            options[type] = { issuable_metadata: Gitlab::IssuableMetadata.new(current_user, targets).data }
           end
         end
       end

@@ -41,6 +41,13 @@ describe Projects::ClustersController do
           expect(response).to match_response_schema('cluster_list')
         end
 
+        it 'sets the polling interval header for json requests' do
+          go(format: :json)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response.headers['Poll-Interval']).to eq("10000")
+        end
+
         context 'when page is specified' do
           let(:last_page) { project.clusters.page.total_pages }
           let(:total_count) { project.clusters.page.total_count }

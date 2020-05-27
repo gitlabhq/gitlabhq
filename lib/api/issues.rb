@@ -5,7 +5,6 @@ module API
     include PaginationParams
     helpers Helpers::IssuesHelpers
     helpers Helpers::RateLimiter
-    helpers ::Gitlab::IssuableMetadata
 
     before { authenticate_non_get! }
 
@@ -108,7 +107,7 @@ module API
           with: Entities::Issue,
           with_labels_details: declared_params[:with_labels_details],
           current_user: current_user,
-          issuable_metadata: issuable_meta_data(issues, 'Issue', current_user),
+          issuable_metadata: Gitlab::IssuableMetadata.new(current_user, issues).data,
           include_subscribed: false
         }
 
@@ -134,7 +133,7 @@ module API
           with: Entities::Issue,
           with_labels_details: declared_params[:with_labels_details],
           current_user: current_user,
-          issuable_metadata: issuable_meta_data(issues, 'Issue', current_user),
+          issuable_metadata: Gitlab::IssuableMetadata.new(current_user, issues).data,
           include_subscribed: false,
           group: user_group
         }
@@ -171,7 +170,7 @@ module API
           with_labels_details: declared_params[:with_labels_details],
           current_user: current_user,
           project: user_project,
-          issuable_metadata: issuable_meta_data(issues, 'Issue', current_user),
+          issuable_metadata: Gitlab::IssuableMetadata.new(current_user, issues).data,
           include_subscribed: false
         }
 
