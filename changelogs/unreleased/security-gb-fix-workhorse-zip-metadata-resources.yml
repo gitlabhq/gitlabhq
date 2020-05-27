@@ -1,5 +1,0 @@
----
-title: Limit memory footprint of a command that generates ZIP artifacts metadata
-merge_request:
-author:
-type: security

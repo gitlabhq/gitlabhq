@@ -1,5 +1,0 @@
----
-title: Kubernetes cluster details page no longer exposes Service Token
-merge_request:
-author:
-type: security
