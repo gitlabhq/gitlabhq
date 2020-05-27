@@ -1109,6 +1109,25 @@ entry.
 - Remove store_mentions! in Snippets::CreateService. !29581 (Sashi Kumar)
 
 
+## 12.9.8 (2020-05-27)
+
+### Security (13 changes)
+
+- Hide EKS secret key in admin integrations settings.
+- Added data integrity check before updating a deploy key.
+- Display only verified emails on notifications and profile page.
+- Disable caching on repo/blobs/[sha]/raw endpoint.
+- Require confirmed email address for GitLab OAuth authentication.
+- Kubernetes cluster details page no longer exposes Service Token.
+- Fix confirming unverified emails with soft email confirmation flow enabled.
+- Disallow user to control PUT request using mermaid markdown in issue description.
+- Check forked project permissions before allowing fork.
+- Limit memory footprint of a command that generates ZIP artifacts metadata.
+- Fix file enuming using Group Import.
+- Prevent XSS in the monitoring dashboard.
+- Use `gsub` instead of the Ruby `%` operator to perform variable substitution in Prometheus proxy API.
+
+
 ## 12.9.6 (2020-05-05)
 
 ### Fixed (1 change)
