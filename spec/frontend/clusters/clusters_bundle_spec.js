@@ -82,28 +82,6 @@ describe('Clusters', () => {
     });
   });
 
-  describe('showToken', () => {
-    it('should update token field type', () => {
-      cluster.showTokenButton.click();
-
-      expect(cluster.tokenField.getAttribute('type')).toEqual('text');
-
-      cluster.showTokenButton.click();
-
-      expect(cluster.tokenField.getAttribute('type')).toEqual('password');
-    });
-
-    it('should update show token button text', () => {
-      cluster.showTokenButton.click();
-
-      expect(cluster.showTokenButton.textContent).toEqual('Hide');
-
-      cluster.showTokenButton.click();
-
-      expect(cluster.showTokenButton.textContent).toEqual('Show');
-    });
-  });
-
   describe('checkForNewInstalls', () => {
     const INITIAL_APP_MAP = {
       helm: { status: null, title: 'Helm Tiller' },

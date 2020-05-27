@@ -135,6 +135,46 @@ describe Admin::ApplicationSettingsController do
     end
   end
 
+  describe 'PATCH #integrations' do
+    before do
+      stub_feature_flags(instance_level_integrations: false)
+      sign_in(admin)
+    end
+
+    describe 'EKS integration' do
+      let(:application_setting) { ApplicationSetting.current }
+      let(:settings_params) do
+        {
+          eks_integration_enabled: '1',
+          eks_account_id: '123456789012',
+          eks_access_key_id: 'dummy access key',
+          eks_secret_access_key: 'dummy secret key'
+        }
+      end
+
+      it 'updates EKS settings' do
+        patch :integrations, params: { application_setting: settings_params }
+
+        expect(application_setting.eks_integration_enabled).to be_truthy
+        expect(application_setting.eks_account_id).to eq '123456789012'
+        expect(application_setting.eks_access_key_id).to eq 'dummy access key'
+        expect(application_setting.eks_secret_access_key).to eq 'dummy secret key'
+      end
+
+      context 'secret access key is blank' do
+        let(:settings_params) { { eks_integration_enabled: '0', eks_secret_access_key: '' } }
+
+        it 'does not update the secret key' do
+          application_setting.update!(eks_secret_access_key: 'dummy secret key')
+
+          patch :integrations, params: { application_setting: settings_params }
+
+          expect(application_setting.reload.eks_secret_access_key).to eq 'dummy secret key'
+        end
+      end
+    end
+  end
+
   describe 'PUT #reset_registration_token' do
     before do
       sign_in(admin)

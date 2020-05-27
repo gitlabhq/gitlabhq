@@ -108,6 +108,11 @@ describe Group do
       let(:group_notification_email) { 'user+group@example.com' }
       let(:subgroup_notification_email) { 'user+subgroup@example.com' }
 
+      before do
+        create(:email, :confirmed, user: user, email: group_notification_email)
+        create(:email, :confirmed, user: user, email: subgroup_notification_email)
+      end
+
       subject { subgroup.notification_email_for(user) }
 
       context 'when both group notification emails are set' do

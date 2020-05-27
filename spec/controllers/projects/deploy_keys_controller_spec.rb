@@ -256,7 +256,7 @@ describe Projects::DeployKeysController do
     end
 
     def deploy_key_params(title, can_push)
-      deploy_keys_projects_attributes = { '0' => { id: deploy_keys_project, can_push: can_push } }
+      deploy_keys_projects_attributes = { '0' => { can_push: can_push } }
       { deploy_key: { title: title, deploy_keys_projects_attributes: deploy_keys_projects_attributes } }
     end
 
@@ -298,6 +298,42 @@ describe Projects::DeployKeysController do
 
         it 'updates can_push of deploy_keys_project' do
           expect { subject }.to change { deploy_keys_project.reload.can_push }.from(false).to(true)
+        end
+      end
+
+      context 'when a different deploy key id param is injected' do
+        let(:extra_params) { deploy_key_params('updated title', '1') }
+        let(:hacked_params) do
+          extra_params.reverse_merge(id: other_deploy_key_id,
+                                     namespace_id: project.namespace,
+                                     project_id: project)
+        end
+
+        subject { put :update, params: hacked_params }
+
+        context 'and that deploy key id exists' do
+          let(:other_project) { create(:project) }
+          let(:other_deploy_key) do
+            key = create(:deploy_key)
+            project.deploy_keys << key
+            key
+          end
+
+          let(:other_deploy_key_id) { other_deploy_key.id }
+
+          it 'does not update the can_push attribute' do
+            expect { subject }.not_to change { deploy_key.deploy_keys_project_for(project).can_push }
+          end
+        end
+
+        context 'and that deploy key id does not exist' do
+          let(:other_deploy_key_id) { 9999 }
+
+          it 'returns 404' do
+            subject
+
+            expect(response).to have_gitlab_http_status(:not_found)
+          end
         end
       end
     end

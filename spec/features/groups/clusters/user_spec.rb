@@ -39,7 +39,7 @@ describe 'User Cluster', :js do
           expect(page.find_field('cluster[platform_kubernetes_attributes][api_url]').value)
             .to have_content('http://example.com')
           expect(page.find_field('cluster[platform_kubernetes_attributes][token]').value)
-            .to have_content('my-token')
+            .to be_empty
         end
       end
 
