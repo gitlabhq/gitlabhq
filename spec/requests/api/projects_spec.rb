@@ -1891,6 +1891,17 @@ describe API::Projects do
           expect(project_fork_target).to be_forked
         end
 
+        it 'fails without permission from forked_from project' do
+          project_fork_source.project_feature.update_attribute(:forking_access_level, ProjectFeature::PRIVATE)
+
+          post api("/projects/#{project_fork_target.id}/fork/#{project_fork_source.id}", user)
+
+          expect(response).to have_gitlab_http_status(:forbidden)
+          expect(project_fork_target.forked_from_project).to be_nil
+          expect(project_fork_target.fork_network_member).not_to be_present
+          expect(project_fork_target).not_to be_forked
+        end
+
         it 'denies project to be forked from a private project' do
           post api("/projects/#{project_fork_target.id}/fork/#{private_project_fork_source.id}", user)
 

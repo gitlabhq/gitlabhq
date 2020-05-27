@@ -26,6 +26,6 @@
           = f.text_field :eks_access_key_id, class: 'form-control'
         .form-group
           = f.label :eks_secret_access_key, 'Secret access key', class: 'label-bold'
-          = f.password_field :eks_secret_access_key, value: @application_setting.eks_secret_access_key, class: 'form-control'
+          = f.password_field :eks_secret_access_key, autocomplete: 'off', class: 'form-control'
 
       = f.submit 'Save changes', class: "btn btn-success"
