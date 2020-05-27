@@ -100,13 +100,13 @@ describe AlertManagement::AlertsFinder, '#execute' do
 
         context 'when sorting by start time' do
           context 'sorts alerts ascending' do
-            let(:params) { { sort: 'start_time_asc' } }
+            let(:params) { { sort: 'started_at_asc' } }
 
             it { is_expected.to eq [alert_1, alert_2] }
           end
 
           context 'sorts alerts descending' do
-            let(:params) { { sort: 'start_time_desc' } }
+            let(:params) { { sort: 'started_at_desc' } }
 
             it { is_expected.to eq [alert_2, alert_1] }
           end
@@ -114,13 +114,13 @@ describe AlertManagement::AlertsFinder, '#execute' do
 
         context 'when sorting by end time' do
           context 'sorts alerts ascending' do
-            let(:params) { { sort: 'end_time_asc' } }
+            let(:params) { { sort: 'ended_at_asc' } }
 
             it { is_expected.to eq [alert_1, alert_2] }
           end
 
           context 'sorts alerts descending' do
-            let(:params) { { sort: 'end_time_desc' } }
+            let(:params) { { sort: 'ended_at_desc' } }
 
             it { is_expected.to eq [alert_2, alert_1] }
           end
@@ -131,13 +131,13 @@ describe AlertManagement::AlertsFinder, '#execute' do
           let_it_be(:alert_count_3) { create(:alert_management_alert, project: project, events: 3) }
 
           context 'sorts alerts ascending' do
-            let(:params) { { sort: 'events_count_asc' } }
+            let(:params) { { sort: 'event_count_asc' } }
 
             it { is_expected.to eq [alert_2, alert_1, alert_count_3, alert_count_6] }
           end
 
           context 'sorts alerts descending' do
-            let(:params) { { sort: 'events_count_desc' } }
+            let(:params) { { sort: 'event_count_desc' } }
 
             it { is_expected.to eq [alert_count_6, alert_count_3, alert_1, alert_2] }
           end

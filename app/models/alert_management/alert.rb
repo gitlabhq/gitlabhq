@@ -102,7 +102,7 @@ module AlertManagement
 
     scope :order_start_time,    -> (sort_order) { order(started_at: sort_order) }
     scope :order_end_time,      -> (sort_order) { order(ended_at: sort_order) }
-    scope :order_events_count,  -> (sort_order) { order(events: sort_order) }
+    scope :order_event_count,   -> (sort_order) { order(events: sort_order) }
     scope :order_severity,      -> (sort_order) { order(severity: sort_order) }
     scope :order_status,        -> (sort_order) { order(status: sort_order) }
 
@@ -110,12 +110,12 @@ module AlertManagement
 
     def self.sort_by_attribute(method)
       case method.to_s
-      when 'start_time_asc'     then order_start_time(:asc)
-      when 'start_time_desc'    then order_start_time(:desc)
-      when 'end_time_asc'       then order_end_time(:asc)
-      when 'end_time_desc'      then order_end_time(:desc)
-      when 'events_count_asc'   then order_events_count(:asc)
-      when 'events_count_desc'  then order_events_count(:desc)
+      when 'started_at_asc'     then order_start_time(:asc)
+      when 'started_at_desc'    then order_start_time(:desc)
+      when 'ended_at_asc'       then order_end_time(:asc)
+      when 'ended_at_desc'      then order_end_time(:desc)
+      when 'event_count_asc'    then order_event_count(:asc)
+      when 'event_count_desc'   then order_event_count(:desc)
       when 'severity_asc'       then order_severity(:asc)
       when 'severity_desc'      then order_severity(:desc)
       when 'status_asc'         then order_status(:asc)

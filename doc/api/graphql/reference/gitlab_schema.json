@@ -769,25 +769,25 @@
               "deprecationReason": null
             },
             {
-              "name": "START_TIME_ASC",
+              "name": "STARTED_AT_ASC",
               "description": "Start time by ascending order",
               "isDeprecated": false,
               "deprecationReason": null
             },
             {
-              "name": "START_TIME_DESC",
+              "name": "STARTED_AT_DESC",
               "description": "Start time by descending order",
               "isDeprecated": false,
               "deprecationReason": null
             },
             {
-              "name": "END_TIME_ASC",
+              "name": "ENDED_AT_ASC",
               "description": "End time by ascending order",
               "isDeprecated": false,
               "deprecationReason": null
             },
             {
-              "name": "END_TIME_DESC",
+              "name": "ENDED_AT_DESC",
               "description": "End time by descending order",
               "isDeprecated": false,
               "deprecationReason": null
@@ -817,13 +817,13 @@
               "deprecationReason": null
             },
             {
-              "name": "EVENTS_COUNT_ASC",
+              "name": "EVENT_COUNT_ASC",
               "description": "Events count by ascending order",
               "isDeprecated": false,
               "deprecationReason": null
             },
             {
-              "name": "EVENTS_COUNT_DESC",
+              "name": "EVENT_COUNT_DESC",
               "description": "Events count by descending order",
               "isDeprecated": false,
               "deprecationReason": null

@@ -38,8 +38,8 @@ exports[`Dashboard template matches the default snapshot 1`] = `
             class="monitor-environment-dropdown-header text-center"
           >
             
-            Environment
-          
+          Environment
+        
           </gl-dropdown-header-stub>
            
           <gl-dropdown-divider-stub />
@@ -58,8 +58,8 @@ exports[`Dashboard template matches the default snapshot 1`] = `
             class="text-secondary no-matches-message"
           >
             
-            No matching results
-          
+          No matching results
+        
           </div>
         </div>
       </gl-dropdown-stub>

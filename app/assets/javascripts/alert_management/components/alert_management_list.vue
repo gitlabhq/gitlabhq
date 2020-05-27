@@ -52,14 +52,14 @@ export default {
       sortable: true,
     },
     {
-      key: 'startTime',
+      key: 'startedAt',
       label: s__('AlertManagement|Start time'),
       thClass: 'js-started-at',
       tdClass,
       sortable: true,
     },
     {
-      key: 'endTime',
+      key: 'endedAt',
       label: s__('AlertManagement|End time'),
       tdClass,
       sortable: true,
@@ -72,7 +72,7 @@ export default {
       sortable: false,
     },
     {
-      key: 'eventsCount',
+      key: 'eventCount',
       label: s__('AlertManagement|Events'),
       thClass: 'text-right gl-pr-9 w-3rem',
       tdClass: `${tdClass} text-md-right`,
@@ -164,7 +164,7 @@ export default {
       errored: false,
       isAlertDismissed: false,
       isErrorAlertDismissed: false,
-      sort: 'START_TIME_ASC',
+      sort: 'STARTED_AT_ASC',
       statusFilter: this.$options.statusTabs[4].filters,
     };
   },
@@ -199,7 +199,7 @@ export default {
       const sortDirection = sortDesc ? 'DESC' : 'ASC';
       const sortColumn = convertToSnakeCase(sortBy).toUpperCase();
 
-      if (sortBy !== 'startTime') {
+      if (sortBy !== 'startedAt') {
         findDefaultSortColumn().ariaSort = 'none';
       }
       this.sort = `${sortColumn}_${sortDirection}`;
@@ -294,15 +294,15 @@ export default {
           </div>
         </template>
 
-        <template #cell(startTime)="{ item }">
+        <template #cell(startedAt)="{ item }">
           <time-ago v-if="item.startedAt" :time="item.startedAt" />
         </template>
 
-        <template #cell(endTime)="{ item }">
+        <template #cell(endedAt)="{ item }">
           <time-ago v-if="item.endedAt" :time="item.endedAt" />
         </template>
-        <!-- TODO: Remove after: https://gitlab.com/gitlab-org/gitlab/-/issues/218467 -->
-        <template #cell(eventsCount)="{ item }">
+
+        <template #cell(eventCount)="{ item }">
           {{ item.eventCount }}
         </template>
 

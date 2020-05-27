@@ -17930,6 +17930,9 @@ msgstr ""
 msgid "Remove group"
 msgstr ""
 
+msgid "Remove iteration"
+msgstr ""
+
 msgid "Remove license"
 msgstr ""
 
@@ -17975,6 +17978,9 @@ msgstr ""
 msgid "Removed %{epic_ref} from child epics."
 msgstr ""
 
+msgid "Removed %{iteration_reference} iteration."
+msgstr ""
+
 msgid "Removed %{label_references} %{label_text}."
 msgstr ""
 
@@ -18012,6 +18018,9 @@ msgid "Removes %{assignee_text} %{assignee_references}."
 msgstr ""
 
 msgid "Removes %{epic_ref} from child epics."
+msgstr ""
+
+msgid "Removes %{iteration_reference} iteration."
 msgstr ""
 
 msgid "Removes %{label_references} %{label_text}."
@@ -18188,6 +18197,9 @@ msgid "Reports|Metrics reports did not change"
 msgstr ""
 
 msgid "Reports|Metrics reports failed loading results"
+msgstr ""
+
+msgid "Reports|Scanner"
 msgstr ""
 
 msgid "Reports|Severity"
@@ -19140,10 +19152,10 @@ msgstr ""
 msgid "SecurityReports|Remove project from dashboard"
 msgstr ""
 
-msgid "SecurityReports|Report type"
+msgid "SecurityReports|Return to dashboard"
 msgstr ""
 
-msgid "SecurityReports|Return to dashboard"
+msgid "SecurityReports|Scanner type"
 msgstr ""
 
 msgid "SecurityReports|Security Dashboard"
@@ -19611,6 +19623,9 @@ msgstr ""
 msgid "Set instance-wide template repository"
 msgstr ""
 
+msgid "Set iteration"
+msgstr ""
+
 msgid "Set max session time for web terminal."
 msgstr ""
 
@@ -19645,6 +19660,9 @@ msgid "Set the due date to %{due_date}."
 msgstr ""
 
 msgid "Set the duration for which the jobs will be considered as old and expired. Once that time passes, the jobs will be archived and no longer able to be retried. Make it empty to never expire jobs. It has to be no less than 1 day, for example: <code>15 days</code>, <code>1 month</code>, <code>2 years</code>."
+msgstr ""
+
+msgid "Set the iteration to %{iteration_reference}."
 msgstr ""
 
 msgid "Set the maximum file size for each job's artifacts"
@@ -19729,6 +19747,9 @@ msgid "Sets target branch to %{branch_name}."
 msgstr ""
 
 msgid "Sets the due date to %{due_date}."
+msgstr ""
+
+msgid "Sets the iteration to %{iteration_reference}."
 msgstr ""
 
 msgid "Sets the milestone to %{milestone_reference}."
@@ -25704,7 +25725,7 @@ msgstr ""
 msgid "ciReport|All projects"
 msgstr ""
 
-msgid "ciReport|All report types"
+msgid "ciReport|All scanner types"
 msgstr ""
 
 msgid "ciReport|All severities"

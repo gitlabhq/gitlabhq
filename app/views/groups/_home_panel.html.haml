@@ -11,7 +11,7 @@
         .d-inline-flex.align-items-baseline
           %h1.home-panel-title.prepend-top-8.append-bottom-5
             = @group.name
-            %span.visibility-icon.text-secondary.prepend-left-4.has-tooltip{ data: { container: 'body' }, title: visibility_icon_description(@group) }
+            %span.visibility-icon.text-secondary.gl-ml-2.has-tooltip{ data: { container: 'body' }, title: visibility_icon_description(@group) }
               = visibility_level_icon(@group.visibility_level, fw: false, options: {class: 'icon'})
         .home-panel-metadata.d-flex.align-items-center.text-secondary
           %span

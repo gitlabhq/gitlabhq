@@ -114,30 +114,33 @@ describe Gitlab::UsageData, :aggregate_failures do
           end
         end
 
+        let_it_be('container_expiration_policy_with_keep_n_set_to_null') { create(:container_expiration_policy, keep_n: nil) }
+        let_it_be('container_expiration_policy_with_older_than_set_to_null') { create(:container_expiration_policy, older_than: nil) }
+
         let(:inactive_policies) { ::ContainerExpirationPolicy.where(enabled: false) }
         let(:active_policies) { ::ContainerExpirationPolicy.active }
 
         subject { described_class.data[:counts] }
 
         it 'gathers usage data' do
-          expect(subject[:projects_with_expiration_policy_enabled]).to eq 20
+          expect(subject[:projects_with_expiration_policy_enabled]).to eq 22
           expect(subject[:projects_with_expiration_policy_disabled]).to eq 1
 
-          expect(subject[:projects_with_expiration_policy_enabled_with_keep_n_unset]).to eq 14
+          expect(subject[:projects_with_expiration_policy_enabled_with_keep_n_unset]).to eq 1
           expect(subject[:projects_with_expiration_policy_enabled_with_keep_n_set_to_1]).to eq 1
           expect(subject[:projects_with_expiration_policy_enabled_with_keep_n_set_to_5]).to eq 1
-          expect(subject[:projects_with_expiration_policy_enabled_with_keep_n_set_to_10]).to eq 1
+          expect(subject[:projects_with_expiration_policy_enabled_with_keep_n_set_to_10]).to eq 16
           expect(subject[:projects_with_expiration_policy_enabled_with_keep_n_set_to_25]).to eq 1
           expect(subject[:projects_with_expiration_policy_enabled_with_keep_n_set_to_50]).to eq 1
 
-          expect(subject[:projects_with_expiration_policy_enabled_with_older_than_unset]).to eq 16
+          expect(subject[:projects_with_expiration_policy_enabled_with_older_than_unset]).to eq 1
           expect(subject[:projects_with_expiration_policy_enabled_with_older_than_set_to_7d]).to eq 1
           expect(subject[:projects_with_expiration_policy_enabled_with_older_than_set_to_14d]).to eq 1
           expect(subject[:projects_with_expiration_policy_enabled_with_older_than_set_to_30d]).to eq 1
-          expect(subject[:projects_with_expiration_policy_enabled_with_older_than_set_to_90d]).to eq 1
+          expect(subject[:projects_with_expiration_policy_enabled_with_older_than_set_to_90d]).to eq 18
 
-          expect(subject[:projects_with_expiration_policy_enabled_with_cadence_set_to_1d]).to eq 12
-          expect(subject[:projects_with_expiration_policy_enabled_with_cadence_set_to_7d]).to eq 5
+          expect(subject[:projects_with_expiration_policy_enabled_with_cadence_set_to_1d]).to eq 18
+          expect(subject[:projects_with_expiration_policy_enabled_with_cadence_set_to_7d]).to eq 1
           expect(subject[:projects_with_expiration_policy_enabled_with_cadence_set_to_14d]).to eq 1
           expect(subject[:projects_with_expiration_policy_enabled_with_cadence_set_to_1month]).to eq 1
           expect(subject[:projects_with_expiration_policy_enabled_with_cadence_set_to_3month]).to eq 1

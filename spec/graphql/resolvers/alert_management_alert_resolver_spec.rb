@@ -45,11 +45,11 @@ describe Resolvers::AlertManagementAlertResolver do
         let_it_be(:alert_count_3) { create(:alert_management_alert, project: project, events: 3) }
 
         it 'sorts alerts ascending' do
-          expect(resolve_alerts(sort: :events_count_asc)).to eq [alert_2, alert_1, alert_count_3, alert_count_6]
+          expect(resolve_alerts(sort: :event_count_asc)).to eq [alert_2, alert_1, alert_count_3, alert_count_6]
         end
 
         it 'sorts alerts descending' do
-          expect(resolve_alerts(sort: :events_count_desc)).to eq [alert_count_6, alert_count_3, alert_1, alert_2]
+          expect(resolve_alerts(sort: :event_count_desc)).to eq [alert_count_6, alert_count_3, alert_1, alert_2]
         end
       end
     end

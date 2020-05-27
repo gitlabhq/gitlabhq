@@ -40,6 +40,7 @@ The following quick actions are applicable to descriptions, discussions and thre
 | `/duplicate <#issue>`                 | ✓     |               |      | Mark this issue as a duplicate of another issue and mark them as related. **(STARTER)**                                          |
 | `/epic <epic>`                        | ✓     |               |      | Add to epic `<epic>`. The `<epic>` value should be in the format of `&epic`, `group&epic`, or a URL to an epic. **(PREMIUM)**  |
 | `/estimate <<W>w <DD>d <hh>h <mm>m>`  | ✓     | ✓             |      | Set time estimate. For example, `/estimate 1w 3d 2h 14m`.                                                                        |
+| `/iteration *iteration:iteration`     | ✓     |               |      | Set iteration ([Introduced in GitLab 13.1](https://gitlab.com/gitlab-org/gitlab/-/issues/196795)) **(STARTER)** |
 | `/label ~label1 ~label2`              | ✓     | ✓             | ✓    | Add one or more labels. Label names can also start without a tilde (`~`), but mixed syntax is not supported.                      |
 | `/lock`                               | ✓     | ✓             |      | Lock the thread.                                                                                                                 |
 | `/merge`                              |       | ✓             |      | Merge changes. Depending on the project setting, this may be [when the pipeline succeeds](merge_requests/merge_when_pipeline_succeeds.md), adding to a [Merge Train](../../ci/merge_request_pipelines/pipelines_for_merged_results/merge_trains/index.md), etc.  |
@@ -54,6 +55,7 @@ The following quick actions are applicable to descriptions, discussions and thre
 | `/remove_due_date`                    | ✓     |               |      | Remove due date.                                                                                                                 |
 | `/remove_epic`                        | ✓     |               |      | Remove from epic. **(PREMIUM)**                                                                                                  |
 | `/remove_estimate`                    | ✓     | ✓             |      | Remove time estimate.                                                                                                            |
+| `/remove_iteration`                   | ✓     |               |      | Remove iteration ([Introduced in GitLab 13.1](https://gitlab.com/gitlab-org/gitlab/-/issues/196795)) **(STARTER)** |
 | `/remove_milestone`                   | ✓     | ✓             |      | Remove milestone.                                                                                                                |
 | `/remove_parent_epic`                 |       |               | ✓    | Remove parent epic from epic ([introduced in GitLab 12.1](https://gitlab.com/gitlab-org/gitlab/-/issues/10556)). **(ULTIMATE)**    |
 | `/remove_time_spent`                  | ✓     | ✓             |      | Remove time spent.                                                                                                               |

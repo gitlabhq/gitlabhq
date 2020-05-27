@@ -2,6 +2,7 @@ import { shallowMount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
 import Dashboard from '~/monitoring/components/dashboard.vue';
+import DashboardHeader from '~/monitoring/components/dashboard_header.vue';
 import { createStore } from '~/monitoring/stores';
 import { setupAllDashboards } from '../store_utils';
 import { propsData } from '../mock_data';
@@ -27,7 +28,13 @@ describe('Dashboard template', () => {
   });
 
   it('matches the default snapshot', () => {
-    wrapper = shallowMount(Dashboard, { propsData: { ...propsData }, store });
+    wrapper = shallowMount(Dashboard, {
+      propsData: { ...propsData },
+      store,
+      stubs: {
+        DashboardHeader,
+      },
+    });
 
     expect(wrapper.element).toMatchSnapshot();
   });

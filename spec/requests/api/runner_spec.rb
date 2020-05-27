@@ -1694,6 +1694,10 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
         end
 
         context 'authorize uploading of an lsif artifact' do
+          before do
+            stub_feature_flags(code_navigation: job.project)
+          end
+
           it 'adds ProcessLsif header' do
             authorize_artifacts_with_token_in_headers(artifact_type: :lsif)
 

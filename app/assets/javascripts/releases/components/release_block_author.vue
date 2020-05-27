@@ -30,7 +30,7 @@ export default {
     <gl-sprintf :message="__('by %{user}')">
       <template #user>
         <user-avatar-link
-          class="prepend-left-4"
+          class="gl-ml-2"
           :link-href="author.webUrl"
           :img-src="author.avatarUrl"
           :img-alt="userImageAltDescription"

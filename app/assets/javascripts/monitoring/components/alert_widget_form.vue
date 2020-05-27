@@ -238,7 +238,7 @@ export default {
             <icon
               v-gl-tooltip="$options.alertQueryText.descriptionTooltip"
               name="question"
-              class="prepend-left-4"
+              class="gl-ml-2"
             />
           </div>
         </template>

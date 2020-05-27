@@ -28,6 +28,12 @@ class Iteration < ApplicationRecord
   scope :upcoming, -> { with_state(:upcoming) }
   scope :started, -> { with_state(:started) }
 
+  scope :within_timeframe, -> (start_date, end_date) do
+    where('start_date is not NULL or due_date is not NULL')
+      .where('start_date is NULL or start_date <= ?', end_date)
+      .where('due_date is NULL or due_date >= ?', start_date)
+  end
+
   state_machine :state_enum, initial: :upcoming do
     event :start do
       transition upcoming: :started
@@ -73,6 +79,10 @@ class Iteration < ApplicationRecord
 
   def state=(value)
     self.state_enum = STATE_ENUM_MAP[value]
+  end
+
+  def resource_parent
+    group || project
   end
 
   private

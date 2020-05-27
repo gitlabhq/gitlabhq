@@ -52,7 +52,6 @@ export const initialState = () => ({
   dashboard: {
     panel_groups: [],
   },
-  useDashboardEndpoint: true,
 });
 
 export const initialEmbedGroupState = () => ({

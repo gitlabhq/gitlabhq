@@ -270,22 +270,22 @@ enum AlertManagementAlertSort {
   """
   End time by ascending order
   """
-  END_TIME_ASC
+  ENDED_AT_ASC
 
   """
   End time by descending order
   """
-  END_TIME_DESC
+  ENDED_AT_DESC
 
   """
   Events count by ascending order
   """
-  EVENTS_COUNT_ASC
+  EVENT_COUNT_ASC
 
   """
   Events count by descending order
   """
-  EVENTS_COUNT_DESC
+  EVENT_COUNT_DESC
 
   """
   Severity by ascending order
@@ -300,12 +300,12 @@ enum AlertManagementAlertSort {
   """
   Start time by ascending order
   """
-  START_TIME_ASC
+  STARTED_AT_ASC
 
   """
   Start time by descending order
   """
-  START_TIME_DESC
+  STARTED_AT_DESC
 
   """
   Status by ascending order

@@ -12,7 +12,7 @@
         .d-inline-flex.align-items-baseline
           %h1.home-panel-title.prepend-top-8.append-bottom-5{ data: { qa_selector: 'project_name_content' } }
             = @project.name
-            %span.visibility-icon.text-secondary.prepend-left-4.has-tooltip{ data: { container: 'body' }, title: visibility_icon_description(@project) }
+            %span.visibility-icon.text-secondary.gl-ml-2.has-tooltip{ data: { container: 'body' }, title: visibility_icon_description(@project) }
               = visibility_level_icon(@project.visibility_level, fw: false, options: {class: 'icon'})
             = render_if_exists 'compliance_management/compliance_framework/compliance_framework_badge', project: @project
         .home-panel-metadata.d-flex.flex-wrap.text-secondary
