@@ -1,5 +1,14 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 13.0.1 (2020-05-27)
+
+### Security (3 changes)
+
+- Change the mirror user along with pull mirror settings.
+- Allow only users with a verified email to be member of a group when the group has restricted membership based on email domain.
+- Do not auto-confirm email in Trial registration.
+
+
 ## 13.0.0 (2020-05-22)
 
 ### Security (1 change)
