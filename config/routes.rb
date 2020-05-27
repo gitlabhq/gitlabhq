@@ -46,6 +46,7 @@ Rails.application.routes.draw do
 
   # Sign up
   get 'users/sign_up/welcome' => 'registrations#welcome'
+  get 'users/sign_up/experience_level' => 'registrations#experience_level'
   patch 'users/sign_up/update_registration' => 'registrations#update_registration'
 
   # Search

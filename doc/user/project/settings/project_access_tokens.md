@@ -1,6 +1,13 @@
-# Project access tokens **(CORE ONLY)**
+# Project access tokens (Alpha) **(CORE ONLY)**
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/2587) in GitLab 13.0.
+CAUTION: **Warning:**
+This is an [Alpha](https://about.gitlab.com/handbook/product/#alpha) feature, and it is subject to change at any time without
+prior notice.
+
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/2587) in GitLab 13.0.  
+> - It's deployed behind a feature flag, disabled by default.
+> - It's disabled on GitLab.com.
+> - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-project-access-tokens).
 
 Project access tokens are scoped to a project and can be used to authenticate with the [GitLab API](../../../api/README.md#personalproject-access-tokens).
 
@@ -53,3 +60,22 @@ the following table.
 | `write_registry`   | Allows write-access (push) to [container registry](../../packages/container_registry/index.md). |
 | `read_repository`  | Allows read-only access (pull) to the repository. |
 | `write_repository` | Allows read-write access (pull, push) to the repository. |
+
+### Enable or disable project access tokens
+
+Project access tokens is an [Alpha](https://about.gitlab.com/handbook/product/#alpha) feature and is not recommended for production use.
+It is deployed behind a feature flag that is **disabled by default**.
+[GitLab administrators with access to the GitLab Rails console](../../../administration/feature_flags.md)
+can enable it for your instance.
+
+To enable it:
+
+```ruby
+Feature.enable(:resource_access_token)
+```
+
+To disable it:
+
+```ruby
+Feature.disable(:resource_access_token)
+```

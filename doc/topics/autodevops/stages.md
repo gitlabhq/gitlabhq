@@ -84,10 +84,38 @@ Auto Test runs the appropriate tests for your application using
 your project to detect the language and framework. Several languages and
 frameworks are detected automatically, but if your language is not detected,
 you may be able to create a [custom buildpack](customize.md#custom-buildpacks).
-Check the [currently supported languages](index.md#currently-supported-languages).
+Check the [currently supported languages](#currently-supported-languages).
 
 Auto Test uses tests you already have in your application. If there are no
 tests, it's up to you to add them.
+
+### Currently supported languages
+
+Note that not all buildpacks support Auto Test yet, as it's a relatively new
+enhancement. All of Heroku's
+[officially supported languages](https://devcenter.heroku.com/articles/heroku-ci#supported-languages)
+support Auto Test. The languages supported by Heroku's Herokuish buildpacks all
+support Auto Test, but notably the multi-buildpack does not.
+
+The supported buildpacks are:
+
+```plaintext
+- heroku-buildpack-multi
+- heroku-buildpack-ruby
+- heroku-buildpack-nodejs
+- heroku-buildpack-clojure
+- heroku-buildpack-python
+- heroku-buildpack-java
+- heroku-buildpack-gradle
+- heroku-buildpack-scala
+- heroku-buildpack-play
+- heroku-buildpack-php
+- heroku-buildpack-go
+- buildpack-nginx
+```
+
+If your application needs a buildpack that is not in the above list, you
+might want to use a [custom buildpack](customize.md#custom-buildpacks).
 
 ## Auto Code Quality **(STARTER)**
 

@@ -8995,6 +8995,9 @@ msgstr ""
 msgid "Expand up"
 msgstr ""
 
+msgid "Experienced"
+msgstr ""
+
 msgid "Expiration"
 msgstr ""
 
@@ -9239,6 +9242,9 @@ msgid "Failed to protect the branch"
 msgstr ""
 
 msgid "Failed to protect the environment"
+msgstr ""
+
+msgid "Failed to publish issue on status page."
 msgstr ""
 
 msgid "Failed to remove a Zoom meeting"
@@ -12085,6 +12091,9 @@ msgstr ""
 msgid "Issue or Merge Request ID is required"
 msgstr ""
 
+msgid "Issue published on status page."
+msgstr ""
+
 msgid "Issue template (optional)"
 msgstr ""
 
@@ -12202,6 +12211,12 @@ msgstr ""
 msgid "It's you"
 msgstr ""
 
+msgid "Iteration changed to"
+msgstr ""
+
+msgid "Iteration removed"
+msgstr ""
+
 msgid "Iterations"
 msgstr ""
 
@@ -12212,6 +12227,12 @@ msgid "Iteration|cannot be in the past"
 msgstr ""
 
 msgid "Iteration|cannot be more than 500 years in the future"
+msgstr ""
+
+msgid "I’m familiar with the basics of project management and DevOps."
+msgstr ""
+
+msgid "I’m not very familiar with the basics of project management and DevOps."
 msgstr ""
 
 msgid "Jaeger URL"
@@ -13472,6 +13493,9 @@ msgid "Merge request"
 msgstr ""
 
 msgid "Merge request %{iid} authored by %{authorName}"
+msgstr ""
+
+msgid "Merge request %{mr_link} was reviewed by %{mr_author}"
 msgstr ""
 
 msgid "Merge request approvals"
@@ -14797,6 +14821,9 @@ msgstr ""
 msgid "November"
 msgstr ""
 
+msgid "Novice"
+msgstr ""
+
 msgid "Now you can access the merge request navigation tabs at the top, where they’re easier to find."
 msgstr ""
 
@@ -15036,7 +15063,7 @@ msgstr ""
 msgid "Optional"
 msgstr ""
 
-msgid "Optional parameter \"variables\" must be an array of keys and values. Ex: [key1, value1, key2, value2]"
+msgid "Optional parameter \"variables\" must be a Hash. Ex: variables[key1]=value1"
 msgstr ""
 
 msgid "Optionally, you can %{link_to_customize} how FogBugz email addresses and usernames are imported into GitLab."
@@ -17550,6 +17577,12 @@ msgstr ""
 msgid "Public projects Minutes cost factor"
 msgstr ""
 
+msgid "Publish to status page"
+msgstr ""
+
+msgid "Publishes this issue to the associated status page."
+msgstr ""
+
 msgid "Pull"
 msgstr ""
 
@@ -19868,7 +19901,13 @@ msgstr ""
 msgid "Show latest version"
 msgstr ""
 
+msgid "Show me everything"
+msgstr ""
+
 msgid "Show me how"
+msgstr ""
+
+msgid "Show me more advanced stuff"
 msgstr ""
 
 msgid "Show only direct members"
@@ -24648,10 +24687,19 @@ msgstr ""
 msgid "Welcome to the Guided GitLab Tour"
 msgstr ""
 
+msgid "Welcome to the guided GitLab tour"
+msgstr ""
+
 msgid "Welcome to your Issue Board!"
 msgstr ""
 
 msgid "What are you searching for?"
+msgstr ""
+
+msgid "What describes you best?"
+msgstr ""
+
+msgid "What’s your experience level?"
 msgstr ""
 
 msgid "When a deployment job is successful, skip older deployment jobs that are still pending"
@@ -26006,10 +26054,10 @@ msgstr ""
 msgid "exceeds the limit of %{bytes} bytes for directory name \"%{dirname}\""
 msgstr ""
 
-msgid "expired on %{milestone_due_date}"
+msgid "expired on %{timebox_due_date}"
 msgstr ""
 
-msgid "expires on %{milestone_due_date}"
+msgid "expires on %{timebox_due_date}"
 msgstr ""
 
 msgid "external_url"
@@ -26784,10 +26832,10 @@ msgstr ""
 msgid "started a discussion on %{design_link}"
 msgstr ""
 
-msgid "started on %{milestone_start_date}"
+msgid "started on %{timebox_start_date}"
 msgstr ""
 
-msgid "starts on %{milestone_start_date}"
+msgid "starts on %{timebox_start_date}"
 msgstr ""
 
 msgid "stuck"

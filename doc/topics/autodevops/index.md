@@ -393,9 +393,6 @@ To add a different cluster for each environment:
 1. Navigate to your project's **{cloud-gear}** **Operations > Kubernetes**.
 1. Create the Kubernetes clusters with their respective environment scope, as
    described from the table above.
-
-   ![Auto DevOps multiple clusters](img/autodevops_multiple_clusters.png)
-
 1. After creating the clusters, navigate to each cluster and install Helm Tiller
    and Ingress. Wait for the Ingress IP address to be assigned.
 1. Make sure you've [configured your DNS](#auto-devops-base-domain) with the
@@ -407,35 +404,6 @@ After completing configuration, you can test your setup by creating a merge requ
 and verifying your application is deployed as a Review App in the Kubernetes
 cluster with the `review/*` environment scope. Similarly, you can check the
 other environments.
-
-## Currently supported languages
-
-Note that not all buildpacks support Auto Test yet, as it's a relatively new
-enhancement. All of Heroku's
-[officially supported languages](https://devcenter.heroku.com/articles/heroku-ci#supported-languages)
-support Auto Test. The languages supported by Heroku's Herokuish buildpacks all
-support Auto Test, but notably the multi-buildpack does not.
-
-As of GitLab 10.0, the supported buildpacks are:
-
-```plaintext
-- heroku-buildpack-multi     v1.0.0
-- heroku-buildpack-ruby      v168
-- heroku-buildpack-nodejs    v99
-- heroku-buildpack-clojure   v77
-- heroku-buildpack-python    v99
-- heroku-buildpack-java      v53
-- heroku-buildpack-gradle    v23
-- heroku-buildpack-scala     v78
-- heroku-buildpack-play      v26
-- heroku-buildpack-php       v122
-- heroku-buildpack-go        v72
-- heroku-buildpack-erlang    fa17af9
-- buildpack-nginx            v8
-```
-
-If your application needs a buildpack that is not in the above list, you
-might want to use a [custom buildpack](customize.md#custom-buildpacks).
 
 ## Limitations
 

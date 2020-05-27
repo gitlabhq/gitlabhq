@@ -88,9 +88,11 @@ module Notes
       end
     end
 
-    # EE::Notes::CreateService would override this method
     def quick_action_options
-      { merge_request_diff_head_sha: params[:merge_request_diff_head_sha] }
+      {
+        merge_request_diff_head_sha: params[:merge_request_diff_head_sha],
+        review_id: params[:review_id]
+      }
     end
 
     def tracking_data_for(note)
@@ -103,5 +105,3 @@ module Notes
     end
   end
 end
-
-Notes::CreateService.prepend_if_ee('EE::Notes::CreateService')

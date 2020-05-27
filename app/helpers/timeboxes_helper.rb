@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module MilestonesHelper
+module TimeboxesHelper
   include EntityDateHelper
   include Gitlab::Utils::StrongMemoize
 
@@ -209,23 +209,24 @@ module MilestonesHelper
     end
   end
 
-  def milestone_date_range(milestone)
-    if milestone.start_date && milestone.due_date
-      "#{milestone.start_date.to_s(:medium)}–#{milestone.due_date.to_s(:medium)}"
-    elsif milestone.due_date
-      if milestone.due_date.past?
-        _("expired on %{milestone_due_date}") % { milestone_due_date: milestone.due_date.strftime('%b %-d, %Y') }
+  def timebox_date_range(timebox)
+    if timebox.start_date && timebox.due_date
+      "#{timebox.start_date.to_s(:medium)}–#{timebox.due_date.to_s(:medium)}"
+    elsif timebox.due_date
+      if timebox.due_date.past?
+        _("expired on %{timebox_due_date}") % { timebox_due_date: timebox.due_date.to_s(:medium) }
       else
-        _("expires on %{milestone_due_date}") % { milestone_due_date: milestone.due_date.strftime('%b %-d, %Y') }
+        _("expires on %{timebox_due_date}") % { timebox_due_date: timebox.due_date.to_s(:medium) }
       end
-    elsif milestone.start_date
-      if milestone.start_date.past?
-        _("started on %{milestone_start_date}") % { milestone_start_date: milestone.start_date.strftime('%b %-d, %Y') }
+    elsif timebox.start_date
+      if timebox.start_date.past?
+        _("started on %{timebox_start_date}") % { timebox_start_date: timebox.start_date.to_s(:medium) }
       else
-        _("starts on %{milestone_start_date}") % { milestone_start_date: milestone.start_date.strftime('%b %-d, %Y') }
+        _("starts on %{timebox_start_date}") % { timebox_start_date: timebox.start_date.to_s(:medium) }
       end
     end
   end
+  alias_method :milestone_date_range, :timebox_date_range
 
   def milestone_tab_path(milestone, tab)
     if milestone.global_milestone?
@@ -306,4 +307,4 @@ module MilestonesHelper
   end
 end
 
-MilestonesHelper.prepend_if_ee('EE::MilestonesHelper')
+TimeboxesHelper.prepend_if_ee('EE::TimeboxesHelper')

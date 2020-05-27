@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe MilestonesHelper do
+describe TimeboxesHelper do
   describe '#milestones_filter_dropdown_path' do
     let(:project) { create(:project) }
     let(:project2) { create(:project) }
@@ -39,23 +39,34 @@ describe MilestonesHelper do
     end
   end
 
-  describe "#milestone_date_range" do
-    def result_for(*args)
-      milestone_date_range(build(:milestone, *args))
-    end
-
+  describe "#timebox_date_range" do
     let(:yesterday) { Date.yesterday }
     let(:tomorrow) { yesterday + 2 }
     let(:format) { '%b %-d, %Y' }
     let(:yesterday_formatted) { yesterday.strftime(format) }
     let(:tomorrow_formatted) { tomorrow.strftime(format) }
 
-    it { expect(result_for(due_date: nil, start_date: nil)).to be_nil }
-    it { expect(result_for(due_date: tomorrow)).to eq("expires on #{tomorrow_formatted}") }
-    it { expect(result_for(due_date: yesterday)).to eq("expired on #{yesterday_formatted}") }
-    it { expect(result_for(start_date: tomorrow)).to eq("starts on #{tomorrow_formatted}") }
-    it { expect(result_for(start_date: yesterday)).to eq("started on #{yesterday_formatted}") }
-    it { expect(result_for(start_date: yesterday, due_date: tomorrow)).to eq("#{yesterday_formatted}–#{tomorrow_formatted}") }
+    context 'milestone' do
+      def result_for(*args)
+        timebox_date_range(build(:milestone, *args))
+      end
+
+      it { expect(result_for(due_date: nil, start_date: nil)).to be_nil }
+      it { expect(result_for(due_date: tomorrow)).to eq("expires on #{tomorrow_formatted}") }
+      it { expect(result_for(due_date: yesterday)).to eq("expired on #{yesterday_formatted}") }
+      it { expect(result_for(start_date: tomorrow)).to eq("starts on #{tomorrow_formatted}") }
+      it { expect(result_for(start_date: yesterday)).to eq("started on #{yesterday_formatted}") }
+      it { expect(result_for(start_date: yesterday, due_date: tomorrow)).to eq("#{yesterday_formatted}–#{tomorrow_formatted}") }
+    end
+
+    context 'iteration' do
+      # Iterations always have start and due dates, so only A-B format is expected
+      it 'formats properly' do
+        iteration = build(:iteration, start_date: yesterday, due_date: tomorrow)
+
+        expect(timebox_date_range(iteration)).to eq("#{yesterday_formatted}–#{tomorrow_formatted}")
+      end
+    end
   end
 
   describe '#milestone_counts' do

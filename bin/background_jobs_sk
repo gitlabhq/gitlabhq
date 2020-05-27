@@ -36,7 +36,7 @@ start_silent()
 start_sidekiq()
 {
   cmd="exec"
-  chpst=$(which chpst)
+  chpst=$(command -v chpst)
 
   if [ -n "$chpst" ]; then
     cmd="${cmd} ${chpst} -P"

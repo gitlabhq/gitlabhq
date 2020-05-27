@@ -20,7 +20,6 @@ export default () => ({
   viewer: viewerTypes.edit,
   delayViewerUpdated: false,
   currentActivityView: leftSidebarViews.edit.name,
-  unusedSeal: true,
   fileFindVisible: false,
   links: {},
   errorMessage: null,

@@ -329,7 +329,7 @@ describe('Monitoring store Getters', () => {
     });
   });
 
-  describe('getCustomVariablesArray', () => {
+  describe('getCustomVariablesParams', () => {
     let state;
 
     beforeEach(() => {
@@ -340,25 +340,21 @@ describe('Monitoring store Getters', () => {
 
     it('transforms the variables object to an array in the [variable, variable_value] format for all variable types', () => {
       mutations[types.SET_VARIABLES](state, mockTemplatingDataResponses.allVariableTypes);
-      const variablesArray = getters.getCustomVariablesArray(state);
+      const variablesArray = getters.getCustomVariablesParams(state);
 
-      expect(variablesArray).toEqual([
-        'simpleText',
-        'Simple text',
-        'advText',
-        'default',
-        'simpleCustom',
-        'value1',
-        'advCustomNormal',
-        'value2',
-      ]);
+      expect(variablesArray).toEqual({
+        'variables[advCustomNormal]': 'value2',
+        'variables[advText]': 'default',
+        'variables[simpleCustom]': 'value1',
+        'variables[simpleText]': 'Simple text',
+      });
     });
 
     it('transforms the variables object to an empty array when no keys are present', () => {
       mutations[types.SET_VARIABLES](state, {});
-      const variablesArray = getters.getCustomVariablesArray(state);
+      const variablesArray = getters.getCustomVariablesParams(state);
 
-      expect(variablesArray).toEqual([]);
+      expect(variablesArray).toEqual({});
     });
   });
 

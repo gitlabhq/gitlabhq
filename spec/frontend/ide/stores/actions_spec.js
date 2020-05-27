@@ -292,21 +292,6 @@ describe('Multi-file store actions', () => {
           })
           .catch(done.fail);
       });
-
-      it('bursts unused seal', done => {
-        store
-          .dispatch('createTempEntry', {
-            name: 'test',
-            branchId: 'mybranch',
-            type: 'blob',
-          })
-          .then(() => {
-            expect(store.state.unusedSeal).toBe(false);
-
-            done();
-          })
-          .catch(done.fail);
-      });
     });
   });
 
@@ -682,19 +667,6 @@ describe('Multi-file store actions', () => {
         });
       });
     });
-
-    it('bursts unused seal', done => {
-      store.state.entries.test = file('test');
-
-      store
-        .dispatch('deleteEntry', 'test')
-        .then(() => {
-          expect(store.state.unusedSeal).toBe(false);
-
-          done();
-        })
-        .catch(done.fail);
-    });
   });
 
   describe('renameEntry', () => {
@@ -837,20 +809,6 @@ describe('Multi-file store actions', () => {
             expect(router.push).toHaveBeenCalledWith(`/project/foo-bar.md`);
           })
           .then(done)
-          .catch(done.fail);
-      });
-
-      it('bursts unused seal', done => {
-        store
-          .dispatch('renameEntry', {
-            path: 'orig',
-            name: 'renamed',
-          })
-          .then(() => {
-            expect(store.state.unusedSeal).toBe(false);
-
-            done();
-          })
           .catch(done.fail);
       });
     });

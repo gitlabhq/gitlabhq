@@ -1,0 +1,26 @@
+- content_for(:page_title, _('What’s your experience level?'))
+
+%h3= _('Hello there')
+%p= _('Welcome to the guided GitLab tour')
+
+%br
+
+%h5= _('What describes you best?')
+
+%hr
+
+%div
+  %p
+    %b= _('Novice')
+  %p= _('I’m not very familiar with the basics of project management and DevOps.')
+  %p
+    %a{ href: '#novice' }= _('Show me everything')
+
+%hr
+
+%div
+  %p
+    %b= _('Experienced')
+  %p= _('I’m familiar with the basics of project management and DevOps.')
+  %p
+    %a{ href: '#experienced' }= _('Show me more advanced stuff')

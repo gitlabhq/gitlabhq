@@ -265,16 +265,6 @@ describe('Multi-file store mutations', () => {
       expect(localState.changedFiles).toEqual([]);
       expect(localState.stagedFiles).toEqual([]);
     });
-
-    it('bursts unused seal', () => {
-      localState.entries.test = file('test');
-
-      expect(localState.unusedSeal).toBe(true);
-
-      mutations.DELETE_ENTRY(localState, 'test');
-
-      expect(localState.unusedSeal).toBe(false);
-    });
   });
 
   describe('UPDATE_FILE_AFTER_COMMIT', () => {

@@ -126,3 +126,5 @@ module Emails
     end
   end
 end
+
+Emails::Issues.prepend_if_ee('EE::Emails::Issues')

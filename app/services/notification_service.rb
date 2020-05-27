@@ -557,6 +557,15 @@ class NotificationService
     mailer.group_was_not_exported_email(current_user, group, errors).deliver_later
   end
 
+  # Notify users on new review in system
+  def new_review(review)
+    recipients = NotificationRecipients::BuildService.build_new_review_recipients(review)
+
+    recipients.each do |recipient|
+      mailer.new_review_email(recipient.user.id, review.id).deliver_later
+    end
+  end
+
   protected
 
   def new_resource_email(target, method)

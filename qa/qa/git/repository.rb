@@ -111,7 +111,7 @@ module QA
       end
 
       def commit_with_gpg(message)
-        run(%Q{git config user.signingkey #{@gpg_key_id} && git config gpg.program $(which gpg) && git commit -S -m "#{message}"}).to_s
+        run(%Q{git config user.signingkey #{@gpg_key_id} && git config gpg.program $(command -v gpg) && git commit -S -m "#{message}"}).to_s
       end
 
       def push_changes(branch = 'master')

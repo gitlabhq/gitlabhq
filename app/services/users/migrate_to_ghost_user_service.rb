@@ -53,6 +53,7 @@ module Users
       migrate_abuse_reports
       migrate_award_emoji
       migrate_snippets
+      migrate_reviews
     end
 
     # rubocop: disable CodeReuse/ActiveRecord
@@ -84,6 +85,10 @@ module Users
     def migrate_snippets
       snippets = user.snippets.only_project_snippets
       snippets.update_all(author_id: ghost_user.id)
+    end
+
+    def migrate_reviews
+      user.reviews.update_all(author_id: ghost_user.id)
     end
   end
 end

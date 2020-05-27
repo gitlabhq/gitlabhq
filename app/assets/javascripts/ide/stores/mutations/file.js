@@ -153,13 +153,11 @@ export default {
   [types.ADD_FILE_TO_CHANGED](state, path) {
     Object.assign(state, {
       changedFiles: state.changedFiles.concat(state.entries[path]),
-      unusedSeal: false,
     });
   },
   [types.REMOVE_FILE_FROM_CHANGED](state, path) {
     Object.assign(state, {
       changedFiles: state.changedFiles.filter(f => f.path !== path),
-      unusedSeal: false,
     });
   },
   [types.STAGE_CHANGE](state, { path, diffInfo }) {
@@ -175,7 +173,6 @@ export default {
           deleted: diffInfo.deleted,
         }),
       }),
-      unusedSeal: false,
     });
 
     if (stagedFile) {

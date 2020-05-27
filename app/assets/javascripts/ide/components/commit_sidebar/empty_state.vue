@@ -9,10 +9,7 @@ export default {
 </script>
 
 <template>
-  <div
-    v-if="!lastCommitMsg"
-    class="multi-file-commit-panel-section ide-commit-empty-state js-empty-state"
-  >
+  <div v-if="!lastCommitMsg" class="multi-file-commit-panel-section ide-commit-empty-state">
     <div class="ide-commit-empty-state-container">
       <div class="svg-content svg-80"><img :src="noChangesStateSvgPath" /></div>
       <div class="append-right-default prepend-left-default">

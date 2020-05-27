@@ -26,7 +26,7 @@ RSpec.shared_examples 'includes Limitable concern' do
           subject.dup.save
         end
 
-        it 'cannot create new models exceding the plan limits' do
+        it 'cannot create new models exceeding the plan limits' do
           expect { subject.save }.not_to change { described_class.count }
           expect(subject.errors[:base]).to contain_exactly("Maximum number of #{subject.class.limit_name.humanize(capitalize: false)} (1) exceeded")
         end

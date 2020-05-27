@@ -14,6 +14,7 @@ class RegistrationsController < Devise::RegistrationsController
   before_action :ensure_terms_accepted,
     if: -> { action_name == 'create' && Gitlab::CurrentSettings.current_application_settings.enforce_terms? }
   before_action :load_recaptcha, only: :new
+  before_action :authenticate_user!, only: :experience_level
 
   def new
     if experiment_enabled?(:signup_flow)
@@ -55,6 +56,10 @@ class RegistrationsController < Devise::RegistrationsController
   def welcome
     return redirect_to new_user_registration_path unless current_user
     return redirect_to path_for_signed_in_user(current_user) if current_user.role.present? && !current_user.setup_for_company.nil?
+  end
+
+  def experience_level
+    return access_denied! unless experiment_enabled?(:onboarding_issues)
   end
 
   def update_registration

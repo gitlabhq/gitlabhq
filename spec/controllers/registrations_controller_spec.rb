@@ -445,4 +445,27 @@ describe RegistrationsController do
       end
     end
   end
+
+  describe '#experience_level' do
+    subject { get :experience_level }
+
+    let_it_be(:user) { create(:user) }
+
+    let(:part_of_onboarding_issues_experiment) { false }
+
+    before do
+      stub_experiment_for_user(onboarding_issues: part_of_onboarding_issues_experiment)
+      sign_in(user)
+    end
+
+    context 'when not part of the onboarding issues experiment' do
+      it { is_expected.to have_gitlab_http_status(:not_found) }
+    end
+
+    context 'when part of the onboarding issues experiment' do
+      let(:part_of_onboarding_issues_experiment) { true }
+
+      it { is_expected.to render_template(:experience_level) }
+    end
+  end
 end

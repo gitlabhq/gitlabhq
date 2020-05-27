@@ -218,13 +218,16 @@ export const fetchPrometheusMetric = (
   { commit, state, getters },
   { metric, defaultQueryParams },
 ) => {
-  const queryParams = { ...defaultQueryParams };
+  let queryParams = { ...defaultQueryParams };
   if (metric.step) {
     queryParams.step = metric.step;
   }
 
   if (Object.keys(state.variables).length > 0) {
-    queryParams.variables = getters.getCustomVariablesArray;
+    queryParams = {
+      ...queryParams,
+      ...getters.getCustomVariablesParams,
+    };
   }
 
   commit(types.REQUEST_METRIC_RESULT, { metricId: metric.metricId });

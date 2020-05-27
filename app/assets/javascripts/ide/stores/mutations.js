@@ -207,8 +207,6 @@ export default {
         state.changedFiles = state.changedFiles.concat(entry);
       }
     }
-
-    state.unusedSeal = false;
   },
   [types.RENAME_ENTRY](state, { path, name, parentPath }) {
     const oldEntry = state.entries[path];

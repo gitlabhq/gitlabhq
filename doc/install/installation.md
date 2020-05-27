@@ -142,7 +142,7 @@ Starting with GitLab 12.0, Git is required to be compiled with `libpcre2`.
 Find out if that's the case:
 
 ```shell
-ldd $(which git) | grep pcre2
+ldd $(command -v git) | grep pcre2
 ```
 
 The output should contain `libpcre2-8.so.0`.

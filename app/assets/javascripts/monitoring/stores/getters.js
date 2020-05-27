@@ -1,5 +1,5 @@
-import { flatMap } from 'lodash';
 import { NOT_IN_DB_PREFIX } from '../constants';
+import { addPrefixToCustomVariableParams } from './utils';
 
 const metricsIdsInPanel = panel =>
   panel.metrics.filter(metric => metric.metricId && metric.result).map(metric => metric.metricId);
@@ -116,13 +116,27 @@ export const filteredEnvironments = state =>
  * Maps an variables object to an array along with stripping
  * the variable prefix.
  *
+ * This method outputs an object in the below format
+ *
+ * {
+ *   variables[key1]=value1,
+ *   variables[key2]=value2,
+ * }
+ *
+ * This is done so that the backend can identify the custom
+ * user-defined variables coming through the URL and differentiate
+ * from other variables used for Prometheus API endpoint.
+ *
  * @param {Object} variables - Custom variables provided by the user
  * @returns {Array} The custom variables array to be send to the API
- * in the format of [variable1, variable1_value]
+ * in the format of {variables[key1]=value1, variables[key2]=value2}
  */
 
-export const getCustomVariablesArray = state =>
-  flatMap(state.variables, (variable, key) => [key, variable.value]);
+export const getCustomVariablesParams = state =>
+  Object.keys(state.variables).reduce((acc, variable) => {
+    acc[addPrefixToCustomVariableParams(variable)] = state.variables[variable]?.value;
+    return acc;
+  }, {});
 
 // prevent babel-plugin-rewire from generating an invalid default during karma tests
 export default () => {};
