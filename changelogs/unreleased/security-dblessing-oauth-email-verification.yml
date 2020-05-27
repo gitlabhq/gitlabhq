@@ -1,5 +1,0 @@
----
-title: Require confirmed email address for GitLab OAuth authentication
-merge_request:
-author:
-type: security

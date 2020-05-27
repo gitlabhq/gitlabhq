@@ -1,5 +1,0 @@
----
-title: Disallow user to control PUT request using mermaid markdown in issue description
-merge_request:
-author:
-type: security
