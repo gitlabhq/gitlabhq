@@ -15513,6 +15513,9 @@ msgstr ""
 msgid "PerformanceBar|Download"
 msgstr ""
 
+msgid "PerformanceBar|Elasticsearch calls"
+msgstr ""
+
 msgid "PerformanceBar|Frontend resources"
 msgstr ""
 

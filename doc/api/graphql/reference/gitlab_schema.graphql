@@ -8310,6 +8310,11 @@ type Project {
     after: String
 
     """
+    Filter requirements by author username
+    """
+    authorUsername: [String!]
+
+    """
     Returns the elements in the list that come before the specified cursor.
     """
     before: String
@@ -8406,6 +8411,11 @@ type Project {
   """
   requirement(
     """
+    Filter requirements by author username
+    """
+    authorUsername: [String!]
+
+    """
     IID of the requirement, e.g., "1"
     """
     iid: ID
@@ -8414,6 +8424,11 @@ type Project {
     List of IIDs of requirements, e.g., [1, 2]
     """
     iids: [ID!]
+
+    """
+    Filter requirements by title search
+    """
+    search: String
 
     """
     List requirements by sort order
@@ -8464,6 +8479,11 @@ type Project {
     Returns the last _n_ elements from the list.
     """
     last: Int
+
+    """
+    Filter requirements by title search
+    """
+    search: String
 
     """
     List requirements by sort order
@@ -9609,7 +9629,7 @@ type Repository {
 }
 
 """
-Represents a requirement.
+Represents a requirement
 """
 type Requirement {
   """

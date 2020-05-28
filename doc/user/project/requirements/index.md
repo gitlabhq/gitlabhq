@@ -73,3 +73,23 @@ You can view the list of archived requirements in the **Archived** tab.
 To reopen an archived requirement, click **Reopen**.
 
 As soon as a requirement is reopened, it no longer appears in the **Archived** tab.
+
+## Search for a requirement from the requirements list page
+
+> - Introduced in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.1.
+
+You can search for a requirement from the list of requirements using filtered search bar (similar to
+that of Issues and Merge Requests) based on following parameters:
+
+- Title
+- Author username
+
+To search, go to the list of requirements and click the field **Search or filter results**.
+It will display a dropdown menu, from which you can add an author. You can also enter plain
+text to search by epic title or description. When done, press <kbd>Enter</kbd> on your
+keyboard to filter the list.
+
+You can also sort requirements list by:
+
+- Created date
+- Last updated

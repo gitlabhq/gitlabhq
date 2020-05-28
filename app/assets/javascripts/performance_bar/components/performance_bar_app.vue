@@ -58,6 +58,11 @@ export default {
       keys: ['cmd'],
     },
     {
+      metric: 'es',
+      header: s__('PerformanceBar|Elasticsearch calls'),
+      keys: ['request', 'body'],
+    },
+    {
       metric: 'total',
       header: s__('PerformanceBar|Frontend resources'),
       keys: ['name', 'size'],

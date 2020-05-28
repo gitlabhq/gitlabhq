@@ -225,7 +225,7 @@ Variable. To do so, follow these steps:
 1. Give this variable the value `ECS` before saving it.
 
 When you trigger a pipeline, if you have AutoDev Ops enabled and if you have correctly
-[entered AWS credentials as environment variables](../../ci/cloud_deployment/index.md#deploy-your-application-to-aws-elastic-container-service-ecs),
+[entered AWS credentials as environment variables](../../ci/cloud_deployment/index.md#deploy-your-application-to-the-aws-elastic-container-service-ecs),
 your application will be deployed to AWS ECS.
 
 NOTE: **Note:**
