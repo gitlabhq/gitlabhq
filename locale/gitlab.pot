@@ -20735,9 +20735,6 @@ msgstr ""
 msgid "Starts at (UTC)"
 msgstr ""
 
-msgid "State"
-msgstr ""
-
 msgid "State your message to activate"
 msgstr ""
 

@@ -184,6 +184,27 @@ required:
    set the database to read-write:
    - Amazon RDS - [Promoting a Read Replica to Be a Standalone DB Instance](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_ReadRepl.html#USER_ReadRepl.Promote)
    - Azure Database for PostgreSQL - [Stop replication](https://docs.microsoft.com/en-us/azure/postgresql/howto-read-replicas-portal#stop-replication)
+   - Other external PostgreSQL databases - save the script below in you secondary node, for example
+     `/tmp/geo_promote.sh`, and modify the connection parameters to match your
+     environment. Then, execute it to promote the replica:
+
+     ```shell
+     #!/bin/bash
+
+     PG_SUPERUSER=postgres
+
+     # The path to your pg_ctl binary. You may need to adjust this path to match
+     # your PostgreSQL installation
+     PG_CTL_BINARY=/usr/lib/postgresql/10/bin/pg_ctl
+
+     # The path to your PostgreSQL data directory. You may need to adjust this
+     # path to match your PostgreSQL installation. You can also run
+     # `SHOW data_directory;` from PostgreSQL to find your data directory
+     PG_DATA_DIRECTORY=/etc/postgresql/10/main
+
+     # Promote the PostgreSQL database and allow read/write operations
+     sudo -u $PG_SUPERUSER $PG_CTL_BINARY -D $PG_DATA_DIRECTORY promote
+     ```
 
 1. Edit `/etc/gitlab/gitlab.rb` on every node in the **secondary** site to
    reflect its new status as **primary** by removing any lines that enabled the

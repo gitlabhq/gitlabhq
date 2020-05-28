@@ -102,11 +102,9 @@ describe 'Group milestones' do
         expect(find('.top-area .all .badge').text).to eq("6")
       end
 
-      it 'lists legacy group milestones and group milestones' do
-        legacy_milestone = GroupMilestone.build_collection(group, group.projects, { state: 'active' }).first
-
+      it 'lists group and project milestones' do
         expect(page).to have_selector("#milestone_#{active_group_milestone.id}", count: 1)
-        expect(page).to have_selector("#milestone_#{legacy_milestone.milestone.id}", count: 1)
+        expect(page).to have_selector("#milestone_#{active_project_milestone2.id}", count: 1)
       end
 
       it 'shows milestone detail and supports its edit' do
@@ -126,74 +124,34 @@ describe 'Group milestones' do
         expect(page).to have_content('v1.1')
         expect(page).to have_content('GL-113')
         expect(page).to have_link(
+          'v1.0',
+          href: project_milestone_path(project, active_project_milestone1)
+        )
+        expect(page).to have_link(
           '1 Issue',
-          href: issues_group_path(group, milestone_title: 'v1.0')
+          href: project_issues_path(project, milestone_title: 'v1.0')
         )
         expect(page).to have_link(
           '0 Merge Requests',
-          href: merge_requests_group_path(group, milestone_title: 'v1.0')
+          href: project_merge_requests_path(project, milestone_title: 'v1.0')
         )
-      end
-
-      it 'renders group milestone details' do
-        click_link 'v1.0'
-
-        expect(page).to have_content('expires on Aug 20, 2114')
-        expect(page).to have_content('v1.0')
-        expect(page).to have_content('Issues 1 Open: 1 Closed: 0')
-        expect(page).to have_link(issue.title, href: project_issue_path(issue.project, issue))
+        expect(page).to have_link(
+          'GL-113',
+          href: group_milestone_path(group, active_group_milestone)
+        )
+        expect(page).to have_link(
+          '0 Issues',
+          href: issues_group_path(group, milestone_title: 'GL-113')
+        )
+        expect(page).to have_link(
+          '0 Merge Requests',
+          href: merge_requests_group_path(group, milestone_title: 'GL-113')
+        )
       end
     end
   end
 
   describe 'milestone tabs', :js do
-    context 'for a legacy group milestone' do
-      let_it_be(:milestone) { create(:milestone, project: project) }
-      let_it_be(:label)     { create(:label, project: project) }
-      let_it_be(:issue)     { create(:labeled_issue, project: project, milestone: milestone, labels: [label], assignees: [create(:user)]) }
-      let_it_be(:mr)        { create(:merge_request, source_project: project, milestone: milestone) }
-
-      before do
-        visit group_milestone_path(group, milestone.title, title: milestone.title)
-      end
-
-      it 'renders the issues tab' do
-        within('#tab-issues') do
-          expect(page).to have_content issue.title
-        end
-      end
-
-      it 'renders the merge requests tab' do
-        within('.js-milestone-tabs') do
-          click_link('Merge Requests')
-        end
-
-        within('#tab-merge-requests') do
-          expect(page).to have_content mr.title
-        end
-      end
-
-      it 'renders the participants tab' do
-        within('.js-milestone-tabs') do
-          click_link('Participants')
-        end
-
-        within('#tab-participants') do
-          expect(page).to have_content issue.assignees.first.name
-        end
-      end
-
-      it 'renders the labels tab' do
-        within('.js-milestone-tabs') do
-          click_link('Labels')
-        end
-
-        within('#tab-labels') do
-          expect(page).to have_content label.title
-        end
-      end
-    end
-
     context 'for a group milestone' do
       let_it_be(:other_project) { create(:project_empty_repo, group: group) }
       let_it_be(:milestone) { create(:milestone, group: group) }

@@ -1,5 +1,4 @@
 = render 'shared/milestones/milestone',
-          milestone_path: project_milestone_path(milestone.project, milestone),
           issues_path: project_issues_path(milestone.project, milestone_title: milestone.title),
           merge_requests_path: project_merge_requests_path(milestone.project, milestone_title: milestone.title),
           milestone: milestone

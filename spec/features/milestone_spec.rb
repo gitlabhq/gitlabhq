@@ -111,20 +111,6 @@ describe 'Milestone' do
     end
   end
 
-  describe 'deprecation popover', :js do
-    it 'opens deprecation popover' do
-      milestone = create(:milestone, project: project)
-
-      visit group_milestone_path(group, milestone, title: milestone.title)
-
-      expect(page).to have_selector('.milestone-deprecation-message')
-
-      find('.milestone-deprecation-message .js-popover-link').click
-
-      expect(page).to have_selector('.popover')
-    end
-  end
-
   describe 'reopen closed milestones' do
     before do
       create(:milestone, :closed, project: project)

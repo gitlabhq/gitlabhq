@@ -6,39 +6,33 @@
   .row
     .col-sm-6
       .append-bottom-5
-        %strong= link_to truncate(milestone.title, length: 100), milestone_path
+        %strong= link_to truncate(milestone.title, length: 100), milestone_path(milestone)
         - if @group
           = " - #{milestone_type}"
 
-      - if @project || milestone.is_a?(GlobalMilestone) || milestone.group_milestone?
-        - if milestone.due_date || milestone.start_date
-          .text-tertiary.append-bottom-5
-            = milestone_date_range(milestone)
-        - recent_releases, total_count, more_count = recent_releases_with_counts(milestone)
-        - unless total_count.zero?
-          .text-tertiary.append-bottom-5.milestone-release-links
-            = icon('rocket')
-            = n_('Release', 'Releases', total_count)
-            - recent_releases.each do |release|
-              = link_to release.name, project_releases_path(release.project, anchor: release.tag)
-              - unless release == recent_releases.last
-                &bull;
-            - if total_count > recent_releases.count
+      - if milestone.due_date || milestone.start_date
+        .text-tertiary.append-bottom-5
+          = milestone_date_range(milestone)
+      - recent_releases, total_count, more_count = recent_releases_with_counts(milestone)
+      - unless total_count.zero?
+        .text-tertiary.append-bottom-5.milestone-release-links
+          = icon('rocket')
+          = n_('Release', 'Releases', total_count)
+          - recent_releases.each do |release|
+            = link_to release.name, project_releases_path(release.project, anchor: release.tag)
+            - unless release == recent_releases.last
               &bull;
-              = link_to n_('%{count} more release', '%{count} more releases', more_count) % { count: more_count }, project_releases_path(milestone.project)
-        %div
-          = render('shared/milestone_expired', milestone: milestone)
-          - if milestone.group_milestone?
-            .label-badge.label-badge-blue.d-inline-block
-              = milestone.group.full_name
-          - if milestone.legacy_group_milestone?
-            .projects
-              - link_to milestone_path(milestone.milestone) do
-                %span.label-badge.label-badge-blue.d-inline-block.append-bottom-5
-                  = dashboard ? milestone.project.full_name : milestone.project.name
-          - if milestone.project
-            .label-badge.label-badge-gray.d-inline-block
-              = milestone.project.full_name
+          - if total_count > recent_releases.count
+            &bull;
+            = link_to n_('%{count} more release', '%{count} more releases', more_count) % { count: more_count }, project_releases_path(milestone.project)
+      %div
+        = render('shared/milestone_expired', milestone: milestone)
+        - if milestone.group_milestone?
+          .label-badge.label-badge-blue.d-inline-block
+            = milestone.group.full_name
+        - if milestone.project_milestone?
+          .label-badge.label-badge-gray.d-inline-block
+            = milestone.project.full_name
 
     .col-sm-4.milestone-progress
       = milestone_progress_bar(milestone)
@@ -49,29 +43,25 @@
       .float-lg-right.light #{milestone.percent_complete}% complete
     .col-sm-2
       .milestone-actions.d-flex.justify-content-sm-start.justify-content-md-end
-        - if @project
-          - if can_admin_project_milestones? and milestone.active?
-            - if can_admin_group_milestones?
-              %button.js-promote-project-milestone-button.btn.btn-blank.btn-sm.btn-grouped.has-tooltip{ title: s_('Milestones|Promote to Group Milestone'),
-                disabled: true,
-                type: 'button',
-                data: { url: promote_project_milestone_path(milestone.project, milestone),
-                        milestone_title: milestone.title,
-                        group_name: @project.group.name,
-                        target: '#promote-milestone-modal',
-                        container: 'body',
-                        toggle: 'modal' } }
-                = sprite_icon('level-up', size: 14)
+        - if @project # if in milestones list on project level
+          - if can_admin_group_milestones?
+            %button.js-promote-project-milestone-button.btn.btn-blank.btn-sm.btn-grouped.has-tooltip{ title: s_('Milestones|Promote to Group Milestone'),
+              disabled: true,
+              type: 'button',
+              data: { url: promote_project_milestone_path(milestone.project, milestone),
+                      milestone_title: milestone.title,
+                      group_name: @project.group.name,
+                      target: '#promote-milestone-modal',
+                      container: 'body',
+                      toggle: 'modal' } }
+              = sprite_icon('level-up', size: 14)
 
-            = link_to s_('Milestones|Close Milestone'), project_milestone_path(@project, milestone, milestone: {state_event: :close }), method: :put, remote: true, class: "btn btn-sm btn-close btn-grouped"
-          - unless milestone.active?
-            = link_to s_('Milestones|Reopen Milestone'), project_milestone_path(@project, milestone, milestone: {state_event: :activate }), method: :put, class: "btn btn-grouped btn-reopen"
-        - if @group
-          - if can?(current_user, :admin_milestone, @group)
-            - if milestone.closed?
-              = link_to s_('Milestones|Reopen Milestone'), group_milestone_route(milestone, {state_event: :activate }), method: :put, class: "btn btn-sm btn-grouped btn-reopen"
-            - else
-              = link_to s_('Milestones|Close Milestone'), group_milestone_route(milestone, {state_event: :close }), method: :put, class: "btn btn-sm btn-grouped btn-close"
+        - if can?(current_user, :admin_milestone, milestone)
+          - if milestone.closed?
+            = link_to s_('Milestones|Reopen Milestone'), milestone_path(milestone, milestone: { state_event: :activate }), method: :put, class: "btn btn-sm btn-grouped btn-reopen"
+          - else
+            = link_to s_('Milestones|Close Milestone'), milestone_path(milestone, milestone: { state_event: :close }), method: :put, class: "btn btn-sm btn-grouped btn-close"
+
         - if dashboard
           .label-badge.label-badge-gray
             = milestone_type

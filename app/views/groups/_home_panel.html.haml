@@ -17,7 +17,7 @@
           %span
             = _("Group ID: %{group_id}") % { group_id: @group.id }
           - if current_user
-            %span.access-request-links.prepend-left-8
+            %span.access-request-links.gl-ml-3
               = render 'shared/members/access_request_links', source: @group
 
     .home-panel-buttons.col-md-12.col-lg-6.d-inline-flex.flex-wrap.justify-content-lg-end

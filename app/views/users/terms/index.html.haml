@@ -6,13 +6,13 @@
   .card-footer.footer-block.clearfix
     - if can?(current_user, :accept_terms, @term)
       .float-right
-        = button_to accept_term_path(@term, redirect_params), class: 'btn btn-success prepend-left-8', data: { qa_selector: 'accept_terms_button' } do
+        = button_to accept_term_path(@term, redirect_params), class: 'btn btn-success gl-ml-3', data: { qa_selector: 'accept_terms_button' } do
           = _('Accept terms')
     - else
       .pull-right
-        = link_to root_path, class: 'btn btn-success prepend-left-8' do
+        = link_to root_path, class: 'btn btn-success gl-ml-3' do
           = _('Continue')
     - if can?(current_user, :decline_terms, @term)
       .float-right
-        = button_to decline_term_path(@term, redirect_params), class: 'btn btn-default prepend-left-8' do
+        = button_to decline_term_path(@term, redirect_params), class: 'btn btn-default gl-ml-3' do
           =  _('Decline and sign out')

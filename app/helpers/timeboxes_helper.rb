@@ -229,11 +229,7 @@ module TimeboxesHelper
   alias_method :milestone_date_range, :timebox_date_range
 
   def milestone_tab_path(milestone, tab)
-    if milestone.global_milestone?
-      url_for(action: tab, title: milestone.title, format: :json)
-    else
-      url_for(action: tab, format: :json)
-    end
+    url_for(action: tab, format: :json)
   end
 
   def update_milestone_path(milestone, params = {})
@@ -247,11 +243,7 @@ module TimeboxesHelper
   def group_milestone_route(milestone, params = {})
     params = nil if params.empty?
 
-    if milestone.legacy_group_milestone?
-      group_milestone_path(@group, milestone.safe_title, title: milestone.title, milestone: params)
-    else
-      group_milestone_path(milestone.group, milestone.iid, milestone: params)
-    end
+    group_milestone_path(milestone.group, milestone.iid, milestone: params)
   end
 
   def group_or_project_milestone_path(milestone)

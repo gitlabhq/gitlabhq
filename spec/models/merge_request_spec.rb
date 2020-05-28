@@ -1651,14 +1651,6 @@ describe MergeRequest do
       let(:merge_request) { create(:merge_request, :with_accessibility_reports, source_project: project) }
 
       it { is_expected.to be_truthy }
-
-      context 'when feature flag is disabled' do
-        before do
-          stub_feature_flags(accessibility_report_view: false)
-        end
-
-        it { is_expected.to be_falsey }
-      end
     end
 
     context 'when head pipeline does not have accessibility reports' do

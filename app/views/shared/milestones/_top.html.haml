@@ -1,11 +1,9 @@
 - page_title milestone.title
-- @breadcrumb_link = dashboard_milestone_path(milestone.safe_title, title: milestone.title)
+- @breadcrumb_link = milestone_path(milestone)
 
 - group = local_assigns[:group]
-- is_dynamic_milestone = milestone.legacy_group_milestone? || milestone.dashboard_milestone?
 
 = render 'shared/milestones/header', milestone: milestone
-= render 'shared/milestones/deprecation_message' if is_dynamic_milestone
 = render 'shared/milestones/description', milestone: milestone
 
 - if milestone.complete? && milestone.active?
@@ -15,26 +13,3 @@
       = group ? _('You may close the milestone now.') : _('Navigate to the project to close the milestone.')
 
 = render_if_exists 'shared/milestones/burndown', milestone: milestone, project: @project
-
-- if is_dynamic_milestone
-  .table-holder
-    %table.table
-      %thead
-        %tr
-          %th= _('Project')
-          %th= _('Open issues')
-          %th= _('State')
-          %th= _('Due date')
-        %tr
-          %td
-            - project_name = group ? milestone.project.name : milestone.project.full_name
-            = link_to project_name, milestone_path(milestone.milestone)
-          %td
-            = milestone.milestone.issues_visible_to_user(current_user).opened.count
-          %td
-            - if milestone.closed?
-              = _('Closed')
-            - else
-              = _('Open')
-          %td
-            = milestone.expires_at

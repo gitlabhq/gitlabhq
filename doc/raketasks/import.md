@@ -115,16 +115,16 @@ repository in GitLab 10.4 and later:
 - Ancestor renamed
 - Ancestor transferred to another namespace
 
-Bare repositories are **not** importable by GitLab 10.4 and later when all the following are true about the repository:
+Bare repositories are **not** importable by GitLab 10.4 to GitLab 11.6, if all the following are true about the repository:
 
 - It was created in GitLab 10.3 or earlier.
-- It was not renamed, transferred, or migrated to hashed storage in GitLab 10.4 and later.
-- Its ancestor namespaces were not renamed or transferred in GitLab 10.4 and later.
+- It was not renamed, transferred, or migrated to [hashed storage](../administration/repository_storage_types.md#hashed-storage) in GitLab 10.4 to GitLab 11.6.
+- Its ancestor namespaces were not renamed or transferred in GitLab 10.4 to GitLab 11.6.
 
-There is an [open issue to add a migration to make all bare repositories
-importable](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/41776).
+[Since GitLab 11.6](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/41776), all
+bare repositories are importable.
 
-Until then, you may wish to manually migrate repositories yourself. You can use
+To manually migrate repositories yourself (for GitLab 10.4 to GitLab 11.6), you can use the
 [Rails console](../administration/troubleshooting/debug.md#starting-a-rails-console-session)
 to do so. In a Rails console session, run the following to migrate a project:
 

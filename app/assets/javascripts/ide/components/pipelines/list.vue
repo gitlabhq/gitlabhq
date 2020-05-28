@@ -63,7 +63,7 @@ export default {
     <template v-else-if="hasLoadedPipeline">
       <header v-if="latestPipeline" class="ide-tree-header ide-pipeline-header">
         <ci-icon :status="latestPipeline.details.status" :size="24" class="d-flex" />
-        <span class="prepend-left-8">
+        <span class="gl-ml-3">
           <strong> {{ __('Pipeline') }} </strong>
           <a
             :href="latestPipeline.path"

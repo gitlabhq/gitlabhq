@@ -71,7 +71,7 @@ export default {
         v-tooltip="showTooltip"
         :title="showTooltip ? stage.name : null"
         data-container="body"
-        class="prepend-left-8 text-truncate"
+        class="gl-ml-3 text-truncate"
       >
         {{ stage.name }}
       </strong>

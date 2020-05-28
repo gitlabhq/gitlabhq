@@ -24,21 +24,12 @@ describe 'Milestones sorting', :js do
 
     # assert default sorting
     within '.milestones' do
-      expect(page.all('ul.content-list > li').first.text).to include('v2.0')
-      expect(page.all('ul.content-list > li')[1].text).to include('v3.0')
-      expect(page.all('ul.content-list > li').last.text).to include('v1.0')
+      expect(page.all('ul.content-list > li strong > a').map(&:text)).to eq(['v2.0', 'v2.0', 'v3.0', 'v1.0', 'v1.0'])
     end
 
     click_button 'Due soon'
 
-    sort_options = find('ul.dropdown-menu-sort li').all('a').collect(&:text)
-
-    expect(sort_options[0]).to eq('Due soon')
-    expect(sort_options[1]).to eq('Due later')
-    expect(sort_options[2]).to eq('Start soon')
-    expect(sort_options[3]).to eq('Start later')
-    expect(sort_options[4]).to eq('Name, ascending')
-    expect(sort_options[5]).to eq('Name, descending')
+    expect(find('ul.dropdown-menu-sort li').all('a').map(&:text)).to eq(['Due soon', 'Due later', 'Start soon', 'Start later', 'Name, ascending', 'Name, descending'])
 
     click_link 'Due later'
 
@@ -46,9 +37,7 @@ describe 'Milestones sorting', :js do
 
     # assert descending sorting
     within '.milestones' do
-      expect(page.all('ul.content-list > li').first.text).to include('v1.0')
-      expect(page.all('ul.content-list > li')[1].text).to include('v3.0')
-      expect(page.all('ul.content-list > li').last.text).to include('v2.0')
+      expect(page.all('ul.content-list > li strong > a').map(&:text)).to eq(['v1.0', 'v1.0', 'v3.0', 'v2.0', 'v2.0'])
     end
   end
 end

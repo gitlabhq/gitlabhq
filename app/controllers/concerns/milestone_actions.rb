@@ -51,13 +51,7 @@ module MilestoneActions
     }
   end
 
-  # rubocop:disable Gitlab/ModuleWithInstanceVariables
   def milestone_redirect_path
-    if @milestone.global_milestone?
-      url_for(action: :show, title: @milestone.title)
-    else
-      url_for(action: :show)
-    end
+    url_for(action: :show)
   end
-  # rubocop:enable Gitlab/ModuleWithInstanceVariables
 end

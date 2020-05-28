@@ -83,7 +83,7 @@ brakeman-sast:
           $GITLAB_FEATURES =~ /\bsast\b/ &&
           $SAST_DEFAULT_ANALYZERS =~ /brakeman/
       exists:
-        - '**/*.rb'
+        - 'config/routes.rb'
 
 eslint-sast:
   extends: .sast-analyzer
@@ -149,7 +149,7 @@ nodejs-scan-sast:
           $GITLAB_FEATURES =~ /\bsast\b/ &&
           $SAST_DEFAULT_ANALYZERS =~ /nodejs-scan/
       exists:
-        - '**/*.js'
+        - 'package.json'
 
 phpcs-security-audit-sast:
   extends: .sast-analyzer
@@ -213,8 +213,7 @@ sobelow-sast:
           $GITLAB_FEATURES =~ /\bsast\b/ &&
           $SAST_DEFAULT_ANALYZERS =~ /sobelow/
       exists:
-        - '**/*.ex'
-        - '**/*.exs'
+        - 'mix.exs'
 
 spotbugs-sast:
   extends: .sast-analyzer

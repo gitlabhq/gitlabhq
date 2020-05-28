@@ -288,10 +288,11 @@ You can provide feedback [on this issue](https://gitlab.com/gitlab-org/gitlab/-/
 
 GitLab supports the following web browsers:
 
-- Firefox
-- Chrome/Chromium
-- Safari
-- Microsoft Edge
+- [Mozilla Firefox](https://www.mozilla.org/firefox/new/)
+- [Google Chrome](https://www.google.com/chrome/)
+- [Chromium](https://www.chromium.org/getting-involved/dev-channel)
+- [Apple Safari](https://www.apple.com/safari/)
+- [Microsoft Edge](https://www.microsoft.com/edge)
 - Internet Explorer 11 (until May 2020)
 
 For the listed web browsers, GitLab supports:

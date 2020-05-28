@@ -1,0 +1,5 @@
+---
+title: Fix preconnect typo in rel link
+merge_request: 33255
+author:
+type: performance

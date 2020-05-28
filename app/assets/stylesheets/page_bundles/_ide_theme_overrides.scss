@@ -221,7 +221,7 @@
   }
 
   @function calc-btn-hover-padding($original-padding, $original-border: 1px) {
-    @return calc(#{$original-padding + $original-border} - var(--ide-btn-hover-border-width, $original-border));
+    @return calc(#{$original-padding + $original-border} - var(--ide-btn-hover-border-width, #{$original-border}));
   }
 
   .btn:not(.btn-link):not([disabled]):hover {

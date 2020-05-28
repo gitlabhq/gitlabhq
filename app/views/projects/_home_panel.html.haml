@@ -20,7 +20,7 @@
             %span.text-secondary
               = s_('ProjectPage|Project ID: %{project_id}') % { project_id: @project.id }
           - if current_user
-            %span.access-request-links.prepend-left-8
+            %span.access-request-links.gl-ml-3
               = render 'shared/members/access_request_links', source: @project
           - if @project.tag_list.present?
             %span.home-panel-topic-list.mt-2.w-100.d-inline-flex

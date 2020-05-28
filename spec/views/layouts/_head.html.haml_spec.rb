@@ -50,7 +50,7 @@ describe 'layouts/_head' do
     it 'adds a link preconnect tag' do
       render
 
-      expect(rendered).to match(%Q(<link crossorigin="" href="#{asset_host}" rel="preconnnect">))
+      expect(rendered).to match(%Q(<link crossorigin="" href="#{asset_host}" rel="preconnect">))
     end
   end
 

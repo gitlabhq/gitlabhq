@@ -2,9 +2,9 @@
 type: reference
 ---
 
-# Load Balancer for GitLab HA
+# Load Balancer for multi-node GitLab
 
-In an active/active GitLab configuration, you will need a load balancer to route
+In an multi-node GitLab configuration, you will need a load balancer to route
 traffic to the application servers. The specifics on which load balancer to use
 or the exact configuration is beyond the scope of GitLab documentation. We hope
 that if you're managing HA systems like GitLab you have a load balancer of
@@ -14,7 +14,7 @@ you need to use with GitLab.
 
 ## SSL
 
-How will you handle SSL in your HA environment? There are several different
+How will you handle SSL in your multi-node environment? There are several different
 options:
 
 - Each application node terminates SSL

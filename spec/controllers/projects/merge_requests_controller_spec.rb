@@ -1409,20 +1409,6 @@ describe Projects::MergeRequestsController do
       end
     end
 
-    context 'when feature flag is disabled' do
-      let(:accessibility_comparison) { { status: :parsed, data: { summary: 1 } } }
-
-      before do
-        stub_feature_flags(accessibility_report_view: false)
-      end
-
-      it 'returns 204 HTTP status' do
-        subject
-
-        expect(response).to have_gitlab_http_status(:no_content)
-      end
-    end
-
     context 'when pipeline has jobs with accessibility reports' do
       before do
         allow_any_instance_of(MergeRequest)
