@@ -17,6 +17,22 @@ experiences. Several projects were started with different standards and they
 can still have specifics. They will be described in their respective
 `README.md` or `PROCESS.md` files.
 
+## Dependency Management
+
+Go uses a source-based strategy for dependency management. Dependencies are
+downloaded as source from their source repository. This differs from the more
+common artifact-based strategy where dependencies are downloaded as artifacts
+from a package repository that is separate from the dependency's source
+repository.
+
+Go did not have first-class support for version management prior to 1.11. That
+version introduced Go modules and the use of semantic versioning. Go 1.12
+introduced module proxies, which can serve as an intermediate between clients
+and source version control systems, and checksum databases, which can be used to
+verify the integrity of dependency downloads.
+
+See [Dependency Management in Go](dependencies.md) for more details.
+
 ## Code Review
 
 We follow the common principles of

@@ -3,7 +3,17 @@
 require 'spec_helper'
 
 describe Gitlab::Metrics::Samplers::DatabaseSampler do
-  subject { described_class.new(described_class::SAMPLING_INTERVAL_SECONDS) }
+  subject { described_class.new }
+
+  describe '#interval' do
+    it 'samples every five seconds by default' do
+      expect(subject.interval).to eq(5)
+    end
+
+    it 'samples at other intervals if requested' do
+      expect(described_class.new(11).interval).to eq(11)
+    end
+  end
 
   describe '#sample' do
     before do

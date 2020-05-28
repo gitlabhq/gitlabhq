@@ -172,6 +172,41 @@ describe Clusters::Cluster, :use_clean_rails_memory_store_caching do
     end
   end
 
+  describe '.with_application_prometheus' do
+    subject { described_class.with_application_prometheus }
+
+    let!(:cluster) { create(:cluster) }
+
+    context 'cluster has prometheus application' do
+      let!(:application) { create(:clusters_applications_prometheus, :installed, cluster: cluster) }
+
+      it { is_expected.to include(cluster) }
+    end
+
+    context 'cluster does not have prometheus application' do
+      let(:cluster) { create(:cluster) }
+
+      it { is_expected.not_to include(cluster) }
+    end
+  end
+
+  describe '.with_project_alert_service_data' do
+    subject { described_class.with_project_alert_service_data(project_id) }
+
+    let!(:cluster) { create(:cluster, :project) }
+    let!(:project_id) { cluster.first_project.id }
+
+    context 'project has alert service data' do
+      let!(:alerts_service) { create(:alerts_service, project: cluster.clusterable) }
+
+      it { is_expected.to include(cluster) }
+    end
+
+    context 'project has no alert service data' do
+      it { is_expected.not_to include(cluster) }
+    end
+  end
+
   describe '.for_project_namespace' do
     subject { described_class.for_project_namespace(namespace_id) }
 

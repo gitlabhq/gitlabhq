@@ -42,11 +42,11 @@ if !Rails.env.test? && Gitlab::Metrics.prometheus_metrics_enabled?
   Gitlab::Cluster::LifecycleEvents.on_worker_start do
     defined?(::Prometheus::Client.reinitialize_on_pid_change) && Prometheus::Client.reinitialize_on_pid_change
 
-    Gitlab::Metrics::Samplers::RubySampler.initialize_instance(Settings.monitoring.ruby_sampler_interval).start
-    Gitlab::Metrics::Samplers::DatabaseSampler.initialize_instance(Gitlab::Metrics::Samplers::DatabaseSampler::SAMPLING_INTERVAL_SECONDS).start
+    Gitlab::Metrics::Samplers::RubySampler.initialize_instance.start
+    Gitlab::Metrics::Samplers::DatabaseSampler.initialize_instance.start
 
     if Gitlab.ee? && Gitlab::Runtime.sidekiq?
-      Gitlab::Metrics::Samplers::GlobalSearchSampler.instance(Settings.monitoring.global_search_sampler_interval).start
+      Gitlab::Metrics::Samplers::GlobalSearchSampler.instance.start
     end
   rescue IOError => e
     Gitlab::ErrorTracking.track_exception(e)
@@ -59,7 +59,7 @@ if !Rails.env.test? && Gitlab::Metrics.prometheus_metrics_enabled?
     if Gitlab::Runtime.unicorn?
       Gitlab::Metrics::Samplers::UnicornSampler.instance(Settings.monitoring.unicorn_sampler_interval).start
     elsif Gitlab::Runtime.puma?
-      Gitlab::Metrics::Samplers::PumaSampler.instance(Settings.monitoring.puma_sampler_interval).start
+      Gitlab::Metrics::Samplers::PumaSampler.instance.start
     end
 
     Gitlab::Metrics.gauge(:deployments, 'GitLab Version', {}, :max).set({ version: Gitlab::VERSION }, 1)

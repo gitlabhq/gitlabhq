@@ -96,6 +96,28 @@ describe Gitlab do
     end
   end
 
+  describe '.staging?' do
+    subject { described_class.staging? }
+
+    it 'is false when on GitLab.com' do
+      stub_config_setting(url: 'https://gitlab.com')
+
+      expect(subject).to eq false
+    end
+
+    it 'is true when on staging' do
+      stub_config_setting(url: 'https://staging.gitlab.com')
+
+      expect(subject).to eq true
+    end
+
+    it 'is false when not on staging' do
+      stub_config_setting(url: 'https://example.gitlab.com')
+
+      expect(subject).to eq false
+    end
+  end
+
   describe '.canary?' do
     it 'is true when CANARY env var is set to true' do
       stub_env('CANARY', '1')
@@ -183,6 +205,26 @@ describe Gitlab do
       allow(described_class).to receive(:com?).and_return(false)
 
       expect(described_class.dev_env_or_com?).to eq false
+    end
+  end
+
+  describe '.dev_or_test_env?' do
+    subject { described_class.dev_or_test_env? }
+
+    it 'is true when test env' do
+      expect(subject).to eq true
+    end
+
+    it 'is true when dev env' do
+      allow(Rails).to receive(:env).and_return(ActiveSupport::StringInquirer.new('development'))
+
+      expect(subject).to eq true
+    end
+
+    it 'is false when env is not dev or test' do
+      allow(Rails).to receive(:env).and_return(ActiveSupport::StringInquirer.new('production'))
+
+      expect(subject).to eq false
     end
   end
 

@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 describe Gitlab::Metrics::Samplers::RubySampler do
-  let(:sampler) { described_class.new(5) }
+  let(:sampler) { described_class.new }
   let(:null_metric) { double('null_metric', set: nil, observe: nil) }
 
   before do
@@ -15,6 +15,16 @@ describe Gitlab::Metrics::Samplers::RubySampler do
       Timecop.freeze do
         expect(sampler.metrics[:process_start_time_seconds].get).to eq(Time.now.to_i)
       end
+    end
+  end
+
+  describe '#interval' do
+    it 'samples every sixty seconds by default' do
+      expect(subject.interval).to eq(60)
+    end
+
+    it 'samples at other intervals if requested' do
+      expect(described_class.new(11).interval).to eq(11)
     end
   end
 
