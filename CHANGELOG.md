@@ -589,6 +589,14 @@ entry.
 - Use visitUrl in Alert management. !32414
 
 
+## 12.10.8 (2020-05-28)
+
+### Fixed (2 changes)
+
+- Fix Geo replication for design thumbnails. !32703
+- Fix 404s downloading build artifacts. !32741
+
+
 ## 12.10.7 (2020-05-27)
 
 ### Security (14 changes)
