@@ -20,14 +20,13 @@ import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
 import getAlerts from '../graphql/queries/get_alerts.query.graphql';
 import getAlertsCountByStatus from '../graphql/queries/get_count_by_status.query.graphql';
 import {
-  ALERTS_STATUS,
   ALERTS_STATUS_TABS,
   ALERTS_SEVERITY_LABELS,
   trackAlertListViewsOptions,
   trackAlertStatusUpdateOptions,
 } from '../constants';
 import updateAlertStatus from '../graphql/mutations/update_alert_status.graphql';
-import { capitalizeFirstCharacter, convertToSnakeCase } from '~/lib/utils/text_utility';
+import { convertToSnakeCase } from '~/lib/utils/text_utility';
 import Tracking from '~/tracking';
 
 const tdClass = 'table-col d-flex d-md-table-cell align-items-center';
@@ -87,9 +86,9 @@ export default {
     },
   ],
   statuses: {
-    [ALERTS_STATUS.TRIGGERED]: s__('AlertManagement|Triggered'),
-    [ALERTS_STATUS.ACKNOWLEDGED]: s__('AlertManagement|Acknowledged'),
-    [ALERTS_STATUS.RESOLVED]: s__('AlertManagement|Resolved'),
+    TRIGGERED: s__('AlertManagement|Triggered'),
+    ACKNOWLEDGED: s__('AlertManagement|Acknowledged'),
+    RESOLVED: s__('AlertManagement|Resolved'),
   },
   severityLabels: ALERTS_SEVERITY_LABELS,
   statusTabs: ALERTS_STATUS_TABS,
@@ -204,7 +203,6 @@ export default {
       }
       this.sort = `${sortColumn}_${sortDirection}`;
     },
-    capitalizeFirstCharacter,
     updateAlertStatus(status, iid) {
       this.$apollo
         .mutate({
@@ -311,11 +309,7 @@ export default {
         </template>
 
         <template #cell(status)="{ item }">
-          <gl-dropdown
-            :text="capitalizeFirstCharacter(item.status.toLowerCase())"
-            class="w-100"
-            right
-          >
+          <gl-dropdown :text="$options.statuses[item.status]" class="w-100" right>
             <gl-dropdown-item
               v-for="(label, field) in $options.statuses"
               :key="field"

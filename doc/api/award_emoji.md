@@ -42,7 +42,7 @@ Parameters:
 Example request:
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/1/issues/80/award_emoji
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/issues/80/award_emoji"
 ```
 
 Example response:
@@ -105,7 +105,7 @@ Parameters:
 Example request:
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/1/issues/80/award_emoji/1
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/issues/80/award_emoji/1"
 ```
 
 Example response:
@@ -148,7 +148,7 @@ Parameters:
 | `name`         | string         | yes      | Name of the emoji without colons.                                            |
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/1/issues/80/award_emoji?name=blowfish
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/issues/80/award_emoji?name=blowfish"
 ```
 
 Example Response:
@@ -194,7 +194,7 @@ Parameters:
 | `award_id`     | integer        | yes      | ID of an award emoji.                                                        |
 
 ```shell
-curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/1/issues/80/award_emoji/344
+curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/issues/80/award_emoji/344"
 ```
 
 ## Award Emoji on Comments
@@ -225,7 +225,7 @@ Parameters:
 Example request:
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/1/issues/80/notes/1/award_emoji
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/issues/80/notes/1/award_emoji"
 ```
 
 Example response:
@@ -271,7 +271,7 @@ Parameters:
 Example request:
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/1/issues/80/notes/1/award_emoji/2
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/issues/80/notes/1/award_emoji/2"
 ```
 
 Example response:
@@ -315,7 +315,7 @@ Parameters:
 Example request:
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/1/issues/80/notes/1/award_emoji?name=rocket
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/issues/80/notes/1/award_emoji?name=rocket"
 ```
 
 Example response:
@@ -362,5 +362,5 @@ Parameters:
 Example request:
 
 ```shell
-curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/1/issues/80/award_emoji/345
+curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/issues/80/award_emoji/345"
 ```

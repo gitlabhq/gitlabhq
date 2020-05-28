@@ -28,7 +28,7 @@ GET /snippets
 Example request:
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/snippets
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/snippets"
 ```
 
 Example response:
@@ -95,7 +95,7 @@ Parameters:
 Example request:
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/snippets/1
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/snippets/1"
 ```
 
 Example response:
@@ -141,7 +141,7 @@ Parameters:
 Example request:
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/snippets/1/raw
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/snippets/1/raw"
 ```
 
 Example response:
@@ -177,8 +177,8 @@ Example request:
 curl --request POST \
      --data '{"title": "This is a snippet", "content": "Hello world", "description": "Hello World snippet", "file_name": "test.txt", "visibility": "internal" }' \
      --header 'Content-Type: application/json' \
-     --header "PRIVATE-TOKEN: valid_api_token" \
-     https://gitlab.example.com/api/v4/snippets
+     --header "PRIVATE-TOKEN: <your_access_token>" \
+     "https://gitlab.example.com/api/v4/snippets"
 ```
 
 Example response:
@@ -235,8 +235,8 @@ Example request:
 curl --request PUT \
      --data '{"title": "foo", "content": "bar"}' \
      --header 'Content-Type: application/json' \
-     --header "PRIVATE-TOKEN: valid_api_token" \
-     https://gitlab.example.com/api/v4/snippets/1
+     --header "PRIVATE-TOKEN: <your_access_token>" \
+     "https://gitlab.example.com/api/v4/snippets/1"
 ```
 
 Example response:
@@ -310,7 +310,7 @@ Parameters:
 Example request:
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/snippets/public?per_page=2&page=1
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/snippets/public?per_page=2&page=1"
 ```
 
 Example response:
@@ -375,7 +375,7 @@ GET /snippets/:id/user_agent_detail
 Example request:
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/snippets/1/user_agent_detail
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/snippets/1/user_agent_detail"
 ```
 
 Example response:

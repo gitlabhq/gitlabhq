@@ -174,19 +174,19 @@ module Gitlab
 
       def features_usage_data_ce
         {
-          container_registry_enabled: alt_usage_data { Gitlab.config.registry.enabled },
+          container_registry_enabled: alt_usage_data(fallback: nil) { Gitlab.config.registry.enabled },
           dependency_proxy_enabled: Gitlab.config.try(:dependency_proxy)&.enabled,
-          gitlab_shared_runners_enabled: alt_usage_data { Gitlab.config.gitlab_ci.shared_runners_enabled },
-          gravatar_enabled: alt_usage_data { Gitlab::CurrentSettings.gravatar_enabled? },
-          ldap_enabled: alt_usage_data { Gitlab.config.ldap.enabled },
-          mattermost_enabled: alt_usage_data { Gitlab.config.mattermost.enabled },
-          omniauth_enabled: alt_usage_data { Gitlab::Auth.omniauth_enabled? },
-          prometheus_metrics_enabled: alt_usage_data { Gitlab::Metrics.prometheus_metrics_enabled? },
-          reply_by_email_enabled: alt_usage_data { Gitlab::IncomingEmail.enabled? },
-          signup_enabled: alt_usage_data { Gitlab::CurrentSettings.allow_signup? },
-          web_ide_clientside_preview_enabled: alt_usage_data { Gitlab::CurrentSettings.web_ide_clientside_preview_enabled? },
+          gitlab_shared_runners_enabled: alt_usage_data(fallback: nil) { Gitlab.config.gitlab_ci.shared_runners_enabled },
+          gravatar_enabled: alt_usage_data(fallback: nil) { Gitlab::CurrentSettings.gravatar_enabled? },
+          ldap_enabled: alt_usage_data(fallback: nil) { Gitlab.config.ldap.enabled },
+          mattermost_enabled: alt_usage_data(fallback: nil) { Gitlab.config.mattermost.enabled },
+          omniauth_enabled: alt_usage_data(fallback: nil) { Gitlab::Auth.omniauth_enabled? },
+          prometheus_metrics_enabled: alt_usage_data(fallback: nil) { Gitlab::Metrics.prometheus_metrics_enabled? },
+          reply_by_email_enabled: alt_usage_data(fallback: nil) { Gitlab::IncomingEmail.enabled? },
+          signup_enabled: alt_usage_data(fallback: nil) { Gitlab::CurrentSettings.allow_signup? },
+          web_ide_clientside_preview_enabled: alt_usage_data(fallback: nil) { Gitlab::CurrentSettings.web_ide_clientside_preview_enabled? },
           ingress_modsecurity_enabled: Feature.enabled?(:ingress_modsecurity),
-          grafana_link_enabled: alt_usage_data { Gitlab::CurrentSettings.grafana_enabled? }
+          grafana_link_enabled: alt_usage_data(fallback: nil) { Gitlab::CurrentSettings.grafana_enabled? }
         }
       end
 
@@ -213,14 +213,14 @@ module Gitlab
 
       def components_usage_data
         {
-          git: { version: alt_usage_data { Gitlab::Git.version } },
+          git: { version: alt_usage_data(fallback: { major: -1 }) { Gitlab::Git.version } },
           gitaly: {
             version: alt_usage_data { Gitaly::Server.all.first.server_version },
             servers: alt_usage_data { Gitaly::Server.count },
-            filesystems: alt_usage_data { Gitaly::Server.filesystems }
+            filesystems: alt_usage_data(fallback: ["-1"]) { Gitaly::Server.filesystems }
           },
           gitlab_pages: {
-            enabled: alt_usage_data { Gitlab.config.pages.enabled },
+            enabled: alt_usage_data(fallback: nil) { Gitlab.config.pages.enabled },
             version: alt_usage_data { Gitlab::Pages::VERSION }
           },
           database: {

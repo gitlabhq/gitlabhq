@@ -18,7 +18,7 @@ GET /projects/:id/remote_mirrors
 Example request:
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" 'https://gitlab.example.com/api/v4/projects/42/remote_mirrors'
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/42/remote_mirrors"
 ```
 
 Example response:
@@ -64,7 +64,7 @@ POST /projects/:id/remote_mirrors
 Example request:
 
 ```shell
-curl --request POST --data "url=https://username:token@example.com/gitlab/example.git" --header "PRIVATE-TOKEN: <your_access_token>" 'https://gitlab.example.com/api/v4/projects/42/remote_mirrors'
+curl --request POST --data "url=https://username:token@example.com/gitlab/example.git" --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/42/remote_mirrors"
 ```
 
 Example response:
@@ -105,7 +105,7 @@ PUT /projects/:id/remote_mirrors/:mirror_id
 Example request:
 
 ```shell
-curl --request PUT --data "enabled=false" --header "PRIVATE-TOKEN: <your_access_token>" 'https://gitlab.example.com/api/v4/projects/42/remote_mirrors/101486'
+curl --request PUT --data "enabled=false" --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/42/remote_mirrors/101486"
 ```
 
 Example response:

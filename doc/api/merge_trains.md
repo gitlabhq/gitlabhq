@@ -32,7 +32,7 @@ GET /projects/:id/merge_trains?scope=complete
 | `sort`              | string           | no         | Return Merge Trains sorted in `asc` or `desc` order. Default is `desc`.                                                     |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/1/merge_trains
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/merge_trains"
 ```
 
 Example response:

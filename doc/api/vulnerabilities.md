@@ -40,7 +40,7 @@ GET /vulnerabilities/:id
 | `id` | integer or string | yes | The ID of a Vulnerability to get |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/vulnerabilities/1
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/vulnerabilities/1"
 ```
 
 Example response:

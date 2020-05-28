@@ -76,7 +76,7 @@ GET /groups/:id/epics?state=opened
 | `my_reaction_emoji` | string           | no         | Return epics reacted by the authenticated user by the given emoji. `None` returns epics not given a reaction. `Any` returns epics given at least one reaction. Introduced in [GitLab 13.0](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/31479)|
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/groups/1/epics
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/1/epics"
 ```
 
 Example response:
@@ -183,7 +183,7 @@ GET /groups/:id/epics/:epic_iid
 | `epic_iid`          | integer/string   | yes        | The internal ID of the epic.  |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/groups/1/epics/5
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/1/epics/5"
 ```
 
 Example response:
@@ -259,7 +259,7 @@ POST /groups/:id/epics
 | `parent_id`         | integer/string   | no         | The ID of a parent epic (since 11.11) |
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/groups/1/epics?title=Epic&description=Epic%20description
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/1/epics?title=Epic&description=Epic%20description"
 ```
 
 Example response:
@@ -336,7 +336,7 @@ PUT /groups/:id/epics/:epic_iid
 | `state_event`       | string           | no         | State event for an epic. Set `close` to close the epic and `reopen` to reopen it (since 11.4) |
 
 ```shell
-curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/groups/1/epics/5?title=New%20Title
+curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/1/epics/5?title=New%20Title"
 ```
 
 Example response:
@@ -399,7 +399,7 @@ DELETE /groups/:id/epics/:epic_iid
 | `epic_iid`          | integer/string   | yes        | The internal ID of the epic.  |
 
 ```shell
-curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/groups/1/epics/5
+curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/1/epics/5"
 ```
 
 ## Create a todo
@@ -418,7 +418,7 @@ POST /groups/:id/epics/:epic_iid/todo
 | `epic_iid` | integer | yes          | The internal ID of a group's epic |
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/groups/1/epics/5/todo
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/1/epics/5/todo"
 ```
 
 Example response:

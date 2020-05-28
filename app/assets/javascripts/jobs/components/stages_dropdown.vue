@@ -81,7 +81,7 @@ export default {
     <button
       type="button"
       data-toggle="dropdown"
-      class="js-selected-stage dropdown-menu-toggle prepend-top-8"
+      class="js-selected-stage dropdown-menu-toggle gl-mt-3"
     >
       {{ selectedStage }} <i class="fa fa-chevron-down"></i>
     </button>

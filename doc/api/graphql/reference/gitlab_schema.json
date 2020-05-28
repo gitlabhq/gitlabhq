@@ -2516,6 +2516,284 @@
           "possibleTypes": null
         },
         {
+          "kind": "OBJECT",
+          "name": "ContainerExpirationPolicy",
+          "description": "A tag expiration policy designed to keep only the images that matter most",
+          "fields": [
+            {
+              "name": "cadence",
+              "description": "This container expiration policy schedule",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "ENUM",
+                  "name": "ContainerExpirationPolicyCadenceEnum",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "createdAt",
+              "description": "Timestamp of when the container expiration policy was created",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Time",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "enabled",
+              "description": "Indicates if this container expiration policy is enabled",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "keepN",
+              "description": "Number of tags to retain",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "ENUM",
+                "name": "ContainerExpirationPolicyKeepEnum",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "nameRegex",
+              "description": "Tags with names matching this regex pattern will expire",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "nameRegexKeep",
+              "description": "Tags with names matching this regex pattern will be preserved",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "nextRunAt",
+              "description": "Next time that this container expiration policy will get executed",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Time",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "olderThan",
+              "description": "Tags older that this will expire",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "ENUM",
+                "name": "ContainerExpirationPolicyOlderThanEnum",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "updatedAt",
+              "description": "Timestamp of when the container expiration policy was updated",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Time",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [
+
+          ],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "ENUM",
+          "name": "ContainerExpirationPolicyCadenceEnum",
+          "description": null,
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": [
+            {
+              "name": "EVERY_DAY",
+              "description": "Every day",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "EVERY_WEEK",
+              "description": "Every week",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "EVERY_TWO_WEEKS",
+              "description": "Every two weeks",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "EVERY_MONTH",
+              "description": "Every month",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "EVERY_THREE_MONTHS",
+              "description": "Every three months",
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "possibleTypes": null
+        },
+        {
+          "kind": "ENUM",
+          "name": "ContainerExpirationPolicyKeepEnum",
+          "description": null,
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": [
+            {
+              "name": "ONE_TAG",
+              "description": "1 tag per image name",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "FIVE_TAGS",
+              "description": "5 tags per image name",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "TEN_TAGS",
+              "description": "10 tags per image name",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "TWENTY_FIVE_TAGS",
+              "description": "25 tags per image name",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "FIFTY_TAGS",
+              "description": "50 tags per image name",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "ONE_HUNDRED_TAGS",
+              "description": "100 tags per image name",
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "possibleTypes": null
+        },
+        {
+          "kind": "ENUM",
+          "name": "ContainerExpirationPolicyOlderThanEnum",
+          "description": null,
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": [
+            {
+              "name": "SEVEN_DAYS",
+              "description": "7 days until tags are automatically removed",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "FOURTEEN_DAYS",
+              "description": "14 days until tags are automatically removed",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "THIRTY_DAYS",
+              "description": "30 days until tags are automatically removed",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "NINETY_DAYS",
+              "description": "90 days until tags are automatically removed",
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "possibleTypes": null
+        },
+        {
           "kind": "INPUT_OBJECT",
           "name": "CreateAlertIssueInput",
           "description": "Autogenerated input type of CreateAlertIssue",
@@ -22998,6 +23276,20 @@
               "type": {
                 "kind": "OBJECT",
                 "name": "BoardConnection",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "containerExpirationPolicy",
+              "description": "The container expiration policy of the project",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "ContainerExpirationPolicy",
                 "ofType": null
               },
               "isDeprecated": false,

@@ -237,6 +237,11 @@ module Types
           description: 'A single release of the project',
           resolver: Resolvers::ReleasesResolver.single,
           feature_flag: :graphql_release_data
+
+    field :container_expiration_policy,
+          Types::ContainerExpirationPolicyType,
+          null: true,
+          description: 'The container expiration policy of the project'
   end
 end
 

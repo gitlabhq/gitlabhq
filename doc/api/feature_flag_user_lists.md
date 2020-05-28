@@ -23,7 +23,7 @@ GET /projects/:id/feature_flags_user_lists
 | `id`                | integer/string   | yes        | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding).                                            |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/1/feature_flags_user_lists
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/feature_flags_user_lists"
 ```
 
 Example response:
@@ -66,7 +66,7 @@ POST /projects/:id/feature_flags_user_lists
 | `user_xids`         | string           | yes        | A comma separated list of user IDs. |
 
 ```shell
-curl https://gitlab.example.com/api/v4/projects/1/feature_flags_user_lists \
+curl "https://gitlab.example.com/api/v4/projects/1/feature_flags_user_lists" \
      --header "PRIVATE-TOKEN: <your_access_token>" \
      --header "Content-type: application/json" \
      --data @- << EOF
@@ -105,7 +105,7 @@ GET /projects/:id/feature_flags_user_lists/:iid
 | `iid`               | integer/string   | yes        | The internal ID of the project's feature flag user list.                               |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/1/feature_flags_user_lists/1
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/feature_flags_user_lists/1"
 ```
 
 Example response:
@@ -138,7 +138,7 @@ PUT /projects/:id/feature_flags_user_lists/:iid
 | `user_xids`         | string           | no         | A comma separated list of user IDs.                                                    |
 
 ```shell
-curl https://gitlab.example.com/api/v4/projects/1/feature_flags_user_lists/1 \
+curl "https://gitlab.example.com/api/v4/projects/1/feature_flags_user_lists/1" \
      --header "PRIVATE-TOKEN: <your_access_token>" \
      --header "Content-type: application/json" \
      --request PUT \
@@ -177,5 +177,5 @@ DELETE /projects/:id/feature_flags_user_lists/:iid
 | `iid`               | integer/string   | yes        | The internal ID of the project's feature flag user list                                |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" --request DELETE https://gitlab.example.com/api/v4/projects/1/feature_flags_user_lists/1
+curl --header "PRIVATE-TOKEN: <your_access_token>" --request DELETE "https://gitlab.example.com/api/v4/projects/1/feature_flags_user_lists/1"
 ```

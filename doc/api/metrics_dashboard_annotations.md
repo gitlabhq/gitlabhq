@@ -24,7 +24,7 @@ Parameters:
 | `description` | string        | yes      | Description of the annotation.  |
 
 ```shell
-curl --header 'Private-Token: <your_access_token>' https://gitlab.example.com/api/v4/environments/1/metrics_dashboard/annotations \
+curl --header "Private-Token: <your_access_token>" "https://gitlab.example.com/api/v4/environments/1/metrics_dashboard/annotations" \
  --data-urlencode "dashboard_path=.gitlab/dashboards/custom_metrics.yml" \
  --data-urlencode "starting_at=2016-03-11T03:45:40Z" \
  --data-urlencode "description=annotation description"

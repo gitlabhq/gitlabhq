@@ -25,7 +25,7 @@ are paginated.
 Read more on [pagination](README.md#pagination).
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" https://primary.example.com/api/v4/audit_events
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://primary.example.com/api/v4/audit_events"
 ```
 
 Example response:
@@ -96,7 +96,7 @@ GET /audit_events/:id
 | `id` | integer | yes | The ID of the audit event |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" https://primary.example.com/api/v4/audit_events/1
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://primary.example.com/api/v4/audit_events/1"
 ```
 
 Example response:
@@ -146,7 +146,7 @@ are paginated.
 Read more on [pagination](README.md#pagination).
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" https://primary.example.com/api/v4/groups/60/audit_events
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://primary.example.com/api/v4/groups/60/audit_events"
 ```
 
 Example response:
@@ -202,7 +202,7 @@ GET /groups/:id/audit_events/:audit_event_id
 | `audit_event_id` | integer | yes | The ID of the audit event |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" https://primary.example.com/api/v4/groups/60/audit_events/2
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://primary.example.com/api/v4/groups/60/audit_events/2"
 ```
 
 Example response:

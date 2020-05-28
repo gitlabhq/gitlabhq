@@ -24,7 +24,7 @@ GET /projects/:id/packages
 | `package_name` | string | no | Filter the project packages with a fuzzy search by name. (_Introduced in GitLab 12.9_)
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/:id/packages
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/:id/packages"
 ```
 
 Example response:
@@ -71,7 +71,7 @@ GET /groups/:id/packages
 | `package_name` | string | no | Filter the project packages with a fuzzy search by name. (_[Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/30980) in GitLab 13.0_)
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/groups/:id/packages?exclude_subgroups=true
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/:id/packages?exclude_subgroups=true"
 ```
 
 CAUTION: **Deprecation**
@@ -156,7 +156,7 @@ GET /projects/:id/packages/:package_id
 | `package_id`      | integer | yes | ID of a package. |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/:id/packages/:package_id
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/:id/packages/:package_id"
 ```
 
 CAUTION: **Deprecation**
@@ -233,7 +233,7 @@ GET /projects/:id/packages/:package_id/package_files
 | `package_id`      | integer | yes | ID of a package. |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/1/packages/4/package_files
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/packages/4/package_files"
 ```
 
 Example response:
@@ -288,7 +288,7 @@ DELETE /projects/:id/packages/:package_id
 | `package_id`      | integer | yes | ID of a package. |
 
 ```shell
-curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/:id/packages/:package_id
+curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/:id/packages/:package_id"
 ```
 
 Can return the following status codes:

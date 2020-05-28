@@ -29,7 +29,7 @@ Parameters:
 Example request:
 
 ```shell
-curl https://gitlab.example.com/api/v4/avatar?email=admin@example.com&size=32
+curl "https://gitlab.example.com/api/v4/avatar?email=admin@example.com&size=32"
 ```
 
 Example response:

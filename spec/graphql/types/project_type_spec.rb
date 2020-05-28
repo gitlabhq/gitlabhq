@@ -26,6 +26,7 @@ describe GitlabSchema.types['Project'] do
       grafanaIntegration autocloseReferencedIssues suggestion_commit_message environments
       boards jira_import_status jira_imports services releases release
       alert_management_alerts alert_management_alert alert_management_alert_status_counts
+      container_expiration_policy
     ]
 
     expect(described_class).to include_graphql_fields(*expected_fields)
@@ -124,5 +125,11 @@ describe GitlabSchema.types['Project'] do
 
     it { is_expected.to have_graphql_type(Types::ReleaseType.connection_type) }
     it { is_expected.to have_graphql_resolver(Resolvers::ReleasesResolver) }
+  end
+
+  describe 'container expiration policy field' do
+    subject { described_class.fields['containerExpirationPolicy'] }
+
+    it { is_expected.to have_graphql_type(Types::ContainerExpirationPolicyType) }
   end
 end

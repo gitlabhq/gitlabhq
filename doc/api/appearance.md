@@ -14,7 +14,7 @@ GET /application/appearance
 ```
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/application/appearance
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/application/appearance"
 ```
 
 Example response:
@@ -60,7 +60,7 @@ PUT /application/appearance
 | `email_header_and_footer_enabled` | boolean | no       | Add header and footer to all outgoing emails if enabled
 
 ```shell
-curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/application/appearance?email_header_and_footer_enabled=true&header_message=test
+curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/application/appearance?email_header_and_footer_enabled=true&header_message=test"
 ```
 
 Example response:

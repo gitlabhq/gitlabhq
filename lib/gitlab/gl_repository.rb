@@ -12,15 +12,14 @@ module Gitlab
     WIKI = RepoType.new(
       name: :wiki,
       access_checker_class: Gitlab::GitAccessWiki,
-      repository_resolver: -> (container) { container&.wiki&.repository },
-      project_resolver: -> (container) { container.is_a?(Project) ? container : nil },
+      repository_resolver: -> (project) { project&.wiki&.repository },
       suffix: :wiki
     ).freeze
     SNIPPET = RepoType.new(
       name: :snippet,
       access_checker_class: Gitlab::GitAccessSnippet,
       repository_resolver: -> (snippet) { snippet&.repository },
-      container_class: Snippet,
+      container_resolver: -> (id) { Snippet.find_by_id(id) },
       project_resolver: -> (snippet) { snippet&.project },
       guest_read_ability: :read_snippet
     ).freeze
@@ -43,12 +42,16 @@ module Gitlab
     end
 
     def self.parse(gl_repository)
-      result = ::Gitlab::GlRepository::Identifier.new(gl_repository)
+      type_name, _id = gl_repository.split('-').first
+      type = types[type_name]
 
-      repo_type = result.repo_type
-      container = result.fetch_container!
+      unless type
+        raise ArgumentError, "Invalid GL Repository \"#{gl_repository}\""
+      end
 
-      [container, repo_type.project_for(container), repo_type]
+      container = type.fetch_container!(gl_repository)
+
+      [container, type.project_for(container), type]
     end
 
     def self.default_type

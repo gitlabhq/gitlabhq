@@ -33,7 +33,7 @@ Parameters:
 | `search`  | string | no | Return only milestones with a title or description matching the provided string |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/groups/5/milestones
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/5/milestones"
 ```
 
 Example Response:

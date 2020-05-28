@@ -32,7 +32,7 @@ Parameters:
 Example request:
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --data "name=MyApplication&redirect_uri=http://redirect.uri&scopes=" https://gitlab.example.com/api/v4/applications
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --data "name=MyApplication&redirect_uri=http://redirect.uri&scopes=" "https://gitlab.example.com/api/v4/applications"
 ```
 
 Example response:
@@ -59,7 +59,7 @@ GET /applications
 Example request:
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/applications
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/applications"
 ```
 
 Example response:
@@ -98,5 +98,5 @@ Parameters:
 Example request:
 
 ```shell
-curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/applications/:id
+curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/applications/:id"
 ```

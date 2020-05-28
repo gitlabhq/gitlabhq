@@ -643,7 +643,7 @@ PUT /user/status
 When both parameters `emoji` and `message` are empty, the status will be cleared.
 
 ```shell
-curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" --data "emoji=coffee" --data "message=I crave coffee" https://gitlab.example.com/api/v4/user/status
+curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" --data "emoji=coffee" --data "message=I crave coffee" "https://gitlab.example.com/api/v4/user/status"
 ```
 
 Example responses
@@ -833,7 +833,7 @@ GET /user/gpg_keys
 ```
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/user/gpg_keys
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/user/gpg_keys"
 ```
 
 Example response:
@@ -863,7 +863,7 @@ Parameters:
 | `key_id`  | integer | yes      | The ID of the GPG key |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/user/gpg_keys/1
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/user/gpg_keys/1"
 ```
 
 Example response:
@@ -891,7 +891,7 @@ Parameters:
 | key       | string | yes      | The new GPG key |
 
 ```shell
-curl --data "key=-----BEGIN PGP PUBLIC KEY BLOCK-----\r\n\r\nxsBNBFV..."  --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/user/gpg_keys
+curl --data "key=-----BEGIN PGP PUBLIC KEY BLOCK-----\r\n\r\nxsBNBFV..."  --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/user/gpg_keys"
 ```
 
 Example response:
@@ -921,7 +921,7 @@ Parameters:
 | `key_id`  | integer | yes      | The ID of the GPG key |
 
 ```shell
-curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/user/gpg_keys/1
+curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/user/gpg_keys/1"
 ```
 
 Returns `204 No Content` on success, or `404 Not found` if the key cannot be found.
@@ -941,7 +941,7 @@ Parameters:
 | `id`      | integer | yes      | The ID of the user |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/users/2/gpg_keys
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/users/2/gpg_keys"
 ```
 
 Example response:
@@ -972,7 +972,7 @@ Parameters:
 | `key_id`  | integer | yes      | The ID of the GPG key |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/users/2/gpg_keys/1
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/users/2/gpg_keys/1"
 ```
 
 Example response:
@@ -1001,7 +1001,7 @@ Parameters:
 | `key_id`  | integer | yes      | The ID of the GPG key |
 
 ```shell
-curl --data "key=-----BEGIN PGP PUBLIC KEY BLOCK-----\r\n\r\nxsBNBFV..."  --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/users/2/gpg_keys
+curl --data "key=-----BEGIN PGP PUBLIC KEY BLOCK-----\r\n\r\nxsBNBFV..."  --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/users/2/gpg_keys"
 ```
 
 Example response:
@@ -1032,7 +1032,7 @@ Parameters:
 | `key_id`  | integer | yes      | The ID of the GPG key |
 
 ```shell
-curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/users/2/gpg_keys/1
+curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/users/2/gpg_keys/1"
 ```
 
 ## List emails
@@ -1261,7 +1261,7 @@ Parameters:
 | `state`   | string  | no       | filter tokens based on state (`all`, `active`, `inactive`) |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/users/42/impersonation_tokens
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/users/42/impersonation_tokens"
 ```
 
 Example response:
@@ -1313,7 +1313,7 @@ Parameters:
 | `impersonation_token_id` | integer | yes      | The ID of the impersonation token |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/users/42/impersonation_tokens/2
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/users/42/impersonation_tokens/2"
 ```
 
 Example response:
@@ -1355,7 +1355,7 @@ POST /users/:user_id/impersonation_tokens
 | `scopes`     | array   | yes      | The array of scopes of the impersonation token (`api`, `read_user`) |
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --data "name=mytoken" --data "expires_at=2017-04-04" --data "scopes[]=api" https://gitlab.example.com/api/v4/users/42/impersonation_tokens
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --data "name=mytoken" --data "expires_at=2017-04-04" --data "scopes[]=api" "https://gitlab.example.com/api/v4/users/42/impersonation_tokens"
 ```
 
 Example response:
@@ -1387,7 +1387,7 @@ DELETE /users/:user_id/impersonation_tokens/:impersonation_token_id
 ```
 
 ```shell
-curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/users/42/impersonation_tokens/1
+curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/users/42/impersonation_tokens/1"
 ```
 
 Parameters:
@@ -1425,7 +1425,7 @@ Parameters:
 | `from` | string | no | Date string in the format YEAR-MONTH-DAY. For example, `2016-03-11`. Defaults to 6 months ago. |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/user/activities
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/user/activities"
 ```
 
 Example response:
@@ -1480,7 +1480,7 @@ Returns:
 - `400 Bad Request` when requested type is not supported.
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/users/<user_id>/memberships
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/users/:user_id/memberships"
 ```
 
 Example response:

@@ -28,7 +28,7 @@ POST /groups/:id/export
 | `id`      | integer/string | yes      | ID of the group owned by the authenticated user |
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/groups/1/export
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/1/export"
 ```
 
 ```json
@@ -50,7 +50,7 @@ GET /groups/:id/export/download
 | `id`      | integer/string | yes      | ID of the group owned by the authenticated user |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" --remote-header-name --remote-name https://gitlab.example.com/api/v4/groups/1/export/download
+curl --header "PRIVATE-TOKEN: <your_access_token>" --remote-header-name --remote-name "https://gitlab.example.com/api/v4/groups/1/export/download"
 ```
 
 ```shell
@@ -83,7 +83,7 @@ The `file=` parameter must point to a file on your file system and be preceded
 by `@`. For example:
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --form "name=imported-group" --form "path=imported-group" --form "file=@/path/to/file" https://gitlab.example.com/api/v4/groups/import
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --form "name=imported-group" --form "path=imported-group" --form "file=@/path/to/file" "https://gitlab.example.com/api/v4/groups/import"
 ```
 
 ## Important notes

@@ -14,7 +14,6 @@ import { s__ } from '~/locale';
 import query from '../graphql/queries/details.query.graphql';
 import { fetchPolicies } from '~/lib/graphql';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { ALERTS_SEVERITY_LABELS, trackAlertsDetailsViewsOptions } from '../constants';
 import createIssueQuery from '../graphql/mutations/create_issue_from_alert.graphql';
 import { visitUrl, joinPaths } from '~/lib/utils/url_utility';
@@ -47,7 +46,6 @@ export default {
     TimeAgoTooltip,
     AlertSidebar,
   },
-  mixins: [glFeatureFlagsMixin()],
   props: {
     alertId: {
       type: String,
@@ -204,29 +202,27 @@ export default {
             <template #tool>{{ alert.monitoringTool }}</template>
           </gl-sprintf>
         </div>
-        <div v-if="glFeatures.alertManagementCreateAlertIssue">
-          <gl-button
-            v-if="alert.issueIid"
-            class="gl-mt-3 mt-sm-0 align-self-center align-self-sm-baseline alert-details-issue-button"
-            data-testid="viewIssueBtn"
-            :href="issuePath(alert.issueIid)"
-            category="primary"
-            variant="success"
-          >
-            {{ s__('AlertManagement|View issue') }}
-          </gl-button>
-          <gl-button
-            v-else
-            class="gl-mt-3 mt-sm-0 align-self-center align-self-sm-baseline alert-details-issue-button"
-            data-testid="createIssueBtn"
-            :loading="issueCreationInProgress"
-            category="primary"
-            variant="success"
-            @click="createIssue()"
-          >
-            {{ s__('AlertManagement|Create issue') }}
-          </gl-button>
-        </div>
+        <gl-button
+          v-if="alert.issueIid"
+          class="gl-mt-3 mt-sm-0 align-self-center align-self-sm-baseline alert-details-issue-button"
+          data-testid="viewIssueBtn"
+          :href="issuePath(alert.issueIid)"
+          category="primary"
+          variant="success"
+        >
+          {{ s__('AlertManagement|View issue') }}
+        </gl-button>
+        <gl-button
+          v-else
+          class="gl-mt-3 mt-sm-0 align-self-center align-self-sm-baseline alert-details-issue-button"
+          data-testid="createIssueBtn"
+          :loading="issueCreationInProgress"
+          category="primary"
+          variant="success"
+          @click="createIssue()"
+        >
+          {{ s__('AlertManagement|Create issue') }}
+        </gl-button>
         <gl-button
           :aria-label="__('Toggle sidebar')"
           category="primary"

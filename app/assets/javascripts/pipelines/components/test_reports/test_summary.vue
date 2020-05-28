@@ -68,7 +68,7 @@ export default {
 <template>
   <div>
     <div class="row">
-      <div class="col-12 d-flex prepend-top-8 align-items-center">
+      <div class="col-12 d-flex gl-mt-3 align-items-center">
         <gl-deprecated-button
           v-if="showBack"
           size="sm"

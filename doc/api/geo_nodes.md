@@ -12,7 +12,7 @@ POST /geo_nodes
 ```
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" https://primary.example.com/api/v4/geo_nodes \
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://primary.example.com/api/v4/geo_nodes" \
      --request POST \
      -d "name=himynameissomething" \
      -d "url=https://another-node.example.com/"
@@ -73,7 +73,7 @@ GET /geo_nodes
 ```
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" https://primary.example.com/api/v4/geo_nodes
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://primary.example.com/api/v4/geo_nodes"
 ```
 
 Example response:
@@ -140,7 +140,7 @@ GET /geo_nodes/:id
 ```
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" https://primary.example.com/api/v4/geo_nodes/1
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://primary.example.com/api/v4/geo_nodes/1"
 ```
 
 Example response:
@@ -287,7 +287,7 @@ GET /geo_nodes/status
 ```
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" https://primary.example.com/api/v4/geo_nodes/status
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://primary.example.com/api/v4/geo_nodes/status"
 ```
 
 Example response:
@@ -452,7 +452,7 @@ GET /geo_nodes/:id/status
 ```
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" https://primary.example.com/api/v4/geo_nodes/2/status
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://primary.example.com/api/v4/geo_nodes/2/status"
 ```
 
 Example response:
@@ -530,7 +530,7 @@ GET /geo_nodes/current/failures
 This endpoint uses [Pagination](README.md#pagination).
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" https://primary.example.com/api/v4/geo_nodes/current/failures
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://primary.example.com/api/v4/geo_nodes/current/failures"
 ```
 
 Example response:

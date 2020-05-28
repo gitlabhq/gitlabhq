@@ -71,7 +71,7 @@ export default {
       </p>
       <b>{{ name }}</b>
       <div v-for="line in description.split('\n')" :key="line">{{ line }}</div>
-      <url :uri="targetUrl" class="prepend-top-8 no-expand" />
+      <url :uri="targetUrl" class="gl-mt-3 no-expand" />
     </div>
   </li>
 </template>

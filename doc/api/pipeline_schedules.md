@@ -16,7 +16,7 @@ GET /projects/:id/pipeline_schedules
 | `scope`   | string  | no       | The scope of pipeline schedules, one of: `active`, `inactive` |
 
 ```shell
-curl --header "PRIVATE-TOKEN: k5ESFgWY2Qf5xEvDcFxZ" "https://gitlab.example.com/api/v4/projects/29/pipeline_schedules"
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/29/pipeline_schedules"
 ```
 
 ```json
@@ -57,7 +57,7 @@ GET /projects/:id/pipeline_schedules/:pipeline_schedule_id
 | `pipeline_schedule_id` | integer | yes      | The pipeline schedule ID           |
 
 ```shell
-curl --header "PRIVATE-TOKEN: k5ESFgWY2Qf5xEvDcFxZ" "https://gitlab.example.com/api/v4/projects/29/pipeline_schedules/13"
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/29/pipeline_schedules/13"
 ```
 
 ```json
@@ -113,7 +113,7 @@ POST /projects/:id/pipeline_schedules
 | `active` | boolean  | no      | The activation of pipeline schedule. If false is set, the pipeline schedule will deactivated initially (default: `true`) |
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: k5ESFgWY2Qf5xEvDcFxZ" --form description="Build packages" --form ref="master" --form cron="0 1 * * 5" --form cron_timezone="UTC" --form active="true" "https://gitlab.example.com/api/v4/projects/29/pipeline_schedules"
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --form description="Build packages" --form ref="master" --form cron="0 1 * * 5" --form cron_timezone="UTC" --form active="true" "https://gitlab.example.com/api/v4/projects/29/pipeline_schedules"
 ```
 
 ```json
@@ -158,7 +158,7 @@ PUT /projects/:id/pipeline_schedules/:pipeline_schedule_id
 | `active` | boolean  | no      | The activation of pipeline schedule. If false is set, the pipeline schedule will deactivated initially. |
 
 ```shell
-curl --request PUT --header "PRIVATE-TOKEN: k5ESFgWY2Qf5xEvDcFxZ" --form cron="0 2 * * *" "https://gitlab.example.com/api/v4/projects/29/pipeline_schedules/13"
+curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" --form cron="0 2 * * *" "https://gitlab.example.com/api/v4/projects/29/pipeline_schedules/13"
 ```
 
 ```json
@@ -203,7 +203,7 @@ POST /projects/:id/pipeline_schedules/:pipeline_schedule_id/take_ownership
 | `pipeline_schedule_id`  | integer | yes      | The pipeline schedule ID           |
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: hf2CvZXB9w8Uc5pZKpSB" "https://gitlab.example.com/api/v4/projects/29/pipeline_schedules/13/take_ownership"
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/29/pipeline_schedules/13/take_ownership"
 ```
 
 ```json
@@ -248,7 +248,7 @@ DELETE /projects/:id/pipeline_schedules/:pipeline_schedule_id
 | `pipeline_schedule_id`   | integer | yes      | The pipeline schedule ID           |
 
 ```shell
-curl --request DELETE --header "PRIVATE-TOKEN: k5ESFgWY2Qf5xEvDcFxZ" "https://gitlab.example.com/api/v4/projects/29/pipeline_schedules/13"
+curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/29/pipeline_schedules/13"
 ```
 
 ```json
@@ -298,7 +298,7 @@ POST /projects/:id/pipeline_schedules/:pipeline_schedule_id/play
 Example request:
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" 'https://gitlab.example.com/api/v4/projects/42/pipeline_schedules/1/play
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/42/pipeline_schedules/1/play"
 ```
 
 Example response:
@@ -330,7 +330,7 @@ POST /projects/:id/pipeline_schedules/:pipeline_schedule_id/variables
 | `variable_type`        | string         | no       | The type of a variable. Available types are: `env_var` (default) and `file` |
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: k5ESFgWY2Qf5xEvDcFxZ" --form "key=NEW_VARIABLE" --form "value=new value" "https://gitlab.example.com/api/v4/projects/29/pipeline_schedules/13/variables"
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --form "key=NEW_VARIABLE" --form "value=new value" "https://gitlab.example.com/api/v4/projects/29/pipeline_schedules/13/variables"
 ```
 
 ```json
@@ -358,7 +358,7 @@ PUT /projects/:id/pipeline_schedules/:pipeline_schedule_id/variables/:key
 | `variable_type`        | string         | no       | The type of a variable. Available types are: `env_var` (default) and `file` |
 
 ```shell
-curl --request PUT --header "PRIVATE-TOKEN: k5ESFgWY2Qf5xEvDcFxZ" --form "value=updated value" "https://gitlab.example.com/api/v4/projects/29/pipeline_schedules/13/variables/NEW_VARIABLE"
+curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" --form "value=updated value" "https://gitlab.example.com/api/v4/projects/29/pipeline_schedules/13/variables/NEW_VARIABLE"
 ```
 
 ```json
@@ -384,7 +384,7 @@ DELETE /projects/:id/pipeline_schedules/:pipeline_schedule_id/variables/:key
 | `key`                  | string         | yes      | The `key` of a variable |
 
 ```shell
-curl --request DELETE --header "PRIVATE-TOKEN: k5ESFgWY2Qf5xEvDcFxZ" "https://gitlab.example.com/api/v4/projects/29/pipeline_schedules/13/variables/NEW_VARIABLE"
+curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/29/pipeline_schedules/13/variables/NEW_VARIABLE"
 ```
 
 ```json

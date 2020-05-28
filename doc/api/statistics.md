@@ -13,7 +13,7 @@ GET /application/statistics
 ```
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/application/statistics
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/application/statistics"
 ```
 
 Example response:

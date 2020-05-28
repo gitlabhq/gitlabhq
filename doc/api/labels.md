@@ -26,7 +26,7 @@ GET /projects/:id/labels
 | `include_ancestor_groups` | boolean | no | Include ancestor groups. Defaults to `true`. |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/1/labels?with_counts=true
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/labels?with_counts=true"
 ```
 
 Example response:
@@ -121,7 +121,7 @@ GET /projects/:id/labels/:label_id
 | `include_ancestor_groups` | boolean | no | Include ancestor groups. Defaults to `true`. |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/1/labels/bug
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/labels/bug"
 ```
 
 Example response:
@@ -297,7 +297,7 @@ POST /projects/:id/labels/:label_id/subscribe
 | `label_id` | integer or string | yes      | The ID or title of a project's label |
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/labels/1/subscribe
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/labels/1/subscribe"
 ```
 
 Example response:
@@ -335,5 +335,5 @@ POST /projects/:id/labels/:label_id/unsubscribe
 | `label_id` | integer or string | yes      | The ID or title of a project's label |
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/labels/1/unsubscribe
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/labels/1/unsubscribe"
 ```

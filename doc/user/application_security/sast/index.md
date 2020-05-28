@@ -517,7 +517,6 @@ registry.gitlab.com/gitlab-org/security-products/analyzers/bandit:2
 registry.gitlab.com/gitlab-org/security-products/analyzers/brakeman:2
 registry.gitlab.com/gitlab-org/security-products/analyzers/eslint:2
 registry.gitlab.com/gitlab-org/security-products/analyzers/flawfinder:2
-registry.gitlab.com/gitlab-org/security-products/analyzers/go-ast-scanner:2
 registry.gitlab.com/gitlab-org/security-products/analyzers/gosec:2
 registry.gitlab.com/gitlab-org/security-products/analyzers/kubesec:2
 registry.gitlab.com/gitlab-org/security-products/analyzers/nodejs-scan:2

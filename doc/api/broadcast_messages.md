@@ -20,7 +20,7 @@ GET /broadcast_messages
 Example request:
 
 ```shell
-curl https://gitlab.example.com/api/v4/broadcast_messages
+curl "https://gitlab.example.com/api/v4/broadcast_messages"
 ```
 
 Example response:
@@ -59,7 +59,7 @@ Parameters:
 Example request:
 
 ```shell
-curl https://gitlab.example.com/api/v4/broadcast_messages/1
+curl "https://gitlab.example.com/api/v4/broadcast_messages/1"
 ```
 
 Example response:
@@ -103,7 +103,7 @@ Parameters:
 Example request:
 
 ```shell
-curl --data "message=Deploy in progress&color=#cecece" --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/broadcast_messages
+curl --data "message=Deploy in progress&color=#cecece" --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/broadcast_messages"
 ```
 
 Example response:
@@ -148,7 +148,7 @@ Parameters:
 Example request:
 
 ```shell
-curl --request PUT --data "message=Update message&color=#000" --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/broadcast_messages/1
+curl --request PUT --data "message=Update message&color=#000" --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/broadcast_messages/1"
 ```
 
 Example response:
@@ -185,5 +185,5 @@ Parameters:
 Example request:
 
 ```shell
-curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/broadcast_messages/1
+curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/broadcast_messages/1"
 ```

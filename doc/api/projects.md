@@ -1857,7 +1857,7 @@ The `file=` parameter must point to a file on your filesystem and be preceded
 by `@`. For example:
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --form "file=@dk.png" https://gitlab.example.com/api/v4/projects/5/uploads
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --form "file=@dk.png" "https://gitlab.example.com/api/v4/projects/5/uploads"
 ```
 
 Returned object:
@@ -1904,7 +1904,7 @@ DELETE /projects/:id/share/:group_id
 | `group_id` | integer | yes | The ID of the group |
 
 ```shell
-curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/share/17
+curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/share/17"
 ```
 
 ## Hooks
@@ -2070,7 +2070,7 @@ GET /projects
 | `sort` | string | no | Return requests sorted in `asc` or `desc` order |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects?search=test
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects?search=test"
 ```
 
 ## Start the Housekeeping task for a Project
@@ -2230,7 +2230,7 @@ POST /projects/:id/mirror/pull
 | `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/:id/mirror/pull
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/:id/mirror/pull"
 ```
 
 ## Project badges

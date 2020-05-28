@@ -15,7 +15,7 @@ GET /projects/:id/environments
 | `search`  | string  | no       | Return list of environments matching the search criteria. Mutually exclusive with `name` |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/1/environments?name=review%2Ffix-foo
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/environments?name=review%2Ffix-foo"
 ```
 
 Example response:
