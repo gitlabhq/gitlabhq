@@ -2,7 +2,6 @@
 import { mapActions, mapState } from 'vuex';
 import tooltip from '~/vue_shared/directives/tooltip';
 import Icon from '~/vue_shared/components/icon.vue';
-import ResizablePanel from '../resizable_panel.vue';
 import IdeSidebarNav from '../ide_sidebar_nav.vue';
 
 export default {
@@ -12,7 +11,6 @@ export default {
   },
   components: {
     Icon,
-    ResizablePanel,
     IdeSidebarNav,
   },
   props: {
@@ -23,10 +21,6 @@ export default {
     },
     side: {
       type: String,
-      required: true,
-    },
-    width: {
-      type: Number,
       required: true,
     },
   },
@@ -75,25 +69,20 @@ export default {
     :data-qa-selector="`ide_${side}_sidebar`"
     class="multi-file-commit-panel ide-sidebar"
   >
-    <resizable-panel
+    <div
       v-show="isOpen"
-      :initial-width="width"
-      :min-size="width"
       :class="`ide-${side}-sidebar-${currentView}`"
-      :side="side"
       class="multi-file-commit-panel-inner"
     >
-      <div class="h-100 d-flex flex-column align-items-stretch">
-        <div
-          v-for="tabView in aliveTabViews"
-          v-show="tabView.name === currentView"
-          :key="tabView.name"
-          class="flex-fill gl-overflow-hidden js-tab-view"
-        >
-          <component :is="tabView.component" />
-        </div>
+      <div
+        v-for="tabView in aliveTabViews"
+        v-show="tabView.name === currentView"
+        :key="tabView.name"
+        class="flex-fill gl-overflow-hidden js-tab-view gl-h-full"
+      >
+        <component :is="tabView.component" />
       </div>
-    </resizable-panel>
+    </div>
     <ide-sidebar-nav
       :tabs="tabs"
       :side="side"

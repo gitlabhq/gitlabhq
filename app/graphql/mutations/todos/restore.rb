@@ -18,7 +18,7 @@ module Mutations
 
       def resolve(id:)
         todo = authorized_find!(id: id)
-        restore(todo.id) if todo.done?
+        restore(todo)
 
         {
           todo: todo.reset,
@@ -28,8 +28,8 @@ module Mutations
 
       private
 
-      def restore(id)
-        TodoService.new.mark_todos_as_pending_by_ids([id], current_user)
+      def restore(todo)
+        TodoService.new.restore_todo(todo, current_user)
       end
     end
   end

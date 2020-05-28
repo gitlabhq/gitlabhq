@@ -1,7 +1,8 @@
 import { mount, shallowMount } from '@vue/test-utils';
 import { GlDeprecatedButton, GlLink, GlFormGroup, GlFormInput } from '@gitlab/ui';
 import { TEST_HOST } from 'helpers/test_constants';
-import ExternalDashboard from '~/operation_settings/components/external_dashboard.vue';
+import MetricsSettings from '~/operation_settings/components/metrics_settings.vue';
+import ExternalDashboard from '~/operation_settings/components/form_group/external_dashboard.vue';
 import store from '~/operation_settings/store';
 import axios from '~/lib/utils/axios_utils';
 import { refreshCurrentPage } from '~/lib/utils/url_utility';
@@ -12,18 +13,25 @@ jest.mock('~/flash');
 
 describe('operation settings external dashboard component', () => {
   let wrapper;
+
   const operationsSettingsEndpoint = `${TEST_HOST}/mock/ops/settings/endpoint`;
+  const helpPage = `${TEST_HOST}/help/metrics/page/path`;
   const externalDashboardUrl = `http://mock-external-domain.com/external/dashboard/url`;
-  const externalDashboardHelpPagePath = `${TEST_HOST}/help/page/path`;
+  const externalDashboardHelpPage = `${TEST_HOST}/help/external/page/path`;
+
   const mountComponent = (shallow = true) => {
     const config = [
-      ExternalDashboard,
+      MetricsSettings,
       {
         store: store({
           operationsSettingsEndpoint,
+          helpPage,
           externalDashboardUrl,
-          externalDashboardHelpPagePath,
+          externalDashboardHelpPage,
         }),
+        stubs: {
+          ExternalDashboard,
+        },
       },
     ];
     wrapper = shallow ? shallowMount(...config) : mount(...config);
@@ -44,7 +52,7 @@ describe('operation settings external dashboard component', () => {
 
   it('renders header text', () => {
     mountComponent();
-    expect(wrapper.find('.js-section-header').text()).toBe('External Dashboard');
+    expect(wrapper.find('.js-section-header').text()).toBe('Metrics Dashboard');
   });
 
   describe('expand/collapse button', () => {
@@ -64,16 +72,14 @@ describe('operation settings external dashboard component', () => {
     });
 
     it('renders descriptive text', () => {
-      expect(subHeader.text()).toContain(
-        'Add a button to the metrics dashboard linking directly to your existing external dashboards.',
-      );
+      expect(subHeader.text()).toContain('Manage Metrics Dashboard settings.');
     });
 
     it('renders help page link', () => {
       const link = subHeader.find(GlLink);
 
       expect(link.text()).toBe('Learn more');
-      expect(link.attributes().href).toBe(externalDashboardHelpPagePath);
+      expect(link.attributes().href).toBe(helpPage);
     });
   });
 
@@ -82,18 +88,17 @@ describe('operation settings external dashboard component', () => {
       let formGroup;
 
       beforeEach(() => {
-        mountComponent();
-        formGroup = wrapper.find(GlFormGroup);
+        mountComponent(false);
+        formGroup = wrapper.find(ExternalDashboard).find(GlFormGroup);
       });
 
       it('uses label text', () => {
-        expect(formGroup.attributes().label).toBe('Full dashboard URL');
+        expect(formGroup.find('label').text()).toBe('External dashboard URL');
       });
 
       it('uses description text', () => {
-        expect(formGroup.attributes().description).toBe(
-          'Enter the URL of the dashboard you want to link to',
-        );
+        const description = formGroup.find('small');
+        expect(description.find('a').attributes('href')).toBe(externalDashboardHelpPage);
       });
     });
 

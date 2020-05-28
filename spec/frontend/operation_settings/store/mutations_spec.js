@@ -13,7 +13,7 @@ describe('operation settings mutations', () => {
       const mockUrl = 'mockUrl';
       mutations.SET_EXTERNAL_DASHBOARD_URL(localState, mockUrl);
 
-      expect(localState.externalDashboardUrl).toBe(mockUrl);
+      expect(localState.externalDashboard.url).toBe(mockUrl);
     });
   });
 });

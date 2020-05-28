@@ -7,19 +7,19 @@ import * as mutationTypes from './mutation_types';
 export const setExternalDashboardUrl = ({ commit }, url) =>
   commit(mutationTypes.SET_EXTERNAL_DASHBOARD_URL, url);
 
-export const updateExternalDashboardUrl = ({ state, dispatch }) =>
+export const saveChanges = ({ state, dispatch }) =>
   axios
     .patch(state.operationsSettingsEndpoint, {
       project: {
         metrics_setting_attributes: {
-          external_dashboard_url: state.externalDashboardUrl,
+          external_dashboard_url: state.externalDashboard.url,
         },
       },
     })
-    .then(() => dispatch('receiveExternalDashboardUpdateSuccess'))
-    .catch(error => dispatch('receiveExternalDashboardUpdateError', error));
+    .then(() => dispatch('receiveSaveChangesSuccess'))
+    .catch(error => dispatch('receiveSaveChangesError', error));
 
-export const receiveExternalDashboardUpdateSuccess = () => {
+export const receiveSaveChangesSuccess = () => {
   /**
    * The operations_controller currently handles successful requests
    * by creating a flash banner messsage to notify the user.
@@ -27,8 +27,8 @@ export const receiveExternalDashboardUpdateSuccess = () => {
   refreshCurrentPage();
 };
 
-export const receiveExternalDashboardUpdateError = (_, error) => {
-  const { response } = error;
+export const receiveSaveChangesError = (_, error) => {
+  const { response = {} } = error;
   const message = response.data && response.data.message ? response.data.message : '';
 
   createFlash(`${__('There was an error saving your changes.')} ${message}`, 'alert');

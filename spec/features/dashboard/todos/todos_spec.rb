@@ -114,7 +114,7 @@ describe 'Dashboard Todos' do
     context 'todo is stale on the page' do
       before do
         todos = TodosFinder.new(user, state: :pending).execute
-        TodoService.new.mark_todos_as_done(todos, user)
+        TodoService.new.resolve_todos(todos, user)
       end
 
       it_behaves_like 'deleting the todo'

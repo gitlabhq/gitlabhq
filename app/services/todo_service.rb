@@ -30,7 +30,7 @@ class TodoService
   #  * mark all pending todos related to the target for the current user as done
   #
   def close_issue(issue, current_user)
-    mark_pending_todos_as_done(issue, current_user)
+    resolve_todos_for_target(issue, current_user)
   end
 
   # When we destroy a todo target we should:
@@ -79,7 +79,7 @@ class TodoService
   #  * mark all pending todos related to the target for the current user as done
   #
   def close_merge_request(merge_request, current_user)
-    mark_pending_todos_as_done(merge_request, current_user)
+    resolve_todos_for_target(merge_request, current_user)
   end
 
   # When merge a merge request we should:
@@ -87,7 +87,7 @@ class TodoService
   #  * mark all pending todos related to the target for the current user as done
   #
   def merge_merge_request(merge_request, current_user)
-    mark_pending_todos_as_done(merge_request, current_user)
+    resolve_todos_for_target(merge_request, current_user)
   end
 
   # When a build fails on the HEAD of a merge request we should:
@@ -105,7 +105,7 @@ class TodoService
   #  * mark all pending todos related to the merge request for that user as done
   #
   def merge_request_push(merge_request, current_user)
-    mark_pending_todos_as_done(merge_request, current_user)
+    resolve_todos_for_target(merge_request, current_user)
   end
 
   # When a build is retried to a merge request we should:
@@ -114,7 +114,7 @@ class TodoService
   #
   def merge_request_build_retried(merge_request)
     merge_request.merge_participants.each do |user|
-      mark_pending_todos_as_done(merge_request, user)
+      resolve_todos_for_target(merge_request, user)
     end
   end
 
@@ -151,50 +151,7 @@ class TodoService
   #  * mark all pending todos related to the awardable for the current user as done
   #
   def new_award_emoji(awardable, current_user)
-    mark_pending_todos_as_done(awardable, current_user)
-  end
-
-  # When marking pending todos as done we should:
-  #
-  #  * mark all pending todos related to the target for the current user as done
-  #
-  def mark_pending_todos_as_done(target, user)
-    attributes = attributes_for_target(target)
-    pending_todos(user, attributes).update_all(state: :done)
-    user.update_todos_count_cache
-  end
-
-  # When user marks some todos as done
-  def mark_todos_as_done(todos, current_user)
-    update_todos_state(todos, current_user, :done)
-  end
-
-  def mark_todos_as_done_by_ids(ids, current_user)
-    todos = todos_by_ids(ids, current_user)
-    mark_todos_as_done(todos, current_user)
-  end
-
-  def mark_all_todos_as_done_by_user(current_user)
-    todos = TodosFinder.new(current_user).execute
-    mark_todos_as_done(todos, current_user)
-  end
-
-  def mark_todo_as_done(todo, current_user)
-    return if todo.done?
-
-    todo.update(state: :done)
-
-    current_user.update_todos_count_cache
-  end
-
-  # When user marks some todos as pending
-  def mark_todos_as_pending(todos, current_user)
-    update_todos_state(todos, current_user, :pending)
-  end
-
-  def mark_todos_as_pending_by_ids(ids, current_user)
-    todos = todos_by_ids(ids, current_user)
-    mark_todos_as_pending(todos, current_user)
+    resolve_todos_for_target(awardable, current_user)
   end
 
   # When user marks an issue as todo
@@ -207,19 +164,46 @@ class TodoService
     TodosFinder.new(current_user).any_for_target?(issuable, :pending)
   end
 
-  private
+  # Resolves all todos related to target
+  def resolve_todos_for_target(target, current_user)
+    attributes = attributes_for_target(target)
 
-  def todos_by_ids(ids, current_user)
-    current_user.todos_limited_to(Array(ids))
+    resolve_todos(pending_todos(current_user, attributes), current_user)
   end
 
-  def update_todos_state(todos, current_user, state)
-    todos_ids = todos.update_state(state)
+  def resolve_todos(todos, current_user, resolution: :done, resolved_by_action: :system_done)
+    todos_ids = todos.batch_update(state: resolution, resolved_by_action: resolved_by_action)
 
     current_user.update_todos_count_cache
 
     todos_ids
   end
+
+  def resolve_todo(todo, current_user, resolution: :done, resolved_by_action: :system_done)
+    return if todo.done?
+
+    todo.update(state: resolution, resolved_by_action: resolved_by_action)
+
+    current_user.update_todos_count_cache
+  end
+
+  def restore_todos(todos, current_user)
+    todos_ids = todos.batch_update(state: :pending)
+
+    current_user.update_todos_count_cache
+
+    todos_ids
+  end
+
+  def restore_todo(todo, current_user)
+    return if todo.pending?
+
+    todo.update(state: :pending)
+
+    current_user.update_todos_count_cache
+  end
+
+  private
 
   def create_todos(users, attributes)
     Array(users).map do |user|
@@ -252,9 +236,9 @@ class TodoService
     return unless note.can_create_todo?
 
     project = note.project
-    target  = note.noteable
+    target = note.noteable
 
-    mark_pending_todos_as_done(target, author)
+    resolve_todos_for_target(target, author)
     create_mention_todos(project, target, author, note, skip_users)
   end
 

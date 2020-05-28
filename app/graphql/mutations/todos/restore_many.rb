@@ -68,7 +68,7 @@ module Mutations
       end
 
       def restore(todos)
-        TodoService.new.mark_todos_as_pending(todos, current_user)
+        TodoService.new.restore_todos(todos, current_user)
       end
     end
   end

@@ -9,7 +9,7 @@ import CommitForm from './commit_sidebar/form.vue';
 import IdeReview from './ide_review.vue';
 import SuccessMessage from './commit_sidebar/success_message.vue';
 import IdeProjectHeader from './ide_project_header.vue';
-import { leftSidebarViews, LEFT_SIDEBAR_INIT_WIDTH } from '../constants';
+import { leftSidebarViews, SIDEBAR_INIT_WIDTH } from '../constants';
 
 export default {
   components: {
@@ -33,13 +33,13 @@ export default {
       );
     },
   },
-  LEFT_SIDEBAR_INIT_WIDTH,
+  SIDEBAR_INIT_WIDTH,
 };
 </script>
 
 <template>
   <resizable-panel
-    :initial-width="$options.LEFT_SIDEBAR_INIT_WIDTH"
+    :initial-width="$options.SIDEBAR_INIT_WIDTH"
     side="left"
     class="multi-file-commit-panel flex-column"
   >

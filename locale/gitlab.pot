@@ -9119,18 +9119,6 @@ msgstr ""
 msgid "ExternalAuthorizationService|When no classification label is set the default label `%{default_label}` will be used."
 msgstr ""
 
-msgid "ExternalMetrics|Add a button to the metrics dashboard linking directly to your existing external dashboards."
-msgstr ""
-
-msgid "ExternalMetrics|Enter the URL of the dashboard you want to link to"
-msgstr ""
-
-msgid "ExternalMetrics|External Dashboard"
-msgstr ""
-
-msgid "ExternalMetrics|Full dashboard URL"
-msgstr ""
-
 msgid "ExternalWikiService|External Wiki"
 msgstr ""
 
@@ -13725,6 +13713,18 @@ msgid "Metrics::UsersStarredDashboards|Dashboard with requested path can not be 
 msgstr ""
 
 msgid "Metrics::UsersStarredDashboards|You are not authorized to add star to this dashboard"
+msgstr ""
+
+msgid "MetricsSettings|Add a button to the metrics dashboard linking directly to your existing external dashboard."
+msgstr ""
+
+msgid "MetricsSettings|External dashboard URL"
+msgstr ""
+
+msgid "MetricsSettings|Manage Metrics Dashboard settings."
+msgstr ""
+
+msgid "MetricsSettings|Metrics Dashboard"
 msgstr ""
 
 msgid "Metrics|Add metric"

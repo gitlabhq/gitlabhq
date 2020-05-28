@@ -46,7 +46,8 @@ static-analysis:
   stage: test
   variables:
     SETUP_DB: "false"
-  parallel: 2
+    ENABLE_SPRING: "1"
+  parallel: 4
   script:
     - scripts/static-analysis
   cache:

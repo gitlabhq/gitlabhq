@@ -65,8 +65,11 @@ in a safe place.
 
 ### Enable 2FA via U2F device
 
+> Introduced in [GitLab 8.9](https://about.gitlab.com/blog/2016/06/22/gitlab-adds-support-for-u2f/).
+
 GitLab officially only supports [YubiKey](https://www.yubico.com/products/)
-U2F devices, but users have successfully used [SoloKeys](https://solokeys.com/).
+U2F devices, but users have successfully used [SoloKeys](https://solokeys.com/)
+or [Google Titan Security Key](https://cloud.google.com/titan-security-key).
 
 The U2F workflow is [supported by](https://caniuse.com/#search=U2F) the
 following desktop browsers:
