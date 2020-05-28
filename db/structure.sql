@@ -6711,7 +6711,8 @@ CREATE TABLE public.user_preferences (
     setup_for_company boolean,
     render_whitespace_in_code boolean,
     tab_width smallint,
-    feature_filter_type bigint
+    feature_filter_type bigint,
+    experience_level smallint
 );
 
 CREATE SEQUENCE public.user_preferences_id_seq
@@ -13951,6 +13952,7 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200519171058
 20200519194042
 20200520103514
+20200521022725
 20200525114553
 20200525121014
 20200526120714

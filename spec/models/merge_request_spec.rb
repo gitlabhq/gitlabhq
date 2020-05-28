@@ -2623,7 +2623,7 @@ describe MergeRequest do
 
       context 'with no discussions' do
         before do
-          merge_request.notes.destroy_all # rubocop: disable DestroyAll
+          merge_request.notes.destroy_all # rubocop: disable Cop/DestroyAll
         end
 
         it 'returns true' do

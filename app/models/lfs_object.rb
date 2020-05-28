@@ -44,13 +44,13 @@ class LfsObject < ApplicationRecord
     file_store == LfsObjectUploader::Store::LOCAL
   end
 
-  # rubocop: disable DestroyAll
+  # rubocop: disable Cop/DestroyAll
   def self.destroy_unreferenced
     joins("LEFT JOIN lfs_objects_projects ON lfs_objects_projects.lfs_object_id = #{table_name}.id")
         .where(lfs_objects_projects: { id: nil })
         .destroy_all
   end
-  # rubocop: enable DestroyAll
+  # rubocop: enable Cop/DestroyAll
 
   def self.calculate_oid(path)
     self.hexdigest(path)

@@ -18,7 +18,7 @@ describe RuboCop::Cop::Scalability::IdempotentWorker do
   end
 
   it 'adds an offense when not defining idempotent method' do
-    inspect_source(<<~CODE.strip_indent)
+    inspect_source(<<~CODE)
       class SomeWorker
       end
     CODE
@@ -27,7 +27,7 @@ describe RuboCop::Cop::Scalability::IdempotentWorker do
   end
 
   it 'adds an offense when not defining idempotent method' do
-    inspect_source(<<~CODE.strip_indent)
+    inspect_source(<<~CODE)
       class SomeWorker
         idempotent!
       end

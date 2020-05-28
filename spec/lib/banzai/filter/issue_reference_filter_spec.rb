@@ -374,6 +374,16 @@ describe Banzai::Filter::IssueReferenceFilter do
       expect(link.attr('href')).to eq(designs_tab_url)
       expect(link.text).to eq("#{issue.to_reference} (designs)")
     end
+
+    context 'design management is not available' do
+      before do
+        enable_design_management(false)
+      end
+
+      it 'links to the issue, but not to the designs tab' do
+        expect(link.text).to eq(issue.to_reference)
+      end
+    end
   end
 
   context 'group context' do

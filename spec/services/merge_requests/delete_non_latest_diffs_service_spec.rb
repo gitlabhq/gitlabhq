@@ -48,12 +48,12 @@ describe MergeRequests::DeleteNonLatestDiffsService, :clean_gitlab_redis_shared_
     end
 
     it 'schedules no removal if there is no non-latest diffs' do
-      # rubocop: disable DestroyAll
+      # rubocop: disable Cop/DestroyAll
       merge_request
         .merge_request_diffs
         .where.not(id: merge_request.latest_merge_request_diff_id)
         .destroy_all
-      # rubocop: enable DestroyAll
+      # rubocop: enable Cop/DestroyAll
 
       expect(DeleteDiffFilesWorker).not_to receive(:bulk_perform_in)
 

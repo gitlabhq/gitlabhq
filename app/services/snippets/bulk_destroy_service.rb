@@ -19,7 +19,7 @@ module Snippets
 
       user_can_delete_snippets!
       attempt_delete_repositories!
-      snippets.destroy_all # rubocop: disable DestroyAll
+      snippets.destroy_all # rubocop: disable Cop/DestroyAll
 
       ServiceResponse.success(message: 'Snippets were deleted.')
     rescue SnippetAccessError

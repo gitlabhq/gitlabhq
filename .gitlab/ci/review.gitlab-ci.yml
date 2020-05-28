@@ -233,7 +233,6 @@ danger-review:
     - .review:rules:danger
   image: registry.gitlab.com/gitlab-org/gitlab-build-images:danger
   stage: test
-  allow_failure: true
   needs: []
   script:
     - source scripts/utils.sh

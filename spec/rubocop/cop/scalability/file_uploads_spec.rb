@@ -15,7 +15,7 @@ describe RuboCop::Cop::Scalability::FileUploads do
 
   context 'with required params' do
     it 'detects File in types array' do
-      expect_offense(<<~PATTERN.strip_indent)
+      expect_offense(<<~PATTERN)
       params do
         requires :certificate, allow_blank: false, types: [String, File]
                                                                    ^^^^ #{message}
@@ -24,7 +24,7 @@ describe RuboCop::Cop::Scalability::FileUploads do
     end
 
     it 'detects File as type argument' do
-      expect_offense(<<~PATTERN.strip_indent)
+      expect_offense(<<~PATTERN)
       params do
         requires :attachment, type: File
                                     ^^^^ #{message}
@@ -35,7 +35,7 @@ describe RuboCop::Cop::Scalability::FileUploads do
 
   context 'with optional params' do
     it 'detects File in types array' do
-      expect_offense(<<~PATTERN.strip_indent)
+      expect_offense(<<~PATTERN)
       params do
         optional :certificate, allow_blank: false, types: [String, File]
                                                                    ^^^^ #{message}
@@ -44,7 +44,7 @@ describe RuboCop::Cop::Scalability::FileUploads do
     end
 
     it 'detects File as type argument' do
-      expect_offense(<<~PATTERN.strip_indent)
+      expect_offense(<<~PATTERN)
       params do
         optional :attachment, type: File
                                     ^^^^ #{message}

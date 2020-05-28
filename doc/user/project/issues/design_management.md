@@ -176,3 +176,44 @@ Different discussions have different pin numbers:
 
 From GitLab 12.5 on, new discussions will be outputted to the issue activity,
 so that everyone involved can participate in the discussion.
+
+## Referring to designs in Markdown
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/217160) in **GitLab 13.1**.
+> - It is deployed behind a feature flag, disabled by default.
+> - It is disabled on GitLab.com.
+> - It is not recommended for production use.
+> - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-design-references-core-only). **(CORE ONLY)**
+
+We support referring to designs in [Markdown](../../markdown.md), which is available
+throughout the application, including in merge request and issue descriptions, in discussions and comments, and in wiki pages.
+
+At present, full URL references are supported. For example, if we refer to a design
+somewhere with:
+
+```markdown
+See http://gitlab.com/your-group/your-project/-/issues/123/designs/homescreen.png
+```
+
+This will be rendered as:
+
+> See [#123[homescreen.png]](http://gitlab.com/your-group/your-project/-/issues/123/designs/homescreen.png)
+
+### Enable or disable design references **(CORE ONLY)**
+
+Design reference parsing is under development and not ready for production use. It is
+deployed behind a feature flag that is **disabled by default**.
+[GitLab administrators with access to the GitLab Rails console](../../../administration/feature_flags.md)
+can enable it for your instance.
+
+To enable it:
+
+```ruby
+Feature.enable(:design_management_reference_filter_gfm_pipeline)
+```
+
+To disable it:
+
+```ruby
+Feature.disable(:design_management_reference_filter_gfm_pipeline)
+```

@@ -82,6 +82,9 @@ export default {
     showDomainsDropdown() {
       return this.availableDomains.length > 0;
     },
+    validationError() {
+      return this.knative.validationError;
+    },
   },
   watch: {
     knativeUpdateSuccessful(updateSuccessful) {
@@ -157,6 +160,8 @@ export default {
         type="text"
         class="form-control js-knative-domainname"
       />
+
+      <span v-if="validationError" class="gl-field-error">{{ validationError }}</span>
     </div>
 
     <template v-if="knativeInstalled">

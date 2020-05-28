@@ -61,7 +61,6 @@
     "bootstrap": "4.3.1",
     "brace-expansion": "^1.1.8",
     "cache-loader": "^4.1.0",
-    "chart.js": "2.7.2",
     "classlist-polyfill": "^1.2.0",
     "clipboard": "^1.7.1",
     "codemirror": "^5.48.4",

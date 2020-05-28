@@ -28,7 +28,7 @@ module Projects
     # rubocop: enable CodeReuse/ActiveRecord
 
     def remove_remaining_deploy_keys_projects
-      source_project.deploy_keys_projects.destroy_all # rubocop: disable DestroyAll
+      source_project.deploy_keys_projects.destroy_all # rubocop: disable Cop/DestroyAll
     end
   end
 end

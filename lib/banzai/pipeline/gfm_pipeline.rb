@@ -56,6 +56,7 @@ module Banzai
         [
           Filter::UserReferenceFilter,
           Filter::ProjectReferenceFilter,
+          Filter::DesignReferenceFilter,
           Filter::IssueReferenceFilter,
           Filter::ExternalIssueReferenceFilter,
           Filter::MergeRequestReferenceFilter,

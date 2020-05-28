@@ -75,7 +75,7 @@ describe SystemHook do
 
     it "project member destroy hook" do
       project.add_maintainer(user)
-      project.project_members.destroy_all # rubocop: disable DestroyAll
+      project.project_members.destroy_all # rubocop: disable Cop/DestroyAll
 
       expect(WebMock).to have_requested(:post, system_hook.url).with(
         body: /user_remove_from_team/,
@@ -121,7 +121,7 @@ describe SystemHook do
 
     it 'group member destroy hook' do
       group.add_maintainer(user)
-      group.group_members.destroy_all # rubocop: disable DestroyAll
+      group.group_members.destroy_all # rubocop: disable Cop/DestroyAll
 
       expect(WebMock).to have_requested(:post, system_hook.url).with(
         body: /user_remove_from_group/,

@@ -15,6 +15,8 @@ class UserPreference < ApplicationRecord
     less_than_or_equal_to: Gitlab::TabWidth::MAX
   }
 
+  enum experience_level: { novice: 0, experienced: 1 }
+
   default_value_for :tab_width, value: Gitlab::TabWidth::DEFAULT, allows_nil: false
   default_value_for :timezone, value: Time.zone.tzinfo.name, allows_nil: false
   default_value_for :time_display_relative, value: true, allows_nil: false

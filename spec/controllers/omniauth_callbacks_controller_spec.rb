@@ -212,7 +212,7 @@ describe OmniauthCallbacksController, type: :controller do
           end
 
           it 'allows linking the disabled provider' do
-            user.identities.destroy_all # rubocop: disable DestroyAll
+            user.identities.destroy_all # rubocop: disable Cop/DestroyAll
             sign_in(user)
 
             expect { post provider }.to change { user.reload.identities.count }.by(1)

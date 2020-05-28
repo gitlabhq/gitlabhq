@@ -42,7 +42,7 @@ describe 'getting merge request listings nested in a project' do
   # all the gitaly calls.  Selecting combinations of fields may mask this due to
   # memoization.
   context 'requesting a single field' do
-    let(:fresh_mr) { create(:merge_request, :unique_branches, source_project: project) }
+    let_it_be(:fresh_mr) { create(:merge_request, :unique_branches, source_project: project) }
     let(:search_params) { { iids: [fresh_mr.iid.to_s] } }
 
     before do

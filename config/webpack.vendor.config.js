@@ -38,7 +38,7 @@ module.exports = {
       'katex',
       'three',
       'select2',
-      'moment',
+      'moment-mini',
       'aws-sdk',
       'sanitize-html',
       'bootstrap/dist/js/bootstrap.js',

@@ -366,6 +366,10 @@ Pages access control is disabled by default. To enable it:
 1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
 1. Users can now configure it in their [projects' settings](../../user/project/pages/pages_access_control.md).
 
+NOTE: **Important:**
+For multi-node setups, in order for this setting to be effective, it has to be applied
+to all the App nodes as well as the Sidekiq nodes.
+
 #### Disabling public access to all Pages websites
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/32095) in GitLab 12.7.

@@ -49,7 +49,7 @@ module Gitlab
       def ensure_default_member!
         return if user_already_member?
 
-        @importable.members.destroy_all # rubocop: disable DestroyAll
+        @importable.members.destroy_all # rubocop: disable Cop/DestroyAll
 
         relation_class.create!(user: @user, access_level: highest_access_level, source_id: @importable.id, importing: true)
       rescue => e

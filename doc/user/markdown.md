@@ -442,7 +442,7 @@ In addition to this, links to some objects are also recognized and formatted. So
 
 - Comments on issues: `"https://gitlab.com/gitlab-org/gitlab/-/issues/1234#note_101075757"`, which will be rendered as `#1234 (note1)`
 - The issues designs tab: `"https://gitlab.com/gitlab-org/gitlab/-/issues/1234/designs"`, which will be rendered as `#1234 (designs)`.
-  **(PREMIUM)**
+- Links to individual designs: `"https://gitlab.com/gitlab-org/gitlab/-/issues/1234/designs/layout.png"`, which will be rendered as `#1234[layout.png]`.
 
 ### Task lists
 

@@ -757,13 +757,13 @@ module Ci
 
     # and use that for `ExpireBuildInstanceArtifactsWorker`?
     def erase_erasable_artifacts!
-      job_artifacts.erasable.destroy_all # rubocop: disable DestroyAll
+      job_artifacts.erasable.destroy_all # rubocop: disable Cop/DestroyAll
     end
 
     def erase(opts = {})
       return false unless erasable?
 
-      job_artifacts.destroy_all # rubocop: disable DestroyAll
+      job_artifacts.destroy_all # rubocop: disable Cop/DestroyAll
       erase_trace!
       update_erased!(opts[:erased_by])
     end

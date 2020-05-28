@@ -25,7 +25,7 @@ module Projects
 
     def remove_remaining_members
       # Remove remaining members and authorizations from source_project
-      source_project.project_members.destroy_all # rubocop: disable DestroyAll
+      source_project.project_members.destroy_all # rubocop: disable Cop/DestroyAll
     end
 
     def project_members_in_target_project

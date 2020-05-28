@@ -72,8 +72,20 @@ You will need at least Developer [permissions](../../permissions.md) to view Ale
 
 Navigate to the Alert Management detail view by visiting the [Alert Management list](#alert-management-list) and selecting an Alert from the list.
 
-![Alert Management Detail View](img/alert_detail_v13_0.png)
+![Alert Management Detail Overview](img/alert_detail_overview_v13_1.png)
+
+![Alert Management Full Details](img/alert_detail_full_v13_1.png)
 
 ### Update an Alert's status
 
-The Alert Management detail view allows users to update the Alert Status. See [Alert Management statuses](#alert-management-statuses) for more details.
+The Alert Management detail view enables you to update the Alert Status.
+See [Alert Management statuses](#alert-management-statuses) for more details.
+
+### Create an Issue from an Alert
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/217745) in GitLab 13.1.
+
+The Alert Management detail view enables you to create an issue with a
+description automatically populated from an alert. To create the issue,
+click the **Create Issue** button. You can then view the issue from the
+alert by clicking the **View Issue** button.

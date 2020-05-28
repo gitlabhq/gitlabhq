@@ -5368,6 +5368,9 @@ msgstr ""
 msgid "ClusterIntegration|You must have an RBAC-enabled cluster to install Knative."
 msgstr ""
 
+msgid "ClusterIntegration|You must specify a domain before you can install Knative."
+msgstr ""
+
 msgid "ClusterIntegration|You should select at least two subnets"
 msgstr ""
 

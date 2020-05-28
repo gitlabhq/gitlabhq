@@ -1,6 +1,6 @@
 require_relative '../migrate/20180223120443_create_user_interacted_projects_table.rb'
-# rubocop:disable AddIndex
-# rubocop:disable AddConcurrentForeignKey
+# rubocop:disable Migration/AddIndex
+# rubocop:disable Migration/AddConcurrentForeignKey
 class BuildUserInteractedProjectsTable < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 

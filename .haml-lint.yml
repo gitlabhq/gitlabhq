@@ -80,8 +80,8 @@ linters:
     ignored_cops:
       - Layout/BlockAlignment
       - Layout/EndAlignment
+      - Layout/LineLength
       - Lint/Void
-      - Metrics/LineLength
       - Naming/FileName
       - Style/AlignParameters
       - Style/BlockNesting
@@ -92,7 +92,6 @@ linters:
       - Style/IfUnlessModifier
       - Style/IndentationWidth
       - Style/Next
-      - Style/TrailingBlankLines
       - Style/TrailingWhitespace
       - Style/WhileUntilModifier
 
@@ -112,7 +111,7 @@ linters:
       - Layout/SpaceInsideArrayLiteralBrackets
       - Layout/SpaceInsideHashLiteralBraces
       - Layout/SpaceInsideStringInterpolation
-      - Layout/TrailingBlankLines
+      - Layout/TrailingEmptyLines
       - Lint/BooleanSymbol
       - Lint/LiteralInInterpolation
       - Lint/ParenthesesAsGroupedExpression

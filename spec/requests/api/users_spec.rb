@@ -468,13 +468,14 @@ describe API::Users, :do_not_mock_admin_mode do
 
     context "when authenticated and ldap is enabled" do
       it "returns non-ldap user" do
-        create :omniauth_user, provider: "ldapserver1"
+        ldap_user = create :omniauth_user, provider: "ldapserver1"
 
         get api("/users", user), params: { skip_ldap: "true" }
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response).to be_an Array
-        expect(json_response.first["username"]).to eq user.username
+        expect(json_response.map { |u| u['username'] })
+          .not_to include(ldap_user.username)
       end
     end
   end

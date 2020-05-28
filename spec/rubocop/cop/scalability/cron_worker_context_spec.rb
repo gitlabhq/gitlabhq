@@ -12,7 +12,7 @@ describe RuboCop::Cop::Scalability::CronWorkerContext do
   subject(:cop) { described_class.new }
 
   it 'adds an offense when including CronjobQueue' do
-    inspect_source(<<~CODE.strip_indent)
+    inspect_source(<<~CODE)
       class SomeWorker
         include CronjobQueue
       end
@@ -22,14 +22,14 @@ describe RuboCop::Cop::Scalability::CronWorkerContext do
   end
 
   it 'does not add offenses for other workers' do
-    expect_no_offenses(<<~CODE.strip_indent)
+    expect_no_offenses(<<~CODE)
       class SomeWorker
       end
     CODE
   end
 
   it 'does not add an offense when the class defines a context' do
-    expect_no_offenses(<<~CODE.strip_indent)
+    expect_no_offenses(<<~CODE)
       class SomeWorker
         include CronjobQueue
 
@@ -39,7 +39,7 @@ describe RuboCop::Cop::Scalability::CronWorkerContext do
   end
 
   it 'does not add an offense when the worker calls `with_context`' do
-    expect_no_offenses(<<~CODE.strip_indent)
+    expect_no_offenses(<<~CODE)
       class SomeWorker
         include CronjobQueue
 
@@ -53,7 +53,7 @@ describe RuboCop::Cop::Scalability::CronWorkerContext do
   end
 
   it 'does not add an offense when the worker calls `bulk_perform_async_with_contexts`' do
-    expect_no_offenses(<<~CODE.strip_indent)
+    expect_no_offenses(<<~CODE)
       class SomeWorker
         include CronjobQueue
 
@@ -67,7 +67,7 @@ describe RuboCop::Cop::Scalability::CronWorkerContext do
   end
 
   it 'does not add an offense when the worker calls `bulk_perform_in_with_contexts`' do
-    expect_no_offenses(<<~CODE.strip_indent)
+    expect_no_offenses(<<~CODE)
       class SomeWorker
         include CronjobQueue
 

@@ -12,7 +12,7 @@ describe RuboCop::Cop::Gitlab::ChangeTimezone do
 
   context 'Time.zone=' do
     it 'registers an offense with no 2nd argument' do
-      expect_offense(<<~PATTERN.strip_indent)
+      expect_offense(<<~PATTERN)
         Time.zone = 'Awkland'
         ^^^^^^^^^^^^^^^^^^^^^ Do not change timezone in the runtime (application or rspec), it could result in silently modifying other behavior.
       PATTERN

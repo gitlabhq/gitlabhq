@@ -329,9 +329,6 @@ module.exports = {
     // automatically configure monaco editor web workers
     new MonacoWebpackPlugin(),
 
-    // prevent pikaday from including moment.js
-    new webpack.IgnorePlugin(/moment/, /pikaday/),
-
     // fix legacy jQuery plugins which depend on globals
     new webpack.ProvidePlugin({
       $: 'jquery',

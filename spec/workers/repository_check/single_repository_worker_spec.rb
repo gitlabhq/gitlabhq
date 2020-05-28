@@ -8,7 +8,7 @@ describe RepositoryCheck::SingleRepositoryWorker do
 
   it 'skips when the project has no push events' do
     project = create(:project, :repository, :wiki_disabled)
-    project.events.destroy_all # rubocop: disable DestroyAll
+    project.events.destroy_all # rubocop: disable Cop/DestroyAll
     break_project(project)
 
     expect(worker).not_to receive(:git_fsck)

@@ -44,7 +44,7 @@ module Banzai
       end
 
       def read_designs?(issue)
-        Ability.allowed?(current_user, :read_design, issue)
+        issue.project.design_management_enabled?
       end
     end
   end
