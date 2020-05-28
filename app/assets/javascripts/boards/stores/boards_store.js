@@ -547,6 +547,15 @@ const boardsStore = {
   destroyList(id) {
     return axios.delete(`${this.state.endpoints.listsEndpoint}/${id}`);
   },
+  destroy(list) {
+    const index = this.state.lists.indexOf(list);
+    this.state.lists.splice(index, 1);
+    this.updateNewListDropdown(list.id);
+
+    this.destroyList(list.id).catch(() => {
+      // TODO: handle request error
+    });
+  },
 
   saveList(list) {
     const entity = list.label || list.assignee || list.milestone;

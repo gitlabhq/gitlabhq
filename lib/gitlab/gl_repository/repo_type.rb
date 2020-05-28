@@ -6,7 +6,7 @@ module Gitlab
       attr_reader :name,
                   :access_checker_class,
                   :repository_resolver,
-                  :container_resolver,
+                  :container_class,
                   :project_resolver,
                   :guest_read_ability,
                   :suffix
@@ -15,34 +15,25 @@ module Gitlab
         name:,
         access_checker_class:,
         repository_resolver:,
-        container_resolver: default_container_resolver,
+        container_class: default_container_class,
         project_resolver: nil,
         guest_read_ability: :download_code,
         suffix: nil)
         @name = name
         @access_checker_class = access_checker_class
         @repository_resolver = repository_resolver
-        @container_resolver = container_resolver
+        @container_class = container_class
         @project_resolver = project_resolver
         @guest_read_ability = guest_read_ability
         @suffix = suffix
       end
 
       def identifier_for_container(container)
+        if container.is_a?(Group)
+          return "#{container.class.name.underscore}-#{container.id}-#{name}"
+        end
+
         "#{name}-#{container.id}"
-      end
-
-      def fetch_id(identifier)
-        match = /\A#{name}-(?<id>\d+)\z/.match(identifier)
-        match[:id] if match
-      end
-
-      def fetch_container!(identifier)
-        id = fetch_id(identifier)
-
-        raise ArgumentError, "Invalid GL Repository \"#{identifier}\"" unless id
-
-        container_resolver.call(id)
       end
 
       def wiki?
@@ -85,8 +76,8 @@ module Gitlab
 
       private
 
-      def default_container_resolver
-        -> (id) { Project.find_by_id(id) }
+      def default_container_class
+        Project
       end
     end
   end

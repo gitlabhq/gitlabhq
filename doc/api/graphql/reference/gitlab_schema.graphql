@@ -8310,11 +8310,6 @@ type Project {
     after: String
 
     """
-    Filter requirements by author username
-    """
-    authorUsername: [String!]
-
-    """
     Returns the elements in the list that come before the specified cursor.
     """
     before: String
@@ -8454,6 +8449,11 @@ type Project {
     Returns the elements in the list that come after the specified cursor.
     """
     after: String
+
+    """
+    Filter requirements by author username
+    """
+    authorUsername: [String!]
 
     """
     Returns the elements in the list that come before the specified cursor.

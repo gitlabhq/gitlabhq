@@ -19,14 +19,11 @@ class NewNoteWorker # rubocop:disable Scalability/IdempotentWorker
       Gitlab::AppLogger.error("NewNoteWorker: couldn't find note with ID=#{note_id}, skipping job")
     end
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   private
 
-  # EE-only method
   def skip_notification?(note)
-    false
+    note.review.present?
   end
-  # rubocop: enable CodeReuse/ActiveRecord
 end
-
-NewNoteWorker.prepend_if_ee('EE::NewNoteWorker')

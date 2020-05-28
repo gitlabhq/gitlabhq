@@ -104,6 +104,7 @@ GET /users
     "color_scheme_id": 2,
     "projects_limit": 100,
     "current_sign_in_at": "2012-06-02T06:36:55Z",
+    "note": "DMCA Request: 2018-11-05 | DMCA Violation | Abuse | https://gitlab.zendesk.com/agent/tickets/123",
     "identities": [
       {"provider": "github", "extern_uid": "2435223452345"},
       {"provider": "bitbucket", "extern_uid": "john.smith"},
@@ -154,7 +155,7 @@ GET /users
 ]
 ```
 
-Users on GitLab [Starter, Bronze, or higher](https://about.gitlab.com/pricing/) will also see the `shared_runners_minutes_limit`, `extra_shared_runners_minutes_limit`, and `note` parameters.
+Users on GitLab [Starter, Bronze, or higher](https://about.gitlab.com/pricing/) will also see the `shared_runners_minutes_limit`, and `extra_shared_runners_minutes_limit` parameters.
 
 ```json
 [
@@ -163,7 +164,6 @@ Users on GitLab [Starter, Bronze, or higher](https://about.gitlab.com/pricing/) 
     ...
     "shared_runners_minutes_limit": 133,
     "extra_shared_runners_minutes_limit": 133,
-    "note": "DMCA Request: 2018-11-05 | DMCA Violation | Abuse | https://gitlab.zendesk.com/agent/tickets/123",
     ...
   }
 ]
@@ -296,6 +296,7 @@ Example Responses:
   "color_scheme_id": 2,
   "projects_limit": 100,
   "current_sign_in_at": "2012-06-02T06:36:55Z",
+  "note": "DMCA Request: 2018-11-05 | DMCA Violation | Abuse | https://gitlab.zendesk.com/agent/tickets/123",
   "identities": [
     {"provider": "github", "extern_uid": "2435223452345"},
     {"provider": "bitbucket", "extern_uid": "john.smith"},
@@ -316,7 +317,7 @@ Example Responses:
 NOTE: **Note:** The `plan` and `trial` parameters are only available on GitLab Enterprise Edition.
 
 Users on GitLab [Starter, Bronze, or higher](https://about.gitlab.com/pricing/) will also see
-the `shared_runners_minutes_limit`, `extra_shared_runners_minutes_limit`, and `note` parameters.
+the `shared_runners_minutes_limit`, and `extra_shared_runners_minutes_limit` parameters.
 
 ```json
 {
@@ -324,7 +325,6 @@ the `shared_runners_minutes_limit`, `extra_shared_runners_minutes_limit`, and `n
   "username": "john_smith",
   "shared_runners_minutes_limit": 133,
   "extra_shared_runners_minutes_limit": 133,
-  "note": "DMCA Request: 2018-11-05 | DMCA Violation | Abuse | https://gitlab.zendesk.com/agent/tickets/123",
   ...
 }
 ```
@@ -338,7 +338,6 @@ see the `group_saml` option:
   "username": "john_smith",
   "shared_runners_minutes_limit": 133,
   "extra_shared_runners_minutes_limit": 133,
-  "note": "DMCA Request: 2018-11-05 | DMCA Violation | Abuse | https://gitlab.zendesk.com/agent/tickets/123",
   "identities": [
     {"provider": "github", "extern_uid": "2435223452345"},
     {"provider": "bitbucket", "extern_uid": "john.smith"},
@@ -391,6 +390,7 @@ Parameters:
 | `linkedin`                           | No       | LinkedIn                                                                                                                                                |
 | `location`                           | No       | User's location                                                                                                                                         |
 | `name`                               | Yes      | Name                                                                                                                                                    |
+| `note`                               | No       | Admin notes for this user                                                                                                                               |
 | `organization`                       | No       | Organization name                                                                                                                                       |
 | `password`                           | No       | Password                                                                                                                                                |
 | `private_profile`                    | No       | User's profile is private - true, false (default), or null (will be converted to false)                                                                 |
@@ -432,7 +432,7 @@ Parameters:
 | `linkedin`                           | No       | LinkedIn                                                                                                                                                |
 | `location`                           | No       | User's location                                                                                                                                         |
 | `name`                               | No       | Name                                                                                                                                                    |
-| `note`                               | No       | Admin notes for this user **(STARTER)**                                                                                                                 |
+| `note`                               | No       | Admin notes for this user                                                                                                                  |
 | `organization`                       | No       | Organization name                                                                                                                                       |
 | `password`                           | No       | Password                                                                                                                                                |
 | `private_profile`                    | No       | User's profile is private - true, false (default), or null (will be converted to false)                                                                 |

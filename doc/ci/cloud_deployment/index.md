@@ -123,6 +123,17 @@ After you're all set up on AWS ECS, follow these steps:
    task definition, making the cluster pull the newest version of your
    application.
 
+CAUTION: **Warning:**
+The [`Deploy-ECS.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Deploy-ECS.gitlab-ci.yml)
+template includes both the [`Jobs/Build.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/Build.gitlab-ci.yml)
+and [`Jobs/Deploy/ECS.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/Deploy/ECS.gitlab-ci.yml)
+"sub-templates". Do not include these "sub-templates" on their own, and only include the main
+`Deploy-ECS.gitlab-ci.yml` template. The "sub-templates" are designed to only be
+used along with the main template. They may move or change unexpectedly causing your
+pipeline to fail if you didn't include the main template. Also, the job names within
+these templates may change. Do not override these jobs names in your own pipeline,
+as the override will stop working when the name changes.
+
 Alternatively, if you don't wish to use the `Deploy-ECS.gitlab-ci.yml` template
 to deploy to AWS ECS, you can always use our
 `aws-base` Docker image to run your own [AWS CLI commands for ECS](https://docs.aws.amazon.com/cli/latest/reference/ecs/index.html#cli-aws-ecs).

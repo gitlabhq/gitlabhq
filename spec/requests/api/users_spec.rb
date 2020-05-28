@@ -15,6 +15,177 @@ describe API::Users, :do_not_mock_admin_mode do
   let(:not_existing_pat_id) { (PersonalAccessToken.maximum('id') || 0 ) + 10 }
   let(:private_user) { create(:user, private_profile: true) }
 
+  context 'admin notes' do
+    let(:admin) { create(:admin, note: '2019-10-06 | 2FA added | user requested | www.gitlab.com') }
+    let(:user) { create(:user, note: '2018-11-05 | 2FA removed | user requested | www.gitlab.com') }
+
+    describe 'POST /users' do
+      context 'when unauthenticated' do
+        it 'return authentication error' do
+          post api('/users')
+
+          expect(response).to have_gitlab_http_status(:unauthorized)
+        end
+      end
+
+      context 'when authenticated' do
+        context 'as an admin' do
+          it 'contains the note of the user' do
+            optional_attributes = { note: 'Awesome Note' }
+            attributes = attributes_for(:user).merge(optional_attributes)
+
+            post api('/users', admin), params: attributes
+
+            expect(response).to have_gitlab_http_status(:created)
+            expect(json_response['note']).to eq(optional_attributes[:note])
+          end
+        end
+
+        context 'as a regular user' do
+          it 'does not allow creating new user' do
+            post api('/users', user), params: attributes_for(:user)
+
+            expect(response).to have_gitlab_http_status(:forbidden)
+          end
+        end
+      end
+    end
+
+    describe 'GET /users/:id' do
+      context 'when unauthenticated' do
+        it 'does not contain the note of the user' do
+          get api("/users/#{user.id}")
+
+          expect(json_response).not_to have_key('note')
+        end
+      end
+
+      context 'when authenticated' do
+        context 'as an admin' do
+          it 'contains the note of the user' do
+            get api("/users/#{user.id}", admin)
+
+            expect(json_response).to have_key('note')
+            expect(json_response['note']).to eq(user.note)
+          end
+        end
+
+        context 'as a regular user' do
+          it 'does not contain the note of the user' do
+            get api("/users/#{user.id}", user)
+
+            expect(json_response).not_to have_key('note')
+          end
+        end
+      end
+    end
+
+    describe "PUT /users/:id" do
+      context 'when user is an admin' do
+        it "updates note of the user" do
+          new_note = '2019-07-07 | Email changed | user requested | www.gitlab.com'
+
+          expect do
+            put api("/users/#{user.id}", admin), params: { note: new_note }
+          end.to change { user.reload.note }
+                   .from('2018-11-05 | 2FA removed | user requested | www.gitlab.com')
+                   .to(new_note)
+
+          expect(response).to have_gitlab_http_status(:success)
+          expect(json_response['note']).to eq(new_note)
+        end
+      end
+
+      context 'when user is not an admin' do
+        it "cannot update their own note" do
+          expect do
+            put api("/users/#{user.id}", user), params: { note: 'new note' }
+          end.not_to change { user.reload.note }
+
+          expect(response).to have_gitlab_http_status(:forbidden)
+        end
+      end
+    end
+
+    describe 'GET /users/' do
+      context 'when unauthenticated' do
+        it "does not contain the note of users" do
+          get api("/users"), params: { username: user.username }
+
+          expect(json_response.first).not_to have_key('note')
+        end
+      end
+
+      context 'when authenticated' do
+        context 'as a regular user' do
+          it 'does not contain the note of users' do
+            get api("/users", user), params: { username: user.username }
+
+            expect(json_response.first).not_to have_key('note')
+          end
+        end
+
+        context 'as an admin' do
+          it 'contains the note of users' do
+            get api("/users", admin), params: { username: user.username }
+
+            expect(response).to have_gitlab_http_status(:success)
+            expect(json_response.first).to have_key('note')
+            expect(json_response.first['note']).to eq '2018-11-05 | 2FA removed | user requested | www.gitlab.com'
+          end
+        end
+      end
+    end
+
+    describe 'GET /user' do
+      context 'when authenticated' do
+        context 'as an admin' do
+          context 'accesses their own profile' do
+            it 'contains the note of the user' do
+              get api("/user", admin)
+
+              expect(json_response).to have_key('note')
+              expect(json_response['note']).to eq(admin.note)
+            end
+          end
+
+          context 'sudo' do
+            let(:admin_personal_access_token) { create(:personal_access_token, user: admin, scopes: %w[api sudo]).token }
+
+            context 'accesses the profile of another regular user' do
+              it 'does not contain the note of the user' do
+                get api("/user?private_token=#{admin_personal_access_token}&sudo=#{user.id}")
+
+                expect(json_response['id']).to eq(user.id)
+                expect(json_response).not_to have_key('note')
+              end
+            end
+
+            context 'accesses the profile of another admin' do
+              let(:admin_2) {create(:admin, note: '2010-10-10 | 2FA added | admin requested | www.gitlab.com')}
+
+              it 'contains the note of the user' do
+                get api("/user?private_token=#{admin_personal_access_token}&sudo=#{admin_2.id}")
+
+                expect(json_response['id']).to eq(admin_2.id)
+                expect(json_response).to have_key('note')
+                expect(json_response['note']).to eq(admin_2.note)
+              end
+            end
+          end
+        end
+
+        context 'as a regular user' do
+          it 'does not contain the note of the user' do
+            get api("/user", user)
+
+            expect(json_response).not_to have_key('note')
+          end
+        end
+      end
+    end
+  end
+
   shared_examples 'rendering user status' do
     it 'returns the status if there was one' do
       create(:user_status, user: user)

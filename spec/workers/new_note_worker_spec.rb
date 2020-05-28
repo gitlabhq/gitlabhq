@@ -49,4 +49,14 @@ describe NewNoteWorker do
       described_class.new.perform(unexistent_note_id)
     end
   end
+
+  context 'when note is with review' do
+    it 'does not create a new note notification' do
+      note = create(:note, :with_review)
+
+      expect_any_instance_of(NotificationService).not_to receive(:new_note)
+
+      subject.perform(note.id)
+    end
+  end
 end

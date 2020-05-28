@@ -83,13 +83,7 @@ class List {
   }
 
   destroy() {
-    const index = boardsStore.state.lists.indexOf(this);
-    boardsStore.state.lists.splice(index, 1);
-    boardsStore.updateNewListDropdown(this.id);
-
-    boardsStore.destroyList(this.id).catch(() => {
-      // TODO: handle request error
-    });
+    boardsStore.destroy(this);
   }
 
   update() {

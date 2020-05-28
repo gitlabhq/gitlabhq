@@ -183,6 +183,10 @@ FactoryBot.define do
       confidential { true }
     end
 
+    trait :with_review do
+      review
+    end
+
     transient do
       in_reply_to { nil }
     end

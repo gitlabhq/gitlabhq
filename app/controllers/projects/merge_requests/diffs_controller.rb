@@ -162,8 +162,13 @@ class Projects::MergeRequests::DiffsController < Projects::MergeRequests::Applic
   def renderable_notes
     define_diff_comment_vars unless @notes
 
-    @notes
+    draft_notes =
+      if current_user
+        merge_request.draft_notes.authored_by(current_user)
+      else
+        []
+      end
+
+    @notes.concat(draft_notes)
   end
 end
-
-Projects::MergeRequests::DiffsController.prepend_if_ee('EE::Projects::MergeRequests::DiffsController')

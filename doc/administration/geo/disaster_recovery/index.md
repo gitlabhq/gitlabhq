@@ -121,6 +121,12 @@ Note the following when promoting a secondary:
    gitlab-ctl promote-to-primary-node
    ```
 
+   If you have already run the [preflight checks](planned_failover.md#preflight-checks), you can skip them with:
+
+   ```shell
+   gitlab-ctl promote-to-primary-node --skip-preflight-check
+   ```
+
 1. Verify you can connect to the newly promoted **primary** node using the URL used
    previously for the **secondary** node.
 1. If successful, the **secondary** node has now been promoted to the **primary** node.

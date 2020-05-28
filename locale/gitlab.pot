@@ -96,6 +96,11 @@ msgid_plural "%d comments"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "%d comment on this commit"
+msgid_plural "%d comments on this commit"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%d commit"
 msgid_plural "%d commits"
 msgstr[0] ""
@@ -1218,6 +1223,9 @@ msgstr ""
 msgid "Add a bullet list"
 msgstr ""
 
+msgid "Add a comment to this line"
+msgstr ""
+
 msgid "Add a general comment to this %{noteableDisplayName}."
 msgstr ""
 
@@ -1417,6 +1425,9 @@ msgid "Adjust your filters/search criteria above. If you believe this may be an 
 msgstr ""
 
 msgid "Admin Area"
+msgstr ""
+
+msgid "Admin Note"
 msgstr ""
 
 msgid "Admin Overview"
@@ -3605,7 +3616,7 @@ msgstr ""
 msgid "CI / CD"
 msgstr ""
 
-msgid "CI / CD Charts"
+msgid "CI / CD Analytics"
 msgstr ""
 
 msgid "CI / CD Settings"
@@ -5838,6 +5849,11 @@ msgid_plural "ContainerRegistry|%{count} Image repositories"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "ContainerRegistry|%{count} Tag"
+msgid_plural "ContainerRegistry|%{count} Tags"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "ContainerRegistry|%{imageName} tags"
 msgstr ""
 
@@ -6405,6 +6421,9 @@ msgid "Create group label"
 msgstr ""
 
 msgid "Create issue"
+msgstr ""
+
+msgid "Create iteration"
 msgstr ""
 
 msgid "Create lists from labels. Issues with that label appear in that list."
@@ -23331,6 +23350,9 @@ msgid "Unable to process group import file"
 msgstr ""
 
 msgid "Unable to resolve"
+msgstr ""
+
+msgid "Unable to save iteration. Please try again"
 msgstr ""
 
 msgid "Unable to save your changes. Please try again."

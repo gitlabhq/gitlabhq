@@ -13,7 +13,7 @@ describe Gitlab::GlRepository::RepoType do
 
   describe Gitlab::GlRepository::PROJECT do
     it_behaves_like 'a repo type' do
-      let(:expected_id) { project.id.to_s }
+      let(:expected_id) { project.id }
       let(:expected_identifier) { "project-#{expected_id}" }
       let(:expected_suffix) { '' }
       let(:expected_container) { project }
@@ -42,7 +42,7 @@ describe Gitlab::GlRepository::RepoType do
 
   describe Gitlab::GlRepository::WIKI do
     it_behaves_like 'a repo type' do
-      let(:expected_id) { project.id.to_s }
+      let(:expected_id) { project.id }
       let(:expected_identifier) { "wiki-#{expected_id}" }
       let(:expected_suffix) { '.wiki' }
       let(:expected_container) { project }
@@ -72,7 +72,7 @@ describe Gitlab::GlRepository::RepoType do
   describe Gitlab::GlRepository::SNIPPET do
     context 'when PersonalSnippet' do
       it_behaves_like 'a repo type' do
-        let(:expected_id) { personal_snippet.id.to_s }
+        let(:expected_id) { personal_snippet.id }
         let(:expected_identifier) { "snippet-#{expected_id}" }
         let(:expected_suffix) { '' }
         let(:expected_repository) { personal_snippet.repository }
@@ -101,7 +101,7 @@ describe Gitlab::GlRepository::RepoType do
 
     context 'when ProjectSnippet' do
       it_behaves_like 'a repo type' do
-        let(:expected_id) { project_snippet.id.to_s }
+        let(:expected_id) { project_snippet.id }
         let(:expected_identifier) { "snippet-#{expected_id}" }
         let(:expected_suffix) { '' }
         let(:expected_repository) { project_snippet.repository }
@@ -131,7 +131,7 @@ describe Gitlab::GlRepository::RepoType do
   describe Gitlab::GlRepository::DESIGN do
     it_behaves_like 'a repo type' do
       let(:expected_identifier) { "design-#{project.id}" }
-      let(:expected_id) { project.id.to_s }
+      let(:expected_id) { project.id }
       let(:expected_suffix) { '.design' }
       let(:expected_repository) { project.design_repository }
       let(:expected_container) { project }

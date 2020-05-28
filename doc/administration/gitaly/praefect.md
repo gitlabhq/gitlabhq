@@ -784,9 +784,7 @@ If the time frame is not specified, dead replication jobs from the last six hour
 sudo /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml dataloss
 
 Failed replication jobs between [2020-01-02 00:00:00 +0000 UTC, 2020-01-02 06:00:00 +0000 UTC):
-example/repository-1: 1 jobs
-example/repository-2: 4 jobs
-example/repository-3: 2 jobs
+@hashed/fa/53/fa539965395b8382145f8370b34eab249cf610d2d6f2943c95b9b9d08a63d4a3.git: 2 jobs
 ```
 
 To specify a time frame in UTC, run:
@@ -797,7 +795,8 @@ sudo /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.t
 
 ### Checking repository checksums
 
-To check a project's checksums across all nodes, the Praefect replicas Rake task can be used:
+To check a project's repository checksums across on all Gitaly nodes, the
+replicas Rake task can be run on the main GitLab node:
 
 ```shell
 sudo gitlab-rake "gitlab:praefect:replicas[project_id]"

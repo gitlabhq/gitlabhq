@@ -82,7 +82,8 @@ module Users
         :organization,
         :location,
         :public_email,
-        :user_type
+        :user_type,
+        :note
       ]
     end
 

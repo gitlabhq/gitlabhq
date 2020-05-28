@@ -154,7 +154,7 @@
             %br
             = link_to 'Confirm user', confirm_admin_user_path(@user), method: :put, class: "btn btn-info", data: { confirm: 'Are you sure?', qa_selector: 'confirm_user_button' }
 
-      = render_if_exists 'admin/users/user_detail_note'
+      = render 'admin/users/user_detail_note'
 
       - if @user.deactivated?
         .card.border-info

@@ -55,6 +55,7 @@ module API
           optional :theme_id, type: Integer, desc: 'The GitLab theme for the user'
           optional :color_scheme_id, type: Integer, desc: 'The color scheme for the file viewer'
           optional :private_profile, type: Boolean, desc: 'Flag indicating the user has a private profile'
+          optional :note, type: String, desc: 'Admin note for this user'
           all_or_none_of :extern_uid, :provider
 
           use :optional_params_ee

@@ -241,7 +241,8 @@ class Admin::UsersController < Admin::ApplicationController
       :theme_id,
       :twitter,
       :username,
-      :website_url
+      :website_url,
+      :note
     ]
   end
 
