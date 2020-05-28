@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 describe Projects::ArtifactsController do
+  include RepoHelpers
+
   let(:user) { project.owner }
   let_it_be(:project) { create(:project, :repository, :public) }
 
@@ -446,6 +448,22 @@ describe Projects::ArtifactsController do
 
           expect(response).to redirect_to(path)
         end
+      end
+
+      context 'with a failed pipeline on an updated master' do
+        before do
+          create_file_in_repo(project, 'master', 'master', 'test.txt', 'This is test')
+
+          create(:ci_pipeline,
+            project: project,
+            sha: project.commit.sha,
+            ref: project.default_branch,
+            status: 'failed')
+
+          get :latest_succeeded, params: params_from_ref(project.default_branch)
+        end
+
+        it_behaves_like 'redirect to the job'
       end
     end
   end
