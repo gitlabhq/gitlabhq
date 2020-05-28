@@ -330,6 +330,18 @@
                 %strong.fly-out-top-item-name
                   = _('Snippets')
 
+      = nav_link(controller: :project_members) do
+        = link_to project_project_members_path(@project), title: _('Members'), class: 'qa-members-link', id: 'js-onboarding-members-link' do
+          .nav-icon-container
+            = sprite_icon('users')
+          %span.nav-item-name
+            = _('Members')
+        %ul.sidebar-sub-level-items.is-fly-out-only
+          = nav_link(path: %w[members#show], html_options: { class: "fly-out-top-item" } ) do
+            = link_to project_project_members_path(@project) do
+              %strong.fly-out-top-item-name
+                = _('Members')
+
       - if project_nav_tab? :settings
         = nav_link(path: sidebar_settings_paths) do
           = link_to edit_project_path(@project), class: 'shortcuts-tree' do
@@ -350,10 +362,6 @@
                 = link_to edit_project_path(@project), title: _('General'), class: 'qa-general-settings-link' do
                   %span
                     = _('General')
-            = nav_link(controller: :project_members) do
-              = link_to project_project_members_path(@project), title: _('Members'), class: 'qa-link-members-settings', id: 'js-onboarding-settings-members-link' do
-                %span
-                  = _('Members')
             - if can_edit
               = nav_link(controller: [:integrations, :services]) do
                 = link_to project_settings_integrations_path(@project), title: _('Integrations'), data: { qa_selector: 'integrations_settings_link' } do
@@ -388,19 +396,6 @@
                       = _('Pages')
 
               = render_if_exists 'projects/sidebar/settings_audit_events'
-
-      - else
-        = nav_link(controller: :project_members) do
-          = link_to project_settings_members_path(@project), title: _('Members'), class: 'shortcuts-tree' do
-            .nav-icon-container
-              = sprite_icon('users')
-            %span.nav-item-name
-              = _('Members')
-          %ul.sidebar-sub-level-items.is-fly-out-only
-            = nav_link(path: %w[members#show], html_options: { class: "fly-out-top-item" } ) do
-              = link_to project_project_members_path(@project) do
-                %strong.fly-out-top-item-name
-                  = _('Members')
 
       = render 'shared/sidebar_toggle_button'
 

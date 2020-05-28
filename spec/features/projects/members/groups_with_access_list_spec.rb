@@ -12,7 +12,7 @@ describe 'Projects > Members > Groups with access list', :js do
     @group_link = create(:project_group_link, project: project, group: group)
 
     sign_in(user)
-    visit project_settings_members_path(project)
+    visit project_project_members_path(project)
   end
 
   it 'updates group access level' do
@@ -24,7 +24,7 @@ describe 'Projects > Members > Groups with access list', :js do
 
     wait_for_requests
 
-    visit project_settings_members_path(project)
+    visit project_project_members_path(project)
 
     expect(first('.group_member')).to have_content('Guest')
   end

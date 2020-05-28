@@ -12,7 +12,7 @@ class Groups::MilestonesController < Groups::ApplicationController
   def index
     respond_to do |format|
       format.html do
-        @milestone_states = Milestone.states_count(group_projects_with_access, [group])
+        @milestone_states = Milestone.states_count(group_projects_with_access.without_order, [group])
         @milestones = milestones.page(params[:page])
       end
       format.json do

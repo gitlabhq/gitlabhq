@@ -174,7 +174,7 @@ describe EventCreateService do
             wiki_page?: true,
             valid?: true,
             persisted?: true,
-            action: action,
+            action: action.to_s,
             wiki_page: wiki_page,
             author: user
           )
@@ -200,7 +200,7 @@ describe EventCreateService do
       end
     end
 
-    (Event::ACTIONS.values - Event::WIKI_ACTIONS).each do |bad_action|
+    (Event.actions.keys - Event::WIKI_ACTIONS).each do |bad_action|
       context "The action is #{bad_action}" do
         it 'raises an error' do
           expect { service.wiki_event(meta, user, bad_action) }.to raise_error(described_class::IllegalActionError)

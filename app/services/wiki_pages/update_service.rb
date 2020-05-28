@@ -22,7 +22,7 @@ module WikiPages
     end
 
     def event_action
-      Event::UPDATED
+      :updated
     end
 
     def slug_for_page(page)

@@ -45,7 +45,7 @@ RSpec.shared_examples 'WikiPages::CreateService#execute' do |container_type|
       expect { service.execute }.to change { Event.count }.by 1
 
       expect(Event.recent.first).to have_attributes(
-        action: Event::CREATED,
+        action: 'created',
         target: have_attributes(canonical_slug: page_title)
       )
     end

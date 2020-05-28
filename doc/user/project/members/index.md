@@ -8,7 +8,7 @@ You should have Maintainer or Owner [permissions](../../permissions.md) to add
 or import a new user to your project.
 
 To view, edit, add, and remove project's members, go to your
-project's **Settings > Members**.
+project's **Members**.
 
 ## Inherited membership
 

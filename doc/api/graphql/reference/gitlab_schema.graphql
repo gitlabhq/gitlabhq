@@ -9143,6 +9143,21 @@ type Query {
   ): SnippetConnection
 
   """
+  Find a user
+  """
+  user(
+    """
+    ID of the User
+    """
+    id: ID
+
+    """
+    Username of the User
+    """
+    username: String
+  ): User
+
+  """
   Vulnerabilities reported on projects on the current user's instance security dashboard
   """
   vulnerabilities(

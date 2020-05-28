@@ -10,7 +10,7 @@ describe Gitlab::GitAccess do
 
   let(:actor) { user }
   let(:project) { create(:project, :repository) }
-  let(:project_path) { project.path }
+  let(:project_path) { project&.path }
   let(:namespace_path) { project&.namespace&.path }
   let(:protocol) { 'ssh' }
   let(:authentication_abilities) { %i[read_project download_code push_code] }
@@ -89,13 +89,14 @@ describe Gitlab::GitAccess do
       end
     end
 
-    context 'when namespace does not exist' do
+    context 'when namespace and project are nil' do
+      let(:project) { nil }
       let(:namespace_path) { nil }
 
       it 'does not allow push and pull access' do
         aggregate_failures do
-          expect { push_access_check }.to raise_not_found
-          expect { pull_access_check }.to raise_not_found
+          expect { push_access_check }.to raise_namespace_not_found
+          expect { pull_access_check }.to raise_namespace_not_found
         end
       end
     end
@@ -227,13 +228,6 @@ describe Gitlab::GitAccess do
     context 'when the project is nil' do
       let(:project) { nil }
       let(:project_path) { "new-project" }
-
-      it 'blocks push and pull with "not found"' do
-        aggregate_failures do
-          expect { pull_access_check }.to raise_not_found
-          expect { push_access_check }.to raise_not_found
-        end
-      end
 
       context 'when user is allowed to create project in namespace' do
         let(:namespace_path) { user.namespace.path }
@@ -1217,6 +1211,10 @@ describe Gitlab::GitAccess do
 
   def raise_not_found
     raise_error(Gitlab::GitAccess::NotFoundError, Gitlab::GitAccess::ERROR_MESSAGES[:project_not_found])
+  end
+
+  def raise_namespace_not_found
+    raise_error(Gitlab::GitAccess::NotFoundError, Gitlab::GitAccess::ERROR_MESSAGES[:namespace_not_found])
   end
 
   def build_authentication_abilities

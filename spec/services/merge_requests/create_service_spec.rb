@@ -59,7 +59,7 @@ describe MergeRequests::CreateService, :clean_gitlab_redis_shared_state do
 
       it 'creates exactly 1 create MR event', :sidekiq_might_not_need_inline do
         attributes = {
-          action: Event::CREATED,
+          action: :created,
           target_id: merge_request.id,
           target_type: merge_request.class.name
         }

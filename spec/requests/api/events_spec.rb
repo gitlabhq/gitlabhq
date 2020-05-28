@@ -7,9 +7,9 @@ describe API::Events do
   let(:non_member) { create(:user) }
   let(:private_project) { create(:project, :private, creator_id: user.id, namespace: user.namespace) }
   let(:closed_issue) { create(:closed_issue, project: private_project, author: user) }
-  let!(:closed_issue_event) { create(:event, project: private_project, author: user, target: closed_issue, action: Event::CLOSED, created_at: Date.new(2016, 12, 30)) }
+  let!(:closed_issue_event) { create(:event, :closed, project: private_project, author: user, target: closed_issue, created_at: Date.new(2016, 12, 30)) }
   let(:closed_issue2) { create(:closed_issue, project: private_project, author: non_member) }
-  let!(:closed_issue_event2) { create(:event, project: private_project, author: non_member, target: closed_issue2, action: Event::CLOSED, created_at: Date.new(2016, 12, 30)) }
+  let!(:closed_issue_event2) { create(:event, :closed, project: private_project, author: non_member, target: closed_issue2, created_at: Date.new(2016, 12, 30)) }
 
   describe 'GET /events' do
     context 'when unauthenticated' do
@@ -117,7 +117,7 @@ describe API::Events do
       context 'when the list of events includes wiki page events' do
         it 'returns information about the wiki event', :aggregate_failures do
           page = create(:wiki_page, project: private_project)
-          [Event::CREATED, Event::UPDATED, Event::DESTROYED].each do |action|
+          [:created, :updated, :destroyed].each do |action|
             create(:wiki_page_event, wiki_page: page, action: action, author: user)
           end
 

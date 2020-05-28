@@ -10,35 +10,24 @@ class Event < ApplicationRecord
 
   default_scope { reorder(nil) }
 
-  CREATED   = 1
-  UPDATED   = 2
-  CLOSED    = 3
-  REOPENED  = 4
-  PUSHED    = 5
-  COMMENTED = 6
-  MERGED    = 7
-  JOINED    = 8 # User joined project
-  LEFT      = 9 # User left project
-  DESTROYED = 10
-  EXPIRED   = 11 # User left project due to expiry
-  APPROVED  = 12
-
   ACTIONS = HashWithIndifferentAccess.new(
-    created:    CREATED,
-    updated:    UPDATED,
-    closed:     CLOSED,
-    reopened:   REOPENED,
-    pushed:     PUSHED,
-    commented:  COMMENTED,
-    merged:     MERGED,
-    joined:     JOINED,
-    left:       LEFT,
-    destroyed:  DESTROYED,
-    expired:    EXPIRED,
-    approved:   APPROVED
+    created:    1,
+    updated:    2,
+    closed:     3,
+    reopened:   4,
+    pushed:     5,
+    commented:  6,
+    merged:     7,
+    joined:     8, # User joined project
+    left:       9, # User left project
+    destroyed:  10,
+    expired:    11, # User left project due to expiry
+    approved:   12
   ).freeze
 
-  WIKI_ACTIONS = [CREATED, UPDATED, DESTROYED].freeze
+  private_constant :ACTIONS
+
+  WIKI_ACTIONS = [:created, :updated, :destroyed].freeze
 
   TARGET_TYPES = HashWithIndifferentAccess.new(
     issue:          Issue,
@@ -53,6 +42,8 @@ class Event < ApplicationRecord
 
   RESET_PROJECT_ACTIVITY_INTERVAL = 1.hour
   REPOSITORY_UPDATED_AT_INTERVAL = 5.minutes
+
+  enum action: ACTIONS, _suffix: true
 
   delegate :name, :email, :public_email, :username, to: :author, prefix: true, allow_nil: true
   delegate :title, to: :issue, prefix: true, allow_nil: true
@@ -83,8 +74,6 @@ class Event < ApplicationRecord
 
   # Scopes
   scope :recent, -> { reorder(id: :desc) }
-  scope :code_push, -> { where(action: PUSHED) }
-  scope :merged, -> { where(action: MERGED) }
   scope :for_wiki_page, -> { where(target_type: 'WikiPage::Meta') }
 
   # Needed to implement feature flag: can be removed when feature flag is removed
@@ -115,7 +104,7 @@ class Event < ApplicationRecord
     end
 
     def find_sti_class(action)
-      if action.to_i == PUSHED
+      if actions.fetch(action, action) == actions[:pushed] # action can be integer or symbol
         PushEvent
       else
         Event
@@ -125,17 +114,13 @@ class Event < ApplicationRecord
     # Update Gitlab::ContributionsCalendar#activity_dates if this changes
     def contributions
       where("action = ? OR (target_type IN (?) AND action IN (?)) OR (target_type = ? AND action = ?)",
-            Event::PUSHED,
-            %w(MergeRequest Issue), [Event::CREATED, Event::CLOSED, Event::MERGED],
-            "Note", Event::COMMENTED)
+            actions[:pushed],
+            %w(MergeRequest Issue), [actions[:created], actions[:closed], actions[:merged]],
+            "Note", actions[:commented])
     end
 
     def limit_recent(limit = 20, offset = nil)
       recent.limit(limit).offset(offset)
-    end
-
-    def actions
-      ACTIONS.keys
     end
 
     def target_types
@@ -161,44 +146,8 @@ class Event < ApplicationRecord
     target.try(:title)
   end
 
-  def created_action?
-    action == CREATED
-  end
-
   def push_action?
     false
-  end
-
-  def merged_action?
-    action == MERGED
-  end
-
-  def closed_action?
-    action == CLOSED
-  end
-
-  def reopened_action?
-    action == REOPENED
-  end
-
-  def joined_action?
-    action == JOINED
-  end
-
-  def left_action?
-    action == LEFT
-  end
-
-  def expired_action?
-    action == EXPIRED
-  end
-
-  def destroyed_action?
-    action == DESTROYED
-  end
-
-  def commented_action?
-    action == COMMENTED
   end
 
   def membership_changed?
@@ -210,11 +159,11 @@ class Event < ApplicationRecord
   end
 
   def created_wiki_page?
-    wiki_page? && action == CREATED
+    wiki_page? && created_action?
   end
 
   def updated_wiki_page?
-    wiki_page? && action == UPDATED
+    wiki_page? && updated_action?
   end
 
   def created_target?

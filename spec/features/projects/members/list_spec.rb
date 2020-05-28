@@ -113,6 +113,6 @@ describe 'Project members list' do
   end
 
   def visit_members_page
-    visit project_settings_members_path(project)
+    visit project_project_members_path(project)
   end
 end

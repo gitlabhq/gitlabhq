@@ -19,7 +19,7 @@ module WikiPages
     end
 
     def event_action
-      Event::DESTROYED
+      :destroyed
     end
   end
 end

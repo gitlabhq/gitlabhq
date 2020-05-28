@@ -27,15 +27,15 @@ class EventFilter
 
     case filter
     when PUSH
-      events.where(action: Event::PUSHED)
+      events.pushed_action
     when MERGED
-      events.where(action: Event::MERGED)
+      events.merged_action
     when COMMENTS
-      events.where(action: Event::COMMENTED)
+      events.commented_action
     when TEAM
-      events.where(action: [Event::JOINED, Event::LEFT, Event::EXPIRED])
+      events.where(action: [:joined, :left, :expired])
     when ISSUE
-      events.where(action: [Event::CREATED, Event::UPDATED, Event::CLOSED, Event::REOPENED], target_type: 'Issue')
+      events.where(action: [:created, :updated, :closed, :reopened], target_type: 'Issue')
     when WIKI
       wiki_events(events)
     else

@@ -27,7 +27,7 @@ RSpec.shared_examples 'WikiPages::DestroyService#execute' do |container_type|
     expect { service.execute(page) }.to change { Event.count }.by 1
 
     expect(Event.recent.first).to have_attributes(
-      action: Event::DESTROYED,
+      action: 'destroyed',
       target: have_attributes(canonical_slug: page.slug)
     )
   end

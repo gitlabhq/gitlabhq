@@ -118,8 +118,8 @@ describe PushEvent do
   end
 
   describe '.sti_name' do
-    it 'returns Event::PUSHED' do
-      expect(described_class.sti_name).to eq(Event::PUSHED)
+    it 'returns the integer representation of the :pushed event action' do
+      expect(described_class.sti_name).to eq(Event.actions[:pushed])
     end
   end
 
@@ -299,7 +299,7 @@ describe PushEvent do
 
   describe '#validate_push_action' do
     it 'adds an error when the action is not PUSHED' do
-      event.action = Event::CREATED
+      event.action = :created
       event.validate_push_action
 
       expect(event.errors.count).to eq(1)

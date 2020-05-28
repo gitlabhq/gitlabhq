@@ -24,6 +24,7 @@ module Gitlab
       deploy_key_upload: 'This deploy key does not have write access to this project.',
       no_repo: 'A repository for this project does not exist yet.',
       project_not_found: 'The project you were looking for could not be found.',
+      namespace_not_found: 'The namespace you were looking for could not be found.',
       command_not_allowed: "The command you're trying to execute is not allowed.",
       upload_pack_disabled_over_http: 'Pulling over HTTP is not allowed.',
       receive_pack_disabled_over_http: 'Pushing over HTTP is not allowed.',
@@ -73,6 +74,7 @@ module Gitlab
       return custom_action if custom_action
 
       check_db_accessibility!(cmd)
+      check_namespace!
       check_project!(changes, cmd)
       check_repository_existence!
 
@@ -111,7 +113,6 @@ module Gitlab
     private
 
     def check_project!(changes, cmd)
-      check_namespace!
       ensure_project_on_push!(cmd, changes)
       check_project_accessibility!
       add_project_moved_message!
@@ -156,7 +157,7 @@ module Gitlab
     def check_namespace!
       return if namespace_path.present?
 
-      raise NotFoundError, ERROR_MESSAGES[:project_not_found]
+      raise NotFoundError, ERROR_MESSAGES[:namespace_not_found]
     end
 
     def check_active_user!

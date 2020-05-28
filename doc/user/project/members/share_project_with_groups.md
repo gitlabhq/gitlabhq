@@ -18,7 +18,7 @@ This is where the group sharing feature can be of use.
 
 To share 'Project Acme' with the 'Engineering' group:
 
-1. For 'Project Acme' use the left navigation menu to go to **Settings > Members**
+1. For 'Project Acme' use the left navigation menu to go to **Members**
 
    ![share project with groups](img/share_project_with_groups.png)
 

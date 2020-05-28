@@ -18,7 +18,7 @@ describe 'Project member activity', :js do
 
   context 'when a user joins the project' do
     before do
-      visit_activities_and_wait_with_event(Event::JOINED)
+      visit_activities_and_wait_with_event(:joined)
     end
 
     it "presents the correct message" do
@@ -29,7 +29,7 @@ describe 'Project member activity', :js do
 
   context 'when a user leaves the project' do
     before do
-      visit_activities_and_wait_with_event(Event::LEFT)
+      visit_activities_and_wait_with_event(:left)
     end
 
     it "presents the correct message" do
@@ -40,7 +40,7 @@ describe 'Project member activity', :js do
 
   context 'when a users membership expires for the project' do
     before do
-      visit_activities_and_wait_with_event(Event::EXPIRED)
+      visit_activities_and_wait_with_event(:expired)
     end
 
     it "presents the correct message" do

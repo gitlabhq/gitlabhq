@@ -6,7 +6,7 @@ class Projects::GroupLinksController < Projects::ApplicationController
   before_action :authorize_admin_project_member!, only: [:update]
 
   def index
-    redirect_to namespace_project_settings_members_path
+    redirect_to namespace_project_project_members_path
   end
 
   def create

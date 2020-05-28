@@ -4,7 +4,7 @@ CAUTION: **Warning:**
 This is an [Alpha](https://about.gitlab.com/handbook/product/#alpha) feature, and it is subject to change at any time without
 prior notice.
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/2587) in GitLab 13.0.  
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/2587) in GitLab 13.0.
 > - It's deployed behind a feature flag, disabled by default.
 > - It's disabled on GitLab.com.
 > - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-project-access-tokens).
@@ -34,7 +34,7 @@ For each project access token created, a bot user will also be created and added
 ["Maintainer" level permissions](../../permissions.md#project-members-permissions). API calls made with a
 project access token will be associated to the corresponding bot user.
 
-These users will appear in **{settings}** **Settings > Members** but can not be modified.
+These users will appear in **Members** but can not be modified.
 Furthermore, the bot user can not be added to any other project.
 
 When the project access token is [revoked](#revoking-a-project-access-token) the bot user will be deleted and all

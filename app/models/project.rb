@@ -445,7 +445,7 @@ class Project < ApplicationRecord
   scope :archived, -> { where(archived: true) }
   scope :non_archived, -> { where(archived: false) }
   scope :for_milestones, ->(ids) { joins(:milestones).where('milestones.id' => ids).distinct }
-  scope :with_push, -> { joins(:events).where('events.action = ?', Event::PUSHED) }
+  scope :with_push, -> { joins(:events).merge(Event.pushed_action) }
   scope :with_project_feature, -> { joins('LEFT JOIN project_features ON projects.id = project_features.project_id') }
   scope :inc_routes, -> { includes(:route, namespace: :route) }
   scope :with_statistics, -> { includes(:statistics) }

@@ -11,7 +11,7 @@ describe WikiPages::EventCreateService do
   describe '#execute' do
     let_it_be(:page) { create(:wiki_page, project: project) }
     let(:slug) { generate(:sluggified_title) }
-    let(:action) { Event::CREATED }
+    let(:action) { :created }
     let(:response) { subject.execute(slug, page, action) }
 
     context 'feature flag is not enabled' do
@@ -38,7 +38,7 @@ describe WikiPages::EventCreateService do
     end
 
     context 'the action is illegal' do
-      let(:action) { Event::WIKI_ACTIONS.max + 1 }
+      let(:action) { :illegal_action }
 
       it 'returns an error' do
         expect(response).to be_error
@@ -58,7 +58,7 @@ describe WikiPages::EventCreateService do
     end
 
     context 'the action is a deletion' do
-      let(:action) { Event::DESTROYED }
+      let(:action) { :destroyed }
 
       it 'does not synchronize the wiki metadata timestamps with the git commit' do
         expect_next_instance_of(WikiPage::Meta) do |instance|
@@ -74,7 +74,7 @@ describe WikiPages::EventCreateService do
     end
 
     it 'returns an event in the payload' do
-      expect(response.payload).to include(event: have_attributes(author: user, wiki_page?: true, action: action))
+      expect(response.payload).to include(event: have_attributes(author: user, wiki_page?: true, action: 'created'))
     end
 
     it 'records the slug for the page' do

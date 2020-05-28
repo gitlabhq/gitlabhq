@@ -229,6 +229,7 @@ module QA
       autoload :Show, 'qa/page/project/show'
       autoload :Activity, 'qa/page/project/activity'
       autoload :Menu, 'qa/page/project/menu'
+      autoload :Members, 'qa/page/project/members'
 
       module Branches
         autoload :Show, 'qa/page/project/branches/show'
@@ -265,7 +266,6 @@ module QA
         autoload :CiVariables, 'qa/page/project/settings/ci_variables'
         autoload :Runners, 'qa/page/project/settings/runners'
         autoload :MergeRequest, 'qa/page/project/settings/merge_request'
-        autoload :Members, 'qa/page/project/settings/members'
         autoload :MirroringRepositories, 'qa/page/project/settings/mirroring_repositories'
         autoload :VisibilityFeaturesPermissions, 'qa/page/project/settings/visibility_features_permissions'
 

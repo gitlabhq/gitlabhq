@@ -59,7 +59,7 @@ describe 'Contributions Calendar', :js do
   def note_comment_contribution
     note_comment_params = {
       project: contributed_project,
-      action: Event::COMMENTED,
+      action: :commented,
       target: issue_note,
       author_id: user.id
     }

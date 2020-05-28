@@ -91,7 +91,7 @@ describe Git::BranchHooksService do
   end
 
   describe 'Push Event' do
-    let(:event) { Event.find_by_action(Event::PUSHED) }
+    let(:event) { Event.pushed_action.first }
 
     before do
       service.execute
@@ -101,7 +101,7 @@ describe Git::BranchHooksService do
       it 'generates a push event with one commit' do
         expect(event).to be_an_instance_of(PushEvent)
         expect(event.project).to eq(project)
-        expect(event.action).to eq(Event::PUSHED)
+        expect(event).to be_pushed_action
         expect(event.push_event_payload).to be_an_instance_of(PushEventPayload)
         expect(event.push_event_payload.commit_from).to eq(oldrev)
         expect(event.push_event_payload.commit_to).to eq(newrev)
@@ -117,7 +117,7 @@ describe Git::BranchHooksService do
       it 'generates a push event with more than one commit' do
         expect(event).to be_an_instance_of(PushEvent)
         expect(event.project).to eq(project)
-        expect(event.action).to eq(Event::PUSHED)
+        expect(event).to be_pushed_action
         expect(event.push_event_payload).to be_an_instance_of(PushEventPayload)
         expect(event.push_event_payload.commit_from).to be_nil
         expect(event.push_event_payload.commit_to).to eq(newrev)
@@ -133,7 +133,7 @@ describe Git::BranchHooksService do
       it 'generates a push event with no commits' do
         expect(event).to be_an_instance_of(PushEvent)
         expect(event.project).to eq(project)
-        expect(event.action).to eq(Event::PUSHED)
+        expect(event).to be_pushed_action
         expect(event.push_event_payload).to be_an_instance_of(PushEventPayload)
         expect(event.push_event_payload.commit_from).to eq(oldrev)
         expect(event.push_event_payload.commit_to).to be_nil

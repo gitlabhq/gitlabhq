@@ -89,20 +89,20 @@ describe Git::WikiPushService::Change do
     context 'the page is deleted' do
       let(:operation) { :deleted }
 
-      it { is_expected.to have_attributes(event_action: Event::DESTROYED) }
+      it { is_expected.to have_attributes(event_action: :destroyed) }
     end
 
     context 'the page is added' do
       let(:operation) { :added }
 
-      it { is_expected.to have_attributes(event_action: Event::CREATED) }
+      it { is_expected.to have_attributes(event_action: :created) }
     end
 
     %i[renamed modified].each do |op|
       context "the page is #{op}" do
         let(:operation) { op }
 
-        it { is_expected.to have_attributes(event_action: Event::UPDATED) }
+        it { is_expected.to have_attributes(event_action: :updated) }
       end
     end
   end

@@ -5,6 +5,10 @@ class ApplicationRecord < ActiveRecord::Base
 
   alias_method :reset, :reload
 
+  def self.without_order
+    reorder(nil)
+  end
+
   def self.id_in(ids)
     where(id: ids)
   end

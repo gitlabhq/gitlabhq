@@ -9,6 +9,7 @@ module Timebox
   include IidRoutes
   include Referable
   include StripAttribute
+  include FromUnion
 
   TimeboxStruct = Struct.new(:title, :name, :id) do
     # Ensure these models match the interface required for exporting
@@ -65,7 +66,11 @@ module Timebox
       groups = groups.compact if groups.is_a? Array
       groups = [] if groups.nil?
 
-      where(project_id: projects).or(where(group_id: groups))
+      if Feature.enabled?(:optimized_timebox_queries)
+        from_union([where(project_id: projects), where(group_id: groups)], remove_duplicates: false)
+      else
+        where(project_id: projects).or(where(group_id: groups))
+      end
     end
 
     scope :within_timeframe, -> (start_date, end_date) do

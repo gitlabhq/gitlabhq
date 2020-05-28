@@ -12,7 +12,7 @@ describe 'Tooltips on .timeago dates', :js do
     before do
       project.add_maintainer(user)
 
-      Event.create( project: project, author_id: user.id, action: Event::JOINED,
+      Event.create( project: project, author_id: user.id, action: :joined,
                     updated_at: created_date, created_at: created_date)
 
       sign_in user

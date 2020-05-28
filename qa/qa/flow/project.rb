@@ -8,9 +8,9 @@ module QA
       def add_member(project:, username:)
         project.visit!
 
-        Page::Project::Menu.perform(&:go_to_members_settings)
+        Page::Project::Menu.perform(&:click_members)
 
-        Page::Project::Settings::Members.perform do |member_settings|
+        Page::Project::Members.perform do |member_settings|
           member_settings.add_member(username)
         end
       end

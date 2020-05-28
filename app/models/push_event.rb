@@ -68,7 +68,7 @@ class PushEvent < Event
   end
 
   def self.sti_name
-    PUSHED
+    actions[:pushed]
   end
 
   def push_action?
@@ -111,7 +111,7 @@ class PushEvent < Event
   end
 
   def validate_push_action
-    return if action == PUSHED
+    return if pushed_action?
 
     errors.add(:action, "the action #{action.inspect} is not valid")
   end

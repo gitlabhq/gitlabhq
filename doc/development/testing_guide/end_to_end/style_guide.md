@@ -123,7 +123,7 @@ Capybara DSL, potentially leading to confusion and bugs.
 **Good**
 
 ```ruby
-Page::Project::Settings::Members.perform do |members|
+Page::Project::Members.perform do |members|
   members.do_something
 end
 ```
@@ -149,7 +149,7 @@ end
 **Bad**
 
 ```ruby
-Page::Project::Settings::Members.perform do |project_settings_members_page|
+Page::Project::Members.perform do |project_settings_members_page|
   project_settings_members_page.do_something
 end
 ```

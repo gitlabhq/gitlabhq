@@ -1,0 +1,5 @@
+---
+title: Optimize SQL queries on Milestone index page
+merge_request: 32953
+author:
+type: performance

@@ -21,7 +21,7 @@ describe 'Projects members' do
   context 'with a group invitee' do
     before do
       group_invitee
-      visit project_settings_members_path(project)
+      visit project_project_members_path(project)
     end
 
     it 'does not appear in the project members page' do
@@ -70,7 +70,7 @@ describe 'Projects members' do
     before do
       group_invitee
       project_invitee
-      visit project_settings_members_path(project)
+      visit project_project_members_path(project)
     end
 
     it 'shows the project invitee, the project developer, and the group owner' do
@@ -91,7 +91,7 @@ describe 'Projects members' do
   context 'with a group requester' do
     before do
       group.request_access(group_requester)
-      visit project_settings_members_path(project)
+      visit project_project_members_path(project)
     end
 
     it 'does not appear in the project members page' do
@@ -105,7 +105,7 @@ describe 'Projects members' do
     before do
       group.request_access(group_requester)
       project.request_access(project_requester)
-      visit project_settings_members_path(project)
+      visit project_project_members_path(project)
     end
 
     it 'shows the project requester, the project developer, and the group owner' do
@@ -129,7 +129,7 @@ describe 'Projects members' do
     it_behaves_like 'showing user status' do
       let(:user_with_status) { developer }
 
-      subject { visit project_settings_members_path(project) }
+      subject { visit project_project_members_path(project) }
     end
   end
 end

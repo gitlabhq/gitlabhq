@@ -86,7 +86,7 @@ describe RepositoryCheck::SingleRepositoryWorker do
   end
 
   def create_push_event(project)
-    project.events.create(action: Event::PUSHED, author_id: create(:user).id)
+    project.events.create(action: :pushed, author_id: create(:user).id)
   end
 
   def break_wiki(project)

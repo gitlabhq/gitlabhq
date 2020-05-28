@@ -8,9 +8,24 @@ describe GitlabSchema.types['Query'] do
   end
 
   it 'has the expected fields' do
-    expected_fields = %i[project namespace group echo metadata current_user snippets design_management]
+    expected_fields = %i[
+      current_user
+      design_management
+      geoNode
+      group
+      echo
+      instanceSecurityDashboard
+      metadata
+      namespace
+      project
+      projects
+      snippets
+      user
+      vulnerabilities
+      vulnerabilitiesCountByDayAndSeverity
+    ]
 
-    expect(described_class).to have_graphql_fields(*expected_fields).at_least
+    expect(described_class).to have_graphql_fields(*expected_fields)
   end
 
   describe 'namespace field' do

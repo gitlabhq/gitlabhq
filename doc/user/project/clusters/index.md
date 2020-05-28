@@ -46,6 +46,7 @@ GitLab is committed to support at least two production-ready Kubernetes minor ve
 
 Currently, GitLab supports the following Kubernetes versions:
 
+- 1.16
 - 1.15
 - 1.14
 - 1.13 (deprecated, support ends on November 22, 2020)

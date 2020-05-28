@@ -8,7 +8,7 @@ describe UserInteractedProject do
 
     let(:event) { build(:event) }
 
-    Event::ACTIONS.each do |action|
+    Event.actions.each_key do |action|
       context "for all actions (event types)" do
         let(:event) { build(:event, action: action) }
 

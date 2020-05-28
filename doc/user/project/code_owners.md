@@ -103,7 +103,7 @@ Any of the following groups would be eligible to be specified as code owners:
 - `@group/sub-group`
 - `@group/sub-group/sub-subgroup`
 
-In addition, any groups that have been invited to the project using the **Settings > Members** tool will also be recognized as eligible code owners.
+In addition, any groups that have been invited to the project using the **Members** tool will also be recognized as eligible code owners.
 
 The order in which the paths are defined is significant: the last
 pattern that matches a given path will be used to find the code

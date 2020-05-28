@@ -24,13 +24,13 @@ module Gitlab
       # project_features for the (currently) 3 different contribution types
       date_from = 1.year.ago
       repo_events = event_counts(date_from, :repository)
-        .having(action: Event::PUSHED)
+        .having(action: :pushed)
       issue_events = event_counts(date_from, :issues)
-        .having(action: [Event::CREATED, Event::CLOSED], target_type: "Issue")
+        .having(action: [:created, :closed], target_type: "Issue")
       mr_events = event_counts(date_from, :merge_requests)
-        .having(action: [Event::MERGED, Event::CREATED, Event::CLOSED], target_type: "MergeRequest")
+        .having(action: [:merged, :created, :closed], target_type: "MergeRequest")
       note_events = event_counts(date_from, :merge_requests)
-        .having(action: [Event::COMMENTED])
+        .having(action: :commented)
 
       events = Event
         .from_union([repo_events, issue_events, mr_events, note_events])

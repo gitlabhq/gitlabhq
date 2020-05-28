@@ -677,7 +677,6 @@ module ProjectsHelper
   def sidebar_settings_paths
     %w[
       projects#edit
-      project_members#index
       integrations#show
       services#edit
       hooks#index

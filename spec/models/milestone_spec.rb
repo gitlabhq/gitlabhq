@@ -225,70 +225,88 @@ describe Milestone do
     end
   end
 
-  describe '#for_projects_and_groups' do
-    let(:project) { create(:project) }
-    let(:project_other) { create(:project) }
-    let(:group) { create(:group) }
-    let(:group_other) { create(:group) }
+  shared_examples '#for_projects_and_groups' do
+    describe '#for_projects_and_groups' do
+      let_it_be(:project) { create(:project) }
+      let_it_be(:project_other) { create(:project) }
+      let_it_be(:group) { create(:group) }
+      let_it_be(:group_other) { create(:group) }
 
+      before(:all) do
+        create(:milestone, project: project)
+        create(:milestone, project: project_other)
+        create(:milestone, group: group)
+        create(:milestone, group: group_other)
+      end
+
+      subject { described_class.for_projects_and_groups(projects, groups) }
+
+      shared_examples 'filters by projects and groups' do
+        it 'returns milestones filtered by project' do
+          milestones = described_class.for_projects_and_groups(projects, [])
+
+          expect(milestones.count).to eq(1)
+          expect(milestones.first.project_id).to eq(project.id)
+        end
+
+        it 'returns milestones filtered by group' do
+          milestones = described_class.for_projects_and_groups([], groups)
+
+          expect(milestones.count).to eq(1)
+          expect(milestones.first.group_id).to eq(group.id)
+        end
+
+        it 'returns milestones filtered by both project and group' do
+          milestones = described_class.for_projects_and_groups(projects, groups)
+
+          expect(milestones.count).to eq(2)
+          expect(milestones).to contain_exactly(project.milestones.first, group.milestones.first)
+        end
+      end
+
+      context 'ids as params' do
+        let(:projects) { [project.id] }
+        let(:groups) { [group.id] }
+
+        it_behaves_like 'filters by projects and groups'
+      end
+
+      context 'relations as params' do
+        let(:projects) { Project.where(id: project.id).select(:id) }
+        let(:groups) { Group.where(id: group.id).select(:id) }
+
+        it_behaves_like 'filters by projects and groups'
+      end
+
+      context 'objects as params' do
+        let(:projects) { [project] }
+        let(:groups) { [group] }
+
+        it_behaves_like 'filters by projects and groups'
+      end
+
+      it 'returns no records if projects and groups are nil' do
+        milestones = described_class.for_projects_and_groups(nil, nil)
+
+        expect(milestones).to be_empty
+      end
+    end
+  end
+
+  context 'when `optimized_timebox_queries` feature flag is enabled' do
     before do
-      create(:milestone, project: project)
-      create(:milestone, project: project_other)
-      create(:milestone, group: group)
-      create(:milestone, group: group_other)
+      stub_feature_flags(optimized_timebox_queries: true)
     end
 
-    subject { described_class.for_projects_and_groups(projects, groups) }
+    it_behaves_like '#for_projects_and_groups'
+  end
 
-    shared_examples 'filters by projects and groups' do
-      it 'returns milestones filtered by project' do
-        milestones = described_class.for_projects_and_groups(projects, [])
-
-        expect(milestones.count).to eq(1)
-        expect(milestones.first.project_id).to eq(project.id)
-      end
-
-      it 'returns milestones filtered by group' do
-        milestones = described_class.for_projects_and_groups([], groups)
-
-        expect(milestones.count).to eq(1)
-        expect(milestones.first.group_id).to eq(group.id)
-      end
-
-      it 'returns milestones filtered by both project and group' do
-        milestones = described_class.for_projects_and_groups(projects, groups)
-
-        expect(milestones.count).to eq(2)
-        expect(milestones).to contain_exactly(project.milestones.first, group.milestones.first)
-      end
+  context 'when `optimized_timebox_queries` feature flag is disabled' do
+    before do
+      stub_feature_flags(optimized_timebox_queries: false)
     end
 
-    context 'ids as params' do
-      let(:projects) { [project.id] }
-      let(:groups) { [group.id] }
-
-      it_behaves_like 'filters by projects and groups'
-    end
-
-    context 'relations as params' do
-      let(:projects) { Project.where(id: project.id).select(:id) }
-      let(:groups) { Group.where(id: group.id).select(:id) }
-
-      it_behaves_like 'filters by projects and groups'
-    end
-
-    context 'objects as params' do
-      let(:projects) { [project] }
-      let(:groups) { [group] }
-
-      it_behaves_like 'filters by projects and groups'
-    end
-
-    it 'returns no records if projects and groups are nil' do
-      milestones = described_class.for_projects_and_groups(nil, nil)
-
-      expect(milestones).to be_empty
-    end
+    it_behaves_like '#for_projects_and_groups'
   end
 
   describe '.upcoming_ids' do

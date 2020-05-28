@@ -896,11 +896,11 @@ class MergeRequest < ApplicationRecord
   end
 
   def merge_event
-    @merge_event ||= target_project.events.where(target_id: self.id, target_type: "MergeRequest", action: Event::MERGED).last
+    @merge_event ||= target_project.events.where(target_id: self.id, target_type: "MergeRequest", action: :merged).last
   end
 
   def closed_event
-    @closed_event ||= target_project.events.where(target_id: self.id, target_type: "MergeRequest", action: Event::CLOSED).last
+    @closed_event ||= target_project.events.where(target_id: self.id, target_type: "MergeRequest", action: :closed).last
   end
 
   def work_in_progress?
