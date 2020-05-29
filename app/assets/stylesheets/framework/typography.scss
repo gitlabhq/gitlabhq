@@ -545,6 +545,24 @@
       }
     }
   }
+
+  /* AsciiDoc(tor) built-in alignment roles */
+
+  .text-left {
+    text-align: left !important;
+  }
+
+  .text-right {
+    text-align: right !important;
+  }
+
+  .text-center {
+    text-align: center !important;
+  }
+
+  .text-justify {
+    text-align: justify !important;
+  }
 }
 
 /**

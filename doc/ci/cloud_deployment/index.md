@@ -35,12 +35,21 @@ Some credentials are required to be able to run `aws` commands:
    NOTE: **Note:**
    A new **Access key ID** and **Secret access key** pair will be generated. Please take a note of them right away.
 
-1. In your GitLab project, go to **Settings > CI / CD**. Set the Access key ID and Secret access key as [environment variables](../variables/README.md#gitlab-cicd-environment-variables), using the following variable names:
+1. In your GitLab project, go to **Settings > CI / CD**. Set the following as
+   [environment variables](../variables/README.md#gitlab-cicd-environment-variables)
+   (see table below):
 
-   | Env. variable name      | Value                    |
-   |:------------------------|:-------------------------|
-   | `AWS_ACCESS_KEY_ID`     | Your "Access key ID"     |
-   | `AWS_SECRET_ACCESS_KEY` | Your "Secret access key" |
+   - Access key ID.
+   - Secret access key.
+   - Region code. You can check the [list of AWS regional endpoints](https://docs.aws.amazon.com/general/latest/gr/rande.html#regional-endpoints).
+     You might want to check if the AWS service you intend to use is
+     [available in the chosen region](https://aws.amazon.com/about-aws/global-infrastructure/regional-product-services/).
+
+   | Env. variable name      | Value                  |
+   |:------------------------|:-----------------------|
+   | `AWS_ACCESS_KEY_ID`     | Your Access key ID     |
+   | `AWS_SECRET_ACCESS_KEY` | Your Secret access key |
+   | `AWS_DEFAULT_REGION`    | Your region code       |
 
 1. You can now use `aws` commands in the `.gitlab-ci.yml` file of this project:
 

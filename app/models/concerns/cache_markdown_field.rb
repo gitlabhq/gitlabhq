@@ -102,7 +102,7 @@ module CacheMarkdownField
   def updated_cached_html_for(markdown_field)
     return unless cached_markdown_fields.markdown_fields.include?(markdown_field)
 
-    refresh_markdown_cache if attribute_invalidated?(cached_markdown_fields.html_field(markdown_field))
+    refresh_markdown_cache! if attribute_invalidated?(cached_markdown_fields.html_field(markdown_field))
 
     cached_html_for(markdown_field)
   end

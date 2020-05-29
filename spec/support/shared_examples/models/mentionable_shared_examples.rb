@@ -80,25 +80,21 @@ RSpec.shared_examples 'a mentionable' do
 
   context 'when there are cached markdown fields' do
     before do
-      if subject.is_a?(CacheMarkdownField)
-        subject.refresh_markdown_cache
-      end
+      skip unless subject.is_a?(CacheMarkdownField)
     end
 
     it 'sends in cached markdown fields when appropriate' do
-      if subject.is_a?(CacheMarkdownField) && subject.extractors[author].blank?
-        expect_next_instance_of(Gitlab::ReferenceExtractor) do |ext|
-          attrs = subject.class.mentionable_attrs.collect(&:first) & subject.cached_markdown_fields.markdown_fields
-          attrs.each do |field|
-            expect(ext).to receive(:analyze).with(subject.send(field), hash_including(rendered: anything))
-          end
+      subject.extractors[author] = nil
+      expect_next_instance_of(Gitlab::ReferenceExtractor) do |ext|
+        attrs = subject.class.mentionable_attrs.collect(&:first) & subject.cached_markdown_fields.markdown_fields
+        attrs.each do |field|
+          expect(ext).to receive(:analyze).with(subject.send(field), hash_including(rendered: anything))
         end
-
-        expect(subject).not_to receive(:refresh_markdown_cache)
-        expect(subject).to receive(:cached_markdown_fields).at_least(:once).and_call_original
-
-        subject.all_references(author)
       end
+
+      expect(subject).to receive(:cached_markdown_fields).at_least(:once).and_call_original
+
+      subject.all_references(author)
     end
   end
 
@@ -126,26 +122,40 @@ RSpec.shared_examples 'an editable mentionable' do
 
   context 'when there are cached markdown fields' do
     before do
-      if subject.is_a?(CacheMarkdownField)
-        subject.refresh_markdown_cache
-      end
+      skip unless subject.is_a?(CacheMarkdownField)
+
+      subject.save!
     end
 
     it 'refreshes markdown cache if necessary' do
-      subject.save!
-
       set_mentionable_text.call('This is a text')
 
-      if subject.is_a?(CacheMarkdownField) && subject.extractors[author].blank?
-        expect_next_instance_of(Gitlab::ReferenceExtractor) do |ext|
-          subject.cached_markdown_fields.markdown_fields.each do |field|
-            expect(ext).to receive(:analyze).with(subject.send(field), hash_including(rendered: anything))
-          end
+      subject.extractors[author] = nil
+      expect_next_instance_of(Gitlab::ReferenceExtractor) do |ext|
+        subject.cached_markdown_fields.markdown_fields.each do |field|
+          expect(ext).to receive(:analyze).with(subject.send(field), hash_including(rendered: anything))
         end
+      end
 
-        expect(subject).to receive(:refresh_markdown_cache)
-        expect(subject).to receive(:cached_markdown_fields).at_least(:once).and_call_original
+      expect(subject).to receive(:refresh_markdown_cache).and_call_original
+      expect(subject).to receive(:cached_markdown_fields).at_least(:once).and_call_original
 
+      subject.all_references(author)
+    end
+
+    context 'when the markdown cache is stale' do
+      before do
+        expect(subject).to receive(:latest_cached_markdown_version).at_least(:once) do
+          (Gitlab::MarkdownCache::CACHE_COMMONMARK_VERSION + 1) << 16
+        end
+      end
+
+      it 'persists the refreshed cache so that it does not have to be refreshed every time' do
+        expect(subject).to receive(:refresh_markdown_cache).once.and_call_original
+
+        subject.all_references(author)
+
+        subject.reload
         subject.all_references(author)
       end
     end

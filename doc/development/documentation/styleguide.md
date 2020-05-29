@@ -1614,7 +1614,7 @@ Rendered example:
 - Wherever needed use this personal access token: `<your_access_token>`.
 - Always put the request first. `GET` is the default so you don't have to
   include it.
-- Use double quotes to the URL when it includes additional parameters.
+- Wrap the URL in double quotes (`"`).
 - Prefer to use examples using the personal access token and don't pass data of
   username and password.
 

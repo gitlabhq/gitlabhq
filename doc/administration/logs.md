@@ -352,7 +352,7 @@ only. For example:
 ## `audit_json.log`
 
 NOTE: **Note:**
-Most log entries only exist in [GitLab Starter](https://about.gitlab.com/pricing), however a few exist in GitLab Core.
+Most log entries only exist in [GitLab Starter](https://about.gitlab.com/pricing/), however a few exist in GitLab Core.
 
 This file lives in `/var/log/gitlab/gitlab-rails/audit_json.log` for
 Omnibus GitLab packages or in `/home/git/gitlab/log/audit_json.log` for

@@ -10,7 +10,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 Available since [Omnibus GitLab 11.0](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/2493).
 For installations from source you'll have to install and configure it yourself.
 
-The [PgBouncer exporter](https://github.com/stanhu/pgbouncer_exporter) allows you to measure various PgBouncer metrics.
+The [PgBouncer exporter](https://github.com/prometheus-community/pgbouncer_exporter) allows you to measure various PgBouncer metrics.
 
 To enable the PgBouncer exporter:
 

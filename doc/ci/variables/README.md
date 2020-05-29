@@ -669,7 +669,7 @@ Below you can find supported syntax reference:
    which means that it is defined and non-empty, you can simply use
    variable name as an expression, like `$STAGING`. If `$STAGING` variable
    is defined, and is non empty, expression will evaluate to truth.
-   `$STAGING` value needs to a string, with length higher than zero.
+   `$STAGING` value needs to be a string, with length higher than zero.
    Variable that contains only whitespace characters is not an empty variable.
 
 1. Pattern matching (introduced in GitLab 11.0)

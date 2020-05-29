@@ -14,7 +14,7 @@ module Gitlab
 
     include LfsTokenHelper
 
-    DEFAULT_EXPIRE_TIME = 1800
+    DEFAULT_EXPIRE_TIME = 7200 # Default value 2 hours
 
     attr_accessor :actor
 
