@@ -1,5 +1,0 @@
----
-title: Change format of variables parameter in Prometheus proxy API for metrics dashboard
-merge_request: 33062
-author:
-type: fixed
