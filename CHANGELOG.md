@@ -2,10 +2,6 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
-## 13.0.2 (2020-05-28)
-
-- No changes.
-
 ## 13.0.1 (2020-05-27)
 
 ### Security (12 changes)
@@ -591,6 +587,14 @@ entry.
 - Update GitLab Elasticsearch Indexer to v2.3.0. !32199
 - Update asciidoctor-plantuml gem to v0.0.12. !32376
 - Use visitUrl in Alert management. !32414
+
+
+## 12.10.8 (2020-05-28)
+
+### Fixed (2 changes)
+
+- Fix Geo replication for design thumbnails. !32703
+- Fix 404s downloading build artifacts. !32741
 
 
 ## 12.10.7 (2020-05-27)

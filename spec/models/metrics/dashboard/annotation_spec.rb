@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 describe Metrics::Dashboard::Annotation do
+  using RSpec::Parameterized::TableSyntax
+
   describe 'associations' do
     it { is_expected.to belong_to(:environment).inverse_of(:metrics_dashboard_annotations) }
     it { is_expected.to belong_to(:cluster).class_name('Clusters::Cluster').inverse_of(:metrics_dashboard_annotations) }
@@ -25,6 +27,26 @@ describe Metrics::Dashboard::Annotation do
         subject.valid?
 
         expect(subject.errors.full_messages).to include(/Annotation must belong to a cluster or an environment/)
+      end
+    end
+
+    context 'ending_at_after_starting_at' do
+      where(:starting_at, :ending_at, :valid?, :message) do
+        2.days.ago.beginning_of_day | 1.day.ago.beginning_of_day  | true  | nil
+        1.day.ago.beginning_of_day  | nil                         | true  | nil
+        1.day.ago.beginning_of_day  | 1.day.ago.beginning_of_day  | true  | nil
+        1.day.ago.beginning_of_day  | 2.days.ago.beginning_of_day | false | /Ending at can't be before starting_at time/
+        nil                         | 2.days.ago.beginning_of_day | false | /Starting at can't be blank/ # validation is covered by other method, be we need to assure, that ending_at_after_starting_at will not break with nil as starting_at
+        nil                         | nil                         | false | /Starting at can't be blank/ # validation is covered by other method, be we need to assure, that ending_at_after_starting_at will not break with nil as starting_at
+      end
+
+      with_them do
+        subject(:annotation) { build(:metrics_dashboard_annotation, starting_at: starting_at, ending_at: ending_at) }
+
+        it do
+          expect(annotation.valid?).to be(valid?)
+          expect(annotation.errors.full_messages).to include(message) if message
+        end
       end
     end
 
@@ -73,6 +95,17 @@ describe Metrics::Dashboard::Annotation do
 
       it 'returns annotations only for appointed dashboard' do
         expect(described_class.for_dashboard('other_dashboard.yml')).to match_array [other_dashboard_annotation]
+      end
+    end
+
+    describe '#ending_before' do
+      it 'returns annotations only for appointed dashboard' do
+        Timecop.freeze do
+          twelve_minutes_old_annotation = create(:metrics_dashboard_annotation, starting_at: 15.minutes.ago, ending_at: 12.minutes.ago)
+          create(:metrics_dashboard_annotation, starting_at: 15.minutes.ago, ending_at: 11.minutes.ago)
+
+          expect(described_class.ending_before(11.minutes.ago)).to match_array [fifteen_minutes_old_annotation, twelve_minutes_old_annotation]
+        end
       end
     end
   end

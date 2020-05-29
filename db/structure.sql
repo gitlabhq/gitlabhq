@@ -10082,6 +10082,8 @@ CREATE INDEX index_metrics_dashboard_annotations_on_cluster_id_and_3_columns ON 
 
 CREATE INDEX index_metrics_dashboard_annotations_on_environment_id_and_3_col ON public.metrics_dashboard_annotations USING btree (environment_id, dashboard_path, starting_at, ending_at) WHERE (environment_id IS NOT NULL);
 
+CREATE INDEX index_metrics_dashboard_annotations_on_timespan_end ON public.metrics_dashboard_annotations USING btree (COALESCE(ending_at, starting_at));
+
 CREATE INDEX index_metrics_users_starred_dashboards_on_project_id ON public.metrics_users_starred_dashboards USING btree (project_id);
 
 CREATE INDEX index_milestone_releases_on_release_id ON public.milestone_releases USING btree (release_id);
@@ -13948,6 +13950,7 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200514000340
 20200515155620
 20200518091745
+20200518133123
 20200519115908
 20200519171058
 20200519194042

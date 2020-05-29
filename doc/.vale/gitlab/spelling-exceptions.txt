@@ -5,6 +5,7 @@ Ansible
 Anthos
 API
 approvers
+architected
 Artifactory
 Asana
 Asciidoctor
@@ -25,6 +26,7 @@ autoscaler
 autoscales
 autoscaling
 awardable
+Axios
 Azure
 backport
 backported
@@ -154,6 +156,7 @@ Jaeger
 Jenkins
 Jira
 jQuery
+jsdom
 JupyterHub
 kanban
 kanbans
@@ -380,6 +383,7 @@ unmergeable
 unmerged
 unmerges
 unmerging
+unmocked
 unoptimize
 unoptimized
 unoptimizes

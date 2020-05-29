@@ -26,7 +26,7 @@ Jest tests can be found in `/spec/frontend` and `/ee/spec/frontend` in EE.
 
 > **Note:**
 >
-> Most examples have a Jest and Karma example. See the Karma examples only as explanation to what's going on in the code, should you stumble over some usescases during your discovery. The Jest examples are the one you should follow.
+> Most examples have a Jest and Karma example. See the Karma examples only as explanation to what's going on in the code, should you stumble over some use cases during your discovery. The Jest examples are the one you should follow.
 
 ## Karma test suite
 
@@ -61,7 +61,7 @@ which could arise (especially with testing against browser specific features).
 - Jest runs in a Node.js environment, not in a browser. Support for running Jest tests in a browser [is planned](https://gitlab.com/gitlab-org/gitlab/-/issues/26982).
 - Because Jest runs in a Node.js environment, it uses [jsdom](https://github.com/jsdom/jsdom) by default. See also its [limitations](#limitations-of-jsdom) below.
 - Jest does not have access to Webpack loaders or aliases.
-  The aliases used by Jest are defined in its [own config](https://gitlab.com/gitlab-org/gitlab/blob/master/jest.config.js).
+  The aliases used by Jest are defined in its [own configuration](https://gitlab.com/gitlab-org/gitlab/blob/master/jest.config.js).
 - All calls to `setTimeout` and `setInterval` are mocked away. See also [Jest Timer Mocks](https://jestjs.io/docs/en/timer-mocks).
 - `rewire` is not required because Jest supports mocking modules. See also [Manual Mocks](https://jestjs.io/docs/en/manual-mocks).
 - No [context object](https://jasmine.github.io/tutorials/your_first_suite#section-The_%3Ccode%3Ethis%3C/code%3E_keyword) is passed to tests in Jest.
@@ -200,7 +200,7 @@ For example, it's better to use the generated markup to trigger a button click a
 
 ## Common practices
 
-Following you'll find some general common practices you will find as part of our testsuite. Should you stumble over something not following this guide, ideally fix it right away. 🎉
+Following you'll find some general common practices you will find as part of our test suite. Should you stumble over something not following this guide, ideally fix it right away. 🎉
 
 ### How to query DOM elements
 
@@ -562,7 +562,7 @@ The more challenging part are mocks, which can be used for functions or even dep
 ### Manual module mocks
 
 Manual mocks are used to mock modules across the entire Jest environment. This is a very powerful testing tool that helps simplify
-unit testing by mocking out modules which cannot be easily consumned in our test environment.
+unit testing by mocking out modules which cannot be easily consumed in our test environment.
 
 > **WARNING:** Do not use manual mocks if a mock should not be consistently applied in every spec (i.e. it's only needed by a few specs).
 > Instead, consider using [`jest.mock(..)`](https://jestjs.io/docs/en/jest-object#jestmockmodulename-factory-options)
@@ -588,10 +588,10 @@ If a manual mock is needed for a CE module, please place it in `spec/frontend/mo
 - [`mocks/axios_utils`](https://gitlab.com/gitlab-org/gitlab/blob/bd20aeb64c4eed117831556c54b40ff4aee9bfd1/spec/frontend/mocks/ce/lib/utils/axios_utils.js#L1) -
   This mock is helpful because we don't want any unmocked requests to pass any tests. Also, we are able to inject some test helpers such as `axios.waitForAll`.
 - [`__mocks__/mousetrap/index.js`](https://gitlab.com/gitlab-org/gitlab/blob/cd4c086d894226445be9d18294a060ba46572435/spec/frontend/__mocks__/mousetrap/index.js#L1) -
-  This mock is helpful because the module itself uses amd format which webpack understands, but is incompatible with the jest environment. This mock doesn't remove
+  This mock is helpful because the module itself uses AMD format which webpack understands, but is incompatible with the jest environment. This mock doesn't remove
   any behavior, only provides a nice es6 compatible wrapper.
 - [`__mocks__/monaco-editor/index.js`](https://gitlab.com/gitlab-org/gitlab/blob/b7f914cddec9fc5971238cdf12766e79fa1629d7/spec/frontend/__mocks__/monaco-editor/index.js) -
-  This mock is helpful because the monaco package is completely incompatible in a Jest environment. In fact, webpack requires a special loader to make it work. This mock
+  This mock is helpful because the Monaco package is completely incompatible in a Jest environment. In fact, webpack requires a special loader to make it work. This mock
   simply makes this package consumable by Jest.
 
 ### Keep mocks light
@@ -617,7 +617,7 @@ As long as the fixtures don't change, `yarn test` is sufficient (and saves you s
 
 ### Live testing and focused testing -- Jest
 
-While you work on a testsuite, you may want to run these specs in watch mode, so they rerun automatically on every save.
+While you work on a test suite, you may want to run these specs in watch mode, so they rerun automatically on every save.
 
 ```shell
 # Watch and rerun all specs matching the name icon
@@ -836,11 +836,11 @@ testAction(
 );
 ```
 
-Check an example in [spec/javascripts/ide/stores/actions_spec.jsspec/javascripts/ide/stores/actions_spec.js](https://gitlab.com/gitlab-org/gitlab/blob/master/spec/javascripts/ide/stores/actions_spec.js).
+Check an example in [`spec/javascripts/ide/stores/actions_spec.jsspec/javascripts/ide/stores/actions_spec.js`](https://gitlab.com/gitlab-org/gitlab/blob/master/spec/javascripts/ide/stores/actions_spec.js).
 
-### Wait until axios requests finish
+### Wait until Axios requests finish
 
-The axios utils mock module located in `spec/frontend/mocks/ce/lib/utils/axios_utils.js` contains two helper methods for Jest tests that spawn HTTP requests.
+The Axios Utils mock module located in `spec/frontend/mocks/ce/lib/utils/axios_utils.js` contains two helper methods for Jest tests that spawn HTTP requests.
 These are very useful if you don't have a handle to the request's Promise, for example when a Vue component does a request as part of its life cycle.
 
 - `waitFor(url, callback)`: Runs `callback` after a request to `url` finishes (either successfully or unsuccessfully).
@@ -850,11 +850,11 @@ Both functions run `callback` on the next tick after the requests finish (using 
 
 ## Testing with older browsers
 
-Some regressions only affect a specific browser version. We can install and test in particular browsers with either Firefox or Browserstack using the following steps:
+Some regressions only affect a specific browser version. We can install and test in particular browsers with either Firefox or BrowserStack using the following steps:
 
-### Browserstack
+### BrowserStack
 
-[Browserstack](https://www.browserstack.com/) allows you to test more than 1200 mobile devices and browsers.
+[BrowserStack](https://www.browserstack.com/) allows you to test more than 1200 mobile devices and browsers.
 You can use it directly through the [live app](https://www.browserstack.com/live) or you can install the [chrome extension](https://chrome.google.com/webstore/detail/browserstack/nkihdmlheodkdfojglpcjjmioefjahjb) for easy access.
 You can find the credentials on 1Password, under `frontendteam@gitlab.com`.
 
@@ -866,7 +866,7 @@ You can download any older version of Firefox from the releases FTP server, <htt
 
 1. From the website, select a version, in this case `50.0.1`.
 1. Go to the mac folder.
-1. Select your preferred language, you will find the dmg package inside, download it.
+1. Select your preferred language, you will find the DMG package inside, download it.
 1. Drag and drop the application to any other folder but the `Applications` folder.
 1. Rename the application to something like `Firefox_Old`.
 1. Move the application to the `Applications` folder.

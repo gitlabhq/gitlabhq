@@ -1816,6 +1816,7 @@ Represents a vulnerability.
 | `severity` | VulnerabilitySeverity | Severity of the vulnerability (INFO, UNKNOWN, LOW, MEDIUM, HIGH, CRITICAL) |
 | `state` | VulnerabilityState | State of the vulnerability (DETECTED, DISMISSED, RESOLVED, CONFIRMED) |
 | `title` | String | Title of the vulnerability |
+| `userNotesCount` | Int! | Number of user notes attached to the vulnerability |
 | `userPermissions` | VulnerabilityPermissions! | Permissions for the current user on the resource |
 | `vulnerabilityPath` | String | URL to the vulnerability's details page |
 

@@ -67,9 +67,9 @@ Download Ruby and compile it:
 
 ```shell
 mkdir /tmp/ruby && cd /tmp/ruby
-curl --remote-name --progress https://cache.ruby-lang.org/pub/ruby/2.6/ruby-2.6.5.tar.gz
-echo '1416ce288fb8bfeae07a12b608540318c9cace71  ruby-2.6.5.tar.gz' | shasum -c - && tar xzf ruby-2.6.5.tar.gz
-cd ruby-2.6.5
+curl --remote-name --progress https://cache.ruby-lang.org/pub/ruby/2.6/ruby-2.6.6.tar.gz
+echo '2d78048e293817f38d4ede4ebc7873013e97bb0b  ruby-2.6.6.tar.gz' | shasum -c - && tar xzf ruby-2.6.6.tar.gz
+cd ruby-2.6.6
 
 ./configure --disable-install-rdoc
 make

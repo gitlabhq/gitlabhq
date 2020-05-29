@@ -35538,6 +35538,24 @@
               "deprecationReason": null
             },
             {
+              "name": "userNotesCount",
+              "description": "Number of user notes attached to the vulnerability",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "userPermissions",
               "description": "Permissions for the current user on the resource",
               "args": [

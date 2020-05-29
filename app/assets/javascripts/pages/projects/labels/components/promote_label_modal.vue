@@ -90,7 +90,9 @@ export default {
     footer-primary-button-variant="warning"
     @submit="onSubmit"
   >
-    <div slot="title" class="modal-title-with-label" v-html="title">{{ title }}</div>
+    <template #title>
+      <div class="modal-title-with-label" v-html="title">{{ title }}</div>
+    </template>
 
     {{ text }}
   </gl-modal>

@@ -134,6 +134,8 @@ be ignored by markdownlint.
 
 In general, product names should follow the exact capitalization of the official names
 of the products, protocols, and so on.
+See [`.markdownlint.json`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.markdownlint.json)
+for the words tested for proper capitalization in GitLab documentation.
 
 Some examples fail if incorrect capitalization is used:
 
@@ -246,13 +248,14 @@ Do not include the same information in multiple places. [Link to a SSOT instead.
 GitLab documentation should be clear and easy to understand.
 
 - Be clear, concise, and stick to the goal of the documentation.
-- Write in US English with US grammar.
+- Write in US English with US grammar. (Tested in [`British.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/British.yml).)
 - Use inclusive language.
 
 ### Point of view
 
 In most cases, it’s appropriate to use the second-person (you, yours) point of view,
 because it’s friendly and easy to understand.
+(Tested in [`FirstPerson.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/FirstPerson.yml).)
 
 <!-- How do we harmonize the second person in Pajamas with our first person plural in our doc guide? -->
 
@@ -272,10 +275,11 @@ because it’s friendly and easy to understand.
   - [GitLab Features](https://about.gitlab.com/features/). For example, Issue Board,
     Geo, and Runner.
   - GitLab [product tiers](https://about.gitlab.com/pricing/). For example, GitLab Core
-    and GitLab Ultimate.
+    and GitLab Ultimate. (Tested in [`BadgeCapitalization.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/BadgeCapitalization.yml).)
   - Third-party products. For example, Prometheus, Kubernetes, and Git.
   - Methods or methodologies. For example, Continuous Integration, Continuous
     Deployment, Scrum, and Agile.
+    (Tested in [`.markdownlint.json`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.markdownlint.json).)
 
     NOTE: **Note:**
     Some features are also objects. For example, "GitLab's Merge Requests support X" and
@@ -289,6 +293,7 @@ tenses, words, and phrases:
 - Avoid jargon.
 - Avoid uncommon words.
 - Don't write in the first person singular.
+  (Tested in [`FirstPerson.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/FirstPerson.yml).)
   - Instead of "I" or "me," use "we," "you," "us," or "one."
   - When possible, stay user focused by writing in the second person ("you" or
     the imperative).
@@ -311,6 +316,7 @@ tenses, words, and phrases:
 - <!-- vale gitlab.LatinTerms = NO -->
   We discourage use of Latin abbreviations, such as "e.g.," "i.e.," or "etc.,"
   as even native users of English might misunderstand them.
+  (Tested in [`LatinTerms.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/LatinTerms.yml).)
   - Instead of "i.e.," use "that is."
   - Instead of "e.g.," use "for example," "such as," "for instance," or "like."
   - Instead of "etc.," either use "and so on" or consider editing it out, since
@@ -331,7 +337,7 @@ tenses, words, and phrases:
 
 ### Contractions
 
-- Use common contractions when it helps create a friendly and informal tone, especially in tutorials, instructional documentation, and [UIs](https://design.gitlab.com/content/punctuation/#contractions).
+- Use common contractions when it helps create a friendly and informal tone, especially in tutorials, instructional documentation, and [UIs](https://design.gitlab.com/content/punctuation/#contractions). (Tested in [`Contractions.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/Contractions.yml).)
 
   | Do       | Don't     |
   |----------|-----------|
@@ -414,9 +420,9 @@ Check specific punctuation rules for [lists](#lists) below.
 | ---- | ------- |
 | Always end full sentences with a period. | _For a complete overview, read through this document._|
 | Always add a space after a period when beginning a new sentence. | _For a complete overview, check this doc. For other references, check out this guide._ |
-| Do not use double spaces. | --- |
+| Do not use double spaces. (Tested in [`SentenceSpacing.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/SentenceSpacing.yml).) | --- |
 | Do not use tabs for indentation. Use spaces instead. You can configure your code editor to output spaces instead of tabs when pressing the tab key. | --- |
-| Use serial commas ("Oxford commas") before the final 'and/or' in a list. | _You can create new issues, merge requests, and milestones._ |
+| Use serial commas ("Oxford commas") before the final 'and/or' in a list. (Tested in [`OxfordComma.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/OxfordComma.yml).) | _You can create new issues, merge requests, and milestones._ |
 | Always add a space before and after dashes when using it in a sentence (for replacing a comma, for example). | _You should try this - or not._ |
 | Always use lowercase after a colon. | _Related Issues: a way to create a relationship between issues._ |
 
@@ -439,7 +445,7 @@ cp <your_source_directory> <your_destination_directory>
 - Always start list items with a capital letter, unless they are parameters or commands
   that are in backticks, or similar.
 - Always leave a blank line before and after a list.
-- Begin a line with spaces (not tabs) to denote a [nested subitem](#nesting-inside-a-list-item).
+- Begin a line with spaces (not tabs) to denote a [nested sub-item](#nesting-inside-a-list-item).
 
 ### Ordered vs. unordered lists
 
@@ -599,7 +605,7 @@ that is best described by a matrix, tables are the best choice for use.
 
 ### Creation guidelines
 
-Due to accessibility and scanability requirements, tables should not have any
+Due to accessibility and scannability requirements, tables should not have any
 empty cells. If there is no otherwise meaningful value for a cell, consider entering
 *N/A* (for 'not applicable') or *none*.
 
@@ -648,7 +654,7 @@ For other punctuation rules, please refer to the
   links shift too, which eventually leads to dead links. If you think it is
   compelling to add numbers in headings, make sure to at least discuss it with
   someone in the Merge Request.
-- [Avoid using symbols and special chars](https://gitlab.com/gitlab-org/gitlab-docs/issues/84)
+- [Avoid using symbols and special characters](https://gitlab.com/gitlab-org/gitlab-docs/issues/84)
   in headers. Whenever possible, they should be plain and short text.
 - Avoid adding things that show ephemeral statuses. For example, if a feature is
   considered beta or experimental, put this information in a note, not in the heading.

@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 
 gem 'gitlab-qa'
-gem 'activesupport', '~> 6.0.3' # This should stay in sync with the root's Gemfile
+gem 'activesupport', '~> 6.0.3.1' # This should stay in sync with the root's Gemfile
 gem 'capybara', '~> 3.29.0'
 gem 'capybara-screenshot', '~> 1.0.23'
 gem 'rake', '~> 12.3.0'
