@@ -13,7 +13,7 @@ export default {
     tooltip,
   },
   computed: {
-    ...mapGetters(['hasChanges']),
+    ...mapGetters(['someUncommittedChanges']),
     ...mapState(['currentActivityView']),
   },
   methods: {
@@ -69,7 +69,7 @@ export default {
           <icon name="file-modified" />
         </button>
       </li>
-      <li v-show="hasChanges">
+      <li v-show="someUncommittedChanges">
         <button
           v-tooltip
           :class="{

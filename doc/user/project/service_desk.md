@@ -177,7 +177,7 @@ To turn on the feature, ask a GitLab administrator with Rails console access to 
 command:
 
 ```ruby
-Feature.enable(service_desk_email)
+Feature.enable(:service_desk_email)
 ```
 
 The configuration options are the same as for configuring

@@ -50,9 +50,6 @@ export const emptyRepo = state =>
 export const currentTree = state =>
   state.trees[`${state.currentProjectId}/${state.currentBranchId}`];
 
-export const hasChanges = state =>
-  Boolean(state.changedFiles.length) || Boolean(state.stagedFiles.length);
-
 export const hasMergeRequest = state => Boolean(state.currentMergeRequestId);
 
 export const allBlobs = state =>

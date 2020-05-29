@@ -92,7 +92,7 @@ Marked stuck import jobs as failed. JIDs: xyz
 While the performance problems are not tackled, there is a process to workaround
 importing big projects, using a foreground import:
 
-[Foreground import](https://gitlab.com/gitlab-com/gl-infra/infrastructure/issues/5384) of big projects for customers.
+[Foreground import](https://gitlab.com/gitlab-com/gl-infra/infrastructure/-/issues/5384) of big projects for customers.
 (Using the import template in the [infrastructure tracker](https://gitlab.com/gitlab-com/gl-infra/infrastructure/))
 
 ## Security

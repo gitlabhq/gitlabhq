@@ -154,7 +154,7 @@ Some tickets need specific knowledge or a deep understanding of a particular com
 - Understand what's in the pipeline and proposed features at GitLab: [Direction Page](https://about.gitlab.com/direction/)
 - Practice searching issues and filtering using [labels](https://gitlab.com/gitlab-org/gitlab/-/labels) to find existing feature proposals and bugs
 - If raising a new issue always provide a relevant label and a link to the relevant ticket in Zendesk
-- Add [customer labels](https://gitlab.com/gitlab-org/gitlab/issues?label_name%5B%5D=customer) for those issues relevant to our subscribers
+- Add [customer labels](https://gitlab.com/gitlab-org/gitlab/-/issues?label_name%5B%5D=customer) for those issues relevant to our subscribers
 - Take a look at the [existing issue templates](https://gitlab.com/gitlab-org/gitlab/blob/master/CONTRIBUTING.md#issue-tracker) to see what is expected
 - Raise issues for bugs in a manner that would make the issue easily reproducible. A Developer or a contributor may work on your issue
 

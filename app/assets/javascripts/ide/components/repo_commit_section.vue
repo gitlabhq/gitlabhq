@@ -16,7 +16,7 @@ export default {
   computed: {
     ...mapState(['changedFiles', 'stagedFiles', 'lastCommitMsg']),
     ...mapState('commit', ['commitMessage', 'submitCommitLoading']),
-    ...mapGetters(['lastOpenedFile', 'hasChanges', 'someUncommittedChanges', 'activeFile']),
+    ...mapGetters(['lastOpenedFile', 'someUncommittedChanges', 'activeFile']),
     ...mapGetters('commit', ['discardDraftButtonDisabled']),
     showStageUnstageArea() {
       return Boolean(this.someUncommittedChanges || this.lastCommitMsg);
@@ -26,8 +26,8 @@ export default {
     },
   },
   watch: {
-    hasChanges() {
-      if (!this.hasChanges) {
+    someUncommittedChanges() {
+      if (!this.someUncommittedChanges) {
         this.updateActivityBarView(leftSidebarViews.edit.name);
       }
     },

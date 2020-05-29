@@ -654,7 +654,7 @@ For other punctuation rules, please refer to the
   links shift too, which eventually leads to dead links. If you think it is
   compelling to add numbers in headings, make sure to at least discuss it with
   someone in the Merge Request.
-- [Avoid using symbols and special characters](https://gitlab.com/gitlab-org/gitlab-docs/issues/84)
+- [Avoid using symbols and special characters](https://gitlab.com/gitlab-org/gitlab-docs/-/issues/84)
   in headers. Whenever possible, they should be plain and short text.
 - Avoid adding things that show ephemeral statuses. For example, if a feature is
   considered beta or experimental, put this information in a note, not in the heading.
@@ -1050,7 +1050,7 @@ For a complete reference on code blocks, check the [Kramdown guide](https://abou
 
 ## GitLab SVG icons
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-docs/issues/384) in GitLab 12.7.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-docs/-/issues/384) in GitLab 12.7.
 
 You can use icons from the [GitLab SVG library](https://gitlab-org.gitlab.io/gitlab-svgs/) directly
 in the documentation.

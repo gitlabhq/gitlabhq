@@ -57,7 +57,7 @@ This section describes the steps you need to complete to onboard as a partner
 and complete an intgration with the Secure stage.
 
 1. Read about our [partnerships](https://about.gitlab.com/partners/integrate/).
-1. [Create an issue](https://gitlab.com/gitlab-com/alliances/alliances/issues/new?issuable_template=new_partner)
+1. [Create an issue](https://gitlab.com/gitlab-com/alliances/alliances/-/issues/new?issuable_template=new_partner)
    using our new partner issue template to begin the discussion.
 1. Get a test account to begin developing your integration. You can
    request a [GitLab.com Gold Subscription Sandbox](https://about.gitlab.com/partners/integrate/#gitlabcom-gold-subscription-sandbox-request)

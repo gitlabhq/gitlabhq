@@ -152,7 +152,7 @@ used by the `review-deploy` and `review-stop` jobs.
 
 ### Get access to the GCP Review Apps cluster
 
-You need to [open an access request (internal link)](https://gitlab.com/gitlab-com/access-requests/issues/new)
+You need to [open an access request (internal link)](https://gitlab.com/gitlab-com/access-requests/-/issues/new)
 for the `gcp-review-apps-sg` GCP group. In order to join a group, you must specify the desired GCP role in your access request.
 The role is what will grant you specific permissions in order to engage with Review App containers.
 
@@ -406,7 +406,7 @@ find a way to limit it to only us.**
 ## Other resources
 
 - [Review Apps integration for CE/EE (presentation)](https://docs.google.com/presentation/d/1QPLr6FO4LduROU8pQIPkX1yfGvD13GEJIBOenqoKxR8/edit?usp=sharing)
-- [Stability issues](https://gitlab.com/gitlab-org/quality/team-tasks/issues/212)
+- [Stability issues](https://gitlab.com/gitlab-org/quality/team-tasks/-/issues/212)
 
 ### Helpful command line tools
 

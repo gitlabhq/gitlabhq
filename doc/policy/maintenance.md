@@ -62,7 +62,7 @@ have to adhere to various internal requirements (for example, org. compliance, v
 In cases where a strategic user has a requirement to test a feature before it is
 officially released, we can offer to create a Release Candidate (RC) version that will
 include the specific feature. This should be needed only in extreme cases, and can be requested for
-consideration by raising an issue in the [release/tasks](https://gitlab.com/gitlab-org/release/tasks/issues/new?issuable_template=Backporting-request) issue tracker.
+consideration by raising an issue in the [release/tasks](https://gitlab.com/gitlab-org/release/tasks/-/issues/new?issuable_template=Backporting-request) issue tracker.
 It is important to note that the Release Candidate will also contain other features and changes as
 it is not possible to easily isolate a specific feature (similar reasons as noted above). The
 Release Candidate will be no different than any code that is deployed to GitLab.com or is publicly
@@ -95,7 +95,7 @@ For instance, if we release `11.2.1` with a fix for a severe bug introduced in
 `11.0.0`, we could backport the fix to a new `11.0.x`, and `11.1.x` patch release.
 
 To request backporting to more than one stable release for consideration, raise an issue in the
-[release/tasks](https://gitlab.com/gitlab-org/release/tasks/issues/new?issuable_template=Backporting-request) issue tracker.
+[release/tasks](https://gitlab.com/gitlab-org/release/tasks/-/issues/new?issuable_template=Backporting-request) issue tracker.
 
 ### Security releases
 

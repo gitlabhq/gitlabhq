@@ -2,7 +2,7 @@
 
 ## Issue tracker guidelines
 
-**[Search the issue tracker](https://gitlab.com/gitlab-org/gitlab/issues)** for similar entries before
+**[Search the issue tracker](https://gitlab.com/gitlab-org/gitlab/-/issues)** for similar entries before
 submitting your own, there's a good chance somebody else had the same issue or
 feature proposal. Show your support with an award emoji and/or join the
 discussion.
@@ -356,10 +356,10 @@ A recent example of this was the issue for
 ## Feature proposals
 
 To create a feature proposal, open an issue on the
-[issue tracker](https://gitlab.com/gitlab-org/gitlab/issues).
+[issue tracker](https://gitlab.com/gitlab-org/gitlab/-/issues).
 
 In order to help track the feature proposals, we have created a
-[`feature`](https://gitlab.com/gitlab-org/gitlab/issues?label_name=feature) label. For the time being, users that are not members
+[`feature`](https://gitlab.com/gitlab-org/gitlab/-/issues?label_name=feature) label. For the time being, users that are not members
 of the project cannot add labels. You can instead ask one of the [core team](https://about.gitlab.com/community/core-team/)
 members to add the label ~feature to the issue or add the following
 code snippet right after your description in a new line: `~feature`.
@@ -420,7 +420,7 @@ in the regression issue as fixes are addressed.
 ## Technical and UX debt
 
 In order to track things that can be improved in GitLab's codebase,
-we use the ~"technical debt" label in [GitLab's issue tracker](https://gitlab.com/gitlab-org/gitlab/issues).
+we use the ~"technical debt" label in [GitLab's issue tracker](https://gitlab.com/gitlab-org/gitlab/-/issues).
 For missed user experience requirements, we use the ~"UX debt" label.
 
 These labels should be added to issues that describe things that can be improved,

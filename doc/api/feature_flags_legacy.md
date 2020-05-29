@@ -1,6 +1,6 @@
 # Legacy Feature Flags API **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/9566) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.5.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/9566) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.5.
 
 CAUTION: **Deprecation**
 This API is deprecated and [scheduled for removal in GitLab 14.0](https://gitlab.com/gitlab-org/gitlab/-/issues/213369). Use [this API](feature_flags.md) instead.

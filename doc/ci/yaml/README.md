@@ -1110,7 +1110,7 @@ docker build:
 
 Additional job configuration may be added to rules in the future. If something
 useful is not available, please
-[open an issue](https://gitlab.com/gitlab-org/gitlab/issues).
+[open an issue](https://gitlab.com/gitlab-org/gitlab/-/issues).
 
 ### `only`/`except` (basic)
 
@@ -1611,7 +1611,7 @@ This example creates four paths of execution:
   pipeline will be created with YAML error.
 - The maximum number of jobs that a single job can need in the `needs:` array is limited:
   - For GitLab.com, the limit is ten. For more information, see our
-    [infrastructure issue](https://gitlab.com/gitlab-com/gl-infra/infrastructure/issues/7541).
+    [infrastructure issue](https://gitlab.com/gitlab-com/gl-infra/infrastructure/-/issues/7541).
   - For self-managed instances, the limit is:
     - 10, if the `ci_dag_limit_needs` feature flag is enabled (default).
     - 50, if the `ci_dag_limit_needs` feature flag is disabled.

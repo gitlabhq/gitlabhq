@@ -1,4 +1,6 @@
 import $ from 'jquery';
+import 'jquery.waitforimages';
+
 import initBlob from '~/blob_edit/blob_bundle';
 import ShortcutsNavigation from '~/behaviors/shortcuts/shortcuts_navigation';
 import NotificationsForm from '~/notifications_form';

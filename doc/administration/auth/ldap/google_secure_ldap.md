@@ -4,7 +4,7 @@ type: reference
 
 # Google Secure LDAP **(CORE ONLY)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/46391) in GitLab 11.9.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/46391) in GitLab 11.9.
 
 [Google Cloud Identity](https://cloud.google.com/identity/) provides a Secure
 LDAP service that can be configured with GitLab for authentication and group sync.

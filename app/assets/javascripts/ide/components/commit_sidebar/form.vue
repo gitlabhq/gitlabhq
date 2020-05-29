@@ -26,7 +26,7 @@ export default {
   computed: {
     ...mapState(['changedFiles', 'stagedFiles', 'currentActivityView', 'lastCommitMsg']),
     ...mapState('commit', ['commitMessage', 'submitCommitLoading']),
-    ...mapGetters(['hasChanges']),
+    ...mapGetters(['someUncommittedChanges']),
     ...mapGetters('commit', ['discardDraftButtonDisabled', 'preBuiltCommitMessage']),
     overviewText() {
       return n__('%d changed file', '%d changed files', this.stagedFiles.length);
@@ -126,7 +126,7 @@ export default {
     >
       <div v-if="isCompact" ref="compactEl" class="commit-form-compact">
         <button
-          :disabled="!hasChanges"
+          :disabled="!someUncommittedChanges"
           type="button"
           class="btn btn-primary btn-sm btn-block qa-begin-commit-button"
           @click="toggleIsCompact"

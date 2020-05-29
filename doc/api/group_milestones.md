@@ -8,6 +8,9 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/12819) in GitLab 9.5.
 
+This page describes the group milestones API.
+There's a separate [project milestones API](./group_milestones.md) page.
+
 ## List group milestones
 
 Returns a list of group milestones.

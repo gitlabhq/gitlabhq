@@ -23,7 +23,7 @@ For more information about the permission model at GitLab, please see [the GitLa
 ### Impact
 
 Improper permission handling can have significant impacts on the security of an application.
-Some situations may reveal [sensitive data](https://gitlab.com/gitlab-com/gl-infra/production/issues/477) or allow a malicious actor to perform [harmful actions](https://gitlab.com/gitlab-org/gitlab/-/issues/8180).
+Some situations may reveal [sensitive data](https://gitlab.com/gitlab-com/gl-infra/production/-/issues/477) or allow a malicious actor to perform [harmful actions](https://gitlab.com/gitlab-org/gitlab/-/issues/8180).
 The overall impact depends heavily on what resources can be accessed or modified improperly.
 
 A common vulnerability when permission checks are missing is called [IDOR](https://owasp.org/www-project-web-security-testing-guide/latest/4-Web_Application_Security_Testing/05-Authorization_Testing/04-Testing_for_Insecure_Direct_Object_References) for Insecure Direct Object References.

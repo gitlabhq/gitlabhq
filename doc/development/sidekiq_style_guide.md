@@ -147,7 +147,7 @@ GitLab doesn't skip jobs scheduled in the future, as we assume that
 the state will have changed by the time the job is scheduled to
 execute.
 
-More [deduplication strategies have been suggested](https://gitlab.com/gitlab-com/gl-infra/scalability/issues/195). If you are implementing a worker that
+More [deduplication strategies have been suggested](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/195). If you are implementing a worker that
 could benefit from a different strategy, please comment in the issue.
 
 If the automatic deduplication were to cause issues in certain

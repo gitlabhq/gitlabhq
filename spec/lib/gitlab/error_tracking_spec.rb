@@ -179,5 +179,16 @@ describe Gitlab::ErrorTracking do
         described_class.track_exception(exception, extra_info)
       end
     end
+
+    context 'with sidekiq args' do
+      let(:extra) { { sidekiq: { 'args' => [1, { 'id' => 2, 'name' => 'hello' }, 'some-value', 'another-value'] } } }
+
+      it 'ensures extra.sidekiq.args is a string' do
+        expect(Gitlab::ErrorTracking::Logger).to receive(:error).with(
+          hash_including({ 'extra.sidekiq' => { 'args' => ['1', '{"id"=>2, "name"=>"hello"}', 'some-value', 'another-value'] } }))
+
+        described_class.track_exception(exception, extra)
+      end
+    end
   end
 end

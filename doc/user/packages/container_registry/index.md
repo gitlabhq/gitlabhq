@@ -258,7 +258,7 @@ build:
     - docker push $CI_REGISTRY/group/project/image:latest
 ```
 
-You can also make use of [other variables](../../../ci/variables/README.md) to avoid hardcoding:
+You can also make use of [other variables](../../../ci/variables/README.md) to avoid hard-coding:
 
 ```yaml
 build:

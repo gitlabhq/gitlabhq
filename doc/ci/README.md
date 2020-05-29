@@ -186,15 +186,15 @@ been necessary. These are:
 #### 13.0
 
 - [Remove Backported
-  `os.Expand`](https://gitlab.com/gitlab-org/gitlab-runner/issues/4915)
+  `os.Expand`](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/4915)
 - [Remove Fedora 29 package
-  support](https://gitlab.com/gitlab-org/gitlab-runner/issues/16158)
+  support](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/16158)
 - [Remove macOS 32-bit
-  support](https://gitlab.com/gitlab-org/gitlab-runner/issues/25466)
+  support](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/25466)
 - [Removed `debug/jobs/list?v=1`
-  endpoint](https://gitlab.com/gitlab-org/gitlab-runner/issues/6361)
+  endpoint](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/6361)
 - [Remove support for array of strings when defining services for Docker
-  executor](https://gitlab.com/gitlab-org/gitlab-runner/issues/4922)
+  executor](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/4922)
 - [Remove `--docker-services` flag on register
   command](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/6404)
 - [Remove legacy build directory

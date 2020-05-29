@@ -358,7 +358,7 @@ as it attempts to fetch the image using `CI_REGISTRY_PASSWORD`.
 
 CAUTION: **Deprecation**
 The default value for the `deploymentApiVersion` setting was changed from
-`extensions/v1beta` to `apps/v1` in [GitLab 13.0](https://gitlab.com/gitlab-org/charts/auto-deploy-app/issues/47).
+`extensions/v1beta` to `apps/v1` in [GitLab 13.0](https://gitlab.com/gitlab-org/charts/auto-deploy-app/-/issues/47).
 
 In Kubernetes 1.16 and later, a number of
 [APIs were removed](https://kubernetes.io/blog/2019/07/18/api-deprecations-in-1-16/),

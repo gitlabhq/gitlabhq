@@ -134,7 +134,7 @@ This example code does the following:
 #### Setting up your AWS credentials with your GitLab account
 
 In order to interact with your AWS account, the GitLab CI/CD pipelines require both `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` to be defined in your GitLab settings under **Settings > CI/CD > Variables**.
-For more information please see: <https://docs.gitlab.com/ee/ci/variables/README.html#via-the-ui>
+For more information please see [Create a custom variable in the UI](../../../../ci/variables/README.md#create-a-custom-variable-in-the-ui).
 
 NOTE: **Note:**
    The AWS credentials you provide must include IAM policies that provision correct access control to AWS Lambda, API Gateway, CloudFormation, and IAM resources.
@@ -288,7 +288,7 @@ automated testing of both local and deployed serverless function.
 
 The example code is available:
 
-- As a [cloneable repository](https://gitlab.com/gitlab-org/serverless/examples/serverless-framework-js).
+- As a [clonable repository](https://gitlab.com/gitlab-org/serverless/examples/serverless-framework-js).
 - In a version with [tests and secret variables](https://gitlab.com/gitlab-org/project-templates/serverless-framework/).
 
 You can also use a [template](../../../../gitlab-basics/create-project.md#project-templates)
@@ -416,7 +416,7 @@ production:
   environment: production
   ```
 
-Let’s examine the config file more closely:
+Let’s examine the configuration file more closely:
 
 - `image` specifies the Docker image to use for this build. This is the latest Python
   image since the sample application is written in Python.

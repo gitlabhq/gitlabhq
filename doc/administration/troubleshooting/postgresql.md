@@ -117,7 +117,7 @@ Quoting from issue [#1](https://gitlab.com/gitlab-org/gitlab/-/issues/30528):
 
 TIP: **Tip:** In support, our general approach to reconfiguring timeouts (applies also to the HTTP stack as well) is that it's acceptable to do it temporarily as a workaround. If it makes GitLab usable for the customer, then it buys time to understand the problem more completely, implement a hot fix, or make some other change that addresses the root cause. Generally, the timeouts should be put back to reasonable defaults once the root cause is resolved.
 
-In this case, the guidance we had from development was to drop deadlock_timeout and/or statement_timeout but to leave the third setting at 60s. Setting idle_in_transaction protects the database from sessions potentially hanging for days. There's more discussion in [the issue relating to introducing this timeout on GitLab.com](https://gitlab.com/gitlab-com/gl-infra/production/issues/1053).
+In this case, the guidance we had from development was to drop deadlock_timeout and/or statement_timeout but to leave the third setting at 60s. Setting idle_in_transaction protects the database from sessions potentially hanging for days. There's more discussion in [the issue relating to introducing this timeout on GitLab.com](https://gitlab.com/gitlab-com/gl-infra/production/-/issues/1053).
 
 PostgresSQL defaults:
 

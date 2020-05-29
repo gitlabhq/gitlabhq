@@ -371,7 +371,7 @@ test:
   release we will update the autoscaler to enable
   the pre-provisioning of virtual machines. This will significantly reduce
   the time it takes to provision a VM on the Windows fleet. You can
-  follow along in the [related issue](https://gitlab.com/gitlab-org/ci-cd/custom-executor-drivers/autoscaler/issues/32).
+  follow along in the [related issue](https://gitlab.com/gitlab-org/ci-cd/custom-executor-drivers/autoscaler/-/issues/32).
 - The Windows Shared Runner fleet may be unavailable occasionally
   for maintenance or updates.
 - The Windows Shared Runner virtual machine instances do not use the

@@ -20,15 +20,6 @@ export default {
       type: String,
       required: true,
     },
-    hasChanges: {
-      type: Boolean,
-      required: true,
-    },
-    mergeRequestId: {
-      type: String,
-      required: false,
-      default: '',
-    },
   },
   methods: {
     ...mapActions(['updateViewer', 'removePendingTab']),
