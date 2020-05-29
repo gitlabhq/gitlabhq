@@ -541,7 +541,8 @@
   cursor: help;
 }
 
-.board-labels-toggle-wrapper {
+.board-labels-toggle-wrapper,
+.board-swimlanes-toggle-wrapper {
   /**
    * Make the wrapper the same height as a button so it aligns properly when the
    * filtered-search-box input element increases in size on Linux smaller breakpoints

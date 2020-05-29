@@ -446,7 +446,7 @@ table.code {
     vertical-align: top;
 
     span {
-      white-space: pre-wrap;
+      white-space: break-spaces;
 
       &.context-cell {
         display: inline-block;

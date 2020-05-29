@@ -7,6 +7,7 @@ import BoardSidebar from 'ee_else_ce/boards/components/board_sidebar';
 import initNewListDropdown from 'ee_else_ce/boards/components/new_list_dropdown';
 import boardConfigToggle from 'ee_else_ce/boards/config_toggle';
 import toggleLabels from 'ee_else_ce/boards/toggle_labels';
+import toggleEpicsSwimlanes from 'ee_else_ce/boards/toggle_epics_swimlanes';
 import {
   setPromotionState,
   setWeigthFetchingState,
@@ -371,5 +372,6 @@ export default () => {
 
   toggleFocusMode(ModalStore, boardsStore);
   toggleLabels();
+  toggleEpicsSwimlanes();
   mountMultipleBoardsSwitcher();
 };

@@ -1,4 +1,5 @@
 import $ from 'jquery';
+import 'vendor/jquery.endless-scroll';
 import { getParameterByName } from '~/lib/utils/common_utils';
 import axios from '~/lib/utils/axios_utils';
 import { removeParams } from '~/lib/utils/url_utility';

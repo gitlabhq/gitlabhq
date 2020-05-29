@@ -41,10 +41,10 @@ module Spam
       return unless Gitlab::CurrentSettings.spam_check_endpoint_enabled
       return if endpoint_url.blank?
 
-      result = Gitlab::HTTP.try_get(endpoint_url, verdict_params)
-      return unless result
-
       begin
+        result = Gitlab::HTTP.post(endpoint_url, body: verdict_params.to_json, headers: { 'Content-Type' => 'application/json' })
+        return unless result
+
         json_result = Gitlab::Json.parse(result).with_indifferent_access
         # @TODO metrics/logging
         # Expecting:
@@ -56,6 +56,10 @@ module Spam
         # @TODO log if json_result[:error]
 
         json_result[:verdict]
+      rescue *Gitlab::HTTP::HTTP_ERRORS => e
+        # @TODO: log error via try_post https://gitlab.com/gitlab-org/gitlab/-/issues/219223
+        Gitlab::ErrorTracking.log_exception(e)
+        return
       rescue
         # @TODO log
         ALLOW

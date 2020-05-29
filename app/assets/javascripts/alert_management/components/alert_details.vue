@@ -2,6 +2,7 @@
 import * as Sentry from '@sentry/browser';
 import {
   GlAlert,
+  GlBadge,
   GlIcon,
   GlLoadingIcon,
   GlSprintf,
@@ -35,6 +36,7 @@ export default {
   },
   severityLabels: ALERTS_SEVERITY_LABELS,
   components: {
+    GlBadge,
     GlAlert,
     GlIcon,
     GlLoadingIcon,
@@ -186,21 +188,18 @@ export default {
           <div
             class="gl-display-inline-flex gl-align-items-center gl-justify-content-space-between"
           >
-            <gl-icon
-              class="gl-mr-3 align-middle"
-              :size="12"
-              :name="`severity-${alert.severity.toLowerCase()}`"
-              :class="`icon-${alert.severity.toLowerCase()}`"
-            />
-            <strong>{{ $options.severityLabels[alert.severity] }}</strong>
+            <gl-badge class="gl-mr-3">
+              <strong>{{ s__('AlertManagement|Alert') }}</strong>
+            </gl-badge>
           </div>
-          <span class="mx-2">&bull;</span>
-          <gl-sprintf :message="reportedAtMessage">
-            <template #when>
-              <time-ago-tooltip :time="alert.createdAt" class="gl-ml-3" />
-            </template>
-            <template #tool>{{ alert.monitoringTool }}</template>
-          </gl-sprintf>
+          <span>
+            <gl-sprintf :message="reportedAtMessage">
+              <template #when>
+                <time-ago-tooltip :time="alert.createdAt" />
+              </template>
+              <template #tool>{{ alert.monitoringTool }}</template>
+            </gl-sprintf>
+          </span>
         </div>
         <gl-button
           v-if="alert.issueIid"
@@ -242,24 +241,48 @@ export default {
       </div>
       <gl-tabs v-if="alert" data-testid="alertDetailsTabs">
         <gl-tab data-testid="overviewTab" :title="$options.i18n.overviewTitle">
-          <ul class="pl-4 mb-n1">
-            <li v-if="alert.startedAt" class="my-2">
-              <strong class="bold">{{ s__('AlertManagement|Start time') }}:</strong>
+          <div v-if="alert.severity" class="gl-mt-3 gl-mb-5 gl-display-flex">
+            <div class="gl-font-weight-bold gl-w-13 gl-text-right gl-pr-3">
+              {{ s__('AlertManagement|Severity') }}:
+            </div>
+            <div class="gl-pl-2" data-testid="severity">
+              <span>
+                <gl-icon
+                  class="gl-vertical-align-middle"
+                  :size="12"
+                  :name="`severity-${alert.severity.toLowerCase()}`"
+                  :class="`icon-${alert.severity.toLowerCase()}`"
+                />
+              </span>
+              {{ $options.severityLabels[alert.severity] }}
+            </div>
+          </div>
+          <div v-if="alert.startedAt" class="gl-my-5 gl-display-flex">
+            <div class="gl-font-weight-bold gl-w-13 gl-text-right gl-pr-3">
+              {{ s__('AlertManagement|Start time') }}:
+            </div>
+            <div class="gl-pl-2">
               <time-ago-tooltip data-testid="startTimeItem" :time="alert.startedAt" />
-            </li>
-            <li v-if="alert.eventCount" class="my-2">
-              <strong class="bold">{{ s__('AlertManagement|Events') }}:</strong>
-              <span data-testid="eventCount">{{ alert.eventCount }}</span>
-            </li>
-            <li v-if="alert.monitoringTool" class="my-2">
-              <strong class="bold">{{ s__('AlertManagement|Tool') }}:</strong>
-              <span data-testid="monitoringTool">{{ alert.monitoringTool }}</span>
-            </li>
-            <li v-if="alert.service" class="my-2">
-              <strong class="bold">{{ s__('AlertManagement|Service') }}:</strong>
-              <span data-testid="service">{{ alert.service }}</span>
-            </li>
-          </ul>
+            </div>
+          </div>
+          <div v-if="alert.eventCount" class="gl-my-5 gl-display-flex">
+            <div class="gl-font-weight-bold gl-w-13 gl-text-right gl-pr-3">
+              {{ s__('AlertManagement|Events') }}:
+            </div>
+            <div class="gl-pl-2" data-testid="eventCount">{{ alert.eventCount }}</div>
+          </div>
+          <div v-if="alert.monitoringTool" class="gl-my-5 gl-display-flex">
+            <div class="gl-font-weight-bold gl-w-13 gl-text-right gl-pr-3">
+              {{ s__('AlertManagement|Tool') }}:
+            </div>
+            <div class="gl-pl-2" data-testid="monitoringTool">{{ alert.monitoringTool }}</div>
+          </div>
+          <div v-if="alert.service" class="gl-my-5 gl-display-flex">
+            <div class="bold gl-w-13 gl-text-right gl-pr-3">
+              {{ s__('AlertManagement|Service') }}:
+            </div>
+            <div class="gl-pl-2" data-testid="service">{{ alert.service }}</div>
+          </div>
         </gl-tab>
         <gl-tab data-testid="fullDetailsTab" :title="$options.i18n.fullAlertDetailsTitle">
           <gl-table

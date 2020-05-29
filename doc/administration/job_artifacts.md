@@ -119,7 +119,7 @@ The connection settings match those provided by [Fog](https://github.com/fog), a
 | `aws_signature_version` | AWS signature version to use. 2 or 4 are valid options. Digital Ocean Spaces and other providers may need 2. | 4 |
 | `enable_signature_v4_streaming` | Set to true to enable HTTP chunked transfers with [AWS v4 signatures](https://docs.aws.amazon.com/AmazonS3/latest/API/sigv4-streaming.html). Oracle Cloud S3 needs this to be false | true |
 | `region` | AWS region | us-east-1 |
-| `host` | S3 compatible host for when not using AWS, e.g. `localhost` or `storage.example.com` | s3.amazonaws.com |
+| `host` | S3 compatible host for when not using AWS, for example `localhost` or `storage.example.com` | s3.amazonaws.com |
 | `endpoint` | Can be used when configuring an S3 compatible service such as [MinIO](https://min.io), by entering a URL such as `http://127.0.0.1:9000` | (optional) |
 | `path_style` | Set to true to use `host/bucket_name/object` style paths instead of `bucket_name.host/object`. Leave as false for AWS S3 | false |
 | `use_iam_profile` | Set to true to use IAM profile instead of access keys | false
@@ -144,7 +144,7 @@ _The artifacts are stored by default in
    }
    ```
 
-   NOTE: For GitLab 9.4+, if you are using AWS IAM profiles, be sure to omit the
+   NOTE: For GitLab 9.4+, if you're using AWS IAM profiles, be sure to omit the
    AWS access key and secret access key/value pairs. For example:
 
    ```ruby
@@ -209,8 +209,8 @@ The connection settings match those provided by [Fog](https://github.com/fog), a
 | `provider` | Always `OpenStack` for compatible hosts | OpenStack |
 | `openstack_username` | OpenStack username | |
 | `openstack_api_key` | OpenStack API key  | |
-| `openstack_temp_url_key` | OpenStack key for generating temporary urls | |
-| `openstack_auth_url` | OpenStack authentication endpont | |
+| `openstack_temp_url_key` | OpenStack key for generating temporary URLs | |
+| `openstack_auth_url` | OpenStack authentication endpoint | |
 | `openstack_region` | OpenStack region | |
 | `openstack_tenant_id` | OpenStack tenant ID |
 
@@ -404,6 +404,8 @@ In these and other cases, you'll need to identify the projects most responsible
 for disk space usage, figure out what types of artifacts are using the most
 space, and in some cases, manually delete job artifacts to reclaim disk space.
 
+One possible first step is to [clean up _orphaned_ artifact files](../raketasks/cleanup.md#remove-orphan-artifact-files).
+
 #### List projects by total size of job artifacts stored
 
 List the top 20 projects, sorted by the total size of job artifacts stored, by
@@ -488,7 +490,7 @@ highly recommend running them only under the guidance of a Support Engineer, or
 running them in a test environment with a backup of the instance ready to be
 restored, just in case.
 
-If you need to manually remove ALL job artifacts associated with multiple jobs,
+If you need to manually remove **all** job artifacts associated with multiple jobs,
 **including job logs**, this can be done from the Rails console (`sudo gitlab-rails console`):
 
 1. Select jobs to be deleted:

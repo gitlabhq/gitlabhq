@@ -2518,6 +2518,9 @@ msgstr ""
 msgid "Apply a template"
 msgstr ""
 
+msgid "Apply changes"
+msgstr ""
+
 msgid "Apply suggestion"
 msgstr ""
 
@@ -10796,6 +10799,9 @@ msgstr ""
 msgid "Group avatar"
 msgstr ""
 
+msgid "Group by:"
+msgstr ""
+
 msgid "Group could not be imported: %{errors}"
 msgstr ""
 
@@ -13622,7 +13628,7 @@ msgstr ""
 msgid "MergeRequests|started a thread on commit %{linkStart}%{commitDisplay}%{linkEnd}"
 msgstr ""
 
-msgid "MergeRequest|Compare %{source} and %{target}"
+msgid "MergeRequest|Compare %{target} and %{source}"
 msgstr ""
 
 msgid "MergeRequest|Error dismissing suggestion popover. Please try again."
@@ -14223,6 +14229,9 @@ msgstr ""
 msgid "Network"
 msgstr ""
 
+msgid "NetworkPolicies|Define this policy's location, conditions and actions."
+msgstr ""
+
 msgid "NetworkPolicies|Enabled"
 msgstr ""
 
@@ -14248,6 +14257,9 @@ msgid "NetworkPolicies|Policies are a specification of how groups of pods are al
 msgstr ""
 
 msgid "NetworkPolicies|Policy %{policyName} was successfully changed"
+msgstr ""
+
+msgid "NetworkPolicies|Policy definition"
 msgstr ""
 
 msgid "NetworkPolicies|Something went wrong, failed to update policy"
@@ -14529,6 +14541,9 @@ msgid "No files found."
 msgstr ""
 
 msgid "No forks are available to you."
+msgstr ""
+
+msgid "No grouping"
 msgstr ""
 
 msgid "No job log"

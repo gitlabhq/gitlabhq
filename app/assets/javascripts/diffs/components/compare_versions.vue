@@ -98,18 +98,18 @@ export default {
       <gl-sprintf
         v-if="showDropdowns"
         class="d-flex align-items-center compare-versions-container"
-        :message="s__('MergeRequest|Compare %{source} and %{target}')"
+        :message="s__('MergeRequest|Compare %{target} and %{source}')"
       >
-        <template #source>
-          <compare-dropdown-layout
-            :versions="diffCompareDropdownSourceVersions"
-            class="mr-version-dropdown"
-          />
-        </template>
         <template #target>
           <compare-dropdown-layout
             :versions="diffCompareDropdownTargetVersions"
             class="mr-version-compare-dropdown"
+          />
+        </template>
+        <template #source>
+          <compare-dropdown-layout
+            :versions="diffCompareDropdownSourceVersions"
+            class="mr-version-dropdown"
           />
         </template>
       </gl-sprintf>

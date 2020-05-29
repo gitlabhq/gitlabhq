@@ -3,9 +3,11 @@ import { GlAlert, GlLoadingIcon, GlTable } from '@gitlab/ui';
 import AlertDetails from '~/alert_management/components/alert_details.vue';
 import createIssueQuery from '~/alert_management/graphql/mutations/create_issue_from_alert.graphql';
 import { joinPaths } from '~/lib/utils/url_utility';
-import { trackAlertsDetailsViewsOptions } from '~/alert_management/constants';
+import {
+  trackAlertsDetailsViewsOptions,
+  ALERTS_SEVERITY_LABELS,
+} from '~/alert_management/constants';
 import Tracking from '~/tracking';
-
 import mockAlerts from '../mocks/alerts.json';
 
 const mockAlert = mockAlerts[0];
@@ -75,6 +77,12 @@ describe('AlertDetails', () => {
 
       it('renders a tab with full alert information', () => {
         expect(wrapper.find('[data-testid="fullDetailsTab"]').exists()).toBe(true);
+      });
+
+      it('renders severity', () => {
+        expect(wrapper.find('[data-testid="severity"]').text()).toBe(
+          ALERTS_SEVERITY_LABELS[mockAlert.severity],
+        );
       });
 
       it('renders a title', () => {
@@ -204,15 +212,15 @@ describe('AlertDetails', () => {
 
       describe('individual header fields', () => {
         describe.each`
-          severity    | createdAt                     | monitoringTool | result
-          ${'MEDIUM'} | ${'2020-04-17T23:18:14.996Z'} | ${null}        | ${'Medium • Reported now'}
-          ${'INFO'}   | ${'2020-04-17T23:18:14.996Z'} | ${'Datadog'}   | ${'Info • Reported now by Datadog'}
+          createdAt                     | monitoringTool | result
+          ${'2020-04-17T23:18:14.996Z'} | ${null}        | ${'Alert Reported now'}
+          ${'2020-04-17T23:18:14.996Z'} | ${'Datadog'}   | ${'Alert Reported now by Datadog'}
         `(
-          `When severity=$severity, createdAt=$createdAt, monitoringTool=$monitoringTool`,
-          ({ severity, createdAt, monitoringTool, result }) => {
+          `When createdAt=$createdAt, monitoringTool=$monitoringTool`,
+          ({ createdAt, monitoringTool, result }) => {
             beforeEach(() => {
               mountComponent({
-                data: { alert: { ...mockAlert, severity, createdAt, monitoringTool } },
+                data: { alert: { ...mockAlert, createdAt, monitoringTool } },
                 mountMethod: mount,
                 stubs,
               });

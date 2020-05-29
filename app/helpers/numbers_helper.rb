@@ -1,15 +1,14 @@
 # frozen_string_literal: true
 
 module NumbersHelper
-  # rubocop: disable CodeReuse/ActiveRecord
   def limited_counter_with_delimiter(resource, **options)
     limit = options.fetch(:limit, 1000).to_i
-    count = resource.limit(limit + 1).count(:all)
+    count = resource.page.total_count_with_limit(:all, limit: limit)
+
     if count > limit
       number_with_delimiter(count - 1, options) + '+'
     else
       number_with_delimiter(count, options)
     end
   end
-  # rubocop: enable CodeReuse/ActiveRecord
 end

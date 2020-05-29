@@ -1,0 +1,6 @@
+---
+title: Bump cluster-applications to 0.17.0, which updates Runner to 0.17.0 and Cilium
+  to 1.7.4
+merge_request: 32931
+author:
+type: changed
