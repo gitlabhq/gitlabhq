@@ -112,8 +112,10 @@ module Snippets
     end
 
     def build_actions_from_params(snippet)
-      [{ previous_path: snippet.file_name_on_repo,
-         file_path: params[:file_name],
+      file_name_on_repo = snippet.file_name_on_repo
+
+      [{ previous_path: file_name_on_repo,
+         file_path: params[:file_name] || file_name_on_repo,
          content: params[:content] }]
     end
   end

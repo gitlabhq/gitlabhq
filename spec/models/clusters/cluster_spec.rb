@@ -608,19 +608,12 @@ describe Clusters::Cluster, :use_clean_rails_memory_store_caching do
     end
 
     context 'when applications are created' do
-      let!(:helm) { create(:clusters_applications_helm, cluster: cluster) }
-      let!(:ingress) { create(:clusters_applications_ingress, cluster: cluster) }
-      let!(:cert_manager) { create(:clusters_applications_cert_manager, cluster: cluster) }
-      let!(:crossplane) { create(:clusters_applications_crossplane, cluster: cluster) }
-      let!(:prometheus) { create(:clusters_applications_prometheus, cluster: cluster) }
-      let!(:runner) { create(:clusters_applications_runner, cluster: cluster) }
-      let!(:jupyter) { create(:clusters_applications_jupyter, cluster: cluster) }
-      let!(:knative) { create(:clusters_applications_knative, cluster: cluster) }
-      let!(:elastic_stack) { create(:clusters_applications_elastic_stack, cluster: cluster) }
-      let!(:fluentd) { create(:clusters_applications_fluentd, cluster: cluster) }
+      let(:cluster) { create(:cluster, :with_all_applications) }
 
-      it 'returns a list of created applications' do
-        is_expected.to contain_exactly(helm, ingress, cert_manager, crossplane, prometheus, runner, jupyter, knative, elastic_stack, fluentd)
+      it 'returns a list of created applications', :aggregate_failures do
+        is_expected.to have_attributes(size: described_class::APPLICATIONS.size)
+        is_expected.to all(be_kind_of(::Clusters::Concerns::ApplicationCore))
+        is_expected.to all(be_persisted)
       end
     end
   end
@@ -646,33 +639,13 @@ describe Clusters::Cluster, :use_clean_rails_memory_store_caching do
     end
 
     context 'when application is persisted' do
-      let!(:helm) { create(:clusters_applications_helm, cluster: cluster) }
-      let!(:ingress) { create(:clusters_applications_ingress, cluster: cluster) }
-      let!(:cert_manager) { create(:clusters_applications_cert_manager, cluster: cluster) }
-      let!(:crossplane) { create(:clusters_applications_crossplane, cluster: cluster) }
-      let!(:prometheus) { create(:clusters_applications_prometheus, cluster: cluster) }
-      let!(:runner) { create(:clusters_applications_runner, cluster: cluster) }
-      let!(:jupyter) { create(:clusters_applications_jupyter, cluster: cluster) }
-      let!(:knative) { create(:clusters_applications_knative, cluster: cluster) }
-      let!(:elastic_stack) { create(:clusters_applications_elastic_stack, cluster: cluster) }
-      let!(:fluentd) { create(:clusters_applications_fluentd, cluster: cluster) }
+      let(:cluster) { create(:cluster, :with_all_applications) }
 
       it 'returns the persisted application', :aggregate_failures do
-        {
-          Clusters::Applications::Helm => helm,
-          Clusters::Applications::Ingress => ingress,
-          Clusters::Applications::CertManager => cert_manager,
-          Clusters::Applications::Crossplane => crossplane,
-          Clusters::Applications::Prometheus => prometheus,
-          Clusters::Applications::Runner => runner,
-          Clusters::Applications::Jupyter => jupyter,
-          Clusters::Applications::Knative => knative,
-          Clusters::Applications::ElasticStack => elastic_stack,
-          Clusters::Applications::Fluentd => fluentd
-        }.each do |application_class, expected_object|
+        described_class::APPLICATIONS.each_value do |application_class|
           application = cluster.find_or_build_application(application_class)
 
-          expect(application).to eq(expected_object)
+          expect(application).to be_kind_of(::Clusters::Concerns::ApplicationCore)
           expect(application).to be_persisted
         end
       end

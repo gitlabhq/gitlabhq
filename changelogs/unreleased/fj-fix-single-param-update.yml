@@ -1,0 +1,5 @@
+---
+title: Fix bug in snippets updating only file_name or content
+merge_request: 33375
+author:
+type: fixed

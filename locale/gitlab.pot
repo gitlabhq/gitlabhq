@@ -6492,6 +6492,9 @@ msgstr ""
 msgid "Create your group"
 msgstr ""
 
+msgid "Create/import your first project"
+msgstr ""
+
 msgid "CreateGroup|You don’t have permission to create a subgroup in this group."
 msgstr ""
 
@@ -17212,6 +17215,9 @@ msgstr ""
 msgid "ProjectsNew|Contact an administrator to enable options for importing your project."
 msgstr ""
 
+msgid "ProjectsNew|Create"
+msgstr ""
+
 msgid "ProjectsNew|Create from template"
 msgstr ""
 
@@ -22505,6 +22511,9 @@ msgstr ""
 msgid "This project will be removed on %{date} since its parent group '%{parent_group_name}' has been scheduled for removal."
 msgstr ""
 
+msgid "This project will live in your group <strong>%{namespace}</strong>. A project is where you house your files (repository), plan your work (issues), publish your documentation (wiki), and so much more."
+msgstr ""
+
 msgid "This repository"
 msgstr ""
 
@@ -25591,6 +25600,9 @@ msgid "Your deployment services will be broken, you will need to manually fix th
 msgstr ""
 
 msgid "Your device was successfully set up! Give it a name and register it with the GitLab server."
+msgstr ""
+
+msgid "Your first project"
 msgstr ""
 
 msgid "Your groups"

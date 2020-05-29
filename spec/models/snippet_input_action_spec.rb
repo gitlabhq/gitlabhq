@@ -20,6 +20,8 @@ describe SnippetInputAction do
       'create' | 'foobar'  | ''       | 'foobar' | false
       'create' | nil       | 'foobar' | 'foobar' | false
       'create' | ''        | 'foobar' | 'foobar' | false
+      'update' | 'foobar'  | nil      | 'foobar' | false
+      'update' | 'other'   | 'foobar' | 'foobar' | false
     end
 
     with_them do

@@ -125,6 +125,7 @@ gemnasium-maven-dependency_scanning:
           $DS_DEFAULT_ANALYZERS =~ /gemnasium-maven/
       exists:
         - '{build.gradle,*/build.gradle,*/*/build.gradle}'
+        - '{build.gradle.kts,*/build.gradle.kts,*/*/build.gradle.kts}'
         - '{build.sbt,*/build.sbt,*/*/build.sbt}'
         - '{pom.xml,*/pom.xml,*/*/pom.xml}'
 

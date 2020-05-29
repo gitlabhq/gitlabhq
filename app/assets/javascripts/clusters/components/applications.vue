@@ -2,16 +2,13 @@
 import { escape } from 'lodash';
 import helmInstallIllustration from '@gitlab/svgs/dist/illustrations/kubernetes-installation.svg';
 import { GlLoadingIcon } from '@gitlab/ui';
-import elasticsearchLogo from 'images/cluster_app_logos/elasticsearch.png';
 import gitlabLogo from 'images/cluster_app_logos/gitlab.png';
 import helmLogo from 'images/cluster_app_logos/helm.png';
-import jeagerLogo from 'images/cluster_app_logos/jeager.png';
 import jupyterhubLogo from 'images/cluster_app_logos/jupyterhub.png';
 import kubernetesLogo from 'images/cluster_app_logos/kubernetes.png';
 import certManagerLogo from 'images/cluster_app_logos/cert_manager.png';
 import crossplaneLogo from 'images/cluster_app_logos/crossplane.png';
 import knativeLogo from 'images/cluster_app_logos/knative.png';
-import meltanoLogo from 'images/cluster_app_logos/meltano.png';
 import prometheusLogo from 'images/cluster_app_logos/prometheus.png';
 import elasticStackLogo from 'images/cluster_app_logos/elastic_stack.png';
 import fluentdLogo from 'images/cluster_app_logos/fluentd.png';
@@ -92,25 +89,7 @@ export default {
       default: false,
     },
   },
-  data: () => ({
-    elasticsearchLogo,
-    gitlabLogo,
-    helmLogo,
-    jeagerLogo,
-    jupyterhubLogo,
-    kubernetesLogo,
-    certManagerLogo,
-    crossplaneLogo,
-    knativeLogo,
-    meltanoLogo,
-    prometheusLogo,
-    elasticStackLogo,
-    fluentdLogo,
-  }),
   computed: {
-    isProjectCluster() {
-      return this.type === CLUSTER_TYPE.PROJECT;
-    },
     managedAppsLocalTillerEnabled() {
       return Boolean(gon.features?.managedAppsLocalTiller);
     },
@@ -132,9 +111,6 @@ export default {
     },
     certManagerInstalled() {
       return this.applications.cert_manager.status === APPLICATION_STATUS.INSTALLED;
-    },
-    crossplaneInstalled() {
-      return this.applications.crossplane.status === APPLICATION_STATUS.INSTALLED;
     },
     ingressDescription() {
       return sprintf(
@@ -208,9 +184,6 @@ Crossplane runs inside your Kubernetes cluster and supports secure connectivity 
     jupyterHostname() {
       return this.applications.jupyter.hostname;
     },
-    elasticStackInstalled() {
-      return this.applications.elastic_stack.status === APPLICATION_STATUS.INSTALLED;
-    },
     knative() {
       return this.applications.knative;
     },
@@ -240,9 +213,6 @@ Crossplane runs inside your Kubernetes cluster and supports secure connectivity 
       return this.applications.ingress;
     },
   },
-  created() {
-    this.helmInstallIllustration = helmInstallIllustration;
-  },
   methods: {
     saveKnativeDomain() {
       eventHub.$emit('saveKnativeDomain', {
@@ -267,6 +237,19 @@ Crossplane runs inside your Kubernetes cluster and supports secure connectivity 
       });
     },
   },
+  logos: {
+    gitlabLogo,
+    helmLogo,
+    jupyterhubLogo,
+    kubernetesLogo,
+    certManagerLogo,
+    crossplaneLogo,
+    knativeLogo,
+    prometheusLogo,
+    elasticStackLogo,
+    fluentdLogo,
+  },
+  helmInstallIllustration,
 };
 </script>
 
@@ -284,7 +267,7 @@ Crossplane runs inside your Kubernetes cluster and supports secure connectivity 
       <application-row
         v-if="!managedAppsLocalTillerEnabled"
         id="helm"
-        :logo-url="helmLogo"
+        :logo-url="$options.logos.helmLogo"
         :title="applications.helm.title"
         :status="applications.helm.status"
         :status-reason="applications.helm.statusReason"
@@ -308,7 +291,7 @@ Crossplane runs inside your Kubernetes cluster and supports secure connectivity 
         </div>
       </application-row>
       <div v-show="!helmInstalled" class="cluster-application-warning">
-        <div class="svg-container" v-html="helmInstallIllustration"></div>
+        <div class="svg-container" v-html="$options.helmInstallIllustration"></div>
         {{
           s__(`ClusterIntegration|You must first install Helm Tiller before
                 installing the applications below`)
@@ -316,7 +299,7 @@ Crossplane runs inside your Kubernetes cluster and supports secure connectivity 
       </div>
       <application-row
         :id="ingressId"
-        :logo-url="kubernetesLogo"
+        :logo-url="$options.logos.kubernetesLogo"
         :title="applications.ingress.title"
         :status="applications.ingress.status"
         :status-reason="applications.ingress.statusReason"
@@ -352,27 +335,29 @@ Crossplane runs inside your Kubernetes cluster and supports secure connectivity 
           <template v-if="ingressInstalled">
             <div class="form-group">
               <label for="ingress-endpoint">{{ s__('ClusterIntegration|Ingress Endpoint') }}</label>
-              <div v-if="ingressExternalEndpoint" class="input-group">
-                <input
-                  id="ingress-endpoint"
-                  :value="ingressExternalEndpoint"
-                  type="text"
-                  class="form-control js-endpoint"
-                  readonly
-                />
-                <span class="input-group-append">
-                  <clipboard-button
-                    :text="ingressExternalEndpoint"
-                    :title="s__('ClusterIntegration|Copy Ingress Endpoint')"
-                    class="input-group-text js-clipboard-btn"
+              <div class="input-group">
+                <template v-if="ingressExternalEndpoint">
+                  <input
+                    id="ingress-endpoint"
+                    :value="ingressExternalEndpoint"
+                    type="text"
+                    class="form-control js-endpoint"
+                    readonly
                   />
-                </span>
-              </div>
-              <div v-else class="input-group">
-                <input type="text" class="form-control js-endpoint" readonly />
-                <gl-loading-icon
-                  class="position-absolute align-self-center ml-2 js-ingress-ip-loading-icon"
-                />
+                  <span class="input-group-append">
+                    <clipboard-button
+                      :text="ingressExternalEndpoint"
+                      :title="s__('ClusterIntegration|Copy Ingress Endpoint')"
+                      class="input-group-text js-clipboard-btn"
+                    />
+                  </span>
+                </template>
+                <template v-else>
+                  <input type="text" class="form-control js-endpoint" readonly />
+                  <gl-loading-icon
+                    class="position-absolute align-self-center ml-2 js-ingress-ip-loading-icon"
+                  />
+                </template>
               </div>
               <p class="form-text text-muted">
                 {{
@@ -397,7 +382,7 @@ Crossplane runs inside your Kubernetes cluster and supports secure connectivity 
               </a>
             </p>
           </template>
-          <template v-if="!ingressInstalled">
+          <template v-else>
             <div class="bs-callout bs-callout-info">
               <strong v-html="ingressDescription"></strong>
             </div>
@@ -406,7 +391,7 @@ Crossplane runs inside your Kubernetes cluster and supports secure connectivity 
       </application-row>
       <application-row
         id="cert_manager"
-        :logo-url="certManagerLogo"
+        :logo-url="$options.logos.certManagerLogo"
         :title="applications.cert_manager.title"
         :status="applications.cert_manager.status"
         :status-reason="applications.cert_manager.statusReason"
@@ -430,6 +415,7 @@ Crossplane runs inside your Kubernetes cluster and supports secure connectivity 
               </label>
               <div class="input-group">
                 <input
+                  id="cert-manager-issuer-email"
                   v-model="applications.cert_manager.email"
                   :readonly="certManagerInstalled"
                   type="text"
@@ -454,7 +440,7 @@ Crossplane runs inside your Kubernetes cluster and supports secure connectivity 
       </application-row>
       <application-row
         id="prometheus"
-        :logo-url="prometheusLogo"
+        :logo-url="$options.logos.prometheusLogo"
         :title="applications.prometheus.title"
         :manage-link="managePrometheusPath"
         :status="applications.prometheus.status"
@@ -473,7 +459,7 @@ Crossplane runs inside your Kubernetes cluster and supports secure connectivity 
       </application-row>
       <application-row
         id="runner"
-        :logo-url="gitlabLogo"
+        :logo-url="$options.logos.gitlabLogo"
         :title="applications.runner.title"
         :status="applications.runner.status"
         :status-reason="applications.runner.statusReason"
@@ -503,7 +489,7 @@ Crossplane runs inside your Kubernetes cluster and supports secure connectivity 
       </application-row>
       <application-row
         id="crossplane"
-        :logo-url="crossplaneLogo"
+        :logo-url="$options.logos.crossplaneLogo"
         :title="applications.crossplane.title"
         :status="applications.crossplane.status"
         :status-reason="applications.crossplane.statusReason"
@@ -530,7 +516,7 @@ Crossplane runs inside your Kubernetes cluster and supports secure connectivity 
 
       <application-row
         id="jupyter"
-        :logo-url="jupyterhubLogo"
+        :logo-url="$options.logos.jupyterhubLogo"
         :title="applications.jupyter.title"
         :status="applications.jupyter.status"
         :status-reason="applications.jupyter.statusReason"
@@ -562,6 +548,7 @@ Crossplane runs inside your Kubernetes cluster and supports secure connectivity 
 
               <div class="input-group">
                 <input
+                  id="jupyter-hostname"
                   v-model="applications.jupyter.hostname"
                   :readonly="jupyterInstalled"
                   type="text"
@@ -591,7 +578,7 @@ Crossplane runs inside your Kubernetes cluster and supports secure connectivity 
       </application-row>
       <application-row
         id="knative"
-        :logo-url="knativeLogo"
+        :logo-url="$options.logos.knativeLogo"
         :title="applications.knative.title"
         :status="applications.knative.status"
         :status-reason="applications.knative.statusReason"
@@ -613,18 +600,15 @@ Crossplane runs inside your Kubernetes cluster and supports secure connectivity 
         title-link="https://github.com/knative/docs"
       >
         <div slot="description">
-          <span v-if="!rbac">
-            <p v-if="!rbac" class="rbac-notice bs-callout bs-callout-info gl-mb-0">
-              {{
-                s__(`ClusterIntegration|You must have an RBAC-enabled cluster
-              to install Knative.`)
-              }}
-              <a :href="helpPath" target="_blank" rel="noopener noreferrer">
-                {{ __('More information') }}
-              </a>
-            </p>
-            <br />
-          </span>
+          <p v-if="!rbac" class="rbac-notice bs-callout bs-callout-info">
+            {{
+              s__(`ClusterIntegration|You must have an RBAC-enabled cluster
+            to install Knative.`)
+            }}
+            <a :href="helpPath" target="_blank" rel="noopener noreferrer">
+              {{ __('More information') }}
+            </a>
+          </p>
           <p>
             {{
               s__(`ClusterIntegration|Knative extends Kubernetes to provide
@@ -645,7 +629,7 @@ Crossplane runs inside your Kubernetes cluster and supports secure connectivity 
       </application-row>
       <application-row
         id="elastic_stack"
-        :logo-url="elasticStackLogo"
+        :logo-url="$options.logos.elasticStackLogo"
         :title="applications.elastic_stack.title"
         :status="applications.elastic_stack.status"
         :status-reason="applications.elastic_stack.statusReason"
@@ -677,7 +661,7 @@ Crossplane runs inside your Kubernetes cluster and supports secure connectivity 
 
       <application-row
         id="fluentd"
-        :logo-url="fluentdLogo"
+        :logo-url="$options.logos.fluentdLogo"
         :title="applications.fluentd.title"
         :status="applications.fluentd.status"
         :status-reason="applications.fluentd.statusReason"
