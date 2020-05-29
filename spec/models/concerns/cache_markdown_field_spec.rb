@@ -209,8 +209,8 @@ describe CacheMarkdownField, :clean_gitlab_redis_cache do
           thing.cached_markdown_version += 1
         end
 
-        it 'calls #refresh_markdown_cache' do
-          expect(thing).to receive(:refresh_markdown_cache)
+        it 'calls #refresh_markdown_cache!' do
+          expect(thing).to receive(:refresh_markdown_cache!)
 
           expect(thing.updated_cached_html_for(:description)).to eq(html)
         end
@@ -227,8 +227,8 @@ describe CacheMarkdownField, :clean_gitlab_redis_cache do
           thing.try(:save)
         end
 
-        it 'does not call #refresh_markdown_cache' do
-          expect(thing).not_to receive(:refresh_markdown_cache)
+        it 'does not call #refresh_markdown_cache!' do
+          expect(thing).not_to receive(:refresh_markdown_cache!)
 
           expect(thing.updated_cached_html_for(:description)).to eq(html)
         end

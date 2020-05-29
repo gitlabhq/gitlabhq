@@ -89,9 +89,10 @@ export default class Issue {
   initIssueBtnEventListeners() {
     const issueFailMessage = __('Unable to update this issue at this time.');
 
-    return $(document).on(
+    // NOTE: data attribute seems unnecessary but is actually necessary
+    return $('.js-issuable-buttons[data-action="close-reopen"]').on(
       'click',
-      '.js-issuable-actions a.btn-close, .js-issuable-actions a.btn-reopen, a.btn-close-anyway',
+      'a.btn-close, a.btn-reopen, a.btn-close-anyway',
       e => {
         e.preventDefault();
         e.stopImmediatePropagation();
@@ -108,10 +109,7 @@ export default class Issue {
         } else {
           this.disableCloseReopenButton($button);
 
-          const url = $button.data('close-reopen-url');
-          if (!url) {
-            return;
-          }
+          const url = $button.attr('href');
 
           return axios
             .put(url)
