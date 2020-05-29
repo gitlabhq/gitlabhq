@@ -284,7 +284,7 @@ describe API::Repositories do
 
       context "when hotlinking detection is enabled" do
         before do
-          Feature.enable(:repository_archive_hotlinking_interception)
+          stub_feature_flags(repository_archive_hotlinking_interception: true)
         end
 
         it_behaves_like "hotlink interceptor" do

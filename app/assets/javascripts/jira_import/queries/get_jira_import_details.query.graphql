@@ -8,5 +8,17 @@ query($fullPath: ID!) {
         ...JiraImport
       }
     }
+    services(active: true, type: JIRA_SERVICE) {
+      nodes {
+        ... on JiraService {
+          projects {
+            nodes {
+              key
+              name
+            }
+          }
+        }
+      }
+    }
   }
 }

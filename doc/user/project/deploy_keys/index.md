@@ -1,3 +1,10 @@
+---
+stage: Release
+group: Progressive Delivery
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+type: howto, reference
+---
+
 # Deploy Keys
 
 Deploy keys allow read-only or read-write (if enabled) access to one or

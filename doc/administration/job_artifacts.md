@@ -1,3 +1,10 @@
+---
+stage: Verify
+group: Continuous Integration
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+type: reference, howto
+---
+
 # Jobs artifacts administration
 
 > - Introduced in GitLab 8.2 and GitLab Runner 0.7.0.

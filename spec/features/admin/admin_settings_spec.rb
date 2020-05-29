@@ -277,6 +277,19 @@ describe 'Admin updates settings', :clean_gitlab_redis_shared_state, :do_not_moc
       end
     end
 
+    context 'Repository page' do
+      it 'Change Repository storage settings' do
+        visit repository_admin_application_settings_path
+
+        page.within('.as-repository-storage') do
+          fill_in 'application_setting_repository_storages_weighted_default', with: 50
+          click_button 'Save changes'
+        end
+
+        expect(current_settings.repository_storages_weighted_default).to be 50
+      end
+    end
+
     context 'Reporting page' do
       it 'Change Spam settings' do
         visit reporting_admin_application_settings_path

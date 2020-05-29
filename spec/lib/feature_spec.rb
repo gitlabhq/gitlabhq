@@ -2,12 +2,10 @@
 
 require 'spec_helper'
 
-describe Feature do
+describe Feature, stub_feature_flags: false do
   before do
-    # We mock all calls to .enabled? to return true in order to force all
-    # specs to run the feature flag gated behavior, but here we need a clean
-    # behavior from the class
-    allow(described_class).to receive(:enabled?).and_call_original
+    # reset Flipper AR-engine
+    Feature.reset
   end
 
   describe '.get' do
@@ -23,67 +21,106 @@ describe Feature do
   end
 
   describe '.persisted_names' do
-    it 'returns the names of the persisted features' do
-      Feature::FlipperFeature.create!(key: 'foo')
-
-      expect(described_class.persisted_names).to eq(%w[foo])
-    end
-
-    it 'returns an empty Array when no features are presisted' do
-      expect(described_class.persisted_names).to be_empty
-    end
-
-    it 'caches the feature names when request store is active',
-       :request_store, :use_clean_rails_memory_store_caching do
-      Feature::FlipperFeature.create!(key: 'foo')
-
-      expect(Feature::FlipperFeature)
-        .to receive(:feature_names)
-        .once
-        .and_call_original
-
-      expect(Gitlab::ProcessMemoryCache.cache_backend)
-        .to receive(:fetch)
-        .once
-        .with('flipper:persisted_names', expires_in: 1.minute)
-        .and_call_original
-
-      2.times do
-        expect(described_class.persisted_names).to eq(%w[foo])
+    context 'when FF_LEGACY_PERSISTED_NAMES=false' do
+      before do
+        stub_env('FF_LEGACY_PERSISTED_NAMES', 'false')
       end
+
+      it 'returns the names of the persisted features' do
+        Feature.enable('foo')
+
+        expect(described_class.persisted_names).to contain_exactly('foo')
+      end
+
+      it 'returns an empty Array when no features are presisted' do
+        expect(described_class.persisted_names).to be_empty
+      end
+
+      it 'caches the feature names when request store is active',
+       :request_store, :use_clean_rails_memory_store_caching do
+        Feature.enable('foo')
+
+        expect(Gitlab::ProcessMemoryCache.cache_backend)
+          .to receive(:fetch)
+          .once
+          .with('flipper/v1/features', expires_in: 1.minute)
+          .and_call_original
+
+        2.times do
+          expect(described_class.persisted_names).to contain_exactly('foo')
+        end
+      end
+    end
+
+    context 'when FF_LEGACY_PERSISTED_NAMES=true' do
+      before do
+        stub_env('FF_LEGACY_PERSISTED_NAMES', 'true')
+      end
+
+      it 'returns the names of the persisted features' do
+        Feature.enable('foo')
+
+        expect(described_class.persisted_names).to contain_exactly('foo')
+      end
+
+      it 'returns an empty Array when no features are presisted' do
+        expect(described_class.persisted_names).to be_empty
+      end
+
+      it 'caches the feature names when request store is active',
+       :request_store, :use_clean_rails_memory_store_caching do
+        Feature.enable('foo')
+
+        expect(Gitlab::ProcessMemoryCache.cache_backend)
+          .to receive(:fetch)
+          .once
+          .with('flipper:persisted_names', expires_in: 1.minute)
+          .and_call_original
+
+        2.times do
+          expect(described_class.persisted_names).to contain_exactly('foo')
+        end
+      end
+    end
+
+    it 'fetches all flags once in a single query', :request_store do
+      Feature.enable('foo1')
+      Feature.enable('foo2')
+
+      queries = ActiveRecord::QueryRecorder.new(skip_cached: false) do
+        expect(described_class.persisted_names).to contain_exactly('foo1', 'foo2')
+
+        RequestStore.clear!
+
+        expect(described_class.persisted_names).to contain_exactly('foo1', 'foo2')
+      end
+
+      expect(queries.count).to eq(1)
     end
   end
 
-  describe '.persisted?' do
+  describe '.persisted_name?' do
     context 'when the feature is persisted' do
       it 'returns true when feature name is a string' do
-        Feature::FlipperFeature.create!(key: 'foo')
+        Feature.enable('foo')
 
-        feature = double(:feature, name: 'foo')
-
-        expect(described_class.persisted?(feature)).to eq(true)
+        expect(described_class.persisted_name?('foo')).to eq(true)
       end
 
       it 'returns true when feature name is a symbol' do
-        Feature::FlipperFeature.create!(key: 'foo')
+        Feature.enable('foo')
 
-        feature = double(:feature, name: :foo)
-
-        expect(described_class.persisted?(feature)).to eq(true)
+        expect(described_class.persisted_name?(:foo)).to eq(true)
       end
     end
 
     context 'when the feature is not persisted' do
       it 'returns false when feature name is a string' do
-        feature = double(:feature, name: 'foo')
-
-        expect(described_class.persisted?(feature)).to eq(false)
+        expect(described_class.persisted_name?('foo')).to eq(false)
       end
 
       it 'returns false when feature name is a symbol' do
-        feature = double(:feature, name: :bar)
-
-        expect(described_class.persisted?(feature)).to eq(false)
+        expect(described_class.persisted_name?(:bar)).to eq(false)
       end
     end
   end
@@ -100,10 +137,6 @@ describe Feature do
   end
 
   describe '.flipper' do
-    before do
-      described_class.instance_variable_set(:@flipper, nil)
-    end
-
     context 'when request store is inactive' do
       it 'memoizes the Flipper instance' do
         expect(Flipper).to receive(:new).once.and_call_original
@@ -216,10 +249,8 @@ describe Feature do
     end
 
     context 'with an individual actor' do
-      CustomActor = Struct.new(:flipper_id)
-
-      let(:actor) { CustomActor.new(flipper_id: 'CustomActor:5') }
-      let(:another_actor) { CustomActor.new(flipper_id: 'CustomActor:10') }
+      let(:actor) { stub_feature_flag_gate('CustomActor:5') }
+      let(:another_actor) { stub_feature_flag_gate('CustomActor:10') }
 
       before do
         described_class.enable(:enabled_feature_flag, actor)
@@ -235,6 +266,17 @@ describe Feature do
 
       it 'returns false when no actor is informed' do
         expect(described_class.enabled?(:enabled_feature_flag)).to be_falsey
+      end
+    end
+
+    context 'with invalid actor' do
+      let(:actor) { double('invalid actor') }
+
+      context 'when is dev_or_test_env' do
+        it 'does raise exception' do
+          expect { described_class.enabled?(:enabled_feature_flag, actor) }
+            .to raise_error /needs to include `FeatureGate` or implement `flipper_id`/
+        end
       end
     end
   end

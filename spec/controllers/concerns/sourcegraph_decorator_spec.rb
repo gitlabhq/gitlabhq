@@ -25,7 +25,7 @@ describe SourcegraphDecorator do
   end
 
   before do
-    Feature.get(:sourcegraph).enable(feature_enabled)
+    stub_feature_flags(sourcegraph: feature_enabled)
 
     stub_application_setting(sourcegraph_url: sourcegraph_url, sourcegraph_enabled: sourcegraph_enabled, sourcegraph_public_only: sourcegraph_public_only)
 

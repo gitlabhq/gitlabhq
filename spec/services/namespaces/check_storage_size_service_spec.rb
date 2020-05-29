@@ -44,7 +44,7 @@ describe Namespaces::CheckStorageSizeService, '#execute' do
     end
 
     it 'errors when feature flag is activated for the current namespace' do
-      stub_feature_flags(namespace_storage_limit: namespace )
+      stub_feature_flags(namespace_storage_limit: namespace)
 
       expect(response).to be_error
       expect(response.message).to be_present

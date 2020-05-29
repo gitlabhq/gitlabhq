@@ -141,7 +141,13 @@ export const parseData = data => {
     values for the nodes and links in the graph.
   */
 
-export const createSankey = ({ width, height, nodeWidth, nodePadding, paddingForLabels }) => {
+export const createSankey = ({
+  width = 10,
+  height = 10,
+  nodeWidth = 10,
+  nodePadding = 10,
+  paddingForLabels = 1,
+} = {}) => {
   const sankeyGenerator = sankey()
     .nodeId(({ name }) => name)
     .nodeAlign(sankeyLeft)

@@ -1,5 +1,6 @@
 import {
   calculateJiraImportLabel,
+  extractJiraProjectsOptions,
   IMPORT_STATE,
   isFinished,
   isInProgress,
@@ -30,6 +31,34 @@ describe('isFinished', () => {
     ${undefined}              | ${false}
   `('returns $result when state is $state', ({ state, result }) => {
     expect(isFinished(state)).toBe(result);
+  });
+});
+
+describe('extractJiraProjectsOptions', () => {
+  const jiraProjects = [
+    {
+      key: 'MJP',
+      name: 'My Jira project',
+    },
+    {
+      key: 'MTG',
+      name: 'Migrate to GitLab',
+    },
+  ];
+
+  const expected = [
+    {
+      text: 'My Jira project (MJP)',
+      value: 'MJP',
+    },
+    {
+      text: 'Migrate to GitLab (MTG)',
+      value: 'MTG',
+    },
+  ];
+
+  it('returns a list of Jira projects in a format suitable for GlFormSelect', () => {
+    expect(extractJiraProjectsOptions(jiraProjects)).toEqual(expected);
   });
 });
 

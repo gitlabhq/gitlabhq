@@ -23,6 +23,9 @@ class Foo < ActiveRecord::Base
 end
 ```
 
+Only models that `include FeatureGate` or expose `flipper_id` method can be
+used as an actor for `Feature.enabled?`.
+
 Features that are developed and are intended to be merged behind a feature flag
 should not include a changelog entry. The entry should either be added in the merge
 request removing the feature flag or the merge request where the default value of
@@ -119,16 +122,29 @@ how to access feature flags in a Vue component.
 
 ### Specs
 
-In the test environment `Feature.enabled?` is stubbed to always respond to `true`,
-so we make sure behavior under feature flag doesn't go untested in some non-specific
-contexts.
+Our Flipper engine in the test environment works in a memory mode `Flipper::Adapters::Memory`.
+`production` and `development` modes use `Flipper::Adapters::ActiveRecord`.
 
-Whenever a feature flag is present, make sure to test _both_ states of the
-feature flag.
+### `stub_feature_flags: true` (default and preferred)
+
+In this mode Flipper is configured to use `Flipper::Adapters::Memory` and mark all feature
+flags to be on-by-default and persisted on a first use. This overwrites the `default_enabled:`
+of `Feature.enabled?` and `Feature.disabled?` returning always `true` unless feature flag
+is persisted.
+
+Make sure behavior under feature flag doesn't go untested in some non-specific contexts.
 
 See the
 [testing guide](../testing_guide/best_practices.md#feature-flags-in-tests)
 for information and examples on how to stub feature flags in tests.
+
+### `stub_feature_flags: false`
+
+This disables a memory-stubbed flipper, and uses `Flipper::Adapters::ActiveRecord`
+a mode that is used by `production` and `development`.
+
+You should use this mode only when you really want to tests aspects of Flipper
+with how it interacts with `ActiveRecord`.
 
 ### Enabling a feature flag (in development)
 
@@ -142,4 +158,10 @@ Similarly, the following command will disable a feature flag:
 
 ```ruby
 Feature.disable(:feature_flag_name)
+```
+
+You can as well enable feature flag for a given gate:
+
+```ruby
+Feature.enable(:feature_flag_name, Project.find_by_full_path("root/my-project"))
 ```

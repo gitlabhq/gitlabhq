@@ -18,9 +18,9 @@
             = _('Select the configured storage available for new repositories to be placed on.')
             = link_to icon('question-circle'), help_page_path('administration/repository_storage_paths')
         .form-check
-          = f.collection_check_boxes :repository_storages, Gitlab.config.repositories.storages, :first, :first, include_hidden: false do |b|
-            = b.check_box class: 'form-check-input'
-            = b.label class: 'label-bold form-check-label'
+          - @application_setting.repository_storages_weighted.each_key do |storage|
+            = f.text_field "repository_storages_weighted_#{storage}".to_sym, class: 'form-text-input'
+            = f.label storage, storage, class: 'label-bold form-check-label'
             %br
 
   = f.submit _('Save changes'), class: "btn btn-success qa-save-changes-button"

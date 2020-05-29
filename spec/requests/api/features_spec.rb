@@ -2,11 +2,12 @@
 
 require 'spec_helper'
 
-describe API::Features do
+describe API::Features, stub_feature_flags: false do
   let_it_be(:user)  { create(:user) }
   let_it_be(:admin) { create(:admin) }
 
   before do
+    Feature.reset
     Flipper.unregister_groups
     Flipper.register(:perf_team) do |actor|
       actor.respond_to?(:admin) && actor.admin?

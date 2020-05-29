@@ -3,7 +3,6 @@
     issues_path: project_issues_path(@project),
     jira_integration_path: edit_project_service_path(@project, :jira),
     is_jira_configured: @project.jira_service.present?.to_s,
-    jira_projects: @jira_projects.to_json,
     in_progress_illustration: image_path('illustrations/export-import.svg'),
     setup_illustration: image_path('illustrations/manual_action.svg') } }
 - else

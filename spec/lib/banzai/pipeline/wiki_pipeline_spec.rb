@@ -3,6 +3,11 @@
 require 'spec_helper'
 
 describe Banzai::Pipeline::WikiPipeline do
+  let_it_be(:namespace) { create(:namespace, name: "wiki_link_ns") }
+  let_it_be(:project)   { create(:project, :public, name: "wiki_link_project", namespace: namespace) }
+  let_it_be(:wiki)      { ProjectWiki.new(project, double(:user)) }
+  let_it_be(:page)      { build(:wiki_page, wiki: wiki, title: 'nested/twice/start-page') }
+
   describe 'TableOfContents' do
     it 'replaces the tag with the TableOfContentsFilter result' do
       markdown = <<-MD.strip_heredoc
@@ -13,7 +18,7 @@ describe Banzai::Pipeline::WikiPipeline do
           Foo
       MD
 
-      result = described_class.call(markdown, project: spy, wiki: spy)
+      result = described_class.call(markdown, project: project, wiki: wiki)
 
       aggregate_failures do
         expect(result[:output].text).not_to include '[['
@@ -31,7 +36,7 @@ describe Banzai::Pipeline::WikiPipeline do
           Foo
       MD
 
-      output = described_class.to_html(markdown, project: spy, wiki: spy)
+      output = described_class.to_html(markdown, project: project, wiki: wiki)
 
       expect(output).to include('[[<em>toc</em>]]')
     end
@@ -44,7 +49,7 @@ describe Banzai::Pipeline::WikiPipeline do
           Foo
       MD
 
-      output = described_class.to_html(markdown, project: spy, wiki: spy)
+      output = described_class.to_html(markdown, project: project, wiki: wiki)
 
       aggregate_failures do
         expect(output).not_to include('<ul>')
@@ -54,11 +59,6 @@ describe Banzai::Pipeline::WikiPipeline do
   end
 
   describe "Links" do
-    let(:namespace) { create(:namespace, name: "wiki_link_ns") }
-    let(:project)   { create(:project, :public, name: "wiki_link_project", namespace: namespace) }
-    let(:wiki) { ProjectWiki.new(project, double(:user)) }
-    let(:page) { build(:wiki_page, wiki: wiki, title: 'nested/twice/start-page') }
-
     { 'when GitLab is hosted at a root URL' => '',
       'when GitLab is hosted at a relative URL' => '/nested/relative/gitlab' }.each do |test_name, relative_url_root|
       context test_name do
@@ -261,11 +261,6 @@ describe Banzai::Pipeline::WikiPipeline do
   end
 
   describe 'videos and audio' do
-    let_it_be(:namespace) { create(:namespace, name: "wiki_link_ns") }
-    let_it_be(:project)   { create(:project, :public, name: "wiki_link_project", namespace: namespace) }
-    let_it_be(:wiki) { ProjectWiki.new(project, double(:user)) }
-    let_it_be(:page) { build(:wiki_page, wiki: wiki, title: 'nested/twice/start-page') }
-
     it 'generates video html structure' do
       markdown = "![video_file](video_file_name.mp4)"
       output = described_class.to_html(markdown, project: project, wiki: wiki, page_slug: page.slug)

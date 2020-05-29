@@ -7,6 +7,7 @@ import { rightSidebarViews, SIDEBAR_INIT_WIDTH, SIDEBAR_NAV_WIDTH } from '../../
 import PipelinesList from '../pipelines/list.vue';
 import JobsDetail from '../jobs/detail.vue';
 import Clientside from '../preview/clientside.vue';
+import TerminalView from '../terminal/view.vue';
 
 // Need to add the width of the nav buttons since the resizable container contains those as well
 const WIDTH = SIDEBAR_INIT_WIDTH + SIDEBAR_NAV_WIDTH;
@@ -17,14 +18,8 @@ export default {
     CollapsibleSidebar,
     ResizablePanel,
   },
-  props: {
-    extensionTabs: {
-      type: Array,
-      required: false,
-      default: () => [],
-    },
-  },
   computed: {
+    ...mapState('terminal', { isTerminalVisible: 'isVisible' }),
     ...mapState(['currentMergeRequestId', 'clientsidePreviewEnabled']),
     ...mapGetters(['packageJson']),
     ...mapState('rightPane', ['isOpen']),
@@ -48,7 +43,12 @@ export default {
           views: [{ component: Clientside, ...rightSidebarViews.clientSidePreview }],
           icon: 'live-preview',
         },
-        ...this.extensionTabs,
+        {
+          show: this.isTerminalVisible,
+          title: __('Terminal'),
+          views: [{ component: TerminalView, ...rightSidebarViews.terminal }],
+          icon: 'terminal',
+        },
       ];
     },
   },

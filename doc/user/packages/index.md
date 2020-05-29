@@ -22,6 +22,7 @@ The Packages feature allows GitLab to act as a repository for the following:
 | [NuGet Repository](nuget_repository/index.md) **(PREMIUM)**  | The GitLab NuGet Repository will enable every project in GitLab to have its own space to store [NuGet](https://www.nuget.org/) packages. | 12.8+ |
 | [PyPi Repository](pypi_repository/index.md) **(PREMIUM)**  | The GitLab PyPi Repository will enable every project in GitLab to have its own space to store [PyPi](https://pypi.org/) packages. | 12.10+ |
 | [Go Proxy](go_proxy/index.md) **(PREMIUM)** | The Go proxy for GitLab enables every project in GitLab to be fetched with the [Go proxy protocol](https://proxy.golang.org/). | 13.1+ |
+| [Composer Repository](composer_repository/index.md) **(PREMIUM)**  | The GitLab Composer Repository will enable every project in GitLab to have its own space to store [Composer](https://getcomposer.org/) packages. | 13.1+ |
 
 ## Enable the Package Registry for your project
 

@@ -357,6 +357,60 @@ Feature.enabled?(:my_feature2) # => false
 Feature.enabled?(:my_feature2, project1) # => true
 ```
 
+#### `stub_feature_flags` vs `Feature.get/enable`
+
+It is preferred to use `stub_feature_flags` for enabling feature flags
+in testing environment. This method provides a simple and well described
+interface for a simple use-cases.
+
+However, in some cases a more complex behaviors needs to be tested,
+like a feature flag percentage rollouts. This can be achieved using
+the `.enable_percentage_of_time` and `.enable_percentage_of_actors`
+
+```ruby
+# Good: feature needs to be explicitly disabled, as it is enabled by default if not defined
+stub_feature_flags(my_feature: false)
+stub_feature_flags(my_feature: true)
+stub_feature_flags(my_feature: project)
+stub_feature_flags(my_feature: [project, project2])
+
+# Bad
+Feature.enable(:my_feature_2)
+
+# Good: enable my_feature for 50% of time
+Feature.get(:my_feature_3).enable_percentage_of_time(50)
+
+# Good: enable my_feature for 50% of actors/gates/things
+Feature.get(:my_feature_4).enable_percentage_of_actors(50)
+```
+
+Each feature flag that has a defined state will be persisted
+for test execution time:
+
+```ruby
+Feature.persisted_names.include?('my_feature') => true
+Feature.persisted_names.include?('my_feature_2') => true
+Feature.persisted_names.include?('my_feature_3') => true
+Feature.persisted_names.include?('my_feature_4') => true
+```
+
+#### Stubbing gate
+
+It is required that a gate that is passed as an argument to `Feature.enabled?`
+and `Feature.disabled?` is an object that includes `FeatureGate`.
+
+In specs you can use a `stub_feature_flag_gate` method that allows you to have
+quickly your custom gate:
+
+```ruby
+gate = stub_feature_flag_gate('CustomActor')
+
+stub_feature_flags(ci_live_trace: gate)
+
+Feature.enabled?(:ci_live_trace) # => false
+Feature.enabled?(:ci_live_trace, gate) # => true
+```
+
 ### Pristine test environments
 
 The code exercised by a single GitLab test may access and modify many items of

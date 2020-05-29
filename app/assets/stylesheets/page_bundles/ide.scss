@@ -887,6 +887,7 @@ $ide-commit-header-height: 48px;
     padding-bottom: 0;
   }
 
+  .ide-right-sidebar-terminal,
   .ide-right-sidebar-clientside {
     padding: 0;
   }
@@ -1152,5 +1153,24 @@ $ide-commit-header-height: 48px;
 
   .folder-icon {
     fill: var(--ide-text-color-secondary, $gl-text-color-secondary);
+  }
+}
+
+.ide-terminal {
+  @include ide-trace-view();
+
+  .terminal-wrapper {
+    background: $black;
+    color: $gray-darkest;
+    overflow: hidden;
+  }
+
+  .xterm {
+    height: 100%;
+    padding: $grid-size;
+  }
+
+  .xterm-viewport {
+    overflow-y: auto;
   }
 }

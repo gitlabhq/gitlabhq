@@ -20,7 +20,7 @@ const TEST_CURRENT_INDEX = 1;
 const TEST_CURRENT_VIEW = TEST_TABS[TEST_CURRENT_INDEX].views[1].name;
 const TEST_OPEN_VIEW = TEST_TABS[TEST_CURRENT_INDEX].views[0];
 
-describe('~/ide/components/ide_sidebar_nav', () => {
+describe('ide/components/ide_sidebar_nav', () => {
   let wrapper;
 
   const createComponent = (props = {}) => {

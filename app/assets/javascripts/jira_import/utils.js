@@ -14,6 +14,17 @@ export const isInProgress = state =>
 export const isFinished = state => state === IMPORT_STATE.FINISHED;
 
 /**
+ * Converts the list of Jira projects into a format consumable by GlFormSelect.
+ *
+ * @param {Object[]} projects - List of Jira projects
+ * @param {string} projects[].key - Jira project key
+ * @param {string} projects[].name - Jira project name
+ * @returns {Object[]} - List of Jira projects in a format consumable by GlFormSelect
+ */
+export const extractJiraProjectsOptions = projects =>
+  projects.map(({ key, name }) => ({ text: `${name} (${key})`, value: key }));
+
+/**
  * Calculates the label title for the most recent Jira import.
  *
  * @param {Object[]} jiraImports - List of Jira imports

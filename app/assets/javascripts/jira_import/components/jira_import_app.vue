@@ -4,7 +4,7 @@ import { last } from 'lodash';
 import { __ } from '~/locale';
 import getJiraImportDetailsQuery from '../queries/get_jira_import_details.query.graphql';
 import initiateJiraImportMutation from '../queries/initiate_jira_import.mutation.graphql';
-import { IMPORT_STATE, isInProgress } from '../utils';
+import { IMPORT_STATE, isInProgress, extractJiraProjectsOptions } from '../utils';
 import JiraImportForm from './jira_import_form.vue';
 import JiraImportProgress from './jira_import_progress.vue';
 import JiraImportSetup from './jira_import_setup.vue';
@@ -36,10 +36,6 @@ export default {
       type: String,
       required: true,
     },
-    jiraProjects: {
-      type: Array,
-      required: true,
-    },
     projectPath: {
       type: String,
       required: true,
@@ -51,6 +47,7 @@ export default {
   },
   data() {
     return {
+      jiraImportDetails: {},
       errorMessage: '',
       showAlert: false,
       selectedProject: undefined,
@@ -65,6 +62,7 @@ export default {
         };
       },
       update: ({ project }) => ({
+        projects: extractJiraProjectsOptions(project.services.nodes[0].projects.nodes),
         status: project.jiraImportStatus,
         imports: project.jiraImports.nodes,
       }),
@@ -75,17 +73,14 @@ export default {
   },
   computed: {
     isImportInProgress() {
-      return isInProgress(this.jiraImportDetails?.status);
-    },
-    jiraProjectsOptions() {
-      return this.jiraProjects.map(([text, value]) => ({ text, value }));
+      return isInProgress(this.jiraImportDetails.status);
     },
     mostRecentImport() {
       // The backend returns JiraImports ordered by created_at asc in app/models/project.rb
-      return last(this.jiraImportDetails?.imports);
+      return last(this.jiraImportDetails.imports);
     },
     numberOfPreviousImportsForProject() {
-      return this.jiraImportDetails?.imports?.reduce?.(
+      return this.jiraImportDetails.imports?.reduce?.(
         (acc, jiraProject) => (jiraProject.jiraProjectKey === this.selectedProject ? acc + 1 : acc),
         0,
       );
@@ -202,7 +197,7 @@ export default {
       v-model="selectedProject"
       :import-label="importLabel"
       :issues-path="issuesPath"
-      :jira-projects="jiraProjectsOptions"
+      :jira-projects="jiraImportDetails.projects"
       @initiateJiraImport="initiateJiraImport"
     />
   </div>

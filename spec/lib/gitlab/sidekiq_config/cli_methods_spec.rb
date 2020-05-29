@@ -76,7 +76,12 @@ describe Gitlab::SidekiqConfig::CliMethods do
 
   describe '.expand_queues' do
     let(:worker_queues) do
-      ['cronjob:stuck_import_jobs', 'cronjob:stuck_merge_jobs', 'post_receive']
+      [
+        'cronjob:stuck_import_jobs',
+        'cronjob:jira_import_stuck_jira_import_jobs',
+        'cronjob:stuck_merge_jobs',
+        'post_receive'
+      ]
     end
 
     it 'defaults the value of the second argument to .worker_queues' do
@@ -88,12 +93,12 @@ describe Gitlab::SidekiqConfig::CliMethods do
       allow(described_class).to receive(:worker_queues).and_return(worker_queues)
 
       expect(described_class.expand_queues(['cronjob']))
-        .to contain_exactly('cronjob', 'cronjob:stuck_import_jobs', 'cronjob:stuck_merge_jobs')
+        .to contain_exactly('cronjob', 'cronjob:stuck_import_jobs', 'cronjob:jira_import_stuck_jira_import_jobs', 'cronjob:stuck_merge_jobs')
     end
 
     it 'expands queue namespaces to concrete queue names' do
       expect(described_class.expand_queues(['cronjob'], worker_queues))
-        .to contain_exactly('cronjob', 'cronjob:stuck_import_jobs', 'cronjob:stuck_merge_jobs')
+        .to contain_exactly('cronjob', 'cronjob:stuck_import_jobs', 'cronjob:jira_import_stuck_jira_import_jobs', 'cronjob:stuck_merge_jobs')
     end
 
     it 'lets concrete queue names pass through' do

@@ -396,7 +396,7 @@ describe API::Internal::Base do
 
       context "git pull" do
         before do
-          allow(Feature).to receive(:persisted_names).and_return(%w[gitaly_mep_mep])
+          stub_feature_flags(gitaly_mep_mep: true)
         end
 
         it "has the correct payload" do

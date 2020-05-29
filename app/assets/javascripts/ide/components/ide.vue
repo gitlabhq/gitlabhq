@@ -1,5 +1,4 @@
 <script>
-import Vue from 'vue';
 import { mapActions, mapGetters, mapState } from 'vuex';
 import { GlDeprecatedButton, GlLoadingIcon } from '@gitlab/ui';
 import { __ } from '~/locale';
@@ -27,15 +26,9 @@ export default {
     CommitEditorHeader,
     GlDeprecatedButton,
     GlLoadingIcon,
+    RightPane,
   },
   mixins: [glFeatureFlagsMixin()],
-  props: {
-    rightPaneComponent: {
-      type: Vue.Component,
-      required: false,
-      default: () => RightPane,
-    },
-  },
   computed: {
     ...mapState([
       'openFiles',
@@ -151,7 +144,7 @@ export default {
           </div>
         </template>
       </div>
-      <component :is="rightPaneComponent" v-if="currentProjectId" />
+      <right-pane v-if="currentProjectId" />
     </div>
     <ide-status-bar />
     <new-modal ref="newModal" />

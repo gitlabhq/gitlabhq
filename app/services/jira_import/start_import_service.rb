@@ -28,8 +28,8 @@ module JiraImport
     rescue => ex
       # in case project.save! raises an erorr
       Gitlab::ErrorTracking.track_exception(ex, project_id: project.id)
+      jira_import&.do_fail!(error_message: ex.message)
       build_error_response(ex.message)
-      jira_import.do_fail!
     end
 
     def build_jira_import

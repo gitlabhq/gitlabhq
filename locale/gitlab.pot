@@ -867,6 +867,9 @@ msgstr ""
 msgid "A .NET Core console application template, customizable for any .NET Core project"
 msgstr ""
 
+msgid "A DAG must have two dependent jobs to be visualized on this tab."
+msgstr ""
+
 msgid "A GitBook site that uses Netlify for CI/CD instead of GitLab, but still with all the other great GitLab features."
 msgstr ""
 
@@ -2402,6 +2405,9 @@ msgid "An unexpected error occurred while starting the Web Terminal."
 msgstr ""
 
 msgid "An unexpected error occurred while stopping the Web Terminal."
+msgstr ""
+
+msgid "An unknown error occurred while loading this graph."
 msgstr ""
 
 msgid "Analytics"
@@ -22068,6 +22074,9 @@ msgid "There was an error importing the Jira project."
 msgstr ""
 
 msgid "There was an error loading users activity calendar."
+msgstr ""
+
+msgid "There was an error parsing the data for this graph."
 msgstr ""
 
 msgid "There was an error removing the e-mail."

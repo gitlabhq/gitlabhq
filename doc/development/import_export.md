@@ -54,8 +54,8 @@ class StuckImportJobsWorker
   IMPORT_JOBS_EXPIRATION = 15.hours.to_i
 
   def perform
-    import_state_without_jid_count = mark_import_states_without_jid_as_failed!
-    import_state_with_jid_count = mark_import_states_with_jid_as_failed!
+    imports_without_jid_count = mark_imports_without_jid_as_failed!
+    imports_with_jid_count = mark_imports_with_jid_as_failed!
     ...
 ```
 

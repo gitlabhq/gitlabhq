@@ -1,3 +1,10 @@
+---
+stage: Release
+group: Progressive Delivery
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+type: howto
+---
+
 # Deploy Tokens
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/17894) in GitLab 10.7.

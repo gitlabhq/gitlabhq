@@ -15,6 +15,7 @@ The Packages feature allows GitLab to act as a repository for the following:
 | Software repository | Description | Available in GitLab version |
 | ------------------- | ----------- | --------------------------- |
 | [PyPi Repository](../../user/packages/pypi_repository/index.md) | The GitLab PyPi Repository enables every project in GitLab to have its own space to store [PyPi](https://pypi.org/) packages. | 12.10+ |
+| [Composer Repository](../../user/packages/composer_repository/index.md) | The GitLab Composer Repository enables every project in GitLab to have its own space to store [Composer](https://getcomposer.org/) packages. | 13.1+ |
 | [NuGet Repository](../../user/packages/nuget_repository/index.md) | The GitLab NuGet Repository enables every project in GitLab to have its own space to store [NuGet](https://www.nuget.org/) packages. | 12.8+ |
 | [Conan Repository](../../user/packages/conan_repository/index.md) | The GitLab Conan Repository enables every project in GitLab to have its own space to store [Conan](https://conan.io/) packages. | 12.4+ |
 | [Maven Repository](../../user/packages/maven_repository/index.md) | The GitLab Maven Repository enables every project in GitLab to have its own space to store [Maven](https://maven.apache.org/) packages. | 11.3+ |

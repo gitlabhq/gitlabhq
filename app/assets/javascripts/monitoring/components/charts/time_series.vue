@@ -2,18 +2,19 @@
 import { omit, throttle } from 'lodash';
 import { GlLink, GlDeprecatedButton, GlTooltip, GlResizeObserverDirective } from '@gitlab/ui';
 import { GlAreaChart, GlLineChart, GlChartSeriesLabel } from '@gitlab/ui/dist/charts';
-import dateFormat from 'dateformat';
 import { s__, __ } from '~/locale';
 import { getSvgIconPathContent } from '~/lib/utils/icon_utils';
 import Icon from '~/vue_shared/components/icon.vue';
-import { panelTypes, chartHeight, lineTypes, lineWidths, dateFormats } from '../../constants';
+import { panelTypes, chartHeight, lineTypes, lineWidths } from '../../constants';
 import { getYAxisOptions, getChartGrid, getTooltipFormatter } from './options';
 import { annotationsYAxis, generateAnnotationsSeries } from './annotations';
 import { makeDataSeries } from '~/helpers/monitor_helper';
 import { graphDataValidatorForValues } from '../../utils';
+import { formatDate, timezones, formats } from '../../format_date';
+
+export const timestampToISODate = timestamp => new Date(timestamp).toISOString();
 
 const THROTTLED_DATAZOOM_WAIT = 1000; // milliseconds
-const timestampToISODate = timestamp => new Date(timestamp).toISOString();
 
 const events = {
   datazoom: 'datazoom',
@@ -89,6 +90,11 @@ export default {
       required: false,
       default: '',
     },
+    timezone: {
+      type: String,
+      required: false,
+      default: timezones.LOCAL,
+    },
   },
   data() {
     return {
@@ -163,7 +169,8 @@ export default {
         name: __('Time'),
         type: 'time',
         axisLabel: {
-          formatter: date => dateFormat(date, dateFormats.timeOfDay),
+          formatter: date =>
+            formatDate(date, { format: formats.shortTime, timezone: this.timezone }),
         },
         axisPointer: {
           snap: true,
@@ -271,12 +278,13 @@ export default {
      */
     formatAnnotationsTooltipText(params) {
       return {
-        title: dateFormat(params.data?.tooltipData?.title, dateFormats.default),
+        title: formatDate(params.data?.tooltipData?.title, { timezone: this.timezone }),
         content: params.data?.tooltipData?.content,
       };
     },
     formatTooltipText(params) {
-      this.tooltip.title = dateFormat(params.value, dateFormats.default);
+      this.tooltip.title = formatDate(params.value, { timezone: this.timezone });
+
       this.tooltip.content = [];
 
       params.seriesData.forEach(dataPoint => {

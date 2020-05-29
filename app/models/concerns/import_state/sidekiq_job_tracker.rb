@@ -5,6 +5,9 @@ module ImportState
     extend ActiveSupport::Concern
 
     included do
+      scope :with_jid, -> { where.not(jid: nil) }
+      scope :without_jid, -> { where(jid: nil) }
+
       # Refreshes the expiration time of the associated import job ID.
       #
       # This method can be used by asynchronous importers to refresh the status,

@@ -3516,7 +3516,9 @@ CREATE TABLE public.jira_imports (
     jid character varying(255),
     jira_project_key character varying(255) NOT NULL,
     jira_project_name character varying(255) NOT NULL,
-    scheduled_at timestamp with time zone
+    scheduled_at timestamp with time zone,
+    error_message text,
+    CONSTRAINT check_9ed451c5b1 CHECK ((char_length(error_message) <= 1000))
 );
 
 CREATE SEQUENCE public.jira_imports_id_seq
@@ -13955,6 +13957,7 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200515155620
 20200518091745
 20200518133123
+20200519101002
 20200519115908
 20200519171058
 20200519194042
@@ -13962,6 +13965,7 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200521022725
 20200525114553
 20200525121014
+20200526000407
 20200526120714
 20200526153844
 20200526164946

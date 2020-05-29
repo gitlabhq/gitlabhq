@@ -25,11 +25,6 @@ const mountComponent = ({
       isJiraConfigured,
       inProgressIllustration: 'in-progress-illustration.svg',
       issuesPath: 'gitlab-org/gitlab-test/-/issues',
-      jiraProjects: [
-        ['My Jira Project', 'MJP'],
-        ['My Second Jira Project', 'MSJP'],
-        ['Migrate to GitLab', 'MTG'],
-      ],
       jiraIntegrationPath: 'gitlab-org/gitlab-test/-/services/jira/edit',
       projectPath: 'gitlab-org/gitlab-test',
       setupIllustration: 'setup-illustration.svg',
@@ -40,6 +35,11 @@ const mountComponent = ({
         showAlert,
         selectedProject,
         jiraImportDetails: {
+          projects: [
+            { text: 'My Jira Project (MJP)', value: 'MJP' },
+            { text: 'My Second Jira Project (MSJP)', value: 'MSJP' },
+            { text: 'Migrate to GitLab (MTG)', value: 'MTG' },
+          ],
           status,
           imports: [
             {

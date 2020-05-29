@@ -7,7 +7,7 @@ describe Gitlab::Sourcegraph do
   let(:feature_scope) { true }
 
   before do
-    Feature.enable(:sourcegraph, feature_scope)
+    stub_feature_flags(sourcegraph: feature_scope)
   end
 
   describe '.feature_conditional?' do

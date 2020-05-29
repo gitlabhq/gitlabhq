@@ -18,6 +18,8 @@ class Feature
     superclass.table_name = 'feature_gates'
   end
 
+  InvalidFeatureFlagError = Class.new(Exception) # rubocop:disable Lint/InheritException
+
   class << self
     delegate :group, to: :flipper
 
@@ -32,26 +34,47 @@ class Feature
     def persisted_names
       return [] unless Gitlab::Database.exists?
 
-      Gitlab::SafeRequestStore[:flipper_persisted_names] ||=
-        begin
-          # We saw on GitLab.com, this database request was called 2300
-          # times/s. Let's cache it for a minute to avoid that load.
-          Gitlab::ProcessMemoryCache.cache_backend.fetch('flipper:persisted_names', expires_in: 1.minute) do
-            FlipperFeature.feature_names
+      if Gitlab::Utils.to_boolean(ENV['FF_LEGACY_PERSISTED_NAMES'])
+        # To be removed:
+        # This uses a legacy persisted names that are know to work (always)
+        Gitlab::SafeRequestStore[:flipper_persisted_names] ||=
+          begin
+            # We saw on GitLab.com, this database request was called 2300
+            # times/s. Let's cache it for a minute to avoid that load.
+            Gitlab::ProcessMemoryCache.cache_backend.fetch('flipper:persisted_names', expires_in: 1.minute) do
+              FlipperFeature.feature_names
+            end.to_set
           end
-        end
+      else
+        # This loads names of all stored feature flags
+        # and returns a stable Set in the following order:
+        # - Memoized: using Gitlab::SafeRequestStore or @flipper
+        # - L1: using Process cache
+        # - L2: using Redis cache
+        # - DB: using a single SQL query
+        flipper.adapter.features
+      end
     end
 
-    def persisted?(feature)
+    def persisted_name?(feature_name)
       # Flipper creates on-memory features when asked for a not-yet-created one.
       # If we want to check if a feature has been actually set, we look for it
       # on the persisted features list.
-      persisted_names.include?(feature.name.to_s)
+      persisted_names.include?(feature_name.to_s)
     end
 
     # use `default_enabled: true` to default the flag to being `enabled`
     # unless set explicitly.  The default is `disabled`
+    # TODO: remove the `default_enabled:` and read it from the `defintion_yaml`
+    # check: https://gitlab.com/gitlab-org/gitlab/-/issues/30228
     def enabled?(key, thing = nil, default_enabled: false)
+      if check_feature_flags_definition?
+        if thing && !thing.respond_to?(:flipper_id)
+          raise InvalidFeatureFlagError,
+            "The thing '#{thing.class.name}' for feature flag '#{key}' needs to include `FeatureGate` or implement `flipper_id`"
+        end
+      end
+
       # During setup the database does not exist yet. So we haven't stored a value
       # for the feature yet and return the default.
       return default_enabled unless Gitlab::Database.exists?
@@ -62,7 +85,7 @@ class Feature
       # `persisted?` can potentially generate DB queries and also checks for inclusion
       # in an array of feature names (177 at last count), possibly reducing performance by half.
       # So we only perform the `persisted` check if `default_enabled: true`
-      !default_enabled || Feature.persisted?(feature) ? feature.enabled?(thing) : true
+      !default_enabled || Feature.persisted_name?(feature.name) ? feature.enabled?(thing) : true
     end
 
     def disabled?(key, thing = nil, default_enabled: false)
@@ -87,10 +110,9 @@ class Feature
     end
 
     def remove(key)
-      feature = get(key)
-      return unless persisted?(feature)
+      return unless persisted_name?(key)
 
-      feature.remove
+      get(key).remove
     end
 
     def flipper
@@ -101,17 +123,12 @@ class Feature
       end
     end
 
+    def reset
+      Gitlab::SafeRequestStore.delete(:flipper) if Gitlab::SafeRequestStore.active?
+      @flipper = nil
+    end
+
     def build_flipper_instance
-      Flipper.new(flipper_adapter).tap { |flip| flip.memoize = true }
-    end
-
-    # This method is called from config/initializers/flipper.rb and can be used
-    # to register Flipper groups.
-    # See https://docs.gitlab.com/ee/development/feature_flags.html#feature-groups
-    def register_feature_groups
-    end
-
-    def flipper_adapter
       active_record_adapter = Flipper::Adapters::ActiveRecord.new(
         feature_class: FlipperFeature,
         gate_class: FlipperGate)
@@ -125,10 +142,26 @@ class Feature
 
       # Thread-local L1 cache: use a short timeout since we don't have a
       # way to expire this cache all at once
-      Flipper::Adapters::ActiveSupportCacheStore.new(
+      flipper_adapter = Flipper::Adapters::ActiveSupportCacheStore.new(
         redis_cache_adapter,
         l1_cache_backend,
         expires_in: 1.minute)
+
+      Flipper.new(flipper_adapter).tap do |flip|
+        flip.memoize = true
+      end
+    end
+
+    def check_feature_flags_definition?
+      # We want to check feature flags usage only when
+      # running in development or test environment
+      Gitlab.dev_or_test_env?
+    end
+
+    # This method is called from config/initializers/flipper.rb and can be used
+    # to register Flipper groups.
+    # See https://docs.gitlab.com/ee/development/feature_flags.html#feature-groups
+    def register_feature_groups
     end
 
     def l1_cache_backend

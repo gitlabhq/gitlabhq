@@ -3,6 +3,12 @@
 require 'spec_helper'
 
 describe RecaptchaExperimentHelper, type: :helper do
+  let(:session) { {} }
+
+  before do
+    allow(helper).to receive(:session) { session }
+  end
+
   describe '.show_recaptcha_sign_up?' do
     context 'when reCAPTCHA is disabled' do
       it 'returns false' do

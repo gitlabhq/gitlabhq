@@ -127,11 +127,6 @@ export const lineWidths = {
   default: 2,
 };
 
-export const dateFormats = {
-  timeOfDay: 'h:MM TT',
-  default: 'dd mmm yyyy, h:MMTT',
-};
-
 /**
  * These Vuex store properties are allowed to be
  * replaced dynamically after component has been created

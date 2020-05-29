@@ -57,6 +57,7 @@ export const rightSidebarViews = {
   jobsDetail: { name: 'jobs-detail', keepAlive: false },
   mergeRequestInfo: { name: 'merge-request-info', keepAlive: true },
   clientSidePreview: { name: 'clientside', keepAlive: false },
+  terminal: { name: 'terminal', keepAlive: true },
 };
 
 export const stageKeys = {

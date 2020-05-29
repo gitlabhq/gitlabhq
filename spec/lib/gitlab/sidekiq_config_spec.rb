@@ -19,6 +19,7 @@ describe Gitlab::SidekiqConfig do
       expect(queues).to include('post_receive')
       expect(queues).to include('merge')
       expect(queues).to include('cronjob:stuck_import_jobs')
+      expect(queues).to include('cronjob:jira_import_stuck_jira_import_jobs')
       expect(queues).to include('mailers')
       expect(queues).to include('default')
     end

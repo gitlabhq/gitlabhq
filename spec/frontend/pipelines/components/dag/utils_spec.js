@@ -8,12 +8,12 @@ import {
   getMaxNodes,
 } from '~/pipelines/components/dag/utils';
 
-import mockGraphData from './mock_data';
+import { mockBaseData } from './mock_data';
 
 describe('DAG visualization parsing utilities', () => {
-  const { nodes, nodeDict } = createNodesStructure(mockGraphData.stages);
+  const { nodes, nodeDict } = createNodesStructure(mockBaseData.stages);
   const unfilteredLinks = makeLinksFromNodes(nodes, nodeDict);
-  const parsed = parseData(mockGraphData.stages);
+  const parsed = parseData(mockBaseData.stages);
 
   const layoutSettings = {
     width: 200,
@@ -30,10 +30,10 @@ describe('DAG visualization parsing utilities', () => {
     const parallelJobName = 'jest 1/2';
     const singleJobName = 'frontend fixtures';
 
-    const { name, jobs, size } = mockGraphData.stages[0].groups[0];
+    const { name, jobs, size } = mockBaseData.stages[0].groups[0];
 
     it('returns the expected node structure', () => {
-      expect(nodes[0]).toHaveProperty('category', mockGraphData.stages[0].name);
+      expect(nodes[0]).toHaveProperty('category', mockBaseData.stages[0].name);
       expect(nodes[0]).toHaveProperty('name', name);
       expect(nodes[0]).toHaveProperty('jobs', jobs);
       expect(nodes[0]).toHaveProperty('size', size);

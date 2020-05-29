@@ -45,6 +45,22 @@ describe JiraImport::StartImportService do
         it_behaves_like 'responds with error', 'Jira import is already running.'
       end
 
+      context 'when an error is raised while scheduling import' do
+        before do
+          expect_next_instance_of(JiraImportState) do |jira_impport|
+            expect(jira_impport).to receive(:schedule!).and_raise(Projects::ImportService::Error, 'Unexpected failure.')
+          end
+        end
+
+        it_behaves_like 'responds with error', 'Unexpected failure.'
+
+        it 'saves the error message' do
+          subject
+
+          expect(JiraImportState.last.error_message).to eq('Unexpected failure.')
+        end
+      end
+
       context 'when everything is ok' do
         it 'returns success response' do
           expect(subject).to be_a(ServiceResponse)
@@ -57,7 +73,7 @@ describe JiraImport::StartImportService do
           expect(project.latest_jira_import).to be_scheduled
         end
 
-        it 'creates Jira import data' do
+        it 'creates Jira import data', :aggregate_failures do
           jira_import = subject.payload[:import_data]
 
           expect(jira_import.jira_project_xid).to eq(0)
@@ -72,8 +88,8 @@ describe JiraImport::StartImportService do
 
         it 'creates Jira label title with correct number' do
           jira_import = subject.payload[:import_data]
-
           label_title = "jira-import::#{jira_import.jira_project_key}-1"
+
           expect(jira_import.label.title).to eq(label_title)
         end
       end
@@ -83,8 +99,8 @@ describe JiraImport::StartImportService do
 
         it 'creates Jira label title with correct number' do
           jira_import = subject.payload[:import_data]
-
           label_title = "jira-import::#{jira_import.jira_project_key}-4"
+
           expect(jira_import.label.title).to eq(label_title)
         end
       end
