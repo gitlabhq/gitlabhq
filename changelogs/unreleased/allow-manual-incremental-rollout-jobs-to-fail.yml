@@ -1,5 +1,0 @@
----
-title: Fix Auto DevOps manual rollout jobs not being allowed to fail
-merge_request: 32865
-author:
-type: fixed

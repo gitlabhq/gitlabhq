@@ -1,5 +1,0 @@
----
-title: Fix issue and MR API performance regression when Markdown cache is stale
-merge_request: 33235
-author:
-type: fixed

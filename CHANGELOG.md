@@ -2,6 +2,20 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 13.0.3 (2020-05-29)
+
+### Fixed (8 changes, 1 of them is from the community)
+
+- Fixed redirection to project snippets. !32530
+- Fix Geo replication for design thumbnails. !32703
+- Fix 404s downloading build artifacts. !32741
+- Fix Auto DevOps manual rollout jobs not being allowed to fail. !32865
+- Update deprecated routes in irker integration. !32923 (Marc Jeanmougin)
+- Change format of variables parameter in Prometheus proxy API for metrics dashboard. !33062
+- Fix issue and MR API performance regression when Markdown cache is stale. !33235
+- Fix close issue when user created the issue. !33294
+
+
 ## 13.0.1 (2020-05-27)
 
 ### Security (12 changes)
