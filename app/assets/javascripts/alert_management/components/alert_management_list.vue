@@ -10,7 +10,7 @@ import {
   GlDropdownItem,
   GlTabs,
   GlTab,
-  GlDeprecatedBadge as GlBadge,
+  GlBadge,
 } from '@gitlab/ui';
 import createFlash from '~/flash';
 import { s__ } from '~/locale';
@@ -76,6 +76,11 @@ export default {
       thClass: 'text-right gl-pr-9 w-3rem',
       tdClass: `${tdClass} text-md-right`,
       sortable: true,
+    },
+    {
+      key: 'assignees',
+      label: s__('AlertManagement|Assignees'),
+      tdClass,
     },
     {
       key: 'status',
@@ -237,6 +242,10 @@ export default {
       const { category, action, label } = trackAlertStatusUpdateOptions;
       Tracking.event(category, action, { label, property: status });
     },
+    getAssignees(assignees) {
+      // TODO: Update to show list of assignee(s) after https://gitlab.com/gitlab-org/gitlab/-/issues/218405
+      return assignees?.length > 0 ? assignees[0]?.username : s__('AlertManagement|Unassigned');
+    },
   },
 };
 </script>
@@ -306,6 +315,12 @@ export default {
 
         <template #cell(title)="{ item }">
           <div class="gl-max-w-full text-truncate">{{ item.title }}</div>
+        </template>
+
+        <template #cell(assignees)="{ item }">
+          <div class="gl-max-w-full text-truncate" data-testid="assigneesField">
+            {{ getAssignees(item.assignees) }}
+          </div>
         </template>
 
         <template #cell(status)="{ item }">

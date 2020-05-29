@@ -20,10 +20,16 @@ module Gitlab
         def initialize(badge)
           @entity = badge.entity
           @status = badge.status
+          @key_text = badge.customization.dig(:key_text)
+          @key_width = badge.customization.dig(:key_width)
         end
 
         def key_text
-          @entity.to_s
+          if @key_text && @key_text.size <= MAX_KEY_SIZE
+            @key_text
+          else
+            @entity.to_s
+          end
         end
 
         def value_text
@@ -31,7 +37,11 @@ module Gitlab
         end
 
         def key_width
-          62
+          if @key_width && @key_width.between?(1, MAX_KEY_SIZE)
+            @key_width
+          else
+            62
+          end
         end
 
         def value_width

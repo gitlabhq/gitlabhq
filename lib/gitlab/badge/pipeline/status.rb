@@ -7,11 +7,15 @@ module Gitlab
       # Pipeline status badge
       #
       class Status < Badge::Base
-        attr_reader :project, :ref
+        attr_reader :project, :ref, :customization
 
-        def initialize(project, ref)
+        def initialize(project, ref, opts: {})
           @project = project
           @ref = ref
+          @customization = {
+            key_width: opts[:key_width].to_i,
+            key_text: opts[:key_text]
+          }
 
           @sha = @project.commit(@ref).try(:sha)
         end

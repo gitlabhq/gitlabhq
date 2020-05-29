@@ -1801,6 +1801,9 @@ msgstr ""
 msgid "AlertManagement|Assign status"
 msgstr ""
 
+msgid "AlertManagement|Assignees"
+msgstr ""
+
 msgid "AlertManagement|Authorize external service"
 msgstr ""
 
@@ -1892,6 +1895,9 @@ msgid "AlertManagement|Tool"
 msgstr ""
 
 msgid "AlertManagement|Triggered"
+msgstr ""
+
+msgid "AlertManagement|Unassigned"
 msgstr ""
 
 msgid "AlertManagement|Unknown"

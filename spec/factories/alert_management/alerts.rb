@@ -19,6 +19,12 @@ FactoryBot.define do
       issue
     end
 
+    trait :with_assignee do |alert|
+      after(:create) do |alert|
+        alert.alert_assignees.create(assignee: create(:user))
+      end
+    end
+
     trait :with_fingerprint do
       fingerprint { SecureRandom.hex }
     end
@@ -77,6 +83,7 @@ FactoryBot.define do
 
     trait :all_fields do
       with_issue
+      with_assignee
       with_fingerprint
       with_service
       with_monitoring_tool

@@ -395,6 +395,28 @@
           "description": "Describes an alert from the project's Alert Management",
           "fields": [
             {
+              "name": "assignees",
+              "description": "Assignees of the alert",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "OBJECT",
+                    "name": "User",
+                    "ofType": null
+                  }
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "createdAt",
               "description": "Timestamp the alert was created",
               "args": [

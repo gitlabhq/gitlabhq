@@ -8,7 +8,7 @@ import {
   GlDropdownItem,
   GlIcon,
   GlTab,
-  GlDeprecatedBadge as GlBadge,
+  GlBadge,
 } from '@gitlab/ui';
 import { visitUrl } from '~/lib/utils/url_utility';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
@@ -42,6 +42,7 @@ describe('AlertManagementList', () => {
   const findStatusFilterBadge = () => wrapper.findAll(GlBadge);
   const findDateFields = () => wrapper.findAll(TimeAgo);
   const findFirstStatusOption = () => findStatusDropdown().find(GlDropdownItem);
+  const findAssignees = () => wrapper.findAll('[data-testid="assigneesField"]');
   const findSeverityFields = () => wrapper.findAll('[data-testid="severityField"]');
   const findSeverityColumnHeader = () => wrapper.findAll('th').at(0);
 
@@ -233,6 +234,34 @@ describe('AlertManagementList', () => {
           .at(0)
           .text(),
       ).toBe('Critical');
+    });
+
+    it('renders Unassigned when no assignee(s) present', () => {
+      mountComponent({
+        props: { alertManagementEnabled: true, userCanEnableAlertManagement: true },
+        data: { alerts: mockAlerts, alertsCount, errored: false },
+        loading: false,
+      });
+
+      expect(
+        findAssignees()
+          .at(0)
+          .text(),
+      ).toBe('Unassigned');
+    });
+
+    it('renders username(s) when assignee(s) present', () => {
+      mountComponent({
+        props: { alertManagementEnabled: true, userCanEnableAlertManagement: true },
+        data: { alerts: mockAlerts, alertsCount, errored: false },
+        loading: false,
+      });
+
+      expect(
+        findAssignees()
+          .at(1)
+          .text(),
+      ).toBe(mockAlerts[1].assignees[0].username);
     });
 
     it('navigates to the detail page when alert row is clicked', () => {

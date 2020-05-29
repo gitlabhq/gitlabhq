@@ -23,7 +23,7 @@ describe Gitlab::Analytics::CycleAnalytics::RecordsFetcher do
   describe '#serialized_records' do
     shared_context 'when records are loaded by maintainer' do
       before do
-        project.add_user(user, Gitlab::Access::MAINTAINER)
+        project.add_user(user, Gitlab::Access::DEVELOPER)
       end
 
       it 'returns all records' do
@@ -103,6 +103,8 @@ describe Gitlab::Analytics::CycleAnalytics::RecordsFetcher do
           latest_build_finished_at: 7.days.ago,
           pipeline: ci_build2.pipeline
         })
+
+        project.add_user(user, Gitlab::Access::MAINTAINER)
       end
 
       context 'returns build records' do

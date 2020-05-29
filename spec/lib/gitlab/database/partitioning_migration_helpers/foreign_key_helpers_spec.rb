@@ -2,17 +2,19 @@
 
 require 'spec_helper'
 
-describe Gitlab::Database::PartitioningMigrationHelpers do
+describe Gitlab::Database::PartitioningMigrationHelpers::ForeignKeyHelpers do
   let(:model) do
     ActiveRecord::Migration.new.extend(described_class)
   end
   let_it_be(:connection) { ActiveRecord::Base.connection }
   let(:referenced_table) { :issues }
-  let(:function_name) { model.fk_function_name(referenced_table) }
-  let(:trigger_name) { model.fk_trigger_name(referenced_table) }
+  let(:function_name) { '_test_partitioned_foreign_keys_function' }
+  let(:trigger_name) { '_test_partitioned_foreign_keys_trigger' }
 
   before do
     allow(model).to receive(:puts)
+    allow(model).to receive(:fk_function_name).and_return(function_name)
+    allow(model).to receive(:fk_trigger_name).and_return(trigger_name)
   end
 
   describe 'adding a foreign key' do

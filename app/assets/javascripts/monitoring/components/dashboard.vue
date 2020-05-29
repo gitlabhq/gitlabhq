@@ -15,6 +15,7 @@ import GraphGroup from './graph_group.vue';
 import EmptyState from './empty_state.vue';
 import GroupEmptyState from './group_empty_state.vue';
 import VariablesSection from './variables_section.vue';
+import LinksSection from './links_section.vue';
 
 import TrackEventDirective from '~/vue_shared/directives/track_event';
 import {
@@ -38,6 +39,7 @@ export default {
     EmptyState,
     GroupEmptyState,
     VariablesSection,
+    LinksSection,
   },
   directives: {
     GlModal: GlModalDirective,
@@ -154,11 +156,15 @@ export default {
       'showEmptyState',
       'expandedPanel',
       'variables',
+      'links',
       'currentDashboard',
     ]),
     ...mapGetters('monitoringDashboard', ['selectedDashboard', 'getMetricStates']),
     shouldShowVariablesSection() {
       return Object.keys(this.variables).length > 0;
+    },
+    shouldShowLinksSection() {
+      return Object.keys(this.links).length > 0;
     },
   },
   watch: {
@@ -309,6 +315,7 @@ export default {
       @setRearrangingPanels="onSetRearrangingPanels"
     />
     <variables-section v-if="shouldShowVariablesSection && !showEmptyState" />
+    <links-section v-if="shouldShowLinksSection && !showEmptyState" />
     <div v-if="!showEmptyState">
       <dashboard-panel
         v-show="expandedPanel.panel"

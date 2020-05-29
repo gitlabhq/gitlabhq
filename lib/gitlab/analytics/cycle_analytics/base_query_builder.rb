@@ -8,21 +8,24 @@ module Gitlab
 
         delegate :subject_class, to: :stage
 
-        # rubocop: disable CodeReuse/ActiveRecord
+        FINDER_CLASSES = {
+          MergeRequest.to_s => MergeRequestsFinder,
+          Issue.to_s => IssuesFinder
+        }.freeze
 
         def initialize(stage:, params: {})
           @stage = stage
-          @params = params
+          @params = build_finder_params(params)
         end
 
+        # rubocop: disable CodeReuse/ActiveRecord
         def build
-          query = subject_class
-          query = filter_by_parent_model(query)
-          query = filter_by_time_range(query)
+          query = finder.execute
           query = stage.start_event.apply_query_customization(query)
           query = stage.end_event.apply_query_customization(query)
           query.where(duration_condition)
         end
+        # rubocop: enable CodeReuse/ActiveRecord
 
         private
 
@@ -32,38 +35,33 @@ module Gitlab
           stage.end_event.timestamp_projection.gteq(stage.start_event.timestamp_projection)
         end
 
-        def filter_by_parent_model(query)
-          if parent_class.eql?(Project)
-            if subject_class.eql?(Issue)
-              query.where(project_id: stage.parent_id)
-            elsif subject_class.eql?(MergeRequest)
-              query.where(target_project_id: stage.parent_id)
-            else
-              raise ArgumentError, "unknown subject_class: #{subject_class}"
-            end
-          else
-            raise ArgumentError, "unknown parent_class: #{parent_class}"
-          end
-        end
-
-        def filter_by_time_range(query)
-          from = params.fetch(:from, 30.days.ago)
-          to = params[:to]
-
-          query = query.where(subject_table[:created_at].gteq(from))
-          query = query.where(subject_table[:created_at].lteq(to)) if to
-          query
-        end
-
-        def subject_table
-          subject_class.arel_table
+        def finder
+          FINDER_CLASSES.fetch(subject_class.to_s).new(params[:current_user], params)
         end
 
         def parent_class
           stage.parent.class
         end
 
-        # rubocop: enable CodeReuse/ActiveRecord
+        def build_finder_params(params)
+          {}.tap do |finder_params|
+            finder_params[:current_user] = params[:current_user]
+
+            add_parent_model_params!(finder_params)
+            add_time_range_params!(finder_params, params[:from], params[:to])
+          end
+        end
+
+        def add_parent_model_params!(finder_params)
+          raise(ArgumentError, "unknown parent_class: #{parent_class}") unless parent_class.eql?(Project)
+
+          finder_params[:project_id] = stage.parent_id
+        end
+
+        def add_time_range_params!(finder_params, from, to)
+          finder_params[:created_after] = from || 30.days.ago
+          finder_params[:created_before] = to if to
+        end
       end
     end
   end

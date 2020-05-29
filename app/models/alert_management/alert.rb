@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require_dependency 'alert_management'
+
 module AlertManagement
   class Alert < ApplicationRecord
     include AtomicInternalId
@@ -23,9 +25,11 @@ module AlertManagement
 
     belongs_to :project
     belongs_to :issue, optional: true
-    has_internal_id :iid, scope: :project, init: ->(s) { s.project.alert_management_alerts.maximum(:iid) }
 
-    self.table_name = 'alert_management_alerts'
+    has_many :alert_assignees, inverse_of: :alert
+    has_many :assignees, through: :alert_assignees
+
+    has_internal_id :iid, scope: :project, init: ->(s) { s.project.alert_management_alerts.maximum(:iid) }
 
     sha_attribute :fingerprint
 

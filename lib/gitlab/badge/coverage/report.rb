@@ -7,12 +7,16 @@ module Gitlab
       # Test coverage report badge
       #
       class Report < Badge::Base
-        attr_reader :project, :ref, :job
+        attr_reader :project, :ref, :job, :customization
 
-        def initialize(project, ref, job = nil)
+        def initialize(project, ref, opts: { job: nil })
           @project = project
           @ref = ref
-          @job = job
+          @job = opts[:job]
+          @customization = {
+            key_width: opts[:key_width].to_i,
+            key_text: opts[:key_text]
+          }
 
           @pipeline = @project.ci_pipelines.latest_successful_for_ref(@ref)
         end

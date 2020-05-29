@@ -404,9 +404,8 @@ script:
 
 You can define per-project or per-group variables
 that are set in the pipeline environment. Group-level variables are stored out of
-the repository (not in `.gitlab-ci.yml`) and are securely passed to GitLab Runner
-making them available during a pipeline run. It's the **recommended method** to
-use for storing things like passwords, SSH keys, and credentials.
+the repository (not in `.gitlab-ci.yml`) and are securely passed to GitLab Runner,
+which makes them available during a pipeline run. For Premium users who do **not** use an external key store or who use GitLab's [integration with HashiCorp Vault](../examples/authenticating-with-hashicorp-vault/index.md), we recommend using group environment variables to store secrets like passwords, SSH keys, and credentials.
 
 Group-level variables can be added by:
 

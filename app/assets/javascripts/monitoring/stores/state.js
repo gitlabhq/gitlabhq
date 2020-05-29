@@ -36,10 +36,14 @@ export default () => ({
   allDashboards: [],
   /**
    * User-defined custom variables are passed
-   * via the dashboard.yml file.
+   * via the dashboard yml file.
    */
   variables: {},
-
+  /**
+   * User-defined custom links are passed
+   * via the dashboard yml file.
+   */
+  links: {},
   // Other project data
   annotations: [],
   deploymentData: [],

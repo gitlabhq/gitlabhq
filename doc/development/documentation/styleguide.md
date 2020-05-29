@@ -325,6 +325,9 @@ tenses, words, and phrases:
 - Avoid using the word *currently* when talking about the product or its
   features. The documentation describes the product as it is, and not as it
   will be at some indeterminate point in the future.
+- Don't use profanity or obscenities. Doing so may negatively affect other
+  users and contributors, which is contrary to GitLab's value of
+  [diversity and inclusion](https://about.gitlab.com/handbook/values/#diversity-inclusion).
 
 ### Word usage clarifications
 

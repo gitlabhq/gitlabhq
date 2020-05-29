@@ -7,7 +7,8 @@
       "createdAt": "2020-04-17T23:18:14.996Z",
       "startedAt": "2020-04-17T23:18:14.996Z",
       "endedAt": "2020-04-17T23:18:14.996Z",
-      "status": "TRIGGERED"
+      "status": "TRIGGERED",
+      "assignees": []
     },
     {
       "iid": "1527543",
@@ -16,7 +17,8 @@
       "eventCount": 1,
       "startedAt": "2020-04-17T23:18:14.996Z",
       "endedAt": "2020-04-17T23:18:14.996Z",
-      "status": "ACKNOWLEDGED"
+      "status": "ACKNOWLEDGED",
+      "assignees": [{"username": "root"}]
     },
     {
       "iid": "1527544",
@@ -25,6 +27,7 @@
       "eventCount": 4,
       "startedAt": "2020-04-17T23:18:14.996Z",
       "endedAt": "2020-04-17T23:18:14.996Z",
-      "status": "RESOLVED"
+      "status": "RESOLVED",
+      "assignees": [{"username": "root"}]
     }
   ]

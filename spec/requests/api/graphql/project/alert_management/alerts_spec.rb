@@ -75,6 +75,8 @@ describe 'getting Alert Management Alerts' do
           'updatedAt' => triggered_alert.updated_at.strftime('%Y-%m-%dT%H:%M:%SZ')
         )
 
+        expect(first_alert['assignees'].first).to include('username' => triggered_alert.assignees.first.username)
+
         expect(second_alert).to include(
           'iid' => resolved_alert.iid.to_s,
           'issueIid' => nil,

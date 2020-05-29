@@ -143,6 +143,11 @@ Describes an alert from the project's Alert Management
 """
 type AlertManagementAlert {
   """
+  Assignees of the alert
+  """
+  assignees: [User!]
+
+  """
   Timestamp the alert was created
   """
   createdAt: Time

@@ -83,6 +83,11 @@ module Types
             Types::TimeType,
             null: true,
             description: 'Timestamp the alert was last updated'
+
+      field :assignees,
+            [Types::UserType],
+            null: true,
+            description: 'Assignees of the alert'
     end
   end
 end

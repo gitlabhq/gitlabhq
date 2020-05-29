@@ -641,7 +641,7 @@ recommended that you configure the appropriate retention policy for your object
 storage (for example, [AWS S3](https://docs.aws.amazon.com/AmazonS3/latest/user-guide/create-lifecycle.html)).
 
 You may want to set a limited lifetime for backups to prevent regular
-backups using all your disk space.
+backups using all your disk space. The next time the backup task is run, backups older than the `backup_keep_time` will be pruned.
 
 For Omnibus GitLab packages:
 

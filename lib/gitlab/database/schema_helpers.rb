@@ -35,6 +35,12 @@ module Gitlab
         execute("DROP TRIGGER #{exists_clause} #{name} ON #{table_name}")
       end
 
+      def tmp_table_name(base)
+        hashed_base = Digest::SHA256.hexdigest(base).first(10)
+
+        "#{base}_#{hashed_base}"
+      end
+
       def object_name(table, type)
         identifier = "#{table}_#{type}"
         hashed_identifier = Digest::SHA256.hexdigest(identifier).first(10)

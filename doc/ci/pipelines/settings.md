@@ -301,6 +301,16 @@ https://example.gitlab.com/<namespace>/<project>/badges/<branch>/coverage.svg?st
 
 ![Badge flat square style](https://gitlab.com/gitlab-org/gitlab-foss/badges/master/coverage.svg?job=coverage&style=flat-square)
 
+### Custom badge text
+
+The text for a badge can be customized. This can be useful to differentiate between multiple coverage jobs that run in the same pipeline. Customize the badge text and width by adding the `key_text=custom_text` and `key_width=custom_key_width` parameters to the URL:
+
+```plaintext
+https://gitlab.com/gitlab-org/gitlab-foss/badges/master/coverage.svg?job=karma&key_text=Frontend+Coverage&key_width=100
+```
+
+![Badge with custom text and width](https://gitlab.com/gitlab-org/gitlab-foss/badges/master/coverage.svg?job=karma&key_text=Frontend+Coverage&key_width=100)
+
 ## Environment Variables
 
 [Environment variables](../variables/README.md#gitlab-cicd-environment-variables) can be set in an environment to be available to a runner.

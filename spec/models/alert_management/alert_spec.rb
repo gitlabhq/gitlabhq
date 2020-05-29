@@ -6,6 +6,7 @@ describe AlertManagement::Alert do
   describe 'associations' do
     it { is_expected.to belong_to(:project) }
     it { is_expected.to belong_to(:issue) }
+    it { is_expected.to have_many(:assignees).through(:alert_assignees) }
   end
 
   describe 'validations' do
