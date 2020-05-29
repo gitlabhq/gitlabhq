@@ -9642,6 +9642,8 @@ CREATE INDEX index_epics_on_group_id_and_iid_varchar_pattern ON public.epics USI
 
 CREATE INDEX index_epics_on_iid ON public.epics USING btree (iid);
 
+CREATE INDEX index_epics_on_last_edited_by_id ON public.epics USING btree (last_edited_by_id);
+
 CREATE INDEX index_epics_on_lock_version ON public.epics USING btree (lock_version) WHERE (lock_version IS NULL);
 
 CREATE INDEX index_epics_on_parent_id ON public.epics USING btree (parent_id);
@@ -9875,6 +9877,8 @@ CREATE INDEX index_issues_on_confidential ON public.issues USING btree (confiden
 CREATE INDEX index_issues_on_description_trigram ON public.issues USING gin (description public.gin_trgm_ops);
 
 CREATE INDEX index_issues_on_duplicated_to_id ON public.issues USING btree (duplicated_to_id) WHERE (duplicated_to_id IS NOT NULL);
+
+CREATE INDEX index_issues_on_last_edited_by_id ON public.issues USING btree (last_edited_by_id);
 
 CREATE INDEX index_issues_on_lock_version ON public.issues USING btree (lock_version) WHERE (lock_version IS NULL);
 
@@ -13959,6 +13963,7 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200525114553
 20200525121014
 20200526120714
+20200526153844
 20200526164946
 20200526164947
 20200527094322

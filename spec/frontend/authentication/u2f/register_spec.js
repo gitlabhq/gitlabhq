@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import U2FRegister from '~/u2f/register';
+import U2FRegister from '~/authentication/u2f/register';
 import 'vendor/u2f';
 import MockU2FDevice from './mock_u2f_device';
 

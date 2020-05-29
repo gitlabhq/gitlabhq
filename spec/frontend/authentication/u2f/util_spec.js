@@ -1,4 +1,4 @@
-import { canInjectU2fApi } from '~/u2f/util';
+import { canInjectU2fApi } from '~/authentication/u2f/util';
 
 describe('U2F Utils', () => {
   describe('canInjectU2fApi', () => {

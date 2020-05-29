@@ -68,6 +68,10 @@ The following languages and package managers are supported.
 | Ruby       | [gem](https://rubygems.org/) |[License Finder](https://github.com/pivotal/LicenseFinder)|
 | Objective-C, Swift | [Carthage](https://github.com/Carthage/Carthage) |[License Finder](https://github.com/pivotal/LicenseFinder)|
 
+NOTE: **Note:**
+
+Java 8 and Gradle 1.x projects are not supported.
+
 ### Experimental support
 
 The following languages and package managers are [supported experimentally](https://github.com/pivotal/LicenseFinder#experimental-project-types),
@@ -138,14 +142,18 @@ License Compliance can be configured using environment variables.
 
 | Environment variable        | Required | Description |
 |-----------------------------|----------|-------------|
-| `SECURE_ANALYZERS_PREFIX`   | no       | Set the Docker registry base address to download the analyzer from. |
 | `ADDITIONAL_CA_CERT_BUNDLE` | no       | Bundle of trusted CA certificates (currently supported in Pip, Pipenv, Maven, Gradle, Yarn, and NPM projects). |
+| `ASDF_JAVA_VERSION`         | no       | Version of Java to use for the scan. |
+| `ASDF_NODEJS_VERSION`       | no       | Version of Node.js to use for the scan. |
+| `ASDF_PYTHON_VERSION`       | no       | Version of Python to use for the scan. |
+| `ASDF_RUBY_VERSION`         | no       | Version of Ruby to use for the scan. |
 | `GRADLE_CLI_OPTS`           | no       | Additional arguments for the gradle executable. If not supplied, defaults to `--exclude-task=test`. |
 | `LICENSE_FINDER_CLI_OPTS`   | no       | Additional arguments for the `license_finder` executable. For example, if your project has both Golang and Ruby code stored in different directories and you want to only scan the Ruby code, you can update your `.gitlab-ci-yml` template to specify which project directories to scan, like `LICENSE_FINDER_CLI_OPTS: '--debug --aggregate-paths=. ruby'`. |
 | `LM_JAVA_VERSION`           | no       | Version of Java. If set to `11`, Maven and Gradle use Java 11 instead of Java 8. |
 | `LM_PYTHON_VERSION`         | no       | Version of Python. If set to `3`, dependencies are installed using Python 3 instead of Python 2.7. |
 | `MAVEN_CLI_OPTS`            | no       | Additional arguments for the mvn executable. If not supplied, defaults to `-DskipTests`. |
 | `PIP_INDEX_URL`             | no       | Base URL of Python Package Index (default: `https://pypi.org/simple/`). |
+| `SECURE_ANALYZERS_PREFIX`   | no       | Set the Docker registry base address to download the analyzer from. |
 | `SETUP_CMD`                 | no       | Custom setup for the dependency installation (experimental). |
 
 ### Installing custom dependencies
@@ -584,3 +592,78 @@ Policies can be configured by maintainers of the project.
 Developers of the project can view the policies configured in a project.
 
 ![View Policies](img/policies_v13_0.png)
+
+## Troubleshooting
+
+### `ERROR -- : asdf: No preset version installed for command`
+
+This error occurs when the version of the tools used by your project
+do not match the version of the pre-installed tools available in the
+`license_scanning` Docker image. The `license_scanning` job uses
+[asdf-vm](https://asdf-vm.com/) to activate the appropriate version of
+a tool that your project relies on. For example, if your project relies on a specific
+version of [Node.js](https://nodejs.org/) or any other supported tool you can
+specify the desired version by adding a
+[`.tool-versions`](https://asdf-vm.com/#/core-configuration?id=tool-versions) file to the project
+or using the appropriate [`ASDF_<tool>_VERSION`](https://asdf-vm.com/#/core-configuration?id=environment-variables) environment variable to
+activate the appropriate version.
+
+For example, the following `.tool-versions` file will activate version `12.16.3` of [Node.js](https://nodejs.org/)
+and version `2.6.6` of [Ruby](https://www.ruby-lang.org/).
+
+```plaintext
+nodejs 12.16.3
+ruby 2.6.6
+```
+
+The next example shows how to activate the same versions of the tools mentioned above by using environment variables defined in your
+project's `.gitlab-ci.yml` file.
+
+```yaml
+include:
+  - template: License-Scanning.gitlab-ci.yml
+
+license_scanning:
+  variables:
+    ASDF_NODEJS_VERSION: '12.16.3'
+    ASDF_RUBY_VERSION: '2.6.6'
+```
+
+A full list of variables can be found in [environment variables](#available-variables).
+
+To find out what tools are pre-installed in the `license_scanning` Docker image use the following command:
+
+```shell
+$ docker run --entrypoint='' registry.gitlab.com/gitlab-org/security-products/analyzers/license-finder:3 /bin/bash -lc 'asdf list'
+golang
+  1.14
+gradle
+  6.3
+java
+  adopt-openjdk-11.0.7+10
+  adopt-openjdk-8u242-b08
+maven
+  3.6.3
+nodejs
+  10.20.1
+  12.16.3
+php
+  7.4.5
+python
+  2.7.18
+  3.8.2
+ruby
+  2.6.6
+sbt
+  1.3.8
+```
+
+To interact with the `license_scanning` runtime environment use the following command:
+
+```shell
+$ docker run -it --entrypoint='' registry.gitlab.com/gitlab-org/security-products/analyzers/license-finder:3 /bin/bash -l
+root@6abb70e9f193:~#
+```
+
+NOTE: **Note:**
+Selecting a custom version of [Mono](https://www.mono-project.com/) or [.NET Core](https://dotnet.microsoft.com/download/dotnet-core) is currently not supported.

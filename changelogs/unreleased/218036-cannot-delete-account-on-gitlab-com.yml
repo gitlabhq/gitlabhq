@@ -1,0 +1,5 @@
+---
+title: Add index to issues and epics on last_edited_by_id
+merge_request: 33075
+author:
+type: performance

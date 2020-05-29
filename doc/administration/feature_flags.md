@@ -94,6 +94,18 @@ Example, to disable Evidence Collection:
 Feature.disable(:release_evidence_collection)
 ```
 
+Some feature flags can be enabled or disabled on a per project basis:
+
+```ruby
+Feature.enable(:<feature flag>, Project.find(<project id>))
+```
+
+For example, to enable the [`:release_evidence_collection`](../ci/junit_test_reports.md#enabling-the-feature) feature flag for project `1234`:
+
+```ruby
+Feature.enable(:release_evidence_collection, Project.find(1234))
+```
+
 When the feature is ready, GitLab will remove the feature flag, the option for
 enabling and disabling it will no longer exist, and the feature will become
 available in all instances.

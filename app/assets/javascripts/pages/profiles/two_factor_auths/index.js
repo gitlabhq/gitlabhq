@@ -1,6 +1,5 @@
-import $ from 'jquery';
-import U2FRegister from '~/u2f/register';
 import { parseBoolean } from '~/lib/utils/common_utils';
+import { mount2faRegistration } from '~/authentication/mount_2fa';
 
 document.addEventListener('DOMContentLoaded', () => {
   const twoFactorNode = document.querySelector('.js-two-factor-auth');
@@ -12,6 +11,5 @@ document.addEventListener('DOMContentLoaded', () => {
     if (flashAlert) flashAlert.insertAdjacentHTML('beforeend', button);
   }
 
-  const u2fRegister = new U2FRegister($('#js-register-u2f'), gon.u2f);
-  u2fRegister.start();
+  mount2faRegistration();
 });

@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import U2FAuthenticate from '../../u2f/authenticate';
+import U2FAuthenticate from './authenticate';
 
 export default () => {
   if (!gon.u2f) return;
@@ -12,6 +12,6 @@ export default () => {
     document.querySelector('.js-2fa-form'),
   );
   u2fAuthenticate.start();
-  // needed in rspec
+  // needed in rspec (FakeU2fDevice)
   gl.u2fAuthenticate = u2fAuthenticate;
 };
