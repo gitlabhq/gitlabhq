@@ -64,7 +64,7 @@ describe Prometheus::ProxyVariableSubstitutionService do
       let(:params_keys) do
         {
           query: 'up{pod_name="{{pod_name}}"}',
-          variables: ['pod_name', pod_name]
+          variables: { 'pod_name' => pod_name }
         }
       end
 
@@ -76,7 +76,7 @@ describe Prometheus::ProxyVariableSubstitutionService do
         let(:params_keys) do
           {
             query: 'up{pod_name="{{pod_name}}",env="{{ci_environment_slug}}"}',
-            variables: ['pod_name', pod_name, 'ci_environment_slug', 'custom_value']
+            variables: { 'pod_name' => pod_name, 'ci_environment_slug' => 'custom_value' }
           }
         end
 
@@ -95,8 +95,7 @@ describe Prometheus::ProxyVariableSubstitutionService do
           }
         end
 
-        it_behaves_like 'error', 'Optional parameter "variables" must be an ' \
-          'array of keys and values. Ex: [key1, value1, key2, value2]'
+        it_behaves_like 'error', 'Optional parameter "variables" must be a Hash. Ex: variables[key1]=value1'
       end
 
       context 'with nil variables' do

@@ -84,12 +84,12 @@ describe Projects::Environments::PrometheusApiController do
 
           before do
             expected_params[:query] = %{up{pod_name="#{pod_name}"}}
-            expected_params[:variables] = ['pod_name', pod_name]
+            expected_params[:variables] = { 'pod_name' => pod_name }
           end
 
           it 'replaces variables with values' do
             get :proxy, params: environment_params.merge(
-              query: 'up{pod_name="{{pod_name}}"}', variables: ['pod_name', pod_name]
+              query: 'up{pod_name="{{pod_name}}"}', variables: { 'pod_name' => pod_name }
             )
 
             expect(response).to have_gitlab_http_status(:success)

@@ -229,3 +229,19 @@ export const normalizeQueryResult = timeSeries => {
 
   return normalizedResult;
 };
+
+/**
+ * Custom variables defined in the dashboard yml file are
+ * eventually passed over the wire to the backend Prometheus
+ * API proxy.
+ *
+ * This method adds a prefix to the URL param keys so that
+ * the backend can differential these variables from the other
+ * variables.
+ *
+ * This is currently only used by getters/getCustomVariablesParams
+ *
+ * @param {String} key Variable key that needs to be prefixed
+ * @returns {String}
+ */
+export const addPrefixToCustomVariableParams = key => `variables[${key}]`;

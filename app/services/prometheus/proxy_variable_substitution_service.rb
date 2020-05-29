@@ -32,8 +32,8 @@ module Prometheus
     def validate_variables(_result)
       return success unless variables
 
-      unless variables.is_a?(Array) && variables.size.even?
-        return error(_('Optional parameter "variables" must be an array of keys and values. Ex: [key1, value1, key2, value2]'))
+      unless variables.is_a?(ActionController::Parameters)
+        return error(_('Optional parameter "variables" must be a Hash. Ex: variables[key1]=value1'))
       end
 
       success
@@ -88,12 +88,7 @@ module Prometheus
     end
 
     def variables_hash
-      # .each_slice(2) converts ['key1', 'value1', 'key2', 'value2'] into
-      # [['key1', 'value1'], ['key2', 'value2']] which is then converted into
-      # a hash by to_h: {'key1' => 'value1', 'key2' => 'value2'}
-      # to_h will raise an ArgumentError if the number of elements in the original
-      # array is not even.
-      variables&.each_slice(2).to_h
+      variables.to_h
     end
 
     def query(result)

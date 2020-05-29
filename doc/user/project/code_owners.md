@@ -88,6 +88,23 @@ or more users or by the `@name` of one or more groups that should
 be owners of the file. Groups must be added as [members of the project](members/index.md),
 or they will be ignored.
 
+Starting in [GitLab 13.0](https://gitlab.com/gitlab-org/gitlab/-/issues/32432), you can now specify
+groups or subgroups from the project's group hierarchy as potential code owners.
+
+For example, consider the following hierarchy for a given project:
+
+```text
+group >> sub-group >> sub-subgroup >> myproject >> file.md
+```
+
+Any of the following groups would be eligible to be specified as code owners:
+
+- `@group`
+- `@group/sub-group`
+- `@group/sub-group/sub-subgroup`
+
+In addition, any groups that have been invited to the project using the **Settings > Members** tool will also be recognized as eligible code owners.
+
 The order in which the paths are defined is significant: the last
 pattern that matches a given path will be used to find the code
 owners.
