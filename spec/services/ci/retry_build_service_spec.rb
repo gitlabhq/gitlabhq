@@ -30,7 +30,7 @@ describe Ci::RetryBuildService do
        created_at updated_at started_at finished_at queued_at erased_by
        erased_at auto_canceled_by job_artifacts job_artifacts_archive
        job_artifacts_metadata job_artifacts_trace job_artifacts_junit
-       job_artifacts_sast job_artifacts_dependency_scanning
+       job_artifacts_sast job_artifacts_secret_detection job_artifacts_dependency_scanning
        job_artifacts_container_scanning job_artifacts_dast
        job_artifacts_license_management job_artifacts_license_scanning
        job_artifacts_performance job_artifacts_lsif

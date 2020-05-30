@@ -36124,7 +36124,7 @@
             },
             {
               "name": "reportType",
-              "description": "Type of the security report that found the vulnerability (SAST, DEPENDENCY_SCANNING, CONTAINER_SCANNING, DAST)",
+              "description": "Type of the security report that found the vulnerability (SAST, DEPENDENCY_SCANNING, CONTAINER_SCANNING, DAST, SECRET_DETECTION)",
               "args": [
 
               ],
@@ -36812,6 +36812,12 @@
             },
             {
               "name": "DAST",
+              "description": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "SECRET_DETECTION",
               "description": null,
               "isDeprecated": false,
               "deprecationReason": null

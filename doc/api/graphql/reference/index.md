@@ -1835,7 +1835,7 @@ Represents a vulnerability.
 | `id` | ID! | GraphQL ID of the vulnerability |
 | `location` | VulnerabilityLocation | Location metadata for the vulnerability. Its fields depend on the type of security scan that found the vulnerability |
 | `project` | Project | The project on which the vulnerability was found |
-| `reportType` | VulnerabilityReportType | Type of the security report that found the vulnerability (SAST, DEPENDENCY_SCANNING, CONTAINER_SCANNING, DAST) |
+| `reportType` | VulnerabilityReportType | Type of the security report that found the vulnerability (SAST, DEPENDENCY_SCANNING, CONTAINER_SCANNING, DAST, SECRET_DETECTION) |
 | `severity` | VulnerabilitySeverity | Severity of the vulnerability (INFO, UNKNOWN, LOW, MEDIUM, HIGH, CRITICAL) |
 | `state` | VulnerabilityState | State of the vulnerability (DETECTED, DISMISSED, RESOLVED, CONFIRMED) |
 | `title` | String | Title of the vulnerability |

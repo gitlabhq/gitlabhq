@@ -137,5 +137,18 @@ describe 'getting Alert Management Alerts' do
         end
       end
     end
+
+    context 'with alert_assignee flag disabled' do
+      before do
+        stub_feature_flags(alert_assignee: false)
+        project.add_developer(current_user)
+
+        post_graphql(query, current_user: current_user)
+      end
+
+      it 'excludes assignees' do
+        expect(alerts.first['assignees']).to be_empty
+      end
+    end
   end
 end

@@ -983,10 +983,10 @@
     consola "^2.10.1"
     node-fetch "^2.6.0"
 
-"@rails/actioncable@^6.0.3-1":
-  version "6.0.3-1"
-  resolved "https://registry.yarnpkg.com/@rails/actioncable/-/actioncable-6.0.3-1.tgz#9b9eb8858a6507162911007d355d9a206e1c5caa"
-  integrity sha512-szFhWD+V5TAxVNVIG16klgq+ypqA5k5AecLarTTrXgOG8cawVbQdOAwLbCmzkwiQ60rGSxAFoC1u2LrzxSK2Aw==
+"@rails/actioncable@^6.0.3":
+  version "6.0.3"
+  resolved "https://registry.yarnpkg.com/@rails/actioncable/-/actioncable-6.0.3.tgz#722b4b639936129307ddbab3a390f6bcacf3e7bc"
+  integrity sha512-I01hgqxxnOgOtJTGlq0ZsGJYiTEEiSGVEGQn3vimZSqEP1HqzyFNbzGTq14Xdyeow2yGJjygjoFF1pmtE+SQaw==
 
 "@sentry/browser@^5.10.2":
   version "5.10.2"

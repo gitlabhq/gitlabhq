@@ -400,6 +400,14 @@ FactoryBot.define do
       end
     end
 
+    trait :secret_detection do
+      options do
+        {
+            artifacts: { reports: { secret_detection: 'gl-secret-detection-report.json' } }
+        }
+      end
+    end
+
     trait :dependency_scanning do
       options do
         {

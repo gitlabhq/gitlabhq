@@ -27,6 +27,7 @@ module Ci
       accessibility: 'gl-accessibility.json',
       codequality: 'gl-code-quality-report.json',
       sast: 'gl-sast-report.json',
+      secret_detection: 'gl-secret-detection-report.json',
       dependency_scanning: 'gl-dependency-scanning-report.json',
       container_scanning: 'gl-container-scanning-report.json',
       dast: 'gl-dast-report.json',
@@ -63,6 +64,7 @@ module Ci
       accessibility: :raw,
       codequality: :raw,
       sast: :raw,
+      secret_detection: :raw,
       dependency_scanning: :raw,
       container_scanning: :raw,
       dast: :raw,
@@ -177,7 +179,8 @@ module Ci
       cobertura: 17,
       terraform: 18, # Transformed json
       accessibility: 19,
-      cluster_applications: 20
+      cluster_applications: 20,
+      secret_detection: 21 ## EE-specific
     }
 
     enum file_format: {

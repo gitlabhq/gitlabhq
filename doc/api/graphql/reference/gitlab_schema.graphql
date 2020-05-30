@@ -12226,7 +12226,8 @@ type Vulnerability {
   project: Project
 
   """
-  Type of the security report that found the vulnerability (SAST, DEPENDENCY_SCANNING, CONTAINER_SCANNING, DAST)
+  Type of the security report that found the vulnerability (SAST,
+  DEPENDENCY_SCANNING, CONTAINER_SCANNING, DAST, SECRET_DETECTION)
   """
   reportType: VulnerabilityReportType
 
@@ -12444,6 +12445,7 @@ enum VulnerabilityReportType {
   DAST
   DEPENDENCY_SCANNING
   SAST
+  SECRET_DETECTION
 }
 
 """
