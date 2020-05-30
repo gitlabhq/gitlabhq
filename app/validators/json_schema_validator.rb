@@ -1,7 +1,5 @@
 # frozen_string_literal: true
-
-require "json-schema"
-
+#
 # JsonSchemaValidator
 #
 # Custom validator for json schema.
