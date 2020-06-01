@@ -319,15 +319,6 @@ application server, or a Gitaly node.
    }
    ```
 
-1. Enable the database replication queue:
-
-   ```ruby
-   praefect['postgres_queue_enabled'] = true
-   ```
-
-   In the next release, database replication queue will be enabled by default.
-   See [issue #2615](https://gitlab.com/gitlab-org/gitaly/-/issues/2615).
-
 1. Enable automatic failover by editing `/etc/gitlab/gitlab.rb`:
 
    ```ruby

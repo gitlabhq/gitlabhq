@@ -14,6 +14,7 @@ module Types
     mount_mutation Mutations::AwardEmojis::Toggle
     mount_mutation Mutations::Branches::Create, calls_gitaly: true
     mount_mutation Mutations::Commits::Create, calls_gitaly: true
+    mount_mutation Mutations::Discussions::ToggleResolve
     mount_mutation Mutations::Issues::SetConfidential
     mount_mutation Mutations::Issues::SetDueDate
     mount_mutation Mutations::Issues::Update

@@ -1116,5 +1116,5 @@ server to keep them synchronized if possible.
 
 ### Praefect
 
-Praefect is an experimental daemon that allows for replication of the Git data.
-It can be setup with omnibus, [as explained here](./praefect.md).
+Praefect is a router and transaction manager for Gitaly, and a required
+component for running a Gitaly Cluster. For more information see [Gitaly Cluster](praefect.md).

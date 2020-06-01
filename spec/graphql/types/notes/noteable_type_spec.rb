@@ -1,8 +1,16 @@
 # frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Types::Notes::NoteableType do
-  specify { expect(described_class).to have_graphql_fields(:notes, :discussions) }
+  it 'exposes the expected fields' do
+    expected_fields = %i[
+      discussions
+      notes
+    ]
+
+    expect(described_class).to have_graphql_fields(*expected_fields)
+  end
 
   describe ".resolve_type" do
     it 'knows the correct type for objects' do

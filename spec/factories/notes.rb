@@ -23,11 +23,6 @@ FactoryBot.define do
 
     factory :discussion_note_on_merge_request, traits: [:on_merge_request], class: 'DiscussionNote' do
       association :project, :repository
-
-      trait :resolved do
-        resolved_at { Time.now }
-        resolved_by { create(:user) }
-      end
     end
 
     factory :track_mr_picking_note, traits: [:on_merge_request, :system] do
@@ -74,11 +69,6 @@ FactoryBot.define do
                 new_line: 1,
                 diff_refs: diff_refs)
         end
-      end
-
-      trait :resolved do
-        resolved_at { Time.now }
-        resolved_by { create(:user) }
       end
 
       factory :image_diff_note_on_merge_request do
@@ -153,6 +143,11 @@ FactoryBot.define do
         # note validations require consistency between these two objects
         note.project = note.noteable.project
       end
+    end
+
+    trait :resolved do
+      resolved_at { Time.now }
+      resolved_by { association(:user) }
     end
 
     trait :system do

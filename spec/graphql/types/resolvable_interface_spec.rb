@@ -2,13 +2,9 @@
 
 require 'spec_helper'
 
-describe GitlabSchema.types['Discussion'] do
+describe Types::ResolvableInterface do
   it 'exposes the expected fields' do
     expected_fields = %i[
-      created_at
-      id
-      notes
-      reply_id
       resolvable
       resolved
       resolved_at
@@ -17,6 +13,4 @@ describe GitlabSchema.types['Discussion'] do
 
     expect(described_class).to have_graphql_fields(*expected_fields)
   end
-
-  specify { expect(described_class).to require_graphql_authorizations(:read_note) }
 end
