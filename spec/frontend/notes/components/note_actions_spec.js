@@ -157,4 +157,19 @@ describe('noteActions', () => {
       expect(replyButton.exists()).toBe(false);
     });
   });
+
+  describe('Draft notes', () => {
+    beforeEach(() => {
+      store.dispatch('setUserData', userDataMock);
+
+      wrapper = shallowMountNoteActions({ ...props, canResolve: true, isDraft: true });
+    });
+
+    it('should render the right resolve button title', () => {
+      const resolveButton = wrapper.find({ ref: 'resolveButton' });
+
+      expect(resolveButton.exists()).toBe(true);
+      expect(resolveButton.attributes('title')).toBe('Thread stays unresolved');
+    });
+  });
 });

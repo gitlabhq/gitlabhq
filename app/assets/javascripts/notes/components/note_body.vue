@@ -1,8 +1,7 @@
 <script>
-import { mapActions } from 'vuex';
+import { mapActions, mapGetters } from 'vuex';
 import $ from 'jquery';
 import '~/behaviors/markdown/render_gfm';
-import getDiscussion from 'ee_else_ce/notes/mixins/get_discussion';
 import noteEditedText from './note_edited_text.vue';
 import noteAwardsList from './note_awards_list.vue';
 import noteAttachment from './note_attachment.vue';
@@ -18,7 +17,7 @@ export default {
     noteForm,
     Suggestions,
   },
-  mixins: [autosave, getDiscussion],
+  mixins: [autosave],
   props: {
     note: {
       type: Object,
@@ -45,6 +44,12 @@ export default {
     },
   },
   computed: {
+    ...mapGetters(['getDiscussion']),
+    discussion() {
+      if (!this.note.isDraft) return {};
+
+      return this.getDiscussion(this.note.discussion_id);
+    },
     noteBody() {
       return this.note.note;
     },

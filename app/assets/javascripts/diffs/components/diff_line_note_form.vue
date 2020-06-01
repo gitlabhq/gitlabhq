@@ -1,6 +1,6 @@
 <script>
 import { mapState, mapGetters, mapActions } from 'vuex';
-import diffLineNoteFormMixin from 'ee_else_ce/notes/mixins/diff_line_note_form';
+import diffLineNoteFormMixin from '~/notes/mixins/diff_line_note_form';
 import { s__ } from '~/locale';
 import noteForm from '../../notes/components/note_form.vue';
 import autosave from '../../notes/mixins/autosave';

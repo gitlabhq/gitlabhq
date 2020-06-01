@@ -169,7 +169,7 @@ module NotesHelper
   end
 
   def notes_data(issuable)
-    {
+    data = {
       discussionsPath: discussions_path(issuable),
       registerPath: new_session_path(:user, redirect_to_referer: 'yes', anchor: 'register-pane'),
       newSessionPath: new_session_path(:user, redirect_to_referer: 'yes'),
@@ -181,6 +181,16 @@ module NotesHelper
       prerenderedNotesCount: issuable.capped_notes_count(MAX_PRERENDERED_NOTES),
       lastFetchedAt: Time.now.to_i
     }
+
+    if issuable.is_a?(MergeRequest)
+      data.merge!(
+        draftsPath: project_merge_request_drafts_path(@project, issuable),
+        draftsPublishPath: publish_project_merge_request_drafts_path(@project, issuable),
+        draftsDiscardPath: discard_project_merge_request_drafts_path(@project, issuable)
+      )
+    end
+
+    data
   end
 
   def discussion_resolved_intro(discussion)

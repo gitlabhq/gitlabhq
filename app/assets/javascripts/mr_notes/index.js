@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import store from 'ee_else_ce/mr_notes/stores';
+import store from '~/mr_notes/stores';
 import initNotesApp from './init_notes';
 import initDiffsApp from '../diffs';
 import discussionCounter from '../notes/components/discussion_counter.vue';

@@ -2,7 +2,6 @@
 import $ from 'jquery';
 import { mapGetters, mapActions } from 'vuex';
 import { escape } from 'lodash';
-import draftMixin from 'ee_else_ce/notes/mixins/draft';
 import { truncateSha } from '~/lib/utils/text_utility';
 import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
 import { __, s__, sprintf } from '../../locale';
@@ -25,7 +24,7 @@ export default {
     NoteBody,
     TimelineEntryItem,
   },
-  mixins: [noteable, resolvable, draftMixin],
+  mixins: [noteable, resolvable],
   props: {
     note: {
       type: Object,
@@ -104,6 +103,15 @@ export default {
         id,
       )}</a>`;
       return sprintf(s__('MergeRequests|commented on commit %{commitLink}'), { commitLink }, false);
+    },
+    isDraft() {
+      return this.note.isDraft;
+    },
+    canResolve() {
+      return (
+        this.note.current_user.can_resolve ||
+        (this.note.isDraft && this.note.discussion_id !== null)
+      );
     },
   },
 

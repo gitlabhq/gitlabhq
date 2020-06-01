@@ -49,7 +49,7 @@ describe 'User comments on a diff', :js do
 
       page.within('.js-discussion-note-form') do
         fill_in('note_note', with: "```suggestion\n# change to a comment\n```")
-        click_button('Comment')
+        click_button('Add comment now')
       end
 
       wait_for_requests
@@ -77,7 +77,7 @@ describe 'User comments on a diff', :js do
 
       page.within('.js-discussion-note-form') do
         fill_in('note_note', with: "```suggestion\n# change to a comment\n```")
-        click_button('Comment')
+        click_button('Add comment now')
       end
 
       wait_for_requests
@@ -119,7 +119,7 @@ describe 'User comments on a diff', :js do
 
         page.within('.js-discussion-note-form') do
           fill_in('note_note', with: "```suggestion\n# change to a comment\n```")
-          click_button('Comment')
+          click_button('Add comment now')
           wait_for_requests
         end
 
@@ -127,7 +127,7 @@ describe 'User comments on a diff', :js do
 
         page.within('.js-discussion-note-form') do
           fill_in('note_note', with: "```suggestion\n# 2nd change to a comment\n```")
-          click_button('Comment')
+          click_button('Add comment now')
           wait_for_requests
         end
 
@@ -158,7 +158,7 @@ describe 'User comments on a diff', :js do
 
       page.within('.js-discussion-note-form') do
         fill_in('note_note', with: "```suggestion\n# change to a comment\n```\n```suggestion:-2\n# or that\n# heh\n```")
-        click_button('Comment')
+        click_button('Add comment now')
       end
 
       wait_for_requests
@@ -201,7 +201,7 @@ describe 'User comments on a diff', :js do
 
       page.within('.js-discussion-note-form') do
         fill_in('note_note', with: "```suggestion:-3+5\n# change to a\n# comment\n# with\n# broken\n# lines\n```")
-        click_button('Comment')
+        click_button('Add comment now')
       end
 
       wait_for_requests

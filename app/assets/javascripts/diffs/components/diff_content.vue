@@ -1,11 +1,12 @@
 <script>
 import { mapActions, mapGetters, mapState } from 'vuex';
 import { GlLoadingIcon } from '@gitlab/ui';
-import diffLineNoteFormMixin from 'ee_else_ce/notes/mixins/diff_line_note_form';
-import draftCommentsMixin from 'ee_else_ce/diffs/mixins/draft_comments';
+import diffLineNoteFormMixin from '~/notes/mixins/diff_line_note_form';
+import draftCommentsMixin from '~/diffs/mixins/draft_comments';
 import DiffViewer from '~/vue_shared/components/diff_viewer/diff_viewer.vue';
 import NotDiffableViewer from '~/vue_shared/components/diff_viewer/viewers/not_diffable.vue';
 import NoPreviewViewer from '~/vue_shared/components/diff_viewer/viewers/no_preview.vue';
+import DiffFileDrafts from '~/batch_comments/components/diff_file_drafts.vue';
 import InlineDiffView from './inline_diff_view.vue';
 import ParallelDiffView from './parallel_diff_view.vue';
 import userAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
@@ -29,7 +30,7 @@ export default {
     NotDiffableViewer,
     NoPreviewViewer,
     userAvatarLink,
-    DiffFileDrafts: () => import('ee_component/batch_comments/components/diff_file_drafts.vue'),
+    DiffFileDrafts,
   },
   mixins: [diffLineNoteFormMixin, draftCommentsMixin],
   props: {

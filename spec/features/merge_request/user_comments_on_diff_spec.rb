@@ -27,7 +27,7 @@ describe 'User comments on a diff', :js do
 
           page.within('.js-discussion-note-form') do
             fill_in('note_note', with: 'Line is wrong')
-            click_button('Comment')
+            click_button('Add comment now')
           end
 
           page.within('.diff-files-holder > div:nth-child(3)') do
@@ -46,7 +46,7 @@ describe 'User comments on a diff', :js do
 
           page.within('.js-discussion-note-form') do
             fill_in('note_note', with: 'Line is correct')
-            click_button('Comment')
+            click_button('Add comment now')
           end
 
           wait_for_requests
@@ -59,7 +59,7 @@ describe 'User comments on a diff', :js do
 
           page.within('.js-discussion-note-form') do
             fill_in('note_note', with: 'Line is wrong')
-            click_button('Comment')
+            click_button('Add comment now')
           end
 
           wait_for_requests
@@ -120,7 +120,7 @@ describe 'User comments on a diff', :js do
 
       page.within('.js-discussion-note-form') do
         fill_in(:note_note, with: 'Line is wrong')
-        click_button('Comment')
+        click_button('Add comment now')
       end
 
       page.within('.diff-file:nth-of-type(5) .discussion .note') do
@@ -146,7 +146,7 @@ describe 'User comments on a diff', :js do
 
       page.within('.js-discussion-note-form') do
         fill_in(:note_note, with: 'Line is wrong')
-        click_button('Comment')
+        click_button('Add comment now')
       end
 
       page.within('.notes-tab .badge') do

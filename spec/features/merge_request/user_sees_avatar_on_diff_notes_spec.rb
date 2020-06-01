@@ -42,7 +42,7 @@ describe 'Merge request > User sees avatars on diff notes', :js do
       page.within('.js-discussion-note-form') do
         find('.note-textarea').native.send_keys('Test comment')
 
-        click_button 'Comment'
+        click_button 'Add comment now'
       end
 
       expect(page).to have_content('Test comment')
@@ -137,7 +137,7 @@ describe 'Merge request > User sees avatars on diff notes', :js do
         page.within '.js-discussion-note-form' do
           find('.js-note-text').native.send_keys('Test')
 
-          click_button 'Comment'
+          click_button 'Add comment now'
 
           wait_for_requests
         end
@@ -155,7 +155,7 @@ describe 'Merge request > User sees avatars on diff notes', :js do
 
           page.within '.js-discussion-note-form' do
             find('.js-note-text').native.send_keys('Test')
-            find('.js-comment-button').click
+            click_button 'Add comment now'
 
             wait_for_requests
           end

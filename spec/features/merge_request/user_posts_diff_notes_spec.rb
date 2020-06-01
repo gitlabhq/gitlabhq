@@ -225,7 +225,7 @@ describe 'Merge request > User posts diff notes', :js do
   def should_allow_commenting(line_holder, diff_side = nil, asset_form_reset: true)
     write_comment_on_line(line_holder, diff_side)
 
-    click_button 'Comment'
+    click_button 'Add comment now'
 
     wait_for_requests
 

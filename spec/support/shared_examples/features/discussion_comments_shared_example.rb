@@ -15,7 +15,7 @@ RSpec.shared_examples 'thread comments' do |resource_name|
 
     find("#{form_selector} .note-textarea").send_keys(comment)
 
-    click_button 'Comment'
+    find('.js-comment-button').click
 
     expect(page).to have_content(comment)
 
@@ -146,7 +146,7 @@ RSpec.shared_examples 'thread comments' do |resource_name|
           find("#{comments_selector} .js-vue-discussion-reply").click
           find("#{comments_selector} .note-textarea").send_keys(text)
 
-          click_button "Comment"
+          find("#{comments_selector} .js-comment-button").click
           wait_for_requests
         end
 

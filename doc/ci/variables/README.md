@@ -514,8 +514,10 @@ variables take precedence over those defined in `.gitlab-ci.yml`.
 
 ## Unsupported variables
 
-There are cases where some variables cannot be used in the context of a
-`.gitlab-ci.yml` definition (for example under `script`). Read more about which variables are [not supported](where_variables_can_be_used.md).
+Variable names are limited by the underlying shell used to execute scripts (see [available shells](https://docs.gitlab.com/runner/shells/index.html).
+Each shell has its own unique set of reserved variable names.
+You will also want to keep in mind the [scope of environment variables](where_variables_can_be_used.md) to ensure a variable is defined in the scope
+in which you wish to use it.
 
 ## Where variables can be used
 

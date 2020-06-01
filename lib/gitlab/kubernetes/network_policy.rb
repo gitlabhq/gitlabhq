@@ -3,6 +3,8 @@
 module Gitlab
   module Kubernetes
     class NetworkPolicy
+      DISABLED_BY_LABEL = :'network-policy.gitlab.com/disabled_by'
+
       def initialize(name:, namespace:, pod_selector:, ingress:, labels: nil, creation_timestamp: nil, policy_types: ["Ingress"], egress: nil)
         @name = name
         @namespace = namespace
@@ -66,7 +68,8 @@ module Gitlab
           namespace: namespace,
           creation_timestamp: creation_timestamp,
           manifest: manifest,
-          is_autodevops: autodevops?
+          is_autodevops: autodevops?,
+          is_enabled: enabled?
         }
       end
 
@@ -74,6 +77,28 @@ module Gitlab
         return false unless labels
 
         !labels[:chart].nil? && labels[:chart].start_with?('auto-deploy-app-')
+      end
+
+      # podSelector selects pods that should be targeted by this
+      # policy. We can narrow selection by requiring this policy to
+      # match our custom labels. Since DISABLED_BY label will not be
+      # on any pod a policy will be effectively disabled.
+      def enabled?
+        return true unless pod_selector&.key?(:matchLabels)
+
+        !pod_selector[:matchLabels]&.key?(DISABLED_BY_LABEL)
+      end
+
+      def enable
+        return if enabled?
+
+        pod_selector[:matchLabels].delete(DISABLED_BY_LABEL)
+      end
+
+      def disable
+        @pod_selector ||= {}
+        pod_selector[:matchLabels] ||= {}
+        pod_selector[:matchLabels].merge!(DISABLED_BY_LABEL => 'gitlab')
       end
 
       private

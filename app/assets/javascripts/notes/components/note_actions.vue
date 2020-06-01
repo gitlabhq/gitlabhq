@@ -1,7 +1,7 @@
 <script>
 import { mapGetters } from 'vuex';
 import { GlLoadingIcon, GlTooltipDirective } from '@gitlab/ui';
-import resolvedStatusMixin from 'ee_else_ce/batch_comments/mixins/resolved_status';
+import resolvedStatusMixin from '~/batch_comments/mixins/resolved_status';
 import Icon from '~/vue_shared/components/icon.vue';
 import ReplyButton from './note_actions/reply_button.vue';
 

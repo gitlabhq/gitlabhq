@@ -6,7 +6,7 @@ RSpec.shared_examples 'comment on merge request file' do
 
     page.within('.js-discussion-note-form') do
       fill_in(:note_note, with: 'Line is wrong')
-      click_button('Comment')
+      find('.js-comment-button').click
     end
 
     wait_for_requests

@@ -73,6 +73,70 @@ module QA
           element :edit_button
         end
 
+        view 'app/assets/javascripts/batch_comments/components/publish_button.vue' do
+          element :submit_review
+        end
+
+        view 'app/assets/javascripts/batch_comments/components/review_bar.vue' do
+          element :review_bar
+          element :discard_review
+          element :modal_delete_pending_comments
+        end
+
+        view 'app/assets/javascripts/notes/components/note_form.vue' do
+          element :unresolve_review_discussion_checkbox
+          element :resolve_review_discussion_checkbox
+          element :start_review
+          element :comment_now
+        end
+
+        view 'app/assets/javascripts/batch_comments/components/preview_dropdown.vue' do
+          element :review_preview_toggle
+        end
+
+        def start_review
+          click_element :start_review
+
+          # After clicking the button, wait for it to disappear
+          # before moving on to the next part of the test
+          has_no_element? :start_review
+        end
+
+        def comment_now
+          click_element :comment_now
+
+          # After clicking the button, wait for it to disappear
+          # before moving on to the next part of the test
+          has_no_element? :comment_now
+        end
+
+        def submit_pending_reviews
+          within_element :review_bar do
+            click_element :review_preview_toggle
+            click_element :submit_review
+
+            # After clicking the button, wait for it to disappear
+            # before moving on to the next part of the test
+            has_no_element? :submit_review
+          end
+        end
+
+        def discard_pending_reviews
+          within_element :review_bar do
+            click_element :discard_review
+          end
+          click_element :modal_delete_pending_comments
+        end
+
+        def resolve_review_discussion
+          scroll_to_element :start_review
+          check_element :resolve_review_discussion_checkbox
+        end
+
+        def unresolve_review_discussion
+          check_element :unresolve_review_discussion_checkbox
+        end
+
         def add_comment_to_diff(text)
           wait_until(sleep_interval: 5) do
             has_text?("No newline at end of file")

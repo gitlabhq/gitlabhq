@@ -105,7 +105,7 @@ describe 'Merge request > User posts notes', :js do
 
       page.within('.discussion-reply-holder') do
         fill_in 'note[note]', with: 'A reply'
-        click_button 'Comment'
+        click_button 'Add comment now'
         wait_for_requests
         expect(page).to have_content('Your comment could not be submitted because discussion to reply to cannot be found')
       end

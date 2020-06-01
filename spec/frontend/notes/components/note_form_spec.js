@@ -1,8 +1,9 @@
 import { shallowMount, createLocalVue } from '@vue/test-utils';
 import createStore from '~/notes/stores';
 import NoteForm from '~/notes/components/note_form.vue';
+import batchComments from '~/batch_comments/stores/modules/batch_comments';
 import MarkdownField from '~/vue_shared/components/markdown/field.vue';
-import { noteableDataMock, notesDataMock } from '../mock_data';
+import { noteableDataMock, notesDataMock, discussionMock } from '../mock_data';
 
 import { getDraft, updateDraft } from '~/lib/utils/autosave';
 
@@ -243,6 +244,57 @@ describe('issue_note_form component', () => {
       textarea.setValue(dummyContent);
 
       expect(updateDraft).toHaveBeenCalledWith(dummyAutosaveKey, dummyContent);
+    });
+  });
+
+  describe('with batch comments', () => {
+    beforeEach(() => {
+      store.registerModule('batchComments', batchComments());
+
+      wrapper = createComponentWrapper();
+      wrapper.setProps({
+        ...props,
+        noteId: '',
+        discussion: { ...discussionMock, for_commit: false },
+      });
+    });
+
+    it('should be possible to cancel', () => {
+      jest.spyOn(wrapper.vm, 'cancelHandler');
+
+      return wrapper.vm.$nextTick().then(() => {
+        const cancelButton = wrapper.find('[data-testid="cancelBatchCommentsEnabled"]');
+        cancelButton.trigger('click');
+
+        expect(wrapper.vm.cancelHandler).toHaveBeenCalledWith(true);
+      });
+    });
+
+    it('shows resolve checkbox', () => {
+      expect(wrapper.find('.js-resolve-checkbox').exists()).toBe(true);
+    });
+
+    it('hides actions for commits', () => {
+      wrapper.setProps({ discussion: { for_commit: true } });
+
+      return wrapper.vm.$nextTick(() => {
+        expect(wrapper.find('.note-form-actions').text()).not.toContain('Start a review');
+      });
+    });
+
+    describe('on enter', () => {
+      it('should start review or add to review when cmd+enter is pressed', () => {
+        const textarea = wrapper.find('textarea');
+
+        jest.spyOn(wrapper.vm, 'handleAddToReview');
+
+        textarea.setValue('Foo');
+        textarea.trigger('keydown.enter', { metaKey: true });
+
+        return wrapper.vm.$nextTick(() => {
+          expect(wrapper.vm.handleAddToReview).toHaveBeenCalled();
+        });
+      });
     });
   });
 });
