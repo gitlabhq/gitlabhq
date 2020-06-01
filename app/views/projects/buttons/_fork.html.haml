@@ -1,6 +1,6 @@
 - unless @project.empty_repo?
   - if current_user && can?(current_user, :fork_project, @project)
-    .count-badge.d-inline-flex.align-item-stretch.append-right-8
+    .count-badge.d-inline-flex.align-item-stretch.gl-mr-3
       - if current_user.already_forked?(@project) && current_user.manageable_namespaces.size < 2
         = link_to namespace_project_path(current_user, current_user.fork_of(@project)), title: s_('ProjectOverview|Go to your fork'), class: 'btn btn-default has-tooltip count-badge-button d-flex align-items-center fork-btn' do
           = sprite_icon('fork', { css_class: 'icon' })

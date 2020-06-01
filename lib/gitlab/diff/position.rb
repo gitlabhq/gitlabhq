@@ -9,6 +9,7 @@ module Gitlab
 
       delegate :old_path,
                :new_path,
+               :file_identifier_hash,
                :base_sha,
                :start_sha,
                :head_sha,

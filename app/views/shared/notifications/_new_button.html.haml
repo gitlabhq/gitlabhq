@@ -8,7 +8,7 @@
   - else
     - button_title = _("Notification setting - %{notification_title}") % { notification_title: notification_title(notification_setting.level) }
 
-  .js-notification-dropdown.notification-dropdown.home-panel-action-button.prepend-top-default.append-right-8.dropdown.inline
+  .js-notification-dropdown.notification-dropdown.home-panel-action-button.prepend-top-default.gl-mr-3.dropdown.inline
     = form_for notification_setting, remote: true, html: { class: "inline notification-form no-label" } do |f|
       = hidden_setting_source_input(notification_setting)
       = hidden_field_tag "hide_label", true

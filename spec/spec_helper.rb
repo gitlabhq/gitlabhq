@@ -195,6 +195,10 @@ RSpec.configure do |config|
         stub_feature_flags(flag => enable_rugged)
       end
 
+      # Disable the usage of file_identifier_hash by default until it is ready
+      # See https://gitlab.com/gitlab-org/gitlab/-/issues/33867
+      stub_feature_flags(file_identifier_hash: false)
+
       allow(Gitlab::GitalyClient).to receive(:can_use_disk?).and_return(enable_rugged)
     end
 

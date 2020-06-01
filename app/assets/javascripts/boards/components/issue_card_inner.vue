@@ -188,7 +188,7 @@ export default {
       >
         <span
           v-if="issue.referencePath"
-          class="board-card-number overflow-hidden d-flex append-right-8 gl-mt-3"
+          class="board-card-number overflow-hidden d-flex gl-mr-3 gl-mt-3"
         >
           <tooltip-on-truncate
             v-if="issueReferencePath"

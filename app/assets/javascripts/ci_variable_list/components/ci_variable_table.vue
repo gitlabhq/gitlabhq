@@ -170,7 +170,7 @@ export default {
         v-if="tableIsNotEmpty"
         ref="secret-value-reveal-button"
         data-qa-selector="reveal_ci_variable_value_button"
-        class="append-right-8"
+        class="gl-mr-3"
         @click="toggleValues(!valuesHidden)"
         >{{ valuesButtonText }}</gl-deprecated-button
       >

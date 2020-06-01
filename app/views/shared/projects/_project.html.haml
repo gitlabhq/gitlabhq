@@ -32,7 +32,7 @@
         .d-flex.align-items-center.flex-wrap.project-title
           %h2.d-flex.gl-mt-3
             = link_to project_path(project), class: 'text-plain' do
-              %span.project-full-name.append-right-8><
+              %span.project-full-name.gl-mr-3><
                 %span.namespace-name
                   - if project.namespace && !skip_namespace
                     = project.namespace.human_name

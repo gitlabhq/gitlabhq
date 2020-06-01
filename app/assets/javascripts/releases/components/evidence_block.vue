@@ -71,7 +71,7 @@ export default {
           :download="evidenceTitle(index)"
           :href="evidenceUrl(index)"
         >
-          <gl-icon name="review-list" class="align-middle append-right-8" />
+          <gl-icon name="review-list" class="align-middle gl-mr-3" />
           <span>{{ evidenceTitle(index) }}</span>
         </gl-link>
 
@@ -96,7 +96,7 @@ export default {
         <gl-icon
           v-gl-tooltip
           name="clock"
-          class="align-middle append-right-8"
+          class="align-middle gl-mr-3"
           :title="collectedAt(index)"
         />
         <span>{{ timeSummary(index) }}</span>

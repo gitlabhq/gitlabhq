@@ -7,8 +7,10 @@ import {
   GlDropdown,
   GlDropdownItem,
   GlIcon,
+  GlTabs,
   GlTab,
   GlBadge,
+  GlPagination,
 } from '@gitlab/ui';
 import { visitUrl } from '~/lib/utils/url_utility';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
@@ -39,19 +41,21 @@ describe('AlertManagementList', () => {
   const findLoader = () => wrapper.find(GlLoadingIcon);
   const findStatusDropdown = () => wrapper.find(GlDropdown);
   const findStatusFilterTabs = () => wrapper.findAll(GlTab);
+  const findStatusTabs = () => wrapper.find(GlTabs);
   const findStatusFilterBadge = () => wrapper.findAll(GlBadge);
   const findDateFields = () => wrapper.findAll(TimeAgo);
   const findFirstStatusOption = () => findStatusDropdown().find(GlDropdownItem);
   const findAssignees = () => wrapper.findAll('[data-testid="assigneesField"]');
   const findSeverityFields = () => wrapper.findAll('[data-testid="severityField"]');
   const findSeverityColumnHeader = () => wrapper.findAll('th').at(0);
-
+  const findStartTimeColumnHeader = () => wrapper.findAll('th').at(1);
+  const findPagination = () => wrapper.find(GlPagination);
   const alertsCount = {
-    acknowledged: 6,
-    all: 16,
     open: 14,
-    resolved: 2,
     triggered: 10,
+    acknowledged: 6,
+    resolved: 1,
+    all: 16,
   };
 
   function mountComponent({
@@ -76,6 +80,7 @@ describe('AlertManagementList', () => {
       mocks: {
         $apollo: {
           mutate: jest.fn(),
+          query: jest.fn(),
           queries: {
             alerts: {
               loading,
@@ -134,7 +139,7 @@ describe('AlertManagementList', () => {
     it('loading state', () => {
       mountComponent({
         props: { alertManagementEnabled: true, userCanEnableAlertManagement: true },
-        data: { alerts: null, alertsCount: null },
+        data: { alerts: {}, alertsCount: null },
         loading: true,
       });
       expect(findAlertsTable().exists()).toBe(true);
@@ -149,7 +154,7 @@ describe('AlertManagementList', () => {
     it('error state', () => {
       mountComponent({
         props: { alertManagementEnabled: true, userCanEnableAlertManagement: true },
-        data: { alerts: null, alertsCount: null, errored: true },
+        data: { alerts: { errors: ['error'] }, alertsCount: null, errored: true },
         loading: false,
       });
       expect(findAlertsTable().exists()).toBe(true);
@@ -166,7 +171,7 @@ describe('AlertManagementList', () => {
     it('empty state', () => {
       mountComponent({
         props: { alertManagementEnabled: true, userCanEnableAlertManagement: true },
-        data: { alerts: [], alertsCount: { all: 0 }, errored: false },
+        data: { alerts: { list: [], pageInfo: {} }, alertsCount: { all: 0 }, errored: false },
         loading: false,
       });
       expect(findAlertsTable().exists()).toBe(true);
@@ -183,7 +188,7 @@ describe('AlertManagementList', () => {
     it('has data state', () => {
       mountComponent({
         props: { alertManagementEnabled: true, userCanEnableAlertManagement: true },
-        data: { alerts: mockAlerts, alertsCount, errored: false },
+        data: { alerts: { list: mockAlerts }, alertsCount, errored: false },
         loading: false,
       });
       expect(findLoader().exists()).toBe(false);
@@ -199,7 +204,7 @@ describe('AlertManagementList', () => {
     it('displays status dropdown', () => {
       mountComponent({
         props: { alertManagementEnabled: true, userCanEnableAlertManagement: true },
-        data: { alerts: mockAlerts, alertsCount, errored: false },
+        data: { alerts: { list: mockAlerts }, alertsCount, errored: false },
         loading: false,
       });
       expect(findStatusDropdown().exists()).toBe(true);
@@ -208,7 +213,7 @@ describe('AlertManagementList', () => {
     it('shows correct severity icons', () => {
       mountComponent({
         props: { alertManagementEnabled: true, userCanEnableAlertManagement: true },
-        data: { alerts: mockAlerts, alertsCount, errored: false },
+        data: { alerts: { list: mockAlerts }, alertsCount, errored: false },
         loading: false,
       });
 
@@ -225,7 +230,7 @@ describe('AlertManagementList', () => {
     it('renders severity text', () => {
       mountComponent({
         props: { alertManagementEnabled: true, userCanEnableAlertManagement: true },
-        data: { alerts: mockAlerts, alertsCount, errored: false },
+        data: { alerts: { list: mockAlerts }, alertsCount, errored: false },
         loading: false,
       });
 
@@ -239,7 +244,7 @@ describe('AlertManagementList', () => {
     it('renders Unassigned when no assignee(s) present', () => {
       mountComponent({
         props: { alertManagementEnabled: true, userCanEnableAlertManagement: true },
-        data: { alerts: mockAlerts, alertsCount, errored: false },
+        data: { alerts: { list: mockAlerts }, alertsCount, errored: false },
         loading: false,
       });
 
@@ -253,7 +258,7 @@ describe('AlertManagementList', () => {
     it('renders username(s) when assignee(s) present', () => {
       mountComponent({
         props: { alertManagementEnabled: true, userCanEnableAlertManagement: true },
-        data: { alerts: mockAlerts, alertsCount, errored: false },
+        data: { alerts: { list: mockAlerts }, alertsCount, errored: false },
         loading: false,
       });
 
@@ -267,7 +272,7 @@ describe('AlertManagementList', () => {
     it('navigates to the detail page when alert row is clicked', () => {
       mountComponent({
         props: { alertManagementEnabled: true, userCanEnableAlertManagement: true },
-        data: { alerts: mockAlerts, alertsCount, errored: false },
+        data: { alerts: { list: mockAlerts }, alertsCount, errored: false },
         loading: false,
       });
 
@@ -282,15 +287,17 @@ describe('AlertManagementList', () => {
         mountComponent({
           props: { alertManagementEnabled: true, userCanEnableAlertManagement: true },
           data: {
-            alerts: [
-              {
-                iid: 1,
-                status: 'acknowledged',
-                startedAt: '2020-03-17T23:18:14.996Z',
-                endedAt: '2020-04-17T23:18:14.996Z',
-                severity: 'high',
-              },
-            ],
+            alerts: {
+              list: [
+                {
+                  iid: 1,
+                  status: 'acknowledged',
+                  startedAt: '2020-03-17T23:18:14.996Z',
+                  endedAt: '2020-04-17T23:18:14.996Z',
+                  severity: 'high',
+                },
+              ],
+            },
             alertsCount,
             errored: false,
           },
@@ -326,27 +333,31 @@ describe('AlertManagementList', () => {
     beforeEach(() => {
       mountComponent({
         props: { alertManagementEnabled: true, userCanEnableAlertManagement: true },
-        data: { alerts: mockAlerts, errored: false, sort: 'STARTED_AT_ASC', alertsCount },
+        data: { alerts: { list: mockAlerts }, errored: false, sort: 'STARTED_AT_ASC', alertsCount },
         loading: false,
+        stubs: { GlTable },
       });
     });
 
     it('updates sort with new direction and column key', () => {
       findSeverityColumnHeader().trigger('click');
 
-      expect(wrapper.vm.$data.sort).toEqual('SEVERITY_ASC');
+      expect(wrapper.vm.$data.sort).toBe('SEVERITY_ASC');
 
       findSeverityColumnHeader().trigger('click');
 
-      expect(wrapper.vm.$data.sort).toEqual('SEVERITY_DESC');
+      expect(wrapper.vm.$data.sort).toBe('SEVERITY_DESC');
     });
 
     it('updates the `ariaSort` attribute so the sort icon appears in the proper column', () => {
-      expect(mockStartedAtCol.ariaSort).toEqual('ascending');
+      expect(findStartTimeColumnHeader().attributes('aria-sort')).toBe('ascending');
 
       findSeverityColumnHeader().trigger('click');
 
-      expect(mockStartedAtCol.ariaSort).toEqual('none');
+      wrapper.vm.$nextTick(() => {
+        expect(findStartTimeColumnHeader().attributes('aria-sort')).toBe('none');
+        expect(findSeverityColumnHeader().attributes('aria-sort')).toBe('ascending');
+      });
     });
   });
 
@@ -367,7 +378,7 @@ describe('AlertManagementList', () => {
     beforeEach(() => {
       mountComponent({
         props: { alertManagementEnabled: true, userCanEnableAlertManagement: true },
-        data: { alerts: mockAlerts, alertsCount, errored: false },
+        data: { alerts: { list: mockAlerts }, alertsCount, errored: false },
         loading: false,
       });
     });
@@ -403,7 +414,7 @@ describe('AlertManagementList', () => {
       jest.spyOn(Tracking, 'event');
       mountComponent({
         props: { alertManagementEnabled: true, userCanEnableAlertManagement: true },
-        data: { alerts: mockAlerts, alertsCount },
+        data: { alerts: { list: mockAlerts }, alertsCount },
         loading: false,
       });
     });
@@ -421,6 +432,66 @@ describe('AlertManagementList', () => {
       setImmediate(() => {
         const { category, action, label } = trackAlertStatusUpdateOptions;
         expect(Tracking.event).toHaveBeenCalledWith(category, action, { label, property: status });
+      });
+    });
+  });
+
+  describe('Pagination', () => {
+    beforeEach(() => {
+      mountComponent({
+        props: { alertManagementEnabled: true, userCanEnableAlertManagement: true },
+        data: { alerts: { list: mockAlerts, pageInfo: {} }, alertsCount, errored: false },
+        loading: false,
+      });
+    });
+
+    it('does NOT show pagination control when list is smaller than default page size', () => {
+      findStatusTabs().vm.$emit('input', 3);
+      wrapper.vm.$nextTick(() => {
+        expect(findPagination().exists()).toBe(false);
+      });
+    });
+
+    it('shows pagination control when list is larger than default page size', () => {
+      findStatusTabs().vm.$emit('input', 0);
+      wrapper.vm.$nextTick(() => {
+        expect(findPagination().exists()).toBe(true);
+      });
+    });
+
+    describe('prevPage', () => {
+      it('returns prevPage number', () => {
+        findPagination().vm.$emit('input', 3);
+
+        return wrapper.vm.$nextTick(() => {
+          expect(wrapper.vm.prevPage).toBe(2);
+        });
+      });
+
+      it('returns 0 when it is the first page', () => {
+        findPagination().vm.$emit('input', 1);
+
+        return wrapper.vm.$nextTick(() => {
+          expect(wrapper.vm.prevPage).toBe(0);
+        });
+      });
+    });
+
+    describe('nextPage', () => {
+      it('returns nextPage number', () => {
+        findPagination().vm.$emit('input', 1);
+
+        return wrapper.vm.$nextTick(() => {
+          expect(wrapper.vm.nextPage).toBe(2);
+        });
+      });
+
+      it('returns `null` when currentPage is already last page', () => {
+        findStatusTabs().vm.$emit('input', 3);
+        findPagination().vm.$emit('input', 1);
+        return wrapper.vm.$nextTick(() => {
+          expect(wrapper.vm.nextPage).toBeNull();
+        });
       });
     });
   });

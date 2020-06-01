@@ -86,7 +86,7 @@ export default {
         <publish-button
           :show-count="true"
           :should-publish="false"
-          class="btn btn-success btn-inverted append-right-8"
+          class="btn btn-success btn-inverted gl-mr-3"
         />
         <loading-button
           ref="publishNowButton"

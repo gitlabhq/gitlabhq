@@ -83,7 +83,7 @@ export default {
     @click="scrollToDraft(draft)"
   >
     <span class="review-preview-item-header">
-      <icon class="append-right-8 flex-shrink-0" :name="iconName" />
+      <icon class="gl-mr-3 flex-shrink-0" :name="iconName" />
       <span class="bold text-nowrap">
         <span class="review-preview-item-header-text block-truncated"> {{ titleText }} </span>
         <template v-if="showLinePosition">
@@ -98,7 +98,7 @@ export default {
       v-if="draft.discussion_id && resolvedStatusMessage"
       class="review-preview-item-footer draft-note-resolution p-0"
     >
-      <icon class="append-right-8" name="status_success" /> {{ resolvedStatusMessage }}
+      <icon class="gl-mr-3" name="status_success" /> {{ resolvedStatusMessage }}
     </span>
   </button>
 </template>

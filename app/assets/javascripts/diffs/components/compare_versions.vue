@@ -86,7 +86,7 @@ export default {
       <button
         v-gl-tooltip.hover
         type="button"
-        class="btn btn-default append-right-8 js-toggle-tree-list"
+        class="btn btn-default gl-mr-3 js-toggle-tree-list"
         :class="{
           active: showTreeList,
         }"
@@ -126,15 +126,11 @@ export default {
         <gl-deprecated-button
           v-if="commit || startVersion"
           :href="latestVersionPath"
-          class="append-right-8 js-latest-version"
+          class="gl-mr-3 js-latest-version"
         >
           {{ __('Show latest version') }}
         </gl-deprecated-button>
-        <gl-deprecated-button
-          v-show="hasCollapsedFile"
-          class="append-right-8"
-          @click="expandAllFiles"
-        >
+        <gl-deprecated-button v-show="hasCollapsedFile" class="gl-mr-3" @click="expandAllFiles">
           {{ __('Expand all') }}
         </gl-deprecated-button>
         <settings-dropdown />

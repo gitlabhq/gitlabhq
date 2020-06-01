@@ -75,7 +75,7 @@ export default {
       >
         {{ stage.name }}
       </strong>
-      <div v-if="!stage.isLoading || stage.jobs.length" class="append-right-8 gl-ml-2">
+      <div v-if="!stage.isLoading || stage.jobs.length" class="gl-mr-3 gl-ml-2">
         <span class="badge badge-pill"> {{ jobsCount }} </span>
       </div>
       <icon :name="collapseIcon" class="ide-stage-collapse-icon" />

@@ -103,7 +103,7 @@ export default {
           :show-count="false"
           :should-publish="true"
           :label="__('Submit review')"
-          class="float-right append-right-8"
+          class="float-right gl-mr-3"
         />
       </div>
     </div>

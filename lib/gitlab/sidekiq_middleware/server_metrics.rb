@@ -49,6 +49,8 @@ module Gitlab
           @metrics[:sidekiq_jobs_gitaly_seconds].observe(labels, get_gitaly_time(job))
           @metrics[:sidekiq_redis_requests_total].increment(labels, get_redis_calls(job))
           @metrics[:sidekiq_redis_requests_duration_seconds].observe(labels, get_redis_time(job))
+          @metrics[:sidekiq_elasticsearch_requests_total].increment(labels, get_elasticsearch_calls(job))
+          @metrics[:sidekiq_elasticsearch_requests_duration_seconds].observe(labels, get_elasticsearch_time(job))
         end
       end
 
@@ -62,9 +64,11 @@ module Gitlab
           sidekiq_jobs_gitaly_seconds:             ::Gitlab::Metrics.histogram(:sidekiq_jobs_gitaly_seconds, 'Seconds of Gitaly time to run Sidekiq job', {}, SIDEKIQ_LATENCY_BUCKETS),
           sidekiq_jobs_queue_duration_seconds:     ::Gitlab::Metrics.histogram(:sidekiq_jobs_queue_duration_seconds, 'Duration in seconds that a Sidekiq job was queued before being executed', {}, SIDEKIQ_LATENCY_BUCKETS),
           sidekiq_redis_requests_duration_seconds: ::Gitlab::Metrics.histogram(:sidekiq_redis_requests_duration_seconds, 'Duration in seconds that a Sidekiq job spent requests a Redis server', {}, Gitlab::Instrumentation::Redis::QUERY_TIME_BUCKETS),
+          sidekiq_elasticsearch_requests_duration_seconds: ::Gitlab::Metrics.histogram(:sidekiq_elasticsearch_requests_duration_seconds, 'Duration in seconds that a Sidekiq job spent in requests to an Elasticsearch server', {}, SIDEKIQ_LATENCY_BUCKETS),
           sidekiq_jobs_failed_total:               ::Gitlab::Metrics.counter(:sidekiq_jobs_failed_total, 'Sidekiq jobs failed'),
           sidekiq_jobs_retried_total:              ::Gitlab::Metrics.counter(:sidekiq_jobs_retried_total, 'Sidekiq jobs retried'),
           sidekiq_redis_requests_total:            ::Gitlab::Metrics.counter(:sidekiq_redis_requests_total, 'Redis requests during a Sidekiq job execution'),
+          sidekiq_elasticsearch_requests_total:    ::Gitlab::Metrics.counter(:sidekiq_elasticsearch_requests_total, 'Elasticsearch requests during a Sidekiq job execution'),
           sidekiq_running_jobs:                    ::Gitlab::Metrics.gauge(:sidekiq_running_jobs, 'Number of Sidekiq jobs running', {}, :all),
           sidekiq_concurrency:                     ::Gitlab::Metrics.gauge(:sidekiq_concurrency, 'Maximum number of Sidekiq jobs', {}, :all)
         }
@@ -80,6 +84,14 @@ module Gitlab
 
       def get_redis_calls(job)
         job.fetch(:redis_calls, 0)
+      end
+
+      def get_elasticsearch_time(job)
+        job.fetch(:elasticsearch_duration_s, 0)
+      end
+
+      def get_elasticsearch_calls(job)
+        job.fetch(:elasticsearch_calls, 0)
       end
 
       def get_gitaly_time(job)

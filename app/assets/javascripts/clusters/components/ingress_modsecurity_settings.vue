@@ -168,7 +168,7 @@ export default {
       }}
     </gl-alert>
     <div class="gl-responsive-table-row-layout" role="row">
-      <div class="table-section append-right-8 section-align-top" role="gridcell">
+      <div class="table-section gl-mr-3 section-align-top" role="gridcell">
         <img
           :src="modSecurityLogo"
           :alt="`${$options.title} logo`"

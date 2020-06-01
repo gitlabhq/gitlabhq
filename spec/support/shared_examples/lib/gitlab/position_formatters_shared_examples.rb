@@ -32,7 +32,21 @@ RSpec.shared_examples "position formatter" do
 
     subject { formatter.to_h }
 
-    it { is_expected.to eq(formatter_hash) }
+    context 'when file_identifier_hash is disabled' do
+      before do
+        stub_feature_flags(file_identifier_hash: false)
+      end
+
+      it { is_expected.to eq(formatter_hash.except(:file_identifier_hash)) }
+    end
+
+    context 'when file_identifier_hash is enabled' do
+      before do
+        stub_feature_flags(file_identifier_hash: true)
+      end
+
+      it { is_expected.to eq(formatter_hash) }
+    end
   end
 
   describe '#==' do
