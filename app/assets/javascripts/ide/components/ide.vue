@@ -125,6 +125,7 @@ export default {
                       variant="success"
                       :title="__('New file')"
                       :aria-label="__('New file')"
+                      data-qa-selector="first_file_button"
                       @click="createNewFile()"
                     >
                       {{ __('New file') }}

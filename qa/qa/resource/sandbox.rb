@@ -13,6 +13,7 @@ module QA
 
       attribute :id
       attribute :runners_token
+      attribute :name
 
       def initialize
         @path = Runtime::Namespace.sandbox_name

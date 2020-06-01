@@ -133,7 +133,7 @@ export default {
   <gl-modal
     ref="modal"
     modal-id="ide-new-entry"
-    modal-class="qa-new-file-modal"
+    data-qa-selector="new_file_modal"
     :title="modalTitle"
     :ok-title="buttonLabel"
     ok-variant="success"
@@ -148,7 +148,8 @@ export default {
           ref="fieldName"
           v-model.trim="entryName"
           type="text"
-          class="form-control qa-full-file-path"
+          class="form-control"
+          data-qa-selector="file_name_field"
           :placeholder="placeholder"
         />
         <ul

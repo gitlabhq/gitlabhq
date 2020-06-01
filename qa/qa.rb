@@ -440,6 +440,10 @@ module QA
 
       module WebIDE
         autoload :Alert, 'qa/page/component/web_ide/alert'
+
+        module Modal
+          autoload :CreateNewFile, 'qa/page/component/web_ide/modal/create_new_file'
+        end
       end
 
       module Project

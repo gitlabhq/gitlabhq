@@ -28,19 +28,11 @@ module QA
       end
 
       def enable_and_verify(key)
-        Support::Retrier.retry_on_exception(sleep_interval: 2) do
-          enable(key)
+        set_and_verify(key, enable: true)
+      end
 
-          is_enabled = false
-
-          QA::Support::Waiter.wait_until(sleep_interval: 1) do
-            is_enabled = enabled?(key)
-          end
-
-          raise SetFeatureError, "#{key} was not enabled!" unless is_enabled
-
-          QA::Runtime::Logger.info("Successfully enabled and verified feature flag: #{key}")
-        end
+      def disable_and_verify(key)
+        set_and_verify(key, enable: false)
       end
 
       def enabled?(key)
@@ -72,6 +64,27 @@ module QA
 
             Runtime::API::Client.new(:gitlab, user: user)
           end
+        end
+      end
+
+      # Change a feature flag and verify that the change was successful
+      # Arguments:
+      #   key: The feature flag to set (as a string)
+      #   enable: `true` to enable the flag, `false` to disable it
+      def set_and_verify(key, enable:)
+        Support::Retrier.retry_on_exception(sleep_interval: 2) do
+          enable ? enable(key) : disable(key)
+
+          is_enabled = nil
+
+          QA::Support::Waiter.wait_until(sleep_interval: 1) do
+            is_enabled = enabled?(key)
+            is_enabled == enable
+          end
+
+          raise SetFeatureError, "#{key} was not #{enable ? 'enabled' : 'disabled'}!" unless is_enabled == enable
+
+          QA::Runtime::Logger.info("Successfully #{enable ? 'enabled' : 'disabled'} and verified feature flag: #{key}")
         end
       end
 

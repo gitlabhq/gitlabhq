@@ -30,6 +30,8 @@ module QA
         "#{sandbox_path}#{group.path}/#{name}" if group
       end
 
+      alias_method :full_path, :path_with_namespace
+
       def sandbox_path
         group.respond_to?('sandbox') ? "#{group.sandbox.path}/" : ''
       end

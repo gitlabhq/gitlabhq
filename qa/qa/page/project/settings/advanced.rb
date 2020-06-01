@@ -43,7 +43,9 @@ module QA
 
           def transfer_project!(project_name, namespace)
             expand_select_list
-            select_transfer_option(namespace)
+            # Workaround for a failure to search when there are no spaces around the /
+            # https://gitlab.com/gitlab-org/gitlab/-/issues/218965
+            select_transfer_option(namespace.gsub(/([^\s])\/([^\s])/, '\1 / \2'))
             click_element(:transfer_button)
             fill_confirmation_text(project_name)
             click_confirm_button

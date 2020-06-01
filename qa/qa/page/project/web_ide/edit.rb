@@ -20,12 +20,6 @@ module QA
             element :file_list
           end
 
-          view 'app/assets/javascripts/ide/components/new_dropdown/modal.vue' do
-            element :full_file_path
-            element :new_file_modal
-            element :template_list
-          end
-
           view 'app/assets/javascripts/ide/components/file_templates/bar.vue' do
             element :file_templates_bar
             element :file_template_dropdown
@@ -52,6 +46,10 @@ module QA
             element :editor_container
           end
 
+          view 'app/assets/javascripts/ide/components/ide.vue' do
+            element :first_file_button
+          end
+
           def has_file?(file_name)
             within_element(:file_list) do
               page.has_content? file_name
@@ -59,10 +57,7 @@ module QA
           end
 
           def create_new_file_from_template(file_name, template)
-            click_element :new_file
-
-            # Wait for the modal animation to complete before clicking on the file name
-            wait_for_animated_element(:new_file_modal)
+            click_element(:new_file, Page::Component::WebIDE::Modal::CreateNewFile)
 
             within_element(:template_list) do
               click_on file_name
@@ -129,6 +124,13 @@ module QA
             within_element(:editor_container) do
               find('.modified textarea.inputarea')
             end
+          end
+
+          def create_first_file(file_name)
+            finished_loading?
+            click_element(:first_file_button, Page::Component::WebIDE::Modal::CreateNewFile)
+            fill_element(:file_name_field, file_name)
+            click_button('Create file')
           end
         end
       end

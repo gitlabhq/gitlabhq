@@ -154,8 +154,8 @@ module QA
         end
 
         def merge!
-          click_element :merge_button if ready_to_merge?
-
+          wait_until_ready_to_merge
+          click_element(:merge_button)
           finished_loading?
 
           raise "Merge did not appear to be successful" unless merged?
@@ -165,11 +165,18 @@ module QA
           has_element?(:merged_status_content, text: 'The changes were merged into', wait: 30)
         end
 
-        def ready_to_merge?
-          # The merge button is disabled on load
-          wait_until do
-            has_element?(:merge_button)
-          end
+        # Check if the MR is able to be merged
+        # Waits up 10 seconds and returns false if the MR can't be merged
+        def mergeable?
+          # The merge button is enabled via JS, but `has_element?` calls
+          # `wait_for_requests`, which should ensure the disabled/enabled
+          # state of the element is reliable
+          has_element?(:merge_button, disabled: false)
+        end
+
+        # Waits up 60 seconds and raises an error if unable to merge
+        def wait_until_ready_to_merge
+          has_element?(:merge_button)
 
           # The merge button is enabled via JS
           wait_until(reload: false) do
@@ -198,7 +205,9 @@ module QA
         end
 
         def try_to_merge!
-          click_element :merge_button if ready_to_merge?
+          wait_until_ready_to_merge
+
+          click_element(:merge_button)
         end
 
         def view_email_patches
