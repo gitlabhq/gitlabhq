@@ -99,7 +99,7 @@ describe 'lograge', type: :request do
   end
 
   context 'with a log subscriber' do
-    let(:subscriber) { Lograge::RequestLogSubscriber.new }
+    let(:subscriber) { Lograge::LogSubscribers::ActionController.new }
 
     let(:event) do
       ActiveSupport::Notifications::Event.new(

@@ -62,6 +62,7 @@ are very appreciative of the work done by translators and proofreaders!
   - Hiroyuki Sato - [GitLab](https://gitlab.com/hiroponz), [CrowdIn](https://crowdin.com/profile/hiroponz)
   - Tomo Dote - [GitLab](https://gitlab.com/fu7mu4), [CrowdIn](https://crowdin.com/profile/fu7mu4)
   - Hiromi Nozawa - [GitLab](https://gitlab.com/hir0mi), [CrowdIn](https://crowdin.com/profile/hir0mi)
+  - Takuya Noguchi - [GitLab](https://gitlab.com/tnir), [CrowdIn](https://crowdin.com/profile/tnir)
 - Korean
   - Chang-Ho Cha - [GitLab](https://gitlab.com/changho-cha), [CrowdIn](https://crowdin.com/profile/zzazang)
   - Ji Hun Oh - [GitLab](https://gitlab.com/Baw-Appie), [CrowdIn](https://crowdin.com/profile/BawAppie)

@@ -20,6 +20,13 @@ that can be reused in different scripts.
 Variables are useful for customizing your jobs in GitLab CI/CD.
 When you use variables, you don't have to hard-code values.
 
+For more information about advanced use of GitLab CI/CD:
+
+- Get to productivity faster with these [7 advanced GitLab CI workflow hacks](https://about.gitlab.com/webcast/7cicd-hacks/)
+  shared by GitLab engineers.
+- Learn how the Cloud Native Computing Foundation (CNCF) [eliminates the complexity](https://about.gitlab.com/customers/cncf/)
+  of managing projects across many cloud providers with GitLab CI/CD.
+
 ## Predefined environment variables
 
 GitLab CI/CD has a [default set of predefined variables](predefined_variables.md)

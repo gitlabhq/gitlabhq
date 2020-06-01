@@ -25,6 +25,14 @@ We have complete examples of configuring pipelines:
 - For a collection of examples, see [GitLab CI/CD Examples](../examples/README.md).
 - To see a large `.gitlab-ci.yml` file used in an enterprise, see the [`.gitlab-ci.yml` file for `gitlab`](https://gitlab.com/gitlab-org/gitlab/blob/master/.gitlab-ci.yml).
 
+For some additional information about GitLab CI/CD:
+
+- Watch the [CI/CD Ease of configuration](https://www.youtube.com/embed/opdLqwz6tcE) video.
+- Watch the [Making the case for CI/CD in your organization](https://about.gitlab.com/compare/github-actions-alternative/)
+  webcast to learn the benefits of CI/CD and how to measure the results of CI/CD automation.
+- Learn how [Verizon reduced rebuilds](https://about.gitlab.com/blog/2019/02/14/verizon-customer-story/)
+  from 30 days to under 8 hours with GitLab.
+
 NOTE: **Note:**
 If you have a [mirrored repository where GitLab pulls from](../../user/project/repository/repository_mirroring.md#pulling-from-a-remote-repository-starter),
 you may need to enable pipeline triggering in your project's

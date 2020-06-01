@@ -243,11 +243,12 @@ describe NotificationService, :mailer do
   describe '#unknown_sign_in' do
     let_it_be(:user) { create(:user) }
     let_it_be(:ip) { '127.0.0.1' }
+    let_it_be(:time) { Time.current }
 
-    subject { notification.unknown_sign_in(user, ip) }
+    subject { notification.unknown_sign_in(user, ip, time) }
 
     it 'sends email to the user' do
-      expect { subject }.to have_enqueued_email(user, ip, mail: 'unknown_sign_in_email')
+      expect { subject }.to have_enqueued_email(user, ip, time, mail: 'unknown_sign_in_email')
     end
   end
 

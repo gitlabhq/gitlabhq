@@ -68,10 +68,10 @@ class NotificationService
 
   # Notify a user when a previously unknown IP or device is used to
   # sign in to their account
-  def unknown_sign_in(user, ip)
+  def unknown_sign_in(user, ip, time)
     return unless user.can?(:receive_notifications)
 
-    mailer.unknown_sign_in_email(user, ip).deliver_later
+    mailer.unknown_sign_in_email(user, ip, time).deliver_later
   end
 
   # When create an issue we should send an email to:

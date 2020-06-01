@@ -54,7 +54,40 @@ NOTE: **Note:**
 GitLab does not currently display Go modules in the **Packages Registry** of a project.
 Follow [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/213770) for details.
 
-### Fetch modules from private projects
+## Add GitLab as a Go proxy
+
+NOTE: **Note:**
+To use a Go proxy, you must be using Go 1.13 or later.
+
+The available proxy endpoints are:
+
+- Project - can fetch modules defined by a project - `/api/v4/projects/:id/packages/go`
+
+To use the Go proxy for GitLab to fetch Go modules from GitLab, add the
+appropriate proxy endpoint to `GOPROXY`. For details on setting Go environment
+variables, see [Set environment variables](#set-environment-variables). For
+details on configuring `GOPROXY`, see [Dependency Management in Go >
+Proxies](../../../development/go_guide/dependencies.md#proxies).
+
+For example, adding the project-specific endpoint to `GOPROXY` will tell Go
+to initially query that endpoint and fall back to the default behavior:
+
+```shell
+go env -w GOPROXY='https://gitlab.com/api/v4/projects/1234/packages/go,https://proxy.golang.org,direct'
+```
+
+With this configuration, Go fetches dependencies as follows:
+
+1. Attempt to fetch from the project-specific Go proxy.
+1. Attempt to fetch from [proxy.golang.org](https://proxy.golang.org).
+1. Fetch directly with version control system operations (such as `git clone`,
+   `svn checkout`, and so on).
+
+If `GOPROXY` is not specified, Go follows steps 2 and 3, which corresponds to
+setting `GOPROXY` to `https://proxy.golang.org,direct`. If `GOPROXY` only
+contains the project-specific endpoint, Go will only query that endpoint.
+
+## Fetch modules from private projects
 
 `go` does not support transmitting credentials over insecure connections. The
 steps below work only if GitLab is configured for HTTPS.
@@ -64,7 +97,7 @@ steps below work only if GitLab is configured for HTTPS.
 1. Configure Go to skip downloading of checksums for private GitLab projects
    from the public checksum database.
 
-#### Enable Request Authentication
+### Enable request authentication
 
 Create a [personal access token](../../profile/personal_access_tokens.md) with
 the `api` or `read_api` scope and add it to
@@ -78,90 +111,53 @@ machine <url> login <username> password <token>
 `<username>` and `<token>` should be your username and the personal access
 token, respectively.
 
-#### Disable checksum database queries
+### Disable checksum database queries
 
-Go can be configured to query a checksum database for module checksums. Go 1.13
-and later query `sum.golang.org` by default. This fails for modules that are not
-public and thus not accessible to `sum.golang.org`. To resolve this issue, set
-`GONOSUMDB` to a comma-separated list of projects or namespaces for which Go
-should not query the checksum database. For example, `go env -w
-GONOSUMDB=gitlab.com/my/project` persistently configures Go to skip checksum
-queries for the project `gitlab.com/my/project`.
+When downloading dependencies, by default Go 1.13 and later validate fetched
+sources against the checksum database `sum.golang.org`. If the checksum of the
+fetched sources does not match the checksum from the database, Go will not build
+the dependency. This causes private modules to fail to build, as
+`sum.golang.org` cannot fetch the source of private modules and thus cannot
+provide a checksum. To resolve this issue, `GONOSUMDB` should be set to a
+comma-separated list of private projects. For details on setting Go environment
+variables, see [Set environment variables](#set-environment-variables). For more
+details on disabling this feature of Go, see [Dependency Management in Go >
+Checksums](../../../development/go_guide/dependencies.md#checksums).
 
-Checksum database queries can be disabled for arbitrary prefixes or disabled
-entirely. However, checksum database queries are a security mechanism and as
-such they should be disabled selectively and only when necessary. `GOSUMDB=off`
-or `GONOSUMDB=*` disables checksum queries entirely. `GONOSUMDB=gitlab.com`
-disables checksum queries for all projects hosted on GitLab.com.
-
-## Add GitLab as a Go proxy
-
-NOTE: **Note:**
-To use a Go proxy, you must be using Go 1.13 or later.
-
-The available proxy endpoints are:
-
-- Project - can fetch modules defined by a project - `/api/v4/projects/:id/packages/go`
-
-Go's use of proxies is configured with the `GOPROXY` environment variable, as a
-comma separated list of URLs. Go 1.14 adds support for comma separated list of
-URLs. Go 1.14 adds support for using `go env -w` to manage Go's environment
-variables. For example, `go env -w GOPROXY=...` writes to `$GOPATH/env`
-(which defaults to `~/.go/env`). `GOPROXY` can also be configured as a normal
-environment variable, with RC files or `export GOPROXY=...`.
-
-The default value of `$GOPROXY` is `https://proxy.golang.org,direct`, which
-tells `go` to first query `proxy.golang.org` and fallback to direct VCS
-operations (`git clone`, `svc checkout`, etc). Replacing
-`https://proxy.golang.org` with a GitLab endpoint will direct all fetches
-through GitLab. Currently GitLab's Go proxy does not support dependency
-proxying, so all external dependencies will be handled directly. If GitLab's
-endpoint is inserted before `https://proxy.golang.org`, then all fetches will
-first go through GitLab. This can help avoid making requests for private
-packages to the public proxy, but `GOPRIVATE` is a much safer way of achieving
-that.
-
-For example, with the following configuration, Go will attempt to fetch modules
-from 1) GitLab project 1234's Go module proxy, 2) `proxy.golang.org`, and
-finally 3) directly with Git (or another VCS, depending on where the module
-source is hosted).
+For example, to disable checksum queries for `gitlab.com/my/project`, set `GONOSUMDB`:
 
 ```shell
-go env -w GOPROXY=https://gitlab.com/api/v4/projects/1234/packages/go,https://proxy.golang.org,direct
+go env -w GONOSUMDB='gitlab.com/my/project,<previous value>'
 ```
 
-## Release a module
+## Working with Go
 
-Go modules and module versions are handled entirely with Git (or SVN, Mercurial,
-and so on). A module is a repository containing Go source and a `go.mod` file. A
-version of a module is a Git tag (or equivalent) that is a valid [semantic
-version](https://semver.org), prefixed with 'v'. For example, `v1.0.0` and
-`v1.3.2-alpha` are valid module versions, but `v1` or `v1.2` are not.
+If you are unfamiliar with managing dependencies in Go, or Go in general,
+consider reviewing the following documentation:
 
-Go requires that major versions after v1 involve a change in the import path of
-the module. For example, version 2 of the module `gitlab.com/my/project` must be
-imported and released as `gitlab.com/my/project/v2`.
+- [Dependency Management in Go](../../../development/go_guide/dependencies.md)
+- [Go Modules Reference](https://golang.org/ref/mod)
+- [Documentation (golang.org)](https://golang.org/doc/)
+- [Learn (learn.go.dev)](https://learn.go.dev/)
 
-For a complete understanding of Go modules and versioning, see [this series of
-blog posts](https://blog.golang.org/using-go-modules) on the official Go
-website.
+### Set environment variables
 
-## Valid modules and versions
+Go uses environment variables to control various features. These can be managed
+in all the usual ways, but Go 1.14 will read and write Go environment variables
+from and to a special Go environment file, `~/.go/env` by default. If `GOENV` is
+set to a file, Go will read and write that file instead. If `GOENV` is not set
+but `GOPATH` is set, Go will read and write `$GOPATH/env`.
 
-The GitLab Go proxy will ignore modules and module versions that have an invalid
-`module` directive in their `go.mod`. Go requires that a package imported as
-`gitlab.com/my/project` can be accessed with that same URL, and that the first
-line of `go.mod` is `module gitlab.com/my/project`. If `go.mod` names a
-different module, compilation will fail. Additionally, Go requires, for major
-versions after 1, that the name of the module have an appropriate suffix, for
-example `gitlab.com/my/project/v2`. If the `module` directive does not also have
-this suffix, compilation will fail.
+Go environment variables can be read with `go env <var>` and, in Go 1.14 and
+later, can be written with `go env -w <var>=<value>`. For example, `go env
+GOPATH` or `go env -w GOPATH=/go`.
 
-Go supports 'pseudo-versions' that encode the timestamp and SHA of a commit.
-Tags that match the pseudo-version pattern are ignored, as otherwise they could
-interfere with fetching specific commits using a pseudo-version. Pseudo-versions
-follow one of three formats:
+### Release a module
 
-- `vX.0.0-yyyymmddhhmmss-abcdefabcdef`, when no earlier tagged commit exists for X.
-- `vX.Y.Z-pre.0.yyyymmddhhmmss-abcdefabcdef`, when most recent prior tag is vX.Y.Z-pre.
-- `vX.Y.(Z+1)-0.yyyymmddhhmmss-abcdefabcdef`, when most recent prior tag is vX.Y.Z.
+Go modules and module versions are defined by source repositories, such as Git,
+SVN, Mercurial, and so on. A module is a repository containing `go.mod` and Go
+files. Module versions are defined by VCS tags. To publish a module, push
+`go.mod` and source files to a VCS repository. To publish a module version, push
+a VCS tag. See [Dependency Management in Go >
+Versioning](../../../development/go_guide/dependencies.md#versioning) for more
+details on what constitutes a valid module or module version.

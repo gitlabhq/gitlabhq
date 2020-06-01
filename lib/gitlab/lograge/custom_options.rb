@@ -19,17 +19,17 @@ module Gitlab
           remote_ip: event.payload[:remote_ip],
           user_id: event.payload[:user_id],
           username: event.payload[:username],
-          ua: event.payload[:ua],
-          queue_duration_s: event.payload[:queue_duration_s]
+          ua: event.payload[:ua]
         }
 
         payload.merge!(event.payload[:metadata]) if event.payload[:metadata]
 
         ::Gitlab::InstrumentationHelper.add_instrumentation_data(payload)
 
+        payload[:queue_duration_s] = event.payload[:queue_duration_s] if event.payload[:queue_duration_s]
         payload[:response] = event.payload[:response] if event.payload[:response]
         payload[:etag_route] = event.payload[:etag_route] if event.payload[:etag_route]
-        payload[Labkit::Correlation::CorrelationId::LOG_KEY] = Labkit::Correlation::CorrelationId.current_id
+        payload[Labkit::Correlation::CorrelationId::LOG_KEY] = event.payload[Labkit::Correlation::CorrelationId::LOG_KEY] || Labkit::Correlation::CorrelationId.current_id
 
         if cpu_s = Gitlab::Metrics::System.thread_cpu_duration(::Gitlab::RequestContext.instance.start_thread_cpu_time)
           payload[:cpu_s] = cpu_s.round(2)

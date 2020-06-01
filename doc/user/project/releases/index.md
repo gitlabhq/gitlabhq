@@ -67,6 +67,8 @@ A link is any URL which can point to whatever you like; documentation, built
 binaries, or other related materials. These can be both internal or external
 links from your GitLab instance.
 
+The four types of links are "Runbook," "Package," "Image," and "Other."
+
 #### Permanent links to Release assets
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/27300) in GitLab 12.9.

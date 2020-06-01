@@ -85,6 +85,29 @@ which correspond to:
 1. `elasticsearch_calls`: total number of calls to Elasticsearch
 1. `elasticsearch_duration_s`: total time taken by Elasticsearch calls
 
+ActionCable connection and subscription events are also logged to this file and they follow the same
+format above. The `method`, `path`, and `format` fields are not applicable, and are always empty.
+The ActionCable connection or channel class is used as the `controller`.
+
+```json
+{
+  "method":{},
+  "path":{},
+  "format":{},
+  "controller":"IssuesChannel",
+  "action":"subscribe",
+  "status":200,
+  "time":"2020-05-14T19:46:22.008Z",
+  "params":[{"key":"project_path","value":"gitlab/gitlab-foss"},{"key":"iid","value":"1"}],
+  "remote_ip":"127.0.0.1",
+  "user_id":1,
+  "username":"admin",
+  "ua":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:76.0) Gecko/20100101 Firefox/76.0",
+  "correlation_id":"jSOIEynHCUa",
+  "duration_s":0.32566
+}
+```
+
 NOTE: **Note:** Starting with GitLab 12.5, if an error occurs, an
 `exception` field is included with `class`, `message`, and
 `backtrace`. Previous versions included an `error` field instead of

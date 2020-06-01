@@ -18,10 +18,10 @@ Prior to this, Go did not have any well-defined mechanism for version management
 While 3rd party version management tools existed, the default Go experience had
 no support for versioning.
 
-Go modules use semantic versioning. The versions of a module are defined as VCS
-tags that are valid semantic versions prefixed with `v`. For example, to release
-version `1.0.0` of `gitlab.com/my/project`, the developer must create the Git
-tag `v1.0.0`.
+Go modules use [semantic versioning](https://semver.org). The versions of a
+module are defined as VCS (version control system) tags that are valid semantic
+versions prefixed with `v`. For example, to release version `1.0.0` of
+`gitlab.com/my/project`, the developer must create the Git tag `v1.0.0`.
 
 For major versions other than 0 and 1, the module name must be suffixed with
 `/vX` where X is the major version. For example, version `v2.0.0` of
@@ -37,6 +37,10 @@ end with a timestamp and the first 12 characters of the commit identifier:
 - `vX.Y.(Z+1)-0.yyyymmddhhmmss-abcdefabcdef`, when most recent prior tag is vX.Y.Z.
 
 If a VCS tag matches one of these patterns, it is ignored.
+
+For a complete understanding of Go modules and versioning, see [this series of
+blog posts](https://blog.golang.org/using-go-modules) on the official Go
+website.
 
 ## 'Module' vs 'Package'
 

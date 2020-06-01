@@ -358,6 +358,9 @@ msgstr ""
 msgid "%{group_name} uses group managed accounts. You need to create a new GitLab account which will be managed by %{group_name}."
 msgstr ""
 
+msgid "%{host} sign-in from new location"
+msgstr ""
+
 msgid "%{icon}You are about to add %{usersTag} people to the discussion. Proceed with caution."
 msgstr ""
 
@@ -966,9 +969,6 @@ msgid "A secure token that identifies an external storage request."
 msgstr ""
 
 msgid "A sign-in to your account has been made from the following IP address: %{ip}"
-msgstr ""
-
-msgid "A sign-in to your account has been made from the following IP address: %{ip}."
 msgstr ""
 
 msgid "A subscription will trigger a new pipeline on the default branch of this project when a pipeline successfully completes for a new tag on the %{default_branch_docs} of the subscribed project."
@@ -11403,6 +11403,9 @@ msgid "Hook was successfully created."
 msgstr ""
 
 msgid "Hook was successfully updated."
+msgstr ""
+
+msgid "Hostname"
 msgstr ""
 
 msgid "Hour (UTC)"
@@ -23531,9 +23534,6 @@ msgstr ""
 msgid "Unknown response text"
 msgstr ""
 
-msgid "Unknown sign-in from new location"
-msgstr ""
-
 msgid "Unlimited"
 msgstr ""
 
@@ -25533,6 +25533,9 @@ msgid "You've already enabled two-factor authentication using one time password 
 msgstr ""
 
 msgid "YouTube"
+msgstr ""
+
+msgid "Your %{host} account was signed in to from a new location"
 msgstr ""
 
 msgid "Your %{strong}%{plan_name}%{strong_close} subscription for %{strong}%{namespace_name}%{strong_close} will expire on %{strong}%{expires_on}%{strong_close}."

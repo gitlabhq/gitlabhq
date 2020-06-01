@@ -139,6 +139,7 @@ RSpec.configure do |config|
   config.include IdempotentWorkerHelper, type: :worker
   config.include RailsHelpers
   config.include SidekiqMiddleware
+  config.include StubActionCableConnection, type: :channel
 
   if ENV['CI'] || ENV['RETRIES']
     # This includes the first try, i.e. tests will be run 4 times before failing.

@@ -604,7 +604,7 @@ GEM
       ruby_dep (~> 1.2)
     locale (2.1.2)
     lockbox (0.3.3)
-    lograge (0.10.0)
+    lograge (0.11.2)
       actionpack (>= 4)
       activesupport (>= 4)
       railties (>= 4)
