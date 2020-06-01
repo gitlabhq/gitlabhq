@@ -13,6 +13,14 @@ import FluentdOutputSettings from '~/clusters/components/fluentd_output_settings
 describe('Applications', () => {
   let vm;
   let Applications;
+  const ApplicationRowStub = {
+    name: 'application-row-stub',
+    template: `
+                <div>
+                  <slot name="description"></slot>
+                </div>
+              `,
+  };
 
   beforeEach(() => {
     Applications = Vue.extend(applications);
@@ -202,7 +210,12 @@ describe('Applications', () => {
 
       let wrapper;
       beforeEach(() => {
-        wrapper = shallowMount(Applications, { propsData });
+        wrapper = shallowMount(Applications, {
+          propsData,
+          stubs: {
+            ApplicationRow: ApplicationRowStub,
+          },
+        });
       });
       afterEach(() => {
         wrapper.destroy();
@@ -436,7 +449,10 @@ describe('Applications', () => {
     let knativeDomainEditor;
 
     beforeEach(() => {
-      wrapper = shallowMount(Applications, { propsData });
+      wrapper = shallowMount(Applications, {
+        propsData,
+        stubs: { ApplicationRow: ApplicationRowStub },
+      });
       jest.spyOn(eventHub, '$emit');
 
       knativeDomainEditor = wrapper.find(KnativeDomainEditor);
@@ -504,7 +520,10 @@ describe('Applications', () => {
 
     let wrapper;
     beforeEach(() => {
-      wrapper = shallowMount(Applications, { propsData });
+      wrapper = shallowMount(Applications, {
+        propsData,
+        stubs: { ApplicationRow: ApplicationRowStub },
+      });
     });
     afterEach(() => {
       wrapper.destroy();
@@ -563,7 +582,10 @@ describe('Applications', () => {
 
     let wrapper;
     beforeEach(() => {
-      wrapper = shallowMount(Applications, { propsData });
+      wrapper = shallowMount(Applications, {
+        propsData,
+        stubs: { ApplicationRow: ApplicationRowStub },
+      });
     });
     afterEach(() => {
       wrapper.destroy();

@@ -123,3 +123,5 @@ const normalizeAuthor = author => ({
 });
 
 export const extractParticipants = users => users.edges.map(({ node }) => normalizeAuthor(node));
+
+export const getPageLayoutElement = () => document.querySelector('.layout-page');

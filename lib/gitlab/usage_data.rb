@@ -217,6 +217,7 @@ module Gitlab
           gitaly: {
             version: alt_usage_data { Gitaly::Server.all.first.server_version },
             servers: alt_usage_data { Gitaly::Server.count },
+            clusters: alt_usage_data { Gitaly::Server.gitaly_clusters },
             filesystems: alt_usage_data(fallback: ["-1"]) { Gitaly::Server.filesystems }
           },
           gitlab_pages: {

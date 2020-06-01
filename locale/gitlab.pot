@@ -17957,6 +17957,18 @@ msgstr ""
 msgid "Release title"
 msgstr ""
 
+msgid "ReleaseAssetLinkType|Image"
+msgstr ""
+
+msgid "ReleaseAssetLinkType|Other"
+msgstr ""
+
+msgid "ReleaseAssetLinkType|Package"
+msgstr ""
+
+msgid "ReleaseAssetLinkType|Runbook"
+msgstr ""
+
 msgid "Releases"
 msgstr ""
 

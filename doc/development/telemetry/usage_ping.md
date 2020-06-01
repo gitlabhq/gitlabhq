@@ -612,6 +612,7 @@ The following is example content of the Usage Ping payload.
   "gitaly": {
     "version": "12.10.0-rc1-93-g40980d40",
     "servers": 56,
+    "clusters": 14,
     "filesystems": [
       "EXT_2_3_4"
     ]

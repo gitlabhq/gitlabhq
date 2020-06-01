@@ -10,6 +10,7 @@ import createFlash from '~/flash';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import { redirectTo } from '~/lib/utils/url_utility';
 import api from '~/api';
+import { ASSET_LINK_TYPE } from '~/releases/constants';
 
 jest.mock('~/flash', () => jest.fn());
 
@@ -126,6 +127,54 @@ describe('Release detail actions', () => {
       const newReleaseNotes = 'The new release notes';
       return testAction(actions.updateReleaseNotes, newReleaseNotes, state, [
         { type: types.UPDATE_RELEASE_NOTES, payload: newReleaseNotes },
+      ]);
+    });
+  });
+
+  describe('updateAssetLinkUrl', () => {
+    it(`commits ${types.UPDATE_ASSET_LINK_URL} with the updated link URL`, () => {
+      const params = {
+        linkIdToUpdate: 2,
+        newUrl: 'https://example.com/updated',
+      };
+
+      return testAction(actions.updateAssetLinkUrl, params, state, [
+        { type: types.UPDATE_ASSET_LINK_URL, payload: params },
+      ]);
+    });
+  });
+
+  describe('updateAssetLinkName', () => {
+    it(`commits ${types.UPDATE_ASSET_LINK_NAME} with the updated link name`, () => {
+      const params = {
+        linkIdToUpdate: 2,
+        newName: 'Updated link name',
+      };
+
+      return testAction(actions.updateAssetLinkName, params, state, [
+        { type: types.UPDATE_ASSET_LINK_NAME, payload: params },
+      ]);
+    });
+  });
+
+  describe('updateAssetLinkType', () => {
+    it(`commits ${types.UPDATE_ASSET_LINK_TYPE} with the updated link type`, () => {
+      const params = {
+        linkIdToUpdate: 2,
+        newType: ASSET_LINK_TYPE.RUNBOOK,
+      };
+
+      return testAction(actions.updateAssetLinkType, params, state, [
+        { type: types.UPDATE_ASSET_LINK_TYPE, payload: params },
+      ]);
+    });
+  });
+
+  describe('removeAssetLink', () => {
+    it(`commits ${types.REMOVE_ASSET_LINK} with the ID of the asset link to remove`, () => {
+      const idToRemove = 2;
+      return testAction(actions.removeAssetLink, idToRemove, state, [
+        { type: types.REMOVE_ASSET_LINK, payload: idToRemove },
       ]);
     });
   });

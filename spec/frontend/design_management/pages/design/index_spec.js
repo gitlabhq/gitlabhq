@@ -1,4 +1,5 @@
-import { shallowMount } from '@vue/test-utils';
+import { shallowMount, createLocalVue } from '@vue/test-utils';
+import VueRouter from 'vue-router';
 import { GlAlert } from '@gitlab/ui';
 import { ApolloMutation } from 'vue-apollo';
 import createFlash from '~/flash';
@@ -17,6 +18,9 @@ import {
   DESIGN_VERSION_NOT_EXIST_ERROR,
 } from '~/design_management/utils/error_messages';
 import { DESIGNS_ROUTE_NAME } from '~/design_management/router/constants';
+import createRouter from '~/design_management/router';
+import * as utils from '~/design_management/utils/design_management_utils';
+import { DESIGN_DETAIL_LAYOUT_CLASSLIST } from '~/design_management/constants';
 
 jest.mock('~/flash');
 jest.mock('mousetrap', () => ({
@@ -24,8 +28,13 @@ jest.mock('mousetrap', () => ({
   unbind: jest.fn(),
 }));
 
+const localVue = createLocalVue();
+localVue.use(VueRouter);
+
 describe('Design management design index page', () => {
   let wrapper;
+  let router;
+
   const newComment = 'new comment';
   const annotationCoordinates = {
     x: 10,
@@ -62,14 +71,13 @@ describe('Design management design index page', () => {
   };
 
   const mutate = jest.fn().mockResolvedValue();
-  const routerPush = jest.fn();
 
   const findDiscussions = () => wrapper.findAll(DesignDiscussion);
   const findDiscussionForm = () => wrapper.find(DesignReplyForm);
   const findParticipants = () => wrapper.find(Participants);
   const findDiscussionsWrapper = () => wrapper.find('.image-notes');
 
-  function createComponent(loading = false, data = {}, { routeQuery = {} } = {}) {
+  function createComponent(loading = false, data = {}) {
     const $apollo = {
       queries: {
         design: {
@@ -79,17 +87,11 @@ describe('Design management design index page', () => {
       mutate,
     };
 
-    const $router = {
-      push: routerPush,
-    };
-
-    const $route = {
-      query: routeQuery,
-    };
+    router = createRouter();
 
     wrapper = shallowMount(DesignIndex, {
       propsData: { id: '1' },
-      mocks: { $apollo, $router, $route },
+      mocks: { $apollo },
       stubs: {
         ApolloMutation,
         DesignDiscussion,
@@ -104,11 +106,30 @@ describe('Design management design index page', () => {
           ...data,
         };
       },
+      localVue,
+      router,
     });
   }
 
   afterEach(() => {
     wrapper.destroy();
+  });
+
+  describe('when navigating', () => {
+    it('applies fullscreen layout', () => {
+      const mockEl = {
+        classList: {
+          add: jest.fn(),
+          remove: jest.fn(),
+        },
+      };
+      jest.spyOn(utils, 'getPageLayoutElement').mockReturnValue(mockEl);
+      createComponent(true);
+
+      wrapper.vm.$router.push('/designs/test');
+      expect(mockEl.classList.add).toHaveBeenCalledTimes(1);
+      expect(mockEl.classList.add).toHaveBeenCalledWith(...DESIGN_DETAIL_LAYOUT_CLASSLIST);
+    });
   });
 
   it('sets loading state', () => {
@@ -269,31 +290,35 @@ describe('Design management design index page', () => {
     describe('with no designs', () => {
       it('redirects to /designs', () => {
         createComponent(true);
+        router.push = jest.fn();
 
         wrapper.vm.onDesignQueryResult({ data: mockResponseNoDesigns, loading: false });
         return wrapper.vm.$nextTick().then(() => {
           expect(createFlash).toHaveBeenCalledTimes(1);
           expect(createFlash).toHaveBeenCalledWith(DESIGN_NOT_FOUND_ERROR);
-          expect(routerPush).toHaveBeenCalledTimes(1);
-          expect(routerPush).toHaveBeenCalledWith({ name: DESIGNS_ROUTE_NAME });
+          expect(router.push).toHaveBeenCalledTimes(1);
+          expect(router.push).toHaveBeenCalledWith({ name: DESIGNS_ROUTE_NAME });
         });
       });
     });
 
     describe('when no design exists for given version', () => {
       it('redirects to /designs', () => {
-        // attempt to query for a version of the design that doesn't exist
-        createComponent(true, {}, { routeQuery: { version: '999' } });
+        createComponent(true);
         wrapper.setData({
           allVersions: mockAllVersions,
         });
+
+        // attempt to query for a version of the design that doesn't exist
+        router.push({ query: { version: '999' } });
+        router.push = jest.fn();
 
         wrapper.vm.onDesignQueryResult({ data: mockResponseWithDesigns, loading: false });
         return wrapper.vm.$nextTick().then(() => {
           expect(createFlash).toHaveBeenCalledTimes(1);
           expect(createFlash).toHaveBeenCalledWith(DESIGN_VERSION_NOT_EXIST_ERROR);
-          expect(routerPush).toHaveBeenCalledTimes(1);
-          expect(routerPush).toHaveBeenCalledWith({ name: DESIGNS_ROUTE_NAME });
+          expect(router.push).toHaveBeenCalledTimes(1);
+          expect(router.push).toHaveBeenCalledWith({ name: DESIGNS_ROUTE_NAME });
         });
       });
     });

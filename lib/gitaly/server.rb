@@ -3,6 +3,7 @@
 module Gitaly
   class Server
     SHA_VERSION_REGEX = /\A\d+\.\d+\.\d+-\d+-g([a-f0-9]{8})\z/.freeze
+    DEFAULT_REPLICATION_FACTOR = 1
 
     class << self
       def all
@@ -15,6 +16,10 @@ module Gitaly
 
       def filesystems
         all.map(&:filesystem_type).compact.uniq
+      end
+
+      def gitaly_clusters
+        all.count { |g| g.replication_factor > DEFAULT_REPLICATION_FACTOR }
       end
     end
 
@@ -71,6 +76,10 @@ module Gitaly
       Gitlab::GitalyClient.address(@storage)
     rescue RuntimeError => e
       "Error getting the address: #{e.message}"
+    end
+
+    def replication_factor
+      storage_status&.replication_factor
     end
 
     private

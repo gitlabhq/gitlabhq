@@ -533,7 +533,9 @@ If you wish to use a different configuration file, use the `-c` flag:
 markdownlint -c <config-file-name> 'doc/**/*.md'
 ```
 
-markdownlint can also be run from within text editors using [plugins/extensions](https://github.com/DavidAnson/markdownlint#related),
+##### Run markdownlint in an editor
+
+markdownlint can also be run as a linter within text editors using [plugins/extensions](https://github.com/DavidAnson/markdownlint#related),
 such as:
 
 - [Sublime Text](https://packagecontrol.io/packages/SublimeLinter-contrib-markdownlint)
@@ -581,11 +583,16 @@ and from GitLab's root directory (where `.vale.ini` is located), run:
 vale --glob='*.{md}' doc
 ```
 
-You can also
-[configure the text editor of your choice](https://errata-ai.github.io/vale/#local-use-by-a-single-writer)
-to display the results.
-
 Vale's error-level test results [are displayed](#testing) in CI pipelines.
+
+##### Run Vale in an editor
+
+You can run Vale as a linter within your text editor of choice, with:
+
+- The Sublime Text [`SublimeLinter-contrib-vale` plugin](https://packagecontrol.io/packages/SublimeLinter-contrib-vale)
+- The Visual Studio Code [`testthedocs.vale` extension](https://marketplace.visualstudio.com/items?itemName=testthedocs.vale)
+
+We don't use [Vale Server](https://errata-ai.github.io/vale/#using-vale-with-a-text-editor-or-another-third-party-application).
 
 ##### Disable a Vale test
 
