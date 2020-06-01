@@ -11600,6 +11600,12 @@ msgstr ""
 msgid "Ignored"
 msgstr ""
 
+msgid "Image Details"
+msgstr ""
+
+msgid "Image URL"
+msgstr ""
+
 msgid "Image: %{image}"
 msgstr ""
 
@@ -11858,10 +11864,16 @@ msgstr ""
 msgid "Input your repository URL"
 msgstr ""
 
+msgid "Insert"
+msgstr ""
+
 msgid "Insert a code block"
 msgstr ""
 
 msgid "Insert a quote"
+msgstr ""
+
+msgid "Insert an image"
 msgstr ""
 
 msgid "Insert code"
@@ -16036,6 +16048,9 @@ msgid "Please note that this application is not provided by GitLab and you shoul
 msgstr ""
 
 msgid "Please provide a name"
+msgstr ""
+
+msgid "Please provide a valid URL"
 msgstr ""
 
 msgid "Please provide a valid email address."
@@ -26258,6 +26273,9 @@ msgid "here"
 msgstr ""
 
 msgid "https://your-bitbucket-server"
+msgstr ""
+
+msgid "image"
 msgstr ""
 
 msgid "image diff"

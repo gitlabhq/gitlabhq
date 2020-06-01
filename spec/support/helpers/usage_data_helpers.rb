@@ -124,6 +124,8 @@ module UsageDataHelpers
       releases
       remote_mirrors
       snippets
+      personal_snippets
+      project_snippets
       suggestions
       terraform_reports
       terraform_states

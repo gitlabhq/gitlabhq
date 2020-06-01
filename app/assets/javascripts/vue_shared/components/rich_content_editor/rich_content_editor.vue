@@ -2,6 +2,7 @@
 import 'codemirror/lib/codemirror.css';
 import '@toast-ui/editor/dist/toastui-editor.css';
 
+import AddImageModal from './modals/add_image_modal.vue';
 import {
   EDITOR_OPTIONS,
   EDITOR_TYPES,
@@ -10,7 +11,12 @@ import {
   CUSTOM_EVENTS,
 } from './constants';
 
-import { addCustomEventListener } from './editor_service';
+import {
+  addCustomEventListener,
+  removeCustomEventListener,
+  addImage,
+  getMarkdown,
+} from './editor_service';
 
 export default {
   components: {
@@ -18,6 +24,7 @@ export default {
       import(/* webpackChunkName: 'toast_editor' */ '@toast-ui/vue-editor').then(
         toast => toast.Editor,
       ),
+    AddImageModal,
   },
   props: {
     value: {
@@ -49,13 +56,20 @@ export default {
     editorOptions() {
       return { ...EDITOR_OPTIONS, ...this.options };
     },
+    editorInstance() {
+      return this.$refs.editor;
+    },
+  },
+  beforeDestroy() {
+    removeCustomEventListener(
+      this.editorInstance,
+      CUSTOM_EVENTS.openAddImageModal,
+      this.onOpenAddImageModal,
+    );
   },
   methods: {
     onContentChanged() {
-      this.$emit('input', this.getMarkdown());
-    },
-    getMarkdown() {
-      return this.$refs.editor.invoke('getMarkdown');
+      this.$emit('input', getMarkdown(this.editorInstance));
     },
     onLoad(editorInstance) {
       addCustomEventListener(
@@ -65,20 +79,26 @@ export default {
       );
     },
     onOpenAddImageModal() {
-      // TODO - add image modal (next MR)
+      this.$refs.addImageModal.show();
+    },
+    onAddImage(image) {
+      addImage(this.editorInstance, image);
     },
   },
 };
 </script>
 <template>
-  <toast-editor
-    ref="editor"
-    :initial-value="value"
-    :options="editorOptions"
-    :preview-style="previewStyle"
-    :initial-edit-type="initialEditType"
-    :height="height"
-    @change="onContentChanged"
-    @load="onLoad"
-  />
+  <div>
+    <toast-editor
+      ref="editor"
+      :initial-value="value"
+      :options="editorOptions"
+      :preview-style="previewStyle"
+      :initial-edit-type="initialEditType"
+      :height="height"
+      @change="onContentChanged"
+      @load="onLoad"
+    />
+    <add-image-modal ref="addImageModal" @addImage="onAddImage" />
+  </div>
 </template>

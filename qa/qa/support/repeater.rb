@@ -7,8 +7,9 @@ module QA
     module Repeater
       DEFAULT_MAX_WAIT_TIME = 60
 
-      RetriesExceededError = Class.new(RuntimeError)
-      WaitExceededError = Class.new(RuntimeError)
+      RepeaterConditionExceededError = Class.new(RuntimeError)
+      RetriesExceededError = Class.new(RepeaterConditionExceededError)
+      WaitExceededError = Class.new(RepeaterConditionExceededError)
 
       def repeat_until(max_attempts: nil, max_duration: nil, reload_page: nil, sleep_interval: 0, raise_on_failure: true, retry_on_exception: false, log: true)
         attempts = 0

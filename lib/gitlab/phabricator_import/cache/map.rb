@@ -63,7 +63,7 @@ module Gitlab
         def timeout
           # Setting the timeout to the same one as we do for clearing stuck jobs
           # this makes sure all cache is available while the import is running.
-          StuckImportJobsWorker::IMPORT_JOBS_EXPIRATION
+          Gitlab::Import::StuckImportJob::IMPORT_JOBS_EXPIRATION
         end
       end
     end

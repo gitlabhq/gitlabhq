@@ -34,3 +34,10 @@ export const addCustomEventListener = (editorInstance, event, handler) => {
   editorInstance.eventManager.addEventType(event);
   editorInstance.eventManager.listen(event, handler);
 };
+
+export const removeCustomEventListener = (editorInstance, event, handler) =>
+  editorInstance.eventManager.removeEventHandler(event, handler);
+
+export const addImage = ({ editor }, image) => editor.exec('AddImage', image);
+
+export const getMarkdown = editorInstance => editorInstance.invoke('getMarkdown');

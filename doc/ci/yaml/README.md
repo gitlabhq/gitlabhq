@@ -117,7 +117,7 @@ The following table lists available parameters for jobs:
 | [`when`](#when)                                    | When to run job. Also available: `when:manual` and `when:delayed`.                                                                                                                  |
 | [`environment`](#environment)                      | Name of an environment to which the job deploys. Also available: `environment:name`, `environment:url`, `environment:on_stop`, `environment:auto_stop_in` and `environment:action`. |
 | [`cache`](#cache)                                  | List of files that should be cached between subsequent runs. Also available: `cache:paths`, `cache:key`, `cache:untracked`, and `cache:policy`.                                     |
-| [`artifacts`](#artifacts)                          | List of files and directories to attach to a job on success. Also available: `artifacts:paths`, `artifacts:expose_as`, `artifacts:name`, `artifacts:untracked`, `artifacts:when`, `artifacts:expire_in`, `artifacts:reports`, `artifacts:reports:junit`, `artifacts:reports:cobertura`, and `artifacts:reports:terraform`.<br><br>In GitLab [Enterprise Edition](https://about.gitlab.com/pricing/), these are available: `artifacts:reports:codequality`, `artifacts:reports:sast`, `artifacts:reports:dependency_scanning`, `artifacts:reports:container_scanning`, `artifacts:reports:dast`, `artifacts:reports:license_scanning`, `artifacts:reports:license_management` (removed in GitLab 13.0),`artifacts:reports:performance` and `artifacts:reports:metrics`. |
+| [`artifacts`](#artifacts)                          | List of files and directories to attach to a job on success. Also available: `artifacts:paths`, `artifacts:exclude`, `artifacts:expose_as`, `artifacts:name`, `artifacts:untracked`, `artifacts:when`, `artifacts:expire_in`, `artifacts:reports`, `artifacts:reports:junit`, `artifacts:reports:cobertura`, and `artifacts:reports:terraform`.<br><br>In GitLab [Enterprise Edition](https://about.gitlab.com/pricing/), these are available: `artifacts:reports:codequality`, `artifacts:reports:sast`, `artifacts:reports:dependency_scanning`, `artifacts:reports:container_scanning`, `artifacts:reports:dast`, `artifacts:reports:license_scanning`, `artifacts:reports:license_management` (removed in GitLab 13.0),`artifacts:reports:performance` and `artifacts:reports:metrics`. |
 | [`dependencies`](#dependencies)                    | Restrict which artifacts are passed to a specific job by providing a list of jobs to fetch artifacts from.                                                                          |
 | [`coverage`](#coverage)                            | Code coverage settings for a given job.                                                                                                                                             |
 | [`retry`](#retry)                                  | When and how many times a job can be auto-retried in case of a failure.                                                                                                             |
@@ -2555,6 +2555,33 @@ job:
       - path/*xyz/*
 ```
 
+#### `artifacts:exclude`
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/15122) in GitLab 13.1
+> - Requires GitLab Runner 13.1
+
+`exclude` makes it possible to prevent files from being added to an artifacts
+archive.
+
+Similar to [`artifacts:paths`](#artifactspaths), `exclude` paths are relative
+to the project directory. Wildcards can be used that follow the
+[glob](https://en.wikipedia.org/wiki/Glob_(programming)) patterns and
+[`filepath.Match`](https://golang.org/pkg/path/filepath/#Match).
+
+For example, to store all files in `binaries/`, but not `*.o` files located in
+subdirectories of `binaries/`:
+
+```yaml
+artifacts:
+  paths:
+    - binaries/
+  exclude:
+    - binaries/**/*.o
+```
+
+Files matched by [`artifacts:untracked`](#artifactsuntracked) can be excluded using
+`artifacts:exclude` too.
+
 #### `artifacts:expose_as`
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15018) in GitLab 12.5.
@@ -2699,6 +2726,15 @@ artifacts:
   untracked: true
   paths:
     - binaries/
+```
+
+Send all untracked files but [exclude](#artifactsexclude) `*.txt`:
+
+```yaml
+artifacts:
+  untracked: true
+  exclude:
+    - *.txt
 ```
 
 #### `artifacts:when`

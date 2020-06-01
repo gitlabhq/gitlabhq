@@ -15,7 +15,7 @@ module ImportState
       def refresh_jid_expiration
         return unless jid
 
-        Gitlab::SidekiqStatus.set(jid, StuckImportJobsWorker::IMPORT_JOBS_EXPIRATION)
+        Gitlab::SidekiqStatus.set(jid, Gitlab::Import::StuckImportJob::IMPORT_JOBS_EXPIRATION)
       end
 
       def self.jid_by(project_id:, status:)

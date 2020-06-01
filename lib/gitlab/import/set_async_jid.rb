@@ -14,7 +14,7 @@ module Gitlab
         jid = generate_jid(import_state)
 
         Gitlab::SidekiqStatus
-          .set(jid, StuckImportJobsWorker::IMPORT_JOBS_EXPIRATION)
+          .set(jid, Gitlab::Import::StuckImportJob::IMPORT_JOBS_EXPIRATION)
 
         import_state.update_column(:jid, jid)
       end

@@ -133,6 +133,8 @@ module Gitlab
             releases: count(Release),
             remote_mirrors: count(RemoteMirror),
             snippets: count(Snippet),
+            personal_snippets: count(PersonalSnippet),
+            project_snippets: count(ProjectSnippet),
             suggestions: count(Suggestion),
             terraform_reports: count(::Ci::JobArtifact.terraform_reports),
             terraform_states: count(::Terraform::State),

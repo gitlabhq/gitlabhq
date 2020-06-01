@@ -49,7 +49,7 @@ export default {
 <template>
   <div class="d-flex flex-grow-1 flex-column h-100">
     <edit-header class="py-2" :title="title" />
-    <rich-content-editor v-model="editableContent" class="mb-9" />
+    <rich-content-editor v-model="editableContent" class="mb-9 h-100" />
     <publish-toolbar
       class="gl-fixed gl-left-0 gl-bottom-0 gl-w-full"
       :return-url="returnUrl"

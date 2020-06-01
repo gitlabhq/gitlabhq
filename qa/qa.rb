@@ -43,6 +43,7 @@ module QA
 
     module API
       autoload :Client, 'qa/runtime/api/client'
+      autoload :RepositoryStorageMoves, 'qa/runtime/api/repository_storage_moves'
       autoload :Request, 'qa/runtime/api/request'
     end
 

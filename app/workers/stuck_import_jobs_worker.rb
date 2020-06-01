@@ -3,8 +3,6 @@
 class StuckImportJobsWorker # rubocop:disable Scalability/IdempotentWorker
   include Gitlab::Import::StuckImportJob
 
-  IMPORT_JOBS_EXPIRATION = Gitlab::Import::StuckImportJob::IMPORT_JOBS_EXPIRATION
-
   private
 
   def track_metrics(with_jid_count, without_jid_count)
