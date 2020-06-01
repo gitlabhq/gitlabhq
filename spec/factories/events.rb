@@ -17,6 +17,7 @@ FactoryBot.define do
     trait(:left)      { action { :left } }
     trait(:destroyed) { action { :destroyed } }
     trait(:expired)   { action { :expired } }
+    trait(:archived)  { action { :archived } }
 
     factory :closed_issue_event do
       action { :closed }
@@ -33,14 +34,26 @@ FactoryBot.define do
       end
     end
 
-    trait :for_design do
+    trait :has_design do
       transient do
         design { create(:design, issue: create(:issue, project: project)) }
+      end
+    end
+
+    trait :for_design do
+      has_design
+
+      transient do
         note { create(:note, author: author, project: project, noteable: design) }
       end
 
       action { :commented }
       target { note }
+    end
+
+    factory :design_event, traits: [:has_design] do
+      action { :created }
+      target { design }
     end
   end
 

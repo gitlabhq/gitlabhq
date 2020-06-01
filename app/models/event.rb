@@ -22,12 +22,15 @@ class Event < ApplicationRecord
     left:       9, # User left project
     destroyed:  10,
     expired:    11, # User left project due to expiry
-    approved:   12
+    approved:   12,
+    archived:   13 # Recoverable deletion
   ).freeze
 
   private_constant :ACTIONS
 
   WIKI_ACTIONS = [:created, :updated, :destroyed].freeze
+
+  DESIGN_ACTIONS = [:created, :updated, :destroyed, :archived].freeze
 
   TARGET_TYPES = HashWithIndifferentAccess.new(
     issue:          Issue,
@@ -37,7 +40,8 @@ class Event < ApplicationRecord
     project:        Project,
     snippet:        Snippet,
     user:           User,
-    wiki:           WikiPage::Meta
+    wiki:           WikiPage::Meta,
+    design:         DesignManagement::Design
   ).freeze
 
   RESET_PROJECT_ACTIVITY_INTERVAL = 1.hour
@@ -49,6 +53,7 @@ class Event < ApplicationRecord
   delegate :title, to: :issue, prefix: true, allow_nil: true
   delegate :title, to: :merge_request, prefix: true, allow_nil: true
   delegate :title, to: :note, prefix: true, allow_nil: true
+  delegate :title, to: :design, prefix: true, allow_nil: true
 
   belongs_to :author, class_name: "User"
   belongs_to :project
@@ -75,9 +80,11 @@ class Event < ApplicationRecord
   # Scopes
   scope :recent, -> { reorder(id: :desc) }
   scope :for_wiki_page, -> { where(target_type: 'WikiPage::Meta') }
+  scope :for_design, -> { where(target_type: 'DesignManagement::Design') }
 
   # Needed to implement feature flag: can be removed when feature flag is removed
   scope :not_wiki_page, -> { where('target_type IS NULL or target_type <> ?', 'WikiPage::Meta') }
+  scope :not_design, -> { where('target_type IS NULL or target_type <> ?', 'DesignManagement::Design') }
 
   scope :with_associations, -> do
     # We're using preload for "push_event_payload" as otherwise the association
@@ -95,6 +102,13 @@ class Event < ApplicationRecord
   # We're just validating the presence of the ID here as foreign key constraints
   # should ensure the ID points to a valid user.
   validates :author_id, presence: true
+
+  validates :action_enum_value,
+    if: :design?,
+    inclusion: {
+      in: actions.values_at(*DESIGN_ACTIONS),
+      message: ->(event, _data) { "#{event.action} is not a valid design action" }
+    }
 
   self.inheritance_column = 'action'
 
@@ -190,12 +204,20 @@ class Event < ApplicationRecord
     target_type == 'WikiPage::Meta'
   end
 
+  def design?
+    target_type == 'DesignManagement::Design'
+  end
+
   def milestone
     target if milestone?
   end
 
   def issue
     target if issue?
+  end
+
+  def design
+    target if design?
   end
 
   def merge_request
@@ -217,6 +239,8 @@ class Event < ApplicationRecord
   def action_name
     if push_action?
       push_action_name
+    elsif design?
+      design_action_names[action.to_sym]
     elsif closed_action?
       "closed"
     elsif merged_action?
@@ -358,7 +382,7 @@ class Event < ApplicationRecord
                         :read_milestone
                       elsif wiki_page?
                         :read_wiki
-                      elsif design_note?
+                      elsif design_note? || design?
                         :read_design
                       end
                     end
@@ -411,6 +435,19 @@ class Event < ApplicationRecord
     # that would otherwise conflict with the call to .track
     # (because the table does not exist yet).
     UserInteractedProject.track(self) if UserInteractedProject.available?
+  end
+
+  def design_action_names
+    {
+      created: _('uploaded'),
+      updated: _('revised'),
+      destroyed: _('deleted'),
+      archived: _('archived')
+    }
+  end
+
+  def action_enum_value
+    self.class.actions[action]
   end
 end
 

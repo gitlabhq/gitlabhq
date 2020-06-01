@@ -30,11 +30,20 @@ export const setResizingStatus = ({ commit }, resizing) => {
 
 export const createTempEntry = (
   { state, commit, dispatch, getters },
-  { name, type, content = '', base64 = false, binary = false, rawPath = '' },
+  {
+    name,
+    type,
+    content = '',
+    base64 = false,
+    binary = false,
+    rawPath = '',
+    openFile = true,
+    makeFileActive = true,
+  },
 ) => {
   const fullName = name.slice(-1) !== '/' && type === 'tree' ? `${name}/` : name;
 
-  if (state.entries[name] && !state.entries[name].deleted) {
+  if (getters.entryExists(name)) {
     flash(
       sprintf(__('The name "%{name}" is already taken in this directory.'), {
         name: name.split('/').pop(),
@@ -46,7 +55,7 @@ export const createTempEntry = (
       true,
     );
 
-    return;
+    return undefined;
   }
 
   const data = decorateFiles({
@@ -69,17 +78,31 @@ export const createTempEntry = (
   });
 
   if (type === 'blob') {
-    commit(types.TOGGLE_FILE_OPEN, file.path);
+    if (openFile) commit(types.TOGGLE_FILE_OPEN, file.path);
     commit(types.STAGE_CHANGE, { path: file.path, diffInfo: getters.getDiffInfo(file.path) });
 
-    dispatch('setFileActive', file.path);
+    if (openFile && makeFileActive) dispatch('setFileActive', file.path);
     dispatch('triggerFilesChange');
   }
 
   if (parentPath && !state.entries[parentPath].opened) {
     commit(types.TOGGLE_TREE_OPEN, parentPath);
   }
+
+  return file;
 };
+
+export const addTempImage = ({ dispatch, getters }, { name, rawPath = '' }) =>
+  dispatch('createTempEntry', {
+    name: getters.getAvailableFileName(name),
+    type: 'blob',
+    content: rawPath.split('base64,')[1],
+    base64: true,
+    binary: true,
+    rawPath,
+    openFile: false,
+    makeFileActive: false,
+  });
 
 export const scrollToTab = () => {
   Vue.nextTick(() => {

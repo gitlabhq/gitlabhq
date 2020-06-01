@@ -1654,6 +1654,12 @@ describe API::MergeRequests do
     end
   end
 
+  describe 'PUT /projects/:id/merge_reuests/:merge_request_iid' do
+    it_behaves_like 'issuable update endpoint' do
+      let(:entity) { merge_request }
+    end
+  end
+
   describe "POST /projects/:id/merge_requests/:merge_request_iid/context_commits" do
     let(:merge_request_iid)  { merge_request.iid }
     let(:authenticated_user) { user }

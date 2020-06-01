@@ -1,17 +1,19 @@
 import Vue from 'vue';
 import MockAdapter from 'axios-mock-adapter';
 import '~/behaviors/markdown/render_gfm';
+import { Range } from 'monaco-editor';
 import axios from '~/lib/utils/axios_utils';
-import store from '~/ide/stores';
+import { createStore } from '~/ide/stores';
 import repoEditor from '~/ide/components/repo_editor.vue';
 import Editor from '~/ide/lib/editor';
 import { leftSidebarViews, FILE_VIEW_MODE_EDITOR, FILE_VIEW_MODE_PREVIEW } from '~/ide/constants';
 import { createComponentWithStore } from '../../helpers/vue_mount_component_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import { file, resetStore } from '../helpers';
+import { file } from '../helpers';
 
 describe('RepoEditor', () => {
   let vm;
+  let store;
 
   beforeEach(() => {
     const f = {
@@ -20,6 +22,7 @@ describe('RepoEditor', () => {
     };
     const RepoEditor = Vue.extend(repoEditor);
 
+    store = createStore();
     vm = createComponentWithStore(RepoEditor, store, {
       file: f,
     });
@@ -55,8 +58,6 @@ describe('RepoEditor', () => {
 
   afterEach(() => {
     vm.$destroy();
-
-    resetStore(vm.$store);
 
     Editor.editorInstance.dispose();
   });
@@ -498,6 +499,82 @@ describe('RepoEditor', () => {
         })
         .then(done)
         .catch(done.fail);
+    });
+  });
+
+  describe('onPaste', () => {
+    const setFileName = name => {
+      Vue.set(vm, 'file', {
+        ...vm.file,
+        content: 'hello world\n',
+        name,
+        path: `foo/${name}`,
+        key: 'new',
+      });
+
+      vm.$store.state.entries[vm.file.path] = vm.file;
+    };
+
+    const pasteImage = () => {
+      window.dispatchEvent(
+        Object.assign(new Event('paste'), {
+          clipboardData: {
+            files: [new File(['foo'], 'foo.png', { type: 'image/png' })],
+          },
+        }),
+      );
+    };
+
+    beforeEach(() => {
+      setFileName('bar.md');
+
+      vm.$store.state.trees['gitlab-org/gitlab'] = { tree: [] };
+      vm.$store.state.currentProjectId = 'gitlab-org';
+      vm.$store.state.currentBranchId = 'gitlab';
+
+      // create a new model each time, otherwise tests conflict with each other
+      // because of same model being used in multiple tests
+      Editor.editorInstance.modelManager.dispose();
+      vm.setupEditor();
+
+      return waitForPromises().then(() => {
+        // set cursor to line 2, column 1
+        vm.editor.instance.setSelection(new Range(2, 1, 2, 1));
+        vm.editor.instance.focus();
+      });
+    });
+
+    it('adds an image entry to the same folder for a pasted image in a markdown file', () => {
+      pasteImage();
+
+      return waitForPromises().then(() => {
+        expect(vm.$store.state.entries['foo/foo.png']).toMatchObject({
+          path: 'foo/foo.png',
+          type: 'blob',
+          content: 'Zm9v',
+          base64: true,
+          binary: true,
+          rawPath: 'data:image/png;base64,Zm9v',
+        });
+      });
+    });
+
+    it("adds a markdown image tag to the file's contents", () => {
+      pasteImage();
+
+      return waitForPromises().then(() => {
+        expect(vm.file.content).toBe('hello world\n![foo.png](./foo.png)');
+      });
+    });
+
+    it("does not add file to state or set markdown image syntax if the file isn't markdown", () => {
+      setFileName('myfile.txt');
+      pasteImage();
+
+      return waitForPromises().then(() => {
+        expect(vm.$store.state.entries['foo/foo.png']).toBeUndefined();
+        expect(vm.file.content).toBe('hello world\n');
+      });
     });
   });
 });

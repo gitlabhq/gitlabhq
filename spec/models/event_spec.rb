@@ -13,6 +13,7 @@ describe Event do
     it { is_expected.to respond_to(:author_email) }
     it { is_expected.to respond_to(:issue_title) }
     it { is_expected.to respond_to(:merge_request_title) }
+    it { is_expected.to respond_to(:design_title) }
   end
 
   describe 'Callbacks' do
@@ -80,6 +81,26 @@ describe Event do
         expect(UserInteractedProject).to receive(:available?).and_return(false)
         expect(UserInteractedProject).not_to receive(:track)
         event.save
+      end
+    end
+  end
+
+  describe 'validations' do
+    describe 'action' do
+      context 'for a design' do
+        where(:action, :valid) do
+          valid = described_class::DESIGN_ACTIONS.map(&:to_s).to_set
+
+          described_class.actions.keys.map do |action|
+            [action, valid.include?(action)]
+          end
+        end
+
+        with_them do
+          let(:event) { build(:design_event, action: action) }
+
+          specify { expect(event.valid?).to eq(valid) }
+        end
       end
     end
   end
@@ -552,10 +573,36 @@ describe Event do
       end
     end
 
-    context 'design event' do
+    context 'design note event' do
       include DesignManagementTestHelpers
 
       let(:target) { note_on_design }
+
+      before do
+        enable_design_management
+      end
+
+      include_examples 'visibility examples' do
+        let(:visibility) { visible_to_all }
+      end
+
+      include_examples 'visible to assignee and author', true
+
+      context 'the event refers to a design on a confidential issue' do
+        let(:design) { create(:design, issue: confidential_issue, project: project) }
+
+        include_examples 'visibility examples' do
+          let(:visibility) { visible_to_none_except(:member, :admin) }
+        end
+
+        include_examples 'visible to assignee and author', true
+      end
+    end
+
+    context 'design event' do
+      include DesignManagementTestHelpers
+
+      let(:target) { design }
 
       before do
         enable_design_management
@@ -587,8 +634,29 @@ describe Event do
         create(:wiki_page_event),
         create(:closed_issue_event),
         create(:event, :created),
-        create(:wiki_page_event)
+        create(:design_event, :destroyed),
+        create(:wiki_page_event),
+        create(:design_event)
       ]
+    end
+
+    describe '.for_design' do
+      it 'only includes design events' do
+        design_events = events.select(&:design?)
+
+        expect(described_class.for_design)
+          .to be_present
+          .and match_array(design_events)
+      end
+    end
+
+    describe '.not_design' do
+      it 'does not contain the design events' do
+        non_design_events = events.reject(&:design?)
+
+        expect(events).not_to match_array(non_design_events)
+        expect(described_class.not_design).to match_array(non_design_events)
+      end
     end
 
     describe '.for_wiki_page' do
@@ -618,26 +686,76 @@ describe Event do
     end
   end
 
-  describe '#wiki_page and #wiki_page?' do
+  describe 'categorization' do
     let_it_be(:project) { create(:project, :repository) }
-
-    context 'for a wiki page event' do
-      let(:wiki_page) do
-        create(:wiki_page, project: project)
-      end
-
-      subject(:event) { create(:wiki_page_event, project: project, wiki_page: wiki_page) }
-
-      it { is_expected.to have_attributes(wiki_page?: be_truthy, wiki_page: wiki_page) }
+    let_it_be(:all_valid_events) do
+      # mapping from factory name to whether we need to supply the project
+      valid_target_factories = {
+        issue: true,
+        note_on_issue: true,
+        user: false,
+        merge_request: true,
+        note_on_merge_request: true,
+        project_snippet: true,
+        personal_snippet: false,
+        note_on_project_snippet: true,
+        note_on_personal_snippet: false,
+        wiki_page_meta: true,
+        milestone: true,
+        project: false,
+        design: true,
+        note_on_design: true,
+        note_on_commit: true
+      }
+      valid_target_factories.map do |kind, needs_project|
+        extra_data = needs_project ? { project: project } : {}
+        target = kind == :project ? nil : build(kind, **extra_data)
+        [kind, build(:event, :created, project: project, target: target)]
+      end.to_h
     end
 
-    [:issue, :user, :merge_request, :snippet, :milestone, nil].each do |kind|
-      context "for a #{kind} event" do
-        it 'is nil' do
-          target = create(kind) if kind
-          event = create(:event, project: project, target: target)
+    it 'passes a sanity check', :aggregate_failures do
+      expect(all_valid_events.values).to all(be_valid)
+    end
 
-          expect(event).to have_attributes(wiki_page: be_nil, wiki_page?: be_falsy)
+    describe '#wiki_page and #wiki_page?' do
+      context 'for a wiki page event' do
+        let(:wiki_page) do
+          create(:wiki_page, project: project)
+        end
+
+        subject(:event) { create(:wiki_page_event, project: project, wiki_page: wiki_page) }
+
+        it { is_expected.to have_attributes(wiki_page?: be_truthy, wiki_page: wiki_page) }
+      end
+
+      context 'for any other event' do
+        it 'has no wiki_page and is not a wiki_page', :aggregate_failures do
+          all_valid_events.each do |k, event|
+            next if k == :wiki_page_meta
+
+            expect(event).to have_attributes(wiki_page: be_nil, wiki_page?: be_falsy)
+          end
+        end
+      end
+    end
+
+    describe '#design and #design?' do
+      context 'for a design event' do
+        let(:design) { build(:design, project: project) }
+
+        subject(:event) { build(:design_event, target: design, project: project) }
+
+        it { is_expected.to have_attributes(design?: be_truthy, design: design) }
+      end
+
+      context 'for any other event' do
+        it 'has no design and is not a design', :aggregate_failures do
+          all_valid_events.each do |k, event|
+            next if k == :design
+
+            expect(event).to have_attributes(design: be_nil, design?: be_falsy)
+          end
         end
       end
     end
@@ -762,6 +880,19 @@ describe Event do
       expect(events.first.target.author).to be_an_instance_of(User)
 
       expect(count).to be_zero
+    end
+  end
+
+  describe '#action_name' do
+    it 'handles all valid design events' do
+      created, updated, destroyed, archived = %i[created updated destroyed archived].map do |trait|
+        build(:design_event, trait).action_name
+      end
+
+      expect(created).to eq('uploaded')
+      expect(updated).to eq('revised')
+      expect(destroyed).to eq('deleted')
+      expect(archived).to eq('archived')
     end
   end
 

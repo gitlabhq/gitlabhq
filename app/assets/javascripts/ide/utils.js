@@ -85,16 +85,37 @@ export function insertFinalNewline(content, eol = '\n') {
   return content.slice(-eol.length) !== eol ? `${content}${eol}` : content;
 }
 
-export function getPathParents(path) {
+export function getPathParents(path, maxDepth = Infinity) {
   const pathComponents = path.split('/');
   const paths = [];
-  while (pathComponents.length) {
+
+  let depth = 0;
+  while (pathComponents.length && depth < maxDepth) {
     pathComponents.pop();
 
     let parentPath = pathComponents.join('/');
     if (parentPath.startsWith('/')) parentPath = parentPath.slice(1);
     if (parentPath) paths.push(parentPath);
+
+    depth += 1;
   }
 
   return paths;
+}
+
+export function getPathParent(path) {
+  return getPathParents(path, 1)[0];
+}
+
+/**
+ * Takes a file object and returns a data uri of its contents.
+ *
+ * @param {File} file
+ */
+export function readFileAsDataURL(file) {
+  return new Promise(resolve => {
+    const reader = new FileReader();
+    reader.addEventListener('load', e => resolve(e.target.result), { once: true });
+    reader.readAsDataURL(file);
+  });
 }

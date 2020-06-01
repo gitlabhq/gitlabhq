@@ -1,5 +1,5 @@
 import { debounce } from 'lodash';
-import { editor as monacoEditor, KeyCode, KeyMod } from 'monaco-editor';
+import { editor as monacoEditor, KeyCode, KeyMod, Range } from 'monaco-editor';
 import store from '../stores';
 import DecorationsController from './decorations/controller';
 import DirtyDiffController from './diff/controller';
@@ -184,6 +184,21 @@ export default class Editor {
     this.instance.updateOptions({
       renderSideBySide: Editor.renderSideBySide(this.instance.getDomNode()),
     });
+  }
+
+  replaceSelectedText(text) {
+    let selection = this.instance.getSelection();
+    const range = new Range(
+      selection.startLineNumber,
+      selection.startColumn,
+      selection.endLineNumber,
+      selection.endColumn,
+    );
+
+    this.instance.executeEdits('', [{ range, text }]);
+
+    selection = this.instance.getSelection();
+    this.instance.setPosition({ lineNumber: selection.endLineNumber, column: selection.endColumn });
   }
 
   get isDiffEditorType() {

@@ -5,6 +5,8 @@ import {
   insertFinalNewline,
   trimTrailingWhitespace,
   getPathParents,
+  getPathParent,
+  readFileAsDataURL,
 } from '~/ide/utils';
 import { languages } from 'monaco-editor';
 
@@ -202,6 +204,39 @@ describe('WebIDE utils', () => {
       ${'path with/spaces to/something.md'} | ${['path with/spaces to', 'path with']}
     `('gets all parent directory names for path: $path', ({ path, parents }) => {
       expect(getPathParents(path)).toEqual(parents);
+    });
+
+    it.each`
+      path                      | depth | parents
+      ${'foo/bar/baz/index.md'} | ${0}  | ${[]}
+      ${'foo/bar/baz/index.md'} | ${1}  | ${['foo/bar/baz']}
+      ${'foo/bar/baz/index.md'} | ${2}  | ${['foo/bar/baz', 'foo/bar']}
+      ${'foo/bar/baz/index.md'} | ${3}  | ${['foo/bar/baz', 'foo/bar', 'foo']}
+      ${'foo/bar/baz/index.md'} | ${4}  | ${['foo/bar/baz', 'foo/bar', 'foo']}
+    `('gets only the immediate $depth parents if when depth=$depth', ({ path, depth, parents }) => {
+      expect(getPathParents(path, depth)).toEqual(parents);
+    });
+  });
+
+  describe('getPathParent', () => {
+    it.each`
+      path                                  | parents
+      ${'foo/bar/baz/index.md'}             | ${'foo/bar/baz'}
+      ${'foo/bar/baz'}                      | ${'foo/bar'}
+      ${'index.md'}                         | ${undefined}
+      ${'path with/spaces to/something.md'} | ${'path with/spaces to'}
+    `('gets the immediate parent for path: $path', ({ path, parents }) => {
+      expect(getPathParent(path)).toEqual(parents);
+    });
+  });
+
+  describe('readFileAsDataURL', () => {
+    it('reads a file and returns its output as a data url', () => {
+      const file = new File(['foo'], 'foo.png', { type: 'image/png' });
+
+      return readFileAsDataURL(file).then(contents => {
+        expect(contents).toBe('data:image/png;base64,Zm9v');
+      });
     });
   });
 });

@@ -158,3 +158,19 @@ export const canCreateMergeRequests = (state, getters) =>
 
 export const canPushCode = (state, getters) =>
   Boolean(getters.findProjectPermissions(state.currentProjectId)[PERMISSION_PUSH_CODE]);
+
+export const entryExists = state => path =>
+  Boolean(state.entries[path] && !state.entries[path].deleted);
+
+export const getAvailableFileName = (state, getters) => path => {
+  let newPath = path;
+
+  while (getters.entryExists(newPath)) {
+    newPath = newPath.replace(
+      /([ _-]?)(\d*)(\..+?$|$)/,
+      (_, before, number, after) => `${before || '_'}${Number(number) + 1}${after}`,
+    );
+  }
+
+  return newPath;
+};

@@ -1,4 +1,9 @@
-import { editor as monacoEditor, languages as monacoLanguages } from 'monaco-editor';
+import {
+  editor as monacoEditor,
+  languages as monacoLanguages,
+  Range,
+  Selection,
+} from 'monaco-editor';
 import Editor from '~/ide/lib/editor';
 import { defaultEditorOptions } from '~/ide/lib/editor_options';
 import { file } from '../helpers';
@@ -191,6 +196,38 @@ describe('Multi-file editor library', () => {
           }),
         ]),
       );
+    });
+  });
+
+  describe('replaceSelectedText', () => {
+    let model;
+    let editor;
+
+    beforeEach(() => {
+      instance.createInstance(holder);
+
+      model = instance.createModel({
+        ...file(),
+        key: 'index.md',
+        path: 'index.md',
+      });
+
+      instance.attachModel(model);
+
+      editor = instance.instance;
+      editor.getModel().setValue('foo bar baz');
+      editor.setSelection(new Range(1, 5, 1, 8));
+
+      instance.replaceSelectedText('hello');
+    });
+
+    it('replaces the text selected in editor with the one provided', () => {
+      expect(editor.getModel().getValue()).toBe('foo hello baz');
+    });
+
+    it('sets cursor to end of the replaced string', () => {
+      const selection = editor.getSelection();
+      expect(selection).toEqual(new Selection(1, 10, 1, 10));
     });
   });
 
