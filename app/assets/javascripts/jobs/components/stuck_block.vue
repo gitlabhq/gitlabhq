@@ -29,7 +29,7 @@ export default {
     <p v-if="tags.length" class="js-stuck-with-tags gl-mb-0">
       {{
         s__(`This job is stuck because you don't have
-  any active runners online with any of these tags assigned to them:`)
+  any active runners online or available with any of these tags assigned to them:`)
       }}
       <span v-for="(tag, index) in tags" :key="index" class="badge badge-primary append-right-4">
         {{ tag }}
@@ -48,9 +48,9 @@ export default {
       }}
     </p>
 
-    {{ __('Go to') }}
+    {{ __('Go to project') }}
     <gl-link v-if="runnersPath" :href="runnersPath" class="js-runners-path">
-      {{ __('Runners page') }}
+      {{ __('CI settings') }}
     </gl-link>
   </div>
 </template>

@@ -3,7 +3,7 @@
 module Mutations
   module AlertManagement
     class Base < BaseMutation
-      include Mutations::ResolvesProject
+      include ResolvesProject
 
       argument :project_path, GraphQL::ID_TYPE,
                required: true,

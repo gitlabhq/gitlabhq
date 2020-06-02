@@ -56,6 +56,10 @@ module Types
           description: 'Text to echo back',
           resolver: Resolvers::EchoResolver
 
+    field :user, Types::UserType, null: true,
+          description: 'Find a user on this instance',
+          resolver: Resolvers::UserResolver
+
     def design_management
       DesignManagementObject.new(nil)
     end

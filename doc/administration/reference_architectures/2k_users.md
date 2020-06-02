@@ -16,7 +16,7 @@ For a full list of reference architectures, see
 | PostgreSQL                                                   | 1     | 2 vCPU, 7.5GB Memory            | n1-standard-2 | m5.large              | D2s v3         |
 | Redis ([3](#footnotes))                                      | 1     | 1 vCPU, 3.75GB Memory           | n1-standard-1 | m5.large              | D2s v3         |
 | Gitaly ([5](#footnotes)) ([7](#footnotes))    | X ([2](#footnotes))  | 4 vCPU, 15GB Memory             | n1-standard-4 | m5.xlarge             | D4s v3         |
-| GitLab Rails ([1](#footnotes))                               | 2     | 8 vCPU, 7.2GB Memory            | n1-highcpu-8  | c5.2xlarge            | F8s v2         |
+| GitLab Rails ([1](#footnotes)), Sidekiq                      | 2     | 8 vCPU, 7.2GB Memory            | n1-highcpu-8  | c5.2xlarge            | F8s v2         |
 | Monitoring node                                              | 1     | 2 vCPU, 1.8GB Memory            | n1-highcpu-2  | c5.large              | F2s v2         |
 
 ## Setup instructions

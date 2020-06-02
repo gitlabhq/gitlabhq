@@ -3,7 +3,7 @@
 module Mutations
   module MergeRequests
     class Create < BaseMutation
-      include Mutations::ResolvesProject
+      include ResolvesProject
 
       graphql_name 'MergeRequestCreate'
 

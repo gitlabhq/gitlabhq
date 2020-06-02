@@ -29,16 +29,6 @@ RSpec.shared_examples 'resolving an issuable in GraphQL' do |type|
       subject
     end
 
-    it 'uses correct Resolver to resolve issuable parent' do
-      resolver_class = type == :epic ? 'Resolvers::GroupResolver' : 'Resolvers::ProjectResolver'
-
-      expect(resolver_class.constantize).to receive(:new)
-        .with(object: nil, context: context, field: nil)
-        .and_call_original
-
-      subject
-    end
-
     it 'returns nil if issuable is not found' do
       result = mutation.resolve_issuable(type: type, parent_path: parent.full_path, iid: "100")
       result = result.respond_to?(:sync) ? result.sync : result

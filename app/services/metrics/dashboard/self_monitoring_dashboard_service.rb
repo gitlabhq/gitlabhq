@@ -6,7 +6,7 @@ module Metrics
   module Dashboard
     class SelfMonitoringDashboardService < ::Metrics::Dashboard::PredefinedDashboardService
       DASHBOARD_PATH = 'config/prometheus/self_monitoring_default.yml'
-      DASHBOARD_NAME = 'Default'
+      DASHBOARD_NAME = N_('Default dashboard')
 
       SEQUENCE = [
         STAGES::CustomMetricsInserter,
@@ -23,7 +23,7 @@ module Metrics
         def all_dashboard_paths(_project)
           [{
             path: DASHBOARD_PATH,
-            display_name: DASHBOARD_NAME,
+            display_name: _(DASHBOARD_NAME),
             default: true,
             system_dashboard: false
           }]

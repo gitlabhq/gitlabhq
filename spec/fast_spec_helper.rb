@@ -13,6 +13,5 @@ require 'active_support/all'
 
 ActiveSupport::Dependencies.autoload_paths << 'lib'
 ActiveSupport::Dependencies.autoload_paths << 'ee/lib'
-ActiveSupport::Dependencies.autoload_paths << 'tooling/lib'
 
 ActiveSupport::XmlMini.backend = 'Nokogiri'

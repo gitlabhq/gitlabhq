@@ -851,6 +851,62 @@ describe('Dashboard', () => {
     });
   });
 
+  describe('document title', () => {
+    const originalTitle = 'Original Title';
+    const defaultDashboardName = dashboardGitResponse[0].display_name;
+
+    beforeEach(() => {
+      document.title = originalTitle;
+      createShallowWrapper({ hasMetrics: true });
+    });
+
+    afterAll(() => {
+      document.title = '';
+    });
+
+    it('is prepended with default dashboard name by default', () => {
+      setupAllDashboards(store);
+
+      return wrapper.vm.$nextTick().then(() => {
+        expect(document.title.startsWith(`${defaultDashboardName} · `)).toBe(true);
+      });
+    });
+
+    it('is prepended with dashboard name if path is known', () => {
+      const dashboard = dashboardGitResponse[1];
+      const currentDashboard = dashboard.path;
+
+      setupAllDashboards(store, currentDashboard);
+
+      return wrapper.vm.$nextTick().then(() => {
+        expect(document.title.startsWith(`${dashboard.display_name} · `)).toBe(true);
+      });
+    });
+
+    it('is prepended with default dashboard name is path is not known', () => {
+      setupAllDashboards(store, 'unknown/path');
+
+      return wrapper.vm.$nextTick().then(() => {
+        expect(document.title.startsWith(`${defaultDashboardName} · `)).toBe(true);
+      });
+    });
+
+    it('is not modified when dashboard name is not provided', () => {
+      const dashboard = { ...dashboardGitResponse[1], display_name: null };
+      const currentDashboard = dashboard.path;
+
+      store.commit(`monitoringDashboard/${types.SET_ALL_DASHBOARDS}`, [dashboard]);
+
+      store.commit(`monitoringDashboard/${types.SET_INITIAL_STATE}`, {
+        currentDashboard,
+      });
+
+      return wrapper.vm.$nextTick().then(() => {
+        expect(document.title).toBe(originalTitle);
+      });
+    });
+  });
+
   describe('Dashboard dropdown', () => {
     beforeEach(() => {
       createMountedWrapper({ hasMetrics: true });

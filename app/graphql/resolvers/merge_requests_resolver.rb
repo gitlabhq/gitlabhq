@@ -34,7 +34,11 @@ module Resolvers
     end
 
     def no_results_possible?(args)
-      project.nil? || args.values.any? { |v| v.is_a?(Array) && v.empty? }
+      project.nil? || some_argument_is_empty?(args)
+    end
+
+    def some_argument_is_empty?(args)
+      args.values.any? { |v| v.is_a?(Array) && v.empty? }
     end
   end
 end

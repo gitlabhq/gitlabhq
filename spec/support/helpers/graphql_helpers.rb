@@ -153,7 +153,15 @@ module GraphqlHelpers
   end
 
   def wrap_fields(fields)
-    fields = Array.wrap(fields).join("\n")
+    fields = Array.wrap(fields).map do |field|
+      case field
+      when Symbol
+        GraphqlHelpers.fieldnamerize(field)
+      else
+        field
+      end
+    end.join("\n")
+
     return unless fields.present?
 
     <<~FIELDS

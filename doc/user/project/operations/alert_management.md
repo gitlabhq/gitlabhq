@@ -89,3 +89,6 @@ The Alert Management detail view enables you to create an issue with a
 description automatically populated from an alert. To create the issue,
 click the **Create Issue** button. You can then view the issue from the
 alert by clicking the **View Issue** button.
+
+Closing a GitLab issue associated with an alert changes the alert's status to Resolved.
+See [Alert Management statuses](#alert-management-statuses) for more details about statuses.

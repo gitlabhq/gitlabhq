@@ -64,7 +64,7 @@ export GITLAB_LICENSE_FILE="/path/to/license/file"
 Omnibus installations should add this entry to `gitlab.rb`:
 
 ```ruby
-gitlab_rails['license_file'] = "/path/to/license/file"
+gitlab_rails['initial_license_file'] = "/path/to/license/file"
 ```
 
 CAUTION: **Caution:**

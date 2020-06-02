@@ -40,6 +40,6 @@ describe Resolvers::UserResolver do
   private
 
   def resolve_user(args = {})
-    resolve(described_class, args: args)
+    sync(resolve(described_class, args: args))
   end
 end

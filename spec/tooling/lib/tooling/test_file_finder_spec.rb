@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
+require_relative '../../../../tooling/lib/tooling/test_file_finder'
 
-describe Tooling::TestFileFinder do
+RSpec.describe Tooling::TestFileFinder do
   subject { Tooling::TestFileFinder.new(file) }
 
   describe '#test_files' do

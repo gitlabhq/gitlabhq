@@ -3,7 +3,7 @@
 module Mutations
   module JiraImport
     class Start < BaseMutation
-      include Mutations::ResolvesProject
+      include ResolvesProject
 
       graphql_name 'JiraImportStart'
 

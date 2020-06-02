@@ -6,6 +6,16 @@ COMMIT_MESSAGE_GUIDELINES = "https://docs.gitlab.com/ee/development/contributing
 MORE_INFO = "For more information, take a look at our [Commit message guidelines](#{COMMIT_MESSAGE_GUIDELINES})."
 THE_DANGER_JOB_TEXT = "the `danger-review` job"
 MAX_COMMITS_COUNT = 10
+MAX_COMMITS_COUNT_EXCEEDED_MESSAGE = <<~MSG
+This merge request includes more than %<max_commits_count>d commits. Each commit should meet the following criteria:
+
+1. Have a well-written commit message.
+1. Has all tests passing when used on its own (e.g. when using git checkout SHA).
+1. Can be reverted on its own without also requiring the revert of commit that came before it.
+1. Is small enough that it can be reviewed in isolation in under 30 minutes or so.
+
+If this merge request contains commits that do not meet this criteria and/or contains intermediate work, please rebase these commits into a smaller number of commits or split this merge request into multiple smaller merge requests.
+MSG
 
 def gitlab_danger
   @gitlab_danger ||= GitlabDanger.new(helper.gitlab_helper)
@@ -94,11 +104,7 @@ def lint_commits(commits)
   warn_or_fail_commits(failed_commit_linters, default_to_fail: !squash_mr?)
 
   if count_non_fixup_commits(commit_linters) > MAX_COMMITS_COUNT
-    level = squash_mr? ? :warn : :fail
-    self.__send__(level, # rubocop:disable GitlabSecurity/PublicSend
-      "This merge request includes more than #{MAX_COMMITS_COUNT} commits. " \
-        'Please rebase these commits into a smaller number of commits or split ' \
-        'this merge request into multiple smaller merge requests.')
+    self.warn(format(MAX_COMMITS_COUNT_EXCEEDED_MESSAGE, max_commits_count: MAX_COMMITS_COUNT))
   end
 
   if squash_mr?

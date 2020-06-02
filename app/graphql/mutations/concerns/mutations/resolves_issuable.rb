@@ -3,7 +3,10 @@
 module Mutations
   module ResolvesIssuable
     extend ActiveSupport::Concern
-    include Mutations::ResolvesProject
+
+    included do
+      include ResolvesProject
+    end
 
     def resolve_issuable(type:, parent_path:, iid:)
       parent = resolve_issuable_parent(type, parent_path)
@@ -29,7 +32,7 @@ module Mutations
     def resolve_issuable_parent(type, parent_path)
       return unless type == :issue || type == :merge_request
 
-      resolve_project(full_path: parent_path)
+      resolve_project(full_path: parent_path) if parent_path.present?
     end
   end
 end

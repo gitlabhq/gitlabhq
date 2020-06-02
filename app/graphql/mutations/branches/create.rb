@@ -3,7 +3,7 @@
 module Mutations
   module Branches
     class Create < BaseMutation
-      include Mutations::ResolvesProject
+      include ResolvesProject
 
       graphql_name 'CreateBranch'
 

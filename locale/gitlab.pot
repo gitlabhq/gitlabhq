@@ -3642,6 +3642,9 @@ msgstr ""
 msgid "CI Lint"
 msgstr ""
 
+msgid "CI settings"
+msgstr ""
+
 msgid "CI variables"
 msgstr ""
 
@@ -6986,6 +6989,9 @@ msgid "Default branch and protected branches"
 msgstr ""
 
 msgid "Default classification label"
+msgstr ""
+
+msgid "Default dashboard"
 msgstr ""
 
 msgid "Default deletion adjourned period"
@@ -10606,9 +10612,6 @@ msgstr ""
 msgid "Go full screen"
 msgstr ""
 
-msgid "Go to"
-msgstr ""
-
 msgid "Go to %{link_to_google_takeout}."
 msgstr ""
 
@@ -13754,9 +13757,6 @@ msgid "Metrics Dashboard"
 msgstr ""
 
 msgid "Metrics and profiling"
-msgstr ""
-
-msgid "Metrics for environment"
 msgstr ""
 
 msgid "Metrics::Dashboard::Annotation|Annotation can't belong to both a cluster and an environment at the same time"
@@ -18807,9 +18807,6 @@ msgstr ""
 msgid "Runners currently online: %{active_runners_count}"
 msgstr ""
 
-msgid "Runners page"
-msgstr ""
-
 msgid "Runners page."
 msgstr ""
 
@@ -20470,6 +20467,12 @@ msgstr ""
 msgid "Sort direction"
 msgstr ""
 
+msgid "Sort direction: Ascending"
+msgstr ""
+
+msgid "Sort direction: Descending"
+msgstr ""
+
 msgid "SortOptions|Access level, ascending"
 msgstr ""
 
@@ -22057,6 +22060,9 @@ msgstr ""
 msgid "There was a problem fetching project users."
 msgstr ""
 
+msgid "There was a problem fetching users."
+msgstr ""
+
 msgid "There was a problem refreshing the data, please try again"
 msgstr ""
 
@@ -22483,7 +22489,7 @@ msgstr ""
 msgid "This job is preparing to start"
 msgstr ""
 
-msgid "This job is stuck because you don't have any active runners online with any of these tags assigned to them:"
+msgid "This job is stuck because you don't have any active runners online or available with any of these tags assigned to them:"
 msgstr ""
 
 msgid "This job is stuck because you don't have any active runners that can run this job."

@@ -33,7 +33,7 @@ are very appreciative of the work done by translators and proofreaders!
 - Dutch
   - Emily Hendle - [GitLab](https://gitlab.com/pundachan), [CrowdIn](https://crowdin.com/profile/pandachan)
 - Esperanto
-- Lyubomir Vasilev - [CrowdIn](https://crowdin.com/profile/lyubomirv)
+  - Lyubomir Vasilev - [CrowdIn](https://crowdin.com/profile/lyubomirv)
 - Estonian
   - Proofreaders needed.
 - Filipino

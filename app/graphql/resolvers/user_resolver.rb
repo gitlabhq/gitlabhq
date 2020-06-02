@@ -4,6 +4,8 @@ module Resolvers
   class UserResolver < BaseResolver
     description 'Retrieve a single user'
 
+    type Types::UserType, null: true
+
     argument :id, GraphQL::ID_TYPE,
              required: false,
              description: 'ID of the User'
@@ -12,19 +14,30 @@ module Resolvers
              required: false,
              description: 'Username of the User'
 
-    def resolve(id: nil, username: nil)
-      id_or_username = GitlabSchema.parse_gid(id, expected_type: ::User).model_id if id
-      id_or_username ||= username
-
-      ::UserFinder.new(id_or_username).find_by_id_or_username
-    end
-
     def ready?(id: nil, username: nil)
       unless id.present? ^ username.present?
         raise Gitlab::Graphql::Errors::ArgumentError, 'Provide either a single username or id'
       end
 
       super
+    end
+
+    def resolve(id: nil, username: nil)
+      if id
+        GitlabSchema.object_from_id(id, expected_type: User)
+      else
+        batch_load(username)
+      end
+    end
+
+    private
+
+    def batch_load(username)
+      BatchLoader::GraphQL.for(username).batch do |usernames, loader|
+        User.by_username(usernames).each do |user|
+          loader.call(user.username, user)
+        end
+      end
     end
   end
 end

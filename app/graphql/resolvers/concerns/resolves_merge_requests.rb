@@ -13,10 +13,10 @@ module ResolvesMergeRequests
     args[:iids] = Array.wrap(args[:iids]) if args[:iids]
     args.compact!
 
-    if args.keys == [:iids]
+    if project && args.keys == [:iids]
       batch_load_merge_requests(args[:iids])
     else
-      args[:project_id] = project.id
+      args[:project_id] ||= project
 
       MergeRequestsFinder.new(current_user, args).execute
     end.then(&(single? ? :first : :itself))

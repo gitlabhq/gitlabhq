@@ -16,15 +16,16 @@ const setEnvironmentData = store => {
   store.commit(`monitoringDashboard/${types.RECEIVE_ENVIRONMENTS_DATA_SUCCESS}`, environmentData);
 };
 
-export const setupAllDashboards = store => {
+export const setupAllDashboards = (store, path) => {
   store.commit(`monitoringDashboard/${types.SET_ALL_DASHBOARDS}`, dashboardGitResponse);
+  if (path) {
+    store.commit(`monitoringDashboard/${types.SET_INITIAL_STATE}`, {
+      currentDashboard: path,
+    });
+  }
 };
 
 export const setupStoreWithDashboard = store => {
-  store.commit(
-    `monitoringDashboard/${types.RECEIVE_METRICS_DASHBOARD_SUCCESS}`,
-    metricsDashboardPayload,
-  );
   store.commit(
     `monitoringDashboard/${types.RECEIVE_METRICS_DASHBOARD_SUCCESS}`,
     metricsDashboardPayload,
