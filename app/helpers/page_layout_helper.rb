@@ -104,6 +104,16 @@ module PageLayoutHelper
     end
   end
 
+  # This helper ensures there is always a default `Gitlab::SearchContext` available
+  # to all controller that use the application layout.
+  def search_context
+    strong_memoize(:search_context) do
+      next super if defined?(super)
+
+      Gitlab::SearchContext::Builder.new(controller.view_context).build!
+    end
+  end
+
   def fluid_layout
     current_user && current_user.layout == "fluid"
   end

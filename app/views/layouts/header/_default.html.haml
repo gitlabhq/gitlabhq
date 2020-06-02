@@ -1,9 +1,3 @@
-- if project
-  - search_path_url = search_path(project_id: project.id)
-- elsif group
-  - search_path_url = search_path(group_id: group.id)
-- else
-  - search_path_url = search_path
 - has_impersonation_link = header_link?(:admin_impersonation)
 
 %header.navbar.navbar-gitlab.navbar-expand-sm.js-navbar{ data: { qa_selector: 'navbar' } }
@@ -36,7 +30,7 @@
             %li.nav-item.d-none.d-lg-block.m-auto
               = render 'layouts/search' unless current_controller?(:search)
             %li.nav-item.d-inline-block.d-lg-none
-              = link_to search_path_url, title: _('Search'), aria: { label: _('Search') }, data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
+              = link_to search_context.search_url, title: _('Search'), aria: { label: _('Search') }, data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
                 = sprite_icon('search', size: 16)
           - if header_link?(:issues)
             = nav_link(path: 'dashboard#issues', html_options: { class: "user-counter" }) do

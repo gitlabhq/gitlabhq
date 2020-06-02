@@ -8,6 +8,7 @@
       = render_if_exists 'layouts/header/users_over_license_banner'
       - if Feature.enabled?(:subscribable_banner_license, default_enabled: true)
         = render_if_exists "layouts/header/ee_subscribable_banner"
+      = render_if_exists "layouts/header/licensed_user_count_threshold"
       = render "layouts/broadcast"
       = render "layouts/header/read_only_banner"
       = render "layouts/nav/classification_level_banner"

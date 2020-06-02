@@ -142,7 +142,8 @@ third party ports for other languages like JavaScript, Python, Ruby, and so on.
 
 The `terraform` report obtains a Terraform `tfplan.json` file. [JQ processing required to remove creds](../../user/infrastructure/index.md#output-terraform-plan-information-into-a-merge-request). The collected Terraform
 plan report will be uploaded to GitLab as an artifact and will be automatically shown
-in merge requests.
+in merge requests. For more information, see
+[Output `terraform plan` information into a merge request](../../user/infrastructure/index.md#output-terraform-plan-information-into-a-merge-request).
 
 #### `artifacts:reports:codequality` **(STARTER)**
 

@@ -31,7 +31,7 @@ export const getProjectSlug = () => {
 };
 
 export const getGroupSlug = () => {
-  if (isInGroupsPage()) {
+  if (isInProjectPage() || isInGroupsPage()) {
     return $('body').data('group');
   }
   return null;

@@ -36,7 +36,7 @@ import initSearchAutocomplete from './search_autocomplete';
 import GlFieldErrors from './gl_field_errors';
 import initUserPopovers from './user_popovers';
 import initBroadcastNotifications from './broadcast_notification';
-import PersistentUserCallout from './persistent_user_callout';
+import initPersistentUserCallouts from './persistent_user_callouts';
 import { initUserTracking } from './tracking';
 import { __ } from './locale';
 
@@ -108,12 +108,7 @@ function deferredInitialisation() {
   initUserPopovers();
   initBroadcastNotifications();
   initFrequentItemDropdowns();
-
-  const recoverySettingsCallout = document.querySelector('.js-recovery-settings-callout');
-  PersistentUserCallout.factory(recoverySettingsCallout);
-
-  const usersOverLicenseCallout = document.querySelector('.js-users-over-license-callout');
-  PersistentUserCallout.factory(usersOverLicenseCallout);
+  initPersistentUserCallouts();
 
   if (document.querySelector('.search')) initSearchAutocomplete();
 

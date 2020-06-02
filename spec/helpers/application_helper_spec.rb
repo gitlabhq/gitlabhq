@@ -278,7 +278,7 @@ describe ApplicationHelper do
             page: 'application',
             page_type_id: nil,
             find_file: nil,
-            group: ''
+            group: nil
           }
         )
       end
@@ -317,12 +317,31 @@ describe ApplicationHelper do
             page: 'application',
             page_type_id: nil,
             find_file: nil,
-            group: '',
+            group: nil,
             project_id: project.id,
             project: project.name,
             namespace_id: project.namespace.id
           }
         )
+      end
+
+      context 'when @project is owned by a group' do
+        let_it_be(:project) { create(:project, :repository, group: create(:group)) }
+
+        it 'includes all possible body data elements and associates the project elements with project' do
+          expect(helper).to receive(:can?).with(nil, :download_code, project)
+          expect(helper.body_data).to eq(
+            {
+              page: 'application',
+              page_type_id: nil,
+              find_file: nil,
+              group: project.group.name,
+              project_id: project.id,
+              project: project.name,
+              namespace_id: project.namespace.id
+            }
+          )
+        end
       end
 
       context 'when controller is issues' do
@@ -342,7 +361,7 @@ describe ApplicationHelper do
                 page: 'projects:issues:show',
                 page_type_id: issue.id,
                 find_file: nil,
-                group: '',
+                group: nil,
                 project_id: issue.project.id,
                 project: issue.project.name,
                 namespace_id: issue.project.namespace.id

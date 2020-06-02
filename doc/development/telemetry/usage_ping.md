@@ -317,43 +317,43 @@ On GitLab.com, we have DangerBot setup to monitor Telemetry related files and Da
 | `license_trial`                                         |                                    |             |                                                   |
 | `assignee_lists`                                        | `counts`                           |             |                                                   |
 | `boards`                                                | `counts`                           |             |                                                   |
-| `ci_builds`                                             | `counts`                           |             |                                                   |
-| `ci_internal_pipelines`                                 | `counts`                           |             |                                                   |
-| `ci_external_pipelines`                                 | `counts`                           |             |                                                   |
-| `ci_pipeline_config_auto_devops`                        | `counts`                           |             |                                                   |
-| `ci_pipeline_config_repository`                         | `counts`                           |             |                                                   |
-| `ci_runners`                                            | `counts`                           |             |                                                   |
-| `ci_triggers`                                           | `counts`                           |             |                                                   |
-| `ci_pipeline_schedules`                                 | `counts`                           |             |                                                   |
-| `auto_devops_enabled`                                   | `counts`                           |             |                                                   |
-| `auto_devops_disabled`                                  | `counts`                           |             |                                                   |
+| `ci_builds`                                             | `counts`                           | `verify`    | Unique builds in project                          |
+| `ci_internal_pipelines`                                 | `counts`                           | `verify`    | Total pipelines in GitLab repositories            |
+| `ci_external_pipelines`                                 | `counts`                           | `verify`    | Total pipelines in external repositories          |
+| `ci_pipeline_config_auto_devops`                        | `counts`                           | `verify`    | Total pipelines from an Auto DevOps template      |
+| `ci_pipeline_config_repository`                         | `counts`                           | `verify`    | Total Pipelines from templates in repository      |
+| `ci_runners`                                            | `counts`                           | `verify`    | Total configured Runners in project               |
+| `ci_triggers`                                           | `counts`                           | `verify`    | Total configured Triggers in project              |
+| `ci_pipeline_schedules`                                 | `counts`                           | `verify`    | Pipeline schedules in GitLab                      |
+| `auto_devops_enabled`                                   | `counts`                           |`configure`  | Projects with Auto DevOps template enabled        |
+| `auto_devops_disabled`                                  | `counts`                           |`configure`  | Projects with Auto DevOps template disabled       |
 | `deploy_keys`                                           | `counts`                           |             |                                                   |
-| `deployments`                                           | `counts`                           |             |                                                   |
+| `deployments`                                           | `counts`                           |`release`    | Total deployments                                 |
 | `dast_jobs`                                             | `counts`                           |             |                                                   |
-| `successful_deployments`                                | `counts`                           |             |                                                   |
-| `failed_deployments`                                    | `counts`                           |             |                                                   |
-| `environments`                                          | `counts`                           |             |                                                   |
-| `clusters`                                              | `counts`                           |             |                                                   |
-| `clusters_enabled`                                      | `counts`                           |             |                                                   |
-| `project_clusters_enabled`                              | `counts`                           |             |                                                   |
-| `group_clusters_enabled`                                | `counts`                           |             |                                                   |
-| `instance_clusters_enabled`                             | `counts`                           |             |                                                   |
-| `clusters_disabled`                                     | `counts`                           |             |                                                   |
-| `project_clusters_disabled`                             | `counts`                           |             |                                                   |
-| `group_clusters_disabled`                               | `counts`                           |             |                                                   |
-| `instance_clusters_disabled`                            | `counts`                           |             |                                                   |
-| `clusters_platforms_eks`                                | `counts`                           |             |                                                   |
-| `clusters_platforms_gke`                                | `counts`                           |             |                                                   |
-| `clusters_platforms_user`                               | `counts`                           |             |                                                   |
-| `clusters_applications_helm`                            | `counts`                           |             |                                                   |
-| `clusters_applications_ingress`                         | `counts`                           |             |                                                   |
-| `clusters_applications_cert_managers`                   | `counts`                           |             |                                                   |
-| `clusters_applications_crossplane`                      | `counts`                           |             |                                                   |
-| `clusters_applications_prometheus`                      | `counts`                           |             |                                                   |
-| `clusters_applications_runner`                          | `counts`                           |             |                                                   |
-| `clusters_applications_knative`                         | `counts`                           |             |                                                   |
-| `clusters_applications_elastic_stack`                   | `counts`                           |             |                                                   |
-| `clusters_management_project`                           | `counts`                           |             |                                                   |
+| `successful_deployments`                                | `counts`                           |`release`    | Total successful deployments                      |
+| `failed_deployments`                                    | `counts`                           |`release`    | Total failed deployments                          |
+| `environments`                                          | `counts`                           |`release`    | Total available and stopped environments          |
+| `clusters`                                              | `counts`                           |`configure`  | Total GitLab Managed clusters both enabled and disabled |
+| `clusters_enabled`                                      | `counts`                           |`configure`  | Total GitLab Managed clusters currently enabled |
+| `project_clusters_enabled`                              | `counts`                           |`configure`  | Total GitLab Managed clusters attached to projects|
+| `group_clusters_enabled`                                | `counts`                           |`configure`  | Total GitLab Managed clusters attached to groups  |
+| `instance_clusters_enabled`                             | `counts`                           |`configure`  | Total GitLab Managed clusters attached to the instance |
+| `clusters_disabled`                                     | `counts`                           |`configure`  | Total GitLab Managed disabled clusters |
+| `project_clusters_disabled`                             | `counts`                           |`configure`  | Total GitLab Managed disabled clusters previously attached to projects |
+| `group_clusters_disabled`                               | `counts`                           |`configure`  | Total GitLab Managed disabled clusters previously attached to groups |
+| `instance_clusters_disabled`                            | `counts`                           |`configure`  | Total GitLab Managed disabled clusters previously attached to the instance |
+| `clusters_platforms_eks`                                | `counts`                           |`configure`  | Total GitLab Managed clusters provisioned with GitLab on AWS EKS |
+| `clusters_platforms_gke`                                | `counts`                           |`configure`  | Total GitLab Managed clusters provisioned with GitLab on GCE GKE |
+| `clusters_platforms_user`                               | `counts`                           |`configure`  | Total GitLab Managed clusters that are user provisioned |
+| `clusters_applications_helm`                            | `counts`                           |`configure`  | Total GitLab Managed clusters with Helm enabled |
+| `clusters_applications_ingress`                         | `counts`                           |`configure`  | Total GitLab Managed clusters with Ingress enabled |
+| `clusters_applications_cert_managers`                   | `counts`                           |`configure`  | Total GitLab Managed clusters with Cert Manager enabled |
+| `clusters_applications_crossplane`                      | `counts`                           |`configure`  | Total GitLab Managed clusters with Crossplane enabled |
+| `clusters_applications_prometheus`                      | `counts`                           |`configure`  | Total GitLab Managed clusters with Prometheus enabled |
+| `clusters_applications_runner`                          | `counts`                           |`configure`  | Total GitLab Managed clusters with Runner enabled              |
+| `clusters_applications_knative`                         | `counts`                           |`configure`  | Total GitLab Managed clusters with Knative enabled              |
+| `clusters_applications_elastic_stack`                   | `counts`                           |`configure`  | Total GitLab Managed clusters with Elastic Stack enabled        |
+| `clusters_management_project`                           | `counts`                           |`configure`  | Total GitLab Managed clusters with defined cluster management project   |
 | `in_review_folder`                                      | `counts`                           |             |                                                   |
 | `grafana_integrated_projects`                           | `counts`                           |             |                                                   |
 | `groups`                                                | `counts`                           |             |                                                   |
@@ -368,14 +368,14 @@ On GitLab.com, we have DangerBot setup to monitor Telemetry related files and Da
 | `lfs_objects`                                           | `counts`                           |             |                                                   |
 | `milestone_lists`                                       | `counts`                           |             |                                                   |
 | `milestones`                                            | `counts`                           |             |                                                   |
-| `pages_domains`                                         | `counts`                           |             |                                                   |
+| `pages_domains`                                         | `counts`                           |`release`    | Total GitLab Pages domains                        |
 | `pool_repositories`                                     | `counts`                           |             |                                                   |
 | `projects`                                              | `counts`                           |             |                                                   |
 | `projects_imported_from_github`                         | `counts`                           |             |                                                   |
 | `projects_with_repositories_enabled`                    | `counts`                           |             |                                                   |
 | `projects_with_error_tracking_enabled`                  | `counts`                           |             |                                                   |
 | `protected_branches`                                    | `counts`                           |             |                                                   |
-| `releases`                                              | `counts`                           |             |                                                   |
+| `releases`                                              | `counts`                           |`release`    | Unique release tags                               |
 | `remote_mirrors`                                        | `counts`                           |             |                                                   |
 | `requirements_created`                                  | `counts`                           |             |                                                   |
 | `snippets`                                              | `counts`                           |             |                                                   |
@@ -466,22 +466,22 @@ On GitLab.com, we have DangerBot setup to monitor Telemetry related files and Da
 | `ldap_users`                                            | `counts`                           |             |                                                   |
 | `pod_logs_usages_total`                                 | `counts`                           |             |                                                   |
 | `projects_enforcing_code_owner_approval`                | `counts`                           |             |                                                   |
-| `projects_mirrored_with_pipelines_enabled`              | `counts`                           |             |                                                   |
-| `projects_reporting_ci_cd_back_to_github`               | `counts`                           |             |                                                   |
-| `projects_with_packages`                                | `counts`                           |             |                                                   |
-| `projects_with_prometheus_alerts`                       | `counts`                           |             |                                                   |
-| `projects_with_tracing_enabled`                         | `counts`                           |             |                                                   |
-| `projects_with_alerts_service_enabled`                  | `counts`                           |             |                                                   |
+| `projects_mirrored_with_pipelines_enabled`              | `counts`                           |`release`    | Projects with repository mirroring enabled        |
+| `projects_reporting_ci_cd_back_to_github`               | `counts`                           |`verify`     | Projects with a GitHub service pipeline enabled   |
+| `projects_with_packages`                                | `counts`                           |`package`    | Projects with package registry configured         |
+| `projects_with_prometheus_alerts`                       | `counts`                           |`monitor`    | Projects with Promethus alerting enabled          |
+| `projects_with_tracing_enabled`                         | `counts`                           |`monitor`    | Projects with tracing enabled                     |
+| `projects_with_alerts_service_enabled`                  | `counts`                           |`monitor`    | Projects with alerting service enabled            |
 | `template_repositories`                                 | `counts`                           |             |                                                   |
 | `container_scanning_jobs`                               | `counts`                           |             |                                                   |
 | `dependency_scanning_jobs`                              | `counts`                           |             |                                                   |
 | `license_management_jobs`                               | `counts`                           |             |                                                   |
 | `sast_jobs`                                             | `counts`                           |             |                                                   |
-| `status_page_projects`                                  | `counts`                           | `monitor`   |                                                   |
-| `status_page_issues`                                    | `counts`                           | `monitor`   |                                                   |
+| `status_page_projects`                                  | `counts`                           | `monitor`   | Projects with status page enabled                 |
+| `status_page_issues`                                    | `counts`                           | `monitor`   | Issues published to a Status Page                   |
 | `epics_deepest_relationship_level`                      | `counts`                           |             |                                                   |
-| `operations_dashboard_default_dashboard`                | `counts`                           |             |                                                   |
-| `operations_dashboard_users_with_projects_added`        | `counts`                           |             |                                                   |
+| `operations_dashboard_default_dashboard`                | `counts`                           | `monitor`   | Active users with enabled operations dashboard    |
+| `operations_dashboard_users_with_projects_added`        | `counts`                           | `monitor`   | Active users with projects on operations dashboard|
 | `container_registry_enabled`                            |                                    |             |                                                   |
 | `dependency_proxy_enabled`                              |                                    |             |                                                   |
 | `gitlab_shared_runners_enabled`                         |                                    |             |                                                   |
@@ -507,47 +507,47 @@ On GitLab.com, we have DangerBot setup to monitor Telemetry related files and Da
 | `sd`                                                    | `avg_cycle_analytics - production` |             |                                                   |
 | `missing`                                               | `avg_cycle_analytics - production` |             |                                                   |
 | `total`                                                 | `avg_cycle_analytics`              |             |                                                   |
-| `clusters_applications_cert_managers`                   | `usage_activity_by_stage`          | `configure` |                                                   |
-| `clusters_applications_helm`                            | `usage_activity_by_stage`          | `configure` |                                                   |
-| `clusters_applications_ingress`                         | `usage_activity_by_stage`          | `configure` |                                                   |
-| `clusters_applications_knative`                         | `usage_activity_by_stage`          | `configure` |                                                   |
-| `clusters_management_project`                           | `usage_activity_by_stage`          | `configure` |                                                   |
-| `clusters_disabled`                                     | `usage_activity_by_stage`          | `configure` |                                                   |
-| `clusters_enabled`                                      | `usage_activity_by_stage`          | `configure` |                                                   |
-| `clusters_platforms_gke`                                | `usage_activity_by_stage`          | `configure` |                                                   |
-| `clusters_platforms_eks`                                | `usage_activity_by_stage`          | `configure` |                                                   |
-| `clusters_platforms_user`                               | `usage_activity_by_stage`          | `configure` |                                                   |
-| `instance_clusters_disabled`                            | `usage_activity_by_stage`          | `configure` |                                                   |
-| `instance_clusters_enabled`                             | `usage_activity_by_stage`          | `configure` |                                                   |
-| `group_clusters_disabled`                               | `usage_activity_by_stage`          | `configure` |                                                   |
-| `group_clusters_enabled`                                | `usage_activity_by_stage`          | `configure` |                                                   |
-| `project_clusters_disabled`                             | `usage_activity_by_stage`          | `configure` |                                                   |
-| `project_clusters_enabled`                              | `usage_activity_by_stage`          | `configure` |                                                   |
-| `projects_slack_notifications_active`                   | `usage_activity_by_stage`          | `configure` |                                                   |
-| `projects_slack_slash_active`                           | `usage_activity_by_stage`          | `configure` |                                                   |
-| `projects_with_prometheus_alerts: 0`                    | `usage_activity_by_stage`          | `configure` |                                                   |
+| `clusters_applications_cert_managers`                   | `usage_activity_by_stage`          | `configure` | Unique clusters with certificate managers enabled |
+| `clusters_applications_helm`                            | `usage_activity_by_stage`          | `configure` | Unique clusters with Helm enabled                 |
+| `clusters_applications_ingress`                         | `usage_activity_by_stage`          | `configure` | Unique clusters with Ingress enabled              |
+| `clusters_applications_knative`                         | `usage_activity_by_stage`          | `configure` | Unique clusters with Knative enabled              |
+| `clusters_management_project`                           | `usage_activity_by_stage`          | `configure` | Unique clusters with project management enabled   |
+| `clusters_disabled`                                     | `usage_activity_by_stage`          | `configure` | Total non-"GitLab Managed clusters"                          |
+| `clusters_enabled`                                      | `usage_activity_by_stage`          | `configure` | Total GitLab Managed clusters                           |
+| `clusters_platforms_gke`                                | `usage_activity_by_stage`          | `configure` | Unique clusters with Google Cloud installed       |
+| `clusters_platforms_eks`                                | `usage_activity_by_stage`          | `configure` | Unique clusters with AWS installed                |
+| `clusters_platforms_user`                               | `usage_activity_by_stage`          | `configure` | Unique clusters that are user provided            |
+| `instance_clusters_disabled`                            | `usage_activity_by_stage`          | `configure` | Unique clusters disabled on instance              |
+| `instance_clusters_enabled`                             | `usage_activity_by_stage`          | `configure` | Unique clusters enabled on instance               |
+| `group_clusters_disabled`                               | `usage_activity_by_stage`          | `configure` | Unique clusters disabled on group                 |
+| `group_clusters_enabled`                                | `usage_activity_by_stage`          | `configure` | Unique clusters enabled on group                  |
+| `project_clusters_disabled`                             | `usage_activity_by_stage`          | `configure` | Unique clusters disabled on project               |
+| `project_clusters_enabled`                              | `usage_activity_by_stage`          | `configure` | Unique clusters enabled on project                |
+| `projects_slack_notifications_active`                   | `usage_activity_by_stage`          | `configure` | Unique projects with Slack service enabled        |
+| `projects_slack_slash_active`                           | `usage_activity_by_stage`          | `configure` | Unique projects with Slack '/' commands enabled   |
+| `projects_with_prometheus_alerts: 0`                    | `usage_activity_by_stage`          | `monitor`   | Projects with Promethus enabled and no alerts     |
 | `deploy_keys`                                           | `usage_activity_by_stage`          | `create`    |                                                   |
 | `keys`                                                  | `usage_activity_by_stage`          | `create`    |                                                   |
 | `projects_jira_dvcs_server_active`                      | `usage_activity_by_stage`          | `plan`      |                                                   |
 | `service_desk_enabled_projects`                         | `usage_activity_by_stage`          | `plan`      |                                                   |
 | `service_desk_issues`                                   | `usage_activity_by_stage`          | `plan`      |                                                   |
 | `todos: 0`                                              | `usage_activity_by_stage`          | `plan`      |                                                   |
-| `deployments`                                           | `usage_activity_by_stage`          | `release`   |                                                   |
-| `failed_deployments`                                    | `usage_activity_by_stage`          | `release`   |                                                   |
-| `projects_mirrored_with_pipelines_enabled`              | `usage_activity_by_stage`          | `release`   |                                                   |
-| `releases`                                              | `usage_activity_by_stage`          | `release`   |                                                   |
-| `successful_deployments: 0`                             | `usage_activity_by_stage`          | `release`   |                                                   |
+| `deployments`                                           | `usage_activity_by_stage`          | `release`   | Total deployments                                 |
+| `failed_deployments`                                    | `usage_activity_by_stage`          | `release`   | Total failed deployments                          |
+| `projects_mirrored_with_pipelines_enabled`              | `usage_activity_by_stage`          | `release`   | Projects with repository mirroring enabled        |
+| `releases`                                              | `usage_activity_by_stage`          | `release`   | Unique release tags in project                    |
+| `successful_deployments: 0`                             | `usage_activity_by_stage`          | `release`   | Total successful deployments                      |
 | `user_preferences_group_overview_security_dashboard: 0` | `usage_activity_by_stage`          | `secure`    |                                                   |
-| `ci_builds`                                             | `usage_activity_by_stage`          | `verify`    |                                                   |
-| `ci_external_pipelines`                                 | `usage_activity_by_stage`          | `verify`    |                                                   |
-| `ci_internal_pipelines`                                 | `usage_activity_by_stage`          | `verify`    |                                                   |
-| `ci_pipeline_config_auto_devops`                        | `usage_activity_by_stage`          | `verify`    |                                                   |
-| `ci_pipeline_config_repository`                         | `usage_activity_by_stage`          | `verify`    |                                                   |
-| `ci_pipeline_schedules`                                 | `usage_activity_by_stage`          | `verify`    |                                                   |
-| `ci_pipelines`                                          | `usage_activity_by_stage`          | `verify`    |                                                   |
-| `ci_triggers`                                           | `usage_activity_by_stage`          | `verify`    |                                                   |
-| `clusters_applications_runner`                          | `usage_activity_by_stage`          | `verify`    |                                                   |
-| `projects_reporting_ci_cd_back_to_github: 0`            | `usage_activity_by_stage`          | `verify`    |                                                   |
+| `ci_builds`                                             | `usage_activity_by_stage`          | `verify`    | Unique builds in project                          |
+| `ci_external_pipelines`                                 | `usage_activity_by_stage`          | `verify`    | Total pipelines in external repositories          |
+| `ci_internal_pipelines`                                 | `usage_activity_by_stage`          | `verify`    | Total pipelines in GitLab repositories            |
+| `ci_pipeline_config_auto_devops`                        | `usage_activity_by_stage`          | `verify`    | Total pipelines from an Auto DevOps template      |
+| `ci_pipeline_config_repository`                         | `usage_activity_by_stage`          | `verify`    | Pipelines from templates in repository            |
+| `ci_pipeline_schedules`                                 | `usage_activity_by_stage`          | `verify`    | Pipeline schedules in GitLab                      |
+| `ci_pipelines`                                          | `usage_activity_by_stage`          | `verify`    | Total pipelines                                   |
+| `ci_triggers`                                           | `usage_activity_by_stage`          | `verify`    | Triggers enabled                                  |
+| `clusters_applications_runner`                          | `usage_activity_by_stage`          | `verify`    | Unique clusters with Runner enabled               |
+| `projects_reporting_ci_cd_back_to_github: 0`            | `usage_activity_by_stage`          | `verify`    | Unique projects with a GitHub pipeline enabled   |
 
 ## Example Usage Ping payload
 

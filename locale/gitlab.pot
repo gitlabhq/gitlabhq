@@ -14300,6 +14300,9 @@ msgstr ""
 msgid "NetworkPolicies|Environment does not have deployment platform"
 msgstr ""
 
+msgid "NetworkPolicies|If you are using Auto DevOps, your %{monospacedStart}auto-deploy-values.yaml%{monospacedEnd} file will not be updated if you change a policy in this section. Auto DevOps users should make changes by following the %{linkStart}Container Network Policy documentation%{linkEnd}."
+msgstr ""
+
 msgid "NetworkPolicies|Invalid or empty policy"
 msgstr ""
 
@@ -14315,7 +14318,7 @@ msgstr ""
 msgid "NetworkPolicies|No policies detected"
 msgstr ""
 
-msgid "NetworkPolicies|Policies are a specification of how groups of pods are allowed to communicate with each other network endpoints."
+msgid "NetworkPolicies|Policies are a specification of how groups of pods are allowed to communicate with each other's network endpoints."
 msgstr ""
 
 msgid "NetworkPolicies|Policy %{policyName} was successfully changed"
@@ -19086,10 +19089,10 @@ msgstr ""
 msgid "SearchAutocomplete|in all GitLab"
 msgstr ""
 
-msgid "SearchAutocomplete|in this group"
+msgid "SearchAutocomplete|in group %{groupName}"
 msgstr ""
 
-msgid "SearchAutocomplete|in this project"
+msgid "SearchAutocomplete|in project %{projectName}"
 msgstr ""
 
 msgid "SearchCodeResults|in"
@@ -24477,6 +24480,9 @@ msgstr ""
 msgid "View the performance dashboard at"
 msgstr ""
 
+msgid "View users statistics"
+msgstr ""
+
 msgid "Viewing commit"
 msgstr ""
 
@@ -25686,6 +25692,12 @@ msgid "Your first project"
 msgstr ""
 
 msgid "Your groups"
+msgstr ""
+
+msgid "Your instance has %{remaining_user_count} users remaining of the %{total_user_count} included in your subscription. You can add more users than the number included in your license, and we will include the overage in your next bill."
+msgstr ""
+
+msgid "Your instance is approaching its licensed user count"
 msgstr ""
 
 msgid "Your issues are being imported. Once finished, you'll get a confirmation email."

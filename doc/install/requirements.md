@@ -50,11 +50,11 @@ needs several Gems that have native extensions.
 
 ### Go versions
 
-The minimum required Go version is 1.12.
+The minimum required Go version is 1.13.
 
 ### Git versions
 
-GitLab 11.11 and higher only supports Git 2.21.x and newer, and
+GitLab 11.11 and higher only supports Git 2.24.x and newer, and
 [dropped support for older versions](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/54255).
 
 ### Node.js versions

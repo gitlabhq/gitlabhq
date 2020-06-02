@@ -192,6 +192,16 @@ possible.
 
 ## Version specific upgrading instructions
 
+### 13.1.0
+
+In 13.1.0, you must upgrade to either:
+
+- At least Git v2.24 (previously, the minimum required version was Git v2.22).
+- The recommended Git v2.26.
+
+Failure to do so will result in internal errors in the Gitaly service in some RPCs due
+to the use of the new `--end-of-options` Git flag.
+
 ### 12.2.0
 
 In 12.2.0, we enabled Rails' authenticated cookie encryption. Old sessions are

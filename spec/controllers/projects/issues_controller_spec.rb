@@ -332,8 +332,7 @@ describe Projects::IssuesController do
       end
 
       before do
-        allow(controller).to receive(:find_routable!)
-          .with(Project, project.full_path, any_args).and_return(project)
+        allow(controller).to receive(:find_routable!).and_return(project)
         allow(project).to receive(:default_branch).and_return(master_branch)
         allow_next_instance_of(Issues::RelatedBranchesService) do |service|
           allow(service).to receive(:execute).and_return(related_branches)
