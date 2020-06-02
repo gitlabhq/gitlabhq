@@ -6,8 +6,6 @@ class Releases::Evidence < ApplicationRecord
 
   belongs_to :release, inverse_of: :evidences
 
-  before_validation :generate_summary_and_sha
-
   default_scope { order(created_at: :asc) }
 
   sha_attribute :summary_sha
@@ -30,15 +28,5 @@ class Releases::Evidence < ApplicationRecord
     end
 
     safe_summary
-  end
-
-  private
-
-  def generate_summary_and_sha
-    summary = Evidences::EvidenceSerializer.new.represent(self) # rubocop: disable CodeReuse/Serializer
-    return unless summary
-
-    self.summary = summary
-    self.summary_sha = Gitlab::CryptoHelper.sha256(summary)
   end
 end

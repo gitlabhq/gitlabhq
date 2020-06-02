@@ -57,7 +57,7 @@ module Resolvers
       def jira_projects(name:, start_at:, limit:)
         args = { query: name, start_at: start_at, limit: limit }.compact
 
-        response = jira_service&.jira_projects(args)
+        response = Jira::Requests::Projects.new(project.jira_service, args).execute
         projects = response.payload[:projects]
         start_cursor = start_at == 0 ? nil : Base64.encode64((start_at - 1).to_s)
         end_cursor = Base64.encode64((start_at + projects.size - 1).to_s)

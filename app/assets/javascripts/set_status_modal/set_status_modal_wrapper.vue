@@ -82,7 +82,8 @@ export default {
         })
         .catch(() => createFlash(__('Failed to load emoji list.')));
     },
-    showEmojiMenu() {
+    showEmojiMenu(e) {
+      e.stopPropagation();
       this.isEmojiMenuVisible = true;
       this.emojiMenu.showEmojiMenu($(this.$refs.toggleEmojiMenuButton));
     },

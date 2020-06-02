@@ -833,6 +833,9 @@ msgstr ""
 msgid "8 hours"
 msgstr ""
 
+msgid ":%{startLine} to %{endLine}"
+msgstr ""
+
 msgid "< 1 hour"
 msgstr ""
 
@@ -5566,6 +5569,9 @@ msgid "Comment form position"
 msgstr ""
 
 msgid "Comment is being updated"
+msgstr ""
+
+msgid "Comment on lines %{startLine} to %{endLine}"
 msgstr ""
 
 msgid "Comment/Reply (quoting selected text)"
@@ -12340,6 +12346,9 @@ msgstr ""
 msgid "Jira project: %{importProject}"
 msgstr ""
 
+msgid "Jira service not configured."
+msgstr ""
+
 msgid "JiraService| on branch %{branch_link}"
 msgstr ""
 
@@ -13619,6 +13628,12 @@ msgid "MergeConflict|conflicts"
 msgstr ""
 
 msgid "MergeConflict|origin//their changes"
+msgstr ""
+
+msgid "MergeRequestDiffs|Commenting on lines %{selectStart}start%{selectEnd} to %{end}"
+msgstr ""
+
+msgid "MergeRequestDiffs|Select comment starting line"
 msgstr ""
 
 msgid "MergeRequests|Add a reply"

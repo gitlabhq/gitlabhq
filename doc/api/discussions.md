@@ -783,7 +783,9 @@ Diff comments also contain position:
           "new_line": 27,
           "line_range": {
             "start_line_code": "588440f66559714280628a4f9799f0c4eb880a4a_10_10",
-            "end_line_code": "588440f66559714280628a4f9799f0c4eb880a4a_11_11"
+            "start_line_type": "new",
+            "end_line_code": "588440f66559714280628a4f9799f0c4eb880a4a_11_11",
+            "end_line_type": "old"
           }
         },
         "resolved": false,
@@ -848,6 +850,8 @@ Parameters:
 | `position[line_range]`                  | hash           | no       | Line range for a multi-line diff note |
 | `position[line_range][start_line_code]` | string         | yes      | Line code for the start line |
 | `position[line_range][end_line_code]`   | string         | yes      | Line code for the end line |
+| `position[line_range][start_line_type]` | string         | yes      | Line type for the start line |
+| `position[line_range][end_line_type]`   | string         | yes      | Line type for the end line |
 | `position[width]`                       | integer        | no       | Width of the image (for 'image' diff notes) |
 | `position[height]`                      | integer        | no       | Height of the image (for 'image' diff notes) |
 | `position[x]`                           | integer        | no       | X coordinate (for 'image' diff notes) |

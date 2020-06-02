@@ -263,7 +263,7 @@ p.import_state.mark_as_failed("Failed manually through console.")
 
 In a specific situation, an imported repository needed to be renamed. The Support
 Team was informed of a backup restore that failed on a single repository, which created
-the project with an empty repository. The project was successfully restored to a dev
+the project with an empty repository. The project was successfully restored to a development
 instance, then exported, and imported into a new project under a different name.
 
 The Support Team was able to transfer the incorrectly named imported project into the
@@ -652,7 +652,7 @@ License.current.feature_available?(:jira_dev_panel_integration)
 
 ### Check if a project feature is available in a project
 
-Features listed in <https://gitlab.com/gitlab-org/gitlab/blob/master/ee/app/models/license.rb>.
+Features listed in [`license.rb`](https://gitlab.com/gitlab-org/gitlab/blob/master/ee/app/models/license.rb).
 
 ```ruby
 p = Project.find_by_full_path('<group>/<project>')

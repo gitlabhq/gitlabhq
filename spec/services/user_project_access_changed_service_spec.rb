@@ -20,7 +20,11 @@ describe UserProjectAccessChangedService do
 
     it 'permits low-priority operation' do
       expect(AuthorizedProjectUpdate::UserRefreshWithLowUrgencyWorker).to(
-        receive(:bulk_perform_in).with(described_class::DELAY, [[1], [2]])
+        receive(:bulk_perform_in).with(
+          described_class::DELAY,
+          [[1], [2]],
+          { batch_delay: 30.seconds, batch_size: 100 }
+        )
       )
 
       described_class.new([1, 2]).execute(blocking: false,

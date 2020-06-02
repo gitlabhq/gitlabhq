@@ -9,6 +9,7 @@ architected
 Artifactory
 Asana
 Asciidoctor
+Assembla
 Atlassian
 Auth0
 Authentiq
@@ -75,6 +76,7 @@ crosslinking
 crosslinks
 Crossplane
 CrowdIn
+datetime
 Debian
 deduplicate
 deduplicated
@@ -97,11 +99,13 @@ Dreamweaver
 Elasticsearch
 enablement
 enqueued
+Excon
 expirable
 Facebook
 failover
 failovers
 failsafe
+fastlane
 favicon
 firewalled
 Flawfinder
@@ -172,6 +176,7 @@ Laravel
 LDAP
 Libravatar
 Lograge
+Logstash
 lookahead
 lookaheads
 lookbehind
@@ -202,6 +207,7 @@ mitigations
 mockup
 mockups
 ModSecurity
+mutex
 nameserver
 nameservers
 namespace
@@ -209,6 +215,7 @@ namespaced
 namespaces
 Nanoc
 NGINX
+Nokogiri
 npm
 Nurtch
 OAuth
@@ -273,6 +280,7 @@ relicensing
 remediations
 Repmgr
 Repmgrd
+repurposing
 requeue
 requeued
 requeues
@@ -313,8 +321,11 @@ serializing
 Sitespeed
 Slack
 Slony
+smartcard
+smartcards
 SMTP
 Sobelow
+Sourcegraph
 spidering
 Splunk
 SpotBugs
@@ -398,6 +409,7 @@ unpublished
 unpublishes
 unpublishing
 unreferenced
+unreplicated
 unresolve
 unresolved
 unresolving
@@ -423,6 +435,7 @@ upvotes
 validator
 validators
 vendored
+versionless
 virtualized
 virtualizing
 Vue
@@ -430,6 +443,7 @@ Vuex
 walkthrough
 walkthroughs
 WebdriverIO
+Webex
 webpack
 webserver
 whitepaper

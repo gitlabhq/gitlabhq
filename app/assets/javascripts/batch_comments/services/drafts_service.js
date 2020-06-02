@@ -25,9 +25,9 @@ export default {
   discard(endpoint) {
     return axios.delete(endpoint);
   },
-  update(endpoint, { draftId, note, resolveDiscussion }) {
+  update(endpoint, { draftId, note, resolveDiscussion, position }) {
     return axios.put(`${endpoint}/${draftId}`, {
-      draft_note: { note, resolve_discussion: resolveDiscussion },
+      draft_note: { note, resolve_discussion: resolveDiscussion, position },
     });
   },
 };

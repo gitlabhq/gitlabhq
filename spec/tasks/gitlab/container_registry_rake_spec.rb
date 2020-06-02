@@ -4,6 +4,7 @@ require 'rake_helper'
 
 describe 'gitlab:container_registry namespace rake tasks' do
   let_it_be(:application_settings) { Gitlab::CurrentSettings }
+  let_it_be(:api_url) { 'http://registry.gitlab' }
 
   before :all do
     Rake.application.rake_require 'tasks/gitlab/container_registry'
@@ -11,7 +12,8 @@ describe 'gitlab:container_registry namespace rake tasks' do
 
   describe 'configure' do
     before do
-      stub_container_registry_config(enabled: true, api_url: 'http://registry.gitlab')
+      stub_access_token
+      stub_container_registry_config(enabled: true, api_url: api_url)
     end
 
     shared_examples 'invalid config' do
@@ -35,6 +37,24 @@ describe 'gitlab:container_registry namespace rake tasks' do
       end
 
       it_behaves_like 'invalid config'
+    end
+
+    context 'when creating a registry client instance' do
+      let(:token) { 'foo' }
+      let(:client) { ContainerRegistry::Client.new(api_url, token: token) }
+
+      before do
+        stub_registry_info({})
+      end
+
+      it 'uses a token with no access permissions' do
+        expect(Auth::ContainerRegistryAuthenticationService)
+          .to receive(:access_token).with([], []).and_return(token)
+        expect(ContainerRegistry::Client)
+          .to receive(:new).with(api_url, token: token).and_return(client)
+
+        run_rake_task('gitlab:container_registry:configure')
+      end
     end
 
     context 'when unabled to detect the container registry type' do
@@ -77,6 +97,11 @@ describe 'gitlab:container_registry namespace rake tasks' do
         end
       end
     end
+  end
+
+  def stub_access_token
+    allow(Auth::ContainerRegistryAuthenticationService)
+      .to receive(:access_token).with([], []).and_return('foo')
   end
 
   def stub_registry_info(output)

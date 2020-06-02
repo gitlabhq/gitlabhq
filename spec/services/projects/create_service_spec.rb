@@ -558,7 +558,9 @@ describe Projects::CreateService, '#execute' do
       )
       expect(AuthorizedProjectUpdate::UserRefreshWithLowUrgencyWorker).to(
         receive(:bulk_perform_in)
-          .with(1.hour, array_including([user.id], [other_user.id]))
+          .with(1.hour,
+                array_including([user.id], [other_user.id]),
+                batch_delay: 30.seconds, batch_size: 100)
           .and_call_original
       )
 

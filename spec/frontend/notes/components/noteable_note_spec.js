@@ -1,5 +1,5 @@
 import { escape } from 'lodash';
-import { shallowMount, createLocalVue } from '@vue/test-utils';
+import { mount, createLocalVue } from '@vue/test-utils';
 import createStore from '~/notes/stores';
 import issueNote from '~/notes/components/noteable_note.vue';
 import NoteHeader from '~/notes/components/note_header.vue';
@@ -8,9 +8,19 @@ import NoteActions from '~/notes/components/note_actions.vue';
 import NoteBody from '~/notes/components/note_body.vue';
 import { noteableDataMock, notesDataMock, note } from '../mock_data';
 
+jest.mock('~/vue_shared/mixins/gl_feature_flags_mixin', () => () => ({
+  inject: {
+    glFeatures: {
+      from: 'glFeatures',
+      default: () => ({ multilineComments: true }),
+    },
+  },
+}));
+
 describe('issue_note', () => {
   let store;
   let wrapper;
+  const findMultilineComment = () => wrapper.find('[data-testid="multiline-comment"]');
 
   beforeEach(() => {
     store = createStore();
@@ -18,17 +28,56 @@ describe('issue_note', () => {
     store.dispatch('setNotesData', notesDataMock);
 
     const localVue = createLocalVue();
-    wrapper = shallowMount(localVue.extend(issueNote), {
+    wrapper = mount(localVue.extend(issueNote), {
       store,
       propsData: {
         note,
       },
       localVue,
+      stubs: ['note-header', 'user-avatar-link', 'note-actions', 'note-body'],
     });
   });
 
   afterEach(() => {
     wrapper.destroy();
+  });
+
+  describe('mutiline comments', () => {
+    it('should render if has multiline comment', () => {
+      const position = {
+        line_range: {
+          start_line_code: 'abc_1_1',
+          end_line_code: 'abc_2_2',
+        },
+      };
+      wrapper.setProps({
+        note: { ...note, position },
+      });
+
+      return wrapper.vm.$nextTick().then(() => {
+        expect(findMultilineComment().text()).toEqual('Comment on lines 1 to 2');
+      });
+    });
+
+    it('should not render if has single line comment', () => {
+      const position = {
+        line_range: {
+          start_line_code: 'abc_1_1',
+          end_line_code: 'abc_1_1',
+        },
+      };
+      wrapper.setProps({
+        note: { ...note, position },
+      });
+
+      return wrapper.vm.$nextTick().then(() => {
+        expect(findMultilineComment().exists()).toBe(false);
+      });
+    });
+
+    it('should not render if `line_range` is unavailable', () => {
+      expect(findMultilineComment().exists()).toBe(false);
+    });
   });
 
   it('should render user information', () => {

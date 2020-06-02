@@ -7,7 +7,8 @@
     "state",
     "iid",
     "created_at",
-    "due_date"
+    "due_date",
+    "issues"
   ],
   "properties": {
     "id": { "type": "integer" },
@@ -16,7 +17,11 @@
     "state": { "type": "string" },
     "iid": { "type": "integer" },
     "created_at": { "type": "date" },
-    "due_date": { "type": ["date", "null"] }
+    "due_date": { "type": ["date", "null"] },
+    "issues": {
+      "type": "array",
+      "items": { "$ref": "issue.json" }
+    }
   },
   "additionalProperties": false
 }

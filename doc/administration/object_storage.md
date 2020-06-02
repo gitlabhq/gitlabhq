@@ -66,7 +66,7 @@ One risk of using a single bucket would be that if your organisation decided to
 migrate GitLab to the Helm deployment in the future. GitLab would run, but the situation with
 backups might not be realised until the organisation had a critical requirement for the backups to work.
 
-### S3 API compatability issues
+### S3 API compatibility issues
 
 Not all S3 providers [are fully compatible](../raketasks/backup_restore.md#other-s3-providers)
 with the Fog library that GitLab uses. Symptoms include:

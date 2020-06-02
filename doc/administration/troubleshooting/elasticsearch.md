@@ -189,7 +189,7 @@ Moving past that, it is best to attempt the same search using the [Elasticsearch
 
 If the results:
 
-- Sync up, then there is not a technical "issue" per se. Instead, it might be a problem
+- Sync up, then there is not a technical "issue." Instead, it might be a problem
   with the Elasticsearch filters we are using. This can be complicated, so it is best to
   escalate to GitLab support to check these and guide you on the potential on whether or
   not a feature request is needed.

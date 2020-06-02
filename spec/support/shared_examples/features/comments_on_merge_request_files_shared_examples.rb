@@ -13,6 +13,7 @@ RSpec.shared_examples 'comment on merge request file' do
 
     page.within('.notes_holder') do
       expect(page).to have_content('Line is wrong')
+      expect(page).not_to have_content('Comment on lines')
     end
 
     visit(merge_request_path(merge_request))

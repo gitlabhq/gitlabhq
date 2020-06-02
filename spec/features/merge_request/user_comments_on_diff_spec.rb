@@ -114,6 +114,40 @@ describe 'User comments on a diff', :js do
     include_examples 'comment on merge request file'
   end
 
+  context 'when adding multiline comments' do
+    it 'saves a multiline comment' do
+      click_diff_line(find("[id='#{sample_commit.line_code}']"))
+
+      page.within('.discussion-form') do
+        find('#comment-line-start option', text: '-13').select_option
+      end
+
+      page.within('.js-discussion-note-form') do
+        fill_in(:note_note, with: 'Line is wrong')
+        click_button('Add comment now')
+      end
+
+      wait_for_requests
+
+      page.within('.notes_holder') do
+        expect(page).to have_content('Line is wrong')
+        expect(page).to have_content('Comment on lines -13 to +14')
+      end
+
+      visit(merge_request_path(merge_request))
+
+      page.within('.notes .discussion') do
+        expect(page).to have_content("#{user.name} #{user.to_reference} started a thread")
+        expect(page).to have_content(sample_commit.line_code_path)
+        expect(page).to have_content('Line is wrong')
+      end
+
+      page.within('.notes-tab .badge') do
+        expect(page).to have_content('1')
+      end
+    end
+  end
+
   context 'when editing comments' do
     it 'edits a comment' do
       click_diff_line(find("[id='#{sample_commit.line_code}']"))

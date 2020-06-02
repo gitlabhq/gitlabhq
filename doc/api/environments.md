@@ -141,7 +141,7 @@ Example of response
 
 ## Create a new environment
 
-Creates a new environment with the given name and external_url.
+Creates a new environment with the given name and `external_url`.
 
 It returns `201` if the environment was successfully created, `400` for wrong parameters.
 
@@ -173,7 +173,7 @@ Example response:
 
 ## Edit an existing environment
 
-Updates an existing environment's name and/or external_url.
+Updates an existing environment's name and/or `external_url`.
 
 It returns `200` if the environment was successfully updated. In case of an error, a status code `400` is returned.
 
@@ -186,7 +186,7 @@ PUT /projects/:id/environments/:environments_id
 | `id`            | integer/string | yes                               | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user            |
 | `environment_id` | integer | yes | The ID of the environment  |
 | `name`          | string  | no                                | The new name of the environment  |
-| `external_url`  | string  | no                                | The new external_url             |
+| `external_url`  | string  | no                                | The new `external_url`           |
 
 ```shell
 curl --request PUT --data "name=staging&external_url=https://staging.example.gitlab.com" --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/environments/1"

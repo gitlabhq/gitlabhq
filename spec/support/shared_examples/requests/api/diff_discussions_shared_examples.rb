@@ -30,7 +30,9 @@ RSpec.shared_examples 'diff discussions API' do |parent_type, noteable_type, id_
     it "creates a new diff note" do
       line_range = {
         "start_line_code" => Gitlab::Git.diff_line_code(diff_note.position.file_path, 1, 1),
-        "end_line_code" => Gitlab::Git.diff_line_code(diff_note.position.file_path, 2, 2)
+        "end_line_code" => Gitlab::Git.diff_line_code(diff_note.position.file_path, 2, 2),
+        "start_line_type" => diff_note.position.type,
+        "end_line_type" => diff_note.position.type
       }
 
       position = diff_note.position.to_h.merge({ line_range: line_range })

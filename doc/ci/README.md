@@ -71,7 +71,7 @@ available through the UI. You can use them by creating a new file,
 choosing a template that suits your application, and adjusting it
 to your needs:
 
-![Use a .gitlab-ci.yml template](img/add_file_template_11_10.png)
+![Use a `.gitlab-ci.yml` template](img/add_file_template_11_10.png)
 
 For a broader overview, see the [CI/CD getting started](quick_start/README.md) guide.
 
@@ -108,7 +108,7 @@ GitLab CI/CD supports numerous configuration options:
 | [Pipeline triggers](triggers/README.md) | Trigger pipelines through the API. |
 | [Pipelines for Merge Requests](merge_request_pipelines/index.md) | Design a pipeline structure for running a pipeline in merge requests. |
 | [Integrate with Kubernetes clusters](../user/project/clusters/index.md) | Connect your project to Google Kubernetes Engine (GKE) or an existing Kubernetes cluster. |
-| [Optimize GitLab and Runner for large repositories](large_repositories/index.md) | Recommended strategies for handling large repos. |
+| [Optimize GitLab and Runner for large repositories](large_repositories/index.md) | Recommended strategies for handling large repositories. |
 | [`.gitlab-ci.yml` full reference](yaml/README.md) | All the attributes you can use with GitLab CI/CD. |
 
 Note that certain operations can only be performed according to the

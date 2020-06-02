@@ -29,11 +29,11 @@ allows clients to request exactly the data they need, making it
 possible to get all required data in a limited number of requests.
 
 The GraphQL data (fields) can be described in the form of types,
-allowing clients to use [clientside GraphQL
+allowing clients to use [client-side GraphQL
 libraries](https://graphql.org/code/#graphql-clients) to consume the
 API and avoid manual parsing.
 
-Since there's no fixed endpoints and datamodel, new abilities can be
+Since there's no fixed endpoints and data model, new abilities can be
 added to the API without creating breaking changes. This allows us to
 have a versionless API as described in [the GraphQL
 documentation](https://graphql.org/learn/best-practices/#versioning).

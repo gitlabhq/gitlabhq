@@ -129,9 +129,8 @@ allowing access only to trusted actors.
 CAUTION: **Caution:**
 Before GitLab 11.5, Code Quality job and artifact had to be named specifically to
 automatically extract report data and show it in the merge request widget. While these
-old job definitions are still maintained they have been deprecated and may be removed
-in the next major release, GitLab 12.0. You are advised to update your current `.gitlab-ci.yml`
-configuration to reflect that change.
+old job definitions are still maintained they have been deprecated and are no longer supported on GitLab 12.0 or higher.
+You are advised to update your `.gitlab-ci.yml` configuration to reflect that change.
 
 For GitLab 11.5 and later, the job should look like:
 

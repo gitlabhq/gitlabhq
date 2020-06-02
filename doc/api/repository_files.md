@@ -51,7 +51,7 @@ Parameters:
 - `ref` (required) - The name of branch, tag or commit
 
 NOTE: **Note:**
-`blob_id` is the blob sha, see [repositories - Get a blob from repository](repositories.md#get-a-blob-from-repository)
+`blob_id` is the blob SHA, see [repositories - Get a blob from repository](repositories.md#get-a-blob-from-repository)
 
 In addition to the `GET` method, you can also use `HEAD` to get just file metadata.
 

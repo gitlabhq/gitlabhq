@@ -118,5 +118,45 @@ describe ApplicationWorker do
           .to raise_error(ArgumentError)
       end
     end
+
+    context 'with batches' do
+      let(:batch_delay) { 1.minute }
+
+      it 'correctly schedules jobs' do
+        expect(Sidekiq::Client).to(
+          receive(:push_bulk).with(hash_including('args' => [['Foo', [1]], ['Foo', [2]]]))
+                             .ordered
+                             .and_call_original)
+        expect(Sidekiq::Client).to(
+          receive(:push_bulk).with(hash_including('args' => [['Foo', [3]], ['Foo', [4]]]))
+                             .ordered
+                             .and_call_original)
+        expect(Sidekiq::Client).to(
+          receive(:push_bulk).with(hash_including('args' => [['Foo', [5]]]))
+                             .ordered
+                             .and_call_original)
+
+        worker.bulk_perform_in(
+          1.minute,
+          [['Foo', [1]], ['Foo', [2]], ['Foo', [3]], ['Foo', [4]], ['Foo', [5]]],
+          batch_size: 2, batch_delay: batch_delay)
+
+        expect(worker.jobs.count).to eq 5
+        expect(worker.jobs[0]['at']).to eq(worker.jobs[1]['at'])
+        expect(worker.jobs[2]['at']).to eq(worker.jobs[3]['at'])
+        expect(worker.jobs[2]['at'] - worker.jobs[1]['at']).to eq(batch_delay)
+        expect(worker.jobs[4]['at'] - worker.jobs[3]['at']).to eq(batch_delay)
+      end
+
+      context 'when batch_size is invalid' do
+        it 'raises an ArgumentError exception' do
+          expect do
+            worker.bulk_perform_in(1.minute,
+                                   [['Foo']],
+                                   batch_size: -1, batch_delay: batch_delay)
+          end.to raise_error(ArgumentError)
+        end
+      end
+    end
   end
 end

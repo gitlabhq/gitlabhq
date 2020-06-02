@@ -78,6 +78,8 @@ module API
             optional :line_range, type: Hash, desc: 'Multi-line start and end' do
               requires :start_line_code, type: String, desc: 'Start line code for multi-line note'
               requires :end_line_code, type: String, desc: 'End line code for multi-line note'
+              requires :start_line_type, type: String, desc: 'Start line type for multi-line note'
+              requires :end_line_type, type: String, desc: 'End line type for multi-line note'
             end
           end
         end

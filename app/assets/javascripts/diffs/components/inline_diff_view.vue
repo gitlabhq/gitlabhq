@@ -80,6 +80,8 @@ export default {
           v-if="shouldRenderDraftRow(diffFile.file_hash, line)"
           :key="`draft_${index}`"
           :draft="draftForLine(diffFile.file_hash, line)"
+          :diff-file="diffFile"
+          :line="line"
         />
       </template>
     </tbody>

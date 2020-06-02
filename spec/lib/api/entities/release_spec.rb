@@ -4,10 +4,14 @@ require 'spec_helper'
 
 describe API::Entities::Release do
   let_it_be(:project) { create(:project) }
-  let_it_be(:release) { create(:release, :with_evidence, project: project) }
+  let(:release) { create(:release, project: project) }
   let(:evidence) { release.evidences.first }
   let(:user) { create(:user) }
   let(:entity) { described_class.new(release, current_user: user).as_json }
+
+  before do
+    ::Releases::CreateEvidenceService.new(release).execute
+  end
 
   describe 'evidences' do
     context 'when the current user can download code' do

@@ -187,6 +187,7 @@ describe('DiffsStoreUtils', () => {
         },
         diffViewType: PARALLEL_DIFF_VIEW_TYPE,
         linePosition: LINE_POSITION_LEFT,
+        lineRange: { start_line_code: 'abc_1_1', end_line_code: 'abc_2_2' },
       };
 
       const position = JSON.stringify({
@@ -198,6 +199,7 @@ describe('DiffsStoreUtils', () => {
         position_type: TEXT_DIFF_POSITION_TYPE,
         old_line: options.noteTargetLine.old_line,
         new_line: options.noteTargetLine.new_line,
+        line_range: options.lineRange,
       });
 
       const postData = {

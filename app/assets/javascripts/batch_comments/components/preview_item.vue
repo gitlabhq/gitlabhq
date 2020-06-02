@@ -4,12 +4,20 @@ import { IMAGE_DIFF_POSITION_TYPE } from '~/diffs/constants';
 import { sprintf, __ } from '~/locale';
 import Icon from '~/vue_shared/components/icon.vue';
 import resolvedStatusMixin from '../mixins/resolved_status';
+import { GlSprintf } from '@gitlab/ui';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import {
+  getStartLineNumber,
+  getEndLineNumber,
+  getLineClasses,
+} from '~/notes/components/multiline_comment_utils';
 
 export default {
   components: {
     Icon,
+    GlSprintf,
   },
-  mixins: [resolvedStatusMixin],
+  mixins: [resolvedStatusMixin, glFeatureFlagsMixin()],
   props: {
     draft: {
       type: Object,
@@ -51,7 +59,7 @@ export default {
 
       const position = this.discussion ? this.discussion.position : this.draft.position;
 
-      return position.new_line || position.old_line;
+      return position?.new_line || position?.old_line;
     },
     content() {
       const el = document.createElement('div');
@@ -62,9 +70,18 @@ export default {
     showLinePosition() {
       return this.draft.file_hash || this.isDiffDiscussion;
     },
+    startLineNumber() {
+      return getStartLineNumber(this.draft.position?.line_range);
+    },
+    endLineNumber() {
+      return getEndLineNumber(this.draft.position?.line_range);
+    },
   },
   methods: {
     ...mapActions('batchComments', ['scrollToDraft']),
+    getLineClasses(lineNumber) {
+      return getLineClasses(lineNumber);
+    },
   },
   showStaysResolved: false,
 };
@@ -83,11 +100,33 @@ export default {
     @click="scrollToDraft(draft)"
   >
     <span class="review-preview-item-header">
-      <icon class="gl-mr-3 flex-shrink-0" :name="iconName" />
-      <span class="bold text-nowrap">
-        <span class="review-preview-item-header-text block-truncated"> {{ titleText }} </span>
+      <icon class="flex-shrink-0" :name="iconName" />
+      <span
+        class="bold text-nowrap"
+        :class="{ 'gl-align-items-center': glFeatures.multilineComments }"
+      >
+        <span class="review-preview-item-header-text block-truncated">
+          {{ titleText }}
+        </span>
         <template v-if="showLinePosition">
-          :{{ linePosition }}
+          <template v-if="!glFeatures.multilineComments"
+            >:{{ linePosition }}</template
+          >
+          <template v-else-if="startLineNumber === endLineNumber">
+            :<span :class="getLineClasses(startLineNumber)">{{ startLineNumber }}</span>
+          </template>
+          <gl-sprintf v-else :message="__(':%{startLine} to %{endLine}')">
+            <template #startLine>
+              <span class="gl-mr-2" :class="getLineClasses(startLineNumber)">{{
+                startLineNumber
+              }}</span>
+            </template>
+            <template #endLine>
+              <span class="gl-ml-2" :class="getLineClasses(endLineNumber)">{{
+                endLineNumber
+              }}</span>
+            </template>
+          </gl-sprintf>
         </template>
       </span>
     </span>

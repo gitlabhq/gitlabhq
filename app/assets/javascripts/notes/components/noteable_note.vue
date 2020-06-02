@@ -2,6 +2,8 @@
 import $ from 'jquery';
 import { mapGetters, mapActions } from 'vuex';
 import { escape } from 'lodash';
+import { GlSprintf } from '@gitlab/ui';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { truncateSha } from '~/lib/utils/text_utility';
 import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
 import { __, s__, sprintf } from '../../locale';
@@ -14,17 +16,26 @@ import eventHub from '../event_hub';
 import noteable from '../mixins/noteable';
 import resolvable from '../mixins/resolvable';
 import httpStatusCodes from '~/lib/utils/http_status';
+import {
+  getStartLineNumber,
+  getEndLineNumber,
+  getLineClasses,
+  commentLineOptions,
+} from './multiline_comment_utils';
+import MultilineCommentForm from './multiline_comment_form.vue';
 
 export default {
   name: 'NoteableNote',
   components: {
+    GlSprintf,
     userAvatarLink,
     noteHeader,
     noteActions,
     NoteBody,
     TimelineEntryItem,
+    MultilineCommentForm,
   },
-  mixins: [noteable, resolvable],
+  mixins: [noteable, resolvable, glFeatureFlagsMixin()],
   props: {
     note: {
       type: Object,
@@ -50,6 +61,11 @@ export default {
       required: false,
       default: false,
     },
+    diffLines: {
+      type: Object,
+      required: false,
+      default: null,
+    },
   },
   data() {
     return {
@@ -57,9 +73,14 @@ export default {
       isDeleting: false,
       isRequesting: false,
       isResolving: false,
+      commentLineStart: {
+        line_code: this.line?.line_code,
+        type: this.line?.type,
+      },
     };
   },
   computed: {
+    ...mapGetters('diffs', ['getDiffFileByHash']),
     ...mapGetters(['targetNoteHash', 'getNoteableData', 'getUserData', 'commentsDisabled']),
     author() {
       return this.note.author;
@@ -112,6 +133,32 @@ export default {
         this.note.current_user.can_resolve ||
         (this.note.isDraft && this.note.discussion_id !== null)
       );
+    },
+    lineRange() {
+      return this.note.position?.line_range;
+    },
+    startLineNumber() {
+      return getStartLineNumber(this.lineRange);
+    },
+    endLineNumber() {
+      return getEndLineNumber(this.lineRange);
+    },
+    showMultiLineComment() {
+      return (
+        this.glFeatures.multilineComments &&
+        this.startLineNumber &&
+        this.endLineNumber &&
+        (this.startLineNumber !== this.endLineNumber || this.isEditing)
+      );
+    },
+    commentLineOptions() {
+      if (this.diffLines) {
+        return commentLineOptions(this.diffLines, this.line.line_code);
+      }
+
+      const diffFile = this.diffFile || this.getDiffFileByHash(this.targetNoteHash);
+      if (!diffFile) return null;
+      return commentLineOptions(diffFile.highlighted_diff_lines, this.line.line_code);
     },
   },
 
@@ -174,10 +221,20 @@ export default {
       this.$emit('updateSuccess');
     },
     formUpdateHandler(noteText, parentElement, callback, resolveDiscussion) {
+      const position = {
+        ...this.note.position,
+        line_range: {
+          start_line_code: this.commentLineStart?.lineCode,
+          start_line_type: this.commentLineStart?.type,
+          end_line_code: this.line?.line_code,
+          end_line_type: this.line?.type,
+        },
+      };
       this.$emit('handleUpdateNote', {
         note: this.note,
         noteText,
         resolveDiscussion,
+        position,
         callback: () => this.updateSuccess(),
       });
 
@@ -239,6 +296,9 @@ export default {
         noteBody.note.note = noteText;
       }
     },
+    getLineClasses(lineNumber) {
+      return getLineClasses(lineNumber);
+    },
   },
 };
 </script>
@@ -251,6 +311,26 @@ export default {
     :data-note-id="note.id"
     class="note note-wrapper qa-noteable-note-item"
   >
+    <div v-if="showMultiLineComment" data-testid="multiline-comment">
+      <multiline-comment-form
+        v-if="isEditing && commentLineOptions && line"
+        v-model="commentLineStart"
+        :line="line"
+        :comment-line-options="commentLineOptions"
+        :line-range="note.position.line_range"
+        class="gl-mb-3 gl-text-gray-700 gl-border-gray-200 gl-border-b-solid gl-border-b-1 gl-pb-3"
+      />
+      <div v-else class="gl-mb-3 gl-text-gray-700">
+        <gl-sprintf :message="__('Comment on lines %{startLine} to %{endLine}')">
+          <template #startLine>
+            <span :class="getLineClasses(startLineNumber)">{{ startLineNumber }}</span>
+          </template>
+          <template #endLine>
+            <span :class="getLineClasses(endLineNumber)">{{ endLineNumber }}</span>
+          </template>
+        </gl-sprintf>
+      </div>
+    </div>
     <div v-once class="timeline-icon">
       <user-avatar-link
         :link-href="author.path"

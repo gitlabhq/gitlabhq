@@ -226,25 +226,7 @@ class JiraService < IssueTrackerService
     true
   end
 
-  def jira_projects(query: '', limit: PROJECTS_PER_PAGE, start_at: 0)
-    return ServiceResponse.success(payload: { projects: [], is_last: true }) if limit.to_i <= 0
-
-    response = jira_request { client.get(projects_url(query: query, limit: limit.to_i, start_at: start_at.to_i)) }
-
-    return ServiceResponse.error(message: @error.message) if @error.present?
-    return ServiceResponse.success(payload: { projects: [] }) unless response['values'].present?
-
-    projects = response['values'].map { |v| JIRA::Resource::Project.build(client, v) }
-
-    ServiceResponse.success(payload: { projects: projects, is_last: response['isLast'] })
-  end
-
   private
-
-  def projects_url(query:, limit:, start_at:)
-    '/rest/api/2/project/search?query=%{query}&maxResults=%{limit}&startAt=%{start_at}' %
-    { query: CGI.escape(query.to_s), limit: limit, start_at: start_at }
-  end
 
   def test_settings
     return unless client_url.present?

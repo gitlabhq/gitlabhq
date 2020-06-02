@@ -84,12 +84,16 @@ export const discardReview = ({ commit, getters }) => {
     .catch(() => commit(types.RECEIVE_DISCARD_REVIEW_ERROR));
 };
 
-export const updateDraft = ({ commit, getters }, { note, noteText, resolveDiscussion, callback }) =>
+export const updateDraft = (
+  { commit, getters },
+  { note, noteText, resolveDiscussion, position, callback },
+) =>
   service
     .update(getters.getNotesData.draftsPath, {
       draftId: note.id,
       note: noteText,
       resolveDiscussion,
+      position: JSON.stringify(position),
     })
     .then(res => res.data)
     .then(data => commit(types.RECEIVE_DRAFT_UPDATE_SUCCESS, data))

@@ -35,11 +35,18 @@ Here are some things to keep in mind regarding test performance:
 To run RSpec tests:
 
 ```shell
-# run all tests
+# run test for a file
+bin/rspec spec/models/project_spec.rb
+
+# run test for the example on line 10 on that file
+bin/rspec spec/models/project_spec.rb:10
+
+# run tests matching the example name has that string
+bin/rspec spec/models/project_spec.rb -e associations
+
+# run all tests, will take hours for GitLab codebase!
 bin/rspec
 
-# run test for path
-bin/rspec spec/[path]/[to]/[spec].rb
 ```
 
 Use [Guard](https://github.com/guard/guard) to continuously monitor for changes and only run matching tests:

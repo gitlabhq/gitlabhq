@@ -86,13 +86,13 @@ sudo apt-get install linux-tools-common linux-tools-generic linux-tools-`uname -
 sudo yum install perf
 ```
 
-Run perf against the Sidekiq PID:
+Run `perf` against the Sidekiq PID:
 
 ```shell
 sudo perf record -p <sidekiq_pid>
 ```
 
-Let this run for 30-60 seconds and then press Ctrl-C. Then view the perf report:
+Let this run for 30-60 seconds and then press Ctrl-C. Then view the `perf` report:
 
 ```shell
 $ sudo perf report
@@ -105,13 +105,13 @@ Samples: 348K of event 'cycles', Event count (approx.): 280908431073
   0.10%            ruby  libc-2.12.so        [.] _int_free
 ```
 
-Above you see sample output from a perf report. It shows that 97% of the CPU is
+Above you see sample output from a `perf` report. It shows that 97% of the CPU is
 being spent inside Nokogiri and `xmlXPathNodeSetMergeAndClear`. For something
 this obvious you should then go investigate what job in GitLab would use
 Nokogiri and XPath. Combine with `TTIN` or `gdb` output to show the
 corresponding Ruby code where this is happening.
 
-## The GNU Project Debugger (gdb)
+## The GNU Project Debugger (`gdb`)
 
 `gdb` can be another effective tool for debugging Sidekiq. It gives you a little
 more interactive way to look at each thread and see what's causing problems.

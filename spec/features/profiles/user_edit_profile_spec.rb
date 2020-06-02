@@ -245,6 +245,15 @@ describe 'User edit profile' do
         end
       end
 
+      it 'opens the emoji modal again after closing it' do
+        open_user_status_modal
+        select_emoji('biohazard', true)
+
+        find('.js-toggle-emoji-menu').click
+
+        expect(page).to have_selector('.emoji-menu')
+      end
+
       it 'does not update the awards panel emoji' do
         project.add_maintainer(user)
         visit(project_issue_path(project, issue))

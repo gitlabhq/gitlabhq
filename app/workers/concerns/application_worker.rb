@@ -84,7 +84,7 @@ module ApplicationWorker
       Sidekiq::Client.push_bulk('class' => self, 'args' => args_list)
     end
 
-    def bulk_perform_in(delay, args_list)
+    def bulk_perform_in(delay, args_list, batch_size: nil, batch_delay: nil)
       now = Time.now.to_i
       schedule = now + delay.to_i
 
@@ -92,7 +92,14 @@ module ApplicationWorker
         raise ArgumentError, _('The schedule time must be in the future!')
       end
 
-      Sidekiq::Client.push_bulk('class' => self, 'args' => args_list, 'at' => schedule)
+      if batch_size && batch_delay
+        args_list.each_slice(batch_size.to_i).with_index do |args_batch, idx|
+          batch_schedule = schedule + idx * batch_delay.to_i
+          Sidekiq::Client.push_bulk('class' => self, 'args' => args_batch, 'at' => batch_schedule)
+        end
+      else
+        Sidekiq::Client.push_bulk('class' => self, 'args' => args_list, 'at' => schedule)
+      end
     end
   end
 end

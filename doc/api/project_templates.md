@@ -4,7 +4,7 @@ This API is a project-specific version of these endpoints:
 
 - [Dockerfile templates](templates/dockerfiles.md)
 - [Gitignore templates](templates/gitignores.md)
-- [GitLab CI/CD Config templates](templates/gitlab_ci_ymls.md)
+- [GitLab CI/CD Configuration templates](templates/gitlab_ci_ymls.md)
 - [Open source license templates](templates/licenses.md)
 
 It deprecates these endpoints, which will be removed for API version 5.

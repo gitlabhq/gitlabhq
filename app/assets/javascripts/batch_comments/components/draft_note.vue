@@ -15,6 +15,16 @@ export default {
       type: Object,
       required: true,
     },
+    diffFile: {
+      type: Object,
+      required: false,
+      default: () => ({}),
+    },
+    line: {
+      type: Object,
+      required: false,
+      default: null,
+    },
   },
   data() {
     return {
@@ -61,6 +71,8 @@ export default {
     <ul class="notes draft-notes">
       <noteable-note
         :note="draft"
+        :diff-lines="diffFile.highlighted_diff_lines"
+        :line="line"
         class="draft-note"
         @handleEdit="handleEditing"
         @cancelForm="handleNotEditing"

@@ -50,7 +50,7 @@ PUT /application/appearance
 | `description`                     | string  | no       | Markdown text shown on the sign in / sign up page
 | `logo`                            | mixed   | no       | Instance image used on the sign in / sign up page
 | `header_logo`                     | mixed   | no       | Instance image used for the main navigation bar
-| `favicon`                         | mixed   | no       | Instance favicon in .ico/.png format
+| `favicon`                         | mixed   | no       | Instance favicon in `.ico` or `.png` format
 | `new_project_guidelines`          | string  | no       | Markdown text shown on the new project page
 | `profile_image_guidelines`        | string  | no       | Markdown text shown on the profile page below Public Avatar
 | `header_message`                  | string  | no       | Message within the system header bar
