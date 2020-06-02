@@ -213,7 +213,7 @@ the mitigations for a new feature.
 
 #### Feature-specific Mitigations
 
-For situtions in which a whitelist or GitLab:HTTP cannot be used, it will be necessary to implement mitigations directly in the feature. It is best to validate the destination IP addresses themselves, not just domain names, as DNS can be controlled by the attacker. Below are a list of mitigations that should be implemented.
+For situtions in which an allowlist or GitLab:HTTP cannot be used, it will be necessary to implement mitigations directly in the feature. It is best to validate the destination IP addresses themselves, not just domain names, as DNS can be controlled by the attacker. Below are a list of mitigations that should be implemented.
 
 **Important Note:** There are many tricks to bypass common SSRF validations. If feature-specific mitigations are necessary, they should be reviewed by the AppSec team, or a developer who has worked on SSRF mitigations previously.
 
@@ -276,10 +276,10 @@ For any and all input fields, ensure to define expectations on the type/format o
 - Treat all user input as untrusted.
 - Based on the expectations you [defined above](#setting-expectations):
   - Validate the [input size limits](https://youtu.be/2VFavqfDS6w?t=7582).
-  - Validate the input using a [whitelist approach](https://youtu.be/2VFavqfDS6w?t=7816) to only allow characters through which you are expecting to receive for the field.
+  - Validate the input using an [allowlist approach](https://youtu.be/2VFavqfDS6w?t=7816) to only allow characters through which you are expecting to receive for the field.
     - Input which fails validation should be **rejected**, and not sanitized.
 
-Note that blacklists should be avoided, as it is near impossible to block all [variations of XSS](https://owasp.org/www-community/xss-filter-evasion-cheatsheet).
+Note that denylists should be avoided, as it is near impossible to block all [variations of XSS](https://owasp.org/www-community/xss-filter-evasion-cheatsheet).
 
 #### Output encoding
 
@@ -345,5 +345,5 @@ Once you've [determined when and where](#setting-expectations) the user submitte
 - [Input Validation](https://youtu.be/2VFavqfDS6w?t=7489)
 - [Validate size limits](https://youtu.be/2VFavqfDS6w?t=7582)
 - [RoR model validators](https://youtu.be/2VFavqfDS6w?t=7636)
-- [Whitelist input validation](https://youtu.be/2VFavqfDS6w?t=7816)
+- [Allowlist input validation](https://youtu.be/2VFavqfDS6w?t=7816)
 - [Content Security Policy](https://www.youtube.com/watch?v=2VFavqfDS6w&t=12991s)

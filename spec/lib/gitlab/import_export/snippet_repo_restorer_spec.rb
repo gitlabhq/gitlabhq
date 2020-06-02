@@ -25,10 +25,9 @@ describe Gitlab::ImportExport::SnippetRepoRestorer do
       expect(snippet.repository_exists?).to be_falsey
 
       aggregate_failures do
-        expect(restorer.restore).to be_truthy
-
-        expect(snippet.repository_exists?).to be_truthy
-        expect(snippet.snippet_repository).not_to be_nil
+        expect do
+          expect(restorer.restore).to be_truthy
+        end.to change { SnippetRepository.count }.by(1)
 
         blob = snippet.repository.blob_at('HEAD', snippet.file_name)
         expect(blob).not_to be_nil

@@ -1,0 +1,5 @@
+---
+title: Fix KaTeX font paths
+merge_request: 33338
+author:
+type: fixed

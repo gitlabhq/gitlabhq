@@ -61,8 +61,8 @@ describe ChatMessage::PipelineMessage do
 
   it "returns the pipeline summary in the activity's title" do
     expect(subject.activity[:title]).to eq(
-      "Pipeline [#123](http://example.gitlab.com/pipelines/123)" \
-        " of branch [develop](http://example.gitlab.com/commits/develop)" \
+      "Pipeline [#123](http://example.gitlab.com/-/pipelines/123)" \
+        " of branch [develop](http://example.gitlab.com/-/commits/develop)" \
         " by The Hacker (hacker) has passed"
     )
   end
@@ -74,8 +74,8 @@ describe ChatMessage::PipelineMessage do
 
     it "returns the summary with a 'failed' status" do
       expect(subject.activity[:title]).to eq(
-        "Pipeline [#123](http://example.gitlab.com/pipelines/123)" \
-          " of branch [develop](http://example.gitlab.com/commits/develop)" \
+        "Pipeline [#123](http://example.gitlab.com/-/pipelines/123)" \
+          " of branch [develop](http://example.gitlab.com/-/commits/develop)" \
           " by The Hacker (hacker) has failed"
       )
     end
@@ -88,8 +88,8 @@ describe ChatMessage::PipelineMessage do
 
     it "returns the summary with a 'passed with warnings' status" do
       expect(subject.activity[:title]).to eq(
-        "Pipeline [#123](http://example.gitlab.com/pipelines/123)" \
-          " of branch [develop](http://example.gitlab.com/commits/develop)" \
+        "Pipeline [#123](http://example.gitlab.com/-/pipelines/123)" \
+          " of branch [develop](http://example.gitlab.com/-/commits/develop)" \
           " by The Hacker (hacker) has passed with warnings"
       )
     end
@@ -102,8 +102,8 @@ describe ChatMessage::PipelineMessage do
 
     it "returns the summary with 'API' as the username" do
       expect(subject.activity[:title]).to eq(
-        "Pipeline [#123](http://example.gitlab.com/pipelines/123)" \
-          " of branch [develop](http://example.gitlab.com/commits/develop)" \
+        "Pipeline [#123](http://example.gitlab.com/-/pipelines/123)" \
+          " of branch [develop](http://example.gitlab.com/-/commits/develop)" \
           " by API has passed"
       )
     end
@@ -134,8 +134,8 @@ describe ChatMessage::PipelineMessage do
   it "returns the pipeline summary as the attachment's fallback property" do
     expect(subject.attachments.first[:fallback]).to eq(
       "<http://example.gitlab.com|project_name>:" \
-        " Pipeline <http://example.gitlab.com/pipelines/123|#123>" \
-        " of branch <http://example.gitlab.com/commits/develop|develop>" \
+        " Pipeline <http://example.gitlab.com/-/pipelines/123|#123>" \
+        " of branch <http://example.gitlab.com/-/commits/develop|develop>" \
         " by The Hacker (hacker) has passed in 02:00:10"
     )
   end
@@ -199,7 +199,7 @@ describe ChatMessage::PipelineMessage do
   end
 
   it "returns the pipeline URL as the attachment's title_link property" do
-    expect(subject.attachments.first[:title_link]).to eq("http://example.gitlab.com/pipelines/123")
+    expect(subject.attachments.first[:title_link]).to eq("http://example.gitlab.com/-/pipelines/123")
   end
 
   it "returns two attachment fields" do
@@ -209,7 +209,7 @@ describe ChatMessage::PipelineMessage do
   it "returns the commit message as the attachment's second field property" do
     expect(subject.attachments.first[:fields][0]).to eq({
       title: "Branch",
-      value: "<http://example.gitlab.com/commits/develop|develop>",
+      value: "<http://example.gitlab.com/-/commits/develop|develop>",
       short: true
     })
   end
@@ -237,7 +237,7 @@ describe ChatMessage::PipelineMessage do
     it "returns the stage name and link to the 'Failed jobs' tab on the pipeline's page as the attachment's third field property" do
       expect(subject.attachments.first[:fields][2]).to eq({
         title: "Failed stage",
-        value: "<http://example.gitlab.com/pipelines/123/failures|test>",
+        value: "<http://example.gitlab.com/-/pipelines/123/failures|test>",
         short: true
       })
     end
@@ -261,7 +261,7 @@ describe ChatMessage::PipelineMessage do
     it "returns the stage names and links to the 'Failed jobs' tab on the pipeline's page as the attachment's third field property" do
       expect(subject.attachments.first[:fields][2]).to eq({
         title: "Failed stages",
-        value: "<http://example.gitlab.com/pipelines/123/failures|stage-2>, <http://example.gitlab.com/pipelines/123/failures|stage-1>, <http://example.gitlab.com/pipelines/123/failures|stage-3>",
+        value: "<http://example.gitlab.com/-/pipelines/123/failures|stage-2>, <http://example.gitlab.com/-/pipelines/123/failures|stage-1>, <http://example.gitlab.com/-/pipelines/123/failures|stage-3>",
         short: true
       })
     end
@@ -271,7 +271,7 @@ describe ChatMessage::PipelineMessage do
         "<http://example.gitlab.com/-/jobs/#{i}|job-#{i}>"
       end
 
-      expected_jobs << "and <http://example.gitlab.com/pipelines/123/failures|15 more>"
+      expected_jobs << "and <http://example.gitlab.com/-/pipelines/123/failures|15 more>"
 
       expect(subject.attachments.first[:fields][3]).to eq({
         title: "Failed jobs",
@@ -369,8 +369,8 @@ describe ChatMessage::PipelineMessage do
     it 'returns the pipeline summary as the attachments in markdown format' do
       expect(subject.attachments).to eq(
         "[project_name](http://example.gitlab.com):" \
-          " Pipeline [#123](http://example.gitlab.com/pipelines/123)" \
-          " of branch [develop](http://example.gitlab.com/commits/develop)" \
+          " Pipeline [#123](http://example.gitlab.com/-/pipelines/123)" \
+          " of branch [develop](http://example.gitlab.com/-/commits/develop)" \
           " by The Hacker (hacker) has passed in 02:00:10"
       )
     end

@@ -22,3 +22,6 @@ export const SNIPPET_VISIBILITY = {
     description: __('The snippet can be accessed without any authentication.'),
   },
 };
+
+export const SNIPPET_CREATE_MUTATION_ERROR = __("Can't create snippet: %{err}");
+export const SNIPPET_UPDATE_MUTATION_ERROR = __("Can't update snippet: %{err}");

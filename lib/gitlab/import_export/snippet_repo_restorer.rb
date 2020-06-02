@@ -34,14 +34,7 @@ module Gitlab
       end
 
       def create_repository_from_db
-        snippet.create_repository
-
-        commit_attrs = {
-          branch_name: 'master',
-          message: 'Initial commit'
-        }
-
-        repository.create_file(@user, snippet.file_name, snippet.content, commit_attrs)
+        Gitlab::BackgroundMigration::BackfillSnippetRepositories.new.perform_by_ids([snippet.id])
       end
     end
   end

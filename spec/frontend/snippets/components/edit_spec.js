@@ -1,5 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
 import axios from '~/lib/utils/axios_utils';
+import Flash from '~/flash';
 
 import { GlLoadingIcon } from '@gitlab/ui';
 import { joinPaths, redirectTo } from '~/lib/utils/url_utility';
@@ -10,6 +11,7 @@ import SnippetVisibilityEdit from '~/snippets/components/snippet_visibility_edit
 import SnippetBlobEdit from '~/snippets/components/snippet_blob_edit.vue';
 import TitleField from '~/vue_shared/components/form/title.vue';
 import FormFooterActions from '~/vue_shared/components/form/form_footer_actions.vue';
+import { SNIPPET_CREATE_MUTATION_ERROR, SNIPPET_UPDATE_MUTATION_ERROR } from '~/snippets/constants';
 
 import UpdateSnippetMutation from '~/snippets/mutations/updateSnippet.mutation.graphql';
 import CreateSnippetMutation from '~/snippets/mutations/createSnippet.mutation.graphql';
@@ -26,6 +28,8 @@ jest.mock('~/lib/utils/url_utility', () => ({
     .mockName('joinPaths')
     .mockReturnValue('contentApiURL'),
 }));
+
+jest.mock('~/flash');
 
 let flashSpy;
 
@@ -290,6 +294,26 @@ describe('Snippet Edit app', () => {
           expect(flashSpy).toHaveBeenCalledWith(apiError);
         });
       });
+
+      it.each`
+        isNew    | status        | expectation
+        ${true}  | ${`new`}      | ${SNIPPET_CREATE_MUTATION_ERROR.replace('%{err}', '')}
+        ${false} | ${`existing`} | ${SNIPPET_UPDATE_MUTATION_ERROR.replace('%{err}', '')}
+      `(
+        `renders the correct error message if mutation fails for $status snippet`,
+        ({ isNew, expectation }) => {
+          createComponent({
+            data: {
+              newSnippet: isNew,
+            },
+            mutationRes: mutationTypes.REJECT,
+          });
+          wrapper.vm.handleFormSubmit();
+          return waitForPromises().then(() => {
+            expect(Flash).toHaveBeenCalledWith(expect.stringContaining(expectation));
+          });
+        },
+      );
     });
   });
 });

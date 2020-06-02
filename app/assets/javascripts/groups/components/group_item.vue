@@ -122,7 +122,7 @@ export default {
               v-tooltip
               :href="group.relativePath"
               :title="group.fullName"
-              class="no-expand gl-mt-3 gl-mr-3"
+              class="no-expand gl-mt-3 gl-mr-3 gl-text-gray-900!"
               data-placement="bottom"
               >{{
                 // ending bracket must be by closing tag to prevent

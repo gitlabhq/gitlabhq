@@ -244,6 +244,7 @@ module.exports = {
         loader: 'file-loader',
         options: {
           name: '[name].[contenthash:8].[ext]',
+          esModule: false,
         },
       },
     ],

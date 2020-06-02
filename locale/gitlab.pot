@@ -3726,6 +3726,9 @@ msgstr ""
 msgid "Can override approvers and approvals required per merge request"
 msgstr ""
 
+msgid "Can't create snippet: %{err}"
+msgstr ""
+
 msgid "Can't edit as source branch was deleted"
 msgstr ""
 
@@ -18384,9 +18387,6 @@ msgstr ""
 msgid "Reports|Metrics reports failed loading results"
 msgstr ""
 
-msgid "Reports|Scanner"
-msgstr ""
-
 msgid "Reports|Severity"
 msgstr ""
 
@@ -19340,10 +19340,10 @@ msgstr ""
 msgid "SecurityReports|Remove project from dashboard"
 msgstr ""
 
-msgid "SecurityReports|Return to dashboard"
+msgid "SecurityReports|Report type"
 msgstr ""
 
-msgid "SecurityReports|Scanner type"
+msgid "SecurityReports|Return to dashboard"
 msgstr ""
 
 msgid "SecurityReports|Security Dashboard"
@@ -25958,7 +25958,7 @@ msgstr ""
 msgid "ciReport|All projects"
 msgstr ""
 
-msgid "ciReport|All scanner types"
+msgid "ciReport|All report types"
 msgstr ""
 
 msgid "ciReport|All severities"

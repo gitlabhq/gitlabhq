@@ -7,7 +7,7 @@ describe Gitlab::Patch::ActionDispatchJourneyFormatter do
   let(:project) { create(:project, namespace: group) }
   let(:pipeline) { create(:ci_empty_pipeline, project: project) }
   let(:url) { Gitlab::Routing.url_helpers.project_pipeline_url(project, pipeline) }
-  let(:expected_path) { "#{project.full_path}/pipelines/#{pipeline.id}" }
+  let(:expected_path) { "#{project.full_path}/-/pipelines/#{pipeline.id}" }
 
   context 'custom implementation of #missing_keys' do
     before do

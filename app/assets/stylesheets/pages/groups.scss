@@ -14,17 +14,12 @@
   flex-direction: column;
   margin: 0;
 
-  .group-row-contents .controls > .btn:last-child {
-    margin: 0;
-  }
-
   li {
     .title {
       font-weight: 600;
     }
 
     a {
-      color: $gray-900;
       text-decoration: none;
 
       &:hover {
@@ -42,8 +37,6 @@
 }
 
 .group-row {
-  @include basic-list-stats;
-
   .description p {
     margin-bottom: 0;
     color: $gl-text-color-secondary;
@@ -454,27 +447,8 @@ table.pipeline-project-metrics tr td {
         min-width: 30px;
       }
 
-      > span:last-child {
-        margin-right: 0;
-      }
-
       .stat-value {
         margin: 2px 0 0 5px;
-      }
-    }
-
-    .controls {
-      flex-basis: 90px;
-
-      > .btn {
-        margin: 0 $btn-side-margin 0 0;
-        color: $gl-text-color-secondary;
-      }
-    }
-
-    .metadata {
-      @include media-breakpoint-up(md) {
-        flex-basis: 240px;
       }
     }
   }
