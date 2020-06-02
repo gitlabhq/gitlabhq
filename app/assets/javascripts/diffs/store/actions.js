@@ -118,12 +118,7 @@ export const fetchDiffFilesBatch = ({ commit, state }) => {
 
   const getBatch = (page = 1) =>
     axios
-      .get(state.endpointBatch, {
-        params: {
-          ...urlParams,
-          page,
-        },
-      })
+      .get(mergeUrlParams({ ...urlParams, page }, state.endpointBatch))
       .then(({ data: { pagination, diff_files } }) => {
         commit(types.SET_DIFF_DATA_BATCH, { diff_files });
         commit(types.SET_BATCH_LOADING, false);

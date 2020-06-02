@@ -8,7 +8,6 @@ describe Gitlab::Git::RuggedImpl::UseRugged, :seed_helper do
   let(:project) { create(:project, :repository) }
   let(:repository) { project.repository }
   let(:feature_flag_name) { 'feature-flag-name' }
-  let(:feature_flag) { Feature.get(feature_flag_name) }
   let(:temp_gitaly_metadata_file) { create_temporary_gitaly_metadata_file }
 
   before(:all) do

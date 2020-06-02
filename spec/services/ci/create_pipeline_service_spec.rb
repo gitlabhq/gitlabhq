@@ -77,6 +77,18 @@ describe Ci::CreatePipelineService do
         pipeline
       end
 
+      it 'records pipeline size in a prometheus histogram' do
+        histogram = spy('pipeline size histogram')
+
+        allow(Gitlab::Ci::Pipeline::Chain::Metrics)
+          .to receive(:new).and_return(histogram)
+
+        execute_service
+
+        expect(histogram).to have_received(:observe)
+          .with({ source: 'push' }, 5)
+      end
+
       context 'when merge requests already exist for this source branch' do
         let(:merge_request_1) do
           create(:merge_request, source_branch: 'feature', target_branch: "master", source_project: project)

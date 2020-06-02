@@ -1,156 +1,127 @@
-.assets-compile-cache:
-  cache:
-    paths:
-      - vendor/ruby/
-      - public/assets/webpack/
-      - assets-hash.txt
-      - .yarn-cache/
-      - tmp/cache/assets/sprockets
-      - tmp/cache/babel-loader
-      - tmp/cache/vue-loader
-      - tmp/cache/webpack-dlls
-
-.gitlab:assets:compile-metadata:
+.frontend-base:
   extends:
     - .default-retry
     - .default-before_script
     - .assets-compile-cache
-  image: registry.gitlab.com/gitlab-org/gitlab-build-images:ruby-2.6.6-git-2.26-lfs-2.9-chrome-73.0-node-12.x-yarn-1.21-graphicsmagick-1.3.34-docker-19.03.1
+  variables:
+    SETUP_DB: "false"
+    # we override the max_old_space_size to prevent OOM errors
+    NODE_OPTIONS: --max_old_space_size=3584
+    WEBPACK_VENDOR_DLL: "true"
+
+.compile-assets-base:
+  extends: .frontend-base
+  image: registry.gitlab.com/gitlab-org/gitlab-build-images:ruby-2.6.6-git-2.26-lfs-2.9-node-12.x-yarn-1.21-graphicsmagick-1.3.34
   stage: prepare
+  script:
+    - node --version
+    - run_timed_command "retry yarn install --frozen-lockfile"
+    - free -m
+    - run_timed_command "bin/rake gitlab:assets:compile > assets-compile.log 2>&1"
+    - run_timed_command "scripts/clean-old-cached-assets"
+
+compile-production-assets:
+  extends:
+    - .compile-assets-base
+    - .frontend:rules:compile-production-assets
   variables:
     NODE_ENV: "production"
     RAILS_ENV: "production"
-    SETUP_DB: "false"
     WEBPACK_REPORT: "true"
-    # we override the max_old_space_size to prevent OOM errors
-    NODE_OPTIONS: --max_old_space_size=3584
-  cache:
-    key: "assets-compile:production:v1"
   artifacts:
     name: webpack-report
     expire_in: 31d
     paths:
-      - webpack-report/
       - assets-compile.log
       # These assets are used in multiple locations:
       # - in `build-assets-image` job to create assets image for packaging systems
       # - GitLab UI for integration tests: https://gitlab.com/gitlab-org/gitlab-ui/-/blob/e88493b3c855aea30bf60baee692a64606b0eb1e/.storybook/preview-head.pug#L1
-      - public/assets
+      - public/assets/
+      - webpack-report/
     when: always
-  script:
-    - node --version
-    - retry yarn install --frozen-lockfile --production --cache-folder .yarn-cache --prefer-offline
-    - free -m
-    - time bin/rake gitlab:assets:compile > assets-compile.log 2>&1
-    - scripts/clean-old-cached-assets
+  after_script:
     - rm -f /etc/apt/sources.list.d/google*.list  # We don't need to update Chrome here
 
-gitlab:assets:compile pull-push-cache:
+compile-test-assets:
   extends:
-    - .gitlab:assets:compile-metadata
-    - .frontend:rules:gitlab-assets-compile-pull-push-cache
-  cache:
-    policy: pull-push
+    - .compile-assets-base
+    - .frontend:rules:compile-test-assets
+  artifacts:
+    expire_in: 7d
+    paths:
+      - assets-compile.log
+      - public/assets/
+      - node_modules/@gitlab/svgs/dist/icons.json  # app/helpers/icons_helper.rb uses this file
+    when: always
 
-gitlab:assets:compile pull-cache:
+compile-test-assets as-if-foss:
   extends:
-    - .gitlab:assets:compile-metadata
-    - .frontend:rules:gitlab-assets-compile-pull-cache
+    - compile-test-assets
+    - .frontend:rules:compile-test-assets-as-if-foss
+    - .as-if-foss
+
+update-assets-compile-production-cache:
+  extends:
+    - compile-production-assets
+    - .shared:rules:update-cache
+  stage: prepare
+  artifacts: {}  # This job's purpose is only to update the cache.
   cache:
-    policy: pull
+    policy: push  # We want to rebuild the cache from scratch to ensure stale dependencies are cleaned up.
+
+update-assets-compile-test-cache:
+  extends:
+    - compile-test-assets
+    - .shared:rules:update-cache
+  stage: prepare
+  artifacts: {}  # This job's purpose is only to update the cache.
+  cache:
+    policy: push  # We want to rebuild the cache from scratch to ensure stale dependencies are cleaned up.
+
+update-yarn-cache:
+  extends:
+    - .default-retry
+    - .yarn-cache
+    - .shared:rules:update-cache
+  stage: prepare
+  script:
+    - source scripts/utils.sh
+    - run_timed_command "retry yarn install --frozen-lockfile"
+  cache:
+    policy: push
 
 build-assets-image:
   extends:
     - .use-kaniko
-    - .frontend:rules:gitlab-assets-compile-pull-cache
+    - .frontend:rules:compile-production-assets
   stage: build-images
-  needs: ["gitlab:assets:compile pull-cache"]
+  needs: ["compile-production-assets"]
   variables:
     GIT_DEPTH: "1"
   script:
     # TODO: Change the image tag to be the MD5 of assets files and skip image building if the image exists
     # We'll also need to pass GITLAB_ASSETS_TAG to the trigerred omnibus-gitlab pipeline similarly to how we do it for trigerred CNG pipelines
     # https://gitlab.com/gitlab-org/gitlab/issues/208389
-    - scripts/build_assets_image
-
-.compile-assets-metadata:
-  extends:
-    - .default-retry
-    - .default-before_script
-    - .assets-compile-cache
-  stage: prepare
-  script:
-    - node --version
-    - retry yarn install --frozen-lockfile --cache-folder .yarn-cache --prefer-offline
-    - free -m
-    - time bin/rake gitlab:assets:compile > assets-compile.log 2>&1
-    - scripts/clean-old-cached-assets
-  variables:
-    SETUP_DB: "false"
-    # we override the max_old_space_size to prevent OOM errors
-    NODE_OPTIONS: --max_old_space_size=3584
-    WEBPACK_VENDOR_DLL: "true"
-  cache:
-    key: "assets-compile:test:v1"
-  artifacts:
-    expire_in: 7d
-    paths:
-      - node_modules
-      - public/assets
-      - assets-compile.log
-    when: always
-
-compile-assets pull-push-cache:
-  extends:
-    - .compile-assets-metadata
-    - .frontend:rules:compile-assets-pull-push-cache
-  cache:
-    policy: pull-push
-
-compile-assets pull-push-cache as-if-foss:
-  extends:
-    - .compile-assets-metadata
-    - .frontend:rules:compile-assets-pull-push-cache-as-if-foss
-    - .as-if-foss
-  cache:
-    policy: pull-push
-    key: "assets-compile:test:as-if-foss:v1"
-
-compile-assets pull-cache:
-  extends:
-    - .compile-assets-metadata
-    - .frontend:rules:compile-assets-pull-cache
-  cache:
-    policy: pull
-
-compile-assets pull-cache as-if-foss:
-  extends:
-    - .compile-assets-metadata
-    - .frontend:rules:compile-assets-pull-cache-as-if-foss
-    - .as-if-foss
-  cache:
-    policy: pull
-    key: "assets-compile:test:as-if-foss:v1"
+    - run_timed_command "scripts/build_assets_image"
 
 .frontend-fixtures-base:
   extends:
-    - .default-retry
+    - .frontend-base
     - .rails-cache
-    - .default-before_script
     - .use-pg11
   stage: fixtures
-  needs: ["setup-test-env", "compile-assets pull-cache"]
+  needs: ["setup-test-env", "compile-test-assets"]
+  variables:
+    SETUP_DB: "true"
   script:
     - run_timed_command "scripts/gitaly-test-build"
     - run_timed_command "scripts/gitaly-test-spawn"
-    - run_timed_command "bundle exec rake frontend:fixtures"
+    - run_timed_command "bin/rake frontend:fixtures"
   artifacts:
     name: frontend-fixtures
     expire_in: 31d
     when: always
     paths:
-      - node_modules
-      - public/assets
       - tmp/tests/frontend/
 
 frontend-fixtures:
@@ -164,25 +135,27 @@ frontend-fixtures-as-if-foss:
     - .frontend:rules:default-frontend-jobs-as-if-foss
     - .as-if-foss
 
-.frontend-job-base:
+.frontend-test-base:
   extends:
     - .default-retry
-    - .default-cache
-    - .default-before_script
+    - .yarn-cache
   variables:
     USE_BUNDLE_INSTALL: "false"
     SETUP_DB: "false"
   stage: test
+  before_script:
+    - source scripts/utils.sh
 
 .karma-base:
-  extends: .frontend-job-base
+  extends: .frontend-test-base
   variables:
     # we override the max_old_space_size to prevent OOM errors
     NODE_OPTIONS: --max_old_space_size=3584
   script:
+    - source scripts/utils.sh
     - export BABEL_ENV=coverage CHROME_LOG_FILE=chrome_debug.log
-    - date
-    - yarn karma
+    - run_timed_command "retry yarn install --frozen-lockfile"
+    - run_timed_command "yarn karma"
 
 karma:
   extends:
@@ -209,15 +182,11 @@ karma-as-if-foss:
   needs: ["frontend-fixtures-as-if-foss"]
 
 .jest-base:
-  extends: .frontend-job-base
+  extends: .frontend-test-base
   script:
-    - date
-    - yarn jest --ci --coverage --testSequencer ./scripts/frontend/parallel_ci_sequencer.js
-  cache:
-    key: jest
-    paths:
-      - tmp/cache/jest/
-    policy: pull-push
+    - source scripts/utils.sh
+    - run_timed_command "retry yarn install --frozen-lockfile"
+    - run_timed_command "yarn jest --ci --coverage --testSequencer ./scripts/frontend/parallel_ci_sequencer.js"
 
 jest:
   extends:
@@ -238,17 +207,13 @@ jest:
 
 jest-integration:
   extends:
-    - .frontend-job-base
+    - .frontend-test-base
     - .frontend:rules:default-frontend-jobs
   script:
-    - date
-    - yarn jest:integration --ci
+    - source scripts/utils.sh
+    - run_timed_command "retry yarn install --frozen-lockfile"
+    - run_timed_command "yarn jest:integration --ci"
   needs: ["frontend-fixtures"]
-  cache:
-    key: jest-integration
-    paths:
-      - tmp/cache/jest/
-    policy: pull-push
 
 jest-as-if-foss:
   extends:
@@ -256,8 +221,6 @@ jest-as-if-foss:
     - .frontend:rules:default-frontend-jobs-as-if-foss
     - .as-if-foss
   needs: ["frontend-fixtures-as-if-foss"]
-  cache:
-    policy: pull
 
 coverage-frontend:
   extends:
@@ -268,33 +231,26 @@ coverage-frontend:
   stage: post-test
   before_script:
     - source scripts/utils.sh
-    - retry yarn install --frozen-lockfile
+    - run_timed_command "retry yarn install --frozen-lockfile"
   script:
-    - yarn node scripts/frontend/merge_coverage_frontend.js
+    - run_timed_command "yarn node scripts/frontend/merge_coverage_frontend.js"
   artifacts:
     name: coverage-frontend
     expire_in: 31d
     paths:
       - coverage-frontend/
-  cache:
-    policy: pull
 
 .qa-frontend-node:
   extends:
     - .default-retry
+    - .yarn-cache
     - .frontend:rules:qa-frontend-node
   stage: test
   dependencies: []
-  cache:
-    key: "$CI_JOB_NAME"
-    paths:
-      - .yarn-cache/
-    policy: pull-push
   script:
-    - date
-    - yarn install --frozen-lockfile --cache-folder .yarn-cache --prefer-offline
-    - date
-    - yarn run webpack-prod
+    - source scripts/utils.sh
+    - run_timed_command "yarn install --frozen-lockfile"
+    - run_timed_command "yarn run webpack-prod"
 
 qa-frontend-node:10:
   extends: .qa-frontend-node
@@ -309,25 +265,18 @@ qa-frontend-node:latest:
 webpack-dev-server:
   extends:
     - .default-retry
+    - .yarn-cache
     - .frontend:rules:default-frontend-jobs
   stage: test
   needs: []
   variables:
     WEBPACK_MEMORY_TEST: "true"
     WEBPACK_VENDOR_DLL: "true"
-  cache:
-    key:
-      files:
-        - yarn.lock
-      prefix: "v1"
-    paths:
-      - node_modules/
-      - tmp/cache/webpack-dlls/
   script:
     - source scripts/utils.sh
-    - retry yarn install --frozen-lockfile
-    - retry yarn webpack-vendor
-    - node --expose-gc node_modules/.bin/webpack-dev-server --config config/webpack.config.js
+    - run_timed_command "retry yarn install --frozen-lockfile"
+    - run_timed_command "retry yarn webpack-vendor"
+    - run_timed_command "node --expose-gc node_modules/.bin/webpack-dev-server --config config/webpack.config.js"
   artifacts:
     name: webpack-dev-server
     expire_in: 31d
@@ -340,7 +289,7 @@ bundle-size-review:
     - .frontend:rules:bundle-size-review
   image: registry.gitlab.com/gitlab-org/gitlab-build-images:danger
   stage: test
-  needs: ["gitlab:assets:compile pull-cache"]
+  needs: ["compile-production-assets"]
   script:
     - mkdir -p bundle-size-review
     - cp webpack-report/index.html bundle-size-review/bundle-report.html

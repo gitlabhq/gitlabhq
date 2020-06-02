@@ -7,7 +7,7 @@ pages:
     - rspec:coverage
     - coverage-frontend
     - karma
-    - gitlab:assets:compile pull-cache
+    - compile-production-assets
   script:
     - mv public/ .public/
     - mkdir public/

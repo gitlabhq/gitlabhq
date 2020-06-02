@@ -30,7 +30,7 @@ describe('MergeRequestTabs', function() {
     setLocation();
 
     this.spies = {
-      history: spyOn(window.history, 'replaceState').and.callFake(function() {}),
+      history: spyOn(window.history, 'pushState').and.callFake(function() {}),
     };
   });
 
@@ -142,6 +142,7 @@ describe('MergeRequestTabs', function() {
 
     afterEach(() => {
       mock.restore();
+      window.history.replaceState({}, '', '/');
     });
 
     it('changes from commits', function() {
@@ -194,11 +195,21 @@ describe('MergeRequestTabs', function() {
       setLocation({
         pathname: '/foo/bar/-/merge_requests/1',
       });
+      window.history.replaceState(
+        {
+          url: window.location.href,
+          action: 'show',
+        },
+        document.title,
+        window.location.href,
+      );
+
       const newState = this.subject('commits');
 
       expect(this.spies.history).toHaveBeenCalledWith(
         {
           url: newState,
+          action: 'commits',
         },
         document.title,
         newState,

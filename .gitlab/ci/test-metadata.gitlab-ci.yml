@@ -3,11 +3,6 @@
     TESTS_METADATA_S3_BUCKET: "gitlab-ce-cache"
   before_script:
     - source scripts/utils.sh
-  cache:
-    key: tests_metadata
-    paths:
-      - knapsack/
-      - rspec_flaky/
   artifacts:
     expire_in: 31d
     paths:
@@ -20,8 +15,6 @@ retrieve-tests-metadata:
     - .tests-metadata-state
     - .test-metadata:rules:retrieve-tests-metadata
   stage: prepare
-  cache:
-    policy: pull
   script:
     - source scripts/rspec_helpers.sh
     - retrieve_tests_metadata
@@ -44,8 +37,6 @@ update-tests-metadata:
     - rspec-ee unit pg11 geo
     - rspec-ee integration pg11 geo
     - rspec-ee system pg11 geo
-  cache:
-    policy: push
   script:
     - retry gem install fog-aws mime-types activesupport rspec_profiling postgres-copy --no-document
     - source scripts/rspec_helpers.sh

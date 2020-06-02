@@ -598,7 +598,7 @@ The banner can be disabled for:
   - By an administrator running the following in a Rails console:
 
     ```ruby
-    Feature.get(:auto_devops_banner_disabled).enable
+    Feature.enable(:auto_devops_banner_disabled)
     ```
 
   - Through the REST API with an admin access token:

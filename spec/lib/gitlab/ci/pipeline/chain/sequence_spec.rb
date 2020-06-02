@@ -56,11 +56,24 @@ describe Gitlab::Ci::Pipeline::Chain::Sequence do
     end
 
     it 'adds sequence duration to duration histogram' do
-      allow(command).to receive(:duration_histogram).and_return(histogram)
+      allow(command.metrics)
+        .to receive(:pipeline_creation_duration_histogram)
+        .and_return(histogram)
 
       subject.build!
 
       expect(histogram).to have_received(:observe)
+    end
+
+    it 'records pipeline size by pipeline source in a histogram' do
+      allow(command.metrics)
+        .to receive(:pipeline_size_histogram)
+        .and_return(histogram)
+
+      subject.build!
+
+      expect(histogram).to have_received(:observe)
+        .with({ source: 'push' }, 0)
     end
   end
 end

@@ -37,6 +37,9 @@
 .if-merge-request-title-as-if-foss: &if-merge-request-title-as-if-foss
   if: '$CI_MERGE_REQUEST_TITLE =~ /RUN AS-IF-FOSS/'
 
+.if-merge-request-title-update-caches: &if-merge-request-title-update-caches
+  if: '$CI_MERGE_REQUEST_TITLE =~ /UPDATE CACHE/'
+
 .if-security-merge-request: &if-security-merge-request
   if: '$CI_PROJECT_NAMESPACE == "gitlab-org/security" && $CI_MERGE_REQUEST_IID'
 
@@ -183,6 +186,14 @@
   - ".dockerignore"
   - "qa/**/*"
 
+################
+# Shared rules #
+################
+.shared:rules:update-cache:
+  rules:
+    - <<: *if-master-schedule-2-hourly
+    - <<: *if-merge-request-title-update-caches
+
 ####################
 # Cache repo rules #
 ####################
@@ -244,45 +255,18 @@
 ##################
 # Frontend rules #
 ##################
-# This job only runs on `master` since it pushes to the cache.
-.frontend:rules:gitlab-assets-compile-pull-push-cache:
-  rules:
-    - <<: *if-not-canonical-namespace
-      when: never
-    - <<: *if-master-refs
-      changes: *code-backstage-qa-patterns
-      when: on_success
-
-.frontend:rules:gitlab-assets-compile-pull-cache:
+.frontend:rules:compile-production-assets:
   rules:
     - <<: *if-not-canonical-namespace
       when: never
     - <<: *if-default-refs
       changes: *code-backstage-qa-patterns
-      when: on_success
 
-.frontend:rules:compile-assets-pull-push-cache:
+.frontend:rules:compile-test-assets:
   rules:
-    - <<: *if-master-refs
-      changes: *code-backstage-qa-patterns
-      when: on_success
+    - changes: *code-backstage-qa-patterns
 
-# This job only runs on `master` since it pushes to the cache.
-.frontend:rules:compile-assets-pull-push-cache-as-if-foss:
-  rules:
-    - <<: *if-not-ee
-      when: never
-    - <<: *if-master-push
-      changes: *code-backstage-qa-patterns
-    - <<: *if-master-schedule-2-hourly
-
-.frontend:rules:compile-assets-pull-cache:
-  rules:
-    - <<: *if-default-refs
-      changes: *code-backstage-qa-patterns
-      when: on_success
-
-.frontend:rules:compile-assets-pull-cache-as-if-foss:
+.frontend:rules:compile-test-assets-as-if-foss:
   rules:
     - <<: *if-not-ee
       when: never
@@ -299,7 +283,6 @@
   rules:
     - <<: *if-default-refs
       changes: *code-backstage-patterns
-      when: on_success
 
 .frontend:rules:default-frontend-jobs-as-if-foss:
   rules:
@@ -327,10 +310,8 @@
   rules:
     - <<: *if-master-refs
       changes: *frontend-dependency-patterns
-      when: on_success
     - <<: *if-merge-request
       changes: *frontend-dependency-patterns
-      when: on_success
 
 .frontend:rules:qa-frontend-node-latest:
   rules:

@@ -14,7 +14,7 @@ describe Gitlab::JiraImport::BaseImporter do
       before do
         stub_jira_service_test
 
-        allow(project).to receive(:validate_jira_import_settings!)
+        allow(Gitlab::JiraImport).to receive(:validate_project_settings!)
       end
 
       context 'when Jira service exists' do

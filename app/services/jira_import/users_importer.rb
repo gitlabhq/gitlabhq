@@ -13,7 +13,7 @@ module JiraImport
     end
 
     def execute
-      project.validate_jira_import_settings!(user: user)
+      Gitlab::JiraImport.validate_project_settings!(project, user: user)
 
       return ServiceResponse.success(payload: nil) if users.blank?
 

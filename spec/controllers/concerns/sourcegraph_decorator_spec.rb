@@ -36,10 +36,6 @@ describe SourcegraphDecorator do
     sign_in user if user
   end
 
-  after do
-    Feature.get(:sourcegraph).disable
-  end
-
   subject do
     get :index, format: format
 

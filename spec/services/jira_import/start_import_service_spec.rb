@@ -13,7 +13,7 @@ describe JiraImport::StartImportService do
 
   context 'when an error is returned from the project validation' do
     before do
-      allow(project).to receive(:validate_jira_import_settings!)
+      allow(Gitlab::JiraImport).to receive(:validate_project_settings!)
         .and_raise(Projects::ImportService::Error, 'Jira import feature is disabled.')
     end
 
@@ -25,7 +25,7 @@ describe JiraImport::StartImportService do
 
     before do
       stub_jira_service_test
-      allow(project).to receive(:validate_jira_import_settings!)
+      allow(Gitlab::JiraImport).to receive(:validate_project_settings!)
     end
 
     context 'when Jira project key is not provided' do

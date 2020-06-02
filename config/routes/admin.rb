@@ -118,6 +118,7 @@ namespace :admin do
     resources :services, only: [:index, :edit, :update]
     resources :integrations, only: [:edit, :update] do
       member do
+        get :custom_integration_projects
         put :test
       end
     end

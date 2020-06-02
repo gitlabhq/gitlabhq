@@ -51,6 +51,7 @@ import axios from '~/lib/utils/axios_utils';
 import testAction from '../../helpers/vuex_action_helper';
 import * as utils from '~/diffs/store/utils';
 import * as commonUtils from '~/lib/utils/common_utils';
+import { mergeUrlParams } from '~/lib/utils/url_utility';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import createFlash from '~/flash';
 
@@ -173,19 +174,44 @@ describe('DiffsStoreActions', () => {
   });
 
   describe('fetchDiffFilesBatch', () => {
+    let mock;
+
+    beforeEach(() => {
+      mock = new MockAdapter(axios);
+    });
+
+    afterEach(() => {
+      mock.restore();
+    });
+
     it('should fetch batch diff files', done => {
       const endpointBatch = '/fetch/diffs_batch';
-      const mock = new MockAdapter(axios);
       const res1 = { diff_files: [], pagination: { next_page: 2 } };
       const res2 = { diff_files: [], pagination: {} };
       mock
-        .onGet(endpointBatch, {
-          params: { page: 1, per_page: DIFFS_PER_PAGE, w: '1', view: 'inline' },
-        })
+        .onGet(
+          mergeUrlParams(
+            {
+              per_page: DIFFS_PER_PAGE,
+              w: '1',
+              view: 'inline',
+              page: 1,
+            },
+            endpointBatch,
+          ),
+        )
         .reply(200, res1)
-        .onGet(endpointBatch, {
-          params: { page: 2, per_page: DIFFS_PER_PAGE, w: '1', view: 'inline' },
-        })
+        .onGet(
+          mergeUrlParams(
+            {
+              per_page: DIFFS_PER_PAGE,
+              w: '1',
+              view: 'inline',
+              page: 2,
+            },
+            endpointBatch,
+          ),
+        )
         .reply(200, res2);
 
       testAction(
@@ -202,12 +228,34 @@ describe('DiffsStoreActions', () => {
           { type: types.SET_RETRIEVING_BATCHES, payload: false },
         ],
         [],
-        () => {
-          mock.restore();
-          done();
-        },
+        done,
       );
     });
+
+    it.each`
+      viewStyle     | otherView
+      ${'inline'}   | ${'parallel'}
+      ${'parallel'} | ${'inline'}
+    `(
+      'should make a request with the view parameter "$viewStyle" when the batchEndpoint already contains "$otherView"',
+      ({ viewStyle, otherView }) => {
+        const endpointBatch = '/fetch/diffs_batch';
+
+        fetchDiffFilesBatch({
+          commit: () => {},
+          state: {
+            endpointBatch: `${endpointBatch}?view=${otherView}`,
+            useSingleDiffStyle: true,
+            diffViewType: viewStyle,
+          },
+        })
+          .then(() => {
+            expect(mock.history.get[0].url).toContain(`view=${viewStyle}`);
+            expect(mock.history.get[0].url).not.toContain(`view=${otherView}`);
+          })
+          .catch(() => {});
+      },
+    );
   });
 
   describe('fetchDiffFilesMeta', () => {
@@ -278,15 +326,24 @@ describe('DiffsStoreActions', () => {
     });
 
     describe('fetchDiffFilesBatch', () => {
+      let mock;
+
+      beforeEach(() => {
+        mock = new MockAdapter(axios);
+      });
+
+      afterEach(() => {
+        mock.restore();
+      });
+
       it('should fetch batch diff files', done => {
         const endpointBatch = '/fetch/diffs_batch';
-        const mock = new MockAdapter(axios);
         const res1 = { diff_files: [], pagination: { next_page: 2 } };
         const res2 = { diff_files: [], pagination: {} };
         mock
-          .onGet(endpointBatch, { params: { page: 1, per_page: DIFFS_PER_PAGE, w: '1' } })
+          .onGet(mergeUrlParams({ per_page: DIFFS_PER_PAGE, w: '1', page: 1 }, endpointBatch))
           .reply(200, res1)
-          .onGet(endpointBatch, { params: { page: 2, per_page: DIFFS_PER_PAGE, w: '1' } })
+          .onGet(mergeUrlParams({ per_page: DIFFS_PER_PAGE, w: '1', page: 2 }, endpointBatch))
           .reply(200, res2);
 
         testAction(
@@ -303,12 +360,33 @@ describe('DiffsStoreActions', () => {
             { type: types.SET_RETRIEVING_BATCHES, payload: false },
           ],
           [],
-          () => {
-            mock.restore();
-            done();
-          },
+          done,
         );
       });
+
+      it.each`
+        querystrings        | requestUrl
+        ${'?view=parallel'} | ${'/fetch/diffs_batch?view=parallel'}
+        ${'?view=inline'}   | ${'/fetch/diffs_batch?view=inline'}
+        ${''}               | ${'/fetch/diffs_batch'}
+      `(
+        'should use the endpoint $requestUrl if the endpointBatch in state includes `$querystrings` as a querystring',
+        ({ querystrings, requestUrl }) => {
+          const endpointBatch = '/fetch/diffs_batch';
+
+          fetchDiffFilesBatch({
+            commit: () => {},
+            state: {
+              endpointBatch: `${endpointBatch}${querystrings}`,
+              diffViewType: 'inline',
+            },
+          })
+            .then(() => {
+              expect(mock.history.get[0].url).toEqual(requestUrl);
+            })
+            .catch(() => {});
+        },
+      );
     });
 
     describe('fetchDiffFilesMeta', () => {

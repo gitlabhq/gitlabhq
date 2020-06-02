@@ -787,6 +787,131 @@ found, we should raise a
 `Gitlab::Graphql::Errors::ResourceNotAvailable` error. Which will be
 correctly rendered to the clients.
 
+### Errors in mutations
+
+We encourage following the practice of [errors as
+data](https://graphql-ruby.org/mutations/mutation_errors) for mutations, which
+distinguishes errors by who they are relevant to, defined by who can deal with
+them.
+
+Key points:
+
+- All mutation responses have an `errors` field. This should be populated on
+  failure, and may be populated on success.
+- Consider who needs to see the error: the **user** or the **developer**.
+- Clients should always request the `errors` field when performing mutations.
+- Errors may be reported to users either at `$root.errors` (top-level error) or at
+  `$root.data.mutationName.errors` (mutation errors). The location depends on what kind of error
+  this is, and what information it holds.
+
+Consider an example mutation `doTheThing` that returns a response with
+two fields: `errors: [String]`, and `thing: ThingType`. The specific nature of
+the `thing` itself is irrelevant to these examples, as we are considering the
+errors.
+
+There are three states a mutation response can be in:
+
+- [Success](#success)
+- [Failure (relevant to the user)](#failure-relevant-to-the-user)
+- [Failure (irrelevant to the user)](#failure-irrelevant-to-the-user)
+
+#### Success
+
+In the happy path, errors *may* be returned, along with the anticipated payload, but
+if everything was successful, then `errors` should be an empty array, since
+there are no problems we need to inform the user of.
+
+```javascript
+{
+  data: {
+    doTheThing: {
+      errors: [] // if successful, this array will generally be empty.
+      thing: { .. }
+    }
+  }
+}
+```
+
+#### Failure (relevant to the user)
+
+An error that affects the **user** occurred. We refer to these as _mutation errors_. In
+this case there is typically no `thing` to return:
+
+```javascript
+{
+  data: {
+    doTheThing: {
+      errors: ["you cannot touch the thing"],
+      thing: null
+    }
+  }
+}
+```
+
+Examples of this include:
+
+- Model validation errors: the user may need to change the inputs.
+- Permission errors: the user needs to know they cannot do this, they may need to request permission or sign in.
+- Problems with application state that prevent the user's action, for example: merge conflicts, the resource was locked, and so on.
+
+Ideally, we should prevent the user from getting this far, but if they do, they
+need to be told what is wrong, so they understand the reason for the failure and
+what they can do to achieve their intent, even if that is as simple as retrying the
+request.
+
+It is possible to return *recoverable* errors alongside mutation data. For example, if
+a user uploads 10 files and 3 of them fail and the rest succeed, the errors for the
+failures can be made available to the user, alongside the information about
+the successes.
+
+#### Failure (irrelevant to the user)
+
+One or more *non-recoverable* errors can be returned at the _top level_. These
+are things over which the **user** has little to no control, and should mainly
+be system or programming problems, that a **developer** needs to know about.
+In this case there is no `data`:
+
+```javascript
+{
+  errors: [
+    {"message": "argument error: expected an integer, got null"},
+  ]
+}
+```
+
+This is the result of raising an error during the mutation. In our implementation,
+the messages of argument errors and validation errors are returned to the client, and all other
+`StandardError` instances are caught, logged and presented to the client with the message set to `"Internal server error"`.
+See [`GraphqlController`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/controllers/graphql_controller.rb) for details.
+
+These represent programming errors, such as:
+
+- A GraphQL syntax error, where an `Int` was passed instead of a `String`, or a required argument was not present.
+- Errors in our schema, such as being unable to provide a value for a non-nullable field.
+- System errors: for example, a Git storage exception, or database unavailability.
+
+The user should not be able to cause such errors in regular usage. This category
+of errors should be treated as internal, and not shown to the user in specific
+detail.
+
+We need to inform the user when the mutation fails, but we do not need to
+tell them why, since they cannot have caused it, and nothing they can do will
+fix it, although we may offer to retry the mutation.
+
+#### Categorizing errors
+
+When we write mutations, we need to be conscious about which of
+these two categories an error state falls into (and communicate about this with
+frontend developers to verify our assumptions). This means distinguishing the
+needs of the _user_ from the needs of the _client_.
+
+> _Never catch an error unless the user needs to know about it._
+
+If the user does need to know about it, communicate with frontend developers
+to make sure the error information we are passing back is useful.
+
+See also the [frontend GraphQL guide](../development/fe_guide/graphql.md#handling-errors).
+
 ## Validating arguments
 
 For validations of single arguments, use the
@@ -794,8 +919,8 @@ For validations of single arguments, use the
 as normal.
 
 Sometimes a mutation or resolver may accept a number of optional
-arguments, but still want to validate that at least one of the optional
-arguments were given. In this situation, consider using the `#ready?`
+arguments, but we still want to validate that at least one of the optional
+arguments is provided. In this situation, consider using the `#ready?`
 method within your mutation or resolver to provide the validation. The
 `#ready?` method will be called before any work is done within the
 `#resolve` method.

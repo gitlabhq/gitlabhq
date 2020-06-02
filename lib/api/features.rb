@@ -61,7 +61,7 @@ module API
         mutually_exclusive :key, :project
       end
       post ':name' do
-        feature = Feature.get(params[:name])
+        feature = Feature.get(params[:name]) # rubocop:disable Gitlab/AvoidFeatureGet
         targets = gate_targets(params)
         value = gate_value(params)
         key = gate_key(params)
@@ -92,7 +92,7 @@ module API
 
       desc 'Remove the gate value for the given feature'
       delete ':name' do
-        Feature.get(params[:name]).remove
+        Feature.remove(params[:name])
 
         no_content!
       end

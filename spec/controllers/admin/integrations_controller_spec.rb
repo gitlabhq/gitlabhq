@@ -4,6 +4,7 @@ require 'spec_helper'
 
 describe Admin::IntegrationsController do
   let(:admin) { create(:admin) }
+  let(:integration) { create(:jira_service, :instance) }
 
   before do
     sign_in(admin)
@@ -33,8 +34,6 @@ describe Admin::IntegrationsController do
   end
 
   describe '#update' do
-    let(:integration) { create(:jira_service, :instance) }
-
     before do
       allow(PropagateIntegrationWorker).to receive(:perform_async)
 
@@ -66,6 +65,16 @@ describe Admin::IntegrationsController do
       it 'does not call to PropagateIntegrationWorker' do
         expect(PropagateIntegrationWorker).not_to have_received(:perform_async)
       end
+    end
+  end
+
+  describe '#custom_integration_projects' do
+    it 'calls to get the custom integration projects' do
+      allow(Project).to receive_message_chain(:with_custom_integration_compared_to, :page, :per)
+
+      get :custom_integration_projects, params: { id: integration.class.to_param }
+
+      expect(Project).to have_received(:with_custom_integration_compared_to).with(integration)
     end
   end
 end

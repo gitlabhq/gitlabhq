@@ -1,7 +1,7 @@
 .only-code-memory-job-base:
   extends:
     - .default-retry
-    - .default-cache
+    - .rails-cache
     - .default-before_script
     - .memory:rules
 
@@ -39,7 +39,7 @@ memory-on-boot:
     - .only-code-memory-job-base
     - .use-pg11
   stage: test
-  needs: ["setup-test-env", "compile-assets pull-cache"]
+  needs: ["setup-test-env", "compile-test-assets"]
   variables:
     NODE_ENV: "production"
     RAILS_ENV: "production"

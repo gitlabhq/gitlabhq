@@ -1,12 +1,9 @@
 .qa-job-base:
   extends:
     - .default-retry
+    - .qa-cache
   stage: test
   needs: []
-  cache:
-    key: "qa-framework-jobs:v1"
-    paths:
-      - vendor/ruby
   before_script:
     - '[ "$FOSS_ONLY" = "1" ] && rm -rf ee/ qa/spec/ee/ qa/qa/specs/features/ee/ qa/qa/ee/ qa/qa/ee.rb'
     - cd qa/
@@ -22,11 +19,9 @@ qa:internal:
 
 qa:internal-as-if-foss:
   extends:
-    - .qa-job-base
+    - qa:internal
     - .qa:rules:as-if-foss
     - .as-if-foss
-  script:
-    - bundle exec rspec
 
 qa:selectors:
   extends:
@@ -40,6 +35,16 @@ qa:selectors-as-if-foss:
     - qa:selectors
     - .qa:rules:as-if-foss
     - .as-if-foss
+
+update-qa-cache:
+  extends:
+    - .qa-job-base
+    - .shared:rules:update-cache
+  stage: prepare
+  script:
+    - echo "Cache has been updated and ready to be uploaded."
+  cache:
+    policy: push  # We want to rebuild the cache from scratch to ensure stale dependencies are cleaned up.
 
 .package-and-qa-base:
   image: ruby:2.6-alpine

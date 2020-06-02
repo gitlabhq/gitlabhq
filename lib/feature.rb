@@ -79,7 +79,7 @@ class Feature
       # for the feature yet and return the default.
       return default_enabled unless Gitlab::Database.exists?
 
-      feature = Feature.get(key)
+      feature = get(key)
 
       # If we're not default enabling the flag or the feature has been set, always evaluate.
       # `persisted?` can potentially generate DB queries and also checks for inclusion
@@ -109,11 +109,40 @@ class Feature
       get(key).disable_group(group)
     end
 
+    def enable_percentage_of_time(key, percentage)
+      get(key).enable_percentage_of_time(percentage)
+    end
+
+    def disable_percentage_of_time(key)
+      get(key).disable_percentage_of_time
+    end
+
+    def enable_percentage_of_actors(key, percentage)
+      get(key).enable_percentage_of_actors(percentage)
+    end
+
+    def disable_percentage_of_actors(key)
+      get(key).disable_percentage_of_actors
+    end
+
     def remove(key)
       return unless persisted_name?(key)
 
       get(key).remove
     end
+
+    def reset
+      Gitlab::SafeRequestStore.delete(:flipper) if Gitlab::SafeRequestStore.active?
+      @flipper = nil
+    end
+
+    # This method is called from config/initializers/flipper.rb and can be used
+    # to register Flipper groups.
+    # See https://docs.gitlab.com/ee/development/feature_flags.html#feature-groups
+    def register_feature_groups
+    end
+
+    private
 
     def flipper
       if Gitlab::SafeRequestStore.active?
@@ -121,11 +150,6 @@ class Feature
       else
         @flipper ||= build_flipper_instance
       end
-    end
-
-    def reset
-      Gitlab::SafeRequestStore.delete(:flipper) if Gitlab::SafeRequestStore.active?
-      @flipper = nil
     end
 
     def build_flipper_instance
@@ -156,12 +180,6 @@ class Feature
       # We want to check feature flags usage only when
       # running in development or test environment
       Gitlab.dev_or_test_env?
-    end
-
-    # This method is called from config/initializers/flipper.rb and can be used
-    # to register Flipper groups.
-    # See https://docs.gitlab.com/ee/development/feature_flags.html#feature-groups
-    def register_feature_groups
     end
 
     def l1_cache_backend

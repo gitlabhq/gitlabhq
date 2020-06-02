@@ -38,7 +38,7 @@ review-build-cng:
     - install_api_client_dependencies_with_apk
     - install_gitlab_gem
   needs:
-    - job: gitlab:assets:compile pull-cache
+    - job: compile-production-assets
       artifacts: false
   script:
     - BUILD_TRIGGER_TOKEN=$REVIEW_APPS_BUILD_TRIGGER_TOKEN ./scripts/trigger-build cng
@@ -238,5 +238,3 @@ danger-review:
     - source scripts/utils.sh
     - retry yarn install --frozen-lockfile
     - danger --fail-on-errors=true --verbose
-  cache:
-    policy: pull

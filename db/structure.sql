@@ -5831,7 +5831,8 @@ CREATE TABLE public.requirements_management_test_reports (
     requirement_id bigint NOT NULL,
     pipeline_id bigint,
     author_id bigint,
-    state smallint NOT NULL
+    state smallint NOT NULL,
+    build_id bigint
 );
 
 CREATE SEQUENCE public.requirements_management_test_reports_id_seq
@@ -10611,6 +10612,8 @@ CREATE UNIQUE INDEX index_repository_languages_on_project_and_languages_id ON pu
 
 CREATE INDEX index_requirements_management_test_reports_on_author_id ON public.requirements_management_test_reports USING btree (author_id);
 
+CREATE INDEX index_requirements_management_test_reports_on_build_id ON public.requirements_management_test_reports USING btree (build_id);
+
 CREATE INDEX index_requirements_management_test_reports_on_pipeline_id ON public.requirements_management_test_reports USING btree (pipeline_id);
 
 CREATE INDEX index_requirements_management_test_reports_on_requirement_id ON public.requirements_management_test_reports USING btree (requirement_id);
@@ -12660,6 +12663,9 @@ ALTER TABLE ONLY public.approval_merge_request_rule_sources
 ALTER TABLE ONLY public.prometheus_alerts
     ADD CONSTRAINT fk_rails_e6351447ec FOREIGN KEY (prometheus_metric_id) REFERENCES public.prometheus_metrics(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY public.requirements_management_test_reports
+    ADD CONSTRAINT fk_rails_e67d085910 FOREIGN KEY (build_id) REFERENCES public.ci_builds(id) ON DELETE SET NULL;
+
 ALTER TABLE ONLY public.merge_request_metrics
     ADD CONSTRAINT fk_rails_e6d7c24d1b FOREIGN KEY (merge_request_id) REFERENCES public.merge_requests(id) ON DELETE CASCADE;
 
@@ -14038,6 +14044,7 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200527092027
 20200527094322
 20200527095401
+20200527135313
 20200527151413
 20200527152116
 20200527152657

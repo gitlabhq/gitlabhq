@@ -77,19 +77,18 @@ module Gitlab
             bridge&.parent_pipeline
           end
 
-          def duration_histogram
-            strong_memoize(:duration_histogram) do
-              name = :gitlab_ci_pipeline_creation_duration_seconds
-              comment = 'Pipeline creation duration'
-              labels = {}
-              buckets = [0.01, 0.05, 0.1, 0.5, 1.0, 2.0, 5.0, 20.0, 50.0, 240.0]
-
-              Gitlab::Metrics.histogram(name, comment, labels, buckets)
-            end
+          def metrics
+            @metrics ||= Chain::Metrics.new
           end
 
           def observe_creation_duration(duration)
-            duration_histogram.observe({}, duration.seconds)
+            metrics.pipeline_creation_duration_histogram
+              .observe({}, duration.seconds)
+          end
+
+          def observe_pipeline_size(pipeline)
+            metrics.pipeline_size_histogram
+              .observe({ source: pipeline.source.to_s }, pipeline.total_size)
           end
         end
       end

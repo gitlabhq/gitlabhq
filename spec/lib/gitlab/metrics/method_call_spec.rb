@@ -26,7 +26,7 @@ describe Gitlab::Metrics::MethodCall do
 
       context 'prometheus instrumentation is enabled' do
         before do
-          Feature.get(:prometheus_metrics_method_instrumentation).enable
+          stub_feature_flags(prometheus_metrics_method_instrumentation: true)
         end
 
         around do |example|
@@ -50,7 +50,7 @@ describe Gitlab::Metrics::MethodCall do
 
       context 'prometheus instrumentation is disabled' do
         before do
-          Feature.get(:prometheus_metrics_method_instrumentation).disable
+          stub_feature_flags(prometheus_metrics_method_instrumentation: false)
         end
 
         it 'observes using NullMetric' do

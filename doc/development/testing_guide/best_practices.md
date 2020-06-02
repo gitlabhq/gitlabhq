@@ -357,7 +357,7 @@ Feature.enabled?(:my_feature2) # => false
 Feature.enabled?(:my_feature2, project1) # => true
 ```
 
-#### `stub_feature_flags` vs `Feature.get/enable`
+#### `stub_feature_flags` vs `Feature.enable*`
 
 It is preferred to use `stub_feature_flags` for enabling feature flags
 in testing environment. This method provides a simple and well described
@@ -378,10 +378,10 @@ stub_feature_flags(my_feature: [project, project2])
 Feature.enable(:my_feature_2)
 
 # Good: enable my_feature for 50% of time
-Feature.get(:my_feature_3).enable_percentage_of_time(50)
+Feature.enable_percentage_of_time(:my_feature_3, 50)
 
 # Good: enable my_feature for 50% of actors/gates/things
-Feature.get(:my_feature_4).enable_percentage_of_actors(50)
+Feature.enable_percentage_of_actors(:my_feature_4, 50)
 ```
 
 Each feature flag that has a defined state will be persisted

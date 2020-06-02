@@ -1,0 +1,5 @@
+---
+title: Added build_id column to requirements_management_test_reports table
+merge_request: 33184
+author:
+type: other

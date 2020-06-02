@@ -346,7 +346,7 @@ of projects. From the console, enter the following command, replacing `10` with
 your desired percentage:
 
 ```ruby
-Feature.get(:force_autodevops_on_by_default).enable_percentage_of_actors(10)
+Feature.enable_percentage_of_actors(:force_autodevops_on_by_default, 10)
 ```
 
 ### Deployment strategy

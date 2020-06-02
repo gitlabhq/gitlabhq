@@ -36,6 +36,10 @@ module IntegrationsActions
     end
   end
 
+  def custom_integration_projects
+    Project.with_custom_integration_compared_to(integration).page(params[:page]).per(20)
+  end
+
   def test
     render json: {}, status: :ok
   end

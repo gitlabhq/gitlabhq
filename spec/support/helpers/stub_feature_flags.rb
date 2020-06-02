@@ -47,7 +47,7 @@ module StubFeatureFlags
   def stub_feature_flags(features)
     features.each do |feature_name, actors|
       # Remove feature flag overwrite
-      feature = Feature.get(feature_name)
+      feature = Feature.get(feature_name) # rubocop:disable Gitlab/AvoidFeatureGet
       feature.remove
 
       Array(actors).each do |actor|

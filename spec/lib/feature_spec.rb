@@ -142,7 +142,7 @@ describe Feature, stub_feature_flags: false do
         expect(Flipper).to receive(:new).once.and_call_original
 
         2.times do
-          described_class.flipper
+          described_class.send(:flipper)
         end
       end
     end
@@ -151,9 +151,9 @@ describe Feature, stub_feature_flags: false do
       it 'memoizes the Flipper instance' do
         expect(Flipper).to receive(:new).once.and_call_original
 
-        described_class.flipper
+        described_class.send(:flipper)
         described_class.instance_variable_set(:@flipper, nil)
-        described_class.flipper
+        described_class.send(:flipper)
       end
     end
   end
@@ -179,21 +179,21 @@ describe Feature, stub_feature_flags: false do
       expect(described_class.enabled?(:enabled_feature_flag)).to be_truthy
     end
 
-    it { expect(described_class.l1_cache_backend).to eq(Gitlab::ProcessMemoryCache.cache_backend) }
-    it { expect(described_class.l2_cache_backend).to eq(Rails.cache) }
+    it { expect(described_class.send(:l1_cache_backend)).to eq(Gitlab::ProcessMemoryCache.cache_backend) }
+    it { expect(described_class.send(:l2_cache_backend)).to eq(Rails.cache) }
 
     it 'caches the status in L1 and L2 caches',
        :request_store, :use_clean_rails_memory_store_caching do
       described_class.enable(:enabled_feature_flag)
       flipper_key = "flipper/v1/feature/enabled_feature_flag"
 
-      expect(described_class.l2_cache_backend)
+      expect(described_class.send(:l2_cache_backend))
         .to receive(:fetch)
         .once
         .with(flipper_key, expires_in: 1.hour)
         .and_call_original
 
-      expect(described_class.l1_cache_backend)
+      expect(described_class.send(:l1_cache_backend))
         .to receive(:fetch)
         .once
         .with(flipper_key, expires_in: 1.minute)
@@ -215,14 +215,14 @@ describe Feature, stub_feature_flags: false do
       let(:flag) { :some_feature_flag }
 
       before do
-        described_class.flipper.memoize = false
+        described_class.send(:flipper).memoize = false
         described_class.enabled?(flag)
       end
 
       it 'caches the status in L1 cache for the first minute' do
         expect do
-          expect(described_class.l1_cache_backend).to receive(:fetch).once.and_call_original
-          expect(described_class.l2_cache_backend).not_to receive(:fetch)
+          expect(described_class.send(:l1_cache_backend)).to receive(:fetch).once.and_call_original
+          expect(described_class.send(:l2_cache_backend)).not_to receive(:fetch)
           expect(described_class.enabled?(flag)).to be_truthy
         end.not_to exceed_query_limit(0)
       end
@@ -230,8 +230,8 @@ describe Feature, stub_feature_flags: false do
       it 'caches the status in L2 cache after 2 minutes' do
         Timecop.travel 2.minutes do
           expect do
-            expect(described_class.l1_cache_backend).to receive(:fetch).once.and_call_original
-            expect(described_class.l2_cache_backend).to receive(:fetch).once.and_call_original
+            expect(described_class.send(:l1_cache_backend)).to receive(:fetch).once.and_call_original
+            expect(described_class.send(:l2_cache_backend)).to receive(:fetch).once.and_call_original
             expect(described_class.enabled?(flag)).to be_truthy
           end.not_to exceed_query_limit(0)
         end
@@ -240,8 +240,8 @@ describe Feature, stub_feature_flags: false do
       it 'fetches the status after an hour' do
         Timecop.travel 61.minutes do
           expect do
-            expect(described_class.l1_cache_backend).to receive(:fetch).once.and_call_original
-            expect(described_class.l2_cache_backend).to receive(:fetch).once.and_call_original
+            expect(described_class.send(:l1_cache_backend)).to receive(:fetch).once.and_call_original
+            expect(described_class.send(:l2_cache_backend)).to receive(:fetch).once.and_call_original
             expect(described_class.enabled?(flag)).to be_truthy
           end.not_to exceed_query_limit(1)
         end

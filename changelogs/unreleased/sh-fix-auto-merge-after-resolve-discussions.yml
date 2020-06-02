@@ -1,0 +1,5 @@
+---
+title: Fix auto-merge not running after discussions resolved
+merge_request: 33371
+author:
+type: fixed

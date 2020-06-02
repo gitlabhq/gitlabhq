@@ -15411,6 +15411,9 @@ msgstr ""
 msgid "PackageRegistry|There was a problem fetching the details for this package."
 msgstr ""
 
+msgid "PackageRegistry|This NuGet package has no dependencies."
+msgstr ""
+
 msgid "PackageRegistry|To widen your search, change or remove the filters above."
 msgstr ""
 
@@ -25808,6 +25811,9 @@ msgid "blocks"
 msgstr ""
 
 msgid "branch name"
+msgstr ""
+
+msgid "build pipeline reference mismatch"
 msgstr ""
 
 msgid "by"

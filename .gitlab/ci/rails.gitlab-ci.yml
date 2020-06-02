@@ -1,6 +1,3 @@
-.rails:needs:setup-and-assets:
-  needs: ["setup-test-env", "compile-assets pull-cache"]
-
 .rails-job-base:
   extends:
     - .default-retry
@@ -35,33 +32,54 @@ setup-test-env:
       - tmp/tests/repositories
       - tmp/tests/second_storage
     when: always
+
+update-rails-cache:
+  extends:
+    - setup-test-env
+    - .shared:rules:update-cache
+  artifacts: {}  # This job's purpose is only to update the cache.
   cache:
+    policy: push  # We want to rebuild the cache from scratch to ensure stale dependencies are cleaned up.
+
+.static-analysis-base:
+  extends:
+    - .default-retry
+    - .default-before_script
+    - .static-analysis-cache
+  needs: []
+  variables:
+    SETUP_DB: "false"
+    ENABLE_SPRING: "1"
+
+update-static-analysis-cache:
+  extends:
+    - .static-analysis-base
+    - .shared:rules:update-cache
+  stage: prepare
+  script:
+    - rm -rf ./node_modules  # We remove node_modules because there's no mechanism to remove stall entries.
+    - run_timed_command "retry yarn install --frozen-lockfile"
+    - bundle exec rubocop --parallel  # For the moment we only cache `vendor/ruby/`, `node_modules/`, and `tmp/rubocop_cache` so we don't need to run all the tasks,
+  cache:
+    # We want to rebuild the cache from scratch to ensure stale dependencies are cleaned up but RuboCop has a mechanism
+    # for keeping only the N latest cache files, so we take advantage of it with `pull-push` and removing `node_modules` at the start of the job.
     policy: pull-push
 
 static-analysis:
   extends:
-    - .rails-job-base
+    - .static-analysis-base
     - .rails:rules:default-refs-code-backstage-qa
-    - .rails:needs:setup-and-assets
   stage: test
-  variables:
-    SETUP_DB: "false"
-    ENABLE_SPRING: "1"
   parallel: 4
   script:
+    - run_timed_command "retry yarn install --frozen-lockfile"
     - scripts/static-analysis
-  cache:
-    key: "ruby-2.6.6-pg11-rubocop"
-    paths:
-      - vendor/ruby
-      - tmp/rubocop_cache
-    policy: pull-push
 
 downtime_check:
   extends:
     - .rails-job-base
     - .rails:rules:downtime_check
-  needs: ["setup-test-env"]
+  needs: []
   stage: test
   variables:
     SETUP_DB: "false"
@@ -71,7 +89,7 @@ downtime_check:
 .rspec-base:
   extends: .rails-job-base
   stage: test
-  needs: ["setup-test-env", "retrieve-tests-metadata", "compile-assets pull-cache"]
+  needs: ["setup-test-env", "retrieve-tests-metadata", "compile-test-assets"]
   script:
     - run_timed_command "scripts/gitaly-test-build"
     - run_timed_command "scripts/gitaly-test-spawn"
@@ -219,8 +237,6 @@ rspec:coverage:
     - memory-on-boot
   variables:
     SETUP_DB: "false"
-  cache:
-    policy: pull
   script:
     - bundle exec scripts/merge-simplecov
     - bundle exec scripts/gather-test-memory-data
@@ -248,7 +264,7 @@ rspec:coverage:
     - .rails:rules:as-if-foss
     - .as-if-foss
     - .use-pg11
-  needs: ["setup-test-env", "retrieve-tests-metadata", "compile-assets pull-cache as-if-foss"]
+  needs: ["setup-test-env", "retrieve-tests-metadata", "compile-test-assets as-if-foss"]
 
 .rspec-ee-base-pg11:
   extends:

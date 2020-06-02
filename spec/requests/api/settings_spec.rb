@@ -52,7 +52,7 @@ describe API::Settings, 'Settings' do
         storages = Gitlab.config.repositories.storages
                      .merge({ 'custom' => 'tmp/tests/custom_repositories' })
         allow(Gitlab.config.repositories).to receive(:storages).and_return(storages)
-        Feature.get(:sourcegraph).enable
+        stub_feature_flags(sourcegraph: true)
       end
 
       it "updates application settings" do

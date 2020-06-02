@@ -62,7 +62,7 @@ module JiraImport
     end
 
     def validate
-      project.validate_jira_import_settings!(user: user)
+      Gitlab::JiraImport.validate_project_settings!(project, user: user)
 
       return build_error_response(_('Unable to find Jira project to import data from.')) if jira_project_key.blank?
       return build_error_response(_('Jira import is already running.')) if import_in_progress?

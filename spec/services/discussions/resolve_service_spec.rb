@@ -6,7 +6,7 @@ describe Discussions::ResolveService do
   describe '#execute' do
     let_it_be(:project) { create(:project, :repository) }
     let_it_be(:user) { create(:user, developer_projects: [project]) }
-    let_it_be(:merge_request) { create(:merge_request, source_project: project) }
+    let_it_be(:merge_request) { create(:merge_request, :merge_when_pipeline_succeeds, source_project: project) }
     let(:discussion) { create(:diff_note_on_merge_request, noteable: merge_request, project: project).to_discussion }
     let(:service) { described_class.new(project, user, one_or_more_discussions: discussion) }
 
@@ -30,6 +30,36 @@ describe Discussions::ResolveService do
       end
 
       service.execute
+    end
+
+    it 'schedules an auto-merge' do
+      expect(AutoMergeProcessWorker).to receive(:perform_async).with(discussion.noteable.id)
+
+      service.execute
+    end
+
+    context 'with a project that requires all discussion to be resolved' do
+      before do
+        project.update(only_allow_merge_if_all_discussions_are_resolved: true)
+      end
+
+      after do
+        project.update(only_allow_merge_if_all_discussions_are_resolved: false)
+      end
+
+      let_it_be(:other_discussion) { create(:diff_note_on_merge_request, noteable: merge_request, project: project).to_discussion }
+
+      it 'does not schedule an auto-merge' do
+        expect(AutoMergeProcessWorker).not_to receive(:perform_async)
+
+        service.execute
+      end
+
+      it 'schedules an auto-merge' do
+        expect(AutoMergeProcessWorker).to receive(:perform_async)
+
+        described_class.new(project, user, one_or_more_discussions: [discussion, other_discussion]).execute
+      end
     end
 
     it 'adds a system note to the discussion' do
@@ -67,6 +97,12 @@ describe Discussions::ResolveService do
 
       it 'does not execute the notification service' do
         expect(MergeRequests::ResolvedDiscussionNotificationService).not_to receive(:new)
+
+        service.execute
+      end
+
+      it 'does not schedule an auto-merge' do
+        expect(AutoMergeProcessWorker).not_to receive(:perform_async)
 
         service.execute
       end
