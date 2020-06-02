@@ -339,29 +339,40 @@ describe Projects::CreateService, '#execute' do
     end
   end
 
-  context 'when there is an active service template' do
-    before do
-      create(:prometheus_service, project: nil, template: true, active: true)
+  describe 'create service for the project' do
+    subject(:project) { create_project(user, opts) }
+
+    context 'when there is an active instance-level and an active template integration' do
+      before do
+        create(:prometheus_service, :instance, api_url: 'https://prometheus.instance.com/')
+        create(:prometheus_service, :template, api_url: 'https://prometheus.template.com/')
+      end
+
+      it 'creates a service from the instance-level integration' do
+        expect(project.services.count).to eq(1)
+        expect(project.services.first.api_url).to eq('https://prometheus.instance.com/')
+      end
     end
 
-    it 'creates a service from this template' do
-      project = create_project(user, opts)
+    context 'when there is an active service template' do
+      before do
+        create(:prometheus_service, :template, active: true)
+      end
 
-      expect(project.services.count).to eq 1
-      expect(project.errors).to be_empty
+      it 'creates a service from the template' do
+        expect(project.services.count).to eq(1)
+      end
     end
-  end
 
-  context 'when a bad service template is created' do
-    it 'sets service to be inactive' do
-      opts[:import_url] = 'http://www.gitlab.com/gitlab-org/gitlab-foss'
-      create(:service, type: 'DroneCiService', project: nil, template: true, active: true)
+    context 'when there is an invalid integration' do
+      before do
+        create(:service, :template, type: 'DroneCiService', active: true)
+      end
 
-      project = create_project(user, opts)
-      service = project.services.first
-
-      expect(project).to be_persisted
-      expect(service.active).to be false
+      it 'creates an inactive service' do
+        expect(project).to be_persisted
+        expect(project.services.first.active).to be false
+      end
     end
   end
 

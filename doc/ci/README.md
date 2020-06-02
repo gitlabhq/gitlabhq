@@ -60,8 +60,10 @@ the following documents:
 - [GitLab CI/CD basic workflow](introduction/index.md#basic-cicd-workflow).
 - [Step-by-step guide for writing `.gitlab-ci.yml` for the first time](../user/project/pages/getting_started_part_four.md).
 
-If you're coming over from Jenkins, you can also check out our handy [reference](jenkins/index.md)
-for converting your pipelines.
+If you're migrating from another CI/CD tool, check out our handy references:
+
+- [Migrating from CircleCI](migration/circleci.md)
+- [Migrating from Jenkins](jenkins/index.md)
 
 You can also get started by using one of the
 [`.gitlab-ci.yml` templates](https://gitlab.com/gitlab-org/gitlab-foss/tree/master/lib/gitlab/ci/templates)

@@ -51,21 +51,6 @@ class SearchController < ApplicationController
     render json: { count: count }
   end
 
-  # rubocop: disable CodeReuse/ActiveRecord
-  def autocomplete
-    term = params[:term]
-
-    if params[:project_id].present?
-      @project = Project.find_by(id: params[:project_id])
-      @project = nil unless can?(current_user, :read_project, @project)
-    end
-
-    @ref = params[:project_ref] if params[:project_ref].present?
-
-    render json: search_autocomplete_opts(term).to_json
-  end
-  # rubocop: enable CodeReuse/ActiveRecord
-
   private
 
   def preload_method

@@ -79,6 +79,7 @@ module Gitlab
           config[:'gitaly-ruby'] = { dir: File.join(gitaly_dir, 'ruby') } if gitaly_ruby
           config[:'gitlab-shell'] = { dir: Gitlab.config.gitlab_shell.path }
           config[:bin_dir] = Gitlab.config.gitaly.client_path
+          config[:gitlab] = { url: Gitlab.config.gitlab.url }
 
           TomlRB.dump(config)
         end
@@ -97,7 +98,8 @@ module Gitlab
         def configuration_toml(gitaly_dir, storage_paths)
           nodes = [{ storage: 'default', address: "unix:#{gitaly_dir}/gitaly.socket", primary: true, token: 'secret' }]
           storages = [{ name: 'default', node: nodes }]
-          config = { socket_path: "#{gitaly_dir}/praefect.socket", memory_queue_enabled: true, virtual_storage: storages }
+          failover = { enabled: false }
+          config = { socket_path: "#{gitaly_dir}/praefect.socket", memory_queue_enabled: true, virtual_storage: storages, failover: failover }
           config[:token] = 'secret' if Rails.env.test?
 
           TomlRB.dump(config)

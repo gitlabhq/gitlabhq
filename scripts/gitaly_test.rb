@@ -4,6 +4,7 @@
 # Please be careful when modifying this file. Your changes must work
 # both for local development rspec runs, and in CI.
 
+require 'securerandom'
 require 'socket'
 
 module GitalyTest
@@ -11,8 +12,20 @@ module GitalyTest
     File.expand_path('../tmp/tests/gitaly', __dir__)
   end
 
+  def tmp_tests_gitlab_shell_dir
+    File.expand_path('../tmp/tests/gitlab-shell', __dir__)
+  end
+
+  def rails_gitlab_shell_secret
+    File.expand_path('../.gitlab_shell_secret', __dir__)
+  end
+
   def gemfile
     File.join(tmp_tests_gitaly_dir, 'ruby', 'Gemfile')
+  end
+
+  def gitlab_shell_secret_file
+    File.join(tmp_tests_gitlab_shell_dir, '.gitlab_shell_secret')
   end
 
   def env
@@ -68,6 +81,20 @@ module GitalyTest
     end
 
     pid
+  end
+
+  # Taken from Gitlab::Shell.generate_and_link_secret_token
+  def ensure_gitlab_shell_secret!
+    secret_file = rails_gitlab_shell_secret
+    shell_link = gitlab_shell_secret_file
+
+    unless File.size?(secret_file)
+      File.write(secret_file, SecureRandom.hex(16))
+    end
+
+    unless File.exist?(shell_link)
+      FileUtils.ln_s(secret_file, shell_link)
+    end
   end
 
   def check_gitaly_config!

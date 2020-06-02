@@ -10,7 +10,7 @@ exports[`Design management upload button component renders inverted upload desig
     variant="success"
   >
     
-    Add designs
+    Upload designs
     
     <!---->
   </gl-deprecated-button-stub>
@@ -34,7 +34,7 @@ exports[`Design management upload button component renders loading icon 1`] = `
     variant="success"
   >
     
-    Add designs
+    Upload designs
     
     <gl-loading-icon-stub
       class="ml-1"
@@ -63,7 +63,7 @@ exports[`Design management upload button component renders upload design button 
     variant="success"
   >
     
-    Add designs
+    Upload designs
     
     <!---->
   </gl-deprecated-button-stub>

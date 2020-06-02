@@ -2,10 +2,10 @@
 
 import $ from 'jquery';
 import '~/gl_dropdown';
-import initSearchAutocomplete from '~/search_autocomplete';
+import initGlobalSearchInput from '~/global_search_input';
 import '~/lib/utils/common_utils';
 
-describe('Search autocomplete dropdown', () => {
+describe('Global search input dropdown', () => {
   let widget = null;
 
   const userName = 'root';
@@ -112,15 +112,15 @@ describe('Search autocomplete dropdown', () => {
     expect(list.find(mrsIHaveCreatedLink).text()).toBe("Merge requests I've created");
   };
 
-  preloadFixtures('static/search_autocomplete.html');
+  preloadFixtures('static/global_search_input.html');
   beforeEach(function() {
-    loadFixtures('static/search_autocomplete.html');
+    loadFixtures('static/global_search_input.html');
 
     window.gon = {};
     window.gon.current_user_id = userId;
     window.gon.current_username = userName;
 
-    return (widget = initSearchAutocomplete());
+    return (widget = initGlobalSearchInput());
   });
 
   afterEach(function() {
@@ -189,25 +189,25 @@ describe('Search autocomplete dropdown', () => {
     expect(submitSpy).not.toHaveBeenTriggered();
   });
 
-  describe('disableAutocomplete', function() {
+  describe('disableDropdown', function() {
     beforeEach(function() {
-      widget.enableAutocomplete();
+      widget.enableDropdown();
     });
 
     it('should close the Dropdown', function() {
       const toggleSpy = spyOn(widget.dropdownToggle, 'dropdown');
 
       widget.dropdown.addClass('show');
-      widget.disableAutocomplete();
+      widget.disableDropdown();
 
       expect(toggleSpy).toHaveBeenCalledWith('toggle');
     });
   });
 
-  describe('enableAutocomplete', function() {
+  describe('enableDropdown', function() {
     it('should open the Dropdown', function() {
       const toggleSpy = spyOn(widget.dropdownToggle, 'dropdown');
-      widget.enableAutocomplete();
+      widget.enableDropdown();
 
       expect(toggleSpy).toHaveBeenCalledWith('toggle');
     });

@@ -150,7 +150,7 @@ module Projects
 
         if @project.save
           unless @project.gitlab_project_import?
-            create_services_from_active_templates(@project)
+            create_services_from_active_instances_or_templates(@project)
             @project.create_labels
           end
 
@@ -174,15 +174,6 @@ module Projects
 
       @project
     end
-
-    # rubocop: disable CodeReuse/ActiveRecord
-    def create_services_from_active_templates(project)
-      Service.where(template: true, active: true).each do |template|
-        service = Service.build_from_integration(project.id, template)
-        service.save!
-      end
-    end
-    # rubocop: enable CodeReuse/ActiveRecord
 
     def create_prometheus_service
       service = @project.find_or_initialize_service(::PrometheusService.to_param)
@@ -224,6 +215,15 @@ module Projects
     end
 
     private
+
+    # rubocop: disable CodeReuse/ActiveRecord
+    def create_services_from_active_instances_or_templates(project)
+      Service.active.where(instance: true).or(Service.active.where(template: true)).group_by(&:type).each do |type, records|
+        service = records.find(&:instance?) || records.find(&:template?)
+        Service.build_from_integration(project.id, service).save!
+      end
+    end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def project_namespace
       @project_namespace ||= Namespace.find_by_id(@params[:namespace_id]) || current_user.namespace

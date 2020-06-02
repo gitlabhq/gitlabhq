@@ -41,7 +41,7 @@ export default {
       variant="success"
       @click="openFileUpload"
     >
-      {{ s__('DesignManagement|Add designs') }}
+      {{ s__('DesignManagement|Upload designs') }}
       <gl-loading-icon v-if="isSaving" inline class="ml-1" />
     </gl-deprecated-button>
 

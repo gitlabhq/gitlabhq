@@ -22,6 +22,11 @@ This guide will help you get started with Git through the command line and can b
 for Git commands in the future. If you're only looking for a quick reference of Git commands, you
 can download GitLab's [Git Cheat Sheet](https://about.gitlab.com/images/press/git-cheat-sheet.pdf).
 
+> For more information about the advantages of working with Git and GitLab:
+>
+> - Watch the [GitLab Source Code Management Walkthrough](https://www.youtube.com/watch?v=wTQ3aXJswtM) video.
+> - Learn how GitLab became the backbone of [Worldline](https://about.gitlab.com/customers/worldline/)’s development environment.
+
 TIP: **Tip:**
 To help you visualize what you're doing locally, there are
 [Git GUI apps](https://git-scm.com/download/gui/) you can install.

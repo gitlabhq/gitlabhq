@@ -983,9 +983,6 @@ msgstr ""
 msgid "ACTION REQUIRED: Something went wrong while obtaining the Let's Encrypt certificate for GitLab Pages domain '%{domain}'"
 msgstr ""
 
-msgid "API Help"
-msgstr ""
-
 msgid "API Token"
 msgstr ""
 
@@ -1439,9 +1436,6 @@ msgid "Admin Note"
 msgstr ""
 
 msgid "Admin Overview"
-msgstr ""
-
-msgid "Admin Section"
 msgstr ""
 
 msgid "Admin mode already enabled"
@@ -7487,9 +7481,6 @@ msgstr ""
 msgid "DesignManagement|%{filename} did not change."
 msgstr ""
 
-msgid "DesignManagement|Add designs"
-msgstr ""
-
 msgid "DesignManagement|Adding a design with the same filename replaces the file in a new version."
 msgstr ""
 
@@ -7572,6 +7563,9 @@ msgid "DesignManagement|The maximum number of designs allowed to be uploaded is 
 msgstr ""
 
 msgid "DesignManagement|To enable design management, you'll need to  %{requirements_link_start}meet the requirements%{requirements_link_end}. If you need help, reach out to our %{support_link_start}support team%{support_link_end} for assistance."
+msgstr ""
+
+msgid "DesignManagement|Upload designs"
 msgstr ""
 
 msgid "DesignManagement|Upload skipped."
@@ -13336,9 +13330,6 @@ msgstr ""
 msgid "Markdown"
 msgstr ""
 
-msgid "Markdown Help"
-msgstr ""
-
 msgid "Markdown enabled"
 msgstr ""
 
@@ -15654,9 +15645,6 @@ msgstr ""
 msgid "Permissions"
 msgstr ""
 
-msgid "Permissions Help"
-msgstr ""
-
 msgid "Permissions, LFS, 2FA"
 msgstr ""
 
@@ -17685,9 +17673,6 @@ msgstr ""
 msgid "Public - The project can be accessed without any authentication."
 msgstr ""
 
-msgid "Public Access Help"
-msgstr ""
-
 msgid "Public deploy keys (%{deploy_keys_count})"
 msgstr ""
 
@@ -17815,9 +17800,6 @@ msgid "Quick range"
 msgstr ""
 
 msgid "README"
-msgstr ""
-
-msgid "Rake Tasks Help"
 msgstr ""
 
 msgid "Raw blob request rate limit per minute"
@@ -18859,9 +18841,6 @@ msgid "SSH Key"
 msgstr ""
 
 msgid "SSH Keys"
-msgstr ""
-
-msgid "SSH Keys Help"
 msgstr ""
 
 msgid "SSH host key fingerprints"
@@ -21341,9 +21320,6 @@ msgid "System"
 msgstr ""
 
 msgid "System Hooks"
-msgstr ""
-
-msgid "System Hooks Help"
 msgstr ""
 
 msgid "System Info"
@@ -23975,9 +23951,6 @@ msgstr ""
 msgid "User restrictions"
 msgstr ""
 
-msgid "User settings"
-msgstr ""
-
 msgid "User was successfully created."
 msgstr ""
 
@@ -24789,9 +24762,6 @@ msgstr ""
 msgid "Webhooks"
 msgstr ""
 
-msgid "Webhooks Help"
-msgstr ""
-
 msgid "Webhooks allow you to trigger a URL if, for example, new code is pushed or a new issue is created. You can configure webhooks to listen for specific events like pushes, issues or merge requests. Group webhooks will apply to all projects in a group, allowing you to standardize webhook functionality across your entire group."
 msgstr ""
 
@@ -25056,9 +25026,6 @@ msgid "Work in progress (open and unassigned)"
 msgstr ""
 
 msgid "Work in progress Limit"
-msgstr ""
-
-msgid "Workflow Help"
 msgstr ""
 
 msgid "Write"

@@ -324,3 +324,25 @@ db:rollback geo:
     - bundle exec rake geo:db:migrate
 # EE: default refs (MRs, master, schedules) jobs #
 ##################################################
+
+##################################################
+# EE: Canonical MR pipelines
+rspec foss-impact:
+  extends:
+    - .rspec-base
+    - .as-if-foss
+    - .rails:rules:ee-mr-only
+    - .use-pg11
+  script:
+    - install_gitlab_gem
+    - run_timed_command "scripts/gitaly-test-build"
+    - run_timed_command "scripts/gitaly-test-spawn"
+    - source scripts/rspec_helpers.sh
+    - tooling/bin/find_foss_tests tmp/matching_foss_tests.txt
+    - rspec_simple_job "--tag ~quarantine --tag ~geo --tag ~level:migration $(cat tmp/matching_foss_tests.txt)"
+  artifacts:
+    expire_in: 7d
+    paths:
+      - tmp/matching_foss_tests.txt
+# EE: Merge Request pipelines
+##################################################
