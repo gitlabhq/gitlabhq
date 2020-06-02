@@ -334,13 +334,30 @@ then all Gitaly requests will fail.
 Additionally, you need to
 [disable Rugged if previously manually enabled](../high_availability/nfs.md#improving-nfs-performance-with-gitlab).
 
-We assume that your `gitaly1.internal` Gitaly server can be reached at
-`gitaly1.internal:8075` from your Gitaly clients, and that Gitaly server
-can read and write to `/mnt/gitlab/default` and `/mnt/gitlab/storage1`.
+Gitaly makes the following assumptions:
 
-We assume also that your `gitaly2.internal` Gitaly server can be reached at
-`gitaly2.internal:8075` from your Gitaly clients, and that Gitaly server
-can read and write to `/mnt/gitlab/storage2`.
+- Your `gitaly1.internal` Gitaly server can be reached at `gitaly1.internal:8075`
+  from your Gitaly clients, and that Gitaly server can read and write to
+  `/mnt/gitlab/default` and `/mnt/gitlab/storage1`.
+- Your `gitaly2.internal` Gitaly server can be reached at `gitaly2.internal:8075`
+  from your Gitaly clients, and that Gitaly server can read and write to
+  `/mnt/gitlab/storage2`.
+- Your `gitaly1.internal` and `gitaly2.internal` Gitaly servers can reach each other.
+
+Note that you can't use mixed installation setup when at least one of your
+Gitaly servers is configured as a local server with the `path` setting
+provided, because other Gitaly instances can't communicate with it.
+The following setup is _incorrect_, because you must replace `path` with
+`gitaly_address` containing a proper value, and the
+address must be reachable from the other two addresses provided:
+
+```ruby
+git_data_dirs({
+  'default' => { 'gitaly_address' => 'tcp://gitaly1.internal:8075' },
+  'storage1' => { 'path' => '/var/opt/gitlab/git-data' },
+  'storage2' => { 'gitaly_address' => 'tcp://gitaly2.internal:8075' },
+})
+```
 
 **For Omnibus GitLab**
 
