@@ -9,8 +9,16 @@
     top: 35px;
   }
 
-  .inactive {
-    opacity: 0.5;
+  .design-pin {
+    transition: opacity 0.5s ease;
+
+    &.inactive {
+      @include gl-opacity-5;
+
+      &:hover {
+        @include gl-opacity-10;
+      }
+    }
   }
 }
 

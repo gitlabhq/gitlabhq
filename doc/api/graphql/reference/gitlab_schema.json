@@ -28195,6 +28195,20 @@
               "deprecationReason": null
             },
             {
+              "name": "linkType",
+              "description": "Type of the link: `other`, `runbook`, `image`, `package`; defaults to `other`",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "ENUM",
+                "name": "ReleaseLinkType",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "name",
               "description": "Name of the link",
               "args": [
@@ -28340,6 +28354,41 @@
 
           ],
           "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "ENUM",
+          "name": "ReleaseLinkType",
+          "description": "Type of the link: `other`, `runbook`, `image`, `package`; defaults to `other`",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": [
+            {
+              "name": "OTHER",
+              "description": "Other link type",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "RUNBOOK",
+              "description": "Runbook link type",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "PACKAGE",
+              "description": "Package link type",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "IMAGE",
+              "description": "Image link type",
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
           "possibleTypes": null
         },
         {

@@ -29,4 +29,46 @@ describe Ci::BuildReportResult do
       end
     end
   end
+
+  describe '#tests_name' do
+    it 'returns the suite name' do
+      expect(build_report_result.tests_name).to eq("rspec")
+    end
+  end
+
+  describe '#tests_duration' do
+    it 'returns the suite duration' do
+      expect(build_report_result.tests_duration).to eq(0.42)
+    end
+  end
+
+  describe '#tests_success' do
+    it 'returns the success count' do
+      expect(build_report_result.tests_success).to eq(2)
+    end
+  end
+
+  describe '#tests_failed' do
+    it 'returns the failed count' do
+      expect(build_report_result.tests_failed).to eq(0)
+    end
+  end
+
+  describe '#tests_errored' do
+    it 'returns the errored count' do
+      expect(build_report_result.tests_errored).to eq(0)
+    end
+  end
+
+  describe '#tests_skipped' do
+    it 'returns the skipped count' do
+      expect(build_report_result.tests_skipped).to eq(0)
+    end
+  end
+
+  describe '#tests_total' do
+    it 'returns the total count' do
+      expect(build_report_result.tests_total).to eq(2)
+    end
+  end
 end

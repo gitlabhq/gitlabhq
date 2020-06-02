@@ -42,6 +42,7 @@ GitLab provides built-in tools to help improve performance and availability:
 - [Request Profiling](../administration/monitoring/performance/request_profiling.md).
 - [QueryRecoder](query_recorder.md) for preventing `N+1` regressions.
 - [Chaos endpoints](chaos_endpoints.md) for testing failure scenarios. Intended mainly for testing availability.
+- [Service measurement](service_measurement.md) for measuring and logging service execution.
 
 GitLab team members can use [GitLab.com's performance monitoring systems](https://about.gitlab.com/handbook/engineering/monitoring/) located at
 <https://dashboards.gitlab.net>, this requires you to log in using your

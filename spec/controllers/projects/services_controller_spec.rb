@@ -134,24 +134,50 @@ describe Projects::ServicesController do
   describe 'PUT #update' do
     describe 'as HTML' do
       let(:service_params) { { active: true } }
+      let(:params)         { project_params(service: service_params) }
+
+      let(:message) { 'Jira activated.' }
+      let(:redirect_url) { project_settings_integrations_path(project) }
 
       before do
-        put :update, params: project_params(service: service_params)
+        put :update, params: params
+      end
+
+      shared_examples 'service update' do
+        it 'redirects to the correct url with a flash message' do
+          expect(response).to redirect_to(redirect_url)
+          expect(flash[:notice]).to eq(message)
+        end
       end
 
       context 'when param `active` is set to true' do
-        it 'activates the service and redirects to integrations paths' do
-          expect(response).to redirect_to(project_settings_integrations_path(project))
-          expect(flash[:notice]).to eq 'Jira activated.'
+        let(:params) { project_params(service: service_params, redirect_to: redirect) }
+
+        context 'when redirect_to param is present' do
+          let(:redirect)     { '/redirect_here' }
+          let(:redirect_url) { redirect }
+
+          it_behaves_like 'service update'
+        end
+
+        context 'when redirect_to is an external domain' do
+          let(:redirect) { 'http://examle.com' }
+
+          it_behaves_like 'service update'
+        end
+
+        context 'when redirect_to param is an empty string' do
+          let(:redirect) { '' }
+
+          it_behaves_like 'service update'
         end
       end
 
       context 'when param `active` is set to false' do
         let(:service_params) { { active: false } }
+        let(:message)        { 'Jira settings saved, but not activated.' }
 
-        it 'does not activate the service but saves the settings' do
-          expect(flash[:notice]).to eq 'Jira settings saved, but not activated.'
-        end
+        it_behaves_like 'service update'
       end
     end
 

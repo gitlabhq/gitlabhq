@@ -1,9 +1,9 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Design discussions component should match the snapshot of note when repositioning 1`] = `
+exports[`Design note pin component should match the snapshot of note when repositioning 1`] = `
 <button
   aria-label="Comment form position"
-  class="position-absolute btn-transparent comment-indicator"
+  class="design-pin gl-absolute gl-display-flex gl-align-items-center gl-justify-content-center btn-transparent comment-indicator"
   style="left: 10px; top: 10px; cursor: move;"
   type="button"
 >
@@ -14,10 +14,10 @@ exports[`Design discussions component should match the snapshot of note when rep
 </button>
 `;
 
-exports[`Design discussions component should match the snapshot of note with index 1`] = `
+exports[`Design note pin component should match the snapshot of note with index 1`] = `
 <button
   aria-label="Comment '1' position"
-  class="position-absolute js-image-badge badge badge-pill"
+  class="design-pin gl-absolute gl-display-flex gl-align-items-center gl-justify-content-center js-image-badge badge badge-pill"
   style="left: 10px; top: 10px;"
   type="button"
 >
@@ -27,10 +27,10 @@ exports[`Design discussions component should match the snapshot of note with ind
 </button>
 `;
 
-exports[`Design discussions component should match the snapshot of note without index 1`] = `
+exports[`Design note pin component should match the snapshot of note without index 1`] = `
 <button
   aria-label="Comment form position"
-  class="position-absolute btn-transparent comment-indicator"
+  class="design-pin gl-absolute gl-display-flex gl-align-items-center gl-justify-content-center btn-transparent comment-indicator"
   style="left: 10px; top: 10px;"
   type="button"
 >

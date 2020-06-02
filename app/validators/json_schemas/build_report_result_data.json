@@ -3,9 +3,9 @@
   "type": "object",
   "properties": {
     "coverage": { "type": "float" },
-    "junit": {
+    "tests": {
       "type": "object",
-      "items": { "$ref": "./build_report_result_data_junit.json" }
+      "items": { "$ref": "./build_report_result_data_tests.json" }
     }
   },
   "additionalProperties": false

@@ -9649,6 +9649,11 @@ type ReleaseLink {
   id: ID!
 
   """
+  Type of the link: `other`, `runbook`, `image`, `package`; defaults to `other`
+  """
+  linkType: ReleaseLinkType
+
+  """
   Name of the link
   """
   name: String
@@ -9692,6 +9697,31 @@ type ReleaseLinkEdge {
   The item at the end of the edge.
   """
   node: ReleaseLink
+}
+
+"""
+Type of the link: `other`, `runbook`, `image`, `package`; defaults to `other`
+"""
+enum ReleaseLinkType {
+  """
+  Image link type
+  """
+  IMAGE
+
+  """
+  Other link type
+  """
+  OTHER
+
+  """
+  Package link type
+  """
+  PACKAGE
+
+  """
+  Runbook link type
+  """
+  RUNBOOK
 }
 
 type ReleaseSource {

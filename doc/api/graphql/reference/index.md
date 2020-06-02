@@ -1342,6 +1342,7 @@ Information about pagination in a connection.
 | ---   |  ---- | ----------  |
 | `external` | Boolean | Indicates the link points to an external resource |
 | `id` | ID! | ID of the link |
+| `linkType` | ReleaseLinkType | Type of the link: `other`, `runbook`, `image`, `package`; defaults to `other` |
 | `name` | String | Name of the link |
 | `url` | String | URL of the link |
 

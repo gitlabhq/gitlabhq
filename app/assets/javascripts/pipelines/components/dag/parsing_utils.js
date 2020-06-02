@@ -1,4 +1,3 @@
-import { sankey, sankeyLeft } from 'd3-sankey';
 import { uniqWith, isEqual } from 'lodash';
 
 /*
@@ -134,34 +133,6 @@ export const parseData = data => {
   const links = uniqWith(filteredLinks, isEqual);
 
   return { nodes, links };
-};
-
-/*
-    createSankey calls the d3 layout to generate the relationships and positioning
-    values for the nodes and links in the graph.
-  */
-
-export const createSankey = ({
-  width = 10,
-  height = 10,
-  nodeWidth = 10,
-  nodePadding = 10,
-  paddingForLabels = 1,
-} = {}) => {
-  const sankeyGenerator = sankey()
-    .nodeId(({ name }) => name)
-    .nodeAlign(sankeyLeft)
-    .nodeWidth(nodeWidth)
-    .nodePadding(nodePadding)
-    .extent([
-      [paddingForLabels, paddingForLabels],
-      [width - paddingForLabels, height - paddingForLabels],
-    ]);
-  return ({ nodes, links }) =>
-    sankeyGenerator({
-      nodes: nodes.map(d => ({ ...d })),
-      links: links.map(d => ({ ...d })),
-    });
 };
 
 /*

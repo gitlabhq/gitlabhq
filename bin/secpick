@@ -21,10 +21,6 @@ module Secpick
       @options = self.class.options
     end
 
-    def ee?
-      File.exist?(File.expand_path('../ee/app/models/license.rb', __dir__))
-    end
-
     def dry_run?
       @options[:try] == true
     end
@@ -40,9 +36,7 @@ module Secpick
     end
 
     def stable_branch
-      "#{@options[:version]}-#{STABLE_SUFFIX}".tap do |name|
-        name << "-ee" if ee?
-      end.freeze
+      "#{@options[:version]}-#{STABLE_SUFFIX}-ee".freeze
     end
 
     def git_commands
@@ -64,11 +58,7 @@ module Secpick
     end
 
     def new_mr_url
-      if ee?
-        SECURITY_MR_URL
-      else
-        SECURITY_MR_URL.sub('/gitlab/', '/gitlab-foss/')
-      end
+      SECURITY_MR_URL
     end
 
     def create!

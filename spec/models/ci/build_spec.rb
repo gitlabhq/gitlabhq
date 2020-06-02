@@ -875,6 +875,22 @@ describe Ci::Build do
     end
   end
 
+  describe '#has_test_reports?' do
+    subject { build.has_test_reports? }
+
+    context 'when build has a test report' do
+      let(:build) { create(:ci_build, :test_reports) }
+
+      it { is_expected.to be_truthy }
+    end
+
+    context 'when build does not have a test report' do
+      let(:build) { create(:ci_build) }
+
+      it { is_expected.to be_falsey }
+    end
+  end
+
   describe '#has_old_trace?' do
     subject { build.has_old_trace? }
 

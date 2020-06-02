@@ -2,6 +2,7 @@
 
 class Projects::ServicesController < Projects::ApplicationController
   include ServiceParams
+  include InternalRedirect
 
   # Authorize
   before_action :authorize_admin_project!
@@ -26,8 +27,8 @@ class Projects::ServicesController < Projects::ApplicationController
     respond_to do |format|
       format.html do
         if saved
-          redirect_to project_settings_integrations_path(@project),
-            notice: success_message
+          target_url = safe_redirect_path(params[:redirect_to]).presence || project_settings_integrations_path(@project)
+          redirect_to target_url, notice: success_message
         else
           render 'edit'
         end

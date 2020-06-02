@@ -7,7 +7,7 @@ describe GitlabSchema.types['ReleaseLink'] do
 
   it 'has the expected fields' do
     expected_fields = %w[
-      id name url external
+      id name url external link_type
     ]
 
     expect(described_class).to include_graphql_fields(*expected_fields)

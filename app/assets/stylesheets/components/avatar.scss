@@ -70,7 +70,7 @@ $avatar-sizes: (
 $identicon-backgrounds: $identicon-red, $identicon-purple, $identicon-indigo, $identicon-blue, $identicon-teal,
   $identicon-orange, $gray-darker;
 
-.avatar-circle {
+%avatar-circle {
   float: left;
   margin-right: $gl-padding;
   border-radius: $avatar-radius;
@@ -84,7 +84,7 @@ $identicon-backgrounds: $identicon-red, $identicon-purple, $identicon-indigo, $i
 }
 
 .avatar {
-  @extend .avatar-circle;
+  @extend %avatar-circle;
   transition-property: none;
 
   width: 40px;
@@ -100,10 +100,7 @@ $identicon-backgrounds: $identicon-red, $identicon-purple, $identicon-indigo, $i
     margin-left: 2px;
     flex-shrink: 0;
 
-    &.s16 {
-      margin-right: 4px;
-    }
-
+    &.s16,
     &.s24 {
       margin-right: 4px;
     }
@@ -154,7 +151,7 @@ $identicon-backgrounds: $identicon-red, $identicon-purple, $identicon-indigo, $i
 }
 
 .avatar-container {
-  @extend .avatar-circle;
+  @extend %avatar-circle;
   overflow: hidden;
   display: flex;
 

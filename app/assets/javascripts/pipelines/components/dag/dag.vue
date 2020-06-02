@@ -4,7 +4,7 @@ import axios from '~/lib/utils/axios_utils';
 import { __ } from '~/locale';
 import DagGraph from './dag_graph.vue';
 import { DEFAULT, PARSE_FAILURE, LOAD_FAILURE, UNSUPPORTED_DATA } from './constants';
-import { parseData } from './utils';
+import { parseData } from './parsing_utils';
 
 export default {
   // eslint-disable-next-line @gitlab/require-i18n-strings

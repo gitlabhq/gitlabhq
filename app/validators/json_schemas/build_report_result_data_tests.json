@@ -1,5 +1,5 @@
 {
-  "description": "Build report result data junit",
+  "description": "Build report result data tests",
   "type": "object",
   "properties": {
     "name": { "type": "string" },

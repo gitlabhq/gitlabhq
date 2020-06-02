@@ -3,7 +3,11 @@
 require 'spec_helper'
 
 describe BuildFinishedWorker do
+  subject { described_class.new.perform(build.id) }
+
   describe '#perform' do
+    let(:build) { create(:ci_build, :success, pipeline: create(:ci_pipeline)) }
+
     context 'when build exists' do
       let!(:build) { create(:ci_build) }
 
@@ -18,8 +22,10 @@ describe BuildFinishedWorker do
         expect(BuildHooksWorker).to receive(:perform_async)
         expect(ArchiveTraceWorker).to receive(:perform_async)
         expect(ExpirePipelineCacheWorker).to receive(:perform_async)
+        expect(ChatNotificationWorker).not_to receive(:perform_async)
+        expect(Ci::BuildReportResultWorker).not_to receive(:perform)
 
-        described_class.new.perform(build.id)
+        subject
       end
     end
 
@@ -30,23 +36,26 @@ describe BuildFinishedWorker do
       end
     end
 
-    it 'schedules a ChatNotification job for a chat build' do
-      build = create(:ci_build, :success, pipeline: create(:ci_pipeline, source: :chat))
+    context 'when build has a chat' do
+      let(:build) { create(:ci_build, :success, pipeline: create(:ci_pipeline, source: :chat)) }
 
-      expect(ChatNotificationWorker)
-        .to receive(:perform_async)
-        .with(build.id)
+      it 'schedules a ChatNotification job' do
+        expect(ChatNotificationWorker).to receive(:perform_async).with(build.id)
 
-      described_class.new.perform(build.id)
+        subject
+      end
     end
 
-    it 'does not schedule a ChatNotification job for a regular build' do
-      build = create(:ci_build, :success, pipeline: create(:ci_pipeline))
+    context 'when build has a test report' do
+      let(:build) { create(:ci_build, :test_reports) }
 
-      expect(ChatNotificationWorker)
-        .not_to receive(:perform_async)
+      it 'schedules a BuildReportResult job' do
+        expect_next_instance_of(Ci::BuildReportResultWorker) do |worker|
+          expect(worker).to receive(:perform).with(build.id)
+        end
 
-      described_class.new.perform(build.id)
+        subject
+      end
     end
   end
 end

@@ -688,6 +688,10 @@ module Ci
       job_artifacts.any?
     end
 
+    def has_test_reports?
+      job_artifacts.test_reports.exists?
+    end
+
     def has_old_trace?
       old_trace.present?
     end

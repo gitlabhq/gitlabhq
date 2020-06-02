@@ -3,11 +3,11 @@ import {
   makeLinksFromNodes,
   filterByAncestors,
   parseData,
-  createSankey,
   removeOrphanNodes,
   getMaxNodes,
-} from '~/pipelines/components/dag/utils';
+} from '~/pipelines/components/dag/parsing_utils';
 
+import { createSankey } from '~/pipelines/components/dag/drawing_utils';
 import { mockBaseData } from './mock_data';
 
 describe('DAG visualization parsing utilities', () => {
@@ -102,44 +102,6 @@ describe('DAG visualization parsing utilities', () => {
       expect(parsed).toHaveProperty('links');
       expect(Array.isArray(parsed.links)).toBe(true);
       expect(parsed.links.filter(Boolean)).not.toHaveLength(0);
-    });
-  });
-
-  describe('createSankey', () => {
-    it('returns a nodes data structure with expected d3-added properties', () => {
-      expect(sankeyLayout.nodes[0]).toHaveProperty('sourceLinks');
-      expect(sankeyLayout.nodes[0]).toHaveProperty('targetLinks');
-      expect(sankeyLayout.nodes[0]).toHaveProperty('depth');
-      expect(sankeyLayout.nodes[0]).toHaveProperty('layer');
-      expect(sankeyLayout.nodes[0]).toHaveProperty('x0');
-      expect(sankeyLayout.nodes[0]).toHaveProperty('x1');
-      expect(sankeyLayout.nodes[0]).toHaveProperty('y0');
-      expect(sankeyLayout.nodes[0]).toHaveProperty('y1');
-    });
-
-    it('returns a links data structure with expected d3-added properties', () => {
-      expect(sankeyLayout.links[0]).toHaveProperty('source');
-      expect(sankeyLayout.links[0]).toHaveProperty('target');
-      expect(sankeyLayout.links[0]).toHaveProperty('width');
-      expect(sankeyLayout.links[0]).toHaveProperty('y0');
-      expect(sankeyLayout.links[0]).toHaveProperty('y1');
-    });
-
-    describe('data structure integrity', () => {
-      const newObject = { name: 'bad-actor' };
-
-      beforeEach(() => {
-        sankeyLayout.nodes.unshift(newObject);
-      });
-
-      it('sankey does not propagate changes back to the original', () => {
-        expect(sankeyLayout.nodes[0]).toBe(newObject);
-        expect(parsed.nodes[0]).not.toBe(newObject);
-      });
-
-      afterEach(() => {
-        sankeyLayout.nodes.shift();
-      });
     });
   });
 

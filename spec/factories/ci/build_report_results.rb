@@ -6,7 +6,7 @@ FactoryBot.define do
     project factory: :project
     data do
       {
-        junit: {
+        tests: {
           name: "rspec",
           duration: 0.42,
           failed: 0,
@@ -20,7 +20,7 @@ FactoryBot.define do
     trait :with_junit_success do
       data do
         {
-          junit: {
+          tests: {
             name: "rspec",
             duration: 0.42,
             failed: 0,

@@ -1,7 +1,7 @@
 import { shallowMount } from '@vue/test-utils';
 import DesignNotePin from '~/design_management/components/design_note_pin.vue';
 
-describe('Design discussions component', () => {
+describe('Design note pin component', () => {
   let wrapper;
 
   function createComponent(propsData = {}) {

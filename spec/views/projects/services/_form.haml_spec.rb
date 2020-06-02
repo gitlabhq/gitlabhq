@@ -15,7 +15,8 @@ describe 'projects/services/_form' do
 
     allow(view).to receive_messages(current_user: user,
                                     can?: true,
-                                    current_application_settings: Gitlab::CurrentSettings.current_application_settings)
+                                    current_application_settings: Gitlab::CurrentSettings.current_application_settings,
+                                    request: double(referrer: '/services'))
   end
 
   context 'commit_events and merge_request_events' do
@@ -30,6 +31,7 @@ describe 'projects/services/_form' do
 
       expect(rendered).to have_content('Event will be triggered when a commit is created/updated')
       expect(rendered).to have_content('Event will be triggered when a merge request is created/updated/merged')
+      expect(rendered).to have_css("input[name='redirect_to'][value='/services']", count: 1, visible: false)
     end
   end
 end

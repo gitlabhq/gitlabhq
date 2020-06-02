@@ -803,6 +803,14 @@
   :weight: 1
   :idempotent: 
   :tags: []
+- :name: pipeline_background:ci_build_report_result
+  :feature_category: :continuous_integration
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: pipeline_background:ci_build_trace_chunk_flush
   :feature_category: :continuous_integration
   :has_external_dependencies: 

@@ -4,8 +4,6 @@
 # Example:
 # ```
 #   class DummyService
-#     prepend Measurable
-#
 #     def execute
 #       # ...
 #     end

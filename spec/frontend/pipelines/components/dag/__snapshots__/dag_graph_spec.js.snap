@@ -10,12 +10,13 @@ exports[`The DAG graph in the basic case renders the graph svg 1`] = `
       </linearGradient>
       <clipPath id=\\"dag-clip63\\">
         <path d=\\"
-          M100, 129
-          V158
-          H377.3333333333333
-          V100
-          H100
-          Z\\"></path>
+    M100, 129
+    V158
+    H377.3333333333333
+    V100
+    H100
+    Z
+  \\"></path>
       </clipPath>
       <path d=\\"M108,129L190,129L190,129L369.3333333333333,129\\" stroke=\\"url(#dag-grad53)\\" style=\\"stroke-linejoin: round;\\" stroke-width=\\"56\\" clip-path=\\"url(#dag-clip63)\\"></path>
     </g>
@@ -26,12 +27,13 @@ exports[`The DAG graph in the basic case renders the graph svg 1`] = `
       </linearGradient>
       <clipPath id=\\"dag-clip64\\">
         <path d=\\"
-          M361.3333333333333, 129.0000000000002
-          V158.0000000000002
-          H638.6666666666666
-          V100
-          H361.3333333333333
-          Z\\"></path>
+    M361.3333333333333, 129.0000000000002
+    V158.0000000000002
+    H638.6666666666666
+    V100
+    H361.3333333333333
+    Z
+  \\"></path>
       </clipPath>
       <path d=\\"M369.3333333333333,129L509.3333333333333,129L509.3333333333333,129.0000000000002L630.6666666666666,129.0000000000002\\" stroke=\\"url(#dag-grad54)\\" style=\\"stroke-linejoin: round;\\" stroke-width=\\"56\\" clip-path=\\"url(#dag-clip64)\\"></path>
     </g>
@@ -42,12 +44,13 @@ exports[`The DAG graph in the basic case renders the graph svg 1`] = `
       </linearGradient>
       <clipPath id=\\"dag-clip65\\">
         <path d=\\"
-          M100, 187.0000000000002
-          V241.00000000000003
-          H638.6666666666666
-          V158.0000000000002
-          H100
-          Z\\"></path>
+    M100, 187.0000000000002
+    V241.00000000000003
+    H638.6666666666666
+    V158.0000000000002
+    H100
+    Z
+  \\"></path>
       </clipPath>
       <path d=\\"M108,212.00000000000003L306,212.00000000000003L306,187.0000000000002L630.6666666666666,187.0000000000002\\" stroke=\\"url(#dag-grad55)\\" style=\\"stroke-linejoin: round;\\" stroke-width=\\"56\\" clip-path=\\"url(#dag-clip65)\\"></path>
     </g>
@@ -58,12 +61,13 @@ exports[`The DAG graph in the basic case renders the graph svg 1`] = `
       </linearGradient>
       <clipPath id=\\"dag-clip66\\">
         <path d=\\"
-          M100, 269.9999999999998
-          V324
-          H377.3333333333333
-          V240.99999999999977
-          H100
-          Z\\"></path>
+    M100, 269.9999999999998
+    V324
+    H377.3333333333333
+    V240.99999999999977
+    H100
+    Z
+  \\"></path>
       </clipPath>
       <path d=\\"M108,295L338.93333333333334,295L338.93333333333334,269.9999999999998L369.3333333333333,269.9999999999998\\" stroke=\\"url(#dag-grad56)\\" style=\\"stroke-linejoin: round;\\" stroke-width=\\"56\\" clip-path=\\"url(#dag-clip66)\\"></path>
     </g>
@@ -74,12 +78,13 @@ exports[`The DAG graph in the basic case renders the graph svg 1`] = `
       </linearGradient>
       <clipPath id=\\"dag-clip67\\">
         <path d=\\"
-          M100, 352.99999999999994
-          V407.00000000000006
-          H377.3333333333333
-          V323.99999999999994
-          H100
-          Z\\"></path>
+    M100, 352.99999999999994
+    V407.00000000000006
+    H377.3333333333333
+    V323.99999999999994
+    H100
+    Z
+  \\"></path>
       </clipPath>
       <path d=\\"M108,378.00000000000006L144.66666666666669,378.00000000000006L144.66666666666669,352.99999999999994L369.3333333333333,352.99999999999994\\" stroke=\\"url(#dag-grad57)\\" style=\\"stroke-linejoin: round;\\" stroke-width=\\"56\\" clip-path=\\"url(#dag-clip67)\\"></path>
     </g>
@@ -90,12 +95,13 @@ exports[`The DAG graph in the basic case renders the graph svg 1`] = `
       </linearGradient>
       <clipPath id=\\"dag-clip68\\">
         <path d=\\"
-          M361.3333333333333, 270.0000000000001
-          V299.0000000000001
-          H638.6666666666666
-          V240.99999999999977
-          H361.3333333333333
-          Z\\"></path>
+    M361.3333333333333, 270.0000000000001
+    V299.0000000000001
+    H638.6666666666666
+    V240.99999999999977
+    H361.3333333333333
+    Z
+  \\"></path>
       </clipPath>
       <path d=\\"M369.3333333333333,269.9999999999998L464,269.9999999999998L464,270.0000000000001L630.6666666666666,270.0000000000001\\" stroke=\\"url(#dag-grad58)\\" style=\\"stroke-linejoin: round;\\" stroke-width=\\"56\\" clip-path=\\"url(#dag-clip68)\\"></path>
     </g>
@@ -106,12 +112,13 @@ exports[`The DAG graph in the basic case renders the graph svg 1`] = `
       </linearGradient>
       <clipPath id=\\"dag-clip69\\">
         <path d=\\"
-          M361.3333333333333, 328.0000000000001
-          V381.99999999999994
-          H638.6666666666666
-          V299.0000000000001
-          H361.3333333333333
-          Z\\"></path>
+    M361.3333333333333, 328.0000000000001
+    V381.99999999999994
+    H638.6666666666666
+    V299.0000000000001
+    H361.3333333333333
+    Z
+  \\"></path>
       </clipPath>
       <path d=\\"M369.3333333333333,352.99999999999994L522,352.99999999999994L522,328.0000000000001L630.6666666666666,328.0000000000001\\" stroke=\\"url(#dag-grad59)\\" style=\\"stroke-linejoin: round;\\" stroke-width=\\"56\\" clip-path=\\"url(#dag-clip69)\\"></path>
     </g>
@@ -122,12 +129,13 @@ exports[`The DAG graph in the basic case renders the graph svg 1`] = `
       </linearGradient>
       <clipPath id=\\"dag-clip70\\">
         <path d=\\"
-          M361.3333333333333, 411
-          V440
-          H638.6666666666666
-          V381.99999999999994
-          H361.3333333333333
-          Z\\"></path>
+    M361.3333333333333, 411
+    V440
+    H638.6666666666666
+    V381.99999999999994
+    H361.3333333333333
+    Z
+  \\"></path>
       </clipPath>
       <path d=\\"M369.3333333333333,410.99999999999994L580,410.99999999999994L580,411L630.6666666666666,411\\" stroke=\\"url(#dag-grad60)\\" style=\\"stroke-linejoin: round;\\" stroke-width=\\"56\\" clip-path=\\"url(#dag-clip70)\\"></path>
     </g>
@@ -138,12 +146,13 @@ exports[`The DAG graph in the basic case renders the graph svg 1`] = `
       </linearGradient>
       <clipPath id=\\"dag-clip71\\">
         <path d=\\"
-          M622.6666666666666, 270.1890725105691
-          V299.1890725105691
-          H900
-          V241.0000000000001
-          H622.6666666666666
-          Z\\"></path>
+    M622.6666666666666, 270.1890725105691
+    V299.1890725105691
+    H900
+    V241.0000000000001
+    H622.6666666666666
+    Z
+  \\"></path>
       </clipPath>
       <path d=\\"M630.6666666666666,270.0000000000001L861.6,270.0000000000001L861.6,270.1890725105691L892,270.1890725105691\\" stroke=\\"url(#dag-grad61)\\" style=\\"stroke-linejoin: round;\\" stroke-width=\\"56\\" clip-path=\\"url(#dag-clip71)\\"></path>
     </g>
@@ -154,12 +163,13 @@ exports[`The DAG graph in the basic case renders the graph svg 1`] = `
       </linearGradient>
       <clipPath id=\\"dag-clip72\\">
         <path d=\\"
-          M622.6666666666666, 411
-          V440
-          H900
-          V382
-          H622.6666666666666
-          Z\\"></path>
+    M622.6666666666666, 411
+    V440
+    H900
+    V382
+    H622.6666666666666
+    Z
+  \\"></path>
       </clipPath>
       <path d=\\"M630.6666666666666,411L679.9999999999999,411L679.9999999999999,411L892,411\\" stroke=\\"url(#dag-grad62)\\" style=\\"stroke-linejoin: round;\\" stroke-width=\\"56\\" clip-path=\\"url(#dag-clip72)\\"></path>
     </g>
