@@ -7,6 +7,7 @@ class Event < ApplicationRecord
   include DeleteWithLimit
   include CreatedAtFilterable
   include Gitlab::Utils::StrongMemoize
+  include UsageStatistics
 
   default_scope { reorder(nil) }
 

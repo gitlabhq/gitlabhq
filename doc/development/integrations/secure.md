@@ -69,7 +69,7 @@ For example, here is the definition of a SAST job that generates a file named `g
 and uploads it as a SAST report:
 
 ```yaml
-mysec_sast_scanning:
+mysec_sast:
   image: registry.gitlab.com/secure/mysec
   artifacts:
     reports:

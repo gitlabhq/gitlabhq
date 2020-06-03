@@ -5,7 +5,7 @@ group: Portfolio Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 ---
 
-<!-- When adding a new section here, remember to mention it in index.md#manage-epics -->
+<!-- When adding a new h2 section here, remember to mention it in index.md#manage-epics -->
 
 # Manage epics **(PREMIUM)**
 
@@ -199,46 +199,49 @@ To create an issue from an epic:
 1. From the **Project** dropdown, select the project in which the issue should be created.
 1. Click **Create issue**.
 
+### Remove an issue from an epic
+
+You can remove issues from an epic when you're on the epic's details page.
+After you remove an issue from an epic, the issue will no longer be associated with this epic.
+
 To remove an issue from an epic:
 
-1. Click the <kbd>x</kbd> button in the epic's issue list.
-1. Click **Remove** in the **Remove issue** warning message.
+1. Click the **Remove** (**{close}**) button next to the issue you want to remove.
+   The **Remove issue** warning appears.
+1. Click **Remove**.
+
+![List of issues assigned to an epic](img/issue_list_v13_1.png)
 
 ### Reorder issues assigned to an epic
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/9367) in GitLab 12.5.
 
-New issues are added to the top of their list in the **Epics and Issues** tab.
-You can reorder the list of issues.
+New issues appear at the top of the list in the **Epics and Issues** tab.
+You can reorder the list of issues by dragging them.
 
 To reorder issues assigned to an epic:
 
 1. Go to the **Epics and Issues** tab.
-1. Drag and drop issues into the desired order.
-
-To reorder child epics assigned to an epic:
-
-1. Go to the **Epics and Issues** tab.
-1. Drag and drop epics into the desired order.
+1. Drag issues into the desired order.
 
 ### Move issues between epics **(ULTIMATE)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/33039) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.0.
 
-New issues are added to the top of their list in the **Epics and Issues**
+New issues appear at the top of the list in the **Epics and Issues**
 tab. You can move issues from one epic to another.
 
 To move an issue to another epic:
 
 1. Go to the **Epics and Issues** tab.
-1. Drag and drop issues into the desired parent epic.
+1. Drag issues into the desired parent epic.
 
 ### Promote an issue to an epic
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/3777) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.6.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/37081) to [GitLab Premium](https://about.gitlab.com/pricing/) in 12.8.
 
-If you have [permissions](../../permissions.md) to close an issue and create an
+If you have the necessary [permissions](../../permissions.md) to close an issue and create an
 epic in the parent group, you can promote an issue to an epic with the `/promote`
 [quick action](../../project/quick_actions.md#quick-actions-for-issues-merge-requests-and-epics).
 Only issues from projects that are in groups can be promoted. When attempting to promote a confidential
@@ -277,7 +280,7 @@ To add a child epic to an epic:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/33039) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.0.
 
-New child epics are added to the top of their list in the **Epics and Issues** tab.
+New child epics appear at the top of the list in the **Epics and Issues** tab.
 You can move child epics from one epic to another.
 When you add an epic that's already linked to a parent epic, the link to its current parent is removed.
 Issues and child epics cannot be intermingled.
@@ -285,19 +288,19 @@ Issues and child epics cannot be intermingled.
 To move child epics to another epic:
 
 1. Go to the **Epics and Issues** tab.
-1. Drag and drop epics into the desired parent epic.
+1. Drag epics into the desired parent epic.
 
 ### Reorder child epics assigned to an epic
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/9367) in GitLab 12.5.
 
-New child epics are added to the top of their list in the **Epics and Issues** tab.
+New child epics appear at the top of the list in the **Epics and Issues** tab.
 You can reorder the list of child epics.
 
 To reorder child epics assigned to an epic:
 
 1. Go to the **Epics and Issues** tab.
-1. Drag and drop epics into the desired order.
+1. Drag epics into the desired order.
 
 ### Remove a child epic from a parent epic
 

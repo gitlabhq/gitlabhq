@@ -4,12 +4,12 @@
 %aside.right-sidebar.js-right-sidebar{ data: { "offset-top" => affix_offset, "spy" => "affix", "always-show-toggle" => true }, class: sidebar_gutter_collapsed_class, 'aria-live' => 'polite' }
   .issuable-sidebar.milestone-sidebar
     .block.milestone-progress.issuable-sidebar-header
-      %a.gutter-toggle.float-right.js-sidebar-toggle.has-tooltip{ role: "button", href: "#", "aria-label" => "Toggle sidebar", title: sidebar_gutter_tooltip_text, data: { container: 'body', placement: 'left', boundary: 'viewport' } }
+      %a.gutter-toggle.float-right.js-sidebar-toggle.has-tooltip{ role: "button", href: "#", "aria-label" => s_('MilestoneSidebar|Toggle sidebar'), title: sidebar_gutter_tooltip_text, data: { container: 'body', placement: 'left', boundary: 'viewport' } }
         = sidebar_gutter_toggle_icon
       .title.hide-collapsed
         %strong.bold== #{milestone.percent_complete}%
         %span.hide-collapsed
-          complete
+          = s_('MilestoneSidebar|complete')
       .value.hide-collapsed
         = milestone_progress_bar(milestone)
 
@@ -20,15 +20,15 @@
 
     .block.start_date.hide-collapsed
       .title
-        Start date
+        = s_('MilestoneSidebar|Start date')
         - if @project && can?(current_user, :admin_milestone, @project)
-          = link_to 'Edit', edit_project_milestone_path(@project, @milestone), class: 'js-sidebar-dropdown-toggle edit-link float-right'
+          = link_to s_('MilestoneSidebar|Edit'), edit_project_milestone_path(@project, @milestone), class: 'js-sidebar-dropdown-toggle edit-link float-right'
       .value
         %span.value-content
           - if milestone.start_date
             %span.bold= milestone.start_date.to_s(:medium)
           - else
-            %span.no-value No start date
+            %span.no-value= s_('MilestoneSidebar|No start date')
 
     .block.due_date
       .sidebar-collapsed-icon
@@ -45,26 +45,26 @@
             .due_date.has-tooltip{ title: milestone_time_for(milestone.due_date, :end), data: { container: 'body', html: 'true', placement: 'left', boundary: 'viewport' } }
               = milestone.due_date.strftime('%b %-d %Y')
           - elsif milestone.start_date
-            From
+            = s_('MilestoneSidebar|From')
             .milestone-date.has-tooltip{ title: milestone_time_for(milestone.start_date, :start), data: { container: 'body', html: 'true', placement: 'left', boundary: 'viewport' } }
               = milestone.start_date.strftime('%b %-d %Y')
           - elsif milestone.due_date
-            Until
+            = s_('MilestoneSidebar|Until')
             .milestone-date.has-tooltip{ title: milestone_time_for(milestone.due_date, :end), data: { container: 'body', html: 'true', placement: 'left', boundary: 'viewport' } }
               = milestone.due_date.strftime('%b %-d %Y')
           - else
             .has-tooltip{ title: milestone_time_for(milestone.start_date, :start), data: { container: 'body', html: 'true', placement: 'left', boundary: 'viewport' } }
-              None
+              = s_('MilestoneSidebar|None')
       .title.hide-collapsed
-        Due date
+        = s_('MilestoneSidebar|Due date')
         - if @project && can?(current_user, :admin_milestone, @project)
-          = link_to 'Edit', edit_project_milestone_path(@project, @milestone), class: 'js-sidebar-dropdown-toggle edit-link float-right'
+          = link_to s_('MilestoneSidebar|Edit'), edit_project_milestone_path(@project, @milestone), class: 'js-sidebar-dropdown-toggle edit-link float-right'
       .value.hide-collapsed
         %span.value-content
           - if milestone.due_date
             %span.bold= milestone.due_date.to_s(:medium)
           - else
-            %span.no-value No due date
+            %span.no-value= s_('MilestoneSidebar|No due date')
         - remaining_days = remaining_days_in_words(milestone.due_date, milestone.start_date)
         - if remaining_days.present?
           = surround '(', ')' do
@@ -77,19 +77,19 @@
             = custom_icon('issues')
           %span= milestone.issues_visible_to_user(current_user).count
         .title.hide-collapsed
-          Issues
+          = s_('MilestoneSidebar|Issues')
           %span.badge.badge-pill= milestone.issues_visible_to_user(current_user).count
           - if show_new_issue_link?(project)
-            = link_to new_project_issue_path(project, issue: { milestone_id: milestone.id }), class: "float-right", title: "New Issue" do
-              New issue
+            = link_to new_project_issue_path(project, issue: { milestone_id: milestone.id }), class: "float-right", title: s_('MilestoneSidebar|New Issue') do
+              = s_('MilestoneSidebar|New issue')
         .value.hide-collapsed.bold
           %span.milestone-stat
             = link_to milestones_browse_issuables_path(milestone, type: :issues) do
-              Open:
+              = s_('MilestoneSidebar|Open:')
               = milestone.issues_visible_to_user(current_user).opened.count
           %span.milestone-stat
             = link_to milestones_browse_issuables_path(milestone, type: :issues, state: 'closed') do
-              Closed:
+              = s_('MilestoneSidebar|Closed:')
               = milestone.issues_visible_to_user(current_user).closed.count
 
     .block
@@ -108,31 +108,31 @@
             = custom_icon('mr_bold')
           %span= milestone.merge_requests.count
         .title.hide-collapsed
-          Merge requests
+          = s_('MilestoneSidebar|Merge requests')
           %span.badge.badge-pill= milestone.merge_requests.count
         .value.hide-collapsed.bold
           - if !project || can?(current_user, :read_merge_request, project)
             %span.milestone-stat
               = link_to milestones_browse_issuables_path(milestone, type: :merge_requests) do
-                Open:
+                = s_('MilestoneSidebar|Open:')
                 = milestone.merge_requests.opened.count
             %span.milestone-stat
               = link_to milestones_browse_issuables_path(milestone, type: :merge_requests, state: 'closed') do
-                Closed:
+                = s_('MilestoneSidebar|Closed:')
                 = milestone.merge_requests.closed.count
             %span.milestone-stat
               = link_to milestones_browse_issuables_path(milestone, type: :merge_requests, state: 'merged') do
-                Merged:
+                = s_('MilestoneSidebar|Merged:')
                 = milestone.merge_requests.merged.count
           - else
             %span.milestone-stat
-              Open:
+              = s_('MilestoneSidebar|Open:')
               = milestone.merge_requests.opened.count
             %span.milestone-stat
-              Closed:
+              = s_('MilestoneSidebar|Closed:')
               = milestone.merge_requests.closed.count
             %span.milestone-stat
-              Merged:
+              = s_('MilestoneSidebar|Merged:')
               = milestone.merge_requests.merged.count
 
     - if project
@@ -145,7 +145,7 @@
         .title.hide-collapsed= n_('Release', 'Releases', total_count)
         .hide-collapsed
           - if total_count.zero?
-            .no-value= _('None')
+            .no-value= s_('MilestoneSidebar|None')
           - else
             .font-weight-bold
               - recent_releases.each do |release|
@@ -160,10 +160,10 @@
     - if milestone_ref.present?
       .block.reference
         .sidebar-collapsed-icon.dont-change-state
-          = clipboard_button(text: milestone_ref, title: _("Copy reference"), placement: "left", boundary: 'viewport')
+          = clipboard_button(text: milestone_ref, title: s_('MilestoneSidebar|Copy reference'), placement: "left", boundary: 'viewport')
         .cross-project-reference.hide-collapsed
           %span
-            Reference:
+            = s_('MilestoneSidebar|Reference:')
             %cite{ title: milestone_ref }
               = milestone_ref
-          = clipboard_button(text: milestone_ref, title: _("Copy reference"), placement: "left", boundary: 'viewport')
+          = clipboard_button(text: milestone_ref, title: s_('MilestoneSidebar|Copy reference'), placement: "left", boundary: 'viewport')
