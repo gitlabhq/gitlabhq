@@ -1,5 +1,0 @@
----
-title: Prevent fetching repository code with unauthorized ci token
-merge_request:
-author:
-type: security
