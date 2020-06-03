@@ -13,7 +13,7 @@ module PerformanceMonitoring
       panel_group = new(
         group: json_content['group'],
         priority: json_content['priority'],
-        panels: json_content['panels'].map { |panel| PrometheusPanel.from_json(panel) }
+        panels: json_content['panels']&.map { |panel| PrometheusPanel.from_json(panel) }
       )
 
       panel_group.tap(&:validate!)

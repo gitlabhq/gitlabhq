@@ -76,7 +76,7 @@ describe('Design discussions component', () => {
 
   it('hides reply placeholder and opens form on placeholder click', () => {
     createComponent();
-    findReplyPlaceholder().trigger('click');
+    findReplyPlaceholder().vm.$emit('onMouseDown');
 
     return wrapper.vm.$nextTick().then(() => {
       expect(findReplyPlaceholder().exists()).toBe(false);
@@ -129,5 +129,23 @@ describe('Design discussions component', () => {
     expect(wrapper.findAll(DesignNote).wrappers.every(note => note.classes('gl-bg-blue-50'))).toBe(
       true,
     );
+  });
+
+  it('closes the form on blur if the form was empty', () => {
+    createComponent({}, { discussionComment: '', isFormRendered: true });
+    findReplyForm().vm.$emit('onBlur');
+
+    return wrapper.vm.$nextTick().then(() => {
+      expect(findReplyForm().exists()).toBe(false);
+    });
+  });
+
+  it('keeps the form open on blur if the form had text', () => {
+    createComponent({}, { discussionComment: 'test', isFormRendered: true });
+    findReplyForm().vm.$emit('onBlur');
+
+    return wrapper.vm.$nextTick().then(() => {
+      expect(findReplyForm().exists()).toBe(true);
+    });
   });
 });

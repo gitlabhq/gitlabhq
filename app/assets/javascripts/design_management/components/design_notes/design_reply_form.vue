@@ -103,6 +103,7 @@ export default {
           @keydown.meta.enter="submitForm"
           @keydown.ctrl.enter="submitForm"
           @keyup.esc.stop="cancelComment"
+          @blur="$emit('onBlur')"
         >
         </textarea>
       </template>

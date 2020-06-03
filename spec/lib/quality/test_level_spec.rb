@@ -21,7 +21,7 @@ RSpec.describe Quality::TestLevel do
     context 'when level is unit' do
       it 'returns a pattern' do
         expect(subject.pattern(:unit))
-          .to eq("spec/{bin,channels,config,db,dependencies,factories,finders,frontend,graphql,haml_lint,helpers,initializers,javascripts,lib,models,policies,presenters,rack_servers,replicators,routing,rubocop,serializers,services,sidekiq,support_specs,tasks,uploaders,validators,views,workers,elastic_integration}{,/**/}*_spec.rb")
+          .to eq("spec/{bin,channels,config,db,dependencies,factories,finders,frontend,graphql,haml_lint,helpers,initializers,javascripts,lib,models,policies,presenters,rack_servers,replicators,routing,rubocop,serializers,services,sidekiq,support_specs,tasks,uploaders,validators,views,workers,elastic_integration,tooling}{,/**/}*_spec.rb")
       end
     end
 
@@ -89,7 +89,7 @@ RSpec.describe Quality::TestLevel do
     context 'when level is unit' do
       it 'returns a regexp' do
         expect(subject.regexp(:unit))
-          .to eq(%r{spec/(bin|channels|config|db|dependencies|factories|finders|frontend|graphql|haml_lint|helpers|initializers|javascripts|lib|models|policies|presenters|rack_servers|replicators|routing|rubocop|serializers|services|sidekiq|support_specs|tasks|uploaders|validators|views|workers|elastic_integration)})
+          .to eq(%r{spec/(bin|channels|config|db|dependencies|factories|finders|frontend|graphql|haml_lint|helpers|initializers|javascripts|lib|models|policies|presenters|rack_servers|replicators|routing|rubocop|serializers|services|sidekiq|support_specs|tasks|uploaders|validators|views|workers|elastic_integration|tooling)})
       end
     end
 
@@ -142,6 +142,10 @@ RSpec.describe Quality::TestLevel do
   describe '#level_for' do
     it 'returns the correct level for a unit test' do
       expect(subject.level_for('spec/models/abuse_report_spec.rb')).to eq(:unit)
+    end
+
+    it 'returns the correct level for a tooling test' do
+      expect(subject.level_for('spec/tooling/lib/tooling/test_file_finder_spec.rb')).to eq(:unit)
     end
 
     it 'returns the correct level for a migration test' do

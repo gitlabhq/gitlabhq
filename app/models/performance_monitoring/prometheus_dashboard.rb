@@ -13,7 +13,7 @@ module PerformanceMonitoring
       def from_json(json_content)
         dashboard = new(
           dashboard: json_content['dashboard'],
-          panel_groups: json_content['panel_groups'].map { |group| PrometheusPanelGroup.from_json(group) }
+          panel_groups: json_content['panel_groups']&.map { |group| PrometheusPanelGroup.from_json(group) }
         )
 
         dashboard.tap(&:validate!)

@@ -1,20 +1,17 @@
 <script>
-import { GlDeprecatedButton, GlDropdown, GlDropdownItem, GlFormGroup } from '@gitlab/ui';
+import { GlIcon, GlDeprecatedButton, GlDropdown, GlDropdownItem, GlFormGroup } from '@gitlab/ui';
 import { __, sprintf } from '~/locale';
 
 import { convertToFixedRange, isEqualTimeRanges, findTimeRange } from '~/lib/utils/datetime_range';
 
-import Icon from '~/vue_shared/components/icon.vue';
 import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate.vue';
 import DateTimePickerInput from './date_time_picker_input.vue';
 import {
   defaultTimeRanges,
   defaultTimeRange,
-  isValidDate,
-  stringToISODate,
-  ISODateToString,
-  truncateZerosInDateTime,
-  isDateTimePickerInputValid,
+  isValidInputString,
+  inputStringToIsoDate,
+  isoDateToInputString,
 } from './date_time_picker_lib';
 
 const events = {
@@ -24,13 +21,13 @@ const events = {
 
 export default {
   components: {
-    Icon,
-    TooltipOnTruncate,
-    DateTimePickerInput,
-    GlFormGroup,
+    GlIcon,
     GlDeprecatedButton,
     GlDropdown,
     GlDropdownItem,
+    GlFormGroup,
+    TooltipOnTruncate,
+    DateTimePickerInput,
   },
   props: {
     value: {
@@ -48,20 +45,41 @@ export default {
       required: false,
       default: true,
     },
+    utc: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
       timeRange: this.value,
-      startDate: '',
-      endDate: '',
+
+      /**
+       * Valid start iso date string, null if not valid value
+       */
+      startDate: null,
+      /**
+       * Invalid start date string as input by the user
+       */
+      startFallbackVal: '',
+
+      /**
+       * Valid end iso date string, null if not valid value
+       */
+      endDate: null,
+      /**
+       * Invalid end date string as input by the user
+       */
+      endFallbackVal: '',
     };
   },
   computed: {
     startInputValid() {
-      return isValidDate(this.startDate);
+      return isValidInputString(this.startDate);
     },
     endInputValid() {
-      return isValidDate(this.endDate);
+      return isValidInputString(this.endDate);
     },
     isValid() {
       return this.startInputValid && this.endInputValid;
@@ -69,21 +87,31 @@ export default {
 
     startInput: {
       get() {
-        return this.startInputValid ? this.formatDate(this.startDate) : this.startDate;
+        return this.dateToInput(this.startDate) || this.startFallbackVal;
       },
       set(val) {
-        // Attempt to set a formatted date if possible
-        this.startDate = isDateTimePickerInputValid(val) ? stringToISODate(val) : val;
+        try {
+          this.startDate = this.inputToDate(val);
+          this.startFallbackVal = null;
+        } catch (e) {
+          this.startDate = null;
+          this.startFallbackVal = val;
+        }
         this.timeRange = null;
       },
     },
     endInput: {
       get() {
-        return this.endInputValid ? this.formatDate(this.endDate) : this.endDate;
+        return this.dateToInput(this.endDate) || this.endFallbackVal;
       },
       set(val) {
-        // Attempt to set a formatted date if possible
-        this.endDate = isDateTimePickerInputValid(val) ? stringToISODate(val) : val;
+        try {
+          this.endDate = this.inputToDate(val);
+          this.endFallbackVal = null;
+        } catch (e) {
+          this.endDate = null;
+          this.endFallbackVal = val;
+        }
         this.timeRange = null;
       },
     },
@@ -96,16 +124,23 @@ export default {
         }
 
         const { start, end } = convertToFixedRange(this.value);
-        if (isValidDate(start) && isValidDate(end)) {
+        if (isValidInputString(start) && isValidInputString(end)) {
           return sprintf(__('%{start} to %{end}'), {
-            start: this.formatDate(start),
-            end: this.formatDate(end),
+            start: this.stripZerosInDateTime(this.dateToInput(start)),
+            end: this.stripZerosInDateTime(this.dateToInput(end)),
           });
         }
       } catch {
         return __('Invalid date range');
       }
       return '';
+    },
+
+    customLabel() {
+      if (this.utc) {
+        return __('Custom range (UTC)');
+      }
+      return __('Custom range');
     },
   },
   watch: {
@@ -132,8 +167,17 @@ export default {
     }
   },
   methods: {
-    formatDate(date) {
-      return truncateZerosInDateTime(ISODateToString(date));
+    dateToInput(date) {
+      if (date === null) {
+        return null;
+      }
+      return isoDateToInputString(date, this.utc);
+    },
+    inputToDate(value) {
+      return inputStringToIsoDate(value, this.utc);
+    },
+    stripZerosInDateTime(str = '') {
+      return str.replace(' 00:00:00', '');
     },
     closeDropdown() {
       this.$refs.dropdown.hide();
@@ -169,10 +213,16 @@ export default {
       menu-class="date-time-picker-menu"
       toggle-class="date-time-picker-toggle text-truncate"
     >
+      <template #button-content>
+        <span class="gl-flex-grow-1 text-truncate">{{ timeWindowText }}</span>
+        <span v-if="utc" class="text-muted gl-font-weight-bold gl-font-sm">{{ __('UTC') }}</span>
+        <gl-icon class="gl-dropdown-caret" name="chevron-down" aria-hidden="true" />
+      </template>
+
       <div class="d-flex justify-content-between gl-p-2-deprecated-no-really-do-not-use-me">
         <gl-form-group
           v-if="customEnabled"
-          :label="__('Custom range')"
+          :label="customLabel"
           label-for="custom-from-time"
           label-class="gl-pb-1-deprecated-no-really-do-not-use-me"
           class="custom-time-range-form-group col-md-7 gl-pl-1-deprecated-no-really-do-not-use-me gl-pr-0 m-0"
@@ -214,7 +264,7 @@ export default {
             active-class="active"
             @click="setQuickRange(option)"
           >
-            <icon
+            <gl-icon
               name="mobile-issue-close"
               class="align-bottom"
               :class="{ invisible: !isOptionActive(option) }"

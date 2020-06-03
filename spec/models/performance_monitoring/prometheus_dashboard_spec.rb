@@ -38,24 +38,123 @@ describe PerformanceMonitoring::PrometheusDashboard do
     end
 
     describe 'validations' do
-      context 'when dashboard is missing' do
-        before do
-          json_content['dashboard'] = nil
+      shared_examples 'validation failed' do |errors_messages|
+        it 'raises error with corresponding messages', :aggregate_failures do
+          expect { subject }.to raise_error do |error|
+            expect(error).to be_kind_of(ActiveModel::ValidationError)
+            expect(error.model.errors.messages).to eql(errors_messages)
+          end
         end
-
-        subject { described_class.from_json(json_content) }
-
-        it { expect { subject }.to raise_error(ActiveModel::ValidationError) }
       end
 
-      context 'when panel groups are missing' do
-        before do
-          json_content['panel_groups'] = []
+      context 'dashboard definition is missing panels_groups and dashboard keys' do
+        let(:json_content) do
+          {
+            "dashboard" => nil
+          }
         end
 
-        subject { described_class.from_json(json_content) }
+        it_behaves_like 'validation failed', panel_groups: ["can't be blank"], dashboard: ["can't be blank"]
+      end
 
-        it { expect { subject }.to raise_error(ActiveModel::ValidationError) }
+      context 'group definition is missing panels and group keys' do
+        let(:json_content) do
+          {
+            "dashboard" => "Dashboard Title",
+            "templating" => {
+              "variables" => {
+                "variable1" => %w(value1 value2 value3)
+              }
+            },
+            "panel_groups" => [{ "group" => nil }]
+          }
+        end
+
+        it_behaves_like 'validation failed', panels: ["can't be blank"], group: ["can't be blank"]
+      end
+
+      context 'panel definition is missing metrics and title keys' do
+        let(:json_content) do
+          {
+            "dashboard" => "Dashboard Title",
+            "templating" => {
+              "variables" => {
+                "variable1" => %w(value1 value2 value3)
+              }
+            },
+            "panel_groups" => [{
+              "group" => "Group Title",
+              "panels" => [{
+                "type" => "area-chart",
+                "y_label" => "Y-Axis"
+              }]
+            }]
+          }
+        end
+
+        it_behaves_like 'validation failed', metrics: ["can't be blank"], title: ["can't be blank"]
+      end
+
+      context 'metrics definition is missing unit, query and query_range keys' do
+        let(:json_content) do
+          {
+            "dashboard" => "Dashboard Title",
+            "templating" => {
+              "variables" => {
+                "variable1" => %w(value1 value2 value3)
+              }
+            },
+            "panel_groups" => [{
+              "group" => "Group Title",
+              "panels" => [{
+                "type" => "area-chart",
+                "title" => "Chart Title",
+                "y_label" => "Y-Axis",
+                "metrics" => [{
+                  "id" => "metric_of_ages",
+                  "label" => "Metric of Ages",
+                  "query_range" => nil
+                }]
+              }]
+            }]
+          }
+        end
+
+        it_behaves_like 'validation failed', unit: ["can't be blank"], query_range: ["can't be blank"], query: ["can't be blank"]
+      end
+
+      # for each parent entry validation first is done to its children,
+      # whole execution is stopped on first encountered error
+      # which is the one that is reported
+      context 'multiple offences on different levels' do
+        let(:json_content) do
+          {
+            "dashboard" => nil,
+            "panel_groups" => [{
+              "group" => nil,
+              "panels" => [{
+                "type" => "area-chart",
+                "title" => nil,
+                "y_label" => "Y-Axis",
+                "metrics" => [{
+                  "id" => "metric_of_ages",
+                  "label" => "Metric of Ages",
+                  "query_range" => 'query'
+                }, {
+                  "id" => "metric_of_ages",
+                  "unit" => "count",
+                  "label" => "Metric of Ages",
+                  "query_range" => nil
+                }]
+              }]
+            }, {
+              "group" => 'group',
+              "panels" => nil
+            }]
+          }
+        end
+
+        it_behaves_like 'validation failed', unit: ["can't be blank"]
       end
     end
   end

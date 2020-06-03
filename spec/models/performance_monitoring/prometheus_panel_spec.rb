@@ -54,7 +54,7 @@ describe PerformanceMonitoring::PrometheusPanel do
 
       context 'when metrics are missing' do
         before do
-          json_content['metrics'] = []
+          json_content.delete('metrics')
         end
 
         subject { described_class.from_json(json_content) }

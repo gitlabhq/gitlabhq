@@ -326,6 +326,33 @@ new branch.
 If you select your **default** branch, the new dashboard becomes immediately available.
 If you select another branch, this branch should be merged to your **default** branch first.
 
+#### Dashboard YAML syntax validation
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/33202) in GitLab 13.1.
+
+To confirm your dashboard definition contains valid YAML syntax:
+
+1. Navigate to **{doc-text}** **Repository > Files**.
+1. Navigate to your dashboard file in your repository.
+1. Review the information pane about the file, displayed above the file contents.
+
+Files with valid syntax display **Metrics Dashboard YAML definition is valid**,
+and files with invalid syntax display **Metrics Dashboard YAML definition is invalid**.
+
+![Metrics Dashboard_YAML_syntax_validation](img/prometheus_dashboard_yaml_validation_v13_1.png)
+
+When **Metrics Dashboard YAML definition is invalid** at least one of the following messages is displayed:
+
+1. `dashboard: can't be blank` [learn more](#dashboard-top-level-properties)
+1. `panel_groups: can't be blank` [learn more](#dashboard-top-level-properties)
+1. `group: can't be blank` [learn more](#panel-group-panel_groups-properties)
+1. `panels: can't be blank` [learn more](#panel-group-panel_groups-properties)
+1. `metrics: can't be blank` [learn more](#panel-panels-properties)
+1. `title: can't be blank` [learn more](#panel-panels-properties)
+1. `query: can't be blank` [learn more](#metrics-metrics-properties)
+1. `query_range: can't be blank` [learn more](#metrics-metrics-properties)
+1. `unit: can't be blank` [learn more](#metrics-metrics-properties)
+
 #### Dashboard YAML properties
 
 Dashboards have several components:

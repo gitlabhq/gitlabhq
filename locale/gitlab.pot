@@ -6665,6 +6665,9 @@ msgstr ""
 msgid "Custom range"
 msgstr ""
 
+msgid "Custom range (UTC)"
+msgstr ""
+
 msgid "CustomCycleAnalytics|Add a stage"
 msgstr ""
 
@@ -13756,6 +13759,15 @@ msgstr ""
 msgid "Metrics Dashboard"
 msgstr ""
 
+msgid "Metrics Dashboard YAML definition"
+msgstr ""
+
+msgid "Metrics Dashboard YAML definition is invalid:"
+msgstr ""
+
+msgid "Metrics Dashboard YAML definition is valid."
+msgstr ""
+
 msgid "Metrics and profiling"
 msgstr ""
 
@@ -14342,10 +14354,13 @@ msgstr ""
 msgid "Network"
 msgstr ""
 
+msgid "NetworkPolicies|Choose whether to enforce this policy."
+msgstr ""
+
 msgid "NetworkPolicies|Define this policy's location, conditions and actions."
 msgstr ""
 
-msgid "NetworkPolicies|Enabled"
+msgid "NetworkPolicies|Enforcement status"
 msgstr ""
 
 msgid "NetworkPolicies|Environment does not have deployment platform"
@@ -23463,6 +23478,9 @@ msgid "URL of the external storage that will serve the repository static objects
 msgstr ""
 
 msgid "URL or request ID"
+msgstr ""
+
+msgid "UTC"
 msgstr ""
 
 msgid "Unable to apply suggestions to a deleted line."

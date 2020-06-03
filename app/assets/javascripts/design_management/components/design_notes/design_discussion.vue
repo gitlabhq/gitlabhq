@@ -117,6 +117,12 @@ export default {
     showForm() {
       this.isFormRendered = true;
     },
+    handleReplyFormBlur() {
+      if (this.discussionComment) {
+        return;
+      }
+      this.isFormRendered = false;
+    },
   },
   createNoteMutation,
 };
@@ -142,7 +148,7 @@ export default {
           v-if="!isFormRendered"
           class="qa-discussion-reply"
           :button-text="__('Reply...')"
-          @onClick="showForm"
+          @onMouseDown="showForm"
         />
         <apollo-mutation
           v-else
@@ -161,6 +167,7 @@ export default {
             :markdown-preview-path="markdownPreviewPath"
             @submitForm="mutate"
             @cancelForm="hideForm"
+            @onBlur="handleReplyFormBlur"
           />
         </apollo-mutation>
       </div>

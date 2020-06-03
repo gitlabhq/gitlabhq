@@ -15,7 +15,7 @@ module PerformanceMonitoring
         title: json_content['title'],
         y_label: json_content['y_label'],
         weight: json_content['weight'],
-        metrics: json_content['metrics'].map { |metric| PrometheusMetric.from_json(metric) }
+        metrics: json_content['metrics']&.map { |metric| PrometheusMetric.from_json(metric) }
       )
 
       panel.tap(&:validate!)

@@ -32,7 +32,7 @@ describe PerformanceMonitoring::PrometheusPanelGroup do
     describe 'validations' do
       context 'when group is missing' do
         before do
-          json_content['group'] = nil
+          json_content.delete('group')
         end
 
         subject { described_class.from_json(json_content) }
