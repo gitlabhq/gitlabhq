@@ -1,3 +1,10 @@
+---
+stage: Enablement
+group: Geo
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+type: howto
+---
+
 # Geo data types support
 
 A Geo data type is a specific class of data that is required by one or more GitLab features to

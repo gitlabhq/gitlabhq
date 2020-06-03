@@ -13,6 +13,10 @@ the CI/CD pipeline to generate a Pages website.
 
 Use a `.gitlab-ci.yml` template when you have an existing project that you want to add a Pages site to.
 
+Your GitLab repository should contain files specific to an SSG, or plain HTML.
+After you complete these steps, you may need to do additional
+configuration for the Pages site to generate properly.
+
 1. In the left sidebar, click **Project overview**.
 1. Click **Set up CI/CD**.
 

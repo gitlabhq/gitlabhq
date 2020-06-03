@@ -58,7 +58,7 @@ Everything you should know about how to test Rake tasks.
 ## [End-to-end tests](end_to_end/index.md)
 
 Everything you should know about how to run end-to-end tests using
-[GitLab QA](ttps://gitlab.com/gitlab-org/gitlab-qa) testing framework.
+[GitLab QA](https://gitlab.com/gitlab-org/gitlab-qa) testing framework.
 
 ## [Migrations tests](testing_migrations_guide.md)
 

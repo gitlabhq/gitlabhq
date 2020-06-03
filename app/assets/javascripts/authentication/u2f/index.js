@@ -5,8 +5,8 @@ export default () => {
   if (!gon.u2f) return;
 
   const u2fAuthenticate = new U2FAuthenticate(
-    $('#js-authenticate-u2f'),
-    '#js-login-u2f-form',
+    $('#js-authenticate-token-2fa'),
+    '#js-login-token-2fa-form',
     gon.u2f,
     document.querySelector('#js-login-2fa-device'),
     document.querySelector('.js-2fa-form'),

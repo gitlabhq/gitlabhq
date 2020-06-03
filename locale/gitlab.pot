@@ -24830,7 +24830,7 @@ msgstr ""
 msgid "We have found the following errors:"
 msgstr ""
 
-msgid "We heard back from your U2F device. You have been authenticated."
+msgid "We heard back from your device. You have been authenticated."
 msgstr ""
 
 msgid "We recommend that you buy more Pipeline minutes to avoid any interruption of service."

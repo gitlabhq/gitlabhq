@@ -66,7 +66,7 @@ FDOC=1 bin/rspec spec/[path]/[to]/[spec].rb
 
 ### General guidelines
 
-- Use a single, top-level `describe ClassName` block.
+- Use a single, top-level `RSpec.describe ClassName` block.
 - Use `.method` to describe class methods and `#method` to describe instance
   methods.
 - Use `context` to test branching logic.

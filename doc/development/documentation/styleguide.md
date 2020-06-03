@@ -1723,9 +1723,8 @@ Use `%2F` for slashes (`/`).
 #### Pass arrays to API calls
 
 The GitLab API sometimes accepts arrays of strings or integers. For example, to
-restrict the sign-up e-mail domains of a GitLab instance to `*.example.com` and
-`example.net`, you would do something like this:
+exclude specific users when requesting a list of users for a project, you would do something like this:
 
 ```shell
-curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" --data "domain_whitelist[]=*.example.com" --data "domain_whitelist[]=example.net" https://gitlab.example.com/api/v4/application/settings
+curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" --data "skip_users[]=<user_id>" --data "skip_users[]=<user_id>" https://gitlab.example.com/api/v4/projects/<project_id>/users
 ```

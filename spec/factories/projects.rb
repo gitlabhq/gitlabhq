@@ -297,6 +297,12 @@ FactoryBot.define do
     trait :auto_devops_disabled do
       association :auto_devops, factory: [:project_auto_devops, :disabled]
     end
+
+    trait :without_container_expiration_policy do
+      after :create do |project|
+        project.container_expiration_policy.destroy!
+      end
+    end
   end
 
   # Project with empty repository

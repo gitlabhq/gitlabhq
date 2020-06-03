@@ -669,7 +669,8 @@
   .ci-action-icon-container {
     position: absolute;
     right: 5px;
-    top: 5px;
+    top: 50%;
+    transform: translateY(-50%);
 
     // Action Icons in big pipeline-graph nodes
     &.ci-action-icon-wrapper {

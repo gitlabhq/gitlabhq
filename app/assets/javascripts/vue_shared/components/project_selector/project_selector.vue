@@ -24,28 +24,23 @@ export default {
     },
     showNoResultsMessage: {
       type: Boolean,
-      required: false,
-      default: false,
+      required: true,
     },
     showMinimumSearchQueryMessage: {
       type: Boolean,
-      required: false,
-      default: false,
+      required: true,
     },
     showLoadingIndicator: {
       type: Boolean,
-      required: false,
-      default: false,
+      required: true,
     },
     showSearchErrorMessage: {
       type: Boolean,
-      required: false,
-      default: false,
+      required: true,
     },
     totalResults: {
       type: Number,
-      required: false,
-      default: 0,
+      required: true,
     },
   },
   data() {

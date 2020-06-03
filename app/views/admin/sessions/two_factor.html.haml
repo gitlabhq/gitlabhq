@@ -12,4 +12,4 @@
               - if current_user.two_factor_otp_enabled?
                 = render 'admin/sessions/two_factor_otp'
               - if current_user.two_factor_u2f_enabled?
-                = render 'admin/sessions/two_factor_u2f'
+                = render 'u2f/authenticate', render_remember_me: false, target_path: admin_session_path

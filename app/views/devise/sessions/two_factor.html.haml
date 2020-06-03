@@ -14,4 +14,4 @@
               = f.submit "Verify code", class: "btn btn-success"
 
       - if @user.two_factor_u2f_enabled?
-        = render "u2f/authenticate", locals: { params: params, resource: resource, resource_name: resource_name }
+        = render "u2f/authenticate", params: params, resource: resource, resource_name: resource_name, render_remember_me: true, target_path: new_user_session_path

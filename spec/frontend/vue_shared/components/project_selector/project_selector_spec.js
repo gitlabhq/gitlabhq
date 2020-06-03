@@ -29,6 +29,7 @@ describe('ProjectSelector component', () => {
         showMinimumSearchQueryMessage: false,
         showLoadingIndicator: false,
         showSearchErrorMessage: false,
+        totalResults: searchResults.length,
       },
       attachToDocument: true,
     });

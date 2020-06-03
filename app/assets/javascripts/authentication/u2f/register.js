@@ -78,7 +78,7 @@ export default class U2FRegister {
       error_message: error.message(),
       error_code: error.errorCode,
     });
-    return this.container.find('#js-u2f-try-again').on('click', this.renderSetup);
+    return this.container.find('#js-token-2fa-try-again').on('click', this.renderSetup);
   }
 
   renderRegistered(deviceResponse) {

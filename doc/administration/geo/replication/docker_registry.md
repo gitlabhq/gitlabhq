@@ -1,3 +1,10 @@
+---
+stage: Enablement
+group: Geo
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+type: howto
+---
+
 # Docker Registry for a secondary node **(PREMIUM ONLY)**
 
 You can set up a [Docker Registry](https://docs.docker.com/registry/) on your

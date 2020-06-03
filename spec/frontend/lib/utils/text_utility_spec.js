@@ -126,6 +126,8 @@ describe('text_utility', () => {
       ${'snake case'}          | ${'snake_case'}
       ${'snake_case'}          | ${'snake_case'}
       ${'snakeCasesnake Case'} | ${'snake_casesnake_case'}
+      ${'123'}                 | ${'123'}
+      ${'123 456'}             | ${'123_456'}
     `('converts string $txt to $result string', ({ txt, result }) => {
       expect(textUtils.convertToSnakeCase(txt)).toEqual(result);
     });

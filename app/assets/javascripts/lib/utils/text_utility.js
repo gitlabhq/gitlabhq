@@ -168,7 +168,7 @@ export const convertToCamelCase = string =>
  * @param {*} string
  */
 export const convertToSnakeCase = string =>
-  slugifyWithUnderscore(string.match(/([a-zA-Z][^A-Z]*)/g).join(' '));
+  slugifyWithUnderscore((string.match(/([a-zA-Z][^A-Z]*)/g) || [string]).join(' '));
 
 /**
  * Converts a sentence to lower case from the second word onwards

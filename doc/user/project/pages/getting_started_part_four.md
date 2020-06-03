@@ -6,137 +6,131 @@ group: Release Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 ---
 
-# Creating and Tweaking GitLab CI/CD for GitLab Pages
+# Create a GitLab Pages website from scratch
 
-To [get started with GitLab Pages](index.md#getting-started), you can
-use one of the project templates, a `.gitlab-ci.yml` template,
-or fork an existing example project. Therefore, you don't need to
-understand _all_ the ins and odds of GitLab CI/CD to get your site
-deployed. Still, there are cases where you want to write your own
-script or tweak an existing one. This document guides you through
-this process.
+This tutorial shows you how to create a Pages site from scratch. You will start with
+a blank project and create your own CI file, which gives instruction to the
+[GitLab Runner](https://docs.gitlab.com/runner/). When your CI/CD
+[pipeline](../../../ci/pipelines/index.md) runs, the Pages site is created.
 
-This guide also provides a general overview and clear introduction
-for **getting familiar with the `.gitlab-ci.yml` file and writing
-one for the first time.**
+This example uses the [Jekyll](https://jekyllrb.com/) Static Site Generator (SSG).
+Other SSGs follow similar steps. You do not need to be familiar with Jekyll or SSGs
+to complete this tutorial.
 
-[GitLab CI/CD](../../../ci/README.md) serves
-numerous purposes, to build, test, and deploy your app
-from GitLab through
-[Continuous Integration, Continuous Delivery, and Continuous Deployment](../../../ci/introduction/index.md#introduction-to-cicd-methodologies)
-methods. You will need it to build your website with GitLab Pages,
-and deploy it to the Pages server.
+## Prerequisites
 
-To implement GitLab CI/CD, the first thing you need is a configuration
-file called `.gitlab-ci.yml` placed at your website's root directory.
+To follow along with this example, start with a blank project in GitLab.
+Create three files in the root (top-level) directory.
 
-What this file actually does is telling the
-[GitLab Runner](https://docs.gitlab.com/runner/) to run scripts
-as you would do from the command line. The Runner acts as your
-terminal. GitLab CI/CD tells the Runner which commands to run.
-Both are built-in in GitLab, and you don't need to set up
-anything for them to work.
+- `.gitlab-ci.yml` A YAML file that contains the commands you want to run.
+  For now, leave the file's contents blank.
 
-Explaining [every detail of GitLab CI/CD](../../../ci/yaml/README.md)
-and GitLab Runner is out of the scope of this guide, but we'll
-need to understand just a few things to be able to write our own
-`.gitlab-ci.yml` or tweak an existing one. It's a
-[YAML](https://docs.ansible.com/ansible/latest/reference_appendices/YAMLSyntax.html) file,
-with its own syntax. You can always check your CI syntax with
-the [GitLab CI/CD Lint Tool](https://gitlab.com/ci/lint).
+- `index.html` An HTML file you can populate with whatever HTML content you'd like,
+  for example:
 
-## Practical example
+  ```html
+  <html>
+  <head>
+    <title>Home</title>
+  </head>
+  <body>
+    <h1>Hello World!</h1>
+  </body>
+  </html>
+  ```
 
-Let's consider you have a [Jekyll](https://jekyllrb.com/) site.
-To build it locally, you would open your terminal, and run `jekyll build`.
-Of course, before building it, you had to install Jekyll in your computer.
-For that, you had to open your terminal and run `gem install jekyll`.
-Right? GitLab CI/CD + GitLab Runner do the same thing. But you need to
-write in the `.gitlab-ci.yml` the script you want to run so
-GitLab Runner will do it for you. It looks more complicated than it
-is. What you need to tell the Runner:
+- [`Gemfile`](https://bundler.io/gemfile.html) A file that describes dependencies for Ruby programs.
+  Populate it with this content:
 
-```shell
-gem install jekyll
-jekyll build
+  ```ruby
+  source "https://rubygems.org"
+
+  gem "jekyll"
+  ```
+
+## Choose a Docker image
+
+In this example, the Runner uses a [Docker image](../../../ci/docker/using_docker_images.md)
+to run scripts and deploy the site.
+
+This specific Ruby image is maintained on [DockerHub](https://hub.docker.com/_/ruby).
+
+Edit your `.gitlab-ci.yml` and add this text as the first line.
+
+```yaml
+image: ruby:2.7
 ```
 
-### Script
+If your SSG needs [NodeJS](https://nodejs.org/) to build, you must specify an
+image that contains NodeJS as part of its file system. For example, for a
+[Hexo](https://gitlab.com/pages/hexo) site, you can use `image: node:12.17.0`.
 
-To transpose this script to YAML, it would be like this:
+## Install Jekyll
+
+To run [Jekyll](https://jekyllrb.com/) locally, you would open your terminal and:
+
+- Install [Bundler](https://bundler.io/) by running `gem install bundler`.
+- Create `Gemfile.lock` by running `bundle install`.
+- Install Jekyll by running `bundle exec jekyll build`.
+
+In the `.gitlab-ci.yml` file, this is written as:
 
 ```yaml
 script:
-  - gem install jekyll
-  - jekyll build
+  - gem install bundler
+  - bundle install
+  - bundle exec jekyll build
 ```
 
-### Job
-
-So far so good. Now, each `script`, in GitLab is organized by
-a `job`, which is a bunch of scripts and settings you want to
-apply to that specific task.
+In addition, in the `.gitlab-ci.yml` file, each `script` is organized by a `job`.
+A `job` includes the scripts and settings you want to apply to that specific
+task.
 
 ```yaml
 job:
   script:
-  - gem install jekyll
-  - jekyll build
+  - gem install bundler
+  - bundle install
+  - bundle exec jekyll build
 ```
 
-For GitLab Pages, this `job` has a specific name, called `pages`,
-which tells the Runner you want that task to deploy your website
+For GitLab Pages, this `job` has a specific name, called `pages`.
+This setting tells the Runner you want the job to deploy your website
 with GitLab Pages:
 
 ```yaml
 pages:
   script:
-  - gem install jekyll
-  - jekyll build
+  - gem install bundler
+  - bundle install
+  - bundle exec jekyll build
 ```
 
-### The `public` directory
+## Specify the `public` directory for output
 
-We also need to tell Jekyll where do you want the website to build,
-and GitLab Pages will only consider files in a directory called `public`.
-To do that with Jekyll, we need to add a flag specifying the
-[destination (`-d`)](https://jekyllrb.com/docs/usage/) of the
-built website: `jekyll build -d public`. Of course, we need
-to tell this to our Runner:
+Jekyll needs to know where to generate its output.
+GitLab Pages only considers files in a directory called `public`.
+
+Jekyll uses destination (`-d`) to specify an output directory for the built website:
 
 ```yaml
 pages:
   script:
-  - gem install jekyll
-  - jekyll build -d public
+  - gem install bundler
+  - bundle install
+  - bundle exec jekyll build -d public
 ```
 
-### Artifacts
+## Specify the `public` directory for artifacts
 
-We also need to tell the Runner that this _job_ generates
-_artifacts_, which is the site built by Jekyll.
-Where are these artifacts stored? In the `public` directory:
+Now that Jekyll has output the files to the `public` directory,
+the Runner needs to know where to get them. The artifacts are stored
+in the `public` directory:
 
 ```yaml
 pages:
   script:
-  - gem install jekyll
-  - jekyll build -d public
-  artifacts:
-    paths:
-    - public
-```
-
-The script above would be enough to build your Jekyll
-site with GitLab Pages. But, from Jekyll 3.4.0 on, its default
-template originated by `jekyll new project` requires
-[Bundler](https://bundler.io) to install Jekyll dependencies
-and the default theme. To adjust our script to meet these new
-requirements, we only need to install and build Jekyll with Bundler:
-
-```yaml
-pages:
-  script:
+  - gem install bundler
   - bundle install
   - bundle exec jekyll build -d public
   artifacts:
@@ -144,27 +138,14 @@ pages:
     - public
 ```
 
-That's it! A `.gitlab-ci.yml` with the content above would deploy
-your Jekyll 3.4.0 site with GitLab Pages. This is the minimum
-configuration for our example. On the steps below, we'll refine
-the script by adding extra options to our GitLab CI/CD.
-
-Artifacts will be automatically deleted once GitLab Pages got deployed.
-You can preserve artifacts for limited time by specifying the expiry time.
-
-### Image
-
-At this point, you probably ask yourself: "okay, but to install Jekyll
-I need Ruby. Where is Ruby on that script?". The answer is simple: the
-first thing GitLab Runner will look for in your `.gitlab-ci.yml` is a
-[Docker](https://www.docker.com/) image specifying what do you need in
-your container to run that script:
+Paste this into `.gitlab-ci.yml` file, so it now looks like this:
 
 ```yaml
 image: ruby:2.7
 
 pages:
   script:
+  - gem install bundler
   - bundle install
   - bundle exec jekyll build -d public
   artifacts:
@@ -172,39 +153,31 @@ pages:
     - public
 ```
 
-In this case, you're telling the Runner to pull this image, which
-contains Ruby 2.7 as part of its file system. When you don't specify
-this image in your configuration, the Runner will use a default
-image, which is Ruby 2.6.
+Now save and commit the `.gitlab-ci.yml` file. You can watch the pipeline run
+by going to **CI / CD > Pipelines**.
 
-If your SSG needs [NodeJS](https://nodejs.org/) to build, you'll
-need to specify which image you want to use, and this image should
-contain NodeJS as part of its file system. E.g., for a
-[Hexo](https://gitlab.com/pages/hexo) site, you can use `image: node:4.2.2`.
+When it succeeds, go to **Settings > Pages** to view the URL where your site
+is now available.
 
->**Note:**
-We're not trying to explain what a Docker image is,
-we just need to introduce the concept with a minimum viable
-explanation. To know more about Docker images, please visit
-their website or take a look at a
-[summarized explanation](http://paislee.io/how-to-automate-docker-deployments/) here.
+If you want to do more advanced tasks, you can update your `.gitlab-ci.yml` file
+with [any of the available settings](../../../ci/yaml/README.md). You can check
+your CI syntax with the [GitLab CI/CD Lint Tool](https://gitlab.com/ci/lint).
 
-Let's go a little further.
+The following topics show other examples of other options you can add to your CI/CD file.
 
-### Branching
+## Deploy specific branches to a Pages site
 
-If you use GitLab as a version control platform, you will have your
-branching strategy to work on your project. Meaning, you will have
-other branches in your project, but you'll want only pushes to the
-default branch (usually `master`) to be deployed to your website.
-To do that, we need to add another line to our CI, telling the Runner
-to only perform that _job_ called `pages` on the `master` branch `only`:
+You may want to deploy to a Pages site only from specific branches.
+
+You can add another line to `.gitlab-ci.yml`, which tells the Runner
+to perform the job called `pages` on the `master` branch **only**:
 
 ```yaml
-image: ruby:2.6
+image: ruby:2.7
 
 pages:
   script:
+  - gem install bundler
   - bundle install
   - bundle exec jekyll build -d public
   artifacts:
@@ -214,21 +187,25 @@ pages:
   - master
 ```
 
-### Stages
+## Specify a stage to deploy
 
-Another interesting concept to keep in mind are build stages.
-Your web app can pass through a lot of tests and other tasks
-until it's deployed to staging or production environments.
-There are three default stages on GitLab CI/CD: build, test,
-and deploy. To specify which stage your _job_ is running,
-simply add another line to your CI:
+There are three default stages for GitLab CI/CD: build, test,
+and deploy.
+
+If you want to test your script and check the built site before deploying
+to production, you can run the test exactly as it will run when you
+push to `master`.
+
+To specify a stage for your job to run in,
+add a `stage` line to your CI file:
 
 ```yaml
-image: ruby:2.6
+image: ruby:2.7
 
 pages:
   stage: deploy
   script:
+  - gem install bundler
   - bundle install
   - bundle exec jekyll build -d public
   artifacts:
@@ -238,20 +215,16 @@ pages:
   - master
 ```
 
-You might ask yourself: "why should I bother with stages
-at all?" Well, let's say you want to be able to test your
-script and check the built site before deploying your site
-to production. You want to run the test exactly as your
-script will do when you push to `master`. It's simple,
-let's add another task (_job_) to our CI, telling it to
-test every push to other branches, `except` the `master` branch:
+Now add another job to the CI file, telling it to
+test every push to other branches, **except** the `master` branch:
 
 ```yaml
-image: ruby:2.6
+image: ruby:2.7
 
 pages:
   stage: deploy
   script:
+  - gem install bundler
   - bundle install
   - bundle exec jekyll build -d public
   artifacts:
@@ -263,6 +236,7 @@ pages:
 test:
   stage: test
   script:
+  - gem install bundler
   - bundle install
   - bundle exec jekyll build -d test
   artifacts:
@@ -272,34 +246,31 @@ test:
   - master
 ```
 
-The `test` job is running on the stage `test`, Jekyll
-will build the site in a directory called `test`, and
-this job will affect all the branches except `master`.
+When the `test` job runs in the `test` stage, Jekyll
+builds the site in a directory called `test`. The job affects
+all branches except `master`.
 
-The best benefit of applying _stages_ to different
-_jobs_ is that every job in the same stage builds in
-parallel. So, if your web app needs more than one test
-before being deployed, you can run all your test at the
-same time, it's not necessary to wait one test to finish
-to run the other. Of course, this is just a brief
-introduction of GitLab CI/CD and GitLab Runner, which are
-tools much more powerful than that. This is what you
-need to be able to create and tweak your builds for
-your GitLab Pages site.
+When you apply stages to different jobs, every job in the same
+stage builds in parallel. If your web application needs more than
+one test before being deployed, you can run all your tests at the
+same time.
 
-### Before Script
+## Remove duplicate commands
 
-To avoid running the same script multiple times across
-your _jobs_, you can add the parameter `before_script`,
-in which you specify which commands you want to run for
-every single _job_. In our example, notice that we run
-`bundle install` for both jobs, `pages` and `test`.
-We don't need to repeat it:
+To avoid running the same scripts for each job, you can add the
+parameter `before_script`. In this section, specify the commands
+you want to run for every job.
+
+In the example, `gem install bundler` and `bundle install` were running
+for both jobs, `pages` and `test`.
+
+Move these commands to a `before_script` section:
 
 ```yaml
-image: ruby:2.6
+image: ruby:2.7
 
 before_script:
+  - gem install bundler
   - bundle install
 
 pages:
@@ -323,22 +294,23 @@ test:
   - master
 ```
 
-### Caching Dependencies
+## Build faster with cached dependencies
 
-If you want to cache the installation files for your
-projects dependencies, for building faster, you can
-use the parameter `cache`. For this example, we'll
-cache Jekyll dependencies in a `vendor` directory
-when we run `bundle install`:
+To build faster, you can cache the installation files for your
+project's dependencies by using the `cache` parameter.
+
+This example caches Jekyll dependencies in a `vendor` directory
+when you run `bundle install`:
 
 ```yaml
-image: ruby:2.6
+image: ruby:2.7
 
 cache:
   paths:
   - vendor/
 
 before_script:
+  - gem install bundler
   - bundle install --path vendor
 
 pages:
@@ -362,36 +334,31 @@ test:
   - master
 ```
 
-For this specific case, we need to exclude `/vendor`
-from Jekyll `_config.yml` file, otherwise Jekyll will
-understand it as a regular directory to build
-together with the site:
+In this case, we need to exclude the `/vendor`
+directory from the list of folders Jekyll builds. Otherwise, Jekyll
+will try to build the directory contents along with the site.
+
+In the root directory, create a file called `_config.yml`
+and add this content:
 
 ```yaml
 exclude:
   - vendor
 ```
 
-There we go! Now our GitLab CI/CD not only builds our website,
-but also **continuously test** pushes to feature-branches,
+Now GitLab CI/CD not only builds the website,
+but also pushes with **continuous tests** to feature-branches,
 **caches** dependencies installed with Bundler, and
-**continuously deploy** every push to the `master` branch.
+**continuously deploys** every push to the `master` branch.
 
-## Advanced GitLab CI for GitLab Pages
+## Related topics
 
-What you can do with GitLab CI/CD is pretty much up to your
-creativity. Once you get used to it, you start creating
-awesome scripts that automate most of tasks you'd do
-manually in the past. Read through the
-[documentation of GitLab CI/CD](../../../ci/yaml/README.md)
-to understand how to go even further on your scripts.
+For more information, see the following blog posts.
 
-- On this blog post, understand the concept of
-  [using GitLab CI/CD `environments` to deploy your
+- [Use GitLab CI/CD `environments` to deploy your
   web app to staging and production](https://about.gitlab.com/blog/2016/08/26/ci-deployment-and-environments/).
-- On this post, learn [how to run jobs sequentially,
-  in parallel, or build a custom pipeline](https://about.gitlab.com/blog/2016/07/29/the-basics-of-gitlab-ci/)
-- On this blog post, we go through the process of
-  [pulling specific directories from different projects](https://about.gitlab.com/blog/2016/12/07/building-a-new-gitlab-docs-site-with-nanoc-gitlab-ci-and-gitlab-pages/)
-  to deploy this website you're looking at, <https://docs.gitlab.com>.
-- On this blog post, we teach you [how to use GitLab Pages to produce a code coverage report](https://about.gitlab.com/blog/2016/11/03/publish-code-coverage-report-with-gitlab-pages/).
+- Learn [how to run jobs sequentially,
+  in parallel, or build a custom pipeline](https://about.gitlab.com/blog/2016/07/29/the-basics-of-gitlab-ci/).
+- Learn [how to pull specific directories from different projects](https://about.gitlab.com/blog/2016/12/07/building-a-new-gitlab-docs-site-with-nanoc-gitlab-ci-and-gitlab-pages/)
+  to deploy this website, <https://docs.gitlab.com>.
+- Learn [how to use GitLab Pages to produce a code coverage report](https://about.gitlab.com/blog/2016/11/03/publish-code-coverage-report-with-gitlab-pages/).

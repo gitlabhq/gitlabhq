@@ -1,3 +1,10 @@
+---
+stage: Enablement
+group: Geo
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+type: howto
+---
+
 # Geo security review (Q&A) **(PREMIUM ONLY)**
 
 The following security review of the Geo feature set focuses on security aspects of

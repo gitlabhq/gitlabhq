@@ -40,10 +40,10 @@ export default class U2FAuthenticate {
     this.signRequests = u2fParams.sign_requests.map(request => omit(request, 'challenge'));
 
     this.templates = {
-      setup: '#js-authenticate-u2f-setup',
-      inProgress: '#js-authenticate-u2f-in-progress',
-      error: '#js-authenticate-u2f-error',
-      authenticated: '#js-authenticate-u2f-authenticated',
+      setup: '#js-authenticate-token-2fa-setup',
+      inProgress: '#js-authenticate-token-2fa-in-progress',
+      error: '#js-authenticate-token-2fa-error',
+      authenticated: '#js-authenticate-token-2fa-authenticated',
     };
   }
 
@@ -88,7 +88,7 @@ export default class U2FAuthenticate {
       error_message: error.message(),
       error_code: error.errorCode,
     });
-    return this.container.find('#js-u2f-try-again').on('click', this.renderInProgress);
+    return this.container.find('#js-token-2fa-try-again').on('click', this.renderInProgress);
   }
 
   renderAuthenticated(deviceResponse) {

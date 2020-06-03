@@ -13,10 +13,10 @@ describe('U2FAuthenticate', () => {
   beforeEach(() => {
     loadFixtures('u2f/authenticate.html');
     u2fDevice = new MockU2FDevice();
-    container = $('#js-authenticate-u2f');
+    container = $('#js-authenticate-token-2fa');
     component = new U2FAuthenticate(
       container,
-      '#js-login-u2f-form',
+      '#js-login-token-2fa-form',
       {
         sign_requests: [],
       },
@@ -92,7 +92,7 @@ describe('U2FAuthenticate', () => {
         u2fDevice.respondToAuthenticateRequest({
           errorCode: 'error!',
         });
-        const retryButton = container.find('#js-u2f-try-again');
+        const retryButton = container.find('#js-token-2fa-try-again');
         retryButton.trigger('click');
         setupButton = container.find('#js-login-u2f-device');
         setupButton.trigger('click');
