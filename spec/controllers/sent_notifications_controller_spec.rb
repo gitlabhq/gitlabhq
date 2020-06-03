@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe SentNotificationsController do
+RSpec.describe SentNotificationsController do
   let(:user) { create(:user) }
   let(:project) { create(:project, :public) }
   let(:private_project) { create(:project, :private) }

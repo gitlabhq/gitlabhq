@@ -7,47 +7,49 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # Incident Management
 
 GitLab offers solutions for handling incidents in your applications and services,
-from setting up an alert with Prometheus, to receiving a notification through a
-monitoring tool like Slack, and [setting up Zoom calls](#zoom-integration-in-issues) with your
-support team. Incidents can display [metrics](#embed-metrics-in-incidents-and-issues)
-and [logs](#view-logs-from-metrics-panel).
+such as setting up Prometheus alerts, displaying metrics, and sending notifications.
 
 ## Configure incidents **(ULTIMATE)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/4925) in GitLab Ultimate 11.11.
 
-You can enable or disable Incident Management features in your project's
-**{settings}** **Settings > Operations > Incidents**. Issues can be created for
-each alert triggered, and separate email notifications can be sent to users with
-[Developer permissions](../permissions.md). Appropriately configured alerts include an
+You can enable or disable Incident Management features in the GitLab user interface
+to create issues when alerts are triggered:
+
+1. Navigate to **{settings}** **Settings > Operations > Incidents** and expand
+   **Incidents**:
+
+   ![Incident Management Settings](img/incident_management_settings.png)
+
+1. For GitLab versions 11.11 and greater, you can select the **Create an issue**
+   checkbox to create an issue based on your own
+   [issue templates](../project/description_templates.md#creating-issue-templates).
+   For more information, see
+   [Taking Action on Incidents](../project/integrations/prometheus.md#taking-action-on-incidents-ultimate) **(ULTIMATE)**.
+1. To create issues from alerts, select the template in the **Issue Template**
+   select box.
+1. To send [separate email notifications](#notify-developers-of-alerts) to users
+   with [Developer permissions](../permissions.md), select
+   **Send a separate email notification to Developers**.
+1. Click **Save changes**.
+
+Appropriately configured alerts include an
 [embedded chart](../project/integrations/prometheus.md#embedding-metrics-based-on-alerts-in-incident-issues)
 for the query corresponding to the alert. You can also configure GitLab to
 [close issues](../project/integrations/prometheus.md#taking-action-on-incidents-ultimate)
 when you receive notification that the alert is resolved.
 
-![Incident Management Settings](img/incident_management_settings.png)
-
-### Create issues from alerts
-
-You can create GitLab issues from an alert notification. These issues contain
-information about the alerts to help you diagnose the source of the alerts.
-
-1. Visit your project's **{settings}** **Settings > Operations > Incidents**.
-1. Select the **Create an issue** checkbox for GitLab to create an issue from
-   the incident.
-1. Select the template from the **Issue Template** dropdown.
-   You can create your own [issue templates](../project/description_templates.md#creating-issue-templates)
-   to [use within Incident Management](../project/integrations/prometheus.md#taking-action-on-incidents-ultimate).
-1. Click **Save changes**.
-
-## Notify developers of alerts
+### Notify developers of alerts
 
 GitLab can react to the alerts triggered from your applications and services
-by creating issues and alerting developers through email. GitLab sends these emails
-to [owners and maintainers](../permissions.md) of the project. They contain details
-of the alert, and a link for more information.
+by creating issues and alerting developers through email. By default, GitLab
+sends these emails to [owners and maintainers](../permissions.md) of the project.
+These emails contain details of the alert, and a link for more information.
 
-### Configure Prometheus alerts
+To send separate email notifications to users with
+[Developer permissions](../permissions.md), see [Configure incidents](#configure-incidents-ultimate).
+
+## Configure Prometheus alerts
 
 You can set up Prometheus alerts in:
 
@@ -57,7 +59,7 @@ You can set up Prometheus alerts in:
 Prometheus alerts are created by the special Alert Bot user. You can't remove this
 user, but it does not count toward your license limit.
 
-### Configure external generic alerts
+## Configure external generic alerts
 
 GitLab can accept alerts from any source through a generic webhook receiver. When
 [configuring the generic alerts integration](../project/integrations/generic_alerts.md),
@@ -65,7 +67,7 @@ GitLab creates a unique endpoint which receives a JSON-formatted, customizable p
 
 ## Embed metrics in incidents and issues
 
-You can embed metrics anywhere GitLab Markdown is used, such as descriptions,
+You can embed metrics anywhere [GitLab Markdown](../markdown.md) is used, such as descriptions,
 comments on issues, and merge requests. Embedding metrics helps you share them
 when discussing incidents or performance issues. You can output the dashboard directly
 into any issue, merge request, epic, or any other Markdown text field in GitLab
@@ -78,10 +80,9 @@ in incidents and issue templates.
 
 ### Context menu
 
-From each of the embedded metrics panels, you can access more details
-about the data you're viewing from a context menu. You can access the context menu
-by clicking the **{ellipsis_v}** **More actions** dropdown box above the
-upper right corner of the panel. The options are:
+You can view more details about an embedded metrics panel from the context menu.
+To access the context menu, click the **{ellipsis_v}** **More actions** dropdown box
+above the upper right corner of the panel. The options are:
 
 - [View logs](#view-logs-from-metrics-panel).
 - **Download CSV** - Data from embedded charts can be
@@ -97,16 +98,16 @@ incident and need to [explore logs](../project/integrations/prometheus.md#view-l
 from across your application. These logs help you understand what is affecting
 your application's performance and resolve any problems.
 
-## Slack integration
+## Integrate incidents with Slack
 
 Slack slash commands allow you to control GitLab and view GitLab content without leaving Slack.
 
 Learn how to [set up Slack slash commands](../project/integrations/slack_slash_commands.md)
 and how to [use the available slash commands](../../integration/slash_commands.md).
 
-## Zoom integration in issues
+## Integrate issues with Zoom
 
 GitLab enables you to [associate a Zoom meeting with an issue](../project/issues/associate_zoom_meeting.md)
 for synchronous communication during incident management. After starting a Zoom
-call for an incident, you can associate the conference call with an issue, so your
-team members can join without requesting a link.
+call for an incident, you can associate the conference call with an issue. Your
+team members can join the Zoom call without requesting a link.

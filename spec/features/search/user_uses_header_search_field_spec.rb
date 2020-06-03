@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'User uses header search field', :js do
+RSpec.describe 'User uses header search field', :js do
   include FilteredSearchHelpers
 
   let(:project) { create(:project) }

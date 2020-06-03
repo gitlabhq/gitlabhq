@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Snippet', :js do
+RSpec.describe 'Snippet', :js do
   let(:project) { create(:project, :repository) }
   let(:snippet) { create(:personal_snippet, :public, file_name: file_name, content: content) }
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe SearchController do
+RSpec.describe SearchController do
   include ExternalAuthorizationServiceHelpers
 
   let(:user) { create(:user) }

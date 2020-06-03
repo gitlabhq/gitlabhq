@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Oauth::ApplicationsController do
+RSpec.describe Oauth::ApplicationsController do
   let(:user) { create(:user) }
   let(:application) { create(:oauth_application, owner: user) }
 

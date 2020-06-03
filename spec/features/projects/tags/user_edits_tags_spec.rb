@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Project > Tags', :js do
+RSpec.describe 'Project > Tags', :js do
   include DropzoneHelper
 
   let(:user) { create(:user) }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Disable individual triggers' do
+RSpec.describe 'Disable individual triggers' do
   include_context 'project service activation'
 
   let(:checkbox_selector) { 'input[type=checkbox][id$=_events]' }

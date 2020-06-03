@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'User views Release', :js do
+RSpec.describe 'User views Release', :js do
   let(:project) { create(:project, :repository) }
   let(:release) { create(:release, project: project, name: 'The first release' ) }
   let(:user) { create(:user) }

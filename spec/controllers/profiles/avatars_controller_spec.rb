@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Profiles::AvatarsController do
+RSpec.describe Profiles::AvatarsController do
   let(:user) { create(:user, avatar: fixture_file_upload("spec/fixtures/dk.png")) }
 
   before do

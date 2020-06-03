@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Projects::Registry::RepositoriesController do
+RSpec.describe Projects::Registry::RepositoriesController do
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project, :private) }
 

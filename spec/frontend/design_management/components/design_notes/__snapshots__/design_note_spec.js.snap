@@ -50,12 +50,18 @@ exports[`Design note component should match the snapshot 1`] = `
       </span>
     </div>
      
-    <!---->
+    <div
+      class="gl-display-flex"
+    >
+       
+      <!---->
+    </div>
   </div>
    
   <div
     class="note-text js-note-text md"
     data-qa-selector="note_content"
   />
+   
 </timeline-entry-item-stub>
 `;

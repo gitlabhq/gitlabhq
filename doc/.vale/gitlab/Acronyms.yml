@@ -16,6 +16,7 @@ exceptions:
   - AWS
   - CNAME
   - CSS
+  - CSV
   - DNS
   - GET
   - GNU

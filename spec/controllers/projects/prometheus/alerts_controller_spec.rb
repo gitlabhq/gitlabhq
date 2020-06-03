@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Projects::Prometheus::AlertsController do
+RSpec.describe Projects::Prometheus::AlertsController do
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project) }
   let_it_be(:environment) { create(:environment, project: project) }

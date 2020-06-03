@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Projects tree', :js do
+RSpec.describe 'Projects tree', :js do
   let(:user) { create(:user) }
   let(:project) { create(:project, :repository) }
   let(:gravatar_enabled) { true }

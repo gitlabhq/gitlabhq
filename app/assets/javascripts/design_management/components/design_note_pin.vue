@@ -13,7 +13,7 @@ export default {
       required: true,
     },
     label: {
-      type: String,
+      type: Number,
       required: false,
       default: null,
     },

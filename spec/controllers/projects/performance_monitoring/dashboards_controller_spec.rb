@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Projects::PerformanceMonitoring::DashboardsController do
+RSpec.describe Projects::PerformanceMonitoring::DashboardsController do
   let_it_be(:user) { create(:user) }
   let_it_be(:namespace) { create(:namespace) }
   let!(:project) { create(:project, :repository, name: 'dashboard-project', namespace: namespace) }

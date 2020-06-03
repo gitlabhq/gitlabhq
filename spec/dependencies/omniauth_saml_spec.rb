@@ -3,7 +3,7 @@
 require 'spec_helper'
 require 'omniauth/strategies/saml'
 
-describe 'processing of SAMLResponse in dependencies' do
+RSpec.describe 'processing of SAMLResponse in dependencies' do
   let(:mock_saml_response) { File.read('spec/fixtures/authentication/saml_response.xml') }
   let(:saml_strategy) { OmniAuth::Strategies::SAML.new({}) }
   let(:session_mock) { {} }

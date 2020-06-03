@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-shared_examples_for 'snippet editor' do
+RSpec.shared_examples_for 'snippet editor' do
   include_context 'includes Spam constants'
 
   def description_field
@@ -122,7 +122,7 @@ shared_examples_for 'snippet editor' do
   end
 end
 
-describe 'User creates snippet', :js do
+RSpec.describe 'User creates snippet', :js do
   let_it_be(:user) { create(:user) }
 
   it_behaves_like "snippet editor"

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'User activates Slack notifications' do
+RSpec.describe 'User activates Slack notifications' do
   include_context 'project service activation'
 
   context 'when service is not configured yet' do

@@ -66,7 +66,7 @@ module Banzai
       # links have `gfm` and `gfm-issue` class names attached for styling.
       def issue_link_filter(text, link_content: nil)
         self.class.references_in(text, issue_reference_pattern) do |match, id|
-          url = url_for_issue(id, project, only_path: context[:only_path])
+          url = url_for_issue(id)
           klass = reference_class(:issue)
           data  = data_attribute(project: project.id, external_issue: id)
           content = link_content || match
@@ -77,8 +77,19 @@ module Banzai
         end
       end
 
-      def url_for_issue(*args)
-        IssuesHelper.url_for_issue(*args)
+      def url_for_issue(issue_id)
+        return '' if project.nil?
+
+        url = if only_path?
+                project.external_issue_tracker.issue_path(issue_id)
+              else
+                project.external_issue_tracker.issue_url(issue_id)
+              end
+
+        # Ensure we return a valid URL to prevent possible XSS.
+        URI.parse(url).to_s
+      rescue URI::InvalidURIError
+        ''
       end
 
       def default_issues_tracker?

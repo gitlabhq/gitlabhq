@@ -5,6 +5,7 @@ require 'spec_helper'
 describe ProjectPolicy do
   include ExternalAuthorizationServiceHelpers
   include_context 'ProjectPolicy context'
+  let_it_be(:other_user) { create(:user) }
   let_it_be(:guest) { create(:user) }
   let_it_be(:reporter) { create(:user) }
   let_it_be(:developer) { create(:user) }
@@ -163,7 +164,7 @@ describe ProjectPolicy do
     subject { described_class.new(owner, project) }
 
     it 'disallows all permissions when the feature is disabled' do
-      project.project_feature.update(merge_requests_access_level: ProjectFeature::DISABLED)
+      project.project_feature.update!(merge_requests_access_level: ProjectFeature::DISABLED)
 
       mr_permissions = [:create_merge_request_from, :read_merge_request,
                         :update_merge_request, :admin_merge_request,
@@ -215,7 +216,7 @@ describe ProjectPolicy do
       subject { described_class.new(owner, project) }
 
       before do
-        project.project_feature.update(builds_access_level: ProjectFeature::DISABLED)
+        project.project_feature.update!(builds_access_level: ProjectFeature::DISABLED)
       end
 
       it 'disallows all permissions except pipeline when the feature is disabled' do
@@ -235,7 +236,7 @@ describe ProjectPolicy do
       subject { described_class.new(guest, project) }
 
       before do
-        project.project_feature.update(builds_access_level: ProjectFeature::PRIVATE)
+        project.project_feature.update!(builds_access_level: ProjectFeature::PRIVATE)
       end
 
       it 'disallows pipeline and commit_status permissions' do
@@ -250,22 +251,54 @@ describe ProjectPolicy do
   end
 
   context 'repository feature' do
-    subject { described_class.new(owner, project) }
-
-    it 'disallows all permissions when the feature is disabled' do
-      project.project_feature.update(repository_access_level: ProjectFeature::DISABLED)
-
-      repository_permissions = [
+    let(:repository_permissions) do
+      [
         :create_pipeline, :update_pipeline, :admin_pipeline, :destroy_pipeline,
         :create_build, :read_build, :update_build, :admin_build, :destroy_build,
         :create_pipeline_schedule, :read_pipeline_schedule, :update_pipeline_schedule, :admin_pipeline_schedule, :destroy_pipeline_schedule,
         :create_environment, :read_environment, :update_environment, :admin_environment, :destroy_environment,
         :create_cluster, :read_cluster, :update_cluster, :admin_cluster,
         :create_deployment, :read_deployment, :update_deployment, :admin_deployment, :destroy_deployment,
-        :destroy_release
+        :destroy_release, :download_code, :build_download_code
       ]
+    end
 
-      expect_disallowed(*repository_permissions)
+    context 'when user is a project member' do
+      subject { described_class.new(owner, project) }
+
+      context 'when it is disabled' do
+        before do
+          project.project_feature.update!(
+            repository_access_level: ProjectFeature::DISABLED,
+            merge_requests_access_level: ProjectFeature::DISABLED,
+            builds_access_level: ProjectFeature::DISABLED,
+            forking_access_level: ProjectFeature::DISABLED
+          )
+        end
+
+        it 'disallows all permissions' do
+          expect_disallowed(*repository_permissions)
+        end
+      end
+    end
+
+    context 'when user is some other user' do
+      subject { described_class.new(other_user, project) }
+
+      context 'when access level is private' do
+        before do
+          project.project_feature.update!(
+            repository_access_level: ProjectFeature::PRIVATE,
+            merge_requests_access_level: ProjectFeature::PRIVATE,
+            builds_access_level: ProjectFeature::PRIVATE,
+            forking_access_level: ProjectFeature::PRIVATE
+          )
+        end
+
+        it 'disallows all permissions' do
+          expect_disallowed(*repository_permissions)
+        end
+      end
     end
   end
 
@@ -547,7 +580,7 @@ describe ProjectPolicy do
 
       context 'feature enabled' do
         before do
-          project.project_feature.update(metrics_dashboard_access_level: ProjectFeature::ENABLED)
+          project.project_feature.update!(metrics_dashboard_access_level: ProjectFeature::ENABLED)
         end
 
         context 'with reporter' do
@@ -611,7 +644,7 @@ describe ProjectPolicy do
 
       context 'feature enabled' do
         before do
-          project.project_feature.update(metrics_dashboard_access_level: ProjectFeature::ENABLED)
+          project.project_feature.update!(metrics_dashboard_access_level: ProjectFeature::ENABLED)
         end
 
         context 'with reporter' do
@@ -696,7 +729,7 @@ describe ProjectPolicy do
 
     context 'feature disabled' do
       before do
-        project.project_feature.update(metrics_dashboard_access_level: ProjectFeature::DISABLED)
+        project.project_feature.update!(metrics_dashboard_access_level: ProjectFeature::DISABLED)
       end
 
       context 'with reporter' do

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Projects::IssuesController do
+RSpec.describe Projects::IssuesController do
   include ProjectForksHelper
   include_context 'includes Spam constants'
 

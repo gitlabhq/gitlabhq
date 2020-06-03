@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Projects::Serverless::FunctionsController do
+RSpec.describe Projects::Serverless::FunctionsController do
   include KubernetesHelpers
   include ReactiveCachingHelpers
 

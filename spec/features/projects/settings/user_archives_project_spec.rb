@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Projects > Settings > User archives a project' do
+RSpec.describe 'Projects > Settings > User archives a project' do
   let(:user) { create(:user) }
 
   before do

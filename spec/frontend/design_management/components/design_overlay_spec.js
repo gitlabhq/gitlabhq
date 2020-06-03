@@ -12,6 +12,7 @@ describe('Design overlay component', () => {
   const mockDimensions = { width: 100, height: 100 };
   const mockNoteNotAuthorised = {
     id: 'note-not-authorised',
+    index: 1,
     discussion: { id: 'discussion-not-authorised' },
     position: {
       x: 1,
@@ -19,6 +20,7 @@ describe('Design overlay component', () => {
       ...mockDimensions,
     },
     userPermissions: {},
+    resolved: false,
   };
 
   const findOverlay = () => wrapper.find('.image-diff-overlay');
@@ -43,6 +45,7 @@ describe('Design overlay component', () => {
           top: '0',
           left: '0',
         },
+        resolvedDiscussionsExpanded: false,
         ...props,
       },
       data() {
@@ -88,19 +91,46 @@ describe('Design overlay component', () => {
   });
 
   describe('with notes', () => {
-    beforeEach(() => {
+    it('should render only the first note', () => {
       createComponent({
         notes,
       });
+      expect(findAllNotes()).toHaveLength(1);
     });
 
-    it('should render a correct amount of notes', () => {
-      expect(findAllNotes()).toHaveLength(notes.length);
-    });
+    describe('with resolved discussions toggle expanded', () => {
+      beforeEach(() => {
+        createComponent({
+          notes,
+          resolvedDiscussionsExpanded: true,
+        });
+      });
 
-    it('should have a correct style for each note badge', () => {
-      expect(findFirstBadge().attributes().style).toBe('left: 10px; top: 15px;');
-      expect(findSecondBadge().attributes().style).toBe('left: 50px; top: 50px;');
+      it('should render all notes', () => {
+        expect(findAllNotes()).toHaveLength(notes.length);
+      });
+
+      it('should have set the correct position for each note badge', () => {
+        expect(findFirstBadge().attributes().style).toBe('left: 10px; top: 15px;');
+        expect(findSecondBadge().attributes().style).toBe('left: 50px; top: 50px;');
+      });
+
+      it('should apply resolved class to the resolved note pin', () => {
+        expect(findSecondBadge().classes()).toContain('resolved');
+      });
+
+      it('when there is an active discussion, should apply inactive class to all pins besides the active one', () => {
+        wrapper.setData({
+          activeDiscussion: {
+            id: notes[0].id,
+            source: 'discussion',
+          },
+        });
+
+        return wrapper.vm.$nextTick().then(() => {
+          expect(findSecondBadge().classes()).toContain('inactive');
+        });
+      });
     });
 
     it('should recalculate badges positions on window resize', () => {
@@ -142,19 +172,6 @@ describe('Design overlay component', () => {
       return wrapper.vm.$nextTick().then(() => {
         findFirstBadge().trigger('mouseup', { clientX: position.x, clientY: position.y });
         expect(mutate).toHaveBeenCalledWith(mutationVariables);
-      });
-    });
-
-    it('when there is an active discussion, should apply inactive class to all pins besides the active one', () => {
-      wrapper.setData({
-        activeDiscussion: {
-          id: notes[0].id,
-          source: 'discussion',
-        },
-      });
-
-      return wrapper.vm.$nextTick().then(() => {
-        expect(findSecondBadge().classes()).toContain('inactive');
       });
     });
   });

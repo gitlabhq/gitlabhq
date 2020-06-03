@@ -53,10 +53,10 @@ describe('extractDiscussions', () => {
 
   it('discards the edges.node artifacts of GraphQL', () => {
     expect(extractDiscussions(discussions)).toEqual([
-      { id: 1, notes: ['a'] },
-      { id: 2, notes: ['b'] },
-      { id: 3, notes: ['c'] },
-      { id: 4, notes: ['d'] },
+      { id: 1, notes: ['a'], index: 1 },
+      { id: 2, notes: ['b'], index: 2 },
+      { id: 3, notes: ['c'], index: 3 },
+      { id: 4, notes: ['d'], index: 4 },
     ]);
   });
 });

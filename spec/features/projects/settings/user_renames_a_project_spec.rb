@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Projects > Settings > User renames a project' do
+RSpec.describe 'Projects > Settings > User renames a project' do
   let(:user) { create(:user) }
   let(:project) { create(:project, namespace: user.namespace, path: 'gitlab', name: 'sample') }
 

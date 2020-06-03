@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'ActionCable logging', :js do
+RSpec.describe 'ActionCable logging', :js do
   let_it_be(:project) { create(:project, :public) }
   let_it_be(:issue) { create(:issue, project: project) }
   let_it_be(:user) { create(:user) }

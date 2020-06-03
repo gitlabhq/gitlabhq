@@ -21,8 +21,9 @@ export const extractNodes = elements => elements.edges.map(({ node }) => node);
  */
 
 export const extractDiscussions = discussions =>
-  discussions.nodes.map(discussion => ({
+  discussions.nodes.map((discussion, index) => ({
     ...discussion,
+    index: index + 1,
     notes: discussion.notes.nodes,
   }));
 

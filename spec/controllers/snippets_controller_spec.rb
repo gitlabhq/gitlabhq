@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe SnippetsController do
+RSpec.describe SnippetsController do
   let_it_be(:user) { create(:user) }
 
   describe 'GET #index' do

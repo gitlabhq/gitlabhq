@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe InvitesController do
+RSpec.describe InvitesController do
   let(:token) { '123456' }
   let(:user) { create(:user) }
   let(:member) { create(:project_member, invite_token: token, invite_email: 'test@abc.com', user: user) }

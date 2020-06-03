@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Embedded Snippets' do
+RSpec.describe 'Embedded Snippets' do
   let(:snippet) { create(:personal_snippet, :public, file_name: 'random_dir.rb', content: content) }
   let(:content) { "require 'fileutils'\nFileUtils.mkdir_p 'some/random_dir'\n" }
 

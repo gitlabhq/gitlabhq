@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Admin disables 2FA for a user' do
+RSpec.describe 'Admin disables 2FA for a user' do
   it 'successfully', :js do
     sign_in(create(:admin))
     user = create(:user, :two_factor)

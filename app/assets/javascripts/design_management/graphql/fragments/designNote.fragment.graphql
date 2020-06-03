@@ -10,6 +10,7 @@ fragment DesignNote on Note {
   body
   bodyHtml
   createdAt
+  resolved
   position {
     diffRefs {
       ...DesignDiffRefs

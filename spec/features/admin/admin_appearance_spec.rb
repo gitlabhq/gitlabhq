@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Admin Appearance' do
+RSpec.describe 'Admin Appearance' do
   let!(:appearance) { create(:appearance) }
 
   it 'Create new appearance' do

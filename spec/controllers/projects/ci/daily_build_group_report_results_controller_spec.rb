@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Projects::Ci::DailyBuildGroupReportResultsController do
+RSpec.describe Projects::Ci::DailyBuildGroupReportResultsController do
   describe 'GET index' do
     let(:project) { create(:project, :public, :repository) }
     let(:ref_path) { 'refs/heads/master' }

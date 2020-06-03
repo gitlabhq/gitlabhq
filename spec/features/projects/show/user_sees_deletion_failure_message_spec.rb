@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Projects > Show > User sees a deletion failure message' do
+RSpec.describe 'Projects > Show > User sees a deletion failure message' do
   let(:project) { create(:project, :empty_repo, pending_delete: true) }
 
   before do

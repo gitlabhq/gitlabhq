@@ -32,13 +32,15 @@ Example response:
       "id":2,
       "name":"awesome-v0.2.msi",
       "url":"http://192.168.10.15:3000/msi",
-      "external":true
+      "external":true,
+      "link_type":"other"
    },
    {
       "id":1,
       "name":"awesome-v0.2.dmg",
       "url":"http://192.168.10.15:3000",
-      "external":true
+      "external":true,
+      "link_type":"other"
    }
 ]
 ```
@@ -70,7 +72,8 @@ Example response:
    "id":1,
    "name":"awesome-v0.2.dmg",
    "url":"http://192.168.10.15:3000",
-   "external":true
+   "external":true,
+   "link_type":"other"
 }
 ```
 
@@ -87,7 +90,8 @@ POST /projects/:id/releases/:tag_name/assets/links
 | `id`          | integer/string | yes      | The ID or [URL-encoded path of the project](../README.md#namespaced-path-encoding). |
 | `tag_name`    | string         | yes      | The tag associated with the Release. |
 | `name`        | string         | yes      | The name of the link. |
-| `url`        | string         | yes      | The URL of the link. |
+| `url`         | string         | yes      | The URL of the link. |
+| `link_type`        | string         | no       | The type of the link: `other`, `runbook`, `image`, `package`. Defaults to `other`. |
 
 Example request:
 
@@ -106,7 +110,8 @@ Example response:
    "id":1,
    "name":"awesome-v0.2.dmg",
    "url":"http://192.168.10.15:3000",
-   "external":true
+   "external":true,
+   "link_type":"other"
 }
 ```
 
@@ -122,9 +127,10 @@ PUT /projects/:id/releases/:tag_name/assets/links/:link_id
 | ------------- | -------------- | -------- | --------------------------------------- |
 | `id`          | integer/string | yes      | The ID or [URL-encoded path of the project](../README.md#namespaced-path-encoding). |
 | `tag_name`    | string         | yes      | The tag associated with the Release. |
-| `link_id`    | integer         | yes      | The ID of the link. |
+| `link_id`     | integer         | yes      | The ID of the link. |
 | `name`        | string         | no | The name of the link. |
-| `url`        | string         | no | The URL of the link. |
+| `url`         | string         | no | The URL of the link. |
+| `link_type`        | string         | no       | The type of the link: `other`, `runbook`, `image`, `package`. Defaults to `other`. |
 
 NOTE: **NOTE**
 You have to specify at least one of `name` or `url`
@@ -132,7 +138,7 @@ You have to specify at least one of `name` or `url`
 Example request:
 
 ```shell
-curl --request PUT --data name="new name" --header "PRIVATE-TOKEN: n671WNGecHugsdEDPsyo" "https://gitlab.example.com/api/v4/projects/24/releases/v0.1/assets/links/1"
+curl --request PUT --data name="new name" --data link_type="runbook" --header "PRIVATE-TOKEN: n671WNGecHugsdEDPsyo" "https://gitlab.example.com/api/v4/projects/24/releases/v0.1/assets/links/1"
 ```
 
 Example response:
@@ -142,7 +148,8 @@ Example response:
    "id":1,
    "name":"new name",
    "url":"http://192.168.10.15:3000",
-   "external":true
+   "external":true,
+   "link_type":"runbook"
 }
 ```
 
@@ -173,6 +180,7 @@ Example response:
    "id":1,
    "name":"new name",
    "url":"http://192.168.10.15:3000",
-   "external":true
+   "external":true,
+   "link_type":"other"
 }
 ```

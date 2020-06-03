@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Projects::MergeRequests::CreationsController do
+RSpec.describe Projects::MergeRequests::CreationsController do
   let(:project) { create(:project, :repository) }
   let(:user)    { project.owner }
   let(:fork_project) { create(:forked_project_with_submodules) }

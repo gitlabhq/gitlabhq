@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Projects::PagesController do
+RSpec.describe Projects::PagesController do
   let(:user) { create(:user) }
   let(:project) { create(:project, :public) }
 

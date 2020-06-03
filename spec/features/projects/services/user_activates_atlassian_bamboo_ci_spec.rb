@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'User activates Atlassian Bamboo CI' do
+RSpec.describe 'User activates Atlassian Bamboo CI' do
   include_context 'project service activation'
 
   before do

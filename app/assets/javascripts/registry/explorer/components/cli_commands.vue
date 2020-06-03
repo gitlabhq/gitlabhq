@@ -11,7 +11,7 @@ import {
   COPY_BUILD_TITLE,
   PUSH_COMMAND_LABEL,
   COPY_PUSH_TITLE,
-} from '../constants';
+} from '../constants/index';
 
 export default {
   components: {

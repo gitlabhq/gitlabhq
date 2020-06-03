@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Private Group access' do
+RSpec.describe 'Private Group access' do
   include AccessMatchers
 
   let(:group)   { create(:group, :private) }

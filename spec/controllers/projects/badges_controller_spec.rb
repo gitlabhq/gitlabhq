@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Projects::BadgesController do
+RSpec.describe Projects::BadgesController do
   let(:project) { pipeline.project }
   let!(:pipeline) { create(:ci_empty_pipeline) }
   let(:user) { create(:user) }

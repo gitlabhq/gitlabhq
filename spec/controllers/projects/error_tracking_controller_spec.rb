@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Projects::ErrorTrackingController do
+RSpec.describe Projects::ErrorTrackingController do
   let_it_be(:project) { create(:project) }
   let_it_be(:user) { create(:user) }
 

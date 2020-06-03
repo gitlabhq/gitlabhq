@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Projects::TreeController do
+RSpec.describe Projects::TreeController do
   let(:project) { create(:project, :repository) }
   let(:user)    { create(:user) }
 

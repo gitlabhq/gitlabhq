@@ -1,9 +1,9 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
-import { s__ } from '~/locale';
 import List from './pages/list.vue';
 import Details from './pages/details.vue';
 import { decodeAndParse } from './utils';
+import { CONTAINER_REGISTRY_TITLE } from './constants/index';
 
 Vue.use(VueRouter);
 
@@ -17,7 +17,7 @@ export default function createRouter(base) {
         path: '/',
         component: List,
         meta: {
-          nameGenerator: () => s__('ContainerRegistry|Container Registry'),
+          nameGenerator: () => CONTAINER_REGISTRY_TITLE,
           root: true,
         },
       },

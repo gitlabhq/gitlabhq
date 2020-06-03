@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Projects::MattermostsController do
+RSpec.describe Projects::MattermostsController do
   let!(:project) { create(:project) }
   let!(:user) { create(:user) }
 

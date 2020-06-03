@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Projects::NotesController do
+RSpec.describe Projects::NotesController do
   include ProjectForksHelper
 
   let(:user)    { create(:user) }

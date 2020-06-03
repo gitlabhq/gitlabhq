@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'User searches for issues', :js do
+RSpec.describe 'User searches for issues', :js do
   let(:user) { create(:user) }
   let(:project) { create(:project, namespace: user.namespace) }
   let!(:issue1) { create(:issue, title: 'Foo', project: project) }

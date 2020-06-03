@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Projects::MergeRequests::ContentController do
+RSpec.describe Projects::MergeRequests::ContentController do
   let(:project) { create(:project, :repository) }
   let(:user) { create(:user) }
   let(:merge_request) { create(:merge_request, target_project: project, source_project: project) }

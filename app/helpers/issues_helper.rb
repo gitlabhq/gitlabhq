@@ -9,40 +9,6 @@ module IssuesHelper
     classes.join(' ')
   end
 
-  def url_for_issue(issue_iid, project = @project, options = {})
-    return '' if project.nil?
-
-    url =
-      if options[:internal]
-        url_for_internal_issue(issue_iid, project, options)
-      else
-        url_for_tracker_issue(issue_iid, project, options)
-      end
-
-    # Ensure we return a valid URL to prevent possible XSS.
-    URI.parse(url).to_s
-  rescue URI::InvalidURIError
-    ''
-  end
-
-  def url_for_tracker_issue(issue_iid, project, options)
-    if options[:only_path]
-      project.issues_tracker.issue_path(issue_iid)
-    else
-      project.issues_tracker.issue_url(issue_iid)
-    end
-  end
-
-  def url_for_internal_issue(issue_iid, project = @project, options = {})
-    helpers = Gitlab::Routing.url_helpers
-
-    if options[:only_path]
-      helpers.namespace_project_issue_path(namespace_id: project.namespace, project_id: project, id: issue_iid)
-    else
-      helpers.namespace_project_issue_url(namespace_id: project.namespace, project_id: project, id: issue_iid)
-    end
-  end
-
   def status_box_class(item)
     if item.try(:expired?)
       'status-box-expired'
@@ -168,11 +134,6 @@ module IssuesHelper
   def show_moved_service_desk_issue_warning?(issue)
     false
   end
-
-  # Required for Banzai::Filter::IssueReferenceFilter
-  module_function :url_for_issue
-  module_function :url_for_internal_issue
-  module_function :url_for_tracker_issue
 end
 
 IssuesHelper.prepend_if_ee('EE::IssuesHelper')

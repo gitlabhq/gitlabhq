@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Project > Settings > CI/CD > Container registry tag expiration policy', :js do
+RSpec.describe 'Project > Settings > CI/CD > Container registry tag expiration policy', :js do
   let(:user) { create(:user) }
   let(:project) { create(:project, namespace: user.namespace, container_registry_enabled: container_registry_enabled) }
   let(:container_registry_enabled) { true }

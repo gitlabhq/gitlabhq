@@ -26,7 +26,7 @@ describe('Design note pin component', () => {
   });
 
   it('should match the snapshot of note with index', () => {
-    createComponent({ label: '1' });
+    createComponent({ label: 1 });
     expect(wrapper.element).toMatchSnapshot();
   });
 

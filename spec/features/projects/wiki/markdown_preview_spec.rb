@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Projects > Wiki > User previews markdown changes', :js do
+RSpec.describe 'Projects > Wiki > User previews markdown changes', :js do
   let_it_be(:user) { create(:user) }
   let(:project) { create(:project, :wiki_repo, namespace: user.namespace) }
   let(:wiki_page) { create(:wiki_page, wiki: project.wiki, title: 'home', content: '[some link](other-page)') }

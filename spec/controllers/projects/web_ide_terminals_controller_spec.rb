@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Projects::WebIdeTerminalsController do
+RSpec.describe Projects::WebIdeTerminalsController do
   let_it_be(:owner) { create(:owner) }
   let_it_be(:admin) { create(:admin) }
   let_it_be(:maintainer) { create(:user) }

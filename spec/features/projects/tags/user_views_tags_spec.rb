@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-describe 'User views tags', :feature do
+RSpec.describe 'User views tags', :feature do
   context 'rss' do
     shared_examples 'has access to the tags RSS feed' do
       it do

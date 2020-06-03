@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'User activates Asana' do
+RSpec.describe 'User activates Asana' do
   include_context 'project service activation'
 
   it 'activates service', :js do

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Projects::ArtifactsController do
+RSpec.describe Projects::ArtifactsController do
   include RepoHelpers
 
   let(:user) { project.owner }

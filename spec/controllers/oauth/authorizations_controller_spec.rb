@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Oauth::AuthorizationsController do
+RSpec.describe Oauth::AuthorizationsController do
   let!(:application) { create(:oauth_application, scopes: 'api read_user', redirect_uri: 'http://example.com') }
   let(:params) do
     {

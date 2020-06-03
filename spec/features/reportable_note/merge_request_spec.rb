@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Reportable note on merge request', :js do
+RSpec.describe 'Reportable note on merge request', :js do
   let(:user) { create(:user) }
   let(:project) { create(:project, :repository) }
   let(:merge_request) { create(:merge_request, source_project: project) }

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-describe Projects::JobsController, :clean_gitlab_redis_shared_state do
+RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state do
   include ApiHelpers
   include HttpIOHelpers
 

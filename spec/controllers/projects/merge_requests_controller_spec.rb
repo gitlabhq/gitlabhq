@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Projects::MergeRequestsController do
+RSpec.describe Projects::MergeRequestsController do
   include ProjectForksHelper
   include Gitlab::Routing
 

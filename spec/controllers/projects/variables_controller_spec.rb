@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Projects::VariablesController do
+RSpec.describe Projects::VariablesController do
   let(:project) { create(:project) }
   let(:user) { create(:user) }
 

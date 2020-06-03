@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Snippets::NotesController do
+RSpec.describe Snippets::NotesController do
   let(:user) { create(:user) }
 
   let(:private_snippet)  { create(:personal_snippet, :private) }

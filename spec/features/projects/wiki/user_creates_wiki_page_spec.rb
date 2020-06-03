@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-describe "User creates wiki page" do
+RSpec.describe "User creates wiki page" do
   include WikiHelpers
 
   let(:user) { create(:user) }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe SessionsController do
+RSpec.describe SessionsController do
   include DeviseHelpers
   include LdapHelpers
 

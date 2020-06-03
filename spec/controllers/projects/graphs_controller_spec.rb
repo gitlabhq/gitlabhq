@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Projects::GraphsController do
+RSpec.describe Projects::GraphsController do
   let(:project) { create(:project, :repository) }
   let(:user)    { create(:user) }
 

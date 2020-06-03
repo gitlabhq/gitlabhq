@@ -2,7 +2,7 @@
 
 require('spec_helper')
 
-describe Projects::Settings::CiCdController do
+RSpec.describe Projects::Settings::CiCdController do
   let_it_be(:user) { create(:user) }
   let_it_be(:project_auto_devops) { create(:project_auto_devops) }
   let(:project) { project_auto_devops.project }

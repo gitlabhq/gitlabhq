@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'User views AsciiDoc page with includes', :js do
+RSpec.describe 'User views AsciiDoc page with includes', :js do
   let_it_be(:user) { create(:user) }
   let_it_be(:wiki_content_selector) { '[data-qa-selector=wiki_page_content]' }
   let(:project) { create(:project, :public, :wiki_repo) }

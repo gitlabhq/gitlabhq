@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Projects > Settings > For a forked project', :js do
+RSpec.describe 'Projects > Settings > For a forked project', :js do
   let(:user) { create(:user) }
   let(:project) { create(:project, :repository, create_templates: :issue) }
   let(:role) { :maintainer }

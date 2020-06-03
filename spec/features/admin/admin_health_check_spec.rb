@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe "Admin Health Check", :feature do
+RSpec.describe "Admin Health Check", :feature do
   include StubENV
   let_it_be(:admin) { create(:admin) }
 

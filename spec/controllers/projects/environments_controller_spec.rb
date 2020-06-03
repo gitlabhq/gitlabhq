@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Projects::EnvironmentsController do
+RSpec.describe Projects::EnvironmentsController do
   include MetricsDashboardHelpers
 
   let_it_be(:project) { create(:project) }

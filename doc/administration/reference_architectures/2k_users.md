@@ -8,7 +8,7 @@ For a full list of reference architectures, see
 > - **High Availability:** False
 > - **Test RPS rates:** API: 40 RPS, Web: 4 RPS, Git: 4 RPS
 
-| Service                                                      | Nodes | Configuration ([8](#footnotes)) | GCP           | AWS ([9](#footnotes)) | Azure([9](#footnotes)) |
+| Service                                                      | Nodes | Configuration ([8](#footnotes)) | GCP           | AWS                   | Azure          |
 |--------------------------------------------------------------|-------|---------------------------------|---------------|-----------------------|----------------|
 | External load balancing node ([6](#footnotes))               | 1     | 2 vCPU, 1.8GB Memory            | n1-highcpu-2  | c5.large              | F2s v2         |
 | Object Storage ([4](#footnotes))                             | -     | -                               | -             | -                     | -              |
@@ -85,6 +85,3 @@ For a full list of reference architectures, see
    or higher, are required for your CPU or Node counts accordingly. For more information, a
    [Sysbench](https://github.com/akopytov/sysbench) benchmark of the CPU can be found
    [here](https://gitlab.com/gitlab-org/quality/performance/-/wikis/Reference-Architectures/GCP-CPU-Benchmarks).
-
-1. AWS-equivalent and Azure-equivalent configurations are rough suggestions
-   and may change in the future. They have not yet been tested and validated.

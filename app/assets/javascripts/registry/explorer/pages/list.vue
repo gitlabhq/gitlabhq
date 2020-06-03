@@ -29,7 +29,7 @@ import {
   IMAGE_REPOSITORY_LIST_LABEL,
   EMPTY_RESULT_TITLE,
   EMPTY_RESULT_MESSAGE,
-} from '../constants';
+} from '../constants/index';
 
 export default {
   name: 'RegistryListApp',

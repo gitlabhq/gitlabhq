@@ -255,7 +255,7 @@ module.exports = {
     moduleIds: 'hashed',
     runtimeChunk: 'single',
     splitChunks: {
-      maxInitialRequests: 4,
+      maxInitialRequests: 20,
       cacheGroups: {
         default: false,
         common: () => ({

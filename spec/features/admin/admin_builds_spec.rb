@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Admin Builds' do
+RSpec.describe 'Admin Builds' do
   before do
     sign_in(create(:admin))
   end

@@ -52,6 +52,7 @@ describe API::Markdown do
     context "when arguments are valid" do
       let_it_be(:project) { create(:project) }
       let_it_be(:issue) { create(:issue, project: project) }
+      let(:issue_url) { "http://#{Gitlab.config.gitlab.host}/#{issue.project.namespace.path}/#{issue.project.path}/-/issues/#{issue.iid}" }
       let(:text) { ":tada: Hello world! :100: #{issue.to_reference}" }
 
       context "when not using gfm" do
@@ -88,7 +89,7 @@ describe API::Markdown do
                                         .and include('data-name="tada"')
                                         .and include('data-name="100"')
                                         .and include("#1")
-                                        .and exclude("<a href=\"#{IssuesHelper.url_for_issue(issue.iid, project)}\"")
+                                        .and exclude("<a href=\"#{issue_url}\"")
                                         .and exclude("#1</a>")
           end
         end
@@ -104,16 +105,16 @@ describe API::Markdown do
             expect(json_response["html"]).to include("Hello world!")
                                         .and include('data-name="tada"')
                                         .and include('data-name="100"')
-                                        .and include("<a href=\"#{IssuesHelper.url_for_issue(issue.iid, project)}\"")
+                                        .and include("<a href=\"#{issue_url}\"")
                                         .and include("#1</a>")
           end
         end
 
         context 'with a public project and confidential issue' do
-          let(:public_project)     { create(:project, :public) }
-          let(:confidential_issue) { create(:issue, :confidential, project: public_project, title: 'Confidential title') }
+          let(:public_project) { create(:project, :public) }
+          let(:issue) { create(:issue, :confidential, project: public_project, title: 'Confidential title') }
 
-          let(:text)   { ":tada: Hello world! :100: #{confidential_issue.to_reference}" }
+          let(:text)   { ":tada: Hello world! :100: #{issue.to_reference}" }
           let(:params) { { text: text, gfm: true, project: public_project.full_path } }
 
           shared_examples 'user without proper access' do
@@ -141,7 +142,7 @@ describe API::Markdown do
           end
 
           context 'when logged in as author' do
-            let(:user) { confidential_issue.author }
+            let(:user) { issue.author }
 
             it 'renders the title or link' do
               expect(response).to have_gitlab_http_status(:created)
@@ -149,7 +150,7 @@ describe API::Markdown do
               expect(json_response["html"]).to include('Hello world!')
                                           .and include('data-name="tada"')
                                           .and include('data-name="100"')
-                                          .and include("<a href=\"#{IssuesHelper.url_for_issue(confidential_issue.iid, public_project)}\"")
+                                          .and include("<a href=\"#{issue_url}\"")
                                           .and include("#1</a>")
             end
           end

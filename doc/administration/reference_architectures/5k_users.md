@@ -8,8 +8,8 @@ For a full list of reference architectures, see
 > - **High Availability:** True
 > - **Test RPS rates:** API: 100 RPS, Web: 10 RPS, Git: 10 RPS
 
-| Service                                                      | Nodes | Configuration ([8](#footnotes)) | GCP           | AWS ([9](#footnotes)) | Azure([9](#footnotes)) |
-|--------------------------------------------------------------|-------|---------------------------------|---------------|-----------------------|------------------------|
+| Service                                                      | Nodes | Configuration ([8](#footnotes)) | GCP           | AWS                   | Azure          |
+|--------------------------------------------------------------|-------|---------------------------------|---------------|-----------------------|----------------|
 | GitLab Rails ([1](#footnotes))                               | 3     | 16 vCPU, 14.4GB Memory          | n1-highcpu-16 | c5.4xlarge            | F16s v2        |
 | PostgreSQL                                                   | 3     | 2 vCPU, 7.5GB Memory            | n1-standard-2 | m5.large              | D2s v3         |
 | PgBouncer                                                    | 3     | 2 vCPU, 1.8GB Memory            | n1-highcpu-2  | c5.large              | F2s v2         |
@@ -71,6 +71,3 @@ For a full list of reference architectures, see
    or higher, are required for your CPU or Node counts accordingly. For more information, a
    [Sysbench](https://github.com/akopytov/sysbench) benchmark of the CPU can be found
    [here](https://gitlab.com/gitlab-org/quality/performance/-/wikis/Reference-Architectures/GCP-CPU-Benchmarks).
-
-1. AWS-equivalent and Azure-equivalent configurations are rough suggestions
-   and may change in the future. They have not yet been tested and validated.

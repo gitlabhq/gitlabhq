@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Profiles::EmailsController do
+RSpec.describe Profiles::EmailsController do
   let(:user) { create(:user) }
 
   before do

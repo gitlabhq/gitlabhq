@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Projects::WikisController do
+RSpec.describe Projects::WikisController do
   let_it_be(:project) { create(:project, :public, :repository) }
   let(:user) { project.owner }
   let(:project_wiki) { ProjectWiki.new(project, user) }

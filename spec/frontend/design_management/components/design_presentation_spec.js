@@ -17,7 +17,13 @@ describe('Design management design presentation component', () => {
   let wrapper;
 
   function createComponent(
-    { image, imageName, discussions = [], isAnnotating = false } = {},
+    {
+      image,
+      imageName,
+      discussions = [],
+      isAnnotating = false,
+      resolvedDiscussionsExpanded = false,
+    } = {},
     data = {},
     stubs = {},
   ) {
@@ -27,6 +33,7 @@ describe('Design management design presentation component', () => {
         imageName,
         discussions,
         isAnnotating,
+        resolvedDiscussionsExpanded,
       },
       stubs,
     });

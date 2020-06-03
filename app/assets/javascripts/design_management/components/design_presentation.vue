@@ -35,6 +35,10 @@ export default {
       required: false,
       default: 1,
     },
+    resolvedDiscussionsExpanded: {
+      type: Boolean,
+      required: true,
+    },
   },
   data() {
     return {
@@ -54,7 +58,10 @@ export default {
   },
   computed: {
     discussionStartingNotes() {
-      return this.discussions.map(discussion => discussion.notes[0]);
+      return this.discussions.map(discussion => ({
+        ...discussion.notes[0],
+        index: discussion.index,
+      }));
     },
     currentCommentForm() {
       return (this.isAnnotating && this.currentAnnotationPosition) || null;
@@ -305,6 +312,7 @@ export default {
         :notes="discussionStartingNotes"
         :current-comment-form="currentCommentForm"
         :disable-commenting="isDraggingDesign"
+        :resolved-discussions-expanded="resolvedDiscussionsExpanded"
         @openCommentForm="openCommentForm"
         @closeCommentForm="closeCommentForm"
         @moveNote="moveNote"

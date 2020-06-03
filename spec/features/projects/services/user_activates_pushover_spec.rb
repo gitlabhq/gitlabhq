@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'User activates Pushover' do
+RSpec.describe 'User activates Pushover' do
   include_context 'project service activation'
 
   before do

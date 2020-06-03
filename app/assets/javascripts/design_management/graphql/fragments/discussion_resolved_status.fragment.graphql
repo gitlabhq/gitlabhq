@@ -1,0 +1,9 @@
+fragment ResolvedStatus on Discussion {
+  resolvable
+  resolved
+  resolvedAt
+  resolvedBy {
+    name
+    webUrl
+  }
+}

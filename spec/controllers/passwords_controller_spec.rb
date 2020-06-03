@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe PasswordsController do
+RSpec.describe PasswordsController do
   describe '#check_password_authentication_available' do
     before do
       @request.env["devise.mapping"] = Devise.mappings[:user]

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Projects::ServicesController do
+RSpec.describe Projects::ServicesController do
   let(:project) { create(:project, :repository) }
   let(:user)    { create(:user) }
   let(:service) { create(:jira_service, project: project) }

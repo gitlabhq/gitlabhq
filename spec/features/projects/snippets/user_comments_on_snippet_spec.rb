@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Projects > Snippets > User comments on a snippet', :js do
+RSpec.describe 'Projects > Snippets > User comments on a snippet', :js do
   let_it_be(:project) { create(:project) }
   let_it_be(:user) { create(:user) }
   let_it_be(:snippet) { create(:project_snippet, :repository, project: project, author: user) }

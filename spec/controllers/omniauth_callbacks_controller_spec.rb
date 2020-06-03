@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe OmniauthCallbacksController, type: :controller do
+RSpec.describe OmniauthCallbacksController, type: :controller do
   include LoginHelpers
 
   describe 'omniauth' do

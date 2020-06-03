@@ -1,6 +1,7 @@
 #import "./designNote.fragment.graphql"
 #import "./designList.fragment.graphql"
 #import "./diffRefs.fragment.graphql"
+#import "./discussion_resolved_status.fragment.graphql"
 
 fragment DesignItem on Design {
   ...DesignListItem
@@ -12,6 +13,7 @@ fragment DesignItem on Design {
     nodes {
       id
       replyId
+      ...ResolvedStatus
       notes {
         nodes {
           ...DesignNote

@@ -1,0 +1,17 @@
+#import "../fragments/designNote.fragment.graphql"
+#import "../fragments/discussion_resolved_status.fragment.graphql"
+
+mutation toggleResolveDiscussion($id: ID!, $resolve: Boolean!) {
+  discussionToggleResolve(input: { id: $id, resolve: $resolve }) {
+    discussion {
+      id
+      ...ResolvedStatus
+      notes {
+        nodes {
+          ...DesignNote
+        }
+      }
+    }
+    errors
+  }
+}

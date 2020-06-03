@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Profiles::PersonalAccessTokensController do
+RSpec.describe Profiles::PersonalAccessTokensController do
   let(:user) { create(:user) }
   let(:token_attributes) { attributes_for(:personal_access_token) }
 

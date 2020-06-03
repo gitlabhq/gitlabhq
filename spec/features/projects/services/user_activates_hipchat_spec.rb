@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'User activates HipChat', :js do
+RSpec.describe 'User activates HipChat', :js do
   include_context 'project service activation'
 
   context 'with standart settings' do

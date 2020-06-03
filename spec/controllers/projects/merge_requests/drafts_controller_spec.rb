@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-describe Projects::MergeRequests::DraftsController do
+RSpec.describe Projects::MergeRequests::DraftsController do
   include RepoHelpers
 
   let(:project)       { create(:project, :repository) }

@@ -4451,9 +4451,6 @@ msgstr ""
 msgid "Click the button below to begin the install process by navigating to the Kubernetes page"
 msgstr ""
 
-msgid "Click the image where you'd like to start a new discussion"
-msgstr ""
-
 msgid "Click to expand it."
 msgstr ""
 
@@ -5526,6 +5523,9 @@ msgid "Collapse approvers"
 msgstr ""
 
 msgid "Collapse child epics"
+msgstr ""
+
+msgid "Collapse replies"
 msgstr ""
 
 msgid "Collapse sidebar"
@@ -7519,7 +7519,13 @@ msgstr ""
 msgid "DesignManagement|Cancel comment update confirmation"
 msgstr ""
 
+msgid "DesignManagement|Click the image where you'd like to start a new discussion"
+msgstr ""
+
 msgid "DesignManagement|Comment"
+msgstr ""
+
+msgid "DesignManagement|Comments you resolve can be viewed and unresolved by going to the \"Resolved Comments\" section below"
 msgstr ""
 
 msgid "DesignManagement|Could not add a new comment. Please try again."
@@ -7567,7 +7573,16 @@ msgstr ""
 msgid "DesignManagement|Keep comment"
 msgstr ""
 
+msgid "DesignManagement|Learn more about resolving comments"
+msgstr ""
+
 msgid "DesignManagement|Requested design version does not exist. Showing latest version instead"
+msgstr ""
+
+msgid "DesignManagement|Resolve thread"
+msgstr ""
+
+msgid "DesignManagement|Resolved Comments"
 msgstr ""
 
 msgid "DesignManagement|Save comment"
@@ -7580,6 +7595,9 @@ msgid "DesignManagement|The maximum number of designs allowed to be uploaded is 
 msgstr ""
 
 msgid "DesignManagement|To enable design management, you'll need to  %{requirements_link_start}meet the requirements%{requirements_link_end}. If you need help, reach out to our %{support_link_start}support team%{support_link_end} for assistance."
+msgstr ""
+
+msgid "DesignManagement|Unresolve thread"
 msgstr ""
 
 msgid "DesignManagement|Upload designs"
@@ -18657,6 +18675,9 @@ msgstr ""
 msgid "Resolved all discussions."
 msgstr ""
 
+msgid "Resolved by"
+msgstr ""
+
 msgid "Resolved by %{name}"
 msgstr ""
 
@@ -19421,6 +19442,9 @@ msgid "SecurityReports|Severity"
 msgstr ""
 
 msgid "SecurityReports|Status"
+msgstr ""
+
+msgid "SecurityReports|The rating \"unknown\" indicates that the underlying scanner doesn’t contain or provide a severity rating."
 msgstr ""
 
 msgid "SecurityReports|The security dashboard displays the latest security findings for projects you wish to monitor. Select \"Edit dashboard\" to add and remove projects."

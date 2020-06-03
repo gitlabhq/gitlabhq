@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Projects::Tags::ReleasesController do
+RSpec.describe Projects::Tags::ReleasesController do
   let!(:project) { create(:project, :repository) }
   let!(:user)    { create(:user) }
   let!(:release) { create(:release, project: project) }

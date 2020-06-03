@@ -8,7 +8,7 @@ import {
   LIST_DELETE_BUTTON_DISABLED,
   REMOVE_REPOSITORY_LABEL,
   ROW_SCHEDULED_FOR_DELETION,
-} from '../constants';
+} from '../constants/index';
 
 export default {
   name: 'ImageListrow',

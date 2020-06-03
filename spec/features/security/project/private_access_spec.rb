@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe "Private Project Access" do
+RSpec.describe "Private Project Access" do
   include AccessMatchers
 
   let_it_be(:project, reload: true) { create(:project, :private, :repository, public_builds: false) }

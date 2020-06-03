@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'User activates Packagist' do
+RSpec.describe 'User activates Packagist' do
   include_context 'project service activation'
 
   before do

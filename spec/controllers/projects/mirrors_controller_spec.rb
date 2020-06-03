@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Projects::MirrorsController do
+RSpec.describe Projects::MirrorsController do
   include ReactiveCachingHelpers
 
   shared_examples 'only admin is allowed when mirroring is disabled' do

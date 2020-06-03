@@ -2,7 +2,7 @@
 
 require('spec_helper')
 
-describe Projects::Settings::AccessTokensController do
+RSpec.describe Projects::Settings::AccessTokensController do
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project) }
 

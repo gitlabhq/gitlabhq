@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Pipelines', :js do
+RSpec.describe 'Pipelines', :js do
   include ProjectForksHelper
 
   let(:project) { create(:project) }

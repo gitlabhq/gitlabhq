@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Projects::Environments::SampleMetricsController do
+RSpec.describe Projects::Environments::SampleMetricsController do
   include StubENV
 
   let_it_be(:project) { create(:project) }

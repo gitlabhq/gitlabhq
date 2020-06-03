@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Projects::ClustersController do
+RSpec.describe Projects::ClustersController do
   include AccessMatchersForController
   include GoogleApi::CloudPlatformHelpers
   include KubernetesHelpers

@@ -537,18 +537,74 @@ possible situations:
 
 ### Changing the arguments for a worker
 
-Jobs need to be backwards- and forwards-compatible between consecutive versions
-of the application.
+Jobs need to be backward and forward compatible between consecutive versions
+of the application. Adding or removing an argument may cause problems
+during deployment before all Rails and Sidekiq nodes have the updated code.
 
-This can be done by following this process:
+#### Remove an argument
 
-1. **Do not remove arguments from the `perform` function.**. Instead, use the
-   following approach
-   1. Provide a default value (usually `nil`) and use a comment to mark the
-      argument as deprecated
-   1. Stop using the argument in `perform_async`.
-   1. Ignore the value in the worker class, but do not remove it until the next
-      major release.
+**Do not remove arguments from the `perform` function.**. Instead, use the
+following approach:
+
+1. Provide a default value (usually `nil`) and use a comment to mark the
+   argument as deprecated
+1. Stop using the argument in `perform_async`.
+1. Ignore the value in the worker class, but do not remove it until the next
+   major release.
+
+In the following example, if you want to remove `arg2`, first set a `nil` default value,
+and then update locations where `ExampleWorker.perform_async` is called.
+
+```ruby
+class ExampleWorker
+  def perform(object_id, arg1, arg2 = nil)
+    # ...
+  end
+end
+```
+
+#### Add an argument
+
+There are two options for safely adding new arguments to Sidekiq workers:
+
+1. Set up a [multi-step deployment](#multi-step-deployment) in which the new argument is first added to the worker
+1. Use a [parameter hash](#parameter-hash) for additional arguments. This is perhaps the most flexible option.
+1. Use a parameter hash for additional arguments. This is perhaps the most flexible option.
+
+##### Multi-step deployment
+
+This approach requires multiple merge requests and for the first merge request
+to be merged and deployed before additional changes are merged.
+
+1. In an initial merge request, add the argument to the worker with a default
+   value:
+
+    ```ruby
+    class ExampleWorker
+      def perform(object_id, new_arg = nil)
+        # ...
+      end
+    end
+    ```
+
+1. Merge and deploy the worker with the new argument.
+1. In a further merge request, update `ExampleWorker.perform_async` calls to
+   use the new argument.
+
+##### Parameter hash  
+
+This approach will not require multiple deployments if an existing worker already
+utilizes a parameter hash.
+
+1. Use a parameter hash in the worker to allow for future flexibility:
+
+    ```ruby
+    class ExampleWorker
+      def perform(object_id, params = {})
+        # ...
+      end
+    end
+    ```
 
 ### Removing workers
 

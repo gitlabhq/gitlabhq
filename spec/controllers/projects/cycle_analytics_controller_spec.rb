@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Projects::CycleAnalyticsController do
+RSpec.describe Projects::CycleAnalyticsController do
   let(:project) { create(:project, :repository) }
   let(:user) { create(:user) }
 

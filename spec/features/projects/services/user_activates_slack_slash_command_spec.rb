@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Slack slash commands' do
+RSpec.describe 'Slack slash commands' do
   include_context 'project service activation'
 
   before do

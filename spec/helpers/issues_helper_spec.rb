@@ -7,59 +7,6 @@ describe IssuesHelper do
   let(:issue) { create :issue, project: project }
   let(:ext_project) { create :redmine_project }
 
-  describe "url_for_issue" do
-    let(:issues_url) { ext_project.external_issue_tracker.issues_url}
-    let(:ext_expected) { issues_url.gsub(':id', issue.iid.to_s).gsub(':project_id', ext_project.id.to_s) }
-    let(:int_expected) { polymorphic_path([@project.namespace, @project, issue]) }
-
-    it "returns internal path if used internal tracker" do
-      @project = project
-
-      expect(url_for_issue(issue.iid)).to match(int_expected)
-    end
-
-    it "returns path to external tracker" do
-      @project = ext_project
-
-      expect(url_for_issue(issue.iid)).to match(ext_expected)
-    end
-
-    it "returns path to internal issue when internal option passed" do
-      @project = ext_project
-
-      expect(url_for_issue(issue.iid, ext_project, internal: true)).to match(int_expected)
-    end
-
-    it "returns empty string if project nil" do
-      @project = nil
-
-      expect(url_for_issue(issue.iid)).to eq ""
-    end
-
-    it 'returns an empty string if issue_url is invalid' do
-      expect(project).to receive_message_chain('issues_tracker.issue_url') { 'javascript:alert("foo");' }
-
-      expect(url_for_issue(issue.iid, project)).to eq ''
-    end
-
-    it 'returns an empty string if issue_path is invalid' do
-      expect(project).to receive_message_chain('issues_tracker.issue_path') { 'javascript:alert("foo");' }
-
-      expect(url_for_issue(issue.iid, project, only_path: true)).to eq ''
-    end
-
-    describe "when external tracker was enabled and then config removed" do
-      before do
-        @project = ext_project
-        allow(Gitlab.config).to receive(:issues_tracker).and_return(nil)
-      end
-
-      it "returns external path" do
-        expect(url_for_issue(issue.iid)).to match(ext_expected)
-      end
-    end
-  end
-
   describe '#award_user_list' do
     it "returns a comma-separated list of the first X users" do
       user = build_stubbed(:user, name: 'Joe')

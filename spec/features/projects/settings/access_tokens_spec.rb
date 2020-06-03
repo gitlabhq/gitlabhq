@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Project > Settings > Access Tokens', :js do
+RSpec.describe 'Project > Settings > Access Tokens', :js do
   let_it_be(:user) { create(:user) }
   let_it_be(:bot_user) { create(:user, :project_bot) }
   let_it_be(:project) { create(:project) }

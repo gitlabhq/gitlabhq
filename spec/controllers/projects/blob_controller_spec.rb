@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Projects::BlobController do
+RSpec.describe Projects::BlobController do
   include ProjectForksHelper
 
   let(:project) { create(:project, :public, :repository) }

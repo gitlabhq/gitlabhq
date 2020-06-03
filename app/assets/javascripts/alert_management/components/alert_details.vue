@@ -177,7 +177,11 @@ export default {
       {{ createIssueError }}
     </gl-alert>
     <div v-if="loading"><gl-loading-icon size="lg" class="gl-mt-5" /></div>
-    <div v-if="alert" class="alert-management-details gl-relative">
+    <div
+      v-if="alert"
+      class="alert-management-details gl-relative"
+      :class="{ 'pr-8': sidebarCollapsed }"
+    >
       <div
         class="gl-display-flex gl-justify-content-space-between gl-align-items-baseline gl-px-1 py-3 py-md-4 gl-border-b-1 gl-border-b-gray-200 gl-border-b-solid flex-column flex-sm-row"
       >

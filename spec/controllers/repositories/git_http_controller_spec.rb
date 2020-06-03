@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Repositories::GitHttpController do
+RSpec.describe Repositories::GitHttpController do
   include GitHttpHelpers
 
   let_it_be(:project) { create(:project, :public, :repository) }

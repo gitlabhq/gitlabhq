@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'User searches for wiki pages', :js do
+RSpec.describe 'User searches for wiki pages', :js do
   let(:user) { create(:user) }
   let(:project) { create(:project, :repository, :wiki_repo, namespace: user.namespace) }
   let!(:wiki_page) { create(:wiki_page, wiki: project.wiki, title: 'directory/title', content: 'Some Wiki content') }

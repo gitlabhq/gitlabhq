@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Projects > Settings > Repository settings' do
+RSpec.describe 'Projects > Settings > Repository settings' do
   let(:project) { create(:project_empty_repo) }
   let(:user) { create(:user) }
   let(:role) { :developer }

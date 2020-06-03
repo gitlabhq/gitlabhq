@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'User views an empty project' do
+RSpec.describe 'User views an empty project' do
   let(:project) { create(:project, :empty_repo) }
   let(:user) { create(:user) }
 

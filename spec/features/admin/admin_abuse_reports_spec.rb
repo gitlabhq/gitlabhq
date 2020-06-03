@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe "Admin::AbuseReports", :js do
+RSpec.describe "Admin::AbuseReports", :js do
   let(:user) { create(:user) }
 
   context 'as an admin' do

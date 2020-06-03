@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Projects::TemplatesController do
+RSpec.describe Projects::TemplatesController do
   let(:project) { create(:project, :repository, :private) }
   let(:user) { create(:user) }
   let(:file_path_1) { '.gitlab/issue_templates/issue_template.md' }

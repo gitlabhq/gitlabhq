@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Profiles::NotificationsController do
+RSpec.describe Profiles::NotificationsController do
   let(:user) do
     create(:user) do |user|
       user.emails.create(email: 'original@example.com', confirmed_at: Time.current)

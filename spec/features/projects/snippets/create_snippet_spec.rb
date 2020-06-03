@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-shared_examples_for 'snippet editor' do
+RSpec.shared_examples_for 'snippet editor' do
   before do
     stub_feature_flags(snippets_edit_vue: false)
   end
@@ -138,7 +138,7 @@ shared_examples_for 'snippet editor' do
   end
 end
 
-describe 'Projects > Snippets > Create Snippet', :js do
+RSpec.describe 'Projects > Snippets > Create Snippet', :js do
   include DropzoneHelper
 
   let_it_be(:user) { create(:user) }

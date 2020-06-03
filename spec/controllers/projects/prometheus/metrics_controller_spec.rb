@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Projects::Prometheus::MetricsController do
+RSpec.describe Projects::Prometheus::MetricsController do
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:prometheus_project) }
 

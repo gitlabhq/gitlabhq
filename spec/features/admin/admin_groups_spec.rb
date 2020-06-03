@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Admin Groups' do
+RSpec.describe 'Admin Groups' do
   include Select2Helper
 
   let(:internal) { Gitlab::VisibilityLevel::INTERNAL }

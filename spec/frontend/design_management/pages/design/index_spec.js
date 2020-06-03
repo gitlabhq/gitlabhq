@@ -4,11 +4,9 @@ import { GlAlert } from '@gitlab/ui';
 import { ApolloMutation } from 'vue-apollo';
 import createFlash from '~/flash';
 import DesignIndex from '~/design_management/pages/design/index.vue';
-import DesignDiscussion from '~/design_management/components/design_notes/design_discussion.vue';
+import DesignSidebar from '~/design_management/components/design_sidebar.vue';
 import DesignReplyForm from '~/design_management/components/design_notes/design_reply_form.vue';
-import Participants from '~/sidebar/components/participants/participants.vue';
 import createImageDiffNoteMutation from '~/design_management/graphql/mutations/createImageDiffNote.mutation.graphql';
-import updateActiveDiscussionMutation from '~/design_management/graphql/mutations/update_active_discussion.mutation.graphql';
 import design from '../../mock_data/design';
 import mockResponseWithDesigns from '../../mock_data/designs';
 import mockResponseNoDesigns from '../../mock_data/no_designs';
@@ -62,20 +60,10 @@ describe('Design management design index page', () => {
     },
   };
 
-  const updateActiveDiscussionMutationVariables = {
-    mutation: updateActiveDiscussionMutation,
-    variables: {
-      id: design.discussions.nodes[0].notes.nodes[0].id,
-      source: 'discussion',
-    },
-  };
-
   const mutate = jest.fn().mockResolvedValue();
 
-  const findDiscussions = () => wrapper.findAll(DesignDiscussion);
   const findDiscussionForm = () => wrapper.find(DesignReplyForm);
-  const findParticipants = () => wrapper.find(Participants);
-  const findDiscussionsWrapper = () => wrapper.find('.image-notes');
+  const findSidebar = () => wrapper.find(DesignSidebar);
 
   function createComponent(loading = false, data = {}) {
     const $apollo = {
@@ -94,7 +82,7 @@ describe('Design management design index page', () => {
       mocks: { $apollo },
       stubs: {
         ApolloMutation,
-        DesignDiscussion,
+        DesignSidebar,
       },
       data() {
         return {
@@ -145,63 +133,13 @@ describe('Design management design index page', () => {
     expect(wrapper.find(GlAlert).exists()).toBe(false);
   });
 
-  it('renders participants', () => {
+  it('passes correct props to sidebar component', () => {
     createComponent(false, { design });
 
-    expect(findParticipants().exists()).toBe(true);
-  });
-
-  it('passes the correct amount of participants to the Participants component', () => {
-    createComponent(false, { design });
-
-    expect(findParticipants().props('participants')).toHaveLength(1);
-  });
-
-  describe('when has no discussions', () => {
-    beforeEach(() => {
-      createComponent(false, {
-        design: {
-          ...design,
-          discussions: {
-            nodes: [],
-          },
-        },
-      });
-    });
-
-    it('does not render discussions', () => {
-      expect(findDiscussions().exists()).toBe(false);
-    });
-
-    it('renders a message about possibility to create a new discussion', () => {
-      expect(wrapper.find('.new-discussion-disclaimer').exists()).toBe(true);
-    });
-  });
-
-  describe('when has discussions', () => {
-    beforeEach(() => {
-      createComponent(false, { design });
-    });
-
-    it('renders correct amount of discussions', () => {
-      expect(findDiscussions()).toHaveLength(1);
-    });
-
-    it('sends a mutation to set an active discussion when clicking on a discussion', () => {
-      findDiscussions()
-        .at(0)
-        .trigger('click');
-
-      expect(mutate).toHaveBeenCalledWith(updateActiveDiscussionMutationVariables);
-    });
-
-    it('sends a mutation to reset an active discussion when clicking outside of discussion', () => {
-      findDiscussionsWrapper().trigger('click');
-
-      expect(mutate).toHaveBeenCalledWith({
-        ...updateActiveDiscussionMutationVariables,
-        variables: { id: undefined, source: 'discussion' },
-      });
+    expect(findSidebar().props()).toEqual({
+      design,
+      markdownPreviewPath: '//preview_markdown?target_type=Issue',
+      resolvedDiscussionsExpanded: false,
     });
   });
 

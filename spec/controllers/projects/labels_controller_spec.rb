@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Projects::LabelsController do
+RSpec.describe Projects::LabelsController do
   let(:group)   { create(:group) }
   let(:project) { create(:project, namespace: group) }
   let(:user)    { create(:user) }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'User activates Emails on push' do
+RSpec.describe 'User activates Emails on push' do
   include_context 'project service activation'
 
   it 'activates service', :js do

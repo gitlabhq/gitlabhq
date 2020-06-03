@@ -2,7 +2,7 @@
 
 require('spec_helper')
 
-describe ProjectsController do
+RSpec.describe ProjectsController do
   include ExternalAuthorizationServiceHelpers
   include ProjectForksHelper
 

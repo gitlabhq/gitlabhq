@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'User activates JetBrains TeamCity CI' do
+RSpec.describe 'User activates JetBrains TeamCity CI' do
   include_context 'project service activation'
 
   before do

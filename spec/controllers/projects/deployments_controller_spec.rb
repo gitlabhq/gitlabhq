@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Projects::DeploymentsController do
+RSpec.describe Projects::DeploymentsController do
   include ApiHelpers
 
   let(:user) { create(:user) }

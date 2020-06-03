@@ -450,6 +450,7 @@ class ProjectPolicy < BasePolicy
   rule { repository_disabled }.policy do
     prevent :push_code
     prevent :download_code
+    prevent :build_download_code
     prevent :fork_project
     prevent :read_commit_status
     prevent :read_pipeline

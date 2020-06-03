@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Projects::StagesController do
+RSpec.describe Projects::StagesController do
   let(:user) { create(:user) }
   let(:project) { create(:project, :repository) }
 

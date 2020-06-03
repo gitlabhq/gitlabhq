@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe RootController do
+RSpec.describe RootController do
   describe 'GET index' do
     context 'when user is not logged in' do
       it 'redirects to the sign-in page' do

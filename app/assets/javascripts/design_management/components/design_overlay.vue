@@ -33,6 +33,10 @@ export default {
       required: false,
       default: false,
     },
+    resolvedDiscussionsExpanded: {
+      type: Boolean,
+      required: true,
+    },
   },
   apollo: {
     activeDiscussion: {
@@ -236,6 +240,9 @@ export default {
     isNoteInactive(note) {
       return this.activeDiscussion.id && this.activeDiscussion.id !== note.id;
     },
+    designPinClass(note) {
+      return { inactive: this.isNoteInactive(note), resolved: note.resolved };
+    },
   },
 };
 </script>
@@ -254,20 +261,23 @@ export default {
       data-qa-selector="design_image_button"
       @mouseup="onAddCommentMouseup"
     ></button>
-    <design-note-pin
-      v-for="(note, index) in notes"
-      :key="note.id"
-      :label="`${index + 1}`"
-      :repositioning="isMovingNote(note.id)"
-      :position="
-        isMovingNote(note.id) && movingNoteNewPosition
-          ? getNotePositionStyle(movingNoteNewPosition)
-          : getNotePositionStyle(note.position)
-      "
-      :class="{ inactive: isNoteInactive(note) }"
-      @mousedown.stop="onNoteMousedown($event, note)"
-      @mouseup.stop="onNoteMouseup(note)"
-    />
+    <template v-for="note in notes">
+      <design-note-pin
+        v-if="resolvedDiscussionsExpanded || !note.resolved"
+        :key="note.id"
+        :label="note.index"
+        :repositioning="isMovingNote(note.id)"
+        :position="
+          isMovingNote(note.id) && movingNoteNewPosition
+            ? getNotePositionStyle(movingNoteNewPosition)
+            : getNotePositionStyle(note.position)
+        "
+        :class="designPinClass(note)"
+        @mousedown.stop="onNoteMousedown($event, note)"
+        @mouseup.stop="onNoteMouseup(note)"
+      />
+    </template>
+
     <design-note-pin
       v-if="currentCommentForm"
       :position="currentCommentPositionStyle"

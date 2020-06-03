@@ -45,7 +45,7 @@ import {
   EMPTY_IMAGE_REPOSITORY_TITLE,
   EMPTY_IMAGE_REPOSITORY_MESSAGE,
   ADMIN_GARBAGE_COLLECTION_TIP,
-} from '../constants';
+} from '../constants/index';
 
 export default {
   components: {

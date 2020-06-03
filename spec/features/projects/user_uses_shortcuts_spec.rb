@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'User uses shortcuts', :js do
+RSpec.describe 'User uses shortcuts', :js do
   let(:project) { create(:project, :repository) }
   let(:user) { create(:user) }
 

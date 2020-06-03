@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Protected Tags', :js do
+RSpec.describe 'Protected Tags', :js do
   include ProtectedTagHelpers
 
   let(:user) { create(:user, :admin) }

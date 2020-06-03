@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'User views empty wiki' do
+RSpec.describe 'User views empty wiki' do
   let(:user) { create(:user) }
 
   shared_examples 'empty wiki and accessible issues' do

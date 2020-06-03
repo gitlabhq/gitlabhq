@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Private Snippets', :js do
+RSpec.describe 'Private Snippets', :js do
   let(:user) { create(:user) }
 
   before do

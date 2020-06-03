@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Projects::PipelinesController do
+RSpec.describe Projects::PipelinesController do
   include ApiHelpers
 
   let_it_be(:user) { create(:user) }

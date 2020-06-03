@@ -3,7 +3,12 @@ import { GlEmptyState, GlSprintf, GlLink } from '@gitlab/ui';
 import { mapState, mapGetters } from 'vuex';
 import { s__ } from '~/locale';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
-import { COPY_LOGIN_TITLE, COPY_BUILD_TITLE, COPY_PUSH_TITLE, QUICK_START } from '../constants';
+import {
+  COPY_LOGIN_TITLE,
+  COPY_BUILD_TITLE,
+  COPY_PUSH_TITLE,
+  QUICK_START,
+} from '../constants/index';
 
 export default {
   name: 'ProjectEmptyState',
