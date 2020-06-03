@@ -5798,9 +5798,6 @@ msgstr ""
 msgid "Configure the %{link} integration."
 msgstr ""
 
-msgid "Configure the Jira integration first on your project's %{strong_start} Settings > Integrations > Jira%{strong_end} page."
-msgstr ""
-
 msgid "Configure the way a user creates a new account."
 msgstr ""
 
@@ -9937,9 +9934,6 @@ msgstr ""
 msgid "From merge request merge until deploy to production"
 msgstr ""
 
-msgid "From project"
-msgstr ""
-
 msgid "From the Kubernetes cluster details view, install Runner from the applications list"
 msgstr ""
 
@@ -11639,9 +11633,6 @@ msgstr ""
 msgid "Import"
 msgstr ""
 
-msgid "Import %{status}"
-msgstr ""
-
 msgid "Import CSV"
 msgstr ""
 
@@ -11676,9 +11667,6 @@ msgid "Import in progress. Refresh page to see newly added issues."
 msgstr ""
 
 msgid "Import issues"
-msgstr ""
-
-msgid "Import issues from Jira"
 msgstr ""
 
 msgid "Import members"
@@ -12332,9 +12320,6 @@ msgid "Jan"
 msgstr ""
 
 msgid "January"
-msgstr ""
-
-msgid "Jira Issue Import"
 msgstr ""
 
 msgid "Jira import is already running."

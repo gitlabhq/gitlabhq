@@ -575,4 +575,27 @@ describe Gitlab::UsageData, :aggregate_failures do
 
     it_behaves_like 'usage data execution'
   end
+
+  describe '#merge_requests_usage_data' do
+    let(:time_period) { { created_at: 2.days.ago..Time.current } }
+    let(:merge_request) { create(:merge_request) }
+    let(:other_user) { create(:user) }
+    let(:another_user) { create(:user) }
+
+    before do
+      create(:event, target: merge_request, author: merge_request.author, created_at: 1.day.ago)
+      create(:event, target: merge_request, author: merge_request.author, created_at: 1.hour.ago)
+      create(:event, target: merge_request, author: merge_request.author, created_at: 3.days.ago)
+      create(:event, target: merge_request, author: other_user, created_at: 1.day.ago)
+      create(:event, target: merge_request, author: other_user, created_at: 1.hour.ago)
+      create(:event, target: merge_request, author: other_user, created_at: 3.days.ago)
+      create(:event, target: merge_request, author: another_user, created_at: 4.days.ago)
+    end
+
+    it 'returns the distinct count of users using merge requests (via events table) within the specified time period' do
+      expect(described_class.merge_requests_usage_data(time_period)).to eq(
+        merge_requests_users: 2
+      )
+    end
+  end
 end

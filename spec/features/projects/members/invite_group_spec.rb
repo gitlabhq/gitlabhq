@@ -39,6 +39,8 @@ describe 'Project > Members > Invite group', :js do
         it 'the project can be shared with another group' do
           visit project_project_members_path(project)
 
+          expect(page).not_to have_css('.project-members-groups')
+
           click_on 'invite-group-tab'
 
           select2 group_to_share_with.id, from: '#link_group_id'

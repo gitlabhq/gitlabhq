@@ -68,10 +68,11 @@ module EnvironmentsHelper
     return {} unless environment
 
     {
-      'current-environment-name' => environment.name,
-      'has-metrics'              => "#{environment.has_metrics?}",
-      'prometheus-status'        => "#{environment.prometheus_status}",
-      'environment-state'        => "#{environment.state}"
+      'metrics-dashboard-base-path' => environment_metrics_path(environment),
+      'current-environment-name'    => environment.name,
+      'has-metrics'                 => "#{environment.has_metrics?}",
+      'prometheus-status'           => "#{environment.prometheus_status}",
+      'environment-state'           => "#{environment.state}"
     }
   end
 

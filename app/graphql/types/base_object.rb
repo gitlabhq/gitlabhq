@@ -12,5 +12,9 @@ module Types
     def id
       GitlabSchema.id_from_object(object)
     end
+
+    def current_user
+      context[:current_user]
+    end
   end
 end

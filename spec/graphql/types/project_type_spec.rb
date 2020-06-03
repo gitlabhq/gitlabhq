@@ -132,4 +132,6 @@ describe GitlabSchema.types['Project'] do
 
     it { is_expected.to have_graphql_type(Types::ContainerExpirationPolicyType) }
   end
+
+  it_behaves_like 'a GraphQL type with labels'
 end

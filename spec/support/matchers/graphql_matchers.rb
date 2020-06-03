@@ -82,19 +82,30 @@ RSpec::Matchers.define :have_graphql_mutation do |mutation_class|
   end
 end
 
+# note: connection arguments do not have to be named, they will be inferred.
 RSpec::Matchers.define :have_graphql_arguments do |*expected|
   include GraphqlHelpers
 
-  def expected_names
+  def expected_names(field)
     @names ||= Array.wrap(expected).map { |name| GraphqlHelpers.fieldnamerize(name) }
+
+    if field.type.try(:ancestors)&.include?(GraphQL::Types::Relay::BaseConnection)
+      @names | %w(after before first last)
+    else
+      @names
+    end
   end
 
   match do |field|
-    expect(field.arguments.keys).to contain_exactly(*expected_names)
+    names = expected_names(field)
+
+    expect(field.arguments.keys).to contain_exactly(*names)
   end
 
   failure_message do |field|
-    "expected that #{field.name} would have the following fields: #{expected_names.inspect}, but it has #{field.arguments.keys.inspect}."
+    names = expected_names(field)
+
+    "expected that #{field.name} would have the following fields: #{names.inspect}, but it has #{field.arguments.keys.inspect}."
   end
 end
 

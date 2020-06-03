@@ -6,26 +6,9 @@ module Projects
       before_action :authenticate_user!
       before_action :check_issues_available!
       before_action :authorize_read_project!
-      before_action :jira_integration_configured?
       before_action :authorize_admin_project!, only: [:import]
 
       def show
-        jira_service = @project.jira_service
-
-        if jira_service.present? && !@project.latest_jira_import&.in_progress? && current_user&.can?(:admin_project, @project)
-          jira_client = jira_service.client
-          jira_projects = jira_client.Project.all
-
-          if jira_projects.present?
-            @jira_projects = jira_projects.map { |p| ["#{p.name} (#{p.key})", p.key] }
-          else
-            flash[:alert] = 'No projects have been returned from Jira. Please check your Jira configuration.'
-          end
-        end
-
-        unless Feature.enabled?(:jira_issue_import_vue, @project, default_enabled: true)
-          flash[:notice] = _("Import %{status}") % { status: @project.jira_import_status } unless @project.latest_jira_import&.initial?
-        end
       end
 
       def import
@@ -42,15 +25,6 @@ module Projects
       end
 
       private
-
-      def jira_integration_configured?
-        return if Feature.enabled?(:jira_issue_import_vue, @project, default_enabled: true)
-        return if @project.jira_service
-
-        flash[:notice] = _("Configure the Jira integration first on your project's %{strong_start} Settings > Integrations > Jira%{strong_end} page." %
-           { strong_start: '<strong>'.html_safe, strong_end: '</strong>'.html_safe })
-        redirect_to project_issues_path(@project)
-      end
 
       def jira_import_params
         params.permit(:jira_project_key)

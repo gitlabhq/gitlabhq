@@ -159,7 +159,7 @@ module Gitlab
     end
 
     def find_commits_by_message(query, limit:)
-      project.repository.find_commits_by_message(query, nil, nil, limit)
+      project.repository.find_commits_by_message(query, repository_project_ref, nil, limit)
     end
 
     def find_commit_by_sha(query)

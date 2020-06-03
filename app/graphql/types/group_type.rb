@@ -65,6 +65,45 @@ module Types
           null: true,
           description: 'A single board of the group',
           resolver: Resolvers::BoardsResolver.single
+
+    field :label,
+          Types::LabelType,
+          null: true,
+          description: 'A label available on this group' do
+            argument :title, GraphQL::STRING_TYPE,
+              required: true,
+              description: 'Title of the label'
+          end
+
+    def label(title:)
+      BatchLoader::GraphQL.for(title).batch(key: group) do |titles, loader, args|
+        LabelsFinder
+          .new(current_user, group: args[:key], title: titles)
+          .execute
+          .each { |label| loader.call(label.title, label) }
+      end
+    end
+
+    field :labels,
+          Types::LabelType.connection_type,
+          null: true,
+          description: 'Labels available on this group' do
+            argument :search_term, GraphQL::STRING_TYPE,
+              required: false,
+              description: 'A search term to find labels with'
+          end
+
+    def labels(search_term: nil)
+      LabelsFinder
+        .new(current_user, group: group, search: search_term)
+        .execute
+    end
+
+    private
+
+    def group
+      object.respond_to?(:sync) ? object.sync : object
+    end
   end
 end
 

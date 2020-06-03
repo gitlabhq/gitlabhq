@@ -32,6 +32,7 @@ module Gitlab
           .merge(cycle_analytics_usage_data)
           .merge(object_store_usage_data)
           .merge(recording_ce_finish_data)
+          .merge(merge_requests_usage_data(default_time_period))
       end
 
       def to_json(force_refresh: false)
@@ -385,12 +386,37 @@ module Gitlab
         {} # augmented in EE
       end
 
+      # rubocop: disable CodeReuse/ActiveRecord
+      def merge_requests_usage_data(time_period)
+        query =
+          Event
+            .where(target_type: Event::TARGET_TYPES[:merge_request].to_s)
+            .where(time_period)
+
+        merge_request_users = distinct_count(
+          query,
+          :author_id,
+          batch_size: 5_000, # Based on query performance, this is the optimal batch size.
+          start: User.minimum(:id),
+          finish: User.maximum(:id)
+        )
+
+        {
+          merge_requests_users: merge_request_users
+        }
+      end
+      # rubocop: enable CodeReuse/ActiveRecord
+
       def installation_type
         if Rails.env.production?
           Gitlab::INSTALLATION_TYPE
         else
           "gitlab-development-kit"
         end
+      end
+
+      def default_time_period
+        { created_at: 28.days.ago..Time.current }
       end
     end
   end

@@ -94,6 +94,11 @@ class CommitStatus < ApplicationRecord
   end
 
   before_save if: :status_changed?, unless: :importing? do
+    # we mark `processed` as always changed:
+    # another process might change its value and our object
+    # will not be refreshed to pick the change
+    self.processed_will_change!
+
     if Feature.disabled?(:ci_atomic_processing, project)
       self.processed = nil
     elsif latest?

@@ -242,6 +242,45 @@ module Types
           Types::ContainerExpirationPolicyType,
           null: true,
           description: 'The container expiration policy of the project'
+
+    field :label,
+          Types::LabelType,
+          null: true,
+          description: 'A label available on this project' do
+            argument :title, GraphQL::STRING_TYPE,
+              required: true,
+              description: 'Title of the label'
+          end
+
+    def label(title:)
+      BatchLoader::GraphQL.for(title).batch(key: project) do |titles, loader, args|
+        LabelsFinder
+          .new(current_user, project: args[:key], title: titles)
+          .execute
+          .each { |label| loader.call(label.title, label) }
+      end
+    end
+
+    field :labels,
+          Types::LabelType.connection_type,
+          null: true,
+          description: 'Labels available on this project' do
+            argument :search_term, GraphQL::STRING_TYPE,
+              required: false,
+              description: 'A search term to find labels with'
+          end
+
+    def labels(search_term: nil)
+      LabelsFinder
+        .new(current_user, project: project, search: search_term)
+        .execute
+    end
+
+    private
+
+    def project
+      @project ||= object.respond_to?(:sync) ? object.sync : object
+    end
   end
 end
 

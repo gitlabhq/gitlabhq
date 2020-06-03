@@ -16,6 +16,8 @@ module Gitlab
 
         repository.create_from_bundle(path_to_bundle)
       rescue => e
+        Repositories::DestroyService.new(repository).execute
+
         shared.error(e)
         false
       end

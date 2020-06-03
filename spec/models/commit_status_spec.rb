@@ -96,6 +96,21 @@ describe CommitStatus do
 
         it { is_expected.to be_truthy }
       end
+
+      it "processed state is always persisted" do
+        commit_status.update!(retried: false, status: :pending)
+
+        # another process does mark object as processed
+        CommitStatus.find(commit_status.id).update_column(:processed, true)
+
+        # subsequent status transitions on the same instance
+        # always saves processed=false to DB even though
+        # the current value did not change
+        commit_status.update!(retried: false, status: :running)
+
+        # we look at a persisted state in DB
+        expect(CommitStatus.find(commit_status.id).processed).to eq(false)
+      end
     end
   end
 

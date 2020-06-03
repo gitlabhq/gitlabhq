@@ -9708,6 +9708,8 @@ CREATE INDEX index_events_on_action ON public.events USING btree (action);
 
 CREATE INDEX index_events_on_author_id_and_created_at ON public.events USING btree (author_id, created_at);
 
+CREATE INDEX index_events_on_author_id_and_created_at_merge_requests ON public.events USING btree (author_id, created_at) WHERE ((target_type)::text = 'MergeRequest'::text);
+
 CREATE INDEX index_events_on_author_id_and_project_id ON public.events USING btree (author_id, project_id);
 
 CREATE INDEX index_events_on_group_id_partial ON public.events USING btree (group_id) WHERE (group_id IS NOT NULL);
@@ -14048,5 +14050,6 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200527151413
 20200527152116
 20200527152657
+20200528123703
 \.
 

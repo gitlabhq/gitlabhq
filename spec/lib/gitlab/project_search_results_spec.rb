@@ -530,6 +530,18 @@ describe Gitlab::ProjectSearchResults do
         expect(commits).to be_empty
       end
 
+      context 'when repository_ref is provided' do
+        let(:message) { 'Feature added' }
+        let(:repository_ref) { +'feature' }
+
+        it 'searches in the specified ref' do
+          commits = described_class.new(user, project, message, repository_ref).objects('commits')
+
+          # This commit is unique to the feature branch
+          expect(commits).to contain_exactly(project.repository.commit('0b4bc9a49b562e85de7cc9e834518ea6828729b9'))
+        end
+      end
+
       it_behaves_like 'access restricted commits' do
         let(:search_phrase) { message }
         let(:commit) { project.repository.commit('59e29889be61e6e0e5e223bfa9ac2721d31605b8') }

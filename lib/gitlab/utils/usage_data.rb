@@ -49,9 +49,9 @@ module Gitlab
         FALLBACK
       end
 
-      def distinct_count(relation, column = nil, batch: true, start: nil, finish: nil)
+      def distinct_count(relation, column = nil, batch: true, batch_size: nil, start: nil, finish: nil)
         if batch && Feature.enabled?(:usage_ping_batch_counter, default_enabled: true)
-          Gitlab::Database::BatchCount.batch_distinct_count(relation, column, start: start, finish: finish)
+          Gitlab::Database::BatchCount.batch_distinct_count(relation, column, batch_size: batch_size, start: start, finish: finish)
         else
           relation.distinct_count_by(column)
         end

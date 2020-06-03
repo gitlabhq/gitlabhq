@@ -1,32 +1,6 @@
-- if Feature.enabled?(:jira_issue_import_vue, @project, default_enabled: true)
-  .js-jira-import-root{ data: { project_path: @project.full_path,
-    issues_path: project_issues_path(@project),
-    jira_integration_path: edit_project_service_path(@project, :jira),
-    is_jira_configured: @project.jira_service.present?.to_s,
-    in_progress_illustration: image_path('illustrations/export-import.svg'),
-    setup_illustration: image_path('illustrations/manual_action.svg') } }
-- else
-  - title = _('Jira Issue Import')
-  - page_title title
-  - breadcrumb_title title
-  - header_title _("Projects"), root_path
-
-  = render 'import/shared/errors'
-
-  - if @project.import_state&.in_progress?
-    %h3.page-title.d-flex.align-items-center
-      = sprite_icon('issues', size: 16, css_class: 'mr-1')
-      = _('Import in progress')
-  - elsif @jira_projects.present?
-    %h3.page-title.d-flex.align-items-center
-      = sprite_icon('issues', size: 16, css_class: 'mr-1')
-      = _('Import issues from Jira')
-
-    = form_tag import_project_import_jira_path(@project), method: :post do
-      .form-group.row
-        = label_tag :jira_project_key, _('From project'), class: 'col-form-label col-md-2'
-        .col-md-4
-          = select_tag :jira_project_key, options_for_select(@jira_projects, ''), { class: 'select2' }
-      .form-actions
-        = submit_tag _('Import issues'), class: 'btn btn-success'
-        = link_to _('Cancel'), project_issues_path(@project), class: 'btn btn-cancel'
+.js-jira-import-root{ data: { project_path: @project.full_path,
+  issues_path: project_issues_path(@project),
+  jira_integration_path: edit_project_service_path(@project, :jira),
+  is_jira_configured: @project.jira_service.present?.to_s,
+  in_progress_illustration: image_path('illustrations/export-import.svg'),
+  setup_illustration: image_path('illustrations/manual_action.svg') } }

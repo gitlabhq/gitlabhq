@@ -76,7 +76,7 @@ in multiple ways:
 
 ## Features
 
-Comprised of a set of stages, Auto DevOps brings these best practices to your
+Comprised of a set of [stages](stages.md), Auto DevOps brings these best practices to your
 project in a simple and automatic way:
 
 1. [Auto Build](stages.md#auto-build)
@@ -248,16 +248,18 @@ The Auto DevOps base domain is required to use
 [Auto Monitoring](stages.md#auto-monitoring). You can define the base domain in
 any of the following places:
 
-- either under the cluster's settings, whether for
+- either under the cluster's settings, whether for an instance,
   [projects](../../user/project/clusters/index.md#base-domain) or
   [groups](../../user/group/clusters/index.md#base-domain)
-- or in instance-wide settings in **{admin}** **Admin Area > Settings** under the
-  **Continuous Integration and Delivery** section
 - or at the project level as a variable: `KUBE_INGRESS_BASE_DOMAIN`
-- or at the group level as a variable: `KUBE_INGRESS_BASE_DOMAIN`.
+- or at the group level as a variable: `KUBE_INGRESS_BASE_DOMAIN`
+- or as an instance-wide fallback in **{admin}** **Admin Area > Settings** under the
+  **Continuous Integration and Delivery** section
 
 The base domain variable `KUBE_INGRESS_BASE_DOMAIN` follows the same order of precedence
 as other environment [variables](../../ci/variables/README.md#priority-of-environment-variables).
+If the CI/CD variable is not set and the cluster setting is left blank, the instance-wide **Auto DevOps domain**
+setting will be used if set.
 
 TIP: **Tip:**
 If you use the [GitLab managed app for Ingress](../../user/clusters/applications.md#ingress),
@@ -339,16 +341,6 @@ Auto DevOps at the group and project level, respectively.
    for Auto Deploy and Auto Review Apps to use.
 1. Click **Save changes** for the changes to take effect.
 
-### Enable for a percentage of projects
-
-You can use a feature flag to enable Auto DevOps by default to your desired percentage
-of projects. From the console, enter the following command, replacing `10` with
-your desired percentage:
-
-```ruby
-Feature.enable_percentage_of_actors(:force_autodevops_on_by_default, 10)
-```
-
 ### Deployment strategy
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/38542) in GitLab 11.0.
@@ -377,7 +369,7 @@ When using Auto DevOps, you can deploy different environments to
 different Kubernetes clusters, due to the 1:1 connection
 [existing between them](../../user/project/clusters/index.md#multiple-kubernetes-clusters-premium).
 
-The [template](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Auto-DevOps.gitlab-ci.yml)
+The [Deploy Job template](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Jobs/Deploy.gitlab-ci.yml)
 used by Auto DevOps currently defines 3 environment names:
 
 - `review/` (every environment starting with `review/`)
@@ -466,11 +458,6 @@ The following are possible reasons:
   even though it's possible to write a Ruby app without a `Gemfile`.
 - No buildpack may exist for your application. Try specifying a
   [custom buildpack](customize.md#custom-buildpacks).
-
-### Mismatch between testing frameworks
-
-Auto Test may fail because of a mismatch between testing frameworks. In this
-case, you may need to customize your `.gitlab-ci.yml` with your test commands.
 
 ### Pipeline that extends Auto DevOps with only / except fails
 

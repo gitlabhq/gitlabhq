@@ -4,35 +4,35 @@ require 'spec_helper'
 
 describe LabelsFinder do
   describe '#execute' do
-    let(:group_1) { create(:group) }
-    let(:group_2) { create(:group) }
-    let(:group_3) { create(:group) }
-    let(:private_group_1) { create(:group, :private) }
-    let(:private_subgroup_1) { create(:group, :private, parent: private_group_1) }
+    let_it_be(:group_1) { create(:group) }
+    let_it_be(:group_2) { create(:group) }
+    let_it_be(:group_3) { create(:group) }
+    let_it_be(:private_group_1) { create(:group, :private) }
+    let_it_be(:private_subgroup_1) { create(:group, :private, parent: private_group_1) }
 
-    let(:project_1) { create(:project, namespace: group_1) }
-    let(:project_2) { create(:project, namespace: group_2) }
-    let(:project_3) { create(:project) }
-    let(:project_4) { create(:project, :public) }
-    let(:project_5) { create(:project, namespace: group_1) }
+    let_it_be(:project_1, reload: true) { create(:project, namespace: group_1) }
+    let_it_be(:project_2) { create(:project, namespace: group_2) }
+    let_it_be(:project_3) { create(:project) }
+    let_it_be(:project_4) { create(:project, :public) }
+    let_it_be(:project_5) { create(:project, namespace: group_1) }
 
-    let!(:project_label_1) { create(:label, project: project_1, title: 'Label 1', description: 'awesome label') }
-    let!(:project_label_2) { create(:label, project: project_2, title: 'Label 2') }
-    let!(:project_label_4) { create(:label, project: project_4, title: 'Label 4') }
-    let!(:project_label_5) { create(:label, project: project_5, title: 'Label 5') }
+    let_it_be(:project_label_1) { create(:label, project: project_1, title: 'Label 1', description: 'awesome label') }
+    let_it_be(:project_label_2) { create(:label, project: project_2, title: 'Label 2') }
+    let_it_be(:project_label_4) { create(:label, project: project_4, title: 'Label 4') }
+    let_it_be(:project_label_5) { create(:label, project: project_5, title: 'Label 5') }
 
-    let!(:group_label_1) { create(:group_label, group: group_1, title: 'Label 1 (group)') }
-    let!(:group_label_2) { create(:group_label, group: group_1, title: 'Group Label 2') }
-    let!(:group_label_3) { create(:group_label, group: group_2, title: 'Group Label 3') }
-    let!(:private_group_label_1) { create(:group_label, group: private_group_1, title: 'Private Group Label 1') }
-    let!(:private_subgroup_label_1) { create(:group_label, group: private_subgroup_1, title: 'Private Sub Group Label 1') }
+    let_it_be(:group_label_1) { create(:group_label, group: group_1, title: 'Label 1 (group)') }
+    let_it_be(:group_label_2) { create(:group_label, group: group_1, title: 'Group Label 2') }
+    let_it_be(:group_label_3) { create(:group_label, group: group_2, title: 'Group Label 3') }
+    let_it_be(:private_group_label_1) { create(:group_label, group: private_group_1, title: 'Private Group Label 1') }
+    let_it_be(:private_subgroup_label_1) { create(:group_label, group: private_subgroup_1, title: 'Private Sub Group Label 1') }
 
-    let(:user) { create(:user) }
+    let_it_be(:unused_label) { create(:label, project: project_3, title: 'Label 3') }
+    let_it_be(:unused_group_label) { create(:group_label, group: group_3, title: 'Group Label 4') }
+
+    let_it_be(:user) { create(:user) }
 
     before do
-      create(:label, project: project_3, title: 'Label 3')
-      create(:group_label, group: group_3, title: 'Group Label 4')
-
       project_1.add_developer(user)
     end
 
@@ -54,11 +54,11 @@ describe LabelsFinder do
       end
     end
 
-    context 'filtering by group_id' do
+    shared_examples 'filtering by group' do
       it 'returns labels available for any non-archived project within the group' do
         group_1.add_developer(user)
         ::Projects::UpdateService.new(project_1, user, archived: true).execute
-        finder = described_class.new(user, group_id: group_1.id)
+        finder = described_class.new(user, **group_params(group_1))
 
         expect(finder.execute).to eq [group_label_2, group_label_1, project_label_5]
       end
@@ -67,7 +67,7 @@ describe LabelsFinder do
         it 'returns only group labels' do
           group_1.add_developer(user)
 
-          finder = described_class.new(user, group_id: group_1.id, only_group_labels: true)
+          finder = described_class.new(user, only_group_labels: true, **group_params(group_1))
 
           expect(finder.execute).to eq [group_label_2, group_label_1]
         end
@@ -84,7 +84,7 @@ describe LabelsFinder do
 
         context 'when only group labels is false' do
           it 'returns group labels' do
-            finder = described_class.new(user, group_id: empty_group.id)
+            finder = described_class.new(user, **group_params(empty_group))
 
             expect(finder.execute).to eq [empty_group_label_1, empty_group_label_2]
           end
@@ -96,7 +96,7 @@ describe LabelsFinder do
           private_group_1.add_developer(user)
           private_subgroup_1.add_developer(user)
 
-          finder = described_class.new(user, group_id: private_subgroup_1.id, only_group_labels: true, include_ancestor_groups: true)
+          finder = described_class.new(user, **group_params(private_subgroup_1), only_group_labels: true, include_ancestor_groups: true)
 
           expect(finder.execute).to eq [private_group_label_1, private_subgroup_label_1]
         end
@@ -104,7 +104,7 @@ describe LabelsFinder do
         it 'ignores labels from groups which user can not read' do
           private_subgroup_1.add_developer(user)
 
-          finder = described_class.new(user, group_id: private_subgroup_1.id, only_group_labels: true, include_ancestor_groups: true)
+          finder = described_class.new(user, **group_params(private_subgroup_1), only_group_labels: true, include_ancestor_groups: true)
 
           expect(finder.execute).to eq [private_subgroup_label_1]
         end
@@ -115,7 +115,7 @@ describe LabelsFinder do
           private_group_1.add_developer(user)
           private_subgroup_1.add_developer(user)
 
-          finder = described_class.new(user, group_id: private_group_1.id, only_group_labels: true, include_descendant_groups: true)
+          finder = described_class.new(user, **group_params(private_group_1), only_group_labels: true, include_descendant_groups: true)
 
           expect(finder.execute).to eq [private_group_label_1, private_subgroup_label_1]
         end
@@ -123,14 +123,14 @@ describe LabelsFinder do
         it 'ignores labels from groups which user can not read' do
           private_subgroup_1.add_developer(user)
 
-          finder = described_class.new(user, group_id: private_group_1.id, only_group_labels: true, include_descendant_groups: true)
+          finder = described_class.new(user, **group_params(private_group_1), only_group_labels: true, include_descendant_groups: true)
 
           expect(finder.execute).to eq [private_subgroup_label_1]
         end
       end
 
       context 'when including labels from group projects with limited visibility' do
-        let(:finder)                     { described_class.new(user, group_id: group_4.id) }
+        let(:finder)                     { described_class.new(user, **group_params(group_4)) }
         let(:group_4)                    { create(:group) }
         let(:limited_visibility_project) { create(:project, :public, group: group_4) }
         let(:visible_project)            { create(:project, :public, group: group_4) }
@@ -210,6 +210,24 @@ describe LabelsFinder do
             it_behaves_like 'with full visibility'
           end
         end
+      end
+    end
+
+    it_behaves_like 'filtering by group' do
+      def group_params(group)
+        { group: group }
+      end
+    end
+
+    it_behaves_like 'filtering by group' do
+      def group_params(group)
+        { group_id: group.id }
+      end
+    end
+
+    it_behaves_like 'filtering by group' do
+      def group_params(group)
+        { group: '', group_id: group.id }
       end
     end
 

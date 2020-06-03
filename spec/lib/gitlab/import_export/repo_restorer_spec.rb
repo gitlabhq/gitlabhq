@@ -13,11 +13,8 @@ describe Gitlab::ImportExport::RepoRestorer do
     let(:shared) { project.import_export_shared }
     let(:bundler) { Gitlab::ImportExport::RepoSaver.new(project: project_with_repo, shared: shared) }
     let(:bundle_path) { File.join(shared.export_path, Gitlab::ImportExport.project_bundle_filename) }
-    let(:restorer) do
-      described_class.new(path_to_bundle: bundle_path,
-                          shared: shared,
-                          project: project)
-    end
+
+    subject { described_class.new(path_to_bundle: bundle_path, shared: shared, project: project) }
 
     before do
       allow_next_instance_of(Gitlab::ImportExport) do |instance|
@@ -36,7 +33,25 @@ describe Gitlab::ImportExport::RepoRestorer do
     end
 
     it 'restores the repo successfully' do
-      expect(restorer.restore).to be_truthy
+      expect(subject.restore).to be_truthy
+    end
+
+    context 'when the repository creation fails' do
+      before do
+        allow_next_instance_of(Repositories::DestroyService) do |instance|
+          expect(instance).to receive(:execute).and_call_original
+        end
+      end
+
+      it 'logs the error' do
+        allow(project.repository)
+          .to receive(:create_from_bundle)
+          .and_raise('9:CreateRepositoryFromBundle: target directory is non-empty')
+
+        expect(shared).to receive(:error).and_call_original
+
+        expect(subject.restore).to be_falsey
+      end
     end
   end
 end
