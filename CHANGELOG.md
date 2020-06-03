@@ -2,6 +2,13 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 13.0.4 (2020-06-03)
+
+### Security (1 change)
+
+- Prevent fetching repository code with unauthorized ci token.
+
+
 ## 13.0.3 (2020-05-29)
 
 ### Fixed (8 changes, 1 of them is from the community)
