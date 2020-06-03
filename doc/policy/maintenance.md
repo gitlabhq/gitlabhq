@@ -144,6 +144,10 @@ It's also important to ensure that any background migrations have been fully com
 before upgrading to a new major version. To see the current size of the `background_migration` queue,
 [Check for background migrations before upgrading](../update/README.md#checking-for-background-migrations-before-upgrading).
 
+If your GitLab instance has any GitLab Runners associated with it, it is very
+important to upgrade the GitLab Runners to match the GitLab minor version that was
+upgraded to. This is to ensure [compatibility with GitLab versions](https://docs.gitlab.com/runner/#compatibility-with-gitlab-versions).
+
 ### Version 12 onwards: Extra step for major upgrades
 
 From version 12 onwards, an additional step is required. More significant migrations

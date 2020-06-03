@@ -14179,6 +14179,9 @@ msgstr ""
 msgid "MissingSSHKeyWarningLink|You won't be able to pull or push project code via SSH until you add an SSH key to your profile"
 msgstr ""
 
+msgid "ModalButton|Add projects"
+msgstr ""
+
 msgid "Modal|Cancel"
 msgstr ""
 

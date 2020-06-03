@@ -46,7 +46,7 @@ module Issues
     end
 
     def email_results_to_user
-      Notify.import_issues_csv_email(@user.id, @project.id, @results).deliver_now
+      Notify.import_issues_csv_email(@user.id, @project.id, @results).deliver_later
     end
 
     def detect_col_sep(header)

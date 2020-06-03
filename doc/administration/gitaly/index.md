@@ -1,19 +1,25 @@
+---
+stage: Create
+group: Gitaly
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+type: reference
+---
+
 # Gitaly
 
-[Gitaly](https://gitlab.com/gitlab-org/gitaly) is the service that
-provides high-level RPC access to Git repositories. Without it, no other
-components can read or write Git data. GitLab components that access Git
-repositories (GitLab Rails, GitLab Shell, GitLab Workhorse, etc.) act as clients
-to Gitaly. End users do not have direct access to Gitaly.
+[Gitaly](https://gitlab.com/gitlab-org/gitaly) is the service that provides high-level RPC access to
+Git repositories. Without it, no GitLab components can read or write Git data.
 
-On this page:
+In the Gitaly documentation:
 
 - **Gitaly server** refers to any node that runs Gitaly itself.
 - **Gitaly client** refers to any node that runs a process that makes requests of the
   Gitaly server. Processes include, but are not limited to:
-  - GitLab Rails application.
-  - GitLab Shell.
-  - GitLab Workhorse.
+  - [GitLab Rails application](https://gitlab.com/gitlab-org/gitlab).
+  - [GitLab Shell](https://gitlab.com/gitlab-org/gitlab-shell).
+  - [GitLab Workhorse](https://gitlab.com/gitlab-org/gitlab-workhorse).
+
+GitLab end users do not have direct access to Gitaly.
 
 CAUTION: **Caution:**
 From GitLab 13.0, using NFS for Git repositories is deprecated. In GitLab 14.0,
@@ -22,7 +28,7 @@ support for NFS for Git repositories is scheduled to be removed. Upgrade to
 
 ## Architecture
 
-Here's a high-level architecture overview of how Gitaly is used.
+The following is a high-level architecture overview of how Gitaly is used.
 
 ![Gitaly architecture diagram](img/architecture_v12_4.png)
 
@@ -30,7 +36,7 @@ Here's a high-level architecture overview of how Gitaly is used.
 
 The Gitaly service itself is configured via a [TOML configuration file](reference.md).
 
-If you want to change any of its settings:
+To change Gitaly settings:
 
 **For Omnibus GitLab**
 
@@ -44,12 +50,20 @@ If you want to change any of its settings:
 
 ## Running Gitaly on its own server
 
-This is an optional way to deploy Gitaly which can benefit GitLab
-installations that are larger than a single machine. Most
-installations will be better served with the default configuration
-used by Omnibus and the GitLab source installation guide.
-Following transition to Gitaly on its own server,
-[Gitaly servers will need to be upgraded before Gitaly clients in your cluster](https://docs.gitlab.com/omnibus/update/#upgrading-gitaly-servers).
+By default, Gitaly is run on the same server as Gitaly clients and is
+[configured as above](#configuring-gitaly). Single-server installations are best served by
+this default configuration used by:
+
+- [Omnibus GitLab](https://docs.gitlab.com/omnibus/).
+- The GitLab [source installation guide](../../install/installation.md).
+
+However, Gitaly can be deployed to its own server, which can benefit GitLab installations that span
+multiple machines.
+
+NOTE: **Note:**
+When configured to run on their own servers, Gitaly servers
+[must be upgraded](https://docs.gitlab.com/omnibus/update/#upgrading-gitaly-servers) before Gitaly
+clients in your cluster.
 
 Starting with GitLab 11.4, Gitaly is able to serve all Git requests without
 requiring a shared NFS mount for Git repository data.

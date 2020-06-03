@@ -5895,7 +5895,7 @@ CREATE TABLE public.resource_state_events (
     created_at timestamp with time zone NOT NULL,
     state smallint NOT NULL,
     epic_id integer,
-    CONSTRAINT resource_state_events_must_belong_to_issue_or_merge_request_or_ CHECK ((((issue_id <> NULL::bigint) AND (merge_request_id IS NULL) AND (epic_id IS NULL)) OR ((issue_id IS NULL) AND (merge_request_id <> NULL::bigint) AND (epic_id IS NULL)) OR ((issue_id IS NULL) AND (merge_request_id IS NULL) AND (epic_id <> NULL::integer))))
+    CONSTRAINT state_events_must_belong_to_issue_or_merge_request_or_epic CHECK ((((issue_id <> NULL::bigint) AND (merge_request_id IS NULL) AND (epic_id IS NULL)) OR ((issue_id IS NULL) AND (merge_request_id <> NULL::bigint) AND (epic_id IS NULL)) OR ((issue_id IS NULL) AND (merge_request_id IS NULL) AND (epic_id <> NULL::integer))))
 );
 
 CREATE SEQUENCE public.resource_state_events_id_seq
@@ -13776,5 +13776,6 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200527152116
 20200527152657
 20200528123703
+20200603073101
 \.
 

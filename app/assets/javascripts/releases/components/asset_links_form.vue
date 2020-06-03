@@ -124,10 +124,10 @@ export default {
     <div
       v-for="(link, index) in release.assets.links"
       :key="link.id"
-      class="row flex-column flex-sm-row align-items-stretch align-items-sm-start"
+      class="row flex-column flex-sm-row align-items-stretch align-items-sm-start no-gutters"
     >
       <gl-form-group
-        class="url-field form-group col"
+        class="url-field form-group col pr-sm-2"
         :label="__('URL')"
         :label-for="`asset-url-${index}`"
       >
@@ -164,7 +164,7 @@ export default {
       </gl-form-group>
 
       <gl-form-group
-        class="link-title-field col"
+        class="link-title-field col px-sm-2"
         :label="__('Link title')"
         :label-for="`asset-link-name-${index}`"
       >
@@ -186,7 +186,7 @@ export default {
 
       <gl-form-group
         v-if="glFeatures.releaseAssetLinkType"
-        class="link-type-field col-auto"
+        class="link-type-field col-auto px-sm-2"
         :label="__('Type')"
         :label-for="`asset-type-${index}`"
       >
@@ -200,7 +200,7 @@ export default {
         />
       </gl-form-group>
 
-      <div class="mb-5 mb-sm-3 mt-sm-4 col col-sm-auto">
+      <div class="mb-5 mb-sm-3 mt-sm-4 col col-sm-auto pl-sm-2">
         <gl-button
           v-gl-tooltip
           class="remove-button w-100 form-control"

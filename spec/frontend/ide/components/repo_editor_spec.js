@@ -525,6 +525,14 @@ describe('RepoEditor', () => {
       );
     };
 
+    const watchState = watched =>
+      new Promise(resolve => {
+        const unwatch = vm.$store.watch(watched, () => {
+          unwatch();
+          resolve();
+        });
+      });
+
     beforeEach(() => {
       setFileName('bar.md');
 
@@ -562,7 +570,10 @@ describe('RepoEditor', () => {
     it("adds a markdown image tag to the file's contents", () => {
       pasteImage();
 
-      return waitForPromises().then(() => {
+      // Pasting an image does a lot of things like using the FileReader API,
+      // so, waitForPromises isn't very reliable (and causes a flaky spec)
+      // Read more about state.watch: https://vuex.vuejs.org/api/#watch
+      return watchState(s => s.entries['foo/bar.md'].content).then(() => {
         expect(vm.file.content).toBe('hello world\n![foo.png](./foo.png)');
       });
     });
