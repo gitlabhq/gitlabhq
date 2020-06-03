@@ -1,6 +1,9 @@
 Akismet
 Alertmanager
 Algolia
+allowlist
+allowlisting
+allowlists
 Ansible
 Anthos
 API
@@ -29,6 +32,7 @@ autoscaling
 awardable
 Axios
 Azure
+B-tree
 backport
 backported
 backporting
@@ -57,6 +61,7 @@ CAS
 CentOS
 Chatops
 Citrix
+Citus
 clonable
 Cloudwatch
 Cobertura
@@ -83,6 +88,9 @@ deduplicated
 deduplicates
 deduplicating
 deduplication
+denylist
+denylisting
+denylists
 deprovision
 deprovisioned
 deprovisioning
@@ -114,6 +122,7 @@ Fluentd
 Forgerock
 Gantt
 Gemnasium
+gettext
 Git
 Gitaly
 Gitea
@@ -129,6 +138,7 @@ Gradle
 Grafana
 gravatar
 Gzip
+Haml
 hardcode
 hardcoded
 hardcodes
@@ -168,6 +178,7 @@ kanbans
 Karma
 Kerberos
 Kibana
+Kinesis
 Knative
 Kramdown
 Kubernetes
@@ -190,6 +201,10 @@ Markdown
 markdownlint
 Mattermost
 mbox
+memoization
+memoize
+memoized
+memoizing
 mergeable
 Microsoft
 middleware
@@ -204,6 +219,8 @@ misconfiguration
 misconfigurations
 misconfiguring
 mitigations
+mixin
+mixins
 mockup
 mockups
 ModSecurity
@@ -224,6 +241,7 @@ offboarded
 offboarding
 offboards
 OmniAuth
+onboarding
 OpenID
 OpenShift
 Packagist
@@ -235,6 +253,8 @@ Pipfiles
 Piwik
 PgBouncer
 plaintext
+Poedit
+pooler
 PostgreSQL
 precompile
 preconfigure
@@ -299,6 +319,7 @@ reverified
 reverifies
 reverify
 Rubix
+Rubocop
 runbook
 runbooks
 runit
@@ -306,11 +327,13 @@ runtime
 runtimes
 Salesforce
 SAML
+sandboxing
 sbt
 Sendmail
 Sentry
 serverless
 Sidekiq
+Sisense
 sharding
 shfmt
 Shibboleth
@@ -330,6 +353,7 @@ spidering
 Splunk
 SpotBugs
 SSH
+Stackdriver
 storable
 strace
 strikethrough

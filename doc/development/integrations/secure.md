@@ -15,7 +15,7 @@ scanner, as well as requirements and guidelines for the Docker image.
 
 ## Job definition
 
-This section desribes several important fields to add to the security scanner's job
+This section describes several important fields to add to the security scanner's job
 definition file. Full documentation on these and other available fields can be viewed
 in the [CI documentation](../../ci/yaml/README.md#image).
 
@@ -89,9 +89,9 @@ for variables such as `DEPENDENCY_SCANNING_DISABLED`, `CONTAINER_SCANNING_DISABL
 disable running the custom scanner.
 
 GitLab also defines a `CI_PROJECT_REPOSITORY_LANGUAGES` variable, which provides the list of
-languages in the repo. Depending on this value, your scanner may or may not do something different.
+languages in the repository. Depending on this value, your scanner may or may not do something different.
 Language detection currently relies on the [`linguist`](https://github.com/github/linguist) Ruby gem.
-See [GitLab CI/CD prefined variables](../../ci/variables/predefined_variables.md#variables-reference).
+See [GitLab CI/CD predefined variables](../../ci/variables/predefined_variables.md#variables-reference).
 
 #### Policy checking example
 

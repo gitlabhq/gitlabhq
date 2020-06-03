@@ -52,10 +52,10 @@ maintain and support one database with tables with many rows.
 
 There are two ways to deal with this:
 
-- Partioning. Locally split up tables data.
+- Partitioning. Locally split up tables data.
 - Sharding. Distribute data across multiple databases.
 
-Partioning is a built-in PostgreSQL feature and requires minimal changes
+Partitioning is a built-in PostgreSQL feature and requires minimal changes
 in the application. However, it [requires PostgreSQL
 11](https://www.2ndquadrant.com/en/blog/partitioning-evolution-postgresql-11/).
 
@@ -246,9 +246,9 @@ lifting of many activities, including:
 - Processing CI builds and pipelines.
 
 The full list of jobs can be found in the
-[app/workers](https://gitlab.com/gitlab-org/gitlab/tree/master/app/workers)
+[`app/workers`](https://gitlab.com/gitlab-org/gitlab/tree/master/app/workers)
 and
-[ee/app/workers](https://gitlab.com/gitlab-org/gitlab/tree/master/ee/app/workers)
+[`ee/app/workers`](https://gitlab.com/gitlab-org/gitlab/tree/master/ee/app/workers)
 directories in the GitLab code base.
 
 #### Runaway Queues
@@ -281,7 +281,7 @@ in a timely manner:
   benefits.
 
 From the Sidekiq logs, it's possible to see which jobs run the most
-frequently and/or take the longest. For example, theis Kibana
+frequently and/or take the longest. For example, these Kibana
 visualizations show the jobs that consume the most total time:
 
 ![Most time-consuming Sidekiq jobs](img/sidekiq_most_time_consuming_jobs.png)

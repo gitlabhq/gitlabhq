@@ -150,6 +150,8 @@
   - 5
 - - merge_request_mergeability_check
   - 1
+- - metrics_dashboard_prune_old_annotations
+  - 1
 - - migrate_external_diffs
   - 1
 - - namespaceless_project_destroy

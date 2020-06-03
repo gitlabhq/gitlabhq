@@ -54,7 +54,7 @@ The process for adding new Gitaly features is:
 These steps often overlap. It is possible to use an unreleased version
 of Gitaly and `gitaly-proto` during testing and development.
 
-- See the [Gitaly repo](https://gitlab.com/gitlab-org/gitaly/blob/master/CONTRIBUTING.md#development-and-testing-with-a-custom-gitaly-proto) for instructions on writing server side code with an unreleased protocol.
+- See the [Gitaly repository](https://gitlab.com/gitlab-org/gitaly/blob/master/CONTRIBUTING.md#development-and-testing-with-a-custom-gitaly-proto) for instructions on writing server side code with an unreleased protocol.
 - See [below](#running-tests-with-a-locally-modified-version-of-gitaly) for instructions on running GitLab CE tests with a modified version of Gitaly.
 - In GDK run `gdk install` and restart `gdk run` (or `gdk run app`) to use a locally modified Gitaly version for development
 
@@ -67,7 +67,7 @@ This should make it easier to contribute for developers who are less
 comfortable writing Go code.
 
 There is documentation for this approach in [the Gitaly
-repo](https://gitlab.com/gitlab-org/gitaly/blob/master/doc/ruby_endpoint.md).
+repository](https://gitlab.com/gitlab-org/gitaly/blob/master/doc/ruby_endpoint.md).
 
 ## Gitaly-Related Test Failures
 
@@ -323,8 +323,8 @@ the integration by using GDK:
    1. Navigate to GDK's root directory.
    1. Make sure you have the proper branch checked out for Gitaly.
    1. Recompile it with `make gitaly-setup` and restart the service with `gdk restart gitaly`.
-   1. Make sure your setup is runnig: `gdk status | grep praefect`.
-   1. Check what config file is used: `cat ./services/praefect/run | grep praefect` value of the `-config` flag
+   1. Make sure your setup is running: `gdk status | grep praefect`.
+   1. Check what configuration file is used: `cat ./services/praefect/run | grep praefect` value of the `-config` flag
    1. Uncomment `prometheus_listen_addr` in the configuration file and run `gdk restart gitaly`.
 
 1. Make sure that the flag is not enabled yet:

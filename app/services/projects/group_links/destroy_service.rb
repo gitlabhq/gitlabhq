@@ -12,7 +12,9 @@ module Projects
           TodosDestroyer::ConfidentialIssueWorker.perform_in(Todo::WAIT_FOR_DELETE, nil, project.id)
         end
 
-        group_link.destroy
+        group_link.destroy.tap do |link|
+          link.group.refresh_members_authorized_projects
+        end
       end
     end
   end

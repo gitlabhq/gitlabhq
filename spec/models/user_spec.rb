@@ -2845,10 +2845,10 @@ describe User do
     it "includes projects shared with user's group" do
       user    = create(:user)
       project = create(:project, :private)
-      group   = create(:group)
-
-      group.add_reporter(user)
-      project.project_group_links.create(group: group)
+      group   = create(:group) do |group|
+        group.add_reporter(user)
+      end
+      create(:project_group_link, group: group, project: project)
 
       expect(user.authorized_projects).to include(project)
     end

@@ -69,7 +69,7 @@ expect(cleanForSnapshot(wrapper.element)).toMatchSnapshot();
 
 ### Examples
 
-- [Pinning test in a haml to vue refactor](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/27691#pinning-tests)
+- [Pinning test in a Haml to Vue refactor](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/27691#pinning-tests)
 - [Pinning test in isolating a bug](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/32198#note_212736225)
 - [Pinning test in refactoring dropdown](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/28173)
 - [Pinning test in refactoring vulnerability_details.vue](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/25830/commits)

@@ -249,11 +249,12 @@ group.
 | View/manage group-level Kubernetes cluster             |       |          |           | ✓          | ✓     |
 | Create subgroup                                        |       |          |           | ✓ (1)      | ✓     |
 | Edit epic comments (posted by any user) **(ULTIMATE)** |       |          |           | ✓ (2)      | ✓ (2) |
-| Edit group                                             |       |          |           |            | ✓     |
+| Edit group settings                                    |       |          |           |            | ✓     |
 | Manage group level CI/CD variables                     |       |          |           |            | ✓     |
 | Manage group members                                   |       |          |           |            | ✓     |
-| Remove group                                           |       |          |           |            | ✓     |
+| Delete group                                           |       |          |           |            | ✓     |
 | Delete group epic **(ULTIMATE)**                       |       |          |           |            | ✓     |
+| Edit SAML SSO Billing **(SILVER ONLY)**                | ✓     | ✓        | ✓         | ✓          | ✓ (4) |
 | View group Audit Events                                |       |          |           |            | ✓     |
 | Disable notification emails                            |       |          |           |            | ✓     |
 | View Contribution analytics                            | ✓     | ✓        | ✓         | ✓          | ✓     |
@@ -261,6 +262,8 @@ group.
 | View Issues analytics **(PREMIUM)**                    | ✓     | ✓        | ✓         | ✓          | ✓     |
 | View Productivity analytics **(PREMIUM)**              |       | ✓        | ✓         | ✓          | ✓     |
 | View Value Stream analytics                            | ✓     | ✓        | ✓         | ✓          | ✓     |
+| View Billing **(FREE ONLY)**                           | ✓     | ✓        | ✓         | ✓          | ✓ (4) |
+| View Usage Quotas **(FREE ONLY)**                      | ✓     | ✓        | ✓         | ✓          | ✓ (4) |
 
 1. Groups can be set to [allow either Owners or Owners and
   Maintainers to create subgroups](group/subgroups/index.md#creating-a-subgroup)
@@ -268,6 +271,7 @@ group.
 1. Default project creation role can be changed at:
    - The [instance level](admin_area/settings/visibility_and_access_controls.md#default-project-creation-protection).
    - The [group level](group/index.md#default-project-creation-level).
+1. Does not apply to subgroups.
 
 ### Subgroup permissions
 

@@ -3,13 +3,23 @@
 require 'spec_helper'
 
 describe Projects::GroupLinks::DestroyService, '#execute' do
-  let(:project) { create(:project, :private) }
-  let!(:group_link) { create(:project_group_link, project: project) }
-  let(:user) { create :user }
-  let(:subject) { described_class.new(project, user) }
+  let_it_be(:user) { create :user }
+  let_it_be(:project) { create(:project, :private) }
+  let_it_be(:group) { create(:group) }
+  let!(:group_link) { create(:project_group_link, project: project, group: group) }
+
+  subject { described_class.new(project, user) }
 
   it 'removes group from project' do
     expect { subject.execute(group_link) }.to change { project.project_group_links.count }.from(1).to(0)
+  end
+
+  it 'updates authorization' do
+    group.add_maintainer(user)
+
+    expect { subject.execute(group_link) }.to(
+      change { Ability.allowed?(user, :read_project, project) }
+        .from(true).to(false))
   end
 
   it 'returns false if group_link is blank' do

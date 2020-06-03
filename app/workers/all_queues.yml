@@ -163,6 +163,14 @@
   :weight: 1
   :idempotent: 
   :tags: []
+- :name: cronjob:metrics_dashboard_schedule_annotations_prune
+  :feature_category: :metrics
+  :has_external_dependencies: 
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: cronjob:namespaces_prune_aggregation_schedules
   :feature_category: :source_code_management
   :has_external_dependencies: 
@@ -1349,6 +1357,14 @@
   :tags: []
 - :name: merge_request_mergeability_check
   :feature_category: :source_code_management
+  :has_external_dependencies: 
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+- :name: metrics_dashboard_prune_old_annotations
+  :feature_category: :metrics
   :has_external_dependencies: 
   :urgency: :low
   :resource_boundary: :unknown

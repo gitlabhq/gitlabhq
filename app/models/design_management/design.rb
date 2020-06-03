@@ -22,7 +22,7 @@ module DesignManagement
 
     validates :project, :filename, presence: true
     validates :issue, presence: true, unless: :importing?
-    validates :filename, uniqueness: { scope: :issue_id }
+    validates :filename, uniqueness: { scope: :issue_id }, length: { maximum: 255 }
     validate :validate_file_is_image
 
     alias_attribute :title, :filename

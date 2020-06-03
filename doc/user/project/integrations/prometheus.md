@@ -827,6 +827,14 @@ You can create annotations by making requests to the
 
 ![Annotations UI](img/metrics_dashboard_annotations_ui_v13.0.png)
 
+#### Retention policy
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/211433) in GitLab 13.01.
+
+To avoid excessive storage space consumption by stale annotations, records attached
+to time periods older than two weeks are removed daily. This recurring background
+job runs at 1:00 a.m. local server time.
+
 ### Expand panel
 
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3100) in GitLab 13.0.

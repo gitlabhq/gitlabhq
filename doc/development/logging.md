@@ -359,7 +359,7 @@ end
 
 1. If you add a new file, submit an issue to the [production
    tracker](https://gitlab.com/gitlab-com/gl-infra/production/-/issues) or
-   a merge request to the [gitlab_fluentd](https://gitlab.com/gitlab-cookbooks/gitlab_fluentd)
+   a merge request to the [`gitlab_fluentd`](https://gitlab.com/gitlab-cookbooks/gitlab_fluentd)
    project. See [this example](https://gitlab.com/gitlab-cookbooks/gitlab_fluentd/-/merge_requests/51/diffs).
 
 1. Be sure to update the [GitLab CE/EE documentation](../administration/logs.md) and the [GitLab.com

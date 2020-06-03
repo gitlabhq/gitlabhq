@@ -54,7 +54,7 @@ best place to integrate your own product and its results into GitLab.
 ## How to onboard
 
 This section describes the steps you need to complete to onboard as a partner
-and complete an intgration with the Secure stage.
+and complete an integration with the Secure stage.
 
 1. Read about our [partnerships](https://about.gitlab.com/partners/integrate/).
 1. [Create an issue](https://gitlab.com/gitlab-com/alliances/alliances/-/issues/new?issuable_template=new_partner)

@@ -9,7 +9,7 @@
     = icon('angle-double-left')
 
   .nav-text.flex-fill
-    %h2.wiki-page-title= @page.human_title
+    %h2.wiki-page-title{ data: { qa_selector: 'wiki_page_title' } }= @page.human_title
     %span.wiki-last-edit-by
       - if @page.last_version
         = (_("Last edited by %{name}") % { name: "<strong>#{@page.last_version.author_name}</strong>" }).html_safe

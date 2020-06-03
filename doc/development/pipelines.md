@@ -416,7 +416,7 @@ of the `gitlab-org/gitlab-foss` project. These jobs are only created in the foll
 - `master` commits (pushes and scheduled pipelines).
 - `gitlab-org/security/gitlab` merge requests.
 - Merge requests which include `RUN AS-IF-FOSS` in their title.
-- Merge requests that changes the CI config.
+- Merge requests that changes the CI configuration.
 
 The `* as-if-foss` jobs have the `FOSS_ONLY='1'` variable set and gets their EE-specific
 folders removed before the tests start running.
@@ -546,19 +546,19 @@ The current stages are:
 - `post-qa`: This stage includes jobs that build reports or gather data from
   the `qa` stage's jobs (e.g. Review App performance report).
 - `pages`: This stage includes a job that deploys the various reports as
-  GitLab Pages (e.g. <https://gitlab-org.gitlab.io/gitlab/coverage-ruby/>,
-  <https://gitlab-org.gitlab.io/gitlab/coverage-javascript/>,
-  <https://gitlab-org.gitlab.io/gitlab/webpack-report/>).
+  GitLab Pages (e.g. [`coverage-ruby`](https://gitlab-org.gitlab.io/gitlab/coverage-ruby/),
+  [`coverage-javascript`](https://gitlab-org.gitlab.io/gitlab/coverage-javascript/),
+  [`webpack-report`](https://gitlab-org.gitlab.io/gitlab/webpack-report/).
 
 ### Default image
 
-The default image is defined in <https://gitlab.com/gitlab-org/gitlab/blob/master/.gitlab-ci.yml>.
+The default image is defined in [`.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/blob/master/.gitlab-ci.yml).
 
 It includes Ruby, Go, Git, Git LFS, Chrome, Node, Yarn, PostgreSQL, and Graphics Magick.
 
 The images used in our pipelines are configured in the
 [`gitlab-org/gitlab-build-images`](https://gitlab.com/gitlab-org/gitlab-build-images)
-project, which is push-mirrored to <https://dev.gitlab.org/gitlab/gitlab-build-images>
+project, which is push-mirrored to [`gitlab/gitlab-build-images`](https://dev.gitlab.org/gitlab/gitlab-build-images)
 for redundancy.
 
 The current version of the build images can be found in the
@@ -600,7 +600,7 @@ then included in individual jobs via [`extends`](../ci/yaml/README.md#extends).
 
 The `rules` definitions are composed of `if:` conditions and `changes:` patterns,
 which are also defined in
-<https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/ci/rules.gitlab-ci.yml>
+[`rules.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/ci/rules.gitlab-ci.yml)
 and included in `rules` definitions via [YAML anchors](../ci/yaml/README.md#anchors)
 
 #### `if:` conditions

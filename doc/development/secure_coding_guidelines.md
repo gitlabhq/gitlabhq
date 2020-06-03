@@ -52,7 +52,7 @@ Some example of well implemented access controls and tests:
 1. [example2](https://dev.gitlab.org/gitlab/gitlabhq/-/merge_requests/2511/diffs#ed3aaab1510f43b032ce345909a887e5b167e196_142_155)
 1. [example3](https://dev.gitlab.org/gitlab/gitlabhq/-/merge_requests/3170/diffs?diff_id=17494)
 
-**NB:** any input from development team is welcome, e.g. about rubocop rules.
+**NB:** any input from development team is welcome, e.g. about Rubocop rules.
 
 ## Regular Expressions guidelines
 
@@ -67,7 +67,7 @@ matches = re.findall("^bar$",text)
 print(matches)
 ```
 
-The Python example will output an emtpy array (`[]`) as the matcher considers the whole string `foo\nbar` including the newline (`\n`). In contrast Ruby's Regular Expression engine acts differently:
+The Python example will output an empty array (`[]`) as the matcher considers the whole string `foo\nbar` including the newline (`\n`). In contrast Ruby's Regular Expression engine acts differently:
 
 ```ruby
 text = "foo\nbar"
@@ -111,7 +111,7 @@ or controls the regular expression (regex) used, and is able to enter user input
 
 ### Impact
 
-The resource, for example Unicorn, Puma, or Sidekiq, can be made to hang as it takes a long time to evaulate the bad regex match.
+The resource, for example Unicorn, Puma, or Sidekiq, can be made to hang as it takes a long time to evaluate the bad regex match.
 
 ### Examples
 
@@ -140,9 +140,9 @@ class Email < ApplicationRecord
 GitLab has `Gitlab::UntrustedRegexp` which internally uses the [`re2`](https://github.com/google/re2/wiki/Syntax) library.
 By utilizing `re2`, we get a strict limit on total execution time, and a smaller subset of available regex features.
 
-All user-provided regexes should use `Gitlab::UntrustedRegexp`.
+All user-provided regular expressions should use `Gitlab::UntrustedRegexp`.
 
-For other regexes, here are a few guidelines:
+For other regular expressions, here are a few guidelines:
 
 - Remove unnecessary backtracking.
 - Avoid nested quantifiers if possible.
@@ -206,14 +206,14 @@ The [GitLab::HTTP](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab
 `Outbound requests` options that allow instance administrators to block all internal connections, or limit the networks to which connections can be made.
 
 In some cases, it has been possible to configure GitLab::HTTP as the HTTP
-connection library for 3rd-party gems. This is preferrable over re-implementing
+connection library for 3rd-party gems. This is preferable over re-implementing
 the mitigations for a new feature.
 
 - [More details](https://dev.gitlab.org/gitlab/gitlabhq/-/merge_requests/2530/diffs)
 
 #### Feature-specific Mitigations
 
-For situtions in which an allowlist or GitLab:HTTP cannot be used, it will be necessary to implement mitigations directly in the feature. It is best to validate the destination IP addresses themselves, not just domain names, as DNS can be controlled by the attacker. Below are a list of mitigations that should be implemented.
+For situations in which an allowlist or GitLab:HTTP cannot be used, it will be necessary to implement mitigations directly in the feature. It is best to validate the destination IP addresses themselves, not just domain names, as DNS can be controlled by the attacker. Below are a list of mitigations that should be implemented.
 
 **Important Note:** There are many tricks to bypass common SSRF validations. If feature-specific mitigations are necessary, they should be reviewed by the AppSec team, or a developer who has worked on SSRF mitigations previously.
 
@@ -230,7 +230,7 @@ For situtions in which an allowlist or GitLab:HTTP cannot be used, it will be ne
 - For HTTP connections: Disable redirects or validate the redirect destination
 - To mitigate DNS rebinding attacks, validate and use the first IP address received
 
-See [url_blocker_spec.rb](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/lib/gitlab/url_blocker_spec.rb) for examples of SSRF payloads
+See [`url_blocker_spec.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/lib/gitlab/url_blocker_spec.rb) for examples of SSRF payloads
 
 ## XSS guidelines
 

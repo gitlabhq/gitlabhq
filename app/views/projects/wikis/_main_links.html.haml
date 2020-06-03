@@ -1,9 +1,9 @@
 - if (@page && @page.persisted?)
   - if can?(current_user, :create_wiki, @project)
-    = link_to project_wikis_new_path(@project), class: "add-new-wiki btn btn-success", role: "button" do
+    = link_to project_wikis_new_path(@project), class: "add-new-wiki btn btn-success", role: "button", data: { qa_selector: 'new_page_button' } do
       = s_("Wiki|New page")
-  = link_to project_wiki_history_path(@project, @page), class: "btn", role: "button" do
+  = link_to project_wiki_history_path(@project, @page), class: "btn", role: "button", data: { qa_selector: 'page_history_button' } do
     = s_("Wiki|Page history")
   - if can?(current_user, :create_wiki, @project) && @page.latest? && @valid_encoding
-    = link_to project_wiki_edit_path(@project, @page), class: "btn js-wiki-edit", role: "button" do
+    = link_to project_wiki_edit_path(@project, @page), class: "btn js-wiki-edit", role: "button", data: { qa_selector: 'edit_page_button' } do
       = _("Edit")

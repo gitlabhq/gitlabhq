@@ -5,7 +5,7 @@
         = icon('angle-double-right')
 
       - git_access_url = project_wikis_git_access_path(@project)
-      = link_to git_access_url, class: active_nav_link?(path: 'wikis#git_access') ? 'active' : '' do
+      = link_to git_access_url, class: active_nav_link?(path: 'wikis#git_access') ? 'active' : '', data: { qa_selector: 'clone_repository_link' } do
         = icon('cloud-download', class: 'append-right-5')
         %span= _("Clone repository")
 

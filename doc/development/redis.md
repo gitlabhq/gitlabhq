@@ -18,7 +18,7 @@ database.
 
 Redis is a flat namespace with no hierarchy, which means we must pay attention
 to key names to avoid collisions. Typically we use colon-separated elements to
-provide a semblence of structure at application level. An example might be
+provide a semblance of structure at application level. An example might be
 `projects:1:somekey`.
 
 Although we split our Redis usage into three separate purposes, and those may

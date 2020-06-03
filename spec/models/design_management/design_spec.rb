@@ -27,6 +27,7 @@ describe DesignManagement::Design do
     it { is_expected.to validate_presence_of(:project) }
     it { is_expected.to validate_presence_of(:issue) }
     it { is_expected.to validate_presence_of(:filename) }
+    it { is_expected.to validate_length_of(:filename).is_at_most(255) }
     it { is_expected.to validate_uniqueness_of(:filename).scoped_to(:issue_id) }
 
     it "validates that the extension is an image" do

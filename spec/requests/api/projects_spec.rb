@@ -2055,10 +2055,12 @@ describe API::Projects do
   end
 
   describe "POST /projects/:id/share" do
-    let(:group) { create(:group) }
+    let_it_be(:group) { create(:group, :private) }
+    let_it_be(:group_user) { create(:user) }
 
     before do
       group.add_developer(user)
+      group.add_developer(group_user)
     end
 
     it "shares project with group" do
@@ -2072,6 +2074,14 @@ describe API::Projects do
       expect(json_response['group_id']).to eq(group.id)
       expect(json_response['group_access']).to eq(Gitlab::Access::DEVELOPER)
       expect(json_response['expires_at']).to eq(expires_at.to_s)
+    end
+
+    it 'updates project authorization' do
+      expect do
+        post api("/projects/#{project.id}/share", user), params: { group_id: group.id, group_access: Gitlab::Access::DEVELOPER }
+      end.to(
+        change { group_user.can?(:read_project, project) }.from(false).to(true)
+      )
     end
 
     it "returns a 400 error when group id is not given" do
@@ -2123,9 +2133,12 @@ describe API::Projects do
 
   describe 'DELETE /projects/:id/share/:group_id' do
     context 'for a valid group' do
-      let(:group) { create(:group, :public) }
+      let_it_be(:group) { create(:group, :private) }
+      let_it_be(:group_user) { create(:user) }
 
       before do
+        group.add_developer(group_user)
+
         create(:project_group_link, group: group, project: project)
       end
 
@@ -2134,6 +2147,14 @@ describe API::Projects do
 
         expect(response).to have_gitlab_http_status(:no_content)
         expect(project.project_group_links).to be_empty
+      end
+
+      it 'updates project authorization' do
+        expect do
+          delete api("/projects/#{project.id}/share/#{group.id}", user)
+        end.to(
+          change { group_user.can?(:read_project, project) }.from(true).to(false)
+        )
       end
 
       it_behaves_like '412 response' do

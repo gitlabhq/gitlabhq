@@ -245,6 +245,9 @@ following command:
 
 ```ruby
 Feature.enable(:junit_pipeline_view)
+
+# Enable the feature for a specific project
+Feature.enable(:junit_pipeline_view, Project.find(<your-project-id-here>))
 ```
 
 ## Viewing JUnit screenshots on GitLab

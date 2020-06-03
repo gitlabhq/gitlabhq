@@ -5,17 +5,17 @@ module QA
     module Repository
       class WikiPush < Repository::Push
         attribute :wiki do
-          Wiki.fabricate! do |resource|
+          # We are using the project based wiki as a standard.
+          Wiki::ProjectPage.fabricate_via_api! do |resource|
             resource.title = 'Home'
             resource.content = '# My First Wiki Content'
-            resource.message = 'Update home'
           end
         end
 
         def initialize
           @file_name = 'Home.md'
-          @file_content = '# Welcome to My Wiki'
-          @commit_message = 'Updating Home Page'
+          @file_content = 'This line was created using git push'
+          @commit_message = 'Updating using git push'
           @branch_name = 'master'
           @new_branch = false
         end
@@ -28,9 +28,10 @@ module QA
           @repository_ssh_uri ||= wiki.repository_ssh_location.uri
         end
 
-        def fabricate!
-          super
-          wiki.visit!
+        def web_url
+          # TODO
+          # workaround
+          repository_http_uri.to_s.gsub(".wiki.git", "/-/wikis/#{@file_name.gsub('.md', '')}")
         end
       end
     end

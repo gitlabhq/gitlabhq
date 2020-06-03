@@ -49,22 +49,6 @@ describe ProjectGroupLink do
     end
   end
 
-  describe "destroying a record", :delete do
-    it "refreshes group users' authorized projects" do
-      project     = create(:project, :private)
-      group       = create(:group)
-      reporter    = create(:user)
-      group_users = group.users
-
-      group.add_reporter(reporter)
-      project.project_group_links.create(group: group)
-      group_users.each { |user| expect(user.authorized_projects).to include(project) }
-
-      project.project_group_links.destroy_all # rubocop: disable Cop/DestroyAll
-      group_users.each { |user| expect(user.authorized_projects).not_to include(project) }
-    end
-  end
-
   describe 'search by group name' do
     let_it_be(:project_group_link) { create(:project_group_link) }
     let_it_be(:group) { project_group_link.group }

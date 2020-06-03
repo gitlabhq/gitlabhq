@@ -24,7 +24,7 @@ and write it to the Rails root. In the Omnibus packages, reconfigure writes the
 The Omnibus design separates code (read-only, under `/opt/gitlab`) from data
 (read/write, under `/var/opt/gitlab`) and logs (read/write, under
 `/var/log/gitlab`). To make this happen the reconfigure script sets custom
-paths where it can in GitLab config files, and where there are no path
+paths where it can in GitLab configuration files, and where there are no path
 settings, it uses symlinks.
 
 For example, `config/gitlab.yml` is treated as data so that file is a symlink.

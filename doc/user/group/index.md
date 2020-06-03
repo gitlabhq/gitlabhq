@@ -513,7 +513,7 @@ underlying projects, issues, etc, by IP address. This can help ensure that
 particular content doesn't leave the premises, while not blocking off access to
 the entire instance.
 
-Add one or more whitelisted IP subnets using CIDR notation in comma separated format to the group settings and anyone
+Add one or more allowed IP subnets using CIDR notation in comma separated format to the group settings and anyone
 coming from a different IP address won't be able to access the restricted
 content.
 
@@ -533,7 +533,7 @@ the group regardless of the IP restriction.
 You can restrict access to groups by
 allowing only users with email addresses in particular domains to be added to the group.
 
-Add email domains you want to whitelist and users with emails from different
+Add email domains you want to allow and users with emails from different
 domains won't be allowed to be added to this group.
 
 Some domains cannot be restricted. These are the most popular public email domains, such as:

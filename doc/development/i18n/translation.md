@@ -79,8 +79,10 @@ ethnicity.
 In languages which distinguish between a male and female form, use both or
 choose a neutral formulation.
 
+<!-- vale gitlab.Spelling = NO -->
 For example in German, the word "user" can be translated into "Benutzer" (male) or "Benutzerin" (female).
 Therefore "create a new user" would translate into "Benutzer(in) anlegen".
+<!-- vale gitlab.Spelling = YES -->
 
 ### Updating the glossary
 
@@ -91,6 +93,8 @@ To propose additions to the glossary please
 
 ### Inclusive language in French
 
+<!-- vale gitlab.Spelling = NO -->
 In French, the "écriture inclusive" is now over (see on [Legifrance](https://www.legifrance.gouv.fr/affichTexte.do?cidTexte=JORFTEXT000036068906&categorieLien=id)).
 So, to include both genders, write “Utilisateurs et utilisatrices” instead of “Utilisateur·rice·s”.
 When space is missing, the male gender should be used alone.
+<!-- vale gitlab.Spelling = YES -->

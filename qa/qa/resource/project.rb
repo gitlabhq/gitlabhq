@@ -56,6 +56,8 @@ module QA
         @auto_devops_enabled = false
         @visibility = :public
         @template_name = nil
+
+        self.name = "the_awesome_project"
       end
 
       def name=(raw_name)

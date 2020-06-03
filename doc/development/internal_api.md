@@ -47,7 +47,7 @@ POST /internal/allowed
 | `protocol` | string | yes     | SSH when called from GitLab-shell, HTTP or SSH when called from Gitaly |
 | `action`   | string | yes     | Git command being run (`git-upload-pack`, `git-receive-pack`, `git-upload-archive`) |
 | `changes`  | string | yes     | `<oldrev> <newrev> <refname>` when called from Gitaly, The magic string `_any` when called from GitLab Shell |
-| `check_ip` | string | no     | Ip address from which call to GitLab Shell was made |
+| `check_ip` | string | no     | IP address from which call to GitLab Shell was made |
 
 Example request:
 

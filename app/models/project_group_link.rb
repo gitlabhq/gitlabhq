@@ -15,8 +15,6 @@ class ProjectGroupLink < ApplicationRecord
 
   scope :non_guests, -> { where('group_access > ?', Gitlab::Access::GUEST) }
 
-  after_commit :refresh_group_members_authorized_projects
-
   alias_method :shared_with_group, :group
 
   def self.access_options
@@ -48,10 +46,6 @@ class ProjectGroupLink < ApplicationRecord
     if group_ids.include?(self.group.id)
       errors.add(:base, _("Project cannot be shared with the group it is in or one of its ancestors."))
     end
-  end
-
-  def refresh_group_members_authorized_projects
-    group.refresh_members_authorized_projects
   end
 end
 

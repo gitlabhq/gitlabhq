@@ -119,9 +119,9 @@ without measuring anything.
 
 Three values are measured for a block:
 
-- The real time elapsed, stored in NAME_real_time.
-- The CPU time elapsed, stored in NAME_cpu_time.
-- The call count, stored in NAME_call_count.
+- The real time elapsed, stored in `NAME_real_time`.
+- The CPU time elapsed, stored in `NAME_cpu_time`.
+- The call count, stored in `NAME_call_count`.
 
 Both the real and CPU timings are measured in milliseconds.
 

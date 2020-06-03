@@ -1,0 +1,5 @@
+---
+title: Remove metrics dashboard annotations attached to time periods older than two weeks.
+merge_request: 32838
+author:
+type: added
