@@ -31,6 +31,7 @@ module Gitlab
           .merge(components_usage_data)
           .merge(cycle_analytics_usage_data)
           .merge(object_store_usage_data)
+          .merge(topology_usage_data)
           .merge(recording_ce_finish_data)
           .merge(merge_requests_usage_data(default_time_period))
       end
@@ -233,6 +234,25 @@ module Gitlab
           },
           app_server: { type: app_server_type }
         }
+      end
+
+      def topology_usage_data
+        topology_data, duration = measure_duration do
+          alt_usage_data(fallback: {}) do
+            {
+              nodes: topology_node_data
+            }.compact
+          end
+        end
+        { topology: topology_data.merge(duration_s: duration) }
+      end
+
+      def topology_node_data
+        with_prometheus_client do |client|
+          by_instance_mem =
+            client.aggregate(func: 'avg', metric: 'node_memory_MemTotal_bytes', by: 'instance').compact
+          by_instance_mem.values.map { |v| { node_memory_total_bytes: v } }
+        end
       end
 
       def app_server_type

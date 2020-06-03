@@ -77,6 +77,21 @@ module Gitlab
         end
       end
 
+      def with_prometheus_client
+        if Gitlab::Prometheus::Internal.prometheus_enabled?
+          prometheus_address = Gitlab::Prometheus::Internal.uri
+          yield Gitlab::PrometheusClient.new(prometheus_address, allow_local_requests: true)
+        end
+      end
+
+      def measure_duration
+        result = nil
+        duration = Benchmark.realtime do
+          result = yield
+        end
+        [result, duration]
+      end
+
       private
 
       def redis_usage_counter

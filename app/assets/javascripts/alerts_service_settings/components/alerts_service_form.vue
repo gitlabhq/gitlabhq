@@ -3,24 +3,35 @@ import {
   GlDeprecatedButton,
   GlFormGroup,
   GlFormInput,
+  GlLink,
   GlModal,
   GlModalDirective,
+  GlSprintf,
 } from '@gitlab/ui';
-import { escape } from 'lodash';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import ToggleButton from '~/vue_shared/components/toggle_button.vue';
 import axios from '~/lib/utils/axios_utils';
-import { s__, __, sprintf } from '~/locale';
+import { s__, __ } from '~/locale';
 import createFlash from '~/flash';
 
 export default {
+  i18n: {
+    usageSection: s__(
+      'AlertService|You must provide this URL and authorization key to authorize an external service to send alerts to GitLab. You can provide this URL and key to multiple services. After configuring an external service, alerts from your service will display on the GitLab %{linkStart}Alerts%{linkEnd} page.',
+    ),
+    setupSection: s__(
+      "AlertService|Review your external service's documentation to learn where to provide this information to your external service, and the %{linkStart}GitLab documentation%{linkEnd} to learn more about configuring your endpoint.",
+    ),
+  },
   COPY_TO_CLIPBOARD: __('Copy'),
   RESET_KEY: __('Reset key'),
   components: {
     GlDeprecatedButton,
     GlFormGroup,
     GlFormInput,
+    GlLink,
     GlModal,
+    GlSprintf,
     ClipboardButton,
     ToggleButton,
   },
@@ -28,6 +39,14 @@ export default {
     'gl-modal': GlModalDirective,
   },
   props: {
+    alertsSetupUrl: {
+      type: String,
+      required: true,
+    },
+    alertsUsageUrl: {
+      type: String,
+      required: true,
+    },
     initialAuthorizationKey: {
       type: String,
       required: false,
@@ -40,11 +59,6 @@ export default {
     url: {
       type: String,
       required: true,
-    },
-    learnMoreUrl: {
-      type: String,
-      required: false,
-      default: '',
     },
     initialActivated: {
       type: Boolean,
@@ -59,27 +73,17 @@ export default {
     };
   },
   computed: {
-    learnMoreDescription() {
-      return sprintf(
-        s__(
-          'AlertService|%{linkStart}Learn more%{linkEnd} about configuring this endpoint to receive alerts.',
-        ),
+    sections() {
+      return [
         {
-          linkStart: `<a href="${escape(
-            this.learnMoreUrl,
-          )}" target="_blank" rel="noopener noreferrer">`,
-          linkEnd: '</a>',
+          text: this.$options.i18n.usageSection,
+          url: this.alertsUsageUrl,
         },
-        false,
-      );
-    },
-    sectionDescription() {
-      const desc = s__(
-        'AlertService|Each alert source must be authorized using the following URL and authorization key.',
-      );
-      const learnMoreDesc = this.learnMoreDescription ? ` ${this.learnMoreDescription}` : '';
-
-      return `${desc}${learnMoreDesc}`;
+        {
+          text: this.$options.i18n.setupSection,
+          url: this.alertsSetupUrl,
+        },
+      ];
     },
   },
   watch: {
@@ -126,7 +130,15 @@ export default {
 
 <template>
   <div>
-    <p v-html="sectionDescription"></p>
+    <div data-testid="description">
+      <p v-for="section in sections" :key="section.text">
+        <gl-sprintf :message="section.text">
+          <template #link="{ content }">
+            <gl-link :href="section.url" target="_blank">{{ content }}</gl-link>
+          </template>
+        </gl-sprintf>
+      </p>
+    </div>
     <gl-form-group :label="__('Active')" label-for="activated" label-class="label-bold">
       <toggle-button
         id="activated"

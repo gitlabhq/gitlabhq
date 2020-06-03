@@ -92,7 +92,7 @@ For example:
 
 To help avoid abuse, users are rate limited to:
 
-| Request Type     | Limit                          |
-| ---------------- | ------------------------------ |
-| Export           | 1 group every 5 minutes        |
-| Download export  | 10 downloads every 10 minutes  |
+| Request Type     | Limit                                    |
+| ---------------- | ---------------------------------------- |
+| Export           | 30 groups every 5 minutes                |
+| Download export  | 10 downloads per group every 10 minutes  |

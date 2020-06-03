@@ -6,8 +6,7 @@ describe Gitlab::UsageData, :aggregate_failures do
   include UsageDataHelpers
 
   before do
-    allow(ActiveRecord::Base.connection).to receive(:transaction_open?).and_return(false)
-
+    stub_usage_data_connections
     stub_object_store_settings
   end
 
@@ -245,9 +244,10 @@ describe Gitlab::UsageData, :aggregate_failures do
       describe '#components_usage_data' do
         subject { described_class.components_usage_data }
 
-        it 'gathers components usage data' do
-          expect(Gitlab::UsageData).to receive(:app_server_type).and_return('server_type')
-          expect(subject[:app_server][:type]).to eq('server_type')
+        it 'gathers basic components usage data' do
+          stub_runtime(:puma)
+
+          expect(subject[:app_server][:type]).to eq('puma')
           expect(subject[:gitlab_pages][:enabled]).to eq(Gitlab.config.pages.enabled)
           expect(subject[:gitlab_pages][:version]).to eq(Gitlab::Pages::VERSION)
           expect(subject[:git][:version]).to eq(Gitlab::Git.version)
@@ -258,6 +258,92 @@ describe Gitlab::UsageData, :aggregate_failures do
           expect(subject[:gitaly][:clusters]).to be >= 0
           expect(subject[:gitaly][:filesystems]).to be_an(Array)
           expect(subject[:gitaly][:filesystems].first).to be_a(String)
+        end
+
+        def stub_runtime(runtime)
+          allow(Gitlab::Runtime).to receive(:identify).and_return(runtime)
+        end
+      end
+
+      describe '#topology_usage_data' do
+        subject { described_class.topology_usage_data }
+
+        before do
+          # this pins down time shifts when benchmarking durations
+          allow(Process).to receive(:clock_gettime).and_return(0)
+        end
+
+        context 'when embedded Prometheus server is enabled' do
+          before do
+            expect(Gitlab::Prometheus::Internal).to receive(:prometheus_enabled?).and_return(true)
+            expect(Gitlab::Prometheus::Internal).to receive(:uri).and_return('http://prom:9090')
+          end
+
+          it 'contains a topology element' do
+            allow_prometheus_queries
+
+            expect(subject).to have_key(:topology)
+          end
+
+          context 'tracking node metrics' do
+            it 'contains node level metrics for each instance' do
+              expect_prometheus_api_to receive(:aggregate)
+                .with(func: 'avg', metric: 'node_memory_MemTotal_bytes', by: 'instance')
+                .and_return({
+                  'instance1' => 512,
+                  'instance2' => 1024
+                })
+
+              expect(subject[:topology]).to eq({
+                duration_s: 0,
+                nodes: [
+                  {
+                    node_memory_total_bytes: 512
+                  },
+                  {
+                    node_memory_total_bytes: 1024
+                  }
+                ]
+              })
+            end
+          end
+
+          context 'and no results are found' do
+            it 'does not report anything' do
+              expect_prometheus_api_to receive(:aggregate).and_return({})
+
+              expect(subject[:topology]).to eq({
+                duration_s: 0,
+                nodes: []
+              })
+            end
+          end
+
+          context 'and a connection error is raised' do
+            it 'does not report anything' do
+              expect_prometheus_api_to receive(:aggregate).and_raise('Connection failed')
+
+              expect(subject[:topology]).to eq({ duration_s: 0 })
+            end
+          end
+        end
+
+        context 'when embedded Prometheus server is disabled' do
+          it 'does not report anything' do
+            expect(subject[:topology]).to eq({ duration_s: 0 })
+          end
+        end
+
+        def expect_prometheus_api_to(receive_matcher)
+          expect_next_instance_of(Gitlab::PrometheusClient) do |client|
+            expect(client).to receive_matcher
+          end
+        end
+
+        def allow_prometheus_queries
+          allow_next_instance_of(Gitlab::PrometheusClient) do |client|
+            allow(client).to receive(:aggregate).and_return({})
+          end
         end
       end
 

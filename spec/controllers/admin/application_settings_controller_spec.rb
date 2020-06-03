@@ -4,6 +4,7 @@ require 'spec_helper'
 
 describe Admin::ApplicationSettingsController do
   include StubENV
+  include UsageDataHelpers
 
   let(:group) { create(:group) }
   let(:project) { create(:project, namespace: group) }
@@ -16,7 +17,7 @@ describe Admin::ApplicationSettingsController do
 
   describe 'GET #usage_data with no access' do
     before do
-      allow(ActiveRecord::Base.connection).to receive(:transaction_open?).and_return(false)
+      stub_usage_data_connections
       sign_in(user)
     end
 
@@ -29,7 +30,7 @@ describe Admin::ApplicationSettingsController do
 
   describe 'GET #usage_data' do
     before do
-      allow(ActiveRecord::Base.connection).to receive(:transaction_open?).and_return(false)
+      stub_usage_data_connections
       sign_in(admin)
     end
 

@@ -74,4 +74,38 @@ describe Gitlab::Utils::UsageData do
       end
     end
   end
+
+  describe '#with_prometheus_client' do
+    context 'when Prometheus is enabled' do
+      it 'yields a client instance and returns the block result' do
+        expect(Gitlab::Prometheus::Internal).to receive(:prometheus_enabled?).and_return(true)
+        expect(Gitlab::Prometheus::Internal).to receive(:uri).and_return('http://prom:9090')
+
+        result = described_class.with_prometheus_client { |client| client }
+
+        expect(result).to be_an_instance_of(Gitlab::PrometheusClient)
+      end
+    end
+
+    context 'when Prometheus is disabled' do
+      it 'returns nil' do
+        expect(Gitlab::Prometheus::Internal).to receive(:prometheus_enabled?).and_return(false)
+
+        result = described_class.with_prometheus_client { |client| client }
+
+        expect(result).to be nil
+      end
+    end
+  end
+
+  describe '#measure_duration' do
+    it 'returns block result and execution duration' do
+      allow(Process).to receive(:clock_gettime).and_return(1, 3)
+
+      result, duration = described_class.measure_duration { 42 }
+
+      expect(result).to eq(42)
+      expect(duration).to eq(2)
+    end
+  end
 end

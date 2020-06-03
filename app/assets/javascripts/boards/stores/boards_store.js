@@ -1,4 +1,4 @@
-/* eslint-disable no-shadow, no-param-reassign */
+/* eslint-disable no-shadow, no-param-reassign,consistent-return */
 /* global List */
 
 import $ from 'jquery';
@@ -22,6 +22,7 @@ import ListLabel from '../models/label';
 import ListAssignee from '../models/assignee';
 import ListMilestone from '../models/milestone';
 
+const PER_PAGE = 20;
 const boardsStore = {
   disabled: false,
   timeTracking: {
@@ -137,6 +138,17 @@ const boardsStore = {
   findIssueLabel(issue, findLabel) {
     return issue.labels.find(label => label.id === findLabel.id);
   },
+
+  goToNextPage(list) {
+    if (list.issuesSize > list.issues.length) {
+      if (list.issues.length / PER_PAGE >= 1) {
+        list.page += 1;
+      }
+
+      return list.getIssues(false);
+    }
+  },
+
   addListIssue(list, issue, listFrom, newIndex) {
     let moveBeforeId = null;
     let moveAfterId = null;

@@ -71,6 +71,18 @@ module Gitlab
       end
     end
 
+    # Queries Prometheus for values aggregated by the given label string.
+    #
+    # @return [Hash] mapping labels to their aggregate numeric values, or the empty hash if no results were found
+    def aggregate(func:, metric:, by:, time: Time.now)
+      response = query("#{func} (#{metric}) by (#{by})", time: time)
+      response.to_h do |result|
+        group_name = result.dig('metric', by)
+        _timestamp, value = result['value']
+        [group_name, value.to_i]
+      end
+    end
+
     def label_values(name = '__name__')
       json_api_get("label/#{name}/values")
     end

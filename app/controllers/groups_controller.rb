@@ -264,11 +264,12 @@ class GroupsController < Groups::ApplicationController
   def export_rate_limit
     prefixed_action = "group_#{params[:action]}".to_sym
 
-    if Gitlab::ApplicationRateLimiter.throttled?(prefixed_action, scope: [current_user, prefixed_action, @group])
+    scope = params[:action] == :download_export ? @group : nil
+
+    if Gitlab::ApplicationRateLimiter.throttled?(prefixed_action, scope: [current_user, scope].compact)
       Gitlab::ApplicationRateLimiter.log_request(request, "#{prefixed_action}_request_limit".to_sym, current_user)
 
-      flash[:alert] = _('This endpoint has been requested too many times. Try again later.')
-      redirect_to edit_group_path(@group)
+      render plain: _('This endpoint has been requested too many times. Try again later.'), status: :too_many_requests
     end
   end
 

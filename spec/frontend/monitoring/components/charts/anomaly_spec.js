@@ -13,8 +13,6 @@ import MonitorTimeSeriesChart from '~/monitoring/components/charts/time_series.v
 
 const mockProjectPath = `${TEST_HOST}${mockProjectDir}`;
 
-jest.mock('~/lib/utils/icon_utils'); // mock getSvgIconPathContent
-
 const makeAnomalyGraphData = (datasetName, template = anomalyMockGraphData) => {
   const metrics = anomalyMockResultValues[datasetName].map((values, index) => ({
     ...template.metrics[index],

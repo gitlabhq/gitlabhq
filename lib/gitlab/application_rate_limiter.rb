@@ -20,14 +20,14 @@ module Gitlab
       def rate_limits
         {
           issues_create:                { threshold: -> { Gitlab::CurrentSettings.current_application_settings.issues_create_limit }, interval: 1.minute },
-          project_export:               { threshold: 1, interval: 5.minutes },
+          project_export:               { threshold: 30, interval: 5.minutes },
           project_download_export:      { threshold: 10, interval: 10.minutes },
           project_repositories_archive: { threshold: 5, interval: 1.minute },
-          project_generate_new_export: { threshold: 1, interval: 5.minutes },
+          project_generate_new_export: { threshold: 30, interval: 5.minutes },
           project_import:              { threshold: 30, interval: 5.minutes },
           play_pipeline_schedule:      { threshold: 1, interval: 1.minute },
           show_raw_controller:         { threshold: -> { Gitlab::CurrentSettings.current_application_settings.raw_blob_request_limit }, interval: 1.minute },
-          group_export:                { threshold: 1, interval: 5.minutes },
+          group_export:                { threshold: 30, interval: 5.minutes },
           group_download_export:       { threshold: 10, interval: 10.minutes },
           group_import:                { threshold: 30, interval: 5.minutes }
         }.freeze

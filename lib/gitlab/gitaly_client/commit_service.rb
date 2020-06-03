@@ -212,8 +212,9 @@ module Gitlab
           right_commit_id: right_commit_sha
         )
 
-        response = GitalyClient.call(@repository.storage, :diff_service, :diff_stats, request, timeout: GitalyClient.medium_timeout)
-        response.flat_map(&:stats)
+        GitalyClient.streaming_call(@repository.storage, :diff_service, :diff_stats, request, timeout: GitalyClient.medium_timeout) do |response|
+          response.flat_map(&:stats)
+        end
       end
 
       def find_all_commits(opts = {})

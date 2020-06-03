@@ -862,14 +862,17 @@ describe GroupsController do
     context 'when the endpoint receives requests above the rate limit' do
       before do
         sign_in(admin)
-        allow(Gitlab::ApplicationRateLimiter).to receive(:throttled?).and_return(true)
+
+        allow(Gitlab::ApplicationRateLimiter)
+          .to receive(:increment)
+          .and_return(Gitlab::ApplicationRateLimiter.rate_limits[:group_export][:threshold] + 1)
       end
 
       it 'throttles the endpoint' do
         post :export, params: { id: group.to_param }
 
-        expect(flash[:alert]).to eq('This endpoint has been requested too many times. Try again later.')
-        expect(response).to have_gitlab_http_status(:found)
+        expect(response.body).to eq('This endpoint has been requested too many times. Try again later.')
+        expect(response).to have_gitlab_http_status :too_many_requests
       end
     end
   end
@@ -933,14 +936,17 @@ describe GroupsController do
     context 'when the endpoint receives requests above the rate limit' do
       before do
         sign_in(admin)
-        allow(Gitlab::ApplicationRateLimiter).to receive(:throttled?).and_return(true)
+
+        allow(Gitlab::ApplicationRateLimiter)
+          .to receive(:increment)
+          .and_return(Gitlab::ApplicationRateLimiter.rate_limits[:group_download_export][:threshold] + 1)
       end
 
       it 'throttles the endpoint' do
         get :download_export, params: { id: group.to_param }
 
-        expect(flash[:alert]).to eq('This endpoint has been requested too many times. Try again later.')
-        expect(response).to have_gitlab_http_status(:found)
+        expect(response.body).to eq('This endpoint has been requested too many times. Try again later.')
+        expect(response).to have_gitlab_http_status :too_many_requests
       end
     end
   end

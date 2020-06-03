@@ -162,8 +162,8 @@ all imported projects are given the visibility of `Private`.
 
 To help avoid abuse, users are rate limited to:
 
-| Request Type     | Limit                       |
-| ---------------- | --------------------------- |
-| Export           | 1 project per 5 minutes     |
-| Download export  | 10 projects per 10 minutes  |
-| Import           | 30 projects per 5 minutes  |
+| Request Type     | Limit                                     |
+| ---------------- | ----------------------------------------- |
+| Export           | 30 projects per 5 minutes                 |
+| Download export  | 10 downloads per project every 10 minutes |
+| Import           | 30 projects per 5 minutes                 |

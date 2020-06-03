@@ -1159,14 +1159,13 @@ describe ProjectsController do
     end
 
     shared_examples 'rate limits project export endpoint' do
+      before do
+        allow(Gitlab::ApplicationRateLimiter)
+          .to receive(:increment)
+          .and_return(Gitlab::ApplicationRateLimiter.rate_limits["project_#{action}".to_sym][:threshold] + 1)
+      end
+
       it 'prevents requesting project export' do
-        exportable_project = create(:project)
-        exportable_project.add_maintainer(user)
-
-        post action, params: { namespace_id: exportable_project.namespace, id: exportable_project }
-
-        expect(response).to have_gitlab_http_status(:found)
-
         post action, params: { namespace_id: project.namespace, id: project }
 
         expect(response.body).to eq('This endpoint has been requested too many times. Try again later.')
@@ -1228,9 +1227,9 @@ describe ProjectsController do
 
         context 'when the endpoint receives requests above the limit', :clean_gitlab_redis_cache do
           before do
-            allow(::Gitlab::ApplicationRateLimiter)
-              .to receive(:throttled?)
-              .and_return(true)
+            allow(Gitlab::ApplicationRateLimiter)
+              .to receive(:increment)
+              .and_return(Gitlab::ApplicationRateLimiter.rate_limits[:project_download_export][:threshold] + 1)
           end
 
           it 'prevents requesting project export' do

@@ -1,9 +1,10 @@
 import { shallowMount } from '@vue/test-utils';
 import component from '~/registry/explorer/pages/index.vue';
-import store from '~/registry/explorer/stores/';
+import { createStore } from '~/registry/explorer/stores/';
 
 describe('List Page', () => {
   let wrapper;
+  let store;
 
   const findRouterView = () => wrapper.find({ ref: 'router-view' });
 
@@ -17,6 +18,7 @@ describe('List Page', () => {
   };
 
   beforeEach(() => {
+    store = createStore();
     mountComponent();
   });
 

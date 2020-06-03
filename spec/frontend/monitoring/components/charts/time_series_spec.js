@@ -21,9 +21,6 @@ import {
   metricsDashboardViewModel,
   metricResultStatus,
 } from '../../fixture_data';
-import * as iconUtils from '~/lib/utils/icon_utils';
-
-const mockSvgPathContent = 'mockSvgPathContent';
 
 jest.mock('lodash/throttle', () =>
   // this throttle mock executes immediately
@@ -34,7 +31,7 @@ jest.mock('lodash/throttle', () =>
   }),
 );
 jest.mock('~/lib/utils/icon_utils', () => ({
-  getSvgIconPathContent: jest.fn().mockImplementation(() => Promise.resolve(mockSvgPathContent)),
+  getSvgIconPathContent: jest.fn().mockImplementation(icon => Promise.resolve(`${icon}-content`)),
 }));
 
 describe('Time series component', () => {
@@ -127,7 +124,7 @@ describe('Time series component', () => {
           let startValue;
           let endValue;
 
-          beforeEach(done => {
+          beforeEach(() => {
             eChartMock = {
               handlers: {},
               getOption: () => ({
@@ -147,9 +144,8 @@ describe('Time series component', () => {
             };
 
             createWrapper({}, mount);
-            wrapper.vm.$nextTick(() => {
+            return wrapper.vm.$nextTick(() => {
               findChart().vm.$emit('created', eChartMock);
-              done();
             });
           });
 
@@ -356,35 +352,6 @@ describe('Time series component', () => {
           });
         });
 
-        describe('setSvg', () => {
-          const mockSvgName = 'mockSvgName';
-
-          beforeEach(done => {
-            wrapper.vm.setSvg(mockSvgName);
-            wrapper.vm.$nextTick(done);
-          });
-
-          it('gets svg path content', () => {
-            expect(iconUtils.getSvgIconPathContent).toHaveBeenCalledWith(mockSvgName);
-          });
-
-          it('sets svg path content', () => {
-            wrapper.vm.$nextTick(() => {
-              expect(wrapper.vm.svgs[mockSvgName]).toBe(`path://${mockSvgPathContent}`);
-            });
-          });
-
-          it('contains an svg object within an array to properly render icon', () => {
-            wrapper.vm.$nextTick(() => {
-              expect(wrapper.vm.chartOptions.dataZoom).toEqual([
-                {
-                  handleIcon: `path://${mockSvgPathContent}`,
-                },
-              ]);
-            });
-          });
-        });
-
         describe('onResize', () => {
           const mockWidth = 233;
 
@@ -435,6 +402,15 @@ describe('Time series component', () => {
         });
 
         describe('chartOptions', () => {
+          describe('dataZoom', () => {
+            it('renders with scroll handle icons', () => {
+              expect(getChartOptions().dataZoom).toHaveLength(1);
+              expect(getChartOptions().dataZoom[0]).toMatchObject({
+                handleIcon: 'path://scroll-handle-content',
+              });
+            });
+          });
+
           describe('are extended by `option`', () => {
             const mockSeriesName = 'Extra series 1';
             const mockOption = {
@@ -539,14 +515,17 @@ describe('Time series component', () => {
             expect(annotationSeries.data).toEqual([
               expect.objectContaining({
                 symbolSize: 14,
+                symbol: 'path://rocket-content',
                 value: ['2019-07-16T10:14:25.589Z', expect.any(Number)],
               }),
               expect.objectContaining({
                 symbolSize: 14,
+                symbol: 'path://rocket-content',
                 value: ['2019-07-16T11:14:25.589Z', expect.any(Number)],
               }),
               expect.objectContaining({
                 symbolSize: 14,
+                symbol: 'path://rocket-content',
                 value: ['2019-07-16T12:14:25.589Z', expect.any(Number)],
               }),
             ]);
@@ -638,12 +617,12 @@ describe('Time series component', () => {
         describe(`GitLab UI: ${dynamicComponent.chartType}`, () => {
           const findChartComponent = () => wrapper.find(dynamicComponent.component);
 
-          beforeEach(done => {
+          beforeEach(() => {
             createWrapper(
               { graphData: { ...mockGraphData, type: dynamicComponent.chartType } },
               mount,
             );
-            wrapper.vm.$nextTick(done);
+            return wrapper.vm.$nextTick();
           });
 
           it('is a Vue instance', () => {
@@ -660,15 +639,14 @@ describe('Time series component', () => {
             expect(props.thresholds).toBe(wrapper.vm.thresholds);
           });
 
-          it('recieves a tooltip title', done => {
+          it('receives a tooltip title', () => {
             const mockTitle = 'mockTitle';
             wrapper.vm.tooltip.title = mockTitle;
 
-            wrapper.vm.$nextTick(() => {
+            return wrapper.vm.$nextTick(() => {
               expect(
                 shallowWrapperContainsSlotText(findChartComponent(), 'tooltipTitle', mockTitle),
               ).toBe(true);
-              done();
             });
           });
 
@@ -676,13 +654,13 @@ describe('Time series component', () => {
             const mockSha = 'mockSha';
             const commitUrl = `${mockProjectDir}/-/commit/${mockSha}`;
 
-            beforeEach(done => {
+            beforeEach(() => {
               wrapper.setData({
                 tooltip: {
                   type: 'deployments',
                 },
               });
-              wrapper.vm.$nextTick(done);
+              return wrapper.vm.$nextTick();
             });
 
             it('uses deployment title', () => {
@@ -691,16 +669,15 @@ describe('Time series component', () => {
               ).toBe(true);
             });
 
-            it('renders clickable commit sha in tooltip content', done => {
+            it('renders clickable commit sha in tooltip content', () => {
               wrapper.vm.tooltip.sha = mockSha;
               wrapper.vm.tooltip.commitUrl = commitUrl;
 
-              wrapper.vm.$nextTick(() => {
+              return wrapper.vm.$nextTick(() => {
                 const commitLink = wrapper.find(GlLink);
 
                 expect(shallowWrapperContainsSlotText(commitLink, 'default', mockSha)).toBe(true);
                 expect(commitLink.attributes('href')).toEqual(commitUrl);
-                done();
               });
             });
           });
@@ -711,7 +688,7 @@ describe('Time series component', () => {
 
   describe('with multiple time series', () => {
     describe('General functions', () => {
-      beforeEach(done => {
+      beforeEach(() => {
         store = createStore();
         const graphData = cloneDeep(metricsDashboardViewModel.panelGroups[0].panels[3]);
         graphData.metrics.forEach(metric =>
@@ -719,7 +696,7 @@ describe('Time series component', () => {
         );
 
         createWrapper({ graphData: { ...graphData, type: 'area-chart' } }, mount);
-        wrapper.vm.$nextTick(done);
+        return wrapper.vm.$nextTick();
       });
 
       afterEach(() => {

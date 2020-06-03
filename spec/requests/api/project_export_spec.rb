@@ -235,7 +235,9 @@ describe API::ProjectExport, :clean_gitlab_redis_cache do
           let(:request) { get api(download_path, admin) }
 
           before do
-            allow(::Gitlab::ApplicationRateLimiter).to receive(:throttled?).and_return(true)
+            allow(Gitlab::ApplicationRateLimiter)
+              .to receive(:increment)
+              .and_return(Gitlab::ApplicationRateLimiter.rate_limits[:project_download_export][:threshold] + 1)
           end
 
           it 'prevents requesting project export' do
@@ -357,11 +359,13 @@ describe API::ProjectExport, :clean_gitlab_redis_cache do
         it_behaves_like 'post project export start'
 
         context 'when rate limit is exceeded across projects' do
+          before do
+            allow(Gitlab::ApplicationRateLimiter)
+              .to receive(:increment)
+              .and_return(Gitlab::ApplicationRateLimiter.rate_limits[:project_export][:threshold] + 1)
+          end
+
           it 'prevents requesting project export' do
-            post api(path_none, admin)
-
-            expect(response).not_to have_gitlab_http_status(:too_many_requests)
-
             post api(path, admin)
 
             expect(response).to have_gitlab_http_status(:too_many_requests)

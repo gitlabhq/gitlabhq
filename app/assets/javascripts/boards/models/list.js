@@ -1,4 +1,4 @@
-/* eslint-disable no-underscore-dangle, class-methods-use-this, consistent-return */
+/* eslint-disable no-underscore-dangle, class-methods-use-this */
 
 import ListIssue from 'ee_else_ce/boards/models/issue';
 import { __ } from '~/locale';
@@ -7,8 +7,6 @@ import ListAssignee from './assignee';
 import flash from '~/flash';
 import boardsStore from '../stores/boards_store';
 import ListMilestone from './milestone';
-
-const PER_PAGE = 20;
 
 const TYPES = {
   backlog: {
@@ -91,13 +89,7 @@ class List {
   }
 
   nextPage() {
-    if (this.issuesSize > this.issues.length) {
-      if (this.issues.length / PER_PAGE >= 1) {
-        this.page += 1;
-      }
-
-      return this.getIssues(false);
-    }
+    return boardsStore.goToNextPage(this);
   }
 
   getIssues(emptyIssues = true) {

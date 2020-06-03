@@ -8,6 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-06-01 14:24-0400\n"
+"PO-Revision-Date: 2020-06-01 14:24-0400\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -1908,10 +1910,10 @@ msgstr ""
 msgid "AlertManagement|View issue"
 msgstr ""
 
-msgid "AlertService|%{linkStart}Learn more%{linkEnd} about configuring this endpoint to receive alerts."
+msgid "AlertService|Review your external service's documentation to learn where to provide this information to your external service, and the %{linkStart}GitLab documentation%{linkEnd} to learn more about configuring your endpoint."
 msgstr ""
 
-msgid "AlertService|Each alert source must be authorized using the following URL and authorization key."
+msgid "AlertService|You must provide this URL and authorization key to authorize an external service to send alerts to GitLab. You can provide this URL and key to multiple services. After configuring an external service, alerts from your service will display on the GitLab %{linkStart}Alerts%{linkEnd} page."
 msgstr ""
 
 msgid "Alerts"
@@ -3028,6 +3030,9 @@ msgid "Authorize"
 msgstr ""
 
 msgid "Authorize %{link_to_client} to use your account?"
+msgstr ""
+
+msgid "Authorize external services to send alerts to GitLab"
 msgstr ""
 
 msgid "Authorized %{new_chat_name}"
@@ -4761,7 +4766,7 @@ msgstr ""
 msgid "ClusterIntegration|Crossplane"
 msgstr ""
 
-msgid "ClusterIntegration|Crossplane enables declarative provisioning of managed services from your cloud of choice using %{kubectl} or %{gitlabIntegrationLink}. Crossplane runs inside your Kubernetes cluster and supports secure connectivity and secrets management between app containers and the cloud services they depend on."
+msgid "ClusterIntegration|Crossplane enables declarative provisioning of managed services from your cloud of choice using %{codeStart}kubectl%{codeEnd} or %{gitlabIntegrationLink}. Crossplane runs inside your Kubernetes cluster and supports secure connectivity and secrets management between app containers and the cloud services they depend on."
 msgstr ""
 
 msgid "ClusterIntegration|Deletes all GitLab resources attached to this cluster during removal"
@@ -12466,6 +12471,9 @@ msgstr ""
 msgid "Job|The artifacts will be removed"
 msgstr ""
 
+msgid "Job|These artifacts are the latest. They will not be deleted (even if expired) until newer artifacts are available."
+msgstr ""
+
 msgid "Job|This job failed because the necessary resources were not successfully created."
 msgstr ""
 
@@ -17911,9 +17919,6 @@ msgid "Rebase in progress"
 msgstr ""
 
 msgid "Receive alerts from manually configured Prometheus servers."
-msgstr ""
-
-msgid "Receive alerts on GitLab from any source"
 msgstr ""
 
 msgid "Receive notifications about your own activity"

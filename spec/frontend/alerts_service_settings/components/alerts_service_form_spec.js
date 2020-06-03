@@ -12,7 +12,8 @@ const defaultProps = {
   initialAuthorizationKey: 'abcedfg123',
   formPath: 'http://invalid',
   url: 'https://gitlab.com/endpoint-url',
-  learnMoreUrl: 'https://docs.gitlab.com/ee/user/project/integrations/generic_alerts.md',
+  alertsSetupUrl: 'http://invalid',
+  alertsUsageUrl: 'http://invalid',
   initialActivated: false,
 };
 
@@ -32,7 +33,7 @@ describe('AlertsServiceForm', () => {
 
   const findUrl = () => wrapper.find('#url');
   const findAuthorizationKey = () => wrapper.find('#authorization-key');
-  const findDescription = () => wrapper.find('p');
+  const findDescription = () => wrapper.find('[data-testid="description"');
   const findActiveStatusIcon = val =>
     document.querySelector(`.js-service-active-status[data-value=${val.toString()}]`);
 
@@ -67,7 +68,7 @@ describe('AlertsServiceForm', () => {
       expect(wrapper.find(ToggleButton).html()).toMatchSnapshot();
     });
 
-    it('shows description and "Learn More" link', () => {
+    it('shows description and docs links', () => {
       expect(findDescription().element.innerHTML).toMatchSnapshot();
     });
   });

@@ -21,8 +21,6 @@ have a pipelines that include jobs from multiple types (e.g. a combination of do
 
 #### Docs-only MR pipeline
 
-<details><summary>Click to view the graph</summary>
-
 Reference pipeline: <https://gitlab.com/gitlab-org/gitlab/pipelines/135236627>
 
 ```mermaid
@@ -35,11 +33,7 @@ graph LR
   end
 ```
 
-</details>
-
 #### Code-only MR pipeline
-
-<details><summary>Click to view the graph</summary>
 
 Reference pipeline: <https://gitlab.com/gitlab-org/gitlab/pipelines/136295694>
 
@@ -152,11 +146,7 @@ graph RL;
   end
 ```
 
-</details>
-
 #### Frontend-only MR pipeline
-
-<details><summary>Click to view the graph</summary>
 
 Reference pipeline: <https://gitlab.com/gitlab-org/gitlab/pipelines/134661039>
 
@@ -296,11 +286,7 @@ graph RL;
   end
 ```
 
-</details>
-
 #### QA-only MR pipeline
-
-<details><summary>Click to view the graph</summary>
 
 Reference pipeline: <https://gitlab.com/gitlab-org/gitlab/pipelines/134645109>
 
@@ -358,8 +344,6 @@ graph RL;
     click 2_4-1 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=6914305&udv=0"
   end
 ```
-
-</details>
 
 ### `workflow:rules`
 
