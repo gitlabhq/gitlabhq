@@ -1,5 +1,9 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 12.9.9 (2020-06-03)
+
+- No changes.
+
 ## 12.9.8 (2020-05-27)
 
 ### Security (3 changes)
