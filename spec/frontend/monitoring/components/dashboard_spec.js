@@ -36,8 +36,9 @@ describe('Dashboard', () => {
   let wrapper;
   let mock;
 
+  const findDashboardHeader = () => wrapper.find(DashboardHeader);
   const findEnvironmentsDropdown = () =>
-    wrapper.find(DashboardHeader).find({ ref: 'monitorEnvironmentsDropdown' });
+    findDashboardHeader().find({ ref: 'monitorEnvironmentsDropdown' });
   const findAllEnvironmentsDropdownItems = () => findEnvironmentsDropdown().findAll(GlDropdownItem);
   const setSearchTerm = searchTerm => {
     store.commit(`monitoringDashboard/${types.SET_ENVIRONMENTS_FILTER}`, searchTerm);
@@ -801,6 +802,57 @@ describe('Dashboard', () => {
             expect(findEnabledDraggables().length).toBe(0);
           });
         });
+      });
+    });
+  });
+
+  describe('dashboard timezone', () => {
+    const setupWithTimezone = value => {
+      store = createStore({ dashboardTimezone: value });
+      setupStoreWithData(store);
+      createShallowWrapper({ hasMetrics: true });
+      return wrapper.vm.$nextTick;
+    };
+
+    describe('local timezone is enabled by default', () => {
+      beforeEach(() => {
+        return setupWithTimezone();
+      });
+
+      it('shows the data time picker in local timezone', () => {
+        expect(
+          findDashboardHeader()
+            .find(DateTimePicker)
+            .props('utc'),
+        ).toBe(false);
+      });
+    });
+
+    describe('when LOCAL timezone is enabled', () => {
+      beforeEach(() => {
+        return setupWithTimezone('LOCAL');
+      });
+
+      it('shows the data time picker in local timezone', () => {
+        expect(
+          findDashboardHeader()
+            .find(DateTimePicker)
+            .props('utc'),
+        ).toBe(false);
+      });
+    });
+
+    describe('when UTC timezone is enabled', () => {
+      beforeEach(() => {
+        return setupWithTimezone('UTC');
+      });
+
+      it('shows the data time picker in UTC format', () => {
+        expect(
+          findDashboardHeader()
+            .find(DateTimePicker)
+            .props('utc'),
+        ).toBe(true);
       });
     });
   });

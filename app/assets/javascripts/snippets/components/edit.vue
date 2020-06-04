@@ -155,8 +155,9 @@ export default {
           const errors = baseObj?.errors;
           if (errors.length) {
             this.flashAPIFailure(errors[0]);
+          } else {
+            redirectTo(baseObj.snippet.webUrl);
           }
-          redirectTo(baseObj.snippet.webUrl);
         })
         .catch(e => {
           this.flashAPIFailure(e);
@@ -215,7 +216,7 @@ export default {
             variant="success"
             :disabled="updatePrevented"
             data-qa-selector="submit_button"
-            @click="handleFormSubmit"
+            @click.prevent="handleFormSubmit"
             >{{ saveButtonLabel }}</gl-button
           >
         </template>

@@ -38,6 +38,7 @@ const rawPathMock = '/foo/bar';
 const rawProjectPathMock = '/project/path';
 const newlyEditedSnippetUrl = 'http://foo.bar';
 const apiError = { message: 'Ufff' };
+const mutationError = 'Bummer';
 
 const defaultProps = {
   snippetGid: 'gid://gitlab/PersonalSnippet/42',
@@ -60,10 +61,26 @@ describe('Snippet Edit app', () => {
     },
   });
 
+  const resolveMutateWithErrors = jest.fn().mockResolvedValue({
+    data: {
+      updateSnippet: {
+        errors: [mutationError],
+        snippet: {
+          webUrl: newlyEditedSnippetUrl,
+        },
+      },
+      createSnippet: {
+        errors: [mutationError],
+        snippet: null,
+      },
+    },
+  });
+
   const rejectMutation = jest.fn().mockRejectedValue(apiError);
 
   const mutationTypes = {
     RESOLVE: resolveMutate,
+    RESOLVE_WITH_ERRORS: resolveMutateWithErrors,
     REJECT: rejectMutation,
   };
 
@@ -283,6 +300,35 @@ describe('Snippet Edit app', () => {
           expect(redirectTo).toHaveBeenCalledWith(newlyEditedSnippetUrl);
         });
       });
+
+      it.each`
+        newSnippet | projectPath           | mutationName
+        ${true}    | ${rawProjectPathMock} | ${'CreateSnippetMutation with projectPath'}
+        ${true}    | ${''}                 | ${'CreateSnippetMutation without projectPath'}
+        ${false}   | ${rawProjectPathMock} | ${'UpdateSnippetMutation with projectPath'}
+        ${false}   | ${''}                 | ${'UpdateSnippetMutation without projectPath'}
+      `(
+        'does not redirect to snippet view if the seemingly successful' +
+          ' $mutationName response contains errors',
+        ({ newSnippet, projectPath }) => {
+          createComponent({
+            data: {
+              newSnippet,
+            },
+            props: {
+              ...defaultProps,
+              projectPath,
+            },
+            mutationRes: mutationTypes.RESOLVE_WITH_ERRORS,
+          });
+
+          wrapper.vm.handleFormSubmit();
+          return waitForPromises().then(() => {
+            expect(redirectTo).not.toHaveBeenCalled();
+            expect(flashSpy).toHaveBeenCalledWith(mutationError);
+          });
+        },
+      );
 
       it('flashes an error if mutation failed', () => {
         createComponent({

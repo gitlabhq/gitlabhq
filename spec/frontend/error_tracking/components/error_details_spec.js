@@ -519,11 +519,8 @@ describe('ErrorDetails', () => {
       Tracking.event.mockClear();
       findUpdateIgnoreStatusButton().vm.$emit('click');
       setImmediate(() => {
-        const { category, action, label } = trackErrorStatusUpdateOptions;
-        expect(Tracking.event).toHaveBeenCalledWith(category, action, {
-          label,
-          property: 'ignored',
-        });
+        const { category, action } = trackErrorStatusUpdateOptions('ignored');
+        expect(Tracking.event).toHaveBeenCalledWith(category, action);
       });
     });
 
@@ -531,11 +528,8 @@ describe('ErrorDetails', () => {
       Tracking.event.mockClear();
       findUpdateResolveStatusButton().vm.$emit('click');
       setImmediate(() => {
-        const { category, action, label } = trackErrorStatusUpdateOptions;
-        expect(Tracking.event).toHaveBeenCalledWith(category, action, {
-          label,
-          property: 'resolved',
-        });
+        const { category, action } = trackErrorStatusUpdateOptions('resolved');
+        expect(Tracking.event).toHaveBeenCalledWith(category, action);
       });
     });
 

@@ -513,6 +513,34 @@ describe('Dashboard Panel', () => {
     });
   });
 
+  describe('panel timezone', () => {
+    it('displays a time chart in local timezone', () => {
+      createWrapper();
+      expect(findTimeChart().props('timezone')).toBe('LOCAL');
+    });
+
+    it('displays a heatmap in local timezone', () => {
+      createWrapper({ graphData: graphDataPrometheusQueryRangeMultiTrack });
+      expect(wrapper.find(MonitorHeatmapChart).props('timezone')).toBe('LOCAL');
+    });
+
+    describe('when timezone is set to UTC', () => {
+      beforeEach(() => {
+        store = createStore({ dashboardTimezone: 'UTC' });
+      });
+
+      it('displays a time chart with UTC', () => {
+        createWrapper();
+        expect(findTimeChart().props('timezone')).toBe('UTC');
+      });
+
+      it('displays a heatmap with UTC', () => {
+        createWrapper({ graphData: graphDataPrometheusQueryRangeMultiTrack });
+        expect(wrapper.find(MonitorHeatmapChart).props('timezone')).toBe('UTC');
+      });
+    });
+  });
+
   describe('Expand to full screen', () => {
     const findExpandBtn = () => wrapper.find({ ref: 'expandBtn' });
 

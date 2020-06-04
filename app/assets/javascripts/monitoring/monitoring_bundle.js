@@ -20,6 +20,7 @@ export default (props = {}) => {
       projectPath,
       logsPath,
       currentEnvironmentName,
+      dashboardTimezone,
       ...dataProps
     } = el.dataset;
 
@@ -28,6 +29,7 @@ export default (props = {}) => {
       deploymentsEndpoint,
       dashboardEndpoint,
       dashboardsEndpoint,
+      dashboardTimezone,
       projectPath,
       logsPath,
       currentEnvironmentName,

@@ -1,6 +1,5 @@
 <script>
 import Icon from '../../../vue_shared/components/icon.vue';
-import router from '../../ide_router';
 
 export default {
   components: {
@@ -33,7 +32,7 @@ export default {
     mergeRequestHref() {
       const path = `/project/${this.item.projectPathWithNamespace}/merge_requests/${this.item.iid}`;
 
-      return router.resolve(path).href;
+      return this.$router.resolve(path).href;
     },
   },
 };

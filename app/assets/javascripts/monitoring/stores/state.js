@@ -1,4 +1,5 @@
 import invalidUrl from '~/lib/utils/invalid_url';
+import { timezones } from '../format_date';
 
 export default () => ({
   // API endpoints
@@ -45,6 +46,7 @@ export default () => ({
    */
   links: {},
   // Other project data
+  dashboardTimezone: timezones.LOCAL,
   annotations: [],
   deploymentData: [],
   environments: [],

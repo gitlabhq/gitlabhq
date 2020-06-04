@@ -118,6 +118,9 @@ export default {
       timeRange(state) {
         return state[this.namespace].timeRange;
       },
+      dashboardTimezone(state) {
+        return state[this.namespace].dashboardTimezone;
+      },
       metricsSavedToDb(state, getters) {
         return getters[`${this.namespace}/metricsSavedToDb`];
       },
@@ -398,6 +401,7 @@ export default {
       :is="basicChartComponent"
       v-else-if="basicChartComponent"
       :graph-data="graphData"
+      :timezone="dashboardTimezone"
       v-bind="$attrs"
       v-on="$listeners"
     />
@@ -411,6 +415,7 @@ export default {
       :project-path="projectPath"
       :thresholds="getGraphAlertValues(graphData.metrics)"
       :group-id="groupId"
+      :timezone="dashboardTimezone"
       v-bind="$attrs"
       v-on="$listeners"
       @datazoom="onDatazoom"

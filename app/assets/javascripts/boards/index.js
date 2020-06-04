@@ -1,8 +1,10 @@
 import $ from 'jquery';
 import Vue from 'vue';
+import { mapActions } from 'vuex';
 
 import 'ee_else_ce/boards/models/issue';
 import 'ee_else_ce/boards/models/list';
+import BoardContent from '~/boards/components/board_content.vue';
 import BoardSidebar from 'ee_else_ce/boards/components/board_sidebar';
 import initNewListDropdown from 'ee_else_ce/boards/components/new_list_dropdown';
 import boardConfigToggle from 'ee_else_ce/boards/config_toggle';
@@ -77,6 +79,7 @@ export default () => {
   issueBoardsApp = new Vue({
     el: $boardApp,
     components: {
+      BoardContent,
       Board: () =>
         window?.gon?.features?.sfcIssueBoards
           ? import('ee_else_ce/boards/components/board_column.vue')
@@ -115,14 +118,16 @@ export default () => {
       },
     },
     created() {
-      boardsStore.setEndpoints({
+      const endpoints = {
         boardsEndpoint: this.boardsEndpoint,
         recentBoardsEndpoint: this.recentBoardsEndpoint,
         listsEndpoint: this.listsEndpoint,
         bulkUpdatePath: this.bulkUpdatePath,
         boardId: this.boardId,
         fullPath: $boardApp.dataset.fullPath,
-      });
+      };
+      this.setEndpoints(endpoints);
+      boardsStore.setEndpoints(endpoints);
       boardsStore.rootPath = this.boardsEndpoint;
 
       eventHub.$on('updateTokens', this.updateTokens);
@@ -193,6 +198,7 @@ export default () => {
       }
     },
     methods: {
+      ...mapActions(['setEndpoints']),
       updateTokens() {
         this.filterManager.updateTokens();
       },

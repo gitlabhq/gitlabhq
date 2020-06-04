@@ -2,15 +2,15 @@
 import { omit, throttle } from 'lodash';
 import { GlLink, GlDeprecatedButton, GlTooltip, GlResizeObserverDirective } from '@gitlab/ui';
 import { GlAreaChart, GlLineChart, GlChartSeriesLabel } from '@gitlab/ui/dist/charts';
-import { s__, __ } from '~/locale';
+import { s__ } from '~/locale';
 import { getSvgIconPathContent } from '~/lib/utils/icon_utils';
 import Icon from '~/vue_shared/components/icon.vue';
 import { panelTypes, chartHeight, lineTypes, lineWidths } from '../../constants';
-import { getYAxisOptions, getChartGrid, getTooltipFormatter } from './options';
+import { getYAxisOptions, getTimeAxisOptions, getChartGrid, getTooltipFormatter } from './options';
 import { annotationsYAxis, generateAnnotationsSeries } from './annotations';
 import { makeDataSeries } from '~/helpers/monitor_helper';
 import { graphDataValidatorForValues } from '../../utils';
-import { formatDate, timezones, formats } from '../../format_date';
+import { formatDate, timezones } from '../../format_date';
 
 export const timestampToISODate = timestamp => new Date(timestamp).toISOString();
 
@@ -160,22 +160,14 @@ export default {
       const { yAxis, xAxis } = this.option;
       const option = omit(this.option, ['series', 'yAxis', 'xAxis']);
 
+      const timeXAxis = {
+        ...getTimeAxisOptions({ timezone: this.timezone }),
+        ...xAxis,
+      };
+
       const dataYAxis = {
         ...getYAxisOptions(this.graphData.yAxis),
         ...yAxis,
-      };
-
-      const timeXAxis = {
-        name: __('Time'),
-        type: 'time',
-        axisLabel: {
-          formatter: date =>
-            formatDate(date, { format: formats.shortTime, timezone: this.timezone }),
-        },
-        axisPointer: {
-          snap: true,
-        },
-        ...xAxis,
       };
 
       return {

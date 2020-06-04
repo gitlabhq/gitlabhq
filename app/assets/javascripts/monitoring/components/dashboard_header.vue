@@ -26,6 +26,7 @@ import DashboardsDropdown from './dashboards_dropdown.vue';
 import TrackEventDirective from '~/vue_shared/directives/track_event';
 import { getAddMetricTrackingOptions, timeRangeToUrl } from '../utils';
 import { timeRanges } from '~/vue_shared/constants';
+import { timezones } from '../format_date';
 
 export default {
   components: {
@@ -104,6 +105,7 @@ export default {
       'currentEnvironmentName',
       'isUpdatingStarredValue',
       'showEmptyState',
+      'dashboardTimezone',
     ]),
     ...mapGetters('monitoringDashboard', ['selectedDashboard', 'filteredEnvironments']),
     shouldShowEnvironmentsDropdownNoMatchedMsg() {
@@ -121,6 +123,9 @@ export default {
     },
     showRearrangePanelsBtn() {
       return !this.showEmptyState && this.rearrangePanelsAvailable;
+    },
+    displayUtc() {
+      return this.dashboardTimezone === timezones.UTC;
     },
   },
   methods: {
@@ -240,6 +245,7 @@ export default {
         data-qa-selector="range_picker_dropdown"
         :value="selectedTimeRange"
         :options="$options.timeRanges"
+        :utc="displayUtc"
         @input="onDateTimePickerInput"
         @invalid="onDateTimePickerInvalid"
       />

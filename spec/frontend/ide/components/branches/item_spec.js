@@ -22,6 +22,7 @@ describe('IDE branch item', () => {
         isActive: false,
         ...props,
       },
+      router,
     });
   }
 

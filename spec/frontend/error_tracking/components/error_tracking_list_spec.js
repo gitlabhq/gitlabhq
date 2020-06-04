@@ -491,11 +491,8 @@ describe('ErrorTrackingList', () => {
       });
 
       setImmediate(() => {
-        const { category, action, label } = trackErrorStatusUpdateOptions;
-        expect(Tracking.event).toHaveBeenCalledWith(category, action, {
-          label,
-          property: status,
-        });
+        const { category, action } = trackErrorStatusUpdateOptions(status);
+        expect(Tracking.event).toHaveBeenCalledWith(category, action);
       });
     });
   });

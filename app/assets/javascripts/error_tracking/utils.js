@@ -30,8 +30,7 @@ export const trackErrorDetailsViewsOptions = {
 /**
  * Tracks snowplow event when error status is updated
  */
-export const trackErrorStatusUpdateOptions = {
+export const trackErrorStatusUpdateOptions = status => ({
   category: 'Error Tracking',
-  action: 'update_error_status',
-  label: 'Status',
-};
+  action: `update_${status}_status`,
+});

@@ -699,6 +699,12 @@ stop action when the associated branch is deleted. The `stop_review` job must
 be in the same `stage` as the `deploy_review` job in order for the environment
 to automatically stop.
 
+Additionally, both jobs should have matching [`rules`](../yaml/README.md#onlyexcept-basic)
+or [`only/except`](../yaml/README.md#onlyexcept-basic) configuration. In the example
+above, if the configuration is not identical, the `stop_review` job might not be
+included in all pipelines that include the `deploy_review` job, and it will not be
+possible to trigger the `action: stop` to stop the environment automatically.
+
 You can read more in the [`.gitlab-ci.yml` reference](../yaml/README.md#environmenton_stop).
 
 #### Environments auto-stop

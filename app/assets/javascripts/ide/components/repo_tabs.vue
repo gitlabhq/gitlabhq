@@ -1,7 +1,6 @@
 <script>
 import { mapActions } from 'vuex';
 import RepoTab from './repo_tab.vue';
-import router from '../ide_router';
 
 export default {
   components: {
@@ -28,7 +27,7 @@ export default {
 
       if (this.activeFile.pending) {
         return this.removePendingTab(this.activeFile).then(() => {
-          router.push(`/project${this.activeFile.url}`);
+          this.$router.push(`/project${this.activeFile.url}`);
         });
       }
 

@@ -233,8 +233,8 @@ export default {
       Tracking.event(category, action);
     },
     trackStatusUpdate(status) {
-      const { category, action, label } = trackErrorStatusUpdateOptions;
-      Tracking.event(category, action, { label, property: status });
+      const { category, action } = trackErrorStatusUpdateOptions(status);
+      Tracking.event(category, action);
     },
   },
 };

@@ -1,5 +1,6 @@
 import { SUPPORTED_FORMATS, getFormatter } from '~/lib/utils/unit_format';
-import { s__ } from '~/locale';
+import { __, s__ } from '~/locale';
+import { formatDate, timezones, formats } from '../../format_date';
 
 const yAxisBoundaryGap = [0.1, 0.1];
 /**
@@ -57,6 +58,17 @@ export const getYAxisOptions = ({
     }),
   };
 };
+
+export const getTimeAxisOptions = ({ timezone = timezones.LOCAL } = {}) => ({
+  name: __('Time'),
+  type: 'time',
+  axisLabel: {
+    formatter: date => formatDate(date, { format: formats.shortTime, timezone }),
+  },
+  axisPointer: {
+    snap: true,
+  },
+});
 
 // Chart grid
 

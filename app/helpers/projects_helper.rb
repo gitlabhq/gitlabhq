@@ -284,8 +284,8 @@ module ProjectsHelper
     "xcode://clone?repo=#{CGI.escape(default_url_to_repo(project))}"
   end
 
-  def link_to_bfg
-    link_to 'BFG', 'https://rtyley.github.io/bfg-repo-cleaner/', target: '_blank', rel: 'noopener noreferrer'
+  def link_to_filter_repo
+    link_to 'git filter-repo', 'https://github.com/newren/git-filter-repo', target: '_blank', rel: 'noopener noreferrer'
   end
 
   def explore_projects_tab?

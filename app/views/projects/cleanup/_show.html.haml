@@ -6,7 +6,7 @@
     %button.btn.js-settings-toggle
       = expanded ? _('Collapse') : _('Expand')
     %p
-      = _("Clean up after running %{bfg} on the repository" % { bfg: link_to_bfg }).html_safe
+      = _("Clean up after running %{filter_repo} on the repository" % { filter_repo: link_to_filter_repo }).html_safe
       = link_to icon('question-circle'),
           help_page_path('user/project/repository/reducing_the_repo_size_using_git.md'),
           target: '_blank', rel: 'noopener noreferrer'
@@ -22,7 +22,7 @@
             = _("Choose a file")
           %span.prepend-left-default.js-filename
             = _("No file selected")
-          = f.file_field :bfg_object_map, accept: 'text/plain', class: "hidden js-object-map-input", required: true
+          = f.file_field :bfg_object_map, class: "hidden js-object-map-input", required: true
         .form-text.text-muted
           = _("The maximum file size allowed is %{size}.") % { size: number_to_human_size(Gitlab::CurrentSettings.max_attachment_size.megabytes) }
       = f.submit _('Start cleanup'), class: 'btn btn-success'
