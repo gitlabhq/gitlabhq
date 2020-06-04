@@ -8,14 +8,14 @@ module WikiHelpers
     find('.svg-content .js-lazy-loaded') if example.nil? || example.metadata.key?(:js)
   end
 
-  def upload_file_to_wiki(project, user, file_name)
+  def upload_file_to_wiki(container, user, file_name)
     opts = {
       file_name: file_name,
       file_content: File.read(expand_fixture_path(file_name))
      }
 
     ::Wikis::CreateAttachmentService.new(
-      container: project,
+      container: container,
       current_user: user,
       params: opts
     ).execute[:result][:file_path]

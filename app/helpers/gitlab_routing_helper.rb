@@ -298,6 +298,12 @@ module GitlabRoutingHelper
     toggle_award_emoji_snippet_url(snippet, *new_args)
   end
 
+  # Wikis
+
+  def wiki_page_path(wiki, page, **options)
+    Gitlab::UrlBuilder.wiki_page_url(wiki, page, **options, only_path: true)
+  end
+
   private
 
   def snippet_query_params(snippet, *args)

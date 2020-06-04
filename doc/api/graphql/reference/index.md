@@ -1871,6 +1871,16 @@ Represents a vulnerability.
 | `userPermissions` | VulnerabilityPermissions! | Permissions for the current user on the resource |
 | `vulnerabilityPath` | String | URL to the vulnerability's details page |
 
+## VulnerabilityIssueLink
+
+Represents an issue link of a vulnerability.
+
+| Name  | Type  | Description |
+| ---   |  ---- | ----------  |
+| `id` | ID! | GraphQL ID of the vulnerability |
+| `issue` | Issue! | The issue attached to issue link |
+| `linkType` | VulnerabilityIssueLinkType! | Type of the issue link |
+
 ## VulnerabilityLocationContainerScanning
 
 Represents the location of a vulnerability found by a container security scan

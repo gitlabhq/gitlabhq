@@ -12614,6 +12614,36 @@ type Vulnerability {
   id: ID!
 
   """
+  List of issue links related to the vulnerability
+  """
+  issueLinks(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+
+    """
+    Filter issue links by link type
+    """
+    linkType: [VulnerabilityIssueLinkType!]
+  ): VulnerabilityIssueLinkConnection!
+
+  """
   Location metadata for the vulnerability. Its fields depend on the type of security scan that found the vulnerability
   """
   location: VulnerabilityLocation
@@ -12693,6 +12723,69 @@ type VulnerabilityEdge {
   The item at the end of the edge.
   """
   node: Vulnerability
+}
+
+"""
+Represents an issue link of a vulnerability.
+"""
+type VulnerabilityIssueLink {
+  """
+  GraphQL ID of the vulnerability
+  """
+  id: ID!
+
+  """
+  The issue attached to issue link
+  """
+  issue: Issue!
+
+  """
+  Type of the issue link
+  """
+  linkType: VulnerabilityIssueLinkType!
+}
+
+"""
+The connection type for VulnerabilityIssueLink.
+"""
+type VulnerabilityIssueLinkConnection {
+  """
+  A list of edges.
+  """
+  edges: [VulnerabilityIssueLinkEdge]
+
+  """
+  A list of nodes.
+  """
+  nodes: [VulnerabilityIssueLink]
+
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: PageInfo!
+}
+
+"""
+An edge in a connection.
+"""
+type VulnerabilityIssueLinkEdge {
+  """
+  A cursor for use in pagination.
+  """
+  cursor: String!
+
+  """
+  The item at the end of the edge.
+  """
+  node: VulnerabilityIssueLink
+}
+
+"""
+The type of the issue link related to a vulnerability.
+"""
+enum VulnerabilityIssueLinkType {
+  CREATED
+  RELATED
 }
 
 """

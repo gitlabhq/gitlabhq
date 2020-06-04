@@ -70,12 +70,12 @@ Username search is case insensitive.
 GET /users
 ```
 
-| Attribute    | Type   | Required | Description |
-| ------------ | ------ | -------- | ----------- |
-| `order_by`   | string | no       | Return users ordered by `id`, `name`, `username`, `created_at`, or `updated_at` fields. Default is `id` |
-| `sort`       | string | no       | Return users sorted in `asc` or `desc` order. Default is `desc` |
-| `two_factor` | string | no       | Filter users by Two-factor authentication. Filter values are `enabled` or `disabled`. By default it returns all users |
-| `without_projects` | boolean | no | Filter users without projects. Default is `false` |
+| Attribute          | Type    | Required | Description                                                                                                           |
+| ------------------ | ------- | -------- | --------------------------------------------------------------------------------------------------------------------- |
+| `order_by`         | string  | no       | Return users ordered by `id`, `name`, `username`, `created_at`, or `updated_at` fields. Default is `id`               |
+| `sort`             | string  | no       | Return users sorted in `asc` or `desc` order. Default is `desc`                                                       |
+| `two_factor`       | string  | no       | Filter users by Two-factor authentication. Filter values are `enabled` or `disabled`. By default it returns all users |
+| `without_projects` | boolean | no       | Filter users without projects. Default is `false`                                                                     |
 
 ```json
 [
@@ -375,7 +375,7 @@ POST /users
 Parameters:
 
 | Attribute                            | Required | Description                                                                                                                                             |
-|:-------------------------------------|:---------|:--------------------------------------------------------------------------------------------------------------------------------------------------------|
+| :----------------------------------- | :------- | :------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `admin`                              | No       | User is admin - true or false (default)                                                                                                                 |
 | `avatar`                             | No       | Image file for user's avatar                                                                                                                            |
 | `bio`                                | No       | User's biography                                                                                                                                        |
@@ -417,7 +417,7 @@ PUT /users/:id
 Parameters:
 
 | Attribute                            | Required | Description                                                                                                                                             |
-|:-------------------------------------|:---------|:--------------------------------------------------------------------------------------------------------------------------------------------------------|
+| :----------------------------------- | :------- | :------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `admin`                              | No       | User is admin - true or false (default)                                                                                                                 |
 | `avatar`                             | No       | Image file for user's avatar                                                                                                                            |
 | `bio`                                | No       | User's biography                                                                                                                                        |
@@ -432,7 +432,7 @@ Parameters:
 | `linkedin`                           | No       | LinkedIn                                                                                                                                                |
 | `location`                           | No       | User's location                                                                                                                                         |
 | `name`                               | No       | Name                                                                                                                                                    |
-| `note`                               | No       | Admin notes for this user                                                                                                                  |
+| `note`                               | No       | Admin notes for this user                                                                                                                               |
 | `organization`                       | No       | Organization name                                                                                                                                       |
 | `password`                           | No       | Password                                                                                                                                                |
 | `private_profile`                    | No       | User's profile is private - true, false (default), or null (will be converted to false)                                                                 |
@@ -609,8 +609,8 @@ Get the status of a user.
 GET /users/:id_or_username/status
 ```
 
-| Attribute        | Type   | Required | Description |
-| ---------------- | ------ | -------- | ----------- |
+| Attribute        | Type   | Required | Description                                       |
+| ---------------- | ------ | -------- | ------------------------------------------------- |
 | `id_or_username` | string | yes      | The ID or username of the user to get a status of |
 
 ```shell
@@ -635,10 +635,10 @@ Set the status of the current user.
 PUT /user/status
 ```
 
-| Attribute | Type   | Required | Description |
-| --------- | ------ | -------- | ----------- |
-| `emoji`   | string | no     | The name of the emoji to use as status, if omitted `speech_balloon` is used. Emoji name can be one of the specified names in the [Gemojione index](https://github.com/bonusly/gemojione/blob/master/config/index.json). |
-| `message` | string | no     | The message to set as a status. It can also contain emoji codes. |
+| Attribute | Type   | Required | Description                                                                                                                                                                                                             |
+| --------- | ------ | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `emoji`   | string | no       | The name of the emoji to use as status. If omitted `speech_balloon` is used. Emoji name can be one of the specified names in the [Gemojione index](https://github.com/bonusly/gemojione/blob/master/config/index.json). |
+| `message` | string | no       | The message to set as a status. It can also contain emoji codes.                                                                                                                                                        |
 
 When both parameters `emoji` and `message` are empty, the status will be cleared.
 
@@ -660,9 +660,9 @@ Example responses
 
 Get the counts (same as in top right menu) of the currently signed in user.
 
-| Attribute | Type | Description |
-| --------- | ---- | ----------- |
-| `merge_requests`   | number | Merge requests that are active and assigned to current user. |
+| Attribute        | Type   | Description                                                  |
+| ---------------- | ------ | ------------------------------------------------------------ |
+| `merge_requests` | number | Merge requests that are active and assigned to current user. |
 
 ```plaintext
 GET /user_counts
@@ -721,8 +721,8 @@ Get a list of a specified user's SSH keys.
 GET /users/:id_or_username/keys
 ```
 
-| Attribute        | Type   | Required | Description |
-| ---------------- | ------ | -------- | ----------- |
+| Attribute        | Type   | Required | Description                                             |
+| ---------------- | ------ | -------- | ------------------------------------------------------- |
 | `id_or_username` | string | yes      | The ID or username of the user to get the SSH keys for. |
 
 ## Single SSH key
@@ -758,13 +758,13 @@ Parameters:
 
 - `title` (required) - new SSH Key's title
 - `key` (required) - new SSH key
+- `expires_at` (optional) - The expiration date of the SSH key in ISO 8601 format (`YYYY-MM-DDTHH:MM:SSZ`)
 
 ```json
 {
-  "created_at": "2015-01-21T17:44:33.512Z",
-  "key": "ssh-dss AAAAB3NzaC1kc3MAAACBAMLrhYgI3atfrSD6KDas1b/3n6R/HP+bLaHHX6oh+L1vg31mdUqK0Ac/NjZoQunavoyzqdPYhFz9zzOezCrZKjuJDS3NRK9rspvjgM0xYR4d47oNZbdZbwkI4cTv/gcMlquRy0OvpfIvJtjtaJWMwTLtM5VhRusRuUlpH99UUVeXAAAAFQCVyX+92hBEjInEKL0v13c/egDCTQAAAIEAvFdWGq0ccOPbw4f/F8LpZqvWDydAcpXHV3thwb7WkFfppvm4SZte0zds1FJ+Hr8Xzzc5zMHe6J4Nlay/rP4ewmIW7iFKNBEYb/yWa+ceLrs+TfR672TaAgO6o7iSRofEq5YLdwgrwkMmIawa21FrZ2D9SPao/IwvENzk/xcHu7YAAACAQFXQH6HQnxOrw4dqf0NqeKy1tfIPxYYUZhPJfo9O0AmBW2S36pD2l14kS89fvz6Y1g8gN/FwFnRncMzlLY/hX70FSc/3hKBSbH6C6j8hwlgFKfizav21eS358JJz93leOakJZnGb8XlWvz1UJbwCsnR2VEY8Dz90uIk1l/UqHkA= loic@call",
   "title": "ABC",
-  "id": 4
+  "key": "ssh-dss AAAAB3NzaC1kc3MAAACBAMLrhYgI3atfrSD6KDas1b/3n6R/HP+bLaHHX6oh+L1vg31mdUqK0Ac/NjZoQunavoyzqdPYhFz9zzOezCrZKjuJDS3NRK9rspvjgM0xYR4d47oNZbdZbwkI4cTv/gcMlquRy0OvpfIvJtjtaJWMwTLtM5VhRusRuUlpH99UUVeXAAAAFQCVyX+92hBEjInEKL0v13c/egDCTQAAAIEAvFdWGq0ccOPbw4f/F8LpZqvWDydAcpXHV3thwb7WkFfppvm4SZte0zds1FJ+Hr8Xzzc5zMHe6J4Nlay/rP4ewmIW7iFKNBEYb/yWa+ceLrs+TfR672TaAgO6o7iSRofEq5YLdwgrwkMmIawa21FrZ2D9SPao/IwvENzk/xcHu7YAAACAQFXQH6HQnxOrw4dqf0NqeKy1tfIPxYYUZhPJfo9O0AmBW2S36pD2l14kS89fvz6Y1g8gN/FwFnRncMzlLY/hX70FSc/3hKBSbH6C6j8hwlgFKfizav21eS358JJz93leOakJZnGb8XlWvz1UJbwCsnR2VEY8Dz90uIk1l/UqHkA= loic@call",
+  "expires_at": "2016-01-21T00:00:00.000Z"
 }
 ```
 
@@ -797,6 +797,7 @@ Parameters:
 - `id` (required) - ID of specified user
 - `title` (required) - new SSH Key's title
 - `key` (required) - new SSH key
+- `expires_at` (optional) - The expiration date of the SSH key in ISO 8601 format (`YYYY-MM-DDTHH:MM:SSZ`)
 
 ## Delete SSH key for current user
 
@@ -858,8 +859,8 @@ GET /user/gpg_keys/:key_id
 
 Parameters:
 
-| Attribute | Type    | Required | Description |
-| --------- | ------- | -------- | ----------- |
+| Attribute | Type    | Required | Description           |
+| --------- | ------- | -------- | --------------------- |
 | `key_id`  | integer | yes      | The ID of the GPG key |
 
 ```shell
@@ -886,8 +887,8 @@ POST /user/gpg_keys
 
 Parameters:
 
-| Attribute | Type   | Required | Description |
-| --------- | ------ | -------- | ----------- |
+| Attribute | Type   | Required | Description     |
+| --------- | ------ | -------- | --------------- |
 | key       | string | yes      | The new GPG key |
 
 ```shell
@@ -916,8 +917,8 @@ DELETE /user/gpg_keys/:key_id
 
 Parameters:
 
-| Attribute | Type    | Required | Description |
-| --------- | ------- | -------- | ----------- |
+| Attribute | Type    | Required | Description           |
+| --------- | ------- | -------- | --------------------- |
 | `key_id`  | integer | yes      | The ID of the GPG key |
 
 ```shell
@@ -936,8 +937,8 @@ GET /users/:id/gpg_keys
 
 Parameters:
 
-| Attribute | Type    | Required | Description |
-| --------- | ------- | -------- | ----------- |
+| Attribute | Type    | Required | Description        |
+| --------- | ------- | -------- | ------------------ |
 | `id`      | integer | yes      | The ID of the user |
 
 ```shell
@@ -966,9 +967,9 @@ GET /users/:id/gpg_keys/:key_id
 
 Parameters:
 
-| Attribute | Type    | Required | Description |
-| --------- | ------- | -------- | ----------- |
-| `id`      | integer | yes      | The ID of the user |
+| Attribute | Type    | Required | Description           |
+| --------- | ------- | -------- | --------------------- |
+| `id`      | integer | yes      | The ID of the user    |
 | `key_id`  | integer | yes      | The ID of the GPG key |
 
 ```shell
@@ -995,9 +996,9 @@ POST /users/:id/gpg_keys
 
 Parameters:
 
-| Attribute | Type    | Required | Description |
-| --------- | ------- | -------- | ----------- |
-| `id`      | integer | yes      | The ID of the user |
+| Attribute | Type    | Required | Description           |
+| --------- | ------- | -------- | --------------------- |
+| `id`      | integer | yes      | The ID of the user    |
 | `key_id`  | integer | yes      | The ID of the GPG key |
 
 ```shell
@@ -1026,9 +1027,9 @@ DELETE /users/:id/gpg_keys/:key_id
 
 Parameters:
 
-| Attribute | Type    | Required | Description |
-| --------- | ------- | -------- | ----------- |
-| `id`      | integer | yes      | The ID of the user |
+| Attribute | Type    | Required | Description           |
+| --------- | ------- | -------- | --------------------- |
+| `id`      | integer | yes      | The ID of the user    |
 | `key_id`  | integer | yes      | The ID of the GPG key |
 
 ```shell
@@ -1347,12 +1348,12 @@ settings page.
 POST /users/:user_id/impersonation_tokens
 ```
 
-| Attribute    | Type    | Required | Description |
-| ------------ | ------- | -------- | ----------- |
-| `user_id`    | integer | yes      | The ID of the user |
-| `name`       | string  | yes      | The name of the impersonation token |
-| `expires_at` | date    | no       | The expiration date of the impersonation token in ISO format (`YYYY-MM-DD`)|
-| `scopes`     | array   | yes      | The array of scopes of the impersonation token (`api`, `read_user`) |
+| Attribute    | Type    | Required | Description                                                                 |
+| ------------ | ------- | -------- | --------------------------------------------------------------------------- |
+| `user_id`    | integer | yes      | The ID of the user                                                          |
+| `name`       | string  | yes      | The name of the impersonation token                                         |
+| `expires_at` | date    | no       | The expiration date of the impersonation token in ISO format (`YYYY-MM-DD`) |
+| `scopes`     | array   | yes      | The array of scopes of the impersonation token (`api`, `read_user`)         |
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --data "name=mytoken" --data "expires_at=2017-04-04" --data "scopes[]=api" "https://gitlab.example.com/api/v4/users/42/impersonation_tokens"
@@ -1392,10 +1393,10 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://git
 
 Parameters:
 
-| Attribute | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `user_id` | integer | yes | The ID of the user |
-| `impersonation_token_id` | integer | yes | The ID of the impersonation token |
+| Attribute                | Type    | Required | Description                       |
+| ------------------------ | ------- | -------- | --------------------------------- |
+| `user_id`                | integer | yes      | The ID of the user                |
+| `impersonation_token_id` | integer | yes      | The ID of the impersonation token |
 
 ### Get user activities (admin only)
 
@@ -1420,9 +1421,9 @@ GET /user/activities
 
 Parameters:
 
-| Attribute | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `from` | string | no | Date string in the format YEAR-MONTH-DAY. For example, `2016-03-11`. Defaults to 6 months ago. |
+| Attribute | Type   | Required | Description                                                                                    |
+| --------- | ------ | -------- | ---------------------------------------------------------------------------------------------- |
+| `from`    | string | no       | Date string in the format YEAR-MONTH-DAY. For example, `2016-03-11`. Defaults to 6 months ago. |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/user/activities"
@@ -1467,10 +1468,10 @@ GET /users/:id/memberships
 
 Parameters:
 
-| Attribute | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `id` | integer | yes | The ID of a specified user |
-| `type` | string | no | Filter memberships by type. Can be either `Project` or `Namespace` |
+| Attribute | Type    | Required | Description                                                        |
+| --------- | ------- | -------- | ------------------------------------------------------------------ |
+| `id`      | integer | yes      | The ID of a specified user                                         |
+| `type`    | string  | no       | Filter memberships by type. Can be either `Project` or `Namespace` |
 
 Returns:
 

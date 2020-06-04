@@ -327,7 +327,7 @@ describe MarkupHelper do
       expect(wiki).to receive(:content).and_return('wiki content')
       expect(wiki).to receive(:slug).and_return('nested/page')
       expect(wiki).to receive(:repository).and_return(wiki_repository)
-      helper.instance_variable_set(:@project_wiki, wiki)
+      helper.instance_variable_set(:@wiki, wiki)
     end
 
     context 'when file is Markdown' do

@@ -129,8 +129,8 @@ module MarkupHelper
     context.merge!(
       pipeline: :wiki,
       project: @project,
-      wiki: @project_wiki,
-      repository: @project_wiki.repository,
+      wiki: @wiki,
+      repository: @wiki.repository,
       page_slug: wiki_page.slug,
       issuable_state_filter_enabled: true
     )
@@ -300,7 +300,7 @@ module MarkupHelper
 
       # RepositoryLinkFilter and UploadLinkFilter
       commit:         @commit,
-      project_wiki:   @project_wiki,
+      wiki:           @wiki,
       ref:            @ref,
       requested_path: @path
     )

@@ -229,4 +229,14 @@ describe GitlabRoutingHelper do
       end
     end
   end
+
+  context 'wikis' do
+    let(:wiki) { create(:project_wiki) }
+
+    describe '#wiki_page_path' do
+      it 'returns the url for the wiki page' do
+        expect(wiki_page_path(wiki, 'page')).to eq("/#{wiki.project.full_path}/-/wikis/page")
+      end
+    end
+  end
 end

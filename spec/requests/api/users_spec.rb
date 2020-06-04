@@ -1242,6 +1242,16 @@ describe API::Users, :do_not_mock_admin_mode do
       end.to change { user.keys.count }.by(1)
     end
 
+    it 'creates SSH key with `expires_at` attribute' do
+      optional_attributes = { expires_at: '2016-01-21T00:00:00.000Z' }
+      attributes = attributes_for(:key).merge(optional_attributes)
+
+      post api("/users/#{user.id}/keys", admin), params: attributes
+
+      expect(response).to have_gitlab_http_status(:created)
+      expect(json_response['expires_at']).to eq(optional_attributes[:expires_at])
+    end
+
     it "returns 400 for invalid ID" do
       post api("/users/0/keys", admin)
       expect(response).to have_gitlab_http_status(:bad_request)
@@ -1796,6 +1806,16 @@ describe API::Users, :do_not_mock_admin_mode do
         post api("/user/keys", user), params: key_attrs
       end.to change { user.keys.count }.by(1)
       expect(response).to have_gitlab_http_status(:created)
+    end
+
+    it 'creates SSH key with `expires_at` attribute' do
+      optional_attributes = { expires_at: '2016-01-21T00:00:00.000Z' }
+      attributes = attributes_for(:key).merge(optional_attributes)
+
+      post api("/user/keys", user), params: attributes
+
+      expect(response).to have_gitlab_http_status(:created)
+      expect(json_response['expires_at']).to eq(optional_attributes[:expires_at])
     end
 
     it "returns a 401 error if unauthorized" do

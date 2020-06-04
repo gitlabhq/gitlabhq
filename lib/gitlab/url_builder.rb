@@ -39,9 +39,9 @@ module Gitlab
         when User
           instance.user_url(object, **options)
         when Wiki
-          wiki_url(object, **options)
+          wiki_page_url(object, Wiki::HOMEPAGE, **options)
         when WikiPage
-          instance.project_wiki_url(object.wiki.project, object.slug, **options)
+          wiki_page_url(object.wiki, object, **options)
         when ::DesignManagement::Design
           design_url(object, **options)
         else
@@ -78,11 +78,11 @@ module Gitlab
         end
       end
 
-      def wiki_url(object, **options)
-        if object.container.is_a?(Project)
-          instance.project_wiki_url(object.container, Wiki::HOMEPAGE, **options)
+      def wiki_page_url(wiki, page, **options)
+        if wiki.container.is_a?(Project)
+          instance.project_wiki_url(wiki.container, page, **options)
         else
-          raise NotImplementedError.new("No URL builder defined for #{object.inspect}")
+          raise NotImplementedError.new("No URL builder defined for #{wiki.container.inspect} wikis")
         end
       end
 

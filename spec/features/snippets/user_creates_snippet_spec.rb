@@ -176,6 +176,8 @@ RSpec.shared_examples_for 'snippet editor' do
       click_link('Internal')
 
       expect(page).to have_content('My Snippet Title')
+      created_snippet = Snippet.last
+      expect(created_snippet.visibility_level).to eq(Gitlab::VisibilityLevel::INTERNAL)
     end
   end
 end
