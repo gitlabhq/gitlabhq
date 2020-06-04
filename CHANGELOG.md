@@ -2,6 +2,17 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 12.10.10 (2020-06-04)
+
+### Fixed (1 change)
+
+- Fix close issue when user created the issue. !33440
+
+### Other (1 change)
+
+- Update GitLab Workhorse to v8.30.3. !33819
+
+
 ## 12.10.9 (2020-06-03)
 
 ### Security (1 change)
