@@ -2,6 +2,20 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 13.0.5 (2020-06-04)
+
+### Fixed (4 changes)
+
+- Fix NoMethodError by using the correct method to report exceptions to Sentry. !33260
+- Fix bug in snippets updating only file_name or content. !33375
+- Fix ambiguous string concatenation on CleanupProjectsWithMissingNamespace. !33497
+- Fix linking alerts to created issues for the Generic alerts intergration. !33647
+
+### Other (1 change)
+
+- Update GitLab Workhorse to v8.31.2. !33818
+
+
 ## 13.0.4 (2020-06-03)
 
 ### Security (1 change)
