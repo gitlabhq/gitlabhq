@@ -417,9 +417,13 @@ The response header includes a link to the next page. For example:
 HTTP/1.1 200 OK
 ...
 Links: <https://gitlab.example.com/api/v4/projects?pagination=keyset&per_page=50&order_by=id&sort=asc&id_after=42>; rel="next"
+Link: <https://gitlab.example.com/api/v4/projects?pagination=keyset&per_page=50&order_by=id&sort=asc&id_after=42>; rel="next"
 Status: 200 OK
 ...
 ```
+
+CAUTION: **Deprecation:**
+The `Links` Header will be removed in GitLab 14.0 to be aligned with the [W3C specification](https://www.w3.org/wiki/LinkHeader)
 
 The link to the next page contains an additional filter `id_after=42` which excludes records we have retrieved already.
 Note the type of filter depends on the `order_by` option used and we may have more than one additional filter.

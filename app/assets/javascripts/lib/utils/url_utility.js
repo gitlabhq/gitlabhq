@@ -109,9 +109,10 @@ export function mergeUrlParams(params, url) {
  *
  * @param {string[]} params - the query param names to remove
  * @param {string} [url=windowLocation().href] - url from which the query param will be removed
+ * @param {boolean} skipEncoding - set to true when the url does not require encoding
  * @returns {string} A copy of the original url but without the query param
  */
-export function removeParams(params, url = window.location.href) {
+export function removeParams(params, url = window.location.href, skipEncoding = false) {
   const [rootAndQuery, fragment] = url.split('#');
   const [root, query] = rootAndQuery.split('?');
 
@@ -119,12 +120,13 @@ export function removeParams(params, url = window.location.href) {
     return url;
   }
 
-  const encodedParams = params.map(param => encodeURIComponent(param));
+  const removableParams = skipEncoding ? params : params.map(param => encodeURIComponent(param));
+
   const updatedQuery = query
     .split('&')
     .filter(paramPair => {
       const [foundParam] = paramPair.split('=');
-      return encodedParams.indexOf(foundParam) < 0;
+      return removableParams.indexOf(foundParam) < 0;
     })
     .join('&');
 

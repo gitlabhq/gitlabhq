@@ -366,7 +366,9 @@ Example response:
     "revision": "33d33a096a",
     "package_files_count": 10,
     "package_files_checksummed_count": 10,
-    "package_files_checksum_failed_count": 0
+    "package_files_checksum_failed_count": 0,
+    "package_files_synced_count": 10,
+    "package_files_failed_count": 5
   },
   {
     "geo_node_id": 2,
@@ -437,7 +439,9 @@ Example response:
     "revision": "33d33a096a",
     "package_files_count": 10,
     "package_files_checksummed_count": 10,
-    "package_files_checksum_failed_count": 0
+    "package_files_checksum_failed_count": 0,
+    "package_files_synced_count": 10,
+    "package_files_failed_count": 5
   }
 ]
 ```

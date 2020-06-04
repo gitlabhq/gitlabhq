@@ -146,7 +146,7 @@ test:
 
 Instead, you can use the
 [`$CI_COMMIT_REF_NAME` predefined environment
-variable](../variables/predefined_variables.md#variables-reference) in
+variable](../variables/predefined_variables.md) in
 combination with
 [`only:variables`](../yaml/README.md#onlyvariablesexceptvariables) to
 accomplish this behavior:

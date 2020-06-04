@@ -5,6 +5,8 @@ module Gitlab
     class SnippetRepoRestorer < RepoRestorer
       attr_reader :snippet
 
+      SnippetRepositoryError = Class.new(StandardError)
+
       def initialize(snippet:, user:, shared:, path_to_bundle:)
         @snippet = snippet
         @user = user
@@ -35,6 +37,10 @@ module Gitlab
 
       def create_repository_from_db
         Gitlab::BackgroundMigration::BackfillSnippetRepositories.new.perform_by_ids([snippet.id])
+
+        unless snippet.reset.snippet_repository
+          raise SnippetRepositoryError, _("Error creating repository for snippet with id %{snippet_id}") % { snippet_id: snippet.id }
+        end
       end
     end
   end

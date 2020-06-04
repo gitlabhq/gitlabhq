@@ -32,6 +32,13 @@ RSpec.shared_examples 'wiki model' do
     it 'returns the wiki base path' do
       expect(subject.wiki_base_path).to eq("#{wiki_container.web_url(only_path: true)}/-/wikis")
     end
+
+    it 'includes the relative URL root' do
+      allow(Rails.application.routes).to receive(:default_url_options).and_return(script_name: '/root')
+
+      expect(subject.wiki_base_path).to start_with('/root/')
+      expect(subject.wiki_base_path).not_to start_with('/root/root')
+    end
   end
 
   describe '#wiki' do

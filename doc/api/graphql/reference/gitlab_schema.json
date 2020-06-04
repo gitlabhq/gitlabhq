@@ -37400,17 +37400,9 @@
                   "name": "linkType",
                   "description": "Filter issue links by link type",
                   "type": {
-                    "kind": "LIST",
-                    "name": null,
-                    "ofType": {
-                      "kind": "NON_NULL",
-                      "name": null,
-                      "ofType": {
-                        "kind": "ENUM",
-                        "name": "VulnerabilityIssueLinkType",
-                        "ofType": null
-                      }
-                    }
+                    "kind": "ENUM",
+                    "name": "VulnerabilityIssueLinkType",
+                    "ofType": null
                   },
                   "defaultValue": null
                 },

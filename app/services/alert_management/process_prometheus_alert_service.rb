@@ -29,6 +29,7 @@ module AlertManagement
 
     def process_firing_alert_management_alert
       if am_alert.present?
+        am_alert.register_new_event!
         reset_alert_management_alert_status
       else
         create_alert_management_alert

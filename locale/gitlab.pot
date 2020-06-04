@@ -8,8 +8,6 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-06-01 14:24-0400\n"
-"PO-Revision-Date: 2020-06-01 14:24-0400\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -8734,6 +8732,9 @@ msgid "Error creating label."
 msgstr ""
 
 msgid "Error creating new iteration"
+msgstr ""
+
+msgid "Error creating repository for snippet with id %{snippet_id}"
 msgstr ""
 
 msgid "Error creating the snippet"

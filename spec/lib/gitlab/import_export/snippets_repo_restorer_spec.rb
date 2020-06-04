@@ -86,13 +86,14 @@ describe Gitlab::ImportExport::SnippetsRepoRestorer do
       it_behaves_like 'imports snippet repositories'
     end
 
-    context 'when one snippet cannot be saved' do
-      it 'returns false and do not process other snippets' do
+    context 'when any of the snippet repositories cannot be created' do
+      it 'continues processing other snippets and returns false' do
         allow(Gitlab::ImportExport::SnippetRepoRestorer).to receive(:new).with(hash_including(snippet: snippet1)).and_return(service)
         allow(service).to receive(:restore).and_return(false)
 
-        expect(Gitlab::ImportExport::SnippetRepoRestorer).not_to receive(:new).with(hash_including(snippet: snippet2))
-        expect(restorer.restore).to be_falsey
+        expect(Gitlab::ImportExport::SnippetRepoRestorer).to receive(:new).with(hash_including(snippet: snippet2)).and_call_original
+
+        expect(restorer.restore).to be false
       end
     end
 

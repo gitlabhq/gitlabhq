@@ -1,0 +1,5 @@
+---
+title: Fix ambiguous string concatenation on CleanupProjectsWithMissingNamespace
+merge_request: 33497
+author:
+type: fixed

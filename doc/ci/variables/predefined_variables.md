@@ -10,8 +10,6 @@ type: reference
 For an introduction on this subject, read through the
 [getting started with environment variables](README.md) document.
 
-## Overview
-
 Some of the predefined environment variables are available only if a minimum
 version of [GitLab Runner](https://docs.gitlab.com/runner/) is used. Consult the table below to find the
 version of Runner required.
@@ -22,7 +20,8 @@ Starting with GitLab 9.0, we have deprecated some variables. Read the
 strongly advised to use the new variables as we will remove the old ones in
 future GitLab releases.**
 
-## Variables reference
+You can add a command to your `.gitlab-ci.yml` file to
+[output the values of all variables available for a job](README.md#list-all-environment-variables).
 
 | Variable                                      | GitLab | Runner | Description                                                                                                                                                                                                                                                                                                                                                |
 |-----------------------------------------------|--------|--------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|

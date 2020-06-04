@@ -140,7 +140,7 @@ module AlertManagement
     end
 
     def register_new_event!
-      increment!(:events, 1)
+      increment!(:events)
     end
 
     private

@@ -91,7 +91,7 @@ disable running the custom scanner.
 GitLab also defines a `CI_PROJECT_REPOSITORY_LANGUAGES` variable, which provides the list of
 languages in the repository. Depending on this value, your scanner may or may not do something different.
 Language detection currently relies on the [`linguist`](https://github.com/github/linguist) Ruby gem.
-See [GitLab CI/CD predefined variables](../../ci/variables/predefined_variables.md#variables-reference).
+See [GitLab CI/CD predefined variables](../../ci/variables/predefined_variables.md).
 
 #### Policy checking example
 

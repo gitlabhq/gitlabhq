@@ -34,6 +34,15 @@ describe Gitlab::ImportExport::SnippetRepoRestorer do
         expect(blob.data).to eq(snippet.content)
       end
     end
+
+    context 'when the repository creation fails' do
+      it 'returns false' do
+        allow_any_instance_of(Gitlab::BackgroundMigration::BackfillSnippetRepositories).to receive(:perform_by_ids).and_return(nil)
+
+        expect(restorer.restore).to be false
+        expect(shared.errors.first).to match(/Error creating repository for snippet/)
+      end
+    end
   end
 
   context 'when the snippet does not have a bundle file path' do

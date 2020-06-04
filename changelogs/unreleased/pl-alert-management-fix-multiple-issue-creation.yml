@@ -1,0 +1,5 @@
+---
+title: Fix linking alerts to created issues for the Generic alerts intergration
+merge_request: 33647
+author:
+type: fixed

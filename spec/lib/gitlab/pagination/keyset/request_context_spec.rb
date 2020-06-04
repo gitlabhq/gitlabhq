@@ -60,9 +60,7 @@ describe Gitlab::Pagination::Keyset::RequestContext do
     it 'sets Links header with same host/path as the original request' do
       orig_uri = URI.parse(request_context.request.url)
 
-      expect(request_context).to receive(:header) do |name, header|
-        expect(name).to eq('Links')
-
+      expect(request_context).to receive(:header).twice do |name, header|
         first_link, _ = /<([^>]+)>; rel="next"/.match(header).captures
 
         uri = URI.parse(first_link)
@@ -77,9 +75,7 @@ describe Gitlab::Pagination::Keyset::RequestContext do
     it 'sets Links header with a link to the next page' do
       orig_uri = URI.parse(request_context.request.url)
 
-      expect(request_context).to receive(:header) do |name, header|
-        expect(name).to eq('Links')
-
+      expect(request_context).to receive(:header).twice do |name, header|
         first_link, _ = /<([^>]+)>; rel="next"/.match(header).captures
 
         query = CGI.parse(URI.parse(first_link).query)
@@ -97,9 +93,7 @@ describe Gitlab::Pagination::Keyset::RequestContext do
       it 'sets Links header with a link to the next page' do
         orig_uri = URI.parse(request_context.request.url)
 
-        expect(request_context).to receive(:header) do |name, header|
-          expect(name).to eq('Links')
-
+        expect(request_context).to receive(:header).twice do |name, header|
           first_link, _ = /<([^>]+)>; rel="next"/.match(header).captures
 
           query = CGI.parse(URI.parse(first_link).query)

@@ -6,7 +6,7 @@ RSpec.describe AlertManagement::ProcessPrometheusAlertService do
   let_it_be(:project) { create(:project) }
 
   describe '#execute' do
-    subject { described_class.new(project, nil, payload).execute }
+    subject(:execute) { described_class.new(project, nil, payload).execute }
 
     context 'when alert payload is valid' do
       let(:parsed_alert) { Gitlab::Alerting::Alert.new(project: project, payload: payload) }
@@ -37,9 +37,13 @@ RSpec.describe AlertManagement::ProcessPrometheusAlertService do
         context 'when alert with the same fingerprint already exists' do
           let!(:alert) { create(:alert_management_alert, :resolved, project: project, fingerprint: parsed_alert.gitlab_fingerprint) }
 
+          it 'increases alert events count' do
+            expect { execute }.to change { alert.reload.events }.by(1)
+          end
+
           context 'when status can be changed' do
             it 'changes status to triggered' do
-              expect { subject }.to change { alert.reload.triggered? }.to(true)
+              expect { execute }.to change { alert.reload.triggered? }.to(true)
             end
           end
 
@@ -56,7 +60,7 @@ RSpec.describe AlertManagement::ProcessPrometheusAlertService do
                 alert_id: alert.id
               )
 
-              subject
+              execute
             end
           end
 
@@ -66,7 +70,7 @@ RSpec.describe AlertManagement::ProcessPrometheusAlertService do
         context 'when alert does not exist' do
           context 'when alert can be created' do
             it 'creates a new alert' do
-              expect { subject }.to change { AlertManagement::Alert.where(project: project).count }.by(1)
+              expect { execute }.to change { AlertManagement::Alert.where(project: project).count }.by(1)
             end
           end
 
@@ -85,7 +89,7 @@ RSpec.describe AlertManagement::ProcessPrometheusAlertService do
                 alert_errors: { hosts: ['hosts array is over 255 chars'] }
               )
 
-              subject
+              execute
             end
           end
 
@@ -99,7 +103,7 @@ RSpec.describe AlertManagement::ProcessPrometheusAlertService do
 
         context 'when status can be changed' do
           it 'resolves an existing alert' do
-            expect { subject }.to change { alert.reload.resolved? }.to(true)
+            expect { execute }.to change { alert.reload.resolved? }.to(true)
           end
         end
 
@@ -116,7 +120,7 @@ RSpec.describe AlertManagement::ProcessPrometheusAlertService do
               alert_id: alert.id
             )
 
-            subject
+            execute
           end
         end
 
@@ -128,8 +132,8 @@ RSpec.describe AlertManagement::ProcessPrometheusAlertService do
       let(:payload) { {} }
 
       it 'responds with bad_request' do
-        expect(subject).to be_error
-        expect(subject.http_status).to eq(:bad_request)
+        expect(execute).to be_error
+        expect(execute.http_status).to eq(:bad_request)
       end
     end
   end

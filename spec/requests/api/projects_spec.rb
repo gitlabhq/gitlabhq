@@ -597,6 +597,10 @@ describe API::Projects do
           expect(response.header).to include('Links')
           expect(response.header['Links']).to include('pagination=keyset')
           expect(response.header['Links']).to include("id_after=#{public_project.id}")
+
+          expect(response.header).to include('Link')
+          expect(response.header['Link']).to include('pagination=keyset')
+          expect(response.header['Link']).to include("id_after=#{public_project.id}")
         end
 
         it 'contains only the first project with per_page = 1' do
@@ -613,12 +617,17 @@ describe API::Projects do
           expect(response.header).to include('Links')
           expect(response.header['Links']).to include('pagination=keyset')
           expect(response.header['Links']).to include("id_after=#{project3.id}")
+
+          expect(response.header).to include('Link')
+          expect(response.header['Link']).to include('pagination=keyset')
+          expect(response.header['Link']).to include("id_after=#{project3.id}")
         end
 
         it 'does not include a next link when the page does not have any records' do
           get api('/projects', current_user), params: params.merge(id_after: Project.maximum(:id))
 
           expect(response.header).not_to include('Links')
+          expect(response.header).not_to include('Link')
         end
 
         it 'returns an empty array when the page does not have any records' do
@@ -644,6 +653,10 @@ describe API::Projects do
           expect(response.header).to include('Links')
           expect(response.header['Links']).to include('pagination=keyset')
           expect(response.header['Links']).to include("id_before=#{project3.id}")
+
+          expect(response.header).to include('Link')
+          expect(response.header['Link']).to include('pagination=keyset')
+          expect(response.header['Link']).to include("id_before=#{project3.id}")
         end
 
         it 'contains only the last project with per_page = 1' do
@@ -669,6 +682,11 @@ describe API::Projects do
 
             links = response.header['Links']
             url = links&.match(/<[^>]+(\/projects\?[^>]+)>; rel="next"/) do |match|
+              match[1]
+            end
+
+            link = response.header['Link']
+            url = link&.match(/<[^>]+(\/projects\?[^>]+)>; rel="next"/) do |match|
               match[1]
             end
 

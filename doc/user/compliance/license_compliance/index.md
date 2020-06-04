@@ -385,6 +385,79 @@ You can supply a custom root certificate to complete TLS verification by using t
 specifying a `ca` setting in a [`.bowerrc`](https://bower.io/docs/config/#bowerrc-specification)
 file.
 
+### Configuring Conan projects
+
+You can configure [Conan](https://conan.io/) projects by adding a `.conan` directory to your
+project root. The project root serves as the [`CONAN_USER_HOME`](https://docs.conan.io/en/latest/reference/env_vars.html#conan-user-home).
+
+Consult the [Conan](https://docs.conan.io/en/latest/reference/config_files/conan.conf.html#conan-conf)
+documentation for a list of settings that you can apply.
+
+The `license_scanning` job runs in a [Debian 10](https://www.debian.org/releases/buster/) Docker
+image. The supplied image ships with some build tools such as [CMake](https://cmake.org/) and [GCC](https://gcc.gnu.org/).
+However, not all project types are supported by default. To install additional tools needed to
+compile dependencies, use a [`before_script`](../../../ci/yaml/README.md#before_script-and-after_script)
+to install the necessary build tools using the [`apt`](https://wiki.debian.org/PackageManagementTools)
+package manager. For a comprehensive list, consult [the Conan documentation](https://docs.conan.io/en/latest/introduction.html#all-platforms-all-build-systems-and-compilers).
+
+The default [Conan](https://conan.io/) configuration sets [`CONAN_LOGIN_USERNAME`](https://docs.conan.io/en/latest/reference/env_vars.html#conan-login-username-conan-login-username-remote-name)
+to `ci_user`, and binds [`CONAN_PASSWORD`](https://docs.conan.io/en/latest/reference/env_vars.html#conan-password-conan-password-remote-name)
+to the [`CI_JOB_TOKEN`](../../../ci/variables/predefined_variables.md)
+for the running job. This allows Conan projects to fetch packages from a [GitLab Conan Repository](../../packages/conan_repository/#fetching-conan-package-information-from-the-gitlab-package-registry)
+if a GitLab remote is specified in the `.conan/remotes.json` file.
+
+To override the default credentials specify a [`CONAN_LOGIN_USERNAME_{REMOTE_NAME}`](https://docs.conan.io/en/latest/reference/env_vars.html#conan-login-username-conan-login-username-remote-name)
+matching the name of the remote specified in the `.conan/remotes.json` file.
+
+NOTE: **Note:**
+[MSBuild](https://github.com/mono/msbuild#microsoftbuild-msbuild) projects aren't supported. The
+`license_scanning` image ships with [Mono](https://www.mono-project.com/) and [MSBuild](https://github.com/mono/msbuild#microsoftbuild-msbuild).
+Additional setup may be required to build packages for this project configuration.
+
+#### Using private Conan registries
+
+By default, [Conan](https://conan.io/) uses the `conan-center` remote. For example:
+
+```json
+{
+ "remotes": [
+  {
+   "name": "conan-center",
+   "url": "https://conan.bintray.com",
+   "verify_ssl": true
+  }
+ ]
+}
+```
+
+To fetch dependencies from an alternate remote, specify that remote in a `.conan/remotes.json`. For
+example:
+
+```json
+{
+ "remotes": [
+  {
+   "name": "gitlab",
+   "url": "https://gitlab.com/api/v4/packages/conan",
+   "verify_ssl": true
+  }
+ ]
+}
+```
+
+If credentials are required to authenticate then you can configure a [protected variable](../../../ci/variables/README.md#protect-a-custom-variable)
+following the naming convention described in the [`CONAN_LOGIN_USERNAME` documentation](https://docs.conan.io/en/latest/reference/env_vars.html#conan-login-username-conan-login-username-remote-name).
+
+#### Custom root certificates for Conan
+
+You can provide custom certificates by adding a `.conan/cacert.pem` file to the project root and
+setting [`CA_CERT_PATH`](https://docs.conan.io/en/latest/reference/env_vars.html#conan-cacert-path)
+to `.conan/cacert.pem`.
+
+If you specify the `ADDITIONAL_CA_CERT_BUNDLE` [environment variable](#available-variables), this
+variable's X.509 certificates are installed in the Docker image's default trust store and Conan is
+configured to use this as the default `CA_CERT_PATH`.
+
 ### Migration from `license_management` to `license_scanning`
 
 In GitLab 12.8 a new name for `license_management` job was introduced. This change was made to improve clarity around the purpose of the scan, which is to scan and collect the types of licenses present in a projects dependencies.
@@ -487,9 +560,13 @@ license_scanning:
 The License Compliance job should now use local copies of the License Compliance analyzers to scan
 your code and generate security reports, without requiring internet access.
 
-Additional configuration may be needed for connecting to [private Maven repositories](#using-private-maven-repos),
+Additional configuration may be needed for connecting to
 [private Bower registries](#using-private-bower-registries),
-[private NPM registries](#using-private-npm-registries), [private Yarn registries](#using-private-yarn-registries), and [private Python repositories](#using-private-python-repos).
+[private Conan registries](#using-private-bower-registries),
+[private Maven repositories](#using-private-maven-repos),
+[private NPM registries](#using-private-npm-registries),
+[private Python repositories](#using-private-python-repos),
+and [private Yarn registries](#using-private-yarn-registries).
 
 Exact name matches are required for [project policies](#project-policies-for-license-compliance)
 when running in an offline environment ([see related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/212388)).

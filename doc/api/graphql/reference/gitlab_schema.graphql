@@ -12725,7 +12725,7 @@ type Vulnerability {
     """
     Filter issue links by link type
     """
-    linkType: [VulnerabilityIssueLinkType!]
+    linkType: VulnerabilityIssueLinkType
   ): VulnerabilityIssueLinkConnection!
 
   """
