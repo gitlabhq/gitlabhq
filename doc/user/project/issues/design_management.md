@@ -208,12 +208,12 @@ At present, full URL references are supported. For example, if we refer to a des
 somewhere with:
 
 ```markdown
-See http://gitlab.com/your-group/your-project/-/issues/123/designs/homescreen.png
+See https://gitlab.com/your-group/your-project/-/issues/123/designs/homescreen.png
 ```
 
 This will be rendered as:
 
-> See [#123[homescreen.png]](http://gitlab.com/your-group/your-project/-/issues/123/designs/homescreen.png)
+> See [#123[homescreen.png]](https://gitlab.com/your-group/your-project/-/issues/123/designs/homescreen.png)
 
 ### Enable or disable design references **(CORE ONLY)**
 

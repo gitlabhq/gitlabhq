@@ -28,6 +28,8 @@ module ServiceParams
     :drone_url,
     :enable_ssl_verification,
     :external_wiki_url,
+    :google_iap_service_account_json,
+    :google_iap_audience_client_id,
     # We're using `issues_events` and `merge_requests_events`
     # in the view so we still need to explicitly state them
     # here. `Service#event_names` would only give

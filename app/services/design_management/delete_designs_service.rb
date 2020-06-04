@@ -15,6 +15,7 @@ module DesignManagement
       return error('Forbidden!') unless can_delete_designs?
 
       version = delete_designs!
+      EventCreateService.new.destroy_designs(designs, current_user)
 
       success(version: version)
     end
@@ -48,7 +49,9 @@ module DesignManagement
     end
 
     def design_action(design)
-      on_success { counter.count(:delete) }
+      on_success do
+        counter.count(:delete)
+      end
 
       DesignManagement::DesignAction.new(design, :delete)
     end

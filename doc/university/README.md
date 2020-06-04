@@ -76,7 +76,6 @@ The GitLab University curriculum is composed of GitLab videos, screencasts, pres
    - Getting Technical Support
    - Being part of our Great Community and Contributing to GitLab
 1. [Getting Started with the GitLab Development Kit (GDK)](https://about.gitlab.com/blog/2016/06/08/getting-started-with-gitlab-development-kit/)
-1. [Contributing Technical Articles to the GitLab Blog](https://about.gitlab.com/blog/2016/01/26/call-for-writers/)
 1. [GitLab Training Workshops](training/end-user/README.md)
 1. [GitLab Professional Services](https://about.gitlab.com/services/)
 
@@ -176,7 +175,7 @@ The GitLab University curriculum is composed of GitLab videos, screencasts, pres
 
 1. [Scalability and High Availability - Video](https://www.youtube.com/watch?v=cXRMJJb6sp4&list=PLFGfElNsQthbQu_IWlNOxul0TbS_2JH-e&index=2)
 1. [High Availability - Video](https://www.youtube.com/watch?v=36KS808u6bE&index=15&list=PLFGfElNsQthbQu_IWlNOxul0TbS_2JH-e)
-1. [High Availability Documentation](https://about.gitlab.com/solutions/high-availability/)
+1. [High Availability Documentation](https://about.gitlab.com/solutions/reference-architectures/)
 
 ### 3.8 Cycle Analytics
 

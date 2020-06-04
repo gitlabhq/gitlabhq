@@ -38,6 +38,18 @@ export const setupStoreWithVariable = store => {
   });
 };
 
+export const setupStoreWithLinks = store => {
+  store.commit(`monitoringDashboard/${types.RECEIVE_METRICS_DASHBOARD_SUCCESS}`, {
+    ...metricsDashboardPayload,
+    links: [
+      {
+        title: 'GitLab Website',
+        url: `https://gitlab.com/website`,
+      },
+    ],
+  });
+};
+
 export const setupStoreWithData = store => {
   setupAllDashboards(store);
   setupStoreWithDashboard(store);

@@ -5,6 +5,8 @@ class PrometheusService < MonitoringService
 
   #  Access to prometheus is directly through the API
   prop_accessor :api_url
+  prop_accessor :google_iap_service_account_json
+  prop_accessor :google_iap_audience_client_id
   boolean_accessor :manual_configuration
 
   # We need to allow the self-monitoring project to connect to the internal
@@ -49,7 +51,7 @@ class PrometheusService < MonitoringService
   end
 
   def fields
-    [
+    result = [
       {
         type: 'checkbox',
         name: 'manual_configuration',
@@ -64,6 +66,27 @@ class PrometheusService < MonitoringService
         required: true
       }
     ]
+
+    if Feature.enabled?(:prometheus_service_iap_auth)
+      result += [
+        {
+          type: 'text',
+          name: 'google_iap_audience_client_id',
+          title: 'Google IAP Audience Client ID',
+          placeholder: s_('PrometheusService|Client ID of the IAP secured resource (looks like IAP_CLIENT_ID.apps.googleusercontent.com)'),
+          required: false
+        },
+        {
+          type: 'textarea',
+          name: 'google_iap_service_account_json',
+          title: 'Google IAP Service Account JSON',
+          placeholder: s_('PrometheusService|Contents of the credentials.json file of your service account, like: { "type": "service_account", "project_id": ... }'),
+          required: false
+        }
+      ]
+    end
+
+    result
   end
 
   # Check we can connect to the Prometheus API
@@ -77,7 +100,14 @@ class PrometheusService < MonitoringService
   def prometheus_client
     return unless should_return_client?
 
-    Gitlab::PrometheusClient.new(api_url, allow_local_requests: allow_local_api_url?)
+    options = { allow_local_requests: allow_local_api_url? }
+
+    if Feature.enabled?(:prometheus_service_iap_auth) && behind_iap?
+      # Adds the Authorization header
+      options[:headers] = iap_client.apply({})
+    end
+
+    Gitlab::PrometheusClient.new(api_url, options)
   end
 
   def prometheus_available?
@@ -148,5 +178,13 @@ class PrometheusService < MonitoringService
     return unless project_id
 
     Prometheus::CreateDefaultAlertsWorker.perform_async(project_id)
+  end
+
+  def behind_iap?
+    manual_configuration? && google_iap_audience_client_id.present? && google_iap_service_account_json.present?
+  end
+
+  def iap_client
+    @iap_client ||= Google::Auth::Credentials.new(Gitlab::Json.parse(google_iap_service_account_json), target_audience: google_iap_audience_client_id).client
   end
 end

@@ -48,7 +48,7 @@ Be careful to **also test [visibility levels](https://gitlab.com/gitlab-org/gitl
 
 Some example of well implemented access controls and tests:
 
-1. [example1](https://dev.gitlab.org/gitlab/gitlab-ee/merge_requests/710/diffs?diff_id=13750#af40ef0eaae3c1e018809e1d88086e32bccaca40_43_43)
+1. [example1](https://dev.gitlab.org/gitlab/gitlab-ee/-/merge_requests/710/diffs?diff_id=13750#af40ef0eaae3c1e018809e1d88086e32bccaca40_43_43)
 1. [example2](https://dev.gitlab.org/gitlab/gitlabhq/-/merge_requests/2511/diffs#ed3aaab1510f43b032ce345909a887e5b167e196_142_155)
 1. [example3](https://dev.gitlab.org/gitlab/gitlabhq/-/merge_requests/3170/diffs?diff_id=17494)
 

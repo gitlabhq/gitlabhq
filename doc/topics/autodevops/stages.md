@@ -497,7 +497,7 @@ traffic within a local namespace, and from the `gitlab-managed-apps`
 namespace. All other inbound connections are blocked. Outbound
 traffic (for example, to the Internet) is not affected by the default policy.
 
-You can also provide a custom [policy specification](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.16/#networkpolicyspec-v1-networking-k8s-io)
+You can also provide a custom [policy specification](https://kubernetes.io/docs/concepts/services-networking/network-policies/)
 in the `.gitlab/auto-deploy-values.yaml` file, for example:
 
 ```yaml

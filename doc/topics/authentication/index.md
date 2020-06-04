@@ -44,5 +44,5 @@ This page gathers all the resources for the topic **Authentication** within GitL
 
 - [Kanboard Plugin GitLab Authentication](https://github.com/kanboard/plugin-gitlab-auth)
 - [Jenkins GitLab OAuth Plugin](https://wiki.jenkins.io/display/JENKINS/GitLab+OAuth+Plugin)
-- [How to customize GitLab to support OpenID authentication](http://eric.van-der-vlist.com/blog/2013/11/23/how-to-customize-gitlab-to-support-openid-authentication/)
+- [How to customize GitLab to support OpenID authentication](https://eric.van-der-vlist.com/blog/2013/11/23/how-to-customize-gitlab-to-support-openid-authentication//)
 - [OKD - Configuring Authentication and User Agent](https://docs.okd.io/3.11/install_config/configuring_authentication.html#GitLab)

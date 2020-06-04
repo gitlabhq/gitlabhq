@@ -96,6 +96,29 @@ class EventCreateService
     create_push_event(BulkPushEventPayloadService, project, current_user, push_data)
   end
 
+  def save_designs(current_user, create: [], update: [])
+    created = create.group_by(&:project).flat_map do |project, designs|
+      Feature.enabled?(:design_activity_events, project) ? designs : []
+    end.to_set
+    updated = update.group_by(&:project).flat_map do |project, designs|
+      Feature.enabled?(:design_activity_events, project) ? designs : []
+    end.to_set
+    return [] if created.empty? && updated.empty?
+
+    records = created.zip([:created].cycle) + updated.zip([:updated].cycle)
+
+    create_record_events(records, current_user)
+  end
+
+  def destroy_designs(designs, current_user)
+    designs = designs.select do |design|
+      Feature.enabled?(:design_activity_events, design.project)
+    end
+    return [] unless designs.present?
+
+    create_record_events(designs.zip([:destroyed].cycle), current_user)
+  end
+
   # Create a new wiki page event
   #
   # @param [WikiPage::Meta] wiki_page_meta The event target
@@ -134,7 +157,32 @@ class EventCreateService
   end
 
   def create_record_event(record, current_user, status)
-    create_event(record.resource_parent, current_user, status, target_id: record.id, target_type: record.class.name)
+    create_event(record.resource_parent, current_user, status,
+                 target_id: record.id, target_type: record.class.name)
+  end
+
+  # If creating several events, this method will insert them all in a single
+  # statement
+  #
+  # @param [[Eventable, Symbol]] a list of pairs of records and a valid status
+  # @param [User] the author of the event
+  def create_record_events(pairs, current_user)
+    base_attrs = {
+      created_at: Time.now.utc,
+      updated_at: Time.now.utc,
+      author_id: current_user.id
+    }
+
+    attribute_sets = pairs.map do |record, status|
+      action = Event.actions[status]
+      raise IllegalActionError, "#{status} is not a valid status" if action.nil?
+
+      parent_attrs(record.resource_parent)
+        .merge(base_attrs)
+        .merge(action: action, target_id: record.id, target_type: record.class.name)
+    end
+
+    Event.insert_all(attribute_sets, returning: %w[id])
   end
 
   def create_push_event(service_class, project, current_user, push_data)
@@ -160,16 +208,22 @@ class EventCreateService
       action: status,
       author_id: current_user.id
     )
-
-    resource_parent_attr = case resource_parent
-                           when Project
-                             :project
-                           when Group
-                             :group
-                           end
-    attributes[resource_parent_attr] = resource_parent if resource_parent_attr
+    attributes.merge!(parent_attrs(resource_parent))
 
     Event.create!(attributes)
+  end
+
+  def parent_attrs(resource_parent)
+    resource_parent_attr = case resource_parent
+                           when Project
+                             :project_id
+                           when Group
+                             :group_id
+                           end
+
+    return {} unless resource_parent_attr
+
+    { resource_parent_attr => resource_parent.id }
   end
 
   def create_resource_event(issuable, current_user, status)

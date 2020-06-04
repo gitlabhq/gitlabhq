@@ -110,4 +110,26 @@ describe('ProjectSelector component', () => {
       );
     });
   });
+
+  describe('the search results legend', () => {
+    it.each`
+      count | total | expected
+      ${0}  | ${0}  | ${'Showing 0 projects'}
+      ${1}  | ${0}  | ${'Showing 1 project'}
+      ${2}  | ${0}  | ${'Showing 2 projects'}
+      ${2}  | ${3}  | ${'Showing 2 of 3 projects'}
+    `(
+      'is "$expected" given $count results are showing out of $total',
+      ({ count, total, expected }) => {
+        wrapper.setProps({
+          projectSearchResults: searchResults.slice(0, count),
+          totalResults: total,
+        });
+
+        return wrapper.vm.$nextTick().then(() => {
+          expect(wrapper.text()).toContain(expected);
+        });
+      },
+    );
+  });
 });

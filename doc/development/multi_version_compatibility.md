@@ -45,7 +45,7 @@ and set this column to `false`. The old servers were still updating the old colu
 that updated the new column from the old one. For the new servers though, they were only updating the new column and that same trigger
 was now working against us and setting it back to the wrong value.
 
-For more information, see [the relevant issue](https://gitlab.com/gitlab-com/gl-infra/infrastructure/-/issues/9176).
+For more information, see this [confidential issue](../user/project/issues/confidential_issues.md) `https://gitlab.com/gitlab-com/gl-infra/infrastructure/-/issues/9176`.
 
 ### Sidebar wasn't loading for some users
 

@@ -2,6 +2,7 @@ import { slugify } from '~/lib/utils/text_utility';
 import createGqClient, { fetchPolicies } from '~/lib/graphql';
 import { SUPPORTED_FORMATS } from '~/lib/utils/unit_format';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
+import { parseTemplatingVariables } from './variable_mapping';
 import { NOT_IN_DB_PREFIX } from '../constants';
 import { isSafeURL } from '~/lib/utils/url_utility';
 
@@ -217,9 +218,16 @@ const mapToPanelGroupViewModel = ({ group = '', panels = [] }, i) => {
  * @param {Array} dashboard.panel_groups - Panel groups array
  * @returns {Object}
  */
-export const mapToDashboardViewModel = ({ dashboard = '', panel_groups = [] }) => {
+export const mapToDashboardViewModel = ({
+  dashboard = '',
+  templating = {},
+  links = [],
+  panel_groups = [],
+}) => {
   return {
     dashboard,
+    variables: parseTemplatingVariables(templating),
+    links: links.map(mapLinksToViewModel),
     panelGroups: panel_groups.map(mapToPanelGroupViewModel),
   };
 };

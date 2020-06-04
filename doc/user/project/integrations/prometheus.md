@@ -865,7 +865,7 @@ You can create annotations by making requests to the
 
 #### Retention policy
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/211433) in GitLab 13.01.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/211433) in GitLab 13.01.
 
 To avoid excessive storage space consumption by stale annotations, records attached
 to time periods older than two weeks are removed daily. This recurring background

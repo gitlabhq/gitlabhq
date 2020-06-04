@@ -990,17 +990,17 @@ when upgrading the Vault application.
 
 To optimally use Vault in a production environment, it's ideal to have a good understanding
 of the internals of Vault and how to configure it. This can be done by reading the
-[the Vault documentation](https://www.vaultproject.io/docs/internals/) as well as
+[the Vault documentation](https://www.vaultproject.io/docs/internals) as well as
 the Vault Helm chart [`values.yaml` file](https://github.com/hashicorp/vault-helm/blob/v0.3.3/values.yaml).
 
 At a minimum you will likely set up:
 
-- A [seal](https://www.vaultproject.io/docs/configuration/seal/) for extra encryption
+- A [seal](https://www.vaultproject.io/docs/configuration/seal) for extra encryption
   of the master key.
-- A [storage backend](https://www.vaultproject.io/docs/configuration/storage/) that is
+- A [storage backend](https://www.vaultproject.io/docs/configuration/storage) that is
   suitable for environment and storage security requirements.
-- [HA Mode](https://www.vaultproject.io/docs/concepts/ha/).
-- [The Vault UI](https://www.vaultproject.io/docs/configuration/ui/).
+- [HA Mode](https://www.vaultproject.io/docs/concepts/ha).
+- [The Vault UI](https://www.vaultproject.io/docs/configuration/ui).
 
 The following is an example values file (`.gitlab/managed-apps/vault/values.yaml`)
 that configures Google Key Management Service for auto-unseal, using a Google Cloud Storage backend, enabling

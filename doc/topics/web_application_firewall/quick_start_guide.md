@@ -254,5 +254,5 @@ You can explore them in more detail:
 
 - [GitLab Defend Vision](https://about.gitlab.com/direction/defend/#waf)
 - [ModSecurity](https://www.modsecurity.org/)
-- [OWASP Core Rule Set](https://modsecurity.org/crs/)
+- [OWASP Core Rule Set](https://github.com/coreruleset/coreruleset/)
 - [AutoDevOps](../autodevops/index.md)

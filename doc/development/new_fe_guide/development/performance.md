@@ -9,7 +9,7 @@ Any frontend engineer can contribute to this dashboard. They can contribute by a
 
 There are 3 recommended high impact metrics to review on each page:
 
-- [First visual change](https://developers.google.com/web/tools/lighthouse/audits/first-meaningful-paint)
+- [First visual change](https://web.dev/first-meaningful-paint/)
 - [Speed Index](https://sites.google.com/a/webpagetest.org/docs/using-webpagetest/metrics/speed-index)
 - [Visual Complete 95%](https://sites.google.com/a/webpagetest.org/docs/using-webpagetest/metrics/speed-index)
 

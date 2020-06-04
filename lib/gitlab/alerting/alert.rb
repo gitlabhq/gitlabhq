@@ -173,7 +173,10 @@ module Gitlab
         value = payload&.dig(field)
         return unless value
 
-        Time.rfc3339(value)
+        # value is a rfc3339 timestamp
+        # Timestamps from Prometheus and Alertmanager are UTC RFC3339 timestamps like: '2018-03-12T09:06:00Z' (Z represents 0 offset or UTC)
+        # .utc sets the datetime zone to `UTC`
+        Time.rfc3339(value).utc
       rescue ArgumentError
       end
 

@@ -21,7 +21,7 @@ The following assumes you already have Vault installed and running.
    First you'll need to create a GitLab application to obtain an application ID and secret for authenticating into Vault. To do this, sign in to GitLab and follow these steps:
 
    1. On GitLab, click your avatar on the top-right corner, and select your user **Settings > Applications**.
-   1. Fill out the application **Name** and [**Redirect URI**](https://www.vaultproject.io/docs/auth/jwt/#redirect-uris),
+   1. Fill out the application **Name** and [**Redirect URI**](https://www.vaultproject.io/docs/auth/jwt#redirect-uris),
       making sure to select the **OpenID** scope.
    1. Save application.
    1. Copy client ID and secret, or keep the page open for reference.

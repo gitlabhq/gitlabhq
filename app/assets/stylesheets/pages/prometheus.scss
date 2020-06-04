@@ -21,6 +21,14 @@
       }
     }
   }
+
+  .links-section {
+    .gl-hover-text-blue-600-children:hover {
+      * {
+        @include gl-text-blue-600;
+      }
+    }
+  }
 }
 
 .draggable {

@@ -2561,7 +2561,7 @@ job:
 
 #### `artifacts:exclude`
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/15122) in GitLab 13.1
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15122) in GitLab 13.1
 > - Requires GitLab Runner 13.1
 
 `exclude` makes it possible to prevent files from being added to an artifacts

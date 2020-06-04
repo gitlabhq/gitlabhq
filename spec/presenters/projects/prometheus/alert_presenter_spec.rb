@@ -24,18 +24,25 @@ describe Projects::Prometheus::AlertPresenter do
     it { is_expected.to eq(project.full_path) }
   end
 
-  describe '#starts_at' do
-    subject { presenter.starts_at }
+  describe '#start_time' do
+    subject { presenter.start_time }
+
+    let(:starts_at) { '2020-10-31T14:02:04Z' }
 
     before do
       payload['startsAt'] = starts_at
     end
 
-    context 'with valid datetime' do
-      let(:datetime) { Time.now }
-      let(:starts_at) { datetime.rfc3339 }
+    context 'with valid utc datetime' do
+      it { is_expected.to eq('31 October 2020, 2:02PM (UTC)') }
 
-      it { is_expected.to eq(datetime.rfc3339) }
+      context 'with admin time zone not UTC' do
+        before do
+          allow(Time).to receive(:zone).and_return(ActiveSupport::TimeZone.new('Perth'))
+        end
+
+        it { is_expected.to eq('31 October 2020, 2:02PM (UTC)') }
+      end
     end
 
     context 'with invalid datetime' do
@@ -56,7 +63,7 @@ describe Projects::Prometheus::AlertPresenter do
           <<~MARKDOWN.chomp
             #### Summary
 
-            **Start time:** #{presenter.starts_at}
+            **Start time:** #{presenter.start_time}
 
           MARKDOWN
         )
@@ -73,7 +80,7 @@ describe Projects::Prometheus::AlertPresenter do
           <<~MARKDOWN.chomp
             #### Summary
 
-            **Start time:** #{presenter.starts_at}
+            **Start time:** #{presenter.start_time}
 
             #### Alert Details
 
@@ -94,7 +101,7 @@ describe Projects::Prometheus::AlertPresenter do
           <<~MARKDOWN.chomp
             #### Summary
 
-            **Start time:** #{presenter.starts_at}#{markdown_line_break}
+            **Start time:** #{presenter.start_time}#{markdown_line_break}
             **full_query:** `query`
 
           MARKDOWN
@@ -122,7 +129,7 @@ describe Projects::Prometheus::AlertPresenter do
           <<~MARKDOWN.chomp
             #### Summary
 
-            **Start time:** #{presenter.starts_at}#{markdown_line_break}
+            **Start time:** #{presenter.start_time}#{markdown_line_break}
             **Service:** service_name#{markdown_line_break}
             **Monitoring tool:** monitoring_tool_name#{markdown_line_break}
             **Hosts:** http://localhost:3000 http://localhost:3001
@@ -144,7 +151,7 @@ describe Projects::Prometheus::AlertPresenter do
             <<~MARKDOWN.chomp
             #### Summary
 
-            **Start time:** #{presenter.starts_at}#{markdown_line_break}
+            **Start time:** #{presenter.start_time}#{markdown_line_break}
             **Hosts:** http://localhost:3000
 
             MARKDOWN
@@ -161,7 +168,7 @@ describe Projects::Prometheus::AlertPresenter do
           <<~MARKDOWN.chomp
           #### Summary
 
-          **Start time:** #{presenter.starts_at}#{markdown_line_break}
+          **Start time:** #{presenter.start_time}#{markdown_line_break}
           **full_query:** `avg(metric) > 1.0`
 
           [](#{url})
@@ -253,7 +260,7 @@ describe Projects::Prometheus::AlertPresenter do
             <<~MARKDOWN.chomp
             #### Summary
 
-            **Start time:** #{presenter.starts_at}#{markdown_line_break}
+            **Start time:** #{presenter.start_time}#{markdown_line_break}
             **full_query:** `avg(metric) > 1.0`
 
             MARKDOWN
@@ -280,7 +287,7 @@ describe Projects::Prometheus::AlertPresenter do
               <<~MARKDOWN.chomp
               #### Summary
 
-              **Start time:** #{presenter.starts_at}
+              **Start time:** #{presenter.start_time}
 
               MARKDOWN
             end

@@ -20,6 +20,8 @@ module DesignManagement
     has_many :notes, as: :noteable, dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
     has_many :user_mentions, class_name: 'DesignUserMention', dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
 
+    has_many :events, as: :target, dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
+
     validates :project, :filename, presence: true
     validates :issue, presence: true, unless: :importing?
     validates :filename, uniqueness: { scope: :issue_id }, length: { maximum: 255 }
@@ -188,6 +190,11 @@ module DesignManagement
     end
     alias_method :after_note_created,   :after_note_changed
     alias_method :after_note_destroyed, :after_note_changed
+
+    # Part of the interface of objects we can create events about
+    def resource_parent
+      project
+    end
 
     private
 

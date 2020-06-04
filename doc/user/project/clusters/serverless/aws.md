@@ -101,7 +101,7 @@ The handler definition will provision the Lambda function using the source code 
 
 The `events` declaration will create a AWS API Gateway `GET` endpoint to receive external requests and hand them over to the Lambda function via a service integration.
 
-You can read more about the available properties and additional configuration possibilities of the Serverless Framework here: <https://serverless.com/framework/docs/providers/aws/guide/serverless.yml/>
+You can read more about the [available properties and additional configuration possibilities](https://www.serverless.com/framework/docs/providers/aws/guide/serverless.yml/) of the Serverless Framework.
 
 #### Crafting the `.gitlab-ci.yml` file
 
@@ -275,7 +275,7 @@ module.exports.hello = async event => {
 };
 ```
 
-For more information, see the [Your CORS and API Gateway survival guide](https://serverless.com/blog/cors-api-gateway-survival-guide/)
+For more information, see the [Your CORS and API Gateway survival guide](https://www.serverless.com/blog/cors-api-gateway-survival-guide/)
 blog post written by the Serverless Framework team.
 
 #### Writing automated tests

@@ -16,6 +16,7 @@ import DashboardsDropdown from '~/monitoring/components/dashboards_dropdown.vue'
 import EmptyState from '~/monitoring/components/empty_state.vue';
 import GroupEmptyState from '~/monitoring/components/group_empty_state.vue';
 import DashboardPanel from '~/monitoring/components/dashboard_panel.vue';
+import LinksSection from '~/monitoring/components/links_section.vue';
 import { createStore } from '~/monitoring/stores';
 import * as types from '~/monitoring/stores/mutation_types';
 import {
@@ -24,6 +25,7 @@ import {
   setMetricResult,
   setupStoreWithData,
   setupStoreWithVariable,
+  setupStoreWithLinks,
 } from '../store_utils';
 import { environmentData, dashboardGitResponse, propsData } from '../mock_data';
 import { metricsDashboardViewModel, metricsDashboardPanelCount } from '../fixture_data';
@@ -480,6 +482,21 @@ describe('Dashboard', () => {
 
     it('shows the variables section', () => {
       expect(wrapper.vm.shouldShowVariablesSection).toBe(true);
+    });
+  });
+
+  describe('links section', () => {
+    beforeEach(() => {
+      createShallowWrapper({ hasMetrics: true });
+      setupStoreWithData(store);
+      setupStoreWithLinks(store);
+
+      return wrapper.vm.$nextTick();
+    });
+
+    it('shows the links section', () => {
+      expect(wrapper.vm.shouldShowLinksSection).toBe(true);
+      expect(wrapper.find(LinksSection)).toExist();
     });
   });
 

@@ -11,7 +11,7 @@ It is **not** valid for the [GitLab documentation website](https://docs.gitlab.c
 or [GitLab's main website](https://about.gitlab.com), as they both use
 [Kramdown](https://kramdown.gettalong.org) as their Markdown engine. The documentation
 website uses an extended Kramdown gem, [GitLab Kramdown](https://gitlab.com/gitlab-org/gitlab_kramdown).
-Consult the [GitLab Kramdown Guide](https://about.gitlab.com/handbook/engineering/ux/technical-writing/markdown-guide/)
+Consult the [GitLab Kramdown Guide](https://about.gitlab.com/handbook/markdown-guide/)
 for a complete Kramdown reference.
 
 NOTE: **Note:** We encourage you to view this document as [rendered by GitLab itself](https://gitlab.com/gitlab-org/gitlab/blob/master/doc/user/markdown.md).

@@ -444,7 +444,7 @@ Lightweight connection pooler for PostgreSQL.
 
 #### PgBouncer Exporter
 
-- [Project page](https://github.com/stanhu/pgbouncer_exporter/blob/master/README.md)
+- [Project page](https://github.com/prometheus-community/pgbouncer_exporter/blob/master/README.md)
 - Configuration:
   - [Omnibus](../administration/monitoring/prometheus/pgbouncer_exporter.md)
   - [Charts](https://docs.gitlab.com/charts/installation/deployment.html#postgresql)

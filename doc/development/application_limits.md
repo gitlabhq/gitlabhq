@@ -11,7 +11,7 @@ coordinate with others to [document](../administration/instance_limits.md)
 and communicate those limits.
 
 There is a guide about [introducing application
-limits](https://about.gitlab.com/handbook/product/product-management/process/index.html#introducing-application-limits).
+limits](https://about.gitlab.com/handbook/product/product-management/process/#introducing-application-limits).
 
 ## Development
 

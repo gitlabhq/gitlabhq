@@ -177,7 +177,7 @@ Click **"Save"** for the changes to take effect.
 domain registrar which points to the public IP address of your Azure VM. If you do this, you'll need
 to make sure your VM is configured to use a _static_ public IP address (i.e. not a _dynamic_ one)
 or you will have to reconfigure the DNS `A` record each time Azure reassigns your VM a new public IP
-address. Read [IP address types and allocation methods in Azure](https://docs.microsoft.com/en-us/azure/virtual-network/virtual-network-ip-addresses-overview-arm) to learn more.
+address. Read [Public IP addresses](https://docs.microsoft.com/en-us/azure/virtual-network/public-ip-addresses) to learn more.
 
 ## Let's open some ports
 

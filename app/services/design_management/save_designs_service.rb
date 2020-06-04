@@ -20,6 +20,7 @@ module DesignManagement
       uploaded_designs, version = upload_designs!
       skipped_designs = designs - uploaded_designs
 
+      create_events
       success({ designs: uploaded_designs, version: version, skipped_designs: skipped_designs })
     rescue ::ActiveRecord::RecordInvalid => e
       error(e.message)
@@ -47,7 +48,7 @@ module DesignManagement
     end
 
     def build_actions
-      files.zip(designs).flat_map do |(file, design)|
+      @actions ||= files.zip(designs).flat_map do |(file, design)|
         Array.wrap(build_design_action(file, design))
       end
     end
@@ -57,7 +58,9 @@ module DesignManagement
       return if design_unchanged?(design, content)
 
       action = new_file?(design) ? :create : :update
-      on_success { ::Gitlab::UsageDataCounters::DesignsCounter.count(action) }
+      on_success do
+        ::Gitlab::UsageDataCounters::DesignsCounter.count(action)
+      end
 
       DesignManagement::DesignAction.new(design, action, content)
     end
@@ -65,6 +68,16 @@ module DesignManagement
     # Returns true if the design file is the same as its latest version
     def design_unchanged?(design, content)
       content == existing_blobs[design]&.data
+    end
+
+    def create_events
+      by_action = @actions.group_by(&:action).transform_values { |grp| grp.map(&:design) }
+
+      event_create_service.save_designs(current_user, **by_action)
+    end
+
+    def event_create_service
+      @event_create_service ||= EventCreateService.new
     end
 
     def commit_message

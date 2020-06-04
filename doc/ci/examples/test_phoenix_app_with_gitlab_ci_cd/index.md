@@ -48,7 +48,7 @@ Phoenix can run in any OS where Erlang is supported:
 - Fedora
 - Raspbian
 
-Check the [Phoenix learning guide](https://hexdocs.pm/phoenix/learning.html) for more information.
+Check the [Phoenix learning guide](https://hexdocs.pm/phoenix/overview.html) for more information.
 
 ### What is Elixir?
 

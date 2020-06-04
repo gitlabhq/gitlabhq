@@ -16,6 +16,8 @@ describe('mapToDashboardViewModel', () => {
     expect(mapToDashboardViewModel({})).toEqual({
       dashboard: '',
       panelGroups: [],
+      links: [],
+      variables: {},
     });
   });
 
@@ -44,6 +46,8 @@ describe('mapToDashboardViewModel', () => {
 
     expect(mapToDashboardViewModel(response)).toEqual({
       dashboard: 'Dashboard Name',
+      links: [],
+      variables: {},
       panelGroups: [
         {
           group: 'Group 1',
@@ -76,6 +80,8 @@ describe('mapToDashboardViewModel', () => {
     it('key', () => {
       const response = {
         dashboard: 'Dashboard Name',
+        links: [],
+        variables: {},
         panel_groups: [
           {
             group: 'Group A',

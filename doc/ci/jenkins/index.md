@@ -210,7 +210,7 @@ which can be used by projects in that instance.
 Declarative Jenkinsfiles contain "Sections" and "Directives" which are used to control the behavior of your
 pipelines. There are equivalents for all of these in GitLab, which we've documented below.
 
-This section is based on the [Jenkinsfile syntax documentation](https://jenkins.io/doc/book/pipeline/syntax/)
+This section is based on the [Jenkinsfile syntax documentation](http://www.jenkins.io/doc/book/pipeline/syntax/)
 and is meant to be a mapping of concepts there to concepts in GitLab.
 
 ### Sections

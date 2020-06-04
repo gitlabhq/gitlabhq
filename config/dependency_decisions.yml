@@ -626,3 +626,9 @@
     :why: 
     :versions: []
     :when: 2019-11-08 10:03:31.787226000 Z
+- - :whitelist
+  - CC0-1.0
+  - :who: Thomas Randolph
+    :why: This license is public domain
+    :versions: []
+    :when: 2020-06-03 05:04:44.632875345 Z

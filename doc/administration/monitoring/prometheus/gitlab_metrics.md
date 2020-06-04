@@ -6,30 +6,29 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # GitLab Prometheus metrics
 
->**Note:**
-Available since [Omnibus GitLab 9.3](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/29118). For
-installations from source you'll have to configure it yourself.
-
 To enable the GitLab Prometheus metrics:
 
-1. Log into GitLab as an administrator.
-1. Navigate to **Admin Area > Settings > Metrics and profiling**.
+1. Log into GitLab as a user with [administrator permissions](../../../user/permissions.md).
+1. Navigate to **{admin}** **Admin Area > Settings > Metrics and profiling**.
 1. Find the **Metrics - Prometheus** section, and click **Enable Prometheus Metrics**.
 1. [Restart GitLab](../../restart_gitlab.md#omnibus-gitlab-restart) for the changes to take effect.
+
+NOTE: **Note:**
+For installations from source you'll have to configure it yourself.
 
 ## Collecting the metrics
 
 GitLab monitors its own internal service metrics, and makes them available at the
-`/-/metrics` endpoint. Unlike other [Prometheus](https://prometheus.io) exporters, in order to access
-it, the client IP needs to be [included in a whitelist](../ip_whitelist.md).
+`/-/metrics` endpoint. Unlike other [Prometheus](https://prometheus.io) exporters, to access
+it, the client IP address needs to be [explicitly allowed](../ip_whitelist.md).
 
-For Omnibus and Chart installations, these metrics are automatically enabled
-and collected as of [GitLab
-9.4](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/1702). For
-source installations or earlier versions, these metrics will need to be enabled
+For [Omnibus GitLab](https://docs.gitlab.com/omnibus/) and Chart installations,
+these metrics are enabled and collected as of
+[GitLab 9.4](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/1702).
+For source installations or earlier versions, these metrics must be enabled
 manually and collected by a Prometheus server.
 
-See also [Sidekiq metrics](#sidekiq-metrics) for how to enable and view metrics from Sidekiq nodes.
+For enabling and viewing metrics from Sidekiq nodes, see [Sidekiq metrics](#sidekiq-metrics).
 
 ## Metrics available
 
@@ -50,7 +49,7 @@ The following metrics are available:
 | `gitlab_method_call_duration_seconds`                          | Histogram |                   10.2 | Method calls real duration                                                                          | `controller`, `action`, `module`, `method`          |
 | `gitlab_page_out_of_bounds`                                    | Counter   |                   12.8 | Counter for the PageLimiter pagination limit being hit                                              | `controller`, `action`, `bot`                       |
 | `gitlab_rails_queue_duration_seconds`                          | Histogram |                    9.4 | Measures latency between GitLab Workhorse forwarding a request to Rails                             |                                                     |
-| `gitlab_sql_duration_seconds`                                  | Histogram |                   10.2 | SQL execution time, excluding SCHEMA operations and BEGIN / COMMIT                                  |                                                     |
+| `gitlab_sql_duration_seconds`                                  | Histogram |                   10.2 | SQL execution time, excluding `SCHEMA` operations and `BEGIN` / `COMMIT`                                  |                                                     |
 | `gitlab_transaction_allocated_memory_bytes`                    | Histogram |                   10.2 | Allocated memory for all transactions (`gitlab_transaction_*` metrics)                                |                                                     |
 | `gitlab_transaction_cache_<key>_count_total`                   | Counter   |                   10.2 | Counter for total Rails cache calls (per key)                                                       |                                                     |
 | `gitlab_transaction_cache_<key>_duration_total`                | Counter   |                   10.2 | Counter for total time (seconds) spent in Rails cache calls (per key)                               |                                                     |
@@ -65,11 +64,11 @@ The following metrics are available:
 | `gitlab_transaction_event_build_not_found_total`               | Counter   |                    9.4 | Counter for build not found for API /jobs/request                                                   |                                                     |
 | `gitlab_transaction_event_change_default_branch_total`         | Counter   |                    9.4 | Counter when default branch is changed for any repository                                           |                                                     |
 | `gitlab_transaction_event_create_repository_total`             | Counter   |                    9.4 | Counter when any repository is created                                                              |                                                     |
-| `gitlab_transaction_event_etag_caching_cache_hit_total`        | Counter   |                    9.4 | Counter for etag cache hit.                                                                         | `endpoint`                                          |
-| `gitlab_transaction_event_etag_caching_header_missing_total`   | Counter   |                    9.4 | Counter for etag cache miss - header missing                                                        | `endpoint`                                          |
-| `gitlab_transaction_event_etag_caching_key_not_found_total`    | Counter   |                    9.4 | Counter for etag cache miss - key not found                                                         | `endpoint`                                          |
-| `gitlab_transaction_event_etag_caching_middleware_used_total`  | Counter   |                    9.4 | Counter for etag middleware accessed                                                                | `endpoint`                                          |
-| `gitlab_transaction_event_etag_caching_resource_changed_total` | Counter   |                    9.4 | Counter for etag cache miss - resource changed                                                      | `endpoint`                                          |
+| `gitlab_transaction_event_etag_caching_cache_hit_total`        | Counter   |                    9.4 | Counter for ETag cache hit.                                                                         | `endpoint`                                          |
+| `gitlab_transaction_event_etag_caching_header_missing_total`   | Counter   |                    9.4 | Counter for ETag cache miss - header missing                                                        | `endpoint`                                          |
+| `gitlab_transaction_event_etag_caching_key_not_found_total`    | Counter   |                    9.4 | Counter for ETag cache miss - key not found                                                         | `endpoint`                                          |
+| `gitlab_transaction_event_etag_caching_middleware_used_total`  | Counter   |                    9.4 | Counter for ETag middleware accessed                                                                | `endpoint`                                          |
+| `gitlab_transaction_event_etag_caching_resource_changed_total` | Counter   |                    9.4 | Counter for ETag cache miss - resource changed                                                      | `endpoint`                                          |
 | `gitlab_transaction_event_fork_repository_total`               | Counter   |                    9.4 | Counter for repository forks (RepositoryForkWorker). Only incremented when source repository exists |                                                     |
 | `gitlab_transaction_event_import_repository_total`             | Counter   |                    9.4 | Counter for repository imports (RepositoryImportWorker)                                             |                                                     |
 | `gitlab_transaction_event_push_branch_total`                   | Counter   |                    9.4 | Counter for all branch pushes                                                                       |                                                     |
@@ -193,8 +192,6 @@ They all have these labels:
     1. `ActiveRecord::Base` is the main database connection.
     1. `Geo::TrackingBase` is the connection to the Geo tracking database, if
        enabled.
-    1. `Gitlab::Database::LoadBalancing::Host` is a connection used by [database
-       load balancing](../../database_load_balancing.md), if enabled.
 1. `host` - the host name used to connect to the database.
 1. `port` - the port used to connect to the database.
 
@@ -238,31 +235,28 @@ Unicorn specific metrics, when Unicorn is used.
 
 When Puma is used instead of Unicorn, the following metrics are available:
 
-| Metric                                         | Type    | Since | Description |
-|:---------------------------------------------- |:------- |:----- |:----------- |
-| `puma_workers`                                 | Gauge   | 12.0  | Total number of workers |
-| `puma_running_workers`                         | Gauge   | 12.0  | Number of booted workers |
-| `puma_stale_workers`                           | Gauge   | 12.0  | Number of old workers |
-| `puma_running`                                 | Gauge   | 12.0  | Number of running threads |
-| `puma_queued_connections`                      | Gauge   | 12.0  | Number of connections in that worker's "to do" set waiting for a worker thread |
-| `puma_active_connections`                      | Gauge   | 12.0  | Number of threads processing a request |
-| `puma_pool_capacity`                           | Gauge   | 12.0  | Number of requests the worker is capable of taking right now |
-| `puma_max_threads`                             | Gauge   | 12.0  | Maximum number of worker threads |
-| `puma_idle_threads`                            | Gauge   | 12.0  | Number of spawned threads which are not processing a request |
-| `puma_killer_terminations_total`               | Gauge   | 12.0  | Number of workers terminated by PumaWorkerKiller |
+| Metric                            | Type    | Since | Description |
+|:--------------------------------- |:------- |:----- |:----------- |
+| `puma_workers`                    | Gauge   | 12.0  | Total number of workers |
+| `puma_running_workers`            | Gauge   | 12.0  | Number of booted workers |
+| `puma_stale_workers`              | Gauge   | 12.0  | Number of old workers |
+| `puma_running`                    | Gauge   | 12.0  | Number of running threads |
+| `puma_queued_connections`         | Gauge   | 12.0  | Number of connections in that worker's "to do" set waiting for a worker thread |
+| `puma_active_connections`         | Gauge   | 12.0  | Number of threads processing a request |
+| `puma_pool_capacity`              | Gauge   | 12.0  | Number of requests the worker is capable of taking right now |
+| `puma_max_threads`                | Gauge   | 12.0  | Maximum number of worker threads |
+| `puma_idle_threads`               | Gauge   | 12.0  | Number of spawned threads which are not processing a request |
+| `puma_killer_terminations_total`  | Gauge   | 12.0  | Number of workers terminated by PumaWorkerKiller |
 
 ## Metrics shared directory
 
 GitLab's Prometheus client requires a directory to store metrics data shared between multi-process services.
 Those files are shared among all instances running under Unicorn server.
-The directory needs to be accessible to all running Unicorn's processes otherwise
-metrics will not function correctly.
+The directory must be accessible to all running Unicorn's processes, or
+metrics won't function correctly.
 
-For best performance its advisable that this directory will be located in `tmpfs`.
+This directory's location is configured using environment variable `prometheus_multiproc_dir`.
+For best performance, create this directory in `tmpfs`.
 
-Its location is configured using environment variable `prometheus_multiproc_dir`.
-
-If GitLab is installed using Omnibus and `tmpfs` is available then metrics
-directory will be automatically configured.
-
-[← Back to the main Prometheus page](index.md)
+If GitLab is installed using [Omnibus GitLab](https://docs.gitlab.com/omnibus/)
+and `tmpfs` is available, then the metrics directory will be configured for you.
