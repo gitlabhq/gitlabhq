@@ -1,5 +1,9 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 12.10.10 (2020-06-04)
+
+- No changes.
+
 ## 12.10.9 (2020-06-03)
 
 - No changes.
