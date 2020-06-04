@@ -17,7 +17,7 @@ describe Peek::Views::RedisDetailed, :request_store do
 
   with_them do
     it 'scrubs Redis commands' do
-      subject.detail_store << { cmd: cmd, duration: 1.second }
+      Gitlab::Instrumentation::Redis::SharedState.detail_store << { cmd: cmd, duration: 1.second }
 
       expect(subject.results[:details].count).to eq(1)
       expect(subject.results[:details].first)
@@ -29,11 +29,12 @@ describe Peek::Views::RedisDetailed, :request_store do
   end
 
   it 'returns aggregated results' do
-    subject.detail_store << { cmd: [:get, 'test'], duration: 0.001 }
-    subject.detail_store << { cmd: [:get, 'test'], duration: 1.second }
+    Gitlab::Instrumentation::Redis::Cache.detail_store << { cmd: [:get, 'test'], duration: 0.001 }
+    Gitlab::Instrumentation::Redis::Cache.detail_store << { cmd: [:get, 'test'], duration: 1.second }
+    Gitlab::Instrumentation::Redis::SharedState.detail_store << { cmd: [:get, 'test'], duration: 1.second }
 
-    expect(subject.results[:calls]).to eq(2)
-    expect(subject.results[:duration]).to eq('1001.00ms')
-    expect(subject.results[:details].count).to eq(2)
+    expect(subject.results[:calls]).to eq(3)
+    expect(subject.results[:duration]).to eq('2001.00ms')
+    expect(subject.results[:details].count).to eq(3)
   end
 end

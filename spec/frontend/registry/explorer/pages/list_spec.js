@@ -3,11 +3,11 @@ import { GlSkeletonLoader, GlSprintf, GlAlert, GlSearchBoxByClick } from '@gitla
 import Tracking from '~/tracking';
 import waitForPromises from 'helpers/wait_for_promises';
 import component from '~/registry/explorer/pages/list.vue';
-import CliCommands from '~/registry/explorer/components/cli_commands.vue';
-import GroupEmptyState from '~/registry/explorer/components/group_empty_state.vue';
-import ProjectEmptyState from '~/registry/explorer/components/project_empty_state.vue';
-import RegistryHeader from '~/registry/explorer/components/registry_header.vue';
-import ImageList from '~/registry/explorer/components/image_list.vue';
+import CliCommands from '~/registry/explorer/components/list_page/cli_commands.vue';
+import GroupEmptyState from '~/registry/explorer/components/list_page/group_empty_state.vue';
+import ProjectEmptyState from '~/registry/explorer/components/list_page/project_empty_state.vue';
+import RegistryHeader from '~/registry/explorer/components/list_page/registry_header.vue';
+import ImageList from '~/registry/explorer/components/list_page/image_list.vue';
 import { createStore } from '~/registry/explorer/stores/';
 import {
   SET_MAIN_LOADING,

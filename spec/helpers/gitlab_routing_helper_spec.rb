@@ -121,6 +121,16 @@ describe GitlabRoutingHelper do
       it 'matches the Rails download path' do
         expect(fast_download_project_job_artifacts_path(project, job)).to eq(download_project_job_artifacts_path(project, job))
       end
+
+      context 'when given parameters' do
+        it 'adds them to the path' do
+          expect(
+            fast_download_project_job_artifacts_path(project, job, file_type: :dast)
+          ).to eq(
+            download_project_job_artifacts_path(project, job, file_type: :dast)
+          )
+        end
+      end
     end
 
     describe '#fast_keep_project_job_artifacts_path' do

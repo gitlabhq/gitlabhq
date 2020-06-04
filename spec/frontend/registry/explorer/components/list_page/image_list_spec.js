@@ -1,9 +1,9 @@
 import { shallowMount } from '@vue/test-utils';
 import { GlPagination } from '@gitlab/ui';
-import Component from '~/registry/explorer/components/image_list.vue';
-import ImageListRow from '~/registry/explorer/components/image_list_row.vue';
+import Component from '~/registry/explorer/components/list_page/image_list.vue';
+import ImageListRow from '~/registry/explorer/components/list_page/image_list_row.vue';
 
-import { imagesListResponse, imagePagination } from '../mock_data';
+import { imagesListResponse, imagePagination } from '../../mock_data';
 
 describe('Image List', () => {
   let wrapper;

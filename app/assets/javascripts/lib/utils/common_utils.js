@@ -244,20 +244,26 @@ export const contentTop = () => {
   );
 };
 
-export const scrollToElement = element => {
+export const scrollToElement = (element, options = {}) => {
   let $el = element;
   if (!(element instanceof $)) {
     $el = $(element);
   }
   const { top } = $el.offset();
+  const { offset = 0 } = options;
 
   // eslint-disable-next-line no-jquery/no-animate
   return $('body, html').animate(
     {
-      scrollTop: top - contentTop(),
+      scrollTop: top - contentTop() + offset,
     },
     200,
   );
+};
+
+export const scrollToElementWithContext = element => {
+  const offsetMultiplier = -0.1;
+  return scrollToElement(element, { offset: window.innerHeight * offsetMultiplier });
 };
 
 /**

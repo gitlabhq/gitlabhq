@@ -12,9 +12,7 @@ For organizations with 300 users or less, the recommended AWS installation metho
 
 ## Introduction
 
-GitLab on AWS can leverage many of the services that are already
-configurable. These services offer a great deal of
-flexibility and can be adapted to the needs of most companies.
+For the most part, we'll make use of Omnibus GitLab in our setup, but we'll also leverage native AWS services. Instead of using the Omnibus bundled PostgreSQL and Redis, we will use AWS RDS and ElastiCache.
 
 In this guide, we'll go through a multi-node setup where we'll start by
 configuring our Virtual Private Cloud and subnets to later integrate
@@ -225,16 +223,18 @@ We also need to create two private route tables so that instances in each privat
 
 ## Load Balancer
 
+We'll create a load balancer to evenly distribute inbound traffic on ports `80` and `443` across our GitLab application servers. Based the on the [scaling policies](#create-an-auto-scaling-group) we'll create later, instances will be added to or removed from our load balancer as needed. Additionally, the load balance will perform health checks on our instances.
+
 On the EC2 dashboard, look for Load Balancer in the left navigation bar:
 
 1. Click the **Create Load Balancer** button.
    1. Choose the **Classic Load Balancer**.
    1. Give it a name (we'll use `gitlab-loadbalancer`) and for the **Create LB Inside** option, select `gitlab-vpc` from the dropdown menu.
    1. In the **Listeners** section, set HTTP port 80, HTTPS port 443, and TCP port 22 for both load balancer and instance protocols and ports.
-   1. In the **Select Subnets** section, select both public subnets from the list.
-1. Click **Assign Security Groups** and select **Create a new security group**, give it a name
+   1. In the **Select Subnets** section, select both public subnets from the list so that the load balancer can route traffic to both availability zones.
+1. We'll add a security group for our load balancer to act as a firewall to control what traffic is allowed through. Click **Assign Security Groups** and select **Create a new security group**, give it a name
    (we'll use `gitlab-loadbalancer-sec-group`) and description, and allow both HTTP and HTTPS traffic
-   from anywhere (`0.0.0.0/0, ::/0`). Also allow SSH traffic from a single IP address or an IP address range in CIDR notation.
+   from anywhere (`0.0.0.0/0, ::/0`). Also allow SSH traffic, select a custom source, and add a single trusted IP address or an IP address range in CIDR notation. This will allow users to perform Git actions over SSH.
 1. Click **Configure Security Settings** and set the following:
    1. Select an SSL/TLS certificate from ACM or upload a certificate to IAM.
    1. Under **Select a Cipher**, pick a predefined security policy from the dropdown. You can see a breakdown of [Predefined SSL Security Policies for Classic Load Balancers](https://docs.aws.amazon.com/elasticloadbalancing/latest/classic/elb-security-policy-table.html) in the AWS docs. Check the GitLab codebase for a list of [supported SSL ciphers and protocols](https://gitlab.com/gitlab-org/gitlab/-/blob/9ee7ad433269b37251e0dd5b5e00a0f00d8126b4/lib/support/nginx/gitlab-ssl#L97-99).
@@ -261,11 +261,16 @@ On the Route 53 dashboard, click **Hosted zones** in the left navigation bar:
 1. Click **Create Record Set** and provide the following values:
     1. **Name:** Use the domain name (the default value) or enter a subdomain.
     1. **Type:** Select **A - IPv4 address**.
+    1. **Alias:** Defaults to **No**. Select **Yes**.
     1. **Alias Target:** Find the **ELB Classic Load Balancers** section and select the classic load balancer we created earlier.
     1. **Routing Policy:** We'll use **Simple** but you can choose a different policy based on your use case.
     1. **Evaluate Target Health:** We'll set this to **No** but you can choose to have the load balancer route traffic based on target health.
     1. Click **Create**.
-1. Update your DNS records with your domain registrar. The steps for doing this vary depending on which registrar you use and is beyond the scope of this guide.
+1. If you registered your domain through Route 53, you're done. If you used a different domain registrar, you need to update your DNS records with your domain registrar. You'll need to:
+   1. Click on **Hosted zones** and select the domain you added above.
+   1. You'll see a list of `NS` records. From your domain registrar's admin panel, add each of these as `NS` records to your domain's DNS records. These steps may vary between domain registrars. If you're stuck, Google **"name of your registrar" add dns records** and you should find a help article specific to your domain registrar.
+
+The steps for doing this vary depending on which registrar you use and is beyond the scope of this guide.
 
 ## PostgreSQL with RDS
 

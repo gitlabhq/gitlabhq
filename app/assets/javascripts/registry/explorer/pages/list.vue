@@ -12,11 +12,11 @@ import {
 } from '@gitlab/ui';
 import Tracking from '~/tracking';
 
-import ProjectEmptyState from '../components/project_empty_state.vue';
-import GroupEmptyState from '../components/group_empty_state.vue';
-import RegistryHeader from '../components/registry_header.vue';
-import ImageList from '../components/image_list.vue';
-import CliCommands from '../components/cli_commands.vue';
+import ProjectEmptyState from '../components/list_page/project_empty_state.vue';
+import GroupEmptyState from '../components/list_page/group_empty_state.vue';
+import RegistryHeader from '../components/list_page/registry_header.vue';
+import ImageList from '../components/list_page/image_list.vue';
+import CliCommands from '../components/list_page/cli_commands.vue';
 
 import {
   DELETE_IMAGE_SUCCESS_MESSAGE,

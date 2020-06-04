@@ -9,7 +9,7 @@ import {
   EXPIRATION_POLICY_WILL_RUN_IN,
   EXPIRATION_POLICY_DISABLED_TEXT,
   EXPIRATION_POLICY_DISABLED_MESSAGE,
-} from '../constants/index';
+} from '../../constants/index';
 
 export default {
   components: {

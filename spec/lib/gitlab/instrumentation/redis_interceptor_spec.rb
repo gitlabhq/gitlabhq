@@ -3,7 +3,7 @@
 require 'spec_helper'
 require 'rspec-parameterized'
 
-describe Gitlab::Instrumentation::RedisDriver, :clean_gitlab_redis_shared_state, :request_store do
+describe Gitlab::Instrumentation::RedisInterceptor, :clean_gitlab_redis_shared_state, :request_store do
   using RSpec::Parameterized::TableSyntax
 
   describe 'read and write' do

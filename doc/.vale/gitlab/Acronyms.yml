@@ -3,7 +3,7 @@
 # For a list of all options, see https://errata-ai.github.io/vale/styles/
 extends: conditional
 message: "'%s' has no definition."
-link: https://about.gitlab.com/handbook/marketing/corporate-marketing/content/editorial-team/#acronyms
+link: https://about.gitlab.com/handbook/marketing/growth-marketing/content/editorial-team/#acronyms
 level: warning
 ignorecase: false
 # Ensures that the existence of 'first' implies the existence of 'second'.

@@ -13,9 +13,9 @@ RSpec.describe Integration do
     create(:slack_service, project: project_1, inherit_from_id: nil)
   end
 
-  describe '#with_custom_integration_compared_to' do
+  describe '#with_custom_integration_for' do
     it 'returns projects with custom integrations' do
-      expect(Project.with_custom_integration_compared_to(instance_integration)).to contain_exactly(project_2)
+      expect(Project.with_custom_integration_for(instance_integration)).to contain_exactly(project_2)
     end
   end
 end

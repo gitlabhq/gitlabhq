@@ -542,7 +542,7 @@ or `gitlab-ctl promote-to-primary-node`, either:
 
   ```ruby
   Rails.application.load_tasks; nil
-  Gitlab::Geo.expire_cache_keys!([:primary_node, :current_node])
+  Gitlab::Geo.expire_cache!
   Rake::Task['geo:set_secondary_as_primary'].invoke
   ```
 

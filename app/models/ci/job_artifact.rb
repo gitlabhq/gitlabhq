@@ -112,6 +112,7 @@ module Ci
 
     after_save :update_file_store, if: :saved_change_to_file?
 
+    scope :not_expired, -> { where('expire_at IS NULL OR expire_at > ?', Time.current) }
     scope :with_files_stored_locally, -> { where(file_store: [nil, ::JobArtifactUploader::Store::LOCAL]) }
     scope :with_files_stored_remotely, -> { where(file_store: ::JobArtifactUploader::Store::REMOTE) }
     scope :for_sha, ->(sha, project_id) { joins(job: :pipeline).where(ci_pipelines: { sha: sha, project_id: project_id }) }
@@ -151,6 +152,7 @@ module Ci
     end
 
     scope :expired, -> (limit) { where('expire_at < ?', Time.current).limit(limit) }
+    scope :downloadable, -> { where(file_type: DOWNLOADABLE_TYPES) }
     scope :locked, -> { where(locked: true) }
     scope :unlocked, -> { where(locked: [false, nil]) }
 
@@ -244,6 +246,14 @@ module Ci
       return true if trace? # ArchiveLegacyTraces background migration might not have `file_location` column
 
       super || self.file_location.nil?
+    end
+
+    def expired?
+      expire_at.present? && expire_at < Time.current
+    end
+
+    def expiring?
+      expire_at.present? && expire_at > Time.current
     end
 
     def expire_in

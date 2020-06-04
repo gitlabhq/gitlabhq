@@ -3,17 +3,18 @@
 require 'spec_helper'
 
 describe BuildArtifactEntity do
-  let(:job) { create(:ci_build, :artifacts, name: 'test:job', artifacts_expire_at: 1.hour.from_now) }
+  let(:job) { create(:ci_build) }
+  let(:artifact) { create(:ci_job_artifact, :codequality, expire_at: 1.hour.from_now, job: job) }
 
   let(:entity) do
-    described_class.new(job, request: double)
+    described_class.new(artifact, request: double)
   end
 
   describe '#as_json' do
     subject { entity.as_json }
 
     it 'contains job name' do
-      expect(subject[:name]).to eq 'test:job'
+      expect(subject[:name]).to eq "test:codequality"
     end
 
     it 'exposes information about expiration of artifacts' do
@@ -22,7 +23,7 @@ describe BuildArtifactEntity do
 
     it 'contains paths to the artifacts' do
       expect(subject[:path])
-        .to include "jobs/#{job.id}/artifacts/download"
+        .to include "jobs/#{job.id}/artifacts/download?file_type=codequality"
 
       expect(subject[:keep_path])
         .to include "jobs/#{job.id}/artifacts/keep"

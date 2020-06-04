@@ -3,7 +3,7 @@ import { mount, createLocalVue } from '@vue/test-utils';
 import { GlDropdown, GlFormGroup, GlFormInputGroup } from '@gitlab/ui';
 import Tracking from '~/tracking';
 import * as getters from '~/registry/explorer/stores/getters';
-import QuickstartDropdown from '~/registry/explorer/components/cli_commands.vue';
+import QuickstartDropdown from '~/registry/explorer/components/list_page/cli_commands.vue';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 
 import {

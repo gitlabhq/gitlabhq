@@ -26,6 +26,7 @@ describe Ci::Pipeline, :mailer do
   it { is_expected.to have_many(:trigger_requests) }
   it { is_expected.to have_many(:variables) }
   it { is_expected.to have_many(:builds) }
+  it { is_expected.to have_many(:job_artifacts).through(:builds) }
   it { is_expected.to have_many(:auto_canceled_pipelines) }
   it { is_expected.to have_many(:auto_canceled_jobs) }
   it { is_expected.to have_many(:sourced_pipelines) }
@@ -50,6 +51,27 @@ describe Ci::Pipeline, :mailer do
       expect(described_class.reflect_on_association(:project).has_inverse?).to eq(:all_pipelines)
       expect(Project.reflect_on_association(:all_pipelines).has_inverse?).to eq(:project)
       expect(Project.reflect_on_association(:ci_pipelines).has_inverse?).to eq(:project)
+    end
+
+    describe '#latest_builds' do
+      it 'has a one to many relationship with its latest builds' do
+        _old_build = create(:ci_build, :retried, pipeline: pipeline)
+        latest_build = create(:ci_build, :expired, pipeline: pipeline)
+
+        expect(pipeline.latest_builds).to contain_exactly(latest_build)
+      end
+    end
+
+    describe '#downloadable_artifacts' do
+      let(:build) { create(:ci_build, pipeline: pipeline) }
+
+      it 'returns downloadable artifacts that have not expired' do
+        downloadable_artifact = create(:ci_job_artifact, :codequality, job: build)
+        _expired_artifact = create(:ci_job_artifact, :junit, :expired, job: build)
+        _undownloadable_artifact = create(:ci_job_artifact, :trace, job: build)
+
+        expect(pipeline.downloadable_artifacts).to contain_exactly(downloadable_artifact)
+      end
     end
   end
 

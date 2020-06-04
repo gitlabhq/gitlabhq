@@ -9,6 +9,10 @@ module Peek
         'redis'
       end
 
+      def detail_store
+        ::Gitlab::Instrumentation::Redis.detail_store
+      end
+
       private
 
       def format_call_details(call)

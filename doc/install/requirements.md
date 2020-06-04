@@ -45,7 +45,7 @@ Please consider using a virtual machine to run GitLab.
 GitLab requires Ruby (MRI) 2.6. Beginning in GitLab 12.2, we no longer support Ruby 2.5 and lower.
 
 You must use the standard MRI implementation of Ruby.
-We love [JRuby](https://www.jruby.org/) and [Rubinius](https://rubinius.com), but GitLab
+We love [JRuby](https://www.jruby.org/) and [Rubinius](https://github.com/rubinius/rubinius#the-rubinius-language-platform), but GitLab
 needs several Gems that have native extensions.
 
 ### Go versions
@@ -62,12 +62,12 @@ GitLab 11.11 and higher only supports Git 2.24.x and newer, and
 Beginning in GitLab 12.9, we only support node.js 10.13.0 or higher, and we have dropped
 support for node.js 8. (node.js 6 support was dropped in GitLab 11.8)
 
-We recommend Node 12.x, as it is faster.
+We recommend Node 12.x, as it's faster.
 
 GitLab uses [webpack](https://webpack.js.org/) to compile frontend assets, which requires a minimum
 version of Node.js 10.13.0.
 
-You can check which version you are running with `node -v`. If you are running
+You can check which version you're running with `node -v`. If you're running
 a version older than `v10.13.0`, you need to update it to a newer version. You
 can find instructions to install from community maintained packages or compile
 from source at the [Node.js website](https://nodejs.org/en/download/).
@@ -80,30 +80,30 @@ GitLab requires Redis 5.0+. Beginning in GitLab 13.0, lower versions are not sup
 
 ### Storage
 
-The necessary hard drive space largely depends on the size of the repos you want to store in GitLab but as a *rule of thumb* you should have at least as much free space as all your repos combined take up.
+The necessary hard drive space largely depends on the size of the repositories you want to store in GitLab but as a *rule of thumb* you should have at least as much free space as all your repositories combined take up.
 
-If you want to be flexible about growing your hard drive space in the future consider mounting it using LVM so you can add more hard drives when you need them.
+If you want to be flexible about growing your hard drive space in the future consider mounting it using [logical volume management (LVM)](https://en.wikipedia.org/wiki/Logical_volume_management) so you can add more hard drives when you need them.
 
 Apart from a local hard drive you can also mount a volume that supports the network file system (NFS) protocol. This volume might be located on a file server, a network attached storage (NAS) device, a storage area network (SAN) or on an Amazon Web Services (AWS) Elastic Block Store (EBS) volume.
 
-If you have enough RAM memory and a recent CPU the speed of GitLab is mainly limited by hard drive seek times. Having a fast drive (7200 RPM and up) or a solid state drive (SSD) will improve the responsiveness of GitLab.
+If you have enough RAM and a recent CPU the speed of GitLab is mainly limited by hard drive seek times. Having a fast drive (7200 RPM and up) or a solid state drive (SSD) will improve the responsiveness of GitLab.
 
-NOTE: **Note:** Since file system performance may affect GitLab's overall performance, we do not recommend using EFS for storage. See the [relevant documentation](../administration/high_availability/nfs.md#avoid-using-awss-elastic-file-system-efs) for more details.
+NOTE: **Note:** Since file system performance may affect GitLab's overall performance, [we don't recommend using AWS EFS for storage](../administration/high_availability/nfs.md#avoid-using-awss-elastic-file-system-efs).
 
 ### CPU
 
-This is the recommended minimum hardware for a handful of example GitLab user base sizes. Your exact needs may be more, depending on your workload. Your workload is influenced by factors such as - but not limited to - how active your users are, how much automation you use, mirroring, and repo/change size.
+This is the recommended minimum hardware for a handful of example GitLab user base sizes. Your exact needs may be more, depending on your workload. Your workload is influenced by factors such as - but not limited to - how active your users are, how much automation you use, mirroring, and repository/change size.
 
 - 1 core supports up to 100 users but the application can be a bit slower due to having all workers and background jobs running on the same core
 - **2 cores** is the **recommended** minimum number of cores and supports up to 100 users
-- 4 cores supports up to 500 users
-- 8 cores supports up to 1,000 users
-- 32 cores supports up to 5,000 users
+- 4 cores support up to 500 users
+- 8 cores support up to 1,000 users
+- 32 cores support up to 5,000 users
 - More users? Consult the [reference architectures page](../administration/reference_architectures/index.md)
 
 ### Memory
 
-This is the recommended minimum hardware for a handful of example GitLab user base sizes. Your exact needs may be more, depending on your workload. Your workload is influenced by factors such as - but not limited to - how active your users are, how much automation you use, mirroring, and repo/change size.
+This is the recommended minimum hardware for a handful of example GitLab user base sizes. Your exact needs may be more, depending on your workload. Your workload is influenced by factors such as - but not limited to - how active your users are, how much automation you use, mirroring, and the size of repositories as well as changes/commits.
 
 You need at least 8GB of addressable memory (RAM + swap) to install and use GitLab!
 The operating system and any other running applications will also be using memory
@@ -130,18 +130,15 @@ NOTE: **Note:** The 25 workers of Sidekiq will show up as separate processes in 
 
 ## Database
 
-The server running the database should have _at least_ 5-10 GB of storage
-available, though the exact requirements depend on the size of the GitLab
-installation (e.g. the number of users, projects, etc).
-
-We currently support the following databases:
-
-- PostgreSQL
-
+PostgreSQL is the only supported database, which is bundled with the Omnibus GitLab package.
+You can also use an [external PostgreSQL database](https://docs.gitlab.com/omnibus/settings/database.html#using-a-non-packaged-postgresql-database-management-server).
 Support for MySQL was removed in GitLab 12.1. Existing users using GitLab with
 MySQL/MariaDB are advised to [migrate to PostgreSQL](../update/mysql_to_postgresql.md) before upgrading.
 
 ### PostgreSQL Requirements
+
+The server running PostgreSQL should have _at least_ 5-10 GB of storage
+available, though the exact requirements [depend on the number of users](../administration/reference_architectures/index.md).
 
 We highly recommend users to use the minimum PostgreSQL versions specified below as these are the versions used for development and testing.
 
@@ -149,37 +146,27 @@ GitLab version | Minimum PostgreSQL version
 -|-
 10.0 | 9.6
 12.10 | 11
+13.0 | 11
 
-Users using PostgreSQL must ensure the `pg_trgm` extension is loaded into every
-GitLab database. This extension can be enabled (using a PostgreSQL super user)
-by running the following query for every database:
+You must also ensure the `pg_trgm` extension is loaded into every
+GitLab database. This extension [can be enabled](https://www.postgresql.org/docs/11/sql-createextension.html) using a PostgreSQL super user.
 
-```sql
-CREATE EXTENSION pg_trgm;
-```
-
-On some systems you may need to install an additional package (e.g.
+On some systems you may need to install an additional package (for example,
 `postgresql-contrib`) for this extension to become available.
 
-NOTE: **Note:** Support for PostgreSQL 9.6 and 10 will be removed in GitLab 13.0 so that GitLab can benefit from PostgreSQL 11 improvements, such as partitioning. For the schedule on adding support for PostgreSQL 11 and 12, see [the related epic](https://gitlab.com/groups/gitlab-org/-/epics/2184). For the release schedule for GitLab 13.0, see [GitLab's release and maintenance policy](../policy/maintenance.md).
+NOTE: **Note:** Support for [PostgreSQL 9.6 and 10 has been removed in GitLab 13.0](https://about.gitlab.com/releases/2020/05/22/gitlab-13-0-released/#postgresql-11-is-now-the-minimum-required-version-to-install-gitlab) so that GitLab can benefit from PostgreSQL 11 improvements, such as partitioning. For the schedule of transitioning to PostgreSQL 12, see [the related epic](https://gitlab.com/groups/gitlab-org/-/epics/2184).
 
 #### Additional requirements for GitLab Geo
 
-If you are using [GitLab Geo](../development/geo.md):
+If you're using [GitLab Geo](../administration/geo/replication/index.md):
 
 - We strongly recommend running Omnibus-managed instances as they are actively
   developed and tested. We aim to be compatible with most external (not managed
-  by Omnibus) databases (for example, AWS RDS) but we do not guarantee
-  compatibility.
-- The
-  [tracking database](../development/geo.md#using-the-tracking-database)
-  requires the
-  [postgres_fdw](https://www.postgresql.org/docs/11/postgres-fdw.html)
-  extension.
-
-```sql
-CREATE EXTENSION postgres_fdw;
-```
+  by Omnibus) databases (for example, [AWS Relational Database Service (RDS)](https://aws.amazon.com/rds/)) but we don't guarantee compatibility.
+- You must also ensure the `postgres_fdw` extension is loaded into every
+  GitLab database. This extension
+  [can be enabled](https://www.postgresql.org/docs/11/sql-createextension.html)
+  using a PostgreSQL super user.
 
 ## Unicorn Workers
 
@@ -204,7 +191,7 @@ Omnibus GitLab defaults to the recommended Puma settings. Regardless of installa
 tune the Puma settings.
 
 If you're using Omnibus GitLab, see [Puma settings](https://docs.gitlab.com/omnibus/settings/puma.html)
-for instructions on changing the Puma settings. If you are using the GitLab Helm chart, see the [Webservice chart](https://docs.gitlab.com/charts/charts/gitlab/webservice/index.html).
+for instructions on changing the Puma settings. If you're using the GitLab Helm chart, see the [Webservice chart](https://docs.gitlab.com/charts/charts/gitlab/webservice/index.html).
 
 ### Puma workers
 
@@ -228,7 +215,7 @@ of [legacy Rugged code](../development/gitaly.md#legacy-rugged-code).
 - If the operating system has a maximum 2 GB of memory, the recommended number of threads is `1`.
   A higher value will result in excess swapping, and decrease performance.
 - If legacy Rugged code is in use, the recommended number of threads is `1`.
-- In all other cases, the recommended number of threads is `4`. We do not recommend setting this
+- In all other cases, the recommended number of threads is `4`. We don't recommend setting this
 higher, due to how [Ruby MRI multi-threading](https://en.wikipedia.org/wiki/Global_interpreter_lock)
 works.
 
@@ -257,11 +244,11 @@ to install GitLab on. Depending on how you decide to configure GitLab Runner and
 what tools you use to exercise your application in the CI environment, GitLab
 Runner can consume significant amount of available memory.
 
-Memory consumption calculations, that are available above, will not be valid if
+Memory consumption calculations, that are available above, won't be valid if
 you decide to run GitLab Runner and the GitLab Rails application on the same
 machine.
 
-It is also not safe to install everything on a single machine, because of the
+It's also not safe to install everything on a single machine, because of the
 [security reasons](https://docs.gitlab.com/runner/security/), especially when you plan to use shell executor with GitLab
 Runner.
 
@@ -282,7 +269,7 @@ For reference, GitLab.com's [auto-scaling shared runner](../user/gitlab_com/inde
 
 ## Supported web browsers
 
-CAUTION: **Caution:** With GitLab 13.0 (May 2020) we are removing official support for Internet Explorer 11.
+CAUTION: **Caution:** With GitLab 13.0 (May 2020) we have removed official support for Internet Explorer 11.
 With the release of GitLab 13.4 (September 2020) we will remove all code that supports Internet Explorer 11.
 You can provide feedback [on this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/197987) or via your usual support channels.
 
@@ -293,14 +280,13 @@ GitLab supports the following web browsers:
 - [Chromium](https://www.chromium.org/getting-involved/dev-channel)
 - [Apple Safari](https://www.apple.com/safari/)
 - [Microsoft Edge](https://www.microsoft.com/edge)
-- Internet Explorer 11 (until May 2020)
 
 For the listed web browsers, GitLab supports:
 
 - The current and previous major versions of browsers except Internet Explorer.
 - The current minor version of a supported major version.
 
-NOTE: **Note:** We do not support running GitLab with JavaScript disabled in the browser and have no plans of supporting that
+NOTE: **Note:** We don't support running GitLab with JavaScript disabled in the browser and have no plans of supporting that
 in the future because we have features such as Issue Boards which require JavaScript extensively.
 
 <!-- ## Troubleshooting

@@ -195,7 +195,7 @@ ci_pipelines:
 - cancelable_statuses
 - manual_actions
 - scheduled_actions
-- artifacts
+- downloadable_artifacts
 - pipeline_schedule
 - merge_requests_as_head_pipeline
 - merge_request
@@ -220,6 +220,7 @@ ci_pipelines:
 - pipeline_config
 - security_scans
 - daily_build_group_report_results
+- latest_builds
 pipeline_variables:
 - pipeline
 stages:

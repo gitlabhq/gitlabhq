@@ -4,13 +4,16 @@ module Integration
   extend ActiveSupport::Concern
 
   class_methods do
-    def with_custom_integration_compared_to(integration)
-      custom_integrations = Service
-        .select('1')
-        .where(type: integration.type, inherit_from_id: nil)
-        .where('services.project_id = projects.id')
+    def with_custom_integration_for(integration, page = nil, per = nil)
+      custom_integration_project_ids = Service
+        .where(type: integration.type)
+        .where(inherit_from_id: nil)
+        .distinct # Required until https://gitlab.com/gitlab-org/gitlab/-/issues/207385
+        .page(page)
+        .per(per)
+        .pluck(:project_id)
 
-      Project.where('EXISTS (?)', custom_integrations)
+      Project.where(id: custom_integration_project_ids)
     end
   end
 end

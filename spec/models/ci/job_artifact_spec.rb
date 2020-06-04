@@ -23,6 +23,14 @@ describe Ci::JobArtifact do
     subject { build(:ci_job_artifact, :archive, size: 107464) }
   end
 
+  describe '.not_expired' do
+    it 'returns artifacts that have not expired' do
+      _expired_artifact = create(:ci_job_artifact, :expired)
+
+      expect(described_class.not_expired).to contain_exactly(artifact)
+    end
+  end
+
   describe '.with_reports' do
     let!(:artifact) { create(:ci_job_artifact, :archive) }
 
@@ -115,6 +123,17 @@ describe Ci::JobArtifact do
       let!(:artifact) { create(:ci_job_artifact, :trace) }
 
       it { is_expected.to be_empty }
+    end
+  end
+
+  describe '.downloadable' do
+    subject { described_class.downloadable }
+
+    it 'filters for downloadable artifacts' do
+      downloadable_artifact = create(:ci_job_artifact, :codequality)
+      _not_downloadable_artifact = create(:ci_job_artifact, :trace)
+
+      expect(subject).to contain_exactly(downloadable_artifact)
     end
   end
 
@@ -353,6 +372,62 @@ describe Ci::JobArtifact do
 
       it 'raises an error' do
         expect { |b| artifact.each_blob(&b) }.to raise_error(described_class::NotSupportedAdapterError)
+      end
+    end
+  end
+
+  describe 'expired?' do
+    subject { artifact.expired? }
+
+    context 'when expire_at is nil' do
+      let(:artifact) { build(:ci_job_artifact, expire_at: nil) }
+
+      it 'returns false' do
+        is_expected.to be_falsy
+      end
+    end
+
+    context 'when expire_at is in the past' do
+      let(:artifact) { build(:ci_job_artifact, expire_at: Date.yesterday) }
+
+      it 'returns true' do
+        is_expected.to be_truthy
+      end
+    end
+
+    context 'when expire_at is in the future' do
+      let(:artifact) { build(:ci_job_artifact, expire_at: Date.tomorrow) }
+
+      it 'returns false' do
+        is_expected.to be_falsey
+      end
+    end
+  end
+
+  describe '#expiring?' do
+    subject { artifact.expiring? }
+
+    context 'when expire_at is nil' do
+      let(:artifact) { build(:ci_job_artifact, expire_at: nil) }
+
+      it 'returns false' do
+        is_expected.to be_falsy
+      end
+    end
+
+    context 'when expire_at is in the past' do
+      let(:artifact) { build(:ci_job_artifact, expire_at: Date.yesterday) }
+
+      it 'returns false' do
+        is_expected.to be_falsy
+      end
+    end
+
+    context 'when expire_at is in the future' do
+      let(:artifact) { build(:ci_job_artifact, expire_at: Date.tomorrow) }
+
+      it 'returns true' do
+        is_expected.to be_truthy
       end
     end
   end

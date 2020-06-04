@@ -21,15 +21,16 @@ export default class UserCallout {
 
   dismissCallout(e) {
     const $currentTarget = $(e.currentTarget);
+    const cookieOptions = {};
 
-    if (this.options.setCalloutPerProject) {
-      Cookies.set(this.cookieName, 'true', {
-        expires: 365,
-        path: this.userCalloutBody.data('projectPath'),
-      });
-    } else {
-      Cookies.set(this.cookieName, 'true', { expires: 365 });
+    if (!$currentTarget.hasClass('js-close-session')) {
+      cookieOptions.expires = 365;
     }
+    if (this.options.setCalloutPerProject) {
+      cookieOptions.path = this.userCalloutBody.data('projectPath');
+    }
+
+    Cookies.set(this.cookieName, 'true', cookieOptions);
 
     if ($currentTarget.hasClass('close') || $currentTarget.hasClass('js-close')) {
       this.userCalloutBody.remove();

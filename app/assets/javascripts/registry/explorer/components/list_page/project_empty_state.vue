@@ -8,7 +8,7 @@ import {
   COPY_BUILD_TITLE,
   COPY_PUSH_TITLE,
   QUICK_START,
-} from '../constants/index';
+} from '../../constants/index';
 
 export default {
   name: 'ProjectEmptyState',

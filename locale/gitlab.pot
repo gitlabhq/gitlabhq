@@ -17609,6 +17609,9 @@ msgstr ""
 msgid "Promotions|Learn more"
 msgstr ""
 
+msgid "Promotions|Not now, thanks!"
+msgstr ""
+
 msgid "Promotions|See the other features in the %{subscription_link_start}bronze plan%{subscription_link_end}"
 msgstr ""
 
@@ -17619,6 +17622,9 @@ msgid "Promotions|This feature is locked."
 msgstr ""
 
 msgid "Promotions|Track activity with Contribution Analytics."
+msgstr ""
+
+msgid "Promotions|Try it for free"
 msgstr ""
 
 msgid "Promotions|Upgrade plan"

@@ -1,4 +1,5 @@
 import * as commonUtils from '~/lib/utils/common_utils';
+import $ from 'jquery';
 
 describe('common_utils', () => {
   describe('parseUrl', () => {
@@ -208,6 +209,59 @@ describe('common_utils', () => {
       expect(commonUtils.buildUrlWithCurrentLocation('?page=2')).toEqual(
         `${window.location.pathname}?page=2`,
       );
+    });
+  });
+
+  describe('scrollToElement*', () => {
+    let elem;
+    const windowHeight = 1000;
+    const elemTop = 100;
+
+    beforeEach(() => {
+      elem = document.createElement('div');
+      window.innerHeight = windowHeight;
+      jest.spyOn($.fn, 'animate');
+      jest.spyOn($.fn, 'offset').mockReturnValue({ top: elemTop });
+    });
+
+    afterEach(() => {
+      $.fn.animate.mockRestore();
+      $.fn.offset.mockRestore();
+    });
+
+    describe('scrollToElement', () => {
+      it('scrolls to element', () => {
+        commonUtils.scrollToElement(elem);
+        expect($.fn.animate).toHaveBeenCalledWith(
+          {
+            scrollTop: elemTop,
+          },
+          expect.any(Number),
+        );
+      });
+
+      it('scrolls to element with offset', () => {
+        const offset = 50;
+        commonUtils.scrollToElement(elem, { offset });
+        expect($.fn.animate).toHaveBeenCalledWith(
+          {
+            scrollTop: elemTop + offset,
+          },
+          expect.any(Number),
+        );
+      });
+    });
+
+    describe('scrollToElementWithContext', () => {
+      it('scrolls with context', () => {
+        commonUtils.scrollToElementWithContext();
+        expect($.fn.animate).toHaveBeenCalledWith(
+          {
+            scrollTop: elemTop - windowHeight * 0.1,
+          },
+          expect.any(Number),
+        );
+      });
     });
   });
 

@@ -30,6 +30,10 @@ module Gitlab
           # this will force use of DEFAULT_REDIS_SHARED_STATE_URL when config file is absent
           super
         end
+
+        def instrumentation_class
+          ::Gitlab::Instrumentation::Redis::SharedState
+        end
       end
     end
   end

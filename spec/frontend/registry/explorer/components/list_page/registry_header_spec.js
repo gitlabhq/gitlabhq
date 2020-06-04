@@ -1,6 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
 import { GlSprintf, GlLink } from '@gitlab/ui';
-import Component from '~/registry/explorer/components/registry_header.vue';
+import Component from '~/registry/explorer/components/list_page/registry_header.vue';
 import {
   CONTAINER_REGISTRY_TITLE,
   LIST_INTRO_TEXT,
