@@ -53,6 +53,10 @@ export default {
       type: Boolean,
       required: true,
     },
+    discussionWithOpenForm: {
+      type: String,
+      required: true,
+    },
   },
   apollo: {
     activeDiscussion: {
@@ -127,6 +131,9 @@ export default {
     isReplyPlaceholderVisible() {
       return this.areRepliesShown || !this.discussionReplies.length;
     },
+    isFormVisible() {
+      return this.isFormRendered && this.discussionWithOpenForm === this.discussion.id;
+    },
   },
   methods: {
     addDiscussionComment(
@@ -158,13 +165,8 @@ export default {
       this.discussionComment = '';
     },
     showForm() {
+      this.$emit('openForm', this.discussion.id);
       this.isFormRendered = true;
-    },
-    handleReplyFormBlur() {
-      if (this.discussionComment) {
-        return;
-      }
-      this.isFormRendered = false;
     },
     toggleResolvedStatus() {
       this.isResolving = true;
@@ -256,10 +258,10 @@ export default {
       />
       <li v-show="isReplyPlaceholderVisible" class="reply-wrapper">
         <reply-placeholder
-          v-if="!isFormRendered"
+          v-if="!isFormVisible"
           class="qa-discussion-reply"
           :button-text="__('Reply...')"
-          @onMouseDown="showForm"
+          @onClick="showForm"
         />
         <apollo-mutation
           v-else
@@ -278,7 +280,6 @@ export default {
             :markdown-preview-path="markdownPreviewPath"
             @submitForm="mutate"
             @cancelForm="hideForm"
-            @onBlur="handleReplyFormBlur"
           >
             <template v-if="discussion.resolvable" #resolveCheckbox>
               <label data-testid="resolve-checkbox">

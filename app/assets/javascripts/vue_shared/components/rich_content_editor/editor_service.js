@@ -22,10 +22,9 @@ export const generateToolbarItem = config => {
   return {
     type: 'button',
     options: {
-      el: buildWrapper({ props: { icon }, class: classes }),
+      el: buildWrapper({ props: { icon, tooltip }, class: classes }),
       event,
       command,
-      tooltip,
     },
   };
 };

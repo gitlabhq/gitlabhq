@@ -139,6 +139,11 @@ module Types
           description: 'Issues of the project',
           resolver: Resolvers::IssuesResolver
 
+    field :project_members,
+          Types::ProjectMemberType.connection_type,
+          description: 'Members of the project',
+          resolver: Resolvers::ProjectMembersResolver
+
     field :environments,
           Types::EnvironmentType.connection_type,
           null: true,

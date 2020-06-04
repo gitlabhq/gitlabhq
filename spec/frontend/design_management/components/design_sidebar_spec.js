@@ -159,6 +159,14 @@ describe('Design management design sidebar component', () => {
       findFirstDiscussion().vm.$emit('resolveDiscussionError', 'payload');
       expect(wrapper.emitted('resolveDiscussionError')).toEqual([['payload']]);
     });
+
+    it('changes prop correctly on opening discussion form', () => {
+      findFirstDiscussion().vm.$emit('openForm', 'some-id');
+
+      return wrapper.vm.$nextTick().then(() => {
+        expect(findFirstDiscussion().props('discussionWithOpenForm')).toBe('some-id');
+      });
+    });
   });
 
   describe('when all discussions are resolved', () => {

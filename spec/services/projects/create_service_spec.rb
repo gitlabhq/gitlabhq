@@ -88,6 +88,116 @@ describe Projects::CreateService, '#execute' do
     end
   end
 
+  context 'group sharing', :sidekiq_inline do
+    let_it_be(:group) { create(:group) }
+    let_it_be(:shared_group) { create(:group) }
+    let_it_be(:shared_group_user) { create(:user) }
+    let(:opts) do
+      {
+        name: 'GitLab',
+        namespace_id: shared_group.id
+      }
+    end
+
+    before do
+      create(:group_group_link, shared_group: shared_group, shared_with_group: group)
+
+      shared_group.add_maintainer(shared_group_user)
+      group.add_developer(user)
+    end
+
+    it 'updates authorization' do
+      shared_group_project = create_project(shared_group_user, opts)
+
+      expect(
+        Ability.allowed?(shared_group_user, :read_project, shared_group_project)
+      ).to be_truthy
+      expect(
+        Ability.allowed?(user, :read_project, shared_group_project)
+      ).to be_truthy
+    end
+  end
+
+  context 'membership overrides', :sidekiq_inline do
+    let_it_be(:group) { create(:group, :private) }
+    let_it_be(:subgroup_for_projects) { create(:group, :private, parent: group) }
+    let_it_be(:subgroup_for_access) { create(:group, :private, parent: group) }
+    let_it_be(:group_maintainer) { create(:user) }
+    let(:group_access_level) { Gitlab::Access::REPORTER }
+    let(:subgroup_access_level) { Gitlab::Access::DEVELOPER }
+    let(:share_max_access_level) { Gitlab::Access::MAINTAINER }
+    let(:opts) do
+      {
+        name: 'GitLab',
+        namespace_id: subgroup_for_projects.id
+      }
+    end
+
+    before do
+      group.add_maintainer(group_maintainer)
+
+      create(:group_group_link, shared_group: subgroup_for_projects,
+                                shared_with_group: subgroup_for_access,
+                                group_access: share_max_access_level)
+    end
+
+    context 'membership is higher from group hierarchy' do
+      let(:group_access_level) { Gitlab::Access::MAINTAINER }
+
+      it 'updates authorization' do
+        create(:group_member, access_level: subgroup_access_level, group: subgroup_for_access, user: user)
+        create(:group_member, access_level: group_access_level, group: group, user: user)
+
+        subgroup_project = create_project(group_maintainer, opts)
+
+        project_authorization = ProjectAuthorization.where(
+          project_id: subgroup_project.id,
+          user_id: user.id,
+          access_level: group_access_level)
+
+        expect(project_authorization).to exist
+      end
+    end
+
+    context 'membership is higher from group share' do
+      let(:subgroup_access_level) { Gitlab::Access::MAINTAINER }
+
+      context 'share max access level is not limiting' do
+        it 'updates authorization' do
+          create(:group_member, access_level: group_access_level, group: group, user: user)
+          create(:group_member, access_level: subgroup_access_level, group: subgroup_for_access, user: user)
+
+          subgroup_project = create_project(group_maintainer, opts)
+
+          project_authorization = ProjectAuthorization.where(
+            project_id: subgroup_project.id,
+            user_id: user.id,
+            access_level: subgroup_access_level)
+
+          expect(project_authorization).to exist
+        end
+      end
+
+      context 'share max access level is limiting' do
+        let(:share_max_access_level) { Gitlab::Access::DEVELOPER }
+
+        it 'updates authorization' do
+          create(:group_member, access_level: group_access_level, group: group, user: user)
+          create(:group_member, access_level: subgroup_access_level, group: subgroup_for_access, user: user)
+
+          subgroup_project = create_project(group_maintainer, opts)
+
+          project_authorization = ProjectAuthorization.where(
+            project_id: subgroup_project.id,
+            user_id: user.id,
+            access_level: share_max_access_level)
+
+          expect(project_authorization).to exist
+        end
+      end
+    end
+  end
+
   context 'error handling' do
     it 'handles invalid options' do
       opts[:default_branch] = 'master'

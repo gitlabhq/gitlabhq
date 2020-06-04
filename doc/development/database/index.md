@@ -3,8 +3,7 @@
 ## Tooling
 
 - [Understanding EXPLAIN plans](../understanding_explain_plans.md)
-- [explain.depesz.com](https://explain.depesz.com/) for visualizing the output
-  of `EXPLAIN`
+- [explain.depesz.com](https://explain.depesz.com/) or [explain.dalibo.com](https://explain.dalibo.com/) for visualizing the output of `EXPLAIN`
 - [pgFormatter](http://sqlformat.darold.net/) a PostgreSQL SQL syntax beautifier
 
 ## Migrations

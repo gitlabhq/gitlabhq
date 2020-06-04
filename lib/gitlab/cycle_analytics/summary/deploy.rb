@@ -5,7 +5,7 @@ module Gitlab
     module Summary
       class Deploy < Base
         def title
-          n_('Deploy', 'Deploys', value)
+          n_('Deploy', 'Deploys', value.to_i)
         end
 
         def value

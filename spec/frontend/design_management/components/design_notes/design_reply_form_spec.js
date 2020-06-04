@@ -39,13 +39,6 @@ describe('Design reply form component', () => {
     expect(findTextarea().element).toEqual(document.activeElement);
   });
 
-  it('textarea emits onBlur event on blur', () => {
-    createComponent();
-    findTextarea().trigger('blur');
-
-    expect(wrapper.emitted('onBlur')).toBeTruthy();
-  });
-
   it('renders button text as "Comment" when creating a comment', () => {
     createComponent();
 

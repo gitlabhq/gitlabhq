@@ -657,7 +657,7 @@ different queries. The only _rule_ is that you _must always measure_ your query
 and related tools such as:
 
 - [`explain.depesz.com`](https://explain.depesz.com/).
-- [Pev](http://tatiyants.com/postgres-query-plan-visualization/).
+- [`explain.dalibo.com/`](https://explain.dalibo.com/).
 
 ## Producing query plans
 

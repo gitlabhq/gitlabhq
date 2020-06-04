@@ -477,7 +477,7 @@ module API
           squash_commit_message: params[:squash_commit_message],
           should_remove_source_branch: params[:should_remove_source_branch],
           sha: params[:sha] || merge_request.diff_head_sha
-        )
+        ).compact
 
         if immediately_mergeable
           ::MergeRequests::MergeService

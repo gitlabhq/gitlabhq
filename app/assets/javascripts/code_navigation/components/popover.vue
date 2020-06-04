@@ -1,9 +1,11 @@
 <script>
 import { GlButton } from '@gitlab/ui';
+import DocLine from './doc_line.vue';
 
 export default {
   components: {
     GlButton,
+    DocLine,
   },
   props: {
     position: {
@@ -83,8 +85,7 @@ export default {
         ref="code-output"
         :class="$options.colorScheme"
         class="border-0 bg-transparent m-0 code highlight"
-        v-html="hover.value"
-      ></pre>
+      ><doc-line v-for="(tokens, tokenIndex) in hover.tokens" :key="tokenIndex" :language="hover.language" :tokens="tokens"/></pre>
       <p v-else ref="doc-output" class="p-3 m-0">
         {{ hover.value }}
       </p>

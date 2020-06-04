@@ -53,6 +53,7 @@ describe('Design discussions component', () => {
         noteableId: 'noteable-id',
         designId: 'design-id',
         discussionIndex: 1,
+        discussionWithOpenForm: '',
         ...props,
       },
       data() {
@@ -119,7 +120,8 @@ describe('Design discussions component', () => {
     });
 
     it('renders a checkbox with Resolve thread text in reply form', () => {
-      findReplyPlaceholder().vm.$emit('onMouseDown');
+      findReplyPlaceholder().vm.$emit('onClick');
+      wrapper.setProps({ discussionWithOpenForm: discussion.id });
 
       return wrapper.vm.$nextTick().then(() => {
         expect(findResolveCheckbox().text()).toBe('Resolve thread');
@@ -199,7 +201,8 @@ describe('Design discussions component', () => {
       });
 
       it('renders a checkbox with Unresolve thread text in reply form', () => {
-        findReplyPlaceholder().vm.$emit('onMouseDown');
+        findReplyPlaceholder().vm.$emit('onClick');
+        wrapper.setProps({ discussionWithOpenForm: discussion.id });
 
         return wrapper.vm.$nextTick().then(() => {
           expect(findResolveCheckbox().text()).toBe('Unresolve thread');
@@ -210,7 +213,8 @@ describe('Design discussions component', () => {
 
   it('hides reply placeholder and opens form on placeholder click', () => {
     createComponent();
-    findReplyPlaceholder().vm.$emit('onMouseDown');
+    findReplyPlaceholder().vm.$emit('onClick');
+    wrapper.setProps({ discussionWithOpenForm: discussion.id });
 
     return wrapper.vm.$nextTick().then(() => {
       expect(findReplyPlaceholder().exists()).toBe(false);
@@ -219,7 +223,10 @@ describe('Design discussions component', () => {
   });
 
   it('calls mutation on submitting form and closes the form', () => {
-    createComponent({}, { discussionComment: 'test', isFormRendered: true });
+    createComponent(
+      { discussionWithOpenForm: discussion.id },
+      { discussionComment: 'test', isFormRendered: true },
+    );
 
     findReplyForm().vm.$emit('submitForm');
     expect(mutate).toHaveBeenCalledWith(mutationVariables);
@@ -234,7 +241,10 @@ describe('Design discussions component', () => {
   });
 
   it('clears the discussion comment on closing comment form', () => {
-    createComponent({}, { discussionComment: 'test', isFormRendered: true });
+    createComponent(
+      { discussionWithOpenForm: discussion.id },
+      { discussionComment: 'test', isFormRendered: true },
+    );
 
     return wrapper.vm
       .$nextTick()
@@ -265,24 +275,6 @@ describe('Design discussions component', () => {
     );
   });
 
-  it('closes the form on blur if the form was empty', () => {
-    createComponent({}, { discussionComment: '', isFormRendered: true });
-    findReplyForm().vm.$emit('onBlur');
-
-    return wrapper.vm.$nextTick().then(() => {
-      expect(findReplyForm().exists()).toBe(false);
-    });
-  });
-
-  it('keeps the form open on blur if the form had text', () => {
-    createComponent({}, { discussionComment: 'test', isFormRendered: true });
-    findReplyForm().vm.$emit('onBlur');
-
-    return wrapper.vm.$nextTick().then(() => {
-      expect(findReplyForm().exists()).toBe(true);
-    });
-  });
-
   it('calls toggleResolveDiscussion mutation on resolve thread button click', () => {
     createComponent();
     findResolveButton().trigger('click');
@@ -299,7 +291,10 @@ describe('Design discussions component', () => {
   });
 
   it('calls toggleResolveDiscussion mutation after adding a note if checkbox was checked', () => {
-    createComponent({}, { discussionComment: 'test', isFormRendered: true });
+    createComponent(
+      { discussionWithOpenForm: discussion.id },
+      { discussionComment: 'test', isFormRendered: true },
+    );
     findResolveButton().trigger('click');
     findReplyForm().vm.$emit('submitForm');
 
@@ -312,5 +307,12 @@ describe('Design discussions component', () => {
         },
       });
     });
+  });
+
+  it('emits openForm event on opening the form', () => {
+    createComponent();
+    findReplyPlaceholder().vm.$emit('onClick');
+
+    expect(wrapper.emitted('openForm')).toBeTruthy();
   });
 });

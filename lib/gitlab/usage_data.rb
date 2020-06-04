@@ -17,6 +17,7 @@ module Gitlab
 
     class << self
       include Gitlab::Utils::UsageData
+      include Gitlab::Utils::StrongMemoize
 
       def data(force_refresh: false)
         Rails.cache.fetch('usage_data', force: force_refresh, expires_in: 2.weeks) do
@@ -25,6 +26,8 @@ module Gitlab
       end
 
       def uncached_data
+        clear_memoized_limits
+
         license_usage_data
           .merge(system_usage_data)
           .merge(features_usage_data)
@@ -437,6 +440,25 @@ module Gitlab
 
       def default_time_period
         { created_at: 28.days.ago..Time.current }
+      end
+
+      private
+
+      def user_minimum_id
+        strong_memoize(:user_minimum_id) do
+          ::User.minimum(:id)
+        end
+      end
+
+      def user_maximum_id
+        strong_memoize(:user_maximum_id) do
+          ::User.maximum(:id)
+        end
+      end
+
+      def clear_memoized_limits
+        clear_memoization(:user_minimum_id)
+        clear_memoization(:user_maximum_id)
       end
     end
   end

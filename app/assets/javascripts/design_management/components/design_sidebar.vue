@@ -34,6 +34,7 @@ export default {
   data() {
     return {
       isResolvedCommentsPopoverHidden: parseBoolean(Cookies.get(this.$options.cookieKey)),
+      discussionWithOpenForm: '',
     };
   },
   computed: {
@@ -78,6 +79,9 @@ export default {
       this.comment = '';
       this.$emit('closeCommentForm');
     },
+    updateDiscussionWithOpenForm(id) {
+      this.discussionWithOpenForm = id;
+    },
   },
   resolveCommentsToggleText: s__('DesignManagement|Resolved Comments'),
   cookieKey: 'hide_design_resolved_comments_popover',
@@ -114,11 +118,13 @@ export default {
       :noteable-id="design.id"
       :markdown-preview-path="markdownPreviewPath"
       :resolved-discussions-expanded="resolvedDiscussionsExpanded"
+      :discussion-with-open-form="discussionWithOpenForm"
       data-testid="unresolved-discussion"
       @createNoteError="$emit('onDesignDiscussionError', $event)"
       @updateNoteError="$emit('updateNoteError', $event)"
       @resolveDiscussionError="$emit('resolveDiscussionError', $event)"
       @click.native.stop="updateActiveDiscussion(discussion.notes[0].id)"
+      @openForm="updateDiscussionWithOpenForm"
     />
     <template v-if="resolvedDiscussions.length > 0">
       <gl-button
@@ -158,9 +164,11 @@ export default {
           :noteable-id="design.id"
           :markdown-preview-path="markdownPreviewPath"
           :resolved-discussions-expanded="resolvedDiscussionsExpanded"
+          :discussion-with-open-form="discussionWithOpenForm"
           data-testid="resolved-discussion"
           @error="$emit('onDesignDiscussionError', $event)"
           @updateNoteError="$emit('updateNoteError', $event)"
+          @openForm="updateDiscussionWithOpenForm"
           @click.native.stop="updateActiveDiscussion(discussion.notes[0].id)"
         />
       </gl-collapse>

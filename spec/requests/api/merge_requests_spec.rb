@@ -2029,6 +2029,34 @@ describe API::MergeRequests do
       end
     end
 
+    context "with a merge request that has force_remove_source_branch enabled" do
+      let(:source_repository) { merge_request.source_project.repository }
+      let(:source_branch) { merge_request.source_branch }
+
+      before do
+        merge_request.update(merge_params: { 'force_remove_source_branch' => true })
+      end
+
+      it 'removes the source branch' do
+        put(
+          api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/merge", user)
+        )
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(source_repository.branch_exists?(source_branch)).to be_falsy
+      end
+
+      it 'does not remove the source branch' do
+        put(
+          api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/merge", user),
+          params: { should_remove_source_branch: false }
+        )
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(source_repository.branch_exists?(source_branch)).to be_truthy
+      end
+    end
+
     context "performing a ff-merge with squash" do
       let(:merge_request) { create(:merge_request, :rebased, source_project: project, squash: true) }
 

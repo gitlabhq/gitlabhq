@@ -12,7 +12,7 @@ module Gitlab
         end
 
         def title
-          n_('New Issue', 'New Issues', value)
+          n_('New Issue', 'New Issues', value.to_i)
         end
 
         def value

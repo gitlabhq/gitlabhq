@@ -59,6 +59,7 @@ exports[`Design management design index page renders design index 1`] = `
       data-testid="unresolved-discussion"
       designid="test"
       discussion="[object Object]"
+      discussionwithopenform=""
       markdownpreviewpath="//preview_markdown?target_type=Issue"
       noteableid="design-id"
     />
@@ -106,6 +107,7 @@ exports[`Design management design index page renders design index 1`] = `
         data-testid="resolved-discussion"
         designid="test"
         discussion="[object Object]"
+        discussionwithopenform=""
         markdownpreviewpath="//preview_markdown?target_type=Issue"
         noteableid="design-id"
       />

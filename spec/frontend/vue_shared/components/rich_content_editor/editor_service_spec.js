@@ -29,10 +29,6 @@ describe('Editor Service', () => {
       expect(generatedItem.options.command).toBe(config.command);
     });
 
-    it('generates the correct tooltip', () => {
-      expect(generatedItem.options.tooltip).toBe(config.tooltip);
-    });
-
     it('generates the correct event', () => {
       expect(generatedItem.options.event).toBe(config.event);
     });

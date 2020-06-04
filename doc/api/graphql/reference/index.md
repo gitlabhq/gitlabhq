@@ -1258,6 +1258,16 @@ Information about pagination in a connection.
 | `webUrl` | String | Web URL of the project |
 | `wikiEnabled` | Boolean | Indicates if Wikis are enabled for the current user |
 
+## ProjectMember
+
+Member of a project
+
+| Name  | Type  | Description |
+| ---   |  ---- | ----------  |
+| `accessLevel` | Int! | Access level of the member |
+| `id` | ID! | ID of the member |
+| `user` | User! | User that is associated with the member object |
+
 ## ProjectPermissions
 
 | Name  | Type  | Description |

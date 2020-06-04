@@ -1,5 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
 import Popover from '~/code_navigation/components/popover.vue';
+import DocLine from '~/code_navigation/components/doc_line.vue';
 
 const DEFINITION_PATH_PREFIX = 'http://gitlab.com';
 
@@ -7,7 +8,22 @@ const MOCK_CODE_DATA = Object.freeze({
   hover: [
     {
       language: 'javascript',
-      value: 'console.log',
+      tokens: [
+        [
+          {
+            class: 'k',
+            value: 'function',
+          },
+          {
+            value: ' main() {',
+          },
+        ],
+        [
+          {
+            value: '}',
+          },
+        ],
+      ],
     },
   ],
   definition_path: 'test.js#L20',
@@ -28,6 +44,7 @@ let wrapper;
 function factory({ position, data, definitionPathPrefix, blobPath = 'index.js' }) {
   wrapper = shallowMount(Popover, {
     propsData: { position, data, definitionPathPrefix, blobPath },
+    stubs: { DocLine },
   });
 }
 

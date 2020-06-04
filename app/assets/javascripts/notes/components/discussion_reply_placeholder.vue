@@ -17,7 +17,6 @@ export default {
     class="js-vue-discussion-reply btn btn-text-field"
     :title="s__('MergeRequests|Add a reply')"
     @click="$emit('onClick')"
-    @mousedown.prevent="$emit('onMouseDown')"
   >
     {{ buttonText }}
   </button>

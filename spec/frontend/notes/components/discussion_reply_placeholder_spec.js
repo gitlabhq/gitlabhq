@@ -30,16 +30,6 @@ describe('ReplyPlaceholder', () => {
     });
   });
 
-  it('emits onMouseDown event on button mousedown', () => {
-    findButton().trigger('mousedown');
-
-    return wrapper.vm.$nextTick().then(() => {
-      expect(wrapper.emitted()).toEqual({
-        onMouseDown: [[]],
-      });
-    });
-  });
-
   it('should render reply button', () => {
     expect(findButton().text()).toEqual(buttonText);
   });
