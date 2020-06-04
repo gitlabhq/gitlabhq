@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe InstanceStatistics::CohortsController do
+RSpec.describe InstanceStatistics::CohortsController do
   let(:user) { create(:user) }
 
   before do

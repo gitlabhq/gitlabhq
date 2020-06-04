@@ -63,7 +63,7 @@ Contributions per group member are also presented in tabular format. Click a col
 - Number of opened issues
 - Number of closed issues
 - Number of opened MRs
-- Number of accepted MRs
+- Number of merged MRs
 - Number of total contributions
 
 ![Contribution analytics contributions table](img/group_stats_table.png)

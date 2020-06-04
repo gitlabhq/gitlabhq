@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Admin::ApplicationsController do
+RSpec.describe Admin::ApplicationsController do
   let(:admin) { create(:admin) }
   let(:application) { create(:oauth_application, owner_id: nil, owner_type: nil) }
 

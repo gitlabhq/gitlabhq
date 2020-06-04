@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Application do # rubocop:disable RSpec/FilePath
+RSpec.describe Gitlab::Application do # rubocop:disable RSpec/FilePath
   using RSpec::Parameterized::TableSyntax
 
   filtered_param = ActiveSupport::ParameterFilter::FILTERED

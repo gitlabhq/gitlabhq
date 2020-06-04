@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe IssuableCollections do
+RSpec.describe IssuableCollections do
   let(:user) { create(:user) }
 
   let(:controller) do

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Admin::RequestsProfilesController do
+RSpec.describe Admin::RequestsProfilesController do
   let_it_be(:admin) { create(:admin) }
 
   before do

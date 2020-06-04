@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe RedirectsForMissingPathOnTree, type: :controller do
+RSpec.describe RedirectsForMissingPathOnTree, type: :controller do
   controller(ActionController::Base) do
     include Gitlab::Routing.url_helpers
     include RedirectsForMissingPathOnTree

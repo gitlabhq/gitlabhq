@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Dashboard::LabelsController do
+RSpec.describe Dashboard::LabelsController do
   let(:project) { create(:project) }
   let(:user)    { create(:user) }
   let!(:label)  { create(:label, project: project) }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Admin::DashboardController do
+RSpec.describe Admin::DashboardController do
   describe '#index' do
     context 'with pending_delete projects' do
       render_views

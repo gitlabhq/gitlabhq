@@ -1033,9 +1033,6 @@ msgstr ""
 msgid "Acceptable for use in this project"
 msgstr ""
 
-msgid "Accepted MR"
-msgstr ""
-
 msgid "Access Tokens"
 msgstr ""
 
@@ -6124,10 +6121,10 @@ msgstr ""
 msgid "Contribution Analytics"
 msgstr ""
 
-msgid "ContributionAnalytics|<strong>%{created_count}</strong> created, <strong>%{accepted_count}</strong> accepted."
+msgid "ContributionAnalytics|<strong>%{created_count}</strong> created, <strong>%{closed_count}</strong> closed."
 msgstr ""
 
-msgid "ContributionAnalytics|<strong>%{created_count}</strong> created, <strong>%{closed_count}</strong> closed."
+msgid "ContributionAnalytics|<strong>%{created_count}</strong> created, <strong>%{merged_count}</strong> merged."
 msgstr ""
 
 msgid "ContributionAnalytics|<strong>%{pushes}</strong> pushes, more than <strong>%{commits}</strong> commits by <strong>%{people}</strong> contributors."
@@ -13734,6 +13731,9 @@ msgstr ""
 msgid "Merged"
 msgstr ""
 
+msgid "Merged MRs"
+msgstr ""
+
 msgid "Merged branches are being deleted. This can take some time depending on the number of branches. Please refresh the page to see changes."
 msgstr ""
 
@@ -15215,7 +15215,7 @@ msgstr ""
 msgid "Opened"
 msgstr ""
 
-msgid "Opened MR"
+msgid "Opened MRs"
 msgstr ""
 
 msgid "Opened issues"

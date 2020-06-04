@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Groups::Registry::RepositoriesController do
+RSpec.describe Groups::Registry::RepositoriesController do
   let_it_be(:user)  { create(:user) }
   let_it_be(:guest) { create(:user) }
   let_it_be(:group, reload: true) { create(:group) }

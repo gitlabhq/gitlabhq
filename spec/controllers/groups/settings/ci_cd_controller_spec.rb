@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Groups::Settings::CiCdController do
+RSpec.describe Groups::Settings::CiCdController do
   include ExternalAuthorizationServiceHelpers
 
   let(:group) { create(:group) }

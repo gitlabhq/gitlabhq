@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Admin::AppearancesController do
+RSpec.describe Admin::AppearancesController do
   let(:admin) { create(:admin) }
   let(:header_message) { 'Header message' }
   let(:footer_message) { 'Footer' }

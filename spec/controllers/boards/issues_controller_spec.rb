@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Boards::IssuesController do
+RSpec.describe Boards::IssuesController do
   include ExternalAuthorizationServiceHelpers
 
   let(:project) { create(:project, :private) }

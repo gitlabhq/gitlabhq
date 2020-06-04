@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Admin::ApplicationSettingsController do
+RSpec.describe Admin::ApplicationSettingsController do
   include StubENV
   include UsageDataHelpers
 

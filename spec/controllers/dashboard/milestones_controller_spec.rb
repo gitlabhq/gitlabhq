@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Dashboard::MilestonesController do
+RSpec.describe Dashboard::MilestonesController do
   let(:project) { create(:project) }
   let(:group) { create(:group) }
   let(:user) { create(:user) }

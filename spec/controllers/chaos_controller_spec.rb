@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ChaosController do
+RSpec.describe ChaosController do
   describe '#leakmem' do
     it 'calls synchronously' do
       expect(Gitlab::Chaos).to receive(:leak_mem).with(100, 30.seconds)

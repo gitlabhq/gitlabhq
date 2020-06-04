@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe LfsRequest do
+RSpec.describe LfsRequest do
   include ProjectForksHelper
 
   controller(Repositories::GitHttpClientController) do

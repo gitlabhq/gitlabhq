@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ProjectUnauthorized do
+RSpec.describe ProjectUnauthorized do
   include ExternalAuthorizationServiceHelpers
   let(:user) { create(:user) }
 

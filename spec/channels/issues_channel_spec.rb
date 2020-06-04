@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe IssuesChannel do
+RSpec.describe IssuesChannel do
   let_it_be(:issue) { create(:issue) }
 
   it 'rejects when project path is invalid' do

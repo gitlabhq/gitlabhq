@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ConfirmEmailWarning do
+RSpec.describe ConfirmEmailWarning do
   before do
     stub_feature_flags(soft_email_confirmation: true)
   end

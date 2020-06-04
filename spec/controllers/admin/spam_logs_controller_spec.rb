@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Admin::SpamLogsController do
+RSpec.describe Admin::SpamLogsController do
   let(:admin) { create(:admin) }
   let(:user) { create(:user) }
   let!(:first_spam) { create(:spam_log, user: user) }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe GoogleApi::AuthorizationsController do
+RSpec.describe GoogleApi::AuthorizationsController do
   describe 'GET|POST #callback' do
     let(:user) { create(:user) }
     let(:token) { 'token' }

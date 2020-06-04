@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Import::BitbucketServerController do
+RSpec.describe Import::BitbucketServerController do
   let(:user) { create(:user) }
   let(:project_key) { 'test-project' }
   let(:repo_slug) { 'some-repo' }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe IdeController do
+RSpec.describe IdeController do
   let(:user) { create(:user) }
 
   before do

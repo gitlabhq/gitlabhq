@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Admin::ProjectsController do
+RSpec.describe Admin::ProjectsController do
   let!(:project) { create(:project, :public) }
 
   before do

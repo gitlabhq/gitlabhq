@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Groups::MilestonesController do
+RSpec.describe Groups::MilestonesController do
   let(:group) { create(:group, :public) }
   let!(:project) { create(:project, :public, group: group) }
   let!(:project2) { create(:project, group: group) }

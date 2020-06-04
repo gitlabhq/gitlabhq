@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Admin::ImpersonationsController do
+RSpec.describe Admin::ImpersonationsController do
   let(:impersonator) { create(:admin) }
   let(:user) { create(:user) }
 

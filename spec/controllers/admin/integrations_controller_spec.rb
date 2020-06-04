@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Admin::IntegrationsController do
+RSpec.describe Admin::IntegrationsController do
   let(:admin) { create(:admin) }
   let(:integration) { create(:jira_service, :instance) }
 

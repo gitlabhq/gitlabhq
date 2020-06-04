@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe IssuableActions do
+RSpec.describe IssuableActions do
   let(:project) { double('project') }
   let(:user) { double('user') }
   let(:issuable) { double('issuable') }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe HealthCheckController, :request_store do
+RSpec.describe HealthCheckController, :request_store do
   include StubENV
 
   let(:xml_response) { Hash.from_xml(response.body)['hash'] }

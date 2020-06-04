@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe MetricsDashboard do
+RSpec.describe MetricsDashboard do
   include MetricsDashboardHelpers
 
   describe 'GET #metrics_dashboard' do

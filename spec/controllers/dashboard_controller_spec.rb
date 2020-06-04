@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe DashboardController do
+RSpec.describe DashboardController do
   context 'signed in' do
     let(:user) { create(:user) }
     let(:project) { create(:project) }

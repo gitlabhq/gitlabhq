@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ImportUrlParams do
+RSpec.describe ImportUrlParams do
   let(:import_url_params) do
     controller = OpenStruct.new(params: params).extend(described_class)
     controller.import_url_params

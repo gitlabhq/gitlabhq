@@ -124,7 +124,7 @@ There are some important differences in the way Runners work in comparison to ag
   associate runners with specific jobs. For example, you can use a tag for jobs that
   require dedicated, more powerful, or specific hardware.
 - GitLab has [autoscaling for Runners](https://docs.gitlab.com/runner/configuration/autoscale.html)
-  which will let configure them to be provisioned as needed, and scaled down when not.
+  which will let you configure them to be provisioned as needed, and scaled down when not.
   This is similar to ephemeral agents in Jenkins.
 
 If you are using `gitlab.com`, you can take advantage of our [shared Runner fleet](../../user/gitlab_com/index.md#shared-runners)

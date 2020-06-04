@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Dashboard::ProjectsController do
+RSpec.describe Dashboard::ProjectsController do
   include ExternalAuthorizationServiceHelpers
 
   describe '#index' do

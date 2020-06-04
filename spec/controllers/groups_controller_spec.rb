@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe GroupsController do
+RSpec.describe GroupsController do
   include ExternalAuthorizationServiceHelpers
 
   let(:user) { create(:user) }

@@ -3,7 +3,7 @@
 require 'spec_helper'
 require Rails.root.join('config', 'object_store_settings.rb')
 
-describe ObjectStoreSettings do
+RSpec.describe ObjectStoreSettings do
   describe '.parse' do
     it 'sets correct default values' do
       settings = described_class.parse(nil)

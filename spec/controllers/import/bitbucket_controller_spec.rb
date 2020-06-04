@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Import::BitbucketController do
+RSpec.describe Import::BitbucketController do
   include ImportSpecHelper
 
   let(:user) { create(:user) }
