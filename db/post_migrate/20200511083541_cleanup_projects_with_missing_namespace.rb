@@ -249,8 +249,8 @@ class CleanupProjectsWithMissingNamespace < ActiveRecord::Migration[6.0]
         -- Names are expected to be unique inside their namespace
         --  (uniqueness validation on namespace_id, name)
         -- Attach the id to the name and path to make sure that they are unique
-        name = name || '_' || id,
-        path = path || '_' || id
+        name = name || '_' || id::text,
+        path = path || '_' || id::text
       SQL
     end
   end

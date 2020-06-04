@@ -53,10 +53,21 @@ class SnippetRepository < ApplicationRecord
   def transform_file_entries(files)
     next_index = get_last_empty_file_index + 1
 
-    files.each do |file_entry|
+    files.map do |file_entry|
       file_entry[:file_path] = file_path_for(file_entry, next_index) { next_index += 1 }
       file_entry[:action] = infer_action(file_entry) unless file_entry[:action]
-    end
+      file_entry[:action] = file_entry[:action].to_sym
+
+      if only_rename_action?(file_entry)
+        file_entry[:infer_content] = true
+      elsif empty_update_action?(file_entry)
+        # There is no need to perform a repository operation
+        # When the update action has no content
+        file_entry = nil
+      end
+
+      file_entry
+    end.compact
   end
 
   def file_path_for(file_entry, next_index)
@@ -110,5 +121,13 @@ class SnippetRepository < ApplicationRecord
   def invalid_signature_error?(err)
     err.is_a?(ArgumentError) &&
       err.message.downcase.match?(/failed to parse signature/)
+  end
+
+  def only_rename_action?(action)
+    action[:action] == :move && action[:content].nil?
+  end
+
+  def empty_update_action?(action)
+    action[:action] == :update && action[:content].nil?
   end
 end

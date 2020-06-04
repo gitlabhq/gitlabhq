@@ -302,6 +302,60 @@ describe Snippets::UpdateService do
       end
     end
 
+    shared_examples 'only file_name is present' do
+      let(:base_opts) do
+        {
+          file_name: file_name
+        }
+      end
+
+      shared_examples 'content is not updated' do
+        specify do
+          existing_content = snippet.blobs.first.data
+          response = subject
+          snippet = response.payload[:snippet]
+
+          blob = snippet.repository.blob_at('master', file_name)
+
+          expect(blob).not_to be_nil
+          expect(response).to be_success
+          expect(blob.data).to eq existing_content
+        end
+      end
+
+      context 'when renaming the file_name' do
+        let(:file_name) { 'new_file_name' }
+
+        it_behaves_like 'content is not updated'
+      end
+
+      context 'when file_name does not change' do
+        let(:file_name) { snippet.blobs.first.path }
+
+        it_behaves_like 'content is not updated'
+      end
+    end
+
+    shared_examples 'only content is present' do
+      let(:content) { 'new_content' }
+      let(:base_opts) do
+        {
+          content: content
+        }
+      end
+
+      it 'updates the content' do
+        response = subject
+        snippet = response.payload[:snippet]
+
+        blob = snippet.repository.blob_at('master', snippet.blobs.first.path)
+
+        expect(blob).not_to be_nil
+        expect(response).to be_success
+        expect(blob.data).to eq content
+      end
+    end
+
     context 'when Project Snippet' do
       let_it_be(:project) { create(:project) }
       let!(:snippet) { create(:project_snippet, :repository, author: user, project: project) }
@@ -316,6 +370,8 @@ describe Snippets::UpdateService do
       it_behaves_like 'updates repository content'
       it_behaves_like 'commit operation fails'
       it_behaves_like 'committable attributes'
+      it_behaves_like 'only file_name is present'
+      it_behaves_like 'only content is present'
       it_behaves_like 'snippets spam check is performed' do
         before do
           subject
@@ -340,6 +396,8 @@ describe Snippets::UpdateService do
       it_behaves_like 'updates repository content'
       it_behaves_like 'commit operation fails'
       it_behaves_like 'committable attributes'
+      it_behaves_like 'only file_name is present'
+      it_behaves_like 'only content is present'
       it_behaves_like 'snippets spam check is performed' do
         before do
           subject

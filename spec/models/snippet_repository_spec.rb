@@ -116,17 +116,81 @@ describe SnippetRepository do
       end
 
       context 'when commit actions are present' do
-        let(:file_action) { { file_path: 'foo.txt', content: 'foo', action: :foobar } }
-        let(:data) { [file_action] }
+        shared_examples 'uses the expected action' do |action, expected_action|
+          let(:file_action) { { file_path: 'foo.txt', content: 'foo', action: action } }
+          let(:data) { [file_action] }
 
-        it 'does not change commit action' do
-          expect(repo).to(
-            receive(:multi_action).with(
-              user,
-              hash_including(actions: array_including(hash_including(action: :foobar)))))
+          specify do
+            expect(repo).to(
+              receive(:multi_action).with(
+                user,
+                hash_including(actions: array_including(hash_including(action: expected_action)))))
 
-          snippet_repository.multi_files_action(user, data, commit_opts)
+            snippet_repository.multi_files_action(user, data, commit_opts)
+          end
         end
+
+        it_behaves_like 'uses the expected action', :foobar, :foobar
+
+        context 'when action is a string' do
+          it_behaves_like 'uses the expected action', 'foobar', :foobar
+        end
+      end
+    end
+
+    context 'when move action does not include content' do
+      let(:previous_path) { 'CHANGELOG' }
+      let(:new_path) { 'CHANGELOG_new' }
+      let(:move_action) { { previous_path: previous_path, file_path: new_path, action: action } }
+
+      shared_examples 'renames file and does not update content' do
+        specify do
+          existing_content = blob_at(snippet, previous_path).data
+
+          snippet_repository.multi_files_action(user, [move_action], commit_opts)
+
+          blob = blob_at(snippet, new_path)
+          expect(blob).not_to be_nil
+          expect(blob.data).to eq existing_content
+        end
+      end
+
+      context 'when action is not set' do
+        let(:action) { nil }
+
+        it_behaves_like 'renames file and does not update content'
+      end
+
+      context 'when action is set' do
+        let(:action) { :move }
+
+        it_behaves_like 'renames file and does not update content'
+      end
+    end
+
+    context 'when update action does not include content' do
+      let(:update_action) { { previous_path: 'CHANGELOG', file_path: 'CHANGELOG', action: action } }
+
+      shared_examples 'does not commit anything' do
+        specify do
+          last_commit_id = snippet.repository.head_commit.id
+
+          snippet_repository.multi_files_action(user, [update_action], commit_opts)
+
+          expect(snippet.repository.head_commit.id).to eq last_commit_id
+        end
+      end
+
+      context 'when action is not set' do
+        let(:action) { nil }
+
+        it_behaves_like 'does not commit anything'
+      end
+
+      context 'when action is set' do
+        let(:action) { :update }
+
+        it_behaves_like 'does not commit anything'
       end
     end
 
