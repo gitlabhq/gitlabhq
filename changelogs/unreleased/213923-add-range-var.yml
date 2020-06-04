@@ -1,0 +1,5 @@
+---
+title: Provide `__range` variable for Prometheus queries
+merge_request: 33521
+author:
+type: added

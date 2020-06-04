@@ -343,7 +343,7 @@ When installing the GitLab package, do not supply `EXTERNAL_URL` value.
 
 > Please note:
 >
-> - If you want your database to listen on a specific interface, change the config:
+> - If you want your database to listen on a specific interface, change the configuration:
 >   `postgresql['listen_address'] = '0.0.0.0'`.
 > - If your PgBouncer service runs under a different user account,
 >   you also need to specify: `postgresql['pgbouncer_user'] = PGBOUNCER_USERNAME` in
@@ -902,7 +902,7 @@ after it has been restored to service.
 
 ##### Add a node as a standby server
 
-  From the stnadby node, run:
+  From the standby node, run:
 
   ```shell
   gitlab-ctl repmgr standby follow NEW_MASTER
@@ -917,7 +917,7 @@ after it has been restored to service.
 
 ##### Add a failed master back into the cluster as a standby node
 
-  Once `repmgrd` and PostgreSQL are runnning, the node will need to follow the new
+  Once `repmgrd` and PostgreSQL are running, the node will need to follow the new
   as a standby node.
 
   ```shell
@@ -934,7 +934,7 @@ after it has been restored to service.
   gitlab-ctl repmgr standby setup NEW_MASTER
   ```
 
-  Failure to unregister and readd the old master node can lead to subsequent failovers
+  Failure to unregister and read the old master node can lead to subsequent failovers
   not working.
 
 #### Alternate configurations

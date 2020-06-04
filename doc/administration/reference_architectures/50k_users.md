@@ -10,21 +10,21 @@ For a full list of reference architectures, see
 
 | Service                                                      | Nodes | Configuration ([8](#footnotes)) | GCP            | AWS                   | Azure          |
 |--------------------------------------------------------------|-------|---------------------------------|----------------|-----------------------|----------------|
-| GitLab Rails ([1](#footnotes))                               | 12    | 32 vCPU, 28.8GB Memory          | n1-highcpu-32  | c5.9xlarge            | F32s v2        |
-| PostgreSQL                                                   | 3     | 16 vCPU, 60GB Memory            | n1-standard-16 | m5.4xlarge            | D16s v3        |
-| PgBouncer                                                    | 3     | 2 vCPU, 1.8GB Memory            | n1-highcpu-2   | c5.large              | F2s v2         |
-| Gitaly ([2](#footnotes)) ([5](#footnotes)) ([7](#footnotes)) | X     | 64 vCPU, 240GB Memory           | n1-standard-64 | m5.16xlarge           | D64s v3        |
-| Redis ([3](#footnotes)) - Cache                              | 3     | 4 vCPU, 15GB Memory             | n1-standard-4  | m5.xlarge             | D4s v3         |
-| Redis ([3](#footnotes)) - Queues / Shared State              | 3     | 4 vCPU, 15GB Memory             | n1-standard-4  | m5.xlarge             | D4s v3         |
-| Redis Sentinel ([3](#footnotes)) - Cache                     | 3     | 1 vCPU, 1.7GB Memory            | g1-small       | t2.small              | B1MS           |
-| Redis Sentinel ([3](#footnotes)) - Queues / Shared State     | 3     | 1 vCPU, 1.7GB Memory            | g1-small       | t2.small              | B1MS           |
-| Consul                                                       | 3     | 2 vCPU, 1.8GB Memory            | n1-highcpu-2   | c5.large              | F2s v2         |
-| Sidekiq                                                      | 4     | 4 vCPU, 15GB Memory             | n1-standard-4  | m5.xlarge             | D4s v3         |
-| NFS Server ([5](#footnotes)) ([7](#footnotes))               | 1     | 4 vCPU, 3.6GB Memory            | n1-highcpu-4   | c5.xlarge             | F4s v2         |
+| GitLab Rails ([1](#footnotes))                               | 12    | 32 vCPU, 28.8GB Memory          | `n1-highcpu-32`  | `c5.9xlarge`            | F32s v2        |
+| PostgreSQL                                                   | 3     | 16 vCPU, 60GB Memory            | `n1-standard-16` | `m5.4xlarge`            | D16s v3        |
+| PgBouncer                                                    | 3     | 2 vCPU, 1.8GB Memory            | `n1-highcpu-2`   | `c5.large`              | F2s v2         |
+| Gitaly ([2](#footnotes)) ([5](#footnotes)) ([7](#footnotes)) | X     | 64 vCPU, 240GB Memory           | `n1-standard-64` | `m5.16xlarge`           | D64s v3        |
+| Redis ([3](#footnotes)) - Cache                              | 3     | 4 vCPU, 15GB Memory             | `n1-standard-4`  | `m5.xlarge`             | D4s v3         |
+| Redis ([3](#footnotes)) - Queues / Shared State              | 3     | 4 vCPU, 15GB Memory             | `n1-standard-4`  | `m5.xlarge`             | D4s v3         |
+| Redis Sentinel ([3](#footnotes)) - Cache                     | 3     | 1 vCPU, 1.7GB Memory            | `g1-small`       | `t2.small`              | B1MS           |
+| Redis Sentinel ([3](#footnotes)) - Queues / Shared State     | 3     | 1 vCPU, 1.7GB Memory            | `g1-small`       | `t2.small`              | B1MS           |
+| Consul                                                       | 3     | 2 vCPU, 1.8GB Memory            | `n1-highcpu-2`   | `c5.large`              | F2s v2         |
+| Sidekiq                                                      | 4     | 4 vCPU, 15GB Memory             | `n1-standard-4`  | `m5.xlarge`             | D4s v3         |
+| NFS Server ([5](#footnotes)) ([7](#footnotes))               | 1     | 4 vCPU, 3.6GB Memory            | `n1-highcpu-4`   | `c5.xlarge`             | F4s v2         |
 | Object Storage ([4](#footnotes))                             | -     | -                               | -              | -                     | -              |
-| Monitoring node                                              | 1     | 4 vCPU, 3.6GB Memory            | n1-highcpu-4   | c5.xlarge             | F4s v2         |
-| External load balancing node ([6](#footnotes))               | 1     | 8 vCPU, 7.2GB Memory            | n1-highcpu-8   | c5.2xlarge            | F8s v2         |
-| Internal load balancing node ([6](#footnotes))               | 1     | 8 vCPU, 7.2GB Memory            | n1-highcpu-8   | c5.2xlarge            | F8s v2         |
+| Monitoring node                                              | 1     | 4 vCPU, 3.6GB Memory            | `n1-highcpu-4`   | `c5.xlarge`             | F4s v2         |
+| External load balancing node ([6](#footnotes))               | 1     | 8 vCPU, 7.2GB Memory            | `n1-highcpu-8`   | `c5.2xlarge`            | F8s v2         |
+| Internal load balancing node ([6](#footnotes))               | 1     | 8 vCPU, 7.2GB Memory            | `n1-highcpu-8`   | `c5.2xlarge`            | F8s v2         |
 
 ## Footnotes
 

@@ -1,6 +1,7 @@
 Akismet
 Alertmanager
 Algolia
+Alibaba
 allowlist
 allowlisting
 allowlists
@@ -48,6 +49,7 @@ blockquoted
 blockquotes
 blockquoting
 boolean
+Bootsnap
 browsable
 Bugzilla
 Buildkite
@@ -60,6 +62,8 @@ cacheable
 CAS
 CentOS
 Chatops
+checksummed
+checksumming
 Citrix
 Citus
 clonable
@@ -72,6 +76,7 @@ compilable
 composable
 Conda
 Consul
+Corosync
 cron
 crons
 crontab
@@ -91,6 +96,7 @@ deduplication
 denylist
 denylisting
 denylists
+deployers
 deprovision
 deprovisioned
 deprovisioning
@@ -115,6 +121,7 @@ failovers
 failsafe
 fastlane
 favicon
+Fio
 firewalled
 Flawfinder
 Flowdock
@@ -157,6 +164,7 @@ hotfixing
 http
 https
 idempotence
+idmapper
 Ingress
 initializer
 initializers
@@ -185,6 +193,7 @@ Kubernetes
 Kubesec
 Laravel
 LDAP
+ldapsearch
 Libravatar
 Lograge
 Logstash
@@ -193,6 +202,7 @@ lookaheads
 lookbehind
 lookbehinds
 lookups
+loopback
 Lucene
 Maildir
 Makefile
@@ -247,6 +257,7 @@ OpenShift
 Packagist
 parallelization
 parallelizations
+passwordless
 performant
 Pipfile
 Pipfiles
@@ -273,8 +284,8 @@ Prometheus
 proxied
 proxies
 proxying
-Pseudonymized
-Pseudonymizer
+pseudonymized
+pseudonymizer
 Puma
 Python
 Qualys
@@ -298,8 +309,8 @@ reindexes
 reindexing
 relicensing
 remediations
-Repmgr
-Repmgrd
+repmgr
+repmgrd
 repurposing
 requeue
 requeued
@@ -320,6 +331,7 @@ reverifies
 reverify
 Rubix
 Rubocop
+Rubular
 runbook
 runbooks
 runit
@@ -355,6 +367,7 @@ SpotBugs
 SSH
 Stackdriver
 storable
+storages
 strace
 strikethrough
 strikethroughs
@@ -379,6 +392,7 @@ subquerying
 substring
 substrings
 syslog
+tcpdump
 Tiller
 todos
 tokenizer
@@ -433,6 +447,9 @@ unpublished
 unpublishes
 unpublishing
 unreferenced
+unregister
+unregistered
+unregisters
 unreplicated
 unresolve
 unresolved

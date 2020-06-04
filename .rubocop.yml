@@ -250,8 +250,7 @@ GitlabSecurity/PublicSend:
     - 'ee/spec/**/*'
 
 Gitlab/DuplicateSpecLocation:
-  Exclude:
-    - ee/spec/lib/gitlab/gl_repository_spec.rb
+  Enabled: true
 
 Cop/InjectEnterpriseEditionModule:
   Enabled: true

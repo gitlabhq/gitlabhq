@@ -376,7 +376,7 @@ The different supported drivers are:
 | swift      | OpenStack Swift Object Storage      |
 | oss        | Aliyun OSS                          |
 
-Read more about the individual driver's config options in the
+Read more about the individual driver's configuration options in the
 [Docker Registry docs](https://docs.docker.com/registry/configuration/#storage).
 
 [Read more about using object storage with GitLab](../object_storage.md).
@@ -413,7 +413,7 @@ NOTE: **Note:**
 
 **Installations from source**
 
-Configuring the storage driver is done in your registry config YML file created
+Configuring the storage driver is done in your registry configuration YML file created
 when you [deployed your Docker registry](https://docs.docker.com/registry/deploying/).
 
 `s3` storage driver example:
@@ -610,7 +610,7 @@ You can use GitLab as an auth endpoint with an external container registry.
 You can configure the Container Registry to send webhook notifications in
 response to events happening within the registry.
 
-Read more about the Container Registry notifications config options in the
+Read more about the Container Registry notifications configuration options in the
 [Docker Registry notifications documentation](https://docs.docker.com/registry/notifications/).
 
 NOTE: **Note:**
@@ -641,7 +641,7 @@ To configure a notification endpoint in Omnibus:
 
 **Installations from source**
 
-Configuring the notification endpoint is done in your registry config YML file created
+Configuring the notification endpoint is done in your registry configuration YML file created
 when you [deployed your Docker registry](https://docs.docker.com/registry/deploying/).
 
 Example:

@@ -59,7 +59,7 @@ you should
 ## Taking action on Prometheus alerts **(ULTIMATE)**
 
 You can [add a webhook](../../../user/project/integrations/prometheus.md#external-prometheus-instances)
-to the Prometheus config in order for GitLab to receive notifications of any alerts.
+to the Prometheus configuration in order for GitLab to receive notifications of any alerts.
 
 Once the webhook is setup, you can
 [take action on incoming alerts](../../../user/project/integrations/prometheus.md#taking-action-on-incidents-ultimate).

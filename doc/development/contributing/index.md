@@ -6,8 +6,8 @@ to contribute to GitLab in a way that is easy for everyone.
 For a first-time step-by-step guide to the contribution process, see our
 [Contributing to GitLab](https://about.gitlab.com/community/contribute/) page.
 
-Looking for something to work on? Look for issues with the label
-[`~Accepting merge requests`](#how-to-contribute).
+Looking for something to work on? See the
+[How to contribute](#how-to-contribute) section for more information.
 
 GitLab comes in two flavors:
 
@@ -76,9 +76,12 @@ Sign up for the mailing list, answer GitLab questions on StackOverflow or respon
 
 ## How to contribute
 
-If you want to contribute to GitLab,
-[issues with the `~Accepting merge requests` label](issue_workflow.md#label-for-community-contributors)
-are a great place to start.
+If you would like to contribute to GitLab:
+
+- Issues with the
+  [`~Accepting merge requests` label](issue_workflow.md#label-for-community-contributors)
+  are a great place to start.
+- Consult the [Contribution Flow](#contribution-flow) section to learn the process.
 
 If you have any questions or need help visit [Getting Help](https://about.gitlab.com/get-help/) to
 learn how to communicate with GitLab. We have a [Gitter channel for contributors](https://gitter.im/gitlab/contributors),
@@ -96,25 +99,77 @@ a Merge Request.
 For more information, see the [`gitlab-development-kit`](https://gitlab.com/gitlab-org/gitlab-development-kit)
 project.
 
-## Contribution Flow
+### Contribution flow
 
-When contributing to GitLab, your merge request is subject to review by merge request maintainers of a particular specialty.
+The general flow of contributing to GitLab is:
 
-When you submit code to GitLab, we really want it to get merged, but there will be times when it will not be merged.
+1. [Create a fork](../../user/project/repository/forking_workflow.md#creating-a-fork)
+   of GitLab. In some cases, you will want to set up the
+   [GitLab Development Kit](https://gitlab.com/gitlab-org/gitlab-development-kit) to
+   [develop against your fork](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/master/doc/index.md#develop-in-your-own-gitlab-fork).
+1. Make your changes in your fork.
+1. When you're ready, [create a new merge request](../../user/project/merge_requests/creating_merge_requests.md).
+1. In the merge request's description:
+   - Ensure you provide complete and accurate information.
+   - Review the provided checklist.
+1. Assign the merge request (if possible) to, or `@mention`, one of the
+   [code owners](../../user/project/code_owners.md) for the relevant project,
+   and explain that you are ready for review.
 
-When maintainers are reading through a merge request they may request guidance from other maintainers. If merge request maintainers conclude that the code should not be merged, our reasons will be fully disclosed. If it has been decided that the code quality is not up to GitLab’s standards, the merge request maintainer will refer the author to our docs and code style guides, and provide some guidance.
+When you submit code to GitLab, we really want it to get merged! However, we always review
+submissions carefully, and this takes time. Code submissions will usually be reviewed by two
+[domain experts](../code_review.md#domain-experts) before being merged:
 
-Sometimes style guides will be followed but the code will lack structural integrity, or the maintainer will have reservations about the code’s overall quality. When there is a reservation the maintainer will inform the author and provide some guidance. The author may then choose to update the merge request. Once the merge request has been updated and reassigned to the maintainer, they will review the code again. Once the code has been resubmitted any number of times, the maintainer may choose to close the merge request with a summary of why it will not be merged, as well as some guidance. If the merge request is closed the maintainer will be open to discussion as to how to improve the code so it can be approved in the future.
+- A [reviewer](../code_review.md#the-responsibility-of-the-reviewer).
+- A [maintainer](../code_review.md#the-responsibility-of-the-maintainer).
 
-GitLab will do its best to review community contributions as quickly as possible. Specially appointed developers review community contributions daily. You may take a look at the [team page](https://about.gitlab.com/company/team/) for the merge request coach who specializes in the type of code you have written and mention them in the merge request. For example, if you have written some JavaScript in your code then you should mention the frontend merge request coach. If your code has multiple disciplines you may mention multiple merge request coaches.
+Keep the following in mind when submitting merge requests:
 
-GitLab receives a lot of community contributions, so if your code has not been reviewed within two days (excluding weekend and public holidays) of its initial submission feel free to re-mention the appropriate merge request coach.
+- When reviewers are reading through a merge request they may request guidance from other
+  reviewers.
+- If the code quality is found to not meet GitLab’s standards, the merge request reviewer will
+  provide guidance and refer the author to our:
+  - [Documentation](../documentation/styleguide.md) style guide.
+  - Code style guides.
+- Sometimes style guides will be followed but the code will lack structural integrity, or the
+  reviewer will have reservations about the code’s overall quality. When there is a reservation,
+  the reviewer will inform the author and provide some guidance.
+- Though GitLab generally allows anyone to indicate
+  [approval](../../user/project/merge_requests/merge_request_approvals.md) of merge requests, the
+  maintainer may require [approvals from certain reviewers](../code_review.md#approval-guidelines)
+  before merging a merge request.
+- After review, the author may be asked to update the merge request. Once the merge request has been
+  updated and reassigned to the reviewer, they will review the code again. This process may repeat
+  any number of times before merge, to help make the contribution the best it can be.
 
-When submitting code to GitLab, you may feel that your contribution requires the aid of an external library. If your code includes an external library please provide a link to the library, as well as reasons for including it.
+Sometimes a maintainer may choose to close a merge request. They will fully disclose why it will not
+be merged, as well as some guidance. The maintainers will be open to discussion about how to change
+the code so it can be approved and merged in the future.
 
-When your code contains more than 500 changes, any major breaking changes, or an external library, `@mention` a maintainer in the merge request. If you are not sure who to mention, the reviewer will add one early in the merge request process.
+GitLab will do its best to review community contributions as quickly as possible. Specially
+appointed developers review community contributions daily. Look at the
+[team page](https://about.gitlab.com/company/team/) for the merge request coach who specializes in
+the type of code you have written and mention them in the merge request. For example, if you have
+written some front-end code, you should `@mention` the frontend merge request coach. If
+your code has multiple disciplines, you may `@mention` multiple merge request coaches.
 
-### Issues workflow
+GitLab receives a lot of community contributions. If your code has not been reviewed within two
+working days of its initial submission, feel free to `@mention` all merge request coaches with
+`@gitlab-org/coaches` to get their attention.
+
+When submitting code to GitLab, you may feel that your contribution requires the aid of an external
+library. If your code includes an external library, please provide a link to the library, as well as
+reasons for including it.
+
+`@mention` a maintainer in merge requests that contain:
+
+- More than 500 changes.
+- Any major breaking changes.
+- External libraries.
+
+If you are not sure who to mention, the reviewer will do this for you early in the merge request process.
+
+#### Issues workflow
 
 This [documentation](issue_workflow.md) outlines the current issue workflow:
 
@@ -127,7 +182,7 @@ This [documentation](issue_workflow.md) outlines the current issue workflow:
 - [Technical and UX debt](issue_workflow.md#technical-and-ux-debt)
 - [Technical debt in follow-up issues](issue_workflow.md#technical-debt-in-follow-up-issues)
 
-### Merge requests workflow
+#### Merge requests workflow
 
 This [documentation](merge_request_workflow.md) outlines the current merge request process.
 

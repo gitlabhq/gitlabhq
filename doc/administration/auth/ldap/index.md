@@ -93,7 +93,7 @@ NOTE: **Note:**
 The `encryption` value `simple_tls` corresponds to 'Simple TLS' in the LDAP
 library. `start_tls` corresponds to StartTLS, not to be confused with regular TLS.
 Normally, if you specify `simple_tls` it will be on port 636, while `start_tls` (StartTLS)
-would be on port 389. `plain` also operates on port 389. Removed values: "tls" was replaced with "start_tls" and "ssl" was replaced with "simple_tls".
+would be on port 389. `plain` also operates on port 389. Removed values: `tls` was replaced with `start_tls` and `ssl` was replaced with `simple_tls`.
 
 NOTE: **Note:**
 LDAP users must have an email address set, regardless of whether it is used to log in.
@@ -173,7 +173,7 @@ production:
 | `bind_dn` | The full DN of the user you will bind with. | no | `'america\momo'` or `'CN=Gitlab,OU=Users,DC=domain,DC=com'` |
 | `password` | The password of the bind user. | no | `'your_great_password'` |
 | `encryption` | Encryption method. The `method` key is deprecated in favor of `encryption`. | yes | `'start_tls'` or `'simple_tls'` or `'plain'` |
-| `verify_certificates` | Enables SSL certificate verification if encryption method is "start_tls" or "simple_tls". Defaults to true. | no | boolean |
+| `verify_certificates` | Enables SSL certificate verification if encryption method is `start_tls` or `simple_tls`. Defaults to true. | no | boolean |
 | `timeout` | Set a timeout, in seconds, for LDAP queries. This helps avoid blocking a request if the LDAP server becomes unresponsive. A value of 0 means there is no timeout. | no | `10` or `30` |
 | `active_directory` | This setting specifies if LDAP server is Active Directory LDAP server. For non-AD servers it skips the AD specific queries. If your LDAP server is not AD, set this to false. | no | boolean |
 | `allow_username_or_email_login` | If enabled, GitLab will ignore everything after the first `@` in the LDAP username submitted by the user on login. If you are using `uid: 'userPrincipalName'` on ActiveDirectory you need to disable this setting, because the userPrincipalName contains an `@`. | no | boolean |
@@ -595,7 +595,7 @@ When enabled, the following applies:
 
 NOTE: **Note:**
 These are cron formatted values. You can use a crontab generator to create
-these values, for example <http://www.crontabgenerator.com/>.
+these values, for example [Crontab Generator](http://www.crontabgenerator.com/).
 
 By default, GitLab runs a group sync process every hour, on the hour.
 

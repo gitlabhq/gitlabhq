@@ -324,7 +324,7 @@ There is an [issue where support is being discussed](https://gitlab.com/gitlab-o
    to the private key, which is **only** present on the **primary** node.
 
 1. Test that the `gitlab-psql` user can connect to the **primary** node's database
-   (the default Omnibus database name is gitlabhq_production):
+   (the default Omnibus database name is `gitlabhq_production`):
 
    ```shell
    sudo \

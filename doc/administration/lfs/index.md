@@ -110,7 +110,7 @@ Here is a configuration example with GCS.
 | `provider` | The provider name | `Google` |
 | `google_project` | GCP project name | `gcp-project-12345` |
 | `google_client_email` | The email address of the service account | `foo@gcp-project-12345.iam.gserviceaccount.com` |
-| `google_json_key_location` | The json key path | `/path/to/gcp-project-12345-abcde.json` |
+| `google_json_key_location` | The JSON key path | `/path/to/gcp-project-12345-abcde.json` |
 
 NOTE: **Note:**
 The service account must have permission to access the bucket.

@@ -159,7 +159,7 @@ attribute. As a prerequisite, you must use an LDAP server that:
      ```
 
    For example, the following is an example server context in an NGINX
-   configuration file (eg. in `/etc/nginx/sites-available/gitlab-ssl`):
+   configuration file (such as in `/etc/nginx/sites-available/gitlab-ssl`):
 
    ```plaintext
    server {

@@ -272,7 +272,7 @@ world. Custom domains are supported, but no TLS.
    sudo ln -sf /etc/nginx/sites-{available,enabled}/gitlab-pages.conf
    ```
 
-1. Edit all GitLab related configs in `/etc/nginx/site-available/` and replace
+1. Edit all GitLab related configurations in `/etc/nginx/site-available/` and replace
    `0.0.0.0` with `192.0.2.1`, where `192.0.2.1` the primary IP where GitLab
    listens to.
 1. Restart NGINX
@@ -341,7 +341,7 @@ world. Custom domains and TLS are supported.
    sudo ln -sf /etc/nginx/sites-{available,enabled}/gitlab-pages-ssl.conf
    ```
 
-1. Edit all GitLab related configs in `/etc/nginx/site-available/` and replace
+1. Edit all GitLab related configurations in `/etc/nginx/site-available/` and replace
    `0.0.0.0` with `192.0.2.1`, where `192.0.2.1` the primary IP where GitLab
    listens to.
 1. Restart NGINX
@@ -352,7 +352,7 @@ world. Custom domains and TLS are supported.
 >**Note:**
 The following information applies only for installations from source.
 
-Be extra careful when setting up the domain name in the NGINX config. You must
+Be extra careful when setting up the domain name in the NGINX configuration. You must
 not remove the backslashes.
 
 If your GitLab Pages domain is `example.io`, replace:

@@ -12,7 +12,7 @@ You can set up a [Docker Registry](https://docs.docker.com/registry/) on your
 
 ## Storage support
 
-Docker Registry currently supports a few types of storages. If you choose a
+Docker Registry currently supports a few types of storage. If you choose a
 distributed storage (`azure`, `gcs`, `s3`, `swift`, or `oss`) for your Docker
 Registry on the **primary** node, you can use the same storage for a **secondary**
 Docker Registry as well. For more information, read the
@@ -23,7 +23,7 @@ integrated [Container Registry](../../packages/container_registry.md#container-r
 ## Replicating Docker Registry
 
 You can enable a storage-agnostic replication so it
-can be used for cloud or local storages. Whenever a new image is pushed to the
+can be used for cloud or local storage. Whenever a new image is pushed to the
 **primary** node, each **secondary** node will pull it to its own container
 repository.
 

@@ -58,7 +58,7 @@ module Prometheus
     def substitute_variables(result)
       return success(result) unless query(result)
 
-      result[:params][:query] = gsub(query(result), full_context)
+      result[:params][:query] = gsub(query(result), full_context(result))
 
       success(result)
     end
@@ -75,12 +75,16 @@ module Prometheus
       end
     end
 
-    def predefined_context
-      Gitlab::Prometheus::QueryVariables.call(@environment).stringify_keys
+    def predefined_context(result)
+      Gitlab::Prometheus::QueryVariables.call(
+        @environment,
+        start_time: start_timestamp(result),
+        end_time: end_timestamp(result)
+      ).stringify_keys
     end
 
-    def full_context
-      @full_context ||= predefined_context.reverse_merge(variables_hash)
+    def full_context(result)
+      @full_context ||= predefined_context(result).reverse_merge(variables_hash)
     end
 
     def variables
@@ -89,6 +93,16 @@ module Prometheus
 
     def variables_hash
       variables.to_h
+    end
+
+    def start_timestamp(result)
+      Time.rfc3339(result[:params][:start])
+    rescue ArgumentError
+    end
+
+    def end_timestamp(result)
+      Time.rfc3339(result[:params][:end])
+    rescue ArgumentError
     end
 
     def query(result)

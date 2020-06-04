@@ -15332,6 +15332,9 @@ msgstr ""
 msgid "Owner"
 msgstr ""
 
+msgid "Package Files"
+msgstr ""
+
 msgid "Package Registry"
 msgstr ""
 
@@ -22080,7 +22083,7 @@ msgstr ""
 msgid "The vulnerability is no longer detected. Verify the vulnerability has been remediated before changing its status."
 msgstr ""
 
-msgid "There are no %{replicableType} to show"
+msgid "There are no %{replicableTypeName} to show"
 msgstr ""
 
 msgid "There are no GPG keys associated with this account."

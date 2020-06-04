@@ -84,7 +84,7 @@ To change the address/port that Prometheus listens on:
 1. Save the file and [reconfigure GitLab](../../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to
    take effect
 
-### Adding custom scrape configs
+### Adding custom scrape configurations
 
 You can configure additional scrape targets for the Omnibus GitLab-bundled
 Prometheus by editing `prometheus['scrape_configs']` in `/etc/gitlab/gitlab.rb`

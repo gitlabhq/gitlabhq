@@ -67,7 +67,7 @@ must disable the **primary** node.
 
    NOTE: **Note:**
    (**Ubuntu 14.04 LTS**) If you are using an older version of Ubuntu
-   or any other distro based on the Upstart init system, you can prevent GitLab
+   or any other distribution based on the Upstart init system, you can prevent GitLab
    from starting if the machine reboots by doing the following:
 
    ```shell
