@@ -7,7 +7,6 @@ import * as types from './mutation_types';
 import { decorateFiles } from '../lib/files';
 import { stageKeys } from '../constants';
 import service from '../services';
-import router from '../ide_router';
 import eventHub from '../eventhub';
 
 export const redirectToUrl = (self, url) => visitUrl(url);
@@ -262,7 +261,7 @@ export const renameEntry = ({ dispatch, commit, state, getters }, { path, name, 
     }
 
     if (newEntry.opened) {
-      router.push(`/project${newEntry.url}`);
+      dispatch('router/push', `/project${newEntry.url}`, { root: true });
     }
   }
 

@@ -85,7 +85,7 @@ export default {
           class="confidential-icon append-right-4 align-self-baseline align-self-md-auto mt-xl-0"
           :aria-label="__('Confidential')"
         />
-        <a :href="computedPath" class="sortable-link">{{ title }}</a>
+        <a :href="computedPath" class="sortable-link gl-font-weight-normal">{{ title }}</a>
       </div>
 
       <!-- Info area: meta, path, and assignees -->

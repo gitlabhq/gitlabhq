@@ -8,6 +8,4 @@
     - unless project.empty_repo?
       = render 'shared/auto_devops_implicitly_enabled_banner', project: project
     = render_if_exists 'projects/above_size_limit_warning', project: project
-    - if Feature.enabled?(:subscribable_banner_subscription)
-      = render_if_exists "layouts/header/ee_subscribable_banner", subscription: true
     = render_if_exists 'shared/shared_runners_minutes_limit', project: project, classes: [container_class, ("limit-container-width" unless fluid_layout)]

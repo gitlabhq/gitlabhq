@@ -5,7 +5,7 @@ import { createStore } from '~/ide/stores';
 import * as actions from '~/ide/stores/actions/file';
 import * as types from '~/ide/stores/mutation_types';
 import service from '~/ide/services';
-import router from '~/ide/ide_router';
+import { createRouter } from '~/ide/ide_router';
 import eventHub from '~/ide/eventhub';
 import { file } from '../../helpers';
 
@@ -16,6 +16,7 @@ describe('IDE store file actions', () => {
   let mock;
   let originalGon;
   let store;
+  let router;
 
   beforeEach(() => {
     mock = new MockAdapter(axios);
@@ -26,6 +27,7 @@ describe('IDE store file actions', () => {
     };
 
     store = createStore();
+    router = createRouter(store);
 
     jest.spyOn(store, 'commit');
     jest.spyOn(store, 'dispatch');

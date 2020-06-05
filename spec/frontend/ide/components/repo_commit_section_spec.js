@@ -1,6 +1,6 @@
 import { mount } from '@vue/test-utils';
 import { createStore } from '~/ide/stores';
-import router from '~/ide/ide_router';
+import { createRouter } from '~/ide/ide_router';
 import RepoCommitSection from '~/ide/components/repo_commit_section.vue';
 import EmptyState from '~/ide/components/commit_sidebar/empty_state.vue';
 import { stageKeys } from '~/ide/constants';
@@ -10,6 +10,7 @@ const TEST_NO_CHANGES_SVG = 'nochangessvg';
 
 describe('RepoCommitSection', () => {
   let wrapper;
+  let router;
   let store;
 
   function createComponent() {
@@ -55,6 +56,7 @@ describe('RepoCommitSection', () => {
 
   beforeEach(() => {
     store = createStore();
+    router = createRouter(store);
 
     jest.spyOn(store, 'dispatch');
     jest.spyOn(router, 'push').mockImplementation();

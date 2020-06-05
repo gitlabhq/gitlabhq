@@ -51,7 +51,7 @@ describe('ConfirmModal', () => {
   const findModalOkButton = (modal, variant) =>
     modal.querySelector(`.modal-footer .btn-${variant}`);
   const findModalCancelButton = modal => modal.querySelector('.modal-footer .btn-secondary');
-  const modalIsHidden = () => findModal().getAttribute('aria-hidden') === 'true';
+  const modalIsHidden = () => findModal() === null;
 
   const serializeModal = (modal, buttonIndex) => {
     const { modalAttributes } = buttons[buttonIndex];
@@ -101,7 +101,9 @@ describe('ConfirmModal', () => {
         });
 
         it('closes the modal', () => {
-          expect(modalIsHidden()).toBe(true);
+          setImmediate(() => {
+            expect(modalIsHidden()).toBe(true);
+          });
         });
       });
     });

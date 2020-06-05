@@ -1,7 +1,6 @@
 import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
 import { createStore } from '~/ide/stores';
-import router from '~/ide/ide_router';
 import {
   refreshLastCommitData,
   showBranchNotFoundError,
@@ -13,7 +12,6 @@ import {
 } from '~/ide/stores/actions';
 import service from '~/ide/services';
 import api from '~/api';
-import { resetStore } from '../../helpers';
 import testAction from '../../../helpers/vuex_action_helper';
 
 const TEST_PROJECT_ID = 'abc/def';
@@ -33,8 +31,6 @@ describe('IDE store project actions', () => {
 
   afterEach(() => {
     mock.restore();
-
-    resetStore(store);
   });
 
   describe('refreshLastCommitData', () => {
@@ -122,7 +118,6 @@ describe('IDE store project actions', () => {
   describe('createNewBranchFromDefault', () => {
     beforeEach(() => {
       jest.spyOn(api, 'createBranch').mockResolvedValue();
-      jest.spyOn(router, 'push').mockImplementation();
     });
 
     it('calls API', done => {
@@ -175,6 +170,8 @@ describe('IDE store project actions', () => {
     });
 
     it('reloads window', done => {
+      jest.spyOn(window.location, 'reload').mockImplementation();
+
       createNewBranchFromDefault(
         {
           state: {
@@ -190,7 +187,7 @@ describe('IDE store project actions', () => {
         'new-branch-name',
       )
         .then(() => {
-          expect(router.push).toHaveBeenCalled();
+          expect(window.location.reload).toHaveBeenCalled();
         })
         .then(done)
         .catch(done.fail);

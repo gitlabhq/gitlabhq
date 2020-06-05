@@ -1,11 +1,13 @@
 import Vue from 'vue';
-import store from '~/ide/stores';
+import { createStore } from '~/ide/stores';
 import repoTab from '~/ide/components/repo_tab.vue';
-import router from '~/ide/ide_router';
-import { file, resetStore } from '../helpers';
+import { createRouter } from '~/ide/ide_router';
+import { file } from '../helpers';
 
 describe('RepoTab', () => {
   let vm;
+  let store;
+  let router;
 
   function createComponent(propsData) {
     const RepoTab = Vue.extend(repoTab);
@@ -17,13 +19,13 @@ describe('RepoTab', () => {
   }
 
   beforeEach(() => {
+    store = createStore();
+    router = createRouter(store);
     jest.spyOn(router, 'push').mockImplementation(() => {});
   });
 
   afterEach(() => {
     vm.$destroy();
-
-    resetStore(vm.$store);
   });
 
   it('renders a close link and a name link', () => {

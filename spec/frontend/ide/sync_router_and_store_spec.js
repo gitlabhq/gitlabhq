@@ -1,13 +1,9 @@
-import Vue from 'vue';
 import VueRouter from 'vue-router';
-import Vuex from 'vuex';
-import routerModule from '~/ide/stores/modules/router';
+import { createStore } from '~/ide/stores';
 import { syncRouterAndStore } from '~/ide/sync_router_and_store';
 import waitForPromises from 'helpers/wait_for_promises';
 
 const TEST_ROUTE = '/test/lorem/ipsum';
-
-Vue.use(Vuex);
 
 describe('~/ide/sync_router_and_store', () => {
   let unsync;
@@ -32,11 +28,7 @@ describe('~/ide/sync_router_and_store', () => {
 
   beforeEach(() => {
     router = new VueRouter();
-    store = new Vuex.Store({
-      modules: {
-        router: routerModule,
-      },
-    });
+    store = createStore();
     jest.spyOn(store, 'dispatch');
 
     onRouterChange = jest.fn();

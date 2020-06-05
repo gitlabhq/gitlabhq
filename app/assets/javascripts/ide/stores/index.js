@@ -11,6 +11,7 @@ import branches from './modules/branches';
 import fileTemplates from './modules/file_templates';
 import paneModule from './modules/pane';
 import clientsideModule from './modules/clientside';
+import routerModule from './modules/router';
 
 Vue.use(Vuex);
 
@@ -28,6 +29,7 @@ export const createStore = () =>
       fileTemplates: fileTemplates(),
       rightPane: paneModule(),
       clientside: clientsideModule(),
+      router: routerModule,
     },
   });
 

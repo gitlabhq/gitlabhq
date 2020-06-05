@@ -378,15 +378,25 @@ The following tables outline the details of expected properties.
 | ------ | ------ | ------ | ------ |
 | `dashboard` | string | yes | Heading for the dashboard. Only one dashboard should be defined per file. |
 | `panel_groups` | array | yes | The panel groups which should be on the dashboard. |
-| `templating` | Hash | no | Top level key under which templating related options can be added. |
+| `templating` | hash | no | Top level key under which templating related options can be added. |
+| `links` | array | no | Add links to display on the dashboard. |
 
 ##### **Templating (`templating`) properties**
 
 | Property | Type | Required | Description |
 | -------- | ---- | -------- | ----------- |
-| `variables` | Hash | no | Variables can be defined here. |
+| `variables` | hash | no | Variables can be defined here. |
 
 Read the documentation on [templating](#templating-variables-for-metrics-dashboards).
+
+##### **Links (`links`) properties**
+
+| Property | Type | Required | Description |
+| -------- | ---- | -------- | ----------- |
+| `url` | string | yes | The address of the link. |
+| `title` | string | no | Display title for the link. |
+
+Read the documentation on [links](#add-related-links-to-custom-dashboards).
 
 ##### **Panel group (`panel_groups`) properties**
 
@@ -802,7 +812,7 @@ templating:
 
 ###### Full syntax
 
-This example creates a variable called `variable1`, with a default value of `var1_option_2`.
+This example creates a variable called `variable1`, with a default value of `value_option_2`.
 The label for the text box on the UI will be the value of the `label` key.
 The dashboard UI will display a dropdown with `Option 1` and `Option 2`
 as the choices.
@@ -823,6 +833,28 @@ templating:
         - value: 'value_option_2'
           text: 'Option 2'
           default: true                  # (Optional) This option should be the default value of this variable.
+```
+
+### Add related links to custom dashboards
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/216385) in GitLab 13.1.
+
+Related links can be added to the top of your metrics dashboard, which can be used for quickly
+navigating between dashboards or external services. The links will open in the same tab.
+
+The `url` attribute is required for the link but the `title` attribute is optional; if the `title`
+is missing then the full address of the URL will be displayed.
+
+![Links UI](img/related_links_v13_1.png)
+
+#### Links Syntax
+
+```yaml
+links:
+  - title: GitLab.com
+    url: https://gitlab.com
+  - title: GitLab Documentation
+    url: https://docs.gitlab.com
 ```
 
 ### View and edit the source file of a custom dashboard

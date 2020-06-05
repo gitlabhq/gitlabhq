@@ -373,6 +373,30 @@ msgstr ""
 msgid "%{issuesSize} issues with a limit of %{maxIssueCount}"
 msgstr ""
 
+msgid "%{labelStart}Class:%{labelEnd} %{class}"
+msgstr ""
+
+msgid "%{labelStart}Confidence:%{labelEnd} %{confidence}"
+msgstr ""
+
+msgid "%{labelStart}File:%{labelEnd} %{file}"
+msgstr ""
+
+msgid "%{labelStart}Image:%{labelEnd} %{image}"
+msgstr ""
+
+msgid "%{labelStart}Method:%{labelEnd} %{method}"
+msgstr ""
+
+msgid "%{labelStart}Namespace:%{labelEnd} %{namespace}"
+msgstr ""
+
+msgid "%{labelStart}Report Type:%{labelEnd} %{reportType}"
+msgstr ""
+
+msgid "%{labelStart}Severity:%{labelEnd} %{severity}"
+msgstr ""
+
 msgid "%{label_for_message} unavailable"
 msgstr ""
 
@@ -4386,9 +4410,6 @@ msgstr ""
 msgid "Class"
 msgstr ""
 
-msgid "Class:"
-msgstr ""
-
 msgid "Classification Label (optional)"
 msgstr ""
 
@@ -5739,9 +5760,6 @@ msgid "ComplianceFramework|This project is regulated by %{framework}."
 msgstr ""
 
 msgid "Confidence"
-msgstr ""
-
-msgid "Confidence: %{confidence}"
 msgstr ""
 
 msgid "Confidential"
@@ -9658,9 +9676,6 @@ msgstr ""
 msgid "File upload error."
 msgstr ""
 
-msgid "File:"
-msgstr ""
-
 msgid "Files"
 msgstr ""
 
@@ -11628,9 +11643,6 @@ msgid "Image Details"
 msgstr ""
 
 msgid "Image URL"
-msgstr ""
-
-msgid "Image: %{image}"
 msgstr ""
 
 msgid "ImageDiffViewer|2-up"
@@ -13756,9 +13768,6 @@ msgstr ""
 msgid "Method"
 msgstr ""
 
-msgid "Method:"
-msgstr ""
-
 msgid "Metric was successfully added."
 msgstr ""
 
@@ -14346,9 +14355,6 @@ msgid "Name:"
 msgstr ""
 
 msgid "Namespace is empty"
-msgstr ""
-
-msgid "Namespace: %{namespace}"
 msgstr ""
 
 msgid "Namespaces to index"
@@ -18415,9 +18421,6 @@ msgstr ""
 msgid "Report %{display_issuable_type} that are abusive, inappropriate or spam."
 msgstr ""
 
-msgid "Report Type: %{report_type}"
-msgstr ""
-
 msgid "Report abuse"
 msgstr ""
 
@@ -20058,9 +20061,6 @@ msgid "Settings to prevent self-approval across all projects in the instance. On
 msgstr ""
 
 msgid "Severity"
-msgstr ""
-
-msgid "Severity: %{severity}"
 msgstr ""
 
 msgid "Shards (%{shards})"

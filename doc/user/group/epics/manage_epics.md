@@ -43,17 +43,8 @@ An epic's page contains the following tabs:
 
 ## Bulk-edit epics
 
-You can edit multiple epics at once. For example, to apply labels to multiple epics:
-
-1. Go to the Epics list.
-1. Click **Edit epics**.
-    - Checkboxes appear next to each epic.
-    - A sidebar on the right-hand side appears with an editable field for labels.
-1. Select the checkbox next to each epic to be edited.
-1. Select the labels you want.
-1. Click **Update all**.
-
-![bulk editing](img/bulk_editing.png)
+You can edit multiple epics at once. To learn how to do it, visit
+[Bulk editing issues, epics, and merge requests at the group level](../bulk_editing/index.md#bulk-edit-epics).
 
 ## Delete an epic
 

@@ -1,5 +1,7 @@
-import { mount } from '@vue/test-utils';
-import router from '~/ide/ide_router';
+import Vuex from 'vuex';
+import { mount, createLocalVue } from '@vue/test-utils';
+import { createStore } from '~/ide/stores';
+import { createRouter } from '~/ide/ide_router';
 import Item from '~/ide/components/merge_requests/item.vue';
 
 const TEST_ITEM = {
@@ -9,7 +11,12 @@ const TEST_ITEM = {
 };
 
 describe('IDE merge request item', () => {
+  const localVue = createLocalVue();
+  localVue.use(Vuex);
+
   let wrapper;
+  let store;
+  let router;
 
   const createComponent = (props = {}) => {
     wrapper = mount(Item, {
@@ -21,10 +28,17 @@ describe('IDE merge request item', () => {
         currentProjectId: TEST_ITEM.projectPathWithNamespace,
         ...props,
       },
+      localVue,
       router,
+      store,
     });
   };
   const findIcon = () => wrapper.find('.ic-mobile-issue-close');
+
+  beforeEach(() => {
+    store = createStore();
+    router = createRouter(store);
+  });
 
   afterEach(() => {
     wrapper.destroy();

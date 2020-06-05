@@ -69,7 +69,7 @@ The following assumes you already have Vault installed and running.
 
 1. **Write the OIDC Role Config:**
 
-   Now that Vault has a GitLab application ID and secret, it needs to know the [**Redirect URIs**](https://www.vaultproject.io/docs/auth/jwt/#redirect-uris) and scopes given to GitLab during the application creation process. The redirect URIs need to match where your Vault instance is running. The `oidc_scopes` field needs to include the `openid`. Similarly to the previous step, replace `your_application_id` with the generated application ID from GitLab:
+   Now that Vault has a GitLab application ID and secret, it needs to know the [**Redirect URIs**](https://www.vaultproject.io/docs/auth/jwt#redirect-uris) and scopes given to GitLab during the application creation process. The redirect URIs need to match where your Vault instance is running. The `oidc_scopes` field needs to include the `openid`. Similarly to the previous step, replace `your_application_id` with the generated application ID from GitLab:
 
    This configuration is saved under the name of the role you are creating. In this case, we are creating a `demo` role. Later, we'll show how you can access this role through the Vault CLI.
 
@@ -110,7 +110,7 @@ The following assumes you already have Vault installed and running.
 
    1. In the **Write the OIDC Role Config** (step 4), we created a role called `demo`. We set `role=demo` so Vault knows which configuration we'd like to login in with.
    1. To set Vault to use the `OIDC` sign-in method, we set `-method=oidc`.
-   1. To set the port that GitLab should redirect to, we set `port=8250` or another port number that matches the port given to GitLab when listing [Redirect URIs](https://www.vaultproject.io/docs/auth/jwt/#redirect-uris).
+   1. To set the port that GitLab should redirect to, we set `port=8250` or another port number that matches the port given to GitLab when listing [Redirect URIs](https://www.vaultproject.io/docs/auth/jwt#redirect-uris).
 
    Once you run the command above, it will present a link in the terminal.
    Click the link in the terminal and a tab will open in the browser confirming you're signed into Vault via OIDC:

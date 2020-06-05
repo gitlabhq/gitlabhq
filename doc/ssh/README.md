@@ -412,7 +412,7 @@ are *explicitly not supported* and may stop working at any time.
 
 ### Options for Microsoft Windows
 
-If you're running Windows 10, the [Windows Subsystem for Linux (WSL)](https://docs.microsoft.com/en-us/windows/wsl/install-win10), and its latest [WSL 2](https://docs.microsoft.com/install-win10) version,
+If you're running Windows 10, the [Windows Subsystem for Linux (WSL)](https://docs.microsoft.com/en-us/windows/wsl/install-win10), and its latest [WSL 2](https://docs.microsoft.com/en-us/install-win10) version,
 support the installation of different Linux distributions, which include the Git and SSH clients.
 
 For current versions of Windows, you can also install the Git and SSH clients with

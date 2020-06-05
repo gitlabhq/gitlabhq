@@ -1,17 +1,22 @@
 import Vue from 'vue';
 import { trimText } from 'helpers/text_helper';
 import { createComponentWithStore } from 'helpers/vue_mount_component_helper';
-import store from '~/ide/stores';
+import { createStore } from '~/ide/stores';
 import listItem from '~/ide/components/commit_sidebar/list_item.vue';
-import router from '~/ide/ide_router';
-import { file, resetStore } from '../../helpers';
+import { createRouter } from '~/ide/ide_router';
+import { file } from '../../helpers';
 
 describe('Multi-file editor commit sidebar list item', () => {
   let vm;
   let f;
   let findPathEl;
+  let store;
+  let router;
 
   beforeEach(() => {
+    store = createStore();
+    router = createRouter(store);
+
     const Component = Vue.extend(listItem);
 
     f = file('test-file');
@@ -28,8 +33,6 @@ describe('Multi-file editor commit sidebar list item', () => {
 
   afterEach(() => {
     vm.$destroy();
-
-    resetStore(store);
   });
 
   const findPathText = () => trimText(findPathEl.textContent);

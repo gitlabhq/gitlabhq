@@ -3,14 +3,16 @@ import testAction from 'helpers/vuex_action_helper';
 import { showTreeEntry, getFiles, setDirectoryData } from '~/ide/stores/actions/tree';
 import * as types from '~/ide/stores/mutation_types';
 import axios from '~/lib/utils/axios_utils';
-import store from '~/ide/stores';
+import { createStore } from '~/ide/stores';
 import service from '~/ide/services';
-import router from '~/ide/ide_router';
-import { file, resetStore, createEntriesFromPaths } from '../../helpers';
+import { createRouter } from '~/ide/ide_router';
+import { file, createEntriesFromPaths } from '../../helpers';
 
 describe('Multi-file store tree actions', () => {
   let projectTree;
   let mock;
+  let store;
+  let router;
 
   const basicCallParameters = {
     endpoint: 'rootEndpoint',
@@ -21,6 +23,8 @@ describe('Multi-file store tree actions', () => {
   };
 
   beforeEach(() => {
+    store = createStore();
+    router = createRouter(store);
     jest.spyOn(router, 'push').mockImplementation();
 
     mock = new MockAdapter(axios);
@@ -35,7 +39,6 @@ describe('Multi-file store tree actions', () => {
 
   afterEach(() => {
     mock.restore();
-    resetStore(store);
   });
 
   describe('getFiles', () => {
