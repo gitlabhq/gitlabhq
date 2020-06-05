@@ -3,6 +3,30 @@
 require 'spec_helper'
 
 describe Ci::DailyBuildGroupReportResult do
+  let(:daily_build_group_report_result) { build(:ci_daily_build_group_report_result)}
+
+  describe 'associations' do
+    it { is_expected.to belong_to(:last_pipeline) }
+    it { is_expected.to belong_to(:project) }
+  end
+
+  describe 'validations' do
+    context 'when attributes are valid' do
+      it 'returns no errors' do
+        expect(daily_build_group_report_result).to be_valid
+      end
+    end
+
+    context 'when data is invalid' do
+      it 'returns errors' do
+        daily_build_group_report_result.data = { invalid: 'data' }
+
+        expect(daily_build_group_report_result).to be_invalid
+        expect(daily_build_group_report_result.errors.full_messages).to eq(["Data must be a valid json schema"])
+      end
+    end
+  end
+
   describe '.upsert_reports' do
     let!(:rspec_coverage) do
       create(

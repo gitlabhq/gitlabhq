@@ -26164,6 +26164,9 @@ msgstr ""
 msgid "ciReport|SAST"
 msgstr ""
 
+msgid "ciReport|Secret Detection"
+msgstr ""
+
 msgid "ciReport|Secret scanning"
 msgstr ""
 

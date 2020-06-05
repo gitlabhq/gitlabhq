@@ -218,14 +218,12 @@ export default {
         title-link="https://docs.helm.sh/"
       >
         <template #description>
-          <div>
-            {{
-              s__(`ClusterIntegration|Helm streamlines installing
-                      and managing Kubernetes applications.
-                      Tiller runs inside of your Kubernetes Cluster,
-                      and manages releases of your charts.`)
-            }}
-          </div>
+          {{
+            s__(`ClusterIntegration|Helm streamlines installing
+                    and managing Kubernetes applications.
+                    Tiller runs inside of your Kubernetes Cluster,
+                    and manages releases of your charts.`)
+          }}
         </template>
       </application-row>
       <div v-show="!helmInstalled" class="cluster-application-warning">
@@ -257,92 +255,88 @@ export default {
         title-link="https://kubernetes.io/docs/concepts/services-networking/ingress/"
       >
         <template #description>
-          <div>
-            <p>
-              {{
-                s__(`ClusterIntegration|Ingress gives you a way to route
-                          requests to services based on the request host or path,
-                          centralizing a number of services into a single entrypoint.`)
-              }}
-            </p>
+          <p>
+            {{
+              s__(`ClusterIntegration|Ingress gives you a way to route
+                        requests to services based on the request host or path,
+                        centralizing a number of services into a single entrypoint.`)
+            }}
+          </p>
 
-            <ingress-modsecurity-settings
-              :ingress="ingress"
-              :ingress-mod-security-help-path="ingressModSecurityHelpPath"
-            />
+          <ingress-modsecurity-settings
+            :ingress="ingress"
+            :ingress-mod-security-help-path="ingressModSecurityHelpPath"
+          />
 
-            <template v-if="ingressInstalled">
-              <div class="form-group">
-                <label for="ingress-endpoint">{{
-                  s__('ClusterIntegration|Ingress Endpoint')
-                }}</label>
-                <div class="input-group">
-                  <template v-if="ingressExternalEndpoint">
-                    <input
-                      id="ingress-endpoint"
-                      :value="ingressExternalEndpoint"
-                      type="text"
-                      class="form-control js-endpoint"
-                      readonly
+          <template v-if="ingressInstalled">
+            <div class="form-group">
+              <label for="ingress-endpoint">{{ s__('ClusterIntegration|Ingress Endpoint') }}</label>
+              <div class="input-group">
+                <template v-if="ingressExternalEndpoint">
+                  <input
+                    id="ingress-endpoint"
+                    :value="ingressExternalEndpoint"
+                    type="text"
+                    class="form-control js-endpoint"
+                    readonly
+                  />
+                  <span class="input-group-append">
+                    <clipboard-button
+                      :text="ingressExternalEndpoint"
+                      :title="s__('ClusterIntegration|Copy Ingress Endpoint')"
+                      class="input-group-text js-clipboard-btn"
                     />
-                    <span class="input-group-append">
-                      <clipboard-button
-                        :text="ingressExternalEndpoint"
-                        :title="s__('ClusterIntegration|Copy Ingress Endpoint')"
-                        class="input-group-text js-clipboard-btn"
-                      />
-                    </span>
-                  </template>
-                  <template v-else>
-                    <input type="text" class="form-control js-endpoint" readonly />
-                    <gl-loading-icon
-                      class="position-absolute align-self-center ml-2 js-ingress-ip-loading-icon"
-                    />
-                  </template>
-                </div>
-                <p class="form-text text-muted">
-                  {{
-                    s__(`ClusterIntegration|Point a wildcard DNS to this
+                  </span>
+                </template>
+                <template v-else>
+                  <input type="text" class="form-control js-endpoint" readonly />
+                  <gl-loading-icon
+                    class="position-absolute align-self-center ml-2 js-ingress-ip-loading-icon"
+                  />
+                </template>
+              </div>
+              <p class="form-text text-muted">
+                {{
+                  s__(`ClusterIntegration|Point a wildcard DNS to this
                                 generated endpoint in order to access
                                 your application after it has been deployed.`)
-                  }}
-                  <gl-link :href="ingressDnsHelpPath" target="_blank">
-                    {{ __('More information') }}
-                  </gl-link>
-                </p>
-              </div>
-
-              <p v-if="!ingressExternalEndpoint" class="settings-message js-no-endpoint-message">
-                {{
-                  s__(`ClusterIntegration|The endpoint is in
-                              the process of being assigned. Please check your Kubernetes
-                              cluster or Quotas on Google Kubernetes Engine if it takes a long time.`)
                 }}
                 <gl-link :href="ingressDnsHelpPath" target="_blank">
                   {{ __('More information') }}
                 </gl-link>
               </p>
-            </template>
-            <template v-else>
-              <div class="bs-callout bs-callout-info">
-                <strong>
-                  <gl-sprintf
-                    :message="
-                      s__(
-                        'ClusterIntegration|Installing Ingress may incur additional costs. Learn more about %{pricingLink}.',
-                      )
-                    "
-                  >
-                    <template #pricingLink>
-                      <gl-link href="https://cloud.google.com/compute/pricing#lb" target="_blank">{{
-                        s__('ClusterIntegration|pricing')
-                      }}</gl-link>
-                    </template>
-                  </gl-sprintf>
-                </strong>
-              </div>
-            </template>
-          </div>
+            </div>
+
+            <p v-if="!ingressExternalEndpoint" class="settings-message js-no-endpoint-message">
+              {{
+                s__(`ClusterIntegration|The endpoint is in
+                            the process of being assigned. Please check your Kubernetes
+                            cluster or Quotas on Google Kubernetes Engine if it takes a long time.`)
+              }}
+              <gl-link :href="ingressDnsHelpPath" target="_blank">
+                {{ __('More information') }}
+              </gl-link>
+            </p>
+          </template>
+          <template v-else>
+            <div class="bs-callout bs-callout-info">
+              <strong>
+                <gl-sprintf
+                  :message="
+                    s__(
+                      'ClusterIntegration|Installing Ingress may incur additional costs. Learn more about %{pricingLink}.',
+                    )
+                  "
+                >
+                  <template #pricingLink>
+                    <gl-link href="https://cloud.google.com/compute/pricing#lb" target="_blank">{{
+                      s__('ClusterIntegration|pricing')
+                    }}</gl-link>
+                  </template>
+                </gl-sprintf>
+              </strong>
+            </div>
+          </template>
         </template>
       </application-row>
       <application-row
@@ -363,47 +357,45 @@ export default {
         title-link="https://cert-manager.readthedocs.io/en/latest/#"
       >
         <template #description>
-          <div>
-            <p>
-              <gl-sprintf
-                :message="
-                  s__(`ClusterIntegration|Cert-Manager is a native Kubernetes certificate management controller that helps with issuing certificates.
-                              Installing Cert-Manager on your cluster will issue a certificate by %{letsEncrypt} and ensure that certificates
-                              are valid and up-to-date.`)
-                "
-              >
-                <template #letsEncrypt>
-                  <gl-link href="https://letsencrypt.org/" target="_blank">{{
-                    s__(`ClusterIntegration|Let's Encrypt`)
-                  }}</gl-link>
-                </template>
-              </gl-sprintf>
-            </p>
-            <div class="form-group">
-              <label for="cert-manager-issuer-email">
-                {{ s__('ClusterIntegration|Issuer Email') }}
-              </label>
-              <div class="input-group">
-                <input
-                  id="cert-manager-issuer-email"
-                  v-model="applications.cert_manager.email"
-                  :readonly="certManagerInstalled"
-                  type="text"
-                  class="form-control js-email"
-                />
-              </div>
-              <p class="form-text text-muted">
-                {{
-                  s__(`ClusterIntegration|Issuers represent a certificate authority.
-                                You must provide an email address for your Issuer. `)
-                }}
-                <gl-link
-                  href="http://docs.cert-manager.io/en/latest/reference/issuers.html?highlight=email"
-                  target="_blank"
-                  >{{ __('More information') }}</gl-link
-                >
-              </p>
+          <p>
+            <gl-sprintf
+              :message="
+                s__(`ClusterIntegration|Cert-Manager is a native Kubernetes certificate management controller that helps with issuing certificates.
+            Installing Cert-Manager on your cluster will issue a certificate by %{letsEncrypt} and ensure that certificates
+            are valid and up-to-date.`)
+              "
+            >
+              <template #letsEncrypt>
+                <gl-link href="https://letsencrypt.org/" target="_blank">{{
+                  s__(`ClusterIntegration|Let's Encrypt`)
+                }}</gl-link>
+              </template>
+            </gl-sprintf>
+          </p>
+          <div class="form-group">
+            <label for="cert-manager-issuer-email">
+              {{ s__('ClusterIntegration|Issuer Email') }}
+            </label>
+            <div class="input-group">
+              <input
+                id="cert-manager-issuer-email"
+                v-model="applications.cert_manager.email"
+                :readonly="certManagerInstalled"
+                type="text"
+                class="form-control js-email"
+              />
             </div>
+            <p class="form-text text-muted">
+              {{
+                s__(`ClusterIntegration|Issuers represent a certificate authority.
+                              You must provide an email address for your Issuer. `)
+              }}
+              <gl-link
+                href="http://docs.cert-manager.io/en/latest/reference/issuers.html?highlight=email"
+                target="_blank"
+                >{{ __('More information') }}</gl-link
+              >
+            </p>
           </div>
         </template>
       </application-row>
@@ -463,14 +455,12 @@ export default {
         title-link="https://docs.gitlab.com/runner/"
       >
         <template #description>
-          <div>
-            {{
-              s__(`ClusterIntegration|GitLab Runner connects to the
-                      repository and executes CI/CD jobs,
-                      pushing results back and deploying
-                      applications to production.`)
-            }}
-          </div>
+          {{
+            s__(`ClusterIntegration|GitLab Runner connects to the
+                    repository and executes CI/CD jobs,
+                    pushing results back and deploying
+                    applications to production.`)
+          }}
         </template>
       </application-row>
       <application-row
@@ -491,31 +481,29 @@ export default {
         title-link="https://crossplane.io"
       >
         <template #description>
-          <div>
-            <p>
-              <gl-sprintf
-                :message="
-                  s__(
-                    `ClusterIntegration|Crossplane enables declarative provisioning of managed services from your cloud of choice using %{codeStart}kubectl%{codeEnd} or %{gitlabIntegrationLink}.
-                              Crossplane runs inside your Kubernetes cluster and supports secure connectivity and secrets management between app containers and the cloud services they depend on.`,
-                  )
-                "
-              >
-                <template #code="{content}">
-                  <code>{{ content }}</code>
-                </template>
-                <template #gitlabIntegrationLink>
-                  <gl-link
-                    href="https://docs.gitlab.com/ee/user/clusters/applications.html#crossplane"
-                    target="_blank"
-                    >{{ s__('ClusterIntegration|Gitlab Integration') }}</gl-link
-                  >
-                </template>
-              </gl-sprintf>
-            </p>
-            <div class="form-group">
-              <CrossplaneProviderStack :crossplane="crossplane" @set="setCrossplaneProviderStack" />
-            </div>
+          <p>
+            <gl-sprintf
+              :message="
+                s__(
+                  `ClusterIntegration|Crossplane enables declarative provisioning of managed services from your cloud of choice using %{codeStart}kubectl%{codeEnd} or %{gitlabIntegrationLink}.
+              Crossplane runs inside your Kubernetes cluster and supports secure connectivity and secrets management between app containers and the cloud services they depend on.`,
+                )
+              "
+            >
+              <template #code="{content}">
+                <code>{{ content }}</code>
+              </template>
+              <template #gitlabIntegrationLink>
+                <gl-link
+                  href="https://docs.gitlab.com/ee/user/clusters/applications.html#crossplane"
+                  target="_blank"
+                  >{{ s__('ClusterIntegration|Gitlab Integration') }}</gl-link
+                >
+              </template>
+            </gl-sprintf>
+          </p>
+          <div class="form-group">
+            <CrossplaneProviderStack :crossplane="crossplane" @set="setCrossplaneProviderStack" />
           </div>
         </template>
       </application-row>
@@ -538,52 +526,48 @@ export default {
         title-link="https://jupyterhub.readthedocs.io/en/stable/"
       >
         <template #description>
-          <div>
-            <p>
-              {{
-                s__(`ClusterIntegration|JupyterHub, a multi-user Hub, spawns,
-                          manages, and proxies multiple instances of the single-user
-                          Jupyter notebook server. JupyterHub can be used to serve
-                          notebooks to a class of students, a corporate data science group,
-                          or a scientific research group.`)
-              }}
-            </p>
+          <p>
+            {{
+              s__(`ClusterIntegration|JupyterHub, a multi-user Hub, spawns,
+                        manages, and proxies multiple instances of the single-user
+                        Jupyter notebook server. JupyterHub can be used to serve
+                        notebooks to a class of students, a corporate data science group,
+                        or a scientific research group.`)
+            }}
+          </p>
 
-            <template v-if="ingressExternalEndpoint">
-              <div class="form-group">
-                <label for="jupyter-hostname">{{
-                  s__('ClusterIntegration|Jupyter Hostname')
-                }}</label>
+          <template v-if="ingressExternalEndpoint">
+            <div class="form-group">
+              <label for="jupyter-hostname">{{ s__('ClusterIntegration|Jupyter Hostname') }}</label>
 
-                <div class="input-group">
-                  <input
-                    id="jupyter-hostname"
-                    v-model="applications.jupyter.hostname"
-                    :readonly="jupyterInstalled"
-                    type="text"
-                    class="form-control js-hostname"
+              <div class="input-group">
+                <input
+                  id="jupyter-hostname"
+                  v-model="applications.jupyter.hostname"
+                  :readonly="jupyterInstalled"
+                  type="text"
+                  class="form-control js-hostname"
+                />
+                <span class="input-group-btn">
+                  <clipboard-button
+                    :text="jupyterHostname"
+                    :title="s__('ClusterIntegration|Copy Jupyter Hostname')"
+                    class="js-clipboard-btn"
                   />
-                  <span class="input-group-btn">
-                    <clipboard-button
-                      :text="jupyterHostname"
-                      :title="s__('ClusterIntegration|Copy Jupyter Hostname')"
-                      class="js-clipboard-btn"
-                    />
-                  </span>
-                </div>
-
-                <p v-if="ingressInstalled" class="form-text text-muted">
-                  {{
-                    s__(`ClusterIntegration|Replace this with your own hostname if you want.
-                                  If you do so, point hostname to Ingress IP Address from above.`)
-                  }}
-                  <gl-link :href="ingressDnsHelpPath" target="_blank">
-                    {{ __('More information') }}
-                  </gl-link>
-                </p>
+                </span>
               </div>
-            </template>
-          </div>
+
+              <p v-if="ingressInstalled" class="form-text text-muted">
+                {{
+                  s__(`ClusterIntegration|Replace this with your own hostname if you want.
+                                If you do so, point hostname to Ingress IP Address from above.`)
+                }}
+                <gl-link :href="ingressDnsHelpPath" target="_blank">
+                  {{ __('More information') }}
+                </gl-link>
+              </p>
+            </div>
+          </template>
         </template>
       </application-row>
       <application-row
@@ -610,31 +594,29 @@ export default {
         title-link="https://github.com/knative/docs"
       >
         <template #description>
-          <div>
-            <p v-if="!rbac" class="rbac-notice bs-callout bs-callout-info">
-              {{
-                s__(`ClusterIntegration|You must have an RBAC-enabled cluster
-                to install Knative.`)
-              }}
-              <gl-link :href="helpPath" target="_blank">{{ __('More information') }}</gl-link>
-            </p>
-            <p>
-              {{
-                s__(`ClusterIntegration|Knative extends Kubernetes to provide
-                          a set of middleware components that are essential to build modern,
-                          source-centric, and container-based applications that can run
-                          anywhere: on premises, in the cloud, or even in a third-party data center.`)
-              }}
-            </p>
+          <p v-if="!rbac" class="rbac-notice bs-callout bs-callout-info">
+            {{
+              s__(`ClusterIntegration|You must have an RBAC-enabled cluster
+            to install Knative.`)
+            }}
+            <gl-link :href="helpPath" target="_blank">{{ __('More information') }}</gl-link>
+          </p>
+          <p>
+            {{
+              s__(`ClusterIntegration|Knative extends Kubernetes to provide
+                        a set of middleware components that are essential to build modern,
+                        source-centric, and container-based applications that can run
+                        anywhere: on premises, in the cloud, or even in a third-party data center.`)
+            }}
+          </p>
 
-            <knative-domain-editor
-              v-if="(knative.installed || (helmInstalled && rbac)) && !preInstalledKnative"
-              :knative="knative"
-              :ingress-dns-help-path="ingressDnsHelpPath"
-              @save="saveKnativeDomain"
-              @set="setKnativeDomain"
-            />
-          </div>
+          <knative-domain-editor
+            v-if="(knative.installed || (helmInstalled && rbac)) && !preInstalledKnative"
+            :knative="knative"
+            :ingress-dns-help-path="ingressDnsHelpPath"
+            @save="saveKnativeDomain"
+            @set="setKnativeDomain"
+          />
         </template>
       </application-row>
       <application-row
@@ -659,15 +641,13 @@ export default {
         title-link="https://gitlab.com/gitlab-org/charts/elastic-stack"
       >
         <template #description>
-          <div>
-            <p>
-              {{
-                s__(
-                  `ClusterIntegration|The elastic stack collects logs from all pods in your cluster`,
-                )
-              }}
-            </p>
-          </div>
+          <p>
+            {{
+              s__(
+                `ClusterIntegration|The elastic stack collects logs from all pods in your cluster`,
+              )
+            }}
+          </p>
         </template>
       </application-row>
 
@@ -696,25 +676,23 @@ export default {
         title-link="https://github.com/helm/charts/tree/master/stable/fluentd"
       >
         <template #description>
-          <div>
-            <p>
-              {{
-                s__(
-                  `ClusterIntegration|Fluentd is an open source data collector, which lets you unify the data collection and consumption for a better use and understanding of data. It requires at least one of the following logs to be successfully installed.`,
-                )
-              }}
-            </p>
+          <p>
+            {{
+              s__(
+                `ClusterIntegration|Fluentd is an open source data collector, which lets you unify the data collection and consumption for a better use and understanding of data. It requires at least one of the following logs to be successfully installed.`,
+              )
+            }}
+          </p>
 
-            <fluentd-output-settings
-              :port="applications.fluentd.port"
-              :protocol="applications.fluentd.protocol"
-              :host="applications.fluentd.host"
-              :waf-log-enabled="applications.fluentd.wafLogEnabled"
-              :cilium-log-enabled="applications.fluentd.ciliumLogEnabled"
-              :status="applications.fluentd.status"
-              :update-failed="applications.fluentd.updateFailed"
-            />
-          </div>
+          <fluentd-output-settings
+            :port="applications.fluentd.port"
+            :protocol="applications.fluentd.protocol"
+            :host="applications.fluentd.host"
+            :waf-log-enabled="applications.fluentd.wafLogEnabled"
+            :cilium-log-enabled="applications.fluentd.ciliumLogEnabled"
+            :status="applications.fluentd.status"
+            :update-failed="applications.fluentd.updateFailed"
+          />
         </template>
       </application-row>
     </div>

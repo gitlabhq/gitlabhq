@@ -37,6 +37,7 @@ describe Gitlab::Ci::Config::Entry::Reports do
         :junit | 'junit.xml'
         :codequality | 'gl-code-quality-report.json'
         :sast | 'gl-sast-report.json'
+        :secret_detection | 'gl-secret-detection-report.json'
         :dependency_scanning | 'gl-dependency-scanning-report.json'
         :container_scanning | 'gl-container-scanning-report.json'
         :dast | 'gl-dast-report.json'

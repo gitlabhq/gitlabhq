@@ -8,7 +8,7 @@ describe JsonSchemaValidator do
 
     subject { validator.validate(build_report_result) }
 
-    context 'when file_path is set' do
+    context 'when filename is set' do
       let(:validator) { described_class.new(attributes: [:data], filename: "build_report_result_data") }
 
       context 'when data is valid' do
@@ -31,11 +31,19 @@ describe JsonSchemaValidator do
       end
     end
 
-    context 'when file_path is not set' do
+    context 'when filename is not set' do
       let(:validator) { described_class.new(attributes: [:data]) }
 
       it 'raises an ArgumentError' do
         expect { subject }.to raise_error(ArgumentError)
+      end
+    end
+
+    context 'when filename is invalid' do
+      let(:validator) { described_class.new(attributes: [:data], filename: "invalid$filename") }
+
+      it 'raises a FilenameError' do
+        expect { subject }.to raise_error(described_class::FilenameError)
       end
     end
   end

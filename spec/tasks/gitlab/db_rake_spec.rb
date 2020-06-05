@@ -115,24 +115,69 @@ describe 'gitlab:db namespace rake task' do
     end
 
     it 'can be executed multiple times within another rake task' do
-      Rake::Task.define_task(test_task_name => :environment) do
+      expect_multiple_executions_of_task(test_task_name, clean_rake_task) do
         expect_next_instance_of(Gitlab::Database::SchemaCleaner) do |cleaner|
           expect(cleaner).to receive(:clean).with(output)
         end
-        Rake::Task[clean_rake_task].invoke
-
-        expect_next_instance_of(Gitlab::Database::SchemaCleaner) do |cleaner|
-          expect(cleaner).to receive(:clean).with(output)
-        end
-        Rake::Task[clean_rake_task].invoke
       end
+    end
+  end
 
-      run_rake_task(test_task_name)
+  describe 'load_custom_structure' do
+    let_it_be(:db_config) { Rails.application.config_for(:database) }
+    let_it_be(:custom_load_task) { 'gitlab:db:load_custom_structure' }
+    let_it_be(:custom_filepath) { Pathname.new('db/directory') }
+
+    it 'uses the psql command to load the custom structure file' do
+      expect(Gitlab::Database::CustomStructure).to receive(:custom_dump_filepath).and_return(custom_filepath)
+
+      expect(Kernel).to receive(:system)
+        .with('psql', any_args, custom_filepath.to_path, db_config['database']).and_return(true)
+
+      run_rake_task(custom_load_task)
+    end
+
+    it 'raises an error when the call to the psql command fails' do
+      expect(Gitlab::Database::CustomStructure).to receive(:custom_dump_filepath).and_return(custom_filepath)
+
+      expect(Kernel).to receive(:system)
+        .with('psql', any_args, custom_filepath.to_path, db_config['database']).and_return(nil)
+
+      expect { run_rake_task(custom_load_task) }.to raise_error(/failed to execute:\s*psql/)
+    end
+  end
+
+  describe 'dump_custom_structure' do
+    let_it_be(:test_task_name) { 'gitlab:db:_test_multiple_task_executions' }
+    let_it_be(:custom_dump_task) { 'gitlab:db:dump_custom_structure' }
+
+    after do
+      Rake::Task[test_task_name].clear if Rake::Task.task_defined?(test_task_name)
+    end
+
+    it 'can be executed multiple times within another rake task' do
+      expect_multiple_executions_of_task(test_task_name, custom_dump_task) do
+        expect_next_instance_of(Gitlab::Database::CustomStructure) do |custom_structure|
+          expect(custom_structure).to receive(:dump)
+        end
+      end
     end
   end
 
   def run_rake_task(task_name)
     Rake::Task[task_name].reenable
     Rake.application.invoke_task task_name
+  end
+
+  def expect_multiple_executions_of_task(test_task_name, task_to_invoke, count: 2)
+    Rake::Task.define_task(test_task_name => :environment) do
+      count.times do
+        yield
+
+        Rake::Task[task_to_invoke].invoke
+      end
+    end
+
+    run_rake_task(test_task_name)
   end
 end

@@ -339,7 +339,9 @@ export default {
           class="js-cluster-application-installed-via"
           v-html="installedVia"
         ></span>
-        <slot name="description"></slot>
+        <div>
+          <slot name="description"></slot>
+        </div>
         <div v-if="hasError" class="cluster-application-error text-danger prepend-top-10">
           <p class="js-cluster-application-general-error-message gl-mb-0">
             {{ generalErrorDescription }}

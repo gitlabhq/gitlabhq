@@ -1,0 +1,8 @@
+{
+  "description": "Daily build group report result data",
+  "type": "object",
+  "properties": {
+    "coverage": { "type": "float" }
+  },
+  "additionalProperties": false
+}
