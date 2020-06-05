@@ -1,0 +1,9 @@
+{
+  "type": "array",
+  "required": ["url"],
+  "properties": {
+    "url": { "type": "string" },
+    "title": { "type": "string" }
+  },
+  "additionalProperties": false
+}

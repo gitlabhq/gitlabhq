@@ -5,7 +5,6 @@ shared_context 'project service activation' do
   let(:user) { create(:user) }
 
   before do
-    stub_feature_flags(integration_form_refactor: false)
     project.add_maintainer(user)
     sign_in(user)
   end

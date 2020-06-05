@@ -803,7 +803,7 @@ restore:
 
 ```shell
 # This command will overwrite the contents of your GitLab database!
-sudo gitlab-backup restore BACKUP=1493107454_2018_04_25_10.6.4-ce
+sudo gitlab-backup restore BACKUP=11493107454_2018_04_25_10.6.4-ce
 ```
 
 NOTE: **Note**

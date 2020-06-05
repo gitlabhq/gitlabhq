@@ -19,6 +19,7 @@ exceptions:
   - CSS
   - CSV
   - DNS
+  - EKS
   - GET
   - GNU
   - GPG

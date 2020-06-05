@@ -242,6 +242,12 @@ describe AlertManagement::Alert do
     end
   end
 
+  describe '#to_reference' do
+    let(:alert) { build(:alert_management_alert) }
+
+    it { expect(alert.to_reference).to eq('') }
+  end
+
   describe '#trigger' do
     subject { alert.trigger }
 

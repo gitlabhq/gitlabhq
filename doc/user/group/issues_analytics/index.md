@@ -35,6 +35,17 @@ shows a total of 15 months for the chart in the GitLab.org group.
 
 ![Issues created per month](img/issues_created_per_month_v12_8.png)
 
+## Drill into the information
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/196547) in GitLab 13.1.
+
+You can examine details of individual issues by browsing the table
+located below the chart.
+
+The chart displays the top 100 issues based on the global page filters.
+
+![Issues table](img/issues_table_v13_1.png)
+
 <!-- ## Troubleshooting
 
 Include any troubleshooting steps that you can foresee. If you know beforehand what issues

@@ -456,7 +456,8 @@ On GitLab.com, we have DangerBot setup to monitor Telemetry related files and Da
 | `dependency_list_usages_total`                          | `counts`                           |             |                                                   |
 | `epics`                                                 | `counts`                           |             |                                                   |
 | `feature_flags`                                         | `counts`                           |             |                                                   |
-| `geo_nodes`                                             | `counts`                           |             |                                                   |
+| `geo_nodes`                                             | `counts`                           | `geo`       | Number of sites in a Geo deployment               |
+| `geo_event_log_max_id`                                  | `counts`                           | `geo`       | Number of replication events on a Geo primary     |
 | `incident_issues`                                       | `counts`                           | `monitor`   | Issues created by the alert bot                   |
 | `alert_bot_incident_issues`                             | `counts`                           | `monitor`   | Issues created by the alert bot                   |
 | `incident_labeled_issues`                               | `counts`                           | `monitor`   | Issues with the incident label                    |

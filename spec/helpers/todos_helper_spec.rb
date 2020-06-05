@@ -20,6 +20,10 @@ describe TodosHelper do
            author: author,
            note: note)
   end
+  let_it_be(:alert_todo) do
+    alert = create(:alert_management_alert, iid: 1001)
+    create(:todo, target: alert)
+  end
 
   describe '#todos_count_format' do
     it 'shows fuzzy count for 100 or more items' do
@@ -115,6 +119,18 @@ describe TodosHelper do
         expect(path).to eq("#{issue_path}/designs/#{design.filename}##{dom_id(design_todo.note)}")
       end
     end
+
+    context 'when given an alert' do
+      let(:todo) { alert_todo }
+
+      it 'responds with an appropriate path' do
+        path = helper.todo_target_path(todo)
+
+        expect(path).to eq(
+          "/#{todo.project.full_path}/-/alert_management/#{todo.target.iid}/details"
+        )
+      end
+    end
   end
 
   describe '#todo_target_type_name' do
@@ -125,6 +141,16 @@ describe TodosHelper do
         name = helper.todo_target_type_name(todo)
 
         expect(name).to eq('design')
+      end
+    end
+
+    context 'when given an alert todo' do
+      let(:todo) { alert_todo }
+
+      it 'responds with an appropriate target type name' do
+        name = helper.todo_target_type_name(todo)
+
+        expect(name).to eq('alert')
       end
     end
   end

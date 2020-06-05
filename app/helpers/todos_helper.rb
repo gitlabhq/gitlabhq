@@ -55,6 +55,7 @@ module TodosHelper
 
   def todo_target_type_name(todo)
     return _('design') if todo.for_design?
+    return _('alert') if todo.for_alert?
 
     todo.target_type.titleize.downcase
   end
@@ -68,6 +69,8 @@ module TodosHelper
       project_commit_path(todo.project, todo.target, path_options)
     elsif todo.for_design?
       todos_design_path(todo, path_options)
+    elsif todo.for_alert?
+      details_project_alert_management_path(todo.project, todo.target)
     else
       path = [todo.resource_parent, todo.target]
 

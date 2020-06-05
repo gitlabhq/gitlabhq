@@ -2,12 +2,10 @@
 
 require 'spec_helper'
 
-describe 'Admin activates Prometheus' do
+describe 'Admin activates Prometheus', :js do
   let(:admin) { create(:user, :admin) }
 
   before do
-    stub_feature_flags(integration_form_refactor: false)
-
     sign_in(admin)
 
     visit(admin_application_settings_services_path)

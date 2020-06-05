@@ -8248,6 +8248,9 @@ msgstr ""
 msgid "Enable header and footer in emails"
 msgstr ""
 
+msgid "Enable integration"
+msgstr ""
+
 msgid "Enable maintenance mode"
 msgstr ""
 
@@ -15116,6 +15119,15 @@ msgid "Omnibus Protected Paths throttle is active, and takes priority over these
 msgstr ""
 
 msgid "On track"
+msgstr ""
+
+msgid "OnDemandScans|Create new DAST scan"
+msgstr ""
+
+msgid "OnDemandScans|On-demand Scans"
+msgstr ""
+
+msgid "OnDemandScans|Schedule or run scans immediately against target sites. Currently available on-demand scan type: DAST. %{helpLinkStart}More information%{helpLinkEnd}"
 msgstr ""
 
 msgid "Onboarding"
@@ -25495,7 +25507,7 @@ msgstr ""
 msgid "You have declined the invitation to join %{label}."
 msgstr ""
 
-msgid "You have imported from this project %{numberOfPreviousImportsForProject} times before. Each new import will create duplicate issues."
+msgid "You have imported from this project %{numberOfPreviousImports} times before. Each new import will create duplicate issues."
 msgstr ""
 
 msgid "You have no permissions"
@@ -25923,6 +25935,9 @@ msgstr ""
 msgid "ago"
 msgstr ""
 
+msgid "alert"
+msgstr ""
+
 msgid "allowed to fail"
 msgstr ""
 
@@ -26233,6 +26248,9 @@ msgid "commented on %{link_to_project}"
 msgstr ""
 
 msgid "commit %{commit_id}"
+msgstr ""
+
+msgid "committed"
 msgstr ""
 
 msgid "confidentiality|You are going to turn off the confidentiality. This means <strong>everyone</strong> will be able to see and leave a comment on this issue."

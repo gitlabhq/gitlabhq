@@ -164,6 +164,41 @@ You will need to add your AWS external ID to the
 [IAM Role in the AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-role.html#cli-configure-role-xaccount)
 to manage your cluster using `kubectl`.
 
+### Troubleshooting creating a new cluster
+
+The following errors are commonly encountered when creating a new cluster.
+
+#### Error: Request failed with status code 422
+
+When submitting the initial authentication form, GitLab returns a status code 422
+error when it can't determine the role you've provided. Make sure you've
+correctly configured your role with the **Account ID** and **External ID**
+provided by GitLab. In GitLab, make sure to enter the correct **Role ARN**.
+
+#### Could not load Security Groups for this VPC
+
+When populating options in the configuration form, GitLab returns this error
+because GitLab has successfully assumed your provided role, but the role has
+insufficient permissions to retrieve the resources needed for the form. Make sure
+you've assigned the role the correct permissions.
+
+#### `ROLLBACK_FAILED` during cluster creation
+
+The creation process halted because GitLab encountered an error when creating
+one or more resources. You can inspect the associated
+[CloudFormation stack](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/cfn-console-view-stack-data-resources.html)
+to find the specific resources that failed to create.
+
+If the `Cluster` resource failed with the error
+`The provided role doesn't have the Amazon EKS Managed Policies associated with it.`,
+the role specified in **Role name** is not configured correctly.
+
+NOTE: **Note:**
+This role should not be the same as the one created above. If you don't have an
+existing
+[EKS cluster IAM role](https://docs.aws.amazon.com/eks/latest/userguide/service_IAM_role.html),
+you must create one.
+
 ## Existing EKS cluster
 
 To add an existing EKS cluster to your project, group, or instance:

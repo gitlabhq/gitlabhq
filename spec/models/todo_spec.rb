@@ -100,6 +100,20 @@ describe Todo do
     end
   end
 
+  describe '#for_alert?' do
+    it 'returns true when target is a Alert' do
+      subject.target_type = 'AlertManagement::Alert'
+
+      expect(subject.for_alert?).to eq(true)
+    end
+
+    it 'returns false when target is not a Alert' do
+      subject.target_type = 'Issue'
+
+      expect(subject.for_alert?).to eq(false)
+    end
+  end
+
   describe '#target' do
     context 'for commits' do
       let(:project) { create(:project, :repository) }

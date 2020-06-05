@@ -1,4 +1,5 @@
 <script>
+import eventHub from '../event_hub';
 import { capitalize, lowerCase, isEmpty } from 'lodash';
 import { __, sprintf } from '~/locale';
 import { GlFormGroup, GlFormCheckbox, GlFormInput, GlFormSelect, GlFormTextarea } from '@gitlab/ui';
@@ -54,6 +55,7 @@ export default {
   data() {
     return {
       model: this.value,
+      validated: false,
     };
   },
   computed: {
@@ -106,17 +108,35 @@ export default {
         name: this.fieldName,
       };
     },
+    valid() {
+      return !this.required || !isEmpty(this.model) || !this.validated;
+    },
   },
   created() {
     if (this.isNonEmptyPassword) {
       this.model = null;
     }
+    eventHub.$on('validateForm', this.validateForm);
+  },
+  beforeDestroy() {
+    eventHub.$off('validateForm', this.validateForm);
+  },
+  methods: {
+    validateForm() {
+      this.validated = true;
+    },
   },
 };
 </script>
 
 <template>
-  <gl-form-group :label="label" :label-for="fieldId" :description="help">
+  <gl-form-group
+    :label="label"
+    :label-for="fieldId"
+    :invalid-feedback="__('This field is required.')"
+    :state="valid"
+    :description="help"
+  >
     <template v-if="isCheckbox">
       <input :name="fieldName" type="hidden" value="false" />
       <gl-form-checkbox v-model="model" v-bind="sharedProps">

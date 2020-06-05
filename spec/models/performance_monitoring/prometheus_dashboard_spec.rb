@@ -47,6 +47,24 @@ describe PerformanceMonitoring::PrometheusDashboard do
         end
       end
 
+      context 'dashboard content is missing' do
+        let(:json_content) { nil }
+
+        it_behaves_like 'validation failed', panel_groups: ["can't be blank"], dashboard: ["can't be blank"]
+      end
+
+      context 'dashboard content is NOT a hash' do
+        let(:json_content) { YAML.safe_load("'test'") }
+
+        it_behaves_like 'validation failed', panel_groups: ["can't be blank"], dashboard: ["can't be blank"]
+      end
+
+      context 'content is an array' do
+        let(:json_content) { [{ "dashboard" => "Dashboard Title" }] }
+
+        it_behaves_like 'validation failed', panel_groups: ["can't be blank"], dashboard: ["can't be blank"]
+      end
+
       context 'dashboard definition is missing panels_groups and dashboard keys' do
         let(:json_content) do
           {

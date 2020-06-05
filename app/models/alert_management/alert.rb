@@ -4,6 +4,7 @@ require_dependency 'alert_management'
 
 module AlertManagement
   class Alert < ApplicationRecord
+    include IidRoutes
     include AtomicInternalId
     include ShaAttribute
     include Sortable
@@ -141,6 +142,12 @@ module AlertManagement
 
     def register_new_event!
       increment!(:events)
+    end
+
+    # required for todos (typically contains an identifier like issue iid)
+    #  no-op; we could use iid, but we don't have a reference prefix
+    def to_reference(_from = nil, full: false)
+      ''
     end
 
     private

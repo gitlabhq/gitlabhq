@@ -45,10 +45,15 @@ export default class IntegrationSettingsForm {
     // 2) If this service can be tested
     // If both conditions are true, we override form submission
     // and test the service using provided configuration.
-    if (this.$form.get(0).checkValidity() && this.canTestService) {
+    if (this.$form.get(0).checkValidity()) {
+      if (this.canTestService) {
+        e.preventDefault();
+        // eslint-disable-next-line no-jquery/no-serialize
+        this.testSettings(this.$form.serialize());
+      }
+    } else {
       e.preventDefault();
-      // eslint-disable-next-line no-jquery/no-serialize
-      this.testSettings(this.$form.serialize());
+      eventHub.$emit('validateForm');
     }
   }
 

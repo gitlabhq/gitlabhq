@@ -11,12 +11,7 @@ module PerformanceMonitoring
 
     class << self
       def from_json(json_content)
-        dashboard = new(
-          dashboard: json_content['dashboard'],
-          panel_groups: json_content['panel_groups']&.map { |group| PrometheusPanelGroup.from_json(group) }
-        )
-
-        dashboard.tap(&:validate!)
+        build_from_hash(json_content).tap(&:validate!)
       end
 
       def find_for(project:, user:, path:, options: {})
@@ -28,6 +23,17 @@ module PerformanceMonitoring
             path: path,
             environment: options[:environment]
           }.merge(dashboard_response[:dashboard])
+        )
+      end
+
+      private
+
+      def build_from_hash(attributes)
+        return new unless attributes.is_a?(Hash)
+
+        new(
+          dashboard: attributes['dashboard'],
+          panel_groups: attributes['panel_groups']&.map { |group| PrometheusPanelGroup.from_json(group) }
         )
       end
     end

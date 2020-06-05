@@ -385,7 +385,7 @@ The following tables outline the details of expected properties.
 
 | Property | Type | Required | Description |
 | -------- | ---- | -------- | ----------- |
-| `variables` | hash | no | Variables can be defined here. |
+| `variables` | hash | yes | Variables can be defined here. |
 
 Read the documentation on [templating](#templating-variables-for-metrics-dashboards).
 

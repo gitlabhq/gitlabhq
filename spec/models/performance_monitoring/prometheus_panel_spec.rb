@@ -42,6 +42,14 @@ describe PerformanceMonitoring::PrometheusPanel do
     end
 
     describe 'validations' do
+      context 'json_content is not a hash' do
+        let(:json_content) { nil }
+
+        subject { described_class.from_json(json_content) }
+
+        it { expect { subject }.to raise_error(ActiveModel::ValidationError) }
+      end
+
       context 'when title is missing' do
         before do
           json_content['title'] = nil

@@ -11,7 +11,9 @@
     "panel_groups": {
       "type": "array",
       "items": { "$ref": "spec/fixtures/lib/gitlab/metrics/dashboard/schemas/panel_groups.json" }
-    }
+    },
+    "templating": { "$ref": "spec/fixtures/lib/gitlab/metrics/dashboard/schemas/templating.json" },
+    "links": { "$ref": "spec/fixtures/lib/gitlab/metrics/dashboard/schemas/links.json" }
   },
   "additionalProperties": false
 }

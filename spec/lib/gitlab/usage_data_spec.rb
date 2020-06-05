@@ -10,6 +10,17 @@ describe Gitlab::UsageData, :aggregate_failures do
     stub_object_store_settings
   end
 
+  describe '#uncached_data' do
+    it 'ensures recorded_at is set before any other usage data calculation' do
+      %i(alt_usage_data redis_usage_data distinct_count count).each do |method|
+        expect(described_class).not_to receive(method)
+      end
+      expect(described_class).to receive(:recorded_at).and_raise(Exception.new('Stopped calculating recorded_at'))
+
+      expect { described_class.uncached_data }.to raise_error('Stopped calculating recorded_at')
+    end
+  end
+
   describe '#data' do
     let!(:ud) { build(:usage_data) }
 

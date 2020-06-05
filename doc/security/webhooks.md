@@ -52,29 +52,29 @@ NOTE: **Note:**
 set up by administrators. However, you can turn this off by disabling the
 **Allow requests to the local network from system hooks** option.
 
-## Whitelist for local requests
+## Allowlist for local requests
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/44496) in GitLab 12.2
 
 You can allow certain domains and IP addresses to be accessible to both *system hooks*
 and *webhooks* even when local requests are not allowed by adding them to the
-whitelist. Navigate to **Admin Area > Settings > Network** (`/admin/application_settings/network`)
+allowlist. Navigate to **Admin Area > Settings > Network** (`/admin/application_settings/network`)
 and expand **Outbound requests**:
 
-![Outbound local requests whitelist](img/whitelist.png)
+![Outbound local requests allowlist](img/allowlist_v13_0.png)
 
-The whitelist entries can be separated by semicolons, commas or whitespaces
+The allowed entries can be separated by semicolons, commas or whitespaces
 (including newlines) and be in different formats like hostnames, IP addresses and/or
 IP ranges. IPv6 is supported. Hostnames that contain unicode characters should
 use IDNA encoding.
 
-The whitelist can hold a maximum of 1000 entries. Each entry can be a maximum of
+The allowlist can hold a maximum of 1000 entries. Each entry can be a maximum of
 255 characters.
 
-You can whitelist a particular port by specifying it in the whitelist entry.
+You can allow a particular port by specifying it in the allowlist entry.
 For example `127.0.0.1:8080` will only allow connections to port 8080 on `127.0.0.1`.
-If no port is mentioned, all ports on that IP/domain are whitelisted. An IP range
-will whitelist all ports on all IPs in that range.
+If no port is mentioned, all ports on that IP/domain are allowed. An IP range
+will allow all ports on all IPs in that range.
 
 Example:
 

@@ -189,6 +189,10 @@ class Todo < ApplicationRecord
     target_type == DesignManagement::Design.name
   end
 
+  def for_alert?
+    target_type == AlertManagement::Alert.name
+  end
+
   # override to return commits, which are not active record
   def target
     if for_commit?
