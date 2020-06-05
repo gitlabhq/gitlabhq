@@ -135,7 +135,7 @@ With [Canary](https://about.gitlab.com/handbook/engineering/infrastructure/libra
 
 ## Changing Column Constraints
 
-Adding or removing a NOT NULL clause (or another constraint) can typically be
+Adding or removing a `NOT NULL` clause (or another constraint) can typically be
 done without requiring downtime. However, this does require that any application
 changes are deployed _first_. Thus, changing the constraints of a column should
 happen in a post-deployment migration.
@@ -143,35 +143,11 @@ happen in a post-deployment migration.
 NOTE: Avoid using `change_column` as it produces an inefficient query because it re-defines
 the whole column type.
 
-To add a NOT NULL constraint, use the `add_not_null_constraint` migration helper:
+You can check the following guides for each specific use case:
 
-```ruby
-# A post-deployment migration in db/post_migrate
-class AddNotNull < ActiveRecord::Migration[4.2]
-  include Gitlab::Database::MigrationHelpers
-
-  disable_ddl_transaction!
-
-  def up
-    add_not_null_constraint :users, :username
-  end
-
-  def down
-    remove_not_null_constraint :users, :username
-  end
-end
-```
-
-If the column to be updated requires cleaning first (e.g. there are `NULL` values), you should:
-
-1. Add the `NOT NULL` constraint with `validate: false`
-
-   `add_not_null_constraint :users, :username, validate: false`
-
-1. Clean up the data with a data migration
-1. Validate the `NOT NULL` constraint with a followup migration
-
-   `validate_not_null_constraint :users, :username`
+- [Adding foreign-key constraints](migration_style_guide.md#adding-foreign-key-constraints)
+- [Adding `NOT NULL` constraints](database/not_null_constraints.md)
+- [Adding limits to text columns](database/strings_and_the_text_data_type.md)
 
 ## Changing Column Types
 

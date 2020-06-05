@@ -192,7 +192,7 @@ const mapPanelToViewModel = ({
     xAxis,
     maxValue: max_value,
     links: links.map(mapLinksToViewModel),
-    metrics: mapToMetricsViewModel(metrics, yAxis.name),
+    metrics: mapToMetricsViewModel(metrics),
   };
 };
 
@@ -232,6 +232,19 @@ export const mapToDashboardViewModel = ({
   };
 };
 
+/**
+ * Processes a single Range vector, part of the result
+ * of type `matrix` in the form:
+ *
+ * {
+ *   "metric": { "<label_name>": "<label_value>", ... },
+ *   "values": [ [ <unix_time>, "<sample_value>" ], ... ]
+ * },
+ *
+ * See https://prometheus.io/docs/prometheus/latest/querying/api/#range-vectors
+ *
+ * @param {*} timeSeries
+ */
 export const normalizeQueryResult = timeSeries => {
   let normalizedResult = {};
 

@@ -552,6 +552,12 @@ operations that don't require `disable_ddl_transaction!`.
 
 You can read more about adding [foreign key constraints to an existing column](database/add_foreign_key_to_existing_column.md).
 
+## `NOT NULL` constraints
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/38358) in GitLab 13.0.
+
+See the style guide on [`NOT NULL` constraints](database/not_null_constraints.md) for more information.
+
 ## Adding Columns With Default Values
 
 With PostgreSQL 11 being the minimum version since GitLab 13.0, adding columns with default values has become much easier and

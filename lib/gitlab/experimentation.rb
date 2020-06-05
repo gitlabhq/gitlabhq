@@ -47,6 +47,9 @@ module Gitlab
       },
       upgrade_link_in_user_menu_a: {
         tracking_category: 'Growth::Expansion::Experiment::UpgradeLinkInUserMenuA'
+      },
+      invite_members_version_a: {
+        tracking_category: 'Growth::Expansion::Experiment::InviteMembersVersionA'
       }
     }.freeze
 

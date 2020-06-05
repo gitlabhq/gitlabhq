@@ -34,7 +34,7 @@ When adding a new table, the limits for all text columns should be added in the 
 the table creation.
 
 For example, consider a migration that creates a table with two text columns,
-**db/migrate/20200401000001_create_db_guides.rb**:
+`db/migrate/20200401000001_create_db_guides.rb`:
 
 ```ruby
 class CreateDbGuides < ActiveRecord::Migration[6.0]
@@ -80,7 +80,7 @@ frequently accessed table may take minutes in GitLab.com and requires the use of
 For these reasons, it is advised to add the text limit on a separate migration than the `add_column` one.
 
 For example, consider a migration that adds a new text column `extended_title` to table `sprints`,
-**db/migrate/20200501000001_add_extended_title_to_sprints.rb**:
+`db/migrate/20200501000001_add_extended_title_to_sprints.rb`:
 
 ```ruby
 class AddExtendedTitleToSprints < ActiveRecord::Migration[6.0]
@@ -96,7 +96,7 @@ end
 ```
 
 A second migration should follow the first one with a limit added to `extended_title`,
-**db/migrate/20200501000002_add_text_limit_to_sprints_extended_title.rb**:
+`db/migrate/20200501000002_add_text_limit_to_sprints_extended_title.rb`:
 
 ```ruby
 class AddTextLimitToSprintsExtendedTitle < ActiveRecord::Migration[6.0]
@@ -174,7 +174,7 @@ validates :title_html, length: { maximum: 1024 }
 
 We can also update the database in the same milestone by adding the text limit with `validate: false`
 in a post-deployment migration,
-**db/post_migrate/20200501000001_add_text_limit_migration.rb**:
+`db/post_migrate/20200501000001_add_text_limit_migration.rb`:
 
 ```ruby
 class AddTextLimitMigration < ActiveRecord::Migration[6.0]
@@ -208,7 +208,7 @@ When unsure about which option to use, please contact the Database team for advi
 
 Back to our example, the issues table is considerably large and frequently accessed, so we are going
 to add a background migration for the 13.0 milestone (current),
-**db/post_migrate/20200501000002_schedule_cap_title_length_on_issues.rb**:
+`db/post_migrate/20200501000002_schedule_cap_title_length_on_issues.rb`:
 
 ```ruby
 class ScheduleCapTitleLengthOnIssues < ActiveRecord::Migration[6.0]
@@ -255,7 +255,7 @@ Validating the text limit will scan the whole table and make sure that each reco
 
 Still in our example, for the 13.1 milestone (next), we run the `validate_text_limit` migration
 helper in a final post-deployment migration,
-**db/post_migrate/20200601000001_validate_text_limit_migration.rb**:
+`db/post_migrate/20200601000001_validate_text_limit_migration.rb`:
 
 ```ruby
 class ValidateTextLimitMigration < ActiveRecord::Migration[6.0]

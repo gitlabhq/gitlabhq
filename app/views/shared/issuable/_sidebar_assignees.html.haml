@@ -40,4 +40,13 @@
   - data['max-select'] = dropdown_options[:data][:'max-select'] if dropdown_options[:data][:'max-select']
   - options[:data].merge!(data)
 
-  = dropdown_tag(title, options: options)
+  - if experiment_enabled?(:invite_members_version_a) && can_import_members?
+    - options[:dropdown_class] += ' dropdown-extended-height'
+    - options[:footer_content] = true
+
+    = dropdown_tag(title, options: options) do
+      %ul.dropdown-footer-list
+        %li
+          = link_to _('Invite Members'), project_project_members_path(@project), title: _('Invite Members'), :"data-is-link" => true
+  - else
+    = dropdown_tag(title, options: options)

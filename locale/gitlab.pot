@@ -430,6 +430,9 @@ msgstr ""
 msgid "%{lock_path} is locked by GitLab User %{lock_user_id}"
 msgstr ""
 
+msgid "%{markdownDocsLinkStart}Markdown%{markdownDocsLinkEnd} and %{quickActionsDocsLinkStart}quick actions%{quickActionsDocsLinkEnd} are supported"
+msgstr ""
+
 msgid "%{mergeLength}/%{usersLength} can merge"
 msgstr ""
 
@@ -502,6 +505,9 @@ msgid "%{releases} release"
 msgid_plural "%{releases} releases"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "%{retryButtonStart}Try again%{retryButtonEnd} or %{newFileButtonStart}attach a new file%{newFileButtonEnd}"
+msgstr ""
 
 msgid "%{screenreaderOnlyStart}Keyboard shorcuts%{screenreaderOnlyEnd} Disabled"
 msgstr ""
@@ -12110,6 +12116,9 @@ msgid "Invite"
 msgstr ""
 
 msgid "Invite \"%{trimmed}\" by email"
+msgstr ""
+
+msgid "Invite Members"
 msgstr ""
 
 msgid "Invite group"

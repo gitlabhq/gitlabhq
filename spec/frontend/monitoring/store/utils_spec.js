@@ -5,6 +5,7 @@ import {
   parseAnnotationsResponse,
   removeLeadingSlash,
   mapToDashboardViewModel,
+  normalizeQueryResult,
 } from '~/monitoring/stores/utils';
 import { annotationsData } from '../mock_data';
 import { NOT_IN_DB_PREFIX } from '~/monitoring/constants';
@@ -393,6 +394,28 @@ describe('mapToDashboardViewModel', () => {
         x_label: 'Another label',
         unkown_option: 'unkown_data',
       });
+    });
+  });
+});
+
+describe('normalizeQueryResult', () => {
+  const testData = {
+    metric: {
+      __name__: 'up',
+      job: 'prometheus',
+      instance: 'localhost:9090',
+    },
+    values: [[1435781430.781, '1'], [1435781445.781, '1'], [1435781460.781, '1']],
+  };
+
+  it('processes a simple matrix result', () => {
+    expect(normalizeQueryResult(testData)).toEqual({
+      metric: { __name__: 'up', job: 'prometheus', instance: 'localhost:9090' },
+      values: [
+        ['2015-07-01T20:10:30.781Z', 1],
+        ['2015-07-01T20:10:45.781Z', 1],
+        ['2015-07-01T20:11:00.781Z', 1],
+      ],
     });
   });
 });
