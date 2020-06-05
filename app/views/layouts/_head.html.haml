@@ -20,6 +20,9 @@
     %link{ rel: 'dns-prefetch', href: ActionController::Base.asset_host }
     %link{ rel: 'preconnect', href: ActionController::Base.asset_host, crossorigin: '' }
 
+  - if Gitlab::CurrentSettings.snowplow_enabled? && Gitlab::CurrentSettings.snowplow_collector_hostname
+    %link{ rel: 'preconnect', href: Gitlab::CurrentSettings.snowplow_collector_hostname, crossorigin: '' }
+
   %meta{ 'http-equiv' => 'X-UA-Compatible', content: 'IE=edge' }
 
   -# Open Graph - http://ogp.me/

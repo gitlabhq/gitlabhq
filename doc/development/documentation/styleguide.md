@@ -728,6 +728,7 @@ We include guidance for links in the following categories:
 - How to set up [criteria](#basic-link-criteria) for configuring a link.
 - What to set up when [linking to a `help`](../documentation/index.md#linking-to-help) page.
 - How to set up [links to internal documentation](#links-to-internal-documentation) for cross-references.
+- How to set up [links to external documentation](#links-to-external-documentation) for authoritative sources.
 - When to use [links requiring permissions](#links-requiring-permissions).
 - How to set up a [link to a video](#link-to-video).
 - How to [include links with version text](#text-for-documentation-requiring-version-text).
@@ -779,6 +780,12 @@ To link to internal documentation:
 
 NOTE: **Note**:
 Using the Markdown extension is necessary for the [`/help`](index.md#gitlab-help) section of GitLab.
+
+### Links to external documentation
+
+When describing interactions with external software, it's often helpful to include links to external
+documentation. When possible, make sure that you are linking to an **authoritative** source.
+For example, if you're describing a feature in Microsoft's Active Directory, include a link to official Microsoft documentation.
 
 ### Links requiring permissions
 

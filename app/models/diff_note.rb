@@ -136,7 +136,7 @@ class DiffNote < Note
       # As an extra benefit, the returned `diff_file` already
       # has `highlighted_diff_lines` data set from Redis on
       # `Diff::FileCollection::MergeRequestDiff`.
-      file = noteable.diffs(original_position.diff_options).diff_files.first
+      file = original_position.find_diff_file_from(noteable)
       # if line is not found in persisted diffs, fallback and retrieve file from repository using gitaly
       # This is required because of https://gitlab.com/gitlab-org/gitlab/issues/42676
       file = nil if file&.line_for_position(original_position).nil? && importing?

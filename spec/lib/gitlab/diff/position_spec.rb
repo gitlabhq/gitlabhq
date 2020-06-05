@@ -574,6 +574,86 @@ describe Gitlab::Diff::Position do
     end
   end
 
+  describe '#find_diff_file_from' do
+    context "position for a diff file that has changed from symlink to regular file" do
+      let(:commit) { project.commit("81e6355ce4e1544a3524b230952c12455de0777b") }
+
+      let(:old_symlink_file_identifier_hash) { "bfa430463f33619872d52a6b85ced59c973e42dc" }
+      let(:new_regular_file_identifier_hash) { "e25b60c2e5ffb977d2b1431b96c6f7800c3c3529" }
+      let(:file_identifier_hash) { new_regular_file_identifier_hash }
+
+      let(:args) do
+        {
+          file_identifier_hash: file_identifier_hash,
+          old_path: "symlink",
+          new_path: "symlink",
+          old_line: nil,
+          new_line: 1,
+          diff_refs: commit.diff_refs
+        }
+      end
+
+      let(:diffable) { commit.diff_refs.compare_in(project) }
+
+      subject(:diff_file) { described_class.new(args).find_diff_file_from(diffable) }
+
+      context 'when file_identifier_hash is disabled' do
+        before do
+          stub_feature_flags(file_identifier_hash: false)
+        end
+
+        it "returns the first diff file" do
+          expect(diff_file.file_identifier_hash).to eq(old_symlink_file_identifier_hash)
+        end
+      end
+
+      context 'when file_identifier_hash is enabled' do
+        before do
+          stub_feature_flags(file_identifier_hash: true)
+        end
+
+        context 'for new regular file' do
+          it "returns the correct diff file" do
+            expect(diff_file.file_identifier_hash).to eq(new_regular_file_identifier_hash)
+          end
+        end
+
+        context 'for old symlink file' do
+          let(:args) do
+            {
+              file_identifier_hash: old_symlink_file_identifier_hash,
+              old_path: "symlink",
+              new_path: "symlink",
+              old_line: 1,
+              new_line: nil,
+              diff_refs: commit.diff_refs
+            }
+          end
+
+          it "returns the correct diff file" do
+            expect(diff_file.file_identifier_hash).to eq(old_symlink_file_identifier_hash)
+          end
+        end
+
+        context 'when file_identifier_hash is missing' do
+          let(:file_identifier_hash) { nil }
+
+          it "returns the first diff file" do
+            expect(diff_file.file_identifier_hash).to eq(old_symlink_file_identifier_hash)
+          end
+        end
+
+        context 'when file_identifier_hash cannot be found' do
+          let(:file_identifier_hash) { "missingidentifier" }
+
+          it "returns nil" do
+            expect(diff_file).to be_nil
+          end
+        end
+      end
+    end
+  end
+
   describe '#==' do
     let(:commit) { project.commit("570e7b2abdd848b95f2f578043fc23bd6f6fd24d") }
 

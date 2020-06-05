@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::BackgroundMigration::ResetMergeStatus, schema: 20190528180441 do
+describe Gitlab::BackgroundMigration::ResetMergeStatus do
   let(:namespaces) { table(:namespaces) }
   let(:projects) { table(:projects) }
   let(:namespace) { namespaces.create(name: 'gitlab', path: 'gitlab-org') }
@@ -23,24 +23,24 @@ describe Gitlab::BackgroundMigration::ResetMergeStatus, schema: 20190528180441 d
   end
 
   it 'correctly updates opened mergeable MRs to unchecked' do
-    create_merge_request(1, state: 'opened', merge_status: 'can_be_merged')
-    create_merge_request(2, state: 'opened', merge_status: 'can_be_merged')
-    create_merge_request(3, state: 'opened', merge_status: 'can_be_merged')
-    create_merge_request(4, state: 'merged', merge_status: 'can_be_merged')
-    create_merge_request(5, state: 'opened', merge_status: 'cannot_be_merged')
+    create_merge_request(1, state_id: MergeRequest.available_states[:opened], merge_status: 'can_be_merged')
+    create_merge_request(2, state_id: MergeRequest.available_states[:opened], merge_status: 'can_be_merged')
+    create_merge_request(3, state_id: MergeRequest.available_states[:opened], merge_status: 'can_be_merged')
+    create_merge_request(4, state_id: MergeRequest.available_states[:merged], merge_status: 'can_be_merged')
+    create_merge_request(5, state_id: MergeRequest.available_states[:opened], merge_status: 'cannot_be_merged')
 
     subject.perform(1, 5)
 
     expected_rows = [
-      { id: 1, state: 'opened', merge_status: 'unchecked' },
-      { id: 2, state: 'opened', merge_status: 'unchecked' },
-      { id: 3, state: 'opened', merge_status: 'unchecked' },
-      { id: 4, state: 'merged', merge_status: 'can_be_merged' },
-      { id: 5, state: 'opened', merge_status: 'cannot_be_merged' }
+      { id: 1, state_id: MergeRequest.available_states[:opened], merge_status: 'unchecked' },
+      { id: 2, state_id: MergeRequest.available_states[:opened], merge_status: 'unchecked' },
+      { id: 3, state_id: MergeRequest.available_states[:opened], merge_status: 'unchecked' },
+      { id: 4, state_id: MergeRequest.available_states[:merged], merge_status: 'can_be_merged' },
+      { id: 5, state_id: MergeRequest.available_states[:opened], merge_status: 'cannot_be_merged' }
     ]
 
     rows = merge_requests.order(:id).map do |row|
-      row.attributes.slice('id', 'state', 'merge_status').symbolize_keys
+      row.attributes.slice('id', 'state_id', 'merge_status').symbolize_keys
     end
 
     expect(rows).to eq(expected_rows)

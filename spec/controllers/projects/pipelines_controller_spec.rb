@@ -171,6 +171,40 @@ RSpec.describe Projects::PipelinesController do
       end
     end
 
+    context 'filter by status' do
+      context 'when pipelines with the status exists' do
+        it 'returns matched pipelines' do
+          get_pipelines_index_json(status: 'success')
+
+          check_pipeline_response(returned: 1, all: 1, running: 0, pending: 0, finished: 1)
+        end
+
+        context 'when filter by unrelated scope' do
+          it 'returns empty list' do
+            get_pipelines_index_json(status: 'success', scope: 'running')
+
+            check_pipeline_response(returned: 0, all: 1, running: 0, pending: 0, finished: 1)
+          end
+        end
+      end
+
+      context 'when no pipeline with the status exists' do
+        it 'returns empty list' do
+          get_pipelines_index_json(status: 'manual')
+
+          check_pipeline_response(returned: 0, all: 0, running: 0, pending: 0, finished: 0)
+        end
+      end
+
+      context 'when invalid status' do
+        it 'returns all list' do
+          get_pipelines_index_json(status: 'invalid-status')
+
+          check_pipeline_response(returned: 6, all: 6, running: 2, pending: 1, finished: 3)
+        end
+      end
+    end
+
     def get_pipelines_index_json(params = {})
       get :index, params: {
                     namespace_id: project.namespace,

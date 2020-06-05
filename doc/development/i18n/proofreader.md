@@ -12,6 +12,8 @@ are very appreciative of the work done by translators and proofreaders!
   - Tsegaselassie Tadesse - [GitLab](https://gitlab.com/tsega), [CrowdIn](https://crowdin.com/profile/tsegaselassi/activity)
 - Arabic
   - Proofreaders needed.
+- Bosnian
+  - Proofreaders needed.
 - Bulgarian
   - Lyubomir Vasilev - [CrowdIn](https://crowdin.com/profile/lyubomirv)
 - Catalan
@@ -27,6 +29,8 @@ are very appreciative of the work done by translators and proofreaders!
 - Chinese Traditional, Hong Kong 繁體中文 (香港)
   - Victor Wu - [GitLab](https://gitlab.com/victorwuky), [CrowdIn](https://crowdin.com/profile/victorwu)
   - Ivan Ip - [GitLab](https://gitlab.com/lifehome), [CrowdIn](https://crowdin.com/profile/lifehome)
+- Croatian
+  - Proofreaders needed.
 - Czech
   - Jan Urbanec - [GitLab](https://gitlab.com/TatranskyMedved), [CrowdIn](https://crowdin.com/profile/Tatranskymedved)
 - Danish
@@ -51,6 +55,8 @@ are very appreciative of the work done by translators and proofreaders!
   - Proofreaders needed.
 - Hebrew
   - Yaron Shahrabani - [GitLab](https://gitlab.com/yarons), [CrowdIn](https://crowdin.com/profile/YaronSh)
+- Hindi
+  - Proofreaders needed.
 - Hungarian
   - Proofreaders needed.
 - Indonesian
@@ -76,7 +82,6 @@ are very appreciative of the work done by translators and proofreaders!
   - Filip Mech - [GitLab](https://gitlab.com/mehenz), [CrowdIn](https://crowdin.com/profile/mehenz)
   - Maksymilian Roman - [GitLab](https://gitlab.com/villaincandle), [CrowdIn](https://crowdin.com/profile/villaincandle)
 - Portuguese
-  - Proofreaders needed.
   - Diogo Trindade - [GitLab](https://gitlab.com/luisdiogo2071317), [CrowdIn](https://crowdin.com/profile/ldiogotrindade)
 - Portuguese, Brazilian
   - Paulo George Gomes Bezerra - [GitLab](https://gitlab.com/paulobezerra), [CrowdIn](https://crowdin.com/profile/paulogomes.rep)
@@ -90,14 +95,14 @@ are very appreciative of the work done by translators and proofreaders!
   - NickVolynkin - [Crowdin](https://crowdin.com/profile/NickVolynkin)
   - Andrey Komarov - [GitLab](https://gitlab.com/elkamarado), [Crowdin](https://crowdin.com/profile/kamarado)
   - Iaroslav Postovalov - [GitLab](https://gitlab.com/CMDR_Tvis), [Crowdin](https://crowdin.com/profile/CMDR_Tvis)
-- Serbian (Cyrillic)
-  - Proofreaders needed.
-- Serbian (Latin)
+- Serbian (Latin and Cyrillic)
   - Proofreaders needed.
 - Slovak
   - Proofreaders needed.
 - Spanish
   - Pedro Garcia - [GitLab](https://gitlab.com/pedgarrod), [CrowdIn](https://crowdin.com/profile/breaking_pitt)
+- Swedish
+  - Proofreaders needed.
 - Turkish
   - Ali Demirtaş - [GitLab](https://gitlab.com/alidemirtas), [CrowdIn](https://crowdin.com/profile/alidemirtas)
 - Ukrainian

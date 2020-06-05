@@ -2,33 +2,27 @@
 
 To enable the Microsoft Azure OAuth2 OmniAuth provider you must register your application with Azure. Azure will generate a client ID and secret key for you to use.
 
-1. Sign in to the [Azure Management Portal](https://portal.azure.com).
+1. Sign in to the [Azure Portal](https://portal.azure.com).
 
-1. Select "Active Directory" on the left and choose the directory you want to use to register GitLab.
+1. Select "All Services" from the hamburger menu located top left and select "Azure Active Directory" or use the search bar at the top of the page to search for "Azure Active Directory".
+   1. You can select alternative directories by clicking the "switch tenant" button at the top of the Azure AD page.
 
-1. Select "Applications" at the top bar and click the "Add" button the bottom.
+1. Select "App registrations" from the left hand menu, then select "New registration" from the top of the page.
 
-1. Select "Add an application my organization is developing".
-
-1. Provide the project information and click the "Next" button.
+1. Provide the required information and click the "Register" button.
    - Name: 'GitLab' works just fine here.
-   - Type: 'WEB APPLICATION AND/OR WEB API'
+   - Supported account types: Select the appropriate choice based on the descriptions provided.
+   - Redirect URI: Enter the URL to the Azure OAuth callback of your GitLab installation (e.g. `https://gitlab.mycompany.com/users/auth/azure_oauth2/callback`), the type dropdown should be set to "Web".
 
-1. On the "App properties" page enter the needed URI's and click the "Complete" button.
-   - SIGN-IN URL: Enter the URL of your GitLab installation (e.g `https://gitlab.mycompany.com/`)
-   - APP ID URI: Enter the endpoint URL for Microsoft to use, just has to be unique (e.g `https://mycompany.onmicrosoft.com/gitlab`)
+1. On the "App Registration" page for the app you've created. Select "Certificates & secrets" on the left.
+   - Create a new Client secret by clicking "New client secret" and selecting a duration. Provide a description if required to help identify the secret.
+   - Copy the secret and note it securely, this is shown when you click the "add" button. (You will not be able to retrieve the secret when you perform the next step or leave that blade in the Azure Portal.)
 
-1. Select "Configure" in the top menu.
+1. Select "Overview" in the left hand menu.
 
-1. Add a "Reply URL" pointing to the Azure OAuth callback of your GitLab installation (e.g. `https://gitlab.mycompany.com/users/auth/azure_oauth2/callback`).
+1. Note the "Application (client) ID" from the section at the top of the displayed page.
 
-1. Create a "Client secret" by selecting a duration, the secret will be generated as soon as you click the "Save" button in the bottom menu.
-
-1. Note the "CLIENT ID" and the "CLIENT SECRET".
-
-1. Select "View endpoints" from the bottom menu.
-
-1. You will see lots of endpoint URLs in the form `https://login.microsoftonline.com/TENANT ID/...`, note down the TENANT ID part of one of those endpoints.
+1. Note the "Directory (tenant) ID" from the section at the top of the page.
 
 1. On your GitLab server, open the configuration file.
 
@@ -84,4 +78,4 @@ To enable the Microsoft Azure OAuth2 OmniAuth provider you must register your ap
 1. [Reconfigure](../administration/restart_gitlab.md#omnibus-gitlab-reconfigure) or [restart GitLab](../administration/restart_gitlab.md#installations-from-source) for the changes to take effect if you
    installed GitLab via Omnibus or from source respectively.
 
-On the sign in page there should now be a Microsoft icon below the regular sign in form. Click the icon to begin the authentication process. Microsoft will ask the user to sign in and authorize the GitLab application. If everything goes well the user will be returned to GitLab and will be signed in.
+On the sign in page there should now be a Microsoft icon below the regular sign in form. Click the icon to begin the authentication process. Microsoft will ask the user to sign in and authorize the GitLab application. If everything goes well the user will be returned to GitLab and will be signed in. See [Enable OmniAuth for an Existing User](omniauth.md#enable-omniauth-for-an-existing-user) for information on how existing GitLab users can connect their newly available Azure AD accounts to their existing GitLab users.

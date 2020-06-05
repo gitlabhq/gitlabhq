@@ -271,7 +271,10 @@ class WikiPage
 
   def title_changed?
     if persisted?
-      old_title, old_dir = wiki.page_title_and_dir(self.class.unhyphenize(page.url_path))
+      # A page's `title` will be returned from Gollum/Gitaly with any +<>
+      # characters changed to -, whereas the `path` preserves these characters.
+      path_without_extension = Pathname(page.path).sub_ext('').to_s
+      old_title, old_dir = wiki.page_title_and_dir(self.class.unhyphenize(path_without_extension))
       new_title, new_dir = wiki.page_title_and_dir(self.class.unhyphenize(title))
 
       new_title != old_title || (title.include?('/') && new_dir != old_dir)

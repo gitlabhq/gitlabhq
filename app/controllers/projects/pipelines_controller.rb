@@ -277,7 +277,7 @@ class Projects::PipelinesController < Projects::ApplicationController
   end
 
   def index_params
-    params.permit(:scope, :username, :ref)
+    params.permit(:scope, :username, :ref, :status)
   end
 end
 

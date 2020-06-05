@@ -684,7 +684,13 @@ describe('Pipelines', () => {
     });
 
     it('updates request data and query params on filter submit', () => {
-      const expectedQueryParams = { page: '1', scope: 'all', username: 'root', ref: 'master' };
+      const expectedQueryParams = {
+        page: '1',
+        scope: 'all',
+        username: 'root',
+        ref: 'master',
+        status: 'pending',
+      };
 
       findFilteredSearch().vm.$emit('submit', mockSearch);
 

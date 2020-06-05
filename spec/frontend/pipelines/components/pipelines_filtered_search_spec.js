@@ -3,7 +3,7 @@ import { mount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
 import PipelinesFilteredSearch from '~/pipelines/components/pipelines_filtered_search.vue';
-import { users, mockSearch, pipelineWithStages, branches } from '../mock_data';
+import { users, mockSearch, branches } from '../mock_data';
 import { GlFilteredSearch } from '@gitlab/ui';
 
 describe('Pipelines filtered search', () => {
@@ -19,7 +19,6 @@ describe('Pipelines filtered search', () => {
   const createComponent = (params = {}) => {
     wrapper = mount(PipelinesFilteredSearch, {
       propsData: {
-        pipelines: [pipelineWithStages],
         projectId: '21',
         params,
       },
@@ -65,6 +64,14 @@ describe('Pipelines filtered search', () => {
       title: 'Branch name',
       unique: true,
       projectId: '21',
+      operators: [expect.objectContaining({ value: '=' })],
+    });
+
+    expect(getSearchToken('status')).toMatchObject({
+      type: 'status',
+      icon: 'status',
+      title: 'Status',
+      unique: true,
       operators: [expect.objectContaining({ value: '=' })],
     });
   });

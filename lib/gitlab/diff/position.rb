@@ -157,13 +157,23 @@ module Gitlab
         position_type == 'text'
       end
 
+      def find_diff_file_from(diffable)
+        diff_files = diffable.diffs(diff_options).diff_files
+
+        if Feature.enabled?(:file_identifier_hash) && file_identifier_hash.present?
+          diff_files.find { |df| df.file_identifier_hash == file_identifier_hash }
+        else
+          diff_files.first
+        end
+      end
+
       private
 
       def find_diff_file(repository)
         return unless diff_refs.complete?
         return unless comparison = diff_refs.compare_in(repository.project)
 
-        comparison.diffs(diff_options).diff_files.first
+        find_diff_file_from(comparison)
       end
 
       def get_formatter_class(type)

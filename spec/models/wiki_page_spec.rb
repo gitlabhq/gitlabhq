@@ -651,6 +651,7 @@ describe WikiPage do
 
     let(:untitled_page) { described_class.new(wiki) }
     let(:directory_page) { create(:wiki_page, title: 'parent directory/child page') }
+    let(:page_with_special_characters) { create(:wiki_page, title: 'test+page') }
 
     where(:page, :title, :changed) do
       :untitled_page  | nil                             | false
@@ -658,6 +659,8 @@ describe WikiPage do
 
       :new_page       | nil                             | true
       :new_page       | 'test page'                     | true
+      :new_page       | 'test-page'                     | true
+      :new_page       | 'test+page'                     | true
       :new_page       | 'new title'                     | true
 
       :existing_page  | nil                             | false
@@ -665,6 +668,7 @@ describe WikiPage do
       :existing_page  | 'test-page'                     | false
       :existing_page  | '/test page'                    | false
       :existing_page  | '/test-page'                    | false
+      :existing_page  | 'test+page'                     | true
       :existing_page  | ' test page '                   | true
       :existing_page  | 'new title'                     | true
       :existing_page  | 'new-title'                     | true
@@ -681,6 +685,11 @@ describe WikiPage do
       :directory_page | 'parent-directory / child-page' | true
       :directory_page | 'other directory/child page'    | true
       :directory_page | 'other-directory/child page'    | true
+
+      :page_with_special_characters | nil               | false
+      :page_with_special_characters | 'test+page'       | false
+      :page_with_special_characters | 'test-page'       | true
+      :page_with_special_characters | 'test page'       | true
     end
 
     with_them do

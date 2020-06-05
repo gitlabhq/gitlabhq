@@ -82,7 +82,7 @@ module Gitlab
           def sliced_nodes
             @sliced_nodes ||=
               begin
-                OrderInfo.validate_ordering(ordered_items, order_list)
+                OrderInfo.validate_ordering(ordered_items, order_list) unless loaded?(ordered_items)
 
                 sliced = ordered_items
                 sliced = slice_nodes(sliced, before, :before) if before.present?
@@ -113,16 +113,14 @@ module Gitlab
                 # grab one more than we need
                 paginated_nodes = sliced_nodes.last(limit_value + 1)
 
-                if paginated_nodes.count > limit_value
-                  # there is an extra node, so there is a previous page
-                  @has_previous_page = true
-                  paginated_nodes = paginated_nodes.last(limit_value)
-                end
+                # there is an extra node, so there is a previous page
+                @has_previous_page = paginated_nodes.count > limit_value
+                @has_previous_page ? paginated_nodes.last(limit_value) : paginated_nodes
+              elsif loaded?(sliced_nodes)
+                sliced_nodes.take(limit_value) # rubocop: disable CodeReuse/ActiveRecord
               else
-                paginated_nodes = sliced_nodes.limit(limit_value) # rubocop: disable CodeReuse/ActiveRecord
+                sliced_nodes.limit(limit_value) # rubocop: disable CodeReuse/ActiveRecord
               end
-
-              paginated_nodes
             end
           end
 
@@ -141,6 +139,15 @@ module Gitlab
             @limit_value ||= [first, last, max_page_size].compact.min
           end
 
+          def loaded?(items)
+            case items
+            when Array
+              true
+            else
+              items.loaded?
+            end
+          end
+
           def ordered_items
             strong_memoize(:ordered_items) do
               unless items.primary_key.present?
@@ -148,6 +155,16 @@ module Gitlab
               end
 
               list = OrderInfo.build_order_list(items)
+
+              if loaded?(items)
+                @order_list = list.presence || [items.primary_key]
+
+                # already sorted, or trivially sorted
+                next items if list.present? || items.size <= 1
+
+                pkey = items.primary_key.to_sym
+                next items.sort_by { |item| item[pkey] }.reverse
+              end
 
               # ensure there is a primary key ordering
               if list&.last&.attribute_name != items.primary_key

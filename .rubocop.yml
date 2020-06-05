@@ -2,10 +2,13 @@ inherit_gem:
   gitlab-styles:
     - rubocop-default.yml
 
-inherit_from: .rubocop_todo.yml
 require:
   - ./rubocop/rubocop
   - rubocop-rspec
+
+inherit_from:
+  - .rubocop_todo.yml
+  - ./rubocop/rubocop-migrations.yml
 
 inherit_mode:
   merge:

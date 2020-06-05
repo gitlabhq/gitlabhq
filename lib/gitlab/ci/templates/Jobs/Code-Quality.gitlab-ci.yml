@@ -1,9 +1,9 @@
 code_quality:
   stage: test
-  image: docker:19.03.8
+  image: docker:19.03.11
   allow_failure: true
   services:
-    - docker:19.03.8-dind
+    - docker:19.03.11-dind
   variables:
     DOCKER_DRIVER: overlay2
     DOCKER_TLS_CERTDIR: ""

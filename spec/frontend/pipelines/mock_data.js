@@ -563,6 +563,7 @@ export const branches = [
 export const mockSearch = [
   { type: 'username', value: { data: 'root', operator: '=' } },
   { type: 'ref', value: { data: 'master', operator: '=' } },
+  { type: 'status', value: { data: 'pending', operator: '=' } },
 ];
 
 export const mockBranchesAfterMap = ['branch-1', 'branch-10', 'branch-11'];

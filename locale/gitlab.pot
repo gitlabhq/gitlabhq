@@ -15981,6 +15981,9 @@ msgstr ""
 msgid "Pipeline|Branch name"
 msgstr ""
 
+msgid "Pipeline|Canceled"
+msgstr ""
+
 msgid "Pipeline|Commit"
 msgstr ""
 
@@ -15988,6 +15991,9 @@ msgid "Pipeline|Could not retrieve the pipeline status. For troubleshooting step
 msgstr ""
 
 msgid "Pipeline|Coverage"
+msgstr ""
+
+msgid "Pipeline|Created"
 msgstr ""
 
 msgid "Pipeline|Date"
@@ -16002,7 +16008,13 @@ msgstr ""
 msgid "Pipeline|Existing branch name or tag"
 msgstr ""
 
+msgid "Pipeline|Failed"
+msgstr ""
+
 msgid "Pipeline|Key"
+msgstr ""
+
+msgid "Pipeline|Manual"
 msgstr ""
 
 msgid "Pipeline|Merge train pipeline"
@@ -16012,6 +16024,12 @@ msgid "Pipeline|Merged result pipeline"
 msgstr ""
 
 msgid "Pipeline|No pipeline has been run for this commit."
+msgstr ""
+
+msgid "Pipeline|Passed"
+msgstr ""
+
+msgid "Pipeline|Pending"
 msgstr ""
 
 msgid "Pipeline|Pipeline"
@@ -16029,7 +16047,13 @@ msgstr ""
 msgid "Pipeline|Run for"
 msgstr ""
 
+msgid "Pipeline|Running"
+msgstr ""
+
 msgid "Pipeline|Search branches"
+msgstr ""
+
+msgid "Pipeline|Skipped"
 msgstr ""
 
 msgid "Pipeline|Specify variable values to be used in this run. The values specified in %{settings_link} will be used by default."

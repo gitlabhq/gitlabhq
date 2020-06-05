@@ -458,6 +458,38 @@ If you specify the `ADDITIONAL_CA_CERT_BUNDLE` [environment variable](#available
 variable's X.509 certificates are installed in the Docker image's default trust store and Conan is
 configured to use this as the default `CA_CERT_PATH`.
 
+### Configuring Go projects
+
+To configure [Go modules](https://github.com/golang/go/wiki/Modules)
+based projects, specify [environment variables](https://golang.org/pkg/cmd/go/#hdr-Environment_variables)
+in the `license_scanning` job's [variables](#available-variables) section in `.gitlab-ci.yml`.
+
+If a project has [vendored](https://golang.org/pkg/cmd/go/#hdr-Vendor_Directories) its modules,
+then the combination of the `vendor` directory and `mod.sum` file are used to detect the software
+licenses associated with the Go module dependencies.
+
+#### Using private Go registries
+
+You can use the [`GOPRIVATE`](https://golang.org/pkg/cmd/go/#hdr-Environment_variables)
+and [`GOPROXY`](https://golang.org/pkg/cmd/go/#hdr-Environment_variables)
+environment variables to control where modules are sourced from. Alternatively, you can use
+[`go mod vendor`](https://golang.org/ref/mod#tmp_28) to vendor a project's modules.
+
+#### Custom root certificates for Go
+
+You can specify the [`-insecure`](https://golang.org/pkg/cmd/go/internal/get/) flag by exporting the
+[`GOFLAGS`](https://golang.org/cmd/go/#hdr-Environment_variables)
+environment variable. For example:
+
+```yaml
+include:
+  - template: License-Scanning.gitlab-ci.yml
+
+license_scanning:
+  variables:
+    GOFLAGS: '-insecure'
+```
+
 ### Migration from `license_management` to `license_scanning`
 
 In GitLab 12.8 a new name for `license_management` job was introduced. This change was made to improve clarity around the purpose of the scan, which is to scan and collect the types of licenses present in a projects dependencies.
@@ -563,6 +595,7 @@ your code and generate security reports, without requiring internet access.
 Additional configuration may be needed for connecting to
 [private Bower registries](#using-private-bower-registries),
 [private Conan registries](#using-private-bower-registries),
+[private Go registries](#using-private-go-registries),
 [private Maven repositories](#using-private-maven-repos),
 [private NPM registries](#using-private-npm-registries),
 [private Python repositories](#using-private-python-repos),

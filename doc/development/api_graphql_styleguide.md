@@ -644,6 +644,59 @@ abstractions Resolvers should not be considered re-usable, finders are to be
 preferred), remember to call the `ready?` method and check the boolean flag
 before calling `resolve`! An example can be seen in our [`GraphQLHelpers`](https://gitlab.com/gitlab-org/gitlab/-/blob/2d395f32d2efbb713f7bc861f96147a2a67e92f2/spec/support/helpers/graphql_helpers.rb#L20-27).
 
+### Look-Ahead
+
+The full query is known in advance during execution, which means we can make use
+of [lookahead](https://graphql-ruby.org/queries/lookahead.html) to optimize our
+queries, and batch load associations we know we will need. Consider adding
+lookahead support in your resolvers to avoid `N+1` performance issues.
+
+To enable support for common lookahead use-cases (pre-loading associations when
+child fields are requested), you can
+include [`LooksAhead`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/graphql/resolvers/concerns/looks_ahead.rb). For example:
+
+```ruby
+# Assuming a model `MyThing` with attributes `[child_attribute, other_attribute, nested]`,
+# where nested has an attribute named `included_attribute`.
+class MyThingResolver < BaseResolver
+  include LooksAhead
+
+  # Rather than defining `resolve(**args)`, we implement: `resolve_with_lookahead(**args)`
+  def resolve_with_lookahead(**args)
+    apply_lookahead(MyThingFinder.new(current_user).execute)
+  end
+
+  # We list things that should always be preloaded:
+  # For example, if child_attribute is always needed (during authorization
+  # perhaps), then we can include it here.
+  def unconditional_includes
+    [:child_attribute]
+  end
+
+  # We list things that should be included if a certain field is selected:
+  def preloads
+    {
+        field_one: [:other_attribute],
+        field_two: [{ nested: [:included_attribute] }]
+    }
+  end
+end
+```
+
+The final thing that is needed is that every field that uses this resolver needs
+to advertise the need for lookahead:
+
+```ruby
+  # in ParentType
+  field :my_things, MyThingType.connection_type, null: true,
+        extras: [:lookahead], # Necessary
+        resolver: MyThingResolver,
+        description: 'My things'
+```
+
+For an example of real world use, please
+see [`ResolvesMergeRequests`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/graphql/resolvers/concerns/resolves_merge_requests.rb).
+
 ## Mutations
 
 Mutations are used to change any stored values, or to trigger

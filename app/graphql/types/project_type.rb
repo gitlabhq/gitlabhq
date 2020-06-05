@@ -125,6 +125,7 @@ module Types
           Types::MergeRequestType.connection_type,
           null: true,
           description: 'Merge requests of the project',
+          extras: [:lookahead],
           resolver: Resolvers::MergeRequestsResolver
 
     field :merge_request,
