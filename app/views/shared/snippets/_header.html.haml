@@ -1,6 +1,6 @@
 .detail-page-header
   .detail-page-header-body
-    .snippet-box.qa-snippet-box.has-tooltip.inline.append-right-5{ title: snippet_visibility_level_description(@snippet.visibility_level, @snippet), data: { container: "body" } }
+    .snippet-box.has-tooltip.inline.append-right-5{ title: snippet_visibility_level_description(@snippet.visibility_level, @snippet), data: { container: "body" } }
       %span.sr-only
         = visibility_level_label(@snippet.visibility_level)
       = visibility_level_icon(@snippet.visibility_level, fw: false)
@@ -17,11 +17,11 @@
       = render "snippets/actions"
 
 .snippet-header.limited-header-width
-  %h2.snippet-title.gl-mt-0.mb-3{ data: { qa_selector: 'snippet_title' } }
+  %h2.snippet-title.gl-mt-0.mb-3
     = markdown_field(@snippet, :title)
 
   - if @snippet.description.present?
-    .description{ data: { qa_selector: 'snippet_description_field' } }
+    .description
       .md
         = markdown_field(@snippet, :description)
       %textarea.hidden.js-task-list-field

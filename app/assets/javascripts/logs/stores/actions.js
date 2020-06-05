@@ -100,6 +100,11 @@ export const showEnvironment = ({ dispatch, commit }, environmentName) => {
   dispatch('fetchLogs', tracking.ENVIRONMENT_SELECTED);
 };
 
+export const refreshPodLogs = ({ dispatch, commit }) => {
+  commit(types.REFRESH_POD_LOGS);
+  dispatch('fetchLogs', tracking.REFRESH_POD_LOGS);
+};
+
 /**
  * Fetch environments data and initial logs
  * @param {Object} store

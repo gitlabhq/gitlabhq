@@ -100,26 +100,6 @@ describe('Multi-file store actions', () => {
     });
   });
 
-  describe('closeAllFiles', () => {
-    beforeEach(() => {
-      const f = file('closeAll');
-      store.state.openFiles.push(f);
-      store.state.openFiles[0].opened = true;
-      store.state.entries[f.path] = f;
-    });
-
-    it('closes all open files', done => {
-      store
-        .dispatch('closeAllFiles')
-        .then(() => {
-          expect(store.state.openFiles.length).toBe(0);
-
-          done();
-        })
-        .catch(done.fail);
-    });
-  });
-
   describe('createTempEntry', () => {
     beforeEach(() => {
       document.body.innerHTML += '<div class="flash-container"></div>';

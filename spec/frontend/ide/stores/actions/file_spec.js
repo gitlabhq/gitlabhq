@@ -46,7 +46,6 @@ describe('IDE store file actions', () => {
       localFile = file('testFile');
       localFile.active = true;
       localFile.opened = true;
-      localFile.parentTreeUrl = 'parentTreeUrl';
 
       store.state.openFiles.push(localFile);
       store.state.entries[localFile.path] = localFile;
@@ -256,13 +255,8 @@ describe('IDE store file actions', () => {
         mock.onGet(`${RELATIVE_URL_ROOT}/test/test/-/7297abc/${localFile.path}`).replyOnce(
           200,
           {
-            blame_path: 'blame_path',
-            commits_path: 'commits_path',
-            permalink: 'permalink',
             raw_path: 'raw_path',
             binary: false,
-            html: '123',
-            render_error: '',
           },
           {
             'page-title': 'testing getFileData',
@@ -277,17 +271,6 @@ describe('IDE store file actions', () => {
             expect(service.getFileData).toHaveBeenCalledWith(
               `${RELATIVE_URL_ROOT}/test/test/-/7297abc/${localFile.path}`,
             );
-
-            done();
-          })
-          .catch(done.fail);
-      });
-
-      it('sets the file data', done => {
-        store
-          .dispatch('getFileData', { path: localFile.path })
-          .then(() => {
-            expect(localFile.blamePath).toBe('blame_path');
 
             done();
           })
@@ -350,13 +333,8 @@ describe('IDE store file actions', () => {
         mock.onGet(`${RELATIVE_URL_ROOT}/test/test/-/7297abc/old-dull-file`).replyOnce(
           200,
           {
-            blame_path: 'blame_path',
-            commits_path: 'commits_path',
-            permalink: 'permalink',
             raw_path: 'raw_path',
             binary: false,
-            html: '123',
-            render_error: '',
           },
           {
             'page-title': 'testing old-dull-file',

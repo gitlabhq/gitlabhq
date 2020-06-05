@@ -11,7 +11,6 @@ const createEntries = paths => {
     const createUrl = base => (type === 'tree' ? `${base}/` : base);
 
     const { name, parent } = splitParent(path);
-    const parentEntry = acc[parent];
     const previewMode = viewerInformationForPath(name);
 
     acc[path] = {
@@ -26,9 +25,6 @@ const createEntries = paths => {
         previewMode,
         binary: (previewMode && previewMode.binary) || false,
         parentPath: parent,
-        parentTreeUrl: parentEntry
-          ? parentEntry.url
-          : createUrl(`/${TEST_PROJECT_ID}/${type}/${TEST_BRANCH_ID}`),
       }),
       tree: children.map(childName => expect.objectContaining({ name: childName })),
     };

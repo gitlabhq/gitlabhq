@@ -19,10 +19,6 @@ export const discardAllChanges = ({ state, commit, dispatch }) => {
   commit(types.REMOVE_ALL_CHANGES_FILES);
 };
 
-export const closeAllFiles = ({ state, dispatch }) => {
-  state.openFiles.forEach(file => dispatch('closeFile', file));
-};
-
 export const setResizingStatus = ({ commit }, resizing) => {
   commit(types.SET_RESIZING_STATUS, resizing);
 };

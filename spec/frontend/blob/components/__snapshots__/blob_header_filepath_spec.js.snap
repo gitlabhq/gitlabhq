@@ -14,7 +14,7 @@ exports[`Blob Header Filepath rendering matches the snapshot 1`] = `
    
   <strong
     class="file-title-name mr-1 js-blob-header-filepath"
-    data-qa-selector="file_title_name"
+    data-qa-selector="file_title_content"
   >
     foo/bar/dummy.md
   </strong>

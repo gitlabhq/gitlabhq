@@ -3,7 +3,7 @@
 exports[`Snippet Description component matches the snapshot 1`] = `
 <markdown-field-view-stub
   class="snippet-description"
-  data-qa-selector="snippet_description_field"
+  data-qa-selector="snippet_description_content"
 >
   <div
     class="md js-snippet-description"

@@ -60,22 +60,14 @@ describe('IDE store file mutations', () => {
     it('sets extra file data', () => {
       mutations.SET_FILE_DATA(localState, {
         data: {
-          blame_path: 'blame',
-          commits_path: 'commits',
-          permalink: 'permalink',
           raw_path: 'raw',
           binary: true,
-          render_error: 'render_error',
         },
         file: localFile,
       });
 
-      expect(localFile.blamePath).toBe('blame');
-      expect(localFile.commitsPath).toBe('commits');
-      expect(localFile.permalink).toBe('permalink');
       expect(localFile.rawPath).toBe('raw');
       expect(localFile.binary).toBeTruthy();
-      expect(localFile.renderError).toBe('render_error');
       expect(localFile.raw).toBeNull();
       expect(localFile.baseRaw).toBeNull();
     });

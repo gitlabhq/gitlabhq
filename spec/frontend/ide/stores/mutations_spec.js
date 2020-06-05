@@ -120,24 +120,6 @@ describe('Multi-file store mutations', () => {
       expect(localState.trees['gitlab-ce/master'].tree.length).toEqual(1);
       expect(localState.entries.test.tempFile).toEqual(true);
     });
-
-    it('marks entry as replacing previous entry if the old one has been deleted', () => {
-      const tmpFile = file('test');
-      localState.entries.test = { ...tmpFile, deleted: true };
-      mutations.CREATE_TMP_ENTRY(localState, {
-        data: {
-          entries: {
-            test: { ...tmpFile, tempFile: true, changed: true },
-          },
-          treeList: [tmpFile],
-        },
-        projectId: 'gitlab-ce',
-        branchId: 'master',
-      });
-
-      expect(localState.trees['gitlab-ce/master'].tree.length).toEqual(1);
-      expect(localState.entries.test.replaces).toEqual(true);
-    });
   });
 
   describe('UPDATE_TEMP_FLAG', () => {
@@ -273,10 +255,6 @@ describe('Multi-file store mutations', () => {
         ...file('test'),
         prevPath: 'testing-123',
         rawPath: `${TEST_HOST}/testing-123`,
-        permalink: `${TEST_HOST}/testing-123`,
-        commitsPath: `${TEST_HOST}/testing-123`,
-        blamePath: `${TEST_HOST}/testing-123`,
-        replaces: true,
       };
       localState.entries.test = f;
       localState.changedFiles.push(f);
@@ -291,10 +269,6 @@ describe('Multi-file store mutations', () => {
       expect(f).toEqual(
         expect.objectContaining({
           rawPath: `${TEST_HOST}/test`,
-          permalink: `${TEST_HOST}/test`,
-          commitsPath: `${TEST_HOST}/test`,
-          blamePath: `${TEST_HOST}/test`,
-          replaces: false,
           prevId: undefined,
           prevPath: undefined,
           prevName: undefined,

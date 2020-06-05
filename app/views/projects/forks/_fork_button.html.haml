@@ -22,5 +22,5 @@
       - else
         .avatar-container.s100.mx-auto
           = image_tag(avatar, class: "avatar s100")
-      %h5.prepend-top-default
+      %h5.prepend-top-default{ data: { qa_selector: 'fork_namespace_content' } }
         = namespace.human_name

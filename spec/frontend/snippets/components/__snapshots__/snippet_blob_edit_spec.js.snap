@@ -12,7 +12,7 @@ exports[`Snippet Blob Edit component rendering matches the snapshot 1`] = `
     class="file-holder snippet"
   >
     <blob-header-edit-stub
-      data-qa-selector="snippet_file_name"
+      data-qa-selector="file_name_field"
       value="lorem.txt"
     />
      

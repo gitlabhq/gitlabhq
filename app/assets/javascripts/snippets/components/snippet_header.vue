@@ -163,7 +163,8 @@ export default {
   <div class="detail-page-header">
     <div class="detail-page-header-body">
       <div
-        class="snippet-box qa-snippet-box has-tooltip d-flex align-items-center append-right-5 mb-1"
+        class="snippet-box has-tooltip d-flex align-items-center append-right-5 mb-1"
+        data-qa-selector="snippet_container"
         :title="snippetVisibilityLevelDescription"
         data-container="body"
       >

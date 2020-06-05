@@ -7,4 +7,5 @@ export const tracking = {
   POD_LOG_CHANGED: 'pod_log_changed',
   TIME_RANGE_SET: 'time_range_set',
   ENVIRONMENT_SELECTED: 'environment_selected',
+  REFRESH_POD_LOGS: 'refresh_pod_logs',
 };

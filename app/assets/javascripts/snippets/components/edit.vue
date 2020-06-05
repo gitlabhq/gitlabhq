@@ -187,7 +187,7 @@ export default {
       <title-field
         :id="titleFieldId"
         v-model="snippet.title"
-        data-qa-selector="snippet_title"
+        data-qa-selector="snippet_title_field"
         required
         :autofocus="true"
       />

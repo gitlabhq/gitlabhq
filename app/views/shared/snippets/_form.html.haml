@@ -9,7 +9,7 @@
 
       .form-group
         = f.label :title, class: 'label-bold'
-        = f.text_field :title, class: 'form-control qa-snippet-title', required: true, autofocus: true
+        = f.text_field :title, class: 'form-control', required: true, autofocus: true, data: { qa_selector: 'snippet_title_field' }
 
       .form-group.js-description-input
         - description_placeholder = s_('Snippets|Optionally add a description about what your snippet does or how to use it...')
@@ -27,7 +27,7 @@
         = f.label :file_name, s_('Snippets|File')
         .file-holder.snippet
           .js-file-title.file-title-flex-parent
-            = f.text_field :file_name, placeholder: s_("Snippets|Give your file a name to add code highlighting, e.g. example.rb for Ruby"), class: 'form-control js-snippet-file-name qa-snippet-file-name'
+            = f.text_field :file_name, placeholder: s_("Snippets|Give your file a name to add code highlighting, e.g. example.rb for Ruby"), class: 'form-control js-snippet-file-name', data: { qa_selector: 'file_name_field' }
           .file-content.code
             %pre#editor{ data: { 'editor-loading': true } }= @snippet.content
             = f.hidden_field :content, class: 'snippet-file-content'

@@ -6,6 +6,7 @@ module QA
       module Snippet
         class New < Page::Base
           view 'app/assets/javascripts/snippets/components/edit.vue' do
+            element :snippet_title_field, required: true
             element :submit_button
           end
 
@@ -14,12 +15,8 @@ module QA
             element :description_placeholder, required: true
           end
 
-          view 'app/assets/javascripts/snippets/components/snippet_title.vue' do
-            element :snippet_title, required: true
-          end
-
           view 'app/assets/javascripts/snippets/components/snippet_blob_edit.vue' do
-            element :snippet_file_name
+            element :file_name_field
           end
 
           view 'app/views/shared/form_elements/_description.html.haml' do
@@ -29,8 +26,8 @@ module QA
           view 'app/views/shared/snippets/_form.html.haml' do
             element :snippet_description_field
             element :description_placeholder
-            element :snippet_title
-            element :snippet_file_name
+            element :snippet_title_field
+            element :file_name_field
             element :submit_button
           end
 
@@ -40,7 +37,7 @@ module QA
           end
 
           def fill_title(title)
-            fill_element :snippet_title, title
+            fill_element :snippet_title_field, title
           end
 
           def fill_description(description)
@@ -54,7 +51,7 @@ module QA
 
           def fill_file_name(name)
             finished_loading?
-            fill_element :snippet_file_name, name
+            fill_element :file_name_field, name
           end
 
           def fill_file_content(content)

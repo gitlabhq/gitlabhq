@@ -301,11 +301,11 @@ describe('EnvironmentLogs', () => {
       });
 
       it('refresh button, trace is refreshed', () => {
-        expect(dispatch).not.toHaveBeenCalledWith(`${module}/fetchLogs`, undefined);
+        expect(dispatch).not.toHaveBeenCalledWith(`${module}/refreshPodLogs`, undefined);
 
         findLogControlButtons().vm.$emit('refresh');
 
-        expect(dispatch).toHaveBeenCalledWith(`${module}/fetchLogs`, undefined);
+        expect(dispatch).toHaveBeenCalledWith(`${module}/refreshPodLogs`, undefined);
       });
     });
   });

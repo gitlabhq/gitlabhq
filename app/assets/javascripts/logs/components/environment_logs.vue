@@ -91,7 +91,7 @@ export default {
       'setInitData',
       'showEnvironment',
       'fetchEnvironments',
-      'fetchLogs',
+      'refreshPodLogs',
       'fetchMoreLogsPrepend',
       'dismissRequestEnvironmentsError',
       'dismissInvalidTimeRangeWarning',
@@ -204,7 +204,7 @@ export default {
         ref="scrollButtons"
         class="flex-grow-0 pr-2 mb-2 controllers"
         :scroll-down-button-disabled="scrollDownButtonDisabled"
-        @refresh="fetchLogs()"
+        @refresh="refreshPodLogs()"
         @scrollDown="scrollDown"
       />
     </div>

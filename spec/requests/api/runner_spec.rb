@@ -2317,7 +2317,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
           end
         end
 
-        context 'when job does not has artifacts' do
+        context 'when job does not have artifacts' do
           it 'responds with not found' do
             download_artifact
 

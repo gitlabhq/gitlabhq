@@ -29,7 +29,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions(['stageChange', 'unstageChange', 'discardFileChanges']),
+    ...mapActions(['unstageChange', 'discardFileChanges']),
     showDiscardModal() {
       this.$refs.discardModal.show();
     },

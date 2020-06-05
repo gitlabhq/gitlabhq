@@ -55,7 +55,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions(['stageAllChanges', 'unstageAllChanges', 'discardAllChanges']),
+    ...mapActions(['unstageAllChanges', 'discardAllChanges']),
     openDiscardModal() {
       this.$refs.discardAllModal.show();
     },

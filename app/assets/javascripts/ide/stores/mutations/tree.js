@@ -34,11 +34,6 @@ export default {
 
     Object.assign(selectedTree, { tree });
   },
-  [types.SET_LAST_COMMIT_URL](state, { tree = state, url }) {
-    Object.assign(tree, {
-      lastCommitPath: url,
-    });
-  },
   [types.REMOVE_ALL_CHANGES_FILES](state) {
     Object.assign(state, {
       changedFiles: [],
