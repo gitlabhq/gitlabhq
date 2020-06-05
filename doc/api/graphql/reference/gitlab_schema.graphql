@@ -12907,7 +12907,7 @@ enum VulnerabilityIssueLinkType {
 """
 Represents a vulnerability location. The fields with data will depend on the vulnerability report type
 """
-union VulnerabilityLocation = VulnerabilityLocationContainerScanning | VulnerabilityLocationDast | VulnerabilityLocationDependencyScanning | VulnerabilityLocationSast
+union VulnerabilityLocation = VulnerabilityLocationContainerScanning | VulnerabilityLocationDast | VulnerabilityLocationDependencyScanning | VulnerabilityLocationSast | VulnerabilityLocationSecretDetection
 
 """
 Represents the location of a vulnerability found by a container security scan
@@ -12973,6 +12973,36 @@ type VulnerabilityLocationDependencyScanning {
 Represents the location of a vulnerability found by a SAST scan
 """
 type VulnerabilityLocationSast {
+  """
+  Number of the last relevant line in the vulnerable file
+  """
+  endLine: String
+
+  """
+  Path to the vulnerable file
+  """
+  file: String
+
+  """
+  Number of the first relevant line in the vulnerable file
+  """
+  startLine: String
+
+  """
+  Class containing the vulnerability
+  """
+  vulnerableClass: String
+
+  """
+  Method containing the vulnerability
+  """
+  vulnerableMethod: String
+}
+
+"""
+Represents the location of a vulnerability found by a secret detection scan
+"""
+type VulnerabilityLocationSecretDetection {
   """
   Number of the last relevant line in the vulnerable file
   """

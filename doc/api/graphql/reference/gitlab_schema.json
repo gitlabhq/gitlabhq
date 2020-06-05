@@ -38058,6 +38058,11 @@
               "kind": "OBJECT",
               "name": "VulnerabilityLocationSast",
               "ofType": null
+            },
+            {
+              "kind": "OBJECT",
+              "name": "VulnerabilityLocationSecretDetection",
+              "ofType": null
             }
           ]
         },
@@ -38230,6 +38235,89 @@
           "kind": "OBJECT",
           "name": "VulnerabilityLocationSast",
           "description": "Represents the location of a vulnerability found by a SAST scan",
+          "fields": [
+            {
+              "name": "endLine",
+              "description": "Number of the last relevant line in the vulnerable file",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "file",
+              "description": "Path to the vulnerable file",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "startLine",
+              "description": "Number of the first relevant line in the vulnerable file",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "vulnerableClass",
+              "description": "Class containing the vulnerability",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "vulnerableMethod",
+              "description": "Method containing the vulnerability",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [
+
+          ],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "VulnerabilityLocationSecretDetection",
+          "description": "Represents the location of a vulnerability found by a secret detection scan",
           "fields": [
             {
               "name": "endLine",

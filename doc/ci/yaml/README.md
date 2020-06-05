@@ -2156,6 +2156,12 @@ The `stop_review_app` job is **required** to have the following keywords defined
 - `stage` should be the same as the `review_app` in order for the environment
   to stop automatically when the branch is deleted
 
+Additionally, both jobs should have matching [`rules`](../yaml/README.md#onlyexcept-basic)
+or [`only/except`](../yaml/README.md#onlyexcept-basic) configuration. In the example
+above, if the configuration is not identical, the `stop_review_app` job might not be
+included in all pipelines that include the `review_app` job, and it will not be
+possible to trigger the `action: stop` to stop the environment automatically.
+
 #### `environment:auto_stop_in`
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/20956) in GitLab 12.8.
