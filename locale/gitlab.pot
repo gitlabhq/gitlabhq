@@ -6575,6 +6575,9 @@ msgstr ""
 msgid "Created by me"
 msgstr ""
 
+msgid "Created date"
+msgstr ""
+
 msgid "Created issue %{issueLink}"
 msgstr ""
 
@@ -13168,6 +13171,9 @@ msgstr ""
 msgid "Loading…"
 msgstr ""
 
+msgid "Local IP addresses and domain names that hooks and services may access."
+msgstr ""
+
 msgid "Localization"
 msgstr ""
 
@@ -15546,10 +15552,10 @@ msgstr ""
 msgid "PackageRegistry|Upcoming package managers"
 msgstr ""
 
-msgid "PackageRegistry|You are about to delete <b>%{packageName}</b>, this operation is irreversible, are you sure?"
+msgid "PackageRegistry|You are about to delete %{name}, this operation is irreversible, are you sure?"
 msgstr ""
 
-msgid "PackageRegistry|You are about to delete version %{boldStart}%{version}%{boldEnd} of %{boldStart}%{name}%{boldEnd}. Are you sure?"
+msgid "PackageRegistry|You are about to delete version %{version} of %{name}. Are you sure?"
 msgstr ""
 
 msgid "PackageRegistry|You may also need to setup authentication using an auth token. %{linkStart}See the documentation%{linkEnd} to find out more."
@@ -18597,7 +18603,7 @@ msgstr ""
 msgid "Requests Profiles"
 msgstr ""
 
-msgid "Requests to these domain(s)/address(es) on the local network will be allowed when local requests from hooks and services are not allowed. IP ranges such as 1:0:0:0:0:0:0:0/124 or 127.0.0.0/28 are supported. Domain wildcards are not supported currently. Use comma, semicolon, or newline to separate multiple entries. The whitelist can hold a maximum of 1000 entries. Domains should use IDNA encoding. Ex: example.com, 192.168.1.1, 127.0.0.0/28, xn--itlab-j1a.com."
+msgid "Requests to these domain(s)/address(es) on the local network will be allowed when local requests from hooks and services are not allowed. IP ranges such as 1:0:0:0:0:0:0:0/124 or 127.0.0.0/28 are supported. Domain wildcards are not supported currently. Use comma, semicolon, or newline to separate multiple entries. The allowlist can hold a maximum of 1000 entries. Domains should use IDNA encoding. Ex: example.com, 192.168.1.1, 127.0.0.0/28, xn--itlab-j1a.com."
 msgstr ""
 
 msgid "Require all users in this group to setup Two-factor authentication"
@@ -19165,6 +19171,9 @@ msgid "Search projects"
 msgstr ""
 
 msgid "Search projects..."
+msgstr ""
+
+msgid "Search requirements"
 msgstr ""
 
 msgid "Search users"
@@ -24998,9 +25007,6 @@ msgid "While it's rare to have no vulnerabilities, it can happen. In any event, 
 msgstr ""
 
 msgid "White helpers give contextual information."
-msgstr ""
-
-msgid "Whitelist to allow requests to the local network from hooks and services"
 msgstr ""
 
 msgid "Who can be an approver?"

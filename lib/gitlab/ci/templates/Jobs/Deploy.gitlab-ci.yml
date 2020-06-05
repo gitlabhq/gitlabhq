@@ -1,5 +1,5 @@
 .auto-deploy:
-  image: "registry.gitlab.com/gitlab-org/cluster-integration/auto-deploy-image:v0.15.0"
+  image: "registry.gitlab.com/gitlab-org/cluster-integration/auto-deploy-image:v0.16.1"
 
 include:
   - template: Jobs/Deploy/ECS.gitlab-ci.yml

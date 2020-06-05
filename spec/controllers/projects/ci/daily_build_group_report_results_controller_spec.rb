@@ -9,27 +9,19 @@ RSpec.describe Projects::Ci::DailyBuildGroupReportResultsController do
     let(:param_type) { 'coverage' }
     let(:start_date) { '2019-12-10' }
     let(:end_date) { '2020-03-09' }
-
-    def create_daily_coverage(group_name, coverage, date)
-      create(
-        :ci_daily_build_group_report_result,
-        project: project,
-        ref_path: ref_path,
-        group_name: group_name,
-        data: { 'coverage' => coverage },
-        date: date
-      )
-    end
-
-    def csv_response
-      CSV.parse(response.body)
-    end
+    let(:allowed_to_read) { true }
+    let(:user) { create(:user) }
 
     before do
       create_daily_coverage('rspec', 79.0, '2020-03-09')
       create_daily_coverage('karma', 81.0, '2019-12-10')
       create_daily_coverage('rspec', 67.0, '2019-12-09')
       create_daily_coverage('karma', 71.0, '2019-12-09')
+
+      sign_in(user)
+
+      allow(Ability).to receive(:allowed?).and_call_original
+      allow(Ability).to receive(:allowed?).with(user, :read_build_report_results, project).and_return(allowed_to_read)
 
       get :index, params: {
         namespace_id: project.namespace,
@@ -76,5 +68,28 @@ RSpec.describe Projects::Ci::DailyBuildGroupReportResultsController do
         expect(response).to have_gitlab_http_status(:unprocessable_entity)
       end
     end
+
+    context 'when user is not allowed to read build report results' do
+      let(:allowed_to_read) { false }
+
+      it 'responds with 404 error' do
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+  end
+
+  def create_daily_coverage(group_name, coverage, date)
+    create(
+      :ci_daily_build_group_report_result,
+      project: project,
+      ref_path: ref_path,
+      group_name: group_name,
+      data: { 'coverage' => coverage },
+      date: date
+    )
+  end
+
+  def csv_response
+    CSV.parse(response.body)
   end
 end

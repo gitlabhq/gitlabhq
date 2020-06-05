@@ -47,3 +47,14 @@ export const LIST_KEY_SIZE = 'total_size';
 export const LIST_KEY_LAST_UPDATED = 'created_at';
 export const LIST_KEY_ACTIONS = 'actions';
 export const LIST_KEY_CHECKBOX = 'checkbox';
+export const ALERT_SUCCESS_TAG = 'success_tag';
+export const ALERT_DANGER_TAG = 'danger_tag';
+export const ALERT_SUCCESS_TAGS = 'success_tags';
+export const ALERT_DANGER_TAGS = 'danger_tags';
+
+export const ALERT_MESSAGES = {
+  [ALERT_SUCCESS_TAG]: DELETE_TAG_SUCCESS_MESSAGE,
+  [ALERT_DANGER_TAG]: DELETE_TAG_ERROR_MESSAGE,
+  [ALERT_SUCCESS_TAGS]: DELETE_TAGS_SUCCESS_MESSAGE,
+  [ALERT_DANGER_TAGS]: DELETE_TAGS_ERROR_MESSAGE,
+};

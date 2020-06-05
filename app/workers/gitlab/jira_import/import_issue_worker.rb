@@ -48,7 +48,7 @@ module Gitlab
 
         label_link_attrs << build_label_attrs(issue_id, import_label_id.to_i)
 
-        Gitlab::Database.bulk_insert(LabelLink.table_name, label_link_attrs)
+        Gitlab::Database.bulk_insert(LabelLink.table_name, label_link_attrs) # rubocop:disable Gitlab/BulkInsert
       end
 
       def assign_issue(project_id, issue_id, assignee_ids)
@@ -56,7 +56,7 @@ module Gitlab
 
         assignee_attrs = assignee_ids.map { |user_id| { issue_id: issue_id, user_id: user_id } }
 
-        Gitlab::Database.bulk_insert(IssueAssignee.table_name, assignee_attrs)
+        Gitlab::Database.bulk_insert(IssueAssignee.table_name, assignee_attrs) # rubocop:disable Gitlab/BulkInsert
       end
 
       def build_label_attrs(issue_id, label_id)

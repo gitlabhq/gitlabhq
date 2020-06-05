@@ -1,24 +1,20 @@
 import { mount } from '@vue/test-utils';
-import { GlTable, GlPagination, GlSkeletonLoader, GlAlert, GlLink } from '@gitlab/ui';
+import { GlTable, GlPagination, GlSkeletonLoader } from '@gitlab/ui';
 import Tracking from '~/tracking';
 import stubChildren from 'helpers/stub_children';
 import component from '~/registry/explorer/pages/details.vue';
+import DeleteAlert from '~/registry/explorer/components/details_page/delete_alert.vue';
+import DeleteModal from '~/registry/explorer/components/details_page/delete_modal.vue';
+import DetailsHeader from '~/registry/explorer/components/details_page/details_header.vue';
 import { createStore } from '~/registry/explorer/stores/';
 import {
   SET_MAIN_LOADING,
-  SET_INITIAL_STATE,
   SET_TAGS_LIST_SUCCESS,
   SET_TAGS_PAGINATION,
+  SET_INITIAL_STATE,
 } from '~/registry/explorer/stores/mutation_types/';
-import {
-  DELETE_TAG_SUCCESS_MESSAGE,
-  DELETE_TAG_ERROR_MESSAGE,
-  DELETE_TAGS_SUCCESS_MESSAGE,
-  DELETE_TAGS_ERROR_MESSAGE,
-  ADMIN_GARBAGE_COLLECTION_TIP,
-} from '~/registry/explorer/constants';
+
 import { tagsListResponse } from '../mock_data';
-import { GlModal } from '../stubs';
 import { $toast } from '../../shared/mocks';
 
 describe('Details Page', () => {
@@ -26,7 +22,7 @@ describe('Details Page', () => {
   let dispatchSpy;
   let store;
 
-  const findDeleteModal = () => wrapper.find(GlModal);
+  const findDeleteModal = () => wrapper.find(DeleteModal);
   const findPagination = () => wrapper.find(GlPagination);
   const findSkeletonLoader = () => wrapper.find(GlSkeletonLoader);
   const findMainCheckbox = () => wrapper.find({ ref: 'mainCheckbox' });
@@ -38,7 +34,8 @@ describe('Details Page', () => {
   const findCheckedCheckboxes = () => findAllCheckboxes().filter(c => c.attributes('checked'));
   const findFirsTagColumn = () => wrapper.find('.js-tag-column');
   const findFirstTagNameText = () => wrapper.find('[data-testid="rowNameText"]');
-  const findAlert = () => wrapper.find(GlAlert);
+  const findDeleteAlert = () => wrapper.find(DeleteAlert);
+  const findDetailsHeader = () => wrapper.find(DetailsHeader);
 
   const routeId = window.btoa(JSON.stringify({ name: 'foo', tags_path: 'bar' }));
 
@@ -47,9 +44,9 @@ describe('Details Page', () => {
       store,
       stubs: {
         ...stubChildren(component),
-        GlModal,
         GlSprintf: false,
         GlTable,
+        DeleteModal,
       },
       mocks: {
         $route: {
@@ -70,6 +67,7 @@ describe('Details Page', () => {
     store.commit(SET_TAGS_LIST_SUCCESS, tagsListResponse.data);
     store.commit(SET_TAGS_PAGINATION, tagsListResponse.headers);
     jest.spyOn(Tracking, 'event');
+    jest.spyOn(DeleteModal.methods, 'show');
   });
 
   afterEach(() => {
@@ -100,10 +98,6 @@ describe('Details Page', () => {
   });
 
   describe('table', () => {
-    beforeEach(() => {
-      mountComponent();
-    });
-
     it.each([
       'rowCheckbox',
       'rowName',
@@ -112,6 +106,7 @@ describe('Details Page', () => {
       'rowTime',
       'singleDeleteButton',
     ])('%s exist in the table', element => {
+      mountComponent();
       expect(findFirstRowItem(element).exists()).toBe(true);
     });
 
@@ -143,16 +138,20 @@ describe('Details Page', () => {
     });
 
     describe('row checkbox', () => {
+      beforeEach(() => {
+        mountComponent();
+      });
+
       it('if selected adds item to selectedItems', () => {
         findFirstRowItem('rowCheckbox').vm.$emit('change');
         return wrapper.vm.$nextTick().then(() => {
-          expect(wrapper.vm.selectedItems).toEqual([1]);
+          expect(wrapper.vm.selectedItems).toEqual([store.state.tags[1].name]);
           expect(findFirstRowItem('rowCheckbox').attributes('checked')).toBeTruthy();
         });
       });
 
-      it('if deselect remove index from selectedItems', () => {
-        wrapper.setData({ selectedItems: [1] });
+      it('if deselect remove name from selectedItems', () => {
+        wrapper.setData({ selectedItems: [store.state.tags[1].name] });
         findFirstRowItem('rowCheckbox').vm.$emit('change');
         return wrapper.vm.$nextTick().then(() => {
           expect(wrapper.vm.selectedItems.length).toBe(0);
@@ -167,14 +166,17 @@ describe('Details Page', () => {
       });
 
       it('exists', () => {
+        mountComponent();
         expect(findBulkDeleteButton().exists()).toBe(true);
       });
 
       it('is disabled if no item is selected', () => {
+        mountComponent();
         expect(findBulkDeleteButton().attributes('disabled')).toBe('true');
       });
 
       it('is enabled if at least one item is selected', () => {
+        mountComponent({ data: () => ({ selectedItems: [store.state.tags[0].name] }) });
         wrapper.setData({ selectedItems: [1] });
         return wrapper.vm.$nextTick().then(() => {
           expect(findBulkDeleteButton().attributes('disabled')).toBeFalsy();
@@ -183,30 +185,26 @@ describe('Details Page', () => {
 
       describe('on click', () => {
         it('when one item is selected', () => {
-          wrapper.setData({ selectedItems: [1] });
+          mountComponent({ data: () => ({ selectedItems: [store.state.tags[0].name] }) });
+          jest.spyOn(wrapper.vm.$refs.deleteModal, 'show');
           findBulkDeleteButton().vm.$emit('click');
-          return wrapper.vm.$nextTick().then(() => {
-            expect(findDeleteModal().html()).toContain(
-              'You are about to remove <b>foo</b>. Are you sure?',
-            );
-            expect(GlModal.methods.show).toHaveBeenCalled();
-            expect(Tracking.event).toHaveBeenCalledWith(undefined, 'click_button', {
-              label: 'registry_tag_delete',
-            });
+          expect(wrapper.vm.itemsToBeDeleted).toEqual([store.state.tags[0]]);
+          expect(DeleteModal.methods.show).toHaveBeenCalled();
+          expect(Tracking.event).toHaveBeenCalledWith(undefined, 'click_button', {
+            label: 'registry_tag_delete',
           });
         });
 
         it('when multiple items are selected', () => {
-          wrapper.setData({ selectedItems: [0, 1] });
+          mountComponent({
+            data: () => ({ selectedItems: store.state.tags.map(t => t.name) }),
+          });
           findBulkDeleteButton().vm.$emit('click');
-          return wrapper.vm.$nextTick().then(() => {
-            expect(findDeleteModal().html()).toContain(
-              'You are about to remove <b>2</b> tags. Are you sure?',
-            );
-            expect(GlModal.methods.show).toHaveBeenCalled();
-            expect(Tracking.event).toHaveBeenCalledWith(undefined, 'click_button', {
-              label: 'bulk_registry_tag_delete',
-            });
+
+          expect(wrapper.vm.itemsToBeDeleted).toEqual(tagsListResponse.data);
+          expect(DeleteModal.methods.show).toHaveBeenCalled();
+          expect(Tracking.event).toHaveBeenCalledWith(undefined, 'click_button', {
+            label: 'bulk_registry_tag_delete',
           });
         });
       });
@@ -237,14 +235,10 @@ describe('Details Page', () => {
         findAllDeleteButtons()
           .at(0)
           .vm.$emit('click');
-        return wrapper.vm.$nextTick().then(() => {
-          expect(findDeleteModal().html()).toContain(
-            'You are about to remove <b>bar</b>. Are you sure?',
-          );
-          expect(GlModal.methods.show).toHaveBeenCalled();
-          expect(Tracking.event).toHaveBeenCalledWith(undefined, 'click_button', {
-            label: 'registry_tag_delete',
-          });
+
+        expect(DeleteModal.methods.show).toHaveBeenCalled();
+        expect(Tracking.event).toHaveBeenCalledWith(undefined, 'click_button', {
+          label: 'registry_tag_delete',
         });
       });
     });
@@ -292,6 +286,7 @@ describe('Details Page', () => {
       let timeCell;
 
       beforeEach(() => {
+        mountComponent();
         timeCell = findFirstRowItem('rowTime');
       });
 
@@ -331,176 +326,97 @@ describe('Details Page', () => {
   });
 
   describe('modal', () => {
-    beforeEach(() => {
-      mountComponent();
-    });
-
     it('exists', () => {
+      mountComponent();
       expect(findDeleteModal().exists()).toBe(true);
     });
 
-    describe('when ok event is emitted', () => {
-      beforeEach(() => {
-        dispatchSpy.mockResolvedValue();
-      });
-
-      it('tracks confirm_delete', () => {
-        const deleteModal = findDeleteModal();
-        deleteModal.vm.$emit('ok');
-        return wrapper.vm.$nextTick().then(() => {
-          expect(Tracking.event).toHaveBeenCalledWith(undefined, 'confirm_delete', {
-            label: 'registry_tag_delete',
-          });
-        });
-      });
-
-      describe('when only one element is selected', () => {
-        it('execute the delete and remove selection', () => {
-          wrapper.setData({ itemsToBeDeleted: [0] });
-          findDeleteModal().vm.$emit('ok');
-
-          expect(store.dispatch).toHaveBeenCalledWith('requestDeleteTag', {
-            tag: store.state.tags[0],
-            params: wrapper.vm.$route.params.id,
-          });
-          // itemsToBeDeleted is not represented in the DOM, is used as parking variable between selected and deleted items
-          expect(wrapper.vm.itemsToBeDeleted).toEqual([]);
-          expect(wrapper.vm.selectedItems).toEqual([]);
-          expect(findCheckedCheckboxes()).toHaveLength(0);
-        });
-      });
-
-      describe('when multiple elements are selected', () => {
-        beforeEach(() => {
-          wrapper.setData({ itemsToBeDeleted: [0, 1] });
-        });
-
-        it('execute the delete and remove selection', () => {
-          findDeleteModal().vm.$emit('ok');
-
-          expect(store.dispatch).toHaveBeenCalledWith('requestDeleteTags', {
-            ids: store.state.tags.map(t => t.name),
-            params: wrapper.vm.$route.params.id,
-          });
-          // itemsToBeDeleted is not represented in the DOM, is used as parking variable between selected and deleted items
-          expect(wrapper.vm.itemsToBeDeleted).toEqual([]);
-          expect(findCheckedCheckboxes()).toHaveLength(0);
-        });
-      });
-    });
-
-    it('tracks cancel_delete when cancel event is emitted', () => {
-      const deleteModal = findDeleteModal();
-      deleteModal.vm.$emit('cancel');
-      return wrapper.vm.$nextTick().then(() => {
+    describe('cancel event', () => {
+      it('tracks cancel_delete', () => {
+        mountComponent();
+        findDeleteModal().vm.$emit('cancel');
         expect(Tracking.event).toHaveBeenCalledWith(undefined, 'cancel_delete', {
           label: 'registry_tag_delete',
         });
       });
     });
-  });
 
-  describe('Delete alert', () => {
-    const config = {
-      garbageCollectionHelpPagePath: 'foo',
-    };
+    describe('confirmDelete event', () => {
+      describe('when one item is selected to be deleted', () => {
+        const itemsToBeDeleted = [{ name: 'foo' }];
 
-    describe('when the user is an admin', () => {
-      beforeEach(() => {
-        store.commit(SET_INITIAL_STATE, { ...config, isAdmin: true });
+        it('dispatch requestDeleteTag with the right parameters', () => {
+          mountComponent({ data: () => ({ itemsToBeDeleted }) });
+          findDeleteModal().vm.$emit('confirmDelete');
+          expect(dispatchSpy).toHaveBeenCalledWith('requestDeleteTag', {
+            tag: itemsToBeDeleted[0],
+            params: routeId,
+          });
+        });
+        it('remove the deleted item from the selected items', () => {
+          mountComponent({ data: () => ({ itemsToBeDeleted, selectedItems: ['foo', 'bar'] }) });
+          findDeleteModal().vm.$emit('confirmDelete');
+          expect(wrapper.vm.selectedItems).toEqual(['bar']);
+        });
       });
 
-      afterEach(() => {
-        store.commit(SET_INITIAL_STATE, config);
-      });
-
-      describe.each`
-        deleteType                | successTitle                   | errorTitle
-        ${'handleSingleDelete'}   | ${DELETE_TAG_SUCCESS_MESSAGE}  | ${DELETE_TAG_ERROR_MESSAGE}
-        ${'handleMultipleDelete'} | ${DELETE_TAGS_SUCCESS_MESSAGE} | ${DELETE_TAGS_ERROR_MESSAGE}
-      `('behaves correctly on $deleteType', ({ deleteType, successTitle, errorTitle }) => {
-        describe('when delete is successful', () => {
-          beforeEach(() => {
-            dispatchSpy.mockResolvedValue();
-            mountComponent();
-            return wrapper.vm[deleteType]('foo');
-          });
-
-          it('alert exists', () => {
-            expect(findAlert().exists()).toBe(true);
-          });
-
-          it('alert body contains admin tip', () => {
-            expect(
-              findAlert()
-                .text()
-                .replace(/\s\s+/gm, ' '),
-            ).toBe(ADMIN_GARBAGE_COLLECTION_TIP.replace(/%{\w+}/gm, ''));
-          });
-
-          it('alert body contains link', () => {
-            const alertLink = findAlert().find(GlLink);
-            expect(alertLink.exists()).toBe(true);
-            expect(alertLink.attributes('href')).toBe(config.garbageCollectionHelpPagePath);
-          });
-
-          it('alert title is appropriate', () => {
-            expect(findAlert().attributes('title')).toBe(successTitle);
+      describe('when more than one item is selected to be deleted', () => {
+        beforeEach(() => {
+          mountComponent({
+            data: () => ({
+              itemsToBeDeleted: [{ name: 'foo' }, { name: 'bar' }],
+              selectedItems: ['foo', 'bar'],
+            }),
           });
         });
 
-        describe('when delete is not successful', () => {
-          beforeEach(() => {
-            mountComponent();
-            dispatchSpy.mockRejectedValue();
-            return wrapper.vm[deleteType]('foo');
+        it('dispatch requestDeleteTags with the right parameters', () => {
+          findDeleteModal().vm.$emit('confirmDelete');
+          expect(dispatchSpy).toHaveBeenCalledWith('requestDeleteTags', {
+            ids: ['foo', 'bar'],
+            params: routeId,
           });
-
-          it('alert exist and text is appropriate', () => {
-            expect(findAlert().exists()).toBe(true);
-            expect(findAlert().text()).toBe(errorTitle);
-          });
+        });
+        it('clears the selectedItems', () => {
+          findDeleteModal().vm.$emit('confirmDelete');
+          expect(wrapper.vm.selectedItems).toEqual([]);
         });
       });
     });
+  });
 
-    describe.each`
-      deleteType                | successTitle                   | errorTitle
-      ${'handleSingleDelete'}   | ${DELETE_TAG_SUCCESS_MESSAGE}  | ${DELETE_TAG_ERROR_MESSAGE}
-      ${'handleMultipleDelete'} | ${DELETE_TAGS_SUCCESS_MESSAGE} | ${DELETE_TAGS_ERROR_MESSAGE}
-    `(
-      'when the user is not an admin alert behaves correctly on $deleteType',
-      ({ deleteType, successTitle, errorTitle }) => {
-        beforeEach(() => {
-          store.commit('SET_INITIAL_STATE', { ...config });
-        });
+  describe('Header', () => {
+    it('exists', () => {
+      mountComponent();
+      expect(findDetailsHeader().exists()).toBe(true);
+    });
 
-        describe('when delete is successful', () => {
-          beforeEach(() => {
-            dispatchSpy.mockResolvedValue();
-            mountComponent();
-            return wrapper.vm[deleteType]('foo');
-          });
+    it('has the correct props', () => {
+      mountComponent();
+      expect(findDetailsHeader().props()).toEqual({ imageName: 'foo' });
+    });
+  });
 
-          it('alert exist and text is appropriate', () => {
-            expect(findAlert().exists()).toBe(true);
-            expect(findAlert().text()).toBe(successTitle);
-          });
-        });
+  describe('Delete Alert', () => {
+    const config = {
+      isAdmin: true,
+      garbageCollectionHelpPagePath: 'baz',
+    };
+    const deleteAlertType = 'success_tag';
 
-        describe('when delete is not successful', () => {
-          beforeEach(() => {
-            mountComponent();
-            dispatchSpy.mockRejectedValue();
-            return wrapper.vm[deleteType]('foo');
-          });
+    it('exists', () => {
+      mountComponent();
+      expect(findDeleteAlert().exists()).toBe(true);
+    });
 
-          it('alert exist and text is appropriate', () => {
-            expect(findAlert().exists()).toBe(true);
-            expect(findAlert().text()).toBe(errorTitle);
-          });
-        });
-      },
-    );
+    it('has the correct props', () => {
+      store.commit(SET_INITIAL_STATE, { ...config });
+      mountComponent({
+        data: () => ({
+          deleteAlertType,
+        }),
+      });
+      expect(findDeleteAlert().props()).toEqual({ ...config, deleteAlertType });
+    });
   });
 });

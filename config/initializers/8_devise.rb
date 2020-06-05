@@ -6,6 +6,11 @@ Devise.setup do |config|
     manager.default_strategies(scope: :user).unshift :two_factor_backupable
   end
 
+  # This is the default. This makes it explicit that Devise loads routes
+  # before eager loading. Disabling this seems to cause an error loading
+  # grape-entity `expose` for some reason.
+  config.reload_routes = true
+
   # ==> Mailer Configuration
   # Configure the class responsible to send e-mails.
   config.mailer = "DeviseMailer"

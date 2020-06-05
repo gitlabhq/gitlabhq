@@ -8,17 +8,6 @@ describe Ci::DailyBuildGroupReportResultsFinder do
     let(:ref_path) { 'refs/heads/master' }
     let(:limit) { nil }
 
-    def create_daily_coverage(group_name, coverage, date)
-      create(
-        :ci_daily_build_group_report_result,
-        project: project,
-        ref_path: ref_path,
-        group_name: group_name,
-        data: { 'coverage' => coverage },
-        date: date
-      )
-    end
-
     let!(:rspec_coverage_1) { create_daily_coverage('rspec', 79.0, '2020-03-09') }
     let!(:karma_coverage_1) { create_daily_coverage('karma', 89.0, '2020-03-09') }
     let!(:rspec_coverage_2) { create_daily_coverage('rspec', 95.0, '2020-03-10') }
@@ -37,7 +26,7 @@ describe Ci::DailyBuildGroupReportResultsFinder do
       ).execute
     end
 
-    context 'when current user is allowed to download project code' do
+    context 'when current user is allowed to read build report results' do
       let(:current_user) { project.owner }
 
       it 'returns all matching results within the given date range' do
@@ -61,12 +50,23 @@ describe Ci::DailyBuildGroupReportResultsFinder do
       end
     end
 
-    context 'when current user is not allowed to download project code' do
+    context 'when current user is not allowed to read build report results' do
       let(:current_user) { create(:user) }
 
       it 'returns an empty result' do
         expect(subject).to be_empty
       end
     end
+  end
+
+  def create_daily_coverage(group_name, coverage, date)
+    create(
+      :ci_daily_build_group_report_result,
+      project: project,
+      ref_path: ref_path,
+      group_name: group_name,
+      data: { 'coverage' => coverage },
+      date: date
+    )
   end
 end

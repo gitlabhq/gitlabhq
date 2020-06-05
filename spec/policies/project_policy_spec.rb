@@ -833,4 +833,63 @@ describe ProjectPolicy do
       it { is_expected.to be_disallowed(:create_web_ide_terminal) }
     end
   end
+
+  describe 'read_repository_graphs' do
+    subject { described_class.new(guest, project) }
+
+    before do
+      allow(subject).to receive(:allowed?).with(:read_repository_graphs).and_call_original
+      allow(subject).to receive(:allowed?).with(:download_code).and_return(can_download_code)
+    end
+
+    context 'when user can download_code' do
+      let(:can_download_code) { true }
+
+      it { is_expected.to be_allowed(:read_repository_graphs) }
+    end
+
+    context 'when user cannot download_code' do
+      let(:can_download_code) { false }
+
+      it { is_expected.to be_disallowed(:read_repository_graphs) }
+    end
+  end
+
+  describe 'read_build_report_results' do
+    subject { described_class.new(guest, project) }
+
+    before do
+      allow(subject).to receive(:allowed?).with(:read_build_report_results).and_call_original
+      allow(subject).to receive(:allowed?).with(:read_build).and_return(can_read_build)
+      allow(subject).to receive(:allowed?).with(:read_pipeline).and_return(can_read_pipeline)
+    end
+
+    context 'when user can read_build and read_pipeline' do
+      let(:can_read_build) { true }
+      let(:can_read_pipeline) { true }
+
+      it { is_expected.to be_allowed(:read_build_report_results) }
+    end
+
+    context 'when user can read_build but cannot read_pipeline' do
+      let(:can_read_build) { true }
+      let(:can_read_pipeline) { false }
+
+      it { is_expected.to be_disallowed(:read_build_report_results) }
+    end
+
+    context 'when user cannot read_build but can read_pipeline' do
+      let(:can_read_build) { false }
+      let(:can_read_pipeline) { true }
+
+      it { is_expected.to be_disallowed(:read_build_report_results) }
+    end
+
+    context 'when user cannot read_build and cannot read_pipeline' do
+      let(:can_read_build) { false }
+      let(:can_read_pipeline) { false }
+
+      it { is_expected.to be_disallowed(:read_build_report_results) }
+    end
+  end
 end

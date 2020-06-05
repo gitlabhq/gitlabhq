@@ -1,0 +1,44 @@
+{
+  "_id":"@root/npm-test",
+  "name":"@root/npm-test",
+  "description":"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+  "dist-tags":{
+     "latest":"1.0.1"
+  },
+  "versions":{
+     "1.0.1":{
+        "name":"@root/npm-test",
+        "version":"1.0.1",
+        "main":"app.js",
+        "dependencies":{
+           "express":"^4.16.4",
+           "dagre-d3": "~0.3.2"
+        },
+        "devDependencies": {
+           "dagre-d3": "~0.3.2",
+           "d3": "~3.4.13"
+        },
+        "bundleDependencies": {
+           "d3": "~3.4.13"
+        },
+        "peerDependencies": {
+           "d3": "~3.3.0"
+        },
+        "deprecated": {
+           "express":"^4.16.4"
+        },
+        "dist":{
+           "shasum":"f572d396fae9206628714fb2ce00f72e94f2258f"
+        }
+     }
+  },
+  "_attachments":{
+     "@root/npm-test-1.0.1.tgz":{
+        "content_type":"application/octet-stream",
+        "data":"aGVsbG8K",
+        "length":8
+     }
+  },
+  "id":"10",
+  "package_name":"@root/npm-test"
+}

@@ -137,7 +137,7 @@
     .badge.badge-pill:not(.fly-out-badge),
     .sidebar-context-title,
     .nav-item-name {
-      display: none;
+      @include gl-sr-only;
     }
 
     .sidebar-top-level-items > li > a {

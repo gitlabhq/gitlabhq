@@ -17,9 +17,8 @@ module Issuable
       ids = params.delete(:issuable_ids).split(",")
       items = find_issuables(parent, model_class, ids)
 
-      permitted_attrs(type).each do |key|
-        params.delete(key) unless params[key].present?
-      end
+      params.slice!(*permitted_attrs(type))
+      params.delete_if { |k, v| v.blank? }
 
       if params[:assignee_ids] == [IssuableFinder::Params::NONE.to_s]
         params[:assignee_ids] = []

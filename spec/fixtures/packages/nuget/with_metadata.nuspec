@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
+  <metadata>
+    <id>DummyProject.WithMetadata</id>
+    <version>1.2.3</version>
+    <title>nuspec with metadata</title>
+    <authors>Author Test</authors>
+    <owners>Author Test</owners>
+    <developmentDependency>true</developmentDependency>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <licenseUrl>https://opensource.org/licenses/MIT</licenseUrl>
+    <projectUrl>https://gitlab.com/gitlab-org/gitlab</projectUrl>
+    <iconUrl>https://opensource.org/files/osi_keyhole_300X300_90ppi_0.png</iconUrl>
+    <description>Description Test</description>
+    <releaseNotes>Release Notes Test</releaseNotes>
+    <copyright>Copyright Test</copyright>
+    <tags>foo bar test tag1 tag2 tag3 tag4 tag5</tags>
+  </metadata>
+</package>

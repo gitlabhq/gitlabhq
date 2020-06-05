@@ -141,10 +141,88 @@ Using the default GitLab settings, some object storage back-ends such as
 and [Alibaba](https://gitlab.com/gitlab-org/charts/gitlab/-/issues/1564)
 might generate `ETag mismatch` errors.
 
+If you are seeing this ETag mismatch error with Amazon Web Services S3,
+it's likely this is due to [encryption settings on your bucket](https://docs.aws.amazon.com/AmazonS3/latest/API/RESTCommonResponseHeaders.html).
+See the section on [using Amazon instance profiles](#using-amazon-instance-profiles) on how to fix this issue.
+
 When using GitLab direct upload, the
 [workaround for MinIO](https://gitlab.com/gitlab-org/charts/gitlab/-/issues/1564#note_244497658)
 is to use the `--compat` parameter on the server.
 
-We are working on a fix to GitLab component Workhorse, and also
-a workaround, in the mean time, to
-[allow ETag verification to be disabled](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/18175).
+We are working on a fix to the [GitLab Workhorse
+component](https://gitlab.com/gitlab-org/gitlab-workhorse/-/issues/222).
+
+### Using Amazon instance profiles
+
+Instead of supplying AWS access and secret keys in object storage
+configuration, GitLab can be configured to use IAM roles to set up an
+[Amazon instance profile](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_use_switch-role-ec2.html).
+When this is used, GitLab will fetch temporary credentials each time an
+S3 bucket is accessed, so no hard-coded values are needed in the
+configuration.
+
+#### Encrypted S3 buckets
+
+> Introduced in [GitLab 13.1](https://gitlab.com/gitlab-org/gitlab-workhorse/-/merge_requests/466) only for instance profiles.
+
+When configured to use an instance profile, GitLab Workhorse
+will properly upload files to S3 buckets that have [SSE-S3 or SSE-KMS
+encryption enabled by default](https://docs.aws.amazon.com/kms/latest/developerguide/services-s3.html).
+Note that customer master keys (CMKs) and SSE-C encryption are not yet
+supported since this requires supplying keys to the GitLab
+configuration.
+
+Without instance profiles enabled (or prior to GitLab 13.1), GitLab
+Workhorse will upload files to S3 using pre-signed URLs that do not have
+a `Content-MD5` HTTP header computed for them. To ensure data is not
+corrupted, Workhorse checks that the MD5 hash of the data sent equals
+the ETag header returned from the S3 server. When encryption is enabled,
+this is not the case, which causes Workhorse to report an `ETag
+mismatch` error during an upload.
+
+With instance profiles enabled, GitLab Workhorse uses an AWS S3 client
+that properly computes and sends the `Content-MD5` header to the server,
+which eliminates the need for comparing ETag headers. If the data is
+corrupted in transit, the S3 server will reject the file.
+
+#### IAM Permissions
+
+To set up an instance profile, create an Amazon Identity Access and
+Management (IAM) role with the necessary permissions. The following
+example is a role for an S3 bucket named `test-bucket`:
+
+```json
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "VisualEditor0",
+            "Effect": "Allow",
+            "Action": [
+                "s3:PutObject",
+                "s3:GetObject",
+                "s3:AbortMultipartUpload",
+                "s3:DeleteObject"
+            ],
+            "Resource": "arn:aws:s3:::test-bucket/*"
+        }
+    ]
+}
+```
+
+Associate this role with your GitLab instance, and then configure GitLab
+to use it via the `use_iam_profile` configuration option. For example,
+when configuring uploads to use object storage, see the `AWS IAM profiles`
+section in [S3 compatible connection settings](uploads.md#s3-compatible-connection-settings).
+
+#### Disabling the feature
+
+The Workhorse S3 client is only enabled when the `use_iam_profile`
+configuration flag is `true`.
+
+To disable this feature, ask a GitLab administrator with [Rails console access](feature_flags.md#how-to-enable-and-disable-features-behind-flags) to run the
+following command:
+
+```ruby
+Feature.disable(:use_workhorse_s3_client)
+```

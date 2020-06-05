@@ -1,0 +1,5 @@
+---
+title: Hide "Import from Jira" option from non-entitled users
+merge_request: 32685
+author:
+type: fixed

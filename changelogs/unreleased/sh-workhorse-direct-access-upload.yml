@@ -1,0 +1,5 @@
+---
+title: Support Workhorse directly uploading files to S3
+merge_request: 29389
+author:
+type: added

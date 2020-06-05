@@ -263,7 +263,7 @@ n_("%{project_name}", "%d projects selected", count) % { project_name: 'GitLab' 
 A namespace is a way to group translations that belong together. They provide context to our translators by adding a prefix followed by the bar symbol (`|`). For example:
 
 ```ruby
-_('Namespace|Translated string')
+'Namespace|Translated string'
 ```
 
 A namespace provide the following benefits:

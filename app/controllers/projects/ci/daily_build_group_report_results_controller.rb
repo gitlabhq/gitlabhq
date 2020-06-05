@@ -7,7 +7,7 @@ class Projects::Ci::DailyBuildGroupReportResultsController < Projects::Applicati
   REPORT_WINDOW = 90.days
 
   before_action :validate_feature_flag!
-  before_action :authorize_download_code! # Share the same authorization rules as the graphs controller
+  before_action :authorize_read_build_report_results!
   before_action :validate_param_type!
 
   def index

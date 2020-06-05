@@ -211,7 +211,8 @@ describe Gitlab::UsageData, :aggregate_failures do
     describe '#features_usage_data_ce' do
       subject { described_class.features_usage_data_ce }
 
-      it 'gathers feature usage data' do
+      it 'gathers feature usage data', :aggregate_failures do
+        expect(subject[:instance_auto_devops_enabled]).to eq(Gitlab::CurrentSettings.auto_devops_enabled?)
         expect(subject[:mattermost_enabled]).to eq(Gitlab.config.mattermost.enabled)
         expect(subject[:signup_enabled]).to eq(Gitlab::CurrentSettings.allow_signup?)
         expect(subject[:ldap_enabled]).to eq(Gitlab.config.ldap.enabled)

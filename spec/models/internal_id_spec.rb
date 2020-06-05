@@ -88,33 +88,6 @@ describe InternalId do
 
       expect(normalized).to eq((0..seq.size - 1).to_a)
     end
-
-    context 'with an insufficient schema version' do
-      before do
-        described_class.reset_column_information
-        # Project factory will also call the current_version
-        expect(ActiveRecord::Migrator).to receive(:current_version).at_least(:once).and_return(InternalId::REQUIRED_SCHEMA_VERSION - 1)
-      end
-
-      let(:init) { double('block') }
-
-      it 'calculates next internal ids on the fly' do
-        val = rand(1..100)
-
-        expect(init).to receive(:call).with(issue).and_return(val)
-        expect(subject).to eq(val + 1)
-      end
-
-      it 'always attempts to generate internal IDs in production mode' do
-        stub_rails_env('production')
-
-        val = rand(1..100)
-        generator = double(generate: val)
-        expect(InternalId::InternalIdGenerator).to receive(:new).and_return(generator)
-
-        expect(subject).to eq(val)
-      end
-    end
   end
 
   describe '.reset' do
@@ -150,20 +123,6 @@ describe InternalId do
 
       def generate_next
         described_class.generate_next(issue, scope, usage, init)
-      end
-    end
-
-    context 'with an insufficient schema version' do
-      let(:value) { 2 }
-
-      before do
-        described_class.reset_column_information
-        # Project factory will also call the current_version
-        expect(ActiveRecord::Migrator).to receive(:current_version).at_least(:once).and_return(InternalId::REQUIRED_SCHEMA_VERSION - 1)
-      end
-
-      it 'does not reset any of the iids' do
-        expect(subject).to be_falsey
       end
     end
   end

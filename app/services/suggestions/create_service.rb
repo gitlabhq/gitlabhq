@@ -25,7 +25,7 @@ module Suggestions
         end
 
       rows.in_groups_of(100, false) do |rows|
-        Gitlab::Database.bulk_insert('suggestions', rows)
+        Gitlab::Database.bulk_insert('suggestions', rows) # rubocop:disable Gitlab/BulkInsert
       end
     end
   end

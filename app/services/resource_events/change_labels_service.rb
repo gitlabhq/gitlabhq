@@ -22,7 +22,7 @@ module ResourceEvents
         label_hash.merge(label_id: label.id, action: ResourceLabelEvent.actions['remove'])
       end
 
-      Gitlab::Database.bulk_insert(ResourceLabelEvent.table_name, labels)
+      Gitlab::Database.bulk_insert(ResourceLabelEvent.table_name, labels) # rubocop:disable Gitlab/BulkInsert
       resource.expire_note_etag_cache
     end
 

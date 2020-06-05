@@ -14,7 +14,7 @@ module Ci
     end
 
     def execute
-      return none unless can?(current_user, :download_code, project)
+      return none unless can?(current_user, :read_build_report_results, project)
 
       Ci::DailyBuildGroupReportResult.recent_results(
         {

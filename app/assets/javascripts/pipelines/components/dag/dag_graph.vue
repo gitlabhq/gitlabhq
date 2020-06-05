@@ -1,8 +1,13 @@
 <script>
 import * as d3 from 'd3';
 import { uniqueId } from 'lodash';
-import { PARSE_FAILURE } from './constants';
-
+import { LINK_SELECTOR, NODE_SELECTOR, PARSE_FAILURE } from './constants';
+import {
+  highlightLinks,
+  restoreLinks,
+  toggleLinkHighlight,
+  togglePathHighlights,
+} from './interactions';
 import { getMaxNodes, removeOrphanNodes } from './parsing_utils';
 import { calculateClip, createLinkPath, createSankey, labelPosition } from './drawing_utils';
 
@@ -16,11 +21,7 @@ export default {
     paddingForLabels: 100,
     labelMargin: 8,
 
-    // can plausibly applied through CSS instead, TBD
     baseOpacity: 0.8,
-    highlightIn: 1,
-    highlightOut: 0.2,
-
     containerClasses: ['dag-graph-container', 'gl-display-flex', 'gl-flex-direction-column'].join(
       ' ',
     ),
@@ -85,6 +86,20 @@ export default {
           // minus two to account for the rounded nodes
           .attr('stroke-width', ({ width }) => Math.max(1, width - 2))
           .attr('clip-path', ({ clipId }) => `url(#${clipId})`)
+      );
+    },
+
+    appendLinkInteractions(link) {
+      return link
+        .on('mouseover', highlightLinks)
+        .on('mouseout', restoreLinks.bind(null, this.$options.viewOptions.baseOpacity))
+        .on('click', toggleLinkHighlight.bind(null, this.$options.viewOptions.baseOpacity));
+    },
+
+    appendNodeInteractions(node) {
+      return node.on(
+        'click',
+        togglePathHighlights.bind(null, this.$options.viewOptions.baseOpacity),
       );
     },
 
@@ -163,15 +178,17 @@ export default {
     },
 
     createLinks(svg, linksData) {
-      const link = this.generateLinks(svg, linksData);
-      this.createGradient(link);
-      this.createClip(link);
-      this.appendLinks(link);
+      const links = this.generateLinks(svg, linksData);
+      this.createGradient(links);
+      this.createClip(links);
+      this.appendLinks(links);
+      this.appendLinkInteractions(links);
     },
 
     createNodes(svg, nodeData) {
-      this.generateNodes(svg, nodeData);
+      const nodes = this.generateNodes(svg, nodeData);
       this.labelNodes(svg, nodeData);
+      this.appendNodeInteractions(nodes);
     },
 
     drawGraph({ maxNodesPerLayer, linksAndNodes }) {
@@ -202,37 +219,39 @@ export default {
     },
 
     generateLinks(svg, linksData) {
-      const linkContainerName = 'dag-link';
-
       return svg
         .append('g')
         .attr('fill', 'none')
         .attr('stroke-opacity', this.$options.viewOptions.baseOpacity)
-        .selectAll(`.${linkContainerName}`)
+        .selectAll(`.${LINK_SELECTOR}`)
         .data(linksData)
         .enter()
         .append('g')
         .attr('id', d => {
-          return this.createAndAssignId(d, 'uid', linkContainerName);
+          return this.createAndAssignId(d, 'uid', LINK_SELECTOR);
         })
-        .classed(`${linkContainerName} gl-cursor-pointer`, true);
+        .classed(`${LINK_SELECTOR} gl-cursor-pointer`, true);
     },
 
     generateNodes(svg, nodeData) {
-      const nodeContainerName = 'dag-node';
       const { nodeWidth } = this.$options.viewOptions;
 
       return svg
         .append('g')
-        .selectAll(`.${nodeContainerName}`)
+        .selectAll(`.${NODE_SELECTOR}`)
         .data(nodeData)
         .enter()
         .append('line')
-        .classed(`${nodeContainerName} gl-cursor-pointer`, true)
+        .classed(`${NODE_SELECTOR} gl-cursor-pointer`, true)
         .attr('id', d => {
-          return this.createAndAssignId(d, 'uid', nodeContainerName);
+          return this.createAndAssignId(d, 'uid', NODE_SELECTOR);
         })
-        .attr('stroke', this.color)
+        .attr('stroke', d => {
+          const color = this.color(d);
+          /* eslint-disable-next-line no-param-reassign */
+          d.color = color;
+          return color;
+        })
         .attr('stroke-width', nodeWidth)
         .attr('stroke-linecap', 'round')
         .attr('x1', d => Math.floor((d.x1 + d.x0) / 2))

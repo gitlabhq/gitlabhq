@@ -173,12 +173,12 @@ As a result, a new Service Desk issue is created from this email in the `mygroup
 
 #### Enable custom email address
 
-This feature comes with the `service_desk_email` feature flag disabled by default.
+This feature comes with the `service_desk_custom_address` feature flag disabled by default.
 To turn on the feature, ask a GitLab administrator with Rails console access to run the following
 command:
 
 ```ruby
-Feature.enable(:service_desk_email)
+Feature.enable(:service_desk_custom_address)
 ```
 
 The configuration options are the same as for configuring

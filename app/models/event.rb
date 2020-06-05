@@ -76,7 +76,7 @@ class Event < ApplicationRecord
   # Callbacks
   after_create :reset_project_activity
   after_create :set_last_repository_updated_at, if: :push_action?
-  after_create :track_user_interacted_projects
+  after_create ->(event) { UserInteractedProject.track(event) }
 
   # Scopes
   scope :recent, -> { reorder(id: :desc) }
@@ -427,13 +427,6 @@ class Event < ApplicationRecord
     Project.unscoped.where(id: project_id)
       .where("last_repository_updated_at < ? OR last_repository_updated_at IS NULL", REPOSITORY_UPDATED_AT_INTERVAL.ago)
       .update_all(last_repository_updated_at: created_at)
-  end
-
-  def track_user_interacted_projects
-    # Note the call to .available? is due to earlier migrations
-    # that would otherwise conflict with the call to .track
-    # (because the table does not exist yet).
-    UserInteractedProject.track(self) if UserInteractedProject.available?
   end
 
   def design_action_names

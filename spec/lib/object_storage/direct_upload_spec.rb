@@ -3,11 +3,17 @@
 require 'spec_helper'
 
 describe ObjectStorage::DirectUpload do
+  let(:region) { 'us-east-1' }
+  let(:path_style) { false }
+  let(:use_iam_profile) { false }
   let(:credentials) do
     {
       provider: 'AWS',
       aws_access_key_id: 'AWS_ACCESS_KEY_ID',
-      aws_secret_access_key: 'AWS_SECRET_ACCESS_KEY'
+      aws_secret_access_key: 'AWS_SECRET_ACCESS_KEY',
+      region: region,
+      path_style: path_style,
+      use_iam_profile: use_iam_profile
     }
   end
 
@@ -57,6 +63,62 @@ describe ObjectStorage::DirectUpload do
   describe '#to_hash' do
     subject { direct_upload.to_hash }
 
+    shared_examples 'a valid S3 upload' do
+      it_behaves_like 'a valid upload'
+
+      it 'sets Workhorse client data' do
+        expect(subject[:UseWorkhorseClient]).to eq(use_iam_profile)
+        expect(subject[:RemoteTempObjectID]).to eq(object_name)
+
+        object_store_config = subject[:ObjectStorage]
+        expect(object_store_config[:Provider]).to eq 'AWS'
+
+        s3_config = object_store_config[:S3Config]
+        expect(s3_config[:Bucket]).to eq(bucket_name)
+        expect(s3_config[:Region]).to eq(region)
+        expect(s3_config[:PathStyle]).to eq(path_style)
+        expect(s3_config[:UseIamProfile]).to eq(use_iam_profile)
+      end
+
+      context 'when feature flag is disabled' do
+        before do
+          stub_feature_flags(use_workhorse_s3_client: false)
+        end
+
+        it 'does not enable Workhorse client' do
+          expect(subject[:UseWorkhorseClient]).to be false
+        end
+      end
+
+      context 'when V2 signatures are used' do
+        before do
+          credentials[:aws_signature_version] = 2
+        end
+
+        it 'does not enable Workhorse client' do
+          expect(subject[:UseWorkhorseClient]).to be false
+        end
+      end
+
+      context 'when V4 signatures are used' do
+        before do
+          credentials[:aws_signature_version] = 4
+        end
+
+        it 'enables the Workhorse client for instance profiles' do
+          expect(subject[:UseWorkhorseClient]).to eq(use_iam_profile)
+        end
+      end
+    end
+
+    shared_examples 'a valid Google upload' do
+      it_behaves_like 'a valid upload'
+
+      it 'does not set Workhorse client data' do
+        expect(subject.keys).not_to include(:UseWorkhorseClient, :RemoteTempObjectID, :ObjectStorage)
+      end
+    end
+
     shared_examples 'a valid upload' do
       it "returns valid structure" do
         expect(subject).to have_key(:Timeout)
@@ -97,6 +159,16 @@ describe ObjectStorage::DirectUpload do
       end
     end
 
+    shared_examples 'a valid S3 upload without multipart data' do
+      it_behaves_like 'a valid S3 upload'
+      it_behaves_like 'a valid upload without multipart data'
+    end
+
+    shared_examples 'a valid S3 upload with multipart data' do
+      it_behaves_like 'a valid S3 upload'
+      it_behaves_like 'a valid upload with multipart data'
+    end
+
     shared_examples 'a valid upload without multipart data' do
       it_behaves_like 'a valid upload'
 
@@ -109,13 +181,50 @@ describe ObjectStorage::DirectUpload do
       context 'when length is known' do
         let(:has_length) { true }
 
-        it_behaves_like 'a valid upload without multipart data'
+        it_behaves_like 'a valid S3 upload without multipart data'
+
+        context 'when path style is true' do
+          let(:path_style) { true }
+          let(:storage_url) { 'https://s3.amazonaws.com/uploads' }
+
+          before do
+            stub_object_storage_multipart_init(storage_url, "myUpload")
+          end
+
+          it_behaves_like 'a valid S3 upload without multipart data'
+        end
+
+        context 'when IAM profile is true' do
+          let(:use_iam_profile) { true }
+          let(:iam_credentials_url) { "http://169.254.169.254/latest/meta-data/iam/security-credentials/" }
+          let(:iam_credentials) do
+            {
+              'AccessKeyId' => 'dummykey',
+              'SecretAccessKey' => 'dummysecret',
+              'Token' => 'dummytoken',
+              'Expiration' => 1.day.from_now.xmlschema
+            }
+          end
+
+          before do
+            stub_request(:get, iam_credentials_url)
+              .to_return(status: 200, body: "somerole", headers: {})
+            stub_request(:get, "#{iam_credentials_url}somerole")
+              .to_return(status: 200, body: iam_credentials.to_json, headers: {})
+          end
+
+          it_behaves_like 'a valid S3 upload without multipart data'
+        end
       end
 
       context 'when length is unknown' do
         let(:has_length) { false }
 
-        it_behaves_like 'a valid upload with multipart data' do
+        it_behaves_like 'a valid S3 upload with multipart data' do
+          before do
+            stub_object_storage_multipart_init(storage_url, "myUpload")
+          end
+
           context 'when maximum upload size is 10MB' do
             let(:maximum_size) { 10.megabyte }
 
@@ -169,12 +278,14 @@ describe ObjectStorage::DirectUpload do
       context 'when length is known' do
         let(:has_length) { true }
 
+        it_behaves_like 'a valid Google upload'
         it_behaves_like 'a valid upload without multipart data'
       end
 
       context 'when length is unknown' do
         let(:has_length) { false }
 
+        it_behaves_like 'a valid Google upload'
         it_behaves_like 'a valid upload without multipart data'
       end
     end

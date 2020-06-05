@@ -96,8 +96,7 @@ class Project < ApplicationRecord
   after_create :create_project_feature, unless: :project_feature
 
   after_create :create_ci_cd_settings,
-    unless: :ci_cd_settings,
-    if: proc { ProjectCiCdSetting.available? }
+    unless: :ci_cd_settings
 
   after_create :create_container_expiration_policy,
                unless: :container_expiration_policy

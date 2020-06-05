@@ -25,8 +25,6 @@ class InternalId < ApplicationRecord
 
   validates :usage, presence: true
 
-  REQUIRED_SCHEMA_VERSION = 20180305095250
-
   # Increments #last_value and saves the record
   #
   # The operation locks the record and gathers a `ROW SHARE` lock (in PostgreSQL).
@@ -63,24 +61,16 @@ class InternalId < ApplicationRecord
 
   class << self
     def track_greatest(subject, scope, usage, new_value, init)
-      return new_value unless available?
-
       InternalIdGenerator.new(subject, scope, usage)
         .track_greatest(init, new_value)
     end
 
     def generate_next(subject, scope, usage, init)
-      # Shortcut if `internal_ids` table is not available (yet)
-      # This can be the case in other (unrelated) migration specs
-      return (init.call(subject) || 0) + 1 unless available?
-
       InternalIdGenerator.new(subject, scope, usage)
         .generate(init)
     end
 
     def reset(subject, scope, usage, value)
-      return false unless available?
-
       InternalIdGenerator.new(subject, scope, usage)
         .reset(value)
     end
@@ -94,20 +84,6 @@ class InternalId < ApplicationRecord
       raise ArgumentError, "filter cannot be empty" if filter.blank?
 
       where(filter).delete_all
-    end
-
-    def available?
-      return true unless Rails.env.test?
-
-      Gitlab::SafeRequestStore.fetch(:internal_ids_available_flag) do
-        ActiveRecord::Migrator.current_version >= REQUIRED_SCHEMA_VERSION
-      end
-    end
-
-    # Flushes cached information about schema
-    def reset_column_information
-      Gitlab::SafeRequestStore[:internal_ids_available_flag] = nil
-      super
     end
   end
 

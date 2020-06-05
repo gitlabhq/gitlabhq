@@ -68,18 +68,11 @@ describe Event do
       end
     end
 
-    describe 'after_create :track_user_interacted_projects' do
+    describe 'after_create UserInteractedProject.track' do
       let(:event) { build(:push_event, project: project, author: project.owner) }
 
       it 'passes event to UserInteractedProject.track' do
-        expect(UserInteractedProject).to receive(:available?).and_return(true)
         expect(UserInteractedProject).to receive(:track).with(event)
-        event.save
-      end
-
-      it 'does not call UserInteractedProject.track if its not yet available' do
-        expect(UserInteractedProject).to receive(:available?).and_return(false)
-        expect(UserInteractedProject).not_to receive(:track)
         event.save
       end
     end

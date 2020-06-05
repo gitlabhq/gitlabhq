@@ -1,4 +1,5 @@
 - type = local_assigns.fetch(:type, :icon)
+- can_edit = can?(current_user, :admin_project, @project)
 
 .dropdown.btn-group
   %button.btn.rounded-right.text-center{ class: ('has-tooltip' if type == :icon), title: (_('Import issues') if type == :icon),
@@ -9,6 +10,7 @@
       = _('Import issues')
   %ul.dropdown-menu
     %li
-      %button.btn{ data: { toggle: 'modal', target: '.issues-import-modal' } }
+      %button{ data: { toggle: 'modal', target: '.issues-import-modal' } }
         = _('Import CSV')
-    %li= link_to _('Import from Jira'), project_import_jira_path(@project)
+    - if can_edit
+      %li= link_to _('Import from Jira'), project_import_jira_path(@project)

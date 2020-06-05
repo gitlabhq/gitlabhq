@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
+  <metadata>
+    <id>Test.Package</id>
+    <version>3.5.2</version>
+    <authors>Test Author</authors>
+    <owners>Test Owner</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Package Description</description>
+    <dependencies>
+      <dependency id="Moqi" version="2.5.6" include="Runtime,Compile" />
+      <group targetFramework=".NETStandard2.0">
+        <dependency id="Test.Dependency" version="2.3.7" exclude="Build,Analyzers" include="Runtime,Compile" />
+        <dependency id="Newtonsoft.Json" version="12.0.3" exclude="Build,Analyzers" />
+      </group>
+      <dependency id="Castle.Core" />
+    </dependencies>
+  </metadata>
+</package>

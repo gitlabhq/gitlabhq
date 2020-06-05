@@ -181,6 +181,7 @@ module Gitlab
 
       def features_usage_data_ce
         {
+          instance_auto_devops_enabled: alt_usage_data(fallback: nil) { Gitlab::CurrentSettings.auto_devops_enabled? },
           container_registry_enabled: alt_usage_data(fallback: nil) { Gitlab.config.registry.enabled },
           dependency_proxy_enabled: Gitlab.config.try(:dependency_proxy)&.enabled,
           gitlab_shared_runners_enabled: alt_usage_data(fallback: nil) { Gitlab.config.gitlab_ci.shared_runners_enabled },

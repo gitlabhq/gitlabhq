@@ -322,28 +322,6 @@ application server, or a Gitaly node.
    }
    ```
 
-1. Enable automatic failover by editing `/etc/gitlab/gitlab.rb`:
-
-   ```ruby
-   praefect['failover_enabled'] = true
-   praefect['failover_election_strategy'] = 'sql'
-   ```
-
-   When automatic failover is enabled, Praefect checks the health of internal
-   Gitaly nodes. If the primary has a certain amount of health checks fail, it
-   will promote one of the secondaries to be primary, and demote the primary to
-   be a secondary.
-
-   NOTE: **Note:** Database leader election will be [enabled by default in the
-   future](https://gitlab.com/gitlab-org/gitaly/-/issues/2682).
-
-   Caution, **automatic failover** favors availability over consistency and will
-   cause data loss if changes have not been replicated to the newly elected
-   primary. In the next release, leader election will [prefer to promote up to
-   date replicas](https://gitlab.com/gitlab-org/gitaly/-/issues/2642), and it
-   will be an option to favor consistency by marking [out-of-date repositories
-   read-only](https://gitlab.com/gitlab-org/gitaly/-/issues/2630).
-
 1. Save the changes to `/etc/gitlab/gitlab.rb` and [reconfigure
    Praefect](../restart_gitlab.md#omnibus-gitlab-reconfigure):
 
@@ -738,7 +716,7 @@ Praefect regularly checks the health of each backend Gitaly node. This
 information can be used to automatically failover to a new primary node if the
 current primary node is found to be unhealthy.
 
-- **PostgreSQL (recommended):** Enabled by setting
+- **PostgreSQL (recommended):** Enabled by default, and equivalent to:
   `praefect['failover_election_strategy'] = sql`. This configuration
   option will allow multiple Praefect nodes to coordinate via the
   PostgreSQL database to elect a primary Gitaly node. This configuration
@@ -749,17 +727,12 @@ current primary node is found to be unhealthy.
   reconfigured in `/etc/gitlab/gitlab.rb` on the Praefect node. Modify the
   `praefect['virtual_storages']` field by moving the `primary = true` to promote
   a different Gitaly node to primary. In the steps above, `gitaly-1` was set to
-  the primary.
-- **Memory:** Enabled by setting `praefect['failover_enabled'] = true` in
-  `/etc/gitlab/gitlab.rb` on the Praefect node. If a sufficient number of health
+  the primary. Requires `praefect['failover_enabled'] = false` in the configuration.
+- **Memory:** Enabled by setting `praefect['failover_election_strategy'] = 'local'`
+  in `/etc/gitlab/gitlab.rb` on the Praefect node. If a sufficient number of health
   checks fail for the current primary backend Gitaly node, and new primary will
   be elected. **Do not use with multiple Praefect nodes!** Using with multiple
   Praefect nodes is likely to result in a split brain.
-
-NOTE: **Note:**: Praefect does not yet account for replication lag on
-the secondaries during the election process, so data loss can occur
-during a failover. Follow issue
-[#2642](https://gitlab.com/gitlab-org/gitaly/-/issues/2642) for updates.
 
 It is likely that we will implement support for Consul, and a cloud native
 strategy in the future.

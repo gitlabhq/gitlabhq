@@ -46,7 +46,7 @@ module ObjectStorage
         MultipartUpload: multipart_upload_hash,
         CustomPutHeaders: true,
         PutHeaders: upload_options
-      }.compact
+      }.merge(workhorse_client_hash).compact
     end
 
     def multipart_upload_hash
@@ -58,6 +58,32 @@ module ObjectStorage
         CompleteURL: multipart_complete_url,
         AbortURL: multipart_abort_url
       }
+    end
+
+    def workhorse_client_hash
+      return {} unless aws?
+
+      {
+        UseWorkhorseClient: use_workhorse_s3_client?,
+        RemoteTempObjectID: object_name,
+        ObjectStorage: {
+          Provider: 'AWS',
+          S3Config: {
+            Bucket: bucket_name,
+            Region: credentials[:region],
+            Endpoint: credentials[:endpoint],
+            PathStyle: credentials.fetch(:path_style, false),
+            UseIamProfile: credentials.fetch(:use_iam_profile, false)
+          }
+        }
+      }
+    end
+
+    def use_workhorse_s3_client?
+      Feature.enabled?(:use_workhorse_s3_client, default_enabled: true) &&
+        credentials.fetch(:use_iam_profile, false) &&
+        # The Golang AWS SDK does not support V2 signatures
+        credentials.fetch(:aws_signature_version, 4).to_i >= 4
     end
 
     def provider

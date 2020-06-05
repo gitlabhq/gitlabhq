@@ -95,7 +95,7 @@ module Gitlab
           file.to_h.merge(created_at: 'NOW()')
         end
 
-        Gitlab::Database.bulk_insert('uploads',
+        Gitlab::Database.bulk_insert('uploads', # rubocop:disable Gitlab/BulkInsert
                                      rows,
                                      disable_quote: :created_at)
       end

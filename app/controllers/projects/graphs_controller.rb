@@ -6,7 +6,7 @@ class Projects::GraphsController < Projects::ApplicationController
   # Authorize
   before_action :require_non_empty_project
   before_action :assign_ref_vars
-  before_action :authorize_download_code!
+  before_action :authorize_read_repository_graphs!
 
   def show
     respond_to do |format|
@@ -54,7 +54,8 @@ class Projects::GraphsController < Projects::ApplicationController
   end
 
   def get_daily_coverage_options
-    return unless Feature.enabled?(:ci_download_daily_code_coverage, default_enabled: true)
+    return unless Feature.enabled?(:ci_download_daily_code_coverage, @project, default_enabled: true)
+    return unless can?(current_user, :read_build_report_results, project)
 
     date_today = Date.current
     report_window = Projects::Ci::DailyBuildGroupReportResultsController::REPORT_WINDOW
