@@ -76,6 +76,8 @@ describe Gitlab::UsageData, :aggregate_failures do
       expect(count_data[:issues_with_embedded_grafana_charts_approx]).to eq(2)
       expect(count_data[:incident_issues]).to eq(4)
       expect(count_data[:issues_created_gitlab_alerts]).to eq(1)
+      expect(count_data[:issues_created_from_alerts]).to eq(3)
+      expect(count_data[:issues_created_manually_from_alerts]).to eq(1)
       expect(count_data[:alert_bot_incident_issues]).to eq(4)
       expect(count_data[:incident_labeled_issues]).to eq(3)
 

@@ -79,11 +79,7 @@ module Gitlab
         end
 
         def update_foreign_keys(from_table, to_table, from_column, to_column, cascade_delete = nil)
-          if transaction_open?
-            raise 'partitioned foreign key operations can not be run inside a transaction block, ' \
-              'you can disable transaction blocks by calling disable_ddl_transaction! ' \
-              'in the body of your migration class'
-          end
+          assert_not_in_transaction_block(scope: 'partitioned foreign key')
 
           from_column ||= "#{to_table.to_s.singularize}_id"
           specified_key = fk_from_spec(from_table, to_table, from_column, to_column, cascade_delete)
@@ -103,7 +99,7 @@ module Gitlab
               drop_function(fn_name, if_exists: true)
             else
               create_or_replace_fk_function(fn_name, final_keys)
-              create_function_trigger(trigger_name, fn_name, fires: "AFTER DELETE ON #{to_table}")
+              create_trigger(trigger_name, fn_name, fires: "AFTER DELETE ON #{to_table}")
             end
           end
         end
@@ -114,13 +110,6 @@ module Gitlab
           when :nullify then false
           else raise ArgumentError, "invalid option #{on_delete} for :on_delete"
           end
-        end
-
-        def with_lock_retries(&block)
-          Gitlab::Database::WithLockRetries.new({
-            klass: self.class,
-            logger: Gitlab::BackgroundMigration::Logger
-          }).run(&block)
         end
 
         def find_existing_key(keys, key)

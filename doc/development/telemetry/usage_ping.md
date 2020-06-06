@@ -358,10 +358,10 @@ On GitLab.com, we have DangerBot setup to monitor Telemetry related files and Da
 | `grafana_integrated_projects`                           | `counts`                           |             |                                                   |
 | `groups`                                                | `counts`                           |             |                                                   |
 | `issues`                                                | `counts`                           |             |                                                   |
-| `issues_created_from_gitlab_error_tracking_ui`          | `counts`                           |             |                                                   |
-| `issues_with_associated_zoom_link`                      | `counts`                           |             |                                                   |
-| `issues_using_zoom_quick_actions`                       | `counts`                           |             |                                                   |
-| `issues_with_embedded_grafana_charts_approx`            | `counts`                           |             |                                                   |
+| `issues_created_from_gitlab_error_tracking_ui`          | `counts`                           | `monitor`   |                                                   |
+| `issues_with_associated_zoom_link`                      | `counts`                           | `monitor`   |                                                   |
+| `issues_using_zoom_quick_actions`                       | `counts`                           | `monitor`   |                                                   |
+| `issues_with_embedded_grafana_charts_approx`            | `counts`                           | `monitor`   |                                                   |
 | `issues_with_health_status`                             | `counts`                           |             |                                                   |
 | `keys`                                                  | `counts`                           |             |                                                   |
 | `label_lists`                                           | `counts`                           |             |                                                   |
@@ -373,7 +373,7 @@ On GitLab.com, we have DangerBot setup to monitor Telemetry related files and Da
 | `projects`                                              | `counts`                           |             |                                                   |
 | `projects_imported_from_github`                         | `counts`                           |             |                                                   |
 | `projects_with_repositories_enabled`                    | `counts`                           |             |                                                   |
-| `projects_with_error_tracking_enabled`                  | `counts`                           |             |                                                   |
+| `projects_with_error_tracking_enabled`                  | `counts`                           | `monitor`   |                                                   |
 | `protected_branches`                                    | `counts`                           |             |                                                   |
 | `releases`                                              | `counts`                           |`release`    | Unique release tags                               |
 | `remote_mirrors`                                        | `counts`                           |             |                                                   |
@@ -462,6 +462,8 @@ On GitLab.com, we have DangerBot setup to monitor Telemetry related files and Da
 | `alert_bot_incident_issues`                             | `counts`                           | `monitor`   | Issues created by the alert bot                   |
 | `incident_labeled_issues`                               | `counts`                           | `monitor`   | Issues with the incident label                    |
 | `issues_created_gitlab_alerts`                          | `counts`                           | `monitor`   | Issues created from alerts by non-alert bot users |
+| `issues_created_manually_from_alerts`                   | `counts`                           | `monitor`   | Issues created from alerts by non-alert bot users |
+| `issues_created_from_alerts`                            | `counts`                           | `monitor`   | Issues created from Prometheus and alert management alerts |
 | `ldap_group_links`                                      | `counts`                           |             |                                                   |
 | `ldap_keys`                                             | `counts`                           |             |                                                   |
 | `ldap_users`                                            | `counts`                           |             |                                                   |

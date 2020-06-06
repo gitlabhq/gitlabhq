@@ -124,9 +124,9 @@ regardless of the individual machine the scanner runs on.
 
 Depending on the CI infrastructure,
 the CI may have to fetch the Docker image every time the job runs.
-To make the scanning job run fast, and to avoid wasting bandwidth,
-it is important to make Docker images as small as possible,
-ideally smaller than 50 MB.
+For the scanning job to run fast and avoid wasting bandwidth, Docker images should be as small as
+possible. You should aim for 50MB or smaller. If that isn't possible, try to keep it below 1.46 GB,
+which is the size of a CD-ROM.
 
 If the scanner requires a fully functional Linux environment,
 it is recommended to use a [Debian](https://www.debian.org/intro/about) "slim" distribution or [Alpine Linux](https://www.alpinelinux.org/).
@@ -134,6 +134,22 @@ If possible, it is recommended to build the image from scratch, using the `FROM 
 and to compile the scanner with all the libraries it needs.
 [Multi-stage builds](https://docs.docker.com/develop/develop-images/multistage-build/)
 might also help with keeping the image small.
+
+To keep an image size small, consider using [dive](https://github.com/wagoodman/dive#dive) to analyze layers in a Docker image to
+identify where additional bloat might be originating from.
+
+In some cases, it might be difficult to remove files from an image. When this occurs, consider using
+[Zstandard](https://github.com/facebook/zstd)
+to compress files or large directories. Zstandard offers many different compression levels that can
+decrease the size of your image with very little impact to decompression speed. It may be helpful to
+automatically decompress any compressed directories as soon as an image launches. You can accomplish
+this by adding a step to the Docker image's `/etc/bashrc` or to a specific user's `$HOME/.bashrc`.
+Remember to change the entry point to launch a bash login shell if you chose the latter option.
+
+Here are some examples to get you started:
+
+- <https://gitlab.com/gitlab-org/security-products/license-management/-/blob/0b976fcffe0a9b8e80587adb076bcdf279c9331c/config/install.sh#L168-170>
+- <https://gitlab.com/gitlab-org/security-products/license-management/-/blob/0b976fcffe0a9b8e80587adb076bcdf279c9331c/config/.bashrc#L49>
 
 ### Image tag
 

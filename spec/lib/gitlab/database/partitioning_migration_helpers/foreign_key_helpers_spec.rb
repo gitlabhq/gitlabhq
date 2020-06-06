@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 describe Gitlab::Database::PartitioningMigrationHelpers::ForeignKeyHelpers do
+  include TriggerHelpers
+
   let(:model) do
     ActiveRecord::Migration.new.extend(described_class)
   end
@@ -27,7 +29,7 @@ describe Gitlab::Database::PartitioningMigrationHelpers::ForeignKeyHelpers do
         model.add_partitioned_foreign_key :issue_assignees, referenced_table
 
         expect_function_to_contain(function_name, 'delete from issue_assignees where issue_id = old.id')
-        expect_valid_function_trigger(trigger_name, function_name)
+        expect_valid_function_trigger(referenced_table, trigger_name, function_name, after: 'delete')
       end
     end
 
@@ -43,7 +45,7 @@ describe Gitlab::Database::PartitioningMigrationHelpers::ForeignKeyHelpers do
           expect_function_to_contain(function_name,
             'delete from issue_assignees where issue_id = old.id',
             'delete from epic_issues where issue_id = old.id')
-          expect_valid_function_trigger(trigger_name, function_name)
+          expect_valid_function_trigger(referenced_table, trigger_name, function_name, after: 'delete')
         end
       end
 
@@ -59,7 +61,7 @@ describe Gitlab::Database::PartitioningMigrationHelpers::ForeignKeyHelpers do
             expect_function_to_contain(function_name,
               'delete from issues where moved_to_id = old.id',
               'delete from issues where duplicated_to_id = old.id')
-            expect_valid_function_trigger(trigger_name, function_name)
+            expect_valid_function_trigger(referenced_table, trigger_name, function_name, after: 'delete')
           end
         end
 
@@ -68,7 +70,7 @@ describe Gitlab::Database::PartitioningMigrationHelpers::ForeignKeyHelpers do
             model.add_partitioned_foreign_key :issues, referenced_table, column: :moved_to_id
 
             expect_function_to_contain(function_name, 'delete from issues where moved_to_id = old.id')
-            expect_valid_function_trigger(trigger_name, function_name)
+            expect_valid_function_trigger(referenced_table, trigger_name, function_name, after: 'delete')
           end
         end
       end
@@ -79,7 +81,7 @@ describe Gitlab::Database::PartitioningMigrationHelpers::ForeignKeyHelpers do
         model.add_partitioned_foreign_key :issue_assignees, referenced_table, on_delete: :nullify
 
         expect_function_to_contain(function_name, 'update issue_assignees set issue_id = null where issue_id = old.id')
-        expect_valid_function_trigger(trigger_name, function_name)
+        expect_valid_function_trigger(referenced_table, trigger_name, function_name, after: 'delete')
       end
     end
 
@@ -88,7 +90,7 @@ describe Gitlab::Database::PartitioningMigrationHelpers::ForeignKeyHelpers do
         model.add_partitioned_foreign_key :issues, referenced_table, column: :duplicated_to_id
 
         expect_function_to_contain(function_name, 'delete from issues where duplicated_to_id = old.id')
-        expect_valid_function_trigger(trigger_name, function_name)
+        expect_valid_function_trigger(referenced_table, trigger_name, function_name, after: 'delete')
       end
     end
 
@@ -99,7 +101,7 @@ describe Gitlab::Database::PartitioningMigrationHelpers::ForeignKeyHelpers do
         model.add_partitioned_foreign_key :user_preferences, referenced_table, column: :user_id, primary_key: :user_id
 
         expect_function_to_contain(function_name, 'delete from user_preferences where user_id = old.user_id')
-        expect_valid_function_trigger(trigger_name, function_name)
+        expect_valid_function_trigger(referenced_table, trigger_name, function_name, after: 'delete')
       end
     end
 
@@ -137,12 +139,12 @@ describe Gitlab::Database::PartitioningMigrationHelpers::ForeignKeyHelpers do
         expect_function_to_contain(function_name,
           'delete from issue_assignees where issue_id = old.id',
           'delete from epic_issues where issue_id = old.id')
-        expect_valid_function_trigger(trigger_name, function_name)
+        expect_valid_function_trigger(referenced_table, trigger_name, function_name, after: 'delete')
 
         model.remove_partitioned_foreign_key :issue_assignees, referenced_table
 
         expect_function_to_contain(function_name, 'delete from epic_issues where issue_id = old.id')
-        expect_valid_function_trigger(trigger_name, function_name)
+        expect_valid_function_trigger(referenced_table, trigger_name, function_name, after: 'delete')
       end
     end
 
@@ -153,12 +155,12 @@ describe Gitlab::Database::PartitioningMigrationHelpers::ForeignKeyHelpers do
 
       it 'removes the trigger function altogether' do
         expect_function_to_contain(function_name, 'delete from issue_assignees where issue_id = old.id')
-        expect_valid_function_trigger(trigger_name, function_name)
+        expect_valid_function_trigger(referenced_table, trigger_name, function_name, after: 'delete')
 
         model.remove_partitioned_foreign_key :issue_assignees, referenced_table
 
-        expect(find_function_def(function_name)).to be_nil
-        expect(find_trigger_def(trigger_name)).to be_nil
+        expect_function_not_to_exist(function_name)
+        expect_trigger_not_to_exist(referenced_table, trigger_name)
       end
     end
 
@@ -169,12 +171,12 @@ describe Gitlab::Database::PartitioningMigrationHelpers::ForeignKeyHelpers do
 
       it 'ignores the invalid key and properly recreates the trigger function' do
         expect_function_to_contain(function_name, 'delete from issue_assignees where issue_id = old.id')
-        expect_valid_function_trigger(trigger_name, function_name)
+        expect_valid_function_trigger(referenced_table, trigger_name, function_name, after: 'delete')
 
         model.remove_partitioned_foreign_key :issues, referenced_table, column: :moved_to_id
 
         expect_function_to_contain(function_name, 'delete from issue_assignees where issue_id = old.id')
-        expect_valid_function_trigger(trigger_name, function_name)
+        expect_valid_function_trigger(referenced_table, trigger_name, function_name, after: 'delete')
       end
     end
 
@@ -187,46 +189,5 @@ describe Gitlab::Database::PartitioningMigrationHelpers::ForeignKeyHelpers do
         end.to raise_error(/can not be run inside a transaction/)
       end
     end
-  end
-
-  def expect_function_to_contain(name, *statements)
-    return_stmt, *body_stmts = parsed_function_statements(name).reverse
-
-    expect(return_stmt).to eq('return old')
-    expect(body_stmts).to contain_exactly(*statements)
-  end
-
-  def expect_valid_function_trigger(name, fn_name)
-    event, activation, definition = cleaned_trigger_def(name)
-
-    expect(event).to eq('delete')
-    expect(activation).to eq('after')
-    expect(definition).to eq("execute procedure #{fn_name}()")
-  end
-
-  def parsed_function_statements(name)
-    cleaned_definition = find_function_def(name)['fn_body'].downcase.gsub(/\s+/, ' ')
-    statements = cleaned_definition.sub(/\A\s*begin\s*(.*)\s*end\s*\Z/, "\\1")
-    statements.split(';').map! { |stmt| stmt.strip.presence }.compact!
-  end
-
-  def find_function_def(name)
-    connection.execute("select prosrc as fn_body from pg_proc where proname = '#{name}';").first
-  end
-
-  def cleaned_trigger_def(name)
-    find_trigger_def(name).values_at('event', 'activation', 'definition').map!(&:downcase)
-  end
-
-  def find_trigger_def(name)
-    connection.execute(<<~SQL).first
-      select
-        string_agg(event_manipulation, ',') as event,
-        action_timing as activation,
-        action_statement as definition
-      from information_schema.triggers
-      where trigger_name = '#{name}'
-      group by 2, 3
-    SQL
   end
 end

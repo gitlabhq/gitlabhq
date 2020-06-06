@@ -21,6 +21,9 @@ describe Issue do
     it { is_expected.to have_one(:alert_management_alert) }
     it { is_expected.to have_many(:resource_milestone_events) }
     it { is_expected.to have_many(:resource_state_events) }
+    it { is_expected.to have_and_belong_to_many(:prometheus_alert_events) }
+    it { is_expected.to have_and_belong_to_many(:self_managed_prometheus_alert_events) }
+    it { is_expected.to have_many(:prometheus_alerts) }
 
     describe 'versions.most_recent' do
       it 'returns the most recent version' do
