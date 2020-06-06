@@ -114,6 +114,20 @@ describe Service do
         expect(described_class.confidential_note_hooks.count).to eq 0
       end
     end
+
+    describe '.alert_hooks' do
+      it 'includes services where alert_events is true' do
+        create(:service, active: true, alert_events: true)
+
+        expect(described_class.alert_hooks.count).to eq 1
+      end
+
+      it 'excludes services where alert_events is false' do
+        create(:service, active: true, alert_events: false)
+
+        expect(described_class.alert_hooks.count).to eq 0
+      end
+    end
   end
 
   describe "Test Button" do

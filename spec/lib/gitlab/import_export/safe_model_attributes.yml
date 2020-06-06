@@ -472,6 +472,7 @@ Service:
 - properties
 - template
 - instance
+- alert_events
 - push_events
 - issues_events
 - commit_events

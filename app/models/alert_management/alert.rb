@@ -150,7 +150,18 @@ module AlertManagement
       ''
     end
 
+    def execute_services
+      return unless Feature.enabled?(:alert_slack_event, project)
+      return unless project.has_active_services?(:alert_hooks)
+
+      project.execute_services(hook_data, :alert_hooks)
+    end
+
     private
+
+    def hook_data
+      Gitlab::DataBuilder::Alert.build(self)
+    end
 
     def hosts_length
       return unless hosts

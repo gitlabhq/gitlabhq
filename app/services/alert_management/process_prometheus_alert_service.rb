@@ -48,7 +48,10 @@ module AlertManagement
 
     def create_alert_management_alert
       am_alert = AlertManagement::Alert.new(am_alert_params.merge(ended_at: nil))
-      return if am_alert.save
+      if am_alert.save
+        am_alert.execute_services
+        return
+      end
 
       logger.warn(
         message: 'Unable to create AlertManagement::Alert',

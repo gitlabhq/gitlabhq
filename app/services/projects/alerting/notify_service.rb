@@ -32,15 +32,24 @@ module Projects
       end
 
       def process_alert
-        if alert = find_alert_by_fingerprint(am_alert_params[:fingerprint])
-          alert.register_new_event!
+        existing_alert = find_alert_by_fingerprint(am_alert_params[:fingerprint])
+
+        if existing_alert
+          process_existing_alert(existing_alert)
         else
           create_alert
         end
       end
 
+      def process_existing_alert(alert)
+        alert.register_new_event!
+      end
+
       def create_alert
-        AlertManagement::Alert.create(am_alert_params)
+        alert = AlertManagement::Alert.create(am_alert_params)
+        alert.execute_services if alert.persisted?
+
+        alert
       end
 
       def find_alert_by_fingerprint(fingerprint)

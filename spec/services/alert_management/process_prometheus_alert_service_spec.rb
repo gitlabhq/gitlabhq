@@ -5,6 +5,10 @@ require 'spec_helper'
 RSpec.describe AlertManagement::ProcessPrometheusAlertService do
   let_it_be(:project) { create(:project) }
 
+  before do
+    allow(ProjectServiceWorker).to receive(:perform_async)
+  end
+
   describe '#execute' do
     subject(:execute) { described_class.new(project, nil, payload).execute }
 
@@ -47,6 +51,12 @@ RSpec.describe AlertManagement::ProcessPrometheusAlertService do
             end
           end
 
+          it 'does not executes the alert service hooks' do
+            expect(alert).not_to receive(:execute_services)
+
+            subject
+          end
+
           context 'when status change did not succeed' do
             before do
               allow(AlertManagement::Alert).to receive(:for_fingerprint).and_return([alert])
@@ -71,6 +81,26 @@ RSpec.describe AlertManagement::ProcessPrometheusAlertService do
           context 'when alert can be created' do
             it 'creates a new alert' do
               expect { execute }.to change { AlertManagement::Alert.where(project: project).count }.by(1)
+            end
+
+            it 'executes the alert service hooks' do
+              slack_service = create(:service, type: 'SlackService', project: project, alert_events: true, active: true)
+
+              subject
+
+              expect(ProjectServiceWorker).to have_received(:perform_async).with(slack_service.id, an_instance_of(Hash))
+            end
+
+            context 'feature flag disabled' do
+              before do
+                stub_feature_flags(alert_slack_event: false)
+              end
+
+              it 'does not execute the alert service hooks' do
+                subject
+
+                expect(ProjectServiceWorker).not_to have_received(:perform_async)
+              end
             end
           end
 

@@ -8,11 +8,16 @@ describe Projects::Alerting::NotifyService do
   before do
     # We use `let_it_be(:project)` so we make sure to clear caches
     project.clear_memoization(:licensed_feature_available)
+    allow(ProjectServiceWorker).to receive(:perform_async)
   end
 
   shared_examples 'processes incident issues' do |amount|
     let(:create_incident_service) { spy }
     let(:new_alert) { instance_double(AlertManagement::Alert, id: 503, persisted?: true) }
+
+    before do
+      allow(new_alert).to receive(:execute_services)
+    end
 
     it 'processes issues' do
       expect(AlertManagement::Alert)
@@ -138,6 +143,25 @@ describe Projects::Alerting::NotifyService do
             )
           end
 
+          it 'executes the alert service hooks' do
+            slack_service = create(:service, type: 'SlackService', project: project, alert_events: true, active: true)
+            subject
+
+            expect(ProjectServiceWorker).to have_received(:perform_async).with(slack_service.id, an_instance_of(Hash))
+          end
+
+          context 'feature flag disabled' do
+            before do
+              stub_feature_flags(alert_slack_event: false)
+            end
+
+            it 'does not executes the alert service hooks' do
+              subject
+
+              expect(ProjectServiceWorker).not_to have_received(:perform_async)
+            end
+          end
+
           context 'existing alert with same fingerprint' do
             let!(:existing_alert) { create(:alert_management_alert, project: project, fingerprint: Digest::SHA1.hexdigest(fingerprint)) }
 
@@ -147,6 +171,12 @@ describe Projects::Alerting::NotifyService do
 
             it 'increments the existing alert count' do
               expect { subject }.to change { existing_alert.reload.events }.from(1).to(2)
+            end
+
+            it 'does not executes the alert service hooks' do
+              subject
+
+              expect(ProjectServiceWorker).not_to have_received(:perform_async)
             end
           end
 
