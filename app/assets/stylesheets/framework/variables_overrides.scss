@@ -55,7 +55,7 @@ $tooltip-padding-y: 0.5rem;
 $tooltip-padding-x: 0.75rem;
 $tooltip-arrow-height: 0.5rem;
 $tooltip-arrow-width: 1rem;
-$b-table-sort-icon-bg-ascending: url('data:image/svg+xml, <svg \
+$b-table-sort-icon-bg-descending: url('data:image/svg+xml, <svg \
   xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="4 0 8 16"> \
   <path style="fill: #666;" fill-rule="evenodd" d="M11.707085,11.7071 \
   L7.999975,15.4142 L4.292875,11.7071 C3.902375,11.3166 3.902375, \
@@ -67,7 +67,7 @@ $b-table-sort-icon-bg-ascending: url('data:image/svg+xml, <svg \
   ,9.90237 11.316555,9.90237 11.707085,10.2929 \
   C12.097605,10.6834 12.097605,11.3166 11.707085,11.7071 Z"/> \
   </svg>') !default;
-$b-table-sort-icon-bg-descending: url('data:image/svg+xml,<svg \
+$b-table-sort-icon-bg-ascending: url('data:image/svg+xml,<svg \
   xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="4 0 8 16"> \
   <path style="fill: #666;" fill-rule="evenodd" d="M4.29289,4.2971 L8,0.59 \
   L11.7071,4.2971 C12.0976,4.6876 \

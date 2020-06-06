@@ -34,7 +34,6 @@ import Tracking from '~/tracking';
 const tdClass = 'table-col d-flex d-md-table-cell align-items-center';
 const bodyTrClass =
   'gl-border-1 gl-border-t-solid gl-border-gray-100 gl-hover-bg-blue-50 gl-hover-cursor-pointer gl-hover-border-b-solid gl-hover-border-blue-200';
-const findDefaultSortColumn = () => document.querySelector('.js-started-at');
 
 const initialPaginationState = {
   currentPage: 1,
@@ -189,10 +188,12 @@ export default {
       errored: false,
       isAlertDismissed: false,
       isErrorAlertDismissed: false,
-      sort: 'STARTED_AT_ASC',
+      sort: 'STARTED_AT_DESC',
       statusFilter: [],
       filteredByStatus: '',
       pagination: initialPaginationState,
+      sortBy: 'startedAt',
+      sortDesc: true,
     };
   },
   computed: {
@@ -241,9 +242,6 @@ export default {
       const sortDirection = sortDesc ? 'DESC' : 'ASC';
       const sortColumn = convertToSnakeCase(sortBy).toUpperCase();
 
-      if (sortBy !== 'startedAt') {
-        findDefaultSortColumn().ariaSort = 'none';
-      }
       this.resetPagination();
       this.sort = `${sortColumn}_${sortDirection}`;
     },
@@ -344,8 +342,9 @@ export default {
         stacked="md"
         :tbody-tr-class="tbodyTrClass"
         :no-local-sorting="true"
+        :sort-desc.sync="sortDesc"
+        :sort-by.sync="sortBy"
         sort-icon-left
-        sort-by="startedAt"
         @row-clicked="navigateToAlertDetails"
         @sort-changed="fetchSortedData"
       >
