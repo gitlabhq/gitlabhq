@@ -144,6 +144,17 @@ To view your starred projects:
    - Number of open merge requests
    - Number of open issues
 
+### Explore projects
+
+You can explore other popular projects available on GitLab. To explore projects:
+
+1. Click **Projects** in the navigation bar.
+1. Click **Explore Projects**.
+
+GitLab displays a list of projects, sorted by last updated date. To view
+projects with the most [stars](#star-a-project), click **Most stars**. To view
+projects with the largest number of comments in the past month, click **Trending**.
+
 ## Project settings
 
 Set the project's visibility level and the access levels to its various pages
