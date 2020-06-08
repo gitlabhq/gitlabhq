@@ -18,7 +18,7 @@ module Issues
     end
 
     def before_update(issue, skip_spam_check: false)
-      spam_check(issue, current_user) unless skip_spam_check
+      spam_check(issue, current_user, action: :update) unless skip_spam_check
     end
 
     def after_update(issue)

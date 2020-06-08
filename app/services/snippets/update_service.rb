@@ -14,7 +14,7 @@ module Snippets
       end
 
       update_snippet_attributes(snippet)
-      spam_check(snippet, current_user)
+      spam_check(snippet, current_user, action: :update)
 
       if save_and_commit(snippet)
         Gitlab::UsageDataCounters::SnippetCounter.count(:update)

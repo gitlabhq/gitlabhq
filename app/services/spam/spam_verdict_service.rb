@@ -5,11 +5,12 @@ module Spam
     include AkismetMethods
     include SpamConstants
 
-    def initialize(target:, request:, options:, verdict_params: {})
+    def initialize(user:, target:, request:, options:, context: {})
       @target = target
       @request = request
+      @user = user
       @options = options
-      @verdict_params = assemble_verdict_params(verdict_params)
+      @verdict_params = assemble_verdict_params(context)
     end
 
     def execute
@@ -27,7 +28,7 @@ module Spam
 
     private
 
-    attr_reader :target, :request, :options, :verdict_params
+    attr_reader :user, :target, :request, :options, :verdict_params
 
     def akismet_verdict
       if akismet.spam?
@@ -66,11 +67,23 @@ module Spam
       end
     end
 
-    def assemble_verdict_params(params)
-      return {} unless endpoint_url
+    def assemble_verdict_params(context)
+      return {} unless endpoint_url.present?
 
-      params.merge({
-        user_id: target.author_id
+      project = target.try(:project)
+
+      context.merge({
+        target: {
+          title: target.spam_title,
+          description: target.spam_description,
+          type: target.class.to_s
+        },
+        user: {
+          created_at: user.created_at,
+          email: user.email,
+          username: user.username
+        },
+        user_in_project: user.authorized_project?(project)
       })
     end
 

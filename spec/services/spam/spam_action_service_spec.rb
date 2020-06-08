@@ -24,7 +24,7 @@ describe Spam::SpamActionService do
   end
 
   describe '#initialize' do
-    subject { described_class.new(spammable: issue, request: request) }
+    subject { described_class.new(spammable: issue, request: request, user: user) }
 
     context 'when the request is nil' do
       let(:request) { nil }
@@ -53,7 +53,7 @@ describe Spam::SpamActionService do
 
   shared_examples 'only checks for spam if a request is provided' do
     context 'when request is missing' do
-      subject { described_class.new(spammable: issue, request: nil) }
+      subject { described_class.new(spammable: issue, request: nil, user: user) }
 
       it "doesn't check as spam" do
         subject
@@ -78,9 +78,9 @@ describe Spam::SpamActionService do
     let_it_be(:existing_spam_log) { create(:spam_log, user: user, recaptcha_verified: false) }
 
     subject do
-      described_service = described_class.new(spammable: issue, request: request)
+      described_service = described_class.new(spammable: issue, request: request, user: user)
       allow(described_service).to receive(:allowlisted?).and_return(allowlisted)
-      described_service.execute(user: user, api: nil, recaptcha_verified: recaptcha_verified, spam_log_id: existing_spam_log.id)
+      described_service.execute(api: nil, recaptcha_verified: recaptcha_verified, spam_log_id: existing_spam_log.id)
     end
 
     before do

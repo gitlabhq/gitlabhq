@@ -13,7 +13,7 @@ module Snippets
 
       @snippet.author = current_user
 
-      spam_check(@snippet, current_user)
+      spam_check(@snippet, current_user, action: :create)
 
       if save_and_commit
         UserAgentDetailService.new(@snippet, @request).create

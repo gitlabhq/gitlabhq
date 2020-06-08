@@ -208,6 +208,13 @@ sudo apt-get install -y postfix
 
 Then select 'Internet Site' and press enter to confirm the hostname.
 
+[GitLab Workhorse](https://gitlab.com/gitlab-org/gitlab-workhorse#dependencies)
+requires `exiftool` to remove EXIF data from uploaded images.
+
+```shell
+sudo apt-get install -y libimage-exiftool-perl
+```
+
 ## 2. Ruby
 
 The Ruby interpreter is required to run GitLab.

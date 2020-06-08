@@ -9,8 +9,11 @@ module QA
         attr_accessor :project_name
         attr_writer :wait_for_push
 
+        attribute :group
+
         attribute :project do
           Project.fabricate! do |resource|
+            resource.group = group if @group
             resource.name = project_name
             resource.description = 'Project with repository'
           end
@@ -24,6 +27,7 @@ module QA
           @new_branch = true
           @project_name = 'project-with-code'
           @wait_for_push = true
+          @group = nil
         end
 
         def repository_http_uri

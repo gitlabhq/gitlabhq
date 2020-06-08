@@ -16,9 +16,10 @@ describe Spam::SpamVerdictService do
   let(:request) { double(:request, env: env) }
 
   let(:check_for_spam) { true }
-  let(:issue) { build(:issue) }
+  let_it_be(:user) { create(:user) }
+  let(:issue) { build(:issue, author: user) }
   let(:service) do
-    described_class.new(target: issue, request: request, options: {})
+    described_class.new(user: user, target: issue, request: request, options: {})
   end
 
   describe '#execute' do

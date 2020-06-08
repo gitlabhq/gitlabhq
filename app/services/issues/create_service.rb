@@ -15,7 +15,7 @@ module Issues
     end
 
     def before_create(issue)
-      spam_check(issue, current_user)
+      spam_check(issue, current_user, action: :create)
       issue.move_to_end
 
       # current_user (defined in BaseService) is not available within run_after_commit block
