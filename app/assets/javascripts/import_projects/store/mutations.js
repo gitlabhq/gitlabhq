@@ -2,10 +2,6 @@ import Vue from 'vue';
 import * as types from './mutation_types';
 
 export default {
-  [types.SET_INITIAL_DATA](state, data) {
-    Object.assign(state, data);
-  },
-
   [types.SET_FILTER](state, filter) {
     state.filter = filter;
   },
@@ -14,11 +10,15 @@ export default {
     state.isLoadingRepos = true;
   },
 
-  [types.RECEIVE_REPOS_SUCCESS](state, { importedProjects, providerRepos, namespaces }) {
+  [types.RECEIVE_REPOS_SUCCESS](
+    state,
+    { importedProjects, providerRepos, incompatibleRepos, namespaces },
+  ) {
     state.isLoadingRepos = false;
 
     state.importedProjects = importedProjects;
     state.providerRepos = providerRepos;
+    state.incompatibleRepos = incompatibleRepos ?? [];
     state.namespaces = namespaces;
   },
 

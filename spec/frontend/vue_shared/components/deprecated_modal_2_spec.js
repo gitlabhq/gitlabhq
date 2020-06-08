@@ -1,6 +1,5 @@
-import $ from 'jquery';
 import Vue from 'vue';
-import mountComponent from 'spec/helpers/vue_mount_component_helper';
+import mountComponent from 'helpers/vue_mount_component_helper';
 import DeprecatedModal2 from '~/vue_shared/components/deprecated_modal_2.vue';
 
 const modalComponent = Vue.extend(DeprecatedModal2);
@@ -86,7 +85,7 @@ describe('DeprecatedModal2', () => {
     });
   });
 
-  it('works with data-toggle="modal"', done => {
+  it('works with data-toggle="modal"', () => {
     setFixtures(`
       <button id="modal-button" data-toggle="modal" data-target="#my-modal"></button>
       <div id="modal-container"></div>
@@ -101,9 +100,16 @@ describe('DeprecatedModal2', () => {
       },
       modalContainer,
     );
-    $(vm.$el).on('shown.bs.modal', () => done());
+    const modalElement = document.getElementById('my-modal');
 
     modalButton.click();
+
+    expect(modalElement).not.toHaveClass('show');
+
+    // let the modal fade in
+    jest.runOnlyPendingTimers();
+
+    expect(modalElement).toHaveClass('show');
   });
 
   describe('methods', () => {
@@ -111,7 +117,7 @@ describe('DeprecatedModal2', () => {
 
     beforeEach(() => {
       vm = mountComponent(modalComponent, {});
-      spyOn(vm, '$emit');
+      jest.spyOn(vm, '$emit').mockImplementation(() => {});
     });
 
     describe('emitCancel', () => {
@@ -149,23 +155,14 @@ describe('DeprecatedModal2', () => {
 
   describe('slots', () => {
     const slotContent = 'this should go into the slot';
-    const modalWithSlot = slotName => {
-      let template;
-      if (slotName) {
-        template = `
-          <deprecated-modal-2>
-            <template slot="${slotName}">${slotContent}</template>
-          </deprecated-modal-2>
-        `;
-      } else {
-        template = `<deprecated-modal-2>${slotContent}</deprecated-modal-2>`;
-      }
 
+    const modalWithSlot = slot => {
       return Vue.extend({
         components: {
           DeprecatedModal2,
         },
-        template,
+        render: h =>
+          h('deprecated-modal-2', [slot ? h('template', { slot }, slotContent) : slotContent]),
       });
     };
 

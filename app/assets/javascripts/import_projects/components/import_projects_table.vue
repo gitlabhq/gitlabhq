@@ -1,11 +1,11 @@
 <script>
 import { throttle } from 'lodash';
 import { mapActions, mapState, mapGetters } from 'vuex';
-import { GlLoadingIcon } from '@gitlab/ui';
-import LoadingButton from '~/vue_shared/components/loading_button.vue';
+import { GlButton, GlLoadingIcon } from '@gitlab/ui';
 import { __, sprintf } from '~/locale';
 import ImportedProjectTableRow from './imported_project_table_row.vue';
 import ProviderRepoTableRow from './provider_repo_table_row.vue';
+import IncompatibleRepoTableRow from './incompatible_repo_table_row.vue';
 import eventHub from '../event_hub';
 
 const reposFetchThrottleDelay = 1000;
@@ -15,8 +15,9 @@ export default {
   components: {
     ImportedProjectTableRow,
     ProviderRepoTableRow,
-    LoadingButton,
+    IncompatibleRepoTableRow,
     GlLoadingIcon,
+    GlButton,
   },
   props: {
     providerTitle: {
@@ -26,8 +27,25 @@ export default {
   },
 
   computed: {
-    ...mapState(['importedProjects', 'providerRepos', 'isLoadingRepos', 'filter']),
-    ...mapGetters(['isImportingAnyRepo', 'hasProviderRepos', 'hasImportedProjects']),
+    ...mapState([
+      'importedProjects',
+      'providerRepos',
+      'incompatibleRepos',
+      'isLoadingRepos',
+      'filter',
+    ]),
+    ...mapGetters([
+      'isImportingAnyRepo',
+      'hasProviderRepos',
+      'hasImportedProjects',
+      'hasIncompatibleRepos',
+    ]),
+
+    importAllButtonText() {
+      return this.hasIncompatibleRepos
+        ? __('Import all compatible repositories')
+        : __('Import all repositories');
+    },
 
     emptyStateText() {
       return sprintf(__('No %{providerTitle} repositories found'), {
@@ -68,7 +86,6 @@ export default {
     },
 
     throttledFetchRepos: throttle(function fetch() {
-      eventHub.$off('importAll');
       this.fetchRepos();
     }, reposFetchThrottleDelay),
   },
@@ -80,17 +97,24 @@ export default {
     <p class="light text-nowrap mt-2">
       {{ s__('ImportProjects|Select the projects you want to import') }}
     </p>
-
-    <div class="d-flex justify-content-between align-items-end flex-wrap mb-3">
-      <loading-button
-        container-class="btn btn-success js-import-all"
+    <template v-if="hasIncompatibleRepos">
+      <slot name="incompatible-repos-warning"> </slot>
+    </template>
+    <div
+      v-if="!isLoadingRepos"
+      class="d-flex justify-content-between align-items-end flex-wrap mb-3"
+    >
+      <gl-button
+        variant="success"
         :loading="isImportingAnyRepo"
-        :label="__('Import all repositories')"
         :disabled="!hasProviderRepos"
         type="button"
         @click="importAll"
-      />
-      <form novalidate @submit.prevent>
+      >
+        {{ importAllButtonText }}
+      </gl-button>
+      <slot name="actions"></slot>
+      <form class="gl-ml-auto" novalidate @submit.prevent>
         <input
           :value="filter"
           data-qa-selector="githubish_import_filter_field"
@@ -109,7 +133,10 @@ export default {
       class="js-loading-button-icon import-projects-loading-icon"
       size="md"
     />
-    <div v-else-if="hasProviderRepos || hasImportedProjects" class="table-responsive">
+    <div
+      v-else-if="hasProviderRepos || hasImportedProjects || hasIncompatibleRepos"
+      class="table-responsive"
+    >
       <table class="table import-table">
         <thead>
           <th class="import-jobs-from-col">{{ fromHeaderText }}</th>
@@ -124,6 +151,11 @@ export default {
             :project="project"
           />
           <provider-repo-table-row v-for="repo in providerRepos" :key="repo.id" :repo="repo" />
+          <incompatible-repo-table-row
+            v-for="repo in incompatibleRepos"
+            :key="repo.id"
+            :repo="repo"
+          />
         </tbody>
       </table>
     </div>

@@ -39,7 +39,8 @@ module Ci
       dotenv: '.env',
       cobertura: 'cobertura-coverage.xml',
       terraform: 'tfplan.json',
-      cluster_applications: 'gl-cluster-applications.json'
+      cluster_applications: 'gl-cluster-applications.json',
+      requirements: 'requirements.json'
     }.freeze
 
     INTERNAL_TYPES = {
@@ -71,7 +72,8 @@ module Ci
       license_management: :raw,
       license_scanning: :raw,
       performance: :raw,
-      terraform: :raw
+      terraform: :raw,
+      requirements: :raw
     }.freeze
 
     DOWNLOADABLE_TYPES = %w[
@@ -90,6 +92,7 @@ module Ci
       metrics
       performance
       sast
+      requirements
     ].freeze
 
     TYPE_AND_FORMAT_PAIRS = INTERNAL_TYPES.merge(REPORT_TYPES).freeze
@@ -182,7 +185,8 @@ module Ci
       terraform: 18, # Transformed json
       accessibility: 19,
       cluster_applications: 20,
-      secret_detection: 21 ## EE-specific
+      secret_detection: 21, ## EE-specific
+      requirements: 22 ## EE-specific
     }
 
     enum file_format: {

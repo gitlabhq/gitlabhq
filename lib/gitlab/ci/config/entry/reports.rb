@@ -14,7 +14,8 @@ module Gitlab
           ALLOWED_KEYS =
             %i[junit codequality sast secret_detection dependency_scanning container_scanning
                dast performance license_management license_scanning metrics lsif
-               dotenv cobertura terraform accessibility cluster_applications].freeze
+               dotenv cobertura terraform accessibility cluster_applications
+               requirements].freeze
 
           attributes ALLOWED_KEYS
 
@@ -40,6 +41,7 @@ module Gitlab
               validates :terraform, array_of_strings_or_string: true
               validates :accessibility, array_of_strings_or_string: true
               validates :cluster_applications, array_of_strings_or_string: true
+              validates :requirements, array_of_strings_or_string: true
             end
           end
 

@@ -1,11 +1,21 @@
+import { nextTick } from 'vue';
 import Vuex from 'vuex';
-import { createLocalVue, mount } from '@vue/test-utils';
-import { state, actions, getters, mutations } from '~/import_projects/store';
-import importProjectsTable from '~/import_projects/components/import_projects_table.vue';
-import STATUS_MAP from '~/import_projects/constants';
+import { createLocalVue, shallowMount } from '@vue/test-utils';
+import { GlLoadingIcon, GlButton } from '@gitlab/ui';
+import { state, getters } from '~/import_projects/store';
+import eventHub from '~/import_projects/event_hub';
+import ImportProjectsTable from '~/import_projects/components/import_projects_table.vue';
+import ImportedProjectTableRow from '~/import_projects/components/imported_project_table_row.vue';
+import ProviderRepoTableRow from '~/import_projects/components/provider_repo_table_row.vue';
+import IncompatibleRepoTableRow from '~/import_projects/components/incompatible_repo_table_row.vue';
+
+jest.mock('~/import_projects/event_hub', () => ({
+  $emit: jest.fn(),
+}));
 
 describe('ImportProjectsTable', () => {
-  let vm;
+  let wrapper;
+
   const providerTitle = 'THE PROVIDER';
   const providerRepo = { id: 10, sanitizedName: 'sanitizedName', fullName: 'fullName' };
   const importedProject = {
@@ -16,176 +26,164 @@ describe('ImportProjectsTable', () => {
     importSource: 'importSource',
   };
 
-  function initStore() {
-    const stubbedActions = {
-      ...actions,
-      fetchJobs: jest.fn(),
-      fetchRepos: jest.fn(actions.requestRepos),
-      fetchImport: jest.fn(actions.requestImport),
-    };
+  const findImportAllButton = () =>
+    wrapper
+      .findAll(GlButton)
+      .filter(w => w.props().variant === 'success')
+      .at(0);
 
-    const store = new Vuex.Store({
-      state: state(),
-      actions: stubbedActions,
-      mutations,
-      getters,
-    });
-
-    return store;
-  }
-
-  function mountComponent() {
+  function createComponent({ state: initialState, getters: customGetters, slots } = {}) {
     const localVue = createLocalVue();
     localVue.use(Vuex);
 
-    const store = initStore();
+    const store = new Vuex.Store({
+      state: { ...state(), ...initialState },
+      getters: {
+        ...getters,
+        ...customGetters,
+      },
+      actions: {
+        fetchRepos: jest.fn(),
+        fetchReposFiltered: jest.fn(),
+        fetchJobs: jest.fn(),
+        stopJobsPolling: jest.fn(),
+        clearJobsEtagPoll: jest.fn(),
+        setFilter: jest.fn(),
+      },
+    });
 
-    const component = mount(importProjectsTable, {
+    wrapper = shallowMount(ImportProjectsTable, {
       localVue,
       store,
       propsData: {
         providerTitle,
       },
+      slots,
     });
-
-    return component.vm;
   }
 
-  beforeEach(() => {
-    vm = mountComponent();
-  });
-
   afterEach(() => {
-    vm.$destroy();
+    if (wrapper) {
+      wrapper.destroy();
+      wrapper = null;
+    }
   });
 
-  it('renders a loading icon while repos are loading', () =>
-    vm.$nextTick().then(() => {
-      expect(vm.$el.querySelector('.js-loading-button-icon')).not.toBeNull();
-    }));
+  it('renders a loading icon while repos are loading', () => {
+    createComponent({
+      state: {
+        isLoadingRepos: true,
+      },
+    });
+
+    expect(wrapper.contains(GlLoadingIcon)).toBe(true);
+  });
 
   it('renders a table with imported projects and provider repos', () => {
-    vm.$store.dispatch('receiveReposSuccess', {
-      importedProjects: [importedProject],
-      providerRepos: [providerRepo],
-      namespaces: [{ path: 'path' }],
-    });
-
-    return vm.$nextTick().then(() => {
-      expect(vm.$el.querySelector('.js-loading-button-icon')).toBeNull();
-      expect(vm.$el.querySelector('.table')).not.toBeNull();
-      expect(vm.$el.querySelector('.import-jobs-from-col').innerText).toMatch(
-        `From ${providerTitle}`,
-      );
-
-      expect(vm.$el.querySelector('.js-imported-project')).not.toBeNull();
-      expect(vm.$el.querySelector('.js-provider-repo')).not.toBeNull();
-    });
-  });
-
-  it('renders an empty state if there are no imported projects or provider repos', () => {
-    vm.$store.dispatch('receiveReposSuccess', {
-      importedProjects: [],
-      providerRepos: [],
-      namespaces: [],
-    });
-
-    return vm.$nextTick().then(() => {
-      expect(vm.$el.querySelector('.js-loading-button-icon')).toBeNull();
-      expect(vm.$el.querySelector('.table')).toBeNull();
-      expect(vm.$el.innerText).toMatch(`No ${providerTitle} repositories found`);
-    });
-  });
-
-  it('shows loading spinner when bulk import button is clicked', () => {
-    vm.$store.dispatch('receiveReposSuccess', {
-      importedProjects: [],
-      providerRepos: [providerRepo],
-      namespaces: [{ path: 'path' }],
-    });
-
-    return vm
-      .$nextTick()
-      .then(() => {
-        expect(vm.$el.querySelector('.js-imported-project')).toBeNull();
-        expect(vm.$el.querySelector('.js-provider-repo')).not.toBeNull();
-
-        vm.$el.querySelector('.js-import-all').click();
-      })
-      .then(() => vm.$nextTick())
-      .then(() => {
-        expect(vm.$el.querySelector('.js-import-all .js-loading-button-icon')).not.toBeNull();
-      });
-  });
-
-  it('imports provider repos if bulk import button is clicked', () => {
-    mountComponent();
-
-    vm.$store.dispatch('receiveReposSuccess', {
-      importedProjects: [],
-      providerRepos: [providerRepo],
-      namespaces: [{ path: 'path' }],
-    });
-
-    return vm
-      .$nextTick()
-      .then(() => {
-        expect(vm.$el.querySelector('.js-imported-project')).toBeNull();
-        expect(vm.$el.querySelector('.js-provider-repo')).not.toBeNull();
-
-        vm.$store.dispatch('receiveImportSuccess', { importedProject, repoId: providerRepo.id });
-      })
-      .then(() => vm.$nextTick())
-      .then(() => {
-        expect(vm.$el.querySelector('.js-imported-project')).not.toBeNull();
-        expect(vm.$el.querySelector('.js-provider-repo')).toBeNull();
-      });
-  });
-
-  it('polls to update the status of imported projects', () => {
-    const updatedProjects = [
-      {
-        id: importedProject.id,
-        importStatus: 'finished',
+    createComponent({
+      state: {
+        importedProjects: [importedProject],
+        providerRepos: [providerRepo],
+        incompatibleRepos: [{ ...providerRepo, id: 11 }],
+        namespaces: [{ path: 'path' }],
       },
-    ];
-
-    vm.$store.dispatch('receiveReposSuccess', {
-      importedProjects: [importedProject],
-      providerRepos: [],
-      namespaces: [{ path: 'path' }],
     });
 
-    return vm
-      .$nextTick()
-      .then(() => {
-        const statusObject = STATUS_MAP[importedProject.importStatus];
+    expect(wrapper.contains(GlLoadingIcon)).toBe(false);
+    expect(wrapper.contains('table')).toBe(true);
+    expect(
+      wrapper
+        .findAll('th')
+        .filter(w => w.text() === `From ${providerTitle}`)
+        .isEmpty(),
+    ).toBe(false);
 
-        expect(vm.$el.querySelector('.js-imported-project')).not.toBeNull();
-        expect(vm.$el.querySelector(`.${statusObject.textClass}`).textContent).toMatch(
-          statusObject.text,
-        );
+    expect(wrapper.contains(ProviderRepoTableRow)).toBe(true);
+    expect(wrapper.contains(ImportedProjectTableRow)).toBe(true);
+    expect(wrapper.contains(IncompatibleRepoTableRow)).toBe(true);
+  });
 
-        expect(vm.$el.querySelector(`.ic-status_${statusObject.icon}`)).not.toBeNull();
-
-        vm.$store.dispatch('receiveJobsSuccess', updatedProjects);
-      })
-      .then(() => vm.$nextTick())
-      .then(() => {
-        const statusObject = STATUS_MAP[updatedProjects[0].importStatus];
-
-        expect(vm.$el.querySelector('.js-imported-project')).not.toBeNull();
-        expect(vm.$el.querySelector(`.${statusObject.textClass}`).textContent).toMatch(
-          statusObject.text,
-        );
-
-        expect(vm.$el.querySelector(`.ic-status_${statusObject.icon}`)).not.toBeNull();
+  it.each`
+    hasIncompatibleRepos | buttonText
+    ${false}             | ${'Import all repositories'}
+    ${true}              | ${'Import all compatible repositories'}
+  `(
+    'import all button has "$buttonText" text when hasIncompatibleRepos is $hasIncompatibleRepos',
+    ({ hasIncompatibleRepos, buttonText }) => {
+      createComponent({
+        state: {
+          providerRepos: [providerRepo],
+        },
+        getters: {
+          hasIncompatibleRepos: () => hasIncompatibleRepos,
+        },
       });
+
+      expect(findImportAllButton().text()).toBe(buttonText);
+    },
+  );
+
+  it('renders an empty state if there are no projects available', () => {
+    createComponent({
+      state: {
+        importedProjects: [],
+        providerRepos: [],
+        incompatibleProjects: [],
+      },
+    });
+
+    expect(wrapper.contains(ProviderRepoTableRow)).toBe(false);
+    expect(wrapper.contains(ImportedProjectTableRow)).toBe(false);
+    expect(wrapper.text()).toContain(`No ${providerTitle} repositories found`);
+  });
+
+  it('sends importAll event when import button is clicked', async () => {
+    createComponent({
+      state: {
+        providerRepos: [providerRepo],
+      },
+    });
+
+    findImportAllButton().vm.$emit('click');
+    await nextTick();
+    expect(eventHub.$emit).toHaveBeenCalledWith('importAll');
+  });
+
+  it('shows loading spinner when import is in progress', () => {
+    createComponent({
+      getters: {
+        isImportingAnyRepo: () => true,
+      },
+    });
+
+    expect(findImportAllButton().props().loading).toBe(true);
   });
 
   it('renders filtering input field', () => {
-    expect(
-      vm.$el.querySelector('input[data-qa-selector="githubish_import_filter_field"]'),
-    ).not.toBeNull();
+    createComponent();
+    expect(wrapper.contains('input[data-qa-selector="githubish_import_filter_field"]')).toBe(true);
   });
+
+  it.each`
+    hasIncompatibleRepos | shouldRenderSlot | action
+    ${false}             | ${false}         | ${'does not render'}
+    ${true}              | ${true}          | ${'render'}
+  `(
+    '$action incompatible-repos-warning slot if hasIncompatibleRepos is $hasIncompatibleRepos',
+    ({ hasIncompatibleRepos, shouldRenderSlot }) => {
+      const INCOMPATIBLE_TEXT = 'INCOMPATIBLE!';
+
+      createComponent({
+        getters: {
+          hasIncompatibleRepos: () => hasIncompatibleRepos,
+        },
+
+        slots: {
+          'incompatible-repos-warning': INCOMPATIBLE_TEXT,
+        },
+      });
+
+      expect(wrapper.text().includes(INCOMPATIBLE_TEXT)).toBe(shouldRenderSlot);
+    },
+  );
 });

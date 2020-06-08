@@ -53,7 +53,11 @@ export default {
   },
 
   created() {
-    eventHub.$on('importAll', () => this.importRepo());
+    eventHub.$on('importAll', this.importRepo);
+  },
+
+  beforeDestroy() {
+    eventHub.$off('importAll', this.importRepo);
   },
 
   methods: {

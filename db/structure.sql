@@ -9229,6 +9229,8 @@ CREATE INDEX index_approvers_on_user_id ON public.approvers USING btree (user_id
 
 CREATE INDEX index_audit_events_on_entity_id_and_entity_type_and_id_desc ON public.audit_events USING btree (entity_id, entity_type, id DESC);
 
+CREATE INDEX index_audit_events_on_ruby_object_in_details ON public.audit_events USING btree (id) WHERE (details ~~ '%ruby/object%'::text);
+
 CREATE INDEX index_award_emoji_on_awardable_type_and_awardable_id ON public.award_emoji USING btree (awardable_type, awardable_id);
 
 CREATE INDEX index_award_emoji_on_user_id_and_name ON public.award_emoji USING btree (user_id, name);
@@ -13764,6 +13766,7 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200514000340
 20200515155620
 20200518091745
+20200518114540
 20200518133123
 20200519074709
 20200519101002

@@ -1,0 +1,5 @@
+---
+title: Add dashboard schema validation warnings as metrics dashboard GraphQL field
+merge_request: 33592
+author:
+type: added

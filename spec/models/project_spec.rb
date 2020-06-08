@@ -3726,7 +3726,7 @@ describe Project do
       context 'when feature is private' do
         let(:project) { create(:project, :public, :merge_requests_private) }
 
-        context 'when user does not has access to the feature' do
+        context 'when user does not have access to the feature' do
           it 'does not return projects with the project feature private' do
             is_expected.not_to include(project)
           end

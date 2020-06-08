@@ -42,7 +42,7 @@ describe PerformanceMonitoring::PrometheusDashboard do
         it 'raises error with corresponding messages', :aggregate_failures do
           expect { subject }.to raise_error do |error|
             expect(error).to be_kind_of(ActiveModel::ValidationError)
-            expect(error.model.errors.messages).to eql(errors_messages)
+            expect(error.model.errors.messages).to eq(errors_messages)
           end
         end
       end
@@ -190,18 +190,49 @@ describe PerformanceMonitoring::PrometheusDashboard do
         dashboard_instance = described_class.find_for(project: project, user: user, path: path, options: { environment: environment })
 
         expect(dashboard_instance).to be_instance_of described_class
-        expect(dashboard_instance.environment).to be environment
-        expect(dashboard_instance.path).to be path
+        expect(dashboard_instance.environment).to eq environment
+        expect(dashboard_instance.path).to eq path
       end
     end
 
     context 'dashboard has NOT been found' do
       it 'returns nil' do
-        allow(Gitlab::Metrics::Dashboard::Finder).to receive(:find).and_return(status: :error)
+        allow(Gitlab::Metrics::Dashboard::Finder).to receive(:find).and_return(http_status: :not_found)
 
         dashboard_instance = described_class.find_for(project: project, user: user, path: path, options: { environment: environment })
 
         expect(dashboard_instance).to be_nil
+      end
+    end
+
+    context 'dashboard has invalid schema', :aggregate_failures do
+      it 'still returns dashboard object' do
+        expect(Gitlab::Metrics::Dashboard::Finder).to receive(:find).and_return(http_status: :unprocessable_entity)
+
+        dashboard_instance = described_class.find_for(project: project, user: user, path: path, options: { environment: environment })
+
+        expect(dashboard_instance).to be_instance_of described_class
+        expect(dashboard_instance.environment).to eq environment
+        expect(dashboard_instance.path).to eq path
+      end
+    end
+  end
+
+  describe '#schema_validation_warnings' do
+    context 'when schema is valid' do
+      it 'returns nil' do
+        expect(described_class).to receive(:from_json)
+        expect(described_class.new.schema_validation_warnings).to be_nil
+      end
+    end
+
+    context 'when schema is invalid' do
+      it 'returns array with errors messages' do
+        instance = described_class.new
+        instance.errors.add(:test, 'test error')
+
+        expect(described_class).to receive(:from_json).and_raise(ActiveModel::ValidationError.new(instance))
+        expect(described_class.new.schema_validation_warnings).to eq ['test: test error']
       end
     end
   end

@@ -7,6 +7,7 @@ export default () => ({
   currentUsername: '',
   importedProjects: [],
   providerRepos: [],
+  incompatibleRepos: [],
   namespaces: [],
   reposBeingImported: [],
   isLoadingRepos: false,

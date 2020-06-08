@@ -383,6 +383,18 @@ Example:
 Additional instructions here.
 -->
 
+### 13.0.1
+
+As part of [deprecating Rack Attack throttles on Omnibus GitLab](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/4750), Rack Attack initializer on GitLab
+was renamed from [`config/initializers/rack_attack_new.rb` to `config/initializers/rack_attack.rb`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/33072).
+If this file exists on your installation, consider creating a backup before updating:
+
+```shell
+cd /home/git/gitlab
+
+cp config/initializers/rack_attack.rb config/initializers/rack_attack_backup.rb
+```
+
 ## Troubleshooting
 
 ### 1. Revert the code to the previous version

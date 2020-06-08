@@ -15,15 +15,17 @@ module PerformanceMonitoring
       end
 
       def find_for(project:, user:, path:, options: {})
-        dashboard_response = Gitlab::Metrics::Dashboard::Finder.find(project, user, options.merge(dashboard_path: path))
-        return unless dashboard_response[:status] == :success
+        template = { path: path, environment: options[:environment] }
+        rsp = Gitlab::Metrics::Dashboard::Finder.find(project, user, options.merge(dashboard_path: path))
 
-        new(
-          {
-            path: path,
-            environment: options[:environment]
-          }.merge(dashboard_response[:dashboard])
-        )
+        case rsp[:http_status] || rsp[:status]
+        when :success
+          new(template.merge(rsp[:dashboard] || {})) # when there is empty dashboard file returned rsp is still a success
+        when :unprocessable_entity
+          new(template) # validation error
+        else
+          nil # any other error
+        end
       end
 
       private
@@ -40,6 +42,15 @@ module PerformanceMonitoring
 
     def to_yaml
       self.as_json(only: yaml_valid_attributes).to_yaml
+    end
+
+    # This method is planned to be refactored as a part of https://gitlab.com/gitlab-org/gitlab/-/issues/219398
+    # implementation. For new existing logic was reused to faster deliver MVC
+    def schema_validation_warnings
+      self.class.from_json(self.as_json)
+      nil
+    rescue ActiveModel::ValidationError => exception
+      exception.model.errors.map { |attr, error| "#{attr}: #{error}" }
     end
 
     private

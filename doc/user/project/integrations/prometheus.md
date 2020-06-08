@@ -362,6 +362,8 @@ When **Metrics Dashboard YAML definition is invalid** at least one of the follow
 1. `query_range: can't be blank` [learn more](#metrics-metrics-properties)
 1. `unit: can't be blank` [learn more](#metrics-metrics-properties)
 
+Metrics Dashboard YAML definition validation information is also available as a [GraphQL API field](../../../api/graphql/reference/index.md#metricsdashboard)
+
 #### Dashboard YAML properties
 
 Dashboards have several components:

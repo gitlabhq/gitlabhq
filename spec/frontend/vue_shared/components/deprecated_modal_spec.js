@@ -1,6 +1,5 @@
-import $ from 'jquery';
 import Vue from 'vue';
-import mountComponent from 'spec/helpers/vue_mount_component_helper';
+import mountComponent from 'helpers/vue_mount_component_helper';
 import DeprecatedModal from '~/vue_shared/components/deprecated_modal.vue';
 
 const modalComponent = Vue.extend(DeprecatedModal);
@@ -47,7 +46,7 @@ describe('DeprecatedModal', () => {
       });
     });
 
-    it('works with data-toggle="modal"', done => {
+    it('works with data-toggle="modal"', () => {
       setFixtures(`
         <button id="modal-button" data-toggle="modal" data-target="#my-modal"></button>
         <div id="modal-container"></div>
@@ -63,9 +62,12 @@ describe('DeprecatedModal', () => {
         modalContainer,
       );
       const modalElement = vm.$el.querySelector('#my-modal');
-      $(modalElement).on('shown.bs.modal', () => done());
+
+      expect(modalElement).not.toHaveClass('show');
 
       modalButton.click();
+
+      expect(modalElement).toHaveClass('show');
     });
   });
 });

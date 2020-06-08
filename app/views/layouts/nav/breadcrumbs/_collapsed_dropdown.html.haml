@@ -3,7 +3,7 @@
 - if defined?(@breadcrumb_dropdown_links) && @breadcrumb_dropdown_links.key?(dropdown_location)
   %li.dropdown
     %button.text-expander.has-tooltip.js-breadcrumbs-collapsed-expander{ type: "button", data: { toggle: "dropdown", container: "body" }, "aria-label": button_tooltip, title: button_tooltip }
-      = icon("ellipsis-h")
+      = sprite_icon("ellipsis_h", size: 12)
     = sprite_icon("angle-right", size: 8, css_class: "breadcrumbs-list-angle")
     .dropdown-menu
       %ul

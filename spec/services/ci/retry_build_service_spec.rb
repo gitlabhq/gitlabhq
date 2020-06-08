@@ -38,7 +38,8 @@ describe Ci::RetryBuildService do
        job_artifacts_codequality job_artifacts_metrics scheduled_at
        job_variables waiting_for_resource_at job_artifacts_metrics_referee
        job_artifacts_network_referee job_artifacts_dotenv
-       job_artifacts_cobertura needs job_artifacts_accessibility].freeze
+       job_artifacts_cobertura needs job_artifacts_accessibility
+       job_artifacts_requirements].freeze
 
   ignore_accessors =
     %i[type lock_version target_url base_tags trace_sections
