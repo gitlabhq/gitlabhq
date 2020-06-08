@@ -76,6 +76,16 @@ msgid_plural "%d URLs scanned"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "%d approver"
+msgid_plural "%d approvers"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "%d approver (you've approved)"
+msgid_plural "%d approvers (you've approved)"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%d changed file"
 msgid_plural "%d changed files"
 msgstr[0] ""
@@ -505,6 +515,9 @@ msgid "%{releases} release"
 msgid_plural "%{releases} releases"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "%{remaining_approvals} left"
+msgstr ""
 
 msgid "%{retryButtonStart}Try again%{retryButtonEnd} or %{newFileButtonStart}attach a new file%{newFileButtonEnd}"
 msgstr ""
@@ -2633,12 +2646,6 @@ msgstr ""
 msgid "ApprovalRule|e.g. QA, Security, etc."
 msgstr ""
 
-msgid "Approvals"
-msgstr ""
-
-msgid "Approvals (you've approved)"
-msgstr ""
-
 msgid "Approve"
 msgstr ""
 
@@ -2646,6 +2653,9 @@ msgid "Approve a merge request"
 msgstr ""
 
 msgid "Approve the current merge request."
+msgstr ""
+
+msgid "Approved"
 msgstr ""
 
 msgid "Approved by: "
@@ -18652,6 +18662,12 @@ msgid "Require user password to approve"
 msgstr ""
 
 msgid "Require users to prove ownership of custom domains"
+msgstr ""
+
+msgid "Required approvals (%{approvals_given} given)"
+msgstr ""
+
+msgid "Required approvals (%{approvals_given} given, you've approved)"
 msgstr ""
 
 msgid "Requirement"

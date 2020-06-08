@@ -1541,7 +1541,7 @@
             },
             {
               "name": "lists",
-              "description": "Lists of the project board",
+              "description": "Lists of the board",
               "args": [
                 {
                   "name": "after",

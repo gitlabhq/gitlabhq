@@ -1,10 +1,13 @@
 import $ from 'jquery';
+import axios from 'axios';
+import MockAdapter from 'axios-mock-adapter';
 import Dropzone from 'dropzone';
 import Mousetrap from 'mousetrap';
 import ZenMode from '~/zen_mode';
 import initNotes from '~/init_notes';
 
 describe('ZenMode', () => {
+  let mock;
   let zen;
   let dropzoneForElementSpy;
   const fixtureName = 'snippets/show.html';
@@ -28,10 +31,13 @@ describe('ZenMode', () => {
   }
 
   beforeEach(() => {
+    mock = new MockAdapter(axios);
+    mock.onGet().reply(200);
+
     loadFixtures(fixtureName);
     initNotes();
 
-    dropzoneForElementSpy = spyOn(Dropzone, 'forElement').and.callFake(() => ({
+    dropzoneForElementSpy = jest.spyOn(Dropzone, 'forElement').mockImplementation(() => ({
       enable: () => true,
     }));
     zen = new ZenMode();
@@ -49,20 +55,20 @@ describe('ZenMode', () => {
       $('.div-dropzone').addClass('js-invalid-dropzone');
       exitZen();
 
-      expect(dropzoneForElementSpy.calls.count()).toEqual(0);
+      expect(dropzoneForElementSpy.mock.calls.length).toEqual(0);
     });
 
     it('should call dropzone if element is dropzone valid', () => {
       $('.div-dropzone').removeClass('js-invalid-dropzone');
       exitZen();
 
-      expect(dropzoneForElementSpy.calls.count()).toEqual(2);
+      expect(dropzoneForElementSpy.mock.calls.length).toEqual(2);
     });
   });
 
   describe('on enter', () => {
     it('pauses Mousetrap', () => {
-      const mouseTrapPauseSpy = spyOn(Mousetrap, 'pause');
+      const mouseTrapPauseSpy = jest.spyOn(Mousetrap, 'pause');
       enterZen();
 
       expect(mouseTrapPauseSpy).toHaveBeenCalled();
@@ -90,14 +96,14 @@ describe('ZenMode', () => {
     beforeEach(enterZen);
 
     it('unpauses Mousetrap', () => {
-      const mouseTrapUnpauseSpy = spyOn(Mousetrap, 'unpause');
+      const mouseTrapUnpauseSpy = jest.spyOn(Mousetrap, 'unpause');
       exitZen();
 
       expect(mouseTrapUnpauseSpy).toHaveBeenCalled();
     });
 
     it('restores the scroll position', () => {
-      spyOn(zen, 'scrollTo');
+      jest.spyOn(zen, 'scrollTo').mockImplementation(() => {});
       exitZen();
 
       expect(zen.scrollTo).toHaveBeenCalled();

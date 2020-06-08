@@ -78,7 +78,8 @@
           },
           "position": { "type": ["integer", "null"] },
           "max_issue_count": { "type": "integer" },
-          "max_issue_weight": { "type": "integer" }
+          "max_issue_weight": { "type": "integer" },
+          "limit_metric": { "type": ["string", "null"] }
         },
         "additionalProperties": false
       }

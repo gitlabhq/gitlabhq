@@ -58,7 +58,9 @@ module QA
         def switching_to_wiki_url(url)
           # TODO
           # workaround
-          Git::Location.new(url.to_s.gsub('.git', '.wiki.git'))
+          # i.e. This replaces the last occurence of the string (case sensitive)
+          # and attaches everything before to the new substring
+          Git::Location.new(url.to_s.gsub(/(.*)\bgit\b/i, '\1wiki.git'))
         end
       end
     end

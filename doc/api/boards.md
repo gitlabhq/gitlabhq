@@ -56,7 +56,8 @@ Example response:
         },
         "position" : 1,
         "max_issue_count": 0,
-        "max_issue_weight": 0
+        "max_issue_weight": 0,
+        "limit_metric": null
       },
       {
         "id" : 2,
@@ -67,7 +68,8 @@ Example response:
         },
         "position" : 2,
         "max_issue_count": 0,
-        "max_issue_weight": 0
+        "max_issue_weight": 0,
+        "limit_metric":  null
       },
       {
         "id" : 3,
@@ -78,7 +80,8 @@ Example response:
         },
         "position" : 3,
         "max_issue_count": 0,
-        "max_issue_weight": 0
+        "max_issue_weight": 0,
+        "limit_metric":  null
       }
     ]
   }
@@ -131,7 +134,8 @@ Example response:
         },
         "position" : 1,
         "max_issue_count": 0,
-        "max_issue_weight": 0
+        "max_issue_weight": 0,
+        "limit_metric":  null
       },
       {
         "id" : 2,
@@ -142,7 +146,8 @@ Example response:
         },
         "position" : 2,
         "max_issue_count": 0,
-        "max_issue_weight": 0
+        "max_issue_weight": 0,
+        "limit_metric":  null
       },
       {
         "id" : 3,
@@ -153,7 +158,8 @@ Example response:
         },
         "position" : 3,
         "max_issue_count": 0,
-        "max_issue_weight": 0
+        "max_issue_weight": 0,
+        "limit_metric":  null
       }
     ]
   }
@@ -205,7 +211,8 @@ Example response:
         },
         "position" : 1,
         "max_issue_count": 0,
-        "max_issue_weight": 0
+        "max_issue_weight": 0,
+        "limit_metric":  null
       },
       {
         "id" : 2,
@@ -216,7 +223,8 @@ Example response:
         },
         "position" : 2,
         "max_issue_count": 0,
-        "max_issue_weight": 0
+        "max_issue_weight": 0,
+        "limit_metric":  null
       },
       {
         "id" : 3,
@@ -227,7 +235,8 @@ Example response:
         },
         "position" : 3,
         "max_issue_count": 0,
-        "max_issue_weight": 0
+        "max_issue_weight": 0,
+        "limit_metric":  null
       }
     ]
   }
@@ -362,7 +371,8 @@ Example response:
     },
     "position" : 1,
     "max_issue_count": 0,
-    "max_issue_weight": 0
+    "max_issue_weight": 0,
+    "limit_metric":  null
   },
   {
     "id" : 2,
@@ -373,7 +383,8 @@ Example response:
     },
     "position" : 2,
     "max_issue_count": 0,
-    "max_issue_weight": 0
+    "max_issue_weight": 0,
+    "limit_metric":  null
   },
   {
     "id" : 3,
@@ -384,7 +395,8 @@ Example response:
     },
     "position" : 3,
     "max_issue_count": 0,
-    "max_issue_weight": 0
+    "max_issue_weight": 0,
+    "limit_metric":  null
   }
 ]
 ```
@@ -419,7 +431,8 @@ Example response:
   },
   "position" : 1,
   "max_issue_count": 0,
-  "max_issue_weight": 0
+  "max_issue_weight": 0,
+  "limit_metric":  null
 }
 ```
 
@@ -461,7 +474,8 @@ Example response:
   },
   "position" : 1,
   "max_issue_count": 0,
-  "max_issue_weight": 0
+  "max_issue_weight": 0,
+  "limit_metric":  null
 }
 ```
 
@@ -496,7 +510,8 @@ Example response:
   },
   "position" : 1,
   "max_issue_count": 0,
-  "max_issue_weight": 0
+  "max_issue_weight": 0,
+  "limit_metric":  null
 }
 ```
 

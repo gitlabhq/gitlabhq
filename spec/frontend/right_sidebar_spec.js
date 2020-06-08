@@ -10,7 +10,7 @@ let $icon = null;
 let $page = null;
 let $labelsIcon = null;
 
-const assertSidebarState = function(state) {
+const assertSidebarState = state => {
   const shouldBeExpanded = state === 'expanded';
   const shouldBeCollapsed = state === 'collapsed';
   expect($aside.hasClass('right-sidebar-expanded')).toBe(shouldBeExpanded);
@@ -21,14 +21,13 @@ const assertSidebarState = function(state) {
   expect($icon.hasClass('fa-angle-double-left')).toBe(shouldBeCollapsed);
 };
 
-describe('RightSidebar', function() {
+describe('RightSidebar', () => {
   describe('fixture tests', () => {
     const fixtureName = 'issues/open-issue.html';
     preloadFixtures(fixtureName);
-    loadJSONFixtures('todos/todos.json');
     let mock;
 
-    beforeEach(function() {
+    beforeEach(() => {
       loadFixtures(fixtureName);
       mock = new MockAdapter(axios);
       new Sidebar(); // eslint-disable-line no-new
@@ -43,7 +42,7 @@ describe('RightSidebar', function() {
       mock.restore();
     });
 
-    it('should expand/collapse the sidebar when arrow is clicked', function() {
+    it('should expand/collapse the sidebar when arrow is clicked', () => {
       assertSidebarState('expanded');
       $toggle.click();
       assertSidebarState('collapsed');
@@ -51,28 +50,29 @@ describe('RightSidebar', function() {
       assertSidebarState('expanded');
     });
 
-    it('should float over the page and when sidebar icons clicked', function() {
+    it('should float over the page and when sidebar icons clicked', () => {
       $labelsIcon.click();
       assertSidebarState('expanded');
     });
 
-    it('should collapse when the icon arrow clicked while it is floating on page', function() {
+    it('should collapse when the icon arrow clicked while it is floating on page', () => {
       $labelsIcon.click();
       assertSidebarState('expanded');
       $toggle.click();
       assertSidebarState('collapsed');
     });
 
-    it('should broadcast todo:toggle event when add todo clicked', function(done) {
+    it('should broadcast todo:toggle event when add todo clicked', done => {
       const todos = getJSONFixture('todos/todos.json');
       mock.onPost(/(.*)\/todos$/).reply(200, todos);
 
-      const todoToggleSpy = spyOnEvent(document, 'todo:toggle');
+      const todoToggleSpy = jest.fn();
+      $(document).on('todo:toggle', todoToggleSpy);
 
       $('.issuable-sidebar-header .js-issuable-todo').click();
 
-      setTimeout(() => {
-        expect(todoToggleSpy.calls.count()).toEqual(1);
+      setImmediate(() => {
+        expect(todoToggleSpy.mock.calls.length).toEqual(1);
 
         done();
       });

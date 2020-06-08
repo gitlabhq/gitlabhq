@@ -28,7 +28,7 @@ describe('Global search input dropdown', () => {
 
   const groupName = 'Gitlab Org';
 
-  const removeBodyAttributes = function() {
+  const removeBodyAttributes = () => {
     const $body = $('body');
 
     $body.removeAttr('data-page');
@@ -38,7 +38,7 @@ describe('Global search input dropdown', () => {
 
   // Add required attributes to body before starting the test.
   // section would be dashboard|group|project
-  const addBodyAttributes = function(section) {
+  const addBodyAttributes = section => {
     if (section == null) {
       section = 'dashboard';
     }
@@ -57,12 +57,12 @@ describe('Global search input dropdown', () => {
     }
   };
 
-  const disableProjectIssues = function() {
+  const disableProjectIssues = () => {
     document.querySelector('.js-search-project-options').setAttribute('data-issues-disabled', true);
   };
 
   // Mock `gl` object in window for dashboard specific page. App code will need it.
-  const mockDashboardOptions = function() {
+  const mockDashboardOptions = () => {
     window.gl || (window.gl = {});
     return (window.gl.dashboardOptions = {
       issuesPath: dashboardIssuesPath,
@@ -71,7 +71,7 @@ describe('Global search input dropdown', () => {
   };
 
   // Mock `gl` object in window for project specific page. App code will need it.
-  const mockProjectOptions = function() {
+  const mockProjectOptions = () => {
     window.gl || (window.gl = {});
     return (window.gl.projectOptions = {
       'gitlab-ce': {
@@ -82,7 +82,7 @@ describe('Global search input dropdown', () => {
     });
   };
 
-  const mockGroupOptions = function() {
+  const mockGroupOptions = () => {
     window.gl || (window.gl = {});
     return (window.gl.groupOptions = {
       'gitlab-org': {
@@ -93,7 +93,7 @@ describe('Global search input dropdown', () => {
     });
   };
 
-  const assertLinks = function(list, issuesPath, mrsPath) {
+  const assertLinks = (list, issuesPath, mrsPath) => {
     if (issuesPath) {
       const issuesAssignedToMeLink = `a[href="${issuesPath}/?assignee_username=${userName}"]`;
       const issuesIHaveCreatedLink = `a[href="${issuesPath}/?author_username=${userName}"]`;
@@ -113,7 +113,7 @@ describe('Global search input dropdown', () => {
   };
 
   preloadFixtures('static/global_search_input.html');
-  beforeEach(function() {
+  beforeEach(() => {
     loadFixtures('static/global_search_input.html');
 
     window.gon = {};
@@ -123,13 +123,13 @@ describe('Global search input dropdown', () => {
     return (widget = initGlobalSearchInput());
   });
 
-  afterEach(function() {
+  afterEach(() => {
     // Undo what we did to the shared <body>
     removeBodyAttributes();
     window.gon = {};
   });
 
-  it('should show Dashboard specific dropdown menu', function() {
+  it('should show Dashboard specific dropdown menu', () => {
     addBodyAttributes();
     mockDashboardOptions();
     widget.searchInput.triggerHandler('focus');
@@ -137,7 +137,7 @@ describe('Global search input dropdown', () => {
     return assertLinks(list, dashboardIssuesPath, dashboardMRsPath);
   });
 
-  it('should show Group specific dropdown menu', function() {
+  it('should show Group specific dropdown menu', () => {
     addBodyAttributes('group');
     mockGroupOptions();
     widget.searchInput.triggerHandler('focus');
@@ -145,7 +145,7 @@ describe('Global search input dropdown', () => {
     return assertLinks(list, groupIssuesPath, groupMRsPath);
   });
 
-  it('should show Project specific dropdown menu', function() {
+  it('should show Project specific dropdown menu', () => {
     addBodyAttributes('project');
     mockProjectOptions();
     widget.searchInput.triggerHandler('focus');
@@ -153,7 +153,7 @@ describe('Global search input dropdown', () => {
     return assertLinks(list, projectIssuesPath, projectMRsPath);
   });
 
-  it('should show only Project mergeRequest dropdown menu items when project issues are disabled', function() {
+  it('should show only Project mergeRequest dropdown menu items when project issues are disabled', () => {
     addBodyAttributes('project');
     disableProjectIssues();
     mockProjectOptions();
@@ -162,7 +162,7 @@ describe('Global search input dropdown', () => {
     assertLinks(list, null, projectMRsPath);
   });
 
-  it('should not show category related menu if there is text in the input', function() {
+  it('should not show category related menu if there is text in the input', () => {
     addBodyAttributes('project');
     mockProjectOptions();
     widget.searchInput.val('help');
@@ -173,12 +173,12 @@ describe('Global search input dropdown', () => {
     expect(list.find(link).length).toBe(0);
   });
 
-  it('should not submit the search form when selecting an autocomplete row with the keyboard', function() {
+  it('should not submit the search form when selecting an autocomplete row with the keyboard', () => {
     const ENTER = 13;
     const DOWN = 40;
     addBodyAttributes();
     mockDashboardOptions(true);
-    const submitSpy = spyOnEvent('form', 'submit');
+    const submitSpy = jest.spyOn(document.querySelector('form'), 'submit');
     widget.searchInput.triggerHandler('focus');
     widget.wrap.trigger($.Event('keydown', { which: DOWN }));
     const enterKeyEvent = $.Event('keydown', { which: ENTER });
@@ -186,16 +186,16 @@ describe('Global search input dropdown', () => {
     // This does not currently catch failing behavior. For security reasons,
     // browsers will not trigger default behavior (form submit, in this
     // example) on JavaScript-created keypresses.
-    expect(submitSpy).not.toHaveBeenTriggered();
+    expect(submitSpy).not.toHaveBeenCalled();
   });
 
-  describe('disableDropdown', function() {
-    beforeEach(function() {
+  describe('disableDropdown', () => {
+    beforeEach(() => {
       widget.enableDropdown();
     });
 
-    it('should close the Dropdown', function() {
-      const toggleSpy = spyOn(widget.dropdownToggle, 'dropdown');
+    it('should close the Dropdown', () => {
+      const toggleSpy = jest.spyOn(widget.dropdownToggle, 'dropdown');
 
       widget.dropdown.addClass('show');
       widget.disableDropdown();
@@ -204,9 +204,9 @@ describe('Global search input dropdown', () => {
     });
   });
 
-  describe('enableDropdown', function() {
-    it('should open the Dropdown', function() {
-      const toggleSpy = spyOn(widget.dropdownToggle, 'dropdown');
+  describe('enableDropdown', () => {
+    it('should open the Dropdown', () => {
+      const toggleSpy = jest.spyOn(widget.dropdownToggle, 'dropdown');
       widget.enableDropdown();
 
       expect(toggleSpy).toHaveBeenCalledWith('toggle');

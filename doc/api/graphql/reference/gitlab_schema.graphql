@@ -591,7 +591,7 @@ type Board {
   id: ID!
 
   """
-  Lists of the project board
+  Lists of the board
   """
   lists(
     """

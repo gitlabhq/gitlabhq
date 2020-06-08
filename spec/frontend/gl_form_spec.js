@@ -5,51 +5,56 @@ import '~/lib/utils/text_utility';
 import '~/lib/utils/common_utils';
 
 describe('GLForm', () => {
-  describe('when instantiated', function() {
-    beforeEach(done => {
-      this.form = $('<form class="gfm-form"><textarea class="js-gfm-input"></form>');
-      this.textarea = this.form.find('textarea');
-      spyOn($.prototype, 'off').and.returnValue(this.textarea);
-      spyOn($.prototype, 'on').and.returnValue(this.textarea);
-      spyOn($.prototype, 'css');
+  const testContext = {};
 
-      this.glForm = new GLForm(this.form, false);
-      setTimeout(() => {
-        $.prototype.off.calls.reset();
-        $.prototype.on.calls.reset();
-        $.prototype.css.calls.reset();
+  describe('when instantiated', () => {
+    beforeEach(done => {
+      testContext.form = $('<form class="gfm-form"><textarea class="js-gfm-input"></form>');
+      testContext.textarea = testContext.form.find('textarea');
+      jest.spyOn($.prototype, 'off').mockReturnValue(testContext.textarea);
+      jest.spyOn($.prototype, 'on').mockReturnValue(testContext.textarea);
+      jest.spyOn($.prototype, 'css').mockImplementation(() => {});
+
+      testContext.glForm = new GLForm(testContext.form, false);
+
+      setImmediate(() => {
+        $.prototype.off.mockClear();
+        $.prototype.on.mockClear();
+        $.prototype.css.mockClear();
         done();
       });
     });
 
     describe('setupAutosize', () => {
       beforeEach(done => {
-        this.glForm.setupAutosize();
-        setTimeout(() => {
+        testContext.glForm.setupAutosize();
+
+        setImmediate(() => {
           done();
         });
       });
 
       it('should register an autosize event handler on the textarea', () => {
         expect($.prototype.off).toHaveBeenCalledWith('autosize:resized');
-        expect($.prototype.on).toHaveBeenCalledWith('autosize:resized', jasmine.any(Function));
+        expect($.prototype.on).toHaveBeenCalledWith('autosize:resized', expect.any(Function));
       });
 
       it('should register a mouseup event handler on the textarea', () => {
         expect($.prototype.off).toHaveBeenCalledWith('mouseup.autosize');
-        expect($.prototype.on).toHaveBeenCalledWith('mouseup.autosize', jasmine.any(Function));
+        expect($.prototype.on).toHaveBeenCalledWith('mouseup.autosize', expect.any(Function));
       });
 
       it('should set the resize css property to vertical', () => {
+        jest.runOnlyPendingTimers();
         expect($.prototype.css).toHaveBeenCalledWith('resize', 'vertical');
       });
     });
 
     describe('setHeightData', () => {
       beforeEach(() => {
-        spyOn($.prototype, 'data');
-        spyOn($.prototype, 'outerHeight').and.returnValue(200);
-        this.glForm.setHeightData();
+        jest.spyOn($.prototype, 'data').mockImplementation(() => {});
+        jest.spyOn($.prototype, 'outerHeight').mockReturnValue(200);
+        testContext.glForm.setHeightData();
       });
 
       it('should set the height data attribute', () => {
@@ -64,12 +69,12 @@ describe('GLForm', () => {
     describe('destroyAutosize', () => {
       describe('when called', () => {
         beforeEach(() => {
-          spyOn($.prototype, 'data');
-          spyOn($.prototype, 'outerHeight').and.returnValue(200);
-          spyOn(window, 'outerHeight').and.returnValue(400);
-          spyOn(autosize, 'destroy');
+          jest.spyOn($.prototype, 'data').mockImplementation(() => {});
+          jest.spyOn($.prototype, 'outerHeight').mockReturnValue(200);
+          window.outerHeight = () => 400;
+          jest.spyOn(autosize, 'destroy').mockImplementation(() => {});
 
-          this.glForm.destroyAutosize();
+          testContext.glForm.destroyAutosize();
         });
 
         it('should call outerHeight', () => {
@@ -81,7 +86,7 @@ describe('GLForm', () => {
         });
 
         it('should call autosize destroy', () => {
-          expect(autosize.destroy).toHaveBeenCalledWith(this.textarea);
+          expect(autosize.destroy).toHaveBeenCalledWith(testContext.textarea);
         });
 
         it('should set the data-height attribute', () => {
@@ -98,11 +103,11 @@ describe('GLForm', () => {
       });
 
       it('should return undefined if the data-height equals the outerHeight', () => {
-        spyOn($.prototype, 'outerHeight').and.returnValue(200);
-        spyOn($.prototype, 'data').and.returnValue(200);
-        spyOn(autosize, 'destroy');
+        jest.spyOn($.prototype, 'outerHeight').mockReturnValue(200);
+        jest.spyOn($.prototype, 'data').mockReturnValue(200);
+        jest.spyOn(autosize, 'destroy').mockImplementation(() => {});
 
-        expect(this.glForm.destroyAutosize()).toBeUndefined();
+        expect(testContext.glForm.destroyAutosize()).toBeUndefined();
         expect(autosize.destroy).not.toHaveBeenCalled();
       });
     });

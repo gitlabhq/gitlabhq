@@ -2,6 +2,7 @@ import $ from 'jquery';
 import Cookies from 'js-cookie';
 import loadAwardsHandler from '~/awards_handler';
 import '~/lib/utils/common_utils';
+import waitForPromises from './helpers/wait_for_promises';
 
 window.gl = window.gl || {};
 window.gon = window.gon || {};
@@ -10,28 +11,32 @@ let openAndWaitForEmojiMenu;
 let awardsHandler = null;
 const urlRoot = gon.relative_url_root;
 
-const lazyAssert = function(done, assertFn) {
-  setTimeout(function() {
-    assertFn();
-    done();
-    // Maybe jasmine.clock here?
-  }, 333);
+const lazyAssert = (done, assertFn) => {
+  jest.runOnlyPendingTimers();
+  waitForPromises()
+    .then(() => {
+      assertFn();
+      done();
+    })
+    .catch(e => {
+      throw e;
+    });
 };
 
-describe('AwardsHandler', function() {
+describe('AwardsHandler', () => {
   preloadFixtures('snippets/show.html');
-  beforeEach(function(done) {
+  beforeEach(done => {
     loadFixtures('snippets/show.html');
     loadAwardsHandler(true)
       .then(obj => {
         awardsHandler = obj;
-        spyOn(awardsHandler, 'postEmoji').and.callFake((button, url, emoji, cb) => cb());
+        jest.spyOn(awardsHandler, 'postEmoji').mockImplementation((button, url, emoji, cb) => cb());
         done();
       })
-      .catch(fail);
+      .catch(done.fail);
 
     let isEmojiMenuBuilt = false;
-    openAndWaitForEmojiMenu = function() {
+    openAndWaitForEmojiMenu = () => {
       return new Promise(resolve => {
         if (isEmojiMenuBuilt) {
           resolve();
@@ -49,7 +54,7 @@ describe('AwardsHandler', function() {
     };
   });
 
-  afterEach(function() {
+  afterEach(() => {
     // restore original url root value
     gon.relative_url_root = urlRoot;
 
@@ -59,12 +64,12 @@ describe('AwardsHandler', function() {
     awardsHandler.destroy();
   });
 
-  describe('::showEmojiMenu', function() {
-    it('should show emoji menu when Add emoji button clicked', function(done) {
+  describe('::showEmojiMenu', () => {
+    it('should show emoji menu when Add emoji button clicked', done => {
       $('.js-add-award')
         .eq(0)
         .click();
-      lazyAssert(done, function() {
+      lazyAssert(done, () => {
         const $emojiMenu = $('.emoji-menu');
 
         expect($emojiMenu.length).toBe(1);
@@ -74,20 +79,20 @@ describe('AwardsHandler', function() {
       });
     });
 
-    it('should also show emoji menu for the smiley icon in notes', function(done) {
+    it('should also show emoji menu for the smiley icon in notes', done => {
       $('.js-add-award.note-action-button').click();
-      lazyAssert(done, function() {
+      lazyAssert(done, () => {
         const $emojiMenu = $('.emoji-menu');
 
         expect($emojiMenu.length).toBe(1);
       });
     });
 
-    it('should remove emoji menu when body is clicked', function(done) {
+    it('should remove emoji menu when body is clicked', done => {
       $('.js-add-award')
         .eq(0)
         .click();
-      lazyAssert(done, function() {
+      lazyAssert(done, () => {
         const $emojiMenu = $('.emoji-menu');
         $('body').click();
 
@@ -97,11 +102,11 @@ describe('AwardsHandler', function() {
       });
     });
 
-    it('should not remove emoji menu when search is clicked', function(done) {
+    it('should not remove emoji menu when search is clicked', done => {
       $('.js-add-award')
         .eq(0)
         .click();
-      lazyAssert(done, function() {
+      lazyAssert(done, () => {
         const $emojiMenu = $('.emoji-menu');
         $('.emoji-search').click();
 
@@ -112,8 +117,8 @@ describe('AwardsHandler', function() {
     });
   });
 
-  describe('::addAwardToEmojiBar', function() {
-    it('should add emoji to votes block', function() {
+  describe('::addAwardToEmojiBar', () => {
+    it('should add emoji to votes block', () => {
       const $votesBlock = $('.js-awards-block').eq(0);
       awardsHandler.addAwardToEmojiBar($votesBlock, 'heart', false);
       const $emojiButton = $votesBlock.find('[data-name=heart]');
@@ -123,7 +128,7 @@ describe('AwardsHandler', function() {
       expect($votesBlock.hasClass('hidden')).toBe(false);
     });
 
-    it('should remove the emoji when we click again', function() {
+    it('should remove the emoji when we click again', () => {
       const $votesBlock = $('.js-awards-block').eq(0);
       awardsHandler.addAwardToEmojiBar($votesBlock, 'heart', false);
       awardsHandler.addAwardToEmojiBar($votesBlock, 'heart', false);
@@ -132,7 +137,7 @@ describe('AwardsHandler', function() {
       expect($emojiButton.length).toBe(0);
     });
 
-    it('should decrement the emoji counter', function() {
+    it('should decrement the emoji counter', () => {
       const $votesBlock = $('.js-awards-block').eq(0);
       awardsHandler.addAwardToEmojiBar($votesBlock, 'heart', false);
       const $emojiButton = $votesBlock.find('[data-name=heart]');
@@ -144,8 +149,8 @@ describe('AwardsHandler', function() {
     });
   });
 
-  describe('::userAuthored', function() {
-    it('should update tooltip to user authored title', function() {
+  describe('::userAuthored', () => {
+    it('should update tooltip to user authored title', () => {
       const $votesBlock = $('.js-awards-block').eq(0);
       const $thumbsUpEmoji = $votesBlock.find('[data-name=thumbsup]').parent();
       $thumbsUpEmoji.attr('data-title', 'sam');
@@ -156,27 +161,25 @@ describe('AwardsHandler', function() {
       );
     });
 
-    it('should restore tooltip back to initial vote list', function() {
-      jasmine.clock().install();
+    it('should restore tooltip back to initial vote list', () => {
       const $votesBlock = $('.js-awards-block').eq(0);
       const $thumbsUpEmoji = $votesBlock.find('[data-name=thumbsup]').parent();
       $thumbsUpEmoji.attr('data-title', 'sam');
       awardsHandler.userAuthored($thumbsUpEmoji);
-      jasmine.clock().tick(2801);
-      jasmine.clock().uninstall();
+      jest.advanceTimersByTime(2801);
 
       expect($thumbsUpEmoji.data('originalTitle')).toBe('sam');
     });
   });
 
-  describe('::getAwardUrl', function() {
-    it('returns the url for request', function() {
+  describe('::getAwardUrl', () => {
+    it('returns the url for request', () => {
       expect(awardsHandler.getAwardUrl()).toBe('http://test.host/snippets/1/toggle_award_emoji');
     });
   });
 
-  describe('::addAward and ::checkMutuality', function() {
-    it('should handle :+1: and :-1: mutuality', function() {
+  describe('::addAward and ::checkMutuality', () => {
+    it('should handle :+1: and :-1: mutuality', () => {
       const awardUrl = awardsHandler.getAwardUrl();
       const $votesBlock = $('.js-awards-block').eq(0);
       const $thumbsUpEmoji = $votesBlock.find('[data-name=thumbsup]').parent();
@@ -194,8 +197,8 @@ describe('AwardsHandler', function() {
     });
   });
 
-  describe('::removeEmoji', function() {
-    it('should remove emoji', function() {
+  describe('::removeEmoji', () => {
+    it('should remove emoji', () => {
       const awardUrl = awardsHandler.getAwardUrl();
       const $votesBlock = $('.js-awards-block').eq(0);
       awardsHandler.addAward($votesBlock, awardUrl, 'fire', false);
@@ -207,8 +210,8 @@ describe('AwardsHandler', function() {
     });
   });
 
-  describe('::addYouToUserList', function() {
-    it('should prepend "You" to the award tooltip', function() {
+  describe('::addYouToUserList', () => {
+    it('should prepend "You" to the award tooltip', () => {
       const awardUrl = awardsHandler.getAwardUrl();
       const $votesBlock = $('.js-awards-block').eq(0);
       const $thumbsUpEmoji = $votesBlock.find('[data-name=thumbsup]').parent();
@@ -219,7 +222,7 @@ describe('AwardsHandler', function() {
       expect($thumbsUpEmoji.data('originalTitle')).toBe('You, sam, jerry, max, and andy');
     });
 
-    it('handles the special case where "You" is not cleanly comma separated', function() {
+    it('handles the special case where "You" is not cleanly comma separated', () => {
       const awardUrl = awardsHandler.getAwardUrl();
       const $votesBlock = $('.js-awards-block').eq(0);
       const $thumbsUpEmoji = $votesBlock.find('[data-name=thumbsup]').parent();
@@ -231,8 +234,8 @@ describe('AwardsHandler', function() {
     });
   });
 
-  describe('::removeYouToUserList', function() {
-    it('removes "You" from the front of the tooltip', function() {
+  describe('::removeYouToUserList', () => {
+    it('removes "You" from the front of the tooltip', () => {
       const awardUrl = awardsHandler.getAwardUrl();
       const $votesBlock = $('.js-awards-block').eq(0);
       const $thumbsUpEmoji = $votesBlock.find('[data-name=thumbsup]').parent();
@@ -244,7 +247,7 @@ describe('AwardsHandler', function() {
       expect($thumbsUpEmoji.data('originalTitle')).toBe('sam, jerry, max, and andy');
     });
 
-    it('handles the special case where "You" is not cleanly comma separated', function() {
+    it('handles the special case where "You" is not cleanly comma separated', () => {
       const awardUrl = awardsHandler.getAwardUrl();
       const $votesBlock = $('.js-awards-block').eq(0);
       const $thumbsUpEmoji = $votesBlock.find('[data-name=thumbsup]').parent();
@@ -258,7 +261,7 @@ describe('AwardsHandler', function() {
   });
 
   describe('::searchEmojis', () => {
-    it('should filter the emoji', function(done) {
+    it('should filter the emoji', done => {
       openAndWaitForEmojiMenu()
         .then(() => {
           expect($('[data-name=angel]').is(':visible')).toBe(true);
@@ -276,7 +279,7 @@ describe('AwardsHandler', function() {
         });
     });
 
-    it('should clear the search when searching for nothing', function(done) {
+    it('should clear the search when searching for nothing', done => {
       openAndWaitForEmojiMenu()
         .then(() => {
           awardsHandler.searchEmojis('ali');
@@ -298,9 +301,9 @@ describe('AwardsHandler', function() {
     });
   });
 
-  describe('emoji menu', function() {
+  describe('emoji menu', () => {
     const emojiSelector = '[data-name="sunglasses"]';
-    const openEmojiMenuAndAddEmoji = function() {
+    const openEmojiMenuAndAddEmoji = () => {
       return openAndWaitForEmojiMenu().then(() => {
         const $menu = $('.emoji-menu');
         const $block = $('.js-awards-block');
@@ -315,7 +318,7 @@ describe('AwardsHandler', function() {
       });
     };
 
-    it('should add selected emoji to awards block', function(done) {
+    it('should add selected emoji to awards block', done => {
       openEmojiMenuAndAddEmoji()
         .then(done)
         .catch(err => {
@@ -323,7 +326,7 @@ describe('AwardsHandler', function() {
         });
     });
 
-    it('should remove already selected emoji', function(done) {
+    it('should remove already selected emoji', done => {
       openEmojiMenuAndAddEmoji()
         .then(() => {
           $('.js-add-award')
@@ -344,13 +347,13 @@ describe('AwardsHandler', function() {
     });
   });
 
-  describe('frequently used emojis', function() {
+  describe('frequently used emojis', () => {
     beforeEach(() => {
       // Clear it out
       Cookies.set('frequently_used_emojis', '');
     });
 
-    it('shouldn\'t have any "Frequently used" heading if no frequently used emojis', function(done) {
+    it('shouldn\'t have any "Frequently used" heading if no frequently used emojis', done => {
       return openAndWaitForEmojiMenu()
         .then(() => {
           const emojiMenu = document.querySelector('.emoji-menu');
@@ -364,7 +367,7 @@ describe('AwardsHandler', function() {
         });
     });
 
-    it('should have any frequently used section when there are frequently used emojis', function(done) {
+    it('should have any frequently used section when there are frequently used emojis', done => {
       awardsHandler.addEmojiToFrequentlyUsedList('8ball');
 
       return openAndWaitForEmojiMenu()
@@ -383,7 +386,7 @@ describe('AwardsHandler', function() {
         });
     });
 
-    it('should disregard invalid frequently used emoji that are being attempted to be added', function() {
+    it('should disregard invalid frequently used emoji that are being attempted to be added', () => {
       awardsHandler.addEmojiToFrequentlyUsedList('8ball');
       awardsHandler.addEmojiToFrequentlyUsedList('invalid_emoji');
       awardsHandler.addEmojiToFrequentlyUsedList('grinning');
@@ -391,7 +394,7 @@ describe('AwardsHandler', function() {
       expect(awardsHandler.getFrequentlyUsedEmojis()).toEqual(['8ball', 'grinning']);
     });
 
-    it('should disregard invalid frequently used emoji already set in cookie', function() {
+    it('should disregard invalid frequently used emoji already set in cookie', () => {
       Cookies.set('frequently_used_emojis', '8ball,invalid_emoji,grinning');
 
       expect(awardsHandler.getFrequentlyUsedEmojis()).toEqual(['8ball', 'grinning']);

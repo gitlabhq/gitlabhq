@@ -15,7 +15,7 @@ module Types
     field :lists,
           Types::BoardListType.connection_type,
           null: true,
-          description: 'Lists of the project board',
+          description: 'Lists of the board',
           resolver: Resolvers::BoardListsResolver,
           extras: [:lookahead]
   end

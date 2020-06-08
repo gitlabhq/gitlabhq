@@ -3,7 +3,8 @@ import { clone } from 'lodash';
 import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
 import Sidebar from '~/right_sidebar';
-import timeoutPromise from './helpers/set_timeout_promise_helper';
+import waitForPromises from './helpers/wait_for_promises';
+import { TEST_HOST } from 'spec/test_constants';
 
 describe('Issuable right sidebar collapsed todo toggle', () => {
   const fixtureName = 'issues/open-issue.html';
@@ -23,7 +24,7 @@ describe('Issuable right sidebar collapsed todo toggle', () => {
 
     mock = new MockAdapter(axios);
 
-    mock.onPost(`${gl.TEST_HOST}/frontend-fixtures/issues-project/todos`).reply(() => {
+    mock.onPost(`${TEST_HOST}/frontend-fixtures/issues-project/todos`).reply(() => {
       const response = clone(todoData);
 
       return [200, response];
@@ -64,7 +65,7 @@ describe('Issuable right sidebar collapsed todo toggle', () => {
   it('toggle todo state', done => {
     document.querySelector('.js-issuable-todo.sidebar-collapsed-icon').click();
 
-    setTimeout(() => {
+    setImmediate(() => {
       expect(
         document.querySelector('.js-issuable-todo.sidebar-collapsed-icon .todo-undone'),
       ).not.toBeNull();
@@ -82,7 +83,7 @@ describe('Issuable right sidebar collapsed todo toggle', () => {
   it('toggle todo state of expanded todo toggle', done => {
     document.querySelector('.js-issuable-todo.sidebar-collapsed-icon').click();
 
-    setTimeout(() => {
+    setImmediate(() => {
       expect(
         document.querySelector('.issuable-sidebar-header .js-issuable-todo').textContent.trim(),
       ).toBe('Mark as done');
@@ -94,7 +95,7 @@ describe('Issuable right sidebar collapsed todo toggle', () => {
   it('toggles todo button tooltip', done => {
     document.querySelector('.js-issuable-todo.sidebar-collapsed-icon').click();
 
-    setTimeout(() => {
+    setImmediate(() => {
       expect(
         document
           .querySelector('.js-issuable-todo.sidebar-collapsed-icon')
@@ -108,7 +109,7 @@ describe('Issuable right sidebar collapsed todo toggle', () => {
   it('marks todo as done', done => {
     document.querySelector('.js-issuable-todo.sidebar-collapsed-icon').click();
 
-    timeoutPromise()
+    waitForPromises()
       .then(() => {
         expect(
           document.querySelector('.js-issuable-todo.sidebar-collapsed-icon .todo-undone'),
@@ -116,7 +117,7 @@ describe('Issuable right sidebar collapsed todo toggle', () => {
 
         document.querySelector('.js-issuable-todo.sidebar-collapsed-icon').click();
       })
-      .then(timeoutPromise)
+      .then(waitForPromises)
       .then(() => {
         expect(
           document.querySelector('.js-issuable-todo.sidebar-collapsed-icon .todo-undone'),
@@ -133,7 +134,7 @@ describe('Issuable right sidebar collapsed todo toggle', () => {
   it('updates aria-label to Mark as done', done => {
     document.querySelector('.js-issuable-todo.sidebar-collapsed-icon').click();
 
-    setTimeout(() => {
+    setImmediate(() => {
       expect(
         document
           .querySelector('.js-issuable-todo.sidebar-collapsed-icon')
@@ -147,7 +148,7 @@ describe('Issuable right sidebar collapsed todo toggle', () => {
   it('updates aria-label to add todo', done => {
     document.querySelector('.js-issuable-todo.sidebar-collapsed-icon').click();
 
-    timeoutPromise()
+    waitForPromises()
       .then(() => {
         expect(
           document
@@ -157,7 +158,7 @@ describe('Issuable right sidebar collapsed todo toggle', () => {
 
         document.querySelector('.js-issuable-todo.sidebar-collapsed-icon').click();
       })
-      .then(timeoutPromise)
+      .then(waitForPromises)
       .then(() => {
         expect(
           document

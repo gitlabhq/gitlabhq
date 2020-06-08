@@ -21,7 +21,9 @@ function testLabelClicks(labelOrder, done) {
     .get(0)
     .click();
 
-  setTimeout(() => {
+  jest.runOnlyPendingTimers();
+
+  setImmediate(() => {
     const labelsInDropdown = $('.dropdown-content a');
 
     expect(labelsInDropdown.length).toBe(10);
@@ -38,11 +40,11 @@ function testLabelClicks(labelOrder, done) {
       .get(0)
       .click();
 
-    setTimeout(() => {
+    setImmediate(() => {
       expect($('.sidebar-collapsed-icon').attr('data-original-title')).toBe(labelOrder);
       done();
-    }, 0);
-  }, 0);
+    });
+  });
 }
 
 describe('Issue dropdown sidebar', () => {

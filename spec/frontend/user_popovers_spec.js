@@ -26,10 +26,12 @@ describe('User Popovers', () => {
     loadFixtures(fixtureTemplate);
 
     const usersCacheSpy = () => Promise.resolve(dummyUser);
-    spyOn(UsersCache, 'retrieveById').and.callFake(userId => usersCacheSpy(userId));
+    jest.spyOn(UsersCache, 'retrieveById').mockImplementation(userId => usersCacheSpy(userId));
 
     const userStatusCacheSpy = () => Promise.resolve(dummyUserStatus);
-    spyOn(UsersCache, 'retrieveStatusById').and.callFake(userId => userStatusCacheSpy(userId));
+    jest
+      .spyOn(UsersCache, 'retrieveStatusById')
+      .mockImplementation(userId => userStatusCacheSpy(userId));
 
     popovers = initUserPopovers(document.querySelectorAll(selector));
   });
@@ -53,6 +55,8 @@ describe('User Popovers', () => {
     let userLink;
 
     beforeEach(() => {
+      UsersCache.retrieveById.mockReset();
+
       userLink = document.querySelector(selector);
 
       triggerEvent('mouseenter', userLink);
@@ -68,7 +72,7 @@ describe('User Popovers', () => {
       const [firstPopover] = popovers;
 
       expect(firstPopover.$props.user).toEqual(
-        jasmine.objectContaining({
+        expect.objectContaining({
           name,
           userId,
           username,

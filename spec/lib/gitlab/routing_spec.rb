@@ -22,4 +22,25 @@ describe Gitlab::Routing do
       expect(subject).to respond_to(:namespace_project_path)
     end
   end
+
+  describe Gitlab::Routing::LegacyRedirector do
+    subject { described_class.new(:wikis) }
+
+    let(:request) { double(:request, path: path, query_string: '') }
+    let(:path) { '/gitlab-org/gitlab-test/wikis/home' }
+
+    it 'returns "-" scoped url' do
+      expect(subject.call({}, request)).to eq('/gitlab-org/gitlab-test/-/wikis/home')
+    end
+
+    context 'invalid uri characters' do
+      let(:path) { '/gitlab-org/gitlab-test/wikis/home[' }
+
+      it 'raises error' do
+        expect do
+          subject.call({}, request)
+        end.to raise_error(ActionController::RoutingError)
+      end
+    end
+  end
 end

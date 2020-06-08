@@ -31,7 +31,9 @@ module QA
         def web_url
           # TODO
           # workaround
-          repository_http_uri.to_s.gsub(".wiki.git", "/-/wikis/#{@file_name.gsub('.md', '')}")
+          # i.e. This replaces the last occurence of the string (case sensitive)
+          # and attaches everything before to the new substring
+          repository_http_uri.to_s.gsub(/(.*)\b\.wiki\.git\b/i, "\\1/-/wikis/#{@file_name.gsub('.md', '')}")
         end
       end
     end

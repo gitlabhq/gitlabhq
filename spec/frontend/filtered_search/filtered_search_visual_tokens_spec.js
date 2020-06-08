@@ -1,7 +1,10 @@
+import axios from 'axios';
+import MockAdapter from 'axios-mock-adapter';
 import FilteredSearchVisualTokens from '~/filtered_search/filtered_search_visual_tokens';
 import FilteredSearchSpecHelper from '../helpers/filtered_search_spec_helper';
 
 describe('Filtered Search Visual Tokens', () => {
+  let mock;
   const subject = FilteredSearchVisualTokens;
 
   const findElements = tokenElement => {
@@ -17,6 +20,9 @@ describe('Filtered Search Visual Tokens', () => {
   let bugLabelToken;
 
   beforeEach(() => {
+    mock = new MockAdapter(axios);
+    mock.onGet().reply(200);
+
     setFixtures(`
       <ul class="tokens-container">
         ${FilteredSearchSpecHelper.createInputHTML()}
@@ -248,15 +254,15 @@ describe('Filtered Search Visual Tokens', () => {
     });
 
     it('contains name div', () => {
-      expect(tokenElement.querySelector('.name')).toEqual(jasmine.anything());
+      expect(tokenElement.querySelector('.name')).toEqual(expect.anything());
     });
 
     it('contains value container div', () => {
-      expect(tokenElement.querySelector('.value-container')).toEqual(jasmine.anything());
+      expect(tokenElement.querySelector('.value-container')).toEqual(expect.anything());
     });
 
     it('contains value div', () => {
-      expect(tokenElement.querySelector('.value-container .value')).toEqual(jasmine.anything());
+      expect(tokenElement.querySelector('.value-container .value')).toEqual(expect.anything());
     });
 
     it('contains selectable class', () => {
@@ -270,12 +276,12 @@ describe('Filtered Search Visual Tokens', () => {
     describe('remove token', () => {
       it('contains remove-token button', () => {
         expect(tokenElement.querySelector('.value-container .remove-token')).toEqual(
-          jasmine.anything(),
+          expect.anything(),
         );
       });
 
       it('contains fa-close icon', () => {
-        expect(tokenElement.querySelector('.remove-token .fa-close')).toEqual(jasmine.anything());
+        expect(tokenElement.querySelector('.remove-token .fa-close')).toEqual(expect.anything());
       });
     });
   });
@@ -453,7 +459,7 @@ describe('Filtered Search Visual Tokens', () => {
       valueContainer.dataset.originalValue = originalValue;
       const avatar = document.createElement('img');
       const valueElement = valueContainer.querySelector('.value');
-      valueElement.insertAdjacentElement('afterbegin', avatar);
+      valueElement.appendChild(avatar);
       tokensContainer.innerHTML = FilteredSearchSpecHelper.createTokensContainerHTML(
         authorToken.outerHTML,
       );
@@ -573,7 +579,7 @@ describe('Filtered Search Visual Tokens', () => {
 
     it("tokenize's existing input", () => {
       input.value = 'some text';
-      spyOn(subject, 'tokenizeInput').and.callThrough();
+      jest.spyOn(subject, 'tokenizeInput');
 
       subject.editToken(token);
 
@@ -635,8 +641,8 @@ describe('Filtered Search Visual Tokens', () => {
         FilteredSearchSpecHelper.createFilterVisualTokenHTML('label', '=', 'none'),
       );
 
-      spyOn(subject, 'tokenizeInput').and.callFake(() => {});
-      spyOn(subject, 'getLastVisualTokenBeforeInput').and.callThrough();
+      jest.spyOn(subject, 'tokenizeInput').mockImplementation(() => {});
+      jest.spyOn(subject, 'getLastVisualTokenBeforeInput');
 
       subject.moveInputToTheRight();
 
@@ -711,12 +717,16 @@ describe('Filtered Search Visual Tokens', () => {
 
     it('renders a author token value element', () => {
       const { tokenNameElement, tokenValueElement } = findElements(authorToken);
-      const tokenName = tokenNameElement.innerText;
+      const tokenName = tokenNameElement.textContent;
       const tokenValue = 'new value';
 
       subject.renderVisualTokenValue(authorToken, tokenName, tokenValue);
 
-      expect(tokenValueElement.innerText).toBe(tokenValue);
+      jest.runOnlyPendingTimers();
+
+      setImmediate(() => {
+        expect(tokenValueElement.textContent).toBe(tokenValue);
+      });
     });
   });
 });

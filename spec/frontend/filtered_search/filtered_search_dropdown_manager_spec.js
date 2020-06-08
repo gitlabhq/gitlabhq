@@ -1,9 +1,13 @@
-import $ from 'jquery';
+import axios from 'axios';
+import MockAdapter from 'axios-mock-adapter';
 import FilteredSearchDropdownManager from '~/filtered_search/filtered_search_dropdown_manager';
 
 describe('Filtered Search Dropdown Manager', () => {
+  let mock;
+
   beforeEach(() => {
-    spyOn($, 'ajax');
+    mock = new MockAdapter(axios);
+    mock.onGet().reply(200);
   });
 
   describe('addWordToInput', () => {
@@ -32,7 +36,7 @@ describe('Filtered Search Dropdown Manager', () => {
         const token = document.querySelector('.tokens-container .js-visual-token');
 
         expect(token.classList.contains('filtered-search-token')).toEqual(true);
-        expect(token.querySelector('.name').innerText).toBe('milestone');
+        expect(token.querySelector('.name').textContent).toBe('milestone');
         expect(getInputValue()).toBe('');
       });
 
@@ -42,7 +46,7 @@ describe('Filtered Search Dropdown Manager', () => {
         let token = document.querySelector('.tokens-container .js-visual-token');
 
         expect(token.classList.contains('filtered-search-token')).toEqual(true);
-        expect(token.querySelector('.name').innerText).toBe('label');
+        expect(token.querySelector('.name').textContent).toBe('label');
         expect(getInputValue()).toBe('');
 
         FilteredSearchDropdownManager.addWordToInput({ tokenName: 'label', tokenOperator: '=' });
@@ -50,8 +54,8 @@ describe('Filtered Search Dropdown Manager', () => {
         token = document.querySelector('.tokens-container .js-visual-token');
 
         expect(token.classList.contains('filtered-search-token')).toEqual(true);
-        expect(token.querySelector('.name').innerText).toBe('label');
-        expect(token.querySelector('.operator').innerText).toBe('=');
+        expect(token.querySelector('.name').textContent).toBe('label');
+        expect(token.querySelector('.operator').textContent).toBe('=');
         expect(getInputValue()).toBe('');
 
         FilteredSearchDropdownManager.addWordToInput({
@@ -64,9 +68,9 @@ describe('Filtered Search Dropdown Manager', () => {
         token = document.querySelector('.tokens-container .js-visual-token');
 
         expect(token.classList.contains('filtered-search-token')).toEqual(true);
-        expect(token.querySelector('.name').innerText).toBe('label');
-        expect(token.querySelector('.operator').innerText).toBe('=');
-        expect(token.querySelector('.value').innerText).toBe('none');
+        expect(token.querySelector('.name').textContent).toBe('label');
+        expect(token.querySelector('.operator').textContent).toBe('=');
+        expect(token.querySelector('.value').textContent).toBe('none');
         expect(getInputValue()).toBe('');
       });
     });
@@ -79,7 +83,7 @@ describe('Filtered Search Dropdown Manager', () => {
         const token = document.querySelector('.tokens-container .js-visual-token');
 
         expect(token.classList.contains('filtered-search-token')).toEqual(true);
-        expect(token.querySelector('.name').innerText).toBe('author');
+        expect(token.querySelector('.name').textContent).toBe('author');
         expect(getInputValue()).toBe('');
       });
 
@@ -97,9 +101,9 @@ describe('Filtered Search Dropdown Manager', () => {
         const token = document.querySelector('.tokens-container .js-visual-token');
 
         expect(token.classList.contains('filtered-search-token')).toEqual(true);
-        expect(token.querySelector('.name').innerText).toBe('author');
-        expect(token.querySelector('.operator').innerText).toBe('=');
-        expect(token.querySelector('.value').innerText).toBe('@root');
+        expect(token.querySelector('.name').textContent).toBe('author');
+        expect(token.querySelector('.operator').textContent).toBe('=');
+        expect(token.querySelector('.value').textContent).toBe('@root');
         expect(getInputValue()).toBe('');
       });
 
@@ -116,9 +120,9 @@ describe('Filtered Search Dropdown Manager', () => {
         const token = document.querySelector('.tokens-container .js-visual-token');
 
         expect(token.classList.contains('filtered-search-token')).toEqual(true);
-        expect(token.querySelector('.name').innerText).toBe('label');
-        expect(token.querySelector('.operator').innerText).toBe('=');
-        expect(token.querySelector('.value').innerText).toBe('~\'"test me"\'');
+        expect(token.querySelector('.name').textContent).toBe('label');
+        expect(token.querySelector('.operator').textContent).toBe('=');
+        expect(token.querySelector('.value').textContent).toBe('~\'"test me"\'');
         expect(getInputValue()).toBe('');
       });
     });

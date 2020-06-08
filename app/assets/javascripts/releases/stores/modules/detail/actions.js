@@ -57,13 +57,18 @@ export const updateRelease = ({ dispatch, state, getters }) => {
   const { release } = state;
   const milestones = release.milestones ? release.milestones.map(milestone => milestone.title) : [];
 
+  const updatedRelease = convertObjectPropsToSnakeCase(
+    {
+      name: release.name,
+      description: release.description,
+      milestones,
+    },
+    { deep: true },
+  );
+
   return (
     api
-      .updateRelease(state.projectId, state.tagName, {
-        name: release.name,
-        description: release.description,
-        milestones,
-      })
+      .updateRelease(state.projectId, state.tagName, updatedRelease)
 
       /**
        * Currently, we delete all existing links and then
