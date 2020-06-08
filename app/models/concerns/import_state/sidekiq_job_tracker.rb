@@ -11,7 +11,7 @@ module ImportState
       # Refreshes the expiration time of the associated import job ID.
       #
       # This method can be used by asynchronous importers to refresh the status,
-      # preventing the StuckImportJobsWorker from marking the import as failed.
+      # preventing the Gitlab::Import::StuckProjectImportJobsWorker from marking the import as failed.
       def refresh_jid_expiration
         return unless jid
 

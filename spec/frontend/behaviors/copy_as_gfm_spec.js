@@ -27,7 +27,7 @@ describe('CopyAsGFM', () => {
     }
 
     it('wraps pasted code when not already in code tags', () => {
-      spyOn(window.gl.utils, 'insertText').and.callFake((el, textFunc) => {
+      jest.spyOn(window.gl.utils, 'insertText').mockImplementation((el, textFunc) => {
         const insertedText = textFunc('This is code: ', '');
 
         expect(insertedText).toEqual('`code`');
@@ -37,7 +37,7 @@ describe('CopyAsGFM', () => {
     });
 
     it('does not wrap pasted code when already in code tags', () => {
-      spyOn(window.gl.utils, 'insertText').and.callFake((el, textFunc) => {
+      jest.spyOn(window.gl.utils, 'insertText').mockImplementation((el, textFunc) => {
         const insertedText = textFunc('This is code: `', '`');
 
         expect(insertedText).toEqual('code');
@@ -90,16 +90,16 @@ describe('CopyAsGFM', () => {
         .catch(done.fail);
     });
 
-    beforeEach(() => spyOn(clipboardData, 'setData'));
+    beforeEach(() => jest.spyOn(clipboardData, 'setData'));
 
     describe('list handling', () => {
       it('uses correct gfm for unordered lists', done => {
         const selection = stubSelection('<li>List Item1</li><li>List Item2</li>\n', 'UL');
 
-        spyOn(window, 'getSelection').and.returnValue(selection);
+        window.getSelection = jest.fn(() => selection);
         simulateCopy();
 
-        setTimeout(() => {
+        setImmediate(() => {
           const expectedGFM = '* List Item1\n* List Item2';
 
           expect(clipboardData.setData).toHaveBeenCalledWith('text/x-gfm', expectedGFM);
@@ -110,10 +110,10 @@ describe('CopyAsGFM', () => {
       it('uses correct gfm for ordered lists', done => {
         const selection = stubSelection('<li>List Item1</li><li>List Item2</li>\n', 'OL');
 
-        spyOn(window, 'getSelection').and.returnValue(selection);
+        window.getSelection = jest.fn(() => selection);
         simulateCopy();
 
-        setTimeout(() => {
+        setImmediate(() => {
           const expectedGFM = '1. List Item1\n1. List Item2';
 
           expect(clipboardData.setData).toHaveBeenCalledWith('text/x-gfm', expectedGFM);

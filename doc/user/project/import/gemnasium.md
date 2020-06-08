@@ -1,3 +1,10 @@
+---
+type: reference, howto
+stage: Manage
+group: Import
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+---
+
 # Gemnasium **(ULTIMATE)**
 
 This guide describes how to migrate from Gemnasium.com to your own GitLab

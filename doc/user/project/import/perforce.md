@@ -1,3 +1,10 @@
+---
+type: howto
+stage: Manage
+group: Import
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+---
+
 # Migrating from Perforce Helix
 
 [Perforce Helix](https://www.perforce.com/) provides a set of tools which also

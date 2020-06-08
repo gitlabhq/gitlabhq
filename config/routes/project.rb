@@ -324,9 +324,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         draw :wiki
 
         namespace :import do
-          resource :jira, only: [:show], controller: :jira do
-            post :import
-          end
+          resource :jira, only: [:show], controller: :jira
         end
       end
       # End of the /-/ scope.

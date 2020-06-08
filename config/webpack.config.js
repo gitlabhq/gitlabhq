@@ -514,6 +514,14 @@ module.exports = {
       // This one is used to check against "EE" properly in application code
       IS_EE: IS_EE ? 'window.gon && window.gon.ee' : JSON.stringify(false),
     }),
+
+    /* Pikaday has a optional dependency to moment.
+       We are currently not utilizing moment.
+       Ignoring this import removes warning from our development build.
+       Upstream reference:
+       https://github.com/Pikaday/Pikaday/blob/5c1a7559be/pikaday.js#L14
+    */
+    new webpack.IgnorePlugin(/moment/, /pikaday/),
   ].filter(Boolean),
 
   devServer: {

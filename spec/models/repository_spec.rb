@@ -1446,17 +1446,13 @@ describe Repository do
     let(:empty_repository) { create(:project_empty_repo).repository }
 
     it 'returns empty array for an empty repository' do
-      # rubocop:disable Style/WordArray
-      expect(empty_repository.blobs_at(['master', 'foobar'])).to eq([])
-      # rubocop:enable Style/WordArray
+      expect(empty_repository.blobs_at(%w[master foobar])).to eq([])
     end
 
     it 'returns blob array for a non-empty repository' do
       repository.create_file(User.last, 'foobar', 'CONTENT', message: 'message', branch_name: 'master')
 
-      # rubocop:disable Style/WordArray
-      blobs = repository.blobs_at([['master', 'foobar']])
-      # rubocop:enable Style/WordArray
+      blobs = repository.blobs_at([%w[master foobar]])
 
       expect(blobs.first.name).to eq('foobar')
       expect(blobs.size).to eq(1)

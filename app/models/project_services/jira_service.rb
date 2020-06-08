@@ -203,6 +203,10 @@ class JiraService < IssueTrackerService
     add_comment(data, jira_issue)
   end
 
+  def valid_connection?
+    test(nil)[:success]
+  end
+
   def test(_)
     result = test_settings
     success = result.present?

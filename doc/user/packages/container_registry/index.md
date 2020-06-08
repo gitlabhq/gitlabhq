@@ -554,6 +554,36 @@ run the policy may get backed up or fail completely. It is recommended you only 
 policies for projects that were created before GitLab 12.8 if you are confident the amount of tags
 being cleaned up will be minimal.
 
+### Regex patterns
+
+The patterns that define which tags should be preserved or removed are defined using regular expressions, both for the UI and the API.
+
+Examples:
+
+- Match all tags:
+
+  ```plaintext
+  .*
+  ```
+
+- Match tags that start with `v`:
+
+  ```plaintext
+  v.+
+  ```
+
+- Match tags that contain `master`:
+
+  ```plaintext
+  master
+  ```
+
+- Match tags that either start with `v`, contain `master`, or contain `release`:
+
+  ```plaintext
+  (?:v.+|master|release)
+  ```
+
 ## Limitations
 
 - Moving or renaming existing Container Registry repositories is not supported

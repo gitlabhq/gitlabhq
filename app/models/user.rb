@@ -265,18 +265,20 @@ class User < ApplicationRecord
   # User's role
   enum role: { software_developer: 0, development_team_lead: 1, devops_engineer: 2, systems_administrator: 3, security_analyst: 4, data_analyst: 5, product_manager: 6, product_designer: 7, other: 8 }, _suffix: true
 
+  delegate  :notes_filter_for,
+            :set_notes_filter,
+            :first_day_of_week, :first_day_of_week=,
+            :timezone, :timezone=,
+            :time_display_relative, :time_display_relative=,
+            :time_format_in_24h, :time_format_in_24h=,
+            :show_whitespace_in_diffs, :show_whitespace_in_diffs=,
+            :tab_width, :tab_width=,
+            :sourcegraph_enabled, :sourcegraph_enabled=,
+            :setup_for_company, :setup_for_company=,
+            :render_whitespace_in_code, :render_whitespace_in_code=,
+            to: :user_preference
+
   delegate :path, to: :namespace, allow_nil: true, prefix: true
-  delegate :notes_filter_for, to: :user_preference
-  delegate :set_notes_filter, to: :user_preference
-  delegate :first_day_of_week, :first_day_of_week=, to: :user_preference
-  delegate :timezone, :timezone=, to: :user_preference
-  delegate :time_display_relative, :time_display_relative=, to: :user_preference
-  delegate :time_format_in_24h, :time_format_in_24h=, to: :user_preference
-  delegate :show_whitespace_in_diffs, :show_whitespace_in_diffs=, to: :user_preference
-  delegate :tab_width, :tab_width=, to: :user_preference
-  delegate :sourcegraph_enabled, :sourcegraph_enabled=, to: :user_preference
-  delegate :setup_for_company, :setup_for_company=, to: :user_preference
-  delegate :render_whitespace_in_code, :render_whitespace_in_code=, to: :user_preference
   delegate :job_title, :job_title=, to: :user_detail, allow_nil: true
 
   accepts_nested_attributes_for :user_preference, update_only: true

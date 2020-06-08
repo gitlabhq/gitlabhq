@@ -435,6 +435,16 @@ storage:
 NOTE: **Note:**
 `your-s3-bucket` should only be the name of a bucket that exists, and can't include subdirectories.
 
+**Migrate without downtime**
+
+To migrate the data to AWS S3 without downtime:
+
+1. To reduce the amount of data to be migrated, run the [garbage collection tool without downtime](#performing-garbage-collection-without-downtime). Part of this process sets the registry to `read-only`.
+1. Copy the data to your AWS S3 bucket, for example with [AWS CLI's `cp`](https://docs.aws.amazon.com/cli/latest/reference/s3/cp.html) command.
+1. Configure your registry to use the S3 bucket for storage.
+1. Put the registry back to `read-write`.
+1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
+
 ### Disable redirect for storage driver
 
 By default, users accessing a registry configured with a remote backend are redirected to the default backend for the storage driver. For example, registries can be configured using the `s3` storage driver, which redirects requests to a remote S3 bucket to alleviate load on the GitLab server.

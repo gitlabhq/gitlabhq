@@ -27,6 +27,39 @@ describe TodoService do
     project.add_developer(skipped)
   end
 
+  shared_examples 'reassigned target' do
+    it 'creates a pending todo for new assignee' do
+      target_unassigned.assignees = [john_doe]
+      service.send(described_method, target_unassigned, author)
+
+      should_create_todo(user: john_doe, target: target_unassigned, action: Todo::ASSIGNED)
+    end
+
+    it 'does not create a todo if unassigned' do
+      target_assigned.assignees = []
+
+      should_not_create_any_todo { service.send(described_method, target_assigned, author) }
+    end
+
+    it 'creates a todo if new assignee is the current user' do
+      target_assigned.assignees = [john_doe]
+      service.send(described_method, target_assigned, john_doe)
+
+      should_create_todo(user: john_doe, target: target_assigned, author: john_doe, action: Todo::ASSIGNED)
+    end
+
+    it 'does not create a todo for guests' do
+      service.send(described_method, target_assigned, author)
+      should_not_create_todo(user: guest, target: target_assigned, action: Todo::MENTIONED)
+    end
+
+    it 'does not create a directly addressed todo for guests' do
+      service.send(described_method, addressed_target_assigned, author)
+
+      should_not_create_todo(user: guest, target: addressed_target_assigned, action: Todo::DIRECTLY_ADDRESSED)
+    end
+  end
+
   describe 'Issues' do
     let(:issue) { create(:issue, project: project, assignees: [john_doe], author: author, description: "- [ ] Task 1\n- [ ] Task 2 #{mentions}") }
     let(:addressed_issue) { create(:issue, project: project, assignees: [john_doe], author: author, description: "#{directly_addressed}\n- [ ] Task 1\n- [ ] Task 2") }
@@ -522,51 +555,21 @@ describe TodoService do
   end
 
   describe '#reassigned_issuable' do
-    shared_examples 'reassigned issuable' do
-      it 'creates a pending todo for new assignee' do
-        issuable_unassigned.assignees = [john_doe]
-        service.reassigned_issuable(issuable_unassigned, author)
-
-        should_create_todo(user: john_doe, target: issuable_unassigned, action: Todo::ASSIGNED)
-      end
-
-      it 'does not create a todo if unassigned' do
-        issuable_assigned.assignees = []
-
-        should_not_create_any_todo { service.reassigned_issuable(issuable_assigned, author) }
-      end
-
-      it 'creates a todo if new assignee is the current user' do
-        issuable_assigned.assignees = [john_doe]
-        service.reassigned_issuable(issuable_assigned, john_doe)
-
-        should_create_todo(user: john_doe, target: issuable_assigned, author: john_doe, action: Todo::ASSIGNED)
-      end
-
-      it 'does not create a todo for guests' do
-        service.reassigned_issuable(issuable_assigned, author)
-        should_not_create_todo(user: guest, target: issuable_assigned, action: Todo::MENTIONED)
-      end
-
-      it 'does not create a directly addressed todo for guests' do
-        service.reassigned_issuable(addressed_issuable_assigned, author)
-        should_not_create_todo(user: guest, target: addressed_issuable_assigned, action: Todo::DIRECTLY_ADDRESSED)
-      end
-    end
+    let(:described_method) { :reassigned_issuable }
 
     context 'issuable is a merge request' do
-      it_behaves_like 'reassigned issuable' do
-        let(:issuable_assigned) { create(:merge_request, source_project: project, author: author, assignees: [john_doe], description: "- [ ] Task 1\n- [ ] Task 2 #{mentions}") }
-        let(:addressed_issuable_assigned) { create(:merge_request, source_project: project, author: author, assignees: [john_doe], description: "#{directly_addressed}\n- [ ] Task 1\n- [ ] Task 2") }
-        let(:issuable_unassigned) { create(:merge_request, source_project: project, author: author, assignees: []) }
+      it_behaves_like 'reassigned target' do
+        let(:target_assigned) { create(:merge_request, source_project: project, author: author, assignees: [john_doe], description: "- [ ] Task 1\n- [ ] Task 2 #{mentions}") }
+        let(:addressed_target_assigned) { create(:merge_request, source_project: project, author: author, assignees: [john_doe], description: "#{directly_addressed}\n- [ ] Task 1\n- [ ] Task 2") }
+        let(:target_unassigned) { create(:merge_request, source_project: project, author: author, assignees: []) }
       end
     end
 
     context 'issuable is an issue' do
-      it_behaves_like 'reassigned issuable' do
-        let(:issuable_assigned) { create(:issue, project: project, author: author, assignees: [john_doe], description: "- [ ] Task 1\n- [ ] Task 2 #{mentions}") }
-        let(:addressed_issuable_assigned) { create(:issue, project: project, author: author, assignees: [john_doe], description: "#{directly_addressed}\n- [ ] Task 1\n- [ ] Task 2") }
-        let(:issuable_unassigned) { create(:issue, project: project, author: author, assignees: []) }
+      it_behaves_like 'reassigned target' do
+        let(:target_assigned) { create(:issue, project: project, author: author, assignees: [john_doe], description: "- [ ] Task 1\n- [ ] Task 2 #{mentions}") }
+        let(:addressed_target_assigned) { create(:issue, project: project, author: author, assignees: [john_doe], description: "#{directly_addressed}\n- [ ] Task 1\n- [ ] Task 2") }
+        let(:target_unassigned) { create(:issue, project: project, author: author, assignees: []) }
       end
     end
   end
@@ -753,6 +756,16 @@ describe TodoService do
         service.new_award_emoji(mr_assigned, john_doe)
 
         expect(todo.reload).to be_done
+      end
+    end
+
+    describe '#assign_alert' do
+      let(:described_method) { :assign_alert }
+
+      it_behaves_like 'reassigned target' do
+        let(:target_assigned) { create(:alert_management_alert, project: project, assignees: [john_doe]) }
+        let(:addressed_target_assigned) { create(:alert_management_alert, project: project, assignees: [john_doe]) }
+        let(:target_unassigned) { create(:alert_management_alert, project: project, assignees: []) }
       end
     end
 

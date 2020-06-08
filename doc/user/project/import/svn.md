@@ -1,3 +1,10 @@
+---
+type: howto
+stage: Manage
+group: Import
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+---
+
 # Migrating from SVN to GitLab
 
 Subversion (SVN) is a central version control system (VCS) while

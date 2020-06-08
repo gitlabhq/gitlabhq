@@ -10,16 +10,18 @@ module Gitlab
     ITEMS_MAPPER_CACHE_KEY = 'jira-import/items-mapper/%{project_id}/%{collection_type}/%{jira_isssue_id}'
     ALREADY_IMPORTED_ITEMS_CACHE_KEY = 'jira-importer/already-imported/%{project}/%{collection_type}'
 
-    def self.validate_project_settings!(project, user: nil)
+    def self.validate_project_settings!(project, user: nil, configuration_check: true)
       if user
         raise Projects::ImportService::Error, _('Cannot import because issues are not available in this project.') unless project.feature_available?(:issues, user)
         raise Projects::ImportService::Error, _('You do not have permissions to run the import.') unless user.can?(:admin_project, project)
       end
 
+      return unless configuration_check
+
       jira_service = project.jira_service
 
       raise Projects::ImportService::Error, _('Jira integration not configured.') unless jira_service&.active?
-      raise Projects::ImportService::Error, _('Unable to connect to the Jira instance. Please check your Jira integration configuration.') unless jira_service.test(nil)[:success]
+      raise Projects::ImportService::Error, _('Unable to connect to the Jira instance. Please check your Jira integration configuration.') unless jira_service&.valid_connection?
     end
 
     def self.jira_issue_cache_key(project_id, jira_issue_id)

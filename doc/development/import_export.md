@@ -44,19 +44,34 @@ WARN: Work still in progress <struct with JID>
 
 ### Timeouts
 
-Timeout errors occur due to the `StuckImportJobsWorker` marking the process as failed:
+Timeout errors occur due to the `Gitlab::Import::StuckProjectImportJobsWorker` marking the process as failed:
 
 ```ruby
-class StuckImportJobsWorker
-  include ApplicationWorker
-  include CronjobQueue
+module Gitlab
+  module Import
+    class StuckProjectImportJobsWorker
+      include Gitlab::Import::StuckImportJob
+      # ...
+    end
+  end
+end
 
-  IMPORT_JOBS_EXPIRATION = 15.hours.to_i
+module Gitlab
+  module Import
+    module StuckImportJob
+      # ...
+      IMPORT_JOBS_EXPIRATION = 15.hours.to_i
+      # ...
+      def perform
+        stuck_imports_without_jid_count = mark_imports_without_jid_as_failed!
+        stuck_imports_with_jid_count = mark_imports_with_jid_as_failed!
 
-  def perform
-    imports_without_jid_count = mark_imports_without_jid_as_failed!
-    imports_with_jid_count = mark_imports_with_jid_as_failed!
-    ...
+        track_metrics(stuck_imports_with_jid_count, stuck_imports_without_jid_count)
+      end
+      # ...
+    end
+  end
+end
 ```
 
 ```shell

@@ -2369,24 +2369,10 @@ describe MergeRequest do
       end
 
       context 'when async is true' do
-        context 'and async_merge_request_check_mergeability feature flag is enabled' do
-          it 'executes MergeabilityCheckService asynchronously' do
-            expect(mergeability_service).to receive(:async_execute)
+        it 'executes MergeabilityCheckService asynchronously' do
+          expect(mergeability_service).to receive(:async_execute)
 
-            subject.check_mergeability(async: true)
-          end
-        end
-
-        context 'and async_merge_request_check_mergeability feature flag is disabled' do
-          before do
-            stub_feature_flags(async_merge_request_check_mergeability: false)
-          end
-
-          it 'executes MergeabilityCheckService' do
-            expect(mergeability_service).to receive(:execute)
-
-            subject.check_mergeability(async: true)
-          end
+          subject.check_mergeability(async: true)
         end
       end
     end

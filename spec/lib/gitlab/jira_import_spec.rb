@@ -9,6 +9,9 @@ describe Gitlab::JiraImport do
     include JiraServiceHelper
 
     let_it_be(:project, reload: true) { create(:project) }
+    let(:additional_params) { {} }
+
+    subject { described_class.validate_project_settings!(project, additional_params) }
 
     shared_examples 'raise Jira import error' do |message|
       it 'returns error' do
@@ -17,6 +20,16 @@ describe Gitlab::JiraImport do
     end
 
     shared_examples 'jira configuration base checks' do
+      context 'with configuration_check set to false' do
+        before do
+          additional_params[:configuration_check] = false
+        end
+
+        it 'does not raise Jira integration error' do
+          expect { subject }.not_to raise_error
+        end
+      end
+
       context 'when Jira service was not setup' do
         it_behaves_like 'raise Jira import error', 'Jira integration not configured.'
       end
@@ -40,8 +53,6 @@ describe Gitlab::JiraImport do
     end
 
     context 'without user param' do
-      subject { described_class.validate_project_settings!(project) }
-
       it_behaves_like 'jira configuration base checks'
 
       context 'when jira connection is valid' do
@@ -56,7 +67,7 @@ describe Gitlab::JiraImport do
     context 'with user param provided' do
       let_it_be(:user) { create(:user) }
 
-      subject { described_class.validate_project_settings!(project, user: user) }
+      let(:additional_params) { { user: user } }
 
       context 'when user has permission to run import' do
         before do

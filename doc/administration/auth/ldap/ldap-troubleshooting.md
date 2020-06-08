@@ -1,3 +1,10 @@
+---
+type: reference
+stage: Manage
+group: Access
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+---
+
 # LDAP Troubleshooting for Administrators
 
 ## Common Problems & Workflows

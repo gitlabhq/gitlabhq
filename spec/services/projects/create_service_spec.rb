@@ -453,24 +453,23 @@ describe Projects::CreateService, '#execute' do
     subject(:project) { create_project(user, opts) }
 
     context 'when there is an active instance-level and an active template integration' do
-      before do
-        create(:prometheus_service, :instance, api_url: 'https://prometheus.instance.com/')
-        create(:prometheus_service, :template, api_url: 'https://prometheus.template.com/')
-      end
+      let!(:template_integration) { create(:prometheus_service, :template, api_url: 'https://prometheus.template.com/') }
+      let!(:instance_integration) { create(:prometheus_service, :instance, api_url: 'https://prometheus.instance.com/') }
 
       it 'creates a service from the instance-level integration' do
         expect(project.services.count).to eq(1)
-        expect(project.services.first.api_url).to eq('https://prometheus.instance.com/')
+        expect(project.services.first.api_url).to eq(instance_integration.api_url)
+        expect(project.services.first.inherit_from_id).to eq(instance_integration.id)
       end
     end
 
     context 'when there is an active service template' do
-      before do
-        create(:prometheus_service, :template, active: true)
-      end
+      let!(:template_integration) { create(:prometheus_service, :template, api_url: 'https://prometheus.template.com/') }
 
       it 'creates a service from the template' do
         expect(project.services.count).to eq(1)
+        expect(project.services.first.api_url).to eq(template_integration.api_url)
+        expect(project.services.first.inherit_from_id).to be_nil
       end
     end
 

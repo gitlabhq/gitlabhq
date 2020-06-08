@@ -185,6 +185,14 @@ them like you would do with every other Git repository.
 On the right sidebar, click on **Clone repository** and follow the on-screen
 instructions.
 
+Files that you add to your wiki locally must have one of the following
+supported extensions, depending on the markup language you wish to use,
+otherwise they will not display when pushed to GitLab:
+
+- Markdown extensions: `.mdown`, `.mkd`, `.mkdn`, `.md`, `.markdown`.
+- AsciiDoc extensions: `.adoc`, `.ad`, `.asciidoc`.
+- Other markup extensions: `.textile`, `.rdoc`, `.org`, `.creole`, `.wiki`, `.mediawiki`, `.rst`.
+
 ## Customizing sidebar
 
 On the project's Wiki page, there is a right side navigation that renders the full Wiki pages list by default, with hierarchy.

@@ -355,6 +355,7 @@ class Service < ApplicationRecord
 
     service.template = false
     service.instance = false
+    service.inherit_from_id = integration.id if integration.instance?
     service.project_id = project_id
     service.active = false if service.invalid?
     service

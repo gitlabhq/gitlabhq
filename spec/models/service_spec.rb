@@ -279,19 +279,31 @@ describe Service do
     end
 
     describe '.build_from_integration' do
-      context 'when template is invalid' do
-        it 'sets service template to inactive when template is invalid' do
-          template = build(:prometheus_service, template: true, active: true, properties: {})
-          template.save(validate: false)
+      context 'when integration is invalid' do
+        let(:integration) do
+          build(:prometheus_service, :template, active: true, properties: {})
+            .tap { |integration| integration.save(validate: false) }
+        end
 
-          service = described_class.build_from_integration(project.id, template)
+        it 'sets service to inactive' do
+          service = described_class.build_from_integration(project.id, integration)
 
           expect(service).to be_valid
           expect(service.active).to be false
         end
       end
 
-      describe 'build issue tracker from a template' do
+      context 'when integration is an instance' do
+        let(:integration) { create(:jira_service, :instance) }
+
+        it 'sets inherit_from_id from integration' do
+          service = described_class.build_from_integration(project.id, integration)
+
+          expect(service.inherit_from_id).to eq(integration.id)
+        end
+      end
+
+      describe 'build issue tracker from an integration' do
         let(:title) { 'custom title' }
         let(:description) { 'custom description' }
         let(:url) { 'http://jira.example.com' }
@@ -305,9 +317,9 @@ describe Service do
           }
         end
 
-        shared_examples 'service creation from a template' do
+        shared_examples 'service creation from an integration' do
           it 'creates a correct service' do
-            service = described_class.build_from_integration(project.id, template)
+            service = described_class.build_from_integration(project.id, integration)
 
             expect(service).to be_active
             expect(service.title).to eq(title)
@@ -324,30 +336,30 @@ describe Service do
         # this  will be removed as part of https://gitlab.com/gitlab-org/gitlab/issues/29404
         context 'when data are stored in properties' do
           let(:properties) { data_params.merge(title: title, description: description) }
-          let!(:template) do
+          let!(:integration) do
             create(:jira_service, :without_properties_callback, template: true, properties: properties.merge(additional: 'something'))
           end
 
-          it_behaves_like 'service creation from a template'
+          it_behaves_like 'service creation from an integration'
         end
 
         context 'when data are stored in separated fields' do
-          let(:template) do
+          let(:integration) do
             create(:jira_service, :template, data_params.merge(properties: {}, title: title, description: description))
           end
 
-          it_behaves_like 'service creation from a template'
+          it_behaves_like 'service creation from an integration'
         end
 
         context 'when data are stored in both properties and separated fields' do
           let(:properties) { data_params.merge(title: title, description: description) }
-          let(:template) do
+          let(:integration) do
             create(:jira_service, :without_properties_callback, active: true, template: true, properties: properties).tap do |service|
               create(:jira_tracker_data, data_params.merge(service: service))
             end
           end
 
-          it_behaves_like 'service creation from a template'
+          it_behaves_like 'service creation from an integration'
         end
       end
     end

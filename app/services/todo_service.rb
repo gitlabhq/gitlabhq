@@ -154,6 +154,14 @@ class TodoService
     resolve_todos_for_target(awardable, current_user)
   end
 
+  # When assigning an alert we should:
+  #
+  #  * create a pending todo for new assignee if alert is assigned
+  #
+  def assign_alert(alert, current_user)
+    create_assignment_todo(alert, current_user, [])
+  end
+
   # When user marks an issue as todo
   def mark_todo(issuable, current_user)
     attributes = attributes_for_todo(issuable.project, issuable, current_user, Todo::MARKED)
@@ -242,10 +250,10 @@ class TodoService
     create_mention_todos(project, target, author, note, skip_users)
   end
 
-  def create_assignment_todo(issuable, author, old_assignees = [])
-    if issuable.assignees.any?
-      assignees = issuable.assignees - old_assignees
-      attributes = attributes_for_todo(issuable.project, issuable, author, Todo::ASSIGNED)
+  def create_assignment_todo(target, author, old_assignees = [])
+    if target.assignees.any?
+      assignees = target.assignees - old_assignees
+      attributes = attributes_for_todo(target.project, target, author, Todo::ASSIGNED)
       create_todos(assignees, attributes)
     end
   end

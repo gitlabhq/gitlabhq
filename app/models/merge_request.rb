@@ -877,7 +877,7 @@ class MergeRequest < ApplicationRecord
 
     check_service = MergeRequests::MergeabilityCheckService.new(self)
 
-    if async && Feature.enabled?(:async_merge_request_check_mergeability, project, default_enabled: true)
+    if async
       check_service.async_execute
     else
       check_service.execute(retry_lease: false)
