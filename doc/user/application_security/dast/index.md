@@ -526,6 +526,29 @@ variables:
 The DAST job does not require the project's repository to be present when running, so by default
 [`GIT_STRATEGY`](../../../ci/yaml/README.md#git-strategy) is set to `none`.
 
+### Debugging DAST jobs
+
+A DAST job has two executing processes:
+
+- The ZAP server.
+- A series of scripts that start, control and stop the ZAP server.
+
+Debug mode of the scripts can be enabled by using the `DAST_DEBUG` environment variable. This can help when troubleshooting the job,
+and will output statements indicating what percentage of the scan is complete.
+For details on using variables, see [Overriding the DAST template](#overriding-the-dast-template).
+
+Debug mode of the ZAP server can be enabled using the `DAST_ZAP_LOG_CONFIGURATION` environment variable.
+The following table outlines examples of values that can be set and the effect that they have on the output that is logged.
+Multiple values can be specified, separated by semicolons.
+
+| Log configuration value                            | Effect                                                            |
+|--------------------------------------------------  | ----------------------------------------------------------------- |
+| `log4j.rootLogger=DEBUG`                           | Enable all debug logging statements.                              |
+| `log4j.logger.org.apache.commons.httpclient=DEBUG` | Log every HTTP request and response made by the ZAP server.       |
+| `log4j.logger.com.crawljax=DEBUG`                  | Enable Ajax Crawler debug logging statements.                     |
+| `log4j.logger.org.parosproxy.paros=DEBUG`          | Enable ZAP server proxy debug logging statements.                 |
+| `log4j.logger.org.zaproxy.zap=DEBUG`               | Enable debug logging statements of the general ZAP server code.   |
+
 ## Running DAST in an offline environment
 
 For self-managed GitLab instances in an environment with limited, restricted, or intermittent access
