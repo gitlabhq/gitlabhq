@@ -377,4 +377,4 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://git
 
 ## Give a group access to a project
 
-Look at [share project with group](projects.md#share-project-with-group)
+See [share project with group](projects.md#share-project-with-group)

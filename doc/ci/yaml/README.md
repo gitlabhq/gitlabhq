@@ -3308,6 +3308,8 @@ NOTE: **Note:**
 This key can only contain letters, digits, `-`, `_`, `/`, `$`, `{`, `}`, `.`, and spaces.
 It can't start or end with `/`.
 
+For more information, see [Deployments Safety](../environments/deployment_safety.md).
+
 ### `pages`
 
 `pages` is a special job that is used to upload static content to GitLab that

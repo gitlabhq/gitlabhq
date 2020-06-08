@@ -228,6 +228,8 @@ To avoid this scenario:
 
 The pending deployment jobs will be skipped.
 
+For more information, see [Deployment safety](../environments/deployment_safety.md).
+
 ## Pipeline Badges
 
 In the pipelines settings page you can find pipeline status and test coverage

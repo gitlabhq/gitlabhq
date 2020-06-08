@@ -423,6 +423,17 @@ that are [managed by GitLab](../../user/project/clusters/index.md#gitlab-managed
 To follow progress on support for GitLab-managed clusters, see the
 [relevant issue](https://gitlab.com/gitlab-org/gitlab/-/issues/38054).
 
+### Deployment safety
+
+Deployment jobs can be more sensitive than other jobs in a pipeline,
+and might need to be treated with an extra care. There are multiple features
+in GitLab that helps maintain deployment security and stability.
+
+- [Restrict write-access to a critical environment](deployment_safety.md#restrict-write-access-to-a-critical-environment)
+- [Limit the job-concurrency for deployment jobs](deployment_safety.md#ensure-only-one-deployment-job-runs-at-a-time)
+- [Skip outdated deployment jobs](deployment_safety.md#skip-outdated-deployment-jobs)
+- [Restrict deployments for a particular period](deployment_safety.md#restrict-deployments-for-a-particular-period)
+
 ### Complete example
 
 The configuration in this section provides a full development workflow where your app is:

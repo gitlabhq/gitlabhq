@@ -55,6 +55,8 @@ Maintainers can:
   **Allowed to Deploy** dropdown menu.
 - Unprotect a protected environment by clicking the **Unprotect** button for that environment.
 
+For more information, see [Deployment safety](deployment_safety.md).
+
 <!-- ## Troubleshooting
 
 Include any troubleshooting steps that you can foresee. If you know beforehand what issues

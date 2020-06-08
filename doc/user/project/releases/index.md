@@ -395,6 +395,8 @@ deploy_to_production:
     - if: $CI_DEPLOY_FREEZE == null
 ```
 
+For more information, see [Deployment safety](../../../ci/environments/deployment_safety.md).
+
 <!-- ## Troubleshooting
 
 Include any troubleshooting steps that you can foresee. If you know beforehand what issues
