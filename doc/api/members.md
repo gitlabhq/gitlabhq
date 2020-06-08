@@ -4,13 +4,17 @@
 
 The access levels are defined in the `Gitlab::Access` module. Currently, these levels are recognized:
 
-```plaintext
-10 => Guest access
-20 => Reporter access
-30 => Developer access
-40 => Maintainer access
-50 => Owner access # Only valid for groups
-```
+- No access (`0`)
+- Guest (`10`)
+- Reporter (`20`)
+- Developer (`30`)
+- Maintainer (`40`)
+- Owner (`50`) - Only valid to set for groups
+
+CAUTION: **Caution:**
+Due to [an issue](https://gitlab.com/gitlab-org/gitlab/-/issues/219299),
+projects in personal namespaces will not show owner (`50`) permission
+for owner.
 
 ## List all members of a group or project
 

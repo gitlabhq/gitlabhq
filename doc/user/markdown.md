@@ -1109,6 +1109,11 @@ These details <em>will</em> remain <strong>hidden</strong> until expanded.
 
 Markdown inside these tags is supported as well.
 
+NOTE: **Note:**
+If your Markdown isn't rendering correctly, try adding
+`{::options parse_block_html="true" /}` to the top of the page, and add
+`markdown="span"` to the opening summary tag like this: `<summary markdown="span">`.
+
 Remember to leave a blank line after the `</summary>` tag and before the `</details>` tag,
 as shown in the example:
 

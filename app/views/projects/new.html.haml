@@ -7,7 +7,11 @@
 .project-edit-container.prepend-top-default
   .project-edit-errors
     = render 'projects/errors'
-  .row
+
+  - if experiment_enabled?(:new_create_project_ui)
+    .js-experiment-new-project-creation{ data: { is_ci_cd_available: ci_cd_projects_available?, has_errors: @project.errors.any? } }
+
+  .row{ 'v-cloak': experiment_enabled?(:new_create_project_ui) }
     .col-lg-3.profile-settings-sidebar
       %h4.gl-mt-0
         = _('New project')
@@ -32,15 +36,15 @@
     .col-lg-9.js-toggle-container
       %ul.nav.nav-tabs.nav-links.gitlab-tabs{ role: 'tablist' }
         %li.nav-item{ role: 'presentation' }
-          %a.nav-link.active{ href: '#blank-project-pane', id: 'blank-project-tab', data: { toggle: 'tab', track_label: 'blank_project', track_event: "click_tab", track_value: "" }, role: 'tab' }
+          %a.nav-link.active{ href: '#blank-project-pane', id: 'blank-project-tab', data: { toggle: 'tab', experiment_track_label: 'blank_project' }, role: 'tab' }
             %span.d-none.d-sm-block= s_('ProjectsNew|Blank project')
             %span.d-block.d-sm-none= s_('ProjectsNew|Blank')
         %li.nav-item{ role: 'presentation' }
-          %a.nav-link{ href: '#create-from-template-pane', id: 'create-from-template-tab', data: { toggle: 'tab', track_label: 'create_from_template', track_event: "click_tab", track_value: "" }, role: 'tab' }
+          %a.nav-link{ href: '#create-from-template-pane', id: 'create-from-template-tab', data: { toggle: 'tab', experiment_track_label: 'create_from_template' }, role: 'tab' }
             %span.d-none.d-sm-block.qa-project-create-from-template-tab= s_('ProjectsNew|Create from template')
             %span.d-block.d-sm-none= s_('ProjectsNew|Template')
         %li.nav-item{ role: 'presentation' }
-          %a.nav-link{ href: '#import-project-pane', id: 'import-project-tab', data: { toggle: 'tab', track_label: 'import_project', track_event: "click_tab", track_value: "" }, role: 'tab' }
+          %a.nav-link{ href: '#import-project-pane', id: 'import-project-tab', data: { toggle: 'tab', experiment_track_label: 'import_project' }, role: 'tab' }
             %span.d-none.d-sm-block= s_('ProjectsNew|Import project')
             %span.d-block.d-sm-none= s_('ProjectsNew|Import')
         = render_if_exists 'projects/new_ci_cd_only_project_tab', active_tab: active_tab

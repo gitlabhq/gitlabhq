@@ -41,11 +41,12 @@ can be accessed only by project members by default.
 Users can be members of multiple groups and projects. The following access
 levels are available (defined in the `Gitlab::Access` module):
 
-- Guest
-- Reporter
-- Developer
-- Maintainer
-- Owner
+- No access (`0`)
+- Guest (`10`)
+- Reporter (`20`)
+- Developer (`30`)
+- Maintainer (`40`)
+- Owner (`50`)
 
 If a user is the member of both a project and the project parent group, the
 higher permission is taken into account for the project.
@@ -55,6 +56,12 @@ can still view the groups and their entities (like epics).
 
 Project membership (where the group membership is already taken into account)
 is stored in the `project_authorizations` table.
+
+CAUTION: **Caution:**
+Due to [an issue](https://gitlab.com/gitlab-org/gitlab/-/issues/219299),
+projects in personal namespace will not show owner (`50`) permission in
+`project_authorizations` table. Note however that [`user.owned_projects`](https://gitlab.com/gitlab-org/gitlab/blob/0d63823b122b11abd2492bca47cc26858eee713d/app/models/user.rb#L906-916)
+is calculated properly.
 
 ### Confidential issues
 

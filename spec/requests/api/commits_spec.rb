@@ -356,28 +356,35 @@ describe API::Commits do
         }
       end
 
+      shared_examples_for "successfully creates the commit" do
+        it "creates the commit" do
+          expect(response).to have_gitlab_http_status(:created)
+          expect(json_response['title']).to eq(message)
+          expect(json_response['committer_name']).to eq(user.name)
+          expect(json_response['committer_email']).to eq(user.email)
+        end
+      end
+
       it 'does not increment the usage counters using access token authentication' do
         expect(::Gitlab::UsageDataCounters::WebIdeCounter).not_to receive(:increment_commits_count)
 
         post api(url, user), params: valid_c_params
       end
 
-      it 'a new file in project repo' do
-        post api(url, user), params: valid_c_params
+      context 'a new file in project repo' do
+        before do
+          post api(url, user), params: valid_c_params
+        end
 
-        expect(response).to have_gitlab_http_status(:created)
-        expect(json_response['title']).to eq(message)
-        expect(json_response['committer_name']).to eq(user.name)
-        expect(json_response['committer_email']).to eq(user.email)
+        it_behaves_like "successfully creates the commit"
       end
 
-      it 'a new file with utf8 chars in project repo' do
-        post api(url, user), params: valid_utf8_c_params
+      context 'a new file with utf8 chars in project repo' do
+        before do
+          post api(url, user), params: valid_utf8_c_params
+        end
 
-        expect(response).to have_gitlab_http_status(:created)
-        expect(json_response['title']).to eq(message)
-        expect(json_response['committer_name']).to eq(user.name)
-        expect(json_response['committer_email']).to eq(user.email)
+        it_behaves_like "successfully creates the commit"
       end
 
       it 'returns a 400 bad request if file exists' do

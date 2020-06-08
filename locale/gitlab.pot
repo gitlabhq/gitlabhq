@@ -2317,6 +2317,9 @@ msgstr ""
 msgid "An error occurred while loading milestones"
 msgstr ""
 
+msgid "An error occurred while loading project creation UI"
+msgstr ""
+
 msgid "An error occurred while loading terraform report"
 msgstr ""
 
@@ -2656,6 +2659,9 @@ msgid "Approve the current merge request."
 msgstr ""
 
 msgid "Approved"
+msgstr ""
+
+msgid "Approved MRs"
 msgstr ""
 
 msgid "Approved by: "
@@ -6441,6 +6447,9 @@ msgstr ""
 msgid "Create a personal access token on your account to pull or push via %{protocol}."
 msgstr ""
 
+msgid "Create a project pre-populated with the necessary files to get you started quickly."
+msgstr ""
+
 msgid "Create an account using:"
 msgstr ""
 
@@ -9614,6 +9623,9 @@ msgstr ""
 msgid "FeatureFlags|There was an error fetching the feature flags."
 msgstr ""
 
+msgid "FeatureFlags|There was an error retrieving user lists"
+msgstr ""
+
 msgid "FeatureFlags|Try again in a few moments or contact your support team."
 msgstr ""
 
@@ -9623,7 +9635,16 @@ msgstr ""
 msgid "FeatureFlag|Delete strategy"
 msgstr ""
 
+msgid "FeatureFlag|List"
+msgstr ""
+
 msgid "FeatureFlag|Percentage"
+msgstr ""
+
+msgid "FeatureFlag|Select a user list"
+msgstr ""
+
+msgid "FeatureFlag|There are no configured user lists"
 msgstr ""
 
 msgid "FeatureFlag|Type"
@@ -14044,6 +14065,9 @@ msgstr ""
 msgid "Middleman project with Static Site Editor support"
 msgstr ""
 
+msgid "Migrate your data from an external source like GitHub, Bitbucket, or another instance of GitLab."
+msgstr ""
+
 msgid "Migrated %{success_count}/%{total_count} files."
 msgstr ""
 
@@ -17446,13 +17470,25 @@ msgstr ""
 msgid "ProjectsNew|Blank project"
 msgstr ""
 
+msgid "ProjectsNew|Connect your external repository to GitLab CI/CD."
+msgstr ""
+
 msgid "ProjectsNew|Contact an administrator to enable options for importing your project."
 msgstr ""
 
 msgid "ProjectsNew|Create"
 msgstr ""
 
+msgid "ProjectsNew|Create a blank project to house your files, plan your work, and collaborate on code, among other things."
+msgstr ""
+
+msgid "ProjectsNew|Create blank project"
+msgstr ""
+
 msgid "ProjectsNew|Create from template"
+msgstr ""
+
+msgid "ProjectsNew|Create new project"
 msgstr ""
 
 msgid "ProjectsNew|Creating project & repository."
@@ -17477,6 +17513,9 @@ msgid "ProjectsNew|Please wait a moment, this page will automatically refresh wh
 msgstr ""
 
 msgid "ProjectsNew|Project description %{tag_start}(optional)%{tag_end}"
+msgstr ""
+
+msgid "ProjectsNew|Run CI/CD for external repository"
 msgstr ""
 
 msgid "ProjectsNew|Template"

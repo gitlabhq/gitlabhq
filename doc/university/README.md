@@ -203,7 +203,6 @@ The GitLab University curriculum is composed of GitLab videos, screencasts, pres
 NOTE: **Note:**
 Some content can only be accessed by GitLab team members.
 
-1. [Support Path](support/README.md)
 1. [Sales Path](https://about.gitlab.com/handbook/sales/onboarding/)
 1. [User Training](training/user_training.md)
 1. [GitLab Flow Training](training/gitlab_flow.md)

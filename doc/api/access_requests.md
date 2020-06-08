@@ -6,14 +6,12 @@
 
  The access levels are defined in the `Gitlab::Access` module. Currently, these levels are recognized:
 
-```plaintext
-0 => No access
-10 => Guest access
-20 => Reporter access
-30 => Developer access
-40 => Maintainer access
-50 => Owner access # Only valid for groups
-```
+- No access (`0`)
+- Guest (`10`)
+- Reporter (`20`)
+- Developer (`30`)
+- Maintainer (`40`)
+- Owner (`50`) - Only valid to set for groups
 
 ## List access requests for a group or project
 

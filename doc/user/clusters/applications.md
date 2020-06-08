@@ -907,10 +907,10 @@ Major upgrades might require additional setup steps, please consult
 the official [upgrade guide](https://docs.cilium.io/en/stable/install/upgrade/) for more
 information.
 
-By default, Cilium will drop all non-whitelisted packets upon policy
+By default, Cilium will drop all disallowed packets upon policy
 deployment. The audit mode is scheduled for release in
 [Cilium 1.8](https://github.com/cilium/cilium/pull/9970). In the audit
-mode, non-whitelisted packets will not be dropped, and audit
+mode, disallowed packets will not be dropped, and audit
 notifications will be generated instead. GitLab provides alternative Docker
 images for Cilium with the audit patch included. You can switch to the
 custom build and enable the audit mode by adding the following to

@@ -50,6 +50,9 @@ module Gitlab
       },
       invite_members_version_a: {
         tracking_category: 'Growth::Expansion::Experiment::InviteMembersVersionA'
+      },
+      new_create_project_ui: {
+        tracking_category: 'Manage::Import::Experiment::NewCreateProjectUi'
       }
     }.freeze
 

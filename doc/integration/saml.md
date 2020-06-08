@@ -1,4 +1,4 @@
-# SAML OmniAuth Provider
+# SAML OmniAuth Provider **(CORE ONLY)**
 
 Note that:
 
