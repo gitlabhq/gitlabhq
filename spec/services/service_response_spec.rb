@@ -84,4 +84,14 @@ describe ServiceResponse do
       expect(described_class.error(message: 'Bad apple').error?).to eq(true)
     end
   end
+
+  describe '#errors' do
+    it 'returns an empty array for a successful response' do
+      expect(described_class.success.errors).to be_empty
+    end
+
+    it 'returns an array with a correct message for an error response' do
+      expect(described_class.error(message: 'error message').errors).to eq(['error message'])
+    end
+  end
 end

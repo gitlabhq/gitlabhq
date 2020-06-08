@@ -8468,7 +8468,7 @@ msgstr ""
 msgid "EnvironmentsDashboard|More actions"
 msgstr ""
 
-msgid "EnvironmentsDashboard|Read more."
+msgid "EnvironmentsDashboard|More information"
 msgstr ""
 
 msgid "EnvironmentsDashboard|Remove"
@@ -9048,6 +9048,9 @@ msgid "Evidence collection"
 msgstr ""
 
 msgid "Exactly one of %{attributes} is required"
+msgstr ""
+
+msgid "Example: <code>acme.com,acme.co.in,acme.uk</code>."
 msgstr ""
 
 msgid "Example: @sub\\.company\\.com$"
@@ -11217,6 +11220,9 @@ msgid "GroupSettings|You can only transfer the group to a group you manage."
 msgstr ""
 
 msgid "GroupSettings|You will need to update your local repositories to point to the new location."
+msgstr ""
+
+msgid "GroupSettings|cannot be changed by you"
 msgstr ""
 
 msgid "GroupSettings|cannot be disabled when the parent group \"Share with group lock\" is enabled, except by the owner of the parent group"
@@ -14346,6 +14352,9 @@ msgstr ""
 msgid "MrDeploymentActions|Stop environment"
 msgstr ""
 
+msgid "Multiple domains are supported with comma delimiters."
+msgstr ""
+
 msgid "Multiple issue boards"
 msgstr ""
 
@@ -15208,7 +15217,7 @@ msgstr ""
 msgid "Only project members will be imported. Group members will be skipped."
 msgstr ""
 
-msgid "Only users with an email address in this domain can be added to the group.<br>Example: <code>gitlab.com</code>. Some common domains are not allowed. %{read_more_link}."
+msgid "Only verified users with an email address in any of these domains can be added to the group."
 msgstr ""
 
 msgid "Only ‘Reporter’ roles and above on tiers Premium / Silver and above can see Productivity Analytics."
@@ -20468,6 +20477,9 @@ msgid "Solution"
 msgstr ""
 
 msgid "Some child epics may be hidden due to applied filters"
+msgstr ""
+
+msgid "Some common domains are not allowed. %{read_more_link}."
 msgstr ""
 
 msgid "Some email servers do not support overriding the email sender name. Enable this option to include the name of the author of the issue, merge request or comment in the email body instead."
@@ -26363,7 +26375,7 @@ msgstr ""
 msgid "element is not a hierarchy"
 msgstr ""
 
-msgid "email '%{email}' does not match the allowed domain of '%{email_domain}'"
+msgid "email '%{email}' does not match the allowed domains of %{email_domains}"
 msgstr ""
 
 msgid "email '%{email}' is not a verified email."

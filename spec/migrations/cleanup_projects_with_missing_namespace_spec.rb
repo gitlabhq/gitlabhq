@@ -5,10 +5,6 @@ require 'spec_helper'
 require Rails.root.join('db', 'post_migrate', '20200511080113_add_projects_foreign_key_to_namespaces.rb')
 require Rails.root.join('db', 'post_migrate', '20200511083541_cleanup_projects_with_missing_namespace.rb')
 
-LOST_AND_FOUND_GROUP = 'lost-and-found'
-USER_TYPE_GHOST = 5
-ACCESS_LEVEL_OWNER = 50
-
 # In order to test the CleanupProjectsWithMissingNamespace migration, we need
 #  to first create an orphaned project (one with an invalid namespace_id)
 #  and then run the migration to check that the project was properly cleaned up
@@ -77,31 +73,39 @@ describe CleanupProjectsWithMissingNamespace, :migration, schema: SchemaVersionF
   end
 
   it 'creates the ghost user' do
-    expect(users.where(user_type: USER_TYPE_GHOST).count).to eq(0)
+    expect(users.where(user_type: described_class::User::USER_TYPE_GHOST).count).to eq(0)
 
     disable_migrations_output { migrate! }
 
-    expect(users.where(user_type: USER_TYPE_GHOST).count).to eq(1)
+    expect(users.where(user_type: described_class::User::USER_TYPE_GHOST).count).to eq(1)
   end
 
   it 'creates the lost-and-found group, owned by the ghost user' do
     expect(
-      Group.where(Group.arel_table[:name].matches("#{LOST_AND_FOUND_GROUP}%")).count
+      described_class::Group.where(
+        described_class::Group
+        .arel_table[:name]
+        .matches("#{described_class::User::LOST_AND_FOUND_GROUP}%")
+      ).count
     ).to eq(0)
 
     disable_migrations_output { migrate! }
 
-    ghost_user = users.find_by(user_type: USER_TYPE_GHOST)
+    ghost_user = users.find_by(user_type: described_class::User::USER_TYPE_GHOST)
     expect(
-      Group
+      described_class::Group
         .joins('INNER JOIN members ON namespaces.id = members.source_id')
         .where('namespaces.type = ?', 'Group')
         .where('members.type = ?', 'GroupMember')
         .where('members.source_type = ?', 'Namespace')
         .where('members.user_id = ?', ghost_user.id)
         .where('members.requested_at IS NULL')
-        .where('members.access_level = ?', ACCESS_LEVEL_OWNER)
-        .where(Group.arel_table[:name].matches("#{LOST_AND_FOUND_GROUP}%"))
+        .where('members.access_level = ?', described_class::ACCESS_LEVEL_OWNER)
+        .where(
+          described_class::Group
+          .arel_table[:name]
+          .matches("#{described_class::User::LOST_AND_FOUND_GROUP}%")
+        )
         .count
     ).to eq(1)
   end
@@ -114,7 +118,11 @@ describe CleanupProjectsWithMissingNamespace, :migration, schema: SchemaVersionF
 
     disable_migrations_output { migrate! }
 
-    lost_and_found_group = Group.find_by(Group.arel_table[:name].matches("#{LOST_AND_FOUND_GROUP}%"))
+    lost_and_found_group = described_class::Group.find_by(
+      described_class::Group
+      .arel_table[:name]
+      .matches("#{described_class::User::LOST_AND_FOUND_GROUP}%")
+    )
     orphaned_project = projects.find_by(id: orphaned_project.id)
 
     expect(orphaned_project.visibility_level).to eq(0)

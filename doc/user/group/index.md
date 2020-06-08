@@ -528,13 +528,12 @@ the group regardless of the IP restriction.
 
 #### Allowed domain restriction **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/7297) in [GitLab Premium and Silver](https://about.gitlab.com/pricing/) 12.2.
+>- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/7297) in [GitLab Premium and Silver](https://about.gitlab.com/pricing/) 12.2.
+>- Support for specifying multiple email domains [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/33143) in GitLab 13.1
 
-You can restrict access to groups by
-allowing only users with email addresses in particular domains to be added to the group.
+You can restrict access to groups by allowing only users with email addresses in particular domains to be added to the group.
 
-Add email domains you want to allow and users with emails from different
-domains won't be allowed to be added to this group.
+Add email domains you want to allow and users with emails from different domains won't be allowed to be added to this group.
 
 Some domains cannot be restricted. These are the most popular public email domains, such as:
 
@@ -552,7 +551,7 @@ Some domains cannot be restricted. These are the most popular public email domai
 To enable this feature:
 
 1. Navigate to the group's **Settings > General** page.
-1. Expand the **Permissions, LFS, 2FA** section, and enter the domain name into **Restrict membership by email** field.
+1. Expand the **Permissions, LFS, 2FA** section, and enter the domain names into **Restrict membership by email** field. You can enter multiple domains by separating each domain with a comma (,).
 1. Click **Save changes**.
 
 This will enable the domain-checking for all new users added to the group from this moment on.

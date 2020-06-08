@@ -449,3 +449,17 @@
     font-size: 13px;
   }
 }
+
+.vue-filtered-search-bar-container {
+  @include media-breakpoint-up(md) {
+    .sort-dropdown-container {
+      margin-left: 10px;
+    }
+  }
+
+  @include media-breakpoint-down(sm) {
+    .sort-dropdown-container {
+      margin-top: 10px;
+    }
+  }
+}

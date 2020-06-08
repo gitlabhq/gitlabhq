@@ -20,8 +20,8 @@ describe JiraImport::UsersImporter do
     end
 
     context 'when Jira import is not configured properly' do
-      it 'raises an error' do
-        expect { subject }.to raise_error(Projects::ImportService::Error)
+      it 'returns an error' do
+        expect(subject.errors).to eq(['Jira integration not configured.'])
       end
     end
 

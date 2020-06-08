@@ -221,7 +221,7 @@ export default {
 </script>
 
 <template>
-  <div class="vue-filtered-search-bar-container d-flex">
+  <div class="vue-filtered-search-bar-container d-md-flex">
     <gl-filtered-search
       v-model="filterValue"
       :placeholder="searchInputPlaceholder"
@@ -230,8 +230,8 @@ export default {
       class="flex-grow-1"
       @submit="handleFilterSubmit"
     />
-    <gl-button-group class="ml-2">
-      <gl-dropdown :text="selectedSortOption.title" :right="true">
+    <gl-button-group class="sort-dropdown-container d-flex">
+      <gl-dropdown :text="selectedSortOption.title" :right="true" class="w-100">
         <gl-dropdown-item
           v-for="sortBy in sortOptions"
           :key="sortBy.id"
@@ -245,6 +245,7 @@ export default {
         v-gl-tooltip
         :title="sortDirectionTooltip"
         :icon="sortDirectionIcon"
+        class="flex-shrink-1"
         @click="handleSortDirectionClick"
       />
     </gl-button-group>

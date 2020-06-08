@@ -109,7 +109,7 @@ are very appreciative of the work done by translators and proofreaders!
   - Volodymyr Sobotovych - [GitLab](https://gitlab.com/wheleph), [CrowdIn](https://crowdin.com/profile/wheleph)
   - Andrew Vityuk - [GitLab](https://gitlab.com/3_1_3_u), [CrowdIn](https://crowdin.com/profile/andruwa13)
 - Welsh
-  - Proofreaders needed.
+  - Delyth Prys - [GitLab](https://gitlab.com/Delyth), [CrowdIn](https://crowdin.com/profile/DelythPrys)
 <!-- vale gitlab.Spelling = YES -->
 
 ## Become a proofreader
