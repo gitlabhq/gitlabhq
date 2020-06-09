@@ -35,7 +35,7 @@ module Jira
         response = client.get(url)
         build_service_response(response)
       rescue Timeout::Error, Errno::EINVAL, Errno::ECONNRESET, Errno::ECONNREFUSED, URI::InvalidURIError, JIRA::HTTPError, OpenSSL::SSL::SSLError => error
-        error_message = error.message
+        error_message = "Jira request error: #{error.message}"
         log_error("Error sending message", client_url: client.options[:site], error: error_message)
         ServiceResponse.error(message: error_message)
       end

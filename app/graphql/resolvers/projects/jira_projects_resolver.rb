@@ -16,7 +16,11 @@ module Resolvers
         response, start_cursor, end_cursor = jira_projects(name: name, **compute_pagination_params(args))
         end_cursor = nil if !!response.payload[:is_last]
 
-        response.success? ? Gitlab::Graphql::ExternallyPaginatedArray.new(start_cursor, end_cursor, *response.payload[:projects]) : nil
+        if response.success?
+          Gitlab::Graphql::ExternallyPaginatedArray.new(start_cursor, end_cursor, *response.payload[:projects])
+        else
+          raise Gitlab::Graphql::Errors::BaseError, response.message
+        end
       end
 
       def authorized_resource?(project)
@@ -58,6 +62,9 @@ module Resolvers
         args = { query: name, start_at: start_at, limit: limit }.compact
 
         response = Jira::Requests::Projects.new(project.jira_service, args).execute
+
+        return [response, nil, nil] if response.error?
+
         projects = response.payload[:projects]
         start_cursor = start_at == 0 ? nil : Base64.encode64((start_at - 1).to_s)
         end_cursor = Base64.encode64((start_at + projects.size - 1).to_s)

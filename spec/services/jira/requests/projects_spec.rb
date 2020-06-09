@@ -54,7 +54,7 @@ describe Jira::Requests::Projects do
 
           it 'returns an error response' do
             expect(subject.error?).to be_truthy
-            expect(subject.message).to eq('Timeout::Error')
+            expect(subject.message).to eq('Jira request error: Timeout::Error')
           end
         end
 

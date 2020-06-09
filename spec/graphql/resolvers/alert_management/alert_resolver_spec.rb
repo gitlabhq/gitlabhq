@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Resolvers::AlertManagementAlertResolver do
+describe Resolvers::AlertManagement::AlertResolver do
   include GraphqlHelpers
 
   let_it_be(:current_user) { create(:user) }

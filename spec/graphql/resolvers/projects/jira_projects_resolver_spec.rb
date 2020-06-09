@@ -41,22 +41,35 @@ describe Resolvers::Projects::JiraProjectsResolver do
       end
 
       context 'when user is a maintainer' do
-        include_context 'jira projects request context'
-
         before do
           project.add_maintainer(user)
         end
 
-        it 'returns jira projects' do
-          jira_projects = resolve_jira_projects
-          project_keys = jira_projects.map(&:key)
-          project_names = jira_projects.map(&:name)
-          project_ids = jira_projects.map(&:id)
+        context 'when Jira connection is valid' do
+          include_context 'jira projects request context'
 
-          expect(jira_projects.size).to eq 2
-          expect(project_keys).to eq(%w(EX ABC))
-          expect(project_names).to eq(%w(Example Alphabetical))
-          expect(project_ids).to eq(%w(10000 10001))
+          it 'returns jira projects' do
+            jira_projects = resolve_jira_projects
+            project_keys = jira_projects.map(&:key)
+            project_names = jira_projects.map(&:name)
+            project_ids = jira_projects.map(&:id)
+
+            expect(jira_projects.size).to eq 2
+            expect(project_keys).to eq(%w(EX ABC))
+            expect(project_names).to eq(%w(Example Alphabetical))
+            expect(project_ids).to eq(%w(10000 10001))
+          end
+        end
+
+        context 'when Jira connection is not valid' do
+          before do
+            WebMock.stub_request(:get, 'https://jira.example.com/rest/api/2/project/search?maxResults=50&query=&startAt=0')
+              .to_raise(JIRA::HTTPError.new(double(message: 'Some failure.')))
+          end
+
+          it 'raises failure error' do
+            expect { resolve_jira_projects }.to raise_error('Jira request error: Some failure.')
+          end
         end
       end
     end

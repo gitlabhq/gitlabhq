@@ -1,5 +1,5 @@
 <script>
-import { mapActions, mapGetters } from 'vuex';
+import { mapActions, mapGetters, mapState } from 'vuex';
 import $ from 'jquery';
 import '~/behaviors/markdown/render_gfm';
 import noteEditedText from './note_edited_text.vue';
@@ -50,6 +50,9 @@ export default {
 
       return this.getDiscussion(this.note.discussion_id);
     },
+    ...mapState({
+      batchSuggestionsInfo: state => state.notes.batchSuggestionsInfo,
+    }),
     noteBody() {
       return this.note.note;
     },
@@ -79,7 +82,12 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['submitSuggestion']),
+    ...mapActions([
+      'submitSuggestion',
+      'submitSuggestionBatch',
+      'addSuggestionInfoToBatch',
+      'removeSuggestionInfoFromBatch',
+    ]),
     renderGFM() {
       $(this.$refs['note-body']).renderGFM();
     },
@@ -96,6 +104,17 @@ export default {
         callback,
       );
     },
+    applySuggestionBatch({ flashContainer }) {
+      return this.submitSuggestionBatch({ flashContainer });
+    },
+    addSuggestionToBatch(suggestionId) {
+      const { discussion_id: discussionId, id: noteId } = this.note;
+
+      this.addSuggestionInfoToBatch({ suggestionId, discussionId, noteId });
+    },
+    removeSuggestionFromBatch(suggestionId) {
+      this.removeSuggestionInfoFromBatch(suggestionId);
+    },
   },
 };
 </script>
@@ -105,10 +124,14 @@ export default {
     <suggestions
       v-if="hasSuggestion && !isEditing"
       :suggestions="note.suggestions"
+      :batch-suggestions-info="batchSuggestionsInfo"
       :note-html="note.note_html"
       :line-type="lineType"
       :help-page-path="helpPagePath"
       @apply="applySuggestion"
+      @applyBatch="applySuggestionBatch"
+      @addToBatch="addSuggestionToBatch"
+      @removeFromBatch="removeSuggestionFromBatch"
     />
     <div v-else class="note-text md" v-html="note.note_html"></div>
     <note-form

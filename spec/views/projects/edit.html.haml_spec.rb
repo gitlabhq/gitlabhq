@@ -32,26 +32,28 @@ describe 'projects/edit' do
     it 'displays all possible variables' do
       render
 
-      expect(rendered).to have_content('%{project_path}')
-      expect(rendered).to have_content('%{project_name}')
-      expect(rendered).to have_content('%{file_path}')
       expect(rendered).to have_content('%{branch_name}')
-      expect(rendered).to have_content('%{username}')
+      expect(rendered).to have_content('%{files_count}')
+      expect(rendered).to have_content('%{file_paths}')
+      expect(rendered).to have_content('%{project_name}')
+      expect(rendered).to have_content('%{project_path}')
       expect(rendered).to have_content('%{user_full_name}')
+      expect(rendered).to have_content('%{username}')
+      expect(rendered).to have_content('%{suggestions_count}')
     end
 
     it 'displays a placeholder if none is set' do
       render
 
-      expect(rendered).to have_field('project[suggestion_commit_message]', placeholder: 'Apply suggestion to %{file_path}')
+      expect(rendered).to have_field('project[suggestion_commit_message]', placeholder: "Apply %{suggestions_count} suggestion(s) to %{files_count} file(s)")
     end
 
     it 'displays the user entered value' do
-      project.update!(suggestion_commit_message: 'refactor: changed %{file_path}')
+      project.update!(suggestion_commit_message: 'refactor: changed %{file_paths}')
 
       render
 
-      expect(rendered).to have_field('project[suggestion_commit_message]', with: 'refactor: changed %{file_path}')
+      expect(rendered).to have_field('project[suggestion_commit_message]', with: 'refactor: changed %{file_paths}')
     end
   end
 

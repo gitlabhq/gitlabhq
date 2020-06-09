@@ -3,7 +3,7 @@ export const clusterList = [
     name: 'My Cluster 1',
     environment_scope: '*',
     cluster_type: 'group_type',
-    status: 'disabled',
+    status: 'creating',
     nodes: null,
   },
   {

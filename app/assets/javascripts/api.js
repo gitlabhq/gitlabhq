@@ -38,6 +38,7 @@ const Api = {
   userPostStatusPath: '/api/:version/user/status',
   commitPath: '/api/:version/projects/:id/repository/commits',
   applySuggestionPath: '/api/:version/suggestions/:id/apply',
+  applySuggestionBatchPath: '/api/:version/suggestions/batch_apply',
   commitPipelinesPath: '/:project_id/commit/:sha/pipelines',
   branchSinglePath: '/api/:version/projects/:id/repository/branches/:branch',
   createBranchPath: '/api/:version/projects/:id/repository/branches',
@@ -320,6 +321,12 @@ const Api = {
     const url = Api.buildUrl(Api.applySuggestionPath).replace(':id', encodeURIComponent(id));
 
     return axios.put(url);
+  },
+
+  applySuggestionBatch(ids) {
+    const url = Api.buildUrl(Api.applySuggestionBatchPath);
+
+    return axios.put(url, { ids });
   },
 
   commitPipelines(projectId, sha) {

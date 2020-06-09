@@ -21,6 +21,12 @@ describe UsersFinder do
         expect(users).to contain_exactly(normal_user)
       end
 
+      it 'filters by id' do
+        users = described_class.new(user, id: normal_user.id).execute
+
+        expect(users).to contain_exactly(normal_user)
+      end
+
       it 'filters by username (case insensitive)' do
         users = described_class.new(user, username: 'joHNdoE').execute
 
@@ -69,6 +75,12 @@ describe UsersFinder do
         ).execute
 
         expect(users).to contain_exactly(user, normal_user, blocked_user, omniauth_user)
+      end
+
+      it 'orders returned results' do
+        users = described_class.new(user, sort: 'id_asc').execute
+
+        expect(users).to eq([normal_user, blocked_user, omniauth_user, user])
       end
     end
 

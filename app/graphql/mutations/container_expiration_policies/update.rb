@@ -48,7 +48,7 @@ module Mutations
 
         {
           container_expiration_policy: result.payload[:container_expiration_policy],
-          errors: result.error? ? [result.message] : []
+          errors: result.errors
         }
       end
 

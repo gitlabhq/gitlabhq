@@ -9636,6 +9636,46 @@ type Query {
   ): User
 
   """
+  Find users
+  """
+  users(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    List of user Global IDs
+    """
+    ids: [ID!]
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+
+    """
+    Sort users by this criteria
+    """
+    sort: Sort = created_desc
+
+    """
+    List of usernames
+    """
+    usernames: [String!]
+  ): UserConnection
+
+  """
   Vulnerabilities reported on projects on the current user's instance security dashboard
   """
   vulnerabilities(

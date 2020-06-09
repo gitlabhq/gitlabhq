@@ -141,6 +141,8 @@
 
         = render_if_exists 'namespaces/shared_runner_status', namespace: @user.namespace
 
+    = render 'shared/custom_attributes', custom_attributes: @user.custom_attributes
+
   .col-md-6
     - unless @user == current_user
       - unless @user.confirmed?

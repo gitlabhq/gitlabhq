@@ -15,4 +15,5 @@ export const STATUSES = {
   unreachable: { className: 'bg-danger', title: __('Unreachable') },
   authentication_failure: { className: 'bg-warning', title: __('Authentication Failure') },
   deleting: { title: __('Deleting') },
+  creating: { title: __('Creating') },
 };

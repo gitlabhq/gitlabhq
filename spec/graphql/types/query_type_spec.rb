@@ -18,6 +18,7 @@ describe GitlabSchema.types['Query'] do
       snippets
       design_management
       user
+      users
     ]
 
     expect(described_class).to have_graphql_fields(*expected_fields).at_least

@@ -1,0 +1,5 @@
+---
+title: Resolve Fix Incomplete Kubernetes Cluster Status List
+merge_request: 33344
+author:
+type: fixed

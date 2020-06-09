@@ -3,9 +3,10 @@ import SuggestionDiffComponent from '~/vue_shared/components/markdown/suggestion
 import SuggestionDiffHeader from '~/vue_shared/components/markdown/suggestion_diff_header.vue';
 import SuggestionDiffRow from '~/vue_shared/components/markdown/suggestion_diff_row.vue';
 
+const suggestionId = 1;
 const MOCK_DATA = {
   suggestion: {
-    id: 1,
+    id: suggestionId,
     diff_lines: [
       {
         can_receive_suggestion: false,
@@ -38,8 +39,10 @@ const MOCK_DATA = {
         type: 'new',
       },
     ],
+    is_applying_batch: true,
   },
   helpPagePath: 'path_to_docs',
+  batchSuggestionsInfo: [{ suggestionId }],
 };
 
 describe('Suggestion Diff component', () => {
@@ -70,17 +73,24 @@ describe('Suggestion Diff component', () => {
     expect(wrapper.findAll(SuggestionDiffRow)).toHaveLength(3);
   });
 
-  it('emits apply event on sugestion diff header apply', () => {
-    wrapper.find(SuggestionDiffHeader).vm.$emit('apply', 'test-event');
+  it.each`
+    event                | childArgs         | args
+    ${'apply'}           | ${['test-event']} | ${[{ callback: 'test-event', suggestionId }]}
+    ${'applyBatch'}      | ${[]}             | ${[]}
+    ${'addToBatch'}      | ${[]}             | ${[suggestionId]}
+    ${'removeFromBatch'} | ${[]}             | ${[suggestionId]}
+  `('emits $event event on sugestion diff header $event', ({ event, childArgs, args }) => {
+    wrapper.find(SuggestionDiffHeader).vm.$emit(event, ...childArgs);
 
-    expect(wrapper.emitted('apply')).toBeDefined();
-    expect(wrapper.emitted('apply')).toEqual([
-      [
-        {
-          callback: 'test-event',
-          suggestionId: 1,
-        },
-      ],
-    ]);
+    expect(wrapper.emitted(event)).toBeDefined();
+    expect(wrapper.emitted(event)).toEqual([args]);
+  });
+
+  it('passes suggestion batch props to suggestion diff header', () => {
+    expect(wrapper.find(SuggestionDiffHeader).props()).toMatchObject({
+      batchSuggestionsCount: 1,
+      isBatched: true,
+      isApplyingBatch: MOCK_DATA.suggestion.is_applying_batch,
+    });
   });
 });

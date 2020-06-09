@@ -9,6 +9,7 @@ import {
   noteableDataMock,
   individualNote,
   notesWithDescriptionChanges,
+  batchSuggestionsInfoMock,
 } from '../mock_data';
 
 const RESOLVED_NOTE = { resolvable: true, resolved: true };
@@ -698,6 +699,110 @@ describe('Notes Store mutations', () => {
       mutations.TOGGLE_BLOCKED_ISSUE_WARNING(state, false);
 
       expect(state.isToggleBlockedIssueWarning).toEqual(false);
+    });
+  });
+
+  describe('SET_APPLYING_BATCH_STATE', () => {
+    const buildDiscussions = suggestionsInfo => {
+      const suggestions = suggestionsInfo.map(({ suggestionId }) => ({ id: suggestionId }));
+
+      const notes = suggestionsInfo.map(({ noteId }, index) => ({
+        id: noteId,
+        suggestions: [suggestions[index]],
+      }));
+
+      return suggestionsInfo.map(({ discussionId }, index) => ({
+        id: discussionId,
+        notes: [notes[index]],
+      }));
+    };
+
+    let state;
+    let batchedSuggestionInfo;
+    let discussions;
+    let suggestions;
+
+    beforeEach(() => {
+      [batchedSuggestionInfo] = batchSuggestionsInfoMock;
+      suggestions = batchSuggestionsInfoMock.map(({ suggestionId }) => ({ id: suggestionId }));
+      discussions = buildDiscussions(batchSuggestionsInfoMock);
+      state = {
+        batchSuggestionsInfo: [batchedSuggestionInfo],
+        discussions,
+      };
+    });
+
+    it('sets is_applying_batch to a boolean value for all batched suggestions', () => {
+      mutations.SET_APPLYING_BATCH_STATE(state, true);
+
+      const updatedSuggestion = {
+        ...suggestions[0],
+        is_applying_batch: true,
+      };
+
+      const expectedSuggestions = [updatedSuggestion, suggestions[1]];
+
+      const actualSuggestions = state.discussions
+        .map(discussion => discussion.notes.map(n => n.suggestions))
+        .flat(2);
+
+      expect(actualSuggestions).toEqual(expectedSuggestions);
+    });
+  });
+
+  describe('ADD_SUGGESTION_TO_BATCH', () => {
+    let state;
+
+    beforeEach(() => {
+      state = { batchSuggestionsInfo: [] };
+    });
+
+    it("adds a suggestion's info to a batch", () => {
+      const suggestionInfo = {
+        suggestionId: 'a123',
+        noteId: 'b456',
+        discussionId: 'c789',
+      };
+
+      mutations.ADD_SUGGESTION_TO_BATCH(state, suggestionInfo);
+
+      expect(state.batchSuggestionsInfo).toEqual([suggestionInfo]);
+    });
+  });
+
+  describe('REMOVE_SUGGESTION_FROM_BATCH', () => {
+    let state;
+    let suggestionInfo1;
+    let suggestionInfo2;
+
+    beforeEach(() => {
+      [suggestionInfo1, suggestionInfo2] = batchSuggestionsInfoMock;
+
+      state = {
+        batchSuggestionsInfo: [suggestionInfo1, suggestionInfo2],
+      };
+    });
+
+    it("removes a suggestion's info from a batch", () => {
+      mutations.REMOVE_SUGGESTION_FROM_BATCH(state, suggestionInfo1.suggestionId);
+
+      expect(state.batchSuggestionsInfo).toEqual([suggestionInfo2]);
+    });
+  });
+
+  describe('CLEAR_SUGGESTION_BATCH', () => {
+    let state;
+
+    beforeEach(() => {
+      state = {
+        batchSuggestionsInfo: batchSuggestionsInfoMock,
+      };
+    });
+
+    it('removes info for all suggestions from a batch', () => {
+      mutations.CLEAR_SUGGESTION_BATCH(state);
+
+      expect(state.batchSuggestionsInfo.length).toEqual(0);
     });
   });
 });

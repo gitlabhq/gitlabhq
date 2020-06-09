@@ -83,24 +83,21 @@ describe('Clusters', () => {
 
   describe('cluster status', () => {
     it.each`
-      statusName                  | className       | lineNumber
-      ${'disabled'}               | ${'disabled'}   | ${0}
-      ${'unreachable'}            | ${'bg-danger'}  | ${1}
-      ${'authentication_failure'} | ${'bg-warning'} | ${2}
-      ${'deleting'}               | ${null}         | ${3}
-      ${'created'}                | ${'bg-success'} | ${4}
-      ${'default'}                | ${'bg-white'}   | ${5}
-    `('renders a status for each cluster', ({ statusName, className, lineNumber }) => {
-      const statuses = findStatuses();
-      const status = statuses.at(lineNumber);
-      if (statusName !== 'deleting') {
-        const statusIndicator = status.find('.cluster-status-indicator');
-        expect(statusIndicator.exists()).toBe(true);
-        expect(statusIndicator.classes()).toContain(className);
-      } else {
-        expect(status.find(GlLoadingIcon).exists()).toBe(true);
-      }
-    });
+      statusName    | lineNumber | result
+      ${'creating'} | ${0}       | ${true}
+      ${null}       | ${1}       | ${false}
+      ${null}       | ${2}       | ${false}
+      ${'deleting'} | ${3}       | ${true}
+      ${null}       | ${4}       | ${false}
+      ${null}       | ${5}       | ${false}
+    `(
+      'renders $result when status=$statusName and lineNumber=$lineNumber',
+      ({ lineNumber, result }) => {
+        const statuses = findStatuses();
+        const status = statuses.at(lineNumber);
+        expect(status.find(GlLoadingIcon).exists()).toBe(result);
+      },
+    );
   });
 
   describe('nodes present', () => {

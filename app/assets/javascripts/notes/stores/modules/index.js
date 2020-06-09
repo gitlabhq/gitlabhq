@@ -11,6 +11,7 @@ export default () => ({
     targetNoteHash: null,
     lastFetchedAt: null,
     currentDiscussionId: null,
+    batchSuggestionsInfo: [],
 
     // View layer
     isToggleStateButtonLoading: false,

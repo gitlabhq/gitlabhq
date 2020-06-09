@@ -52,6 +52,11 @@ module Types
           description: 'Find a user',
           resolver: Resolvers::UserResolver
 
+    field :users, Types::UserType.connection_type,
+          null: true,
+          description: 'Find users',
+          resolver: Resolvers::UsersResolver
+
     field :echo, GraphQL::STRING_TYPE, null: false,
           description: 'Text to echo back',
           resolver: Resolvers::EchoResolver

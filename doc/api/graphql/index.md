@@ -60,6 +60,7 @@ The GraphQL API includes the following queries at the root level:
 1. `user` : Information about a particular user.
 1. `namespace` : Within a namespace it is also possible to fetch `projects`.
 1. `currentUser`: Information about the currently logged in user.
+1. `users`: Information about a collection of users.
 1. `metaData`: Metadata about GitLab and the GraphQL API.
 1. `snippets`: Snippets visible to the currently logged in user.
 

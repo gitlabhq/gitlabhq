@@ -3,8 +3,11 @@ import { shallowMount } from '@vue/test-utils';
 import SuggestionDiffHeader from '~/vue_shared/components/markdown/suggestion_diff_header.vue';
 
 const DEFAULT_PROPS = {
+  batchSuggestionsCount: 2,
   canApply: true,
   isApplied: false,
+  isBatched: false,
+  isApplyingBatch: false,
   helpPagePath: 'path_to_docs',
 };
 
@@ -25,6 +28,9 @@ describe('Suggestion Diff component', () => {
   });
 
   const findApplyButton = () => wrapper.find('.js-apply-btn');
+  const findApplyBatchButton = () => wrapper.find('.js-apply-batch-btn');
+  const findAddToBatchButton = () => wrapper.find('.js-add-to-batch-btn');
+  const findRemoveFromBatchButton = () => wrapper.find('.js-remove-from-batch-btn');
   const findHeader = () => wrapper.find('.js-suggestion-diff-header');
   const findHelpButton = () => wrapper.find('.js-help-btn');
   const findLoading = () => wrapper.find(GlLoadingIcon);
@@ -44,19 +50,24 @@ describe('Suggestion Diff component', () => {
     expect(findHelpButton().exists()).toBe(true);
   });
 
-  it('renders an apply button', () => {
+  it('renders apply suggestion and add to batch buttons', () => {
     createComponent();
 
     const applyBtn = findApplyButton();
+    const addToBatchBtn = findAddToBatchButton();
 
     expect(applyBtn.exists()).toBe(true);
     expect(applyBtn.html().includes('Apply suggestion')).toBe(true);
+
+    expect(addToBatchBtn.exists()).toBe(true);
+    expect(addToBatchBtn.html().includes('Add suggestion to batch')).toBe(true);
   });
 
-  it('does not render an apply button if `canApply` is set to false', () => {
+  it('does not render apply suggestion and add to batch buttons if `canApply` is set to false', () => {
     createComponent({ canApply: false });
 
     expect(findApplyButton().exists()).toBe(false);
+    expect(findAddToBatchButton().exists()).toBe(false);
   });
 
   describe('when apply suggestion is clicked', () => {
@@ -73,13 +84,14 @@ describe('Suggestion Diff component', () => {
       });
     });
 
-    it('hides apply button', () => {
+    it('hides  apply suggestion and add to batch buttons', () => {
       expect(findApplyButton().exists()).toBe(false);
+      expect(findAddToBatchButton().exists()).toBe(false);
     });
 
     it('shows loading', () => {
       expect(findLoading().exists()).toBe(true);
-      expect(wrapper.text()).toContain('Applying suggestion');
+      expect(wrapper.text()).toContain('Applying suggestion...');
     });
 
     it('when callback of apply is called, hides loading', () => {
@@ -90,6 +102,106 @@ describe('Suggestion Diff component', () => {
       return wrapper.vm.$nextTick().then(() => {
         expect(findApplyButton().exists()).toBe(true);
         expect(findLoading().exists()).toBe(false);
+      });
+    });
+  });
+
+  describe('when add to batch is clicked', () => {
+    it('emits addToBatch', () => {
+      createComponent();
+
+      findAddToBatchButton().vm.$emit('click');
+
+      expect(wrapper.emittedByOrder()).toContainEqual({
+        name: 'addToBatch',
+        args: [],
+      });
+    });
+  });
+
+  describe('when remove from batch is clicked', () => {
+    it('emits removeFromBatch', () => {
+      createComponent({ isBatched: true });
+
+      findRemoveFromBatchButton().vm.$emit('click');
+
+      expect(wrapper.emittedByOrder()).toContainEqual({
+        name: 'removeFromBatch',
+        args: [],
+      });
+    });
+  });
+
+  describe('apply suggestions is clicked', () => {
+    it('emits applyBatch', () => {
+      createComponent({ isBatched: true });
+
+      findApplyBatchButton().vm.$emit('click');
+
+      expect(wrapper.emittedByOrder()).toContainEqual({
+        name: 'applyBatch',
+        args: [],
+      });
+    });
+  });
+
+  describe('when isBatched is true', () => {
+    it('shows remove from batch and apply batch buttons and displays the batch count', () => {
+      createComponent({
+        batchSuggestionsCount: 9,
+        isBatched: true,
+      });
+
+      const applyBatchBtn = findApplyBatchButton();
+      const removeFromBatchBtn = findRemoveFromBatchButton();
+
+      expect(removeFromBatchBtn.exists()).toBe(true);
+      expect(removeFromBatchBtn.html().includes('Remove from batch')).toBe(true);
+
+      expect(applyBatchBtn.exists()).toBe(true);
+      expect(applyBatchBtn.html().includes('Apply suggestions')).toBe(true);
+      expect(applyBatchBtn.html().includes(String('9'))).toBe(true);
+    });
+
+    it('hides add to batch and apply buttons', () => {
+      createComponent({
+        isBatched: true,
+      });
+
+      expect(findApplyButton().exists()).toBe(false);
+      expect(findAddToBatchButton().exists()).toBe(false);
+    });
+
+    describe('when isBatched and isApplyingBatch are true', () => {
+      it('shows loading', () => {
+        createComponent({
+          isBatched: true,
+          isApplyingBatch: true,
+        });
+
+        expect(findLoading().exists()).toBe(true);
+        expect(wrapper.text()).toContain('Applying suggestions...');
+      });
+
+      it('adjusts message for batch with single suggestion', () => {
+        createComponent({
+          batchSuggestionsCount: 1,
+          isBatched: true,
+          isApplyingBatch: true,
+        });
+
+        expect(findLoading().exists()).toBe(true);
+        expect(wrapper.text()).toContain('Applying suggestion...');
+      });
+
+      it('hides remove from batch and apply suggestions buttons', () => {
+        createComponent({
+          isBatched: true,
+          isApplyingBatch: true,
+        });
+
+        expect(findRemoveFromBatchButton().exists()).toBe(false);
+        expect(findApplyBatchButton().exists()).toBe(false);
       });
     });
   });

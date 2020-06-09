@@ -216,13 +216,13 @@ module Types
           Types::AlertManagement::AlertType.connection_type,
           null: true,
           description: 'Alert Management alerts of the project',
-          resolver: Resolvers::AlertManagementAlertResolver
+          resolver: Resolvers::AlertManagement::AlertResolver
 
     field :alert_management_alert,
           Types::AlertManagement::AlertType,
           null: true,
           description: 'A single Alert Management alert of the project',
-          resolver: Resolvers::AlertManagementAlertResolver.single
+          resolver: Resolvers::AlertManagement::AlertResolver.single
 
     field :alert_management_alert_status_counts,
           Types::AlertManagement::AlertStatusCountsType,

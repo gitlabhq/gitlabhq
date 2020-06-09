@@ -954,6 +954,12 @@ msgstr ""
 msgid "A deleted user"
 msgstr ""
 
+msgid "A file has been changed."
+msgstr ""
+
+msgid "A file was not found."
+msgstr ""
+
 msgid "A file with '%{file_name}' already exists in %{branch} branch"
 msgstr ""
 
@@ -1018,6 +1024,9 @@ msgid "A sign-in to your account has been made from the following IP address: %{
 msgstr ""
 
 msgid "A subscription will trigger a new pipeline on the default branch of this project when a pipeline successfully completes for a new tag on the %{default_branch_docs} of the subscribed project."
+msgstr ""
+
+msgid "A suggestion is not applicable."
 msgstr ""
 
 msgid "A terraform report was generated in your pipelines."
@@ -1377,6 +1386,9 @@ msgid "Add request manually"
 msgstr ""
 
 msgid "Add strikethrough text"
+msgstr ""
+
+msgid "Add suggestion to batch"
 msgstr ""
 
 msgid "Add system hook"
@@ -2584,6 +2596,9 @@ msgstr ""
 msgid "Apply suggestion"
 msgstr ""
 
+msgid "Apply suggestions"
+msgstr ""
+
 msgid "Apply template"
 msgstr ""
 
@@ -2602,7 +2617,10 @@ msgstr ""
 msgid "Applying multiple commands"
 msgstr ""
 
-msgid "Applying suggestion"
+msgid "Applying suggestion..."
+msgstr ""
+
+msgid "Applying suggestions..."
 msgstr ""
 
 msgid "Approval rules"
@@ -6618,6 +6636,9 @@ msgstr ""
 msgid "Creates branch '%{branch_name}' and a merge request to resolve this issue."
 msgstr ""
 
+msgid "Creating"
+msgstr ""
+
 msgid "Creating epic"
 msgstr ""
 
@@ -6682,6 +6703,9 @@ msgid "CurrentUser|Start a Gold trial"
 msgstr ""
 
 msgid "CurrentUser|Upgrade"
+msgstr ""
+
+msgid "Custom Attributes"
 msgstr ""
 
 msgid "Custom CI configuration path"
@@ -18317,6 +18341,9 @@ msgstr ""
 msgid "Remove fork relationship"
 msgstr ""
 
+msgid "Remove from batch"
+msgstr ""
+
 msgid "Remove from board"
 msgstr ""
 
@@ -20563,6 +20590,9 @@ msgstr ""
 msgid "Something went wrong while adding your award. Please try again."
 msgstr ""
 
+msgid "Something went wrong while applying the batch of suggestions. Please try again."
+msgstr ""
+
 msgid "Something went wrong while applying the suggestion. Please try again."
 msgstr ""
 
@@ -21518,6 +21548,18 @@ msgid "SuggestedColors|Very dark lime green"
 msgstr ""
 
 msgid "SuggestedColors|Very pale orange"
+msgstr ""
+
+msgid "Suggestion is not applicable as the suggestion was not found."
+msgstr ""
+
+msgid "Suggestions are not applicable as one or more suggestions were not found."
+msgstr ""
+
+msgid "Suggestions are not applicable as their lines cannot overlap."
+msgstr ""
+
+msgid "Suggestions must all be on the same branch."
 msgstr ""
 
 msgid "Suggestions:"
@@ -22489,7 +22531,10 @@ msgstr ""
 msgid "This action can lead to data loss. To prevent accidental actions we ask you to confirm your intention."
 msgstr ""
 
-msgid "This also resolves the discussion"
+msgid "This also resolves all related threads"
+msgstr ""
+
+msgid "This also resolves the thread"
 msgstr ""
 
 msgid "This application was created by %{link_to_owner}."

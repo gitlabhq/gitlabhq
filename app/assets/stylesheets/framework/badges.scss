@@ -3,4 +3,12 @@
   background-color: $badge-bg;
   color: $gray-800;
   vertical-align: baseline;
+
+  // Do not use this!
+  // This is a temporary workaround until the new GlBadge component
+  // is available: https://gitlab.com/gitlab-org/gitlab-ui/-/issues/481
+  &.badge-pill-success {
+    background-color: rgba($green-500, 0.2);
+    color: $green;
+  }
 }

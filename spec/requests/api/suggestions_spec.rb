@@ -7,8 +7,7 @@ describe API::Suggestions do
   let(:user) { create(:user) }
 
   let(:merge_request) do
-    create(:merge_request, source_project: project,
-                           target_project: project)
+    create(:merge_request, source_project: project, target_project: project)
   end
 
   let(:position) do
@@ -19,26 +18,45 @@ describe API::Suggestions do
                                diff_refs: merge_request.diff_refs)
   end
 
+  let(:position2) do
+    Gitlab::Diff::Position.new(old_path: "files/ruby/popen.rb",
+                               new_path: "files/ruby/popen.rb",
+                               old_line: nil,
+                               new_line: 15,
+                               diff_refs: merge_request.diff_refs)
+  end
+
   let(:diff_note) do
+    create(:diff_note_on_merge_request,
+           noteable: merge_request,
+           position: position,
+           project: project)
+  end
+
+  let(:diff_note2) do
     create(:diff_note_on_merge_request, noteable: merge_request,
-                                        position: position,
-                                        project: project)
+           position: position2,
+           project: project)
+  end
+
+  let(:suggestion) do
+    create(:suggestion, note: diff_note,
+           from_content: "      raise RuntimeError, \"System commands must be given as an array of strings\"\n",
+           to_content: "      raise RuntimeError, 'Explosion'\n      # explosion?")
+  end
+
+  let(:unappliable_suggestion) do
+    create(:suggestion, :unappliable, note: diff_note2)
   end
 
   describe "PUT /suggestions/:id/apply" do
     let(:url) { "/suggestions/#{suggestion.id}/apply" }
 
     context 'when successfully applies patch' do
-      let(:suggestion) do
-        create(:suggestion, note: diff_note,
-                            from_content: "      raise RuntimeError, \"System commands must be given as an array of strings\"\n",
-                            to_content: "      raise RuntimeError, 'Explosion'\n      # explosion?")
-      end
-
-      it 'returns 200 with json content' do
+      it 'renders an ok response and returns json content' do
         project.add_maintainer(user)
 
-        put api(url, user), params: { id: suggestion.id }
+        put api(url, user)
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response)
@@ -48,31 +66,105 @@ describe API::Suggestions do
     end
 
     context 'when not able to apply patch' do
-      let(:suggestion) do
-        create(:suggestion, :unappliable, note: diff_note)
-      end
+      let(:url) { "/suggestions/#{unappliable_suggestion.id}/apply" }
 
-      it 'returns 400 with json content' do
+      it 'renders a bad request error and returns json content' do
         project.add_maintainer(user)
 
-        put api(url, user), params: { id: suggestion.id }
+        put api(url, user)
 
         expect(response).to have_gitlab_http_status(:bad_request)
-        expect(json_response).to eq({ 'message' => 'Suggestion is not appliable' })
+        expect(json_response).to eq({ 'message' => 'A suggestion is not applicable.' })
+      end
+    end
+
+    context 'when suggestion is not found' do
+      let(:url) { "/suggestions/foo-123/apply" }
+
+      it 'renders a not found error and returns json content' do
+        project.add_maintainer(user)
+
+        put api(url, user)
+
+        expect(response).to have_gitlab_http_status(:not_found)
+        expect(json_response).to eq({ 'message' => 'Suggestion is not applicable as the suggestion was not found.' })
       end
     end
 
     context 'when unauthorized' do
-      let(:suggestion) do
-        create(:suggestion, note: diff_note,
-                            from_content: "      raise RuntimeError, \"System commands must be given as an array of strings\"\n",
-                            to_content: "      raise RuntimeError, 'Explosion'\n      # explosion?")
-      end
-
-      it 'returns 403 with json content' do
+      it 'renders a forbidden error and returns json content' do
         project.add_reporter(user)
 
-        put api(url, user), params: { id: suggestion.id }
+        put api(url, user)
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+        expect(json_response).to eq({ 'message' => '403 Forbidden' })
+      end
+    end
+  end
+
+  describe "PUT /suggestions/batch_apply" do
+    let(:suggestion2) do
+      create(:suggestion, note: diff_note2,
+             from_content: "      \"PWD\" => path\n",
+             to_content: "      *** FOO ***\n")
+    end
+
+    let(:url) { "/suggestions/batch_apply" }
+
+    context 'when successfully applies multiple patches as a batch' do
+      it 'renders an ok response and returns json content' do
+        project.add_maintainer(user)
+
+        put api(url, user), params: { ids: [suggestion.id, suggestion2.id] }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response).to all(include('id', 'from_line', 'to_line',
+                                             'appliable', 'applied',
+                                             'from_content', 'to_content'))
+      end
+    end
+
+    context 'when not able to apply one or more of the patches' do
+      it 'renders a bad request error and returns json content' do
+        project.add_maintainer(user)
+
+        put api(url, user),
+            params: { ids: [suggestion.id, unappliable_suggestion.id] }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response).to eq({ 'message' => 'A suggestion is not applicable.' })
+      end
+    end
+
+    context 'with missing suggestions' do
+      it 'renders a not found error and returns json content if any suggestion is not found' do
+        project.add_maintainer(user)
+
+        put api(url, user), params: { ids: [suggestion.id, 'foo-123'] }
+
+        expect(response).to have_gitlab_http_status(:not_found)
+        expect(json_response)
+          .to eq({ 'message' => 'Suggestions are not applicable as one or more suggestions were not found.' })
+      end
+
+      it 'renders a bad request error and returns json content when no suggestions are provided' do
+        project.add_maintainer(user)
+
+        put api(url, user), params: {}
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response)
+          .to eq({ 'error' => "ids is missing" })
+      end
+    end
+
+    context 'when unauthorized' do
+      it 'renders a forbidden error and returns json content' do
+        project.add_reporter(user)
+
+        put api(url, user),
+            params: { ids: [suggestion.id, suggestion2.id] }
 
         expect(response).to have_gitlab_http_status(:forbidden)
         expect(json_response).to eq({ 'message' => '403 Forbidden' })

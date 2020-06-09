@@ -459,32 +459,60 @@ instead of the usual three.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13086) in GitLab 12.7.
 
-GitLab uses `Apply suggestion to %{file_path}` by default as commit messages
-when applying Suggestions. This commit message can be customized to
-follow any guidelines you might have. To do so, expand the **Merge requests**
+GitLab uses a default commit message
+when applying Suggestions: `Apply %{suggestions_count} suggestion(s) to %{files_count} file(s)`
+
+For example, consider that a user applied 3 suggestions to 2 different files, the default commit message will be: **Apply 3 suggestion(s) to 2 file(s)**
+
+These commit messages can be customized to follow any guidelines you might have. To do so, expand the **Merge requests**
 tab within your project's **General** settings and change the
 **Merge suggestions** text:
 
-![Custom commit message for applied Suggestions](img/suggestions_custom_commit_messages_v12_7.png)
+![Custom commit message for applied Suggestions](img/suggestions_custom_commit_messages_v13_1.jpg)
 
 You can also use following variables besides static text:
 
 | Variable | Description | Output example |
 |---|---|---|
+| `%{branch_name}` | The name of the branch the Suggestion(s) was(were) applied to. | `my-feature-branch` |
+| `%{files_count}` | The number of file(s) to which Suggestion(s) was(were) applied.| **2** |
+| `%{file_paths}` | The path(s) of the file(s) Suggestion(s) was(were) applied to. Paths are separated by commas.| `docs/index.md, docs/about.md` |
 | `%{project_path}` | The project path. | `my-group/my-project` |
 | `%{project_name}` | The human-readable name of the project. | **My Project** |
-| `%{file_path}` | The path of the file the Suggestion is applied to. | `docs/index.md` |
-| `%{branch_name}` | The name of the branch the Suggestion is applied on. | `my-feature-branch` |
-| `%{username}` | The username of the user applying the Suggestion. | `user_1` |
-| `%{user_full_name}` | The full name of the user applying the Suggestion. | **User 1** |
+| `%{suggestions_count}` | The number of Suggestions applied.| **3** |
+| `%{username}` | The username of the user applying Suggestion(s). | `user_1` |
+| `%{user_full_name}` | The full name of the user applying Suggestion(s). | **User 1** |
 
 For example, to customize the commit message to output
 **Addresses user_1's review**, set the custom text to
 `Addresses %{username}'s review`.
 
 NOTE: **Note:**
-Custom commit messages for each applied Suggestion will be
-introduced by [#25381](https://gitlab.com/gitlab-org/gitlab/-/issues/25381).
+Custom commit messages for each applied Suggestion (and for batch Suggestions) will be
+introduced by [#25381](https://gitlab.com/gitlab-org/gitlab/issues/25381).
+
+### Batch Suggestions
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/25486) in GitLab 13.1.
+
+You can apply multiple suggestions at once to reduce the number of commits added
+to your branch to address your reviewers' requests.
+
+1. To start a batch of suggestions that will be applied with a single commit, click **Add suggestion to batch**:
+
+   ![A code change suggestion displayed, with the button to add the suggestion to a batch highlighted.](img/add_first_suggestion_to_batch_v13_1.jpg "Add a suggestion to a batch")
+
+1. Add as many additional suggestions to the batch as you wish:
+
+   ![A code change suggestion displayed, with the button to add an additional suggestion to a batch highlighted.](img/add_another_suggestion_to_batch_v13_1.jpg "Add another suggestion to a batch")
+
+1. To remove suggestions, click **Remove from batch**:
+
+   ![A code change suggestion displayed, with the button to remove that suggestion from its batch highlighted.](img/remove_suggestion_from_batch_v13_1.jpg "Remove a suggestion from a batch")
+
+1. Having added all the suggestions to your liking, when ready, click **Apply suggestions**:
+
+   ![A code change suggestion displayed, with the button to apply the batch of suggestions highlighted.](img/apply_batch_of_suggestions_v13_1.jpg "Apply a batch of suggestions")
 
 ## Start a thread by replying to a standard comment
 

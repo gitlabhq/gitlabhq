@@ -15,6 +15,7 @@ import {
   userDataMock,
   noteableDataMock,
   individualNote,
+  batchSuggestionsInfoMock,
 } from '../mock_data';
 import axios from '~/lib/utils/axios_utils';
 
@@ -890,7 +891,23 @@ describe('Actions Notes Store', () => {
       testSubmitSuggestion(done, () => {
         expect(commit).not.toHaveBeenCalled();
         expect(dispatch).not.toHaveBeenCalled();
-        expect(Flash).toHaveBeenCalledWith(`${TEST_ERROR_MESSAGE}.`, 'alert', flashContainer);
+        expect(Flash).toHaveBeenCalledWith(TEST_ERROR_MESSAGE, 'alert', flashContainer);
+      });
+    });
+
+    it('when service fails, and no error message available, uses default message', done => {
+      const response = { response: 'foo' };
+
+      Api.applySuggestion.mockReturnValue(Promise.reject(response));
+
+      testSubmitSuggestion(done, () => {
+        expect(commit).not.toHaveBeenCalled();
+        expect(dispatch).not.toHaveBeenCalled();
+        expect(Flash).toHaveBeenCalledWith(
+          'Something went wrong while applying the suggestion. Please try again.',
+          'alert',
+          flashContainer,
+        );
       });
     });
 
@@ -900,6 +917,130 @@ describe('Actions Notes Store', () => {
       testSubmitSuggestion(done, () => {
         expect(Flash).not.toHaveBeenCalled();
       });
+    });
+  });
+
+  describe('submitSuggestionBatch', () => {
+    const discussionIds = batchSuggestionsInfoMock.map(({ discussionId }) => discussionId);
+    const batchSuggestionsInfo = batchSuggestionsInfoMock;
+
+    let flashContainer;
+
+    beforeEach(() => {
+      jest.spyOn(Api, 'applySuggestionBatch');
+      dispatch.mockReturnValue(Promise.resolve());
+      Api.applySuggestionBatch.mockReturnValue(Promise.resolve());
+      state = { batchSuggestionsInfo };
+      flashContainer = {};
+    });
+
+    const testSubmitSuggestionBatch = (done, expectFn) => {
+      actions
+        .submitSuggestionBatch({ commit, dispatch, state }, { flashContainer })
+        .then(expectFn)
+        .then(done)
+        .catch(done.fail);
+    };
+
+    it('when service succeeds, commits, resolves discussions, resets batch and applying batch state', done => {
+      testSubmitSuggestionBatch(done, () => {
+        expect(commit.mock.calls).toEqual([
+          [mutationTypes.SET_APPLYING_BATCH_STATE, true],
+          [mutationTypes.APPLY_SUGGESTION, batchSuggestionsInfo[0]],
+          [mutationTypes.APPLY_SUGGESTION, batchSuggestionsInfo[1]],
+          [mutationTypes.CLEAR_SUGGESTION_BATCH],
+          [mutationTypes.SET_APPLYING_BATCH_STATE, false],
+        ]);
+
+        expect(dispatch.mock.calls).toEqual([
+          ['resolveDiscussion', { discussionId: discussionIds[0] }],
+          ['resolveDiscussion', { discussionId: discussionIds[1] }],
+        ]);
+
+        expect(Flash).not.toHaveBeenCalled();
+      });
+    });
+
+    it('when service fails, flashes error message, resets applying batch state', done => {
+      const response = { response: { data: { message: TEST_ERROR_MESSAGE } } };
+
+      Api.applySuggestionBatch.mockReturnValue(Promise.reject(response));
+
+      testSubmitSuggestionBatch(done, () => {
+        expect(commit.mock.calls).toEqual([
+          [mutationTypes.SET_APPLYING_BATCH_STATE, true],
+          [mutationTypes.SET_APPLYING_BATCH_STATE, false],
+        ]);
+
+        expect(dispatch).not.toHaveBeenCalled();
+        expect(Flash).toHaveBeenCalledWith(TEST_ERROR_MESSAGE, 'alert', flashContainer);
+      });
+    });
+
+    it('when service fails, and no error message available, uses default message', done => {
+      const response = { response: 'foo' };
+
+      Api.applySuggestionBatch.mockReturnValue(Promise.reject(response));
+
+      testSubmitSuggestionBatch(done, () => {
+        expect(commit.mock.calls).toEqual([
+          [mutationTypes.SET_APPLYING_BATCH_STATE, true],
+          [mutationTypes.SET_APPLYING_BATCH_STATE, false],
+        ]);
+
+        expect(dispatch).not.toHaveBeenCalled();
+        expect(Flash).toHaveBeenCalledWith(
+          'Something went wrong while applying the batch of suggestions. Please try again.',
+          'alert',
+          flashContainer,
+        );
+      });
+    });
+
+    it('when resolve discussions fails, fails gracefully, resets batch and applying batch state', done => {
+      dispatch.mockReturnValue(Promise.reject());
+
+      testSubmitSuggestionBatch(done, () => {
+        expect(commit.mock.calls).toEqual([
+          [mutationTypes.SET_APPLYING_BATCH_STATE, true],
+          [mutationTypes.APPLY_SUGGESTION, batchSuggestionsInfo[0]],
+          [mutationTypes.APPLY_SUGGESTION, batchSuggestionsInfo[1]],
+          [mutationTypes.CLEAR_SUGGESTION_BATCH],
+          [mutationTypes.SET_APPLYING_BATCH_STATE, false],
+        ]);
+
+        expect(Flash).not.toHaveBeenCalled();
+      });
+    });
+  });
+
+  describe('addSuggestionInfoToBatch', () => {
+    const suggestionInfo = batchSuggestionsInfoMock[0];
+
+    it("adds a suggestion's info to the current batch", done => {
+      testAction(
+        actions.addSuggestionInfoToBatch,
+        suggestionInfo,
+        { batchSuggestionsInfo: [] },
+        [{ type: 'ADD_SUGGESTION_TO_BATCH', payload: suggestionInfo }],
+        [],
+        done,
+      );
+    });
+  });
+
+  describe('removeSuggestionInfoFromBatch', () => {
+    const suggestionInfo = batchSuggestionsInfoMock[0];
+
+    it("removes a suggestion's info the current batch", done => {
+      testAction(
+        actions.removeSuggestionInfoFromBatch,
+        suggestionInfo.suggestionId,
+        { batchSuggestionsInfo: [suggestionInfo] },
+        [{ type: 'REMOVE_SUGGESTION_FROM_BATCH', payload: suggestionInfo.suggestionId }],
+        [],
+        done,
+      );
     });
   });
 

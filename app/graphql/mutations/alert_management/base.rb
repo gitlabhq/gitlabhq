@@ -32,7 +32,7 @@ module Mutations
 
         return unless project
 
-        resolver = Resolvers::AlertManagementAlertResolver.single.new(object: project, context: context, field: nil)
+        resolver = Resolvers::AlertManagement::AlertResolver.single.new(object: project, context: context, field: nil)
         resolver.resolve(iid: iid)
       end
     end

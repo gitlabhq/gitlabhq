@@ -72,10 +72,7 @@ export default {
   },
   methods: {
     ...mapActions(['fetchClusters', 'setPage']),
-    statusClass(status) {
-      const iconClass = STATUSES[status] || STATUSES.default;
-      return iconClass.className;
-    },
+
     statusTitle(status) {
       const iconTitle = STATUSES[status] || STATUSES.default;
       return sprintf(__('Status: %{title}'), { title: iconTitle.title }, false);
@@ -96,19 +93,12 @@ export default {
           </gl-link>
 
           <gl-loading-icon
-            v-if="item.status === 'deleting'"
+            v-if="item.status === 'deleting' || item.status === 'creating'"
             v-tooltip
             :title="statusTitle(item.status)"
             size="sm"
             class="mr-2 ml-md-2"
           />
-          <div
-            v-else
-            v-tooltip
-            class="cluster-status-indicator rounded-circle align-self-center gl-w-4 gl-h-4 mr-2 ml-md-2"
-            :class="statusClass(item.status)"
-            :title="statusTitle(item.status)"
-          ></div>
         </div>
       </template>
 
