@@ -1,4 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
+import { GlSprintf } from '@gitlab/ui';
 import eventHub from '~/clusters/event_hub';
 import { APPLICATION_STATUS, ELASTIC_STACK } from '~/clusters/constants';
 import ApplicationRow from '~/clusters/components/application_row.vue';
@@ -16,6 +17,7 @@ describe('Application Row', () => {
 
   const mountComponent = data => {
     wrapper = shallowMount(ApplicationRow, {
+      stubs: { GlSprintf },
       propsData: {
         ...DEFAULT_APPLICATION_STATE,
         ...data,
@@ -356,6 +358,9 @@ describe('Application Row', () => {
   });
 
   describe('Version', () => {
+    const updateDetails = () => wrapper.find('.js-cluster-application-update-details');
+    const versionEl = () => wrapper.find('.js-cluster-application-update-version');
+
     it('displays a version number if application has been updated', () => {
       const version = '0.1.45';
       mountComponent({
@@ -363,12 +368,8 @@ describe('Application Row', () => {
         updateSuccessful: true,
         version,
       });
-      const updateDetails = wrapper.find('.js-cluster-application-update-details');
-      const versionEl = wrapper.find('.js-cluster-application-update-version');
 
-      expect(updateDetails.text()).toContain('Updated');
-      expect(versionEl.exists()).toBe(true);
-      expect(versionEl.text()).toContain(version);
+      expect(updateDetails().text()).toBe(`Updated to chart v${version}`);
     });
 
     it('contains a link to the chart repo if application has been updated', () => {
@@ -380,10 +381,9 @@ describe('Application Row', () => {
         chartRepo,
         version,
       });
-      const versionEl = wrapper.find('.js-cluster-application-update-version');
 
-      expect(versionEl.attributes('href')).toEqual(chartRepo);
-      expect(versionEl.props('target')).toEqual('_blank');
+      expect(versionEl().attributes('href')).toEqual(chartRepo);
+      expect(versionEl().props('target')).toEqual('_blank');
     });
 
     it('does not display a version number if application update failed', () => {
@@ -393,11 +393,20 @@ describe('Application Row', () => {
         updateFailed: true,
         version,
       });
-      const updateDetails = wrapper.find('.js-cluster-application-update-details');
-      const versionEl = wrapper.find('.js-cluster-application-update-version');
 
-      expect(updateDetails.text()).toContain('failed');
-      expect(versionEl.exists()).toBe(false);
+      expect(updateDetails().text()).toBe('Update failed');
+      expect(versionEl().exists()).toBe(false);
+    });
+
+    it('displays updating when the application update is currently updating', () => {
+      mountComponent({
+        status: APPLICATION_STATUS.UPDATING,
+        updateSuccessful: true,
+        version: '1.2.3',
+      });
+
+      expect(updateDetails().text()).toBe('Updating');
+      expect(versionEl().exists()).toBe(false);
     });
   });
 

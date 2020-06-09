@@ -6,7 +6,7 @@ module Types
       include Types::BaseInterface
       graphql_name 'Service'
 
-      # TODO: Add all the fields that we want to expose for the project services intergrations
+      # TODO: Add all the fields that we want to expose for the project services integrations
       # https://gitlab.com/gitlab-org/gitlab/-/issues/213088
       field :type, GraphQL::STRING_TYPE, null: true,
             description: 'Class name of the service'

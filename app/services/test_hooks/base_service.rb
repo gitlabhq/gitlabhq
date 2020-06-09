@@ -2,6 +2,8 @@
 
 module TestHooks
   class BaseService
+    include BaseServiceUtility
+
     attr_accessor :hook, :current_user, :trigger
 
     def initialize(hook, current_user, trigger)
@@ -12,31 +14,11 @@ module TestHooks
 
     def execute
       trigger_key = hook.class.triggers.key(trigger.to_sym)
-      trigger_data_method = "#{trigger}_data"
 
-      if trigger_key.nil? || !self.respond_to?(trigger_data_method, true)
-        return error('Testing not available for this hook')
-      end
+      return error('Testing not available for this hook') if trigger_key.nil? || data.blank?
+      return error(data[:error]) if data[:error].present?
 
-      error_message = catch(:validation_error) do # rubocop:disable Cop/BanCatchThrow
-        sample_data = self.__send__(trigger_data_method) # rubocop:disable GitlabSecurity/PublicSend
-
-        return hook.execute(sample_data, trigger_key) # rubocop:disable Cop/AvoidReturnFromBlocks
-      end
-
-      error(error_message)
-    end
-
-    private
-
-    def error(message, http_status = nil)
-      result = {
-        message: message,
-        status: :error
-      }
-
-      result[:http_status] = http_status if http_status
-      result
+      hook.execute(data, trigger_key)
     end
   end
 end

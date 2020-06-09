@@ -56,12 +56,6 @@ class PipelinesEmailService < Service
     project&.ci_pipelines&.any?
   end
 
-  def test_data(project, user)
-    data = Gitlab::DataBuilder::Pipeline.build(project.ci_pipelines.last)
-    data[:user] = user.hook_attrs
-    data
-  end
-
   def fields
     [
       { type: 'textarea',

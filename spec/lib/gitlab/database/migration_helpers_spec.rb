@@ -2075,6 +2075,34 @@ describe Gitlab::Database::MigrationHelpers do
       allow(model).to receive(:check_constraint_exists?).and_return(false)
     end
 
+    context 'constraint name validation' do
+      it 'raises an error when too long' do
+        expect do
+          model.add_check_constraint(
+            :test_table,
+            'name IS NOT NULL',
+            'a' * (Gitlab::Database::MigrationHelpers::MAX_IDENTIFIER_NAME_LENGTH + 1)
+          )
+        end.to raise_error(RuntimeError)
+      end
+
+      it 'does not raise error when the length is acceptable' do
+        constraint_name = 'a' * Gitlab::Database::MigrationHelpers::MAX_IDENTIFIER_NAME_LENGTH
+
+        expect(model).to receive(:transaction_open?).and_return(false)
+        expect(model).to receive(:check_constraint_exists?).and_return(false)
+        expect(model).to receive(:with_lock_retries).and_call_original
+        expect(model).to receive(:execute).with(/ADD CONSTRAINT/)
+
+        model.add_check_constraint(
+          :test_table,
+          'name IS NOT NULL',
+          constraint_name,
+          validate: false
+        )
+      end
+    end
+
     context 'inside a transaction' do
       it 'raises an error' do
         expect(model).to receive(:transaction_open?).and_return(true)

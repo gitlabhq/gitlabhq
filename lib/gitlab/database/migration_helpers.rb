@@ -3,6 +3,8 @@
 module Gitlab
   module Database
     module MigrationHelpers
+      # https://www.postgresql.org/docs/current/sql-syntax-lexical.html#SQL-SYNTAX-IDENTIFIERS
+      MAX_IDENTIFIER_NAME_LENGTH = 63
       BACKGROUND_MIGRATION_BATCH_SIZE = 1000 # Number of rows to process per job
       BACKGROUND_MIGRATION_JOB_BUFFER_SIZE = 1000 # Number of jobs to bulk queue at a time
 
@@ -1209,6 +1211,8 @@ into similar problems in the future (e.g. when new tables are created).
       #
       # rubocop:disable Gitlab/RailsLogger
       def add_check_constraint(table, check, constraint_name, validate: true)
+        validate_check_constraint_name!(constraint_name)
+
         # Transactions would result in ALTER TABLE locks being held for the
         # duration of the transaction, defeating the purpose of this method.
         if transaction_open?
@@ -1244,6 +1248,8 @@ into similar problems in the future (e.g. when new tables are created).
       end
 
       def validate_check_constraint(table, constraint_name)
+        validate_check_constraint_name!(constraint_name)
+
         unless check_constraint_exists?(table, constraint_name)
           raise missing_schema_object_message(table, "check constraint", constraint_name)
         end
@@ -1256,6 +1262,8 @@ into similar problems in the future (e.g. when new tables are created).
       end
 
       def remove_check_constraint(table, constraint_name)
+        validate_check_constraint_name!(constraint_name)
+
         # DROP CONSTRAINT requires an EXCLUSIVE lock
         # Use with_lock_retries to make sure that this will not timeout
         with_lock_retries do
@@ -1329,6 +1337,12 @@ into similar problems in the future (e.g. when new tables are created).
       end
 
       private
+
+      def validate_check_constraint_name!(constraint_name)
+        if constraint_name.to_s.length > MAX_IDENTIFIER_NAME_LENGTH
+          raise "The maximum allowed constraint name is #{MAX_IDENTIFIER_NAME_LENGTH} characters"
+        end
+      end
 
       def statement_timeout_disabled?
         # This is a string of the form "100ms" or "0" when disabled

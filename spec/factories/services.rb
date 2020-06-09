@@ -165,6 +165,20 @@ FactoryBot.define do
     type { 'SlackService' }
   end
 
+  factory :github_service do
+    project
+    type { 'GithubService' }
+    active { true }
+    token { 'github-token' }
+  end
+
+  factory :pipelines_email_service do
+    project
+    active { true }
+    type { 'PipelinesEmailService' }
+    recipients { 'test@example.com' }
+  end
+
   # this is for testing storing values inside properties, which is deprecated and will be removed in
   # https://gitlab.com/gitlab-org/gitlab/issues/29404
   trait :without_properties_callback do

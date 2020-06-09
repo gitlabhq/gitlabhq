@@ -31,15 +31,7 @@ describe TestHooks::ProjectService do
       let(:trigger) { 'push_events' }
       let(:trigger_key) { :push_hooks }
 
-      it 'returns error message if not enough data' do
-        allow(project).to receive(:empty_repo?).and_return(true)
-
-        expect(hook).not_to receive(:execute)
-        expect(service.execute).to include({ status: :error, message: 'Ensure the project has at least one commit.' })
-      end
-
       it 'executes hook' do
-        allow(project).to receive(:empty_repo?).and_return(false)
         allow(Gitlab::DataBuilder::Push).to receive(:build_sample).and_return(sample_data)
 
         expect(hook).to receive(:execute).with(sample_data, trigger_key).and_return(success_result)
@@ -51,15 +43,7 @@ describe TestHooks::ProjectService do
       let(:trigger) { 'tag_push_events' }
       let(:trigger_key) { :tag_push_hooks }
 
-      it 'returns error message if not enough data' do
-        allow(project).to receive(:empty_repo?).and_return(true)
-
-        expect(hook).not_to receive(:execute)
-        expect(service.execute).to include({ status: :error, message: 'Ensure the project has at least one commit.' })
-      end
-
       it 'executes hook' do
-        allow(project).to receive(:empty_repo?).and_return(false)
         allow(Gitlab::DataBuilder::Push).to receive(:build_sample).and_return(sample_data)
 
         expect(hook).to receive(:execute).with(sample_data, trigger_key).and_return(success_result)

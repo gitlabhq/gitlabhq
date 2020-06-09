@@ -215,11 +215,6 @@ class JiraService < IssueTrackerService
     { success: success, result: result }
   end
 
-  # Jira does not need test data.
-  def test_data(_, _)
-    nil
-  end
-
   override :support_close_issue?
   def support_close_issue?
     true

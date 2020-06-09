@@ -2,6 +2,9 @@
 
 module TestHooks
   class ProjectService < TestHooks::BaseService
+    include Integrations::ProjectTestData
+    include Gitlab::Utils::StrongMemoize
+
     attr_writer :project
 
     def project
@@ -10,58 +13,25 @@ module TestHooks
 
     private
 
-    def push_events_data
-      throw(:validation_error, s_('TestHooks|Ensure the project has at least one commit.')) if project.empty_repo? # rubocop:disable Cop/BanCatchThrow
-
-      Gitlab::DataBuilder::Push.build_sample(project, current_user)
-    end
-
-    alias_method :tag_push_events_data, :push_events_data
-
-    def note_events_data
-      note = project.notes.first
-      throw(:validation_error, s_('TestHooks|Ensure the project has notes.')) unless note.present? # rubocop:disable Cop/BanCatchThrow
-
-      Gitlab::DataBuilder::Note.build(note, current_user)
-    end
-
-    def issues_events_data
-      issue = project.issues.first
-      throw(:validation_error, s_('TestHooks|Ensure the project has issues.')) unless issue.present? # rubocop:disable Cop/BanCatchThrow
-
-      issue.to_hook_data(current_user)
-    end
-
-    alias_method :confidential_issues_events_data, :issues_events_data
-
-    def merge_requests_events_data
-      merge_request = project.merge_requests.first
-      throw(:validation_error, s_('TestHooks|Ensure the project has merge requests.')) unless merge_request.present? # rubocop:disable Cop/BanCatchThrow
-
-      merge_request.to_hook_data(current_user)
-    end
-
-    def job_events_data
-      build = project.builds.first
-      throw(:validation_error, s_('TestHooks|Ensure the project has CI jobs.')) unless build.present? # rubocop:disable Cop/BanCatchThrow
-
-      Gitlab::DataBuilder::Build.build(build)
-    end
-
-    def pipeline_events_data
-      pipeline = project.ci_pipelines.first
-      throw(:validation_error, s_('TestHooks|Ensure the project has CI pipelines.')) unless pipeline.present? # rubocop:disable Cop/BanCatchThrow
-
-      Gitlab::DataBuilder::Pipeline.build(pipeline)
-    end
-
-    def wiki_page_events_data
-      page = project.wiki.list_pages(limit: 1).first
-      if !project.wiki_enabled? || page.blank?
-        throw(:validation_error, s_('TestHooks|Ensure the wiki is enabled and has pages.')) # rubocop:disable Cop/BanCatchThrow
+    def data
+      strong_memoize(:data) do
+        case trigger
+        when 'push_events', 'tag_push_events'
+          push_events_data
+        when 'note_events'
+          note_events_data
+        when 'issues_events', 'confidential_issues_events'
+          issues_events_data
+        when 'merge_requests_events'
+          merge_requests_events_data
+        when 'job_events'
+          job_events_data
+        when 'pipeline_events'
+          pipeline_events_data
+        when 'wiki_page_events'
+          wiki_page_events_data
+        end
       end
-
-      Gitlab::DataBuilder::WikiPage.build(page, current_user, 'create')
     end
   end
 end

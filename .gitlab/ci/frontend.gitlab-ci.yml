@@ -103,6 +103,7 @@ build-assets-image:
     # We'll also need to pass GITLAB_ASSETS_TAG to the trigerred omnibus-gitlab pipeline similarly to how we do it for trigerred CNG pipelines
     # https://gitlab.com/gitlab-org/gitlab/issues/208389
     - run_timed_command "scripts/build_assets_image"
+  retry: 2
 
 .frontend-fixtures-base:
   extends:

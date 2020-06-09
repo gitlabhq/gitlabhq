@@ -21813,7 +21813,7 @@ msgstr ""
 msgid "TestHooks|Ensure the project has CI pipelines."
 msgstr ""
 
-msgid "TestHooks|Ensure the project has at least one commit."
+msgid "TestHooks|Ensure the project has deployments."
 msgstr ""
 
 msgid "TestHooks|Ensure the project has issues."
@@ -23999,7 +23999,7 @@ msgstr ""
 msgid "Updated at"
 msgstr ""
 
-msgid "Updated to"
+msgid "Updated to %{linkStart}chart v%{linkEnd}"
 msgstr ""
 
 msgid "Updating"

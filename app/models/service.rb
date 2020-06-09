@@ -144,10 +144,6 @@ class Service < ApplicationRecord
     data_fields.as_json(only: data_fields.class.column_names).except('id', 'service_id')
   end
 
-  def test_data(project, user)
-    Gitlab::DataBuilder::Push.build_sample(project, user)
-  end
-
   def event_channel_names
     []
   end

@@ -8,7 +8,7 @@ class UpdateResourceStateEventsConstraintToSupportEpicId < ActiveRecord::Migrati
   disable_ddl_transaction!
 
   OLD_CONSTRAINT = 'resource_state_events_must_belong_to_issue_or_merge_request'
-  CONSTRAINT_NAME = 'resource_state_events_must_belong_to_issue_or_merge_request_or_epic'
+  CONSTRAINT_NAME = 'resource_state_events_must_belong_to_issue_or_merge_request_or_'
 
   def up
     remove_check_constraint :resource_state_events, OLD_CONSTRAINT

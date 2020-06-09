@@ -29,7 +29,6 @@ describe TestHooks::SystemService do
       let(:trigger_key) { :push_hooks }
 
       it 'executes hook' do
-        allow(project).to receive(:empty_repo?).and_return(false)
         expect(Gitlab::DataBuilder::Push).to receive(:sample_data).and_call_original
 
         expect(hook).to receive(:execute).with(Gitlab::DataBuilder::Push::SAMPLE_DATA, trigger_key).and_return(success_result)
@@ -55,7 +54,6 @@ describe TestHooks::SystemService do
       let(:trigger_key) { :repository_update_hooks }
 
       it 'executes hook' do
-        allow(project).to receive(:empty_repo?).and_return(false)
         expect(Gitlab::DataBuilder::Repository).to receive(:sample_data).and_call_original
 
         expect(hook).to receive(:execute).with(Gitlab::DataBuilder::Repository::SAMPLE_DATA, trigger_key).and_return(success_result)
