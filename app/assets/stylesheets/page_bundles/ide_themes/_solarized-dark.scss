@@ -1,0 +1,50 @@
+// -------
+// Please see `app/assets/stylesheets/page_bundles/ide_themes/README.md` for a guide on contributing new themes
+// -------
+.ide.theme-solarized-dark {
+  --ide-border-color: #002c38;
+  --ide-border-color-alt: var(--ide-background);
+  --ide-highlight-accent: #fff;
+  --ide-text-color: #ddd;
+  --ide-text-color-secondary: #ddd;
+  --ide-background: #004152;
+  --ide-background-hover: #003b4d;
+  --ide-highlight-background: #003240;
+  --ide-link-color: #73b9ff;
+  --ide-footer-background: var(--ide-highlight-background);
+
+  --ide-input-border: #d8d8d8;
+  --ide-input-background: transparent;
+  --ide-input-color: #fff;
+
+  --ide-btn-default-background: transparent;
+  --ide-btn-default-border: var(--ide-input-border);
+  --ide-btn-default-hover-border: #d8d8d8;
+
+  --ide-btn-primary-background: #1068bf;
+  --ide-btn-primary-border: #428fdc;
+  --ide-btn-primary-hover-border: #63a6e9;
+
+  --ide-btn-success-background: #217645;
+  --ide-btn-success-border: #108548;
+  --ide-btn-success-hover-border: #2da160;
+
+  --ide-btn-disabled-border: rgba(223, 223, 223, 0.24);
+  --ide-btn-disabled-color: rgba(145, 145, 145, 0.48);
+
+  --ide-btn-hover-border-width: 2px;
+
+  --ide-dropdown-background: #004c61;
+  --ide-dropdown-hover-background: #00617a;
+
+  --ide-dropdown-btn-hover-border: #e9ecef;
+  --ide-dropdown-btn-hover-background: var(--ide-background-hover);
+
+  --ide-file-row-btn-hover-background: #005a73;
+
+  --ide-diff-insert: rgba(155, 185, 85, 0.2);
+  --ide-diff-remove: rgba(255, 0, 0, 0.2);
+
+  --ide-animation-gradient-1: var(--ide-file-row-btn-hover-background);
+  --ide-animation-gradient-2: var(--ide-dropdown-hover-background);
+  }

@@ -282,12 +282,16 @@ export default {
   },
   methods: {
     installClicked() {
+      if (this.disabled || this.installButtonDisabled) return;
+
       eventHub.$emit('installApplication', {
         id: this.id,
         params: this.installApplicationRequestParams,
       });
     },
     updateConfirmed() {
+      if (this.isUpdating) return;
+
       eventHub.$emit('updateApplication', {
         id: this.id,
         params: this.installApplicationRequestParams,

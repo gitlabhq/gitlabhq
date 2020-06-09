@@ -630,6 +630,10 @@ export const softDeleteDescriptionVersion = (
     .catch(error => {
       dispatch('receiveDeleteDescriptionVersionError', error);
       Flash(__('Something went wrong while deleting description changes. Please try again.'));
+
+      // Throw an error here because a component like SystemNote -
+      //  needs to know if the request failed to reset its internal state.
+      throw new Error();
     });
 };
 

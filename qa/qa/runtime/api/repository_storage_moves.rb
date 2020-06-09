@@ -9,11 +9,11 @@ module QA
 
         RepositoryStorageMovesError = Class.new(RuntimeError)
 
-        def has_status?(project, status)
+        def has_status?(project, status, destination_storage = Env.additional_repository_storage)
           all.any? do |move|
             move[:project][:path_with_namespace] == project.path_with_namespace &&
             move[:state] == status &&
-            move[:destination_storage_name] == Env.additional_repository_storage
+            move[:destination_storage_name] == destination_storage
           end
         end
 

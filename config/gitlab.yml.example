@@ -1070,6 +1070,9 @@ production: &base
 
   ## ActionCable settings
   action_cable:
+    # Enables handling of ActionCable requests on the Puma web workers
+    # When this is disabled, a standalone ActionCable server must be started
+    in_app: true
     # Number of threads used to process ActionCable connection callbacks and channel actions
     # worker_pool_size: 4
 

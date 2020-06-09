@@ -2,12 +2,14 @@
 import RichContentEditor from '~/vue_shared/components/rich_content_editor/rich_content_editor.vue';
 import PublishToolbar from './publish_toolbar.vue';
 import EditHeader from './edit_header.vue';
+import UnsavedChangesConfirmDialog from './unsaved_changes_confirm_dialog.vue';
 
 export default {
   components: {
     RichContentEditor,
     PublishToolbar,
     EditHeader,
+    UnsavedChangesConfirmDialog,
   },
   props: {
     title: {
@@ -50,6 +52,7 @@ export default {
   <div class="d-flex flex-grow-1 flex-column h-100">
     <edit-header class="py-2" :title="title" />
     <rich-content-editor v-model="editableContent" class="mb-9 h-100" />
+    <unsaved-changes-confirm-dialog :modified="modified" />
     <publish-toolbar
       class="gl-fixed gl-left-0 gl-bottom-0 gl-w-full"
       :return-url="returnUrl"

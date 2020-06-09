@@ -1083,4 +1083,62 @@ describe('Actions Notes Store', () => {
       );
     });
   });
+
+  describe('softDeleteDescriptionVersion', () => {
+    const endpoint = '/path/to/diff/1';
+    const payload = {
+      endpoint,
+      startingVersion: undefined,
+      versionId: 1,
+    };
+
+    describe('if response contains no errors', () => {
+      it('dispatches requestDeleteDescriptionVersion', done => {
+        axiosMock.onDelete(endpoint).replyOnce(200);
+        testAction(
+          actions.softDeleteDescriptionVersion,
+          payload,
+          {},
+          [],
+          [
+            {
+              type: 'requestDeleteDescriptionVersion',
+            },
+            {
+              type: 'receiveDeleteDescriptionVersion',
+              payload: payload.versionId,
+            },
+          ],
+          done,
+        );
+      });
+    });
+
+    describe('if response contains errors', () => {
+      const errorMessage = 'Request failed with status code 503';
+      it('dispatches receiveDeleteDescriptionVersionError and throws an error', done => {
+        axiosMock.onDelete(endpoint).replyOnce(503);
+        testAction(
+          actions.softDeleteDescriptionVersion,
+          payload,
+          {},
+          [],
+          [
+            {
+              type: 'requestDeleteDescriptionVersion',
+            },
+            {
+              type: 'receiveDeleteDescriptionVersionError',
+              payload: new Error(errorMessage),
+            },
+          ],
+        )
+          .then(() => done.fail('Expected error to be thrown'))
+          .catch(() => {
+            expect(Flash).toHaveBeenCalled();
+            done();
+          });
+      });
+    });
+  });
 });

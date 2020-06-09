@@ -360,5 +360,6 @@ rspec foss-impact:
     expire_in: 7d
     paths:
       - tmp/matching_foss_tests.txt
+      - tmp/capybara/
 # EE: Merge Request pipelines
 ##################################################

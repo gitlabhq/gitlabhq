@@ -141,6 +141,9 @@ that can also be promoted in case of disaster.
 
 ## Configure GitLab to scale
 
+NOTE: **Note:**
+From GitLab 13.0, using NFS for Git repositories is deprecated. In GitLab 14.0, support for NFS for Git repositories is scheduled to be removed. Upgrade to [Gitaly Cluster](../gitaly/praefect.md) as soon as possible.
+
 The following components are the ones you need to configure in order to scale
 GitLab. They are listed in the order you'll typically configure them if they are
 required by your [reference architecture](#reference-architectures) of choice.
@@ -163,7 +166,7 @@ column.
 | Repmgr | PostgreSQL cluster management and failover | [PostgreSQL and Repmgr configuration](../high_availability/database.md) | Yes |
 | [Redis](../../development/architecture.md#redis) ([3](#footnotes))  | Key/value store for fast data lookup and caching | [Redis configuration](../high_availability/redis.md) | Yes |
 | Redis Sentinel | Redis | [Redis Sentinel configuration](../high_availability/redis.md) | Yes |
-| [Gitaly](../../development/architecture.md#gitaly) ([2](#footnotes)) ([7](#footnotes)) ([9](#footnotes)) | Provides access to Git repositories | [Gitaly configuration](../gitaly/index.md#running-gitaly-on-its-own-server) | Yes |
+| [Gitaly](../../development/architecture.md#gitaly) ([2](#footnotes)) ([7](#footnotes)) | Provides access to Git repositories | [Gitaly configuration](../gitaly/index.md#running-gitaly-on-its-own-server) | Yes |
 | [Sidekiq](../../development/architecture.md#sidekiq) | Asynchronous/background jobs | [Sidekiq configuration](../high_availability/sidekiq.md) | Yes |
 | [GitLab application services](../../development/architecture.md#unicorn)([1](#footnotes)) | Puma/Unicorn, Workhorse, GitLab Shell - serves front-end requests (UI, API, Git over HTTP/SSH) | [GitLab app scaling configuration](../high_availability/gitlab.md) | Yes |
 | [Prometheus](../../development/architecture.md#prometheus) and [Grafana](../../development/architecture.md#grafana) | GitLab environment monitoring | [Monitoring node for scaling](../high_availability/monitoring_node.md) | Yes |
@@ -177,9 +180,7 @@ column.
    on workload.
 
 1. Gitaly node requirements are dependent on customer data, specifically the number of
-   projects and their sizes. We recommend two nodes as an absolute minimum,
-   and at least four nodes should be used when supporting 50,000 or more users.
-   We also recommend that each Gitaly node should store no more than 5TB of data
+   projects and their sizes. We recommend that each Gitaly node should store no more than 5TB of data
    and have the number of [`gitaly-ruby` workers](../gitaly/index.md#gitaly-ruby)
    set to 20% of available CPUs. Additional nodes should be considered in conjunction
    with a review of expected data size and spread based on the recommendations above.
@@ -216,7 +217,3 @@ column.
    or higher, are required for your CPU or Node counts accordingly. For more information, a
    [Sysbench](https://github.com/akopytov/sysbench) benchmark of the CPU can be found
    [here](https://gitlab.com/gitlab-org/quality/performance/-/wikis/Reference-Architectures/GCP-CPU-Benchmarks).
-
-1. From GitLab 13.0, using NFS for Git repositories is deprecated. In GitLab
-   14.0, support for NFS for Git repositories is scheduled to be removed.
-   Upgrade to [Gitaly Cluster](../gitaly/praefect.md) as soon as possible.

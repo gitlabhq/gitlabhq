@@ -5,6 +5,7 @@ import RichContentEditor from '~/vue_shared/components/rich_content_editor/rich_
 import EditArea from '~/static_site_editor/components/edit_area.vue';
 import PublishToolbar from '~/static_site_editor/components/publish_toolbar.vue';
 import EditHeader from '~/static_site_editor/components/edit_header.vue';
+import UnsavedChangesConfirmDialog from '~/static_site_editor/components/unsaved_changes_confirm_dialog.vue';
 
 import { sourceContentTitle as title, sourceContent as content, returnUrl } from '../mock_data';
 
@@ -28,6 +29,7 @@ describe('~/static_site_editor/components/edit_area.vue', () => {
   const findEditHeader = () => wrapper.find(EditHeader);
   const findRichContentEditor = () => wrapper.find(RichContentEditor);
   const findPublishToolbar = () => wrapper.find(PublishToolbar);
+  const findUnsavedChangesConfirmDialog = () => wrapper.find(UnsavedChangesConfirmDialog);
 
   beforeEach(() => {
     buildWrapper();
@@ -49,9 +51,16 @@ describe('~/static_site_editor/components/edit_area.vue', () => {
 
   it('renders publish toolbar', () => {
     expect(findPublishToolbar().exists()).toBe(true);
-    expect(findPublishToolbar().props('returnUrl')).toBe(returnUrl);
-    expect(findPublishToolbar().props('savingChanges')).toBe(savingChanges);
-    expect(findPublishToolbar().props('saveable')).toBe(false);
+    expect(findPublishToolbar().props()).toMatchObject({
+      returnUrl,
+      savingChanges,
+      saveable: false,
+    });
+  });
+
+  it('renders unsaved changes confirm dialog', () => {
+    expect(findUnsavedChangesConfirmDialog().exists()).toBe(true);
+    expect(findUnsavedChangesConfirmDialog().props('modified')).toBe(false);
   });
 
   describe('when content changes', () => {
@@ -61,8 +70,12 @@ describe('~/static_site_editor/components/edit_area.vue', () => {
       return wrapper.vm.$nextTick();
     });
 
-    it('sets publish toolbar as saveable when content changes', () => {
+    it('sets publish toolbar as saveable', () => {
       expect(findPublishToolbar().props('saveable')).toBe(true);
+    });
+
+    it('sets unsaved changes confirm dialog as modified', () => {
+      expect(findUnsavedChangesConfirmDialog().props('modified')).toBe(true);
     });
 
     it('sets publish toolbar as not saveable when content changes are rollback', () => {

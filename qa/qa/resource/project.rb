@@ -165,7 +165,7 @@ module QA
           raise ResourceUpdateFailedError, "Could not change repository storage to #{new_storage}. Request returned (#{response.code}): `#{response}`."
         end
 
-        wait_until(sleep_interval: 1) { Runtime::API::RepositoryStorageMoves.has_status?(self, 'finished') }
+        wait_until(sleep_interval: 1) { Runtime::API::RepositoryStorageMoves.has_status?(self, 'finished', new_storage) }
       rescue Support::Repeater::RepeaterConditionExceededError
         raise Runtime::API::RepositoryStorageMoves::RepositoryStorageMovesError, 'Timed out while waiting for the repository storage move to finish'
       end

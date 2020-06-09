@@ -5,6 +5,7 @@
 @import './ide_theme_overrides';
 
 @import './ide_themes/dark';
+@import './ide_themes/solarized-dark';
 
 $search-list-icon-width: 18px;
 $ide-activity-bar-width: 60px;
@@ -89,7 +90,7 @@ $ide-commit-header-height: 48px;
 
     &.active {
       background-color: var(--ide-highlight-background, $white);
-      border-bottom-color: var(--ide-border-color, $white);
+      border-bottom-color: transparent;
     }
 
     &:not(.disabled) {
