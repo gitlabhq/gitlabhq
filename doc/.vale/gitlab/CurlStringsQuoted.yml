@@ -1,5 +1,5 @@
 ---
-# Error: gitlab.CurlStringsQuoted
+# Warning: gitlab.CurlStringsQuoted
 #
 # Ensures all codeblocks using curl quote any URL strings.
 #

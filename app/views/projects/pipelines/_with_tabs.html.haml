@@ -10,6 +10,7 @@
       %li.js-dag-tab-link
         = link_to dag_project_pipeline_path(@project, @pipeline), data: { target: '#js-tab-dag', action: 'dag', toggle: 'tab' }, class: 'dag-tab' do
           = _('DAG')
+          %span.badge-pill.gl-badge.sm.gl-bg-blue-500.gl-text-white.gl-ml-2= _('Beta')
     %li.js-builds-tab-link
       = link_to builds_project_pipeline_path(@project, @pipeline), data: { target: '#js-tab-builds', action: 'builds', toggle: 'tab' }, class: 'builds-tab' do
         = _('Jobs')

@@ -75,6 +75,10 @@ For more details on the specific data persisted in a group export, see the
 1. Alternatively, you can come back to the project settings and download the
    file from there by clicking **Download export**, or generate a new file by clicking **Regenerate export**.
 
+NOTE: **Note:**
+The maximum import file size can be set by the Administrator, default is 50MB.
+As an administrator, you can modify the maximum import file size. To do so, use the `max_import_size` option in the [Application settings API](../../../api/settings.md#change-application-settings) or the [Admin UI](../../admin_area/settings/account_and_limit_settings.md).
+
 ### Between CE and EE
 
 You can export groups from the [Community Edition to the Enterprise Edition](https://about.gitlab.com/install/ce-or-ee/) and vice versa.

@@ -21,7 +21,10 @@ describe Gitlab::SidekiqLogging::StructuredLogger do
         "correlation_id" => 'cid',
         "error_message" => "wrong number of arguments (2 for 3)",
         "error_class" => "ArgumentError",
-        "error_backtrace" => []
+        "error_backtrace" => [],
+        "db_count" => 1,
+        "db_write_count" => 0,
+        "db_cached_count" => 0
       }
     end
 
@@ -197,7 +200,10 @@ describe Gitlab::SidekiqLogging::StructuredLogger do
 
       let(:expected_end_payload_with_db) do
         expected_end_payload.merge(
-          'db_duration_s' => a_value >= 0.1
+          'db_duration_s' => a_value >= 0.1,
+          'db_count' => 1,
+          'db_cached_count' => 0,
+          'db_write_count' => 0
         )
       end
 

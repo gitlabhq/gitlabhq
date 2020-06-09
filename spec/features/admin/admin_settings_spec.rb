@@ -105,6 +105,16 @@ describe 'Admin updates settings', :clean_gitlab_redis_shared_state, :do_not_moc
         expect(page).to have_content "Application settings saved successfully"
       end
 
+      it 'Change Maximum import size' do
+        page.within('.as-account-limit') do
+          fill_in 'Maximum import size (MB)', with: 15
+          click_button 'Save changes'
+        end
+
+        expect(current_settings.max_import_size).to eq 15
+        expect(page).to have_content "Application settings saved successfully"
+      end
+
       it 'Change New users set to external', :js do
         user_internal_regex = find('#application_setting_user_default_internal_regex', visible: :all)
 

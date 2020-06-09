@@ -458,6 +458,7 @@ CREATE TABLE public.application_settings (
     spam_check_endpoint_enabled boolean DEFAULT false NOT NULL,
     elasticsearch_pause_indexing boolean DEFAULT false NOT NULL,
     repository_storages_weighted jsonb DEFAULT '{}'::jsonb NOT NULL,
+    max_import_size integer DEFAULT 50 NOT NULL,
     CONSTRAINT check_d03919528d CHECK ((char_length(container_registry_vendor) <= 255)),
     CONSTRAINT check_d820146492 CHECK ((char_length(spam_check_endpoint_url) <= 255)),
     CONSTRAINT check_e5aba18f02 CHECK ((char_length(container_registry_version) <= 255))
@@ -4915,7 +4916,8 @@ CREATE TABLE public.plan_limits (
     group_hooks integer DEFAULT 50 NOT NULL,
     ci_project_subscriptions integer DEFAULT 2 NOT NULL,
     ci_pipeline_schedules integer DEFAULT 10 NOT NULL,
-    offset_pagination_limit integer DEFAULT 50000 NOT NULL
+    offset_pagination_limit integer DEFAULT 50000 NOT NULL,
+    ci_instance_level_variables integer DEFAULT 25 NOT NULL
 );
 
 CREATE SEQUENCE public.plan_limits_id_seq
@@ -13772,6 +13774,7 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200519074709
 20200519101002
 20200519115908
+20200519141534
 20200519171058
 20200519194042
 20200520103514
@@ -13796,12 +13799,12 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200527151413
 20200527152116
 20200527152657
+20200527211000
 20200528054112
 20200528123703
 20200528125905
 20200528171933
 20200601210148
-20200602143020
 20200603073101
 \.
 

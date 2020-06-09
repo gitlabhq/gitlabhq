@@ -44,6 +44,18 @@ describe Gitlab::Lograge::CustomOptions do
       end
     end
 
+    context 'with transaction' do
+      let(:transaction) { Gitlab::Metrics::WebTransaction.new({}) }
+
+      before do
+        allow(Gitlab::Metrics::Transaction).to receive(:current).and_return(transaction)
+      end
+
+      it 'adds db counters' do
+        expect(subject).to include(:db_count, :db_write_count, :db_cached_count)
+      end
+    end
+
     it 'adds the user id' do
       expect(subject[:user_id]).to eq('test')
     end

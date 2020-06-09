@@ -1,10 +1,12 @@
 ---
+# Warning: gitlab.OxfordComma
+#
 # Checks for the lack of an Oxford comma. In some cases, will catch overly
 # complex sentence structures with lots of commas.
 #
 # For a list of all options, see https://errata-ai.github.io/vale/styles/
 extends: existence
-message: Use a comma before the last "and" or "or" in a list of four or more items.
+message: 'Use a comma before the last "and" or "or" in a list of four or more items.'
 link: https://docs.gitlab.com/ee/development/documentation/styleguide.html#punctuation
 level: warning
 raw:

@@ -17,6 +17,10 @@ module Gitlab
       def self.job_heartbeats_runner?(project)
         ::Feature.enabled?(:ci_job_heartbeats_runner, project, default_enabled: true)
       end
+
+      def self.instance_level_variables_limit_enabled?
+        ::Feature.enabled?(:ci_instance_level_variables_limit, default_enabled: true)
+      end
     end
   end
 end

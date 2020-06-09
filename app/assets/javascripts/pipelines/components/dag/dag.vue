@@ -1,5 +1,5 @@
 <script>
-import { GlAlert } from '@gitlab/ui';
+import { GlAlert, GlLink, GlSprintf } from '@gitlab/ui';
 import axios from '~/lib/utils/axios_utils';
 import { __ } from '~/locale';
 import DagGraph from './dag_graph.vue';
@@ -12,6 +12,8 @@ export default {
   components: {
     DagGraph,
     GlAlert,
+    GlLink,
+    GlSprintf,
   },
   props: {
     graphUrl: {
@@ -23,6 +25,7 @@ export default {
   data() {
     return {
       showFailureAlert: false,
+      showBetaInfo: true,
       failureType: null,
       graphData: null,
     };
@@ -34,6 +37,11 @@ export default {
     [DEFAULT]: __('An unknown error occurred while loading this graph.'),
   },
   computed: {
+    betaMessage() {
+      return __(
+        'This feature is currently in beta. We invite you to %{linkStart}give feedback%{linkEnd}.',
+      );
+    },
     failure() {
       switch (this.failureType) {
         case LOAD_FAILURE:
@@ -98,6 +106,9 @@ export default {
     hideAlert() {
       this.showFailureAlert = false;
     },
+    hideBetaInfo() {
+      this.showBetaInfo = false;
+    },
     reportFailure(type) {
       this.showFailureAlert = true;
       this.failureType = type;
@@ -109,6 +120,16 @@ export default {
   <div>
     <gl-alert v-if="showFailureAlert" :variant="failure.variant" @dismiss="hideAlert">
       {{ failure.text }}
+    </gl-alert>
+
+    <gl-alert v-if="showBetaInfo" @dismiss="hideBetaInfo">
+      <gl-sprintf :message="betaMessage">
+        <template #link="{ content }">
+          <gl-link href="https://gitlab.com/gitlab-org/gitlab/-/issues/220368" target="_blank">
+            {{ content }}
+          </gl-link>
+        </template>
+      </gl-sprintf>
     </gl-alert>
     <dag-graph v-if="shouldDisplayGraph" :graph-data="graphData" @onFailure="reportFailure" />
   </div>

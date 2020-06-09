@@ -1,3 +1,6 @@
+---
+# Warning: gitlab.Spelling
+#
 # Checks for possible spelling mistakes in content, not code. May find false positives
 # due to links using angle brackets: <https://example.com>. These can be ignored.
 #

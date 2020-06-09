@@ -30,6 +30,7 @@ Example response:
    "password_authentication_enabled_for_web" : true,
    "after_sign_out_path" : null,
    "max_attachment_size" : 10,
+   "max_import_size": 50,
    "user_oauth_applications" : true,
    "updated_at" : "2016-01-04T15:44:55.176Z",
    "session_expire_delay" : 10080,
@@ -118,6 +119,7 @@ Example response:
   "default_branch_protection": 2,
   "restricted_visibility_levels": [],
   "max_attachment_size": 10,
+  "max_import_size": 50,
   "session_expire_delay": 10080,
   "default_ci_config_path" : null,
   "default_project_visibility": "internal",
@@ -280,6 +282,7 @@ are listed in the descriptions of the relevant settings.
 | `local_markdown_version`                 | integer          | no                                   | Increase this value when any cached Markdown should be invalidated. |
 | `max_artifacts_size`                     | integer          | no                                   | Maximum artifacts size in MB |
 | `max_attachment_size`                    | integer          | no                                   | Limit attachment size in MB |
+| `max_import_size`                        | integer          | no                                   | Maximum import size in MB. 0 for unlimited. Default = 50 |
 | `max_pages_size`                         | integer          | no                                   | Maximum size of pages repositories in MB |
 | `max_personal_access_token_lifetime`     | integer          | no                                   | **(ULTIMATE ONLY)** Maximum allowable lifetime for personal access tokens in days |
 | `metrics_method_call_threshold`          | integer          | no                                   | A method call is only tracked when it takes longer than the given amount of milliseconds. |

@@ -747,6 +747,9 @@ msgstr ""
 msgid "0 for unlimited"
 msgstr ""
 
+msgid "0 for unlimited, only effective with remote storage enabled."
+msgstr ""
+
 msgid "1 %{type} addition"
 msgid_plural "%{count} %{type} additions"
 msgstr[0] ""
@@ -3350,6 +3353,9 @@ msgid "Below are the fingerprints for the current instance SSH host keys."
 msgstr ""
 
 msgid "Below you will find all the groups that are public."
+msgstr ""
+
+msgid "Beta"
 msgstr ""
 
 msgid "Billing"
@@ -9335,7 +9341,7 @@ msgstr ""
 msgid "Failed to load error details from Sentry."
 msgstr ""
 
-msgid "Failed to load errors from Sentry. Error message: %{errorMessage}"
+msgid "Failed to load errors from Sentry."
 msgstr ""
 
 msgid "Failed to load group activity metrics. Please try again."
@@ -13544,6 +13550,9 @@ msgstr ""
 msgid "Maximum field length"
 msgstr ""
 
+msgid "Maximum import size (MB)"
+msgstr ""
+
 msgid "Maximum job timeout"
 msgstr ""
 
@@ -13581,6 +13590,9 @@ msgid "Maximum size limit for each repository."
 msgstr ""
 
 msgid "Maximum size of Elasticsearch bulk indexing requests."
+msgstr ""
+
+msgid "Maximum size of import files."
 msgstr ""
 
 msgid "Maximum size of individual attachments in comments."
@@ -22622,6 +22634,9 @@ msgid "This epic and its child elements will only be visible to team members wit
 msgstr ""
 
 msgid "This epic does not exist or you don't have sufficient permission."
+msgstr ""
+
+msgid "This feature is currently in beta. We invite you to %{linkStart}give feedback%{linkEnd}."
 msgstr ""
 
 msgid "This feature requires local storage to be enabled"

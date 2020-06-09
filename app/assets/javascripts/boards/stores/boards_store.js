@@ -43,6 +43,7 @@ const boardsStore = {
   },
   detail: {
     issue: {},
+    list: {},
   },
   moving: {
     issue: {},
@@ -74,6 +75,7 @@ const boardsStore = {
     this.filter.path = getUrlParamsArray().join('&');
     this.detail = {
       issue: {},
+      list: {},
     };
   },
   showPage(page) {

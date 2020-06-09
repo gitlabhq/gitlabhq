@@ -13,7 +13,7 @@ class Projects::PipelinesController < Projects::ApplicationController
   before_action do
     push_frontend_feature_flag(:junit_pipeline_view, project)
     push_frontend_feature_flag(:filter_pipelines_search, default_enabled: true)
-    push_frontend_feature_flag(:dag_pipeline_tab)
+    push_frontend_feature_flag(:dag_pipeline_tab, default_enabled: true)
     push_frontend_feature_flag(:pipelines_security_report_summary, project)
   end
   before_action :ensure_pipeline, only: [:show]

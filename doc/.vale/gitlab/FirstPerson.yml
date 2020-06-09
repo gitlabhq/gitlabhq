@@ -1,8 +1,11 @@
+---
+# Warning: gitlab.FirstPerson
+#
 # Checks for use of first person pronouns.
 #
 # For a list of all options, see https://errata-ai.github.io/vale/styles/
 extends: existence
-message: '`%s` is a first-person pronoun. Use second- or third-person pronouns (like we, you, us, one) instead.'
+message: '"%s" is a first-person pronoun. Use second- or third-person pronouns (like we, you, us, one) instead.'
 level: warning
 ignorecase: true
 link: https://docs.gitlab.com/ee/development/documentation/styleguide.html#language

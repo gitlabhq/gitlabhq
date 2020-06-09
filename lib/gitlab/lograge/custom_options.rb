@@ -12,7 +12,6 @@ module Gitlab
         params = event
           .payload[:params]
           .each_with_object([]) { |(k, v), array| array << { key: k, value: v } unless IGNORE_PARAMS.include?(k) }
-
         payload = {
           time: Time.now.utc.iso8601(3),
           params: Gitlab::Utils::LogLimitedArray.log_limited_array(params, sentinel: LIMITED_ARRAY_SENTINEL),
@@ -21,6 +20,7 @@ module Gitlab
           username: event.payload[:username],
           ua: event.payload[:ua]
         }
+        add_db_counters!(payload)
 
         payload.merge!(event.payload[:metadata]) if event.payload[:metadata]
 
@@ -46,6 +46,16 @@ module Gitlab
 
         payload
       end
+
+      def self.add_db_counters!(payload)
+        current_transaction = Gitlab::Metrics::Transaction.current
+        if current_transaction
+          payload[:db_count] = current_transaction.get(:db_count, :counter).to_i
+          payload[:db_write_count] = current_transaction.get(:db_write_count, :counter).to_i
+          payload[:db_cached_count] = current_transaction.get(:db_cached_count, :counter).to_i
+        end
+      end
+      private_class_method :add_db_counters!
     end
   end
 end

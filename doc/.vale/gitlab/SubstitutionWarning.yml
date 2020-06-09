@@ -1,4 +1,6 @@
 ---
+# Warning: gitlab.SubstitutionWarning
+#
 # Warns against using common shorthand for terms.
 # For substitutions flagged as errors, see Substitutions.yml
 #

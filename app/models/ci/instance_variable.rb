@@ -6,6 +6,10 @@ module Ci
     extend Gitlab::ProcessMemoryCache::Helper
     include Ci::NewHasVariable
     include Ci::Maskable
+    include Limitable
+
+    self.limit_name = 'ci_instance_level_variables'
+    self.limit_scope = Limitable::GLOBAL_SCOPE
 
     alias_attribute :secret_value, :value
 
@@ -39,6 +43,14 @@ module Ci
 
           { all: all_records, unprotected: all_records.reject(&:protected?) }
         end
+      end
+    end
+
+    private
+
+    def validate_plan_limit_not_exceeded
+      if Gitlab::Ci::Features.instance_level_variables_limit_enabled?
+        super
       end
     end
   end

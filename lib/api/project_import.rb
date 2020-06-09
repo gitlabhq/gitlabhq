@@ -30,7 +30,10 @@ module API
         status 200
         content_type Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE
 
-        ImportExportUploader.workhorse_authorize(has_length: false, maximum_size: MAXIMUM_FILE_SIZE)
+        ImportExportUploader.workhorse_authorize(
+          has_length: false,
+          maximum_size: Gitlab::CurrentSettings.max_import_size.megabytes
+        )
       end
 
       params do

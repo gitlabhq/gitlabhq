@@ -1,0 +1,5 @@
+---
+title: Adds groupMembership and projectMembership to GraphQL API
+merge_request: 33049
+author:
+type: added

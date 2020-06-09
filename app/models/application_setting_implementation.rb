@@ -86,6 +86,7 @@ module ApplicationSettingImplementation
         local_markdown_version: 0,
         max_artifacts_size: Settings.artifacts['max_size'],
         max_attachment_size: Settings.gitlab['max_attachment_size'],
+        max_import_size: 50,
         mirror_available: true,
         outbound_local_requests_whitelist: [],
         password_authentication_enabled_for_git: true,

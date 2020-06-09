@@ -283,6 +283,14 @@ describe ApplicationSetting do
         .is_greater_than(0)
     end
 
+    it { is_expected.to validate_presence_of(:max_import_size) }
+
+    it do
+      is_expected.to validate_numericality_of(:max_import_size)
+        .only_integer
+        .is_greater_than_or_equal_to(0)
+    end
+
     it do
       is_expected.to validate_numericality_of(:local_markdown_version)
         .only_integer

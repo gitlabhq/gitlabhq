@@ -228,6 +228,7 @@ module ApplicationSettingsHelper
       :import_sources,
       :max_artifacts_size,
       :max_attachment_size,
+      :max_import_size,
       :max_pages_size,
       :metrics_method_call_threshold,
       :minimum_password_length,

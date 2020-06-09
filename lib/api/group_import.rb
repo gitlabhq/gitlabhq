@@ -40,7 +40,7 @@ module API
 
         ImportExportUploader.workhorse_authorize(
           has_length: false,
-          maximum_size: ImportExportUpload::MAXIMUM_IMPORT_FILE_SIZE
+          maximum_size: Gitlab::CurrentSettings.max_import_size.megabytes
         )
       end
 

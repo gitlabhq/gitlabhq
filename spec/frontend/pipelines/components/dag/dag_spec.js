@@ -1,4 +1,4 @@
-import { shallowMount } from '@vue/test-utils';
+import { mount, shallowMount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -18,17 +18,18 @@ describe('Pipeline DAG graph wrapper', () => {
   let wrapper;
   let mock;
   const getAlert = () => wrapper.find(GlAlert);
+  const getAllAlerts = () => wrapper.findAll(GlAlert);
   const getGraph = () => wrapper.find(DagGraph);
   const getErrorText = type => wrapper.vm.$options.errorTexts[type];
 
   const dataPath = '/root/test/pipelines/90/dag.json';
 
-  const createComponent = (propsData = {}) => {
+  const createComponent = (propsData = {}, method = shallowMount) => {
     if (wrapper?.destroy) {
       wrapper.destroy();
     }
 
-    wrapper = shallowMount(Dag, {
+    wrapper = method(Dag, {
       propsData,
       data() {
         return {
@@ -100,15 +101,16 @@ describe('Pipeline DAG graph wrapper', () => {
     describe('and the data fetch and parse succeeds', () => {
       beforeEach(() => {
         mock.onGet(dataPath).replyOnce(200, mockBaseData);
-        createComponent({ graphUrl: dataPath });
+        createComponent({ graphUrl: dataPath }, mount);
       });
 
-      it('shows the graph and not the alert', () => {
+      it('shows the graph and not the beta alert', () => {
         return wrapper.vm
           .$nextTick()
           .then(waitForPromises)
           .then(() => {
-            expect(getAlert().exists()).toBe(false);
+            expect(getAllAlerts().length).toBe(1);
+            expect(getAlert().text()).toContain('This feature is currently in beta.');
             expect(getGraph().exists()).toBe(true);
           });
       });

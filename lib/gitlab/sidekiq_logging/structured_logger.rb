@@ -36,6 +36,10 @@ module Gitlab
         )
       end
 
+      def add_db_counters!(job, output_payload)
+        output_payload.merge!(job.slice(*::Gitlab::Metrics::Subscribers::ActiveRecord::DB_COUNTERS))
+      end
+
       def log_job_start(payload)
         payload['message'] = "#{base_message(payload)}: start"
         payload['job_status'] = 'start'
@@ -50,6 +54,7 @@ module Gitlab
         payload = payload.dup
         add_instrumentation_keys!(job, payload)
         add_logging_extras!(job, payload)
+        add_db_counters!(job, payload)
 
         elapsed_time = elapsed(started_time)
         add_time_keys!(elapsed_time, payload)

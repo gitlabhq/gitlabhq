@@ -7,6 +7,15 @@ module Gitlab
         include Gitlab::ImportExport::CommandLineUtil
 
         BATCH_SIZE = 100
+        SMALLER_BATCH_SIZE = 20
+
+        def self.batch_size(exportable)
+          if Feature.enabled?(:export_reduce_relation_batch_size, exportable)
+            SMALLER_BATCH_SIZE
+          else
+            BATCH_SIZE
+          end
+        end
 
         class Raw < String
           def to_json(*_args)
@@ -60,7 +69,7 @@ module Gitlab
             key_preloads = preloads&.dig(key)
             records = records.preload(key_preloads) if key_preloads
 
-            records.find_each(batch_size: BATCH_SIZE) do |record|
+            records.find_each(batch_size: batch_size) do |record|
               items << Raw.new(record.to_json(options))
             end
           end
@@ -90,6 +99,10 @@ module Gitlab
 
         def preloads
           relations_schema[:preload]
+        end
+
+        def batch_size
+          @batch_size ||= self.class.batch_size(@exportable)
         end
       end
     end

@@ -165,13 +165,6 @@ FactoryBot.define do
     type { 'SlackService' }
   end
 
-  factory :github_service do
-    project
-    type { 'GithubService' }
-    active { true }
-    token { 'github-token' }
-  end
-
   factory :pipelines_email_service do
     project
     active { true }

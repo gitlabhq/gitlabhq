@@ -92,6 +92,9 @@ The following metrics are available:
 | `gitlab_view_rendering_duration_seconds`                       | Histogram |                   10.2 | Duration for views (histogram)                                                                      | `controller`, `action`, `view`                      |
 | `http_requests_total`                                          | Counter   |                    9.4 | Rack request count                                                                                  | `method`                                            |
 | `http_request_duration_seconds`                                | Histogram |                    9.4 | HTTP response time from rack middleware                                                             | `method`, `status`                                  |
+| `gitlab_transaction_db_count_total`                            | Counter   |                   13.1 | Counter for total number of sql calls                                                               | `controller`, `action`                              |
+| `gitlab_transaction_db_write_count_total`                      | Counter   |                   13.1 | Counter for total number of write sql calls                                                         | `controller`, `action`                              |
+| `gitlab_transaction_db_cached_count_total`                     | Counter   |                   13.1 | Counter for total number of cached sql calls                                                        | `controller`, `action`                              |
 | `http_redis_requests_duration_seconds`                         | Histogram |                   13.1 | Redis requests duration during web transactions                                                     | `controller`, `action`                              |
 | `http_redis_requests_total`                                    | Counter   |                   13.1 | Redis requests count during web transactions                                                        | `controller`, `action`                              |
 | `http_elasticsearch_requests_duration_seconds` **(STARTER)**   | Histogram |                   13.1 | Elasticsearch requests duration during web transactions                                             | `controller`, `action`                              |
@@ -103,7 +106,7 @@ The following metrics are available:
 | `failed_login_captcha_total`                                   | Gauge     |                   11.0 | Counter of failed CAPTCHA attempts during login                                                     |                                                     |
 | `successful_login_captcha_total`                               | Gauge     |                   11.0 | Counter of successful CAPTCHA attempts during login                                                 |                                                     |
 | `auto_devops_pipelines_completed_total`                        | Counter   |                   12.7 | Counter of completed Auto DevOps pipelines, labeled by status                                       |                                                     |
-| `gitlab_metrics_dashboard_processing_time_ms` | Summary | 12.10 | Metrics dashboard processing time in milliseconds | service, stages |
+| `gitlab_metrics_dashboard_processing_time_ms`                  | Summary   |                  12.10 | Metrics dashboard processing time in milliseconds | service, stages |
 
 ## Metrics controlled by a feature flag
 

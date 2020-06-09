@@ -5,7 +5,7 @@
 #
 # For a list of all options, see https://errata-ai.github.io/vale/styles/
 extends: existence
-message: Link %s must be relative.
+message: 'Link "%s" must be relative.'
 link: https://docs.gitlab.com/ee/development/documentation/styleguide.html#links-to-internal-documentation
 level: error
 scope: raw
