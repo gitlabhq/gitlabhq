@@ -85,10 +85,15 @@ module Types
             description: 'Timestamp the alert was last updated'
 
       field :assignees,
-            Types::UserType.connection_type,
+            [Types::UserType],
             null: true,
-            description: 'Assignees of the alert',
-            resolver: ::Resolvers::AlertManagement::Alerts::AssigneesResolver
+            description: 'Assignees of the alert'
+
+      def assignees
+        return User.none unless Feature.enabled?(:alert_assignee, object.project)
+
+        object.assignees
+      end
     end
   end
 end

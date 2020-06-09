@@ -1388,7 +1388,7 @@ module Gitlab
         let(:processor) { Gitlab::Ci::YamlProcessor.new(YAML.dump(config)) }
         let(:config) do
           {
-            stages: ["build", "test", "release"], # rubocop:disable Style/WordArray
+            stages: %w[build test release],
             release: {
               stage: "release",
               only: ["tags"],

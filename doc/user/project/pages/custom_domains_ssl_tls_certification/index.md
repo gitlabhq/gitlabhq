@@ -287,6 +287,9 @@ To enable this setting:
 1. Navigate to your project's **Settings > Pages**.
 1. Tick the checkbox **Force HTTPS (requires valid certificates)**.
 
+NOTE: **Note**
+If you use CloudFlare CDN in front of GitLab Pages, make sure to set the SSL connection setting to `full` instead of `flexible`. For more details, see the [CloudFlare CDN directions](https://support.cloudflare.com/hc/en-us/articles/200170416-End-to-end-HTTPS-with-Cloudflare-Part-3-SSL-options#h_4e0d1a7c-eb71-4204-9e22-9d3ef9ef7fef).
+
 <!-- ## Troubleshooting
 
 Include any troubleshooting steps that you can foresee. If you know beforehand what issues

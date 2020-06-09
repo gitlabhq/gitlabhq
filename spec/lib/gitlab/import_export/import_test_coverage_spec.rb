@@ -51,6 +51,7 @@ describe 'Test coverage of the Project Import' do
       project.metrics_setting
       project.boards.lists.label.priorities
       project.service_desk_setting
+      project.security_setting
     ].freeze
   end
 

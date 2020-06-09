@@ -289,7 +289,11 @@ Examples of query optimization work:
 - [Example 1](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/26445)
 - [Example 2](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/26871)
 
-### 4. Ask for a Telemetry Review
+### 4. Add the metric definition
+
+When adding, changing, or updating metrics, please update the [Usage Statistics definition table](#usage-statistics-definitions).
+
+### 5. Ask for a Telemetry Review
 
 On GitLab.com, we have DangerBot setup to monitor Telemetry related files and DangerBot will recommend a Telemetry review. Mention `@gitlab-org/growth/telemetry/engineers` in your MR for a review.
 

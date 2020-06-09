@@ -75,7 +75,7 @@ describe 'getting Alert Management Alerts' do
           'updatedAt' => triggered_alert.updated_at.strftime('%Y-%m-%dT%H:%M:%SZ')
         )
 
-        expect(first_alert['assignees']['nodes'].first).to include('username' => triggered_alert.assignees.first.username)
+        expect(first_alert['assignees'].first).to include('username' => triggered_alert.assignees.first.username)
 
         expect(second_alert).to include(
           'iid' => resolved_alert.iid.to_s,
@@ -135,6 +135,19 @@ describe 'getting Alert Management Alerts' do
 
           it { expect(alerts.size).to eq(0) }
         end
+      end
+    end
+
+    context 'with alert_assignee flag disabled' do
+      before do
+        stub_feature_flags(alert_assignee: false)
+        project.add_developer(current_user)
+
+        post_graphql(query, current_user: current_user)
+      end
+
+      it 'excludes assignees' do
+        expect(alerts.first['assignees']).to be_empty
       end
     end
   end

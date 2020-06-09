@@ -117,7 +117,7 @@ available, [demonstrating configuration of timed rollouts](https://gitlab.com/gl
 
 ## Blue-Green Deployment
 
-Also sometimes known as canary or red-black deployment, this technique is used to reduce
+Also sometimes known as A/B deployment or red-black deployment, this technique is used to reduce
 downtime and risk during a deployment. When combined with incremental rollouts, you can
 minimize the impact of a deployment causing an issue.
 

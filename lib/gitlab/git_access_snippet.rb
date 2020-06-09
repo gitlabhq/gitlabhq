@@ -47,11 +47,10 @@ module Gitlab
     end
 
     override :check_project!
-    def check_project!(cmd, changes)
+    def check_project!(cmd)
       return unless snippet.is_a?(ProjectSnippet)
 
-      check_project_accessibility!
-      add_project_moved_message!
+      super
     end
 
     override :check_push_access!

@@ -622,6 +622,12 @@ msgstr ""
 msgid "%{token}..."
 msgstr ""
 
+msgid "%{totalCpu} (%{freeSpacePercentage}%{percentSymbol} free)"
+msgstr ""
+
+msgid "%{totalMemory} (%{freeSpacePercentage}%{percentSymbol} free)"
+msgstr ""
+
 msgid "%{totalWeight} total weight"
 msgstr ""
 
@@ -12641,6 +12647,9 @@ msgstr ""
 msgid "Keyboard shortcuts"
 msgstr ""
 
+msgid "Ki"
+msgstr ""
+
 msgid "Kubernetes"
 msgstr ""
 
@@ -14096,6 +14105,9 @@ msgid "Metrics|e.g. rate(http_requests_total[5m])"
 msgstr ""
 
 msgid "Metrics|e.g. req/sec"
+msgstr ""
+
+msgid "Mi"
 msgstr ""
 
 msgid "Microsoft Azure"
@@ -23489,7 +23501,13 @@ msgstr ""
 msgid "Total artifacts size: %{total_size}"
 msgstr ""
 
+msgid "Total cores (CPUs)"
+msgstr ""
+
 msgid "Total issues"
+msgstr ""
+
+msgid "Total memory (GB)"
 msgstr ""
 
 msgid "Total test time for all commits/merges"

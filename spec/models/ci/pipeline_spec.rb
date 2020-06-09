@@ -2749,6 +2749,30 @@ describe Ci::Pipeline, :mailer do
     end
   end
 
+  describe '#latest_report_builds' do
+    it 'returns build with test artifacts' do
+      test_build = create(:ci_build, :test_reports, pipeline: pipeline, project: project)
+      coverage_build = create(:ci_build, :coverage_reports, pipeline: pipeline, project: project)
+      create(:ci_build, :artifacts, pipeline: pipeline, project: project)
+
+      expect(pipeline.latest_report_builds).to contain_exactly(test_build, coverage_build)
+    end
+
+    it 'filters builds by scope' do
+      test_build = create(:ci_build, :test_reports, pipeline: pipeline, project: project)
+      create(:ci_build, :coverage_reports, pipeline: pipeline, project: project)
+
+      expect(pipeline.latest_report_builds(Ci::JobArtifact.test_reports)).to contain_exactly(test_build)
+    end
+
+    it 'only returns not retried builds' do
+      test_build = create(:ci_build, :test_reports, pipeline: pipeline, project: project)
+      create(:ci_build, :test_reports, :retried, pipeline: pipeline, project: project)
+
+      expect(pipeline.latest_report_builds).to contain_exactly(test_build)
+    end
+  end
+
   describe '#has_reports?' do
     subject { pipeline.has_reports?(Ci::JobArtifact.test_reports) }
 

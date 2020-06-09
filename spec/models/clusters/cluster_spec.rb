@@ -1057,7 +1057,7 @@ describe Clusters::Cluster, :use_clean_rails_memory_store_caching do
             .and_raise(SocketError)
         end
 
-        it { is_expected.to eq(connection_status: :unreachable, nodes: []) }
+        it { is_expected.to eq(connection_status: :unreachable, nodes: nil) }
       end
 
       context 'cluster cannot be authenticated to' do
@@ -1066,7 +1066,7 @@ describe Clusters::Cluster, :use_clean_rails_memory_store_caching do
             .and_raise(OpenSSL::X509::CertificateError.new("Certificate error"))
         end
 
-        it { is_expected.to eq(connection_status: :authentication_failure, nodes: []) }
+        it { is_expected.to eq(connection_status: :authentication_failure, nodes: nil) }
       end
 
       describe 'Kubeclient::HttpError' do
@@ -1078,18 +1078,18 @@ describe Clusters::Cluster, :use_clean_rails_memory_store_caching do
             .and_raise(Kubeclient::HttpError.new(error_code, error_message, nil))
         end
 
-        it { is_expected.to eq(connection_status: :authentication_failure, nodes: []) }
+        it { is_expected.to eq(connection_status: :authentication_failure, nodes: nil) }
 
         context 'generic timeout' do
           let(:error_message) { 'Timed out connecting to server'}
 
-          it { is_expected.to eq(connection_status: :unreachable, nodes: []) }
+          it { is_expected.to eq(connection_status: :unreachable, nodes: nil) }
         end
 
         context 'gateway timeout' do
           let(:error_message) { '504 Gateway Timeout for GET https://kubernetes.example.com/api/v1'}
 
-          it { is_expected.to eq(connection_status: :unreachable, nodes: []) }
+          it { is_expected.to eq(connection_status: :unreachable, nodes: nil) }
         end
       end
 
@@ -1099,7 +1099,7 @@ describe Clusters::Cluster, :use_clean_rails_memory_store_caching do
             .and_raise(StandardError)
         end
 
-        it { is_expected.to eq(connection_status: :unknown_failure, nodes: []) }
+        it { is_expected.to eq(connection_status: :unknown_failure, nodes: nil) }
 
         it 'notifies Sentry' do
           expect(Gitlab::ErrorTracking).to receive(:track_exception)

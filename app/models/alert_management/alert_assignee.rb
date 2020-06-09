@@ -7,7 +7,5 @@ module AlertManagement
 
     validates :alert, presence: true
     validates :assignee, presence: true, uniqueness: { scope: :alert_id }
-
-    scope :for_alert_ids, -> (ids) { includes(:assignee).where(alert_id: ids) }
   end
 end

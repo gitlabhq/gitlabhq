@@ -6,7 +6,7 @@ module Gitlab
 
     PROJECT = RepoType.new(
       name: :project,
-      access_checker_class: Gitlab::GitAccess,
+      access_checker_class: Gitlab::GitAccessProject,
       repository_resolver: -> (project) { project&.repository }
     ).freeze
     WIKI = RepoType.new(

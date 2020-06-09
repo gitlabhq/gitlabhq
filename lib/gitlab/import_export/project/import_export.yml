@@ -397,3 +397,4 @@ ee:
       - protected_environments:
         - :deploy_access_levels
       - :service_desk_setting
+      - :security_setting

@@ -262,7 +262,7 @@ describe('AlertManagementList', () => {
         findAssignees()
           .at(1)
           .text(),
-      ).toBe(mockAlerts[1].assignees.nodes[0].username);
+      ).toBe(mockAlerts[1].assignees[0].username);
     });
 
     it('navigates to the detail page when alert row is clicked', () => {
@@ -291,7 +291,6 @@ describe('AlertManagementList', () => {
                   startedAt: '2020-03-17T23:18:14.996Z',
                   endedAt: '2020-04-17T23:18:14.996Z',
                   severity: 'high',
-                  assignees: { nodes: [] },
                 },
               ],
             },

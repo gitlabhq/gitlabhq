@@ -5316,6 +5316,25 @@ CREATE SEQUENCE public.project_repository_storage_moves_id_seq
 
 ALTER SEQUENCE public.project_repository_storage_moves_id_seq OWNED BY public.project_repository_storage_moves.id;
 
+CREATE TABLE public.project_security_settings (
+    project_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    auto_fix_container_scanning boolean DEFAULT true NOT NULL,
+    auto_fix_dast boolean DEFAULT true NOT NULL,
+    auto_fix_dependency_scanning boolean DEFAULT true NOT NULL,
+    auto_fix_sast boolean DEFAULT true NOT NULL
+);
+
+CREATE SEQUENCE public.project_security_settings_project_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE public.project_security_settings_project_id_seq OWNED BY public.project_security_settings.project_id;
+
 CREATE TABLE public.project_settings (
     project_id integer NOT NULL,
     created_at timestamp with time zone NOT NULL,
@@ -7822,6 +7841,8 @@ ALTER TABLE ONLY public.project_repository_states ALTER COLUMN id SET DEFAULT ne
 
 ALTER TABLE ONLY public.project_repository_storage_moves ALTER COLUMN id SET DEFAULT nextval('public.project_repository_storage_moves_id_seq'::regclass);
 
+ALTER TABLE ONLY public.project_security_settings ALTER COLUMN project_id SET DEFAULT nextval('public.project_security_settings_project_id_seq'::regclass);
+
 ALTER TABLE ONLY public.project_statistics ALTER COLUMN id SET DEFAULT nextval('public.project_statistics_id_seq'::regclass);
 
 ALTER TABLE ONLY public.project_tracing_settings ALTER COLUMN id SET DEFAULT nextval('public.project_tracing_settings_id_seq'::regclass);
@@ -8747,6 +8768,9 @@ ALTER TABLE ONLY public.project_repository_states
 
 ALTER TABLE ONLY public.project_repository_storage_moves
     ADD CONSTRAINT project_repository_storage_moves_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY public.project_security_settings
+    ADD CONSTRAINT project_security_settings_pkey PRIMARY KEY (project_id);
 
 ALTER TABLE ONLY public.project_settings
     ADD CONSTRAINT project_settings_pkey PRIMARY KEY (project_id);
@@ -12711,6 +12735,9 @@ ALTER TABLE ONLY public.ci_daily_report_results
 ALTER TABLE ONLY public.cluster_providers_aws
     ADD CONSTRAINT fk_rails_ed1fdfaeb2 FOREIGN KEY (created_by_user_id) REFERENCES public.users(id) ON DELETE SET NULL;
 
+ALTER TABLE ONLY public.project_security_settings
+    ADD CONSTRAINT fk_rails_ed4abe1338 FOREIGN KEY (project_id) REFERENCES public.projects(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY public.ci_daily_build_group_report_results
     ADD CONSTRAINT fk_rails_ee072d13b3 FOREIGN KEY (last_pipeline_id) REFERENCES public.ci_pipelines(id) ON DELETE CASCADE;
 
@@ -13806,5 +13833,6 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200528171933
 20200601210148
 20200603073101
+20200604143628
 \.
 

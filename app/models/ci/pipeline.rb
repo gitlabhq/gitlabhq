@@ -800,13 +800,17 @@ module Ci
       @latest_builds_with_artifacts ||= builds.latest.with_artifacts_not_expired.to_a
     end
 
+    def latest_report_builds(reports_scope = ::Ci::JobArtifact.with_reports)
+      builds.latest.with_reports(reports_scope)
+    end
+
     def has_reports?(reports_scope)
-      complete? && builds.latest.with_reports(reports_scope).exists?
+      complete? && latest_report_builds(reports_scope).exists?
     end
 
     def test_reports
       Gitlab::Ci::Reports::TestReports.new.tap do |test_reports|
-        builds.latest.with_reports(Ci::JobArtifact.test_reports).preload(:project).find_each do |build|
+        latest_report_builds(Ci::JobArtifact.test_reports).preload(:project).find_each do |build|
           build.collect_test_reports!(test_reports)
         end
       end
@@ -828,7 +832,7 @@ module Ci
 
     def coverage_reports
       Gitlab::Ci::Reports::CoverageReports.new.tap do |coverage_reports|
-        builds.latest.with_reports(Ci::JobArtifact.coverage_reports).each do |build|
+        latest_report_builds(Ci::JobArtifact.coverage_reports).each do |build|
           build.collect_coverage_reports!(coverage_reports)
         end
       end
@@ -836,7 +840,7 @@ module Ci
 
     def terraform_reports
       ::Gitlab::Ci::Reports::TerraformReports.new.tap do |terraform_reports|
-        builds.latest.with_reports(::Ci::JobArtifact.terraform_reports).each do |build|
+        latest_report_builds(::Ci::JobArtifact.terraform_reports).each do |build|
           build.collect_terraform_reports!(terraform_reports)
         end
       end

@@ -481,6 +481,7 @@ project:
 - upstream_project_subscriptions
 - downstream_project_subscriptions
 - service_desk_setting
+- security_setting
 - import_failures
 - container_expiration_policy
 - resource_groups

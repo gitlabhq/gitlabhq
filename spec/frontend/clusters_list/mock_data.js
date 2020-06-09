@@ -11,7 +11,12 @@ export const clusterList = [
     environment_scope: 'development',
     cluster_type: 'project_type',
     status: 'unreachable',
-    nodes: [{ usage: { cpu: '246155922n', memory: '1255212Ki' } }],
+    nodes: [
+      {
+        status: { allocatable: { cpu: '1930m', memory: '5777156Ki' } },
+        usage: { cpu: '246155922n', memory: '1255212Ki' },
+      },
+    ],
   },
   {
     name: 'My Cluster 3',
@@ -19,8 +24,14 @@ export const clusterList = [
     cluster_type: 'project_type',
     status: 'authentication_failure',
     nodes: [
-      { usage: { cpu: '246155922n', memory: '1255212Ki' } },
-      { usage: { cpu: '307051934n', memory: '1379136Ki' } },
+      {
+        status: { allocatable: { cpu: '1930m', memory: '5777156Ki' } },
+        usage: { cpu: '246155922n', memory: '1255212Ki' },
+      },
+      {
+        status: { allocatable: { cpu: '1940m', memory: '6777156Ki' } },
+        usage: { cpu: '307051934n', memory: '1379136Ki' },
+      },
     ],
   },
   {
@@ -28,12 +39,23 @@ export const clusterList = [
     environment_scope: 'production',
     cluster_type: 'project_type',
     status: 'deleting',
+    nodes: [
+      {
+        status: { allocatable: { cpu: '1missingCpuUnit', memory: '1missingMemoryUnit' } },
+        usage: { cpu: '1missingCpuUnit', memory: '1missingMemoryUnit' },
+      },
+    ],
   },
   {
     name: 'My Cluster 5',
     environment_scope: 'development',
     cluster_type: 'project_type',
     status: 'created',
+    nodes: [
+      {
+        status: { allocatable: { cpu: '1missingCpuUnit', memory: '1missingMemoryUnit' } },
+      },
+    ],
   },
   {
     name: 'My Cluster 6',

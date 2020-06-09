@@ -864,3 +864,11 @@ SystemNoteMetadata:
   - action
   - created_at
   - updated_at
+ProjectSecuritySetting:
+  - project_id
+  - auto_fix_container_scanning
+  - auto_fix_dast
+  - auto_fix_dependency_scanning
+  - auto_fix_sast
+  - created_at
+  - updated_at
