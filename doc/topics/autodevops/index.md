@@ -235,6 +235,10 @@ are available:
   - `master` branch is directly deployed to staging.
   - Manual actions are provided for incremental rollout to production.
 
+TIP: **Tip:**
+Use the [blue-green deployment](../../ci/environments/incremental_rollouts.md#blue-green-deployment) technique
+to minimize downtime and risk.
+
 ## Using multiple Kubernetes clusters **(PREMIUM)**
 
 When using Auto DevOps, you can deploy different environments to

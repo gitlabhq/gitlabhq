@@ -5220,7 +5220,8 @@ ALTER SEQUENCE public.project_incident_management_settings_project_id_seq OWNED 
 
 CREATE TABLE public.project_metrics_settings (
     project_id integer NOT NULL,
-    external_dashboard_url character varying NOT NULL
+    external_dashboard_url character varying,
+    dashboard_timezone smallint DEFAULT 0 NOT NULL
 );
 
 CREATE TABLE public.project_mirror_data (
@@ -13798,6 +13799,8 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200528054112
 20200528123703
 20200528125905
+20200528171933
+20200601210148
 20200602143020
 20200603073101
 \.

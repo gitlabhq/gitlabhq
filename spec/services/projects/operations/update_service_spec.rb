@@ -96,7 +96,8 @@ describe Projects::Operations::UpdateService do
       let(:params) do
         {
           metrics_setting_attributes: {
-            external_dashboard_url: 'http://gitlab.com'
+            external_dashboard_url: 'http://gitlab.com',
+            dashboard_timezone: 'utc'
           }
         }
       end
@@ -108,6 +109,7 @@ describe Projects::Operations::UpdateService do
           expect(project.reload.metrics_setting.external_dashboard_url).to eq(
             'http://gitlab.com'
           )
+          expect(project.metrics_setting.dashboard_timezone).to eq('utc')
         end
       end
 
@@ -122,6 +124,7 @@ describe Projects::Operations::UpdateService do
           expect(project.reload.metrics_setting.external_dashboard_url).to eq(
             'http://gitlab.com'
           )
+          expect(project.metrics_setting.dashboard_timezone).to eq('utc')
         end
 
         context 'with blank external_dashboard_url in params' do

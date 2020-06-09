@@ -6,4 +6,6 @@ class ProjectMetricsSetting < ApplicationRecord
   validates :external_dashboard_url,
     length: { maximum: 255 },
     addressable_url: { enforce_sanitization: true, ascii_only: true }
+
+  enum dashboard_timezone: { local: 0, utc: 1 }
 end

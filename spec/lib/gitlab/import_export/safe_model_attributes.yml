@@ -751,6 +751,7 @@ ProjectMetricsSetting:
 - external_dashboard_url
 - created_at
 - updated_at
+- dashboard_timezone
 Board:
 - id
 - project_id

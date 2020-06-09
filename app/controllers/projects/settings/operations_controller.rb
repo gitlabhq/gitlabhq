@@ -104,7 +104,7 @@ module Projects
         project_params = {
           incident_management_setting_attributes: ::Gitlab::Tracking::IncidentManagement.tracking_keys.keys,
 
-          metrics_setting_attributes: [:external_dashboard_url],
+          metrics_setting_attributes: [:external_dashboard_url, :dashboard_timezone],
 
           error_tracking_setting_attributes: [
             :enabled,

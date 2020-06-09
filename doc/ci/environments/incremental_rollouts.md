@@ -114,3 +114,26 @@ timed rollout 30%:
 
 A [deployable application](https://gitlab.com/gl-release/timed-rollout-example) is
 available, [demonstrating configuration of timed rollouts](https://gitlab.com/gl-release/timed-rollout-example/blob/master/.gitlab-ci.yml#L86-95).
+
+## Blue-Green Deployment
+
+Also sometimes known as canary or red-black deployment, this technique is used to reduce
+downtime and risk during a deployment. When combined with incremental rollouts, you can
+minimize the impact of a deployment causing an issue.
+
+With this technique there are two deployments ("blue" and "green", but any naming can be used).
+Only one of these deployments is live at any given time, except during an incremental rollout.
+
+For example, your blue deployment can be currently active on production, while the
+green deployment is "live" for testing, but not deployed to production. If issues
+are found, the green deployment can be updated without affecting the production
+deployment (currently blue). If testing finds no issues, you switch production to the green
+deployment, and blue is now available to test the next release.
+
+This process reduces downtime as there is no need to take down the production deployment
+to switch to a different deployment. Both deployments are running in parallel, and
+can be switched to at any time.
+
+An [example deployable application](https://gitlab.com/gl-release/blue-green-example)
+is available, with a [`gitlab-ci.yml` CI/CD configuration file](https://gitlab.com/gl-release/blue-green-example/blob/master/.gitlab-ci.yml)
+that demonstrates blue-green deployments.

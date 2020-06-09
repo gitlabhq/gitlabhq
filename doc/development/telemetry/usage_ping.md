@@ -295,262 +295,262 @@ On GitLab.com, we have DangerBot setup to monitor Telemetry related files and Da
 
 ## Usage Statistics definitions
 
-| Statistic                                               | Section                            | Stage       | Description                                       |
-|:--------------------------------------------------------|:-----------------------------------|:------------|:--------------------------------------------------|
-| `uuid`                                                  |                                    |             |                                                   |
-| `hostname`                                              |                                    |             |                                                   |
-| `version`                                               |                                    |             |                                                   |
-| `installation_type`                                     |                                    |             |                                                   |
-| `active_user_count`                                     |                                    |             |                                                   |
-| `recorded_at`                                           |                                    |             |                                                   |
-| `edition`                                               |                                    |             |                                                   |
-| `license_md5`                                           |                                    |             |                                                   |
-| `license_id`                                            |                                    |             |                                                   |
-| `historical_max_users`                                  |                                    |             |                                                   |
-| `Name`                                                  | `licensee`                         |             |                                                   |
-| `Email`                                                 | `licensee`                         |             |                                                   |
-| `Company`                                               | `licensee`                         |             |                                                   |
-| `license_user_count`                                    |                                    |             |                                                   |
-| `license_starts_at`                                     |                                    |             |                                                   |
-| `license_expires_at`                                    |                                    |             |                                                   |
-| `license_plan`                                          |                                    |             |                                                   |
-| `license_trial`                                         |                                    |             |                                                   |
-| `assignee_lists`                                        | `counts`                           |             |                                                   |
-| `boards`                                                | `counts`                           |             |                                                   |
-| `ci_builds`                                             | `counts`                           | `verify`    | Unique builds in project                          |
-| `ci_internal_pipelines`                                 | `counts`                           | `verify`    | Total pipelines in GitLab repositories            |
-| `ci_external_pipelines`                                 | `counts`                           | `verify`    | Total pipelines in external repositories          |
-| `ci_pipeline_config_auto_devops`                        | `counts`                           | `verify`    | Total pipelines from an Auto DevOps template      |
-| `ci_pipeline_config_repository`                         | `counts`                           | `verify`    | Total Pipelines from templates in repository      |
-| `ci_runners`                                            | `counts`                           | `verify`    | Total configured Runners in project               |
-| `ci_triggers`                                           | `counts`                           | `verify`    | Total configured Triggers in project              |
-| `ci_pipeline_schedules`                                 | `counts`                           | `verify`    | Pipeline schedules in GitLab                      |
-| `auto_devops_enabled`                                   | `counts`                           |`configure`  | Projects with Auto DevOps template enabled        |
-| `auto_devops_disabled`                                  | `counts`                           |`configure`  | Projects with Auto DevOps template disabled       |
-| `deploy_keys`                                           | `counts`                           |             |                                                   |
-| `deployments`                                           | `counts`                           |`release`    | Total deployments                                 |
-| `dast_jobs`                                             | `counts`                           |             |                                                   |
-| `successful_deployments`                                | `counts`                           |`release`    | Total successful deployments                      |
-| `failed_deployments`                                    | `counts`                           |`release`    | Total failed deployments                          |
-| `environments`                                          | `counts`                           |`release`    | Total available and stopped environments          |
-| `clusters`                                              | `counts`                           |`configure`  | Total GitLab Managed clusters both enabled and disabled |
-| `clusters_enabled`                                      | `counts`                           |`configure`  | Total GitLab Managed clusters currently enabled |
-| `project_clusters_enabled`                              | `counts`                           |`configure`  | Total GitLab Managed clusters attached to projects|
-| `group_clusters_enabled`                                | `counts`                           |`configure`  | Total GitLab Managed clusters attached to groups  |
-| `instance_clusters_enabled`                             | `counts`                           |`configure`  | Total GitLab Managed clusters attached to the instance |
-| `clusters_disabled`                                     | `counts`                           |`configure`  | Total GitLab Managed disabled clusters |
-| `project_clusters_disabled`                             | `counts`                           |`configure`  | Total GitLab Managed disabled clusters previously attached to projects |
-| `group_clusters_disabled`                               | `counts`                           |`configure`  | Total GitLab Managed disabled clusters previously attached to groups |
-| `instance_clusters_disabled`                            | `counts`                           |`configure`  | Total GitLab Managed disabled clusters previously attached to the instance |
-| `clusters_platforms_eks`                                | `counts`                           |`configure`  | Total GitLab Managed clusters provisioned with GitLab on AWS EKS |
-| `clusters_platforms_gke`                                | `counts`                           |`configure`  | Total GitLab Managed clusters provisioned with GitLab on GCE GKE |
-| `clusters_platforms_user`                               | `counts`                           |`configure`  | Total GitLab Managed clusters that are user provisioned |
-| `clusters_applications_helm`                            | `counts`                           |`configure`  | Total GitLab Managed clusters with Helm enabled |
-| `clusters_applications_ingress`                         | `counts`                           |`configure`  | Total GitLab Managed clusters with Ingress enabled |
-| `clusters_applications_cert_managers`                   | `counts`                           |`configure`  | Total GitLab Managed clusters with Cert Manager enabled |
-| `clusters_applications_crossplane`                      | `counts`                           |`configure`  | Total GitLab Managed clusters with Crossplane enabled |
-| `clusters_applications_prometheus`                      | `counts`                           |`configure`  | Total GitLab Managed clusters with Prometheus enabled |
-| `clusters_applications_runner`                          | `counts`                           |`configure`  | Total GitLab Managed clusters with Runner enabled              |
-| `clusters_applications_knative`                         | `counts`                           |`configure`  | Total GitLab Managed clusters with Knative enabled              |
-| `clusters_applications_elastic_stack`                   | `counts`                           |`configure`  | Total GitLab Managed clusters with Elastic Stack enabled        |
-| `clusters_management_project`                           | `counts`                           |`configure`  | Total GitLab Managed clusters with defined cluster management project   |
-| `in_review_folder`                                      | `counts`                           |             |                                                   |
-| `grafana_integrated_projects`                           | `counts`                           |             |                                                   |
-| `groups`                                                | `counts`                           |             |                                                   |
-| `issues`                                                | `counts`                           |             |                                                   |
-| `issues_created_from_gitlab_error_tracking_ui`          | `counts`                           | `monitor`   |                                                   |
-| `issues_with_associated_zoom_link`                      | `counts`                           | `monitor`   |                                                   |
-| `issues_using_zoom_quick_actions`                       | `counts`                           | `monitor`   |                                                   |
-| `issues_with_embedded_grafana_charts_approx`            | `counts`                           | `monitor`   |                                                   |
-| `issues_with_health_status`                             | `counts`                           |             |                                                   |
-| `keys`                                                  | `counts`                           |             |                                                   |
-| `label_lists`                                           | `counts`                           |             |                                                   |
-| `lfs_objects`                                           | `counts`                           |             |                                                   |
-| `milestone_lists`                                       | `counts`                           |             |                                                   |
-| `milestones`                                            | `counts`                           |             |                                                   |
-| `pages_domains`                                         | `counts`                           |`release`    | Total GitLab Pages domains                        |
-| `pool_repositories`                                     | `counts`                           |             |                                                   |
-| `projects`                                              | `counts`                           |             |                                                   |
-| `projects_imported_from_github`                         | `counts`                           |             |                                                   |
-| `projects_with_repositories_enabled`                    | `counts`                           |             |                                                   |
-| `projects_with_error_tracking_enabled`                  | `counts`                           | `monitor`   |                                                   |
-| `protected_branches`                                    | `counts`                           |             |                                                   |
-| `releases`                                              | `counts`                           |`release`    | Unique release tags                               |
-| `remote_mirrors`                                        | `counts`                           |             |                                                   |
-| `requirements_created`                                  | `counts`                           |             |                                                   |
-| `snippets`                                              | `counts`                           |             |                                                   |
-| `suggestions`                                           | `counts`                           |             |                                                   |
-| `todos`                                                 | `counts`                           |             |                                                   |
-| `uploads`                                               | `counts`                           |             |                                                   |
-| `web_hooks`                                             | `counts`                           |             |                                                   |
-| `projects_alerts_active`                                | `counts`                           |             |                                                   |
-| `projects_asana_active`                                 | `counts`                           |             |                                                   |
-| `projects_assembla_active`                              | `counts`                           |             |                                                   |
-| `projects_bamboo_active`                                | `counts`                           |             |                                                   |
-| `projects_bugzilla_active`                              | `counts`                           |             |                                                   |
-| `projects_buildkite_active`                             | `counts`                           |             |                                                   |
-| `projects_campfire_active`                              | `counts`                           |             |                                                   |
-| `projects_custom_issue_tracker_active`                  | `counts`                           |             |                                                   |
-| `projects_discord_active`                               | `counts`                           |             |                                                   |
-| `projects_drone_ci_active`                              | `counts`                           |             |                                                   |
-| `projects_emails_on_push_active`                        | `counts`                           |             |                                                   |
+| Statistic                                               | Section                            | Stage       | Tier           | Description                                       |
+|:--------------------------------------------------------|:-----------------------------------|:------------|:---------------|:--------------------------------------------------|
+| `uuid`                                                  |                                    |             |                |                                                   |
+| `hostname`                                              |                                    |             |                |                                                   |
+| `version`                                               |                                    |             |                |                                                   |
+| `installation_type`                                     |                                    |             |                |                                                   |
+| `active_user_count`                                     |                                    |             |                |                                                   |
+| `recorded_at`                                           |                                    |             |                |                                                   |
+| `edition`                                               |                                    |             |                |                                                   |
+| `license_md5`                                           |                                    |             |                |                                                   |
+| `license_id`                                            |                                    |             |                |                                                   |
+| `historical_max_users`                                  |                                    |             |                |                                                   |
+| `Name`                                                  | `licensee`                         |             |                |                                                   |
+| `Email`                                                 | `licensee`                         |             |                |                                                   |
+| `Company`                                               | `licensee`                         |             |                |                                                   |
+| `license_user_count`                                    |                                    |             |                |                                                   |
+| `license_starts_at`                                     |                                    |             |                |                                                   |
+| `license_expires_at`                                    |                                    |             |                |                                                   |
+| `license_plan`                                          |                                    |             |                |                                                   |
+| `license_trial`                                         |                                    |             |                |                                                   |
+| `assignee_lists`                                        | `counts`                           |             |                |                                                   |
+| `boards`                                                | `counts`                           |             |                |                                                   |
+| `ci_builds`                                             | `counts`                           | `verify`    |                | Unique builds in project                          |
+| `ci_internal_pipelines`                                 | `counts`                           | `verify`    |                | Total pipelines in GitLab repositories            |
+| `ci_external_pipelines`                                 | `counts`                           | `verify`    |                | Total pipelines in external repositories          |
+| `ci_pipeline_config_auto_devops`                        | `counts`                           | `verify`    |                | Total pipelines from an Auto DevOps template      |
+| `ci_pipeline_config_repository`                         | `counts`                           | `verify`    |                | Total Pipelines from templates in repository      |
+| `ci_runners`                                            | `counts`                           | `verify`    |                | Total configured Runners in project               |
+| `ci_triggers`                                           | `counts`                           | `verify`    |                | Total configured Triggers in project              |
+| `ci_pipeline_schedules`                                 | `counts`                           | `verify`    |                | Pipeline schedules in GitLab                      |
+| `auto_devops_enabled`                                   | `counts`                           |`configure`  |                | Projects with Auto DevOps template enabled        |
+| `auto_devops_disabled`                                  | `counts`                           |`configure`  |                | Projects with Auto DevOps template disabled       |
+| `deploy_keys`                                           | `counts`                           |             |                |                                                   |
+| `deployments`                                           | `counts`                           |`release`    |                | Total deployments                                 |
+| `dast_jobs`                                             | `counts`                           |             |                |                                                   |
+| `successful_deployments`                                | `counts`                           |`release`    |                | Total successful deployments                      |
+| `failed_deployments`                                    | `counts`                           |`release`    |                | Total failed deployments                          |
+| `environments`                                          | `counts`                           |`release`    |                | Total available and stopped environments          |
+| `clusters`                                              | `counts`                           |`configure`  |                | Total GitLab Managed clusters both enabled and disabled |
+| `clusters_enabled`                                      | `counts`                           |`configure`  |                | Total GitLab Managed clusters currently enabled |
+| `project_clusters_enabled`                              | `counts`                           |`configure`  |                | Total GitLab Managed clusters attached to projects|
+| `group_clusters_enabled`                                | `counts`                           |`configure`  |                | Total GitLab Managed clusters attached to groups  |
+| `instance_clusters_enabled`                             | `counts`                           |`configure`  |                | Total GitLab Managed clusters attached to the instance |
+| `clusters_disabled`                                     | `counts`                           |`configure`  |                | Total GitLab Managed disabled clusters |
+| `project_clusters_disabled`                             | `counts`                           |`configure`  |                | Total GitLab Managed disabled clusters previously attached to projects |
+| `group_clusters_disabled`                               | `counts`                           |`configure`  |                | Total GitLab Managed disabled clusters previously attached to groups |
+| `instance_clusters_disabled`                            | `counts`                           |`configure`  |                | Total GitLab Managed disabled clusters previously attached to the instance |
+| `clusters_platforms_eks`                                | `counts`                           |`configure`  |                | Total GitLab Managed clusters provisioned with GitLab on AWS EKS |
+| `clusters_platforms_gke`                                | `counts`                           |`configure`  |                | Total GitLab Managed clusters provisioned with GitLab on GCE GKE |
+| `clusters_platforms_user`                               | `counts`                           |`configure`  |                | Total GitLab Managed clusters that are user provisioned |
+| `clusters_applications_helm`                            | `counts`                           |`configure`  |                | Total GitLab Managed clusters with Helm enabled |
+| `clusters_applications_ingress`                         | `counts`                           |`configure`  |                | Total GitLab Managed clusters with Ingress enabled |
+| `clusters_applications_cert_managers`                   | `counts`                           |`configure`  |                | Total GitLab Managed clusters with Cert Manager enabled |
+| `clusters_applications_crossplane`                      | `counts`                           |`configure`  |                | Total GitLab Managed clusters with Crossplane enabled |
+| `clusters_applications_prometheus`                      | `counts`                           |`configure`  |                | Total GitLab Managed clusters with Prometheus enabled |
+| `clusters_applications_runner`                          | `counts`                           |`configure`  |                | Total GitLab Managed clusters with Runner enabled              |
+| `clusters_applications_knative`                         | `counts`                           |`configure`  |                | Total GitLab Managed clusters with Knative enabled              |
+| `clusters_applications_elastic_stack`                   | `counts`                           |`configure`  |                | Total GitLab Managed clusters with Elastic Stack enabled        |
+| `clusters_management_project`                           | `counts`                           |`configure`  |                | Total GitLab Managed clusters with defined cluster management project   |
+| `in_review_folder`                                      | `counts`                           |             |                |                                                   |
+| `grafana_integrated_projects`                           | `counts`                           |             |                |                                                   |
+| `groups`                                                | `counts`                           |             |                |                                                   |
+| `issues`                                                | `counts`                           |             |                |                                                   |
+| `issues_created_from_gitlab_error_tracking_ui`          | `counts`                           | `monitor`   |                |                                                   |
+| `issues_with_associated_zoom_link`                      | `counts`                           | `monitor`   |                |                                                   |
+| `issues_using_zoom_quick_actions`                       | `counts`                           | `monitor`   |                |                                                   |
+| `issues_with_embedded_grafana_charts_approx`            | `counts`                           | `monitor`   |                |                                                   |
+| `issues_with_health_status`                             | `counts`                           |             |                |                                                   |
+| `keys`                                                  | `counts`                           |             |                |                                                   |
+| `label_lists`                                           | `counts`                           |             |                |                                                   |
+| `lfs_objects`                                           | `counts`                           |             |                |                                                   |
+| `milestone_lists`                                       | `counts`                           |             |                |                                                   |
+| `milestones`                                            | `counts`                           |             |                |                                                   |
+| `pages_domains`                                         | `counts`                           |`release`    |                | Total GitLab Pages domains                        |
+| `pool_repositories`                                     | `counts`                           |             |                |                                                   |
+| `projects`                                              | `counts`                           |             |                |                                                   |
+| `projects_imported_from_github`                         | `counts`                           |             |                |                                                   |
+| `projects_with_repositories_enabled`                    | `counts`                           |             |                |                                                   |
+| `projects_with_error_tracking_enabled`                  | `counts`                           | `monitor`   |                |                                                   |
+| `protected_branches`                                    | `counts`                           |             |                |                                                   |
+| `releases`                                              | `counts`                           |`release`    |                | Unique release tags                               |
+| `remote_mirrors`                                        | `counts`                           |             |                |                                                   |
+| `requirements_created`                                  | `counts`                           |             |                |                                                   |
+| `snippets`                                              | `counts`                           |             |                |                                                   |
+| `suggestions`                                           | `counts`                           |             |                |                                                   |
+| `todos`                                                 | `counts`                           |             |                |                                                   |
+| `uploads`                                               | `counts`                           |             |                |                                                   |
+| `web_hooks`                                             | `counts`                           |             |                |                                                   |
+| `projects_alerts_active`                                | `counts`                           |             |                |                                                   |
+| `projects_asana_active`                                 | `counts`                           |             |                |                                                   |
+| `projects_assembla_active`                              | `counts`                           |             |                |                                                   |
+| `projects_bamboo_active`                                | `counts`                           |             |                |                                                   |
+| `projects_bugzilla_active`                              | `counts`                           |             |                |                                                   |
+| `projects_buildkite_active`                             | `counts`                           |             |                |                                                   |
+| `projects_campfire_active`                              | `counts`                           |             |                |                                                   |
+| `projects_custom_issue_tracker_active`                  | `counts`                           |             |                |                                                   |
+| `projects_discord_active`                               | `counts`                           |             |                |                                                   |
+| `projects_drone_ci_active`                              | `counts`                           |             |                |                                                   |
+| `projects_emails_on_push_active`                        | `counts`                           |             |                |                                                   |
 | `projects_external_wiki_active`                         | `counts`                           |             |                                                   |
-| `projects_flowdock_active`                              | `counts`                           |             |                                                   |
-| `projects_github_active`                                | `counts`                           |             |                                                   |
-| `projects_hangouts_chat_active`                         | `counts`                           |             |                                                   |
-| `projects_hipchat_active`                               | `counts`                           |             |                                                   |
-| `projects_irker_active`                                 | `counts`                           |             |                                                   |
-| `projects_jenkins_active`                               | `counts`                           |             |                                                   |
-| `projects_jira_active`                                  | `counts`                           |             |                                                   |
-| `projects_mattermost_active`                            | `counts`                           |             |                                                   |
-| `projects_mattermost_slash_commands_active`             | `counts`                           |             |                                                   |
-| `projects_microsoft_teams_active`                       | `counts`                           |             |                                                   |
-| `projects_packagist_active`                             | `counts`                           |             |                                                   |
-| `projects_pipelines_email_active`                       | `counts`                           |             |                                                   |
-| `projects_pivotaltracker_active`                        | `counts`                           |             |                                                   |
-| `projects_prometheus_active`                            | `counts`                           |             |                                                   |
-| `projects_pushover_active`                              | `counts`                           |             |                                                   |
-| `projects_redmine_active`                               | `counts`                           |             |                                                   |
-| `projects_slack_active`                                 | `counts`                           |             |                                                   |
-| `projects_slack_slash_commands_active`                  | `counts`                           |             |                                                   |
-| `projects_teamcity_active`                              | `counts`                           |             |                                                   |
-| `projects_unify_circuit_active`                         | `counts`                           |             |                                                   |
-| `projects_webex_teams_active`                           | `counts`                           |             |                                                   |
-| `projects_youtrack_active`                              | `counts`                           |             |                                                   |
-| `projects_slack_notifications_active`                   | `counts`                           |             |                                                   |
-| `projects_slack_slash_active`                           | `counts`                           |             |                                                   |
-| `projects_jira_server_active`                           | `counts`                           |             |                                                   |
-| `projects_jira_cloud_active`                            | `counts`                           |             |                                                   |
-| `projects_jira_dvcs_cloud_active`                       | `counts`                           |             |                                                   |
-| `projects_jira_dvcs_server_active`                      | `counts`                           |             |                                                   |
-| `labels`                                                | `counts`                           |             |                                                   |
-| `merge_requests`                                        | `counts`                           |             |                                                   |
-| `notes`                                                 | `counts`                           |             |                                                   |
-| `wiki_pages_create`                                     | `counts`                           |             |                                                   |
-| `wiki_pages_update`                                     | `counts`                           |             |                                                   |
-| `wiki_pages_delete`                                     | `counts`                           |             |                                                   |
-| `web_ide_commits`                                       | `counts`                           |             |                                                   |
-| `web_ide_views`                                         | `counts`                           |             |                                                   |
-| `web_ide_merge_requests`                                | `counts`                           |             |                                                   |
-| `web_ide_previews`                                      | `counts`                           |             |                                                   |
-| `snippet_comment`                                       | `counts`                           |             |                                                   |
-| `commit_comment`                                        | `counts`                           |             |                                                   |
-| `merge_request_comment`                                 | `counts`                           |             |                                                   |
-| `snippet_create`                                        | `counts`                           |             |                                                   |
-| `snippet_update`                                        | `counts`                           |             |                                                   |
-| `navbar_searches`                                       | `counts`                           |             |                                                   |
-| `cycle_analytics_views`                                 | `counts`                           |             |                                                   |
-| `productivity_analytics_views`                          | `counts`                           |             |                                                   |
-| `source_code_pushes`                                    | `counts`                           |             |                                                   |
-| `merge_request_create`                                  | `counts`                           |             |                                                   |
-| `design_management_designs_create`                      | `counts`                           |             |                                                   |
-| `design_management_designs_update`                      | `counts`                           |             |                                                   |
-| `design_management_designs_delete`                      | `counts`                           |             |                                                   |
-| `licenses_list_views`                                   | `counts`                           |             |                                                   |
-| `user_preferences_group_overview_details`               | `counts`                           |             |                                                   |
-| `user_preferences_group_overview_security_dashboard`    | `counts`                           |             |                                                   |
-| `ingress_modsecurity_logging`                           | `counts`                           |             |                                                   |
-| `ingress_modsecurity_blocking`                          | `counts`                           |             |                                                   |
-| `ingress_modsecurity_disabled`                          | `counts`                           |             |                                                   |
-| `ingress_modsecurity_not_installed`                     | `counts`                           |             |                                                   |
-| `dependency_list_usages_total`                          | `counts`                           |             |                                                   |
-| `epics`                                                 | `counts`                           |             |                                                   |
-| `feature_flags`                                         | `counts`                           |             |                                                   |
-| `geo_nodes`                                             | `counts`                           | `geo`       | Number of sites in a Geo deployment               |
-| `geo_event_log_max_id`                                  | `counts`                           | `geo`       | Number of replication events on a Geo primary     |
-| `incident_issues`                                       | `counts`                           | `monitor`   | Issues created by the alert bot                   |
-| `alert_bot_incident_issues`                             | `counts`                           | `monitor`   | Issues created by the alert bot                   |
-| `incident_labeled_issues`                               | `counts`                           | `monitor`   | Issues with the incident label                    |
-| `issues_created_gitlab_alerts`                          | `counts`                           | `monitor`   | Issues created from alerts by non-alert bot users |
-| `issues_created_manually_from_alerts`                   | `counts`                           | `monitor`   | Issues created from alerts by non-alert bot users |
-| `issues_created_from_alerts`                            | `counts`                           | `monitor`   | Issues created from Prometheus and alert management alerts |
-| `ldap_group_links`                                      | `counts`                           |             |                                                   |
-| `ldap_keys`                                             | `counts`                           |             |                                                   |
-| `ldap_users`                                            | `counts`                           |             |                                                   |
-| `pod_logs_usages_total`                                 | `counts`                           |             |                                                   |
-| `projects_enforcing_code_owner_approval`                | `counts`                           |             |                                                   |
-| `projects_mirrored_with_pipelines_enabled`              | `counts`                           |`release`    | Projects with repository mirroring enabled        |
-| `projects_reporting_ci_cd_back_to_github`               | `counts`                           |`verify`     | Projects with a GitHub service pipeline enabled   |
-| `projects_with_packages`                                | `counts`                           |`package`    | Projects with package registry configured         |
-| `projects_with_prometheus_alerts`                       | `counts`                           |`monitor`    | Projects with Promethus alerting enabled          |
-| `projects_with_tracing_enabled`                         | `counts`                           |`monitor`    | Projects with tracing enabled                     |
-| `projects_with_alerts_service_enabled`                  | `counts`                           |`monitor`    | Projects with alerting service enabled            |
-| `template_repositories`                                 | `counts`                           |             |                                                   |
-| `container_scanning_jobs`                               | `counts`                           |             |                                                   |
-| `dependency_scanning_jobs`                              | `counts`                           |             |                                                   |
-| `license_management_jobs`                               | `counts`                           |             |                                                   |
-| `sast_jobs`                                             | `counts`                           |             |                                                   |
-| `status_page_projects`                                  | `counts`                           | `monitor`   | Projects with status page enabled                 |
-| `status_page_issues`                                    | `counts`                           | `monitor`   | Issues published to a Status Page                   |
-| `epics_deepest_relationship_level`                      | `counts`                           |             |                                                   |
-| `operations_dashboard_default_dashboard`                | `counts`                           | `monitor`   | Active users with enabled operations dashboard    |
-| `operations_dashboard_users_with_projects_added`        | `counts`                           | `monitor`   | Active users with projects on operations dashboard|
-| `container_registry_enabled`                            |                                    |             |                                                   |
-| `dependency_proxy_enabled`                              |                                    |             |                                                   |
-| `gitlab_shared_runners_enabled`                         |                                    |             |                                                   |
-| `gravatar_enabled`                                      |                                    |             |                                                   |
-| `ldap_enabled`                                          |                                    |             |                                                   |
-| `mattermost_enabled`                                    |                                    |             |                                                   |
-| `omniauth_enabled`                                      |                                    |             |                                                   |
-| `prometheus_metrics_enabled`                            |                                    |             |                                                   |
-| `reply_by_email_enabled`                                |                                    |             |                                                   |
-| `average`                                               | `avg_cycle_analytics - code`       |             |                                                   |
-| `sd`                                                    | `avg_cycle_analytics - code`       |             |                                                   |
-| `missing`                                               | `avg_cycle_analytics - code`       |             |                                                   |
-| `average`                                               | `avg_cycle_analytics - test`       |             |                                                   |
-| `sd`                                                    | `avg_cycle_analytics - test`       |             |                                                   |
-| `missing`                                               | `avg_cycle_analytics - test`       |             |                                                   |
-| `average`                                               | `avg_cycle_analytics - review`     |             |                                                   |
-| `sd`                                                    | `avg_cycle_analytics - review`     |             |                                                   |
-| `missing`                                               | `avg_cycle_analytics - review`     |             |                                                   |
-| `average`                                               | `avg_cycle_analytics - staging`    |             |                                                   |
-| `sd`                                                    | `avg_cycle_analytics - staging`    |             |                                                   |
-| `missing`                                               | `avg_cycle_analytics - staging`    |             |                                                   |
-| `average`                                               | `avg_cycle_analytics - production` |             |                                                   |
-| `sd`                                                    | `avg_cycle_analytics - production` |             |                                                   |
-| `missing`                                               | `avg_cycle_analytics - production` |             |                                                   |
-| `total`                                                 | `avg_cycle_analytics`              |             |                                                   |
-| `clusters_applications_cert_managers`                   | `usage_activity_by_stage`          | `configure` | Unique clusters with certificate managers enabled |
-| `clusters_applications_helm`                            | `usage_activity_by_stage`          | `configure` | Unique clusters with Helm enabled                 |
-| `clusters_applications_ingress`                         | `usage_activity_by_stage`          | `configure` | Unique clusters with Ingress enabled              |
-| `clusters_applications_knative`                         | `usage_activity_by_stage`          | `configure` | Unique clusters with Knative enabled              |
-| `clusters_management_project`                           | `usage_activity_by_stage`          | `configure` | Unique clusters with project management enabled   |
-| `clusters_disabled`                                     | `usage_activity_by_stage`          | `configure` | Total non-"GitLab Managed clusters"                          |
-| `clusters_enabled`                                      | `usage_activity_by_stage`          | `configure` | Total GitLab Managed clusters                           |
-| `clusters_platforms_gke`                                | `usage_activity_by_stage`          | `configure` | Unique clusters with Google Cloud installed       |
-| `clusters_platforms_eks`                                | `usage_activity_by_stage`          | `configure` | Unique clusters with AWS installed                |
-| `clusters_platforms_user`                               | `usage_activity_by_stage`          | `configure` | Unique clusters that are user provided            |
-| `instance_clusters_disabled`                            | `usage_activity_by_stage`          | `configure` | Unique clusters disabled on instance              |
-| `instance_clusters_enabled`                             | `usage_activity_by_stage`          | `configure` | Unique clusters enabled on instance               |
-| `group_clusters_disabled`                               | `usage_activity_by_stage`          | `configure` | Unique clusters disabled on group                 |
-| `group_clusters_enabled`                                | `usage_activity_by_stage`          | `configure` | Unique clusters enabled on group                  |
-| `project_clusters_disabled`                             | `usage_activity_by_stage`          | `configure` | Unique clusters disabled on project               |
-| `project_clusters_enabled`                              | `usage_activity_by_stage`          | `configure` | Unique clusters enabled on project                |
-| `projects_slack_notifications_active`                   | `usage_activity_by_stage`          | `configure` | Unique projects with Slack service enabled        |
-| `projects_slack_slash_active`                           | `usage_activity_by_stage`          | `configure` | Unique projects with Slack '/' commands enabled   |
-| `projects_with_prometheus_alerts: 0`                    | `usage_activity_by_stage`          | `monitor`   | Projects with Promethus enabled and no alerts     |
-| `deploy_keys`                                           | `usage_activity_by_stage`          | `create`    |                                                   |
-| `keys`                                                  | `usage_activity_by_stage`          | `create`    |                                                   |
-| `projects_jira_dvcs_server_active`                      | `usage_activity_by_stage`          | `plan`      |                                                   |
-| `service_desk_enabled_projects`                         | `usage_activity_by_stage`          | `plan`      |                                                   |
-| `service_desk_issues`                                   | `usage_activity_by_stage`          | `plan`      |                                                   |
-| `todos: 0`                                              | `usage_activity_by_stage`          | `plan`      |                                                   |
-| `deployments`                                           | `usage_activity_by_stage`          | `release`   | Total deployments                                 |
-| `failed_deployments`                                    | `usage_activity_by_stage`          | `release`   | Total failed deployments                          |
-| `projects_mirrored_with_pipelines_enabled`              | `usage_activity_by_stage`          | `release`   | Projects with repository mirroring enabled        |
-| `releases`                                              | `usage_activity_by_stage`          | `release`   | Unique release tags in project                    |
-| `successful_deployments: 0`                             | `usage_activity_by_stage`          | `release`   | Total successful deployments                      |
-| `user_preferences_group_overview_security_dashboard: 0` | `usage_activity_by_stage`          | `secure`    |                                                   |
-| `ci_builds`                                             | `usage_activity_by_stage`          | `verify`    | Unique builds in project                          |
-| `ci_external_pipelines`                                 | `usage_activity_by_stage`          | `verify`    | Total pipelines in external repositories          |
-| `ci_internal_pipelines`                                 | `usage_activity_by_stage`          | `verify`    | Total pipelines in GitLab repositories            |
-| `ci_pipeline_config_auto_devops`                        | `usage_activity_by_stage`          | `verify`    | Total pipelines from an Auto DevOps template      |
-| `ci_pipeline_config_repository`                         | `usage_activity_by_stage`          | `verify`    | Pipelines from templates in repository            |
-| `ci_pipeline_schedules`                                 | `usage_activity_by_stage`          | `verify`    | Pipeline schedules in GitLab                      |
-| `ci_pipelines`                                          | `usage_activity_by_stage`          | `verify`    | Total pipelines                                   |
-| `ci_triggers`                                           | `usage_activity_by_stage`          | `verify`    | Triggers enabled                                  |
-| `clusters_applications_runner`                          | `usage_activity_by_stage`          | `verify`    | Unique clusters with Runner enabled               |
-| `projects_reporting_ci_cd_back_to_github: 0`            | `usage_activity_by_stage`          | `verify`    | Unique projects with a GitHub pipeline enabled   |
+| `projects_flowdock_active`                              | `counts`                           |             |                |                                                   |
+| `projects_github_active`                                | `counts`                           |             |                |                                                   |
+| `projects_hangouts_chat_active`                         | `counts`                           |             |                |                                                   |
+| `projects_hipchat_active`                               | `counts`                           |             |                |                                                   |
+| `projects_irker_active`                                 | `counts`                           |             |                |                                                   |
+| `projects_jenkins_active`                               | `counts`                           |             |                |                                                   |
+| `projects_jira_active`                                  | `counts`                           |             |                |                                                   |
+| `projects_mattermost_active`                            | `counts`                           |             |                |                                                   |
+| `projects_mattermost_slash_commands_active`             | `counts`                           |             |                |                                                   |
+| `projects_microsoft_teams_active`                       | `counts`                           |             |                |                                                   |
+| `projects_packagist_active`                             | `counts`                           |             |                |                                                   |
+| `projects_pipelines_email_active`                       | `counts`                           |             |                |                                                   |
+| `projects_pivotaltracker_active`                        | `counts`                           |             |                |                                                   |
+| `projects_prometheus_active`                            | `counts`                           |             |                |                                                   |
+| `projects_pushover_active`                              | `counts`                           |             |                |                                                   |
+| `projects_redmine_active`                               | `counts`                           |             |                |                                                   |
+| `projects_slack_active`                                 | `counts`                           |             |                |                                                   |
+| `projects_slack_slash_commands_active`                  | `counts`                           |             |                |                                                   |
+| `projects_teamcity_active`                              | `counts`                           |             |                |                                                   |
+| `projects_unify_circuit_active`                         | `counts`                           |             |                |                                                   |
+| `projects_webex_teams_active`                           | `counts`                           |             |                |                                                   |
+| `projects_youtrack_active`                              | `counts`                           |             |                |                                                   |
+| `projects_slack_notifications_active`                   | `counts`                           |             |                |                                                   |
+| `projects_slack_slash_active`                           | `counts`                           |             |                |                                                   |
+| `projects_jira_server_active`                           | `counts`                           |             |                |                                                   |
+| `projects_jira_cloud_active`                            | `counts`                           |             |                |                                                   |
+| `projects_jira_dvcs_cloud_active`                       | `counts`                           |             |                |                                                   |
+| `projects_jira_dvcs_server_active`                      | `counts`                           |             |                |                                                   |
+| `labels`                                                | `counts`                           |             |                |                                                   |
+| `merge_requests`                                        | `counts`                           |             |                |                                                   |
+| `notes`                                                 | `counts`                           |             |                |                                                   |
+| `wiki_pages_create`                                     | `counts`                           |             |                |                                                   |
+| `wiki_pages_update`                                     | `counts`                           |             |                |                                                   |
+| `wiki_pages_delete`                                     | `counts`                           |             |                |                                                   |
+| `web_ide_commits`                                       | `counts`                           |             |                |                                                   |
+| `web_ide_views`                                         | `counts`                           |             |                |                                                   |
+| `web_ide_merge_requests`                                | `counts`                           |             |                |                                                   |
+| `web_ide_previews`                                      | `counts`                           |             |                |                                                   |
+| `snippet_comment`                                       | `counts`                           |             |                |                                                   |
+| `commit_comment`                                        | `counts`                           |             |                |                                                   |
+| `merge_request_comment`                                 | `counts`                           |             |                |                                                   |
+| `snippet_create`                                        | `counts`                           |             |                |                                                   |
+| `snippet_update`                                        | `counts`                           |             |                |                                                   |
+| `navbar_searches`                                       | `counts`                           |             |                |                                                   |
+| `cycle_analytics_views`                                 | `counts`                           |             |                |                                                   |
+| `productivity_analytics_views`                          | `counts`                           |             |                |                                                   |
+| `source_code_pushes`                                    | `counts`                           |             |                |                                                   |
+| `merge_request_create`                                  | `counts`                           |             |                |                                                   |
+| `design_management_designs_create`                      | `counts`                           |             |                |                                                   |
+| `design_management_designs_update`                      | `counts`                           |             |                |                                                   |
+| `design_management_designs_delete`                      | `counts`                           |             |                |                                                   |
+| `licenses_list_views`                                   | `counts`                           |             |                |                                                   |
+| `user_preferences_group_overview_details`               | `counts`                           |             |                |                                                   |
+| `user_preferences_group_overview_security_dashboard`    | `counts`                           |             |                |                                                   |
+| `ingress_modsecurity_logging`                           | `counts`                           |             |                |                                                   |
+| `ingress_modsecurity_blocking`                          | `counts`                           |             |                |                                                   |
+| `ingress_modsecurity_disabled`                          | `counts`                           |             |                |                                                   |
+| `ingress_modsecurity_not_installed`                     | `counts`                           |             |                |                                                   |
+| `dependency_list_usages_total`                          | `counts`                           |             |                |                                                   |
+| `epics`                                                 | `counts`                           |             |                |                                                   |
+| `feature_flags`                                         | `counts`                           |             |                |                                                   |
+| `geo_nodes`                                             | `counts`                           | `geo`       |                | Number of sites in a Geo deployment               |
+| `geo_event_log_max_id`                                  | `counts`                           | `geo`       |                | Number of replication events on a Geo primary     |
+| `incident_issues`                                       | `counts`                           | `monitor`   |                | Issues created by the alert bot                   |
+| `alert_bot_incident_issues`                             | `counts`                           | `monitor`   |                | Issues created by the alert bot                   |
+| `incident_labeled_issues`                               | `counts`                           | `monitor`   |                | Issues with the incident label                    |
+| `issues_created_gitlab_alerts`                          | `counts`                           | `monitor`   |                | Issues created from alerts by non-alert bot users |
+| `issues_created_manually_from_alerts`                   | `counts`                           | `monitor`   |                | Issues created from alerts by non-alert bot users |
+| `issues_created_from_alerts`                            | `counts`                           | `monitor`   |                | Issues created from Prometheus and alert management alerts |
+| `ldap_group_links`                                      | `counts`                           |             |                |                                                   |
+| `ldap_keys`                                             | `counts`                           |             |                |                                                   |
+| `ldap_users`                                            | `counts`                           |             |                |                                                   |
+| `pod_logs_usages_total`                                 | `counts`                           |             |                |                                                   |
+| `projects_enforcing_code_owner_approval`                | `counts`                           |             |                |                                                   |
+| `projects_mirrored_with_pipelines_enabled`              | `counts`                           |`release`    |                | Projects with repository mirroring enabled        |
+| `projects_reporting_ci_cd_back_to_github`               | `counts`                           |`verify`     |                | Projects with a GitHub service pipeline enabled   |
+| `projects_with_packages`                                | `counts`                           |`package`    |                | Projects with package registry configured         |
+| `projects_with_prometheus_alerts`                       | `counts`                           |`monitor`    |                | Projects with Prometheus alerting enabled          |
+| `projects_with_tracing_enabled`                         | `counts`                           |`monitor`    |                | Projects with tracing enabled                     |
+| `projects_with_alerts_service_enabled`                  | `counts`                           |`monitor`    |                | Projects with alerting service enabled            |
+| `template_repositories`                                 | `counts`                           |             |                |                                                   |
+| `container_scanning_jobs`                               | `counts`                           |             |                |                                                   |
+| `dependency_scanning_jobs`                              | `counts`                           |             |                |                                                   |
+| `license_management_jobs`                               | `counts`                           |             |                |                                                   |
+| `sast_jobs`                                             | `counts`                           |             |                |                                                   |
+| `status_page_projects`                                  | `counts`                           | `monitor`   |                | Projects with status page enabled                 |
+| `status_page_issues`                                    | `counts`                           | `monitor`   |                | Issues published to a Status Page                 |
+| `epics_deepest_relationship_level`                      | `counts`                           |             |                |                                                   |
+| `operations_dashboard_default_dashboard`                | `counts`                           | `monitor`   |                | Active users with enabled operations dashboard    |
+| `operations_dashboard_users_with_projects_added`        | `counts`                           | `monitor`   |                | Active users with projects on operations dashboard|
+| `container_registry_enabled`                            |                                    |             |                |                                                   |
+| `dependency_proxy_enabled`                              |                                    |             |                |                                                   |
+| `gitlab_shared_runners_enabled`                         |                                    |             |                |                                                   |
+| `gravatar_enabled`                                      |                                    |             |                |                                                   |
+| `ldap_enabled`                                          |                                    |             |                |                                                   |
+| `mattermost_enabled`                                    |                                    |             |                |                                                   |
+| `omniauth_enabled`                                      |                                    |             |                |                                                   |
+| `prometheus_metrics_enabled`                            |                                    |             |                |                                                   |
+| `reply_by_email_enabled`                                |                                    |             |                |                                                   |
+| `average`                                               | `avg_cycle_analytics - code`       |             |                |                                                   |
+| `sd`                                                    | `avg_cycle_analytics - code`       |             |                |                                                   |
+| `missing`                                               | `avg_cycle_analytics - code`       |             |                |                                                   |
+| `average`                                               | `avg_cycle_analytics - test`       |             |                |                                                   |
+| `sd`                                                    | `avg_cycle_analytics - test`       |             |                |                                                   |
+| `missing`                                               | `avg_cycle_analytics - test`       |             |                |                                                   |
+| `average`                                               | `avg_cycle_analytics - review`     |             |                |                                                   |
+| `sd`                                                    | `avg_cycle_analytics - review`     |             |                |                                                   |
+| `missing`                                               | `avg_cycle_analytics - review`     |             |                |                                                   |
+| `average`                                               | `avg_cycle_analytics - staging`    |             |                |                                                   |
+| `sd`                                                    | `avg_cycle_analytics - staging`    |             |                |                                                   |
+| `missing`                                               | `avg_cycle_analytics - staging`    |             |                |                                                   |
+| `average`                                               | `avg_cycle_analytics - production` |             |                |                                                   |
+| `sd`                                                    | `avg_cycle_analytics - production` |             |                |                                                   |
+| `missing`                                               | `avg_cycle_analytics - production` |             |                |                                                   |
+| `total`                                                 | `avg_cycle_analytics`              |             |                |                                                   |
+| `clusters_applications_cert_managers`                   | `usage_activity_by_stage`          | `configure` |                | Unique clusters with certificate managers enabled |
+| `clusters_applications_helm`                            | `usage_activity_by_stage`          | `configure` |                | Unique clusters with Helm enabled                 |
+| `clusters_applications_ingress`                         | `usage_activity_by_stage`          | `configure` |                | Unique clusters with Ingress enabled              |
+| `clusters_applications_knative`                         | `usage_activity_by_stage`          | `configure` |                | Unique clusters with Knative enabled              |
+| `clusters_management_project`                           | `usage_activity_by_stage`          | `configure` |                | Unique clusters with project management enabled   |
+| `clusters_disabled`                                     | `usage_activity_by_stage`          | `configure` |                | Total non-"GitLab Managed clusters"                          |
+| `clusters_enabled`                                      | `usage_activity_by_stage`          | `configure` |                | Total GitLab Managed clusters                           |
+| `clusters_platforms_gke`                                | `usage_activity_by_stage`          | `configure` |                | Unique clusters with Google Cloud installed       |
+| `clusters_platforms_eks`                                | `usage_activity_by_stage`          | `configure` |                | Unique clusters with AWS installed                |
+| `clusters_platforms_user`                               | `usage_activity_by_stage`          | `configure` |                | Unique clusters that are user provided            |
+| `instance_clusters_disabled`                            | `usage_activity_by_stage`          | `configure` |                | Unique clusters disabled on instance              |
+| `instance_clusters_enabled`                             | `usage_activity_by_stage`          | `configure` |                | Unique clusters enabled on instance               |
+| `group_clusters_disabled`                               | `usage_activity_by_stage`          | `configure` |                | Unique clusters disabled on group                 |
+| `group_clusters_enabled`                                | `usage_activity_by_stage`          | `configure` |                | Unique clusters enabled on group                  |
+| `project_clusters_disabled`                             | `usage_activity_by_stage`          | `configure` |                | Unique clusters disabled on project               |
+| `project_clusters_enabled`                              | `usage_activity_by_stage`          | `configure` |                | Unique clusters enabled on project                |
+| `projects_slack_notifications_active`                   | `usage_activity_by_stage`          | `configure` |                | Unique projects with Slack service enabled        |
+| `projects_slack_slash_active`                           | `usage_activity_by_stage`          | `configure` |                | Unique projects with Slack '/' commands enabled   |
+| `projects_with_prometheus_alerts: 0`                    | `usage_activity_by_stage`          | `monitor`   |                | Projects with Prometheus enabled and no alerts    |
+| `deploy_keys`                                           | `usage_activity_by_stage`          | `create`    |                |                                                   |
+| `keys`                                                  | `usage_activity_by_stage`          | `create`    |                |                                                   |
+| `projects_jira_dvcs_server_active`                      | `usage_activity_by_stage`          | `plan`      |                |                                                   |
+| `service_desk_enabled_projects`                         | `usage_activity_by_stage`          | `plan`      |                |                                                   |
+| `service_desk_issues`                                   | `usage_activity_by_stage`          | `plan`      |                |                                                   |
+| `todos: 0`                                              | `usage_activity_by_stage`          | `plan`      |                |                                                   |
+| `deployments`                                           | `usage_activity_by_stage`          | `release`   |                | Total deployments                                 |
+| `failed_deployments`                                    | `usage_activity_by_stage`          | `release`   |                | Total failed deployments                          |
+| `projects_mirrored_with_pipelines_enabled`              | `usage_activity_by_stage`          | `release`   |                | Projects with repository mirroring enabled        |
+| `releases`                                              | `usage_activity_by_stage`          | `release`   |                | Unique release tags in project                    |
+| `successful_deployments: 0`                             | `usage_activity_by_stage`          | `release`   |                | Total successful deployments                      |
+| `user_preferences_group_overview_security_dashboard: 0` | `usage_activity_by_stage`          | `secure`    |                |                                                   |
+| `ci_builds`                                             | `usage_activity_by_stage`          | `verify`    |                | Unique builds in project                          |
+| `ci_external_pipelines`                                 | `usage_activity_by_stage`          | `verify`    |                | Total pipelines in external repositories          |
+| `ci_internal_pipelines`                                 | `usage_activity_by_stage`          | `verify`    |                | Total pipelines in GitLab repositories            |
+| `ci_pipeline_config_auto_devops`                        | `usage_activity_by_stage`          | `verify`    |                | Total pipelines from an Auto DevOps template      |
+| `ci_pipeline_config_repository`                         | `usage_activity_by_stage`          | `verify`    |                | Pipelines from templates in repository            |
+| `ci_pipeline_schedules`                                 | `usage_activity_by_stage`          | `verify`    |                | Pipeline schedules in GitLab                      |
+| `ci_pipelines`                                          | `usage_activity_by_stage`          | `verify`    |                | Total pipelines                                   |
+| `ci_triggers`                                           | `usage_activity_by_stage`          | `verify`    |                | Triggers enabled                                  |
+| `clusters_applications_runner`                          | `usage_activity_by_stage`          | `verify`    |                | Unique clusters with Runner enabled               |
+| `projects_reporting_ci_cd_back_to_github: 0`            | `usage_activity_by_stage`          | `verify`    |                | Unique projects with a GitHub pipeline enabled    |
 
 ## Example Usage Ping payload
 

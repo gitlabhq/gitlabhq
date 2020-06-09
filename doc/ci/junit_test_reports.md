@@ -192,6 +192,20 @@ cpp:
       junit: report.xml
 ```
 
+#### CUnit
+
+[CUnit](https://cunity.gitlab.io/cunit/) can be made to produce [JUnit XML reports](https://cunity.gitlab.io/cunit/group__CI.html) automatically when run using its `CUnitCI.h` macros:
+
+```yaml
+cunit:
+  stage: test
+  script:
+    - ./my-cunit-test
+  artifacts:
+    reports:
+      junit: ./my-cunit-test.xml
+```
+
 ### .Net example
 
 The [JunitXML.TestLogger](https://www.nuget.org/packages/JunitXml.TestLogger/) NuGet
