@@ -25,13 +25,13 @@ We have complete examples of configuring pipelines:
 - For a collection of examples, see [GitLab CI/CD Examples](../examples/README.md).
 - To see a large `.gitlab-ci.yml` file used in an enterprise, see the [`.gitlab-ci.yml` file for `gitlab`](https://gitlab.com/gitlab-org/gitlab/blob/master/.gitlab-ci.yml).
 
-For some additional information about GitLab CI/CD:
-
-- Watch the [CI/CD Ease of configuration](https://www.youtube.com/embed/opdLqwz6tcE) video.
-- Watch the [Making the case for CI/CD in your organization](https://about.gitlab.com/compare/github-actions-alternative/)
-  webcast to learn the benefits of CI/CD and how to measure the results of CI/CD automation.
-- Learn how [Verizon reduced rebuilds](https://about.gitlab.com/blog/2019/02/14/verizon-customer-story/)
-  from 30 days to under 8 hours with GitLab.
+> For some additional information about GitLab CI/CD:
+>
+> - <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>&nbsp;Watch the [CI/CD Ease of configuration](https://www.youtube.com/embed/opdLqwz6tcE) video.
+> - Watch the [Making the case for CI/CD in your organization](https://about.gitlab.com/compare/github-actions-alternative/)
+>   webcast to learn the benefits of CI/CD and how to measure the results of CI/CD automation.
+> - <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>&nbsp;Learn how [Verizon reduced rebuilds](https://about.gitlab.com/blog/2019/02/14/verizon-customer-story/)
+>   from 30 days to under 8 hours with GitLab.
 
 NOTE: **Note:**
 If you have a [mirrored repository where GitLab pulls from](../../user/project/repository/repository_mirroring.md#pulling-from-a-remote-repository-starter),
@@ -660,6 +660,44 @@ job:
 ```
 
 [YAML anchors for `before_script` and `after_script`](#yaml-anchors-for-before_script-and-after_script) are available.
+
+#### Coloring script output
+
+Script output can be colored using [ANSI escape codes](https://en.wikipedia.org/wiki/ANSI_escape_code#Colors),
+or by running commands or programs that output ANSI escape codes.
+
+For example, using [Bash with color codes](https://misc.flogisoft.com/bash/tip_colors_and_formatting):
+
+```yaml
+job:
+  script:
+    - echo -e "\e[31mThis text is red,\e[0m but this text isn't\e[31m however this text is red again."
+```
+
+You can define the color codes in Shell variables, or even [custom environment variables](../variables/README.md#custom-environment-variables),
+which makes the commands easier to read and reusable.
+
+For example, using the same example as above and variables defined in a `before_script`:
+
+```yaml
+job:
+  before_script:
+    - TXT_RED="\e[31m" && TXT_CLEAR="\e[0m"
+  script:
+    - echo -e "${TXT_RED}This text is red,${TXT_CLEAR} but this part isn't${TXT_RED} however this part is again."
+    - echo "This text is not colored"
+```
+
+Or with [PowerShell color codes](https://superuser.com/a/1259916):
+
+```yaml
+job:
+  before_script:
+    - $esc="$([char]27)"; $TXT_RED="$esc[31m"; $TXT_CLEAR="$esc[0m"
+  script:
+    - Write-Host $TXT_RED"This text is red,"$TXT_CLEAR" but this text isn't"$TXT_RED" however this text is red again."
+    - Write-Host "This text is not colored"
+```
 
 ### `stage`
 

@@ -28,7 +28,7 @@ and access them with direct commit ID. Read more about _[redoing the undo](#redo
 
 > For more information about working with Git and GitLab:
 >
-> - Learn why [North Western Mutual chose GitLab](https://youtu.be/kPNMyxKRRoM) for their Enterprise source code management.
+> - <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>&nbsp;Learn why [North Western Mutual chose GitLab](https://youtu.be/kPNMyxKRRoM) for their Enterprise source code management.
 > - Learn how to [get started with Git](https://about.gitlab.com/resources/whitepaper-moving-to-git/).
 
 ## Introduction

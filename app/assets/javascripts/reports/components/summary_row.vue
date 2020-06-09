@@ -54,7 +54,10 @@ export default {
       <ci-icon v-else :status="iconStatus" :size="24" />
     </div>
     <div class="report-block-list-issue-description">
-      <div class="report-block-list-issue-description-text">
+      <div
+        class="report-block-list-issue-description-text"
+        data-testid="test-summary-row-description"
+      >
         {{ summary
         }}<span v-if="popoverOptions" class="text-nowrap"
           >&nbsp;<popover v-if="popoverOptions" :options="popoverOptions" class="align-top" />

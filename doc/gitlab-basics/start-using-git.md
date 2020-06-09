@@ -24,7 +24,7 @@ can download GitLab's [Git Cheat Sheet](https://about.gitlab.com/images/press/gi
 
 > For more information about the advantages of working with Git and GitLab:
 >
-> - Watch the [GitLab Source Code Management Walkthrough](https://www.youtube.com/watch?v=wTQ3aXJswtM) video.
+> - <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>&nbsp;Watch the [GitLab Source Code Management Walkthrough](https://www.youtube.com/watch?v=wTQ3aXJswtM) video.
 > - Learn how GitLab became the backbone of [Worldline](https://about.gitlab.com/customers/worldline/)’s development environment.
 
 TIP: **Tip:**
