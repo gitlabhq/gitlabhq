@@ -151,6 +151,7 @@ module API
         end
 
         group = create_group
+        group.preload_shared_group_links
 
         if group.persisted?
           present group, with: Entities::GroupDetail, current_user: current_user
@@ -175,6 +176,8 @@ module API
       end
       put ':id' do
         group = find_group!(params[:id])
+        group.preload_shared_group_links
+
         authorize! :admin_group, group
 
         if update_group(group)
@@ -193,6 +196,7 @@ module API
       end
       get ":id" do
         group = find_group!(params[:id])
+        group.preload_shared_group_links
 
         options = {
           with: params[:with_projects] ? Entities::GroupDetail : Entities::Group,
@@ -299,6 +303,7 @@ module API
       post ":id/projects/:project_id", requirements: { project_id: /.+/ } do
         authenticated_as_admin!
         group = find_group!(params[:id])
+        group.preload_shared_group_links
         project = find_project!(params[:project_id])
         result = ::Projects::TransferService.new(project, current_user).execute(group)
 
@@ -308,6 +313,49 @@ module API
           render_api_error!("Failed to transfer project #{project.errors.messages}", 400)
         end
       end
+
+      desc 'Share a group with a group' do
+        success Entities::GroupDetail
+      end
+      params do
+        requires :group_id, type: Integer, desc: 'The ID of the group to share'
+        requires :group_access, type: Integer, values: Gitlab::Access.all_values, desc: 'The group access level'
+        optional :expires_at, type: Date, desc: 'Share expiration date'
+      end
+      post ":id/share" do
+        shared_group = find_group!(params[:id])
+        shared_with_group = find_group!(params[:group_id])
+
+        group_link_create_params = {
+          shared_group_access: params[:group_access],
+          expires_at: params[:expires_at]
+        }
+
+        result = ::Groups::GroupLinks::CreateService.new(shared_with_group, current_user, group_link_create_params).execute(shared_group)
+        shared_group.preload_shared_group_links
+
+        if result[:status] == :success
+          present shared_group, with: Entities::GroupDetail, current_user: current_user
+        else
+          render_api_error!(result[:message], result[:http_status])
+        end
+      end
+
+      params do
+        requires :group_id, type: Integer, desc: 'The ID of the shared group'
+      end
+      # rubocop: disable CodeReuse/ActiveRecord
+      delete ":id/share/:group_id" do
+        shared_group = find_group!(params[:id])
+
+        link = shared_group.shared_with_group_links.find_by(shared_with_group_id: params[:group_id])
+        not_found!('Group Link') unless link
+
+        ::Groups::GroupLinks::DestroyService.new(shared_group, current_user).execute(link)
+
+        no_content!
+      end
+      # rubocop: enable CodeReuse/ActiveRecord
     end
   end
 end

@@ -428,6 +428,15 @@ Example response:
   "file_template_project_id": 1,
   "parent_id": null,
   "created_at": "2020-01-15T12:36:29.590Z",
+  "shared_with_groups": [
+    {
+      "group_id": 28,
+      "group_name": "H5bp",
+      "group_full_path": "h5bp",
+      "group_access_level": 20,
+      "expires_at": null
+    }
+  ],
   "projects": [ // Deprecated and will be removed in API v5
     {
       "id": 7,
@@ -1101,3 +1110,35 @@ Read more in the [Group Badges](group_badges.md) documentation.
 ## Group Import/Export
 
 Read more in the [Group Import/Export](group_import_export.md) documentation.
+
+## Share Groups with Groups
+
+These endpoints create and delete links for sharing a group with another group. For more information, see the related discussion in the [GitLab Groups](../user/group/index.md#sharing-a-group-with-another-group) page.
+
+### Create a link to share a group with another group
+
+Share group with another group. Returns `200` and the [group details](#details-of-a-group) on success.
+
+```plaintext
+POST /groups/:id/share
+```
+
+| Attribute | Type           | Required | Description |
+| --------- | -------------- | -------- | ----------- |
+| `id`      | integer/string | yes      | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) |
+| `group_id` | integer | yes | The ID of the group to share with |
+| `group_access` | integer | yes | The [permissions level](members.md) to grant the group |
+| `expires_at` | string | no | Share expiration date in ISO 8601 format: 2016-09-26 |
+
+### Delete link sharing group with another group
+
+Unshare the group from another group. Returns `204` and no content on success.
+
+```plaintext
+DELETE /groups/:id/share/:group_id
+```
+
+| Attribute | Type           | Required | Description |
+| --------- | -------------- | -------- | ----------- |
+| `id`      | integer/string | yes      | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) |
+| `group_id` | integer | yes | The ID of the group to share with |

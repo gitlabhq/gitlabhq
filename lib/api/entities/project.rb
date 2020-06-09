@@ -90,7 +90,7 @@ module API
       expose :build_coverage_regex
       expose :ci_config_path, if: -> (project, options) { Ability.allowed?(options[:current_user], :download_code, project) }
       expose :shared_with_groups do |project, options|
-        SharedGroup.represent(project.project_group_links, options)
+        SharedGroupWithProject.represent(project.project_group_links, options)
       end
       expose :only_allow_merge_if_pipeline_succeeds
       expose :request_access_enabled

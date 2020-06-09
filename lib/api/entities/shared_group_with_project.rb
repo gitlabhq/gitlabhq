@@ -2,7 +2,7 @@
 
 module API
   module Entities
-    class SharedGroup < Grape::Entity
+    class SharedGroupWithProject < Grape::Entity
       expose :group_id
       expose :group_name do |group_link, options|
         group_link.group.name

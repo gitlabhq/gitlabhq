@@ -436,6 +436,8 @@ describe API::Groups do
       it "returns one of user1's groups" do
         project = create(:project, namespace: group2, path: 'Foo')
         create(:project_group_link, project: project, group: group1)
+        group = create(:group)
+        link = create(:group_group_link, shared_group: group1, shared_with_group: group)
 
         get api("/groups/#{group1.id}", user1)
 
@@ -460,6 +462,13 @@ describe API::Groups do
         expect(json_response['full_path']).to eq(group1.full_path)
         expect(json_response['parent_id']).to eq(group1.parent_id)
         expect(json_response['created_at']).to be_present
+        expect(json_response['shared_with_groups']).to be_an Array
+        expect(json_response['shared_with_groups'].length).to eq(1)
+        expect(json_response['shared_with_groups'][0]['group_id']).to eq(group.id)
+        expect(json_response['shared_with_groups'][0]['group_name']).to eq(group.name)
+        expect(json_response['shared_with_groups'][0]['group_full_path']).to eq(group.full_path)
+        expect(json_response['shared_with_groups'][0]['group_access_level']).to eq(link.group_access)
+        expect(json_response['shared_with_groups'][0]).to have_key('expires_at')
         expect(json_response['projects']).to be_an Array
         expect(json_response['projects'].length).to eq(2)
         expect(json_response['shared_projects']).to be_an Array
@@ -526,7 +535,7 @@ describe API::Groups do
           .to contain_exactly(projects[:public].id, projects[:internal].id)
       end
 
-      it 'avoids N+1 queries' do
+      it 'avoids N+1 queries with project links' do
         get api("/groups/#{group1.id}", admin)
 
         control_count = ActiveRecord::QueryRecorder.new do
@@ -535,6 +544,24 @@ describe API::Groups do
 
         create(:project, namespace: group1)
 
+        expect do
+          get api("/groups/#{group1.id}", admin)
+        end.not_to exceed_query_limit(control_count)
+      end
+
+      it 'avoids N+1 queries with shared group links' do
+        # setup at least 1 shared group, so that we record the queries that preload the nested associations too.
+        create(:group_group_link, shared_group: group1, shared_with_group: create(:group))
+
+        control_count = ActiveRecord::QueryRecorder.new do
+          get api("/groups/#{group1.id}", admin)
+        end.count
+
+        # setup "n" more shared groups
+        create(:group_group_link, shared_group: group1, shared_with_group: create(:group))
+        create(:group_group_link, shared_group: group1, shared_with_group: create(:group))
+
+        # test that no of queries for 1 shared group is same as for n shared groups
         expect do
           get api("/groups/#{group1.id}", admin)
         end.not_to exceed_query_limit(control_count)
@@ -1526,6 +1553,175 @@ describe API::Groups do
 
     before do
       group2.add_owner(user1)
+    end
+  end
+
+  describe "POST /groups/:id/share" do
+    shared_examples 'shares group with group' do
+      it "shares group with group" do
+        expires_at = 10.days.from_now.to_date
+
+        expect do
+          post api("/groups/#{group.id}/share", user), params: { group_id: shared_with_group.id, group_access: Gitlab::Access::DEVELOPER, expires_at: expires_at }
+        end.to change { group.shared_with_group_links.count }.by(1)
+
+        expect(response).to have_gitlab_http_status(:created)
+        expect(json_response['shared_with_groups']).to be_an Array
+        expect(json_response['shared_with_groups'].length).to eq(1)
+        expect(json_response['shared_with_groups'][0]['group_id']).to eq(shared_with_group.id)
+        expect(json_response['shared_with_groups'][0]['group_name']).to eq(shared_with_group.name)
+        expect(json_response['shared_with_groups'][0]['group_full_path']).to eq(shared_with_group.full_path)
+        expect(json_response['shared_with_groups'][0]['group_access_level']).to eq(Gitlab::Access::DEVELOPER)
+        expect(json_response['shared_with_groups'][0]['expires_at']).to eq(expires_at.to_s)
+      end
+
+      it "returns a 400 error when group id is not given" do
+        post api("/groups/#{group.id}/share", user), params: { group_access: Gitlab::Access::DEVELOPER }
+        expect(response).to have_gitlab_http_status(:bad_request)
+      end
+
+      it "returns a 400 error when access level is not given" do
+        post api("/groups/#{group.id}/share", user), params: { group_id: shared_with_group.id }
+        expect(response).to have_gitlab_http_status(:bad_request)
+      end
+
+      it 'returns a 404 error when group does not exist' do
+        post api("/groups/#{group.id}/share", user), params: { group_id: non_existing_record_id, group_access: Gitlab::Access::DEVELOPER }
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+
+      it "returns a 400 error when wrong params passed" do
+        post api("/groups/#{group.id}/share", user), params: { group_id: shared_with_group.id, group_access: non_existing_record_access_level }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['error']).to eq 'group_access does not have a valid value'
+      end
+
+      it "returns a 409 error when link is not saved" do
+        allow(::Groups::GroupLinks::CreateService).to receive_message_chain(:new, :execute)
+          .and_return({ status: :error, http_status: 409, message: 'error' })
+
+        post api("/groups/#{group.id}/share", user), params: { group_id: shared_with_group.id, group_access: Gitlab::Access::DEVELOPER }
+
+        expect(response).to have_gitlab_http_status(:conflict)
+      end
+    end
+
+    context 'when authenticated as owner' do
+      let(:owner_group) { create(:group) }
+      let(:owner_user) { create(:user) }
+
+      before do
+        owner_group.add_owner(owner_user)
+      end
+
+      it_behaves_like 'shares group with group' do
+        let(:user) { owner_user }
+        let(:group) { owner_group }
+        let(:shared_with_group) { create(:group) }
+      end
+    end
+
+    context 'when the user is not the owner of the group' do
+      let(:group) { create(:group) }
+      let(:user4) { create(:user) }
+      let(:expires_at) { 10.days.from_now.to_date }
+
+      before do
+        group1.add_maintainer(user4)
+      end
+
+      it 'does not create group share' do
+        post api("/groups/#{group1.id}/share", user4), params: { group_id: group.id, group_access: Gitlab::Access::DEVELOPER, expires_at: expires_at }
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
+    context 'when authenticated as admin' do
+      it_behaves_like 'shares group with group' do
+        let(:user) { admin }
+        let(:group) { create(:group) }
+        let(:shared_with_group) { create(:group) }
+      end
+    end
+  end
+
+  describe 'DELETE /groups/:id/share/:group_id' do
+    shared_examples 'deletes group share' do
+      it 'deletes a group share' do
+        expect do
+          delete api("/groups/#{shared_group.id}/share/#{shared_with_group.id}", user)
+
+          expect(response).to have_gitlab_http_status(:no_content)
+          expect(shared_group.shared_with_group_links).to be_empty
+        end.to change { shared_group.shared_with_group_links.count }.by(-1)
+      end
+
+      it 'requires the group id to be an integer' do
+        delete api("/groups/#{shared_group.id}/share/foo", user)
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+      end
+
+      it 'returns a 404 error when group link does not exist' do
+        delete api("/groups/#{shared_group.id}/share/#{non_existing_record_id}", user)
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+
+      it 'returns a 404 error when group does not exist' do
+        delete api("/groups/123/share/#{non_existing_record_id}", user)
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
+    context 'when authenticated as owner' do
+      let(:group_a) { create(:group) }
+
+      before do
+        create(:group_group_link, shared_group: group1, shared_with_group: group_a)
+      end
+
+      it_behaves_like 'deletes group share' do
+        let(:user) { user1 }
+        let(:shared_group) { group1 }
+        let(:shared_with_group) { group_a }
+      end
+    end
+
+    context 'when the user is not the owner of the group' do
+      let(:group_a) { create(:group) }
+      let(:user4) { create(:user) }
+
+      before do
+        group1.add_maintainer(user4)
+        create(:group_group_link, shared_group: group1, shared_with_group: group_a)
+      end
+
+      it 'does not remove group share' do
+        expect do
+          delete api("/groups/#{group1.id}/share/#{group_a.id}", user4)
+
+          expect(response).to have_gitlab_http_status(:no_content)
+        end.not_to change { group1.shared_with_group_links }
+      end
+    end
+
+    context 'when authenticated as admin' do
+      let(:group_b) { create(:group) }
+
+      before do
+        create(:group_group_link, shared_group: group2, shared_with_group: group_b)
+      end
+
+      it_behaves_like 'deletes group share' do
+        let(:user) { admin }
+        let(:shared_group) { group2 }
+        let(:shared_with_group) { group_b }
+      end
     end
   end
 end

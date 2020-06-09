@@ -5,7 +5,7 @@ module Groups
     class CreateService < BaseService
       def execute(shared_group)
         unless group && shared_group &&
-               can?(current_user, :admin_group, shared_group) &&
+               can?(current_user, :admin_group_member, shared_group) &&
                can?(current_user, :read_group, group)
           return error('Not Found', 404)
         end

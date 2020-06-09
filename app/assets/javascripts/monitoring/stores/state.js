@@ -44,7 +44,7 @@ export default () => ({
    * User-defined custom links are passed
    * via the dashboard yml file.
    */
-  links: {},
+  links: [],
   // Other project data
   dashboardTimezone: timezones.LOCAL,
   annotations: [],

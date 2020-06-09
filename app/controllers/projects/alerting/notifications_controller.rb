@@ -29,12 +29,22 @@ module Projects
       end
 
       def notify_service
-        Projects::Alerting::NotifyService
-          .new(project, current_user, notification_payload)
+        notify_service_class.new(project, current_user, notification_payload)
+      end
+
+      def notify_service_class
+        # We are tracking the consolidation of these services in
+        # https://gitlab.com/groups/gitlab-org/-/epics/3360
+        # to get rid of this workaround.
+        if Projects::Prometheus::Alerts::NotifyService.processable?(notification_payload)
+          Projects::Prometheus::Alerts::NotifyService
+        else
+          Projects::Alerting::NotifyService
+        end
       end
 
       def notification_payload
-        params.permit![:notification]
+        @notification_payload ||= params.permit![:notification]
       end
     end
   end

@@ -496,6 +496,11 @@ class Group < Namespace
     # TODO: group hooks https://gitlab.com/gitlab-org/gitlab/-/issues/216904
   end
 
+  def preload_shared_group_links
+    preloader = ActiveRecord::Associations::Preloader.new
+    preloader.preload(self, shared_with_group_links: [shared_with_group: :route])
+  end
+
   private
 
   def update_two_factor_requirement

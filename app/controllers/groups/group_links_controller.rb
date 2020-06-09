@@ -27,7 +27,7 @@ class Groups::GroupLinksController < Groups::ApplicationController
   end
 
   def destroy
-    Groups::GroupLinks::DestroyService.new(nil, nil).execute(@group_link)
+    Groups::GroupLinks::DestroyService.new(group, current_user).execute(@group_link)
 
     respond_to do |format|
       format.html do

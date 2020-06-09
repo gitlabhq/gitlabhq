@@ -67,7 +67,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
 
         namespace :ci do
           resource :lint, only: [:show, :create]
-          resources :daily_build_group_report_results, only: [:index], constraints: { format: 'csv' }
+          resources :daily_build_group_report_results, only: [:index], constraints: { format: /(csv|json)/ }
         end
 
         namespace :settings do

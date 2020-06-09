@@ -49,8 +49,8 @@ RSpec.describe Projects::GraphsController do
 
             expect(assigns[:daily_coverage_options]).to eq(
               base_params: {
-                start_date: Time.current.to_date - 90.days,
-                end_date: Time.current.to_date,
+                start_date: Date.current - 90.days,
+                end_date: Date.current,
                 ref_path: project.repository.expand_ref('master'),
                 param_type: 'coverage'
               },
@@ -58,6 +58,11 @@ RSpec.describe Projects::GraphsController do
                 namespace_id: project.namespace,
                 project_id: project,
                 format: :csv
+              ),
+              graph_api_path: namespace_project_ci_daily_build_group_report_results_path(
+                namespace_id: project.namespace,
+                project_id: project,
+                format: :json
               )
             )
           end

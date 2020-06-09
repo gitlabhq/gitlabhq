@@ -1,0 +1,5 @@
+---
+title: Allow generic endpoint to receive alerts from external Prometheus
+merge_request: 32676
+author:
+type: added

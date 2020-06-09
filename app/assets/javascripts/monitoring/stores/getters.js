@@ -1,5 +1,5 @@
 import { NOT_IN_DB_PREFIX } from '../constants';
-import { addPrefixToCustomVariableParams } from './utils';
+import { addPrefixToCustomVariableParams, addDashboardMetaDataToLink } from './utils';
 
 const metricsIdsInPanel = panel =>
   panel.metrics.filter(metric => metric.metricId && metric.result).map(metric => metric.metricId);
@@ -111,6 +111,22 @@ export const filteredEnvironments = state =>
   state.environments.filter(env =>
     env.name.toLowerCase().includes((state.environmentsSearchTerm || '').trim().toLowerCase()),
   );
+
+/**
+ * User-defined links from the yml file can have other
+ * dashboard-related metadata baked into it. This method
+ * returns modified links which will get rendered in the
+ * metrics dashboard
+ *
+ * @param {Object} state
+ * @returns {Array} modified array of links
+ */
+export const linksWithMetadata = state => {
+  const metadata = {
+    timeRange: state.timeRange,
+  };
+  return state.links?.map(addDashboardMetaDataToLink(metadata));
+};
 
 /**
  * Maps an variables object to an array along with stripping

@@ -10409,6 +10409,9 @@ msgstr ""
 msgid "Geo|Synchronization failed - %{error}"
 msgstr ""
 
+msgid "Geo|Synchronization of %{itemTitle} is disabled."
+msgstr ""
+
 msgid "Geo|The database is currently %{db_lag} behind the primary node."
 msgstr ""
 
@@ -21614,9 +21617,6 @@ msgid "Synced"
 msgstr ""
 
 msgid "Synchronization disabled"
-msgstr ""
-
-msgid "Synchronization of container repositories is disabled."
 msgstr ""
 
 msgid "System"

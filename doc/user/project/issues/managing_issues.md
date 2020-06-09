@@ -4,24 +4,25 @@ group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 ---
 
-# Managing Issues
+# Managing issues
 
 [GitLab Issues](index.md) are the fundamental medium for collaborating on ideas and
 planning work in GitLab. [Creating](#create-a-new-issue), [moving](#moving-issues),
 [closing](#closing-issues), and [deleting](#deleting-issues) are key actions that
 you can do with issues.
 
-## Create a new Issue
+## Create a new issue
 
-When you create a new issue, you'll be prompted to fill in the [data and fields of the issue](issue_data_and_actions.md), as illustrated below. If you know
-the values you want to assign to an issue, you can use the [Quick actions](../quick_actions.md)
-feature to input values, instead of selecting them from lists.
+When you create a new issue, you'll be prompted to fill in the [data and fields of the issue](issue_data_and_actions.md),
+as illustrated below. If you know the values you want to assign to an issue, you can use the
+[Quick actions](../quick_actions.md) feature to input values, instead of selecting them from lists.
 
-![New issue from the issues list](img/new_issue.png)
+While creating an issue, you can associate it to an existing epic from current group by
+selecting it using **Epic** dropdown.
 
-### Accessing the new Issue form
+### Accessing the New Issue form
 
-There are many ways to get to the new Issue form from within a project:
+There are many ways to get to the New Issue form from within a project:
 
 - Navigate to your **Project's Dashboard** > **Issues** > **New Issue**:
 
@@ -42,9 +43,28 @@ There are many ways to get to the new Issue form from within a project:
 
   ![From the issue board](img/new_issue_from_issue_board.png)
 
+### Elements of the New Issue form
+
+> Ability to add the new issue to an epic [was introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13847)
+> in [GitLab Premium](https://about.gitlab.com/pricing/) 13.1.
+
+![New issue from the issues list](img/new_issue_v13_1.png)
+
+When you're creating a new issue, these are the fields you can fill in:
+
+- Title
+- Description
+- Checkbox to make the issue confidential
+- Assignee
+- Weight
+- Epic **(PREMIUM)**
+- Due date
+- Milestone
+- Labels
+
 ### New issue from the group-level Issue Tracker
 
-Go to the Group dashboard and click "Issues" in the sidebar to visit the Issue Tracker
+Go to the Group dashboard and click **Issues** in the sidebar to visit the Issue Tracker
 for all projects in your Group. Select the project you'd like to add an issue for
 using the dropdown button at the top-right of the page.
 
@@ -153,7 +173,7 @@ issues.each do |issue|
 end; nil
 ```
 
-## Closing Issues
+## Closing issues
 
 When you decide that an issue is resolved, or no longer needed, you can close the issue
 using the close button:
@@ -251,7 +271,7 @@ In order to change the default issue closing pattern, GitLab administrators must
 [`gitlab.rb` or `gitlab.yml` file](../../../administration/issue_closing_pattern.md)
 of your installation.
 
-## Deleting Issues
+## Deleting issues
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/2982) in GitLab 8.6
 

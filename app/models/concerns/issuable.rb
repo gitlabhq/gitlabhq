@@ -403,6 +403,10 @@ module Issuable
     participants(user).include?(user)
   end
 
+  def can_assign_epic?(user)
+    false
+  end
+
   def to_hook_data(user, old_associations: {})
     changes = previous_changes
 

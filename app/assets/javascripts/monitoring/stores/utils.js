@@ -4,7 +4,8 @@ import { SUPPORTED_FORMATS } from '~/lib/utils/unit_format';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { parseTemplatingVariables } from './variable_mapping';
 import { NOT_IN_DB_PREFIX } from '../constants';
-import { isSafeURL } from '~/lib/utils/url_utility';
+import { timeRangeToParams } from '~/lib/utils/datetime_range';
+import { isSafeURL, mergeUrlParams } from '~/lib/utils/url_utility';
 
 export const gqClient = createGqClient(
   {},
@@ -208,6 +209,26 @@ const mapToPanelGroupViewModel = ({ group = '', panels = [] }, i) => {
     group,
     panels: panels.map(mapPanelToViewModel),
   };
+};
+
+/**
+ * Adds dashboard-related metadata to the user-defined links.
+ *
+ * As of %13.1, metadata only includes timeRange but in the
+ * future more info will be added to the links.
+ *
+ * @param {Object} metadata
+ * @returns {Function}
+ */
+export const addDashboardMetaDataToLink = metadata => link => {
+  let modifiedLink = { ...link };
+  if (metadata.timeRange) {
+    modifiedLink = {
+      ...modifiedLink,
+      url: mergeUrlParams(timeRangeToParams(metadata.timeRange), link.url),
+    };
+  }
+  return modifiedLink;
 };
 
 /**

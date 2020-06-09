@@ -18,6 +18,9 @@ create an issue with the payload in the body of the issue. You can always
 The entire payload will be posted in the issue discussion as a comment
 authored by the GitLab Alert Bot.
 
+NOTE: **Note**
+In GitLab versions 13.1 and greater, you can configure [External Prometheus instances](prometheus.md#external-prometheus-instances) to use this endpoint.
+
 ## Setting up generic alerts
 
 To set up the generic alerts integration:

@@ -1,5 +1,6 @@
 import { clone } from 'lodash';
 import * as utils from '~/diffs/store/utils';
+import { uuids } from '~/diffs/utils/uuids';
 import {
   LINE_POSITION_LEFT,
   LINE_POSITION_RIGHT,
@@ -430,6 +431,7 @@ describe('DiffsStoreUtils', () => {
   });
 
   describe('prepareDiffData', () => {
+    let fileId;
     let mock;
     let preparedDiff;
     let splitInlineDiff;
@@ -438,6 +440,17 @@ describe('DiffsStoreUtils', () => {
 
     beforeEach(() => {
       mock = getDiffFileMock();
+      [fileId] = uuids({
+        seeds: [
+          mock.blob.id,
+          mock.diff_refs.base_sha,
+          mock.diff_refs.start_sha,
+          mock.diff_refs.head_sha,
+          mock.file_identifier_hash,
+          Number(mock.blob.mode),
+        ],
+      });
+
       preparedDiff = { diff_files: [mock] };
       splitInlineDiff = {
         diff_files: [{ ...mock, parallel_diff_lines: undefined }],
@@ -453,6 +466,13 @@ describe('DiffsStoreUtils', () => {
       splitInlineDiff.diff_files = utils.prepareDiffData(splitInlineDiff);
       splitParallelDiff.diff_files = utils.prepareDiffData(splitParallelDiff);
       completedDiff.diff_files = utils.prepareDiffData(completedDiff, [mock]);
+    });
+
+    it('adds a universally unique identifier to each diff file', () => {
+      expect(preparedDiff.diff_files[0].uuid).toBe(fileId);
+      expect(splitInlineDiff.diff_files[0].uuid).toBe(fileId);
+      expect(splitParallelDiff.diff_files[0].uuid).toBe(fileId);
+      expect(completedDiff.diff_files[0].uuid).toBe(fileId);
     });
 
     it('sets the renderIt and collapsed attribute on files', () => {

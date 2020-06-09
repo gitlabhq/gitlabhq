@@ -8,14 +8,20 @@ describe Groups::GroupLinks::DestroyService, '#execute' do
   let_it_be(:group) { create(:group, :private) }
   let_it_be(:shared_group) { create(:group, :private) }
   let_it_be(:project) { create(:project, group: shared_group) }
+  let_it_be(:owner) { create(:user) }
 
-  subject { described_class.new(nil, nil) }
+  before do
+    group.add_developer(owner)
+    shared_group.add_owner(owner)
+  end
+
+  subject { described_class.new(shared_group, owner) }
 
   context 'single link' do
     let!(:link) { create(:group_group_link, shared_group: shared_group, shared_with_group: group) }
 
     it 'destroys link' do
-      expect { subject.execute(link) }.to change { GroupGroupLink.count }.from(1).to(0)
+      expect { subject.execute(link) }.to change { shared_group.shared_with_group_links.count }.from(1).to(0)
     end
 
     it 'revokes project authorization' do

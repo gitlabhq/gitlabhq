@@ -273,6 +273,9 @@ export default {
         title: document.title,
       });
       this.selectedTimeRange = { start, end };
+      // keep the current dashboard time range
+      // in sync with the Vuex store
+      this.setTimeRange(this.selectedTimeRange);
     },
     onExpandPanel(group, panel) {
       this.setExpandedPanel({ group, panel });

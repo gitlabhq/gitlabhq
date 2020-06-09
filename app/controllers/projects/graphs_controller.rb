@@ -71,6 +71,11 @@ class Projects::GraphsController < Projects::ApplicationController
         namespace_id: @project.namespace,
         project_id: @project,
         format: :csv
+      ),
+      graph_api_path: namespace_project_ci_daily_build_group_report_results_path(
+        namespace_id: @project.namespace,
+        project_id: @project,
+        format: :json
       )
     }
   end

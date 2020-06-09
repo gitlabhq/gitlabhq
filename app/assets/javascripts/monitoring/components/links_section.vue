@@ -1,5 +1,5 @@
 <script>
-import { mapState } from 'vuex';
+import { mapGetters } from 'vuex';
 import { GlIcon, GlLink } from '@gitlab/ui';
 
 export default {
@@ -8,7 +8,7 @@ export default {
     GlLink,
   },
   computed: {
-    ...mapState('monitoringDashboard', ['links']),
+    ...mapGetters('monitoringDashboard', { links: 'linksWithMetadata' }),
   },
 };
 </script>

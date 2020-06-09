@@ -16,6 +16,7 @@ import {
   INLINE_DIFF_VIEW_TYPE,
   PARALLEL_DIFF_VIEW_TYPE,
 } from '../constants';
+import { uuids } from '../utils/uuids';
 
 export function findDiffFile(files, match, matchKey = 'file_hash') {
   return files.find(file => file[matchKey] === match);
@@ -403,8 +404,26 @@ function deduplicateFilesList(files) {
   return Object.values(dedupedFiles);
 }
 
+function prepareDiffFile(file) {
+  Object.assign(file, {
+    uuid: uuids({
+      seeds: [
+        file.blob.id,
+        file.diff_refs.base_sha,
+        file.diff_refs.start_sha,
+        file.diff_refs.head_sha,
+        file.file_identifier_hash,
+        Number(file.blob.mode),
+      ],
+    })[0],
+  });
+
+  return file;
+}
+
 export function prepareDiffData(diff, priorFiles = []) {
   const cleanedFiles = (diff.diff_files || [])
+    .map(prepareDiffFile)
     .map(ensureBasicDiffFileLines)
     .map(prepareDiffFileLines)
     .map(finalizeDiffFile);

@@ -171,28 +171,13 @@ application instead of the running environment.
 
 ### Choose a client library
 
-GitLab implements a single backend that is compatible with
-[Unleash](https://github.com/Unleash/unleash#client-implementations) clients.
+GitLab implements a single backend that is compatible with Unleash clients.
 
 With the Unleash client, developers can define, in the application code, the default values for flags.
 Each feature flag evaluation can express the desired outcome if the flag isn't present in the
 provided configuration file.
 
-Unleash currently offers several official SDKs for various frameworks and
-several community-contributed libraries.
-
-Official clients:
-
-- [Unleash client SDK for Java](https://github.com/unleash/unleash-client-java)
-- [Unleash client SDK for Node.js](https://github.com/unleash/unleash-client-node)
-- [Unleash client for Go](https://github.com/unleash/unleash-client-go)
-- [Unleash client for Ruby](https://github.com/unleash/unleash-client-ruby)
-
-Community contributed clients:
-
-- [Unleash FeatureToggle Client for .Net](https://github.com/stiano/unleash-client-dotnet)
-- [Unofficial .Net Core Unleash client](https://github.com/onybo/unleash-client-core)
-- [Unleash client for Python 3](https://github.com/aes/unleash-client-python)
+Unleash currently [offers many SDKs for various languages and frameworks](https://github.com/Unleash/unleash#client-implementations).
 
 ### Feature flags API information
 

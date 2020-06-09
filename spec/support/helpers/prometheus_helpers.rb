@@ -236,4 +236,51 @@ module PrometheusHelpers
       ]
     }
   end
+
+  def prometheus_alert_payload(firing: [], resolved: [])
+    status = firing.any? ? 'firing' : 'resolved'
+    alerts = firing + resolved
+    alert_name = alerts.first&.title || ''
+    prometheus_metric_id = alerts.first&.prometheus_metric_id&.to_s
+
+    alerts_map = \
+      firing.map { |alert| prometheus_map_alert_payload('firing', alert) } +
+      resolved.map { |alert| prometheus_map_alert_payload('resolved', alert) }
+
+    # See https://prometheus.io/docs/alerting/configuration/#%3Cwebhook_config%3E
+    {
+      'version' => '4',
+      'receiver' => 'gitlab',
+      'status' => status,
+      'alerts' => alerts_map,
+      'groupLabels' => {
+        'alertname' => alert_name
+      },
+      'commonLabels' => {
+        'alertname' => alert_name,
+        'gitlab' => 'hook',
+        'gitlab_alert_id' => prometheus_metric_id
+      },
+      'commonAnnotations' => {},
+      'externalURL' => '',
+      'groupKey' => "{}:{alertname=\'#{alert_name}\'}"
+    }
+  end
+
+  private
+
+  def prometheus_map_alert_payload(status, alert)
+    {
+      'status' => status,
+      'labels' => {
+        'alertname' => alert.title,
+        'gitlab' => 'hook',
+        'gitlab_alert_id' => alert.prometheus_metric_id.to_s
+      },
+      'annotations' => {},
+      'startsAt' => '2018-09-24T08:57:31.095725221Z',
+      'endsAt' => '0001-01-01T00:00:00Z',
+      'generatorURL' => 'http://prometheus-prometheus-server-URL'
+    }
+  end
 end
