@@ -39,6 +39,10 @@ describe Gitlab::Ci::Pipeline::Chain::Seed do
       expect(pipeline.iid).to be_present
     end
 
+    it 'ensures ci_ref' do
+      expect(pipeline.ci_ref).to be_present
+    end
+
     it 'sets the seeds in the command object' do
       expect(command.stage_seeds).to all(be_a Gitlab::Ci::Pipeline::Seed::Base)
       expect(command.stage_seeds.count).to eq 1

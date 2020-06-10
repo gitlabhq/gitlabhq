@@ -144,7 +144,7 @@ export default {
     },
     onExistingNoteMove(e) {
       const note = this.notes.find(({ id }) => id === this.movingNoteStartPosition.noteId);
-      if (!note) return;
+      if (!note || !this.canMoveNote(note)) return;
 
       const { position } = note;
       const { width, height } = position;
@@ -190,8 +190,6 @@ export default {
       });
     },
     onNoteMousedown({ clientX, clientY }, note) {
-      if (note && !this.canMoveNote(note)) return;
-
       this.movingNoteStartPosition = {
         noteId: note?.id,
         discussionId: note?.discussion.id,

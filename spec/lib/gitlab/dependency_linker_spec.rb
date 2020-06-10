@@ -91,5 +91,21 @@ describe Gitlab::DependencyLinker do
 
       described_class.link(blob_name, nil, nil)
     end
+
+    it 'links using GoModLinker' do
+      blob_name = 'go.mod'
+
+      expect(described_class::GoModLinker).to receive(:link)
+
+      described_class.link(blob_name, nil, nil)
+    end
+
+    it 'links using GoSumLinker' do
+      blob_name = 'go.sum'
+
+      expect(described_class::GoSumLinker).to receive(:link)
+
+      described_class.link(blob_name, nil, nil)
+    end
   end
 end

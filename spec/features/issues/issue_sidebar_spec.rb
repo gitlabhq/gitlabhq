@@ -13,7 +13,6 @@ describe 'Issue Sidebar' do
   let!(:xss_label) { create(:label, project: project, title: '&lt;script&gt;alert("xss");&lt;&#x2F;script&gt;') }
 
   before do
-    stub_feature_flags(save_issuable_health_status: false)
     sign_in(user)
   end
 
@@ -56,6 +55,8 @@ describe 'Issue Sidebar' do
         it 'sees link to invite members' do
           page.within '.dropdown-menu-user' do
             expect(page).to have_link('Invite Members', href: project_project_members_path(project))
+            expect(page).to have_selector('[data-track-event="click_invite_members"]')
+            expect(page).to have_selector("[data-track-label='edit_assignee']")
           end
         end
       end

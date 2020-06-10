@@ -93,6 +93,20 @@ RSpec.shared_examples 'resource_label_events API' do |parent_type, eventable_typ
     end
   end
 
+  describe 'pagination' do
+    let!(:event1) { create_event(label) }
+    let!(:event2) { create_event(label) }
+
+    # https://gitlab.com/gitlab-org/gitlab/-/issues/220192
+    it "returns the second page" do
+      get api("/#{parent_type}/#{parent.id}/#{eventable_type}/#{eventable[id_name]}/resource_label_events?page=2&per_page=1", user)
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response.count).to eq(1)
+      expect(json_response.first['id']).to eq(event2.id)
+    end
+  end
+
   def create_event(label)
     create(:resource_label_event, eventable.class.name.underscore => eventable, label: label)
   end

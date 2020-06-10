@@ -1322,7 +1322,8 @@ CREATE TABLE public.ci_pipelines (
     merge_request_id integer,
     source_sha bytea,
     target_sha bytea,
-    external_pull_request_id bigint
+    external_pull_request_id bigint,
+    ci_ref_id bigint
 );
 
 CREATE TABLE public.ci_pipelines_config (
@@ -1350,12 +1351,10 @@ ALTER SEQUENCE public.ci_pipelines_id_seq OWNED BY public.ci_pipelines.id;
 
 CREATE TABLE public.ci_refs (
     id bigint NOT NULL,
-    project_id integer NOT NULL,
-    lock_version integer DEFAULT 0,
-    last_updated_by_pipeline_id integer,
-    tag boolean DEFAULT false NOT NULL,
-    ref character varying(255) NOT NULL,
-    status character varying(255) NOT NULL
+    project_id bigint NOT NULL,
+    lock_version integer DEFAULT 0 NOT NULL,
+    status smallint DEFAULT 0 NOT NULL,
+    ref_path text NOT NULL
 );
 
 CREATE SEQUENCE public.ci_refs_id_seq
@@ -9424,6 +9423,8 @@ CREATE INDEX index_ci_pipelines_config_on_pipeline_id ON public.ci_pipelines_con
 
 CREATE INDEX index_ci_pipelines_on_auto_canceled_by_id ON public.ci_pipelines USING btree (auto_canceled_by_id);
 
+CREATE INDEX index_ci_pipelines_on_ci_ref_id ON public.ci_pipelines USING btree (ci_ref_id) WHERE (ci_ref_id IS NOT NULL);
+
 CREATE INDEX index_ci_pipelines_on_external_pull_request_id ON public.ci_pipelines USING btree (external_pull_request_id) WHERE (external_pull_request_id IS NOT NULL);
 
 CREATE INDEX index_ci_pipelines_on_merge_request_id ON public.ci_pipelines USING btree (merge_request_id) WHERE (merge_request_id IS NOT NULL);
@@ -9452,9 +9453,7 @@ CREATE INDEX index_ci_pipelines_on_status ON public.ci_pipelines USING btree (st
 
 CREATE INDEX index_ci_pipelines_on_user_id_and_created_at ON public.ci_pipelines USING btree (user_id, created_at);
 
-CREATE INDEX index_ci_refs_on_last_updated_by_pipeline_id ON public.ci_refs USING btree (last_updated_by_pipeline_id);
-
-CREATE UNIQUE INDEX index_ci_refs_on_project_id_and_ref_and_tag ON public.ci_refs USING btree (project_id, ref, tag);
+CREATE UNIQUE INDEX index_ci_refs_on_project_id_and_ref_path ON public.ci_refs USING btree (project_id, ref_path);
 
 CREATE UNIQUE INDEX index_ci_resource_groups_on_project_id_and_key ON public.ci_resource_groups USING btree (project_id, key);
 
@@ -11610,6 +11609,9 @@ ALTER TABLE ONLY public.lists
 ALTER TABLE ONLY public.metrics_users_starred_dashboards
     ADD CONSTRAINT fk_d76a2b9a8c FOREIGN KEY (project_id) REFERENCES public.projects(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY public.ci_pipelines
+    ADD CONSTRAINT fk_d80e161c54 FOREIGN KEY (ci_ref_id) REFERENCES public.ci_refs(id) ON DELETE SET NULL;
+
 ALTER TABLE ONLY public.system_note_metadata
     ADD CONSTRAINT fk_d83a918cb1 FOREIGN KEY (note_id) REFERENCES public.notes(id) ON DELETE CASCADE;
 
@@ -11858,9 +11860,6 @@ ALTER TABLE ONLY public.epic_user_mentions
 
 ALTER TABLE ONLY public.approver_groups
     ADD CONSTRAINT fk_rails_1cdcbd7723 FOREIGN KEY (group_id) REFERENCES public.namespaces(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY public.ci_refs
-    ADD CONSTRAINT fk_rails_1da48d19ce FOREIGN KEY (last_updated_by_pipeline_id) REFERENCES public.ci_pipelines(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY public.packages_tags
     ADD CONSTRAINT fk_rails_1dfc868911 FOREIGN KEY (package_id) REFERENCES public.packages_packages(id) ON DELETE CASCADE;
@@ -13634,6 +13633,11 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200330121000
 20200330123739
 20200330132913
+20200330203826
+20200330203837
+20200331103637
+20200331113728
+20200331113738
 20200331132103
 20200331195952
 20200331220930

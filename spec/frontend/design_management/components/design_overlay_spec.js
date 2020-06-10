@@ -10,18 +10,6 @@ describe('Design overlay component', () => {
   let wrapper;
 
   const mockDimensions = { width: 100, height: 100 };
-  const mockNoteNotAuthorised = {
-    id: 'note-not-authorised',
-    index: 1,
-    discussion: { id: 'discussion-not-authorised' },
-    position: {
-      x: 1,
-      y: 80,
-      ...mockDimensions,
-    },
-    userPermissions: {},
-    resolved: false,
-  };
 
   const findOverlay = () => wrapper.find('.image-diff-overlay');
   const findAllNotes = () => wrapper.findAll('.js-image-badge');
@@ -230,20 +218,32 @@ describe('Design overlay component', () => {
         });
     });
 
-    it('should do nothing if [adminNote] permission is not present', () => {
-      createComponent({
-        dimensions: mockDimensions,
-        notes: [mockNoteNotAuthorised],
-      });
+    describe('without [adminNote] permission', () => {
+      const mockNoteNotAuthorised = {
+        ...notes[0],
+        userPermissions: {
+          adminNote: false,
+        },
+      };
 
-      const badge = findAllNotes().at(0);
-      return clickAndDragBadge(
-        badge,
-        { x: mockNoteNotAuthorised.x, y: mockNoteNotAuthorised.y },
-        { x: 20, y: 20 },
-      ).then(() => {
-        expect(wrapper.vm.movingNoteStartPosition).toBeNull();
-        expect(findFirstBadge().attributes().style).toBe('left: 1px; top: 80px;');
+      const mockNoteCoordinates = {
+        x: mockNoteNotAuthorised.position.x,
+        y: mockNoteNotAuthorised.position.y,
+      };
+
+      it('should be unable to move a note', () => {
+        createComponent({
+          dimensions: mockDimensions,
+          notes: [mockNoteNotAuthorised],
+        });
+
+        const badge = findAllNotes().at(0);
+        return clickAndDragBadge(badge, { ...mockNoteCoordinates }, { x: 20, y: 20 }).then(() => {
+          // note position should not change after a click-and-drag attempt
+          expect(findFirstBadge().attributes().style).toContain(
+            `left: ${mockNoteCoordinates.x}px; top: ${mockNoteCoordinates.y}px;`,
+          );
+        });
       });
     });
   });

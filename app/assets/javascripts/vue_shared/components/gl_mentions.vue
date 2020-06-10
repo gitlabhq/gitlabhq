@@ -1,6 +1,5 @@
 <script>
-import escape from 'lodash/escape';
-import sanitize from 'sanitize-html';
+import { escape } from 'lodash';
 import Tribute from 'tributejs';
 import axios from '~/lib/utils/axios_utils';
 import { spriteIcon } from '~/lib/utils/common_utils';
@@ -11,11 +10,11 @@ import { spriteIcon } from '~/lib/utils/common_utils';
  * @param original An object from the array returned from the `autocomplete_sources/members` API
  * @returns {string} An HTML template
  */
-function createMenuItemTemplate({ original }) {
+function menuItemTemplate({ original }) {
   const rectAvatarClass = original.type === 'Group' ? 'rect-avatar' : '';
 
   const avatarClasses = `avatar avatar-inline center s26 ${rectAvatarClass}
-    align-items-center d-inline-flex justify-content-center`;
+    gl-display-inline-flex gl-align-items-center gl-justify-content-center`;
 
   const avatarTag = original.avatar_url
     ? `<img
@@ -24,40 +23,18 @@ function createMenuItemTemplate({ original }) {
         class="${avatarClasses}"/>`
     : `<div class="${avatarClasses}">${original.username.charAt(0).toUpperCase()}</div>`;
 
-  const name = escape(sanitize(original.name));
+  const name = escape(original.name);
 
   const count = original.count && !original.mentionsDisabled ? ` (${original.count})` : '';
 
   const icon = original.mentionsDisabled
-    ? spriteIcon('notifications-off', 's16 vertical-align-middle prepend-left-5')
+    ? spriteIcon('notifications-off', 's16 gl-vertical-align-middle gl-ml-3')
     : '';
 
   return `${avatarTag}
     ${original.username}
-    <small class="small font-weight-normal gl-reset-color">${name}${count}</small>
+    <small class="gl-text-small gl-font-weight-normal gl-reset-color">${name}${count}</small>
     ${icon}`;
-}
-
-/**
- * Creates the list of users to show in the mentions dropdown.
- *
- * @param inputText The text entered by the user in the mentions input field
- * @param processValues Callback function to set the list of users to show in the mentions dropdown
- */
-function getMembers(inputText, processValues) {
-  if (this.members) {
-    processValues(this.members);
-  } else if (this.dataSources.members) {
-    axios
-      .get(this.dataSources.members)
-      .then(response => {
-        this.members = response.data;
-        processValues(response.data);
-      })
-      .catch(() => {});
-  } else {
-    processValues([]);
-  }
 }
 
 export default {
@@ -72,30 +49,49 @@ export default {
   data() {
     return {
       members: undefined,
-      options: {
-        trigger: '@',
-        fillAttr: 'username',
-        lookup(value) {
-          return value.name + value.username;
-        },
-        menuItemTemplate: createMenuItemTemplate.bind(this),
-        values: getMembers.bind(this),
-      },
     };
   },
   mounted() {
+    this.tribute = new Tribute({
+      trigger: '@',
+      fillAttr: 'username',
+      lookup: value => value.name + value.username,
+      menuItemTemplate,
+      values: this.getMembers,
+    });
+
     const input = this.$slots.default[0].elm;
-    this.tribute = new Tribute(this.options);
     this.tribute.attach(input);
   },
   beforeDestroy() {
     const input = this.$slots.default[0].elm;
-    if (this.tribute) {
-      this.tribute.detach(input);
-    }
+    this.tribute.detach(input);
   },
-  render(h) {
-    return h('div', this.$slots.default);
+  methods: {
+    /**
+     * Creates the list of users to show in the mentions dropdown.
+     *
+     * @param inputText - The text entered by the user in the mentions input field
+     * @param processValues - Callback function to set the list of users to show in the mentions dropdown
+     */
+    getMembers(inputText, processValues) {
+      if (this.members) {
+        processValues(this.members);
+      } else if (this.dataSources.members) {
+        axios
+          .get(this.dataSources.members)
+          .then(response => {
+            this.members = response.data;
+            processValues(response.data);
+          })
+          .catch(() => {});
+      } else {
+        processValues([]);
+      }
+    },
+  },
+  render(createElement) {
+    return createElement('div', this.$slots.default);
   },
 };
 </script>

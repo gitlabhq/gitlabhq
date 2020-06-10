@@ -13,7 +13,9 @@ module Gitlab
       CartfileLinker,
       GodepsJsonLinker,
       RequirementsTxtLinker,
-      CargoTomlLinker
+      CargoTomlLinker,
+      GoModLinker,
+      GoSumLinker
     ].freeze
 
     def self.linker(blob_name)

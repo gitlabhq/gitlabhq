@@ -128,6 +128,14 @@ export const lineWidths = {
 };
 
 /**
+ * User-defined links can be passed in dashboard yml file.
+ * These are the supported type of links.
+ */
+export const linkTypes = {
+  GRAFANA: 'grafana',
+};
+
+/**
  * These Vuex store properties are allowed to be
  * replaced dynamically after component has been created
  * and initial state has been set.

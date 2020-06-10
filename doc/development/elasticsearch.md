@@ -175,6 +175,53 @@ If the current version is `v12p1`, and we need to create a new version for `v12p
 1. Change the namespace for files under `v12p1` folder from `Latest` to `V12p1`
 1. Make changes to files under the `latest` folder as needed
 
+## Performance Monitoring
+
+### Prometheus
+
+GitLab exports [Prometheus
+metrics](../administration/monitoring/prometheus/gitlab_metrics.md) relating to
+the number of requests and timing for all web/API requests and Sidekiq jobs,
+which can help diagnose performance trends and compare how Elasticsearch timing
+is impacting overall performance relative to the time spent doing other things.
+
+#### Indexing queues
+
+GitLab also exports [Prometheus
+metrics](../administration/monitoring/prometheus/gitlab_metrics.md) for
+indexing queues, which can help diagnose performance bottlenecks and determine
+whether or not your GitLab instance or Elasticsearch server can keep up with
+the volume of updates.
+
+### Logs
+
+All of the indexing happens in Sidekiq, so much of the relevant logs for the
+Elasticsearch integration can be found in
+[`sidekiq.log`](../administration/logs.md#sidekiqlog). In particular, all
+Sidekiq workers that make requests to Elasticsearch in any way will log the
+number of requests and time taken querying/writing to Elasticsearch. This can
+be useful to understand whether or not your cluster is keeping up with
+indexing.
+
+Searching Elasticsearch is done via ordinary web workers handling requests. Any
+requests to load a page or make an API request, which then make requests to
+Elasticsearch, will log the number of requests and the time taken to
+[`production_json.log`](../administration/logs.md#production_jsonlog). These
+logs will also include the time spent on Database and Gitaly requests, which
+may help to diagnose which part of the search is performing poorly.
+
+There are additional logs specific to Elasticsearch that are sent to
+[`elasticsearch.log`](../administration/logs.md#elasticsearchlog-starter-only)
+that may contain information to help diagnose performance issues.
+
+### Performance Bar
+
+Elasticsearch requests will be displayed in the [`Performance
+Bar`](../administration/monitoring/performance/performance_bar.md), which can
+be used both locally in development and on any deployed GitLab instance to
+diagnose poor search performance. This will show the exact queries being made,
+which is useful to diagnose why a search might be slow.
+
 ## Troubleshooting
 
 ### Getting `flood stage disk watermark [95%] exceeded`

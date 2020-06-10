@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 
 describe Gitlab::Regex do
   shared_examples_for 'project/group name regex' do
@@ -273,5 +273,26 @@ describe Gitlab::Regex do
     it { is_expected.not_to match('1./2.3') }
     it { is_expected.not_to match('../../../../../1.2.3') }
     it { is_expected.not_to match('%2e%2e%2f1.2.3') }
+  end
+
+  describe '.go_package_regex' do
+    subject { described_class.go_package_regex }
+
+    it { is_expected.to match('example.com') }
+    it { is_expected.to match('example.com/foo') }
+    it { is_expected.to match('example.com/foo/bar') }
+    it { is_expected.to match('example.com/foo/bar/baz') }
+    it { is_expected.to match('tl.dr.foo.bar.baz') }
+  end
+
+  describe '.unbounded_semver_regex' do
+    subject { described_class.unbounded_semver_regex }
+
+    it { is_expected.to match('1.2.3') }
+    it { is_expected.to match('1.2.3-beta') }
+    it { is_expected.to match('1.2.3-alpha.3') }
+    it { is_expected.not_to match('1') }
+    it { is_expected.not_to match('1.2') }
+    it { is_expected.not_to match('1./2.3') }
   end
 end

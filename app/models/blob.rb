@@ -58,6 +58,7 @@ class Blob < SimpleDelegator
     BlobViewer::Gemfile,
     BlobViewer::Gemspec,
     BlobViewer::GodepsJson,
+    BlobViewer::GoMod,
     BlobViewer::PackageJson,
     BlobViewer::Podfile,
     BlobViewer::Podspec,

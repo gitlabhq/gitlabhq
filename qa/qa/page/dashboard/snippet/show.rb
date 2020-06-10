@@ -83,7 +83,11 @@ module QA
             finished_loading?
             click_element(:snippet_action_button, action: 'Delete')
             click_element(:delete_snippet_button)
-            finished_loading? # wait for the page to reload after deletion
+            # wait for the page to reload after deletion
+            wait_until(reload: false) do
+              has_no_element?(:delete_snippet_button) &&
+                  has_no_element?(:snippet_action_button, action: 'Delete')
+            end
           end
 
           def get_repository_uri_http

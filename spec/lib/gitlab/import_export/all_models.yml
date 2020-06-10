@@ -179,6 +179,7 @@ merge_request_context_commits:
 ci_pipelines:
 - project
 - user
+- ci_ref
 - stages
 - statuses
 - latest_statuses_ordered_by_stage
@@ -221,6 +222,10 @@ ci_pipelines:
 - security_scans
 - daily_build_group_report_results
 - latest_builds
+- daily_report_results
+ci_refs:
+- project
+- ci_pipelines
 pipeline_variables:
 - pipeline
 stages:

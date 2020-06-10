@@ -13,6 +13,7 @@ module Gitlab
 
             # Allocate next IID. This operation must be outside of transactions of pipeline creations.
             pipeline.ensure_project_iid!
+            pipeline.ensure_ci_ref!
 
             # Protect the pipeline. This is assigned in Populate instead of
             # Build to prevent erroring out on ambiguous refs.

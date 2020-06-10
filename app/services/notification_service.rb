@@ -447,14 +447,14 @@ class NotificationService
     # from the PipelinesEmailService integration.
     return if pipeline.project.emails_disabled?
 
-    ref_status ||= pipeline.status
-    email_template = "pipeline_#{ref_status}_email"
+    status = pipeline_notification_status(ref_status, pipeline)
+    email_template = "pipeline_#{status}_email"
 
     return unless mailer.respond_to?(email_template)
 
     recipients ||= notifiable_users(
       [pipeline.user], :watch,
-      custom_action: :"#{ref_status}_pipeline",
+      custom_action: :"#{status}_pipeline",
       target: pipeline
     ).map do |user|
       user.notification_email_for(pipeline.project.group)
@@ -660,6 +660,16 @@ class NotificationService
   end
 
   private
+
+  def pipeline_notification_status(ref_status, pipeline)
+    if Ci::Ref.failing_state?(ref_status)
+      'failed'
+    elsif ref_status
+      ref_status
+    else
+      pipeline.status
+    end
+  end
 
   def owners_and_maintainers_without_invites(project)
     recipients = project.members.active_without_invites_and_requests.owners_and_maintainers

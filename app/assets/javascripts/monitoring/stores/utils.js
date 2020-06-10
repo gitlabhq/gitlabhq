@@ -3,8 +3,9 @@ import createGqClient, { fetchPolicies } from '~/lib/graphql';
 import { SUPPORTED_FORMATS } from '~/lib/utils/unit_format';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { parseTemplatingVariables } from './variable_mapping';
-import { NOT_IN_DB_PREFIX } from '../constants';
-import { timeRangeToParams } from '~/lib/utils/datetime_range';
+import { NOT_IN_DB_PREFIX, linkTypes } from '../constants';
+import { DATETIME_RANGE_TYPES } from '~/lib/utils/constants';
+import { timeRangeToParams, getRangeType } from '~/lib/utils/datetime_range';
 import { isSafeURL, mergeUrlParams } from '~/lib/utils/url_utility';
 
 export const gqClient = createGqClient(
@@ -147,12 +148,13 @@ const mapYAxisToViewModel = ({
  * Unsafe URLs are ignored.
  *
  * @param {Object} Link
- * @returns {Object} Link object with a `title` and `url`.
+ * @returns {Object} Link object with a `title`, `url` and `type`
  *
  */
-const mapLinksToViewModel = ({ url = null, title = '' } = {}) => {
+const mapLinksToViewModel = ({ url = null, title = '', type } = {}) => {
   return {
     title: title || String(url),
+    type,
     url: url && isSafeURL(url) ? String(url) : '#',
   };
 };
@@ -212,6 +214,46 @@ const mapToPanelGroupViewModel = ({ group = '', panels = [] }, i) => {
 };
 
 /**
+ * Convert dashboard time range to Grafana
+ * dashboards time range.
+ *
+ * @param {Object} timeRange
+ * @returns {Object}
+ */
+export const convertToGrafanaTimeRange = timeRange => {
+  const timeRangeType = getRangeType(timeRange);
+  if (timeRangeType === DATETIME_RANGE_TYPES.fixed) {
+    return {
+      from: new Date(timeRange.start).getTime(),
+      to: new Date(timeRange.end).getTime(),
+    };
+  } else if (timeRangeType === DATETIME_RANGE_TYPES.rolling) {
+    const { seconds } = timeRange.duration;
+    return {
+      from: `now-${seconds}s`,
+      to: 'now',
+    };
+  }
+  // fallback to returning the time range as is
+  return timeRange;
+};
+
+/**
+ * Convert dashboard time ranges to other supported
+ * link formats.
+ *
+ * @param {Object} timeRange metrics dashboard time range
+ * @param {String} type type of link
+ * @returns {String}
+ */
+export const convertTimeRanges = (timeRange, type) => {
+  if (type === linkTypes.GRAFANA) {
+    return convertToGrafanaTimeRange(timeRange);
+  }
+  return timeRangeToParams(timeRange);
+};
+
+/**
  * Adds dashboard-related metadata to the user-defined links.
  *
  * As of %13.1, metadata only includes timeRange but in the
@@ -225,7 +267,7 @@ export const addDashboardMetaDataToLink = metadata => link => {
   if (metadata.timeRange) {
     modifiedLink = {
       ...modifiedLink,
-      url: mergeUrlParams(timeRangeToParams(metadata.timeRange), link.url),
+      url: mergeUrlParams(convertTimeRanges(metadata.timeRange, link.type), link.url),
     };
   }
   return modifiedLink;

@@ -616,6 +616,7 @@ Supported applications:
 - [Fluentd](#install-fluentd-using-gitlab-cicd)
 - [Knative](#install-knative-using-gitlab-cicd)
 - [PostHog](#install-posthog-using-gitlab-cicd)
+- [Prometheus](#install-prometheus-using-gitlab-cicd)
 
 ### Usage
 
@@ -828,6 +829,28 @@ redis:
 NOTE: **Note:**
 Support for the PostHog managed application is provided by the PostHog team.
 If you run into issues, please [open a support ticket](https://github.com/PostHog/posthog/issues/new/choose) directly.
+
+### Install Prometheus using GitLab CI/CD
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/25138) in GitLab 12.8.
+
+[Prometheus](https://prometheus.io/docs/introduction/overview/) is an
+open-source monitoring and alerting system for supervising your
+deployed applications.
+
+To install Prometheus into the `gitlab-managed-apps` namespace of your cluster,
+define the `.gitlab/managed-apps/config.yaml` file with:
+
+```yaml
+prometheus:
+  installed: true
+```
+
+You can customize the installation of Prometheus by defining
+`.gitlab/managed-apps/prometheus/values.yaml` in your cluster management
+project. Refer to the
+[Configuration section of the Prometheus chart's README](https://github.com/helm/charts/tree/master/stable/prometheus#configuration)
+for the available configuration options.
 
 ### Install GitLab Runner using GitLab CI/CD
 
@@ -1103,7 +1126,7 @@ available configuration options.
 
 ### Install Elastic Stack using GitLab CI/CD
 
-> [Introduced](https://gitlab.com/gitlab-org/cluster-integration/cluster-applications/-/merge_requests/45) in GitLab 12.8.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/25138) in GitLab 12.8.
 
 Elastic Stack is installed using GitLab CI/CD by defining configuration in
 `.gitlab/managed-apps/config.yaml`.

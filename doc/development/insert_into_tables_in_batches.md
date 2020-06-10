@@ -187,8 +187,6 @@ There are a few restrictions to how these APIs can be used:
 - `BulkInsertableAssociations`:
   - It is currently only compatible with `has_many` relations.
   - It does not yet support `has_many through: ...` relations.
-- Writing [`jsonb`](https://www.postgresql.org/docs/current/datatype-json.html) content is
-[not currently supported](https://gitlab.com/gitlab-org/gitlab/-/issues/210560).
 
 Moreover, input data should either be limited to around 1000 records at most,
 or already batched prior to calling bulk insert. The `INSERT` statement will run in a single

@@ -6,6 +6,8 @@ import {
   removeLeadingSlash,
   mapToDashboardViewModel,
   normalizeQueryResult,
+  convertToGrafanaTimeRange,
+  addDashboardMetaDataToLink,
 } from '~/monitoring/stores/utils';
 import { annotationsData } from '../mock_data';
 import { NOT_IN_DB_PREFIX } from '~/monitoring/constants';
@@ -519,6 +521,89 @@ describe('removeLeadingSlash', () => {
   ].forEach(({ input, output }) => {
     it(`removeLeadingSlash returns ${output} with input ${input}`, () => {
       expect(removeLeadingSlash(input)).toEqual(output);
+    });
+  });
+});
+
+describe('user-defined links utils', () => {
+  const mockRelativeTimeRange = {
+    metricsDashboard: {
+      duration: {
+        seconds: 86400,
+      },
+    },
+    grafana: {
+      from: 'now-86400s',
+      to: 'now',
+    },
+  };
+  const mockAbsoluteTimeRange = {
+    metricsDashboard: {
+      start: '2020-06-08T16:13:01.995Z',
+      end: '2020-06-08T21:12:32.243Z',
+    },
+    grafana: {
+      from: 1591632781995,
+      to: 1591650752243,
+    },
+  };
+  describe('convertToGrafanaTimeRange', () => {
+    it('converts relative timezone to grafana timezone', () => {
+      expect(convertToGrafanaTimeRange(mockRelativeTimeRange.metricsDashboard)).toEqual(
+        mockRelativeTimeRange.grafana,
+      );
+    });
+
+    it('converts absolute timezone to grafana timezone', () => {
+      expect(convertToGrafanaTimeRange(mockAbsoluteTimeRange.metricsDashboard)).toEqual(
+        mockAbsoluteTimeRange.grafana,
+      );
+    });
+  });
+
+  describe('addDashboardMetaDataToLink', () => {
+    const link = { title: 'title', url: 'https://gitlab.com' };
+    const grafanaLink = { ...link, type: 'grafana' };
+
+    it('adds relative time range to link w/o type for metrics dashboards', () => {
+      const adder = addDashboardMetaDataToLink({
+        timeRange: mockRelativeTimeRange.metricsDashboard,
+      });
+      expect(adder(link)).toMatchObject({
+        title: 'title',
+        url: 'https://gitlab.com?duration_seconds=86400',
+      });
+    });
+
+    it('adds relative time range to Grafana type links', () => {
+      const adder = addDashboardMetaDataToLink({
+        timeRange: mockRelativeTimeRange.metricsDashboard,
+      });
+      expect(adder(grafanaLink)).toMatchObject({
+        title: 'title',
+        url: 'https://gitlab.com?from=now-86400s&to=now',
+      });
+    });
+
+    it('adds absolute time range to link w/o type for metrics dashboard', () => {
+      const adder = addDashboardMetaDataToLink({
+        timeRange: mockAbsoluteTimeRange.metricsDashboard,
+      });
+      expect(adder(link)).toMatchObject({
+        title: 'title',
+        url:
+          'https://gitlab.com?start=2020-06-08T16%3A13%3A01.995Z&end=2020-06-08T21%3A12%3A32.243Z',
+      });
+    });
+
+    it('adds absolute time range to Grafana type links', () => {
+      const adder = addDashboardMetaDataToLink({
+        timeRange: mockAbsoluteTimeRange.metricsDashboard,
+      });
+      expect(adder(grafanaLink)).toMatchObject({
+        title: 'title',
+        url: 'https://gitlab.com?from=1591632781995&to=1591650752243',
+      });
     });
   });
 });

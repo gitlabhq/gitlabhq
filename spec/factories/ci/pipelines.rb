@@ -21,6 +21,12 @@ FactoryBot.define do
     end
 
     factory :ci_pipeline do
+      transient { ci_ref_presence { true } }
+
+      after(:build) do |pipeline, evaluator|
+        pipeline.ensure_ci_ref! if evaluator.ci_ref_presence && pipeline.ci_ref_id.nil?
+      end
+
       trait :invalid do
         status { :failed }
         yaml_errors { 'invalid YAML' }

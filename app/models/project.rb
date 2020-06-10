@@ -282,7 +282,7 @@ class Project < ApplicationRecord
           class_name: 'Ci::Pipeline',
           inverse_of: :project
   has_many :stages, class_name: 'Ci::Stage', inverse_of: :project
-  has_many :ci_refs, class_name: 'Ci::Ref'
+  has_many :ci_refs, class_name: 'Ci::Ref', inverse_of: :project
 
   # Ci::Build objects store data on the file system such as artifact files and
   # build traces. Currently there's no efficient way of removing this data in

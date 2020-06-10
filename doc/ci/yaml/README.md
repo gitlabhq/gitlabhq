@@ -2846,7 +2846,7 @@ job:
 ```
 
 NOTE: **Note:**
-For artifacts created in [GitLab 13.0](https://gitlab.com/gitlab-org/gitlab/-/issues/16267)
+For artifacts created in [GitLab 13.1](https://gitlab.com/gitlab-org/gitlab/-/issues/16267)
 and later, the latest artifact for a ref is always kept, regardless of the expiry time.
 
 #### `artifacts:reports`

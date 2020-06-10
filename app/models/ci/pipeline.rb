@@ -31,6 +31,7 @@ module Ci
     belongs_to :pipeline_schedule, class_name: 'Ci::PipelineSchedule'
     belongs_to :merge_request, class_name: 'MergeRequest'
     belongs_to :external_pull_request
+    belongs_to :ci_ref, class_name: 'Ci::Ref', foreign_key: :ci_ref_id, inverse_of: :pipelines
 
     has_internal_id :iid, scope: :project, presence: false, track_if: -> { !importing? }, ensure_if: -> { !importing? }, init: ->(s) do
       s&.project&.all_pipelines&.maximum(:iid) || s&.project&.all_pipelines&.count
@@ -65,13 +66,6 @@ module Ci
     has_many :sourced_pipelines, class_name: 'Ci::Sources::Pipeline', foreign_key: :source_pipeline_id
 
     has_one :source_pipeline, class_name: 'Ci::Sources::Pipeline', inverse_of: :pipeline
-
-    has_one :ref_status, ->(pipeline) {
-      # We use .read_attribute to save 1 extra unneeded query to load the :project.
-      unscope(:where)
-        .where(project_id: pipeline.read_attribute(:project_id), ref: pipeline.ref, tag: pipeline.tag)
-      # Sadly :inverse_of is not supported (yet) by Rails for composite PKs.
-    }, class_name: 'Ci::Ref', inverse_of: :pipelines
 
     has_one :chat_data, class_name: 'Ci::PipelineChatData'
 
@@ -237,12 +231,10 @@ module Ci
       end
 
       after_transition any => [:success, :failed] do |pipeline|
+        ref_status = pipeline.ci_ref&.update_status_by!(pipeline)
+
         pipeline.run_after_commit do
-          if Feature.enabled?(:ci_pipeline_fixed_notifications)
-            PipelineUpdateCiRefStatusWorker.perform_async(pipeline.id)
-          else
-            PipelineNotificationWorker.perform_async(pipeline.id)
-          end
+          PipelineNotificationWorker.perform_async(pipeline.id, ref_status: ref_status)
         end
       end
 
@@ -973,6 +965,12 @@ module Ci
       return unless ::Gitlab::Ci::Features.ensure_scheduling_type_enabled?
 
       processables.populate_scheduling_type!
+    end
+
+    def ensure_ci_ref!
+      return unless Gitlab::Ci::Features.pipeline_fixed_notifications?
+
+      self.ci_ref = Ci::Ref.ensure_for(self)
     end
 
     private

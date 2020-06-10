@@ -27,10 +27,9 @@ module API
         get ":id/#{eventables_str}/:eventable_id/resource_label_events" do
           eventable = find_noteable(eventable_type, params[:eventable_id])
 
-          opts = { page: params[:page], per_page: params[:per_page] }
-          events = ResourceLabelEventFinder.new(current_user, eventable, opts).execute
+          events = eventable.resource_label_events.inc_relations
 
-          present paginate(events), with: Entities::ResourceLabelEvent
+          present ResourceLabelEvent.visible_to_user?(current_user, paginate(events)), with: Entities::ResourceLabelEvent
         end
 
         desc "Get a single #{eventable_type.to_s.downcase} resource label event" do

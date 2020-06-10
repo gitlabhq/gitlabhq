@@ -2641,28 +2641,6 @@ describe Ci::Pipeline, :mailer do
       end
     end
 
-    shared_examples 'enqueues the notification worker' do
-      it 'enqueues PipelineUpdateCiRefStatusWorker' do
-        expect(PipelineUpdateCiRefStatusWorker).to receive(:perform_async).with(pipeline.id)
-        expect(PipelineNotificationWorker).not_to receive(:perform_async).with(pipeline.id)
-
-        pipeline.succeed
-      end
-
-      context 'when ci_pipeline_fixed_notifications is disabled' do
-        before do
-          stub_feature_flags(ci_pipeline_fixed_notifications: false)
-        end
-
-        it 'enqueues PipelineNotificationWorker' do
-          expect(PipelineUpdateCiRefStatusWorker).not_to receive(:perform_async).with(pipeline.id)
-          expect(PipelineNotificationWorker).to receive(:perform_async).with(pipeline.id)
-
-          pipeline.succeed
-        end
-      end
-    end
-
     context 'with success pipeline' do
       it_behaves_like 'sending a notification' do
         before do
@@ -2672,7 +2650,25 @@ describe Ci::Pipeline, :mailer do
         end
       end
 
-      it_behaves_like 'enqueues the notification worker'
+      it 'enqueues PipelineNotificationWorker' do
+        expect(PipelineNotificationWorker)
+          .to receive(:perform_async).with(pipeline.id, ref_status: :success)
+
+        pipeline.succeed
+      end
+
+      context 'when pipeline is not the latest' do
+        before do
+          create(:ci_pipeline, :success, project: project, ci_ref: pipeline.ci_ref)
+        end
+
+        it 'does not pass ref_status' do
+          expect(PipelineNotificationWorker)
+            .to receive(:perform_async).with(pipeline.id, ref_status: nil)
+
+          pipeline.succeed!
+        end
+      end
     end
 
     context 'with failed pipeline' do
@@ -2687,7 +2683,12 @@ describe Ci::Pipeline, :mailer do
         end
       end
 
-      it_behaves_like 'enqueues the notification worker'
+      it 'enqueues PipelineNotificationWorker' do
+        expect(PipelineNotificationWorker)
+          .to receive(:perform_async).with(pipeline.id, ref_status: :failed)
+
+        pipeline.drop
+      end
     end
 
     context 'with skipped pipeline' do
@@ -2708,6 +2709,69 @@ describe Ci::Pipeline, :mailer do
       end
 
       it_behaves_like 'not sending any notification'
+    end
+  end
+
+  describe 'updates ci_ref when pipeline finished' do
+    context 'when ci_ref exists' do
+      let!(:pipeline) { create(:ci_pipeline, :running) }
+
+      it 'updates the ci_ref' do
+        expect(pipeline.ci_ref)
+          .to receive(:update_status_by!).with(pipeline).and_call_original
+
+        pipeline.succeed!
+      end
+    end
+
+    context 'when ci_ref does not exist' do
+      let!(:pipeline) { create(:ci_pipeline, :running, ci_ref_presence: false) }
+
+      it 'does not raise an exception' do
+        expect { pipeline.succeed! }.not_to raise_error
+      end
+    end
+  end
+
+  describe '#ensure_ci_ref!' do
+    subject { pipeline.ensure_ci_ref! }
+
+    shared_examples_for 'protected by feature flag' do
+      context 'when feature flag is disabled' do
+        before do
+          stub_feature_flags(ci_pipeline_fixed_notifications: false)
+        end
+
+        it 'does not do anything' do
+          expect(Ci::Ref).not_to receive(:ensure_for)
+
+          subject
+        end
+      end
+    end
+
+    context 'when ci_ref does not exist yet' do
+      let!(:pipeline) { create(:ci_pipeline, ci_ref_presence: false) }
+
+      it_behaves_like 'protected by feature flag'
+
+      it 'creates a new ci_ref and assigns it' do
+        expect { subject }.to change { Ci::Ref.count }.by(1)
+
+        expect(pipeline.ci_ref).to be_present
+      end
+    end
+
+    context 'when ci_ref already exists' do
+      let!(:pipeline) { create(:ci_pipeline) }
+
+      it_behaves_like 'protected by feature flag'
+
+      it 'fetches a new ci_ref and assigns it' do
+        expect { subject }.not_to change { Ci::Ref.count }
+
+        expect(pipeline.ci_ref).to be_present
+      end
     end
   end
 
