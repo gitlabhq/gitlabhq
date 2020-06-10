@@ -9,7 +9,7 @@ class Event < ApplicationRecord
   include Gitlab::Utils::StrongMemoize
   include UsageStatistics
 
-  default_scope { reorder(nil) }
+  default_scope { reorder(nil) } # rubocop:disable Cop/DefaultScope
 
   ACTIONS = HashWithIndifferentAccess.new(
     created:    1,

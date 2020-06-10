@@ -18,6 +18,7 @@ module Gitlab
     class << self
       include Gitlab::Utils::UsageData
       include Gitlab::Utils::StrongMemoize
+      include Gitlab::UsageDataConcerns::Topology
 
       def data(force_refresh: false)
         Rails.cache.fetch('usage_data', force: force_refresh, expires_in: 2.weeks) do
@@ -245,25 +246,6 @@ module Gitlab
           },
           app_server: { type: app_server_type }
         }
-      end
-
-      def topology_usage_data
-        topology_data, duration = measure_duration do
-          alt_usage_data(fallback: {}) do
-            {
-              nodes: topology_node_data
-            }.compact
-          end
-        end
-        { topology: topology_data.merge(duration_s: duration) }
-      end
-
-      def topology_node_data
-        with_prometheus_client do |client|
-          by_instance_mem =
-            client.aggregate(func: 'avg', metric: 'node_memory_MemTotal_bytes', by: 'instance').compact
-          by_instance_mem.values.map { |v| { node_memory_total_bytes: v } }
-        end
       end
 
       def app_server_type

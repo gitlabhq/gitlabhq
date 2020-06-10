@@ -94,9 +94,9 @@ dependency_scanning:
   stage: test
   needs: []
   variables:
+    DS_MAJOR_VERSION: 2
     DS_EXCLUDED_PATHS: "qa/qa/ee/fixtures/secure_premade_reports,spec,ee/spec"  # GitLab-specific
   script:
-    - export DS_VERSION=${SP_VERSION:-$(echo "$CI_SERVER_VERSION" | sed 's/^\([0-9]*\)\.\([0-9]*\).*/\1-\2-stable/')}
     - |
       if ! docker info &>/dev/null; then
         if [ -z "$DOCKER_HOST" -a "$KUBERNETES_PORT" ]; then
@@ -138,7 +138,7 @@ dependency_scanning:
         ) \
         --volume "$PWD:/code" \
         --volume /var/run/docker.sock:/var/run/docker.sock \
-        "registry.gitlab.com/gitlab-org/security-products/dependency-scanning:$DS_VERSION" /code
+        "registry.gitlab.com/gitlab-org/security-products/dependency-scanning:$DS_MAJOR_VERSION" /code
   artifacts:
     paths:
       - gl-dependency-scanning-report.json  # GitLab-specific

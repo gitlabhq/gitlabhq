@@ -128,13 +128,13 @@ sudo -u git -H bin/rails console -e production
 **To check if incremental logging (trace) is enabled:**
 
 ```ruby
-Feature.enabled?('ci_enable_live_trace')
+Feature.enabled?(:ci_enable_live_trace)
 ```
 
 **To enable incremental logging (trace):**
 
 ```ruby
-Feature.enable('ci_enable_live_trace')
+Feature.enable(:ci_enable_live_trace)
 ```
 
 NOTE: **Note:**

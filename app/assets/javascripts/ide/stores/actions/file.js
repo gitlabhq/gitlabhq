@@ -169,12 +169,6 @@ export const setFileLanguage = ({ getters, commit }, { fileLanguage }) => {
   }
 };
 
-export const setFileEOL = ({ getters, commit }, { eol }) => {
-  if (getters.activeFile) {
-    commit(types.SET_FILE_EOL, { file: getters.activeFile, eol });
-  }
-};
-
 export const setEditorPosition = ({ getters, commit }, { editorRow, editorColumn }) => {
   if (getters.activeFile) {
     commit(types.SET_FILE_POSITION, {

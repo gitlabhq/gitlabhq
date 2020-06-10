@@ -1,0 +1,5 @@
+---
+title: Fix default path when creating project from group template
+merge_request: 30597
+author: Lee Tickett
+type: fixed

@@ -99,11 +99,6 @@ export default {
       fileLanguage,
     });
   },
-  [types.SET_FILE_EOL](state, { file, eol }) {
-    Object.assign(state.entries[file.path], {
-      eol,
-    });
-  },
   [types.SET_FILE_POSITION](state, { file, editorRow, editorColumn }) {
     Object.assign(state.entries[file.path], {
       editorRow,

@@ -1,5 +1,10 @@
 import { commitActionTypes, FILE_VIEW_MODE_EDITOR } from '../constants';
-import { relativePathToAbsolute, isAbsolute, isRootRelative } from '~/lib/utils/url_utility';
+import {
+  relativePathToAbsolute,
+  isAbsolute,
+  isRootRelative,
+  isBase64DataUrl,
+} from '~/lib/utils/url_utility';
 
 export const dataStructure = () => ({
   id: '',
@@ -31,13 +36,10 @@ export const dataStructure = () => ({
   binary: false,
   raw: '',
   content: '',
-  base64: false,
   editorRow: 1,
   editorColumn: 1,
   fileLanguage: '',
-  eol: '',
   viewMode: FILE_VIEW_MODE_EDITOR,
-  previewMode: null,
   size: 0,
   parentPath: null,
   lastOpenedAt: 0,
@@ -60,10 +62,8 @@ export const decorateData = entity => {
     active = false,
     opened = false,
     changed = false,
-    base64 = false,
     binary = false,
     rawPath = '',
-    previewMode,
     file_lock,
     parentPath = '',
   } = entity;
@@ -82,10 +82,8 @@ export const decorateData = entity => {
     active,
     changed,
     content,
-    base64,
     binary,
     rawPath,
-    previewMode,
     file_lock,
     parentPath,
   });
@@ -136,7 +134,7 @@ export const createCommitPayload = ({
     file_path: f.path,
     previous_path: f.prevPath || undefined,
     content: f.prevPath && !f.changed ? null : f.content || undefined,
-    encoding: f.base64 ? 'base64' : 'text',
+    encoding: isBase64DataUrl(f.rawPath) ? 'base64' : 'text',
     last_commit_id: newBranch || f.deleted || f.prevPath ? undefined : f.lastCommitSha,
   })),
   start_sha: newBranch ? rootGetters.lastCommit.id : undefined,

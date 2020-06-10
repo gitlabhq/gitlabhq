@@ -71,15 +71,16 @@ module Gitlab
       end
     end
 
-    # Queries Prometheus for values aggregated by the given label string.
+    # Queries Prometheus with the given aggregate query and groups the results by mapping
+    # metric labels to their respective values.
     #
     # @return [Hash] mapping labels to their aggregate numeric values, or the empty hash if no results were found
-    def aggregate(func:, metric:, by:, time: Time.now)
-      response = query("#{func} (#{metric}) by (#{by})", time: time)
+    def aggregate(aggregate_query, time: Time.now)
+      response = query(aggregate_query, time: time)
       response.to_h do |result|
-        group_name = result.dig('metric', by)
+        key = block_given? ? yield(result['metric']) : result['metric']
         _timestamp, value = result['value']
-        [group_name, value.to_i]
+        [key, value.to_i]
       end
     end
 

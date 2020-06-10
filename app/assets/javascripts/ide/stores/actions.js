@@ -29,7 +29,6 @@ export const createTempEntry = (
     name,
     type,
     content = '',
-    base64 = false,
     binary = false,
     rawPath = '',
     openFile = true,
@@ -60,7 +59,6 @@ export const createTempEntry = (
     type,
     tempFile: true,
     content,
-    base64,
     binary,
     rawPath,
   });
@@ -92,7 +90,6 @@ export const addTempImage = ({ dispatch, getters }, { name, rawPath = '' }) =>
     name: getters.getAvailableFileName(name),
     type: 'blob',
     content: rawPath.split('base64,')[1],
-    base64: true,
     binary: true,
     rawPath,
     openFile: false,

@@ -4,6 +4,7 @@ class ProjectMetricsSetting < ApplicationRecord
   belongs_to :project
 
   validates :external_dashboard_url,
+    allow_nil: true,
     length: { maximum: 255 },
     addressable_url: { enforce_sanitization: true, ascii_only: true }
 

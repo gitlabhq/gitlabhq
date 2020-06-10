@@ -244,6 +244,15 @@ export function isRootRelative(url) {
 }
 
 /**
+ * Returns true if url is a base64 data URL
+ *
+ * @param {String} url
+ */
+export function isBase64DataUrl(url) {
+  return /^data:[.\w+-]+\/[.\w+-]+;base64,/.test(url);
+}
+
+/**
  * Returns true if url is an absolute or root-relative URL
  *
  * @param {String} url

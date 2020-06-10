@@ -125,7 +125,7 @@ export default {
           :disabled="disabledDelete"
           :title="$options.i18n.REMOVE_REPOSITORY_LABEL"
           :aria-label="$options.i18n.REMOVE_REPOSITORY_LABEL"
-          class="btn-inverted"
+          category="secondary"
           variant="danger"
           icon="remove"
           @click="$emit('delete', item)"

@@ -182,6 +182,9 @@ Rails/ApplicationRecord:
     - ee/db/**/*.rb
     - ee/spec/**/*.rb
 
+Cop/DefaultScope:
+  Enabled: true
+
 Rails/FindBy:
   Enabled: true
   Include:

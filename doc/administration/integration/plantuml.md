@@ -105,6 +105,21 @@ To activate the changes, run the following command:
 sudo gitlab-ctl reconfigure
 ```
 
+### Security
+
+PlantUML has features that allows fetching network resources.
+
+```plaintext
+@startuml
+start
+    ' ...
+    !include http://localhost/
+stop;
+@enduml
+```
+
+**If you self-host the PlantUML server, network controls should be put in place to isolate it.**
+
 ## GitLab
 
 You need to enable PlantUML integration from Settings under Admin Area. To do

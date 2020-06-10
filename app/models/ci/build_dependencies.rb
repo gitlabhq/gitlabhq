@@ -45,7 +45,7 @@ module Ci
     end
 
     def valid_local?
-      return true if Feature.enabled?('ci_disable_validates_dependencies')
+      return true if Feature.enabled?(:ci_disable_validates_dependencies)
 
       local.all?(&:valid_dependency?)
     end

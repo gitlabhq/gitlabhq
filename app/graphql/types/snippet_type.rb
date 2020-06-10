@@ -65,6 +65,11 @@ module Types
           calls_gitaly: true,
           null: false
 
+    field :blobs, type: [Types::Snippets::BlobType],
+          description: 'Snippet blobs',
+          calls_gitaly: true,
+          null: false
+
     field :ssh_url_to_repo, type: GraphQL::STRING_TYPE,
           description: 'SSH URL to the snippet repository',
           calls_gitaly: true,

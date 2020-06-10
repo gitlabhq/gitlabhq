@@ -40,13 +40,11 @@ class ListIssue {
   }
 
   removeLabel(removeLabel) {
-    if (removeLabel) {
-      this.labels = this.labels.filter(label => removeLabel.id !== label.id);
-    }
+    boardsStore.removeIssueLabel(this, removeLabel);
   }
 
   removeLabels(labels) {
-    labels.forEach(this.removeLabel.bind(this));
+    boardsStore.removeIssueLabels(this, labels);
   }
 
   addAssignee(assignee) {
@@ -54,7 +52,7 @@ class ListIssue {
   }
 
   findAssignee(findAssignee) {
-    return this.assignees.find(assignee => assignee.id === findAssignee.id);
+    return boardsStore.findIssueAssignee(this, findAssignee);
   }
 
   removeAssignee(removeAssignee) {
@@ -66,10 +64,7 @@ class ListIssue {
   }
 
   addMilestone(milestone) {
-    const miletoneId = this.milestone ? this.milestone.id : null;
-    if (IS_EE && milestone.id !== miletoneId) {
-      this.milestone = new ListMilestone(milestone);
-    }
+    boardsStore.addIssueMilestone(this, milestone);
   }
 
   removeMilestone(removeMilestone) {

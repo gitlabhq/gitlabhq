@@ -75,7 +75,7 @@ describe 'Container Registry', :js do
         expect(service).to receive(:execute).with(container_repository) { { status: :success } }
         expect(Projects::ContainerRepository::DeleteTagsService).to receive(:new).with(container_repository.project, user, tags: ['latest']) { service }
 
-        click_on(class: 'js-delete-registry')
+        first('[data-testid="singleDeleteButton"]').click
         expect(find('.modal .modal-title')).to have_content _('Remove tag')
         find('.modal .modal-footer .btn-danger').click
       end

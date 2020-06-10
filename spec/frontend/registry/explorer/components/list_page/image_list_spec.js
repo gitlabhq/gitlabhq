@@ -24,6 +24,11 @@ describe('Image List', () => {
     mountComponent();
   });
 
+  afterEach(() => {
+    wrapper.destroy();
+    wrapper = null;
+  });
+
   describe('list', () => {
     it('contains one list element for each image', () => {
       expect(findRow().length).toBe(imagesListResponse.data.length);

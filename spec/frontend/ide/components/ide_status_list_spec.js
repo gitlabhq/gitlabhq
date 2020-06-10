@@ -5,10 +5,10 @@ import TerminalSyncStatusSafe from '~/ide/components/terminal_sync/terminal_sync
 
 const TEST_FILE = {
   name: 'lorem.md',
-  eol: 'LF',
   editorRow: 3,
   editorColumn: 23,
   fileLanguage: 'markdown',
+  content: 'abc\nndef',
 };
 
 const localVue = createLocalVue();
@@ -56,7 +56,8 @@ describe('ide/components/ide_status_list', () => {
     });
 
     it('shows file eol', () => {
-      expect(wrapper.text()).toContain(TEST_FILE.name);
+      expect(wrapper.text()).not.toContain('CRLF');
+      expect(wrapper.text()).toContain('LF');
     });
 
     it('shows file editor position', () => {

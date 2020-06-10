@@ -31,7 +31,7 @@ class Label < ApplicationRecord
   validates :title, uniqueness: { scope: [:group_id, :project_id] }
   validates :title, length: { maximum: 255 }
 
-  default_scope { order(title: :asc) }
+  default_scope { order(title: :asc) } # rubocop:disable Cop/DefaultScope
 
   scope :templates, -> { where(template: true, type: [Label.name, nil]) }
   scope :with_title, ->(title) { where(title: title) }

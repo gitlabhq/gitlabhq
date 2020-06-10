@@ -9972,6 +9972,31 @@ type Release {
   descriptionHtml: String
 
   """
+  Evidence for the release
+  """
+  evidences(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+  ): ReleaseEvidenceConnection
+
+  """
   Milestones associated to the release
   """
   milestones(
@@ -10107,6 +10132,66 @@ type ReleaseEdge {
   The item at the end of the edge.
   """
   node: Release
+}
+
+"""
+Evidence for a release
+"""
+type ReleaseEvidence {
+  """
+  Timestamp when the evidence was collected
+  """
+  collectedAt: Time
+
+  """
+  URL from where the evidence can be downloaded
+  """
+  filepath: String
+
+  """
+  ID of the evidence
+  """
+  id: ID!
+
+  """
+  SHA1 ID of the evidence hash
+  """
+  sha: String
+}
+
+"""
+The connection type for ReleaseEvidence.
+"""
+type ReleaseEvidenceConnection {
+  """
+  A list of edges.
+  """
+  edges: [ReleaseEvidenceEdge]
+
+  """
+  A list of nodes.
+  """
+  nodes: [ReleaseEvidence]
+
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: PageInfo!
+}
+
+"""
+An edge in a connection.
+"""
+type ReleaseEvidenceEdge {
+  """
+  A cursor for use in pagination.
+  """
+  cursor: String!
+
+  """
+  The item at the end of the edge.
+  """
+  node: ReleaseEvidence
 }
 
 type ReleaseLink {
@@ -11161,6 +11246,11 @@ type Snippet implements Noteable {
   Snippet blob
   """
   blob: SnippetBlob!
+
+  """
+  Snippet blobs
+  """
+  blobs: [SnippetBlob!]!
 
   """
   Timestamp this snippet was created

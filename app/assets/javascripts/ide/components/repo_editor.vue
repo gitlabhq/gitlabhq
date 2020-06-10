@@ -83,10 +83,6 @@ export default {
         active: this.isPreviewViewMode,
       };
     },
-    fileType() {
-      const info = viewerInformationForPath(this.file.path);
-      return (info && info.id) || '';
-    },
     showEditor() {
       return !this.shouldHideEditor && this.isEditorViewMode;
     },
@@ -98,6 +94,12 @@ export default {
     },
     currentBranchCommit() {
       return this.currentBranch?.commit.id;
+    },
+    previewMode() {
+      return viewerInformationForPath(this.file.path);
+    },
+    fileType() {
+      return this.previewMode?.id || '';
     },
   },
   watch: {
@@ -181,7 +183,6 @@ export default {
       'setFileLanguage',
       'setEditorPosition',
       'setFileViewMode',
-      'setFileEOL',
       'updateViewer',
       'removePendingTab',
       'triggerFilesChange',
@@ -260,7 +261,6 @@ export default {
         const monacoModel = model.getModel();
         const content = monacoModel.getValue();
         this.changeFileContent({ path: file.path, content });
-        this.setFileEOL({ eol: this.model.eol });
       });
 
       // Handle Cursor Position
@@ -279,11 +279,6 @@ export default {
       // Handle File Language
       this.setFileLanguage({
         fileLanguage: this.model.language,
-      });
-
-      // Get File eol
-      this.setFileEOL({
-        eol: this.model.eol,
       });
     },
     refreshEditorDimensions() {
@@ -331,16 +326,15 @@ export default {
             role="button"
             @click.prevent="setFileViewMode({ file, viewMode: $options.FILE_VIEW_MODE_EDITOR })"
           >
-            <template v-if="viewer === $options.viewerTypes.edit">{{ __('Edit') }}</template>
-            <template v-else>{{ __('Review') }}</template>
+            {{ __('Edit') }}
           </a>
         </li>
-        <li v-if="file.previewMode" :class="previewTabCSS">
+        <li v-if="previewMode" :class="previewTabCSS">
           <a
             href="javascript:void(0);"
             role="button"
             @click.prevent="setFileViewMode({ file, viewMode: $options.FILE_VIEW_MODE_PREVIEW })"
-            >{{ file.previewMode.previewTitle }}</a
+            >{{ previewMode.previewTitle }}</a
           >
         </li>
       </ul>

@@ -351,7 +351,7 @@ you can flip the feature flag from a Rails console.
 1. Flip the switch and disable it:
 
    ```ruby
-   Feature.enable('ci_disable_validates_dependencies')
+   Feature.enable(:ci_disable_validates_dependencies)
    ```
 
 **In installations from source:**
@@ -366,7 +366,7 @@ you can flip the feature flag from a Rails console.
 1. Flip the switch and disable it:
 
    ```ruby
-   Feature.enable('ci_disable_validates_dependencies')
+   Feature.enable(:ci_disable_validates_dependencies)
    ```
 
 ## Set the maximum file size of the artifacts

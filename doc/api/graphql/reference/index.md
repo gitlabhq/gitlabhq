@@ -1406,6 +1406,17 @@ Represents a Project Member
 | ---   |  ---- | ----------  |
 | `assetsCount` | Int | Number of assets of the release |
 
+## ReleaseEvidence
+
+Evidence for a release
+
+| Name  | Type  | Description |
+| ---   |  ---- | ----------  |
+| `collectedAt` | Time | Timestamp when the evidence was collected |
+| `filepath` | String | URL from where the evidence can be downloaded |
+| `id` | ID! | ID of the evidence |
+| `sha` | String | SHA1 ID of the evidence hash |
+
 ## ReleaseLink
 
 | Name  | Type  | Description |
@@ -1632,6 +1643,7 @@ Represents a snippet entry
 | ---   |  ---- | ----------  |
 | `author` | User! | The owner of the snippet |
 | `blob` | SnippetBlob! | Snippet blob |
+| `blobs` | SnippetBlob! => Array | Snippet blobs |
 | `createdAt` | Time! | Timestamp this snippet was created |
 | `description` | String | Description of the snippet |
 | `descriptionHtml` | String | The GitLab Flavored Markdown rendering of `description` |

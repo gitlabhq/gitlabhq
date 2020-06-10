@@ -35,7 +35,6 @@ export default {
           name: `${this.path ? `${this.path}/` : ''}${name}`,
           type: 'blob',
           content,
-          base64: !isText,
           binary: !isText,
           rawPath: !isText ? target.result : '',
         });

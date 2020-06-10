@@ -119,3 +119,7 @@ export function readFileAsDataURL(file) {
     reader.readAsDataURL(file);
   });
 }
+
+export function getFileEOL(content = '') {
+  return content.includes('\r\n') ? 'CRLF' : 'LF';
+}

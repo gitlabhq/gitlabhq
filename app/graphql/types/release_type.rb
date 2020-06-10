@@ -27,6 +27,8 @@ module Types
           description: 'Assets of the release'
     field :milestones, Types::MilestoneType.connection_type, null: true,
           description: 'Milestones associated to the release'
+    field :evidences, Types::EvidenceType.connection_type, null: true,
+          description: 'Evidence for the release'
 
     field :author, Types::UserType, null: true,
           description: 'User that created the release'

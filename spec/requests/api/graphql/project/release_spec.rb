@@ -5,11 +5,12 @@ require 'pp'
 
 describe 'Query.project(fullPath).release(tagName)' do
   include GraphqlHelpers
+  include Presentable
 
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:milestone_1) { create(:milestone, project: project) }
   let_it_be(:milestone_2) { create(:milestone, project: project) }
-  let_it_be(:release) { create(:release, project: project, milestones: [milestone_1, milestone_2]) }
+  let_it_be(:release) { create(:release, :with_evidence, project: project, milestones: [milestone_1, milestone_2]) }
   let_it_be(:release_link_1) { create(:release_link, release: release) }
   let_it_be(:release_link_2) { create(:release_link, release: release) }
   let_it_be(:developer) { create(:user) }
@@ -162,6 +163,43 @@ describe 'Query.project(fullPath).release(tagName)' do
         end
 
         expect(data).to match_array(expected)
+      end
+    end
+
+    describe 'evidences' do
+      let(:path) { path_prefix + %w[evidences] }
+      let(:release_fields) do
+        query_graphql_field(:evidences, nil, 'nodes { id sha filepath collectedAt }')
+      end
+
+      context 'for a developer' do
+        it 'finds all evidence fields' do
+          post_query
+
+          evidence = release.evidences.first.present
+          expected = {
+            'id' => global_id_of(evidence),
+            'sha' => evidence.sha,
+            'filepath' => evidence.filepath,
+            'collectedAt' => evidence.collected_at.utc.iso8601
+          }
+
+          expect(data["nodes"].first).to eq(expected)
+        end
+      end
+
+      context 'for a guest' do
+        let(:current_user) { create :user }
+
+        before do
+          project.add_guest(current_user)
+        end
+
+        it 'denies access' do
+          post_query
+
+          expect(data['node']).to be_nil
+        end
       end
     end
   end

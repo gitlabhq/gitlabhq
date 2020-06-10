@@ -7,6 +7,7 @@ module Gitlab
       include Gitlab::EncodingHelper
       prepend Gitlab::Git::RuggedImpl::Commit
       extend Gitlab::Git::WrapsGitalyErrors
+      include Gitlab::Utils::StrongMemoize
 
       attr_accessor :raw_commit, :head
 
@@ -231,6 +232,18 @@ module Gitlab
         parent_ids.first
       end
 
+      def committed_date
+        strong_memoize(:committed_date) do
+          init_date_from_gitaly(raw_commit.committer) if raw_commit
+        end
+      end
+
+      def authored_date
+        strong_memoize(:authored_date) do
+          init_date_from_gitaly(raw_commit.author) if raw_commit
+        end
+      end
+
       # Returns a diff object for the changes from this commit's first parent.
       # If there is no parent, then the diff is between this commit and an
       # empty repo. See Repository#diff for keys allowed in the +options+
@@ -369,11 +382,9 @@ module Gitlab
         # subject from the message to make it clearer when there's one
         # available but not the other.
         @message = message_from_gitaly_body
-        @authored_date = init_date_from_gitaly(commit.author)
         @author_name = commit.author.name.dup
         @author_email = commit.author.email.dup
 
-        @committed_date = init_date_from_gitaly(commit.committer)
         @committer_name = commit.committer.name.dup
         @committer_email = commit.committer.email.dup
         @parent_ids = Array(commit.parent_ids)

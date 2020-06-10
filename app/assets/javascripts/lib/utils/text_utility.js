@@ -90,6 +90,13 @@ export const truncatePathMiddleToLength = (text, maxWidth) => {
 
   while (returnText.length >= maxWidth) {
     const textSplit = returnText.split('/').filter(s => s !== ELLIPSIS_CHAR);
+
+    if (textSplit.length === 0) {
+      // There are n - 1 path separators for n segments, so 2n - 1 <= maxWidth
+      const maxSegments = Math.floor((maxWidth + 1) / 2);
+      return new Array(maxSegments).fill(ELLIPSIS_CHAR).join('/');
+    }
+
     const middleIndex = Math.floor(textSplit.length / 2);
 
     returnText = textSplit

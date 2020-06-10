@@ -13,8 +13,8 @@ import { commitActionTypes, PERMISSION_CREATE_MR } from '~/ide/constants';
 import testAction from '../../../../helpers/vuex_action_helper';
 
 jest.mock('~/lib/utils/url_utility', () => ({
+  ...jest.requireActual('~/lib/utils/url_utility'),
   visitUrl: jest.fn(),
-  joinPaths: jest.requireActual('~/lib/utils/url_utility').joinPaths,
 }));
 
 const TEST_COMMIT_SHA = '123456789';

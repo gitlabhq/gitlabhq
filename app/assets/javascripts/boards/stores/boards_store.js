@@ -277,6 +277,20 @@ const boardsStore = {
       return !matchesRemove;
     });
   },
+  removeListMultipleIssues(list, removeIssues) {
+    const ids = removeIssues.map(issue => issue.id);
+
+    list.issues = list.issues.filter(issue => {
+      const matchesRemove = ids.includes(issue.id);
+
+      if (matchesRemove) {
+        list.issuesSize -= 1;
+        issue.removeLabel(list.label);
+      }
+
+      return !matchesRemove;
+    });
+  },
 
   startMoving(list, issue) {
     Object.assign(this.moving, { list, issue });
@@ -684,11 +698,20 @@ const boardsStore = {
       ),
     );
   },
+  removeIssueLabel(issue, removeLabel) {
+    if (removeLabel) {
+      issue.labels = issue.labels.filter(label => removeLabel.id !== label.id);
+    }
+  },
 
   addIssueAssignee(issue, assignee) {
     if (!issue.findAssignee(assignee)) {
       issue.assignees.push(new ListAssignee(assignee));
     }
+  },
+
+  removeIssueLabels(issue, labels) {
+    labels.forEach(issue.removeLabel.bind(issue));
   },
 
   bulkUpdate(issueIds, extraData = {}) {
@@ -763,12 +786,23 @@ const boardsStore = {
     }
   },
 
+  findIssueAssignee(issue, findAssignee) {
+    return issue.assignees.find(assignee => assignee.id === findAssignee.id);
+  },
+
   clearMultiSelect() {
     this.multiSelect.list = [];
   },
 
   removeAllIssueAssignees(issue) {
     issue.assignees = [];
+  },
+
+  addIssueMilestone(issue, milestone) {
+    const miletoneId = issue.milestone ? issue.milestone.id : null;
+    if (IS_EE && milestone.id !== miletoneId) {
+      issue.milestone = new ListMilestone(milestone);
+    }
   },
 
   refreshIssueData(issue, obj) {

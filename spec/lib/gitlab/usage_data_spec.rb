@@ -115,6 +115,10 @@ describe Gitlab::UsageData, :aggregate_failures do
       )
     end
 
+    it 'gathers topology data' do
+      expect(subject.keys).to include(:topology)
+    end
+
     context 'with existing container expiration policies' do
       let_it_be(:disabled) { create(:container_expiration_policy, enabled: false) }
       let_it_be(:enabled) { create(:container_expiration_policy, enabled: true) }
@@ -275,88 +279,6 @@ describe Gitlab::UsageData, :aggregate_failures do
 
       def stub_runtime(runtime)
         allow(Gitlab::Runtime).to receive(:identify).and_return(runtime)
-      end
-    end
-
-    describe '#topology_usage_data' do
-      subject { described_class.topology_usage_data }
-
-      before do
-        # this pins down time shifts when benchmarking durations
-        allow(Process).to receive(:clock_gettime).and_return(0)
-      end
-
-      context 'when embedded Prometheus server is enabled' do
-        before do
-          expect(Gitlab::Prometheus::Internal).to receive(:prometheus_enabled?).and_return(true)
-          expect(Gitlab::Prometheus::Internal).to receive(:uri).and_return('http://prom:9090')
-        end
-
-        it 'contains a topology element' do
-          allow_prometheus_queries
-
-          expect(subject).to have_key(:topology)
-        end
-
-        context 'tracking node metrics' do
-          it 'contains node level metrics for each instance' do
-            expect_prometheus_api_to receive(:aggregate)
-              .with(func: 'avg', metric: 'node_memory_MemTotal_bytes', by: 'instance')
-              .and_return({
-                'instance1' => 512,
-                'instance2' => 1024
-              })
-
-            expect(subject[:topology]).to eq({
-              duration_s: 0,
-              nodes: [
-                {
-                  node_memory_total_bytes: 512
-                },
-                {
-                  node_memory_total_bytes: 1024
-                }
-              ]
-            })
-          end
-        end
-
-        context 'and no results are found' do
-          it 'does not report anything' do
-            expect_prometheus_api_to receive(:aggregate).and_return({})
-
-            expect(subject[:topology]).to eq({
-              duration_s: 0,
-              nodes: []
-            })
-          end
-        end
-
-        context 'and a connection error is raised' do
-          it 'does not report anything' do
-            expect_prometheus_api_to receive(:aggregate).and_raise('Connection failed')
-
-            expect(subject[:topology]).to eq({ duration_s: 0 })
-          end
-        end
-      end
-
-      context 'when embedded Prometheus server is disabled' do
-        it 'does not report anything' do
-          expect(subject[:topology]).to eq({ duration_s: 0 })
-        end
-      end
-
-      def expect_prometheus_api_to(receive_matcher)
-        expect_next_instance_of(Gitlab::PrometheusClient) do |client|
-          expect(client).to receive_matcher
-        end
-      end
-
-      def allow_prometheus_queries
-        allow_next_instance_of(Gitlab::PrometheusClient) do |client|
-          allow(client).to receive(:aggregate).and_return({})
-        end
       end
     end
 

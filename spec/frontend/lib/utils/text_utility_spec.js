@@ -192,6 +192,20 @@ describe('text_utility', () => {
         'app/…/…/diff',
       );
     });
+
+    describe('given a path too long for the maxWidth', () => {
+      it.each`
+        path          | maxWidth | result
+        ${'aa/bb/cc'} | ${1}     | ${'…'}
+        ${'aa/bb/cc'} | ${2}     | ${'…'}
+        ${'aa/bb/cc'} | ${3}     | ${'…/…'}
+        ${'aa/bb/cc'} | ${4}     | ${'…/…'}
+        ${'aa/bb/cc'} | ${5}     | ${'…/…/…'}
+      `('truncates ($path, $maxWidth) to $result', ({ path, maxWidth, result }) => {
+        expect(result.length).toBeLessThanOrEqual(maxWidth);
+        expect(textUtils.truncatePathMiddleToLength(path, maxWidth)).toEqual(result);
+      });
+    });
   });
 
   describe('slugifyWithUnderscore', () => {

@@ -19,7 +19,6 @@ export const decorateFiles = ({
   branchId,
   tempFile = false,
   content = '',
-  base64 = false,
   binary = false,
   rawPath = '',
 }) => {
@@ -88,10 +87,8 @@ export const decorateFiles = ({
         tempFile,
         changed: tempFile,
         content,
-        base64,
         binary: (previewMode && previewMode.binary) || binary,
         rawPath,
-        previewMode,
         parentPath,
       });
 

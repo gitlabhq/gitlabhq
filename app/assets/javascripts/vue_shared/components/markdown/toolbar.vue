@@ -1,5 +1,5 @@
 <script>
-import { GlButton, GlLink, GlLoadingIcon, GlSprintf } from '@gitlab/ui';
+import { GlButton, GlLink, GlLoadingIcon, GlSprintf, GlIcon } from '@gitlab/ui';
 
 export default {
   components: {
@@ -7,6 +7,7 @@ export default {
     GlLink,
     GlLoadingIcon,
     GlSprintf,
+    GlIcon,
   },
   props: {
     markdownDocsPath: {
@@ -59,7 +60,9 @@ export default {
     </div>
     <span v-if="canAttachFile" class="uploading-container">
       <span class="uploading-progress-container hide">
-        <i class="fa fa-file-image-o toolbar-button-icon" aria-hidden="true"></i>
+        <template>
+          <gl-icon name="media" :size="16" />
+        </template>
         <span class="attaching-file-message"></span>
         <!-- eslint-disable-next-line @gitlab/vue-require-i18n-strings -->
         <span class="uploading-progress">0%</span>
@@ -67,7 +70,9 @@ export default {
       </span>
       <span class="uploading-error-container hide">
         <span class="uploading-error-icon">
-          <i class="fa fa-file-image-o toolbar-button-icon" aria-hidden="true"></i>
+          <template>
+            <gl-icon name="media" :size="16" />
+          </template>
         </span>
         <span class="uploading-error-message"></span>
 
@@ -87,8 +92,10 @@ export default {
         </gl-sprintf>
       </span>
       <gl-button class="markdown-selector button-attach-file" variant="link">
-        <i class="fa fa-file-image-o toolbar-button-icon" aria-hidden="true"></i
-        ><span class="text-attach-file">{{ __('Attach a file') }}</span>
+        <template>
+          <gl-icon name="media" :size="16" />
+        </template>
+        <span class="text-attach-file">{{ __('Attach a file') }}</span>
       </gl-button>
       <gl-button class="btn btn-default btn-sm hide button-cancel-uploading-files" variant="link">
         {{ __('Cancel') }}

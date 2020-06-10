@@ -62,7 +62,7 @@ module Gitlab
         class PrometheusService < ActiveRecord::Base
           self.inheritance_column = :_type_disabled
           self.table_name = 'services'
-          default_scope { where(type: type) }
+          default_scope { where(type: type) } # rubocop:disable Cop/DefaultScope
 
           def self.type
             'PrometheusService'

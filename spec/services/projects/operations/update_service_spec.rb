@@ -126,21 +126,23 @@ describe Projects::Operations::UpdateService do
           )
           expect(project.metrics_setting.dashboard_timezone).to eq('utc')
         end
+      end
 
-        context 'with blank external_dashboard_url in params' do
-          let(:params) do
-            {
-              metrics_setting_attributes: {
-                external_dashboard_url: ''
-              }
+      context 'with blank external_dashboard_url' do
+        let(:params) do
+          {
+            metrics_setting_attributes: {
+              external_dashboard_url: '',
+              dashboard_timezone: 'utc'
             }
-          end
+          }
+        end
 
-          it 'destroys the metrics_setting entry in DB' do
-            expect(result[:status]).to eq(:success)
+        it 'updates dashboard_timezone' do
+          expect(result[:status]).to eq(:success)
 
-            expect(project.reload.metrics_setting).to be_nil
-          end
+          expect(project.reload.metrics_setting.external_dashboard_url).to be(nil)
+          expect(project.metrics_setting.dashboard_timezone).to eq('utc')
         end
       end
     end

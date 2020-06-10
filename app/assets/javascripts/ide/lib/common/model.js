@@ -53,10 +53,6 @@ export default class Model {
     return this.model.getModeId();
   }
 
-  get eol() {
-    return this.model.getEOL() === '\n' ? 'LF' : 'CRLF';
-  }
-
   get path() {
     return this.file.key;
   }

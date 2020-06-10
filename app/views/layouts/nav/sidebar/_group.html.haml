@@ -55,7 +55,7 @@
             %span.badge.badge-pill.count= number_with_delimiter(issues_count)
 
           %ul.sidebar-sub-level-items{ data: { qa_selector: 'group_issues_sidebar_submenu'} }
-            = nav_link(path: ['groups#issues', 'labels#index', 'milestones#index'], html_options: { class: "fly-out-top-item" } ) do
+            = nav_link(path: ['groups#issues', 'labels#index', 'milestones#index', 'iterations#index'], html_options: { class: "fly-out-top-item" } ) do
               = link_to issues_group_path(@group) do
                 %strong.fly-out-top-item-name
                   = _('Issues')
@@ -84,6 +84,8 @@
                 = link_to group_milestones_path(@group), title: _('Milestones') do
                   %span
                     = _('Milestones')
+
+            = render_if_exists 'layouts/nav/sidebar/iterations_link'
 
       - if group_sidebar_link?(:merge_requests)
         = nav_link(path: 'groups#merge_requests') do

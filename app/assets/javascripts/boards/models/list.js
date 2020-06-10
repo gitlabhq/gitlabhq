@@ -158,18 +158,7 @@ class List {
   }
 
   removeMultipleIssues(removeIssues) {
-    const ids = removeIssues.map(issue => issue.id);
-
-    this.issues = this.issues.filter(issue => {
-      const matchesRemove = ids.includes(issue.id);
-
-      if (matchesRemove) {
-        this.issuesSize -= 1;
-        issue.removeLabel(this.label);
-      }
-
-      return !matchesRemove;
-    });
+    return boardsStore.removeListMultipleIssues(this, removeIssues);
   }
 
   removeIssue(removeIssue) {

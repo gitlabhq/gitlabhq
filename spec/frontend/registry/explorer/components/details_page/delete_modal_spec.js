@@ -23,6 +23,11 @@ describe('Delete Modal', () => {
     });
   };
 
+  afterEach(() => {
+    wrapper.destroy();
+    wrapper = null;
+  });
+
   it('contains a GlModal', () => {
     mountComponent();
     expect(findModal().exists()).toBe(true);
