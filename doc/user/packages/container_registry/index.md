@@ -555,11 +555,11 @@ run the policy may get backed up or fail completely. It is recommended you only 
 policies for projects that were created before GitLab 12.8 if you are confident the amount of tags
 being cleaned up will be minimal.
 
-### Regex patterns
+### Regex pattern examples
 
-The patterns that define which tags should be preserved or removed are defined using regular expressions, both for the UI and the API.
+Expiration policies use regex patterns to determine which tags should be preserved or removed, both in the UI and the API.
 
-Examples:
+Here are examples of regex patterns you may want to use:
 
 - Match all tags:
 

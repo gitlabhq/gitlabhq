@@ -5,7 +5,8 @@ class GroupImportState < ApplicationRecord
 
   belongs_to :group, inverse_of: :import_state
 
-  validates :group, :status, :jid, presence: true
+  validates :group, :status, presence: true
+  validates :jid, presence: true, if: -> { started? || finished? }
 
   state_machine :status, initial: :created do
     state :created, value: 0

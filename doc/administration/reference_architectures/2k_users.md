@@ -30,7 +30,7 @@ For a full list of reference architectures, see
    NFS is required for GitLab Pages, you can skip this step if you're not using that feature.
 1. [Configure PostgreSQL](../high_availability/load_balancer.md), the database for GitLab.
 1. [Configure Redis](../high_availability/redis.md).
-1. [Configure Gitaly](../gitaly/index.md#running-gitaly-on-its-own-server),
+1. [Configure Gitaly](../gitaly/index.md#run-gitaly-on-its-own-server),
    which is used to provide access to the Git repositories.
 1. [Configure the main GitLab Rails application](../high_availability/gitlab.md)
    to run Puma/Unicorn, Workhorse, GitLab Shell, and to serve all

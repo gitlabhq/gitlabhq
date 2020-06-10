@@ -381,7 +381,7 @@ Particular attention should be shown to:
   `gitaly-2`, and `gitaly-3` as Gitaly storage names.
 
 For more information on Gitaly server configuration, see our [Gitaly
-documentation](index.md#3-gitaly-server-configuration).
+documentation](index.md#configure-gitaly-servers).
 
 1. SSH into the **Gitaly** node and login as root:
 

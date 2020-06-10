@@ -2,6 +2,12 @@ import $ from 'jquery';
 import preserveUrlFragment from '~/pages/sessions/new/preserve_url_fragment';
 
 describe('preserve_url_fragment', () => {
+  const findFormAction = selector => {
+    return $(`.omniauth-container ${selector}`)
+      .parent('form')
+      .attr('action');
+  };
+
   preloadFixtures('sessions/new.html');
 
   beforeEach(() => {
@@ -25,35 +31,36 @@ describe('preserve_url_fragment', () => {
   it('does not add an empty query parameter to OmniAuth login buttons', () => {
     preserveUrlFragment();
 
-    expect($('#oauth-login-cas3').attr('href')).toBe('http://test.host/users/auth/cas3');
+    expect(findFormAction('#oauth-login-cas3')).toBe('http://test.host/users/auth/cas3');
 
-    expect($('.omniauth-container #oauth-login-auth0').attr('href')).toBe(
-      'http://test.host/users/auth/auth0',
-    );
+    expect(findFormAction('#oauth-login-auth0')).toBe('http://test.host/users/auth/auth0');
   });
 
   describe('adds "redirect_fragment" query parameter to OmniAuth login buttons', () => {
     it('when "remember_me" is not present', () => {
       preserveUrlFragment('#L65');
 
-      expect($('#oauth-login-cas3').attr('href')).toBe(
+      expect(findFormAction('#oauth-login-cas3')).toBe(
         'http://test.host/users/auth/cas3?redirect_fragment=L65',
       );
 
-      expect($('.omniauth-container #oauth-login-auth0').attr('href')).toBe(
+      expect(findFormAction('#oauth-login-auth0')).toBe(
         'http://test.host/users/auth/auth0?redirect_fragment=L65',
       );
     });
 
     it('when "remember-me" is present', () => {
-      $('a.omniauth-btn').attr('href', (i, href) => `${href}?remember_me=1`);
+      $('.omniauth-btn')
+        .parent('form')
+        .attr('action', (i, href) => `${href}?remember_me=1`);
+
       preserveUrlFragment('#L65');
 
-      expect($('#oauth-login-cas3').attr('href')).toBe(
+      expect(findFormAction('#oauth-login-cas3')).toBe(
         'http://test.host/users/auth/cas3?remember_me=1&redirect_fragment=L65',
       );
 
-      expect($('#oauth-login-auth0').attr('href')).toBe(
+      expect(findFormAction('#oauth-login-auth0')).toBe(
         'http://test.host/users/auth/auth0?remember_me=1&redirect_fragment=L65',
       );
     });

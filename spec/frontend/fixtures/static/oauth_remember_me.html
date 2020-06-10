@@ -1,6 +1,22 @@
 <div id="oauth-container">
 <input id="remember_me" type="checkbox">
-<a class="oauth-login twitter" href="http://example.com/"></a>
-<a class="oauth-login github" href="http://example.com/"></a>
-<a class="oauth-login facebook" href="http://example.com/?redirect_fragment=L1"></a>
+
+<form method="post" action="http://example.com/">
+  <button class="oauth-login twitter" type="submit">
+    <span>Twitter</span>
+  </button>
+</form>
+
+<form method="post" action="http://example.com/">
+  <button class="oauth-login github" type="submit">
+    <span>GitHub</span>
+  </button>
+</form>
+
+<form method="post" action="http://example.com/?redirect_fragment=L1">
+  <button class="oauth-login facebook" type="submit">
+    <span>Facebook</span>
+  </button>
+</form>
+
 </div>

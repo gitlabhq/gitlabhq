@@ -3187,7 +3187,7 @@ CREATE TABLE public.group_import_states (
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
     status smallint DEFAULT 0 NOT NULL,
-    jid text NOT NULL,
+    jid text,
     last_error text,
     CONSTRAINT check_87b58f6b30 CHECK ((char_length(last_error) <= 255)),
     CONSTRAINT check_96558fff96 CHECK ((char_length(jid) <= 100))
@@ -13816,6 +13816,7 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200526000407
 20200526013844
 20200526120714
+20200526142550
 20200526153844
 20200526164946
 20200526164947

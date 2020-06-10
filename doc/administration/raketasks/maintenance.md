@@ -62,7 +62,7 @@ The `gitlab:check` Rake task runs the following Rake tasks:
 
 It will check that each component was set up according to the installation guide and suggest fixes
 for issues found. This command must be run from your application server and will not work correctly on
-component servers like [Gitaly](../gitaly/index.md#running-gitaly-on-its-own-server).
+component servers like [Gitaly](../gitaly/index.md#run-gitaly-on-its-own-server).
 
 You may also have a look at our troubleshooting guides for:
 

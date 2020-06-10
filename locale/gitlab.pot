@@ -27393,6 +27393,9 @@ msgstr ""
 msgid "uses Kubernetes clusters to deploy your code!"
 msgstr ""
 
+msgid "v%{version} published %{timeAgo}"
+msgstr ""
+
 msgid "verify ownership"
 msgstr ""
 

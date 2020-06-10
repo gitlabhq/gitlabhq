@@ -96,14 +96,21 @@
       margin: 0;
     }
 
-    .omniauth-btn {
-      margin-bottom: $gl-padding;
+    form {
       width: 48%;
-      padding: $gl-padding-8;
+      padding: 0;
+      border: 0;
+      background: none;
+      margin-bottom: $gl-padding;
 
       @include media-breakpoint-down(md) {
         width: 100%;
       }
+    }
+
+    .omniauth-btn {
+      width: 100%;
+      padding: $gl-padding-8;
 
       img {
         width: $default-icon-size;
