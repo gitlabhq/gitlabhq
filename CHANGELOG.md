@@ -614,6 +614,10 @@ entry.
 - Use visitUrl in Alert management. !32414
 
 
+## 12.10.11 (2020-06-10)
+
+- No changes.
+
 ## 12.10.8 (2020-05-28)
 
 ### Fixed (2 changes)
