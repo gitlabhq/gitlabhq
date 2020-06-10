@@ -1142,6 +1142,10 @@ entry.
 - Remove store_mentions! in Snippets::CreateService. !29581 (Sashi Kumar)
 
 
+## 12.9.10 (2020-06-10)
+
+- No changes.
+
 ## 12.9.8 (2020-05-27)
 
 ### Security (13 changes)
