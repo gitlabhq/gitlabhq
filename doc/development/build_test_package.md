@@ -24,7 +24,7 @@ trigger.
 
 If you want to create a package from a specific branch, commit or tag of any of
 the GitLab components (like GitLab Workhorse, Gitaly, GitLab Pages, etc.), you
-can specify the branch name, commit sha or tag in the component's respective
+can specify the branch name, commit SHA or tag in the component's respective
 `*_VERSION` file. For example, if you want to build a package that uses the
 branch `0-1-stable`, modify the content of `GITALY_SERVER_VERSION` to
 `0-1-stable` and push the commit. This will create a manual job that can be

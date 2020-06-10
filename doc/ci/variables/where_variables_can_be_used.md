@@ -75,10 +75,10 @@ ordering of variables definitions.
 ### Execution shell environment
 
 This is an expansion that takes place during the `script` execution.
-How it works depends on the used shell (bash/sh/cmd/PowerShell). For example, if the job's
+How it works depends on the used shell (`bash`, `sh`, `cmd`, PowerShell). For example, if the job's
 `script` contains a line `echo $MY_VARIABLE-${MY_VARIABLE_2}`, it should be properly handled
 by bash/sh (leaving empty strings or some values depending whether the variables were
-defined or not), but will not work with Windows' cmd/PowerShell, since these shells
+defined or not), but will not work with Windows' `cmd` or PowerShell, since these shells
 are using a different variables syntax.
 
 Supported:

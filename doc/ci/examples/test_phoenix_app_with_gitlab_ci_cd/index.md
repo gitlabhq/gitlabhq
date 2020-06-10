@@ -46,7 +46,7 @@ Phoenix can run in any OS where Erlang is supported:
 - Debian
 - Windows
 - Fedora
-- Raspbian
+- Raspberry Pi OS
 
 Check the [Phoenix learning guide](https://hexdocs.pm/phoenix/overview.html) for more information.
 
@@ -154,7 +154,7 @@ point `localhost` to `127.0.0.1`.
 
 Great, now we have a local Phoenix Server running our app.
 
-Locally, our application is running in an `iex` session. [iex](https://elixir-lang.org/getting-started/introduction.html#interactive-mode) stands for Interactive Elixir.
+Locally, our application is running in an [`iex`](https://elixir-lang.org/getting-started/introduction.html#interactive-mode) session, which stands for Interactive Elixir.
 In this interactive mode, we can type any Elixir expression and get its result. To exit `iex`, we
 need to press `Ctrl+C` twice. So, when we need to stop the Phoenix server, we have to hit `Ctrl+C`
 twice.
@@ -164,7 +164,7 @@ twice.
 With GitLab, we can manage our development workflow, improve our productivity, track issues,
 perform code review, and much more from a single platform. With GitLab CI/CD, we can be much more
 productive, because every time we, or our co-workers push any code, GitLab CI/CD will build and
-test the changes, telling us in realtime if anything goes wrong.
+test the changes, telling us in real time if anything goes wrong.
 
 Certainly, when our application starts to grow, we'll need more developers working on the same
 project and this process of building and testing can easily become a mess without proper management.

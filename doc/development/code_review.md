@@ -314,7 +314,7 @@ experience, refactors the existing code). Then:
   - For non-mandatory suggestions, decorate with (non-blocking) so the author knows they can
     optionally resolve within the merge request or follow-up at a later stage.
 - After a round of line notes, it can be helpful to post a summary note such as
-  "LGTM :thumbsup:", or "Just a couple things to address."
+  "Looks good to me", or "Just a couple things to address."
 - Assign the merge request to the author if changes are required following your
   review.
 
@@ -381,7 +381,7 @@ Merge Results against the latest `master` at the time of the pipeline creation.
 
 One of the most difficult things during code review is finding the right
 balance in how deep the reviewer can interfere with the code created by a
-reviewee.
+author.
 
 - Learning how to find the right balance takes time; that is why we have
   reviewers that become maintainers after some time spent on reviewing merge
@@ -389,7 +389,7 @@ reviewee.
 - Finding bugs and improving code style is important, but thinking about good
   design is important as well. Building abstractions and good design is what
   makes it possible to hide complexity and makes future changes easier.
-- Asking the reviewee to change the design sometimes means the complete rewrite
+- Asking the author to change the design sometimes means the complete rewrite
   of the contributed code. It's usually a good idea to ask another maintainer or
   reviewer before doing it, but have the courage to do it when you believe it is
   important.
@@ -402,7 +402,7 @@ reviewee.
 - There is a difference in doing things right and doing things right now.
   Ideally, we should do the former, but in the real world we need the latter as
   well. A good example is a security fix which should be released as soon as
-  possible. Asking the reviewee to do the major refactoring in the merge
+  possible. Asking the author to do the major refactoring in the merge
   request that is an urgent fix should be avoided.
 - Doing things well today is usually better than doing something perfectly
   tomorrow. Shipping a kludge today is usually worse than doing something well

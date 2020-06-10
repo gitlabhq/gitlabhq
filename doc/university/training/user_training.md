@@ -222,7 +222,7 @@ See GitLab merge requests for examples: <https://gitlab.com/gitlab-org/gitlab-fo
 
 - Dashboard
 - User Preferences
-- ReadMe, Changelog, License shortcuts
+- README, Changelog, License shortcuts
 - Issues
 - Milestones and Labels
 - Manage project members

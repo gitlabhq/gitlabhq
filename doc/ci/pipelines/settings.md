@@ -142,7 +142,7 @@ If you want to see the evolution of your project code coverage over time,
 you can download a CSV file with this data. From your project:
 
 1. Go to **{chart}** **Project Analytics > Repository**.
-1. Click **Download raw data (.csv)**
+1. Click **Download raw data (`.csv`)**
 
 ### Removing color codes
 

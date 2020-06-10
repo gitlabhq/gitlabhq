@@ -793,7 +793,7 @@ posthog:
 ```
 
 You can customize the installation of PostHog by defining `.gitlab/managed-apps/posthog/values.yaml`
-in your cluster management project. Refer to the [Configuration section of the PostHog chart's readme](https://github.com/PostHog/charts/tree/master/charts/posthog)
+in your cluster management project. Refer to the [Configuration section of the PostHog chart's README](https://github.com/PostHog/charts/tree/master/charts/posthog)
 for the available configuration options.
 
 NOTE: **Note:**

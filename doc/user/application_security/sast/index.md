@@ -289,7 +289,7 @@ Some analyzers make it possible to filter out vulnerabilities under a given thre
 | Environment variable    | Default value | Description |
 |-------------------------|---------------|-------------|
 | `SAST_EXCLUDED_PATHS`         | -   | Exclude vulnerabilities from output based on the paths. This is a comma-separated list of patterns. Patterns can be globs, or file or folder paths (for example, `doc,spec` ). Parent directories will also match patterns. |
-| `SAST_BANDIT_EXCLUDED_PATHS`  | -   | comma-separated list of paths to exclude from scan. Uses Python's [`fnmatch` syntax](https://docs.python.org/2/library/fnmatch.html) |
+| `SAST_BANDIT_EXCLUDED_PATHS`  | -   | comma-separated list of paths to exclude from scan. Uses Python's [`fnmatch` syntax](https://docs.python.org/2/library/fnmatch.html); For example: `'*/tests/*'` |
 | `SAST_BRAKEMAN_LEVEL`   |         1 | Ignore Brakeman vulnerabilities under given confidence level. Integer, 1=Low 3=High. |
 | `SAST_FLAWFINDER_LEVEL` |         1 | Ignore Flawfinder vulnerabilities under given risk level. Integer, 0=No risk, 5=High risk. |
 | `SAST_GITLEAKS_ENTROPY_LEVEL` | 8.0 | Minimum entropy for secret detection. Float, 0.0 = low, 8.0 = high. |

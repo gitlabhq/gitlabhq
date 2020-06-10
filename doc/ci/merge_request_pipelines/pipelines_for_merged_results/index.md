@@ -79,7 +79,7 @@ merge happens.
 
 For more information, read the [documentation on Merge Trains](merge_trains/index.md).
 
-## Automatic pipeline cancelation
+## Automatic pipeline cancellation
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12996) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.3.
 

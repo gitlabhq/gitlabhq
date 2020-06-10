@@ -10,7 +10,7 @@ the main components.
 ![CI software architecture](img/ci_architecture.png)
 <!-- Editable diagram available at https://app.diagrams.net/#G1LFl-KW4fgpBPzz8VIH9rsOlAH4t0xwKj -->
 
-On the left side we have the events that can trigger a pipeline based on various events (trigged by a user or automation):
+On the left side we have the events that can trigger a pipeline based on various events (triggered by a user or automation):
 
 - A `git push` is the most common event that triggers a pipeline.
 - The [Web API](../../api/pipelines.md#create-a-new-pipeline).

@@ -1014,10 +1014,14 @@ job:
     - if: '$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME' # If neither of the first two match but the simple presence does, we set to "on_success" by default
 ```
 
-If none of the provided rules match, the job will be set to `when:never`, and
-not included in the pipeline. If `rules:when` is not included in the configuration
-at all, the behavior defaults to `job:when`, which continues to default to
-`on_success`.
+Some details regarding the logic that determines the `when` for the job:
+
+- If none of the provided rules match, the job is set to `when: never`, and is
+  not included in the pipeline.
+- A rule without any conditional clause, such as a `when` or `allow_failure`
+  rule without `if` or `changes`, always matches, and is always used if reached.
+- If a rule matches and has no `when` defined, the rule will use the `when`
+  defined for the job, which defaults to `on_success` if not defined.
 
 #### `rules:changes`
 

@@ -75,7 +75,7 @@ There are some high level differences between the products worth mentioning:
   with the [`rules` syntax](../yaml/README.md#rules).
 - GitLab [pipeline scheduling concepts](../pipelines/schedules.md) are also different than with Jenkins.
 - You can reuse pipeline configurations using the [`include` keyword](../yaml/README.md#include)
-  and [templates](#templates). Your templates can be kept in a central repo (with different
+  and [templates](#templates). Your templates can be kept in a central repository (with different
   permissions), and then any project can use them. This central project could also
   contain scripts or other reusable code.
 - You can also use the [`extends` keyword](../yaml/README.md#extends) to reuse configuration
@@ -139,7 +139,7 @@ GitLab works a bit differently, we use the more highly structured [YAML](https:/
 places scripting elements inside of `script:` blocks separate from the pipeline specification itself.
 
 This is a strength of GitLab, in that it helps keep the learning curve much simpler to get up and running
-and avoids some of the problem of unconstrained complexity which can make your Jenkinsfiles hard to understand
+and avoids some of the problem of unconstrained complexity which can make your Jenkinsfile hard to understand
 and manage.
 
 That said, we do of course still value DRY (don't repeat yourself) principles and want to ensure that
@@ -205,9 +205,9 @@ be used by all projects in the group. An instance administrator can set a group 
 the source for [instance project templates](../../user/group/custom_project_templates.md),
 which can be used by projects in that instance.
 
-## Converting Declarative Jenkinsfiles
+## Converting a declarative Jenkinsfile
 
-Declarative Jenkinsfiles contain "Sections" and "Directives" which are used to control the behavior of your
+A declarative Jenkinsfile contains "Sections" and "Directives" which are used to control the behavior of your
 pipelines. There are equivalents for all of these in GitLab, which we've documented below.
 
 This section is based on the [Jenkinsfile syntax documentation](https://www.jenkins.io/doc/book/pipeline/syntax/)

@@ -12,7 +12,7 @@ Both EE and CE require some add-on components called GitLab Shell and Gitaly. Th
 
 ## Components
 
-A typical install of GitLab will be on GNU/Linux. It uses NGINX or Apache as a web front end to proxypass the Unicorn web server. By default, communication between Unicorn and the front end is via a Unix domain socket but forwarding requests via TCP is also supported. The web front end accesses `/home/git/gitlab/public` bypassing the Unicorn server to serve static pages, uploads (e.g. avatar images or attachments), and precompiled assets. GitLab serves web pages and the [GitLab API](../api/README.md) using the Unicorn web server. It uses Sidekiq as a job queue which, in turn, uses Redis as a non-persistent database backend for job information, meta data, and incoming jobs.
+A typical install of GitLab will be on GNU/Linux. It uses NGINX or Apache as a web front end to proxypass the Unicorn web server. By default, communication between Unicorn and the front end is via a Unix domain socket but forwarding requests via TCP is also supported. The web front end accesses `/home/git/gitlab/public` bypassing the Unicorn server to serve static pages, uploads (e.g. avatar images or attachments), and pre-compiled assets. GitLab serves web pages and the [GitLab API](../api/README.md) using the Unicorn web server. It uses Sidekiq as a job queue which, in turn, uses Redis as a non-persistent database backend for job information, meta data, and incoming jobs.
 
 We also support deploying GitLab on Kubernetes using our [GitLab Helm chart](https://docs.gitlab.com/charts/).
 
@@ -254,7 +254,7 @@ Elasticsearch is a distributed RESTful search engine built for the cloud.
 - Process: `gitaly`
 - GitLab.com: [Service Architecture](https://about.gitlab.com/handbook/engineering/infrastructure/production/architecture/#service-architecture)
 
-Gitaly is a service designed by GitLab to remove our need for NFS for Git storage in distributed deployments of GitLab (think GitLab.com or High Availability Deployments). As of 11.3.0, this service handles all Git level access in GitLab. You can read more about the project [in the project's readme](https://gitlab.com/gitlab-org/gitaly).
+Gitaly is a service designed by GitLab to remove our need for NFS for Git storage in distributed deployments of GitLab (think GitLab.com or High Availability Deployments). As of 11.3.0, this service handles all Git level access in GitLab. You can read more about the project [in the project's README](https://gitlab.com/gitlab-org/gitaly).
 
 #### Praefect
 
@@ -287,7 +287,7 @@ repository updates to secondary nodes.
 - Process: `gitlab-exporter`
 - GitLab.com: [Monitoring of GitLab.com](https://about.gitlab.com/handbook/engineering/monitoring/)
 
-GitLab Exporter is a process designed in house that allows us to export metrics about GitLab application internals to Prometheus. You can read more [in the project's readme](https://gitlab.com/gitlab-org/gitlab-exporter).
+GitLab Exporter is a process designed in house that allows us to export metrics about GitLab application internals to Prometheus. You can read more [in the project's README](https://gitlab.com/gitlab-org/gitlab-exporter).
 
 #### GitLab Pages
 
@@ -551,7 +551,7 @@ An external registry can also be configured to use GitLab as an auth endpoint.
 - Layer: Monitoring
 - GitLab.com: [Searching Sentry](https://about.gitlab.com/handbook/support/workflows/500_errors.html#searching-sentry)
 
-Sentry fundamentally is a service that helps you monitor and fix crashes in realtime.
+Sentry fundamentally is a service that helps you monitor and fix crashes in real time.
 The server is in Python, but it contains a full API for sending events from any language, in any application.
 
 For monitoring deployed apps, see the [Sentry integration docs](../user/project/operations/error_tracking.md)
@@ -657,7 +657,7 @@ When making a request to an HTTP Endpoint (think `/users/sign_in`) the request w
 
 ### GitLab Git Request Cycle
 
-Below we describe the different pathing that HTTP vs. SSH Git requests will take. There is some overlap with the Web Request Cycle but also some differences.
+Below we describe the different paths that HTTP vs. SSH Git requests will take. There is some overlap with the Web Request Cycle but also some differences.
 
 ### Web Request (80/443)
 
@@ -790,7 +790,7 @@ ps aux | grep '^git'
 ```
 
 GitLab has several components to operate. It requires a persistent database
-(PostgreSQL) and Redis database, and uses Apache httpd or NGINX to proxypass
+(PostgreSQL) and Redis database, and uses Apache `httpd` or NGINX to proxypass
 Unicorn. All these components should run as different system users to GitLab
 (e.g., `postgres`, `redis` and `www-data`, instead of `git`).
 
@@ -866,7 +866,7 @@ NGINX:
 
 - `/var/log/nginx/` contains error and access logs.
 
-Apache httpd:
+Apache `httpd`:
 
 - [Explanation of Apache logs](https://httpd.apache.org/docs/2.2/logs.html).
 - `/var/log/apache2/` contains error and output logs (on Ubuntu).
@@ -880,7 +880,7 @@ PostgreSQL:
 
 - `/var/log/postgresql/*`
 
-### GitLab specific config files
+### GitLab specific configuration files
 
 GitLab has configuration files located in `/home/git/gitlab/config/*`. Commonly referenced config files include:
 
@@ -902,7 +902,7 @@ bundle exec rake gitlab:env:info RAILS_ENV=production
 bundle exec rake gitlab:check RAILS_ENV=production
 ```
 
-Note: It is recommended to log into the `git` user using `sudo -i -u git` or `sudo su - git`. While the sudo commands provided by gitlabhq work in Ubuntu they do not always work in RHEL.
+Note: It is recommended to log into the `git` user using `sudo -i -u git` or `sudo su - git`. While the sudo commands provided by GitLab work in Ubuntu they do not always work in RHEL.
 
 ## GitLab.com
 

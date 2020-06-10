@@ -21,7 +21,7 @@ In the `plan_limits` table, you have to create a new column and insert the
 limit values. It's recommended to create separate migration script files.
 
 1. Add new column to the `plan_limits` table with non-null default value
-   that represents desired limit, eg:
+   that represents desired limit, such as:
 
   ```ruby
   add_column(:plan_limits, :project_hooks, :integer, default: 100, null: false)
@@ -31,7 +31,7 @@ limit values. It's recommended to create separate migration script files.
   enabled. You should use this setting only in special and documented circumstances.
 
 1. (Optionally) Create the database migration that fine-tunes each level with
-    a desired limit using `create_or_update_plan_limit` migration helper, eg:
+    a desired limit using `create_or_update_plan_limit` migration helper, such as:
 
   ```ruby
   class InsertProjectHooksPlanLimits < ActiveRecord::Migration[5.2]
@@ -65,7 +65,7 @@ for plans that do not exist.
 #### Get current limit
 
 Access to the current limit can be done through the project or the namespace,
-eg:
+such as:
 
 ```ruby
 project.actual_limits.project_hooks
@@ -76,13 +76,13 @@ project.actual_limits.project_hooks
 There is one method `PlanLimits#exceeded?` to check if the current limit is
 being exceeded. You can use either an `ActiveRecord` object or an `Integer`.
 
-Ensures that the count of the records does not exceed the defined limit, eg:
+Ensures that the count of the records does not exceed the defined limit, such as:
 
 ```ruby
 project.actual_limits.exceeded?(:project_hooks, ProjectHook.where(project: project))
 ```
 
-Ensures that the number does not exceed the defined limit, eg:
+Ensures that the number does not exceed the defined limit, such as:
 
 ```ruby
 project.actual_limits.exceeded?(:project_hooks, 10)

@@ -87,7 +87,7 @@ the following preparations into account.
 #### Preparation when adding or modifying queries
 
 - Write the raw SQL in the MR description. Preferably formatted
-  nicely with [sqlformat.darold.net](http://sqlformat.darold.net) or
+  nicely with [pgFormatter](https://sqlformat.darold.net) or
   [paste.depesz.com](https://paste.depesz.com).
 - Include the output of `EXPLAIN (ANALYZE, BUFFERS)` of the relevant
   queries in the description. If the output is too long, wrap it in
