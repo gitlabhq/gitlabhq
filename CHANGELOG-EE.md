@@ -1,5 +1,12 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 12.10.11 (2020-06-10)
+
+### Security (1 change)
+
+- Do not set fallback mirror user.
+
+
 ## 12.10.10 (2020-06-04)
 
 - No changes.
