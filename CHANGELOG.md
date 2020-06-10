@@ -2,6 +2,10 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 13.0.6 (2020-06-10)
+
+- No changes.
+
 ## 13.0.5 (2020-06-04)
 
 ### Fixed (4 changes)
