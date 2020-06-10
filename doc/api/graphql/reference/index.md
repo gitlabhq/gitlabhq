@@ -1252,6 +1252,7 @@ Information about pagination in a connection.
 | ---   |  ---- | ----------  |
 | `alertManagementAlert` | AlertManagementAlert | A single Alert Management alert of the project |
 | `alertManagementAlertStatusCounts` | AlertManagementAlertStatusCountsType | Counts of alerts by status for the project |
+| `allowMergeOnSkippedPipeline` | Boolean | If `only_allow_merge_if_pipeline_succeeds` is true, indicates if merge requests of the project can also be merged with skipped jobs |
 | `archived` | Boolean | Indicates the archived status of the project |
 | `autocloseReferencedIssues` | Boolean | Indicates if issues referenced by merge requests and commits within the default branch are closed automatically |
 | `avatarUrl` | String | URL to avatar image file of the project |

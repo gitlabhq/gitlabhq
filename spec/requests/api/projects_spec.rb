@@ -764,7 +764,8 @@ describe API::Projects do
         resolve_outdated_diff_discussions: false,
         remove_source_branch_after_merge: true,
         autoclose_referenced_issues: true,
-        only_allow_merge_if_pipeline_succeeds: false,
+        only_allow_merge_if_pipeline_succeeds: true,
+        allow_merge_on_skipped_pipeline: true,
         request_access_enabled: true,
         only_allow_merge_if_all_discussions_are_resolved: false,
         ci_config_path: 'a/custom/path',
@@ -910,6 +911,22 @@ describe API::Projects do
       post api('/projects', user), params: project
 
       expect(json_response['only_allow_merge_if_pipeline_succeeds']).to be_truthy
+    end
+
+    it 'sets a project as not allowing merge when pipeline is skipped' do
+      project_params = attributes_for(:project, allow_merge_on_skipped_pipeline: false)
+
+      post api('/projects', user), params: project_params
+
+      expect(json_response['allow_merge_on_skipped_pipeline']).to be_falsey
+    end
+
+    it 'sets a project as allowing merge when pipeline is skipped' do
+      project_params = attributes_for(:project, allow_merge_on_skipped_pipeline: true)
+
+      post api('/projects', user), params: project_params
+
+      expect(json_response['allow_merge_on_skipped_pipeline']).to be_truthy
     end
 
     it 'sets a project as allowing merge even if discussions are unresolved' do
@@ -1245,14 +1262,34 @@ describe API::Projects do
 
     it 'sets a project as allowing merge even if build fails' do
       project = attributes_for(:project, only_allow_merge_if_pipeline_succeeds: false)
+
       post api("/projects/user/#{user.id}", admin), params: project
+
       expect(json_response['only_allow_merge_if_pipeline_succeeds']).to be_falsey
     end
 
     it 'sets a project as allowing merge only if pipeline succeeds' do
       project = attributes_for(:project, only_allow_merge_if_pipeline_succeeds: true)
+
       post api("/projects/user/#{user.id}", admin), params: project
+
       expect(json_response['only_allow_merge_if_pipeline_succeeds']).to be_truthy
+    end
+
+    it 'sets a project as not allowing merge when pipeline is skipped' do
+      project = attributes_for(:project, allow_merge_on_skipped_pipeline: false)
+
+      post api("/projects/user/#{user.id}", admin), params: project
+
+      expect(json_response['allow_merge_on_skipped_pipeline']).to be_falsey
+    end
+
+    it 'sets a project as allowing merge when pipeline is skipped' do
+      project = attributes_for(:project, allow_merge_on_skipped_pipeline: true)
+
+      post api("/projects/user/#{user.id}", admin), params: project
+
+      expect(json_response['allow_merge_on_skipped_pipeline']).to be_truthy
     end
 
     it 'sets a project as allowing merge even if discussions are unresolved' do
@@ -1394,6 +1431,7 @@ describe API::Projects do
         expect(json_response['shared_with_groups'][0]['group_name']).to eq(group.name)
         expect(json_response['shared_with_groups'][0]['group_access_level']).to eq(link.group_access)
         expect(json_response['only_allow_merge_if_pipeline_succeeds']).to eq(project.only_allow_merge_if_pipeline_succeeds)
+        expect(json_response['allow_merge_on_skipped_pipeline']).to eq(project.allow_merge_on_skipped_pipeline)
         expect(json_response['only_allow_merge_if_all_discussions_are_resolved']).to eq(project.only_allow_merge_if_all_discussions_are_resolved)
       end
     end
@@ -1461,6 +1499,7 @@ describe API::Projects do
         expect(json_response['shared_with_groups'][0]['group_access_level']).to eq(link.group_access)
         expect(json_response['shared_with_groups'][0]).to have_key('expires_at')
         expect(json_response['only_allow_merge_if_pipeline_succeeds']).to eq(project.only_allow_merge_if_pipeline_succeeds)
+        expect(json_response['allow_merge_on_skipped_pipeline']).to eq(project.allow_merge_on_skipped_pipeline)
         expect(json_response['only_allow_merge_if_all_discussions_are_resolved']).to eq(project.only_allow_merge_if_all_discussions_are_resolved)
         expect(json_response['ci_default_git_depth']).to eq(project.ci_default_git_depth)
         expect(json_response['merge_method']).to eq(project.merge_method.to_s)

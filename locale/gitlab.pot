@@ -17341,6 +17341,9 @@ msgstr ""
 msgid "ProjectSettings|Show link to create/view merge request when pushing from the command line"
 msgstr ""
 
+msgid "ProjectSettings|Skipped pipelines are considered successful"
+msgstr ""
+
 msgid "ProjectSettings|Snippets"
 msgstr ""
 
@@ -17354,6 +17357,9 @@ msgid "ProjectSettings|The variables GitLab supports:"
 msgstr ""
 
 msgid "ProjectSettings|These checks must pass before merge requests can be merged"
+msgstr ""
+
+msgid "ProjectSettings|This introduces the risk of merging changes that will not pass the pipeline."
 msgstr ""
 
 msgid "ProjectSettings|This setting is applied on the server level and can be overridden by an admin."

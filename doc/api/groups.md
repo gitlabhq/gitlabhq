@@ -679,6 +679,19 @@ The `default_branch_protection` attribute determines whether developers and main
 | `1`   | Partial protection. Developers and maintainers can:  <br>- Push new commits |
 | `2`   | Full protection. Only maintainers can:  <br>- Push new commits |
 
+## New Subgroup
+
+This is similar to creating a [New group](#new-group). You'll need the `parent_id` from the [List groups](#list-groups) call. You can then enter the desired:
+
+- `subgroup_path`
+- `subgroup_name`
+
+```shell
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --header "Content-Type: application/json" \
+  --data '{"path": "<subgroup_path>", "name": "<subgroup_name>", "parent_id": <parent_group_id> } \
+  "https://gitlab.example.com/api/v4/groups/"
+```
+
 ## Transfer project to group
 
 Transfer a project to the Group namespace. Available only to instance administrators, although an [alternative API endpoint](projects.md#transfer-a-project-to-a-new-namespace) is available which does not require instance administrator access. Transferring projects may fail when tagged packages exist in the project's repository.

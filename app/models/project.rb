@@ -198,7 +198,7 @@ class Project < ApplicationRecord
   has_one :error_tracking_setting, inverse_of: :project, class_name: 'ErrorTracking::ProjectErrorTrackingSetting'
   has_one :metrics_setting, inverse_of: :project, class_name: 'ProjectMetricsSetting'
   has_one :grafana_integration, inverse_of: :project
-  has_one :project_setting, ->(project) { where_or_create_by(project: project) }, inverse_of: :project
+  has_one :project_setting, inverse_of: :project, autosave: true
   has_one :alerting_setting, inverse_of: :project, class_name: 'Alerting::ProjectAlertingSetting'
 
   # Merge Requests for target project should be removed with it
@@ -376,6 +376,7 @@ class Project < ApplicationRecord
   delegate :default_git_depth, :default_git_depth=, to: :ci_cd_settings, prefix: :ci
   delegate :forward_deployment_enabled, :forward_deployment_enabled=, :forward_deployment_enabled?, to: :ci_cd_settings
   delegate :actual_limits, :actual_plan_name, to: :namespace, allow_nil: true
+  delegate :allow_merge_on_skipped_pipeline, :allow_merge_on_skipped_pipeline?, :allow_merge_on_skipped_pipeline=, to: :project_setting
 
   # Validations
   validates :creator, presence: true, on: :create
@@ -725,6 +726,10 @@ class Project < ApplicationRecord
     end
 
     super
+  end
+
+  def project_setting
+    super.presence || build_project_setting
   end
 
   def all_pipelines

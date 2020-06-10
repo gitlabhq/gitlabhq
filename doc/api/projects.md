@@ -158,6 +158,7 @@ When the user is authenticated and `simple` is not set this returns something li
     "public_jobs": true,
     "shared_with_groups": [],
     "only_allow_merge_if_pipeline_succeeds": false,
+    "allow_merge_on_skipped_pipeline": false,
     "only_allow_merge_if_all_discussions_are_resolved": false,
     "remove_source_branch_after_merge": false,
     "request_access_enabled": false,
@@ -248,6 +249,7 @@ When the user is authenticated and `simple` is not set this returns something li
     "public_jobs": true,
     "shared_with_groups": [],
     "only_allow_merge_if_pipeline_succeeds": false,
+    "allow_merge_on_skipped_pipeline": false,
     "only_allow_merge_if_all_discussions_are_resolved": false,
     "remove_source_branch_after_merge": false,
     "request_access_enabled": false,
@@ -407,6 +409,7 @@ This endpoint supports [keyset pagination](README.md#keyset-based-pagination) fo
     "public_jobs": true,
     "shared_with_groups": [],
     "only_allow_merge_if_pipeline_succeeds": false,
+    "allow_merge_on_skipped_pipeline": false,
     "only_allow_merge_if_all_discussions_are_resolved": false,
     "remove_source_branch_after_merge": false,
     "request_access_enabled": false,
@@ -497,6 +500,7 @@ This endpoint supports [keyset pagination](README.md#keyset-based-pagination) fo
     "public_jobs": true,
     "shared_with_groups": [],
     "only_allow_merge_if_pipeline_succeeds": false,
+    "allow_merge_on_skipped_pipeline": false,
     "only_allow_merge_if_all_discussions_are_resolved": false,
     "remove_source_branch_after_merge": false,
     "request_access_enabled": false,
@@ -623,6 +627,7 @@ Example response:
     "public_jobs": true,
     "shared_with_groups": [],
     "only_allow_merge_if_pipeline_succeeds": false,
+    "allow_merge_on_skipped_pipeline": false,
     "only_allow_merge_if_all_discussions_are_resolved": false,
     "remove_source_branch_after_merge": false,
     "request_access_enabled": false,
@@ -708,6 +713,7 @@ Example response:
     "public_jobs": true,
     "shared_with_groups": [],
     "only_allow_merge_if_pipeline_succeeds": false,
+    "allow_merge_on_skipped_pipeline": false,
     "only_allow_merge_if_all_discussions_are_resolved": false,
     "remove_source_branch_after_merge": false,
     "request_access_enabled": false,
@@ -861,6 +867,7 @@ GET /projects/:id
   ],
   "repository_storage": "default",
   "only_allow_merge_if_pipeline_succeeds": false,
+  "allow_merge_on_skipped_pipeline": false,
   "only_allow_merge_if_all_discussions_are_resolved": false,
   "remove_source_branch_after_merge": false,
   "printing_merge_requests_link_enabled": true,
@@ -1044,6 +1051,7 @@ POST /projects
 | `import_url` | string | no | URL to import repository from |
 | `public_builds` | boolean | no | If `true`, jobs can be viewed by non-project-members |
 | `only_allow_merge_if_pipeline_succeeds` | boolean | no | Set whether merge requests can only be merged with successful jobs |
+| `allow_merge_on_skipped_pipeline` | boolean | no | Set whether or not merge requests can be merged with skipped jobs |
 | `only_allow_merge_if_all_discussions_are_resolved` | boolean | no | Set whether merge requests can only be merged when all the discussions are resolved |
 | `merge_method` | string | no | Set the [merge method](#project-merge-method) used |
 | `autoclose_referenced_issues` | boolean | no | Set whether auto-closing referenced issues on default branch |
@@ -1113,6 +1121,7 @@ POST /projects/user/:user_id
 | `import_url` | string | no | URL to import repository from |
 | `public_builds` | boolean | no | If `true`, jobs can be viewed by non-project-members |
 | `only_allow_merge_if_pipeline_succeeds` | boolean | no | Set whether merge requests can only be merged with successful jobs |
+| `allow_merge_on_skipped_pipeline` | boolean | no | Set whether or not merge requests can be merged with skipped jobs |
 | `only_allow_merge_if_all_discussions_are_resolved` | boolean | no | Set whether merge requests can only be merged when all the discussions are resolved |
 | `merge_method` | string | no | Set the [merge method](#project-merge-method) used |
 | `autoclose_referenced_issues` | boolean | no | Set whether auto-closing referenced issues on default branch |
@@ -1183,6 +1192,7 @@ PUT /projects/:id
 | `import_url` | string | no | URL to import repository from |
 | `public_builds` | boolean | no | If `true`, jobs can be viewed by non-project-members |
 | `only_allow_merge_if_pipeline_succeeds` | boolean | no | Set whether merge requests can only be merged with successful jobs |
+| `allow_merge_on_skipped_pipeline` | boolean | no | Set whether or not merge requests can be merged with skipped jobs |
 | `only_allow_merge_if_all_discussions_are_resolved` | boolean | no | Set whether merge requests can only be merged when all the discussions are resolved |
 | `merge_method` | string | no | Set the [merge method](#project-merge-method) used |
 | `autoclose_referenced_issues` | boolean | no | Set whether auto-closing referenced issues on default branch |
@@ -1317,6 +1327,7 @@ Example responses:
     "public_jobs": true,
     "shared_with_groups": [],
     "only_allow_merge_if_pipeline_succeeds": false,
+    "allow_merge_on_skipped_pipeline": false,
     "only_allow_merge_if_all_discussions_are_resolved": false,
     "remove_source_branch_after_merge": false,
     "request_access_enabled": false,
@@ -1408,6 +1419,7 @@ Example response:
   "public_jobs": true,
   "shared_with_groups": [],
   "only_allow_merge_if_pipeline_succeeds": false,
+  "allow_merge_on_skipped_pipeline": false,
   "only_allow_merge_if_all_discussions_are_resolved": false,
   "remove_source_branch_after_merge": false,
   "request_access_enabled": false,
@@ -1498,6 +1510,7 @@ Example response:
   "public_jobs": true,
   "shared_with_groups": [],
   "only_allow_merge_if_pipeline_succeeds": false,
+  "allow_merge_on_skipped_pipeline": false,
   "only_allow_merge_if_all_discussions_are_resolved": false,
   "remove_source_branch_after_merge": false,
   "request_access_enabled": false,
@@ -1680,6 +1693,7 @@ Example response:
   "public_jobs": true,
   "shared_with_groups": [],
   "only_allow_merge_if_pipeline_succeeds": false,
+  "allow_merge_on_skipped_pipeline": false,
   "only_allow_merge_if_all_discussions_are_resolved": false,
   "remove_source_branch_after_merge": false,
   "request_access_enabled": false,
@@ -1789,6 +1803,7 @@ Example response:
   "public_jobs": true,
   "shared_with_groups": [],
   "only_allow_merge_if_pipeline_succeeds": false,
+  "allow_merge_on_skipped_pipeline": false,
   "only_allow_merge_if_all_discussions_are_resolved": false,
   "remove_source_branch_after_merge": false,
   "request_access_enabled": false,

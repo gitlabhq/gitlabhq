@@ -59,6 +59,7 @@ To create and add a new Kubernetes cluster to your project, group, or instance:
    - Project's **{cloud-gear}** **Operations > Kubernetes** page, for a project-level cluster.
    - Group's **{cloud-gear}** **Kubernetes** page, for a group-level cluster.
    - **{admin}** **Admin Area >** **{cloud-gear}** **Kubernetes**, for an instance-level cluster.
+<br><br/>
 1. Click **Add Kubernetes cluster**.
 1. Under the **Create new cluster** tab, click **Amazon EKS**. You will be provided with an
    `Account ID` and `External ID` to use in the next step.
@@ -154,6 +155,7 @@ To create and add a new Kubernetes cluster to your project, group, or instance:
    - **Node count** - The number of worker nodes.
    - **GitLab-managed cluster** - Leave this checked if you want GitLab to manage namespaces and service accounts for this cluster.
      See the [Managed clusters section](index.md#gitlab-managed-clusters) for more information.
+<br><br/>
 1. Finally, click the **Create Kubernetes cluster** button.
 
 After about 10 minutes, your cluster will be ready to go. You can now proceed
@@ -201,112 +203,8 @@ you must create one.
 
 ## Existing EKS cluster
 
-To add an existing EKS cluster to your project, group, or instance:
-
-1. Perform the following steps on the EKS cluster:
-   1. Retrieve the certificate. A valid Kubernetes certificate is needed to authenticate to the
-      EKS cluster. We will use the certificate created by default.
-      Open a shell and use `kubectl` to retrieve it:
-
-      1. List the secrets with `kubectl get secrets`, and one should named similar to
-         `default-token-xxxxx`. Copy that token name for use below.
-      1. Get the certificate with:
-
-         ```shell
-         kubectl get secret <secret name> -o jsonpath="{['data']['ca\.crt']}" | base64 --decode
-         ```
-
-   1. Create admin token. A `cluster-admin` token is required to install and manage Helm Tiller.
-      GitLab establishes mutual SSL authentication with Helm Tiller and creates limited service
-      accounts for each application. To create the token we will create an admin service account as
-      follows:
-
-      1. Create a file called `eks-admin-service-account.yaml` with contents:
-
-         ```yaml
-         apiVersion: v1
-         kind: ServiceAccount
-         metadata:
-           name: eks-admin
-           namespace: kube-system
-         ```
-
-      1. Apply the service account to your cluster:
-
-         ```shell
-         $ kubectl apply -f eks-admin-service-account.yaml
-         serviceaccount "eks-admin" created
-         ```
-
-      1. Create a file called `eks-admin-cluster-role-binding.yaml` with contents:
-
-         ```yaml
-         apiVersion: rbac.authorization.k8s.io/v1beta1
-         kind: ClusterRoleBinding
-         metadata:
-           name: eks-admin
-         roleRef:
-           apiGroup: rbac.authorization.k8s.io
-           kind: ClusterRole
-           name: cluster-admin
-         subjects:
-         - kind: ServiceAccount
-           name: eks-admin
-           namespace: kube-system
-         ```
-
-      1. Apply the cluster role binding to your cluster:
-
-         ```shell
-         $ kubectl apply -f eks-admin-cluster-role-binding.yaml
-         clusterrolebinding "eks-admin" created
-         ```
-
-      1. Retrieve the token for the `eks-admin` service account:
-
-         ```shell
-         kubectl -n kube-system describe secret $(kubectl -n kube-system get secret | grep eks-admin | awk '{print $1}')
-         ```
-
-         Copy the `<authentication_token>` value from the output:
-
-         ```yaml
-         Name:         eks-admin-token-b5zv4
-         Namespace:    kube-system
-         Labels:       <none>
-         Annotations:  kubernetes.io/service-account.name=eks-admin
-                    kubernetes.io/service-account.uid=bcfe66ac-39be-11e8-97e8-026dce96b6e8
-
-         Type:  kubernetes.io/service-account-token
-
-         Data
-         ====
-         ca.crt:     1025 bytes
-         namespace:  11 bytes
-         token:      <authentication_token>
-         ```
-
-   1. Locate the API server endpoint so GitLab can connect to the cluster. This is displayed on
-      the AWS EKS console, when viewing the EKS cluster details.
-1. Navigate to your:
-   - Project's **{cloud-gear}** **Operations > Kubernetes** page, for a project-level cluster.
-   - Group's **{cloud-gear}** **Kubernetes** page, for a group-level cluster.
-   - **{admin}** **Admin Area >** **{cloud-gear}** **Kubernetes** page, for an instance-level cluster.
-1. Click **Add Kubernetes cluster**.
-1. Click the **Add existing cluster** tab and fill in the details:
-   - **Kubernetes cluster name**: A name for the cluster to identify it within GitLab.
-   - **Environment scope**: Leave this as `*` for now, since we are only connecting a single cluster.
-   - **API URL**: The API server endpoint retrieved earlier.
-   - **CA Certificate**: The certificate data from the earlier step, as-is.
-   - **Service Token**: The admin token value.
-   - For project-level clusters, **Project namespace prefix**: This can be left blank to accept the
-     default namespace, based on the project name.
-1. Click on **Add Kubernetes cluster**. The cluster is now connected to GitLab.
-
-At this point, [Kubernetes deployment variables](index.md#deployment-variables) will
-automatically be available during CI/CD jobs, making it easy to interact with the cluster.
-
-If you would like to utilize your own CI/CD scripts to deploy to the cluster, you can stop here.
+For information on adding an existing EKS cluster, see
+[Existing Kubernetes cluster](add_remove_clusters.md#existing-kubernetes-cluster).
 
 ### Create a default Storage Class
 

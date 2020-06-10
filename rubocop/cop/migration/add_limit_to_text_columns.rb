@@ -39,6 +39,9 @@ module RuboCop
         private
 
         def text_operation?(node)
+          # Don't complain about text arrays
+          return false if array_column?(node)
+
           modifier = node.children[0]
           migration_method = node.children[1]
 

@@ -1,5 +1,12 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 13.0.6 (2020-06-10)
+
+### Security (1 change)
+
+- Do not set fallback mirror user.
+
+
 ## 13.0.4 (2020-06-03)
 
 - No changes.
@@ -343,6 +350,13 @@ Please view this file on the master branch, on stable branches it's out of date.
 - Translate unauthenticated user string for Audit Event. !31856 (Sashi Kumar)
 
 
+## 12.10.11 (2020-06-10)
+
+### Security (1 change)
+
+- Do not set fallback mirror user.
+
+
 ## 12.10.8 (2020-05-28)
 
 ### Fixed (1 change)
@@ -431,6 +445,13 @@ Please view this file on the master branch, on stable branches it's out of date.
 ### Other (1 change)
 
 - Add health status counts to usage data. !28964
+
+
+## 12.9.10 (2020-06-10)
+
+### Security (1 change)
+
+- Do not set fallback mirror user.
 
 
 ## 12.9.8 (2020-05-27)

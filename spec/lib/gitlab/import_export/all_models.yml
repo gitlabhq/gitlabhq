@@ -424,6 +424,7 @@ project:
 - deploy_tokens
 - settings
 - ci_cd_settings
+- project_settings
 - import_export_upload
 - repository_languages
 - pool_repository

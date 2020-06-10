@@ -8266,6 +8266,12 @@ type Project {
   ): AlertManagementAlertConnection
 
   """
+  If `only_allow_merge_if_pipeline_succeeds` is true, indicates if merge
+  requests of the project can also be merged with skipped jobs
+  """
+  allowMergeOnSkippedPipeline: Boolean
+
+  """
   Indicates the archived status of the project
   """
   archived: Boolean

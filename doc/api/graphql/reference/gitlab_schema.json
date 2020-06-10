@@ -24674,6 +24674,20 @@
               "deprecationReason": null
             },
             {
+              "name": "allowMergeOnSkippedPipeline",
+              "description": "If `only_allow_merge_if_pipeline_succeeds` is true, indicates if merge requests of the project can also be merged with skipped jobs",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Boolean",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "archived",
               "description": "Indicates the archived status of the project",
               "args": [

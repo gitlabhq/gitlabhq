@@ -59,6 +59,19 @@ merge request from the UI, until you make all relevant jobs pass.
 
 ![Only allow merge if pipeline succeeds message](img/merge_when_pipeline_succeeds_only_if_succeeds_msg.png)
 
+### Skipped pipelines
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/211482) in GitLab 13.1.
+
+When the **Pipelines must succeed** checkbox is checked, [skipped pipelines](../../../ci/yaml/README.md#skip-pipeline) prevent
+merge requests from being merged. To change this behavior:
+
+1. Navigate to your project's **Settings > General** page.
+1. Expand the **Merge requests** section.
+1. In the **Merge checks** subsection, ensure **Pipelines must succeed** is checked.
+1. In the **Merge checks** subsection, select the **Skipped pipelines are considered successful** checkbox.
+1. Press **Save** for the changes to take effect.
+
 ### Limitations
 
 When this setting is enabled, a merge request is prevented from being merged if there is no pipeline. This may conflict with some use cases where [`only/except`](../../../ci/yaml/README.md#onlyexcept-advanced) rules are used and they don't generate any pipelines.

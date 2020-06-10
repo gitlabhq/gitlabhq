@@ -362,6 +362,7 @@ class ProjectsController < Projects::ApplicationController
 
   def project_params_attributes
     [
+      :allow_merge_on_skipped_pipeline,
       :avatar,
       :build_allow_git_fetch,
       :build_coverage_regex,

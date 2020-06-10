@@ -257,6 +257,8 @@ For example, to add support for files referenced by a `Widget` model with a
    class Geo::WidgetRegistry < Geo::BaseRegistry
      include Geo::StateMachineRegistry
 
+     MODEL_FOREIGN_KEY = :widget_id
+
      belongs_to :widget, class_name: 'Widget'
    end
    ```
@@ -305,6 +307,8 @@ For example, to add support for files referenced by a `Widget` model with a
      specify 'factory is valid' do
        expect(registry).to be_valid
      end
+
+     include_examples 'a Geo framework registry'
    end
    ```
 

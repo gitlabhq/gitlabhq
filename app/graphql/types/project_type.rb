@@ -95,6 +95,8 @@ module Types
           description: 'Status of Jira import background job of the project'
     field :only_allow_merge_if_pipeline_succeeds, GraphQL::BOOLEAN_TYPE, null: true,
           description: 'Indicates if merge requests of the project can only be merged with successful jobs'
+    field :allow_merge_on_skipped_pipeline, GraphQL::BOOLEAN_TYPE, null: true,
+          description: 'If `only_allow_merge_if_pipeline_succeeds` is true, indicates if merge requests of the project can also be merged with skipped jobs'
     field :request_access_enabled, GraphQL::BOOLEAN_TYPE, null: true,
           description: 'Indicates if users can request member access to the project'
     field :only_allow_merge_if_all_discussions_are_resolved, GraphQL::BOOLEAN_TYPE, null: true,

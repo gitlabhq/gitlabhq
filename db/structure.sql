@@ -5340,6 +5340,7 @@ CREATE TABLE public.project_settings (
     updated_at timestamp with time zone NOT NULL,
     push_rule_id bigint,
     show_default_award_emojis boolean DEFAULT true,
+    allow_merge_on_skipped_pipeline boolean,
     CONSTRAINT check_bde223416c CHECK ((show_default_award_emojis IS NOT NULL))
 );
 
@@ -13613,6 +13614,7 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200323134519
 20200324093258
 20200324115359
+20200325094612
 20200325104755
 20200325104756
 20200325104833

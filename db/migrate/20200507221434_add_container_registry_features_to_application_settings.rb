@@ -4,7 +4,7 @@ class AddContainerRegistryFeaturesToApplicationSettings < ActiveRecord::Migratio
   DOWNTIME = false
 
   def up
-    add_column :application_settings, :container_registry_features, :text, array: true, default: [], null: false # rubocop:disable Migration/AddLimitToTextColumns
+    add_column :application_settings, :container_registry_features, :text, array: true, default: [], null: false
   end
 
   def down
