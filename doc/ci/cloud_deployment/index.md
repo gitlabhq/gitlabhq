@@ -121,11 +121,11 @@ After you're all set up on AWS ECS, follow these steps:
 
    ```yaml
    include:
-     - template: Deploy-ECS.gitlab-ci.yml
+     - template: AWS/Deploy-ECS.gitlab-ci.yml
    ```
 
    The `Deploy-ECS` template ships with GitLab and is available [on
-   GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Deploy-ECS.gitlab-ci.yml).
+   GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/AWS/Deploy-ECS.gitlab-ci.yml).
 
 1. Commit and push your updated `.gitlab-ci.yml` to your project's repository, and you're done!
 
@@ -138,7 +138,7 @@ After you're all set up on AWS ECS, follow these steps:
    application.
 
 CAUTION: **Warning:**
-The [`Deploy-ECS.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Deploy-ECS.gitlab-ci.yml)
+The [`Deploy-ECS.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/AWS/Deploy-ECS.gitlab-ci.yml)
 template includes both the [`Jobs/Build.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/Build.gitlab-ci.yml)
 and [`Jobs/Deploy/ECS.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/Deploy/ECS.gitlab-ci.yml)
 "sub-templates". Do not include these "sub-templates" on their own, and only include the main

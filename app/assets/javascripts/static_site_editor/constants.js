@@ -17,3 +17,4 @@ export const LOAD_CONTENT_ERROR = __(
 export const DEFAULT_HEADING = s__('StaticSiteEditor|Static site editor');
 
 export const TRACKING_ACTION_CREATE_COMMIT = 'create_commit';
+export const TRACKING_ACTION_CREATE_MERGE_REQUEST = 'create_merge_request';

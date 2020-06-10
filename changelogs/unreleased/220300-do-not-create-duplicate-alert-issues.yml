@@ -1,0 +1,5 @@
+---
+title: Do not create duplicate issues for exising Alert Management alerts
+merge_request: 33860
+author:
+type: fixed

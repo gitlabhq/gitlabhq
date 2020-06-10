@@ -63,6 +63,8 @@ module Projects
       end
 
       def process_incident_issues(alert)
+        return if alert.issue
+
         IncidentManagement::ProcessAlertWorker
           .perform_async(project.id, parsed_payload, alert.id)
       end

@@ -86,6 +86,10 @@ FactoryBot.define do
       application_helm factory: %i(clusters_applications_helm installed)
     end
 
+    trait :with_installed_prometheus do
+      application_prometheus factory: %i(clusters_applications_prometheus installed)
+    end
+
     trait :with_all_applications do
       application_helm factory: %i(clusters_applications_helm installed)
       application_ingress factory: %i(clusters_applications_ingress installed)

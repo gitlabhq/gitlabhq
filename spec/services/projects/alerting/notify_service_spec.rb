@@ -11,23 +11,18 @@ describe Projects::Alerting::NotifyService do
     allow(ProjectServiceWorker).to receive(:perform_async)
   end
 
-  shared_examples 'processes incident issues' do |amount|
+  shared_examples 'processes incident issues' do
     let(:create_incident_service) { spy }
-    let(:new_alert) { instance_double(AlertManagement::Alert, id: 503, persisted?: true) }
 
     before do
-      allow(new_alert).to receive(:execute_services)
+      allow_any_instance_of(AlertManagement::Alert).to receive(:execute_services)
     end
 
     it 'processes issues' do
-      expect(AlertManagement::Alert)
-        .to receive(:create)
-        .and_return(new_alert)
-
       expect(IncidentManagement::ProcessAlertWorker)
         .to receive(:perform_async)
-        .with(project.id, kind_of(Hash), new_alert.id)
-        .exactly(amount).times
+        .with(project.id, kind_of(Hash), kind_of(Integer))
+        .once
 
       Sidekiq::Testing.inline! do
         expect(subject).to be_success
@@ -163,7 +158,8 @@ describe Projects::Alerting::NotifyService do
           end
 
           context 'existing alert with same fingerprint' do
-            let!(:existing_alert) { create(:alert_management_alert, project: project, fingerprint: Digest::SHA1.hexdigest(fingerprint)) }
+            let(:fingerprint_sha) { Digest::SHA1.hexdigest(fingerprint) }
+            let!(:existing_alert) { create(:alert_management_alert, project: project, fingerprint: fingerprint_sha) }
 
             it 'does not create AlertManagement::Alert' do
               expect { subject }.not_to change(AlertManagement::Alert, :count)
@@ -220,7 +216,7 @@ describe Projects::Alerting::NotifyService do
         context 'issue enabled' do
           let(:issue_enabled) { true }
 
-          it_behaves_like 'processes incident issues', 1
+          it_behaves_like 'processes incident issues'
 
           context 'with an invalid payload' do
             before do
@@ -231,6 +227,21 @@ describe Projects::Alerting::NotifyService do
 
             it_behaves_like 'does not process incident issues due to error', http_status: :bad_request
             it_behaves_like 'NotifyService does not create alert'
+          end
+
+          context 'when alert already exists' do
+            let(:fingerprint_sha) { Digest::SHA1.hexdigest(fingerprint) }
+            let!(:existing_alert) { create(:alert_management_alert, project: project, fingerprint: fingerprint_sha) }
+
+            context 'when existing alert does not have an associated issue' do
+              it_behaves_like 'processes incident issues'
+            end
+
+            context 'when existing alert has an associated issue' do
+              let!(:existing_alert) { create(:alert_management_alert, :with_issue, project: project, fingerprint: fingerprint_sha) }
+
+              it_behaves_like 'does not process incident issues'
+            end
           end
         end
 
