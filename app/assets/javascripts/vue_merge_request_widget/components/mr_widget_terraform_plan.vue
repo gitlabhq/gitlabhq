@@ -39,7 +39,8 @@ export default {
       return this.plan.job_path;
     },
     plan() {
-      return this.plans['tfplan.json'] || {};
+      const firstPlanKey = Object.keys(this.plans)[0];
+      return this.plans[firstPlanKey] ?? {};
     },
     validPlanValues() {
       return this.addNum + this.changeNum + this.deleteNum >= 0;

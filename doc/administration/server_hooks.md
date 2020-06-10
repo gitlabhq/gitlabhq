@@ -1,4 +1,7 @@
 ---
+stage: Create
+group: Gitaly
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 type: reference, howto
 disqus_identifier: 'https://docs.gitlab.com/ee/administration/custom_hooks.html'
 ---

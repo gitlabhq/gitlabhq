@@ -110,6 +110,7 @@ FactoryBot.define do
 
         after(:build) do |pipeline, evaluator|
           pipeline.builds << build(:ci_build, :terraform_reports, pipeline: pipeline, project: pipeline.project)
+          pipeline.builds << build(:ci_build, :terraform_reports, pipeline: pipeline, project: pipeline.project)
         end
       end
 

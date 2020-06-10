@@ -75,11 +75,11 @@ describe('Rich Content Editor', () => {
 
   describe('when editor is loaded', () => {
     it('adds the CUSTOM_EVENTS.openAddImageModal custom event listener', () => {
-      const mockInstance = { eventManager: { addEventType: jest.fn(), listen: jest.fn() } };
-      findEditor().vm.$emit('load', mockInstance);
+      const mockEditorApi = { eventManager: { addEventType: jest.fn(), listen: jest.fn() } };
+      findEditor().vm.$emit('load', mockEditorApi);
 
       expect(addCustomEventListener).toHaveBeenCalledWith(
-        mockInstance,
+        mockEditorApi,
         CUSTOM_EVENTS.openAddImageModal,
         wrapper.vm.onOpenAddImageModal,
       );
@@ -88,13 +88,13 @@ describe('Rich Content Editor', () => {
 
   describe('when editor is destroyed', () => {
     it('removes the CUSTOM_EVENTS.openAddImageModal custom event listener', () => {
-      const mockInstance = { eventManager: { removeEventHandler: jest.fn() } };
+      const mockEditorApi = { eventManager: { removeEventHandler: jest.fn() } };
 
-      wrapper.vm.$refs.editor = mockInstance;
+      wrapper.vm.editorApi = mockEditorApi;
       wrapper.vm.$destroy();
 
       expect(removeCustomEventListener).toHaveBeenCalledWith(
-        mockInstance,
+        mockEditorApi,
         CUSTOM_EVENTS.openAddImageModal,
         wrapper.vm.onOpenAddImageModal,
       );

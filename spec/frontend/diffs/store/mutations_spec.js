@@ -243,8 +243,6 @@ describe('DiffsStoreMutations', () => {
       const data = {
         diff_files: [
           {
-            blob: {},
-            diff_refs: {},
             content_sha: 'abc',
             file_hash: fileHash,
             extra_field: 1,

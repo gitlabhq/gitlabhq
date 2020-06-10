@@ -67,7 +67,7 @@ Once you have created the merge request, you can also:
 - Preview continuous integration [pipelines on the merge request widget](reviewing_and_managing_merge_requests.md#pipeline-status-in-merge-requests-widgets).
 - Preview how your changes look directly on your deployed application with [Review Apps](reviewing_and_managing_merge_requests.md#live-preview-with-review-apps).
 - [Allow collaboration on merge requests across forks](allow_collaboration.md).
-- Perform a [Review](../../discussions/index.md#merge-request-reviews-premium) in order to create multiple comments on a diff and publish them once you're ready. **(PREMIUM)**
+- Perform a [Review](../../discussions/index.md#merge-request-reviews) in order to create multiple comments on a diff and publish them once you're ready.
 - Add [code suggestions](../../discussions/index.md#suggest-changes) to change the content of merge requests directly into merge request threads, and easily apply them to the codebase directly from the UI.
 - Add a time estimation and the time spent with that merge request with [Time Tracking](../time_tracking.md#time-tracking).
 

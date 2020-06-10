@@ -38,7 +38,7 @@ describe('MrWidgetTerraformPlan', () => {
 
   describe('loading poll', () => {
     beforeEach(() => {
-      mockPollingApi(200, { 'tfplan.json': plan }, {});
+      mockPollingApi(200, { '123': plan }, {});
 
       return mountWrapper().then(() => {
         wrapper.setData({ loading: true });
@@ -65,7 +65,7 @@ describe('MrWidgetTerraformPlan', () => {
       pollRequest = jest.spyOn(Poll.prototype, 'makeRequest');
       pollStop = jest.spyOn(Poll.prototype, 'stop');
 
-      mockPollingApi(200, { 'tfplan.json': plan }, {});
+      mockPollingApi(200, { '123': plan }, {});
 
       return mountWrapper();
     });

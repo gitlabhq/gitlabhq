@@ -296,9 +296,10 @@ edit existing comments. Non-team members are restricted from adding or editing c
 
 Additionally, locked issues and merge requests can not be reopened.
 
-## Merge Request Reviews **(PREMIUM)**
+## Merge Request Reviews
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/4213) in GitLab 11.4.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/4213) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.4.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/28154) to GitLab Core in 13.1.
 
 When looking at a Merge Request diff, you are able to start a review.
 This allows you to create comments inside a Merge Request that are **only visible to you** until published,
@@ -408,10 +409,7 @@ the merge request authored by the user that applied them.
 
    ![Add a suggestion into a code block tagged properly](img/make_suggestion_v12_7.png)
 
-1. Click **Comment**.
-
-   NOTE: **Note:**
-   If you're using GitLab Premium, GitLab.com Silver, and higher tiers, the thread will display [Review](#merge-request-reviews-premium) options. Click either **Start a review**, **Add comment now**, or **Add to review** to obtain the same result.
+1. Click either **Start a review** or **Add to review** to add your comment to a [review](#merge-request-reviews), or **Add comment now** to add the comment to the thread immediately.
 
    The Suggestion in the comment can be applied by the merge request author
    directly from the merge request:

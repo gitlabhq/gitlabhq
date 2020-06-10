@@ -7,7 +7,8 @@ import appDataQuery from '../graphql/queries/app_data.query.graphql';
 import sourceContentQuery from '../graphql/queries/source_content.query.graphql';
 import submitContentChangesMutation from '../graphql/mutations/submit_content_changes.mutation.graphql';
 import createFlash from '~/flash';
-import { LOAD_CONTENT_ERROR } from '../constants';
+import Tracking from '~/tracking';
+import { LOAD_CONTENT_ERROR, TRACKING_ACTION_INITIALIZE_EDITOR } from '../constants';
 import { SUCCESS_ROUTE } from '../router/constants';
 
 export default {
@@ -58,6 +59,9 @@ export default {
     isContentLoaded() {
       return Boolean(this.sourceContent);
     },
+  },
+  mounted() {
+    Tracking.event(document.body.dataset.page, TRACKING_ACTION_INITIALIZE_EDITOR);
   },
   methods: {
     onDismissError() {

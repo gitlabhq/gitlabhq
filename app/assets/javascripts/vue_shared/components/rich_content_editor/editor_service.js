@@ -29,13 +29,13 @@ export const generateToolbarItem = config => {
   };
 };
 
-export const addCustomEventListener = (editorInstance, event, handler) => {
-  editorInstance.eventManager.addEventType(event);
-  editorInstance.eventManager.listen(event, handler);
+export const addCustomEventListener = (editorApi, event, handler) => {
+  editorApi.eventManager.addEventType(event);
+  editorApi.eventManager.listen(event, handler);
 };
 
-export const removeCustomEventListener = (editorInstance, event, handler) =>
-  editorInstance.eventManager.removeEventHandler(event, handler);
+export const removeCustomEventListener = (editorApi, event, handler) =>
+  editorApi.eventManager.removeEventHandler(event, handler);
 
 export const addImage = ({ editor }, image) => editor.exec('AddImage', image);
 

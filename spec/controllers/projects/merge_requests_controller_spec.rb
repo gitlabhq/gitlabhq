@@ -1183,15 +1183,19 @@ RSpec.describe Projects::MergeRequestsController do
           subject
 
           expect(response).to have_gitlab_http_status(:ok)
-          expect(json_response).to match(
-            a_hash_including(
-              'tfplan.json' => hash_including(
-                'create' => 0,
-                'delete' => 0,
-                'update' => 1
+
+          pipeline.builds.each do |build|
+            expect(json_response).to match(
+              a_hash_including(
+                build.id.to_s => hash_including(
+                  'create' => 0,
+                  'delete' => 0,
+                  'update' => 1,
+                  'job_name' => build.options.dig(:artifacts, :name).to_s
+                )
               )
             )
-          )
+          end
         end
       end
 

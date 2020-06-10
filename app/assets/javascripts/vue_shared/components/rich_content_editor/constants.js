@@ -34,6 +34,7 @@ export const EDITOR_OPTIONS = {
 };
 
 export const EDITOR_TYPES = {
+  markdown: 'markdown',
   wysiwyg: 'wysiwyg',
 };
 

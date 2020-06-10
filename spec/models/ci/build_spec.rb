@@ -4068,10 +4068,11 @@ describe Ci::Build do
 
           expect(terraform_reports.plans).to match(
             a_hash_including(
-              'tfplan.json' => a_hash_including(
+              build.id.to_s => a_hash_including(
                 'create' => 0,
                 'update' => 1,
-                'delete' => 0
+                'delete' => 0,
+                'job_name' => build.options.dig(:artifacts, :name).to_s
               )
             )
           )

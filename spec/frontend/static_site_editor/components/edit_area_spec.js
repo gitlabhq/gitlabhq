@@ -7,12 +7,17 @@ import PublishToolbar from '~/static_site_editor/components/publish_toolbar.vue'
 import EditHeader from '~/static_site_editor/components/edit_header.vue';
 import UnsavedChangesConfirmDialog from '~/static_site_editor/components/unsaved_changes_confirm_dialog.vue';
 
-import { sourceContentTitle as title, sourceContent as content, returnUrl } from '../mock_data';
+import {
+  sourceContentTitle as title,
+  sourceContent as content,
+  sourceContentBody as body,
+  returnUrl,
+} from '../mock_data';
 
 describe('~/static_site_editor/components/edit_area.vue', () => {
   let wrapper;
   const savingChanges = true;
-  const newContent = `new ${content}`;
+  const newBody = `new ${body}`;
 
   const buildWrapper = (propsData = {}) => {
     wrapper = shallowMount(EditArea, {
@@ -46,7 +51,7 @@ describe('~/static_site_editor/components/edit_area.vue', () => {
 
   it('renders rich content editor', () => {
     expect(findRichContentEditor().exists()).toBe(true);
-    expect(findRichContentEditor().props('value')).toBe(content);
+    expect(findRichContentEditor().props('value')).toBe(body);
   });
 
   it('renders publish toolbar', () => {
@@ -65,7 +70,7 @@ describe('~/static_site_editor/components/edit_area.vue', () => {
 
   describe('when content changes', () => {
     beforeEach(() => {
-      findRichContentEditor().vm.$emit('input', newContent);
+      findRichContentEditor().vm.$emit('input', newBody);
 
       return wrapper.vm.$nextTick();
     });
@@ -79,7 +84,7 @@ describe('~/static_site_editor/components/edit_area.vue', () => {
     });
 
     it('sets publish toolbar as not saveable when content changes are rollback', () => {
-      findRichContentEditor().vm.$emit('input', content);
+      findRichContentEditor().vm.$emit('input', body);
 
       return wrapper.vm.$nextTick().then(() => {
         expect(findPublishToolbar().props('saveable')).toBe(false);

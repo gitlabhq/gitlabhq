@@ -7,6 +7,8 @@ import InvalidContentMessage from '~/static_site_editor/components/invalid_conte
 import SubmitChangesError from '~/static_site_editor/components/submit_changes_error.vue';
 import submitContentChangesMutation from '~/static_site_editor/graphql/mutations/submit_content_changes.mutation.graphql';
 import { SUCCESS_ROUTE } from '~/static_site_editor/router/constants';
+import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
+import { TRACKING_ACTION_INITIALIZE_EDITOR } from '~/static_site_editor/constants';
 
 import {
   projectId as project,
@@ -17,6 +19,7 @@ import {
   username,
   savedContentMeta,
   submitChangesError,
+  trackingCategory,
 } from '../mock_data';
 
 const localVue = createLocalVue();
@@ -29,6 +32,7 @@ describe('static_site_editor/pages/home', () => {
   let $apollo;
   let $router;
   let mutateMock;
+  let trackingSpy;
 
   const buildApollo = (queries = {}) => {
     mutateMock = jest.fn();
@@ -76,10 +80,14 @@ describe('static_site_editor/pages/home', () => {
   beforeEach(() => {
     buildApollo();
     buildRouter();
+
+    document.body.dataset.page = trackingCategory;
+    trackingSpy = mockTracking(document.body.dataset.page, undefined, jest.spyOn);
   });
 
   afterEach(() => {
     wrapper.destroy();
+    unmockTracking();
     wrapper = null;
     $apollo = null;
   });
@@ -207,5 +215,13 @@ describe('static_site_editor/pages/home', () => {
     it('transitions to the SUCCESS route', () => {
       expect($router.push).toHaveBeenCalledWith(SUCCESS_ROUTE);
     });
+  });
+
+  it('tracks when editor is initialized on the mounted lifecycle hook', () => {
+    buildWrapper();
+    expect(trackingSpy).toHaveBeenCalledWith(
+      document.body.dataset.page,
+      TRACKING_ACTION_INITIALIZE_EDITOR,
+    );
   });
 });

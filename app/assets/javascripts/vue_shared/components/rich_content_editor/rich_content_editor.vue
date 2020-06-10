@@ -52,6 +52,12 @@ export default {
       default: EDITOR_PREVIEW_STYLE,
     },
   },
+  data() {
+    return {
+      editorApi: null,
+      previousMode: null,
+    };
+  },
   computed: {
     editorOptions() {
       return { ...EDITOR_OPTIONS, ...this.options };
@@ -60,29 +66,55 @@ export default {
       return this.$refs.editor;
     },
   },
+  watch: {
+    value(newVal) {
+      const isSameMode = this.previousMode === this.editorApi.currentMode;
+      if (!isSameMode) {
+        /*
+        The ToastUI Editor consumes its content via the `initial-value` prop and then internally
+        manages changes. If we desire the `v-model` to work as expected, we need to manually call
+        `setMarkdown`. However, if we do this in each v-model change we'll continually prevent
+        the editor from internally managing changes. Thus we use the `previousMode` flag as
+        confirmation to actually update its internals. This is initially designed so that front
+        matter is excluded from editing in wysiwyg mode, but included in markdown mode.
+        */
+        this.editorInstance.invoke('setMarkdown', newVal);
+        this.previousMode = this.editorApi.currentMode;
+      }
+    },
+  },
   beforeDestroy() {
     removeCustomEventListener(
-      this.editorInstance,
+      this.editorApi,
       CUSTOM_EVENTS.openAddImageModal,
       this.onOpenAddImageModal,
     );
+
+    this.editorApi.eventManager.removeEventHandler('changeMode', this.onChangeMode);
   },
   methods: {
     onContentChanged() {
       this.$emit('input', getMarkdown(this.editorInstance));
     },
-    onLoad(editorInstance) {
+    onLoad(editorApi) {
+      this.editorApi = editorApi;
+
       addCustomEventListener(
-        editorInstance,
+        this.editorApi,
         CUSTOM_EVENTS.openAddImageModal,
         this.onOpenAddImageModal,
       );
+
+      this.editorApi.eventManager.listen('changeMode', this.onChangeMode);
     },
     onOpenAddImageModal() {
       this.$refs.addImageModal.show();
     },
     onAddImage(image) {
       addImage(this.editorInstance, image);
+    },
+    onChangeMode(newMode) {
+      this.$emit('modeChange', newMode);
     },
   },
 };
