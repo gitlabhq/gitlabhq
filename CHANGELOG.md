@@ -2,6 +2,10 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 13.0.6 (2020-06-10)
+
+- No changes.
+
 ## 13.0.4 (2020-06-03)
 
 ### Security (1 change)
@@ -610,6 +614,10 @@ entry.
 - Use visitUrl in Alert management. !32414
 
 
+## 12.10.11 (2020-06-10)
+
+- No changes.
+
 ## 12.10.8 (2020-05-28)
 
 ### Fixed (2 changes)
@@ -1137,6 +1145,10 @@ entry.
 - Improve error message in DAST CI template. !29388
 - Remove store_mentions! in Snippets::CreateService. !29581 (Sashi Kumar)
 
+
+## 12.9.10 (2020-06-10)
+
+- No changes.
 
 ## 12.9.8 (2020-05-27)
 
