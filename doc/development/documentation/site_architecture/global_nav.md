@@ -356,7 +356,7 @@ files.
 ```
 
 This also allows the nav to be displayed on other
-highest-level dirs (`/omnibus/`, `/runner/`, etc),
+highest-level directories (`/omnibus/`, `/runner/`, etc),
 linking them back to `/ee/`.
 
 The same logic is applied to all sections (`sec[:section_url]`),

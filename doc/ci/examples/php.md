@@ -65,7 +65,7 @@ docker-php-ext-install pdo_mysql
 ```
 
 You might wonder what `docker-php-ext-install` is. In short, it is a script
-provided by the official php Docker image that you can use to easily install
+provided by the official PHP Docker image that you can use to easily install
 extensions. For more information read the documentation at
 <https://hub.docker.com/_/php>.
 
@@ -174,7 +174,7 @@ Finally, push to GitLab and let the tests begin!
 ### Test against different PHP versions in Shell builds
 
 The [phpenv](https://github.com/phpenv/phpenv) project allows you to easily manage different versions of PHP
-each with its own config. This is especially useful when testing PHP projects
+each with its own configuration. This is especially useful when testing PHP projects
 with the Shell executor.
 
 You will have to install it on your build machine under the `gitlab-runner`

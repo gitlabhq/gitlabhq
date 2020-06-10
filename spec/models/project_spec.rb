@@ -6064,6 +6064,14 @@ describe Project do
     it { is_expected.not_to include(user) }
   end
 
+  describe "#metrics_setting" do
+    let(:project) { build(:project) }
+
+    it 'creates setting if it does not exist' do
+      expect(project.metrics_setting).to be_an_instance_of(ProjectMetricsSetting)
+    end
+  end
+
   def finish_job(export_job)
     export_job.start
     export_job.finish

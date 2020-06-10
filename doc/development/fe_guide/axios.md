@@ -1,15 +1,15 @@
 # Axios
 
-We use [axios](https://github.com/axios/axios) to communicate with the server in Vue applications and most new code.
+We use [Axios](https://github.com/axios/axios) to communicate with the server in Vue applications and most new code.
 
-In order to guarantee all defaults are set you *should not use `axios` directly*, you should import `axios` from `axios_utils`.
+In order to guarantee all defaults are set you *should not use Axios directly*, you should import Axios from `axios_utils`.
 
 ## CSRF token
 
-All our request require a CSRF token.
-To guarantee this token is set, we are importing [axios](https://github.com/axios/axios), setting the token, and exporting `axios` .
+All our requests require a CSRF token.
+To guarantee this token is set, we are importing [Axios](https://github.com/axios/axios), setting the token, and exporting `axios` .
 
-This exported module should be used instead of directly using `axios` to ensure the token is set.
+This exported module should be used instead of directly using Axios to ensure the token is set.
 
 ## Usage
 
@@ -30,7 +30,7 @@ This exported module should be used instead of directly using `axios` to ensure 
     });
 ```
 
-## Mock axios response in tests
+## Mock Axios response in tests
 
 To help us mock the responses we are using [axios-mock-adapter](https://github.com/ctimmerm/axios-mock-adapter).
 
@@ -41,7 +41,7 @@ Advantages over [`spyOn()`](https://jasmine.github.io/api/edge/global.html#spyOn
 - simple API to test error cases
 - provides `replyOnce()` to allow for different responses
 
-We have also decided against using [axios interceptors](https://github.com/axios/axios#interceptors) because they are not suitable for mocking.
+We have also decided against using [Axios interceptors](https://github.com/axios/axios#interceptors) because they are not suitable for mocking.
 
 ### Example
 
@@ -67,7 +67,7 @@ We have also decided against using [axios interceptors](https://github.com/axios
   });
 ```
 
-### Mock poll requests in tests with axios
+### Mock poll requests in tests with Axios
 
 Because polling function requires a header object, we need to always include an object as the third argument:
 

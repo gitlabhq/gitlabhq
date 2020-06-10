@@ -14,6 +14,13 @@ describe('Clusters', () => {
 
   const endpoint = 'some/endpoint';
 
+  const entryData = {
+    endpoint,
+    imgTagsAwsText: 'AWS Icon',
+    imgTagsDefaultText: 'Default Icon',
+    imgTagsGcpText: 'GCP Icon',
+  };
+
   const findLoader = () => wrapper.find(GlLoadingIcon);
   const findPaginatedButtons = () => wrapper.find(GlPagination);
   const findTable = () => wrapper.find(GlTable);
@@ -24,7 +31,7 @@ describe('Clusters', () => {
   };
 
   const mountWrapper = () => {
-    store = ClusterStore({ endpoint });
+    store = ClusterStore(entryData);
     wrapper = mount(Clusters, { store });
     return axios.waitForAll();
   };
@@ -84,6 +91,23 @@ describe('Clusters', () => {
 
     it('should stack on smaller devices', () => {
       expect(findTable().classes()).toContain('b-table-stacked-md');
+    });
+  });
+
+  describe('cluster icon', () => {
+    it.each`
+      providerText      | lineNumber
+      ${'GCP Icon'}     | ${0}
+      ${'AWS Icon'}     | ${1}
+      ${'Default Icon'} | ${2}
+      ${'Default Icon'} | ${3}
+      ${'Default Icon'} | ${4}
+      ${'Default Icon'} | ${5}
+    `('renders provider image and alt text for each cluster', ({ providerText, lineNumber }) => {
+      const images = findTable().findAll('.js-status img');
+      const image = images.at(lineNumber);
+
+      expect(image.attributes('alt')).toBe(providerText);
     });
   });
 

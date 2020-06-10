@@ -52,6 +52,9 @@
 .if-dot-com-gitlab-org-merge-request: &if-dot-com-gitlab-org-merge-request
   if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE == "gitlab-org" && $CI_MERGE_REQUEST_IID'
 
+.if-dot-com-gitlab-org-and-security-merge-request: &if-dot-com-gitlab-org-and-security-merge-request
+  if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE =~ /^gitlab-org($|\/security$)/ && $CI_MERGE_REQUEST_IID'
+
 .if-dot-com-gitlab-org-and-security-tag: &if-dot-com-gitlab-org-and-security-tag
   if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE =~ /^gitlab-org($|\/security$)/ && $CI_COMMIT_TAG'
 
@@ -372,13 +375,13 @@
 
 .qa:rules:package-and-qa:
   rules:
-    - <<: *if-dot-com-gitlab-org-merge-request
+    - <<: *if-dot-com-gitlab-org-and-security-merge-request
       changes: *ci-patterns
       allow_failure: true
-    - <<: *if-dot-com-gitlab-org-merge-request
+    - <<: *if-dot-com-gitlab-org-and-security-merge-request
       changes: *qa-patterns
       allow_failure: true
-    - <<: *if-dot-com-gitlab-org-merge-request
+    - <<: *if-dot-com-gitlab-org-and-security-merge-request
       changes: *code-patterns
       when: manual
       allow_failure: true
@@ -507,7 +510,7 @@
   rules:
     - <<: *if-not-ee
       when: never
-    - <<: *if-dot-com-gitlab-org-merge-request
+    - <<: *if-dot-com-gitlab-org-and-security-merge-request
       changes: *code-qa-patterns
     - <<: *if-dot-com-gitlab-org-schedule
 

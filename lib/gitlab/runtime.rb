@@ -37,7 +37,7 @@ module Gitlab
       end
 
       def puma?
-        !!defined?(::Puma)
+        !!defined?(::Puma) && !defined?(ACTION_CABLE_SERVER)
       end
 
       # For unicorn, we need to check for actual server instances to avoid false positives.
@@ -70,11 +70,11 @@ module Gitlab
       end
 
       def web_server?
-        puma? || unicorn?
+        puma? || unicorn? || action_cable?
       end
 
       def action_cable?
-        web_server? && (!!defined?(ACTION_CABLE_SERVER) || Gitlab.config.action_cable.in_app)
+        !!defined?(ACTION_CABLE_SERVER)
       end
 
       def multi_threaded?
@@ -82,21 +82,19 @@ module Gitlab
       end
 
       def max_threads
-        threads = 1 # main thread
+        main_thread = 1
 
-        if puma?
-          threads += Puma.cli_config.options[:max_threads]
+        if action_cable?
+          Gitlab::Application.config.action_cable.worker_pool_size
+        elsif puma?
+          Puma.cli_config.options[:max_threads]
         elsif sidekiq?
           # An extra thread for the poller in Sidekiq Cron:
           # https://github.com/ondrejbartas/sidekiq-cron#under-the-hood
-          threads += Sidekiq.options[:concurrency] + 1
-        end
-
-        if action_cable?
-          threads += Gitlab.config.action_cable.worker_pool_size
-        end
-
-        threads
+          Sidekiq.options[:concurrency] + 1
+        else
+          0
+        end + main_thread
       end
     end
   end

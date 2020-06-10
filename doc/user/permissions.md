@@ -23,9 +23,6 @@ GitLab [administrators](../administration/index.md) receive all permissions.
 To add or import a user, you can follow the
 [project members documentation](project/members/index.md).
 
-For information on eligible approvers for Merge Requests, see
-[Eligible approvers](project/merge_requests/merge_request_approvals.md#eligible-approvers).
-
 ## Principles behind permissions
 
 See our [product handbook on permissions](https://about.gitlab.com/handbook/product/#permissions-in-gitlab)
@@ -99,6 +96,7 @@ The following table depicts the various user permission levels in a project.
 | Assign merge requests                             |         |            | ✓           | ✓        | ✓      |
 | Label merge requests                              |         |            | ✓           | ✓        | ✓      |
 | Lock merge request threads                        |         |            | ✓           | ✓        | ✓      |
+| Approve merge requests (*9*)                      |         |            | ✓           | ✓        | ✓      |
 | Manage/Accept merge requests                      |         |            | ✓           | ✓        | ✓      |
 | Create new environments                           |         |            | ✓           | ✓        | ✓      |
 | Stop environments                                 |         |            | ✓           | ✓        | ✓      |
@@ -177,6 +175,8 @@ The following table depicts the various user permission levels in a project.
 1. Guest users can access GitLab [**Releases**](project/releases/index.md) for downloading assets but are not allowed to download the source code nor see repository information like tags and commits.
 1. Actions are limited only to records owned (referenced) by user.
 1. When [Share Group Lock](./group/index.md#share-with-group-lock) is enabled the project can't be shared with other groups. It does not affect group with group sharing.
+1. For information on eligible approvers for merge requests, see
+   [Eligible approvers](project/merge_requests/merge_request_approvals.md#eligible-approvers).
 
 ## Project features permissions
 

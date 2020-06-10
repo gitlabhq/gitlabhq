@@ -594,7 +594,7 @@ There are two ways to determine the value of `DOCKER_AUTH_CONFIG`:
   ```
 
 - **Second way -** In some setups, it's possible that Docker client
-  will use the available system keystore to store the result of `docker
+  will use the available system key store to store the result of `docker
   login`. In that case, it's impossible to read `~/.docker/config.json`,
   so you will need to prepare the required base64-encoded version of
   `${username}:${password}` and create the Docker configuration JSON manually.
@@ -712,7 +712,7 @@ To configure credentials store, follow these steps:
      ```
 
    - Or, if you are running self-managed Runners, add the above JSON to
-     `${GITLAB_RUNNER_HOME}/.docker/config.json`. GitLab Runner will read this config file
+     `${GITLAB_RUNNER_HOME}/.docker/config.json`. GitLab Runner will read this configuration file
      and will use the needed helper for this specific repository.
 
 NOTE: **Note:** `credsStore` is used to access ALL the registries.
@@ -761,7 +761,7 @@ To configure access for `aws_account_id.dkr.ecr.region.amazonaws.com`, follow th
 
    - Or, if you are running self-managed Runners,
      add the above JSON to `${GITLAB_RUNNER_HOME}/.docker/config.json`.
-     GitLab Runner will read this config file and will use the needed helper for this
+     GitLab Runner will read this configuration file and will use the needed helper for this
      specific repository.
 
 1. You can now use any private image from `aws_account_id.dkr.ecr.region.amazonaws.com` defined in

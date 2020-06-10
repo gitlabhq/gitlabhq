@@ -16,6 +16,44 @@ describe GitlabSchema.types['Snippet'] do
     expect(described_class).to have_graphql_fields(*expected_fields)
   end
 
+  context 'when restricted visibility level is set to public' do
+    let_it_be(:snippet) { create(:personal_snippet, :repository, :public, author: user) }
+
+    let(:current_user) { user }
+    let(:query) do
+      %(
+        {
+          snippets {
+            nodes {
+              author {
+                id
+              }
+            }
+          }
+        }
+      )
+    end
+    let(:response) { subject.dig('data', 'snippets', 'nodes')[0] }
+
+    subject { GitlabSchema.execute(query, context: { current_user: current_user }).as_json }
+
+    before do
+      stub_application_setting(restricted_visibility_levels: [Gitlab::VisibilityLevel::PUBLIC])
+    end
+
+    it 'returns snippet author' do
+      expect(response['author']).to be_present
+    end
+
+    context 'when user is not logged in' do
+      let(:current_user) { nil }
+
+      it 'returns snippet author as nil' do
+        expect(response['author']).to be_nil
+      end
+    end
+  end
+
   describe 'authorizations' do
     specify { expect(described_class).to require_graphql_authorizations(:read_snippet) }
   end

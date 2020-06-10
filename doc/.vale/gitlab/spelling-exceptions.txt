@@ -42,6 +42,7 @@ backtrace
 backtraced
 backtraces
 backtracing
+badging
 Bamboo
 Bitbucket
 blockquote
@@ -121,6 +122,8 @@ Ecto
 Elasticsearch
 enablement
 enqueued
+enum
+enums
 ETag
 Excon
 expirable
@@ -139,6 +142,7 @@ Forgerock
 Fugit
 Gantt
 Gemnasium
+Gemojione
 gettext
 Git
 Gitaly
@@ -148,6 +152,7 @@ GitLab
 gitlabsos
 Gitleaks
 Gitter
+globals
 Gmail
 Google
 Gosec
@@ -297,6 +302,7 @@ preloading
 preloads
 prepend
 prepended
+prepending
 prepends
 Pritaly
 profiler

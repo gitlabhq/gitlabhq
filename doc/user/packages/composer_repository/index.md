@@ -59,7 +59,7 @@ After this basic package structure is created, we need to tag it in Git and push
 
 ```shell
 git init
-add composer.json
+git add composer.json
 git commit -m 'Composer package test'
 git tag v1.0.0
 git add origin git@gitlab.com:<namespace>/<project-name>.git

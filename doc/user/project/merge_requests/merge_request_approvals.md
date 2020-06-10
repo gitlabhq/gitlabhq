@@ -34,10 +34,12 @@ minimum number of required approvers can still be set in the [project settings f
 
 ### Eligible approvers
 
-The following can approve merge requests:
+The following users can approve merge requests:
 
-- Users being added as approvers at project or merge request level.
-- [Code owners](#code-owners-as-eligible-approvers) to the files changed by the merge request.
+- Users who have been added as approvers at the project or merge request levels with
+  developer or higher [permissions](../../permissions.md).
+- [Code owners](#code-owners-as-eligible-approvers) of the files changed by the merge request
+  that have developer or higher [permissions](../../permissions.md).
 
 An individual user can be added as an approver for a project if they are a member of:
 
@@ -68,7 +70,7 @@ were not explicitly listed in the approval rules.
 
 If you add [Code Owners](../code_owners.md) to your repository, the owners to the
 corresponding files will become eligible approvers, together with members with Developer
-or higher permissions.
+or higher [permissions](../../permissions.md).
 
 To enable this merge request approval rule:
 

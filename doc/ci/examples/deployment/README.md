@@ -56,7 +56,7 @@ To use different provider take a look at long list of [Supported Providers](http
 ## Using Dpl with Docker
 
 In most cases, you will have configured [GitLab Runner](https://docs.gitlab.com/runner/) to use your server's shell commands.
-This means that all commands are run in the context of local user (e.g. gitlab_runner or gitlab_ci_multi_runner).
+This means that all commands are run in the context of local user (e.g. `gitlab_runner` or `gitlab_ci_multi_runner`).
 It also means that most probably in your Docker container you don't have the Ruby runtime installed.
 You will have to install it:
 

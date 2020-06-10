@@ -47,7 +47,7 @@ All these operations will put all files into a `build` folder, which is ready to
 
 ## How to transfer files to a live server
 
-You have multiple options: rsync, scp, sftp, and so on. For now, we will use scp.
+You have multiple options: rsync, SCP, SFTP, and so on. For now, we will use SCP.
 
 To make this work, you need to add a GitLab CI/CD Variable (accessible on `gitlab.example/your-project-name/variables`). That variable will be called `STAGING_PRIVATE_KEY` and it's the  **private** SSH key of your server.
 
@@ -123,7 +123,7 @@ Therefore, for a production environment we use additional steps to ensure that a
 Since this was a WordPress project, I gave real life code snippets. Some further ideas you can pursue:
 
 - Having a slightly different script for `master` branch will allow you to deploy to a production server from that branch and to a stage server from any other branches.
-- Instead of pushing it live, you can push it to WordPress official repo (with creating a SVN commit, etc.).
+- Instead of pushing it live, you can push it to WordPress official repository (with creating a SVN commit, etc.).
 - You could generate i18n text domains on the fly.
 
 ---

@@ -17,11 +17,16 @@ module Gitlab
   class Application < Rails::Application
     require_dependency Rails.root.join('lib/gitlab')
     require_dependency Rails.root.join('lib/gitlab/utils')
+    require_dependency Rails.root.join('lib/gitlab/redis/wrapper')
+    require_dependency Rails.root.join('lib/gitlab/redis/cache')
+    require_dependency Rails.root.join('lib/gitlab/redis/queues')
+    require_dependency Rails.root.join('lib/gitlab/redis/shared_state')
     require_dependency Rails.root.join('lib/gitlab/current_settings')
     require_dependency Rails.root.join('lib/gitlab/middleware/read_only')
     require_dependency Rails.root.join('lib/gitlab/middleware/basic_health_check')
     require_dependency Rails.root.join('lib/gitlab/middleware/same_site_cookies')
     require_dependency Rails.root.join('lib/gitlab/middleware/handle_ip_spoof_attack_error')
+    require_dependency Rails.root.join('lib/gitlab/runtime')
 
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers
@@ -256,6 +261,17 @@ module Gitlab
           expose: headers_to_expose
       end
     end
+
+    # Use caching across all environments
+    # Full list of options:
+    # https://api.rubyonrails.org/classes/ActiveSupport/Cache/RedisCacheStore.html#method-c-new
+    caching_config_hash = {}
+    caching_config_hash[:redis] = Gitlab::Redis::Cache.pool
+    caching_config_hash[:compress] = Gitlab::Utils.to_boolean(ENV.fetch('ENABLE_REDIS_CACHE_COMPRESSION', '1'))
+    caching_config_hash[:namespace] = Gitlab::Redis::Cache::CACHE_NAMESPACE
+    caching_config_hash[:expires_in] = 2.weeks # Cache should not grow forever
+
+    config.cache_store = :redis_cache_store, caching_config_hash
 
     config.active_job.queue_adapter = :sidekiq
 

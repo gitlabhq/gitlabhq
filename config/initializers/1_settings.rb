@@ -729,7 +729,6 @@ Settings.webpack.dev_server['port']    ||= 3808
 # ActionCable settings
 #
 Settings['action_cable'] ||= Settingslogic.new({})
-Settings.action_cable['in_app'] ||= false
 Settings.action_cable['worker_pool_size'] ||= 4
 
 #

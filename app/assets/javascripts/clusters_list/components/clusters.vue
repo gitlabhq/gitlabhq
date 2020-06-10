@@ -28,7 +28,7 @@ export default {
     tooltip,
   },
   computed: {
-    ...mapState(['clusters', 'clustersPerPage', 'loading', 'page', 'totalCulsters']),
+    ...mapState(['clusters', 'clustersPerPage', 'loading', 'page', 'providers', 'totalCulsters']),
     currentPage: {
       get() {
         return this.page;
@@ -101,6 +101,9 @@ export default {
       // We are trying to track quantity types coming from Kubernetes.
       // Sentry will notify us if we are missing types.
       throw new Error(`UnknownK8sCpuQuantity:${quantity}`);
+    },
+    selectedProvider(provider) {
+      return this.providers[provider] || this.providers.default;
     },
     statusTitle(status) {
       const iconTitle = STATUSES[status] || STATUSES.default;
@@ -182,8 +185,21 @@ export default {
   <section v-else>
     <gl-table :items="clusters" :fields="fields" stacked="md" class="qa-clusters-table">
       <template #cell(name)="{ item }">
-        <div class="d-flex flex-row-reverse flex-md-row js-status">
-          <gl-link data-qa-selector="cluster" :data-qa-cluster-name="item.name" :href="item.path">
+        <div
+          class="gl-display-flex gl-align-items-center gl-justify-content-end gl-justify-content-md-start js-status"
+        >
+          <img
+            :src="selectedProvider(item.provider_type).path"
+            :alt="selectedProvider(item.provider_type).text"
+            class="gl-w-6 gl-h-6 gl-display-flex gl-align-items-center"
+          />
+
+          <gl-link
+            data-qa-selector="cluster"
+            :data-qa-cluster-name="item.name"
+            :href="item.path"
+            class="gl-px-3"
+          >
             {{ item.name }}
           </gl-link>
 
@@ -192,7 +208,6 @@ export default {
             v-tooltip
             :title="statusTitle(item.status)"
             size="sm"
-            class="mr-2 ml-md-2"
           />
         </div>
       </template>

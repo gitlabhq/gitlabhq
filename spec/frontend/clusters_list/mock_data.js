@@ -3,6 +3,7 @@ export const clusterList = [
     name: 'My Cluster 1',
     environment_scope: '*',
     cluster_type: 'group_type',
+    provider_type: 'gcp',
     status: 'creating',
     nodes: null,
   },
@@ -10,6 +11,7 @@ export const clusterList = [
     name: 'My Cluster 2',
     environment_scope: 'development',
     cluster_type: 'project_type',
+    provider_type: 'aws',
     status: 'unreachable',
     nodes: [
       {
@@ -22,6 +24,7 @@ export const clusterList = [
     name: 'My Cluster 3',
     environment_scope: 'development',
     cluster_type: 'project_type',
+    provider_type: 'none',
     status: 'authentication_failure',
     nodes: [
       {

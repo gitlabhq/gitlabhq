@@ -24,7 +24,7 @@ sprite_icon(icon_name, size: nil, css_class: '')
 - **icon_name** Use the icon_name that you can find in the SVG Sprite
   ([Overview is available here](https://gitlab-org.gitlab.io/gitlab-svgs)).
 - **size (optional)** Use one of the following sizes : 16, 24, 32, 48, 72 (this will be translated into a `s16` class)
-- **css_class (optional)** If you want to add additional css classes
+- **css_class (optional)** If you want to add additional CSS classes
 
 **Example**
 
@@ -67,8 +67,8 @@ export default {
 
 - **name** Name of the Icon in the SVG Sprite ([Overview is available here](https://gitlab-org.gitlab.io/gitlab-svgs)).
 - **size (optional)** Number value for the size which is then mapped to a specific CSS class
-  (Available Sizes: 8, 12, 16, 18, 24, 32, 48, 72 are mapped to `sXX` css classes)
-- **css-classes (optional)** Additional CSS Classes to add to the svg tag.
+  (Available Sizes: 8, 12, 16, 18, 24, 32, 48, 72 are mapped to `sXX` CSS classes)
+- **css-classes (optional)** Additional CSS Classes to add to the SVG tag.
 
 ### Usage in HTML/JS
 
@@ -91,7 +91,7 @@ Please use the class `svg-content` around it to ensure nice rendering.
 
 ### Usage in Vue
 
-To use an SVG illustrations in a template provide the path as a property and display it through a standard img tag.
+To use an SVG illustrations in a template provide the path as a property and display it through a standard `img` tag.
 
 Component:
 

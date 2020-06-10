@@ -120,7 +120,7 @@ For instance:
 
 In order to validate some parameters in the API request, we validate them
 before sending them further (say Gitaly). The following are the
-[custom validators](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/api/validations/validators),
+[custom validators](https://GitLab.com/gitlab-org/gitlab/-/tree/master/lib/api/validations/validators),
 which we have added so far and how to use them. We also wrote a
 guide on how you can add a new custom validator.
 

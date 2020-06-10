@@ -16,6 +16,10 @@ module Trigger
     %w[gitlab gitlab-ee].include?(ENV['CI_PROJECT_NAME'])
   end
 
+  def self.security?
+    %r{\Agitlab-org/security(\z|/)}.match?(ENV['CI_PROJECT_NAMESPACE'])
+  end
+
   def self.non_empty_variable_value(variable)
     variable_value = ENV[variable]
 
@@ -26,6 +30,9 @@ module Trigger
 
   class Base
     def invoke!(post_comment: false, downstream_job_name: nil)
+      # gitlab-bot's token "GitLab multi-project pipeline polling"
+      Gitlab.private_token = access_token
+
       pipeline_variables = variables
 
       puts "Triggering downstream pipeline on #{downstream_project_path}"
@@ -40,7 +47,7 @@ module Trigger
       puts "Triggered downstream pipeline: #{pipeline.web_url}\n"
       puts "Waiting for downstream pipeline status"
 
-      Trigger::CommitComment.post!(pipeline, access_token) if post_comment
+      Trigger::CommitComment.post!(pipeline) if post_comment
       downstream_job =
         if downstream_job_name
           Gitlab.pipeline_jobs(downstream_project_path, pipeline.id).auto_paginate.find do |potential_job|
@@ -49,9 +56,9 @@ module Trigger
         end
 
       if downstream_job
-        Trigger::Job.new(downstream_project_path, downstream_job.id, access_token)
+        Trigger::Job.new(downstream_project_path, downstream_job.id)
       else
-        Trigger::Pipeline.new(downstream_project_path, pipeline.id, access_token)
+        Trigger::Pipeline.new(downstream_project_path, pipeline.id)
       end
     end
 
@@ -140,6 +147,7 @@ module Trigger
       {
         'GITLAB_VERSION' => Trigger.non_empty_variable_value('CI_MERGE_REQUEST_SOURCE_BRANCH_SHA') || ENV['CI_COMMIT_SHA'],
         'ALTERNATIVE_SOURCES' => 'true',
+        'SECURITY_SOURCES' => Trigger.security? ? 'true' : 'false',
         'ee' => Trigger.ee? ? 'true' : 'false',
         'QA_BRANCH' => ENV['QA_BRANCH'] || 'master'
       }
@@ -197,9 +205,7 @@ module Trigger
   end
 
   class CommitComment
-    def self.post!(downstream_pipeline, access_token)
-      Gitlab.private_token = access_token
-
+    def self.post!(downstream_pipeline)
       Gitlab.create_commit_comment(
         ENV['CI_PROJECT_PATH'],
         Trigger.non_empty_variable_value('CI_MERGE_REQUEST_SOURCE_BRANCH_SHA') || ENV['CI_COMMIT_SHA'],
@@ -214,7 +220,7 @@ module Trigger
     INTERVAL = 60 # seconds
     MAX_DURATION = 3600 * 3 # 3 hours
 
-    attr_reader :project, :id, :api_token
+    attr_reader :project, :id
 
     def self.unscoped_class_name
       name.split('::').last
@@ -224,14 +230,10 @@ module Trigger
       unscoped_class_name.downcase
     end
 
-    def initialize(project, id, api_token)
+    def initialize(project, id)
       @project = project
       @id = id
-      @api_token = api_token
       @start = Time.now.to_i
-
-      # gitlab-bot's token "GitLab multi-project pipeline polling"
-      Gitlab.private_token = api_token
     end
 
     def wait!

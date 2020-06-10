@@ -15,6 +15,8 @@ import FileTemplatesBar from './file_templates/bar.vue';
 import { __ } from '~/locale';
 import { extractMarkdownImagesFromEntries } from '../stores/utils';
 import { getPathParent, readFileAsDataURL } from '../utils';
+import { getRulesWithTraversal } from '../lib/editorconfig/parser';
+import mapRulesToMonaco from '../lib/editorconfig/rules_mapper';
 
 export default {
   components: {
@@ -32,6 +34,7 @@ export default {
     return {
       content: '',
       images: {},
+      rules: {},
     };
   },
   computed: {
@@ -195,7 +198,7 @@ export default {
 
       this.editor.clearEditor();
 
-      this.fetchFileData()
+      Promise.all([this.fetchFileData(), this.fetchEditorconfigRules()])
         .then(() => {
           this.createEditorInstance();
         })
@@ -254,6 +257,8 @@ export default {
         this.editor.attachModel(this.model);
       }
 
+      this.model.updateOptions(this.rules);
+
       this.model.onChange(model => {
         const { file } = model;
         if (!file.active) return;
@@ -280,11 +285,28 @@ export default {
       this.setFileLanguage({
         fileLanguage: this.model.language,
       });
+
+      this.$emit('editorSetup');
     },
     refreshEditorDimensions() {
       if (this.showEditor) {
         this.editor.updateDimensions();
       }
+    },
+    fetchEditorconfigRules() {
+      return getRulesWithTraversal(this.file.path, path => {
+        const entry = this.entries[path];
+        if (!entry) return Promise.resolve(null);
+
+        const content = entry.content || entry.raw;
+        if (content) return Promise.resolve(content);
+
+        return this.getFileData({ path: entry.path, makeFileActive: false }).then(() =>
+          this.getRawFileData({ path: entry.path }),
+        );
+      }).then(rules => {
+        this.rules = mapRulesToMonaco(rules);
+      });
     },
     onPaste(event) {
       const editor = this.editor.instance;

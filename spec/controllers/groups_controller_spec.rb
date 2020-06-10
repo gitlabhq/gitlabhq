@@ -301,6 +301,66 @@ RSpec.describe GroupsController do
         end
       end
     end
+
+    describe 'tracking group creation for onboarding issues experiment' do
+      before do
+        sign_in(user)
+      end
+
+      subject(:create_namespace) { post :create, params: { group: { name: 'new_group', path: 'new_group' } } }
+
+      context 'experiment disabled' do
+        before do
+          stub_experiment(onboarding_issues: false)
+        end
+
+        it 'does not track anything' do
+          expect(Gitlab::Tracking).not_to receive(:event)
+
+          create_namespace
+        end
+      end
+
+      context 'experiment enabled' do
+        before do
+          stub_experiment(onboarding_issues: true)
+        end
+
+        context 'and the user is part of the control group' do
+          before do
+            stub_experiment_for_user(onboarding_issues: false)
+          end
+
+          it 'tracks the event with the "created_namespace" action with the "control_group" property' do
+            expect(Gitlab::Tracking).to receive(:event).with(
+              'Growth::Conversion::Experiment::OnboardingIssues',
+              'created_namespace',
+              label: anything,
+              property: 'control_group'
+            )
+
+            create_namespace
+          end
+        end
+
+        context 'and the user is part of the experimental group' do
+          before do
+            stub_experiment_for_user(onboarding_issues: true)
+          end
+
+          it 'tracks the event with the "created_namespace" action with the "experimental_group" property' do
+            expect(Gitlab::Tracking).to receive(:event).with(
+              'Growth::Conversion::Experiment::OnboardingIssues',
+              'created_namespace',
+              label: anything,
+              property: 'experimental_group'
+            )
+
+            create_namespace
+          end
+        end
+      end
+    end
   end
 
   describe 'GET #index' do

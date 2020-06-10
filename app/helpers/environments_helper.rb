@@ -60,7 +60,8 @@ module EnvironmentsHelper
       'custom-metrics-path'         => project_prometheus_metrics_path(project),
       'validate-query-path'         => validate_query_project_prometheus_metrics_path(project),
       'custom-metrics-available'    => "#{custom_metrics_available?(project)}",
-      'prometheus-alerts-available' => "#{can?(current_user, :read_prometheus_alerts, project)}"
+      'prometheus-alerts-available' => "#{can?(current_user, :read_prometheus_alerts, project)}",
+      'dashboard-timezone'          => project.metrics_setting_dashboard_timezone.to_s.upcase
     }
   end
 

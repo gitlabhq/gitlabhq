@@ -1,0 +1,5 @@
+---
+title: Add ability to filter self monitoring resource usage charts by instance name
+merge_request: 34084
+author:
+type: changed

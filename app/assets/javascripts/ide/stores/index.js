@@ -15,22 +15,23 @@ import routerModule from './modules/router';
 
 Vue.use(Vuex);
 
-export const createStore = () =>
-  new Vuex.Store({
-    state: state(),
-    actions,
-    mutations,
-    getters,
-    modules: {
-      commit: commitModule,
-      pipelines,
-      mergeRequests,
-      branches,
-      fileTemplates: fileTemplates(),
-      rightPane: paneModule(),
-      clientside: clientsideModule(),
-      router: routerModule,
-    },
-  });
+export const createStoreOptions = () => ({
+  state: state(),
+  actions,
+  mutations,
+  getters,
+  modules: {
+    commit: commitModule,
+    pipelines,
+    mergeRequests,
+    branches,
+    fileTemplates: fileTemplates(),
+    rightPane: paneModule(),
+    clientside: clientsideModule(),
+    router: routerModule,
+  },
+});
+
+export const createStore = () => new Vuex.Store(createStoreOptions());
 
 export default createStore();

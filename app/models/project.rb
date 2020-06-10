@@ -2410,6 +2410,10 @@ class Project < ApplicationRecord
     touch(:last_activity_at, :last_repository_updated_at)
   end
 
+  def metrics_setting
+    super || build_metrics_setting
+  end
+
   private
 
   def find_service(services, name)

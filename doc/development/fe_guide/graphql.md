@@ -89,7 +89,7 @@ Default client accepts two parameters: `resolvers` and `config`.
 ## GraphQL Queries
 
 To save query compilation at runtime, webpack can directly import `.graphql`
-files. This allows webpack to preprocess the query at compile time instead
+files. This allows webpack to pre-process the query at compile time instead
 of the client doing compilation of queries.
 
 To distinguish queries from mutations and fragments, the following naming convention is recommended:

@@ -6,9 +6,9 @@ To get started with Vue, read through [their documentation](https://vuejs.org/v2
 
 What is described in the following sections can be found in these examples:
 
-- web ide: <https://gitlab.com/gitlab-org/gitlab-foss/tree/master/app/assets/javascripts/ide/stores>
-- security products: <https://gitlab.com/gitlab-org/gitlab/tree/master/ee/app/assets/javascripts/vue_shared/security_reports>
-- registry: <https://gitlab.com/gitlab-org/gitlab-foss/tree/master/app/assets/javascripts/registry/stores>
+- [Web IDE](https://gitlab.com/gitlab-org/gitlab-foss/tree/master/app/assets/javascripts/ide/stores)
+- [Security products](https://gitlab.com/gitlab-org/gitlab/tree/master/ee/app/assets/javascripts/vue_shared/security_reports)
+- [Registry](https://gitlab.com/gitlab-org/gitlab-foss/tree/master/app/assets/javascripts/registry/stores)
 
 ## Vue architecture
 
@@ -16,7 +16,7 @@ All new features built with Vue.js must follow a [Flux architecture](https://fac
 The main goal we are trying to achieve is to have only one data flow and only one data entry.
 In order to achieve this goal we use [vuex](#vuex).
 
-You can also read about this architecture in vue docs about [state management](https://vuejs.org/v2/guide/state-management.html#Simple-State-Management-from-Scratch)
+You can also read about this architecture in Vue docs about [state management](https://vuejs.org/v2/guide/state-management.html#Simple-State-Management-from-Scratch)
 and about [one way data flow](https://vuejs.org/v2/guide/components.html#One-Way-Data-Flow).
 
 ### Components and Store
@@ -59,7 +59,7 @@ To do that, provide the data through `data` attributes in the HTML element and q
 _Note:_ You should only do this while initializing the application, because the mounted element will be replaced with Vue-generated DOM.
 
 The advantage of providing data from the DOM to the Vue instance through `props` in the `render` function
-instead of querying the DOM inside the main vue component is that makes tests easier by avoiding the need to
+instead of querying the DOM inside the main Vue component is that makes tests easier by avoiding the need to
 create a fixture or an HTML element in the unit test. See the following example:
 
 ```javascript
