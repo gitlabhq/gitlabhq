@@ -30,12 +30,14 @@ module Commits
 
       success(result: new_commit)
     rescue ChangeError => ex
+      Gitlab::ErrorTracking.log_exception(ex)
       error(ex.message, pass_back: { error_code: ex.error_code })
     rescue ValidationError,
            Gitlab::Git::Index::IndexError,
            Gitlab::Git::CommitError,
            Gitlab::Git::PreReceiveError,
            Gitlab::Git::CommandError => ex
+      Gitlab::ErrorTracking.log_exception(ex)
       error(ex.message)
     end
 

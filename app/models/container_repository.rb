@@ -16,7 +16,13 @@ class ContainerRepository < ApplicationRecord
   scope :ordered, -> { order(:name) }
   scope :with_api_entity_associations, -> { preload(project: [:route, { namespace: :route }]) }
   scope :for_group_and_its_subgroups, ->(group) do
-    where(project_id: Project.for_group_and_its_subgroups(group).with_container_registry.select(:id))
+    project_scope = Project
+      .for_group_and_its_subgroups(group)
+      .with_container_registry
+      .select(:id)
+
+    ContainerRepository
+      .joins("INNER JOIN (#{project_scope.to_sql}) projects on projects.id=container_repositories.project_id")
   end
   scope :search_by_name, ->(query) { fuzzy_search(query, [:name], use_minimum_char_limit: false) }
 

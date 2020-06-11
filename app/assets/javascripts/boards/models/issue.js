@@ -78,7 +78,7 @@ class ListIssue {
   }
 
   updateData(newData) {
-    Object.assign(this, newData);
+    boardsStore.updateIssueData(this, newData);
   }
 
   setFetchingState(key, value) {

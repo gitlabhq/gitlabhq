@@ -92,6 +92,7 @@ module Ci
       metrics
       performance
       sast
+      secret_detection
       requirements
     ].freeze
 

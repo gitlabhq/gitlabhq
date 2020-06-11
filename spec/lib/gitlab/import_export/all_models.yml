@@ -589,6 +589,7 @@ boards:
 - board_assignee
 - assignee
 - labels
+- user_preferences
 lists:
 - user
 - milestone

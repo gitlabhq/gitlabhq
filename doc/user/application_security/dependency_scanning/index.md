@@ -155,7 +155,7 @@ The following variables allow configuration of global dependency scanning settin
 | `DS_DEFAULT_ANALYZERS`                  | Override the names of the official default images. Read more about [customizing analyzers](analyzers.md). |
 | `DS_DISABLE_DIND`                       | Disable Docker-in-Docker and run analyzers [individually](#enabling-docker-in-docker). This variable is `true` by default. |
 | `ADDITIONAL_CA_CERT_BUNDLE`             | Bundle of CA certs to trust. |
-| `DS_EXCLUDED_PATHS`                     | Exclude vulnerabilities from output based on the paths. A comma-separated list of patterns. Patterns can be globs, or file or folder paths (for example, `doc,spec`). Parent directories also match patterns. |
+| `DS_EXCLUDED_PATHS`                     | Exclude vulnerabilities from output based on the paths. A comma-separated list of patterns. Patterns can be globs, or file or folder paths (for example, `doc,spec`). Parent directories also match patterns. Default: `"spec, test, tests, tmp"` |
 
 #### Configuring Docker-in-Docker orchestrator
 

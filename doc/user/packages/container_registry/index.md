@@ -532,6 +532,17 @@ The UI allows you to configure the following:
 - **Docker tags with names matching this regex pattern will expire:** the regex used to determine what tags should be expired. To qualify all tags for expiration, use the default value of `.*`.
 - **Docker tags with names matching this regex pattern will be preserved:** the regex used to determine what tags should be preserved. To preserve all tags, use the default value of `.*`.
 
+#### Troubleshooting expiration policies
+
+If you see the following message:
+
+"Something went wrong while updating the expiration policy."
+
+Check the regex patterns to ensure they are valid.
+
+You can use [Rubular](https://rubular.com/) to check your regex.
+View some common [regex pattern examples](#regex-pattern-examples).
+
 ### Managing project expiration policy through the API
 
 You can set, update, and disable the expiration policies using the GitLab API.

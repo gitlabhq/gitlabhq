@@ -13,6 +13,8 @@ class ContainerExpirationPolicy < ApplicationRecord
   validates :cadence, presence: true, inclusion: { in: ->(_) { self.cadence_options.stringify_keys } }
   validates :older_than, inclusion: { in: ->(_) { self.older_than_options.stringify_keys } }, allow_nil: true
   validates :keep_n, inclusion: { in: ->(_) { self.keep_n_options.keys } }, allow_nil: true
+  validates :name_regex, untrusted_regexp: true, if: :enabled?
+  validates :name_regex_keep, untrusted_regexp: true, if: :enabled?
 
   scope :active, -> { where(enabled: true) }
   scope :preloaded, -> { preload(project: [:route]) }

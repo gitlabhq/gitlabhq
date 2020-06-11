@@ -37,6 +37,37 @@ RSpec.describe ContainerExpirationPolicy, type: :model do
       it { is_expected.to allow_value(nil).for(:keep_n) }
       it { is_expected.not_to allow_value('foo').for(:keep_n) }
     end
+
+    context 'with a set of regexps' do
+      valid_regexps = %w[master .* v.+ v10.1.* (?:v.+|master|release)]
+      invalid_regexps = ['[', '(?:v.+|master|release']
+
+      valid_regexps.each do |valid_regexp|
+        it { is_expected.to allow_value(valid_regexp).for(:name_regex) }
+        it { is_expected.to allow_value(valid_regexp).for(:name_regex_keep) }
+      end
+
+      invalid_regexps.each do |invalid_regexp|
+        it { is_expected.not_to allow_value(invalid_regexp).for(:name_regex) }
+        it { is_expected.not_to allow_value(invalid_regexp).for(:name_regex_keep) }
+      end
+
+      context 'with a disabled container expiration policy' do
+        let_it_be(:container_expiration_policy) { create(:container_expiration_policy, :disabled) }
+
+        subject { container_expiration_policy }
+
+        valid_regexps.each do |valid_regexp|
+          it { is_expected.to allow_value(valid_regexp).for(:name_regex) }
+          it { is_expected.to allow_value(valid_regexp).for(:name_regex_keep) }
+        end
+
+        invalid_regexps.each do |invalid_regexp|
+          it { is_expected.to allow_value(invalid_regexp).for(:name_regex) }
+          it { is_expected.to allow_value(invalid_regexp).for(:name_regex_keep) }
+        end
+      end
+    end
   end
 
   describe '.preloaded' do

@@ -7757,10 +7757,10 @@ merge2@^1.2.3:
   resolved "https://registry.yarnpkg.com/merge2/-/merge2-1.2.3.tgz#7ee99dbd69bb6481689253f018488a1b902b0ed5"
   integrity sha512-gdUU1Fwj5ep4kplwcmftruWofEFt6lfpkkr3h860CXbAB9c3hGb55EOL2ali0Td5oebvW0E1+3Sr+Ur7XfKpRA==
 
-mermaid@^8.5.1:
-  version "8.5.1"
-  resolved "https://registry.yarnpkg.com/mermaid/-/mermaid-8.5.1.tgz#c3b3a39d14315c8b00ba43c047101c2d7cf463f1"
-  integrity sha512-CU8jEceILn/zS5Fs6CxxAIilhXoQd9b3Hy/UR/ZIioK75yyLf8f+V8WX2Voq4oaXiwExCwYUcBA9WV4oyr31wA==
+mermaid@^8.5.2:
+  version "8.5.2"
+  resolved "https://registry.yarnpkg.com/mermaid/-/mermaid-8.5.2.tgz#0f1914cda53d4ea5377380e5ce07a38bef2ea7e8"
+  integrity sha512-I+s+8/RzlazF3dGOhDUfU/ERkUV4zfIlTWb3703jNx+2lfACs+4AdY9ULQaw6BPWzW3gB+XlXFOOX/m/vqujIA==
   dependencies:
     "@braintree/sanitize-url" "^3.1.0"
     crypto-random-string "^3.0.1"

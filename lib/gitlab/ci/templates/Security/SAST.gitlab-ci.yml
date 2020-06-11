@@ -13,6 +13,7 @@ variables:
   SAST_ANALYZER_IMAGE_PREFIX: "$SECURE_ANALYZERS_PREFIX"
 
   SAST_DEFAULT_ANALYZERS: "bandit, brakeman, gosec, spotbugs, flawfinder, phpcs-security-audit, security-code-scan, nodejs-scan, eslint, tslint, secrets, sobelow, pmd-apex, kubesec"
+  SAST_EXCLUDED_PATHS: "spec, test, tests, tmp"
   SAST_ANALYZER_IMAGE_TAG: 2
   SAST_DISABLE_DIND: "true"
   SCAN_KUBERNETES_MANIFESTS: "false"

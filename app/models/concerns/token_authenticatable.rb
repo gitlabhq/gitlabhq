@@ -4,6 +4,10 @@ module TokenAuthenticatable
   extend ActiveSupport::Concern
 
   class_methods do
+    def encrypted_token_authenticatable_fields
+      @encrypted_token_authenticatable_fields ||= []
+    end
+
     private
 
     def add_authentication_token_field(token_field, options = {})
@@ -12,6 +16,7 @@ module TokenAuthenticatable
       end
 
       token_authenticatable_fields.push(token_field)
+      encrypted_token_authenticatable_fields.push(token_field) if options[:encrypted]
 
       attr_accessor :cleartext_tokens
 

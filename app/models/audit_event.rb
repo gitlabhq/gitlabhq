@@ -2,6 +2,9 @@
 
 class AuditEvent < ApplicationRecord
   include CreatedAtFilterable
+  include IgnorableColumns
+
+  ignore_column :updated_at, remove_with: '13.3', remove_after: '2020-08-22'
 
   serialize :details, Hash # rubocop:disable Cop/ActiveRecordSerialize
 

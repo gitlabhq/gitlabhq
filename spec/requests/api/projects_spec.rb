@@ -2516,6 +2516,21 @@ describe API::Projects do
         expect(json_response['container_expiration_policy']['keep_n']).to eq(1)
         expect(json_response['container_expiration_policy']['name_regex_keep']).to eq('foo.*')
       end
+
+      it "doesn't update container_expiration_policy with invalid regex" do
+        project_param = {
+          container_expiration_policy_attributes: {
+            cadence: '1month',
+            keep_n: 1,
+            name_regex_keep: '['
+          }
+        }
+
+        put api("/projects/#{project3.id}", user4), params: project_param
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['message']['container_expiration_policy.name_regex_keep']).to contain_exactly('not valid RE2 syntax: missing ]: [')
+      end
     end
 
     context 'when authenticated as project developer' do

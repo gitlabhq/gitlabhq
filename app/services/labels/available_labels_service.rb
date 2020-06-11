@@ -30,11 +30,13 @@ module Labels
     end
 
     def filter_labels_ids_in_param(key)
-      return [] if params[key].to_a.empty?
+      ids = params[key].to_a
+      return [] if ids.empty?
 
       # rubocop:disable CodeReuse/ActiveRecord
-      available_labels.by_ids(params[key]).pluck(:id)
+      existing_ids = available_labels.by_ids(ids).pluck(:id)
       # rubocop:enable CodeReuse/ActiveRecord
+      ids.map(&:to_i) & existing_ids
     end
 
     private

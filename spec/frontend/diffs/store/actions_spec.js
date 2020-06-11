@@ -53,6 +53,7 @@ import * as utils from '~/diffs/store/utils';
 import * as commonUtils from '~/lib/utils/common_utils';
 import { mergeUrlParams } from '~/lib/utils/url_utility';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
+import { diffMetadata } from '../mock_data/diff_metadata';
 import createFlash from '~/flash';
 
 jest.mock('~/flash', () => jest.fn());
@@ -259,13 +260,19 @@ describe('DiffsStoreActions', () => {
   });
 
   describe('fetchDiffFilesMeta', () => {
-    it('should fetch diff meta information', done => {
-      const endpointMetadata = '/fetch/diffs_meta?view=inline';
-      const mock = new MockAdapter(axios);
-      const data = { diff_files: [] };
-      const res = { data };
-      mock.onGet(endpointMetadata).reply(200, res);
+    const endpointMetadata = '/fetch/diffs_metadata.json?view=inline';
+    const noFilesData = { ...diffMetadata };
+    let mock;
 
+    beforeEach(() => {
+      mock = new MockAdapter(axios);
+
+      delete noFilesData.diff_files;
+
+      mock.onGet(endpointMetadata).reply(200, diffMetadata);
+    });
+
+    it('should fetch diff meta information', done => {
       testAction(
         fetchDiffFilesMeta,
         {},
@@ -273,8 +280,8 @@ describe('DiffsStoreActions', () => {
         [
           { type: types.SET_LOADING, payload: true },
           { type: types.SET_LOADING, payload: false },
-          { type: types.SET_MERGE_REQUEST_DIFFS, payload: [] },
-          { type: types.SET_DIFF_DATA, payload: { data } },
+          { type: types.SET_MERGE_REQUEST_DIFFS, payload: diffMetadata.merge_request_diffs },
+          { type: types.SET_DIFF_DATA, payload: noFilesData },
         ],
         [],
         () => {
@@ -390,13 +397,18 @@ describe('DiffsStoreActions', () => {
     });
 
     describe('fetchDiffFilesMeta', () => {
-      it('should fetch diff meta information', done => {
-        const endpointMetadata = '/fetch/diffs_meta';
-        const mock = new MockAdapter(axios);
-        const data = { diff_files: [] };
-        const res = { data };
-        mock.onGet(endpointMetadata).reply(200, res);
+      const endpointMetadata = '/fetch/diffs_metadata.json';
+      const noFilesData = { ...diffMetadata };
+      let mock;
 
+      beforeEach(() => {
+        mock = new MockAdapter(axios);
+
+        delete noFilesData.diff_files;
+
+        mock.onGet(endpointMetadata).reply(200, diffMetadata);
+      });
+      it('should fetch diff meta information', done => {
         testAction(
           fetchDiffFilesMeta,
           {},
@@ -404,8 +416,8 @@ describe('DiffsStoreActions', () => {
           [
             { type: types.SET_LOADING, payload: true },
             { type: types.SET_LOADING, payload: false },
-            { type: types.SET_MERGE_REQUEST_DIFFS, payload: [] },
-            { type: types.SET_DIFF_DATA, payload: { data } },
+            { type: types.SET_MERGE_REQUEST_DIFFS, payload: diffMetadata.merge_request_diffs },
+            { type: types.SET_DIFF_DATA, payload: noFilesData },
           ],
           [],
           () => {

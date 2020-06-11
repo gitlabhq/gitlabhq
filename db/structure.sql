@@ -804,6 +804,24 @@ CREATE SEQUENCE public.board_project_recent_visits_id_seq
 
 ALTER SEQUENCE public.board_project_recent_visits_id_seq OWNED BY public.board_project_recent_visits.id;
 
+CREATE TABLE public.board_user_preferences (
+    id bigint NOT NULL,
+    user_id bigint NOT NULL,
+    board_id bigint NOT NULL,
+    hide_labels boolean,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL
+);
+
+CREATE SEQUENCE public.board_user_preferences_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE public.board_user_preferences_id_seq OWNED BY public.board_user_preferences.id;
+
 CREATE TABLE public.boards (
     id integer NOT NULL,
     project_id integer,
@@ -7435,6 +7453,8 @@ ALTER TABLE ONLY public.board_labels ALTER COLUMN id SET DEFAULT nextval('public
 
 ALTER TABLE ONLY public.board_project_recent_visits ALTER COLUMN id SET DEFAULT nextval('public.board_project_recent_visits_id_seq'::regclass);
 
+ALTER TABLE ONLY public.board_user_preferences ALTER COLUMN id SET DEFAULT nextval('public.board_user_preferences_id_seq'::regclass);
+
 ALTER TABLE ONLY public.boards ALTER COLUMN id SET DEFAULT nextval('public.boards_id_seq'::regclass);
 
 ALTER TABLE ONLY public.broadcast_messages ALTER COLUMN id SET DEFAULT nextval('public.broadcast_messages_id_seq'::regclass);
@@ -8108,6 +8128,9 @@ ALTER TABLE ONLY public.board_labels
 
 ALTER TABLE ONLY public.board_project_recent_visits
     ADD CONSTRAINT board_project_recent_visits_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY public.board_user_preferences
+    ADD CONSTRAINT board_user_preferences_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY public.boards
     ADD CONSTRAINT boards_pkey PRIMARY KEY (id);
@@ -9298,6 +9321,12 @@ CREATE INDEX index_board_project_recent_visits_on_project_id ON public.board_pro
 CREATE INDEX index_board_project_recent_visits_on_user_id ON public.board_project_recent_visits USING btree (user_id);
 
 CREATE UNIQUE INDEX index_board_project_recent_visits_on_user_project_and_board ON public.board_project_recent_visits USING btree (user_id, project_id, board_id);
+
+CREATE INDEX index_board_user_preferences_on_board_id ON public.board_user_preferences USING btree (board_id);
+
+CREATE INDEX index_board_user_preferences_on_user_id ON public.board_user_preferences USING btree (user_id);
+
+CREATE UNIQUE INDEX index_board_user_preferences_on_user_id_and_board_id ON public.board_user_preferences USING btree (user_id, board_id);
 
 CREATE INDEX index_boards_on_group_id ON public.boards USING btree (group_id);
 
@@ -12335,6 +12364,9 @@ ALTER TABLE ONLY public.snippet_repositories
 ALTER TABLE ONLY public.gpg_key_subkeys
     ADD CONSTRAINT fk_rails_8b2c90b046 FOREIGN KEY (gpg_key_id) REFERENCES public.gpg_keys(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY public.board_user_preferences
+    ADD CONSTRAINT fk_rails_8b3b23ce82 FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY public.allowed_email_domains
     ADD CONSTRAINT fk_rails_8b5da859f9 FOREIGN KEY (group_id) REFERENCES public.namespaces(id) ON DELETE CASCADE;
 
@@ -12673,6 +12705,9 @@ ALTER TABLE ONLY public.dependency_proxy_blobs
 
 ALTER TABLE ONLY public.issues_prometheus_alert_events
     ADD CONSTRAINT fk_rails_db5b756534 FOREIGN KEY (issue_id) REFERENCES public.issues(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY public.board_user_preferences
+    ADD CONSTRAINT fk_rails_dbebdaa8fe FOREIGN KEY (board_id) REFERENCES public.boards(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY public.vulnerability_occurrence_pipelines
     ADD CONSTRAINT fk_rails_dc3ae04693 FOREIGN KEY (occurrence_id) REFERENCES public.vulnerability_occurrences(id) ON DELETE CASCADE;
@@ -13848,6 +13883,9 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200602013901
 20200603073101
 20200604143628
+20200604145731
+20200604174544
+20200604174558
 20200608075553
 20200609002841
 \.

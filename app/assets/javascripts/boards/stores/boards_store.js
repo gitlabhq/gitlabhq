@@ -805,6 +805,9 @@ const boardsStore = {
     }
   },
 
+  updateIssueData(issue, newData) {
+    Object.assign(issue, newData);
+  },
   refreshIssueData(issue, obj) {
     issue.id = obj.id;
     issue.iid = obj.iid;
