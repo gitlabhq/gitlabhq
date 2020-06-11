@@ -37,6 +37,8 @@ RSpec.describe GroupsController do
   end
 
   shared_examples 'details view' do
+    let(:namespace) { group }
+
     it { is_expected.to render_template('groups/show') }
 
     context 'as atom' do
@@ -50,6 +52,8 @@ RSpec.describe GroupsController do
         expect(assigns(:events).map(&:id)).to contain_exactly(event.id)
       end
     end
+
+    it_behaves_like 'namespace storage limit alert'
   end
 
   describe 'GET #show' do

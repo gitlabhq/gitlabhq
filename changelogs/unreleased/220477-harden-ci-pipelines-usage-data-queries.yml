@@ -1,0 +1,5 @@
+---
+title: Harden CI pipelines usage data queries with an index
+merge_request: 34045
+author:
+type: performance

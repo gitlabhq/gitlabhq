@@ -218,6 +218,7 @@ module Types
           Types::AlertManagement::AlertType.connection_type,
           null: true,
           description: 'Alert Management alerts of the project',
+          extras: [:lookahead],
           resolver: Resolvers::AlertManagement::AlertResolver
 
     field :alert_management_alert,

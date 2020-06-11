@@ -156,4 +156,10 @@ describe Namespaces::CheckStorageSizeService, '#execute' do
       expect(response).to include("60%")
     end
   end
+
+  describe 'payload root_namespace' do
+    subject(:response) { service.execute.payload[:root_namespace] }
+
+    it { is_expected.to eq(namespace) }
+  end
 end

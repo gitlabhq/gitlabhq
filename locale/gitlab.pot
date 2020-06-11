@@ -13403,6 +13403,9 @@ msgstr ""
 msgid "Manage project labels"
 msgstr ""
 
+msgid "Manage storage usage"
+msgstr ""
+
 msgid "Manage two-factor authentication"
 msgstr ""
 
@@ -25772,7 +25775,7 @@ msgstr ""
 msgid "You need to upload a Google Takeout archive."
 msgstr ""
 
-msgid "You reached %{usage_in_percent} of %{namespace_name}'s capacity (%{used_storage} of %{storage_limit})"
+msgid "You reached %{usage_in_percent} of %{namespace_name}'s storage capacity (%{used_storage} of %{storage_limit})"
 msgstr ""
 
 msgid "You tried to fork %{link_to_the_project} but it failed for the following reason:"

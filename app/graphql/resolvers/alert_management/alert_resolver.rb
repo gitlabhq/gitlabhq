@@ -3,6 +3,8 @@
 module Resolvers
   module AlertManagement
     class AlertResolver < BaseResolver
+      include LooksAhead
+
       argument :iid, GraphQL::STRING_TYPE,
                 required: false,
                 description: 'IID of the alert. For example, "1"'
@@ -22,11 +24,17 @@ module Resolvers
 
       type Types::AlertManagement::AlertType, null: true
 
-      def resolve(**args)
+      def resolve_with_lookahead(**args)
         parent = object.respond_to?(:sync) ? object.sync : object
         return ::AlertManagement::Alert.none if parent.nil?
 
-        ::AlertManagement::AlertsFinder.new(context[:current_user], parent, args).execute
+        apply_lookahead(::AlertManagement::AlertsFinder.new(context[:current_user], parent, args).execute)
+      end
+
+      def preloads
+        {
+          assignees: [:assignees]
+        }
       end
     end
   end

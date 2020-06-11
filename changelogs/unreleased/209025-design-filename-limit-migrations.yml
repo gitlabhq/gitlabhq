@@ -1,0 +1,6 @@
+---
+title: Add database migrations to design_management_designs.filename to enforce
+  a 255 character limit, and modify any filenames that exceed that limit
+merge_request: 33565
+author:
+type: changed

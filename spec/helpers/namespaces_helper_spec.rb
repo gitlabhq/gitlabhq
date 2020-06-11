@@ -174,4 +174,96 @@ describe NamespacesHelper do
       end
     end
   end
+
+  describe '#namespace_storage_alert' do
+    subject { helper.namespace_storage_alert(namespace) }
+
+    let(:namespace) { build(:namespace) }
+
+    let(:payload) do
+      {
+        alert_level: :info,
+        usage_message: "Usage",
+        explanation_message: "Explanation",
+        root_namespace: namespace
+      }
+    end
+
+    before do
+      allow(helper).to receive(:current_user).and_return(admin)
+      allow_next_instance_of(Namespaces::CheckStorageSizeService, namespace, admin) do |check_storage_size_service|
+        expect(check_storage_size_service).to receive(:execute).and_return(ServiceResponse.success(payload: payload))
+      end
+    end
+
+    context 'when payload is not empty and no cookie is set' do
+      it { is_expected.to eq(payload) }
+    end
+
+    context 'when there is no current_user' do
+      before do
+        allow(helper).to receive(:current_user).and_return(nil)
+      end
+
+      it { is_expected.to eq({}) }
+    end
+
+    context 'when payload is empty' do
+      let(:payload) { {} }
+
+      it { is_expected.to eq({}) }
+    end
+
+    context 'when cookie is set' do
+      before do
+        helper.request.cookies["hide_storage_limit_alert_#{namespace.id}_info"] = 'true'
+      end
+
+      it { is_expected.to eq({}) }
+    end
+
+    context 'when payload is empty and cookie is set' do
+      let(:payload) { {} }
+
+      before do
+        helper.request.cookies["hide_storage_limit_alert_#{namespace.id}_info"] = 'true'
+      end
+
+      it { is_expected.to eq({}) }
+    end
+  end
+
+  describe '#namespace_storage_alert_style' do
+    using RSpec::Parameterized::TableSyntax
+
+    subject { helper.namespace_storage_alert_style(alert_level) }
+
+    where(:alert_level, :result) do
+      :info      | 'info'
+      :warning   | 'warning'
+      :error     | 'danger'
+      :alert     | 'danger'
+    end
+
+    with_them do
+      it { is_expected.to eq(result) }
+    end
+  end
+
+  describe '#namespace_storage_alert_icon' do
+    using RSpec::Parameterized::TableSyntax
+
+    subject { helper.namespace_storage_alert_icon(alert_level) }
+
+    where(:alert_level, :result) do
+      :info      | 'information-o'
+      :warning   | 'warning'
+      :error     | 'error'
+      :alert     | 'error'
+    end
+
+    with_them do
+      it { is_expected.to eq(result) }
+    end
+  end
 end

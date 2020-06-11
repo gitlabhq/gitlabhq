@@ -53,6 +53,9 @@ describe User do
     it { is_expected.to delegate_method(:render_whitespace_in_code).to(:user_preference) }
     it { is_expected.to delegate_method(:render_whitespace_in_code=).to(:user_preference).with_arguments(:args) }
 
+    it { is_expected.to delegate_method(:experience_level).to(:user_preference) }
+    it { is_expected.to delegate_method(:experience_level=).to(:user_preference).with_arguments(:args) }
+
     it { is_expected.to delegate_method(:job_title).to(:user_detail).allow_nil }
     it { is_expected.to delegate_method(:job_title=).to(:user_detail).with_arguments(:args).allow_nil }
   end

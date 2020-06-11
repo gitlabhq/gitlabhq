@@ -1,0 +1,26 @@
+- page_title _('What’s your experience level?')
+
+%h3= _('Hello there')
+%p= _('Welcome to the guided GitLab tour')
+
+%br
+
+%h5= _('What describes you best?')
+
+%hr
+
+%div
+  %p
+    %b= _('Novice')
+  %p= _('I’m not very familiar with the basics of project management and DevOps.')
+  %p
+    = link_to _('Show me everything'), users_sign_up_experience_level_path(experience_level: :novice, namespace_path: params[:namespace_path]), method: :patch
+
+%hr
+
+%div
+  %p
+    %b= _('Experienced')
+  %p= _('I’m familiar with the basics of project management and DevOps.')
+  %p
+    = link_to _('Show me more advanced stuff'), users_sign_up_experience_level_path(experience_level: :experienced, namespace_path: params[:namespace_path]), method: :patch

@@ -747,7 +747,7 @@ Templating variables can be used to make your metrics dashboard more versatile.
 [dashboard YAML](#dashboard-top-level-properties).
 Define your variables in the `variables` key, under `templating`. The value of
 the `variables` key should be a hash, and each key under `variables`
-defines a templating variable on the dashboard.
+defines a templating variable on the dashboard, and may contain alphanumeric and underscore characters.
 
 A variable can be used in a Prometheus query in the same dashboard using the syntax
 described [here](#using-variables).

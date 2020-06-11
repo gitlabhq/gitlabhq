@@ -380,6 +380,15 @@ RSpec.describe ProjectsController do
         end
       end
     end
+
+    context 'namespace storage limit' do
+      let_it_be(:project) { create(:project, :public, :repository ) }
+      let(:namespace) { project.namespace }
+
+      subject { get :show, params: { namespace_id: namespace, id: project } }
+
+      it_behaves_like 'namespace storage limit alert'
+    end
   end
 
   describe 'GET edit' do

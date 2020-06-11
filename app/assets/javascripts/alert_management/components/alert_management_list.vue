@@ -282,7 +282,9 @@ export default {
     },
     getAssignees(assignees) {
       // TODO: Update to show list of assignee(s) after https://gitlab.com/gitlab-org/gitlab/-/issues/218405
-      return assignees?.length > 0 ? assignees[0]?.username : s__('AlertManagement|Unassigned');
+      return assignees.nodes?.length > 0
+        ? assignees.nodes[0]?.username
+        : s__('AlertManagement|Unassigned');
     },
     handlePageChange(page) {
       const { startCursor, endCursor } = this.alerts.pageInfo;
