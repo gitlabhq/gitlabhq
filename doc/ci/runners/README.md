@@ -8,189 +8,52 @@ type: reference
 # Configuring GitLab Runners
 
 In GitLab CI/CD, Runners run the code defined in [`.gitlab-ci.yml`](../yaml/README.md).
-They are isolated (virtual) machines that pick up jobs through the coordinator
-API of GitLab CI/CD.
+A GitLab Runner is a lightweight, highly-scalable agent that picks up a CI job through
+the coordinator API of GitLab CI/CD, runs the job, and sends the result back to the GitLab instance.
 
-A Runner can be specific to a certain project or serve any project
-in GitLab CI/CD. A Runner that serves all projects is called a shared Runner.
+Runners are created by an administrator and are visible in the GitLab UI.
+Runners can be specific to certain projects or available to all projects.
 
-Ideally, the GitLab Runner should not be installed on the same machine as GitLab.
-Read the [requirements documentation](../../install/requirements.md#gitlab-runner)
-for more information.
+## Types of Runners
 
-## Shared, specific and group Runners
+There are three types of Runners:
 
-After [installing the Runner](https://docs.gitlab.com/runner/install/), you can either register it as shared or
-specific. You can only register a shared Runner if you have admin access to
-the GitLab instance. The main differences between a shared and a specific Runner
-are:
+- [Shared](#shared-runners) (for all projects)
+- [Group](#group-runners) (for all projects in a group)
+- [Specific](#specific-runners) (for specific projects)
 
-- **Shared Runners** are useful for jobs that have similar requirements,
-  between multiple projects. Rather than having multiple Runners idling for
-  many projects, you can have a single or a small number of Runners that handle
-  multiple projects. This makes it easier to maintain and update them.
-  Shared Runners process jobs using a [fair usage queue](#how-shared-runners-pick-jobs).
-  In contrast to specific Runners that use a FIFO queue, this prevents
-  cases where projects create hundreds of jobs which can lead to eating all
-  available shared Runners resources.
-- **Specific Runners** are useful for jobs that have special requirements or for
-  projects with a specific demand. If a job has certain requirements, you can set
-  up the specific Runner with this in mind, while not having to do this for all
-  Runners. For example, if you want to deploy a certain project, you can set up
-  a specific Runner to have the right credentials for this. The [usage of tags](#using-tags)
-  may be useful in this case. Specific Runners process jobs using a [FIFO](https://en.wikipedia.org/wiki/FIFO_(computing_and_electronics)) queue.
-- **Group Runners** are useful when you have multiple projects under one group
-  and would like all projects to have access to a set of Runners. Group Runners
-  process jobs using a [FIFO](https://en.wikipedia.org/wiki/FIFO_(computing_and_electronics)) queue.
+If you are running self-managed GitLab, you can create your own Runners.
 
-A Runner that is specific only runs for the specified project(s). A shared Runner
-can run jobs for every project that allows shared Runners. To allow shared Runners on a project:
+If you are using GitLab.com, you can use the shared Runners provided by GitLab or
+create your own group or specific Runners.
 
-1. Navigate to the project's **{settings}** **Settings > CI/CD**.
-1. Expand the **Runners** section.
-1. Click on **Allow shared Runners**.
+### Shared Runners
 
-Projects with high demand of CI activity can also benefit from using specific
-Runners. By having dedicated Runners you are guaranteed that the Runner is not
-being held up by another project's jobs.
+*Shared Runners* are available to every project in a GitLab instance.
 
-You can set up a specific Runner to be used by multiple projects. The difference
-with a shared Runner is that you have to enable each project explicitly for
-the Runner to be able to run its jobs.
+Use shared Runners when you have multiple jobs with similar requirements. Rather than
+having multiple Runners idling for many projects, you can have a few Runners that handle
+multiple projects.
 
-Specific Runners do not get shared with forked projects automatically.
-A fork does copy the CI settings (jobs, allow shared, etc) of the cloned
-repository.
+If you are using a self-managed instance of GitLab, your administrator can create
+shared Runners and configure them to use the
+[executor](https://docs.gitlab.com/runner/executors/README.html) you want.
 
-## Registering a shared Runner
+If you are using GitLab.com, you can select from a list of
+[shared Runners that GitLab maintains](../../user/gitlab_com/index.md#shared-runners).
 
-You can only register a shared Runner if you are an admin of the GitLab instance.
+#### How shared Runners pick jobs
 
-1. Grab the shared-Runner token on the `admin/runners` page
+Shared Runners process jobs by using a fair usage queue. This queue prevents
+projects from creating hundreds of jobs and using all available
+shared Runner resources.
 
-   ![Shared Runners Admin Area](img/shared_runners_admin.png)
-
-1. [Register the Runner](https://docs.gitlab.com/runner/register/)
-
-Shared Runners are enabled by default as of GitLab 8.2, but can be disabled
-with the **Disable shared Runners** button which is present under each project's
-**{settings}** **Settings > CI/CD** page. Previous versions of GitLab defaulted shared
-Runners to disabled.
-
-## Registering a specific Runner
-
-Registering a specific Runner can be done in two ways:
-
-1. Creating a Runner with the project registration token
-1. Converting a shared Runner into a specific Runner (one-way, admin only)
-
-### Registering a specific Runner with a project registration token
-
-To create a specific Runner without having admin rights to the GitLab instance,
-visit the project you want to make the Runner work for in GitLab:
-
-1. Go to **{settings}** **Settings > CI/CD** to obtain the token
-1. [Register the Runner](https://docs.gitlab.com/runner/register/)
-
-## Registering a group Runner
-
-Creating a group Runner requires Owner permissions for the group. To create a
-group Runner visit the group you want to make the Runner work for in GitLab:
-
-1. Go to **{settings}** **Settings > CI/CD** to obtain the token
-1. [Register the Runner](https://docs.gitlab.com/runner/register/)
-
-### Making an existing shared Runner specific
-
-If you are an admin on your GitLab instance, you can turn any shared Runner into
-a specific one, but not the other way around. Keep in mind that this is a one
-way transition.
-
-1. Go to the Runners in the **{admin}** **Admin Area > Overview > Runners** (`/admin/runners`)
-   and find your Runner
-1. Enable any projects under **Restrict projects for this Runner** to be used
-   with the Runner
-
-From now on, the shared Runner will be specific to those projects.
-
-## Locking a specific Runner from being enabled for other projects
-
-You can configure a Runner to assign it exclusively to a project. When a
-Runner is locked this way, it can no longer be enabled for other projects.
-This setting can be enabled the first time you [register a Runner](https://docs.gitlab.com/runner/register/) and
-can be changed afterwards under each Runner's settings.
-
-To lock/unlock a Runner:
-
-1. Visit your project's **{settings}** **Settings > CI/CD**
-1. Find the Runner you wish to lock/unlock and make sure it's enabled
-1. Click the pencil button
-1. Check the **Lock to current projects** option
-1. Click **Save changes** for the changes to take effect
-
-## Assigning a Runner to another project
-
-If you are an Owner on a project where a specific Runner is assigned to, and the
-Runner is not [locked only to that project](#locking-a-specific-runner-from-being-enabled-for-other-projects),
-you can enable the Runner also on any other project where you have Owner permissions.
-
-To enable/disable a Runner in your project:
-
-1. Visit your project's **{settings}** **Settings > CI/CD**
-1. Find the Runner you wish to enable/disable
-1. Click **Enable for this project** or **Disable for this project**
-
-> **Note**:
-Consider that if you don't lock your specific Runner to a specific project, any
-user with Maintainer role in you project can assign your Runner to another arbitrary
-project without requiring your authorization, so use it with caution.
-
-CAUTION: **Caution:**
-Never add a private Runner that you're using in your private projects to a
-project that you share with other people.
-
-CAUTION: **Caution:**
-Never use a Runner from a project which has multiple maintainers in your
-private project.
-
-An admin can enable/disable a specific Runner for projects:
-
-1. Navigate to **Admin > Runners**
-1. Find the Runner you wish to enable/disable
-1. Click edit on the Runner
-1. Click **Enable** or **Disable** on the project
-
-## Protected Runners
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/13194) in GitLab 10.0.
-
-You can protect Runners from revealing sensitive information.
-Whenever a Runner is protected, the Runner picks only jobs created on
-[protected branches](../../user/project/protected_branches.md) or [protected tags](../../user/project/protected_tags.md), and ignores other jobs.
-
-To protect/unprotect Runners:
-
-1. Visit your project's **{settings}** **Settings > CI/CD**
-1. Find a Runner you want to protect/unprotect and make sure it's enabled
-1. Click the pencil button besides the Runner name
-1. Check the **Protected** option
-1. Click **Save changes** for the changes to take effect
-
-![specific Runners edit icon](img/protected_runners_check_box.png)
-
-## Manually clearing the Runners cache
-
-Read [clearing the cache](../caching/index.md#clearing-the-cache).
-
-## How shared Runners pick jobs
-
-Shared Runners abide to a process queue we call fair usage. The fair usage
-algorithm tries to assign jobs to shared Runners from projects that have the
-lowest number of jobs currently running on shared Runners.
+The fair usage queue algorithm assigns jobs based on the projects that have the
+fewest number of jobs already running on shared Runners.
 
 **Example 1**
 
-We have following jobs in queue:
+If these jobs are in the queue:
 
 - Job 1 for Project 1
 - Job 2 for Project 1
@@ -199,20 +62,20 @@ We have following jobs in queue:
 - Job 5 for Project 2
 - Job 6 for Project 3
 
-With the fair usage algorithm jobs are assigned in following order:
+The fair usage algorithm assigns jobs in this order:
 
-1. Job 1 is chosen first, because it has the lowest job number from projects with no running jobs (that is, all projects)
-1. Job 4 is next, because 4 is now the lowest job number from projects with no running jobs (Project 1 has a job running)
-1. Job 6 is next, because 6 is now the lowest job number from projects with no running jobs (Projects 1 and 2 have jobs running)
-1. Job 2 is next, because, of projects with the lowest number of jobs running (each has 1), it is the lowest job number
+1. Job 1 is chosen first, because it has the lowest job number from projects with no running jobs (that is, all projects).
+1. Job 4 is next, because 4 is now the lowest job number from projects with no running jobs (Project 1 has a job running).
+1. Job 6 is next, because 6 is now the lowest job number from projects with no running jobs (Projects 1 and 2 have jobs running).
+1. Job 2 is next, because, of projects with the lowest number of jobs running (each has 1), it is the lowest job number.
 1. Job 5 is next, because Project 1 now has 2 jobs running and Job 5 is the lowest remaining job number between Projects 2 and 3.
-1. Lastly we choose Job 3... because it's the only job left
+1. Finally is Job 3... because it's the only job left.
 
 ---
 
 **Example 2**
 
-We have following jobs in queue:
+If these jobs are in the queue:
 
 - Job 1 for project 1
 - Job 2 for project 1
@@ -221,103 +84,129 @@ We have following jobs in queue:
 - Job 5 for project 2
 - Job 6 for project 3
 
-With the fair usage algorithm jobs are assigned in following order:
+The fair usage algorithm assigns jobs in this order:
 
-1. Job 1 is chosen first, because it has the lowest job number from projects with no running jobs (that is, all projects)
-1. We finish job 1
-1. Job 2 is next, because, having finished Job 1, all projects have 0 jobs running again, and 2 is the lowest available job number
-1. Job 4 is next, because with Project 1 running a job, 4 is the lowest number from projects running no jobs (Projects 2 and 3)
-1. We finish job 4
-1. Job 5 is next, because having finished Job 4, Project 2 has no jobs running again
-1. Job 6 is next, because Project 3 is the only project left with no running jobs
-1. Lastly we choose Job 3... because, again, it's the only job left (who says 1 is the loneliest number?)
+1. Job 1 is chosen first, because it has the lowest job number from projects with no running jobs (that is, all projects).
+1. We finish job 1.
+1. Job 2 is next, because, having finished Job 1, all projects have 0 jobs running again, and 2 is the lowest available job number.
+1. Job 4 is next, because with Project 1 running a job, 4 is the lowest number from projects running no jobs (Projects 2 and 3).
+1. We finish job 4.
+1. Job 5 is next, because having finished Job 4, Project 2 has no jobs running again.
+1. Job 6 is next, because Project 3 is the only project left with no running jobs.
+1. Lastly we choose Job 3... because, again, it's the only job left.
 
-## Using shared Runners effectively
+#### Enable a shared Runner
 
-If you are planning to use shared Runners, there are several things you
-should keep in mind.
+By default, all projects can use shared Runners, and they are enabled by default.
 
-### Using tags
+However, you can enable or disable shared Runners for individual projects.
 
-You must set up a Runner to be able to run all the different types of jobs
-that it may encounter on the projects it's shared over. This would be
-problematic for large amounts of projects, if it wasn't for tags.
+To enable or disable a shared Runner:
 
-By tagging a Runner for the types of jobs it can handle, you can make sure
-shared Runners will [only run the jobs they are equipped to run](../yaml/README.md#tags).
+1. Go to the project's **{settings}** **Settings > CI/CD** and expand the **Runners** section.
+1. Click **Allow shared Runners** or **Disable shared Runners**.
 
-For instance, at GitLab we have Runners tagged with "rails" if they contain
-the appropriate dependencies to run Rails test suites.
+### Group Runners
 
-### Allowing Runners with tags to pick jobs without tags
+Use *Group Runners* when you want all projects in a group
+to have access to a set of Runners.
 
-When you [register a Runner](https://docs.gitlab.com/runner/register/), its default behavior is to **only pick**
-[tagged jobs](../yaml/README.md#tags).
+Group Runners process jobs by using a first in, first out ([FIFO](https://en.wikipedia.org/wiki/FIFO_(computing_and_electronics))) queue.
+
+#### Create a group Runner
+
+You can create a group Runner for your self-managed GitLab instance or for GitLab.com.
+You must have [Owner permissions](../../user/permissions.md#group-members-permissions) for the group.
+
+To create a group Runner:
+
+1. [Install Runner](https://docs.gitlab.com/runner/install/).
+1. Go to the group you want to make the Runner work for.
+1. Go to **{settings}** **Settings > CI/CD** and expand the **Runners** section.
+1. Note the URL and token.
+1. [Register the Runner](https://docs.gitlab.com/runner/register/).
+
+#### Pause or remove a group Runner
+
+You can pause or remove a group Runner.
+You must have [Owner permissions](../../user/permissions.md#group-members-permissions) for the group.
+
+1. Go to the group you want to remove or pause the Runner for.
+1. Go to **{settings}** **Settings > CI/CD** and expand the **Runners** section.
+1. Click **Pause** or **Remove Runner**.
+1. On the confirmation dialog, click **OK**.
+
+### Specific Runners
+
+Use *Specific Runners* when you want to use Runners for specific projects. For example,
+when you have:
+
+- Jobs with specific requirements, like a deploy job that requires credentials.
+- Projects with a lot of CI activity that can benefit from being separate from other Runners.
+
+You can set up a specific Runner to be used by multiple projects. Specific Runners
+must be enabled for each project explicitly.
+
+Specific Runners process jobs by using a first in, first out ([FIFO](https://en.wikipedia.org/wiki/FIFO_(computing_and_electronics))) queue.
 
 NOTE: **Note:**
-Owner [permissions](../../user/permissions.md) are required to change the
-Runner settings.
+Specific Runners do not get shared with forked projects automatically.
+A fork *does* copy the CI / CD settings of the cloned repository.
 
-To make a Runner pick untagged jobs:
+#### Create a specific Runner
 
-1. Visit your project's **{settings}** **Settings > CI/CD > Runners**.
-1. Find the Runner you want to pick untagged jobs and make sure it's enabled.
+You can create a specific Runner for your self-managed GitLab instance or for GitLab.com.
+You must have [Owner permissions](../../user/permissions.md#project-members-permissions) for the project.
+
+To create a specific Runner:
+
+1. [Install Runner](https://docs.gitlab.com/runner/install/).
+1. Go to the project's **{settings}** **Settings > CI/CD** and expand the **Runners** section.
+1. Note the URL and token.
+1. [Register the Runner](https://docs.gitlab.com/runner/register/).
+
+#### Enable a specific Runner for a specific project
+
+A specific Runner is available in the project it was created for. An administrator can
+enable a specific Runner to apply to additional projects.
+
+- You must have Owner permissions for the project.
+- The specific Runner must not be [locked](#prevent-a-specific-runner-from-being-enabled-for-other-projects).
+
+To enable or disable a specific Runner for a project:
+
+1. Go to the project's **{settings}** **Settings > CI/CD** and expand the **Runners** section.
+1. Click **Enable for this project** or **Disable for this project**.
+
+#### Prevent a specific Runner from being enabled for other projects
+
+You can configure a specific Runner so it is "locked" and cannot be enabled for other projects.
+This setting can be enabled when you first [register a Runner](https://docs.gitlab.com/runner/register/),
+but can also be changed later.
+
+To lock or unlock a Runner:
+
+1. Go to the project's **{settings}** **Settings > CI/CD** and expand the **Runners** section.
+1. Find the Runner you want to lock or unlock. Make sure it's enabled.
 1. Click the pencil button.
-1. Check the **Run untagged jobs** option.
-1. Click the **Save changes** button for the changes to take effect.
+1. Check the **Lock to current projects** option.
+1. Click **Save changes**.
 
-NOTE: **Note:**
-The Runner tags list can not be empty when it's not allowed to pick untagged jobs.
+## Manually clear the Runner cache
 
-Below are some example scenarios of different variations.
+Read [clearing the cache](../caching/index.md#clearing-the-cache).
 
-#### Runner runs only tagged jobs
+## Set maximum job timeout for a Runner
 
-The following examples illustrate the potential impact of the Runner being set
-to run only tagged jobs.
+For each Runner, you can specify a *maximum job timeout*. This timeout,
+if smaller than the [project defined timeout](../pipelines/settings.md#timeout), takes precedence.
 
-Example 1:
+This feature can be used to prevent your shared Runner from being overwhelmed
+by a project that has jobs with a long timeout (for example, one week).
 
-1. The Runner is configured to run only tagged jobs and has the `docker` tag.
-1. A job that has a `hello` tag is executed and stuck.
+When not configured, Runners will not override the project timeout.
 
-Example 2:
-
-1. The Runner is configured to run only tagged jobs and has the `docker` tag.
-1. A job that has a `docker` tag is executed and run.
-
-Example 3:
-
-1. The Runner is configured to run only tagged jobs and has the `docker` tag.
-1. A job that has no tags defined is executed and stuck.
-
-#### Runner is allowed to run untagged jobs
-
-The following examples illustrate the potential impact of the Runner being set
-to run tagged and untagged jobs.
-
-Example 1:
-
-1. The Runner is configured to run untagged jobs and has the `docker` tag.
-1. A job that has no tags defined is executed and run.
-1. A second job that has a `docker` tag defined is executed and run.
-
-Example 2:
-
-1. The Runner is configured to run untagged jobs and has no tags defined.
-1. A job that has no tags defined is executed and run.
-1. A second job that has a `docker` tag defined is stuck.
-
-### Setting maximum job timeout for a Runner
-
-For each Runner you can specify a _maximum job timeout_. Such timeout,
-if smaller than [project defined timeout](../pipelines/settings.md#timeout), will take the precedence. This
-feature can be used to prevent Shared Runner from being appropriated
-by a project by setting a ridiculous big timeout (for example, one week).
-
-When not configured, Runner will not override project timeout.
-
-How this feature will work:
+How this feature works:
 
 **Example 1 - Runner timeout bigger than project timeout**
 
@@ -340,7 +229,7 @@ How this feature will work:
 1. You start a job
 1. The job, if running longer, will be timed out after **30 minutes**
 
-### Be careful with sensitive information
+## Be careful with sensitive information
 
 With some [Runner Executors](https://docs.gitlab.com/runner/executors/README.html),
 if you can run a job on the Runner, you can get full access to the file system,
@@ -355,6 +244,25 @@ The above is easily avoided by restricting the usage of shared Runners
 on large public GitLab instances, controlling access to your GitLab instance,
 and using more secure [Runner Executors](https://docs.gitlab.com/runner/executors/README.html).
 
+### Prevent Runners from revealing sensitive information
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/13194) in GitLab 10.0.
+
+You can protect Runners so they don't reveal sensitive information.
+When a Runner is protected, the Runner picks jobs created on
+[protected branches](../../user/project/protected_branches.md) or [protected tags](../../user/project/protected_tags.md) only,
+and ignores other jobs.
+
+To protect or unprotect a Runner:
+
+1. Go to the project's **{settings}** **Settings > CI/CD** and expand the **Runners** section.
+1. Find the Runner you want to protect or unprotect. Make sure it's enabled.
+1. Click the pencil button.
+1. Check the **Protected** option.
+1. Click **Save changes**.
+
+![specific Runners edit icon](img/protected_runners_check_box.png)
+
 ### Forks
 
 Whenever a project is forked, it copies the settings of the jobs that relate
@@ -362,23 +270,21 @@ to it. This means that if you have shared Runners set up for a project and
 someone forks that project, the shared Runners will also serve jobs of this
 project.
 
-## Attack vectors in Runners
+### Attack vectors in Runners
 
 Mentioned briefly earlier, but the following things of Runners can be exploited.
 We're always looking for contributions that can mitigate these
 [Security Considerations](https://docs.gitlab.com/runner/security/).
 
-### Resetting the registration token for a Project
+### Reset the Runner registration token for a project
 
-If you think that registration token for a Project was revealed, you should
-reset them. It's recommended because such a token can be used to register another
-Runner to the Project. It may then be used to obtain the values of secret
-variables or clone the project code, that normally may be unavailable for the
-attacker.
+If you think that a registration token for a project was revealed, you should
+reset it. A token can be used to register another Runner for the project. That new Runner
+may then be used to obtain the values of secret variables or to clone project code.
 
 To reset the token:
 
-1. Go to **{settings}** **Settings > CI/CD** for a specified Project.
+1. Go to the project's **{settings}** **Settings > CI/CD**.
 1. Expand the **General pipelines settings** section.
 1. Find the **Runner token** form field and click the **Reveal value** button.
 1. Delete the value and save the form.
@@ -390,7 +296,7 @@ any new Runners to the project. If you are using any tools to provision and
 register new Runners, the tokens used in those tools should be updated to reflect the
 value of the new token.
 
-## Determining the IP address of a Runner
+## Determine the IP address of a Runner
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/17286) in GitLab 10.6.
 
@@ -403,22 +309,88 @@ automatically updated in GitLab.
 The IP address for shared Runners and specific Runners can be found in
 different places.
 
-### Shared Runners
+### Determine the IP address of a shared Runner
 
 To view the IP address of a shared Runner you must have admin access to
 the GitLab instance. To determine this:
 
-1. Visit **{admin}** **Admin Area > Overview > Runners**
-1. Look for the Runner in the table and you should see a column for "IP Address"
+1. Visit **{admin}** **Admin Area > Overview > Runners**.
+1. Look for the Runner in the table and you should see a column for **IP Address**.
 
 ![shared Runner IP address](img/shared_runner_ip_address.png)
 
-### Specific Runners
+### Determine the IP address of a specific Runner
 
-You can find the IP address of a Runner for a specific project by:
+To can find the IP address of a Runner for a specific project,
+you must have Owner [permissions](../../user/permissions.md#project-members-permissions) for the project.
 
-1. Visit your project's **{settings}** **Settings > CI/CD**
-1. Find the Runner and click on it's ID which links you to the details page
-1. On the details page you should see a row for "IP Address"
+1. Go to the project's **{settings}** **Settings > CI/CD** and expand the **Runners** section.
+1. On the details page you should see a row for **IP Address**.
 
 ![specific Runner IP address](img/specific_runner_ip_address.png)
+
+## Use tags to limit the number of jobs using the Runner
+
+You must set up a Runner to be able to run all the different types of jobs
+that it may encounter on the projects it's shared over. This would be
+problematic for large amounts of projects, if it weren't for tags.
+
+By tagging a Runner for the types of jobs it can handle, you can make sure
+shared Runners will [only run the jobs they are equipped to run](../yaml/README.md#tags).
+
+For instance, at GitLab we have Runners tagged with `rails` if they contain
+the appropriate dependencies to run Rails test suites.
+
+When you [register a Runner](https://docs.gitlab.com/runner/register/), its default behavior is to **only pick**
+[tagged jobs](../yaml/README.md#tags).
+To change this, you must have Owner [permissions](../../user/permissions.md#project-members-permissions) for the project.
+
+To make a Runner pick untagged jobs:
+
+1. Go to the project's **{settings}** **Settings > CI/CD** and expand the **Runners** section.
+1. Find the Runner you want to pick untagged jobs and make sure it's enabled.
+1. Click the pencil button.
+1. Check the **Run untagged jobs** option.
+1. Click the **Save changes** button for the changes to take effect.
+
+NOTE: **Note:**
+The Runner tags list can not be empty when it's not allowed to pick untagged jobs.
+
+Below are some example scenarios of different variations.
+
+### Runner runs only tagged jobs
+
+The following examples illustrate the potential impact of the Runner being set
+to run only tagged jobs.
+
+Example 1:
+
+1. The Runner is configured to run only tagged jobs and has the `docker` tag.
+1. A job that has a `hello` tag is executed and stuck.
+
+Example 2:
+
+1. The Runner is configured to run only tagged jobs and has the `docker` tag.
+1. A job that has a `docker` tag is executed and run.
+
+Example 3:
+
+1. The Runner is configured to run only tagged jobs and has the `docker` tag.
+1. A job that has no tags defined is executed and stuck.
+
+### Runner is allowed to run untagged jobs
+
+The following examples illustrate the potential impact of the Runner being set
+to run tagged and untagged jobs.
+
+Example 1:
+
+1. The Runner is configured to run untagged jobs and has the `docker` tag.
+1. A job that has no tags defined is executed and run.
+1. A second job that has a `docker` tag defined is executed and run.
+
+Example 2:
+
+1. The Runner is configured to run untagged jobs and has no tags defined.
+1. A job that has no tags defined is executed and run.
+1. A second job that has a `docker` tag defined is stuck.

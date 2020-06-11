@@ -86,9 +86,9 @@ which type of Runner you are using, cache can act differently.
 From the perspective of the developer, to ensure maximum availability of the
 cache, when declaring `cache` in your jobs, use one or a mix of the following:
 
-- [Tag your Runners](../runners/README.md#using-tags) and use the tag on jobs
+- [Tag your Runners](../runners/README.md#use-tags-to-limit-the-number-of-jobs-using-the-runner) and use the tag on jobs
   that share their cache.
-- [Use sticky Runners](../runners/README.md#locking-a-specific-runner-from-being-enabled-for-other-projects)
+- [Use sticky Runners](../runners/README.md#prevent-a-specific-runner-from-being-enabled-for-other-projects)
   that will be only available to a particular project.
 - [Use a `key`](../yaml/README.md#cachekey) that fits your workflow (for example,
   different caches on each branch). For that, you can take advantage of the

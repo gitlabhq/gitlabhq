@@ -118,9 +118,9 @@ agents you were using.
 
 There are some important differences in the way Runners work in comparison to agents:
 
-- Runners can be set up as [shared across an instance, be added at the group level, or set up at the project level](../runners/README.md#shared-specific-and-group-runners).
+- Runners can be set up as [shared across an instance, be added at the group level, or set up at the project level](../runners/README.md#types-of-runners).
   They will self-select jobs from the scopes you've defined automatically.
-- You can also [use tags](../runners/README.md#using-tags) for finer control, and
+- You can also [use tags](../runners/README.md#use-tags-to-limit-the-number-of-jobs-using-the-runner) for finer control, and
   associate runners with specific jobs. For example, you can use a tag for jobs that
   require dedicated, more powerful, or specific hardware.
 - GitLab has [autoscaling for Runners](https://docs.gitlab.com/runner/configuration/autoscale.html)
@@ -220,7 +220,7 @@ and is meant to be a mapping of concepts there to concepts in GitLab.
 The agent section is used to define how a pipeline will be executed. For GitLab, we use the [GitLab Runner](../runners/README.md)
 to provide this capability. You can configure your own runners in Kubernetes or on any host, or take advantage
 of our shared runner fleet (note that the shared runner fleet is only available for GitLab.com users.) The link above will bring you to the documentation which will describe how to get
-up and running quickly. We also support using [tags](../runners/README.md#using-tags) to direct different jobs
+up and running quickly. We also support using [tags](../runners/README.md#use-tags-to-limit-the-number-of-jobs-using-the-runner) to direct different jobs
 to different Runners (execution agents).
 
 The `agent` section also allows you to define which Docker images should be used for execution, for which we use

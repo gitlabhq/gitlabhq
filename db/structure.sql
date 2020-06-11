@@ -9119,6 +9119,8 @@ CREATE INDEX idx_merge_requests_on_state_id_and_merge_status ON public.merge_req
 
 CREATE INDEX idx_merge_requests_on_target_project_id_and_iid_opened ON public.merge_requests USING btree (target_project_id, iid) WHERE (state_id = 1);
 
+CREATE INDEX idx_merge_requests_on_target_project_id_and_locked_state ON public.merge_requests USING btree (target_project_id) WHERE (state_id = 4);
+
 CREATE UNIQUE INDEX idx_metrics_users_starred_dashboard_on_user_project_dashboard ON public.metrics_users_starred_dashboards USING btree (user_id, project_id, dashboard_path);
 
 CREATE INDEX idx_mr_cc_diff_files_on_mr_cc_id_and_sha ON public.merge_request_context_commit_diff_files USING btree (merge_request_context_commit_id, sha);
@@ -13847,5 +13849,6 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200603073101
 20200604143628
 20200608075553
+20200609002841
 \.
 

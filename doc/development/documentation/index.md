@@ -414,7 +414,7 @@ The following GitLab features are used among others:
 - [Multi project pipelines](../../ci/multi_project_pipeline_graphs.md)
 - [Review Apps](../../ci/review_apps/index.md)
 - [Artifacts](../../ci/yaml/README.md#artifacts)
-- [Specific Runner](../../ci/runners/README.md#locking-a-specific-runner-from-being-enabled-for-other-projects)
+- [Specific Runner](../../ci/runners/README.md#prevent-a-specific-runner-from-being-enabled-for-other-projects)
 - [Pipelines for merge requests](../../ci/merge_request_pipelines/index.md)
 
 ## Testing

@@ -289,7 +289,7 @@ The following documentation relates to the DevOps **Release** stage:
 | [Environment-specific variables](ci/variables/README.md#limit-the-environment-scopes-of-environment-variables) | Limit the scope of variables to specific environments.                                                                                    |
 | [GitLab CI/CD](ci/README.md)                                                                                                        | Explore the features and capabilities of Continuous Deployment and Delivery with GitLab.                                              |
 | [GitLab Pages](user/project/pages/index.md)                                                                                         | Build, test, and deploy a static site directly from GitLab.                                                                           |
-| [Protected Runners](ci/runners/README.md#protected-runners)                                                                         | Select Runners to only pick jobs for protected branches and tags.                                                                     |
+| [Protected Runners](ci/runners/README.md#prevent-runners-from-revealing-sensitive-information)                                                                         | Select Runners to only pick jobs for protected branches and tags.                                                                     |
 | [Scheduled Pipelines](ci/pipelines/schedules.md)                                                                          | Execute pipelines on a schedule.                                                                                                      |
 
 <div align="right">

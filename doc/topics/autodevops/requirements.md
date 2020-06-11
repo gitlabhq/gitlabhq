@@ -61,8 +61,8 @@ To make full use of Auto DevOps with Kubernetes, you need:
   can deploy it to your cluster by installing the
   [GitLab-managed app for GitLab Runner](../../user/clusters/applications.md#gitlab-runner).
 
-  Runners should be registered as [shared Runners](../../ci/runners/README.md#registering-a-shared-runner)
-  for the entire GitLab instance, or [specific Runners](../../ci/runners/README.md#registering-a-specific-runner)
+  Runners should be registered as [shared Runners](../../ci/runners/README.md#shared-runners)
+  for the entire GitLab instance, or [specific Runners](../../ci/runners/README.md#specific-runners)
   that are assigned to specific projects (the default if you've installed the
   GitLab Runner managed application).
 

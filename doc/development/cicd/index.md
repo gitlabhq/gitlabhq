@@ -98,7 +98,7 @@ Once all jobs are completed for the current stage, the server "unlocks" all the 
 
 ### Communication between Runner and GitLab server
 
-Once the Runner is [registered](../../ci/runners/README.md#registering-a-shared-runner) using the registration token, the server knows what type of jobs it can execute. This depends on:
+Once the Runner is [registered](https://docs.gitlab.com/runner/register/) using the registration token, the server knows what type of jobs it can execute. This depends on:
 
 - The type of runner it is registered as:
   - a shared runner
