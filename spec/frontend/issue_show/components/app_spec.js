@@ -17,6 +17,9 @@ jest.mock('~/issue_show/event_hub');
 
 const REALTIME_REQUEST_STACK = [initialRequest, secondRequest];
 
+const zoomMeetingUrl = 'https://gitlab.zoom.us/j/95919234811';
+const publishedIncidentUrl = 'https://status.com/';
+
 describe('Issuable output', () => {
   let mock;
   let realtimeRequestCount = 0;
@@ -67,6 +70,8 @@ describe('Issuable output', () => {
         projectNamespace: '/',
         projectPath: '/',
         issuableTemplateNamesPath: '/issuable-templates-path',
+        zoomMeetingUrl,
+        publishedIncidentUrl,
       },
     }).$mount();
   });
@@ -132,7 +137,7 @@ describe('Issuable output', () => {
     vm.canUpdate = false;
 
     return vm.$nextTick().then(() => {
-      expect(vm.$el.querySelector('.btn')).toBeNull();
+      expect(vm.$el.querySelector('.markdown-selector')).toBeNull();
     });
   });
 
@@ -181,6 +186,17 @@ describe('Issuable output', () => {
         expect(modal.style.display).toEqual('none');
         expect(document.body.querySelector('.js-recaptcha-script')).toBeNull();
       });
+  });
+
+  describe('Pinned links propagated', () => {
+    it.each`
+      prop                      | value
+      ${'zoomMeetingUrl'}       | ${zoomMeetingUrl}
+      ${'publishedIncidentUrl'} | ${publishedIncidentUrl}
+    `('sets the $prop correctly on underlying pinned links', ({ prop, value }) => {
+      expect(vm[prop]).toEqual(value);
+      expect(vm.$el.querySelector(`[data-testid="${prop}"]`).href).toBe(value);
+    });
   });
 
   describe('updateIssuable', () => {

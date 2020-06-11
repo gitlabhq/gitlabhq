@@ -725,4 +725,26 @@ describe('Api', () => {
         .catch(done.fail);
     });
   });
+
+  describe('tags', () => {
+    it('fetches all tags of a particular project', done => {
+      const query = 'dummy query';
+      const options = { unused: 'option' };
+      const projectId = 8;
+      const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/projects/${projectId}/repository/tags`;
+      mock.onGet(expectedUrl).reply(200, [
+        {
+          name: 'test',
+        },
+      ]);
+
+      Api.tags(projectId, query, options)
+        .then(({ data }) => {
+          expect(data.length).toBe(1);
+          expect(data[0].name).toBe('test');
+        })
+        .then(done)
+        .catch(done.fail);
+    });
+  });
 });

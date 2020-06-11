@@ -2,10 +2,12 @@
 import { mapState } from 'vuex';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import BoardColumn from 'ee_else_ce/boards/components/board_column.vue';
+import EpicsSwimlanes from 'ee_component/boards/components/epics_swimlanes.vue';
 
 export default {
   components: {
     BoardColumn,
+    EpicsSwimlanes,
   },
   mixins: [glFeatureFlagMixin()],
   props: {
@@ -49,18 +51,31 @@ export default {
 </script>
 
 <template>
-  <div
-    v-if="!isSwimlanesOn"
-    class="boards-list w-100 py-3 px-2 text-nowrap"
-    data-qa-selector="boards_list"
-  >
-    <board-column
-      v-for="list in lists"
-      :key="list.id"
-      ref="board"
+  <div>
+    <div
+      v-if="!isSwimlanesOn"
+      class="boards-list w-100 py-3 px-2 text-nowrap"
+      data-qa-selector="boards_list"
+    >
+      <board-column
+        v-for="list in lists"
+        :key="list.id"
+        ref="board"
+        :can-admin-list="canAdminList"
+        :group-id="groupId"
+        :list="list"
+        :disabled="disabled"
+        :issue-link-base="issueLinkBase"
+        :root-path="rootPath"
+        :board-id="boardId"
+      />
+    </div>
+    <epics-swimlanes
+      v-else
+      ref="swimlanes"
+      :lists="lists"
       :can-admin-list="canAdminList"
       :group-id="groupId"
-      :list="list"
       :disabled="disabled"
       :issue-link-base="issueLinkBase"
       :root-path="rootPath"

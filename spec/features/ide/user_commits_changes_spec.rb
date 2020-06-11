@@ -30,14 +30,4 @@ describe 'IDE user commits changes', :js do
     expect(project.repository.blob_at('master', 'foo/bar/.gitkeep')).to be_nil
     expect(project.repository.blob_at('master', 'foo/bar/lorem_ipsum.md').data).to eql(content)
   end
-
-  it 'user adds then deletes new file' do
-    ide_create_new_file('foo/bar/lorem_ipsum.md')
-
-    expect(page).to have_selector(ide_commit_tab_selector)
-
-    ide_delete_file('foo/bar/lorem_ipsum.md')
-
-    expect(page).not_to have_selector(ide_commit_tab_selector)
-  end
 end

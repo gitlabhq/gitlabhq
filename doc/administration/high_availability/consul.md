@@ -7,7 +7,7 @@ type: reference
 As part of its High Availability stack, GitLab Premium includes a bundled version of [Consul](https://www.consul.io/) that can be managed through `/etc/gitlab/gitlab.rb`. Consul is a service networking solution. When it comes to [GitLab Architecture](../../development/architecture.md), Consul utilization is supported for configuring:
 
 1. [Monitoring in Scaled and Highly Available environments](monitoring_node.md)
-1. [PostgreSQL High Availability with Omnibus](database.md#high-availability-with-omnibus-gitlab-premium-only)
+1. [PostgreSQL High Availability with Omnibus](../postgresql/replication_and_failover.md)
 
 A Consul cluster consists of multiple server agents, as well as client agents that run on other nodes which need to talk to the Consul cluster.
 
@@ -27,7 +27,7 @@ When installing the GitLab package, do not supply `EXTERNAL_URL` value.
 
 On each Consul node perform the following:
 
-1. Make sure you collect [`CONSUL_SERVER_NODES`](database.md#consul-information), which are the IP addresses or DNS records of the Consul server nodes, for the next step, before executing the next step.
+1. Make sure you collect [`CONSUL_SERVER_NODES`](../postgresql/replication_and_failover.md#consul-information), which are the IP addresses or DNS records of the Consul server nodes, for the next step, before executing the next step.
 
 1. Edit `/etc/gitlab/gitlab.rb` replacing values noted in the `# START user configuration` section:
 

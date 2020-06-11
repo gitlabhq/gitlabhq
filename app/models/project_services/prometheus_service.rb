@@ -74,6 +74,7 @@ class PrometheusService < MonitoringService
           name: 'google_iap_audience_client_id',
           title: 'Google IAP Audience Client ID',
           placeholder: s_('PrometheusService|Client ID of the IAP secured resource (looks like IAP_CLIENT_ID.apps.googleusercontent.com)'),
+          autocomplete: 'off',
           required: false
         },
         {

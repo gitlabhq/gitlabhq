@@ -126,8 +126,8 @@ As long as at least one of each component is online and capable of handling the 
 By adding automatic failover for database systems, you can enable higher uptime
 with additional database nodes. This extends the default database with
 cluster management and failover policies.
-[PgBouncer](../../development/architecture.md#pgbouncer) in conjunction with
-[Repmgr](../high_availability/database.md) is recommended.
+[PgBouncer in conjunction with Repmgr](../postgresql/replication_and_failover.md)
+is recommended.
 
 ### Instance level replication with GitLab Geo **(PREMIUM ONLY)**
 
@@ -163,7 +163,7 @@ column.
 | [Consul](../../development/architecture.md#consul) ([3](#footnotes)) | Service discovery and health checks/failover | [Consul configuration](../high_availability/consul.md) **(PREMIUM ONLY)** | Yes |
 | [PostgreSQL](../../development/architecture.md#postgresql) | Database | [PostgreSQL configuration](https://docs.gitlab.com/omnibus/settings/database.html) | Yes |
 | [PgBouncer](../../development/architecture.md#pgbouncer) | Database connection pooler | [PgBouncer configuration](../high_availability/pgbouncer.md#running-pgbouncer-as-part-of-a-non-ha-gitlab-installation) **(PREMIUM ONLY)** | Yes |
-| Repmgr | PostgreSQL cluster management and failover | [PostgreSQL and Repmgr configuration](../high_availability/database.md) | Yes |
+| Repmgr | PostgreSQL cluster management and failover | [PostgreSQL and Repmgr configuration](../postgresql/replication_and_failover.md) | Yes |
 | [Redis](../../development/architecture.md#redis) ([3](#footnotes))  | Key/value store for fast data lookup and caching | [Redis configuration](../high_availability/redis.md) | Yes |
 | Redis Sentinel | Redis | [Redis Sentinel configuration](../high_availability/redis.md) | Yes |
 | [Gitaly](../../development/architecture.md#gitaly) ([2](#footnotes)) ([7](#footnotes)) | Provides access to Git repositories | [Gitaly configuration](../gitaly/index.md#run-gitaly-on-its-own-server) | Yes |

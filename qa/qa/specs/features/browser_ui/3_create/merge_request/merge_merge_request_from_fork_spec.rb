@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  context 'Create', quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/220189', type: :investigating } do
+  context 'Create' do
     describe 'Merge request creation from fork' do
       it 'user forks a project, submits a merge request and maintainer merges it' do
         Flow::Login.sign_in

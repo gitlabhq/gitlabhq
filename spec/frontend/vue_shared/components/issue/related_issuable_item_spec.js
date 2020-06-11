@@ -6,6 +6,15 @@ import { defaultAssignees, defaultMilestone } from './related_issuable_mock_data
 
 describe('RelatedIssuableItem', () => {
   let wrapper;
+
+  function mountComponent({ mountMethod = mount, stubs = {}, props = {}, slots = {} } = {}) {
+    wrapper = mountMethod(RelatedIssuableItem, {
+      propsData: props,
+      slots,
+      stubs,
+    });
+  }
+
   const props = {
     idKey: 1,
     displayReference: 'gitlab-org/gitlab-test#1',
@@ -26,10 +35,7 @@ describe('RelatedIssuableItem', () => {
   };
 
   beforeEach(() => {
-    wrapper = mount(RelatedIssuableItem, {
-      slots,
-      propsData: props,
-    });
+    mountComponent({ props, slots });
   });
 
   afterEach(() => {

@@ -146,7 +146,7 @@ Additionally, this configuration is specifically warned against in the
 >to the NFS server can cause data corruption problems.
 
 For supported database architecture, please see our documentation on
-[Configuring a Database for GitLab HA](database.md).
+[Configuring a Database for GitLab HA](../postgresql/replication_and_failover.md).
 
 ## NFS Client mount options
 
@@ -284,7 +284,7 @@ are empty before attempting a restore. Read more about the
 
 Read more on high-availability configuration:
 
-1. [Configure the database](database.md)
+1. [Configure the database](../postgresql/replication_and_failover.md)
 1. [Configure Redis](redis.md)
 1. [Configure the GitLab application servers](gitlab.md)
 1. [Configure the load balancers](load_balancer.md)

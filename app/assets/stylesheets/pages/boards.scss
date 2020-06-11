@@ -206,6 +206,7 @@
 
   &:hover {
     color: $blue-600;
+    box-shadow: none;
   }
 }
 
@@ -572,4 +573,9 @@
     height: 100%;
     top: 0;
   }
+}
+
+.board-epics-swimlanes {
+  overflow-x: auto;
+  min-height: 600px;
 }

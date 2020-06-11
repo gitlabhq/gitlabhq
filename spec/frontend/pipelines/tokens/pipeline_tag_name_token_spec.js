@@ -1,8 +1,8 @@
 import Api from '~/api';
 import { GlFilteredSearchToken, GlFilteredSearchSuggestion, GlLoadingIcon } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import PipelineBranchNameToken from '~/pipelines/components/tokens/pipeline_branch_name_token.vue';
-import { branches, mockBranchesAfterMap } from '../mock_data';
+import PipelineTagNameToken from '~/pipelines/components/tokens/pipeline_tag_name_token.vue';
+import { tags, mockTagsAfterMap } from '../mock_data';
 
 describe('Pipeline Branch Name Token', () => {
   let wrapper;
@@ -19,9 +19,9 @@ describe('Pipeline Branch Name Token', () => {
 
   const defaultProps = {
     config: {
-      type: 'ref',
-      icon: 'branch',
-      title: 'Branch name',
+      type: 'tag',
+      icon: 'tag',
+      title: 'Tag name',
       unique: true,
       projectId: '21',
       disabled: false,
@@ -32,7 +32,7 @@ describe('Pipeline Branch Name Token', () => {
   };
 
   const createComponent = (options, data) => {
-    wrapper = shallowMount(PipelineBranchNameToken, {
+    wrapper = shallowMount(PipelineTagNameToken, {
       propsData: {
         ...defaultProps,
       },
@@ -46,7 +46,7 @@ describe('Pipeline Branch Name Token', () => {
   };
 
   beforeEach(() => {
-    jest.spyOn(Api, 'branches').mockResolvedValue({ data: branches });
+    jest.spyOn(Api, 'tags').mockResolvedValue({ data: tags });
 
     createComponent();
   });
@@ -60,10 +60,10 @@ describe('Pipeline Branch Name Token', () => {
     expect(findFilteredSearchToken().props('config')).toEqual(defaultProps.config);
   });
 
-  it('fetches and sets project branches', () => {
-    expect(Api.branches).toHaveBeenCalled();
+  it('fetches and sets project tags', () => {
+    expect(Api.tags).toHaveBeenCalled();
 
-    expect(wrapper.vm.branches).toEqual(mockBranchesAfterMap);
+    expect(wrapper.vm.tags).toEqual(mockTagsAfterMap);
     expect(findLoadingIcon().exists()).toBe(false);
   });
 
@@ -81,18 +81,18 @@ describe('Pipeline Branch Name Token', () => {
     });
   });
 
-  describe('shows branches correctly', () => {
-    it('renders all branches', () => {
-      createComponent({ stubs }, { branches, loading: false });
+  describe('shows tags correctly', () => {
+    it('renders all tags', () => {
+      createComponent({ stubs }, { tags, loading: false });
 
-      expect(findAllFilteredSearchSuggestions()).toHaveLength(branches.length);
+      expect(findAllFilteredSearchSuggestions()).toHaveLength(tags.length);
     });
 
-    it('renders only the branch searched for', () => {
-      const mockBranches = ['master'];
-      createComponent({ stubs }, { branches: mockBranches, loading: false });
+    it('renders only the tag searched for', () => {
+      const mockTags = ['master-tag'];
+      createComponent({ stubs }, { tags: mockTags, loading: false });
 
-      expect(findAllFilteredSearchSuggestions()).toHaveLength(mockBranches.length);
+      expect(findAllFilteredSearchSuggestions()).toHaveLength(mockTags.length);
     });
   });
 });

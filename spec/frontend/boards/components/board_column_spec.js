@@ -70,37 +70,6 @@ describe('Board Column Component', () => {
   const isExpandable = () => wrapper.classes('is-expandable');
   const isCollapsed = () => wrapper.classes('is-collapsed');
 
-  const findAddIssueButton = () => wrapper.find({ ref: 'newIssueBtn' });
-
-  describe('Add issue button', () => {
-    const hasNoAddButton = [ListType.promotion, ListType.blank, ListType.closed];
-    const hasAddButton = [ListType.backlog, ListType.label, ListType.milestone, ListType.assignee];
-
-    it.each(hasNoAddButton)('does not render when List Type is `%s`', listType => {
-      createComponent({ listType });
-
-      expect(findAddIssueButton().exists()).toBe(false);
-    });
-
-    it.each(hasAddButton)('does render when List Type is `%s`', listType => {
-      createComponent({ listType });
-
-      expect(findAddIssueButton().exists()).toBe(true);
-    });
-
-    it('has a test for each list type', () => {
-      Object.values(ListType).forEach(value => {
-        expect([...hasAddButton, ...hasNoAddButton]).toContain(value);
-      });
-    });
-
-    it('does render when logged out', () => {
-      createComponent();
-
-      expect(findAddIssueButton().exists()).toBe(true);
-    });
-  });
-
   describe('Given different list types', () => {
     it('is expandable when List Type is `backlog`', () => {
       createComponent({ listType: ListType.backlog });
@@ -109,64 +78,17 @@ describe('Board Column Component', () => {
     });
   });
 
-  describe('expanding / collapsing the column', () => {
-    it('does not collapse when clicking the header', () => {
-      createComponent();
-      expect(isCollapsed()).toBe(false);
-      wrapper.find('.board-header').trigger('click');
+  describe('expanded / collaped column', () => {
+    it('has class is-collapsed when list is collapsed', () => {
+      createComponent({ collapsed: false });
 
-      return wrapper.vm.$nextTick().then(() => {
-        expect(isCollapsed()).toBe(false);
-      });
-    });
-
-    it('collapses expanded Column when clicking the collapse icon', () => {
-      createComponent();
       expect(wrapper.vm.list.isExpanded).toBe(true);
-      wrapper.find('.board-title-caret').trigger('click');
-
-      return wrapper.vm.$nextTick().then(() => {
-        expect(isCollapsed()).toBe(true);
-      });
     });
 
-    it('expands collapsed Column when clicking the expand icon', () => {
+    it('does not have class is-collapsed when list is expanded', () => {
       createComponent({ collapsed: true });
+
       expect(isCollapsed()).toBe(true);
-      wrapper.find('.board-title-caret').trigger('click');
-
-      return wrapper.vm.$nextTick().then(() => {
-        expect(isCollapsed()).toBe(false);
-      });
-    });
-
-    it("when logged in it calls list update and doesn't set localStorage", () => {
-      jest.spyOn(List.prototype, 'update');
-      window.gon.current_user_id = 1;
-
-      createComponent({ withLocalStorage: false });
-
-      wrapper.find('.board-title-caret').trigger('click');
-
-      return wrapper.vm.$nextTick().then(() => {
-        expect(wrapper.vm.list.update).toHaveBeenCalledTimes(1);
-        expect(localStorage.getItem(`${wrapper.vm.uniqueKey}.expanded`)).toBe(null);
-      });
-    });
-
-    it("when logged out it doesn't call list update and sets localStorage", () => {
-      jest.spyOn(List.prototype, 'update');
-
-      createComponent();
-
-      wrapper.find('.board-title-caret').trigger('click');
-
-      return wrapper.vm.$nextTick().then(() => {
-        expect(wrapper.vm.list.update).toHaveBeenCalledTimes(0);
-        expect(localStorage.getItem(`${wrapper.vm.uniqueKey}.expanded`)).toBe(
-          String(wrapper.vm.list.isExpanded),
-        );
-      });
     });
   });
 });

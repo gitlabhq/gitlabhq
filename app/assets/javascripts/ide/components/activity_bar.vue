@@ -1,6 +1,6 @@
 <script>
 import $ from 'jquery';
-import { mapActions, mapGetters, mapState } from 'vuex';
+import { mapActions, mapState } from 'vuex';
 import Icon from '~/vue_shared/components/icon.vue';
 import tooltip from '~/vue_shared/directives/tooltip';
 import { leftSidebarViews } from '../constants';
@@ -13,7 +13,6 @@ export default {
     tooltip,
   },
   computed: {
-    ...mapGetters(['someUncommittedChanges']),
     ...mapState(['currentActivityView']),
   },
   methods: {
@@ -69,7 +68,7 @@ export default {
           <icon name="file-modified" />
         </button>
       </li>
-      <li v-show="someUncommittedChanges">
+      <li>
         <button
           v-tooltip
           :class="{

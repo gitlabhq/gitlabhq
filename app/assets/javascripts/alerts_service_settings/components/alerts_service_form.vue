@@ -1,6 +1,6 @@
 <script>
 import {
-  GlDeprecatedButton,
+  GlButton,
   GlFormGroup,
   GlFormInput,
   GlLink,
@@ -26,7 +26,7 @@ export default {
   COPY_TO_CLIPBOARD: __('Copy'),
   RESET_KEY: __('Reset key'),
   components: {
-    GlDeprecatedButton,
+    GlButton,
     GlFormGroup,
     GlFormInput,
     GlLink,
@@ -167,9 +167,7 @@ export default {
           <clipboard-button :text="authorizationKey" :title="$options.COPY_TO_CLIPBOARD" />
         </span>
       </div>
-      <gl-deprecated-button v-gl-modal.authKeyModal class="mt-2">{{
-        $options.RESET_KEY
-      }}</gl-deprecated-button>
+      <gl-button v-gl-modal.authKeyModal class="mt-2">{{ $options.RESET_KEY }}</gl-button>
       <gl-modal
         modal-id="authKeyModal"
         :title="$options.RESET_KEY"

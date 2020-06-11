@@ -142,7 +142,7 @@ migrations performed.
 
 If you enable Monitoring, it must be enabled on **all** GitLab servers.
 
-1. Make sure to collect [`CONSUL_SERVER_NODES`](database.md#consul-information), which are the IP addresses or DNS records of the Consul server nodes, for the next step. Note they are presented as `Y.Y.Y.Y consul1.gitlab.example.com Z.Z.Z.Z`
+1. Make sure to collect [`CONSUL_SERVER_NODES`](../postgresql/replication_and_failover.md#consul-information), which are the IP addresses or DNS records of the Consul server nodes, for the next step. Note they are presented as `Y.Y.Y.Y consul1.gitlab.example.com Z.Z.Z.Z`
 
 1. Create/edit `/etc/gitlab/gitlab.rb` and add the following configuration:
 
@@ -203,7 +203,7 @@ for more details.
 
 Read more on high-availability configuration:
 
-1. [Configure the database](database.md)
+1. [Configure the database](../postgresql/replication_and_failover.md)
 1. [Configure Redis](redis.md)
 1. [Configure NFS](nfs.md)
 1. [Configure the load balancers](load_balancer.md)

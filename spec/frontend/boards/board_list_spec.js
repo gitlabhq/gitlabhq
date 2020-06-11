@@ -118,7 +118,7 @@ describe('Board list component', () => {
     });
 
     it('shows new issue form after eventhub event', () => {
-      eventHub.$emit(`hide-issue-form-${component.list.id}`);
+      eventHub.$emit(`toggle-issue-form-${component.list.id}`);
 
       return Vue.nextTick().then(() => {
         expect(component.$el.querySelector('.board-new-issue-form')).not.toBeNull();

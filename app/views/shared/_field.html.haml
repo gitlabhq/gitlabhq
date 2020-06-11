@@ -3,6 +3,7 @@
 - value = @service.send(name)
 - type = field[:type]
 - placeholder = field[:placeholder]
+- autocomplete = field[:autocomplete]
 - required = field[:required]
 - choices = field[:choices]
 - default_choice = field[:default_choice]
@@ -15,7 +16,7 @@
     = form.label name, title, class: "col-form-label col-sm-2"
   .col-sm-10
     - if type == 'text'
-      = form.text_field name, class: "form-control", placeholder: placeholder, required: required, data: { qa_selector: "#{name.downcase.gsub('\s', '')}_field" }
+      = form.text_field name, class: "form-control", autocomplete: autocomplete, placeholder: placeholder, required: required, data: { qa_selector: "#{name.downcase.gsub('\s', '')}_field" }
     - elsif type == 'textarea'
       = form.text_area name, rows: 5, class: "form-control", placeholder: placeholder, required: required
     - elsif type == 'checkbox'

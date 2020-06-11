@@ -123,6 +123,28 @@ describe('RepoCommitSection', () => {
     });
   });
 
+  describe('if nothing is changed or staged', () => {
+    beforeEach(() => {
+      setupDefaultState();
+
+      store.state.openFiles = [...Object.values(store.state.entries)];
+      store.state.openFiles[0].active = true;
+      store.state.stagedFiles = [];
+
+      createComponent();
+    });
+
+    it('opens currently active file', () => {
+      expect(store.state.openFiles.length).toBe(1);
+      expect(store.state.openFiles[0].pending).toBe(true);
+
+      expect(store.dispatch).toHaveBeenCalledWith('openPendingTab', {
+        file: store.state.entries[store.getters.activeFile.path],
+        keyPrefix: stageKeys.unstaged,
+      });
+    });
+  });
+
   describe('with unstaged file', () => {
     beforeEach(() => {
       setupDefaultState();

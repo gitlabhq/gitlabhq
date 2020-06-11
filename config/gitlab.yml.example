@@ -487,6 +487,11 @@ production: &base
     # NOTE: This will only take effect if elasticsearch is enabled.
     elastic_index_bulk_cron_worker:
       cron: "*/1 * * * *"
+      
+    # Elasticsearch bulk updater for initial updates.
+    # NOTE: This will only take effect if elasticsearch is enabled.
+    elastic_index_initial_bulk_cron_worker:
+      cron: "*/1 * * * *"
 
   registry:
     # enabled: true

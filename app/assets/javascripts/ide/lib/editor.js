@@ -37,6 +37,10 @@ export default class Editor {
       ...defaultEditorOptions,
       ...options,
     };
+    this.diffOptions = {
+      ...defaultDiffEditorOptions,
+      ...options,
+    };
 
     setupThemes();
     registerLanguages(...languages);
@@ -66,18 +70,14 @@ export default class Editor {
     }
   }
 
-  createDiffInstance(domElement, readOnly = true) {
+  createDiffInstance(domElement) {
     if (!this.instance) {
       clearDomElement(domElement);
 
       this.disposable.add(
         (this.instance = monacoEditor.createDiffEditor(domElement, {
-          ...this.options,
-          ...defaultDiffEditorOptions,
+          ...this.diffOptions,
           renderSideBySide: Editor.renderSideBySide(domElement),
-          readOnly,
-          renderLineHighlight: readOnly ? 'all' : 'none',
-          hideCursorInOverviewRuler: !readOnly,
         })),
       );
 

@@ -10,7 +10,7 @@ module QA
           end
 
           def choose_namespace(namespace = Runtime::Namespace.path)
-            click_element(:fork_namespace_content)
+            click_element(:fork_namespace_content, name: namespace)
           end
         end
       end

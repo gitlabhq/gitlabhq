@@ -27,8 +27,7 @@
     z-index: 2;
   }
 
-  .is-readonly,
-  .editor.original {
+  .is-readonly .editor.original {
     .view-lines {
       cursor: default;
     }

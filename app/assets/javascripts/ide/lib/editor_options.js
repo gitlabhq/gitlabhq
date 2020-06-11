@@ -14,9 +14,13 @@ export const defaultDiffOptions = {
 };
 
 export const defaultDiffEditorOptions = {
+  ...defaultEditorOptions,
   quickSuggestions: false,
   occurrencesHighlight: false,
   ignoreTrimWhitespace: false,
+  readOnly: false,
+  renderLineHighlight: 'none',
+  hideCursorInOverviewRuler: true,
 };
 
 export const defaultModelOptions = {

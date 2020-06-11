@@ -54,7 +54,6 @@ export default {
       'getStagedFile',
       'isEditModeActive',
       'isCommitModeActive',
-      'isReviewModeActive',
       'currentBranch',
     ]),
     ...mapGetters('fileTemplates', ['showFileTemplatesBar']),
@@ -235,7 +234,7 @@ export default {
         if (this.viewer === viewerTypes.edit) {
           this.editor.createInstance(this.$refs.editor);
         } else {
-          this.editor.createDiffInstance(this.$refs.editor, !this.isReviewModeActive);
+          this.editor.createDiffInstance(this.$refs.editor);
         }
 
         this.setupEditor();

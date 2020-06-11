@@ -117,7 +117,7 @@ It is strongly recommend that multi-node deployments configure load balancers to
 
 Read more on high-availability configuration:
 
-1. [Configure the database](database.md)
+1. [Configure the database](../postgresql/replication_and_failover.md)
 1. [Configure Redis](redis.md)
 1. [Configure NFS](nfs.md)
 1. [Configure the GitLab application servers](gitlab.md)

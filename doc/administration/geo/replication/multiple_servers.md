@@ -45,7 +45,7 @@ Because of the additional complexity involved in setting up this configuration
 for PostgreSQL and Redis, it is not covered by this Geo multi-server documentation.
 
 For more information about setting up a multi-server PostgreSQL cluster and Redis cluster using the omnibus package see the multi-server documentation for
-[PostgreSQL](../../high_availability/database.md) and
+[PostgreSQL](../../postgresql/replication_and_failover.md) and
 [Redis](../../high_availability/redis.md), respectively.
 
 NOTE: **Note:**
@@ -94,7 +94,7 @@ NOTE: **Note:** PostgreSQL and Redis should have already been disabled on the
 application servers, and connections from the application servers to those
 services on the backend servers configured, during normal GitLab multi-server set up. See
 multi-server configuration documentation for
-[PostgreSQL](../../high_availability/database.md#configuring-the-application-nodes)
+[PostgreSQL](../../postgresql/replication_and_failover.md#configuring-the-application-nodes)
 and [Redis](../../high_availability/redis.md#example-configuration-for-the-gitlab-application).
 
 ### Step 2: Configure the **primary** database

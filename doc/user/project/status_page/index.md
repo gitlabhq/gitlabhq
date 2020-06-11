@@ -90,6 +90,12 @@ After the quick action is used, a background worker publishes the issue onto the
 Since all incidents are published publicly, user and group mentions are anonymized with `Incident Responder`,
 and titles of non-public [GitLab references](../../markdown.md#special-gitlab-references) are removed.
 
+When an Incident is published in the GitLab project, you can access the
+details page of the Incident by clicking the **Published on status page** button
+displayed under the Incident's title.
+
+![Status Page detail link](../img/status_page_detail_link_v13_1.png)
+
 NOTE: **Note:**
 Confidential issues can't be published. If you make a published issue confidential, it will be unpublished.
 

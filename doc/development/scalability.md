@@ -116,7 +116,7 @@ database has reached the target time.
 
 On GitLab.com, Consul and Patroni work together to coordinate failovers with
 the read replicas. [Omnibus ships with repmgr instead of
-Consul](../administration/high_availability/database.md).
+Patroni](../administration/postgresql/replication_and_failover.md).
 
 #### Load-balancing
 

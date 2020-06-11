@@ -6723,7 +6723,7 @@ msgstr ""
 msgid "Current vulnerabilities count"
 msgstr ""
 
-msgid "CurrentUser|Buy CI minutes"
+msgid "CurrentUser|Buy Pipeline minutes"
 msgstr ""
 
 msgid "CurrentUser|Profile"
@@ -16195,6 +16195,9 @@ msgstr ""
 msgid "Pipeline|Stop pipeline #%{pipelineId}?"
 msgstr ""
 
+msgid "Pipeline|Tag name"
+msgstr ""
+
 msgid "Pipeline|Trigger author"
 msgstr ""
 
@@ -18011,6 +18014,9 @@ msgid "Public projects Minutes cost factor"
 msgstr ""
 
 msgid "Publish to status page"
+msgstr ""
+
+msgid "Published on status page"
 msgstr ""
 
 msgid "Publishes this issue to the associated status page."
@@ -22412,6 +22418,9 @@ msgid "There was a problem communicating with your device."
 msgstr ""
 
 msgid "There was a problem fetching project branches."
+msgstr ""
+
+msgid "There was a problem fetching project tags."
 msgstr ""
 
 msgid "There was a problem fetching project users."

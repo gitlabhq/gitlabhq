@@ -104,7 +104,7 @@ export default {
     },
   },
   created() {
-    eventHub.$on(`hide-issue-form-${this.list.id}`, this.toggleForm);
+    eventHub.$on(`toggle-issue-form-${this.list.id}`, this.toggleForm);
     eventHub.$on(`scroll-board-list-${this.list.id}`, this.scrollToTop);
   },
   mounted() {
@@ -381,7 +381,7 @@ export default {
     this.$refs.list.addEventListener('scroll', this.onScroll);
   },
   beforeDestroy() {
-    eventHub.$off(`hide-issue-form-${this.list.id}`, this.toggleForm);
+    eventHub.$off(`toggle-issue-form-${this.list.id}`, this.toggleForm);
     eventHub.$off(`scroll-board-list-${this.list.id}`, this.scrollToTop);
     this.$refs.list.removeEventListener('scroll', this.onScroll);
   },

@@ -21,9 +21,9 @@ To enable the PostgreSQL Server Exporter:
    ```
 
    NOTE: **Note:**
-   If PostgreSQL Server Exporter is configured on a separate node, make sure the local
-   address is [listed in `trust_auth_cidr_addresses`](../../high_availability/database.md#network-information), or the
-   exporter can't connect to the database.
+   If PostgreSQL Server Exporter is configured on a separate node, make sure that the local
+   address is [listed in `trust_auth_cidr_addresses`](../../postgresql/replication_and_failover.md#network-information) or the
+   exporter will not be able to connect to the database.
 
 1. Save the file and [reconfigure GitLab](../../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to
    take effect.
