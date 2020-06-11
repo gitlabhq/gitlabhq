@@ -22,7 +22,7 @@ need to be configured in a Bamboo build plan before GitLab can integrate.
 1. Choose 'Repository triggers the build when changes are committed'
 1. Check one or more repositories checkboxes
 1. Enter the GitLab IP address in the 'Trigger IP addresses' box. This is a
-   whitelist of IP addresses that are allowed to trigger Bamboo builds.
+   list of IP addresses that are allowed to trigger Bamboo builds.
 1. Save the trigger.
 1. In the left pane, select a build stage. If you have multiple build stages
    you want to select the last stage that contains the Git checkout task.

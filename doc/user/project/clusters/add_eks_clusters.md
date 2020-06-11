@@ -59,7 +59,6 @@ To create and add a new Kubernetes cluster to your project, group, or instance:
    - Project's **{cloud-gear}** **Operations > Kubernetes** page, for a project-level cluster.
    - Group's **{cloud-gear}** **Kubernetes** page, for a group-level cluster.
    - **{admin}** **Admin Area >** **{cloud-gear}** **Kubernetes**, for an instance-level cluster.
-<br><br/>
 1. Click **Add Kubernetes cluster**.
 1. Under the **Create new cluster** tab, click **Amazon EKS**. You will be provided with an
    `Account ID` and `External ID` to use in the next step.
@@ -155,7 +154,6 @@ To create and add a new Kubernetes cluster to your project, group, or instance:
    - **Node count** - The number of worker nodes.
    - **GitLab-managed cluster** - Leave this checked if you want GitLab to manage namespaces and service accounts for this cluster.
      See the [Managed clusters section](index.md#gitlab-managed-clusters) for more information.
-<br><br/>
 1. Finally, click the **Create Kubernetes cluster** button.
 
 After about 10 minutes, your cluster will be ready to go. You can now proceed

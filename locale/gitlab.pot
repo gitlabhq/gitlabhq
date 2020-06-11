@@ -18341,13 +18341,22 @@ msgstr ""
 msgid "ReleaseAssetLinkType|Image"
 msgstr ""
 
+msgid "ReleaseAssetLinkType|Images"
+msgstr ""
+
 msgid "ReleaseAssetLinkType|Other"
 msgstr ""
 
 msgid "ReleaseAssetLinkType|Package"
 msgstr ""
 
+msgid "ReleaseAssetLinkType|Packages"
+msgstr ""
+
 msgid "ReleaseAssetLinkType|Runbook"
+msgstr ""
+
+msgid "ReleaseAssetLinkType|Runbooks"
 msgstr ""
 
 msgid "Releases"
@@ -20992,6 +21001,9 @@ msgstr ""
 msgid "Source code"
 msgstr ""
 
+msgid "Source code (%{fileExtension})"
+msgstr ""
+
 msgid "Source is not available"
 msgstr ""
 
@@ -22892,6 +22904,9 @@ msgid "This job will automatically run after its timer finishes. Often they are 
 msgstr ""
 
 msgid "This license has already expired."
+msgstr ""
+
+msgid "This link points to external content"
 msgstr ""
 
 msgid "This may expose confidential information as the selected fork is in another namespace that can have other members."

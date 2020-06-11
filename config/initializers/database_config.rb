@@ -30,7 +30,7 @@ if Gitlab::Runtime.multi_threaded?
       Rails.application.config.database_configuration[Rails.env]
   previous_db_pool_size = db_config['pool']
 
-  db_config['pool'] = [db_config['pool'].to_i, max_threads].max
+  db_config['pool'] = [db_config['pool'].to_i, max_threads].max + ENV["DB_POOL_HEADROOM"].to_i
 
   ActiveRecord::Base.establish_connection(db_config)
 

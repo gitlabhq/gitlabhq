@@ -1,0 +1,5 @@
+---
+title: Fix 500 error in BlobController#delete
+merge_request: 34367
+author:
+type: fixed

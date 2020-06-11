@@ -94,7 +94,6 @@ class Projects::BlobController < Projects::ApplicationController
   def destroy
     create_commit(Files::DeleteService, success_notice: _("The file has been successfully deleted."),
                                         success_path: -> { after_delete_path },
-                                        failure_view: :show,
                                         failure_path: project_blob_path(@project, @id))
   end
 

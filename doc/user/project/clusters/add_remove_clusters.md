@@ -161,7 +161,6 @@ To add a Kubernetes cluster to your project, group, or instance:
    1. Project's **{cloud-gear}** **Operations > Kubernetes** page, for a project-level cluster.
    1. Group's **{cloud-gear}** **Kubernetes** page, for a group-level cluster.
    1. **{admin}** **Admin Area >** **{cloud-gear}** **Kubernetes** page, for an instance-level cluster.
-<br></br>
 1. Click **Add Kubernetes cluster**.
 1. Click the **Add existing cluster** tab and fill in the details:
    1. **Kubernetes cluster name** (required) - The name you wish to give the cluster.
@@ -184,9 +183,7 @@ To add a Kubernetes cluster to your project, group, or instance:
       1. Get the certificate by running this command:
 
          ```shell
-
          kubectl get secret <secret name> -o jsonpath="{['data']['ca\.crt']}" | base64 --decode
-
          ```
 
          NOTE: **Note:**
@@ -199,7 +196,6 @@ To add a Kubernetes cluster to your project, group, or instance:
       **The token used should belong to a service account with
       [`cluster-admin`](https://kubernetes.io/docs/reference/access-authn-authz/rbac/#user-facing-roles)
       privileges.** To create this service account:
-
       1. Create a file called `gitlab-admin-service-account.yaml` with contents:
 
          ```yaml
@@ -273,16 +269,15 @@ To add a Kubernetes cluster to your project, group, or instance:
          token:      <authentication_token>
          ```
 
-     NOTE: **Note:**
-     For GKE clusters, you will need the
-     `container.clusterRoleBindings.create` permission to create a cluster
-     role binding. You can follow the [Google Cloud
-     documentation](https://cloud.google.com/iam/docs/granting-changing-revoking-access)
-     to grant access.
+      NOTE: **Note:**
+      For GKE clusters, you will need the
+      `container.clusterRoleBindings.create` permission to create a cluster
+      role binding. You can follow the [Google Cloud
+      documentation](https://cloud.google.com/iam/docs/granting-changing-revoking-access)
+      to grant access.
 
    1. **GitLab-managed cluster** - Leave this checked if you want GitLab to manage namespaces and service accounts for this cluster.
       See the [Managed clusters section](index.md#gitlab-managed-clusters) for more information.
-
    1. **Project namespace** (optional) - You don't have to fill it in; by leaving
       it blank, GitLab will create one for you. Also:
       - Each project should have a unique namespace.
@@ -292,7 +287,7 @@ To add a Kubernetes cluster to your project, group, or instance:
       - If you or someone created a secret specifically for the project, usually
         with limited permissions, the secret's namespace and project namespace may
         be the same.
-<br></br>
+
 1. Finally, click the **Create Kubernetes cluster** button.
 
 After a couple of minutes, your cluster will be ready to go. You can now proceed

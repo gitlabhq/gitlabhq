@@ -282,6 +282,18 @@ RSpec.shared_examples 'wiki controller actions' do
         expect(wiki_page.content).to eq new_content
       end
     end
+
+    context 'when user does not have edit permissions' do
+      before do
+        sign_out(:user)
+      end
+
+      it 'renders the empty state' do
+        subject
+
+        expect(response).to render_template('shared/wikis/empty')
+      end
+    end
   end
 
   def redirect_to_wiki(wiki, page)

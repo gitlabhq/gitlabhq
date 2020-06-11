@@ -1,3 +1,5 @@
+import { ASSET_LINK_TYPE } from '~/releases/constants';
+
 export const milestones = [
   {
     id: 50,
@@ -150,6 +152,42 @@ export const pageInfoHeadersWithPagination = {
   'X-TOTAL-PAGES': '2',
 };
 
+export const assets = {
+  count: 5,
+  sources: [
+    {
+      format: 'zip',
+      url: 'https://example.gitlab.com/path/to/zip',
+    },
+  ],
+  links: [
+    {
+      linkType: ASSET_LINK_TYPE.IMAGE,
+      url: 'https://example.gitlab.com/path/to/image',
+      directAssetUrl: 'https://example.gitlab.com/path/to/image',
+      name: 'Example image link',
+    },
+    {
+      linkType: ASSET_LINK_TYPE.PACKAGE,
+      url: 'https://example.gitlab.com/path/to/package',
+      directAssetUrl: 'https://example.gitlab.com/path/to/package',
+      name: 'Example package link',
+    },
+    {
+      linkType: ASSET_LINK_TYPE.RUNBOOK,
+      url: 'https://example.gitlab.com/path/to/runbook',
+      directAssetUrl: 'https://example.gitlab.com/path/to/runbook',
+      name: 'Example runbook link',
+    },
+    {
+      linkType: ASSET_LINK_TYPE.OTHER,
+      url: 'https://example.gitlab.com/path/to/link',
+      directAssetUrl: 'https://example.gitlab.com/path/to/link',
+      name: 'Example link',
+    },
+  ],
+};
+
 export const release2 = {
   name: 'Bionic Beaver',
   tag_name: '18.04',
@@ -180,42 +218,7 @@ export const release2 = {
     committer_email: 'jack@example.com',
     committed_date: '2012-05-28T04:42:42-07:00',
   },
-  assets: {
-    count: 6,
-    sources: [
-      {
-        format: 'zip',
-        url: 'https://gitlab.com/gitlab-org/gitlab-foss/-/archive/v11.3.12/gitlab-ce-v11.3.12.zip',
-      },
-      {
-        format: 'tar.gz',
-        url:
-          'https://gitlab.com/gitlab-org/gitlab-foss/-/archive/v11.3.12/gitlab-ce-v11.3.12.tar.gz',
-      },
-      {
-        format: 'tar.bz2',
-        url:
-          'https://gitlab.com/gitlab-org/gitlab-foss/-/archive/v11.3.12/gitlab-ce-v11.3.12.tar.bz2',
-      },
-      {
-        format: 'tar',
-        url: 'https://gitlab.com/gitlab-org/gitlab-foss/-/archive/v11.3.12/gitlab-ce-v11.3.12.tar',
-      },
-    ],
-    links: [
-      {
-        name: 'release-18.04.dmg',
-        url: 'https://my-external-hosting.example.com/scrambled-url/',
-        external: true,
-      },
-      {
-        name: 'binary-linux-amd64',
-        url:
-          'https://gitlab.com/gitlab-org/gitlab-foss/-/jobs/artifacts/v11.6.0-rc4/download?job=rspec-mysql+41%2F50',
-        external: false,
-      },
-    ],
-  },
+  assets,
 };
 
 export const releases = [release, release2];

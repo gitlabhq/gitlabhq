@@ -99,5 +99,9 @@ and complete an integration with the Secure stage.
      doing an [Unfiltered blog post](https://about.gitlab.com/handbook/marketing/blog/unfiltered/),
      doing a co-branded webinar, or producing a co-branded whitepaper.
 
+We have a [video playlist](https://www.youtube.com/playlist?list=PL05JrBw4t0KpMqYxJiOLz-uBIr5w-yP4A)
+that may be helpful as part of this process. This covers various topics related to integrating your
+tool.
+
 If you have any issues while working through your integration or the steps
 above, please create an issue to discuss with us further.
