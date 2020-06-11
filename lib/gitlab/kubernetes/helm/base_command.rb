@@ -3,7 +3,24 @@
 module Gitlab
   module Kubernetes
     module Helm
-      module BaseCommand
+      class BaseCommand
+        attr_reader :name, :files
+
+        def initialize(rbac:, name:, files:, local_tiller_enabled:)
+          @rbac = rbac
+          @name = name
+          @files = files
+          @local_tiller_enabled = local_tiller_enabled
+        end
+
+        def rbac?
+          @rbac
+        end
+
+        def local_tiller_enabled?
+          @local_tiller_enabled
+        end
+
         def pod_resource
           pod_service_account_name = rbac? ? service_account_name : nil
 
@@ -44,18 +61,6 @@ module Gitlab
 
         def file_names
           files.keys
-        end
-
-        def name
-          raise "Not implemented"
-        end
-
-        def rbac?
-          raise "Not implemented"
-        end
-
-        def files
-          raise "Not implemented"
         end
 
         private

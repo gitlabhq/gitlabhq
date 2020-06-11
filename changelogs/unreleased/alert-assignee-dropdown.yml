@@ -1,0 +1,5 @@
+---
+title: Allow the assignment of alerts to users from the alert detail view
+merge_request: 33122
+author:
+type: added

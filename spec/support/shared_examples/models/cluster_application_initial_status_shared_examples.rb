@@ -18,7 +18,7 @@ RSpec.shared_examples 'cluster application initial status specs' do
 
     context 'local tiller feature flag is enabled' do
       before do
-        stub_feature_flags(managed_apps_local_tiller: true)
+        stub_feature_flags(managed_apps_local_tiller: cluster.clusterable)
       end
 
       it 'sets a default status' do

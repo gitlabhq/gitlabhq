@@ -7,6 +7,7 @@ describe Gitlab::Kubernetes::Helm::PatchCommand do
   let(:repository) { 'https://repository.example.com' }
   let(:rbac) { false }
   let(:version) { '1.2.3' }
+  let(:local_tiller_enabled) { true }
 
   subject(:patch_command) do
     described_class.new(
@@ -15,14 +16,13 @@ describe Gitlab::Kubernetes::Helm::PatchCommand do
       rbac: rbac,
       files: files,
       version: version,
-      repository: repository
+      repository: repository,
+      local_tiller_enabled: local_tiller_enabled
     )
   end
 
   context 'when local tiller feature is disabled' do
-    before do
-      stub_feature_flags(managed_apps_local_tiller: false)
-    end
+    let(:local_tiller_enabled) { false }
 
     let(:tls_flags) do
       <<~EOS.squish

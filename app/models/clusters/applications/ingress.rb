@@ -63,7 +63,8 @@ module Clusters
           version: VERSION,
           rbac: cluster.platform_kubernetes_rbac?,
           chart: chart,
-          files: files
+          files: files,
+          local_tiller_enabled: cluster.local_tiller_enabled?
         )
       end
 

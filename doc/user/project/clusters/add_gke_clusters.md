@@ -24,8 +24,6 @@ requirements are met:
 Starting from [GitLab 12.4](https://gitlab.com/gitlab-org/gitlab/-/issues/25925), all the GKE clusters
 provisioned by GitLab are [VPC-native](https://cloud.google.com/kubernetes-engine/docs/how-to/alias-ips).
 
-### Important notes
-
 Note the following:
 
 - The [Google authentication integration](../../../integration/google.md) must be enabled in GitLab
@@ -38,9 +36,10 @@ Note the following:
   cluster's pod address IP range will be set to /16 instead of the regular /14. /16 is a CIDR
   notation.
 - GitLab requires basic authentication enabled and a client certificate issued for the cluster to
-  set up an [initial service account](add_remove_clusters.md#access-controls). Starting from [GitLab
-  11.10](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/58208), the cluster creation process will
-  explicitly request that basic authentication and client certificate is enabled.
+  set up an [initial service account](add_remove_clusters.md#access-controls). In [GitLab versions
+  11.10 and later](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/58208), the cluster creation process
+  explicitly requests GKE to create clusters with basic authentication enabled and a client
+  certificate.
 
 ### Creating the cluster on GKE
 

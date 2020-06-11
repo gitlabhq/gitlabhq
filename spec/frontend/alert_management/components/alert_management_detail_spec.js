@@ -1,5 +1,7 @@
 import { mount, shallowMount } from '@vue/test-utils';
 import { GlAlert, GlLoadingIcon, GlTable } from '@gitlab/ui';
+import axios from 'axios';
+import MockAdapter from 'axios-mock-adapter';
 import AlertDetails from '~/alert_management/components/alert_details.vue';
 import createIssueQuery from '~/alert_management/graphql/mutations/create_issue_from_alert.graphql';
 import { joinPaths } from '~/lib/utils/url_utility';
@@ -14,6 +16,7 @@ const mockAlert = mockAlerts[0];
 
 describe('AlertDetails', () => {
   let wrapper;
+  let mock;
   const projectPath = 'root/alerts';
   const projectIssuesPath = 'root/alerts/-/issues';
 
@@ -43,12 +46,17 @@ describe('AlertDetails', () => {
     });
   }
 
+  beforeEach(() => {
+    mock = new MockAdapter(axios);
+  });
+
   afterEach(() => {
     if (wrapper) {
       if (wrapper) {
         wrapper.destroy();
       }
     }
+    mock.restore();
   });
 
   const findCreateIssueBtn = () => wrapper.find('[data-testid="createIssueBtn"]');

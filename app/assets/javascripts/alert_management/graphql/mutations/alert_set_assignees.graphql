@@ -1,0 +1,15 @@
+mutation($projectPath: ID!, $assigneeUsernames: [String!]!, $iid: String!) {
+  alertSetAssignees(
+    input: { iid: $iid, assigneeUsernames: $assigneeUsernames, projectPath: $projectPath }
+  ) {
+    errors
+    alert {
+      iid
+      assignees {
+        nodes {
+          username
+        }
+      }
+    }
+  }
+}

@@ -12,8 +12,7 @@ projects.
 
 ## Cluster precedence
 
-GitLab will try [to match](../../../ci/environments/index.md#scoping-environments-with-specs) clusters in
-the following order:
+GitLab will try to match clusters in the following order:
 
 - Project-level clusters.
 - Group-level clusters.

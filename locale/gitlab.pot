@@ -1846,6 +1846,9 @@ msgstr ""
 msgid "AlertManagement|Alert"
 msgstr ""
 
+msgid "AlertManagement|Alert assignee(s): %{assignees}"
+msgstr ""
+
 msgid "AlertManagement|Alert detail"
 msgstr ""
 
@@ -1861,7 +1864,16 @@ msgstr ""
 msgid "AlertManagement|All alerts"
 msgstr ""
 
+msgid "AlertManagement|Assign Assignees"
+msgstr ""
+
 msgid "AlertManagement|Assign status"
+msgstr ""
+
+msgid "AlertManagement|Assignee"
+msgstr ""
+
+msgid "AlertManagement|Assignee(s)"
 msgstr ""
 
 msgid "AlertManagement|Assignees"
@@ -1901,6 +1913,9 @@ msgid "AlertManagement|Medium"
 msgstr ""
 
 msgid "AlertManagement|More information"
+msgstr ""
+
+msgid "AlertManagement|No Matching Results"
 msgstr ""
 
 msgid "AlertManagement|No alert data to display."
@@ -1949,6 +1964,12 @@ msgid "AlertManagement|There was an error displaying the alert. Please refresh t
 msgstr ""
 
 msgid "AlertManagement|There was an error displaying the alerts. Confirm your endpoint's configuration details to ensure alerts appear."
+msgstr ""
+
+msgid "AlertManagement|There was an error while updating the assignee(s) list. Please try again."
+msgstr ""
+
+msgid "AlertManagement|There was an error while updating the assignee(s) of the alert. Please try again."
 msgstr ""
 
 msgid "AlertManagement|There was an error while updating the status of the alert. Please try again."
@@ -16318,6 +16339,9 @@ msgstr ""
 msgid "Please provide a valid email address."
 msgstr ""
 
+msgid "Please provide attributes to update"
+msgstr ""
+
 msgid "Please refer to <a href=\"%{docs_url}\">%{docs_url}</a>"
 msgstr ""
 
@@ -17221,6 +17245,9 @@ msgstr ""
 msgid "ProjectSettings|Enable 'Delete source branch' option by default"
 msgstr ""
 
+msgid "ProjectSettings|Enable merge trains and pipelines for merged results"
+msgstr ""
+
 msgid "ProjectSettings|Every merge creates a merge commit"
 msgstr ""
 
@@ -17287,9 +17314,6 @@ msgstr ""
 msgid "ProjectSettings|Merge options"
 msgstr ""
 
-msgid "ProjectSettings|Merge pipelines will try to validate the post-merge result prior to merging"
-msgstr ""
-
 msgid "ProjectSettings|Merge requests"
 msgstr ""
 
@@ -17315,6 +17339,9 @@ msgid "ProjectSettings|Pages for project documentation"
 msgstr ""
 
 msgid "ProjectSettings|Pipelines"
+msgstr ""
+
+msgid "ProjectSettings|Pipelines for merge requests must be enabled in the CI/CD configuration file, or pipelines could be unresolvable or dropped"
 msgstr ""
 
 msgid "ProjectSettings|Pipelines must succeed"

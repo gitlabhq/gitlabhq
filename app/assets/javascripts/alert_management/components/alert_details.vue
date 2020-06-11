@@ -230,7 +230,7 @@ export default {
           :aria-label="__('Toggle sidebar')"
           category="primary"
           variant="default"
-          class="d-sm-none position-absolute toggle-sidebar-mobile-button"
+          class="d-sm-none gl-absolute toggle-sidebar-mobile-button"
           type="button"
           @click="toggleSidebar"
         >

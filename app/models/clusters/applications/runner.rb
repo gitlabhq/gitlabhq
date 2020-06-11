@@ -36,7 +36,8 @@ module Clusters
           rbac: cluster.platform_kubernetes_rbac?,
           chart: chart,
           files: files,
-          repository: repository
+          repository: repository,
+          local_tiller_enabled: cluster.local_tiller_enabled?
         )
       end
 

@@ -148,7 +148,7 @@ To create and add a new Kubernetes cluster to your project, group, or instance:
    - **VPC** - Select a [VPC](https://docs.aws.amazon.com/vpc/latest/userguide/what-is-amazon-vpc.html)
      to use for your EKS Cluster resources.
    - **Subnets** - Choose the [subnets](https://docs.aws.amazon.com/vpc/latest/userguide/VPC_Subnets.html)
-     in your VPC where your worker nodes will run.
+     in your VPC where your worker nodes will run. You must select at least two.
    - **Security group** - Choose the [security group](https://docs.aws.amazon.com/vpc/latest/userguide/VPC_SecurityGroups.html)
      to apply to the EKS-managed Elastic Network Interfaces that are created in your worker node subnets.
    - **Instance type** - The [instance type](https://aws.amazon.com/ec2/instance-types/) of your worker nodes.

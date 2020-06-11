@@ -66,7 +66,7 @@ RSpec.shared_examples 'cluster application status specs' do |application_name|
 
       context 'managed_apps_local_tiller feature flag enabled' do
         before do
-          stub_feature_flags(managed_apps_local_tiller: true)
+          stub_feature_flags(managed_apps_local_tiller: subject.cluster.clusterable)
         end
 
         it 'does not update the helm version' do

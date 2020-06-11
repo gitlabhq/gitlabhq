@@ -17,13 +17,13 @@ export default {
 </script>
 
 <template>
-  <div class="block">
-    <span class="issuable-header-text hide-collapsed float-left">
+  <div class="block  d-flex justify-content-between">
+    <span class="issuable-header-text hide-collapsed">
       {{ __('Quick actions') }}
     </span>
     <toggle-sidebar
       :collapsed="sidebarCollapsed"
-      css-classes="float-right"
+      css-classes="ml-auto"
       @toggle="$emit('toggle-sidebar')"
     />
     <!-- TODO: Implement after or as part of: https://gitlab.com/gitlab-org/gitlab/-/issues/215946 -->

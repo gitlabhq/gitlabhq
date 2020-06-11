@@ -13,14 +13,8 @@ describe('Alert Details Sidebar Status', () => {
   const findStatusDropdownItem = () => wrapper.find(GlDropdownItem);
   const findStatusLoadingIcon = () => wrapper.find(GlLoadingIcon);
 
-  function mountComponent({
-    data,
-    sidebarCollapsed = true,
-    loading = false,
-    mountMethod = shallowMount,
-    stubs = {},
-  } = {}) {
-    wrapper = mountMethod(AlertSidebarStatus, {
+  function mountComponent({ data, sidebarCollapsed = true, loading = false, stubs = {} } = {}) {
+    wrapper = shallowMount(AlertSidebarStatus, {
       propsData: {
         alert: { ...mockAlert },
         ...data,
@@ -85,7 +79,7 @@ describe('Alert Details Sidebar Status', () => {
       jest.spyOn(wrapper.vm.$apollo, 'mutate').mockReturnValue(Promise.reject(new Error()));
       findStatusDropdownItem().vm.$emit('click');
       expect(findStatusLoadingIcon().exists()).toBe(false);
-      expect(wrapper.find('.gl-text-gray-700').text()).toBe('Triggered');
+      expect(wrapper.find('[data-testid="status"]').text()).toBe('Triggered');
     });
   });
 

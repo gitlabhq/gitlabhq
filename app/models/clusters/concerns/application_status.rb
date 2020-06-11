@@ -98,7 +98,7 @@ module Clusters
           end
 
           before_transition any => [:installed, :updated] do |application, transition|
-            unless ::Gitlab::Kubernetes::Helm.local_tiller_enabled? || application.is_a?(Clusters::Applications::Helm)
+            unless application.cluster.local_tiller_enabled? || application.is_a?(Clusters::Applications::Helm)
               if transition.event == :make_externally_installed
                 # If an application is externally installed
                 # We assume the helm application is externally installed too

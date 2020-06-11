@@ -12,7 +12,8 @@ describe Gitlab::Kubernetes::Helm::InstallCommand do
       version: version,
       repository: repository,
       preinstall: preinstall,
-      postinstall: postinstall
+      postinstall: postinstall,
+      local_tiller_enabled: local_tiller_enabled
     )
   end
 
@@ -22,6 +23,7 @@ describe Gitlab::Kubernetes::Helm::InstallCommand do
   let(:version) { '1.2.3' }
   let(:preinstall) { nil }
   let(:postinstall) { nil }
+  let(:local_tiller_enabled) { true }
 
   it_behaves_like 'helm command generator' do
     let(:commands) do
@@ -51,9 +53,7 @@ describe Gitlab::Kubernetes::Helm::InstallCommand do
   end
 
   context 'tillerless feature disabled' do
-    before do
-      stub_feature_flags(managed_apps_local_tiller: false)
-    end
+    let(:local_tiller_enabled) { false }
 
     let(:tls_flags) do
       <<~EOS.squish

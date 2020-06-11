@@ -38,7 +38,8 @@ module Clusters
           chart: chart,
           files: files.merge(cluster_issuer_file),
           preinstall: pre_install_script,
-          postinstall: post_install_script
+          postinstall: post_install_script,
+          local_tiller_enabled: cluster.local_tiller_enabled?
         )
       end
 
@@ -47,7 +48,8 @@ module Clusters
           name: 'certmanager',
           rbac: cluster.platform_kubernetes_rbac?,
           files: files,
-          postdelete: post_delete_script
+          postdelete: post_delete_script,
+          local_tiller_enabled: cluster.local_tiller_enabled?
         )
       end
 

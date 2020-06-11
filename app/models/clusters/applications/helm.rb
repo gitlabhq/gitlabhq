@@ -52,7 +52,8 @@ module Clusters
         Gitlab::Kubernetes::Helm::InitCommand.new(
           name: name,
           files: files,
-          rbac: cluster.platform_kubernetes_rbac?
+          rbac: cluster.platform_kubernetes_rbac?,
+          local_tiller_enabled: cluster.local_tiller_enabled?
         )
       end
 
@@ -60,7 +61,8 @@ module Clusters
         Gitlab::Kubernetes::Helm::ResetCommand.new(
           name: name,
           files: files,
-          rbac: cluster.platform_kubernetes_rbac?
+          rbac: cluster.platform_kubernetes_rbac?,
+          local_tiller_enabled: cluster.local_tiller_enabled?
         )
       end
 

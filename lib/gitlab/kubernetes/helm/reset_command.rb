@@ -3,17 +3,8 @@
 module Gitlab
   module Kubernetes
     module Helm
-      class ResetCommand
-        include BaseCommand
+      class ResetCommand < BaseCommand
         include ClientCommand
-
-        attr_reader :name, :files
-
-        def initialize(name:, rbac:, files:)
-          @name = name
-          @files = files
-          @rbac = rbac
-        end
 
         def generate_script
           super + [
@@ -21,10 +12,6 @@ module Gitlab
             delete_tiller_replicaset,
             delete_tiller_clusterrolebinding
           ].join("\n")
-        end
-
-        def rbac?
-          @rbac
         end
 
         def pod_name

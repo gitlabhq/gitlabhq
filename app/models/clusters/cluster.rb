@@ -326,6 +326,10 @@ module Clusters
       end
     end
 
+    def local_tiller_enabled?
+      Feature.enabled?(:managed_apps_local_tiller, clusterable, default_enabled: false)
+    end
+
     private
 
     def unique_management_project_environment_scope

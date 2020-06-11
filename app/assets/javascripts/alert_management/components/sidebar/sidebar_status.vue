@@ -51,7 +51,7 @@ export default {
   },
   computed: {
     dropdownClass() {
-      return this.isDropdownShowing ? 'show' : 'd-none';
+      return this.isDropdownShowing ? 'show' : 'gl-display-none';
     },
   },
   methods: {
@@ -81,7 +81,6 @@ export default {
         })
         .then(() => {
           this.trackStatusUpdate(status);
-
           this.hideDropdown();
         })
         .catch(() => {
@@ -172,12 +171,15 @@ export default {
       <gl-loading-icon v-if="isUpdating" :inline="true" />
       <p
         v-else-if="!isDropdownShowing"
-        class="value m-0"
+        class="value gl-m-0"
         :class="{ 'no-value': !$options.statuses[alert.status] }"
       >
-        <span v-if="$options.statuses[alert.status]" class="gl-text-gray-700">{{
-          $options.statuses[alert.status]
-        }}</span>
+        <span
+          v-if="$options.statuses[alert.status]"
+          class="gl-text-gray-700"
+          data-testid="status"
+          >{{ $options.statuses[alert.status] }}</span
+        >
         <span v-else>
           {{ s__('AlertManagement|None') }}
         </span>
