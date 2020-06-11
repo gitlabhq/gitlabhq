@@ -1,4 +1,4 @@
-import Wikis from '~/pages/projects/wikis/wikis';
+import Wikis from '~/pages/shared/wikis/wikis';
 import { setHTMLFixture } from './helpers/fixtures';
 
 describe('Wikis', () => {

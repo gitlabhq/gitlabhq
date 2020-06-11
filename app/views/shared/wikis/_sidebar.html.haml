@@ -4,7 +4,7 @@
       %a.gutter-toggle.float-right.d-block.d-sm-block.d-md-none.js-sidebar-wiki-toggle{ href: "#" }
         = icon('angle-double-right')
 
-      - git_access_url = project_wikis_git_access_path(@project)
+      - git_access_url = wiki_path(@wiki, action: :git_access)
       = link_to git_access_url, class: active_nav_link?(path: 'wikis#git_access') ? 'active' : '', data: { qa_selector: 'clone_repository_link' } do
         = icon('cloud-download', class: 'append-right-5')
         %span= _("Clone repository")
@@ -18,5 +18,5 @@
             = render @sidebar_wiki_entries, context: 'sidebar'
       .block.w-100
         - if @sidebar_limited
-          = link_to project_wikis_pages_path(@project), class: 'btn btn-block' do
+          = link_to wiki_path(@wiki, action: :pages), class: 'btn btn-block' do
             = s_("Wiki|View All Pages")

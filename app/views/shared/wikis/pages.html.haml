@@ -1,4 +1,4 @@
-- add_to_breadcrumbs "Wiki", project_wiki_path(@project, :home)
+- add_to_breadcrumbs "Wiki", wiki_path(@wiki)
 - breadcrumb_title s_("Wiki|Pages")
 - page_title s_("Wiki|Pages"), _("Wiki")
 - sort_title = wiki_sort_title(params[:sort])
@@ -10,7 +10,7 @@
       = s_("Wiki|Wiki Pages")
 
   .nav-controls.pb-md-3.pb-lg-0
-    = link_to project_wikis_git_access_path(@project), class: 'btn' do
+    = link_to wiki_path(@wiki, action: :git_access), class: 'btn' do
       = icon('cloud-download')
       = _("Clone repository")
 
@@ -22,9 +22,9 @@
             = icon('chevron-down')
           %ul.dropdown-menu.dropdown-menu-right.dropdown-menu-selectable.dropdown-menu-sort
             %li
-              = sortable_item(s_("Wiki|Title"), project_wikis_pages_path(@project, sort: ProjectWiki::TITLE_ORDER), sort_title)
-              = sortable_item(s_("Wiki|Created date"), project_wikis_pages_path(@project, sort: ProjectWiki::CREATED_AT_ORDER), sort_title)
-        = wiki_sort_controls(@project, params[:sort], params[:direction])
+              = sortable_item(s_("Wiki|Title"), wiki_path(@wiki, action: :pages, sort: Wiki::TITLE_ORDER), sort_title)
+              = sortable_item(s_("Wiki|Created date"), wiki_path(@wiki, action: :pages, sort: Wiki::CREATED_AT_ORDER), sort_title)
+        = wiki_sort_controls(@wiki, params[:sort], params[:direction])
 
 %ul.wiki-pages-list.content-list
   = render @wiki_entries, context: 'pages'

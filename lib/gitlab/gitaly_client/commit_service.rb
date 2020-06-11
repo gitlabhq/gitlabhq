@@ -247,8 +247,8 @@ module Gitlab
         request = Gitaly::CommitsByMessageRequest.new(
           repository: @gitaly_repo,
           query: query,
-          revision: revision.to_s.force_encoding(Encoding::ASCII_8BIT),
-          path: path.to_s.force_encoding(Encoding::ASCII_8BIT),
+          revision: encode_binary(revision),
+          path: encode_binary(path),
           limit: limit.to_i,
           offset: offset.to_i
         )

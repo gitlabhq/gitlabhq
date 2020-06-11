@@ -1,30 +1,31 @@
 - layout_path = 'shared/empty_states/wikis_layout'
+- messages = wiki_empty_state_messages(@wiki)
 
-- if can?(current_user, :create_wiki, @project)
-  - create_path = project_wiki_path(@project, params[:id], { view: 'create' })
+- if can?(current_user, :create_wiki, @wiki.container)
+  - create_path = wiki_page_path(@wiki, params[:id], view: 'create')
   - create_link = link_to s_('WikiEmpty|Create your first page'), create_path, class: 'btn btn-success qa-create-first-page-link', title: s_('WikiEmpty|Create your first page')
 
   = render layout: layout_path, locals: { image_path: 'illustrations/wiki_login_empty.svg' } do
     %h4.text-left
-      = s_('WikiEmpty|The wiki lets you write documentation for your project')
+      = messages.dig(:writable, :title)
     %p.text-left
-      = s_("WikiEmpty|A wiki is where you can store all the details about your project. This can include why you've created it, its principles, how to use it, and so on.")
+      = messages.dig(:writable, :body)
     = create_link
 
-- elsif can?(current_user, :read_issue, @project)
+- elsif @project && can?(current_user, :read_issue, @project)
   - issues_link = link_to s_('WikiEmptyIssueMessage|issue tracker'), project_issues_path(@project)
   - new_issue_link = link_to s_('WikiEmpty|Suggest wiki improvement'), new_project_issue_path(@project), class: 'btn btn-success', title: s_('WikiEmptyIssueMessage|Suggest wiki improvement')
 
   = render layout: layout_path, locals: { image_path: 'illustrations/wiki_logout_empty.svg' } do
     %h4
-      = s_('WikiEmpty|This project has no wiki pages')
+      = messages.dig(:issuable, :title)
     %p.text-left
-      = s_('WikiEmptyIssueMessage|You must be a project member in order to add wiki pages. If you have suggestions for how to improve the wiki for this project, consider opening an issue in the %{issues_link}.').html_safe % { issues_link: issues_link }
+      = messages.dig(:issuable, :body).html_safe % { issues_link: issues_link }
     = new_issue_link
 
 - else
   = render layout: layout_path, locals: { image_path: 'illustrations/wiki_logout_empty.svg' } do
     %h4
-      = s_('WikiEmpty|This project has no wiki pages')
+      = messages.dig(:readonly, :title)
     %p
-      = s_('WikiEmpty|You must be a project member in order to add wiki pages.')
+      = messages.dig(:readonly, :body)

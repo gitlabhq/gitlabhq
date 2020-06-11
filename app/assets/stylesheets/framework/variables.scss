@@ -73,108 +73,106 @@ $size-scale: (
   'xl': #{70 * $grid-size}
 );
 
-/*
- * Color schema
- */
-$darken-normal-factor: 7%;
-$darken-dark-factor: 10%;
-$darken-border-factor: 5%;
-$darken-border-dashed-factor: 25%;
+// Color schema
+$darken-normal-factor: 7% !default;
+$darken-dark-factor: 10% !default;
+$darken-border-factor: 5% !default;
+$darken-border-dashed-factor: 25% !default;
 
-$white: #fff;
-$white-normal: #f0f0f0;
-$white-dark: #eaeaea;
-$white-transparent: rgba(255, 255, 255, 0.8);
+$white: #fff !default;
+$white-normal: #f0f0f0 !default;
+$white-dark: #eaeaea !default;
+$white-transparent: rgba(255, 255, 255, 0.8) !default;
 
-$gray-lightest: #fdfdfd;
-$gray-light: #fafafa;
-$gray-lighter: #f9f9f9;
-$gray-normal: #f5f5f5;
-$gray-dark: darken($gray-light, $darken-dark-factor);
-$gray-darker: #eee;
-$gray-darkest: #c4c4c4;
+$gray-lightest: #fdfdfd !default;
+$gray-light: #fafafa !default;
+$gray-lighter: #f9f9f9 !default;
+$gray-normal: #f5f5f5 !default;
+$gray-dark: darken($gray-light, $darken-dark-factor) !default;
+$gray-darker: #eee !default;
+$gray-darkest: #c4c4c4 !default;
 
-$purple: #6d49cb;
-$purple-light: #ede8fb;
+$purple: #6d49cb !default;
+$purple-light: #ede8fb !default;
 
-$black: #000;
-$black-transparent: rgba(0, 0, 0, 0.3);
-$almost-black: #242424;
+$black: #000 !default;
+$black-transparent: rgba(0, 0, 0, 0.3) !default;
+$almost-black: #242424 !default;
 
-$t-gray-a-02: rgba($black, 0.02);
-$t-gray-a-04: rgba($black, 0.04);
-$t-gray-a-06: rgba($black, 0.06);
-$t-gray-a-08: rgba($black, 0.08);
+$t-gray-a-02: rgba($black, 0.02) !default;
+$t-gray-a-04: rgba($black, 0.04) !default;
+$t-gray-a-06: rgba($black, 0.06) !default;
+$t-gray-a-08: rgba($black, 0.08) !default;
 
-$gl-gray-100: #ddd;
-$gl-gray-200: #ccc;
-$gl-gray-350: #aaa;
-$gl-gray-400: #999;
-$gl-gray-500: #777;
-$gl-gray-600: #666;
-$gl-gray-700: #555;
-$gl-gray-800: #333;
+$gl-gray-100: #ddd !default;
+$gl-gray-200: #ccc !default;
+$gl-gray-350: #aaa !default;
+$gl-gray-400: #999 !default;
+$gl-gray-500: #777 !default;
+$gl-gray-600: #666 !default;
+$gl-gray-700: #555 !default;
+$gl-gray-800: #333 !default;
 
-$green-50: #f1fdf6;
-$green-100: #dcf5e7;
-$green-200: #b3e6c8;
-$green-300: #75d09b;
-$green-400: #37b96d;
-$green-500: #1aaa55;
-$green-600: #168f48;
-$green-700: #12753a;
-$green-800: #0e5a2d;
-$green-900: #0a4020;
-$green-950: #072b15;
+$green-50: #f1fdf6 !default;
+$green-100: #dcf5e7 !default;
+$green-200: #263a2e !default;
+$green-300: #75d09b !default;
+$green-400: #37b96d !default;
+$green-500: #1aaa55 !default;
+$green-600: #168f48 !default;
+$green-700: #12753a !default;
+$green-800: #0e5a2d !default;
+$green-900: #0a4020 !default;
+$green-950: #072b15 !default;
 
-$blue-50: #f6fafe;
-$blue-100: #e4f0fb;
-$blue-200: #b8d6f4;
-$blue-300: #73afea;
-$blue-400: #418cd8;
-$blue-500: #1f78d1;
-$blue-600: #1b69b6;
-$blue-700: #17599c;
-$blue-800: #134a81;
-$blue-900: #0f3b66;
-$blue-950: #0a2744;
+$blue-50: #f6fafe !default;
+$blue-100: #e4f0fb !default;
+$blue-200: #b8d6f4 !default;
+$blue-300: #73afea !default;
+$blue-400: #418cd8 !default;
+$blue-500: #1f78d1 !default;
+$blue-600: #1b69b6 !default;
+$blue-700: #17599c !default;
+$blue-800: #134a81 !default;
+$blue-900: #0f3b66 !default;
+$blue-950: #0a2744 !default;
 
-$orange-50: #fffaf4;
-$orange-100: #fff1de;
-$orange-200: #fed69f;
-$orange-300: #fdbc60;
-$orange-400: #fca429;
-$orange-500: #fc9403;
-$orange-600: #de7e00;
-$orange-700: #c26700;
-$orange-800: #a35200;
-$orange-900: #853c00;
-$orange-950: #592800;
+$orange-50: #fffaf4 !default;
+$orange-100: #fff1de !default;
+$orange-200: #fed69f !default;
+$orange-300: #fdbc60 !default;
+$orange-400: #fca429 !default;
+$orange-500: #fc9403 !default;
+$orange-600: #de7e00 !default;
+$orange-700: #c26700 !default;
+$orange-800: #a35200 !default;
+$orange-900: #853c00 !default;
+$orange-950: #592800 !default;
 
-$red-50: #fef6f5;
-$red-100: #fbe5e1;
-$red-200: #f2b4a9;
-$red-300: #ea8271;
-$red-400: #e05842;
-$red-500: #db3b21;
-$red-600: #c0341d;
-$red-700: #a62d19;
-$red-800: #8b2615;
-$red-900: #711e11;
-$red-950: #4b140b;
+$red-50: #fef6f5 !default;
+$red-100: #fbe5e1 !default;
+$red-200: #f2b4a9 !default;
+$red-300: #ea8271 !default;
+$red-400: #e05842 !default;
+$red-500: #db3b21 !default;
+$red-600: #c0341d !default;
+$red-700: #a62d19 !default;
+$red-800: #8b2615 !default;
+$red-900: #711e11 !default;
+$red-950: #4b140b !default;
 
-$gray-10: #fafafa;
-$gray-50: #f0f0f0;
-$gray-100: #dbdbdb;
-$gray-200: #dfdfdf;
-$gray-300: #ccc;
-$gray-400: #bababa;
-$gray-500: #a7a7a7;
-$gray-600: #919191;
-$gray-700: #707070;
-$gray-800: #4f4f4f;
-$gray-900: #2e2e2e;
-$gray-950: #1f1f1f;
+$gray-10: #fafafa !default;
+$gray-50: #f0f0f0 !default;
+$gray-100: #dbdbdb !default;
+$gray-200: #dfdfdf !default;
+$gray-300: #ccc !default;
+$gray-400: #bababa !default;
+$gray-500: #a7a7a7 !default;
+$gray-600: #919191 !default;
+$gray-700: #707070 !default;
+$gray-800: #4f4f4f !default;
+$gray-900: #2e2e2e !default;
+$gray-950: #1f1f1f !default;
 
 $greens: (
   '50': $green-50,
@@ -325,8 +323,8 @@ $theme-light-red-500: #c24b38;
 $theme-light-red-600: #b03927;
 $theme-light-red-700: #a62e21;
 
-$border-white-light: darken($white, $darken-border-factor);
-$border-white-normal: darken($white-normal, $darken-border-factor);
+$border-white-light: darken($white, $darken-border-factor) !default;
+$border-white-normal: darken($white-normal, $darken-border-factor) !default;
 
 $border-gray-light: darken($gray-light, $darken-border-factor);
 $border-gray-normal: darken($gray-normal, $darken-border-factor);
@@ -335,7 +333,7 @@ $border-gray-normal-dashed: darken($gray-normal, $darken-border-dashed-factor);
 /*
  * UI elements
  */
-$border-color: #e5e5e5;
+$border-color: $gray-200;
 $shadow-color: $t-gray-a-08;
 $well-expand-item: #e8f2f7;
 $well-inner-border: #eef0f2;
@@ -356,7 +354,7 @@ $gl-text-color-secondary: $gray-700;
 $gl-text-color-tertiary: $gray-600;
 $gl-text-color-quaternary: #d6d6d6;
 $gl-text-color-inverted: $white;
-$gl-text-color-secondary-inverted: rgba(255, 255, 255, 0.85);
+$gl-text-color-secondary-inverted: rgba($white, 0.85);
 $gl-text-color-disabled: $gray-600;
 $gl-grayish-blue: #7f8fa4;
 $gl-gray-dark: #313236;
@@ -435,7 +433,6 @@ $layout-link-gray: #7e7c7c;
 $btn-side-margin: 10px;
 $btn-sm-side-margin: 7px;
 $btn-margin-5: 5px;
-$sidebar-block-hover-color: #ebebeb;
 $count-arrow-border: #dce0e5;
 $general-hover-transition-duration: 100ms;
 $general-hover-transition-curve: linear;
@@ -491,8 +488,8 @@ $line-number-select: #fbf2da;
 $line-target-blue: $blue-50;
 $line-select-yellow: #fcf8e7;
 $line-select-yellow-dark: #f0e2bd;
-$dark-diff-match-bg: rgba(255, 255, 255, 0.3);
-$dark-diff-match-color: rgba(255, 255, 255, 0.1);
+$dark-diff-match-bg: rgba($white, 0.3);
+$dark-diff-match-color: rgba($white, 0.1);
 $diff-image-info-color: #808080;
 $diff-view-modes-color: #808080;
 $diff-view-modes-border: #c1c1c1;
@@ -520,7 +517,7 @@ $dropdown-shadow-color: rgba(#000, 0.1);
 $dropdown-title-btn-color: #bfbfbf;
 $dropdown-input-fa-color: #c7c7c7;
 $dropdown-input-focus-shadow: rgba($blue-300, 0.4);
-$dropdown-loading-bg: rgba(#fff, 0.6);
+$dropdown-loading-bg: rgba($white, 0.6);
 $dropdown-chevron-size: 10px;
 $dropdown-toggle-active-border-color: darken($border-color, 14%);
 $dropdown-fade-mask-height: 32px;
@@ -534,9 +531,9 @@ $filtered-search-term-shadow-color: rgba(0, 0, 0, 0.09);
 /*
 * Contextual Sidebar
 */
-$link-active-background: rgba(0, 0, 0, 0.04);
-$link-hover-background: rgba(0, 0, 0, 0.06);
-$inactive-badge-background: rgba(0, 0, 0, 0.08);
+$link-active-background: rgba($black, 0.04);
+$link-hover-background: rgba($gray-900, 0.06);
+$inactive-badge-background: rgba($black, 0.08);
 $sidebar-toggle-height: 60px;
 $sidebar-toggle-width: 40px;
 $sidebar-milestone-toggle-bottom-margin: 10px;
@@ -544,8 +541,8 @@ $sidebar-milestone-toggle-bottom-margin: 10px;
 /*
 * Buttons
 */
-$btn-active-gray: #ececec;
-$btn-active-gray-light: #e4e7ed;
+$btn-active-gray: $gray-50;
+$btn-active-gray-light: $gray-50;
 $btn-white-active: #848484;
 $gl-btn-padding: 10px;
 $gl-btn-line-height: 16px;
@@ -602,12 +599,12 @@ $note-icon-gutter-width: 55px;
 /*
 * Identicon
 */
-$identicon-red: #ffebee;
-$identicon-purple: #f3e5f5;
-$identicon-indigo: #e8eaf6;
-$identicon-blue: #e3f2fd;
-$identicon-teal: #e0f2f1;
-$identicon-orange: #fbe9e7;
+$identicon-red: #ffebee !default;
+$identicon-purple: #f3e5f5 !default;
+$identicon-indigo: #e8eaf6 !default;
+$identicon-blue: #e3f2fd !default;
+$identicon-teal: #e0f2f1 !default;
+$identicon-orange: #fbe9e7 !default;
 
 /*
 * Calendar
@@ -871,6 +868,7 @@ $priority-label-empty-state-width: 114px;
 Popovers
 */
 $popover-max-width: 384px;
+$popover-box-shadow: 0 2px 3px 1px $gray-200;
 
 /*
 Issues Analytics

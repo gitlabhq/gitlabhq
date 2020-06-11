@@ -305,8 +305,12 @@ module GitlabRoutingHelper
 
   # Wikis
 
+  def wiki_path(wiki, **options)
+    Gitlab::UrlBuilder.wiki_url(wiki, only_path: true, **options)
+  end
+
   def wiki_page_path(wiki, page, **options)
-    Gitlab::UrlBuilder.wiki_page_url(wiki, page, **options, only_path: true)
+    Gitlab::UrlBuilder.wiki_page_url(wiki, page, only_path: true, **options)
   end
 
   private

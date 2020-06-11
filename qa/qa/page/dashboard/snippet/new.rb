@@ -31,7 +31,7 @@ module QA
             element :submit_button
           end
 
-          view 'app/views/projects/_zen.html.haml' do
+          view 'app/views/shared/_zen.html.haml' do
             # This 'element' is here only to ensure the changes in the view source aren't mistakenly changed
             element :_, "qa_selector = local_assigns.fetch(:qa_selector, '')" # rubocop:disable QA/ElementWithPattern
           end

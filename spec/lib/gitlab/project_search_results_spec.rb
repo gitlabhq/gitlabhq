@@ -532,7 +532,7 @@ describe Gitlab::ProjectSearchResults do
 
       context 'when repository_ref is provided' do
         let(:message) { 'Feature added' }
-        let(:repository_ref) { +'feature' }
+        let(:repository_ref) { 'feature' }
 
         it 'searches in the specified ref' do
           commits = described_class.new(user, project, message, repository_ref).objects('commits')

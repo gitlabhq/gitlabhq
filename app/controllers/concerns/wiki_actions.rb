@@ -34,6 +34,8 @@ module WikiActions
     ).page(params[:page])
 
     @wiki_entries = WikiPage.group_by_directory(@wiki_pages)
+
+    render 'shared/wikis/pages'
   end
   # rubocop:enable Gitlab/ModuleWithInstanceVariables
 
@@ -54,7 +56,7 @@ module WikiActions
       @ref = params[:version_id]
       @path = page.path
 
-      render 'show'
+      render 'shared/wikis/show'
     elsif file_blob
       send_blob(wiki.repository, file_blob, allow_caching: container.public?)
     elsif show_create_form?
@@ -63,14 +65,15 @@ module WikiActions
 
       @page = build_page(title: title)
 
-      render 'edit'
+      render 'shared/wikis/edit'
     else
-      render 'empty'
+      render 'shared/wikis/empty'
     end
   end
   # rubocop:enable Gitlab/ModuleWithInstanceVariables
 
   def edit
+    render 'shared/wikis/edit'
   end
 
   # rubocop:disable Gitlab/ModuleWithInstanceVariables
@@ -85,11 +88,11 @@ module WikiActions
         notice: _('Wiki was successfully updated.')
       )
     else
-      render 'edit'
+      render 'shared/wikis/edit'
     end
   rescue WikiPage::PageChangedError, WikiPage::PageRenameError, Gitlab::Git::Wiki::OperationError => e
     @error = e
-    render 'edit'
+    render 'shared/wikis/edit'
   end
   # rubocop:enable Gitlab/ModuleWithInstanceVariables
 
@@ -103,13 +106,12 @@ module WikiActions
         notice: _('Wiki was successfully updated.')
       )
     else
-      render action: "edit"
+      render 'shared/wikis/edit'
     end
   rescue Gitlab::Git::Wiki::OperationError => e
     @page = build_page(wiki_params)
     @error = e
-
-    render 'edit'
+    render 'shared/wikis/edit'
   end
   # rubocop:enable Gitlab/ModuleWithInstanceVariables
 
@@ -119,9 +121,11 @@ module WikiActions
       @page_versions = Kaminari.paginate_array(page.versions(page: params[:page].to_i),
                                                total_count: page.count_versions)
         .page(params[:page])
+
+      render 'shared/wikis/history'
     else
       redirect_to(
-        wiki_page_path(wiki, :home),
+        wiki_path(wiki),
         notice: _("Page not found")
       )
     end
@@ -132,12 +136,12 @@ module WikiActions
   def destroy
     WikiPages::DestroyService.new(container: container, current_user: current_user).execute(page)
 
-    redirect_to wiki_page_path(wiki, :home),
+    redirect_to wiki_path(wiki),
                 status: :found,
                 notice: _("Page was successfully deleted")
   rescue Gitlab::Git::Wiki::OperationError => e
     @error = e
-    render 'edit'
+    render 'shared/wikis/edit'
   end
   # rubocop:enable Gitlab/ModuleWithInstanceVariables
 

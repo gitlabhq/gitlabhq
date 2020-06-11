@@ -29,7 +29,7 @@ RSpec.describe 'User updates wiki page' do
           click_on('Cancel')
         end
 
-        expect(current_path).to eq project_wiki_path(project, :home)
+        expect(current_path).to eq wiki_path(project.wiki)
       end
 
       it 'updates a page that has a path', :js do

@@ -290,7 +290,7 @@
       = render 'layouts/nav/sidebar/analytics_links', links: project_analytics_navbar_links(@project, current_user)
 
       - if project_nav_tab? :wiki
-        - wiki_url = project_wiki_path(@project, :home)
+        - wiki_url = wiki_path(@project.wiki)
         = nav_link(controller: :wikis) do
           = link_to wiki_url, class: 'shortcuts-wiki', data: { qa_selector: 'wiki_link' } do
             .nav-icon-container

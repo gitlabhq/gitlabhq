@@ -84,7 +84,7 @@ describe 'Project active tab' do
 
   context 'on project Wiki' do
     before do
-      visit project_wiki_path(project, :home)
+      visit wiki_path(project.wiki)
     end
 
     it_behaves_like 'page has active tab', 'Wiki'

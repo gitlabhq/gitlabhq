@@ -86,7 +86,7 @@ class ListIssue {
   }
 
   setLoadingState(key, value) {
-    this.isLoading[key] = value;
+    boardsStore.setIssueLoadingState(this, key, value);
   }
 
   update() {

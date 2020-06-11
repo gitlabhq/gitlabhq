@@ -1,0 +1,20 @@
+- expanded = local_assigns.fetch(:expanded)
+
+%h4
+  = _('Variables')
+  = link_to icon('question-circle'), help_page_path('ci/variables/README', anchor: 'variables'), target: '_blank', rel: 'noopener noreferrer'
+
+%button.btn.btn-default.js-settings-toggle{ type: 'button' }
+  = expanded ? _('Collapse') : _('Expand')
+
+%p
+  = _('Environment variables are applied to all project environments in this instance via the Runner. You can use environment variables for passwords, secret keys, etc. Make variables available to the running application by prepending the variable key with <code>K8S_SECRET_</code>. You can set variables to be:').html_safe
+
+%ul
+  %li
+    = _('<code>Protected</code> to expose them to protected branches or tags only.').html_safe
+  %li
+    = _('<code>Masked</code> to prevent the values from being displayed in job logs (must match certain regexp requirements).').html_safe
+
+%p
+  = link_to _('More information'), help_page_path('ci/variables/README', anchor: 'instance-level-cicd-environment-variables')

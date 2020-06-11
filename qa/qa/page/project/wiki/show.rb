@@ -7,16 +7,16 @@ module QA
         class Show < Page::Base
           include Component::LazyLoader
 
-          view 'app/views/projects/wikis/_sidebar.html.haml' do
+          view 'app/views/shared/wikis/_sidebar.html.haml' do
             element :clone_repository_link
           end
 
-          view 'app/views/projects/wikis/show.html.haml' do
+          view 'app/views/shared/wikis/show.html.haml' do
             element :wiki_page_title
             element :wiki_page_content
           end
 
-          view 'app/views/projects/wikis/_main_links.html.haml' do
+          view 'app/views/shared/wikis/_main_links.html.haml' do
             element :new_page_button
             element :page_history_button
             element :edit_page_button

@@ -6,7 +6,7 @@
 
   .nav-text
     %h2.wiki-page-title
-      = link_to @page.human_title, project_wiki_path(@project, @page)
+      = link_to @page.human_title, wiki_page_path(@wiki, @page)
       %span.light
         &middot;
         = _("History")
@@ -25,8 +25,7 @@
         - commit = version
         %tr
           %td
-            = link_to project_wiki_path_with_version(@project, @page,
-                                                     commit.id, index == 0) do
+            = link_to wiki_page_path(@wiki, @page, version_id: index == 0 ? nil : commit.id) do
               = truncate_sha(commit.id)
           %td
             = commit.author_name
@@ -39,4 +38,4 @@
               = version.format
 = paginate @page_versions, theme: 'gitlab'
 
-= render 'sidebar'
+= render 'shared/wikis/sidebar'

@@ -72,6 +72,7 @@
 
 .select2-drop,
 .select2-drop.select2-drop-above {
+  background: $white;
   box-shadow: 0 2px 4px $dropdown-shadow-color;
   border-radius: $border-radius-base;
   border: 1px solid $border-color;
@@ -166,7 +167,8 @@
 
   input {
     padding: $grid-size;
-    background: $white image-url('select2.png');
+    background: transparent image-url('select2.png');
+    color: $gl-text-color;
     background-clip: content-box;
     background-origin: content-box;
     background-repeat: no-repeat;

@@ -45,7 +45,7 @@ describe AlertManagement::Alerts::UpdateService do
       end
     end
 
-    context 'when a model attribute is included' do
+    context 'when a model attribute is included without assignees' do
       let(:params) { { title: 'This is an updated alert.' } }
 
       it 'updates the attribute' do
@@ -53,6 +53,10 @@ describe AlertManagement::Alerts::UpdateService do
 
         expect { response }.to change { alert.title }.from(original_title).to(params[:title])
         expect(response).to be_success
+      end
+
+      it 'skips adding a todo' do
+        expect { response }.not_to change(Todo, :count)
       end
     end
 
@@ -75,6 +79,10 @@ describe AlertManagement::Alerts::UpdateService do
           expect { response }.to change { alert.reload.assignees }.from([]).to([user_with_permissions])
           expect(response).to be_success
         end
+      end
+
+      it 'adds a todo' do
+        expect { response }.to change { Todo.where(user: user_with_permissions).count }.by(1)
       end
     end
   end

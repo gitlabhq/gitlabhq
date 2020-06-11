@@ -427,6 +427,51 @@ Once you set them, they will be available for all subsequent pipelines. Any grou
 
 ![CI/CD settings - inherited variables](img/inherited_group_variables_v12_5.png)
 
+## Instance-level CI/CD environment variables
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/14108) in GitLab 13.0.
+
+Instance variables are useful for no longer needing to manually enter the same credentials repeatedly for all your projects. Instance-level variables are available to all projects and groups on the instance.
+
+NOTE: **Note:**
+The maximum number of instance-level variables is [planned to be 25](https://gitlab.com/gitlab-org/gitlab/-/issues/216097).
+
+You can define instance-level variables via the UI or [API](../../api/instance_level_ci_variables.md).
+
+To add an instance-level variable:
+
+1. Navigate to your admin area's **Settings > CI/CD** and expand the **Variables** section.
+1. Click the **Add variable** button, and fill in the details:
+
+    - **Key**: Must be one line, using only letters, numbers, or `_` (underscore), with no spaces.
+    - **Value**: 700 characters allowed.
+    - **Type**: `File` or `Variable`.
+    - **Protect variable** (Optional): If selected, the variable will only be available in pipelines that run on protected branches or tags.
+    - **Mask variable** (Optional): If selected, the variable's **Value** will not be shown in job logs. The variable will not be saved if the value does not meet the [masking requirements](#masked-variable-requirements).
+
+After a variable is created, you can update any of the details by clicking the **{pencil}** **Edit** button.
+
+### Enable or disable UI interface for instance-level CI/CD variables
+
+The UI interface for Instance-level CI/CD variables is under development but ready for production use.
+It is deployed behind a feature flag that is **enabled by default**.
+[GitLab administrators with access to the GitLab Rails console](../../administration/feature_flags.md) can opt to disable it for your instance.
+
+NOTE: **Note:**
+This feature will not work if the [instance-level CI/CD variables API feature flag is disabled](../../api/instance_level_ci_variables.md#enable-or-disable-instance-level-cicd-variables-core-only).
+
+To disable it:
+
+```ruby
+Feature.disable(:instance_variables_ui)
+```
+
+To enable it:
+
+```ruby
+Feature.enable(:instance_variables_ui)
+```
+
 ## Inherit environment variables
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/22638) in GitLab 13.0.

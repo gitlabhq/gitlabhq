@@ -24,7 +24,7 @@ module API
       params :common_wiki_page_params do
         optional :format,
           type: String,
-          values: ProjectWiki::MARKUPS.values.map(&:to_s),
+          values: Wiki::MARKUPS.values.map(&:to_s),
           default: 'markdown',
           desc: 'Format of a wiki page. Available formats are markdown, rdoc, asciidoc and org'
       end

@@ -1,0 +1,131 @@
+$gray-10: #1f1f1f;
+$gray-50: #2e2e2e;
+$gray-100: #4f4f4f;
+$gray-200: #707070;
+$gray-300: #919191;
+$gray-400: #a7a7a7;
+$gray-500: #bababa;
+$gray-600: #ccc;
+$gray-700: #dfdfdf;
+$gray-800: #f2f2f2;
+$gray-900: #fafafa;
+$gray-950: #fff;
+
+$gl-gray-100: #333;
+$gl-gray-200: #555;
+$gl-gray-350: #666;
+$gl-gray-400: #777;
+$gl-gray-500: #999;
+$gl-gray-600: #aaa;
+$gl-gray-700: #ccc;
+$gl-gray-800: #ddd;
+
+$green-50: #072b15;
+$green-100: #0a4020;
+$green-200: #0e5a2d;
+$green-300: #12753a;
+$green-400: #168f48;
+$green-500: #1aaa55;
+$green-600: #37b96d;
+$green-700: #75d09b;
+$green-800: #b3e6c8;
+$green-900: #dcf5e7;
+$green-950: #f1fdf6;
+
+$blue-50: #0a2744;
+$blue-100: #0f3b66;
+$blue-200: #134a81;
+$blue-300: #17599c;
+$blue-400: #1b69b6;
+$blue-500: #1f78d1;
+$blue-600: #418cd8;
+$blue-700: #73afea;
+$blue-800: #b8d6f4;
+$blue-900: #e4f0fb;
+$blue-950: #f6fafe;
+
+$orange-50: #592800;
+$orange-100: #853c00;
+$orange-200: #a35200;
+$orange-300: #c26700;
+$orange-400: #de7e00;
+$orange-500: #fc9403;
+$orange-600: #fca429;
+$orange-700: #fdbc60;
+$orange-800: #fed69f;
+$orange-900: #fff1de;
+$orange-950: #fffaf4;
+
+$red-50: #4b140b;
+$red-100: #711e11;
+$red-200: #8b2615;
+$red-300: #a62d19;
+$red-400: #c0341d;
+$red-500: #db3b21;
+$red-600: #e05842;
+$red-700: #ea8271;
+$red-800: #f2b4a9;
+$red-900: #fbe5e1;
+$red-950: #fef6f5;
+
+$indigo-50: #1a1a40;
+$indigo-100: #292961;
+$indigo-200: #393982;
+$indigo-300: #4b4ba3;
+$indigo-400: #5b5bbd;
+$indigo-500: #6666c4;
+$indigo-600: #7c7ccc;
+$indigo-700: #a6a6de;
+$indigo-800: #d1d1f0;
+$indigo-900: #ebebfa;
+$indigo-950: #f7f7ff;
+
+$gray-lightest: #222;
+$gray-light: $gray-50;
+$gray-lighter: #303030;
+$gray-normal: #333;
+$gray-dark: $gray-100;
+$gray-darker: #4f4f4f;
+$gray-darkest: #c4c4c4;
+
+$black: #fff;
+$white: #333;
+$white-light: #2b2b2b;
+$white-normal: #333;
+$white-dark: #444;
+
+$border-white-light: $gray-900;
+$border-white-normal: $gray-900;
+
+$body-bg: $gray-50;
+$input-bg: $gray-100;
+$input-focus-bg: $gray-50;
+$input-color: $gray-900;
+$input-group-addon-bg: $gray-900;
+
+$tooltip-bg: $gray-800;
+$tooltip-color: $gray-10;
+
+$popover-color: $gray-950;
+$popover-box-shadow: 0 2px 3px 1px $gray-700;
+$popover-arrow-outer-color: $gray-800;
+
+$secondary: $gray-600;
+
+.gl-label {
+  filter: brightness(0.9) contrast(1.1);
+}
+
+// white-ish text for light labels
+// and for scoped label value (the right section)
+.gl-label-text-light.gl-label-text-light,
+.gl-label-text-dark + .gl-label-text-dark {
+  color: $gray-900;
+}
+
+// duplicated class as the original .atwho-view style is added later
+.atwho-view.atwho-view {
+  background-color: $white;
+  color: $gray-900;
+  border-color: $gray-800;
+}

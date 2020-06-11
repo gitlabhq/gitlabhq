@@ -805,6 +805,10 @@ const boardsStore = {
     }
   },
 
+  setIssueLoadingState(issue, key, value) {
+    issue.isLoading[key] = value;
+  },
+
   updateIssueData(issue, newData) {
     Object.assign(issue, newData);
   },

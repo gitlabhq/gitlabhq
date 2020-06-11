@@ -261,8 +261,7 @@ class WikiPage
   # Relative path to the partial to be used when rendering collections
   # of this object.
   def to_partial_path
-    # TODO: Move into shared/ with https://gitlab.com/gitlab-org/gitlab/-/issues/196054
-    'projects/wikis/wiki_page'
+    '../shared/wikis/wiki_page'
   end
 
   def id

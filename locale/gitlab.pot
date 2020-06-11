@@ -903,6 +903,12 @@ msgstr ""
 msgid "<code>\"johnsmith@example.com\": \"johnsmith@example.com\"</code> will add \"By <a href=\"#\">johnsmith@example.com</a>\" to all issues and comments originally created by johnsmith@example.com. By default, the email address or username is masked to ensure the user's privacy. Use this option if you want to show the full email address."
 msgstr ""
 
+msgid "<code>Masked</code> to prevent the values from being displayed in job logs (must match certain regexp requirements)."
+msgstr ""
+
+msgid "<code>Protected</code> to expose them to protected branches or tags only."
+msgstr ""
+
 msgid "<namespace / project>"
 msgstr ""
 
@@ -8489,10 +8495,16 @@ msgstr ""
 msgid "Environment scope"
 msgstr ""
 
+msgid "Environment variables are applied to all project environments in this instance via the Runner. You can use environment variables for passwords, secret keys, etc. Make variables available to the running application by prepending the variable key with <code>K8S_SECRET_</code>. You can set variables to be:"
+msgstr ""
+
 msgid "Environment variables are applied to environments via the runner. They can be protected by only exposing them to protected branches or tags. Additionally, they can be masked so they are hidden in job logs, though they must match certain regexp requirements to do so. You can use environment variables for passwords, secret keys, or whatever you want."
 msgstr ""
 
 msgid "Environment variables are configured by your administrator to be %{link_start}protected%{link_end} by default"
+msgstr ""
+
+msgid "Environment variables on this GitLab instance are configured to be %{link_start}protected%{link_end} by default"
 msgstr ""
 
 msgid "Environment:"
@@ -25286,10 +25298,16 @@ msgstr ""
 msgid "WikiEmptyIssueMessage|Suggest wiki improvement"
 msgstr ""
 
+msgid "WikiEmptyIssueMessage|You must be a group member in order to add wiki pages. If you have suggestions for how to improve the wiki for this group, consider opening an issue in the %{issues_link}."
+msgstr ""
+
 msgid "WikiEmptyIssueMessage|You must be a project member in order to add wiki pages. If you have suggestions for how to improve the wiki for this project, consider opening an issue in the %{issues_link}."
 msgstr ""
 
 msgid "WikiEmptyIssueMessage|issue tracker"
+msgstr ""
+
+msgid "WikiEmpty|A wiki is where you can store all the details about your group. This can include why you've created it, its principles, how to use it, and so on."
 msgstr ""
 
 msgid "WikiEmpty|A wiki is where you can store all the details about your project. This can include why you've created it, its principles, how to use it, and so on."
@@ -25301,10 +25319,19 @@ msgstr ""
 msgid "WikiEmpty|Suggest wiki improvement"
 msgstr ""
 
+msgid "WikiEmpty|The wiki lets you write documentation for your group"
+msgstr ""
+
 msgid "WikiEmpty|The wiki lets you write documentation for your project"
 msgstr ""
 
+msgid "WikiEmpty|This group has no wiki pages"
+msgstr ""
+
 msgid "WikiEmpty|This project has no wiki pages"
+msgstr ""
+
+msgid "WikiEmpty|You must be a group member in order to add wiki pages."
 msgstr ""
 
 msgid "WikiEmpty|You must be a project member in order to add wiki pages."

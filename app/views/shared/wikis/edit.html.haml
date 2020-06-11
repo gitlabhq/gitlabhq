@@ -1,5 +1,5 @@
 - @content_class = "limit-container-width" unless fluid_layout
-- add_to_breadcrumbs _("Wiki"), project_wiki_path(@project, @page)
+- add_to_breadcrumbs _("Wiki"), wiki_page_path(@wiki, @page)
 - breadcrumb_title @page.persisted? ? _("Edit") : _("New")
 - page_title @page.persisted? ? _("Edit") : _("New"), @page.human_title, _("Wiki")
 
@@ -12,7 +12,7 @@
   .nav-text
     %h2.wiki-page-title
       - if @page.persisted?
-        = link_to @page.human_title, project_wiki_path(@project, @page)
+        = link_to @page.human_title, wiki_page_path(@wiki, @page)
         %span.light
           &middot;
           = s_("Wiki|Edit Page")
@@ -21,11 +21,11 @@
 
   .nav-controls.pb-md-3.pb-lg-0
     - if @page.persisted?
-      = link_to project_wiki_history_path(@project, @page), class: "btn" do
+      = link_to wiki_page_path(@wiki, @page, action: :history), class: "btn" do
         = s_("Wiki|Page history")
-      - if can?(current_user, :admin_wiki, @project)
-        #delete-wiki-modal-wrapper{ data: { delete_wiki_url: project_wiki_path(@project, @page), page_title: @page.human_title } }
+      - if can?(current_user, :admin_wiki, @wiki.container)
+        #delete-wiki-modal-wrapper{ data: { delete_wiki_url: wiki_page_path(@wiki, @page), page_title: @page.human_title } }
 
-= render 'form', uploads_path: wiki_attachment_upload_url
+= render 'shared/wikis/form', uploads_path: wiki_attachment_upload_url
 
-= render 'sidebar'
+= render 'shared/wikis/sidebar'

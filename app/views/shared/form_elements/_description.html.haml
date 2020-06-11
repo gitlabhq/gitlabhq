@@ -18,8 +18,8 @@
 
     - if model.is_a?(Issuable)
       = render 'shared/issuable/form/template_selector', issuable: model
-    = render layout: 'projects/md_preview', locals: { url: preview_url, referenced_users: true } do
-      = render 'projects/zen', f: form, attr: :description,
+    = render layout: 'shared/md_preview', locals: { url: preview_url, referenced_users: true } do
+      = render 'shared/zen', f: form, attr: :description,
                                classes: 'note-textarea qa-issuable-form-description rspec-issuable-form-description',
                                placeholder: placeholder,
                                supports_quick_actions: supports_quick_actions

@@ -96,7 +96,7 @@
   }
 
   .name {
-    background-color: $white-normal;
+    background-color: $gray-50;
     color: $gl-text-color-secondary;
     border-radius: 2px 0 0 2px;
     margin-right: 1px;
@@ -259,6 +259,7 @@
   flex: 1;
   position: relative;
   min-width: 0;
+  background-color: $input-bg;
 }
 
 .filtered-search-input-dropdown-menu {

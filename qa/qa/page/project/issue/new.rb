@@ -14,7 +14,7 @@ module QA
           end
 
           view 'app/views/shared/form_elements/_description.html.haml' do
-            element :issue_description_textarea, "render 'projects/zen', f: form, attr: :description" # rubocop:disable QA/ElementWithPattern
+            element :issue_description_textarea, "render 'shared/zen', f: form, attr: :description" # rubocop:disable QA/ElementWithPattern
           end
 
           def add_title(title)

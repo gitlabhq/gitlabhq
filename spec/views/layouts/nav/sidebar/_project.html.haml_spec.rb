@@ -66,7 +66,7 @@ describe 'layouts/nav/sidebar/_project' do
       it 'shows the wiki tab with the wiki internal link' do
         render
 
-        expect(rendered).to have_link('Wiki', href: project_wiki_path(project, :home))
+        expect(rendered).to have_link('Wiki', href: wiki_path(project.wiki))
       end
     end
 
@@ -76,7 +76,7 @@ describe 'layouts/nav/sidebar/_project' do
       it 'does not show the wiki tab' do
         render
 
-        expect(rendered).not_to have_link('Wiki', href: project_wiki_path(project, :home))
+        expect(rendered).not_to have_link('Wiki', href: wiki_path(project.wiki))
       end
     end
   end
@@ -104,7 +104,7 @@ describe 'layouts/nav/sidebar/_project' do
       it 'does not show the external wiki tab' do
         render
 
-        expect(rendered).not_to have_link('External Wiki', href: project_wiki_path(project, :home))
+        expect(rendered).not_to have_link('External Wiki')
       end
     end
   end

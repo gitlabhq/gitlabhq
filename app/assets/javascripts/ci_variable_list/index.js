@@ -3,9 +3,9 @@ import CiVariableSettings from './components/ci_variable_settings.vue';
 import createStore from './store';
 import { parseBoolean } from '~/lib/utils/common_utils';
 
-export default () => {
-  const el = document.getElementById('js-ci-project-variables');
-  const { endpoint, projectId, group, maskableRegex, protectedByDefault } = el.dataset;
+export default (containerId = 'js-ci-project-variables') => {
+  const containerEl = document.getElementById(containerId);
+  const { endpoint, projectId, group, maskableRegex, protectedByDefault } = containerEl.dataset;
   const isGroup = parseBoolean(group);
   const isProtectedByDefault = parseBoolean(protectedByDefault);
 
@@ -18,7 +18,7 @@ export default () => {
   });
 
   return new Vue({
-    el,
+    el: containerEl,
     store,
     render(createElement) {
       return createElement(CiVariableSettings);

@@ -254,7 +254,7 @@ describe Projects::UpdateService do
       it 'logs an error and creates a metric when wiki can not be created' do
         project.project_feature.update(wiki_access_level: ProjectFeature::DISABLED)
 
-        expect_any_instance_of(ProjectWiki).to receive(:wiki).and_raise(ProjectWiki::CouldNotCreateWikiError)
+        expect_any_instance_of(ProjectWiki).to receive(:wiki).and_raise(Wiki::CouldNotCreateWikiError)
         expect_any_instance_of(described_class).to receive(:log_error).with("Could not create wiki for #{project.full_name}")
 
         counter = double(:counter)

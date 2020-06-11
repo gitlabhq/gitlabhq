@@ -1,0 +1,5 @@
+---
+title: Remove setLoadingState logic from issue model
+merge_request: 32226
+author: nuwe1
+type: other

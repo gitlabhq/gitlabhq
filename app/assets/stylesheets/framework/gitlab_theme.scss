@@ -308,6 +308,7 @@ body {
     );
   }
 
+  &.gl-dark,
   &.ui-light {
     @include gitlab-theme(
       $gray-700,
@@ -387,5 +388,16 @@ body {
     .sidebar-top-level-items > li.active .badge.badge-pill {
       color: $gray-900;
     }
+  }
+
+  &.gl-dark {
+    @include gitlab-theme(
+      $gray-900,
+      $gray-500,
+      $gray-700,
+      $gray-800,
+      $gray-50,
+      $gray-100
+    );
   }
 }
