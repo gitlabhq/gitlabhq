@@ -302,7 +302,7 @@ describe('List Page', () => {
     });
 
     it('contains a description with the path of the item to delete', () => {
-      wrapper.setData({ itemToDelete: { path: 'foo' } });
+      findImageList().vm.$emit('delete', { path: 'foo' });
       return wrapper.vm.$nextTick().then(() => {
         expect(findDeleteModal().html()).toContain('foo');
       });

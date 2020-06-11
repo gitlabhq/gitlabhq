@@ -112,7 +112,7 @@ in a Merge Request. To do so, click the **...** button in the gutter of the Merg
 If you've set up [GitLab CI/CD](../../../ci/README.md) in your project,
 you will be able to see:
 
-- Both pre and post-merge pipelines and the environment information if any.
+- Both pre-merge and post-merge pipelines and the environment information if any.
 - Which deployments are in progress.
 
 If there's an [environment](../../../ci/environments/index.md) and the application is

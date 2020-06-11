@@ -55,7 +55,7 @@ describe('Image List', () => {
     });
 
     it('emits a pageChange event when the page change', () => {
-      wrapper.setData({ currentPage: 2 });
+      findPagination().vm.$emit(GlPagination.model.event, 2);
       expect(wrapper.emitted('pageChange')).toEqual([[2]]);
     });
   });

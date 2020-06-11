@@ -22,6 +22,21 @@ const chartGridLeft = 75;
 // Axis options
 
 /**
+ * Axis types
+ * @see https://echarts.apache.org/en/option.html#xAxis.type
+ */
+export const axisTypes = {
+  /**
+   * Category axis, suitable for discrete category data.
+   */
+  category: 'category',
+  /**
+   *  Time axis, suitable for continuous time series data.
+   */
+  time: 'time',
+};
+
+/**
  * Converts .yml parameters to echarts axis options for data axis
  * @param {Object} param - Dashboard .yml definition options
  */
@@ -61,7 +76,7 @@ export const getYAxisOptions = ({
 
 export const getTimeAxisOptions = ({ timezone = timezones.LOCAL } = {}) => ({
   name: __('Time'),
-  type: 'time',
+  type: axisTypes.time,
   axisLabel: {
     formatter: date => formatDate(date, { format: formats.shortTime, timezone }),
   },

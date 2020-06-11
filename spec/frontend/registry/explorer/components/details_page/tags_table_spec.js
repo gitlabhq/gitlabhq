@@ -88,21 +88,20 @@ describe('tags_table', () => {
       mountComponent();
     });
 
-    it('if selected adds item to selectedItems', () => {
+    it('selecting and deselecting the checkbox works as intended', () => {
       findFirstRowItem('rowCheckbox').vm.$emit('change');
-      return wrapper.vm.$nextTick().then(() => {
-        expect(wrapper.vm.selectedItems).toEqual([tags[0].name]);
-        expect(findFirstRowItem('rowCheckbox').attributes('checked')).toBeTruthy();
-      });
-    });
-
-    it('if deselect remove name from selectedItems', () => {
-      wrapper.setData({ selectedItems: [tags[0].name] });
-      findFirstRowItem('rowCheckbox').vm.$emit('change');
-      return wrapper.vm.$nextTick().then(() => {
-        expect(wrapper.vm.selectedItems.length).toBe(0);
-        expect(findFirstRowItem('rowCheckbox').attributes('checked')).toBe(undefined);
-      });
+      return wrapper.vm
+        .$nextTick()
+        .then(() => {
+          expect(wrapper.vm.selectedItems).toEqual([tags[0].name]);
+          expect(findFirstRowItem('rowCheckbox').attributes('checked')).toBeTruthy();
+          findFirstRowItem('rowCheckbox').vm.$emit('change');
+          return wrapper.vm.$nextTick();
+        })
+        .then(() => {
+          expect(wrapper.vm.selectedItems.length).toBe(0);
+          expect(findFirstRowItem('rowCheckbox').attributes('checked')).toBe(undefined);
+        });
     });
   });
 

@@ -49,7 +49,7 @@ examples in a JSON report file on `master` (`retrieve-tests-metadata` and
 
 This was originally implemented in: <https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/13021>.
 
-If you want to enable retries locally, you can use the `RETRIES` env variable.
+If you want to enable retries locally, you can use the `RETRIES` environment variable.
 For instance `RETRIES=1 bin/rspec ...` would retry the failing examples once.
 
 ## Problems we had in the past at GitLab
@@ -79,11 +79,11 @@ For instance `RETRIES=1 bin/rspec ...` would retry the failing examples once.
 - [Bis](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/34609#note_34048715): <https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/12604>
 - [Bis](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/34698#note_34276286): <https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/12664>
 - [Assert against the underlying database state instead of against a page's content](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/31437): <https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/10934>
-- In JS tests, shifting elements can cause Capybara to misclick when the element moves at the exact time Capybara sends the click
+- In JS tests, shifting elements can cause Capybara to mis-click when the element moves at the exact time Capybara sends the click
   - [Dropdowns rendering upward or downward due to window size and scroll position](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/17660)
-  - [Lazy loaded images can cause Capybara to misclick](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/18713)
+  - [Lazy loaded images can cause Capybara to mis-click](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/18713)
 - [Triggering JS events before the event handlers are set up](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/18742)
-- [Wait for the image to be lazy-loaded when asserting on a Markdown image's src attribute](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/25408)
+- [Wait for the image to be lazy-loaded when asserting on a Markdown image's `src` attribute](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/25408)
 
 #### Capybara viewport size related issues
 

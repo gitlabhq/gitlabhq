@@ -46,6 +46,14 @@ export default {
     isApplying() {
       return this.isApplyingSingle || this.isApplyingBatch;
     },
+    tooltipMessage() {
+      return this.canApply
+        ? __('This also resolves the discussion')
+        : __("Can't apply as this line has changed or the suggestion already matches its content.");
+    },
+    isDisableButton() {
+      return this.isApplying || !this.canApply;
+    },
     applyingSuggestionsMessage() {
       if (this.isApplyingSingle || this.batchSuggestionsCount < 2) {
         return __('Applying suggestion...');
@@ -110,23 +118,24 @@ export default {
         </span>
       </gl-deprecated-button>
     </div>
-    <div v-else-if="canApply" class="d-flex align-items-center">
+    <div v-else class="d-flex align-items-center">
       <gl-deprecated-button
         class="btn-inverted js-add-to-batch-btn btn-grouped"
-        :disabled="isApplying"
+        :disabled="isDisableButton"
         @click="addSuggestionToBatch"
       >
         {{ __('Add suggestion to batch') }}
       </gl-deprecated-button>
-      <gl-deprecated-button
-        v-gl-tooltip.viewport="__('This also resolves the thread')"
-        class="btn-inverted js-apply-btn btn-grouped"
-        :disabled="isApplying"
-        variant="success"
-        @click="applySuggestion"
-      >
-        {{ __('Apply suggestion') }}
-      </gl-deprecated-button>
+      <span v-gl-tooltip.viewport="tooltipMessage" tabindex="0">
+        <gl-deprecated-button
+          class="btn-inverted js-apply-btn btn-grouped"
+          :disabled="isDisableButton"
+          variant="success"
+          @click="applySuggestion"
+        >
+          {{ __('Apply suggestion') }}
+        </gl-deprecated-button>
+      </span>
     </div>
   </div>
 </template>

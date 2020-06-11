@@ -27,8 +27,7 @@ project](../settings/import_export.html#exporting-a-project-and-its-data).
 To make cloning your project faster, rewrite branches and tags to remove
 unwanted files.
 
-1. [Install `git
-   filter-repo`](https://github.com/newren/git-filter-repo/blob/master/INSTALL.md)
+1. [Install `git filter-repo`](https://github.com/newren/git-filter-repo/blob/master/INSTALL.md)
    using a supported package manager, or from source.
 
 1. Clone a fresh copy of the repository using `--bare`.
@@ -52,8 +51,7 @@ unwanted files.
    git filter-repo --path path/to/big/file.m4v --invert-paths
    ```
 
-   See the [`git filter-repo`
-   documentation](https://htmlpreview.github.io/?https://github.com/newren/git-filter-repo/blob/docs/html/git-filter-repo.html#EXAMPLES)
+   See the [`git filter-repo` documentation](https://htmlpreview.github.io/?https://github.com/newren/git-filter-repo/blob/docs/html/git-filter-repo.html#EXAMPLES)
    for more examples, and the complete documentation.
 
 1. Force push your changes to overwrite all branches on GitLab.
@@ -81,8 +79,7 @@ unwanted files.
 
 To reduce the size of your repository in GitLab you will need to remove GitLab
 internal refs that reference commits contain large files. Before completing
-these steps, first [purged files from your repository
-history](#purging-files-from-your-repository-history).
+these steps, first [purged files from your repository history](#purging-files-from-your-repository-history).
 
 As well as branches and tags, which are a type of Git ref, GitLab automatically
 creates other refs. These refs prevent dead links to commits, or missing diffs
@@ -97,12 +94,10 @@ fetching faster. The hidden refs to prevent commits with discussion from being
 deleted (`refs/keep-around/*`) cannot be fetched at all. These refs can,
 however, be accessed from the Git bundle inside the project export.
 
-1. [Install `git
-   filter-repo`](https://github.com/newren/git-filter-repo/blob/master/INSTALL.md)
+1. [Install `git filter-repo`](https://github.com/newren/git-filter-repo/blob/master/INSTALL.md)
    using a supported package manager, or from source.
 
-1. Generate a fresh [export the
-   project](../settings/import_export.html#exporting-a-project-and-its-data) and
+1. Generate a fresh [export from the project](../settings/import_export.md#exporting-a-project-and-its-data) and
    download to your computer.
 
 1. Decompress the backup using `tar`
@@ -111,8 +106,7 @@ however, be accessed from the Git bundle inside the project export.
    tar xzf project-backup.tar.gz
    ```
 
-   This will contain a `project.bundle` file, which was created by [`git
-   bundle`](https://git-scm.com/docs/git-bundle)
+   This will contain a `project.bundle` file, which was created by [`git bundle`](https://git-scm.com/docs/git-bundle)
 
 1. Clone a fresh copy of the repository from the bundle.
 
@@ -142,8 +136,7 @@ however, be accessed from the Git bundle inside the project export.
    git filter-repo --path path/to/big/file.m4v --invert-paths
    ```
 
-   See the [`git filter-repo`
-   documentation](https://htmlpreview.github.io/?https://github.com/newren/git-filter-repo/blob/docs/html/git-filter-repo.html#EXAMPLES)
+   See the [`git filter-repo` documentation](https://htmlpreview.github.io/?https://github.com/newren/git-filter-repo/blob/docs/html/git-filter-repo.html#EXAMPLES)
    for more examples, and the complete documentation.
 
 1. After running `git filter-repo`, the header and unchanged commits need to be

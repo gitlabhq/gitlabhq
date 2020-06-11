@@ -113,9 +113,9 @@ sequenceDiagram
 ## How Usage Ping works
 
 1. The Usage Ping [cron job](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/workers/gitlab_usage_ping_worker.rb#L30) is set in Sidekiq to run weekly.
-1. When the cron job runs, it calls [GitLab::UsageData.to_json](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/services/submit_usage_ping_service.rb#L22).
-1. GitLab::UsageData.to_json [cascades down](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/usage_data.rb#L22) to ~400+ other counter method calls.
-1. The response of all methods calls are [merged together](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/usage_data.rb#L14) into a single JSON payload in GitLab::UsageData.to_json.
+1. When the cron job runs, it calls [`GitLab::UsageData.to_json`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/services/submit_usage_ping_service.rb#L22).
+1. `GitLab::UsageData.to_json` [cascades down](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/usage_data.rb#L22) to ~400+ other counter method calls.
+1. The response of all methods calls are [merged together](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/usage_data.rb#L14) into a single JSON payload in `GitLab::UsageData.to_json`.
 1. The JSON payload is then [posted to the Versions application]( https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/services/submit_usage_ping_service.rb#L20).
 
 ## Implementing Usage Ping
@@ -136,12 +136,12 @@ For large tables, PostgreSQL can take a long time to count rows due to MVCC [(Mu
 
 For GitLab.com, there are extremely large tables with 15 second query timeouts, so we use batch counting to avoid encountering timeouts. Here are the sizes of some GitLab.com tables:
 
-| Table                      | Row counts in millions |
-|----------------------------|------------------------|
-| merge_request_diff_commits | 2280                   |
-| ci_build_trace_sections    | 1764                   |
-| merge_request_diff_files   | 1082                   |
-| events                     | 514                    |
+| Table                        | Row counts in millions |
+|------------------------------|------------------------|
+| `merge_request_diff_commits` | 2280                   |
+| `ci_build_trace_sections`    | 1764                   |
+| `merge_request_diff_files`   | 1082                   |
+| `events`                     | 514                    |
 
 There are two batch counting methods provided, `Ordinary Batch Counters` and `Distinct Batch Counters`. Batch counting requires indexes on columns to calculate max, min, and range queries. In some cases, a specialized index may need to be added on the columns involved in a counter.
 
@@ -204,7 +204,7 @@ Method: `redis_usage_data(counter, &block)`
 Arguments:
 
 - `counter`: a counter from `Gitlab::UsageDataCounters`, that has `fallback_totals` method implemented
-- or a `block`: wich is evaluated
+- or a `block`: which is evaluated
 
 Example of usage:
 

@@ -3826,6 +3826,9 @@ msgstr ""
 msgid "Can override approvers and approvals required per merge request"
 msgstr ""
 
+msgid "Can't apply as this line has changed or the suggestion already matches its content."
+msgstr ""
+
 msgid "Can't create snippet: %{err}"
 msgstr ""
 
@@ -4741,7 +4744,7 @@ msgstr ""
 msgid "ClusterIntegration|Cert-Manager"
 msgstr ""
 
-msgid "ClusterIntegration|Cert-Manager is a native Kubernetes certificate management controller that helps with issuing certificates. Installing Cert-Manager on your cluster will issue a certificate by %{letsEncrypt} and ensure that certificates are valid and up-to-date."
+msgid "ClusterIntegration|Cert-Manager is a native Kubernetes certificate management controller that helps with issuing certificates. Installing Cert-Manager on your cluster will issue a certificate by %{linkStart}Let's Encrypt%{linkEnd} and ensure that certificates are valid and up-to-date."
 msgstr ""
 
 msgid "ClusterIntegration|Certificate Authority bundle (PEM format)"
@@ -4766,9 +4769,6 @@ msgid "ClusterIntegration|Clear cluster cache"
 msgstr ""
 
 msgid "ClusterIntegration|Clear the local cache of namespace and service accounts. This is necessary if your integration has become out of sync. The cache is repopulated during the next CI job that requires namespace and service accounts."
-msgstr ""
-
-msgid "ClusterIntegration|Cloud Run"
 msgstr ""
 
 msgid "ClusterIntegration|Cluster being created"
@@ -4855,7 +4855,7 @@ msgstr ""
 msgid "ClusterIntegration|Crossplane"
 msgstr ""
 
-msgid "ClusterIntegration|Crossplane enables declarative provisioning of managed services from your cloud of choice using %{codeStart}kubectl%{codeEnd} or %{gitlabIntegrationLink}. Crossplane runs inside your Kubernetes cluster and supports secure connectivity and secrets management between app containers and the cloud services they depend on."
+msgid "ClusterIntegration|Crossplane enables declarative provisioning of managed services from your cloud of choice using %{codeStart}kubectl%{codeEnd} or %{linkStart}GitLab Integration%{linkEnd}. Crossplane runs inside your Kubernetes cluster and supports secure connectivity and secrets management between app containers and the cloud services they depend on."
 msgstr ""
 
 msgid "ClusterIntegration|Deletes all GitLab resources attached to this cluster during removal"
@@ -4939,9 +4939,6 @@ msgstr ""
 msgid "ClusterIntegration|GitLab-managed cluster"
 msgstr ""
 
-msgid "ClusterIntegration|Gitlab Integration"
-msgstr ""
-
 msgid "ClusterIntegration|Global default"
 msgstr ""
 
@@ -4987,7 +4984,7 @@ msgstr ""
 msgid "ClusterIntegration|Ingress gives you a way to route requests to services based on the request host or path, centralizing a number of services into a single entrypoint."
 msgstr ""
 
-msgid "ClusterIntegration|Installing Ingress may incur additional costs. Learn more about %{pricingLink}."
+msgid "ClusterIntegration|Installing Ingress may incur additional costs. Learn more about %{linkStart}pricing%{linkEnd}."
 msgstr ""
 
 msgid "ClusterIntegration|Instance cluster"
@@ -5002,7 +4999,7 @@ msgstr ""
 msgid "ClusterIntegration|Issuer Email"
 msgstr ""
 
-msgid "ClusterIntegration|Issuers represent a certificate authority. You must provide an email address for your Issuer. "
+msgid "ClusterIntegration|Issuers represent a certificate authority. You must provide an email address for your Issuer."
 msgstr ""
 
 msgid "ClusterIntegration|Jupyter Hostname"
@@ -5072,9 +5069,6 @@ msgid "ClusterIntegration|Learn more about group Kubernetes clusters"
 msgstr ""
 
 msgid "ClusterIntegration|Learn more about instance Kubernetes clusters"
-msgstr ""
-
-msgid "ClusterIntegration|Let's Encrypt"
 msgstr ""
 
 msgid "ClusterIntegration|Loading IAM Roles"
@@ -5188,7 +5182,7 @@ msgstr ""
 msgid "ClusterIntegration|Prometheus"
 msgstr ""
 
-msgid "ClusterIntegration|Prometheus is an open-source monitoring system with %{gitlabIntegrationLink} to monitor deployed applications."
+msgid "ClusterIntegration|Prometheus is an open-source monitoring system with %{linkStart}GitLab Integration%{linkEnd} to monitor deployed applications."
 msgstr ""
 
 msgid "ClusterIntegration|Provider details"
@@ -5515,13 +5509,10 @@ msgstr ""
 msgid "ClusterIntegration|documentation"
 msgstr ""
 
-msgid "ClusterIntegration|installed via %{installed_via}"
+msgid "ClusterIntegration|installed via %{linkStart}Cloud Run%{linkEnd}"
 msgstr ""
 
 msgid "ClusterIntegration|meets the requirements"
-msgstr ""
-
-msgid "ClusterIntegration|pricing"
 msgstr ""
 
 msgid "ClusterIntegration|sign up"
@@ -22639,7 +22630,7 @@ msgstr ""
 msgid "This also resolves all related threads"
 msgstr ""
 
-msgid "This also resolves the thread"
+msgid "This also resolves the discussion"
 msgstr ""
 
 msgid "This application was created by %{link_to_owner}."

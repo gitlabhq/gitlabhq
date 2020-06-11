@@ -30,10 +30,6 @@ The GitLab **primary** node where the write operations happen will connect to
 the **primary** database server, and **secondary** nodes will
 connect to their own database servers (which are also read-only).
 
-NOTE: **Note:**
-In database documentation, you may see "**primary**" being referenced as "master"
-and "**secondary**" as either "slave" or "standby" server (read-only).
-
 We recommend using [PostgreSQL replication slots](https://medium.com/@tk512/replication-slots-in-postgresql-b4b03d277c75)
 to ensure that the **primary** node retains all the data necessary for the **secondary** nodes to
 recover. See below for more details.

@@ -27,7 +27,7 @@ that you [connect with GitLab via SSH](../../../ssh/README.md).
 
 ## Files
 
-Use a repository to store your files in GitLab. From [GitLab 12.10 onwards](https://gitlab.com/gitlab-org/gitlab/-/issues/33806),
+Use a repository to store your files in GitLab. In [GitLab 12.10 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/33806),
 you'll see on the repository's file tree an icon next to the file name
 according to its extension:
 
@@ -84,9 +84,9 @@ according to the markup language.
 | [AsciiDoc](../../asciidoc.md) | `adoc`, `ad`, `asciidoc` |
 | [Textile](https://textile-lang.com/) | `textile` |
 | [rdoc](http://rdoc.sourceforge.net/doc/index.html)  | `rdoc` |
-| [Orgmode](https://orgmode.org/) | `org` |
+| [Org mode](https://orgmode.org/) | `org` |
 | [creole](http://www.wikicreole.org/) | `creole` |
-| [Mediawiki](https://www.mediawiki.org/wiki/MediaWiki) | `wiki`, `mediawiki` |
+| [MediaWiki](https://www.mediawiki.org/wiki/MediaWiki) | `wiki`, `mediawiki` |
 
 ### Repository README and index files
 
@@ -219,7 +219,9 @@ vendored code, and most markup languages are excluded. This behavior can be
 adjusted by overriding the default. For example, to enable `.proto` files to be
 detected, add the following to `.gitattributes` in the root of your repository.
 
-> *.proto linguist-detectable=true
+```plaintext
+*.proto linguist-detectable=true
+```
 
 ## Locked files **(PREMIUM)**
 

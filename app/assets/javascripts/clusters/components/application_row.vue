@@ -82,11 +82,6 @@ export default {
       required: false,
       default: false,
     },
-    installedVia: {
-      type: String,
-      required: false,
-      default: '',
-    },
     version: {
       type: String,
       required: false,
@@ -336,11 +331,7 @@ export default {
           >
           <span v-else class="js-cluster-application-title">{{ title }}</span>
         </strong>
-        <span
-          v-if="installedVia"
-          class="js-cluster-application-installed-via"
-          v-html="installedVia"
-        ></span>
+        <slot name="installedVia"></slot>
         <div>
           <slot name="description"></slot>
         </div>

@@ -174,7 +174,7 @@ describe('Details Page', () => {
 
     it('fetch the data from the API when the v-model changes', () => {
       dispatchSpy.mockResolvedValue();
-      wrapper.setData({ currentPage: 2 });
+      findPagination().vm.$emit(GlPagination.model.event, 2);
       expect(store.dispatch).toHaveBeenCalledWith('requestTagsList', {
         params: wrapper.vm.$route.params.id,
         pagination: { page: 2 },

@@ -89,7 +89,7 @@ end
 
 ### Defining Elements
 
-The `view` DSL method will correspond to the rails View, partial, or vue component that renders the elements.
+The `view` DSL method will correspond to the rails View, partial, or Vue component that renders the elements.
 
 The `element` DSL method in turn declares an element for which a corresponding
 `data-qa-selector=element_name_snaked` data attribute will need to be added to the view file.
@@ -134,7 +134,7 @@ view 'app/views/my/view.html.haml' do
 end
 ```
 
-To add these elements to the view, you must change the rails View, partial, or vue component by adding a `data-qa-selector` attribute
+To add these elements to the view, you must change the rails View, partial, or Vue component by adding a `data-qa-selector` attribute
 for each element defined.
 
 In our case, `data-qa-selector="login_field"`, `data-qa-selector="password_field"` and `data-qa-selector="sign_in_button"`
@@ -149,7 +149,7 @@ In our case, `data-qa-selector="login_field"`, `data-qa-selector="password_field
 
 Things to note:
 
-- The name of the element and the qa_selector must match and be snake_cased
+- The name of the element and the `qa_selector` must match and be snake_cased
 - If the element appears on the page unconditionally, add `required: true` to the element. See
   [Dynamic element validation](dynamic_element_validation.md)
 - You may see `.qa-selector` classes in existing Page Objects. We should prefer the [`data-qa-selector`](#data-qa-selector-vs-qa-selector)
@@ -255,7 +255,7 @@ These steps ensure the sanity selectors check will detect problems properly.
 
 For example, `qa/qa/ee/page/merge_request/show.rb` adds EE-specific methods to `qa/qa/page/merge_request/show.rb` (with
 `QA::Page::MergeRequest::Show.prepend_if_ee('QA::EE::Page::MergeRequest::Show')`) and following is how it's implemented
-(only showing the relevant part and refering to the 4 steps described above with inline comments):
+(only showing the relevant part and referring to the 4 steps described above with inline comments):
 
 ```ruby
 module QA

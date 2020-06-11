@@ -92,7 +92,7 @@ We can identify three major use-cases for an upload:
 
 1. **storage:** if we are uploading for storing a file (i.e. artifacts, packages, discussion attachments). In this case [direct upload](#direct-upload) is the proper level as it's the less resource-intensive operation. Additional information can be found on [File Storage in GitLab](file_storage.md).
 1. **in-controller/synchronous processing:** if we allow processing **small files** synchronously, using [disk buffered upload](#disk-buffered-upload) may speed up development.
-1. **Sidekiq/asynchronous processing:** Async processing must implement [direct upload](#direct-upload), the reason being that it's the only way to support Cloud Native deployments without a shared NFS.
+1. **Sidekiq/asynchronous processing:** Asynchronous processing must implement [direct upload](#direct-upload), the reason being that it's the only way to support Cloud Native deployments without a shared NFS.
 
 For more details about currently broken feature see [epic &1802](https://gitlab.com/groups/gitlab-org/-/epics/1802).
 
@@ -128,7 +128,7 @@ This is the default kind of upload, and it's most expensive in terms of resource
 
 In this case, workhorse is unaware of files being uploaded and acts as a regular proxy.
 
-When a multipart request reaches the rails application, `Rack::Multipart` leaves behind tempfiles in `/tmp` and uses valuable Ruby process time to copy files around.
+When a multipart request reaches the rails application, `Rack::Multipart` leaves behind temporary files in `/tmp` and uses valuable Ruby process time to copy files around.
 
 ```mermaid
 sequenceDiagram

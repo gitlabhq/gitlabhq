@@ -8,8 +8,8 @@ The measuring module is a tool that allows to measure a service's execution, and
 
 - Service class name
 - Execution time
-- Number of sql calls
-- Detailed gc stats and diffs
+- Number of SQL calls
+- Detailed `gc` stats and diffs
 - RSS memory usage
 - Server worker ID
 
@@ -74,7 +74,7 @@ In the following example, the `:gitlab_service_measuring_projects_import_service
 [feature flag](feature_flags/development.md#enabling-a-feature-flag-in-development) is used to enable the measuring feature
 for `Projects::ImportService`.
 
-From chatops:
+From ChatOps:
 
 ```shell
 /chatops run feature set gitlab_service_measuring_projects_import_service true

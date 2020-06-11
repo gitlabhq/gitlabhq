@@ -52,5 +52,5 @@ You can take some **optional** further steps:
 
     ![Change repo's path](../img/change_path_v12_10.png)
 
-  - Now go to your SSG's config file and change the [base URL](../getting_started_part_one.md#urls-and-baseurls)
+  - Now go to your SSG's configuration file and change the [base URL](../getting_started_part_one.md#urls-and-baseurls)
     from `"project-name"` to `""`. The project name setting varies by SSG and may not be in the config file.

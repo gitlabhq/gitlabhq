@@ -147,7 +147,7 @@ To run several tests inside one directory:
 
 ### Speed up tests, Rake tasks, and migrations
 
-[Spring](https://github.com/rails/spring) is a Rails application preloader. It
+[Spring](https://github.com/rails/spring) is a Rails application pre-loader. It
 speeds up development by keeping your application running in the background so
 you don't need to boot it every time you run a test, Rake task or migration.
 
@@ -203,9 +203,9 @@ To generate a sprite file containing all the Emoji, run:
 bundle exec rake gemojione:sprite
 ```
 
-If new emoji are added, the spritesheet may change size. To compensate for
-such changes, first generate the `emoji.png` spritesheet with the above Rake
-task, then check the dimensions of the new spritesheet and update the
+If new emoji are added, the sprite sheet may change size. To compensate for
+such changes, first generate the `emoji.png` sprite sheet with the above Rake
+task, then check the dimensions of the new sprite sheet and update the
 `SPRITESHEET_WIDTH` and `SPRITESHEET_HEIGHT` constants accordingly.
 
 ## Update project templates

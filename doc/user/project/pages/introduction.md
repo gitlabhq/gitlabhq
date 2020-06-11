@@ -25,7 +25,7 @@ In brief, this is what you need to upload your website in GitLab Pages:
 1. Domain of the instance: domain name that is used for GitLab Pages
    (ask your administrator).
 1. GitLab CI/CD: a `.gitlab-ci.yml` file with a specific job named [`pages`](../../../ci/yaml/README.md#pages) in the root directory of your repository.
-1. A directory called `public` in your site's repo containing the content
+1. A directory called `public` in your site's repository containing the content
    to be published.
 1. GitLab Runner enabled for the project.
 
@@ -87,7 +87,7 @@ will be deleted.
 
 When using Pages under the general domain of a GitLab instance (`*.example.io`),
 you _cannot_ use HTTPS with sub-subdomains. That means that if your
-username/groupname contains a dot, for example `foo.bar`, the domain
+username or group name contains a dot, for example `foo.bar`, the domain
 `https://foo.bar.example.io` will _not_ work. This is a limitation of the
 [HTTP Over TLS protocol](https://tools.ietf.org/html/rfc2818#section-3.1). HTTP pages will continue to work provided you
 don't redirect HTTP to HTTPS.

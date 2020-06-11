@@ -1,5 +1,4 @@
 <script>
-import { escape } from 'lodash';
 import helmInstallIllustration from '@gitlab/svgs/dist/illustrations/kubernetes-installation.svg';
 import { GlLoadingIcon, GlSprintf, GlLink } from '@gitlab/ui';
 import gitlabLogo from 'images/cluster_app_logos/gitlab.png';
@@ -12,7 +11,6 @@ import knativeLogo from 'images/cluster_app_logos/knative.png';
 import prometheusLogo from 'images/cluster_app_logos/prometheus.png';
 import elasticStackLogo from 'images/cluster_app_logos/elastic_stack.png';
 import fluentdLogo from 'images/cluster_app_logos/fluentd.png';
-import { s__, sprintf } from '../../locale';
 import applicationRow from './application_row.vue';
 import clipboardButton from '../../vue_shared/components/clipboard_button.vue';
 import KnativeDomainEditor from './knative_domain_editor.vue';
@@ -128,22 +126,6 @@ export default {
     },
     cloudRun() {
       return this.providerType === PROVIDER_TYPE.GCP && this.preInstalledKnative;
-    },
-    installedVia() {
-      if (this.cloudRun) {
-        return sprintf(
-          escape(s__(`ClusterIntegration|installed via %{installed_via}`)),
-          {
-            installed_via: `<a href="${
-              this.cloudRunHelpPath
-            }" target="_blank" rel="noopener noreferrer">${escape(
-              s__('ClusterIntegration|Cloud Run'),
-            )}</a>`,
-          },
-          false,
-        );
-      }
-      return null;
     },
     ingress() {
       return this.applications.ingress;
@@ -320,17 +302,17 @@ export default {
           </template>
           <template v-else>
             <div class="bs-callout bs-callout-info">
-              <strong>
+              <strong data-testid="ingressCostWarning">
                 <gl-sprintf
                   :message="
                     s__(
-                      'ClusterIntegration|Installing Ingress may incur additional costs. Learn more about %{pricingLink}.',
+                      'ClusterIntegration|Installing Ingress may incur additional costs. Learn more about %{linkStart}pricing%{linkEnd}.',
                     )
                   "
                 >
-                  <template #pricingLink>
+                  <template #link="{ content }">
                     <gl-link href="https://cloud.google.com/compute/pricing#lb" target="_blank">{{
-                      s__('ClusterIntegration|pricing')
+                      content
                     }}</gl-link>
                   </template>
                 </gl-sprintf>
@@ -357,18 +339,16 @@ export default {
         title-link="https://cert-manager.readthedocs.io/en/latest/#"
       >
         <template #description>
-          <p>
+          <p data-testid="certManagerDescription">
             <gl-sprintf
               :message="
                 s__(`ClusterIntegration|Cert-Manager is a native Kubernetes certificate management controller that helps with issuing certificates.
-            Installing Cert-Manager on your cluster will issue a certificate by %{letsEncrypt} and ensure that certificates
+            Installing Cert-Manager on your cluster will issue a certificate by %{linkStart}Let's Encrypt%{linkEnd} and ensure that certificates
             are valid and up-to-date.`)
               "
             >
-              <template #letsEncrypt>
-                <gl-link href="https://letsencrypt.org/" target="_blank">{{
-                  s__(`ClusterIntegration|Let's Encrypt`)
-                }}</gl-link>
+              <template #link="{ content }">
+                <gl-link href="https://letsencrypt.org/" target="_blank">{{ content }}</gl-link>
               </template>
             </gl-sprintf>
           </p>
@@ -388,7 +368,7 @@ export default {
             <p class="form-text text-muted">
               {{
                 s__(`ClusterIntegration|Issuers represent a certificate authority.
-                              You must provide an email address for your Issuer. `)
+                              You must provide an email address for your Issuer.`)
               }}
               <gl-link
                 href="http://docs.cert-manager.io/en/latest/reference/issuers.html?highlight=email"
@@ -417,20 +397,22 @@ export default {
         title-link="https://prometheus.io/docs/introduction/overview/"
       >
         <template #description>
-          <gl-sprintf
-            :message="
-              s__(`ClusterIntegration|Prometheus is an open-source monitoring system
-                          with %{gitlabIntegrationLink} to monitor deployed applications.`)
-            "
-          >
-            <template #gitlabIntegrationLink>
-              <gl-link
-                href="https://docs.gitlab.com/ce/user/project/integrations/prometheus.html"
-                target="_blank"
-                >{{ s__('ClusterIntegration|Gitlab Integration') }}</gl-link
-              >
-            </template>
-          </gl-sprintf>
+          <span data-testid="prometheusDescription">
+            <gl-sprintf
+              :message="
+                s__(`ClusterIntegration|Prometheus is an open-source monitoring system
+                          with %{linkStart}GitLab Integration%{linkEnd} to monitor deployed applications.`)
+              "
+            >
+              <template #link="{ content }">
+                <gl-link
+                  href="https://docs.gitlab.com/ce/user/project/integrations/prometheus.html"
+                  target="_blank"
+                  >{{ content }}</gl-link
+                >
+              </template>
+            </gl-sprintf>
+          </span>
         </template>
       </application-row>
       <application-row
@@ -481,11 +463,11 @@ export default {
         title-link="https://crossplane.io"
       >
         <template #description>
-          <p>
+          <p data-testid="crossplaneDescription">
             <gl-sprintf
               :message="
                 s__(
-                  `ClusterIntegration|Crossplane enables declarative provisioning of managed services from your cloud of choice using %{codeStart}kubectl%{codeEnd} or %{gitlabIntegrationLink}.
+                  `ClusterIntegration|Crossplane enables declarative provisioning of managed services from your cloud of choice using %{codeStart}kubectl%{codeEnd} or %{linkStart}GitLab Integration%{linkEnd}.
               Crossplane runs inside your Kubernetes cluster and supports secure connectivity and secrets management between app containers and the cloud services they depend on.`,
                 )
               "
@@ -493,11 +475,11 @@ export default {
               <template #code="{content}">
                 <code>{{ content }}</code>
               </template>
-              <template #gitlabIntegrationLink>
+              <template #link="{ content }">
                 <gl-link
                   href="https://docs.gitlab.com/ee/user/clusters/applications.html#crossplane"
                   target="_blank"
-                  >{{ s__('ClusterIntegration|Gitlab Integration') }}</gl-link
+                  >{{ content }}</gl-link
                 >
               </template>
             </gl-sprintf>
@@ -584,7 +566,6 @@ export default {
           hostname: applications.knative.hostname,
           pages_domain_id: applications.knative.pagesDomain && applications.knative.pagesDomain.id,
         }"
-        :installed-via="installedVia"
         :uninstallable="applications.knative.uninstallable"
         :uninstall-successful="applications.knative.uninstallSuccessful"
         :uninstall-failed="applications.knative.uninstallFailed"
@@ -617,6 +598,17 @@ export default {
             @save="saveKnativeDomain"
             @set="setKnativeDomain"
           />
+        </template>
+        <template v-if="cloudRun" #installedVia>
+          <span data-testid="installedVia">
+            <gl-sprintf
+              :message="s__('ClusterIntegration|installed via %{linkStart}Cloud Run%{linkEnd}')"
+            >
+              <template #link="{ content }">
+                <gl-link :href="cloudRunHelpPath" target="_blank">{{ content }}</gl-link>
+              </template>
+            </gl-sprintf>
+          </span>
         </template>
       </application-row>
       <application-row

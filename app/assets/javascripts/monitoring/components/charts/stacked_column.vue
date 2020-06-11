@@ -4,6 +4,8 @@ import { GlStackedColumnChart } from '@gitlab/ui/dist/charts';
 import { getSvgIconPathContent } from '~/lib/utils/icon_utils';
 import { chartHeight } from '../../constants';
 import { graphDataValidatorForValues } from '../../utils';
+import { getTimeAxisOptions, axisTypes } from './options';
+import { timezones } from '../../format_date';
 
 export default {
   components: {
@@ -18,6 +20,11 @@ export default {
       required: true,
       validator: graphDataValidatorForValues.bind(null, false),
     },
+    timezone: {
+      type: String,
+      required: false,
+      default: timezones.LOCAL,
+    },
   },
   data() {
     return {
@@ -28,7 +35,14 @@ export default {
   },
   computed: {
     chartData() {
-      return this.graphData.metrics.map(metric => metric.result[0].values.map(val => val[1]));
+      return this.graphData.metrics.map(({ result }) => {
+        // This needs a fix. Not only metrics[0] should be shown.
+        // See https://gitlab.com/gitlab-org/gitlab/-/issues/220492
+        if (!result || result.length === 0) {
+          return [];
+        }
+        return result[0].values.map(val => val[1]);
+      });
     },
     xAxisTitle() {
       return this.graphData.x_label !== undefined ? this.graphData.x_label : '';
@@ -37,10 +51,17 @@ export default {
       return this.graphData.y_label !== undefined ? this.graphData.y_label : '';
     },
     xAxisType() {
-      return this.graphData.x_type !== undefined ? this.graphData.x_type : 'category';
+      // stacked-column component requires the x-axis to be of type `category`
+      return axisTypes.category;
     },
     groupBy() {
-      return this.graphData.metrics[0].result[0].values.map(val => val[0]);
+      // This needs a fix. Not only metrics[0] should be shown.
+      // See https://gitlab.com/gitlab-org/gitlab/-/issues/220492
+      const { result } = this.graphData.metrics[0];
+      if (!result || result.length === 0) {
+        return [];
+      }
+      return result[0].values.map(val => val[0]);
     },
     dataZoomConfig() {
       const handleIcon = this.svgs['scroll-handle'];
@@ -49,11 +70,15 @@ export default {
     },
     chartOptions() {
       return {
-        dataZoom: this.dataZoomConfig,
+        xAxis: {
+          ...getTimeAxisOptions({ timezone: this.timezone }),
+          type: this.xAxisType,
+        },
+        dataZoom: [this.dataZoomConfig],
       };
     },
     seriesNames() {
-      return this.graphData.metrics.map(metric => metric.series_name);
+      return this.graphData.metrics.map(metric => metric.label);
     },
   },
   created() {

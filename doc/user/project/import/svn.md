@@ -82,7 +82,7 @@ For more information regarding the SubGit configuration options, refer to
 
 ### Initial translation
 
-Now that SubGit has configured the Git/SVN repos, run `subgit` to perform the
+Now that SubGit has configured the Git/SVN repositories, run `subgit` to perform the
 initial translation of existing SVN revisions into the Git repository:
 
 ```shell

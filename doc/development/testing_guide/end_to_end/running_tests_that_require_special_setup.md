@@ -24,7 +24,7 @@ To run the tests from the `/qa` directory:
 CHROME_HEADLESS=false bin/qa Test::Instance::All http://localhost -- qa/specs/features/ee/browser_ui/3_create/jenkins/jenkins_build_status_spec.rb
 ```
 
-The test will automatically spinup a Docker container for Jenkins and tear down once the test completes.
+The test will automatically spin up a Docker container for Jenkins and tear down once the test completes.
 
 However, if you need to run Jenkins manually outside of the tests, use this command:
 

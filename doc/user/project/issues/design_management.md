@@ -68,7 +68,7 @@ Navigate to the **Design Management** page from any issue by clicking the **Desi
 To upload design images, click the **Upload Designs** button and select images to upload.
 
 [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/34353) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.9,
-you can drag and drop designs onto the dedicated dropzone to upload them.
+you can drag and drop designs onto the dedicated drop zone to upload them.
 
 ![Drag and drop design uploads](img/design_drag_and_drop_uploads_v12_9.png)
 

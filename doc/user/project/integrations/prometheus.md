@@ -397,6 +397,7 @@ Read the documentation on [templating](#templating-variables-for-metrics-dashboa
 | -------- | ---- | -------- | ----------- |
 | `url` | string | yes | The address of the link. |
 | `title` | string | no | Display title for the link. |
+| `type` | string | no | Type of the link. Specifies the link type, can be: `grafana` |
 
 Read the documentation on [links](#add-related-links-to-custom-dashboards).
 
@@ -844,8 +845,13 @@ templating:
 Related links can be added to the top of your metrics dashboard, which can be used for quickly
 navigating between dashboards or external services. The links will open in the same tab.
 
+The dashboard's time range is appended to the `url` as URL parameters.
+
 The `url` attribute is required for the link but the `title` attribute is optional; if the `title`
 is missing then the full address of the URL will be displayed.
+
+The `type` attribute is optional; if the `type` is `grafana`, the dashboard's time range values are
+converted to Grafana's time range format and appended to the `url`.
 
 ![Links UI](img/related_links_v13_1.png)
 
@@ -857,6 +863,9 @@ links:
     url: https://gitlab.com
   - title: GitLab Documentation
     url: https://docs.gitlab.com
+  - title: Public Grafana playground dashboard
+    url: https://play.grafana.org/d/000000012/grafana-play-home?orgId=1
+    type: grafana
 ```
 
 ### View and edit the source file of a custom dashboard

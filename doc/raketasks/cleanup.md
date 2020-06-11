@@ -172,6 +172,8 @@ level with `NICENESS`. Below are the valid levels, but consult
 
 ## Remove expired ActiveSession lookup keys
 
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/30668) in GitLab 12.2.
+
 ```shell
 # omnibus-gitlab
 sudo gitlab-rake gitlab:cleanup:sessions:active_sessions_lookup_keys
