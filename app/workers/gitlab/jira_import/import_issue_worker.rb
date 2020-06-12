@@ -8,6 +8,8 @@ module Gitlab
       include Gitlab::JiraImport::QueueOptions
       include Gitlab::Import::DatabaseHelpers
 
+      loggable_arguments 3
+
       def perform(project_id, jira_issue_id, issue_attributes, waiter_key)
         issue_id = create_issue(issue_attributes, project_id)
         JiraImport.cache_issue_mapping(issue_id, jira_issue_id, project_id)

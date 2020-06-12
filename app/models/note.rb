@@ -274,6 +274,10 @@ class Note < ApplicationRecord
     noteable_type == "Snippet"
   end
 
+  def for_alert_mangement_alert?
+    noteable_type == 'AlertManagement::Alert'
+  end
+
   def for_personal_snippet?
     noteable.is_a?(PersonalSnippet)
   end
@@ -396,7 +400,13 @@ class Note < ApplicationRecord
   end
 
   def noteable_ability_name
-    for_snippet? ? 'snippet' : noteable_type.demodulize.underscore
+    if for_snippet?
+      'snippet'
+    elsif for_alert_mangement_alert?
+      'alert_management_alert'
+    else
+      noteable_type.demodulize.underscore
+    end
   end
 
   def can_be_discussion_note?

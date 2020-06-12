@@ -9,6 +9,7 @@ class ClusterUpdateAppWorker # rubocop:disable Scalability/IdempotentWorker
   include ExclusiveLeaseGuard
 
   sidekiq_options retry: 3, dead: false
+  loggable_arguments 0, 3
 
   LEASE_TIMEOUT = 10.minutes.to_i
 

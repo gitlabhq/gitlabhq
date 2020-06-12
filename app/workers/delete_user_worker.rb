@@ -4,6 +4,7 @@ class DeleteUserWorker # rubocop:disable Scalability/IdempotentWorker
   include ApplicationWorker
 
   feature_category :authentication_and_authorization
+  loggable_arguments 2
 
   def perform(current_user_id, delete_user_id, options = {})
     delete_user  = User.find(delete_user_id)

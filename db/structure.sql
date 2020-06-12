@@ -37,6 +37,24 @@ CREATE SEQUENCE public.alert_management_alert_assignees_id_seq
 
 ALTER SEQUENCE public.alert_management_alert_assignees_id_seq OWNED BY public.alert_management_alert_assignees.id;
 
+CREATE TABLE public.alert_management_alert_user_mentions (
+    id bigint NOT NULL,
+    alert_management_alert_id bigint NOT NULL,
+    note_id bigint,
+    mentioned_users_ids integer[],
+    mentioned_projects_ids integer[],
+    mentioned_groups_ids integer[]
+);
+
+CREATE SEQUENCE public.alert_management_alert_user_mentions_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE public.alert_management_alert_user_mentions_id_seq OWNED BY public.alert_management_alert_user_mentions.id;
+
 CREATE TABLE public.alert_management_alerts (
     id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
@@ -7401,6 +7419,8 @@ ALTER TABLE ONLY public.abuse_reports ALTER COLUMN id SET DEFAULT nextval('publi
 
 ALTER TABLE ONLY public.alert_management_alert_assignees ALTER COLUMN id SET DEFAULT nextval('public.alert_management_alert_assignees_id_seq'::regclass);
 
+ALTER TABLE ONLY public.alert_management_alert_user_mentions ALTER COLUMN id SET DEFAULT nextval('public.alert_management_alert_user_mentions_id_seq'::regclass);
+
 ALTER TABLE ONLY public.alert_management_alerts ALTER COLUMN id SET DEFAULT nextval('public.alert_management_alerts_id_seq'::regclass);
 
 ALTER TABLE ONLY public.alerts_service_data ALTER COLUMN id SET DEFAULT nextval('public.alerts_service_data_id_seq'::regclass);
@@ -8044,6 +8064,9 @@ ALTER TABLE ONLY public.abuse_reports
 
 ALTER TABLE ONLY public.alert_management_alert_assignees
     ADD CONSTRAINT alert_management_alert_assignees_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY public.alert_management_alert_user_mentions
+    ADD CONSTRAINT alert_management_alert_user_mentions_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY public.alert_management_alerts
     ADD CONSTRAINT alert_management_alerts_pkey PRIMARY KEY (id);
@@ -9193,6 +9216,12 @@ CREATE INDEX index_alert_management_alerts_on_issue_id ON public.alert_managemen
 CREATE UNIQUE INDEX index_alert_management_alerts_on_project_id_and_fingerprint ON public.alert_management_alerts USING btree (project_id, fingerprint);
 
 CREATE UNIQUE INDEX index_alert_management_alerts_on_project_id_and_iid ON public.alert_management_alerts USING btree (project_id, iid);
+
+CREATE UNIQUE INDEX index_alert_user_mentions_on_alert_id ON public.alert_management_alert_user_mentions USING btree (alert_management_alert_id) WHERE (note_id IS NULL);
+
+CREATE UNIQUE INDEX index_alert_user_mentions_on_alert_id_and_note_id ON public.alert_management_alert_user_mentions USING btree (alert_management_alert_id, note_id);
+
+CREATE UNIQUE INDEX index_alert_user_mentions_on_note_id ON public.alert_management_alert_user_mentions USING btree (note_id) WHERE (note_id IS NOT NULL);
 
 CREATE INDEX index_alerts_service_data_on_service_id ON public.alerts_service_data USING btree (service_id);
 
@@ -12391,6 +12420,9 @@ ALTER TABLE ONLY public.design_user_mentions
 ALTER TABLE ONLY public.clusters_kubernetes_namespaces
     ADD CONSTRAINT fk_rails_8df789f3ab FOREIGN KEY (environment_id) REFERENCES public.environments(id) ON DELETE SET NULL;
 
+ALTER TABLE ONLY public.alert_management_alert_user_mentions
+    ADD CONSTRAINT fk_rails_8e48eca0fe FOREIGN KEY (alert_management_alert_id) REFERENCES public.alert_management_alerts(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY public.project_daily_statistics
     ADD CONSTRAINT fk_rails_8e549b272d FOREIGN KEY (project_id) REFERENCES public.projects(id) ON DELETE CASCADE;
 
@@ -12768,6 +12800,9 @@ ALTER TABLE ONLY public.merge_request_blocks
 
 ALTER TABLE ONLY public.protected_branch_unprotect_access_levels
     ADD CONSTRAINT fk_rails_e9eb8dc025 FOREIGN KEY (protected_branch_id) REFERENCES public.protected_branches(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY public.alert_management_alert_user_mentions
+    ADD CONSTRAINT fk_rails_eb2de0cdef FOREIGN KEY (note_id) REFERENCES public.notes(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY public.ci_daily_report_results
     ADD CONSTRAINT fk_rails_ebc2931b90 FOREIGN KEY (project_id) REFERENCES public.projects(id) ON DELETE CASCADE;
@@ -13873,6 +13908,7 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200527151413
 20200527152116
 20200527152657
+20200527170649
 20200527211000
 20200528054112
 20200528123703
@@ -13886,6 +13922,7 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200604145731
 20200604174544
 20200604174558
+20200605003204
 20200608072931
 20200608075553
 20200609002841

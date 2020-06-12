@@ -12,6 +12,7 @@ module Clusters
 
       worker_has_external_dependencies!
       worker_resource_boundary :cpu
+      loggable_arguments 0
 
       def perform(app_name, app_id)
         find_application(app_name, app_id) do |app|

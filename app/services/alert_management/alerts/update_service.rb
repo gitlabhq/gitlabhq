@@ -19,9 +19,11 @@ module AlertManagement
         return error_no_updates if params.empty?
 
         filter_assignees
+        old_assignees = alert.assignees.to_a
 
         if alert.update(params)
-          assign_todo
+          process_assignement(old_assignees)
+
           success
         else
           error(alert.errors.full_messages.to_sentence)
@@ -32,27 +34,8 @@ module AlertManagement
 
       attr_reader :alert, :current_user, :params
 
-      def assign_todo
-        return unless assignee
-
-        todo_service.assign_alert(alert, assignee)
-      end
-
       def allowed?
         current_user.can?(:update_alert_management_alert, alert)
-      end
-
-      def filter_assignees
-        return if params[:assignees].nil?
-
-        params[:assignees] = Array(assignee)
-      end
-
-      def assignee
-        strong_memoize(:assignee) do
-          # Take first assignee while multiple are not currently supported
-          params[:assignees]&.first
-        end
       end
 
       def todo_service
@@ -75,6 +58,35 @@ module AlertManagement
 
       def error_no_updates
         error(_('Please provide attributes to update'))
+      end
+
+      # ----- Assignee-related behavior ------
+      def filter_assignees
+        return if params[:assignees].nil?
+
+        params[:assignees] = Array(assignee)
+      end
+
+      def assignee
+        strong_memoize(:assignee) do
+          # Take first assignee while multiple are not currently supported
+          params[:assignees]&.first
+        end
+      end
+
+      def process_assignement(old_assignees)
+        assign_todo
+        add_assignee_system_note(old_assignees)
+      end
+
+      def assign_todo
+        return unless assignee
+
+        todo_service.assign_alert(alert, assignee)
+      end
+
+      def add_assignee_system_note(old_assignees)
+        SystemNoteService.change_issuable_assignees(alert, alert.project, current_user, old_assignees)
       end
     end
   end

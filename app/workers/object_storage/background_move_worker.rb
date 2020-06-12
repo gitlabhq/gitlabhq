@@ -7,6 +7,7 @@ module ObjectStorage
 
     sidekiq_options retry: 5
     feature_category_not_owned!
+    loggable_arguments 0, 1, 2, 3
 
     def perform(uploader_class_name, subject_class_name, file_field, subject_id)
       uploader_class = uploader_class_name.constantize

@@ -8,6 +8,7 @@ module AlertManagement
     include AtomicInternalId
     include ShaAttribute
     include Sortable
+    include Noteable
     include Gitlab::SQL::Pattern
 
     STATUSES = {
@@ -29,6 +30,9 @@ module AlertManagement
 
     has_many :alert_assignees, inverse_of: :alert
     has_many :assignees, through: :alert_assignees
+
+    has_many :notes, as: :noteable, inverse_of: :noteable, dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
+    has_many :user_mentions, class_name: 'AlertManagement::AlertUserMention', foreign_key: :alert_management_alert_id
 
     has_internal_id :iid, scope: :project, init: ->(s) { s.project.alert_management_alerts.maximum(:iid) }
 

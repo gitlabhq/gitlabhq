@@ -89,3 +89,14 @@
 
 .gl-text-purple { color: $purple; }
 .gl-bg-purple-light { background-color: $purple-light; }
+
+// move this to GitLab UI once onboarding experiment is considered a success
+.gl-py-8 {
+  padding-top: $gl-spacing-scale-8;
+  padding-bottom: $gl-spacing-scale-8;
+}
+
+// move this to GitLab UI once onboarding experiment is considered a success
+.gl-pl-7 {
+  padding-left: $gl-spacing-scale-7;
+}

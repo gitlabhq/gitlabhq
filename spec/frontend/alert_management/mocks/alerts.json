@@ -8,7 +8,8 @@
     "startedAt": "2020-04-17T23:18:14.996Z",
     "endedAt": "2020-04-17T23:18:14.996Z",
     "status": "TRIGGERED",
-    "assignees": { "nodes": [] }
+    "assignees": { "nodes": [] },
+    "notes": { "nodes": [] }
   },
   {
     "iid": "1527543",
@@ -18,7 +19,23 @@
     "startedAt": "2020-04-17T23:18:14.996Z",
     "endedAt": "2020-04-17T23:18:14.996Z",
     "status": "ACKNOWLEDGED",
-    "assignees": { "nodes": [{ "username": "root" }] }
+    "assignees": { "nodes": [{ "username": "root" }] },
+    "notes": {
+      "nodes": [
+        {
+          "id": "gid://gitlab/Note/1628",
+          "author": {
+            "id": "gid://gitlab/User/1",
+            "state": "active",
+            "__typename": "User",
+            "avatarUrl": "https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80\u0026d=identicon",
+            "name": "Administrator",
+            "username": "root",
+            "webUrl": "http://192.168.1.4:3000/root"
+          }
+        }
+      ]
+    }
   },
   {
     "iid": "1527544",
@@ -28,6 +45,22 @@
     "startedAt": "2020-04-17T23:18:14.996Z",
     "endedAt": "2020-04-17T23:18:14.996Z",
     "status": "RESOLVED",
-    "assignees": { "nodes": [{ "username": "root" }] }
+    "assignees": { "nodes": [{ "username": "root" }] },
+    "notes": {
+      "nodes": [
+        {
+          "id": "gid://gitlab/Note/1629",
+          "author": {
+            "id": "gid://gitlab/User/2",
+            "state": "active",
+            "__typename": "User",
+            "avatarUrl": "https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80\u0026d=identicon",
+            "name": "Administrator",
+            "username": "root",
+            "webUrl": "http://192.168.1.4:3000/root"
+          }
+        }
+      ]
+    }
   }
 ]

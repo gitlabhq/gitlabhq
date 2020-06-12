@@ -7,6 +7,7 @@ class GitlabShellWorker # rubocop:disable Scalability/IdempotentWorker
   feature_category :source_code_management
   urgency :high
   weight 2
+  loggable_arguments 0
 
   def perform(action, *arg)
     # Gitlab::Shell is being removed but we need to continue to process jobs

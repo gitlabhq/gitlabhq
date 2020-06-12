@@ -518,6 +518,34 @@ job needs to be scheduled with.
 The `context_proc` which needs to return a hash with the context
 information for the job.
 
+## Arguments logging
+
+When [`SIDEKIQ_LOG_ARGUMENTS`](../administration/troubleshooting/sidekiq.md#log-arguments-to-sidekiq-jobs)
+is enabled, Sidekiq job arguments will be logged.
+
+By default, the only arguments logged are numeric arguments, because
+arguments of other types could contain sensitive information. To
+override this, use `loggable_arguments` inside a worker with the indexes
+of the arguments to be logged. (Numeric arguments do not need to be
+specified here.)
+
+For example:
+
+```ruby
+class MyWorker
+  include ApplicationWorker
+
+  loggable_arguments 1, 3
+
+  # object_id will be logged as it's numeric
+  # string_a will be logged due to the loggable_arguments call
+  # string_b will be filtered from logs
+  # string_c will be logged due to the loggable_arguments call
+  def perform(object_id, string_a, string_b, string_c)
+  end
+end
+```
+
 ## Tests
 
 Each Sidekiq worker must be tested using RSpec, just like any other class. These

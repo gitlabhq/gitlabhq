@@ -12,6 +12,8 @@ module RepositoryCheck
 
     attr_reader :shard_name
 
+    loggable_arguments 0
+
     def perform(shard_name)
       @shard_name = shard_name
 

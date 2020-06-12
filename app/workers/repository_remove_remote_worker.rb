@@ -5,6 +5,7 @@ class RepositoryRemoveRemoteWorker # rubocop:disable Scalability/IdempotentWorke
   include ExclusiveLeaseGuard
 
   feature_category :source_code_management
+  loggable_arguments 1
 
   LEASE_TIMEOUT = 1.hour
 

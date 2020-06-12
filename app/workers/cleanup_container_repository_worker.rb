@@ -5,6 +5,7 @@ class CleanupContainerRepositoryWorker # rubocop:disable Scalability/IdempotentW
 
   queue_namespace :container_repository
   feature_category :container_registry
+  loggable_arguments 2
 
   attr_reader :container_repository, :current_user
 

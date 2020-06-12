@@ -12,6 +12,7 @@ module Gitlab
 
       sidekiq_options dead: false
       feature_category :importers
+      loggable_arguments 1, 2
 
       # The known importer stages and their corresponding Sidekiq workers.
       STAGES = {

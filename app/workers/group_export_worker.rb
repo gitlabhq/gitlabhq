@@ -5,6 +5,7 @@ class GroupExportWorker # rubocop:disable Scalability/IdempotentWorker
   include ExceptionBacktrace
 
   feature_category :importers
+  loggable_arguments 2
 
   def perform(current_user_id, group_id, params = {})
     current_user = User.find(current_user_id)

@@ -6,6 +6,8 @@ module Types
       graphql_name 'AlertManagementAlert'
       description "Describes an alert from the project's Alert Management"
 
+      implements(Types::Notes::NoteableType)
+
       authorize :read_alert_management_alert
 
       field :iid,

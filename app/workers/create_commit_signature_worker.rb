@@ -5,8 +5,8 @@ class CreateCommitSignatureWorker
 
   feature_category :source_code_management
   weight 2
-
   idempotent!
+  loggable_arguments 0
 
   # rubocop: disable CodeReuse/ActiveRecord
   def perform(commit_shas, project_id)

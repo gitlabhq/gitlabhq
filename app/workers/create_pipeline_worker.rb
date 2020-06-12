@@ -8,6 +8,7 @@ class CreatePipelineWorker # rubocop:disable Scalability/IdempotentWorker
   feature_category :continuous_integration
   urgency :high
   worker_resource_boundary :cpu
+  loggable_arguments 2, 3, 4
 
   def perform(project_id, user_id, ref, source, params = {})
     project = Project.find(project_id)

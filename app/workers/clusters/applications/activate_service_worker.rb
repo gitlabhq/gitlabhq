@@ -6,6 +6,8 @@ module Clusters
       include ApplicationWorker
       include ClusterQueue
 
+      loggable_arguments 1
+
       def perform(cluster_id, service_name)
         cluster = Clusters::Cluster.find_by_id(cluster_id)
         return unless cluster

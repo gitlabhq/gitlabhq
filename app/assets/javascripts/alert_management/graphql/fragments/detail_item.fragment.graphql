@@ -1,4 +1,5 @@
 #import "./list_item.fragment.graphql"
+#import "./alert_note.fragment.graphql"
 
 fragment AlertDetailItem on AlertManagementAlert {
   ...AlertListItem
@@ -8,4 +9,9 @@ fragment AlertDetailItem on AlertManagementAlert {
   description
   updatedAt
   details
+  notes {
+    nodes {
+      ...AlertNote
+    }
+  }
 }

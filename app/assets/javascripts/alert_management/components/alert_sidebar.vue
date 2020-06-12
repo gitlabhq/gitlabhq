@@ -53,6 +53,7 @@ export default {
         v-if="glFeatures.alertAssignee"
         :project-path="projectPath"
         :alert="alert"
+        @alert-refresh="$emit('alert-refresh')"
         @toggle-sidebar="$emit('toggle-sidebar')"
         @alert-sidebar-error="$emit('alert-sidebar-error', $event)"
       />

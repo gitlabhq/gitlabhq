@@ -26,10 +26,13 @@ module Gitlab
 
           # Sanitize fields based on those sanitized from Rails.
           config.sanitize_fields = Rails.application.config.filter_parameters.map(&:to_s)
+          config.processors << ::Gitlab::ErrorTracking::Processor::SidekiqProcessor
           # Sanitize authentication headers
           config.sanitize_http_headers = %w[Authorization Private-Token]
           config.tags = { program: Gitlab.process_name }
           config.before_send = method(:before_send)
+
+          yield config if block_given?
         end
       end
 

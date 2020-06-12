@@ -141,6 +141,7 @@ export default {
         })
         .then(() => {
           this.hideDropdown();
+          this.$emit('alert-refresh');
         })
         .catch(() => {
           this.$emit('alert-sidebar-error', this.$options.UPDATE_ALERT_ASSIGNEES_ERROR);

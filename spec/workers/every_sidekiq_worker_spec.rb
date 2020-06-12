@@ -40,6 +40,12 @@ describe 'Every Sidekiq worker' do
     end
   end
 
+  it 'has a value for loggable_arguments' do
+    workers_without_defaults.each do |worker|
+      expect(worker.klass.loggable_arguments).to be_an(Array)
+    end
+  end
+
   describe "feature category declarations" do
     let(:feature_categories) do
       YAML.load_file(Rails.root.join('config', 'feature_categories.yml')).map(&:to_sym).to_set

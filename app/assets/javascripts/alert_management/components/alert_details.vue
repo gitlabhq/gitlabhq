@@ -15,11 +15,13 @@ import { s__ } from '~/locale';
 import query from '../graphql/queries/details.query.graphql';
 import { fetchPolicies } from '~/lib/graphql';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { ALERTS_SEVERITY_LABELS, trackAlertsDetailsViewsOptions } from '../constants';
 import createIssueQuery from '../graphql/mutations/create_issue_from_alert.graphql';
 import { visitUrl, joinPaths } from '~/lib/utils/url_utility';
 import Tracking from '~/tracking';
 import { toggleContainerClasses } from '~/lib/utils/dom_utils';
+import SystemNote from './system_notes/system_note.vue';
 import AlertSidebar from './alert_sidebar.vue';
 
 const containerEl = document.querySelector('.page-with-contextual-sidebar');
@@ -47,7 +49,9 @@ export default {
     GlTable,
     TimeAgoTooltip,
     AlertSidebar,
+    SystemNote,
   },
+  mixins: [glFeatureFlagsMixin()],
   props: {
     alertId: {
       type: String,
@@ -158,6 +162,9 @@ export default {
     trackPageViews() {
       const { category, action } = trackAlertsDetailsViewsOptions;
       Tracking.event(category, action);
+    },
+    alertRefresh() {
+      this.$apollo.queries.alert.refetch();
     },
   },
 };
@@ -287,6 +294,13 @@ export default {
             </div>
             <div class="gl-pl-2" data-testid="service">{{ alert.service }}</div>
           </div>
+          <template v-if="glFeatures.alertAssignee">
+            <div v-if="alert.notes" class="issuable-discussion">
+              <ul class="notes main-notes-list timeline">
+                <system-note v-for="note in alert.notes.nodes" :key="note.id" :note="note" />
+              </ul>
+            </div>
+          </template>
         </gl-tab>
         <gl-tab data-testid="fullDetailsTab" :title="$options.i18n.fullAlertDetailsTitle">
           <gl-table
@@ -309,6 +323,7 @@ export default {
         :project-path="projectPath"
         :alert="alert"
         :sidebar-collapsed="sidebarCollapsed"
+        @alert-refresh="alertRefresh"
         @toggle-sidebar="toggleSidebar"
         @alert-sidebar-error="handleAlertSidebarError"
       />

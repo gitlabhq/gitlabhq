@@ -9,6 +9,7 @@ class AuthorizedKeysWorker
   urgency :high
   weight 2
   idempotent!
+  loggable_arguments 0
 
   def perform(action, *args)
     return unless Gitlab::CurrentSettings.authorized_keys_enabled?

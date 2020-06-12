@@ -578,6 +578,63 @@
               "deprecationReason": null
             },
             {
+              "name": "discussions",
+              "description": "All discussions on this noteable",
+              "args": [
+                {
+                  "name": "after",
+                  "description": "Returns the elements in the list that come after the specified cursor.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "before",
+                  "description": "Returns the elements in the list that come before the specified cursor.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "first",
+                  "description": "Returns the first _n_ elements from the list.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "last",
+                  "description": "Returns the last _n_ elements from the list.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                }
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "DiscussionConnection",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "endedAt",
               "description": "Timestamp the alert ended",
               "args": [
@@ -674,6 +731,63 @@
               "deprecationReason": null
             },
             {
+              "name": "notes",
+              "description": "All notes on this noteable",
+              "args": [
+                {
+                  "name": "after",
+                  "description": "Returns the elements in the list that come after the specified cursor.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "before",
+                  "description": "Returns the elements in the list that come before the specified cursor.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "first",
+                  "description": "Returns the first _n_ elements from the list.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "last",
+                  "description": "Returns the last _n_ elements from the list.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                }
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "NoteConnection",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "service",
               "description": "Service the alert came from",
               "args": [
@@ -760,7 +874,11 @@
           ],
           "inputFields": null,
           "interfaces": [
-
+            {
+              "kind": "INTERFACE",
+              "name": "Noteable",
+              "ofType": null
+            }
           ],
           "enumValues": null,
           "possibleTypes": null
@@ -23587,6 +23705,11 @@
           "possibleTypes": [
             {
               "kind": "OBJECT",
+              "name": "AlertManagementAlert",
+              "ofType": null
+            },
+            {
+              "kind": "OBJECT",
               "name": "Design",
               "ofType": null
             },
@@ -34801,20 +34924,6 @@
                   "name": "ID",
                   "ofType": null
                 }
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "pipeline",
-              "description": "Pipeline that created the test report",
-              "args": [
-
-              ],
-              "type": {
-                "kind": "OBJECT",
-                "name": "Pipeline",
-                "ofType": null
               },
               "isDeprecated": false,
               "deprecationReason": null

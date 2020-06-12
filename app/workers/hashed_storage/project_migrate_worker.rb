@@ -5,6 +5,7 @@ module HashedStorage
     include ApplicationWorker
 
     queue_namespace :hashed_storage
+    loggable_arguments 1
 
     attr_reader :project_id
 

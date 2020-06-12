@@ -40,6 +40,7 @@ describe AlertManagement::Alerts::UpdateService do
       let(:params) { { title: nil } }
 
       it 'results in an error' do
+        expect { response }.not_to change { alert.reload.notes.count }
         expect(response).to be_error
         expect(response.message).to eq("Title can't be blank")
       end
@@ -72,6 +73,14 @@ describe AlertManagement::Alerts::UpdateService do
         expect(response).to be_success
       end
 
+      it 'creates a system note for the assignment' do
+        expect { response }.to change { alert.reload.notes.count }.by(1)
+      end
+
+      it 'adds a todo' do
+        expect { response }.to change { Todo.where(user: user_with_permissions).count }.by(1)
+      end
+
       context 'with multiple users included' do
         let(:params) { { assignees: [user_with_permissions, user_without_permissions] } }
 
@@ -79,10 +88,6 @@ describe AlertManagement::Alerts::UpdateService do
           expect { response }.to change { alert.reload.assignees }.from([]).to([user_with_permissions])
           expect(response).to be_success
         end
-      end
-
-      it 'adds a todo' do
-        expect { response }.to change { Todo.where(user: user_with_permissions).count }.by(1)
       end
     end
   end

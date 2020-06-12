@@ -5,6 +5,7 @@ class GitGarbageCollectWorker # rubocop:disable Scalability/IdempotentWorker
 
   sidekiq_options retry: false
   feature_category :gitaly
+  loggable_arguments 1, 2, 3
 
   # Timeout set to 24h
   LEASE_TIMEOUT = 86400

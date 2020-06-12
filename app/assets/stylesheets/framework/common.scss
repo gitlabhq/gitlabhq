@@ -135,7 +135,7 @@ hr {
   text-overflow: ellipsis;
   white-space: nowrap;
 
-  > div:not(.block),
+  > div:not(.block):not(.select2-display-none),
   .str-truncated {
     display: inline;
   }

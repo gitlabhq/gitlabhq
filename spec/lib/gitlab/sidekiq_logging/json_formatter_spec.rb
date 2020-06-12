@@ -14,6 +14,7 @@ describe Gitlab::SidekiqLogging::JSONFormatter do
     let(:hash_input) do
       {
         foo: 1,
+        'class' => 'PostReceive',
         'bar' => 'test',
         'created_at' => timestamp,
         'enqueued_at' => timestamp,
@@ -42,21 +43,47 @@ describe Gitlab::SidekiqLogging::JSONFormatter do
       expect(subject).to eq(expected_output)
     end
 
-    context 'when the job args are bigger than the maximum allowed' do
-      it 'keeps args from the front until they exceed the limit' do
-        half_limit = Gitlab::Utils::LogLimitedArray::MAXIMUM_ARRAY_LENGTH / 2
-        hash_input['args'] = [1, 2, 'a' * half_limit, 'b' * half_limit, 3]
+    it 'removes jobstr from the hash' do
+      hash_input[:jobstr] = 'job string'
 
-        expected_args = hash_input['args'].take(3).map(&:to_s) + ['...']
-
-        expect(subject['args']).to eq(expected_args)
-      end
+      expect(subject).not_to include('jobstr')
     end
 
-    it 'properly flattens arguments to a String' do
-      hash_input['args'] = [1, "test", 2, { 'test' => 1 }]
+    it 'does not modify the input hash' do
+      input = { 'args' => [1, 'string'] }
 
-      expect(subject['args']).to eq(["1", "test", "2", %({"test"=>1})])
+      output = Gitlab::Json.parse(described_class.new.call('INFO', now, 'my program', input))
+
+      expect(input['args']).to eq([1, 'string'])
+      expect(output['args']).to eq(['1', '[FILTERED]'])
+    end
+
+    context 'job arguments' do
+      context 'when the arguments are bigger than the maximum allowed' do
+        it 'keeps args from the front until they exceed the limit' do
+          half_limit = Gitlab::Utils::LogLimitedArray::MAXIMUM_ARRAY_LENGTH / 2
+          hash_input['args'] = [1, 2, 'a' * half_limit, 'b' * half_limit, 3]
+
+          expected_args = hash_input['args'].take(3).map(&:to_s) + ['...']
+
+          expect(subject['args']).to eq(expected_args)
+        end
+      end
+
+      context 'when the job has non-integer arguments' do
+        it 'only allows permitted non-integer arguments through' do
+          hash_input['args'] = [1, 'foo', 'bar']
+          hash_input['class'] = 'WebHookWorker'
+
+          expect(subject['args']).to eq(['1', '[FILTERED]', 'bar'])
+        end
+      end
+
+      it 'properly flattens arguments to a String' do
+        hash_input['args'] = [1, "test", 2, { 'test' => 1 }]
+
+        expect(subject['args']).to eq(["1", "test", "2", %({"test"=>1})])
+      end
     end
 
     context 'when the job has a non-integer value for retry' do

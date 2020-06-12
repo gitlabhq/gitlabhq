@@ -17,6 +17,7 @@ describe Types::Notes::NoteableType do
       expect(described_class.resolve_type(build(:issue), {})).to eq(Types::IssueType)
       expect(described_class.resolve_type(build(:merge_request), {})).to eq(Types::MergeRequestType)
       expect(described_class.resolve_type(build(:design), {})).to eq(Types::DesignManagement::DesignType)
+      expect(described_class.resolve_type(build(:alert_management_alert), {})).to eq(Types::AlertManagement::AlertType)
     end
   end
 end
