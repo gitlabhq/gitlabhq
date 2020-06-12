@@ -72,7 +72,7 @@ gitlab_rails['initial_license_file'] = "/path/to/license/file"
 
 CAUTION: **Caution:**
 These methods will only add a license at the time of installation. Use the
-Admin Area in the web ui to renew or upgrade licenses.
+Admin Area in the web user interface to renew or upgrade licenses.
 
 ---
 

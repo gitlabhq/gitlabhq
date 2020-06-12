@@ -35,7 +35,7 @@ bundle exec rake gitlab:snippets:migrate SNIPPET_IDS=1,2,3,4
 ```
 
 There is a default limit (100) to the number of ids supported in the migration
-process. You can modify this limit by using the env variable `LIMIT`.
+process. You can modify this limit by using the environment variable `LIMIT`.
 
 ```shell
 sudo gitlab-rake gitlab:snippets:migrate SNIPPET_IDS=1,2,3,4 LIMIT=50
@@ -83,7 +83,7 @@ bundle exec rake gitlab:snippets:list_non_migrated RAILS_ENV=production
 
 As the number of non-migrated snippets can be large, we limit
 by default the size of the number of ids returned to 100. You can
-modify this limit by using the env variable `LIMIT`.
+modify this limit by using the environment variable `LIMIT`.
 
 ```shell
 sudo gitlab-rake gitlab:snippets:list_non_migrated LIMIT=200

@@ -5,4 +5,8 @@ export default (initialState = {}) => ({
     url: initialState.externalDashboardUrl,
     helpPage: initialState.externalDashboardHelpPage,
   },
+  dashboardTimezone: {
+    selected: initialState.dashboardTimezoneSetting,
+    helpPage: initialState.dashboardTimezoneHelpPage,
+  },
 });

@@ -31,8 +31,8 @@ Dependencies are displayed with the following information:
 | Field     | Description |
 | --------- | ----------- |
 | Component | The dependency's name and version |
-| Packager  | The packager used to install the depedency |
-| Location  | A link to the packager-specific lockfile in your project that declared the dependency |
+| Packager  | The packager used to install the dependency |
+| Location  | A link to the packager-specific lock file in your project that declared the dependency |
 | License   | Links to dependency's software licenses |
 
 Dependencies shown are initially sorted by the severity of their known vulnerabilities, if any. They

@@ -1,3 +1,2 @@
-/* eslint-disable import/prefer-default-export */
-
 export const SET_EXTERNAL_DASHBOARD_URL = 'SET_EXTERNAL_DASHBOARD_URL';
+export const SET_DASHBOARD_TIMEZONE = 'SET_DASHBOARD_TIMEZONE';

@@ -65,7 +65,7 @@ and expand **Outbound requests**:
 
 The allowed entries can be separated by semicolons, commas or whitespaces
 (including newlines) and be in different formats like hostnames, IP addresses and/or
-IP ranges. IPv6 is supported. Hostnames that contain unicode characters should
+IP ranges. IPv6 is supported. Hostnames that contain Unicode characters should
 use IDNA encoding.
 
 The allowlist can hold a maximum of 1000 entries. Each entry can be a maximum of

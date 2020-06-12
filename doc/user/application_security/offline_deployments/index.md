@@ -52,7 +52,7 @@ you must update each of the scanners to either reference a different,
 internally-hosted registry or provide access to the individual scanner images.
 
 You must also ensure that your app has access to common package repositories
-that are not hosted on GitLab.com, such as npm, yarn, or rubygems. Packages
+that are not hosted on GitLab.com, such as npm, yarn, or Ruby gems. Packages
 from these repos can be obtained by temporarily connecting to a network or by
 mirroring the packages inside your own offline network.
 

@@ -172,7 +172,7 @@ GitLab.com), therefore, you don't need to do anything server-side.
    If the terminal doesn't prompt you with a full response on `git-lfs` commands,
    [install the Git LFS client](https://git-lfs.github.com/) first.
 
-1. Inside the repo, run the following command to initiate LFS:
+1. Inside the repository, run the following command to initiate LFS:
 
    ```shell
    git lfs install
@@ -189,7 +189,7 @@ GitLab.com), therefore, you don't need to do anything server-side.
    ```
 
    Once you do that, run `git status` and you'll see `.gitattributes` added
-   to your repo. It collects all file patterns that you chose to track via
+   to your repository. It collects all file patterns that you chose to track via
    `git-lfs`.
 
 1. Add the files, commit and push them to GitLab:

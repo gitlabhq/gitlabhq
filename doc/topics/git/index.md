@@ -92,7 +92,7 @@ Git-related queries from GitLab.
 The following relate to Git Large File Storage:
 
 - [Getting Started with Git LFS](https://about.gitlab.com/blog/2017/01/30/getting-started-with-git-lfs-tutorial/)
-- [Migrate an existing Git repo with Git LFS](lfs/migrate_to_git_lfs.md)
+- [Migrate an existing Git repository with Git LFS](lfs/migrate_to_git_lfs.md)
 - [Removing objects from LFS](lfs/index.md#removing-objects-from-lfs)
 - [GitLab Git LFS user documentation](lfs/index.md)
 - [GitLab Git LFS admin documentation](../../administration/lfs/index.md)

@@ -10,7 +10,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 Track development velocity with Productivity Analytics.
 
-For many companies, the development cycle is a blackbox and getting an estimate of how
+For many companies, the development cycle is a black box and getting an estimate of how
 long, on average, it takes to deliver features is an enormous endeavor.
 
 While [Value Stream Analytics](../project/cycle_analytics.md) focuses on the entire

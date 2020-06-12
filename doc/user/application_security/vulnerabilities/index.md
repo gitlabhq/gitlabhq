@@ -20,7 +20,7 @@ several different ways:
 - [Change the Vulnerability Status](#changing-vulnerability-status) - You can change the
   status of a vulnerability to **Detected**, **Confirmed**, **Dismissed**, or **Resolved**.
 - [Create issue](#creating-an-issue-for-a-vulnerability) - Create a new issue with the
-  title and description prepopulated with information from the vulnerability report.
+  title and description pre-populated with information from the vulnerability report.
   By default, such issues are [confidential](../../project/issues/confidential_issues.md).
 - [Solution](#automatic-remediation-solutions-for-vulnerabilities) - For some vulnerabilities,
   a solution is provided for how to fix the vulnerability.
@@ -42,7 +42,7 @@ the following values:
 You can create an issue for a vulnerability by selecting the **Create issue** button.
 
 This creates a [confidential issue](../../project/issues/confidential_issues.md) in the
-project the vulnerability came from, and prepopulates it with useful information from
+project the vulnerability came from, and pre-populates it with useful information from
 the vulnerability report. After the issue is created, GitLab redirects you to the
 issue page so you can edit, assign, or comment on the issue.
 

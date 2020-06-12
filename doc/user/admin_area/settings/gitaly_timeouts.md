@@ -4,7 +4,7 @@ type: reference
 
 # Gitaly timeouts
 
-![gitaly timeouts](img/gitaly_timeouts.png)
+![Gitaly timeouts](img/gitaly_timeouts.png)
 
 3 timeout types can be configured to make sure that long running
 Gitaly calls don't needlessly take up resources.

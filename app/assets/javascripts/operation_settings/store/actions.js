@@ -7,11 +7,15 @@ import * as mutationTypes from './mutation_types';
 export const setExternalDashboardUrl = ({ commit }, url) =>
   commit(mutationTypes.SET_EXTERNAL_DASHBOARD_URL, url);
 
+export const setDashboardTimezone = ({ commit }, selected) =>
+  commit(mutationTypes.SET_DASHBOARD_TIMEZONE, selected);
+
 export const saveChanges = ({ state, dispatch }) =>
   axios
     .patch(state.operationsSettingsEndpoint, {
       project: {
         metrics_setting_attributes: {
+          dashboard_timezone: state.dashboardTimezone.selected,
           external_dashboard_url: state.externalDashboard.url,
         },
       },

@@ -157,7 +157,7 @@ Below are the shared Runners settings.
 Linux Shared Runners on GitLab.com provide a way to run commands in a CI
 job before the Runner attempts to run `git init` and `git fetch` to
 download a GitLab repository. The
-[pre_clone_script](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runners-section)
+[`pre_clone_script`](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runners-section)
 can be used for:
 
 - Seeding the build directory with repository data
@@ -420,37 +420,37 @@ different database servers.
 
 The list of GitLab.com specific settings (and their defaults) is as follows:
 
-| Setting                             | GitLab.com                                                          | Default                               |
-|:------------------------------------|:--------------------------------------------------------------------|:--------------------------------------|
-| archive_command                     | `/usr/bin/envdir /etc/wal-e.d/env /opt/wal-e/bin/wal-e wal-push %p` | empty                                 |
-| archive_mode                        | on                                                                  | off                                   |
-| autovacuum_analyze_scale_factor     | 0.01                                                                | 0.01                                  |
-| autovacuum_max_workers              | 6                                                                   | 3                                     |
-| autovacuum_vacuum_cost_limit        | 1000                                                                | -1                                    |
-| autovacuum_vacuum_scale_factor      | 0.01                                                                | 0.02                                  |
-| checkpoint_completion_target        | 0.7                                                                 | 0.9                                   |
-| checkpoint_segments                 | 32                                                                  | 10                                    |
-| effective_cache_size                | 338688MB                                                            | Based on how much memory is available |
-| hot_standby                         | on                                                                  | off                                   |
-| hot_standby_feedback                | on                                                                  | off                                   |
-| log_autovacuum_min_duration         | 0                                                                   | -1                                    |
-| log_checkpoints                     | on                                                                  | off                                   |
-| log_line_prefix                     | `%t [%p]: [%l-1]`                                                   | empty                                 |
-| log_min_duration_statement          | 1000                                                                | -1                                    |
-| log_temp_files                      | 0                                                                   | -1                                    |
-| maintenance_work_mem                | 2048MB                                                              | 16 MB                                 |
-| max_replication_slots               | 5                                                                   | 0                                     |
-| max_wal_senders                     | 32                                                                  | 0                                     |
-| max_wal_size                        | 5GB                                                                 | 1GB                                   |
-| shared_buffers                      | 112896MB                                                            | Based on how much memory is available |
-| shared_preload_libraries            | pg_stat_statements                                                  | empty                                 |
-| shmall                              | 30146560                                                            | Based on the server's capabilities    |
-| shmmax                              | 123480309760                                                        | Based on the server's capabilities    |
-| wal_buffers                         | 16MB                                                                | -1                                    |
-| wal_keep_segments                   | 512                                                                 | 10                                    |
-| wal_level                           | replica                                                             | minimal                               |
-| statement_timeout                   | 15s                                                                 | 60s                                   |
-| idle_in_transaction_session_timeout | 60s                                                                 | 60s                                   |
+| Setting                               | GitLab.com                                                          | Default                               |
+|:--------------------------------------|:--------------------------------------------------------------------|:--------------------------------------|
+| `archive_command`                     | `/usr/bin/envdir /etc/wal-e.d/env /opt/wal-e/bin/wal-e wal-push %p` | empty                                 |
+| `archive_mode`                        | on                                                                  | off                                   |
+| `autovacuum_analyze_scale_factor`     | 0.01                                                                | 0.01                                  |
+| `autovacuum_max_workers`              | 6                                                                   | 3                                     |
+| `autovacuum_vacuum_cost_limit`        | 1000                                                                | -1                                    |
+| `autovacuum_vacuum_scale_factor`      | 0.01                                                                | 0.02                                  |
+| `checkpoint_completion_target`        | 0.7                                                                 | 0.9                                   |
+| `checkpoint_segments`                 | 32                                                                  | 10                                    |
+| `effective_cache_size`                | 338688MB                                                            | Based on how much memory is available |
+| `hot_standby`                         | on                                                                  | off                                   |
+| `hot_standby_feedback`                | on                                                                  | off                                   |
+| `log_autovacuum_min_duration`         | 0                                                                   | -1                                    |
+| `log_checkpoints`                     | on                                                                  | off                                   |
+| `log_line_prefix`                     | `%t [%p]: [%l-1]`                                                   | empty                                 |
+| `log_min_duration_statement`          | 1000                                                                | -1                                    |
+| `log_temp_files`                      | 0                                                                   | -1                                    |
+| `maintenance_work_mem`                | 2048MB                                                              | 16 MB                                 |
+| `max_replication_slots`               | 5                                                                   | 0                                     |
+| `max_wal_senders`                     | 32                                                                  | 0                                     |
+| `max_wal_size`                        | 5GB                                                                 | 1GB                                   |
+| `shared_buffers`                      | 112896MB                                                            | Based on how much memory is available |
+| `shared_preload_libraries`            | pg_stat_statements                                                  | empty                                 |
+| `shmall`                              | 30146560                                                            | Based on the server's capabilities    |
+| `shmmax`                              | 123480309760                                                        | Based on the server's capabilities    |
+| `wal_buffers`                         | 16MB                                                                | -1                                    |
+| `wal_keep_segments`                   | 512                                                                 | 10                                    |
+| `wal_level`                           | replica                                                             | minimal                               |
+| `statement_timeout`                   | 15s                                                                 | 60s                                   |
+| `idle_in_transaction_session_timeout` | 60s                                                                 | 60s                                   |
 
 Some of these settings are in the process being adjusted. For example, the value
 for `shared_buffers` is quite high and as such we are looking into adjusting it.

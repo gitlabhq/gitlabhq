@@ -2,12 +2,14 @@
 import { mapState, mapActions } from 'vuex';
 import { GlDeprecatedButton, GlLink } from '@gitlab/ui';
 import ExternalDashboard from './form_group/external_dashboard.vue';
+import DashboardTimezone from './form_group/dashboard_timezone.vue';
 
 export default {
   components: {
     GlDeprecatedButton,
     GlLink,
     ExternalDashboard,
+    DashboardTimezone,
   },
   computed: {
     ...mapState(['helpPage']),
@@ -40,6 +42,7 @@ export default {
     </div>
     <div class="settings-content">
       <form>
+        <dashboard-timezone />
         <external-dashboard />
         <gl-deprecated-button variant="success" @click="saveChanges">
           {{ __('Save Changes') }}

@@ -15,7 +15,7 @@ By default, the navigation bar has the GitLab logo, but this can be customized w
 any image desired. It is optimized for images 28px high (any width), but any image can be
 used (less than 1MB) and it will automatically be resized.
 
-![navbar header logo screenshot](img/appearance_header_logo_v12_3.png)
+![Navigation bar header logo screenshot](img/appearance_header_logo_v12_3.png)
 
 Once you select and upload an image, click **Update appearance settings** at the bottom
 of the page to activate it in the GitLab instance.

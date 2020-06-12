@@ -37,7 +37,7 @@ Documentation for GitLab instance administrators is under [LFS administration do
 - Any Git LFS request will ask for HTTPS credentials to be provided so a good Git
   credentials store is recommended
 - Git LFS always assumes HTTPS so if you have GitLab server on HTTP you will have
-  to add the URL to Git config manually (see [troubleshooting](#troubleshooting))
+  to add the URL to Git configuration manually (see [troubleshooting](#troubleshooting))
 
 NOTE: **Note:**
 With 8.12 GitLab added LFS support to SSH. The Git LFS communication
@@ -83,7 +83,7 @@ git clone git@gitlab.example.com:group/project.git
 ```
 
 If you already cloned the repository and you want to get the latest LFS object
-that are on the remote repository, eg. for a branch from origin:
+that are on the remote repository, such as for a branch from origin:
 
 ```shell
 git lfs fetch origin master
@@ -91,7 +91,7 @@ git lfs fetch origin master
 
 ### Migrate an existing repo to Git LFS
 
-Read the documentation on how to [migrate an existing Git repo with Git LFS](migrate_to_git_lfs.md).
+Read the documentation on how to [migrate an existing Git repository with Git LFS](migrate_to_git_lfs.md).
 
 ### Removing objects from LFS
 
@@ -128,7 +128,7 @@ in order to do that you can edit the `.gitattributes` file manually:
 ```
 
 After a file type has been registered as lockable, Git LFS will make
-them readonly on the file system automatically. This means you will
+them read-only on the file system automatically. This means you will
 need to lock the file before editing it.
 
 ### Managing Locked Files
@@ -205,8 +205,8 @@ If the status `error 501` is shown, it is because:
   on how to enable LFS support.
 
 - Git LFS client version is not supported by GitLab server. Check your Git LFS
-  version with `git lfs version`. Check the Git config of the project for traces
-  of deprecated API with `git lfs -l`. If `batch = false` is set in the config,
+  version with `git lfs version`. Check the Git configuration of the project for traces
+  of deprecated API with `git lfs -l`. If `batch = false` is set in the configuration,
   remove the line and try to update your Git LFS client. Only version 1.0.1 and
   newer are supported.
 
@@ -218,9 +218,9 @@ the LFS client is trying to reach GitLab through HTTPS. However, your GitLab
 instance is being served on HTTP.
 
 This behavior is caused by Git LFS using HTTPS connections by default when a
-`lfsurl` is not set in the Git config.
+`lfsurl` is not set in the Git configuration.
 
-To prevent this from happening, set the lfs URL in project Git config:
+To prevent this from happening, set the LFS URL in project Git configuration:
 
 ```shell
 git config --add lfs.url "http://gitlab.example.com/group/project.git/info/lfs"

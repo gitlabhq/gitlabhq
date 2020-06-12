@@ -27,7 +27,7 @@ Your GitLab instance can perform HTTP POST requests on the following events:
 - `user_remove_from_group`
 - `user_update_for_group`
 
-The triggers for most of these are self-explanatory, but `project_update` and `project_rename` deserve some clarification: `project_update` is fired any time an attribute of a project is changed (name, description, tags, etc.) *unless* the `path` attribute is also changed. In that case, a `project_rename` is triggered instead (so that, for instance, if all you care about is the repo URL, you can just listen for `project_rename`).
+The triggers for most of these are self-explanatory, but `project_update` and `project_rename` deserve some clarification: `project_update` is fired any time an attribute of a project is changed (name, description, tags, etc.) *unless* the `path` attribute is also changed. In that case, a `project_rename` is triggered instead (so that, for instance, if all you care about is the repository URL, you can just listen for `project_rename`).
 
 `user_failed_login` is sent whenever a **blocked** user attempts to login and denied access.
 
@@ -313,7 +313,7 @@ If the user is blocked via LDAP, `state` will be `ldap_blocked`.
 }
 ```
 
-`owner_name` and `owner_email` are always `null`. Please see <https://gitlab.com/gitlab-org/gitlab/-/issues/20011>.
+`owner_name` and `owner_email` are always `null`. Please see [issue #20011](https://gitlab.com/gitlab-org/gitlab/-/issues/20011).
 
 **Group renamed:**
 

@@ -7,7 +7,7 @@ comments: false
 ## Select Version to Install
 
 Make sure you view [this update guide](https://gitlab.com/gitlab-org/gitlab/blob/master/doc/update/patch_versions.md) from the tag (version) of GitLab you would like to install.
-In most cases this should be the highest numbered production tag (without rc in it).
+In most cases this should be the highest numbered production tag (without `rc` in it).
 You can select the tag in the version dropdown in the top left corner of GitLab (below the menu bar).
 
 ### 0. Backup
@@ -35,7 +35,7 @@ sudo -u git -H git checkout -- Gemfile.lock db/structure.sql locale
 sudo -u git -H git checkout LATEST_TAG -b LATEST_TAG
 ```
 
-### 3. Install libs, migrations, etc
+### 3. Install libraries, migrations, etc
 
 ```shell
 cd /home/git/gitlab

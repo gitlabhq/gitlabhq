@@ -35,6 +35,7 @@ awardable
 Axios
 Azure
 B-tree
+backfilling
 backport
 backported
 backporting
@@ -233,6 +234,7 @@ lookups
 loopback
 Lucene
 Maildir
+Mailgun
 Makefile
 Makefiles
 Markdown
@@ -348,6 +350,8 @@ redirections
 refactorings
 referer
 referers
+reflog
+reflogs
 reindex
 reindexed
 reindexes

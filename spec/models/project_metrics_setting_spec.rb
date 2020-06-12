@@ -52,4 +52,12 @@ describe ProjectMetricsSetting do
       end
     end
   end
+
+  describe '#dashboard_timezone=' do
+    it 'downcases string' do
+      subject.dashboard_timezone = 'UTC'
+
+      expect(subject.dashboard_timezone).to eq('utc')
+    end
+  end
 end

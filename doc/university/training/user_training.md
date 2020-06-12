@@ -314,7 +314,7 @@ Squash the commits on the same branch we used for the merge conflicts step.
 git rebase -i master
 ```
 
-In the editor, leave the first commit as 'pick' and set others to 'fixup'.
+In the editor, leave the first commit as `pick` and set others to `fixup`.
 
 ## Questions?
 
