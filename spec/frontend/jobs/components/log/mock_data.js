@@ -34,7 +34,7 @@ export const utilsMockData = [
     content: [
       {
         text:
-          'Using Docker executor with image dev.gitlab.org:5005/gitlab/gitlab-build-images:ruby-2.6.5-golang-1.12-git-2.26-lfs-2.9-chrome-73.0-node-12.x-yarn-1.16-postgresql-9.6-graphicsmagick-1.3.34',
+          'Using Docker executor with image dev.gitlab.org:5005/gitlab/gitlab-build-images:ruby-2.6.6-golang-1.14-git-2.27-lfs-2.9-chrome-83-node-12.x-yarn-1.21-postgresql-11-graphicsmagick-1.3.34',
       },
     ],
     section: 'prepare-executor',
