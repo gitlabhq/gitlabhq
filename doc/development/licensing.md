@@ -31,7 +31,7 @@ license_finder whitelist add MIT
 To denylist a new license:
 
 ```shell
-license_finder blacklist add GPLv2
+license_finder blacklist add Unlicense
 ```
 
 To tell License Finder about a dependency's license if it isn't auto-detected:

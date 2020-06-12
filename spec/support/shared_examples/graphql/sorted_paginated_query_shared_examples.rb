@@ -23,7 +23,7 @@
 #       graphql_query_for(
 #         'project',
 #         { 'fullPath' => sort_project.full_path },
-#         "issues(#{params}) { #{page_info} edges { node { iid weight } } }"
+#         query_graphql_field('issues', params, "#{page_info} edges { node { id } }")
 #       )
 #     end
 #
@@ -47,11 +47,13 @@ RSpec.shared_examples 'sorted paginated query' do
   end
 
   describe do
-    let(:params)       { "sort: #{sort_param}" }
-    let(:start_cursor) { graphql_data_at(*data_path, :pageInfo, :startCursor) }
-    let(:end_cursor)   { graphql_data_at(*data_path, :pageInfo, :endCursor) }
-    let(:sorted_edges) { graphql_data_at(*data_path, :edges) }
-    let(:page_info)    { "pageInfo { startCursor endCursor }" }
+    let(:sort_argument)  { "sort: #{sort_param}" if sort_param.present? }
+    let(:first_argument) { "first: #{first_param}" if first_param.present? }
+    let(:params)         { sort_argument }
+    let(:start_cursor)   { graphql_data_at(*data_path, :pageInfo, :startCursor) }
+    let(:end_cursor)     { graphql_data_at(*data_path, :pageInfo, :endCursor) }
+    let(:sorted_edges)   { graphql_data_at(*data_path, :edges) }
+    let(:page_info)      { "pageInfo { startCursor endCursor }" }
 
     def pagination_query(params, page_info)
       raise('pagination_query(params, page_info) must be defined in the test, see example in comment') unless defined?(super)
@@ -75,12 +77,12 @@ RSpec.shared_examples 'sorted paginated query' do
       end
 
       context 'when paginating' do
-        let(:params) { "sort: #{sort_param}, first: #{first_param}" }
+        let(:params) { [sort_argument, first_argument].compact.join(',') }
 
         it 'paginates correctly' do
           expect(pagination_results_data(sorted_edges)).to eq expected_results.first(first_param)
 
-          cursored_query = pagination_query("sort: #{sort_param}, after: \"#{end_cursor}\"", page_info)
+          cursored_query = pagination_query([sort_argument, "after: \"#{end_cursor}\""].compact.join(','), page_info)
           post_graphql(cursored_query, current_user: current_user)
           response_data = graphql_dig_at(Gitlab::Json.parse(response.body), :data, *data_path, :edges)
 

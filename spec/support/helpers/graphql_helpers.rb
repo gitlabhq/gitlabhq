@@ -279,8 +279,13 @@ module GraphqlHelpers
   end
 
   def graphql_dig_at(data, *path)
-    keys = path.map { |segment| GraphqlHelpers.fieldnamerize(segment) }
-    data.dig(*keys)
+    keys = path.map { |segment| segment.is_a?(Integer) ? segment : GraphqlHelpers.fieldnamerize(segment) }
+
+    # Allows for array indexing, like this
+    # ['project', 'boards', 'edges', 0, 'node', 'lists']
+    keys.reduce(data) do |memo, key|
+      memo.is_a?(Array) ? memo[key] : memo&.dig(key)
+    end
   end
 
   def graphql_errors

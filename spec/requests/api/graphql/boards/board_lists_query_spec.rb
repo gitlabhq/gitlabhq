@@ -65,41 +65,41 @@ describe 'get board lists' do
       end
 
       describe 'sorting and pagination' do
+        let_it_be(:current_user) { user }
+        let(:data_path) { [board_parent_type, :boards, :edges, 0, :node, :lists] }
+
+        def pagination_query(params, page_info)
+          graphql_query_for(
+            board_parent_type,
+            { 'fullPath' => board_parent.full_path },
+            <<~BOARDS
+              boards(first: 1) {
+                edges {
+                  node {
+                    #{query_graphql_field('lists', params, "#{page_info} edges { node { id } }")}
+                  }
+                }
+              }
+            BOARDS
+          )
+        end
+
+        def pagination_results_data(data)
+          data.map { |list| list.dig('node', 'id') }
+        end
+
         context 'when using default sorting' do
           let!(:label_list)   { create(:list, board: board, label: label, position: 10) }
           let!(:label_list2)  { create(:list, board: board, label: label2, position: 2) }
           let!(:backlog_list) { create(:backlog_list, board: board) }
           let(:closed_list)   { board.lists.find_by(list_type: :closed) }
-
-          before do
-            post_graphql(query, current_user: user)
-          end
-
-          it_behaves_like 'a working graphql query'
+          let(:lists)         { [backlog_list, label_list2, label_list, closed_list] }
 
           context 'when ascending' do
-            let(:lists) { [backlog_list, label_list2, label_list, closed_list] }
-            let(:expected_list_gids) do
-              lists.map { |list| list.to_global_id.to_s }
-            end
-
-            it 'sorts lists' do
-              expect(grab_ids).to eq expected_list_gids
-            end
-
-            context 'when paginating' do
-              let(:params) { 'first: 2' }
-
-              it 'sorts boards' do
-                expect(grab_ids).to eq expected_list_gids.first(2)
-
-                cursored_query = query("after: \"#{end_cursor}\"")
-                post_graphql(cursored_query, current_user: user)
-
-                response_data = grab_list_data(response.body)
-
-                expect(grab_ids(response_data)).to eq expected_list_gids.drop(2).first(2)
-              end
+            it_behaves_like 'sorted paginated query' do
+              let(:sort_param)       { }
+              let(:first_param)      { 2 }
+              let(:expected_results) { lists.map { |list| list.to_global_id.to_s } }
             end
           end
         end
@@ -125,13 +125,5 @@ describe 'get board lists' do
     end
 
     it_behaves_like 'group and project board lists query'
-  end
-
-  def grab_ids(data = lists_data)
-    data.map { |list| list.dig('node', 'id') }
-  end
-
-  def grab_list_data(response_body)
-    Gitlab::Json.parse(response_body)['data'][board_parent_type]['boards']['edges'][0]['node']['lists']['edges']
   end
 end
