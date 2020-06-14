@@ -16,7 +16,9 @@ module QA
         end
 
         def host_name
-          return 'localhost' unless QA::Runtime::Env.running_in_ci?
+          if !QA::Runtime::Env.running_in_ci? && !runner_network.equal?('airgapped')
+            'localhost'
+          end
 
           super
         end
@@ -33,7 +35,9 @@ module QA
             #{@image}
           CMD
 
-          command.gsub!("--network #{network} ", '') unless QA::Runtime::Env.running_in_ci?
+          if !QA::Runtime::Env.running_in_ci? && !runner_network.equal?('airgapped')
+            command.gsub!("--network #{network} ", '')
+          end
 
           shell command
         end

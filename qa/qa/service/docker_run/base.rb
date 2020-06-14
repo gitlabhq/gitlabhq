@@ -8,6 +8,7 @@ module QA
 
         def initialize
           @network = Runtime::Scenario.attributes[:network] || 'test'
+          @runner_network = Runtime::Scenario.attributes[:runner_network] || @network
         end
 
         def network
@@ -16,6 +17,14 @@ module QA
           'bridge'
         else
           @network
+        end
+
+        def runner_network
+          shell "docker network inspect #{@runner_network}"
+        rescue CommandError
+          network
+        else
+          @runner_network
         end
 
         def pull

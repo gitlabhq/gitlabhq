@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 describe BulkInsertSafe do
-  class BulkInsertItem < ApplicationRecord
+  class BulkInsertItem < ActiveRecord::Base
     include BulkInsertSafe
     include ShaAttribute
 
@@ -74,6 +74,8 @@ describe BulkInsertSafe do
     ActiveRecord::Schema.define do
       drop_table :bulk_insert_items, force: true
     end
+
+    BulkInsertItem.reset_column_information
   end
 
   describe BulkInsertItem do

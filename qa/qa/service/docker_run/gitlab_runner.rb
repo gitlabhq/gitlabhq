@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'resolv'
 require 'securerandom'
 
 module QA
@@ -38,11 +39,16 @@ module QA
         def register!
           shell <<~CMD.tr("\n", ' ')
             docker run -d --rm --entrypoint=/bin/sh
-            --network #{network} --name #{@name}
+            --network #{runner_network} --name #{@name}
             #{'-v /var/run/docker.sock:/var/run/docker.sock' if @executor == :docker}
             --privileged
             #{@image} -c "#{register_command}"
           CMD
+
+          # Prove airgappedness
+          if runner_network == 'airgapped'
+            shell("docker exec #{@name} sh -c '#{prove_airgap}'")
+          end
         end
 
         def tags=(tags)
@@ -83,6 +89,17 @@ module QA
             gitlab-runner register \
               #{args.join(' ')} &&
             gitlab-runner run
+          CMD
+        end
+
+        # Ping CloudFlare DNS, should fail
+        # Ping Registry, should fail to resolve
+        def prove_airgap
+          gitlab_ip = Resolv.getaddress 'registry.gitlab.com'
+          <<~CMD
+            echo "Checking airgapped connectivity..."
+            nc -zv -w 10 #{gitlab_ip} 80 && (echo "Airgapped network faulty. Connectivity netcat check failed." && exit 1) || (echo "Connectivity netcat check passed." && exit 0)
+            wget --retry-connrefused --waitretry=1 --read-timeout=15 --timeout=10 -t 2 http://registry.gitlab.com > /dev/null 2>&1 && (echo "Airgapped network faulty. Connectivity wget check failed." && exit 1) || (echo "Airgapped network confirmed. Connectivity wget check passed." && exit 0)
           CMD
         end
       end
