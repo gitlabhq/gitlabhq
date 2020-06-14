@@ -609,7 +609,8 @@ Alternatively, you can use the variable `SECURE_ANALYZERS_PREFIX` to override th
 
 ## Reports
 
-The DAST job can emit various reports.
+The DAST tool outputs a report file in JSON format by default. However, this tool can also generate reports in
+Markdown, HTML, and XML. For more information, see the [schema for DAST reports](https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/blob/master/dist/dast-report-format.json).
 
 ### List of URLs scanned
 
