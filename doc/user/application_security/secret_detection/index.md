@@ -50,6 +50,10 @@ with a dollar sign (`$`) as this likely indicates the password being used is an 
 variable. For example, `https://username:$password@example.com/path/to/repo` won't be
 detected, whereas `https://username:password@example.com/path/to/repo` would be detected.
 
+NOTE: **Note:**
+You don't have to configure Secret Detection manually as shown in this section if you're using [Auto Secret Detection](../../../topics/autodevops/stages.md#auto-secret-detection-ultimate)
+provided by [Auto DevOps](../../../topics/autodevops/index.md).
+
 ## Full History Secret Scan
 
 GitLab 12.11 introduced support for scanning the full history of a repository. This new functionality

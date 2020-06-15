@@ -209,6 +209,8 @@ you can enable this in the project settings:
 1. Check the **Auto-cancel redundant, pending pipelines** checkbox.
 1. Click **Save changes**.
 
+Note that only jobs with [interruptible](../yaml/README.md#interruptible) set to `true` will be cancelled.
+
 ## Skip outdated deployment jobs
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/25276) in GitLab 12.9.

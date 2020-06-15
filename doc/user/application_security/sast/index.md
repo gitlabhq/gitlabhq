@@ -317,6 +317,8 @@ Some analyzers can be customized with environment variables.
 | Environment variable        | Analyzer | Description |
 |-----------------------------|----------|-------------|
 | `SCAN_KUBERNETES_MANIFESTS`           | Kubesec              | Set to `"true"` to scan Kubernetes manifests. |
+| `KUBESEC_HELM_CHARTS_PATH`            | Kubesec              | Optional path to Helm charts that `helm` will use to generate a Kubernetes manifest that `kubesec` will scan. If dependencies are defined, `helm dependency build` should be ran in a `before_script` to fetch the necessary dependencies. |
+| `KUBESEC_HELM_OPTIONS`                | Kubesec              | Additional arguments for the `helm` executable. |
 | `ANT_HOME`                            | SpotBugs             | The `ANT_HOME` environment variable. |
 | `ANT_PATH`                            | SpotBugs             | Path to the `ant` executable. |
 | `GRADLE_PATH`                         | SpotBugs             | Path to the `gradle` executable. |

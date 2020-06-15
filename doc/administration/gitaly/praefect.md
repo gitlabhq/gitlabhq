@@ -396,7 +396,6 @@ documentation](index.md#configure-gitaly-servers).
    postgresql['enable'] = false
    redis['enable'] = false
    nginx['enable'] = false
-   prometheus['enable'] = false
    grafana['enable'] = false
    puma['enable'] = false
    sidekiq['enable'] = false
@@ -405,6 +404,9 @@ documentation](index.md#configure-gitaly-servers).
 
    # Enable only the Gitaly service
    gitaly['enable'] = true
+
+   # Enable Prometheus if needed
+   prometheus['enable'] = true
 
    # Prevent database connections during 'gitlab-ctl reconfigure'
    gitlab_rails['rake_cache_clear'] = false
@@ -739,7 +741,9 @@ strategy in the future.
 
 ## Identifying Impact of a Primary Node Failure
 
-When a primary Gitaly node fails, there is a chance of data loss. Data loss can occur if there were outstanding replication jobs the secondaries did not manage to process before the failure. The Praefect `dataloss` sub-command helps identify these cases by counting the number of dead replication jobs for each repository within a given time frame.
+When a primary Gitaly node fails, there is a chance of data loss. Data loss can occur if there were outstanding replication jobs the secondaries did not manage to process before the failure. The `dataloss` Praefect sub-command helps identify these cases by counting the number of dead replication jobs for each repository. This command must be executed on a Praefect node.
+
+A time frame to search can be specified with `-from` and `-to`:
 
 ```shell
 sudo /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml dataloss -from <rfc3339-time> -to <rfc3339-time>

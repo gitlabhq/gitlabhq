@@ -29,6 +29,7 @@ export default {
   name: 'CommentForm',
   components: {
     issueWarning,
+    epicWarning: () => import('ee_component/vue_shared/components/epic/epic_warning.vue'),
     noteSignedOutWidget,
     discussionLockedWidget,
     markdownField,
@@ -60,6 +61,7 @@ export default {
       'getCurrentUserLastNote',
       'getUserData',
       'getNoteableData',
+      'getNoteableDataByProp',
       'getNotesData',
       'openState',
       'getBlockedByIssues',
@@ -134,6 +136,9 @@ export default {
       return this.noteableType === constants.MERGE_REQUEST_NOTEABLE_TYPE
         ? __('merge request')
         : __('issue');
+    },
+    isIssueType() {
+      return this.noteableDisplayName === constants.ISSUE_NOTEABLE_TYPE;
     },
     trackingLabel() {
       return slugifyWithUnderscore(`${this.commentButtonTitle} button`);
@@ -346,13 +351,13 @@ export default {
             <div class="error-alert"></div>
 
             <issue-warning
-              v-if="hasWarning(getNoteableData)"
+              v-if="hasWarning(getNoteableData) && isIssueType"
               :is-locked="isLocked(getNoteableData)"
               :is-confidential="isConfidential(getNoteableData)"
               :locked-issue-docs-path="lockedIssueDocsPath"
               :confidential-issue-docs-path="confidentialIssueDocsPath"
             />
-
+            <epic-warning :is-confidential="isConfidential(getNoteableData)" />
             <markdown-field
               ref="markdownField"
               :is-submitting="isSubmitting"

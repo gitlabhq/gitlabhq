@@ -182,6 +182,7 @@ The jobs are separated into stages:
     ([Auto Dependency Scanning](stages.md#auto-dependency-scanning-ultimate)) **(ULTIMATE)**
   - Jobs suffixed with `-sast` run static analysis on the current code to check for potential
     security issues, and are allowed to fail ([Auto SAST](stages.md#auto-sast-ultimate)) **(ULTIMATE)**
+  - The `secret-detection` job checks for leaked secrets and is allowed to fail ([Auto Secret Detection](stages.md#auto-secret-detection-ultimate)) **(ULTIMATE)**
   - The `license_management` job searches the application's dependencies to determine each of their
     licenses and is allowed to fail
     ([Auto License Compliance](stages.md#auto-license-compliance-ultimate)) **(ULTIMATE)**

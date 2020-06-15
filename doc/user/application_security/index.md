@@ -17,14 +17,15 @@ For an overview of application security with GitLab, see
 
 ## Quick start
 
-Get started quickly with Dependency Scanning, License Scanning, and Static Application Security
-Testing (SAST) by adding the following to your `.gitlab-ci.yml`:
+Get started quickly with Dependency Scanning, License Scanning, Static Application Security
+Testing (SAST), and Secret Detection by adding the following to your `.gitlab-ci.yml`:
 
 ```yaml
 include:
   - template: Dependency-Scanning.gitlab-ci.yml
   - template: License-Scanning.gitlab-ci.yml
   - template: SAST.gitlab-ci.yml
+  - template: Secret-Detection.gitlab-ci.yml
 ```
 
 To add Dynamic Application Security Testing (DAST) scanning, add the following to your
@@ -63,6 +64,19 @@ GitLab uses the following tools to scan and report known vulnerabilities found i
 | [Secret Detection](secret_detection/index.md) **(ULTIMATE)**                | Analyze Git history for leaked secrets.                                |
 | [Security Dashboard](security_dashboard/index.md) **(ULTIMATE)**             | View vulnerabilities in all your projects and groups.                  |
 | [Static Application Security Testing (SAST)](sast/index.md) **(ULTIMATE)**   | Analyze source code for known vulnerabilities.                         |
+
+## Security Scanning with Auto DevOps
+
+When [Auto DevOps](../../topics/autodevops/) is enabled, all GitLab Security scanning tools will be configured using default settings.
+
+- [Auto SAST](../../topics/autodevops/stages.md#auto-sast-ultimate)
+- [Auto Secret Detection](../../topics/autodevops/stages.md#auto-secret-detection-ultimate)
+- [Auto DAST](../../topics/autodevops/stages.md#auto-dast-ultimate)
+- [Auto Dependency Scanning](../../topics/autodevops/stages.md#auto-dependency-scanning-ultimate)
+- [Auto License Compliance](../../topics/autodevops/stages.md#auto-license-compliance-ultimate)
+- [Auto Container Scanning](../../topics/autodevops/stages.md#auto-container-scanning-ultimate)
+
+While you cannot directly customize Auto DevOps, you can [include the Auto DevOps template in your project's `.gitlab-ci.yml` file](../../topics/autodevops/customize.md#customizing-gitlab-ciyml).
 
 ## Maintenance and update of the vulnerabilities database
 
@@ -216,9 +230,15 @@ rating.
 
 ### Enabling Security Approvals within a project
 
-To enable Security Approvals, a [project approval rule](../project/merge_requests/merge_request_approvals.md#multiple-approval-rules-premium)
+To enable Security Approvals, a [project approval rule](../project/merge_requests/merge_request_approvals.md#adding--editing-a-default-approval-rule)
 must be created with the case-sensitive name `Vulnerability-Check`. This approval group must be set
-with the number of approvals required greater than zero.
+with the number of approvals required greater than zero. You must have Maintainer or Owner [permissions](../permissions.md#project-members-permissions) to manage approval rules.
+
+1. Navigate to your project's **{settings}** **Settings > General** and expand **Merge request approvals**.
+1. Click **Add approval rule**, or **Edit**.
+   - Add or change the **Rule name** to `Vulnerability-Check` (case sensitive).
+
+![Vulnerability Check Approver Rule](img/vulnerability-check_v13_0.png)
 
 Once this group is added to your project, the approval rule is enabled for all merge requests.
 

@@ -85,6 +85,7 @@ project in a simple and automatic way:
 1. [Auto Test](stages.md#auto-test)
 1. [Auto Code Quality](stages.md#auto-code-quality-starter) **(STARTER)**
 1. [Auto SAST (Static Application Security Testing)](stages.md#auto-sast-ultimate) **(ULTIMATE)**
+1. [Auto Secret Detection](stages.md#auto-secret-detection-ultimate) **(ULTIMATE)**
 1. [Auto Dependency Scanning](stages.md#auto-dependency-scanning-ultimate) **(ULTIMATE)**
 1. [Auto License Compliance](stages.md#auto-license-compliance-ultimate) **(ULTIMATE)**
 1. [Auto Container Scanning](stages.md#auto-container-scanning-ultimate) **(ULTIMATE)**
