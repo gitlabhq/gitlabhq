@@ -5,7 +5,8 @@ require 'spec_helper'
 describe ChatMessage::AlertMessage do
   subject { described_class.new(args) }
 
-  let(:alert) { create(:alert_management_alert) }
+  let_it_be(:start_time) { Time.current }
+  let(:alert) { create(:alert_management_alert, started_at: start_time) }
 
   let(:args) do
     {
@@ -43,6 +44,14 @@ describe ChatMessage::AlertMessage do
       fields = attachments_item[:fields].map { |h| h[:title] }
 
       expect(fields).to match_array(['Severity', 'Events', 'Status', 'Start time'])
+    end
+
+    it 'returns the correctly formatted time' do
+      time_item = subject.attachments.first[:fields].detect { |h| h[:title] == 'Start time' }
+
+      expected_time = start_time.strftime("%B #{start_time.day.ordinalize}, %Y %l:%M%p %Z")
+
+      expect(time_item[:value]).to eq(expected_time)
     end
   end
 end

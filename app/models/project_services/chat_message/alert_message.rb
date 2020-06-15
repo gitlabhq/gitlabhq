@@ -68,7 +68,7 @@ module ChatMessage
     # April 23rd, 2020 1:06AM UTC
     def format_time(time)
       time = Time.zone.parse(time.to_s)
-      time.strftime("%B #{time.day.ordinalize}, %Y%l:%M%p %Z")
+      time.strftime("%B #{time.day.ordinalize}, %Y %l:%M%p %Z")
     end
   end
 end
