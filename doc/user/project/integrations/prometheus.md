@@ -998,7 +998,7 @@ In GitLab versions 13.1 and greater, you can configure your manually configured 
 >- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/4925) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.11.
 >- [From GitLab Ultimate 12.5](https://gitlab.com/gitlab-org/gitlab/-/issues/13401), when GitLab receives a recovery alert, it will automatically close the associated issue.
 
-Alerts can be used to trigger actions, like opening an issue automatically (enabled by default since `12.1`). To configure the actions:
+Alerts can be used to trigger actions, like opening an issue automatically (disabled by default since `13.1`). To configure the actions:
 
 1. Navigate to your project's **Settings > Operations > Incidents**.
 1. Enable the option to create issues.

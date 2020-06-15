@@ -368,3 +368,10 @@ describe AutocompleteController, 'routing' do
     expect(get("/autocomplete/award_emojis")).to route_to('autocomplete#award_emojis')
   end
 end
+
+# jwks  GET /-/jwks(.:format)  jwks#index
+describe JwksController, "routing" do
+  it "to #index" do
+    expect(get('/-/jwks')).to route_to('jwks#index')
+  end
+end

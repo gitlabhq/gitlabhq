@@ -82,11 +82,10 @@ are certain use cases that you may need to work around. For more information:
 ## DAG Visualization
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/215517) in GitLab 13.1 as a [Beta feature](https://about.gitlab.com/handbook/product/#beta).
-> - It's deployed behind a feature flag, enabled by default.
+> - It's deployed behind a feature flag, disabled by default.
 > - It's enabled on GitLab.com.
-> - It's not able to be enabled or disabled per-project
 > - It's not recommended for production use.
-> - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#enable-or-disable-dag-visualization-core-only)
+> - For GitLab self-managed instances, GitLab administrators can opt to [enable it](#enable-or-disable-dag-visualization-core-only)
 
 The DAG visualization makes it easier to visualize the relationships between dependent jobs in a DAG. This graph will display all the jobs in a pipeline that need or are needed by other jobs. Jobs with no relationships are not displayed in this view.
 
@@ -100,18 +99,13 @@ Clicking a node will highlight all the job paths it depends on.
 
 DAG Visualization is under development and requires more testing, but is being made available as a beta features so users can check its limitations and uses.
 
-It is deployed behind a feature flag that is **enabled by default**.
+It is deployed behind a feature flag that is **disabled by default**.
 [GitLab administrators with access to the GitLab Rails console](../../administration/feature_flags.md)
-can opt to disable it for your instance. It cannot be enabled or disabled per-project.
-
-To disable it:
+can opt to enable it for your instance:
 
 ```ruby
-Feature.disable(:dag_pipeline_tab)
-```
-
-To enable it:
-
-```ruby
+# Instance-wide
 Feature.enable(:dag_pipeline_tab)
+# or by project
+Feature.enable(:dag_pipeline_tab, Project.find(<project id>))
 ```

@@ -59,12 +59,13 @@ describe Gitlab::Ci::Status::Bridge::Factory do
 
     context 'failed with downstream_pipeline_creation_failed' do
       before do
+        bridge.options = { downstream_errors: ['No stages / jobs for this pipeline.', 'other error'] }
         bridge.failure_reason = 'downstream_pipeline_creation_failed'
       end
 
       it 'fabricates correct status_tooltip' do
         expect(status.status_tooltip).to eq(
-          "#{s_('CiStatusText|failed')} - (downstream pipeline can not be created)"
+          "#{s_('CiStatusText|failed')} - (downstream pipeline can not be created, No stages / jobs for this pipeline., other error)"
         )
       end
     end

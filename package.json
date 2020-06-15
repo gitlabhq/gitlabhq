@@ -210,6 +210,7 @@
     "timezone-mock": "^1.0.8",
     "vue-jest": "^4.0.0-beta.2",
     "webpack-dev-server": "^3.10.3",
+    "xhr-mock": "^2.5.1",
     "yarn-check-webpack-plugin": "^1.2.0",
     "yarn-deduplicate": "^1.1.1"
   },

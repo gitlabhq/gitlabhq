@@ -1,7 +1,9 @@
 import $ from 'jquery';
+import mock from 'xhr-mock';
 import { TEST_HOST } from 'spec/test_constants';
 import dropzoneInput from '~/dropzone_input';
 import PasteMarkdownTable from '~/behaviors/markdown/paste_markdown_table';
+import waitForPromises from 'helpers/wait_for_promises';
 
 const TEST_FILE = new File([], 'somefile.jpg');
 TEST_FILE.upload = {};
@@ -38,14 +40,16 @@ describe('dropzone_input', () => {
     it('pastes Markdown tables', () => {
       const event = $.Event('paste');
       const origEvent = new Event('paste');
-      const pasteData = new DataTransfer();
-      pasteData.setData('text/plain', 'Hello World');
-      pasteData.setData('text/html', '<table><tr><td>Hello World</td></tr></table>');
-      origEvent.clipboardData = pasteData;
+
+      origEvent.clipboardData = {
+        types: ['text/plain', 'text/html'],
+        getData: () => '<table><tr><td>Hello World</td></tr></table>',
+        items: [],
+      };
       event.originalEvent = origEvent;
 
-      spyOn(PasteMarkdownTable.prototype, 'isTable').and.callThrough();
-      spyOn(PasteMarkdownTable.prototype, 'convertToTableMarkdown').and.callThrough();
+      jest.spyOn(PasteMarkdownTable.prototype, 'isTable');
+      jest.spyOn(PasteMarkdownTable.prototype, 'convertToTableMarkdown');
 
       $('.js-gfm-input').trigger(event);
 
@@ -57,53 +61,37 @@ describe('dropzone_input', () => {
   describe('shows error message', () => {
     let form;
     let dropzone;
-    let xhr;
-    let oldXMLHttpRequest;
 
     beforeEach(() => {
+      mock.setup();
+
       form = $(TEMPLATE);
 
       dropzone = dropzoneInput(form);
-
-      xhr = jasmine.createSpyObj(Object.keys(XMLHttpRequest.prototype));
-      oldXMLHttpRequest = window.XMLHttpRequest;
-      window.XMLHttpRequest = () => xhr;
     });
 
     afterEach(() => {
-      window.XMLHttpRequest = oldXMLHttpRequest;
+      mock.teardown();
     });
 
-    it('when AJAX fails with json', () => {
-      xhr = {
-        ...xhr,
-        statusCode: 400,
-        readyState: 4,
-        responseText: JSON.stringify({ message: TEST_ERROR_MESSAGE }),
-        getResponseHeader: () => 'application/json',
-      };
+    beforeEach(() => {});
+
+    it.each`
+      responseType          | responseBody
+      ${'application/json'} | ${JSON.stringify({ message: TEST_ERROR_MESSAGE })}
+      ${'text/plain'}       | ${TEST_ERROR_MESSAGE}
+    `('when AJAX fails with json', ({ responseType, responseBody }) => {
+      mock.post(TEST_UPLOAD_PATH, {
+        status: 400,
+        body: responseBody,
+        headers: { 'Content-Type': responseType },
+      });
 
       dropzone.processFile(TEST_FILE);
 
-      xhr.onload();
-
-      expect(form.find('.uploading-error-message').text()).toEqual(TEST_ERROR_MESSAGE);
-    });
-
-    it('when AJAX fails with text', () => {
-      xhr = {
-        ...xhr,
-        statusCode: 400,
-        readyState: 4,
-        responseText: TEST_ERROR_MESSAGE,
-        getResponseHeader: () => 'text/plain',
-      };
-
-      dropzone.processFile(TEST_FILE);
-
-      xhr.onload();
-
-      expect(form.find('.uploading-error-message').text()).toEqual(TEST_ERROR_MESSAGE);
+      return waitForPromises().then(() => {
+        expect(form.find('.uploading-error-message').text()).toEqual(TEST_ERROR_MESSAGE);
+      });
     });
   });
 });

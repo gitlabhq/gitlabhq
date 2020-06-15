@@ -11,7 +11,7 @@ module Ci
     def execute(trigger_build_ids = nil, initial_process: false)
       update_retried
 
-      if Feature.enabled?(:ci_atomic_processing, pipeline.project)
+      if ::Gitlab::Ci::Features.atomic_processing?(pipeline.project)
         Ci::PipelineProcessing::AtomicProcessingService
           .new(pipeline)
           .execute

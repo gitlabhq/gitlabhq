@@ -32,8 +32,8 @@ describe ProjectsHelper do
         setting = helper.project_incident_management_setting
 
         expect(setting).not_to be_persisted
+        expect(setting.create_issue).to be_falsey
         expect(setting.send_email).to be_falsey
-        expect(setting.create_issue).to be_truthy
         expect(setting.issue_template_key).to be_nil
       end
     end

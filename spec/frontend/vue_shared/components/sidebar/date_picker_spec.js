@@ -1,121 +1,149 @@
-import Vue from 'vue';
-import mountComponent from 'helpers/vue_mount_component_helper';
-import sidebarDatePicker from '~/vue_shared/components/sidebar/date_picker.vue';
+import { mount } from '@vue/test-utils';
+import SidebarDatePicker from '~/vue_shared/components/sidebar/date_picker.vue';
+import DatePicker from '~/vue_shared/components/pikaday.vue';
 
-describe('sidebarDatePicker', () => {
-  let vm;
-  beforeEach(() => {
-    const SidebarDatePicker = Vue.extend(sidebarDatePicker);
-    vm = mountComponent(SidebarDatePicker, {
-      label: 'label',
-      isLoading: true,
+describe('SidebarDatePicker', () => {
+  let wrapper;
+
+  const mountComponent = (propsData = {}, data = {}) => {
+    if (wrapper) {
+      throw new Error('tried to call mountComponent without d');
+    }
+    wrapper = mount(SidebarDatePicker, {
+      stubs: {
+        DatePicker: true,
+      },
+      propsData,
+      data: () => data,
     });
+  };
+
+  afterEach(() => {
+    wrapper.destroy();
+    wrapper = null;
   });
 
   it('should emit toggleCollapse when collapsed toggle sidebar is clicked', () => {
-    const toggleCollapse = jest.fn();
-    vm.$on('toggleCollapse', toggleCollapse);
+    mountComponent();
 
-    vm.$el.querySelector('.issuable-sidebar-header .gutter-toggle').click();
+    wrapper.find('.issuable-sidebar-header .gutter-toggle').element.click();
 
-    expect(toggleCollapse).toHaveBeenCalled();
+    expect(wrapper.emitted('toggleCollapse')).toEqual([[]]);
   });
 
   it('should render collapsed-calendar-icon', () => {
-    expect(vm.$el.querySelector('.sidebar-collapsed-icon')).toBeDefined();
-  });
+    mountComponent();
 
-  it('should render label', () => {
-    expect(vm.$el.querySelector('.title').innerText.trim()).toEqual('label');
-  });
-
-  it('should render loading-icon when isLoading', () => {
-    expect(vm.$el.querySelector('.fa-spin')).toBeDefined();
+    expect(wrapper.find('.sidebar-collapsed-icon').element).toBeDefined();
   });
 
   it('should render value when not editing', () => {
-    expect(vm.$el.querySelector('.value-content')).toBeDefined();
+    mountComponent();
+
+    expect(wrapper.find('.value-content').element).toBeDefined();
   });
 
   it('should render None if there is no selectedDate', () => {
-    expect(vm.$el.querySelector('.value-content span').innerText.trim()).toEqual('None');
+    mountComponent();
+
+    expect(
+      wrapper
+        .find('.value-content span')
+        .text()
+        .trim(),
+    ).toEqual('None');
   });
 
-  it('should render date-picker when editing', done => {
-    vm.editing = true;
-    Vue.nextTick(() => {
-      expect(vm.$el.querySelector('.pika-label')).toBeDefined();
-      done();
-    });
+  it('should render date-picker when editing', () => {
+    mountComponent({}, { editing: true });
+
+    expect(wrapper.find(DatePicker).element).toBeDefined();
+  });
+
+  it('should render label', () => {
+    const label = 'label';
+    mountComponent({ label });
+    expect(
+      wrapper
+        .find('.title')
+        .text()
+        .trim(),
+    ).toEqual(label);
+  });
+
+  it('should render loading-icon when isLoading', () => {
+    mountComponent({ isLoading: true });
+    expect(wrapper.find('.gl-spinner').element).toBeDefined();
   });
 
   describe('editable', () => {
-    beforeEach(done => {
-      vm.editable = true;
-      Vue.nextTick(done);
+    beforeEach(() => {
+      mountComponent({ editable: true });
     });
 
     it('should render edit button', () => {
-      expect(vm.$el.querySelector('.title .btn-blank').innerText.trim()).toEqual('Edit');
+      expect(
+        wrapper
+          .find('.title .btn-blank')
+          .text()
+          .trim(),
+      ).toEqual('Edit');
     });
 
-    it('should enable editing when edit button is clicked', done => {
-      vm.isLoading = false;
-      Vue.nextTick(() => {
-        vm.$el.querySelector('.title .btn-blank').click();
+    it('should enable editing when edit button is clicked', async () => {
+      wrapper.find('.title .btn-blank').element.click();
 
-        expect(vm.editing).toEqual(true);
-        done();
-      });
+      await wrapper.vm.$nextTick();
+
+      expect(wrapper.vm.editing).toEqual(true);
     });
   });
 
-  it('should render date if selectedDate', done => {
-    vm.selectedDate = new Date('07/07/2017');
-    Vue.nextTick(() => {
-      expect(vm.$el.querySelector('.value-content strong').innerText.trim()).toEqual('Jul 7, 2017');
-      done();
-    });
+  it('should render date if selectedDate', () => {
+    mountComponent({ selectedDate: new Date('07/07/2017') });
+
+    expect(
+      wrapper
+        .find('.value-content strong')
+        .text()
+        .trim(),
+    ).toEqual('Jul 7, 2017');
   });
 
   describe('selectedDate and editable', () => {
-    beforeEach(done => {
-      vm.selectedDate = new Date('07/07/2017');
-      vm.editable = true;
-      Vue.nextTick(done);
+    beforeEach(() => {
+      mountComponent({ selectedDate: new Date('07/07/2017'), editable: true });
     });
 
     it('should render remove button if selectedDate and editable', () => {
-      expect(vm.$el.querySelector('.value-content .btn-blank').innerText.trim()).toEqual('remove');
+      expect(
+        wrapper
+          .find('.value-content .btn-blank')
+          .text()
+          .trim(),
+      ).toEqual('remove');
     });
 
-    it('should emit saveDate when remove button is clicked', () => {
-      const saveDate = jest.fn();
-      vm.$on('saveDate', saveDate);
+    it('should emit saveDate with null when remove button is clicked', () => {
+      wrapper.find('.value-content .btn-blank').element.click();
 
-      vm.$el.querySelector('.value-content .btn-blank').click();
-
-      expect(saveDate).toHaveBeenCalled();
+      expect(wrapper.emitted('saveDate')).toEqual([[null]]);
     });
   });
 
   describe('showToggleSidebar', () => {
-    beforeEach(done => {
-      vm.showToggleSidebar = true;
-      Vue.nextTick(done);
+    beforeEach(() => {
+      mountComponent({ showToggleSidebar: true });
     });
 
     it('should render toggle-sidebar when showToggleSidebar', () => {
-      expect(vm.$el.querySelector('.title .gutter-toggle')).toBeDefined();
+      expect(wrapper.find('.title .gutter-toggle').element).toBeDefined();
     });
 
     it('should emit toggleCollapse when toggle sidebar is clicked', () => {
-      const toggleCollapse = jest.fn();
-      vm.$on('toggleCollapse', toggleCollapse);
+      wrapper.find('.title .gutter-toggle').element.click();
 
-      vm.$el.querySelector('.title .gutter-toggle').click();
-
-      expect(toggleCollapse).toHaveBeenCalled();
+      expect(wrapper.emitted('toggleCollapse')).toEqual([[]]);
     });
   });
 });

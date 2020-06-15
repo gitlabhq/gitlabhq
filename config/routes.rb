@@ -171,9 +171,8 @@ Rails.application.routes.draw do
     resources :abuse_reports, only: [:new, :create]
 
     # JWKS (JSON Web Key Set) endpoint
-    # Used by third parties to verify CI_JOB_JWT, placeholder route
-    # in case we decide to move away from doorkeeper-openid_connect
-    get 'jwks' => 'doorkeeper/openid_connect/discovery#keys'
+    # Used by third parties to verify CI_JOB_JWT
+    get 'jwks' => 'jwks#index'
   end
   # End of the /-/ scope.
 

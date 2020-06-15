@@ -37,10 +37,10 @@ describe 'create_tokens' do
         expect(keys).to all(match(hex_key))
       end
 
-      it 'generates an RSA key for openid_connect_signing_key' do
+      it 'generates an RSA key for openid_connect_signing_key and ci_jwt_signing_key' do
         create_tokens
 
-        keys = secrets.values_at(:openid_connect_signing_key)
+        keys = secrets.values_at(:openid_connect_signing_key, :ci_jwt_signing_key)
 
         expect(keys.uniq).to eq(keys)
         expect(keys).to all(match(rsa_key))
@@ -51,6 +51,7 @@ describe 'create_tokens' do
         expect(self).to receive(:warn_missing_secret).with('otp_key_base')
         expect(self).to receive(:warn_missing_secret).with('db_key_base')
         expect(self).to receive(:warn_missing_secret).with('openid_connect_signing_key')
+        expect(self).to receive(:warn_missing_secret).with('ci_jwt_signing_key')
 
         create_tokens
       end
@@ -63,6 +64,7 @@ describe 'create_tokens' do
           expect(new_secrets['otp_key_base']).to eq(secrets.otp_key_base)
           expect(new_secrets['db_key_base']).to eq(secrets.db_key_base)
           expect(new_secrets['openid_connect_signing_key']).to eq(secrets.openid_connect_signing_key)
+          expect(new_secrets['ci_jwt_signing_key']).to eq(secrets.ci_jwt_signing_key)
         end
 
         create_tokens
@@ -79,6 +81,7 @@ describe 'create_tokens' do
       before do
         secrets.db_key_base = 'db_key_base'
         secrets.openid_connect_signing_key = 'openid_connect_signing_key'
+        secrets.ci_jwt_signing_key = 'ci_jwt_signing_key'
 
         allow(File).to receive(:exist?).with('.secret').and_return(true)
         allow(File).to receive(:read).with('.secret').and_return('file_key')
@@ -90,6 +93,7 @@ describe 'create_tokens' do
           secrets.secret_key_base = 'secret_key_base'
           secrets.otp_key_base = 'otp_key_base'
           secrets.openid_connect_signing_key = 'openid_connect_signing_key'
+          secrets.ci_jwt_signing_key = 'ci_jwt_signing_key'
         end
 
         it 'does not issue a warning' do
@@ -116,6 +120,7 @@ describe 'create_tokens' do
           secrets.secret_key_base = 'secret_key_base'
           secrets.otp_key_base = 'otp_key_base'
           secrets.openid_connect_signing_key = 'openid_connect_signing_key'
+          secrets.ci_jwt_signing_key = 'ci_jwt_signing_key'
         end
 
         it 'does not write any files' do
@@ -131,6 +136,7 @@ describe 'create_tokens' do
           expect(secrets.otp_key_base).to eq('otp_key_base')
           expect(secrets.db_key_base).to eq('db_key_base')
           expect(secrets.openid_connect_signing_key).to eq('openid_connect_signing_key')
+          expect(secrets.ci_jwt_signing_key).to eq('ci_jwt_signing_key')
         end
 
         it 'deletes the .secret file' do
@@ -155,6 +161,7 @@ describe 'create_tokens' do
             expect(new_secrets['otp_key_base']).to eq('file_key')
             expect(new_secrets['db_key_base']).to eq('db_key_base')
             expect(new_secrets['openid_connect_signing_key']).to eq('openid_connect_signing_key')
+            expect(new_secrets['ci_jwt_signing_key']).to eq('ci_jwt_signing_key')
           end
 
           create_tokens

@@ -60,7 +60,7 @@ module Gitlab
       end
 
       def key
-        @key ||= OpenSSL::PKey::RSA.new(Rails.application.secrets.openid_connect_signing_key)
+        @key ||= OpenSSL::PKey::RSA.new(Rails.application.secrets.ci_jwt_signing_key)
       end
 
       def public_key

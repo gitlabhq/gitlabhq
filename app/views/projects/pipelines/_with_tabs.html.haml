@@ -1,5 +1,5 @@
 - test_reports_enabled = Feature.enabled?(:junit_pipeline_view, @project)
-- dag_pipeline_tab_enabled = Feature.enabled?(:dag_pipeline_tab)
+- dag_pipeline_tab_enabled = Feature.enabled?(:dag_pipeline_tab, @project, default_enabled: false)
 
 .tabs-holder
   %ul.pipelines-tabs.nav-links.no-top.no-bottom.mobile-separator.nav.nav-tabs

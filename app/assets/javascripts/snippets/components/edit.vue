@@ -137,18 +137,34 @@ export default {
         this.onExistingSnippetFetched();
       }
     },
+    getAttachedFiles() {
+      const fileInputs = Array.from(this.$el.querySelectorAll('[name="files[]"]'));
+      return fileInputs.map(node => node.value);
+    },
+    createMutation() {
+      return {
+        mutation: CreateSnippetMutation,
+        variables: {
+          input: {
+            ...this.apiData,
+            uploadedFiles: this.getAttachedFiles(),
+            projectPath: this.projectPath,
+          },
+        },
+      };
+    },
+    updateMutation() {
+      return {
+        mutation: UpdateSnippetMutation,
+        variables: {
+          input: this.apiData,
+        },
+      };
+    },
     handleFormSubmit() {
       this.isUpdating = true;
       this.$apollo
-        .mutate({
-          mutation: this.newSnippet ? CreateSnippetMutation : UpdateSnippetMutation,
-          variables: {
-            input: {
-              ...this.apiData,
-              projectPath: this.newSnippet ? this.projectPath : undefined,
-            },
-          },
-        })
+        .mutate(this.newSnippet ? this.createMutation() : this.updateMutation())
         .then(({ data }) => {
           const baseObj = this.newSnippet ? data?.createSnippet : data?.updateSnippet;
 
@@ -176,6 +192,8 @@ export default {
   <form
     class="snippet-form js-requires-input js-quick-submit common-note-form"
     :data-snippet-type="isProjectSnippet ? 'project' : 'personal'"
+    data-testid="snippet-edit-form"
+    @submit.prevent="handleFormSubmit"
   >
     <gl-loading-icon
       v-if="isLoading"
@@ -211,17 +229,17 @@ export default {
       <form-footer-actions>
         <template #prepend>
           <gl-button
-            type="submit"
             category="primary"
+            type="submit"
             variant="success"
             :disabled="updatePrevented"
             data-qa-selector="submit_button"
-            @click.prevent="handleFormSubmit"
+            data-testid="snippet-submit-btn"
             >{{ saveButtonLabel }}</gl-button
           >
         </template>
         <template #append>
-          <gl-button data-testid="snippet-cancel-btn" :href="cancelButtonHref">{{
+          <gl-button type="cancel" data-testid="snippet-cancel-btn" :href="cancelButtonHref">{{
             __('Cancel')
           }}</gl-button>
         </template>

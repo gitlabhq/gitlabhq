@@ -374,6 +374,9 @@ msgstr ""
 msgid "%{icon}You are about to add %{usersTag} people to the discussion. Proceed with caution."
 msgstr ""
 
+msgid "%{integrations_link_start}Integrations%{link_end} enable you to make third-party applications part of your GitLab workflow. If the available integrations don't meet your needs, consider using a %{webhooks_link_start}webhook%{link_end}."
+msgstr ""
+
 msgid "%{issuableType} will be removed! Are you sure?"
 msgstr ""
 
@@ -426,9 +429,6 @@ msgid "%{link_start}Learn more%{link_end} about what information is shared with 
 msgstr ""
 
 msgid "%{link_start}Read more%{link_end} about role permissions"
-msgstr ""
-
-msgid "%{link} can be used for binding events when something is happening within the project."
 msgstr ""
 
 msgid "%{listToShow}, and %{awardsListLength} more."
@@ -656,6 +656,12 @@ msgid "%{value} s"
 msgstr ""
 
 msgid "%{verb} %{time_spent_value} spent time."
+msgstr ""
+
+msgid "%{webhooks_link_start}%{webhook_type}%{link_end} enable you to send notifications to web applications in response to events in a group or project."
+msgstr ""
+
+msgid "%{webhooks_link_start}%{webhook_type}%{link_end} enable you to send notifications to web applications in response to events in a group or project. We recommend using an %{integrations_link_start}integration%{link_end} in preference to a webhook."
 msgstr ""
 
 msgid "'%{level}' is not a valid visibility level"
@@ -12098,9 +12104,6 @@ msgstr ""
 msgid "Integrations"
 msgstr ""
 
-msgid "Integrations allow you to integrate GitLab with other applications"
-msgstr ""
-
 msgid "Integrations|All details"
 msgstr ""
 
@@ -19645,6 +19648,9 @@ msgid "SecurityReports|Error fetching the vulnerability list. Please check your 
 msgstr ""
 
 msgid "SecurityReports|False positive"
+msgstr ""
+
+msgid "SecurityReports|Group Security Dashboard"
 msgstr ""
 
 msgid "SecurityReports|Hide dismissed"

@@ -36,36 +36,22 @@ Please consider creating a merge request to
 for them.
 MARKDOWN
 
-NO_REVIEWER = 'No reviewer available'.freeze
-NO_MAINTAINER = 'No maintainer available'.freeze
+OPTIONAL_REVIEW_TEMPLATE = "%{role} review is optional for %{category}".freeze
+NOT_AVAILABLE_TEMPLATE = 'No %{role} available'.freeze
 
-Spin = Struct.new(:reviewer, :maintainer)
-
-def spin_role_for_category(team, role, project, category)
-  team.select do |member|
-    member.public_send("#{role}?", project, category, gitlab.mr_labels) # rubocop:disable GitlabSecurity/PublicSend
+def note_for_category_role(spin, role)
+  if spin.optional_role == role
+    return OPTIONAL_REVIEW_TEMPLATE % { role: role.capitalize, category: helper.label_for_category(spin.category) }
   end
+
+  spin.public_send(role)&.markdown_name || NOT_AVAILABLE_TEMPLATE % { role: role } # rubocop:disable GitlabSecurity/PublicSend
 end
 
-def spin_for_category(team, project, category, branch_name)
-  reviewers, traintainers, maintainers =
-    %i[reviewer traintainer maintainer].map do |role|
-      spin_role_for_category(team, role, project, category)
-    end
+def markdown_row_for_spin(spin)
+  reviewer_note = note_for_category_role(spin, :reviewer)
+  maintainer_note = note_for_category_role(spin, :maintainer)
 
-  # TODO: take CODEOWNERS into account?
-  # https://gitlab.com/gitlab-org/gitlab/issues/26723
-
-  # Make traintainers have triple the chance to be picked as a reviewer
-  random = roulette.new_random(branch_name)
-  reviewer = roulette.spin_for_person(reviewers + traintainers + traintainers, random: random)
-  maintainer = roulette.spin_for_person(maintainers, random: random)
-
-  Spin.new(reviewer, maintainer)
-end
-
-def markdown_row_for_category(category, reviewer, maintainer)
-  "| #{helper.label_for_category(category)} | #{reviewer&.markdown_name || NO_REVIEWER} | #{maintainer&.markdown_name || NO_MAINTAINER} |"
+  "| #{helper.label_for_category(spin.category)} | #{reviewer_note} | #{maintainer_note} |"
 end
 
 changes = helper.changes_by_category
@@ -78,43 +64,13 @@ categories = changes.keys - [:unknown]
 categories << :database if gitlab.mr_labels.include?('database') && !categories.include?(:database)
 
 if changes.any?
-  # Strip leading and trailing CE/EE markers
-  canonical_branch_name =
-    roulette.canonical_branch_name(gitlab.mr_json['source_branch'])
-
-  team =
-    begin
-      roulette.project_team(helper.project_name)
-    rescue => err
-      warn("Reviewer roulette failed to load team data: #{err.message}")
-      []
-    end
-
   project = helper.project_name
+  branch_name = gitlab.mr_json['source_branch']
+
+  roulette_spins = roulette.spin(project, categories, branch_name)
+  rows = roulette_spins.map { |spin| markdown_row_for_spin(spin) }
+
   unknown = changes.fetch(:unknown, [])
-  spin_per_category = categories.each_with_object({}) do |category, memo|
-    memo[category] = spin_for_category(team, project, category, canonical_branch_name)
-  end
-
-  rows = spin_per_category.map do |category, spin|
-    reviewer = spin.reviewer
-    maintainer = spin.maintainer
-
-    case category
-    when :test
-      if reviewer.nil?
-        # Fetch an already picked backend reviewer, or pick one otherwise
-        reviewer = spin_per_category[:backend]&.reviewer || spin_for_category(team, project, :backend, canonical_branch_name).reviewer
-      end
-    when :engineering_productivity
-      if maintainer.nil?
-        # Fetch an already picked backend maintainer, or pick one otherwise
-        maintainer = spin_per_category[:backend]&.maintainer || spin_for_category(team, project, :backend, canonical_branch_name).maintainer
-      end
-    end
-
-    markdown_row_for_category(category, reviewer, maintainer)
-  end
 
   markdown(MESSAGE)
   markdown(CATEGORY_TABLE_HEADER + rows.join("\n")) unless rows.empty?

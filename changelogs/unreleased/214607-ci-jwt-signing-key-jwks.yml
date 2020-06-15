@@ -1,0 +1,5 @@
+---
+title: Use dedicated RSA key to sign CI_JOB_JWT
+merge_request: 34249
+author:
+type: added

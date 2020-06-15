@@ -46,7 +46,11 @@ export default {
     allowedVisibilityOptions: {
       type: Array,
       required: false,
-      default: () => [0, 10, 20],
+      default: () => [
+        visibilityOptions.PRIVATE,
+        visibilityOptions.INTERNAL,
+        visibilityOptions.PUBLIC,
+      ],
     },
     lfsAvailable: {
       type: Boolean,
@@ -118,16 +122,14 @@ export default {
     const defaults = {
       visibilityOptions,
       visibilityLevel: visibilityOptions.PUBLIC,
-      // TODO: Change all of these to use the visibilityOptions constants
-      // https://gitlab.com/gitlab-org/gitlab/-/issues/214667
-      issuesAccessLevel: 20,
-      repositoryAccessLevel: 20,
-      forkingAccessLevel: 20,
-      mergeRequestsAccessLevel: 20,
-      buildsAccessLevel: 20,
-      wikiAccessLevel: 20,
-      snippetsAccessLevel: 20,
-      pagesAccessLevel: 20,
+      issuesAccessLevel: featureAccessLevel.EVERYONE,
+      repositoryAccessLevel: featureAccessLevel.EVERYONE,
+      forkingAccessLevel: featureAccessLevel.EVERYONE,
+      mergeRequestsAccessLevel: featureAccessLevel.EVERYONE,
+      buildsAccessLevel: featureAccessLevel.EVERYONE,
+      wikiAccessLevel: featureAccessLevel.EVERYONE,
+      snippetsAccessLevel: featureAccessLevel.EVERYONE,
+      pagesAccessLevel: featureAccessLevel.EVERYONE,
       metricsDashboardAccessLevel: featureAccessLevel.PROJECT_MEMBERS,
       containerRegistryEnabled: true,
       lfsEnabled: true,
@@ -180,7 +182,7 @@ export default {
     },
 
     repositoryEnabled() {
-      return this.repositoryAccessLevel > 0;
+      return this.repositoryAccessLevel > featureAccessLevel.NOT_ENABLED;
     },
 
     visibilityLevelDescription() {
@@ -206,40 +208,70 @@ export default {
     visibilityLevel(value, oldValue) {
       if (value === visibilityOptions.PRIVATE) {
         // when private, features are restricted to "only team members"
-        this.issuesAccessLevel = Math.min(10, this.issuesAccessLevel);
-        this.repositoryAccessLevel = Math.min(10, this.repositoryAccessLevel);
-        this.mergeRequestsAccessLevel = Math.min(10, this.mergeRequestsAccessLevel);
-        this.buildsAccessLevel = Math.min(10, this.buildsAccessLevel);
-        this.wikiAccessLevel = Math.min(10, this.wikiAccessLevel);
-        this.snippetsAccessLevel = Math.min(10, this.snippetsAccessLevel);
-        this.metricsDashboardAccessLevel = Math.min(10, this.metricsDashboardAccessLevel);
-        if (this.pagesAccessLevel === 20) {
+        this.issuesAccessLevel = Math.min(
+          featureAccessLevel.PROJECT_MEMBERS,
+          this.issuesAccessLevel,
+        );
+        this.repositoryAccessLevel = Math.min(
+          featureAccessLevel.PROJECT_MEMBERS,
+          this.repositoryAccessLevel,
+        );
+        this.mergeRequestsAccessLevel = Math.min(
+          featureAccessLevel.PROJECT_MEMBERS,
+          this.mergeRequestsAccessLevel,
+        );
+        this.buildsAccessLevel = Math.min(
+          featureAccessLevel.PROJECT_MEMBERS,
+          this.buildsAccessLevel,
+        );
+        this.wikiAccessLevel = Math.min(featureAccessLevel.PROJECT_MEMBERS, this.wikiAccessLevel);
+        this.snippetsAccessLevel = Math.min(
+          featureAccessLevel.PROJECT_MEMBERS,
+          this.snippetsAccessLevel,
+        );
+        this.metricsDashboardAccessLevel = Math.min(
+          featureAccessLevel.PROJECT_MEMBERS,
+          this.metricsDashboardAccessLevel,
+        );
+        if (this.pagesAccessLevel === featureAccessLevel.EVERYONE) {
           // When from Internal->Private narrow access for only members
-          this.pagesAccessLevel = 10;
+          this.pagesAccessLevel = featureAccessLevel.PROJECT_MEMBERS;
         }
         this.highlightChanges();
       } else if (oldValue === visibilityOptions.PRIVATE) {
         // if changing away from private, make enabled features more permissive
-        if (this.issuesAccessLevel > 0) this.issuesAccessLevel = 20;
-        if (this.repositoryAccessLevel > 0) this.repositoryAccessLevel = 20;
-        if (this.mergeRequestsAccessLevel > 0) this.mergeRequestsAccessLevel = 20;
-        if (this.buildsAccessLevel > 0) this.buildsAccessLevel = 20;
-        if (this.wikiAccessLevel > 0) this.wikiAccessLevel = 20;
-        if (this.snippetsAccessLevel > 0) this.snippetsAccessLevel = 20;
-        if (this.pagesAccessLevel === 10) this.pagesAccessLevel = 20;
-        if (this.metricsDashboardAccessLevel === 10) this.metricsDashboardAccessLevel = 20;
+        if (this.issuesAccessLevel > featureAccessLevel.NOT_ENABLED)
+          this.issuesAccessLevel = featureAccessLevel.EVERYONE;
+        if (this.repositoryAccessLevel > featureAccessLevel.NOT_ENABLED)
+          this.repositoryAccessLevel = featureAccessLevel.EVERYONE;
+        if (this.mergeRequestsAccessLevel > featureAccessLevel.NOT_ENABLED)
+          this.mergeRequestsAccessLevel = featureAccessLevel.EVERYONE;
+        if (this.buildsAccessLevel > featureAccessLevel.NOT_ENABLED)
+          this.buildsAccessLevel = featureAccessLevel.EVERYONE;
+        if (this.wikiAccessLevel > featureAccessLevel.NOT_ENABLED)
+          this.wikiAccessLevel = featureAccessLevel.EVERYONE;
+        if (this.snippetsAccessLevel > featureAccessLevel.NOT_ENABLED)
+          this.snippetsAccessLevel = featureAccessLevel.EVERYONE;
+        if (this.pagesAccessLevel === featureAccessLevel.PROJECT_MEMBERS)
+          this.pagesAccessLevel = featureAccessLevel.EVERYONE;
+        if (this.metricsDashboardAccessLevel === featureAccessLevel.PROJECT_MEMBERS)
+          this.metricsDashboardAccessLevel = featureAccessLevel.EVERYONE;
         this.highlightChanges();
       }
     },
 
     issuesAccessLevel(value, oldValue) {
-      if (value === 0) toggleHiddenClassBySelector('.issues-feature', true);
-      else if (oldValue === 0) toggleHiddenClassBySelector('.issues-feature', false);
+      if (value === featureAccessLevel.NOT_ENABLED)
+        toggleHiddenClassBySelector('.issues-feature', true);
+      else if (oldValue === featureAccessLevel.NOT_ENABLED)
+        toggleHiddenClassBySelector('.issues-feature', false);
     },
 
     mergeRequestsAccessLevel(value, oldValue) {
-      if (value === 0) toggleHiddenClassBySelector('.merge-requests-feature', true);
-      else if (oldValue === 0) toggleHiddenClassBySelector('.merge-requests-feature', false);
+      if (value === featureAccessLevel.NOT_ENABLED)
+        toggleHiddenClassBySelector('.merge-requests-feature', true);
+      else if (oldValue === featureAccessLevel.NOT_ENABLED)
+        toggleHiddenClassBySelector('.merge-requests-feature', false);
     },
   },
 

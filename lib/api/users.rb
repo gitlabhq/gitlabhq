@@ -264,9 +264,9 @@ module API
         user = User.find_by(id: params.delete(:id))
         not_found!('User') unless user
 
-        key = user.keys.new(declared_params(include_missing: false))
+        key = ::Keys::CreateService.new(current_user, declared_params(include_missing: false).merge(user: user)).execute
 
-        if key.save
+        if key.persisted?
           present key, with: Entities::SSHKey
         else
           render_validation_error!(key)

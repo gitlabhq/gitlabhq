@@ -57,6 +57,25 @@ which applies to the entire Web IDE screen.
 |---------------------------------------------------------------|-----------------------------------------|
 | ![Solarized Light Theme](img/solarized_light_theme_v13.0.png) | ![Dark Theme](img/dark_theme_v13.0.png) |
 
+## Configure the Web IDE
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/23352) in [GitLab Core](https://about.gitlab.com/pricing/) 13.1.
+
+The Web IDE supports configuration of certain editor settings by using
+[`.editorconfig` files](https://editorconfig.org/). When opening a file, the
+Web IDE looks for a file named `.editorconfig` in the current directory
+and all parent directories. If a configuration file is found and has settings
+that match the file's path, these settings will be enforced on the opened file.
+
+The Web IDE currently supports the following `.editorconfig` settings:
+
+- `indent_style`
+- `indent_size`
+- `end_of_line`
+- `trim_trailing_whitespace`
+- `tab_width`
+- `insert_final_newline`
+
 ## Commit changes
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/4539) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 10.4.

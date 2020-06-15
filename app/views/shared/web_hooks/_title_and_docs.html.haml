@@ -1,5 +1,10 @@
+- webhooks_link_start = '<a href="%{url}">'.html_safe % { url: help_page_path(hook.help_path) }
+
 %h4.gl-mt-0
   = page_title
-%p
-  - link = link_to(hook.pluralized_name, help_page_path(hook.help_path))
-  = _('%{link} can be used for binding events when something is happening within the project.').html_safe % { link: link }
+
+- if @project
+  - integrations_link_start = '<a href="%{url}">'.html_safe % { url: scoped_integrations_path }
+  %p= _("%{webhooks_link_start}%{webhook_type}%{link_end} enable you to send notifications to web applications in response to events in a group or project. We recommend using an %{integrations_link_start}integration%{link_end} in preference to a webhook.").html_safe % { webhooks_link_start: webhooks_link_start, webhook_type: hook.pluralized_name, integrations_link_start: integrations_link_start, link_end: '</a>'.html_safe }
+- else
+  %p= _("%{webhooks_link_start}%{webhook_type}%{link_end} enable you to send notifications to web applications in response to events in a group or project.").html_safe % { webhooks_link_start: webhooks_link_start, webhook_type: hook.pluralized_name, link_end: '</a>'.html_safe }

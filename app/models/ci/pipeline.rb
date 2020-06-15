@@ -391,7 +391,7 @@ module Ci
     end
 
     def ordered_stages
-      if Feature.enabled?(:ci_atomic_processing, project, default_enabled: false)
+      if ::Gitlab::Ci::Features.atomic_processing?(project)
         # The `Ci::Stage` contains all up-to date data
         # as atomic processing updates all data in-bulk
         stages
@@ -439,7 +439,7 @@ module Ci
     end
 
     def legacy_stages
-      if Feature.enabled?(:ci_composite_status, project, default_enabled: false)
+      if ::Gitlab::Ci::Features.composite_status?(project)
         legacy_stages_using_composite_status
       else
         legacy_stages_using_sql

@@ -30,7 +30,7 @@ export default {
 </script>
 <template>
   <div class="form-group js-description-input">
-    <label>{{ s__('Snippets|Description (optional)') }}</label>
+    <label for="snippet-description">{{ s__('Snippets|Description (optional)') }}</label>
     <div class="js-collapsible-input">
       <div class="js-collapsed" :class="{ 'd-none': value }">
         <gl-form-input
@@ -46,22 +46,26 @@ export default {
       <markdown-field
         class="js-expanded"
         :class="{ 'd-none': !value }"
+        :add-spacing-classes="false"
         :markdown-preview-path="markdownPreviewPath"
         :markdown-docs-path="markdownDocsPath"
       >
-        <textarea
-          slot="textarea"
-          class="note-textarea js-gfm-input js-autosize markdown-area"
-          dir="auto"
-          data-qa-selector="snippet_description_field"
-          data-supports-quick-actions="false"
-          :value="value"
-          :aria-label="__('Description')"
-          :placeholder="__('Write a comment or drag your files here…')"
-          v-bind="$attrs"
-          @input="$emit('input', $event.target.value)"
-        >
-        </textarea>
+        <template #textarea>
+          <textarea
+            id="snippet-description"
+            ref="textarea"
+            :value="value"
+            class="note-textarea js-gfm-input js-autosize markdown-area"
+            dir="auto"
+            data-qa-selector="snippet_description_field"
+            data-supports-quick-actions="false"
+            :aria-label="__('Description')"
+            :placeholder="__('Write a comment or drag your files here…')"
+            v-bind="$attrs"
+            @input="$emit('input', $event.target.value)"
+          >
+          </textarea>
+        </template>
       </markdown-field>
     </div>
   </div>

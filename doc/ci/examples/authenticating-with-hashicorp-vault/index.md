@@ -50,7 +50,7 @@ The JWT's payload looks like this:
 }
 ```
 
-The JWT is encoded by using RS256 and signed with your GitLab instance's OpenID Connect private key. The expire time for the token will be set to job's timeout, if specifed, or 5 minutes if it is not. The key used to sign this token may change without any notice. In such case retrying the job will generate new JWT using the current signing key.
+The JWT is encoded by using RS256 and signed with a dedicated RSA private key. The expire time for the token will be set to job's timeout, if specifed, or 5 minutes if it is not. The key used to sign this token may change without any notice. In such case retrying the job will generate new JWT using the current signing key.
 
 You can use this JWT and your instance's JWKS endpoint (`https://gitlab.example.com/-/jwks`) to authenticate with a Vault server that is configured to allow the JWT Authentication method for authentication.
 

@@ -99,7 +99,7 @@ class CommitStatus < ApplicationRecord
     # will not be refreshed to pick the change
     self.processed_will_change!
 
-    if Feature.disabled?(:ci_atomic_processing, project)
+    if !::Gitlab::Ci::Features.atomic_processing?(project)
       self.processed = nil
     elsif latest?
       self.processed = false # force refresh of all dependent ones
@@ -287,7 +287,7 @@ class CommitStatus < ApplicationRecord
   end
 
   def schedule_stage_and_pipeline_update
-    if Feature.enabled?(:ci_atomic_processing, project)
+    if ::Gitlab::Ci::Features.atomic_processing?(project)
       # Atomic Processing requires only single Worker
       PipelineProcessWorker.perform_async(pipeline_id, [id])
     else

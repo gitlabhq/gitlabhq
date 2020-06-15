@@ -10,72 +10,73 @@ For a full list of reference architectures, see
 
 > - **Supported users (approximate):** 2,000
 > - **High Availability:** False
-> - **Test RPS rates:** API: 40 RPS, Web: 4 RPS, Git: 4 RPS
+> - **Test requests per second (RPS) rates:** API: 40 RPS, Web: 4 RPS, Git: 4 RPS
 
 | Service                                                      | Nodes     | Configuration                   | GCP           | AWS                   | Azure          |
 |--------------------------------------------------------------|-----------|---------------------------------|---------------|-----------------------|----------------|
-| Load balancer                                                | 1         | 2 vCPU, 1.8GB Memory            | n1-highcpu-2  | c5.large              | F2s v2         |
-| Object Storage                                               | n/a       | n/a                             | n/a           | n/a                   | n/a            |
-| NFS Server (optional, not recommended)                       | 1         | 4 vCPU, 3.6GB Memory            | n1-highcpu-4  | c5.xlarge             | F4s v2         |
-| PostgreSQL                                                   | 1         | 2 vCPU, 7.5GB Memory            | n1-standard-2 | m5.large              | D2s v3         |
-| Redis                                                        | 1         | 1 vCPU, 3.75GB Memory           | n1-standard-1 | m5.large              | D2s v3         |
-| Gitaly                                                       | 1         | 4 vCPU, 15GB Memory             | n1-standard-4 | m5.xlarge             | D4s v3         |
-| GitLab Rails                                                 | 2         | 8 vCPU, 7.2GB Memory            | n1-highcpu-8  | c5.2xlarge            | F8s v2         |
-| Monitoring node                                              | 1         | 2 vCPU, 1.8GB Memory            | n1-highcpu-2  | c5.large              | F2s v2         |
+| Load balancer                                                | 1         | 2 vCPU, 1.8GB memory            | n1-highcpu-2  | c5.large              | F2s v2         |
+| Object storage                                               | n/a       | n/a                             | n/a           | n/a                   | n/a            |
+| NFS server (optional, not recommended)                       | 1         | 4 vCPU, 3.6GB memory            | n1-highcpu-4  | c5.xlarge             | F4s v2         |
+| PostgreSQL                                                   | 1         | 2 vCPU, 7.5GB memory            | n1-standard-2 | m5.large              | D2s v3         |
+| Redis                                                        | 1         | 1 vCPU, 3.75GB memory           | n1-standard-1 | m5.large              | D2s v3         |
+| Gitaly                                                       | 1         | 4 vCPU, 15GB memory             | n1-standard-4 | m5.xlarge             | D4s v3         |
+| GitLab Rails                                                 | 2         | 8 vCPU, 7.2GB memory            | n1-highcpu-8  | c5.2xlarge            | F8s v2         |
+| Monitoring node                                              | 1         | 2 vCPU, 1.8GB memory            | n1-highcpu-2  | c5.large              | F2s v2         |
 
-The architectures were built and tested with the [Intel Xeon E5 v3 (Haswell)](https://cloud.google.com/compute/docs/cpu-platforms)
-CPU platform on GCP. On different hardware you may find that adjustments, either lower
-or higher, are required for your CPU or Node counts accordingly. For more information, a
-[Sysbench](https://github.com/akopytov/sysbench) benchmark of the CPU can be found
-[here](https://gitlab.com/gitlab-org/quality/performance/-/wikis/Reference-Architectures/GCP-CPU-Benchmarks).
+The Google Cloud Platform (GCP) architectures were built and tested using the
+[Intel Xeon E5 v3 (Haswell)](https://cloud.google.com/compute/docs/cpu-platforms)
+CPU platform. On different hardware you may find that adjustments, either lower
+or higher, are required for your CPU or node counts. For more information, see
+our [Sysbench](https://github.com/akopytov/sysbench)-based
+[CPU benchmark](https://gitlab.com/gitlab-org/quality/performance/-/wikis/Reference-Architectures/GCP-CPU-Benchmarks).
 
-AWS-equivalent and Azure-equivalent configurations are rough suggestions
-and may change in the future. They have not been tested and validated.
+AWS-equivalent and Azure-equivalent configurations are rough suggestions that
+may change in the future, and haven't been tested or validated.
 
-For data objects such as LFS, Uploads, Artifacts, etc, an [object storage service](#configure-the-object-storage)
-is recommended over NFS where possible, due to better performance and availability.
-Since this doesn't require a node to be set up, it's marked as not applicable (n/a)
-in the table above.
+Due to better performance and availability, for data objects (such as LFS,
+uploads, or artifacts), using an [object storage service](#configure-the-object-storage)
+is recommended instead of using NFS. Using an object storage service also
+doesn't require you to provision and maintain a node.
 
 ## Setup components
 
 To set up GitLab and its components to accommodate up to 2,000 users:
 
 1. [Configure the external load balancing node](#configure-the-load-balancer)
-   that will handle the load balancing of the two GitLab application services nodes.
-1. [Configure the Object Storage](#configure-the-object-storage)
-   used for shared data objects.
-1. [Configure NFS (Optional)](#configure-nfs-optional)
-   to have shared disk storage service as an alternative to Gitaly and/or Object Storage (although
-   not recommended). NFS is required for GitLab Pages, you can skip this step if you're not using
-   that feature.
-1. [Configure PostgreSQL](#configure-postgresql),
-   the database for GitLab.
+   to handle the load balancing of the two GitLab application services nodes.
+1. [Configure the object storage](#configure-the-object-storage) used for
+   shared data objects.
+1. [Configure NFS](#configure-nfs-optional) (optional, and not recommended)
+   to have shared disk storage service as an alternative to Gitaly or object
+   storage. You can skip this step if you're not using GitLab Pages (which
+   requires NFS).
+1. [Configure PostgreSQL](#configure-postgresql), the database for GitLab.
 1. [Configure Redis](#configure-redis).
-1. [Configure Gitaly](#configure-gitaly),
-   which provides access to the Git repositories.
+1. [Configure Gitaly](#configure-gitaly), which provides access to the Git
+   repositories.
 1. [Configure the main GitLab Rails application](#configure-gitlab-rails)
-   to run Puma/Unicorn, Workhorse, GitLab Shell, and to serve all frontend requests (UI, API, Git
-   over HTTP/SSH).
-1. [Configure Prometheus](#configure-prometheus) to monitor your GitLab environment.
+   to run Puma/Unicorn, Workhorse, GitLab Shell, and to serve all frontend
+   requests (which include UI, API, and Git over HTTP/SSH).
+1. [Configure Prometheus](#configure-prometheus) to monitor your GitLab
+   environment.
 
 ## Configure the load balancer
 
 NOTE: **Note:**
-This architecture has been tested and validated with [HAProxy](https://www.haproxy.org/)
-as the load balancer. Although other load balancers with similar feature sets
-could also be used, those load balancers have not been validated.
+This architecture has been tested and validated with [HAProxy](https://www.haproxy.org/).
+Although you can use a load balancer with a similar set of features, GitLab
+hasn't validated other load balancers.
 
-In an active/active GitLab configuration, you will need a load balancer to route
-traffic to the application servers. The specifics on which load balancer to use
-or the exact configuration is beyond the scope of GitLab documentation. We hope
-that if you're managing multi-node systems like GitLab you have a load balancer of
-choice already. Some examples including HAProxy (open-source), F5 Big-IP LTM,
-and Citrix Net Scaler. This documentation will outline what ports and protocols
-you need to use with GitLab.
+In an active/active GitLab configuration, you'll need a load balancer to route
+traffic to the application servers. The specifics for which load balancer to
+use or its exact configuration is out of scope for the GitLab documentation.
+If you're managing multi-node systems (including GitLab) you'll probably
+already have a load balancer of choice. Some examples including HAProxy
+(open-source), F5 Big-IP LTM, and Citrix Net Scaler. This documentation
+includes the ports and protocols for use with GitLab.
 
-The next question is how you will handle SSL in your environment.
-There are several different options:
+The next question is how you will handle SSL in your environment. There are
+several different options:
 
 - [The application node terminates SSL](#application-node-terminates-ssl).
 - [The load balancer terminates SSL without backend SSL](#load-balancer-terminates-ssl-without-backend-ssl)
@@ -85,83 +86,82 @@ There are several different options:
 
 ### Application node terminates SSL
 
-Configure your load balancer to pass connections on port 443 as `TCP` rather
-than `HTTP(S)` protocol. This will pass the connection to the application node's
-NGINX service untouched. NGINX will have the SSL certificate and listen on port 443.
+Configure your load balancer to pass connections on port 443 as `TCP` instead
+of `HTTP(S)`. This will pass the connection unaltered to the application node's
+NGINX service, which has the SSL certificate and listens to port 443.
 
-See the [NGINX HTTPS documentation](https://docs.gitlab.com/omnibus/settings/nginx.html#enable-https)
-for details on managing SSL certificates and configuring NGINX.
+For details about managing SSL certificates and configuring NGINX, see the
+[NGINX HTTPS documentation](https://docs.gitlab.com/omnibus/settings/nginx.html#enable-https).
 
 ### Load balancer terminates SSL without backend SSL
 
-Configure your load balancer to use the `HTTP(S)` protocol rather than `TCP`.
-The load balancer will then be responsible for managing SSL certificates and
+Configure your load balancer to use the `HTTP(S)` protocol instead of `TCP`.
+The load balancer will be responsible for both managing SSL certificates and
 terminating SSL.
 
-Since communication between the load balancer and GitLab will not be secure,
-there is some additional configuration needed. See the
-[NGINX proxied SSL documentation](https://docs.gitlab.com/omnibus/settings/nginx.html#supporting-proxied-ssl)
-for details.
+Due to communication between the load balancer and GitLab not being secure,
+you'll need to complete some additional configuration. For details, see the
+[NGINX proxied SSL documentation](https://docs.gitlab.com/omnibus/settings/nginx.html#supporting-proxied-ssl).
 
 ### Load balancer terminates SSL with backend SSL
 
-Configure your load balancer(s) to use the 'HTTP(S)' protocol rather than 'TCP'.
-The load balancer(s) will be responsible for managing SSL certificates that
-end users will see.
+Configure your load balancers (or single balancer, if you have only one) to use
+the `HTTP(S)` protocol rather than `TCP`. The load balancers will be
+responsible for the managing SSL certificates for end users.
 
-Traffic will also be secure between the load balancer(s) and NGINX in this
-scenario. There is no need to add configuration for proxied SSL since the
-connection will be secure all the way. However, configuration will need to be
-added to GitLab to configure SSL certificates. See
-[NGINX HTTPS documentation](https://docs.gitlab.com/omnibus/settings/nginx.html#enable-https)
-for details on managing SSL certificates and configuring NGINX.
+Traffic will be secure between the load balancers and NGINX in this scenario,
+and there's no need to add a configuration for proxied SSL. However, you'll
+need to add a configuration to GitLab to configure SSL certificates. For
+details about managing SSL certificates and configuring NGINX, see the
+[NGINX HTTPS documentation](https://docs.gitlab.com/omnibus/settings/nginx.html#enable-https).
 
 ### Ports
 
-The basic ports to be used are shown in the table below.
+The basic load balancer ports you should use are described in the following
+table:
 
-| LB Port | Backend Port | Protocol                 |
+| Port    | Backend Port | Protocol                 |
 | ------- | ------------ | ------------------------ |
 | 80      | 80           | HTTP (*1*)               |
 | 443     | 443          | TCP or HTTPS (*1*) (*2*) |
 | 22      | 22           | TCP                      |
 
-- (*1*): [Web terminal](../../ci/environments/index.md#web-terminals) support requires
-  your load balancer to correctly handle WebSocket connections. When using
-  HTTP or HTTPS proxying, this means your load balancer must be configured
-  to pass through the `Connection` and `Upgrade` hop-by-hop headers. See the
-  [web terminal](../integration/terminal.md) integration guide for
-  more details.
-- (*2*): When using HTTPS protocol for port 443, you will need to add an SSL
-  certificate to the load balancers. If you wish to terminate SSL at the
-  GitLab application server instead, use TCP protocol.
+- (*1*): [Web terminal](../../ci/environments/index.md#web-terminals) support
+  requires your load balancer to correctly handle WebSocket connections.
+  When using HTTP or HTTPS proxying, your load balancer must be configured
+  to pass through the `Connection` and `Upgrade` hop-by-hop headers. For
+  details, see the [web terminal](../integration/terminal.md) integration guide.
+- (*2*): When using the HTTPS protocol for port 443, you'll need to add an SSL
+  certificate to the load balancers. If you need to terminate SSL at the
+  GitLab application server, use the TCP protocol.
 
 If you're using GitLab Pages with custom domain support you will need some
-additional port configurations.
-GitLab Pages requires a separate virtual IP address. Configure DNS to point the
-`pages_external_url` from `/etc/gitlab/gitlab.rb` at the new virtual IP address. See the
-[GitLab Pages documentation](../pages/index.md) for more information.
+additional port configurations. GitLab Pages requires a separate virtual IP
+address. Configure DNS to point the `pages_external_url` from
+`/etc/gitlab/gitlab.rb` to the new virtual IP address. For more information,
+see the [GitLab Pages documentation](../pages/index.md).
 
-| LB Port | Backend Port  | Protocol  |
+| Port    | Backend Port  | Protocol  |
 | ------- | ------------- | --------- |
 | 80      | Varies (*1*)  | HTTP      |
 | 443     | Varies (*1*)  | TCP (*2*) |
 
 - (*1*): The backend port for GitLab Pages depends on the
   `gitlab_pages['external_http']` and `gitlab_pages['external_https']`
-  setting. See [GitLab Pages documentation](../pages/index.md) for more details.
-- (*2*): Port 443 for GitLab Pages should always use the TCP protocol. Users can
-  configure custom domains with custom SSL, which would not be possible
-  if SSL was terminated at the load balancer.
+  settings. For details, see the [GitLab Pages documentation](../pages/index.md).
+- (*2*): Port 443 for GitLab Pages must use the TCP protocol. Users can
+  configure custom domains with custom SSL, which wouldn't be possible if SSL
+  was terminated at the load balancer.
 
 #### Alternate SSH Port
 
 Some organizations have policies against opening SSH port 22. In this case,
-it may be helpful to configure an alternate SSH hostname that allows users
-to use SSH on port 443. An alternate SSH hostname will require a new virtual IP address
-compared to the other GitLab HTTP configuration above.
+it may be helpful to configure an alternate SSH hostname that instead allows
+users to use SSH over port 443. An alternate SSH hostname requires a new
+virtual IP address compared to the previously described GitLab HTTP
+configuration.
 
-Configure DNS for an alternate SSH hostname such as `altssh.gitlab.example.com`.
+Configure DNS for an alternate SSH hostname, such as `altssh.gitlab.example.com`:
 
 | LB Port | Backend Port | Protocol |
 | ------- | ------------ | -------- |
@@ -175,49 +175,49 @@ Configure DNS for an alternate SSH hostname such as `altssh.gitlab.example.com`.
 
 ## Configure the object storage
 
-GitLab supports using an object storage service for holding numerous types of data.
-It's recommended over [NFS](#configure-nfs-optional) and in general it's better
-in larger setups as object storage is typically much more performant, reliable,
-and scalable.
+GitLab supports using an object storage service for holding several types of
+data, and is recommended over [NFS](#configure-nfs-optional). In general,
+object storage services are better for larger environments, as object storage
+is typically much more performant, reliable, and scalable.
 
-Object storage options that GitLab has tested, or is aware of customers using include:
+Object storage options that GitLab has either tested or is aware of customers
+using, includes:
 
-- SaaS/Cloud solutions such as [Amazon S3](https://aws.amazon.com/s3/), [Google cloud storage](https://cloud.google.com/storage).
-- On-premises hardware and appliances from various storage vendors.
-- MinIO. There is [a guide to deploying this](https://docs.gitlab.com/charts/advanced/external-object-storage/minio.html) within our Helm Chart documentation.
+- SaaS/Cloud solutions (such as [Amazon S3](https://aws.amazon.com/s3/) or
+  [Google Cloud Storage](https://cloud.google.com/storage)).
+- On-premises hardware and appliances, from various storage vendors.
+- MinIO ([Deployment guide](https://docs.gitlab.com/charts/advanced/external-object-storage/minio.html)).
 
-For configuring GitLab to use Object Storage refer to the following guides
-based on what features you intend to use:
+To configure GitLab to use object storage, refer to the following guides based
+on the features you intend to use:
 
-1. Configure [object storage for backups](../../raketasks/backup_restore.md#uploading-backups-to-a-remote-cloud-storage).
-1. Configure [object storage for job artifacts](../job_artifacts.md#using-object-storage)
+1. [Object storage for backups](../../raketasks/backup_restore.md#uploading-backups-to-a-remote-cloud-storage).
+1. [Object storage for job artifacts](../job_artifacts.md#using-object-storage)
    including [incremental logging](../job_logs.md#new-incremental-logging-architecture).
-1. Configure [object storage for LFS objects](../lfs/index.md#storing-lfs-objects-in-remote-object-storage).
-1. Configure [object storage for uploads](../uploads.md#using-object-storage-core-only).
-1. Configure [object storage for merge request diffs](../merge_request_diffs.md#using-object-storage).
-1. Configure [object storage for Container Registry](../packages/container_registry.md#container-registry-storage-driver) (optional feature).
-1. Configure [object storage for Mattermost](https://docs.mattermost.com/administration/config-settings.html#file-storage) (optional feature).
-1. Configure [object storage for packages](../packages/index.md#using-object-storage) (optional feature). **(PREMIUM ONLY)**
-1. Configure [object storage for Dependency Proxy](../packages/dependency_proxy.md#using-object-storage) (optional feature). **(PREMIUM ONLY)**
-1. Configure [object storage for Pseudonymizer](../pseudonymizer.md#configuration) (optional feature). **(ULTIMATE ONLY)**
-1. Configure [object storage for autoscale Runner caching](https://docs.gitlab.com/runner/configuration/autoscale.html#distributed-runners-caching) (optional - for improved performance).
-1. Configure [object storage for Terraform state files](../terraform_state.md#using-object-storage-core-only).
+1. [Object storage for LFS objects](../lfs/index.md#storing-lfs-objects-in-remote-object-storage).
+1. [Object storage for uploads](../uploads.md#using-object-storage-core-only).
+1. [Object storage for merge request diffs](../merge_request_diffs.md#using-object-storage).
+1. [Object storage for Container Registry](../packages/container_registry.md#container-registry-storage-driver) (optional feature).
+1. [Object storage for Mattermost](https://docs.mattermost.com/administration/config-settings.html#file-storage) (optional feature).
+1. [Object storage for packages](../packages/index.md#using-object-storage) (optional feature). **(PREMIUM ONLY)**
+1. [Object storage for Dependency Proxy](../packages/dependency_proxy.md#using-object-storage) (optional feature). **(PREMIUM ONLY)**
+1. [Object storage for Pseudonymizer](../pseudonymizer.md#configuration) (optional feature). **(ULTIMATE ONLY)**
+1. [Object storage for autoscale Runner caching](https://docs.gitlab.com/runner/configuration/autoscale.html#distributed-runners-caching) (optional, for improved performance).
+1. [Object storage for Terraform state files](../terraform_state.md#using-object-storage-core-only).
 
 Using separate buckets for each data type is the recommended approach for GitLab.
 
-A limitation of our configuration is that each use of object storage is separately configured.
-[We have an issue for improving this](https://gitlab.com/gitlab-org/gitlab/-/issues/23345)
-and easily using one bucket with separate folders is one improvement that this might bring.
+A limitation of our configuration is that each use of object storage is
+separately configured. We have an [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/23345)
+for improving this, which would allow for one bucket with separate folders.
 
-There is at least one specific issue with using the same bucket:
-when GitLab is deployed with the Helm chart restore from backup
-[will not properly function](https://docs.gitlab.com/charts/advanced/external-object-storage/#lfs-artifacts-uploads-packages-external-diffs-pseudonymizer)
-unless separate buckets are used.
-
-One risk of using a single bucket would be if your organization decided to
-migrate GitLab to the Helm deployment in the future. GitLab would run, but the situation with
-backups might not be realized until the organization had a critical requirement for the backups to
-work.
+Using a single bucket when GitLab is deployed with the Helm chart causes
+restoring from a backup to
+[not function properly](https://docs.gitlab.com/charts/advanced/external-object-storage/#lfs-artifacts-uploads-packages-external-diffs-pseudonymizer).
+Although you may not be using a Helm deployment right now, if you migrate
+GitLab to a Helm deployment later, GitLab would still work, but you may not
+realize backups aren't working correctly until a critical requirement for
+functioning backups is encountered.
 
 <div align="right">
   <a type="button" class="btn btn-default" href="#setup-components">
@@ -227,11 +227,12 @@ work.
 
 ## Configure NFS (optional)
 
-[Object storage](#configure-the-object-storage), along with [Gitaly](#configure-gitaly)
-are recommended over NFS wherever possible for improved performance. If you intend
-to use GitLab Pages, this currently [requires NFS](troubleshooting.md#gitlab-pages-requires-nfs).
+For improved performance, [object storage](#configure-the-object-storage),
+along with [Gitaly](#configure-gitaly), are recommended over using NFS whenever
+possible. However, if you intend to use GitLab Pages,
+[you must use NFS](troubleshooting.md#gitlab-pages-requires-nfs).
 
-See how to [configure NFS](../high_availability/nfs.md).
+For information about configuring NFS, see the [NFS documentation page](../high_availability/nfs.md).
 
 <div align="right">
   <a type="button" class="btn btn-default" href="#setup-components">
@@ -247,14 +248,14 @@ to be used with GitLab.
 ### Provide your own PostgreSQL instance
 
 If you're hosting GitLab on a cloud provider, you can optionally use a
-managed service for PostgreSQL. For example, AWS offers a managed Relational
-Database Service (RDS) that runs PostgreSQL.
+managed service for PostgreSQL. For example, AWS offers a managed relational
+database service (RDS) that runs PostgreSQL.
 
 If you use a cloud-managed service, or provide your own PostgreSQL:
 
 1. Set up PostgreSQL according to the
    [database requirements document](../../install/requirements.md#database).
-1. Set up a `gitlab` username with a password of your choice. The `gitlab` user
+1. Create a `gitlab` username with a password of your choice. The `gitlab` user
    needs privileges to create the `gitlabhq_production` database.
 1. Configure the GitLab application servers with the appropriate details.
    This step is covered in [Configuring the GitLab Rails application](#configure-gitlab-rails).

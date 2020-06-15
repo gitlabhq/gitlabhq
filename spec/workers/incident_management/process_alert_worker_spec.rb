@@ -4,6 +4,7 @@ require 'spec_helper'
 
 describe IncidentManagement::ProcessAlertWorker do
   let_it_be(:project) { create(:project) }
+  let_it_be(:settings) { create(:project_incident_management_setting, project: project, create_issue: true) }
 
   describe '#perform' do
     let(:alert_management_alert_id) { nil }

@@ -9,6 +9,11 @@ describe('performance bar wrapper', () => {
   let vm;
 
   beforeEach(() => {
+    URL.createObjectURL = jest.fn();
+    performance.getEntriesByType = jest.fn().mockReturnValue([]);
+
+    // clear html so that elements from previous tests don't mess with this test
+    document.body.innerHTML = '';
     const peekWrapper = document.createElement('div');
 
     peekWrapper.setAttribute('id', 'js-peek');
@@ -49,11 +54,11 @@ describe('performance bar wrapper', () => {
 
   describe('loadRequestDetails', () => {
     beforeEach(() => {
-      spyOn(vm.store, 'addRequest').and.callThrough();
+      jest.spyOn(vm.store, 'addRequest');
     });
 
     it('does nothing if the request cannot be tracked', () => {
-      spyOn(vm.store, 'canTrackRequest').and.callFake(() => false);
+      jest.spyOn(vm.store, 'canTrackRequest').mockImplementation(() => false);
 
       vm.loadRequestDetails('123', 'https://gitlab.com/');
 
@@ -67,7 +72,7 @@ describe('performance bar wrapper', () => {
     });
 
     it('makes an HTTP request for the request details', () => {
-      spyOn(PerformanceBarService, 'fetchRequestDetails').and.callThrough();
+      jest.spyOn(PerformanceBarService, 'fetchRequestDetails');
 
       vm.loadRequestDetails('456', 'https://gitlab.com/');
 

@@ -3,7 +3,7 @@
 class SnippetInputAction
   include ActiveModel::Validations
 
-  ACTIONS = %w[create update delete move].freeze
+  ACTIONS = %i[create update delete move].freeze
 
   ACTIONS.each do |action_const|
     define_method "#{action_const}_action?" do
@@ -20,7 +20,7 @@ class SnippetInputAction
   validate :ensure_same_file_path_and_previous_path, if: :update_action?
 
   def initialize(action: nil, previous_path: nil, file_path: nil, content: nil)
-    @action = action
+    @action = action&.to_sym
     @previous_path = previous_path
     @file_path = file_path
     @content = content
@@ -28,7 +28,7 @@ class SnippetInputAction
 
   def to_commit_action
     {
-      action: action&.to_sym,
+      action: action,
       previous_path: build_previous_path,
       file_path: file_path,
       content: content
@@ -44,6 +44,7 @@ class SnippetInputAction
   end
 
   def ensure_same_file_path_and_previous_path
+    return if previous_path.blank? || file_path.blank?
     return if previous_path == file_path
 
     errors.add(:file_path, "can't be different from the previous_path attribute")

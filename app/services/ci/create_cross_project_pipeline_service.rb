@@ -47,6 +47,7 @@ module Ci
           # and update the status when the downstream pipeline completes.
           subject.success! unless subject.dependent?
         else
+          subject.options[:downstream_errors] = pipeline.errors.full_messages
           subject.drop!(:downstream_pipeline_creation_failed)
         end
       end

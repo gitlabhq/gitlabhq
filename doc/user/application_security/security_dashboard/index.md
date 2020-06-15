@@ -120,6 +120,21 @@ vulnerabilities are not included either.
 
 Read more on how to [interact with the vulnerabilities](../index.md#interacting-with-the-vulnerabilities).
 
+### Export vulnerabilities
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/213013) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.1.
+
+You can export all your vulnerabilities as CSV by clicking the **{upload}** **Export** button
+located at the top right of the **Group Security Dashboard**. After the report builds, the CSV
+report downloads to your local machine. The report contains all vulnerabilities for the projects
+defined in the **Group Security Dashboard**, as filters don't apply to the export function.
+
+NOTE: **Note:**
+It may take several minutes for the download to start if your project contains thousands of
+vulnerabilities. Don't close the page until the download finishes.
+
+![CSV Export Button](img/group_security_dashboard_export_csv_v13_1.png)
+
 ## Instance Security Dashboard
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/6953) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.8.

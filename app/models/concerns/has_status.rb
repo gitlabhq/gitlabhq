@@ -66,7 +66,7 @@ module HasStatus
     # 1. By plucking all related objects,
     # 2. Or executes expensive SQL query
     def slow_composite_status(project:)
-      if Feature.enabled?(:ci_composite_status, project, default_enabled: false)
+      if ::Gitlab::Ci::Features.composite_status?(project)
         Gitlab::Ci::Status::Composite
           .new(all, with_allow_failure: columns_hash.key?('allow_failure'))
           .status
