@@ -70,6 +70,7 @@ constraints(::Constraints::GroupUrlConstrainer.new) do
     end
 
     resource :avatar, only: [:destroy]
+    resource :import, only: [:show]
 
     concerns :clusterable
 

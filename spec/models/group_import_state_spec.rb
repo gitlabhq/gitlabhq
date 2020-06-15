@@ -35,4 +35,38 @@ describe GroupImportState do
       expect(import_state).to be_valid
     end
   end
+
+  describe '#in_progress?' do
+    context "when the import is 'created'" do
+      it "returns true" do
+        group_import_state = build(:group_import_state, :created)
+
+        expect(group_import_state.in_progress?).to eq true
+      end
+    end
+
+    context "when the import is 'started'" do
+      it "returns true" do
+        group_import_state = build(:group_import_state, :started)
+
+        expect(group_import_state.in_progress?).to eq true
+      end
+    end
+
+    context "when the import is 'finished'" do
+      it "returns false" do
+        group_import_state = build(:group_import_state, :finished)
+
+        expect(group_import_state.in_progress?).to eq false
+      end
+    end
+
+    context "when the import is 'failed'" do
+      it "returns false" do
+        group_import_state = build(:group_import_state, :failed)
+
+        expect(group_import_state.in_progress?).to eq false
+      end
+    end
+  end
 end

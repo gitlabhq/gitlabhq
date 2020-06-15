@@ -29,6 +29,12 @@
     .js-branch-divergence-graph
 
   .controls.d-none.d-md-block<
+    - if commit_status
+      = render 'ci/status/icon', size: 24, status: commit_status, option_css_classes: 'gl-display-inline-flex gl-vertical-align-middle gl-mr-5'
+    - elsif show_commit_status
+      .gl-display-inline-flex.gl-vertical-align-middle.gl-mr-5
+        %svg.s24
+
     - if merge_project && create_mr_button?(@repository.root_ref, branch.name)
       = link_to create_mr_path(@repository.root_ref, branch.name), class: 'btn btn-default' do
         = _('Merge request')

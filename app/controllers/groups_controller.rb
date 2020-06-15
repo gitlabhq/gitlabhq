@@ -74,7 +74,11 @@ class GroupsController < Groups::ApplicationController
   def show
     respond_to do |format|
       format.html do
-        render_show_html
+        if @group.import_state&.in_progress?
+          redirect_to group_import_path(@group)
+        else
+          render_show_html
+        end
       end
 
       format.atom do

@@ -25,8 +25,9 @@ class Projects::BranchesController < Projects::ApplicationController
 
         @refs_pipelines = @project.ci_pipelines.latest_successful_for_refs(@branches.map(&:name))
         @merged_branch_names = repository.merged_branch_names(@branches.map(&:name))
+        @branch_pipeline_statuses = branch_pipeline_statuses
 
-        # https://gitlab.com/gitlab-org/gitlab-foss/issues/48097
+        # https://gitlab.com/gitlab-org/gitlab/-/issues/22851
         Gitlab::GitalyClient.allow_n_plus_1_calls do
           render
         end
@@ -193,5 +194,16 @@ class Projects::BranchesController < Projects::ApplicationController
     return unless can?(current_user, :update_issue, confidential_issue_project)
 
     confidential_issue_project
+  end
+
+  def branch_pipeline_statuses
+    latest_commits = @branches.map do |branch|
+      [branch.name, repository.commit(branch.dereferenced_target).sha]
+    end.to_h
+
+    latest_pipelines = project.ci_pipelines.latest_pipeline_per_commit(latest_commits.values)
+    latest_commits.transform_values do |commit_sha|
+      latest_pipelines[commit_sha]&.detailed_status(current_user)
+    end.compact
   end
 end

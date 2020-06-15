@@ -66,7 +66,19 @@ RSpec.describe GroupsController do
 
     subject { get :show, params: { id: group.to_param }, format: format }
 
-    it_behaves_like 'details view'
+    context 'when the group is not importing' do
+      it_behaves_like 'details view'
+    end
+
+    context 'when the group is importing' do
+      before do
+        create(:group_import_state, group: group)
+      end
+
+      it 'redirects to the import status page' do
+        expect(subject).to redirect_to group_import_path(group)
+      end
+    end
   end
 
   describe 'GET #details' do

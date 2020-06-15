@@ -26,7 +26,7 @@ describe GroupImportWorker do
         subject.perform(user.id, group.id)
       end
 
-      context 'import state' do
+      context 'when the import state does not exist' do
         it 'creates group import' do
           expect(group.import_state).to be_nil
 
@@ -52,6 +52,17 @@ describe GroupImportWorker do
           end
 
           subject.perform(user.id, group.id)
+        end
+      end
+
+      context 'when the import state already exists' do
+        it 'updates the existing state' do
+          existing_state = create(:group_import_state, group: group)
+
+          expect { subject.perform(user.id, group.id) }
+            .not_to change { GroupImportState.count }
+
+          expect(existing_state.reload).to be_finished
         end
       end
     end

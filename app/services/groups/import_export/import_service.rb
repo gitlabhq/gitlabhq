@@ -13,7 +13,16 @@ module Groups
       end
 
       def async_execute
-        GroupImportWorker.perform_async(current_user.id, group.id)
+        group_import_state = GroupImportState.safe_find_or_create_by!(group: group)
+        jid = GroupImportWorker.perform_async(current_user.id, group.id)
+
+        if jid.present?
+          group_import_state.update!(jid: jid)
+        else
+          group_import_state.fail_op('Failed to schedule import job')
+
+          false
+        end
       end
 
       def execute

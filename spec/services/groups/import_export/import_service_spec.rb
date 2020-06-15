@@ -16,6 +16,12 @@ describe Groups::ImportExport::ImportService do
         import_service.async_execute
       end
 
+      it 'marks the group import as in progress' do
+        import_service.async_execute
+
+        expect(group.import_state.in_progress?).to eq true
+      end
+
       it 'returns truthy' do
         expect(import_service.async_execute).to be_truthy
       end
@@ -30,6 +36,10 @@ describe Groups::ImportExport::ImportService do
 
       it 'returns falsey' do
         expect(import_service.async_execute).to be_falsey
+      end
+
+      it 'does not mark the group import as created' do
+        expect { import_service.async_execute }.not_to change { group.import_state }
       end
     end
   end

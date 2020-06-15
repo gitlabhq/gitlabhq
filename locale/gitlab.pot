@@ -10928,9 +10928,6 @@ msgstr ""
 msgid "Group %{group_name} was successfully created."
 msgstr ""
 
-msgid "Group '%{group_name}' is being imported."
-msgstr ""
-
 msgid "Group Audit Events"
 msgstr ""
 
@@ -10967,9 +10964,6 @@ msgstr ""
 msgid "Group by:"
 msgstr ""
 
-msgid "Group could not be imported: %{errors}"
-msgstr ""
-
 msgid "Group description"
 msgstr ""
 
@@ -10995,6 +10989,9 @@ msgid "Group has been already marked for deletion"
 msgstr ""
 
 msgid "Group has not been marked for deletion"
+msgstr ""
+
+msgid "Group import could not be scheduled"
 msgstr ""
 
 msgid "Group info:"
@@ -11061,6 +11058,24 @@ msgid "GroupActivyMetrics|Merge Requests created"
 msgstr ""
 
 msgid "GroupActivyMetrics|Recent activity (last 90 days)"
+msgstr ""
+
+msgid "GroupImport|Failed to import group."
+msgstr ""
+
+msgid "GroupImport|Group '%{group_name}' is being imported."
+msgstr ""
+
+msgid "GroupImport|Group could not be imported: %{errors}"
+msgstr ""
+
+msgid "GroupImport|Please wait while we import the group for you. Refresh at will."
+msgstr ""
+
+msgid "GroupImport|The group was successfully imported."
+msgstr ""
+
+msgid "GroupImport|Unable to process group import file"
 msgstr ""
 
 msgid "GroupRoadmap|%{dateWord} – No end date"
@@ -23868,9 +23883,6 @@ msgid "Unable to load the diff. %{button_try_again}"
 msgstr ""
 
 msgid "Unable to load the merge request widget. Try reloading the page."
-msgstr ""
-
-msgid "Unable to process group import file"
 msgstr ""
 
 msgid "Unable to resolve"

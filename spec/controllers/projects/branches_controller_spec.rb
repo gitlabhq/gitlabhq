@@ -486,6 +486,82 @@ RSpec.describe Projects::BranchesController do
       end
     end
 
+    context 'when a branch has multiple pipelines' do
+      it 'chooses the latest to determine status' do
+        sha = project.repository.create_file(developer, generate(:branch), 'content', message: 'message', branch_name: 'master')
+        create(:ci_pipeline,
+          project: project,
+          user: developer,
+          ref: "master",
+          sha: sha,
+          status: :running,
+          created_at: 6.months.ago)
+        create(:ci_pipeline,
+          project: project,
+          user: developer,
+          ref: "master",
+          sha: sha,
+          status: :success,
+          created_at: 2.months.ago)
+
+        get :index,
+            format: :html,
+            params: {
+              namespace_id: project.namespace,
+              project_id: project,
+              state: 'all'
+            }
+
+        expect(controller.instance_variable_get(:@branch_pipeline_statuses)["master"].group).to eq("success")
+      end
+    end
+
+    context 'when multiple branches exist' do
+      it 'all relevant commit statuses are received' do
+        master_sha = project.repository.create_file(developer, generate(:branch), 'content', message: 'message', branch_name: 'master')
+        create(:ci_pipeline,
+          project: project,
+          user: developer,
+          ref: "master",
+          sha: master_sha,
+          status: :running,
+          created_at: 6.months.ago)
+        test_sha = project.repository.create_file(developer, generate(:branch), 'content', message: 'message', branch_name: 'test')
+        create(:ci_pipeline,
+          project: project,
+          user: developer,
+          ref: "test",
+          sha: test_sha,
+          status: :success,
+          created_at: 2.months.ago)
+
+        get :index,
+            format: :html,
+            params: {
+              namespace_id: project.namespace,
+              project_id: project,
+              state: 'all'
+            }
+
+        expect(controller.instance_variable_get(:@branch_pipeline_statuses)["master"].group).to eq("running")
+        expect(controller.instance_variable_get(:@branch_pipeline_statuses)["test"].group).to eq("success")
+      end
+    end
+
+    context 'when a branch contains no pipelines' do
+      it 'no commit statuses are received' do
+        get :index,
+            format: :html,
+            params: {
+              namespace_id: project.namespace,
+              project_id: project,
+              state: 'all'
+            }
+
+        expect(controller.instance_variable_get(:@branch_pipeline_statuses)).to be_blank
+      end
+    end
+
     # We need :request_store because Gitaly only counts the queries whenever
     # `RequestStore.active?` in GitalyClient.enforce_gitaly_request_limits
     # And the main goal of this test is making sure TooManyInvocationsError

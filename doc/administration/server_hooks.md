@@ -68,9 +68,18 @@ Follow the steps below to properly set up a server hook for all repositories:
    `/home/git/gitlab-shell/hooks`. For Omnibus installs the path is usually
     `/opt/gitlab/embedded/service/gitlab-shell/hooks`.
    To look in a different directory for the global custom hooks,
-   set `custom_hooks_dir` in the GitLab Shell config. For
-   Omnibus installations, this can be set in `gitlab.rb`; and in source
-   installations, this can be set in `gitlab-shell/config.yml`.
+   set `custom_hooks_dir` in the Gitaly config. For Omnibus installations, this is set
+   in `gitlab.rb`. For source installations, the configuration location depends on the
+   GitLab version. For:
+
+   - GitLab 13.0 and earlier, this is set in `gitlab-shell/config.yml`.
+   - GitLab 13.1 and later, this is set in `gitaly/config.toml` under the `[hooks]`
+     section.
+
+   NOTE: **Note:**
+   The `custom_hooks_dir` value in `gitlab-shell/config.yml` is still honored in GitLab
+   13.1 and later if the value in `gitaly/config.toml` is blank or non-existent.
+
 1. Create a new directory in this location. Depending on your hook, it will be
    either a `pre-receive.d`, `post-receive.d`, or `update.d` directory.
 1. Inside this new directory, add your hook. Hooks can be

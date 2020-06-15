@@ -32,4 +32,8 @@ class GroupImportState < ApplicationRecord
       state.update_column(:last_error, last_error) if last_error
     end
   end
+
+  def in_progress?
+    created? || started?
+  end
 end
