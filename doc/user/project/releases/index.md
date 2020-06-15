@@ -269,11 +269,16 @@ Here is an example of a Release Evidence object:
 {
   "release": {
     "id": 5,
-    "tag": "v4.0",
+    "tag_name": "v4.0",
     "name": "New release",
-    "project_id": 45,
-    "project_name": "Project name",
-    "released_at": "2019-06-28 13:23:40 UTC",
+    "project": {
+      "id": 20,
+      "name": "Project name",
+      "created_at": "2019-04-14T11:12:13.940Z",
+      "description": "Project description"
+    },
+    "created_at": "2019-06-28 13:23:40 UTC",
+    "description": "Release description",
     "milestones": [
       {
         "id": 11,
@@ -313,7 +318,7 @@ Here is an example of a Release Evidence object:
 }
 ```
 
-### Enabling Release Evidence display **(CORE ONLY)**
+### Diabling Release Evidence display **(CORE ONLY)**
 
 This feature comes with the `:release_evidence_collection` feature flag
 enabled by default in GitLab self-managed instances. To turn it off,

@@ -273,9 +273,6 @@
   rules:
     - <<: *if-not-ee
       when: never
-    - <<: *if-master-push
-      changes: *code-backstage-qa-patterns
-    - <<: *if-master-schedule-2-hourly
     - <<: *if-security-merge-request
       changes: *code-backstage-qa-patterns
     - <<: *if-merge-request-title-as-if-foss
@@ -291,9 +288,6 @@
   rules:
     - <<: *if-not-ee
       when: never
-    - <<: *if-master-push
-      changes: *code-backstage-patterns
-    - <<: *if-master-schedule-2-hourly
     - <<: *if-security-merge-request
       changes: *code-backstage-patterns
     - <<: *if-merge-request-title-as-if-foss
@@ -364,9 +358,6 @@
   rules:
     - <<: *if-not-ee
       when: never
-    - <<: *if-master-push
-      changes: *code-qa-patterns
-    - <<: *if-master-schedule-2-hourly
     - <<: *if-security-merge-request
       changes: *code-qa-patterns
     - <<: *if-merge-request-title-as-if-foss
@@ -412,9 +403,6 @@
   rules:
     - <<: *if-not-ee
       when: never
-    - <<: *if-master-push
-      changes: *code-backstage-patterns
-    - <<: *if-master-schedule-2-hourly
     - <<: *if-security-merge-request
       changes: *code-backstage-patterns
     - <<: *if-merge-request-title-as-if-foss

@@ -10,7 +10,6 @@ describe 'getting Alert Management Alerts' do
   let_it_be(:resolved_alert) { create(:alert_management_alert, :all_fields, :resolved, project: project, issue: nil, severity: :low) }
   let_it_be(:triggered_alert) { create(:alert_management_alert, :all_fields, project: project, severity: :critical, payload: payload) }
   let_it_be(:other_project_alert) { create(:alert_management_alert, :all_fields) }
-  let_it_be(:system_note) { create(:note_on_alert, noteable: triggered_alert, project: project) }
 
   let(:params) { {} }
 
@@ -76,8 +75,6 @@ describe 'getting Alert Management Alerts' do
           'createdAt' => triggered_alert.created_at.strftime('%Y-%m-%dT%H:%M:%SZ'),
           'updatedAt' => triggered_alert.updated_at.strftime('%Y-%m-%dT%H:%M:%SZ')
         )
-
-        expect(first_alert['notes']['nodes'].first).to include('id' => system_note.to_global_id.to_s)
 
         expect(second_alert).to include(
           'iid' => resolved_alert.iid.to_s,

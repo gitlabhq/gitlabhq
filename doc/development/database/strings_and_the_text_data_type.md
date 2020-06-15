@@ -276,7 +276,7 @@ end
 
 ## Text limit constraints on large tables
 
-If you have to clean up a text column for a really [large table](https://gitlab.com/gitlab-org/gitlab/-/blob/master/rubocop/migration_helpers.rb#L12)
+If you have to clean up a text column for a really [large table](https://gitlab.com/gitlab-org/gitlab/-/blob/master/rubocop/rubocop-migrations.yml#L3)
 (for example, the `artifacts` in `ci_builds`), your background migration will go on for a while and
 it will need an additional [background migration cleaning up](../background_migrations.md#cleaning-up)
 in the release after adding the data migration.

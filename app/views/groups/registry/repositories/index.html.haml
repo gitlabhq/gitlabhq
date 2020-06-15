@@ -12,6 +12,6 @@
         "containers_error_image" => image_path('illustrations/docker-error-state.svg'),
         "registry_host_url_with_port" => escape_once(registry_config.host_port),
         "garbage_collection_help_page_path" => help_page_path('administration/packages/container_registry', anchor: 'container-registry-garbage-collection'),
-        "is_admin": current_user&.admin,
-        is_group_page: true,
+        "is_admin": current_user&.admin.to_s,
+        is_group_page: "true",
         character_error: @character_error.to_s } }

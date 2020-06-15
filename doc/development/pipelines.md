@@ -397,7 +397,6 @@ Consult the [Review Apps](testing_guide/review_apps.md) dedicated page for more 
 The `* as-if-foss` jobs allows to run GitLab's test suite "as-if-FOSS", meaning as if the jobs would run in the context
 of the `gitlab-org/gitlab-foss` project. These jobs are only created in the following cases:
 
-- `master` commits (pushes and scheduled pipelines).
 - `gitlab-org/security/gitlab` merge requests.
 - Merge requests which include `RUN AS-IF-FOSS` in their title.
 - Merge requests that changes the CI configuration.

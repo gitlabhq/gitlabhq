@@ -16,7 +16,7 @@
       - recent_releases, total_count, more_count = recent_releases_with_counts(milestone)
       - unless total_count.zero?
         .text-tertiary.append-bottom-5.milestone-release-links
-          = icon('rocket')
+          = sprite_icon("rocket", size: 12)
           = n_('Release', 'Releases', total_count)
           - recent_releases.each do |release|
             = link_to release.name, project_releases_path(release.project, anchor: release.tag)

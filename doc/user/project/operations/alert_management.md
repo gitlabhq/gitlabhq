@@ -92,3 +92,54 @@ alert by clicking the **View Issue** button.
 
 Closing a GitLab issue associated with an alert changes the alert's status to Resolved.
 See [Alert Management statuses](#alert-management-statuses) for more details about statuses.
+
+### Update an Alert's assignee
+
+NOTE: **Note:**
+We currently only support a single assignee per alert.
+
+The Alert Management detail view allows users to update the Alert Assignee(s).
+
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3066) in GitLab 13.1.
+
+In large teams, where there is shared ownership of an alert, it can be difficult
+to track who is investigating and working on it. The Alert Management detail view
+enables you to update the Alert Assignee(s):
+
+NOTE: **Note:**
+GitLab currently only supports a single assignee per alert.
+
+1. To display the list of current alerts, click
+   **{cloud-gear}** **Operations > Alerts**:
+
+   ![Alert Management List View Assignee(s)](img/alert_list_assignees_v13_1.png)
+
+1. Select your desired alert to display its **Alert Management Details View**:
+
+   ![Alert Management Details View Assignee(s)](img/alert_details_assignees_v13_1.png)
+
+1. If the right sidebar is not expanded, click
+   **{angle-double-right}** **Expand sidebar** to expand it.
+1. In the right sidebar, locate the **Assignee** and click **Edit**. From the
+   dropdown menu, select each user you want to assign to the alert. GitLab creates
+   a [To-Do list item](../../todos.md) for each user.
+
+   ![Alert Management Details View Assignee(s)](img/alert_todo_assignees_v13_1.png)
+
+To remove an assignee, click **Edit** next to the **Assignee** dropdown menu and
+deselect the user from the list of assignees, or click **Unassigned**.
+
+## Use cases for assigning alerts
+
+Consider a team formed by different sections of monitoring, collaborating on a
+single application. After an alert surfaces, it's extremely important to
+route the alert to the team members who can address and resolve the alert.
+
+Assigning Alerts to multiple assignees eases collaboration and delegation. All
+assignees are shown in your team's workflows, and all assignees receive
+notifications, simplifying communication and ownership of the alert.
+
+After completing their portion of investigating or fixing the alert, users can
+unassign their account from the alert when their role is complete.
+The [alerts status](#alert-management-statuses) can be updated to
+reflect if the alert has been resolved.

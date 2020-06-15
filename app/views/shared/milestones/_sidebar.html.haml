@@ -140,7 +140,7 @@
       .block.releases
         .sidebar-collapsed-icon.has-tooltip{ title: milestone_releases_tooltip_text(milestone), data: { container: 'body', placement: 'left', boundary: 'viewport' } }
           %strong
-            = icon('rocket')
+            = sprite_icon("rocket", size: 16)
           %span= total_count
         .title.hide-collapsed= n_('Release', 'Releases', total_count)
         .hide-collapsed

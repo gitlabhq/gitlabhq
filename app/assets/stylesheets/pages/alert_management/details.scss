@@ -51,13 +51,23 @@
   }
 
   .assignee-dropdown-item {
-    button {
+    .dropdown-item {
       display: flex;
       align-items: center;
 
       &::before {
         top: 50% !important;
       }
+
+      &.is-active {
+        &:last-child {
+          border-bottom: 1px solid $gray-200;
+        }
+      }
     }
+  }
+
+  .note-header-info {
+    margin-top: 1px;
   }
 }

@@ -61,15 +61,14 @@ module Gitlab
         # 4. "Binary" string (i.e. may contain zero byte)
         # 5. Array of binary string
 
-        size = if result.is_a? Array
-                 # This count is an approximation that omits the Redis protocol overhead
-                 # of type prefixes, length prefixes and line endings.
-                 result.inject(0) { |sum, y| sum + y.to_s.bytesize }
-               else
-                 result.to_s.bytesize
-               end
-
-        instrumentation_class.increment_read_bytes(size)
+        if result.is_a? Array
+          # Redis can return nested arrays, e.g. from XRANGE or GEOPOS, so we use recursion here.
+          result.each { |x| measure_read_size(x) }
+        else
+          # This count is an approximation that omits the Redis protocol overhead
+          # of type prefixes, length prefixes and line endings.
+          instrumentation_class.increment_read_bytes(result.to_s.bytesize)
+        end
       end
 
       # That's required so it knows which GitLab Redis instance

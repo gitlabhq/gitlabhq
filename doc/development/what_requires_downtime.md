@@ -130,7 +130,7 @@ class CleanupUsersUpdatedAtRename < ActiveRecord::Migration[4.2]
 end
 ```
 
-NOTE: **Note:** If you're renaming a [large table](https://gitlab.com/gitlab-org/gitlab/-/blob/master/rubocop/migration_helpers.rb#L9), please carefully consider the state when the first migration has run but the second cleanup migration hasn't been run yet.
+NOTE: **Note:** If you're renaming a [large table](https://gitlab.com/gitlab-org/gitlab/-/blob/master/rubocop/rubocop-migrations.yml#L3), please carefully consider the state when the first migration has run but the second cleanup migration hasn't been run yet.
 With [Canary](https://about.gitlab.com/handbook/engineering/infrastructure/library/canary/) it is possible that the system runs in this state for a significant amount of time.
 
 ## Changing Column Constraints

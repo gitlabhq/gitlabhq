@@ -81,9 +81,9 @@ the following preparations into account.
   - Ensure the down method reverts the changes in `db/structure.sql`.
   - Update the migration output whenever you modify the migrations during the review process.
 - Add tests for the migration in `spec/migrations` if necessary. See [Testing Rails migrations at GitLab](testing_guide/testing_migrations_guide.md) for more details.
-- When [high-traffic](https://gitlab.com/gitlab-org/gitlab/-/blob/master/rubocop/migration_helpers.rb#L12) tables are involved in the migration, use the [`with_lock_retries`](migration_style_guide.md#retry-mechanism-when-acquiring-database-locks) helper method. Review the relevant [examples in our documentation](migration_style_guide.md#examples) for use cases and solutions.
+- When [high-traffic](https://gitlab.com/gitlab-org/gitlab/-/blob/master/rubocop/rubocop-migrations.yml#L3) tables are involved in the migration, use the [`with_lock_retries`](migration_style_guide.md#retry-mechanism-when-acquiring-database-locks) helper method. Review the relevant [examples in our documentation](migration_style_guide.md#examples) for use cases and solutions.
 - Ensure RuboCop checks are not disabled unless there's a valid reason to.
-- When adding an index to a [large table](https://gitlab.com/gitlab-org/gitlab/-/blob/master/rubocop/migration_helpers.rb#L9),
+- When adding an index to a [large table](https://gitlab.com/gitlab-org/gitlab/-/blob/master/rubocop/rubocop-migrations.yml#L3),
 test its execution using `CREATE INDEX CONCURRENTLY` in the `#database-lab` Slack channel and add the execution time to the MR description:
   - Execution time largely varies between `#database-lab` and GitLab.com, but an elevated execution time from `#database-lab`
     can give a hint that the execution on GitLab.com will also be considerably high.

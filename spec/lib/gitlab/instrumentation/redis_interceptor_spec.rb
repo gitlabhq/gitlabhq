@@ -24,6 +24,9 @@ describe Gitlab::Instrumentation::RedisInterceptor, :clean_gitlab_redis_shared_s
 
       # Exercise counting of a bulk reply
       [[:set, 'foo', 'bar' * 100]] | [:get, 'foo'] | 3 + 3 | 3 * 100
+
+      # Nested array response: ['123456-89', ['foo', 'bar']]
+      [[:xadd, 'mystream', '123456-89', 'foo', 'bar']] | [:xrange, 'mystream', '-', '+'] | 6 + 8 + 1 + 1 | 9 + 3 + 3
     end
 
     with_them do

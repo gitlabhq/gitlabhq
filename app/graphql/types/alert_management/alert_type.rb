@@ -91,10 +91,8 @@ module Types
             null: true,
             description: 'Assignees of the alert'
 
-      def assignees
-        return User.none unless Feature.enabled?(:alert_assignee, object.project)
-
-        object.assignees
+      def notes
+        object.ordered_notes
       end
     end
   end

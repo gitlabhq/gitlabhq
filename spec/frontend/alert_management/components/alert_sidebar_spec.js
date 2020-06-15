@@ -14,7 +14,6 @@ describe('Alert Details Sidebar', () => {
   function mountComponent({
     sidebarCollapsed = true,
     mountMethod = shallowMount,
-    alertAssignee = false,
     stubs = {},
     alert = {},
   } = {}) {
@@ -23,9 +22,6 @@ describe('Alert Details Sidebar', () => {
         alert,
         sidebarCollapsed,
         projectPath: 'projectPath',
-      },
-      provide: {
-        glFeatures: { alertAssignee },
       },
       stubs,
     });
@@ -48,14 +44,9 @@ describe('Alert Details Sidebar', () => {
       expect(wrapper.props('sidebarCollapsed')).toBe(true);
     });
 
-    it('should not render side bar assignee dropdown by default', () => {
-      expect(wrapper.find(SidebarAssignees).exists()).toBe(false);
-    });
-
-    it('should render side bar assignee dropdown if feature flag enabled', () => {
+    it('should render side bar assignee dropdown', () => {
       mountComponent({
         mountMethod: mount,
-        alertAssignee: true,
         alert: mockAlert,
       });
       expect(wrapper.find(SidebarAssignees).exists()).toBe(true);

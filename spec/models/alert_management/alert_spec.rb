@@ -8,6 +8,7 @@ describe AlertManagement::Alert do
     it { is_expected.to belong_to(:issue) }
     it { is_expected.to have_many(:assignees).through(:alert_assignees) }
     it { is_expected.to have_many(:notes) }
+    it { is_expected.to have_many(:ordered_notes) }
     it { is_expected.to have_many(:user_mentions) }
   end
 

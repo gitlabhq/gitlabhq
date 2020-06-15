@@ -58,6 +58,8 @@ Include the code block in the `/etc/gitlab/gitlab.rb` file:
    gitlab_rails['omniauth_providers'] = [
      {
        "name" => "cognito",
+       # "label" => "Cognito",
+       # "icon" => nil,   # Optional icon URL
        "app_id" => "CLIENT ID",
        "app_secret" => "CLIENT SECRET",
        "args" => {
@@ -86,3 +88,5 @@ Include the code block in the `/etc/gitlab/gitlab.rb` file:
 Your sign-in page should now display a Cognito button below the regular sign-in form.
 To begin the authentication process, click the icon, and AWS Cognito will ask the user to sign in and authorize the GitLab application.
 If successful, the user will be redirected and signed in to your GitLab instance.
+
+For more information, see the [Initial OmniAuth Configuration](../../integration/omniauth.md#initial-omniauth-configuration).

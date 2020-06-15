@@ -16,6 +16,13 @@ export default {
     noteAnchorId() {
       return `note_${this.note?.id?.split('/').pop()}`;
     },
+    noteAuthor() {
+      const {
+        author,
+        author: { id },
+      } = this.note;
+      return { ...author, id: id?.split('/').pop() };
+    },
     iconHtml() {
       return spriteIcon('user');
     },
@@ -29,7 +36,7 @@ export default {
       <div class="timeline-icon" v-html="iconHtml"></div>
       <div class="timeline-content">
         <div class="note-header">
-          <note-header :author="note.author" :created-at="note.createdAt" :note-id="note.id">
+          <note-header :author="noteAuthor" :created-at="note.createdAt" :note-id="note.id">
             <span v-html="note.bodyHtml"></span>
           </note-header>
         </div>

@@ -569,7 +569,7 @@ has been deprecated and will be removed in a later release.
 
 NOTE: **Note:**
 If a backport adding a column with a default value is needed for %12.9 or earlier versions,
-it should use `add_column_with_default` helper. If a [large table](https://gitlab.com/gitlab-org/gitlab/-/blob/master/rubocop/migration_helpers.rb#L12)
+it should use `add_column_with_default` helper. If a [large table](https://gitlab.com/gitlab-org/gitlab/-/blob/master/rubocop/rubocop-migrations.yml#L3)
 is involved, backporting to %12.9 is contraindicated.
 
 ## Changing the column default
