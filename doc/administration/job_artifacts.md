@@ -47,6 +47,9 @@ GitLab Runner can upload an archive containing the job artifacts to GitLab. By d
 this is done when the job succeeds, but can also be done on failure, or always, via the
 [`artifacts:when`](../ci/yaml/README.md#artifactswhen) parameter.
 
+Most artifacts are compressed by GitLab Runner before being sent to the coordinator. The exception to this is
+[reports artifacts](../ci/pipelines/job_artifacts.md#artifactsreports), which are compressed after uploading.
+
 ### Using local storage
 
 To change the location where the artifacts are stored locally, follow the steps
@@ -136,7 +139,7 @@ The connection settings match those provided by [Fog](https://github.com/fog), a
 _The artifacts are stored by default in
 `/var/opt/gitlab/gitlab-rails/shared/artifacts`._
 
-1. Edit `/etc/gitlab/gitlab.rb` and add the following lines by replacing with
+1. Edit `/etc/gitlab/gitlab.rb` and add the following lines, substituting
    the values you want:
 
    ```ruby
@@ -226,7 +229,7 @@ The connection settings match those provided by [Fog](https://github.com/fog), a
 _The uploads are stored by default in
 `/var/opt/gitlab/gitlab-rails/shared/artifacts`._
 
-1. Edit `/etc/gitlab/gitlab.rb` and add the following lines by replacing with
+1. Edit `/etc/gitlab/gitlab.rb` and add the following lines, substituting
    the values you want:
 
    ```ruby
@@ -303,17 +306,20 @@ In order to migrate back to local storage:
 
 ## Expiring artifacts
 
-If an expiry date is used for the artifacts, they are marked for deletion
-right after that date passes. Artifacts are cleaned up by the
-`expire_build_artifacts_worker` cron job which is run by Sidekiq every hour at
-50 minutes (`50 * * * *`).
+If [`artifacts:expire_in`](../ci/yaml/README.md#artifactsexpire_in) is used to set
+an expiry for the artifacts, they are marked for deletion right after that date passes.
+Otherwise, they will expire per the [default artifacts expiration setting](../user/admin_area/settings/continuous_integration.md).
+
+Artifacts are cleaned up by the `expire_build_artifacts_worker` cron job which Sidekiq
+runs every hour at 50 minutes (`50 * * * *`).
 
 To change the default schedule on which the artifacts are expired, follow the
 steps below.
 
 **In Omnibus installations:**
 
-1. Edit `/etc/gitlab/gitlab.rb` and comment out or add the following line
+1. Edit `/etc/gitlab/gitlab.rb` and add the following line (or uncomment it if it already exists and is commented out), substituting
+   your schedule in cron syntax:
 
    ```ruby
    gitlab_rails['expire_build_artifacts_worker_cron'] = "50 * * * *"
@@ -333,12 +339,15 @@ steps below.
 
 1. Save the file and [restart GitLab](restart_gitlab.md#installations-from-source) for the changes to take effect.
 
+If the `expire` directive is not set explicitly in your pipeline, artifacts will expire per the
+default artifacts expiration setting, which you can find in the [CI/CD Admin settings](../user/admin_area/settings/continuous_integration.md).
+
 ## Validation for dependencies
 
 > Introduced in GitLab 10.3.
 
 To disable [the dependencies validation](../ci/yaml/README.md#when-a-dependent-job-will-fail),
-you can flip the feature flag from a Rails console.
+you can enable the `ci_disable_validates_dependencies` feature flag from a Rails console.
 
 **In Omnibus installations:**
 
@@ -348,7 +357,7 @@ you can flip the feature flag from a Rails console.
    sudo gitlab-rails console
    ```
 
-1. Flip the switch and disable it:
+1. Enable the feature flag to disable the validation:
 
    ```ruby
    Feature.enable(:ci_disable_validates_dependencies)
@@ -363,7 +372,7 @@ you can flip the feature flag from a Rails console.
    sudo -u git -H bundle exec rails console -e production
    ```
 
-1. Flip the switch and disable it:
+1. Enable the feature flag to disable the validation:
 
    ```ruby
    Feature.enable(:ci_disable_validates_dependencies)
@@ -371,7 +380,7 @@ you can flip the feature flag from a Rails console.
 
 ## Set the maximum file size of the artifacts
 
-Provided the artifacts are enabled, you can change the maximum file size of the
+If artifacts are enabled, you can change the maximum file size of the
 artifacts through the [Admin Area settings](../user/admin_area/settings/continuous_integration.md#maximum-artifacts-size-core-only).
 
 ## Storage statistics
