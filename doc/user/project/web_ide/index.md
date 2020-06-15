@@ -136,6 +136,20 @@ in the top of the sidebar to open a list of branches.
 You will need to commit or discard all your changes before switching to a
 different branch.
 
+## Markdown editing
+
+> - Markdown preview [introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/18059) in [GitLab Core](https://about.gitlab.com/pricing/) 10.7.
+> - Support for pasting images [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/22822) in [GitLab Core](https://about.gitlab.com/pricing/) 13.1.
+
+When you edit Markdown files in the Web IDE, you can preview your changes by
+clicking the **Preview Markdown** tab above the file editor. The Markdown preview
+supports [GitLab Flavored Markdown](../../markdown.md#gitlab-flavored-markdown-gfm).
+
+You can also upload any local images by pasting them directly in the Markdown file.
+The image is uploaded to the same directory and is named `image.png` by default.
+If another file already exists with the same name, a numeric suffix is automatically
+added to the file name.
+
 ## Live Preview
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/19764) in [GitLab Core](https://about.gitlab.com/pricing/) 11.2.

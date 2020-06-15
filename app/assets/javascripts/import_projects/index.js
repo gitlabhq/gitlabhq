@@ -30,6 +30,7 @@ export function initStoreFromElement(element) {
 export function initPropsFromElement(element) {
   return {
     providerTitle: element.dataset.providerTitle,
+    filterable: parseBoolean(element.dataset.filterable),
   };
 }
 

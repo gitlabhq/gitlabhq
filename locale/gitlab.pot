@@ -371,7 +371,7 @@ msgstr ""
 msgid "%{host} sign-in from new location"
 msgstr ""
 
-msgid "%{icon}You are about to add %{usersTag} people to the discussion. Proceed with caution."
+msgid "%{icon}You are about to add %{usersTag} people to the discussion. They will all receive a notification."
 msgstr ""
 
 msgid "%{integrations_link_start}Integrations%{link_end} enable you to make third-party applications part of your GitLab workflow. If the available integrations don't meet your needs, consider using a %{webhooks_link_start}webhook%{link_end}."
@@ -10220,6 +10220,9 @@ msgstr ""
 msgid "GeoNodes|Not checksummed"
 msgstr ""
 
+msgid "GeoNodes|Package files"
+msgstr ""
+
 msgid "GeoNodes|Pausing replication stops the sync process. Are you sure?"
 msgstr ""
 
@@ -10761,6 +10764,9 @@ msgid "Go full screen"
 msgstr ""
 
 msgid "Go to %{link_to_google_takeout}."
+msgstr ""
+
+msgid "Go to <strong>Issues</strong> > <strong>Boards</strong> to access your personalized learning issue board."
 msgstr ""
 
 msgid "Go to Pipelines"
@@ -11496,6 +11502,9 @@ msgid "Helps reduce alert volume (e.g. if creating too many issues)"
 msgstr ""
 
 msgid "Helps reduce request volume for protected paths"
+msgstr ""
+
+msgid "Here are all your projects in your group, including the one you just created. To start, let’s take a look at your personalized learning project which will help you learn about GitLab at your own pace."
 msgstr ""
 
 msgid "Here you will find recent merge request activity"
@@ -15313,6 +15322,9 @@ msgstr ""
 msgid "One or more of you personal access tokens were revoked"
 msgstr ""
 
+msgid "One or more of your %{provider} projects cannot be imported into GitLab directly because they use Subversion or Mercurial for version control, rather than Git."
+msgstr ""
+
 msgid "One or more of your Bitbucket projects cannot be imported into GitLab directly because they use Subversion or Mercurial for version control, rather than Git."
 msgstr ""
 
@@ -16319,6 +16331,9 @@ msgid "Please choose a group URL with no special characters."
 msgstr ""
 
 msgid "Please complete your profile with email address"
+msgstr ""
+
+msgid "Please convert %{linkStart}them to Git%{linkEnd}, and go through the %{linkToImportFlow} again."
 msgstr ""
 
 msgid "Please convert them to %{link_to_git}, and go through the %{link_to_import_flow} again."
@@ -18227,6 +18242,9 @@ msgid "Recent searches"
 msgstr ""
 
 msgid "Recipe"
+msgstr ""
+
+msgid "Reconfigure"
 msgstr ""
 
 msgid "Recover hidden stage"
@@ -20827,7 +20845,7 @@ msgstr ""
 msgid "Something went wrong while updating your list settings"
 msgstr ""
 
-msgid "Something went wrong with your automatic subscription renewal"
+msgid "Something went wrong with your automatic subscription renewal."
 msgstr ""
 
 msgid "Something went wrong, unable to add %{project} to dashboard"
@@ -26183,13 +26201,13 @@ msgstr ""
 msgid "Your subscription expired!"
 msgstr ""
 
-msgid "Your subscription has been downgraded"
+msgid "Your subscription has been downgraded."
 msgstr ""
 
-msgid "Your subscription will automatically renew in %{remaining_days}"
+msgid "Your subscription will automatically renew in %{remaining_days}."
 msgstr ""
 
-msgid "Your subscription will expire in %{remaining_days}"
+msgid "Your subscription will expire in %{remaining_days}."
 msgstr ""
 
 msgid "Zoom meeting added"

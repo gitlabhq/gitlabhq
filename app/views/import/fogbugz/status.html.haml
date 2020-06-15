@@ -4,56 +4,63 @@
   %i.fa.fa-bug
   = _('Import projects from FogBugz')
 
-- if @repos.any?
-  %p.light
-    = _('Select projects you want to import.')
+- if Feature.enabled?(:new_import_ui)
   %p.light
     - link_to_customize = link_to('customize', new_user_map_import_fogbugz_path)
     = _('Optionally, you can %{link_to_customize} how FogBugz email addresses and usernames are imported into GitLab.').html_safe % { link_to_customize: link_to_customize }
   %hr
-  %p
-  = button_tag class: 'btn btn-import btn-success js-import-all' do
-    = _('Import all projects')
-    = icon("spinner spin", class: "loading-icon")
+  = render 'import/githubish_status', provider: 'fogbugz', filterable: false
+- else
+  - if @repos.any?
+    %p.light
+      = _('Select projects you want to import.')
+    %p.light
+      - link_to_customize = link_to('customize', new_user_map_import_fogbugz_path)
+      = _('Optionally, you can %{link_to_customize} how FogBugz email addresses and usernames are imported into GitLab.').html_safe % { link_to_customize: link_to_customize }
+    %hr
+    %p
+    = button_tag class: 'btn btn-import btn-success js-import-all' do
+      = _('Import all projects')
+      = icon("spinner spin", class: "loading-icon")
 
-.table-responsive
-  %table.table.import-jobs
-    %colgroup.import-jobs-from-col
-    %colgroup.import-jobs-to-col
-    %colgroup.import-jobs-status-col
-    %thead
-      %tr
-        %th= _("From FogBugz")
-        %th= _("To GitLab")
-        %th= _("Status")
-    %tbody
-      - @already_added_projects.each do |project|
-        %tr{ id: "project_#{project.id}", class: "#{project_status_css_class(project.import_status)}" }
-          %td
-            = project.import_source
-          %td
-            = link_to project.full_path, [project.namespace.becomes(Namespace), project]
-          %td.job-status
-            - case project.import_status
-            - when 'finished'
-              %span
-                %i.fa.fa-check
-                = _("done")
-            - when 'started'
-              %i.fa.fa-spinner.fa-spin
-              = _("started")
-            - else
-              = project.human_import_status_name
+  .table-responsive
+    %table.table.import-jobs
+      %colgroup.import-jobs-from-col
+      %colgroup.import-jobs-to-col
+      %colgroup.import-jobs-status-col
+      %thead
+        %tr
+          %th= _("From FogBugz")
+          %th= _("To GitLab")
+          %th= _("Status")
+      %tbody
+        - @already_added_projects.each do |project|
+          %tr{ id: "project_#{project.id}", class: "#{project_status_css_class(project.import_status)}" }
+            %td
+              = project.import_source
+            %td
+              = link_to project.full_path, [project.namespace.becomes(Namespace), project]
+            %td.job-status
+              - case project.import_status
+              - when 'finished'
+                %span
+                  %i.fa.fa-check
+                  = _("done")
+              - when 'started'
+                %i.fa.fa-spinner.fa-spin
+                = _("started")
+              - else
+                = project.human_import_status_name
 
-      - @repos.each do |repo|
-        %tr{ id: "repo_#{repo.id}" }
-          %td
-            = repo.name
-          %td.import-target
-            #{current_user.username}/#{repo.name}
-          %td.import-actions.job-status
-            = button_tag class: "btn btn-import js-add-to-import" do
-              = _("Import")
-              = icon("spinner spin", class: "loading-icon")
+        - @repos.each do |repo|
+          %tr{ id: "repo_#{repo.id}" }
+            %td
+              = repo.name
+            %td.import-target
+              #{current_user.username}/#{repo.name}
+            %td.import-actions.job-status
+              = button_tag class: "btn btn-import js-add-to-import" do
+                = _("Import")
+                = icon("spinner spin", class: "loading-icon")
 
-.js-importer-status{ data: { jobs_import_path: "#{jobs_import_fogbugz_path}", import_path: "#{import_fogbugz_path}" } }
+  .js-importer-status{ data: { jobs_import_path: "#{jobs_import_fogbugz_path}", import_path: "#{import_fogbugz_path}" } }

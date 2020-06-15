@@ -56,8 +56,42 @@ RSpec.describe Import::BitbucketController do
 
   describe "GET status" do
     before do
-      @repo = double(slug: 'vim', owner: 'asd', full_name: 'asd/vim', "valid?" => true)
+      @repo = double(name: 'vim', slug: 'vim', owner: 'asd', full_name: 'asd/vim', clone_url: 'http://test.host/demo/url.git', 'valid?' => true)
+      @invalid_repo = double(name: 'mercurialrepo', slug: 'mercurialrepo', owner: 'asd', full_name: 'asd/mercurialrepo', clone_url: 'http://test.host/demo/mercurialrepo.git', 'valid?' => false)
+
       assign_session_tokens
+      stub_feature_flags(new_import_ui: false)
+    end
+
+    it_behaves_like 'import controller with new_import_ui feature flag' do
+      before do
+        allow(controller).to receive(:provider_url).and_return('http://demobitbucket.org')
+      end
+
+      let(:repo) { @repo }
+      let(:repo_id) { @repo.full_name }
+      let(:import_source) { @repo.full_name }
+      let(:provider_name) { 'bitbucket' }
+      let(:client_repos_field) { :repos }
+    end
+
+    context 'with new_import_ui feature flag enabled' do
+      before do
+        stub_feature_flags(new_import_ui: true)
+        allow(controller).to receive(:provider_url).and_return('http://demobitbucket.org')
+      end
+
+      it 'returns invalid repos' do
+        allow_any_instance_of(Bitbucket::Client).to receive(:repos).and_return([@repo, @invalid_repo])
+
+        get :status, format: :json
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['incompatible_repos'].length).to eq(1)
+        expect(json_response.dig("incompatible_repos", 0, "id")).to eq(@invalid_repo.full_name)
+        expect(json_response['provider_repos'].length).to eq(1)
+        expect(json_response.dig("provider_repos", 0, "id")).to eq(@repo.full_name)
+      end
     end
 
     it "assigns variables" do

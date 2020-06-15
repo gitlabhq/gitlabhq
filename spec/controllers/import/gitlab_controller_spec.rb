@@ -34,8 +34,17 @@ RSpec.describe Import::GitlabController do
 
   describe "GET status" do
     before do
-      @repo = OpenStruct.new(path: 'vim', path_with_namespace: 'asd/vim')
+      @repo = OpenStruct.new(id: 1, path: 'vim', path_with_namespace: 'asd/vim', web_url: 'https://gitlab.com/asd/vim')
       assign_session_token
+      stub_feature_flags(new_import_ui: false)
+    end
+
+    it_behaves_like 'import controller with new_import_ui feature flag' do
+      let(:repo) { @repo }
+      let(:repo_id) { @repo.id }
+      let(:import_source) { @repo.path_with_namespace }
+      let(:provider_name) { 'gitlab' }
+      let(:client_repos_field) { :projects }
     end
 
     it "assigns variables" do

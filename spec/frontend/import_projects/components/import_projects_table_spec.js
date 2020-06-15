@@ -16,6 +16,9 @@ jest.mock('~/import_projects/event_hub', () => ({
 describe('ImportProjectsTable', () => {
   let wrapper;
 
+  const findFilterField = () =>
+    wrapper.find('input[data-qa-selector="githubish_import_filter_field"]');
+
   const providerTitle = 'THE PROVIDER';
   const providerRepo = { id: 10, sanitizedName: 'sanitizedName', fullName: 'fullName' };
   const importedProject = {
@@ -32,7 +35,12 @@ describe('ImportProjectsTable', () => {
       .filter(w => w.props().variant === 'success')
       .at(0);
 
-  function createComponent({ state: initialState, getters: customGetters, slots } = {}) {
+  function createComponent({
+    state: initialState,
+    getters: customGetters,
+    slots,
+    filterable,
+  } = {}) {
     const localVue = createLocalVue();
     localVue.use(Vuex);
 
@@ -57,6 +65,7 @@ describe('ImportProjectsTable', () => {
       store,
       propsData: {
         providerTitle,
+        filterable,
       },
       slots,
     });
@@ -159,9 +168,14 @@ describe('ImportProjectsTable', () => {
     expect(findImportAllButton().props().loading).toBe(true);
   });
 
-  it('renders filtering input field', () => {
+  it('renders filtering input field by default', () => {
     createComponent();
-    expect(wrapper.contains('input[data-qa-selector="githubish_import_filter_field"]')).toBe(true);
+    expect(findFilterField().exists()).toBe(true);
+  });
+
+  it('does not render filtering input field when filterable is false', () => {
+    createComponent({ filterable: false });
+    expect(findFilterField().exists()).toBe(false);
   });
 
   it.each`

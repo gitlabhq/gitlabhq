@@ -80,8 +80,17 @@ RSpec.describe Import::FogbugzController do
 
   describe 'GET status' do
     before do
-      @repo = OpenStruct.new(name: 'vim')
+      @repo = OpenStruct.new(id: 'demo', name: 'vim')
       stub_client(valid?: true)
+      stub_feature_flags(new_import_ui: false)
+    end
+
+    it_behaves_like 'import controller with new_import_ui feature flag' do
+      let(:repo) { @repo }
+      let(:repo_id) { @repo.id }
+      let(:import_source) { @repo.name }
+      let(:provider_name) { 'fogbugz' }
+      let(:client_repos_field) { :repos }
     end
 
     it 'assigns variables' do

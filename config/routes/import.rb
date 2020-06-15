@@ -25,12 +25,14 @@ namespace :import do
     get :status
     get :callback
     get :jobs
+    get :realtime_changes
   end
 
   resource :bitbucket, only: [:create], controller: :bitbucket do
     get :status
     get :callback
     get :jobs
+    get :realtime_changes
   end
 
   resource :bitbucket_server, only: [:create, :new], controller: :bitbucket_server do
@@ -38,6 +40,7 @@ namespace :import do
     get :status
     get :callback
     get :jobs
+    get :realtime_changes
   end
 
   resource :google_code, only: [:create, :new], controller: :google_code do
@@ -53,6 +56,7 @@ namespace :import do
     get :status
     post :callback
     get :jobs
+    get :realtime_changes
 
     get   :new_user_map,    path: :user_map
     post  :create_user_map, path: :user_map

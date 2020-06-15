@@ -24,6 +24,11 @@ export default {
       type: String,
       required: true,
     },
+    filterable: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
   },
 
   computed: {
@@ -114,7 +119,7 @@ export default {
         {{ importAllButtonText }}
       </gl-button>
       <slot name="actions"></slot>
-      <form class="gl-ml-auto" novalidate @submit.prevent>
+      <form v-if="filterable" class="gl-ml-auto" novalidate @submit.prevent>
         <input
           :value="filter"
           data-qa-selector="githubish_import_filter_field"

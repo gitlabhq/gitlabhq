@@ -134,7 +134,7 @@ export default {
     addMultipleToDiscussionWarning() {
       return sprintf(
         __(
-          '%{icon}You are about to add %{usersTag} people to the discussion. Proceed with caution.',
+          '%{icon}You are about to add %{usersTag} people to the discussion. They will all receive a notification.',
         ),
         {
           icon: '<i class="fa fa-exclamation-triangle" aria-hidden="true"></i>',

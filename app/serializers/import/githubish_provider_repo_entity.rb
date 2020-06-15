@@ -1,19 +1,13 @@
 # frozen_string_literal: true
 
-class ProviderRepoEntity < Grape::Entity
+class Import::GithubishProviderRepoEntity < Import::BaseProviderRepoEntity
   include ImportHelper
 
-  expose :id
-  expose :full_name
-  expose :owner_name do |provider_repo, options|
-    owner_name(provider_repo, options[:provider])
-  end
-
-  expose :sanitized_name do |provider_repo|
+  expose :sanitized_name, override: true do |provider_repo|
     sanitize_project_name(provider_repo[:name])
   end
 
-  expose :provider_link do |provider_repo, options|
+  expose :provider_link, override: true do |provider_repo, options|
     provider_project_link_url(options[:provider_url], provider_repo[:full_name])
   end
 

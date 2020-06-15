@@ -76,7 +76,7 @@ class Import::GithubController < Import::BaseController
 
   def serialized_provider_repos
     repos = client_repos.reject { |repo| already_added_project_names.include? repo.full_name }
-    ProviderRepoSerializer.new(current_user: current_user).represent(repos, provider: provider, provider_url: provider_url)
+    Import::ProviderRepoSerializer.new(current_user: current_user).represent(repos, provider: provider, provider_url: provider_url)
   end
 
   def serialized_namespaces

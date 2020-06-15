@@ -1,0 +1,5 @@
+---
+title: Introduce a feature flag for Vue-based UI for all import providers
+merge_request: 33980
+author:
+type: added

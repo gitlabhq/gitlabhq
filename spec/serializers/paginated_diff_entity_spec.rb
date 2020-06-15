@@ -30,4 +30,14 @@ describe PaginatedDiffEntity do
       total_pages: 7
     )
   end
+
+  context 'when code_navigation feature flag is disabled' do
+    it 'does not execute Gitlab::CodeNavigationPath' do
+      stub_feature_flags(code_navigation: false)
+
+      expect(Gitlab::CodeNavigationPath).not_to receive(:new)
+
+      subject
+    end
+  end
 end

@@ -12,6 +12,8 @@ import itemStats from './item_stats.vue';
 import itemStatsValue from './item_stats_value.vue';
 import itemActions from './item_actions.vue';
 
+import { showLearnGitLabGroupItemPopover } from '~/onboarding_issues';
+
 export default {
   directives: {
     tooltip,
@@ -72,6 +74,11 @@ export default {
     visibilityTooltip() {
       return GROUP_VISIBILITY_TYPE[this.group.visibility];
     },
+  },
+  mounted() {
+    if (this.group.name === 'Learn GitLab') {
+      showLearnGitLabGroupItemPopover(this.group.id);
+    }
   },
   methods: {
     onClickRowGroup(e) {
