@@ -13,6 +13,7 @@ module Registrations
       current_user.experience_level = params[:experience_level]
 
       if current_user.save
+        hide_advanced_issues
         flash[:message] = I18n.t('devise.registrations.signed_up')
         redirect_to group_path(params[:namespace_path])
       else
@@ -28,6 +29,16 @@ module Registrations
 
     def ensure_namespace_path_param
       redirect_to root_path unless params[:namespace_path].present?
+    end
+
+    def hide_advanced_issues
+      return unless current_user.user_preference.novice?
+
+      settings = cookies[:onboarding_issues_settings]
+      return unless settings
+
+      modified_settings = Gitlab::Json.parse(settings).merge(hideAdvanced: true)
+      cookies[:onboarding_issues_settings] = modified_settings.to_json
     end
   end
 end

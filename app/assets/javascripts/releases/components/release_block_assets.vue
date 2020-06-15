@@ -155,7 +155,7 @@ export default {
       </b>
 
       <ul v-if="assets.links.length" class="pl-0 mb-0 gl-mt-3 list-unstyled js-assets-list">
-        <li v-for="link in assets.links" :key="link.name" class="append-bottom-8">
+        <li v-for="link in assets.links" :key="link.name" class="gl-mb-3">
           <gl-link v-gl-tooltip.bottom :title="__('Download asset')" :href="link.directAssetUrl">
             <icon name="package" class="align-middle append-right-4 align-text-bottom" />
             {{ link.name }}

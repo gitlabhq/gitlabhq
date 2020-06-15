@@ -181,7 +181,7 @@ RSpec.describe 'Admin Groups' do
     end
   end
 
-  describe 'admin remove himself from a group', :js do
+  describe 'admin remove themself from a group', :js, quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/222342' do
     it 'removes admin from the group' do
       group.add_user(current_user, Gitlab::Access::DEVELOPER)
 

@@ -41,7 +41,7 @@
       = render_if_exists 'projects/commits/project_namespace', show_project_name: show_project_name, project: project
 
       - if commit.description?
-        %pre.commit-row-description.js-toggle-content.append-bottom-8
+        %pre.commit-row-description.js-toggle-content.gl-mb-3
           = preserve(markdown_field(commit, :description))
 
     .commit-actions.flex-row

@@ -30,6 +30,10 @@ module Prometheus
       'query_range' => {
         method: ['GET'],
         params: %w(query start end step timeout)
+      },
+      'series' => {
+        method: %w(GET),
+        params: %w(match start end)
       }
     }.freeze
 

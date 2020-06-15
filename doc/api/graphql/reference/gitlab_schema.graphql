@@ -8223,6 +8223,11 @@ type Pipeline {
   iid: String!
 
   """
+  Vulnerability and scanned resource counts for each security scanner of the pipeline
+  """
+  securityReportSummary: SecurityReportSummary
+
+  """
   SHA of the pipeline's commit
   """
   sha: String!
@@ -8953,6 +8958,16 @@ type Project {
   Path of the project
   """
   path: String!
+
+  """
+  Build pipeline of the project
+  """
+  pipeline(
+    """
+    IID of the Pipeline, e.g., "1"
+    """
+    iid: ID!
+  ): Pipeline
 
   """
   Build pipelines of the project
@@ -10837,6 +10852,51 @@ type RunDASTScanPayload {
   URL of the pipeline that was created.
   """
   pipelineUrl: String
+}
+
+"""
+Represents summary of a security report
+"""
+type SecurityReportSummary {
+  """
+  Aggregated counts for the container_scanning scan
+  """
+  containerScanning: SecurityReportSummarySection
+
+  """
+  Aggregated counts for the dast scan
+  """
+  dast: SecurityReportSummarySection
+
+  """
+  Aggregated counts for the dependency_scanning scan
+  """
+  dependencyScanning: SecurityReportSummarySection
+
+  """
+  Aggregated counts for the sast scan
+  """
+  sast: SecurityReportSummarySection
+
+  """
+  Aggregated counts for the secret_detection scan
+  """
+  secretDetection: SecurityReportSummarySection
+}
+
+"""
+Represents a section of a summary of a security report
+"""
+type SecurityReportSummarySection {
+  """
+  Total number of scanned resources
+  """
+  scannedResourcesCount: Int
+
+  """
+  Total number of vulnerabilities
+  """
+  vulnerabilitiesCount: Int
 }
 
 """

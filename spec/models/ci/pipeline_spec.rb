@@ -121,6 +121,17 @@ describe Ci::Pipeline, :mailer do
     end
   end
 
+  describe '.for_iid' do
+    subject { described_class.for_iid(iid) }
+
+    let(:iid) { '1234' }
+    let!(:pipeline) { create(:ci_pipeline, iid: '1234') }
+
+    it 'returns the pipeline' do
+      is_expected.to contain_exactly(pipeline)
+    end
+  end
+
   describe '.for_sha' do
     subject { described_class.for_sha(sha) }
 

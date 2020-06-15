@@ -165,6 +165,12 @@ module Types
           description: 'Build pipelines of the project',
           resolver: Resolvers::ProjectPipelinesResolver
 
+    field :pipeline,
+          Types::Ci::PipelineType,
+          null: true,
+          description: 'Build pipeline of the project',
+          resolver: Resolvers::ProjectPipelineResolver
+
     field :sentry_detailed_error,
           Types::ErrorTracking::SentryDetailedErrorType,
           null: true,

@@ -254,11 +254,10 @@ the [Dependency List](../dependency_list/index.md).
 
 ## Reports JSON format
 
-CAUTION: **Caution:**
-The JSON report artifacts are not a public API of Dependency Scanning and their format may change in the future.
+The Dependency Scanning tool emits a JSON report file. For more information, see the
+[schema for this report](https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/blob/master/dist/dependency-scanning-report-format.json).
 
-The Dependency Scanning tool emits a JSON report file. Here is an example of the report structure with all important parts of
-it highlighted:
+Here's an example Dependency Scanning report:
 
 ```json-doc
 {
@@ -366,49 +365,6 @@ it highlighted:
   ]
 }
 ```
-
-CAUTION: **Deprecation:**
-Beginning with GitLab 12.9, dependency scanning no longer reports `undefined` severity and confidence levels.
-
-This table describes the report file structure nodes and their meaning. All fields are mandatory to be present in
-the report JSON, unless stated otherwise. The presence of optional fields depends on the underlying analyzers used.
-
-| Report JSON node                                     | Description |
-|------------------------------------------------------|-------------|
-| `version`                                            | Report syntax version used to generate this JSON. |
-| `vulnerabilities`                                    | Array of vulnerability objects. |
-| `vulnerabilities[].id`                               | Unique identifier of the vulnerability. |
-| `vulnerabilities[].category`                         | Where this vulnerability belongs, such as SAST or Dependency Scanning. For Dependency Scanning, it will always be `dependency_scanning`. |
-| `vulnerabilities[].name`                             | Name of the vulnerability. Must not include the occurrence's specific information. Optional. |
-| `vulnerabilities[].message`                          | A short text that describes the vulnerability. May include occurrence's specific information. Optional. |
-| `vulnerabilities[].description`                      | A long text that describes the vulnerability. Optional. |
-| `vulnerabilities[].cve`                              | (**DEPRECATED - use `vulnerabilities[].id` instead**) A fingerprint string value that represents a concrete occurrence of the vulnerability. Used to determine whether two vulnerability occurrences are same or different. May not be 100% accurate. **This is NOT a [CVE](https://cve.mitre.org/)**.                                                                                                                                      |
-| `vulnerabilities[].severity`                         | How much the vulnerability impacts the software. Possible values: `Info`, `Unknown`, `Low`, `Medium`, `High`, `Critical`. |
-| `vulnerabilities[].confidence`                       | How reliable the vulnerability's assessment is. Possible values: `Ignore`, `Unknown`, `Experimental`, `Low`, `Medium`, `High`, `Confirmed`. |
-| `vulnerabilities[].solution`                         | Explanation of how to fix the vulnerability. Optional. |
-| `vulnerabilities[].scanner`                          | A node that describes the analyzer used to find this vulnerability. |
-| `vulnerabilities[].scanner.id`                       | ID of the scanner as a `snake_case` string. |
-| `vulnerabilities[].scanner.name`                     | Name of the scanner, for display purposes. |
-| `vulnerabilities[].location`                         | A node that tells where the vulnerability is located. |
-| `vulnerabilities[].location.file`                    | Path to the dependencies file (such as `yarn.lock`). Optional. |
-| `vulnerabilities[].location.dependency`              | A node that describes the dependency of a project where the vulnerability is located. |
-| `vulnerabilities[].location.dependency.package`      | A node that provides the information on the package where the vulnerability is located. |
-| `vulnerabilities[].location.dependency.package.name` | Name of the package where the vulnerability is located. Optional. |
-| `vulnerabilities[].location.dependency.version`      | Version of the vulnerable package. Optional. |
-| `vulnerabilities[].identifiers`                      | An ordered array of references that identify a vulnerability on internal or external DBs. |
-| `vulnerabilities[].identifiers[].type`               | Type of the identifier. Possible values: common identifier types (among `cve`, `cwe`, `osvdb`, and `usn`) or analyzer-dependent ones (such as `gemnasium` for [Gemnasium](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/)). |
-| `vulnerabilities[].identifiers[].name`               | Name of the identifier for display purpose. |
-| `vulnerabilities[].identifiers[].value`              | Value of the identifier for matching purpose. |
-| `vulnerabilities[].identifiers[].url`                | URL to identifier's documentation. Optional. |
-| `vulnerabilities[].links`                            | An array of references to external documentation pieces or articles that describe the vulnerability further. Optional. |
-| `vulnerabilities[].links[].name`                     | Name of the vulnerability details link. Optional. |
-| `vulnerabilities[].links[].url`                      | URL of the vulnerability details document. Optional. |
-| `remediations`                                       | An array of objects containing information on cured vulnerabilities along with patch diffs to apply. Empty if no remediations provided by an underlying analyzer. |
-| `remediations[].fixes`                               | An array of strings that represent references to vulnerabilities fixed by this particular remediation. |
-| `remediations[].fixes[].id`                          | The ID of a fixed vulnerability. |
-| `remediations[].fixes[].cve`                         | (**DEPRECATED - use `remediations[].fixes[].id` instead**) A string value that describes a fixed vulnerability in the same format as `vulnerabilities[].cve`. |
-| `remediations[].summary`                             | Overview of how the vulnerabilities have been fixed. |
-| `remediations[].diff`                                | Base64-encoded remediation code diff, compatible with [`git apply`](https://git-scm.com/docs/git-format-patch#_discussion). |
 
 ## Versioning and release process
 

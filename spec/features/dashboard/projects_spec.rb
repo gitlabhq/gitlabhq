@@ -125,7 +125,7 @@ describe 'Dashboard Projects' do
   end
 
   context 'when on Starred projects tab', :js do
-    it 'shows the empty state when there are no starred projects' do
+    it 'shows the empty state when there are no starred projects', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/222357' do
       visit(starred_dashboard_projects_path)
 
       element = page.find('.row.empty-state')

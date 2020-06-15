@@ -97,6 +97,38 @@ describe Registrations::ExperienceLevelsController do
           it { is_expected.to have_gitlab_http_status(:redirect) }
           it { is_expected.to redirect_to(root_path) }
         end
+
+        describe 'applying the chosen level' do
+          context "when an 'onboarding_issues_settings' cookie does not exist" do
+            let(:params) { super().merge(experience_level: :novice) }
+
+            it 'does not change the cookie' do
+              expect { subject }.not_to change { cookies[:onboarding_issues_settings] }
+            end
+          end
+
+          context "when an 'onboarding_issues_settings' cookie does exist" do
+            before do
+              request.cookies[:onboarding_issues_settings] = '{}'
+            end
+
+            context 'when novice' do
+              let(:params) { super().merge(experience_level: :novice) }
+
+              it "adds a 'hideAdvanced' setting to the cookie" do
+                expect { subject }.to change { Gitlab::Json.parse(cookies[:onboarding_issues_settings])['hideAdvanced'] }.from(nil).to(true)
+              end
+            end
+
+            context 'when experienced' do
+              let(:params) { super().merge(experience_level: :experienced) }
+
+              it 'does not change the cookie' do
+                expect { subject }.not_to change { cookies[:onboarding_issues_settings] }
+              end
+            end
+          end
+        end
       end
 
       context 'when user update fails' do

@@ -160,5 +160,23 @@ module Gitlab
       Addressable::URI.parse(uri_string)
     rescue Addressable::URI::InvalidURIError, TypeError
     end
+
+    # Invert a hash, collecting all keys that map to a given value in an array.
+    #
+    # Unlike `Hash#invert`, where the last encountered pair wins, and which has the
+    # type `Hash[k, v] => Hash[v, k]`, `multiple_key_invert` does not lose any
+    # information, has the type `Hash[k, v] => Hash[v, Array[k]]`, and the original
+    # hash can always be reconstructed.
+    #
+    # example:
+    #
+    #   multiple_key_invert({ a: 1, b: 2, c: 1 })
+    #   # => { 1 => [:a, :c], 2 => [:b] }
+    #
+    def multiple_key_invert(hash)
+      hash.flat_map { |k, v| Array.wrap(v).zip([k].cycle) }
+        .group_by(&:first)
+        .transform_values { |kvs| kvs.map(&:last) }
+    end
   end
 end

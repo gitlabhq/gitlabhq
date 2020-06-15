@@ -183,6 +183,9 @@ describe('ErrorDetails', () => {
           count: 12,
           userCount: 2,
         },
+        stacktraceData: {
+          date_received: '2020-05-20',
+        },
       });
     });
 

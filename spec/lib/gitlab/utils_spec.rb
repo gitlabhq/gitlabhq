@@ -345,4 +345,17 @@ describe Gitlab::Utils do
       expect(described_class.parse_url(1)).to be nil
     end
   end
+
+  describe 'multiple_key_invert' do
+    it 'invert keys with array values' do
+      hash = {
+        dast: [:vulnerabilities_count, :scanned_resources_count],
+        sast: [:vulnerabilities_count]
+      }
+      expect(described_class.multiple_key_invert(hash)).to eq({
+        vulnerabilities_count: [:dast, :sast],
+        scanned_resources_count: [:dast]
+      })
+    end
+  end
 end

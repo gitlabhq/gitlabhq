@@ -134,7 +134,7 @@ describe Gitlab::Ci::Pipeline::Seed::Build::Cache do
           it_behaves_like 'foo/bar directory key'
         end
 
-        context 'with directories ending in slash star' do
+        context 'with directories ending in slash star', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/222356' do
           let(:files) { ['foo/bar/*'] }
 
           it_behaves_like 'foo/bar directory key'

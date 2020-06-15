@@ -4,7 +4,7 @@
 - emails_disabled = @project.emails_disabled?
 
 .project-home-panel{ class: [("empty-project" if empty_repo), ("js-show-on-project-root" if vue_file_list_enabled?)] }
-  .row.append-bottom-8
+  .row.gl-mb-3
     .home-panel-title-row.col-md-12.col-lg-6.d-flex
       .avatar-container.rect-avatar.s64.home-panel-avatar.append-right-default.float-none
         = project_icon(@project, alt: @project.name, class: 'avatar avatar-tile s64', width: 64, height: 64)

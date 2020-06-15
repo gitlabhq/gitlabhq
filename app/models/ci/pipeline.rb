@@ -254,6 +254,7 @@ module Ci
     scope :for_sha_or_source_sha, -> (sha) { for_sha(sha).or(for_source_sha(sha)) }
     scope :for_ref, -> (ref) { where(ref: ref) }
     scope :for_id, -> (id) { where(id: id) }
+    scope :for_iid, -> (iid) { where(iid: iid) }
     scope :created_after, -> (time) { where('ci_pipelines.created_at > ?', time) }
 
     scope :with_reports, -> (reports_scope) do

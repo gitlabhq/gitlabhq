@@ -144,7 +144,7 @@ export default {
 
         <pre
           v-if="commit.description_html"
-          class="commit-row-description js-toggle-content append-bottom-8"
+          class="commit-row-description js-toggle-content gl-mb-3"
           v-html="commit.description_html"
         ></pre>
       </div>

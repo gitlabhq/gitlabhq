@@ -261,7 +261,7 @@ export default {
             </li>
           </template>
           <li v-else class="dropdown-menu-empty-item">
-            <div class="append-right-default prepend-left-default gl-mt-3 append-bottom-8">
+            <div class="append-right-default prepend-left-default gl-mt-3 gl-mb-3">
               <template v-if="loading">
                 {{ __('Loading...') }}
               </template>

@@ -89,13 +89,26 @@ describe Gitlab::Cache::Import::Caching, :clean_gitlab_redis_cache do
   end
 
   describe '.write_multiple' do
-    it 'sets multiple keys' do
+    it 'sets multiple keys when key_prefix not set' do
       mapping = { 'foo' => 10, 'bar' => 20 }
 
       described_class.write_multiple(mapping)
 
       mapping.each do |key, value|
         full_key = described_class.cache_key_for(key)
+        found = Gitlab::Redis::Cache.with { |r| r.get(full_key) }
+
+        expect(found).to eq(value.to_s)
+      end
+    end
+
+    it 'sets multiple keys with correct prefix' do
+      mapping = { 'foo' => 10, 'bar' => 20 }
+
+      described_class.write_multiple(mapping, key_prefix: 'pref/')
+
+      mapping.each do |key, value|
+        full_key = described_class.cache_key_for("pref/#{key}")
         found = Gitlab::Redis::Cache.with { |r| r.get(full_key) }
 
         expect(found).to eq(value.to_s)

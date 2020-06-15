@@ -8,22 +8,43 @@
         outline: none;
       }
 
+      > :not([aria-sort='none']).b-table-sort-icon-left:hover::before {
+        content: '' !important;
+      }
+
       td,
       th {
         // TODO:  There is no gl-pl-9 utlity for this padding, to be done and then removed.
         padding-left: 1.25rem;
         @include gl-py-5;
         @include gl-outline-none;
-
-        &.alert-title {
-          @include gl-pointer-events-none;
-        }
+        @include gl-relative;
       }
 
       th {
         background-color: transparent;
         font-weight: $gl-font-weight-bold;
         color: $gl-gray-600;
+
+        &:hover::before {
+          left: 3%;
+          top: 34%;
+          @include gl-absolute;
+          content: url("data:image/svg+xml,%3Csvg \
+            xmlns='http://www.w3.org/2000/svg' \
+            width='14' height='14' viewBox='0 0 16 \
+            16'%3E%3Cpath fill='%23BABABA' fill-rule='evenodd' \
+            d='M11.707085,11.7071 L7.999975,15.4142 L4.292875,11.7071 \
+            C3.902375,11.3166 3.902375,10.6834 \
+            4.292875,10.2929 C4.683375,9.90237 \
+            5.316575,9.90237 5.707075,10.2929 \
+            L6.999975,11.5858 L6.999975,2 C6.999975,1.44771 \
+            7.447695,1 7.999975,1 C8.552255,1 8.999975,1.44771 \
+            8.999975,2 L8.999975,11.5858 L10.292865,10.2929 \
+            C10.683395,9.90237 11.316555,9.90237 11.707085,10.2929 \
+            C12.097605,10.6834 12.097605,11.3166 11.707085,11.7071 \
+            Z'/%3E%3C/svg%3E%0A");
+        }
       }
     }
 

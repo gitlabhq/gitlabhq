@@ -25,7 +25,8 @@ module API
     get "deploy_keys" do
       authenticated_as_admin!
 
-      present paginate(DeployKey.all), with: Entities::SSHKey
+      deploy_keys = DeployKey.all.preload_users
+      present paginate(deploy_keys), with: Entities::SSHKey
     end
 
     params do
@@ -42,7 +43,7 @@ module API
       end
       # rubocop: disable CodeReuse/ActiveRecord
       get ":id/deploy_keys" do
-        keys = user_project.deploy_keys_projects.preload(:deploy_key)
+        keys = user_project.deploy_keys_projects.preload(deploy_key: [:user])
 
         present paginate(keys), with: Entities::DeployKeysProject
       end

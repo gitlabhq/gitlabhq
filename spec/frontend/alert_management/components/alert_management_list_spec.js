@@ -344,11 +344,11 @@ describe('AlertManagementList', () => {
     it('updates sort with new direction and column key', () => {
       findSeverityColumnHeader().trigger('click');
 
-      expect(wrapper.vm.$data.sort).toBe('SEVERITY_ASC');
+      expect(wrapper.vm.$data.sort).toBe('SEVERITY_DESC');
 
       findSeverityColumnHeader().trigger('click');
 
-      expect(wrapper.vm.$data.sort).toBe('SEVERITY_DESC');
+      expect(wrapper.vm.$data.sort).toBe('SEVERITY_ASC');
     });
   });
 

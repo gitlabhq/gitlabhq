@@ -7,7 +7,8 @@ module Gitlab
     FAILED_ISSUES_COUNTER_KEY = 'jira-import/failed/%{project_id}/%{collection_type}'
     NEXT_ITEMS_START_AT_KEY = 'jira-import/paginator/%{project_id}/%{collection_type}'
     JIRA_IMPORT_LABEL = 'jira-import/import-label/%{project_id}'
-    ITEMS_MAPPER_CACHE_KEY = 'jira-import/items-mapper/%{project_id}/%{collection_type}/%{jira_isssue_id}'
+    ITEMS_MAPPER_CACHE_KEY = 'jira-import/items-mapper/%{project_id}/%{collection_type}/%{jira_item_id}'
+    USERS_MAPPER_KEY_PREFIX = 'jira-import/items-mapper/%{project_id}/users/'
     ALREADY_IMPORTED_ITEMS_CACHE_KEY = 'jira-importer/already-imported/%{project}/%{collection_type}'
 
     def self.validate_project_settings!(project, user: nil, configuration_check: true)
@@ -24,8 +25,12 @@ module Gitlab
       raise Projects::ImportService::Error, _('Unable to connect to the Jira instance. Please check your Jira integration configuration.') unless jira_service&.valid_connection?
     end
 
-    def self.jira_issue_cache_key(project_id, jira_issue_id)
-      ITEMS_MAPPER_CACHE_KEY % { project_id: project_id, collection_type: :issues, jira_isssue_id: jira_issue_id }
+    def self.jira_item_cache_key(project_id, jira_item_id, collection_type)
+      ITEMS_MAPPER_CACHE_KEY % { project_id: project_id, collection_type: collection_type, jira_item_id: jira_item_id }
+    end
+
+    def self.jira_user_key_prefix(project_id)
+      USERS_MAPPER_KEY_PREFIX % { project_id: project_id }
     end
 
     def self.already_imported_cache_key(collection_type, project_id)
@@ -62,7 +67,7 @@ module Gitlab
     end
 
     def self.cache_issue_mapping(issue_id, jira_issue_id, project_id)
-      cache_key = JiraImport.jira_issue_cache_key(project_id, jira_issue_id)
+      cache_key = JiraImport.jira_item_cache_key(project_id, jira_issue_id, :issues)
       cache_class.write(cache_key, issue_id)
     end
 
@@ -79,6 +84,19 @@ module Gitlab
       cache_class.expire(self.failed_issues_counter_cache_key(project_id), JIRA_IMPORT_CACHE_TIMEOUT)
       cache_class.expire(self.jira_issues_next_page_cache_key(project_id), JIRA_IMPORT_CACHE_TIMEOUT)
       cache_class.expire(self.already_imported_cache_key(:issues, project_id), JIRA_IMPORT_CACHE_TIMEOUT)
+    end
+
+    # Caches the mapping of jira_account_id -> gitlab user id
+    # project_id - id of a project
+    # mapping - hash in format of jira_account_id -> gitlab user id
+    def self.cache_users_mapping(project_id, mapping)
+      cache_class.write_multiple(mapping, key_prefix: jira_user_key_prefix(project_id))
+    end
+
+    def self.get_user_mapping(project_id, jira_account_id)
+      cache_key = JiraImport.jira_item_cache_key(project_id, jira_account_id, :users)
+
+      cache_class.read(cache_key)&.to_i
     end
 
     def self.cache_class

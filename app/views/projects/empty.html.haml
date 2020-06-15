@@ -6,7 +6,7 @@
 %div{ class: [("limit-container-width" unless fluid_layout)] }
   = render "home_panel"
 
-  %h4.gl-mt-0.append-bottom-8
+  %h4.gl-mt-0.gl-mb-3
     = _('The repository for this project is empty')
 
   - if @project.can_current_user_push_code?

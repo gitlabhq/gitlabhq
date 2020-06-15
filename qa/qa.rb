@@ -354,6 +354,7 @@ module QA
     end
 
     module Issuable
+      autoload :New, 'qa/page/issuable/new'
       autoload :Sidebar, 'qa/page/issuable/sidebar'
     end
 

@@ -6,7 +6,8 @@ module Types
       class Pipeline < BasePermissionType
         graphql_name 'PipelinePermissions'
 
-        abilities :update_pipeline, :admin_pipeline, :destroy_pipeline
+        abilities :admin_pipeline, :destroy_pipeline
+        ability_field :update_pipeline, calls_gitaly: true
       end
     end
   end

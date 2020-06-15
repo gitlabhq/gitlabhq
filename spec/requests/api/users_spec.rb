@@ -1276,6 +1276,36 @@ describe API::Users, :do_not_mock_admin_mode do
       expect(json_response).to be_an Array
       expect(json_response.first['title']).to eq(key.title)
     end
+
+    it 'returns array of ssh keys with comments replaced with'\
+      'a simple identifier of username + hostname' do
+      get api("/users/#{user.id}/keys")
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(response).to include_pagination_headers
+      expect(json_response).to be_an Array
+
+      keys = json_response.map { |key_detail| key_detail['key'] }
+      expect(keys).to all(include("#{user.name} (#{Gitlab.config.gitlab.host}"))
+    end
+
+    context 'N+1 queries' do
+      before do
+        get api("/users/#{user.id}/keys")
+      end
+
+      it 'avoids N+1 queries', :request_store do
+        control_count = ActiveRecord::QueryRecorder.new(skip_cached: false) do
+          get api("/users/#{user.id}/keys")
+        end.count
+
+        create_list(:key, 2, user: user)
+
+        expect do
+          get api("/users/#{user.id}/keys")
+        end.not_to exceed_all_query_limit(control_count)
+      end
+    end
   end
 
   describe 'GET /user/:user_id/keys' do
@@ -1751,6 +1781,36 @@ describe API::Users, :do_not_mock_admin_mode do
         expect(json_response.first["title"]).to eq(key.title)
       end
 
+      it 'returns array of ssh keys with comments replaced with'\
+        'a simple identifier of username + hostname' do
+        get api("/user/keys", user)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to include_pagination_headers
+        expect(json_response).to be_an Array
+
+        keys = json_response.map { |key_detail| key_detail['key'] }
+        expect(keys).to all(include("#{user.name} (#{Gitlab.config.gitlab.host}"))
+      end
+
+      context 'N+1 queries' do
+        before do
+          get api("/user/keys", user)
+        end
+
+        it 'avoids N+1 queries', :request_store do
+          control_count = ActiveRecord::QueryRecorder.new(skip_cached: false) do
+            get api("/user/keys", user)
+          end.count
+
+          create_list(:key, 2, user: user)
+
+          expect do
+            get api("/user/keys", user)
+          end.not_to exceed_all_query_limit(control_count)
+        end
+      end
+
       context "scopes" do
         let(:path) { "/user/keys" }
         let(:api_call) { method(:api) }
@@ -1767,6 +1827,13 @@ describe API::Users, :do_not_mock_admin_mode do
       get api("/user/keys/#{key.id}", user)
       expect(response).to have_gitlab_http_status(:ok)
       expect(json_response["title"]).to eq(key.title)
+    end
+
+    it 'exposes SSH key comment as a simple identifier of username + hostname' do
+      get api("/user/keys/#{key.id}", user)
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response['key']).to include("#{key.user_name} (#{Gitlab.config.gitlab.host})")
     end
 
     it "returns 404 Not Found within invalid ID" do

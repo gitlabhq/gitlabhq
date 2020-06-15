@@ -1,6 +1,5 @@
 <script>
 import { mapActions, mapGetters, mapState } from 'vuex';
-import dateFormat from 'dateformat';
 import createFlash from '~/flash';
 import {
   GlDeprecatedButton,
@@ -19,7 +18,7 @@ import Icon from '~/vue_shared/components/icon.vue';
 import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate.vue';
 import Stacktrace from './stacktrace.vue';
 import TrackEventDirective from '~/vue_shared/directives/track_event';
-import timeagoMixin from '~/vue_shared/mixins/timeago';
+import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import { severityLevel, severityLevelVariant, errorStatus } from './constants';
 import Tracking from '~/tracking';
 import {
@@ -47,11 +46,11 @@ export default {
     GlDropdown,
     GlDropdownItem,
     GlDropdownDivider,
+    TimeAgoTooltip,
   },
   directives: {
     TrackEvent: TrackEventDirective,
   },
-  mixins: [timeagoMixin],
   props: {
     issueUpdatePath: {
       type: String,
@@ -225,9 +224,6 @@ export default {
         createFlash(__('Could not connect to Sentry. Refresh the page to try again.'), 'warning');
       }
     },
-    formatDate(date) {
-      return `${this.timeFormatted(date)} (${dateFormat(date, 'UTC:yyyy-mm-dd h:MM:ssTT Z')})`;
-    },
     trackPageViews() {
       const { category, action } = trackErrorDetailsViewsOptions;
       Tracking.event(category, action);
@@ -269,7 +265,7 @@ export default {
               <strong class="error-details-meta-culprit">{{ error.culprit }}</strong>
             </template>
             <template #timeAgo>
-              {{ timeFormatted(stacktraceData.date_received) }}
+              <time-ago-tooltip :time="stacktraceData.date_received" />
             </template>
           </gl-sprintf>
         </div>
@@ -395,14 +391,14 @@ export default {
           </li>
           <li v-if="error.firstReleaseShortVersion">
             <strong class="bold">{{ __('First seen') }}:</strong>
-            {{ formatDate(error.firstSeen) }}
+            <time-ago-tooltip :time="error.firstSeen" />
             <gl-link :href="firstReleaseLink" target="_blank">
               <span>{{ __('Release') }}: {{ error.firstReleaseShortVersion.substr(0, 10) }}</span>
             </gl-link>
           </li>
           <li v-if="error.lastReleaseShortVersion">
             <strong class="bold">{{ __('Last seen') }}:</strong>
-            {{ formatDate(error.lastSeen) }}
+            <time-ago-tooltip :time="error.lastSeen" />
             <gl-link :href="lastReleaseLink" target="_blank">
               <span>{{ __('Release') }}: {{ error.lastReleaseShortVersion.substr(0, 10) }}</span>
             </gl-link>

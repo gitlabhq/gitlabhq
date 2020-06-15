@@ -113,15 +113,18 @@ module Gitlab
           end
         end
 
-        # Sets multiple keys to a given value.
+        # Sets multiple keys to given values.
         #
         # mapping - A Hash mapping the cache keys to their values.
+        # key_prefix - prefix inserted before each key
         # timeout - The time after which the cache key should expire.
-        def self.write_multiple(mapping, timeout: TIMEOUT)
+        def self.write_multiple(mapping, key_prefix: nil, timeout: TIMEOUT)
           Redis::Cache.with do |redis|
-            redis.multi do |multi|
+            redis.pipelined do |multi|
               mapping.each do |raw_key, value|
-                multi.set(cache_key_for(raw_key), value, ex: timeout)
+                key = cache_key_for("#{key_prefix}#{raw_key}")
+
+                multi.set(key, value, ex: timeout)
               end
             end
           end

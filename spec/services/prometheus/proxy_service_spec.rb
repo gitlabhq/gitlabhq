@@ -41,6 +41,27 @@ describe Prometheus::ProxyService do
         expect(result.params).to eq('query' => '1')
       end
     end
+
+    context 'with series method' do
+      let(:params) do
+        ActionController::Parameters.new(
+          match: ['1'],
+          start: "2020-06-11T10:15:51Z",
+          end: "2020-06-11T11:16:06Z",
+          unknown_param: 'val'
+        ).permit!
+      end
+
+      it 'allows match, start and end parameters' do
+        result = described_class.new(environment, 'GET', 'series', params)
+
+        expect(result.params).to eq(
+          'match' => ['1'],
+          'start' => "2020-06-11T10:15:51Z",
+          'end' => "2020-06-11T11:16:06Z"
+        )
+      end
+    end
   end
 
   describe '#execute' do
@@ -180,6 +201,24 @@ describe Prometheus::ProxyService do
               http_status: :service_unavailable
             )
           end
+        end
+      end
+
+      context 'with series API' do
+        let(:rest_client_response) { instance_double(RestClient::Response, code: 200, body: '') }
+
+        let(:params) do
+          ActionController::Parameters.new(match: ['1'], start: 1.hour.ago.rfc3339, end: Time.current.rfc3339).permit!
+        end
+
+        subject { described_class.new(environment, 'GET', 'series', params) }
+
+        it 'calls PrometheusClient with given parameters' do
+          expect(prometheus_client).to receive(:proxy)
+            .with('series', params.to_h)
+            .and_return(rest_client_response)
+
+          subject.execute
         end
       end
     end

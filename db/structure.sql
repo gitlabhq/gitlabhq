@@ -5955,7 +5955,7 @@ ALTER SEQUENCE public.resource_label_events_id_seq OWNED BY public.resource_labe
 
 CREATE TABLE public.resource_milestone_events (
     id bigint NOT NULL,
-    user_id bigint NOT NULL,
+    user_id bigint,
     issue_id bigint,
     merge_request_id bigint,
     milestone_id bigint,
@@ -5975,7 +5975,7 @@ ALTER SEQUENCE public.resource_milestone_events_id_seq OWNED BY public.resource_
 
 CREATE TABLE public.resource_state_events (
     id bigint NOT NULL,
-    user_id bigint NOT NULL,
+    user_id bigint,
     issue_id bigint,
     merge_request_id bigint,
     created_at timestamp with time zone NOT NULL,
@@ -5995,7 +5995,7 @@ ALTER SEQUENCE public.resource_state_events_id_seq OWNED BY public.resource_stat
 
 CREATE TABLE public.resource_weight_events (
     id bigint NOT NULL,
-    user_id bigint NOT NULL,
+    user_id bigint,
     issue_id bigint NOT NULL,
     weight integer,
     created_at timestamp with time zone NOT NULL
@@ -13967,6 +13967,9 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200608075553
 20200608214008
 20200609002841
+20200609142506
+20200609142507
+20200609142508
 20200609212701
 \.
 
