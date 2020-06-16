@@ -141,7 +141,7 @@ function initFoo() {
   });
 }
 
-// Vuex action can now reference the path from it's state :)
+// Vuex action can now reference the path from its state :)
 export const fetchFoos = ({ state }) => {
   return axios.get(state.settings.fooPath);
 };

@@ -6,6 +6,7 @@ module Projects
       def execute(container_repository)
         return error('feature disabled') unless can_use?
         return error('access denied') unless can_destroy?
+        return error('invalid regex') unless valid_regex?
 
         tags = container_repository.tags
         tags = without_latest(tags)
@@ -75,6 +76,17 @@ module Projects
 
       def can_use?
         Feature.enabled?(:container_registry_cleanup, project, default_enabled: true)
+      end
+
+      def valid_regex?
+        %w(name_regex_delete name_regex name_regex_keep).each do |param_name|
+          regex = params[param_name]
+          Gitlab::UntrustedRegexp.new(regex) unless regex.blank?
+        end
+        true
+      rescue RegexpError => e
+        Gitlab::ErrorTracking.log_exception(e, project_id: project.id)
+        false
       end
     end
   end

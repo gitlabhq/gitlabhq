@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 module QA
-  context 'Configure', quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/209085', type: :investigating } do
-    describe 'Kubernetes Cluster Integration', :orchestrated, :kubernetes, :requires_admin do
+  context 'Configure' do
+    describe 'Kubernetes Cluster Integration', :orchestrated, :kubernetes, :requires_admin, :skip_live_env do
       context 'Project Clusters' do
-        let(:cluster) { Service::KubernetesCluster.new(provider_class: Service::ClusterProvider::K3s).create! }
+        let!(:cluster) { Service::KubernetesCluster.new(provider_class: Service::ClusterProvider::K3s).create! }
         let(:project) do
           Resource::Project.fabricate_via_api! do |project|
             project.name = 'project-with-k8s'
@@ -13,7 +13,7 @@ module QA
         end
 
         before do
-          Flow::Login.sign_in
+          Flow::Login.sign_in_as_admin
         end
 
         after do

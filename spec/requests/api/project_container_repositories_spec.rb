@@ -223,6 +223,40 @@ describe API::ProjectContainerRepositories do
           expect(response).to have_gitlab_http_status(:accepted)
         end
       end
+
+      context 'with invalid regex' do
+        let(:invalid_regex) { '*v10.' }
+        let(:lease_key) { "container_repository:cleanup_tags:#{root_repository.id}" }
+
+        RSpec.shared_examples 'rejecting the invalid regex' do |param_name|
+          it 'does not enqueue a job' do
+            expect(CleanupContainerRepositoryWorker).not_to receive(:perform_async)
+
+            subject
+          end
+
+          it_behaves_like 'returning response status', :bad_request
+
+          it 'returns an error message' do
+            subject
+
+            expect(json_response['error']).to include("#{param_name} is an invalid regexp")
+          end
+        end
+
+        before do
+          stub_last_activity_update
+          stub_exclusive_lease(lease_key, timeout: 1.hour)
+        end
+
+        %i[name_regex_delete name_regex name_regex_keep].each do |param_name|
+          context "for #{param_name}" do
+            let(:params) { { param_name => invalid_regex } }
+
+            it_behaves_like 'rejecting the invalid regex', param_name
+          end
+        end
+      end
     end
   end
 

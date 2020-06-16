@@ -7,3 +7,4 @@ Grape::Validations.register_validator(:git_sha, ::API::Validations::Validators::
 Grape::Validations.register_validator(:integer_none_any, ::API::Validations::Validators::IntegerNoneAny)
 Grape::Validations.register_validator(:array_none_any, ::API::Validations::Validators::ArrayNoneAny)
 Grape::Validations.register_validator(:check_assignees_count, ::API::Validations::Validators::CheckAssigneesCount)
+Grape::Validations.register_validator(:untrusted_regexp, ::API::Validations::Validators::UntrustedRegexp)

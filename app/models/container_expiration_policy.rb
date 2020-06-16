@@ -52,4 +52,8 @@ class ContainerExpirationPolicy < ApplicationRecord
   def set_next_run_at
     self.next_run_at = Time.zone.now + ChronicDuration.parse(cadence).seconds
   end
+
+  def disable!
+    update_attribute(:enabled, false)
+  end
 end

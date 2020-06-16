@@ -1,3 +1,9 @@
+---
+stage: Monitor
+group: Health
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+---
+
 # Alert Management
 
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/2877) in GitLab 13.0.
@@ -95,16 +101,13 @@ See [Alert Management statuses](#alert-management-statuses) for more details abo
 
 ### Update an Alert's assignee
 
-NOTE: **Note:**
-We currently only support a single assignee per alert.
-
-The Alert Management detail view allows users to update the Alert Assignee(s).
-
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3066) in GitLab 13.1.
+
+The Alert Management detail view allows users to update the Alert assignee.
 
 In large teams, where there is shared ownership of an alert, it can be difficult
 to track who is investigating and working on it. The Alert Management detail view
-enables you to update the Alert Assignee(s):
+enables you to update the Alert assignee:
 
 NOTE: **Note:**
 GitLab currently only supports a single assignee per alert.

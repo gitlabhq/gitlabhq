@@ -103,4 +103,14 @@ RSpec.describe ContainerExpirationPolicy, type: :model do
       end
     end
   end
+
+  describe '#disable!' do
+    let_it_be(:container_expiration_policy) { create(:container_expiration_policy) }
+
+    subject { container_expiration_policy.disable! }
+
+    it 'disables the container expiration policy' do
+      expect { subject }.to change { container_expiration_policy.reload.enabled }.from(true).to(false)
+    end
+  end
 end

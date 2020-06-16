@@ -168,6 +168,18 @@ The collected SAST report will be uploaded to GitLab as an artifact and will be 
 in the merge requests and pipeline view. It's also used to provide data for security
 dashboards.
 
+#### `artifacts:reports:secret_detection` **(ULTIMATE)**
+
+> - Introduced in GitLab 13.1.
+> - Requires GitLab Runner 11.5 and above.
+
+The `secret-detection` report collects [detected secrets](../../user/application_security/secret_detection/index.md)
+as artifacts.
+
+The collected Secret Detection report is uploaded to GitLab as an artifact and summarized
+in the merge requests and pipeline view. It's also used to provide data for security
+dashboards.
+
 #### `artifacts:reports:dependency_scanning` **(ULTIMATE)**
 
 > - Introduced in GitLab 11.5.
