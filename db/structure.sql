@@ -477,6 +477,7 @@ CREATE TABLE public.application_settings (
     elasticsearch_pause_indexing boolean DEFAULT false NOT NULL,
     repository_storages_weighted jsonb DEFAULT '{}'::jsonb NOT NULL,
     max_import_size integer DEFAULT 50 NOT NULL,
+    enforce_pat_expiration boolean DEFAULT true NOT NULL,
     CONSTRAINT check_d03919528d CHECK ((char_length(container_registry_vendor) <= 255)),
     CONSTRAINT check_d820146492 CHECK ((char_length(spam_check_endpoint_url) <= 255)),
     CONSTRAINT check_e5aba18f02 CHECK ((char_length(container_registry_version) <= 255))
@@ -4672,7 +4673,8 @@ ALTER SEQUENCE public.packages_build_infos_id_seq OWNED BY public.packages_build
 
 CREATE TABLE public.packages_composer_metadata (
     package_id bigint NOT NULL,
-    target_sha bytea NOT NULL
+    target_sha bytea NOT NULL,
+    composer_json jsonb DEFAULT '{}'::jsonb NOT NULL
 );
 
 CREATE TABLE public.packages_conan_file_metadata (
@@ -13958,6 +13960,7 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200602013900
 20200602013901
 20200603073101
+20200603180338
 20200604143628
 20200604145731
 20200604174544
@@ -13971,5 +13974,6 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200609142507
 20200609142508
 20200609212701
+20200615083635
 \.
 

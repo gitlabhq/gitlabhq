@@ -175,6 +175,7 @@ describe Clusters::Applications::ElasticStack do
         expect(faraday_connection.headers["Authorization"]).to eq(kube_client.headers[:Authorization])
         expect(faraday_connection.ssl.cert_store).to be_instance_of(OpenSSL::X509::Store)
         expect(faraday_connection.ssl.verify).to eq(1)
+        expect(faraday_connection.options.timeout).to be_nil
       end
 
       context 'when cluster is not reachable' do
@@ -184,6 +185,15 @@ describe Clusters::Applications::ElasticStack do
 
         it 'returns nil' do
           expect(subject.elasticsearch_client).to be_nil
+        end
+      end
+
+      context 'when timeout is provided' do
+        it 'sets timeout in elasticsearch_client' do
+          client = subject.elasticsearch_client(timeout: 123)
+          faraday_connection = client.transport.connections.first.connection
+
+          expect(faraday_connection.options.timeout).to eq(123)
         end
       end
     end

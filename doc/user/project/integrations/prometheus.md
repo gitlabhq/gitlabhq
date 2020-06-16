@@ -420,6 +420,7 @@ Read the documentation on [links](#add-related-links-to-custom-dashboards).
 | `max_value` | number | no | Denominator value used for calculating [percentile based results](#percentile-based-results) |
 | `weight` | number | no, defaults to order in file | Order to appear within the grouping. Lower number means higher priority, which will be higher on the page. Numbers do not need to be consecutive. |
 | `metrics` | array | yes | The metrics which should be displayed in the panel. Any number of metrics can be displayed when `type` is `area-chart` or `line-chart`, whereas only 3 can be displayed when `type` is `anomaly-chart`. |
+| `links` | array | no | Add links to display on the chart's [context menu](#chart-context-menu). |
 
 ##### **Axis (`panels[].y_axis`) properties**
 
@@ -842,16 +843,27 @@ templating:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/216385) in GitLab 13.1.
 
-Related links can be added to the top of your metrics dashboard, which can be used for quickly
-navigating between dashboards or external services. The links will open in the same tab.
+You can embed links to other dashboards or external services in your custom
+dashboard by adding **Related links** to your dashboard's YAML file. Related links
+open in the same tab as the dashboard. Related links can be displayed in the
+following locations on your dashboard:
+
+- At the top of your dashboard as the top level [`links` dashboard property](#dashboard-top-level-properties).
+- In charts context menus as the [`links` property of a panel](#panel-panels-properties).
+
+Related links can contain the following attributes:
+
+- `url`: The full URL to the link. Required.
+- `title`: A phrase describing the link. Optional. If this attribute is not set,
+  the full URL is used for the link title.
+- `type`: A string declaring the type of link. Optional. If set to `grafana`, the
+  dashboard's time range values are converted to Grafana's time range format and
+  appended to the `url`.
 
 The dashboard's time range is appended to the `url` as URL parameters.
 
-The `url` attribute is required for the link but the `title` attribute is optional; if the `title`
-is missing then the full address of the URL will be displayed.
-
-The `type` attribute is optional; if the `type` is `grafana`, the dashboard's time range values are
-converted to Grafana's time range format and appended to the `url`.
+The following example shows two related links (`GitLab.com` and `GitLab Documentation`)
+added to a dashboard:
 
 ![Links UI](img/related_links_v13_1.png)
 

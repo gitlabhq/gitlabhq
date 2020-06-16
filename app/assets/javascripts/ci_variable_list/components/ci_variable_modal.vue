@@ -235,7 +235,7 @@ export default {
           <gl-link href="/help/ci/variables/README#protected-environment-variables">
             <gl-icon name="question" :size="12" />
           </gl-link>
-          <p class="prepend-top-4 text-secondary">
+          <p class="gl-mt-2 text-secondary">
             {{ __('Export variable to pipelines running on protected branches and tags only.') }}
           </p>
         </gl-form-checkbox>
@@ -249,7 +249,7 @@ export default {
           <gl-link href="/help/ci/variables/README#masked-variables">
             <gl-icon name="question" :size="12" />
           </gl-link>
-          <p class="prepend-top-4 gl-mb-0 text-secondary">
+          <p class="gl-mt-2 gl-mb-0 text-secondary">
             {{ __('Variable will be masked in job logs.') }}
             <span
               :class="{

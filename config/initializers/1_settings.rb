@@ -567,6 +567,9 @@ Gitlab.ee do
   Settings.cron_jobs['sync_seat_link_worker'] ||= Settingslogic.new({})
   Settings.cron_jobs['sync_seat_link_worker']['cron'] ||= "#{rand(60)} 0 * * *"
   Settings.cron_jobs['sync_seat_link_worker']['job_class'] = 'SyncSeatLinkWorker'
+  Settings.cron_jobs['web_application_firewall_metrics_worker'] ||= Settingslogic.new({})
+  Settings.cron_jobs['web_application_firewall_metrics_worker']['cron'] ||= '0 1 * * 0'
+  Settings.cron_jobs['web_application_firewall_metrics_worker']['job_class'] = 'IngressModsecurityCounterMetricsWorker'
 end
 
 #

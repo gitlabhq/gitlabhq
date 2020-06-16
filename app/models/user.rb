@@ -522,7 +522,7 @@ class User < ApplicationRecord
 
     # Searches users matching the given query.
     #
-    # This method uses ILIKE on PostgreSQL and LIKE on MySQL.
+    # This method uses ILIKE on PostgreSQL.
     #
     # query - The search query as a String
     #
@@ -565,7 +565,7 @@ class User < ApplicationRecord
 
     # searches user by given pattern
     # it compares name, email, username fields and user's secondary emails with given pattern
-    # This method uses ILIKE on PostgreSQL and LIKE on MySQL.
+    # This method uses ILIKE on PostgreSQL.
 
     def search_with_secondary_emails(query)
       return none if query.blank?

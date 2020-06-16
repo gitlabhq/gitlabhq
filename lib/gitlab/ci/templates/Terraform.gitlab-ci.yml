@@ -40,7 +40,6 @@ plan:
     - terraform plan -out=$PLAN
     - "terraform show --json $PLAN | convert_report > $JSON_PLAN_FILE"
   artifacts:
-    name: plan
     paths:
       - $PLAN
     reports:

@@ -169,11 +169,15 @@ The following topics show other examples of other options you can add to your CI
 
 You may want to deploy to a Pages site only from specific branches.
 
-You can add another line to `.gitlab-ci.yml`, which tells the Runner
-to perform the job called `pages` on the `master` branch **only**:
+First, add a `workflow` section to force the pipeline to run only when changes are
+pushed to branches:
 
 ```yaml
 image: ruby:2.7
+
+workflow:
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
 
 pages:
   script:
@@ -183,8 +187,27 @@ pages:
   artifacts:
     paths:
     - public
-  only:
-  - master
+```
+
+Then configure the pipeline to run the job for the master branch only.
+
+```yaml
+image: ruby:2.7
+
+workflow:
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+
+pages:
+  script:
+  - gem install bundler
+  - bundle install
+  - bundle exec jekyll build -d public
+  artifacts:
+    paths:
+    - public
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "master"'
 ```
 
 ## Specify a stage to deploy
@@ -202,6 +225,10 @@ add a `stage` line to your CI file:
 ```yaml
 image: ruby:2.7
 
+workflow:
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+
 pages:
   stage: deploy
   script:
@@ -211,16 +238,20 @@ pages:
   artifacts:
     paths:
     - public
-  only:
-  - master
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "master"'
 ```
 
 Now add another job to the CI file, telling it to
-test every push to other branches, **except** the `master` branch:
+test every push to every branch **except** the `master` branch:
 
 ```yaml
 image: ruby:2.7
 
+workflow:
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+
 pages:
   stage: deploy
   script:
@@ -230,8 +261,8 @@ pages:
   artifacts:
     paths:
     - public
-  only:
-  - master
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "master"'
 
 test:
   stage: test
@@ -242,8 +273,8 @@ test:
   artifacts:
     paths:
     - test
-  except:
-  - master
+  rules:
+    - if: '$CI_COMMIT_BRANCH != "master"'
 ```
 
 When the `test` job runs in the `test` stage, Jekyll
@@ -257,9 +288,8 @@ same time.
 
 ## Remove duplicate commands
 
-To avoid running the same scripts for each job, you can add the
-parameter `before_script`. In this section, specify the commands
-you want to run for every job.
+To avoid duplicating the same scripts in every job, you can add them
+to a `before_script` section.
 
 In the example, `gem install bundler` and `bundle install` were running
 for both jobs, `pages` and `test`.
@@ -268,6 +298,10 @@ Move these commands to a `before_script` section:
 
 ```yaml
 image: ruby:2.7
+
+workflow:
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
 
 before_script:
   - gem install bundler
@@ -280,8 +314,8 @@ pages:
   artifacts:
     paths:
     - public
-  only:
-  - master
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "master"'
 
 test:
   stage: test
@@ -290,8 +324,8 @@ test:
   artifacts:
     paths:
     - test
-  except:
-  - master
+  rules:
+    - if: '$CI_COMMIT_BRANCH != "master"'
 ```
 
 ## Build faster with cached dependencies
@@ -304,6 +338,10 @@ when you run `bundle install`:
 
 ```yaml
 image: ruby:2.7
+
+workflow:
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
 
 cache:
   paths:
@@ -320,8 +358,8 @@ pages:
   artifacts:
     paths:
     - public
-  only:
-  - master
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "master"'
 
 test:
   stage: test
@@ -330,11 +368,11 @@ test:
   artifacts:
     paths:
     - test
-  except:
-  - master
+  rules:
+    - if: '$CI_COMMIT_BRANCH != "master"'
 ```
 
-In this case, we need to exclude the `/vendor`
+In this case, you need to exclude the `/vendor`
 directory from the list of folders Jekyll builds. Otherwise, Jekyll
 will try to build the directory contents along with the site.
 

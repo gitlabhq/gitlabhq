@@ -133,7 +133,7 @@ class Label < ApplicationRecord
 
   # Searches for labels with a matching title or description.
   #
-  # This method uses ILIKE on PostgreSQL and LIKE on MySQL.
+  # This method uses ILIKE on PostgreSQL.
   #
   # query - The search query as a String.
   #

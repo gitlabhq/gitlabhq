@@ -53,7 +53,7 @@ module Clusters
         super.merge('wait-for-elasticsearch.sh': File.read("#{Rails.root}/vendor/elastic_stack/wait-for-elasticsearch.sh"))
       end
 
-      def elasticsearch_client
+      def elasticsearch_client(timeout: nil)
         strong_memoize(:elasticsearch_client) do
           next unless kube_client
 
@@ -65,6 +65,7 @@ module Clusters
             # ensure TLS certs are properly verified
             faraday.ssl[:verify] = kube_client.ssl_options[:verify_ssl]
             faraday.ssl[:cert_store] = kube_client.ssl_options[:cert_store]
+            faraday.options.timeout = timeout unless timeout.nil?
           end
 
         rescue Kubeclient::HttpError => error

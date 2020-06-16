@@ -11,8 +11,8 @@ module Gitlab
 
       STORAGES = [ActionCable, Cache, Queues, SharedState].freeze
 
-      # Milliseconds represented in seconds (from 1 to 500 milliseconds).
-      QUERY_TIME_BUCKETS = [0.001, 0.0025, 0.005, 0.01, 0.025, 0.05, 0.1, 0.25, 0.5].freeze
+      # Milliseconds represented in seconds (from 1 millisecond to 2 seconds).
+      QUERY_TIME_BUCKETS = [0.001, 0.0025, 0.005, 0.01, 0.025, 0.05, 0.1, 0.25, 0.5, 1, 2].freeze
 
       class << self
         def detail_store

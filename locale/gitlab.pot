@@ -8417,6 +8417,9 @@ msgstr ""
 msgid "Enforce DNS rebinding attack protection"
 msgstr ""
 
+msgid "Enforce personal access token expiration"
+msgstr ""
+
 msgid "Ensure connectivity is available from the GitLab server to the Prometheus server"
 msgstr ""
 

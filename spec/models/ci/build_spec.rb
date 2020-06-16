@@ -2407,13 +2407,13 @@ describe Ci::Build do
             allow(build).to receive(:job_jwt_variables) { [job_jwt_var] }
             allow(build).to receive(:dependency_variables) { [job_dependency_var] }
 
-            allow_any_instance_of(Project)
+            allow(build.project)
               .to receive(:predefined_variables) { [project_pre_var] }
 
             project.variables.create!(key: 'secret', value: 'value')
 
-            allow_any_instance_of(Ci::Pipeline)
-              .to receive(:predefined_variables) { [pipeline_pre_var] }
+            allow(build.pipeline)
+              .to receive(:predefined_variables).and_return([pipeline_pre_var])
           end
 
           it 'returns variables in order depending on resource hierarchy' do

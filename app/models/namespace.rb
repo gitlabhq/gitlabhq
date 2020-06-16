@@ -100,11 +100,11 @@ class Namespace < ApplicationRecord
 
     # Searches for namespaces matching the given query.
     #
-    # This method uses ILIKE on PostgreSQL and LIKE on MySQL.
+    # This method uses ILIKE on PostgreSQL.
     #
-    # query - The search query as a String
+    # query - The search query as a String.
     #
-    # Returns an ActiveRecord::Relation
+    # Returns an ActiveRecord::Relation.
     def search(query)
       fuzzy_search(query, [:name, :path])
     end

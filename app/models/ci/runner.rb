@@ -163,14 +163,14 @@ module Ci
 
     # Searches for runners matching the given query.
     #
-    # This method uses ILIKE on PostgreSQL and LIKE on MySQL.
+    # This method uses ILIKE on PostgreSQL.
     #
     # This method performs a *partial* match on tokens, thus a query for "a"
     # will match any runner where the token contains the letter "a". As a result
     # you should *not* use this method for non-admin purposes as otherwise users
     # might be able to query a list of all runners.
     #
-    # query - The search query as a String
+    # query - The search query as a String.
     #
     # Returns an ActiveRecord::Relation.
     def self.search(query)

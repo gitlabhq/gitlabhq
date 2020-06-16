@@ -204,7 +204,7 @@ jest:
       - tmp/tests/frontend/
     reports:
       junit: junit_jest.xml
-  parallel: 2
+  parallel: 4
 
 jest-integration:
   extends:
@@ -222,6 +222,7 @@ jest-as-if-foss:
     - .frontend:rules:default-frontend-jobs-as-if-foss
     - .as-if-foss
   needs: ["frontend-fixtures-as-if-foss"]
+  parallel: 2
 
 coverage-frontend:
   extends:

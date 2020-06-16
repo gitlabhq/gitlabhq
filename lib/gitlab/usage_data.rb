@@ -37,7 +37,6 @@ module Gitlab
           .merge(object_store_usage_data)
           .merge(topology_usage_data)
           .merge(recording_ce_finish_data)
-          .merge(merge_requests_usage_data(default_time_period))
       end
 
       def to_json(force_refresh: false)
@@ -162,7 +161,8 @@ module Gitlab
             usage_counters,
             user_preferences_usage,
             ingress_modsecurity_usage,
-            container_expiration_policies_usage
+            container_expiration_policies_usage,
+            merge_requests_usage(default_time_period)
           )
         }
       end
@@ -400,7 +400,7 @@ module Gitlab
       end
 
       # rubocop: disable CodeReuse/ActiveRecord
-      def merge_requests_usage_data(time_period)
+      def merge_requests_usage(time_period)
         query =
           Event
             .where(target_type: Event::TARGET_TYPES[:merge_request].to_s)

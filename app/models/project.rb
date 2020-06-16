@@ -617,8 +617,7 @@ class Project < ApplicationRecord
     # Searches for a list of projects based on the query given in `query`.
     #
     # On PostgreSQL this method uses "ILIKE" to perform a case-insensitive
-    # search. On MySQL a regular "LIKE" is used as it's already
-    # case-insensitive.
+    # search.
     #
     # query - The search query as a String.
     def search(query, include_namespace: false)
