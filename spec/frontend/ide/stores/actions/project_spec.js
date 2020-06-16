@@ -12,7 +12,8 @@ import {
 } from '~/ide/stores/actions';
 import service from '~/ide/services';
 import api from '~/api';
-import testAction from '../../../helpers/vuex_action_helper';
+import testAction from 'helpers/vuex_action_helper';
+import { useMockLocationHelper } from 'helpers/mock_window_location_helper';
 
 const TEST_PROJECT_ID = 'abc/def';
 
@@ -116,6 +117,8 @@ describe('IDE store project actions', () => {
   });
 
   describe('createNewBranchFromDefault', () => {
+    useMockLocationHelper();
+
     beforeEach(() => {
       jest.spyOn(api, 'createBranch').mockResolvedValue();
     });
@@ -170,8 +173,6 @@ describe('IDE store project actions', () => {
     });
 
     it('reloads window', done => {
-      jest.spyOn(window.location, 'reload').mockImplementation();
-
       createNewBranchFromDefault(
         {
           state: {

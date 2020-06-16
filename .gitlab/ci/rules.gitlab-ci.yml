@@ -422,6 +422,8 @@
   rules:
     - <<: *if-not-ee
       when: never
+    - <<: *if-merge-request-title-as-if-foss
+      when: never
     - <<: *if-security-merge-request
       changes: *code-backstage-patterns
     - <<: *if-dot-com-gitlab-org-merge-request

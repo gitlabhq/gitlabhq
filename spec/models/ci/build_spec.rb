@@ -3123,24 +3123,8 @@ describe Ci::Build do
 
       let!(:job_variable) { create(:ci_job_variable, :dotenv_source, job: prepare) }
 
-      context 'FF ci_dependency_variables is enabled' do
-        before do
-          stub_feature_flags(ci_dependency_variables: true)
-        end
-
-        it 'inherits dependent variables' do
-          expect(build.scoped_variables.to_hash).to include(job_variable.key => job_variable.value)
-        end
-      end
-
-      context 'FF ci_dependency_variables is disabled' do
-        before do
-          stub_feature_flags(ci_dependency_variables: false)
-        end
-
-        it 'does not inherit dependent variables' do
-          expect(build.scoped_variables.to_hash).not_to include(job_variable.key => job_variable.value)
-        end
+      it 'inherits dependent variables' do
+        expect(build.scoped_variables.to_hash).to include(job_variable.key => job_variable.value)
       end
     end
   end

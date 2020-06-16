@@ -145,18 +145,6 @@ describe Projects::Alerting::NotifyService do
             expect(ProjectServiceWorker).to have_received(:perform_async).with(slack_service.id, an_instance_of(Hash))
           end
 
-          context 'feature flag disabled' do
-            before do
-              stub_feature_flags(alert_slack_event: false)
-            end
-
-            it 'does not executes the alert service hooks' do
-              subject
-
-              expect(ProjectServiceWorker).not_to have_received(:perform_async)
-            end
-          end
-
           context 'existing alert with same fingerprint' do
             let(:fingerprint_sha) { Digest::SHA1.hexdigest(fingerprint) }
             let!(:existing_alert) { create(:alert_management_alert, project: project, fingerprint: fingerprint_sha) }

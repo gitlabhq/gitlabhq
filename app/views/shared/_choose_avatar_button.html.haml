@@ -1,4 +1,1 @@
-%button.btn.js-choose-avatar-button{ type: 'button' }= _("Choose file…")
-%span.file_name.js-avatar-filename= _("No file chosen")
-= f.file_field :avatar, class: "js-avatar-input hidden"
-.form-text.text-muted= _("The maximum file size allowed is 200KB.")
+= render 'shared/file_picker_button', f: f, field: :avatar, help_text: _("The maximum file size allowed is 200KB.")

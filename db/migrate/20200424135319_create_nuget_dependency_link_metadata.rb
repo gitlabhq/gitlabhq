@@ -21,6 +21,8 @@ class CreateNugetDependencyLinkMetadata < ActiveRecord::Migration[6.0]
   end
 
   def down
+    # rubocop:disable Migration/DropTable
     drop_table :packages_nuget_dependency_link_metadata
+    # rubocop:enable Migration/DropTable
   end
 end

@@ -1198,14 +1198,6 @@ class Project < ApplicationRecord
     get_issue(issue_id)
   end
 
-  def default_issue_tracker
-    gitlab_issue_tracker_service || create_gitlab_issue_tracker_service
-  end
-
-  def issues_tracker
-    external_issue_tracker || default_issue_tracker
-  end
-
   def external_issue_reference_pattern
     external_issue_tracker.class.reference_pattern(only_long: issues_enabled?)
   end

@@ -25,6 +25,8 @@ class CreateCiFreezePeriods < ActiveRecord::Migration[6.0]
   end
 
   def down
+    # rubocop:disable Migration/DropTable
     drop_table :ci_freeze_periods
+    # rubocop:enable Migration/DropTable
   end
 end

@@ -1,6 +1,7 @@
 import $ from 'jquery';
 import { parseBoolean, getCookie, setCookie, removeCookie } from '~/lib/utils/common_utils';
 import { __ } from '~/locale';
+import Tracking from '~/tracking';
 
 const COOKIE_NAME = 'onboarding_issues_settings';
 
@@ -18,6 +19,7 @@ function disposePopover(event) {
   event.preventDefault();
   this.popover('dispose');
   removeLearnGitLabCookie();
+  Tracking.event('Growth::Conversion::Experiment::OnboardingIssues', 'dismiss_popover');
 }
 
 const showPopover = (el, path, footer, options) => {

@@ -817,6 +817,12 @@ const boardsStore = {
     issue.isFetching[key] = value;
   },
 
+  removeIssueMilestone(issue, removeMilestone) {
+    if (IS_EE && removeMilestone && removeMilestone.id === issue.milestone.id) {
+      issue.milestone = {};
+    }
+  },
+
   refreshIssueData(issue, obj) {
     issue.id = obj.id;
     issue.iid = obj.iid;

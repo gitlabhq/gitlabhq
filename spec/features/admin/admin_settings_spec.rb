@@ -405,7 +405,7 @@ describe 'Admin updates settings', :clean_gitlab_redis_shared_state, :do_not_moc
         visit network_admin_application_settings_path
 
         page.within('.as-issue-limits') do
-          fill_in 'Max requests per second per user', with: 0
+          fill_in 'Max requests per minute per user', with: 0
           click_button 'Save changes'
         end
 

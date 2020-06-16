@@ -51,6 +51,40 @@ Hooks:            /home/git/gitlab-shell/hooks/
 Git:              /usr/bin/git
 ```
 
+## Show GitLab license information **(STARTER ONLY)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20501) in GitLab Starter 12.6.
+
+This command shows information about your [GitLab license](../../user/admin_area/license.md) and
+how many seats are used. It is only available on GitLab Enterprise
+installations: a license cannot be installed into GitLab Community Edition.
+
+These may be useful when raising tickets with Support, or for programmatically
+checking your license parameters.
+
+**Omnibus Installation**
+
+```shell
+sudo gitlab-rake gitlab:license:info
+```
+
+**Source Installation**
+
+```shell
+bundle exec rake gitlab:license:info RAILS_ENV=production
+```
+
+Example output:
+
+```plaintext
+Today's Date: 2020-02-29
+Current User Count: 30
+Max Historical Count: 30
+Max Users in License: 40
+License valid from: 2019-11-29 to 2020-11-28
+Email associated with license: user@example.com
+```
+
 ## Check GitLab configuration
 
 The `gitlab:check` Rake task runs the following Rake tasks:

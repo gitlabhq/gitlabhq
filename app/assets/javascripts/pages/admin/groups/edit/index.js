@@ -1,3 +1,3 @@
-import initAvatarPicker from '~/avatar_picker';
+import initFilePickers from '~/file_pickers';
 
-document.addEventListener('DOMContentLoaded', initAvatarPicker);
+document.addEventListener('DOMContentLoaded', initFilePickers);

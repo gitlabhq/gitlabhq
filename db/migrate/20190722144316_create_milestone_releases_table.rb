@@ -15,6 +15,8 @@ class CreateMilestoneReleasesTable < ActiveRecord::Migration[5.2]
   end
 
   def down
+    # rubocop:disable Migration/DropTable
     drop_table :milestone_releases
+    # rubocop:enable Migration/DropTable
   end
 end

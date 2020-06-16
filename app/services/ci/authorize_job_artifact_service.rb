@@ -36,7 +36,7 @@ module Ci
 
     def code_navigation_enabled?
       strong_memoize(:code_navigation_enabled) do
-        Feature.enabled?(:code_navigation, job.project)
+        Feature.enabled?(:code_navigation, job.project, default_enabled: true)
       end
     end
 

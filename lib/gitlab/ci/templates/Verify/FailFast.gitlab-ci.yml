@@ -1,0 +1,17 @@
+rspec-rails-modified-path-specs:
+  stage: .pre
+  rules:
+    - if: $CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "merge_train"
+      changes: ["**/*.rb"]
+  script:
+    - gem install test_file_finder
+    - spec_files=$(tff $(git diff --name-only "$CI_MERGE_REQUEST_TARGET_BRANCH_SHA..$CI_MERGE_REQUEST_SOURCE_BRANCH_SHA"))
+    - |
+        if [ -n "$spec_files" ]
+        then
+          bundle install
+          bundle exec rspec -- $spec_files
+        else
+          echo "No relevant spec files found by tff"
+          exit 0
+        fi

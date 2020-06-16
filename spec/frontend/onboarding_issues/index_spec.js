@@ -2,6 +2,7 @@ import $ from 'jquery';
 import { showLearnGitLabIssuesPopover } from '~/onboarding_issues';
 import { getCookie, setCookie, removeCookie } from '~/lib/utils/common_utils';
 import setWindowLocation from 'helpers/set_window_location_helper';
+import Tracking from '~/tracking';
 
 describe('Onboarding Issues Popovers', () => {
   const COOKIE_NAME = 'onboarding_issues_settings';
@@ -116,11 +117,19 @@ describe('Onboarding Issues Popovers', () => {
 
       describe('when dismissing the popover', () => {
         beforeEach(() => {
+          jest.spyOn(Tracking, 'event');
           document.querySelector('.learn-gitlab.popover .close').click();
         });
 
         it('deletes the cookie', () => {
           expect(getCookie(COOKIE_NAME)).toBe(undefined);
+        });
+
+        it('sends a tracking event', () => {
+          expect(Tracking.event).toHaveBeenCalledWith(
+            'Growth::Conversion::Experiment::OnboardingIssues',
+            'dismiss_popover',
+          );
         });
       });
     });

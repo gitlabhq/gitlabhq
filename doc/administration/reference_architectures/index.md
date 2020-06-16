@@ -171,6 +171,25 @@ column.
 | [GitLab application services](../../development/architecture.md#unicorn)([1](#footnotes)) | Puma/Unicorn, Workhorse, GitLab Shell - serves front-end requests (UI, API, Git over HTTP/SSH) | [GitLab app scaling configuration](../high_availability/gitlab.md) | Yes |
 | [Prometheus](../../development/architecture.md#prometheus) and [Grafana](../../development/architecture.md#grafana) | GitLab environment monitoring | [Monitoring node for scaling](../high_availability/monitoring_node.md) | Yes |
 
+### Configuring select components with Cloud Native Helm
+
+We also provide [Helm charts](https://docs.gitlab.com/charts/) as a Cloud Native installation
+method for GitLab. For the reference architectures, select components can be set up in this
+way as an alternative if so desired.
+
+For these kind of setups we support using the charts in an [advanced configuration](https://docs.gitlab.com/charts/#advanced-configuration)
+where stateful backend components, such as the database or Gitaly, are run externally - either
+via Omnibus or reputable third party services. Note that we don't currently support running the
+stateful components via Helm _at large scales_.
+
+When designing these environments you should refer to the respective [Reference Architecture](#available-reference-architectures)
+above for guidance on sizing. Components run via Helm would be similarly scaled to their Omnibus
+specs, only translated into Kubernetes resources.
+
+For example, if you were to set up a 50k installation with the Rails nodes being run in Helm,
+then the same amount of resources as given for Omnibus should be given to the Kubernetes
+cluster with the Rails nodes broken down into a number of smaller Pods across that cluster.
+
 ## Footnotes
 
 1. In our architectures we run each GitLab Rails node using the Puma webserver

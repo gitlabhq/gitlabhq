@@ -6,6 +6,41 @@ require 'rspec-parameterized'
 describe Gitlab::InstrumentationHelper do
   using RSpec::Parameterized::TableSyntax
 
+  describe '.keys' do
+    it 'returns all available payload keys' do
+      expected_keys = [
+        :gitaly_calls,
+        :gitaly_duration_s,
+        :rugged_calls,
+        :rugged_duration_s,
+        :elasticsearch_calls,
+        :elasticsearch_duration_s,
+        :redis_calls,
+        :redis_duration_s,
+        :redis_read_bytes,
+        :redis_write_bytes,
+        :redis_action_cable_calls,
+        :redis_action_cable_duration_s,
+        :redis_action_cable_read_bytes,
+        :redis_action_cable_write_bytes,
+        :redis_cache_calls,
+        :redis_cache_duration_s,
+        :redis_cache_read_bytes,
+        :redis_cache_write_bytes,
+        :redis_queues_calls,
+        :redis_queues_duration_s,
+        :redis_queues_read_bytes,
+        :redis_queues_write_bytes,
+        :redis_shared_state_calls,
+        :redis_shared_state_duration_s,
+        :redis_shared_state_read_bytes,
+        :redis_shared_state_write_bytes
+      ]
+
+      expect(described_class.keys).to eq(expected_keys)
+    end
+  end
+
   describe '.add_instrumentation_data', :request_store do
     let(:payload) { {} }
 
@@ -34,14 +69,30 @@ describe Gitlab::InstrumentationHelper do
 
     context 'when Redis calls are made' do
       it 'adds Redis data and omits Gitaly data' do
-        Gitlab::Redis::Cache.with { |redis| redis.set('test-instrumentation', 123) }
+        Gitlab::Redis::Cache.with { |redis| redis.set('test-cache', 123) }
+        Gitlab::Redis::Queues.with { |redis| redis.set('test-queues', 321) }
 
         subject
 
-        expect(payload[:redis_calls]).to eq(1)
+        # Aggregated payload
+        expect(payload[:redis_calls]).to eq(2)
         expect(payload[:redis_duration_s]).to be >= 0
         expect(payload[:redis_read_bytes]).to be >= 0
         expect(payload[:redis_write_bytes]).to be >= 0
+
+        # Shared state payload
+        expect(payload[:redis_queues_calls]).to eq(1)
+        expect(payload[:redis_queues_duration_s]).to be >= 0
+        expect(payload[:redis_queues_read_bytes]).to be >= 0
+        expect(payload[:redis_queues_write_bytes]).to be >= 0
+
+        # Cache payload
+        expect(payload[:redis_cache_calls]).to eq(1)
+        expect(payload[:redis_cache_duration_s]).to be >= 0
+        expect(payload[:redis_cache_read_bytes]).to be >= 0
+        expect(payload[:redis_cache_write_bytes]).to be >= 0
+
+        # Gitaly
         expect(payload[:gitaly_calls]).to be_nil
         expect(payload[:gitaly_duration]).to be_nil
       end

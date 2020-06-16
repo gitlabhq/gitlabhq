@@ -18,7 +18,7 @@ module Ci
         variables.concat(deployment_variables(environment: environment))
         variables.concat(yaml_variables)
         variables.concat(user_variables)
-        variables.concat(dependency_variables) if Feature.enabled?(:ci_dependency_variables, project)
+        variables.concat(dependency_variables)
         variables.concat(secret_instance_variables)
         variables.concat(secret_group_variables)
         variables.concat(secret_project_variables(environment: environment))

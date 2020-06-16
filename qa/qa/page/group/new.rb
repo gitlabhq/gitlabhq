@@ -10,7 +10,7 @@ module QA
           element :group_description_field, 'text_area :description' # rubocop:disable QA/ElementWithPattern
         end
 
-        view 'app/views/groups/new.html.haml' do
+        view 'app/views/groups/_new_group_fields.html.haml' do
           element :create_group_button, "submit _('Create group')" # rubocop:disable QA/ElementWithPattern
           element :visibility_radios, 'visibility_level:' # rubocop:disable QA/ElementWithPattern
         end

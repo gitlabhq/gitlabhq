@@ -25,7 +25,7 @@ class SlackService < ChatNotificationService
 
   def supported_events
     additional = []
-    additional << 'alert' if Feature.enabled?(:alert_slack_event, project)
+    additional << 'alert'
 
     super + additional
   end

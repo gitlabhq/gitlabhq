@@ -734,7 +734,7 @@ module ProjectsHelper
   end
 
   def native_code_navigation_enabled?(project)
-    Feature.enabled?(:code_navigation, project)
+    Feature.enabled?(:code_navigation, project, default_enabled: true)
   end
 
   def show_visibility_confirm_modal?(project)

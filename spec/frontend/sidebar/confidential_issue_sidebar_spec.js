@@ -6,11 +6,14 @@ import SidebarService from '~/sidebar/services/sidebar_service';
 import createFlash from '~/flash';
 import RecaptchaModal from '~/vue_shared/components/recaptcha_modal.vue';
 import createStore from '~/notes/stores';
+import { useMockLocationHelper } from 'helpers/mock_window_location_helper';
 
 jest.mock('~/flash');
 jest.mock('~/sidebar/services/sidebar_service');
 
 describe('Confidential Issue Sidebar Block', () => {
+  useMockLocationHelper();
+
   let wrapper;
 
   const findRecaptchaModal = () => wrapper.find(RecaptchaModal);
@@ -42,10 +45,6 @@ describe('Confidential Issue Sidebar Block', () => {
       },
     });
   };
-
-  beforeEach(() => {
-    jest.spyOn(window.location, 'reload').mockImplementation();
-  });
 
   afterEach(() => {
     wrapper.destroy();

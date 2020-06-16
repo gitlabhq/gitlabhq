@@ -7,11 +7,12 @@ module Gitlab
     class RedisBase
       class << self
         include ::Gitlab::Utils::StrongMemoize
+        include ::Gitlab::Instrumentation::RedisPayload
 
         # TODO: To be used by https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/395
         # as a 'label' alias.
         def storage_key
-          self.name.underscore
+          self.name.demodulize.underscore
         end
 
         def add_duration(duration)

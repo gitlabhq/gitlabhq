@@ -78,7 +78,7 @@ class DiffsEntity < Grape::Entity
     options[:merge_request_diffs]
   end
 
-  expose :definition_path_prefix, if: -> (diff_file) { Feature.enabled?(:code_navigation, merge_request.project) } do |diffs|
+  expose :definition_path_prefix, if: -> (diff_file) { Feature.enabled?(:code_navigation, merge_request.project, default_enabled: true) } do |diffs|
     project_blob_path(merge_request.project, diffs.diff_refs&.head_sha)
   end
 
@@ -89,7 +89,7 @@ class DiffsEntity < Grape::Entity
   private
 
   def code_navigation_path(diffs)
-    return unless Feature.enabled?(:code_navigation, merge_request.project)
+    return unless Feature.enabled?(:code_navigation, merge_request.project, default_enabled: true)
 
     Gitlab::CodeNavigationPath.new(merge_request.project, diffs.diff_refs&.head_sha)
   end

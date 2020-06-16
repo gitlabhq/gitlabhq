@@ -274,7 +274,7 @@ describe('Renamed Diff Viewer', () => {
         expect(link.text()).toEqual(linkText);
         expect(link.attributes('href')).toEqual(DIFF_FILE_VIEW_PATH);
 
-        link.trigger('click');
+        link.vm.$emit('click');
 
         expect(clickMock).toHaveBeenCalled();
       },

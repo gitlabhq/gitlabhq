@@ -33,7 +33,8 @@ module SystemCheck
           SystemCheck::App::ActiveUsersCheck,
           SystemCheck::App::AuthorizedKeysPermissionCheck,
           SystemCheck::App::HashedStorageEnabledCheck,
-          SystemCheck::App::HashedStorageAllProjectsCheck
+          SystemCheck::App::HashedStorageAllProjectsCheck,
+          SystemCheck::App::CiJwtSigningKeyCheck
         ]
       end
     end

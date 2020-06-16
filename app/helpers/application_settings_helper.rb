@@ -26,6 +26,17 @@ module ApplicationSettingsHelper
     end
   end
 
+  def storage_weights
+    ApplicationSetting.repository_storages_weighted_attributes.map do |attribute|
+      storage = attribute.to_s.delete_prefix('repository_storages_weighted_')
+      {
+        name: attribute,
+        label: storage,
+        value: @application_setting.repository_storages_weighted[storage] || 0
+      }
+    end
+  end
+
   def all_protocols_enabled?
     Gitlab::CurrentSettings.enabled_git_access_protocol.blank?
   end

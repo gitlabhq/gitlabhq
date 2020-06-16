@@ -2233,7 +2233,7 @@ msgstr ""
 msgid "An error occurred while adding formatted title for epic"
 msgstr ""
 
-msgid "An error occurred while checking group path"
+msgid "An error occurred while checking group path. Please refresh and try again."
 msgstr ""
 
 msgid "An error occurred while committing your changes."
@@ -3000,6 +3000,9 @@ msgid "Assignee lists show all issues assigned to the selected user."
 msgstr ""
 
 msgid "Assignee(s)"
+msgstr ""
+
+msgid "Assignees"
 msgstr ""
 
 msgid "Assigns %{assignee_users_sentence}."
@@ -11412,6 +11415,33 @@ msgid "GroupsEmptyState|No groups found"
 msgstr ""
 
 msgid "GroupsEmptyState|You can manage your group member’s permissions and access to each project in the group."
+msgstr ""
+
+msgid "GroupsNew|Contact an administrator to enable options for importing your group."
+msgstr ""
+
+msgid "GroupsNew|Create"
+msgstr ""
+
+msgid "GroupsNew|Create group"
+msgstr ""
+
+msgid "GroupsNew|GitLab group export"
+msgstr ""
+
+msgid "GroupsNew|Import"
+msgstr ""
+
+msgid "GroupsNew|Import group"
+msgstr ""
+
+msgid "GroupsNew|My Awesome Group"
+msgstr ""
+
+msgid "GroupsNew|No import options available"
+msgstr ""
+
+msgid "GroupsNew|To copy a GitLab group between installations, navigate to the group settings page for the original installation, generate an export file, and upload it here."
 msgstr ""
 
 msgid "GroupsTree|Are you sure you want to leave the \"%{fullName}\" group?"
@@ -19905,6 +19935,9 @@ msgstr ""
 msgid "Select a timezone"
 msgstr ""
 
+msgid "Select a weight for the storage new repositories will be placed on."
+msgstr ""
+
 msgid "Select all"
 msgstr ""
 
@@ -19984,9 +20017,6 @@ msgid "Select target branch"
 msgstr ""
 
 msgid "Select the branch you want to set as the default for this project. All merge requests and commits will automatically be made against this branch unless you specify a different one."
-msgstr ""
-
-msgid "Select the configured storage available for new repositories to be placed on."
 msgstr ""
 
 msgid "Select the custom project template source group."
@@ -23952,6 +23982,9 @@ msgid "Unable to schedule a pipeline to run immediately"
 msgstr ""
 
 msgid "Unable to sign you in to the group with SAML due to \"%{reason}\""
+msgstr ""
+
+msgid "Unable to suggest a path. Please refresh and try again."
 msgstr ""
 
 msgid "Unable to update label prioritization at this time"

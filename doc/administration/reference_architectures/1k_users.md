@@ -7,11 +7,18 @@ For a full list of reference architectures, see
 > - **Supported users (approximate):** 1,000
 > - **High Availability:** False
 
-| Users | Configuration([8](#footnotes)) | GCP             | AWS                  | Azure                  |
-|-------|--------------------------------|-----------------|----------------------|------------------------|
-| 100   | 2 vCPU, 7.2GB Memory           | `n1-standard-2` | `m5.large`           | D2s v3                 |
-| 500   | 4 vCPU, 15GB Memory            | `n1-standard-4` | `m5.xlarge`          | D4s v3                 |
-| 1000  | 8 vCPU, 30GB Memory            | `n1-standard-8` | `m5.2xlarge`         | D8s v3                 |
+| Users | Configuration([8](#footnotes))     | GCP            | AWS                 | Azure                  |
+|-------|------------------------------------|----------------|---------------------|------------------------|
+| 500   | 4 vCPU, 3.6GB Memory               | `n1-highcpu-4` | `c5.xlarge`         | F4s v2                 |
+| 1000  | 8 vCPU, 7.2GB Memory               | `n1-highcpu-8` | `c5.2xlarge`        | F8s v2                 |
+
+In addition to the above, we recommend having at least
+2GB of swap on your server, even if you currently have
+enough available RAM. Having swap will help reduce the chance of errors occurring
+if your available memory changes. We also recommend
+configuring the kernel's swappiness setting
+to a low value like `10` to make the most of your RAM while still having the swap
+available when needed.
 
 For situations where you need to serve up to 1,000 users, a single-node
 solution with [frequent backups](index.md#automated-backups-core-only) is appropriate

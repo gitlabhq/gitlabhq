@@ -39,6 +39,8 @@ class CreateAlertManagementAlerts < ActiveRecord::Migration[6.0]
   end
 
   def down
+    # rubocop:disable Migration/DropTable
     drop_table :alert_management_alerts
+    # rubocop:enable Migration/DropTable
   end
 end

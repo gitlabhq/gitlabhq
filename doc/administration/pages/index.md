@@ -208,7 +208,6 @@ control over how the Pages daemon runs and serves content in your environment.
 | `gitlab_secret` |  The OAuth application secret. Leave blank to automatically fill when Pages authenticates with GitLab.
 | `gitlab_server` |  Server to use for authentication when access control is enabled; defaults to GitLab `external_url`.
 | `headers` |  Specify any additional http headers that should be sent to the client with each response.
-| `http_proxy` |  Configure GitLab Pages to use an HTTP Proxy to mediate traffic between Pages and GitLab. Sets an environment variable `http_proxy` when starting Pages daemon.
 | `inplace_chroot` |  On [systems that don't support bind-mounts](index.md#additional-configuration-for-docker-container), this instructs GitLab Pages to chroot into its `pages_path` directory. Some caveats exist when using inplace chroot; refer to the GitLab Pages [README](https://gitlab.com/gitlab-org/gitlab-pages/blob/master/README.md#caveats) for more information.
 | `insecure_ciphers` |  Use default list of cipher suites, may contain insecure ones like 3DES and RC4.
 | `internal_gitlab_server` | Internal GitLab server address used exclusively for API requests. Useful if you want to send that traffic over an internal load balancer. Defaults to GitLab `external_url`.
@@ -226,6 +225,8 @@ control over how the Pages daemon runs and serves content in your environment.
 | `tls_max_version` |  Specifies the maximum SSL/TLS version ("ssl3", "tls1.0", "tls1.1" or "tls1.2").
 | `tls_min_version` |  Specifies the minimum SSL/TLS version ("ssl3", "tls1.0", "tls1.1" or "tls1.2").
 | `use_http2` |  Enable HTTP2 support.
+| **gitlab_pages['env'][]** | |
+| `http_proxy` |  Configure GitLab Pages to use an HTTP Proxy to mediate traffic between Pages and GitLab. Sets an environment variable `http_proxy` when starting Pages daemon.
 | **gitlab_rails[]** | |
 | `pages_domain_verification_cron_worker` | Schedule for verifying custom GitLab Pages domains.
 | `pages_domain_ssl_renewal_cron_worker` | Schedule for obtaining and renewing SSL certificates through Let's Encrypt for GitLab Pages domains.
@@ -400,7 +401,7 @@ pages:
 1. Configure in `/etc/gitlab/gitlab.rb`:
 
    ```ruby
-   gitlab_pages['http_proxy'] = 'http://example:8080'
+   gitlab_pages['env']['http_proxy'] = 'http://example:8080'
    ```
 
 1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.

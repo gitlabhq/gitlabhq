@@ -90,18 +90,6 @@ RSpec.describe AlertManagement::ProcessPrometheusAlertService do
 
               expect(ProjectServiceWorker).to have_received(:perform_async).with(slack_service.id, an_instance_of(Hash))
             end
-
-            context 'feature flag disabled' do
-              before do
-                stub_feature_flags(alert_slack_event: false)
-              end
-
-              it 'does not execute the alert service hooks' do
-                subject
-
-                expect(ProjectServiceWorker).not_to have_received(:perform_async)
-              end
-            end
           end
 
           context 'when alert cannot be created' do

@@ -23,6 +23,8 @@ class AddGroupDeletionSchedules < ActiveRecord::Migration[5.2]
   end
 
   def down
+    # rubocop:disable Migration/DropTable
     drop_table :group_deletion_schedules
+    # rubocop:enable Migration/DropTable
   end
 end

@@ -15,6 +15,8 @@ class CreateBoardUserPreferences < ActiveRecord::Migration[6.0]
   end
 
   def down
+    # rubocop:disable Migration/DropTable
     drop_table :board_user_preferences
+    # rubocop:enable Migration/DropTable
   end
 end

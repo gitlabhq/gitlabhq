@@ -66,9 +66,7 @@ class ListIssue {
   }
 
   removeMilestone(removeMilestone) {
-    if (IS_EE && removeMilestone && removeMilestone.id === this.milestone.id) {
-      this.milestone = {};
-    }
+    boardsStore.removeIssueMilestone(this, removeMilestone);
   }
 
   getLists() {

@@ -64,13 +64,17 @@ seconds:
 1. `queue_duration_s`: total time that the request was queued inside GitLab Workhorse
 1. `view_duration_s`: total time taken inside the Rails views
 1. `db_duration_s`: total time to retrieve data from PostgreSQL
-1. `redis_duration_s`: total time to retrieve data from Redis
 1. `cpu_s`: total time spent on CPU
 1. `gitaly_duration_s`: total time taken by Gitaly calls
 1. `gitaly_calls`: total number of calls made to Gitaly
 1. `redis_calls`: total number of calls made to Redis
+1. `redis_duration_s`: total time to retrieve data from Redis
 1. `redis_read_bytes`: total bytes read from Redis
 1. `redis_write_bytes`: total bytes written to Redis
+1. `redis_<instance>_calls`: total number of calls made to a Redis instance
+1. `redis_<instance>_duration_s`: total time to retrieve data from a Redis instance
+1. `redis_<instance>_read_bytes`: total bytes read from a Redis instance
+1. `redis_<instance>_write_bytes`: total bytes written to a Redis instance
 
 User clone and fetch activity using HTTP transport appears in this log as `action: git_upload_pack`.
 

@@ -474,8 +474,8 @@ Feature.enable(:instance_variables_ui)
 
 ## Inherit environment variables
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/22638) in GitLab 13.0.
-> - It's deployed behind a feature flag (`ci_dependency_variables`), disabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/22638) in GitLab 13.0 behind a disabled [feature flag](../../administration/feature_flags.md): `ci_dependency_variables`.
+> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/217834) in GitLab 13.1.
 
 You can inherit environment variables from dependent jobs.
 
@@ -518,25 +518,6 @@ deploy:
   needs:
     - job: build
       artifacts: true
-```
-
-### Enable inherited environment variables **(CORE ONLY)**
-
-The Inherited Environment Variables feature is under development and not ready for production use. It is
-deployed behind a feature flag that is **disabled by default**.
-[GitLab administrators with access to the GitLab Rails console](../../administration/feature_flags.md)
-can enable it for your instance.
-
-To enable it:
-
-```ruby
-Feature.enable(:ci_dependency_variables)
-```
-
-To disable it:
-
-```ruby
-Feature.disable(:ci_dependency_variables)
 ```
 
 ## Priority of environment variables

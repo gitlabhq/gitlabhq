@@ -158,3 +158,11 @@ After completing their portion of investigating or fixing the alert, users can
 unassign their account from the alert when their role is complete.
 The [alerts status](#alert-management-statuses) can be updated to
 reflect if the alert has been resolved.
+
+### Slack Notifications
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/216326) in GitLab 13.1.
+
+You can be alerted via a Slack message when a new alert has been received.
+
+See the [Slack Notifications Service docs](../integrations/slack.md) for information on how to set this up.

@@ -10,6 +10,8 @@ const createMountedWrapper = (props = {}) => {
   wrapper = mount(DuplicateDashboardForm, {
     propsData: { ...props },
     sync: false,
+    // We need to attach to document, so that `document.activeElement` is properly set in jsdom
+    attachToDocument: true,
   });
 };
 

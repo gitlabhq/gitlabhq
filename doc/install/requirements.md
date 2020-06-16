@@ -92,41 +92,30 @@ NOTE: **Note:** Since file system performance may affect GitLab's overall perfor
 
 ### CPU
 
-This is the recommended minimum hardware for a handful of example GitLab user base sizes. Your exact needs may be more, depending on your workload. Your workload is influenced by factors such as - but not limited to - how active your users are, how much automation you use, mirroring, and repository/change size.
+CPU requirements are dependent on the number of users and expected workload. Your exact needs may be more, depending on your workload. Your workload is influenced by factors such as - but not limited to - how active your users are, how much automation you use, mirroring, and repo/change size.
 
-- 1 core supports up to 100 users but the application can be a bit slower due to having all workers and background jobs running on the same core
-- **2 cores** is the **recommended** minimum number of cores and supports up to 100 users
-- 4 cores support up to 500 users
-- 8 cores support up to 1,000 users
-- 32 cores support up to 5,000 users
+The following is the recommended minimum CPU hardware guidance for a handful of example GitLab user base sizes.
+
+- **4 cores** is the **recommended** minimum number of cores and supports up to 500 users
+- 8 cores supports up to 1000 users
 - More users? Consult the [reference architectures page](../administration/reference_architectures/index.md)
 
 ### Memory
 
-This is the recommended minimum hardware for a handful of example GitLab user base sizes. Your exact needs may be more, depending on your workload. Your workload is influenced by factors such as - but not limited to - how active your users are, how much automation you use, mirroring, and the size of repositories as well as changes/commits.
+Memory requirements are dependent on the number of users and expected workload. Your exact needs may be more, depending on your workload. Your workload is influenced by factors such as - but not limited to - how active your users are, how much automation you use, mirroring, and repo/change size.
 
-You need at least 8GB of addressable memory (RAM + swap) to install and use GitLab!
-The operating system and any other running applications will also be using memory
-so keep in mind that you need at least 4GB available before running GitLab. With
-less memory GitLab will give strange errors during the reconfigure run and 500
-errors during usage.
+The following is the recommended minimum Memory hardware guidance for a handful of example GitLab user base sizes.
 
-- 4GB RAM + 4GB swap supports up to 100 users but it will be very slow
-- **8GB RAM** is the **recommended** minimum memory size for all installations and supports up to 100 users
-- 16GB RAM supports up to 500 users
-- 32GB RAM supports up to 1,000 users
-- 128GB RAM supports up to 5,000 users
+- **4GB RAM** is the **required** minimum memory size and supports up to 500 users
+  - Our [Memory Team](https://about.gitlab.com/handbook/engineering/development/enablement/memory/) is working to reduce the memory requirement.
+- 8GB RAM supports up to 1000 users
 - More users? Consult the [reference architectures page](../administration/reference_architectures/index.md)
 
-We recommend having at least [2GB of swap on your server](https://askubuntu.com/a/505344/310789), even if you currently have
-enough available RAM. Having swap will help reduce the chance of errors occurring
-if your available memory changes. We also recommend [configuring the kernel's swappiness setting](https://askubuntu.com/a/103916)
+In addition to the above, we generally recommend having at least 2GB of swap on your server,
+even if you currently have enough available RAM. Having swap will help reduce the chance of errors occurring
+if your available memory changes. We also recommend configuring the kernel's swappiness setting
 to a low value like `10` to make the most of your RAM while still having the swap
 available when needed.
-
-Our [Memory Team](https://about.gitlab.com/handbook/engineering/development/enablement/memory/) is actively working to reduce the memory requirement.
-
-NOTE: **Note:** The 25 workers of Sidekiq will show up as separate processes in your process overview (such as `top` or `htop`). However, they share the same RAM allocation, as Sidekiq is a multi-threaded application. See the section below about Unicorn workers for information about how many you need for those.
 
 ## Database
 
@@ -168,22 +157,6 @@ If you're using [GitLab Geo](../administration/geo/replication/index.md):
   [can be enabled](https://www.postgresql.org/docs/11/sql-createextension.html)
   using a PostgreSQL super user.
 
-## Unicorn Workers
-
-For most instances we recommend using: (CPU cores * 1.5) + 1 = Unicorn workers.
-For example a node with 4 cores would have 7 Unicorn workers.
-
-For all machines that have 2GB and up we recommend a minimum of three Unicorn workers.
-If you have a 1GB machine we recommend to configure only two Unicorn workers to prevent excessive
-swapping.
-
-As long as you have enough available CPU and memory capacity, it's okay to increase the number of
-Unicorn workers and this will usually help to reduce the response time of the applications and
-increase the ability to handle parallel requests.
-
-To change the Unicorn workers when you have the Omnibus package (which defaults to the
-recommendation above) please see [the Unicorn settings in the Omnibus GitLab documentation](https://docs.gitlab.com/omnibus/settings/unicorn.html).
-
 ## Puma settings
 
 The recommended settings for Puma are determined by the infrastructure on which it's running.
@@ -218,6 +191,22 @@ of [legacy Rugged code](../development/gitaly.md#legacy-rugged-code).
 - In all other cases, the recommended number of threads is `4`. We don't recommend setting this
 higher, due to how [Ruby MRI multi-threading](https://en.wikipedia.org/wiki/Global_interpreter_lock)
 works.
+
+## Unicorn Workers
+
+For most instances we recommend using: (CPU cores * 1.5) + 1 = Unicorn workers.
+For example a node with 4 cores would have 7 Unicorn workers.
+
+For all machines that have 2GB and up we recommend a minimum of three Unicorn workers.
+If you have a 1GB machine we recommend to configure only two Unicorn workers to prevent excessive
+swapping.
+
+As long as you have enough available CPU and memory capacity, it's okay to increase the number of
+Unicorn workers and this will usually help to reduce the response time of the applications and
+increase the ability to handle parallel requests.
+
+To change the Unicorn workers when you have the Omnibus package (which defaults to the
+recommendation above) please see [the Unicorn settings in the Omnibus GitLab documentation](https://docs.gitlab.com/omnibus/settings/unicorn.html).
 
 ## Redis and Sidekiq
 

@@ -23,7 +23,11 @@ module RuboCop
 
     # Returns true if the given node originated from the db/migrate directory.
     def in_migration?(node)
-      dirname(node).end_with?('db/migrate', 'db/geo/migrate') || in_post_deployment_migration?(node)
+      in_deployment_migration?(node) || in_post_deployment_migration?(node)
+    end
+
+    def in_deployment_migration?(node)
+      dirname(node).end_with?('db/migrate', 'db/geo/migrate')
     end
 
     def in_post_deployment_migration?(node)

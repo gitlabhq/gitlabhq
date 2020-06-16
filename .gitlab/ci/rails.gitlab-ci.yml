@@ -355,7 +355,7 @@ rspec foss-impact:
     - run_timed_command "scripts/gitaly-test-spawn"
     - source scripts/rspec_helpers.sh
     - tooling/bin/find_foss_tests tmp/matching_foss_tests.txt
-    - 'if [[ -n "$(cat tmp/matching_foss_tests.txt)" ]]; then rspec_simple_job "--tag ~quarantine --tag ~geo --tag ~level:migration $(cat tmp/matching_foss_tests.txt)"; fi'
+    - rspec_matched_tests tmp/matching_foss_tests.txt "--tag ~quarantine --tag ~geo --tag ~level:migration"
   artifacts:
     expire_in: 7d
     paths:

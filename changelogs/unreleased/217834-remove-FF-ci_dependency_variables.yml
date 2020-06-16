@@ -1,0 +1,5 @@
+---
+title: Enable CI Inheriting Env Variables feature
+merge_request: 34495
+author:
+type: added

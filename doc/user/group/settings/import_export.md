@@ -67,7 +67,7 @@ For more details on the specific data persisted in a group export, see the
 
 1. In the **Advanced** section, click the **Export Group** button.
 
-   ![Export group panel](img/export_panel.png)
+   ![Export group panel](img/export_panel_v13_0.png)
 
 1. Once the export is generated, you should receive an e-mail with a link to the [exported contents](#exported-contents)
    in a compressed tar archive, with contents in JSON format.
@@ -84,6 +84,27 @@ As an administrator, you can modify the maximum import file size. To do so, use 
 You can export groups from the [Community Edition to the Enterprise Edition](https://about.gitlab.com/install/ce-or-ee/) and vice versa.
 
 If you're exporting a group from the Enterprise Edition to the Community Edition, you may lose data that is retained only in the Enterprise Edition. For more information, see [downgrading from EE to CE](../../../README.md).
+
+## Importing the group
+
+1. Navigate to the New Group page, either via the `+` button in the top navigation bar, or the **New subgroup** button
+on an existing group's page.
+
+   ![Navigation paths to create a new group](img/new_group_navigation_v13_1.png)
+
+1. On the New Group page, select the **Import group** tab.
+
+   ![Fill in group details](img/import_panel_v13_1.png)
+
+1. Enter your group name.
+
+1. Accept or modify the associated group URL.
+
+1. Click **Choose file**
+
+1. Select the file that you exported in the [exporting a group](#exporting-a-group) section.
+
+1. Click **Import group** to begin importing. Your newly imported group page will appear shortly.
 
 ## Version history
 
@@ -106,3 +127,4 @@ To help avoid abuse, users are rate limited to:
 | ---------------- | ---------------------------------------- |
 | Export           | 30 groups every 5 minutes                |
 | Download export  | 10 downloads per group every 10 minutes  |
+| Import           | 30 groups every 5 minutes                |

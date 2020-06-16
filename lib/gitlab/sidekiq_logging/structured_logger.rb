@@ -27,7 +27,7 @@ module Gitlab
       private
 
       def add_instrumentation_keys!(job, output_payload)
-        output_payload.merge!(job.slice(*::Gitlab::InstrumentationHelper::KEYS))
+        output_payload.merge!(job.slice(*::Gitlab::InstrumentationHelper.keys))
       end
 
       def add_logging_extras!(job, output_payload)

@@ -30,7 +30,8 @@ module Ci
         webide: 9,
         merge_request_event: 10,
         external_pull_request_event: 11,
-        parent_pipeline: 12
+        parent_pipeline: 12,
+        ondemand_scan: 13
       }
     end
 

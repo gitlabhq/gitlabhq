@@ -70,6 +70,32 @@ module API
       end
       # rubocop: enable CodeReuse/ActiveRecord
 
+      desc 'Get pipeline bridge jobs' do
+        success Entities::Bridge
+      end
+      params do
+        requires :pipeline_id, type: Integer, desc: 'The pipeline ID'
+        use :optional_scope
+        use :pagination
+      end
+      # rubocop: disable CodeReuse/ActiveRecord
+      get ':id/pipelines/:pipeline_id/bridges' do
+        authorize!(:read_build, user_project)
+        pipeline = user_project.ci_pipelines.find(params[:pipeline_id])
+        authorize!(:read_pipeline, pipeline)
+
+        bridges = pipeline.bridges
+        bridges = filter_builds(bridges, params[:scope])
+        bridges = bridges.preload(
+          :metadata,
+          downstream_pipeline: [project: [:route, { namespace: :route }]],
+          project: [:namespace]
+        )
+
+        present paginate(bridges), with: Entities::Bridge
+      end
+      # rubocop: enable CodeReuse/ActiveRecord
+
       desc 'Get a specific job of a project' do
         success Entities::Job
       end

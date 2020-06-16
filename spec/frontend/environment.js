@@ -2,7 +2,7 @@
 
 const path = require('path');
 const { ErrorWithStack } = require('jest-util');
-const JSDOMEnvironment = require('jest-environment-jsdom');
+const JSDOMEnvironment = require('jest-environment-jsdom-sixteen');
 
 const ROOT_PATH = path.resolve(__dirname, '../..');
 

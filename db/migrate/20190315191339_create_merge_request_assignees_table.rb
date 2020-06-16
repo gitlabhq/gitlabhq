@@ -17,6 +17,8 @@ class CreateMergeRequestAssigneesTable < ActiveRecord::Migration[5.0]
   end
 
   def down
+    # rubocop:disable Migration/DropTable
     drop_table :merge_request_assignees
+    # rubocop:enable Migration/DropTable
   end
 end

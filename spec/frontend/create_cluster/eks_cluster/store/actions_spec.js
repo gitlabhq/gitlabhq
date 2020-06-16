@@ -1,4 +1,5 @@
 import testAction from 'helpers/vuex_action_helper';
+import { useMockLocationHelper } from 'helpers/mock_window_location_helper';
 import MockAdapter from 'axios-mock-adapter';
 import createState from '~/create_cluster/eks_cluster/store/state';
 import * as actions from '~/create_cluster/eks_cluster/store/actions';
@@ -251,12 +252,7 @@ describe('EKS Cluster Store Actions', () => {
   });
 
   describe('createClusterSuccess', () => {
-    beforeEach(() => {
-      jest.spyOn(window.location, 'assign').mockImplementation(() => {});
-    });
-    afterEach(() => {
-      window.location.assign.mockRestore();
-    });
+    useMockLocationHelper();
 
     it('redirects to the new cluster URL', () => {
       actions.createClusterSuccess(null, newClusterUrl);

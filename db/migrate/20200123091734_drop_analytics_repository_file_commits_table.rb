@@ -7,7 +7,9 @@ class DropAnalyticsRepositoryFileCommitsTable < ActiveRecord::Migration[5.2]
 
   def up
     # Requires ExclusiveLock on the table. Not in use, no records, no FKs.
+    # rubocop:disable Migration/DropTable
     drop_table :analytics_repository_file_commits
+    # rubocop:enable Migration/DropTable
   end
 
   def down

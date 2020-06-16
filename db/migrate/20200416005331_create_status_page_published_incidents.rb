@@ -15,6 +15,8 @@ class CreateStatusPagePublishedIncidents < ActiveRecord::Migration[6.0]
   end
 
   def down
+    # rubocop:disable Migration/DropTable
     drop_table :status_page_published_incidents
+    # rubocop:enable Migration/DropTable
   end
 end

@@ -20,6 +20,8 @@ class CreateMetricsUsersStarredDashboard < ActiveRecord::Migration[6.0]
   # rubocop: enable Migration/AddLimitToTextColumns
 
   def down
+    # rubocop:disable Migration/DropTable
     drop_table :metrics_users_starred_dashboards
+    # rubocop:enable Migration/DropTable
   end
 end
