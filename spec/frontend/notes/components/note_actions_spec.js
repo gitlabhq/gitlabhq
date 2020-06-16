@@ -4,26 +4,33 @@ import { TEST_HOST } from 'spec/test_constants';
 import createStore from '~/notes/stores';
 import noteActions from '~/notes/components/note_actions.vue';
 import { userDataMock } from '../mock_data';
+import AxiosMockAdapter from 'axios-mock-adapter';
+import axios from '~/lib/utils/axios_utils';
 
 describe('noteActions', () => {
   let wrapper;
   let store;
   let props;
+  let actions;
+  let axiosMock;
 
-  const shallowMountNoteActions = propsData => {
+  const shallowMountNoteActions = (propsData, computed) => {
     const localVue = createLocalVue();
     return shallowMount(localVue.extend(noteActions), {
       store,
       propsData,
       localVue,
+      computed,
     });
   };
 
   beforeEach(() => {
     store = createStore();
+
     props = {
       accessLevel: 'Maintainer',
-      authorId: 26,
+      authorId: 1,
+      author: userDataMock,
       canDelete: true,
       canEdit: true,
       canAwardEmoji: true,
@@ -33,10 +40,17 @@ describe('noteActions', () => {
       reportAbusePath: `${TEST_HOST}/abuse_reports/new?ref_url=http%3A%2F%2Flocalhost%3A3000%2Fgitlab-org%2Fgitlab-ce%2Fissues%2F7%23note_539&user_id=26`,
       showReply: false,
     };
+
+    actions = {
+      updateAssignees: jest.fn(),
+    };
+
+    axiosMock = new AxiosMockAdapter(axios);
   });
 
   afterEach(() => {
     wrapper.destroy();
+    axiosMock.restore();
   });
 
   describe('user is logged in', () => {
@@ -76,6 +90,14 @@ describe('noteActions', () => {
       it('should not show copy link action when `noteUrl` prop is empty', done => {
         wrapper.setProps({
           ...props,
+          author: {
+            avatar_url: 'mock_path',
+            id: 26,
+            name: 'Example Maintainer',
+            path: '/ExampleMaintainer',
+            state: 'active',
+            username: 'ExampleMaintainer',
+          },
           noteUrl: '',
         });
 
@@ -103,6 +125,25 @@ describe('noteActions', () => {
             done();
           })
           .catch(done.fail);
+      });
+
+      it('should be possible to assign or unassign the comment author', () => {
+        wrapper = shallowMountNoteActions(props, {
+          targetType: () => 'issue',
+        });
+
+        const assignUserButton = wrapper.find('[data-testid="assign-user"]');
+        expect(assignUserButton.exists()).toBe(true);
+
+        assignUserButton.trigger('click');
+        axiosMock.onPut(`${TEST_HOST}/api/v4/projects/group/project/issues/1`).reply(() => {
+          expect(actions.updateAssignees).toHaveBeenCalled();
+        });
+      });
+
+      it('should not be possible to assign or unassign the comment author in a merge request', () => {
+        const assignUserButton = wrapper.find('[data-testid="assign-user"]');
+        expect(assignUserButton.exists()).toBe(false);
       });
     });
   });

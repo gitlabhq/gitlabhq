@@ -134,15 +134,18 @@ in the jobs table.
 A few examples of known coverage tools for a variety of languages can be found
 in the pipelines settings page.
 
-### Download test coverage history
+### Code Coverage history
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/209121) in GitLab 12.10.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/209121) the ability to download a `.csv` in GitLab 12.10.
+> - [Graph introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/33743) in GitLab 13.1.
 
 If you want to see the evolution of your project code coverage over time,
-you can download a CSV file with this data. From your project:
+you can view a graph or download a CSV file with this data. From your project:
 
-1. Go to **{chart}** **Project Analytics > Repository**.
-1. Click **Download raw data (`.csv`)**
+1. Go to **{chart}** **Project Analytics > Repository** to see the historic data for each job listed in the dropdown above the graph.
+1. If you want a CSV file of that data, click **Download raw data (.csv)**
+
+![Code coverage graph of a project over time](img/code_coverage_graph_v13_1.png)
 
 ### Removing color codes
 

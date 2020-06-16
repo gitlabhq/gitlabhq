@@ -1,9 +1,13 @@
 <script>
+import { __ } from '~/locale';
 import { mapGetters } from 'vuex';
 import { GlLoadingIcon, GlTooltipDirective } from '@gitlab/ui';
 import resolvedStatusMixin from '~/batch_comments/mixins/resolved_status';
 import Icon from '~/vue_shared/components/icon.vue';
 import ReplyButton from './note_actions/reply_button.vue';
+import eventHub from '~/sidebar/event_hub';
+import Api from '~/api';
+import flash from '~/flash';
 
 export default {
   name: 'NoteActions',
@@ -17,6 +21,10 @@ export default {
   },
   mixins: [resolvedStatusMixin],
   props: {
+    author: {
+      type: Object,
+      required: true,
+    },
     authorId: {
       type: Number,
       required: true,
@@ -87,7 +95,7 @@ export default {
     },
   },
   computed: {
-    ...mapGetters(['getUserDataByProp']),
+    ...mapGetters(['getUserDataByProp', 'getNoteableData']),
     shouldShowActionsDropdown() {
       return this.currentUserId && (this.canEdit || this.canReportAsAbuse);
     },
@@ -99,6 +107,26 @@ export default {
     },
     currentUserId() {
       return this.getUserDataByProp('id');
+    },
+    isUserAssigned() {
+      return this.assignees && this.assignees.some(({ id }) => id === this.author.id);
+    },
+    displayAssignUserText() {
+      return this.isUserAssigned
+        ? __('Unassign from commenting user')
+        : __('Assign to commenting user');
+    },
+    sidebarAction() {
+      return this.isUserAssigned ? 'sidebar.addAssignee' : 'sidebar.removeAssignee';
+    },
+    targetType() {
+      return this.getNoteableData.targetType;
+    },
+    assignees() {
+      return this.getNoteableData.assignees || [];
+    },
+    isIssue() {
+      return this.targetType === 'issue';
     },
   },
   methods: {
@@ -115,6 +143,29 @@ export default {
       this.$nextTick(() => {
         this.$root.$emit('bv::hide::tooltip');
       });
+    },
+    handleAssigneeUpdate(assignees) {
+      this.$emit('updateAssignees', assignees);
+      eventHub.$emit(this.sidebarAction, this.author);
+      eventHub.$emit('sidebar.saveAssignees');
+    },
+    assignUser() {
+      let { assignees } = this;
+      const { project_id, iid } = this.getNoteableData;
+
+      if (this.isUserAssigned) {
+        assignees = assignees.filter(assignee => assignee.id !== this.author.id);
+      } else {
+        assignees.push({ id: this.author.id });
+      }
+
+      if (this.targetType === 'issue') {
+        Api.updateIssue(project_id, iid, {
+          assignee_ids: assignees.map(assignee => assignee.id),
+        })
+          .then(() => this.handleAssigneeUpdate(assignees))
+          .catch(() => flash(__('Something went wrong while updating assignees')));
+      }
     },
   },
 };
@@ -213,6 +264,16 @@ export default {
             @click.prevent="onDelete"
           >
             <span class="text-danger">{{ __('Delete comment') }}</span>
+          </button>
+        </li>
+        <li v-if="isIssue">
+          <button
+            class="btn-default btn-transparent"
+            data-testid="assign-user"
+            type="button"
+            @click="assignUser"
+          >
+            {{ displayAssignUserText }}
           </button>
         </li>
       </ul>

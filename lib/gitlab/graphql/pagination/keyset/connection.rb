@@ -194,7 +194,12 @@ module Gitlab
 
             order_list.each do |field|
               field_name = field.attribute_name
-              ordering[field_name] = node[field_name].to_s
+              field_value = node[field_name]
+              ordering[field_name] = if field_value.is_a?(Time)
+                                       field_value.strftime('%Y-%m-%d %H:%M:%S.%N %Z')
+                                     else
+                                       field_value.to_s
+                                     end
             end
 
             encode(ordering.to_json)

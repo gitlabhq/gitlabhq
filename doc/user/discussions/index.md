@@ -532,3 +532,15 @@ to the original comment, so a note about when it was last edited will appear und
 
 This feature only exists for Issues, Merge requests, and Epics. Commits, Snippets and Merge request diff threads are
 not supported yet.
+
+## Assign an issue to the commenting user
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/191455) in GitLab 13.1.
+
+You can assign an issue to a user who made a comment.
+
+In the comment, click the **More Actions** menu and click **Assign to commenting user**.
+
+Click the button again to unassign the commenter.
+
+![Assign to commenting user](img/quickly_assign_commenter_v13_1.png)

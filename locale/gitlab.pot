@@ -2970,6 +2970,9 @@ msgstr ""
 msgid "Assign to"
 msgstr ""
 
+msgid "Assign to commenting user"
+msgstr ""
+
 msgid "Assign yourself to these issues"
 msgstr ""
 
@@ -3413,6 +3416,9 @@ msgid "Below you will find all the groups that are public."
 msgstr ""
 
 msgid "Beta"
+msgstr ""
+
+msgid "Bi-weekly code coverage"
 msgstr ""
 
 msgid "Billing"
@@ -5362,10 +5368,10 @@ msgstr ""
 msgid "ClusterIntegration|Select zone to choose machine type"
 msgstr ""
 
-msgid "ClusterIntegration|Send Cilium Logs"
+msgid "ClusterIntegration|Send Container Network Policies Logs"
 msgstr ""
 
-msgid "ClusterIntegration|Send ModSecurity Logs"
+msgid "ClusterIntegration|Send Web Application Firewall Logs"
 msgstr ""
 
 msgid "ClusterIntegration|Service Token"
@@ -5573,6 +5579,15 @@ msgid "Clusters|An error occurred while loading clusters"
 msgstr ""
 
 msgid "Code"
+msgstr ""
+
+msgid "Code Coverage: %{coveragePercentage}%{percentSymbol}"
+msgstr ""
+
+msgid "Code Coverage| Empty code coverage data"
+msgstr ""
+
+msgid "Code Coverage|Couldn't fetch the code coverage data"
 msgstr ""
 
 msgid "Code Owners"
@@ -12510,6 +12525,9 @@ msgid "It must have a header row and at least two columns: the first column is t
 msgstr ""
 
 msgid "It seems like the Dependency Scanning job ran successfully, but no dependencies have been detected in your project."
+msgstr ""
+
+msgid "It seems that there is currently no available data for code coverage"
 msgstr ""
 
 msgid "It's you"
@@ -20950,6 +20968,9 @@ msgstr ""
 msgid "Something went wrong while updating a requirement."
 msgstr ""
 
+msgid "Something went wrong while updating assignees"
+msgstr ""
+
 msgid "Something went wrong while updating your list settings"
 msgstr ""
 
@@ -24059,6 +24080,9 @@ msgstr ""
 msgid "Unarchiving the project will restore people's ability to make changes to it. The repository can be committed to, and issues, comments, and other entities can be created. %{strong_start}Once active, this project shows up in the search and on the dashboard.%{strong_end}"
 msgstr ""
 
+msgid "Unassign from commenting user"
+msgstr ""
+
 msgid "Unblock"
 msgstr ""
 
@@ -25315,6 +25339,9 @@ msgid "We will automatically renew your %{strong}%{plan_name}%{strong_close} sub
 msgstr ""
 
 msgid "We've found no vulnerabilities"
+msgstr ""
+
+msgid "Web Application Firewall"
 msgstr ""
 
 msgid "Web IDE"
@@ -26705,6 +26732,9 @@ msgid "created %{timeago}"
 msgstr ""
 
 msgid "customize"
+msgstr ""
+
+msgid "data"
 msgstr ""
 
 msgid "date must not be after 9999-12-31"

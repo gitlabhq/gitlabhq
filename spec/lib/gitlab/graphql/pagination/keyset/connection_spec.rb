@@ -33,7 +33,7 @@ describe Gitlab::Graphql::Pagination::Keyset::Connection do
       let(:nodes) { Project.order(:updated_at) }
 
       it 'returns the encoded value of the order' do
-        expect(decoded_cursor(cursor)).to include('updated_at' => project.updated_at.to_s)
+        expect(decoded_cursor(cursor)).to include('updated_at' => project.updated_at.strftime('%Y-%m-%d %H:%M:%S.%N %Z'))
       end
 
       it 'includes the :id even when not specified in the order' do
@@ -45,7 +45,7 @@ describe Gitlab::Graphql::Pagination::Keyset::Connection do
       let(:nodes) { Project.order(:updated_at).order(:created_at) }
 
       it 'returns the encoded value of the order' do
-        expect(decoded_cursor(cursor)).to include('updated_at' => project.updated_at.to_s)
+        expect(decoded_cursor(cursor)).to include('updated_at' => project.updated_at.strftime('%Y-%m-%d %H:%M:%S.%N %Z'))
       end
     end
 
@@ -53,7 +53,7 @@ describe Gitlab::Graphql::Pagination::Keyset::Connection do
       let(:nodes) { Project.order(Arel.sql('projects.updated_at IS NULL')).order(:updated_at).order(:id) }
 
       it 'returns the encoded value of the order' do
-        expect(decoded_cursor(cursor)).to include('updated_at' => project.updated_at.to_s)
+        expect(decoded_cursor(cursor)).to include('updated_at' => project.updated_at.strftime('%Y-%m-%d %H:%M:%S.%N %Z'))
       end
     end
   end

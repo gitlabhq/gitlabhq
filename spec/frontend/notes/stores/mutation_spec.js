@@ -805,4 +805,16 @@ describe('Notes Store mutations', () => {
       expect(state.batchSuggestionsInfo.length).toEqual(0);
     });
   });
+
+  describe('UPDATE_ASSIGNEES', () => {
+    it('should update assignees', () => {
+      const state = {
+        noteableData: noteableDataMock,
+      };
+
+      mutations.UPDATE_ASSIGNEES(state, [userDataMock.id]);
+
+      expect(state.noteableData.assignees).toEqual([userDataMock.id]);
+    });
+  });
 });

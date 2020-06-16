@@ -28,7 +28,7 @@
       %a.btn.btn-sm{ href: "#{download_path}?#{@daily_coverage_options[:base_params].to_query}" }
         %small
           = _("Download raw data (.csv)")
-    #js-code-coverage-chart{ data: { daily_coverage_options: @daily_coverage_options.to_json.html_safe } }
+    #js-code-coverage-chart{ data: { graph_endpoint: "#{@daily_coverage_options[:graph_api_path]}?#{@daily_coverage_options[:base_params].to_query}" } }
 
 .repo-charts
   .sub-header-block.border-top

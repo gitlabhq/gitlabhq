@@ -1141,4 +1141,17 @@ describe('Actions Notes Store', () => {
       });
     });
   });
+
+  describe('updateAssignees', () => {
+    it('update the assignees state', done => {
+      testAction(
+        actions.updateAssignees,
+        [userDataMock.id],
+        { state: noteableDataMock },
+        [{ type: mutationTypes.UPDATE_ASSIGNEES, payload: [userDataMock.id] }],
+        [],
+        done,
+      );
+    });
+  });
 });

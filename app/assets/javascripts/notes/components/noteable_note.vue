@@ -184,6 +184,7 @@ export default {
       'updateNote',
       'toggleResolveNote',
       'scrollToNoteIfNeeded',
+      'updateAssignees',
     ]),
     editHandler() {
       this.isEditing = true;
@@ -299,6 +300,9 @@ export default {
     getLineClasses(lineNumber) {
       return getLineClasses(lineNumber);
     },
+    assigneesUpdate(assignees) {
+      this.updateAssignees(assignees);
+    },
   },
 };
 </script>
@@ -355,6 +359,7 @@ export default {
           <span v-else-if="note.created_at" class="d-none d-sm-inline">&middot;</span>
         </note-header>
         <note-actions
+          :author="author"
           :author-id="author.id"
           :note-id="note.id"
           :note-url="note.noteable_note_url"
@@ -377,6 +382,7 @@ export default {
           @handleDelete="deleteHandler"
           @handleResolve="resolveHandler"
           @startReplying="$emit('startReplying')"
+          @updateAssignees="assigneesUpdate"
         />
       </div>
       <div class="timeline-discussion-body">

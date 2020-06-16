@@ -20,6 +20,15 @@ describe AlertManagement::Alerts::UpdateService do
   describe '#execute' do
     subject(:response) { service.execute }
 
+    context 'when the current_user is nil' do
+      let(:current_user) { nil }
+
+      it 'results in an error' do
+        expect(response).to be_error
+        expect(response.message).to eq('You have no permissions')
+      end
+    end
+
     context 'when user does not have permission to update alerts' do
       let(:current_user) { user_without_permissions }
 
@@ -79,6 +88,37 @@ describe AlertManagement::Alerts::UpdateService do
 
       it 'adds a todo' do
         expect { response }.to change { Todo.where(user: user_with_permissions).count }.by(1)
+      end
+
+      context 'when current user is not the assignee' do
+        let(:assignee_user) { create(:user) }
+        let(:params) { { assignees: [assignee_user] } }
+
+        it 'skips adding todo for assignee without permission to read alert' do
+          expect { response }.not_to change(Todo, :count)
+        end
+
+        context 'when assignee has read permission' do
+          before do
+            project.add_developer(assignee_user)
+          end
+
+          it 'adds a todo' do
+            response
+
+            expect(Todo.first.author).to eq(current_user)
+          end
+        end
+
+        context 'when current_user is nil' do
+          let(:current_user) { nil }
+
+          it 'skips adding todo if current_user is nil' do
+            project.add_developer(assignee_user)
+
+            expect { response }.not_to change(Todo, :count)
+          end
+        end
       end
 
       context 'with multiple users included' do

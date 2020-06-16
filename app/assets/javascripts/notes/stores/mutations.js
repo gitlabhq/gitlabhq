@@ -355,4 +355,7 @@ export default {
   [types.RECEIVE_DELETE_DESCRIPTION_VERSION_ERROR](state) {
     state.isLoadingDescriptionVersion = false;
   },
+  [types.UPDATE_ASSIGNEES](state, assignees) {
+    state.noteableData.assignees = assignees;
+  },
 };

@@ -647,5 +647,9 @@ export const receiveDeleteDescriptionVersionError = ({ commit }, error) => {
   commit(types.RECEIVE_DELETE_DESCRIPTION_VERSION_ERROR, error);
 };
 
+export const updateAssignees = ({ commit }, assignees) => {
+  commit(types.UPDATE_ASSIGNEES, assignees);
+};
+
 // prevent babel-plugin-rewire from generating an invalid default during karma tests
 export default () => {};

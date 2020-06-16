@@ -22,7 +22,7 @@
     = render 'stat_anchor_list', anchors: @project.empty_repo_statistics_buttons
 
   - if can?(current_user, :push_code, @project)
-    .empty-wrapper.prepend-top-32
+    .empty-wrapper.gl-mt-7
       %h3#repo-command-line-instructions.page-title-empty
         = _('Command line instructions')
       %p

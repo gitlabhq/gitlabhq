@@ -35,7 +35,11 @@ module AlertManagement
       attr_reader :alert, :current_user, :params
 
       def allowed?
-        current_user.can?(:update_alert_management_alert, alert)
+        current_user&.can?(:update_alert_management_alert, alert)
+      end
+
+      def assignee_todo_allowed?
+        assignee&.can?(:read_alert_management_alert, alert)
       end
 
       def todo_service
@@ -80,9 +84,10 @@ module AlertManagement
       end
 
       def assign_todo
-        return unless assignee
+        # Remove check in follow-up issue https://gitlab.com/gitlab-org/gitlab/-/issues/222672
+        return unless assignee_todo_allowed?
 
-        todo_service.assign_alert(alert, assignee)
+        todo_service.assign_alert(alert, current_user)
       end
 
       def add_assignee_system_note(old_assignees)

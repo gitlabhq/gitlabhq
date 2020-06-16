@@ -33,6 +33,7 @@ The data in the charts are updated soon after each commit in the default branch.
 Available charts:
 
 - Programming languages used in the repository
+- Code coverage history (last 3 months) ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/33743) in GitLab 13.1)
 - Commit statistics (last month)
 - Commits per day of month
 - Commits per weekday
