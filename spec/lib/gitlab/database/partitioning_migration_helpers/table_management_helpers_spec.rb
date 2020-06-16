@@ -111,6 +111,36 @@ describe Gitlab::Database::PartitioningMigrationHelpers::TableManagementHelpers 
         expect_table_partitioned_by(partitioned_table, [partition_column])
       end
 
+      it 'changes the primary key datatype to bigint' do
+        migration.partition_table_by_date template_table, partition_column, min_date: min_date, max_date: max_date
+
+        pk_column = connection.columns(partitioned_table).find { |c| c.name == old_primary_key }
+
+        expect(pk_column.sql_type).to eq('bigint')
+      end
+
+      context 'with a non-integer primary key datatype' do
+        before do
+          connection.create_table :another_example, id: false do |t|
+            t.string :identifier, primary_key: true
+            t.timestamp :created_at
+          end
+        end
+
+        let(:template_table) { :another_example }
+        let(:old_primary_key) { 'identifier' }
+
+        it 'does not change the primary key datatype' do
+          migration.partition_table_by_date template_table, partition_column, min_date: min_date, max_date: max_date
+
+          original_pk_column = connection.columns(template_table).find { |c| c.name == old_primary_key }
+          pk_column = connection.columns(partitioned_table).find { |c| c.name == old_primary_key }
+
+          expect(pk_column).not_to be_nil
+          expect(pk_column).to eq(original_pk_column)
+        end
+      end
+
       it 'removes the default from the primary key column' do
         migration.partition_table_by_date template_table, partition_column, min_date: min_date, max_date: max_date
 

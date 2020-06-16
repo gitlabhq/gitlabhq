@@ -369,7 +369,7 @@ export const toggleStarredValue = ({ commit, state, getters }) => {
     method,
   })
     .then(() => {
-      commit(types.RECEIVE_DASHBOARD_STARRING_SUCCESS, newStarredValue);
+      commit(types.RECEIVE_DASHBOARD_STARRING_SUCCESS, { selectedDashboard, newStarredValue });
     })
     .catch(() => {
       commit(types.RECEIVE_DASHBOARD_STARRING_FAILURE);

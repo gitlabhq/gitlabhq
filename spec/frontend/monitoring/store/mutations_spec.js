@@ -93,14 +93,20 @@ describe('Monitoring mutations', () => {
       });
 
       it('sets a dashboard as starred', () => {
-        mutations[types.RECEIVE_DASHBOARD_STARRING_SUCCESS](stateCopy, true);
+        mutations[types.RECEIVE_DASHBOARD_STARRING_SUCCESS](stateCopy, {
+          selectedDashboard: stateCopy.allDashboards[1],
+          newStarredValue: true,
+        });
 
         expect(stateCopy.isUpdatingStarredValue).toBe(false);
         expect(stateCopy.allDashboards[1].starred).toBe(true);
       });
 
       it('sets a dashboard as unstarred', () => {
-        mutations[types.RECEIVE_DASHBOARD_STARRING_SUCCESS](stateCopy, false);
+        mutations[types.RECEIVE_DASHBOARD_STARRING_SUCCESS](stateCopy, {
+          selectedDashboard: stateCopy.allDashboards[1],
+          newStarredValue: false,
+        });
 
         expect(stateCopy.isUpdatingStarredValue).toBe(false);
         expect(stateCopy.allDashboards[1].starred).toBe(false);

@@ -2,10 +2,9 @@
 
 require 'fast_spec_helper'
 require 'rubocop'
-require_relative '../../../support/helpers/expect_offense'
 require_relative '../../../../rubocop/cop/rspec/modify_sidekiq_middleware'
 
-describe RuboCop::Cop::RSpec::ModifySidekiqMiddleware do
+describe RuboCop::Cop::RSpec::ModifySidekiqMiddleware, type: :rubocop do
   include CopHelper
   include ExpectOffense
 

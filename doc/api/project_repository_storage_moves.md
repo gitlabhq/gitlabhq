@@ -23,7 +23,7 @@ are [paginated](README.md#pagination).
 Example request:
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" 'https://primary.example.com/api/v4/project_repository_storage_moves'
+curl --header "PRIVATE-TOKEN: <your_access_token>" 'https://gitlab.example.com/api/v4/project_repository_storage_moves'
 ```
 
 Example response:
@@ -61,12 +61,12 @@ Parameters:
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `project_id` | integer | yes | The ID of the project |
+| `project_id` | integer | yes | ID of the project |
 
 Example request:
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" 'https://primary.example.com/api/v4/project/1/repository_storage_moves'
+curl --header "PRIVATE-TOKEN: <your_access_token>" 'https://gitlab.example.com/api/v4/projects/1/repository_storage_moves'
 ```
 
 Example response:
@@ -101,12 +101,12 @@ Parameters:
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `repository_storage_id` | integer | yes | The ID of the project repository storage move |
+| `repository_storage_id` | integer | yes | ID of the project repository storage move |
 
 Example request:
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" 'https://primary.example.com/api/v4/project_repository_storage_moves/1'
+curl --header "PRIVATE-TOKEN: <your_access_token>" 'https://gitlab.example.com/api/v4/project_repository_storage_moves/1'
 ```
 
 Example response:
@@ -132,20 +132,60 @@ Example response:
 ## Get a single repository storage move for a project
 
 ```plaintext
-GET /project/:project_id/repository_storage_moves/:repository_storage_id
+GET /projects/:project_id/repository_storage_moves/:repository_storage_id
 ```
 
 Parameters:
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `project_id` | integer | yes | The ID of the project |
-| `repository_storage_id` | integer | yes | The ID of the project repository storage move |
+| `project_id` | integer | yes | ID of the project |
+| `repository_storage_id` | integer | yes | ID of the project repository storage move |
 
 Example request:
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" 'https://primary.example.com/api/v4/project/1/repository_storage_moves/1'
+curl --header "PRIVATE-TOKEN: <your_access_token>" 'https://gitlab.example.com/api/v4/projects/1/repository_storage_moves/1'
+```
+
+Example response:
+
+```json
+{
+  "id": 1,
+  "created_at": "2020-05-07T04:27:17.234Z",
+  "state": "scheduled",
+  "source_storage_name": "default",
+  "destination_storage_name": "storage2",
+  "project": {
+    "id": 1,
+    "description": null,
+    "name": "project1",
+    "name_with_namespace": "John Doe2 / project1",
+    "path": "project1",
+    "path_with_namespace": "namespace1/project1",
+    "created_at": "2020-05-07T04:27:17.016Z"
+}
+```
+
+## Schedule a repository storage move for a project
+
+```plaintext
+POST /projects/:project_id/repository_storage_moves
+```
+
+Parameters:
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `project_id` | integer | yes | ID of the project |
+| `destination_storage_name` | string | yes | Name of the destination storage shard |
+
+Example request:
+
+```shell
+curl --request POST --header "PRIVATE_TOKEN: <your_access_token>" --header "Content-Type: application/json" \
+--data '{"destination_storage_name":"storage2"}' 'https://gitlab.example.com/api/v4/projects/1/repository_storage_moves'
 ```
 
 Example response:

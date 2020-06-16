@@ -20,9 +20,7 @@ describe('operation settings external dashboard component', () => {
   const operationsSettingsEndpoint = `${TEST_HOST}/mock/ops/settings/endpoint`;
   const helpPage = `${TEST_HOST}/help/metrics/page/path`;
   const externalDashboardUrl = `http://mock-external-domain.com/external/dashboard/url`;
-  const externalDashboardHelpPage = `${TEST_HOST}/help/external/page/path`;
   const dashboardTimezoneSetting = timezones.LOCAL;
-  const dashboardTimezoneHelpPage = `${TEST_HOST}/help/timezone/page/path`;
 
   const mountComponent = (shallow = true) => {
     const config = [
@@ -32,9 +30,7 @@ describe('operation settings external dashboard component', () => {
           operationsSettingsEndpoint,
           helpPage,
           externalDashboardUrl,
-          externalDashboardHelpPage,
           dashboardTimezoneSetting,
-          dashboardTimezoneHelpPage,
         }),
         stubs: {
           ExternalDashboard,
@@ -140,7 +136,7 @@ describe('operation settings external dashboard component', () => {
 
         it('uses description text', () => {
           const description = formGroup.find('small');
-          expect(description.find('a').attributes('href')).toBe(externalDashboardHelpPage);
+          expect(description.text()).not.toBeFalsy();
         });
       });
 

@@ -2,10 +2,9 @@
 
 require 'fast_spec_helper'
 require 'rubocop'
-require_relative '../../../support/helpers/expect_offense'
 require_relative '../../../../rubocop/cop/scalability/file_uploads'
 
-describe RuboCop::Cop::Scalability::FileUploads do
+describe RuboCop::Cop::Scalability::FileUploads, type: :rubocop do
   include CopHelper
   include ExpectOffense
 

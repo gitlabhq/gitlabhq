@@ -129,6 +129,18 @@ GitLab currently only supports a single assignee per alert.
 To remove an assignee, click **Edit** next to the **Assignee** dropdown menu and
 deselect the user from the list of assignees, or click **Unassigned**.
 
+### Alert system notes
+
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3066) in GitLab 13.1.
+
+NOTE: **Note:**
+GitLab currently only supports creating system notes when assigning an Alert.
+
+Assigning a user an Alert creates a system note, visible in the Alert Details view,
+giving you a linear timeline of the alert's investigation and assignment history.
+
+![Alert Management Details View System Notes](img/alert_detail_system_notes_v13_1.png)
+
 ## Use cases for assigning alerts
 
 Consider a team formed by different sections of monitoring, collaborating on a
@@ -136,7 +148,7 @@ single application. After an alert surfaces, it's extremely important to
 route the alert to the team members who can address and resolve the alert.
 
 Assigning Alerts to multiple assignees eases collaboration and delegation. All
-assignees are shown in your team's workflows, and all assignees receive
+assignees are shown in your team's work-flows, and all assignees receive
 notifications, simplifying communication and ownership of the alert.
 
 After completing their portion of investigating or fixing the alert, users can

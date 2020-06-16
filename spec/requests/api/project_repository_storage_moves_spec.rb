@@ -111,4 +111,45 @@ describe API::ProjectRepositoryStorageMoves do
       let(:url) { "/projects/#{project.id}/repository_storage_moves/#{project_repository_storage_move_id}" }
     end
   end
+
+  describe 'POST /projects/:id/repository_storage_moves' do
+    let(:url) { "/projects/#{project.id}/repository_storage_moves" }
+    let(:destination_storage_name) { 'test_second_storage' }
+
+    def create_project_repository_storage_move
+      post api(url, user), params: { destination_storage_name: destination_storage_name }
+    end
+
+    before do
+      stub_storage_settings('test_second_storage' => { 'path' => 'tmp/tests/extra_storage' })
+    end
+
+    it 'schedules a project repository storage move' do
+      create_project_repository_storage_move
+
+      storage_move = project.repository_storage_moves.last
+
+      expect(response).to have_gitlab_http_status(:created)
+      expect(response).to match_response_schema('public_api/v4/project_repository_storage_move')
+      expect(json_response['id']).to eq(storage_move.id)
+      expect(json_response['state']).to eq('scheduled')
+      expect(json_response['source_storage_name']).to eq('default')
+      expect(json_response['destination_storage_name']).to eq(destination_storage_name)
+    end
+
+    describe 'permissions' do
+      it { expect { create_project_repository_storage_move }.to be_allowed_for(:admin) }
+      it { expect { create_project_repository_storage_move }.to be_denied_for(:user) }
+    end
+
+    context 'destination_storage_name is missing' do
+      let(:destination_storage_name) { nil }
+
+      it 'returns a validation error' do
+        create_project_repository_storage_move
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+      end
+    end
+  end
 end

@@ -1,10 +1,9 @@
 <script>
 import { mapState, mapActions } from 'vuex';
-import { GlLink, GlFormGroup, GlFormInput } from '@gitlab/ui';
+import { GlFormGroup, GlFormInput } from '@gitlab/ui';
 
 export default {
   components: {
-    GlLink,
     GlFormGroup,
     GlFormInput,
   },
@@ -36,7 +35,6 @@ export default {
           'MetricsSettings|Add a button to the metrics dashboard linking directly to your existing external dashboard.',
         )
       }}
-      <gl-link :href="externalDashboard.helpPage">{{ __('Learn more') }}</gl-link>
     </template>
     <!-- placeholder with a url is a false positive  -->
     <!-- eslint-disable @gitlab/vue-require-i18n-attribute-strings -->

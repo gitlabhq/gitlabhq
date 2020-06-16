@@ -28,7 +28,8 @@ More useful links:
 ## What is Usage Ping?
 
 - GitLab sends a weekly payload containing usage data to GitLab Inc. Usage Ping provides high-level data to help our product, support, and sales teams. It does not send any project names, usernames, or any other specific data. The information from the usage ping is not anonymous, it is linked to the hostname of the instance. Sending usage ping is optional, and any instance can disable analytics.
-- The usage data is primarily composed of row counts for different tables in the instance’s database. By comparing these counts month over month (or week over week), we can get a rough sense for how an instance is using the different features within the product.
+- The usage data is primarily composed of row counts for different tables in the instance’s database. By comparing these counts month over month (or week over week), we can get a rough sense for how an instance is using the different features within the product. In addition to counts, other facts
+    that help us classify and understand GitLab installations are collected.
 - Usage ping is important to GitLab as we use it to calculate our Stage Monthly Active Users (SMAU) which helps us measure the success of our stages and features.
 - Once usage ping is enabled, GitLab will gather data from the other instances and will be able to show usage statistics of your instance to your users.
 
@@ -120,7 +121,12 @@ sequenceDiagram
 
 ## Implementing Usage Ping
 
-Usage Ping consists of four types of counters which are all found in `usage_data.rb`:
+Usage Ping consists of two kinds of data, counters and observations. Counters track how often a certain event
+happened over time, such as how many CI pipelines have run. They are monotonic and always trend up.
+Observations are facts collected from one or more GitLab instances and can carry arbitrary data. There are no
+general guidelines around how to collect those, due to the individual nature of that data.
+
+There are four types of counters which are all found in `usage_data.rb`:
 
 - **Ordinary Batch Counters:** Simple count of a given ActiveRecord_Relation
 - **Distinct Batch Counters:** Distinct count of a given ActiveRecord_Relation on given column
@@ -236,6 +242,29 @@ alt_usage_data { Gitlab::CurrentSettings.uuid }
 alt_usage_data(999)
 ```
 
+### Prometheus Queries
+
+In those cases where operational metrics should be part of Usage Ping, a database or Redis query is unlikely
+to provide useful data. Instead, Prometheus might be more appropriate, since most of GitLab's architectural
+components publish metrics to it that can be queried back, aggregated, and included as usage data.
+
+NOTE: **Note:**
+Prometheus as a data source for Usage Ping is currently only available for single-node Omnibus installations
+that are running the [bundled Prometheus](../../administration/monitoring/prometheus/index.md) instance.
+
+In order to query Prometheus for metrics, a helper method is available that will `yield` a fully configured
+`PrometheusClient`, given it is available as per the note above:
+
+```ruby
+with_prometheus_client do |client|
+  response = client.query('<your query>')
+  ...
+end
+```
+
+Please refer to [the `PrometheusClient` definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/prometheus_client.rb)
+for how to use its API to query for data.
+
 ## Developing and testing Usage Ping
 
 ### 1. Use your Rails console to manually test counters
@@ -296,6 +325,52 @@ When adding, changing, or updating metrics, please update the [Usage Statistics 
 ### 5. Ask for a Telemetry Review
 
 On GitLab.com, we have DangerBot setup to monitor Telemetry related files and DangerBot will recommend a Telemetry review. Mention `@gitlab-org/growth/telemetry/engineers` in your MR for a review.
+
+### Optional: Test Prometheus based Usage Ping
+
+If the data submitted includes metrics [queried from Prometheus](#prometheus-queries) that you would like to inspect and verify,
+then you need to ensure that a Prometheus server is running locally, and that furthermore the respective GitLab components
+are exporting metrics to it. If you do not need to test data coming from Prometheus, no further action
+is necessary, since Usage Ping should degrade gracefully in the absence of a running Prometheus server.
+
+There are currently three kinds of components that may export data to Prometheus, and which are included in Usage Ping:
+
+- [`node_exporter`](https://github.com/prometheus/node_exporter) - Exports node metrics from the host machine
+- [`gitlab-exporter`](https://gitlab.com/gitlab-org/gitlab-exporter) - Exports process metrics from various GitLab components
+- various GitLab services such as Sidekiq and the Rails server that export their own metrics
+
+#### Test with an Omnibus container
+
+This is the recommended approach to test Prometheus based Usage Ping.
+
+The easiest way to verify your changes is to build a new Omnibus image from your code branch via CI, then download the image
+and run a local container instance:
+
+1. From your merge request, click on the `qa` stage, then trigger the `package-and-qa` job. This job will trigger an Omnibus
+build in a [downstream pipeline of the `omnibus-gitlab-mirror` project](https://gitlab.com/gitlab-org/build/omnibus-gitlab-mirror/-/pipelines).
+1. In the downstream pipeline, wait for the `gitlab-docker` job to finish.
+1. Open the job logs and locate the full container name including the version. It will take the following form: `registry.gitlab.com/gitlab-org/build/omnibus-gitlab-mirror/gitlab-ee:<VERSION>`.
+1. On your local machine, make sure you are logged in to the GitLab Docker registry. You can find the instructions for this in
+[Authenticating to the GitLab Container Registry](../../user/packages/container_registry/index.md#authenticating-to-the-gitlab-container-registry).
+1. Once logged in, download the new image via `docker pull registry.gitlab.com/gitlab-org/build/omnibus-gitlab-mirror/gitlab-ee:<VERSION>`
+1. For more information about working with and running Omnibus GitLab containers in Docker, please refer to [GitLab Docker images](https://docs.gitlab.com/omnibus/docker/README.html) in the Omnibus documentation.
+
+#### Test with GitLab development toolkits
+
+This is the less recommended approach, since it comes with a number of difficulties when emulating a real GitLab deployment.
+
+The [GDK](https://gitlab.com/gitlab-org/gitlab-development-kit) is not currently set up to run a Prometheus server or `node_exporter` alongside other GitLab components. If you would
+like to do so, [Monitoring the GDK with Prometheus](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/master/doc/howto/prometheus/index.md#monitoring-the-gdk-with-prometheus) is a good start.
+
+The [GCK](https://gitlab.com/gitlab-org/gitlab-compose-kit) has limited support for testing Prometheus based Usage Ping.
+By default, it already comes with a fully configured Prometheus service that is set up to scrape a number of components,
+but with the following limitations:
+
+- It does not currently run a `gitlab-exporter` instance, so several `process_*` metrics from services such as Gitaly may be missing.
+- While it runs a `node_exporter`, `docker-compose` services emulate hosts, meaning that it would normally report itself to not be associated
+with any of the other services that are running. That is not how node metrics are reported in a production setup, where `node_exporter`
+always runs as a process alongside other GitLab components on any given node. From Usage Ping's perspective none of the node data would therefore
+appear to be associated to any of the services running, since they all appear to be running on different hosts. To alleviate this problem, the `node_exporter` in GCK was arbitrarily "assigned" to the `web` service, meaning only for this service `node_*` metrics will appear in Usage Ping.
 
 ## Usage Statistics definitions
 
@@ -555,6 +630,16 @@ On GitLab.com, we have DangerBot setup to monitor Telemetry related files and Da
 | `ci_triggers`                                           | `usage_activity_by_stage`          | `verify`    |                | Triggers enabled                                  |
 | `clusters_applications_runner`                          | `usage_activity_by_stage`          | `verify`    |                | Unique clusters with Runner enabled               |
 | `projects_reporting_ci_cd_back_to_github: 0`            | `usage_activity_by_stage`          | `verify`    |                | Unique projects with a GitHub pipeline enabled    |
+| `nodes`                                                 | `topology`                         | `enablement`|                | The list of server nodes on which GitLab components are running    |
+| `duration_s`                                            | `topology`                         | `enablement`|                | Time it took to collect topology data    |
+| `node_memory_total_bytes`                               | `topology > nodes`                 | `enablement`|                | The total available memory of this node    |
+| `node_cpus`                                             | `topology > nodes`                 | `enablement`|                | The number of CPU cores of this node   |
+| `node_services`                                         | `topology > nodes`                 | `enablement`|                | The list of GitLab services running on this node   |
+| `name`                                                  | `topology > nodes > node_services` | `enablement`|                | The name of the GitLab service running on this node   |
+| `process_count`                                         | `topology > nodes > node_services` | `enablement`|                | The number of processes running for this service   |
+| `process_memory_rss`                                    | `topology > nodes > node_services` | `enablement`|                | The average Resident Set Size of a service process   |
+| `process_memory_uss`                                    | `topology > nodes > node_services` | `enablement`|                | The average Unique Set Size of a service process   |
+| `process_memory_pss`                                    | `topology > nodes > node_services` | `enablement`|                | The average Proportional Set Size of a service process   |
 
 ## Example Usage Ping payload
 
@@ -746,6 +831,34 @@ The following is example content of the Usage Ping payload.
       "ci_builds": 999,
       ...
     }
+  },
+  "topology": {
+    "nodes": [
+      {
+        "node_memory_total_bytes": 33269903360,
+        "node_cpus": 16,
+        "node_services": [
+          {
+            "name": "web",
+            "process_count": 16,
+            "process_memory_pss": 233349888,
+            "process_memory_rss": 788220927,
+            "process_memory_uss": 195295487
+          },
+          {
+            "name": "sidekiq",
+            "process_count": 1,
+            "process_memory_pss": 734080000,
+            "process_memory_rss": 750051328,
+            "process_memory_uss": 731533312
+          },
+          ...
+        ],
+        ...
+      },
+      ...
+    ],
+    "duration_s": 0.013836685999194742
   }
 }
 ```

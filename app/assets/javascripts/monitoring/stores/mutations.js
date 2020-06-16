@@ -1,7 +1,6 @@
 import Vue from 'vue';
 import { pick } from 'lodash';
 import * as types from './mutation_types';
-import { selectedDashboard } from './getters';
 import { mapToDashboardViewModel, normalizeQueryResult } from './utils';
 import { BACKOFF_TIMEOUT } from '../../lib/utils/common_utils';
 import { endpointKeys, initialStateKeys, metricStates } from '../constants';
@@ -82,15 +81,14 @@ export default {
   [types.REQUEST_DASHBOARD_STARRING](state) {
     state.isUpdatingStarredValue = true;
   },
-  [types.RECEIVE_DASHBOARD_STARRING_SUCCESS](state, newStarredValue) {
-    const dashboard = selectedDashboard(state);
-    const index = state.allDashboards.findIndex(d => d === dashboard);
+  [types.RECEIVE_DASHBOARD_STARRING_SUCCESS](state, { selectedDashboard, newStarredValue }) {
+    const index = state.allDashboards.findIndex(d => d === selectedDashboard);
 
     state.isUpdatingStarredValue = false;
 
     // Trigger state updates in the reactivity system for this change
     // https://vuejs.org/v2/guide/reactivity.html#For-Arrays
-    Vue.set(state.allDashboards, index, { ...dashboard, starred: newStarredValue });
+    Vue.set(state.allDashboards, index, { ...selectedDashboard, starred: newStarredValue });
   },
   [types.RECEIVE_DASHBOARD_STARRING_FAILURE](state) {
     state.isUpdatingStarredValue = false;

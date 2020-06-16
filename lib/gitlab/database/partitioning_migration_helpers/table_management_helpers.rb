@@ -109,7 +109,16 @@ module Gitlab
             remove_column(table_name, partition_column.name)
             rename_column(table_name, tmp_column_name, partition_column.name)
             change_column_default(table_name, primary_key, nil)
+
+            if column_of_type?(table_name, primary_key, :integer)
+              # Default to int8 primary keys to prevent overflow
+              change_column(table_name, primary_key, :bigint)
+            end
           end
+        end
+
+        def column_of_type?(table_name, column, type)
+          find_column_definition(table_name, column).type == type
         end
 
         def create_daterange_partitions(table_name, column_name, min_date, max_date)

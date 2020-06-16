@@ -361,7 +361,13 @@ describe('Monitoring store actions', () => {
 
         return testAction(toggleStarredValue, null, state, [
           { type: types.REQUEST_DASHBOARD_STARRING },
-          { type: types.RECEIVE_DASHBOARD_STARRING_SUCCESS, payload: true },
+          {
+            type: types.RECEIVE_DASHBOARD_STARRING_SUCCESS,
+            payload: {
+              newStarredValue: true,
+              selectedDashboard: unstarredDashboard,
+            },
+          },
         ]);
       });
 

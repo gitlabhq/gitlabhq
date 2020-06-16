@@ -866,10 +866,6 @@ versions of the app, all without leaving GitLab.
 
 ![Monitoring dashboard](../img/environments_monitoring.png)
 
-#### Linking to external dashboard
-
-Add a [button to the Monitoring dashboard](../../user/project/operations/linking_to_an_external_dashboard.md) linking directly to your existing external dashboards.
-
 #### Embedding metrics in GitLab Flavored Markdown
 
 Metric charts can be embedded within GitLab Flavored Markdown. See [Embedding Metrics within GitLab Flavored Markdown](../../user/project/integrations/prometheus.md#embedding-metric-charts-within-gitlab-flavored-markdown) for more details.

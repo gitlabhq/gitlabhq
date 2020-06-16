@@ -1,10 +1,9 @@
 # frozen_string_literal: true
 
 require 'fast_spec_helper'
-require_relative '../../../support/helpers/expect_offense'
 require_relative '../../../../rubocop/cop/performance/readlines_each'
 
-describe RuboCop::Cop::Performance::ReadlinesEach do
+describe RuboCop::Cop::Performance::ReadlinesEach, type: :rubocop do
   include CopHelper
   include ExpectOffense
 

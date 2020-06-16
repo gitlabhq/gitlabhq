@@ -16,7 +16,8 @@ describe Gitlab::Metrics::Dashboard::Processor do
         Gitlab::Metrics::Dashboard::Stages::EndpointInserter,
         Gitlab::Metrics::Dashboard::Stages::Sorter,
         Gitlab::Metrics::Dashboard::Stages::AlertsInserter,
-        Gitlab::Metrics::Dashboard::Stages::PanelIdsInserter
+        Gitlab::Metrics::Dashboard::Stages::PanelIdsInserter,
+        Gitlab::Metrics::Dashboard::Stages::UrlValidator
       ]
     end
 
@@ -200,6 +201,27 @@ describe Gitlab::Metrics::Dashboard::Processor do
       let(:dashboard_yml) { { panel_groups: [{ panels: [{ metrics: [{}] }] }] } }
 
       it_behaves_like 'errors with message', 'Each "metric" must define one of :query or :query_range'
+    end
+
+    describe 'validating links' do
+      context 'when the links contain a blocked url' do
+        let(:dashboard_yml_links) do
+          [{ 'url' => 'http://1.1.1.1.1' }, { 'url' => 'https://gitlab.com' }]
+        end
+
+        let(:expected) do
+          [{ url: '' }, { url: 'https://gitlab.com' }]
+        end
+
+        before do
+          stub_env('RSPEC_ALLOW_INVALID_URLS', 'false')
+          dashboard_yml['links'] = dashboard_yml_links
+        end
+
+        it 'replaces the blocked url with an empty string' do
+          expect(dashboard[:links]).to eq(expected)
+        end
+      end
     end
   end
 

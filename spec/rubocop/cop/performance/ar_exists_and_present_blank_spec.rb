@@ -1,10 +1,9 @@
 # frozen_string_literal: true
 
 require 'fast_spec_helper'
-require_relative '../../../support/helpers/expect_offense'
 require_relative '../../../../rubocop/cop/performance/ar_exists_and_present_blank.rb'
 
-describe RuboCop::Cop::Performance::ARExistsAndPresentBlank do
+describe RuboCop::Cop::Performance::ARExistsAndPresentBlank, type: :rubocop do
   include CopHelper
   include ExpectOffense
 
