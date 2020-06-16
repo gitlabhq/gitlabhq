@@ -1,7 +1,7 @@
-import { shallowMount } from '@vue/test-utils';
+import { shallowMount, mount } from '@vue/test-utils';
 import timezoneMock from 'timezone-mock';
 import { cloneDeep } from 'lodash';
-import { GlStackedColumnChart } from '@gitlab/ui/dist/charts';
+import { GlStackedColumnChart, GlChartLegend } from '@gitlab/ui/dist/charts';
 import StackedColumnChart from '~/monitoring/components/charts/stacked_column.vue';
 import { stackedColumnMockedData } from '../../mock_data';
 
@@ -11,16 +11,25 @@ jest.mock('~/lib/utils/icon_utils', () => ({
 
 describe('Stacked column chart component', () => {
   let wrapper;
-  const findChart = () => wrapper.find(GlStackedColumnChart);
 
-  const createWrapper = (props = {}) => {
-    wrapper = shallowMount(StackedColumnChart, {
+  const findChart = () => wrapper.find(GlStackedColumnChart);
+  const findLegend = () => wrapper.find(GlChartLegend);
+
+  const createWrapper = (props = {}, mountingMethod = shallowMount) =>
+    mountingMethod(StackedColumnChart, {
       propsData: {
         graphData: stackedColumnMockedData,
         ...props,
       },
+      stubs: {
+        GlPopover: true,
+      },
+      attachToDocument: true,
     });
-  };
+
+  beforeEach(() => {
+    wrapper = createWrapper({}, mount);
+  });
 
   describe('when graphData is present', () => {
     beforeEach(() => {
@@ -128,6 +137,56 @@ describe('Stacked column chart component', () => {
 
     it('chart is rendered', () => {
       expect(findChart().exists()).toBe(true);
+    });
+  });
+
+  describe('legend', () => {
+    beforeEach(() => {
+      wrapper = createWrapper({}, mount);
+    });
+
+    it('allows user to override legend label texts using props', () => {
+      const legendRelatedProps = {
+        legendMinText: 'legendMinText',
+        legendMaxText: 'legendMaxText',
+        legendAverageText: 'legendAverageText',
+        legendCurrentText: 'legendCurrentText',
+      };
+      wrapper.setProps({
+        ...legendRelatedProps,
+      });
+
+      return wrapper.vm.$nextTick().then(() => {
+        expect(findChart().props()).toMatchObject(legendRelatedProps);
+      });
+    });
+
+    it('should render a tabular legend layout by default', () => {
+      expect(findLegend().props('layout')).toBe('table');
+    });
+
+    describe('when inline legend layout prop is set', () => {
+      beforeEach(() => {
+        wrapper.setProps({
+          legendLayout: 'inline',
+        });
+      });
+
+      it('should render an inline legend layout', () => {
+        expect(findLegend().props('layout')).toBe('inline');
+      });
+    });
+
+    describe('when table legend layout prop is set', () => {
+      beforeEach(() => {
+        wrapper.setProps({
+          legendLayout: 'table',
+        });
+      });
+
+      it('should render a tabular legend layout', () => {
+        expect(findLegend().props('layout')).toBe('table');
+      });
     });
   });
 });

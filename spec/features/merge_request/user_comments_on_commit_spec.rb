@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'User comments on a commit', :js do
+RSpec.describe 'User comments on a commit', :js do
   include MergeRequestDiffHelpers
   include RepoHelpers
 

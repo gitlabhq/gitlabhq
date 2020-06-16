@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe LabelsFinder do
+RSpec.describe LabelsFinder do
   describe '#execute' do
     let_it_be(:group_1) { create(:group) }
     let_it_be(:group_2) { create(:group) }

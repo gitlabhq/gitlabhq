@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Groups > Members > Leave group' do
+RSpec.describe 'Groups > Members > Leave group' do
   let(:user) { create(:user) }
   let(:other_user) { create(:user) }
   let(:group) { create(:group) }

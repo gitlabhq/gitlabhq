@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Root explore' do
+RSpec.describe 'Root explore' do
   let_it_be(:public_project) { create(:project, :public) }
   let_it_be(:archived_project) { create(:project, :archived) }
   let_it_be(:internal_project) { create(:project, :internal) }

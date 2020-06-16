@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Merge request > User resolves diff notes and threads', :js do
+RSpec.describe 'Merge request > User resolves diff notes and threads', :js do
   let(:project)       { create(:project, :public, :repository) }
   let(:user)          { project.creator }
   let(:guest)         { create(:user) }

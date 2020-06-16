@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Group activity page' do
+RSpec.describe 'Group activity page' do
   let(:user) { create(:group_member, :developer, user: create(:user), group: group ).user }
   let(:group) { create(:group) }
   let(:path) { activity_group_path(group) }

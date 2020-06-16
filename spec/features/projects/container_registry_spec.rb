@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Container Registry', :js do
+RSpec.describe 'Container Registry', :js do
   let(:user) { create(:user) }
   let(:project) { create(:project) }
 

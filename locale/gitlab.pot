@@ -2140,6 +2140,9 @@ msgstr ""
 msgid "Allow users to request access (if visibility is public or internal)"
 msgstr ""
 
+msgid "Allowed Geo IP"
+msgstr ""
+
 msgid "Allowed email domain restriction only permitted for top-level groups"
 msgstr ""
 
@@ -5644,6 +5647,9 @@ msgstr ""
 msgid "Coming soon"
 msgstr ""
 
+msgid "Comma-separated, e.g. '1.1.1.1, 2.2.2.0/24'"
+msgstr ""
+
 msgid "Command"
 msgstr ""
 
@@ -5950,6 +5956,9 @@ msgid "Connection failure"
 msgstr ""
 
 msgid "Connection timed out"
+msgstr ""
+
+msgid "Connection timeout"
 msgstr ""
 
 msgid "Contact sales to upgrade"
@@ -14081,6 +14090,9 @@ msgstr ""
 msgid "Metrics|Create metric"
 msgstr ""
 
+msgid "Metrics|Current"
+msgstr ""
+
 msgid "Metrics|Delete metric"
 msgstr ""
 
@@ -14129,6 +14141,9 @@ msgid "Metrics|Manage chart links"
 msgstr ""
 
 msgid "Metrics|Max"
+msgstr ""
+
+msgid "Metrics|Min"
 msgstr ""
 
 msgid "Metrics|Must be a valid PromQL query."
@@ -15338,13 +15353,49 @@ msgstr ""
 msgid "On track"
 msgstr ""
 
+msgid "OnDemandScans|Attached branch"
+msgstr ""
+
+msgid "OnDemandScans|Attached branch is where the scan job runs."
+msgstr ""
+
+msgid "OnDemandScans|Could not run the scan. Please try again."
+msgstr ""
+
 msgid "OnDemandScans|Create new DAST scan"
+msgstr ""
+
+msgid "OnDemandScans|DAST will scan the target URL and any discovered sub URLs."
+msgstr ""
+
+msgid "OnDemandScans|New on-demand DAST scan"
 msgstr ""
 
 msgid "OnDemandScans|On-demand Scans"
 msgstr ""
 
+msgid "OnDemandScans|On-demand scans run outside the DevOps cycle and find vulnerabilities in your projects. %{learnMoreLinkStart}Learn more%{learnMoreLinkEnd}"
+msgstr ""
+
+msgid "OnDemandScans|Only a passive scan can be performed on demand."
+msgstr ""
+
+msgid "OnDemandScans|Passive DAST Scan"
+msgstr ""
+
+msgid "OnDemandScans|Please enter a valid URL format, ex: http://www.example.com/home"
+msgstr ""
+
+msgid "OnDemandScans|Run this scan"
+msgstr ""
+
+msgid "OnDemandScans|Scan mode"
+msgstr ""
+
 msgid "OnDemandScans|Schedule or run scans immediately against target sites. Currently available on-demand scan type: DAST. %{helpLinkStart}More information%{helpLinkEnd}"
+msgstr ""
+
+msgid "OnDemandScans|Target URL"
 msgstr ""
 
 msgid "Onboarding"
@@ -20304,6 +20355,9 @@ msgstr ""
 msgid "Set the milestone to %{milestone_reference}."
 msgstr ""
 
+msgid "Set the timeout in seconds to send a secondary node status to the primary and IPs allowed for the secondary nodes."
+msgstr ""
+
 msgid "Set time estimate"
 msgstr ""
 
@@ -23266,6 +23320,9 @@ msgstr ""
 msgid "Time from last commit to merge"
 msgstr ""
 
+msgid "Time in seconds"
+msgstr ""
+
 msgid "Time in seconds GitLab will wait for a response from the external service. When the service does not respond in time, access will be denied."
 msgstr ""
 
@@ -24435,6 +24492,9 @@ msgid "User Cohorts are only shown when the %{usage_ping_link_start}usage ping%{
 msgstr ""
 
 msgid "User IDs"
+msgstr ""
+
+msgid "User Lists can only be created and modified with %{linkStart}the API%{linkEnd}"
 msgstr ""
 
 msgid "User OAuth applications"

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Tooltips on .timeago dates', :js do
+RSpec.describe 'Tooltips on .timeago dates', :js do
   let(:user)            { create(:user) }
   let(:project)         { create(:project, name: 'test', namespace: user.namespace) }
   let(:created_date)    { Date.yesterday.to_time }

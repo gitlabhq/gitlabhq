@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Projects::DeployKeysController, '(JavaScript fixtures)', type: :controller do
+RSpec.describe Projects::DeployKeysController, '(JavaScript fixtures)', type: :controller do
   include JavaScriptFixturesHelpers
 
   let(:admin) { create(:admin) }

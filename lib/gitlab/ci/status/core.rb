@@ -3,7 +3,7 @@
 module Gitlab
   module Ci
     module Status
-      # Base abstract class fore core status
+      # Base abstract class for core status
       #
       class Core
         include Gitlab::Routing

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Mutations::Issues::SetDueDate do
+RSpec.describe Mutations::Issues::SetDueDate do
   let(:issue) { create(:issue) }
   let(:user) { create(:user) }
 

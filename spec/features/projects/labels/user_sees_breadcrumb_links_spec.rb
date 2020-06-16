@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'New project label breadcrumb' do
+RSpec.describe 'New project label breadcrumb' do
   let(:project) { create(:project) }
   let(:user) { project.creator }
 

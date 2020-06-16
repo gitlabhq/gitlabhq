@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Boards::VisitsFinder do
+RSpec.describe Boards::VisitsFinder do
   describe '#latest' do
     let(:user) { create(:user) }
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'User views an SVG design that contains XSS', :js do
+RSpec.describe 'User views an SVG design that contains XSS', :js do
   include DesignManagementTestHelpers
 
   let(:project) { create(:project_empty_repo, :public) }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ResourceMilestoneEventFinder do
+RSpec.describe ResourceMilestoneEventFinder do
   let_it_be(:user) { create(:user) }
   let_it_be(:issue_project) { create(:project) }
   let_it_be(:issue) { create(:issue, project: issue_project) }

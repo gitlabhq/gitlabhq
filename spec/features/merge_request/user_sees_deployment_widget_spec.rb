@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Merge request > User sees deployment widget', :js do
+RSpec.describe 'Merge request > User sees deployment widget', :js do
   describe 'when merge request has associated environments' do
     let(:user) { create(:user) }
     let(:project) { create(:project, :repository) }

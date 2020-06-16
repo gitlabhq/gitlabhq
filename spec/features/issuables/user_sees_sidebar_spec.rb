@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Issue Sidebar on Mobile' do
+RSpec.describe 'Issue Sidebar on Mobile' do
   include MobileHelpers
 
   let(:project) { create(:project, :public, :repository) }

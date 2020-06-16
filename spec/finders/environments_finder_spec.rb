@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe EnvironmentsFinder do
+RSpec.describe EnvironmentsFinder do
   let(:project) { create(:project, :repository) }
   let(:user) { project.creator }
   let(:environment) { create(:environment, :available, project: project) }

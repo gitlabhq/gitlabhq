@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Groups > Members > Manage groups', :js do
+RSpec.describe 'Groups > Members > Manage groups', :js do
   include Select2Helper
   include Spec::Support::Helpers::Features::ListRowsHelpers
 

@@ -288,11 +288,37 @@ RSpec.shared_examples 'application settings examples' do
   end
 
   describe '#pick_repository_storage' do
-    it 'uses Array#sample to pick a random storage' do
-      array = double('array', sample: 'random')
-      expect(setting).to receive(:repository_storages).and_return(array)
+    before do
+      allow(setting).to receive(:repository_storages_weighted).and_return({ 'default' => 20, 'backup' => 80 })
+    end
 
-      expect(setting.pick_repository_storage).to eq('random')
+    it 'chooses repository based on weight' do
+      picked_storages = { 'default' => 0.0, 'backup' => 0.0 }
+      10_000.times { picked_storages[setting.pick_repository_storage] += 1 }
+
+      expect(((picked_storages['default'] / 10_000) * 100).round.to_i).to be_between(19, 21)
+      expect(((picked_storages['backup'] / 10_000) * 100).round.to_i).to be_between(79, 81)
+    end
+  end
+
+  describe '#normalized_repository_storage_weights' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:storages, :normalized) do
+      { 'default' => 0, 'backup' => 100 }   | { 'default' => 0.0, 'backup' => 1.0 }
+      { 'default' => 100, 'backup' => 100 } | { 'default' => 0.5, 'backup' => 0.5 }
+      { 'default' => 20, 'backup' => 80 }   | { 'default' => 0.2, 'backup' => 0.8 }
+      { 'default' => 0, 'backup' => 0 }     | { 'default' => 0.0, 'backup' => 0.0 }
+    end
+
+    with_them do
+      before do
+        allow(setting).to receive(:repository_storages_weighted).and_return(storages)
+      end
+
+      it 'normalizes storage weights' do
+        expect(setting.normalized_repository_storage_weights).to eq(normalized)
+      end
     end
   end
 

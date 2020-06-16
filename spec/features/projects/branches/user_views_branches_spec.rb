@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-describe "User views branches" do
+RSpec.describe "User views branches" do
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:user) { project.owner }
 

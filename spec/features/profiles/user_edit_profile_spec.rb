@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'User edit profile' do
+RSpec.describe 'User edit profile' do
   let(:user) { create(:user) }
 
   before do

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'project commit pipelines', :js do
+RSpec.describe 'project commit pipelines', :js do
   let(:project) { create(:project, :repository) }
 
   before do

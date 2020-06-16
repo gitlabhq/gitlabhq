@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe AlertManagement::AlertsFinder, '#execute' do
+RSpec.describe AlertManagement::AlertsFinder, '#execute' do
   let_it_be(:current_user) { create(:user) }
   let_it_be(:project) { create(:project) }
   let_it_be(:alert_1) { create(:alert_management_alert, :all_fields, :resolved, project: project, ended_at: 1.year.ago, events: 2, severity: :high) }

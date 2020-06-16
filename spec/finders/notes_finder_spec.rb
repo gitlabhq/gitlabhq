@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe NotesFinder do
+RSpec.describe NotesFinder do
   let(:user) { create :user }
   let(:project) { create(:project) }
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Projects > Labels > User sees links to issuables' do
+RSpec.describe 'Projects > Labels > User sees links to issuables' do
   let_it_be(:user) { create(:user) }
 
   before do

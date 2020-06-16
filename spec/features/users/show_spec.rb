@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'User page' do
+RSpec.describe 'User page' do
   include ExternalAuthorizationServiceHelpers
 
   let(:user) { create(:user) }

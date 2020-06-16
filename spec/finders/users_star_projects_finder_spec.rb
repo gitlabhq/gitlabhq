@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe UsersStarProjectsFinder do
+RSpec.describe UsersStarProjectsFinder do
   let(:project) { create(:project, :public, :empty_repo) }
 
   let(:user) { create(:user) }

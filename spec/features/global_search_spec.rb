@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Global search' do
+RSpec.describe 'Global search' do
   let(:user) { create(:user) }
   let(:project) { create(:project, namespace: user.namespace) }
 

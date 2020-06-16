@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Download buttons in branches page' do
+RSpec.describe 'Download buttons in branches page' do
   let(:user) { create(:user) }
   let(:role) { :developer }
   let(:status) { 'success' }

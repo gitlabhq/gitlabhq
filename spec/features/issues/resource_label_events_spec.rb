@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'List issue resource label events', :js do
+RSpec.describe 'List issue resource label events', :js do
   let(:user)     { create(:user) }
   let(:project)  { create(:project, :public) }
   let(:issue)    { create(:issue, project: project, author: user) }

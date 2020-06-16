@@ -148,18 +148,18 @@ RSpec.shared_examples 'model with repository' do
       expect(subject).to eq('picked')
     end
 
-    it 'picks from the latest available storage', :request_store do
+    it 'picks from the available storages based on weight', :request_store do
       stub_env('IN_MEMORY_APPLICATION_SETTINGS', 'false')
       Gitlab::CurrentSettings.expire_current_application_settings
       Gitlab::CurrentSettings.current_application_settings
 
       settings = ApplicationSetting.last
-      settings.repository_storages = %w(picked)
+      settings.repository_storages_weighted = { 'picked' => 100, 'default' => 0 }
       settings.save!
 
-      expect(Gitlab::CurrentSettings.repository_storages).to eq(%w(default))
+      expect(Gitlab::CurrentSettings.repository_storages_weighted).to eq({ 'default' => 100 })
       expect(subject).to eq('picked')
-      expect(Gitlab::CurrentSettings.repository_storages).to eq(%w(picked))
+      expect(Gitlab::CurrentSettings.repository_storages_weighted).to eq({ 'default' => 0, 'picked' => 100 })
     end
   end
 end

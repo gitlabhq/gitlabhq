@@ -1,3 +1,4 @@
+import { GlIntersectionObserver } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import { TEST_HOST } from 'helpers/test_constants';
@@ -25,6 +26,8 @@ describe('Issuable output', () => {
   let realtimeRequestCount = 0;
   let wrapper;
 
+  const findStickyHeader = () => wrapper.find('[data-testid="issue-sticky-header"]');
+
   beforeEach(() => {
     setFixtures(`
       <div>
@@ -42,6 +45,11 @@ describe('Issuable output', () => {
       </div>
     `);
 
+    window.IntersectionObserver = class {
+      disconnect = jest.fn();
+      observe = jest.fn();
+    };
+
     mock = new MockAdapter(axios);
     mock
       .onGet('/gitlab-org/gitlab-shell/-/issues/9/realtime_changes/realtime_changes')
@@ -58,6 +66,7 @@ describe('Issuable output', () => {
         endpoint: '/gitlab-org/gitlab-shell/-/issues/9/realtime_changes',
         updateEndpoint: TEST_HOST,
         issuableRef: '#1',
+        issuableStatus: 'opened',
         initialTitleHtml: '',
         initialTitleText: '',
         initialDescriptionHtml: 'test',
@@ -75,6 +84,7 @@ describe('Issuable output', () => {
   });
 
   afterEach(() => {
+    delete window.IntersectionObserver;
     mock.restore();
     realtimeRequestCount = 0;
 
@@ -518,6 +528,41 @@ describe('Issuable output', () => {
       wrapper.setProps({ initialDescriptionText: null });
 
       expect(wrapper.vm.issueChanged).toBe(false);
+    });
+  });
+
+  describe('sticky header', () => {
+    describe('when title is in view', () => {
+      it('is not shown', () => {
+        expect(wrapper.contains('.issue-sticky-header')).toBe(false);
+      });
+    });
+
+    describe('when title is not in view', () => {
+      beforeEach(() => {
+        wrapper.vm.state.titleText = 'Sticky header title';
+        wrapper.find(GlIntersectionObserver).vm.$emit('disappear');
+      });
+
+      it('is shown with title', () => {
+        expect(findStickyHeader().text()).toContain('Sticky header title');
+      });
+
+      it('is shown with Open when status is opened', () => {
+        wrapper.setProps({ issuableStatus: 'opened' });
+
+        return wrapper.vm.$nextTick(() => {
+          expect(findStickyHeader().text()).toContain('Open');
+        });
+      });
+
+      it('is shown with Closed when status is closed', () => {
+        wrapper.setProps({ issuableStatus: 'closed' });
+
+        return wrapper.vm.$nextTick(() => {
+          expect(findStickyHeader().text()).toContain('Closed');
+        });
+      });
     });
   });
 });

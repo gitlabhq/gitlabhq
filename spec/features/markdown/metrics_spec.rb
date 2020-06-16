@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Metrics rendering', :js, :use_clean_rails_memory_store_caching, :sidekiq_inline do
+RSpec.describe 'Metrics rendering', :js, :use_clean_rails_memory_store_caching, :sidekiq_inline do
   include PrometheusHelpers
   include GrafanaApiHelpers
   include MetricsDashboardUrlHelpers

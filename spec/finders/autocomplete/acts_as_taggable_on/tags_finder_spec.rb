@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Autocomplete::ActsAsTaggableOn::TagsFinder do
+RSpec.describe Autocomplete::ActsAsTaggableOn::TagsFinder do
   describe '#execute' do
     context 'with empty params' do
       it 'returns all tags' do

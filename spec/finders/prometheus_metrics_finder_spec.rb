@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe PrometheusMetricsFinder do
+RSpec.describe PrometheusMetricsFinder do
   describe '#execute' do
     let(:finder) { described_class.new(params) }
     let(:params) { {} }

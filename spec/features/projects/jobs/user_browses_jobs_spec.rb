@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'User browses jobs' do
+RSpec.describe 'User browses jobs' do
   let!(:build) { create(:ci_build, :coverage, pipeline: pipeline) }
   let(:pipeline) { create(:ci_empty_pipeline, project: project, sha: project.commit.sha, ref: 'master') }
   let(:project) { create(:project, :repository, namespace: user.namespace) }

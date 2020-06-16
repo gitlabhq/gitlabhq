@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Ci::RunnerJobsFinder do
+RSpec.describe Ci::RunnerJobsFinder do
   let(:project) { create(:project) }
   let(:runner) { create(:ci_runner, :instance) }
 

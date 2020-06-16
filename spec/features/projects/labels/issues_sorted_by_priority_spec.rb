@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Issue prioritization' do
+RSpec.describe 'Issue prioritization' do
   let(:user)    { create(:user) }
   let(:project) { create(:project, name: 'test', namespace: user.namespace) }
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Login' do
+RSpec.describe 'Login' do
   include TermsHelper
   include UserLoginHelper
 

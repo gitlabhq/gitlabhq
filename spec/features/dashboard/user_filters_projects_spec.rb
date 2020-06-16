@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Dashboard > User filters projects' do
+RSpec.describe 'Dashboard > User filters projects' do
   let(:user) { create(:user) }
   let(:project) { create(:project, name: 'Victorialand', namespace: user.namespace, created_at: 2.seconds.ago, updated_at: 2.seconds.ago) }
   let(:user2) { create(:user) }

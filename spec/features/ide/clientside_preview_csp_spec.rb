@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'IDE Clientside Preview CSP' do
+RSpec.describe 'IDE Clientside Preview CSP' do
   let_it_be(:user) { create(:user) }
 
   shared_context 'disable feature' do

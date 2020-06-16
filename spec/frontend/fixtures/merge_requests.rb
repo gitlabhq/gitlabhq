@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Projects::MergeRequestsController, '(JavaScript fixtures)', type: :controller do
+RSpec.describe Projects::MergeRequestsController, '(JavaScript fixtures)', type: :controller do
   include JavaScriptFixturesHelpers
 
   let(:admin) { create(:admin) }

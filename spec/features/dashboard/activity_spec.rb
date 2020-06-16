@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Dashboard > Activity' do
+RSpec.describe 'Dashboard > Activity' do
   let(:user) { create(:user) }
 
   before do

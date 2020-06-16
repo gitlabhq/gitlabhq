@@ -26,7 +26,8 @@ module Ci
     RUNNER_FEATURES = {
       upload_multiple_artifacts: -> (build) { build.publishes_artifacts_reports? },
       refspecs: -> (build) { build.merge_request_ref? },
-      artifacts_exclude: -> (build) { build.supports_artifacts_exclude? }
+      artifacts_exclude: -> (build) { build.supports_artifacts_exclude? },
+      release_steps: -> (build) { build.release_steps? }
     }.freeze
 
     DEFAULT_RETRIES = {
@@ -815,6 +816,7 @@ module Ci
 
     def steps
       [Gitlab::Ci::Build::Step.from_commands(self),
+       Gitlab::Ci::Build::Step.from_release(self),
        Gitlab::Ci::Build::Step.from_after_script(self)].compact
     end
 
@@ -876,6 +878,16 @@ module Ci
 
     def publishes_artifacts_reports?
       options&.dig(:artifacts, :reports)&.any?
+    end
+
+    def supports_artifacts_exclude?
+      options&.dig(:artifacts, :exclude)&.any? &&
+        Gitlab::Ci::Features.artifacts_exclude_enabled?
+    end
+
+    def release_steps?
+      options.dig(:release)&.any? &&
+        Gitlab::Ci::Features.release_generation_enabled?
     end
 
     def hide_secrets(trace)
@@ -949,11 +961,6 @@ module Ci
       update_columns(
         status: :failed,
         failure_reason: :data_integrity_failure)
-    end
-
-    def supports_artifacts_exclude?
-      options&.dig(:artifacts, :exclude)&.any? &&
-        Gitlab::Ci::Features.artifacts_exclude_enabled?
     end
 
     def degradation_threshold

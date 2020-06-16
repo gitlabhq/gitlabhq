@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'User browses a job', :js do
+RSpec.describe 'User browses a job', :js do
   let(:user) { create(:user) }
   let(:user_access_level) { :developer }
   let(:project) { create(:project, :repository, namespace: user.namespace) }

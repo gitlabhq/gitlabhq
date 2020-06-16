@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'User uploads new design', :js do
+RSpec.describe 'User uploads new design', :js do
   include DesignManagementTestHelpers
 
   let_it_be(:project) { create(:project_empty_repo, :public) }

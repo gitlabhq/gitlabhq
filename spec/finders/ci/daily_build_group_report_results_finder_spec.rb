@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Ci::DailyBuildGroupReportResultsFinder do
+RSpec.describe Ci::DailyBuildGroupReportResultsFinder do
   describe '#execute' do
     let(:project) { create(:project, :private) }
     let(:ref_path) { 'refs/heads/master' }

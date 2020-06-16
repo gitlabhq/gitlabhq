@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-describe "User views issue" do
+RSpec.describe "User views issue" do
   let(:project) { create(:project_empty_repo, :public) }
   let(:user) { create(:user) }
   let(:issue) { create(:issue, project: project, description: "# Description header", author: user) }

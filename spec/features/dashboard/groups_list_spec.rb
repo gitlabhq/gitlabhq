@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Dashboard Groups page', :js do
+RSpec.describe 'Dashboard Groups page', :js do
   let(:user) { create :user }
   let(:group) { create(:group) }
   let(:nested_group) { create(:group, :nested) }

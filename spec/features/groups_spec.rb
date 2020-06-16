@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Group' do
+RSpec.describe 'Group' do
   let(:user) { create(:admin) }
 
   before do

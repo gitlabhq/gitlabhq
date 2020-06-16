@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Environments page', :js do
+RSpec.describe 'Environments page', :js do
   let(:project) { create(:project) }
   let(:user) { create(:user) }
   let(:role) { :developer }

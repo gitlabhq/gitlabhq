@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Projects members' do
+RSpec.describe 'Projects members' do
   let(:user) { create(:user) }
   let(:developer) { create(:user) }
   let(:group) { create(:group, :public) }

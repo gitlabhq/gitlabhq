@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Dashboard shortcuts', :js do
+RSpec.describe 'Dashboard shortcuts', :js do
   context 'logged in' do
     let(:user) { create(:user) }
     let(:project) { create(:project) }

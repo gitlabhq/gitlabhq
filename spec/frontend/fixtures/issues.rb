@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Projects::IssuesController, '(JavaScript fixtures)', type: :controller do
+RSpec.describe Projects::IssuesController, '(JavaScript fixtures)', type: :controller do
   include JavaScriptFixturesHelpers
 
   let(:admin) { create(:admin, feed_token: 'feedtoken:coldfeed') }
@@ -75,7 +75,7 @@ describe Projects::IssuesController, '(JavaScript fixtures)', type: :controller 
   end
 end
 
-describe API::Issues, '(JavaScript fixtures)', type: :request do
+RSpec.describe API::Issues, '(JavaScript fixtures)', type: :request do
   include ApiHelpers
   include JavaScriptFixturesHelpers
 

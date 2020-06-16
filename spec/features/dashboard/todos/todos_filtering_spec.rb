@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Dashboard > User filters todos', :js do
+RSpec.describe 'Dashboard > User filters todos', :js do
   let(:user_1)    { create(:user, username: 'user_1', name: 'user_1') }
   let(:user_2)    { create(:user, username: 'user_2', name: 'user_2') }
 

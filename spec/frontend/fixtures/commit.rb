@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Projects::CommitController, '(JavaScript fixtures)', type: :controller do
+RSpec.describe Projects::CommitController, '(JavaScript fixtures)', type: :controller do
   include JavaScriptFixturesHelpers
 
   let_it_be(:project) { create(:project, :repository) }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Dashboard Projects' do
+RSpec.describe 'Dashboard Projects' do
   let(:user) { create(:user) }
   let(:project) { create(:project, :repository, name: 'awesome stuff') }
   let(:project2) { create(:project, :public, name: 'Community project') }

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-describe 'User edit preferences profile' do
+RSpec.describe 'User edit preferences profile' do
   let(:user) { create(:user) }
 
   before do

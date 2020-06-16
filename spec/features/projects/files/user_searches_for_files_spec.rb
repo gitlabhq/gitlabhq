@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Projects > Files > User searches for files' do
+RSpec.describe 'Projects > Files > User searches for files' do
   let(:user) { project.owner }
 
   before do

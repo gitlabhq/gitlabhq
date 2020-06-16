@@ -37,6 +37,10 @@ module Gitlab
       def self.atomic_processing?(project)
         ::Feature.enabled?(:ci_atomic_processing, project, default_enabled: true)
       end
+
+      def self.release_generation_enabled?
+        ::Feature.enabled?(:ci_release_generation)
+      end
     end
   end
 end

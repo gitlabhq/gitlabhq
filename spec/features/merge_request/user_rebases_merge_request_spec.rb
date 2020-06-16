@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-describe "User rebases a merge request", :js do
+RSpec.describe "User rebases a merge request", :js do
   let(:merge_request) { create(:merge_request, :simple, source_project: project) }
   let(:user) { project.owner }
 

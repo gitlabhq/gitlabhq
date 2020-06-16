@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe BranchesFinder do
+RSpec.describe BranchesFinder do
   let(:user) { create(:user) }
   let(:project) { create(:project, :repository) }
   let(:repository) { project.repository }

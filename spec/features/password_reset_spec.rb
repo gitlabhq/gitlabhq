@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Password reset' do
+RSpec.describe 'Password reset' do
   describe 'throttling' do
     it 'sends reset instructions when not previously sent' do
       user = create(:user)

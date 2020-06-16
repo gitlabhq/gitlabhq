@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Environment' do
+RSpec.describe 'Environment' do
   let(:project) { create(:project, :repository) }
   let(:user) { create(:user) }
   let(:role) { :developer }

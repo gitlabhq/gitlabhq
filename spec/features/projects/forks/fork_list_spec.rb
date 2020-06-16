@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'listing forks of a project' do
+RSpec.describe 'listing forks of a project' do
   include ProjectForksHelper
   include ExternalAuthorizationServiceHelpers
 

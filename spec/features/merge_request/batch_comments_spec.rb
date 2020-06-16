@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Merge request > Batch comments', :js do
+RSpec.describe 'Merge request > Batch comments', :js do
   include MergeRequestDiffHelpers
   include RepoHelpers
 

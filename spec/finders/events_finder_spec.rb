@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe EventsFinder do
+RSpec.describe EventsFinder do
   let_it_be(:user) { create(:user) }
   let(:other_user) { create(:user) }
 

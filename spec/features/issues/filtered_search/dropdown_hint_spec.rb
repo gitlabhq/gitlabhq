@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Dropdown hint', :js do
+RSpec.describe 'Dropdown hint', :js do
   include FilteredSearchHelpers
 
   let!(:project) { create(:project, :public) }

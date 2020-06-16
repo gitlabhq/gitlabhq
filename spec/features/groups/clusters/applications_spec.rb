@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_relative '../../../../spec/features/clusters/installing_applications_shared_examples'
 
-describe 'Group-level Cluster Applications', :js do
+RSpec.describe 'Group-level Cluster Applications', :js do
   include GoogleApi::CloudPlatformHelpers
 
   let(:group) { create(:group) }

@@ -26,7 +26,7 @@ require 'erb'
 #
 # See the MarkdownFeature class for setup details.
 
-describe 'GitLab Markdown', :aggregate_failures do
+RSpec.describe 'GitLab Markdown', :aggregate_failures do
   include Capybara::Node::Matchers
   include MarkupHelper
   include MarkdownMatchers

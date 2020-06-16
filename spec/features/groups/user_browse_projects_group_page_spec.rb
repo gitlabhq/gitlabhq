@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'User browse group projects page' do
+RSpec.describe 'User browse group projects page' do
   let(:user) { create :user }
   let(:group) { create :group }
 

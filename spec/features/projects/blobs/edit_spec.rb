@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Editing file blob', :js do
+RSpec.describe 'Editing file blob', :js do
   include TreeHelper
 
   let(:project) { create(:project, :public, :repository) }

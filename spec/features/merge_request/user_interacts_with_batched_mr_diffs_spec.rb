@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Batch diffs', :js do
+RSpec.describe 'Batch diffs', :js do
   include MergeRequestDiffHelpers
   include RepoHelpers
 

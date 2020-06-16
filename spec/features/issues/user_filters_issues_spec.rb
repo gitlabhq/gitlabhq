@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'User filters issues' do
+RSpec.describe 'User filters issues' do
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project_empty_repo, :public) }
 

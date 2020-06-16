@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Merge request > User sees pipelines triggered by merge request', :js do
+RSpec.describe 'Merge request > User sees pipelines triggered by merge request', :js do
   include ProjectForksHelper
   include TestReportsHelper
 

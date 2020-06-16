@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Milestone' do
+RSpec.describe 'Milestone' do
   let(:group) { create(:group, :public) }
   let(:project) { create(:project, :public, namespace: group) }
   let(:user) { create(:user) }

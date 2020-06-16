@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Projects > Files > User uploads files' do
+RSpec.describe 'Projects > Files > User uploads files' do
   include DropzoneHelper
 
   let(:user) { create(:user) }

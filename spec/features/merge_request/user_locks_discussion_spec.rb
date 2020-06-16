@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Merge request > User locks discussion', :js do
+RSpec.describe 'Merge request > User locks discussion', :js do
   let(:user) { create(:user) }
   let(:project) { create(:project, :public, :repository) }
   let(:merge_request) { create(:merge_request, source_project: project) }

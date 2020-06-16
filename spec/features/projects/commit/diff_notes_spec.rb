@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Commit diff', :js do
+RSpec.describe 'Commit diff', :js do
   include RepoHelpers
 
   let(:user)          { create(:user) }

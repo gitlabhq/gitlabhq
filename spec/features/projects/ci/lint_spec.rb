@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'CI Lint', :js do
+RSpec.describe 'CI Lint', :js do
   let(:project) { create(:project, :repository) }
   let(:user) { create(:user) }
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Profile > GPG Keys' do
+RSpec.describe 'Profile > GPG Keys' do
   let(:user) { create(:user, email: GpgHelpers::User2.emails.first) }
 
   before do

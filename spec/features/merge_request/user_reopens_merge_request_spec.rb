@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'User reopens a merge requests', :js do
+RSpec.describe 'User reopens a merge requests', :js do
   let(:project) { create(:project, :public, :repository) }
   let!(:merge_request) { create(:closed_merge_request, source_project: project, target_project: project) }
   let(:user) { create(:user) }

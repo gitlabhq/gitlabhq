@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Merge request > User resolves conflicts', :js do
+RSpec.describe 'Merge request > User resolves conflicts', :js do
   let(:project) { create(:project, :repository) }
   let(:user) { project.creator }
 

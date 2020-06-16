@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Projects > Activity > User sees activity' do
+RSpec.describe 'Projects > Activity > User sees activity' do
   let(:project) { create(:project, :repository, :public) }
   let(:user) { project.creator }
   let(:issue) { create(:issue, project: project) }

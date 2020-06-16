@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Overview tab on a user profile', :js do
+RSpec.describe 'Overview tab on a user profile', :js do
   let(:user) { create(:user) }
   let(:contributed_project) { create(:project, :public, :repository) }
 

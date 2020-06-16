@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Merge request > User sees versions', :js do
+RSpec.describe 'Merge request > User sees versions', :js do
   let(:merge_request) do
     create(:merge_request).tap do |mr|
       mr.merge_request_diff.destroy

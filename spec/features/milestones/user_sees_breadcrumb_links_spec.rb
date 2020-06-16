@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'New project milestone breadcrumb' do
+RSpec.describe 'New project milestone breadcrumb' do
   let(:project) { create(:project) }
   let(:milestone) { create(:milestone, project: project) }
   let(:user) { project.creator }

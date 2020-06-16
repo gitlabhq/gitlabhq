@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe UserFinder do
+RSpec.describe UserFinder do
   let_it_be(:user) { create(:user) }
 
   describe '#find_by_id' do

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Clusters::KnativeServicesFinder do
+RSpec.describe Clusters::KnativeServicesFinder do
   include KubernetesHelpers
   include ReactiveCachingHelpers
 

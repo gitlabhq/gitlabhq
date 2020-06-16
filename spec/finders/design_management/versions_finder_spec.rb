@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe DesignManagement::VersionsFinder do
+RSpec.describe DesignManagement::VersionsFinder do
   include DesignManagementTestHelpers
 
   let_it_be(:user) { create(:user) }

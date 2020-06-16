@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'User interacts with labels' do
+RSpec.describe 'User interacts with labels' do
   let(:user) { create(:user) }
   let(:project) { create(:project, namespace: user.namespace) }
   let(:milestone) { create(:milestone, project: project, title: 'v2.2', description: '# Description header') }

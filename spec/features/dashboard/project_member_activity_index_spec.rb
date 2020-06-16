@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Project member activity', :js do
+RSpec.describe 'Project member activity', :js do
   let(:user)            { create(:user) }
   let(:project)         { create(:project, :public, name: 'x', namespace: user.namespace) }
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Projects::ExportJobFinder do
+RSpec.describe Projects::ExportJobFinder do
   let(:project) { create(:project) }
   let(:project_export_job1) { create(:project_export_job, project: project) }
   let(:project_export_job2) { create(:project_export_job, project: project) }

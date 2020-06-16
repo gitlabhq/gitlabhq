@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Edit group label' do
+RSpec.describe 'Edit group label' do
   let(:user)  { create(:user) }
   let(:group) { create(:group) }
   let(:label) { create(:group_label, group: group) }

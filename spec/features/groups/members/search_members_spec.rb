@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Search group member' do
+RSpec.describe 'Search group member' do
   let(:user) { create :user }
   let(:member) { create :user }
 

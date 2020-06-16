@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Dropdown base', :js do
+RSpec.describe 'Dropdown base', :js do
   include FilteredSearchHelpers
 
   let!(:project) { create(:project) }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Mutations::ResolvesGroup do
+RSpec.describe Mutations::ResolvesGroup do
   let(:mutation_class) do
     Class.new(Mutations::BaseMutation) do
       include Mutations::ResolvesGroup

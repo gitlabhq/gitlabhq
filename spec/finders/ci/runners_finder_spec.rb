@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Ci::RunnersFinder do
+RSpec.describe Ci::RunnersFinder do
   context 'admin' do
     let_it_be(:admin) { create(:user, :admin) }
 

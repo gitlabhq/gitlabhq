@@ -141,3 +141,9 @@ composer update
 ```
 
 If successful, you should be able to see the output indicating that the package has been successfully installed.
+
+CAUTION: **Important:**
+Make sure to never commit the `auth.json` file to your repository. To install packages from a CI job,
+consider using the [`composer config`](https://getcomposer.org/doc/articles/handling-private-packages-with-satis.md#authentication) tool with your personal access token
+stored in a [GitLab CI/CD environment variable](../../../ci/variables/README.md) or in
+[Hashicorp Vault](../../../ci/examples/authenticating-with-hashicorp-vault/index.md).

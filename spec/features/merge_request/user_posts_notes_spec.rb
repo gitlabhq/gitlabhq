@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Merge request > User posts notes', :js do
+RSpec.describe 'Merge request > User posts notes', :js do
   include NoteInteractionHelpers
 
   let_it_be(:project) { create(:project, :repository) }

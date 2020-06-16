@@ -266,6 +266,17 @@ as artifacts.
 The collected Metrics report will be uploaded to GitLab as an artifact and will
 be automatically shown in merge requests.
 
+#### `artifacts:reports:requirements` **(ULTIMATE)**
+
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/2859) in GitLab 13.1.
+> - Requires GitLab Runner 11.5 and above.
+
+The `requirements` report collects `requirements.json` files as artifacts.
+
+The collected Requirements report will be uploaded to GitLab as an artifact and
+existing [requirements](../../user/project/requirements/index.md) will be
+marked as Satisfied.
+
 ## Browsing artifacts
 
 > - From GitLab 9.2, PDFs, images, videos, and other formats can be previewed directly in the job artifacts browser without the need to download them.

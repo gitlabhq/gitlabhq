@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'User visits their profile' do
+RSpec.describe 'User visits their profile' do
   let(:user) { create(:user) }
 
   before do

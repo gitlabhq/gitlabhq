@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ClusterAncestorsFinder, '#execute' do
+RSpec.describe ClusterAncestorsFinder, '#execute' do
   let(:group) { create(:group) }
   let(:project) { create(:project, group: group) }
   let(:user) { create(:user) }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Manually create a todo item from issue', :js do
+RSpec.describe 'Manually create a todo item from issue', :js do
   let!(:project) { create(:project) }
   let!(:issue)   { create(:issue, project: project) }
   let!(:user)    { create(:user)}

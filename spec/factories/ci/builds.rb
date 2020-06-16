@@ -378,6 +378,21 @@ FactoryBot.define do
       end
     end
 
+    trait :release_options do
+      options do
+        {
+          only: 'tags',
+          script: ['make changelog | tee release_changelog.txt'],
+          release: {
+            name: 'Release $CI_COMMIT_SHA',
+            description: 'Created using the release-cli $EXTRA_DESCRIPTION',
+            tag_name: 'release-$CI_COMMIT_SHA',
+            ref: '$CI_COMMIT_SHA'
+          }
+        }
+      end
+    end
+
     trait :no_options do
       options { {} }
     end

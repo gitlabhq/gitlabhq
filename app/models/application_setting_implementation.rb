@@ -297,10 +297,21 @@ module ApplicationSettingImplementation
     performance_bar_allowed_group_id.present?
   end
 
-  # Choose one of the available repository storage options. Currently all have
-  # equal weighting.
+  def normalized_repository_storage_weights
+    strong_memoize(:normalized_repository_storage_weights) do
+      weights_total = repository_storages_weighted.values.reduce(:+)
+
+      repository_storages_weighted.transform_values do |w|
+        next w if weights_total == 0
+
+        w.to_f / weights_total
+      end
+    end
+  end
+
+  # Choose one of the available repository storage options based on a normalized weighted probability.
   def pick_repository_storage
-    repository_storages.sample
+    normalized_repository_storage_weights.max_by { |_, weight| rand**(1.0 / weight) }.first
   end
 
   def runners_registration_token

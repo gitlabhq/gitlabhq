@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-describe "User creates labels" do
+RSpec.describe "User creates labels" do
   let_it_be(:project) { create(:project_empty_repo, :public) }
   let_it_be(:user) { create(:user) }
 

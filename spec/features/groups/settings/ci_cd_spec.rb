@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Group CI/CD settings' do
+RSpec.describe 'Group CI/CD settings' do
   include WaitForRequests
 
   let(:user) { create(:user) }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Dashboard Todos' do
+RSpec.describe 'Dashboard Todos' do
   let_it_be(:user)    { create(:user, username: 'john') }
   let_it_be(:author)  { create(:user) }
   let_it_be(:project) { create(:project, :public) }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'User reverts a commit', :js do
+RSpec.describe 'User reverts a commit', :js do
   include RepoHelpers
 
   let(:project) { create(:project, :repository, namespace: user.namespace) }

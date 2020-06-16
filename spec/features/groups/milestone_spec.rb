@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Group milestones' do
+RSpec.describe 'Group milestones' do
   let_it_be(:group) { create(:group) }
   let_it_be(:project) { create(:project_empty_repo, group: group) }
   let_it_be(:user) { create(:group_member, :maintainer, user: create(:user), group: group ).user }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe UploaderFinder do
+RSpec.describe UploaderFinder do
   describe '#execute' do
     let(:project) { build(:project) }
     let(:upload) { create(:upload, :issuable_upload, :with_file) }

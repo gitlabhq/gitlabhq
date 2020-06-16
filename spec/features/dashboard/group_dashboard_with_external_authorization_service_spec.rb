@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'The group dashboard' do
+RSpec.describe 'The group dashboard' do
   include ExternalAuthorizationServiceHelpers
 
   let(:user) { create(:user) }

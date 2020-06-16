@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe PersonalAccessTokensFinder do
+RSpec.describe PersonalAccessTokensFinder do
   def finder(options = {})
     described_class.new(options)
   end

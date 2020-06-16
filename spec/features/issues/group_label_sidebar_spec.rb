@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Group label on issue' do
+RSpec.describe 'Group label on issue' do
   it 'renders link to the project issues page' do
     group = create(:group)
     project = create(:project, :public, namespace: group)

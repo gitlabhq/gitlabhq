@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'New/edit issue', :js do
+RSpec.describe 'New/edit issue', :js do
   include ActionView::Helpers::JavaScriptHelper
   include FormHelper
 

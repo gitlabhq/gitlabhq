@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe SnippetsFinder do
+RSpec.describe SnippetsFinder do
   include ExternalAuthorizationServiceHelpers
   include Gitlab::Allowable
 

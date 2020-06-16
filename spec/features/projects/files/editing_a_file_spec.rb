@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Projects > Files > User wants to edit a file' do
+RSpec.describe 'Projects > Files > User wants to edit a file' do
   let(:project) { create(:project, :repository) }
   let(:user) { project.owner }
   let(:commit_params) do

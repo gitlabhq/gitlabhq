@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Mutations::DesignManagement::Delete do
+RSpec.describe Mutations::DesignManagement::Delete do
   include DesignManagementTestHelpers
 
   let(:issue) { create(:issue) }

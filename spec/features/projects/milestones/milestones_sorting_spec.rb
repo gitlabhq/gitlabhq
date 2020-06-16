@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Milestones sorting', :js do
+RSpec.describe 'Milestones sorting', :js do
   let(:user)    { create(:user) }
   let(:project) { create(:project, name: 'test', namespace: user.namespace) }
 

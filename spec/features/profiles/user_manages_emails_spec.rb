@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'User manages emails' do
+RSpec.describe 'User manages emails' do
   let(:user) { create(:user) }
 
   before do

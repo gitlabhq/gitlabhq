@@ -512,7 +512,9 @@ Here are some common pitfalls and how to overcome them:
   pp s.search_objects.class.name
   ```
 
-  If you see `Elasticsearch::Model::Response::Records`, you are using Elasticsearch.
+  If you see `"ActiveRecord::Relation"`, you are **not** using Elasticsearch.
+  
+  If you see `"Kaminari::PaginatableArray"` you are using Elasticsearch.
 
   NOTE: **Note**:
   The above instructions are used to verify that GitLab is using Elasticsearch only when indexing all namespaces. This is not to be used for scenarios that only index a [subset of namespaces](#limiting-namespaces-and-projects).
@@ -628,9 +630,9 @@ Here are some common pitfalls and how to overcome them:
    You probably have not used either `http://` or `https://` as part of your value in the **"URL"** field of the Elasticsearch Integration Menu. Please make sure you are using either `http://` or `https://` in this field as the [Elasticsearch client for Go](https://github.com/olivere/elastic) that we are using [needs the prefix for the URL to be accepted as valid](https://github.com/olivere/elastic/commit/a80af35aa41856dc2c986204e2b64eab81ccac3a).
    Once you have corrected the formatting of the URL, delete the index (via the [dedicated Rake task](#gitlab-elasticsearch-rake-tasks)) and [reindex the content of your instance](#adding-gitlabs-data-to-the-elasticsearch-index).
 
-### Low level troubleshooting
+### Low-level troubleshooting
 
-There is more [low level troubleshooting documentation](../administration/troubleshooting/elasticsearch.md) for when you experience other issues, including poor performance.
+There is a [more structured, lower-level troubleshooting document](../administration/troubleshooting/elasticsearch.md) for when you experience other issues, including poor performance.
 
 ### Known Issues
 

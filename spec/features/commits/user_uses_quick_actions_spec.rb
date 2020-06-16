@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Commit > User uses quick actions', :js do
+RSpec.describe 'Commit > User uses quick actions', :js do
   include Spec::Support::Helpers::Features::NotesHelpers
   include RepoHelpers
 

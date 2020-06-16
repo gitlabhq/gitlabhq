@@ -697,7 +697,8 @@ CREATE TABLE public.audit_events (
     entity_type character varying NOT NULL,
     details text,
     created_at timestamp without time zone,
-    updated_at timestamp without time zone
+    updated_at timestamp without time zone,
+    ip_address inet
 );
 
 CREATE SEQUENCE public.audit_events_id_seq
@@ -13982,6 +13983,7 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200604174544
 20200604174558
 20200605003204
+20200605093113
 20200608072931
 20200608075553
 20200608214008

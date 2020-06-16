@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Mutations::Commits::Create do
+RSpec.describe Mutations::Commits::Create do
   subject(:mutation) { described_class.new(object: nil, context: context, field: nil) }
 
   let_it_be(:project) { create(:project, :public, :repository) }

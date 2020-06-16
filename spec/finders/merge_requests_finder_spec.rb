@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe MergeRequestsFinder do
+RSpec.describe MergeRequestsFinder do
   context "multiple projects with merge requests" do
     include_context 'MergeRequestsFinder multiple projects with merge requests context'
 

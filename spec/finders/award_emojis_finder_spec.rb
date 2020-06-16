@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe AwardEmojisFinder do
+RSpec.describe AwardEmojisFinder do
   let_it_be(:issue_1) { create(:issue) }
   let_it_be(:issue_1_thumbsup) { create(:award_emoji, name: 'thumbsup', awardable: issue_1) }
   let_it_be(:issue_1_thumbsdown) { create(:award_emoji, name: 'thumbsdown', awardable: issue_1) }

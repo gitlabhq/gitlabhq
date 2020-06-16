@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Issue Boards shortcut', :js do
+RSpec.describe 'Issue Boards shortcut', :js do
   context 'issues are enabled' do
     let(:project) { create(:project) }
 

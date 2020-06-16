@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Merge request > User sees WIP help message' do
+RSpec.describe 'Merge request > User sees WIP help message' do
   let(:project) { create(:project, :public, :repository) }
   let(:user)    { project.creator }
 

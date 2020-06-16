@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Project group variables', :js do
+RSpec.describe 'Project group variables', :js do
   let(:user) { create(:user) }
   let(:group) { create(:group) }
   let(:subgroup) { create(:group, parent: group) }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'admin visits dashboard' do
+RSpec.describe 'admin visits dashboard' do
   include ProjectForksHelper
 
   before do

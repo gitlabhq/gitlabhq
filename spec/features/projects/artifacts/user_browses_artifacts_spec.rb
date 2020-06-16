@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-describe "User browses artifacts" do
+RSpec.describe "User browses artifacts" do
   let(:project) { create(:project, :public) }
   let(:pipeline) { create(:ci_empty_pipeline, project: project) }
   let(:job) { create(:ci_build, :artifacts, pipeline: pipeline) }

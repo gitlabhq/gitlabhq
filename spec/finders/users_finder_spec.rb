@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe UsersFinder do
+RSpec.describe UsersFinder do
   describe '#execute' do
     include_context 'UsersFinder#execute filter by project context'
 

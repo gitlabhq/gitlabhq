@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Issues > User sees empty state' do
+RSpec.describe 'Issues > User sees empty state' do
   let_it_be(:project) { create(:project, :public) }
   let_it_be(:user) { project.creator }
 

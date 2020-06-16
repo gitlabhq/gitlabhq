@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Admin activates Prometheus', :js do
+RSpec.describe 'Admin activates Prometheus', :js do
   let(:admin) { create(:user, :admin) }
 
   before do

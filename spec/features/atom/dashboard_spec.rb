@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe "Dashboard Feed" do
+RSpec.describe "Dashboard Feed" do
   describe "GET /" do
     let!(:user) { create(:user, name: "Jonh") }
 

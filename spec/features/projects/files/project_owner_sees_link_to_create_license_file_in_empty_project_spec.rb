@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Projects > Files > Project owner sees a link to create a license file in empty project', :js do
+RSpec.describe 'Projects > Files > Project owner sees a link to create a license file in empty project', :js do
   let(:project) { create(:project_empty_repo) }
   let(:project_maintainer) { project.owner }
 

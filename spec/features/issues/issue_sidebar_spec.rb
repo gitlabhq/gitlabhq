@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Issue Sidebar' do
+RSpec.describe 'Issue Sidebar' do
   include MobileHelpers
 
   let(:group) { create(:group, :nested) }

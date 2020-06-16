@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe "User deletes milestone", :js do
+RSpec.describe "User deletes milestone", :js do
   let(:user) { create(:user) }
   let(:group) { create(:group) }
   let(:project) { create(:project, namespace: group) }

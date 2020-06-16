@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Cohorts page', :js do
+RSpec.describe 'Cohorts page', :js do
   before do
     sign_in(create(:admin))
   end

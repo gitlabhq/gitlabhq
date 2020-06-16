@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'User can display performance bar', :js do
+RSpec.describe 'User can display performance bar', :js do
   shared_examples 'performance bar cannot be displayed' do
     it 'does not show the performance bar by default' do
       expect(page).not_to have_css('#js-peek')

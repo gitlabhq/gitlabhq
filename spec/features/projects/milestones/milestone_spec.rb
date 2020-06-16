@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Project milestone' do
+RSpec.describe 'Project milestone' do
   let(:user) { create(:user) }
   let(:project) { create(:project, name: 'test', namespace: user.namespace) }
   let(:milestone) { create(:milestone, project: project) }

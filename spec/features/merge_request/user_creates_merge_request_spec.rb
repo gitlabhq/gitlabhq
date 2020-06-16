@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-describe "User creates a merge request", :js do
+RSpec.describe "User creates a merge request", :js do
   include ProjectForksHelper
 
   let_it_be(:project) { create(:project, :repository) }

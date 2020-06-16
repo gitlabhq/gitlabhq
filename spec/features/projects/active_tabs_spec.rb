@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Project active tab' do
+RSpec.describe 'Project active tab' do
   let(:user) { create :user }
   let(:project) { create(:project, :repository) }
 

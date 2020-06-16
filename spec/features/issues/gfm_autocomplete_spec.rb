@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'GFM autocomplete', :js do
+RSpec.describe 'GFM autocomplete', :js do
   let(:issue_xss_title) { 'This will execute alert<img src=x onerror=alert(2)&lt;img src=x onerror=alert(1)&gt;' }
   let(:user_xss_title) { 'eve <img src=x onerror=alert(2)&lt;img src=x onerror=alert(1)&gt;' }
   let(:label_xss_title) { 'alert label &lt;img src=x onerror="alert(\'Hello xss\');" a' }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Group AWS EKS Cluster', :js do
+RSpec.describe 'Group AWS EKS Cluster', :js do
   let(:group) { create(:group) }
   let(:user) { create(:user) }
 

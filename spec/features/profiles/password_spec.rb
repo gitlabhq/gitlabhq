@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Profile > Password' do
+RSpec.describe 'Profile > Password' do
   let(:user) { create(:user) }
 
   def fill_passwords(password, confirmation)

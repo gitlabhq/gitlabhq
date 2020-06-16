@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Admin updates settings', :clean_gitlab_redis_shared_state, :do_not_mock_admin_mode do
+RSpec.describe 'Admin updates settings', :clean_gitlab_redis_shared_state, :do_not_mock_admin_mode do
   include StubENV
   include TermsHelper
   include UsageDataHelpers

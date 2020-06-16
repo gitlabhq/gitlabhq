@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe FinderMethods do
+RSpec.describe FinderMethods do
   let(:finder_class) do
     Class.new do
       include FinderMethods

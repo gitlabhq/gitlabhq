@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe JoinedGroupsFinder do
+RSpec.describe JoinedGroupsFinder do
   describe '#execute' do
     let!(:profile_owner)    { create(:user) }
     let!(:profile_visitor)  { create(:user) }

@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-describe "User sorts issues" do
+RSpec.describe "User sorts issues" do
   include SortingHelper
   include IssueHelpers
 

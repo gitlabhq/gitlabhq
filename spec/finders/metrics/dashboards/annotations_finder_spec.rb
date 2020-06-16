@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Metrics::Dashboards::AnnotationsFinder do
+RSpec.describe Metrics::Dashboards::AnnotationsFinder do
   describe '#execute' do
     subject(:annotations) { described_class.new(dashboard: dashboard, params: params).execute }
 

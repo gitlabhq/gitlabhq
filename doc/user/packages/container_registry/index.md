@@ -513,7 +513,7 @@ then goes through a process of excluding tags from it until only the ones to be 
 1. Excludes any tags that do not have a manifest (not part of the options).
 1. Orders the remaining tags by `created_date`.
 1. Excludes from the list the N tags based on the `keep_n` value (Number of tags to retain).
-1. Excludes from the list the tags older than the `older_than` value (Expiration interval).
+1. Excludes from the list the tags more recent than the `older_than` value (Expiration interval).
 1. Excludes from the list any tags matching the `name_regex_keep` value (Images to preserve).
 1. Finally, the remaining tags in the list are deleted from the Container Registry.
 

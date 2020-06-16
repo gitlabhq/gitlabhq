@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'User edits a merge request', :js do
+RSpec.describe 'User edits a merge request', :js do
   include Select2Helper
 
   let(:project) { create(:project, :repository) }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe TodosFinder do
+RSpec.describe TodosFinder do
   describe '#execute' do
     let(:user) { create(:user) }
     let(:group) { create(:group) }

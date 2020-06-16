@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Issue Boards new issue', :js do
+RSpec.describe 'Issue Boards new issue', :js do
   let(:project) { create(:project, :public) }
   let(:board)   { create(:board, project: project) }
   let!(:list)   { create(:list, board: board, position: 0) }

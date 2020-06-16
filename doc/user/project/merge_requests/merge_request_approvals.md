@@ -248,6 +248,11 @@ enable this feature:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/5981) in [GitLab Starter](https://about.gitlab.com/pricing/) 12.0.
 
+NOTE: **Note:**
+To require authentication when approving a merge request, you must enable
+**Password authentication enabled for web interface** under [sign-in restrictions](../../admin_area/settings/sign_in_restrictions.md#password-authentication-enabled).
+in the Admin area.
+
 You can force the approver to enter a password in order to authenticate before adding
 the approval. This enables an Electronic Signature for approvals such as the one defined
 by [CFR Part 11](https://www.accessdata.fda.gov/scripts/cdrh/cfdocs/cfcfr/CFRSearch.cfm?CFRPart=11&showFR=1&subpartNode=21:1.0.1.1.8.3)).

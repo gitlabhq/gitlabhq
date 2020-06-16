@@ -25,9 +25,11 @@ module BlobViewer
     private
 
     def parse_blob_data
-      ::PerformanceMonitoring::PrometheusDashboard.from_json(YAML.safe_load(blob.data))
+      yaml = ::Gitlab::Config::Loader::Yaml.new(blob.data).load_raw!
+
+      ::PerformanceMonitoring::PrometheusDashboard.from_json(yaml)
       nil
-    rescue Psych::SyntaxError => error
+    rescue Gitlab::Config::Loader::FormatError => error
       wrap_yml_syntax_error(error)
     rescue ActiveModel::ValidationError => invalid
       invalid.model.errors

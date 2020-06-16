@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Labels subscription' do
+RSpec.describe 'Labels subscription' do
   let(:user)     { create(:user) }
   let(:group)    { create(:group) }
   let(:project)  { create(:project, :public, namespace: group) }

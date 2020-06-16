@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Contextual sidebar', :js do
+RSpec.describe 'Contextual sidebar', :js do
   let(:user) { create(:user) }
   let(:project) { create(:project) }
 

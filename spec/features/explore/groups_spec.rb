@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Explore Groups', :js do
+RSpec.describe 'Explore Groups', :js do
   let(:user) { create :user }
   let(:group) { create :group }
   let!(:private_project) do

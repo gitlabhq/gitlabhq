@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'User visits the profile preferences page' do
+RSpec.describe 'User visits the profile preferences page' do
   include Select2Helper
 
   let(:user) { create(:user) }

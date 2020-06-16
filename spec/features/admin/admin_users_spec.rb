@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe "Admin::Users" do
+RSpec.describe "Admin::Users" do
   include Spec::Support::Helpers::Features::ResponsiveTableHelpers
 
   let!(:user) do

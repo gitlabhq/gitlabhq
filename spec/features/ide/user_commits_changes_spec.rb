@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'IDE user commits changes', :js do
+RSpec.describe 'IDE user commits changes', :js do
   include WebIdeSpecHelpers
 
   let(:project) { create(:project, :public, :repository) }

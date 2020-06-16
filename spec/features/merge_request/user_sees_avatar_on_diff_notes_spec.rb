@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Merge request > User sees avatars on diff notes', :js do
+RSpec.describe 'Merge request > User sees avatars on diff notes', :js do
   include NoteInteractionHelpers
 
   let(:project)       { create(:project, :public, :repository) }

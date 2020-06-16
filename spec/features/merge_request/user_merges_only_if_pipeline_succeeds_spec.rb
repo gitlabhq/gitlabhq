@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Merge request > User merges only if pipeline succeeds', :js do
+RSpec.describe 'Merge request > User merges only if pipeline succeeds', :js do
   let(:merge_request) { create(:merge_request_with_diffs) }
   let(:project)       { merge_request.target_project }
 

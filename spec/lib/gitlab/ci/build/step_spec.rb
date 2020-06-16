@@ -51,6 +51,30 @@ describe Gitlab::Ci::Build::Step do
     end
   end
 
+  describe '#from_release' do
+    subject { described_class.from_release(job) }
+
+    before do
+      job.run!
+    end
+
+    context 'with release' do
+      let(:job) { create(:ci_build, :release_options) }
+
+      it 'returns the release-cli command line' do
+        expect(subject.script).to eq("release-cli create --name \"Release $CI_COMMIT_SHA\" --description \"Created using the release-cli $EXTRA_DESCRIPTION\" --tag-name \"release-$CI_COMMIT_SHA\" --ref \"$CI_COMMIT_SHA\"")
+      end
+    end
+
+    context 'when release is empty' do
+      let(:job) { create(:ci_build) }
+
+      it 'does not fabricate an object' do
+        is_expected.to be_nil
+      end
+    end
+  end
+
   describe '#from_after_script' do
     let(:job) { create(:ci_build) }
 
@@ -61,7 +85,7 @@ describe Gitlab::Ci::Build::Step do
     end
 
     context 'when after_script is empty' do
-      it 'doesn not fabricate an object' do
+      it 'does not fabricate an object' do
         is_expected.to be_nil
       end
     end

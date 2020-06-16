@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ForkProjectsFinder do
+RSpec.describe ForkProjectsFinder do
   include ProjectForksHelper
 
   let(:source_project) { create(:project, :public, :empty_repo) }

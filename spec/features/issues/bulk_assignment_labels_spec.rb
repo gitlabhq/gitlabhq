@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Issues > Labels bulk assignment' do
+RSpec.describe 'Issues > Labels bulk assignment' do
   let(:user)      { create(:user) }
   let!(:project)  { create(:project) }
   let!(:issue1)   { create(:issue, project: project, title: "Issue 1") }

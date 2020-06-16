@@ -4216,7 +4216,7 @@ describe Ci::Build do
 
     subject { build.supported_runner?(runner_features) }
 
-    context 'when feature is required by build' do
+    context 'when `upload_multiple_artifacts` feature is required by build' do
       before do
         expect(build).to receive(:runner_required_feature_names) do
           [:upload_multiple_artifacts]
@@ -4240,13 +4240,33 @@ describe Ci::Build do
       end
     end
 
-    context 'when refspecs feature is required by build' do
+    context 'when `refspecs` feature is required by build' do
       before do
         allow(build).to receive(:merge_request_ref?) { true }
       end
 
       context 'when runner provides given feature' do
         let(:runner_features) { { refspecs: true } }
+
+        it { is_expected.to be_truthy }
+      end
+
+      context 'when runner does not provide given feature' do
+        let(:runner_features) { {} }
+
+        it { is_expected.to be_falsey }
+      end
+    end
+
+    context 'when `release_steps` feature is required by build' do
+      before do
+        expect(build).to receive(:runner_required_feature_names) do
+          [:release_steps]
+        end
+      end
+
+      context 'when runner provides given feature' do
+        let(:runner_features) { { release_steps: true } }
 
         it { is_expected.to be_truthy }
       end

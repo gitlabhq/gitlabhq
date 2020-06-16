@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Edit Project Settings' do
+RSpec.describe 'Edit Project Settings' do
   let(:member) { create(:user) }
   let!(:project) { create(:project, :public, :repository) }
   let!(:issue) { create(:issue, project: project) }

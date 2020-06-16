@@ -2,7 +2,8 @@
 import { GlResizeObserverDirective } from '@gitlab/ui';
 import { GlStackedColumnChart } from '@gitlab/ui/dist/charts';
 import { getSvgIconPathContent } from '~/lib/utils/icon_utils';
-import { chartHeight } from '../../constants';
+import { chartHeight, legendLayoutTypes } from '../../constants';
+import { s__ } from '~/locale';
 import { graphDataValidatorForValues } from '../../utils';
 import { getTimeAxisOptions, axisTypes } from './options';
 import { timezones } from '../../format_date';
@@ -24,6 +25,31 @@ export default {
       type: String,
       required: false,
       default: timezones.LOCAL,
+    },
+    legendLayout: {
+      type: String,
+      required: false,
+      default: legendLayoutTypes.table,
+    },
+    legendAverageText: {
+      type: String,
+      required: false,
+      default: s__('Metrics|Avg'),
+    },
+    legendCurrentText: {
+      type: String,
+      required: false,
+      default: s__('Metrics|Current'),
+    },
+    legendMaxText: {
+      type: String,
+      required: false,
+      default: s__('Metrics|Max'),
+    },
+    legendMinText: {
+      type: String,
+      required: false,
+      default: s__('Metrics|Min'),
     },
   },
   data() {
@@ -119,6 +145,11 @@ export default {
       :width="width"
       :height="height"
       :series-names="seriesNames"
+      :legend-layout="legendLayout"
+      :legend-average-text="legendAverageText"
+      :legend-current-text="legendCurrentText"
+      :legend-max-text="legendMaxText"
+      :legend-min-text="legendMinText"
     />
   </div>
 </template>

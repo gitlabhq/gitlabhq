@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'New issue', :js do
+RSpec.describe 'New issue', :js do
   include StubENV
 
   let(:project) { create(:project, :public) }

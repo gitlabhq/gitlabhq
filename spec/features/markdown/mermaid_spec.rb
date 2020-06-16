@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Mermaid rendering', :js do
+RSpec.describe 'Mermaid rendering', :js do
   it 'renders Mermaid diagrams correctly' do
     description = <<~MERMAID
       ```mermaid

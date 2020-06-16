@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Projects > Files > Project owner creates a license file', :js do
+RSpec.describe 'Projects > Files > Project owner creates a license file', :js do
   let(:project) { create(:project, :repository) }
   let(:project_maintainer) { project.owner }
 

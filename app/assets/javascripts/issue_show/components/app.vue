@@ -1,9 +1,10 @@
 <script>
+import { GlIcon, GlIntersectionObserver } from '@gitlab/ui';
 import Visibility from 'visibilityjs';
 import { __, s__, sprintf } from '~/locale';
 import createFlash from '~/flash';
-import { visitUrl } from '../../lib/utils/url_utility';
-import Poll from '../../lib/utils/poll';
+import { visitUrl } from '~/lib/utils/url_utility';
+import Poll from '~/lib/utils/poll';
 import eventHub from '../event_hub';
 import Service from '../services/index';
 import Store from '../stores';
@@ -12,10 +13,13 @@ import descriptionComponent from './description.vue';
 import editedComponent from './edited.vue';
 import formComponent from './form.vue';
 import PinnedLinks from './pinned_links.vue';
-import recaptchaModalImplementor from '../../vue_shared/mixins/recaptcha_modal_implementor';
+import recaptchaModalImplementor from '~/vue_shared/mixins/recaptcha_modal_implementor';
+import { IssuableStatus, IssuableStatusText, IssuableType } from '../constants';
 
 export default {
   components: {
+    GlIcon,
+    GlIntersectionObserver,
     descriptionComponent,
     titleComponent,
     editedComponent,
@@ -68,6 +72,11 @@ export default {
     issuableRef: {
       type: String,
       required: true,
+    },
+    issuableStatus: {
+      type: String,
+      required: false,
+      default: '',
     },
     initialTitleHtml: {
       type: String,
@@ -162,6 +171,7 @@ export default {
       state: store.state,
       showForm: false,
       templatesRequested: false,
+      isStickyHeaderShowing: false,
     };
   },
   computed: {
@@ -195,6 +205,18 @@ export default {
     },
     defaultErrorMessage() {
       return sprintf(s__('Error updating %{issuableType}'), { issuableType: this.issuableType });
+    },
+    isOpenStatus() {
+      return this.issuableStatus === IssuableStatus.Open;
+    },
+    statusIcon() {
+      return this.isOpenStatus ? 'issue-open-m' : 'mobile-issue-close';
+    },
+    statusText() {
+      return IssuableStatusText[this.issuableStatus];
+    },
+    shouldShowStickyHeader() {
+      return this.isStickyHeaderShowing && this.issuableType === IssuableType.Issue;
     },
   },
   created() {
@@ -349,6 +371,14 @@ export default {
           );
         });
     },
+
+    hideStickyHeader() {
+      this.isStickyHeaderShowing = false;
+    },
+
+    showStickyHeader() {
+      this.isStickyHeaderShowing = true;
+    },
   },
 };
 </script>
@@ -385,10 +415,40 @@ export default {
         :title-text="state.titleText"
         :show-inline-edit-button="showInlineEditButton"
       />
+
+      <gl-intersection-observer @appear="hideStickyHeader" @disappear="showStickyHeader">
+        <transition name="issuable-header-slide">
+          <div
+            v-if="shouldShowStickyHeader"
+            class="issue-sticky-header gl-fixed gl-z-index-2 gl-bg-white gl-border-1 gl-border-b-solid gl-border-b-gray-200 gl-py-3"
+            data-testid="issue-sticky-header"
+          >
+            <div
+              class="issue-sticky-header-text gl-display-flex gl-align-items-center gl-mx-auto gl-px-5"
+            >
+              <p
+                class="issuable-status-box status-box gl-my-0"
+                :class="[isOpenStatus ? 'status-box-open' : 'status-box-issue-closed']"
+              >
+                <gl-icon :name="statusIcon" class="gl-display-block d-sm-none gl-h-6!" />
+                <span class="gl-display-none d-sm-block">{{ statusText }}</span>
+              </p>
+              <p
+                class="gl-font-weight-bold gl-overflow-hidden gl-white-space-nowrap gl-text-overflow-ellipsis gl-my-0"
+                :title="state.titleText"
+              >
+                {{ state.titleText }}
+              </p>
+            </div>
+          </div>
+        </transition>
+      </gl-intersection-observer>
+
       <pinned-links
         :zoom-meeting-url="zoomMeetingUrl"
         :published-incident-url="publishedIncidentUrl"
       />
+
       <description-component
         v-if="state.descriptionHtml"
         :can-update="canUpdate"
@@ -401,6 +461,7 @@ export default {
         :lock-version="state.lock_version"
         @taskListUpdateFailed="updateStoreState"
       />
+
       <edited-component
         v-if="hasUpdated"
         :updated-at="state.updatedAt"

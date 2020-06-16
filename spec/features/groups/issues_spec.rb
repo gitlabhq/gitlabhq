@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Group issues page' do
+RSpec.describe 'Group issues page' do
   include FilteredSearchHelpers
   include DragTo
 

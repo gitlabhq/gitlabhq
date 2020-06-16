@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Multiple issue updating from issues#index', :js do
+RSpec.describe 'Multiple issue updating from issues#index', :js do
   let!(:project)   { create(:project) }
   let!(:issue)     { create(:issue, project: project) }
   let!(:user)      { create(:user)}

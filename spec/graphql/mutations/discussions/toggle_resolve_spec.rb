@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Mutations::Discussions::ToggleResolve do
+RSpec.describe Mutations::Discussions::ToggleResolve do
   subject(:mutation) do
     described_class.new(object: nil, context: { current_user: user }, field: nil)
   end

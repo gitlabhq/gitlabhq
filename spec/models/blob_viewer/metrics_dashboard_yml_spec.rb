@@ -24,9 +24,16 @@ describe BlobViewer::MetricsDashboardYml do
         viewer.valid?
       end
 
-      it 'returns true' do
+      it 'returns true', :aggregate_failures do
+        yml = ::Gitlab::Config::Loader::Yaml.new(data).load_raw!
+
+        expect_next_instance_of(::Gitlab::Config::Loader::Yaml, data) do |loader|
+          expect(loader).to receive(:load_raw!).and_call_original
+        end
         expect(PerformanceMonitoring::PrometheusDashboard)
-          .to receive(:from_json).with(YAML.safe_load(data))
+          .to receive(:from_json)
+          .with(yml)
+          .and_call_original
         expect(viewer.valid?).to be_truthy
       end
     end
@@ -90,6 +97,31 @@ describe BlobViewer::MetricsDashboardYml do
         expect(viewer.errors).to be_kind_of ActiveModel::Errors
         expect(viewer.errors.messages).to eql(yaml_wrapped_errors)
       end
+    end
+  end
+
+  context 'when YAML loader raises error' do
+    let(:data) do
+      <<~YAML
+        large yaml file
+      YAML
+    end
+
+    before do
+      allow(::Gitlab::Config::Loader::Yaml).to receive(:new)
+        .and_raise(::Gitlab::Config::Loader::Yaml::DataTooLargeError, 'The parsed YAML is too big')
+    end
+
+    it 'is invalid' do
+      expect(PerformanceMonitoring::PrometheusDashboard).not_to receive(:from_json)
+      expect(viewer.valid?).to be(false)
+    end
+
+    it 'returns validation errors' do
+      yaml_wrapped_errors = { 'YAML syntax': ["The parsed YAML is too big"] }
+
+      expect(viewer.errors).to be_kind_of(ActiveModel::Errors)
+      expect(viewer.errors.messages).to eq(yaml_wrapped_errors)
     end
   end
 end

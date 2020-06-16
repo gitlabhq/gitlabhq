@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Project members list' do
+RSpec.describe 'Project members list' do
   include Select2Helper
   include Spec::Support::Helpers::Features::ListRowsHelpers
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe GroupMembersFinder, '#execute' do
+RSpec.describe GroupMembersFinder, '#execute' do
   let(:group) { create(:group) }
   let(:nested_group) { create(:group, parent: group) }
   let(:deeper_nested_group) { create(:group, parent: nested_group) }

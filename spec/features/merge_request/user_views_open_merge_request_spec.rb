@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'User views an open merge request' do
+RSpec.describe 'User views an open merge request' do
   let(:merge_request) do
     create(:merge_request, source_project: project, target_project: project, description: '# Description header')
   end

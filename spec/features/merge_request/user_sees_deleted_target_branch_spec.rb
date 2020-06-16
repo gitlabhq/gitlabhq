@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Merge request > User sees deleted target branch', :js do
+RSpec.describe 'Merge request > User sees deleted target branch', :js do
   let(:merge_request) { create(:merge_request) }
   let(:project) { merge_request.project }
   let(:user) { project.creator }

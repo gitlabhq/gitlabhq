@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe GitlabSchema do
+RSpec.describe GitlabSchema do
   let_it_be(:connections) { GitlabSchema.connections.all_wrappers }
   let(:user) { build :user }
 

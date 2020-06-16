@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Dropdown milestone', :js do
+RSpec.describe 'Dropdown milestone', :js do
   include FilteredSearchHelpers
 
   let!(:project) { create(:project) }

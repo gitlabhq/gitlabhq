@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Projects > Members > Groups with access list', :js do
+RSpec.describe 'Projects > Members > Groups with access list', :js do
   let(:user) { create(:user) }
   let(:group) { create(:group, :public) }
   let(:project) { create(:project, :public) }

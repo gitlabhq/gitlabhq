@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Cherry-pick Commits' do
+RSpec.describe 'Cherry-pick Commits' do
   let(:user) { create(:user) }
   let(:group) { create(:group) }
   let(:project) { create(:project, :repository, namespace: group) }

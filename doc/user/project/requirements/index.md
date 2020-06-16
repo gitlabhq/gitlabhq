@@ -93,3 +93,61 @@ You can also sort requirements list by:
 
 - Created date
 - Last updated
+
+## Allow requirements to be satisfied from a CI job
+
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/2859) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.1.
+
+GitLab supports [requirements test
+reports](../../../ci/pipelines/job_artifacts.md#artifactsreportsrequirements-ultimate) now.
+You can add a job to your CI pipeline that, when triggered, marks all existing
+requirements as Satisfied.
+
+### Add the manual job to CI
+
+To configure your CI to mark requirements as Satisfied when the manual job is
+triggered, add the code below to your `.gitlab-ci.yml` file.
+
+```yaml
+requirements_confirmation:
+  when: manual
+  allow_failure: false
+  script:
+    - mkdir tmp
+    - echo "{\"*\":\"passed\"}" > tmp/requirements.json
+  artifacts:
+    reports:
+      requirements: tmp/requirements.json
+```
+
+This definition adds a manually-triggered (`when: manual`) job to the CI
+pipeline. It's blocking (`allow_failure: false`), but it's up to you what
+conditions you use for triggering the CI job. Also, you can use any existing CI job
+to mark all requirements as satisfied, as long as the `requirements.json`
+artifact is generated and uploaded by the CI job.
+
+When you manually trigger this job, the `requirements.json` file containing
+`{"*":"passed"}` is uploaded as an artifact to the server. On the server side,
+the requirement report is checked for the "all passed" record
+(`{"*":"passed"}`), and on success, it marks all existing open requirements as
+Satisfied.
+
+### Add the manual job to CI conditionally
+
+To configure your CI to include the manual job only when there are some open
+requirements, add a rule which checks `CI_HAS_OPEN_REQUIREMENTS` CI variable.
+
+```yaml
+requirements_confirmation:
+  rules:
+  - if: "$CI_HAS_OPEN_REQUIREMENTS" == "true"
+    when: manual
+  - when: never
+  allow_failure: false
+  script:
+    - mkdir tmp
+    - echo "{\"*\":\"passed\"}" > tmp/requirements.json
+  artifacts:
+    reports:
+      requirements: tmp/requirements.json
+```

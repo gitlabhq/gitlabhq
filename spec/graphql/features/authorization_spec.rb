@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Gitlab::Graphql::Authorization' do
+RSpec.describe 'Gitlab::Graphql::Authorization' do
   include GraphqlHelpers
 
   let_it_be(:user) { create(:user) }

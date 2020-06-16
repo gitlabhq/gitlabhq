@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Group Repository settings' do
+RSpec.describe 'Group Repository settings' do
   include WaitForRequests
 
   let(:user) { create(:user) }

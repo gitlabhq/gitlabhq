@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-describe "User creates branch", :js do
+RSpec.describe "User creates branch", :js do
   include Spec::Support::Helpers::Features::BranchesHelpers
 
   let(:user) { create(:user) }

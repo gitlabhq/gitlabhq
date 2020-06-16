@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Mutations::Issues::SetConfidential do
+RSpec.describe Mutations::Issues::SetConfidential do
   let(:issue) { create(:issue) }
   let(:user) { create(:user) }
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Merge request > image review', :js do
+RSpec.describe 'Merge request > image review', :js do
   include MergeRequestDiffHelpers
   include RepoHelpers
 

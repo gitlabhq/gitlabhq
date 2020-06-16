@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Contributions Calendar', :js do
+RSpec.describe 'Contributions Calendar', :js do
   include MobileHelpers
 
   let(:user) { create(:user) }

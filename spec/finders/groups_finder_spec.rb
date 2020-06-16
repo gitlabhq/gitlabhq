@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe GroupsFinder do
+RSpec.describe GroupsFinder do
   describe '#execute' do
     let(:user) { create(:user) }
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Profile > Account', :js do
+RSpec.describe 'Profile > Account', :js do
   let(:user) { create(:user, username: 'foo') }
 
   before do

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Merge requests > User mass updates', :js do
+RSpec.describe 'Merge requests > User mass updates', :js do
   let(:project) { create(:project, :repository) }
   let(:user)    { project.creator }
   let!(:merge_request) { create(:merge_request, source_project: project, target_project: project) }

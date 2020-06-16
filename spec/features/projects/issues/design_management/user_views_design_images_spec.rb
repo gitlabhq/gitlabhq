@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Users views raw design image files' do
+RSpec.describe 'Users views raw design image files' do
   include DesignManagementTestHelpers
 
   let_it_be(:project) { create(:project, :public) }

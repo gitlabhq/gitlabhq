@@ -562,6 +562,8 @@ appear to be associated to any of the services running, since they all appear to
 | `sast_jobs`                                             | `counts`                           |             |                |                                                   |
 | `status_page_projects`                                  | `counts`                           | `monitor`   |                | Projects with status page enabled                 |
 | `status_page_issues`                                    | `counts`                           | `monitor`   |                | Issues published to a Status Page                 |
+| `status_page_incident_publishes`                        | `counts`                           | `monitor`   |                | Cumulative count of usages of publish operation   |
+| `status_page_incident_unpublishes`                      | `counts`                           | `monitor`   |                | Cumulative count of usages of unpublish operation |
 | `epics_deepest_relationship_level`                      | `counts`                           |             |                |                                                   |
 | `operations_dashboard_default_dashboard`                | `counts`                           | `monitor`   |                | Active users with enabled operations dashboard    |
 | `operations_dashboard_users_with_projects_added`        | `counts`                           | `monitor`   |                | Active users with projects on operations dashboard|

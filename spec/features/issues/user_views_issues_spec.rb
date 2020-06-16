@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-describe "User views issues" do
+RSpec.describe "User views issues" do
   let!(:closed_issue) { create(:closed_issue, project: project) }
   let!(:open_issue1) { create(:issue, project: project) }
   let!(:open_issue2) { create(:issue, project: project) }
