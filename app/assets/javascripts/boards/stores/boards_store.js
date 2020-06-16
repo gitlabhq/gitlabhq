@@ -812,6 +812,11 @@ const boardsStore = {
   updateIssueData(issue, newData) {
     Object.assign(issue, newData);
   },
+
+  setIssueFetchingState(issue, key, value) {
+    issue.isFetching[key] = value;
+  },
+
   refreshIssueData(issue, obj) {
     issue.id = obj.id;
     issue.iid = obj.iid;
@@ -842,6 +847,11 @@ const boardsStore = {
 
     if (obj.assignees) {
       issue.assignees = obj.assignees.map(a => new ListAssignee(a));
+    }
+  },
+  addIssueLabel(issue, label) {
+    if (!issue.findLabel(label)) {
+      issue.labels.push(new ListLabel(label));
     }
   },
   updateIssue(issue) {

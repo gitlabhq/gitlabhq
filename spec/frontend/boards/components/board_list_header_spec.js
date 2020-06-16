@@ -107,7 +107,7 @@ describe('Board List Header Component', () => {
       createComponent();
 
       expect(isCollapsed()).toBe(false);
-      wrapper.find('[data-testid="board-list-header"]').trigger('click');
+      wrapper.find('[data-testid="board-list-header"]').vm.$emit('click');
 
       return wrapper.vm.$nextTick().then(() => {
         expect(isCollapsed()).toBe(false);
@@ -118,7 +118,7 @@ describe('Board List Header Component', () => {
       createComponent();
 
       expect(isExpanded()).toBe(true);
-      findCaret().trigger('click');
+      findCaret().vm.$emit('click');
 
       return wrapper.vm.$nextTick().then(() => {
         expect(isCollapsed()).toBe(true);
@@ -129,7 +129,7 @@ describe('Board List Header Component', () => {
       createComponent({ collapsed: true });
 
       expect(isCollapsed()).toBe(true);
-      findCaret().trigger('click');
+      findCaret().vm.$emit('click');
 
       return wrapper.vm.$nextTick().then(() => {
         expect(isCollapsed()).toBe(false);
@@ -142,7 +142,7 @@ describe('Board List Header Component', () => {
 
       createComponent({ withLocalStorage: false });
 
-      findCaret().trigger('click');
+      findCaret().vm.$emit('click');
 
       return wrapper.vm.$nextTick().then(() => {
         expect(wrapper.vm.list.update).toHaveBeenCalledTimes(1);
@@ -155,7 +155,7 @@ describe('Board List Header Component', () => {
 
       createComponent();
 
-      findCaret().trigger('click');
+      findCaret().vm.$emit('click');
 
       return wrapper.vm.$nextTick().then(() => {
         expect(wrapper.vm.list.update).not.toHaveBeenCalled();

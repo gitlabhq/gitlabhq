@@ -8349,7 +8349,12 @@ type Project {
   """
   Counts of alerts by status for the project
   """
-  alertManagementAlertStatusCounts: AlertManagementAlertStatusCountsType
+  alertManagementAlertStatusCounts(
+    """
+    Search criteria for filtering alerts. This will search on title, description, service, monitoring_tool.
+    """
+    search: String
+  ): AlertManagementAlertStatusCountsType
 
   """
   Alert Management alerts of the project

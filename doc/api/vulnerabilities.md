@@ -9,14 +9,6 @@ This document now describes the new Vulnerabilities API that provides access to
 [Standalone Vulnerabilities](https://gitlab.com/groups/gitlab-org/-/epics/634).
 
 CAUTION: **Caution:**
-This API is currently in development and is protected by a **disabled**
-[feature flag](../development/feature_flags/index.md).
-On a self-managed GitLab instance, an administrator can enable it by starting the Rails console
-(`sudo gitlab-rails console`) and then running the following command: `Feature.enable(:first_class_vulnerabilities)`.
-To test if the Vulnerabilities API was successfully enabled, run the following command:
-`Feature.enabled?(:first_class_vulnerabilities)`.
-
-CAUTION: **Caution:**
 This API is in an alpha stage and considered unstable.
 The response payload may be subject to change or breakage
 across GitLab releases.

@@ -34,14 +34,6 @@ $item-remove-button-space: 42px;
   position: relative;
   line-height: $gl-line-height;
 
-  .issue-token-state-icon-open {
-    color: $green-500;
-  }
-
-  .issue-token-state-icon-closed {
-    color: $blue-500;
-  }
-
   .merge-request-status.closed {
     color: $red-500;
   }

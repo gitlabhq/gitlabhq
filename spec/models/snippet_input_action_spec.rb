@@ -6,34 +6,42 @@ describe SnippetInputAction do
   describe 'validations' do
     using RSpec::Parameterized::TableSyntax
 
-    where(:action, :file_path, :content, :previous_path, :is_valid, :invalid_field) do
-      :create  | 'foobar'  | 'foobar' | 'foobar' | true  | nil
-      :move    | 'foobar'  | 'foobar' | 'foobar' | true  | nil
-      :delete  | 'foobar'  | 'foobar' | 'foobar' | true  | nil
-      :update  | 'foobar'  | 'foobar' | 'foobar' | true  | nil
-      :foo     | 'foobar'  | 'foobar' | 'foobar' | false | :action
-      'create' | 'foobar'  | 'foobar' | 'foobar' | true  | nil
-      'move'   | 'foobar'  | 'foobar' | 'foobar' | true  | nil
-      'delete' | 'foobar'  | 'foobar' | 'foobar' | true  | nil
-      'update' | 'foobar'  | 'foobar' | 'foobar' | true  | nil
-      'foo'    | 'foobar'  | 'foobar' | 'foobar' | false | :action
-      nil      | 'foobar'  | 'foobar' | 'foobar' | false | :action
-      ''       | 'foobar'  | 'foobar' | 'foobar' | false | :action
-      :move    | 'foobar'  | 'foobar' | nil      | false | :previous_path
-      :move    | 'foobar'  | 'foobar' | ''       | false | :previous_path
-      :create  | 'foobar'  | nil      | 'foobar' | false | :content
-      :create  | 'foobar'  | ''       | 'foobar' | false | :content
-      :create  | nil       | 'foobar' | 'foobar' | false | :file_path
-      :create  | ''        | 'foobar' | 'foobar' | false | :file_path
-      :update  | 'foobar'  | nil      | 'foobar' | false | :content
-      :update  | 'foobar'  | ''       | 'foobar' | false | :content
-      :update  | 'other'   | 'foobar' | 'foobar' | false | :file_path
-      :update  | 'foobar'  | 'foobar' | nil      | true  | nil
-      :update  | 'foobar'  | 'foobar' | ''       | true  | nil
+    where(:action, :file_path, :content, :previous_path, :allowed_actions, :is_valid, :invalid_field) do
+      :create  | 'foobar'  | 'foobar' | 'foobar' | nil                | true  | nil
+      :move    | 'foobar'  | 'foobar' | 'foobar' | nil                | true  | nil
+      :delete  | 'foobar'  | 'foobar' | 'foobar' | nil                | true  | nil
+      :update  | 'foobar'  | 'foobar' | 'foobar' | nil                | true  | nil
+      :foo     | 'foobar'  | 'foobar' | 'foobar' | nil                | false | :action
+      'create' | 'foobar'  | 'foobar' | 'foobar' | nil                | true  | nil
+      'move'   | 'foobar'  | 'foobar' | 'foobar' | nil                | true  | nil
+      'delete' | 'foobar'  | 'foobar' | 'foobar' | nil                | true  | nil
+      'update' | 'foobar'  | 'foobar' | 'foobar' | nil                | true  | nil
+      'foo'    | 'foobar'  | 'foobar' | 'foobar' | nil                | false | :action
+      nil      | 'foobar'  | 'foobar' | 'foobar' | nil                | false | :action
+      ''       | 'foobar'  | 'foobar' | 'foobar' | nil                | false | :action
+      :move    | 'foobar'  | 'foobar' | nil      | nil                | false | :previous_path
+      :move    | 'foobar'  | 'foobar' | ''       | nil                | false | :previous_path
+      :create  | 'foobar'  | nil      | 'foobar' | nil                | false | :content
+      :create  | 'foobar'  | ''       | 'foobar' | nil                | false | :content
+      :create  | nil       | 'foobar' | 'foobar' | nil                | false | :file_path
+      :create  | ''        | 'foobar' | 'foobar' | nil                | false | :file_path
+      :update  | 'foobar'  | nil      | 'foobar' | nil                | false | :content
+      :update  | 'foobar'  | ''       | 'foobar' | nil                | false | :content
+      :update  | 'other'   | 'foobar' | 'foobar' | nil                | false | :file_path
+      :update  | 'foobar'  | 'foobar' | nil      | nil                | true  | nil
+      :update  | 'foobar'  | 'foobar' | ''       | nil                | true  | nil
+      :update  | 'foobar'  | 'foobar' | ''       | :update            | true  | nil
+      :update  | 'foobar'  | 'foobar' | ''       | 'update'           | true  | nil
+      :update  | 'foobar'  | 'foobar' | ''       | [:update]          | true  | nil
+      :update  | 'foobar'  | 'foobar' | ''       | [:update, :create] | true  | nil
+      :update  | 'foobar'  | 'foobar' | ''       | :create            | false | :action
+      :update  | 'foobar'  | 'foobar' | ''       | 'create'           | false | :action
+      :update  | 'foobar'  | 'foobar' | ''       | [:create]          | false | :action
+      :foo     | 'foobar'  | 'foobar' | ''       | :foo               | false | :action
     end
 
     with_them do
-      subject { described_class.new(action: action, file_path: file_path, content: content, previous_path: previous_path) }
+      subject { described_class.new(action: action, file_path: file_path, content: content, previous_path: previous_path, allowed_actions: allowed_actions) }
 
       specify do
         expect(subject.valid?).to be is_valid

@@ -7,7 +7,7 @@
 Prints out checksums of the repository of a given project_id on the primary as well as secondary internal Gitaly nodes.
 
 NOTE: **Note:**
-This only is relevant and works for projects that have been created on a praefect storage. See the [Praefect Documentation](../gitaly/praefect.md) for configuring Praefect.
+This only is relevant and works for projects that have been created on a Praefect storage. See the [Praefect Documentation](../gitaly/praefect.md) for configuring Praefect.
 
 **Omnibus Installation**
 

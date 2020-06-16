@@ -36,4 +36,12 @@ describe SnippetInputActionCollection do
       end
     end
   end
+
+  context 'when allowed_actions param is passed' do
+    it 'builds SnippetInputAction with that param' do
+      expect(SnippetInputAction).to receive(:new).with(hash_including(allowed_actions: :create))
+
+      described_class.new([action], allowed_actions: :create)
+    end
+  end
 end

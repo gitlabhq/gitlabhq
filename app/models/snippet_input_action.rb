@@ -18,12 +18,14 @@ class SnippetInputAction
   validates :file_path, presence: true
   validates :content, presence: true, if: -> (action) { action.create_action? || action.update_action? }
   validate :ensure_same_file_path_and_previous_path, if: :update_action?
+  validate :ensure_allowed_action
 
-  def initialize(action: nil, previous_path: nil, file_path: nil, content: nil)
+  def initialize(action: nil, previous_path: nil, file_path: nil, content: nil, allowed_actions: nil)
     @action = action&.to_sym
     @previous_path = previous_path
     @file_path = file_path
     @content = content
+    @allowed_actions = Array(allowed_actions).map(&:to_sym)
   end
 
   def to_commit_action
@@ -48,5 +50,13 @@ class SnippetInputAction
     return if previous_path == file_path
 
     errors.add(:file_path, "can't be different from the previous_path attribute")
+  end
+
+  def ensure_allowed_action
+    return if @allowed_actions.empty?
+
+    unless @allowed_actions.include?(action)
+      errors.add(:action, 'is not allowed')
+    end
   end
 end

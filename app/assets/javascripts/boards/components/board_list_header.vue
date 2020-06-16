@@ -2,7 +2,6 @@
 import {
   GlButton,
   GlButtonGroup,
-  GlDeprecatedButton,
   GlLabel,
   GlTooltip,
   GlIcon,
@@ -23,7 +22,6 @@ export default {
     BoardDelete,
     GlButtonGroup,
     GlButton,
-    GlDeprecatedButton,
     GlLabel,
     GlTooltip,
     GlIcon,
@@ -89,8 +87,11 @@ export default {
 
       return sprintf(__('%{issuesSize} issues'), { issuesSize });
     },
-    caretTooltip() {
+    chevronTooltip() {
       return this.list.isExpanded ? s__('Boards|Collapse') : s__('Boards|Expand');
+    },
+    chevronIcon() {
+      return this.list.isExpanded ? 'chevron-right' : 'chevron-down';
     },
     isNewIssueShown() {
       return this.listType === ListType.backlog || this.showListHeaderButton;
@@ -160,20 +161,16 @@ export default {
       }"
       class="board-title gl-m-0 gl-display-flex js-board-handle"
     >
-      <div
+      <gl-button
         v-if="list.isExpandable"
-        v-gl-tooltip.hover.bottom
-        :aria-label="caretTooltip"
-        :title="caretTooltip"
-        aria-hidden="true"
+        v-gl-tooltip.hover
+        :aria-label="chevronTooltip"
+        :title="chevronTooltip"
+        :icon="chevronIcon"
         class="board-title-caret no-drag"
+        variant="link"
         @click="toggleExpanded"
-      >
-        <i
-          :class="{ 'fa-caret-right': list.isExpanded, 'fa-caret-down': !list.isExpanded }"
-          class="fa fa-fw"
-        ></i>
-      </div>
+      />
       <!-- The following is only true in EE and if it is a milestone -->
       <span
         v-if="list.type === 'milestone' && list.milestone"
@@ -232,7 +229,7 @@ export default {
           v-gl-tooltip.hover.bottom
           :class="{ 'gl-display-none': !list.isExpanded }"
           :aria-label="__('Delete list')"
-          class="board-delete no-drag gl-pr-0 gl-shadow-none"
+          class="board-delete no-drag gl-pr-0 gl-shadow-none gl-mr-3"
           :title="__('Delete list')"
           icon="remove"
           size="small"
@@ -263,32 +260,30 @@ export default {
         v-if="isNewIssueShown || isSettingsShown"
         class="board-list-button-group pl-2"
       >
-        <gl-deprecated-button
+        <gl-button
           v-if="isNewIssueShown"
           ref="newIssueBtn"
+          v-gl-tooltip.hover
           :class="{
             'gl-display-none': !list.isExpanded,
           }"
-          :aria-label="__(`New issue`)"
+          :aria-label="__('New issue')"
+          :title="__('New issue')"
           class="issue-count-badge-add-button no-drag"
-          type="button"
+          icon="plus"
           @click="showNewIssueForm"
-        >
-          <i aria-hidden="true" data-hidden="true" class="fa fa-plus"></i>
-        </gl-deprecated-button>
-        <gl-tooltip :target="() => $refs.newIssueBtn">{{ __('New Issue') }}</gl-tooltip>
+        />
 
-        <gl-deprecated-button
+        <gl-button
           v-if="isSettingsShown"
           ref="settingsBtn"
-          :aria-label="__(`List settings`)"
+          v-gl-tooltip.hover
+          :aria-label="__('List settings')"
           class="no-drag js-board-settings-button"
-          title="List settings"
-          type="button"
+          :title="__('List settings')"
+          icon="settings"
           @click="openSidebarSettings"
-        >
-          <gl-icon name="settings" />
-        </gl-deprecated-button>
+        />
         <gl-tooltip :target="() => $refs.settingsBtn">{{ __('List settings') }}</gl-tooltip>
       </gl-button-group>
     </h3>

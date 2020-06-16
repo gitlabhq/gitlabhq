@@ -1,0 +1,5 @@
+---
+title: Fix undefined method error
+merge_request: 34522
+author:
+type: fixed

@@ -75,10 +75,7 @@ export default {
       ref="swimlanes"
       :lists="lists"
       :can-admin-list="canAdminList"
-      :group-id="groupId"
       :disabled="disabled"
-      :issue-link-base="issueLinkBase"
-      :root-path="rootPath"
       :board-id="boardId"
     />
   </div>

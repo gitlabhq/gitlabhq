@@ -656,8 +656,8 @@ Particular attention should be shown to:
    Repository > Repository storage** to make the newly configured Praefect
    cluster the storage location for new Git repositories.
 
-   - Deselect the **default** storage location
-   - Select the **praefect** storage location
+   - The default option is unchecked.
+   - The Praefect option is checked.
 
    ![Update repository storage](img/praefect_storage_v12_10.png)
 

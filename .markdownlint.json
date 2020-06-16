@@ -103,6 +103,7 @@
       "OpenShift",
       "PgBouncer",
       "PostgreSQL",
+      "Praefect",
       "Prometheus",
       "Puma",
       "puma-worker-killer",

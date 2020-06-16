@@ -92,7 +92,8 @@ RSpec.describe 'Database schema' do
         let(:indexes) { connection.indexes(table) }
         let(:columns) { connection.columns(table) }
         let(:foreign_keys) { connection.foreign_keys(table) }
-        let(:primary_key_column) { connection.primary_key(table) }
+        # take the first column in case we're using a composite primary key
+        let(:primary_key_column) { Array(connection.primary_key(table)).first }
 
         context 'all foreign keys' do
           # for index to be effective, the FK constraint has to be at first place

@@ -380,6 +380,9 @@ msgstr ""
 msgid "%{issuableType} will be removed! Are you sure?"
 msgstr ""
 
+msgid "%{issuesCount} issues in this group"
+msgstr ""
+
 msgid "%{issuesSize} issues"
 msgstr ""
 
@@ -2669,6 +2672,9 @@ msgid "Applying suggestions..."
 msgstr ""
 
 msgid "Approval rules"
+msgstr ""
+
+msgid "Approval rules reset to project defaults"
 msgstr ""
 
 msgid "ApprovalRuleRemove|%d member"
@@ -18960,6 +18966,9 @@ msgid "Reset runners registration token"
 msgstr ""
 
 msgid "Reset template"
+msgstr ""
+
+msgid "Reset to project defaults"
 msgstr ""
 
 msgid "Resetting the authorization key for this project will require updating the authorization key in every alert source it is enabled in."

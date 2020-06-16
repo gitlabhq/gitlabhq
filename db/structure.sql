@@ -5041,6 +5041,11 @@ CREATE SEQUENCE public.programming_languages_id_seq
 
 ALTER SEQUENCE public.programming_languages_id_seq OWNED BY public.programming_languages.id;
 
+CREATE TABLE public.project_access_tokens (
+    personal_access_token_id bigint NOT NULL,
+    project_id bigint NOT NULL
+);
+
 CREATE TABLE public.project_alerting_settings (
     project_id integer NOT NULL,
     encrypted_token character varying NOT NULL,
@@ -8790,6 +8795,9 @@ ALTER TABLE ONLY public.pool_repositories
 ALTER TABLE ONLY public.programming_languages
     ADD CONSTRAINT programming_languages_pkey PRIMARY KEY (id);
 
+ALTER TABLE ONLY public.project_access_tokens
+    ADD CONSTRAINT project_access_tokens_pkey PRIMARY KEY (personal_access_token_id, project_id);
+
 ALTER TABLE ONLY public.project_alerting_settings
     ADD CONSTRAINT project_alerting_settings_pkey PRIMARY KEY (project_id);
 
@@ -9158,8 +9166,6 @@ CREATE INDEX commit_id_and_note_id_index ON public.commit_user_mentions USING bt
 CREATE UNIQUE INDEX design_management_designs_versions_uniqueness ON public.design_management_designs_versions USING btree (design_id, version_id);
 
 CREATE INDEX design_user_mentions_on_design_id_and_note_id_index ON public.design_user_mentions USING btree (design_id, note_id);
-
-CREATE INDEX dev_index_route_on_path_trigram ON public.routes USING gin (path public.gin_trgm_ops);
 
 CREATE UNIQUE INDEX epic_user_mentions_on_epic_id_and_note_id_index ON public.epic_user_mentions USING btree (epic_id, note_id);
 
@@ -10505,6 +10511,8 @@ CREATE UNIQUE INDEX index_pool_repositories_on_source_project_id_and_shard_id ON
 
 CREATE UNIQUE INDEX index_programming_languages_on_name ON public.programming_languages USING btree (name);
 
+CREATE INDEX index_project_access_tokens_on_project_id ON public.project_access_tokens USING btree (project_id);
+
 CREATE UNIQUE INDEX index_project_aliases_on_name ON public.project_aliases USING btree (name);
 
 CREATE INDEX index_project_aliases_on_project_id ON public.project_aliases USING btree (project_id);
@@ -11426,6 +11434,9 @@ ALTER TABLE ONLY public.deploy_keys_projects
 ALTER TABLE ONLY public.issue_assignees
     ADD CONSTRAINT fk_5e0c8d9154 FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY public.project_access_tokens
+    ADD CONSTRAINT fk_5f7e8450e1 FOREIGN KEY (personal_access_token_id) REFERENCES public.personal_access_tokens(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY public.merge_requests
     ADD CONSTRAINT fk_6149611a04 FOREIGN KEY (assignee_id) REFERENCES public.users(id) ON DELETE SET NULL;
 
@@ -11635,6 +11646,9 @@ ALTER TABLE ONLY public.fork_network_members
 
 ALTER TABLE ONLY public.vulnerabilities
     ADD CONSTRAINT fk_b1de915a15 FOREIGN KEY (author_id) REFERENCES public.users(id) ON DELETE SET NULL;
+
+ALTER TABLE ONLY public.project_access_tokens
+    ADD CONSTRAINT fk_b27801bfbf FOREIGN KEY (project_id) REFERENCES public.projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY public.protected_tag_create_access_levels
     ADD CONSTRAINT fk_b4eb82fe3c FOREIGN KEY (group_id) REFERENCES public.namespaces(id) ON DELETE CASCADE;
@@ -13871,6 +13885,7 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200429181955
 20200429182245
 20200430103158
+20200430123614
 20200430130048
 20200430174637
 20200505164958
@@ -13975,5 +13990,7 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200609142508
 20200609212701
 20200615083635
+20200615121217
+20200615123055
 \.
 
