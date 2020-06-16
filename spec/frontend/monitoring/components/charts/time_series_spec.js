@@ -411,6 +411,12 @@ describe('Time series component', () => {
             });
           });
 
+          describe('xAxis pointer', () => {
+            it('snap is set to false by default', () => {
+              expect(getChartOptions().xAxis.axisPointer.snap).toBe(false);
+            });
+          });
+
           describe('are extended by `option`', () => {
             const mockSeriesName = 'Extra series 1';
             const mockOption = {

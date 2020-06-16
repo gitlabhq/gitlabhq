@@ -2,8 +2,9 @@
 
 module Releases
   class CreateEvidenceService
-    def initialize(release)
+    def initialize(release, pipeline: nil)
       @release = release
+      @pipeline = pipeline
     end
 
     def execute

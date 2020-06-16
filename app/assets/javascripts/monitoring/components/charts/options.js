@@ -81,7 +81,7 @@ export const getTimeAxisOptions = ({ timezone = timezones.LOCAL } = {}) => ({
     formatter: date => formatDate(date, { format: formats.shortTime, timezone }),
   },
   axisPointer: {
-    snap: true,
+    snap: false,
   },
 });
 

@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 describe API::Terraform::State do
+  include HttpBasicAuthHelpers
+
   let_it_be(:project) { create(:project) }
   let_it_be(:developer) { create(:user, developer_projects: [project]) }
   let_it_be(:maintainer) { create(:user, maintainer_projects: [project]) }
@@ -10,7 +12,7 @@ describe API::Terraform::State do
   let!(:state) { create(:terraform_state, :with_file, project: project) }
 
   let(:current_user) { maintainer }
-  let(:auth_header) { basic_auth_header(current_user) }
+  let(:auth_header) { user_basic_auth_header(current_user) }
   let(:project_id) { project.id }
   let(:state_name) { state.name }
   let(:state_path) { "/projects/#{project_id}/terraform/state/#{state_name}" }
@@ -23,7 +25,7 @@ describe API::Terraform::State do
     subject(:request) { get api(state_path), headers: auth_header }
 
     context 'without authentication' do
-      let(:auth_header) { basic_auth_header('failing_token') }
+      let(:auth_header) { basic_auth_header('bad', 'token') }
 
       it 'returns 401 if user is not authenticated' do
         request
@@ -32,34 +34,71 @@ describe API::Terraform::State do
       end
     end
 
-    context 'with maintainer permissions' do
-      let(:current_user) { maintainer }
+    context 'personal acceess token authentication' do
+      context 'with maintainer permissions' do
+        let(:current_user) { maintainer }
 
-      it 'returns terraform state belonging to a project of given state name' do
-        request
-
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(response.body).to eq(state.file.read)
-      end
-
-      context 'for a project that does not exist' do
-        let(:project_id) { '0000' }
-
-        it 'returns not found' do
+        it 'returns terraform state belonging to a project of given state name' do
           request
 
-          expect(response).to have_gitlab_http_status(:not_found)
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response.body).to eq(state.file.read)
+        end
+
+        context 'for a project that does not exist' do
+          let(:project_id) { '0000' }
+
+          it 'returns not found' do
+            request
+
+            expect(response).to have_gitlab_http_status(:not_found)
+          end
+        end
+      end
+
+      context 'with developer permissions' do
+        let(:current_user) { developer }
+
+        it 'returns forbidden if the user cannot access the state' do
+          request
+
+          expect(response).to have_gitlab_http_status(:forbidden)
         end
       end
     end
 
-    context 'with developer permissions' do
-      let(:current_user) { developer }
+    context 'job token authentication' do
+      let(:auth_header) { job_basic_auth_header(job) }
 
-      it 'returns forbidden if the user cannot access the state' do
-        request
+      context 'with maintainer permissions' do
+        let(:job) { create(:ci_build, project: project, user: maintainer) }
 
-        expect(response).to have_gitlab_http_status(:forbidden)
+        it 'returns terraform state belonging to a project of given state name' do
+          request
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response.body).to eq(state.file.read)
+        end
+
+        context 'for a project that does not exist' do
+          let(:project_id) { '0000' }
+
+          it 'returns not found' do
+            request
+
+            expect(response).to have_gitlab_http_status(:not_found)
+          end
+        end
+      end
+
+      context 'with developer permissions' do
+        let(:job) { create(:ci_build, project: project, user: developer) }
+
+        it 'returns forbidden if the user cannot access the state' do
+          request
+
+          expect(response).to have_gitlab_http_status(:forbidden)
+        end
       end
     end
   end

@@ -1,3 +1,3 @@
-import monitoringBundle from '~/monitoring/monitoring_bundle';
+import monitoringApp from '~/monitoring/monitoring_app';
 
-document.addEventListener('DOMContentLoaded', monitoringBundle);
+document.addEventListener('DOMContentLoaded', monitoringApp);

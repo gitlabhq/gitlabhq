@@ -306,7 +306,10 @@ module API
         key = user.keys.find_by(id: params[:key_id])
         not_found!('Key') unless key
 
-        destroy_conditionally!(key)
+        destroy_conditionally!(key) do |key|
+          destroy_service = ::Keys::DestroyService.new(current_user)
+          destroy_service.execute(key)
+        end
       end
       # rubocop: enable CodeReuse/ActiveRecord
 

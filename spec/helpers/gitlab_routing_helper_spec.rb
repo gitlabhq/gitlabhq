@@ -238,6 +238,16 @@ describe GitlabRoutingHelper do
         expect(gitlab_toggle_award_emoji_snippet_url(personal_snippet)).to eq("http://test.host/snippets/#{personal_snippet.id}/toggle_award_emoji")
       end
     end
+
+    describe '#gitlab_dashboard_snippets_path' do
+      it 'returns the personal snippets dashboard path' do
+        expect(gitlab_dashboard_snippets_path(personal_snippet)).to eq("/dashboard/snippets")
+      end
+
+      it 'returns the project snippets dashboard path' do
+        expect(gitlab_dashboard_snippets_path(project_snippet)).to eq("/#{project_snippet.project.full_path}/snippets")
+      end
+    end
   end
 
   context 'wikis' do

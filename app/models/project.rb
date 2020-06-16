@@ -1253,7 +1253,7 @@ class Project < ApplicationRecord
 
     available_services_names.map do |service_name|
       find_or_initialize_service(service_name)
-    end
+    end.sort_by(&:title)
   end
 
   def disabled_services

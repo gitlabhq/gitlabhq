@@ -7,8 +7,8 @@ class AuthorizedProjectsWorker
   feature_category :authentication_and_authorization
   urgency :high
   weight 2
-
   idempotent!
+  loggable_arguments 1 # For the job waiter key
 
   # This is a workaround for a Ruby 2.3.7 bug. rspec-mocks cannot restore the
   # visibility of prepended modules. See https://github.com/rspec/rspec-mocks/issues/1231

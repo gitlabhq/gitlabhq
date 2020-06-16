@@ -85,7 +85,8 @@ export default {
     },
     defaultBranch: {
       type: String,
-      required: true,
+      required: false,
+      default: '',
     },
     emptyGettingStartedSvgPath: {
       type: String,

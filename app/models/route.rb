@@ -3,6 +3,7 @@
 class Route < ApplicationRecord
   include CaseSensitivity
   include Gitlab::SQL::Pattern
+  include RouteModelQuery
 
   belongs_to :source, polymorphic: true # rubocop:disable Cop/PolymorphicAssociations
   validates :source, presence: true

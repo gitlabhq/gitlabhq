@@ -25,6 +25,13 @@ $ide-commit-header-height: 48px;
   @include str-truncated(250px);
 }
 
+.ide-layout {
+  // Fix for iOS 13+, the height of the page is actually less than
+  // 100vh because of the presence of the bottom bar
+  max-height: 100%;
+  position: fixed;
+}
+
 .ide-view {
   position: relative;
   margin-top: 0;

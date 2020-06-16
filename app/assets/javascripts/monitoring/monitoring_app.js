@@ -1,9 +1,9 @@
 import Vue from 'vue';
 import { GlToast } from '@gitlab/ui';
-import Dashboard from '~/monitoring/components/dashboard.vue';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import { getParameterValues } from '~/lib/utils/url_utility';
 import { createStore } from './stores';
+import createRouter from './router';
 
 Vue.use(GlToast);
 
@@ -21,6 +21,7 @@ export default (props = {}) => {
       logsPath,
       currentEnvironmentName,
       dashboardTimezone,
+      metricsDashboardBasePath,
       ...dataProps
     } = el.dataset;
 
@@ -40,18 +41,19 @@ export default (props = {}) => {
     dataProps.customMetricsAvailable = parseBoolean(dataProps.customMetricsAvailable);
     dataProps.prometheusAlertsAvailable = parseBoolean(dataProps.prometheusAlertsAvailable);
 
+    const router = createRouter(metricsDashboardBasePath);
+
     // eslint-disable-next-line no-new
     new Vue({
       el,
       store,
-      render(createElement) {
-        return createElement(Dashboard, {
-          props: {
-            ...dataProps,
-            ...props,
-          },
-        });
+      router,
+      data() {
+        return {
+          dashboardProps: { ...dataProps, ...props },
+        };
       },
+      template: `<router-view :dashboardProps="dashboardProps"/>`,
     });
   }
 };

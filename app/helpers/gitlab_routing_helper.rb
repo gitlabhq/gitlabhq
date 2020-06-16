@@ -245,6 +245,14 @@ module GitlabRoutingHelper
     end
   end
 
+  def gitlab_dashboard_snippets_path(snippet, *args)
+    if snippet.is_a?(ProjectSnippet)
+      project_snippets_path(snippet.project, *args)
+    else
+      dashboard_snippets_path
+    end
+  end
+
   def gitlab_raw_snippet_path(snippet, *args)
     if snippet.is_a?(ProjectSnippet)
       raw_project_snippet_path(snippet.project, snippet, *args)

@@ -64,7 +64,7 @@ module Projects
     end
 
     def remove_snippets
-      response = Snippets::BulkDestroyService.new(current_user, project.snippets).execute
+      response = ::Snippets::BulkDestroyService.new(current_user, project.snippets).execute
 
       response.success?
     end

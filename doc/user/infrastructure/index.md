@@ -25,7 +25,7 @@ Amazon S3 or Google Cloud Storage. Its features include:
 To get started with a GitLab-managed Terraform State, there are two different options:
 
 - [Use a local machine](#get-started-using-local-development).
-- [Use GitLab CI](#get-started-using-a-gitlab-ci).
+- [Use GitLab CI](#get-started-using-gitlab-ci).
 
 ## Get started using local development
 
@@ -44,10 +44,15 @@ local machine, this is a simple way to get started:
    }
    ```
 
+1. Create a [Personal Access Token](../profile/personal_access_tokens.md) with
+   the `api` scope. The Terraform backend is restricted to users with
+   [Maintainer access](../permissions.md) to the repository.
+
 1. On your local machine, run `terraform init`, passing in the following options,
-   replacing `<YOUR-PROJECT-NAME>` and `<YOUR-PROJECT-ID>` with the values for
-   your project. This command initializes your Terraform state, and stores that
-   state within your GitLab project. This example uses `gitlab.com`:
+   replacing `<YOUR-PROJECT-NAME>`, `<YOUR-PROJECT-ID>`,  `<YOUR-USERNAME>` and
+   `<YOUR-ACCESS-TOKEN>` with the relevant values. This command initializes your
+   Terraform state, and stores that state within your GitLab project. This example
+   uses `gitlab.com`:
 
    ```shell
    terraform init \
@@ -61,30 +66,24 @@ local machine, this is a simple way to get started:
        -backend-config="retry_wait_min=5"
    ```
 
-Next, [configure the backend](#configure-the-variables-and-backend).
+Next, [configure the backend](#configure-the-backend).
 
-## Get started using a GitLab CI
+## Get started using GitLab CI
 
 If you don't want to start with local development, you can also use GitLab CI to
 run your `terraform plan` and `terraform apply` commands.
 
-Next, [configure the backend](#configure-the-variables-and-backend).
+Next, [configure the backend](#configure-the-backend).
 
-## Configure the variables and backend
+## Configure the backend
 
-After executing the `terraform init` command, you must configure the needed CI
-variables, the Terraform backend, and the CI YAML file:
+After executing the `terraform init` command, you must configure the Terraform backend
+and the CI YAML file:
 
-1. Create a [Personal Access Token](../profile/personal_access_tokens.md) with
-   the `api` scope. The Terraform backend is restricted to tokens with
-   [Maintainer access](../permissions.md) to the repository.
-1. To keep the Personal Access Token secure, add it as a
-   [CI/CD environment variable](../../ci/variables/README.md). For the examples on
-   this page, it's set to the environment variable `GITLAB_TF_PASSWORD`.
+CAUTION: **Important:**
+The Terraform backend is restricted to users with [Maintainer access](../permissions.md)
+to the repository.
 
-   CAUTION: **Important:**
-   If you plan to use the environment variable on an unprotected branch, make sure
-   to set the variable protection settings correctly.
 1. In your Terraform project, define the [HTTP backend](https://www.terraform.io/docs/backends/types/http.html)
    by adding the following code block in a `.tf` file (such as `backend.tf`) to
    define the remote backend:
@@ -129,7 +128,7 @@ variables, the Terraform backend, and the CI YAML file:
    before_script:
      - cd ${TF_ROOT}
      - terraform --version
-     - terraform init -backend-config="address=${GITLAB_TF_ADDRESS}" -backend-config="lock_address=${GITLAB_TF_ADDRESS}/lock" -backend-config="unlock_address=${GITLAB_TF_ADDRESS}/lock" -backend-config="username=${GITLAB_USER_LOGIN}" -backend-config="password=${GITLAB_TF_PASSWORD}" -backend-config="lock_method=POST" -backend-config="unlock_method=DELETE" -backend-config="retry_wait_min=5"
+     - terraform init -backend-config="address=${GITLAB_TF_ADDRESS}" -backend-config="lock_address=${GITLAB_TF_ADDRESS}/lock" -backend-config="unlock_address=${GITLAB_TF_ADDRESS}/lock" -backend-config="username=gitlab-ci-token" -backend-config="password=${CI_JOB_TOKEN}" -backend-config="lock_method=POST" -backend-config="unlock_method=DELETE" -backend-config="retry_wait_min=5"
 
    stages:
      - validate

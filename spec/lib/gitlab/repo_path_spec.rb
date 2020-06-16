@@ -67,11 +67,11 @@ describe ::Gitlab::RepoPath do
     end
   end
 
-  describe '.find_project' do
+  describe '.find_routes_source' do
     context 'when finding a project by its canonical path' do
       context 'when the cases match' do
         it 'returns the project and nil' do
-          expect(described_class.find_project(project.full_path)).to eq([project, nil])
+          expect(described_class.find_routes_source(project.full_path)).to eq([project, nil])
         end
       end
 
@@ -81,14 +81,14 @@ describe ::Gitlab::RepoPath do
         # requests, we should accept wrongly-cased URLs because it is a pain to
         # block people's git operations and force them to update remote URLs.
         it 'returns the project and nil' do
-          expect(described_class.find_project(project.full_path.upcase)).to eq([project, nil])
+          expect(described_class.find_routes_source(project.full_path.upcase)).to eq([project, nil])
         end
       end
     end
 
     context 'when finding a project via a redirect' do
       it 'returns the project and nil' do
-        expect(described_class.find_project(redirect.path)).to eq([project, redirect.path])
+        expect(described_class.find_routes_source(redirect.path)).to eq([project, redirect.path])
       end
     end
   end
@@ -107,6 +107,16 @@ describe ::Gitlab::RepoPath do
         expect(described_class.find_snippet("snippets/#{project_snippet.id}")).to eq([nil, nil])
         expect(described_class.find_snippet("#{project.full_path}/snippets/#{personal_snippet.id}")).to eq([nil, nil])
         expect(described_class.find_snippet('')).to eq([nil, nil])
+      end
+    end
+
+    context 'when path is namespace path, but has same id as project' do
+      let(:namespace) { build_stubbed(:namespace, id: project.id) }
+
+      it 'returns nil if path is referring to namespace' do
+        allow(described_class).to receive(:find_route_source).and_return(namespace)
+
+        expect(described_class.find_snippet("#{namespace.full_path}/snippets/#{project_snippet.id}")).to eq([nil, nil])
       end
     end
 

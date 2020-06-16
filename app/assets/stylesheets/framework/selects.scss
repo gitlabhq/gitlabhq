@@ -12,6 +12,7 @@
 .select2-container.select2-drop-above {
   .select2-choice {
     background: $white;
+    color: $gl-text-color;
     border-color: $input-border;
     height: 34px;
     padding: $gl-vert-padding $gl-input-padding;
