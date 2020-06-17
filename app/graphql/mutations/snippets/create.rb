@@ -21,7 +21,7 @@ module Mutations
                description: 'File name of the snippet'
 
       argument :content, GraphQL::STRING_TYPE,
-               required: true,
+               required: false,
                description: 'Content of the snippet'
 
       argument :description, GraphQL::STRING_TYPE,
@@ -40,6 +40,10 @@ module Mutations
                required: false,
                description: 'The paths to files uploaded in the snippet description'
 
+      argument :files, [Types::Snippets::FileInputType],
+               description: "The snippet files to create",
+               required: false
+
       def resolve(args)
         project_path = args.delete(:project_path)
 
@@ -49,13 +53,9 @@ module Mutations
           raise_resource_not_available_error!
         end
 
-        # We need to rename `uploaded_files` into `files` because
-        # it's the expected key param
-        args[:files] = args.delete(:uploaded_files)
-
         service_response = ::Snippets::CreateService.new(project,
-                                           context[:current_user],
-                                           args).execute
+                                                         context[:current_user],
+                                                         create_params(args)).execute
 
         snippet = service_response.payload[:snippet]
 
@@ -81,6 +81,18 @@ module Mutations
 
       def can_create_personal_snippet?
         Ability.allowed?(context[:current_user], :create_snippet)
+      end
+
+      def create_params(args)
+        args.tap do |create_args|
+          # We need to rename `files` into `snippet_files` because
+          # it's the expected key param
+          create_args[:snippet_files] = create_args.delete(:files)&.map(&:to_h)
+
+          # We need to rename `uploaded_files` into `files` because
+          # it's the expected key param
+          create_args[:files] = create_args.delete(:uploaded_files)
+        end
       end
     end
   end

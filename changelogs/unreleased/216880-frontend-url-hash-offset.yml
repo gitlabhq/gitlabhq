@@ -1,0 +1,5 @@
+---
+title: Fix Issue sticky title URL hash offset
+merge_request: 34764
+author:
+type: fixed

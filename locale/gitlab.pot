@@ -8543,6 +8543,9 @@ msgstr ""
 msgid "Enter the name of your application, and we'll return a unique %{type}."
 msgstr ""
 
+msgid "Enter weights for storages for new repositories."
+msgstr ""
+
 msgid "Enter your password to approve"
 msgstr ""
 
@@ -20038,9 +20041,6 @@ msgid "Select a template type"
 msgstr ""
 
 msgid "Select a timezone"
-msgstr ""
-
-msgid "Select a weight for the storage new repositories will be placed on."
 msgstr ""
 
 msgid "Select all"

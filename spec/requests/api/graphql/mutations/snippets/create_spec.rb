@@ -14,9 +14,8 @@ describe 'Creating a Snippet' do
   let(:visibility_level) { 'public' }
   let(:project_path) { nil }
   let(:uploaded_files) { nil }
-
-  let(:mutation) do
-    variables = {
+  let(:mutation_vars) do
+    {
       content: content,
       description: description,
       visibility_level: visibility_level,
@@ -25,8 +24,10 @@ describe 'Creating a Snippet' do
       project_path: project_path,
       uploaded_files: uploaded_files
     }
+  end
 
-    graphql_mutation(:create_snippet, variables)
+  let(:mutation) do
+    graphql_mutation(:create_snippet, mutation_vars)
   end
 
   def mutation_response
@@ -134,6 +135,47 @@ describe 'Creating a Snippet' do
         subject
 
         expect(mutation_response['snippet']).to be_nil
+      end
+    end
+
+    context 'when snippet is created using the files param' do
+      let(:action) { :create }
+      let(:file_1) { { filePath: 'example_file1', content: 'This is the example file 1' }}
+      let(:file_2) { { filePath: 'example_file2', content: 'This is the example file 2' }}
+      let(:actions) { [{ action: action }.merge(file_1), { action: action }.merge(file_2)] }
+      let(:mutation_vars) do
+        {
+          description: description,
+          visibility_level: visibility_level,
+          project_path: project_path,
+          title: title,
+          files: actions
+        }
+      end
+
+      it 'creates the Snippet' do
+        expect do
+          subject
+        end.to change { Snippet.count }.by(1)
+      end
+
+      it 'returns the created Snippet' do
+        subject
+
+        expect(mutation_response['snippet']['title']).to eq(title)
+        expect(mutation_response['snippet']['description']).to eq(description)
+        expect(mutation_response['snippet']['visibilityLevel']).to eq(visibility_level)
+        expect(mutation_response['snippet']['blobs'][0]['plainData']).to match(file_1[:content])
+        expect(mutation_response['snippet']['blobs'][0]['fileName']).to match(file_1[:file_path])
+        expect(mutation_response['snippet']['blobs'][1]['plainData']).to match(file_2[:content])
+        expect(mutation_response['snippet']['blobs'][1]['fileName']).to match(file_2[:file_path])
+      end
+
+      context 'when action is invalid' do
+        let(:file_1) { { filePath: 'example_file1' }}
+
+        it_behaves_like 'a mutation that returns errors in the response', errors: ['Snippet files have invalid data']
+        it_behaves_like 'does not create snippet'
       end
     end
 

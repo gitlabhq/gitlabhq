@@ -675,10 +675,11 @@ class Project < ApplicationRecord
     # '>' or its escaped form ('&gt;') are checked for because '>' is sometimes escaped
     # when the reference comes from an external source.
     def markdown_reference_pattern
-      %r{
-        #{reference_pattern}
-        (#{reference_postfix}|#{reference_postfix_escaped})
-      }x
+      @markdown_reference_pattern ||=
+        %r{
+          #{reference_pattern}
+          (#{reference_postfix}|#{reference_postfix_escaped})
+        }x
     end
 
     def trending

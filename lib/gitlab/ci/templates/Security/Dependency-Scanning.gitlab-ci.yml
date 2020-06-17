@@ -9,9 +9,6 @@ variables:
   # (SAST, Dependency Scanning, ...)
   SECURE_ANALYZERS_PREFIX: "registry.gitlab.com/gitlab-org/security-products/analyzers"
 
-  # Deprecated, use SECURE_ANALYZERS_PREFIX instead
-  DS_ANALYZER_IMAGE_PREFIX: "$SECURE_ANALYZERS_PREFIX"
-
   DS_DEFAULT_ANALYZERS: "bundler-audit, retire.js, gemnasium, gemnasium-maven, gemnasium-python"
   DS_EXCLUDED_PATHS: "spec, test, tests, tmp"
   DS_MAJOR_VERSION: 2
@@ -45,7 +42,7 @@ dependency_scanning:
       docker run \
         $(propagate_env_vars \
           DS_ANALYZER_IMAGES \
-          DS_ANALYZER_IMAGE_PREFIX \
+          SECURE_ANALYZERS_PREFIX \
           DS_ANALYZER_IMAGE_TAG \
           DS_DEFAULT_ANALYZERS \
           DS_EXCLUDED_PATHS \
@@ -98,7 +95,7 @@ dependency_scanning:
 gemnasium-dependency_scanning:
   extends: .ds-analyzer
   image:
-    name: "$DS_ANALYZER_IMAGE_PREFIX/gemnasium:$DS_MAJOR_VERSION"
+    name: "$SECURE_ANALYZERS_PREFIX/gemnasium:$DS_MAJOR_VERSION"
   rules:
     - if: $DEPENDENCY_SCANNING_DISABLED || $DS_DISABLE_DIND == 'false'
       when: never
@@ -117,7 +114,7 @@ gemnasium-dependency_scanning:
 gemnasium-maven-dependency_scanning:
   extends: .ds-analyzer
   image:
-    name: "$DS_ANALYZER_IMAGE_PREFIX/gemnasium-maven:$DS_MAJOR_VERSION"
+    name: "$SECURE_ANALYZERS_PREFIX/gemnasium-maven:$DS_MAJOR_VERSION"
   rules:
     - if: $DEPENDENCY_SCANNING_DISABLED || $DS_DISABLE_DIND == 'false'
       when: never
@@ -133,7 +130,7 @@ gemnasium-maven-dependency_scanning:
 gemnasium-python-dependency_scanning:
   extends: .ds-analyzer
   image:
-    name: "$DS_ANALYZER_IMAGE_PREFIX/gemnasium-python:$DS_MAJOR_VERSION"
+    name: "$SECURE_ANALYZERS_PREFIX/gemnasium-python:$DS_MAJOR_VERSION"
   rules:
     - if: $DEPENDENCY_SCANNING_DISABLED || $DS_DISABLE_DIND == 'false'
       when: never
@@ -156,7 +153,7 @@ gemnasium-python-dependency_scanning:
 bundler-audit-dependency_scanning:
   extends: .ds-analyzer
   image:
-    name: "$DS_ANALYZER_IMAGE_PREFIX/bundler-audit:$DS_MAJOR_VERSION"
+    name: "$SECURE_ANALYZERS_PREFIX/bundler-audit:$DS_MAJOR_VERSION"
   rules:
     - if: $DEPENDENCY_SCANNING_DISABLED || $DS_DISABLE_DIND == 'false'
       when: never
@@ -169,7 +166,7 @@ bundler-audit-dependency_scanning:
 retire-js-dependency_scanning:
   extends: .ds-analyzer
   image:
-    name: "$DS_ANALYZER_IMAGE_PREFIX/retire.js:$DS_MAJOR_VERSION"
+    name: "$SECURE_ANALYZERS_PREFIX/retire.js:$DS_MAJOR_VERSION"
   rules:
     - if: $DEPENDENCY_SCANNING_DISABLED || $DS_DISABLE_DIND == 'false'
       when: never

@@ -283,6 +283,19 @@ describe Snippets::CreateService do
           expect(snippet.repository.exists?).to be_falsey
         end
       end
+
+      context 'when snippet_files contain an action different from "create"' do
+        let(:snippet_files) { [{ action: 'delete', file_path: 'snippet_file_path.rb' }] }
+
+        it 'a validation error is raised' do
+          response = subject
+          snippet = response.payload[:snippet]
+
+          expect(response).to be_error
+          expect(snippet.errors.full_messages_for(:snippet_files)).to eq ['Snippet files have invalid data']
+          expect(snippet.repository.exists?).to be_falsey
+        end
+      end
     end
 
     context 'when ProjectSnippet' do

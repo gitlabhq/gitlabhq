@@ -1,0 +1,29 @@
+image: node:latest
+
+create_npmrc:
+  stage: build
+  script:
+    - |
+      if [ ! -f .npmrc ]; then
+        echo 'No .npmrc found! Creating one now. Please review the following link for more information: https://docs.gitlab.com/ee/user/packages/npm_registry/index.html#authenticating-with-a-ci-job-token'
+
+        echo "@${CI_PROJECT_NAMESPACE%%/*}:registry=\${CI_SERVER_URL}/api/v4/projects/${CI_PROJECT_ID}/packages/npm/" >> .npmrc
+        echo '//gitlab.com/api/v4/packages/npm/:_authToken=${CI_JOB_TOKEN}' >> .npmrc
+        echo '//gitlab.com/api/v4/projects/${CI_PROJECT_ID}/packages/npm/:_authToken=${CI_JOB_TOKEN}' >> .npmrc
+      fi
+  artifacts:
+    paths:
+      - .npmrc
+
+publish_package:
+  stage: deploy
+  script:
+    - export NPM_PACKAGE_NAME=$(node -p "require('./package.json').name")
+    - export NPM_PACKAGE_VERSION=$(node -p "require('./package.json').version")
+    - |
+      {
+        npm publish &&
+        echo "Successfully published version $NPM_PACKAGE_VERSION of $NPM_PACKAGE_NAME to GitLab's NPM registry."
+      } || {
+        echo "No new version of $NPM_PACKAGE_NAME published. This is most likely because version $NPM_PACKAGE_VERSION already exists in GitLab's NPM registry."
+      }

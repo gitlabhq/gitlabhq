@@ -105,6 +105,7 @@ export const handleLocationHash = () => {
   const topPadding = 8;
   const diffFileHeader = document.querySelector('.js-file-title');
   const versionMenusContainer = document.querySelector('.mr-version-menus-container');
+  const fixedIssuableTitle = document.querySelector('.issue-sticky-header');
 
   let adjustment = 0;
   if (fixedNav) adjustment -= fixedNav.offsetHeight;
@@ -131,6 +132,10 @@ export const handleLocationHash = () => {
 
   if (versionMenusContainer) {
     adjustment -= versionMenusContainer.offsetHeight;
+  }
+
+  if (isInIssuePage()) {
+    adjustment -= fixedIssuableTitle.offsetHeight;
   }
 
   if (isInMRPage()) {

@@ -12,7 +12,9 @@ module Snippets
       super
 
       @uploaded_assets = Array(@params.delete(:files).presence)
-      @snippet_files = SnippetInputActionCollection.new(Array(@params.delete(:snippet_files).presence))
+
+      input_actions = Array(@params.delete(:snippet_files).presence)
+      @snippet_files = SnippetInputActionCollection.new(input_actions, allowed_actions: restricted_files_actions)
 
       filter_spam_check_params
     end
@@ -78,6 +80,10 @@ module Snippets
 
     def build_actions_from_params(snippet)
       raise NotImplementedError
+    end
+
+    def restricted_files_actions
+      nil
     end
   end
 end

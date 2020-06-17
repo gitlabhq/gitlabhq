@@ -576,7 +576,10 @@ describe('RepoEditor', () => {
         });
       });
 
-      it('adds an image entry to the same folder for a pasted image in a markdown file', () => {
+      // The following test is flaky
+      // see https://gitlab.com/gitlab-org/gitlab/-/issues/221039
+      // eslint-disable-next-line jest/no-disabled-tests
+      it.skip('adds an image entry to the same folder for a pasted image in a markdown file', () => {
         pasteImage();
 
         return waitForPromises().then(() => {

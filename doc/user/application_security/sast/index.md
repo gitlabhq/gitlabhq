@@ -278,7 +278,6 @@ The following are Docker image-related variables.
 | Environment variable         | Description                                                                                                                                                                                                              |
 |------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `SECURE_ANALYZERS_PREFIX`    | Override the name of the Docker registry providing the default images (proxy). Read more about [customizing analyzers](analyzers.md).                                                                                    |
-| `SAST_ANALYZER_IMAGE_PREFIX` | **DEPRECATED**: Use `SECURE_ANALYZERS_PREFIX` instead.                                                                                                                                                                       |
 | `SAST_ANALYZER_IMAGE_TAG`    | **DEPRECATED:** Override the Docker tag of the default images. Read more about [customizing analyzers](analyzers.md).                                                                                                        |
 | `SAST_DEFAULT_ANALYZERS`     | Override the names of default images. Read more about [customizing analyzers](analyzers.md).                                                                                                                             |
 | `SAST_DISABLE_DIND`          | Disable Docker-in-Docker and run analyzers [individually](#enabling-docker-in-docker). This variable is `true` by default. |
@@ -509,7 +508,7 @@ For details on saving and transporting Docker images as a file, see Docker's doc
 ### Set SAST CI job variables to use local SAST analyzers
 
 Add the following configuration to your `.gitlab-ci.yml` file. You must replace
-`SAST_ANALYZER_IMAGE_PREFIX` to refer to your local Docker container registry:
+`SECURE_ANALYZERS_PREFIX` to refer to your local Docker container registry:
 
   ```yaml
 include:

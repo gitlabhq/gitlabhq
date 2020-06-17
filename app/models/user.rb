@@ -619,11 +619,12 @@ class User < ApplicationRecord
 
     # Pattern used to extract `@user` user references from text
     def reference_pattern
-      %r{
-        (?<!\w)
-        #{Regexp.escape(reference_prefix)}
-        (?<user>#{Gitlab::PathRegex::FULL_NAMESPACE_FORMAT_REGEX})
-      }x
+      @reference_pattern ||=
+        %r{
+          (?<!\w)
+          #{Regexp.escape(reference_prefix)}
+          (?<user>#{Gitlab::PathRegex::FULL_NAMESPACE_FORMAT_REGEX})
+        }x
     end
 
     # Return (create if necessary) the ghost user. The ghost user

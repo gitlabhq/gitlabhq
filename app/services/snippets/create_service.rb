@@ -100,5 +100,9 @@ module Snippets
     def build_actions_from_params(_snippet)
       [{ file_path: params[:file_name], content: params[:content] }]
     end
+
+    def restricted_files_actions
+      :create
+    end
   end
 end

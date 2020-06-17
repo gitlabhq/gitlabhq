@@ -1,0 +1,5 @@
+---
+title: Drop deprecated **_ANALYZER_IMAGE_PREFIX
+merge_request: 34325
+author:
+type: removed

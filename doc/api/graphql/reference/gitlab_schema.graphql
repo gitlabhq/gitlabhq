@@ -1824,7 +1824,7 @@ input CreateSnippetInput {
   """
   Content of the snippet
   """
-  content: String!
+  content: String
 
   """
   Description of the snippet
@@ -1835,6 +1835,11 @@ input CreateSnippetInput {
   File name of the snippet
   """
   fileName: String
+
+  """
+  The snippet files to create
+  """
+  files: [SnippetFileInputType!]
 
   """
   The project full path the snippet is associated with

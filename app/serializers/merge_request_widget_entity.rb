@@ -95,7 +95,9 @@ class MergeRequestWidgetEntity < Grape::Entity
   end
 
   def can_add_ci_config_path?(merge_request)
-    merge_request.source_project&.uses_default_ci_config? &&
+    merge_request.open? &&
+      merge_request.source_branch_exists? &&
+      merge_request.source_project&.uses_default_ci_config? &&
       !merge_request.source_project.has_ci? &&
       merge_request.commits_count.positive? &&
       can?(current_user, :read_build, merge_request.source_project) &&
