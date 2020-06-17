@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import { pick } from 'lodash';
 import * as types from './mutation_types';
-import { mapToDashboardViewModel, normalizeQueryResult } from './utils';
+import { mapToDashboardViewModel, normalizeQueryResponseData } from './utils';
 import { BACKOFF_TIMEOUT } from '../../lib/utils/common_utils';
 import { endpointKeys, initialStateKeys, metricStates } from '../constants';
 import httpStatusCodes from '~/lib/utils/http_status';
@@ -135,19 +135,19 @@ export default {
       metric.state = metricStates.LOADING;
     }
   },
-  [types.RECEIVE_METRIC_RESULT_SUCCESS](state, { metricId, result }) {
+  [types.RECEIVE_METRIC_RESULT_SUCCESS](state, { metricId, data }) {
     const metric = findMetricInDashboard(metricId, state.dashboard);
     metric.loading = false;
-    state.showEmptyState = false;
 
-    if (!result || result.length === 0) {
+    state.showEmptyState = false;
+    if (!data.result || data.result.length === 0) {
       metric.state = metricStates.NO_DATA;
       metric.result = null;
     } else {
-      const normalizedResults = result.map(normalizeQueryResult);
+      const result = normalizeQueryResponseData(data);
 
       metric.state = metricStates.OK;
-      metric.result = Object.freeze(normalizedResults);
+      metric.result = Object.freeze(result);
     }
   },
   [types.RECEIVE_METRIC_RESULT_FAILURE](state, { metricId, error }) {

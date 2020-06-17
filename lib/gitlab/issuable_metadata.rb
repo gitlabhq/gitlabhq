@@ -7,11 +7,13 @@ module Gitlab
     # data structure to store issuable meta data like
     # upvotes, downvotes, notes and closing merge requests counts for issues and merge requests
     # this avoiding n+1 queries when loading issuable collections on frontend
-    IssuableMeta = Struct.new(:upvotes, :downvotes, :user_notes_count, :mrs_count) do
-      def merge_requests_count(user = nil)
-        mrs_count
-      end
-    end
+    IssuableMeta = Struct.new(
+      :upvotes,
+      :downvotes,
+      :user_notes_count,
+      :merge_requests_count,
+      :blocking_issues_count # EE-ONLY
+    )
 
     attr_reader :current_user, :issuable_collection
 
@@ -95,3 +97,5 @@ module Gitlab
     end
   end
 end
+
+Gitlab::IssuableMetadata.prepend_if_ee('EE::Gitlab::IssuableMetadata')

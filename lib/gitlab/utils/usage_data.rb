@@ -92,6 +92,10 @@ module Gitlab
         [result, duration]
       end
 
+      def with_finished_at(key, &block)
+        yield.merge(key => Time.now)
+      end
+
       private
 
       def redis_usage_counter

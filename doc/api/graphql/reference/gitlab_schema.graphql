@@ -11715,6 +11715,41 @@ type SnippetEdge {
   node: Snippet
 }
 
+"""
+Type of a snippet file input action
+"""
+enum SnippetFileInputActionEnum {
+  create
+  delete
+  move
+  update
+}
+
+"""
+Represents an action to perform over a snippet file
+"""
+input SnippetFileInputType {
+  """
+  Type of input action
+  """
+  action: SnippetFileInputActionEnum!
+
+  """
+  Snippet file content
+  """
+  content: String
+
+  """
+  Path of the snippet file
+  """
+  filePath: String!
+
+  """
+  Previous path of the snippet file
+  """
+  previousPath: String
+}
+
 type SnippetPermissions {
   """
   Indicates the user can perform `admin_snippet` on this resource
@@ -12907,6 +12942,11 @@ input UpdateSnippetInput {
   File name of the snippet
   """
   fileName: String
+
+  """
+  The snippet files to update
+  """
+  files: [SnippetFileInputType!]
 
   """
   The global id of the snippet to update

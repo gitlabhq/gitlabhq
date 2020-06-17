@@ -609,6 +609,7 @@ Supported applications:
 - [Sentry](#install-sentry-using-gitlab-cicd)
 - [GitLab Runner](#install-gitlab-runner-using-gitlab-cicd)
 - [Cilium](#install-cilium-using-gitlab-cicd)
+- [Falco](#install-falco-using-gitlab-cicd)
 - [Vault](#install-vault-using-gitlab-cicd)
 - [JupyterHub](#install-jupyterhub-using-gitlab-cicd)
 - [Elastic Stack](#install-elastic-stack-using-gitlab-cicd)
@@ -984,6 +985,93 @@ You can also adjust Helm values for Hubble via
 metrics:
   enabled:
     - 'flow:sourceContext=namespace;destinationContext=namespace'
+```
+
+### Install Falco using GitLab CI/CD
+
+> [Introduced](https://gitlab.com/gitlab-org/cluster-integration/cluster-applications/-/merge_requests/91) in GitLab 13.1.
+
+GitLab Container Host Security Monitoring uses [Falco](https://falco.org/)
+as a runtime security tool that listens to the Linux kernel using eBPF. Falco parses system calls
+and asserts the stream against a configurable rules engine in real-time. For more information, see
+[Falco's Documentation](https://falco.org/docs/).
+
+You can enable Falco in the
+`.gitlab/managed-apps/config.yaml` file:
+
+```yaml
+falco:
+  installed: true
+```
+
+You can customize Falco's Helm variables by defining the
+`.gitlab/managed-apps/falco/values.yaml` file in your cluster
+management project. Refer to the
+[Falco chart](https://github.com/helm/charts/blob/master/stable/falco/)
+for the available configuration options.
+
+CAUTION: **Caution:**
+By default eBPF support is enabled and Falco will use an [eBPF probe](https://falco.org/docs/event-sources/drivers/#using-the-ebpf-probe) to pass system calls to userspace.
+If your cluster doesn't support this, you can configure it to use Falco kernel module instead by adding the following to `.gitlab/managed-apps/falco/values.yaml`:
+
+```yaml
+ebpf:
+  enabled: false
+```
+
+In rare cases where automatic probe installation on your cluster isn't possible and the kernel/probe
+isn't precompiled, you may need to manually prepare the kernel module or eBPF probe with
+[driverkit](https://github.com/falcosecurity/driverkit#against-a-kubernetes-cluster)
+and install it on each cluster node.
+
+By default, Falco is deployed with a limited set of rules. To add more rules, add the following to
+`.gitlab/managed-apps/falco/values.yaml` (you can get examples from
+[Cloud Native Security Hub](https://securityhub.dev/)):
+
+```yaml
+customRules:
+  file-integrity.yaml: |-
+    - rule: Detect New File
+      desc: detect new file created
+      condition: >
+        evt.type = chmod or evt.type = fchmod
+      output: >
+        File below a known directory opened for writing (user=%user.name
+        command=%proc.cmdline file=%fd.name parent=%proc.pname pcmdline=%proc.pcmdline gparent=%proc.aname[2])
+      priority: ERROR
+      tags: [filesystem]
+    - rule: Detect New Directory
+      desc: detect new directory created
+      condition: >
+        mkdir
+      output: >
+        File below a known directory opened for writing (user=%user.name
+        command=%proc.cmdline file=%fd.name parent=%proc.pname pcmdline=%proc.pcmdline gparent=%proc.aname[2])
+      priority: ERROR
+      tags: [filesystem]
+```
+
+By default, Falco only outputs security events to logs as JSON objects. To set it to output to an
+[external API](https://falco.org/docs/alerts#https-output-send-alerts-to-an-https-end-point)
+or [application](https://falco.org/docs/alerts#program-output),
+add the following to `.gitlab/managed-apps/falco/values.yaml`:
+
+```yaml
+falco:
+  programOutput:
+    enabled: true
+    keepAlive: false
+    program: mail -s "Falco Notification" someone@example.com
+
+  httpOutput:
+    enabled: true
+    url: http://some.url
+```
+
+You can check these logs with the following command:
+
+```shell
+kubectl logs -l app=falco -n gitlab-managed-apps
 ```
 
 ### Install Vault using GitLab CI/CD

@@ -15,7 +15,7 @@ import { createStore } from '~/monitoring/stores';
 import { panelTypes, chartHeight } from '~/monitoring/constants';
 import TimeSeries from '~/monitoring/components/charts/time_series.vue';
 import * as types from '~/monitoring/stores/mutation_types';
-import { deploymentData, mockProjectDir, annotationsData } from '../../mock_data';
+import { deploymentData, mockProjectDir, annotationsData, metricsResult } from '../../mock_data';
 import {
   metricsDashboardPayload,
   metricsDashboardViewModel,
@@ -702,9 +702,7 @@ describe('Time series component', () => {
       beforeEach(() => {
         store = createStore();
         const graphData = cloneDeep(metricsDashboardViewModel.panelGroups[0].panels[3]);
-        graphData.metrics.forEach(metric =>
-          Object.assign(metric, { result: metricResultStatus.result }),
-        );
+        graphData.metrics.forEach(metric => Object.assign(metric, { result: metricsResult }));
 
         createWrapper({ graphData: { ...graphData, type: 'area-chart' } }, mount);
         return wrapper.vm.$nextTick();

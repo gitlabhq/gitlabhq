@@ -30,12 +30,16 @@ module Mutations
                description: 'The visibility level of the snippet',
                required: false
 
+      argument :files, [Types::Snippets::FileInputType],
+               description: 'The snippet files to update',
+               required: false
+
       def resolve(args)
         snippet = authorized_find!(id: args.delete(:id))
 
         result = ::Snippets::UpdateService.new(snippet.project,
-                                          context[:current_user],
-                                          args).execute(snippet)
+                                               context[:current_user],
+                                               update_params(args)).execute(snippet)
         snippet = result.payload[:snippet]
 
         {
@@ -47,7 +51,15 @@ module Mutations
       private
 
       def ability_name
-        "update"
+        'update'
+      end
+
+      def update_params(args)
+        args.tap do |update_args|
+          # We need to rename `files` into `snippet_files` because
+          # it's the expected key param
+          update_args[:snippet_files] = update_args.delete(:files)&.map(&:to_h)
+        end
       end
     end
   end

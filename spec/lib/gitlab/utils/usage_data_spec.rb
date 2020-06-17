@@ -108,4 +108,14 @@ describe Gitlab::Utils::UsageData do
       expect(duration).to eq(2)
     end
   end
+
+  describe '#with_finished_at' do
+    it 'adds a timestamp to the hash yielded by the block' do
+      freeze_time do
+        result = described_class.with_finished_at(:current_time) { { a: 1 } }
+
+        expect(result).to eq(a: 1, current_time: Time.now)
+      end
+    end
+  end
 end

@@ -18,7 +18,7 @@ const popoverStates = {
   suggest_commit_first_project_gitlab_ci_yml: {
     title: s__(`suggestPipeline|2/2: Commit your changes`),
     content: s__(
-      `suggestPipeline|Commit the changes and your pipeline will automatically run for the first time.`,
+      `suggestPipeline|The template is ready! You can now commit it to create your first pipeline.`,
     ),
   },
 };

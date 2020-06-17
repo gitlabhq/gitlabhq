@@ -225,11 +225,28 @@ describe('Monitoring mutations', () => {
 
   describe('Individual panel/metric results', () => {
     const metricId = 'NO_DB_response_metrics_nginx_ingress_throughput_status_code';
-    const result = [
-      {
-        values: [[0, 1], [1, 1], [1, 3]],
-      },
-    ];
+    const data = {
+      resultType: 'matrix',
+      result: [
+        {
+          metric: {
+            __name__: 'up',
+            job: 'prometheus',
+            instance: 'localhost:9090',
+          },
+          values: [[1435781430.781, '1'], [1435781445.781, '1'], [1435781460.781, '1']],
+        },
+        {
+          metric: {
+            __name__: 'up',
+            job: 'node',
+            instance: 'localhost:9091',
+          },
+          values: [[1435781430.781, '0'], [1435781445.781, '0'], [1435781460.781, '1']],
+        },
+      ],
+    };
+
     const dashboard = metricsDashboardPayload;
     const getMetric = () => stateCopy.dashboard.panelGroups[1].panels[0].metrics[0];
 
@@ -262,7 +279,7 @@ describe('Monitoring mutations', () => {
 
         mutations[types.RECEIVE_METRIC_RESULT_SUCCESS](stateCopy, {
           metricId,
-          result,
+          data,
         });
 
         expect(stateCopy.showEmptyState).toBe(false);
@@ -273,10 +290,10 @@ describe('Monitoring mutations', () => {
 
         mutations[types.RECEIVE_METRIC_RESULT_SUCCESS](stateCopy, {
           metricId,
-          result,
+          data,
         });
 
-        expect(getMetric().result).toHaveLength(result.length);
+        expect(getMetric().result).toHaveLength(data.result.length);
         expect(getMetric()).toEqual(
           expect.objectContaining({
             loading: false,

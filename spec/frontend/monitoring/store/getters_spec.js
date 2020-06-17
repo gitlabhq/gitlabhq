@@ -27,7 +27,10 @@ describe('Monitoring store Getters', () => {
       const { metricId } = state.dashboard.panelGroups[group].panels[panel].metrics[metric];
       mutations[types.RECEIVE_METRIC_RESULT_SUCCESS](state, {
         metricId,
-        result,
+        data: {
+          resultType: 'matrix',
+          result,
+        },
       });
     };
 

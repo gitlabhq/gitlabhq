@@ -27648,7 +27648,7 @@ msgstr ""
 msgid "suggestPipeline|2/2: Commit your changes"
 msgstr ""
 
-msgid "suggestPipeline|Commit the changes and your pipeline will automatically run for the first time."
+msgid "suggestPipeline|The template is ready! You can now commit it to create your first pipeline."
 msgstr ""
 
 msgid "suggestPipeline|We recommend the %{boldStart}Code Quality%{boldEnd} template, which will add a report widget to your Merge Requests. This way you’ll learn about code quality degradations much sooner. %{footerStart} Goodbye technical debt! %{footerEnd}"

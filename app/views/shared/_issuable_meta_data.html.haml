@@ -2,7 +2,7 @@
 - issue_votes        = @issuable_meta_data[issuable.id]
 - upvotes, downvotes = issue_votes.upvotes, issue_votes.downvotes
 - issuable_path      = issuable_path(issuable, anchor: 'notes')
-- issuable_mr        = @issuable_meta_data[issuable.id].merge_requests_count(current_user)
+- issuable_mr        = @issuable_meta_data[issuable.id].merge_requests_count
 
 - if issuable_mr > 0
   %li.issuable-mr.d-none.d-sm-block.has-tooltip{ title: _('Related merge requests') }

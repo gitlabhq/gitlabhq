@@ -8,7 +8,10 @@ export const setMetricResult = ({ store, result, group = 0, panel = 0, metric = 
 
   store.commit(`monitoringDashboard/${types.RECEIVE_METRIC_RESULT_SUCCESS}`, {
     metricId,
-    result,
+    data: {
+      resultType: 'matrix',
+      result,
+    },
   });
 };
 

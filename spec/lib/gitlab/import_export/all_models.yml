@@ -31,6 +31,8 @@ issues:
 - closed_by
 - epic_issue
 - epic
+- feature_flag_issues
+- feature_flags
 - designs
 - design_versions
 - description_versions
@@ -569,6 +571,9 @@ self_managed_prometheus_alert_events:
 epic_issues:
 - issue
 - epic
+feature_flag_issues:
+- issue
+- feature_flag
 tracing_setting:
 - project
 reviews:

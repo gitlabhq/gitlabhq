@@ -30,9 +30,11 @@ to be enabled:
   project level, navigate to your project's **Settings > General**, expand **Visibility, project features, permissions**
   and enable **Git Large File Storage**.
 
-Design Management requires that projects are using
-[hashed storage](../../../administration/repository_storage_types.md#hashed-storage)
-(the default storage type since v10.0).
+Design Management also requires that projects are using
+[hashed storage](../../../administration/raketasks/storage.md#migrate-to-hashed-storage). Since
+ GitLab 10.0, newly created projects use hashed storage by default. A GitLab admin can verify the storage type of a
+project by navigating to **Admin Area > Projects** and then selecting the project in question.
+A project can be identified as hashed-stored if its *Gitaly relative path* contains `@hashed`.
 
 If the requirements are not met, the **Designs** tab displays a message to the user.
 
@@ -47,6 +49,7 @@ and [PDFs](https://gitlab.com/gitlab-org/gitlab/-/issues/32811) is planned for a
 ## Limitations
 
 - Design uploads are limited to 10 files at a time.
+- From GitLab 13.1, Design filenames are limited to 255 characters.
 - Design Management data
   [isn't deleted when a project is destroyed](https://gitlab.com/gitlab-org/gitlab/-/issues/13429) yet.
 - Design Management data [won't be moved](https://gitlab.com/gitlab-org/gitlab/-/issues/13426)

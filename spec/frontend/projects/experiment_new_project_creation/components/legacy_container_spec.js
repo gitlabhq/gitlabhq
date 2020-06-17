@@ -23,13 +23,28 @@ describe('Legacy container component', () => {
       createComponent({ selector: '.dummy-target' });
     });
 
-    it('moves node inside component when mounted', () => {
-      expect(dummy.parentNode).toBe(wrapper.element);
+    describe('when mounted', () => {
+      it('moves node inside component', () => {
+        expect(dummy.parentNode).toBe(wrapper.element);
+      });
+
+      it('sets active class', () => {
+        expect(dummy.classList.contains('active')).toBe(true);
+      });
     });
 
-    it('moves node back when unmounted', () => {
-      wrapper.destroy();
-      expect(dummy.parentNode).toBe(document.body);
+    describe('when unmounted', () => {
+      beforeEach(() => {
+        wrapper.destroy();
+      });
+
+      it('moves node back', () => {
+        expect(dummy.parentNode).toBe(document.body);
+      });
+
+      it('removes active class', () => {
+        expect(dummy.classList.contains('active')).toBe(false);
+      });
     });
   });
 

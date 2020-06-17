@@ -738,7 +738,7 @@ describe('Monitoring store actions', () => {
             type: types.RECEIVE_METRIC_RESULT_SUCCESS,
             payload: {
               metricId: metric.metricId,
-              result: data.result,
+              data,
             },
           },
         ],
@@ -775,7 +775,7 @@ describe('Monitoring store actions', () => {
               type: types.RECEIVE_METRIC_RESULT_SUCCESS,
               payload: {
                 metricId: metric.metricId,
-                result: data.result,
+                data,
               },
             },
           ],
@@ -817,7 +817,7 @@ describe('Monitoring store actions', () => {
               type: types.RECEIVE_METRIC_RESULT_SUCCESS,
               payload: {
                 metricId: metric.metricId,
-                result: data.result,
+                data,
               },
             },
           ],
@@ -852,7 +852,7 @@ describe('Monitoring store actions', () => {
             type: types.RECEIVE_METRIC_RESULT_SUCCESS,
             payload: {
               metricId: metric.metricId,
-              result: data.result,
+              data,
             },
           },
         ],

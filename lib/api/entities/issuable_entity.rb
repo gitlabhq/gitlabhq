@@ -11,7 +11,12 @@ module API
       # Avoids an N+1 query when metadata is included
       def issuable_metadata(subject, options, method, args = nil)
         cached_subject = options.dig(:issuable_metadata, subject.id)
-        (cached_subject || subject).public_send(method, *args) # rubocop: disable GitlabSecurity/PublicSend
+
+        if cached_subject
+          cached_subject[method]
+        else
+          subject.public_send(method, *args) # rubocop: disable GitlabSecurity/PublicSend
+        end
       end
     end
   end

@@ -23,7 +23,7 @@ module Gitlab
       end
 
       def self.pipeline_fixed_notifications?
-        ::Feature.enabled?(:ci_pipeline_fixed_notifications)
+        ::Feature.enabled?(:ci_pipeline_fixed_notifications, default_enabled: true)
       end
 
       def self.instance_variables_ui_enabled?

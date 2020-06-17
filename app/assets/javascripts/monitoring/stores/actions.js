@@ -50,15 +50,14 @@ function backOffRequest(makeRequestCallback) {
   }, PROMETHEUS_TIMEOUT);
 }
 
-function getPrometheusMetricResult(prometheusEndpoint, params) {
+function getPrometheusQueryData(prometheusEndpoint, params) {
   return backOffRequest(() => axios.get(prometheusEndpoint, { params }))
     .then(res => res.data)
     .then(response => {
       if (response.status === 'error') {
         throw new Error(response.error);
       }
-
-      return response.data.result;
+      return response.data;
     });
 }
 
@@ -229,9 +228,9 @@ export const fetchPrometheusMetric = (
 
   commit(types.REQUEST_METRIC_RESULT, { metricId: metric.metricId });
 
-  return getPrometheusMetricResult(metric.prometheusEndpointPath, queryParams)
-    .then(result => {
-      commit(types.RECEIVE_METRIC_RESULT_SUCCESS, { metricId: metric.metricId, result });
+  return getPrometheusQueryData(metric.prometheusEndpointPath, queryParams)
+    .then(data => {
+      commit(types.RECEIVE_METRIC_RESULT_SUCCESS, { metricId: metric.metricId, data });
     })
     .catch(error => {
       Sentry.captureException(error);

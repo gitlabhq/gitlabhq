@@ -284,6 +284,10 @@ NOTE: **Note:** Set the limit to `0` to disable it.
 
 See the [documentation on Snippets settings](snippets/index.md).
 
+## Design Management limits
+
+See the [Design Management Limitations](../user/project/issues/design_management.md#limitations) section.
+
 ## Push Event Limits
 
 ### Webhooks and Project Services

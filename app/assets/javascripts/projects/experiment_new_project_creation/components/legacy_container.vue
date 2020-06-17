@@ -14,11 +14,13 @@ export default {
     } else {
       this.source = legacyEntry.parentNode;
       this.$el.appendChild(legacyEntry);
+      legacyEntry.classList.add('active');
     }
   },
 
   beforeDestroy() {
     if (this.source) {
+      this.$el.firstChild.classList.remove('active');
       this.source.appendChild(this.$el.firstChild);
     }
   },
