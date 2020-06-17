@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 require 'rubocop'
 require 'rubocop/rspec/support'
 require_relative '../../../../rubocop/cop/gitlab/predicate_memoization'
 
-describe RuboCop::Cop::Gitlab::PredicateMemoization do
+describe RuboCop::Cop::Gitlab::PredicateMemoization, type: :rubocop do
   include CopHelper
 
   subject(:cop) { described_class.new }

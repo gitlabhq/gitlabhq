@@ -284,7 +284,7 @@ describe API::Runners do
         end
       end
 
-      it 'returns 404 if runner does not exists' do
+      it 'returns 404 if runner does not exist' do
         get api('/runners/0', admin)
 
         expect(response).to have_gitlab_http_status(:not_found)
@@ -437,7 +437,7 @@ describe API::Runners do
         end
       end
 
-      it 'returns 404 if runner does not exists' do
+      it 'returns 404 if runner does not exist' do
         update_runner(0, admin, description: 'test')
 
         expect(response).to have_gitlab_http_status(:not_found)
@@ -511,7 +511,7 @@ describe API::Runners do
         end
       end
 
-      it 'returns 404 if runner does not exists' do
+      it 'returns 404 if runner does not exist' do
         delete api('/runners/0', admin)
 
         expect(response).to have_gitlab_http_status(:not_found)
