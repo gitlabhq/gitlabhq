@@ -1,3 +1,9 @@
+---
+stage: Release
+group: Progressive Delivery
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+---
+
 # Features flags API
 
 This API is for managing Flipper-based [feature flags used in development of GitLab](../development/feature_flags/index.md).

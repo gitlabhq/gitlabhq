@@ -3451,7 +3451,7 @@ variables:
 
 `none` also re-uses the local working copy, but skips all Git operations
 (including GitLab Runner's pre-clone script, if present). It's mostly useful
-for jobs that operate exclusively on artifacts (for examples `deploy`). Git repository
+for jobs that operate exclusively on artifacts (for example, `deploy`). Git repository
 data may be present, but it's certain to be out of date, so you should only
 rely on files brought into the local working copy from cache or artifacts.
 

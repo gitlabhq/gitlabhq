@@ -720,6 +720,8 @@ no longer directly accessible via the `:latest` tag.
 
 ### Recycling unused tags
 
+> [Introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/987) in Omnibus GitLab 8.12.
+
 There are a couple of considerations you need to note before running the
 built-in command:
 
@@ -774,6 +776,8 @@ You are likely expecting this way of operation, but before doing that, ensure
 that you have backed up all registry data.
 
 ### Performing garbage collection without downtime
+
+> [Introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/764) in GitLab 8.8.
 
 You can perform a garbage collection without stopping the Container Registry by setting
 it into a read-only mode and by not using the built-in command. During this time,

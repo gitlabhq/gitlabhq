@@ -5,6 +5,17 @@ module Gitlab
     module Topology
       include Gitlab::Utils::UsageData
 
+      JOB_TO_SERVICE_NAME = {
+        'gitlab-rails' => 'web',
+        'gitlab-sidekiq' => 'sidekiq',
+        'gitlab-workhorse' => 'workhorse',
+        'redis' => 'redis',
+        'postgres' => 'postgres',
+        'gitaly' => 'gitaly',
+        'prometheus' => 'prometheus',
+        'node' => 'node-exporter'
+      }.freeze
+
       def topology_usage_data
         topology_data, duration = measure_duration do
           alt_usage_data(fallback: {}) do
@@ -50,12 +61,12 @@ module Gitlab
       def topology_all_service_memory(client)
         aggregate_many(
           client,
-          'avg ({__name__=~"ruby_process_(resident|unique|proportional)_memory_bytes"}) by (instance, job, __name__)'
+          'avg ({__name__ =~ "(ruby_){0,1}process_(resident|unique|proportional)_memory_bytes", job != "gitlab_exporter_process"}) by (instance, job, __name__)'
         )
       end
 
       def topology_all_service_process_count(client)
-        aggregate_many(client, 'count (ruby_process_start_time_seconds) by (instance, job)')
+        aggregate_many(client, 'count ({__name__ =~ "(ruby_){0,1}process_start_time_seconds", job != "gitlab_exporter_process"}) by (instance, job)')
       end
 
       def topology_node_services(instance, all_process_counts, all_process_memory)
@@ -64,33 +75,41 @@ module Gitlab
           topology_instance_service_process_count(instance, all_process_counts)
             .deep_merge(topology_instance_service_memory(instance, all_process_memory))
 
-        # map to list of hashes where service name becomes a value instead
-        instance_service_data.map do |service, data|
-          { name: service.to_s }.merge(data)
+        # map to list of hashes where service names become values instead, and remove
+        # unknown services, since they might not be ours
+        instance_service_data.each_with_object([]) do |entry, list|
+          service, service_metrics = entry
+          gitlab_service = JOB_TO_SERVICE_NAME[service.to_s]
+          next unless gitlab_service
+
+          list << { name: gitlab_service }.merge(service_metrics)
         end
       end
 
       def topology_instance_service_process_count(instance, all_instance_data)
         topology_data_for_instance(instance, all_instance_data).to_h do |metric, count|
-          job = metric['job'].underscore.to_sym
-          [job, { process_count: count }]
+          [metric['job'], { process_count: count }]
         end
       end
 
       def topology_instance_service_memory(instance, all_instance_data)
         topology_data_for_instance(instance, all_instance_data).each_with_object({}) do |entry, hash|
           metric, memory = entry
-          job = metric['job'].underscore.to_sym
+          job = metric['job']
           key =
             case metric['__name__']
-            when 'ruby_process_resident_memory_bytes' then :process_memory_rss
-            when 'ruby_process_unique_memory_bytes' then :process_memory_uss
-            when 'ruby_process_proportional_memory_bytes' then :process_memory_pss
+            when match_process_memory_metric_for_type('resident') then :process_memory_rss
+            when match_process_memory_metric_for_type('unique') then :process_memory_uss
+            when match_process_memory_metric_for_type('proportional') then :process_memory_pss
             end
 
           hash[job] ||= {}
           hash[job][key] ||= memory
         end
+      end
+
+      def match_process_memory_metric_for_type(type)
+        /(ruby_){0,1}process_#{type}_memory_bytes/
       end
 
       def topology_data_for_instance(instance, all_instance_data)

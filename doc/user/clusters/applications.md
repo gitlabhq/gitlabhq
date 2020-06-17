@@ -483,7 +483,7 @@ For information on configuring Crossplane installed on the cluster, see
 [Crossplane configuration](crossplane.md).
 
 NOTE: **Note:**
-[`alpha/crossplane`](https://charts.crossplane.io/alpha/) chart v0.4.1 is used to
+[`alpha/crossplane`](https://github.com/crossplane/crossplane/tree/v0.4.1/cluster/charts/crossplane) chart v0.4.1 is used to
 install Crossplane using the
 [`values.yaml`](https://github.com/crossplane/crossplane/blob/master/cluster/charts/crossplane/values.yaml.tmpl)
 file.
@@ -1121,7 +1121,7 @@ You can customize the installation of JupyterHub by defining a
 `.gitlab/managed-apps/jupyterhub/values.yaml` file in your cluster management project.
 
 Refer to the
-[chart reference](https://zero-to-jupyterhub.readthedocs.io/en/stable/reference.html) for the
+[chart reference](https://zero-to-jupyterhub.readthedocs.io/en/stable/reference/reference.html) for the
 available configuration options.
 
 ### Install Elastic Stack using GitLab CI/CD

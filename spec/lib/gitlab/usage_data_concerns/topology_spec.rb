@@ -42,14 +42,14 @@ describe Gitlab::UsageDataConcerns::Topology do
                 node_cpus: 8,
                 node_services: [
                   {
-                    name: 'gitlab_rails',
+                    name: 'web',
                     process_count: 10,
                     process_memory_rss: 300,
                     process_memory_uss: 301,
                     process_memory_pss: 302
                   },
                   {
-                    name: 'gitlab_sidekiq',
+                    name: 'sidekiq',
                     process_count: 5,
                     process_memory_rss: 303
                   }
@@ -60,10 +60,15 @@ describe Gitlab::UsageDataConcerns::Topology do
                 node_cpus: 16,
                 node_services: [
                   {
-                    name: 'gitlab_sidekiq',
+                    name: 'sidekiq',
                     process_count: 15,
                     process_memory_rss: 400,
                     process_memory_pss: 401
+                  },
+                  {
+                    name: 'redis',
+                    process_count: 1,
+                    process_memory_rss: 402
                   }
                 ]
               }
@@ -118,7 +123,7 @@ describe Gitlab::UsageDataConcerns::Topology do
 
   def receive_node_memory_query(result: nil)
     receive(:query)
-      .with('avg (node_memory_MemTotal_bytes) by (instance)', an_instance_of(Hash))
+      .with(/node_memory_MemTotal_bytes/, an_instance_of(Hash))
       .and_return(result || [
         {
           'metric' => { 'instance' => 'instance1:8080' },
@@ -133,7 +138,7 @@ describe Gitlab::UsageDataConcerns::Topology do
 
   def receive_node_cpu_count_query(result: nil)
     receive(:query)
-      .with('count (node_cpu_seconds_total{mode="idle"}) by (instance)', an_instance_of(Hash))
+      .with(/node_cpu_seconds_total/, an_instance_of(Hash))
       .and_return(result || [
         {
           'metric' => { 'instance' => 'instance2:8090' },
@@ -148,7 +153,7 @@ describe Gitlab::UsageDataConcerns::Topology do
 
   def receive_node_service_memory_query(result: nil)
     receive(:query)
-      .with('avg ({__name__=~"ruby_process_(resident|unique|proportional)_memory_bytes"}) by (instance, job, __name__)', an_instance_of(Hash))
+      .with(/process_.+_memory_bytes/, an_instance_of(Hash))
       .and_return(result || [
         # instance 1: runs Puma + a small Sidekiq
         {
@@ -167,7 +172,7 @@ describe Gitlab::UsageDataConcerns::Topology do
           'metric' => { 'instance' => 'instance1:8090', 'job' => 'gitlab-sidekiq', '__name__' => 'ruby_process_resident_memory_bytes' },
           'value' => [1000, '303']
         },
-        # instance 2: runs a dedicated Sidekiq
+        # instance 2: runs a dedicated Sidekiq + Redis (which uses a different metric name)
         {
           'metric' => { 'instance' => 'instance2:8090', 'job' => 'gitlab-sidekiq', '__name__' => 'ruby_process_resident_memory_bytes' },
           'value' => [1000, '400']
@@ -175,13 +180,17 @@ describe Gitlab::UsageDataConcerns::Topology do
         {
           'metric' => { 'instance' => 'instance2:8090', 'job' => 'gitlab-sidekiq', '__name__' => 'ruby_process_proportional_memory_bytes' },
           'value' => [1000, '401']
+        },
+        {
+          'metric' => { 'instance' => 'instance2:9121', 'job' => 'redis', '__name__' => 'process_resident_memory_bytes' },
+          'value' => [1000, '402']
         }
       ])
   end
 
   def receive_node_service_process_count_query(result: nil)
     receive(:query)
-      .with('count (ruby_process_start_time_seconds) by (instance, job)', an_instance_of(Hash))
+      .with(/process_start_time_seconds/, an_instance_of(Hash))
       .and_return(result || [
         # instance 1
         {
@@ -196,6 +205,15 @@ describe Gitlab::UsageDataConcerns::Topology do
         {
           'metric' => { 'instance' => 'instance2:8090', 'job' => 'gitlab-sidekiq' },
           'value' => [1000, '15']
+        },
+        {
+          'metric' => { 'instance' => 'instance2:9121', 'job' => 'redis' },
+          'value' => [1000, '1']
+        },
+        # unknown service => should be stripped out
+        {
+          'metric' => { 'instance' => 'instance2:9000', 'job' => 'not-a-gitlab-service' },
+          'value' => [1000, '42']
         }
       ])
   end
