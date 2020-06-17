@@ -57,6 +57,10 @@ export default {
       type: String,
       required: true,
     },
+    projectId: {
+      type: String,
+      required: true,
+    },
     projectPath: {
       type: String,
       required: true,
@@ -327,6 +331,7 @@ export default {
       </gl-tabs>
       <alert-sidebar
         :project-path="projectPath"
+        :project-id="projectId"
         :alert="alert"
         :sidebar-collapsed="sidebarCollapsed"
         @alert-refresh="alertRefresh"

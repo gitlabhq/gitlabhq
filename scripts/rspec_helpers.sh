@@ -119,12 +119,12 @@ function rspec_matched_tests() {
   local test_file_count=$(wc -w "${matching_tests_file}" | awk {'print $1'})
 
   if [[ "${test_file_count}" -gt "${test_file_count_threshold}" ]]; then
-    echo "There are more than ${test_file_count_threshold} FOSS test files matched,"
+    echo "This job is intentionally failed because there are more than ${test_file_count_threshold} FOSS test files matched,"
     echo "which would take too long to run in this job."
     echo "To reduce the likelihood of breaking FOSS pipelines,"
     echo "please add [RUN AS-IF-FOSS] to the MR title and restart the pipeline."
     echo "This would run all as-if-foss jobs in this merge request"
-    echo "and remove this job from the pipeline."
+    echo "and remove this failing job from the pipeline."
     exit 1
   fi
 

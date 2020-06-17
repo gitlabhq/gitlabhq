@@ -4,9 +4,9 @@
     "type", "options"
   ],
   "properties": {
-    "type": { "enum": ["text"] },
+    "type": { "enum": ["custom"] },
     "label": { "type": "string" },
-    "options": { "$ref": "text_variable_options.json" }
+    "options": { "$ref": "custom_variable_options.json" }
   },
   "additionalProperties": false
 }

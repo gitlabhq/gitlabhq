@@ -356,7 +356,6 @@ module QA
 
     module Issuable
       autoload :New, 'qa/page/issuable/new'
-      autoload :Sidebar, 'qa/page/issuable/sidebar'
     end
 
     module Alert
@@ -442,6 +441,7 @@ module QA
 
       module Issuable
         autoload :Common, 'qa/page/component/issuable/common'
+        autoload :Sidebar, 'qa/page/component/issuable/sidebar'
       end
 
       module IssueBoard

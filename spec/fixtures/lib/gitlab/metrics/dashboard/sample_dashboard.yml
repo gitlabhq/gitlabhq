@@ -13,6 +13,17 @@ templating:
       options:
         default_value: 'default'
     text_variable_simple_syntax: 'default value'
+    custom_variable_simple_syntax: ['value1', 'value2', 'value3']
+    custom_variable_full_syntax:
+      label: 'Variable 2'
+      type: custom
+      options:
+        values:
+        - value: 'value option 1'
+          text: 'Option 1'
+        - value: 'value_option_2'
+          text: 'Option 2'
+          default: true
 panel_groups:
 - group: Group A
   priority: 1

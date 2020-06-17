@@ -33,6 +33,7 @@ describe('Alert Details Sidebar Assignees', () => {
         ...data,
         sidebarCollapsed,
         projectPath: 'projectPath',
+        projectId: '1',
       },
       mocks: {
         $apollo: {

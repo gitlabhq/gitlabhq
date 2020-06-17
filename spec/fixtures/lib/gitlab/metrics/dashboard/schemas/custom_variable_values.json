@@ -1,0 +1,10 @@
+{
+  "type": "object",
+  "required": ["value"],
+  "properties": {
+    "value": { "type": "string" },
+    "text": { "type": "string" },
+    "default": { "type": "boolean" }
+  },
+  "additionalProperties": false
+}

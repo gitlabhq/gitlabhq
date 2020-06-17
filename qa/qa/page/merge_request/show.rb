@@ -5,6 +5,7 @@ module QA
     module MergeRequest
       class Show < Page::Base
         include Page::Component::Note
+        include Page::Component::Issuable::Sidebar
 
         view 'app/assets/javascripts/mr_tabs_popover/components/popover.vue' do
           element :dismiss_popover_button
@@ -62,11 +63,6 @@ module QA
 
         view 'app/assets/javascripts/diffs/components/inline_diff_table_row.vue' do
           element :new_diff_line
-        end
-
-        view 'app/views/shared/issuable/_sidebar.html.haml' do
-          element :assignee_block
-          element :labels_block
         end
 
         view 'app/views/projects/merge_requests/_mr_title.html.haml' do
@@ -176,18 +172,6 @@ module QA
           refresh
 
           has_element?(:merge_button)
-        end
-
-        def has_assignee?(username)
-          page.within(element_selector_css(:assignee_block)) do
-            has_text?(username)
-          end
-        end
-
-        def has_label?(label)
-          within_element(:labels_block) do
-            !!has_element?(:label, label_name: label)
-          end
         end
 
         def has_pipeline_status?(text)

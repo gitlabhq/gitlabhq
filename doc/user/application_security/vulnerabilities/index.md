@@ -9,10 +9,10 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13561) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.0.
 
-Each security vulnerability in the [Vulnerability List](../dependency_list/index.md) has its own standalone
+Each security vulnerability in the [Security Dashboard](../security_dashboard/index.md#project-security-dashboard) has its own standalone
 page.
 
-![Standalone vulnerability page](img/standalone_vulnerability_page_v12_10.png)
+![Standalone vulnerability page](img/standalone_vulnerability_page_v13_1.png)
 
 On the standalone vulnerability page, you can interact with the vulnerability in
 several different ways:

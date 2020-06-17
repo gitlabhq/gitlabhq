@@ -53,10 +53,7 @@ module QA
           expect(merge_request).to have_description(@merge_request_description)
           expect(merge_request).to have_assignee(gitlab_account_username)
           expect(merge_request).to have_label(label.title)
-        end
-
-        Page::Issuable::Sidebar.perform do |sidebar|
-          expect(sidebar).to have_milestone(milestone.title)
+          expect(merge_request).to have_milestone(milestone.title)
         end
       end
     end

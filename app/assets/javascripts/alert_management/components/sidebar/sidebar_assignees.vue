@@ -38,6 +38,10 @@ export default {
     SidebarAssignee,
   },
   props: {
+    projectId: {
+      type: String,
+      required: true,
+    },
     projectPath: {
       type: String,
       required: true,
@@ -128,7 +132,7 @@ export default {
             per_page: 20,
             active: true,
             current_user: true,
-            project_id: gon?.current_project_id,
+            project_id: this.projectId,
           },
         })
         .then(({ data }) => {

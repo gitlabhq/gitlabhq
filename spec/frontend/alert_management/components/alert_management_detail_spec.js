@@ -19,6 +19,7 @@ describe('AlertDetails', () => {
   let mock;
   const projectPath = 'root/alerts';
   const projectIssuesPath = 'root/alerts/-/issues';
+  const projectId = '1';
 
   const findDetailsTable = () => wrapper.find(GlTable);
 
@@ -28,6 +29,7 @@ describe('AlertDetails', () => {
         alertId: 'alertId',
         projectPath,
         projectIssuesPath,
+        projectId,
       },
       data() {
         return { alert: { ...mockAlert }, ...data };

@@ -22,6 +22,7 @@ describe('Alert Details Sidebar', () => {
         alert,
         sidebarCollapsed,
         projectPath: 'projectPath',
+        projectId: '1',
       },
       stubs,
     });

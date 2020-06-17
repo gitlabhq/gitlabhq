@@ -8,6 +8,7 @@ module QA
           include Page::Component::Issuable::Common
           include Page::Component::Note
           include Page::Component::DesignManagement
+          include Page::Component::Issuable::Sidebar
 
           view 'app/assets/javascripts/notes/components/comment_form.vue' do
             element :comment_button
@@ -23,33 +24,13 @@ module QA
             element :noteable_note_item
           end
 
-          view 'app/assets/javascripts/sidebar/components/assignees/assignee_avatar.vue' do
-            element :avatar_image
-          end
-
-          view 'app/assets/javascripts/sidebar/components/assignees/uncollapsed_assignee_list.vue' do
-            element :more_assignees_link
-          end
-
           view 'app/assets/javascripts/vue_shared/components/issue/related_issuable_item.vue' do
             element :remove_related_issue_button
-          end
-
-          view 'app/helpers/dropdowns_helper.rb' do
-            element :dropdown_input_field
           end
 
           view 'app/views/shared/issuable/_close_reopen_button.html.haml' do
             element :close_issue_button
             element :reopen_issue_button
-          end
-
-          view 'app/views/shared/issuable/_sidebar.html.haml' do
-            element :assignee_block
-            element :labels_block
-            element :edit_link_labels
-            element :dropdown_menu_labels
-            element :milestone_link
           end
 
           view 'app/views/shared/notes/_form.html.haml' do
@@ -58,10 +39,10 @@ module QA
           end
 
           view 'app/views/projects/issues/_tabs.html.haml' do
-            element :discussion_tab_link
-            element :discussion_tab_content
-            element :designs_tab_link
             element :designs_tab_content
+            element :designs_tab_link
+            element :discussion_tab_content
+            element :discussion_tab_link
           end
 
           def click_discussion_tab
@@ -72,10 +53,6 @@ module QA
           def click_designs_tab
             click_element(:designs_tab_link)
             active_element?(:designs_tab_content)
-          end
-
-          def click_milestone_link
-            click_element(:milestone_link)
           end
 
           def click_remove_related_issue_button
@@ -100,18 +77,8 @@ module QA
             click_element :comment_button
           end
 
-          def has_avatar_image_count?(count)
-            wait_assignees_block_finish_loading do
-              all_elements(:avatar_image, count: count)
-            end
-          end
-
           def has_comment?(comment_text)
             has_element?(:noteable_note_item, text: comment_text, wait: QA::Support::Repeater::DEFAULT_MAX_WAIT_TIME)
-          end
-
-          def more_assignees_link
-            find_element(:more_assignees_link)
           end
 
           def noteable_note_item
@@ -130,35 +97,6 @@ module QA
             select_filter_with_text('Show history only')
           end
 
-          def select_labels_and_refresh(labels)
-            Support::Retrier.retry_until do
-              click_element(:edit_link_labels)
-              has_element?(:dropdown_menu_labels, text: labels.first)
-            end
-
-            labels.each do |label|
-              within_element(:dropdown_menu_labels, text: label) do
-                send_keys_to_element(:dropdown_input_field, [label, :enter])
-              end
-            end
-
-            click_element(:edit_link_labels)
-
-            labels.each do |label|
-              has_element?(:labels_block, text: label, wait: 0)
-            end
-
-            refresh
-          end
-
-          def text_of_labels_block
-            find_element(:labels_block)
-          end
-
-          def toggle_more_assignees_link
-            click_element(:more_assignees_link)
-          end
-
           private
 
           def select_filter_with_text(text)
@@ -166,15 +104,6 @@ module QA
               click_element(:title)
               click_element :discussion_filter
               find_element(:filter_options, text: text).click
-            end
-          end
-
-          def wait_assignees_block_finish_loading
-            within_element(:assignee_block) do
-              wait_until(reload: false, max_duration: 10, sleep_interval: 1) do
-                finished_loading_block?
-                yield
-              end
             end
           end
         end

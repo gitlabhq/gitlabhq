@@ -48,6 +48,7 @@ describe('ErrorDetails', () => {
   const findUpdateResolveStatusButton = () =>
     wrapper.find('[data-testid="update-resolve-status-btn"]');
   const findExternalUrl = () => wrapper.find('[data-testid="external-url-link"]');
+  const findAlert = () => wrapper.find(GlAlert);
 
   function mountComponent() {
     wrapper = shallowMount(ErrorDetails, {
@@ -278,15 +279,17 @@ describe('ErrorDetails', () => {
         return wrapper.vm.$nextTick().then(() => {
           expect(wrapper.find(GlLoadingIcon).exists()).toBe(false);
           expect(wrapper.find(Stacktrace).exists()).toBe(true);
+          expect(findAlert().exists()).toBe(false);
         });
       });
 
-      it('should NOT show stacktrace if no entries', () => {
+      it('should NOT show stacktrace if no entries and show Alert message', () => {
         store.state.details.loadingStacktrace = false;
         store.getters = { 'details/sentryUrl': () => 'sentry.io', 'details/stacktrace': () => [] };
         return wrapper.vm.$nextTick().then(() => {
           expect(wrapper.find(GlLoadingIcon).exists()).toBe(false);
           expect(wrapper.find(Stacktrace).exists()).toBe(false);
+          expect(findAlert().text()).toBe('No stack trace for this error');
         });
       });
     });
@@ -404,7 +407,6 @@ describe('ErrorDetails', () => {
         });
 
         it('should show alert with closed issueId', () => {
-          const findAlert = () => wrapper.find(GlAlert);
           const closedIssueId = 123;
           wrapper.setData({
             isAlertVisible: true,

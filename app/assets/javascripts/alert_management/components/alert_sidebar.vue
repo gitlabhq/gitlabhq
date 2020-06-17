@@ -16,6 +16,10 @@ export default {
       type: Boolean,
       required: true,
     },
+    projectId: {
+      type: String,
+      required: true,
+    },
     projectPath: {
       type: String,
       required: true,
@@ -49,6 +53,7 @@ export default {
       />
       <sidebar-assignees
         :project-path="projectPath"
+        :project-id="projectId"
         :alert="alert"
         :sidebar-collapsed="sidebarCollapsed"
         @alert-refresh="$emit('alert-refresh')"

@@ -7,7 +7,8 @@ describe Projects::AlertManagementHelper do
 
   let_it_be(:project, reload: true) { create(:project) }
   let_it_be(:current_user) { create(:user) }
-  let_it_be(:project_path) { project.full_path }
+  let(:project_path) { project.full_path }
+  let(:project_id) { project.id }
 
   describe '#alert_management_data' do
     let(:user_can_enable_alert_management) { true }
@@ -75,6 +76,7 @@ describe Projects::AlertManagementHelper do
       expect(helper.alert_management_detail_data(project, alert_id)).to eq(
         'alert-id' => alert_id,
         'project-path' => project_path,
+        'project-id' => project_id,
         'project-issues-path' => issues_path
       )
     end

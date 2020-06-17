@@ -4820,6 +4820,11 @@ type Group {
     first: Int
 
     """
+    The ID of the Iteration to look up
+    """
+    id: ID
+
+    """
     Returns the last _n_ elements from the list.
     """
     last: Int

@@ -13276,6 +13276,16 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "id",
+                  "description": "The ID of the Iteration to look up",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "ID",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "after",
                   "description": "Returns the elements in the list that come after the specified cursor.",
                   "type": {
