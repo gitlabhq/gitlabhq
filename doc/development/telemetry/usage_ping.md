@@ -322,7 +322,11 @@ Examples of query optimization work:
 
 When adding, changing, or updating metrics, please update the [Usage Statistics definition table](#usage-statistics-definitions).
 
-### 5. Ask for a Telemetry Review
+### 5. Add new metric to Versions Application
+
+Check if new metrics need to be added to the Versions Application. See `usage_data` [schema](https://gitlab.com/gitlab-services/version-gitlab-com/-/blob/master/db/schema.rb#L147) and usage data [parameters accepted](https://gitlab.com/gitlab-services/version-gitlab-com/-/blob/master/app/services/usage_ping.rb). Any metrics added under the `counts` key are saved in the `counts` column.
+
+### 6. Ask for a Telemetry Review
 
 On GitLab.com, we have DangerBot setup to monitor Telemetry related files and DangerBot will recommend a Telemetry review. Mention `@gitlab-org/growth/telemetry/engineers` in your MR for a review.
 

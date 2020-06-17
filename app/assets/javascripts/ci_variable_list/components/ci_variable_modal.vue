@@ -1,19 +1,29 @@
 <script>
 import {
+  GlAlert,
+  GlButton,
+  GlCollapse,
   GlDeprecatedButton,
-  GlModal,
-  GlFormSelect,
+  GlFormCheckbox,
   GlFormGroup,
   GlFormInput,
+  GlFormSelect,
   GlFormTextarea,
-  GlFormCheckbox,
-  GlLink,
   GlIcon,
+  GlLink,
+  GlModal,
+  GlSprintf,
 } from '@gitlab/ui';
+import Cookies from 'js-cookie';
 import { mapActions, mapState } from 'vuex';
 import { __ } from '~/locale';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import { ADD_CI_VARIABLE_MODAL_ID } from '../constants';
+import {
+  AWS_TOKEN_CONSTANTS,
+  ADD_CI_VARIABLE_MODAL_ID,
+  AWS_TIP_DISMISSED_COOKIE_NAME,
+  AWS_TIP_MESSAGE,
+} from '../constants';
 import { awsTokens, awsTokenList } from './ci_variable_autocomplete_tokens';
 import CiKeyField from './ci_key_field.vue';
 import CiEnvironmentsDropdown from './ci_environments_dropdown.vue';
@@ -23,19 +33,29 @@ export default {
   components: {
     CiEnvironmentsDropdown,
     CiKeyField,
+    GlAlert,
+    GlButton,
+    GlCollapse,
     GlDeprecatedButton,
-    GlModal,
-    GlFormSelect,
+    GlFormCheckbox,
     GlFormGroup,
     GlFormInput,
+    GlFormSelect,
     GlFormTextarea,
-    GlFormCheckbox,
-    GlLink,
     GlIcon,
+    GlLink,
+    GlModal,
+    GlSprintf,
   },
   mixins: [glFeatureFlagsMixin()],
   tokens: awsTokens,
   tokenList: awsTokenList,
+  awsTipMessage: AWS_TIP_MESSAGE,
+  data() {
+    return {
+      isTipDismissed: Cookies.get(AWS_TIP_DISMISSED_COOKIE_NAME) === 'true',
+    };
+  },
   computed: {
     ...mapState([
       'projectId',
@@ -47,7 +67,16 @@ export default {
       'maskableRegex',
       'selectedEnvironment',
       'isProtectedByDefault',
+      'awsLogoSvgPath',
+      'awsTipDeployLink',
+      'awsTipCommandsLink',
+      'awsTipLearnLink',
+      'protectedEnvironmentVariablesLink',
+      'maskedEnvironmentVariablesLink',
     ]),
+    isTipVisible() {
+      return !this.isTipDismissed && AWS_TOKEN_CONSTANTS.includes(this.variableData.key);
+    },
     canSubmit() {
       return (
         this.variableValidationState &&
@@ -126,6 +155,10 @@ export default {
       'setSelectedEnvironment',
       'setVariableProtected',
     ]),
+    dismissTip() {
+      Cookies.set(AWS_TIP_DISMISSED_COOKIE_NAME, 'true', { expires: 90 });
+      this.isTipDismissed = true;
+    },
     deleteVarAndClose() {
       this.deleteVariable(this.variableBeingEdited);
       this.hideModal();
@@ -232,7 +265,7 @@ export default {
       <gl-form-group :label="__('Flags')" label-for="ci-variable-flags">
         <gl-form-checkbox v-model="variableData.protected" class="mb-0">
           {{ __('Protect variable') }}
-          <gl-link href="/help/ci/variables/README#protected-environment-variables">
+          <gl-link target="_blank" :href="protectedEnvironmentVariablesLink">
             <gl-icon name="question" :size="12" />
           </gl-link>
           <p class="gl-mt-2 text-secondary">
@@ -246,7 +279,7 @@ export default {
           data-qa-selector="ci_variable_masked_checkbox"
         >
           {{ __('Mask variable') }}
-          <gl-link href="/help/ci/variables/README#masked-variables">
+          <gl-link target="_blank" :href="maskedEnvironmentVariablesLink">
             <gl-icon name="question" :size="12" />
           </gl-link>
           <p class="gl-mt-2 gl-mb-0 text-secondary">
@@ -258,13 +291,52 @@ export default {
             >
               {{ __('Requires values to meet regular expression requirements.') }}</span
             >
-            <gl-link href="/help/ci/variables/README#masked-variables">{{
+            <gl-link target="_blank" :href="maskedEnvironmentVariablesLink">{{
               __('More information')
             }}</gl-link>
           </p>
         </gl-form-checkbox>
       </gl-form-group>
     </form>
+    <gl-collapse :visible="isTipVisible">
+      <gl-alert
+        :title="__('Deploying to AWS is easy with GitLab')"
+        variant="tip"
+        data-testid="aws-guidance-tip"
+        @dismiss="dismissTip"
+      >
+        <div class="gl-display-flex gl-flex-direction-row">
+          <div>
+            <p>
+              <gl-sprintf :message="$options.awsTipMessage">
+                <template #deployLink="{ content }">
+                  <gl-link :href="awsTipDeployLink" target="_blank">{{ content }}</gl-link>
+                </template>
+                <template #commandsLink="{ content }">
+                  <gl-link :href="awsTipCommandsLink" target="_blank">{{ content }}</gl-link>
+                </template>
+              </gl-sprintf>
+            </p>
+            <p>
+              <gl-button
+                :href="awsTipLearnLink"
+                target="_blank"
+                category="secondary"
+                variant="info"
+                class="gl-overflow-wrap-break"
+                >{{ __('Learn more about deploying to AWS') }}</gl-button
+              >
+            </p>
+          </div>
+          <img
+            class="gl-mt-3"
+            :alt="__('Amazon Web Services Logo')"
+            :src="awsLogoSvgPath"
+            height="32"
+          />
+        </div>
+      </gl-alert>
+    </gl-collapse>
     <template #modal-footer>
       <gl-deprecated-button @click="hideModal">{{ __('Cancel') }}</gl-deprecated-button>
       <gl-deprecated-button

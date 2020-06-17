@@ -18,13 +18,13 @@ module Gitlab
       # When new jobs can be scheduled again, the strategy calls `#delete`.
       class DuplicateJob
         DUPLICATE_KEY_TTL = 6.hours
+        DEFAULT_STRATEGY = :until_executing
 
         attr_reader :existing_jid
 
-        def initialize(job, queue_name, strategy: :until_executing)
+        def initialize(job, queue_name)
           @job = job
           @queue_name = queue_name
-          @strategy = strategy
         end
 
         # This will continue the middleware chain if the job should be scheduled
@@ -41,12 +41,12 @@ module Gitlab
         end
 
         # This method will return the jid that was set in redis
-        def check!
+        def check!(expiry = DUPLICATE_KEY_TTL)
           read_jid = nil
 
           Sidekiq.redis do |redis|
             redis.multi do |multi|
-              redis.set(idempotency_key, jid, ex: DUPLICATE_KEY_TTL, nx: true)
+              redis.set(idempotency_key, jid, ex: expiry, nx: true)
               read_jid = redis.get(idempotency_key)
             end
           end
@@ -60,6 +60,10 @@ module Gitlab
           end
         end
 
+        def scheduled?
+          scheduled_at.present?
+        end
+
         def duplicate?
           raise "Call `#check!` first to check for existing duplicates" unless existing_jid
 
@@ -67,13 +71,35 @@ module Gitlab
         end
 
         def droppable?
-          idempotent? && duplicate? && ::Feature.disabled?("disable_#{queue_name}_deduplication")
+          idempotent? && ::Feature.disabled?("disable_#{queue_name}_deduplication")
+        end
+
+        def scheduled_at
+          job['at']
+        end
+
+        def options
+          return {} unless worker_klass
+          return {} unless worker_klass.respond_to?(:get_deduplication_options)
+
+          worker_klass.get_deduplication_options
         end
 
         private
 
-        attr_reader :queue_name, :strategy, :job
+        attr_reader :queue_name, :job
         attr_writer :existing_jid
+
+        def worker_klass
+          @worker_klass ||= worker_class_name.to_s.safe_constantize
+        end
+
+        def strategy
+          return DEFAULT_STRATEGY unless worker_klass
+          return DEFAULT_STRATEGY unless worker_klass.respond_to?(:idempotent?)
+
+          worker_klass.get_deduplicate_strategy
+        end
 
         def worker_class_name
           job['class']
@@ -104,11 +130,10 @@ module Gitlab
         end
 
         def idempotent?
-          worker_class = worker_class_name.to_s.safe_constantize
-          return false unless worker_class
-          return false unless worker_class.respond_to?(:idempotent?)
+          return false unless worker_klass
+          return false unless worker_klass.respond_to?(:idempotent?)
 
-          worker_class.idempotent?
+          worker_klass.idempotent?
         end
       end
     end

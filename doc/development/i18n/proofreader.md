@@ -42,7 +42,7 @@ are very appreciative of the work done by translators and proofreaders!
 - Estonian
   - Proofreaders needed.
 - Filipino
-  - Proofreaders needed.
+  - Andrei Jiroh Halili - [GitLab](https://gitlab.com/AJHalili2006DevPH), [Crowdin](https://crowdin.com/profile/AndreiJirohHaliliDev2006)
 - French
   - Davy Defaud - [GitLab](https://gitlab.com/DevDef), [CrowdIn](https://crowdin.com/profile/DevDef)
 - Galician

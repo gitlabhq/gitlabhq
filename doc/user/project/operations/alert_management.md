@@ -38,12 +38,14 @@ immediately identify which alerts you should prioritize investigating:
 
 Alerts contain one of the following icons:
 
-- **Critical**: **{severity-critical}** and hexadecimal color `#8b2615`
-- **High**: **{severity-high}** and hexadecimal color `#c0341d`
-- **Medium**: **{severity-medium}** and hexadecimal color `#fca429`
-- **Low**: **{severity-low}** and hexadecimal color `#fdbc60`
-- **Info**: **{severity-info}** and hexadecimal color `#418cd8`
-- **Unknown**: **{severity-unknown}** and hexadecimal color `#bababa`
+| Severity | Icon | Color (hexadecimal) |
+|---|---|---|
+| Critical | **{severity-critical}** | `#8b2615` |
+| High | **{severity-high}** | `#c0341d` |
+| Medium | **{severity-medium}** | `#fca429` |
+| Low | **{severity-low}** | `#fdbc60` |
+| Info | **{severity-info}** | `#418cd8` |
+| Unknown | **{severity-unknown}** | `#bababa` |
 
 ## Alert Management list
 

@@ -329,6 +329,9 @@ msgstr ""
 msgid "%{days} days until tags are automatically removed"
 msgstr ""
 
+msgid "%{deployLinkStart}Use a template to deploy to ECS%{deployLinkEnd}, or use a docker image to %{commandsLinkStart}run AWS commands in GitLab CI/CD%{commandsLinkEnd}."
+msgstr ""
+
 msgid "%{description}- Sentry event: %{errorUrl}- First seen: %{firstSeen}- Last seen: %{lastSeen} %{countLabel}: %{count}%{userCountLabel}: %{userCount}"
 msgstr ""
 
@@ -2174,6 +2177,9 @@ msgid "Amazon EKS integration allows you to provision EKS clusters from GitLab."
 msgstr ""
 
 msgid "Amazon Web Services"
+msgstr ""
+
+msgid "Amazon Web Services Logo"
 msgstr ""
 
 msgid "Amazon authentication is not %{link_start}correctly configured%{link_end}. Ask your GitLab administrator if you want to use this service."
@@ -7570,6 +7576,9 @@ msgid "Deployed to"
 msgstr ""
 
 msgid "Deploying to"
+msgstr ""
+
+msgid "Deploying to AWS is easy with GitLab"
 msgstr ""
 
 msgid "Deployment Frequency"
@@ -13037,6 +13046,9 @@ msgid "Learn more about approvals."
 msgstr ""
 
 msgid "Learn more about custom project templates"
+msgstr ""
+
+msgid "Learn more about deploying to AWS"
 msgstr ""
 
 msgid "Learn more about deploying to a cluster"

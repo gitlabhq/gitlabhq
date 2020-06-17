@@ -119,6 +119,20 @@ module WorkerAttributes
       Array(worker_attributes[:tags])
     end
 
+    def deduplicate(strategy, options = {})
+      worker_attributes[:deduplication_strategy] = strategy
+      worker_attributes[:deduplication_options] = options
+    end
+
+    def get_deduplicate_strategy
+      worker_attributes[:deduplication_strategy] ||
+        Gitlab::SidekiqMiddleware::DuplicateJobs::DuplicateJob::DEFAULT_STRATEGY
+    end
+
+    def get_deduplication_options
+      worker_attributes[:deduplication_options] || {}
+    end
+
     protected
 
     # Returns a worker attribute declared on this class or its parent class.
