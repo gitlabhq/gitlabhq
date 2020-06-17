@@ -7,6 +7,16 @@ GitLab provides Rake tasks relating to project import and export. For more infor
 
 - [Project import/export documentation](../../user/project/settings/import_export.md).
 - [Project import/export API](../../api/project_import_export.md).
+- [Developer documentation: project import/export](../../development/import_export.md)
+
+## Project import status
+
+You can query an import through the [Project import/export API](../../api/project_import_export.md#import-status).
+As described in the API documentation, the query may return an import error or exceptions.
+
+## Import large projects
+
+If you have a larger project, consider using a Rake task, as described in our [developer documentation](../../development/import_project.md#importing-via-a-rake-task).
 
 ## Import/export tasks
 

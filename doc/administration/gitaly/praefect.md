@@ -766,12 +766,8 @@ sudo /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.t
 
 ### Checking repository checksums
 
-To check a project's repository checksums across on all Gitaly nodes, the
-replicas Rake task can be run on the main GitLab node:
-
-```shell
-sudo gitlab-rake "gitlab:praefect:replicas[project_id]"
-```
+To check a project's repository checksums across on all Gitaly nodes, run the
+[replicas Rake task](../raketasks/praefect.md#replica-checksums) on the main GitLab node.
 
 ## Backend Node Recovery
 

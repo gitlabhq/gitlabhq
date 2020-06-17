@@ -162,6 +162,22 @@ NOTE: **Note:**
 The maximum import file size can be set by the Administrator, default is 50MB.
 As an administrator, you can modify the maximum import file size. To do so, use the `max_import_size` option in the [Application settings API](../../../api/settings.md#change-application-settings) or the [Admin UI](../../admin_area/settings/account_and_limit_settings.md).
 
+### Project import status
+
+The status of an import [can be queried via the API](../../../api/project_import_export.md#import-status).
+
+If the import fails, the API returns the error message, and if it completes, the API will return any
+issues which were encountered.
+
+### Project import with a Rake task. **(CORE ONLY)**
+
+Projects can be imported to a self-managed GitLab instance using a Rake task.
+
+The Rake task is often more effective at importing large project exports that don't complete
+when imported using the web interface.
+
+Further details in the [developer documentation](../../../development/import_project.md#importing-via-a-rake-task).
+
 ## Rate limits
 
 To help avoid abuse, users are rate limited to:

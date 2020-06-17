@@ -30,7 +30,7 @@ RSpec.describe 'User activates Jira', :js do
 
       it 'activates the Jira service' do
         expect(page).to have_content('Jira activated.')
-        expect(current_path).to eq(project_settings_integrations_path(project))
+        expect(current_path).to eq(edit_project_service_path(project, :jira))
       end
 
       it 'shows the Jira link in the menu' do
@@ -61,7 +61,7 @@ RSpec.describe 'User activates Jira', :js do
         click_test_then_save_integration
 
         expect(page).to have_content('Jira activated.')
-        expect(current_path).to eq(project_settings_integrations_path(project))
+        expect(current_path).to eq(edit_project_service_path(project, :jira))
       end
     end
   end
@@ -75,7 +75,7 @@ RSpec.describe 'User activates Jira', :js do
 
     it 'saves but does not activate the Jira service' do
       expect(page).to have_content('Jira settings saved, but not activated.')
-      expect(current_path).to eq(project_settings_integrations_path(project))
+      expect(current_path).to eq(edit_project_service_path(project, :jira))
     end
 
     it 'does not show the Jira link in the menu' do

@@ -64,6 +64,18 @@ Each alert contains the following metrics:
 - **Event count** - The number of times that an alert has fired.
 - **Status** - The [current status](#alert-management-statuses) of the alert.
 
+### Alert Management list sorting
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/217745) in GitLab 13.1.
+
+The Alert Management list displays alerts sorted by start time, but you can
+change the sort order by clicking the headers in the Alert Management list.
+
+To see if a column is sortable, point your mouse at the header. Sortable columns
+display an arrow next to the column name, as shown in this example:
+
+![Alert Management List Sorting](img/alert_list_sort_v13_1.png)
+
 ### Alert Management statuses
 
 Each alert contains a status dropdown to indicate which alerts need investigation.

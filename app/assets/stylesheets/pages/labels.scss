@@ -310,7 +310,6 @@
     width: 200px;
     flex-shrink: 0;
 
-    .scoped-label-wrapper,
     .gl-label {
       line-height: $gl-line-height;
     }
@@ -415,70 +414,10 @@
   color: $indigo-300;
 }
 
-.scoped-label-wrapper {
-  max-width: 100%;
-  vertical-align: top;
-
-  .badge {
-    text-overflow: ellipsis;
-    overflow-x: hidden;
-  }
-
-  &.label-link .color-label a {
-    color: inherit;
-  }
-
-  .color-label {
-    padding-right: $gl-padding-24;
-    max-width: 100%;
-  }
-
-  .scoped-label {
-    position: absolute;
-    top: 4px;
-    right: 8px;
-    padding: 0;
-    margin: 0;
-    line-height: $gl-line-height;
-  }
-
-  &.board-label {
-    .scoped-label {
-      top: 1px;
-    }
-  }
-}
-
 .gl-label-scoped {
   box-shadow: 0 0 0 2px currentColor inset;
 
   &.gl-label-sm {
     box-shadow: 0 0 0 1px inset;
-  }
-}
-
-// Label inside title of Delete Label Modal
-.modal-header .page-title {
-  .scoped-label-wrapper {
-    .scoped-label {
-      line-height: 20px;
-    }
-
-    span.color-label {
-      padding-right: $gl-padding-24;
-    }
-  }
-}
-
-// Don't hide the overflow in system messages
-.system-note-message,
-.issuable-details,
-.md-preview-holder,
-.referenced-commands,
-.note-body {
-  .scoped-label-wrapper {
-    .badge {
-      overflow: initial;
-    }
   }
 }

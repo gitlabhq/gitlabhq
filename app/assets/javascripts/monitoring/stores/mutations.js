@@ -126,6 +126,16 @@ export default {
   },
 
   /**
+   * Dashboard Validation Warnings
+   */
+  [types.RECEIVE_DASHBOARD_VALIDATION_WARNINGS_SUCCESS](state, hasDashboardValidationWarnings) {
+    state.hasDashboardValidationWarnings = hasDashboardValidationWarnings;
+  },
+  [types.RECEIVE_DASHBOARD_VALIDATION_WARNINGS_FAILURE](state) {
+    state.hasDashboardValidationWarnings = false;
+  },
+
+  /**
    * Individual panel/metric results
    */
   [types.REQUEST_METRIC_RESULT](state, { metricId }) {

@@ -4,6 +4,9 @@ class Admin::ServicesController < Admin::ApplicationController
   include ServiceParams
 
   before_action :service, only: [:edit, :update]
+  before_action only: :edit do
+    push_frontend_feature_flag(:integration_form_refactor)
+  end
 
   def index
     @services = Service.find_or_create_templates.sort_by(&:title)

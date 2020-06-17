@@ -113,9 +113,6 @@ file to specify which files should be included when cloning and fetching.
 For more details, see the Git documentation for
 [`rev-list-options`](https://gitlab.com/gitlab-org/git/-/blob/9fadedd637b312089337d73c3ed8447e9f0aa775/Documentation/rev-list-options.txt#L735-780).
 
-With the `uploadpack.allowFilter` and `uploadpack.allowAnySHA1InWant` options
-enabled on the Git server:
-
 1. **Create a filter spec.** For example, consider a monolithic repository with
    many applications, each in a different subdirectory in the root. Create a file
    `shiny-app/.filterspec` using the GitLab web interface:

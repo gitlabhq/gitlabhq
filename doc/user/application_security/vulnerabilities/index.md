@@ -30,7 +30,7 @@ several different ways:
 You can switch the status of a vulnerability using the **Status** dropdown to one of
 the following values:
 
-| State     | Description                                                       |
+| Status    | Description                                                       |
 |-----------|-------------------------------------------------------------------|
 | Detected  | The default state for a newly discovered vulnerability            |
 | Confirmed | A user has seen this vulnerability and confirmed it to be real    |

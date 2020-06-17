@@ -31,7 +31,7 @@ RSpec.describe 'Set up Mattermost slash commands', :js do
         click_active_toggle
         click_on 'Save changes'
 
-        expect(current_path).to eq(project_settings_integrations_path(project))
+        expect(current_path).to eq(edit_project_service_path(project, :mattermost_slash_commands))
         expect(page).to have_content('Mattermost slash commands settings saved, but not activated.')
       end
 
@@ -41,7 +41,7 @@ RSpec.describe 'Set up Mattermost slash commands', :js do
         fill_in 'service_token', with: token
         click_on 'Save changes'
 
-        expect(current_path).to eq(project_settings_integrations_path(project))
+        expect(current_path).to eq(edit_project_service_path(project, :mattermost_slash_commands))
         expect(page).to have_content('Mattermost slash commands activated.')
       end
 

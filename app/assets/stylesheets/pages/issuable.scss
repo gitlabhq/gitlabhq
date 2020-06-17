@@ -115,20 +115,6 @@
     font-size: 0;
     margin-bottom: -5px;
   }
-
-  .scoped-label-wrapper {
-    > a {
-      max-width: 100%;
-    }
-
-    .color-label {
-      padding-right: $gl-padding-24;
-    }
-
-    .scoped-label {
-      right: 12px;
-    }
-  }
 }
 
 .assignee {

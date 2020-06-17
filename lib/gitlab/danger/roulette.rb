@@ -5,7 +5,7 @@ require_relative 'teammate'
 module Gitlab
   module Danger
     module Roulette
-      ROULETTE_DATA_URL = 'https://about.gitlab.com/roulette.json'
+      ROULETTE_DATA_URL = 'https://gitlab-org.gitlab.io/gitlab-roulette/roulette.json'
       OPTIONAL_CATEGORIES = [:qa, :test].freeze
 
       Spin = Struct.new(:category, :reviewer, :maintainer, :optional_role)
@@ -90,7 +90,7 @@ module Gitlab
       # @param [Teammate] person
       # @return [Boolean]
       def valid_person?(person)
-        !mr_author?(person) && person.available?
+        !mr_author?(person) && person.available && person.has_capacity
       end
 
       # @param [Teammate] person

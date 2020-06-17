@@ -10,9 +10,7 @@ def get_vue_files_with_ce_and_ee_versions(files)
                            "ee/#{file}"
                          end
 
-      escaped_path = CGI.escape(counterpart_path)
-      api_endpoint = "https://gitlab.com/api/v4/projects/gitlab-org%2Fgitlab-ee/repository/files/#{escaped_path}?ref=master"
-      response = HTTParty.get(api_endpoint) # rubocop:disable Gitlab/HTTParty
+      response = gitlab.api.get_file(gitlab.mr_json['project_id'], counterpart_path, 'master')
       response.code != 404
     else
       false

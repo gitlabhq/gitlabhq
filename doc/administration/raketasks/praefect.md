@@ -1,13 +1,23 @@
-# Praefect Rake Tasks **(CORE ONLY)**
+---
+stage: Create
+group: Gitaly
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+type: reference
+---
+
+# Praefect Rake tasks **(CORE ONLY)**
 
 > [Introduced]( https://gitlab.com/gitlab-org/gitlab/-/merge_requests/28369) in GitLab 12.10.
 
+Rake tasks are available for projects that have been created on Praefect storage. See the
+[Praefect documentation](../gitaly/praefect.md) for information on configuring Praefect.
+
 ## Replica checksums
 
-Prints out checksums of the repository of a given project_id on the primary as well as secondary internal Gitaly nodes.
+`gitlab:praefect:replicas` prints out checksums of the repository of a given `project_id` on:
 
-NOTE: **Note:**
-This only is relevant and works for projects that have been created on a Praefect storage. See the [Praefect Documentation](../gitaly/praefect.md) for configuring Praefect.
+- The primary Gitaly node.
+- Secondary internal Gitaly nodes.
 
 **Omnibus Installation**
 

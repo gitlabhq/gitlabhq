@@ -12,6 +12,7 @@ export default () => ({
   currentDashboard: null,
 
   // Dashboard data
+  hasDashboardValidationWarnings: false,
   emptyState: 'gettingStarted',
   showEmptyState: true,
   showErrorBanner: true,

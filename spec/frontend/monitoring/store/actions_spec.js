@@ -18,6 +18,7 @@ import {
   fetchEnvironmentsData,
   fetchDashboardData,
   fetchAnnotations,
+  fetchDashboardValidationWarnings,
   toggleStarredValue,
   fetchPrometheusMetric,
   setInitialState,
@@ -35,6 +36,7 @@ import {
 } from '~/monitoring/stores/utils';
 import getEnvironments from '~/monitoring/queries/getEnvironments.query.graphql';
 import getAnnotations from '~/monitoring/queries/getAnnotations.query.graphql';
+import getDashboardValidationWarnings from '~/monitoring/queries/getDashboardValidationWarnings.query.graphql';
 import storeState from '~/monitoring/stores/state';
 import {
   deploymentData,
@@ -335,6 +337,106 @@ describe('Monitoring store actions', () => {
     });
   });
 
+  describe('fetchDashboardValidationWarnings', () => {
+    let mockMutate;
+    let mutationVariables;
+
+    beforeEach(() => {
+      state.projectPath = 'gitlab-org/gitlab-test';
+      state.currentEnvironmentName = 'production';
+      state.currentDashboard = '.gitlab/dashboards/dashboard_with_warnings.yml';
+
+      mockMutate = jest.spyOn(gqClient, 'mutate');
+      mutationVariables = {
+        mutation: getDashboardValidationWarnings,
+        variables: {
+          projectPath: state.projectPath,
+          environmentName: state.currentEnvironmentName,
+          dashboardPath: state.currentDashboard,
+        },
+      };
+    });
+
+    it('dispatches receiveDashboardValidationWarningsSuccess with true payload when there are warnings', () => {
+      mockMutate.mockResolvedValue({
+        data: {
+          project: {
+            id: 'gid://gitlab/Project/29',
+            environments: {
+              nodes: [
+                {
+                  name: 'production',
+                  metricsDashboard: {
+                    path: '.gitlab/dashboards/dashboard_errors_test.yml',
+                    schemaValidationWarnings: ["unit: can't be blank"],
+                  },
+                },
+              ],
+            },
+          },
+        },
+      });
+
+      return testAction(
+        fetchDashboardValidationWarnings,
+        null,
+        state,
+        [],
+        [{ type: 'receiveDashboardValidationWarningsSuccess', payload: true }],
+        () => {
+          expect(mockMutate).toHaveBeenCalledWith(mutationVariables);
+        },
+      );
+    });
+
+    it('dispatches receiveDashboardValidationWarningsSuccess with false payload when there are no warnings', () => {
+      mockMutate.mockResolvedValue({
+        data: {
+          project: {
+            id: 'gid://gitlab/Project/29',
+            environments: {
+              nodes: [
+                {
+                  name: 'production',
+                  metricsDashboard: {
+                    path: '.gitlab/dashboards/dashboard_errors_test.yml',
+                    schemaValidationWarnings: [],
+                  },
+                },
+              ],
+            },
+          },
+        },
+      });
+
+      return testAction(
+        fetchDashboardValidationWarnings,
+        null,
+        state,
+        [],
+        [{ type: 'receiveDashboardValidationWarningsSuccess', payload: false }],
+        () => {
+          expect(mockMutate).toHaveBeenCalledWith(mutationVariables);
+        },
+      );
+    });
+
+    it('dispatches receiveDashboardValidationWarningsFailure if the warnings API call fails', () => {
+      mockMutate.mockRejectedValue({});
+
+      return testAction(
+        fetchDashboardValidationWarnings,
+        null,
+        state,
+        [],
+        [{ type: 'receiveDashboardValidationWarningsFailure' }],
+        () => {
+          expect(mockMutate).toHaveBeenCalledWith(mutationVariables);
+        },
+      );
+    });
+  });
+
   describe('Toggles starred value of current dashboard', () => {
     let unstarredDashboard;
     let starredDashboard;
@@ -455,7 +557,7 @@ describe('Monitoring store actions', () => {
       state.dashboardEndpoint = '/dashboard';
     });
 
-    it('on success, dispatches receive and success actions', () => {
+    it('on success, dispatches receive and success actions, then fetches dashboard warnings', () => {
       document.body.dataset.page = 'projects:environments:metrics';
       mock.onGet(state.dashboardEndpoint).reply(200, response);
 
@@ -470,6 +572,7 @@ describe('Monitoring store actions', () => {
             type: 'receiveMetricsDashboardSuccess',
             payload: { response },
           },
+          { type: 'fetchDashboardValidationWarnings' },
         ],
       );
     });

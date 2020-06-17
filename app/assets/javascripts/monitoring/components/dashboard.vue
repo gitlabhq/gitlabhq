@@ -160,6 +160,7 @@ export default {
       'variables',
       'links',
       'currentDashboard',
+      'hasDashboardValidationWarnings',
     ]),
     ...mapGetters('monitoringDashboard', ['selectedDashboard', 'getMetricStates']),
     shouldShowVariablesSection() {
@@ -196,6 +197,19 @@ export default {
     },
     selectedDashboard(dashboard) {
       this.prependToDocumentTitle(dashboard?.display_name);
+    },
+    hasDashboardValidationWarnings(hasWarnings) {
+      /**
+       * This watcher is set for future SPA behaviour of the dashboard
+       */
+      if (hasWarnings) {
+        createFlash(
+          s__(
+            'Metrics|Your dashboard schema is invalid. Edit the dashboard to correct the YAML schema.',
+          ),
+          'warning',
+        );
+      }
     },
   },
   created() {

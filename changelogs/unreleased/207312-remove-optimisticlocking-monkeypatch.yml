@@ -1,0 +1,5 @@
+---
+title: Remove Rails Optimistic Locking monkeypatch
+merge_request: 25566
+author:
+type: fixed

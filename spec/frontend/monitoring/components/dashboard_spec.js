@@ -157,6 +157,34 @@ describe('Dashboard', () => {
     });
   });
 
+  describe('dashboard validation warning', () => {
+    it('displays a warning if there are validation warnings', () => {
+      createMountedWrapper({ hasMetrics: true });
+
+      store.commit(
+        `monitoringDashboard/${types.RECEIVE_DASHBOARD_VALIDATION_WARNINGS_SUCCESS}`,
+        true,
+      );
+
+      return wrapper.vm.$nextTick().then(() => {
+        expect(createFlash).toHaveBeenCalled();
+      });
+    });
+
+    it('does not display a warning if there are no validation warnings', () => {
+      createMountedWrapper({ hasMetrics: true });
+
+      store.commit(
+        `monitoringDashboard/${types.RECEIVE_DASHBOARD_VALIDATION_WARNINGS_SUCCESS}`,
+        false,
+      );
+
+      return wrapper.vm.$nextTick().then(() => {
+        expect(createFlash).not.toHaveBeenCalled();
+      });
+    });
+  });
+
   describe('when the URL contains a reference to a panel', () => {
     let location;
 

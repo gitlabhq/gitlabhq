@@ -30,7 +30,7 @@ RSpec.describe 'User activates issue tracker', :js do
 
         it 'activates the service' do
           expect(page).to have_content("#{tracker} activated.")
-          expect(current_path).to eq(project_settings_integrations_path(project))
+          expect(current_path).to eq(edit_project_service_path(project, tracker.parameterize(separator: '_')))
         end
 
         it 'shows the link in the menu' do
@@ -50,7 +50,7 @@ RSpec.describe 'User activates issue tracker', :js do
           click_test_then_save_integration
 
           expect(page).to have_content("#{tracker} activated.")
-          expect(current_path).to eq(project_settings_integrations_path(project))
+          expect(current_path).to eq(edit_project_service_path(project, tracker.parameterize(separator: '_')))
         end
       end
     end
@@ -65,7 +65,7 @@ RSpec.describe 'User activates issue tracker', :js do
 
       it 'saves but does not activate the service' do
         expect(page).to have_content("#{tracker} settings saved, but not activated.")
-        expect(current_path).to eq(project_settings_integrations_path(project))
+        expect(current_path).to eq(edit_project_service_path(project, tracker.parameterize(separator: '_')))
       end
 
       it 'does not show the external tracker link in the menu' do

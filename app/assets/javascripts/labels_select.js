@@ -497,7 +497,7 @@ export default class LabelsSelect {
 
     const scopedLabelTemplate = template(
       [
-        '<span class="gl-label gl-label-scoped" style="color: <%= escapeStr(label.color) %>;">',
+        '<span class="gl-label gl-label-scoped" style="color: <%= escapeStr(label.color) %>; --label-inset-border: inset 0 0 0 2px <%= escapeStr(label.color) %>;">',
         linkOpenTag,
         spanOpenTag,
         '<%- label.title.slice(0, label.title.lastIndexOf("::")) %>',
@@ -526,9 +526,7 @@ export default class LabelsSelect {
       [
         '<% labels.forEach(function(label){ %>',
         '<% if (isScopedLabel(label) && enableScopedLabels) { %>',
-        '<span class="d-inline-block position-relative scoped-label-wrapper">',
         '<%= scopedLabelTemplate({ label, issueUpdateURL, isScopedLabel, enableScopedLabels, rightLabelTextColor, tooltipTitleTemplate, escapeStr, linkAttrs: \'data-html="true"\' }) %>',
-        '</span>',
         '<% } else { %>',
         '<%= labelTemplate({ label, issueUpdateURL, isScopedLabel, enableScopedLabels, tooltipTitleTemplate, escapeStr, linkAttrs: "" }) %>',
         '<% } %>',

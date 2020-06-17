@@ -137,7 +137,7 @@ RSpec.describe Projects::ServicesController do
       let(:params)         { project_params(service: service_params) }
 
       let(:message) { 'Jira activated.' }
-      let(:redirect_url) { project_settings_integrations_path(project) }
+      let(:redirect_url) { edit_project_service_path(project, service) }
 
       before do
         put :update, params: params

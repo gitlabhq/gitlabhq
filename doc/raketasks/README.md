@@ -28,9 +28,10 @@ The following are available Rake tasks:
 | [Import repositories](import.md)                                                                    | Import bare repositories into your GitLab instance.                                       |
 | [Import large project exports](../development/import_project.md#importing-via-a-rake-task)          | Import large GitLab [project exports](../user/project/settings/import_export.md).         |
 | [Integrity checks](../administration/raketasks/check.md)                                            | Check the integrity of repositories, files, and LDAP.                                     |
-| [LDAP maintenance](../administration/raketasks/ldap.md)                                    | [LDAP](../administration/auth/ldap/index.md)-related tasks.                                     |
+| [LDAP maintenance](../administration/raketasks/ldap.md)                                             | [LDAP](../administration/auth/ldap/index.md)-related tasks.                               |
 | [List repositories](list_repos.md)                                                                  | List of all GitLab-managed Git repositories on disk.                                      |
 | [Migrate Snippets to Git](migrate_snippets.md)                                                      | Migrate GitLab Snippets to Git repositories and show migration status                     |
+| [Praefect Rake tasks](../administration/raketasks/praefect.md)                                      | [Praefect](../administration/gitaly/praefect.md)-related tasks.                           |
 | [Project import/export](../administration/raketasks/project_import_export.md)                       | Prepare for [project exports and imports](../user/project/settings/import_export.md).     |
 | [Sample Prometheus data](generate_sample_prometheus_data.md)                                        | Generate sample Prometheus data.                                                          |
 | [Repository storage](../administration/raketasks/storage.md)                                        | List and migrate existing projects and attachments from legacy storage to hashed storage. |

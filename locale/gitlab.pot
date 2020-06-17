@@ -6783,6 +6783,9 @@ msgstr ""
 msgid "CurrentUser|Buy Pipeline minutes"
 msgstr ""
 
+msgid "CurrentUser|One of your groups is running out"
+msgstr ""
+
 msgid "CurrentUser|Profile"
 msgstr ""
 
@@ -14218,6 +14221,9 @@ msgstr ""
 msgid "Metrics|There was an error getting annotations information."
 msgstr ""
 
+msgid "Metrics|There was an error getting dashboard validation warnings information."
+msgstr ""
+
 msgid "Metrics|There was an error getting deployment information."
 msgstr ""
 
@@ -14264,6 +14270,9 @@ msgid "Metrics|You can save a copy of this dashboard to your repository so it ca
 msgstr ""
 
 msgid "Metrics|You're about to permanently delete this metric. This cannot be undone."
+msgstr ""
+
+msgid "Metrics|Your dashboard schema is invalid. Edit the dashboard to correct the YAML schema."
 msgstr ""
 
 msgid "Metrics|e.g. HTTP requests"
