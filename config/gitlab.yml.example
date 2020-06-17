@@ -205,6 +205,34 @@ production: &base
     # Whether to expunge (permanently remove) messages from the mailbox when they are deleted after delivery
     expunge_deleted: false
 
+  ## Consolidated object store config
+  ## This will only take effect if the object_store sections are not defined
+  ## within the types (e.g. artifacts, lfs, etc.).
+  # object_store:
+  #   enabled: false
+  #   remote_directory: artifacts # The bucket name
+  #   proxy_download: false # Passthrough all downloads via GitLab instead of using Redirects to Object Storage
+  #   connection:
+  #     provider: AWS # Only AWS supported at the moment
+  #     aws_access_key_id: AWS_ACCESS_KEY_ID
+  #     aws_secret_access_key: AWS_SECRET_ACCESS_KEY
+  #     region: us-east-1
+  #     aws_signature_version: 4 # For creation of signed URLs. Set to 2 if provider does not support v4.
+  #     endpoint: 'https://s3.amazonaws.com' # default: nil - Useful for S3 compliant services such as DigitalOcean Spaces
+  #   objects:
+  #     artifacts:
+  #       bucket: artifacts
+  #     external_diffs:
+  #       bucket: external-diffs
+  #     lfs:
+  #       bucket: lfs-objects
+  #     uploads:
+  #       bucket: uploads
+  #     packages:
+  #       bucket: packages
+  #     dependency_proxy:
+  #       bucket: dependency_proxy
+
   ## Build Artifacts
   artifacts:
     enabled: true

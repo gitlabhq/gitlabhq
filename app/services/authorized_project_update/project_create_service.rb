@@ -21,7 +21,7 @@ module AuthorizedProjectUpdate
           { user_id: member.user_id, project_id: project.id, access_level: member.access_level }
         end
 
-        ProjectAuthorization.insert_all(attributes)
+        ProjectAuthorization.insert_all(attributes) unless attributes.empty?
       end
 
       ServiceResponse.success

@@ -218,7 +218,7 @@ export default {
         <gl-chart-series-label :color="content.color">
           {{ content.name }}
         </gl-chart-series-label>
-        <div class="prepend-left-32">
+        <div class="gl-ml-7">
           {{ yValueFormatted(seriesIndex, content.dataIndex) }}
         </div>
       </div>

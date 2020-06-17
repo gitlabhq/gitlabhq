@@ -56,6 +56,7 @@ export default {
       blob: {},
       fileName: '',
       content: '',
+      originalContent: '',
       isContentLoading: true,
       isUpdating: false,
       newSnippet: false,
@@ -97,7 +98,24 @@ export default {
       return `${this.isProjectSnippet ? 'project' : 'personal'}_snippet_description`;
     },
   },
+  created() {
+    window.addEventListener('beforeunload', this.onBeforeUnload);
+  },
+  destroyed() {
+    window.removeEventListener('beforeunload', this.onBeforeUnload);
+  },
   methods: {
+    onBeforeUnload(e = {}) {
+      const returnValue = __('Are you sure you want to lose unsaved changes?');
+
+      if (!this.hasChanges()) return undefined;
+
+      Object.assign(e, { returnValue });
+      return returnValue;
+    },
+    hasChanges() {
+      return this.content !== this.originalContent;
+    },
     updateFileName(newName) {
       this.fileName = newName;
     },
@@ -125,7 +143,9 @@ export default {
       axios
         .get(url)
         .then(res => {
+          this.originalContent = res.data;
           this.content = res.data;
+
           this.isContentLoading = false;
         })
         .catch(e => this.flashAPIFailure(e));
@@ -172,6 +192,7 @@ export default {
           if (errors.length) {
             this.flashAPIFailure(errors[0]);
           } else {
+            this.originalContent = this.content;
             redirectTo(baseObj.snippet.webUrl);
           }
         })

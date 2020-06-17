@@ -1,0 +1,5 @@
+---
+title: Trigger unsaved changes warning in snippets on navigating away
+merge_request: 34640
+author:
+type: added

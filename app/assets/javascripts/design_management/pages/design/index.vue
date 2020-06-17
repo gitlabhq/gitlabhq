@@ -254,6 +254,9 @@ export default {
     },
     openCommentForm(annotationCoordinates) {
       this.annotationCoordinates = annotationCoordinates;
+      if (this.$refs.newDiscussionForm) {
+        this.$refs.newDiscussionForm.focusInput();
+      }
     },
     closeCommentForm() {
       this.comment = '';
@@ -361,6 +364,7 @@ export default {
             @error="onCreateImageDiffNoteError"
           >
             <design-reply-form
+              ref="newDiscussionForm"
               v-model="comment"
               :is-saving="loading"
               :markdown-preview-path="markdownPreviewPath"

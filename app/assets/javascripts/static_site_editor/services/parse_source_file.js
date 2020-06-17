@@ -24,7 +24,7 @@ const parseSourceFile = raw => {
 
   const computedRaw = () => `${editable.header}${editable.spacing}${editable.body}`;
 
-  const syncBody = () => {
+  const syncRawToBody = () => {
     /*
     We re-parse as markdown editing could have added non-body changes (preFrontMatter, frontMatter, or spacing).
     Re-parsing additionally gets us the desired body that was extracted from the mutated editable.raw
@@ -33,7 +33,7 @@ const parseSourceFile = raw => {
     Object.assign(editable, parse(editable.raw));
   };
 
-  const syncRaw = () => {
+  const syncBodyToRaw = () => {
     editable.raw = computedRaw();
   };
 
@@ -47,8 +47,8 @@ const parseSourceFile = raw => {
     editable,
     isModifiedRaw,
     isModifiedBody,
-    syncRaw,
-    syncBody,
+    syncBodyToRaw,
+    syncRawToBody,
   };
 };
 

@@ -167,11 +167,7 @@ class Snippet < ApplicationRecord
   end
 
   def self.find_by_id_and_project(id:, project:)
-    if project.is_a?(Project)
-      ProjectSnippet.find_by(id: id, project: project)
-    elsif project.nil?
-      PersonalSnippet.find_by(id: id)
-    end
+    Snippet.find_by(id: id, project: project)
   end
 
   def self.max_file_limit(user)

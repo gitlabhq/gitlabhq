@@ -495,8 +495,10 @@ by calling the method `disable_ddl_transaction!` in the body of your migration
 class like so:
 
 ```ruby
-class MyMigration < ActiveRecord::Migration[4.2]
+class MyMigration < ActiveRecord::Migration[6.0]
   include Gitlab::Database::MigrationHelpers
+
+  DOWNTIME = false
 
   disable_ddl_transaction!
 

@@ -11,6 +11,14 @@
   :weight: 1
   :idempotent: true
   :tags: []
+- :name: authorized_project_update:authorized_project_update_project_group_link_create
+  :feature_category: :authentication_and_authorization
+  :has_external_dependencies: 
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: authorized_project_update:authorized_project_update_user_refresh_with_low_urgency
   :feature_category: :authentication_and_authorization
   :has_external_dependencies: 

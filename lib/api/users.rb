@@ -730,9 +730,9 @@ module API
         optional :expires_at, type: DateTime, desc: 'The expiration date of the SSH key in ISO 8601 format (YYYY-MM-DDTHH:MM:SSZ)'
       end
       post "keys" do
-        key = current_user.keys.new(declared_params)
+        key = ::Keys::CreateService.new(current_user, declared_params(include_missing: false)).execute
 
-        if key.save
+        if key.persisted?
           present key, with: Entities::SSHKey
         else
           render_validation_error!(key)

@@ -478,6 +478,7 @@ CREATE TABLE public.application_settings (
     repository_storages_weighted jsonb DEFAULT '{}'::jsonb NOT NULL,
     max_import_size integer DEFAULT 50 NOT NULL,
     enforce_pat_expiration boolean DEFAULT true NOT NULL,
+    compliance_frameworks smallint[] DEFAULT '{}'::smallint[] NOT NULL,
     CONSTRAINT check_d03919528d CHECK ((char_length(container_registry_vendor) <= 255)),
     CONSTRAINT check_d820146492 CHECK ((char_length(spam_check_endpoint_url) <= 255)),
     CONSTRAINT check_e5aba18f02 CHECK ((char_length(container_registry_version) <= 255))
@@ -13994,6 +13995,7 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200609142507
 20200609142508
 20200609212701
+20200613104045
 20200615083635
 20200615121217
 20200615123055

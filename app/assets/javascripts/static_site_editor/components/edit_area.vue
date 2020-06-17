@@ -58,15 +58,16 @@ export default {
   methods: {
     syncSource() {
       if (this.isWysiwygMode) {
-        this.parsedSource.syncBody();
+        this.parsedSource.syncBodyToRaw();
         return;
       }
 
-      this.parsedSource.syncRaw();
+      this.parsedSource.syncRawToBody();
     },
     onModeChange(mode) {
-      this.editorMode = mode;
+      // Sequentially sync then switch modes (rich-content-editor's v-model computed source content update)
       this.syncSource();
+      this.editorMode = mode;
     },
     onSubmit() {
       this.syncSource();

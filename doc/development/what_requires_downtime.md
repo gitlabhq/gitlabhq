@@ -317,30 +317,11 @@ migrations](background_migrations.md#cleaning-up).
 
 ## Adding Indexes
 
-Adding indexes is an expensive process that blocks INSERT and UPDATE queries for
-the duration. You can work around this by using the `CONCURRENTLY` option:
+Adding indexes does not require downtime when `add_concurrent_index`
+is used.
 
-```sql
-CREATE INDEX CONCURRENTLY index_name ON projects (column_name);
-```
-
-Migrations can take advantage of this by using the method
-`add_concurrent_index`. For example:
-
-```ruby
-class MyMigration < ActiveRecord::Migration[4.2]
-  def up
-    add_concurrent_index :projects, :column_name
-  end
-
-  def down
-    remove_index(:projects, :column_name) if index_exists?(:projects, :column_name)
-  end
-end
-```
-
-Note that `add_concurrent_index` can not be reversed automatically, thus you
-need to manually define `up` and `down`.
+See also [Migration Style Guide](migration_style_guide.md#adding-indexes)
+for more information.
 
 ## Dropping Indexes
 

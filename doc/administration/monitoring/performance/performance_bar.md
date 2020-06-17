@@ -6,71 +6,82 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Performance Bar
 
-A Performance Bar can be displayed, to dig into the performance of a page. When
-activated, it looks as follows:
+You can display the GitLab Performance Bar to see statistics for the performance
+of a page. When activated, it looks as follows:
 
 ![Performance Bar](img/performance_bar.png)
 
-It allows you to see (from left to right):
+From left to right, it displays:
 
-- the current host serving the page
-- time taken and number of DB queries; click through for details of these queries
+- **Current Host**: the current host serving the page.
+- **Database queries**: the time taken (in milliseconds) and the total number
+  of database queries, displayed in the format `00ms / 00pg`. Click to display
+  a modal window with more details:
   ![SQL profiling using the Performance Bar](img/performance_bar_sql_queries.png)
-- time taken and number of [Gitaly](../../gitaly/index.md) calls; click through for details of these calls
+- **Gitaly calls**: the time taken (in milliseconds) and the total number of
+  [Gitaly](../../gitaly/index.md) calls. Click to display a modal window with more
+  details:
   ![Gitaly profiling using the Performance Bar](img/performance_bar_gitaly_calls.png)
-- time taken and number of [Rugged](../../high_availability/nfs.md#improving-nfs-performance-with-gitlab) calls; click through for details of these calls
+- **Rugged calls**: the time taken (in milliseconds) and the total number of
+  [Rugged](../../high_availability/nfs.md#improving-nfs-performance-with-gitlab) calls.
+  Click to display a modal window with more details:
   ![Rugged profiling using the Performance Bar](img/performance_bar_rugged_calls.png)
-- time taken and number of Redis calls; click through for details of these calls
+- **Redis calls**: the time taken (in milliseconds) and the total number of
+  Redis calls. Click to display a modal window with more details:
   ![Redis profiling using the Performance Bar](img/performance_bar_redis_calls.png)
-- total load timings of the page; click through for details of these calls. Values in the following order:
-  - Backend - Time that the actual base page took to load
-  - [First Contentful Paint](hhttps://web.dev/first-contentful-paint/) - Time until something was visible to the user
-  - [DomContentLoaded](https://developers.google.com/web/fundamentals/performance/critical-rendering-path/measure-crp) Event
-  - Number of Requests that the page loaded
-  ![Frontend requests using the Performance Bar](img/performance_bar_frontend.png)
-- a link to add a request's details to the performance bar; the request can be
-  added by its full URL (authenticated as the current user), or by the value of
-  its `X-Request-Id` header
-- a link to download the raw JSON used to generate the Performance Bar reports
-
-On the far right is a request selector that allows you to view the same metrics
-(excluding the page timing and line profiler) for any requests made while the
-page was open. Only the first two requests per unique URL are captured.
+- **Elasticsearch calls**: the time taken (in milliseconds) and the total number of
+  Elasticsearch calls. Click to display a modal window with more details.
+- **Load timings** of the page: several values in milliseconds, separated by slashes.
+  Click to display a modal window with more details. The values, from left to right:
+  - **Backend**: time needed for the base page to load.
+  - [**First Contentful Paint**](https://web.dev/first-contentful-paint/):
+    Time until something was visible to the user.
+  - [**DomContentLoaded**](https://developers.google.com/web/fundamentals/performance/critical-rendering-path/measure-crp) Event.
+  - **Total number of requests** the page loaded:
+    ![Frontend requests using the Performance Bar](img/performance_bar_frontend.png)
+- **Trace**: If Jaeger is integrated, **Trace** links to a Jaeger tracing page
+  with the current request's `correlation_id` included.
+- **+**: A link to add a request's details to the performance bar. The request
+  can be added by its full URL (authenticated as the current user), or by the value of
+  its `X-Request-Id` header.
+- **Download**: a link to download the raw JSON used to generate the Performance Bar reports.
+- **Request Selector**: a select box displayed on the right-hand side of the
+  Performance Bar which enables you to view these metrics for any requests made while
+  the current page was open. Only the first two requests per unique URL are captured.
 
 ## Request warnings
 
-For requests exceeding predefined limits, a warning icon will be shown
-next to the failing metric, along with an explanation. In this example,
-the Gitaly call duration exceeded the threshold:
+Requests exceeding predefined limits display a warning **{warning}** icon and
+explanation next to the failing metric. In this example, the Gitaly call duration
+exceeded the threshold:
 
 ![Gitaly call duration exceeded threshold](img/performance_bar_gitaly_threshold.png)
 
-If any requests on the current page generated warnings, the icon will
-appear next to the request selector:
+If any requests on the current page generated warnings, the warning icon displays
+next to the **Request selector**:
 
 ![Request selector showing two requests with warnings](img/performance_bar_request_selector_warning.png)
 
-And requests with warnings are indicated in the request selector with a
-`(!)` after their path:
+Requests with warnings display `(!)` after their path in the **Request selector**:
 
 ![Request selector showing dropdown](img/performance_bar_request_selector_warning_expanded.png)
 
 ## Enable the Performance Bar via the Admin panel
 
-GitLab Performance Bar is disabled by default. To enable it for a given group,
-navigate to **Admin Area > Settings > Metrics and profiling**
-(`admin/application_settings/metrics_and_profiling`), and expand the section
-**Profiling - Performance bar**.
+The GitLab Performance Bar is disabled by default. To enable it for a given group:
 
-The only required setting you need to set is the full path of the group that
-will be allowed to display the Performance Bar.
-Make sure _Enable the Performance Bar_ is checked and hit
-**Save** to save the changes.
+1. Sign in as a user with Administrator [permissions](../../../user/permissions.md).
+1. In the menu bar, click the **{admin}** **Admin Area** icon.
+1. Navigate to **{settings}** **Settings > Metrics and profiling**
+   (`admin/application_settings/metrics_and_profiling`), and expand the section
+   **Profiling - Performance bar**.
+1. Click **Enable access to the Performance Bar**.
+1. In the **Allowed group** field, provide the full path of the group allowed
+   to access the GitLab Performance Bar.
+1. Click **Save changes**.
 
-Once the Performance Bar is enabled, you will need to press the [<kbd>p</kbd> +
-<kbd>b</kbd> keyboard shortcut](../../../user/shortcuts.md) to actually
-display it.
+## Keyboard shortcut for the Performance Bar
 
-You can toggle the Bar using the same shortcut.
-
-![GitLab Performance Bar Admin Settings](img/performance_bar_configuration_settings.png)
+After enabling the GitLab Performance Bar, press the [<kbd>p</kbd> +
+<kbd>b</kbd> keyboard shortcut](../../../user/shortcuts.md) to display it, and
+again to hide it.

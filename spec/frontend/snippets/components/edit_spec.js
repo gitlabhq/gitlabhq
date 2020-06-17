@@ -307,6 +307,16 @@ describe('Snippet Edit app', () => {
         });
       });
 
+      it('makes sure there are no unsaved changes in the snippet', () => {
+        createComponent();
+        clickSubmitBtn();
+
+        return waitForPromises().then(() => {
+          expect(wrapper.vm.originalContent).toBe(wrapper.vm.content);
+          expect(wrapper.vm.hasChanges()).toBe(false);
+        });
+      });
+
       it.each`
         newSnippet | projectPath           | mutationName
         ${true}    | ${rawProjectPathMock} | ${'CreateSnippetMutation with projectPath'}
@@ -417,6 +427,34 @@ describe('Snippet Edit app', () => {
 
         clickSubmitBtn();
         expect(resolveMutate).toHaveBeenCalledWith(updateMutationPayload());
+      });
+    });
+
+    describe('on before unload', () => {
+      let event;
+      let returnValueSetter;
+
+      beforeEach(() => {
+        createComponent();
+
+        event = new Event('beforeunload');
+        returnValueSetter = jest.spyOn(event, 'returnValue', 'set');
+      });
+
+      it('does not prevent page navigation if there are no changes to the snippet content', () => {
+        window.dispatchEvent(event);
+
+        expect(returnValueSetter).not.toHaveBeenCalled();
+      });
+
+      it('prevents page navigation if there are some changes in the snippet content', () => {
+        wrapper.setData({ content: 'new content' });
+
+        window.dispatchEvent(event);
+
+        expect(returnValueSetter).toHaveBeenCalledWith(
+          'Are you sure you want to lose unsaved changes?',
+        );
       });
     });
   });

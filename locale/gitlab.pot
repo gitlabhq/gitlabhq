@@ -5844,6 +5844,9 @@ msgstr ""
 msgid "Compliance framework (optional)"
 msgstr ""
 
+msgid "Compliance frameworks"
+msgstr ""
+
 msgid "ComplianceFramework|GDPR"
 msgstr ""
 
@@ -18474,6 +18477,9 @@ msgstr ""
 msgid "Registration|Your profile"
 msgstr ""
 
+msgid "Regulate approvals by authors/committers, based on compliance frameworks. Can be changed only at the instance level."
+msgstr ""
+
 msgid "Rejected (closed)"
 msgstr ""
 
@@ -22218,6 +22224,9 @@ msgid "The URL to use for connecting to Elasticsearch. Use a comma-separated lis
 msgstr ""
 
 msgid "The X509 Certificate to use when mutual TLS is required to communicate with the external authorization service. If left blank, the server certificate is still validated when accessing over HTTPS."
+msgstr ""
+
+msgid "The above settings apply to all projects with the selected compliance framework(s)."
 msgstr ""
 
 msgid "The amount of seconds after which a request to get a secondary node status will time out."
@@ -27384,6 +27393,9 @@ msgid "mrWidget|to start a merge train when the pipeline succeeds"
 msgstr ""
 
 msgid "must be greater than start date"
+msgstr ""
+
+msgid "must contain only valid frameworks"
 msgstr ""
 
 msgid "my-awesome-group"

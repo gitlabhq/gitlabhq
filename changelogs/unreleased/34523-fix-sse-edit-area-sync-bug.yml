@@ -1,0 +1,5 @@
+---
+title: Fix static site editor raw (has front matter) <-> body (lacks front matter) content changes sync
+merge_request: 34523
+author:
+type: fixed

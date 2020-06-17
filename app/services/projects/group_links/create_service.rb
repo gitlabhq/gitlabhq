@@ -13,10 +13,30 @@ module Projects
         )
 
         if link.save
-          group.refresh_members_authorized_projects
+          setup_authorizations(group)
           success(link: link)
         else
           error(link.errors.full_messages.to_sentence, 409)
+        end
+      end
+
+      private
+
+      def setup_authorizations(group)
+        if Feature.enabled?(:specialized_project_authorization_project_share_worker)
+          AuthorizedProjectUpdate::ProjectGroupLinkCreateWorker.perform_async(project.id, group.id)
+
+          # AuthorizedProjectsWorker uses an exclusive lease per user but
+          # specialized workers might have synchronization issues. Until we
+          # compare the inconsistency rates of both approaches, we still run
+          # AuthorizedProjectsWorker but with some delay and lower urgency as a
+          # safety net.
+          group.refresh_members_authorized_projects(
+            blocking: false,
+            priority: UserProjectAccessChangedService::LOW_PRIORITY
+          )
+        else
+          group.refresh_members_authorized_projects(blocking: false)
         end
       end
     end

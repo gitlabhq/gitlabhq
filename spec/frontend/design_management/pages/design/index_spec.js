@@ -5,7 +5,7 @@ import { ApolloMutation } from 'vue-apollo';
 import createFlash from '~/flash';
 import DesignIndex from '~/design_management/pages/design/index.vue';
 import DesignSidebar from '~/design_management/components/design_sidebar.vue';
-import DesignReplyForm from '~/design_management/components/design_notes/design_reply_form.vue';
+import DesignPresentation from '~/design_management/components/design_presentation.vue';
 import createImageDiffNoteMutation from '~/design_management/graphql/mutations/createImageDiffNote.mutation.graphql';
 import design from '../../mock_data/design';
 import mockResponseWithDesigns from '../../mock_data/designs';
@@ -25,6 +25,15 @@ jest.mock('mousetrap', () => ({
   bind: jest.fn(),
   unbind: jest.fn(),
 }));
+
+const focusInput = jest.fn();
+
+const DesignReplyForm = {
+  template: '<div><textarea ref="textarea"></textarea></div>',
+  methods: {
+    focusInput,
+  },
+};
 
 const localVue = createLocalVue();
 localVue.use(VueRouter);
@@ -64,6 +73,7 @@ describe('Design management design index page', () => {
 
   const findDiscussionForm = () => wrapper.find(DesignReplyForm);
   const findSidebar = () => wrapper.find(DesignSidebar);
+  const findDesignPresentation = () => wrapper.find(DesignPresentation);
 
   function createComponent(loading = false, data = {}) {
     const $apollo = {
@@ -83,6 +93,7 @@ describe('Design management design index page', () => {
       stubs: {
         ApolloMutation,
         DesignSidebar,
+        DesignReplyForm,
       },
       data() {
         return {
@@ -153,11 +164,27 @@ describe('Design management design index page', () => {
       },
     });
 
-    wrapper.vm.openCommentForm({ x: 0, y: 0 });
+    findDesignPresentation().vm.$emit('openCommentForm', { x: 0, y: 0 });
 
     return wrapper.vm.$nextTick().then(() => {
       expect(findDiscussionForm().exists()).toBe(true);
     });
+  });
+
+  it('keeps new discussion form focused', () => {
+    createComponent(false, {
+      design: {
+        ...design,
+        discussions: {
+          nodes: [],
+        },
+      },
+      annotationCoordinates,
+    });
+
+    findDesignPresentation().vm.$emit('openCommentForm', { x: 10, y: 10 });
+
+    expect(focusInput).toHaveBeenCalled();
   });
 
   it('sends a mutation on submitting form and closes form', () => {

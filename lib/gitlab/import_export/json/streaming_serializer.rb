@@ -7,7 +7,7 @@ module Gitlab
         include Gitlab::ImportExport::CommandLineUtil
 
         BATCH_SIZE = 100
-        SMALLER_BATCH_SIZE = 20
+        SMALLER_BATCH_SIZE = 2
 
         def self.batch_size(exportable)
           if Feature.enabled?(:export_reduce_relation_batch_size, exportable)

@@ -48,11 +48,11 @@ describe('parseSourceFile', () => {
     });
 
     it.each`
-      sourceContent     | editableKey | syncKey       | isModifiedKey       | desc
-      ${contentSimple}  | ${'body'}   | ${'syncRaw'}  | ${'isModifiedRaw'}  | ${'returns true after modification and sync'}
-      ${contentSimple}  | ${'raw'}    | ${'syncBody'} | ${'isModifiedBody'} | ${'returns true after modification and sync'}
-      ${contentComplex} | ${'body'}   | ${'syncRaw'}  | ${'isModifiedRaw'}  | ${'returns true after modification and sync'}
-      ${contentComplex} | ${'raw'}    | ${'syncBody'} | ${'isModifiedBody'} | ${'returns true after modification and sync'}
+      sourceContent     | editableKey | syncKey            | isModifiedKey       | desc
+      ${contentSimple}  | ${'body'}   | ${'syncBodyToRaw'} | ${'isModifiedRaw'}  | ${'returns true after modification and sync'}
+      ${contentSimple}  | ${'raw'}    | ${'syncRawToBody'} | ${'isModifiedBody'} | ${'returns true after modification and sync'}
+      ${contentComplex} | ${'body'}   | ${'syncBodyToRaw'} | ${'isModifiedRaw'}  | ${'returns true after modification and sync'}
+      ${contentComplex} | ${'raw'}    | ${'syncRawToBody'} | ${'isModifiedBody'} | ${'returns true after modification and sync'}
     `('$desc', ({ sourceContent, editableKey, syncKey, isModifiedKey }) => {
       const parsedSource = parseSourceFile(sourceContent);
       parsedSource.editable[editableKey] += 'Added content';

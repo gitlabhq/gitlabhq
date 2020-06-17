@@ -2133,7 +2133,7 @@ describe API::Projects do
       expect(json_response['expires_at']).to eq(expires_at.to_s)
     end
 
-    it 'updates project authorization' do
+    it 'updates project authorization', :sidekiq_inline do
       expect do
         post api("/projects/#{project.id}/share", user), params: { group_id: group.id, group_access: Gitlab::Access::DEVELOPER }
       end.to(

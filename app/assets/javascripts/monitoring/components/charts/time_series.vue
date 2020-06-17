@@ -415,7 +415,7 @@ export default {
             <gl-chart-series-label :color="isMultiSeries ? content.color : ''">
               {{ content.name }}
             </gl-chart-series-label>
-            <div class="prepend-left-32">
+            <div class="gl-ml-7">
               {{ content.value }}
             </div>
           </div>

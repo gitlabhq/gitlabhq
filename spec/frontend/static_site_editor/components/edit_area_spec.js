@@ -1,6 +1,7 @@
 import { shallowMount } from '@vue/test-utils';
 
 import RichContentEditor from '~/vue_shared/components/rich_content_editor/rich_content_editor.vue';
+import { EDITOR_TYPES } from '~/vue_shared/components/rich_content_editor/constants';
 
 import EditArea from '~/static_site_editor/components/edit_area.vue';
 import PublishToolbar from '~/static_site_editor/components/publish_toolbar.vue';
@@ -90,5 +91,48 @@ describe('~/static_site_editor/components/edit_area.vue', () => {
         expect(findPublishToolbar().props('saveable')).toBe(false);
       });
     });
+  });
+
+  describe('when the mode changes', () => {
+    const setInitialMode = mode => {
+      wrapper.setData({ editorMode: mode });
+    };
+
+    afterEach(() => {
+      setInitialMode(EDITOR_TYPES.wysiwyg);
+    });
+
+    it.each`
+      initialMode              | targetMode
+      ${EDITOR_TYPES.wysiwyg}  | ${EDITOR_TYPES.markdown}
+      ${EDITOR_TYPES.markdown} | ${EDITOR_TYPES.wysiwyg}
+    `('sets editorMode from $initialMode to $targetMode', ({ initialMode, targetMode }) => {
+      setInitialMode(initialMode);
+      findRichContentEditor().vm.$emit('modeChange', targetMode);
+
+      expect(wrapper.vm.editorMode).toBe(targetMode);
+    });
+
+    it.each`
+      syncFnName         | initialMode              | targetMode
+      ${'syncBodyToRaw'} | ${EDITOR_TYPES.wysiwyg}  | ${EDITOR_TYPES.markdown}
+      ${'syncRawToBody'} | ${EDITOR_TYPES.markdown} | ${EDITOR_TYPES.wysiwyg}
+    `(
+      'calls $syncFnName source before switching from $initialMode to $targetMode',
+      ({ syncFnName, initialMode, targetMode }) => {
+        setInitialMode(initialMode);
+
+        const spySyncSource = jest.spyOn(wrapper.vm, 'syncSource');
+        const spySyncParsedSource = jest.spyOn(wrapper.vm.parsedSource, syncFnName);
+
+        findRichContentEditor().vm.$emit('modeChange', targetMode);
+
+        expect(spySyncSource).toHaveBeenCalled();
+        expect(spySyncParsedSource).toHaveBeenCalled();
+
+        spySyncSource.mockReset();
+        spySyncParsedSource.mockReset();
+      },
+    );
   });
 });
