@@ -46,7 +46,7 @@ You can use [repository mirroring](repository_mirroring.md) to keep your fork sy
 
 The main difference is that with repository mirroring your remote fork will be automatically kept up-to-date.
 
-Without mirroring, to work locally you'll have to use `git pull` to update your local repo
+Without mirroring, to work locally you'll have to use `git pull` to update your local repository
 with the upstream project, then push the changes back to your fork to update it.
 
 CAUTION: **Caution:**

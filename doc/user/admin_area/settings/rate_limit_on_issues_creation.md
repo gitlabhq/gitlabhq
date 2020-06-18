@@ -1,5 +1,8 @@
 ---
 type: reference
+stage: Plan
+group: Project Management
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 ---
 
 # Rate limits on issue creation
@@ -14,7 +17,7 @@ For example, requests using the
 [Projects::IssuesController#create](https://gitlab.com/gitlab-org/gitlab/raw/master/app/controllers/projects/issues_controller.rb)
 action exceeding a rate of 300 per minute are blocked. Access to the endpoint is allowed after one minute.
 
-![Rate limits on issues creation](img/rate_limit_on_issues_creation.png)
+![Rate limits on issues creation](img/rate_limit_on_issues_creation_v13_1.png)
 
 This limit is:
 

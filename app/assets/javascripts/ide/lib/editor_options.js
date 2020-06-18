@@ -9,7 +9,27 @@ export const defaultEditorOptions = {
   wordWrap: 'on',
 };
 
-export default [
+export const defaultDiffOptions = {
+  ignoreWhitespace: false,
+};
+
+export const defaultDiffEditorOptions = {
+  ...defaultEditorOptions,
+  quickSuggestions: false,
+  occurrencesHighlight: false,
+  ignoreTrimWhitespace: false,
+  readOnly: false,
+  renderLineHighlight: 'none',
+  hideCursorInOverviewRuler: true,
+};
+
+export const defaultModelOptions = {
+  endOfLine: 0,
+  insertFinalNewline: true,
+  trimTrailingWhitespace: false,
+};
+
+export const editorOptions = [
   {
     readOnly: model => Boolean(model.file.file_lock),
     quickSuggestions: model => !(model.language === 'markdown'),

@@ -3,7 +3,7 @@
 Since GitLab 9.0, API V4 is the preferred version to be used.
 
 API V3 was unsupported from GitLab 9.5, released on August
-22, 2017. API v3 was removed in [GitLab 11.0](https://gitlab.com/gitlab-org/gitlab-foss/issues/36819).
+22, 2017. API v3 was removed in [GitLab 11.0](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/36819).
 The V3 API documentation is still
 [available](https://gitlab.com/gitlab-org/gitlab-foss/blob/8-16-stable/doc/api/README.md).
 

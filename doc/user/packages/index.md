@@ -1,3 +1,9 @@
+---
+stage: Package
+group: Package
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+---
+
 # GitLab Package Registry
 
 GitLab Packages allows organizations to utilize GitLab as a private repository
@@ -15,6 +21,8 @@ The Packages feature allows GitLab to act as a repository for the following:
 | [NPM Registry](npm_registry/index.md) **(PREMIUM)**  | The GitLab NPM Registry enables every project in GitLab to have its own space to store [NPM](https://www.npmjs.com/) packages. | 11.7+ |
 | [NuGet Repository](nuget_repository/index.md) **(PREMIUM)**  | The GitLab NuGet Repository will enable every project in GitLab to have its own space to store [NuGet](https://www.nuget.org/) packages. | 12.8+ |
 | [PyPi Repository](pypi_repository/index.md) **(PREMIUM)**  | The GitLab PyPi Repository will enable every project in GitLab to have its own space to store [PyPi](https://pypi.org/) packages. | 12.10+ |
+| [Go Proxy](go_proxy/index.md) **(PREMIUM)** | The Go proxy for GitLab enables every project in GitLab to be fetched with the [Go proxy protocol](https://proxy.golang.org/). | 13.1+ |
+| [Composer Repository](composer_repository/index.md) **(PREMIUM)**  | The GitLab Composer Repository will enable every project in GitLab to have its own space to store [Composer](https://getcomposer.org/) packages. | 13.1+ |
 
 ## Enable the Package Registry for your project
 
@@ -104,20 +112,19 @@ are adding support for [PHP](https://gitlab.com/gitlab-org/gitlab/-/merge_reques
 
 | Format | Use case |
 | ------ | ------ |
-| [Cargo](https://gitlab.com/gitlab-org/gitlab/issues/33060) | Cargo is the Rust package manager. Build, publish and share Rust packages  |
-| [Chef](https://gitlab.com/gitlab-org/gitlab/issues/36889) | Configuration management with Chef using all the benefits of a repository manager. |
-| [CocoaPods](https://gitlab.com/gitlab-org/gitlab/issues/36890) | Speed up development with Xcode and CocoaPods. |
-| [Conda](https://gitlab.com/gitlab-org/gitlab/issues/36891) | Secure and private local Conda repositories. |
-| [CRAN](https://gitlab.com/gitlab-org/gitlab/issues/36892) | Deploy and resolve CRAN packages for the R language. |
-| [Debian](https://gitlab.com/gitlab-org/gitlab/issues/5835) | Host and provision Debian packages. |
-| [Go](https://gitlab.com/gitlab-org/gitlab/issues/9773) | Resolve Go dependencies from and publish your Go packages to GitLab.  |
-| [Opkg](https://gitlab.com/gitlab-org/gitlab/issues/36894) | Optimize your work with OpenWrt using Opkg repositories. |
-| [P2](https://gitlab.com/gitlab-org/gitlab/issues/36895) | Host all your Eclipse plugins in your own GitLab P2 repository. |
-| [Puppet](https://gitlab.com/gitlab-org/gitlab/issues/36897) | Configuration management meets repository management with Puppet repositories. |
-| [RPM](https://gitlab.com/gitlab-org/gitlab/issues/5932) | Distribute RPMs directly from GitLab. |
-| [RubyGems](https://gitlab.com/gitlab-org/gitlab/issues/803) | Use GitLab to host your own gems. |
-| [SBT](https://gitlab.com/gitlab-org/gitlab/issues/36898) | Resolve dependencies from and deploy build output to SBT repositories when running SBT builds. |
-| [Vagrant](https://gitlab.com/gitlab-org/gitlab/issues/36899) | Securely host your Vagrant boxes in local repositories. |
+| [Cargo](https://gitlab.com/gitlab-org/gitlab/-/issues/33060) | Cargo is the Rust package manager. Build, publish and share Rust packages  |
+| [Chef](https://gitlab.com/gitlab-org/gitlab/-/issues/36889) | Configuration management with Chef using all the benefits of a repository manager. |
+| [CocoaPods](https://gitlab.com/gitlab-org/gitlab/-/issues/36890) | Speed up development with Xcode and CocoaPods. |
+| [Conda](https://gitlab.com/gitlab-org/gitlab/-/issues/36891) | Secure and private local Conda repositories. |
+| [CRAN](https://gitlab.com/gitlab-org/gitlab/-/issues/36892) | Deploy and resolve CRAN packages for the R language. |
+| [Debian](https://gitlab.com/gitlab-org/gitlab/-/issues/5835) | Host and provision Debian packages. |
+| [Opkg](https://gitlab.com/gitlab-org/gitlab/-/issues/36894) | Optimize your work with OpenWrt using Opkg repositories. |
+| [P2](https://gitlab.com/gitlab-org/gitlab/-/issues/36895) | Host all your Eclipse plugins in your own GitLab P2 repository. |
+| [Puppet](https://gitlab.com/gitlab-org/gitlab/-/issues/36897) | Configuration management meets repository management with Puppet repositories. |
+| [RPM](https://gitlab.com/gitlab-org/gitlab/-/issues/5932) | Distribute RPMs directly from GitLab. |
+| [RubyGems](https://gitlab.com/gitlab-org/gitlab/-/issues/803) | Use GitLab to host your own gems. |
+| [SBT](https://gitlab.com/gitlab-org/gitlab/-/issues/36898) | Resolve dependencies from and deploy build output to SBT repositories when running SBT builds. |
+| [Vagrant](https://gitlab.com/gitlab-org/gitlab/-/issues/36899) | Securely host your Vagrant boxes in local repositories. |
 
 ## Package workflows
 

@@ -10,7 +10,7 @@ describe('Job Log', () => {
   let vm;
 
   const trace =
-    '<span>Running with gitlab-runner 12.1.0 (de7731dd)<br/></span><span>  on docker-auto-scale-com d5ae8d25<br/></span><div class="append-right-8" data-timestamp="1565502765" data-section="prepare-executor" role="button"></div><span class="section section-header js-s-prepare-executor">Using Docker executor with image ruby:2.6 ...<br/></span>';
+    '<span>Running with gitlab-runner 12.1.0 (de7731dd)<br/></span><span>  on docker-auto-scale-com d5ae8d25<br/></span><div class="gl-mr-3" data-timestamp="1565502765" data-section="prepare-executor" role="button"></div><span class="section section-header js-s-prepare-executor">Using Docker executor with image ruby:2.6 ...<br/></span>';
 
   beforeEach(() => {
     store = createStore();

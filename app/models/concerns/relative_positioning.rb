@@ -50,7 +50,7 @@ module RelativePositioning
     # This method takes two integer values (positions) and
     # calculates the position between them. The range is huge as
     # the maximum integer value is 2147483647. We are incrementing position by IDEAL_DISTANCE * 2 every time
-    # when we have enough space. If distance is less then IDEAL_DISTANCE we are calculating an average number
+    # when we have enough space. If distance is less than IDEAL_DISTANCE, we are calculating an average number.
     def position_between(pos_before, pos_after)
       pos_before ||= MIN_POSITION
       pos_after ||= MAX_POSITION

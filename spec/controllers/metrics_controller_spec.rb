@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe MetricsController, :request_store do
+RSpec.describe MetricsController, :request_store do
   include StubENV
 
   let(:metrics_multiproc_dir) { @metrics_multiproc_dir }

@@ -15,7 +15,7 @@ GitLab supports deployment of AWS Lambda functions through GitLab CI/CD using th
 
 ## Serverless Framework
 
-The [Serverless Framework can deploy to AWS](https://serverless.com/framework/docs/providers/aws/).
+The [Serverless Framework can deploy to AWS](https://www.serverless.com/framework/docs/providers/aws/).
 
 We have prepared an example with a step-by-step guide to create a simple function and deploy it on AWS.
 
@@ -101,7 +101,7 @@ The handler definition will provision the Lambda function using the source code 
 
 The `events` declaration will create a AWS API Gateway `GET` endpoint to receive external requests and hand them over to the Lambda function via a service integration.
 
-You can read more about the available properties and additional configuration possibilities of the Serverless Framework here: <https://serverless.com/framework/docs/providers/aws/guide/serverless.yml/>
+You can read more about the [available properties and additional configuration possibilities](https://www.serverless.com/framework/docs/providers/aws/guide/serverless.yml/) of the Serverless Framework.
 
 #### Crafting the `.gitlab-ci.yml` file
 
@@ -134,7 +134,7 @@ This example code does the following:
 #### Setting up your AWS credentials with your GitLab account
 
 In order to interact with your AWS account, the GitLab CI/CD pipelines require both `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` to be defined in your GitLab settings under **Settings > CI/CD > Variables**.
-For more information please see: <https://docs.gitlab.com/ee/ci/variables/README.html#via-the-ui>
+For more information please see [Create a custom variable in the UI](../../../../ci/variables/README.md#create-a-custom-variable-in-the-ui).
 
 NOTE: **Note:**
    The AWS credentials you provide must include IAM policies that provision correct access control to AWS Lambda, API Gateway, CloudFormation, and IAM resources.
@@ -275,7 +275,7 @@ module.exports.hello = async event => {
 };
 ```
 
-For more information, see the [Your CORS and API Gateway survival guide](https://serverless.com/blog/cors-api-gateway-survival-guide/)
+For more information, see the [Your CORS and API Gateway survival guide](https://www.serverless.com/blog/cors-api-gateway-survival-guide/)
 blog post written by the Serverless Framework team.
 
 #### Writing automated tests
@@ -288,7 +288,7 @@ automated testing of both local and deployed serverless function.
 
 The example code is available:
 
-- As a [cloneable repository](https://gitlab.com/gitlab-org/serverless/examples/serverless-framework-js).
+- As a [clonable repository](https://gitlab.com/gitlab-org/serverless/examples/serverless-framework-js).
 - In a version with [tests and secret variables](https://gitlab.com/gitlab-org/project-templates/serverless-framework/).
 
 You can also use a [template](../../../../gitlab-basics/create-project.md#project-templates)
@@ -416,7 +416,7 @@ production:
   environment: production
   ```
 
-Let’s examine the config file more closely:
+Let’s examine the configuration file more closely:
 
 - `image` specifies the Docker image to use for this build. This is the latest Python
   image since the sample application is written in Python.

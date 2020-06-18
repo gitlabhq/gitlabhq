@@ -84,10 +84,22 @@ module Gitlab
           elsif resolved_type.is_a? Array
             # A simple list of rendered types  each object being an object to authorize
             resolved_type.select do |single_object_type|
-              allowed_access?(current_user, single_object_type.object)
+              allowed_access?(current_user, realized(single_object_type).object)
             end
           else
             raise "Can't authorize #{@field}"
+          end
+        end
+
+        # Ensure that we are dealing with realized objects, not delayed promises
+        def realized(thing)
+          case thing
+          when BatchLoader::GraphQL
+            thing.sync
+          when GraphQL::Execution::Lazy
+            thing.value # part of the private api, but we need to unwrap it here.
+          else
+            thing
           end
         end
 

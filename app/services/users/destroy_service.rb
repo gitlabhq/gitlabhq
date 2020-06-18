@@ -56,7 +56,7 @@ module Users
 
       MigrateToGhostUserService.new(user).execute unless options[:hard_delete]
 
-      response = Snippets::BulkDestroyService.new(current_user, user.snippets).execute
+      response = Snippets::BulkDestroyService.new(current_user, user.snippets).execute(options)
       raise DestroyError, response.message if response.error?
 
       # Rails attempts to load all related records into memory before

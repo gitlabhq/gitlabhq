@@ -55,6 +55,7 @@ module API
           optional :theme_id, type: Integer, desc: 'The GitLab theme for the user'
           optional :color_scheme_id, type: Integer, desc: 'The color scheme for the file viewer'
           optional :private_profile, type: Boolean, desc: 'Flag indicating the user has a private profile'
+          optional :note, type: String, desc: 'Admin note for this user'
           all_or_none_of :extern_uid, :provider
 
           use :optional_params_ee
@@ -254,6 +255,7 @@ module API
         requires :id, type: Integer, desc: 'The ID of the user'
         requires :key, type: String, desc: 'The new SSH key'
         requires :title, type: String, desc: 'The title of the new SSH key'
+        optional :expires_at, type: DateTime, desc: 'The expiration date of the SSH key in ISO 8601 format (YYYY-MM-DDTHH:MM:SSZ)'
       end
       # rubocop: disable CodeReuse/ActiveRecord
       post ":id/keys" do
@@ -262,9 +264,9 @@ module API
         user = User.find_by(id: params.delete(:id))
         not_found!('User') unless user
 
-        key = user.keys.new(declared_params(include_missing: false))
+        key = ::Keys::CreateService.new(current_user, declared_params(include_missing: false).merge(user: user)).execute
 
-        if key.save
+        if key.persisted?
           present key, with: Entities::SSHKey
         else
           render_validation_error!(key)
@@ -283,7 +285,8 @@ module API
         user = find_user(params[:user_id])
         not_found!('User') unless user && can?(current_user, :read_user, user)
 
-        present paginate(user.keys), with: Entities::SSHKey
+        keys = user.keys.preload_users
+        present paginate(keys), with: Entities::SSHKey
       end
 
       desc 'Delete an existing SSH key from a specified user. Available only for admins.' do
@@ -303,7 +306,10 @@ module API
         key = user.keys.find_by(id: params[:key_id])
         not_found!('Key') unless key
 
-        destroy_conditionally!(key)
+        destroy_conditionally!(key) do |key|
+          destroy_service = ::Keys::DestroyService.new(current_user)
+          destroy_service.execute(key)
+        end
       end
       # rubocop: enable CodeReuse/ActiveRecord
 
@@ -695,7 +701,9 @@ module API
         use :pagination
       end
       get "keys" do
-        present paginate(current_user.keys), with: Entities::SSHKey
+        keys = current_user.keys.preload_users
+
+        present paginate(keys), with: Entities::SSHKey
       end
 
       desc 'Get a single key owned by currently authenticated user' do
@@ -719,6 +727,7 @@ module API
       params do
         requires :key, type: String, desc: 'The new SSH key'
         requires :title, type: String, desc: 'The title of the new SSH key'
+        optional :expires_at, type: DateTime, desc: 'The expiration date of the SSH key in ISO 8601 format (YYYY-MM-DDTHH:MM:SSZ)'
       end
       post "keys" do
         key = current_user.keys.new(declared_params)

@@ -669,7 +669,8 @@
   .ci-action-icon-container {
     position: absolute;
     right: 5px;
-    top: 5px;
+    top: 50%;
+    transform: translateY(-50%);
 
     // Action Icons in big pipeline-graph nodes
     &.ci-action-icon-wrapper {
@@ -920,7 +921,7 @@ button.mini-pipeline-graph-dropdown-toggle {
 
 
       .ci-status-icon {
-        @extend .append-right-8;
+        @include gl-mr-3;
 
         position: relative;
 

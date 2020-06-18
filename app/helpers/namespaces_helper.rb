@@ -56,6 +56,45 @@ module NamespacesHelper
     namespaces_options(selected, options)
   end
 
+  def namespace_storage_alert(namespace)
+    return {} if current_user.nil?
+
+    payload = Namespaces::CheckStorageSizeService.new(namespace, current_user).execute.payload
+
+    return {} if payload.empty?
+
+    alert_level = payload[:alert_level]
+    root_namespace = payload[:root_namespace]
+
+    return {} if cookies["hide_storage_limit_alert_#{root_namespace.id}_#{alert_level}"] == 'true'
+
+    payload
+  end
+
+  def namespace_storage_alert_style(alert_level)
+    if alert_level == :error || alert_level == :alert
+      'danger'
+    else
+      alert_level.to_s
+    end
+  end
+
+  def namespace_storage_alert_icon(alert_level)
+    if alert_level == :error || alert_level == :alert
+      'error'
+    elsif alert_level == :info
+      'information-o'
+    else
+      alert_level.to_s
+    end
+  end
+
+  def namespace_storage_usage_link(namespace)
+    # The usage quota page is only available in EE. This will be changed in
+    # the future, see https://gitlab.com/gitlab-org/gitlab/-/issues/220042.
+    nil
+  end
+
   private
 
   # Many importers create a temporary Group, so use the real
@@ -89,4 +128,4 @@ module NamespacesHelper
   end
 end
 
-NamespacesHelper.include_if_ee('EE::NamespacesHelper')
+NamespacesHelper.prepend_if_ee('EE::NamespacesHelper')

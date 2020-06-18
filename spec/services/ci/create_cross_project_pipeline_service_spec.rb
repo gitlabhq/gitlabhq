@@ -487,10 +487,11 @@ describe Ci::CreateCrossProjectPipelineService, '#execute' do
       end
 
       it 'does not create a pipeline and drops the bridge' do
-        service.execute(bridge)
+        expect { service.execute(bridge) }.not_to change(downstream_project.ci_pipelines, :count)
 
         expect(bridge.reload).to be_failed
         expect(bridge.failure_reason).to eq('downstream_pipeline_creation_failed')
+        expect(bridge.options[:downstream_errors]).to eq(['Reference not found'])
       end
     end
 
@@ -509,10 +510,35 @@ describe Ci::CreateCrossProjectPipelineService, '#execute' do
       end
 
       it 'does not create a pipeline and drops the bridge' do
-        service.execute(bridge)
+        expect { service.execute(bridge) }.not_to change(downstream_project.ci_pipelines, :count)
 
         expect(bridge.reload).to be_failed
         expect(bridge.failure_reason).to eq('downstream_pipeline_creation_failed')
+        expect(bridge.options[:downstream_errors]).to eq(['No stages / jobs for this pipeline.'])
+      end
+    end
+
+    context 'when downstream pipeline has invalid YAML' do
+      before do
+        stub_ci_pipeline_yaml_file(config)
+      end
+
+      let(:config) do
+        <<-EOY
+          test:
+            stage: testx
+            script: echo 1
+        EOY
+      end
+
+      it 'creates the pipeline but drops the bridge' do
+        expect { service.execute(bridge) }.to change(downstream_project.ci_pipelines, :count).by(1)
+
+        expect(bridge.reload).to be_failed
+        expect(bridge.failure_reason).to eq('downstream_pipeline_creation_failed')
+        expect(bridge.options[:downstream_errors]).to eq(
+          ['test job: chosen stage does not exist; available stages are .pre, build, test, deploy, .post']
+        )
       end
     end
   end

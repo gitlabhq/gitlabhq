@@ -1,7 +1,7 @@
 # Migration guide from Git Annex to Git LFS
 
 >**Note:**
-Git Annex support [has been removed](https://gitlab.com/gitlab-org/gitlab/issues/1648) in GitLab Enterprise
+Git Annex support [has been removed](https://gitlab.com/gitlab-org/gitlab/-/issues/1648) in GitLab Enterprise
 Edition 9.0 (2017/03/22).
 
 Both [Git Annex](http://git-annex.branchable.com/) and [Git LFS](https://git-lfs.github.com/) are tools to manage large files in Git.
@@ -172,7 +172,7 @@ GitLab.com), therefore, you don't need to do anything server-side.
    If the terminal doesn't prompt you with a full response on `git-lfs` commands,
    [install the Git LFS client](https://git-lfs.github.com/) first.
 
-1. Inside the repo, run the following command to initiate LFS:
+1. Inside the repository, run the following command to initiate LFS:
 
    ```shell
    git lfs install
@@ -189,7 +189,7 @@ GitLab.com), therefore, you don't need to do anything server-side.
    ```
 
    Once you do that, run `git status` and you'll see `.gitattributes` added
-   to your repo. It collects all file patterns that you chose to track via
+   to your repository. It collects all file patterns that you chose to track via
    `git-lfs`.
 
 1. Add the files, commit and push them to GitLab:

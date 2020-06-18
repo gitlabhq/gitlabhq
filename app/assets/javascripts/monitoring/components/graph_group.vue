@@ -52,10 +52,17 @@ export default {
 </script>
 
 <template>
-  <div v-if="showPanels" ref="graph-group" class="card prometheus-panel">
+  <div v-if="showPanels" ref="graph-group" class="card prometheus-panel" tabindex="0">
     <div class="card-header d-flex align-items-center">
       <h4 class="flex-grow-1">{{ name }}</h4>
-      <a role="button" class="js-graph-group-toggle" @click="collapse">
+      <a
+        data-testid="group-toggle-button"
+        role="button"
+        class="js-graph-group-toggle gl-text-gray-900"
+        tabindex="0"
+        @click="collapse"
+        @keyup.enter="collapse"
+      >
         <icon :size="16" :aria-label="__('Toggle collapse')" :name="caretIcon" />
       </a>
     </div>

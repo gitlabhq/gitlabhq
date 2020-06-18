@@ -1,3 +1,10 @@
+---
+stage: Enablement
+group: Geo
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+type: howto
+---
+
 # Disaster recovery for planned failover **(PREMIUM ONLY)**
 
 The primary use-case of Disaster Recovery is to ensure business continuity in
@@ -126,7 +133,7 @@ will take to finish syncing. An example message would be:
 
 ## Prevent updates to the **primary** node
 
-Until a [read-only mode](https://gitlab.com/gitlab-org/gitlab-foss/issues/19739) is implemented, updates must be prevented
+Until a [read-only mode](https://gitlab.com/gitlab-org/gitlab/-/issues/14609) is implemented, updates must be prevented
 from happening manually. Note that your **secondary** node still needs read-only
 access to the **primary** node during the maintenance window.
 

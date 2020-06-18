@@ -36,5 +36,5 @@ Parameters:
 | `position[y]`             | integer        | no       | Y coordinate (Only stored for `image` diff notes) |
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/merge_requests/11/visual_review_discussions?body=comment
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/merge_requests/11/visual_review_discussions?body=comment"
 ```

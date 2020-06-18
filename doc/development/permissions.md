@@ -14,7 +14,7 @@ Groups and projects can have the following visibility levels:
 - private (`0`) - an entity is visible only to the approved members of the entity
 
 The visibility level of a group can be changed only if all subgroups and
-subprojects have the same or lower visibility level. (e.g., a group can be set
+sub-projects have the same or lower visibility level. (e.g., a group can be set
 to internal only if all subgroups and projects are internal or private).
 
 Visibility levels can be found in the `Gitlab::VisibilityLevel` module.
@@ -41,11 +41,12 @@ can be accessed only by project members by default.
 Users can be members of multiple groups and projects. The following access
 levels are available (defined in the `Gitlab::Access` module):
 
-- Guest
-- Reporter
-- Developer
-- Maintainer
-- Owner
+- No access (`0`)
+- Guest (`10`)
+- Reporter (`20`)
+- Developer (`30`)
+- Maintainer (`40`)
+- Owner (`50`)
 
 If a user is the member of both a project and the project parent group, the
 higher permission is taken into account for the project.
@@ -55,6 +56,12 @@ can still view the groups and their entities (like epics).
 
 Project membership (where the group membership is already taken into account)
 is stored in the `project_authorizations` table.
+
+CAUTION: **Caution:**
+Due to [an issue](https://gitlab.com/gitlab-org/gitlab/-/issues/219299),
+projects in personal namespace will not show owner (`50`) permission in
+`project_authorizations` table. Note however that [`user.owned_projects`](https://gitlab.com/gitlab-org/gitlab/blob/0d63823b122b11abd2492bca47cc26858eee713d/app/models/user.rb#L906-916)
+is calculated properly.
 
 ### Confidential issues
 
@@ -92,10 +99,10 @@ into different features like Merge Requests and CI flow.
 
 | Activity level | Resource | Locations |Permission dependency|
 |----------------|----------|-----------|-----|
-| View | License information | Dependency list, License Compliance | Can view repo |
-| View | Dependency information | Dependency list, License Compliance | Can view repo |
+| View | License information | Dependency list, License Compliance | Can view repository |
+| View | Dependency information | Dependency list, License Compliance | Can view repository |
 | View | Vulnerabilities information | Dependency list | Can view security findings |
-| View | Black/Whitelisted licenses for the project | License Compliance, Merge request  | Can view repo |
+| View | Black/Whitelisted licenses for the project | License Compliance, Merge request  | Can view repository |
 | View | Security findings | Merge Request, CI job page, Pipeline security tab | Can read the project and CI jobs |
 | View | Vulnerability feedback | Merge Request | Can read security findings |
 | View | Dependency List page | Project | Can access Dependency information |

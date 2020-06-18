@@ -67,6 +67,18 @@ describe Users::DestroyService do
         end
       end
 
+      it 'calls the bulk snippet destroy service with hard delete option if it is present' do
+        # this avoids getting into Projects::DestroyService as it would
+        # call Snippets::BulkDestroyService first!
+        allow(user).to receive(:personal_projects).and_return([])
+
+        expect_next_instance_of(Snippets::BulkDestroyService) do |bulk_destroy_service|
+          expect(bulk_destroy_service).to receive(:execute).with(hard_delete: true).and_call_original
+        end
+
+        service.execute(user, hard_delete: true)
+      end
+
       it 'does not delete project snippets that the user is the author of' do
         repo = create(:project_snippet, :repository, author: user).snippet_repository
         service.execute(user)

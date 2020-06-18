@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe UsersWithPendingTodosFinder do
+RSpec.describe UsersWithPendingTodosFinder do
   describe '#execute' do
     it 'returns the users for all pending todos of a target' do
       issue = create(:issue)

@@ -15,7 +15,7 @@ exports[`WebIDE runs 1`] = `
         (jest: contents hidden)
       </div>
       <div
-        class="multi-file-commit-panel flex-column"
+        class="gl-relative multi-file-commit-panel flex-column"
         style="width: 340px;"
       >
         <div

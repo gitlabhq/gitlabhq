@@ -70,6 +70,7 @@ constraints(::Constraints::GroupUrlConstrainer.new) do
     end
 
     resource :avatar, only: [:destroy]
+    resource :import, only: [:show]
 
     concerns :clusterable
 
@@ -78,7 +79,7 @@ constraints(::Constraints::GroupUrlConstrainer.new) do
       delete :leave, on: :collection
     end
 
-    resources :group_links, only: [:index, :create, :update, :destroy], constraints: { id: /\d+/ }
+    resources :group_links, only: [:create, :update, :destroy], constraints: { id: /\d+/ }
 
     resources :uploads, only: [:create] do
       collection do

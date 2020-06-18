@@ -36,6 +36,8 @@ module Clusters
     has_one :cluster_project, -> { order(id: :desc) }, class_name: 'Clusters::Project'
     has_many :deployment_clusters
     has_many :deployments, inverse_of: :cluster
+    has_many :successful_deployments, -> { success }, class_name: 'Deployment'
+    has_many :environments, -> { distinct }, through: :deployments
 
     has_many :cluster_groups, class_name: 'Clusters::Group'
     has_many :groups, through: :cluster_groups, class_name: '::Group'
@@ -125,12 +127,23 @@ module Clusters
     scope :gcp_installed, -> { gcp_provided.joins(:provider_gcp).merge(Clusters::Providers::Gcp.with_status(:created)) }
     scope :aws_installed, -> { aws_provided.joins(:provider_aws).merge(Clusters::Providers::Aws.with_status(:created)) }
 
+    scope :with_enabled_modsecurity, -> { joins(:application_ingress).merge(::Clusters::Applications::Ingress.modsecurity_enabled) }
+    scope :with_available_elasticstack, -> { joins(:application_elastic_stack).merge(::Clusters::Applications::ElasticStack.available) }
+    scope :distinct_with_deployed_environments, -> { joins(:environments).merge(::Deployment.success).distinct }
+    scope :preload_elasticstack, -> { preload(:application_elastic_stack) }
+    scope :preload_environments, -> { preload(:environments) }
+
     scope :managed, -> { where(managed: true) }
     scope :with_persisted_applications, -> { eager_load(*APPLICATIONS_ASSOCIATIONS) }
     scope :default_environment, -> { where(environment_scope: DEFAULT_ENVIRONMENT) }
     scope :with_management_project, -> { where.not(management_project: nil) }
 
     scope :for_project_namespace, -> (namespace_id) { joins(:projects).where(projects: { namespace_id: namespace_id }) }
+    scope :with_application_prometheus, -> { includes(:application_prometheus).joins(:application_prometheus) }
+    scope :with_project_alert_service_data, -> (project_ids) do
+      conditions = { projects: { alerts_service: [:data] } }
+      includes(conditions).joins(conditions).where(projects: { id: project_ids })
+    end
 
     def self.ancestor_clusters_for_clusterable(clusterable, hierarchy_order: :asc)
       return [] if clusterable.is_a?(Instance)
@@ -321,6 +334,10 @@ module Clusters
       end
     end
 
+    def local_tiller_enabled?
+      Feature.enabled?(:managed_apps_local_tiller, clusterable, default_enabled: false)
+    end
+
     private
 
     def unique_management_project_environment_scope
@@ -368,7 +385,10 @@ module Clusters
 
     def retrieve_nodes
       result = ::Gitlab::Kubernetes::KubeClient.graceful_request(id) { kubeclient.get_nodes }
-      cluster_nodes = result[:response].to_a
+
+      return unless result[:response]
+
+      cluster_nodes = result[:response]
 
       result = ::Gitlab::Kubernetes::KubeClient.graceful_request(id) { kubeclient.metrics_client.get_nodes }
       nodes_metrics = result[:response].to_a

@@ -5,10 +5,6 @@ class Projects::GroupLinksController < Projects::ApplicationController
   before_action :authorize_admin_project!
   before_action :authorize_admin_project_member!, only: [:update]
 
-  def index
-    redirect_to namespace_project_settings_members_path
-  end
-
   def create
     group = Group.find(params[:link_group_id]) if params[:link_group_id].present?
 
@@ -26,8 +22,7 @@ class Projects::GroupLinksController < Projects::ApplicationController
 
   def update
     @group_link = @project.project_group_links.find(params[:id])
-
-    @group_link.update(group_link_params)
+    Projects::GroupLinks::UpdateService.new(@group_link).execute(group_link_params)
   end
 
   def destroy

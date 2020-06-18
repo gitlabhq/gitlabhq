@@ -154,7 +154,6 @@ module API
       end
       put '/:id' do
         job = authenticate_job!
-        job_forbidden!(job, 'Job is not running') unless job.running?
 
         job.trace.set(params[:trace]) if params[:trace]
 
@@ -182,7 +181,6 @@ module API
       end
       patch '/:id/trace' do
         job = authenticate_job!
-        job_forbidden!(job, 'Job is not running') unless job.running?
 
         error!('400 Missing header Content-Range', 400) unless request.headers.key?('Content-Range')
         content_range = request.headers['Content-Range']
@@ -220,6 +218,8 @@ module API
         requires :id, type: Integer, desc: %q(Job's ID)
         optional :token, type: String, desc: %q(Job's authentication token)
         optional :filesize, type: Integer, desc: %q(Artifacts filesize)
+        optional :artifact_type, type: String, desc: %q(The type of artifact),
+                                 default: 'archive', values: Ci::JobArtifact.file_types.keys
       end
       post '/:id/artifacts/authorize' do
         not_allowed! unless Gitlab.config.artifacts.enabled
@@ -227,18 +227,15 @@ module API
         Gitlab::Workhorse.verify_api_request!(headers)
 
         job = authenticate_job!
-        forbidden!('Job is not running') unless job.running?
 
-        max_size = max_artifacts_size(job)
+        service = Ci::AuthorizeJobArtifactService.new(job, params, max_size: max_artifacts_size(job))
 
-        if params[:filesize]
-          file_size = params[:filesize].to_i
-          file_too_large! unless file_size < max_size
-        end
+        forbidden! if service.forbidden?
+        file_too_large! if service.too_large?
 
         status 200
         content_type Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE
-        JobArtifactUploader.workhorse_authorize(has_length: false, maximum_size: max_size)
+        service.headers
       end
 
       desc 'Upload artifacts for job' do
@@ -265,7 +262,6 @@ module API
         require_gitlab_workhorse!
 
         job = authenticate_job!
-        forbidden!('Job is not running!') unless job.running?
 
         artifacts = params[:file]
         metadata = params[:metadata]
@@ -292,7 +288,7 @@ module API
         optional :direct_download, default: false, type: Boolean, desc: %q(Perform direct download from remote storage instead of proxying artifacts)
       end
       get '/:id/artifacts' do
-        job = authenticate_job!
+        job = authenticate_job!(require_running: false)
 
         present_carrierwave_file!(job.artifacts_file, supports_direct_download: params[:direct_download])
       end

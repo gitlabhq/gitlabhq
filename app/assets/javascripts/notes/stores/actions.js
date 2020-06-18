@@ -524,11 +524,54 @@ export const submitSuggestion = (
       const defaultMessage = __(
         'Something went wrong while applying the suggestion. Please try again.',
       );
-      const flashMessage = err.response.data ? `${err.response.data.message}.` : defaultMessage;
+
+      const errorMessage = err.response.data?.message;
+
+      const flashMessage = errorMessage || defaultMessage;
 
       Flash(__(flashMessage), 'alert', flashContainer);
     });
 };
+
+export const submitSuggestionBatch = ({ commit, dispatch, state }, { flashContainer }) => {
+  const suggestionIds = state.batchSuggestionsInfo.map(({ suggestionId }) => suggestionId);
+
+  const applyAllSuggestions = () =>
+    state.batchSuggestionsInfo.map(suggestionInfo =>
+      commit(types.APPLY_SUGGESTION, suggestionInfo),
+    );
+
+  const resolveAllDiscussions = () =>
+    state.batchSuggestionsInfo.map(suggestionInfo => {
+      const { discussionId } = suggestionInfo;
+      return dispatch('resolveDiscussion', { discussionId }).catch(() => {});
+    });
+
+  commit(types.SET_APPLYING_BATCH_STATE, true);
+
+  return Api.applySuggestionBatch(suggestionIds)
+    .then(() => Promise.all(applyAllSuggestions()))
+    .then(() => Promise.all(resolveAllDiscussions()))
+    .then(() => commit(types.CLEAR_SUGGESTION_BATCH))
+    .catch(err => {
+      const defaultMessage = __(
+        'Something went wrong while applying the batch of suggestions. Please try again.',
+      );
+
+      const errorMessage = err.response.data?.message;
+
+      const flashMessage = errorMessage || defaultMessage;
+
+      Flash(__(flashMessage), 'alert', flashContainer);
+    })
+    .finally(() => commit(types.SET_APPLYING_BATCH_STATE, false));
+};
+
+export const addSuggestionInfoToBatch = ({ commit }, { suggestionId, noteId, discussionId }) =>
+  commit(types.ADD_SUGGESTION_TO_BATCH, { suggestionId, noteId, discussionId });
+
+export const removeSuggestionInfoFromBatch = ({ commit }, suggestionId) =>
+  commit(types.REMOVE_SUGGESTION_FROM_BATCH, suggestionId);
 
 export const convertToDiscussion = ({ commit }, noteId) =>
   commit(types.CONVERT_TO_DISCUSSION, noteId);
@@ -587,6 +630,10 @@ export const softDeleteDescriptionVersion = (
     .catch(error => {
       dispatch('receiveDeleteDescriptionVersionError', error);
       Flash(__('Something went wrong while deleting description changes. Please try again.'));
+
+      // Throw an error here because a component like SystemNote -
+      //  needs to know if the request failed to reset its internal state.
+      throw new Error();
     });
 };
 
@@ -598,6 +645,10 @@ export const receiveDeleteDescriptionVersion = ({ commit }, versionId) => {
 };
 export const receiveDeleteDescriptionVersionError = ({ commit }, error) => {
   commit(types.RECEIVE_DELETE_DESCRIPTION_VERSION_ERROR, error);
+};
+
+export const updateAssignees = ({ commit }, assignees) => {
+  commit(types.UPDATE_ASSIGNEES, assignees);
 };
 
 // prevent babel-plugin-rewire from generating an invalid default during karma tests

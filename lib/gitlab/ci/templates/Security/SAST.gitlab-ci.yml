@@ -13,6 +13,7 @@ variables:
   SAST_ANALYZER_IMAGE_PREFIX: "$SECURE_ANALYZERS_PREFIX"
 
   SAST_DEFAULT_ANALYZERS: "bandit, brakeman, gosec, spotbugs, flawfinder, phpcs-security-audit, security-code-scan, nodejs-scan, eslint, tslint, secrets, sobelow, pmd-apex, kubesec"
+  SAST_EXCLUDED_PATHS: "spec, test, tests, tmp"
   SAST_ANALYZER_IMAGE_TAG: 2
   SAST_DISABLE_DIND: "true"
   SCAN_KUBERNETES_MANIFESTS: "false"
@@ -80,10 +81,9 @@ brakeman-sast:
     - if: $SAST_DISABLED || $SAST_DISABLE_DIND == 'false'
       when: never
     - if: $CI_COMMIT_BRANCH &&
-          $GITLAB_FEATURES =~ /\bsast\b/ &&
           $SAST_DEFAULT_ANALYZERS =~ /brakeman/
       exists:
-        - '**/*.rb'
+        - 'config/routes.rb'
 
 eslint-sast:
   extends: .sast-analyzer
@@ -149,7 +149,7 @@ nodejs-scan-sast:
           $GITLAB_FEATURES =~ /\bsast\b/ &&
           $SAST_DEFAULT_ANALYZERS =~ /nodejs-scan/
       exists:
-        - '**/*.js'
+        - 'package.json'
 
 phpcs-security-audit-sast:
   extends: .sast-analyzer
@@ -213,8 +213,7 @@ sobelow-sast:
           $GITLAB_FEATURES =~ /\bsast\b/ &&
           $SAST_DEFAULT_ANALYZERS =~ /sobelow/
       exists:
-        - '**/*.ex'
-        - '**/*.exs'
+        - 'mix.exs'
 
 spotbugs-sast:
   extends: .sast-analyzer

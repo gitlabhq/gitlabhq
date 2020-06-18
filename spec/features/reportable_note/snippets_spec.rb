@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Reportable note on snippets', :js do
+RSpec.describe 'Reportable note on snippets', :js do
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project) }
 

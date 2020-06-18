@@ -1,4 +1,7 @@
 ---
+stage: Release
+group: Progressive Delivery
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 type: concepts, howto
 ---
 
@@ -34,7 +37,7 @@ use as examples to build your own:
 
 ## Manual Rollouts
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/5415) in GitLab 10.8.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/5415) in GitLab 10.8.
 
 It is possible to configure GitLab to do incremental rollouts manually through `.gitlab-ci.yml`. Manual configuration
 allows more control over the this feature. The steps in an incremental rollout depend on the
@@ -74,7 +77,7 @@ available, demonstrating manually triggered incremental rollouts.
 
 ## Timed Rollouts
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/7545) in GitLab 11.4.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/7545) in GitLab 11.4.
 
 Timed rollouts behave in the same way as manual rollouts, except that each job is defined with a delay
 in minutes before it will deploy. Clicking on the job will reveal the countdown.
@@ -111,3 +114,26 @@ timed rollout 30%:
 
 A [deployable application](https://gitlab.com/gl-release/timed-rollout-example) is
 available, [demonstrating configuration of timed rollouts](https://gitlab.com/gl-release/timed-rollout-example/blob/master/.gitlab-ci.yml#L86-95).
+
+## Blue-Green Deployment
+
+Also sometimes known as A/B deployment or red-black deployment, this technique is used to reduce
+downtime and risk during a deployment. When combined with incremental rollouts, you can
+minimize the impact of a deployment causing an issue.
+
+With this technique there are two deployments ("blue" and "green", but any naming can be used).
+Only one of these deployments is live at any given time, except during an incremental rollout.
+
+For example, your blue deployment can be currently active on production, while the
+green deployment is "live" for testing, but not deployed to production. If issues
+are found, the green deployment can be updated without affecting the production
+deployment (currently blue). If testing finds no issues, you switch production to the green
+deployment, and blue is now available to test the next release.
+
+This process reduces downtime as there is no need to take down the production deployment
+to switch to a different deployment. Both deployments are running in parallel, and
+can be switched to at any time.
+
+An [example deployable application](https://gitlab.com/gl-release/blue-green-example)
+is available, with a [`gitlab-ci.yml` CI/CD configuration file](https://gitlab.com/gl-release/blue-green-example/blob/master/.gitlab-ci.yml)
+that demonstrates blue-green deployments.

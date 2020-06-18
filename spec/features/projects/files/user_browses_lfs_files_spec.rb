@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Projects > Files > User browses LFS files' do
+RSpec.describe 'Projects > Files > User browses LFS files' do
   let(:project) { create(:project, :repository) }
   let(:user) { project.owner }
 

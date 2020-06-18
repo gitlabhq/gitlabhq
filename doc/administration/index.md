@@ -109,7 +109,7 @@ Learn how to install, configure, update, and maintain your GitLab instance.
 - [Sign-up restrictions](../user/admin_area/settings/sign_up_restrictions.md): block email addresses of specific domains, or whitelist only specific domains.
 - [Access restrictions](../user/admin_area/settings/visibility_and_access_controls.md#enabled-git-access-protocols): Define which Git access protocols can be used to talk to GitLab (SSH, HTTP, HTTPS).
 - [Authentication and Authorization](auth/README.md): Configure external authentication with LDAP, SAML, CAS, and additional providers.
-  - [Sync LDAP](auth/ldap-ee.md) **(STARTER ONLY)**
+  - [Sync LDAP](auth/ldap/index.md) **(STARTER ONLY)**
   - [Kerberos authentication](../integration/kerberos.md) **(STARTER ONLY)**
   - See also other [authentication](../topics/authentication/index.md#gitlab-administrators) topics (for example, enforcing 2FA).
 - [Email users](../tools/email.md): Email GitLab users from within GitLab. **(STARTER ONLY)**
@@ -157,7 +157,7 @@ Learn how to install, configure, update, and maintain your GitLab instance.
 - [External Pipeline Validation](external_pipeline_validation.md): Enable, disable and configure external pipeline validation.
 - [Job artifacts](job_artifacts.md): Enable, disable, and configure job artifacts (a set of files and directories which are outputted by a job when it completes successfully).
 - [Job logs](job_logs.md): Information about the job logs.
-- [Register Shared and specific Runners](../ci/runners/README.md#registering-a-shared-runner): Learn how to register and configure Shared and specific Runners to your own instance.
+- [Register Runners](../ci/runners/README.md#types-of-runners): Learn how to register and configure Runners.
 - [Shared Runners pipelines quota](../user/admin_area/settings/continuous_integration.md#shared-runners-pipeline-minutes-quota-starter-only): Limit the usage of pipeline minutes for Shared Runners. **(STARTER ONLY)**
 - [Enable/disable Auto DevOps](../topics/autodevops/index.md#enablingdisabling-auto-devops): Enable or disable Auto DevOps for your instance.
 

@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import '~/behaviors/markdown/render_gfm';
-import { createStore } from 'ee_else_ce/mr_notes/stores';
+import { createStore } from '~/mr_notes/stores';
 import { createComponentWithStore } from 'helpers/vue_mount_component_helper';
 import InlineDiffView from '~/diffs/components/inline_diff_view.vue';
 import diffFileMockData from '../mock_data/diff_file';

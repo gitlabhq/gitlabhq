@@ -1,0 +1,29 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require_relative '../../lib/gitlab/popen'
+require_relative '../lib/tooling/test_file_finder'
+
+require 'gitlab'
+
+gitlab_token = ENV.fetch('DANGER_GITLAB_API_TOKEN', '')
+
+Gitlab.configure do |config|
+  config.endpoint       = 'https://gitlab.com/api/v4'
+  config.private_token  = gitlab_token
+end
+
+output_file = ARGV.shift
+
+mr_project_path = ENV.fetch('CI_MERGE_REQUEST_PROJECT_PATH')
+mr_iid = ENV.fetch('CI_MERGE_REQUEST_IID')
+
+mr_changes = Gitlab.merge_request_changes(mr_project_path, mr_iid)
+changed_files = mr_changes.changes.map { |change| change['new_path'] }
+
+tests_to_run = changed_files.flat_map do |file|
+  test_files = Tooling::TestFileFinder.new(file, foss_test_only: true).test_files
+  test_files.select { |f| File.exist?(f) }
+end
+
+File.write(output_file, tests_to_run.uniq.join(' '))

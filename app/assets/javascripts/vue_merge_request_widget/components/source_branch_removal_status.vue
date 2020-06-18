@@ -14,7 +14,7 @@ export default {
 </script>
 
 <template>
-  <p v-once class="mr-info-list mr-links append-bottom-0">
+  <p v-once class="mr-info-list mr-links gl-mb-0">
     <span class="status-text" v-html="removesBranchText"> </span>
     <i v-tooltip :title="tooltipTitle" :aria-label="tooltipTitle" class="fa fa-question-circle">
     </i>

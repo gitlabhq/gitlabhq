@@ -6,8 +6,8 @@ type: reference
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/6916)
 in [GitLab Starter](https://about.gitlab.com/pricing/) 11.3.
-> - [Support for group namespaces](https://gitlab.com/gitlab-org/gitlab-foss/issues/53182) added in GitLab Starter 12.1.
-> - Code Owners for Merge Request approvals was [introduced](https://gitlab.com/gitlab-org/gitlab/issues/4418) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.9.
+> - [Support for group namespaces](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/53182) added in GitLab Starter 12.1.
+> - Code Owners for Merge Request approvals was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/4418) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.9.
 
 ## Introduction
 
@@ -73,12 +73,28 @@ be used for merge request approvals:
 - As [merge request eligible approvers](merge_requests/merge_request_approvals.md#code-owners-as-eligible-approvers).
 - As required approvers for [protected branches](protected_branches.md#protected-branches-approval-by-code-owners-premium). **(PREMIUM)**
 
+NOTE: **Note**:
+Developer or higher [permissions](../permissions.md) are required in order to
+approve a merge request.
+
 Once set, Code Owners are displayed in merge requests widgets:
 
 ![MR widget - Code Owners](img/code_owners_mr_widget_v12_4.png)
 
-NOTE: **Note**:
-  While the`CODEOWNERS` file can be used in addition to Merge Request [Approval Rules](merge_requests/merge_request_approvals.md#approval-rules) it can also be used as the sole driver of a Merge Request approval (without using  [Approval Rules](merge_requests/merge_request_approvals.md#approval-rules)) by simply creating the file in one of the three locations specified above, configuring the Code Owners to be required approvers for [protected branches](protected_branches.md#protected-branches-approval-by-code-owners-premium) and then using [the syntax of Code Owners files](code_owners.md#the-syntax-of-code-owners-files) to specify the actual owners and granular permissions.
+While the `CODEOWNERS` file can be used in addition to Merge Request [Approval Rules](merge_requests/merge_request_approvals.md#approval-rules)
+it can also be used as the sole driver of merge request approvals
+(without using [Approval Rules](merge_requests/merge_request_approvals.md#approval-rules)).
+To do so, create the file in one of the three locations specified above and
+set the code owners as required approvers for [protected branches](protected_branches.md#protected-branches-approval-by-code-owners-premium).
+Use [the syntax of Code Owners files](code_owners.md#the-syntax-of-code-owners-files)
+to specify the actual owners and granular permissions.
+
+Using Code Owners in conjunction with [Protected Branches Approvals](protected_branches.md#protected-branches-approval-by-code-owners-premium)
+will prevent any user who is not specified in the `CODEOWNERS` file from pushing changes
+for the specified files/paths, even if their role is included in the **Allowed to push** column.
+This allows for a more inclusive push strategy, as administrators don't have to restrict developers
+from pushing directly to the protected branch, but can restrict pushing to certain
+files where a review by Code Owners is required.
 
 ## The syntax of Code Owners files
 
@@ -93,7 +109,7 @@ groups or subgroups from the project's group hierarchy as potential code owners.
 
 For example, consider the following hierarchy for a given project:
 
-```text
+```plaintext
 group >> sub-group >> sub-subgroup >> myproject >> file.md
 ```
 
@@ -103,7 +119,7 @@ Any of the following groups would be eligible to be specified as code owners:
 - `@group/sub-group`
 - `@group/sub-group/sub-subgroup`
 
-In addition, any groups that have been invited to the project using the **Settings > Members** tool will also be recognized as eligible code owners.
+In addition, any groups that have been invited to the project using the **Members** tool will also be recognized as eligible code owners.
 
 The order in which the paths are defined is significant: the last
 pattern that matches a given path will be used to find the code

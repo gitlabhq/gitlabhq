@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Projects > Show > User sees last commit CI status' do
+RSpec.describe 'Projects > Show > User sees last commit CI status' do
   let_it_be(:project) { create(:project, :repository, :public) }
 
   it 'shows the project README', :js do

@@ -2,47 +2,43 @@
 
 module Resolvers
   class MergeRequestsResolver < BaseResolver
-    argument :iid, GraphQL::STRING_TYPE,
-              required: false,
-              description: 'IID of the merge request, for example `1`'
+    include ResolvesMergeRequests
+
+    alias_method :project, :synchronized_object
 
     argument :iids, [GraphQL::STRING_TYPE],
               required: false,
               description: 'Array of IIDs of merge requests, for example `[1, 2]`'
 
-    type Types::MergeRequestType, null: true
+    argument :source_branches, [GraphQL::STRING_TYPE],
+             required: false,
+             as: :source_branch,
+             description: 'Array of source branch names. All resolved merge requests will have one of these branches as their source.'
 
-    alias_method :project, :object
+    argument :target_branches, [GraphQL::STRING_TYPE],
+             required: false,
+             as: :target_branch,
+             description: 'Array of target branch names. All resolved merge requests will have one of these branches as their target.'
 
-    def resolve(**args)
-      project = object.respond_to?(:sync) ? object.sync : object
-      return MergeRequest.none if project.nil?
+    argument :state, ::Types::MergeRequestStateEnum,
+             required: false,
+             description: 'A merge request state. If provided, all resolved merge requests will have this state.'
 
-      args[:iids] ||= [args[:iid]].compact
+    argument :labels, [GraphQL::STRING_TYPE],
+             required: false,
+             as: :label_name,
+             description: 'Array of label names. All resolved merge requests will have all of these labels.'
 
-      if args[:iids].any?
-        batch_load_merge_requests(args[:iids])
-      else
-        args[:project_id] = project.id
-
-        MergeRequestsFinder.new(context[:current_user], args).execute
-      end
+    def self.single
+      ::Resolvers::MergeRequestResolver
     end
 
-    def batch_load_merge_requests(iids)
-      iids.map { |iid| batch_load(iid) }.select(&:itself) # .compact doesn't work on BatchLoader
+    def no_results_possible?(args)
+      project.nil? || some_argument_is_empty?(args)
     end
 
-    # rubocop: disable CodeReuse/ActiveRecord
-    def batch_load(iid)
-      BatchLoader::GraphQL.for(iid.to_s).batch(key: project) do |iids, loader, args|
-        arg_key = args[:key].respond_to?(:sync) ? args[:key].sync : args[:key]
-
-        arg_key.merge_requests.where(iid: iids).each do |mr|
-          loader.call(mr.iid.to_s, mr)
-        end
-      end
+    def some_argument_is_empty?(args)
+      args.values.any? { |v| v.is_a?(Array) && v.empty? }
     end
-    # rubocop: enable CodeReuse/ActiveRecord
   end
 end

@@ -5,6 +5,7 @@ class PagesWorker # rubocop:disable Scalability/IdempotentWorker
 
   sidekiq_options retry: 3
   feature_category :pages
+  loggable_arguments 0, 1
 
   def perform(action, *arg)
     send(action, *arg) # rubocop:disable GitlabSecurity/PublicSend

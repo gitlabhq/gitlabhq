@@ -1,5 +1,8 @@
 ---
 type: reference
+stage: Manage
+group: Access
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 ---
 
 # OpenID Connect OmniAuth provider
@@ -96,8 +99,8 @@ The OpenID Connect will provide you with a client details and secret for you to 
        - `mtls` - Mutual TLS or X.509 certificate validation
        - Any other value will POST the client ID and secret in the request body
      - If not specified, defaults to `basic`.
-   - `<uid_field>` (optional) is the field name from the `user_info` details that will be used as `uid` value. For example, `preferred_username`.
-     If this value is not provided or the field with the configured value is missing from the `user_info` details, the `uid` will use the `sub` field.
+   - `<uid_field>` (optional) is the field name from the `user_info.raw_attributes` details that will be used as `uid` value. For example, `preferred_username`.
+     If this value is not provided or the field with the configured value is missing from the `user_info.raw_attributes` details, the `uid` will use the `sub` field.
    - `send_scope_to_token_endpoint` is `true` by default. In other words, the `scope` parameter is normally included in requests to the token endpoint.
      However, if your OpenID Connect provider does not accept the `scope` parameter in such requests, set this to `false`.
    - `client_options` are the OpenID Connect client-specific options. Specifically:

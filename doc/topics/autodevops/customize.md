@@ -72,25 +72,20 @@ Avoid passing secrets as Docker build arguments if possible, as they may be
 persisted in your image. See
 [this discussion of best practices with secrets](https://github.com/moby/moby/issues/13490) for details.
 
-## Passing secrets to `docker build`
+## Forward CI variables to the build environment
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/25514) in GitLab 12.3, but available in versions 11.9 and above.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/25514) in GitLab 12.3, but available in versions 11.9 and above.
 
-CI environment variables can be passed as
-[build secrets](https://docs.docker.com/develop/develop-images/build_enhancements/#new-docker-build-secret-information) to the `docker build` command by listing them
-by name, comma-separated, in the `AUTO_DEVOPS_BUILD_IMAGE_FORWARDED_CI_VARIABLES`
-variable. For example, to forward the variables `CI_COMMIT_SHA` and `CI_ENVIRONMENT_NAME`,
-set `AUTO_DEVOPS_BUILD_IMAGE_FORWARDED_CI_VARIABLES` to `CI_COMMIT_SHA,CI_ENVIRONMENT_NAME`.
+CI variables can be forwarded into the build environment using the
+`AUTO_DEVOPS_BUILD_IMAGE_FORWARDED_CI_VARIABLES` CI variable.
+The forwarded variables should be specified by name in a comma-separated
+list. For example, to forward the variables `CI_COMMIT_SHA` and
+`CI_ENVIRONMENT_NAME`, set `AUTO_DEVOPS_BUILD_IMAGE_FORWARDED_CI_VARIABLES`
+to `CI_COMMIT_SHA,CI_ENVIRONMENT_NAME`.
 
-CAUTION: **Caution:**
-Unlike build arguments, these variables are not persisted by Docker in the final image,
-though you can still persist them yourself.
-
-In projects:
-
-- Without a `Dockerfile`, these are available automatically as environment
-  variables.
-- With a `Dockerfile`, the following is required:
+- When using Buildpacks, the forwarded variables are available automatically
+  as environment variables.
+- When using a `Dockerfile`, the following additional steps are required:
 
   1. Activate the experimental `Dockerfile` syntax by adding the following code
      to the top of the file:
@@ -128,7 +123,7 @@ repository or by specifying a project variable:
 
 ## Customize values for Helm Chart
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/30628) in GitLab 12.6, `.gitlab/auto-deploy-values.yaml` will be used by default for Helm upgrades.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30628) in GitLab 12.6, `.gitlab/auto-deploy-values.yaml` will be used by default for Helm upgrades.
 
 You can override the default values in the `values.yaml` file in the
 [default Helm chart](https://gitlab.com/gitlab-org/charts/auto-deploy-app) by either:
@@ -175,7 +170,7 @@ into your project and edit it as needed.
 
 ## Customizing the Kubernetes namespace
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/27630) in GitLab 12.6.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/27630) in GitLab 12.6.
 
 For clusters not managed by GitLab, you can customize the namespace in
 `.gitlab-ci.yml` by specifying
@@ -302,13 +297,15 @@ applications.
 | `<ENVIRONMENT>_ADDITIONAL_HOSTS`        | For a specific environment, the fully qualified domain names specified as a comma-separated list that are added to the Ingress hosts. This takes precedence over `ADDITIONAL_HOSTS`. |
 | `AUTO_DEVOPS_ATOMIC_RELEASE`            | As of GitLab 13.0, Auto DevOps uses [`--atomic`](https://v2.helm.sh/docs/helm/#options-43) for Helm deployments by default. Set this variable to `false` to disable the use of `--atomic` |
 | `AUTO_DEVOPS_BUILD_IMAGE_CNB_ENABLED`   | When set to a non-empty value and no `Dockerfile` is present, Auto Build builds your application using Cloud Native Buildpacks instead of Herokuish. [More details](stages.md#auto-build-using-cloud-native-buildpacks-beta). |
+| `AUTO_DEVOPS_BUILD_IMAGE_CNB_BUILDER`   | The builder used when building with Cloud Native Buildpacks. The default builder is `heroku/buildpacks:18`. [More details](stages.md#auto-build-using-cloud-native-buildpacks-beta). |
 | `AUTO_DEVOPS_BUILD_IMAGE_EXTRA_ARGS`    | Extra arguments to be passed to the `docker build` command. Note that using quotes won't prevent word splitting. [More details](#passing-arguments-to-docker-build). |
-| `AUTO_DEVOPS_BUILD_IMAGE_FORWARDED_CI_VARIABLES` | A [comma-separated list of CI variable names](#passing-secrets-to-docker-build) to be passed to the `docker build` command as secrets. |
+| `AUTO_DEVOPS_BUILD_IMAGE_FORWARDED_CI_VARIABLES` | A [comma-separated list of CI variable names](#forward-ci-variables-to-the-build-environment) to be forwarded to the build environment (the buildpack builder or `docker build`). |
 | `AUTO_DEVOPS_CHART`                     | Helm Chart used to deploy your apps. Defaults to the one [provided by GitLab](https://gitlab.com/gitlab-org/charts/auto-deploy-app). |
 | `AUTO_DEVOPS_CHART_REPOSITORY`          | Helm Chart repository used to search for charts. Defaults to `https://charts.gitlab.io`. |
 | `AUTO_DEVOPS_CHART_REPOSITORY_NAME`     | From GitLab 11.11, used to set the name of the Helm repository. Defaults to `gitlab`. |
 | `AUTO_DEVOPS_CHART_REPOSITORY_USERNAME` | From GitLab 11.11, used to set a username to connect to the Helm repository. Defaults to no credentials. Also set `AUTO_DEVOPS_CHART_REPOSITORY_PASSWORD`. |
 | `AUTO_DEVOPS_CHART_REPOSITORY_PASSWORD` | From GitLab 11.11, used to set a password to connect to the Helm repository. Defaults to no credentials. Also set `AUTO_DEVOPS_CHART_REPOSITORY_USERNAME`. |
+| `AUTO_DEVOPS_DEPLOY_DEBUG`              | From GitLab 13.1, if this variable is present, Helm will output debug logs. |
 | `AUTO_DEVOPS_MODSECURITY_SEC_RULE_ENGINE` | From GitLab 12.5, used in combination with [ModSecurity feature flag](../../user/clusters/applications.md#web-application-firewall-modsecurity) to toggle [ModSecurity's `SecRuleEngine`](https://github.com/SpiderLabs/ModSecurity/wiki/Reference-Manual-(v2.x)#SecRuleEngine) behavior. Defaults to `DetectionOnly`. |
 | `BUILDPACK_URL`                         | Buildpack's full URL. Can point to either [a Git repository URL or a tarball URL](#custom-buildpacks). |
 | `CANARY_ENABLED`                        | From GitLab 11.0, used to define a [deploy policy for canary environments](#deploy-policy-for-canary-environments-premium). |
@@ -368,7 +365,7 @@ The following table lists variables used to disable jobs.
 
 ### Application secret variables
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/49056) in GitLab 11.7.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/49056) in GitLab 11.7.
 
 Some applications need to define secret variables that are accessible by the deployed
 application. Auto DevOps detects variables starting with `K8S_SECRET_`, and makes
@@ -506,7 +503,7 @@ If you define `CANARY_ENABLED` in your project, such as setting `CANARY_ENABLED`
 
 ### Incremental rollout to production **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/5415) in GitLab 10.8.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/5415) in GitLab 10.8.
 
 TIP: **Tip:**
 You can also set this inside your [project's settings](index.md#deployment-strategy).
@@ -563,7 +560,7 @@ removed in the future.
 
 ### Timed incremental rollout to production **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/7545) in GitLab 11.4.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/7545) in GitLab 11.4.
 
 TIP: **Tip:**
 You can also set this inside your [project's settings](index.md#deployment-strategy).
@@ -597,7 +594,7 @@ The banner can be disabled for:
   - By an administrator running the following in a Rails console:
 
     ```ruby
-    Feature.get(:auto_devops_banner_disabled).enable
+    Feature.enable(:auto_devops_banner_disabled)
     ```
 
   - Through the REST API with an admin access token:

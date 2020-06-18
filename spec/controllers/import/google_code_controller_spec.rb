@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Import::GoogleCodeController do
+RSpec.describe Import::GoogleCodeController do
   include ImportSpecHelper
 
   let(:user) { create(:user) }

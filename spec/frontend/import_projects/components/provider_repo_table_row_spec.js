@@ -6,7 +6,7 @@ import STATUS_MAP, { STATUSES } from '~/import_projects/constants';
 
 describe('ProviderRepoTableRow', () => {
   let vm;
-  const fetchImport = jest.fn((context, data) => actions.requestImport(context, data));
+  const fetchImport = jest.fn();
   const importPath = '/import-path';
   const defaultTargetNamespace = 'user';
   const ciCdOnly = true;
@@ -17,11 +17,11 @@ describe('ProviderRepoTableRow', () => {
     providerLink: 'providerLink',
   };
 
-  function initStore() {
+  function initStore(initialState) {
     const stubbedActions = { ...actions, fetchImport };
 
     const store = new Vuex.Store({
-      state: state(),
+      state: { ...state(), ...initialState },
       actions: stubbedActions,
       mutations,
       getters,
@@ -30,12 +30,11 @@ describe('ProviderRepoTableRow', () => {
     return store;
   }
 
-  function mountComponent() {
+  function mountComponent(initialState) {
     const localVue = createLocalVue();
     localVue.use(Vuex);
 
-    const store = initStore();
-    store.dispatch('setInitialData', { importPath, defaultTargetNamespace, ciCdOnly });
+    const store = initStore({ importPath, defaultTargetNamespace, ciCdOnly, ...initialState });
 
     const component = mount(providerRepoTableRow, {
       localVue,

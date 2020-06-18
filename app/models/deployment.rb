@@ -64,7 +64,7 @@ class Deployment < ApplicationRecord
     end
 
     before_transition any => [:success, :failed, :canceled] do |deployment|
-      deployment.finished_at = Time.now
+      deployment.finished_at = Time.current
     end
 
     after_transition any => :success do |deployment|

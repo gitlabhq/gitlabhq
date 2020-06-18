@@ -1,0 +1,5 @@
+---
+title: Fix leaky constant issue in diff collection spec
+merge_request: 32163
+author: Rajendra Kadam
+type: fixed

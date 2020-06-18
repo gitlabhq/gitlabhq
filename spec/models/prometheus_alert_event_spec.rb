@@ -49,7 +49,7 @@ describe PrometheusAlertEvent do
 
   describe 'transaction' do
     describe 'fire' do
-      let(:started_at) { Time.now }
+      let(:started_at) { Time.current }
 
       context 'when status is none' do
         subject { build(:prometheus_alert_event, :none) }
@@ -75,7 +75,7 @@ describe PrometheusAlertEvent do
     end
 
     describe 'resolve' do
-      let(:ended_at) { Time.now }
+      let(:ended_at) { Time.current }
 
       context 'when firing' do
         subject { build(:prometheus_alert_event) }

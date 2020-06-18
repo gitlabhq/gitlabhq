@@ -9,6 +9,8 @@ module Types
 
       expose_permissions Types::PermissionTypes::Note
 
+      implements(Types::ResolvableInterface)
+
       field :id, GraphQL::ID_TYPE, null: false,
             description: 'ID of the note'
 
@@ -21,11 +23,6 @@ module Types
             null: false,
             description: 'User who wrote this note',
             resolve: -> (note, args, context) { Gitlab::Graphql::Loaders::BatchModelLoader.new(User, note.author_id).find }
-
-      field :resolved_by, Types::UserType,
-            null: true,
-            description: 'User that resolved the discussion',
-            resolve: -> (note, _args, _context) { Gitlab::Graphql::Loaders::BatchModelLoader.new(User, note.resolved_by_id).find }
 
       field :system, GraphQL::BOOLEAN_TYPE,
             null: false,
@@ -44,11 +41,6 @@ module Types
             description: "Timestamp of the note's last activity"
       field :discussion, Types::Notes::DiscussionType, null: true,
             description: 'The discussion this note is a part of'
-      field :resolvable, GraphQL::BOOLEAN_TYPE, null: false,
-            description: 'Indicates if this note can be resolved. That is, if it is a resolvable discussion or simply a standalone note',
-            method: :resolvable?
-      field :resolved_at, Types::TimeType, null: true,
-            description: "Timestamp of the note's resolution"
       field :position, Types::Notes::DiffPositionType, null: true,
             description: 'The position of this note on a diff'
       field :confidential, GraphQL::BOOLEAN_TYPE, null: true,

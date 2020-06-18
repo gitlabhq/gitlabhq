@@ -25,7 +25,7 @@ module Gitlab
               mentions << mention_record unless mention_record.blank?
             end
 
-            Gitlab::Database.bulk_insert(
+            Gitlab::Database.bulk_insert( # rubocop:disable Gitlab/BulkInsert
               resource_user_mention_model.table_name,
               mentions,
               return_ids: true,

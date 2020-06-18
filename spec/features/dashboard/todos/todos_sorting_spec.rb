@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Dashboard > User sorts todos' do
+RSpec.describe 'Dashboard > User sorts todos' do
   let(:user)    { create(:user) }
   let(:project) { create(:project) }
 

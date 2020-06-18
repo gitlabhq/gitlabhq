@@ -9,8 +9,7 @@ class PipelineDetailsEntity < PipelineEntity
 
   expose :details do
     expose :artifacts do |pipeline, options|
-      rel = pipeline.artifacts
-      rel = rel.eager_load_job_artifacts_archive if options.fetch(:preload_job_artifacts_archive, true)
+      rel = pipeline.downloadable_artifacts
 
       BuildArtifactEntity.represent(rel, options)
     end

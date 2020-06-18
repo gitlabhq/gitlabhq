@@ -1,0 +1,5 @@
+---
+doc: "cicd: yaml: clarify rules:if when behaviour"
+merge_request: 33040
+author: Melvin Vermeeren
+type: changed

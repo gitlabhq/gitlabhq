@@ -15,7 +15,7 @@ describe Gitlab::Import::MergeRequestCreator do
 
       it 'updates the data' do
         commits_count = commits.count
-        merge_request.merge_request_diffs.destroy_all # rubocop: disable DestroyAll
+        merge_request.merge_request_diffs.destroy_all # rubocop: disable Cop/DestroyAll
 
         expect(merge_request.merge_request_diffs.count).to eq(0)
 

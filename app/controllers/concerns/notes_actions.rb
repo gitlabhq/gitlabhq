@@ -13,9 +13,7 @@ module NotesActions
   end
 
   def index
-    current_fetched_at = Time.current.to_i
-
-    notes_json = { notes: [], last_fetched_at: current_fetched_at }
+    notes_json = { notes: [], last_fetched_at: Time.current.to_i }
 
     notes = notes_finder
               .execute
@@ -24,7 +22,7 @@ module NotesActions
     if notes_filter != UserPreference::NOTES_FILTERS[:only_comments]
       notes =
         ResourceEvents::MergeIntoNotesService
-          .new(noteable, current_user, last_fetched_at: current_fetched_at)
+          .new(noteable, current_user, last_fetched_at: last_fetched_at)
           .execute(notes)
     end
 

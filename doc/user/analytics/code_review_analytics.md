@@ -2,14 +2,13 @@
 description: "Learn how long your open merge requests have spent in code review, and what distinguishes the longest-running." # Up to ~200 chars long. They will be displayed in Google Search snippets. It may help to write the page intro first, and then reuse it here.
 stage: Manage
 group: Analytics
-To determine the technical writer assigned to the Stage/Group associated with this page, see:
-  https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 ---
 
 
 # Code Review Analytics **(STARTER)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/38062) in [GitLab Starter](https://about.gitlab.com/pricing/) 12.7.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/38062) in [GitLab Starter](https://about.gitlab.com/pricing/) 12.7.
 
 Code Review Analytics makes it easy to view the longest-running reviews among open merge requests,
 enabling you to take action on individual merge requests and reduce overall cycle time.

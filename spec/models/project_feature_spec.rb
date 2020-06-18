@@ -18,106 +18,6 @@ describe ProjectFeature do
     end
   end
 
-  describe '.quoted_access_level_column' do
-    it 'returns the table name and quoted column name for a feature' do
-      expected = '"project_features"."issues_access_level"'
-
-      expect(described_class.quoted_access_level_column(:issues)).to eq(expected)
-    end
-  end
-
-  describe '#feature_available?' do
-    let(:features) { %w(issues wiki builds merge_requests snippets repository pages metrics_dashboard) }
-
-    context 'when features are disabled' do
-      it "returns false" do
-        update_all_project_features(project, features, ProjectFeature::DISABLED)
-
-        features.each do |feature|
-          expect(project.feature_available?(feature.to_sym, user)).to eq(false), "#{feature} failed"
-        end
-      end
-    end
-
-    context 'when features are enabled only for team members' do
-      it "returns false when user is not a team member" do
-        update_all_project_features(project, features, ProjectFeature::PRIVATE)
-
-        features.each do |feature|
-          expect(project.feature_available?(feature.to_sym, user)).to eq(false), "#{feature} failed"
-        end
-      end
-
-      it "returns true when user is a team member" do
-        project.add_developer(user)
-
-        update_all_project_features(project, features, ProjectFeature::PRIVATE)
-
-        features.each do |feature|
-          expect(project.feature_available?(feature.to_sym, user)).to eq(true), "#{feature} failed"
-        end
-      end
-
-      it "returns true when user is a member of project group" do
-        group = create(:group)
-        project = create(:project, namespace: group)
-        group.add_developer(user)
-
-        update_all_project_features(project, features, ProjectFeature::PRIVATE)
-
-        features.each do |feature|
-          expect(project.feature_available?(feature.to_sym, user)).to eq(true), "#{feature} failed"
-        end
-      end
-
-      context 'when admin mode is enabled', :enable_admin_mode do
-        it "returns true if user is an admin" do
-          user.update_attribute(:admin, true)
-
-          update_all_project_features(project, features, ProjectFeature::PRIVATE)
-
-          features.each do |feature|
-            expect(project.feature_available?(feature.to_sym, user)).to eq(true), "#{feature} failed"
-          end
-        end
-      end
-
-      context 'when admin mode is disabled' do
-        it "returns false when user is an admin" do
-          user.update_attribute(:admin, true)
-
-          update_all_project_features(project, features, ProjectFeature::PRIVATE)
-
-          features.each do |feature|
-            expect(project.feature_available?(feature.to_sym, user)).to eq(false), "#{feature} failed"
-          end
-        end
-      end
-    end
-
-    context 'when feature is enabled for everyone' do
-      it "returns true" do
-        expect(project.feature_available?(:issues, user)).to eq(true)
-      end
-    end
-
-    context 'when feature is disabled by a feature flag' do
-      it 'returns false' do
-        stub_feature_flags(issues: false)
-
-        expect(project.feature_available?(:issues, user)).to eq(false)
-      end
-    end
-
-    context 'when feature is enabled by a feature flag' do
-      it 'returns true' do
-        stub_feature_flags(issues: true)
-
-        expect(project.feature_available?(:issues, user)).to eq(true)
-      end
-    end
-  end
-
   context 'repository related features' do
     before do
       project.project_feature.update(
@@ -149,32 +49,6 @@ describe ProjectFeature do
         project_feature.update_attribute(field, ProjectFeature::PUBLIC)
 
         expect(project_feature.valid?).to be_falsy, "#{field} failed"
-      end
-    end
-  end
-
-  describe '#*_enabled?' do
-    let(:features) { %w(wiki builds merge_requests) }
-
-    it "returns false when feature is disabled" do
-      update_all_project_features(project, features, ProjectFeature::DISABLED)
-
-      features.each do |feature|
-        expect(project.public_send("#{feature}_enabled?")).to eq(false), "#{feature} failed"
-      end
-    end
-
-    it "returns true when feature is enabled only for team members" do
-      update_all_project_features(project, features, ProjectFeature::PRIVATE)
-
-      features.each do |feature|
-        expect(project.public_send("#{feature}_enabled?")).to eq(true), "#{feature} failed"
-      end
-    end
-
-    it "returns true when feature is enabled for everyone" do
-      features.each do |feature|
-        expect(project.public_send("#{feature}_enabled?")).to eq(true), "#{feature} failed"
       end
     end
   end
@@ -312,10 +186,5 @@ describe ProjectFeature do
     it 'returns normal permission for issues' do
       expect(described_class.required_minimum_access_level_for_private_project(:issues)).to eq(Gitlab::Access::GUEST)
     end
-  end
-
-  def update_all_project_features(project, features, value)
-    project_feature_attributes = features.map { |f| ["#{f}_access_level", value] }.to_h
-    project.project_feature.update(project_feature_attributes)
   end
 end

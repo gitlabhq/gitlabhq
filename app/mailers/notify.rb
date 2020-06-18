@@ -18,8 +18,9 @@ class Notify < ApplicationMailer
   include Emails::RemoteMirrors
   include Emails::Releases
   include Emails::Groups
+  include Emails::Reviews
 
-  helper MilestonesHelper
+  helper TimeboxesHelper
   helper MergeRequestsHelper
   helper DiffHelper
   helper BlobHelper

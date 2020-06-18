@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'User find project file' do
+RSpec.describe 'User find project file' do
   let(:user)    { create :user }
   let(:project) { create :project, :repository }
 

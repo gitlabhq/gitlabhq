@@ -12,80 +12,62 @@ describe Gitlab::JiraImport::Stage::StartImportWorker do
   end
 
   describe '#perform' do
-    context 'when feature flag not disabled' do
-      before do
-        stub_feature_flags(jira_issue_import: false)
-      end
+    let_it_be(:jira_import, reload: true) { create(:jira_import_state, project: project, jid: jid) }
 
-      it 'exits because import not allowed' do
+    context 'when import is not scheduled' do
+      it 'exits because import not started' do
         expect(Gitlab::JiraImport::Stage::ImportLabelsWorker).not_to receive(:perform_async)
 
         worker.perform(project.id)
       end
     end
 
-    context 'when feature flag enabled' do
-      let_it_be(:jira_import, reload: true) { create(:jira_import_state, project: project, jid: jid) }
-
+    context 'when import is scheduled' do
       before do
-        stub_feature_flags(jira_issue_import: true)
+        jira_import.schedule!
       end
 
-      context 'when import is not scheduled' do
-        it 'exits because import not started' do
-          expect(Gitlab::JiraImport::Stage::ImportLabelsWorker).not_to receive(:perform_async)
+      it 'advances to importing labels' do
+        expect(Gitlab::JiraImport::Stage::ImportLabelsWorker).to receive(:perform_async)
 
-          worker.perform(project.id)
-        end
+        worker.perform(project.id)
+      end
+    end
+
+    context 'when import is started' do
+      before do
+        jira_import.update!(status: :started)
       end
 
-      context 'when import is scheduled' do
-        before do
-          jira_import.schedule!
-        end
-
+      context 'when this is the same worker that stated import' do
         it 'advances to importing labels' do
+          allow(worker).to receive(:jid).and_return(jid)
           expect(Gitlab::JiraImport::Stage::ImportLabelsWorker).to receive(:perform_async)
 
           worker.perform(project.id)
         end
       end
 
-      context 'when import is started' do
-        before do
-          jira_import.update!(status: :started)
-        end
-
-        context 'when this is the same worker that stated import' do
-          it 'advances to importing labels' do
-            allow(worker).to receive(:jid).and_return(jid)
-            expect(Gitlab::JiraImport::Stage::ImportLabelsWorker).to receive(:perform_async)
-
-            worker.perform(project.id)
-          end
-        end
-
-        context 'when this is a different worker that stated import' do
-          it 'advances to importing labels' do
-            allow(worker).to receive(:jid).and_return('87654321')
-            expect(Gitlab::JiraImport::Stage::ImportLabelsWorker).not_to receive(:perform_async)
-
-            worker.perform(project.id)
-          end
-        end
-      end
-
-      context 'when import is finished' do
-        before do
-          jira_import.update!(status: :finished)
-        end
-
+      context 'when this is a different worker that stated import' do
         it 'advances to importing labels' do
-          allow(worker).to receive(:jid).and_return(jid)
+          allow(worker).to receive(:jid).and_return('87654321')
           expect(Gitlab::JiraImport::Stage::ImportLabelsWorker).not_to receive(:perform_async)
 
           worker.perform(project.id)
         end
+      end
+    end
+
+    context 'when import is finished' do
+      before do
+        jira_import.update!(status: :finished)
+      end
+
+      it 'advances to importing labels' do
+        allow(worker).to receive(:jid).and_return(jid)
+        expect(Gitlab::JiraImport::Stage::ImportLabelsWorker).not_to receive(:perform_async)
+
+        worker.perform(project.id)
       end
     end
   end

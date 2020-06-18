@@ -39,6 +39,11 @@ export default {
     metricDetails() {
       return this.currentRequest.details[this.metric];
     },
+    metricDetailsLabel() {
+      return this.metricDetails.duration
+        ? `${this.metricDetails.duration} / ${this.metricDetails.calls}`
+        : this.metricDetails.calls;
+    },
     detailsList() {
       return this.metricDetails.details;
     },
@@ -68,7 +73,7 @@ export default {
       type="button"
       data-toggle="modal"
     >
-      {{ metricDetails.duration }} / {{ metricDetails.calls }}
+      {{ metricDetailsLabel }}
     </button>
     <gl-modal
       :id="`modal-peek-${metric}-details`"
@@ -80,7 +85,9 @@ export default {
         <template v-if="detailsList.length">
           <tr v-for="(item, index) in detailsList" :key="index">
             <td>
-              <span>{{ sprintf(__('%{duration}ms'), { duration: item.duration }) }}</span>
+              <span v-if="item.duration">{{
+                sprintf(__('%{duration}ms'), { duration: item.duration })
+              }}</span>
             </td>
             <td>
               <div class="js-toggle-container">

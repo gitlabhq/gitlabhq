@@ -1,3 +1,9 @@
+---
+stage: Secure
+group: Static Analysis
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+---
+
 # SAST Analyzers **(ULTIMATE)**
 
 SAST relies on underlying third party tools that are wrapped into what we call
@@ -139,7 +145,7 @@ The [Security Scanner Integration](../../../development/integrations/secure.md) 
 
 ## Analyzers Data
 
-| Property \ Tool                         | Apex                 | Bandit               | Brakeman             | ESLint security      | Find Sec Bugs        | Flawfinder           | Gosec                | Kubesec Scanner      | NodeJsScan           | Php CS Security Audit   | Security code Scan (.NET)   | Sobelow            | TSLint Security    |
+| Property \ Tool                         | Apex                 | Bandit               | Brakeman             | ESLint security      | Find Sec Bugs        | Flawfinder           | Gosec                | Kubesec Scanner      | NodeJsScan           | PHP CS Security Audit   | Security code Scan (.NET)   | Sobelow            | TSLint Security    |
 | --------------------------------------- | :------------------: | :------------------: | :------------------: | :------------------: | :------------------: | :------------------: | :------------------: | :------------------: | :------------------: | :---------------------: | :-------------------------: | :----------------: | :-------------:    |
 | Severity                                | ✓                    | ✓                    | 𐄂                    | 𐄂                    | ✓                    | 𐄂                    | ✓                    | ✓                    | 𐄂                    | ✓                       | 𐄂                           | 𐄂                  | ✓                  |
 | Title                                   | ✓                    | ✓                    | ✓                    | ✓                    | ✓                    | ✓                    | ✓                    | ✓                    | ✓                    | ✓                       | ✓                           | ✓                  | ✓                  |

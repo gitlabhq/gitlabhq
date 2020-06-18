@@ -178,7 +178,7 @@ describe MergeRequestWidgetEntity do
     project.add_maintainer(user)
 
     expect(subject[:new_project_pipeline_path])
-      .to eq("/#{resource.project.full_path}/pipelines/new")
+      .to eq("/#{resource.project.full_path}/-/pipelines/new")
   end
 
   describe 'when source project is deleted' do

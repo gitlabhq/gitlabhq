@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe PersonalProjectsFinder do
+RSpec.describe PersonalProjectsFinder do
   let(:source_user)     { create(:user) }
   let(:current_user)    { create(:user) }
   let(:finder)          { described_class.new(source_user) }

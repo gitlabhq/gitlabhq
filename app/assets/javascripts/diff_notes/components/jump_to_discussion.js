@@ -1,4 +1,4 @@
-/* eslint-disable func-names, guard-for-in, no-restricted-syntax, no-lonely-if, no-continue */
+/* eslint-disable func-names, no-continue */
 /* global CommentsStore */
 
 import $ from 'jquery';
@@ -42,13 +42,13 @@ const JumpToDiscussion = Vue.extend({
     },
     lastResolvedId() {
       let lastId;
-      for (const discussionId in this.discussions) {
+      Object.keys(this.discussions).forEach(discussionId => {
         const discussion = this.discussions[discussionId];
 
         if (!discussion.isResolved()) {
           lastId = discussion.id;
         }
-      }
+      });
       return lastId;
     },
   },
@@ -95,12 +95,10 @@ const JumpToDiscussion = Vue.extend({
           if (unresolvedDiscussionCount === 1) {
             hasDiscussionsToJumpTo = false;
           }
-        } else {
+        } else if (unresolvedDiscussionCount === 0) {
           // If there are no unresolved discussions on the diffs tab at all,
           // there are no discussions to jump to.
-          if (unresolvedDiscussionCount === 0) {
-            hasDiscussionsToJumpTo = false;
-          }
+          hasDiscussionsToJumpTo = false;
         }
       } else if (activeTab !== 'show') {
         // If we are on the commits or builds tabs,

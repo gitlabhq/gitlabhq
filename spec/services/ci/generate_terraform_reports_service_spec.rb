@@ -12,15 +12,23 @@ describe Ci::GenerateTerraformReportsService do
 
     context 'when head pipeline has terraform reports' do
       it 'returns status and data' do
-        result = subject.execute(nil, merge_request.head_pipeline)
+        pipeline = merge_request.head_pipeline
+        result = subject.execute(nil, pipeline)
 
-        expect(result).to match(
-          status: :parsed,
-          data: match(
-            a_hash_including('tfplan.json' => a_hash_including('create' => 0, 'update' => 1, 'delete' => 0))
-          ),
-          key: an_instance_of(Array)
-        )
+        pipeline.builds.each do |build|
+          expect(result).to match(
+            status: :parsed,
+            data: match(
+              a_hash_including(build.id.to_s => hash_including(
+                'create' => 0,
+                'delete' => 0,
+                'update' => 1,
+                'job_name' => build.options.dig(:artifacts, :name).to_s
+              ))
+            ),
+            key: an_instance_of(Array)
+          )
+        end
       end
     end
 

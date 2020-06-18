@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Raw artifact', :js do
+RSpec.describe 'Raw artifact', :js do
   let(:project) { create(:project, :public) }
   let(:pipeline) { create(:ci_empty_pipeline, project: project) }
   let(:job) { create(:ci_build, :artifacts, pipeline: pipeline) }

@@ -1,0 +1,5 @@
+---
+title: Convert `:release` yaml to `release-cli` commands
+merge_request: 34261
+author:
+type: added

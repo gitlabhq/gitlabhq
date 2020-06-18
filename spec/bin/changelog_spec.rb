@@ -4,7 +4,7 @@ require 'spec_helper'
 
 load File.expand_path('../../bin/changelog', __dir__)
 
-describe 'bin/changelog' do
+RSpec.describe 'bin/changelog' do
   let(:options) { OpenStruct.new(title: 'Test title', type: 'fixed', dry_run: true) }
 
   describe ChangelogEntry do

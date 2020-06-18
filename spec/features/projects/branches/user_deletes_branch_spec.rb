@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-describe "User deletes branch", :js do
+RSpec.describe "User deletes branch", :js do
   let_it_be(:user) { create(:user) }
   let(:project) { create(:project, :repository) }
 

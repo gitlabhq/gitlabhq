@@ -17,9 +17,8 @@ module Issuable
       ids = params.delete(:issuable_ids).split(",")
       items = find_issuables(parent, model_class, ids)
 
-      permitted_attrs(type).each do |key|
-        params.delete(key) unless params[key].present?
-      end
+      params.slice!(*permitted_attrs(type))
+      params.delete_if { |k, v| v.blank? }
 
       if params[:assignee_ids] == [IssuableFinder::Params::NONE.to_s]
         params[:assignee_ids] = []
@@ -40,9 +39,13 @@ module Issuable
     private
 
     def permitted_attrs(type)
-      attrs = %i(state_event milestone_id assignee_id assignee_ids add_label_ids remove_label_ids subscription_event)
+      attrs = %i(state_event milestone_id add_label_ids remove_label_ids subscription_event)
 
-      if type == 'issue'
+      issuable_specific_attrs(type, attrs)
+    end
+
+    def issuable_specific_attrs(type, attrs)
+      if type == 'issue' || type == 'merge_request'
         attrs.push(:assignee_ids)
       else
         attrs.push(:assignee_id)

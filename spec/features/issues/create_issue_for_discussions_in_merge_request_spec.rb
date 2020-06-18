@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Resolving all open threads in a merge request from an issue', :js do
+RSpec.describe 'Resolving all open threads in a merge request from an issue', :js do
   let(:user) { create(:user) }
   let(:project) { create(:project, :repository) }
   let(:merge_request) { create(:merge_request, source_project: project) }

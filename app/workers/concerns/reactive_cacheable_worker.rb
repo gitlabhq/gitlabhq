@@ -7,6 +7,7 @@ module ReactiveCacheableWorker
     include ApplicationWorker
 
     feature_category_not_owned!
+    loggable_arguments 0
 
     def self.context_for_arguments(arguments)
       class_name, *_other_args = arguments

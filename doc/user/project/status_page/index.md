@@ -55,7 +55,7 @@ To deploy the Status Page to AWS S3 you need to add the Status Page project & co
 
 Once the CI/CD variables are set, you'll need to set up the Project you want to use for Incident issues:
 
-1. Navigate to **Settings > Operations > Status Page**.
+1. To view the [Operations Settings](../settings/#operations-settings) page, navigate to **{settings}** **Settings > Operations > Status Page**.
 1. Fill in your cloud provider's credentials and make sure the **Active** checkbox is checked.
 1. Click **Save changes**.
 
@@ -71,7 +71,8 @@ The incident detail page shows detailed information about a particular incident.
 
 - Status on the incident, including when the incident was last updated.
 - The incident title, including any emojis.
-- The description of the incident, including emojis and static images.
+- The description of the incident, including emojis.
+- Any file attachments provided in the incident description or comments with a valid image extension. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/205166) in GitLab 13.1.
 - A chronological ordered list of updates to the incident.
 
 ![Status Page detail](../img/status_page_detail_v12_10.png)
@@ -82,12 +83,21 @@ The incident detail page shows detailed information about a particular incident.
 
 To publish an Incident, you first need to create an issue in the Project you enabled the Status Page settings in.
 
-Once this issue is created, a background worker will publish the issue onto the Status Page using the credentials you provided during setup.
+Issues are not published to the Status Page by default. Use the `/publish` [quick action](../quick_actions.md) in an issue to publish the issue. Only [project or group owners](../../permissions.md) are permitted to publish issues.
+
+After the quick action is used, a background worker publishes the issue onto the Status Page using the credentials you provided during setup.
+
 Since all incidents are published publicly, user and group mentions are anonymized with `Incident Responder`,
 and titles of non-public [GitLab references](../../markdown.md#special-gitlab-references) are removed.
 
+When an Incident is published in the GitLab project, you can access the
+details page of the Incident by clicking the **Published on status page** button
+displayed under the Incident's title.
+
+![Status Page detail link](../img/status_page_detail_link_v13_1.png)
+
 NOTE: **Note:**
-Confidential issues are not published. If a published issue is made confidential it will be unpublished.
+Confidential issues can't be published. If you make a published issue confidential, it will be unpublished.
 
 ### Publishing updates
 
@@ -108,3 +118,15 @@ Anyone with access to view the Issue can add an Emoji Award to a comment, so you
 ### Changing the Incident status
 
 To change the incident status from `open` to `closed`, close the incident issue within GitLab. This will then be updated shortly on the Status Page website.
+
+## Attachment storage
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/205166) in GitLab 13.1.
+
+Beginning with GitLab 13.1, files attached to incident issue descriptions or
+comments are published and unpublished to the status page storage as part of
+the [publication flow](#how-it-works).
+
+### Limit
+
+Only 5000 attachments per issue will be transferred to the status page.

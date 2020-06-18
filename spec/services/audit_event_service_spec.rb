@@ -4,12 +4,16 @@ require 'spec_helper'
 
 describe AuditEventService do
   let(:project) { create(:project) }
-  let(:user) { create(:user) }
+  let(:user) { create(:user, :with_sign_ins) }
   let(:project_member) { create(:project_member, user: user) }
   let(:service) { described_class.new(user, project, { action: :destroy }) }
   let(:logger) { instance_double(Gitlab::AuditJsonLogger) }
 
   describe '#security_event' do
+    before do
+      stub_licensed_features(admin_audit_log: false)
+    end
+
     it 'creates an event and logs to a file' do
       expect(service).to receive(:file_logger).and_return(logger)
       expect(logger).to receive(:info).with(author_id: user.id,

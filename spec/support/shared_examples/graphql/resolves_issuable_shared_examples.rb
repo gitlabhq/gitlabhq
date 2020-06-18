@@ -22,18 +22,8 @@ RSpec.shared_examples 'resolving an issuable in GraphQL' do |type|
         .with(full_path: parent.full_path)
         .and_return(resolved_parent)
 
-      expect(resolver_class).to receive(:new)
+      expect(resolver_class.single).to receive(:new)
         .with(object: resolved_parent, context: context, field: nil)
-        .and_call_original
-
-      subject
-    end
-
-    it 'uses correct Resolver to resolve issuable parent' do
-      resolver_class = type == :epic ? 'Resolvers::GroupResolver' : 'Resolvers::ProjectResolver'
-
-      expect(resolver_class.constantize).to receive(:new)
-        .with(object: nil, context: context, field: nil)
         .and_call_original
 
       subject
@@ -41,7 +31,7 @@ RSpec.shared_examples 'resolving an issuable in GraphQL' do |type|
 
     it 'returns nil if issuable is not found' do
       result = mutation.resolve_issuable(type: type, parent_path: parent.full_path, iid: "100")
-      result = type == :merge_request ? result.sync : result
+      result = result.respond_to?(:sync) ? result.sync : result
 
       expect(result).to be_nil
     end

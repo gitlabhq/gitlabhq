@@ -124,15 +124,20 @@ describe Gitlab::GitalyClient::CommitService do
     let(:left_commit_id) { 'master' }
     let(:right_commit_id) { 'cfe32cf61b73a0d5e9f13e774abde7ff789b1660' }
 
-    it 'sends an RPC request' do
+    it 'sends an RPC request and returns the stats' do
       request = Gitaly::DiffStatsRequest.new(repository: repository_message,
                                              left_commit_id: left_commit_id,
                                              right_commit_id: right_commit_id)
 
-      expect_any_instance_of(Gitaly::DiffService::Stub).to receive(:diff_stats)
-        .with(request, kind_of(Hash)).and_return([])
+      diff_stat_response = Gitaly::DiffStatsResponse.new(
+        stats: [{ additions: 1, deletions: 2, path: 'test' }])
 
-      described_class.new(repository).diff_stats(left_commit_id, right_commit_id)
+      expect_any_instance_of(Gitaly::DiffService::Stub).to receive(:diff_stats)
+        .with(request, kind_of(Hash)).and_return([diff_stat_response])
+
+      returned_value = described_class.new(repository).diff_stats(left_commit_id, right_commit_id)
+
+      expect(returned_value).to eq(diff_stat_response.stats)
     end
   end
 
@@ -319,6 +324,61 @@ describe Gitlab::GitalyClient::CommitService do
         .with(request, kind_of(Hash)).and_return([])
 
       client.find_commits(order: 'default', author: "Billy Baggins <bilbo@shire.com>")
+    end
+  end
+
+  describe '#commits_by_message' do
+    shared_examples 'a CommitsByMessageRequest' do
+      let(:commits) { create_list(:gitaly_commit, 2) }
+
+      before do
+        request = Gitaly::CommitsByMessageRequest.new(
+          repository: repository_message,
+          query: query,
+          revision: (options[:revision] || '').dup.force_encoding(Encoding::ASCII_8BIT),
+          path: (options[:path] || '').dup.force_encoding(Encoding::ASCII_8BIT),
+          limit: (options[:limit] || 1000).to_i,
+          offset: (options[:offset] || 0).to_i
+        )
+
+        allow_any_instance_of(Gitaly::CommitService::Stub)
+          .to receive(:commits_by_message)
+          .with(request, kind_of(Hash))
+          .and_return([Gitaly::CommitsByMessageResponse.new(commits: commits)])
+      end
+
+      it 'sends an RPC request with the correct payload' do
+        expect(client.commits_by_message(query, options)).to match_array(wrap_commits(commits))
+      end
+    end
+
+    let(:query) { 'Add a feature' }
+    let(:options) { {} }
+
+    context 'when only the query is provided' do
+      include_examples 'a CommitsByMessageRequest'
+    end
+
+    context 'when all arguments are provided' do
+      let(:options) { { revision: 'feature-branch', path: 'foo.txt', limit: 10, offset: 20 } }
+
+      include_examples 'a CommitsByMessageRequest'
+    end
+
+    context 'when limit and offset are not integers' do
+      let(:options) { { limit: '10', offset: '60' } }
+
+      include_examples 'a CommitsByMessageRequest'
+    end
+
+    context 'when revision and path contain non-ASCII characters' do
+      let(:options) { { revision: "branch\u011F", path: "foo/\u011F.txt" } }
+
+      include_examples 'a CommitsByMessageRequest'
+    end
+
+    def wrap_commits(commits)
+      commits.map { |commit| Gitlab::Git::Commit.new(repository, commit) }
     end
   end
 end

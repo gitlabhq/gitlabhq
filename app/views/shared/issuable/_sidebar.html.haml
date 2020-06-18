@@ -53,7 +53,8 @@
           .selectbox.hide-collapsed
             = f.hidden_field 'milestone_id', value: milestone[:id], id: nil
             = dropdown_tag('Milestone', options: { title: _('Assign milestone'), toggle_class: 'js-milestone-select js-extra-options', filter: true, dropdown_class: 'dropdown-menu-selectable', placeholder: _('Search milestones'), data: { show_no: true, field_name: "#{issuable_type}[milestone_id]", project_id: issuable_sidebar[:project_id], issuable_id: issuable_sidebar[:id], milestones: issuable_sidebar[:project_milestones_path], ability_name: issuable_type, issue_update: issuable_sidebar[:issuable_json_path], use_id: true, default_no: true, selected: milestone[:title], null_default: true, display: 'static' }})
-
+          - if @project.group.present?
+            = render_if_exists 'shared/issuable/iteration_select', { can_edit: can_edit_issuable, group_path: @project.group.full_path, project_path: issuable_sidebar[:project_full_path], issue_iid: issuable_sidebar[:iid], issuable_type: issuable_type }
         #issuable-time-tracker.block
           // Fallback while content is loading
           .title.hide-collapsed

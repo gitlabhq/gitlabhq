@@ -117,7 +117,7 @@ export default {
             :href="webIdePath"
             :title="ideButtonTitle"
             :class="{ disabled: !mr.canPushToSourceBranch }"
-            class="btn btn-default js-web-ide d-none d-md-inline-block append-right-8"
+            class="btn btn-default js-web-ide d-none d-md-inline-block gl-mr-3"
             data-placement="bottom"
             tabindex="0"
             role="button"
@@ -129,7 +129,7 @@ export default {
             :disabled="mr.sourceBranchRemoved"
             data-target="#modal_merge_info"
             data-toggle="modal"
-            class="btn btn-default js-check-out-branch append-right-8"
+            class="btn btn-default js-check-out-branch gl-mr-3"
             type="button"
           >
             {{ s__('mrWidget|Check out branch') }}

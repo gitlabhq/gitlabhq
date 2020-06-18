@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Merge request > User sees merge widget', :js do
+RSpec.describe 'Merge request > User sees merge widget', :js do
   include ProjectForksHelper
   include TestReportsHelper
   include ReactiveCachingHelpers

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'User activates Jira', :js do
+RSpec.describe 'User activates Jira', :js do
   include_context 'project service activation'
 
   let(:url) { 'http://jira.example.com' }

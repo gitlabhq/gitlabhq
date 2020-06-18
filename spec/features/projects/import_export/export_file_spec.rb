@@ -6,7 +6,7 @@ require 'spec_helper'
 # It looks up for any sensitive word inside the JSON, so if a sensitive word is found
 # we'll have to either include it adding the model that includes it to the +safe_list+
 # or make sure the attribute is blacklisted in the +import_export.yml+ configuration
-describe 'Import/Export - project export integration test', :js do
+RSpec.describe 'Import/Export - project export integration test', :js do
   include Select2Helper
   include ExportFileHelper
 

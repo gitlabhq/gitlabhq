@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Issue Detail', :js do
+RSpec.describe 'Issue Detail', :js do
   let(:user)     { create(:user) }
   let(:project)  { create(:project, :public) }
   let(:issue)    { create(:issue, project: project, author: user) }

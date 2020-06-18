@@ -16,5 +16,8 @@
         .nothing-here-block No milestones to show
     - else
       - @milestones.each do |milestone|
-        = render 'milestone', milestone: milestone
+        - if milestone.project_milestone?
+          = render 'projects/milestones/milestone', milestone: milestone
+        - else
+          = render 'milestone', milestone: milestone
   = paginate @milestones, theme: "gitlab"

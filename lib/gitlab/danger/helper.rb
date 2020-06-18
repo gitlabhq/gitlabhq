@@ -142,6 +142,7 @@ module Gitlab
         %r{Dangerfile\z} => :engineering_productivity,
         %r{\A(ee/)?(danger/|lib/gitlab/danger/)} => :engineering_productivity,
         %r{\A(ee/)?scripts/} => :engineering_productivity,
+        %r{\A\.codeclimate\.yml\z} => :engineering_productivity,
 
         %r{\A(ee/)?app/(?!assets|views)[^/]+} => :backend,
         %r{\A(ee/)?(bin|config|generator_templates|lib|rubocop)/} => :backend,
@@ -151,6 +152,7 @@ module Gitlab
         %r{\A(Gemfile|Gemfile.lock|Rakefile)\z} => :backend,
         %r{\A[A-Z_]+_VERSION\z} => :backend,
         %r{\A\.rubocop(_todo)?\.yml\z} => :backend,
+        %r{\Afile_hooks/} => :backend,
 
         %r{\A(ee/)?qa/} => :qa,
 

@@ -1,4 +1,7 @@
 ---
+stage: Verify
+group: Continuous Integration
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 type: howto
 ---
 
@@ -12,7 +15,7 @@ GitLab.
 Watch a video on [Using GitLab CI/CD pipelines with GitHub repositories](https://www.youtube.com/watch?v=qgl3F2j-1cI).
 
 NOTE: **Note:**
-Because of [GitHub limitations](https://gitlab.com/gitlab-org/gitlab/issues/9147),
+Because of [GitHub limitations](https://gitlab.com/gitlab-org/gitlab/-/issues/9147),
 [GitHub OAuth](../../integration/github.md#enabling-github-oauth)
 cannot be used to authenticate with GitHub as an external CI/CD repository.
 
@@ -20,7 +23,7 @@ cannot be used to authenticate with GitHub as an external CI/CD repository.
 
 NOTE: **Note:**
 Personal access tokens can only be used to connect GitHub.com
-repositories to GitLab.
+repositories to GitLab, and the GitHub user must have the [owner role](https://help.github.com/en/github/getting-started-with-github/access-permissions-on-github).
 
 To perform a one-off authorization with GitHub to grant GitLab access your
 repositories:
@@ -33,10 +36,8 @@ repositories:
    your project, update commit statuses, and create a web hook to notify
    GitLab of new commits.
 
-1. In GitLab create a **CI/CD for external repo** project and select
+1. In GitLab, go to the [new project page](../../gitlab-basics/create-project.md#create-a-project-in-gitlab), select the **CI/CD for external repo** tab, and then click
    **GitHub**.
-
-   ![Create project](img/github_omniauth.png)
 
 1. Paste the token into the **Personal access token** field and click **List
    Repositories**. Click **Connect** to select the repository.
@@ -91,7 +92,7 @@ To manually enable GitLab CI/CD for your repository:
    https://gitlab.com/api/v4/projects/<NAMESPACE>%2F<PROJECT>/mirror/pull?private_token=<PERSONAL_ACCESS_TOKEN>
    ```
 
-   ![Create web hook](img/github_push_webhook.png)
+   Select the **Let me select individual events** option, then check the **Pull requests** and **Pushes** checkboxes. These settings are needed for [pipelines for external pull requests](index.md#pipelines-for-external-pull-requests).
 
 1. In GitHub add a `.gitlab-ci.yml` to configure GitLab CI/CD.
 

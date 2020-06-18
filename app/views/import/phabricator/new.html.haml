@@ -11,15 +11,15 @@
 = form_tag import_phabricator_path, class: 'new_project', method: :post do
   = render 'import/shared/new_project_form'
 
-  %h4.prepend-top-0= _('Enter in your Phabricator Server URL and personal access token below')
+  %h4.gl-mt-0= _('Enter in your Phabricator Server URL and personal access token below')
 
   .form-group.row
     = label_tag :phabricator_server_url, _('Phabricator Server URL'), class: 'col-form-label col-md-2'
     .col-md-4
-      = text_field_tag :phabricator_server_url, params[:phabricator_server_url], class: 'form-control append-right-8', placeholder: 'https://your-phabricator-server', size: 40
+      = text_field_tag :phabricator_server_url, params[:phabricator_server_url], class: 'form-control gl-mr-3', placeholder: 'https://your-phabricator-server', size: 40
   .form-group.row
     = label_tag :api_token, _('API Token'), class: 'col-form-label col-md-2'
     .col-md-4
-      = password_field_tag :api_token, params[:api_token], class: 'form-control append-right-8', placeholder: _('Personal Access Token'), size: 40
+      = password_field_tag :api_token, params[:api_token], class: 'form-control gl-mr-3', placeholder: _('Personal Access Token'), size: 40
   .form-actions
     = submit_tag _('Import tasks'), class: 'btn btn-success'

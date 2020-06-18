@@ -4,13 +4,17 @@
 
 The access levels are defined in the `Gitlab::Access` module. Currently, these levels are recognized:
 
-```plaintext
-10 => Guest access
-20 => Reporter access
-30 => Developer access
-40 => Maintainer access
-50 => Owner access # Only valid for groups
-```
+- No access (`0`)
+- Guest (`10`)
+- Reporter (`20`)
+- Developer (`30`)
+- Maintainer (`40`)
+- Owner (`50`) - Only valid to set for groups
+
+CAUTION: **Caution:**
+Due to [an issue](https://gitlab.com/gitlab-org/gitlab/-/issues/219299),
+projects in personal namespaces will not show owner (`50`) permission
+for owner.
 
 ## List all members of a group or project
 
@@ -31,8 +35,8 @@ GET /projects/:id/members
 | `user_ids`   | array of integers | no     | Filter the results on the given user IDs |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/groups/:id/members
-curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/:id/members
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/:id/members"
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/:id/members"
 ```
 
 Example response:
@@ -59,6 +63,7 @@ Example response:
     "web_url": "http://192.168.1.8:3000/root",
     "expires_at": "2012-10-22T14:13:35Z",
     "access_level": 30,
+    "email": "john@example.com",
     "group_saml_identity": {
       "extern_uid":"ABC-1234567890",
       "provider": "group_saml",
@@ -88,8 +93,8 @@ GET /projects/:id/members/all
 | `user_ids`   | array of integers | no     | Filter the results on the given user IDs |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/groups/:id/members/all
-curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/:id/members/all
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/:id/members/all"
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/:id/members/all"
 ```
 
 Example response:
@@ -116,6 +121,7 @@ Example response:
     "web_url": "http://192.168.1.8:3000/root",
     "expires_at": "2012-10-22T14:13:35Z",
     "access_level": 30
+    "email": "john@example.com",
     "group_saml_identity": {
       "extern_uid":"ABC-1234567890",
       "provider": "group_saml",
@@ -151,8 +157,8 @@ GET /projects/:id/members/:user_id
 | `user_id` | integer | yes   | The user ID of the member |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/groups/:id/members/:user_id
-curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/:id/members/:user_id
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/:id/members/:user_id"
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/:id/members/:user_id"
 ```
 
 Example response:
@@ -188,8 +194,8 @@ GET /projects/:id/members/all/:user_id
 | `user_id` | integer | yes   | The user ID of the member |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/groups/:id/members/all/:user_id
-curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/:id/members/all/:user_id
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/:id/members/all/:user_id"
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/:id/members/all/:user_id"
 ```
 
 Example response:
@@ -225,8 +231,8 @@ POST /projects/:id/members
 | `expires_at` | string | no | A date string in the format YEAR-MONTH-DAY |
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --data "user_id=1&access_level=30" https://gitlab.example.com/api/v4/groups/:id/members
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --data "user_id=1&access_level=30" https://gitlab.example.com/api/v4/projects/:id/members
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --data "user_id=1&access_level=30" "https://gitlab.example.com/api/v4/groups/:id/members"
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --data "user_id=1&access_level=30" "https://gitlab.example.com/api/v4/projects/:id/members"
 ```
 
 Example response:
@@ -262,8 +268,8 @@ PUT /projects/:id/members/:user_id
 | `expires_at` | string | no | A date string in the format YEAR-MONTH-DAY |
 
 ```shell
-curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/groups/:id/members/:user_id?access_level=40
-curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/:id/members/:user_id?access_level=40
+curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/:id/members/:user_id?access_level=40"
+curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/:id/members/:user_id?access_level=40"
 ```
 
 Example response:
@@ -284,7 +290,7 @@ Example response:
 
 ### Set override flag for a member of a group
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/4875) in GitLab 12.10.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/4875) in GitLab 12.10.
 
 By default, the access level of LDAP group members is set to the value specified
 by LDAP through Group Sync. You can allow access level overrides by calling this endpoint.
@@ -298,8 +304,8 @@ POST /groups/:id/members/:user_id/override
 | `id`      | integer/string | yes | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) owned by the authenticated user |
 | `user_id` | integer | yes   | The user ID of the member |
 
-```bash
-curl --request PUT --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/groups/:id/members/:user_id/override
+```shell
+curl --request PUT --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/groups/:id/members/:user_id/override"
 ```
 
 Example response:
@@ -320,7 +326,7 @@ Example response:
 
 ### Remove override for a member of a group
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/4875) in GitLab 12.10.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/4875) in GitLab 12.10.
 
 Sets the override flag to false and allows LDAP Group Sync to reset the access
 level to the LDAP-prescribed value.
@@ -334,8 +340,8 @@ DELETE /groups/:id/members/:user_id/override
 | `id`      | integer/string | yes | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) owned by the authenticated user |
 | `user_id` | integer | yes   | The user ID of the member |
 
-```bash
-curl --request PUT --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/groups/:id/members/:user_id/override
+```shell
+curl --request PUT --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/groups/:id/members/:user_id/override"
 ```
 
 Example response:
@@ -369,10 +375,10 @@ DELETE /projects/:id/members/:user_id
 | `user_id` | integer | yes   | The user ID of the member |
 
 ```shell
-curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/groups/:id/members/:user_id
-curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/:id/members/:user_id
+curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/:id/members/:user_id"
+curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/:id/members/:user_id"
 ```
 
 ## Give a group access to a project
 
-Look at [share project with group](projects.md#share-project-with-group)
+See [share project with group](projects.md#share-project-with-group)

@@ -1,11 +1,14 @@
 ---
+stage: Verify
+group: Continuous Integration
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 type: reference
 last_update: 2019-07-03
 ---
 
 # Pipelines for Merged Results **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/7380) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.10.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/7380) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.10.
 
 When you submit a merge request, you are requesting to merge changes from a
 source branch into a target branch. By default, the CI pipeline runs jobs
@@ -44,7 +47,7 @@ To enable pipelines for merge results:
 - You must have maintainer [permissions](../../../user/permissions.md).
 - You must be using [GitLab Runner](https://gitlab.com/gitlab-org/gitlab-runner) 11.9 or later.
 - You must not be forking or using cross-repo workflows. To follow progress,
-  see [#11934](https://gitlab.com/gitlab-org/gitlab/issues/11934).
+  see [#11934](https://gitlab.com/gitlab-org/gitlab/-/issues/11934).
 - You must not be using
   [fast forward merges](../../../user/project/merge_requests/fast_forward_merge.md) yet.
   To follow progress, see [#58226](https://gitlab.com/gitlab-org/gitlab/-/issues/26996).
@@ -56,7 +59,7 @@ To enable pipelines for merged results for your project:
 1. [Configure your CI/CD configuration file](../index.md#configuring-pipelines-for-merge-requests)
    so that the pipeline or individual jobs run for merge requests.
 1. Visit your project's **Settings > General** and expand **Merge requests**.
-1. Check **Merge pipelines will try to validate the post-merge result prior to merging**.
+1. Check **Enable merge trains and pipelines for merged results**.
 1. Click **Save changes**.
 
 CAUTION: **Caution:**
@@ -76,9 +79,9 @@ merge happens.
 
 For more information, read the [documentation on Merge Trains](merge_trains/index.md).
 
-## Automatic pipeline cancelation
+## Automatic pipeline cancellation
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/12996) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.3.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12996) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.3.
 
 GitLab CI/CD can detect the presence of redundant pipelines,
 and will cancel them automatically in order to conserve CI resources.

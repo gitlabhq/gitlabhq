@@ -105,6 +105,14 @@ describe ApplicationSetting do
 
     it { is_expected.not_to allow_value(false).for(:hashed_storage_enabled) }
 
+    it { is_expected.not_to allow_value(101).for(:repository_storages_weighted_default) }
+    it { is_expected.not_to allow_value(-1).for(:repository_storages_weighted_default) }
+    it { is_expected.to allow_value(100).for(:repository_storages_weighted_default) }
+    it { is_expected.to allow_value(0).for(:repository_storages_weighted_default) }
+    it { is_expected.to allow_value(50).for(:repository_storages_weighted_default) }
+    it { is_expected.to allow_value(nil).for(:repository_storages_weighted_default) }
+    it { is_expected.not_to allow_value({ default: 100, shouldntexist: 50 }).for(:repository_storages_weighted) }
+
     context 'grafana_url validations' do
       before do
         subject.instance_variable_set(:@parsed_grafana_url, nil)
@@ -149,6 +157,30 @@ describe ApplicationSetting do
             'Admin Area > Settings > Metrics and profiling > Metrics - Grafana'
           ])
         end
+      end
+    end
+
+    describe 'spam_check_endpoint' do
+      context 'when spam_check_endpoint is enabled' do
+        before do
+          setting.spam_check_endpoint_enabled = true
+        end
+
+        it { is_expected.to allow_value('https://example.org/spam_check').for(:spam_check_endpoint_url) }
+        it { is_expected.not_to allow_value('nonsense').for(:spam_check_endpoint_url) }
+        it { is_expected.not_to allow_value(nil).for(:spam_check_endpoint_url) }
+        it { is_expected.not_to allow_value('').for(:spam_check_endpoint_url) }
+      end
+
+      context 'when spam_check_endpoint is NOT enabled' do
+        before do
+          setting.spam_check_endpoint_enabled = false
+        end
+
+        it { is_expected.to allow_value('https://example.org/spam_check').for(:spam_check_endpoint_url) }
+        it { is_expected.not_to allow_value('nonsense').for(:spam_check_endpoint_url) }
+        it { is_expected.to allow_value(nil).for(:spam_check_endpoint_url) }
+        it { is_expected.to allow_value('').for(:spam_check_endpoint_url) }
       end
     end
 
@@ -249,6 +281,14 @@ describe ApplicationSetting do
       is_expected.to validate_numericality_of(:max_attachment_size)
         .only_integer
         .is_greater_than(0)
+    end
+
+    it { is_expected.to validate_presence_of(:max_import_size) }
+
+    it do
+      is_expected.to validate_numericality_of(:max_import_size)
+        .only_integer
+        .is_greater_than_or_equal_to(0)
     end
 
     it do
@@ -762,4 +802,17 @@ describe ApplicationSetting do
   end
 
   it_behaves_like 'application settings examples'
+
+  describe 'repository_storages_weighted_attributes' do
+    it 'returns the keys for repository_storages_weighted' do
+      expect(subject.class.repository_storages_weighted_attributes).to eq([:repository_storages_weighted_default])
+    end
+  end
+
+  it 'does not allow to set weight for non existing storage' do
+    setting.repository_storages_weighted = { invalid_storage: 100 }
+
+    expect(setting).not_to be_valid
+    expect(setting.errors.messages[:repository_storages_weighted]).to match_array(["can't include: invalid_storage"])
+  end
 end

@@ -6,10 +6,10 @@ describe Discussion, ResolvableDiscussion do
   subject { described_class.new([first_note, second_note, third_note]) }
 
   let(:first_note) { create(:discussion_note_on_merge_request) }
-  let(:merge_request) { first_note.noteable }
+  let(:noteable) { first_note.noteable }
   let(:project) { first_note.project }
-  let(:second_note) { create(:discussion_note_on_merge_request, noteable: merge_request, project: project, in_reply_to: first_note) }
-  let(:third_note) { create(:discussion_note_on_merge_request, noteable: merge_request, project: project) }
+  let(:second_note) { create(:discussion_note_on_merge_request, noteable: noteable, project: project, in_reply_to: first_note) }
+  let(:third_note) { create(:discussion_note_on_merge_request, noteable: noteable, project: project) }
 
   describe "#resolvable?" do
     context "when potentially resolvable" do
@@ -198,11 +198,25 @@ describe Discussion, ResolvableDiscussion do
           it "returns true" do
             expect(subject.can_resolve?(current_user)).to be true
           end
+
+          context "when the noteable has no author" do
+            it "returns true" do
+              expect(noteable).to receive(:author).and_return(nil)
+              expect(subject.can_resolve?(current_user)).to be true
+            end
+          end
         end
 
         context "when the signed in user is a random user" do
           it "returns false" do
             expect(subject.can_resolve?(current_user)).to be false
+          end
+
+          context "when the noteable has no author" do
+            it "returns false" do
+              expect(noteable).to receive(:author).and_return(nil)
+              expect(subject.can_resolve?(current_user)).to be false
+            end
           end
         end
       end
@@ -536,7 +550,7 @@ describe Discussion, ResolvableDiscussion do
 
   describe "#last_resolved_note" do
     let(:current_user) { create(:user) }
-    let(:time) { Time.now.utc }
+    let(:time) { Time.current.utc }
 
     before do
       Timecop.freeze(time - 1.second) do

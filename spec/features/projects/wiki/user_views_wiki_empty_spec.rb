@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'User views empty wiki' do
+RSpec.describe 'User views empty wiki' do
   let(:user) { create(:user) }
 
   shared_examples 'empty wiki and accessible issues' do
@@ -12,6 +12,8 @@ describe 'User views empty wiki' do
       element = page.find('.row.empty-state')
 
       expect(element).to have_content('This project has no wiki pages')
+      expect(element).to have_content('You must be a project member')
+      expect(element).to have_content('improve the wiki for this project')
       expect(element).to have_link("issue tracker", href: project_issues_path(project))
       expect(element).to have_link("Suggest wiki improvement", href: new_project_issue_path(project))
     end
@@ -24,6 +26,7 @@ describe 'User views empty wiki' do
       element = page.find('.row.empty-state')
 
       expect(element).to have_content('This project has no wiki pages')
+      expect(element).to have_content('You must be a project member')
       expect(element).to have_no_link('Suggest wiki improvement')
     end
   end
@@ -66,8 +69,9 @@ describe 'User views empty wiki' do
 
     it 'show "create first page" message' do
       visit(project_wikis_path(project))
-
       element = page.find('.row.empty-state')
+
+      expect(element).to have_content('your project', count: 2)
 
       element.click_link 'Create your first page'
 

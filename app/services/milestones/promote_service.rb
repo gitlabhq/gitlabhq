@@ -76,7 +76,7 @@ module Milestones
 
     # rubocop: disable CodeReuse/ActiveRecord
     def destroy_old_milestones(milestone)
-      Milestone.where(id: milestone_ids_for_merge(milestone)).destroy_all # rubocop: disable DestroyAll
+      Milestone.where(id: milestone_ids_for_merge(milestone)).destroy_all # rubocop: disable Cop/DestroyAll
     end
     # rubocop: enable CodeReuse/ActiveRecord
 

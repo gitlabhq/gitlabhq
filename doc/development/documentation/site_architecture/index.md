@@ -53,12 +53,12 @@ product, and all together are pulled to generate the docs website:
 - [GitLab Chart](https://gitlab.com/charts/gitlab/tree/master/doc)
 
 NOTE: **Note:**
-In September 2019, we [moved towards a single codebase](https://gitlab.com/gitlab-org/gitlab/issues/2952),
+In September 2019, we [moved towards a single codebase](https://gitlab.com/gitlab-org/gitlab/-/issues/2952),
 as such the docs for CE and EE are now identical. For historical reasons and
 in order not to break any existing links throughout the internet, we still
 maintain the CE docs (`https://docs.gitlab.com/ce/`), although it is hidden
 from the website, and is now a symlink to the EE docs. When
-[Pages supports redirects](https://gitlab.com/gitlab-org/gitlab-pages/issues/24),
+[Pages supports redirects](https://gitlab.com/gitlab-org/gitlab-pages/-/issues/24),
 we will be able to remove this completely.
 
 ## Assets
@@ -107,13 +107,13 @@ The pipeline in the `gitlab-docs` project:
 
 Once a week on Mondays, a scheduled pipeline runs and rebuilds the Docker images
 used in various pipeline jobs, like `docs-lint`. The Docker image configuration files are
-located at <https://gitlab.com/gitlab-org/gitlab-docs/-/tree/master/dockerfiles>.
+located in the [Dockerfiles directory](https://gitlab.com/gitlab-org/gitlab-docs/-/tree/master/dockerfiles).
 
 If you need to rebuild the Docker images immediately (must have maintainer level permissions):
 
 CAUTION: **Caution**
 If you change the dockerfile configuration and rebuild the images, you can break the master
-pipeline in the main `gitlab` repo as well as in `gitlab-docs`. Create an image with
+pipeline in the main `gitlab` repository as well as in `gitlab-docs`. Create an image with
 a different name first and test it to ensure you do not break the pipelines.
 
 1. In [`gitlab-docs`](https://gitlab.com/gitlab-org/gitlab-docs), go to **{rocket}** **CI / CD > Pipelines**.
@@ -173,7 +173,7 @@ we reference the array with a symbol (`:versions`).
 ## Bumping versions of CSS and JavaScript
 
 Whenever the custom CSS and JavaScript files under `content/assets/` change,
-make sure to bump their version in the frontmatter. This method guarantees that
+make sure to bump their version in the front matter. This method guarantees that
 your changes will take effect by clearing the cache of previous files.
 
 Always use Nanoc's way of including those files, do not hardcode them in the
@@ -207,22 +207,22 @@ If you don't specify `editor:`, the simple one is used by default.
 
 ## Algolia search engine
 
-The docs site uses [Algolia docsearch](https://community.algolia.com/docsearch/)
+The docs site uses [Algolia DocSearch](https://community.algolia.com/docsearch/)
 for its search function. This is how it works:
 
-1. GitLab is a member of the [docsearch program](https://community.algolia.com/docsearch/#join-docsearch-program),
+1. GitLab is a member of the [DocSearch program](https://community.algolia.com/docsearch/#join-docsearch-program),
    which is the free tier of [Algolia](https://www.algolia.com/).
 1. Algolia hosts a [DocSearch configuration](https://github.com/algolia/docsearch-configs/blob/master/configs/gitlab.json)
    for the GitLab docs site, and we've worked together to refine it.
-1. That [config](https://community.algolia.com/docsearch/config-file.html) is
+1. That [configuration](https://community.algolia.com/docsearch/config-file.html) is
    parsed by their [crawler](https://community.algolia.com/docsearch/crawler-overview.html)
    every 24h and [stores](https://community.algolia.com/docsearch/inside-the-engine.html)
-   the [docsearch index](https://community.algolia.com/docsearch/how-do-we-build-an-index.html)
+   the [DocSearch index](https://community.algolia.com/docsearch/how-do-we-build-an-index.html)
    on [Algolia's servers](https://community.algolia.com/docsearch/faq.html#where-is-my-data-hosted%3F).
-1. On the docs side, we use a [docsearch layout](https://gitlab.com/gitlab-org/gitlab-docs/blob/master/layouts/docsearch.html) which
+1. On the docs side, we use a [DocSearch layout](https://gitlab.com/gitlab-org/gitlab-docs/blob/master/layouts/docsearch.html) which
    is present on pretty much every page except <https://docs.gitlab.com/search/>,
    which uses its [own layout](https://gitlab.com/gitlab-org/gitlab-docs/blob/master/layouts/instantsearch.html). In those layouts,
-   there's a JavaScript snippet which initiates docsearch by using an API key
+   there's a JavaScript snippet which initiates DocSearch by using an API key
    and an index name (`gitlab`) that are needed for Algolia to show the results.
 
 NOTE: **For GitLab employees:**

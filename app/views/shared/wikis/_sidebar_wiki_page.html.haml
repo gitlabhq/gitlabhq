@@ -1,0 +1,3 @@
+%li{ class: active_when(params[:id] == wiki_page.slug) }
+  = link_to wiki_page_path(@wiki, wiki_page) do
+    = wiki_page.human_title

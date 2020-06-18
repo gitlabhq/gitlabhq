@@ -13,11 +13,18 @@ class GroupMember < Member
   # Make sure group member points only to group as it source
   default_value_for :source_type, SOURCE_TYPE
   validates :source_type, format: { with: /\ANamespace\z/ }
-  default_scope { where(source_type: SOURCE_TYPE) }
+  default_scope { where(source_type: SOURCE_TYPE) } # rubocop:disable Cop/DefaultScope
 
   scope :of_groups, ->(groups) { where(source_id: groups.select(:id)) }
-  scope :count_users_by_group_id, -> { joins(:user).group(:source_id).count }
   scope :of_ldap_type, -> { where(ldap: true) }
+
+  scope :count_users_by_group_id, -> do
+    if Feature.enabled?(:optimized_count_users_by_group_id)
+      group(:source_id).count
+    else
+      joins(:user).group(:source_id).count
+    end
+  end
 
   after_create :update_two_factor_requirement, unless: :invite?
   after_destroy :update_two_factor_requirement, unless: :invite?

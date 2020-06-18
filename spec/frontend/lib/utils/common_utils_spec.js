@@ -1,4 +1,5 @@
 import * as commonUtils from '~/lib/utils/common_utils';
+import $ from 'jquery';
 
 describe('common_utils', () => {
   describe('parseUrl', () => {
@@ -208,6 +209,59 @@ describe('common_utils', () => {
       expect(commonUtils.buildUrlWithCurrentLocation('?page=2')).toEqual(
         `${window.location.pathname}?page=2`,
       );
+    });
+  });
+
+  describe('scrollToElement*', () => {
+    let elem;
+    const windowHeight = 1000;
+    const elemTop = 100;
+
+    beforeEach(() => {
+      elem = document.createElement('div');
+      window.innerHeight = windowHeight;
+      jest.spyOn($.fn, 'animate');
+      jest.spyOn($.fn, 'offset').mockReturnValue({ top: elemTop });
+    });
+
+    afterEach(() => {
+      $.fn.animate.mockRestore();
+      $.fn.offset.mockRestore();
+    });
+
+    describe('scrollToElement', () => {
+      it('scrolls to element', () => {
+        commonUtils.scrollToElement(elem);
+        expect($.fn.animate).toHaveBeenCalledWith(
+          {
+            scrollTop: elemTop,
+          },
+          expect.any(Number),
+        );
+      });
+
+      it('scrolls to element with offset', () => {
+        const offset = 50;
+        commonUtils.scrollToElement(elem, { offset });
+        expect($.fn.animate).toHaveBeenCalledWith(
+          {
+            scrollTop: elemTop + offset,
+          },
+          expect.any(Number),
+        );
+      });
+    });
+
+    describe('scrollToElementWithContext', () => {
+      it('scrolls with context', () => {
+        commonUtils.scrollToElementWithContext();
+        expect($.fn.animate).toHaveBeenCalledWith(
+          {
+            scrollTop: elemTop - windowHeight * 0.1,
+          },
+          expect.any(Number),
+        );
+      });
     });
   });
 
@@ -535,6 +589,7 @@ describe('common_utils', () => {
           id: 1,
           group_name: 'GitLab.org',
           absolute_web_url: 'https://gitlab.com/gitlab-org/',
+          milestones: ['12.3', '12.4'],
         },
         objNested: {
           project_name: 'GitLab CE',
@@ -545,6 +600,7 @@ describe('common_utils', () => {
             frontend_framework: 'Vue',
             database: 'PostgreSQL',
           },
+          milestones: ['12.3', '12.4'],
         },
       },
       convertObjectPropsToCamelCase: {
@@ -552,6 +608,7 @@ describe('common_utils', () => {
           id: 1,
           group_name: 'GitLab.org',
           absolute_web_url: 'https://gitlab.com/gitlab-org/',
+          milestones: ['12.3', '12.4'],
         },
         objNested: {
           project_name: 'GitLab CE',
@@ -562,6 +619,7 @@ describe('common_utils', () => {
             frontend_framework: 'Vue',
             database: 'PostgreSQL',
           },
+          milestones: ['12.3', '12.4'],
         },
       },
       convertObjectPropsToSnakeCase: {
@@ -569,6 +627,7 @@ describe('common_utils', () => {
           id: 1,
           groupName: 'GitLab.org',
           absoluteWebUrl: 'https://gitlab.com/gitlab-org/',
+          milestones: ['12.3', '12.4'],
         },
         objNested: {
           projectName: 'GitLab CE',
@@ -579,6 +638,7 @@ describe('common_utils', () => {
             frontendFramework: 'Vue',
             database: 'PostgreSQL',
           },
+          milestones: ['12.3', '12.4'],
         },
       },
     };
@@ -615,16 +675,19 @@ describe('common_utils', () => {
             id_converted: 1,
             group_name_converted: 'GitLab.org',
             absolute_web_url_converted: 'https://gitlab.com/gitlab-org/',
+            milestones_converted: ['12.3', '12.4'],
           },
           convertObjectPropsToCamelCase: {
             id: 1,
             groupName: 'GitLab.org',
             absoluteWebUrl: 'https://gitlab.com/gitlab-org/',
+            milestones: ['12.3', '12.4'],
           },
           convertObjectPropsToSnakeCase: {
             id: 1,
             group_name: 'GitLab.org',
             absolute_web_url: 'https://gitlab.com/gitlab-org/',
+            milestones: ['12.3', '12.4'],
           },
         };
 
@@ -642,6 +705,7 @@ describe('common_utils', () => {
               frontend_framework: 'Vue',
               database: 'PostgreSQL',
             },
+            milestones_converted: ['12.3', '12.4'],
           },
           convertObjectPropsToCamelCase: {
             projectName: 'GitLab CE',
@@ -652,6 +716,7 @@ describe('common_utils', () => {
               frontend_framework: 'Vue',
               database: 'PostgreSQL',
             },
+            milestones: ['12.3', '12.4'],
           },
           convertObjectPropsToSnakeCase: {
             project_name: 'GitLab CE',
@@ -662,6 +727,7 @@ describe('common_utils', () => {
               frontendFramework: 'Vue',
               database: 'PostgreSQL',
             },
+            milestones: ['12.3', '12.4'],
           },
         };
 
@@ -680,6 +746,7 @@ describe('common_utils', () => {
                 frontend_framework_converted: 'Vue',
                 database_converted: 'PostgreSQL',
               },
+              milestones_converted: ['12.3', '12.4'],
             },
             convertObjectPropsToCamelCase: {
               projectName: 'GitLab CE',
@@ -690,6 +757,7 @@ describe('common_utils', () => {
                 frontendFramework: 'Vue',
                 database: 'PostgreSQL',
               },
+              milestones: ['12.3', '12.4'],
             },
             convertObjectPropsToSnakeCase: {
               project_name: 'GitLab CE',
@@ -700,6 +768,7 @@ describe('common_utils', () => {
                 frontend_framework: 'Vue',
                 database: 'PostgreSQL',
               },
+              milestones: ['12.3', '12.4'],
             },
           };
 
@@ -729,6 +798,7 @@ describe('common_utils', () => {
                   frontend_framework: 'Vue',
                   database: 'PostgreSQL',
                 },
+                milestones_converted: ['12.3', '12.4'],
               },
               convertObjectPropsToCamelCase: {
                 projectName: 'GitLab CE',
@@ -738,6 +808,7 @@ describe('common_utils', () => {
                   frontend_framework: 'Vue',
                   database: 'PostgreSQL',
                 },
+                milestones: ['12.3', '12.4'],
               },
               convertObjectPropsToSnakeCase: {
                 project_name: 'GitLab CE',
@@ -747,6 +818,7 @@ describe('common_utils', () => {
                   frontendFramework: 'Vue',
                   database: 'PostgreSQL',
                 },
+                milestones: ['12.3', '12.4'],
               },
             };
 
@@ -772,6 +844,7 @@ describe('common_utils', () => {
                   backend_converted: 'Ruby',
                   frontend_framework_converted: 'Vue',
                 },
+                milestones_converted: ['12.3', '12.4'],
               },
               convertObjectPropsToCamelCase: {
                 projectName: 'GitLab CE',
@@ -780,6 +853,7 @@ describe('common_utils', () => {
                   backend: 'Ruby',
                   frontendFramework: 'Vue',
                 },
+                milestones: ['12.3', '12.4'],
               },
               convertObjectPropsToSnakeCase: {
                 project_name: 'GitLab CE',
@@ -788,6 +862,7 @@ describe('common_utils', () => {
                   backend: 'Ruby',
                   frontend_framework: 'Vue',
                 },
+                milestones: ['12.3', '12.4'],
               },
             };
 
@@ -818,6 +893,7 @@ describe('common_utils', () => {
                   frontend_framework: 'Vue',
                   database: 'PostgreSQL',
                 },
+                milestones_converted: ['12.3', '12.4'],
               },
               convertObjectPropsToCamelCase: {
                 projectName: 'GitLab CE',
@@ -828,6 +904,7 @@ describe('common_utils', () => {
                   frontend_framework: 'Vue',
                   database: 'PostgreSQL',
                 },
+                milestones: ['12.3', '12.4'],
               },
               convertObjectPropsToSnakeCase: {
                 project_name: 'GitLab CE',
@@ -838,6 +915,7 @@ describe('common_utils', () => {
                   frontendFramework: 'Vue',
                   database: 'PostgreSQL',
                 },
+                milestones: ['12.3', '12.4'],
               },
             };
 
@@ -865,6 +943,7 @@ describe('common_utils', () => {
                   frontend_framework: 'Vue',
                   database_converted: 'PostgreSQL',
                 },
+                milestones_converted: ['12.3', '12.4'],
               },
               convertObjectPropsToCamelCase: {
                 projectName: 'GitLab CE',
@@ -875,6 +954,7 @@ describe('common_utils', () => {
                   frontend_framework: 'Vue',
                   database: 'PostgreSQL',
                 },
+                milestones: ['12.3', '12.4'],
               },
               convertObjectPropsToSnakeCase: {
                 project_name: 'GitLab CE',
@@ -885,6 +965,7 @@ describe('common_utils', () => {
                   frontendFramework: 'Vue',
                   database: 'PostgreSQL',
                 },
+                milestones: ['12.3', '12.4'],
               },
             };
 

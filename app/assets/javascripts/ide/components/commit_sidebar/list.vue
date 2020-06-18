@@ -55,7 +55,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions(['stageAllChanges', 'unstageAllChanges', 'discardAllChanges']),
+    ...mapActions(['unstageAllChanges', 'discardAllChanges']),
     openDiscardModal() {
       this.$refs.discardAllModal.show();
     },
@@ -74,7 +74,7 @@ export default {
   <div class="ide-commit-list-container">
     <header class="multi-file-commit-panel-header d-flex mb-0">
       <div class="d-flex align-items-center flex-fill">
-        <icon v-once :name="iconName" :size="18" class="append-right-8" />
+        <icon v-once :name="iconName" :size="18" class="gl-mr-3" />
         <strong> {{ titleText }} </strong>
         <div class="d-flex ml-auto">
           <button
@@ -98,7 +98,7 @@ export default {
         </div>
       </div>
     </header>
-    <ul v-if="filesLength" class="multi-file-commit-list list-unstyled append-bottom-0">
+    <ul v-if="filesLength" class="multi-file-commit-list list-unstyled gl-mb-0">
       <li v-for="file in fileList" :key="file.key">
         <list-item
           :file="file"

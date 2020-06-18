@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Recent searches', :js do
+RSpec.describe 'Recent searches', :js do
   include FilteredSearchHelpers
 
   let(:project_1) { create(:project, :public) }

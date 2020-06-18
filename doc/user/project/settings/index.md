@@ -55,7 +55,7 @@ Use the switches to enable or disable the following features:
 | **Merge Requests**                | ✓                         | Enables [merge request](../merge_requests/) functionality; also see [Merge request settings](#merge-request-settings)                                                                          |
 | **Forks**                         | ✓                         | Enables [forking](../index.md#fork-a-project) functionality                                                                                                                                    |
 | **Pipelines**                     | ✓                         | Enables [CI/CD](../../../ci/README.md) functionality                                                                                                                                           |
-| **Container Registry**            |                           | Activates a [registry](../../packages/container_registry/) for your docker images                                                                                                              |
+| **Container Registry**            |                           | Activates a [registry](../../packages/container_registry/) for your Docker images                                                                                                              |
 | **Git Large File Storage**        |                           | Enables the use of [large files](../../../topics/git/lfs/index.md#git-large-file-storage-lfs)                                                                                    |
 | **Packages**                      |                           | Supports configuration of a [package registry](../../../administration/packages/index.md#gitlab-package-registry-administration-premium-only) functionality                                    |
 | **Wiki**                          | ✓                         | Enables a separate system for [documentation](../wiki/)                                                                                                                                        |
@@ -192,11 +192,9 @@ to transfer a project.
 
 You can transfer an existing project into a [group](../../group/index.md) if:
 
-1. You have at least **Maintainer** [permissions](../../permissions.md#project-members-permissions) to that group.
-1. The project is in a subgroup you own.
-1. You're at least a **Maintainer** of the project under your personal namespace.
-   Similarly, if you're an owner of a group, you can transfer any of its projects
-   under your own user.
+- You have at least **Maintainer** [permissions](../../permissions.md#project-members-permissions) to that group.
+- You're at least an **Owner** of the project to be transferred.
+- The group to which the project is being transferred to must allow creation of new projects.
 
 To transfer a project:
 
@@ -228,14 +226,14 @@ To remove a project:
 This action either:
 
 - Removes a project including all associated resources (issues, merge requests etc).
-- Since [GitLab 12.6](https://gitlab.com/gitlab-org/gitlab/issues/32935), on
+- Since [GitLab 12.6](https://gitlab.com/gitlab-org/gitlab/-/issues/32935), on
   [GitLab Premium or GitLab.com Silver](https://about.gitlab.com/pricing/) or higher tiers, marks a project for
   deletion. The deletion will happen 7 days later by default, but this can be changed in the
   [instance settings](../../admin_area/settings/visibility_and_access_controls.md#default-deletion-adjourned-period-premium-only).
 
 #### Restore a project **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/32935) in GitLab 12.6.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/32935) in GitLab 12.6.
 
 To restore a project marked for deletion:
 
@@ -272,3 +270,8 @@ Configure Error Tracking to discover and view [Sentry errors within GitLab](../o
 ### Jaeger tracing **(ULTIMATE)**
 
 Add the URL of a Jaeger server to allow your users to [easily access the Jaeger UI from within GitLab](../operations/tracing.md).
+
+### Status Page
+
+[Add Storage credentials](../status_page/#syncing-incidents-to-the-status-page)
+to enable the syncing of public Issues to a [deployed status page](../status_page/#status-page-project).

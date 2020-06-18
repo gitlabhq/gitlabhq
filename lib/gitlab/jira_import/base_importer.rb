@@ -6,7 +6,7 @@ module Gitlab
       attr_reader :project, :client, :formatter, :jira_project_key, :running_import
 
       def initialize(project)
-        project.validate_jira_import_settings!
+        Gitlab::JiraImport.validate_project_settings!(project)
 
         @running_import = project.latest_jira_import
         @jira_project_key = running_import&.jira_project_key

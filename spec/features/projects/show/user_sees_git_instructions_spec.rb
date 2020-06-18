@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Projects > Show > User sees Git instructions' do
+RSpec.describe 'Projects > Show > User sees Git instructions' do
   let_it_be(:user) { create(:user) }
 
   shared_examples_for 'redirects to the sign in page' do

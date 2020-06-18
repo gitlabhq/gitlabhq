@@ -1,5 +1,5 @@
-- project_duration = age_map_duration(@blame_groups, @project)
 - page_title "Blame", @blob.path, @ref
+- link_icon = icon("link")
 
 #blob-content-holder.tree-holder
   = render "projects/blob/breadcrumb", blob: @blob, blame: true
@@ -11,38 +11,13 @@
     .table-responsive.file-content.blame.code.js-syntax-highlight
       %table
         - current_line = 1
-        - @blame_groups.each do |blame_group|
-          %tr
-            - commit = blame_group[:commit]
-            %td.blame-commit{ class: age_map_class(commit.committed_date, project_duration) }
-              .commit
-                = author_avatar(commit, size: 36, has_tooltip: false)
-                .commit-row-title
-                  %span.item-title.str-truncated-100
-                    = link_to commit.title, project_commit_path(@project, commit.id), class: "cdark", title: commit.title
-                  %span
-                    - previous_commit_id = commit.parent_id
-                    - if previous_commit_id
-                      = link_to project_blame_path(@project, tree_join(previous_commit_id, @path)),
-                                title: _('View blame prior to this change'),
-                                aria: { label: _('View blame prior to this change') },
-                                data: { toggle: 'tooltip', placement: 'right', container: 'body' } do
-                        = sprite_icon('doc-versions', size: 16, css_class: 'doc-versions align-text-bottom')
-                  &nbsp;
-                .light
-                  = commit_author_link(commit, avatar: false)
-                  committed
-                  #{time_ago_with_tooltip(commit.committed_date)}
-            %td.line-numbers
-              - line_count = blame_group[:lines].count
-              - (current_line...(current_line + line_count)).each do |i|
-                %a.diff-line-num{ href: "#L#{i}", id: "L#{i}", 'data-line-number' => i }
-                  = icon("link")
-                  = i
-                \
-              - current_line += line_count
-            %td.lines
-              %pre.code.highlight
-                %code
-                  - blame_group[:lines].each do |line|
-                    #{line}
+        - @blame.groups.each do |blame_group|
+          - commit_data = @blame.commit_data(blame_group[:commit])
+
+          = render 'blame_group',
+            blame_group: blame_group,
+            current_line: current_line,
+            link_icon: link_icon,
+            commit_data: commit_data
+
+          - current_line += blame_group[:lines].count

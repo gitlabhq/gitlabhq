@@ -8,21 +8,21 @@ describe Projects::Alerting::NotifyService do
   before do
     # We use `let_it_be(:project)` so we make sure to clear caches
     project.clear_memoization(:licensed_feature_available)
+    allow(ProjectServiceWorker).to receive(:perform_async)
   end
 
-  shared_examples 'processes incident issues' do |amount|
+  shared_examples 'processes incident issues' do
     let(:create_incident_service) { spy }
-    let(:new_alert) { instance_double(AlertManagement::Alert, id: 503, persisted?: true) }
+
+    before do
+      allow_any_instance_of(AlertManagement::Alert).to receive(:execute_services)
+    end
 
     it 'processes issues' do
-      expect(AlertManagement::Alert)
-        .to receive(:create)
-        .and_return(new_alert)
-
       expect(IncidentManagement::ProcessAlertWorker)
         .to receive(:perform_async)
-        .with(project.id, kind_of(Hash), new_alert.id)
-        .exactly(amount).times
+        .with(project.id, kind_of(Hash), kind_of(Integer))
+        .once
 
       Sidekiq::Testing.inline! do
         expect(subject).to be_success
@@ -73,6 +73,7 @@ describe Projects::Alerting::NotifyService do
   describe '#execute' do
     let(:token) { 'invalid-token' }
     let(:starts_at) { Time.current.change(usec: 0) }
+    let(:fingerprint) { 'testing' }
     let(:service) { described_class.new(project, nil, payload) }
     let(:payload_raw) do
       {
@@ -82,7 +83,8 @@ describe Projects::Alerting::NotifyService do
         monitoring_tool: 'GitLab RSpec',
         service: 'GitLab Test Suite',
         description: 'Very detailed description',
-        hosts: ['1.1.1.1', '2.2.2.2']
+        hosts: ['1.1.1.1', '2.2.2.2'],
+        fingerprint: fingerprint
       }.with_indifferent_access
     end
     let(:payload) { ActionController::Parameters.new(payload_raw).permit! }
@@ -131,9 +133,35 @@ describe Projects::Alerting::NotifyService do
               description: payload_raw.fetch(:description),
               monitoring_tool: payload_raw.fetch(:monitoring_tool),
               service: payload_raw.fetch(:service),
-              fingerprint: nil,
+              fingerprint: Digest::SHA1.hexdigest(fingerprint),
               ended_at: nil
             )
+          end
+
+          it 'executes the alert service hooks' do
+            slack_service = create(:service, type: 'SlackService', project: project, alert_events: true, active: true)
+            subject
+
+            expect(ProjectServiceWorker).to have_received(:perform_async).with(slack_service.id, an_instance_of(Hash))
+          end
+
+          context 'existing alert with same fingerprint' do
+            let(:fingerprint_sha) { Digest::SHA1.hexdigest(fingerprint) }
+            let!(:existing_alert) { create(:alert_management_alert, project: project, fingerprint: fingerprint_sha) }
+
+            it 'does not create AlertManagement::Alert' do
+              expect { subject }.not_to change(AlertManagement::Alert, :count)
+            end
+
+            it 'increments the existing alert count' do
+              expect { subject }.to change { existing_alert.reload.events }.from(1).to(2)
+            end
+
+            it 'does not executes the alert service hooks' do
+              subject
+
+              expect(ProjectServiceWorker).not_to have_received(:perform_async)
+            end
           end
 
           context 'with a minimal payload' do
@@ -176,7 +204,7 @@ describe Projects::Alerting::NotifyService do
         context 'issue enabled' do
           let(:issue_enabled) { true }
 
-          it_behaves_like 'processes incident issues', 1
+          it_behaves_like 'processes incident issues'
 
           context 'with an invalid payload' do
             before do
@@ -187,6 +215,21 @@ describe Projects::Alerting::NotifyService do
 
             it_behaves_like 'does not process incident issues due to error', http_status: :bad_request
             it_behaves_like 'NotifyService does not create alert'
+          end
+
+          context 'when alert already exists' do
+            let(:fingerprint_sha) { Digest::SHA1.hexdigest(fingerprint) }
+            let!(:existing_alert) { create(:alert_management_alert, project: project, fingerprint: fingerprint_sha) }
+
+            context 'when existing alert does not have an associated issue' do
+              it_behaves_like 'processes incident issues'
+            end
+
+            context 'when existing alert has an associated issue' do
+              let!(:existing_alert) { create(:alert_management_alert, :with_issue, project: project, fingerprint: fingerprint_sha) }
+
+              it_behaves_like 'does not process incident issues'
+            end
           end
         end
 

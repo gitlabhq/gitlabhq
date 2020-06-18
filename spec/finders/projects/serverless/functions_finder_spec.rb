@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Projects::Serverless::FunctionsFinder do
+RSpec.describe Projects::Serverless::FunctionsFinder do
   include KubernetesHelpers
   include PrometheusHelpers
   include ReactiveCachingHelpers

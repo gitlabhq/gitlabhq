@@ -1,6 +1,12 @@
+---
+stage: Verify
+group: Continuous Integration
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+---
+
 # Merge Trains API **(PREMIUM)**
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/36146) in GitLab 12.9.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/36146) in GitLab 12.9.
 > - Using this API you can consume GitLab's [Merge Train](../ci/merge_request_pipelines/pipelines_for_merged_results/merge_trains/index.md) entries.
 
 Every API call to merge trains must be authenticated with Developer or higher [permissions](../user/permissions.md).
@@ -32,7 +38,7 @@ GET /projects/:id/merge_trains?scope=complete
 | `sort`              | string           | no         | Return Merge Trains sorted in `asc` or `desc` order. Default is `desc`.                                                     |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/1/merge_trains
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/merge_trains"
 ```
 
 Example response:

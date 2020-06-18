@@ -6,7 +6,7 @@ import List from '~/ide/components/pipelines/list.vue';
 import JobsList from '~/ide/components/jobs/list.vue';
 import Tab from '~/vue_shared/components/tabs/tab.vue';
 import CiIcon from '~/vue_shared/components/ci_icon.vue';
-import { pipelines } from '../../../../javascripts/ide/mock_data';
+import { pipelines } from 'jest/ide/mock_data';
 import IDEServices from '~/ide/services';
 
 const localVue = createLocalVue();

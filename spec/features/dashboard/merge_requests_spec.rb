@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Dashboard Merge Requests' do
+RSpec.describe 'Dashboard Merge Requests' do
   include Spec::Support::Helpers::Features::SortingHelpers
   include FilteredSearchHelpers
   include ProjectForksHelper

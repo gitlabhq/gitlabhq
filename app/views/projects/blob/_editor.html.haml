@@ -28,7 +28,7 @@
 
     .file-buttons
       - if is_markdown
-        = render 'projects/blob/markdown_buttons', show_fullscreen_button: false
+        = render 'shared/blob/markdown_buttons', show_fullscreen_button: false
       = button_tag class: 'soft-wrap-toggle btn', type: 'button', tabindex: '-1' do
         %span.no-wrap
           = custom_icon('icon_no_wrap')

@@ -2,7 +2,11 @@
 
 module ApplicationCable
   class Connection < ActionCable::Connection::Base
+    include Logging
+
     identified_by :current_user
+
+    public :request
 
     def connect
       self.current_user = find_user_from_session_store
@@ -17,6 +21,10 @@ module ApplicationCable
 
     def session_id
       Rack::Session::SessionId.new(cookies[Gitlab::Application.config.session_options[:key]])
+    end
+
+    def notification_payload(_)
+      super.merge!(params: request.params)
     end
   end
 end

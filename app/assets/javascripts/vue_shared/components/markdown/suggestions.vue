@@ -16,6 +16,11 @@ export default {
       required: false,
       default: () => [],
     },
+    batchSuggestionsInfo: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
     noteHtml: {
       type: String,
       required: true,
@@ -68,16 +73,28 @@ export default {
       this.isRendered = true;
     },
     generateDiff(suggestionIndex) {
-      const { suggestions, disabled, helpPagePath } = this;
+      const { suggestions, disabled, batchSuggestionsInfo, helpPagePath } = this;
       const suggestion =
         suggestions && suggestions[suggestionIndex] ? suggestions[suggestionIndex] : {};
       const SuggestionDiffComponent = Vue.extend(SuggestionDiff);
       const suggestionDiff = new SuggestionDiffComponent({
-        propsData: { disabled, suggestion, helpPagePath },
+        propsData: { disabled, suggestion, batchSuggestionsInfo, helpPagePath },
       });
 
       suggestionDiff.$on('apply', ({ suggestionId, callback }) => {
         this.$emit('apply', { suggestionId, callback, flashContainer: this.$el });
+      });
+
+      suggestionDiff.$on('applyBatch', () => {
+        this.$emit('applyBatch', { flashContainer: this.$el });
+      });
+
+      suggestionDiff.$on('addToBatch', suggestionId => {
+        this.$emit('addToBatch', suggestionId);
+      });
+
+      suggestionDiff.$on('removeFromBatch', suggestionId => {
+        this.$emit('removeFromBatch', suggestionId);
       });
 
       return suggestionDiff;

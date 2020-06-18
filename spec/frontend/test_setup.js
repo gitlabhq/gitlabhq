@@ -43,15 +43,6 @@ Object.assign(global, {
   preloadFixtures() {},
 });
 
-Object.assign(global, {
-  MutationObserver() {
-    return {
-      disconnect() {},
-      observe() {},
-    };
-  },
-});
-
 // custom-jquery-matchers was written for an old Jest version, we need to make it compatible
 Object.entries(jqueryMatchers).forEach(([matcherName, matcherFactory]) => {
   // Don't override existing Jest matcher
@@ -68,12 +59,6 @@ expect.extend(customMatchers);
 
 // Tech debt issue TBD
 testUtilsConfig.logModifiedComponents = false;
-
-// Basic stub for MutationObserver
-global.MutationObserver = () => ({
-  disconnect: () => {},
-  observe: () => {},
-});
 
 Object.assign(global, {
   requestIdleCallback(cb) {

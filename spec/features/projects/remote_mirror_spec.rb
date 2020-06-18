@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Project remote mirror', :feature do
+RSpec.describe 'Project remote mirror', :feature do
   let(:project) { create(:project, :repository, :remote_mirror) }
   let(:remote_mirror) { project.remote_mirrors.first }
   let(:user) { create(:user) }

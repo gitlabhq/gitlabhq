@@ -13,7 +13,8 @@ describe Gitlab::SidekiqConfig::Worker do
       get_worker_resource_boundary: attributes[:resource_boundary],
       get_urgency: attributes[:urgency],
       worker_has_external_dependencies?: attributes[:has_external_dependencies],
-      idempotent?: attributes[:idempotent]
+      idempotent?: attributes[:idempotent],
+      get_tags: attributes[:tags]
     )
 
     described_class.new(inner_worker, ee: false)
@@ -91,7 +92,8 @@ describe Gitlab::SidekiqConfig::Worker do
         urgency: :low,
         resource_boundary: :memory,
         weight: 2,
-        idempotent: true
+        idempotent: true,
+        tags: []
       }
 
       attributes_b = {
@@ -100,7 +102,8 @@ describe Gitlab::SidekiqConfig::Worker do
         urgency: :high,
         resource_boundary: :unknown,
         weight: 3,
-        idempotent: false
+        idempotent: false,
+        tags: [:no_disk_io]
       }
 
       worker_a = create_worker(queue: 'a', **attributes_a)

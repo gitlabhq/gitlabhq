@@ -19,7 +19,6 @@ export const decorateFiles = ({
   branchId,
   tempFile = false,
   content = '',
-  base64 = false,
   binary = false,
   rawPath = '',
 }) => {
@@ -49,7 +48,6 @@ export const decorateFiles = ({
       path,
       url: `/${projectId}/tree/${branchId}/-/${path}/`,
       type: 'tree',
-      parentTreeUrl: parentFolder ? parentFolder.url : `/${projectId}/tree/${branchId}/`,
       tempFile,
       changed: tempFile,
       opened: tempFile,
@@ -86,14 +84,11 @@ export const decorateFiles = ({
         path,
         url: `/${projectId}/blob/${branchId}/-/${path}`,
         type: 'blob',
-        parentTreeUrl: fileFolder ? fileFolder.url : `/${projectId}/blob/${branchId}`,
         tempFile,
         changed: tempFile,
         content,
-        base64,
         binary: (previewMode && previewMode.binary) || binary,
         rawPath,
-        previewMode,
         parentPath,
       });
 

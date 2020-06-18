@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Developer updates tag' do
+RSpec.describe 'Developer updates tag' do
   let(:user) { create(:user) }
   let(:group) { create(:group) }
   let(:project) { create(:project, :repository, namespace: group) }

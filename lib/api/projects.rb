@@ -502,7 +502,9 @@ module API
         link = user_project.project_group_links.find_by(group_id: params[:group_id])
         not_found!('Group Link') unless link
 
-        destroy_conditionally!(link)
+        destroy_conditionally!(link) do
+          ::Projects::GroupLinks::DestroyService.new(user_project, current_user).execute(link)
+        end
       end
       # rubocop: enable CodeReuse/ActiveRecord
 

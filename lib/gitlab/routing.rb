@@ -4,6 +4,36 @@ module Gitlab
   module Routing
     extend ActiveSupport::Concern
 
+    class LegacyRedirector
+      # @params path_type [symbol] type of path to do "-" redirection
+      # https://gitlab.com/gitlab-org/gitlab/-/issues/16854
+      def initialize(path_type)
+        @path_type = path_type
+      end
+
+      def call(_params, request)
+        ensure_valid_uri!(request)
+
+        # Only replace the last occurrence of `path`.
+        #
+        # `request.fullpath` includes the querystring
+        new_path = request.path.sub(%r{/#{@path_type}(/*)(?!.*#{@path_type})}, "/-/#{@path_type}\\1")
+        new_path = "#{new_path}?#{request.query_string}" if request.query_string.present?
+
+        new_path
+      end
+
+      private
+
+      def ensure_valid_uri!(request)
+        URI.parse(request.path)
+      rescue URI::InvalidURIError => e
+        # If url is invalid, raise custom error,
+        # which can be ignored by monitoring tools.
+        raise ActionController::RoutingError.new(e.message)
+      end
+    end
+
     mattr_accessor :_includers
     self._includers = []
 
@@ -44,20 +74,10 @@ module Gitlab
     end
 
     def self.redirect_legacy_paths(router, *paths)
-      build_redirect_path = lambda do |request, _params, path|
-        # Only replace the last occurrence of `path`.
-        #
-        # `request.fullpath` includes the querystring
-        new_path = request.path.sub(%r{/#{path}(/*)(?!.*#{path})}, "/-/#{path}\\1")
-        new_path = "#{new_path}?#{request.query_string}" if request.query_string.present?
-
-        new_path
-      end
-
       paths.each do |path|
         router.match "/#{path}(/*rest)",
                      via: [:get, :post, :patch, :delete],
-                     to: router.redirect { |params, request| build_redirect_path.call(request, params, path) },
+                     to: router.redirect(LegacyRedirector.new(path)),
                      as: "legacy_#{path}_redirect"
       end
     end

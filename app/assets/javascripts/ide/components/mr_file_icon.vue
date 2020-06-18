@@ -18,6 +18,6 @@ export default {
     :title="__('Part of merge request changes')"
     :size="12"
     name="git-merge"
-    class="append-right-8"
+    class="gl-mr-3"
   />
 </template>

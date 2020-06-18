@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Profile > Account', :js do
+RSpec.describe 'Profile > Account', :js do
   let(:user) { create(:user, username: 'foo') }
 
   before do
@@ -53,6 +53,37 @@ describe 'Profile > Account', :js do
         visit old_project_path
         expect(current_path).to eq(new_project_path)
         expect(find('.breadcrumbs-sub-title')).to have_content('Details')
+      end
+    end
+  end
+
+  describe 'Delete account' do
+    before do
+      create_list(:project, number_of_projects, namespace: user.namespace)
+      visit profile_account_path
+    end
+
+    context 'when there are no personal projects' do
+      let(:number_of_projects) { 0 }
+
+      it 'does not show personal projects removal message' do
+        expect(page).not_to have_content(/\d personal projects? will be removed and cannot be restored/)
+      end
+    end
+
+    context 'when one personal project exists' do
+      let(:number_of_projects) { 1 }
+
+      it 'does show personal project removal message' do
+        expect(page).to have_content('1 personal project will be removed and cannot be restored')
+      end
+    end
+
+    context 'when more than one personal projects exists' do
+      let(:number_of_projects) { 3 }
+
+      it 'shows pluralized personal project removal message' do
+        expect(page).to have_content('3 personal projects will be removed and cannot be restored')
       end
     end
   end

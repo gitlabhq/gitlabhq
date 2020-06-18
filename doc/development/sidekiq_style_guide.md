@@ -78,7 +78,7 @@ As a general rule, a worker can be considered idempotent if:
 
 - It can safely run multiple times with the same arguments.
 - Application side-effects are expected to happen only once
-  (or side-effects of a second run are not impactful).
+  (or side-effects of a second run do not have an effect).
 
 A good example of that would be a cache expiration worker.
 
@@ -147,7 +147,7 @@ GitLab doesn't skip jobs scheduled in the future, as we assume that
 the state will have changed by the time the job is scheduled to
 execute.
 
-More [deduplication strategies have been suggested](https://gitlab.com/gitlab-com/gl-infra/scalability/issues/195). If you are implementing a worker that
+More [deduplication strategies have been suggested](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/195). If you are implementing a worker that
 could benefit from a different strategy, please comment in the issue.
 
 If the automatic deduplication were to cause issues in certain
@@ -156,7 +156,7 @@ named `disable_<queue name>_deduplication`. For example to disable
 deduplication for the `AuthorizedProjectsWorker`, we would enable the
 feature flag `disable_authorized_projects_deduplication`.
 
-From chatops:
+From ChatOps:
 
 ```shell
 /chatops run feature set disable_authorized_projects_deduplication true
@@ -272,10 +272,10 @@ annotated with the `worker_resource_boundary` method.
 
 Most workers tend to spend most of their time blocked, wait on network responses
 from other services such as Redis, PostgreSQL, and Gitaly. Since Sidekiq is a
-multithreaded environment, these jobs can be scheduled with high concurrency.
+multi-threaded environment, these jobs can be scheduled with high concurrency.
 
 Some workers, however, spend large amounts of time _on-CPU_ running logic in
-Ruby. Ruby MRI does not support true multithreading - it relies on the
+Ruby. Ruby MRI does not support true multi-threading - it relies on the
 [GIL](https://thoughtbot.com/blog/untangling-ruby-threads#the-global-interpreter-lock)
 to greatly simplify application development by only allowing one section of Ruby
 code in a process to run at a time, no matter how many cores the machine
@@ -395,7 +395,7 @@ in the default execution mode - using
 does not account for weights.
 
 As we are [moving towards using `sidekiq-cluster` in
-Core](https://gitlab.com/gitlab-org/gitlab/issues/34396), newly-added
+Core](https://gitlab.com/gitlab-org/gitlab/-/issues/34396), newly-added
 workers do not need to have weights specified. They can simply use the
 default weight, which is 1.
 
@@ -427,7 +427,7 @@ isn't picked up by the cops. In any case, please leave a code-comment
 pointing to which context will be used when disabling the cops.
 
 When you do provide objects to the context, please make sure that the
-route for namespaces and projects is preloaded. This can be done using
+route for namespaces and projects is pre-loaded. This can be done using
 the `.with_route` scope defined on all `Routable`s.
 
 ### Cron-Workers
@@ -518,6 +518,34 @@ job needs to be scheduled with.
 The `context_proc` which needs to return a hash with the context
 information for the job.
 
+## Arguments logging
+
+When [`SIDEKIQ_LOG_ARGUMENTS`](../administration/troubleshooting/sidekiq.md#log-arguments-to-sidekiq-jobs)
+is enabled, Sidekiq job arguments will be logged.
+
+By default, the only arguments logged are numeric arguments, because
+arguments of other types could contain sensitive information. To
+override this, use `loggable_arguments` inside a worker with the indexes
+of the arguments to be logged. (Numeric arguments do not need to be
+specified here.)
+
+For example:
+
+```ruby
+class MyWorker
+  include ApplicationWorker
+
+  loggable_arguments 1, 3
+
+  # object_id will be logged as it's numeric
+  # string_a will be logged due to the loggable_arguments call
+  # string_b will be filtered from logs
+  # string_c will be logged due to the loggable_arguments call
+  def perform(object_id, string_a, string_b, string_c)
+  end
+end
+```
+
 ## Tests
 
 Each Sidekiq worker must be tested using RSpec, just like any other class. These
@@ -537,18 +565,74 @@ possible situations:
 
 ### Changing the arguments for a worker
 
-Jobs need to be backwards- and forwards-compatible between consecutive versions
-of the application.
+Jobs need to be backward and forward compatible between consecutive versions
+of the application. Adding or removing an argument may cause problems
+during deployment before all Rails and Sidekiq nodes have the updated code.
 
-This can be done by following this process:
+#### Remove an argument
 
-1. **Do not remove arguments from the `perform` function.**. Instead, use the
-   following approach
-   1. Provide a default value (usually `nil`) and use a comment to mark the
-      argument as deprecated
-   1. Stop using the argument in `perform_async`.
-   1. Ignore the value in the worker class, but do not remove it until the next
-      major release.
+**Do not remove arguments from the `perform` function.**. Instead, use the
+following approach:
+
+1. Provide a default value (usually `nil`) and use a comment to mark the
+   argument as deprecated
+1. Stop using the argument in `perform_async`.
+1. Ignore the value in the worker class, but do not remove it until the next
+   major release.
+
+In the following example, if you want to remove `arg2`, first set a `nil` default value,
+and then update locations where `ExampleWorker.perform_async` is called.
+
+```ruby
+class ExampleWorker
+  def perform(object_id, arg1, arg2 = nil)
+    # ...
+  end
+end
+```
+
+#### Add an argument
+
+There are two options for safely adding new arguments to Sidekiq workers:
+
+1. Set up a [multi-step deployment](#multi-step-deployment) in which the new argument is first added to the worker
+1. Use a [parameter hash](#parameter-hash) for additional arguments. This is perhaps the most flexible option.
+1. Use a parameter hash for additional arguments. This is perhaps the most flexible option.
+
+##### Multi-step deployment
+
+This approach requires multiple merge requests and for the first merge request
+to be merged and deployed before additional changes are merged.
+
+1. In an initial merge request, add the argument to the worker with a default
+   value:
+
+    ```ruby
+    class ExampleWorker
+      def perform(object_id, new_arg = nil)
+        # ...
+      end
+    end
+    ```
+
+1. Merge and deploy the worker with the new argument.
+1. In a further merge request, update `ExampleWorker.perform_async` calls to
+   use the new argument.
+
+##### Parameter hash
+
+This approach will not require multiple deployments if an existing worker already
+utilizes a parameter hash.
+
+1. Use a parameter hash in the worker to allow for future flexibility:
+
+    ```ruby
+    class ExampleWorker
+      def perform(object_id, params = {})
+        # ...
+      end
+    end
+    ```
 
 ### Removing workers
 

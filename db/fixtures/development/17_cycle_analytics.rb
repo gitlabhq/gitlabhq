@@ -107,6 +107,10 @@ class Gitlab::Seeder::CycleAnalytics
       pipeline = FactoryBot.create(:ci_pipeline, :success, project: project)
       build = FactoryBot.create(:ci_build, pipeline: pipeline, project: project, user: developers.sample)
 
+      # Required because seeds run in a transaction and these are now
+      # created in an `after_commit` hook.
+      merge_request.ensure_metrics
+
       merge_request.metrics.update!(
         latest_build_started_at: merge_request.created_at,
         latest_build_finished_at: within_end_time(merge_request.created_at + TEST_STAGE_MAX_DURATION_IN_HOURS.hours),

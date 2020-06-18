@@ -5,6 +5,7 @@ class WebHookWorker # rubocop:disable Scalability/IdempotentWorker
 
   feature_category :integrations
   worker_has_external_dependencies!
+  loggable_arguments 2
 
   sidekiq_options retry: 4, dead: false
 

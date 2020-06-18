@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Admin::IdentitiesController do
+RSpec.describe Admin::IdentitiesController do
   let(:admin) { create(:admin) }
 
   before do

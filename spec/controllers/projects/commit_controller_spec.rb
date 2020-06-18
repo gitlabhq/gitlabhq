@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Projects::CommitController do
+RSpec.describe Projects::CommitController do
   let_it_be(:project)  { create(:project, :repository) }
   let_it_be(:user)     { create(:user) }
 

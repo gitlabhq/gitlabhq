@@ -9,6 +9,7 @@ module Gitlab
         attach_to :active_record
 
         IGNORABLE_SQL = %w{BEGIN COMMIT}.freeze
+        DB_COUNTERS = %i{db_count db_write_count db_cached_count}.freeze
 
         def sql(event)
           return unless current_transaction
@@ -19,8 +20,7 @@ module Gitlab
 
           self.class.gitlab_sql_duration_seconds.observe(current_transaction.labels, event.duration / 1000.0)
 
-          current_transaction.increment(:sql_duration, event.duration, false)
-          current_transaction.increment(:sql_count, 1, false)
+          increment_db_counters(payload)
         end
 
         private
@@ -29,6 +29,20 @@ module Gitlab
           docstring 'SQL time'
           base_labels Transaction::BASE_LABELS
           buckets [0.01, 0.05, 0.1, 0.25, 0.5, 1.0, 2.5, 5.0]
+        end
+
+        def select_sql_command?(payload)
+          payload[:sql].match(/\A((?!(.*[^\w'"](DELETE|UPDATE|INSERT INTO)[^\w'"])))(WITH.*)?(SELECT)((?!(FOR UPDATE|FOR SHARE)).)*$/i)
+        end
+
+        def increment_db_counters(payload)
+          current_transaction.increment(:db_count, 1)
+
+          if payload.fetch(:cached, payload[:name] == 'CACHE')
+            current_transaction.increment(:db_cached_count, 1)
+          end
+
+          current_transaction.increment(:db_write_count, 1) unless select_sql_command?(payload)
         end
 
         def current_transaction

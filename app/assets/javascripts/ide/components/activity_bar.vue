@@ -1,6 +1,6 @@
 <script>
 import $ from 'jquery';
-import { mapActions, mapGetters, mapState } from 'vuex';
+import { mapActions, mapState } from 'vuex';
 import Icon from '~/vue_shared/components/icon.vue';
 import tooltip from '~/vue_shared/directives/tooltip';
 import { leftSidebarViews } from '../constants';
@@ -13,7 +13,6 @@ export default {
     tooltip,
   },
   computed: {
-    ...mapGetters(['hasChanges']),
     ...mapState(['currentActivityView']),
   },
   methods: {
@@ -23,6 +22,8 @@ export default {
 
       this.updateActivityBarView(view);
 
+      // TODO: We must use JQuery here to interact with the Bootstrap tooltip API
+      // https://gitlab.com/gitlab-org/gitlab/-/issues/217577
       $(e.currentTarget).tooltip('hide');
     },
   },
@@ -67,7 +68,7 @@ export default {
           <icon name="file-modified" />
         </button>
       </li>
-      <li v-show="hasChanges">
+      <li>
         <button
           v-tooltip
           :class="{

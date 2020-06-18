@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Projects::ServiceHookLogsController do
+RSpec.describe Projects::ServiceHookLogsController do
   let(:project) { create(:project, :repository) }
   let(:user) { create(:user) }
   let(:service) { create(:drone_ci_service, project: project) }

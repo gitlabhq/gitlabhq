@@ -44,7 +44,7 @@ module PrometheusAdapter
       {
         success: true,
         data: data,
-        last_update: Time.now.utc
+        last_update: Time.current.utc
       }
     rescue Gitlab::PrometheusClient::Error => err
       { success: false, result: err.message }

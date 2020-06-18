@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Projects > Settings > User changes avatar' do
+RSpec.describe 'Projects > Settings > User changes avatar' do
   let(:project) { create(:project, :repository) }
   let(:user) { project.creator }
 

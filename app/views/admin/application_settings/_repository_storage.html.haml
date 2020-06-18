@@ -15,12 +15,12 @@
       .form-group
         .form-text
           %p.text-secondary
-            = _('Select the configured storage available for new repositories to be placed on.')
+            = _('Select a weight for the storage new repositories will be placed on.')
             = link_to icon('question-circle'), help_page_path('administration/repository_storage_paths')
         .form-check
-          = f.collection_check_boxes :repository_storages, Gitlab.config.repositories.storages, :first, :first, include_hidden: false do |b|
-            = b.check_box class: 'form-check-input'
-            = b.label class: 'label-bold form-check-label'
+          - storage_weights.each do |attribute|
+            = f.text_field attribute[:name], class: 'form-text-input', value: attribute[:value]
+            = f.label attribute[:label], attribute[:label], class: 'label-bold form-check-label'
             %br
 
   = f.submit _('Save changes'), class: "btn btn-success qa-save-changes-button"

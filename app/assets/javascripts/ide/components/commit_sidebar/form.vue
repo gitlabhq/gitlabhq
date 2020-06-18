@@ -26,7 +26,7 @@ export default {
   computed: {
     ...mapState(['changedFiles', 'stagedFiles', 'currentActivityView', 'lastCommitMsg']),
     ...mapState('commit', ['commitMessage', 'submitCommitLoading']),
-    ...mapGetters(['hasChanges']),
+    ...mapGetters(['someUncommittedChanges']),
     ...mapGetters('commit', ['discardDraftButtonDisabled', 'preBuiltCommitMessage']),
     overviewText() {
       return n__('%d changed file', '%d changed files', this.stagedFiles.length);
@@ -40,20 +40,9 @@ export default {
     },
   },
   watch: {
-    currentActivityView() {
-      if (this.lastCommitMsg) {
-        this.isCompact = false;
-      } else {
-        this.isCompact = !(
-          this.currentViewIsCommitView && window.innerHeight >= MAX_WINDOW_HEIGHT_COMPACT
-        );
-      }
-    },
-
-    lastCommitMsg() {
-      this.isCompact =
-        this.currentActivityView !== leftSidebarViews.commit.name && this.lastCommitMsg === '';
-    },
+    currentActivityView: 'handleCompactState',
+    someUncommittedChanges: 'handleCompactState',
+    lastCommitMsg: 'handleCompactState',
   },
   methods: {
     ...mapActions(['updateActivityBarView']),
@@ -71,18 +60,23 @@ export default {
     forceCreateNewBranch() {
       return this.updateCommitAction(consts.COMMIT_TO_NEW_BRANCH).then(() => this.commit());
     },
-    toggleIsCompact() {
-      if (this.currentViewIsCommitView) {
-        this.isCompact = !this.isCompact;
+    handleCompactState() {
+      if (this.lastCommitMsg) {
+        this.isCompact = false;
       } else {
-        this.updateActivityBarView(leftSidebarViews.commit.name)
-          .then(() => {
-            this.isCompact = false;
-          })
-          .catch(e => {
-            throw e;
-          });
+        this.isCompact =
+          !this.someUncommittedChanges ||
+          !this.currentViewIsCommitView ||
+          window.innerHeight < MAX_WINDOW_HEIGHT_COMPACT;
       }
+    },
+    toggleIsCompact() {
+      this.isCompact = !this.isCompact;
+    },
+    beginCommit() {
+      return this.updateActivityBarView(leftSidebarViews.commit.name).then(() => {
+        this.isCompact = false;
+      });
     },
     beforeEnterTransition() {
       const elHeight = this.isCompact
@@ -126,16 +120,17 @@ export default {
     >
       <div v-if="isCompact" ref="compactEl" class="commit-form-compact">
         <button
-          :disabled="!hasChanges"
+          :disabled="!someUncommittedChanges"
           type="button"
           class="btn btn-primary btn-sm btn-block qa-begin-commit-button"
-          @click="toggleIsCompact"
+          data-testid="begin-commit-button"
+          @click="beginCommit"
         >
           {{ __('Commit…') }}
         </button>
         <p class="text-center bold">{{ overviewText }}</p>
       </div>
-      <form v-if="!isCompact" ref="formEl" @submit.prevent.stop="commit">
+      <form v-else ref="formEl" @submit.prevent.stop="commit">
         <transition name="fade"> <success-message v-show="lastCommitMsg" /> </transition>
         <commit-message-field
           :text="commitMessage"

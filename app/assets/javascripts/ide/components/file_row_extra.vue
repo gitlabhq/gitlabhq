@@ -89,7 +89,7 @@ export default {
       :type="file.type"
       :path="file.path"
       :is-open="dropdownOpen"
-      class="prepend-left-8"
+      class="gl-ml-3"
       v-on="$listeners"
     />
   </div>

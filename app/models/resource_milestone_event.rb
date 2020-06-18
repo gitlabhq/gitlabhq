@@ -9,6 +9,8 @@ class ResourceMilestoneEvent < ResourceEvent
 
   validate :exactly_one_issuable
 
+  scope :include_relations, -> { includes(:user, milestone: [:project, :group]) }
+
   enum action: {
     add: 1,
     remove: 2
@@ -25,5 +27,13 @@ class ResourceMilestoneEvent < ResourceEvent
 
   def milestone_title
     milestone&.title
+  end
+
+  def milestone_parent
+    milestone&.parent
+  end
+
+  def issuable
+    issue || merge_request
   end
 end

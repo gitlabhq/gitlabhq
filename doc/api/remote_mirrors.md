@@ -7,7 +7,7 @@ outlined below.
 
 ## List a project's remote mirrors
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/38121) in GitLab 12.9.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/38121) in GitLab 12.9.
 
 Returns an Array of remote mirrors and their statuses:
 
@@ -18,7 +18,7 @@ GET /projects/:id/remote_mirrors
 Example request:
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" 'https://gitlab.example.com/api/v4/projects/42/remote_mirrors'
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/42/remote_mirrors"
 ```
 
 Example response:
@@ -46,7 +46,7 @@ and password information.
 
 ## Create a remote mirror
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/24189) in GitLab 12.9.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/24189) in GitLab 12.9.
 
 Create a remote mirror for a project. The mirror will be disabled by default. You can enable it by including the optional parameter `enabled` when creating it:
 
@@ -64,7 +64,7 @@ POST /projects/:id/remote_mirrors
 Example request:
 
 ```shell
-curl --request POST --data "url=https://username:token@example.com/gitlab/example.git" --header "PRIVATE-TOKEN: <your_access_token>" 'https://gitlab.example.com/api/v4/projects/42/remote_mirrors'
+curl --request POST --data "url=https://username:token@example.com/gitlab/example.git" --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/42/remote_mirrors"
 ```
 
 Example response:
@@ -86,7 +86,7 @@ Example response:
 
 ## Update a remote mirror's attributes
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/38121) in GitLab 12.9.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/38121) in GitLab 12.9.
 
 Toggle a remote mirror on or off, or change which types of branches are
 mirrored:
@@ -105,7 +105,7 @@ PUT /projects/:id/remote_mirrors/:mirror_id
 Example request:
 
 ```shell
-curl --request PUT --data "enabled=false" --header "PRIVATE-TOKEN: <your_access_token>" 'https://gitlab.example.com/api/v4/projects/42/remote_mirrors/101486'
+curl --request PUT --data "enabled=false" --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/42/remote_mirrors/101486"
 ```
 
 Example response:

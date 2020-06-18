@@ -7,7 +7,7 @@
     = f.label :key, class: "label-bold"
     = f.text_area :key, class: "form-control", rows: 5, required: true
   .form-group.row
-    %p.light.append-bottom-0
+    %p.light.gl-mb-0
       = _('Paste a machine public key here. Read more about how to generate it')
       = link_to "here", help_page_path("ssh/README")
 
@@ -17,7 +17,7 @@
         = deploy_keys_project_form.check_box :can_push
         %strong= _('Write access allowed')
     .form-group.row
-      %p.light.append-bottom-0
+      %p.light.gl-mb-0
         = _('Allow this key to push to repository as well? (Default only allows pull access.)')
 
   .form-group.row

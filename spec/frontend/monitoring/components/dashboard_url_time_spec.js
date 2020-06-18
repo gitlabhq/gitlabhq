@@ -12,6 +12,7 @@ import axios from '~/lib/utils/axios_utils';
 import { mockProjectDir, propsData } from '../mock_data';
 
 import Dashboard from '~/monitoring/components/dashboard.vue';
+import DashboardHeader from '~/monitoring/components/dashboard_header.vue';
 import { createStore } from '~/monitoring/stores';
 import { defaultTimeRange } from '~/vue_shared/constants';
 
@@ -27,12 +28,12 @@ describe('dashboard invalid url parameters', () => {
     wrapper = mount(Dashboard, {
       propsData: { ...propsData, ...props },
       store,
-      stubs: ['graph-group', 'dashboard-panel'],
+      stubs: { 'graph-group': true, 'dashboard-panel': true, 'dashboard-header': DashboardHeader },
       ...options,
     });
   };
 
-  const findDateTimePicker = () => wrapper.find({ ref: 'dateTimePicker' });
+  const findDateTimePicker = () => wrapper.find(DashboardHeader).find({ ref: 'dateTimePicker' });
 
   beforeEach(() => {
     store = createStore();

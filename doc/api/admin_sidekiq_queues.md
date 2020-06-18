@@ -33,7 +33,7 @@ DELETE /admin/sidekiq/queues/:queue_name
 At least one attribute, other than `queue_name`, is required.
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/admin/sidekiq/queues/authorized_projects?user=root
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/admin/sidekiq/queues/authorized_projects?user=root"
 ```
 
 Example response:

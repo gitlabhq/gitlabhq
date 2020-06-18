@@ -6,7 +6,7 @@
 
 Add the `Ajax` object to the plugins array of a `DropLab.prototype.init` or `DropLab.prototype.addHook` call.
 
-`Ajax` requires 2 config values, the `endpoint` and `method`.
+`Ajax` requires 2 configuration values, the `endpoint` and `method`.
 
 - `endpoint` should be a URL to the request endpoint.
 - `method` should be `setData` or `addData`.

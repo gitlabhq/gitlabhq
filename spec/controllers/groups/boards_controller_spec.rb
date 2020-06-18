@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Groups::BoardsController do
+RSpec.describe Groups::BoardsController do
   let(:group) { create(:group) }
   let(:user)  { create(:user) }
 

@@ -42,3 +42,5 @@ module Types
     end
   end
 end
+
+Types::Ci::PipelineType.prepend_if_ee('::EE::Types::Ci::PipelineType')

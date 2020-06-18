@@ -14,7 +14,7 @@ exports[`IDE pipeline stage renders stage details & icon 1`] = `
     />
      
     <strong
-      class="prepend-left-8 text-truncate"
+      class="gl-ml-3 text-truncate"
       data-container="body"
       data-original-title=""
       title=""
@@ -25,7 +25,7 @@ exports[`IDE pipeline stage renders stage details & icon 1`] = `
     </strong>
      
     <div
-      class="append-right-8 prepend-left-4"
+      class="gl-mr-3 gl-ml-2"
     >
       <span
         class="badge badge-pill"

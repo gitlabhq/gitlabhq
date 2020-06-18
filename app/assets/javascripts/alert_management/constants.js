@@ -9,38 +9,59 @@ export const ALERTS_SEVERITY_LABELS = {
   UNKNOWN: s__('AlertManagement|Unknown'),
 };
 
-export const ALERTS_STATUS = {
-  OPEN: 'OPEN',
-  TRIGGERED: 'TRIGGERED',
-  ACKNOWLEDGED: 'ACKNOWLEDGED',
-  RESOLVED: 'RESOLVED',
-  ALL: 'ALL',
-};
-
 export const ALERTS_STATUS_TABS = [
   {
     title: s__('AlertManagement|Open'),
-    status: ALERTS_STATUS.OPEN,
-    filters: [ALERTS_STATUS.TRIGGERED, ALERTS_STATUS.ACKNOWLEDGED],
+    status: 'OPEN',
+    filters: ['TRIGGERED', 'ACKNOWLEDGED'],
   },
   {
     title: s__('AlertManagement|Triggered'),
-    status: ALERTS_STATUS.TRIGGERED,
-    filters: [ALERTS_STATUS.TRIGGERED],
+    status: 'TRIGGERED',
+    filters: 'TRIGGERED',
   },
   {
     title: s__('AlertManagement|Acknowledged'),
-    status: ALERTS_STATUS.ACKNOWLEDGED,
-    filters: [ALERTS_STATUS.ACKNOWLEDGED],
+    status: 'ACKNOWLEDGED',
+    filters: 'ACKNOWLEDGED',
   },
   {
     title: s__('AlertManagement|Resolved'),
-    status: ALERTS_STATUS.RESOLVED,
-    filters: [ALERTS_STATUS.RESOLVED],
+    status: 'RESOLVED',
+    filters: 'RESOLVED',
   },
   {
     title: s__('AlertManagement|All alerts'),
-    status: ALERTS_STATUS.ALL,
-    filters: [ALERTS_STATUS.TRIGGERED, ALERTS_STATUS.ACKNOWLEDGED, ALERTS_STATUS.RESOLVED],
+    status: 'ALL',
+    filters: ['TRIGGERED', 'ACKNOWLEDGED', 'RESOLVED'],
   },
 ];
+
+/* eslint-disable @gitlab/require-i18n-strings */
+
+/**
+ * Tracks snowplow event when user views alerts list
+ */
+export const trackAlertListViewsOptions = {
+  category: 'Alert Management',
+  action: 'view_alerts_list',
+};
+
+/**
+ * Tracks snowplow event when user views alert details
+ */
+export const trackAlertsDetailsViewsOptions = {
+  category: 'Alert Management',
+  action: 'view_alert_details',
+};
+
+/**
+ * Tracks snowplow event when alert status is updated
+ */
+export const trackAlertStatusUpdateOptions = {
+  category: 'Alert Management',
+  action: 'update_alert_status',
+  label: 'Status',
+};
+
+export const DEFAULT_PAGE_SIZE = 10;

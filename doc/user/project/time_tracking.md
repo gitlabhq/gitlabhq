@@ -1,6 +1,9 @@
 ---
 type: reference
 disqus_identifier: 'https://docs.gitlab.com/ee/workflow/time_tracking.html'
+stage: Plan
+group: Project Management
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 ---
 
 # Time Tracking

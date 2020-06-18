@@ -1,0 +1,5 @@
+---
+title: Adjust condition for partial indexes on services table
+merge_request: 33044
+author:
+type: performance

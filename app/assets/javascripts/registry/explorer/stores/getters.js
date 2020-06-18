@@ -1,9 +1,3 @@
-export const tags = state => {
-  // to show the loader inside the table we need to pass an empty array to gl-table whenever the table is loading
-  // this is to take in account isLoading = true and state.tags =[1,2,3] during pagination and delete
-  return state.isLoading ? [] : state.tags;
-};
-
 export const dockerBuildCommand = state => {
   /* eslint-disable @gitlab/require-i18n-strings */
   return `docker build -t ${state.config.repositoryUrl} .`;

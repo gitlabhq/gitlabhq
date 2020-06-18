@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Pipelines', :js do
+RSpec.describe 'Pipelines', :js do
   include ProjectForksHelper
 
   let(:project) { create(:project) }
@@ -453,10 +453,12 @@ describe 'Pipelines', :js do
       context 'downloadable pipelines' do
         context 'with artifacts' do
           let!(:with_artifacts) do
-            create(:ci_build, :artifacts, :success,
+            build = create(:ci_build, :success,
               pipeline: pipeline,
               name: 'rspec tests',
               stage: 'test')
+
+            create(:ci_job_artifact, :codequality, job: build)
           end
 
           before do
@@ -470,7 +472,7 @@ describe 'Pipelines', :js do
           it 'has artifacts download dropdown' do
             find('.js-pipeline-dropdown-download').click
 
-            expect(page).to have_link(with_artifacts.name)
+            expect(page).to have_link(with_artifacts.file_type)
           end
 
           it 'has download attribute on download links' do

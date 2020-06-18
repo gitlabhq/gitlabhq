@@ -21,28 +21,18 @@ module Secpick
       @options = self.class.options
     end
 
-    def ee?
-      File.exist?(File.expand_path('../ee/app/models/license.rb', __dir__))
-    end
-
     def dry_run?
       @options[:try] == true
     end
 
-    def original_branch
-      @options[:branch].strip
-    end
-
     def source_branch
-      branch = "#{original_branch}-#{@options[:version]}"
+      branch = "#{@options[:branch]}-#{@options[:version]}"
       branch.prepend("#{BRANCH_PREFIX}-") unless branch.start_with?("#{BRANCH_PREFIX}-")
       branch.freeze
     end
 
     def stable_branch
-      "#{@options[:version]}-#{STABLE_SUFFIX}".tap do |name|
-        name << "-ee" if ee?
-      end.freeze
+      "#{@options[:version]}-#{STABLE_SUFFIX}-ee".freeze
     end
 
     def git_commands
@@ -50,7 +40,7 @@ module Secpick
        "git checkout -B #{source_branch} #{@options[:remote]}/#{stable_branch} --no-track",
        "git cherry-pick #{@options[:sha]}",
        "git push #{@options[:remote]} #{source_branch}",
-       "git checkout #{original_branch}"]
+       "git checkout #{@options[:branch]}"]
     end
 
     def gitlab_params
@@ -64,11 +54,7 @@ module Secpick
     end
 
     def new_mr_url
-      if ee?
-        SECURITY_MR_URL
-      else
-        SECURITY_MR_URL.sub('/gitlab/', '/gitlab-foss/')
-      end
+      SECURITY_MR_URL
     end
 
     def create!
@@ -131,8 +117,8 @@ module Secpick
 
         parser.parse!
 
-        options[:sha] ||= `git rev-parse HEAD`
-        options[:branch] ||= `git rev-parse --abbrev-ref HEAD`
+        options[:sha] ||= `git rev-parse HEAD`.strip
+        options[:branch] ||= `git rev-parse --abbrev-ref HEAD`.strip
         options[:remote] ||= DEFAULT_REMOTE
 
         nil_options = options.select {|_, v| v.nil? }

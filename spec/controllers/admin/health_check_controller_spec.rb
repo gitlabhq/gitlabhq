@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Admin::HealthCheckController do
+RSpec.describe Admin::HealthCheckController do
   let(:admin) { create(:admin) }
 
   before do

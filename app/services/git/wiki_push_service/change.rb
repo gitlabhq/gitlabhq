@@ -21,11 +21,11 @@ module Git
       def event_action
         case raw_change.operation
         when :added
-          Event::CREATED
+          :created
         when :deleted
-          Event::DESTROYED
+          :destroyed
         else
-          Event::UPDATED
+          :updated
         end
       end
 

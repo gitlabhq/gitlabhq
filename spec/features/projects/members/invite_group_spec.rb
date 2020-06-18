@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Project > Members > Invite group', :js do
+RSpec.describe 'Project > Members > Invite group', :js do
   include Select2Helper
   include ActionView::Helpers::DateHelper
 
@@ -11,14 +11,14 @@ describe 'Project > Members > Invite group', :js do
   describe 'Share with group lock' do
     shared_examples 'the project can be shared with groups' do
       it 'the "Invite group" tab exists' do
-        visit project_settings_members_path(project)
+        visit project_project_members_path(project)
         expect(page).to have_selector('#invite-group-tab')
       end
     end
 
     shared_examples 'the project cannot be shared with groups' do
       it 'the "Invite group" tab does not exist' do
-        visit project_settings_members_path(project)
+        visit project_project_members_path(project)
         expect(page).not_to have_selector('#invite-group-tab')
       end
     end
@@ -37,7 +37,9 @@ describe 'Project > Members > Invite group', :js do
         it_behaves_like 'the project can be shared with groups'
 
         it 'the project can be shared with another group' do
-          visit project_settings_members_path(project)
+          visit project_project_members_path(project)
+
+          expect(page).not_to have_css('.project-members-groups')
 
           click_on 'invite-group-tab'
 
@@ -118,7 +120,7 @@ describe 'Project > Members > Invite group', :js do
       group.add_guest(maintainer)
       sign_in(maintainer)
 
-      visit project_settings_members_path(project)
+      visit project_project_members_path(project)
 
       click_on 'invite-group-tab'
 
@@ -151,7 +153,7 @@ describe 'Project > Members > Invite group', :js do
         create(:group).add_owner(maintainer)
         create(:group).add_owner(maintainer)
 
-        visit project_settings_members_path(project)
+        visit project_project_members_path(project)
 
         click_link 'Invite group'
 
@@ -184,7 +186,7 @@ describe 'Project > Members > Invite group', :js do
       end
 
       it 'the groups dropdown does not show ancestors' do
-        visit project_settings_members_path(project)
+        visit project_project_members_path(project)
 
         click_on 'invite-group-tab'
         click_link 'Search for a group'

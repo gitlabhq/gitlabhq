@@ -83,7 +83,7 @@
         .col-sm-10
           = f.text_field :website_url, class: 'form-control'
 
-    = render_if_exists 'admin/users/admin_notes', f: f
+    = render 'admin/users/admin_notes', f: f
 
     .form-actions
       - if @user.new_record?

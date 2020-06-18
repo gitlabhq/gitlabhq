@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'User squashes a merge request', :js do
+RSpec.describe 'User squashes a merge request', :js do
   let(:user) { create(:user) }
   let(:project) { create(:project, :repository) }
   let(:source_branch) { 'csv' }

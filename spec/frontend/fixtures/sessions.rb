@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Sessions (JavaScript fixtures)' do
+RSpec.describe 'Sessions (JavaScript fixtures)' do
   include JavaScriptFixturesHelpers
 
   before(:all) do

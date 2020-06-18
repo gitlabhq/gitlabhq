@@ -106,14 +106,14 @@ you list:
 
 ## Queue selector (experimental)
 
-> [Introduced](https://gitlab.com/gitlab-com/gl-infra/scalability/issues/45) in [GitLab Starter](https://about.gitlab.com/pricing/) 12.8.
+> [Introduced](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/45) in [GitLab Starter](https://about.gitlab.com/pricing/) 12.8.
 
 CAUTION: **Caution:**
 As this is marked as **experimental**, it is subject to change at any
 time, including **breaking backwards compatibility**. This is so that we
 can react to changes we need for our GitLab.com deployment. We have a
 tracking issue open to [remove the experimental
-designation](https://gitlab.com/gitlab-com/gl-infra/scalability/issues/147)
+designation](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/147)
 from this feature; please comment there if you are interested in using
 this in your own deployment.
 
@@ -125,6 +125,8 @@ in a more general way using the following components:
 - Operators used to construct a query.
 
 ### Available attributes
+
+- [Introduced](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/261) in GitLab 13.1, `tags`.
 
 From the [list of all available
 attributes](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/workers/all_queues.yml),
@@ -144,13 +146,20 @@ following attributes:
 - `name` - the queue name. The other attributes are typically more useful as
   they are more general, but this is available in case a particular queue needs
   to be selected.
-- `resource_boundary` - if the worker is bound by `cpu`, `memory`, or
+- `resource_boundary` - if the queue is bound by `cpu`, `memory`, or
   `unknown`. For example, the `project_export` queue is memory bound as it has
   to load data in memory before saving it for export.
+- `tags` - short-lived annotations for queues. These are expected to frequently
+  change from release to release, and may be removed entirely.
 
 `has_external_dependencies` is a boolean attribute: only the exact
 string `true` is considered true, and everything else is considered
 false.
+
+`tags` is a set, which means that `=` checks for intersecting sets, and
+`!=` checks for disjoint sets. For example, `tags=a,b` selects queues
+that have tags `a`, `b`, or both. `tags!=a,b` selects queues that have
+neither of those tags.
 
 ### Available operators
 

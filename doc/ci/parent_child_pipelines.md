@@ -1,10 +1,13 @@
 ---
+stage: Verify
+group: Continuous Integration
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 type: reference
 ---
 
 # Parent-child pipelines
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/16094) in GitLab 12.7.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/16094) in GitLab 12.7.
 
 As pipelines grow more complex, a few related problems start to emerge:
 
@@ -131,7 +134,7 @@ microservice_a:
 
 ## Dynamic child pipelines
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/35632) in GitLab 12.9.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/35632) in GitLab 12.9.
 
 Instead of running a child pipeline from a static YAML file, you can define a job that runs
 your own script to generate a YAML file, which is then [used to trigger a child pipeline](yaml/README.md#trigger-child-pipeline-with-generated-configuration-file).
@@ -148,5 +151,5 @@ This is [resolved in GitLab 12.10](https://gitlab.com/gitlab-org/gitlab/-/issues
 ## Limitations
 
 A parent pipeline can trigger many child pipelines, but a child pipeline cannot trigger
-further child pipelines. See the [related issue](https://gitlab.com/gitlab-org/gitlab/issues/29651)
+further child pipelines. See the [related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/29651)
 for discussion on possible future improvements.

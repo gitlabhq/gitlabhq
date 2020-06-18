@@ -47,9 +47,23 @@ module Types
           null: false,
           description: 'Fields related to design management'
 
+    field :user, Types::UserType,
+          null: true,
+          description: 'Find a user',
+          resolver: Resolvers::UserResolver
+
+    field :users, Types::UserType.connection_type,
+          null: true,
+          description: 'Find users',
+          resolver: Resolvers::UsersResolver
+
     field :echo, GraphQL::STRING_TYPE, null: false,
           description: 'Text to echo back',
           resolver: Resolvers::EchoResolver
+
+    field :user, Types::UserType, null: true,
+          description: 'Find a user on this instance',
+          resolver: Resolvers::UserResolver
 
     def design_management
       DesignManagementObject.new(nil)

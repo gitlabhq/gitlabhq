@@ -1,4 +1,3 @@
-import $ from 'jquery';
 import { slugify } from './lib/utils/text_utility';
 import fetchGroupPathAvailability from '~/pages/groups/new/fetch_group_path_availability';
 import flash from '~/flash';
@@ -6,44 +5,69 @@ import { __ } from '~/locale';
 
 export default class Group {
   constructor() {
-    this.groupPath = $('#group_path');
-    this.groupName = $('#group_name');
-    this.parentId = $('#group_parent_id');
+    this.groupPaths = Array.from(document.querySelectorAll('.js-autofill-group-path'));
+    this.groupNames = Array.from(document.querySelectorAll('.js-autofill-group-name'));
+    this.parentId = document.getElementById('group_parent_id');
     this.updateHandler = this.update.bind(this);
     this.resetHandler = this.reset.bind(this);
     this.updateGroupPathSlugHandler = this.updateGroupPathSlug.bind(this);
-    if (this.groupName.val() === '') {
-      this.groupName.on('keyup', this.updateHandler);
-      this.groupPath.on('keydown', this.resetHandler);
-      if (!this.parentId.val()) {
-        this.groupName.on('blur', this.updateGroupPathSlugHandler);
+
+    this.groupNames.forEach(groupName => {
+      if (groupName.value === '') {
+        groupName.addEventListener('keyup', this.updateHandler);
+
+        if (!this.parentId.value) {
+          groupName.addEventListener('blur', this.updateGroupPathSlugHandler);
+        }
       }
-    }
+    });
+
+    this.groupPaths.forEach(groupPath => {
+      groupPath.addEventListener('keydown', this.resetHandler);
+    });
   }
 
-  update() {
-    const slug = slugify(this.groupName.val());
-    this.groupPath.val(slug);
+  update({ currentTarget: { value: updatedValue } }) {
+    const slug = slugify(updatedValue);
+
+    this.groupNames.forEach(element => {
+      element.value = updatedValue;
+    });
+    this.groupPaths.forEach(element => {
+      element.value = slug;
+    });
   }
 
   reset() {
-    this.groupName.off('keyup', this.updateHandler);
-    this.groupPath.off('keydown', this.resetHandler);
-    this.groupName.off('blur', this.checkPathHandler);
+    this.groupNames.forEach(groupName => {
+      groupName.removeEventListener('keyup', this.updateHandler);
+      groupName.removeEventListener('blur', this.checkPathHandler);
+    });
+
+    this.groupPaths.forEach(groupPath => {
+      groupPath.removeEventListener('keydown', this.resetHandler);
+    });
   }
 
-  updateGroupPathSlug() {
-    const slug = this.groupPath.val() || slugify(this.groupName.val());
+  updateGroupPathSlug({ currentTarget: { value } = '' } = {}) {
+    const slug = this.groupPaths[0]?.value || slugify(value);
     if (!slug) return;
 
     fetchGroupPathAvailability(slug)
       .then(({ data }) => data)
-      .then(data => {
-        if (data.exists && data.suggests.length > 0) {
-          const suggestedSlug = data.suggests[0];
-          this.groupPath.val(suggestedSlug);
+      .then(({ exists, suggests }) => {
+        if (exists && suggests.length) {
+          const [suggestedSlug] = suggests;
+
+          this.groupPaths.forEach(element => {
+            element.value = suggestedSlug;
+          });
+        } else if (exists && !suggests.length) {
+          flash(__('Unable to suggest a path. Please refresh and try again.'));
         }
       })
-      .catch(() => flash(__('An error occurred while checking group path')));
+      .catch(() =>
+        flash(__('An error occurred while checking group path. Please refresh and try again.')),
+      );
   }
 }

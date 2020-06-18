@@ -1,0 +1,5 @@
+---
+title: Update deprecated slot syntax in ./app/assets/javascripts/clusters/components/remove_cluster_confirmation.vue
+merge_request: 32010
+author: Gilang Gumilar
+type: other

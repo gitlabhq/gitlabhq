@@ -186,5 +186,19 @@ describe Prometheus::ProxyVariableSubstitutionService do
         end
       end
     end
+
+    context '__range' do
+      let(:params_keys) do
+        {
+          query: 'topk(5, sum by (method) (rate(rest_client_requests_total[{{__range}}])))',
+          start_time: '2020-05-29T08:19:07.142Z',
+          end_time: '2020-05-29T16:19:07.142Z'
+        }
+      end
+
+      it_behaves_like 'success' do
+        let(:expected_query) { "topk(5, sum by (method) (rate(rest_client_requests_total[#{8.hours.to_i}s])))" }
+      end
+    end
   end
 end

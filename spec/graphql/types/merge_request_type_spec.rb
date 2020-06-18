@@ -19,10 +19,11 @@ describe GitlabSchema.types['MergeRequest'] do
       force_remove_source_branch merge_status in_progress_merge_commit_sha
       merge_error allow_collaboration should_be_rebased rebase_commit_sha
       rebase_in_progress merge_commit_message default_merge_commit_message
-      merge_ongoing source_branch_exists mergeable_discussions_state web_url
+      merge_ongoing mergeable_discussions_state web_url
+      source_branch_exists target_branch_exists
       upvotes downvotes head_pipeline pipelines task_completion_status
       milestone assignees participants subscribed labels discussion_locked time_estimate
-      total_time_spent reference
+      total_time_spent reference author merged_at
     ]
 
     expect(described_class).to have_graphql_fields(*expected_fields)

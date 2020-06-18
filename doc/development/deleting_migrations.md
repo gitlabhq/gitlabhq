@@ -5,7 +5,7 @@ the possibility of the migration already been included in past releases or in th
 
 Because of it, it's not possible to delete existing migrations, as that could lead to:
 
-- Schema inconsistency, as changes introduced into the database were not rollbacked properly.
+- Schema inconsistency, as changes introduced into the database were not rolled back properly.
 - Leaving a record on the `schema_versions` table, that points out to migration that no longer exists on the codebase.
 
 Instead of deleting we can opt for disabling the migration.
@@ -22,7 +22,7 @@ Migrations can be disabled if:
 
 In order to disable a migration, the following steps apply to all types of migrations:
 
-1. Turn the migration into a noop by removing the code inside `#up`, `#down`
+1. Turn the migration into a no-op by removing the code inside `#up`, `#down`
   or `#perform` methods, and adding `#no-op` comment instead.
 1. Add a comment explaining why the code is gone.
 

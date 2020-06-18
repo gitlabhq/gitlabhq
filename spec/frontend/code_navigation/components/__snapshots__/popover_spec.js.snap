@@ -16,7 +16,27 @@ exports[`Code navigation popover component renders popover 1`] = `
     <pre
       class="border-0 bg-transparent m-0 code highlight"
     >
-      console.log
+      <span
+        class="line"
+        lang="javascript"
+      >
+        <span
+          class="k"
+        >
+          function
+        </span>
+        <span>
+           main() {
+        </span>
+      </span>
+      <span
+        class="line"
+        lang="javascript"
+      >
+        <span>
+          }
+        </span>
+      </span>
     </pre>
   </div>
    

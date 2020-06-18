@@ -12,6 +12,11 @@ Bear in mind that the syntax is very specific. Remove any spaces within the argu
 before/after the brackets. Also, some shells (for example, `zsh`) can interpret the open/close brackets
 (`[]`) separately. You may need to either escape the brackets or use double quotes.
 
+## Caveats
+
+If the GitHub [rate limit](https://developer.github.com/v3/#rate-limiting) is reached while importing,
+the importing process will wait (`sleep()`) until it can continue importing.
+
 ## Importing multiple projects
 
 To import a project from the list of your GitHub projects available:

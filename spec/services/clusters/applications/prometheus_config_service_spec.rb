@@ -90,23 +90,25 @@ describe Clusters::Applications::PrometheusConfigService do
             create(:prometheus_alert,
                    project: project,
                    environment: production,
-                   prometheus_metric: metric)
+                   prometheus_metric: metric,
+                   operator: PrometheusAlert.operators['gt'],
+                   threshold: 0)
           end
 
           let(:metric) do
             create(:prometheus_metric, query: query, project: project)
           end
 
-          let(:query) { '%{ci_environment_slug}' }
+          let(:query) { 'up{environment="{{ci_environment_slug}}"}' }
 
           it 'substitutes query variables' do
             expect(Gitlab::Prometheus::QueryVariables)
               .to receive(:call)
-              .with(production)
+              .with(production, start_time: nil, end_time: nil)
               .and_call_original
 
             expr = groups.dig(0, 'rules', 0, 'expr')
-            expect(expr).to include(production.name)
+            expect(expr).to eq("up{environment=\"#{production.slug}\"} > 0.0")
           end
         end
 
@@ -127,13 +129,15 @@ describe Clusters::Applications::PrometheusConfigService do
           end
 
           it 'substitutes query variables once per environment' do
-            expect(Gitlab::Prometheus::QueryVariables)
-              .to receive(:call)
-              .with(production)
+            allow(Gitlab::Prometheus::QueryVariables).to receive(:call).and_call_original
 
             expect(Gitlab::Prometheus::QueryVariables)
               .to receive(:call)
-              .with(staging)
+              .with(production, start_time: nil, end_time: nil)
+
+            expect(Gitlab::Prometheus::QueryVariables)
+              .to receive(:call)
+              .with(staging, start_time: nil, end_time: nil)
 
             subject
           end

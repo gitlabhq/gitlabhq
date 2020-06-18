@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Merge request > User selects branches for new MR', :js do
+RSpec.describe 'Merge request > User selects branches for new MR', :js do
   let(:project) { create(:project, :public, :repository) }
   let(:user) { project.creator }
 

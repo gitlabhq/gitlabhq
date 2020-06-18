@@ -1,0 +1,5 @@
+---
+title: Wrap auto merge parameters update in database transaction
+merge_request: 33471
+author:
+type: fixed

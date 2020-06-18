@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe DeploymentsFinder do
+RSpec.describe DeploymentsFinder do
   subject { described_class.new(project, params).execute }
 
   let(:project) { create(:project, :public, :test_repo) }

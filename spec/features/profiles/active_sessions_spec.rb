@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Profile > Active Sessions', :clean_gitlab_redis_shared_state do
+RSpec.describe 'Profile > Active Sessions', :clean_gitlab_redis_shared_state do
   let(:user) do
     create(:user).tap do |user|
       user.current_sign_in_at = Time.current

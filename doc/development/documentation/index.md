@@ -59,13 +59,48 @@ However, anyone can contribute [documentation improvements](improvement-workflow
 ## Markdown and styles
 
 [GitLab docs](https://gitlab.com/gitlab-org/gitlab-docs) uses [GitLab Kramdown](https://gitlab.com/gitlab-org/gitlab_kramdown)
-as its Markdown rendering engine. See the [GitLab Markdown Guide](https://about.gitlab.com/handbook/engineering/ux/technical-writing/markdown-guide/) for a complete Kramdown reference.
+as its Markdown rendering engine. See the [GitLab Markdown Guide](https://about.gitlab.com/handbook/markdown-guide/) for a complete Kramdown reference.
 
 Adhere to the [Documentation Style Guide](styleguide.md). If a style standard is missing, you are welcome to suggest one via a merge request.
 
 ## Folder structure and files
 
 See the [Structure](styleguide.md#structure) section of the [Documentation Style Guide](styleguide.md).
+
+## Metadata
+
+To provide additional directives or useful information, we add metadata in YAML
+format to the beginning of each product documentation page.
+
+For example, the following metadata would be at the beginning of a product
+documentation page whose content is primarily associated with the Audit Events
+feature:
+
+```yaml
+---
+stage: Monitor
+group: APM
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+---
+```
+
+The following list describes the YAML parameters in use:
+
+- `redirect_to`: The relative path and filename (with an `.md` extension) of the
+  location to which visitors should be redirected for a moved page.
+  [Learn more](#changing-document-location).
+- `stage`: The [Stage](https://about.gitlab.com/handbook/product/categories/#devops-stages)
+  to which the majority of the page's content belongs.
+- `group`: The [Group](https://about.gitlab.com/company/team/structure/#product-groups)
+  to which the majority of the page's content belongs.
+- `info`: The following line, which provides direction to contributors regarding
+  how to contact the Technical Writer associated with the page's Stage and
+  Group: `To determine the technical writer assigned to the Stage/Group
+  associated with this page, see
+  https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers`
+- `disqus_identifier`: Identifier for Disqus commenting system. Used to keep
+  comments with a page that's been moved to a new URL.
+  [Learn more](#redirections-for-pages-with-disqus-comments).
 
 ## Changing document location
 
@@ -133,10 +168,9 @@ Things to note:
   it in for `workflow/lfs/lfs_administration` and `lfs/lfs_administration`
   and will print the file and the line where this file is mentioned.
   You may ask why the two greps. Since [we use relative paths to link to
-  documentation](styleguide.md#links)
-  , sometimes it might be useful to search a path deeper.
+  documentation](styleguide.md#links), sometimes it might be useful to search a path deeper.
 - The `*.md` extension is not used when a document is linked to GitLab's
-  built-in help page, that's why we omit it in `git grep`.
+  built-in help page, which is why we omit it in `git grep`.
 - Use the checklist on the "Change documentation location" MR description template.
 
 ### Redirections for pages with Disqus comments
@@ -380,7 +414,7 @@ The following GitLab features are used among others:
 - [Multi project pipelines](../../ci/multi_project_pipeline_graphs.md)
 - [Review Apps](../../ci/review_apps/index.md)
 - [Artifacts](../../ci/yaml/README.md#artifacts)
-- [Specific Runner](../../ci/runners/README.md#locking-a-specific-runner-from-being-enabled-for-other-projects)
+- [Specific Runner](../../ci/runners/README.md#prevent-a-specific-runner-from-being-enabled-for-other-projects)
 - [Pipelines for merge requests](../../ci/merge_request_pipelines/index.md)
 
 ## Testing
@@ -477,7 +511,7 @@ This list does not limit what other linters you can add to your local documentat
 [markdownlint](https://github.com/DavidAnson/markdownlint) checks that Markdown
 syntax follows [certain rules](https://github.com/DavidAnson/markdownlint/blob/master/doc/Rules.md#rules),
 and is used by the [`docs-lint` test](#testing) with a [configuration file](#markdownlint-configuration).
-Our [Documentation Style Guide](styleguide.md#markdown) and [Markdown Guide](https://about.gitlab.com/handbook/engineering/ux/technical-writing/markdown-guide/)
+Our [Documentation Style Guide](styleguide.md#markdown) and [Markdown Guide](https://about.gitlab.com/handbook/markdown-guide/)
 elaborate on which choices must be made when selecting Markdown syntax for GitLab
 documentation. This tool helps catch deviations from those guidelines.
 
@@ -498,7 +532,9 @@ If you wish to use a different configuration file, use the `-c` flag:
 markdownlint -c <config-file-name> 'doc/**/*.md'
 ```
 
-markdownlint can also be run from within text editors using [plugins/extensions](https://github.com/DavidAnson/markdownlint#related),
+##### Run markdownlint in an editor
+
+markdownlint can also be run as a linter within text editors using [plugins/extensions](https://github.com/DavidAnson/markdownlint#related),
 such as:
 
 - [Sublime Text](https://packagecontrol.io/packages/SublimeLinter-contrib-markdownlint)
@@ -524,7 +560,7 @@ four repositories that are the sources for <https://docs.gitlab.com>:
 
 By default all rules are enabled, so the configuration file is used to disable unwanted
 rules, and also to configure optional parameters for enabled rules as needed. You can
-also check [the issue](https://gitlab.com/gitlab-org/gitlab-foss/issues/64352) that
+also check [the issue](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/64352) that
 tracked the changes required to implement these rules, and details which rules were
 on or off when markdownlint was enabled on the docs.
 
@@ -546,11 +582,16 @@ and from GitLab's root directory (where `.vale.ini` is located), run:
 vale --glob='*.{md}' doc
 ```
 
-You can also
-[configure the text editor of your choice](https://errata-ai.github.io/vale/#local-use-by-a-single-writer)
-to display the results.
+Vale's error-level test results [are displayed](#testing) in CI pipelines.
 
-Vale's test results [are displayed](#testing) in CI pipelines.
+##### Run Vale in an editor
+
+You can run Vale as a linter within your text editor of choice, with:
+
+- The Sublime Text [`SublimeLinter-contrib-vale` plugin](https://packagecontrol.io/packages/SublimeLinter-contrib-vale)
+- The Visual Studio Code [`testthedocs.vale` extension](https://marketplace.visualstudio.com/items?itemName=testthedocs.vale)
+
+We don't use [Vale Server](https://errata-ai.github.io/vale/#using-vale-with-a-text-editor-or-another-third-party-application).
 
 ##### Disable a Vale test
 

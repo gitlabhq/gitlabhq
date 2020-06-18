@@ -4,7 +4,7 @@ import flash from '~/flash';
 import { __, sprintf, s__ } from '~/locale';
 import { GlModal } from '@gitlab/ui';
 import { modalTypes } from '../../constants';
-import { trimPathComponents } from '../../utils';
+import { trimPathComponents, getPathParent } from '../../utils';
 
 export default {
   components: {
@@ -85,8 +85,10 @@ export default {
       }
     },
     createFromTemplate(template) {
+      const parent = getPathParent(this.entryName);
+      const name = parent ? `${parent}/${template.name}` : template.name;
       this.createTempEntry({
-        name: template.name,
+        name,
         type: this.modalType,
       });
 
@@ -133,7 +135,7 @@ export default {
   <gl-modal
     ref="modal"
     modal-id="ide-new-entry"
-    modal-class="qa-new-file-modal"
+    data-qa-selector="new_file_modal"
     :title="modalTitle"
     :ok-title="buttonLabel"
     ok-variant="success"
@@ -148,7 +150,8 @@ export default {
           ref="fieldName"
           v-model.trim="entryName"
           type="text"
-          class="form-control qa-full-file-path"
+          class="form-control"
+          data-qa-selector="file_name_field"
           :placeholder="placeholder"
         />
         <ul

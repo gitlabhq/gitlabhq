@@ -2,9 +2,10 @@
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/109) in GitLab [Starter](https://about.gitlab.com/pricing/) 8.4.
 
-NOTE: **Note**
-Advanced Global Search (powered by Elasticsearch) is not yet available on GitLab.com. We are working on adding it.
-[Follow this epic for the latest updates](https://gitlab.com/groups/gitlab-org/-/epics/153).
+NOTE: **GitLab.com availability:**
+Advanced Global Search (powered by Elasticsearch) is not yet available on GitLab.com.
+It will be progressively enabled for all paid groups in Q3 of 2020.
+[Follow this epic](https://gitlab.com/groups/gitlab-com/-/epics/649) for the latest updates on the timeline.
 
 Leverage Elasticsearch for faster, more advanced code search across your entire
 GitLab instance.

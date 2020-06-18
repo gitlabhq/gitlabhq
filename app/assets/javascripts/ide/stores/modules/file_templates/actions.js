@@ -117,6 +117,3 @@ export const undoFileTemplate = ({ dispatch, commit, rootGetters }) => {
     dispatch('discardFileChanges', file.path, { root: true });
   }
 };
-
-// prevent babel-plugin-rewire from generating an invalid default during karma tests
-export default () => {};

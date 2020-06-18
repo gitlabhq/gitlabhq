@@ -34,10 +34,12 @@ minimum number of required approvers can still be set in the [project settings f
 
 ### Eligible approvers
 
-The following can approve merge requests:
+The following users can approve merge requests:
 
-- Users being added as approvers at project or merge request level.
-- [Code owners](#code-owners-as-eligible-approvers) to the files changed by the merge request.
+- Users who have been added as approvers at the project or merge request levels with
+  developer or higher [permissions](../../permissions.md).
+- [Code owners](#code-owners-as-eligible-approvers) of the files changed by the merge request
+  that have developer or higher [permissions](../../permissions.md).
 
 An individual user can be added as an approver for a project if they are a member of:
 
@@ -46,7 +48,7 @@ An individual user can be added as an approver for a project if they are a membe
 - A group that has access to the project via a [share](../members/share_project_with_groups.md).
 
 A group of users can also be added as approvers. In the future, group approvers may be
-[restricted to only groups with share access to the project](https://gitlab.com/gitlab-org/gitlab/issues/2048).
+[restricted to only groups with share access to the project](https://gitlab.com/gitlab-org/gitlab/-/issues/2048).
 
 If a user is added as an individual approver and is also part of a group approver,
 then that user is just counted once. The merge request author, as well as users who have committed
@@ -68,7 +70,7 @@ were not explicitly listed in the approval rules.
 
 If you add [Code Owners](../code_owners.md) to your repository, the owners to the
 corresponding files will become eligible approvers, together with members with Developer
-or higher permissions.
+or higher [permissions](../../permissions.md).
 
 To enable this merge request approval rule:
 
@@ -127,7 +129,7 @@ the same steps as [Adding / editing a default approval rule](#adding--editing-a-
 
 ### Multiple approval rules **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/1979) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.10.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/1979) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.10.
 
 In GitLab Premium, it is possible to have multiple approval rules per merge request,
 as well as multiple default approval rules per project.
@@ -149,7 +151,7 @@ reduce the number of approvals left for all rules that the approver belongs to.
 
 ### Scoped to Protected Branch **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/460) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.8.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/460) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.8.
 
 Approval rules are often only relevant to specific branches, like `master`.
 When configuring [**Default Approval Rules**](#adding--editing-a-default-approval-rule)
@@ -222,7 +224,7 @@ from the UI. However, approvals will be reset if the target branch is changed.
 
 ### Allowing merge request authors to approve their own merge requests
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/3349) in [GitLab Starter](https://about.gitlab.com/pricing/) 11.3.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/3349) in [GitLab Starter](https://about.gitlab.com/pricing/) 11.3.
 
 You can allow merge request authors to self-approve merge requests. Authors
 also need to be included in the approvers list in order to be able to
@@ -234,7 +236,7 @@ approve their merge request. To enable this feature:
 
 ### Prevent approval of merge requests by their committers
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/10441) in [GitLab Starter](https://about.gitlab.com/pricing/) 11.10.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/10441) in [GitLab Starter](https://about.gitlab.com/pricing/) 11.10.
 
 You can prevent users that have committed to a merge request from approving it. To
 enable this feature:
@@ -244,7 +246,12 @@ enable this feature:
 
 ### Require authentication when approving a merge request
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/5981) in [GitLab Starter](https://about.gitlab.com/pricing/) 12.0.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/5981) in [GitLab Starter](https://about.gitlab.com/pricing/) 12.0.
+
+NOTE: **Note:**
+To require authentication when approving a merge request, you must enable
+**Password authentication enabled for web interface** under [sign-in restrictions](../../admin_area/settings/sign_in_restrictions.md#password-authentication-enabled).
+in the Admin area.
 
 You can force the approver to enter a password in order to authenticate before adding
 the approval. This enables an Electronic Signature for approvals such as the one defined
@@ -264,7 +271,7 @@ For more information, see
 
 ## Enabling the new approvals interface
 
-Since [GitLab v12.0](https://gitlab.com/gitlab-org/gitlab/issues/10685), an updated approvals
+Since [GitLab v12.0](https://gitlab.com/gitlab-org/gitlab/-/issues/10685), an updated approvals
 interface is available by default. In versions older than 12.0, the updated interface is not
 available unless the `approval_rules` feature flag is enabled, which can be done from
 the Rails console by instance administrators.

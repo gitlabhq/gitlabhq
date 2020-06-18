@@ -1,0 +1,5 @@
+---
+title: Add a GraphQL endpoint to fetch Jira projects through its REST API
+merge_request: 28190
+author:
+type: changed

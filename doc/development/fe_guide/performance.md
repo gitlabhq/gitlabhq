@@ -65,7 +65,7 @@ within the `pages` directory correspond to Rails controllers and actions. These
 auto-generated bundles will be automatically included on the corresponding
 pages.
 
-For example, if you were to visit <https://gitlab.com/gitlab-org/gitlab/issues>,
+For example, if you were to visit <https://gitlab.com/gitlab-org/gitlab/-/issues>,
 you would be accessing the `app/controllers/projects/issues_controller.rb`
 controller with the `index` action. If a corresponding file exists at
 `pages/projects/issues/index/index.js`, it will be compiled into a webpack

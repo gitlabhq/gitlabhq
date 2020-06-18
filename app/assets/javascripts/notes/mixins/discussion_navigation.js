@@ -1,5 +1,5 @@
 import { mapGetters, mapActions, mapState } from 'vuex';
-import { scrollToElement } from '~/lib/utils/common_utils';
+import { scrollToElementWithContext } from '~/lib/utils/common_utils';
 import eventHub from '../event_hub';
 
 /**
@@ -10,7 +10,7 @@ function scrollTo(selector) {
   const el = document.querySelector(selector);
 
   if (el) {
-    scrollToElement(el);
+    scrollToElementWithContext(el);
     return true;
   }
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Merge request > User resolves Work in Progress', :js do
+RSpec.describe 'Merge request > User resolves Work in Progress', :js do
   let(:project) { create(:project, :public, :repository) }
   let(:user) { project.creator }
   let(:merge_request) do

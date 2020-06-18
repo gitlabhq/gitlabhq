@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-describe 'Projects > Settings > User manages merge request settings' do
+RSpec.describe 'Projects > Settings > User manages merge request settings' do
   let(:user) { create(:user) }
   let(:project) { create(:project, :public, namespace: user.namespace, path: 'gitlab', name: 'sample') }
 

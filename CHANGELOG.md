@@ -6,20 +6,6 @@ entry.
 
 - No changes.
 
-## 13.0.5 (2020-06-04)
-
-### Fixed (4 changes)
-
-- Fix NoMethodError by using the correct method to report exceptions to Sentry. !33260
-- Fix bug in snippets updating only file_name or content. !33375
-- Fix ambiguous string concatenation on CleanupProjectsWithMissingNamespace. !33497
-- Fix linking alerts to created issues for the Generic alerts intergration. !33647
-
-### Other (1 change)
-
-- Update GitLab Workhorse to v8.31.2. !33818
-
-
 ## 13.0.4 (2020-06-03)
 
 ### Security (1 change)
@@ -40,10 +26,6 @@ entry.
 - Fix issue and MR API performance regression when Markdown cache is stale. !33235
 - Fix close issue when user created the issue. !33294
 
-
-## 13.0.2 (2020-05-28)
-
-- No changes.
 
 ## 13.0.1 (2020-05-27)
 
@@ -632,6 +614,49 @@ entry.
 - Use visitUrl in Alert management. !32414
 
 
+## 12.10.11 (2020-06-10)
+
+- No changes.
+
+## 12.10.8 (2020-05-28)
+
+### Fixed (2 changes)
+
+- Fix Geo replication for design thumbnails. !32703
+- Fix 404s downloading build artifacts. !32741
+
+
+## 12.10.7 (2020-05-27)
+
+### Security (14 changes)
+
+- Add an extra validation to Static Site Editor payload.
+- Hide EKS secret key in admin integrations settings.
+- Added data integrity check before updating a deploy key.
+- Display only verified emails on notifications and profile page.
+- Disable caching on repo/blobs/[sha]/raw endpoint.
+- Require confirmed email address for GitLab OAuth authentication.
+- Kubernetes cluster details page no longer exposes Service Token.
+- Fix confirming unverified emails with soft email confirmation flow enabled.
+- Disallow user to control PUT request using mermaid markdown in issue description.
+- Check forked project permissions before allowing fork.
+- Limit memory footprint of a command that generates ZIP artifacts metadata.
+- Fix file enuming using Group Import.
+- Prevent XSS in the monitoring dashboard.
+- Use `gsub` instead of the Ruby `%` operator to perform variable substitution in Prometheus proxy API.
+
+
+## 12.10.6 (2020-05-15)
+
+### Fixed (5 changes)
+
+- Fix duplicate index removal on ci_pipelines.project_id. !31043
+- Fix 500 on creating an invalid domains and verification. !31190
+- Fix incorrect number of errors returned when querying sentry errors. !31252
+- Add instance column to services table if it's missing. !31631
+- Fix incorrect regex used in FileUploader#extract_dynamic_path. !32271
+
+
 ## 12.10.5 (2020-05-13)
 
 ### Added (1 change)
@@ -1119,6 +1144,29 @@ entry.
 - Add Gitlab User-Agent to ContainerRegistry::Client. !29294 (Sashi Kumar)
 - Improve error message in DAST CI template. !29388
 - Remove store_mentions! in Snippets::CreateService. !29581 (Sashi Kumar)
+
+
+## 12.9.10 (2020-06-10)
+
+- No changes.
+
+## 12.9.8 (2020-05-27)
+
+### Security (13 changes)
+
+- Hide EKS secret key in admin integrations settings.
+- Added data integrity check before updating a deploy key.
+- Display only verified emails on notifications and profile page.
+- Disable caching on repo/blobs/[sha]/raw endpoint.
+- Require confirmed email address for GitLab OAuth authentication.
+- Kubernetes cluster details page no longer exposes Service Token.
+- Fix confirming unverified emails with soft email confirmation flow enabled.
+- Disallow user to control PUT request using mermaid markdown in issue description.
+- Check forked project permissions before allowing fork.
+- Limit memory footprint of a command that generates ZIP artifacts metadata.
+- Fix file enuming using Group Import.
+- Prevent XSS in the monitoring dashboard.
+- Use `gsub` instead of the Ruby `%` operator to perform variable substitution in Prometheus proxy API.
 
 
 ## 12.9.6 (2020-05-05)

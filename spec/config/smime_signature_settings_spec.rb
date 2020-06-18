@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe SmimeSignatureSettings do
+RSpec.describe SmimeSignatureSettings do
   describe '.parse' do
     let(:default_smime_key) { Rails.root.join('.gitlab_smime_key') }
     let(:default_smime_cert) { Rails.root.join('.gitlab_smime_cert') }

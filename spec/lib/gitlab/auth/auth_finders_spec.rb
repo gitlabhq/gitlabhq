@@ -4,6 +4,7 @@ require 'spec_helper'
 
 describe Gitlab::Auth::AuthFinders do
   include described_class
+  include HttpBasicAuthHelpers
 
   let(:user) { create(:user) }
   let(:env) do
@@ -22,10 +23,7 @@ describe Gitlab::Auth::AuthFinders do
   end
 
   def set_basic_auth_header(username, password)
-    set_header(
-      'HTTP_AUTHORIZATION',
-      ActionController::HttpAuthentication::Basic.encode_credentials(username, password)
-    )
+    env.merge!(basic_auth_header(username, password))
   end
 
   describe '#find_user_from_warden' do
@@ -652,6 +650,24 @@ describe Gitlab::Auth::AuthFinders do
 
       it_behaves_like 'job token params', described_class::JOB_TOKEN_PARAM
       it_behaves_like 'job token params', described_class::RUNNER_JOB_TOKEN_PARAM
+    end
+
+    context 'when the job token is provided via basic auth' do
+      let(:route_authentication_setting) { { job_token_allowed: :basic_auth } }
+      let(:username) { Ci::Build::CI_REGISTRY_USER }
+      let(:token) { job.token }
+
+      before do
+        set_basic_auth_header(username, token)
+      end
+
+      it { is_expected.to eq(user) }
+
+      context 'credentials are provided but route setting is incorrect' do
+        let(:route_authentication_setting) { { job_token_allowed: :unknown } }
+
+        it { is_expected.to be_nil }
+      end
     end
   end
 

@@ -3,7 +3,7 @@
 export default {
   computed: {
     canSeeDescriptionVersion() {},
-    canDeleteDescriptionVersion() {},
+    displayDeleteButton() {},
     shouldShowDescriptionVersion() {},
     descriptionVersionToggleIcon() {},
   },

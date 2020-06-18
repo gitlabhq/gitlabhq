@@ -15,7 +15,7 @@ export default class LazyLoader {
   }
 
   static supportsIntersectionObserver() {
-    return 'IntersectionObserver' in window;
+    return Boolean(window.IntersectionObserver);
   }
 
   searchLazyImages() {

@@ -16,15 +16,16 @@ const setEnvironmentData = store => {
   store.commit(`monitoringDashboard/${types.RECEIVE_ENVIRONMENTS_DATA_SUCCESS}`, environmentData);
 };
 
-export const setupAllDashboards = store => {
+export const setupAllDashboards = (store, path) => {
   store.commit(`monitoringDashboard/${types.SET_ALL_DASHBOARDS}`, dashboardGitResponse);
+  if (path) {
+    store.commit(`monitoringDashboard/${types.SET_INITIAL_STATE}`, {
+      currentDashboard: path,
+    });
+  }
 };
 
 export const setupStoreWithDashboard = store => {
-  store.commit(
-    `monitoringDashboard/${types.RECEIVE_METRICS_DASHBOARD_SUCCESS}`,
-    metricsDashboardPayload,
-  );
   store.commit(
     `monitoringDashboard/${types.RECEIVE_METRICS_DASHBOARD_SUCCESS}`,
     metricsDashboardPayload,
@@ -34,6 +35,18 @@ export const setupStoreWithDashboard = store => {
 export const setupStoreWithVariable = store => {
   store.commit(`monitoringDashboard/${types.SET_VARIABLES}`, {
     label1: 'pod',
+  });
+};
+
+export const setupStoreWithLinks = store => {
+  store.commit(`monitoringDashboard/${types.RECEIVE_METRICS_DASHBOARD_SUCCESS}`, {
+    ...metricsDashboardPayload,
+    links: [
+      {
+        title: 'GitLab Website',
+        url: `https://gitlab.com/website`,
+      },
+    ],
   });
 };
 

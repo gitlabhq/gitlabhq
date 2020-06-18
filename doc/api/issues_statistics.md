@@ -46,7 +46,7 @@ GET /issues_statistics?confidential=true
 | `confidential`     | boolean          | no         | Filter confidential or public issues.                                                                                                               |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/issues_statistics
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/issues_statistics"
 ```
 
 Example response:
@@ -102,7 +102,7 @@ GET /groups/:id/issues_statistics?confidential=true
 | `confidential`     | boolean          | no         | Filter confidential or public issues.                                                                                         |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/groups/4/issues_statistics
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/4/issues_statistics"
 ```
 
 Example response:
@@ -158,7 +158,7 @@ GET /projects/:id/issues_statistics?confidential=true
 | `confidential`     | boolean          | no         | Filter confidential or public issues.                                                                                         |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/4/issues_statistics
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/4/issues_statistics"
 ```
 
 Example response:

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Projects::BlobController do
+RSpec.describe Projects::BlobController do
   include ProjectForksHelper
 
   let(:project) { create(:project, :public, :repository) }
@@ -377,6 +377,22 @@ describe Projects::BlobController do
         delete :destroy, params: default_params
 
         expect(response).to redirect_to(after_delete_path)
+      end
+
+      context 'when a validation failure occurs' do
+        let(:failure_path) { project_blob_path(project, default_params[:id]) }
+
+        render_views
+
+        it 'redirects to a valid page' do
+          expect_next_instance_of(Files::DeleteService) do |instance|
+            expect(instance).to receive(:validate!).and_raise(Commits::CreateService::ValidationError, "validation error")
+          end
+
+          delete :destroy, params: default_params
+
+          expect(response).to redirect_to(failure_path)
+        end
       end
     end
 

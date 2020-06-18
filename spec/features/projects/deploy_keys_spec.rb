@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Project deploy keys', :js do
+RSpec.describe 'Project deploy keys', :js do
   let(:user) { create(:user) }
   let(:project) { create(:project_empty_repo) }
 

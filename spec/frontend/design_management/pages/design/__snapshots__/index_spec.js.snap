@@ -16,7 +16,7 @@ exports[`Design management design index page renders design index 1`] = `
     <!---->
      
     <design-presentation-stub
-      discussions="[object Object]"
+      discussions="[object Object],[object Object]"
       image="test.jpg"
       imagename="test.jpg"
       scale="1"
@@ -33,58 +33,86 @@ exports[`Design management design index page renders design index 1`] = `
     class="image-notes"
   >
     <h2
-      class="gl-font-size-20-deprecated-no-really-do-not-use-me font-weight-bold mt-0"
+      class="gl-font-weight-bold gl-mt-0"
     >
       
-        My precious issue
-      
+    My precious issue
+  
     </h2>
      
     <a
-      class="text-tertiary text-decoration-none mb-3 d-block"
+      class="gl-text-gray-600 gl-text-decoration-none gl-mb-6 gl-display-block"
       href="full-issue-url"
     >
       ull-issue-path
     </a>
      
     <participants-stub
-      class="mb-4"
+      class="gl-mb-4"
       numberoflessparticipants="7"
       participants="[object Object]"
     />
      
-    <div
-      class="design-discussion-wrapper"
-    >
-      <div
-        class="badge badge-pill"
-        type="button"
-      >
-        1
-      </div>
-       
-      <div
-        class="design-discussion bordered-box position-relative"
-        data-qa-selector="design_discussion_content"
-      >
-        <design-note-stub
-          class=""
-          markdownpreviewpath="//preview_markdown?target_type=Issue"
-          note="[object Object]"
-        />
-         
-        <div
-          class="reply-wrapper"
-        >
-          <reply-placeholder-stub
-            buttontext="Reply..."
-            class="qa-discussion-reply"
-          />
-        </div>
-      </div>
-    </div>
-     
     <!---->
+     
+    <design-discussion-stub
+      data-testid="unresolved-discussion"
+      designid="test"
+      discussion="[object Object]"
+      discussionwithopenform=""
+      markdownpreviewpath="//preview_markdown?target_type=Issue"
+      noteableid="design-id"
+    />
+     
+    <gl-button-stub
+      category="tertiary"
+      class="link-inherit-color gl-text-black-normal gl-text-decoration-none gl-font-weight-bold gl-mb-4"
+      data-testid="resolved-comments"
+      icon="chevron-right"
+      id="resolved-comments"
+      size="medium"
+      variant="link"
+    >
+      Resolved Comments (1)
+    
+    </gl-button-stub>
+     
+    <gl-popover-stub
+      container="popovercontainer"
+      cssclasses=""
+      placement="top"
+      show="true"
+      target="resolved-comments"
+      title="Resolved Comments"
+    >
+      <p>
+        
+        Comments you resolve can be viewed and unresolved by going to the "Resolved Comments" section below
+      
+      </p>
+       
+      <a
+        href="#"
+        rel="noopener noreferrer"
+        target="_blank"
+      >
+        Learn more about resolving comments
+      </a>
+    </gl-popover-stub>
+     
+    <gl-collapse-stub
+      class="gl-mt-3"
+    >
+      <design-discussion-stub
+        data-testid="resolved-discussion"
+        designid="test"
+        discussion="[object Object]"
+        discussionwithopenform=""
+        markdownpreviewpath="//preview_markdown?target_type=Issue"
+        noteableid="design-id"
+      />
+    </gl-collapse-stub>
+     
   </div>
 </div>
 `;
@@ -152,33 +180,37 @@ exports[`Design management design index page with error GlAlert is rendered in c
     class="image-notes"
   >
     <h2
-      class="gl-font-size-20-deprecated-no-really-do-not-use-me font-weight-bold mt-0"
+      class="gl-font-weight-bold gl-mt-0"
     >
       
-        My precious issue
-      
+    My precious issue
+  
     </h2>
      
     <a
-      class="text-tertiary text-decoration-none mb-3 d-block"
+      class="gl-text-gray-600 gl-text-decoration-none gl-mb-6 gl-display-block"
       href="full-issue-url"
     >
       ull-issue-path
     </a>
      
     <participants-stub
-      class="mb-4"
+      class="gl-mb-4"
       numberoflessparticipants="7"
       participants="[object Object]"
     />
      
     <h2
-      class="new-discussion-disclaimer gl-font-base m-0"
+      class="new-discussion-disclaimer gl-font-base gl-m-0 gl-mb-4"
+      data-testid="new-discussion-disclaimer"
     >
       
-        Click the image where you'd like to start a new discussion
-      
+    Click the image where you'd like to start a new discussion
+  
     </h2>
+      
+    <!---->
+     
   </div>
 </div>
 `;

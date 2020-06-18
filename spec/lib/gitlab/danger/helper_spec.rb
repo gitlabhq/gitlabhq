@@ -213,6 +213,7 @@ describe Gitlab::Danger::Helper do
       'generator_templates/foo' | :backend
       'vendor/languages.yml'    | :backend
       'vendor/licenses.csv'     | :backend
+      'file_hooks/examples/'    | :backend
 
       'Gemfile'        | :backend
       'Gemfile.lock'   | :backend
@@ -233,6 +234,7 @@ describe Gitlab::Danger::Helper do
       '.overcommit.yml.example'                               | :engineering_productivity
       '.editorconfig'                                         | :engineering_productivity
       'tooling/overcommit/foo'                                | :engineering_productivity
+      '.codeclimate.yml'                                      | :engineering_productivity
 
       'lib/gitlab/ci/templates/Security/SAST.gitlab-ci.yml'   | :backend
 

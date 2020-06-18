@@ -48,7 +48,6 @@ CREATE TABLE public.abuse_reports (
 --
 
 CREATE SEQUENCE public.abuse_reports_id_seq
-    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
+require 'spec_helper'
 
 describe Gitlab::Alerting::NotificationPayloadParser do
   describe '.call' do
@@ -85,6 +85,39 @@ describe Gitlab::Alerting::NotificationPayloadParser do
 
         it 'sets severity to the default ' do
           expect(subject.dig('annotations', 'severity')).to eq(described_class::DEFAULT_SEVERITY)
+        end
+      end
+    end
+
+    context 'with fingerprint' do
+      before do
+        payload[:fingerprint] = data
+      end
+
+      shared_examples 'fingerprint generation' do
+        it 'generates the fingerprint correctly' do
+          expect(result).to eq(Gitlab::AlertManagement::Fingerprint.generate(data))
+        end
+      end
+
+      context 'with blank fingerprint' do
+        it_behaves_like 'fingerprint generation' do
+          let(:data) { '   ' }
+          let(:result) { subject.dig('annotations', 'fingerprint') }
+        end
+      end
+
+      context 'with fingerprint given' do
+        it_behaves_like 'fingerprint generation' do
+          let(:data) { 'fingerprint' }
+          let(:result) { subject.dig('annotations', 'fingerprint') }
+        end
+      end
+
+      context 'with array fingerprint given' do
+        it_behaves_like 'fingerprint generation' do
+          let(:data) { [1, 'fingerprint', 'given'] }
+          let(:result) { subject.dig('annotations', 'fingerprint') }
         end
       end
     end

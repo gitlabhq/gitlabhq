@@ -2,14 +2,14 @@
 
 .row.prepend-top-default
   .col-lg-3
-    %h4.prepend-top-0
+    %h4.gl-mt-0
       = _("Fork project")
     %p
       = _("A fork is a copy of a project.<br />Forking a repository allows you to make changes without affecting the original project.").html_safe
   .col-lg-9
     - if @namespaces.present?
       .fork-thumbnail-container.js-fork-content
-        %h5.prepend-top-0.append-bottom-0.prepend-left-default.append-right-default
+        %h5.gl-mt-0.gl-mb-0.prepend-left-default.append-right-default
           = _("Select a namespace to fork the project")
         - @namespaces.each do |namespace|
           = render 'fork_button', namespace: namespace

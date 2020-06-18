@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Mutations::ResolvesIssuable do
+RSpec.describe Mutations::ResolvesIssuable do
   let_it_be(:mutation_class) do
     Class.new(Mutations::BaseMutation) do
       include Mutations::ResolvesIssuable

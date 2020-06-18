@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Ci::PipelinesForMergeRequestFinder do
+RSpec.describe Ci::PipelinesForMergeRequestFinder do
   describe '#all' do
     let(:merge_request) { create(:merge_request) }
     let(:project) { merge_request.source_project }

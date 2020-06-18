@@ -53,7 +53,9 @@ troubleshoot.
 
 Auto Build supports building your application using [Cloud Native Buildpacks](https://buildpacks.io)
 through the [`pack` command](https://github.com/buildpacks/pack). To use Cloud Native Buildpacks,
-set the CI variable `AUTO_DEVOPS_BUILD_IMAGE_CNB_ENABLED` to a non-empty value.
+set the CI variable `AUTO_DEVOPS_BUILD_IMAGE_CNB_ENABLED` to a non-empty
+value. The default builder is `heroku/buildpacks:18` but a different builder
+can be selected using the CI variable `AUTO_DEVOPS_BUILD_IMAGE_CNB_BUILDER`.
 
 Cloud Native Buildpacks (CNBs) are an evolution of Heroku buildpacks, and
 will eventually supersede Herokuish-based builds within Auto DevOps. For more
@@ -82,10 +84,38 @@ Auto Test runs the appropriate tests for your application using
 your project to detect the language and framework. Several languages and
 frameworks are detected automatically, but if your language is not detected,
 you may be able to create a [custom buildpack](customize.md#custom-buildpacks).
-Check the [currently supported languages](index.md#currently-supported-languages).
+Check the [currently supported languages](#currently-supported-languages).
 
 Auto Test uses tests you already have in your application. If there are no
 tests, it's up to you to add them.
+
+### Currently supported languages
+
+Note that not all buildpacks support Auto Test yet, as it's a relatively new
+enhancement. All of Heroku's
+[officially supported languages](https://devcenter.heroku.com/articles/heroku-ci#supported-languages)
+support Auto Test. The languages supported by Heroku's Herokuish buildpacks all
+support Auto Test, but notably the multi-buildpack does not.
+
+The supported buildpacks are:
+
+```plaintext
+- heroku-buildpack-multi
+- heroku-buildpack-ruby
+- heroku-buildpack-nodejs
+- heroku-buildpack-clojure
+- heroku-buildpack-python
+- heroku-buildpack-java
+- heroku-buildpack-gradle
+- heroku-buildpack-scala
+- heroku-buildpack-play
+- heroku-buildpack-php
+- heroku-buildpack-go
+- buildpack-nginx
+```
+
+If your application needs a buildpack that is not in the above list, you
+might want to use a [custom buildpack](customize.md#custom-buildpacks).
 
 ## Auto Code Quality **(STARTER)**
 
@@ -113,6 +143,22 @@ warnings.
 
 To learn more about [how SAST works](../../user/application_security/sast/index.md),
 see the documentation.
+
+## Auto Secret Detection **(ULTIMATE)**
+
+> Introduced in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.1.
+
+Secret Detection uses the
+[Secret Detection Docker image](https://gitlab.com/gitlab-org/security-products/analyzers/secrets) to run Secret Detection on the current code, and checks for leaked secrets. The
+Auto Secret Detection stage runs only on the
+[Ultimate](https://about.gitlab.com/pricing/) tier, and requires
+[GitLab Runner](https://docs.gitlab.com/runner/) 11.5 or above.
+
+After creating the report, it's uploaded as an artifact which you can later
+download and evaluate. The merge request widget also displays any security
+warnings.
+
+To learn more, see [Secret Detection](../../user/application_security/secret_detection/index.md).
 
 ## Auto Dependency Scanning **(ULTIMATE)**
 
@@ -166,7 +212,7 @@ see the documentation.
 ## Auto Review Apps
 
 This is an optional step, since many projects don't have a Kubernetes cluster
-available. If the [requirements](index.md#requirements) are not met, the job is
+available. If the [requirements](requirements.md) are not met, the job is
 silently skipped.
 
 [Review Apps](../../ci/review_apps/index.md) are temporary application environments based on the
@@ -267,7 +313,7 @@ Any performance differences between the source and target branches are also
 ## Auto Deploy
 
 This is an optional step, since many projects don't have a Kubernetes cluster
-available. If the [requirements](index.md#requirements) are not met, the job is skipped.
+available. If the [requirements](requirements.md) are not met, the job is skipped.
 
 After a branch or merge request is merged into the project's default branch (usually
 `master`), Auto Deploy deploys the application to a `production` environment in
@@ -328,7 +374,7 @@ as it attempts to fetch the image using `CI_REGISTRY_PASSWORD`.
 
 CAUTION: **Deprecation**
 The default value for the `deploymentApiVersion` setting was changed from
-`extensions/v1beta` to `apps/v1` in [GitLab 13.0](https://gitlab.com/gitlab-org/charts/auto-deploy-app/issues/47).
+`extensions/v1beta` to `apps/v1` in [GitLab 13.0](https://gitlab.com/gitlab-org/charts/auto-deploy-app/-/issues/47).
 
 In Kubernetes 1.16 and later, a number of
 [APIs were removed](https://kubernetes.io/blog/2019/07/18/api-deprecations-in-1-16/),
@@ -467,7 +513,7 @@ traffic within a local namespace, and from the `gitlab-managed-apps`
 namespace. All other inbound connections are blocked. Outbound
 traffic (for example, to the Internet) is not affected by the default policy.
 
-You can also provide a custom [policy specification](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.16/#networkpolicyspec-v1-networking-k8s-io)
+You can also provide a custom [policy specification](https://kubernetes.io/docs/concepts/services-networking/network-policies/)
 in the `.gitlab/auto-deploy-values.yaml` file, for example:
 
 ```yaml
@@ -568,7 +614,7 @@ GitLab provides some initial alerts for you after you install Prometheus:
 
 To use Auto Monitoring:
 
-1. [Install and configure the requirements](index.md#requirements).
+1. [Install and configure the Auto DevOps requirements](requirements.md).
 1. [Enable Auto DevOps](index.md#enablingdisabling-auto-devops), if you haven't done already.
 1. Navigate to your project's **{rocket}** **CI/CD > Pipelines** and click **Run Pipeline**.
 1. After the pipeline finishes successfully, open the

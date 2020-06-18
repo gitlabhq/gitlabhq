@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-describe Mutations::DesignManagement::Upload do
+RSpec.describe Mutations::DesignManagement::Upload do
   include DesignManagementTestHelpers
   include ConcurrentHelpers
 

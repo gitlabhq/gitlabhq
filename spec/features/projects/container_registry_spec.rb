@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Container Registry', :js do
+RSpec.describe 'Container Registry', :js do
   let(:user) { create(:user) }
   let(:project) { create(:project) }
 
@@ -30,10 +30,10 @@ describe 'Container Registry', :js do
       expect(page).to have_content _('There are no container images stored for this project')
     end
 
-    it 'list page has quickstart' do
+    it 'list page has cli commands' do
       visit_container_registry
 
-      expect(page).to have_content _('Quick Start')
+      expect(page).to have_content _('CLI Commands')
     end
   end
 
@@ -84,7 +84,7 @@ describe 'Container Registry', :js do
         expect(service).to receive(:execute).with(container_repository) { { status: :success } }
         expect(Projects::ContainerRepository::DeleteTagsService).to receive(:new).with(container_repository.project, user, tags: ['1']) { service }
 
-        first('.js-delete-registry').click
+        first('[data-testid="singleDeleteButton"]').click
         expect(find('.modal .modal-title')).to have_content _('Remove tag')
         find('.modal .modal-footer .btn-danger').click
       end

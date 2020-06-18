@@ -1,4 +1,8 @@
-// Overrides styles from ToastUI editor
+/**
+* Overrides styles from ToastUI editor
+*/
+
+// Toolbar buttons
 .tui-editor-defaultUI-toolbar .toolbar-button {
   color: $gl-gray-600;
   border: 0;
@@ -7,5 +11,21 @@
   &:active {
     color: $blue-500;
     border: 0;
+  }
+}
+
+// Contextual menu's & popups
+.tui-editor-defaultUI .tui-popup-wrapper {
+  @include gl-overflow-hidden;
+  @include gl-rounded-base;
+  @include gl-border-gray-400;
+
+  hr {
+    @include gl-m-0;
+    @include gl-bg-gray-400;
+  }
+
+  button {
+    @include gl-text-gray-800;
   }
 }

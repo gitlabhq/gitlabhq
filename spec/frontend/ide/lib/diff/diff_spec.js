@@ -73,5 +73,13 @@ describe('Multi-file editor library diff calculator', () => {
 
       expect(diff.endLineNumber).toBe(1);
     });
+
+    it('disregards changes for EOL type changes', () => {
+      const text1 = 'line1\nline2\nline3\n';
+      const text2 = 'line1\r\nline2\r\nline3\r\n';
+
+      expect(computeDiff(text1, text2)).toEqual([]);
+      expect(computeDiff(text2, text1)).toEqual([]);
+    });
   });
 });

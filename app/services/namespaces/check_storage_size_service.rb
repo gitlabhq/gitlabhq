@@ -41,7 +41,8 @@ module Namespaces
       {
         explanation_message: explanation_message,
         usage_message: usage_message,
-        alert_level: alert_level
+        alert_level: alert_level,
+        root_namespace: root_namespace
       }
     end
 
@@ -50,7 +51,7 @@ module Namespaces
     end
 
     def usage_message
-      s_("You reached %{usage_in_percent} of %{namespace_name}'s capacity (%{used_storage} of %{storage_limit})" % current_usage_params)
+      s_("You reached %{usage_in_percent} of %{namespace_name}'s storage capacity (%{used_storage} of %{storage_limit})" % current_usage_params)
     end
 
     def alert_level

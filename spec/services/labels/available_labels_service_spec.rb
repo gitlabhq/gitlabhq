@@ -73,6 +73,12 @@ describe Labels::AvailableLabelsService do
 
         expect(result).to match_array([project_label.id, group_label.id])
       end
+
+      it 'returns labels in preserved order' do
+        result = described_class.new(user, project, ids: label_ids.reverse).filter_labels_ids_in_param(:ids)
+
+        expect(result).to eq([group_label.id, project_label.id])
+      end
     end
 
     context 'when parent is a group' do

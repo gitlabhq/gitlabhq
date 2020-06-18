@@ -36,10 +36,14 @@ class SnippetPresenter < Gitlab::View::Presenter::Delegated
   end
 
   def blob
+    blobs.first
+  end
+
+  def blobs
     if snippet.empty_repo?
-      snippet.blob
+      [snippet.blob]
     else
-      snippet.blobs.first
+      snippet.blobs
     end
   end
 

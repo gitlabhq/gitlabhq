@@ -71,6 +71,10 @@ module Gitlab
           # nil will force use of DEFAULT_REDIS_URL when config file is absent
           nil
         end
+
+        def instrumentation_class
+          raise NotImplementedError
+        end
       end
 
       def initialize(rails_env = nil)
@@ -99,6 +103,8 @@ module Gitlab
         config = raw_config_hash
         redis_url = config.delete(:url)
         redis_uri = URI.parse(redis_url)
+
+        config[:instrumentation_class] ||= self.class.instrumentation_class
 
         if redis_uri.scheme == 'unix'
           # Redis::Store does not handle Unix sockets well, so let's do it for them

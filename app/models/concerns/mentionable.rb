@@ -259,8 +259,8 @@ module Mentionable
   # for the test period.
   # During the test period the flag should be enabled at the group level.
   def store_mentioned_users_to_db_enabled?
-    return Feature.enabled?(:store_mentioned_users_to_db, self.project&.group) if self.respond_to?(:project)
-    return Feature.enabled?(:store_mentioned_users_to_db, self.group) if self.respond_to?(:group)
+    return Feature.enabled?(:store_mentioned_users_to_db, self.project&.group, default_enabled: true) if self.respond_to?(:project)
+    return Feature.enabled?(:store_mentioned_users_to_db, self.group, default_enabled: true) if self.respond_to?(:group)
   end
 end
 

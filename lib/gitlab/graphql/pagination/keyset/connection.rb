@@ -32,6 +32,49 @@ module Gitlab
         class Connection < GraphQL::Pagination::ActiveRecordRelationConnection
           include Gitlab::Utils::StrongMemoize
 
+          # rubocop: disable Naming/PredicateName
+          # https://relay.dev/graphql/connections.htm#sec-undefined.PageInfo.Fields
+          def has_previous_page
+            strong_memoize(:has_previous_page) do
+              if after
+                # If `after` is specified, that points to a specific record,
+                # even if it's the first one.  Since we're asking for `after`,
+                # then the specific record we're pointing to is in the
+                # previous page
+                true
+              elsif last
+                limited_nodes
+                !!@has_previous_page
+              else
+                # Key thing to remember.  When `before` is specified (and no `last`),
+                # the spec says return _all_ edges minus anything after the `before`.
+                # Which means the returned list starts at the very first record.
+                # Then the max_page kicks in, and returns the first max_page items.
+                # Because of this, `has_previous_page` will be false
+                false
+              end
+            end
+          end
+
+          def has_next_page
+            strong_memoize(:has_next_page) do
+              if before
+                # If `before` is specified, that points to a specific record,
+                # even if it's the last one.  Since we're asking for `before`,
+                # then the specific record we're pointing to is in the
+                # next page
+                true
+              elsif first
+                # If we count the number of requested items plus one (`limit_value + 1`),
+                # then if we get `limit_value + 1` then we know there is a next page
+                relation_count(set_limit(sliced_nodes, limit_value + 1)) == limit_value + 1
+              else
+                false
+              end
+            end
+          end
+          # rubocop: enable Naming/PredicateName
+
           def cursor_for(node)
             encoded_json_from_ordering(node)
           end
@@ -39,7 +82,7 @@ module Gitlab
           def sliced_nodes
             @sliced_nodes ||=
               begin
-                OrderInfo.validate_ordering(ordered_items, order_list)
+                OrderInfo.validate_ordering(ordered_items, order_list) unless loaded?(ordered_items)
 
                 sliced = ordered_items
                 sliced = slice_nodes(sliced, before, :before) if before.present?
@@ -54,20 +97,30 @@ module Gitlab
             # So we're ok loading them into memory here as that's bound to happen
             # anyway. Having them ready means we can modify the result while
             # rendering the fields.
-            @nodes ||= load_paged_nodes.to_a
+            @nodes ||= limited_nodes.to_a
           end
 
           private
 
-          def load_paged_nodes
-            if first && last
-              raise Gitlab::Graphql::Errors::ArgumentError.new("Can only provide either `first` or `last`, not both")
-            end
+          # Apply `first` and `last` to `sliced_nodes`
+          def limited_nodes
+            strong_memoize(:limited_nodes) do
+              if first && last
+                raise Gitlab::Graphql::Errors::ArgumentError.new("Can only provide either `first` or `last`, not both")
+              end
 
-            if last
-              sliced_nodes.last(limit_value)
-            else
-              sliced_nodes.limit(limit_value) # rubocop: disable CodeReuse/ActiveRecord
+              if last
+                # grab one more than we need
+                paginated_nodes = sliced_nodes.last(limit_value + 1)
+
+                # there is an extra node, so there is a previous page
+                @has_previous_page = paginated_nodes.count > limit_value
+                @has_previous_page ? paginated_nodes.last(limit_value) : paginated_nodes
+              elsif loaded?(sliced_nodes)
+                sliced_nodes.take(limit_value) # rubocop: disable CodeReuse/ActiveRecord
+              else
+                sliced_nodes.limit(limit_value) # rubocop: disable CodeReuse/ActiveRecord
+              end
             end
           end
 
@@ -82,7 +135,17 @@ module Gitlab
           # rubocop: enable CodeReuse/ActiveRecord
 
           def limit_value
+            # note: only first _or_ last can be specified, not both
             @limit_value ||= [first, last, max_page_size].compact.min
+          end
+
+          def loaded?(items)
+            case items
+            when Array
+              true
+            else
+              items.loaded?
+            end
           end
 
           def ordered_items
@@ -92,6 +155,16 @@ module Gitlab
               end
 
               list = OrderInfo.build_order_list(items)
+
+              if loaded?(items)
+                @order_list = list.presence || [items.primary_key]
+
+                # already sorted, or trivially sorted
+                next items if list.present? || items.size <= 1
+
+                pkey = items.primary_key.to_sym
+                next items.sort_by { |item| item[pkey] }.reverse
+              end
 
               # ensure there is a primary key ordering
               if list&.last&.attribute_name != items.primary_key
@@ -121,7 +194,12 @@ module Gitlab
 
             order_list.each do |field|
               field_name = field.attribute_name
-              ordering[field_name] = node[field_name].to_s
+              field_value = node[field_name]
+              ordering[field_name] = if field_value.is_a?(Time)
+                                       field_value.strftime('%Y-%m-%d %H:%M:%S.%N %Z')
+                                     else
+                                       field_value.to_s
+                                     end
             end
 
             encode(ordering.to_json)

@@ -1,7 +1,7 @@
 # Fast lookup of authorized SSH keys in the database
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/1631) in [GitLab Starter](https://about.gitlab.com/pricing/) 9.3.
-> - [Available in](https://gitlab.com/gitlab-org/gitlab/issues/3953) GitLab Community Edition 10.4.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/1631) in [GitLab Starter](https://about.gitlab.com/pricing/) 9.3.
+> - [Available in](https://gitlab.com/gitlab-org/gitlab/-/issues/3953) GitLab Community Edition 10.4.
 
 NOTE: **Note:** This document describes a drop-in replacement for the
 `authorized_keys` file. For normal (non-deploy key) users, consider using
@@ -125,7 +125,7 @@ the database. The following instructions can be used to build OpenSSH 7.5:
    ```shell
    sudo su -
    cd /tmp
-   curl --remote-name https://mirrors.evowise.com/pub/OpenBSD/OpenSSH/portable/openssh-7.5p1.tar.gz
+   curl --remote-name https://cdn.openbsd.org/pub/OpenBSD/OpenSSH/portable/openssh-7.5p1.tar.gz
    tar xzvf openssh-7.5p1.tar.gz
    yum install rpm-build gcc make wget openssl-devel krb5-devel pam-devel libX11-devel xmkmf libXt-devel
    ```

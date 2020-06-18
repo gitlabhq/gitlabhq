@@ -2,6 +2,12 @@ import $ from 'jquery';
 import OAuthRememberMe from '~/pages/sessions/new/oauth_remember_me';
 
 describe('OAuthRememberMe', () => {
+  const findFormAction = selector => {
+    return $(`#oauth-container .oauth-login${selector}`)
+      .parent('form')
+      .attr('action');
+  };
+
   preloadFixtures('static/oauth_remember_me.html');
 
   beforeEach(() => {
@@ -13,15 +19,9 @@ describe('OAuthRememberMe', () => {
   it('adds the "remember_me" query parameter to all OAuth login buttons', () => {
     $('#oauth-container #remember_me').click();
 
-    expect($('#oauth-container .oauth-login.twitter').attr('href')).toBe(
-      'http://example.com/?remember_me=1',
-    );
-
-    expect($('#oauth-container .oauth-login.github').attr('href')).toBe(
-      'http://example.com/?remember_me=1',
-    );
-
-    expect($('#oauth-container .oauth-login.facebook').attr('href')).toBe(
+    expect(findFormAction('.twitter')).toBe('http://example.com/?remember_me=1');
+    expect(findFormAction('.github')).toBe('http://example.com/?remember_me=1');
+    expect(findFormAction('.facebook')).toBe(
       'http://example.com/?redirect_fragment=L1&remember_me=1',
     );
   });
@@ -30,10 +30,8 @@ describe('OAuthRememberMe', () => {
     $('#oauth-container #remember_me').click();
     $('#oauth-container #remember_me').click();
 
-    expect($('#oauth-container .oauth-login.twitter').attr('href')).toBe('http://example.com/');
-    expect($('#oauth-container .oauth-login.github').attr('href')).toBe('http://example.com/');
-    expect($('#oauth-container .oauth-login.facebook').attr('href')).toBe(
-      'http://example.com/?redirect_fragment=L1',
-    );
+    expect(findFormAction('.twitter')).toBe('http://example.com/');
+    expect(findFormAction('.github')).toBe('http://example.com/');
+    expect(findFormAction('.facebook')).toBe('http://example.com/?redirect_fragment=L1');
   });
 });

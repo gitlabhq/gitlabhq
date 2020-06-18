@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Merge requests > User lists merge requests' do
+RSpec.describe 'Merge requests > User lists merge requests' do
   include MergeRequestHelpers
   include SortingHelper
 

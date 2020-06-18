@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Download buttons in tags page' do
+RSpec.describe 'Download buttons in tags page' do
   let(:user) { create(:user) }
   let(:role) { :developer }
   let(:status) { 'success' }

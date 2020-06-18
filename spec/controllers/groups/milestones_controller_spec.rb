@@ -2,21 +2,13 @@
 
 require 'spec_helper'
 
-describe Groups::MilestonesController do
+RSpec.describe Groups::MilestonesController do
   let(:group) { create(:group, :public) }
   let!(:project) { create(:project, :public, group: group) }
   let!(:project2) { create(:project, group: group) }
   let(:user)    { create(:user) }
   let(:title) { '肯定不是中文的问题' }
-  let(:milestone) do
-    project_milestone = create(:milestone, project: project)
-
-    GroupMilestone.build(
-      group,
-      [project],
-      project_milestone.title
-    )
-  end
+  let(:milestone) { create(:milestone, project: project) }
   let(:milestone_path) { group_milestone_path(group, milestone.safe_title, title: milestone.title) }
 
   let(:milestone_params) do
@@ -168,17 +160,16 @@ describe Groups::MilestonesController do
 
     context 'as JSON' do
       let!(:milestone) { create(:milestone, group: group, title: 'group milestone') }
-      let!(:legacy_milestone1) { create(:milestone, project: project, title: 'legacy') }
-      let!(:legacy_milestone2) { create(:milestone, project: project2, title: 'legacy') }
+      let!(:project_milestone1) { create(:milestone, project: project, title: 'same name') }
+      let!(:project_milestone2) { create(:milestone, project: project2, title: 'same name') }
 
-      it 'lists legacy group milestones and group milestones' do
+      it 'lists project and group milestones' do
         get :index, params: { group_id: group.to_param }, format: :json
 
         milestones = json_response
 
-        expect(milestones.count).to eq(2)
-        expect(milestones.first["title"]).to eq("group milestone")
-        expect(milestones.second["title"]).to eq("legacy")
+        expect(milestones.count).to eq(3)
+        expect(milestones.collect { |m| m['title'] }).to match_array(['same name', 'same name', 'group milestone'])
         expect(response).to have_gitlab_http_status(:ok)
         expect(response.content_type).to eq 'application/json'
       end
@@ -191,8 +182,9 @@ describe Groups::MilestonesController do
           get :index, params: { group_id: group.to_param }, format: :json
           milestones = json_response
 
-          expect(milestones.count).to eq(3)
-          expect(milestones.second["title"]).to eq("subgroup milestone")
+          milestone_titles = milestones.map { |m| m['title'] }
+          expect(milestones.count).to eq(4)
+          expect(milestone_titles).to match_array(['same name', 'same name', 'group milestone', 'subgroup milestone'])
         end
       end
 
@@ -218,30 +210,17 @@ describe Groups::MilestonesController do
   end
 
   describe '#show' do
-    let(:milestone1) { create(:milestone, project: project, title: 'legacy') }
-    let(:milestone2) { create(:milestone, project: project, title: 'legacy') }
-    let(:group_milestone) { create(:milestone, group: group) }
+    render_views
 
-    context 'when there is a title parameter' do
-      it 'searches for a legacy group milestone' do
-        expect(GroupMilestone).to receive(:build)
-        expect(Milestone).not_to receive(:find_by_iid)
+    let!(:group_milestone) { create(:milestone, group: group) }
 
-        get :show, params: { group_id: group.to_param, id: title, title: milestone1.safe_title }
-      end
-    end
+    it 'renders for a group milestone' do
+      get :show, params: { group_id: group.to_param, id: group_milestone.iid }
 
-    context 'when there is not a title parameter' do
-      it 'searches for a group milestone' do
-        expect(GlobalMilestone).not_to receive(:build)
-        expect(Milestone).to receive(:find_by_iid)
-
-        get :show, params: { group_id: group.to_param, id: group_milestone.id }
-      end
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(response.body).to include(group_milestone.title)
     end
   end
-
-  it_behaves_like 'milestone tabs'
 
   describe "#create" do
     it "creates group milestone with Chinese title" do
@@ -276,34 +255,6 @@ describe Groups::MilestonesController do
       milestone.reload
       expect(response).to redirect_to(group_milestone_path(group, milestone.iid))
       expect(milestone.title).to eq("title changed")
-    end
-
-    context "legacy group milestones" do
-      let!(:milestone1) { create(:milestone, project: project, title: 'legacy milestone', description: "old description") }
-      let!(:milestone2) { create(:milestone, project: project2, title: 'legacy milestone', description: "old description") }
-
-      it "updates only group milestones state" do
-        milestone_params[:title] = "title changed"
-        milestone_params[:description] = "description changed"
-        milestone_params[:state_event] = "close"
-
-        put :update,
-             params: {
-               id: milestone1.title.to_slug.to_s,
-               group_id: group.to_param,
-               milestone: milestone_params,
-               title: milestone1.title
-             }
-
-        expect(response).to redirect_to(group_milestone_path(group, milestone1.safe_title, title: milestone1.title))
-
-        [milestone1, milestone2].each do |milestone|
-          milestone.reload
-          expect(milestone.title).to eq("legacy milestone")
-          expect(milestone.description).to eq("old description")
-          expect(milestone.state).to eq("closed")
-        end
-      end
     end
   end
 

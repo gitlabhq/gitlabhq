@@ -44,7 +44,7 @@ describe Namespaces::CheckStorageSizeService, '#execute' do
     end
 
     it 'errors when feature flag is activated for the current namespace' do
-      stub_feature_flags(namespace_storage_limit: namespace )
+      stub_feature_flags(namespace_storage_limit: namespace)
 
       expect(response).to be_error
       expect(response.message).to be_present
@@ -155,5 +155,11 @@ describe Namespaces::CheckStorageSizeService, '#execute' do
       expect(response).to include("60 MB of 100 MB")
       expect(response).to include("60%")
     end
+  end
+
+  describe 'payload root_namespace' do
+    subject(:response) { service.execute.payload[:root_namespace] }
+
+    it { is_expected.to eq(namespace) }
   end
 end

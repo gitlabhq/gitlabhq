@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Edit group settings' do
+RSpec.describe 'Edit group settings' do
   let(:user)  { create(:user) }
   let(:group) { create(:group, path: 'foo') }
 

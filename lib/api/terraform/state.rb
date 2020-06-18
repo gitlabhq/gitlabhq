@@ -32,7 +32,7 @@ module API
           end
 
           desc 'Get a terraform state by its name'
-          route_setting :authentication, basic_auth_personal_access_token: true
+          route_setting :authentication, basic_auth_personal_access_token: true, job_token_allowed: :basic_auth
           get do
             remote_state_handler.find_with_lock do |state|
               no_content! unless state.file.exists?
@@ -44,7 +44,7 @@ module API
           end
 
           desc 'Add a new terraform state or update an existing one'
-          route_setting :authentication, basic_auth_personal_access_token: true
+          route_setting :authentication, basic_auth_personal_access_token: true, job_token_allowed: :basic_auth
           post do
             data = request.body.read
             no_content! if data.empty?
@@ -57,7 +57,7 @@ module API
           end
 
           desc 'Delete a terraform state of a certain name'
-          route_setting :authentication, basic_auth_personal_access_token: true
+          route_setting :authentication, basic_auth_personal_access_token: true, job_token_allowed: :basic_auth
           delete do
             remote_state_handler.handle_with_lock do |state|
               state.destroy!
@@ -66,7 +66,7 @@ module API
           end
 
           desc 'Lock a terraform state of a certain name'
-          route_setting :authentication, basic_auth_personal_access_token: true
+          route_setting :authentication, basic_auth_personal_access_token: true, job_token_allowed: :basic_auth
           params do
             requires :ID, type: String, limit: 255, desc: 'Terraform state lock ID'
             requires :Operation, type: String, desc: 'Terraform operation'
@@ -103,7 +103,7 @@ module API
           end
 
           desc 'Unlock a terraform state of a certain name'
-          route_setting :authentication, basic_auth_personal_access_token: true
+          route_setting :authentication, basic_auth_personal_access_token: true, job_token_allowed: :basic_auth
           params do
             optional :ID, type: String, limit: 255, desc: 'Terraform state lock ID'
           end

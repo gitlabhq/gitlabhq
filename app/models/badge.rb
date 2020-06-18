@@ -18,7 +18,7 @@ class Badge < ApplicationRecord
   # This regex will build the new PLACEHOLDER_REGEX with the new information
   PLACEHOLDERS_REGEX = /(#{PLACEHOLDERS.keys.join('|')})/.freeze
 
-  default_scope { order_created_at_asc }
+  default_scope { order_created_at_asc } # rubocop:disable Cop/DefaultScope
 
   scope :order_created_at_asc, -> { reorder(created_at: :asc) }
 

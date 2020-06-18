@@ -20,8 +20,8 @@ existing indexes need to be updated. The more indexes there are the slower this
 can potentially become. Indexes can also take up quite some disk space depending
 on the amount of data indexed and the index type. For example, PostgreSQL offers
 "GIN" indexes which can be used to index certain data types that can not be
-indexed by regular btree indexes. These indexes however generally take up more
-data and are slower to update compared to btree indexes.
+indexed by regular B-tree indexes. These indexes however generally take up more
+data and are slower to update compared to B-tree indexes.
 
 Because of all this one should not blindly add a new index for every column used
 to filter data by. Instead one should ask themselves the following questions:

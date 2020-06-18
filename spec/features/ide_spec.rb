@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'IDE', :js do
+RSpec.describe 'IDE', :js do
   describe 'sub-groups' do
     let(:user) { create(:user) }
     let(:group) { create(:group) }

@@ -122,6 +122,36 @@ EOT
         end
       end
     end
+
+    context 'using a Gitaly::CommitDelta' do
+      let(:commit_delta) do
+        Gitaly::CommitDelta.new(
+          to_path: ".gitmodules",
+          from_path: ".gitmodules",
+          old_mode: 0100644,
+          new_mode: 0100644,
+          from_id: '357406f3075a57708d0163752905cc1576fceacc',
+          to_id: '8e5177d718c561d36efde08bad36b43687ee6bf0'
+        )
+      end
+      let(:diff) { described_class.new(commit_delta) }
+
+      it 'initializes the diff' do
+        expect(diff.to_hash).to eq(@raw_diff_hash.merge(diff: ''))
+      end
+
+      it 'is not too large' do
+        expect(diff).not_to be_too_large
+      end
+
+      it 'has an empty diff' do
+        expect(diff.diff).to be_empty
+      end
+
+      it 'is not a binary' do
+        expect(diff).not_to have_binary_notice
+      end
+    end
   end
 
   describe 'straight diffs' do

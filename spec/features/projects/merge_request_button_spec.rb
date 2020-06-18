@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Merge Request button' do
+RSpec.describe 'Merge Request button' do
   shared_examples 'Merge request button only shown when allowed' do
     let(:user) { create(:user) }
     let(:project) { create(:project, :public, :repository) }

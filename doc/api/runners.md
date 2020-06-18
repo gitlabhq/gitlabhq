@@ -1,3 +1,9 @@
+---
+stage: Verify
+group: Runner
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+---
+
 # Runners API
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/2640) in GitLab 8.5

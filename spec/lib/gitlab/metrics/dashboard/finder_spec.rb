@@ -142,7 +142,7 @@ describe Gitlab::Metrics::Dashboard::Finder, :use_clean_rails_memory_store_cachi
 
   describe '.find_all_paths' do
     let(:all_dashboard_paths) { described_class.find_all_paths(project) }
-    let(:system_dashboard) { { path: system_dashboard_path, display_name: 'Default', default: true, system_dashboard: true } }
+    let(:system_dashboard) { { path: system_dashboard_path, display_name: 'Default dashboard', default: true, system_dashboard: true } }
 
     it 'includes only the system dashboard by default' do
       expect(all_dashboard_paths).to eq([system_dashboard])
@@ -163,7 +163,7 @@ describe Gitlab::Metrics::Dashboard::Finder, :use_clean_rails_memory_store_cachi
       let(:self_monitoring_dashboard) do
         {
           path: self_monitoring_dashboard_path,
-          display_name: 'Default',
+          display_name: 'Default dashboard',
           default: true,
           system_dashboard: false
         }

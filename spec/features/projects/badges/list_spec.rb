@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'list of badges' do
+RSpec.describe 'list of badges' do
   before do
     user = create(:user)
     project = create(:project, :repository)

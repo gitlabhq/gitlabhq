@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Merge requests > User merges immediately', :js do
+RSpec.describe 'Merge requests > User merges immediately', :js do
   let(:project) { create(:project, :public, :repository) }
   let(:user) { project.creator }
   let!(:merge_request) do

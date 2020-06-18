@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'User opens link to comment', :js do
+RSpec.describe 'User opens link to comment', :js do
   let(:project) { create(:project, :public) }
   let(:note) { create(:note_on_issue, project: project) }
 

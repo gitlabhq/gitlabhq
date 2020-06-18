@@ -2,7 +2,6 @@
 
 class Milestone < ApplicationRecord
   include Sortable
-  include Referable
   include Timebox
   include Milestoneish
   include FromUnion
@@ -29,6 +28,7 @@ class Milestone < ApplicationRecord
 
   scope :order_by_name_asc, -> { order(Arel::Nodes::Ascending.new(arel_table[:title].lower)) }
   scope :reorder_by_due_date_asc, -> { reorder(Gitlab::Database.nulls_last_order('due_date', 'ASC')) }
+  scope :with_api_entity_associations, -> { preload(project: [:project_feature, :route, namespace: :route]) }
 
   validates_associated :milestone_releases, message: -> (_, obj) { obj[:value].map(&:errors).map(&:full_messages).join(",") }
 
@@ -122,35 +122,6 @@ class Milestone < ApplicationRecord
     }
   end
 
-  ##
-  # Returns the String necessary to reference a Milestone in Markdown. Group
-  # milestones only support name references, and do not support cross-project
-  # references.
-  #
-  # format - Symbol format to use (default: :iid, optional: :name)
-  #
-  # Examples:
-  #
-  #   Milestone.first.to_reference                           # => "%1"
-  #   Milestone.first.to_reference(format: :name)            # => "%\"goal\""
-  #   Milestone.first.to_reference(cross_namespace_project)  # => "gitlab-org/gitlab-foss%1"
-  #   Milestone.first.to_reference(same_namespace_project)   # => "gitlab-foss%1"
-  #
-  def to_reference(from = nil, format: :name, full: false)
-    format_reference = milestone_format_reference(format)
-    reference = "#{self.class.reference_prefix}#{format_reference}"
-
-    if project
-      "#{project.to_reference_base(from, full: full)}#{reference}"
-    else
-      reference
-    end
-  end
-
-  def reference_link_text(from = nil)
-    self.class.reference_prefix + self.title
-  end
-
   def for_display
     self
   end
@@ -179,21 +150,11 @@ class Milestone < ApplicationRecord
     end
   end
 
-  private
-
-  def milestone_format_reference(format = :iid)
-    raise ArgumentError, _('Unknown format') unless [:iid, :name].include?(format)
-
-    if group_milestone? && format == :iid
-      raise ArgumentError, _('Cannot refer to a group milestone by an internal id!')
-    end
-
-    if format == :name && !name.include?('"')
-      %("#{name}")
-    else
-      iid
-    end
+  def subgroup_milestone?
+    group_milestone? && parent.subgroup?
   end
+
+  private
 
   def issues_finder_params
     { project_id: project_id, group_id: group_id, include_subgroups: group_id.present? }.compact

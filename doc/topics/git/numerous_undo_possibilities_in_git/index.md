@@ -26,6 +26,11 @@ This means that until Git automatically cleans detached commits (which cannot be
 accessed by branch or tag) it will be possible to view them with `git reflog` command
 and access them with direct commit ID. Read more about _[redoing the undo](#redoing-the-undo)_ in the section below.
 
+> For more information about working with Git and GitLab:
+>
+> - <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>&nbsp;Learn why [North Western Mutual chose GitLab](https://youtu.be/kPNMyxKRRoM) for their Enterprise source code management.
+> - Learn how to [get started with Git](https://about.gitlab.com/resources/whitepaper-moving-to-git/).
+
 ## Introduction
 
 This guide is organized depending on the [stage of development](https://git-scm.com/book/en/v2/Git-Basics-Recording-Changes-to-the-Repository)

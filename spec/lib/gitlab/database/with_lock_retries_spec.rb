@@ -35,9 +35,6 @@ describe Gitlab::Database::WithLockRetries do
     end
 
     context 'when lock retry is enabled' do
-      class ActiveRecordSecond < ActiveRecord::Base
-      end
-
       let(:lock_fiber) do
         Fiber.new do
           # Initiating a second DB connection for the lock
@@ -52,6 +49,8 @@ describe Gitlab::Database::WithLockRetries do
       end
 
       before do
+        stub_const('ActiveRecordSecond', Class.new(ActiveRecord::Base))
+
         lock_fiber.resume # start the transaction and lock the table
       end
 

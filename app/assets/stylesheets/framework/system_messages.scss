@@ -83,11 +83,19 @@
   // right sidebar eg: mr page
   .nav-sidebar,
   .right-sidebar,
-    // navless pages' footer eg: login page
-    // navless pages' footer border eg: login page
+  // navless pages' footer eg: login page
+  // navless pages' footer border eg: login page
   &.devise-layout-html body .footer-container,
   &.devise-layout-html body hr.footer-fixed {
     bottom: $system-footer-height;
+  }
+
+  .content-wrapper {
+    margin-bottom: 16px;
+  }
+
+  .boards-list {
+    height: calc(100vh - #{$header-height + $breadcrumb-min-height + $performance-bar-height + $system-footer-height + $gl-padding-32});
   }
 }
 

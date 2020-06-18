@@ -27,13 +27,17 @@ module Gitlab
       private
 
       def add_instrumentation_keys!(job, output_payload)
-        output_payload.merge!(job.slice(*::Gitlab::InstrumentationHelper::KEYS))
+        output_payload.merge!(job.slice(*::Gitlab::InstrumentationHelper.keys))
       end
 
       def add_logging_extras!(job, output_payload)
         output_payload.merge!(
           job.select { |key, _| key.to_s.start_with?("#{ApplicationWorker::LOGGING_EXTRA_KEY}.") }
         )
+      end
+
+      def add_db_counters!(job, output_payload)
+        output_payload.merge!(job.slice(*::Gitlab::Metrics::Subscribers::ActiveRecord::DB_COUNTERS))
       end
 
       def log_job_start(payload)
@@ -50,6 +54,7 @@ module Gitlab
         payload = payload.dup
         add_instrumentation_keys!(job, payload)
         add_logging_extras!(job, payload)
+        add_db_counters!(job, payload)
 
         elapsed_time = elapsed(started_time)
         add_time_keys!(elapsed_time, payload)

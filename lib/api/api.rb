@@ -159,7 +159,6 @@ module API
       mount ::API::Keys
       mount ::API::Labels
       mount ::API::Lint
-      mount ::API::LsifData
       mount ::API::Markdown
       mount ::API::Members
       mount ::API::MergeRequestDiffs
@@ -170,6 +169,7 @@ module API
       mount ::API::Notes
       mount ::API::Discussions
       mount ::API::ResourceLabelEvents
+      mount ::API::ResourceMilestoneEvents
       mount ::API::NotificationSettings
       mount ::API::Pages
       mount ::API::PagesDomains

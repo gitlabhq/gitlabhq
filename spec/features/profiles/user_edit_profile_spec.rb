@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'User edit profile' do
+RSpec.describe 'User edit profile' do
   let(:user) { create(:user) }
 
   before do
@@ -243,6 +243,15 @@ describe 'User edit profile' do
         within('.cover-status') do
           expect(page).to have_emoji(emoji)
         end
+      end
+
+      it 'opens the emoji modal again after closing it' do
+        open_user_status_modal
+        select_emoji('biohazard', true)
+
+        find('.js-toggle-emoji-menu').click
+
+        expect(page).to have_selector('.emoji-menu')
       end
 
       it 'does not update the awards panel emoji' do

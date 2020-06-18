@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-describe 'Sort Issuable List' do
+RSpec.describe 'Sort Issuable List' do
   let(:project) { create(:project, :public) }
 
   let(:first_created_issuable) { issuables.order_created_asc.first }

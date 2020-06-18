@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Blob shortcuts', :js do
+RSpec.describe 'Blob shortcuts', :js do
   let(:user) { create(:user) }
   let(:project) { create(:project, :public, :repository) }
   let(:issue) { create(:issue, project: project, author: user) }

@@ -1,6 +1,6 @@
 # GitHub project integration **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/3836) in GitLab Premium 10.6.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/3836) in GitLab Premium 10.6.
 
 GitLab provides an integration for updating the pipeline statuses on GitHub.
 This is especially useful if using GitLab for CI/CD only.
@@ -39,7 +39,7 @@ to configure pipelines to run for open pull requests.
 #### Static / dynamic status check names
 
 > - Introduced in GitLab 11.5: using static status check names as opt-in option.
-> - [In GitLab 12.4](https://gitlab.com/gitlab-org/gitlab/issues/9931), static status check names is default behavior for new projects.
+> - [In GitLab 12.4](https://gitlab.com/gitlab-org/gitlab/-/issues/9931), static status check names is default behavior for new projects.
 
 This makes it possible to mark these status checks as _Required_ on GitHub.
 With **Static status check names** enabled on the integration page, your

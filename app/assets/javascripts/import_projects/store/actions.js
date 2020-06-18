@@ -2,12 +2,16 @@ import Visibility from 'visibilityjs';
 import * as types from './mutation_types';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import Poll from '~/lib/utils/poll';
+import { visitUrl } from '~/lib/utils/url_utility';
 import createFlash from '~/flash';
 import { s__, sprintf } from '~/locale';
 import axios from '~/lib/utils/axios_utils';
 import { jobsPathWithFilter, reposPathWithFilter } from './getters';
 
 let eTagPoll;
+
+const hasRedirectInError = e => e?.response?.data?.error?.redirect;
+const redirectToUrlInError = e => visitUrl(e.response.data.error.redirect);
 
 export const clearJobsEtagPoll = () => {
   eTagPoll = null;
@@ -19,45 +23,39 @@ export const restartJobsPolling = () => {
   if (eTagPoll) eTagPoll.restart();
 };
 
-export const setInitialData = ({ commit }, data) => commit(types.SET_INITIAL_DATA, data);
 export const setFilter = ({ commit }, filter) => commit(types.SET_FILTER, filter);
 
-export const requestRepos = ({ commit }, repos) => commit(types.REQUEST_REPOS, repos);
-export const receiveReposSuccess = ({ commit }, repos) =>
-  commit(types.RECEIVE_REPOS_SUCCESS, repos);
-export const receiveReposError = ({ commit }) => commit(types.RECEIVE_REPOS_ERROR);
-export const fetchRepos = ({ state, dispatch }) => {
+export const fetchRepos = ({ state, dispatch, commit }) => {
   dispatch('stopJobsPolling');
-  dispatch('requestRepos');
+  commit(types.REQUEST_REPOS);
 
   const { provider } = state;
 
   return axios
     .get(reposPathWithFilter(state))
     .then(({ data }) =>
-      dispatch('receiveReposSuccess', convertObjectPropsToCamelCase(data, { deep: true })),
+      commit(types.RECEIVE_REPOS_SUCCESS, convertObjectPropsToCamelCase(data, { deep: true })),
     )
     .then(() => dispatch('fetchJobs'))
-    .catch(() => {
-      createFlash(
-        sprintf(s__('ImportProjects|Requesting your %{provider} repositories failed'), {
-          provider,
-        }),
-      );
+    .catch(e => {
+      if (hasRedirectInError(e)) {
+        redirectToUrlInError(e);
+      } else {
+        createFlash(
+          sprintf(s__('ImportProjects|Requesting your %{provider} repositories failed'), {
+            provider,
+          }),
+        );
 
-      dispatch('receiveReposError');
+        commit(types.RECEIVE_REPOS_ERROR);
+      }
     });
 };
 
-export const requestImport = ({ commit, state }, repoId) => {
-  if (!state.reposBeingImported.includes(repoId)) commit(types.REQUEST_IMPORT, repoId);
-};
-export const receiveImportSuccess = ({ commit }, { importedProject, repoId }) =>
-  commit(types.RECEIVE_IMPORT_SUCCESS, { importedProject, repoId });
-export const receiveImportError = ({ commit }, repoId) =>
-  commit(types.RECEIVE_IMPORT_ERROR, repoId);
-export const fetchImport = ({ state, dispatch }, { newName, targetNamespace, repo }) => {
-  dispatch('requestImport', repo.id);
+export const fetchImport = ({ state, commit }, { newName, targetNamespace, repo }) => {
+  if (!state.reposBeingImported.includes(repo.id)) {
+    commit(types.REQUEST_IMPORT, repo.id);
+  }
 
   return axios
     .post(state.importPath, {
@@ -67,7 +65,7 @@ export const fetchImport = ({ state, dispatch }, { newName, targetNamespace, rep
       target_namespace: targetNamespace,
     })
     .then(({ data }) =>
-      dispatch('receiveImportSuccess', {
+      commit(types.RECEIVE_IMPORT_SUCCESS, {
         importedProject: convertObjectPropsToCamelCase(data, { deep: true }),
         repoId: repo.id,
       }),
@@ -75,13 +73,14 @@ export const fetchImport = ({ state, dispatch }, { newName, targetNamespace, rep
     .catch(() => {
       createFlash(s__('ImportProjects|Importing the project failed'));
 
-      dispatch('receiveImportError', { repoId: repo.id });
+      commit(types.RECEIVE_IMPORT_ERROR, repo.id);
     });
 };
 
 export const receiveJobsSuccess = ({ commit }, updatedProjects) =>
   commit(types.RECEIVE_JOBS_SUCCESS, updatedProjects);
-export const fetchJobs = ({ state, dispatch }) => {
+
+export const fetchJobs = ({ state, commit, dispatch }) => {
   const { filter } = state;
 
   if (eTagPoll) {
@@ -95,9 +94,14 @@ export const fetchJobs = ({ state, dispatch }) => {
     },
     method: 'fetchJobs',
     successCallback: ({ data }) =>
-      dispatch('receiveJobsSuccess', convertObjectPropsToCamelCase(data, { deep: true })),
-    errorCallback: () =>
-      createFlash(s__('ImportProjects|Update of imported projects with realtime changes failed')),
+      commit(types.RECEIVE_JOBS_SUCCESS, convertObjectPropsToCamelCase(data, { deep: true })),
+    errorCallback: e => {
+      if (hasRedirectInError(e)) {
+        redirectToUrlInError(e);
+      } else {
+        createFlash(s__('ImportProjects|Update of imported projects with realtime changes failed'));
+      }
+    },
     data: { filter },
   });
 

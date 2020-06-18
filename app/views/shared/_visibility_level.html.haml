@@ -2,7 +2,7 @@
 
 .form-group.visibility-level-setting
   - if with_label
-    = f.label :visibility_level, _('Visibility level'), class: 'label-bold append-bottom-0'
+    = f.label :visibility_level, _('Visibility level'), class: 'label-bold gl-mb-0'
     %p
       = _('Who can see this group?')
       - visibility_docs_path = help_page_path('public_access/public_access')

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Search Snippets' do
+RSpec.describe 'Search Snippets' do
   it 'User searches for snippets by title' do
     public_snippet = create(:personal_snippet, :public, title: 'Beginning and Middle')
     private_snippet = create(:personal_snippet, :private, title: 'Middle and End')

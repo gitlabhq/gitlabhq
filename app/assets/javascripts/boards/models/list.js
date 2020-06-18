@@ -1,4 +1,4 @@
-/* eslint-disable no-underscore-dangle, class-methods-use-this, consistent-return */
+/* eslint-disable no-underscore-dangle, class-methods-use-this */
 
 import ListIssue from 'ee_else_ce/boards/models/issue';
 import { __ } from '~/locale';
@@ -7,8 +7,6 @@ import ListAssignee from './assignee';
 import flash from '~/flash';
 import boardsStore from '../stores/boards_store';
 import ListMilestone from './milestone';
-
-const PER_PAGE = 20;
 
 const TYPES = {
   backlog: {
@@ -83,30 +81,15 @@ class List {
   }
 
   destroy() {
-    const index = boardsStore.state.lists.indexOf(this);
-    boardsStore.state.lists.splice(index, 1);
-    boardsStore.updateNewListDropdown(this.id);
-
-    boardsStore.destroyList(this.id).catch(() => {
-      // TODO: handle request error
-    });
+    boardsStore.destroy(this);
   }
 
   update() {
-    const collapsed = !this.isExpanded;
-    return boardsStore.updateList(this.id, this.position, collapsed).catch(() => {
-      // TODO: handle request error
-    });
+    return boardsStore.updateListFunc(this);
   }
 
   nextPage() {
-    if (this.issuesSize > this.issues.length) {
-      if (this.issues.length / PER_PAGE >= 1) {
-        this.page += 1;
-      }
-
-      return this.getIssues(false);
-    }
+    return boardsStore.goToNextPage(this);
   }
 
   getIssues(emptyIssues = true) {
@@ -114,13 +97,7 @@ class List {
   }
 
   newIssue(issue) {
-    this.addIssue(issue, null, 0);
-    this.issuesSize += 1;
-
-    return boardsStore
-      .newIssue(this.id, issue)
-      .then(res => res.data)
-      .then(data => this.onNewIssueResponse(issue, data));
+    return boardsStore.newListIssue(this, issue);
   }
 
   createIssues(data) {
@@ -138,12 +115,7 @@ class List {
   }
 
   moveIssue(issue, oldIndex, newIndex, moveBeforeId, moveAfterId) {
-    this.issues.splice(oldIndex, 1);
-    this.issues.splice(newIndex, 0, issue);
-
-    boardsStore.moveIssue(issue.id, null, null, moveBeforeId, moveAfterId).catch(() => {
-      // TODO: handle request error
-    });
+    boardsStore.moveListIssues(this, issue, oldIndex, newIndex, moveBeforeId, moveAfterId);
   }
 
   moveMultipleIssues({ issues, oldIndicies, newIndex, moveBeforeId, moveAfterId }) {
@@ -182,35 +154,15 @@ class List {
   }
 
   findIssue(id) {
-    return this.issues.find(issue => issue.id === id);
+    return boardsStore.findListIssue(this, id);
   }
 
   removeMultipleIssues(removeIssues) {
-    const ids = removeIssues.map(issue => issue.id);
-
-    this.issues = this.issues.filter(issue => {
-      const matchesRemove = ids.includes(issue.id);
-
-      if (matchesRemove) {
-        this.issuesSize -= 1;
-        issue.removeLabel(this.label);
-      }
-
-      return !matchesRemove;
-    });
+    return boardsStore.removeListMultipleIssues(this, removeIssues);
   }
 
   removeIssue(removeIssue) {
-    this.issues = this.issues.filter(issue => {
-      const matchesRemove = removeIssue.id === issue.id;
-
-      if (matchesRemove) {
-        this.issuesSize -= 1;
-        issue.removeLabel(this.label);
-      }
-
-      return !matchesRemove;
-    });
+    return boardsStore.removeListIssues(this, removeIssue);
   }
 
   getTypeInfo(type) {

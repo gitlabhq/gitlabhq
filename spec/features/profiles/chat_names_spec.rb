@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Profile > Chat' do
+RSpec.describe 'Profile > Chat' do
   let(:user) { create(:user) }
   let(:service) { create(:service) }
 

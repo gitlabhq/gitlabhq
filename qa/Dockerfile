@@ -1,6 +1,13 @@
 FROM ruby:2.6-stretch
 LABEL maintainer="GitLab Quality Department <quality@gitlab.com>"
-ENV DEBIAN_FRONTEND noninteractive
+
+ENV DEBIAN_FRONTEND="noninteractive"
+ENV DOCKER_VERSION="17.09.0-ce"
+ENV CHROME_VERSION="83.0.4103.61-1"
+ENV CHROME_DRIVER_VERSION="83.0.4103.39"
+ENV CHROME_DEB="google-chrome-stable_${CHROME_VERSION}_amd64.deb"
+ENV CHROME_URL="https://s3.amazonaws.com/gitlab-google-chrome-stable/${CHROME_DEB}"
+ENV K3D_VERSION="1.3.4"
 
 ##
 # Add support for stretch-backports
@@ -21,28 +28,31 @@ RUN apt-get -y -t stretch-backports install git git-lfs
 ##
 # Install Docker
 #
-RUN wget -q https://download.docker.com/linux/static/stable/x86_64/docker-17.09.0-ce.tgz && \
-    tar -zxf docker-17.09.0-ce.tgz && mv docker/docker /usr/local/bin/docker && \
-    rm docker-17.09.0-ce.tgz
+RUN wget -q "https://download.docker.com/linux/static/stable/x86_64/docker-${DOCKER_VERSION}.tgz" && \
+    tar -zxf "docker-${DOCKER_VERSION}.tgz" && mv docker/docker /usr/local/bin/docker && \
+    rm "docker-${DOCKER_VERSION}.tgz"
 
 ##
 # Install Google Chrome version with headless support
+# Download from our local S3 bucket, populated by https://gitlab.com/gitlab-org/gitlab-build-images/-/blob/master/scripts/cache-google-chrome
 #
-RUN curl -sS -L https://dl.google.com/linux/linux_signing_key.pub | apt-key add -
-RUN echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google.list
-RUN apt-get update -q && apt-get install -y google-chrome-stable && apt-get clean
+RUN curl --silent --show-error --fail -O "${CHROME_URL}" && \
+    dpkg -i "./${CHROME_DEB}" || true && \
+    apt-get install -f -y && \
+    rm -f "./${CHROME_DEB}"
 
 ##
 # Install chromedriver to make it work with Selenium
 #
-RUN wget -q https://chromedriver.storage.googleapis.com/$(wget -q -O - https://chromedriver.storage.googleapis.com/LATEST_RELEASE)/chromedriver_linux64.zip
+RUN wget -q "https://chromedriver.storage.googleapis.com/${CHROME_DRIVER_VERSION}/chromedriver_linux64.zip"
 RUN unzip chromedriver_linux64.zip -d /usr/local/bin
+RUN rm -f chromedriver_linux64.zip
 
 ##
 # Install K3d local cluster support
 #   https://github.com/rancher/k3d
 #
-RUN curl -s https://raw.githubusercontent.com/rancher/k3d/master/install.sh | TAG=v1.3.4 bash
+RUN curl -s https://raw.githubusercontent.com/rancher/k3d/master/install.sh | TAG="v${K3D_VERSION}" bash
 
 ##
 # Install gcloud and kubectl CLI used in Auto DevOps test to create K8s

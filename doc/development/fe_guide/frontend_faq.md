@@ -82,7 +82,7 @@ To avoid this behavior, add the class `js-no-auto-disable` to the button.
 ### 5. Should I use a full URL (i.e. `gon.gitlab_url`) or a full path (i.e. `gon.relative_url_root`) when referencing backend endpoints?
 
 It's preferred to use a **full path** over a **full URL** because the URL will use the hostname configured with
-GitLab which may not match the request. This will cause [CORS issues like this Web IDE one](https://gitlab.com/gitlab-org/gitlab/issues/36810).
+GitLab which may not match the request. This will cause [CORS issues like this Web IDE one](https://gitlab.com/gitlab-org/gitlab/-/issues/36810).
 
 Example:
 
@@ -141,7 +141,7 @@ function initFoo() {
   });
 }
 
-// Vuex action can now reference the path from it's state :)
+// Vuex action can now reference the path from its state :)
 export const fetchFoos = ({ state }) => {
   return axios.get(state.settings.fooPath);
 };

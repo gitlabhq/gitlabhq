@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Admin Mode Login', :clean_gitlab_redis_shared_state, :do_not_mock_admin_mode do
+RSpec.describe 'Admin Mode Login', :clean_gitlab_redis_shared_state, :do_not_mock_admin_mode do
   include TermsHelper
   include UserLoginHelper
   include LdapHelpers

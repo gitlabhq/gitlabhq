@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Projects::Tags::ReleasesController do
+RSpec.describe Projects::Tags::ReleasesController do
   let!(:project) { create(:project, :repository) }
   let!(:user)    { create(:user) }
   let!(:release) { create(:release, project: project) }
@@ -16,7 +16,7 @@ describe Projects::Tags::ReleasesController do
   describe 'GET #edit' do
     it 'initializes a new release' do
       tag_id = release.tag
-      project.releases.destroy_all # rubocop: disable DestroyAll
+      project.releases.destroy_all # rubocop: disable Cop/DestroyAll
 
       response = get :edit, params: { namespace_id: project.namespace, project_id: project, tag_id: tag_id }
 

@@ -23,15 +23,18 @@ export default {
   },
   data() {
     return {
-      branches: this.config.branches,
+      branches: null,
       loading: true,
     };
   },
+  created() {
+    this.fetchBranches();
+  },
   methods: {
-    fetchBranchBySearchTerm(searchTerm) {
-      Api.branches(this.config.projectId, searchTerm)
-        .then(res => {
-          this.branches = res.data.map(branch => branch.name);
+    fetchBranches(searchterm) {
+      Api.branches(this.config.projectId, searchterm)
+        .then(({ data }) => {
+          this.branches = data.map(branch => branch.name);
           this.loading = false;
         })
         .catch(err => {
@@ -41,7 +44,7 @@ export default {
         });
     },
     searchBranches: debounce(function debounceSearch({ data }) {
-      this.fetchBranchBySearchTerm(data);
+      this.fetchBranches(data);
     }, FILTER_PIPELINES_SEARCH_DELAY),
   },
 };

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Projects::Settings::OperationsController do
+RSpec.describe Projects::Settings::OperationsController do
   let_it_be(:user) { create(:user) }
   let_it_be(:project, reload: true) { create(:project) }
 

@@ -73,7 +73,7 @@ module Gitlab
       end
 
       def insert_into_cluster_kubernetes_namespace(rows)
-        Gitlab::Database.bulk_insert(Migratable::KubernetesNamespace.table_name,
+        Gitlab::Database.bulk_insert(Migratable::KubernetesNamespace.table_name, # rubocop:disable Gitlab/BulkInsert
                                      rows,
                                      disable_quote: [:created_at, :updated_at])
       end

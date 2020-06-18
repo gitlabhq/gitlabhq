@@ -7,7 +7,7 @@ type: howto
 
 # Cloud deployment
 
-Interacting with a major cloud provider such as Amazon AWS may have become a much needed task that's
+Interacting with a major cloud provider may have become a much needed task that's
 part of your delivery process. GitLab is making this process less painful by providing Docker images
 that come with the needed libraries and tools pre-installed.
 By referencing them in your CI/CD pipeline, you'll be able to interact with your chosen
@@ -15,7 +15,12 @@ cloud provider more easily.
 
 ## AWS
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/31167) in GitLab 12.6.
+GitLab provides Docker images to simplify working with AWS, and a template to make
+it easier to [deploy to AWS](#deploy-your-application-to-the-aws-elastic-container-service-ecs).
+
+### Run AWS commands from GitLab CI/CD
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/31167) in GitLab 12.6.
 
 GitLab's AWS Docker image provides the [AWS Command Line Interface](https://aws.amazon.com/cli/),
 which enables you to run `aws` commands. As part of your deployment strategy, you can run `aws` commands directly from
@@ -30,12 +35,21 @@ Some credentials are required to be able to run `aws` commands:
    NOTE: **Note:**
    A new **Access key ID** and **Secret access key** pair will be generated. Please take a note of them right away.
 
-1. In your GitLab project, go to **Settings > CI / CD**. Set the Access key ID and Secret access key as [environment variables](../variables/README.md#gitlab-cicd-environment-variables), using the following variable names:
+1. In your GitLab project, go to **Settings > CI / CD**. Set the following as
+   [environment variables](../variables/README.md#gitlab-cicd-environment-variables)
+   (see table below):
 
-   | Env. variable name      | Value                    |
-   |:------------------------|:-------------------------|
-   | `AWS_ACCESS_KEY_ID`     | Your "Access key ID"     |
-   | `AWS_SECRET_ACCESS_KEY` | Your "Secret access key" |
+   - Access key ID.
+   - Secret access key.
+   - Region code. You can check the [list of AWS regional endpoints](https://docs.aws.amazon.com/general/latest/gr/rande.html#regional-endpoints).
+     You might want to check if the AWS service you intend to use is
+     [available in the chosen region](https://aws.amazon.com/about-aws/global-infrastructure/regional-product-services/).
+
+   | Env. variable name      | Value                  |
+   |:------------------------|:-----------------------|
+   | `AWS_ACCESS_KEY_ID`     | Your Access key ID     |
+   | `AWS_SECRET_ACCESS_KEY` | Your Secret access key |
+   | `AWS_DEFAULT_REGION`    | Your region code       |
 
 1. You can now use `aws` commands in the `.gitlab-ci.yml` file of this project:
 
@@ -49,25 +63,25 @@ Some credentials are required to be able to run `aws` commands:
    ```
 
    NOTE: **Note:**
-   Please note that the image used in the example above
+   The image used in the example above
    (`registry.gitlab.com/gitlab-org/cloud-deploy/aws-base:latest`) is hosted on the [GitLab
    Container Registry](../../user/packages/container_registry/index.md) and is
-   ready to use. Alternatively, replace the image with another one hosted on [AWS ECR](#aws-ecr).
+   ready to use. Alternatively, replace the image with one hosted on AWS ECR.
 
-### AWS ECR
+### Use an AWS Elastic Container Registry (ECR) image in your CI/CD
 
-Instead of referencing an image hosted on the GitLab Registry, you are free to
-reference any other image hosted on any third-party registry, such as
+Instead of referencing an image hosted on the GitLab Registry, you can
+reference an image hosted on any third-party registry, such as the
 [Amazon Elastic Container Registry (ECR)](https://aws.amazon.com/ecr/).
 
-To do so, please make sure to [push your image into your ECR
-repository](https://docs.aws.amazon.com/AmazonECR/latest/userguide/docker-push-ecr-image.html)
-before referencing it in your `.gitlab-ci.yml` file and replace the `image`
-path to point to your ECR.
+To do so, [push your image into your ECR
+repository](https://docs.aws.amazon.com/AmazonECR/latest/userguide/docker-push-ecr-image.html).
+Then reference it in your `.gitlab-ci.yml` file and replace the `image`
+path to point to your ECR image.
 
-### Deploy your application to AWS Elastic Container Service (ECS)
+### Deploy your application to the AWS Elastic Container Service (ECS)
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/207962) in GitLab 12.9.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/207962) in GitLab 12.9.
 
 GitLab provides a series of [CI templates that you can include in your project](../yaml/README.md#include).
 To automate deployments of your application to your [Amazon Elastic Container Service](https://aws.amazon.com/ecs/) (AWS ECS)
@@ -80,7 +94,7 @@ components, like an ECS service, ECS task definition, a database on AWS RDS, etc
 After you're all set up on AWS ECS, follow these steps:
 
 1. Make sure your AWS credentials are set up as environment variables for your
-   project. You can follow [the steps above](#aws) to complete this setup.
+   project. You can follow [the steps above](#run-aws-commands-from-gitlab-cicd) to complete this setup.
 1. Add these variables to your project's `.gitlab-ci.yml` file:
 
    ```yaml
@@ -107,11 +121,11 @@ After you're all set up on AWS ECS, follow these steps:
 
    ```yaml
    include:
-     - template: Deploy-ECS.gitlab-ci.yml
+     - template: AWS/Deploy-ECS.gitlab-ci.yml
    ```
 
    The `Deploy-ECS` template ships with GitLab and is available [on
-   GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Deploy-ECS.gitlab-ci.yml).
+   GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/AWS/Deploy-ECS.gitlab-ci.yml).
 
 1. Commit and push your updated `.gitlab-ci.yml` to your project's repository, and you're done!
 
@@ -122,6 +136,17 @@ After you're all set up on AWS ECS, follow these steps:
    Finally, your AWS ECS service will be updated with the new revision of the
    task definition, making the cluster pull the newest version of your
    application.
+
+CAUTION: **Warning:**
+The [`Deploy-ECS.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/AWS/Deploy-ECS.gitlab-ci.yml)
+template includes both the [`Jobs/Build.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/Build.gitlab-ci.yml)
+and [`Jobs/Deploy/ECS.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/Deploy/ECS.gitlab-ci.yml)
+"sub-templates". Do not include these "sub-templates" on their own, and only include the main
+`Deploy-ECS.gitlab-ci.yml` template. The "sub-templates" are designed to only be
+used along with the main template. They may move or change unexpectedly causing your
+pipeline to fail if you didn't include the main template. Also, the job names within
+these templates may change. Do not override these jobs names in your own pipeline,
+as the override will stop working when the name changes.
 
 Alternatively, if you don't wish to use the `Deploy-ECS.gitlab-ci.yml` template
 to deploy to AWS ECS, you can always use our

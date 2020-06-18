@@ -56,7 +56,7 @@ server.
 
 ## Installing Slony
 
-Slony will be used to upgrade the database without requiring long downtimes.
+Slony will be used to upgrade the database without requiring a long downtime.
 Slony can be downloaded from <https://www.slony.info/>. If you have installed
 PostgreSQL using your operating system's package manager you may also be able to
 install Slony using said package manager.
@@ -88,7 +88,7 @@ test -f /opt/gitlab/embedded/bin/slonik_init_cluster && echo 'Slony Perl tools a
 ```
 
 This assumes Slony was installed to `/opt/gitlab/embedded`. If Slony was
-installed properly the output of these commands will be (the mentioned "slonik"
+installed properly the output of these commands will be (the mentioned `slonik`
 version may be different):
 
 ```plaintext

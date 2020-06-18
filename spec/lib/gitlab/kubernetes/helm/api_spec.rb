@@ -17,7 +17,8 @@ describe Gitlab::Kubernetes::Helm::API do
       name: application_name,
       chart: 'chart-name',
       rbac: rbac,
-      files: files
+      files: files,
+      local_tiller_enabled: true
     )
   end
 
@@ -142,7 +143,7 @@ describe Gitlab::Kubernetes::Helm::API do
     end
 
     context 'with a service account' do
-      let(:command) { Gitlab::Kubernetes::Helm::InitCommand.new(name: application_name, files: files, rbac: rbac) }
+      let(:command) { Gitlab::Kubernetes::Helm::InitCommand.new(name: application_name, files: files, rbac: rbac, local_tiller_enabled: true) }
 
       context 'rbac-enabled cluster' do
         let(:rbac) { true }

@@ -1,4 +1,7 @@
 ---
+stage: Verify
+group: Continuous Integration
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 type: tutorial
 ---
 
@@ -13,7 +16,7 @@ using the Shell executor.
 
 While it is possible to test PHP apps on any system, this would require manual
 configuration from the developer. To overcome this we will be using the
-official [PHP docker image](https://hub.docker.com/_/php) that can be found in Docker Hub.
+official [PHP Docker image](https://hub.docker.com/_/php) that can be found in Docker Hub.
 
 This will allow us to test PHP projects against different versions of PHP.
 However, not everything is plug 'n' play, you still need to configure some
@@ -62,7 +65,7 @@ docker-php-ext-install pdo_mysql
 ```
 
 You might wonder what `docker-php-ext-install` is. In short, it is a script
-provided by the official php docker image that you can use to easily install
+provided by the official PHP Docker image that you can use to easily install
 extensions. For more information read the documentation at
 <https://hub.docker.com/_/php>.
 
@@ -111,7 +114,7 @@ test:app:
 ### Test against different PHP versions in Docker builds
 
 Testing against multiple versions of PHP is super easy. Just add another job
-with a different docker image version and the runner will do the rest:
+with a different Docker image version and the runner will do the rest:
 
 ```yaml
 before_script:
@@ -171,7 +174,7 @@ Finally, push to GitLab and let the tests begin!
 ### Test against different PHP versions in Shell builds
 
 The [phpenv](https://github.com/phpenv/phpenv) project allows you to easily manage different versions of PHP
-each with its own config. This is especially useful when testing PHP projects
+each with its own configuration. This is especially useful when testing PHP projects
 with the Shell executor.
 
 You will have to install it on your build machine under the `gitlab-runner`

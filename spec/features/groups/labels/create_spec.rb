@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Create a group label' do
+RSpec.describe 'Create a group label' do
   let(:user)  { create(:user) }
   let(:group) { create(:group) }
 

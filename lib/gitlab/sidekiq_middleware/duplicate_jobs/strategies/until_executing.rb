@@ -13,13 +13,13 @@ module Gitlab
           end
 
           def schedule(job)
-            if duplicate_job.check! && duplicate_job.duplicate?
+            if deduplicatable_job? && check! && duplicate_job.duplicate?
               job['duplicate-of'] = duplicate_job.existing_jid
-            end
 
-            if duplicate_job.droppable?
-              Gitlab::SidekiqLogging::DeduplicationLogger.instance.log(job, "dropped until executing")
-              return false
+              if duplicate_job.droppable?
+                Gitlab::SidekiqLogging::DeduplicationLogger.instance.log(job, "dropped until executing")
+                return false
+              end
             end
 
             yield
@@ -34,6 +34,22 @@ module Gitlab
           private
 
           attr_reader :duplicate_job
+
+          def deduplicatable_job?
+            !duplicate_job.scheduled? || duplicate_job.options[:including_scheduled]
+          end
+
+          def check!
+            duplicate_job.check!(expiry)
+          end
+
+          def expiry
+            return DuplicateJob::DUPLICATE_KEY_TTL unless duplicate_job.scheduled?
+
+            time_diff = duplicate_job.scheduled_at.to_i - Time.now.to_i
+
+            time_diff > 0 ? time_diff : DuplicateJob::DUPLICATE_KEY_TTL
+          end
         end
       end
     end

@@ -190,11 +190,14 @@ describe Gitlab::BitbucketImport::Importer do
 
     context 'when importing a pull request throws an exception' do
       before do
-        allow(pull_request).to receive(:raw).and_return('hello world')
+        allow(pull_request).to receive(:raw).and_return({ error: "broken" })
         allow(subject.client).to receive(:pull_request_comments).and_raise(Gitlab::HTTP::Error)
       end
 
       it 'logs an error without the backtrace' do
+        expect(Gitlab::ErrorTracking).to receive(:log_exception)
+          .with(instance_of(Gitlab::HTTP::Error), hash_including(raw_response: '{"error":"broken"}'))
+
         subject.execute
 
         expect(subject.errors.count).to eq(1)

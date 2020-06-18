@@ -96,6 +96,6 @@
         %p.light
           With webhook:
 
-        %pre.append-bottom-0
+        %pre.gl-mb-0
           :plain
              #{builds_trigger_url(@project.id, ref: 'REF_NAME')}?token=TOKEN&variables[RUN_NIGHTLY_BUILD]=true

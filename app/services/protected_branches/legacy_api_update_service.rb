@@ -39,11 +39,11 @@ module ProtectedBranches
 
     def delete_redundant_access_levels
       unless developers_can_merge.nil?
-        protected_branch.merge_access_levels.destroy_all # rubocop: disable DestroyAll
+        protected_branch.merge_access_levels.destroy_all # rubocop: disable Cop/DestroyAll
       end
 
       unless developers_can_push.nil?
-        protected_branch.push_access_levels.destroy_all # rubocop: disable DestroyAll
+        protected_branch.push_access_levels.destroy_all # rubocop: disable Cop/DestroyAll
       end
     end
   end

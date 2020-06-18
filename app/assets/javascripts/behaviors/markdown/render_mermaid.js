@@ -25,9 +25,10 @@ function importMermaidModule() {
   return import(/* webpackChunkName: 'mermaid' */ 'mermaid')
     .then(mermaid => {
       let theme = 'neutral';
+      const ideDarkThemes = ['dark', 'solarized-dark'];
 
       if (
-        window.gon?.user_color_scheme === 'dark' &&
+        ideDarkThemes.includes(window.gon?.user_color_scheme) &&
         // if on the Web IDE page
         document.querySelector('.ide')
       ) {

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe TemplateFinder do
+RSpec.describe TemplateFinder do
   using RSpec::Parameterized::TableSyntax
 
   describe '#build' do

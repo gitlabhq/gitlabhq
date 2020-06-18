@@ -7,7 +7,7 @@
   .d-flex.justify-content-between.flex-wrap
     - providers.each do |provider|
       - has_icon = provider_has_icon?(provider)
-      = link_to omniauth_authorize_path(:user, provider), method: :post, class: "btn d-flex align-items-center omniauth-btn text-left oauth-login #{qa_class_for_provider(provider)}", id: "oauth-login-#{provider}" do
+      = button_to omniauth_authorize_path(:user, provider), id: "oauth-login-#{provider}", class: "btn d-flex align-items-center omniauth-btn text-left oauth-login #{qa_class_for_provider(provider)}" do
         - if has_icon
           = provider_image_tag(provider)
         %span

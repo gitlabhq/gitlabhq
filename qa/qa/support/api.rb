@@ -11,22 +11,31 @@ module QA
       HTTP_STATUS_ACCEPTED = 202
       HTTP_STATUS_SERVER_ERROR = 500
 
-      def post(url, payload)
-        RestClient::Request.execute(
+      def post(url, payload, args = {})
+        default_args = {
           method: :post,
           url: url,
           payload: payload,
-          verify_ssl: false)
+          verify_ssl: false
+        }
+
+        RestClient::Request.execute(
+          default_args.merge(args)
+        )
       rescue RestClient::ExceptionWithResponse => e
         return_response_or_raise(e)
       end
 
-      def get(url, raw_response: false)
-        RestClient::Request.execute(
+      def get(url, args = {})
+        default_args = {
           method: :get,
           url: url,
-          verify_ssl: false,
-          raw_response: raw_response)
+          verify_ssl: false
+        }
+
+        RestClient::Request.execute(
+          default_args.merge(args)
+        )
       rescue RestClient::ExceptionWithResponse => e
         return_response_or_raise(e)
       end

@@ -8,8 +8,21 @@ FactoryBot.define do
     title { FFaker::Lorem.sentence }
     started_at { Time.current }
 
+    trait :with_validation_errors do
+      after(:create) do |alert|
+        too_many_hosts = Array.new(AlertManagement::Alert::HOSTS_MAX_LENGTH + 1) { |_| 'host' }
+        alert.update_columns(hosts: too_many_hosts)
+      end
+    end
+
     trait :with_issue do
       issue
+    end
+
+    trait :with_assignee do |alert|
+      after(:create) do |alert|
+        alert.alert_assignees.create(assignee: create(:user))
+      end
     end
 
     trait :with_fingerprint do
@@ -70,6 +83,7 @@ FactoryBot.define do
 
     trait :all_fields do
       with_issue
+      with_assignee
       with_fingerprint
       with_service
       with_monitoring_tool

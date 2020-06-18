@@ -261,8 +261,7 @@ class WikiPage
   # Relative path to the partial to be used when rendering collections
   # of this object.
   def to_partial_path
-    # TODO: Move into shared/ with https://gitlab.com/gitlab-org/gitlab/-/issues/196054
-    'projects/wikis/wiki_page'
+    '../shared/wikis/wiki_page'
   end
 
   def id
@@ -271,7 +270,10 @@ class WikiPage
 
   def title_changed?
     if persisted?
-      old_title, old_dir = wiki.page_title_and_dir(self.class.unhyphenize(page.url_path))
+      # A page's `title` will be returned from Gollum/Gitaly with any +<>
+      # characters changed to -, whereas the `path` preserves these characters.
+      path_without_extension = Pathname(page.path).sub_ext('').to_s
+      old_title, old_dir = wiki.page_title_and_dir(self.class.unhyphenize(path_without_extension))
       new_title, new_dir = wiki.page_title_and_dir(self.class.unhyphenize(title))
 
       new_title != old_title || (title.include?('/') && new_dir != old_dir)

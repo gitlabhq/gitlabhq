@@ -5,7 +5,7 @@ module Ci
     def execute(build)
       return false unless build.trace_sections.empty?
 
-      Gitlab::Database.bulk_insert(BuildTraceSection.table_name, extract_sections(build))
+      Gitlab::Database.bulk_insert(BuildTraceSection.table_name, extract_sections(build)) # rubocop:disable Gitlab/BulkInsert
       true
     end
 

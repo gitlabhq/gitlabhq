@@ -64,7 +64,7 @@ export default {
 
 <template>
   <div class="tree-list-holder d-flex flex-column">
-    <div class="append-bottom-8 position-relative tree-list-search d-flex">
+    <div class="gl-mb-3 position-relative tree-list-search d-flex">
       <div class="flex-fill d-flex">
         <icon name="search" class="position-absolute tree-list-icon" />
         <label for="diff-tree-search" class="sr-only">{{ $options.searchPlaceholder }}</label>

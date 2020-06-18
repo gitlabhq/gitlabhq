@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe InternalRedirect do
+RSpec.describe InternalRedirect do
   let(:controller_class) do
     Class.new do
       include InternalRedirect

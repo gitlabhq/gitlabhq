@@ -2,7 +2,6 @@
 /* eslint-disable @gitlab/vue-require-i18n-strings */
 import Icon from '~/vue_shared/components/icon.vue';
 import Timeago from '~/vue_shared/components/time_ago_tooltip.vue';
-import router from '../../ide_router';
 
 export default {
   components: {
@@ -26,7 +25,7 @@ export default {
   },
   computed: {
     branchHref() {
-      return router.resolve(`/project/${this.projectId}/edit/${this.item.name}`).href;
+      return this.$router.resolve(`/project/${this.projectId}/edit/${this.item.name}`).href;
     },
   },
 };

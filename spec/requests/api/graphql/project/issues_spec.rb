@@ -124,7 +124,7 @@ describe 'getting an issue list for a project' do
       graphql_query_for(
         'project',
         { 'fullPath' => sort_project.full_path },
-        "issues(#{params}) { #{page_info} edges { node { iid dueDate } } }"
+        query_graphql_field('issues', params, "#{page_info} edges { node { iid dueDate} }")
       )
     end
 

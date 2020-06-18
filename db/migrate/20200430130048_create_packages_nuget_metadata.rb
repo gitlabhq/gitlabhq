@@ -29,6 +29,8 @@ class CreatePackagesNugetMetadata < ActiveRecord::Migration[6.0]
   end
 
   def down
+    # rubocop:disable Migration/DropTable
     drop_table :packages_nuget_metadata
+    # rubocop:enable Migration/DropTable
   end
 end

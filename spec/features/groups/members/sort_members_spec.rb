@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Groups > Members > Sort members' do
+RSpec.describe 'Groups > Members > Sort members' do
   let(:owner)     { create(:user, name: 'John Doe') }
   let(:developer) { create(:user, name: 'Mary Jane', last_sign_in_at: 5.days.ago) }
   let(:group)     { create(:group) }

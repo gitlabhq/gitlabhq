@@ -23,7 +23,7 @@ describe Gitlab::EtagCaching::Router do
 
   it 'matches issue title endpoint' do
     result = described_class.match(
-      '/my-group/my-project/issues/123/realtime_changes'
+      '/my-group/my-project/-/issues/123/realtime_changes'
     )
 
     expect(result).to be_present
@@ -32,7 +32,7 @@ describe Gitlab::EtagCaching::Router do
 
   it 'matches with a project name that includes a suffix of create' do
     result = described_class.match(
-      '/group/test-create/issues/123/realtime_changes'
+      '/group/test-create/-/issues/123/realtime_changes'
     )
 
     expect(result).to be_present
@@ -41,7 +41,7 @@ describe Gitlab::EtagCaching::Router do
 
   it 'matches with a project name that includes a prefix of create' do
     result = described_class.match(
-      '/group/create-test/issues/123/realtime_changes'
+      '/group/create-test/-/issues/123/realtime_changes'
     )
 
     expect(result).to be_present
@@ -50,7 +50,7 @@ describe Gitlab::EtagCaching::Router do
 
   it 'matches project pipelines endpoint' do
     result = described_class.match(
-      '/my-group/my-project/pipelines.json'
+      '/my-group/my-project/-/pipelines.json'
     )
 
     expect(result).to be_present
@@ -95,7 +95,7 @@ describe Gitlab::EtagCaching::Router do
 
   it 'does not match blob with confusing name' do
     result = described_class.match(
-      '/my-group/my-project/blob/master/pipelines.json'
+      '/my-group/my-project/-/blob/master/pipelines.json'
     )
 
     expect(result).to be_blank
@@ -121,7 +121,7 @@ describe Gitlab::EtagCaching::Router do
 
   it 'matches pipeline#show endpoint' do
     result = described_class.match(
-      '/my-group/my-project/pipelines/2.json'
+      '/my-group/my-project/-/pipelines/2.json'
     )
 
     expect(result).to be_present

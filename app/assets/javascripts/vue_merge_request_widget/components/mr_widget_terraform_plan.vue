@@ -1,16 +1,15 @@
 <script>
 import { __ } from '~/locale';
-import { GlIcon, GlLoadingIcon, GlSprintf } from '@gitlab/ui';
+import { GlIcon, GlLink, GlLoadingIcon, GlSprintf } from '@gitlab/ui';
 import axios from '~/lib/utils/axios_utils';
-import CiIcon from '../../vue_shared/components/ci_icon.vue';
 import flash from '~/flash';
 import Poll from '~/lib/utils/poll';
 
 export default {
   name: 'MRWidgetTerraformPlan',
   components: {
-    CiIcon,
     GlIcon,
+    GlLink,
     GlLoadingIcon,
     GlSprintf,
   },
@@ -36,17 +35,12 @@ export default {
     deleteNum() {
       return Number(this.plan.delete);
     },
-    iconStatusObj() {
-      return {
-        group: 'warning',
-        icon: 'status_warning',
-      };
-    },
     logUrl() {
       return this.plan.job_path;
     },
     plan() {
-      return this.plans['tfplan.json'] || {};
+      const firstPlanKey = Object.keys(this.plans)[0];
+      return this.plans[firstPlanKey] ?? {};
     },
     validPlanValues() {
       return this.addNum + this.changeNum + this.deleteNum >= 0;
@@ -90,7 +84,7 @@ export default {
   <section class="mr-widget-section">
     <div class="mr-widget-body media d-flex flex-row">
       <span class="append-right-default align-self-start align-self-lg-center">
-        <ci-icon :status="iconStatusObj" :size="24" />
+        <gl-icon name="status_warning" :size="24" />
       </span>
 
       <div class="d-flex flex-fill flex-column flex-md-row">
@@ -125,7 +119,7 @@ export default {
         </div>
 
         <div class="terraform-mr-plan-actions">
-          <a
+          <gl-link
             v-if="logUrl"
             :href="logUrl"
             target="_blank"
@@ -137,7 +131,7 @@ export default {
           >
             {{ __('View full log') }}
             <gl-icon name="external-link" />
-          </a>
+          </gl-link>
         </div>
       </div>
     </div>

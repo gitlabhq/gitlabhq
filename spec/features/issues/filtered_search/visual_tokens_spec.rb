@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Visual tokens', :js do
+RSpec.describe 'Visual tokens', :js do
   include FilteredSearchHelpers
 
   let!(:project) { create(:project) }

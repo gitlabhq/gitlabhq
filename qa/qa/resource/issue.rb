@@ -32,8 +32,8 @@ module QA
         Page::Project::Show.perform(&:go_to_new_issue)
 
         Page::Project::Issue::New.perform do |new_page|
-          new_page.add_title(@title)
-          new_page.add_description(@description)
+          new_page.fill_title(@title)
+          new_page.fill_description(@description)
           new_page.create_new_issue
         end
       end

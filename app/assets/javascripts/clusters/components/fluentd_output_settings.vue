@@ -215,10 +215,10 @@ export default {
       </div>
       <div class="form-group flex flex-wrap">
         <gl-form-checkbox :checked="wafLogEnabled" @input="wafLogChanged">
-          <strong>{{ s__('ClusterIntegration|Send ModSecurity Logs') }}</strong>
+          <strong>{{ s__('ClusterIntegration|Send Web Application Firewall Logs') }}</strong>
         </gl-form-checkbox>
         <gl-form-checkbox :checked="ciliumLogEnabled" @input="ciliumLogChanged">
-          <strong>{{ s__('ClusterIntegration|Send Cilium Logs') }}</strong>
+          <strong>{{ s__('ClusterIntegration|Send Container Network Policies Logs') }}</strong>
         </gl-form-checkbox>
       </div>
       <div v-if="showButtons" class="mt-3">

@@ -65,5 +65,5 @@ The output is written into an `exif.log` file because it will probably be long.
 If sanitization fails for an upload, an error message should be in the output of the Rake task.
 Typical reasons include that the file is missing in the storage or it's not a valid image.
 
-[Report](https://gitlab.com/gitlab-org/gitlab/issues/new) any issues and use the prefix 'EXIF' in
+[Report](https://gitlab.com/gitlab-org/gitlab/-/issues/new) any issues and use the prefix 'EXIF' in
 the issue title with the error output and (if possible) the image.

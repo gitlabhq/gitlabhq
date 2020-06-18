@@ -25,14 +25,22 @@ describe Gitlab::ImportExport::SnippetRepoRestorer do
       expect(snippet.repository_exists?).to be_falsey
 
       aggregate_failures do
-        expect(restorer.restore).to be_truthy
-
-        expect(snippet.repository_exists?).to be_truthy
-        expect(snippet.snippet_repository).not_to be_nil
+        expect do
+          expect(restorer.restore).to be_truthy
+        end.to change { SnippetRepository.count }.by(1)
 
         blob = snippet.repository.blob_at('HEAD', snippet.file_name)
         expect(blob).not_to be_nil
         expect(blob.data).to eq(snippet.content)
+      end
+    end
+
+    context 'when the repository creation fails' do
+      it 'returns false' do
+        allow_any_instance_of(Gitlab::BackgroundMigration::BackfillSnippetRepositories).to receive(:perform_by_ids).and_return(nil)
+
+        expect(restorer.restore).to be false
+        expect(shared.errors.first).to match(/Error creating repository for snippet/)
       end
     end
   end

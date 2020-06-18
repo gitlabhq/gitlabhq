@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Prometheus external alerts', :js do
+RSpec.describe 'Prometheus external alerts', :js do
   include_context 'project service activation'
 
   let(:alerts_section_selector) { '.js-prometheus-alerts' }

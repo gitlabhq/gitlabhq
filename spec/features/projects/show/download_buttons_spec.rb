@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Projects > Show > Download buttons' do
+RSpec.describe 'Projects > Show > Download buttons' do
   let(:user) { create(:user) }
   let(:role) { :developer }
   let(:status) { 'success' }

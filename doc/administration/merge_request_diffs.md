@@ -1,6 +1,6 @@
 # Merge request diffs storage **(CORE ONLY)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/52568) in GitLab 11.8.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/52568) in GitLab 11.8.
 
 Merge request diffs are size-limited copies of diffs associated with merge
 requests. When viewing a merge request, diffs are sourced from these copies

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Projects > Files > Template type dropdown selector', :js do
+RSpec.describe 'Projects > Files > Template type dropdown selector', :js do
   let(:project) { create(:project, :repository) }
   let(:user) { project.owner }
 

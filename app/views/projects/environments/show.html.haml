@@ -23,7 +23,7 @@
                   emphasis_end: '</strong>'.html_safe,
                   ci_config_link_start: '<a href="https://docs.gitlab.com/ee/ci/yaml/" target="_blank" rel="noopener noreferrer">'.html_safe,
                   ci_config_link_end: '</a>'.html_safe }
-                %a{ href: 'https://docs.gitlab.com/ee/ci/environments.html#stopping-an-environment',
+                %a{ href: 'https://docs.gitlab.com/ee/ci/environments/index.html#stopping-an-environment',
                   target: '_blank',
                   rel: 'noopener noreferrer' }
                   = s_('Environments|Learn more about stopping environments')
@@ -39,7 +39,7 @@
     .d-flex
       %h3.page-title= @environment.name
       - if @environment.auto_stop_at?
-        %p.align-self-end.prepend-left-8
+        %p.align-self-end.gl-ml-3
           = s_('Environments|Auto stops %{auto_stop_time}').html_safe % {auto_stop_time: time_ago_with_tooltip(@environment.auto_stop_at)}
     .nav-controls.my-2
       = render 'projects/environments/pin_button', environment: @environment

@@ -1,6 +1,36 @@
 dashboard: 'Default dashboard'
 priority: 1
+
+templating:
+  variables:
+    instance:
+      type: 'text'
+      label: 'Instance label regex'
+      options:
+        default_value: '.+'
+
 panel_groups:
+
+- group: 'Resource usage'
+  panels:
+  - title: "Memory usage"
+    type: "line-chart"
+    y_label: "% memory used"
+    metrics:
+    - id: node_memory_usage_percentage
+      query_range: '(1 - (node_memory_MemAvailable_bytes{instance=~"{{instance}}"} or (node_memory_MemFree_bytes{instance=~"{{instance}}"} + node_memory_Buffers_bytes{instance=~"{{instance}}"} + node_memory_Cached_bytes{instance=~"{{instance}}"} + node_memory_Slab_bytes{instance=~"{{instance}}"})) / node_memory_MemTotal_bytes{instance=~"{{instance}}"}) * 100'
+      unit: "%"
+      label: instance
+
+  - title: "CPU usage"
+    type: "line-chart"
+    y_label: "% CPU used"
+    metrics:
+    - id: node_cpu_usage_percentage
+      query_range: '(avg without (mode,cpu) (1 - irate(node_cpu_seconds_total{mode="idle",instance=~"{{instance}}"}[5m]))) * 100'
+      unit: "%"
+      label: instance
+
 - group: Web Service
   panels:
     - title: Web Service - Error Ratio

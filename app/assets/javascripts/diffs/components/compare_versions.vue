@@ -86,7 +86,7 @@ export default {
       <button
         v-gl-tooltip.hover
         type="button"
-        class="btn btn-default append-right-8 js-toggle-tree-list"
+        class="btn btn-default gl-mr-3 js-toggle-tree-list"
         :class="{
           active: showTreeList,
         }"
@@ -98,18 +98,18 @@ export default {
       <gl-sprintf
         v-if="showDropdowns"
         class="d-flex align-items-center compare-versions-container"
-        :message="s__('MergeRequest|Compare %{source} and %{target}')"
+        :message="s__('MergeRequest|Compare %{target} and %{source}')"
       >
-        <template #source>
-          <compare-dropdown-layout
-            :versions="diffCompareDropdownSourceVersions"
-            class="mr-version-dropdown"
-          />
-        </template>
         <template #target>
           <compare-dropdown-layout
             :versions="diffCompareDropdownTargetVersions"
             class="mr-version-compare-dropdown"
+          />
+        </template>
+        <template #source>
+          <compare-dropdown-layout
+            :versions="diffCompareDropdownSourceVersions"
+            class="mr-version-dropdown"
           />
         </template>
       </gl-sprintf>
@@ -126,15 +126,11 @@ export default {
         <gl-deprecated-button
           v-if="commit || startVersion"
           :href="latestVersionPath"
-          class="append-right-8 js-latest-version"
+          class="gl-mr-3 js-latest-version"
         >
           {{ __('Show latest version') }}
         </gl-deprecated-button>
-        <gl-deprecated-button
-          v-show="hasCollapsedFile"
-          class="append-right-8"
-          @click="expandAllFiles"
-        >
+        <gl-deprecated-button v-show="hasCollapsedFile" class="gl-mr-3" @click="expandAllFiles">
           {{ __('Expand all') }}
         </gl-deprecated-button>
         <settings-dropdown />

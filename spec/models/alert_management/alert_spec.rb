@@ -6,6 +6,10 @@ describe AlertManagement::Alert do
   describe 'associations' do
     it { is_expected.to belong_to(:project) }
     it { is_expected.to belong_to(:issue) }
+    it { is_expected.to have_many(:assignees).through(:alert_assignees) }
+    it { is_expected.to have_many(:notes) }
+    it { is_expected.to have_many(:ordered_notes) }
+    it { is_expected.to have_many(:user_mentions) }
   end
 
   describe 'validations' do
@@ -241,6 +245,12 @@ describe AlertManagement::Alert do
     end
   end
 
+  describe '#to_reference' do
+    let(:alert) { build(:alert_management_alert) }
+
+    it { expect(alert.to_reference).to eq('') }
+  end
+
   describe '#trigger' do
     subject { alert.trigger }
 
@@ -315,6 +325,16 @@ describe AlertManagement::Alert do
 
     it 'resets ended at' do
       expect { subject }.to change { alert.reload.ended_at }.to nil
+    end
+  end
+
+  describe '#register_new_event!' do
+    subject { alert.register_new_event! }
+
+    let(:alert) { create(:alert_management_alert) }
+
+    it 'increments the events count by 1' do
+      expect { subject }.to change { alert.events }.by(1)
     end
   end
 end

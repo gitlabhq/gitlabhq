@@ -3,7 +3,7 @@
 cache gems:
   extends:
     - .default-retry
-    - .default-cache
+    - .rails-cache
     - .default-before_script
     - .setup:rules:cache-gems
   stage: test

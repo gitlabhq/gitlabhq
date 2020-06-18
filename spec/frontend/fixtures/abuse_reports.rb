@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Admin::AbuseReportsController, '(JavaScript fixtures)', type: :controller do
+RSpec.describe Admin::AbuseReportsController, '(JavaScript fixtures)', type: :controller do
   include JavaScriptFixturesHelpers
 
   let(:admin) { create(:admin) }

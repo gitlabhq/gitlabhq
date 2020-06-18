@@ -3,10 +3,6 @@
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/660) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.2.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/212566) to GitLab Core in 13.0.
 
-CAUTION: **Warning:**
-This an **alpha** feature and is subject to change at any time without
-prior notice.
-
 ## Overview
 
 Design Management allows you to upload design assets (wireframes, mockups, etc.)
@@ -45,19 +41,19 @@ If the requirements are not met, the **Designs** tab displays a message to the u
 Files uploaded must have a file extension of either `png`, `jpg`, `jpeg`,
 `gif`, `bmp`, `tiff` or `ico`.
 
-Support for [SVG files](https://gitlab.com/gitlab-org/gitlab/issues/12771)
-and [PDFs](https://gitlab.com/gitlab-org/gitlab/issues/32811) is planned for a future release.
+Support for [SVG files](https://gitlab.com/gitlab-org/gitlab/-/issues/12771)
+and [PDFs](https://gitlab.com/gitlab-org/gitlab/-/issues/32811) is planned for a future release.
 
 ## Limitations
 
 - Design uploads are limited to 10 files at a time.
 - Design Management data
-  [isn't deleted when a project is destroyed](https://gitlab.com/gitlab-org/gitlab/issues/13429) yet.
-- Design Management data [won't be moved](https://gitlab.com/gitlab-org/gitlab/issues/13426)
-  when an issue is moved, nor [deleted](https://gitlab.com/gitlab-org/gitlab/issues/13427)
+  [isn't deleted when a project is destroyed](https://gitlab.com/gitlab-org/gitlab/-/issues/13429) yet.
+- Design Management data [won't be moved](https://gitlab.com/gitlab-org/gitlab/-/issues/13426)
+  when an issue is moved, nor [deleted](https://gitlab.com/gitlab-org/gitlab/-/issues/13427)
   when an issue is deleted.
 - From GitLab 12.7, Design Management data [can be replicated](../../../administration/geo/replication/datatypes.md#limitations-on-replicationverification)
-  by Geo but [not verified](https://gitlab.com/gitlab-org/gitlab/issues/32467).
+  by Geo but [not verified](https://gitlab.com/gitlab-org/gitlab/-/issues/32467).
 - Only the latest version of the designs can be deleted.
 - Deleted designs cannot be recovered but you can see them on previous designs versions.
 
@@ -71,8 +67,8 @@ Navigate to the **Design Management** page from any issue by clicking the **Desi
 
 To upload design images, click the **Upload Designs** button and select images to upload.
 
-[Introduced](https://gitlab.com/gitlab-org/gitlab/issues/34353) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.9,
-you can drag and drop designs onto the dedicated dropzone to upload them.
+[Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/34353) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.9,
+you can drag and drop designs onto the dedicated drop zone to upload them.
 
 ![Drag and drop design uploads](img/design_drag_and_drop_uploads_v12_9.png)
 
@@ -91,7 +87,7 @@ Copy-and-pasting has some limitations:
 - Copy/pasting designs is not supported on Internet Explorer.
 
 Designs with the same filename as an existing uploaded design will create a new version
-of the design, and will replace the previous version. [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/34353) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.9, dropping a design on an existing uploaded design will also create a new version,
+of the design, and will replace the previous version. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/34353) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.9, dropping a design on an existing uploaded design will also create a new version,
 provided the filenames are the same.
 
 Designs cannot be added if the issue has been moved, or its
@@ -123,19 +119,19 @@ to help summarize changes between versions.
 
 ### Exploring designs by zooming
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/13217) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.7.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13217) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.7.
 
 Designs can be explored in greater detail by zooming in and out of the image.
 Control the amount of zoom with the `+` and `-` buttons at the bottom of the image.
 While zoomed, you can still [start new discussions](#starting-discussions-on-designs) on the image, and see any existing ones.
-[Introduced](https://gitlab.com/gitlab-org/gitlab/issues/197324) in GitLab 12.10, while zoomed in,
+[Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/197324) in GitLab 12.10, while zoomed in,
 you can click-and-drag on the image to move around it.
 
 ![Design zooming](img/design_zooming_v12_7.png)
 
 ## Deleting designs
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/11089) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.4.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/11089) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.4.
 
 There are two ways to delete designs: manually delete them
 individually, or select a few of them to delete at once,
@@ -169,7 +165,7 @@ A pin is added to the image, identifying the discussion's location.
 
 ![Starting a new discussion on design](img/adding_note_to_design_1.png)
 
-[Introduced](https://gitlab.com/gitlab-org/gitlab/issues/34353) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.8,
+[Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/34353) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.8,
 you can adjust a pin's position by dragging it around the image. This is useful
 for when your design layout has changed between revisions, or if you need to move an
 existing pin to add a new one in its place.
@@ -180,3 +176,60 @@ Different discussions have different pin numbers:
 
 From GitLab 12.5 on, new discussions will be outputted to the issue activity,
 so that everyone involved can participate in the discussion.
+
+## Resolve Design threads
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13049) in GitLab 13.1.
+
+Discussion threads can be resolved on Designs. You can mark a thread as resolved
+or unresolved by clicking the **Resolve thread** icon at the first comment of the
+discussion.
+
+![Resolve thread icon](img/resolve_design-discussion_icon_v13_1.png)
+
+Pinned comments can also be resolved or unresolved in their threads.
+When replying to a comment, you will see a checkbox that you can click in order to resolve or unresolve
+the thread once published.
+
+![Resolve checkbox](img/resolve_design-discussion_checkbox_v13_1.png)
+
+## Referring to designs in Markdown
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/217160) in **GitLab 13.1**.
+> - It is deployed behind a feature flag, disabled by default.
+> - It is disabled on GitLab.com.
+> - It is not recommended for production use.
+> - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-design-references-core-only). **(CORE ONLY)**
+
+We support referring to designs in [Markdown](../../markdown.md), which is available
+throughout the application, including in merge request and issue descriptions, in discussions and comments, and in wiki pages.
+
+At present, full URL references are supported. For example, if we refer to a design
+somewhere with:
+
+```markdown
+See https://gitlab.com/your-group/your-project/-/issues/123/designs/homescreen.png
+```
+
+This will be rendered as:
+
+> See [#123[homescreen.png]](https://gitlab.com/your-group/your-project/-/issues/123/designs/homescreen.png)
+
+### Enable or disable design references **(CORE ONLY)**
+
+Design reference parsing is under development and not ready for production use. It is
+deployed behind a feature flag that is **disabled by default**.
+[GitLab administrators with access to the GitLab Rails console](../../../administration/feature_flags.md)
+can enable it for your instance.
+
+To enable it:
+
+```ruby
+Feature.enable(:design_management_reference_filter_gfm_pipeline)
+```
+
+To disable it:
+
+```ruby
+Feature.disable(:design_management_reference_filter_gfm_pipeline)
+```

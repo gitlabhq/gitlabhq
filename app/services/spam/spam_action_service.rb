@@ -7,9 +7,11 @@ module Spam
     attr_accessor :target, :request, :options
     attr_reader :spam_log
 
-    def initialize(spammable:, request:)
+    def initialize(spammable:, request:, user:, context: {})
       @target = spammable
       @request = request
+      @user = user
+      @context = context
       @options = {}
 
       if @request
@@ -22,7 +24,7 @@ module Spam
       end
     end
 
-    def execute(api: false, recaptcha_verified:, spam_log_id:, user:)
+    def execute(api: false, recaptcha_verified:, spam_log_id:)
       if recaptcha_verified
         # If it's a request which is already verified through reCAPTCHA,
         # update the spam log accordingly.
@@ -40,6 +42,8 @@ module Spam
 
     private
 
+    attr_reader :user, :context
+
     def allowlisted?(user)
       user.respond_to?(:gitlab_employee) && user.gitlab_employee?
     end
@@ -49,7 +53,8 @@ module Spam
       # ask the SpamVerdictService what to do with the target.
       spam_verdict_service.execute.tap do |result|
         case result
-        when REQUIRE_RECAPTCHA
+        when CONDITIONAL_ALLOW
+          # at the moment, this means "ask for reCAPTCHA"
           create_spam_log(api)
 
           break if target.allow_possible_spam?
@@ -74,7 +79,7 @@ module Spam
           description: target.spam_description,
           source_ip: options[:ip_address],
           user_agent: options[:user_agent],
-          noteable_type: target.class.to_s,
+          noteable_type: notable_type,
           via_api: api
         }
       )
@@ -84,8 +89,14 @@ module Spam
 
     def spam_verdict_service
       SpamVerdictService.new(target: target,
+                             user: user,
                              request: @request,
-                             options: options)
+                             options: options,
+                             context: context.merge(target_type: notable_type))
+    end
+
+    def notable_type
+      @notable_type ||= target.class.to_s
     end
   end
 end

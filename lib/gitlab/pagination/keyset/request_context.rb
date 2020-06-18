@@ -24,7 +24,9 @@ module Gitlab
         end
 
         def apply_headers(next_page)
-          request.header('Links', pagination_links(next_page))
+          link = pagination_links(next_page)
+          request.header('Links', link)
+          request.header('Link', link)
         end
 
         private

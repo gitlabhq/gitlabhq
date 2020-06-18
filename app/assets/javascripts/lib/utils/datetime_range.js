@@ -1,5 +1,6 @@
 import dateformat from 'dateformat';
 import { pick, omit, isEqual, isEmpty } from 'lodash';
+import { DATETIME_RANGE_TYPES } from './constants';
 import { secondsToMilliseconds } from './datetime_utility';
 
 const MINIMUM_DATE = new Date(0);
@@ -153,18 +154,22 @@ export function getRangeType(range) {
   const { start, end, anchor, duration } = range;
 
   if ((start || end) && !anchor && !duration) {
-    return isValidDateString(start) && isValidDateString(end) ? 'fixed' : 'invalid';
+    return isValidDateString(start) && isValidDateString(end)
+      ? DATETIME_RANGE_TYPES.fixed
+      : DATETIME_RANGE_TYPES.invalid;
   }
   if (anchor && duration) {
-    return isValidDateString(anchor) && isValidDuration(duration) ? 'anchored' : 'invalid';
+    return isValidDateString(anchor) && isValidDuration(duration)
+      ? DATETIME_RANGE_TYPES.anchored
+      : DATETIME_RANGE_TYPES.invalid;
   }
   if (duration && !anchor) {
-    return isValidDuration(duration) ? 'rolling' : 'invalid';
+    return isValidDuration(duration) ? DATETIME_RANGE_TYPES.rolling : DATETIME_RANGE_TYPES.invalid;
   }
   if (anchor && !duration) {
-    return isValidDateString(anchor) ? 'open' : 'invalid';
+    return isValidDateString(anchor) ? DATETIME_RANGE_TYPES.open : DATETIME_RANGE_TYPES.invalid;
   }
-  return 'invalid';
+  return DATETIME_RANGE_TYPES.invalid;
 }
 
 /**

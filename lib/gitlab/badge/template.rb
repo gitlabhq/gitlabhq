@@ -6,6 +6,8 @@ module Gitlab
     # Abstract template class for badges
     #
     class Template
+      MAX_KEY_SIZE = 128
+
       def initialize(badge)
         @entity = badge.entity
         @status = badge.status

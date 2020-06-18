@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Thread Comments Issue', :js do
+RSpec.describe 'Thread Comments Issue', :js do
   let(:user) { create(:user) }
   let(:project) { create(:project) }
   let(:issue) { create(:issue, project: project) }

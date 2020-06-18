@@ -5,6 +5,7 @@ class UpdateExternalPullRequestsWorker # rubocop:disable Scalability/IdempotentW
 
   feature_category :source_code_management
   weight 3
+  loggable_arguments 2
 
   def perform(project_id, user_id, ref)
     project = Project.find_by_id(project_id)

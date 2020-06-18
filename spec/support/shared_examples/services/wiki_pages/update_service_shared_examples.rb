@@ -48,7 +48,7 @@ RSpec.shared_examples 'WikiPages::UpdateService#execute' do |container_type|
       expect { service.execute(page) }.to change { Event.count }.by 1
 
       expect(Event.recent.first).to have_attributes(
-        action: Event::UPDATED,
+        action: 'updated',
         wiki_page: page,
         target_title: page.title
       )

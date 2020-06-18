@@ -1,3 +1,9 @@
+---
+stage: Plan
+group: Project Management
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+---
+
 # Import your Jira project issues to GitLab
 
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/2766) in GitLab 12.10.
@@ -43,6 +49,7 @@ Importing large projects may take several minutes depending on the size of the i
 
 1. On the **{issues}** **Issues** page, click the **Import Issues** (**{import}**) button.
 1. Select **Import from Jira**.
+   This option is only visible if you have the [correct permissions](#permissions).
 
    ![Import issues from Jira button](img/jira/import_issues_from_jira_button_v12_10.png)
 

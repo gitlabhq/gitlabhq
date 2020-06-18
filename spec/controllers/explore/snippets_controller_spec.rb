@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Explore::SnippetsController do
+RSpec.describe Explore::SnippetsController do
   describe 'GET #index' do
     let!(:project_snippet) { create_list(:project_snippet, 3, :public) }
     let!(:personal_snippet) { create_list(:personal_snippet, 3, :public) }

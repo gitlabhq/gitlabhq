@@ -1,3 +1,4 @@
+- project = local_assigns.fetch(:project)
 - issuable = local_assigns.fetch(:issuable)
 
 - return unless can?(current_user, :"admin_#{issuable.to_ability_name}", issuable.project)
@@ -10,6 +11,9 @@
   %div{ class: (has_due_date ? "col-lg-6" : "col-12") }
     .form-group.row.merge-request-assignee
       = render "shared/issuable/form/metadata_issuable_assignee", issuable: issuable, form: form, has_due_date: has_due_date
+
+    = render_if_exists "shared/issuable/form/epic", issuable: issuable, form: form, project: project
+
     .form-group.row.issue-milestone
       = form.label :milestone_id, "Milestone", class: "col-form-label #{has_due_date ? "col-md-2 col-lg-4" : "col-sm-2"}"
       .col-sm-10{ class: ("col-md-8" if has_due_date) }
@@ -22,11 +26,11 @@
         .issuable-form-select-holder
           = render "shared/issuable/label_dropdown", classes: ["js-issuable-form-dropdown"], selected: issuable.labels, data_options: { field_name: "#{issuable.class.model_name.param_key}[label_ids][]", show_any: false }, dropdown_title: "Select label"
 
-    = render_if_exists "shared/issuable/form/weight", issuable: issuable, form: form
     = render_if_exists "shared/issuable/form/merge_request_blocks", issuable: issuable, form: form
 
-  - if has_due_date
+  - if has_due_date || issuable.supports_weight?
     .col-lg-6
+      = render_if_exists "shared/issuable/form/weight", issuable: issuable, form: form
       .form-group.row
         = form.label :due_date, "Due date", class: "col-form-label col-md-2 col-lg-4"
         .col-8

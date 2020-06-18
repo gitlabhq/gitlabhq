@@ -1,7 +1,6 @@
 <script>
 import { mapActions } from 'vuex';
 import RepoTab from './repo_tab.vue';
-import router from '../ide_router';
 
 export default {
   components: {
@@ -20,15 +19,6 @@ export default {
       type: String,
       required: true,
     },
-    hasChanges: {
-      type: Boolean,
-      required: true,
-    },
-    mergeRequestId: {
-      type: String,
-      required: false,
-      default: '',
-    },
   },
   methods: {
     ...mapActions(['updateViewer', 'removePendingTab']),
@@ -37,7 +27,7 @@ export default {
 
       if (this.activeFile.pending) {
         return this.removePendingTab(this.activeFile).then(() => {
-          router.push(`/project${this.activeFile.url}`);
+          this.$router.push(`/project${this.activeFile.url}`);
         });
       }
 
@@ -49,7 +39,7 @@ export default {
 
 <template>
   <div class="multi-file-tabs">
-    <ul ref="tabsScroller" class="list-unstyled append-bottom-0">
+    <ul ref="tabsScroller" class="list-unstyled gl-mb-0">
       <repo-tab v-for="tab in files" :key="tab.key" :tab="tab" />
     </ul>
   </div>

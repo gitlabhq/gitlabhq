@@ -257,6 +257,8 @@ For example, to add support for files referenced by a `Widget` model with a
    class Geo::WidgetRegistry < Geo::BaseRegistry
      include Geo::StateMachineRegistry
 
+     MODEL_FOREIGN_KEY = :widget_id
+
      belongs_to :widget, class_name: 'Widget'
    end
    ```
@@ -305,6 +307,8 @@ For example, to add support for files referenced by a `Widget` model with a
      specify 'factory is valid' do
        expect(registry).to be_valid
      end
+
+     include_examples 'a Geo framework registry'
    end
    ```
 
@@ -356,7 +360,8 @@ Widgets should now be replicated by Geo!
    end
    ```
 
-1. Add fields `widget_count`, `widget_checksummed_count`, and `widget_checksum_failed_count`
+1. Add fields `widget_count`, `widget_checksummed_count`, `widget_checksum_failed_count`,
+   `widget_synced_count` and `widget_failed_count`
    to `GeoNodeStatus#RESOURCE_STATUS_FIELDS` array in `ee/app/models/geo_node_status.rb`.
 1. Add the same fields to `GeoNodeStatus#PROMETHEUS_METRICS` hash in
    `ee/app/models/geo_node_status.rb`.
@@ -370,6 +375,8 @@ Widgets should now be replicated by Geo!
      self.widget_count = Geo::WidgetReplicator.model.count
      self.widget_checksummed_count = Geo::WidgetReplicator.checksummed.count
      self.widget_checksum_failed_count = Geo::WidgetReplicator.checksum_failed.count
+     self.widget_synced_count = Geo::WidgetReplicator.synced_count
+     self.widget_failed_count = Geo::WidgetReplicator.failed_count
    ```
 
 1. Make sure `Widget` model has `checksummed` and `checksum_failed` scopes.
@@ -450,7 +457,7 @@ Widgets should now be verified by Geo!
    end
    ```
 
-1. Create `ee/app/graphql/types/geo/package_file_registry_type.rb`:
+1. Create `ee/app/graphql/types/geo/widget_registry_type.rb`:
 
    ```ruby
    # frozen_string_literal: true

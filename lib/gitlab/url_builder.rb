@@ -41,7 +41,7 @@ module Gitlab
         when Wiki
           wiki_url(object, **options)
         when WikiPage
-          instance.project_wiki_url(object.wiki.project, object.slug, **options)
+          wiki_page_url(object.wiki, object, **options)
         when ::DesignManagement::Design
           design_url(object, **options)
         else
@@ -78,12 +78,21 @@ module Gitlab
         end
       end
 
-      def wiki_url(object, **options)
-        if object.container.is_a?(Project)
-          instance.project_wiki_url(object.container, Wiki::HOMEPAGE, **options)
-        else
-          raise NotImplementedError.new("No URL builder defined for #{object.inspect}")
-        end
+      def wiki_url(wiki, **options)
+        return wiki_page_url(wiki, Wiki::HOMEPAGE, **options) unless options[:action]
+
+        options[:controller] = 'projects/wikis'
+        options[:namespace_id] = wiki.container.namespace
+        options[:project_id] = wiki.container
+
+        instance.url_for(**options)
+      end
+
+      def wiki_page_url(wiki, page, **options)
+        options[:action] ||= :show
+        options[:id] = page
+
+        wiki_url(wiki, **options)
       end
 
       def design_url(design, **options)

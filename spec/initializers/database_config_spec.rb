@@ -48,6 +48,21 @@ describe 'Database config initializer' do
         expect { subject }.not_to change { Gitlab::Database.config['pool'] }
       end
     end
+
+    context "when specifying headroom through an ENV variable" do
+      let(:headroom) { 10 }
+
+      before do
+        stub_database_config(pool_size: 1)
+        stub_env("DB_POOL_HEADROOM", headroom)
+      end
+
+      it "adds headroom on top of the calculated size" do
+        expect { subject }.to change { Gitlab::Database.config['pool'] }
+                                .from(1)
+                                .to(max_threads + headroom)
+      end
+    end
   end
 
   context "when using single-threaded runtime" do

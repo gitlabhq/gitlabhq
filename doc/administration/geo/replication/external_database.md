@@ -1,3 +1,10 @@
+---
+stage: Enablement
+group: Geo
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+type: howto
+---
+
 # Geo with external PostgreSQL instances **(PREMIUM ONLY)**
 
 This document is relevant if you are using a PostgreSQL instance that is *not
@@ -62,7 +69,7 @@ Once your read-only replica is set up, you can skip to [configure you secondary 
 
 #### Manually configure the primary database for replication
 
-The [geo_primary_role](https://docs.gitlab.com/omnibus/roles/#gitlab-geo-roles)
+The [`geo_primary_role`](https://docs.gitlab.com/omnibus/roles/#gitlab-geo-roles)
 configures the **primary** node's database to be replicated by making changes to
 `pg_hba.conf` and `postgresql.conf`. Make the following configuration changes
 manually to your external database configuration and ensure that you restart PostgreSQL
@@ -123,7 +130,7 @@ hot_standby = on
 ### Configure **secondary** application nodes to use the external read-replica
 
 With Omnibus, the
-[geo_secondary_role](https://docs.gitlab.com/omnibus/roles/#gitlab-geo-roles)
+[`geo_secondary_role`](https://docs.gitlab.com/omnibus/roles/#gitlab-geo-roles)
 has three main functions:
 
 1. Configure the replica database.

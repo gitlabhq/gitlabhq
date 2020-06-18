@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'User sees user popover', :js do
+RSpec.describe 'User sees user popover', :js do
   include Spec::Support::Helpers::Features::NotesHelpers
 
   let_it_be(:project) { create(:project, :repository) }

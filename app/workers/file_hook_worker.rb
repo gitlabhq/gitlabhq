@@ -5,6 +5,7 @@ class FileHookWorker # rubocop:disable Scalability/IdempotentWorker
 
   sidekiq_options retry: false
   feature_category :integrations
+  loggable_arguments 0
 
   def perform(file_name, data)
     success, message = Gitlab::FileHook.execute(file_name, data)

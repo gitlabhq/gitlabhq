@@ -81,6 +81,8 @@ en:
         Grants read-write access to repositories on private projects using Git-over-HTTP (not using the API).
       read_registry:
         Grants read-only access to container registry images on private projects.
+      write_registry:
+        Grants write access to container registry images on private projects.
       openid:
         Grants permission to authenticate with GitLab using OpenID Connect. Also gives read-only access to the user's profile and group memberships.
       sudo:

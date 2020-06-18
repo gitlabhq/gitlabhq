@@ -127,9 +127,25 @@ export const lineWidths = {
   default: 2,
 };
 
-export const dateFormats = {
-  timeOfDay: 'h:MM TT',
-  default: 'dd mmm yyyy, h:MMTT',
+/**
+ * User-defined links can be passed in dashboard yml file.
+ * These are the supported type of links.
+ */
+export const linkTypes = {
+  GRAFANA: 'grafana',
+};
+
+/**
+ * These are the supported values for the GitLab-UI
+ * chart legend layout.
+ *
+ * Currently defined in
+ * https://gitlab.com/gitlab-org/gitlab-ui/-/blob/master/src/utils/charts/constants.js
+ *
+ */
+export const legendLayoutTypes = {
+  inline: 'inline',
+  table: 'table',
 };
 
 /**
@@ -140,7 +156,6 @@ export const dateFormats = {
  * Currently used in `receiveMetricsDashboardSuccess` action.
  */
 export const endpointKeys = [
-  'metricsEndpoint',
   'deploymentsEndpoint',
   'dashboardEndpoint',
   'dashboardsEndpoint',

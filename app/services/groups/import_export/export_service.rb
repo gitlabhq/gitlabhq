@@ -4,10 +4,11 @@ module Groups
   module ImportExport
     class ExportService
       def initialize(group:, user:, params: {})
-        @group        = group
+        @group = group
         @current_user = user
-        @params       = params
-        @shared       = @params[:shared] || Gitlab::ImportExport::Shared.new(@group)
+        @params = params
+        @shared = @params[:shared] || Gitlab::ImportExport::Shared.new(@group)
+        @logger = Gitlab::Export::Logger.build
       end
 
       def async_execute
@@ -21,7 +22,7 @@ module Groups
 
         save!
       ensure
-        cleanup
+        remove_base_tmp_dir
       end
 
       private
@@ -80,8 +81,8 @@ module Groups
         Gitlab::ImportExport::Saver.new(exportable: @group, shared: @shared)
       end
 
-      def cleanup
-        FileUtils.rm_rf(shared.archive_path) if shared&.archive_path
+      def remove_base_tmp_dir
+        FileUtils.rm_rf(shared.base_path) if shared&.base_path
       end
 
       def notify_error!
@@ -91,21 +92,21 @@ module Groups
       end
 
       def notify_success
-        @shared.logger.info(
-          group_id:   @group.id,
-          group_name: @group.name,
-          message:    'Group Import/Export: Export succeeded'
+        @logger.info(
+          message: 'Group Export succeeded',
+          group_id: @group.id,
+          group_name: @group.name
         )
 
         notification_service.group_was_exported(@group, @current_user)
       end
 
       def notify_error
-        @shared.logger.error(
-          group_id:   @group.id,
+        @logger.error(
+          message: 'Group Export failed',
+          group_id: @group.id,
           group_name: @group.name,
-          error:      @shared.errors.join(', '),
-          message:    'Group Import/Export: Export failed'
+          errors: @shared.errors.join(', ')
         )
 
         notification_service.group_was_not_exported(@group, @current_user, @shared.errors)

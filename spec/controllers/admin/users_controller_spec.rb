@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Admin::UsersController do
+RSpec.describe Admin::UsersController do
   let(:user) { create(:user) }
 
   let_it_be(:admin) { create(:admin) }
@@ -254,6 +254,18 @@ describe Admin::UsersController do
       errors = assigns[:user].errors
       expect(errors).to contain_exactly(errors.full_message(:email, I18n.t('errors.messages.invalid')))
     end
+
+    context 'admin notes' do
+      it 'creates the user with note' do
+        note = '2020-05-12 | Note | DCMA | Link'
+        user_params = attributes_for(:user, note: note)
+
+        expect { post :create, params: { user: user_params } }.to change { User.count }.by(1)
+
+        new_user = User.last
+        expect(new_user.note).to eq(note)
+      end
+    end
   end
 
   describe 'POST update' do
@@ -336,6 +348,20 @@ describe Admin::UsersController do
           expect { update_password(user, 'AValidPassword1', 'AValidPassword2') }
             .not_to change { user.reload.encrypted_password }
         end
+      end
+    end
+
+    context 'admin notes' do
+      it 'updates the note for the user' do
+        note = '2020-05-12 | Note | DCMA | Link'
+        params = {
+          id: user.to_param,
+          user: {
+            note: note
+          }
+        }
+
+        expect { post :update, params: params }.to change { user.reload.note }.to(note)
       end
     end
   end

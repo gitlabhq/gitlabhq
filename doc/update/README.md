@@ -22,7 +22,7 @@ Based on your installation, choose a section below that fits your needs.
   source](upgrading_from_source.md) - The guidelines for upgrading Community
   Edition and Enterprise Edition from source.
 - [Patch versions](patch_versions.md) guide includes the steps needed for a
-  patch version, eg. 6.2.0 to 6.2.1, and apply to both Community and Enterprise
+  patch version, such as 6.2.0 to 6.2.1, and apply to both Community and Enterprise
   Editions.
 
 In the past we used separate documents for the upgrading instructions, but we
@@ -178,7 +178,7 @@ If you wish to upgrade your GitLab installation from Community to Enterprise
 Edition, follow the guides below based on the installation method:
 
 - [Source CE to EE update guides](upgrading_from_ce_to_ee.md) - The steps are very similar
-  to a version upgrade: stop the server, get the code, update config files for
+  to a version upgrade: stop the server, get the code, update configuration files for
   the new functionality, install libraries and do migrations, update the init
   script, start the application and check its status.
 - [Omnibus CE to EE](https://docs.gitlab.com/omnibus/update/README.html#updating-community-edition-to-enterprise-edition) - Follow this guide to update your Omnibus
@@ -191,6 +191,16 @@ Edition, you can follow [this guide](../downgrade_ee_to_ce/README.md) to make th
 possible.
 
 ## Version specific upgrading instructions
+
+### 13.1.0
+
+In 13.1.0, you must upgrade to either:
+
+- At least Git v2.24 (previously, the minimum required version was Git v2.22).
+- The recommended Git v2.26.
+
+Failure to do so will result in internal errors in the Gitaly service in some RPCs due
+to the use of the new `--end-of-options` Git flag.
 
 ### 12.2.0
 

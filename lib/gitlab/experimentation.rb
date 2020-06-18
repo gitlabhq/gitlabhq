@@ -13,18 +13,20 @@
 # To enable the experiment for 10% of the users:
 #
 # chatops: `/chatops run feature set experiment_key_experiment_percentage 10`
-# console: `Feature.get(:experiment_key_experiment_percentage).enable_percentage_of_time(10)`
+# console: `Feature.enable_percentage_of_time(:experiment_key_experiment_percentage, 10)`
 #
 # To disable the experiment:
 #
 # chatops: `/chatops run feature delete experiment_key_experiment_percentage`
-# console: `Feature.get(:experiment_key_experiment_percentage).remove`
+# console: `Feature.remove(:experiment_key_experiment_percentage)`
 #
 # To check the current rollout percentage:
 #
 # chatops: `/chatops run feature get experiment_key_experiment_percentage`
 # console: `Feature.get(:experiment_key_experiment_percentage).percentage_of_time_value`
 #
+
+# TODO: see https://gitlab.com/gitlab-org/gitlab/-/issues/217490
 module Gitlab
   module Experimentation
     EXPERIMENTS = {
@@ -45,6 +47,12 @@ module Gitlab
       },
       upgrade_link_in_user_menu_a: {
         tracking_category: 'Growth::Expansion::Experiment::UpgradeLinkInUserMenuA'
+      },
+      invite_members_version_a: {
+        tracking_category: 'Growth::Expansion::Experiment::InviteMembersVersionA'
+      },
+      new_create_project_ui: {
+        tracking_category: 'Manage::Import::Experiment::NewCreateProjectUi'
       }
     }.freeze
 
@@ -66,7 +74,6 @@ module Gitlab
 
         cookies.permanent.signed[:experimentation_subject_id] = {
           value: SecureRandom.uuid,
-          domain: :all,
           secure: ::Gitlab.config.gitlab.https,
           httponly: true
         }
@@ -179,7 +186,7 @@ module Gitlab
 
       # When a feature does not exist, the `percentage_of_time_value` method will return 0
       def experiment_percentage
-        @experiment_percentage ||= Feature.get(:"#{key}_experiment_percentage").percentage_of_time_value
+        @experiment_percentage ||= Feature.get(:"#{key}_experiment_percentage").percentage_of_time_value # rubocop:disable Gitlab/AvoidFeatureGet
       end
     end
   end

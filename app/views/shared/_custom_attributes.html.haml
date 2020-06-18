@@ -1,0 +1,12 @@
+- return unless custom_attributes.present?
+
+.card
+  .card-header
+    = link_to(_('Custom Attributes'), help_page_path('api/custom_attributes.md'))
+  %ul.content-list
+    - custom_attributes.each do |custom_attribute|
+      %li
+        %span.light
+          = custom_attribute.key
+        %strong
+          = custom_attribute.value

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'User searches for milestones', :js do
+RSpec.describe 'User searches for milestones', :js do
   let(:user) { create(:user) }
   let(:project) { create(:project, namespace: user.namespace) }
   let!(:milestone1) { create(:milestone, title: 'Foo', project: project) }

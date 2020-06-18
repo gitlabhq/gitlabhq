@@ -63,7 +63,7 @@ export default {
     <template v-else-if="hasLoadedPipeline">
       <header v-if="latestPipeline" class="ide-tree-header ide-pipeline-header">
         <ci-icon :status="latestPipeline.details.status" :size="24" class="d-flex" />
-        <span class="prepend-left-8">
+        <span class="gl-ml-3">
           <strong> {{ __('Pipeline') }} </strong>
           <a
             :href="latestPipeline.path"
@@ -82,9 +82,9 @@ export default {
         class="mb-auto mt-auto"
       />
       <div v-else-if="latestPipeline.yamlError" class="bs-callout bs-callout-danger">
-        <p class="append-bottom-0">{{ __('Found errors in your .gitlab-ci.yml:') }}</p>
-        <p class="append-bottom-0 break-word">{{ latestPipeline.yamlError }}</p>
-        <p class="append-bottom-0" v-html="ciLintText"></p>
+        <p class="gl-mb-0">{{ __('Found errors in your .gitlab-ci.yml:') }}</p>
+        <p class="gl-mb-0 break-word">{{ latestPipeline.yamlError }}</p>
+        <p class="gl-mb-0" v-html="ciLintText"></p>
       </div>
       <tabs v-else class="ide-pipeline-list">
         <tab :active="!pipelineFailed">

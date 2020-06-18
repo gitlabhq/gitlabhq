@@ -1,4 +1,7 @@
 ---
+stage: Verify
+group: Continuous Integration
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 disqus_identifier: 'https://docs.gitlab.com/ee/user/project/pipelines/job_artifacts.html'
 type: reference, howto
 ---
@@ -103,7 +106,7 @@ combination thereof (`junit: [rspec.xml, test-results/TEST-*.xml]`).
 
 #### `artifacts:reports:dotenv`
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/17066) in GitLab 12.9.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/17066) in GitLab 12.9.
 > - Requires GitLab Runner 11.5 and later.
 
 The `dotenv` report collects a set of environment variables as artifacts.
@@ -122,7 +125,7 @@ There are a couple of limitations on top of the [original dotenv rules](https://
 
 #### `artifacts:reports:cobertura`
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/3708) in GitLab 12.9.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/3708) in GitLab 12.9.
 > - Requires [GitLab Runner](https://docs.gitlab.com/runner/) 11.5 and above.
 
 The `cobertura` report collects [Cobertura coverage XML files](../../user/project/merge_requests/test_coverage_visualization.md).
@@ -137,9 +140,10 @@ third party ports for other languages like JavaScript, Python, Ruby, and so on.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/207528) in GitLab 13.0.
 > - Requires [GitLab Runner](https://docs.gitlab.com/runner/) 11.5 and above.
 
-The `terraform` report obtains a Terraform `tfplan.json` file. The collected Terraform
+The `terraform` report obtains a Terraform `tfplan.json` file. [JQ processing required to remove credentials](../../user/infrastructure/index.md#output-terraform-plan-information-into-a-merge-request). The collected Terraform
 plan report will be uploaded to GitLab as an artifact and will be automatically shown
-in merge requests.
+in merge requests. For more information, see
+[Output `terraform plan` information into a merge request](../../user/infrastructure/index.md#output-terraform-plan-information-into-a-merge-request).
 
 #### `artifacts:reports:codequality` **(STARTER)**
 
@@ -161,6 +165,18 @@ The `sast` report collects [SAST vulnerabilities](../../user/application_securit
 as artifacts.
 
 The collected SAST report will be uploaded to GitLab as an artifact and will be summarized
+in the merge requests and pipeline view. It's also used to provide data for security
+dashboards.
+
+#### `artifacts:reports:secret_detection` **(ULTIMATE)**
+
+> - Introduced in GitLab 13.1.
+> - Requires GitLab Runner 11.5 and above.
+
+The `secret-detection` report collects [detected secrets](../../user/application_security/secret_detection/index.md)
+as artifacts.
+
+The collected Secret Detection report is uploaded to GitLab as an artifact and summarized
 in the merge requests and pipeline view. It's also used to provide data for security
 dashboards.
 
@@ -249,6 +265,17 @@ as artifacts.
 
 The collected Metrics report will be uploaded to GitLab as an artifact and will
 be automatically shown in merge requests.
+
+#### `artifacts:reports:requirements` **(ULTIMATE)**
+
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/2859) in GitLab 13.1.
+> - Requires GitLab Runner 11.5 and above.
+
+The `requirements` report collects `requirements.json` files as artifacts.
+
+The collected Requirements report will be uploaded to GitLab as an artifact and
+existing [requirements](../../user/project/requirements/index.md) will be
+marked as Satisfied.
 
 ## Browsing artifacts
 

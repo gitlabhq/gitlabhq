@@ -47,12 +47,32 @@ describe Banzai::Filter::LabelReferenceFilter do
     expect(link.attr('data-label')).to eq label.id.to_s
   end
 
-  it 'supports an :only_path context' do
+  it 'includes protocol when :only_path not present' do
+    doc = reference_filter("Label #{reference}")
+    link = doc.css('a').first.attr('href')
+
+    expect(link).to match %r(https?://)
+  end
+
+  it 'does not include protocol when :only_path true' do
     doc = reference_filter("Label #{reference}", only_path: true)
     link = doc.css('a').first.attr('href')
 
     expect(link).not_to match %r(https?://)
+  end
+
+  it 'links to issue list when :label_url_method is not present' do
+    doc = reference_filter("Label #{reference}", only_path: true)
+    link = doc.css('a').first.attr('href')
+
     expect(link).to eq urls.project_issues_path(project, label_name: label.name)
+  end
+
+  it 'links to merge request list when `label_url_method: :project_merge_requests_url`' do
+    doc = reference_filter("Label #{reference}", { only_path: true, label_url_method: "project_merge_requests_url" })
+    link = doc.css('a').first.attr('href')
+
+    expect(link).to eq urls.project_merge_requests_path(project, label_name: label.name)
   end
 
   context 'project that does not exist referenced' do

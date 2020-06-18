@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Projects::GroupLinksController do
+RSpec.describe Projects::GroupLinksController do
   let(:group) { create(:group, :private) }
   let(:group2) { create(:group, :private) }
   let(:project) { create(:project, :private, group: group2) }

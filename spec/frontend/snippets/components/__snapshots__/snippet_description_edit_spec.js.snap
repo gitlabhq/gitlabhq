@@ -4,7 +4,9 @@ exports[`Snippet Description Edit component rendering matches the snapshot 1`] =
 <div
   class="form-group js-description-input"
 >
-  <label>
+  <label
+    for="snippet-description"
+  >
     Description (optional)
   </label>
    
@@ -21,27 +23,67 @@ exports[`Snippet Description Edit component rendering matches the snapshot 1`] =
       />
     </div>
      
-    <markdown-field-stub
-      addspacingclasses="true"
-      canattachfile="true"
-      class="js-expanded"
-      enableautocomplete="true"
-      helppagepath=""
-      markdowndocspath="help/"
-      markdownpreviewpath="foo/"
-      note="[object Object]"
-      quickactionsdocspath=""
-      textareavalue=""
+    <div
+      class="js-vue-markdown-field md-area position-relative js-expanded gfm-form"
     >
-      <textarea
-        aria-label="Description"
-        class="note-textarea js-gfm-input js-autosize markdown-area"
-        data-qa-selector="snippet_description_field"
-        data-supports-quick-actions="false"
-        dir="auto"
-        placeholder="Write a comment or drag your files here…"
+      <markdown-header-stub
+        linecontent=""
       />
-    </markdown-field-stub>
+       
+      <div
+        class="md-write-holder"
+      >
+        <div
+          class="zen-backdrop div-dropzone-wrapper"
+        >
+          <div
+            class="div-dropzone js-invalid-dropzone"
+          >
+            <textarea
+              aria-label="Description"
+              class="note-textarea js-gfm-input js-autosize markdown-area"
+              data-qa-selector="snippet_description_field"
+              data-supports-quick-actions="false"
+              dir="auto"
+              id="snippet-description"
+              placeholder="Write a comment or drag your files here…"
+              style="overflow-x: hidden; word-wrap: break-word; overflow-y: hidden;"
+            />
+            <div
+              class="div-dropzone-hover"
+            >
+              <i
+                class="fa fa-paperclip div-dropzone-icon"
+              />
+            </div>
+          </div>
+           
+          <a
+            aria-label="Leave zen mode"
+            class="zen-control zen-control-leave js-zen-leave gl-text-gray-700"
+            href="#"
+          >
+            <icon-stub
+              name="screen-normal"
+              size="16"
+            />
+          </a>
+           
+          <markdown-toolbar-stub
+            canattachfile="true"
+            markdowndocspath="help/"
+            quickactionsdocspath=""
+          />
+        </div>
+      </div>
+       
+      <div
+        class="js-vue-md-preview md md-preview-holder"
+        style="display: none;"
+      />
+       
+      <!---->
+    </div>
   </div>
 </div>
 `;

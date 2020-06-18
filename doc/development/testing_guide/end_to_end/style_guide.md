@@ -49,7 +49,7 @@ Notice that in the above example, before clicking the `:operations_environments_
 
 When adding new elements to a page, it's important that we have a uniform element naming convention.
 
-We follow a simple formula roughly based on hungarian notation.
+We follow a simple formula roughly based on Hungarian notation.
 
 *Formula*: `element :<descriptor>_<type>`
 
@@ -109,7 +109,7 @@ we use the name of the page object in [snake_case](https://en.wikipedia.org/wiki
 (all lowercase, with words separated by an underscore). See good and bad examples below.
 
 While we prefer to follow the standard in most cases, it is also acceptable to
-use common abbreviations (e.g., mr) or other alternatives, as long as
+use common abbreviations (e.g., `mr`) or other alternatives, as long as
 the name is not ambiguous. This can include appending `_page` if it helps to
 avoid confusion or make the code more readable. For example, if a page object is
 named `New`, it could be confusing to name the block argument `new` because that
@@ -123,7 +123,7 @@ Capybara DSL, potentially leading to confusion and bugs.
 **Good**
 
 ```ruby
-Page::Project::Settings::Members.perform do |members|
+Page::Project::Members.perform do |members|
   members.do_something
 end
 ```
@@ -149,7 +149,7 @@ end
 **Bad**
 
 ```ruby
-Page::Project::Settings::Members.perform do |project_settings_members_page|
+Page::Project::Members.perform do |project_settings_members_page|
   project_settings_members_page.do_something
 end
 ```

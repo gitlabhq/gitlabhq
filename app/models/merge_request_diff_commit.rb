@@ -27,6 +27,6 @@ class MergeRequestDiffCommit < ApplicationRecord
       )
     end
 
-    Gitlab::Database.bulk_insert(self.table_name, rows)
+    Gitlab::Database.bulk_insert(self.table_name, rows) # rubocop:disable Gitlab/BulkInsert
   end
 end

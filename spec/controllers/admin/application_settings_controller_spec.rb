@@ -2,8 +2,9 @@
 
 require 'spec_helper'
 
-describe Admin::ApplicationSettingsController do
+RSpec.describe Admin::ApplicationSettingsController do
   include StubENV
+  include UsageDataHelpers
 
   let(:group) { create(:group) }
   let(:project) { create(:project, namespace: group) }
@@ -16,7 +17,7 @@ describe Admin::ApplicationSettingsController do
 
   describe 'GET #usage_data with no access' do
     before do
-      allow(ActiveRecord::Base.connection).to receive(:transaction_open?).and_return(false)
+      stub_usage_data_connections
       sign_in(user)
     end
 
@@ -29,7 +30,7 @@ describe Admin::ApplicationSettingsController do
 
   describe 'GET #usage_data' do
     before do
-      allow(ActiveRecord::Base.connection).to receive(:transaction_open?).and_return(false)
+      stub_usage_data_connections
       sign_in(admin)
     end
 
@@ -118,6 +119,13 @@ describe Admin::ApplicationSettingsController do
       expect(response).to render_template(:general)
       expect(assigns(:application_setting).errors[:namespace_storage_size_limit]).to be_present
       expect(ApplicationSetting.current.namespace_storage_size_limit).not_to eq(-100)
+    end
+
+    it 'updates repository_storages_weighted setting' do
+      put :update, params: { application_setting: { repository_storages_weighted_default: 75 } }
+
+      expect(response).to redirect_to(general_admin_application_settings_path)
+      expect(ApplicationSetting.current.repository_storages_weighted_default).to eq(75)
     end
 
     context 'external policy classification settings' do

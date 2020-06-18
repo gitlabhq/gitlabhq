@@ -1,3 +1,9 @@
+---
+stage: Package
+group: Package
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+---
+
 # GitLab Container Registry administration
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/4040) in GitLab 8.8.
@@ -92,7 +98,7 @@ auth:
 ```
 
 CAUTION: **Caution:**
-If `auth` is not set up, users will be able to pull docker images without authentication.
+If `auth` is not set up, users will be able to pull Docker images without authentication.
 
 ## Container Registry domain configuration
 
@@ -116,7 +122,7 @@ expose the Registry on a port so that you can reuse the existing GitLab TLS
 certificate.
 
 Assuming that the GitLab domain is `https://gitlab.example.com` and the port the
-Registry is exposed to the outside world is `4567`, here is what you need to set
+Registry is exposed to the outside world is `5050`, here is what you need to set
 in `gitlab.rb` or `gitlab.yml` if you are using Omnibus GitLab or installed
 GitLab from source respectively.
 
@@ -130,7 +136,7 @@ otherwise you will run into conflicts.
    path to the existing TLS certificate and key used by GitLab:
 
    ```ruby
-   registry_external_url 'https://gitlab.example.com:4567'
+   registry_external_url 'https://gitlab.example.com:5050'
    ```
 
    Note how the `registry_external_url` is listening on HTTPS under the
@@ -151,7 +157,7 @@ otherwise you will run into conflicts.
 1. Validate using:
 
    ```shell
-   openssl s_client -showcerts -servername gitlab.example.com -connect gitlab.example.com:443 > cacert.pem
+   openssl s_client -showcerts -servername gitlab.example.com -connect gitlab.example.com:5050 > cacert.pem
    ```
 
 NOTE: **Note:**
@@ -166,7 +172,7 @@ If your certificate provider provides the CA Bundle certificates, append them to
    registry:
      enabled: true
      host: gitlab.example.com
-     port: 4567
+     port: 5050
    ```
 
 1. Save the file and [restart GitLab](../restart_gitlab.md#installations-from-source) for the changes to take effect.
@@ -176,7 +182,7 @@ Users should now be able to login to the Container Registry with their GitLab
 credentials using:
 
 ```shell
-docker login gitlab.example.com:4567
+docker login gitlab.example.com:5050
 ```
 
 ### Configure Container Registry under its own domain
@@ -370,7 +376,7 @@ The different supported drivers are:
 | swift      | OpenStack Swift Object Storage      |
 | oss        | Aliyun OSS                          |
 
-Read more about the individual driver's config options in the
+Read more about the individual driver's configuration options in the
 [Docker Registry docs](https://docs.docker.com/registry/configuration/#storage).
 
 [Read more about using object storage with GitLab](../object_storage.md).
@@ -407,8 +413,8 @@ NOTE: **Note:**
 
 **Installations from source**
 
-Configuring the storage driver is done in your registry config YML file created
-when you [deployed your docker registry](https://docs.docker.com/registry/deploying/).
+Configuring the storage driver is done in your registry configuration YML file created
+when you [deployed your Docker registry](https://docs.docker.com/registry/deploying/).
 
 `s3` storage driver example:
 
@@ -428,6 +434,16 @@ storage:
 
 NOTE: **Note:**
 `your-s3-bucket` should only be the name of a bucket that exists, and can't include subdirectories.
+
+**Migrate without downtime**
+
+To migrate the data to AWS S3 without downtime:
+
+1. To reduce the amount of data to be migrated, run the [garbage collection tool without downtime](#performing-garbage-collection-without-downtime). Part of this process sets the registry to `read-only`.
+1. Copy the data to your AWS S3 bucket, for example with [AWS CLI's `cp`](https://docs.aws.amazon.com/cli/latest/reference/s3/cp.html) command.
+1. Configure your registry to use the S3 bucket for storage.
+1. Put the registry back to `read-write`.
+1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
 
 ### Disable redirect for storage driver
 
@@ -604,7 +620,7 @@ You can use GitLab as an auth endpoint with an external container registry.
 You can configure the Container Registry to send webhook notifications in
 response to events happening within the registry.
 
-Read more about the Container Registry notifications config options in the
+Read more about the Container Registry notifications configuration options in the
 [Docker Registry notifications documentation](https://docs.docker.com/registry/notifications/).
 
 NOTE: **Note:**
@@ -635,8 +651,8 @@ To configure a notification endpoint in Omnibus:
 
 **Installations from source**
 
-Configuring the notification endpoint is done in your registry config YML file created
-when you [deployed your docker registry](https://docs.docker.com/registry/deploying/).
+Configuring the notification endpoint is done in your registry configuration YML file created
+when you [deployed your Docker registry](https://docs.docker.com/registry/deploying/).
 
 Example:
 
@@ -704,6 +720,8 @@ no longer directly accessible via the `:latest` tag.
 
 ### Recycling unused tags
 
+> [Introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/987) in Omnibus GitLab 8.12.
+
 There are a couple of considerations you need to note before running the
 built-in command:
 
@@ -758,6 +776,8 @@ You are likely expecting this way of operation, but before doing that, ensure
 that you have backed up all registry data.
 
 ### Performing garbage collection without downtime
+
+> [Introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/764) in GitLab 8.8.
 
 You can perform a garbage collection without stopping the Container Registry by setting
 it into a read-only mode and by not using the built-in command. During this time,
@@ -873,9 +893,9 @@ thus the error above.
 
 While GitLab doesn't support using self-signed certificates with Container
 Registry out of the box, it is possible to make it work by
-[instructing the docker-daemon to trust the self-signed certificates](https://docs.docker.com/registry/insecure/#use-self-signed-certificates),
-mounting the docker-daemon and setting `privileged = false` in the Runner's
-`config.toml`. Setting `privileged = true` takes precedence over the docker-daemon:
+[instructing the Docker daemon to trust the self-signed certificates](https://docs.docker.com/registry/insecure/#use-self-signed-certificates),
+mounting the Docker daemon and setting `privileged = false` in the Runner's
+`config.toml`. Setting `privileged = true` takes precedence over the Docker daemon:
 
 ```toml
   [runners.docker]
@@ -884,7 +904,7 @@ mounting the docker-daemon and setting `privileged = false` in the Runner's
     volumes = ["/var/run/docker.sock:/var/run/docker.sock", "/cache"]
 ```
 
-Additional information about this: [issue 18239](https://gitlab.com/gitlab-org/gitlab-foss/issues/18239).
+Additional information about this: [issue 18239](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/18239).
 
 ### `unauthorized: authentication required` when pushing large images
 
@@ -955,7 +975,7 @@ Start with a value between `25000000` (25MB) and `50000000` (50MB).
 
 ### Supporting older Docker clients
 
-As of GitLab 11.9, we began shipping version 2.7.1 of the Docker container registry, which disables the schema1 manifest by default. If you are still using older Docker clients (1.9 or older), you may experience an error pushing images. See [omnibus-4145](https://gitlab.com/gitlab-org/omnibus-gitlab/issues/4145) for more details.
+As of GitLab 11.9, we began shipping version 2.7.1 of the Docker container registry, which disables the schema1 manifest by default. If you are still using older Docker clients (1.9 or older), you may experience an error pushing images. See [omnibus-4145](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/4145) for more details.
 
 You can add a configuration option for backwards compatibility.
 
@@ -1002,7 +1022,7 @@ there is likely an issue with the headers forwarded to the registry by NGINX. Th
 NGINX configurations should handle this, but it might occur in custom setups where the SSL is
 offloaded to a third party reverse proxy.
 
-This problem was discussed in a [docker project issue](https://github.com/docker/distribution/issues/970)
+This problem was discussed in a [Docker project issue](https://github.com/docker/distribution/issues/970)
 and a simple solution would be to enable relative URLs in the Registry.
 
 **For Omnibus installations**
@@ -1062,7 +1082,7 @@ A user attempted to enable an S3-backed Registry. The `docker login` step went
 fine. However, when pushing an image, the output showed:
 
 ```plaintext
-The push refers to a repository [s3-testing.myregistry.com:4567/root/docker-test/docker-image]
+The push refers to a repository [s3-testing.myregistry.com:5050/root/docker-test/docker-image]
 dc5e59c14160: Pushing [==================================================>] 14.85 kB
 03c20c1a019a: Pushing [==================================================>] 2.048 kB
 a08f14ef632e: Pushing [==================================================>] 2.048 kB
@@ -1154,8 +1174,8 @@ Now that we have mitmproxy and Docker running, we can attempt to login and push
 a container image. You may need to run as root to do this. For example:
 
 ```shell
-docker login s3-testing.myregistry.com:4567
-docker push s3-testing.myregistry.com:4567/root/docker-test/docker-image
+docker login s3-testing.myregistry.com:5050
+docker push s3-testing.myregistry.com:5050/root/docker-test/docker-image
 ```
 
 In the example above, we see the following trace on the mitmproxy window:

@@ -14,6 +14,13 @@
           anchor: 'pipelines-for-merge-requests'),
           target: '_blank'
   .form-check.mb-2
+    .gl-pl-6
+      = form.check_box :allow_merge_on_skipped_pipeline, class: 'form-check-input'
+      = form.label :allow_merge_on_skipped_pipeline, class: 'form-check-label' do
+        = s_('ProjectSettings|Skipped pipelines are considered successful')
+        .text-secondary
+          = s_('ProjectSettings|This introduces the risk of merging changes that will not pass the pipeline.')
+  .form-check.mb-2
     = form.check_box :only_allow_merge_if_all_discussions_are_resolved, class: 'form-check-input'
     = form.label :only_allow_merge_if_all_discussions_are_resolved, class: 'form-check-label' do
       = s_('ProjectSettings|All discussions must be resolved')

@@ -30,6 +30,11 @@ export default {
       required: false,
       default: SIMPLE_BLOB_VIEWER,
     },
+    hasRenderError: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -75,6 +80,7 @@ export default {
         v-if="showDefaultActions"
         :raw-path="blob.rawPath"
         :active-viewer="viewer"
+        :has-render-error="hasRenderError"
         @copy="proxyCopyRequest"
       />
     </div>

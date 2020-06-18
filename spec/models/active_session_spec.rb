@@ -16,7 +16,7 @@ RSpec.describe ActiveSession, :clean_gitlab_redis_shared_state do
     double(:request, {
       user_agent: 'Mozilla/5.0 (iPhone; CPU iPhone OS 8_1_3 like Mac OS X) AppleWebKit/600.1.4 ' \
         '(KHTML, like Gecko) Mobile/12B466 [FBDV/iPhone7,2]',
-      ip: '127.0.0.1',
+      remote_ip: '127.0.0.1',
       session: session
     })
   end

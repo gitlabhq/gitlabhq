@@ -17,6 +17,22 @@ experiences. Several projects were started with different standards and they
 can still have specifics. They will be described in their respective
 `README.md` or `PROCESS.md` files.
 
+## Dependency Management
+
+Go uses a source-based strategy for dependency management. Dependencies are
+downloaded as source from their source repository. This differs from the more
+common artifact-based strategy where dependencies are downloaded as artifacts
+from a package repository that is separate from the dependency's source
+repository.
+
+Go did not have first-class support for version management prior to 1.11. That
+version introduced Go modules and the use of semantic versioning. Go 1.12
+introduced module proxies, which can serve as an intermediate between clients
+and source version control systems, and checksum databases, which can be used to
+verify the integrity of dependency downloads.
+
+See [Dependency Management in Go](dependencies.md) for more details.
+
 ## Code Review
 
 We follow the common principles of
@@ -105,7 +121,7 @@ Including a `.golangci.yml` in the root directory of the project allows for
 configuration of `golangci-lint`. All options for `golangci-lint` are listed in
 this [example](https://github.com/golangci/golangci-lint/blob/master/.golangci.example.yml).
 
-Once [recursive includes](https://gitlab.com/gitlab-org/gitlab-foss/issues/56836)
+Once [recursive includes](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/56836)
 become available, you will be able to share job templates like this
 [analyzer](https://gitlab.com/gitlab-org/security-products/ci-templates/raw/master/includes-dev/analyzer.yml).
 
@@ -260,7 +276,7 @@ easier to debug.
 
 For example:
 
-```go
+```golang
 // Wrap the error
 return nil, fmt.Errorf("get cache %s: %w", f.Name, err)
 
@@ -390,7 +406,7 @@ builds](https://docs.docker.com/develop/develop-images/multistage-build/):
   dependencies.
 - They generate a small, self-contained image, derived from `Scratch`.
 
-Generated docker images should have the program at their `Entrypoint` to create
+Generated Docker images should have the program at their `Entrypoint` to create
 portable commands. That way, anyone can run the image, and without parameters
 it will display its help message (if `cli` has been used).
 

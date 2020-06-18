@@ -53,5 +53,22 @@ describe ContainerExpirationPolicyWorker do
         subject
       end
     end
+
+    context 'an invalid policy' do
+      let_it_be(:container_expiration_policy) { create(:container_expiration_policy, :runnable) }
+      let_it_be(:user) {container_expiration_policy.project.owner }
+
+      before do
+        container_expiration_policy.update_column(:name_regex, '*production')
+      end
+
+      it 'runs the policy and tracks an error' do
+        expect(ContainerExpirationPolicyService)
+          .to receive(:new).with(container_expiration_policy.project, user).and_call_original
+        expect(Gitlab::ErrorTracking).to receive(:log_exception).with(instance_of(ContainerExpirationPolicyService::InvalidPolicyError), container_expiration_policy_id: container_expiration_policy.id)
+
+        expect { subject }.to change { container_expiration_policy.reload.enabled }.from(true).to(false)
+      end
+    end
   end
 end

@@ -20,7 +20,7 @@ GET /projects/:id/custom_attributes
 | `id` | integer | yes | The ID of a resource |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/users/42/custom_attributes
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/users/42/custom_attributes"
 ```
 
 Example response:
@@ -54,7 +54,7 @@ GET /projects/:id/custom_attributes/:key
 | `key` | string | yes | The key of the custom attribute |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/users/42/custom_attributes/location
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/users/42/custom_attributes/location"
 ```
 
 Example response:
@@ -84,7 +84,7 @@ PUT /projects/:id/custom_attributes/:key
 | `value` | string | yes | The value of the custom attribute |
 
 ```shell
-curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" --data "value=Greenland" https://gitlab.example.com/api/v4/users/42/custom_attributes/location
+curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" --data "value=Greenland" "https://gitlab.example.com/api/v4/users/42/custom_attributes/location"
 ```
 
 Example response:
@@ -112,5 +112,5 @@ DELETE /projects/:id/custom_attributes/:key
 | `key` | string | yes | The key of the custom attribute |
 
 ```shell
-curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/users/42/custom_attributes/location
+curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/users/42/custom_attributes/location"
 ```

@@ -36,7 +36,7 @@ To use the instance, group, project, or pipeline security dashboard:
 
 ## Pipeline Security
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/13496) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.3.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13496) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.3.
 
 At the pipeline level, the Security section displays the vulnerabilities present in the branch of the project the pipeline was run against.
 
@@ -49,7 +49,7 @@ A pipeline consists of multiple jobs, including SAST and DAST scanning. If any j
 
 ## Project Security Dashboard
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/6165) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.1.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/6165) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.1.
 
 At the project level, the Security Dashboard displays the latest security reports for your project.
 Use it to find and fix vulnerabilities.
@@ -70,7 +70,7 @@ of thousands of vulnerabilities. Do not close the page until the download finish
 
 ## Group Security Dashboard
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/6709) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.5.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/6709) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.5.
 
 The group Security Dashboard gives an overview of the vulnerabilities of all the
 projects in a group and its subgroups.
@@ -120,9 +120,24 @@ vulnerabilities are not included either.
 
 Read more on how to [interact with the vulnerabilities](../index.md#interacting-with-the-vulnerabilities).
 
+### Export vulnerabilities
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/213013) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.1.
+
+You can export all your vulnerabilities as CSV by clicking the **{upload}** **Export** button
+located at the top right of the **Group Security Dashboard**. After the report builds, the CSV
+report downloads to your local machine. The report contains all vulnerabilities for the projects
+defined in the **Group Security Dashboard**, as filters don't apply to the export function.
+
+NOTE: **Note:**
+It may take several minutes for the download to start if your project contains thousands of
+vulnerabilities. Don't close the page until the download finishes.
+
+![CSV Export Button](img/group_security_dashboard_export_csv_v13_1.png)
+
 ## Instance Security Dashboard
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/6953) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.8.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/6953) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.8.
 
 At the instance level, the Security Dashboard displays the vulnerabilities
 present in all of the projects that you have added to it. It includes all

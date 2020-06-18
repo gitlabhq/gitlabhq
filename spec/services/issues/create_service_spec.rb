@@ -458,7 +458,7 @@ describe Issues::CreateService do
         context 'when SpamVerdictService requires reCAPTCHA' do
           before do
             expect_next_instance_of(Spam::SpamVerdictService) do |verdict_service|
-              expect(verdict_service).to receive(:execute).and_return(REQUIRE_RECAPTCHA)
+              expect(verdict_service).to receive(:execute).and_return(CONDITIONAL_ALLOW)
             end
           end
 

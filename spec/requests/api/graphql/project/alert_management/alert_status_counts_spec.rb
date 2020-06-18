@@ -56,6 +56,22 @@ describe 'getting Alert Management Alert counts by status' do
           'ignored' => 0
         )
       end
+
+      context 'with search criteria' do
+        let(:params) { { search: alert_1.title } }
+
+        it_behaves_like 'a working graphql query'
+        it 'returns the correct counts for each status' do
+          expect(alert_counts).to eq(
+            'open' => 0,
+            'all' => 1,
+            'triggered' => 0,
+            'acknowledged' => 0,
+            'resolved' => 1,
+            'ignored' => 0
+          )
+        end
+      end
     end
   end
 end

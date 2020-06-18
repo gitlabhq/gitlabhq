@@ -1,4 +1,7 @@
 ---
+stage: Verify
+group: Runner
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 type: concepts, howto
 ---
 
@@ -364,7 +367,7 @@ For example, the following two definitions are equal:
 | `alias`      | no       | 9.4 |Additional alias that can be used to access the service from the job's container. Read [Accessing the services](#accessing-the-services) for more information. |
 
 NOTE: **Note:**
-Alias support for the Kubernetes executor was [introduced](https://gitlab.com/gitlab-org/gitlab-runner/issues/2229) in GitLab Runner 12.8, and is only available for Kubernetes version 1.7 or later.
+Alias support for the Kubernetes executor was [introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/2229) in GitLab Runner 12.8, and is only available for Kubernetes version 1.7 or later.
 
 ### Starting multiple services from the same image
 
@@ -543,7 +546,7 @@ runtime.
   of credentials on runner's host. We recommend to upgrade your Runner to
   at least version **1.8** if you want to use private registries.
 - Not available for [Kubernetes executor](https://docs.gitlab.com/runner/executors/kubernetes.html),
-  follow <https://gitlab.com/gitlab-org/gitlab-runner/issues/2673> for
+  follow <https://gitlab.com/gitlab-org/gitlab-runner/-/issues/2673> for
   details.
 
 ### Using statically-defined credentials
@@ -591,7 +594,7 @@ There are two ways to determine the value of `DOCKER_AUTH_CONFIG`:
   ```
 
 - **Second way -** In some setups, it's possible that Docker client
-  will use the available system keystore to store the result of `docker
+  will use the available system key store to store the result of `docker
   login`. In that case, it's impossible to read `~/.docker/config.json`,
   so you will need to prepare the required base64-encoded version of
   `${username}:${password}` and create the Docker configuration JSON manually.
@@ -709,7 +712,7 @@ To configure credentials store, follow these steps:
      ```
 
    - Or, if you are running self-managed Runners, add the above JSON to
-     `${GITLAB_RUNNER_HOME}/.docker/config.json`. GitLab Runner will read this config file
+     `${GITLAB_RUNNER_HOME}/.docker/config.json`. GitLab Runner will read this configuration file
      and will use the needed helper for this specific repository.
 
 NOTE: **Note:** `credsStore` is used to access ALL the registries.
@@ -727,6 +730,9 @@ To configure access for `aws_account_id.dkr.ecr.region.amazonaws.com`, follow th
 
 1. Make sure `docker-credential-ecr-login` is available in GitLab Runner's `$PATH`.
 
+1. Have any of the following [AWS credentials setup](https://github.com/awslabs/amazon-ecr-credential-helper#aws-credentials).
+   Make sure that GitLab Runner can access the credentials.
+
 1. Make GitLab Runner use it. There are two ways to accomplish this. Either:
 
    - Create a [variable](../variables/README.md#gitlab-cicd-environment-variables)
@@ -741,9 +747,21 @@ To configure access for `aws_account_id.dkr.ecr.region.amazonaws.com`, follow th
      }
      ```
 
+     This configures Docker to use the credential helper for a specific registry.
+
+     or
+
+     ```json
+     {
+       "credsStore": "ecr-login"
+     }
+     ```
+
+     This configures Docker to use the credential helper for all Amazon ECR registries.
+
    - Or, if you are running self-managed Runners,
      add the above JSON to `${GITLAB_RUNNER_HOME}/.docker/config.json`.
-     GitLab Runner will read this config file and will use the needed helper for this
+     GitLab Runner will read this configuration file and will use the needed helper for this
      specific repository.
 
 1. You can now use any private image from `aws_account_id.dkr.ecr.region.amazonaws.com` defined in

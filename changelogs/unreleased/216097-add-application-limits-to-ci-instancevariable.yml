@@ -1,0 +1,5 @@
+---
+title: Add application limits to instance level CI/CD variables
+merge_request: 32575
+author:
+type: added

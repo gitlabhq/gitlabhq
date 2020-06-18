@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Import::PhabricatorController do
+RSpec.describe Import::PhabricatorController do
   let(:current_user) { create(:user) }
 
   before do

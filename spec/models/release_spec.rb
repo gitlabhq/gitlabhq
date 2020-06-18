@@ -94,14 +94,6 @@ RSpec.describe Release do
   describe 'evidence' do
     let(:release_with_evidence) { create(:release, :with_evidence, project: project) }
 
-    describe '#create_evidence!' do
-      context 'when a release is created' do
-        it 'creates one Evidence object too' do
-          expect { release_with_evidence }.to change(Releases::Evidence, :count).by(1)
-        end
-      end
-    end
-
     context 'when a release is deleted' do
       it 'also deletes the associated evidence' do
         release_with_evidence

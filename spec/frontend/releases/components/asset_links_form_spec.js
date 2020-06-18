@@ -3,6 +3,7 @@ import { mount, createLocalVue } from '@vue/test-utils';
 import AssetLinksForm from '~/releases/components/asset_links_form.vue';
 import { release as originalRelease } from '../mock_data';
 import * as commonUtils from '~/lib/utils/common_utils';
+import { ASSET_LINK_TYPE, DEFAULT_ASSET_LINK_TYPE } from '~/releases/constants';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
@@ -24,6 +25,7 @@ describe('Release edit component', () => {
       addEmptyAssetLink: jest.fn(),
       updateAssetLinkUrl: jest.fn(),
       updateAssetLinkName: jest.fn(),
+      updateAssetLinkType: jest.fn(),
       removeAssetLink: jest.fn().mockImplementation((_context, linkId) => {
         state.release.assets.links = state.release.assets.links.filter(l => l.id !== linkId);
       }),
@@ -51,6 +53,11 @@ describe('Release edit component', () => {
     wrapper = mount(AssetLinksForm, {
       localVue,
       store,
+      provide: {
+        glFeatures: {
+          releaseAssetLinkType: true,
+        },
+      },
     });
   };
 
@@ -103,7 +110,7 @@ describe('Release edit component', () => {
       );
     });
 
-    it('calls the "updateAssetLinName" store method when text is entered into the "Link title" input field', () => {
+    it('calls the "updateAssetLinkName" store method when text is entered into the "Link title" input field', () => {
       const linkIdToUpdate = release.assets.links[0].id;
       const newName = 'updated name';
 
@@ -120,6 +127,31 @@ describe('Release edit component', () => {
         },
         undefined,
       );
+    });
+
+    it('calls the "updateAssetLinkType" store method when an option is selected from the "Type" dropdown', () => {
+      const linkIdToUpdate = release.assets.links[0].id;
+      const newType = ASSET_LINK_TYPE.RUNBOOK;
+
+      expect(actions.updateAssetLinkType).not.toHaveBeenCalled();
+
+      wrapper.find({ ref: 'typeSelect' }).vm.$emit('change', newType);
+
+      expect(actions.updateAssetLinkType).toHaveBeenCalledTimes(1);
+      expect(actions.updateAssetLinkType).toHaveBeenCalledWith(
+        expect.anything(),
+        {
+          linkIdToUpdate,
+          newType,
+        },
+        undefined,
+      );
+    });
+
+    it('selects the default asset type if no type was provided by the backend', () => {
+      const selected = wrapper.find({ ref: 'typeSelect' }).element.value;
+
+      expect(selected).toBe(DEFAULT_ASSET_LINK_TYPE);
     });
   });
 

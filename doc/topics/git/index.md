@@ -68,6 +68,7 @@ If you have problems with Git, the following may help:
 ## Branching strategies
 
 - [Feature branch workflow](../../gitlab-basics/feature_branch_workflow.md)
+- [Develop on a feature branch](feature_branch_development.md)
 - [GitLab Flow](../gitlab_flow.md)
 - [Git Branching - Branches in a Nutshell](https://git-scm.com/book/en/v2/Git-Branching-Branches-in-a-Nutshell)
 - [Git Branching - Branching Workflows](https://git-scm.com/book/en/v2/Git-Branching-Branching-Workflows)
@@ -91,7 +92,7 @@ Git-related queries from GitLab.
 The following relate to Git Large File Storage:
 
 - [Getting Started with Git LFS](https://about.gitlab.com/blog/2017/01/30/getting-started-with-git-lfs-tutorial/)
-- [Migrate an existing Git repo with Git LFS](lfs/migrate_to_git_lfs.md)
+- [Migrate an existing Git repository with Git LFS](lfs/migrate_to_git_lfs.md)
 - [Removing objects from LFS](lfs/index.md#removing-objects-from-lfs)
 - [GitLab Git LFS user documentation](lfs/index.md)
 - [GitLab Git LFS admin documentation](../../administration/lfs/index.md)

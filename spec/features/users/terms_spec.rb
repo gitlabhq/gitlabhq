@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Users > Terms' do
+RSpec.describe 'Users > Terms' do
   include TermsHelper
 
   let!(:term) { create(:term, terms: 'By accepting, you promise to be nice!') }

@@ -1,3 +1,10 @@
+---
+stage: Verify
+group: Continuous Integration
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+type: reference, howto
+---
+
 # Jobs artifacts administration
 
 > - Introduced in GitLab 8.2 and GitLab Runner 0.7.0.
@@ -39,6 +46,9 @@ To disable artifacts site-wide, follow the steps below.
 GitLab Runner can upload an archive containing the job artifacts to GitLab. By default,
 this is done when the job succeeds, but can also be done on failure, or always, via the
 [`artifacts:when`](../ci/yaml/README.md#artifactswhen) parameter.
+
+Most artifacts are compressed by GitLab Runner before being sent to the coordinator. The exception to this is
+[reports artifacts](../ci/pipelines/job_artifacts.md#artifactsreports), which are compressed after uploading.
 
 ### Using local storage
 
@@ -119,7 +129,7 @@ The connection settings match those provided by [Fog](https://github.com/fog), a
 | `aws_signature_version` | AWS signature version to use. 2 or 4 are valid options. Digital Ocean Spaces and other providers may need 2. | 4 |
 | `enable_signature_v4_streaming` | Set to true to enable HTTP chunked transfers with [AWS v4 signatures](https://docs.aws.amazon.com/AmazonS3/latest/API/sigv4-streaming.html). Oracle Cloud S3 needs this to be false | true |
 | `region` | AWS region | us-east-1 |
-| `host` | S3 compatible host for when not using AWS, e.g. `localhost` or `storage.example.com` | s3.amazonaws.com |
+| `host` | S3 compatible host for when not using AWS, for example `localhost` or `storage.example.com` | s3.amazonaws.com |
 | `endpoint` | Can be used when configuring an S3 compatible service such as [MinIO](https://min.io), by entering a URL such as `http://127.0.0.1:9000` | (optional) |
 | `path_style` | Set to true to use `host/bucket_name/object` style paths instead of `bucket_name.host/object`. Leave as false for AWS S3 | false |
 | `use_iam_profile` | Set to true to use IAM profile instead of access keys | false
@@ -129,7 +139,7 @@ The connection settings match those provided by [Fog](https://github.com/fog), a
 _The artifacts are stored by default in
 `/var/opt/gitlab/gitlab-rails/shared/artifacts`._
 
-1. Edit `/etc/gitlab/gitlab.rb` and add the following lines by replacing with
+1. Edit `/etc/gitlab/gitlab.rb` and add the following lines, substituting
    the values you want:
 
    ```ruby
@@ -144,7 +154,7 @@ _The artifacts are stored by default in
    }
    ```
 
-   NOTE: For GitLab 9.4+, if you are using AWS IAM profiles, be sure to omit the
+   NOTE: For GitLab 9.4+, if you're using AWS IAM profiles, be sure to omit the
    AWS access key and secret access key/value pairs. For example:
 
    ```ruby
@@ -164,7 +174,7 @@ _The artifacts are stored by default in
 
 CAUTION: **CAUTION:**
 JUnit test report artifact (`junit.xml.gz`) migration
-[is not supported](https://gitlab.com/gitlab-org/gitlab/issues/27698)
+[is not supported](https://gitlab.com/gitlab-org/gitlab/-/issues/27698)
 by the `gitlab:artifacts:migrate` script.
 
 **In installations from source:**
@@ -197,7 +207,7 @@ _The artifacts are stored by default in
 
 CAUTION: **CAUTION:**
 JUnit test report artifact (`junit.xml.gz`) migration
-[is not supported](https://gitlab.com/gitlab-org/gitlab/issues/27698)
+[is not supported](https://gitlab.com/gitlab-org/gitlab/-/issues/27698)
 by the `gitlab:artifacts:migrate` script.
 
 ### OpenStack compatible connection settings
@@ -209,8 +219,8 @@ The connection settings match those provided by [Fog](https://github.com/fog), a
 | `provider` | Always `OpenStack` for compatible hosts | OpenStack |
 | `openstack_username` | OpenStack username | |
 | `openstack_api_key` | OpenStack API key  | |
-| `openstack_temp_url_key` | OpenStack key for generating temporary urls | |
-| `openstack_auth_url` | OpenStack authentication endpont | |
+| `openstack_temp_url_key` | OpenStack key for generating temporary URLs | |
+| `openstack_auth_url` | OpenStack authentication endpoint | |
 | `openstack_region` | OpenStack region | |
 | `openstack_tenant_id` | OpenStack tenant ID |
 
@@ -219,7 +229,7 @@ The connection settings match those provided by [Fog](https://github.com/fog), a
 _The uploads are stored by default in
 `/var/opt/gitlab/gitlab-rails/shared/artifacts`._
 
-1. Edit `/etc/gitlab/gitlab.rb` and add the following lines by replacing with
+1. Edit `/etc/gitlab/gitlab.rb` and add the following lines, substituting
    the values you want:
 
    ```ruby
@@ -296,17 +306,20 @@ In order to migrate back to local storage:
 
 ## Expiring artifacts
 
-If an expiry date is used for the artifacts, they are marked for deletion
-right after that date passes. Artifacts are cleaned up by the
-`expire_build_artifacts_worker` cron job which is run by Sidekiq every hour at
-50 minutes (`50 * * * *`).
+If [`artifacts:expire_in`](../ci/yaml/README.md#artifactsexpire_in) is used to set
+an expiry for the artifacts, they are marked for deletion right after that date passes.
+Otherwise, they will expire per the [default artifacts expiration setting](../user/admin_area/settings/continuous_integration.md).
+
+Artifacts are cleaned up by the `expire_build_artifacts_worker` cron job which Sidekiq
+runs every hour at 50 minutes (`50 * * * *`).
 
 To change the default schedule on which the artifacts are expired, follow the
 steps below.
 
 **In Omnibus installations:**
 
-1. Edit `/etc/gitlab/gitlab.rb` and comment out or add the following line
+1. Edit `/etc/gitlab/gitlab.rb` and add the following line (or uncomment it if it already exists and is commented out), substituting
+   your schedule in cron syntax:
 
    ```ruby
    gitlab_rails['expire_build_artifacts_worker_cron'] = "50 * * * *"
@@ -326,12 +339,15 @@ steps below.
 
 1. Save the file and [restart GitLab](restart_gitlab.md#installations-from-source) for the changes to take effect.
 
+If the `expire` directive is not set explicitly in your pipeline, artifacts will expire per the
+default artifacts expiration setting, which you can find in the [CI/CD Admin settings](../user/admin_area/settings/continuous_integration.md).
+
 ## Validation for dependencies
 
 > Introduced in GitLab 10.3.
 
 To disable [the dependencies validation](../ci/yaml/README.md#when-a-dependent-job-will-fail),
-you can flip the feature flag from a Rails console.
+you can enable the `ci_disable_validates_dependencies` feature flag from a Rails console.
 
 **In Omnibus installations:**
 
@@ -341,10 +357,10 @@ you can flip the feature flag from a Rails console.
    sudo gitlab-rails console
    ```
 
-1. Flip the switch and disable it:
+1. Enable the feature flag to disable the validation:
 
    ```ruby
-   Feature.enable('ci_disable_validates_dependencies')
+   Feature.enable(:ci_disable_validates_dependencies)
    ```
 
 **In installations from source:**
@@ -356,15 +372,15 @@ you can flip the feature flag from a Rails console.
    sudo -u git -H bundle exec rails console -e production
    ```
 
-1. Flip the switch and disable it:
+1. Enable the feature flag to disable the validation:
 
    ```ruby
-   Feature.enable('ci_disable_validates_dependencies')
+   Feature.enable(:ci_disable_validates_dependencies)
    ```
 
 ## Set the maximum file size of the artifacts
 
-Provided the artifacts are enabled, you can change the maximum file size of the
+If artifacts are enabled, you can change the maximum file size of the
 artifacts through the [Admin Area settings](../user/admin_area/settings/continuous_integration.md#maximum-artifacts-size-core-only).
 
 ## Storage statistics
@@ -403,6 +419,8 @@ reasons are:
 In these and other cases, you'll need to identify the projects most responsible
 for disk space usage, figure out what types of artifacts are using the most
 space, and in some cases, manually delete job artifacts to reclaim disk space.
+
+One possible first step is to [clean up _orphaned_ artifact files](../raketasks/cleanup.md#remove-orphan-artifact-files).
 
 #### List projects by total size of job artifacts stored
 
@@ -488,7 +506,7 @@ highly recommend running them only under the guidance of a Support Engineer, or
 running them in a test environment with a backup of the instance ready to be
 restored, just in case.
 
-If you need to manually remove ALL job artifacts associated with multiple jobs,
+If you need to manually remove **all** job artifacts associated with multiple jobs,
 **including job logs**, this can be done from the Rails console (`sudo gitlab-rails console`):
 
 1. Select jobs to be deleted:

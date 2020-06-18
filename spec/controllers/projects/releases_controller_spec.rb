@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Projects::ReleasesController do
+RSpec.describe Projects::ReleasesController do
   let!(:project) { create(:project, :repository, :public) }
   let_it_be(:private_project) { create(:project, :repository, :private) }
   let_it_be(:developer)  { create(:user) }

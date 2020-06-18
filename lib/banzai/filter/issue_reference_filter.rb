@@ -18,7 +18,9 @@ module Banzai
       end
 
       def url_for_object(issue, project)
-        IssuesHelper.url_for_issue(issue.iid, project, only_path: context[:only_path], internal: true)
+        return issue_path(issue, project) if only_path?
+
+        issue_url(issue, project)
       end
 
       def projects_relation_for_paths(paths)
@@ -35,6 +37,14 @@ module Banzai
 
       private
 
+      def issue_path(issue, project)
+        Gitlab::Routing.url_helpers.namespace_project_issue_path(namespace_id: project.namespace, project_id: project, id: issue.iid)
+      end
+
+      def issue_url(issue, project)
+        Gitlab::Routing.url_helpers.namespace_project_issue_url(namespace_id: project.namespace, project_id: project, id: issue.iid)
+      end
+
       def design_link_extras(issue, path)
         if path == '/designs' && read_designs?(issue)
           ['designs']
@@ -44,7 +54,7 @@ module Banzai
       end
 
       def read_designs?(issue)
-        Ability.allowed?(current_user, :read_design, issue)
+        issue.project.design_management_enabled?
       end
     end
   end

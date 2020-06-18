@@ -2,9 +2,9 @@
 type: reference
 ---
 
-# Load Balancer for GitLab HA
+# Load Balancer for multi-node GitLab
 
-In an active/active GitLab configuration, you will need a load balancer to route
+In an multi-node GitLab configuration, you will need a load balancer to route
 traffic to the application servers. The specifics on which load balancer to use
 or the exact configuration is beyond the scope of GitLab documentation. We hope
 that if you're managing HA systems like GitLab you have a load balancer of
@@ -14,7 +14,7 @@ you need to use with GitLab.
 
 ## SSL
 
-How will you handle SSL in your HA environment? There are several different
+How will you handle SSL in your multi-node environment? There are several different
 options:
 
 - Each application node terminates SSL
@@ -109,11 +109,15 @@ Configure DNS for an alternate SSH hostname such as `altssh.gitlab.example.com`.
 | ------- | ------------ | -------- |
 | 443     | 22           | TCP      |
 
+## Readiness check
+
+It is strongly recommend that multi-node deployments configure load balancers to utilize the [readiness check](../../user/admin_area/monitoring/health_check.md#readiness) to ensure a node is ready to accept traffic, before routing traffic to it. This is especially important when utilizing Puma, as there is a brief period during a restart where Puma will not accept requests.
+
 ---
 
 Read more on high-availability configuration:
 
-1. [Configure the database](database.md)
+1. [Configure the database](../postgresql/replication_and_failover.md)
 1. [Configure Redis](redis.md)
 1. [Configure NFS](nfs.md)
 1. [Configure the GitLab application servers](gitlab.md)

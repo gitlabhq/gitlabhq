@@ -3,7 +3,7 @@
 exports[`AlertWidget Alert firing displays a warning icon and matches snapshot 1`] = `
 <gl-badge-stub
   class="d-flex-center text-truncate"
-  pill=""
+  size="md"
   variant="danger"
 >
   <gl-icon-stub
@@ -25,8 +25,8 @@ exports[`AlertWidget Alert firing displays a warning icon and matches snapshot 1
 exports[`AlertWidget Alert not firing displays a warning icon and matches snapshot 1`] = `
 <gl-badge-stub
   class="d-flex-center text-truncate"
-  pill=""
-  variant="secondary"
+  size="md"
+  variant="neutral"
 >
   <gl-icon-stub
     class="flex-shrink-0"

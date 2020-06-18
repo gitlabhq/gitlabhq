@@ -10,6 +10,7 @@ import {
   SUBMIT_CHANGES_COMMIT_ERROR,
   SUBMIT_CHANGES_MERGE_REQUEST_ERROR,
   TRACKING_ACTION_CREATE_COMMIT,
+  TRACKING_ACTION_CREATE_MERGE_REQUEST,
 } from '../constants';
 
 const createBranch = (projectId, branch) =>
@@ -41,8 +42,15 @@ const commitContent = (projectId, message, branch, sourcePath, content) => {
   });
 };
 
-const createMergeRequest = (projectId, title, sourceBranch, targetBranch = DEFAULT_TARGET_BRANCH) =>
-  Api.createProjectMergeRequest(
+const createMergeRequest = (
+  projectId,
+  title,
+  sourceBranch,
+  targetBranch = DEFAULT_TARGET_BRANCH,
+) => {
+  Tracking.event(document.body.dataset.page, TRACKING_ACTION_CREATE_MERGE_REQUEST);
+
+  return Api.createProjectMergeRequest(
     projectId,
     convertObjectPropsToSnakeCase({
       title,
@@ -52,6 +60,7 @@ const createMergeRequest = (projectId, title, sourceBranch, targetBranch = DEFAU
   ).catch(() => {
     throw new Error(SUBMIT_CHANGES_MERGE_REQUEST_ERROR);
   });
+};
 
 const submitContentChanges = ({ username, projectId, sourcePath, content }) => {
   const branch = generateBranchName(username);

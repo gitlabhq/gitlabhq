@@ -1,0 +1,5 @@
+---
+title: Return code navigation path for nil diff_refs
+merge_request: 33850
+author:
+type: fixed

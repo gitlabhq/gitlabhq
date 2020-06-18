@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe MetricsDashboard, '(JavaScript fixtures)', type: :controller do
+RSpec.describe MetricsDashboard, '(JavaScript fixtures)', type: :controller do
   include JavaScriptFixturesHelpers
   include MetricsDashboardHelpers
 

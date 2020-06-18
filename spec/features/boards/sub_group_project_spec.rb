@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Sub-group project issue boards', :js do
+RSpec.describe 'Sub-group project issue boards', :js do
   let(:group) { create(:group) }
   let(:nested_group_1) { create(:group, parent: group) }
   let(:project) { create(:project, group: nested_group_1) }

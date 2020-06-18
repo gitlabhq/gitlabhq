@@ -2,10 +2,9 @@
 
 require 'fast_spec_helper'
 require 'rubocop'
-require_relative '../../../support/helpers/expect_offense'
 require_relative '../../../../rubocop/cop/scalability/idempotent_worker'
 
-describe RuboCop::Cop::Scalability::IdempotentWorker do
+describe RuboCop::Cop::Scalability::IdempotentWorker, type: :rubocop do
   include CopHelper
   include ExpectOffense
 
@@ -18,7 +17,7 @@ describe RuboCop::Cop::Scalability::IdempotentWorker do
   end
 
   it 'adds an offense when not defining idempotent method' do
-    inspect_source(<<~CODE.strip_indent)
+    inspect_source(<<~CODE)
       class SomeWorker
       end
     CODE
@@ -27,7 +26,7 @@ describe RuboCop::Cop::Scalability::IdempotentWorker do
   end
 
   it 'adds an offense when not defining idempotent method' do
-    inspect_source(<<~CODE.strip_indent)
+    inspect_source(<<~CODE)
       class SomeWorker
         idempotent!
       end

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'New project' do
+RSpec.describe 'New project' do
   include Select2Helper
 
   context 'as a user' do

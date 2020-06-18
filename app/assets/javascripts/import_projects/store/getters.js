@@ -21,6 +21,8 @@ export const hasProviderRepos = state => state.providerRepos.length > 0;
 
 export const hasImportedProjects = state => state.importedProjects.length > 0;
 
+export const hasIncompatibleRepos = state => state.incompatibleRepos.length > 0;
+
 export const reposPathWithFilter = ({ reposPath, filter = '' }) =>
   filter ? `${reposPath}?filter=${filter}` : reposPath;
 export const jobsPathWithFilter = ({ jobsPath, filter = '' }) =>

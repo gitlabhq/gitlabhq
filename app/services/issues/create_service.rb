@@ -15,7 +15,7 @@ module Issues
     end
 
     def before_create(issue)
-      spam_check(issue, current_user)
+      spam_check(issue, current_user, action: :create)
       issue.move_to_end
 
       # current_user (defined in BaseService) is not available within run_after_commit block
@@ -38,9 +38,8 @@ module Issues
       return if discussions_to_resolve.empty?
 
       Discussions::ResolveService.new(project, current_user,
-                                      merge_request: merge_request_to_resolve_discussions_of,
-                                      follow_up_issue: issue)
-        .execute(discussions_to_resolve)
+                                      one_or_more_discussions: discussions_to_resolve,
+                                      follow_up_issue: issue).execute
     end
 
     private

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Projects tree', :js do
+RSpec.describe 'Projects tree', :js do
   let(:user) { create(:user) }
   let(:project) { create(:project, :repository) }
   let(:gravatar_enabled) { true }
@@ -24,7 +24,7 @@ describe 'Projects tree', :js do
     expect(page).to have_selector('.tree-item')
     expect(page).to have_content('add tests for .gitattributes custom highlighting')
     expect(page).not_to have_selector('.flash-alert')
-    expect(page).not_to have_selector('.label-lfs', text: 'LFS')
+    expect(page).not_to have_selector('[data-qa-selector="label-lfs"]', text: 'LFS')
   end
 
   it 'renders tree table for a subtree without errors' do
@@ -33,7 +33,7 @@ describe 'Projects tree', :js do
 
     expect(page).to have_selector('.tree-item')
     expect(page).to have_content('add spaces in whitespace file')
-    expect(page).not_to have_selector('.label-lfs', text: 'LFS')
+    expect(page).not_to have_selector('[data-qa-selector="label-lfs"]', text: 'LFS')
     expect(page).not_to have_selector('.flash-alert')
   end
 
@@ -86,7 +86,7 @@ describe 'Projects tree', :js do
     it 'renders LFS badge on blob item' do
       visit project_tree_path(project, File.join('master', 'files/lfs'))
 
-      expect(page).to have_selector('.label-lfs', text: 'LFS')
+      expect(page).to have_selector('[data-qa-selector="label-lfs"]', text: 'LFS')
     end
   end
 

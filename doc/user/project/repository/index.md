@@ -27,7 +27,7 @@ that you [connect with GitLab via SSH](../../../ssh/README.md).
 
 ## Files
 
-Use a repository to store your files in GitLab. From [GitLab 12.10 onwards](https://gitlab.com/gitlab-org/gitlab/issues/33806),
+Use a repository to store your files in GitLab. In [GitLab 12.10 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/33806),
 you'll see on the repository's file tree an icon next to the file name
 according to its extension:
 
@@ -84,9 +84,9 @@ according to the markup language.
 | [AsciiDoc](../../asciidoc.md) | `adoc`, `ad`, `asciidoc` |
 | [Textile](https://textile-lang.com/) | `textile` |
 | [rdoc](http://rdoc.sourceforge.net/doc/index.html)  | `rdoc` |
-| [Orgmode](https://orgmode.org/) | `org` |
+| [Org mode](https://orgmode.org/) | `org` |
 | [creole](http://www.wikicreole.org/) | `creole` |
-| [Mediawiki](https://www.mediawiki.org/wiki/MediaWiki) | `wiki`, `mediawiki` |
+| [MediaWiki](https://www.mediawiki.org/wiki/MediaWiki) | `wiki`, `mediawiki` |
 
 ### Repository README and index files
 
@@ -116,7 +116,7 @@ user's sessions and include code, narrative text, equations, and rich output.
 
 ### OpenAPI viewer
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/19515) in GitLab 12.6.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/19515) in GitLab 12.6.
 
 GitLab can render OpenAPI specification files with its file viewer, provided
 their filenames include `openapi` or `swagger` and their extension is `yaml`,
@@ -219,7 +219,9 @@ vendored code, and most markup languages are excluded. This behavior can be
 adjusted by overriding the default. For example, to enable `.proto` files to be
 detected, add the following to `.gitattributes` in the root of your repository.
 
-> *.proto linguist-detectable=true
+```plaintext
+*.proto linguist-detectable=true
+```
 
 ## Locked files **(PREMIUM)**
 
@@ -232,7 +234,7 @@ You can access your repos via [repository API](../../../api/repositories.md).
 
 ## Clone in Apple Xcode
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/45820) in GitLab 11.0
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/45820) in GitLab 11.0
 
 Projects that contain a `.xcodeproj` or `.xcworkspace` directory can now be cloned
 in Xcode using the new **Open in Xcode** button, located next to the Git URL
@@ -240,7 +242,7 @@ used for cloning your project. The button is only shown on macOS.
 
 ## Download Source Code
 
-> Support for directory download was [introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/24704) in GitLab 11.11.
+> Support for directory download was [introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/24704) in GitLab 11.11.
 
 The source code stored in a repository can be downloaded from the UI.
 By clicking the download icon, a dropdown will open with links to download the following:

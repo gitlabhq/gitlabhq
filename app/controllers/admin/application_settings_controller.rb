@@ -12,6 +12,10 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
 
   before_action :whitelist_query_limiting, only: [:usage_data]
 
+  before_action only: [:ci_cd] do
+    push_frontend_feature_flag(:ci_instance_variables_ui, default_enabled: true)
+  end
+
   VALID_SETTING_PANELS = %w(general integrations repository
                             ci_cd reporting metrics_and_profiling
                             network preferences).freeze
@@ -216,6 +220,7 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
     [
       *::ApplicationSettingsHelper.visible_attributes,
       *::ApplicationSettingsHelper.external_authorization_service_attributes,
+      *ApplicationSetting.repository_storages_weighted_attributes,
       :lets_encrypt_notification_email,
       :lets_encrypt_terms_of_service_accepted,
       :domain_blacklist_file,

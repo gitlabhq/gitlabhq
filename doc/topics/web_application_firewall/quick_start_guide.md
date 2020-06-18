@@ -150,7 +150,7 @@ By now you should see the pipeline running, but what is it running exactly?
 To navigate inside the pipeline, click its status badge (its status should be "Running").
 The pipeline is split into a few stages, each running a couple of jobs.
 
-![Pipeline stages](../autodevops/img/guide_pipeline_stages_v12_3.png)
+![Pipeline stages](../autodevops/img/guide_pipeline_stages_v13_0.png)
 
 In the **build** stage, the application is built into a Docker image and then
 uploaded to your project's [Container Registry](../../user/packages/container_registry/index.md) ([Auto Build](../autodevops/stages.md#auto-build)).
@@ -254,5 +254,5 @@ You can explore them in more detail:
 
 - [GitLab Defend Vision](https://about.gitlab.com/direction/defend/#waf)
 - [ModSecurity](https://www.modsecurity.org/)
-- [OWASP Core Rule Set](https://modsecurity.org/crs/)
+- [OWASP Core Rule Set](https://github.com/coreruleset/coreruleset/)
 - [AutoDevOps](../autodevops/index.md)

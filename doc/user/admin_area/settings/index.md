@@ -32,7 +32,7 @@ Access the default page for admin area settings by navigating to
 | Option | Description |
 | ------ | ----------- |
 | [Elasticsearch](../../../integration/elasticsearch.md#enabling-elasticsearch) | Elasticsearch integration. Elasticsearch AWS IAM. |
-| [PlantUML](../../../administration/integration/plantuml.md#gitlab) | Allow rendering of PlantUML diagrams in Asciidoc documents. |
+| [PlantUML](../../../administration/integration/plantuml.md#gitlab) | Allow rendering of PlantUML diagrams in AsciiDoc documents. |
 | [Slack application](../../../user/project/integrations/gitlab_slack_application.md#configuration) **(FREE ONLY)** | Slack integration allows you to interact with GitLab via slash commands in a chat window. This option is only available on GitLab.com, though it may be [available for self-managed instances in the future](https://gitlab.com/gitlab-org/gitlab/-/issues/28164). |
 | [Third party offers](third_party_offers.md) | Control the display of third party offers. |
 | [Snowplow](../../../development/telemetry/snowplow.md) | Configure the Snowplow integration. |

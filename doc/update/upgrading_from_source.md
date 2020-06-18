@@ -12,7 +12,7 @@ Make sure you view this update guide from the branch (version) of GitLab you
 would like to install (e.g., `11.8`. You can select the version in the version
 dropdown at the top left corner of GitLab (below the menu bar).
 
-In all examples, replace `BRANCH` with the branch for the version you uprading
+In all examples, replace `BRANCH` with the branch for the version you upgrading
 to (e.g. `11-8-stable` for `11.8`), and replace `PREVIOUS_BRANCH` with the
 branch for the version you are upgrading from (e.g. `11-7-stable` for `11.7`).
 
@@ -67,9 +67,9 @@ Download Ruby and compile it:
 
 ```shell
 mkdir /tmp/ruby && cd /tmp/ruby
-curl --remote-name --progress https://cache.ruby-lang.org/pub/ruby/2.6/ruby-2.6.5.tar.gz
-echo '1416ce288fb8bfeae07a12b608540318c9cace71  ruby-2.6.5.tar.gz' | shasum -c - && tar xzf ruby-2.6.5.tar.gz
-cd ruby-2.6.5
+curl --remote-name --progress https://cache.ruby-lang.org/pub/ruby/2.6/ruby-2.6.6.tar.gz
+echo '2d78048e293817f38d4ede4ebc7873013e97bb0b  ruby-2.6.6.tar.gz' | shasum -c - && tar xzf ruby-2.6.6.tar.gz
+cd ruby-2.6.6
 
 ./configure --disable-install-rdoc
 make
@@ -122,12 +122,17 @@ rm go1.13.5.linux-amd64.tar.gz
 
 ### 6. Update Git
 
-NOTE: To check the minimum required Git version, see [Git versions](../install/requirements.md#git-versions).
+CAUTION: **Caution:**
+From GitLab 13.1, you must use at least Git v2.24 (previous minimum version was v2.22).
+Git v2.26 is recommended.
+
+To check you are running the minimum required Git version, see
+[Git versions](../install/requirements.md#git-versions).
 
 In Debian or Ubuntu:
 
 ```shell
-# Make sure Git is version 2.21.0 or higher
+# Make sure Git is version 2.24.0 or higher
 git --version
 
 # Remove packaged Git
@@ -147,9 +152,9 @@ make install
 
 # Download and compile from source
 cd /tmp
-curl --remote-name --location --progress https://www.kernel.org/pub/software/scm/git/git-2.21.0.tar.gz
-echo '85eca51c7404da75e353eba587f87fea9481ba41e162206a6f70ad8118147bee  git-2.21.0.tar.gz' | shasum -a256 -c - && tar -xzf git-2.21.0.tar.gz
-cd git-2.21.0/
+curl --remote-name --location --progress https://www.kernel.org/pub/software/scm/git/git-2.26.0.tar.gz
+echo 'aa168c2318e7187cd295a645f7370cc6d71a324aafc932f80f00c780b6a26bed  git-2.26.0.tar.gz' | shasum -a256 -c - && tar -xzf git-2.26.0.tar.gz
+cd git-2.26.0/
 ./configure --with-libpcre
 make prefix=/usr/local all
 
@@ -285,7 +290,7 @@ add the following line to `config/initializers/smtp_settings.rb`:
 ActionMailer::Base.delivery_method = :smtp
 ```
 
-See [smtp_settings.rb.sample](https://gitlab.com/gitlab-org/gitlab/blob/master/config/initializers/smtp_settings.rb.sample#L13) as an example.
+See [`smtp_settings.rb.sample`](https://gitlab.com/gitlab-org/gitlab/blob/master/config/initializers/smtp_settings.rb.sample#L13) as an example.
 
 #### Init script
 
@@ -313,7 +318,7 @@ For Ubuntu 16.04.1 LTS:
 sudo systemctl daemon-reload
 ```
 
-### 13. Install libs, migrations, etc
+### 13. Install libraries, migrations, etc
 
 ```shell
 cd /home/git/gitlab
@@ -377,6 +382,18 @@ Example:
 
 Additional instructions here.
 -->
+
+### 13.0.1
+
+As part of [deprecating Rack Attack throttles on Omnibus GitLab](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/4750), Rack Attack initializer on GitLab
+was renamed from [`config/initializers/rack_attack_new.rb` to `config/initializers/rack_attack.rb`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/33072).
+If this file exists on your installation, consider creating a backup before updating:
+
+```shell
+cd /home/git/gitlab
+
+cp config/initializers/rack_attack.rb config/initializers/rack_attack_backup.rb
+```
 
 ## Troubleshooting
 

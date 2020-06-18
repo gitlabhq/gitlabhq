@@ -6,6 +6,7 @@ class MergeWorker # rubocop:disable Scalability/IdempotentWorker
   feature_category :source_code_management
   urgency :high
   weight 5
+  loggable_arguments 2
 
   def perform(merge_request_id, current_user_id, params)
     params = params.with_indifferent_access

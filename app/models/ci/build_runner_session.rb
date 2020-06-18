@@ -7,6 +7,8 @@ module Ci
     extend Gitlab::Ci::Model
 
     TERMINAL_SUBPROTOCOL = 'terminal.gitlab.com'
+    DEFAULT_SERVICE_NAME = 'build'.freeze
+    DEFAULT_PORT_NAME = 'default_port'.freeze
 
     self.table_name = 'ci_builds_runner_session'
 
@@ -23,6 +25,17 @@ module Ci
       channel_specification(wss_url, TERMINAL_SUBPROTOCOL)
     end
 
+    def service_specification(service: nil, path: nil, port: nil, subprotocols: nil)
+      return {} unless url.present?
+
+      port = port.presence || DEFAULT_PORT_NAME
+      service = service.presence || DEFAULT_SERVICE_NAME
+      url = "#{self.url}/proxy/#{service}/#{port}/#{path}"
+      subprotocols = subprotocols.presence || ::Ci::BuildRunnerSession::TERMINAL_SUBPROTOCOL
+
+      channel_specification(url, subprotocols)
+    end
+
     private
 
     def channel_specification(url, subprotocol)
@@ -37,5 +50,3 @@ module Ci
     end
   end
 end
-
-Ci::BuildRunnerSession.prepend_if_ee('EE::Ci::BuildRunnerSession')

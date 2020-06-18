@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Create notes on issues', :js do
+RSpec.describe 'Create notes on issues', :js do
   let(:user) { create(:user) }
 
   def submit_comment(text)

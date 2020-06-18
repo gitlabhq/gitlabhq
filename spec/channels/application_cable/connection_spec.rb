@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ApplicationCable::Connection, :clean_gitlab_redis_shared_state do
+RSpec.describe ApplicationCable::Connection, :clean_gitlab_redis_shared_state do
   let(:session_id) { Rack::Session::SessionId.new('6919a6f1bb119dd7396fadc38fd18d0d') }
 
   before do

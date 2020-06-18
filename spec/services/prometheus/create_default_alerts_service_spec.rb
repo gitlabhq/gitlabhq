@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 describe Prometheus::CreateDefaultAlertsService do
-  let_it_be(:project) { create(:project) }
+  let_it_be(:project) { create(:project, :repository) }
   let(:instance) { described_class.new(project: project) }
   let(:expected_alerts) { described_class::DEFAULT_ALERTS }
 
@@ -43,6 +43,23 @@ describe Prometheus::CreateDefaultAlertsService do
         it 'creates alerts' do
           expect { execute }.to change { project.reload.prometheus_alerts.count }
            .by(expected_alerts.size)
+        end
+
+        it 'does not schedule an update to prometheus' do
+          expect(::Clusters::Applications::ScheduleUpdateService).not_to receive(:new)
+          execute
+        end
+
+        context 'cluster with prometheus exists' do
+          let!(:cluster) { create(:cluster, :with_installed_prometheus, :provided_by_user, projects: [project]) }
+
+          it 'schedules an update to prometheus' do
+            expect_next_instance_of(::Clusters::Applications::ScheduleUpdateService) do |instance|
+              expect(instance).to receive(:execute)
+            end
+
+            execute
+          end
         end
 
         context 'multiple environments' do

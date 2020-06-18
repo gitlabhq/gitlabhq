@@ -17,17 +17,13 @@ FactoryBot.define do
     factory :note_on_project_snippet,    traits: [:on_project_snippet]
     factory :note_on_personal_snippet,   traits: [:on_personal_snippet]
     factory :note_on_design,             traits: [:on_design]
+    factory :note_on_alert,              traits: [:on_alert]
     factory :system_note,                traits: [:system]
 
     factory :discussion_note, class: 'DiscussionNote'
 
     factory :discussion_note_on_merge_request, traits: [:on_merge_request], class: 'DiscussionNote' do
       association :project, :repository
-
-      trait :resolved do
-        resolved_at { Time.now }
-        resolved_by { create(:user) }
-      end
     end
 
     factory :track_mr_picking_note, traits: [:on_merge_request, :system] do
@@ -74,11 +70,6 @@ FactoryBot.define do
                 new_line: 1,
                 diff_refs: diff_refs)
         end
-      end
-
-      trait :resolved do
-        resolved_at { Time.now }
-        resolved_by { create(:user) }
       end
 
       factory :image_diff_note_on_merge_request do
@@ -155,6 +146,15 @@ FactoryBot.define do
       end
     end
 
+    trait :on_alert do
+      noteable { association(:alert_management_alert, project: project) }
+    end
+
+    trait :resolved do
+      resolved_at { Time.now }
+      resolved_by { association(:user) }
+    end
+
     trait :system do
       system { true }
     end
@@ -181,6 +181,10 @@ FactoryBot.define do
 
     trait :confidential do
       confidential { true }
+    end
+
+    trait :with_review do
+      review
     end
 
     transient do

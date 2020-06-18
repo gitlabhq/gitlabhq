@@ -15,7 +15,7 @@ module Clusters
         def set_initial_status
           return unless not_installable?
 
-          self.status = status_states[:installable] if cluster&.application_helm_available? || ::Gitlab::Kubernetes::Helm.local_tiller_enabled?
+          self.status = status_states[:installable] if cluster&.application_helm_available? || cluster&.local_tiller_enabled?
         end
 
         def can_uninstall?

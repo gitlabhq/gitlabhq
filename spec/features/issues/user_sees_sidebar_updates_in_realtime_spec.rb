@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Issues > Real-time sidebar', :js do
+RSpec.describe 'Issues > Real-time sidebar', :js do
   let_it_be(:project) { create(:project, :public) }
   let_it_be(:issue) { create(:issue, project: project) }
   let_it_be(:user) { create(:user) }

@@ -2,6 +2,7 @@
 
 class Projects::ServicesController < Projects::ApplicationController
   include ServiceParams
+  include InternalRedirect
 
   # Authorize
   before_action :authorize_admin_project!
@@ -10,6 +11,9 @@ class Projects::ServicesController < Projects::ApplicationController
   before_action :web_hook_logs, only: [:edit, :update]
   before_action :set_deprecation_notice_for_prometheus_service, only: [:edit, :update]
   before_action :redirect_deprecated_prometheus_service, only: [:update]
+  before_action only: :edit do
+    push_frontend_feature_flag(:integration_form_refactor)
+  end
 
   respond_to :html
 
@@ -26,8 +30,8 @@ class Projects::ServicesController < Projects::ApplicationController
     respond_to do |format|
       format.html do
         if saved
-          redirect_to project_settings_integrations_path(@project),
-            notice: success_message
+          target_url = safe_redirect_path(params[:redirect_to]).presence || project_settings_integrations_path(@project)
+          redirect_to target_url, notice: success_message
         else
           render 'edit'
         end
@@ -56,11 +60,10 @@ class Projects::ServicesController < Projects::ApplicationController
       return { error: true, message: _('Validations failed.'), service_response: @service.errors.full_messages.join(','), test_failed: false }
     end
 
-    data = @service.test_data(project, current_user)
-    outcome = @service.test(data)
+    result = Integrations::Test::ProjectService.new(@service, current_user, params[:event]).execute
 
-    unless outcome[:success]
-      return { error: true, message: _('Test failed.'), service_response: outcome[:result].to_s, test_failed: true }
+    unless result[:success]
+      return { error: true, message: _('Test failed.'), service_response: result[:message].to_s, test_failed: true }
     end
 
     {}

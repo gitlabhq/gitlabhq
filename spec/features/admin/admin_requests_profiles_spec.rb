@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Admin::RequestsProfilesController' do
+RSpec.describe 'Admin::RequestsProfilesController' do
   let(:tmpdir) { Dir.mktmpdir('profiler-test') }
 
   before do

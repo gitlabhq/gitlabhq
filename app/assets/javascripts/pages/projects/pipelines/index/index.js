@@ -51,6 +51,7 @@ document.addEventListener(
             ciLintPath: this.dataset.ciLintPath,
             resetCachePath: this.dataset.resetCachePath,
             projectId: this.dataset.projectId,
+            params: JSON.parse(this.dataset.params),
           },
         });
       },

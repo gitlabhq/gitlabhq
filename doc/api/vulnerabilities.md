@@ -1,20 +1,12 @@
 # Vulnerabilities API **(ULTIMATE)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/10242) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.6.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/10242) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.6.
 
 NOTE: **Note:**
 The former Vulnerabilities API was renamed to Vulnerability Findings API
 and its documentation was moved to [a different location](vulnerability_findings.md).
 This document now describes the new Vulnerabilities API that provides access to
 [Standalone Vulnerabilities](https://gitlab.com/groups/gitlab-org/-/epics/634).
-
-CAUTION: **Caution:**
-This API is currently in development and is protected by a **disabled**
-[feature flag](../development/feature_flags/index.md).
-On a self-managed GitLab instance, an administrator can enable it by starting the Rails console
-(`sudo gitlab-rails console`) and then running the following command: `Feature.enable(:first_class_vulnerabilities)`.
-To test if the Vulnerabilities API was successfully enabled, run the following command:
-`Feature.enabled?(:first_class_vulnerabilities)`.
 
 CAUTION: **Caution:**
 This API is in an alpha stage and considered unstable.
@@ -40,7 +32,7 @@ GET /vulnerabilities/:id
 | `id` | integer or string | yes | The ID of a Vulnerability to get |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/vulnerabilities/1
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/vulnerabilities/1"
 ```
 
 Example response:

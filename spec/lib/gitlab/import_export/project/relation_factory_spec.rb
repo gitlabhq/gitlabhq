@@ -18,6 +18,22 @@ describe Gitlab::ImportExport::Project::RelationFactory do
                            excluded_keys: excluded_keys)
   end
 
+  before do
+    # Mocks an ActiveRecordish object with the dodgy columns
+    stub_const('FooModel', Class.new)
+    FooModel.class_eval do
+      include ActiveModel::Model
+
+      def initialize(params = {})
+        params.each { |key, value| send("#{key}=", value) }
+      end
+
+      def values
+        instance_variables.map { |ivar| instance_variable_get(ivar) }
+      end
+    end
+  end
+
   context 'hook object' do
     let(:relation_sym) { :hooks }
     let(:id) { 999 }
@@ -80,19 +96,6 @@ describe Gitlab::ImportExport::Project::RelationFactory do
       it 'are removed from the imported object' do
         expect(created_object.url).to be_nil
       end
-    end
-  end
-
-  # Mocks an ActiveRecordish object with the dodgy columns
-  class FooModel
-    include ActiveModel::Model
-
-    def initialize(params = {})
-      params.each { |key, value| send("#{key}=", value) }
-    end
-
-    def values
-      instance_variables.map { |ivar| instance_variable_get(ivar) }
     end
   end
 
@@ -208,11 +211,12 @@ describe Gitlab::ImportExport::Project::RelationFactory do
       }
     end
 
-    class HazardousFooModel < FooModel
-      attr_accessor :service_id, :moved_to_id, :namespace_id, :ci_id, :random_project_id, :random_id, :milestone_id, :project_id
-    end
-
     before do
+      stub_const('HazardousFooModel', Class.new(FooModel))
+      HazardousFooModel.class_eval do
+        attr_accessor :service_id, :moved_to_id, :namespace_id, :ci_id, :random_project_id, :random_id, :milestone_id, :project_id
+      end
+
       allow(HazardousFooModel).to receive(:reflect_on_association).and_return(nil)
     end
 
@@ -246,11 +250,12 @@ describe Gitlab::ImportExport::Project::RelationFactory do
       Gitlab::ImportExport::Project::RelationFactory::PROJECT_REFERENCES.map { |ref| { ref => 99 } }.inject(:merge)
     end
 
-    class ProjectFooModel < FooModel
-      attr_accessor(*Gitlab::ImportExport::Project::RelationFactory::PROJECT_REFERENCES)
-    end
-
     before do
+      stub_const('ProjectFooModel', Class.new(FooModel))
+      ProjectFooModel.class_eval do
+        attr_accessor(*Gitlab::ImportExport::Project::RelationFactory::PROJECT_REFERENCES)
+      end
+
       allow(ProjectFooModel).to receive(:reflect_on_association).and_return(nil)
     end
 

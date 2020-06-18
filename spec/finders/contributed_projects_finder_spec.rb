@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ContributedProjectsFinder do
+RSpec.describe ContributedProjectsFinder do
   let(:source_user) { create(:user) }
   let(:current_user) { create(:user) }
 

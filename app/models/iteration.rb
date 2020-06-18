@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 class Iteration < ApplicationRecord
-  include Timebox
-
   self.table_name = 'sprints'
 
   attr_accessor :skip_future_date_validation
@@ -14,9 +12,6 @@ class Iteration < ApplicationRecord
   }.with_indifferent_access.freeze
 
   include AtomicInternalId
-
-  has_many :issues, foreign_key: 'sprint_id'
-  has_many :merge_requests, foreign_key: 'sprint_id'
 
   belongs_to :project
   belongs_to :group
@@ -32,6 +27,12 @@ class Iteration < ApplicationRecord
 
   scope :upcoming, -> { with_state(:upcoming) }
   scope :started, -> { with_state(:started) }
+
+  scope :within_timeframe, -> (start_date, end_date) do
+    where('start_date is not NULL or due_date is not NULL')
+      .where('start_date is NULL or start_date <= ?', end_date)
+      .where('due_date is NULL or due_date >= ?', start_date)
+  end
 
   state_machine :state_enum, initial: :upcoming do
     event :start do
@@ -62,6 +63,14 @@ class Iteration < ApplicationRecord
       else iterations.upcoming
       end
     end
+
+    def reference_prefix
+      '*iteration:'
+    end
+
+    def reference_pattern
+      nil
+    end
   end
 
   def state
@@ -70,6 +79,10 @@ class Iteration < ApplicationRecord
 
   def state=(value)
     self.state_enum = STATE_ENUM_MAP[value]
+  end
+
+  def resource_parent
+    group || project
   end
 
   private
@@ -98,3 +111,5 @@ class Iteration < ApplicationRecord
     end
   end
 end
+
+Iteration.prepend_if_ee('EE::Iteration')

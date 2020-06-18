@@ -16,7 +16,7 @@ The more of the following that are true, the more likely you should choose the f
 
 - You are not confident the new name is permanent.
 - The feature is susceptible to bugs (large, complex, needing refactor, etc).
-- The renaming will be difficult to review (feature spans many lines/files/repos).
+- The renaming will be difficult to review (feature spans many lines, files, or repositories).
 - The renaming will be disruptive in some way (database table renaming).
 
 ## Consider a façade-first approach

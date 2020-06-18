@@ -1,6 +1,6 @@
 # Instance-level Kubernetes clusters
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/39840) in GitLab 11.11.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/39840) in GitLab 11.11.
 
 ## Overview
 
@@ -12,8 +12,7 @@ projects.
 
 ## Cluster precedence
 
-GitLab will try [to match](../../../ci/environments/index.md#scoping-environments-with-specs) clusters in
-the following order:
+GitLab will try to match clusters in the following order:
 
 - Project-level clusters.
 - Group-level clusters.

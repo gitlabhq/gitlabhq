@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'test coverage badge' do
+RSpec.describe 'test coverage badge' do
   let!(:user) { create(:user) }
   let!(:project) { create(:project, :private) }
 

@@ -71,6 +71,14 @@ class ResourceLabelEvent < ResourceEvent
     end
   end
 
+  def self.visible_to_user?(user, events)
+    ResourceLabelEvent.preload_label_subjects(events)
+
+    events.select do |event|
+      Ability.allowed?(user, :read_label, event)
+    end
+  end
+
   private
 
   def label_reference

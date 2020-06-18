@@ -1,3 +1,9 @@
+---
+stage: Plan
+group: Project Management
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+---
+
 # Description templates
 
 >[Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/4981) in GitLab 8.11.
@@ -29,7 +35,7 @@ templates of the default branch will be taken into account.
   For example, if you have a project for tracking new blog posts, you can require the
   title, outlines, author name, author social media information, and so on.
 - Following the previous example, you can make a template for every MR submitted
-  with a new blog post, requiring information about the post date, frontmatter data,
+  with a new blog post, requiring information about the post date, front matter data,
   images guidelines, link to the related issue, reviewer name, and so on.
 - You can also create issues and merge request templates for different
   stages of your workflow, for example, feature proposal, feature improvement, or a bug report.

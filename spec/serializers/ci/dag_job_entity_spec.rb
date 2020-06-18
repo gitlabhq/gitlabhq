@@ -16,14 +16,23 @@ describe Ci::DagJobEntity do
     end
 
     context 'when job is stage scheduled' do
+      it 'contains the name scheduling_type' do
+        expect(subject[:scheduling_type]).to eq 'stage'
+      end
+
       it 'does not expose needs' do
         expect(subject).not_to include(:needs)
       end
     end
 
     context 'when job is dag scheduled' do
+      let(:job) { create(:ci_build, scheduling_type: 'dag') }
+
+      it 'contains the name scheduling_type' do
+        expect(subject[:scheduling_type]).to eq 'dag'
+      end
+
       context 'when job has needs' do
-        let(:job) { create(:ci_build, scheduling_type: 'dag') }
         let!(:need) { create(:ci_build_need, build: job, name: 'compile') }
 
         it 'exposes the array of needs' do
@@ -32,8 +41,6 @@ describe Ci::DagJobEntity do
       end
 
       context 'when job has empty needs' do
-        let(:job) { create(:ci_build, scheduling_type: 'dag') }
-
         it 'exposes an empty array of needs' do
           expect(subject[:needs]).to eq []
         end

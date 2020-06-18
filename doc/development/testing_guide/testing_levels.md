@@ -295,7 +295,7 @@ graph RL
 
 - **DOM**:
   Testing on the real DOM ensures your components work in the intended environment.
-  Part of DOM testing is delegated to [cross-browser testing](https://gitlab.com/gitlab-org/quality/team-tasks/issues/45).
+  Part of DOM testing is delegated to [cross-browser testing](https://gitlab.com/gitlab-org/quality/team-tasks/-/issues/45).
 - **Properties or state of components**:
   On this level, all tests can only perform actions a user would do.
   For example: to change the state of a component, a click event would be fired.
@@ -366,7 +366,7 @@ See also:
 
 - The [RSpec testing guidelines](../testing_guide/best_practices.md#rspec).
 - System / Feature tests in the [Testing Best Practices](best_practices.md#system--feature-tests).
-- [Issue #26159](https://gitlab.com/gitlab-org/gitlab/issues/26159) which aims at combining those guidelines with this page.
+- [Issue #26159](https://gitlab.com/gitlab-org/gitlab/-/issues/26159) which aims at combining those guidelines with this page.
 
 ```mermaid
 graph RL

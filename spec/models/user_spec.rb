@@ -23,8 +23,41 @@ describe User do
   describe 'delegations' do
     it { is_expected.to delegate_method(:path).to(:namespace).with_prefix }
 
+    it { is_expected.to delegate_method(:notes_filter_for).to(:user_preference) }
+    it { is_expected.to delegate_method(:set_notes_filter).to(:user_preference) }
+
+    it { is_expected.to delegate_method(:first_day_of_week).to(:user_preference) }
+    it { is_expected.to delegate_method(:first_day_of_week=).to(:user_preference).with_arguments(:args) }
+
+    it { is_expected.to delegate_method(:timezone).to(:user_preference) }
+    it { is_expected.to delegate_method(:timezone=).to(:user_preference).with_arguments(:args) }
+
+    it { is_expected.to delegate_method(:time_display_relative).to(:user_preference) }
+    it { is_expected.to delegate_method(:time_display_relative=).to(:user_preference).with_arguments(:args) }
+
+    it { is_expected.to delegate_method(:time_format_in_24h).to(:user_preference) }
+    it { is_expected.to delegate_method(:time_format_in_24h=).to(:user_preference).with_arguments(:args) }
+
+    it { is_expected.to delegate_method(:show_whitespace_in_diffs).to(:user_preference) }
+    it { is_expected.to delegate_method(:show_whitespace_in_diffs=).to(:user_preference).with_arguments(:args) }
+
     it { is_expected.to delegate_method(:tab_width).to(:user_preference) }
-    it { is_expected.to delegate_method(:tab_width=).to(:user_preference).with_arguments(5) }
+    it { is_expected.to delegate_method(:tab_width=).to(:user_preference).with_arguments(:args) }
+
+    it { is_expected.to delegate_method(:sourcegraph_enabled).to(:user_preference) }
+    it { is_expected.to delegate_method(:sourcegraph_enabled=).to(:user_preference).with_arguments(:args) }
+
+    it { is_expected.to delegate_method(:setup_for_company).to(:user_preference) }
+    it { is_expected.to delegate_method(:setup_for_company=).to(:user_preference).with_arguments(:args) }
+
+    it { is_expected.to delegate_method(:render_whitespace_in_code).to(:user_preference) }
+    it { is_expected.to delegate_method(:render_whitespace_in_code=).to(:user_preference).with_arguments(:args) }
+
+    it { is_expected.to delegate_method(:experience_level).to(:user_preference) }
+    it { is_expected.to delegate_method(:experience_level=).to(:user_preference).with_arguments(:args) }
+
+    it { is_expected.to delegate_method(:job_title).to(:user_detail).allow_nil }
+    it { is_expected.to delegate_method(:job_title=).to(:user_detail).with_arguments(:args).allow_nil }
   end
 
   describe 'associations' do
@@ -56,6 +89,7 @@ describe User do
     it { is_expected.to have_many(:custom_attributes).class_name('UserCustomAttribute') }
     it { is_expected.to have_many(:releases).dependent(:nullify) }
     it { is_expected.to have_many(:metrics_users_starred_dashboards).inverse_of(:user) }
+    it { is_expected.to have_many(:reviews).inverse_of(:author) }
 
     describe "#bio" do
       it 'syncs bio with `user_details.bio` on create' do
@@ -816,6 +850,7 @@ describe User do
 
       let_it_be(:expired_token) { create(:personal_access_token, user: user1, expires_at: 2.days.ago) }
       let_it_be(:revoked_token) { create(:personal_access_token, user: user1, revoked: true) }
+      let_it_be(:impersonation_token) { create(:personal_access_token, :impersonation, user: user1, expires_at: 2.days.from_now) }
       let_it_be(:valid_token_and_notified) { create(:personal_access_token, user: user2, expires_at: 2.days.from_now, expire_notification_delivered: true) }
       let_it_be(:valid_token1) { create(:personal_access_token, user: user2, expires_at: 2.days.from_now) }
       let_it_be(:valid_token2) { create(:personal_access_token, user: user2, expires_at: 2.days.from_now) }
@@ -967,7 +1002,7 @@ describe User do
         end
 
         it 'has only one email association' do
-          expect(user.emails.size).to be(1)
+          expect(user.emails.size).to eq(1)
         end
       end
     end
@@ -1381,7 +1416,7 @@ describe User do
     end
 
     it 'is true when sent less than one minute ago' do
-      user = build_stubbed(:user, reset_password_sent_at: Time.now)
+      user = build_stubbed(:user, reset_password_sent_at: Time.current)
 
       expect(user.recently_sent_password_reset?).to eq true
     end
@@ -2157,7 +2192,7 @@ describe User do
 
   describe '#all_emails' do
     let(:user) { create(:user) }
-    let!(:email_confirmed) { create :email, user: user, confirmed_at: Time.now }
+    let!(:email_confirmed) { create :email, user: user, confirmed_at: Time.current }
     let!(:email_unconfirmed) { create :email, user: user }
 
     context 'when `include_private_email` is true' do
@@ -2186,7 +2221,7 @@ describe User do
     let(:user) { create(:user) }
 
     it 'returns only confirmed emails' do
-      email_confirmed = create :email, user: user, confirmed_at: Time.now
+      email_confirmed = create :email, user: user, confirmed_at: Time.current
       create :email, user: user
 
       expect(user.verified_emails).to contain_exactly(
@@ -2226,7 +2261,7 @@ describe User do
     let(:user) { create(:user) }
 
     it 'returns true when the email is verified/confirmed' do
-      email_confirmed = create :email, user: user, confirmed_at: Time.now
+      email_confirmed = create :email, user: user, confirmed_at: Time.current
       create :email, user: user
       user.reload
 
@@ -2347,26 +2382,6 @@ describe User do
           expect(user.ldap_blocked?).to be_falsey
         end
       end
-    end
-  end
-
-  describe '#ultraauth_user?' do
-    it 'is true if provider is ultraauth' do
-      user = create(:omniauth_user, provider: 'ultraauth')
-
-      expect(user.ultraauth_user?).to be_truthy
-    end
-
-    it 'is false with othe provider' do
-      user = create(:omniauth_user, provider: 'not-ultraauth')
-
-      expect(user.ultraauth_user?).to be_falsey
-    end
-
-    it 'is false if no extern_uid is provided' do
-      user = create(:omniauth_user, extern_uid: nil)
-
-      expect(user.ldap_user?).to be_falsey
     end
   end
 
@@ -2863,10 +2878,10 @@ describe User do
     it "includes projects shared with user's group" do
       user    = create(:user)
       project = create(:project, :private)
-      group   = create(:group)
-
-      group.add_reporter(user)
-      project.project_group_links.create(group: group)
+      group   = create(:group) do |group|
+        group.add_reporter(user)
+      end
+      create(:project_group_link, group: group, project: project)
 
       expect(user.authorized_projects).to include(project)
     end
@@ -3645,12 +3660,6 @@ describe User do
 
       expect(user.allow_password_authentication_for_web?).to be_falsey
     end
-
-    it 'returns false for ultraauth user' do
-      user = create(:omniauth_user, provider: 'ultraauth')
-
-      expect(user.allow_password_authentication_for_web?).to be_falsey
-    end
   end
 
   describe '#allow_password_authentication_for_git?' do
@@ -3670,12 +3679,6 @@ describe User do
 
     it 'returns false for ldap user' do
       user = create(:omniauth_user, provider: 'ldapmain')
-
-      expect(user.allow_password_authentication_for_git?).to be_falsey
-    end
-
-    it 'returns false for ultraauth user' do
-      user = create(:omniauth_user, provider: 'ultraauth')
 
       expect(user.allow_password_authentication_for_git?).to be_falsey
     end

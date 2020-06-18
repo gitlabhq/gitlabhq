@@ -16,7 +16,7 @@ module Gitlab
           raise HTTPError, "Failed to read #{url}: #{rsp.code} #{rsp.message}"
         end
 
-        Gitlab::Json.parse(rsp.body)
+        JSON.parse(rsp.body)
       end
     end
   end

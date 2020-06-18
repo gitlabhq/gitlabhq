@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Projects::PipelineSchedulesController do
+RSpec.describe Projects::PipelineSchedulesController do
   include AccessMatchersForController
 
   let_it_be(:user) { create(:user) }

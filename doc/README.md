@@ -289,7 +289,7 @@ The following documentation relates to the DevOps **Release** stage:
 | [Environment-specific variables](ci/variables/README.md#limit-the-environment-scopes-of-environment-variables) | Limit the scope of variables to specific environments.                                                                                    |
 | [GitLab CI/CD](ci/README.md)                                                                                                        | Explore the features and capabilities of Continuous Deployment and Delivery with GitLab.                                              |
 | [GitLab Pages](user/project/pages/index.md)                                                                                         | Build, test, and deploy a static site directly from GitLab.                                                                           |
-| [Protected Runners](ci/runners/README.md#protected-runners)                                                                         | Select Runners to only pick jobs for protected branches and tags.                                                                     |
+| [Protected Runners](ci/runners/README.md#prevent-runners-from-revealing-sensitive-information)                                                                         | Select Runners to only pick jobs for protected branches and tags.                                                                     |
 | [Scheduled Pipelines](ci/pipelines/schedules.md)                                                                          | Execute pipelines on a schedule.                                                                                                      |
 
 <div align="right">
@@ -363,7 +363,7 @@ The following documentation relates to the DevOps **Secure** stage:
 | Secure Topics                                                                                         | Description                                                            |
 |:------------------------------------------------------------------------------------------------------|:-----------------------------------------------------------------------|
 | [Compliance Dashboard](user/compliance/compliance_dashboard/index.md) **(ULTIMATE)**        | View the most recent Merge Request activity in a group.                |
-| [Container Scanning](user/application_security/container_scanning/index.md) **(ULTIMATE)**            | Use Clair to scan docker images for known vulnerabilities.             |
+| [Container Scanning](user/application_security/container_scanning/index.md) **(ULTIMATE)**            | Use Clair to scan Docker images for known vulnerabilities.             |
 | [Dependency List](user/application_security/dependency_list/index.md) **(ULTIMATE)**                  | View your project's dependencies and their known vulnerabilities.      |
 | [Dependency Scanning](user/application_security/dependency_scanning/index.md) **(ULTIMATE)**          | Analyze your dependencies for known vulnerabilities.                   |
 | [Dynamic Application Security Testing (DAST)](user/application_security/dast/index.md) **(ULTIMATE)** | Analyze running web applications for known vulnerabilities.            |

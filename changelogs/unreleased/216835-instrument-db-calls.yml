@@ -1,0 +1,6 @@
+---
+title: Add number of database calls to Prometheus metrics and logs for sidekiq and
+  request
+merge_request: 32131
+author:
+type: added

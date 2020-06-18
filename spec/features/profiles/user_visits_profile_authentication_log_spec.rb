@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'User visits the authentication log' do
+RSpec.describe 'User visits the authentication log' do
   let(:user) { create(:user) }
 
   context 'when user signed in' do

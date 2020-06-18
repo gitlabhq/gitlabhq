@@ -60,7 +60,7 @@ describe('Header', () => {
     beforeEach(() => {
       setFixtures(`
       <li class="js-nav-user-dropdown">
-        <a class="js-buy-ci-minutes-link" data-track-event="click_buy_ci_minutes" data-track-label="free" data-track-property="user_dropdown">Buy CI minutes</a>
+        <a class="js-buy-pipeline-minutes-link" data-track-event="click_buy_ci_minutes" data-track-label="free" data-track-property="user_dropdown">Buy Pipeline minutes</a>
         <a class="js-upgrade-plan-link" data-track-event="click_upgrade_link" data-track-label="free" data-track-property="user_dropdown">Upgrade</a>
       </li>`);
 
@@ -74,7 +74,7 @@ describe('Header', () => {
       unmockTracking();
     });
 
-    it('sends a tracking event when the dropdown is opened and contains Buy CI minutes link', () => {
+    it('sends a tracking event when the dropdown is opened and contains Buy Pipeline minutes link', () => {
       $('.js-nav-user-dropdown').trigger('shown.bs.dropdown');
 
       expect(trackingSpy).toHaveBeenCalledWith('some:page', 'show_buy_ci_minutes', {

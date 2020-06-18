@@ -1,3 +1,9 @@
+---
+stage: Plan
+group: Project Management
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+---
+
 # Threads
 
 The ability to contribute conversationally is offered throughout GitLab.
@@ -48,7 +54,7 @@ to address feedback and lets you hide threads that are no longer relevant.
 
 ### Commit threads in the context of a merge request
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/31847) in GitLab 10.3.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/31847) in GitLab 10.3.
 
 For reviewers with commit-based workflow, it may be useful to add threads to
 specific commit diffs in the context of a merge request. These threads will
@@ -290,9 +296,10 @@ edit existing comments. Non-team members are restricted from adding or editing c
 
 Additionally, locked issues and merge requests can not be reopened.
 
-## Merge Request Reviews **(PREMIUM)**
+## Merge Request Reviews
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/4213) in GitLab 11.4.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/4213) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.4.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/28154) to GitLab Core in 13.1.
 
 When looking at a Merge Request diff, you are able to start a review.
 This allows you to create comments inside a Merge Request that are **only visible to you** until published,
@@ -364,7 +371,7 @@ Replying to this email will, consequentially, create a new comment on the associ
 
 ## Filtering notes
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/26723) in GitLab 11.5.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/26723) in GitLab 11.5.
 
 For issues with many comments like activity notes and user comments, sometimes
 finding useful information can be hard. There is a way to filter comments from single notes and threads for merge requests and issues.
@@ -384,7 +391,7 @@ from any device you're logged into.
 
 ## Suggest Changes
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/18008) in GitLab 11.6.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/18008) in GitLab 11.6.
 
 As a reviewer, you're able to suggest code changes with a simple
 Markdown syntax in Merge Request Diff threads. Then, the
@@ -402,10 +409,7 @@ the merge request authored by the user that applied them.
 
    ![Add a suggestion into a code block tagged properly](img/make_suggestion_v12_7.png)
 
-1. Click **Comment**.
-
-   NOTE: **Note:**
-   If you're using GitLab Premium, GitLab.com Silver, and higher tiers, the thread will display [Review](#merge-request-reviews-premium) options. Click either **Start a review**, **Add comment now**, or **Add to review** to obtain the same result.
+1. Click either **Start a review** or **Add to review** to add your comment to a [review](#merge-request-reviews), or **Add comment now** to add the comment to the thread immediately.
 
    The Suggestion in the comment can be applied by the merge request author
    directly from the merge request:
@@ -419,7 +423,7 @@ branch. [Developer permission](../permissions.md) is required to do so.
 
 ### Multi-line Suggestions
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/53310) in GitLab 11.10.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/53310) in GitLab 11.10.
 
 Reviewers can also suggest changes to multiple lines with a single Suggestion
 within merge request diff threads by adjusting the range offsets. The
@@ -451,38 +455,66 @@ instead of the usual three.
 
 ### Configure the commit message for applied Suggestions
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/13086) in GitLab 12.7.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13086) in GitLab 12.7.
 
-GitLab uses `Apply suggestion to %{file_path}` by default as commit messages
-when applying Suggestions. This commit message can be customized to
-follow any guidelines you might have. To do so, expand the **Merge requests**
+GitLab uses a default commit message
+when applying Suggestions: `Apply %{suggestions_count} suggestion(s) to %{files_count} file(s)`
+
+For example, consider that a user applied 3 suggestions to 2 different files, the default commit message will be: **Apply 3 suggestion(s) to 2 file(s)**
+
+These commit messages can be customized to follow any guidelines you might have. To do so, expand the **Merge requests**
 tab within your project's **General** settings and change the
 **Merge suggestions** text:
 
-![Custom commit message for applied Suggestions](img/suggestions_custom_commit_messages_v12_7.png)
+![Custom commit message for applied Suggestions](img/suggestions_custom_commit_messages_v13_1.jpg)
 
 You can also use following variables besides static text:
 
 | Variable | Description | Output example |
 |---|---|---|
+| `%{branch_name}` | The name of the branch the Suggestion(s) was(were) applied to. | `my-feature-branch` |
+| `%{files_count}` | The number of file(s) to which Suggestion(s) was(were) applied.| **2** |
+| `%{file_paths}` | The path(s) of the file(s) Suggestion(s) was(were) applied to. Paths are separated by commas.| `docs/index.md, docs/about.md` |
 | `%{project_path}` | The project path. | `my-group/my-project` |
 | `%{project_name}` | The human-readable name of the project. | **My Project** |
-| `%{file_path}` | The path of the file the Suggestion is applied to. | `docs/index.md` |
-| `%{branch_name}` | The name of the branch the Suggestion is applied on. | `my-feature-branch` |
-| `%{username}` | The username of the user applying the Suggestion. | `user_1` |
-| `%{user_full_name}` | The full name of the user applying the Suggestion. | **User 1** |
+| `%{suggestions_count}` | The number of Suggestions applied.| **3** |
+| `%{username}` | The username of the user applying Suggestion(s). | `user_1` |
+| `%{user_full_name}` | The full name of the user applying Suggestion(s). | **User 1** |
 
 For example, to customize the commit message to output
 **Addresses user_1's review**, set the custom text to
 `Addresses %{username}'s review`.
 
 NOTE: **Note:**
-Custom commit messages for each applied Suggestion will be
+Custom commit messages for each applied Suggestion (and for batch Suggestions) will be
 introduced by [#25381](https://gitlab.com/gitlab-org/gitlab/issues/25381).
+
+### Batch Suggestions
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/25486) in GitLab 13.1.
+
+You can apply multiple suggestions at once to reduce the number of commits added
+to your branch to address your reviewers' requests.
+
+1. To start a batch of suggestions that will be applied with a single commit, click **Add suggestion to batch**:
+
+   ![A code change suggestion displayed, with the button to add the suggestion to a batch highlighted.](img/add_first_suggestion_to_batch_v13_1.jpg "Add a suggestion to a batch")
+
+1. Add as many additional suggestions to the batch as you wish:
+
+   ![A code change suggestion displayed, with the button to add an additional suggestion to a batch highlighted.](img/add_another_suggestion_to_batch_v13_1.jpg "Add another suggestion to a batch")
+
+1. To remove suggestions, click **Remove from batch**:
+
+   ![A code change suggestion displayed, with the button to remove that suggestion from its batch highlighted.](img/remove_suggestion_from_batch_v13_1.jpg "Remove a suggestion from a batch")
+
+1. Having added all the suggestions to your liking, when ready, click **Apply suggestions**:
+
+   ![A code change suggestion displayed, with the button to apply the batch of suggestions highlighted.](img/apply_batch_of_suggestions_v13_1.jpg "Apply a batch of suggestions")
 
 ## Start a thread by replying to a standard comment
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/30299) in GitLab 11.9
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/30299) in GitLab 11.9
 
 To reply to a standard (non-thread) comment, you can use the **Reply to comment** button.
 
@@ -500,3 +532,15 @@ to the original comment, so a note about when it was last edited will appear und
 
 This feature only exists for Issues, Merge requests, and Epics. Commits, Snippets and Merge request diff threads are
 not supported yet.
+
+## Assign an issue to the commenting user
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/191455) in GitLab 13.1.
+
+You can assign an issue to a user who made a comment.
+
+In the comment, click the **More Actions** menu and click **Assign to commenting user**.
+
+Click the button again to unassign the commenter.
+
+![Assign to commenting user](img/quickly_assign_commenter_v13_1.png)

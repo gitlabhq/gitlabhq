@@ -8,23 +8,23 @@ For a full list of reference architectures, see
 > - **High Availability:** True
 > - **Test RPS rates:** API: 1000 RPS, Web: 100 RPS, Git: 100 RPS
 
-| Service                                                      | Nodes | Configuration ([8](#footnotes)) | GCP            | AWS ([9](#footnotes)) | Azure([9](#footnotes)) |
-|--------------------------------------------------------------|-------|---------------------------------|----------------|-----------------------|------------------------|
-| GitLab Rails ([1](#footnotes))                               | 12    | 32 vCPU, 28.8GB Memory          | n1-highcpu-32  | c5.9xlarge            | F32s v2        |
-| PostgreSQL                                                   | 3     | 16 vCPU, 60GB Memory            | n1-standard-16 | m5.4xlarge            | D16s v3        |
-| PgBouncer                                                    | 3     | 2 vCPU, 1.8GB Memory            | n1-highcpu-2   | c5.large              | F2s v2         |
-| Gitaly ([2](#footnotes)) ([5](#footnotes)) ([7](#footnotes)) | X     | 64 vCPU, 240GB Memory           | n1-standard-64 | m5.16xlarge           | D64s v3        |
-| Redis ([3](#footnotes)) - Cache                              | 3     | 4 vCPU, 15GB Memory             | n1-standard-4  | m5.xlarge             | D4s v3         |
-| Redis ([3](#footnotes)) - Queues / Shared State              | 3     | 4 vCPU, 15GB Memory             | n1-standard-4  | m5.xlarge             | D4s v3         |
-| Redis Sentinel ([3](#footnotes)) - Cache                     | 3     | 1 vCPU, 1.7GB Memory            | g1-small       | t2.small              | B1MS           |
-| Redis Sentinel ([3](#footnotes)) - Queues / Shared State     | 3     | 1 vCPU, 1.7GB Memory            | g1-small       | t2.small              | B1MS           |
-| Consul                                                       | 3     | 2 vCPU, 1.8GB Memory            | n1-highcpu-2   | c5.large              | F2s v2         |
-| Sidekiq                                                      | 4     | 4 vCPU, 15GB Memory             | n1-standard-4  | m5.xlarge             | D4s v3         |
-| NFS Server ([5](#footnotes)) ([7](#footnotes))               | 1     | 4 vCPU, 3.6GB Memory            | n1-highcpu-4   | c5.xlarge             | F4s v2         |
+| Service                                                      | Nodes | Configuration ([8](#footnotes)) | GCP            | AWS                   | Azure          |
+|--------------------------------------------------------------|-------|---------------------------------|----------------|-----------------------|----------------|
+| GitLab Rails ([1](#footnotes))                               | 12    | 32 vCPU, 28.8GB Memory          | `n1-highcpu-32`  | `c5.9xlarge`            | F32s v2        |
+| PostgreSQL                                                   | 3     | 16 vCPU, 60GB Memory            | `n1-standard-16` | `m5.4xlarge`            | D16s v3        |
+| PgBouncer                                                    | 3     | 2 vCPU, 1.8GB Memory            | `n1-highcpu-2`   | `c5.large`              | F2s v2         |
+| Gitaly ([2](#footnotes)) ([5](#footnotes)) ([7](#footnotes)) | X     | 64 vCPU, 240GB Memory           | `n1-standard-64` | `m5.16xlarge`           | D64s v3        |
+| Redis ([3](#footnotes)) - Cache                              | 3     | 4 vCPU, 15GB Memory             | `n1-standard-4`  | `m5.xlarge`             | D4s v3         |
+| Redis ([3](#footnotes)) - Queues / Shared State              | 3     | 4 vCPU, 15GB Memory             | `n1-standard-4`  | `m5.xlarge`             | D4s v3         |
+| Redis Sentinel ([3](#footnotes)) - Cache                     | 3     | 1 vCPU, 1.7GB Memory            | `g1-small`       | `t2.small`              | B1MS           |
+| Redis Sentinel ([3](#footnotes)) - Queues / Shared State     | 3     | 1 vCPU, 1.7GB Memory            | `g1-small`       | `t2.small`              | B1MS           |
+| Consul                                                       | 3     | 2 vCPU, 1.8GB Memory            | `n1-highcpu-2`   | `c5.large`              | F2s v2         |
+| Sidekiq                                                      | 4     | 4 vCPU, 15GB Memory             | `n1-standard-4`  | `m5.xlarge`             | D4s v3         |
+| NFS Server ([5](#footnotes)) ([7](#footnotes))               | 1     | 4 vCPU, 3.6GB Memory            | `n1-highcpu-4`   | `c5.xlarge`             | F4s v2         |
 | Object Storage ([4](#footnotes))                             | -     | -                               | -              | -                     | -              |
-| Monitoring node                                              | 1     | 4 vCPU, 3.6GB Memory            | n1-highcpu-4   | c5.xlarge             | F4s v2         |
-| External load balancing node ([6](#footnotes))               | 1     | 2 vCPU, 1.8GB Memory            | n1-highcpu-2   | c5.large              | F2s v2         |
-| Internal load balancing node ([6](#footnotes))               | 1     | 8 vCPU, 7.2GB Memory            | n1-highcpu-8   | c5.2xlarge            | F8s v2         |
+| Monitoring node                                              | 1     | 4 vCPU, 3.6GB Memory            | `n1-highcpu-4`   | `c5.xlarge`             | F4s v2         |
+| External load balancing node ([6](#footnotes))               | 1     | 8 vCPU, 7.2GB Memory            | `n1-highcpu-8`   | `c5.2xlarge`            | F8s v2         |
+| Internal load balancing node ([6](#footnotes))               | 1     | 8 vCPU, 7.2GB Memory            | `n1-highcpu-8`   | `c5.2xlarge`            | F8s v2         |
 
 ## Footnotes
 
@@ -56,7 +56,7 @@ For a full list of reference architectures, see
 
 1. NFS can be used as an alternative for both repository data (replacing Gitaly) and
    object storage but this isn't typically recommended for performance reasons. Note however it is required for
-   [GitLab Pages](https://gitlab.com/gitlab-org/gitlab-pages/issues/196).
+   [GitLab Pages](https://gitlab.com/gitlab-org/gitlab-pages/-/issues/196).
 
 1. Our architectures have been tested and validated with [HAProxy](https://www.haproxy.org/)
    as the load balancer. Although other load balancers with similar feature sets
@@ -74,6 +74,3 @@ For a full list of reference architectures, see
    or higher, are required for your CPU or Node counts accordingly. For more information, a
    [Sysbench](https://github.com/akopytov/sysbench) benchmark of the CPU can be found
    [here](https://gitlab.com/gitlab-org/quality/performance/-/wikis/Reference-Architectures/GCP-CPU-Benchmarks).
-
-1. AWS-equivalent and Azure-equivalent configurations are rough suggestions
-   and may change in the future. They have not yet been tested and validated.

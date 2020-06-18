@@ -3,7 +3,7 @@
 module Clusters
   module Applications
     class Runner < ApplicationRecord
-      VERSION = '0.16.1'
+      VERSION = '0.17.1'
 
       self.table_name = 'clusters_applications_runners'
 
@@ -36,7 +36,8 @@ module Clusters
           rbac: cluster.platform_kubernetes_rbac?,
           chart: chart,
           files: files,
-          repository: repository
+          repository: repository,
+          local_tiller_enabled: cluster.local_tiller_enabled?
         )
       end
 

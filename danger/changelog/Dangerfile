@@ -3,7 +3,7 @@
 
 require 'yaml'
 
-SEE_DOC = "See [the documentation](https://docs.gitlab.com/ee/development/changelog.html)."
+SEE_DOC = "See the [changelog documentation](https://docs.gitlab.com/ee/development/changelog.html)."
 CREATE_CHANGELOG_MESSAGE = <<~MSG
 If you want to create a changelog entry for GitLab FOSS, run the following:
 
@@ -20,14 +20,29 @@ bin/changelog --ee -m %<mr_iid>s "%<mr_title>s"
 If this merge request [doesn't need a CHANGELOG entry](https://docs.gitlab.com/ee/development/changelog.html#what-warrants-a-changelog-entry), feel free to ignore this message.
 MSG
 
+SUGGEST_MR_COMMENT = <<~SUGGEST_COMMENT
+```suggestion
+merge_request: %<mr_iid>s
+```
+
+#{SEE_DOC}
+SUGGEST_COMMENT
+
 def check_changelog_yaml(path)
-  yaml = YAML.safe_load(File.read(path))
+  raw_file = File.read(path)
+  yaml = YAML.safe_load(raw_file)
 
   fail "`title` should be set, in #{gitlab.html_link(path)}! #{SEE_DOC}" if yaml["title"].nil?
   fail "`type` should be set, in #{gitlab.html_link(path)}! #{SEE_DOC}" if yaml["type"].nil?
 
   if yaml["merge_request"].nil? && !helper.security_mr?
-    message "Consider setting `merge_request` to #{gitlab.mr_json["iid"]} in #{gitlab.html_link(path)}. #{SEE_DOC}"
+    mr_line = raw_file.lines.find_index("merge_request:\n")
+
+    if mr_line
+      markdown(format(SUGGEST_MR_COMMENT, mr_iid: gitlab.mr_json["iid"]), file: path, line: mr_line.succ)
+    else
+      message "Consider setting `merge_request` to #{gitlab.mr_json["iid"]} in #{gitlab.html_link(path)}. #{SEE_DOC}"
+    end
   elsif yaml["merge_request"] != gitlab.mr_json["iid"] && !helper.security_mr?
     fail "Merge request ID was not set to #{gitlab.mr_json["iid"]}! #{SEE_DOC}"
   end

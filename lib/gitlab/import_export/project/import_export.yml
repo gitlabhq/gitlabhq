@@ -312,6 +312,7 @@ excluded_attributes:
     - :pipeline_schedule_id
     - :merge_request_id
     - :external_pull_request_id
+    - :ci_ref_id
   stages:
     - :pipeline_id
   merge_access_levels:
@@ -397,3 +398,4 @@ ee:
       - protected_environments:
         - :deploy_access_levels
       - :service_desk_setting
+      - :security_setting

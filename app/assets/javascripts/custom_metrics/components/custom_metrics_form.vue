@@ -66,7 +66,7 @@ export default {
 </script>
 <template>
   <div class="row my-3">
-    <h4 class="prepend-top-0 col-lg-8 offset-lg-2">{{ titleText }}</h4>
+    <h4 class="gl-mt-0 col-lg-8 offset-lg-2">{{ titleText }}</h4>
     <form ref="form" class="col-lg-8 offset-lg-2" :action="customMetricsPath" method="post">
       <custom-metrics-form-fields
         :form-operation="formOperation"

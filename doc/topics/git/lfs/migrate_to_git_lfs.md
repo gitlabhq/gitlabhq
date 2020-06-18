@@ -16,18 +16,18 @@ the files are still referenced by previous commits.
 
 Through the method described on this document, first migrate
 to Git LFS with a tool such as the open source community-maintained [BFG](https://rtyley.github.io/bfg-repo-cleaner/)
-through a mirror repo, then clean up the repository's history,
+through a mirror repository, then clean up the repository's history,
 and lastly create LFS tracking rules to prevent new binary files
 from being added.
 
 This tutorial was inspired by the guide
-[Use BFG to migrate a repo to Git LFS](https://confluence.atlassian.com/bitbucket/use-bfg-to-migrate-a-repo-to-git-lfs-834233484.html).
+[Use BFG to migrate a repository to Git LFS](https://confluence.atlassian.com/bitbucket/use-bfg-to-migrate-a-repo-to-git-lfs-834233484.html).
 For more information on Git LFS, see the [references](#references)
 below.
 
 CAUTION: **Warning:**
 The method described on this guide rewrites Git history. Make
-sure to back up your repo before beginning and use it at your
+sure to back up your repository before beginning and use it at your
 own risk.
 
 ## Requirements
@@ -71,7 +71,7 @@ Consider an example upstream project, `git@gitlab.com:gitlab-tests/test-git-lfs-
    Create a copy of your repository so that you can
    recover it in case something goes wrong.
 
-1. Clone `--mirror` the repo:
+1. Clone `--mirror` the repository:
 
    Cloning with the mirror flag will create a bare repository.
    This ensures you get all the branches within the repo.
@@ -102,7 +102,7 @@ Consider an example upstream project, `git@gitlab.com:gitlab-tests/test-git-lfs-
    git reflog expire --expire=now --all && git gc --prune=now --aggressive
    ```
 
-   You can also take a look on how to further [clean the repo](../../../user/project/repository/reducing_the_repo_size_using_git.md),
+   You can also take a look on how to further [clean the repository](../../../user/project/repository/reducing_the_repo_size_using_git.md),
    but it's not necessary for the purposes of this guide.
 
 1. Install Git LFS in the mirror repository:
@@ -166,7 +166,7 @@ but commented out to help encourage others to add to it in the future. -->
 - [Migrate from Git Annex to Git LFS](migrate_from_git_annex_to_git_lfs.md)
 - [GitLab's Git LFS user documentation](index.md)
 - [GitLab's Git LFS administrator documentation](../../../administration/lfs/index.md)
-- Alternative method to [migrate an existing repo to Git LFS](https://github.com/git-lfs/git-lfs/wiki/Tutorial#migrating-existing-repository-data-to-lfs)
+- Alternative method to [migrate an existing repository to Git LFS](https://github.com/git-lfs/git-lfs/wiki/Tutorial#migrating-existing-repository-data-to-lfs)
 
 <!--
 Test project:

@@ -43,10 +43,10 @@ describe Projects::CreateService, '#execute' do
       create_project(user, opts)
     end
 
-    it 'creates associated project settings' do
+    it 'builds associated project settings' do
       project = create_project(user, opts)
 
-      expect(project.project_setting).to be_persisted
+      expect(project.project_setting).to be_new_record
     end
   end
 
@@ -85,6 +85,116 @@ describe Projects::CreateService, '#execute' do
       expect(project.namespace).to eq(group)
       expect(project.team.owners).to include(user)
       expect(user.authorized_projects).to include(project)
+    end
+  end
+
+  context 'group sharing', :sidekiq_inline do
+    let_it_be(:group) { create(:group) }
+    let_it_be(:shared_group) { create(:group) }
+    let_it_be(:shared_group_user) { create(:user) }
+    let(:opts) do
+      {
+        name: 'GitLab',
+        namespace_id: shared_group.id
+      }
+    end
+
+    before do
+      create(:group_group_link, shared_group: shared_group, shared_with_group: group)
+
+      shared_group.add_maintainer(shared_group_user)
+      group.add_developer(user)
+    end
+
+    it 'updates authorization' do
+      shared_group_project = create_project(shared_group_user, opts)
+
+      expect(
+        Ability.allowed?(shared_group_user, :read_project, shared_group_project)
+      ).to be_truthy
+      expect(
+        Ability.allowed?(user, :read_project, shared_group_project)
+      ).to be_truthy
+    end
+  end
+
+  context 'membership overrides', :sidekiq_inline do
+    let_it_be(:group) { create(:group, :private) }
+    let_it_be(:subgroup_for_projects) { create(:group, :private, parent: group) }
+    let_it_be(:subgroup_for_access) { create(:group, :private, parent: group) }
+    let_it_be(:group_maintainer) { create(:user) }
+    let(:group_access_level) { Gitlab::Access::REPORTER }
+    let(:subgroup_access_level) { Gitlab::Access::DEVELOPER }
+    let(:share_max_access_level) { Gitlab::Access::MAINTAINER }
+    let(:opts) do
+      {
+        name: 'GitLab',
+        namespace_id: subgroup_for_projects.id
+      }
+    end
+
+    before do
+      group.add_maintainer(group_maintainer)
+
+      create(:group_group_link, shared_group: subgroup_for_projects,
+                                shared_with_group: subgroup_for_access,
+                                group_access: share_max_access_level)
+    end
+
+    context 'membership is higher from group hierarchy' do
+      let(:group_access_level) { Gitlab::Access::MAINTAINER }
+
+      it 'updates authorization' do
+        create(:group_member, access_level: subgroup_access_level, group: subgroup_for_access, user: user)
+        create(:group_member, access_level: group_access_level, group: group, user: user)
+
+        subgroup_project = create_project(group_maintainer, opts)
+
+        project_authorization = ProjectAuthorization.where(
+          project_id: subgroup_project.id,
+          user_id: user.id,
+          access_level: group_access_level)
+
+        expect(project_authorization).to exist
+      end
+    end
+
+    context 'membership is higher from group share' do
+      let(:subgroup_access_level) { Gitlab::Access::MAINTAINER }
+
+      context 'share max access level is not limiting' do
+        it 'updates authorization' do
+          create(:group_member, access_level: group_access_level, group: group, user: user)
+          create(:group_member, access_level: subgroup_access_level, group: subgroup_for_access, user: user)
+
+          subgroup_project = create_project(group_maintainer, opts)
+
+          project_authorization = ProjectAuthorization.where(
+            project_id: subgroup_project.id,
+            user_id: user.id,
+            access_level: subgroup_access_level)
+
+          expect(project_authorization).to exist
+        end
+      end
+
+      context 'share max access level is limiting' do
+        let(:share_max_access_level) { Gitlab::Access::DEVELOPER }
+
+        it 'updates authorization' do
+          create(:group_member, access_level: group_access_level, group: group, user: user)
+          create(:group_member, access_level: subgroup_access_level, group: subgroup_for_access, user: user)
+
+          subgroup_project = create_project(group_maintainer, opts)
+
+          project_authorization = ProjectAuthorization.where(
+            project_id: subgroup_project.id,
+            user_id: user.id,
+            access_level: share_max_access_level)
+
+          expect(project_authorization).to exist
+        end
+      end
     end
   end
 
@@ -339,29 +449,39 @@ describe Projects::CreateService, '#execute' do
     end
   end
 
-  context 'when there is an active service template' do
-    before do
-      create(:prometheus_service, project: nil, template: true, active: true)
+  describe 'create service for the project' do
+    subject(:project) { create_project(user, opts) }
+
+    context 'when there is an active instance-level and an active template integration' do
+      let!(:template_integration) { create(:prometheus_service, :template, api_url: 'https://prometheus.template.com/') }
+      let!(:instance_integration) { create(:prometheus_service, :instance, api_url: 'https://prometheus.instance.com/') }
+
+      it 'creates a service from the instance-level integration' do
+        expect(project.services.count).to eq(1)
+        expect(project.services.first.api_url).to eq(instance_integration.api_url)
+        expect(project.services.first.inherit_from_id).to eq(instance_integration.id)
+      end
     end
 
-    it 'creates a service from this template' do
-      project = create_project(user, opts)
+    context 'when there is an active service template' do
+      let!(:template_integration) { create(:prometheus_service, :template, api_url: 'https://prometheus.template.com/') }
 
-      expect(project.services.count).to eq 1
-      expect(project.errors).to be_empty
+      it 'creates a service from the template' do
+        expect(project.services.count).to eq(1)
+        expect(project.services.first.api_url).to eq(template_integration.api_url)
+        expect(project.services.first.inherit_from_id).to be_nil
+      end
     end
-  end
 
-  context 'when a bad service template is created' do
-    it 'sets service to be inactive' do
-      opts[:import_url] = 'http://www.gitlab.com/gitlab-org/gitlab-foss'
-      create(:service, type: 'DroneCiService', project: nil, template: true, active: true)
+    context 'when there is an invalid integration' do
+      before do
+        create(:service, :template, type: 'DroneCiService', active: true)
+      end
 
-      project = create_project(user, opts)
-      service = project.services.first
-
-      expect(project).to be_persisted
-      expect(service.active).to be false
+      it 'creates an inactive service' do
+        expect(project).to be_persisted
+        expect(project.services.first.active).to be false
+      end
     end
   end
 
@@ -547,7 +667,9 @@ describe Projects::CreateService, '#execute' do
       )
       expect(AuthorizedProjectUpdate::UserRefreshWithLowUrgencyWorker).to(
         receive(:bulk_perform_in)
-          .with(1.hour, array_including([user.id], [other_user.id]))
+          .with(1.hour,
+                array_including([user.id], [other_user.id]),
+                batch_delay: 30.seconds, batch_size: 100)
           .and_call_original
       )
 

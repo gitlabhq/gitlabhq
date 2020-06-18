@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Raw files', '(JavaScript fixtures)' do
+RSpec.describe 'Raw files', '(JavaScript fixtures)' do
   include JavaScriptFixturesHelpers
 
   let(:namespace) { create(:namespace, name: 'frontend-fixtures' )}

@@ -1,20 +1,32 @@
-import Vue from 'vue';
+import { mount } from '@vue/test-utils';
 import { getTimeago } from '~/lib/utils/datetime_utility';
-import component from '~/jobs/components/artifacts_block.vue';
-import mountComponent from '../../helpers/vue_mount_component_helper';
+import ArtifactsBlock from '~/jobs/components/artifacts_block.vue';
 import { trimText } from '../../helpers/text_helper';
 
 describe('Artifacts block', () => {
-  const Component = Vue.extend(component);
-  let vm;
+  let wrapper;
+
+  const createWrapper = propsData =>
+    mount(ArtifactsBlock, {
+      propsData,
+    });
+
+  const findArtifactRemoveElt = () => wrapper.find('[data-testid="artifacts-remove-timeline"]');
+  const findJobLockedElt = () => wrapper.find('[data-testid="job-locked-message"]');
+  const findKeepBtn = () => wrapper.find('[data-testid="keep-artifacts"]');
+  const findDownloadBtn = () => wrapper.find('[data-testid="download-artifacts"]');
+  const findBrowseBtn = () => wrapper.find('[data-testid="browse-artifacts"]');
 
   const expireAt = '2018-08-14T09:38:49.157Z';
   const timeago = getTimeago();
   const formattedDate = timeago.format(expireAt);
+  const lockedText =
+    'These artifacts are the latest. They will not be deleted (even if expired) until newer artifacts are available.';
 
   const expiredArtifact = {
     expire_at: expireAt,
     expired: true,
+    locked: false,
   };
 
   const nonExpiredArtifact = {
@@ -23,97 +35,127 @@ describe('Artifacts block', () => {
     keep_path: '/gitlab-org/gitlab-foss/-/jobs/98314558/artifacts/keep',
     expire_at: expireAt,
     expired: false,
+    locked: false,
+  };
+
+  const lockedExpiredArtifact = {
+    ...expiredArtifact,
+    download_path: '/gitlab-org/gitlab-foss/-/jobs/98314558/artifacts/download',
+    browse_path: '/gitlab-org/gitlab-foss/-/jobs/98314558/artifacts/browse',
+    expired: true,
+    locked: true,
+  };
+
+  const lockedNonExpiredArtifact = {
+    ...nonExpiredArtifact,
+    keep_path: undefined,
+    locked: true,
   };
 
   afterEach(() => {
-    vm.$destroy();
+    wrapper.destroy();
+    wrapper = null;
   });
 
-  describe('with expired artifacts', () => {
-    it('renders expired artifact date and info', () => {
-      vm = mountComponent(Component, {
+  describe('with expired artifacts that are not locked', () => {
+    beforeEach(() => {
+      wrapper = createWrapper({
         artifact: expiredArtifact,
       });
+    });
 
-      expect(vm.$el.querySelector('.js-artifacts-removed')).not.toBeNull();
-      expect(vm.$el.querySelector('.js-artifacts-will-be-removed')).toBeNull();
-      expect(trimText(vm.$el.querySelector('.js-artifacts-removed').textContent)).toEqual(
+    it('renders expired artifact date and info', () => {
+      expect(trimText(findArtifactRemoveElt().text())).toBe(
         `The artifacts were removed ${formattedDate}`,
       );
+    });
+
+    it('does not show the keep button', () => {
+      expect(findKeepBtn().exists()).toBe(false);
+    });
+
+    it('does not show the download button', () => {
+      expect(findDownloadBtn().exists()).toBe(false);
+    });
+
+    it('does not show the browse button', () => {
+      expect(findBrowseBtn().exists()).toBe(false);
     });
   });
 
   describe('with artifacts that will expire', () => {
-    it('renders will expire artifact date and info', () => {
-      vm = mountComponent(Component, {
+    beforeEach(() => {
+      wrapper = createWrapper({
         artifact: nonExpiredArtifact,
       });
+    });
 
-      expect(vm.$el.querySelector('.js-artifacts-removed')).toBeNull();
-      expect(vm.$el.querySelector('.js-artifacts-will-be-removed')).not.toBeNull();
-      expect(trimText(vm.$el.querySelector('.js-artifacts-will-be-removed').textContent)).toEqual(
+    it('renders will expire artifact date and info', () => {
+      expect(trimText(findArtifactRemoveElt().text())).toBe(
         `The artifacts will be removed ${formattedDate}`,
       );
     });
-  });
 
-  describe('with keep path', () => {
     it('renders the keep button', () => {
-      vm = mountComponent(Component, {
-        artifact: nonExpiredArtifact,
-      });
-
-      expect(vm.$el.querySelector('.js-keep-artifacts')).not.toBeNull();
+      expect(findKeepBtn().exists()).toBe(true);
     });
-  });
 
-  describe('without keep path', () => {
-    it('does not render the keep button', () => {
-      vm = mountComponent(Component, {
-        artifact: expiredArtifact,
-      });
-
-      expect(vm.$el.querySelector('.js-keep-artifacts')).toBeNull();
-    });
-  });
-
-  describe('with download path', () => {
     it('renders the download button', () => {
-      vm = mountComponent(Component, {
-        artifact: nonExpiredArtifact,
-      });
+      expect(findDownloadBtn().exists()).toBe(true);
+    });
 
-      expect(vm.$el.querySelector('.js-download-artifacts')).not.toBeNull();
+    it('renders the browse button', () => {
+      expect(findBrowseBtn().exists()).toBe(true);
     });
   });
 
-  describe('without download path', () => {
+  describe('with expired locked artifacts', () => {
+    beforeEach(() => {
+      wrapper = createWrapper({
+        artifact: lockedExpiredArtifact,
+      });
+    });
+
+    it('renders the information that the artefacts are locked', () => {
+      expect(findArtifactRemoveElt().exists()).toBe(false);
+      expect(trimText(findJobLockedElt().text())).toBe(lockedText);
+    });
+
     it('does not render the keep button', () => {
-      vm = mountComponent(Component, {
-        artifact: expiredArtifact,
-      });
+      expect(findKeepBtn().exists()).toBe(false);
+    });
 
-      expect(vm.$el.querySelector('.js-download-artifacts')).toBeNull();
+    it('renders the download button', () => {
+      expect(findDownloadBtn().exists()).toBe(true);
+    });
+
+    it('renders the browse button', () => {
+      expect(findBrowseBtn().exists()).toBe(true);
     });
   });
 
-  describe('with browse path', () => {
-    it('does not render the browse button', () => {
-      vm = mountComponent(Component, {
-        artifact: nonExpiredArtifact,
+  describe('with non expired locked artifacts', () => {
+    beforeEach(() => {
+      wrapper = createWrapper({
+        artifact: lockedNonExpiredArtifact,
       });
-
-      expect(vm.$el.querySelector('.js-browse-artifacts')).not.toBeNull();
     });
-  });
 
-  describe('without browse path', () => {
-    it('does not render the browse button', () => {
-      vm = mountComponent(Component, {
-        artifact: expiredArtifact,
-      });
+    it('renders the information that the artefacts are locked', () => {
+      expect(findArtifactRemoveElt().exists()).toBe(false);
+      expect(trimText(findJobLockedElt().text())).toBe(lockedText);
+    });
 
-      expect(vm.$el.querySelector('.js-browse-artifacts')).toBeNull();
+    it('does not render the keep button', () => {
+      expect(findKeepBtn().exists()).toBe(false);
+    });
+
+    it('renders the download button', () => {
+      expect(findDownloadBtn().exists()).toBe(true);
+    });
+
+    it('renders the browse button', () => {
+      expect(findBrowseBtn().exists()).toBe(true);
     });
   });
 });

@@ -1,0 +1,5 @@
+---
+title: Fallback to lowest visibility level in snippet visibility radio
+merge_request: 31847
+author: Jacopo Beschi @jacopo-beschi
+type: fixed

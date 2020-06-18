@@ -7,6 +7,7 @@ class RebaseWorker # rubocop:disable Scalability/IdempotentWorker
 
   feature_category :source_code_management
   weight 2
+  loggable_arguments 2
 
   def perform(merge_request_id, current_user_id, skip_ci = false)
     current_user = User.find(current_user_id)

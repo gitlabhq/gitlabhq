@@ -41,7 +41,7 @@ class AlertsService < Service
   end
 
   def description
-    _('Receive alerts on GitLab from any source')
+    _('Authorize external services to send alerts to GitLab')
   end
 
   def detailed_description

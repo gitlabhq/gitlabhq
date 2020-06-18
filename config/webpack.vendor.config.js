@@ -38,7 +38,7 @@ module.exports = {
       'katex',
       'three',
       'select2',
-      'moment',
+      'moment-mini',
       'aws-sdk',
       'sanitize-html',
       'bootstrap/dist/js/bootstrap.js',
@@ -65,7 +65,23 @@ module.exports = {
     }),
     new YarnCheck({
       rootDirectory: ROOT_PATH,
-      exclude: /ts-jest/,
+      exclude: new RegExp(
+        [
+          /*
+          chokidar has a newer version which do not depend on fsevents,
+          is faster and only compatible with newer node versions (>=8)
+
+          Their actual interface remains the same and we can safely _force_
+          newer versions to get performance and security benefits.
+
+          This can be removed once all dependencies are up to date:
+          https://gitlab.com/gitlab-org/gitlab/-/issues/219353
+          */
+          'chokidar',
+          // We are ignoring ts-jest, because we force a newer version, compatible with our current jest version
+          'ts-jest',
+        ].join('|'),
+      ),
       forceKill: true,
     }),
   ],

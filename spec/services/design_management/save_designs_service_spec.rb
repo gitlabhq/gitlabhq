@@ -65,6 +65,10 @@ describe DesignManagement::SaveDesignsService do
       end
 
       it_behaves_like 'a service error'
+
+      it 'does not create an event in the activity stream' do
+        expect { run_service }.not_to change { Event.count }
+      end
     end
 
     context 'when the feature is available' do
@@ -87,6 +91,12 @@ describe DesignManagement::SaveDesignsService do
       it 'updates the creation count' do
         counter = Gitlab::UsageDataCounters::DesignsCounter
         expect { run_service }.to change { counter.read(:create) }.by(1)
+      end
+
+      it 'creates an event in the activity stream' do
+        expect { run_service }
+          .to change { Event.count }.by(1)
+          .and change { Event.for_design.created_action.count }.by(1)
       end
 
       it 'creates a commit in the repository' do
@@ -166,9 +176,12 @@ describe DesignManagement::SaveDesignsService do
           expect(updated_designs.first.versions.size).to eq(2)
         end
 
-        it 'increments the update counter' do
+        it 'records the correct events' do
           counter = Gitlab::UsageDataCounters::DesignsCounter
-          expect { run_service }.to change { counter.read(:update) }.by 1
+          expect { run_service }
+            .to change { counter.read(:update) }.by(1)
+            .and change { Event.count }.by(1)
+            .and change { Event.for_design.updated_action.count }.by(1)
         end
 
         context 'when uploading a new design' do
@@ -215,6 +228,14 @@ describe DesignManagement::SaveDesignsService do
           expect { run_service }
             .to change { counter.read(:create) }.by(1)
             .and change { counter.read(:update) }.by(1)
+        end
+
+        it 'creates the correct activity stream events' do
+          expect { run_service }
+            .to change { Event.count }.by(2)
+            .and change { Event.for_design.count }.by(2)
+            .and change { Event.created_action.count }.by(1)
+            .and change { Event.updated_action.count }.by(1)
         end
 
         it 'creates a single commit' do

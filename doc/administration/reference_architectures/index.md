@@ -126,8 +126,8 @@ As long as at least one of each component is online and capable of handling the 
 By adding automatic failover for database systems, you can enable higher uptime
 with additional database nodes. This extends the default database with
 cluster management and failover policies.
-[PgBouncer](../../development/architecture.md#pgbouncer) in conjunction with
-[Repmgr](../high_availability/database.md) is recommended.
+[PgBouncer in conjunction with Repmgr](../postgresql/replication_and_failover.md)
+is recommended.
 
 ### Instance level replication with GitLab Geo **(PREMIUM ONLY)**
 
@@ -140,6 +140,9 @@ instance to other geographical locations as a read-only fully operational instan
 that can also be promoted in case of disaster.
 
 ## Configure GitLab to scale
+
+NOTE: **Note:**
+From GitLab 13.0, using NFS for Git repositories is deprecated. In GitLab 14.0, support for NFS for Git repositories is scheduled to be removed. Upgrade to [Gitaly Cluster](../gitaly/praefect.md) as soon as possible.
 
 The following components are the ones you need to configure in order to scale
 GitLab. They are listed in the order you'll typically configure them if they are
@@ -160,13 +163,32 @@ column.
 | [Consul](../../development/architecture.md#consul) ([3](#footnotes)) | Service discovery and health checks/failover | [Consul configuration](../high_availability/consul.md) **(PREMIUM ONLY)** | Yes |
 | [PostgreSQL](../../development/architecture.md#postgresql) | Database | [PostgreSQL configuration](https://docs.gitlab.com/omnibus/settings/database.html) | Yes |
 | [PgBouncer](../../development/architecture.md#pgbouncer) | Database connection pooler | [PgBouncer configuration](../high_availability/pgbouncer.md#running-pgbouncer-as-part-of-a-non-ha-gitlab-installation) **(PREMIUM ONLY)** | Yes |
-| Repmgr | PostgreSQL cluster management and failover | [PostgreSQL and Repmgr configuration](../high_availability/database.md) | Yes |
+| Repmgr | PostgreSQL cluster management and failover | [PostgreSQL and Repmgr configuration](../postgresql/replication_and_failover.md) | Yes |
 | [Redis](../../development/architecture.md#redis) ([3](#footnotes))  | Key/value store for fast data lookup and caching | [Redis configuration](../high_availability/redis.md) | Yes |
 | Redis Sentinel | Redis | [Redis Sentinel configuration](../high_availability/redis.md) | Yes |
-| [Gitaly](../../development/architecture.md#gitaly) ([2](#footnotes)) ([7](#footnotes)) ([10](#footnotes)) | Provides access to Git repositories | [Gitaly configuration](../gitaly/index.md#running-gitaly-on-its-own-server) | Yes |
+| [Gitaly](../../development/architecture.md#gitaly) ([2](#footnotes)) ([7](#footnotes)) | Provides access to Git repositories | [Gitaly configuration](../gitaly/index.md#run-gitaly-on-its-own-server) | Yes |
 | [Sidekiq](../../development/architecture.md#sidekiq) | Asynchronous/background jobs | [Sidekiq configuration](../high_availability/sidekiq.md) | Yes |
 | [GitLab application services](../../development/architecture.md#unicorn)([1](#footnotes)) | Puma/Unicorn, Workhorse, GitLab Shell - serves front-end requests (UI, API, Git over HTTP/SSH) | [GitLab app scaling configuration](../high_availability/gitlab.md) | Yes |
 | [Prometheus](../../development/architecture.md#prometheus) and [Grafana](../../development/architecture.md#grafana) | GitLab environment monitoring | [Monitoring node for scaling](../high_availability/monitoring_node.md) | Yes |
+
+### Configuring select components with Cloud Native Helm
+
+We also provide [Helm charts](https://docs.gitlab.com/charts/) as a Cloud Native installation
+method for GitLab. For the reference architectures, select components can be set up in this
+way as an alternative if so desired.
+
+For these kind of setups we support using the charts in an [advanced configuration](https://docs.gitlab.com/charts/#advanced-configuration)
+where stateful backend components, such as the database or Gitaly, are run externally - either
+via Omnibus or reputable third party services. Note that we don't currently support running the
+stateful components via Helm _at large scales_.
+
+When designing these environments you should refer to the respective [Reference Architecture](#available-reference-architectures)
+above for guidance on sizing. Components run via Helm would be similarly scaled to their Omnibus
+specs, only translated into Kubernetes resources.
+
+For example, if you were to set up a 50k installation with the Rails nodes being run in Helm,
+then the same amount of resources as given for Omnibus should be given to the Kubernetes
+cluster with the Rails nodes broken down into a number of smaller Pods across that cluster.
 
 ## Footnotes
 
@@ -177,9 +199,7 @@ column.
    on workload.
 
 1. Gitaly node requirements are dependent on customer data, specifically the number of
-   projects and their sizes. We recommend two nodes as an absolute minimum,
-   and at least four nodes should be used when supporting 50,000 or more users.
-   We also recommend that each Gitaly node should store no more than 5TB of data
+   projects and their sizes. We recommend that each Gitaly node should store no more than 5TB of data
    and have the number of [`gitaly-ruby` workers](../gitaly/index.md#gitaly-ruby)
    set to 20% of available CPUs. Additional nodes should be considered in conjunction
    with a review of expected data size and spread based on the recommendations above.
@@ -198,7 +218,7 @@ column.
 
 1. NFS can be used as an alternative for object storage but this isn't typically
    recommended for performance reasons. Note however it is required for [GitLab
-   Pages](https://gitlab.com/gitlab-org/gitlab-pages/issues/196).
+   Pages](https://gitlab.com/gitlab-org/gitlab-pages/-/issues/196).
 
 1. Our architectures have been tested and validated with [HAProxy](https://www.haproxy.org/)
    as the load balancer. Although other load balancers with similar feature sets
@@ -216,10 +236,3 @@ column.
    or higher, are required for your CPU or Node counts accordingly. For more information, a
    [Sysbench](https://github.com/akopytov/sysbench) benchmark of the CPU can be found
    [here](https://gitlab.com/gitlab-org/quality/performance/-/wikis/Reference-Architectures/GCP-CPU-Benchmarks).
-
-1. AWS-equivalent and Azure-equivalent configurations are rough suggestions
-   and may change in the future. They have not yet been tested and validated.
-
-1. From GitLab 13.0, using NFS for Git repositories is deprecated. In GitLab
-   14.0, support for NFS for Git repositories is scheduled to be removed.
-   Upgrade to [Gitaly Cluster](../gitaly/praefect.md) as soon as possible.

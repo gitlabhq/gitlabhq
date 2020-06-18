@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Projects::RefsController do
+RSpec.describe Projects::RefsController do
   let(:project) { create(:project, :repository) }
   let(:user)    { create(:user) }
 
@@ -73,7 +73,7 @@ describe Projects::RefsController do
 
         cache_key = "projects/#{project.id}/logs/#{project.commit.id}/#{path}/25"
         expect(Rails.cache.fetch(cache_key)).to eq(['logs', 50])
-        expect(response.headers['More-Logs-Offset']).to eq(50)
+        expect(response.headers['More-Logs-Offset']).to eq("50")
       end
     end
   end

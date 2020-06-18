@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe "Internal Project Access" do
+RSpec.describe "Internal Project Access" do
   include AccessMatchers
 
   let_it_be(:project, reload: true) { create(:project, :internal, :repository) }
@@ -85,8 +85,8 @@ describe "Internal Project Access" do
     it { is_expected.to be_denied_for(:visitor) }
   end
 
-  describe "GET /:project_path/-/settings/members" do
-    subject { project_settings_members_path(project) }
+  describe "GET /:project_path/-/project_members" do
+    subject { project_project_members_path(project) }
 
     it { is_expected.to be_allowed_for(:admin) }
     it { is_expected.to be_allowed_for(:owner).of(project) }

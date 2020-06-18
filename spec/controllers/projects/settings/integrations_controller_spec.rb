@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Projects::Settings::IntegrationsController do
+RSpec.describe Projects::Settings::IntegrationsController do
   let(:project) { create(:project, :public) }
   let(:user) { create(:user) }
 

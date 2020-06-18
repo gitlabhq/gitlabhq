@@ -1,4 +1,7 @@
 ---
+stage: Release
+group: Progressive Delivery
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 author: Dylan Griffith
 author_gitlab: DylanGriffith
 level: intermediate
@@ -100,7 +103,7 @@ production:
   - master
 ```
 
-We've used the `java:8` [docker
+We've used the `java:8` [Docker
 image](../../docker/using_docker_images.md) to build
 our application as it provides the up-to-date Java 8 JDK on [Docker
 Hub](https://hub.docker.com/). We've also added the [`only`

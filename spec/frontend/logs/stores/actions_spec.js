@@ -1,6 +1,6 @@
 import MockAdapter from 'axios-mock-adapter';
-
 import testAction from 'helpers/vuex_action_helper';
+import Tracking from '~/tracking';
 import * as types from '~/logs/stores/mutation_types';
 import { convertToFixedRange } from '~/lib/utils/datetime_range';
 import logsPageState from '~/logs/stores/state';
@@ -104,7 +104,7 @@ describe('Logs Store actions', () => {
           { type: types.SET_CURRENT_POD_NAME, payload: null },
           { type: types.SET_SEARCH, payload: '' },
         ],
-        [{ type: 'fetchLogs' }],
+        [{ type: 'fetchLogs', payload: 'used_search_bar' }],
       ));
 
     it('text search should filter with a search term', () =>
@@ -116,7 +116,7 @@ describe('Logs Store actions', () => {
           { type: types.SET_CURRENT_POD_NAME, payload: null },
           { type: types.SET_SEARCH, payload: mockSearch },
         ],
-        [{ type: 'fetchLogs' }],
+        [{ type: 'fetchLogs', payload: 'used_search_bar' }],
       ));
 
     it('pod search should filter with a search term', () =>
@@ -128,7 +128,7 @@ describe('Logs Store actions', () => {
           { type: types.SET_CURRENT_POD_NAME, payload: mockPodName },
           { type: types.SET_SEARCH, payload: '' },
         ],
-        [{ type: 'fetchLogs' }],
+        [{ type: 'fetchLogs', payload: 'used_search_bar' }],
       ));
 
     it('pod search should filter with a pod selection and a search term', () =>
@@ -140,7 +140,7 @@ describe('Logs Store actions', () => {
           { type: types.SET_CURRENT_POD_NAME, payload: mockPodName },
           { type: types.SET_SEARCH, payload: mockSearch },
         ],
-        [{ type: 'fetchLogs' }],
+        [{ type: 'fetchLogs', payload: 'used_search_bar' }],
       ));
 
     it('pod search should filter with a pod selection and two search terms', () =>
@@ -152,7 +152,7 @@ describe('Logs Store actions', () => {
           { type: types.SET_CURRENT_POD_NAME, payload: null },
           { type: types.SET_SEARCH, payload: `term1 term2` },
         ],
-        [{ type: 'fetchLogs' }],
+        [{ type: 'fetchLogs', payload: 'used_search_bar' }],
       ));
 
     it('pod search should filter with a pod selection and a search terms before and after', () =>
@@ -168,7 +168,7 @@ describe('Logs Store actions', () => {
           { type: types.SET_CURRENT_POD_NAME, payload: mockPodName },
           { type: types.SET_SEARCH, payload: `term1 term2` },
         ],
-        [{ type: 'fetchLogs' }],
+        [{ type: 'fetchLogs', payload: 'used_search_bar' }],
       ));
   });
 
@@ -179,7 +179,7 @@ describe('Logs Store actions', () => {
         mockPodName,
         state,
         [{ type: types.SET_CURRENT_POD_NAME, payload: mockPodName }],
-        [{ type: 'fetchLogs' }],
+        [{ type: 'fetchLogs', payload: 'pod_log_changed' }],
       ));
   });
 
@@ -198,7 +198,7 @@ describe('Logs Store actions', () => {
           { type: types.REQUEST_ENVIRONMENTS_DATA },
           { type: types.RECEIVE_ENVIRONMENTS_DATA_SUCCESS, payload: mockEnvironments },
         ],
-        [{ type: 'fetchLogs' }],
+        [{ type: 'fetchLogs', payload: 'environment_selected' }],
       );
     });
 
@@ -468,6 +468,61 @@ describe('Logs Store actions', () => {
           expect(mock.history.get[0].url).toBe(mockLogsEndpoint);
         },
       );
+    });
+  });
+});
+
+describe('Tracking user interaction', () => {
+  let commit;
+  let dispatch;
+  let state;
+  let mock;
+
+  beforeEach(() => {
+    jest.spyOn(Tracking, 'event');
+    commit = jest.fn();
+    dispatch = jest.fn();
+    state = logsPageState();
+    state.environments.options = mockEnvironments;
+    state.environments.current = mockEnvName;
+
+    mock = new MockAdapter(axios);
+  });
+
+  afterEach(() => {
+    mock.reset();
+  });
+
+  describe('Logs with data', () => {
+    beforeEach(() => {
+      mock.onGet(mockLogsEndpoint).reply(200, mockResponse);
+      mock.onGet(mockLogsEndpoint).replyOnce(202); // mock reactive cache
+    });
+
+    it('tracks fetched logs with data', () => {
+      return fetchLogs({ state, commit, dispatch }, 'environment_selected').then(() => {
+        expect(Tracking.event).toHaveBeenCalledWith(document.body.dataset.page, 'logs_view', {
+          label: 'environment_selected',
+          property: 'count',
+          value: 1,
+        });
+      });
+    });
+  });
+
+  describe('Logs without data', () => {
+    beforeEach(() => {
+      mock.onGet(mockLogsEndpoint).reply(200, {
+        ...mockResponse,
+        logs: [],
+      });
+      mock.onGet(mockLogsEndpoint).replyOnce(202); // mock reactive cache
+    });
+
+    it('does not track empty log responses', () => {
+      return fetchLogs({ state, commit, dispatch }).then(() => {
+        expect(Tracking.event).not.toHaveBeenCalled();
+      });
     });
   });
 });

@@ -1,0 +1,5 @@
+---
+title: Fix snippet repository import fail with older export files
+merge_request: 33584
+author:
+type: fixed

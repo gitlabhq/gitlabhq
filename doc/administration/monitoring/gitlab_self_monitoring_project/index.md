@@ -1,7 +1,13 @@
+---
+stage: Monitor
+group: APM
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+---
+
 # GitLab self monitoring project
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/32351) in GitLab 12.7, behind a disabled feature flag (`self_monitoring_project`).
-> - The feature flag was removed and the Self Monitoring Project was [made generally available](https://gitlab.com/gitlab-org/gitlab/issues/198511) in GitLab 12.8.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/32351) in GitLab 12.7, behind a disabled feature flag (`self_monitoring_project`).
+> - The feature flag was removed and the Self Monitoring Project was [made generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/198511) in GitLab 12.8.
 
 GitLab has been adding the ability for administrators to see insights into the health of
 their GitLab instance. In order to surface this experience in a native way, similar to how
@@ -15,10 +21,12 @@ All administrators at the time of creation of the project and group will be adde
 as maintainers of the group and project, and as an admin, you'll be able to add new
 members to the group in order to give them maintainer access to the project.
 
-This project is used to self monitor your GitLab instance. Metrics are not yet
-fully integrated, and the dashboard does not aggregate any data on Omnibus installations. GitLab plans
-to provide integrated self-monitoring metrics in a future release. You can
-currently use the project to configure your own [custom metrics](../../../user/project/integrations/prometheus.md#adding-custom-metrics) using
+This project is used to self monitor your GitLab instance. The metrics dashboard
+of the project shows some basic resource usage charts, such as CPU and memory usage
+of each server in [Omnibus GitLab](https://docs.gitlab.com/omnibus/) installations.
+
+You can also use the project to configure your own
+[custom metrics](../../../user/project/integrations/prometheus.md#adding-custom-metrics) using
 metrics exposed by the [GitLab exporter](../prometheus/gitlab_metrics.md#metrics-available).
 
 ## Creating the self monitoring project
@@ -53,7 +61,7 @@ you should
 ## Taking action on Prometheus alerts **(ULTIMATE)**
 
 You can [add a webhook](../../../user/project/integrations/prometheus.md#external-prometheus-instances)
-to the Prometheus config in order for GitLab to receive notifications of any alerts.
+to the Prometheus configuration in order for GitLab to receive notifications of any alerts.
 
 Once the webhook is setup, you can
 [take action on incoming alerts](../../../user/project/integrations/prometheus.md#taking-action-on-incidents-ultimate).
@@ -69,7 +77,7 @@ You can add custom metrics in the self monitoring project by:
 
 ### Getting error message in logs: `Could not create instance administrators group. Errors: ["You don’t have permission to create groups."]`
 
-There is [a bug](https://gitlab.com/gitlab-org/gitlab/issues/208676) which causes
+There is [a bug](https://gitlab.com/gitlab-org/gitlab/-/issues/208676) which causes
 project creation to fail with the following error (which appears in the log file)
 when the first admin user is an
 [external user](../../../user/permissions.md#external-users-core-only):

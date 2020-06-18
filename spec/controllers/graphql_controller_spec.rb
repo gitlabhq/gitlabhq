@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe GraphqlController do
+RSpec.describe GraphqlController do
   include GraphqlHelpers
 
   before do

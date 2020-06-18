@@ -34,7 +34,6 @@ contains some settings that are common for all providers.
 - [OAuth2Generic](oauth2_generic.md)
 - [JWT](../administration/auth/jwt.md)
 - [OpenID Connect](../administration/auth/oidc.md)
-- [UltraAuth](ultra_auth.md)
 - [Salesforce](salesforce.md)
 - [AWS Cognito](../administration/auth/cognito.md)
 

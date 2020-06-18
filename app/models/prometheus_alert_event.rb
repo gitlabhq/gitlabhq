@@ -34,10 +34,4 @@ class PrometheusAlertEvent < ApplicationRecord
   def self.status_value_for(name)
     state_machines[:status].states[name].value
   end
-
-  def self.payload_key_for(gitlab_alert_id, started_at)
-    plain = [gitlab_alert_id, started_at].join('/')
-
-    Digest::SHA1.hexdigest(plain)
-  end
 end

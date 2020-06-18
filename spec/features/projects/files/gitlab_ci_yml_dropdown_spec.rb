@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Projects > Files > User wants to add a .gitlab-ci.yml file' do
+RSpec.describe 'Projects > Files > User wants to add a .gitlab-ci.yml file' do
   before do
     project = create(:project, :repository)
     sign_in project.owner

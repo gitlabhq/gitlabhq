@@ -21,7 +21,7 @@ Pinning tests help you ensure that you don't unintentionally change the output o
 
 Leaving in the commits for adding and removing pins helps others checkout and verify the result of the test.
 
-```bash
+```shell
 AAAAAA Add pinning tests to funky_foo
 BBBBBB Refactor funky_foo into nice_foo
 CCCCCC Remove pinning tests for funky_foo
@@ -31,13 +31,13 @@ Then you can leave a reviewer instructions on how to run the pinning test in you
 
 > First revert the commit which removes the pin.
 >
-> ```bash
+> ```shell
 > git revert --no-commit $(git log -1 --grep="Remove pinning test for funky_foo" --pretty=format:"%H")
 > ```
 >
 > Then run the test
 >
-> ```bash
+> ```shell
 > yarn run jest path/to/funky_foo_pin_spec.js
 > ```
 
@@ -69,7 +69,7 @@ expect(cleanForSnapshot(wrapper.element)).toMatchSnapshot();
 
 ### Examples
 
-- [Pinning test in a haml to vue refactor](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/27691#pinning-tests)
+- [Pinning test in a Haml to Vue refactor](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/27691#pinning-tests)
 - [Pinning test in isolating a bug](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/32198#note_212736225)
 - [Pinning test in refactoring dropdown](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/28173)
 - [Pinning test in refactoring vulnerability_details.vue](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/25830/commits)

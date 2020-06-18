@@ -1,0 +1,5 @@
+---
+title: Fix rendering of emojis in status tooltips
+merge_request: 32604
+author:
+type: fixed

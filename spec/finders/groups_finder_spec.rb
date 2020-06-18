@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe GroupsFinder do
+RSpec.describe GroupsFinder do
   describe '#execute' do
     let(:user) { create(:user) }
 
@@ -73,6 +73,12 @@ describe GroupsFinder do
       let!(:public_subgroup) { create(:group, :public, parent: parent_group) }
       let!(:internal_subgroup) { create(:group, :internal, parent: parent_group) }
       let!(:private_subgroup) { create(:group, :private, parent: parent_group) }
+
+      context 'with [nil] parent' do
+        it 'returns only top-level groups' do
+          expect(described_class.new(user, parent: [nil]).execute).to contain_exactly(parent_group)
+        end
+      end
 
       context 'without a user' do
         it 'only returns parent and public subgroups' do

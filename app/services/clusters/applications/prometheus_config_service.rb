@@ -132,19 +132,21 @@ module Clusters
       end
 
       def alerts(environment)
-        variables = Gitlab::Prometheus::QueryVariables.call(environment)
         alerts = Projects::Prometheus::AlertsFinder
           .new(environment: environment)
           .execute
 
         alerts.map do |alert|
-          substitute_query_variables(alert.to_param, variables)
+          hash = alert.to_param
+          hash['expr'] = substitute_query_variables(hash['expr'], environment)
+          hash
         end
       end
 
-      def substitute_query_variables(hash, variables)
-        hash['expr'] %= variables
-        hash
+      def substitute_query_variables(query, environment)
+        result = ::Prometheus::ProxyVariableSubstitutionService.new(environment, query: query).execute
+
+        result[:params][:query]
       end
 
       def environments

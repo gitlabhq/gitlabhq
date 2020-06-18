@@ -64,7 +64,7 @@ export const imagesListResponse = {
 export const tagsListResponse = {
   data: [
     {
-      tag: 'centos6',
+      name: 'centos6',
       revision: 'b118ab5b0e90b7cb5127db31d5321ac14961d097516a8e0e72084b6cdc783b43',
       short_revision: 'b118ab5b0',
       size: 19,
@@ -75,7 +75,7 @@ export const tagsListResponse = {
       destroy_path: 'path',
     },
     {
-      tag: 'test-image',
+      name: 'test-tag',
       revision: 'b969de599faea2b3d9b6605a8b0897261c571acaa36db1bdc7349b5775b4e0b4',
       short_revision: 'b969de599',
       size: 19,

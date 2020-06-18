@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Projects > Members > Owner cannot leave project' do
+RSpec.describe 'Projects > Members > Owner cannot leave project' do
   let(:project) { create(:project) }
 
   before do

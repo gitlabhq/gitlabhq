@@ -6,7 +6,7 @@ lint_paths="changelogs/unreleased"
 invalid_files=$(find $lint_paths -type f -not -name "*.yml" -not -name ".gitkeep")
 
 if [ -n "$invalid_files" ]; then
-    echo "Changelog files must end in .yml, but these did not:"
-    echo "$invalid_files" | sed -e "s/^/* /"
+  echo "Changelog files must end in .yml, but these did not:"
+  echo "$invalid_files" | sed -e "s/^/* /"
   exit 1
 fi

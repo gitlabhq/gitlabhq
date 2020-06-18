@@ -28,6 +28,10 @@ module Gitlab
           # this will force use of DEFAULT_REDIS_QUEUES_URL when config file is absent
           super
         end
+
+        def instrumentation_class
+          ::Gitlab::Instrumentation::Redis::Queues
+        end
       end
     end
   end

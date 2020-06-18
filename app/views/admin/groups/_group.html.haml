@@ -1,34 +1,37 @@
 - group = local_assigns.fetch(:group)
-- css_class = 'no-description' if group.description.blank?
+- css_class = "gl-display-flex!#{' no-description' if group.description.blank?}"
 
-%li.group-row.py-3{ class: css_class, data: { qa_selector: 'group_row_content' } }
-  .controls
-    = link_to _('Edit'), admin_group_edit_path(group), id: "edit_#{dom_id(group)}", class: 'btn'
-    = link_to _('Delete'), [:admin, group], data: { confirm: _("Are you sure you want to remove %{group_name}?") % { group_name: group.name } }, method: :delete, class: 'btn btn-remove'
-  .stats
+%li.group-row.gl-py-3.gl-align-items-center{ class: css_class, data: { qa_selector: 'group_row_content' } }
+  .avatar-container.rect-avatar.s40.gl-flex-shrink-0
+    = group_icon(group, class: "avatar s40")
+
+  .gl-min-w-0.gl-flex-grow-1
+    .title
+      = link_to [:admin, group], class: 'group-name', data: { qa_selector: 'group_name_link' } do
+        = group.full_name
+
+    - if group.description.present?
+      .description
+        = markdown_field(group, :description)
+
+  .stats.gl-text-gray-700.gl-flex-shrink-0.gl-display-none.gl-display-sm-flex
     %span.badge.badge-pill
       = storage_counter(group.storage_size)
 
-    = render_if_exists 'admin/namespace_plan_badge', namespace: group
-    = render_if_exists 'admin/groups/marked_for_deletion_badge', group: group
+    = render_if_exists 'admin/namespace_plan_badge', namespace: group, css_class: 'gl-ml-5 gl-mr-0'
+    = render_if_exists 'admin/groups/marked_for_deletion_badge', group: group, css_class: 'gl-ml-5'
 
-    %span
+    %span.gl-ml-5
       = icon('bookmark')
       = number_with_delimiter(group.projects.count)
 
-    %span
+    %span.gl-ml-5
       = icon('users')
       = number_with_delimiter(group.users.count)
 
-    %span.visibility-icon.has-tooltip{ data: { container: 'body', placement: 'left' }, title: visibility_icon_description(group) }
+    %span.gl-ml-5.visibility-icon.has-tooltip{ data: { container: 'body', placement: 'left' }, title: visibility_icon_description(group) }
       = visibility_level_icon(group.visibility_level, fw: false)
 
-  .avatar-container.rect-avatar.s40
-    = group_icon(group, class: "avatar s40 d-none d-sm-block")
-  .title
-    = link_to [:admin, group], class: 'group-name', data: { qa_selector: 'group_name_link' } do
-      = group.full_name
-
-  - if group.description.present?
-    .description
-      = markdown_field(group, :description)
+  .controls.gl-flex-shrink-0.gl-ml-5
+    = link_to _('Edit'), admin_group_edit_path(group), id: "edit_#{dom_id(group)}", class: 'btn'
+    = link_to _('Delete'), [:admin, group], data: { confirm: _("Are you sure you want to remove %{group_name}?") % { group_name: group.name } }, method: :delete, class: 'btn btn-remove'

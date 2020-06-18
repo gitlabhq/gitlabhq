@@ -7,6 +7,7 @@ module ObjectStorage
     include ObjectStorageQueue
 
     feature_category_not_owned!
+    loggable_arguments 0, 1, 2, 3
 
     SanityCheckError = Class.new(StandardError)
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Profile > Personal Access Tokens', :js do
+RSpec.describe 'Profile > Personal Access Tokens', :js do
   let(:user) { create(:user) }
 
   def active_personal_access_tokens

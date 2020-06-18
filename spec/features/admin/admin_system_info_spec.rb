@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Admin System Info' do
+RSpec.describe 'Admin System Info' do
   before do
     sign_in(create(:admin))
   end

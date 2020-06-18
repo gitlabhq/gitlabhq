@@ -5,4 +5,6 @@ Rails.application.eager_load!
 
 ACTION_CABLE_SERVER = true
 
+use ActionDispatch::RequestId
+
 run ActionCable.server

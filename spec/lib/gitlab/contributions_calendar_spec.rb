@@ -42,7 +42,7 @@ describe Gitlab::ContributionsCalendar do
     described_class.new(contributor, current_user)
   end
 
-  def create_event(project, day, hour = 0, action = Event::CREATED, target_symbol = :issue)
+  def create_event(project, day, hour = 0, action = :created, target_symbol = :issue)
     @targets ||= {}
     @targets[project] ||= create(target_symbol, project: project, author: contributor)
 
@@ -77,14 +77,14 @@ describe Gitlab::ContributionsCalendar do
     end
 
     it "counts the diff notes on merge request" do
-      create_event(public_project, today, 0, Event::COMMENTED, :diff_note_on_merge_request)
+      create_event(public_project, today, 0, :commented, :diff_note_on_merge_request)
 
       expect(calendar(contributor).activity_dates[today]).to eq(1)
     end
 
     it "counts the discussions on merge requests and issues" do
-      create_event(public_project, today, 0, Event::COMMENTED, :discussion_note_on_merge_request)
-      create_event(public_project, today, 2, Event::COMMENTED, :discussion_note_on_issue)
+      create_event(public_project, today, 0, :commented, :discussion_note_on_merge_request)
+      create_event(public_project, today, 2, :commented, :discussion_note_on_issue)
 
       expect(calendar(contributor).activity_dates[today]).to eq(2)
     end

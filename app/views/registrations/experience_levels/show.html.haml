@@ -1,0 +1,28 @@
+- page_title _('What’s your experience level?')
+
+.gl-display-flex.gl-flex-direction-column.gl-align-items-center
+  = image_tag 'learn-gitlab-avatar.jpg', width: '90'
+
+  %h2.gl-text-center.gl-mt-3.gl-mb-3= _('Hello there')
+  %p.gl-text-center.gl-font-lg.gl-mb-6= _('Welcome to the guided GitLab tour')
+
+  %h3.gl-text-center.gl-font-lg.gl-mt-6.gl-mb-0= _('What describes you best?')
+
+  .card-deck.gl-mt-6
+    .card
+      .card-body.gl-display-flex.gl-py-8.gl-pr-5.gl-pl-7
+        .gl-align-self-center.gl-pr-6
+          = image_tag 'novice.svg', width: '78', height: '78', alt: ''
+        %div
+          %p.gl-font-lg.gl-font-weight-bold.gl-mb-2= _('Novice')
+          %p= _('I’m not very familiar with the basics of project management and DevOps.')
+          = link_to _('Show me everything'), users_sign_up_experience_level_path(experience_level: :novice, namespace_path: params[:namespace_path]), method: :patch, class: 'stretched-link'
+
+    .card
+      .card-body.gl-display-flex.gl-py-8.gl-pr-5.gl-pl-7
+        .gl-align-self-center.gl-pr-6
+          = image_tag 'experienced.svg', width: '78', height: '78', alt: ''
+        %div
+          %p.gl-font-lg.gl-font-weight-bold.gl-mb-2= _('Experienced')
+          %p= _('I’m familiar with the basics of project management and DevOps.')
+          = link_to _('Show me more advanced stuff'), users_sign_up_experience_level_path(experience_level: :experienced, namespace_path: params[:namespace_path]), method: :patch, class: 'stretched-link'

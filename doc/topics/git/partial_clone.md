@@ -141,7 +141,7 @@ enabled on the Git server:
 1. **Create a new Git repository and fetch.** Support for `--filter=sparse:oid`
    using the clone command is incomplete, so we will emulate the clone command
    by hand, using `git init` and `git fetch`. Follow
-   [issue tracking support for `--filter=sparse:oid`](https://gitlab.com/gitlab-org/git/issues/4)
+   [issue tracking support for `--filter=sparse:oid`](https://gitlab.com/gitlab-org/git/-/issues/4)
    for updates.
 
    ```shell
@@ -173,7 +173,7 @@ enabled on the Git server:
 
 1. **Sparse checkout** must be enabled and configured to prevent objects from
    other paths being downloaded automatically when checking out branches. Follow
-   [issue proposing automating sparse checkouts](https://gitlab.com/gitlab-org/git/issues/5) for updates.
+   [issue proposing automating sparse checkouts](https://gitlab.com/gitlab-org/git/-/issues/5) for updates.
 
    ```shell
    # Enable sparse checkout

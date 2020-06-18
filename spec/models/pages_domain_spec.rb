@@ -97,8 +97,8 @@ describe PagesDomain do
     it 'saves validity time' do
       domain.save
 
-      expect(domain.certificate_valid_not_before).to be_like_time(Time.parse("2020-03-16 14:20:34 UTC"))
-      expect(domain.certificate_valid_not_after).to be_like_time(Time.parse("2220-01-28 14:20:34 UTC"))
+      expect(domain.certificate_valid_not_before).to be_like_time(Time.zone.parse("2020-03-16 14:20:34 UTC"))
+      expect(domain.certificate_valid_not_after).to be_like_time(Time.zone.parse("2220-01-28 14:20:34 UTC"))
     end
   end
 
@@ -366,7 +366,7 @@ describe PagesDomain do
       let_it_be(:domain) { create(:pages_domain) }
 
       where(:attribute, :old_value, :new_value, :update_expected) do
-        now = Time.now
+        now = Time.current
         future = now + 1.day
 
         :project | nil       | :project1 | true
@@ -548,7 +548,7 @@ describe PagesDomain do
 
       it 'does not clear failure on unrelated updates' do
         expect do
-          domain.update!(verified_at: Time.now)
+          domain.update!(verified_at: Time.current)
         end.not_to change { domain.auto_ssl_failed }.from(true)
       end
     end

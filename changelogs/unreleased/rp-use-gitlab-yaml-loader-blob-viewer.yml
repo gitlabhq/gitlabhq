@@ -1,0 +1,5 @@
+---
+title: Display error for YAML files that are too large
+merge_request: 34199
+author:
+type: changed

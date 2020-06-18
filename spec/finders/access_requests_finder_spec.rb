@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe AccessRequestsFinder do
+RSpec.describe AccessRequestsFinder do
   let(:user) { create(:user) }
   let(:access_requester) { create(:user) }
 

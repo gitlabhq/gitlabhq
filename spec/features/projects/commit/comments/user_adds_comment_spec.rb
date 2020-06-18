@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-describe "User adds a comment on a commit", :js do
+RSpec.describe "User adds a comment on a commit", :js do
   include Spec::Support::Helpers::Features::NotesHelpers
   include RepoHelpers
 

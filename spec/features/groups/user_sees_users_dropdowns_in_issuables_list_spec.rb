@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Groups > User sees users dropdowns in issuables list' do
+RSpec.describe 'Groups > User sees users dropdowns in issuables list' do
   let(:entity) { create(:group) }
   let(:user_in_dropdown) { create(:user) }
   let!(:user_not_in_dropdown) { create(:user) }

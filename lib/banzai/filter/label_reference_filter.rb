@@ -71,13 +71,16 @@ module Banzai
       end
 
       def url_for_object(label, parent)
-        h = Gitlab::Routing.url_helpers
+        label_url_method =
+          if context[:label_url_method]
+            context[:label_url_method]
+          elsif parent.is_a?(Project)
+            :project_issues_url
+          end
 
-        if parent.is_a?(Project)
-          h.project_issues_url(parent, label_name: label.name, only_path: context[:only_path])
-        elsif context[:label_url_method]
-          h.public_send(context[:label_url_method], parent, label_name: label.name, only_path: context[:only_path]) # rubocop:disable GitlabSecurity/PublicSend
-        end
+        return unless label_url_method
+
+        Gitlab::Routing.url_helpers.public_send(label_url_method, parent, label_name: label.name, only_path: context[:only_path]) # rubocop:disable GitlabSecurity/PublicSend
       end
 
       def object_link_text(object, matches)

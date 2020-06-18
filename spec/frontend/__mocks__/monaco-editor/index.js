@@ -9,5 +9,8 @@ import 'monaco-editor/esm/vs/language/json/monaco.contribution';
 import 'monaco-editor/esm/vs/language/html/monaco.contribution';
 import 'monaco-editor/esm/vs/basic-languages/monaco.contribution';
 
+// This language starts trying to spin up web workers which obviously breaks in Jest environment
+jest.mock('monaco-editor/esm/vs/language/typescript/tsMode');
+
 export * from 'monaco-editor/esm/vs/editor/editor.api';
 export default global.monaco;

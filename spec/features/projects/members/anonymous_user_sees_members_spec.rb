@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Projects > Members > Anonymous user sees members' do
+RSpec.describe 'Projects > Members > Anonymous user sees members' do
   let(:user) { create(:user) }
   let(:group) { create(:group, :public) }
   let(:project) { create(:project, :public) }

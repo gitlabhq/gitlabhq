@@ -18,7 +18,21 @@ describe Gitlab::Redis::Wrapper do
   let(:config_env_variable_url) {"TEST_GITLAB_REDIS_URL"}
   let(:class_redis_url) { Gitlab::Redis::Wrapper::DEFAULT_REDIS_URL }
 
-  include_examples "redis_shared_examples"
+  include_examples "redis_shared_examples" do
+    before do
+      allow(described_class).to receive(:instrumentation_class) do
+        ::Gitlab::Instrumentation::Redis::Cache
+      end
+    end
+  end
+
+  describe '.instrumentation_class' do
+    it 'raises a NotImplementedError' do
+      expect(described_class).to receive(:instrumentation_class).and_call_original
+
+      expect { described_class.instrumentation_class }.to raise_error(NotImplementedError)
+    end
+  end
 
   describe '.config_file_path' do
     it 'returns the absolute path to the configuration file' do

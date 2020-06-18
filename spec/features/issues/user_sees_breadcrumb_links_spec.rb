@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'New issue breadcrumb' do
+RSpec.describe 'New issue breadcrumb' do
   let_it_be(:project, reload: true) { create(:project) }
   let(:user) { project.creator }
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Dashboard Projects' do
+RSpec.describe 'Dashboard Projects' do
   let(:user) { create(:user) }
   let(:project) { create(:project, :repository, name: 'awesome stuff') }
   let(:project2) { create(:project, :public, name: 'Community project') }
@@ -125,7 +125,7 @@ describe 'Dashboard Projects' do
   end
 
   context 'when on Starred projects tab', :js do
-    it 'shows the empty state when there are no starred projects' do
+    it 'shows the empty state when there are no starred projects', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/222357' do
       visit(starred_dashboard_projects_path)
 
       element = page.find('.row.empty-state')

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Explore::GroupsController do
+RSpec.describe Explore::GroupsController do
   let(:user) { create(:user) }
 
   before do

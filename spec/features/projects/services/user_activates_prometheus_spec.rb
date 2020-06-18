@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'User activates Prometheus' do
+RSpec.describe 'User activates Prometheus' do
   include_context 'project service activation'
 
   before do

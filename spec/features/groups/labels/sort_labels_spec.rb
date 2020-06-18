@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Sort labels', :js do
+RSpec.describe 'Sort labels', :js do
   let(:user) { create(:user) }
   let(:group) { create(:group) }
   let!(:label1) { create(:group_label, title: 'Foo', description: 'Lorem ipsum', group: group) }

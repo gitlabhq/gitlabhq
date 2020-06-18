@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe UserCalloutsController do
+RSpec.describe UserCalloutsController do
   let(:user) { create(:user) }
 
   before do

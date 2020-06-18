@@ -17,15 +17,23 @@ module ClustersHelper
     end
   end
 
+  def js_clusters_list_data(path = nil)
+    {
+      endpoint: path,
+      img_tags: {
+        aws: { path: image_path('illustrations/logos/amazon_eks.svg'), text: s_('ClusterIntegration|Amazon EKS') },
+        default: { path: image_path('illustrations/logos/kubernetes.svg'), text: _('Kubernetes Cluster') },
+        gcp: { path: image_path('illustrations/logos/google_gke.svg'), text: s_('ClusterIntegration|Google GKE') }
+      }
+    }
+  end
+
+  # This method is depreciated and will be removed when associated HAML files are moved to JavaScript
   def provider_icon(provider = nil)
-    case provider
-    when 'aws'
-      image_tag 'illustrations/logos/amazon_eks.svg', alt: s_('ClusterIntegration|Amazon EKS'), class: 'gl-h-full'
-    when 'gcp'
-      image_tag 'illustrations/logos/google_gke.svg', alt: s_('ClusterIntegration|Google GKE'), class: 'gl-h-full'
-    else
-      image_tag 'illustrations/logos/kubernetes.svg', alt: _('Kubernetes Cluster'), class: 'gl-h-full'
-    end
+    img_data = js_clusters_list_data.dig(:img_tags, provider&.to_sym) ||
+               js_clusters_list_data.dig(:img_tags, :default)
+
+    image_tag img_data[:path], alt: img_data[:text], class: 'gl-h-full'
   end
 
   def render_gcp_signup_offer

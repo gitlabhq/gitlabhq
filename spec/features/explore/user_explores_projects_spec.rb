@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'User explores projects' do
+RSpec.describe 'User explores projects' do
   let_it_be(:archived_project) { create(:project, :archived) }
   let_it_be(:internal_project) { create(:project, :internal) }
   let_it_be(:private_project) { create(:project, :private) }

@@ -1,5 +1,6 @@
 import axios from '../../lib/utils/axios_utils';
 import Api from '~/api';
+import { validateParams } from '../utils';
 
 export default class PipelinesService {
   /**
@@ -19,18 +20,10 @@ export default class PipelinesService {
   }
 
   getPipelines(data = {}) {
-    const { scope, page, username, ref } = data;
+    const { scope, page } = data;
     const { CancelToken } = axios;
 
-    const queryParams = { scope, page };
-
-    if (username) {
-      queryParams.username = username;
-    }
-
-    if (ref) {
-      queryParams.ref = ref;
-    }
+    const queryParams = { scope, page, ...validateParams(data) };
 
     this.cancelationSource = CancelToken.source();
 

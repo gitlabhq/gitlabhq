@@ -1,10 +1,11 @@
 import invalidUrl from '~/lib/utils/invalid_url';
+import { timezones } from '../format_date';
 
 export default () => ({
   // API endpoints
-  metricsEndpoint: null,
   deploymentsEndpoint: null,
   dashboardEndpoint: invalidUrl,
+  dashboardsEndpoint: invalidUrl,
 
   // Dashboard request parameters
   timeRange: null,
@@ -34,14 +35,24 @@ export default () => ({
     panel: null,
   },
   allDashboards: [],
-  promVariables: {},
-
+  /**
+   * User-defined custom variables are passed
+   * via the dashboard yml file.
+   */
+  variables: {},
+  /**
+   * User-defined custom links are passed
+   * via the dashboard yml file.
+   */
+  links: [],
   // Other project data
+  dashboardTimezone: timezones.LOCAL,
   annotations: [],
   deploymentData: [],
   environments: [],
   environmentsSearchTerm: '',
   environmentsLoading: false,
+  currentEnvironmentName: null,
 
   // GitLab paths to other pages
   projectPath: null,

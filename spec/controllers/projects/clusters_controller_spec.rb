@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Projects::ClustersController do
+RSpec.describe Projects::ClustersController do
   include AccessMatchersForController
   include GoogleApi::CloudPlatformHelpers
   include KubernetesHelpers
@@ -39,6 +39,13 @@ describe Projects::ClustersController do
 
           expect(response).to have_gitlab_http_status(:ok)
           expect(response).to match_response_schema('cluster_list')
+        end
+
+        it 'sets the polling interval header for json requests' do
+          go(format: :json)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response.headers['Poll-Interval']).to eq("10000")
         end
 
         context 'when page is specified' do

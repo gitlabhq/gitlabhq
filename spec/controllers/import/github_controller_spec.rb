@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Import::GithubController do
+RSpec.describe Import::GithubController do
   include ImportSpecHelper
 
   let(:provider) { :github }

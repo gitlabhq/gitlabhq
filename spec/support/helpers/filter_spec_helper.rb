@@ -56,14 +56,11 @@ module FilterSpecHelper
     pipeline.call(body)
   end
 
-  def reference_pipeline(context = {})
+  def reference_pipeline(filter: described_class, **context)
     context.reverse_merge!(project: project) if defined?(project)
     context.reverse_merge!(current_user: current_user) if defined?(current_user)
 
-    filters = [
-      Banzai::Filter::AutolinkFilter,
-      described_class
-    ]
+    filters = [Banzai::Filter::AutolinkFilter, filter].compact
 
     redact = context.delete(:redact)
     filters.push(Banzai::Filter::ReferenceRedactorFilter) if redact
@@ -75,8 +72,13 @@ module FilterSpecHelper
     reference_pipeline(context).call(body)
   end
 
-  def reference_filter(html, context = {})
-    reference_pipeline(context).to_document(html)
+  def reference_filter(text, context = {})
+    reference_pipeline(**context).to_document(text)
+  end
+
+  # Use to test no-ops
+  def null_filter(text, context = {})
+    reference_pipeline(filter: nil, **context).to_document(text)
   end
 
   # Modify a String reference to make it invalid

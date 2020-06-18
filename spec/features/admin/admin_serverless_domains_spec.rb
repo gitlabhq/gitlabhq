@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Admin Serverless Domains', :js do
+RSpec.describe 'Admin Serverless Domains', :js do
   let(:sample_domain) { build(:pages_domain) }
 
   before do

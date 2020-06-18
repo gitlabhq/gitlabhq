@@ -49,8 +49,8 @@ groups:
 1. Select or type the operator to use for filtering the attribute. The following operators are
    available:
    - `=`: Is
-   - `!=`: Is not ([Introduced](https://gitlab.com/gitlab-org/gitlab/issues/18059) in GitLab 12.7)
-1. Enter the text to filter the attribute by.
+   - `!=`: Is not ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/18059) in GitLab 12.7)
+1. Enter the text to [filter the attribute by](#filters-autocomplete).
 1. Repeat this process to filter by multiple attributes. Multiple attributes are joined by a logical
    `AND`.
 
@@ -86,7 +86,7 @@ You can filter issues and merge requests by specific terms included in titles or
 
 ### Filtering by ID
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/39908) in GitLab 12.1.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/39908) in GitLab 12.1.
 
 You can filter the **Issues** list to individual instances by their ID. For example, enter filter `#10` to return only issue 10. The same applies to the **Merge Requests** list. Enter filter `#30` to return only merge request 30.
 
@@ -109,6 +109,18 @@ To filter merge requests already approved by a specific individual, you can type
 the dropdown) **Approved-By** and select the user.
 
 ![Filter MRs by approved by](img/filter_approved_by_merge_requests_v13_0.png)
+
+## Filters autocomplete
+
+GitLab provides many filters across many pages (issues, merge requests, epics,
+and pipelines among others) which you can use to narrow down your search. When
+using the filter functionality, you can start typing characters to bring up
+relevant users or other attributes.
+
+For performance optimization, there is a requirement of a minimum of three
+characters to begin your search. For example, if you want to search for
+issues that have the assignee "Simone Presley", you'll need to type at
+least "Sim" before autocomplete gives any relevant results.
 
 ## Search history
 
@@ -149,9 +161,9 @@ You can search through your projects from the left menu, by clicking the menu ba
 On the field **Filter by name**, type the project or group name you want to find, and GitLab
 will filter them for you as you type.
 
-You can also look for the projects you starred (**Starred projects**), and **Explore** all
+You can also look for the projects you [starred](../project/index.md#star-a-project) (**Starred projects**), and **Explore** all
 public and internal projects available in GitLab.com, from which you can filter by visibility,
-through **Trending**, best rated with **Most starts**, or **All** of them.
+through **Trending**, best rated with **Most stars**, or **All** of them.
 
 You can also sort them by **Name**, **Last created**, **Oldest created**, **Last updated**,
 **Oldest updated**, **Owner**, and choose to hide or show **archived projects**:

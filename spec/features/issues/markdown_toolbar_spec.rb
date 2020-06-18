@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Issue markdown toolbar', :js do
+RSpec.describe 'Issue markdown toolbar', :js do
   let(:project) { create(:project, :public) }
   let(:issue)   { create(:issue, project: project) }
   let(:user)    { create(:user) }

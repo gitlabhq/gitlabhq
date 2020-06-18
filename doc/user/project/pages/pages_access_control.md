@@ -7,7 +7,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # GitLab Pages Access Control
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/33422) in GitLab 11.5.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/33422) in GitLab 11.5.
 > - Available on GitLab.com in GitLab 12.4.
 
 You can enable Pages access control on your project, so that only

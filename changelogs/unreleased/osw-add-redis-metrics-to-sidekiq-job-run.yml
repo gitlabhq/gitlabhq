@@ -1,0 +1,5 @@
+---
+title: Add metrics for Redis usage during Sidekiq job execution
+merge_request: 32265
+author:
+type: added

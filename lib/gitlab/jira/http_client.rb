@@ -12,12 +12,7 @@ module Gitlab
       def request(*args)
         result = make_request(*args)
 
-        unless result.response.is_a?(Net::HTTPSuccess)
-          Gitlab::ErrorTracking.track_and_raise_exception(
-            JIRA::HTTPError.new(result.response),
-            response: result.body
-          )
-        end
+        raise JIRA::HTTPError.new(result.response) unless result.response.is_a?(Net::HTTPSuccess)
 
         result
       end

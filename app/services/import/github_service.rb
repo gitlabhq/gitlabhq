@@ -10,15 +10,26 @@ module Import
         return error(_('This namespace has already been taken! Please choose another one.'), :unprocessable_entity)
       end
 
-      project = Gitlab::LegacyGithubImport::ProjectCreator
-                  .new(repo, project_name, target_namespace, current_user, access_params, type: provider)
-                  .execute(extra_project_attrs)
+      project = create_project(access_params, provider)
 
       if project.persisted?
         success(project)
       else
         error(project_save_error(project), :unprocessable_entity)
       end
+    rescue Octokit::Error => e
+      log_error(e)
+    end
+
+    def create_project(access_params, provider)
+      Gitlab::LegacyGithubImport::ProjectCreator.new(
+        repo,
+        project_name,
+        target_namespace,
+        current_user,
+        access_params,
+        type: provider
+      ).execute(extra_project_attrs)
     end
 
     def repo
@@ -43,6 +54,18 @@ module Import
 
     def authorized?
       can?(current_user, :create_projects, target_namespace)
+    end
+
+    private
+
+    def log_error(exception)
+      Gitlab::Import::Logger.error(
+        message: 'Import failed due to a GitHub error',
+        status: exception.response_status,
+        error: exception.response_body
+      )
+
+      error(_('Import failed due to a GitHub error: %{original}') % { original: exception.response_body }, :unprocessable_entity)
     end
   end
 end

@@ -8,12 +8,25 @@ import {
   GlIcon,
   GlTooltipDirective,
   GlFormInput,
+  GlFormSelect,
 } from '@gitlab/ui';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import { DEFAULT_ASSET_LINK_TYPE, ASSET_LINK_TYPE } from '../constants';
+import { s__ } from '~/locale';
 
 export default {
   name: 'AssetLinksForm',
-  components: { GlSprintf, GlLink, GlFormGroup, GlButton, GlIcon, GlFormInput },
+  components: {
+    GlSprintf,
+    GlLink,
+    GlFormGroup,
+    GlButton,
+    GlIcon,
+    GlFormInput,
+    GlFormSelect,
+  },
   directives: { GlTooltip: GlTooltipDirective },
+  mixins: [glFeatureFlagsMixin()],
   computed: {
     ...mapState('detail', ['release', 'releaseAssetsDocsPath']),
     ...mapGetters('detail', ['validationErrors']),
@@ -26,6 +39,7 @@ export default {
       'addEmptyAssetLink',
       'updateAssetLinkUrl',
       'updateAssetLinkName',
+      'updateAssetLinkType',
       'removeAssetLink',
     ]),
     onAddAnotherClicked() {
@@ -34,12 +48,6 @@ export default {
     onRemoveClicked(linkId) {
       this.removeAssetLink(linkId);
       this.ensureAtLeastOneLink();
-    },
-    onUrlInput(linkIdToUpdate, newUrl) {
-      this.updateAssetLinkUrl({ linkIdToUpdate, newUrl });
-    },
-    onLinkTitleInput(linkIdToUpdate, newName) {
-      this.updateAssetLinkName({ linkIdToUpdate, newName });
     },
     hasDuplicateUrl(link) {
       return Boolean(this.getLinkErrors(link).isDuplicate);
@@ -73,6 +81,13 @@ export default {
       }
     },
   },
+  typeOptions: [
+    { value: ASSET_LINK_TYPE.IMAGE, text: s__('ReleaseAssetLinkType|Image') },
+    { value: ASSET_LINK_TYPE.PACKAGE, text: s__('ReleaseAssetLinkType|Package') },
+    { value: ASSET_LINK_TYPE.RUNBOOK, text: s__('ReleaseAssetLinkType|Runbook') },
+    { value: ASSET_LINK_TYPE.OTHER, text: s__('ReleaseAssetLinkType|Other') },
+  ],
+  defaultTypeOptionValue: DEFAULT_ASSET_LINK_TYPE,
 };
 </script>
 
@@ -109,10 +124,10 @@ export default {
     <div
       v-for="(link, index) in release.assets.links"
       :key="link.id"
-      class="row flex-column flex-sm-row align-items-stretch align-items-sm-start"
+      class="row flex-column flex-sm-row align-items-stretch align-items-sm-start no-gutters"
     >
       <gl-form-group
-        class="url-field form-group col"
+        class="url-field form-group col pr-sm-2"
         :label="__('URL')"
         :label-for="`asset-url-${index}`"
       >
@@ -123,7 +138,7 @@ export default {
           type="text"
           class="form-control"
           :state="isUrlValid(link)"
-          @change="onUrlInput(link.id, $event)"
+          @change="updateAssetLinkUrl({ linkIdToUpdate: link.id, newUrl: $event })"
         />
         <template #invalid-feedback>
           <span v-if="hasEmptyUrl(link)" class="invalid-feedback d-inline">
@@ -149,7 +164,7 @@ export default {
       </gl-form-group>
 
       <gl-form-group
-        class="link-title-field col"
+        class="link-title-field col px-sm-2"
         :label="__('Link title')"
         :label-for="`asset-link-name-${index}`"
       >
@@ -160,7 +175,7 @@ export default {
           type="text"
           class="form-control"
           :state="isNameValid(link)"
-          @change="onLinkTitleInput(link.id, $event)"
+          @change="updateAssetLinkName({ linkIdToUpdate: link.id, newName: $event })"
         />
         <template #invalid-feedback>
           <span v-if="hasEmptyName(link)" class="invalid-feedback d-inline">
@@ -169,16 +184,34 @@ export default {
         </template>
       </gl-form-group>
 
-      <div class="mb-5 mb-sm-3 mt-sm-4 col col-sm-auto">
+      <gl-form-group
+        v-if="glFeatures.releaseAssetLinkType"
+        class="link-type-field col-auto px-sm-2"
+        :label="__('Type')"
+        :label-for="`asset-type-${index}`"
+      >
+        <gl-form-select
+          :id="`asset-type-${index}`"
+          ref="typeSelect"
+          :value="link.linkType || $options.defaultTypeOptionValue"
+          class="form-control pr-4"
+          :options="$options.typeOptions"
+          @change="updateAssetLinkType({ linkIdToUpdate: link.id, newType: $event })"
+        />
+      </gl-form-group>
+
+      <div class="mb-5 mb-sm-3 mt-sm-4 col col-sm-auto pl-sm-2">
         <gl-button
           v-gl-tooltip
-          class="remove-button w-100"
+          class="remove-button w-100 form-control"
           :aria-label="__('Remove asset link')"
           :title="__('Remove asset link')"
           @click="onRemoveClicked(link.id)"
         >
-          <gl-icon class="mr-1 mr-sm-0 mb-1" :size="16" name="remove" />
-          <span class="d-inline d-sm-none">{{ __('Remove asset link') }}</span>
+          <div class="d-flex">
+            <gl-icon class="mr-1 mr-sm-0" :size="16" name="remove" />
+            <span class="d-inline d-sm-none">{{ __('Remove asset link') }}</span>
+          </div>
         </gl-button>
       </div>
     </div>

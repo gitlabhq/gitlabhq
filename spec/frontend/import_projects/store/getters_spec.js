@@ -2,6 +2,7 @@ import {
   namespaceSelectOptions,
   isImportingAnyRepo,
   hasProviderRepos,
+  hasIncompatibleRepos,
   hasImportedProjects,
 } from '~/import_projects/store/getters';
 import state from '~/import_projects/store/state';
@@ -78,6 +79,20 @@ describe('import_projects store getters', () => {
       localState.importedProjects = [];
 
       expect(hasImportedProjects(localState)).toBe(false);
+    });
+  });
+
+  describe('hasIncompatibleRepos', () => {
+    it('returns true if there are any incompatibleProjects', () => {
+      localState.incompatibleRepos = new Array(1);
+
+      expect(hasIncompatibleRepos(localState)).toBe(true);
+    });
+
+    it('returns false if there are no incompatibleProjects', () => {
+      localState.incompatibleRepos = [];
+
+      expect(hasIncompatibleRepos(localState)).toBe(false);
     });
   });
 });

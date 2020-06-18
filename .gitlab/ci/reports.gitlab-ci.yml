@@ -94,9 +94,9 @@ dependency_scanning:
   stage: test
   needs: []
   variables:
+    DS_MAJOR_VERSION: 2
     DS_EXCLUDED_PATHS: "qa/qa/ee/fixtures/secure_premade_reports,spec,ee/spec"  # GitLab-specific
   script:
-    - export DS_VERSION=${SP_VERSION:-$(echo "$CI_SERVER_VERSION" | sed 's/^\([0-9]*\)\.\([0-9]*\).*/\1-\2-stable/')}
     - |
       if ! docker info &>/dev/null; then
         if [ -z "$DOCKER_HOST" -a "$KUBERNETES_PORT" ]; then
@@ -138,7 +138,7 @@ dependency_scanning:
         ) \
         --volume "$PWD:/code" \
         --volume /var/run/docker.sock:/var/run/docker.sock \
-        "registry.gitlab.com/gitlab-org/security-products/dependency-scanning:$DS_VERSION" /code
+        "registry.gitlab.com/gitlab-org/security-products/dependency-scanning:$DS_MAJOR_VERSION" /code
   artifacts:
     paths:
       - gl-dependency-scanning-report.json  # GitLab-specific
@@ -146,37 +146,38 @@ dependency_scanning:
       dependency_scanning: gl-dependency-scanning-report.json
     expire_in: 1 week  # GitLab-specific
 
-# We need to duplicate this job's definition because it seems it's impossible to
-# override an included `only.refs`.
-# See https://gitlab.com/gitlab-org/gitlab/issues/31371.
-dast:
-  extends:
-    - .default-retry
-    - .reports:rules:dast
-  # This is needed so that manual jobs with needs don't block the pipeline.
-  # See https://gitlab.com/gitlab-org/gitlab/-/issues/199979.
-  dependencies: ["review-deploy"]
-  stage: qa  # GitLab-specific
-  image:
-    name: "registry.gitlab.com/gitlab-org/security-products/dast:$DAST_VERSION"
-  variables:
-    # To be done in a later iteration
-    # DAST_USERNAME: "root"
-    # DAST_USERNAME_FIELD: "user[login]"
-    # DAST_PASSWORD_FIELD: "user[passowrd]"
-    DAST_VERSION: 1
-  script:
-    - 'export DAST_WEBSITE="${DAST_WEBSITE:-$(cat environment_url.txt)}"'
-    # To be done in a later iteration
-    # - 'export DAST_AUTH_URL="${DAST_WEBSITE}/users/sign_in"'
-    # - 'export DAST_PASSWORD="${REVIEW_APPS_ROOT_PASSWORD}"'
-    - /analyze -t $DAST_WEBSITE
-  artifacts:
-    paths:
-      - gl-dast-report.json  # GitLab-specific
-    reports:
-      dast: gl-dast-report.json
-    expire_in: 1 week  # GitLab-specific
+# Temporarily disabling review apps
+## We need to duplicate this job's definition because it seems it's impossible to
+## override an included `only.refs`.
+## See https://gitlab.com/gitlab-org/gitlab/issues/31371.
+#dast:
+#  extends:
+#    - .default-retry
+#    - .reports:rules:dast
+#  # This is needed so that manual jobs with needs don't block the pipeline.
+#  # See https://gitlab.com/gitlab-org/gitlab/-/issues/199979.
+#  dependencies: ["review-deploy"]
+#  stage: qa  # GitLab-specific
+#  image:
+#    name: "registry.gitlab.com/gitlab-org/security-products/dast:$DAST_VERSION"
+#  variables:
+#    # To be done in a later iteration
+#    # DAST_USERNAME: "root"
+#    # DAST_USERNAME_FIELD: "user[login]"
+#    # DAST_PASSWORD_FIELD: "user[passowrd]"
+#    DAST_VERSION: 1
+#  script:
+#    - 'export DAST_WEBSITE="${DAST_WEBSITE:-$(cat environment_url.txt)}"'
+#    # To be done in a later iteration
+#    # - 'export DAST_AUTH_URL="${DAST_WEBSITE}/users/sign_in"'
+#    # - 'export DAST_PASSWORD="${REVIEW_APPS_ROOT_PASSWORD}"'
+#    - /analyze -t $DAST_WEBSITE
+#  artifacts:
+#    paths:
+#      - gl-dast-report.json  # GitLab-specific
+#    reports:
+#      dast: gl-dast-report.json
+#    expire_in: 1 week  # GitLab-specific
 
 # To be done in a later iteration: https://gitlab.com/gitlab-org/gitlab/issues/31160#note_278188255
 # schedule:dast:

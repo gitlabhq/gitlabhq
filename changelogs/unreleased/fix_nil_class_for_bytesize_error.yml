@@ -1,0 +1,5 @@
+---
+title: Fix undefined error in Gitlab::Git::Diff
+merge_request: 32967
+author:
+type: fixed

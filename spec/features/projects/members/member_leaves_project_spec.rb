@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Projects > Members > Member leaves project' do
+RSpec.describe 'Projects > Members > Member leaves project' do
   let(:user) { create(:user) }
   let(:project) { create(:project, :repository) }
 

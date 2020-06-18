@@ -1,4 +1,4 @@
-.broadcast-banner-message.js-broadcast-banner-message-preview.mt-2{ style: broadcast_message_style(@broadcast_message), class: ('hidden' unless @broadcast_message.banner? ) }
+.broadcast-message.broadcast-banner-message.alert-warning.js-broadcast-banner-message-preview.mt-2{ style: broadcast_message_style(@broadcast_message), class: ('hidden' unless @broadcast_message.banner? ) }
   = sprite_icon('bullhorn', size: 16, css_class:'vertical-align-text-top')
   .js-broadcast-message-preview
     - if @broadcast_message.message.present?
@@ -6,7 +6,7 @@
     - else
       Your message here
 .d-flex.justify-content-center
-  .broadcast-notification-message.preview.js-broadcast-notification-message-preview.mt-2{ class: ('hidden' unless @broadcast_message.notification? ) }
+  .broadcast-message.broadcast-notification-message.preview.js-broadcast-notification-message-preview.mt-2{ class: ('hidden' unless @broadcast_message.notification? ) }
     = sprite_icon('bullhorn', size: 16, css_class:'vertical-align-text-top')
     .js-broadcast-message-preview
       - if @broadcast_message.message.present?

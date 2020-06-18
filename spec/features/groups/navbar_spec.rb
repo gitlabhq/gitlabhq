@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Group navbar' do
+RSpec.describe 'Group navbar' do
   include NavbarStructureHelper
 
   include_context 'group navbar structure'
@@ -46,6 +46,7 @@ describe 'Group navbar' do
 
   before do
     stub_feature_flags(group_push_rules: false)
+    stub_feature_flags(group_iterations: false)
     group.add_maintainer(user)
     sign_in(user)
   end

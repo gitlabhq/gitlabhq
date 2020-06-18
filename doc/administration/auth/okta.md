@@ -1,5 +1,8 @@
 ---
 type: reference
+stage: Manage
+group: Access
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 ---
 
 # Okta SSO provider
@@ -17,7 +20,7 @@ The following documentation enables Okta as a SAML provider.
 1. Now, very important, add a logo
    (you can choose it from <https://about.gitlab.com/press/>). You'll have to
    crop and resize it.
-1. Next, you'll need the to fill in the SAML general config. Here's an example
+1. Next, you'll need the to fill in the SAML general configuration. Here's an example
    image.
 
    ![Okta admin panel view](img/okta_admin_panel.png)
@@ -25,14 +28,14 @@ The following documentation enables Okta as a SAML provider.
 1. The last part of the configuration is the feedback section where you can
    just say you're a customer and creating an app for internal use.
 1. When you have your app you'll have a few tabs on the top of the app's
-   profile. Click on the SAML 2.0 config instructions button which should
+   profile. Click on the SAML 2.0 configuration instructions button which should
    look like the following:
 
    ![Okta SAML settings](img/okta_saml_settings.png)
 
 1. On the screen that comes up take note of the
    **Identity Provider Single Sign-On URL** which you'll use for the
-   `idp_sso_target_url` on your GitLab config file.
+   `idp_sso_target_url` on your GitLab configuration file.
 
 1. **Before you leave Okta make sure you add your user and groups if any.**
 

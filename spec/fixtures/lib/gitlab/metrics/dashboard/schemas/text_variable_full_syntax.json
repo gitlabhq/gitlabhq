@@ -1,0 +1,12 @@
+{
+  "type": "object",
+  "required": [
+    "type", "options"
+  ],
+  "properties": {
+    "type": { "type": "string" },
+    "label": { "type": "string" },
+    "options": { "$ref": "text_variable_options.json" }
+  },
+  "additionalProperties": false
+}

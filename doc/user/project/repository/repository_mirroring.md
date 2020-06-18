@@ -28,7 +28,7 @@ immediate update, unless:
 - The mirror is already being updated.
 - 5 minutes haven't elapsed since its last update.
 
-For security reasons, from [GitLab 12.10 onwards](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/27166),
+For security reasons, in [GitLab 12.10 and later](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/27166),
 the URL to the original repository is only displayed to users with
 Maintainer or Owner permissions to the mirrored project.
 
@@ -134,7 +134,7 @@ The repository will push soon. To force a push, click the appropriate button.
 ## Pulling from a remote repository **(STARTER)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/51) in GitLab Enterprise Edition 8.2.
-> - [Added Git LFS support](https://gitlab.com/gitlab-org/gitlab/issues/10871) in [GitLab Starter](https://about.gitlab.com/pricing/) 11.11.
+> - [Added Git LFS support](https://gitlab.com/gitlab-org/gitlab/-/issues/10871) in [GitLab Starter](https://about.gitlab.com/pricing/) 11.11.
 
 You can set up a repository to automatically have its branches, tags, and commits updated from an
 upstream repository.
@@ -356,6 +356,24 @@ a [Push event webhook](../integrations/webhooks.md#push-events) to trigger an im
 pull to GitLab. Push mirroring from GitLab is rate limited to once per minute when only push mirroring
 protected branches.
 
+### Configure a webhook to trigger an immediate pull to GitLab
+
+Assuming you have already configured the [push](#setting-up-a-push-mirror-to-another-gitlab-instance-with-2fa-activated) and [pull](#pulling-from-a-remote-repository-starter) mirrors in the upstream GitLab instance, to trigger an immediate pull as suggested above, you will need to configure a [Push Event Web Hook](../integrations/webhooks.md#push-events) in the downstream instance.
+
+To do this:
+
+- Create a [personal access token](../../profile/personal_access_tokens.md) with `API` scope.
+- Navigate to **Settings > Webhooks**
+- Add the webhook URL which in this case will use the [Pull Mirror API](../../../api/projects.md#start-the-pull-mirroring-process-for-a-project-starter) request to trigger an immediate pull after updates to the repository.
+
+  ```plaintext
+  https://gitlab.example.com/api/v4/projects/:id/mirror/pull?private_token=<your_access_token>
+  ```
+
+- Ensure that the **Push Events** checkbox is selected.
+- Click on **Add Webhook** button to save the webhook.
+- To test the integration click on the **Test** button and confirm GitLab does not return any error.
+
 ### Preventing conflicts using a `pre-receive` hook
 
 CAUTION: **Warning:**
@@ -388,13 +406,13 @@ proxy_push()
   REFNAME="$3"
 
   # --- Pattern of branches to proxy pushes
-  whitelisted=$(expr "$branch" : "\(master\)")
+  allowlist=$(expr "$branch" : "\(master\)")
 
   case "$refname" in
     refs/heads/*)
       branch=$(expr "$refname" : "refs/heads/\(.*\)")
 
-      if [ "$whitelisted" = "$branch" ]; then
+      if [ "$allowlist" = "$branch" ]; then
         unset GIT_QUARANTINE_PATH # handle https://git-scm.com/docs/git-receive-pack#_quarantine_environment
         error="$(git push --quiet $TARGET_REPO $NEWREV:$REFNAME 2>&1)"
         fail=$?
@@ -435,7 +453,7 @@ Note that this sample has a few limitations:
 - This example may not work verbatim for your use case and might need modification.
   - It does not regard different types of authentication mechanisms for the mirror.
   - It does not work with forced updates (rewriting history).
-  - Only branches that match the `whitelisted` patterns will be proxy pushed.
+  - Only branches that match the `allowlist` patterns will be proxy pushed.
 - The script circumvents the Git hook quarantine environment because the update of `$TARGET_REPO`
   is seen as a ref update and Git will complain about it.
 

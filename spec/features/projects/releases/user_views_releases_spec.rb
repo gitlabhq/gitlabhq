@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'User views releases', :js do
+RSpec.describe 'User views releases', :js do
   let_it_be(:project) { create(:project, :repository, :private) }
   let_it_be(:release) { create(:release, project: project, name: 'The first release' ) }
   let_it_be(:maintainer) { create(:user) }
@@ -26,45 +26,63 @@ describe 'User views releases', :js do
       expect(page).not_to have_content('Upcoming Release')
     end
 
-    context 'when there is a link as an asset' do
-      let!(:release_link) { create(:release_link, release: release, url: url ) }
-      let(:url) { "#{project.web_url}/-/jobs/1/artifacts/download" }
-      let(:direct_asset_link) { Gitlab::Routing.url_helpers.project_release_url(project, release) << release_link.filepath }
-
-      it 'sees the link' do
-        visit project_releases_path(project)
-
-        page.within('.js-assets-list') do
-          expect(page).to have_link release_link.name, href: direct_asset_link
-          expect(page).not_to have_content('(external source)')
-        end
-      end
-
-      context 'when there is a link redirect' do
-        let!(:release_link) { create(:release_link, release: release, name: 'linux-amd64 binaries', filepath: '/binaries/linux-amd64', url: url) }
+    shared_examples 'asset link tests' do
+      context 'when there is a link as an asset' do
+        let!(:release_link) { create(:release_link, release: release, url: url ) }
         let(:url) { "#{project.web_url}/-/jobs/1/artifacts/download" }
+        let(:direct_asset_link) { Gitlab::Routing.url_helpers.project_release_url(project, release) << release_link.filepath }
 
         it 'sees the link' do
           visit project_releases_path(project)
 
           page.within('.js-assets-list') do
             expect(page).to have_link release_link.name, href: direct_asset_link
-            expect(page).not_to have_content('(external source)')
+            expect(page).not_to have_css('[data-testid="external-link-indicator"]')
+          end
+        end
+
+        context 'when there is a link redirect' do
+          let!(:release_link) { create(:release_link, release: release, name: 'linux-amd64 binaries', filepath: '/binaries/linux-amd64', url: url) }
+          let(:url) { "#{project.web_url}/-/jobs/1/artifacts/download" }
+
+          it 'sees the link' do
+            visit project_releases_path(project)
+
+            page.within('.js-assets-list') do
+              expect(page).to have_link release_link.name, href: direct_asset_link
+              expect(page).not_to have_css('[data-testid="external-link-indicator"]')
+            end
+          end
+        end
+
+        context 'when url points to external resource' do
+          let(:url) { 'http://google.com/download' }
+
+          it 'sees that the link is external resource' do
+            visit project_releases_path(project)
+
+            page.within('.js-assets-list') do
+              expect(page).to have_css('[data-testid="external-link-indicator"]')
+            end
           end
         end
       end
+    end
 
-      context 'when url points to external resource' do
-        let(:url) { 'http://google.com/download' }
-
-        it 'sees that the link is external resource' do
-          visit project_releases_path(project)
-
-          page.within('.js-assets-list') do
-            expect(page).to have_content('(external source)')
-          end
-        end
+    context 'when the release_asset_link_type feature flag is enabled' do
+      before do
+        stub_feature_flags(release_asset_link_type: true)
       end
+
+      it_behaves_like 'asset link tests'
+    end
+
+    context 'when the release_asset_link_type feature flag is disabled' do
+      before do
+        stub_feature_flags(release_asset_link_type: false)
+      end
+
+      it_behaves_like 'asset link tests'
     end
 
     context 'with an upcoming release' do
@@ -80,7 +98,7 @@ describe 'User views releases', :js do
 
     context 'with a tag containing a slash' do
       it 'sees the release' do
-        release = create :release, :with_evidence, project: project, tag: 'debian/2.4.0-1'
+        release = create :release, project: project, tag: 'debian/2.4.0-1'
         visit project_releases_path(project)
 
         expect(page).to have_content(release.name)

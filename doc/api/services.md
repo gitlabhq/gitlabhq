@@ -714,7 +714,7 @@ Parameters:
 | Parameter | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
 | `recipients` | string | true | Recipients/channels separated by whitespaces |
-| `default_irc_uri` | string | false | irc://irc.network.net:6697/ |
+| `default_irc_uri` | string | false | `irc://irc.network.net:6697/` |
 | `server_host` | string | false | localhost |
 | `server_port` | integer | false | 6659 |
 | `colorize_messages` | boolean | false | Colorize messages |
@@ -1007,6 +1007,8 @@ Parameters:
 | Parameter | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
 | `api_url` | string | true | Prometheus API Base URL. For example, `http://prometheus.example.com/`. |
+| `google_iap_audience_client_id` | string | false | Client ID of the IAP secured resource (looks like IAP_CLIENT_ID.apps.googleusercontent.com) |
+| `google_iap_service_account_json` | string | false | credentials.json file for your service account, like { "type": "service_account", "project_id": ... } |
 
 ### Delete Prometheus service
 
@@ -1277,7 +1279,7 @@ A continuous integration and build server
 
 Set JetBrains TeamCity CI service for a project.
 
-> The build configuration in Teamcity must use the build format number %build.vcs.number% you will also want to configure monitoring of all branches so merge requests build, that setting is in the vsc root advanced settings.
+> The build configuration in TeamCity must use the build format number `%build.vcs.number%` you will also want to configure monitoring of all branches so merge requests build, that setting is in the VSC root advanced settings.
 
 ```plaintext
 PUT /projects/:id/services/teamcity

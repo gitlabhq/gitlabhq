@@ -3,6 +3,8 @@
 module Gitlab
   module ImportExport
     class AttributesFinder
+      attr_reader :tree, :included_attributes, :excluded_attributes, :methods, :preloads
+
       def initialize(config:)
         @tree = config[:tree] || {}
         @included_attributes = config[:included_attributes] || {}

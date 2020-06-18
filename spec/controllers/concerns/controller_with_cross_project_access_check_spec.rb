@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ControllerWithCrossProjectAccessCheck do
+RSpec.describe ControllerWithCrossProjectAccessCheck do
   let(:user) { create(:user) }
 
   before do

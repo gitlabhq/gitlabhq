@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Projects::GrafanaApiController do
+RSpec.describe Projects::GrafanaApiController do
   let_it_be(:project) { create(:project) }
   let_it_be(:user) { create(:user) }
 

@@ -10,49 +10,61 @@
 
 .default-before_script:
   before_script:
-    - date
     - '[ "$FOSS_ONLY" = "1" ] && rm -rf ee/ qa/spec/ee/ qa/qa/specs/features/ee/ qa/qa/ee/ qa/qa/ee.rb'
     - export GOPATH=$CI_PROJECT_DIR/.go
     - mkdir -p $GOPATH
     - source scripts/utils.sh
     - source scripts/prepare_build.sh
-    - date
-
-# Jobs that only need to pull cache
-.default-cache:
-  cache:
-    key: "debian-stretch-ruby-2.6.6-pg11-node-12.x"
-    paths:
-      - .go/pkg/mod
-      - vendor/ruby
-      - .yarn-cache/
-      - vendor/gitaly-ruby
-    policy: pull
 
 .rails-cache:
   cache:
-    key:
-      files:
-        - Gemfile.lock
-        - GITALY_SERVER_VERSION
-      prefix: "ruby-go-cache-v1"
+    key: "rails-v1"
     paths:
-      - vendor/ruby
-      - vendor/gitaly-ruby
-      - .go/pkg/mod
+      - vendor/ruby/
+      - vendor/gitaly-ruby/
+      - .go/pkg/mod/
+    policy: pull
+
+.static-analysis-cache:
+  cache:
+    key: "static-analysis-v1"
+    paths:
+      - vendor/ruby/
+      - node_modules/
+      - tmp/rubocop_cache/
+    policy: pull
+
+.qa-cache:
+  cache:
+    key: "qa-v1"
+    paths:
+      - qa/vendor/ruby/
     policy: pull
 
 .yarn-cache:
   cache:
-    key:
-      files:
-        - yarn.lock
-      prefix: "v1"
+    key: "yarn-v1"
     paths:
       - node_modules/
+      - tmp/cache/webpack-dlls/
+    policy: pull
+
+.assets-compile-cache:
+  cache:
+    key: "assets-compile-${NODE_ENV}-v1"
+    paths:
+      - vendor/ruby/
+      - node_modules/
+      - assets-hash.txt
+      - public/assets/webpack/
+      - tmp/cache/assets/sprockets/
+      - tmp/cache/babel-loader/
+      - tmp/cache/vue-loader/
+      - tmp/cache/webpack-dlls/
+    policy: pull
 
 .use-pg11:
-  image: "registry.gitlab.com/gitlab-org/gitlab-build-images:ruby-2.6.6-golang-1.14-git-2.26-lfs-2.9-chrome-73.0-node-12.x-yarn-1.21-postgresql-11-graphicsmagick-1.3.34"
+  image: "registry.gitlab.com/gitlab-org/gitlab-build-images:ruby-2.6.6-golang-1.14-git-2.27-lfs-2.9-chrome-83-node-12.x-yarn-1.21-postgresql-11-graphicsmagick-1.3.34"
   services:
     - name: postgres:11.6
       command: ["postgres", "-c", "fsync=off", "-c", "synchronous_commit=off", "-c", "full_page_writes=off"]
@@ -61,7 +73,7 @@
     POSTGRES_HOST_AUTH_METHOD: trust
 
 .use-pg11-ee:
-  image: "registry.gitlab.com/gitlab-org/gitlab-build-images:ruby-2.6.6-golang-1.14-git-2.26-lfs-2.9-chrome-73.0-node-12.x-yarn-1.21-postgresql-11-graphicsmagick-1.3.34"
+  image: "registry.gitlab.com/gitlab-org/gitlab-build-images:ruby-2.6.6-golang-1.14-git-2.27-lfs-2.9-chrome-83-node-12.x-yarn-1.21-postgresql-11-graphicsmagick-1.3.34"
   services:
     - name: postgres:11.6
       command: ["postgres", "-c", "fsync=off", "-c", "synchronous_commit=off", "-c", "full_page_writes=off"]
@@ -75,6 +87,7 @@
     name: gcr.io/kaniko-project/executor:debug-v0.20.0
     entrypoint: [""]
   before_script:
+    - source scripts/utils.sh
     - mkdir -p /kaniko/.docker
     - echo "{\"auths\":{\"$CI_REGISTRY\":{\"username\":\"$CI_REGISTRY_USER\",\"password\":\"$CI_REGISTRY_PASSWORD\"}}}" > /kaniko/.docker/config.json
 

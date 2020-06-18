@@ -1,5 +1,8 @@
 ---
 type: concepts, howto
+stage: Manage
+group: Access
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 ---
 
 # Personal access tokens
@@ -55,6 +58,58 @@ the following table.
 | `sudo`             | [GitLab 10.2](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/14838)  | Allows performing API actions as any user in the system (if the authenticated user is an admin). |
 | `read_repository`  | [GitLab 10.7](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/17894)  | Allows read-only access (pull) to the repository through `git clone`. |
 | `write_repository` | [GitLab 11.11](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/26021) | Allows read-write access (pull, push) to the repository through `git clone`. Required for accessing Git repositories over HTTP when 2FA is enabled. |
+
+## Programmatically creating a personal access token
+
+You can programmatically create a predetermined personal access token for use in
+automation or tests. You will need sufficient access to run a
+[Rails console session](../../administration/troubleshooting/debug.md#starting-a-rails-console-session)
+for your GitLab instance.
+
+To create a token belonging to a user with username `automation-bot`, run the
+following in the Rails console (`sudo gitlab-rails console`):
+
+```ruby
+user = User.find_by_username('automation-bot')
+token = user.personal_access_tokens.create(scopes: [:read_user, :read_repository], name: 'Automation token')
+token.set_token('token-string-here123')
+token.save!
+```
+
+This can be shortened into a single-line shell command using the
+[GitLab Rails Runner](../../administration/troubleshooting/debug.md#using-the-rails-runner):
+
+```shell
+sudo gitlab-rails runner "token = User.find_by_username('automation-bot').personal_access_tokens.create(scopes: [:read_user, :read_repository], name: 'Automation token'); token.set_token('token-string-here123'); token.save!"
+```
+
+NOTE: **Note:**
+The token string must be 20 characters in length, or it will not be
+recognized as a personal access token.
+
+The list of valid scopes and what they do can be found
+[in the source code](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/auth.rb).
+
+## Programmatically revoking a personal access token
+
+You can programmatically revoke a personal access token. You will need
+sufficient access to run a [Rails console session](../../administration/troubleshooting/debug.md#starting-a-rails-console-session)
+for your GitLab instance.
+
+To revoke a known token `token-string-here123`, run the following in the Rails
+console (`sudo gitlab-rails console`):
+
+```ruby
+token = PersonalAccessToken.find_by_token('token-string-here123')
+token.revoke!
+```
+
+This can be shorted into a single-line shell command using the
+[GitLab Rails Runner](../../administration/troubleshooting/debug.md#using-the-rails-runner):
+
+```shell
+sudo gitlab-rails runner "PersonalAccessToken.find_by_token('token-string-here123').revoke!"
+```
 
 <!-- ## Troubleshooting
 

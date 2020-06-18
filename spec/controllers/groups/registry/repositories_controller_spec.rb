@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Groups::Registry::RepositoriesController do
+RSpec.describe Groups::Registry::RepositoriesController do
   let_it_be(:user)  { create(:user) }
   let_it_be(:guest) { create(:user) }
   let_it_be(:group, reload: true) { create(:group) }
@@ -17,6 +17,7 @@ describe Groups::Registry::RepositoriesController do
 
   before do
     stub_container_registry_config(enabled: true)
+    stub_container_registry_tags(repository: :any, tags: [])
     group.add_owner(user)
     group.add_guest(guest)
     sign_in(user)

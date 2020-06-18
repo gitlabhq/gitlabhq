@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ReleasesFinder do
+RSpec.describe ReleasesFinder do
   let(:user)       { create(:user) }
   let(:project)    { create(:project, :repository) }
   let(:params)     { {} }

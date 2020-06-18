@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Tooltips on .timeago dates', :js do
+RSpec.describe 'Tooltips on .timeago dates', :js do
   let(:user)            { create(:user) }
   let(:project)         { create(:project, name: 'test', namespace: user.namespace) }
   let(:created_date)    { Date.yesterday.to_time }
@@ -12,7 +12,7 @@ describe 'Tooltips on .timeago dates', :js do
     before do
       project.add_maintainer(user)
 
-      Event.create( project: project, author_id: user.id, action: Event::JOINED,
+      Event.create( project: project, author_id: user.id, action: :joined,
                     updated_at: created_date, created_at: created_date)
 
       sign_in user

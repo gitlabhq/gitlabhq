@@ -70,12 +70,12 @@ Username search is case insensitive.
 GET /users
 ```
 
-| Attribute    | Type   | Required | Description |
-| ------------ | ------ | -------- | ----------- |
-| `order_by`   | string | no       | Return users ordered by `id`, `name`, `username`, `created_at`, or `updated_at` fields. Default is `id` |
-| `sort`       | string | no       | Return users sorted in `asc` or `desc` order. Default is `desc` |
-| `two_factor` | string | no       | Filter users by Two-factor authentication. Filter values are `enabled` or `disabled`. By default it returns all users |
-| `without_projects` | boolean | no | Filter users without projects. Default is `false` |
+| Attribute          | Type    | Required | Description                                                                                                           |
+| ------------------ | ------- | -------- | --------------------------------------------------------------------------------------------------------------------- |
+| `order_by`         | string  | no       | Return users ordered by `id`, `name`, `username`, `created_at`, or `updated_at` fields. Default is `id`               |
+| `sort`             | string  | no       | Return users sorted in `asc` or `desc` order. Default is `desc`                                                       |
+| `two_factor`       | string  | no       | Filter users by Two-factor authentication. Filter values are `enabled` or `disabled`. By default it returns all users |
+| `without_projects` | boolean | no       | Filter users without projects. Default is `false`                                                                     |
 
 ```json
 [
@@ -104,6 +104,7 @@ GET /users
     "color_scheme_id": 2,
     "projects_limit": 100,
     "current_sign_in_at": "2012-06-02T06:36:55Z",
+    "note": "DMCA Request: 2018-11-05 | DMCA Violation | Abuse | https://gitlab.zendesk.com/agent/tickets/123",
     "identities": [
       {"provider": "github", "extern_uid": "2435223452345"},
       {"provider": "bitbucket", "extern_uid": "john.smith"},
@@ -154,7 +155,7 @@ GET /users
 ]
 ```
 
-Users on GitLab [Starter, Bronze, or higher](https://about.gitlab.com/pricing/) will also see the `shared_runners_minutes_limit`, `extra_shared_runners_minutes_limit`, and `note` parameters.
+Users on GitLab [Starter, Bronze, or higher](https://about.gitlab.com/pricing/) will also see the `shared_runners_minutes_limit`, and `extra_shared_runners_minutes_limit` parameters.
 
 ```json
 [
@@ -163,7 +164,6 @@ Users on GitLab [Starter, Bronze, or higher](https://about.gitlab.com/pricing/) 
     ...
     "shared_runners_minutes_limit": 133,
     "extra_shared_runners_minutes_limit": 133,
-    "note": "DMCA Request: 2018-11-05 | DMCA Violation | Abuse | https://gitlab.zendesk.com/agent/tickets/123",
     ...
   }
 ]
@@ -296,6 +296,7 @@ Example Responses:
   "color_scheme_id": 2,
   "projects_limit": 100,
   "current_sign_in_at": "2012-06-02T06:36:55Z",
+  "note": "DMCA Request: 2018-11-05 | DMCA Violation | Abuse | https://gitlab.zendesk.com/agent/tickets/123",
   "identities": [
     {"provider": "github", "extern_uid": "2435223452345"},
     {"provider": "bitbucket", "extern_uid": "john.smith"},
@@ -316,7 +317,7 @@ Example Responses:
 NOTE: **Note:** The `plan` and `trial` parameters are only available on GitLab Enterprise Edition.
 
 Users on GitLab [Starter, Bronze, or higher](https://about.gitlab.com/pricing/) will also see
-the `shared_runners_minutes_limit`, `extra_shared_runners_minutes_limit`, and `note` parameters.
+the `shared_runners_minutes_limit`, and `extra_shared_runners_minutes_limit` parameters.
 
 ```json
 {
@@ -324,7 +325,6 @@ the `shared_runners_minutes_limit`, `extra_shared_runners_minutes_limit`, and `n
   "username": "john_smith",
   "shared_runners_minutes_limit": 133,
   "extra_shared_runners_minutes_limit": 133,
-  "note": "DMCA Request: 2018-11-05 | DMCA Violation | Abuse | https://gitlab.zendesk.com/agent/tickets/123",
   ...
 }
 ```
@@ -338,7 +338,6 @@ see the `group_saml` option:
   "username": "john_smith",
   "shared_runners_minutes_limit": 133,
   "extra_shared_runners_minutes_limit": 133,
-  "note": "DMCA Request: 2018-11-05 | DMCA Violation | Abuse | https://gitlab.zendesk.com/agent/tickets/123",
   "identities": [
     {"provider": "github", "extern_uid": "2435223452345"},
     {"provider": "bitbucket", "extern_uid": "john.smith"},
@@ -376,7 +375,7 @@ POST /users
 Parameters:
 
 | Attribute                            | Required | Description                                                                                                                                             |
-|:-------------------------------------|:---------|:--------------------------------------------------------------------------------------------------------------------------------------------------------|
+| :----------------------------------- | :------- | :------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `admin`                              | No       | User is admin - true or false (default)                                                                                                                 |
 | `avatar`                             | No       | Image file for user's avatar                                                                                                                            |
 | `bio`                                | No       | User's biography                                                                                                                                        |
@@ -391,6 +390,7 @@ Parameters:
 | `linkedin`                           | No       | LinkedIn                                                                                                                                                |
 | `location`                           | No       | User's location                                                                                                                                         |
 | `name`                               | Yes      | Name                                                                                                                                                    |
+| `note`                               | No       | Admin notes for this user                                                                                                                               |
 | `organization`                       | No       | Organization name                                                                                                                                       |
 | `password`                           | No       | Password                                                                                                                                                |
 | `private_profile`                    | No       | User's profile is private - true, false (default), or null (will be converted to false)                                                                 |
@@ -417,7 +417,7 @@ PUT /users/:id
 Parameters:
 
 | Attribute                            | Required | Description                                                                                                                                             |
-|:-------------------------------------|:---------|:--------------------------------------------------------------------------------------------------------------------------------------------------------|
+| :----------------------------------- | :------- | :------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `admin`                              | No       | User is admin - true or false (default)                                                                                                                 |
 | `avatar`                             | No       | Image file for user's avatar                                                                                                                            |
 | `bio`                                | No       | User's biography                                                                                                                                        |
@@ -432,7 +432,7 @@ Parameters:
 | `linkedin`                           | No       | LinkedIn                                                                                                                                                |
 | `location`                           | No       | User's location                                                                                                                                         |
 | `name`                               | No       | Name                                                                                                                                                    |
-| `note`                               | No       | Admin notes for this user **(STARTER)**                                                                                                                 |
+| `note`                               | No       | Admin notes for this user                                                                                                                               |
 | `organization`                       | No       | Organization name                                                                                                                                       |
 | `password`                           | No       | Password                                                                                                                                                |
 | `private_profile`                    | No       | User's profile is private - true, false (default), or null (will be converted to false)                                                                 |
@@ -609,8 +609,8 @@ Get the status of a user.
 GET /users/:id_or_username/status
 ```
 
-| Attribute        | Type   | Required | Description |
-| ---------------- | ------ | -------- | ----------- |
+| Attribute        | Type   | Required | Description                                       |
+| ---------------- | ------ | -------- | ------------------------------------------------- |
 | `id_or_username` | string | yes      | The ID or username of the user to get a status of |
 
 ```shell
@@ -635,15 +635,15 @@ Set the status of the current user.
 PUT /user/status
 ```
 
-| Attribute | Type   | Required | Description |
-| --------- | ------ | -------- | ----------- |
-| `emoji`   | string | no     | The name of the emoji to use as status, if omitted `speech_balloon` is used. Emoji name can be one of the specified names in the [Gemojione index](https://github.com/bonusly/gemojione/blob/master/config/index.json). |
-| `message` | string | no     | The message to set as a status. It can also contain emoji codes. |
+| Attribute | Type   | Required | Description                                                                                                                                                                                                             |
+| --------- | ------ | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `emoji`   | string | no       | The name of the emoji to use as status. If omitted `speech_balloon` is used. Emoji name can be one of the specified names in the [Gemojione index](https://github.com/bonusly/gemojione/blob/master/config/index.json). |
+| `message` | string | no       | The message to set as a status. It can also contain emoji codes.                                                                                                                                                        |
 
 When both parameters `emoji` and `message` are empty, the status will be cleared.
 
 ```shell
-curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" --data "emoji=coffee" --data "message=I crave coffee" https://gitlab.example.com/api/v4/user/status
+curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" --data "emoji=coffee" --data "message=I crave coffee" "https://gitlab.example.com/api/v4/user/status"
 ```
 
 Example responses
@@ -660,9 +660,9 @@ Example responses
 
 Get the counts (same as in top right menu) of the currently signed in user.
 
-| Attribute | Type | Description |
-| --------- | ---- | ----------- |
-| `merge_requests`   | number | Merge requests that are active and assigned to current user. |
+| Attribute        | Type   | Description                                                  |
+| ---------------- | ------ | ------------------------------------------------------------ |
+| `merge_requests` | number | Merge requests that are active and assigned to current user. |
 
 ```plaintext
 GET /user_counts
@@ -721,8 +721,8 @@ Get a list of a specified user's SSH keys.
 GET /users/:id_or_username/keys
 ```
 
-| Attribute        | Type   | Required | Description |
-| ---------------- | ------ | -------- | ----------- |
+| Attribute        | Type   | Required | Description                                             |
+| ---------------- | ------ | -------- | ------------------------------------------------------- |
 | `id_or_username` | string | yes      | The ID or username of the user to get the SSH keys for. |
 
 ## Single SSH key
@@ -758,13 +758,13 @@ Parameters:
 
 - `title` (required) - new SSH Key's title
 - `key` (required) - new SSH key
+- `expires_at` (optional) - The expiration date of the SSH key in ISO 8601 format (`YYYY-MM-DDTHH:MM:SSZ`)
 
 ```json
 {
-  "created_at": "2015-01-21T17:44:33.512Z",
-  "key": "ssh-dss AAAAB3NzaC1kc3MAAACBAMLrhYgI3atfrSD6KDas1b/3n6R/HP+bLaHHX6oh+L1vg31mdUqK0Ac/NjZoQunavoyzqdPYhFz9zzOezCrZKjuJDS3NRK9rspvjgM0xYR4d47oNZbdZbwkI4cTv/gcMlquRy0OvpfIvJtjtaJWMwTLtM5VhRusRuUlpH99UUVeXAAAAFQCVyX+92hBEjInEKL0v13c/egDCTQAAAIEAvFdWGq0ccOPbw4f/F8LpZqvWDydAcpXHV3thwb7WkFfppvm4SZte0zds1FJ+Hr8Xzzc5zMHe6J4Nlay/rP4ewmIW7iFKNBEYb/yWa+ceLrs+TfR672TaAgO6o7iSRofEq5YLdwgrwkMmIawa21FrZ2D9SPao/IwvENzk/xcHu7YAAACAQFXQH6HQnxOrw4dqf0NqeKy1tfIPxYYUZhPJfo9O0AmBW2S36pD2l14kS89fvz6Y1g8gN/FwFnRncMzlLY/hX70FSc/3hKBSbH6C6j8hwlgFKfizav21eS358JJz93leOakJZnGb8XlWvz1UJbwCsnR2VEY8Dz90uIk1l/UqHkA= loic@call",
   "title": "ABC",
-  "id": 4
+  "key": "ssh-dss AAAAB3NzaC1kc3MAAACBAMLrhYgI3atfrSD6KDas1b/3n6R/HP+bLaHHX6oh+L1vg31mdUqK0Ac/NjZoQunavoyzqdPYhFz9zzOezCrZKjuJDS3NRK9rspvjgM0xYR4d47oNZbdZbwkI4cTv/gcMlquRy0OvpfIvJtjtaJWMwTLtM5VhRusRuUlpH99UUVeXAAAAFQCVyX+92hBEjInEKL0v13c/egDCTQAAAIEAvFdWGq0ccOPbw4f/F8LpZqvWDydAcpXHV3thwb7WkFfppvm4SZte0zds1FJ+Hr8Xzzc5zMHe6J4Nlay/rP4ewmIW7iFKNBEYb/yWa+ceLrs+TfR672TaAgO6o7iSRofEq5YLdwgrwkMmIawa21FrZ2D9SPao/IwvENzk/xcHu7YAAACAQFXQH6HQnxOrw4dqf0NqeKy1tfIPxYYUZhPJfo9O0AmBW2S36pD2l14kS89fvz6Y1g8gN/FwFnRncMzlLY/hX70FSc/3hKBSbH6C6j8hwlgFKfizav21eS358JJz93leOakJZnGb8XlWvz1UJbwCsnR2VEY8Dz90uIk1l/UqHkA= loic@call",
+  "expires_at": "2016-01-21T00:00:00.000Z"
 }
 ```
 
@@ -797,6 +797,7 @@ Parameters:
 - `id` (required) - ID of specified user
 - `title` (required) - new SSH Key's title
 - `key` (required) - new SSH key
+- `expires_at` (optional) - The expiration date of the SSH key in ISO 8601 format (`YYYY-MM-DDTHH:MM:SSZ`)
 
 ## Delete SSH key for current user
 
@@ -833,7 +834,7 @@ GET /user/gpg_keys
 ```
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/user/gpg_keys
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/user/gpg_keys"
 ```
 
 Example response:
@@ -858,12 +859,12 @@ GET /user/gpg_keys/:key_id
 
 Parameters:
 
-| Attribute | Type    | Required | Description |
-| --------- | ------- | -------- | ----------- |
+| Attribute | Type    | Required | Description           |
+| --------- | ------- | -------- | --------------------- |
 | `key_id`  | integer | yes      | The ID of the GPG key |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/user/gpg_keys/1
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/user/gpg_keys/1"
 ```
 
 Example response:
@@ -886,12 +887,12 @@ POST /user/gpg_keys
 
 Parameters:
 
-| Attribute | Type   | Required | Description |
-| --------- | ------ | -------- | ----------- |
+| Attribute | Type   | Required | Description     |
+| --------- | ------ | -------- | --------------- |
 | key       | string | yes      | The new GPG key |
 
 ```shell
-curl --data "key=-----BEGIN PGP PUBLIC KEY BLOCK-----\r\n\r\nxsBNBFV..."  --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/user/gpg_keys
+curl --data "key=-----BEGIN PGP PUBLIC KEY BLOCK-----\r\n\r\nxsBNBFV..."  --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/user/gpg_keys"
 ```
 
 Example response:
@@ -916,12 +917,12 @@ DELETE /user/gpg_keys/:key_id
 
 Parameters:
 
-| Attribute | Type    | Required | Description |
-| --------- | ------- | -------- | ----------- |
+| Attribute | Type    | Required | Description           |
+| --------- | ------- | -------- | --------------------- |
 | `key_id`  | integer | yes      | The ID of the GPG key |
 
 ```shell
-curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/user/gpg_keys/1
+curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/user/gpg_keys/1"
 ```
 
 Returns `204 No Content` on success, or `404 Not found` if the key cannot be found.
@@ -936,12 +937,12 @@ GET /users/:id/gpg_keys
 
 Parameters:
 
-| Attribute | Type    | Required | Description |
-| --------- | ------- | -------- | ----------- |
+| Attribute | Type    | Required | Description        |
+| --------- | ------- | -------- | ------------------ |
 | `id`      | integer | yes      | The ID of the user |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/users/2/gpg_keys
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/users/2/gpg_keys"
 ```
 
 Example response:
@@ -966,13 +967,13 @@ GET /users/:id/gpg_keys/:key_id
 
 Parameters:
 
-| Attribute | Type    | Required | Description |
-| --------- | ------- | -------- | ----------- |
-| `id`      | integer | yes      | The ID of the user |
+| Attribute | Type    | Required | Description           |
+| --------- | ------- | -------- | --------------------- |
+| `id`      | integer | yes      | The ID of the user    |
 | `key_id`  | integer | yes      | The ID of the GPG key |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/users/2/gpg_keys/1
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/users/2/gpg_keys/1"
 ```
 
 Example response:
@@ -995,13 +996,13 @@ POST /users/:id/gpg_keys
 
 Parameters:
 
-| Attribute | Type    | Required | Description |
-| --------- | ------- | -------- | ----------- |
-| `id`      | integer | yes      | The ID of the user |
+| Attribute | Type    | Required | Description           |
+| --------- | ------- | -------- | --------------------- |
+| `id`      | integer | yes      | The ID of the user    |
 | `key_id`  | integer | yes      | The ID of the GPG key |
 
 ```shell
-curl --data "key=-----BEGIN PGP PUBLIC KEY BLOCK-----\r\n\r\nxsBNBFV..."  --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/users/2/gpg_keys
+curl --data "key=-----BEGIN PGP PUBLIC KEY BLOCK-----\r\n\r\nxsBNBFV..."  --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/users/2/gpg_keys"
 ```
 
 Example response:
@@ -1026,13 +1027,13 @@ DELETE /users/:id/gpg_keys/:key_id
 
 Parameters:
 
-| Attribute | Type    | Required | Description |
-| --------- | ------- | -------- | ----------- |
-| `id`      | integer | yes      | The ID of the user |
+| Attribute | Type    | Required | Description           |
+| --------- | ------- | -------- | --------------------- |
+| `id`      | integer | yes      | The ID of the user    |
 | `key_id`  | integer | yes      | The ID of the GPG key |
 
 ```shell
-curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/users/2/gpg_keys/1
+curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/users/2/gpg_keys/1"
 ```
 
 ## List emails
@@ -1198,7 +1199,7 @@ Will return `201 OK` on success, `404 User Not Found` is user cannot be found or
 
 ## Deactivate user
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/22257) in GitLab 12.4.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/22257) in GitLab 12.4.
 
 Deactivates the specified user. Available only for admin.
 
@@ -1220,7 +1221,7 @@ Returns:
 
 ## Activate user
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/22257) in GitLab 12.4.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/22257) in GitLab 12.4.
 
 Activates the specified user. Available only for admin.
 
@@ -1261,7 +1262,7 @@ Parameters:
 | `state`   | string  | no       | filter tokens based on state (`all`, `active`, `inactive`) |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/users/42/impersonation_tokens
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/users/42/impersonation_tokens"
 ```
 
 Example response:
@@ -1313,7 +1314,7 @@ Parameters:
 | `impersonation_token_id` | integer | yes      | The ID of the impersonation token |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/users/42/impersonation_tokens/2
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/users/42/impersonation_tokens/2"
 ```
 
 Example response:
@@ -1347,15 +1348,15 @@ settings page.
 POST /users/:user_id/impersonation_tokens
 ```
 
-| Attribute    | Type    | Required | Description |
-| ------------ | ------- | -------- | ----------- |
-| `user_id`    | integer | yes      | The ID of the user |
-| `name`       | string  | yes      | The name of the impersonation token |
-| `expires_at` | date    | no       | The expiration date of the impersonation token in ISO format (`YYYY-MM-DD`)|
-| `scopes`     | array   | yes      | The array of scopes of the impersonation token (`api`, `read_user`) |
+| Attribute    | Type    | Required | Description                                                                 |
+| ------------ | ------- | -------- | --------------------------------------------------------------------------- |
+| `user_id`    | integer | yes      | The ID of the user                                                          |
+| `name`       | string  | yes      | The name of the impersonation token                                         |
+| `expires_at` | date    | no       | The expiration date of the impersonation token in ISO format (`YYYY-MM-DD`) |
+| `scopes`     | array   | yes      | The array of scopes of the impersonation token (`api`, `read_user`)         |
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --data "name=mytoken" --data "expires_at=2017-04-04" --data "scopes[]=api" https://gitlab.example.com/api/v4/users/42/impersonation_tokens
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --data "name=mytoken" --data "expires_at=2017-04-04" --data "scopes[]=api" "https://gitlab.example.com/api/v4/users/42/impersonation_tokens"
 ```
 
 Example response:
@@ -1387,15 +1388,15 @@ DELETE /users/:user_id/impersonation_tokens/:impersonation_token_id
 ```
 
 ```shell
-curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/users/42/impersonation_tokens/1
+curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/users/42/impersonation_tokens/1"
 ```
 
 Parameters:
 
-| Attribute | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `user_id` | integer | yes | The ID of the user |
-| `impersonation_token_id` | integer | yes | The ID of the impersonation token |
+| Attribute                | Type    | Required | Description                       |
+| ------------------------ | ------- | -------- | --------------------------------- |
+| `user_id`                | integer | yes      | The ID of the user                |
+| `impersonation_token_id` | integer | yes      | The ID of the impersonation token |
 
 ### Get user activities (admin only)
 
@@ -1406,8 +1407,8 @@ Get the last activity date for all users, sorted from oldest to newest.
 The activities that update the timestamp are:
 
 - Git HTTP/SSH activities (such as clone, push)
-- User logging in into GitLab
-- User visiting pages related to Dashboards, Projects, Issues, and Merge Requests ([introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/54947) in GitLab 11.8)
+- User logging in to GitLab
+- User visiting pages related to Dashboards, Projects, Issues, and Merge Requests ([introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/54947) in GitLab 11.8)
 - User using the API
 - User using the GraphQL API
 
@@ -1420,12 +1421,12 @@ GET /user/activities
 
 Parameters:
 
-| Attribute | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `from` | string | no | Date string in the format YEAR-MONTH-DAY. For example, `2016-03-11`. Defaults to 6 months ago. |
+| Attribute | Type   | Required | Description                                                                                    |
+| --------- | ------ | -------- | ---------------------------------------------------------------------------------------------- |
+| `from`    | string | no       | Date string in the format YEAR-MONTH-DAY. For example, `2016-03-11`. Defaults to 6 months ago. |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/user/activities
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/user/activities"
 ```
 
 Example response:
@@ -1454,7 +1455,7 @@ Please note that `last_activity_at` is deprecated, please use `last_activity_on`
 
 ## User memberships (admin only)
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/20532) in GitLab 12.8.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/20532) in GitLab 12.8.
 
 Lists all projects and groups a user is a member of. This endpoint is available for admins only.
 It returns the `source_id`, `source_name`, `source_type` and `access_level` of a membership.
@@ -1467,10 +1468,10 @@ GET /users/:id/memberships
 
 Parameters:
 
-| Attribute | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `id` | integer | yes | The ID of a specified user |
-| `type` | string | no | Filter memberships by type. Can be either `Project` or `Namespace` |
+| Attribute | Type    | Required | Description                                                        |
+| --------- | ------- | -------- | ------------------------------------------------------------------ |
+| `id`      | integer | yes      | The ID of a specified user                                         |
+| `type`    | string  | no       | Filter memberships by type. Can be either `Project` or `Namespace` |
 
 Returns:
 
@@ -1480,7 +1481,7 @@ Returns:
 - `400 Bad Request` when requested type is not supported.
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/users/<user_id>/memberships
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/users/:user_id/memberships"
 ```
 
 Example response:

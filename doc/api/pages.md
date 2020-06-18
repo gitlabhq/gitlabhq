@@ -1,3 +1,9 @@
+---
+stage: Release
+group: Release Management
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+---
+
 # Pages API
 
 Endpoints for managing [GitLab Pages](https://about.gitlab.com/stages-devops-lifecycle/pages/).
@@ -17,5 +23,5 @@ DELETE /projects/:id/pages
 | `id`      | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
 
 ```shell
-curl --request 'DELETE' --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/2/pages
+curl --request 'DELETE' --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/2/pages"
 ```

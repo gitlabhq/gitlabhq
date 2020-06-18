@@ -33,6 +33,12 @@ FactoryBot.define do
       issues = create_list(:issue, 4, project: projects[0])
       create_list(:prometheus_alert, 2, project: projects[0])
       create(:prometheus_alert, project: projects[1])
+      create(:merge_request, :simple, :with_terraform_reports, source_project: projects[0])
+      create(:merge_request, :rebased, :with_terraform_reports, source_project: projects[0])
+      create(:merge_request, :simple, :with_terraform_reports, source_project: projects[1])
+      create(:terraform_state, project: projects[0])
+      create(:terraform_state, project: projects[0])
+      create(:terraform_state, project: projects[1])
       create(:zoom_meeting, project: projects[0], issue: projects[0].issues[0], issue_status: :added)
       create_list(:zoom_meeting, 2, project: projects[0], issue: projects[0].issues[1], issue_status: :removed)
       create(:zoom_meeting, project: projects[0], issue: projects[0].issues[2], issue_status: :added)
@@ -52,6 +58,7 @@ FactoryBot.define do
       # Alert Issues
       create(:alert_management_alert, issue: issues[0], project: projects[0])
       create(:alert_management_alert, issue: alert_bot_issues[0], project: projects[0])
+      create(:self_managed_prometheus_alert_event, related_issues: [issues[1]], project: projects[0])
 
       # Enabled clusters
       gcp_cluster = create(:cluster_provider_gcp, :created).cluster

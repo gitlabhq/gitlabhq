@@ -11,25 +11,14 @@ describe Gitlab::Kubernetes::Helm::BaseCommand do
   let(:rbac) { false }
 
   let(:test_class) do
-    Class.new do
-      include Gitlab::Kubernetes::Helm::BaseCommand
-
+    Class.new(Gitlab::Kubernetes::Helm::BaseCommand) do
       def initialize(rbac)
-        @rbac = rbac
-      end
-
-      def name
-        "test-class-name"
-      end
-
-      def rbac?
-        @rbac
-      end
-
-      def files
-        {
-          some: 'value'
-        }
+        super(
+          name: 'test-class-name',
+          rbac: rbac,
+          files: { some: 'value' },
+          local_tiller_enabled: false
+        )
       end
     end
   end

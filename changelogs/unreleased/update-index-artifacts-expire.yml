@@ -1,0 +1,6 @@
+---
+title: Update index_ci_builds_on_commit_id_and_artifacts_expireatandidpartial index
+  for secret_detection
+merge_request: 32584
+author:
+type: performance

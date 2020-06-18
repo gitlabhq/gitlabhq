@@ -5,6 +5,9 @@ require 'spec_helper'
 describe ProjectsHelper do
   include ProjectForksHelper
 
+  let_it_be(:project) { create(:project) }
+  let_it_be(:user) { create(:user) }
+
   describe '#project_incident_management_setting' do
     let(:project) { create(:project) }
 
@@ -29,8 +32,8 @@ describe ProjectsHelper do
         setting = helper.project_incident_management_setting
 
         expect(setting).not_to be_persisted
+        expect(setting.create_issue).to be_falsey
         expect(setting.send_email).to be_falsey
-        expect(setting.create_issue).to be_truthy
         expect(setting.issue_template_key).to be_nil
       end
     end
@@ -500,6 +503,23 @@ describe ProjectsHelper do
     end
   end
 
+  describe '#can_view_operations_tab?' do
+    before do
+      allow(helper).to receive(:current_user).and_return(user)
+    end
+
+    subject { helper.send(:can_view_operations_tab?, user, project) }
+
+    [:read_environment, :read_cluster, :metrics_dashboard].each do |ability|
+      it 'includes operations tab' do
+        allow(helper).to receive(:can?).and_return(false)
+        allow(helper).to receive(:can?).with(user, ability, project).and_return(true)
+
+        is_expected.to be(true)
+      end
+    end
+  end
+
   describe '#show_projects' do
     let(:projects) do
       create(:project)
@@ -665,11 +685,11 @@ describe ProjectsHelper do
     end
   end
 
-  describe 'link_to_bfg' do
-    subject { helper.link_to_bfg }
+  describe 'link_to_filter_repo' do
+    subject { helper.link_to_filter_repo }
 
-    it 'generates a hardcoded link to the BFG Repo-Cleaner' do
-      result = helper.link_to_bfg
+    it 'generates a hardcoded link to git filter-repo' do
+      result = helper.link_to_filter_repo
       doc = Nokogiri::HTML.fragment(result)
 
       expect(doc.children.size).to eq(1)
@@ -682,8 +702,8 @@ describe ProjectsHelper do
         expect(link.name).to eq('a')
         expect(link[:target]).to eq('_blank')
         expect(link[:rel]).to eq('noopener noreferrer')
-        expect(link[:href]).to eq('https://rtyley.github.io/bfg-repo-cleaner/')
-        expect(link.inner_html).to eq('BFG')
+        expect(link[:href]).to eq('https://github.com/newren/git-filter-repo')
+        expect(link.inner_html).to eq('git filter-repo')
 
         expect(result).to be_html_safe
       end

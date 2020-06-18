@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Profiles::TwoFactorAuthsController do
+RSpec.describe Profiles::TwoFactorAuthsController do
   before do
     # `user` should be defined within the action-specific describe blocks
     sign_in(user)

@@ -4,7 +4,7 @@
     .d-flex.align-items-center
       %h4.pr-2.m-0
         = s_('ClusterIntegration|GitLab Integration')
-      %label.append-bottom-0.js-cluster-enable-toggle-area{ title: s_('ClusterIntegration|Enable or disable GitLab\'s connection to your Kubernetes cluster.'), data: { toggle: 'tooltip', container: 'body' } }
+      %label.gl-mb-0.js-cluster-enable-toggle-area{ title: s_('ClusterIntegration|Enable or disable GitLab\'s connection to your Kubernetes cluster.'), data: { toggle: 'tooltip', container: 'body' } }
         = render "shared/buttons/project_feature_toggle", is_checked: @cluster.enabled?, label: s_("ClusterIntegration|Toggle Kubernetes cluster"), disabled: !can?(current_user, :update_cluster, @cluster), data: { qa_selector: 'integration_status_toggle' } do
           = field.hidden_field :enabled, { class: 'js-project-feature-toggle-input'}
 

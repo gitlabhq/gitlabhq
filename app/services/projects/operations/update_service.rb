@@ -41,9 +41,9 @@ module Projects
         attribs = params[:metrics_setting_attributes]
         return {} unless attribs
 
-        destroy = attribs[:external_dashboard_url].blank?
+        attribs[:external_dashboard_url] = attribs[:external_dashboard_url].presence
 
-        { metrics_setting_attributes: attribs.merge(_destroy: destroy) }
+        { metrics_setting_attributes: attribs }
       end
 
       def error_tracking_params

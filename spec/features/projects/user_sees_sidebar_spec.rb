@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Projects > User sees sidebar' do
+RSpec.describe 'Projects > User sees sidebar' do
   let(:user) { create(:user) }
   let(:project) { create(:project, :private, public_builds: false, namespace: user.namespace) }
 

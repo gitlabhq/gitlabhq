@@ -1,6 +1,0 @@
-%li
-  = link_to wiki_page.title, project_wiki_path(@project, wiki_page)
-  %small (#{wiki_page.format})
-  .float-right
-    - if wiki_page.last_version
-      %small= (s_("Last edited %{date}") % { date: time_ago_with_tooltip(wiki_page.last_version.authored_date) }).html_safe

@@ -1,0 +1,5 @@
+---
+title: Fix NoMethodError by using the correct method to report exceptions to Sentry
+merge_request: 33260
+author:
+type: fixed

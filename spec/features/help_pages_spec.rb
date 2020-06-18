@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Help Pages' do
+RSpec.describe 'Help Pages' do
   describe 'Get the main help page' do
     before do
       allow(File).to receive(:read).and_call_original

@@ -1,4 +1,6 @@
 import actions from '~/boards/stores/actions';
+import * as types from '~/boards/stores/mutation_types';
+import testAction from 'helpers/vuex_action_helper';
 
 const expectNotImplemented = action => {
   it('is not implemented', () => {
@@ -7,7 +9,20 @@ const expectNotImplemented = action => {
 };
 
 describe('setEndpoints', () => {
-  expectNotImplemented(actions.setEndpoints);
+  it('sets endpoints object', () => {
+    const mockEndpoints = {
+      foo: 'bar',
+      bar: 'baz',
+    };
+
+    return testAction(
+      actions.setEndpoints,
+      mockEndpoints,
+      {},
+      [{ type: types.SET_ENDPOINTS, payload: mockEndpoints }],
+      [],
+    );
+  });
 });
 
 describe('fetchLists', () => {

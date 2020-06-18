@@ -1,15 +1,14 @@
 ---
 stage: Manage
 group: Analytics
-To determine the technical writer assigned to the Stage/Group associated with this page, see:
-  https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 ---
 
 # Analytics
 
 ## Analytics workspace
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/12077) in GitLab 12.2.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12077) in GitLab 12.2.
 
 The Analytics workspace will make it possible to aggregate analytics across
 GitLab, so that users can view information across multiple projects and groups
@@ -19,7 +18,7 @@ To access the Analytics workspace, click on **More > Analytics** in the top navi
 
 ## Group-level analytics
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/195979) in GitLab 12.8.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/195979) in GitLab 12.8.
 
 The following analytics features are available at the group level:
 

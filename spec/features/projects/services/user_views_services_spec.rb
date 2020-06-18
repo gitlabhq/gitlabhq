@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'User views services' do
+RSpec.describe 'User views services' do
   include_context 'project service activation'
 
   it 'shows the list of available services' do

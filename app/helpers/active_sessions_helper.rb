@@ -20,6 +20,6 @@ module ActiveSessionsHelper
         'monitor-o'
       end
 
-    sprite_icon(icon_name, size: 16, css_class: 'prepend-top-2')
+    sprite_icon(icon_name, size: 16, css_class: 'gl-mt-2')
   end
 end

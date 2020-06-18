@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Projects::RawController do
+RSpec.describe Projects::RawController do
   include RepoHelpers
 
   let(:project) { create(:project, :public, :repository) }

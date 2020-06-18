@@ -1,0 +1,7 @@
+{
+  "type": "object",
+  "properties": {
+    "default_value": { "type": "string" }
+  },
+  "additionalProperties": false
+}

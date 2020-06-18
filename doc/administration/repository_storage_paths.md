@@ -10,7 +10,7 @@ storage shards) to distribute the storage load between several mount points.
 > - You must have at least one storage path called `default`.
 > - The paths are defined in key-value pairs. The key is an arbitrary name you
 >   can pick to name the file path.
-> - The target directories and any of its subpaths must not be a symlink.
+> - The target directories and any of its sub-paths must not be a symlink.
 > - No target directory may be a sub-directory of another; no nesting.
 
 Example: this is OK:
@@ -57,7 +57,7 @@ storage2:
 
 Now that you've read that big fat warning above, let's edit the configuration
 files and add the full paths of the alternative repository storage paths. In
-the example below, we add two more mountpoints that are named `nfs_1` and `nfs_2`
+the example below, we add two more mount points that are named `nfs_1` and `nfs_2`
 respectively.
 
 NOTE: **Note:** This example uses NFS. We do not recommend using EFS for storage as it may impact GitLab's performance. See the [relevant documentation](high_availability/nfs.md#avoid-using-awss-elastic-file-system-efs) for more details.

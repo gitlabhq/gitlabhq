@@ -14,7 +14,7 @@ class PageLimiterSpecController < ApplicationController
   end
 end
 
-describe PageLimiter do
+RSpec.describe PageLimiter do
   let(:controller_class) do
     PageLimiterSpecController
   end

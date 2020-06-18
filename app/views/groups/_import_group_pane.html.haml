@@ -1,0 +1,52 @@
+- parent = @group.parent
+- group_path = root_url
+- group_path << parent.full_path + '/' if parent
+
+= form_with url: import_gitlab_group_path, class: 'group-form gl-show-field-errors', multipart: true do |f|
+  = form_errors(@group)
+
+  .row
+    .form-group.group-name.col-sm-12
+      = f.label :name, _('Group name'), class: 'label-bold'
+      = f.text_field :name, placeholder: s_('GroupsNew|My Awesome Group'), class: 'js-autofill-group-name form-control input-lg',
+        required: true,
+        title: _('Please fill in a descriptive name for your group.'),
+        autofocus: true
+
+  .row
+    .form-group.col-xs-12.col-sm-8
+      = f.label :path, _('Group URL'), class: 'label-bold'
+      .input-group.gl-field-error-anchor
+        .group-root-path.input-group-prepend.has-tooltip{ title: group_path, :'data-placement' => 'bottom' }
+          .input-group-text
+            %span
+              = root_url
+            - if parent
+              %strong= parent.full_path + '/'
+        = f.hidden_field :parent_id, value: parent&.id
+        = f.text_field :path, placeholder: 'my-awesome-group', class: 'form-control js-validate-group-path js-autofill-group-path',
+          id: 'import_group_path',
+          required: true,
+          pattern: Gitlab::PathRegex::NAMESPACE_FORMAT_REGEX_JS,
+          title: _('Please choose a group URL with no special characters.'),
+          "data-bind-in" => "#{'create_chat_team' if Gitlab.config.mattermost.enabled}"
+      %p.validation-error.gl-field-error.field-validation.hide
+        = _('Group path is already taken. Suggestions: ')
+        %span.gl-path-suggestions
+      %p.validation-success.gl-field-success.field-validation.hide= _('Group path is available.')
+      %p.validation-pending.gl-field-error-ignore.field-validation.hide= _('Checking group path availability...')
+
+  .row
+    .form-group.col-md-12
+      = s_('GroupsNew|To copy a GitLab group between installations, navigate to the group settings page for the original installation, generate an export file, and upload it here.')
+  .row
+    .form-group.col-sm-12
+      = f.label :file, s_('GroupsNew|GitLab group export'), class: 'label-bold'
+      %div
+        = render 'shared/file_picker_button', f: f, field: :file, help_text: nil
+
+  .row
+    .form-actions.col-sm-12
+      = f.submit s_('GroupsNew|Import group'), class: 'btn btn-success'
+      = link_to _('Cancel'), new_group_path, class: 'btn btn-cancel'
+

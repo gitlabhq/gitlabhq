@@ -284,8 +284,8 @@ module ProjectsHelper
     "xcode://clone?repo=#{CGI.escape(default_url_to_repo(project))}"
   end
 
-  def link_to_bfg
-    link_to 'BFG', 'https://rtyley.github.io/bfg-repo-cleaner/', target: '_blank', rel: 'noopener noreferrer'
+  def link_to_filter_repo
+    link_to 'git filter-repo', 'https://github.com/newren/git-filter-repo', target: '_blank', rel: 'noopener noreferrer'
   end
 
   def explore_projects_tab?
@@ -367,6 +367,10 @@ module ProjectsHelper
     @project.metrics_setting_external_dashboard_url
   end
 
+  def metrics_dashboard_timezone
+    @project.metrics_setting_dashboard_timezone
+  end
+
   def grafana_integration_url
     @project.grafana_integration&.grafana_url
   end
@@ -410,7 +414,7 @@ module ProjectsHelper
       nav_tabs << :pipelines
     end
 
-    if can?(current_user, :read_environment, project) || can?(current_user, :read_cluster, project)
+    if can_view_operations_tab?(current_user, project)
       nav_tabs << :operations
     end
 
@@ -438,20 +442,27 @@ module ProjectsHelper
 
   def tab_ability_map
     {
-      environments:     :read_environment,
-      milestones:       :read_milestone,
-      snippets:         :read_snippet,
-      settings:         :admin_project,
-      builds:           :read_build,
-      clusters:         :read_cluster,
-      serverless:       :read_cluster,
-      error_tracking:   :read_sentry_issue,
-      alert_management: :read_alert_management_alert,
-      labels:           :read_label,
-      issues:           :read_issue,
-      project_members:  :read_project_member,
-      wiki:             :read_wiki
+      environments:       :read_environment,
+      metrics_dashboards: :metrics_dashboard,
+      milestones:         :read_milestone,
+      snippets:           :read_snippet,
+      settings:           :admin_project,
+      builds:             :read_build,
+      clusters:           :read_cluster,
+      serverless:         :read_cluster,
+      error_tracking:     :read_sentry_issue,
+      alert_management:   :read_alert_management_alert,
+      labels:             :read_label,
+      issues:             :read_issue,
+      project_members:    :read_project_member,
+      wiki:               :read_wiki
     }
+  end
+
+  def can_view_operations_tab?(current_user, project)
+    [:read_environment, :read_cluster, :metrics_dashboard].any? do |ability|
+      can?(current_user, ability, project)
+    end
   end
 
   def search_tab_ability_map
@@ -531,11 +542,6 @@ module ProjectsHelper
     else
       s_("ProjectLastActivity|Never")
     end
-  end
-
-  def project_wiki_path_with_version(proj, page, version, is_newest)
-    url_params = is_newest ? {} : { version_id: version }
-    project_wiki_path(proj, page, url_params)
   end
 
   def project_status_css_class(status)
@@ -670,7 +676,6 @@ module ProjectsHelper
   def sidebar_settings_paths
     %w[
       projects#edit
-      project_members#index
       integrations#show
       services#edit
       hooks#index
@@ -729,7 +734,7 @@ module ProjectsHelper
   end
 
   def native_code_navigation_enabled?(project)
-    Feature.enabled?(:code_navigation, project)
+    Feature.enabled?(:code_navigation, project, default_enabled: true)
   end
 
   def show_visibility_confirm_modal?(project)

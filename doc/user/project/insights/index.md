@@ -273,7 +273,7 @@ you defined.
 
 ### `projects`
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/10904) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.4.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/10904) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.4.
 
 You can limit where the "issuables" can be queried from:
 

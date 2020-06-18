@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Projects > Members > Owner cannot request access to their own project' do
+RSpec.describe 'Projects > Members > Owner cannot request access to their own project' do
   let(:project) { create(:project) }
 
   before do

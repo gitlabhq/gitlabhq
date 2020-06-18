@@ -1,0 +1,63 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`TagsLoader component has the correct markup 1`] = `
+<div>
+  <div
+    preserve-aspect-ratio="xMinYMax meet"
+  >
+    <rect
+      height="15"
+      rx="4"
+      width="15"
+      x="0"
+      y="12.5"
+    />
+     
+    <rect
+      height="20"
+      rx="4"
+      width="250"
+      x="25"
+      y="10"
+    />
+     
+    <circle
+      cx="290"
+      cy="20"
+      r="10"
+    />
+     
+    <rect
+      height="20"
+      rx="4"
+      width="100"
+      x="315"
+      y="10"
+    />
+     
+    <rect
+      height="20"
+      rx="4"
+      width="100"
+      x="500"
+      y="10"
+    />
+     
+    <rect
+      height="20"
+      rx="4"
+      width="100"
+      x="630"
+      y="10"
+    />
+     
+    <rect
+      height="40"
+      rx="4"
+      width="40"
+      x="960"
+      y="0"
+    />
+  </div>
+</div>
+`;

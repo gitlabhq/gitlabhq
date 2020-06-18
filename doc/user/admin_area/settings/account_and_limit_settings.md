@@ -15,6 +15,17 @@ If you choose a size larger than what is currently configured for the web server
 you will likely get errors. See the [troubleshooting section](#troubleshooting) for more
 details.
 
+## Max import size
+
+You can change the maximum file size for imports in GitLab.
+Navigate to **Admin Area (wrench icon) > Settings > General**, then expand **Account and Limit**.
+From here, you can increase or decrease by changing the value in `Maximum import size (MB)`.
+
+NOTE: **Note:**
+If you choose a size larger than what is currently configured for the web server,
+you will likely get errors. See the [troubleshooting section](#troubleshooting) for more
+details.
+
 ## Maximum namespace storage size
 
 This sets a maximum size limit on each namespace. The following are included in the namespace size:
@@ -99,7 +110,7 @@ nginx['client_max_body_size'] = "200m"
 
 ## Limiting lifetime of personal access tokens **(ULTIMATE ONLY)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/3649) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.6.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/3649) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.6.
 
 Users can optionally specify an expiration date for
 [personal access tokens](../../profile/personal_access_tokens.md).
@@ -131,7 +142,7 @@ Once a lifetime for personal access tokens is set, GitLab will:
 
 ## Disabling user profile name changes **(PREMIUM ONLY)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/24605) in GitLab 12.7.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/24605) in GitLab 12.7.
 
 To maintain integrity of user details in [Audit Events](../../../administration/audit_events.md), GitLab administrators can choose to disable a user's ability to change their profile name.
 

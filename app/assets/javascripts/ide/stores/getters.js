@@ -50,9 +50,6 @@ export const emptyRepo = state =>
 export const currentTree = state =>
   state.trees[`${state.currentProjectId}/${state.currentBranchId}`];
 
-export const hasChanges = state =>
-  Boolean(state.changedFiles.length) || Boolean(state.stagedFiles.length);
-
 export const hasMergeRequest = state => Boolean(state.currentMergeRequestId);
 
 export const allBlobs = state =>
@@ -162,5 +159,18 @@ export const canCreateMergeRequests = (state, getters) =>
 export const canPushCode = (state, getters) =>
   Boolean(getters.findProjectPermissions(state.currentProjectId)[PERMISSION_PUSH_CODE]);
 
-// prevent babel-plugin-rewire from generating an invalid default during karma tests
-export default () => {};
+export const entryExists = state => path =>
+  Boolean(state.entries[path] && !state.entries[path].deleted);
+
+export const getAvailableFileName = (state, getters) => path => {
+  let newPath = path;
+
+  while (getters.entryExists(newPath)) {
+    newPath = newPath.replace(
+      /([ _-]?)(\d*)(\..+?$|$)/,
+      (_, before, number, after) => `${before || '_'}${Number(number) + 1}${after}`,
+    );
+  }
+
+  return newPath;
+};

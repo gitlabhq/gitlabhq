@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Expand and collapse diffs', :js do
+RSpec.describe 'Expand and collapse diffs', :js do
   let(:branch) { 'expand-collapse-diffs' }
   let(:project) { create(:project, :repository) }
 

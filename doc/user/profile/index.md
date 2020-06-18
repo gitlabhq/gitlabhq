@@ -1,5 +1,8 @@
 ---
 type: index, howto
+stage: Manage
+group: Access
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 ---
 
 # User account
@@ -147,7 +150,7 @@ To add links to other accounts:
 
 ## Private contributions
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/14078) in GitLab 11.3.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/14078) in GitLab 11.3.
 
 Enabling private contributions will include contributions to private projects, in the user contribution calendar graph and user recent activity.
 
@@ -250,7 +253,27 @@ When the `_gitlab_session` expires or isn't available, GitLab uses the `remember
 to get you a new `_gitlab_session` and keep you signed in through browser restarts.
 
 After your `remember_user_token` expires and your `_gitlab_session` is cleared/expired,
-you will be asked to sign in again to verify your identity (which is for security reasons).
+you will be asked to sign in again to verify your identity for security reasons.
+
+### Increased sign-in time
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/20340) in GitLab 13.1.
+
+The `remember_user_token` lifetime of a cookie can now extend beyond the deadline set by `config.remember_for`, as the `config.extend_remember_period` flag is now set to true.
+
+GitLab uses both session and persistent cookies:
+
+- Session cookie: Session cookies are normally removed at the end of the browser session when the browser is closed. The `_gitlab_session` cookie has no expiration date.
+- Persistent cookie: The `remember_me_token` is a cookie with an expiration date of two weeks. GitLab activates this cookie if you click Remember Me when you sign in.
+
+By default, the server sets a time-to-live (TTL) of 1-week on any session that is used.
+
+When you close a browser, the session cookie may still remain. For example, Chrome has the "Continue where you left off" option that restores session cookies.
+In other words, as long as you access GitLab at least once every 2 weeks, you could remain signed in with GitLab, as long as your browser tab is open.
+The server continues to reset the TTL for that session, independent of whether 2FA is installed,
+If you close your browser and open it up again, the `remember_user_token` cookie allows your user to reauthenticate itself.
+
+Without the `config.extend_remember_period` flag, you would be forced to sign in again after two weeks.
 
 <!-- ## Troubleshooting
 

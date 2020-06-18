@@ -1,3 +1,9 @@
+---
+stage: Plan
+group: Project Management
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+---
+
 # Projects API
 
 ## Project visibility level
@@ -152,6 +158,7 @@ When the user is authenticated and `simple` is not set this returns something li
     "public_jobs": true,
     "shared_with_groups": [],
     "only_allow_merge_if_pipeline_succeeds": false,
+    "allow_merge_on_skipped_pipeline": false,
     "only_allow_merge_if_all_discussions_are_resolved": false,
     "remove_source_branch_after_merge": false,
     "request_access_enabled": false,
@@ -242,6 +249,7 @@ When the user is authenticated and `simple` is not set this returns something li
     "public_jobs": true,
     "shared_with_groups": [],
     "only_allow_merge_if_pipeline_succeeds": false,
+    "allow_merge_on_skipped_pipeline": false,
     "only_allow_merge_if_all_discussions_are_resolved": false,
     "remove_source_branch_after_merge": false,
     "request_access_enabled": false,
@@ -309,7 +317,7 @@ GET /projects?custom_attributes[key]=value&custom_attributes[other_key]=other_va
 ### Pagination limits
 
 From GitLab 13.0, [offset-based pagination](README.md#offset-based-pagination) will be
-[limited to 50,000 records](https://gitlab.com/gitlab-org/gitlab/issues/34565).
+[limited to 50,000 records](https://gitlab.com/gitlab-org/gitlab/-/issues/34565).
 [Keyset pagination](README.md#keyset-based-pagination) will be required to retrieve projects
 beyond this limit.
 
@@ -401,6 +409,7 @@ This endpoint supports [keyset pagination](README.md#keyset-based-pagination) fo
     "public_jobs": true,
     "shared_with_groups": [],
     "only_allow_merge_if_pipeline_succeeds": false,
+    "allow_merge_on_skipped_pipeline": false,
     "only_allow_merge_if_all_discussions_are_resolved": false,
     "remove_source_branch_after_merge": false,
     "request_access_enabled": false,
@@ -491,6 +500,7 @@ This endpoint supports [keyset pagination](README.md#keyset-based-pagination) fo
     "public_jobs": true,
     "shared_with_groups": [],
     "only_allow_merge_if_pipeline_succeeds": false,
+    "allow_merge_on_skipped_pipeline": false,
     "only_allow_merge_if_all_discussions_are_resolved": false,
     "remove_source_branch_after_merge": false,
     "request_access_enabled": false,
@@ -617,6 +627,7 @@ Example response:
     "public_jobs": true,
     "shared_with_groups": [],
     "only_allow_merge_if_pipeline_succeeds": false,
+    "allow_merge_on_skipped_pipeline": false,
     "only_allow_merge_if_all_discussions_are_resolved": false,
     "remove_source_branch_after_merge": false,
     "request_access_enabled": false,
@@ -702,6 +713,7 @@ Example response:
     "public_jobs": true,
     "shared_with_groups": [],
     "only_allow_merge_if_pipeline_succeeds": false,
+    "allow_merge_on_skipped_pipeline": false,
     "only_allow_merge_if_all_discussions_are_resolved": false,
     "remove_source_branch_after_merge": false,
     "request_access_enabled": false,
@@ -855,6 +867,7 @@ GET /projects/:id
   ],
   "repository_storage": "default",
   "only_allow_merge_if_pipeline_succeeds": false,
+  "allow_merge_on_skipped_pipeline": false,
   "only_allow_merge_if_all_discussions_are_resolved": false,
   "remove_source_branch_after_merge": false,
   "printing_merge_requests_link_enabled": true,
@@ -1038,6 +1051,7 @@ POST /projects
 | `import_url` | string | no | URL to import repository from |
 | `public_builds` | boolean | no | If `true`, jobs can be viewed by non-project-members |
 | `only_allow_merge_if_pipeline_succeeds` | boolean | no | Set whether merge requests can only be merged with successful jobs |
+| `allow_merge_on_skipped_pipeline` | boolean | no | Set whether or not merge requests can be merged with skipped jobs |
 | `only_allow_merge_if_all_discussions_are_resolved` | boolean | no | Set whether merge requests can only be merged when all the discussions are resolved |
 | `merge_method` | string | no | Set the [merge method](#project-merge-method) used |
 | `autoclose_referenced_issues` | boolean | no | Set whether auto-closing referenced issues on default branch |
@@ -1107,6 +1121,7 @@ POST /projects/user/:user_id
 | `import_url` | string | no | URL to import repository from |
 | `public_builds` | boolean | no | If `true`, jobs can be viewed by non-project-members |
 | `only_allow_merge_if_pipeline_succeeds` | boolean | no | Set whether merge requests can only be merged with successful jobs |
+| `allow_merge_on_skipped_pipeline` | boolean | no | Set whether or not merge requests can be merged with skipped jobs |
 | `only_allow_merge_if_all_discussions_are_resolved` | boolean | no | Set whether merge requests can only be merged when all the discussions are resolved |
 | `merge_method` | string | no | Set the [merge method](#project-merge-method) used |
 | `autoclose_referenced_issues` | boolean | no | Set whether auto-closing referenced issues on default branch |
@@ -1177,6 +1192,7 @@ PUT /projects/:id
 | `import_url` | string | no | URL to import repository from |
 | `public_builds` | boolean | no | If `true`, jobs can be viewed by non-project-members |
 | `only_allow_merge_if_pipeline_succeeds` | boolean | no | Set whether merge requests can only be merged with successful jobs |
+| `allow_merge_on_skipped_pipeline` | boolean | no | Set whether or not merge requests can be merged with skipped jobs |
 | `only_allow_merge_if_all_discussions_are_resolved` | boolean | no | Set whether merge requests can only be merged when all the discussions are resolved |
 | `merge_method` | string | no | Set the [merge method](#project-merge-method) used |
 | `autoclose_referenced_issues` | boolean | no | Set whether auto-closing referenced issues on default branch |
@@ -1311,6 +1327,7 @@ Example responses:
     "public_jobs": true,
     "shared_with_groups": [],
     "only_allow_merge_if_pipeline_succeeds": false,
+    "allow_merge_on_skipped_pipeline": false,
     "only_allow_merge_if_all_discussions_are_resolved": false,
     "remove_source_branch_after_merge": false,
     "request_access_enabled": false,
@@ -1402,6 +1419,7 @@ Example response:
   "public_jobs": true,
   "shared_with_groups": [],
   "only_allow_merge_if_pipeline_succeeds": false,
+  "allow_merge_on_skipped_pipeline": false,
   "only_allow_merge_if_all_discussions_are_resolved": false,
   "remove_source_branch_after_merge": false,
   "request_access_enabled": false,
@@ -1492,6 +1510,7 @@ Example response:
   "public_jobs": true,
   "shared_with_groups": [],
   "only_allow_merge_if_pipeline_succeeds": false,
+  "allow_merge_on_skipped_pipeline": false,
   "only_allow_merge_if_all_discussions_are_resolved": false,
   "remove_source_branch_after_merge": false,
   "request_access_enabled": false,
@@ -1674,6 +1693,7 @@ Example response:
   "public_jobs": true,
   "shared_with_groups": [],
   "only_allow_merge_if_pipeline_succeeds": false,
+  "allow_merge_on_skipped_pipeline": false,
   "only_allow_merge_if_all_discussions_are_resolved": false,
   "remove_source_branch_after_merge": false,
   "request_access_enabled": false,
@@ -1783,6 +1803,7 @@ Example response:
   "public_jobs": true,
   "shared_with_groups": [],
   "only_allow_merge_if_pipeline_succeeds": false,
+  "allow_merge_on_skipped_pipeline": false,
   "only_allow_merge_if_all_discussions_are_resolved": false,
   "remove_source_branch_after_merge": false,
   "request_access_enabled": false,
@@ -1806,7 +1827,7 @@ Example response:
 This endpoint either:
 
 - Removes a project including all associated resources (issues, merge requests etc).
-- From [GitLab 12.6](https://gitlab.com/gitlab-org/gitlab/issues/32935) on [Premium or Silver](https://about.gitlab.com/pricing/) or higher tiers, marks a project for deletion. Actual
+- From [GitLab 12.6](https://gitlab.com/gitlab-org/gitlab/-/issues/32935) on [Premium or Silver](https://about.gitlab.com/pricing/) or higher tiers, marks a project for deletion. Actual
   deletion happens after number of days specified in
   [instance settings](../user/admin_area/settings/visibility_and_access_controls.md#default-deletion-adjourned-period-premium-only).
 
@@ -1820,7 +1841,7 @@ DELETE /projects/:id
 
 ## Restore project marked for deletion **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/32935) in GitLab 12.6.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/32935) in GitLab 12.6.
 
 Restores project marked for deletion.
 
@@ -1851,7 +1872,7 @@ The `file=` parameter must point to a file on your filesystem and be preceded
 by `@`. For example:
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --form "file=@dk.png" https://gitlab.example.com/api/v4/projects/5/uploads
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --form "file=@dk.png" "https://gitlab.example.com/api/v4/projects/5/uploads"
 ```
 
 Returned object:
@@ -1898,7 +1919,7 @@ DELETE /projects/:id/share/:group_id
 | `group_id` | integer | yes | The ID of the group |
 
 ```shell
-curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/share/17
+curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/share/17"
 ```
 
 ## Hooks
@@ -1943,6 +1964,7 @@ GET /projects/:id/hooks/:hook_id
   "merge_requests_events": true,
   "tag_push_events": true,
   "note_events": true,
+  "confidential_note_events": true,
   "job_events": true,
   "pipeline_events": true,
   "wiki_page_events": true,
@@ -1970,6 +1992,7 @@ POST /projects/:id/hooks
 | `merge_requests_events` | boolean | no | Trigger hook on merge requests events |
 | `tag_push_events` | boolean | no | Trigger hook on tag push events |
 | `note_events` | boolean | no | Trigger hook on note events |
+| `confidential_note_events` | boolean | no | Trigger hook on confidential note events |
 | `job_events` | boolean | no | Trigger hook on job events |
 | `pipeline_events` | boolean | no | Trigger hook on pipeline events |
 | `wiki_page_events` | boolean | no | Trigger hook on wiki events |
@@ -1996,6 +2019,7 @@ PUT /projects/:id/hooks/:hook_id
 | `merge_requests_events` | boolean | no | Trigger hook on merge requests events |
 | `tag_push_events` | boolean | no | Trigger hook on tag push events |
 | `note_events` | boolean | no | Trigger hook on note events |
+| `confidential_note_events` | boolean | no | Trigger hook on confidential note events |
 | `job_events` | boolean | no | Trigger hook on job events |
 | `pipeline_events` | boolean | no | Trigger hook on pipeline events |
 | `wiki_events` | boolean | no | Trigger hook on wiki events |
@@ -2061,7 +2085,7 @@ GET /projects
 | `sort` | string | no | Return requests sorted in `asc` or `desc` order |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects?search=test
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects?search=test"
 ```
 
 ## Start the Housekeeping task for a Project
@@ -2221,7 +2245,7 @@ POST /projects/:id/mirror/pull
 | `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/:id/mirror/pull
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/:id/mirror/pull"
 ```
 
 ## Project badges

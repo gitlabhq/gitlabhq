@@ -54,6 +54,10 @@ describe Gitlab::BackgroundMigration::MergeRequestAssigneesMigrationProgressChec
   end
 
   context 'when there are no scheduled, or retrying or dead' do
+    before do
+      stub_feature_flags(multiple_merge_request_assignees: false)
+    end
+
     it 'enables feature' do
       allow(Gitlab::BackgroundMigration).to receive(:exists?)
                                               .with('PopulateMergeRequestAssigneesTable')
@@ -67,9 +71,9 @@ describe Gitlab::BackgroundMigration::MergeRequestAssigneesMigrationProgressChec
                                               .with('PopulateMergeRequestAssigneesTable')
                                               .and_return(false)
 
-      expect(Feature).to receive(:enable).with(:multiple_merge_request_assignees)
-
       described_class.new.perform
+
+      expect(Feature.enabled?(:multiple_merge_request_assignees)).to eq(true)
     end
   end
 

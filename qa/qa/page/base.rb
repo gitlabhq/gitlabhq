@@ -99,7 +99,16 @@ module QA
       def find_element(name, **kwargs)
         wait_for_requests
 
-        find(element_selector_css(name), kwargs)
+        element_selector = element_selector_css(name, reject_capybara_query_keywords(kwargs))
+        find(element_selector, only_capybara_query_keywords(kwargs))
+      end
+
+      def only_capybara_query_keywords(kwargs)
+        kwargs.select { |kwarg| Capybara::Queries::SelectorQuery::VALID_KEYS.include?(kwarg) }
+      end
+
+      def reject_capybara_query_keywords(kwargs)
+        kwargs.reject { |kwarg| Capybara::Queries::SelectorQuery::VALID_KEYS.include?(kwarg) }
       end
 
       def active_element?(name)
@@ -162,11 +171,17 @@ module QA
       def has_element?(name, **kwargs)
         wait_for_requests
 
-        wait = kwargs.delete(:wait) || Capybara.default_max_wait_time
-        text = kwargs.delete(:text)
-        klass = kwargs.delete(:class)
+        disabled = kwargs.delete(:disabled)
 
-        has_css?(element_selector_css(name, kwargs), text: text, wait: wait, class: klass)
+        if disabled.nil?
+          wait = kwargs.delete(:wait) || Capybara.default_max_wait_time
+          text = kwargs.delete(:text)
+          klass = kwargs.delete(:class)
+
+          has_css?(element_selector_css(name, kwargs), text: text, wait: wait, class: klass)
+        else
+          find_element(name, kwargs).disabled? == disabled
+        end
       end
 
       def has_no_element?(name, **kwargs)

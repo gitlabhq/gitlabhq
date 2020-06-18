@@ -18,7 +18,10 @@
 
   - if ActionController::Base.asset_host
     %link{ rel: 'dns-prefetch', href: ActionController::Base.asset_host }
-    %link{ rel: 'preconnnect', href: ActionController::Base.asset_host, crossorigin: '' }
+    %link{ rel: 'preconnect', href: ActionController::Base.asset_host, crossorigin: '' }
+
+  - if Gitlab::CurrentSettings.snowplow_enabled? && Gitlab::CurrentSettings.snowplow_collector_hostname
+    %link{ rel: 'preconnect', href: Gitlab::CurrentSettings.snowplow_collector_hostname, crossorigin: '' }
 
   %meta{ 'http-equiv' => 'X-UA-Compatible', content: 'IE=edge' }
 
@@ -44,7 +47,10 @@
 
   = favicon_link_tag favicon, id: 'favicon', data: { original_href: favicon }, type: 'image/png'
 
-  = stylesheet_link_tag "application", media: "all"
+  - if user_application_theme == 'gl-dark'
+    = stylesheet_link_tag "application_dark", media: "all"
+  - else
+    = stylesheet_link_tag "application", media: "all"
   = stylesheet_link_tag "print", media: "print"
   = stylesheet_link_tag "disable_animations", media: "all" if Rails.env.test? || Gitlab.config.gitlab['disable_animations']
   = stylesheet_link_tag 'performance_bar' if performance_bar_enabled?

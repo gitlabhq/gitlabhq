@@ -15,7 +15,7 @@ Metrics/AbcSize:
 Metrics/PerceivedComplexity:
   Enabled: true
 
-Metrics/LineLength:
+Layout/LineLength:
   Enabled: true
   Details: >
     Long lines are very hard to read and make it more difficult to review

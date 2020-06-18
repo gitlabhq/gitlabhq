@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ContainerRepositoriesFinder do
+RSpec.describe ContainerRepositoriesFinder do
   let_it_be(:reporter) { create(:user) }
   let_it_be(:guest) { create(:user) }
 

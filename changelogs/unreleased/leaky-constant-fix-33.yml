@@ -1,0 +1,5 @@
+---
+title: Fix leaky constant issue in relation factory spec
+merge_request: 32129
+author: Rajendra Kadam
+type: fixed

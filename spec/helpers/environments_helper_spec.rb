@@ -20,6 +20,7 @@ describe EnvironmentsHelper do
       expect(metrics_data).to include(
         'settings-path' => edit_project_service_path(project, 'prometheus'),
         'clusters-path' => project_clusters_path(project),
+        'metrics-dashboard-base-path' => environment_metrics_path(environment),
         'current-environment-name' => environment.name,
         'documentation-path' => help_page_path('administration/monitoring/prometheus/index.md'),
         'empty-getting-started-svg-path' => match_asset_path('/assets/illustrations/monitoring/getting_started.svg'),
@@ -39,7 +40,8 @@ describe EnvironmentsHelper do
         'validate-query-path' => validate_query_project_prometheus_metrics_path(project),
         'custom-metrics-available' => 'true',
         'alerts-endpoint' => project_prometheus_alerts_path(project, environment_id: environment.id, format: :json),
-        'prometheus-alerts-available' => 'true'
+        'prometheus-alerts-available' => 'true',
+        'custom-dashboard-base-path' => Metrics::Dashboard::CustomDashboardService::DASHBOARD_ROOT
       )
     end
 

@@ -57,6 +57,30 @@ describe ProjectImportState, type: :model do
     end
   end
 
+  describe '#mark_as_failed' do
+    let(:error_message) { 'some message' }
+
+    it 'logs error when update column fails' do
+      allow(import_state).to receive(:update_column).and_raise(ActiveRecord::ActiveRecordError)
+
+      expect_next_instance_of(Gitlab::Import::Logger) do |logger|
+        expect(logger).to receive(:error).with(
+          error: 'ActiveRecord::ActiveRecordError',
+          message: 'Error setting import status to failed',
+          original_error: error_message
+        )
+      end
+
+      import_state.mark_as_failed(error_message)
+    end
+
+    it 'updates last_error with error message' do
+      import_state.mark_as_failed(error_message)
+
+      expect(import_state.last_error).to eq(error_message)
+    end
+  end
+
   describe '#human_status_name' do
     context 'when import_state exists' do
       it 'returns the humanized status name' do

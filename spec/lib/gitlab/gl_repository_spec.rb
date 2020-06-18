@@ -11,7 +11,7 @@ describe ::Gitlab::GlRepository do
       expect(described_class.parse("project-#{project.id}")).to eq([project, project, Gitlab::GlRepository::PROJECT])
     end
 
-    it 'parses a wiki gl_repository' do
+    it 'parses a project wiki gl_repository' do
       expect(described_class.parse("wiki-#{project.id}")).to eq([project, project, Gitlab::GlRepository::WIKI])
     end
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Issues csv' do
+RSpec.describe 'Issues csv' do
   let(:user) { create(:user) }
   let(:project) { create(:project, :public) }
   let(:milestone) { create(:milestone, title: 'v1.0', project: project) }

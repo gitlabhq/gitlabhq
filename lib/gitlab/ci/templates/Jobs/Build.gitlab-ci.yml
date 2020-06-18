@@ -1,10 +1,10 @@
 build:
   stage: build
-  image: "registry.gitlab.com/gitlab-org/cluster-integration/auto-build-image:v0.2.2"
+  image: "registry.gitlab.com/gitlab-org/cluster-integration/auto-build-image:v0.2.3"
   variables:
     DOCKER_TLS_CERTDIR: ""
   services:
-    - docker:19.03.8-dind
+    - docker:19.03.11-dind
   script:
     - |
       if [[ -z "$CI_COMMIT_TAG" ]]; then

@@ -3,10 +3,10 @@
 %li.flex-row.allow-wrap
   .row-main-content
     = icon('tag')
-    = link_to tag.name, project_tag_path(@project, tag.name), class: 'item-title ref-name prepend-left-4'
+    = link_to tag.name, project_tag_path(@project, tag.name), class: 'item-title ref-name gl-ml-2'
 
     - if protected_tag?(@project, tag)
-      %span.badge.badge-success.prepend-left-4
+      %span.badge.badge-success.gl-ml-2
         = s_('TagsPage|protected')
 
     - if tag.message.present?
@@ -22,7 +22,7 @@
 
     - if release
       .text-secondary
-        = icon('rocket')
+        = sprite_icon("rocket", size: 12)
         = _("Release")
         = link_to release.name, project_releases_path(@project, anchor: release.tag), class: 'tag-release-link'
       - if release.description.present?

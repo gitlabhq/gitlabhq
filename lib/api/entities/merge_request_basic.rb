@@ -6,19 +6,15 @@ module API
       expose :merged_by, using: Entities::UserBasic do |merge_request, _options|
         merge_request.metrics&.merged_by
       end
-
       expose :merged_at do |merge_request, _options|
         merge_request.metrics&.merged_at
       end
-
       expose :closed_by, using: Entities::UserBasic do |merge_request, _options|
         merge_request.metrics&.latest_closed_by
       end
-
       expose :closed_at do |merge_request, _options|
         merge_request.metrics&.latest_closed_at
       end
-
       expose :title_html, if: -> (_, options) { options[:render_html] } do |entity|
         MarkupHelper.markdown_field(entity, :title)
       end
@@ -33,7 +29,6 @@ module API
         merge_request.assignee
       end
       expose :author, :assignees, using: Entities::UserBasic
-
       expose :source_project_id, :target_project_id
       expose :labels do |merge_request, options|
         if options[:with_labels_details]
@@ -85,11 +80,8 @@ module API
       end
 
       expose :squash
-
       expose :task_completion_status
-
       expose :cannot_be_merged?, as: :has_conflicts
-
       expose :mergeable_discussions_state?, as: :blocking_discussions_resolved
     end
   end

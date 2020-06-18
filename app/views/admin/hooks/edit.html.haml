@@ -9,7 +9,7 @@
     = form_for @hook, as: :hook, url: admin_hook_path do |f|
       = render partial: 'form', locals: { form: f, hook: @hook }
       .form-actions
-        %span>= f.submit _('Save changes'), class: 'btn btn-success append-right-8'
+        %span>= f.submit _('Save changes'), class: 'btn btn-success gl-mr-3'
         = render 'shared/web_hooks/test_button', hook: @hook
         = link_to _('Delete'), admin_hook_path(@hook), method: :delete, class: 'btn btn-remove float-right', data: { confirm: _('Are you sure?') }
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Public Snippets', :js do
+RSpec.describe 'Public Snippets', :js do
   before do
     stub_feature_flags(snippets_vue: false)
   end

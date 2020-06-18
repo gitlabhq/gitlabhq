@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe UsersController do
+RSpec.describe UsersController do
   let(:user) { create(:user) }
   let(:private_user) { create(:user, private_profile: true) }
   let(:public_user) { create(:user) }

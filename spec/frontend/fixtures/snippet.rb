@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe SnippetsController, '(JavaScript fixtures)', type: :controller do
+RSpec.describe SnippetsController, '(JavaScript fixtures)', type: :controller do
   include JavaScriptFixturesHelpers
 
   let(:admin) { create(:admin) }

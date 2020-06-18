@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Abuse reports' do
+RSpec.describe 'Abuse reports' do
   let(:another_user) { create(:user) }
 
   before do

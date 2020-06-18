@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Reportable note on issue', :js do
+RSpec.describe 'Reportable note on issue', :js do
   let(:user) { create(:user) }
   let(:project) { create(:project) }
   let(:issue) { create(:issue, project: project) }

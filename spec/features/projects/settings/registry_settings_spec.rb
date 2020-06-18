@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Project > Settings > CI/CD > Container registry tag expiration policy', :js do
+RSpec.describe 'Project > Settings > CI/CD > Container registry tag expiration policy', :js do
   let(:user) { create(:user) }
   let(:project) { create(:project, namespace: user.namespace, container_registry_enabled: container_registry_enabled) }
   let(:container_registry_enabled) { true }
@@ -29,7 +29,7 @@ describe 'Project > Settings > CI/CD > Container registry tag expiration policy'
           select('7 days until tags are automatically removed', from: 'Expiration interval:')
           select('Every day', from: 'Expiration schedule:')
           select('50 tags per image name', from: 'Number of tags to retain:')
-          fill_in('Tags with names matching this regex pattern will expire:', with: '*-production')
+          fill_in('Tags with names matching this regex pattern will expire:', with: '.*-production')
         end
         submit_button = find('.card-footer .btn.btn-success')
         expect(submit_button).not_to be_disabled
@@ -37,6 +37,19 @@ describe 'Project > Settings > CI/CD > Container registry tag expiration policy'
       end
       toast = find('.gl-toast')
       expect(toast).to have_content('Expiration policy successfully saved.')
+    end
+
+    it 'does not save expiration policy submit form with invalid regex' do
+      within '#js-registry-policies' do
+        within '.card-body' do
+          fill_in('Tags with names matching this regex pattern will expire:', with: '*-production')
+        end
+        submit_button = find('.card-footer .btn.btn-success')
+        expect(submit_button).not_to be_disabled
+        submit_button.click
+      end
+      toast = find('.gl-toast')
+      expect(toast).to have_content('Something went wrong while updating the expiration policy.')
     end
   end
 

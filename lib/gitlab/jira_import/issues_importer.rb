@@ -57,17 +57,27 @@ module Gitlab
           # For such cases we exit early if issue was already imported.
           next if already_imported?(jira_issue.id)
 
-          issue_attrs = IssueSerializer.new(project, jira_issue, running_import.user_id, { iid: next_iid }).execute
-          Gitlab::JiraImport::ImportIssueWorker.perform_async(project.id, jira_issue.id, issue_attrs, job_waiter.key)
+          begin
+            issue_attrs = IssueSerializer.new(project, jira_issue, running_import.user_id, { iid: next_iid }).execute
 
-          job_waiter.jobs_remaining += 1
-          next_iid += 1
+            Gitlab::JiraImport::ImportIssueWorker.perform_async(project.id, jira_issue.id, issue_attrs, job_waiter.key)
 
-          # Mark the issue as imported immediately so we don't end up
-          # importing it multiple times within same import.
-          # These ids are cleaned-up when import finishes.
-          # see Gitlab::JiraImport::Stage::FinishImportWorker
-          mark_as_imported(jira_issue.id)
+            job_waiter.jobs_remaining += 1
+            next_iid += 1
+
+            # Mark the issue as imported immediately so we don't end up
+            # importing it multiple times within same import.
+            # These ids are cleaned-up when import finishes.
+            # see Gitlab::JiraImport::Stage::FinishImportWorker
+            mark_as_imported(jira_issue.id)
+          rescue => ex
+            # handle exceptionn here and skip the failed to import issue, instead of
+            # failing to import the entire batch of issues
+
+            # track the failed to import issue.
+            Gitlab::ErrorTracking.track_exception(ex, project_id: project.id)
+            JiraImport.increment_issue_failures(project.id)
+          end
         end
 
         job_waiter

@@ -173,11 +173,14 @@ the following parameters:
 }
 ```
 
+Also you must use HTTP Basic authentication using the `client_id` and`client_secret`
+values to authenticate the client that performs a request.
+
 Example cURL request:
 
 ```shell
 echo 'grant_type=password&username=<your_username>&password=<your_password>' > auth.txt
-curl --data "@auth.txt" --request POST https://gitlab.example.com/oauth/token
+curl --data "@auth.txt" --user client_id:client_secret --request POST "https://gitlab.example.com/oauth/token"
 ```
 
 Then, you'll receive the access token back in the response:
@@ -189,6 +192,8 @@ Then, you'll receive the access token back in the response:
   "expires_in": 7200
 }
 ```
+
+By default, the scope of the access token is `api`, which provides complete read/write access.
 
 For testing, you can use the `oauth2` Ruby gem:
 
@@ -210,7 +215,7 @@ GET https://gitlab.example.com/api/v4/user?access_token=OAUTH-TOKEN
 or you can put the token to the Authorization header:
 
 ```shell
-curl --header "Authorization: Bearer OAUTH-TOKEN" https://gitlab.example.com/api/v4/user
+curl --header "Authorization: Bearer OAUTH-TOKEN" "https://gitlab.example.com/api/v4/user"
 ```
 
 ## Retrieving the token information
@@ -229,7 +234,7 @@ You must supply the access token, either:
 - In the Authorization header:
 
    ```shell
-   curl --header "Authorization: Bearer <OAUTH-TOKEN>" https://gitlab.example.com/oauth/token/info
+   curl --header "Authorization: Bearer <OAUTH-TOKEN>" "https://gitlab.example.com/oauth/token/info"
    ```
 
 The following is an example response:

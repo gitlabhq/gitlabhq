@@ -24,6 +24,8 @@ class CreateDescriptionVersions < ActiveRecord::Migration[5.2]
   def down
     remove_column :system_note_metadata, :description_version_id
 
+    # rubocop:disable Migration/DropTable
     drop_table :description_versions
+    # rubocop:enable Migration/DropTable
   end
 end

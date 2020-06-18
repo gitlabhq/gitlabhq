@@ -7,7 +7,7 @@
 
 .row.prepend-top-default
   .col-lg-4.profile-settings-sidebar
-    %h4.prepend-top-0
+    %h4.gl-mt-0
       = s_('Profiles|Two-Factor Authentication')
     %p
       = s_("Profiles|Increase your account's security by enabling Two-Factor Authentication (2FA)")
@@ -24,7 +24,7 @@
 - if display_providers_on_profile?
   .row.prepend-top-default
     .col-lg-4.profile-settings-sidebar
-      %h4.prepend-top-0
+      %h4.gl-mt-0
         = s_('Profiles|Social sign-in')
       %p
         = s_('Profiles|Activate signin with one of the following services')
@@ -34,7 +34,7 @@
 - if current_user.can_change_username?
   .row.prepend-top-default
     .col-lg-4.profile-settings-sidebar
-      %h4.prepend-top-0.warning-title
+      %h4.gl-mt-0.warning-title
         = s_('Profiles|Change username')
       %p
         = s_('Profiles|Changing your username can have unintended side effects.')
@@ -47,7 +47,7 @@
 
 .row.prepend-top-default
   .col-lg-4.profile-settings-sidebar
-    %h4.prepend-top-0.danger-title
+    %h4.gl-mt-0.danger-title
       = s_('Profiles|Delete account')
   .col-lg-8
     - if current_user.can_be_removed? && can?(current_user, :destroy_user, current_user)

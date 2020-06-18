@@ -28,7 +28,7 @@ best place to integrate your own product and its results into GitLab.
   implications for app security, corporate policy, or compliance. When complete,
   the job reports back on its status and creates a
   [job artifact](../../user/project/pipelines/job_artifacts.md) as a result.
-- The [Merge Request Security Widget](../../user/project/merge_requests/index.md#security-reports-ultimate)
+- The [Merge Request Security Widget](../../user/project/merge_requests/testing_and_reports_in_merge_requests.md#security-reports-ultimate)
   displays the results of the pipeline's security checks and the developer can
   review them. The developer can review both a summary and a detailed version
   of the results.
@@ -54,10 +54,10 @@ best place to integrate your own product and its results into GitLab.
 ## How to onboard
 
 This section describes the steps you need to complete to onboard as a partner
-and complete an intgration with the Secure stage.
+and complete an integration with the Secure stage.
 
 1. Read about our [partnerships](https://about.gitlab.com/partners/integrate/).
-1. [Create an issue](https://gitlab.com/gitlab-com/alliances/alliances/issues/new?issuable_template=new_partner)
+1. [Create an issue](https://gitlab.com/gitlab-com/alliances/alliances/-/issues/new?issuable_template=new_partner)
    using our new partner issue template to begin the discussion.
 1. Get a test account to begin developing your integration. You can
    request a [GitLab.com Gold Subscription Sandbox](https://about.gitlab.com/partners/integrate/#gitlabcom-gold-subscription-sandbox-request)
@@ -76,10 +76,10 @@ and complete an intgration with the Secure stage.
      - Documentation for [Dependency Scanning reports](../../user/application_security/dependency_scanning/index.md#reports-json-format).
      - Documentation for [Container Scanning reports](../../user/application_security/container_scanning/index.md#reports-json-format).
      - See this [example secure job definition that also defines the artifact created](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Security/Container-Scanning.gitlab-ci.yml).
-     - If you need a new kind of scan or report, [create an issue](https://gitlab.com/gitlab-org/gitlab/issues/new#)
+     - If you need a new kind of scan or report, [create an issue](https://gitlab.com/gitlab-org/gitlab/-/issues/new#)
        and add the label `devops::secure`.
    - Once the job is completed, the data can be seen:
-      - In the [Merge Request Security Report](../../user/project/merge_requests/index.md#security-reports-ultimate) ([MR Security Report data flow](https://gitlab.com/snippets/1910005#merge-request-view)).
+      - In the [Merge Request Security Report](../../user/project/merge_requests/testing_and_reports_in_merge_requests.md#security-reports-ultimate) ([MR Security Report data flow](https://gitlab.com/snippets/1910005#merge-request-view)).
       - While [browsing a Job Artifact](../../user/project/pipelines/job_artifacts.md).
       - In the [Security Dashboard](../../user/application_security/security_dashboard/index.md) ([Dashboard data flow](https://gitlab.com/snippets/1910005#project-and-group-dashboards)).
 1. Optional: Provide a way to interact with results as Vulnerabilities:
@@ -98,6 +98,10 @@ and complete an intgration with the Secure stage.
    - Examples of supported marketing could include being listed on our [Security Partner page](https://about.gitlab.com/partners/#security),
      doing an [Unfiltered blog post](https://about.gitlab.com/handbook/marketing/blog/unfiltered/),
      doing a co-branded webinar, or producing a co-branded whitepaper.
+
+We have a [video playlist](https://www.youtube.com/playlist?list=PL05JrBw4t0KpMqYxJiOLz-uBIr5w-yP4A)
+that may be helpful as part of this process. This covers various topics related to integrating your
+tool.
 
 If you have any issues while working through your integration or the steps
 above, please create an issue to discuss with us further.

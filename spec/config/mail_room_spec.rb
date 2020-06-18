@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'mail_room.yml' do
+RSpec.describe 'mail_room.yml' do
   include StubENV
 
   let(:mailroom_config_path) { 'config/mail_room.yml' }

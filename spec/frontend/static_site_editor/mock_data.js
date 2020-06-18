@@ -1,16 +1,17 @@
-export const sourceContent = `
----
+export const sourceContentHeader = `---
 layout: handbook-page-toc
 title: Handbook
 twitter_image: '/images/tweets/handbook-gitlab.png'
----
-
-## On this page
+---`;
+export const sourceContentSpacing = `
+`;
+export const sourceContentBody = `## On this page
 {:.no_toc .hidden-md .hidden-lg}
 
 - TOC
 {:toc .hidden-md .hidden-lg}
 `;
+export const sourceContent = `${sourceContentHeader}${sourceContentSpacing}${sourceContentBody}`;
 export const sourceContentTitle = 'Handbook';
 
 export const username = 'gitlabuser';

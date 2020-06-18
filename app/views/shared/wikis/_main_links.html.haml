@@ -1,0 +1,9 @@
+- if @page&.persisted?
+  - if can?(current_user, :create_wiki, @wiki.container)
+    = link_to wiki_path(@wiki, action: :new), class: "btn btn-success", role: "button", data: { qa_selector: 'new_page_button' } do
+      = s_("Wiki|New page")
+  = link_to wiki_page_path(@wiki, @page, action: :history), class: "btn", role: "button", data: { qa_selector: 'page_history_button' } do
+    = s_("Wiki|Page history")
+  - if can?(current_user, :create_wiki, @wiki.container) && @page.latest? && @valid_encoding
+    = link_to wiki_page_path(@wiki, @page, action: :edit), class: "btn js-wiki-edit", role: "button", data: { qa_selector: 'edit_page_button' } do
+      = _("Edit")

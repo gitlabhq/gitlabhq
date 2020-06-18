@@ -94,11 +94,7 @@ RSpec.describe AlertManagement::CreateAlertIssueService do
       end
 
       context 'when alert cannot be updated' do
-        before do
-          # invalidate alert
-          too_many_hosts = Array.new(AlertManagement::Alert::HOSTS_MAX_LENGTH + 1) { |_| 'host' }
-          alert.update_columns(hosts: too_many_hosts)
-        end
+        let(:alert) { create(:alert_management_alert, :with_validation_errors, :triggered, project: project, payload: payload) }
 
         it 'responds with error' do
           expect(execute).to be_error
@@ -120,17 +116,6 @@ RSpec.describe AlertManagement::CreateAlertIssueService do
         it 'responds with error' do
           expect(execute).to be_error
           expect(execute.message).to eq(_('An issue already exists'))
-        end
-      end
-
-      context 'when alert_management_create_alert_issue feature flag is disabled' do
-        before do
-          stub_feature_flags(alert_management_create_alert_issue: false)
-        end
-
-        it 'responds with error' do
-          expect(execute).to be_error
-          expect(execute.message).to eq(_('You have no permissions'))
         end
       end
     end

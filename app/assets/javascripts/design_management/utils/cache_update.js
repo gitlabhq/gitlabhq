@@ -95,6 +95,10 @@ const addImageDiffNoteToStore = (store, createImageDiffNote, query, variables) =
     __typename: 'Discussion',
     id: createImageDiffNote.note.discussion.id,
     replyId: createImageDiffNote.note.discussion.replyId,
+    resolvable: true,
+    resolved: false,
+    resolvedAt: null,
+    resolvedBy: null,
     notes: {
       __typename: 'NoteConnection',
       nodes: [createImageDiffNote.note],

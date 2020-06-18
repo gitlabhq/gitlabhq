@@ -1,3 +1,9 @@
+---
+stage: Release
+group: Release Management
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+---
+
 # Pages domains API
 
 Endpoints for connecting custom domain(s) and TLS certificates in [GitLab Pages](https://about.gitlab.com/stages-devops-lifecycle/pages/).
@@ -13,7 +19,7 @@ GET /pages/domains
 ```
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/pages/domains
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/pages/domains"
 ```
 
 ```json
@@ -44,7 +50,7 @@ GET /projects/:id/pages/domains
 | `id`      | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/pages/domains
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/pages/domains"
 ```
 
 ```json
@@ -81,7 +87,7 @@ GET /projects/:id/pages/domains/:domain
 | `domain`  | string         | yes      | The custom domain indicated by the user  |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/pages/domains/www.domain.example
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/pages/domains/www.domain.example"
 ```
 
 ```json
@@ -92,7 +98,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/ap
 ```
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/pages/domains/ssl.domain.example
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/pages/domains/ssl.domain.example"
 ```
 
 ```json
@@ -126,15 +132,15 @@ POST /projects/:id/pages/domains
 | `key`              | file/string    | no       | The certificate key in PEM format.       |
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --form "domain=ssl.domain.example" --form "certificate=@/path/to/cert.pem" --form "key=@/path/to/key.pem" https://gitlab.example.com/api/v4/projects/5/pages/domains
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --form "domain=ssl.domain.example" --form "certificate=@/path/to/cert.pem" --form "key=@/path/to/key.pem" "https://gitlab.example.com/api/v4/projects/5/pages/domains"
 ```
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --form "domain=ssl.domain.example" --form "certificate=$CERT_PEM" --form "key=$KEY_PEM" https://gitlab.example.com/api/v4/projects/5/pages/domains
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --form "domain=ssl.domain.example" --form "certificate=$CERT_PEM" --form "key=$KEY_PEM" "https://gitlab.example.com/api/v4/projects/5/pages/domains"
 ```
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --form "domain=ssl.domain.example" --form "auto_ssl_enabled=true" https://gitlab.example.com/api/v4/projects/5/pages/domains
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --form "domain=ssl.domain.example" --form "auto_ssl_enabled=true" "https://gitlab.example.com/api/v4/projects/5/pages/domains"
 ```
 
 ```json
@@ -170,11 +176,11 @@ PUT /projects/:id/pages/domains/:domain
 ### Adding certificate
 
 ```shell
-curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" --form "certificate=@/path/to/cert.pem" --form "key=@/path/to/key.pem" https://gitlab.example.com/api/v4/projects/5/pages/domains/ssl.domain.example
+curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" --form "certificate=@/path/to/cert.pem" --form "key=@/path/to/key.pem" "https://gitlab.example.com/api/v4/projects/5/pages/domains/ssl.domain.example"
 ```
 
 ```shell
-curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" --form "certificate=$CERT_PEM" --form "key=$KEY_PEM" https://gitlab.example.com/api/v4/projects/5/pages/domains/ssl.domain.example
+curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" --form "certificate=$CERT_PEM" --form "key=$KEY_PEM" "https://gitlab.example.com/api/v4/projects/5/pages/domains/ssl.domain.example"
 ```
 
 ```json
@@ -194,7 +200,7 @@ curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" --form "certifi
 ### Enabling Let's Encrypt integration for Pages custom domains
 
 ```shell
-curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" --form "auto_ssl_enabled=true" https://gitlab.example.com/api/v4/projects/5/pages/domains/ssl.domain.example
+curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" --form "auto_ssl_enabled=true" "https://gitlab.example.com/api/v4/projects/5/pages/domains/ssl.domain.example"
 ```
 
 ```json
@@ -210,7 +216,7 @@ curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" --form "auto_ss
 To remove the SSL certificate attached to the Pages domain, run:
 
 ```shell
-curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" --form "certificate=" --form "key=" https://gitlab.example.com/api/v4/projects/5/pages/domains/ssl.domain.example
+curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" --form "certificate=" --form "key=" "https://gitlab.example.com/api/v4/projects/5/pages/domains/ssl.domain.example"
 ```
 
 ```json
@@ -235,5 +241,5 @@ DELETE /projects/:id/pages/domains/:domain
 | `domain`  | string         | yes      | The custom domain indicated by the user  |
 
 ```shell
-curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/pages/domains/ssl.domain.example
+curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/pages/domains/ssl.domain.example"
 ```

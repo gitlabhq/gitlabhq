@@ -2,6 +2,7 @@
 
 require 'spec_helper'
 
+# NOTE: This class is unused and to be removed in 13.1~
 describe PipelineUpdateCiRefStatusWorker do
   let(:worker) { described_class.new }
   let(:pipeline) { create(:ci_pipeline) }

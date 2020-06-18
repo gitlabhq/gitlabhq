@@ -7,8 +7,10 @@
   %span.event-type.d-inline-block.append-right-4{ class: event.action_name }
     = event.action_name
   = event_note_title_html(event)
-  %span.event-target-title.append-right-4{ dir: "auto" }
-    = "&quot;".html_safe + event.target.title + "&quot".html_safe
+  - title = note_target_title(event.target)
+  - if title.present?
+    %span.event-target-title.append-right-4{ dir: "auto" }
+      = "&quot;".html_safe + title + "&quot".html_safe
 
   = render "events/event_scope", event: event
 

@@ -43,6 +43,7 @@ module QA
 
     module API
       autoload :Client, 'qa/runtime/api/client'
+      autoload :RepositoryStorageMoves, 'qa/runtime/api/repository_storage_moves'
       autoload :Request, 'qa/runtime/api/request'
     end
 
@@ -79,15 +80,16 @@ module QA
     autoload :User, 'qa/resource/user'
     autoload :ProjectMilestone, 'qa/resource/project_milestone'
     autoload :Members, 'qa/resource/members'
-    autoload :Wiki, 'qa/resource/wiki'
     autoload :File, 'qa/resource/file'
     autoload :Fork, 'qa/resource/fork'
     autoload :SSHKey, 'qa/resource/ssh_key'
     autoload :Snippet, 'qa/resource/snippet'
     autoload :Tag, 'qa/resource/tag'
     autoload :ProjectMember, 'qa/resource/project_member'
+    autoload :ProjectSnippet, 'qa/resource/project_snippet'
     autoload :UserGPG, 'qa/resource/user_gpg'
     autoload :Visibility, 'qa/resource/visibility'
+    autoload :ProjectSnippet, 'qa/resource/project_snippet'
 
     module KubernetesCluster
       autoload :Base, 'qa/resource/kubernetes_cluster/base'
@@ -108,6 +110,10 @@ module QA
 
     module Settings
       autoload :HashedStorage, 'qa/resource/settings/hashed_storage'
+    end
+
+    module Wiki
+      autoload :ProjectPage, 'qa/resource/wiki/project_page'
     end
   end
 
@@ -131,6 +137,7 @@ module QA
       module Instance
         autoload :All, 'qa/scenario/test/instance/all'
         autoload :Smoke, 'qa/scenario/test/instance/smoke'
+        autoload :Airgapped, 'qa/scenario/test/instance/airgapped'
       end
 
       module Integration
@@ -224,9 +231,11 @@ module QA
 
     module Project
       autoload :New, 'qa/page/project/new'
+      autoload :NewExperiment, 'qa/page/project/new_experiment'
       autoload :Show, 'qa/page/project/show'
       autoload :Activity, 'qa/page/project/activity'
       autoload :Menu, 'qa/page/project/menu'
+      autoload :Members, 'qa/page/project/members'
 
       module Branches
         autoload :Show, 'qa/page/project/branches/show'
@@ -254,6 +263,7 @@ module QA
         autoload :Main, 'qa/page/project/settings/main'
         autoload :Repository, 'qa/page/project/settings/repository'
         autoload :CICD, 'qa/page/project/settings/ci_cd'
+        autoload :Integrations, 'qa/page/project/settings/integrations'
         autoload :GeneralPipelines, 'qa/page/project/settings/general_pipelines'
         autoload :AutoDevops, 'qa/page/project/settings/auto_devops'
         autoload :DeployKeys, 'qa/page/project/settings/deploy_keys'
@@ -262,9 +272,12 @@ module QA
         autoload :CiVariables, 'qa/page/project/settings/ci_variables'
         autoload :Runners, 'qa/page/project/settings/runners'
         autoload :MergeRequest, 'qa/page/project/settings/merge_request'
-        autoload :Members, 'qa/page/project/settings/members'
         autoload :MirroringRepositories, 'qa/page/project/settings/mirroring_repositories'
         autoload :VisibilityFeaturesPermissions, 'qa/page/project/settings/visibility_features_permissions'
+
+        module Services
+          autoload :Jira, 'qa/page/project/settings/services/jira'
+        end
         autoload :Operations, 'qa/page/project/settings/operations'
         autoload :Incidents, 'qa/page/project/settings/incidents'
         autoload :Integrations, 'qa/page/project/settings/integrations'
@@ -319,13 +332,16 @@ module QA
 
       module Wiki
         autoload :Edit, 'qa/page/project/wiki/edit'
-        autoload :New, 'qa/page/project/wiki/new'
         autoload :Show, 'qa/page/project/wiki/show'
         autoload :GitAccess, 'qa/page/project/wiki/git_access'
       end
 
       module WebIDE
         autoload :Edit, 'qa/page/project/web_ide/edit'
+      end
+
+      module Snippet
+        autoload :New, 'qa/page/project/snippet/new'
       end
     end
 
@@ -339,6 +355,7 @@ module QA
     end
 
     module Issuable
+      autoload :New, 'qa/page/issuable/new'
       autoload :Sidebar, 'qa/page/issuable/sidebar'
     end
 
@@ -427,8 +444,16 @@ module QA
         autoload :Common, 'qa/page/component/issuable/common'
       end
 
+      module IssueBoard
+        autoload :Show, 'qa/page/component/issue_board/show'
+      end
+
       module WebIDE
         autoload :Alert, 'qa/page/component/web_ide/alert'
+
+        module Modal
+          autoload :CreateNewFile, 'qa/page/component/web_ide/modal/create_new_file'
+        end
       end
 
       module Project
@@ -511,6 +536,10 @@ module QA
         autoload :LastJobConsole, 'qa/vendor/jenkins/page/last_job_console'
         autoload :ConfigureJob, 'qa/vendor/jenkins/page/configure_job'
       end
+    end
+
+    module Jira
+      autoload :JiraAPI, 'qa/vendor/jira/jira_api'
     end
   end
 

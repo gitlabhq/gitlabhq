@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe "Internal Project Snippets Access" do
+RSpec.describe "Internal Project Snippets Access" do
   include AccessMatchers
 
   let(:project) { create(:project, :internal) }

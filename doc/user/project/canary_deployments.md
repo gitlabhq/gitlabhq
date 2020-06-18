@@ -1,6 +1,6 @@
 # Canary Deployments **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/1659) in [GitLab Premium](https://about.gitlab.com/pricing/) 9.1.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/1659) in [GitLab Premium](https://about.gitlab.com/pricing/) 9.1.
 
 A popular [Continuous Deployment](https://en.wikipedia.org/wiki/Continuous_deployment)
 strategy, where a small portion of the fleet is updated to the new version of

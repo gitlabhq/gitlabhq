@@ -6,14 +6,13 @@ import JiraImportForm from '~/jira_import/components/jira_import_form.vue';
 import JiraImportProgress from '~/jira_import/components/jira_import_progress.vue';
 import JiraImportSetup from '~/jira_import/components/jira_import_setup.vue';
 import initiateJiraImportMutation from '~/jira_import/queries/initiate_jira_import.mutation.graphql';
-import { IMPORT_STATE } from '~/jira_import/utils';
 
 const mountComponent = ({
   isJiraConfigured = true,
   errorMessage = '',
   selectedProject = 'MTG',
   showAlert = false,
-  status = IMPORT_STATE.NONE,
+  isInProgress = false,
   loading = false,
   mutate = jest.fn(() => Promise.resolve()),
   mountType,
@@ -22,14 +21,9 @@ const mountComponent = ({
 
   return mountFunction(JiraImportApp, {
     propsData: {
-      isJiraConfigured,
       inProgressIllustration: 'in-progress-illustration.svg',
+      isJiraConfigured,
       issuesPath: 'gitlab-org/gitlab-test/-/issues',
-      jiraProjects: [
-        ['My Jira Project', 'MJP'],
-        ['My Second Jira Project', 'MSJP'],
-        ['Migrate to GitLab', 'MTG'],
-      ],
       jiraIntegrationPath: 'gitlab-org/gitlab-test/-/services/jira/edit',
       projectPath: 'gitlab-org/gitlab-test',
       setupIllustration: 'setup-illustration.svg',
@@ -40,7 +34,7 @@ const mountComponent = ({
         showAlert,
         selectedProject,
         jiraImportDetails: {
-          status,
+          isInProgress,
           imports: [
             {
               jiraProjectKey: 'MTG',
@@ -63,6 +57,18 @@ const mountComponent = ({
                 name: 'Jane Doe',
               },
             },
+          ],
+          mostRecentImport: {
+            jiraProjectKey: 'MTG',
+            scheduledAt: '2020-04-09T16:17:18+00:00',
+            scheduledBy: {
+              name: 'Jane Doe',
+            },
+          },
+          projects: [
+            { text: 'My Jira Project (MJP)', value: 'MJP' },
+            { text: 'My Second Jira Project (MSJP)', value: 'MSJP' },
+            { text: 'Migrate to GitLab (MTG)', value: 'MTG' },
           ],
         },
       };
@@ -140,7 +146,7 @@ describe('JiraImportApp', () => {
 
   describe('when Jira integration is configured but import is in progress', () => {
     beforeEach(() => {
-      wrapper = mountComponent({ status: IMPORT_STATE.SCHEDULED });
+      wrapper = mountComponent({ isInProgress: true });
     });
 
     it('does not show the "Set up Jira integration" screen', () => {
@@ -184,7 +190,7 @@ describe('JiraImportApp', () => {
 
   describe('import in progress screen', () => {
     beforeEach(() => {
-      wrapper = mountComponent({ status: IMPORT_STATE.SCHEDULED });
+      wrapper = mountComponent({ isInProgress: true });
     });
 
     it('shows the illustration', () => {

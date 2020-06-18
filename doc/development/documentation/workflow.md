@@ -54,7 +54,7 @@ To update GitLab documentation:
 1. Follow the described standards and processes listed on the page, including:
    - The [Structure and template](structure.md) page.
    - The [Style Guide](styleguide.md).
-   - The [Markdown Guide](https://about.gitlab.com/handbook/engineering/ux/technical-writing/markdown-guide/).
+   - The [Markdown Guide](https://about.gitlab.com/handbook/markdown-guide/).
 1. Follow GitLab's [Merge Request Guidelines](../contributing/merge_request_workflow.md#merge-request-guidelines).
 
 TIP: **Tip:**
@@ -104,7 +104,7 @@ The process involves the following:
   - Ensure the appropriate labels are applied, including any required to pick a merge request into
     a release.
   - Ensure that, if there has not been a Technical Writer review completed or scheduled, they
-    [create the required issue](https://gitlab.com/gitlab-org/gitlab/issues/new?issuable_template=Doc%20Review), assign to the Technical Writer of the given stage group,
+    [create the required issue](https://gitlab.com/gitlab-org/gitlab/-/issues/new?issuable_template=Doc%20Review), assign to the Technical Writer of the given stage group,
     and link it from the merge request.
 
 The process is reflected in the **Documentation**
@@ -113,14 +113,14 @@ The process is reflected in the **Documentation**
 ## Other ways to help
 
 If you have ideas for further documentation resources please
-[create an issue](https://gitlab.com/gitlab-org/gitlab/issues/new?issuable_template=Documentation)
+[create an issue](https://gitlab.com/gitlab-org/gitlab/-/issues/new?issuable_template=Documentation)
 using the Documentation template.
 
 ## Post-merge reviews
 
 If not assigned to a Technical Writer for review prior to merging, a review must be scheduled
 immediately after merge by the developer or maintainer. For this,
-create an issue using the [Doc Review description template](https://gitlab.com/gitlab-org/gitlab/issues/new?issuable_template=Doc%20Review)
+create an issue using the [Doc Review description template](https://gitlab.com/gitlab-org/gitlab/-/issues/new?issuable_template=Doc%20Review)
 and link to it from the merged merge request that introduced the documentation change.
 
 Circumstances where a regular pre-merge Technical Writer review might be skipped include:

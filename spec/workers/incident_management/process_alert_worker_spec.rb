@@ -4,6 +4,7 @@ require 'spec_helper'
 
 describe IncidentManagement::ProcessAlertWorker do
   let_it_be(:project) { create(:project) }
+  let_it_be(:settings) { create(:project_incident_management_setting, project: project, create_issue: true) }
 
   describe '#perform' do
     let(:alert_management_alert_id) { nil }
@@ -71,11 +72,7 @@ describe IncidentManagement::ProcessAlertWorker do
       end
 
       context 'when alert cannot be updated' do
-        before do
-          # invalidate alert
-          too_many_hosts = Array.new(AlertManagement::Alert::HOSTS_MAX_LENGTH + 1) { |_| 'host' }
-          alert.update_columns(hosts: too_many_hosts)
-        end
+        let(:alert) { create(:alert_management_alert, :with_validation_errors, project: project) }
 
         it 'updates AlertManagement::Alert#issue_id' do
           expect { subject }.not_to change { alert.reload.issue_id }

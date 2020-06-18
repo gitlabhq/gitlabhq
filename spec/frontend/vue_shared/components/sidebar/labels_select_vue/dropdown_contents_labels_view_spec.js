@@ -3,6 +3,7 @@ import { shallowMount, createLocalVue } from '@vue/test-utils';
 
 import { GlButton, GlLoadingIcon, GlSearchBoxByType, GlLink } from '@gitlab/ui';
 import { UP_KEY_CODE, DOWN_KEY_CODE, ENTER_KEY_CODE, ESC_KEY_CODE } from '~/lib/utils/keycodes';
+import SmartVirtualList from '~/vue_shared/components/smart_virtual_list.vue';
 import DropdownContentsLabelsView from '~/vue_shared/components/sidebar/labels_select_vue/dropdown_contents_labels_view.vue';
 import LabelItem from '~/vue_shared/components/sidebar/labels_select_vue/label_item.vue';
 
@@ -222,6 +223,10 @@ describe('DropdownContentsLabelsView', () => {
 
       expect(searchInputEl.exists()).toBe(true);
       expect(searchInputEl.attributes('autofocus')).toBe('true');
+    });
+
+    it('renders smart-virtual-list element', () => {
+      expect(wrapper.find(SmartVirtualList).exists()).toBe(true);
     });
 
     it('renders label elements for all labels', () => {

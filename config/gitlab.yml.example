@@ -469,6 +469,11 @@ production: &base
     geo_file_download_dispatch_worker:
       cron: "*/1 * * * *"
 
+    # GitLab Geo registry sync worker (for backfilling)
+    # NOTE: This will only take effect if Geo is enabled (secondary nodes only)
+    geo_registry_sync_worker:
+      cron: "*/1 * * * *"
+
     # GitLab Geo migrated local files clean up worker
     # NOTE: This will only take effect if Geo is enabled (secondary nodes only)
     geo_migrated_local_files_clean_up_worker:
@@ -481,6 +486,11 @@ production: &base
     # Elasticsearch bulk updater for incremental updates.
     # NOTE: This will only take effect if elasticsearch is enabled.
     elastic_index_bulk_cron_worker:
+      cron: "*/1 * * * *"
+      
+    # Elasticsearch bulk updater for initial updates.
+    # NOTE: This will only take effect if elasticsearch is enabled.
+    elastic_index_initial_bulk_cron_worker:
       cron: "*/1 * * * *"
 
   registry:
@@ -1078,8 +1088,6 @@ production: &base
   monitoring:
     # Time between sampling of unicorn socket metrics, in seconds
     # unicorn_sampler_interval: 10
-    # Time between sampling of Puma metrics, in seconds
-    # puma_sampler_interval: 5
     # IP whitelist to access monitoring endpoints
     ip_whitelist:
       - 127.0.0.0/8

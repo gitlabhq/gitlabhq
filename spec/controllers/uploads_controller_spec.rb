@@ -1,25 +1,25 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-shared_examples 'content 5 min private cached with revalidation' do
+RSpec.shared_examples 'content 5 min private cached with revalidation' do
   it 'ensures content will not be cached without revalidation' do
     expect(subject['Cache-Control']).to eq('max-age=300, private, must-revalidate')
   end
 end
 
-shared_examples 'content not cached' do
+RSpec.shared_examples 'content not cached' do
   it 'ensures content will not be cached without revalidation' do
     expect(subject['Cache-Control']).to eq('max-age=0, private, must-revalidate')
   end
 end
 
-shared_examples 'content publicly cached' do
+RSpec.shared_examples 'content publicly cached' do
   it 'ensures content is publicly cached' do
     expect(subject['Cache-Control']).to eq('max-age=300, public')
   end
 end
 
-describe UploadsController do
+RSpec.describe UploadsController do
   include WorkhorseHelpers
 
   let!(:user) { create(:user, avatar: fixture_file_upload("spec/fixtures/dk.png", "image/png")) }

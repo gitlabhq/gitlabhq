@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ChecksCollaboration do
+RSpec.describe ChecksCollaboration do
   include ProjectForksHelper
 
   let(:helper) do

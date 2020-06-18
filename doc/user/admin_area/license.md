@@ -1,4 +1,7 @@
 ---
+stage: Growth
+group: Conversion
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 type: howto
 ---
 
@@ -64,12 +67,12 @@ export GITLAB_LICENSE_FILE="/path/to/license/file"
 Omnibus installations should add this entry to `gitlab.rb`:
 
 ```ruby
-gitlab_rails['license_file'] = "/path/to/license/file"
+gitlab_rails['initial_license_file'] = "/path/to/license/file"
 ```
 
 CAUTION: **Caution:**
 These methods will only add a license at the time of installation. Use the
-Admin Area in the web ui to renew or upgrade licenses.
+Admin Area in the web user interface to renew or upgrade licenses.
 
 ---
 

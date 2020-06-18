@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ProtectedBranchesFinder do
+RSpec.describe ProtectedBranchesFinder do
   let(:project) { create(:project) }
   let!(:protected_branch) { create(:protected_branch, project: project) }
   let!(:another_protected_branch) { create(:protected_branch, project: project) }

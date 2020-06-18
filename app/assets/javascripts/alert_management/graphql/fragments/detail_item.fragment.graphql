@@ -1,0 +1,17 @@
+#import "./list_item.fragment.graphql"
+#import "./alert_note.fragment.graphql"
+
+fragment AlertDetailItem on AlertManagementAlert {
+  ...AlertListItem
+  createdAt
+  monitoringTool
+  service
+  description
+  updatedAt
+  details
+  notes {
+    nodes {
+      ...AlertNote
+    }
+  }
+}

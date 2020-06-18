@@ -24,6 +24,7 @@ describe Ci::Build do
   it { is_expected.to have_many(:needs) }
   it { is_expected.to have_many(:sourced_pipelines) }
   it { is_expected.to have_many(:job_variables) }
+  it { is_expected.to have_many(:report_results) }
 
   it { is_expected.to have_one(:deployment) }
   it { is_expected.to have_one(:runner_session) }
@@ -626,7 +627,7 @@ describe Ci::Build do
 
     context 'is expired' do
       before do
-        build.update(artifacts_expire_at: Time.now - 7.days)
+        build.update(artifacts_expire_at: Time.current - 7.days)
       end
 
       it { is_expected.to be_truthy }
@@ -634,7 +635,7 @@ describe Ci::Build do
 
     context 'is not expired' do
       before do
-        build.update(artifacts_expire_at: Time.now + 7.days)
+        build.update(artifacts_expire_at: Time.current + 7.days)
       end
 
       it { is_expected.to be_falsey }
@@ -661,13 +662,13 @@ describe Ci::Build do
     it { is_expected.to be_nil }
 
     context 'when artifacts_expire_at is specified' do
-      let(:expire_at) { Time.now + 7.days }
+      let(:expire_at) { Time.current + 7.days }
 
       before do
         build.artifacts_expire_at = expire_at
       end
 
-      it { is_expected.to be_within(5).of(expire_at - Time.now) }
+      it { is_expected.to be_within(5).of(expire_at - Time.current) }
     end
   end
 
@@ -871,6 +872,22 @@ describe Ci::Build do
       let(:build) { create(:ci_build, :artifacts) }
 
       it { is_expected.to be_truthy }
+    end
+  end
+
+  describe '#has_test_reports?' do
+    subject { build.has_test_reports? }
+
+    context 'when build has a test report' do
+      let(:build) { create(:ci_build, :test_reports) }
+
+      it { is_expected.to be_truthy }
+    end
+
+    context 'when build does not have a test report' do
+      let(:build) { create(:ci_build) }
+
+      it { is_expected.to be_falsey }
     end
   end
 
@@ -1795,7 +1812,7 @@ describe Ci::Build do
   end
 
   describe '#keep_artifacts!' do
-    let(:build) { create(:ci_build, artifacts_expire_at: Time.now + 7.days) }
+    let(:build) { create(:ci_build, artifacts_expire_at: Time.current + 7.days) }
 
     subject { build.keep_artifacts! }
 
@@ -2285,7 +2302,7 @@ describe Ci::Build do
       let(:predefined_variables) do
         [
           { key: 'CI_PIPELINE_ID', value: pipeline.id.to_s, public: true, masked: false },
-          { key: 'CI_PIPELINE_URL', value: project.web_url + "/pipelines/#{pipeline.id}", public: true, masked: false },
+          { key: 'CI_PIPELINE_URL', value: project.web_url + "/-/pipelines/#{pipeline.id}", public: true, masked: false },
           { key: 'CI_JOB_ID', value: build.id.to_s, public: true, masked: false },
           { key: 'CI_JOB_URL', value: project.web_url + "/-/jobs/#{build.id}", public: true, masked: false },
           { key: 'CI_JOB_TOKEN', value: 'my-token', public: false, masked: true },
@@ -2390,13 +2407,13 @@ describe Ci::Build do
             allow(build).to receive(:job_jwt_variables) { [job_jwt_var] }
             allow(build).to receive(:dependency_variables) { [job_dependency_var] }
 
-            allow_any_instance_of(Project)
+            allow(build.project)
               .to receive(:predefined_variables) { [project_pre_var] }
 
             project.variables.create!(key: 'secret', value: 'value')
 
-            allow_any_instance_of(Ci::Pipeline)
-              .to receive(:predefined_variables) { [pipeline_pre_var] }
+            allow(build.pipeline)
+              .to receive(:predefined_variables).and_return([pipeline_pre_var])
           end
 
           it 'returns variables in order depending on resource hierarchy' do
@@ -2510,6 +2527,17 @@ describe Ci::Build do
 
             expect(ci_variables).to be_empty
           end
+        end
+      end
+
+      context 'with the :modified_path_ci_variables feature flag disabled' do
+        before do
+          stub_feature_flags(modified_path_ci_variables: false)
+        end
+
+        it 'does not set CI_MERGE_REQUEST_CHANGED_PAGES_* variables' do
+          expect(subject.find { |var| var[:key] == 'CI_MERGE_REQUEST_CHANGED_PAGE_PATHS' }).to be_nil
+          expect(subject.find { |var| var[:key] == 'CI_MERGE_REQUEST_CHANGED_PAGE_URLS' }).to be_nil
         end
       end
     end
@@ -3095,24 +3123,8 @@ describe Ci::Build do
 
       let!(:job_variable) { create(:ci_job_variable, :dotenv_source, job: prepare) }
 
-      context 'FF ci_dependency_variables is enabled' do
-        before do
-          stub_feature_flags(ci_dependency_variables: true)
-        end
-
-        it 'inherits dependent variables' do
-          expect(build.scoped_variables.to_hash).to include(job_variable.key => job_variable.value)
-        end
-      end
-
-      context 'FF ci_dependency_variables is disabled' do
-        before do
-          stub_feature_flags(ci_dependency_variables: false)
-        end
-
-        it 'does not inherit dependent variables' do
-          expect(build.scoped_variables.to_hash).not_to include(job_variable.key => job_variable.value)
-        end
+      it 'inherits dependent variables' do
+        expect(build.scoped_variables.to_hash).to include(job_variable.key => job_variable.value)
       end
     end
   end
@@ -3601,7 +3613,7 @@ describe Ci::Build do
             .to receive(:execute)
             .with(subject)
             .and_raise(Gitlab::Access::AccessDeniedError)
-          allow(Rails.logger).to receive(:error)
+          allow(Gitlab::AppLogger).to receive(:error)
         end
 
         it 'handles raised exception' do
@@ -3611,7 +3623,7 @@ describe Ci::Build do
         it 'logs the error' do
           subject.drop!
 
-          expect(Rails.logger)
+          expect(Gitlab::AppLogger)
             .to have_received(:error)
             .with(a_string_matching("Unable to auto-retry job #{subject.id}"))
         end
@@ -4040,10 +4052,11 @@ describe Ci::Build do
 
           expect(terraform_reports.plans).to match(
             a_hash_including(
-              'tfplan.json' => a_hash_including(
+              build.id.to_s => a_hash_including(
                 'create' => 0,
                 'update' => 1,
-                'delete' => 0
+                'delete' => 0,
+                'job_name' => build.options.dig(:artifacts, :name).to_s
               )
             )
           )
@@ -4203,7 +4216,7 @@ describe Ci::Build do
 
     subject { build.supported_runner?(runner_features) }
 
-    context 'when feature is required by build' do
+    context 'when `upload_multiple_artifacts` feature is required by build' do
       before do
         expect(build).to receive(:runner_required_feature_names) do
           [:upload_multiple_artifacts]
@@ -4227,13 +4240,33 @@ describe Ci::Build do
       end
     end
 
-    context 'when refspecs feature is required by build' do
+    context 'when `refspecs` feature is required by build' do
       before do
         allow(build).to receive(:merge_request_ref?) { true }
       end
 
       context 'when runner provides given feature' do
         let(:runner_features) { { refspecs: true } }
+
+        it { is_expected.to be_truthy }
+      end
+
+      context 'when runner does not provide given feature' do
+        let(:runner_features) { {} }
+
+        it { is_expected.to be_falsey }
+      end
+    end
+
+    context 'when `release_steps` feature is required by build' do
+      before do
+        expect(build).to receive(:runner_required_feature_names) do
+          [:release_steps]
+        end
+      end
+
+      context 'when runner provides given feature' do
+        let(:runner_features) { { release_steps: true } }
 
         it { is_expected.to be_truthy }
       end

@@ -6,7 +6,7 @@ require "spec_helper"
 # to check if the sorting option set by user is being kept persisted while going through pages.
 # The `it`s are named here by convention `starting point -> some pages -> final point`.
 # All those specs are moved out to this spec intentionally to keep them all in one place.
-describe "User sorts things" do
+RSpec.describe "User sorts things" do
   include Spec::Support::Helpers::Features::SortingHelpers
   include DashboardHelper
 

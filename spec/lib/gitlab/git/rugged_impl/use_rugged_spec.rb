@@ -8,7 +8,6 @@ describe Gitlab::Git::RuggedImpl::UseRugged, :seed_helper do
   let(:project) { create(:project, :repository) }
   let(:repository) { project.repository }
   let(:feature_flag_name) { 'feature-flag-name' }
-  let(:feature_flag) { Feature.get(feature_flag_name) }
   let(:temp_gitaly_metadata_file) { create_temporary_gitaly_metadata_file }
 
   before(:all) do
@@ -49,10 +48,6 @@ describe Gitlab::Git::RuggedImpl::UseRugged, :seed_helper do
   end
 
   context 'when feature flag is not persisted' do
-    before do
-      allow(Feature).to receive(:persisted?).with(feature_flag).and_return(false)
-    end
-
     context 'when running puma with multiple threads' do
       before do
         allow(subject).to receive(:running_puma_with_multiple_threads?).and_return(true)
@@ -97,18 +92,15 @@ describe Gitlab::Git::RuggedImpl::UseRugged, :seed_helper do
   end
 
   context 'when feature flag is persisted' do
-    before do
-      allow(Feature).to receive(:persisted?).with(feature_flag).and_return(true)
-    end
-
     it 'returns false when the feature flag is off' do
-      allow(feature_flag).to receive(:enabled?).and_return(false)
+      Feature.disable(feature_flag_name)
 
       expect(subject.use_rugged?(repository, feature_flag_name)).to be_falsey
     end
 
     it "returns true when feature flag is on" do
-      allow(feature_flag).to receive(:enabled?).and_return(true)
+      Feature.enable(feature_flag_name)
+
       allow(Gitlab::GitalyClient).to receive(:can_use_disk?).and_return(false)
 
       expect(subject.use_rugged?(repository, feature_flag_name)).to be true

@@ -1,0 +1,5 @@
+---
+title: Remove usage of spam constants in spec
+merge_request: 31959
+author: Rajendra Kadam
+type: fixed

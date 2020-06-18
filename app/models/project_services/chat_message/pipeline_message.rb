@@ -183,7 +183,7 @@ module ChatMessage
       if ref_type == 'tag'
         "#{project_url}/-/tags/#{ref}"
       else
-        "#{project_url}/commits/#{ref}"
+        "#{project_url}/-/commits/#{ref}"
       end
     end
 
@@ -200,14 +200,14 @@ module ChatMessage
     end
 
     def pipeline_failed_jobs_url
-      "#{project_url}/pipelines/#{pipeline_id}/failures"
+      "#{project_url}/-/pipelines/#{pipeline_id}/failures"
     end
 
     def pipeline_url
       if failed_jobs.any?
         pipeline_failed_jobs_url
       else
-        "#{project_url}/pipelines/#{pipeline_id}"
+        "#{project_url}/-/pipelines/#{pipeline_id}"
       end
     end
 

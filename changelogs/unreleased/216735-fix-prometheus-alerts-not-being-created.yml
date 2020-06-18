@@ -1,0 +1,5 @@
+---
+title: Fix prometheus alerts not being automatically created
+merge_request: 33806
+author:
+type: fixed

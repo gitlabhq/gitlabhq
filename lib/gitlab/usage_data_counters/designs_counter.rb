@@ -4,7 +4,7 @@ module Gitlab::UsageDataCounters
   class DesignsCounter
     extend Gitlab::UsageDataCounters::RedisCounter
 
-    KNOWN_EVENTS = %w[create update delete].map(&:freeze).freeze
+    KNOWN_EVENTS = %w[create update delete].freeze
 
     UnknownEvent = Class.new(StandardError)
 

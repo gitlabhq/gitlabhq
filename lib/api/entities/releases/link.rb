@@ -9,6 +9,7 @@ module API
         expose :url
         expose :direct_asset_url
         expose :external?, as: :external
+        expose :link_type
 
         def direct_asset_url
           return object.url unless object.filepath

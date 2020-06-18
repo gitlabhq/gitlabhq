@@ -55,7 +55,7 @@ module Gitlab
       end
 
       def build_base_data(project, user, note)
-        event_type = note.confidential? ? 'confidential_note' : 'note'
+        event_type = note.confidential?(include_noteable: true) ? 'confidential_note' : 'note'
 
         base_data = {
           object_kind: "note",

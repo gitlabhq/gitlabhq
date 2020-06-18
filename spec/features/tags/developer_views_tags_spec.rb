@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Developer views tags' do
+RSpec.describe 'Developer views tags' do
   let(:user) { create(:user) }
   let(:group) { create(:group) }
 

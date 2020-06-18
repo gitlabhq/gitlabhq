@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Groups::Clusters::ApplicationsController do
+RSpec.describe Groups::Clusters::ApplicationsController do
   include AccessMatchersForController
 
   def current_application

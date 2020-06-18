@@ -100,6 +100,20 @@ describe Todo do
     end
   end
 
+  describe '#for_alert?' do
+    it 'returns true when target is a Alert' do
+      subject.target_type = 'AlertManagement::Alert'
+
+      expect(subject.for_alert?).to eq(true)
+    end
+
+    it 'returns false when target is not a Alert' do
+      subject.target_type = 'Issue'
+
+      expect(subject.for_alert?).to eq(false)
+    end
+  end
+
   describe '#target' do
     context 'for commits' do
       let(:project) { create(:project, :repository) }
@@ -393,10 +407,10 @@ describe Todo do
     end
   end
 
-  describe '.update_state' do
+  describe '.batch_update' do
     it 'updates the state of todos' do
       todo = create(:todo, :pending)
-      ids = described_class.update_state(:done)
+      ids = described_class.batch_update(state: :done)
 
       todo.reload
 
@@ -407,16 +421,16 @@ describe Todo do
     it 'does not update todos that already have the given state' do
       create(:todo, :pending)
 
-      expect(described_class.update_state(:pending)).to be_empty
+      expect(described_class.batch_update(state: :pending)).to be_empty
     end
 
     it 'updates updated_at' do
       create(:todo, :pending)
 
       Timecop.freeze(1.day.from_now) do
-        expected_update_date = Time.now.utc
+        expected_update_date = Time.current.utc
 
-        ids = described_class.update_state(:done)
+        ids = described_class.batch_update(state: :done)
 
         expect(Todo.where(id: ids).map(&:updated_at)).to all(be_like_time(expected_update_date))
       end

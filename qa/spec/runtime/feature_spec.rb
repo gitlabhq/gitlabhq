@@ -25,6 +25,21 @@ describe QA::Runtime::Feature do
     end
   end
 
+  describe '.enable_and_verify' do
+    it 'enables a feature flag' do
+      allow(described_class).to receive(:get).and_return(response_get)
+
+      expect(QA::Runtime::API::Request).to receive(:new)
+        .with(api_client, "/features/a-flag").and_return(request)
+      expect(described_class).to receive(:post)
+        .with(request.url, { value: true }).and_return(response_post)
+      expect(QA::Runtime::API::Request).to receive(:new)
+        .with(api_client, "/features").and_return(request)
+
+      subject.enable_and_verify('a-flag')
+    end
+  end
+
   describe '.disable' do
     it 'disables a feature flag' do
       expect(QA::Runtime::API::Request)
@@ -37,6 +52,22 @@ describe QA::Runtime::Feature do
         .and_return(response_post)
 
       subject.disable('a-flag')
+    end
+  end
+
+  describe '.disable_and_verify' do
+    it 'disables a feature flag' do
+      allow(described_class).to receive(:get)
+        .and_return(Struct.new(:code, :body).new(200, '[{ "name": "a-flag", "state": "off" }]'))
+
+      expect(QA::Runtime::API::Request).to receive(:new)
+        .with(api_client, "/features/a-flag").and_return(request)
+      expect(described_class).to receive(:post)
+        .with(request.url, { value: false }).and_return(response_post)
+      expect(QA::Runtime::API::Request).to receive(:new)
+        .with(api_client, "/features").and_return(request)
+
+      subject.disable_and_verify('a-flag')
     end
   end
 

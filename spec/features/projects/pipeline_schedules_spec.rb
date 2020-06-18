@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Pipeline Schedules', :js do
+RSpec.describe 'Pipeline Schedules', :js do
   include PipelineSchedulesHelper
 
   let!(:project) { create(:project, :repository) }

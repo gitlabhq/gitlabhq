@@ -234,11 +234,7 @@ export default {
       class="alert-current-setting cursor-pointer d-flex"
       @click="showModal"
     >
-      <gl-badge
-        :variant="isFiring ? 'danger' : 'secondary'"
-        pill
-        class="d-flex-center text-truncate"
-      >
+      <gl-badge :variant="isFiring ? 'danger' : 'neutral'" class="d-flex-center text-truncate">
         <gl-icon name="warning" :size="16" class="flex-shrink-0" />
         <span class="text-truncate gl-pl-1-deprecated-no-really-do-not-use-me">
           <gl-sprintf

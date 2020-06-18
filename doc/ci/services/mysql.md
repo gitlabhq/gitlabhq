@@ -1,4 +1,7 @@
 ---
+stage: Verify
+group: Runner
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 type: reference
 ---
 
@@ -43,7 +46,7 @@ Database: <your_mysql_database>
 If you are wondering why we used `mysql` for the `Host`, read more at
 [How services are linked to the job](../docker/using_docker_images.md#how-services-are-linked-to-the-job).
 
-You can also use any other docker image available on [Docker Hub](https://hub.docker.com/_/mysql/).
+You can also use any other Docker image available on [Docker Hub](https://hub.docker.com/_/mysql/).
 For example, to use MySQL 5.5 the service becomes `mysql:5.5`.
 
 The `mysql` image can accept some environment variables. For more details

@@ -3,7 +3,10 @@ import api from '~/api';
 import createFlash from '~/flash';
 import { s__ } from '~/locale';
 import { redirectTo } from '~/lib/utils/url_utility';
-import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
+import {
+  convertObjectPropsToCamelCase,
+  convertObjectPropsToSnakeCase,
+} from '~/lib/utils/common_utils';
 
 export const requestRelease = ({ commit }) => commit(types.REQUEST_RELEASE);
 export const receiveReleaseSuccess = ({ commit }, data) =>
@@ -54,13 +57,18 @@ export const updateRelease = ({ dispatch, state, getters }) => {
   const { release } = state;
   const milestones = release.milestones ? release.milestones.map(milestone => milestone.title) : [];
 
+  const updatedRelease = convertObjectPropsToSnakeCase(
+    {
+      name: release.name,
+      description: release.description,
+      milestones,
+    },
+    { deep: true },
+  );
+
   return (
     api
-      .updateRelease(state.projectId, state.tagName, {
-        name: release.name,
-        description: release.description,
-        milestones,
-      })
+      .updateRelease(state.projectId, state.tagName, updatedRelease)
 
       /**
        * Currently, we delete all existing links and then
@@ -91,7 +99,11 @@ export const updateRelease = ({ dispatch, state, getters }) => {
         // Create a new link for each link in the form
         return Promise.all(
           getters.releaseLinksToCreate.map(l =>
-            api.createReleaseLink(state.projectId, release.tagName, l),
+            api.createReleaseLink(
+              state.projectId,
+              release.tagName,
+              convertObjectPropsToSnakeCase(l, { deep: true }),
+            ),
           ),
         );
       })
@@ -116,6 +128,10 @@ export const updateAssetLinkUrl = ({ commit }, { linkIdToUpdate, newUrl }) => {
 
 export const updateAssetLinkName = ({ commit }, { linkIdToUpdate, newName }) => {
   commit(types.UPDATE_ASSET_LINK_NAME, { linkIdToUpdate, newName });
+};
+
+export const updateAssetLinkType = ({ commit }, { linkIdToUpdate, newType }) => {
+  commit(types.UPDATE_ASSET_LINK_TYPE, { linkIdToUpdate, newType });
 };
 
 export const removeAssetLink = ({ commit }, linkIdToRemove) => {

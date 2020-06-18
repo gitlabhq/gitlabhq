@@ -1,4 +1,7 @@
 ---
+stage: Verify
+group: Continuous Integration
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 disqus_identifier: 'https://docs.gitlab.com/ee/articles/laravel_with_gitlab_and_envoy/index.html'
 author: Mehran Rasulian
 author_gitlab: mehranrasulian
@@ -29,7 +32,7 @@ It uses a clean, minimal [Blade syntax](https://laravel.com/docs/master/blade) t
 
 ## Initialize our Laravel app on GitLab
 
-We assume [you have installed a new laravel project](https://laravel.com/docs/master/installation#installation), so let's start with a unit test, and initialize Git for the project.
+We assume [you have installed a new Laravel project](https://laravel.com/docs/master/installation#installation), so let's start with a unit test, and initialize Git for the project.
 
 ### Unit Test
 
@@ -664,7 +667,7 @@ If something doesn't work as expected, you can roll back to the latest working v
 By clicking on the external link icon specified on the right side, GitLab opens the production website.
 Our deployment successfully was done and we can see the application is live.
 
-![laravel welcome page](img/laravel_welcome_page.png)
+![Laravel welcome page](img/laravel_welcome_page.png)
 
 In the case that you're interested to know how is the application directory structure on the production server after deployment, here are three directories named `current`, `releases` and `storage`.
 As you know, the `current` directory is a symbolic link that points to the latest release.

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Projects::BadgesController do
+RSpec.describe Projects::BadgesController do
   let(:project) { pipeline.project }
   let!(:pipeline) { create(:ci_empty_pipeline) }
   let(:user) { create(:user) }
@@ -54,7 +54,7 @@ describe Projects::BadgesController do
 
       context 'when style param is set to `flat`' do
         it 'renders the `flat` badge layout' do
-          get_badge(badge_type, 'flat')
+          get_badge(badge_type, style: 'flat')
 
           expect(response).to render_template('projects/badges/badge')
         end
@@ -62,7 +62,7 @@ describe Projects::BadgesController do
 
       context 'when style param is set to an invalid type' do
         it 'renders the `flat` (default) badge layout' do
-          get_badge(badge_type, 'xxx')
+          get_badge(badge_type, style: 'xxx')
 
           expect(response).to render_template('projects/badges/badge')
         end
@@ -70,7 +70,7 @@ describe Projects::BadgesController do
 
       context 'when style param is set to `flat-square`' do
         it 'renders the `flat-square` badge layout' do
-          get_badge(badge_type, 'flat-square')
+          get_badge(badge_type, style: 'flat-square')
 
           expect(response).to render_template('projects/badges/badge_flat-square')
         end
@@ -102,9 +102,34 @@ describe Projects::BadgesController do
         end
 
         it 'defaults to project permissions' do
-          get_badge(:coverage)
+          get_badge(badge_type)
 
           expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
+    end
+
+    context 'customization' do
+      render_views
+
+      before do
+        project.add_maintainer(user)
+        sign_in(user)
+      end
+
+      context 'when key_text param is used' do
+        it 'sets custom key text' do
+          get_badge(badge_type, key_text: 'custom key text')
+
+          expect(response.body).to include('custom key text')
+        end
+      end
+
+      context 'when key_width param is used' do
+        it 'sets custom key width' do
+          get_badge(badge_type, key_width: '123')
+
+          expect(response.body).to include('123')
         end
       end
     end
@@ -118,13 +143,12 @@ describe Projects::BadgesController do
     it_behaves_like 'a badge resource', :coverage
   end
 
-  def get_badge(badge, style = nil)
+  def get_badge(badge, args = {})
     params = {
       namespace_id: project.namespace.to_param,
       project_id: project,
-      ref: pipeline.ref,
-      style: style
-    }
+      ref: pipeline.ref
+    }.merge(args.slice(:style, :key_text, :key_width))
 
     get badge, params: params, format: :svg
   end

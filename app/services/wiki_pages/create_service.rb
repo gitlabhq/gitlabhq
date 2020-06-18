@@ -22,7 +22,7 @@ module WikiPages
     end
 
     def event_action
-      Event::CREATED
+      :created
     end
   end
 end

@@ -560,9 +560,107 @@ export const branches = [
   },
 ];
 
+export const tags = [
+  {
+    name: 'tag-3',
+    message: '',
+    target: '66673b07efef254dab7d537f0433a40e61cf84fe',
+    commit: {
+      id: '66673b07efef254dab7d537f0433a40e61cf84fe',
+      short_id: '66673b07',
+      created_at: '2020-03-16T11:04:46.000-04:00',
+      parent_ids: ['def28bf679235071140180495f25b657e2203587'],
+      title: 'Update .gitlab-ci.yml',
+      message: 'Update .gitlab-ci.yml',
+      author_name: 'Administrator',
+      author_email: 'admin@example.com',
+      authored_date: '2020-03-16T11:04:46.000-04:00',
+      committer_name: 'Administrator',
+      committer_email: 'admin@example.com',
+      committed_date: '2020-03-16T11:04:46.000-04:00',
+      web_url:
+        'http://192.168.1.22:3000/root/dag-pipeline/-/commit/66673b07efef254dab7d537f0433a40e61cf84fe',
+    },
+    release: null,
+    protected: false,
+  },
+  {
+    name: 'tag-2',
+    message: '',
+    target: '66673b07efef254dab7d537f0433a40e61cf84fe',
+    commit: {
+      id: '66673b07efef254dab7d537f0433a40e61cf84fe',
+      short_id: '66673b07',
+      created_at: '2020-03-16T11:04:46.000-04:00',
+      parent_ids: ['def28bf679235071140180495f25b657e2203587'],
+      title: 'Update .gitlab-ci.yml',
+      message: 'Update .gitlab-ci.yml',
+      author_name: 'Administrator',
+      author_email: 'admin@example.com',
+      authored_date: '2020-03-16T11:04:46.000-04:00',
+      committer_name: 'Administrator',
+      committer_email: 'admin@example.com',
+      committed_date: '2020-03-16T11:04:46.000-04:00',
+      web_url:
+        'http://192.168.1.22:3000/root/dag-pipeline/-/commit/66673b07efef254dab7d537f0433a40e61cf84fe',
+    },
+    release: null,
+    protected: false,
+  },
+  {
+    name: 'tag-1',
+    message: '',
+    target: '66673b07efef254dab7d537f0433a40e61cf84fe',
+    commit: {
+      id: '66673b07efef254dab7d537f0433a40e61cf84fe',
+      short_id: '66673b07',
+      created_at: '2020-03-16T11:04:46.000-04:00',
+      parent_ids: ['def28bf679235071140180495f25b657e2203587'],
+      title: 'Update .gitlab-ci.yml',
+      message: 'Update .gitlab-ci.yml',
+      author_name: 'Administrator',
+      author_email: 'admin@example.com',
+      authored_date: '2020-03-16T11:04:46.000-04:00',
+      committer_name: 'Administrator',
+      committer_email: 'admin@example.com',
+      committed_date: '2020-03-16T11:04:46.000-04:00',
+      web_url:
+        'http://192.168.1.22:3000/root/dag-pipeline/-/commit/66673b07efef254dab7d537f0433a40e61cf84fe',
+    },
+    release: null,
+    protected: false,
+  },
+  {
+    name: 'master-tag',
+    message: '',
+    target: '66673b07efef254dab7d537f0433a40e61cf84fe',
+    commit: {
+      id: '66673b07efef254dab7d537f0433a40e61cf84fe',
+      short_id: '66673b07',
+      created_at: '2020-03-16T11:04:46.000-04:00',
+      parent_ids: ['def28bf679235071140180495f25b657e2203587'],
+      title: 'Update .gitlab-ci.yml',
+      message: 'Update .gitlab-ci.yml',
+      author_name: 'Administrator',
+      author_email: 'admin@example.com',
+      authored_date: '2020-03-16T11:04:46.000-04:00',
+      committer_name: 'Administrator',
+      committer_email: 'admin@example.com',
+      committed_date: '2020-03-16T11:04:46.000-04:00',
+      web_url:
+        'http://192.168.1.22:3000/root/dag-pipeline/-/commit/66673b07efef254dab7d537f0433a40e61cf84fe',
+    },
+    release: null,
+    protected: false,
+  },
+];
+
 export const mockSearch = [
   { type: 'username', value: { data: 'root', operator: '=' } },
   { type: 'ref', value: { data: 'master', operator: '=' } },
+  { type: 'status', value: { data: 'pending', operator: '=' } },
 ];
 
 export const mockBranchesAfterMap = ['branch-1', 'branch-10', 'branch-11'];
+
+export const mockTagsAfterMap = ['tag-3', 'tag-2', 'tag-1', 'master-tag'];

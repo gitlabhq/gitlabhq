@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'DevOps Score' do
+RSpec.describe 'DevOps Score' do
   before do
     sign_in(create(:admin))
   end

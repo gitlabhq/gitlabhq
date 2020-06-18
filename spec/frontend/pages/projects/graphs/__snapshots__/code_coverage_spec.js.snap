@@ -1,0 +1,88 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Code Coverage when fetching data is successful matches the snapshot 1`] = `
+<div>
+  <div
+    class="gl-mt-3 gl-mb-3"
+  >
+    <!---->
+     
+    <!---->
+     
+    <gl-dropdown-stub
+      text="rspec"
+    >
+      <gl-dropdown-item-stub
+        value="rspec"
+      >
+        <div
+          class="gl-display-flex"
+        >
+          <gl-icon-stub
+            class="gl-absolute"
+            name="mobile-issue-close"
+            size="16"
+          />
+           
+          <span
+            class="gl-display-flex align-items-center ml-4"
+          >
+            
+            rspec
+          
+          </span>
+        </div>
+      </gl-dropdown-item-stub>
+      <gl-dropdown-item-stub
+        value="cypress"
+      >
+        <div
+          class="gl-display-flex"
+        >
+          <!---->
+           
+          <span
+            class="gl-display-flex align-items-center ml-4"
+          >
+            
+            cypress
+          
+          </span>
+        </div>
+      </gl-dropdown-item-stub>
+      <gl-dropdown-item-stub
+        value="karma"
+      >
+        <div
+          class="gl-display-flex"
+        >
+          <!---->
+           
+          <span
+            class="gl-display-flex align-items-center ml-4"
+          >
+            
+            karma
+          
+          </span>
+        </div>
+      </gl-dropdown-item-stub>
+    </gl-dropdown-stub>
+  </div>
+   
+  <gl-area-chart-stub
+    annotations=""
+    data="[object Object]"
+    formattooltiptext="function () { [native code] }"
+    height="200"
+    includelegendavgmax="true"
+    legendaveragetext="Avg"
+    legendcurrenttext="Current"
+    legendlayout="inline"
+    legendmaxtext="Max"
+    legendmintext="Min"
+    option="[object Object]"
+    thresholds=""
+  />
+</div>
+`;

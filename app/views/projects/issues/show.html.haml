@@ -11,6 +11,7 @@
 - can_create_issue = show_new_issue_link?(@project)
 
 = render_if_exists "projects/issues/alert_blocked", issue: @issue, current_user: current_user
+= render_if_exists "projects/issues/alert_moved_from_service_desk", issue: @issue
 
 .detail-page-header
   .detail-page-header-body

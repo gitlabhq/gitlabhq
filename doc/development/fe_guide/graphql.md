@@ -1,7 +1,69 @@
 # GraphQL
 
+## Getting Started
+
+### Helpful Resources
+
+**General resources**:
+
+- [📚 Official Introduction to GraphQL](https://graphql.org/learn/)
+- [📚 Official Introduction to Apollo](https://www.apollographql.com/docs/tutorial/introduction/)
+
+**GraphQL at GitLab**:
+
+- [🎬 GitLab Unfiltered GraphQL playlist](https://www.youtube.com/watch?v=wHPKZBDMfxE&list=PL05JrBw4t0KpcjeHjaRMB7IGB2oDWyJzv)
+- [🎬 GraphQL at GitLab: Deep Dive](../api_graphql_styleguide.md#deep-dive) (video) by Nick Thomas
+  - An overview of the history of GraphQL at GitLab (not frontend-specific)
+- [🎬 GitLab Feature Walkthrough with GraphQL and Vue Apollo](https://www.youtube.com/watch?v=6yYp2zB7FrM) (video) by Natalia Tepluhina
+  - A real-life example of implementing a frontend feature in GitLab using GraphQL
+- [🎬 History of client-side GraphQL at GitLab](https://www.youtube.com/watch?v=mCKRJxvMnf0) (video) Illya Klymov and Natalia Tepluhina
+- [🎬 From Vuex to Apollo](https://www.youtube.com/watch?v=9knwu87IfU8) (video) by Natalia Tepluhina
+  - A useful overview of when Apollo might be a better choice than Vuex, and how one could go about the transition
+- [🛠 Vuex -> Apollo Migration: a proof-of-concept project](https://gitlab.com/ntepluhina/vuex-to-apollo/blob/master/README.md)
+  - A collection of examples that show the possible approaches for state management with Vue+GraphQL+(Vuex or Apollo) apps
+
+### Libraries
+
+We use [Apollo](https://www.apollographql.com/) (specifically [Apollo Client](https://www.apollographql.com/docs/react/)) and [Vue Apollo](https://github.com/vuejs/vue-apollo)
+when using GraphQL for frontend development.
+
+If you are using GraphQL within a Vue application, the [Usage in Vue](#usage-in-vue) section
+can help you learn how to integrate Vue Apollo.
+
+For other use cases, check out the [Usage outside of Vue](#usage-outside-of-vue) section.
+
+### Tooling
+
+- [Apollo Client Devtools](https://github.com/apollographql/apollo-client-devtools)
+
+#### [Apollo GraphQL VS Code extension](https://marketplace.visualstudio.com/items?itemName=apollographql.vscode-apollo)
+
+If you use VS Code, the Apollo GraphQL extension supports autocompletion in `.graphql` files. To set up
+the GraphQL extension, follow these steps:
+
+1. Add an `apollo.config.js` file to the root of your `gitlab` local directory.
+1. Populate the file with the following content:
+
+    ```javascript
+    module.exports = {
+      client: {
+        includes: ['./app/assets/javascripts/**/*.graphql', './ee/app/assets/javascripts/**/*.graphql'],
+        service: {
+          name: 'GitLab',
+          localSchemaFile: './doc/api/graphql/reference/gitlab_schema.graphql',
+        },
+      },
+    };
+    ```
+
+1. Restart VS Code.
+
+### Exploring the GraphQL API
+
 Our GraphQL API can be explored via GraphiQL at your instance's
-`/-/graphql-explorer` or at [GitLab.com](https://gitlab.com/-/graphql-explorer).
+`/-/graphql-explorer` or at [GitLab.com](https://gitlab.com/-/graphql-explorer). Consult the
+[GitLab GraphQL API Reference documentation](../../api/graphql/reference)
+where needed.
 
 You can check all existing queries and mutations on the right side
 of GraphiQL in its **Documentation explorer**. It's also possible to
@@ -9,9 +71,6 @@ write queries and mutations directly on the left tab and check
 their execution by clicking **Execute query** button on the top left:
 
 ![GraphiQL interface](img/graphiql_explorer_v12_4.png)
-
-We use [Apollo](https://www.apollographql.com/) and [Vue Apollo](https://github.com/vuejs/vue-apollo) for working with GraphQL
-on the frontend.
 
 ## Apollo Client
 
@@ -30,7 +89,7 @@ Default client accepts two parameters: `resolvers` and `config`.
 ## GraphQL Queries
 
 To save query compilation at runtime, webpack can directly import `.graphql`
-files. This allows webpack to preprocess the query at compile time instead
+files. This allows webpack to pre-process the query at compile time instead
 of the client doing compilation of queries.
 
 To distinguish queries from mutations and fragments, the following naming convention is recommended:
@@ -41,7 +100,7 @@ To distinguish queries from mutations and fragments, the following naming conven
 
 ### Fragments
 
-Fragments are a way to make your complex GraphQL queries more readable and re-usable. Here is an example of GraphQL fragment:
+[Fragments](https://graphql.org/learn/queries/#fragments) are a way to make your complex GraphQL queries more readable and re-usable. Here is an example of GraphQL fragment:
 
 ```javascript
 fragment DesignListItem on Design {
@@ -94,7 +153,7 @@ new Vue({
 });
 ```
 
-Read more about [Vue Apollo](https://github.com/vuejs/vue-apollo) in the [Vue Apollo documentation](https://vue-apollo.netlify.com/guide/).
+Read more about [Vue Apollo](https://github.com/vuejs/vue-apollo) in the [Vue Apollo documentation](https://vue-apollo.netlify.app/guide/).
 
 ### Local state with Apollo
 
@@ -206,11 +265,11 @@ const defaultClient = createDefaultClient(
 
 Now every single time on attempt to fetch a version, our client will fetch `id` and `sha` from the remote API endpoint and will assign our hardcoded values to `author` and `createdAt` version properties. With this data, frontend developers are able to work on UI part without being blocked by backend. When actual response is added to the API, a custom local resolver can be removed fast and the only change to query/fragment is `@client` directive removal.
 
-Read more about local state management with Apollo in the [Vue Apollo documentation](https://vue-apollo.netlify.com/guide/local-state.html#local-state).
+Read more about local state management with Apollo in the [Vue Apollo documentation](https://vue-apollo.netlify.app/guide/local-state.html#local-state).
 
 ### Using with Vuex
 
-When Apollo Client is used within Vuex and fetched data is stored in the Vuex store, there is no need in keeping Apollo Client cache enabled. Otherwise we would have data from the API stored in two places - Vuex store and Apollo Client cache. More to say, with Apollo default settings, a subsequent fetch from the GraphQL API could result in fetching data from Apollo cache (in the case where we have the same query and variables). To prevent this behavior, we need to disable Apollo Client cache passing a valid `fetchPolicy` option to its constructor:
+When Apollo Client is used within Vuex and fetched data is stored in the Vuex store, there is no need in keeping Apollo Client cache enabled. Otherwise we would have data from the API stored in two places - Vuex store and Apollo Client cache. More to say, with Apollo's default settings, a subsequent fetch from the GraphQL API could result in fetching data from Apollo cache (in the case where we have the same query and variables). To prevent this behavior, we need to disable Apollo Client cache passing a valid `fetchPolicy` option to its constructor:
 
 ```javascript
 import fetchPolicies from '~/graphql_shared/fetch_policy_constants';
@@ -411,18 +470,6 @@ fetchNextPage() {
 Please note we don't have to save `pageInfo` one more time; `fetchMore` triggers a query
 `result` hook as well.
 
-#### Limitations
-
-Currently, bidirectional pagination doesn't work:
-
-- `hasNextPage` returns a correct value only when we paginate forward using `endCursor`
-  and `first` parameters.
-- `hasPreviousPage` returns a correct value only when we paginate backward using
-  `startCursor` and `last` parameters.
-
-This should be resolved in the scope of the issue
-[Bi-directional Pagination in GraphQL doesn't work as expected](https://gitlab.com/gitlab-org/gitlab/-/issues/208301).
-
 ### Testing
 
 #### Mocking response as component data
@@ -599,4 +646,20 @@ defaultClient.query({ query })
   .then(result => console.log(result));
 ```
 
-Read more about the [Apollo](https://www.apollographql.com/) client in the [Apollo documentation](https://www.apollographql.com/docs/tutorial/client/).
+When [using Vuex](#Using-with-Vuex), disable the cache when:
+
+- The data is being cached elsewhere
+- The use case does not need caching
+if the data is being cached elsewhere, or if there is simply no need for it for the given use case.
+
+```javascript
+import createDefaultClient from '~/lib/graphql';
+import fetchPolicies from '~/graphql_shared/fetch_policy_constants';
+
+const defaultClient = createDefaultClient(
+  {},
+  {
+    fetchPolicy: fetchPolicies.NO_CACHE,
+  },
+);
+```

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Dashboard::SnippetsController do
+RSpec.describe Dashboard::SnippetsController do
   let(:user) { create(:user) }
 
   before do

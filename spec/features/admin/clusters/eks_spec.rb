@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Instance-level AWS EKS Cluster', :js do
+RSpec.describe 'Instance-level AWS EKS Cluster', :js do
   let(:user) { create(:admin) }
 
   before do

@@ -1,30 +1,42 @@
-import Vue from 'vue';
-import mountComponent from 'helpers/vue_mount_component_helper';
+import { shallowMount } from '@vue/test-utils';
 import datePicker from '~/vue_shared/components/pikaday.vue';
 
 describe('datePicker', () => {
-  let vm;
+  let wrapper;
   beforeEach(() => {
-    const DatePicker = Vue.extend(datePicker);
-    vm = mountComponent(DatePicker, {
-      label: 'label',
+    wrapper = shallowMount(datePicker, {
+      propsData: {
+        label: 'label',
+      },
+      attachToDocument: true,
     });
   });
 
+  afterEach(() => {
+    wrapper.destroy();
+    wrapper = null;
+  });
+
   it('should render label text', () => {
-    expect(vm.$el.querySelector('.dropdown-toggle-text').innerText.trim()).toEqual('label');
+    expect(
+      wrapper
+        .find('.dropdown-toggle-text')
+        .text()
+        .trim(),
+    ).toEqual('label');
   });
 
   it('should show calendar', () => {
-    expect(vm.$el.querySelector('.pika-single')).toBeDefined();
+    expect(wrapper.find('.pika-single').element).toBeDefined();
   });
 
-  it('should toggle when dropdown is clicked', () => {
-    const hidePicker = jest.fn();
-    vm.$on('hidePicker', hidePicker);
+  it('should emit hidePicker event when dropdown is clicked', () => {
+    // Removing the bootstrap data-toggle property,
+    // because it interfers with our click event
+    delete wrapper.find('.dropdown-menu-toggle').element.dataset.toggle;
 
-    vm.$el.querySelector('.dropdown-menu-toggle').click();
+    wrapper.find('.dropdown-menu-toggle').trigger('click');
 
-    expect(hidePicker).toHaveBeenCalled();
+    expect(wrapper.emitted('hidePicker')).toEqual([[]]);
   });
 });

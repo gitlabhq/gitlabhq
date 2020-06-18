@@ -9,6 +9,7 @@ module MailScheduler
 
     feature_category :issue_tracking
     worker_resource_boundary :cpu
+    loggable_arguments 0
 
     def perform(meth, *args)
       check_arguments!(args)

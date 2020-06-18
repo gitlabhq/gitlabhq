@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Projects::CycleAnalytics::EventsController do
+RSpec.describe Projects::CycleAnalytics::EventsController do
   let(:project) { create(:project, :repository) }
   let(:user) { create(:user) }
 

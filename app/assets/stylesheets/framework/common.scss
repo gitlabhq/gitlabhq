@@ -111,7 +111,7 @@ pre {
 
 hr {
   margin: 24px 0;
-  border-top: 1px solid darken($gray-normal, 8%);
+  border-top: 1px solid $gray-darker;
 }
 
 .str-truncated {
@@ -135,7 +135,7 @@ hr {
   text-overflow: ellipsis;
   white-space: nowrap;
 
-  > div:not(.block),
+  > div:not(.block):not(.select2-display-none),
   .str-truncated {
     display: inline;
   }
@@ -396,21 +396,13 @@ img.emoji {
   🚨 Do not use these classes — they are deprecated and being removed. 🚨
   See https://gitlab.com/gitlab-org/gitlab/-/issues/217418 for more details.
 **/
-.prepend-top-0 { margin-top: 0; }
-.prepend-top-2 { margin-top: 2px; }
-.prepend-top-4 { margin-top: $gl-padding-4; }
 .prepend-top-5 { margin-top: 5px; }
-.prepend-top-8 { margin-top: $grid-size; }
 .prepend-top-10 { margin-top: 10px; }
 .prepend-top-15 { margin-top: 15px; }
 .prepend-top-default { margin-top: $gl-padding !important; }
 .prepend-top-16 { margin-top: 16px; }
 .prepend-top-20 { margin-top: 20px; }
-.prepend-top-32 { margin-top: 32px; }
-.prepend-left-2 { margin-left: 2px; }
-.prepend-left-4 { margin-left: 4px; }
 .prepend-left-5 { margin-left: 5px; }
-.prepend-left-8 { margin-left: 8px; }
 .prepend-left-10 { margin-left: 10px; }
 .prepend-left-15 { margin-left: 15px; }
 .prepend-left-default { margin-left: $gl-padding; }
@@ -420,7 +412,6 @@ img.emoji {
 .append-right-2 { margin-right: 2px; }
 .append-right-4 { margin-right: 4px; }
 .append-right-5 { margin-right: 5px; }
-.append-right-8 { margin-right: 8px; }
 .append-right-10 { margin-right: 10px; }
 .append-right-15 { margin-right: 15px; }
 .append-right-default { margin-right: $gl-padding; }
@@ -428,11 +419,7 @@ img.emoji {
 .append-right-32 { margin-right: 32px; }
 .append-right-48 { margin-right: 48px; }
 .prepend-right-32 { margin-right: 32px; }
-.append-bottom-0 { margin-bottom: 0; }
-.append-bottom-2 { margin-bottom: 2px; }
-.append-bottom-4 { margin-bottom: $gl-padding-4; }
 .append-bottom-5 { margin-bottom: 5px; }
-.append-bottom-8 { margin-bottom: $grid-size; }
 .append-bottom-10 { margin-bottom: 10px; }
 .append-bottom-15 { margin-bottom: 15px; }
 .append-bottom-20 { margin-bottom: 20px; }
@@ -521,31 +508,6 @@ img.emoji {
 }
 
 /**
-  The zero-indexed classes will not change and do not need to be updated.
-  These can be removed when the Gitlab UI class include is merged.
-**/
-
-.gl-p-0 {
-  padding: 0;
-}
-
-.gl-pl-0 {
-  padding-left: 0;
-}
-
-.gl-pr-0 {
-  padding-right: 0;
-}
-
-.gl-pt-0 {
-  padding-top: 0;
-}
-
-.gl-pb-0 {
-  padding-bottom: 0;
-}
-
-/**
  * Removes browser specific clear icon from input fields in
  * Internet Explorer 10, Internet Explorer 11, and Microsoft Edge.
  * This is intended for elements which add a customized clear icon.
@@ -602,7 +564,7 @@ img.emoji {
   bottom: 40px;
   right: 40px;
   font-size: $gl-font-size-small;
-  background: $gray-100;
+  background: $gray-50;
   width: 200px;
   border-radius: 24px;
   box-shadow: 0 2px 4px $issue-boards-card-shadow;
@@ -636,8 +598,6 @@ img.emoji {
 .gl-font-sm { font-size: $gl-font-size-small; }
 .gl-font-lg { font-size: $gl-font-size-large; }
 .gl-font-base { font-size: $gl-font-size-14; }
-
-.gl-line-height-24 { line-height: $gl-line-height-24; }
 
 .gl-font-size-0 { font-size: 0; }
 .gl-font-size-28 { font-size: $gl-font-size-28; }

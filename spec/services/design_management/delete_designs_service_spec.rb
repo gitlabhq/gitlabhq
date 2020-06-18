@@ -56,6 +56,10 @@ describe DesignManagement::DeleteDesignsService do
       let(:enabled) { false }
 
       it_behaves_like "a service error"
+
+      it 'does not create any events in the activity stream' do
+        expect { run_service rescue nil }.not_to change { Event.count }
+      end
     end
 
     context "when the feature is available" do
@@ -72,7 +76,9 @@ describe DesignManagement::DeleteDesignsService do
 
         it 'does not log any events' do
           counter = ::Gitlab::UsageDataCounters::DesignsCounter
-          expect { run_service rescue nil }.not_to change { counter.totals }
+
+          expect { run_service rescue nil }
+            .not_to change { [counter.totals, Event.count] }
         end
       end
 
@@ -90,6 +96,12 @@ describe DesignManagement::DeleteDesignsService do
         it 'logs a deletion event' do
           counter = ::Gitlab::UsageDataCounters::DesignsCounter
           expect { run_service }.to change { counter.read(:delete) }.by(1)
+        end
+
+        it 'creates an event in the activity stream' do
+          expect { run_service }
+            .to change { Event.count }.by(1)
+            .and change { Event.destroyed_action.for_design.count }.by(1)
         end
 
         it 'informs the new-version-worker' do
@@ -129,14 +141,14 @@ describe DesignManagement::DeleteDesignsService do
 
         let!(:designs) { create_designs(2) }
 
-        it 'removes those designs' do
+        it 'makes the correct changes' do
+          counter = ::Gitlab::UsageDataCounters::DesignsCounter
+
           expect { run_service }
             .to change { issue.designs.current.count }.from(3).to(1)
-        end
-
-        it 'logs the correct number of deletion events' do
-          counter = ::Gitlab::UsageDataCounters::DesignsCounter
-          expect { run_service }.to change { counter.read(:delete) }.by(2)
+            .and change { counter.read(:delete) }.by(2)
+            .and change { Event.count }.by(2)
+            .and change { Event.destroyed_action.for_design.count }.by(2)
         end
 
         it_behaves_like "a success"

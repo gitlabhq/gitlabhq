@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe KeysFinder do
+RSpec.describe KeysFinder do
   subject { described_class.new(params).execute }
 
   let(:user) { create(:user) }

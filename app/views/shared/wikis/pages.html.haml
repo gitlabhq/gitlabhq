@@ -1,0 +1,32 @@
+- add_to_breadcrumbs "Wiki", wiki_path(@wiki)
+- breadcrumb_title s_("Wiki|Pages")
+- page_title s_("Wiki|Pages"), _("Wiki")
+- sort_title = wiki_sort_title(params[:sort])
+
+.wiki-page-header.top-area.flex-column.flex-lg-row
+
+  .nav-text.flex-fill
+    %h2.wiki-page-title
+      = s_("Wiki|Wiki Pages")
+
+  .nav-controls.pb-md-3.pb-lg-0
+    = link_to wiki_path(@wiki, action: :git_access), class: 'btn' do
+      = icon('cloud-download')
+      = _("Clone repository")
+
+    .dropdown.inline.wiki-sort-dropdown
+      .btn-group{ role: 'group' }
+        .btn-group{ role: 'group' }
+          %button.dropdown-toggle{ type: 'button', data: { toggle: 'dropdown', display: 'static' }, class: 'btn btn-default' }
+            = sort_title
+            = icon('chevron-down')
+          %ul.dropdown-menu.dropdown-menu-right.dropdown-menu-selectable.dropdown-menu-sort
+            %li
+              = sortable_item(s_("Wiki|Title"), wiki_path(@wiki, action: :pages, sort: Wiki::TITLE_ORDER), sort_title)
+              = sortable_item(s_("Wiki|Created date"), wiki_path(@wiki, action: :pages, sort: Wiki::CREATED_AT_ORDER), sort_title)
+        = wiki_sort_controls(@wiki, params[:sort], params[:direction])
+
+%ul.wiki-pages-list.content-list
+  = render @wiki_entries, context: 'pages'
+
+= paginate @wiki_pages, theme: 'gitlab'

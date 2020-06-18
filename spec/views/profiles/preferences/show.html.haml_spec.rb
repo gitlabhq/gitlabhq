@@ -32,8 +32,7 @@ describe 'profiles/preferences/show' do
     end
 
     before do
-      # Can't use stub_feature_flags because we use Feature.get to check if conditinally applied
-      Feature.get(:sourcegraph).enable sourcegraph_feature
+      stub_feature_flags(sourcegraph: sourcegraph_feature)
       stub_application_setting(sourcegraph_enabled: sourcegraph_enabled)
     end
 

@@ -46,8 +46,8 @@
         - replacements = { releases_page_link_start: releases_page_link_start, docs_link_start: docs_link_start, link_end: link_end }
         = s_('TagsPage|Optionally, create a public Release of your project, based on this tag. Release notes are displayed on the %{releases_page_link_start}Releases%{link_end} page. %{docs_link_start}More information%{link_end}').html_safe % replacements
 
-      = render layout: 'projects/md_preview', locals: { url: preview_markdown_path(@project), referenced_users: true } do
-        = render 'projects/zen', attr: :release_description, classes: 'note-textarea', placeholder: s_('TagsPage|Write your release notes or drag files here…'), current_text: @release_description
+      = render layout: 'shared/md_preview', locals: { url: preview_markdown_path(@project), referenced_users: true } do
+        = render 'shared/zen', attr: :release_description, classes: 'note-textarea', placeholder: s_('TagsPage|Write your release notes or drag files here…'), current_text: @release_description
         = render 'shared/notes/hints'
   .form-actions
     = button_tag s_('TagsPage|Create tag'), class: 'btn btn-success'

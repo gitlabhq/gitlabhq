@@ -1,10 +1,13 @@
 ---
+stage: Verify
+group: Testing
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 type: reference
 ---
 
 # JUnit test reports
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/45318) in GitLab 11.2. Requires GitLab Runner 11.2 and above.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/45318) in GitLab 11.2. Requires GitLab Runner 11.2 and above.
 
 ## Overview
 
@@ -189,6 +192,20 @@ cpp:
       junit: report.xml
 ```
 
+#### CUnit
+
+[CUnit](https://cunity.gitlab.io/cunit/) can be made to produce [JUnit XML reports](https://cunity.gitlab.io/cunit/group__CI.html) automatically when run using its `CUnitCI.h` macros:
+
+```yaml
+cunit:
+  stage: test
+  script:
+    - ./my-cunit-test
+  artifacts:
+    reports:
+      junit: ./my-cunit-test.xml
+```
+
 ### .Net example
 
 The [JunitXML.TestLogger](https://www.nuget.org/packages/JunitXml.TestLogger/) NuGet
@@ -215,17 +232,9 @@ Test:
         - ./**/*test-result.xml
 ```
 
-## Limitations
-
-Currently, the following tools might not work because their XML formats are unsupported in GitLab.
-
-|Case|Tool|Issue|
-|---|---|---|
-|`<testcase>` does not have `classname` attribute|ESlint, sass-lint|<https://gitlab.com/gitlab-org/gitlab-foss/issues/50964>|
-
 ## Viewing JUnit test reports on GitLab
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/24792) in GitLab 12.5.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/24792) in GitLab 12.5.
 
 If JUnit XML files are generated and uploaded as part of a pipeline, these reports
 can be viewed inside the pipelines details page. The **Tests** tab on this page will
@@ -250,6 +259,9 @@ following command:
 
 ```ruby
 Feature.enable(:junit_pipeline_view)
+
+# Enable the feature for a specific project
+Feature.enable(:junit_pipeline_view, Project.find(<your-project-id-here>))
 ```
 
 ## Viewing JUnit screenshots on GitLab

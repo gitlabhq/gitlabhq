@@ -185,7 +185,7 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://git
 Enables a deploy key for a project so this can be used. Returns the enabled key, with a status code 201 when successful.
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/deploy_keys/13/enable
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/deploy_keys/13/enable"
 ```
 
 | Attribute | Type | Required | Description |
@@ -213,19 +213,19 @@ First, find the ID of the projects you're interested in, by either listing all
 projects:
 
 ```shell
-curl --header 'PRIVATE-TOKEN: <your_access_token>' https://gitlab.example.com/api/v4/projects
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects"
 ```
 
 Or finding the ID of a group:
 
 ```shell
-curl --header 'PRIVATE-TOKEN: <your_access_token>' https://gitlab.example.com/api/v4/groups
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups"
 ```
 
 Then listing all projects in that group (for example, group 1234):
 
 ```shell
-curl --header 'PRIVATE-TOKEN: <your_access_token>' https://gitlab.example.com/api/v4/groups/1234
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/1234"
 ```
 
 With those IDs, add the same deploy key to all:
@@ -233,6 +233,6 @@ With those IDs, add the same deploy key to all:
 ```shell
 for project_id in 321 456 987; do
     curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --header "Content-Type: application/json" \
-    --data '{"title": "my key", "key": "ssh-rsa AAAA..."}' https://gitlab.example.com/api/v4/projects/${project_id}/deploy_keys
+    --data '{"title": "my key", "key": "ssh-rsa AAAA..."}' "https://gitlab.example.com/api/v4/projects/${project_id}/deploy_keys"
 done
 ```

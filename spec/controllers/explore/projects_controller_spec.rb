@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Explore::ProjectsController do
+RSpec.describe Explore::ProjectsController do
   shared_examples 'explore projects' do
     describe 'GET #index.json' do
       render_views

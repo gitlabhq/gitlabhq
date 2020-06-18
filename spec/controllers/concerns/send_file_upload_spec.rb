@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe SendFileUpload do
+RSpec.describe SendFileUpload do
   let(:uploader_class) do
     Class.new(GitlabUploader) do
       include ObjectStorage::Concern

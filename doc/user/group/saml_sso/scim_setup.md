@@ -1,5 +1,8 @@
 ---
 type: howto, reference
+stage: Manage
+group: Access
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 ---
 
 # SCIM provisioning using SAML SSO for GitLab.com groups **(SILVER ONLY)**
@@ -117,7 +120,7 @@ Once synchronized, changing the field mapped to `id` and `externalId` will likel
 
 ### Okta configuration steps
 
-The SAML application that was created during [Single sign-on](index.md#okta-setup-notes) setup for [Okta](https://developer.okta.com/docs/guides/saml-application-setup/overview/) now needs to be set up for SCIM.
+The SAML application that was created during [Single sign-on](index.md#okta-setup-notes) setup for [Okta](https://developer.okta.com/docs/guides/build-sso-integration/saml2/overview/) now needs to be set up for SCIM.
 Before proceeding, be sure to complete the [GitLab configuration](#gitlab-configuration) process.
 
 1. Sign in to Okta.

@@ -30,9 +30,9 @@
     .project-details.d-sm-flex.flex-sm-fill.align-items-center{ data: { qa_selector: 'project', qa_project_name: project.name } }
       .flex-wrapper
         .d-flex.align-items-center.flex-wrap.project-title
-          %h2.d-flex.prepend-top-8
+          %h2.d-flex.gl-mt-3
             = link_to project_path(project), class: 'text-plain' do
-              %span.project-full-name.append-right-8><
+              %span.project-full-name.gl-mr-3><
                 %span.namespace-name
                   - if project.namespace && !skip_namespace
                     = project.namespace.human_name
@@ -40,22 +40,22 @@
                 %span.project-name<
                   = project.name
 
-          %span.metadata-info.visibility-icon.append-right-10.prepend-top-8.text-secondary.has-tooltip{ data: { container: 'body', placement: 'top' }, title: visibility_icon_description(project) }
+          %span.metadata-info.visibility-icon.append-right-10.gl-mt-3.text-secondary.has-tooltip{ data: { container: 'body', placement: 'top' }, title: visibility_icon_description(project) }
             = visibility_level_icon(project.visibility_level, fw: true)
 
           - if explore_projects_tab? && license_name
-            %span.metadata-info.d-inline-flex.align-items-center.append-right-10.prepend-top-8
+            %span.metadata-info.d-inline-flex.align-items-center.append-right-10.gl-mt-3
               = sprite_icon('scale', size: 14, css_class: 'append-right-4')
               = license_name
 
           - if !explore_projects_tab? && access&.nonzero?
             -# haml-lint:disable UnnecessaryStringOutput
             = ' ' # prevent haml from eating the space between elements
-            .metadata-info.prepend-top-8
+            .metadata-info.gl-mt-3
               %span.user-access-role.d-block= Gitlab::Access.human_access(access)
 
           - if !explore_projects_tab?
-            .metadata-info.prepend-top-8
+            .metadata-info.gl-mt-3
               = render_if_exists 'compliance_management/compliance_framework/compliance_framework_badge', project: project
 
         - if show_last_commit_as_description

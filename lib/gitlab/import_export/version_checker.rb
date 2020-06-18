@@ -36,7 +36,11 @@ module Gitlab
       def different_version?(version)
         Gem::Version.new(version) != Gem::Version.new(Gitlab::ImportExport.version)
       rescue => e
-        Rails.logger.error("Import/Export error: #{e.message}") # rubocop:disable Gitlab/RailsLogger
+        Gitlab::Import::Logger.error(
+          message: 'Import error',
+          error: e.message
+        )
+
         raise Gitlab::ImportExport::Error.new('Incorrect VERSION format')
       end
     end

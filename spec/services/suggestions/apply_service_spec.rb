@@ -5,41 +5,66 @@ require 'spec_helper'
 describe Suggestions::ApplyService do
   include ProjectForksHelper
 
-  def build_position(args = {})
-    default_args = { old_path: "files/ruby/popen.rb",
-                     new_path: "files/ruby/popen.rb",
-                     old_line: nil,
-                     new_line: 9,
-                     diff_refs: merge_request.diff_refs }
+  def build_position(**optional_args)
+    args = { old_path: "files/ruby/popen.rb",
+             new_path: "files/ruby/popen.rb",
+             old_line: nil,
+             new_line: 9,
+             diff_refs: merge_request.diff_refs,
+             **optional_args }
 
-    Gitlab::Diff::Position.new(default_args.merge(args))
+    Gitlab::Diff::Position.new(args)
   end
 
-  shared_examples 'successfully creates commit and updates suggestion' do
-    def apply(suggestion)
-      result = subject.execute(suggestion)
-      expect(result[:status]).to eq(:success)
-    end
+  def create_suggestion(args)
+    position_args = args.slice(:old_path, :new_path, :old_line, :new_line)
+    content_args = args.slice(:from_content, :to_content)
 
-    it 'updates the file with the new contents' do
-      apply(suggestion)
+    position = build_position(position_args)
 
-      blob = project.repository.blob_at_branch(merge_request.source_branch,
-                                               position.new_path)
+    diff_note = create(:diff_note_on_merge_request,
+                       noteable: merge_request,
+                       position: position,
+                       project: project)
 
-      expect(blob.data).to eq(expected_content)
+    suggestion_args = { note: diff_note }.merge(content_args)
+
+    create(:suggestion, :content_from_repo, suggestion_args)
+  end
+
+  def apply(suggestions)
+    result = apply_service.new(user, *suggestions).execute
+
+    suggestions.map { |suggestion| suggestion.reload }
+
+    expect(result[:status]).to eq(:success)
+  end
+
+  shared_examples 'successfully creates commit and updates suggestions' do
+    it 'updates the files with the new content' do
+      apply(suggestions)
+
+      suggestions.each do |suggestion|
+        path = suggestion.diff_file.file_path
+        blob = project.repository.blob_at_branch(merge_request.source_branch,
+                                                 path)
+
+        expect(blob.data).to eq(expected_content_by_path[path.to_sym])
+      end
     end
 
     it 'updates suggestion applied and commit_id columns' do
-      expect { apply(suggestion) }
-        .to change(suggestion, :applied)
-        .from(false).to(true)
-        .and change(suggestion, :commit_id)
-        .from(nil)
+      expect(suggestions.map(&:applied)).to all(be false)
+      expect(suggestions.map(&:commit_id)).to all(be nil)
+
+      apply(suggestions)
+
+      expect(suggestions.map(&:applied)).to all(be true)
+      expect(suggestions.map(&:commit_id)).to all(be_present)
     end
 
     it 'created commit has users email and name' do
-      apply(suggestion)
+      apply(suggestions)
 
       commit = project.repository.commit
 
@@ -53,125 +78,214 @@ describe Suggestions::ApplyService do
       before do
         project.update!(suggestion_commit_message: message)
 
-        apply(suggestion)
+        apply(suggestions)
       end
 
       context 'is not specified' do
-        let(:expected_value) { "Apply suggestion to files/ruby/popen.rb" }
+        let(:message) { '' }
 
-        context 'is nil' do
-          let(:message) { nil }
-
-          it 'sets default commit message' do
-            expect(project.repository.commit.message).to eq(expected_value)
-          end
-        end
-
-        context 'is an empty string' do
-          let(:message) { '' }
-
-          it 'sets default commit message' do
-            expect(project.repository.commit.message).to eq(expected_value)
-          end
+        it 'uses the default commit message' do
+          expect(project.repository.commit.message).to(
+            match(/\AApply #{suggestions.size} suggestion\(s\) to \d+ file\(s\)\z/)
+          )
         end
       end
 
       context 'is specified' do
-        let(:message) { 'refactor: %{project_path} %{project_name} %{file_path} %{branch_name} %{username} %{user_full_name}' }
+        let(:message) do
+          'refactor: %{project_name} %{branch_name} %{username}'
+        end
 
-        it 'sets custom commit message' do
-          expect(project.repository.commit.message).to eq("refactor: project-1 Project_1 files/ruby/popen.rb master test.user Test User")
+        it 'generates a custom commit message' do
+          expect(project.repository.commit.message).to(
+            eq("refactor: Project_1 master test.user")
+          )
         end
       end
     end
   end
 
-  let(:project) { create(:project, :repository, path: 'project-1', name: 'Project_1') }
-  let(:user) { create(:user, :commit_email, name: 'Test User', username: 'test.user') }
+  subject(:apply_service) { described_class }
+
+  let_it_be(:user) do
+    create(:user, :commit_email, name: 'Test User', username: 'test.user')
+  end
+
+  let(:project) do
+    create(:project, :repository, path: 'project-1', name: 'Project_1')
+  end
+
+  let(:merge_request) do
+    create(:merge_request, source_project: project,
+           target_project: project,
+           source_branch: 'master')
+  end
 
   let(:position) { build_position }
 
   let(:diff_note) do
-    create(:diff_note_on_merge_request, noteable: merge_request, position: position, project: project)
+    create(:diff_note_on_merge_request, noteable: merge_request,
+           position: position, project: project)
   end
 
   let(:suggestion) do
     create(:suggestion, :content_from_repo, note: diff_note,
-                                            to_content: "      raise RuntimeError, 'Explosion'\n      # explosion?\n")
+           to_content: "      raise RuntimeError, 'Explosion'\n      # explosion?\n")
   end
 
-  subject { described_class.new(user) }
+  let(:suggestion2) do
+    create_suggestion(
+      to_content: "      *** SUGGESTION CHANGE ***\n",
+      new_line: 15)
+  end
+
+  let(:suggestion3) do
+    create_suggestion(
+      to_content: "      *** ANOTHER SUGGESTION CHANGE ***\n",
+      old_path: "files/ruby/regex.rb",
+      new_path: "files/ruby/regex.rb",
+      new_line: 22)
+  end
+
+  let(:suggestions) { [suggestion, suggestion2, suggestion3] }
 
   context 'patch is appliable' do
-    let(:expected_content) do
+    let(:popen_content) do
       <<-CONTENT.strip_heredoc
-          require 'fileutils'
-          require 'open3'
+        require 'fileutils'
+        require 'open3'
 
-          module Popen
-            extend self
+        module Popen
+          extend self
 
-            def popen(cmd, path=nil)
-              unless cmd.is_a?(Array)
-                raise RuntimeError, 'Explosion'
-                # explosion?
-              end
-
-              path ||= Dir.pwd
-
-              vars = {
-                "PWD" => path
-              }
-
-              options = {
-                chdir: path
-              }
-
-              unless File.directory?(path)
-                FileUtils.mkdir_p(path)
-              end
-
-              @cmd_output = ""
-              @cmd_status = 0
-
-              Open3.popen3(vars, *cmd, options) do |stdin, stdout, stderr, wait_thr|
-                @cmd_output << stdout.read
-                @cmd_output << stderr.read
-                @cmd_status = wait_thr.value.exitstatus
-              end
-
-              return @cmd_output, @cmd_status
+          def popen(cmd, path=nil)
+            unless cmd.is_a?(Array)
+              raise RuntimeError, 'Explosion'
+              # explosion?
             end
+
+            path ||= Dir.pwd
+
+            vars = {
+              *** SUGGESTION CHANGE ***
+            }
+
+            options = {
+              chdir: path
+            }
+
+            unless File.directory?(path)
+              FileUtils.mkdir_p(path)
+            end
+
+            @cmd_output = ""
+            @cmd_status = 0
+
+            Open3.popen3(vars, *cmd, options) do |stdin, stdout, stderr, wait_thr|
+              @cmd_output << stdout.read
+              @cmd_output << stderr.read
+              @cmd_status = wait_thr.value.exitstatus
+            end
+
+            return @cmd_output, @cmd_status
           end
+        end
       CONTENT
     end
 
-    context 'non-fork project' do
-      let(:merge_request) do
-        create(:merge_request, source_project: project,
-                               target_project: project,
-                               source_branch: 'master')
-      end
+    let(:regex_content) do
+      <<-CONTENT.strip_heredoc
+        module Gitlab
+          module Regex
+            extend self
 
+            def username_regex
+              default_regex
+            end
+
+            def project_name_regex
+              /\\A[a-zA-Z0-9][a-zA-Z0-9_\\-\\. ]*\\z/
+            end
+
+            def name_regex
+              /\\A[a-zA-Z0-9_\\-\\. ]*\\z/
+            end
+
+            def path_regex
+              default_regex
+            end
+
+            def archive_formats_regex
+              *** ANOTHER SUGGESTION CHANGE ***
+            end
+
+            def git_reference_regex
+              # Valid git ref regex, see:
+              # https://www.kernel.org/pub/software/scm/git/docs/git-check-ref-format.html
+              %r{
+                (?!
+                   (?# doesn't begins with)
+                   \\/|                    (?# rule #6)
+                   (?# doesn't contain)
+                   .*(?:
+                      [\\\/.]\\\.|            (?# rule #1,3)
+                      \\/\\/|               (?# rule #6)
+                      @\\{|                (?# rule #8)
+                      \\\\                  (?# rule #9)
+                   )
+                )
+                [^\\000-\\040\\177~^:?*\\[]+  (?# rule #4-5)
+                (?# doesn't end with)
+                (?<!\\.lock)               (?# rule #1)
+                (?<![\\/.])                (?# rule #6-7)
+              }x
+            end
+
+            protected
+
+            def default_regex
+              /\\A[.?]?[a-zA-Z0-9][a-zA-Z0-9_\\-\\.]*(?<!\\.git)\\z/
+            end
+          end
+        end
+      CONTENT
+    end
+
+    let(:expected_content_by_path) do
+      {
+        "files/ruby/popen.rb": popen_content,
+        "files/ruby/regex.rb": regex_content
+      }
+    end
+
+    context 'non-fork project' do
       before do
         project.add_maintainer(user)
       end
 
-      it_behaves_like 'successfully creates commit and updates suggestion'
+      it_behaves_like 'successfully creates commit and updates suggestions'
 
-      context 'when it fails to apply because the file was changed' do
+      context 'when it fails to apply because a file was changed' do
+        before do
+          params = {
+            file_path: suggestion3.diff_file.file_path,
+            start_branch: suggestion3.branch,
+            branch_name: suggestion3.branch,
+            commit_message: 'Update file',
+            file_content: 'New content'
+          }
+
+          # Reload the suggestion so it's memoized values get reset after the
+          # file was changed.
+          suggestion3.reload
+
+          Files::UpdateService.new(project, user, params).execute
+        end
+
         it 'returns error message' do
-          service = instance_double(Files::UpdateService)
+          result = apply_service.new(user, suggestion, suggestion3, suggestion2).execute
 
-          expect(Files::UpdateService).to receive(:new)
-            .and_return(service)
-
-          allow(service).to receive(:execute)
-            .and_raise(Files::UpdateService::FileChangedError)
-
-          result = subject.execute(suggestion)
-
-          expect(result).to eq(message: 'The file has been changed', status: :error)
+          expect(result).to eq(message: 'A file has been changed.', status: :error)
         end
       end
 
@@ -181,78 +295,20 @@ describe Suggestions::ApplyService do
           allow(suggestion.position).to receive(:head_sha) { 'old-sha' }
           allow(suggestion.noteable).to receive(:source_branch_sha) { 'new-sha' }
 
-          result = subject.execute(suggestion)
+          result = apply_service.new(user, suggestion).execute
 
-          expect(result).to eq(message: 'The file has been changed', status: :error)
+          expect(result).to eq(message: 'A file has been changed.', status: :error)
         end
       end
 
-      context 'multiple suggestions applied' do
-        let(:expected_content) do
-          <<-CONTENT.strip_heredoc
-              require 'fileutils'
-              require 'open3'
-
-              module Popen
-                extend self
-
-
-                def popen(cmd, path=nil)
-                  unless cmd.is_a?(Array)
-                    # v1 change
-                  end
-
-                  path ||= Dir.pwd
-                  # v1 change
-                  vars = {
-                    "PWD" => path
-                  }
-
-                  options = {
-                    chdir: path
-                  }
-                  # v2 change
-                  unless File.directory?(path)
-                    FileUtils.mkdir_p(path)
-                  end
-
-                  @cmd_output = ""
-                  # v2 change
-
-                  Open3.popen3(vars, *cmd, options) do |stdin, stdout, stderr, wait_thr|
-                    @cmd_output << stdout.read
-                    @cmd_output << stderr.read
-                    @cmd_status = wait_thr.value.exitstatus
-                  end
-
-                  return @cmd_output, @cmd_status
-                end
-              end
-          CONTENT
-        end
-
-        def create_suggestion(diff, old_line: nil, new_line: nil, from_content:, to_content:, path:)
-          position = Gitlab::Diff::Position.new(old_path: path,
-                                                new_path: path,
-                                                old_line: old_line,
-                                                new_line: new_line,
-                                                diff_refs: diff.diff_refs)
-
-          suggestion_note = create(:diff_note_on_merge_request, noteable: merge_request,
-                                                                original_position: position,
-                                                                position: position,
-                                                                project: project)
-          create(:suggestion, note: suggestion_note,
-                              from_content: from_content,
-                              to_content: to_content)
-        end
-
+      context 'multiple suggestions applied sequentially' do
         def apply_suggestion(suggestion)
           suggestion.reload
           merge_request.reload
           merge_request.clear_memoized_shas
 
-          result = subject.execute(suggestion)
+          result = apply_service.new(user, suggestion).execute
+          suggestion.reload
           expect(result[:status]).to eq(:success)
 
           refresh = MergeRequests::RefreshService.new(project, user)
@@ -264,34 +320,31 @@ describe Suggestions::ApplyService do
         end
 
         def fetch_raw_diff(suggestion)
-          project.reload.commit(suggestion.commit_id).diffs.diff_files.first.diff.diff
+          project.reload.commit(suggestion.commit_id)
+            .diffs.diff_files.first.diff.diff
         end
 
         it 'applies multiple suggestions in subsequent versions correctly' do
-          diff = merge_request.merge_request_diff
-          path = 'files/ruby/popen.rb'
+          suggestion1 = create_suggestion(
+            from_content: "\n",
+            to_content: "# v1 change\n",
+            old_line: nil,
+            new_line: 13)
 
-          suggestion_1_changes = { old_line: nil,
-                                   new_line: 13,
-                                   from_content: "\n",
-                                   to_content: "# v1 change\n",
-                                   path: path }
+          suggestion2 = create_suggestion(
+            from_content: "      @cmd_output << stderr.read\n",
+            to_content: "# v2 change\n",
+            old_line: 24,
+            new_line: 31)
 
-          suggestion_2_changes = { old_line: 24,
-                                   new_line: 31,
-                                   from_content: "      @cmd_output << stderr.read\n",
-                                   to_content: "# v2 change\n",
-                                   path: path }
+          apply_suggestion(suggestion1)
+          apply_suggestion(suggestion2)
 
-          suggestion_1 = create_suggestion(diff, suggestion_1_changes)
-          suggestion_2 = create_suggestion(diff, suggestion_2_changes)
-
-          apply_suggestion(suggestion_1)
-
-          suggestion_1_diff = fetch_raw_diff(suggestion_1)
+          suggestion1_diff = fetch_raw_diff(suggestion1)
+          suggestion2_diff = fetch_raw_diff(suggestion2)
 
           # rubocop: disable Layout/TrailingWhitespace
-          expected_suggestion_1_diff = <<-CONTENT.strip_heredoc
+          expected_suggestion1_diff = <<-CONTENT.strip_heredoc
             @@ -10,7 +10,7 @@ module Popen
                  end
              
@@ -304,12 +357,8 @@ describe Suggestions::ApplyService do
           CONTENT
           # rubocop: enable Layout/TrailingWhitespace
 
-          apply_suggestion(suggestion_2)
-
-          suggestion_2_diff = fetch_raw_diff(suggestion_2)
-
           # rubocop: disable Layout/TrailingWhitespace
-          expected_suggestion_2_diff = <<-CONTENT.strip_heredoc
+          expected_suggestion2_diff = <<-CONTENT.strip_heredoc
             @@ -28,7 +28,7 @@ module Popen
              
                  Open3.popen3(vars, *cmd, options) do |stdin, stdout, stderr, wait_thr|
@@ -321,14 +370,14 @@ describe Suggestions::ApplyService do
           CONTENT
           # rubocop: enable Layout/TrailingWhitespace
 
-          expect(suggestion_1_diff.strip).to eq(expected_suggestion_1_diff.strip)
-          expect(suggestion_2_diff.strip).to eq(expected_suggestion_2_diff.strip)
+          expect(suggestion1_diff.strip).to eq(expected_suggestion1_diff.strip)
+          expect(suggestion2_diff.strip).to eq(expected_suggestion2_diff.strip)
         end
       end
 
       context 'multi-line suggestion' do
-        let(:expected_content) do
-          <<~CONTENT
+        let(:popen_content) do
+          <<~CONTENT.strip_heredoc
             require 'fileutils'
             require 'open3'
 
@@ -365,19 +414,27 @@ describe Suggestions::ApplyService do
           CONTENT
         end
 
-        let(:suggestion) do
-          create(:suggestion, :content_from_repo, note: diff_note,
-                                                  lines_above: 2,
-                                                  lines_below: 3,
-                                                  to_content: "# multi\n# line\n")
+        let(:expected_content_by_path) do
+          {
+            "files/ruby/popen.rb": popen_content
+          }
         end
 
-        it_behaves_like 'successfully creates commit and updates suggestion'
+        let(:suggestion) do
+          create(:suggestion, :content_from_repo, note: diff_note,
+                 lines_above: 2,
+                 lines_below: 3,
+                 to_content: "# multi\n# line\n")
+        end
+
+        let(:suggestions) { [suggestion] }
+
+        it_behaves_like 'successfully creates commit and updates suggestions'
       end
 
       context 'remove an empty line suggestion' do
-        let(:expected_content) do
-          <<~CONTENT
+        let(:popen_content) do
+          <<~CONTENT.strip_heredoc
             require 'fileutils'
             require 'open3'
 
@@ -417,12 +474,19 @@ describe Suggestions::ApplyService do
           CONTENT
         end
 
-        let(:position) { build_position(new_line: 13) }
-        let(:suggestion) do
-          create(:suggestion, :content_from_repo, note: diff_note, to_content: "")
+        let(:expected_content_by_path) do
+          {
+            "files/ruby/popen.rb": popen_content
+          }
         end
 
-        it_behaves_like 'successfully creates commit and updates suggestion'
+        let(:suggestion) do
+          create_suggestion( to_content: "", new_line: 13)
+        end
+
+        let(:suggestions) { [suggestion] }
+
+        it_behaves_like 'successfully creates commit and updates suggestions'
       end
     end
 
@@ -430,17 +494,23 @@ describe Suggestions::ApplyService do
       let(:project) { create(:project, :public, :repository) }
 
       let(:forked_project) do
-        fork_project_with_submodules(project, user, repository: project.repository)
+        fork_project_with_submodules(project,
+                                     user, repository: project.repository)
       end
 
       let(:merge_request) do
         create(:merge_request,
-               source_branch: 'conflict-resolvable-fork', source_project: forked_project,
-               target_branch: 'conflict-start', target_project: project)
+               source_branch: 'conflict-resolvable-fork',
+               source_project: forked_project,
+               target_branch: 'conflict-start',
+               target_project: project)
       end
 
       let!(:diff_note) do
-        create(:diff_note_on_merge_request, noteable: merge_request, position: position, project: project)
+        create(:diff_note_on_merge_request,
+               noteable: merge_request,
+               position: position,
+               project: project)
       end
 
       before do
@@ -448,11 +518,12 @@ describe Suggestions::ApplyService do
       end
 
       it 'updates file in the source project' do
-        expect(Files::UpdateService).to receive(:new)
-          .with(merge_request.source_project, user, anything)
-          .and_call_original
+        expect(Files::MultiService).to receive(:new)
+                                         .with(merge_request.source_project,
+                                               user,
+                                               anything).and_call_original
 
-        subject.execute(suggestion)
+        apply_service.new(user, suggestion).execute
       end
     end
   end
@@ -460,13 +531,13 @@ describe Suggestions::ApplyService do
   context 'no permission' do
     let(:merge_request) do
       create(:merge_request, source_project: project,
-                             target_project: project)
+             target_project: project)
     end
 
     let(:diff_note) do
       create(:diff_note_on_merge_request, noteable: merge_request,
-                                          position: position,
-                                          project: project)
+             position: position,
+             project: project)
     end
 
     context 'user cannot write in project repo' do
@@ -475,7 +546,7 @@ describe Suggestions::ApplyService do
       end
 
       it 'returns error' do
-        result = subject.execute(suggestion)
+        result = apply_service.new(user, suggestion).execute
 
         expect(result).to eq(message: "You are not allowed to push into this branch",
                              status: :error)
@@ -486,13 +557,13 @@ describe Suggestions::ApplyService do
   context 'patch is not appliable' do
     let(:merge_request) do
       create(:merge_request, source_project: project,
-                             target_project: project)
+             target_project: project)
     end
 
     let(:diff_note) do
       create(:diff_note_on_merge_request, noteable: merge_request,
-                                          position: position,
-                                          project: project)
+             position: position,
+             project: project)
     end
 
     before do
@@ -503,9 +574,37 @@ describe Suggestions::ApplyService do
       it 'returns error message' do
         expect(suggestion.note).to receive(:latest_diff_file) { nil }
 
-        result = subject.execute(suggestion)
+        result = apply_service.new(user, suggestion).execute
 
-        expect(result).to eq(message: 'Suggestion is not appliable',
+        expect(result).to eq(message: 'A file was not found.',
+                             status: :error)
+      end
+    end
+
+    context 'when not all suggestions belong to the same branch' do
+      it 'renders error message' do
+        merge_request2 = create(:merge_request,
+                                :conflict,
+                                source_project: project,
+                                target_project: project)
+
+        position2 = Gitlab::Diff::Position.new(old_path: "files/ruby/popen.rb",
+                                               new_path: "files/ruby/popen.rb",
+                                               old_line: nil,
+                                               new_line: 15,
+                                               diff_refs: merge_request2
+                                                            .diff_refs)
+
+        diff_note2 = create(:diff_note_on_merge_request,
+                            noteable: merge_request2,
+                            position: position2,
+                            project: project)
+
+        other_branch_suggestion = create(:suggestion, note: diff_note2)
+
+        result = apply_service.new(user, suggestion, other_branch_suggestion).execute
+
+        expect(result).to eq(message: 'Suggestions must all be on the same branch.',
                              status: :error)
       end
     end
@@ -514,18 +613,10 @@ describe Suggestions::ApplyService do
       it 'returns error message' do
         expect(suggestion).to receive(:outdated?) { true }
 
-        result = subject.execute(suggestion)
+        result = apply_service.new(user, suggestion).execute
 
-        expect(result).to eq(message: 'Suggestion is not appliable',
+        expect(result).to eq(message: 'A suggestion is not applicable.',
                              status: :error)
-      end
-    end
-
-    context 'suggestion was already applied' do
-      it 'returns success status' do
-        result = subject.execute(suggestion)
-
-        expect(result[:status]).to eq(:success)
       end
     end
 
@@ -535,9 +626,9 @@ describe Suggestions::ApplyService do
       end
 
       it 'returns error message' do
-        result = subject.execute(suggestion)
+        result = apply_service.new(user, suggestion).execute
 
-        expect(result).to eq(message: 'Suggestion is not appliable',
+        expect(result).to eq(message: 'A suggestion is not applicable.',
                              status: :error)
       end
     end
@@ -548,9 +639,27 @@ describe Suggestions::ApplyService do
       end
 
       it 'returns error message' do
-        result = subject.execute(suggestion)
+        result = apply_service.new(user, suggestion).execute
 
-        expect(result).to eq(message: 'Suggestion is not appliable',
+        expect(result).to eq(message: 'A suggestion is not applicable.',
+                             status: :error)
+      end
+    end
+
+    context 'lines of suggestions overlap' do
+      let(:suggestion) do
+        create_suggestion(
+          to_content: "      raise RuntimeError, 'Explosion'\n      # explosion?\n")
+      end
+
+      let(:overlapping_suggestion) do
+        create_suggestion(to_content: "I Overlap!")
+      end
+
+      it 'returns error message' do
+        result = apply_service.new(user, suggestion, overlapping_suggestion).execute
+
+        expect(result).to eq(message: 'Suggestions are not applicable as their lines cannot overlap.',
                              status: :error)
       end
     end

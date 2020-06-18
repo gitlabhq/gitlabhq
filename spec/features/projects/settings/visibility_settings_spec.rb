@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Projects > Settings > Visibility settings', :js do
+RSpec.describe 'Projects > Settings > Visibility settings', :js do
   let(:user) { create(:user) }
   let(:project) { create(:project, namespace: user.namespace, visibility_level: 20) }
 

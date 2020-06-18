@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Admin::Ci::VariablesController do
+RSpec.describe Admin::Ci::VariablesController do
   let_it_be(:variable) { create(:ci_instance_variable) }
 
   before do

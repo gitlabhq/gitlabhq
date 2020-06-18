@@ -216,7 +216,7 @@
                   =  _('Operations')
             %li.divider.fly-out-top-item
 
-            - if project_nav_tab? :environments
+            - if project_nav_tab? :metrics_dashboards
               = nav_link(controller: :environments, action: [:metrics, :metrics_redirect]) do
                 = link_to metrics_project_environments_path(@project), title: _('Metrics'), class: 'shortcuts-metrics', data: { qa_selector: 'operations_metrics_link' } do
                   %span
@@ -290,7 +290,7 @@
       = render 'layouts/nav/sidebar/analytics_links', links: project_analytics_navbar_links(@project, current_user)
 
       - if project_nav_tab? :wiki
-        - wiki_url = project_wiki_path(@project, :home)
+        - wiki_url = wiki_path(@project.wiki)
         = nav_link(controller: :wikis) do
           = link_to wiki_url, class: 'shortcuts-wiki', data: { qa_selector: 'wiki_link' } do
             .nav-icon-container
@@ -319,7 +319,7 @@
 
       - if project_nav_tab? :snippets
         = nav_link(controller: :snippets) do
-          = link_to project_snippets_path(@project), class: 'shortcuts-snippets' do
+          = link_to project_snippets_path(@project), class: 'shortcuts-snippets', data: { qa_selector: 'snippets_link' } do
             .nav-icon-container
               = sprite_icon('snippet')
             %span.nav-item-name
@@ -329,6 +329,18 @@
               = link_to project_snippets_path(@project) do
                 %strong.fly-out-top-item-name
                   = _('Snippets')
+
+      = nav_link(controller: :project_members) do
+        = link_to project_project_members_path(@project), title: _('Members'), class: 'qa-members-link', id: 'js-onboarding-members-link' do
+          .nav-icon-container
+            = sprite_icon('users')
+          %span.nav-item-name
+            = _('Members')
+        %ul.sidebar-sub-level-items.is-fly-out-only
+          = nav_link(path: %w[members#show], html_options: { class: "fly-out-top-item" } ) do
+            = link_to project_project_members_path(@project) do
+              %strong.fly-out-top-item-name
+                = _('Members')
 
       - if project_nav_tab? :settings
         = nav_link(path: sidebar_settings_paths) do
@@ -350,10 +362,6 @@
                 = link_to edit_project_path(@project), title: _('General'), class: 'qa-general-settings-link' do
                   %span
                     = _('General')
-            = nav_link(controller: :project_members) do
-              = link_to project_project_members_path(@project), title: _('Members'), class: 'qa-link-members-settings', id: 'js-onboarding-settings-members-link' do
-                %span
-                  = _('Members')
             - if can_edit
               = nav_link(controller: [:integrations, :services]) do
                 = link_to project_settings_integrations_path(@project), title: _('Integrations'), data: { qa_selector: 'integrations_settings_link' } do
@@ -388,19 +396,6 @@
                       = _('Pages')
 
               = render_if_exists 'projects/sidebar/settings_audit_events'
-
-      - else
-        = nav_link(controller: :project_members) do
-          = link_to project_settings_members_path(@project), title: _('Members'), class: 'shortcuts-tree' do
-            .nav-icon-container
-              = sprite_icon('users')
-            %span.nav-item-name
-              = _('Members')
-          %ul.sidebar-sub-level-items.is-fly-out-only
-            = nav_link(path: %w[members#show], html_options: { class: "fly-out-top-item" } ) do
-              = link_to project_project_members_path(@project) do
-                %strong.fly-out-top-item-name
-                  = _('Members')
 
       = render 'shared/sidebar_toggle_button'
 

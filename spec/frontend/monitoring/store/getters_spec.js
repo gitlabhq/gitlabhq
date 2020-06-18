@@ -8,6 +8,7 @@ import {
   metricsResult,
   dashboardGitResponse,
   mockTemplatingDataResponses,
+  mockLinks,
 } from '../mock_data';
 import {
   metricsDashboardPayload,
@@ -334,11 +335,11 @@ describe('Monitoring store Getters', () => {
 
     beforeEach(() => {
       state = {
-        promVariables: {},
+        variables: {},
       };
     });
 
-    it('transforms the promVariables object to an array in the [variable, variable_value] format for all variable types', () => {
+    it('transforms the variables object to an array in the [variable, variable_value] format for all variable types', () => {
       mutations[types.SET_VARIABLES](state, mockTemplatingDataResponses.allVariableTypes);
       const variablesArray = getters.getCustomVariablesParams(state);
 
@@ -350,7 +351,7 @@ describe('Monitoring store Getters', () => {
       });
     });
 
-    it('transforms the promVariables object to an empty array when no keys are present', () => {
+    it('transforms the variables object to an empty array when no keys are present', () => {
       mutations[types.SET_VARIABLES](state, {});
       const variablesArray = getters.getCustomVariablesParams(state);
 
@@ -399,6 +400,39 @@ describe('Monitoring store Getters', () => {
         currentDashboard: dashboardGitResponse[0].path,
       };
       expect(selectedDashboard(state)).toEqual(null);
+    });
+  });
+
+  describe('linksWithMetadata', () => {
+    let state;
+    const setupState = (initState = {}) => {
+      state = {
+        ...state,
+        ...initState,
+      };
+    };
+
+    beforeAll(() => {
+      setupState({
+        links: mockLinks,
+      });
+    });
+
+    afterAll(() => {
+      state = null;
+    });
+
+    it.each`
+      timeRange                                                                 | output
+      ${{}}                                                                     | ${''}
+      ${{ start: '2020-01-01T00:00:00.000Z', end: '2020-01-31T23:59:00.000Z' }} | ${'start=2020-01-01T00%3A00%3A00.000Z&end=2020-01-31T23%3A59%3A00.000Z'}
+      ${{ duration: { seconds: 86400 } }}                                       | ${'duration_seconds=86400'}
+    `('linksWithMetadata returns URLs with time range', ({ timeRange, output }) => {
+      setupState({ timeRange });
+      const links = getters.linksWithMetadata(state);
+      links.forEach(({ url }) => {
+        expect(url).toMatch(output);
+      });
     });
   });
 });

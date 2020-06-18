@@ -7,7 +7,7 @@ class CreateNugetDependencyLinkMetadata < ActiveRecord::Migration[6.0]
 
   disable_ddl_transaction!
 
-  CONSTRAINT_NAME = 'packages_nuget_dependency_link_metadata_target_framework_constraint'
+  CONSTRAINT_NAME = 'packages_nuget_dependency_link_metadata_target_framework_constr'
 
   def up
     unless table_exists?(:packages_nuget_dependency_link_metadata)
@@ -21,6 +21,8 @@ class CreateNugetDependencyLinkMetadata < ActiveRecord::Migration[6.0]
   end
 
   def down
+    # rubocop:disable Migration/DropTable
     drop_table :packages_nuget_dependency_link_metadata
+    # rubocop:enable Migration/DropTable
   end
 end

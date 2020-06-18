@@ -20,7 +20,11 @@ describe MergeRequests::MergeService do
     end
 
     context 'valid params' do
+      let(:state_tracking) { true }
+
       before do
+        stub_feature_flags(track_resource_state_change_events: state_tracking)
+
         allow(service).to receive(:execute_hooks)
 
         perform_enqueued_jobs do
@@ -42,9 +46,22 @@ describe MergeRequests::MergeService do
         expect(email.subject).to include(merge_request.title)
       end
 
-      it 'creates system note about merge_request merge' do
-        note = merge_request.notes.last
-        expect(note.note).to include 'merged'
+      context 'note creation' do
+        context 'when resource state event tracking is disabled' do
+          let(:state_tracking) { false }
+
+          it 'creates system note about merge_request merge' do
+            note = merge_request.notes.last
+            expect(note.note).to include 'merged'
+          end
+        end
+
+        context 'when resource state event tracking is enabled' do
+          it 'creates resource state event about merge_request merge' do
+            event = merge_request.resource_state_events.last
+            expect(event.state).to eq('merged')
+          end
+        end
       end
 
       context 'when squashing' do
@@ -55,7 +72,7 @@ describe MergeRequests::MergeService do
         end
 
         let(:merge_request) do
-          # A merge reqeust with 5 commits
+          # A merge request with 5 commits
           create(:merge_request, :simple,
                  author: user2,
                  assignees: [user2],
@@ -277,7 +294,7 @@ describe MergeRequests::MergeService do
 
     context 'error handling' do
       before do
-        allow(Rails.logger).to receive(:error)
+        allow(Gitlab::AppLogger).to receive(:error)
       end
 
       context 'when source is missing' do
@@ -289,7 +306,7 @@ describe MergeRequests::MergeService do
           service.execute(merge_request)
 
           expect(merge_request.merge_error).to eq(error_message)
-          expect(Rails.logger).to have_received(:error).with(a_string_matching(error_message))
+          expect(Gitlab::AppLogger).to have_received(:error).with(a_string_matching(error_message))
         end
       end
 
@@ -302,7 +319,7 @@ describe MergeRequests::MergeService do
         service.execute(merge_request)
 
         expect(merge_request.merge_error).to include('Something went wrong during merge')
-        expect(Rails.logger).to have_received(:error).with(a_string_matching(error_message))
+        expect(Gitlab::AppLogger).to have_received(:error).with(a_string_matching(error_message))
       end
 
       it 'logs and saves error if user is not authorized' do
@@ -326,7 +343,7 @@ describe MergeRequests::MergeService do
         service.execute(merge_request)
 
         expect(merge_request.merge_error).to include('Something went wrong during merge pre-receive hook')
-        expect(Rails.logger).to have_received(:error).with(a_string_matching(error_message))
+        expect(Gitlab::AppLogger).to have_received(:error).with(a_string_matching(error_message))
       end
 
       it 'logs and saves error if there is a merge conflict' do
@@ -340,7 +357,7 @@ describe MergeRequests::MergeService do
         expect(merge_request).to be_open
         expect(merge_request.merge_commit_sha).to be_nil
         expect(merge_request.merge_error).to include(error_message)
-        expect(Rails.logger).to have_received(:error).with(a_string_matching(error_message))
+        expect(Gitlab::AppLogger).to have_received(:error).with(a_string_matching(error_message))
       end
 
       context 'when squashing' do
@@ -359,7 +376,7 @@ describe MergeRequests::MergeService do
           expect(merge_request).to be_open
           expect(merge_request.merge_commit_sha).to be_nil
           expect(merge_request.merge_error).to include(error_message)
-          expect(Rails.logger).to have_received(:error).with(a_string_matching(error_message))
+          expect(Gitlab::AppLogger).to have_received(:error).with(a_string_matching(error_message))
         end
 
         it 'logs and saves error if there is a squash in progress' do
@@ -373,7 +390,7 @@ describe MergeRequests::MergeService do
           expect(merge_request).to be_open
           expect(merge_request.merge_commit_sha).to be_nil
           expect(merge_request.merge_error).to include(error_message)
-          expect(Rails.logger).to have_received(:error).with(a_string_matching(error_message))
+          expect(Gitlab::AppLogger).to have_received(:error).with(a_string_matching(error_message))
         end
 
         context 'when fast-forward merge is not allowed' do
@@ -393,7 +410,7 @@ describe MergeRequests::MergeService do
               expect(merge_request).to be_open
               expect(merge_request.merge_commit_sha).to be_nil
               expect(merge_request.merge_error).to include(error_message)
-              expect(Rails.logger).to have_received(:error).with(a_string_matching(error_message))
+              expect(Gitlab::AppLogger).to have_received(:error).with(a_string_matching(error_message))
             end
           end
         end

@@ -7,7 +7,7 @@ describe Gitlab::Badge::Coverage::Report do
   let(:job_name) { nil }
 
   let(:badge) do
-    described_class.new(project, 'master', job_name)
+    described_class.new(project, 'master', opts: { job: job_name })
   end
 
   describe '#entity' do

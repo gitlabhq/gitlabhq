@@ -162,7 +162,7 @@ Starting with GitLab 9.3, the environment URL is exposed to the Runner via
 
 #### Set dynamic environment URLs after a job finishes
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/17066) in GitLab 12.9.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/17066) in GitLab 12.9.
 
 In a job script, you can specify a static [environment URL](#using-the-environment-url).
 However, there may be times when you want a dynamic URL. For example,
@@ -384,7 +384,7 @@ feature.
 
 ### Configuring Kubernetes deployments
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/27630) in GitLab 12.6.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/27630) in GitLab 12.6.
 
 If you are deploying to a [Kubernetes cluster](../../user/project/clusters/index.md)
 associated with your project, you can configure these deployments from your
@@ -421,7 +421,18 @@ NOTE: **Note:**
 Kubernetes configuration is not supported for Kubernetes clusters
 that are [managed by GitLab](../../user/project/clusters/index.md#gitlab-managed-clusters).
 To follow progress on support for GitLab-managed clusters, see the
-[relevant issue](https://gitlab.com/gitlab-org/gitlab/issues/38054).
+[relevant issue](https://gitlab.com/gitlab-org/gitlab/-/issues/38054).
+
+### Deployment safety
+
+Deployment jobs can be more sensitive than other jobs in a pipeline,
+and might need to be treated with an extra care. There are multiple features
+in GitLab that helps maintain deployment security and stability.
+
+- [Restrict write-access to a critical environment](deployment_safety.md#restrict-write-access-to-a-critical-environment)
+- [Limit the job-concurrency for deployment jobs](deployment_safety.md#ensure-only-one-deployment-job-runs-at-a-time)
+- [Skip outdated deployment jobs](deployment_safety.md#skip-outdated-deployment-jobs)
+- [Restrict deployments for a particular period](deployment_safety.md#restrict-deployments-for-a-particular-period)
 
 ### Complete example
 
@@ -699,11 +710,17 @@ stop action when the associated branch is deleted. The `stop_review` job must
 be in the same `stage` as the `deploy_review` job in order for the environment
 to automatically stop.
 
+Additionally, both jobs should have matching [`rules`](../yaml/README.md#onlyexcept-basic)
+or [`only/except`](../yaml/README.md#onlyexcept-basic) configuration. In the example
+above, if the configuration is not identical, the `stop_review` job might not be
+included in all pipelines that include the `deploy_review` job, and it will not be
+possible to trigger the `action: stop` to stop the environment automatically.
+
 You can read more in the [`.gitlab-ci.yml` reference](../yaml/README.md#environmenton_stop).
 
 #### Environments auto-stop
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/20956) in GitLab 12.8.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/20956) in GitLab 12.8.
 
 You can set a expiry time to environments and stop them automatically after a certain period.
 
@@ -849,10 +866,6 @@ versions of the app, all without leaving GitLab.
 
 ![Monitoring dashboard](../img/environments_monitoring.png)
 
-#### Linking to external dashboard
-
-Add a [button to the Monitoring dashboard](../../user/project/operations/linking_to_an_external_dashboard.md) linking directly to your existing external dashboards.
-
 #### Embedding metrics in GitLab Flavored Markdown
 
 Metric charts can be embedded within GitLab Flavored Markdown. See [Embedding Metrics within GitLab Flavored Markdown](../../user/project/integrations/prometheus.md#embedding-metric-charts-within-gitlab-flavored-markdown) for more details.
@@ -912,7 +925,7 @@ fetch = +refs/environments/*:refs/remotes/origin/environments/*
 ### Scoping environments with specs
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/2112) in [GitLab Premium](https://about.gitlab.com/pricing/) 9.4.
-> - [Scoping for environment variables was moved to Core](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/30779) to Core in GitLab 12.2.
+> - [Scoping for environment variables was moved to Core](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/30779) in GitLab 12.2.
 
 You can limit the environment scope of a variable by
 defining which environments it can be available for.

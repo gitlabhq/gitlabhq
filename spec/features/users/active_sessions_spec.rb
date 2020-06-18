@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Active user sessions', :clean_gitlab_redis_shared_state do
+RSpec.describe 'Active user sessions', :clean_gitlab_redis_shared_state do
   it 'Successful login adds a new active user login' do
     now = Time.zone.parse('2018-03-12 09:06')
     Timecop.freeze(now) do

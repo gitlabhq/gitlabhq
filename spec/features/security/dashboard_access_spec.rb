@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe "Dashboard access" do
+RSpec.describe "Dashboard access" do
   include AccessMatchers
 
   describe "GET /dashboard" do

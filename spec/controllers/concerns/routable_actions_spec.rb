@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe RoutableActions do
+RSpec.describe RoutableActions do
   controller(::ApplicationController) do
     include RoutableActions
 

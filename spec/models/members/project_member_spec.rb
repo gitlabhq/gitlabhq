@@ -44,14 +44,14 @@ describe ProjectMember do
     let(:maintainer) { create(:project_member, project: project) }
 
     it "creates an expired event when left due to expiry" do
-      expired = create(:project_member, project: project, expires_at: Time.now - 6.days)
+      expired = create(:project_member, project: project, expires_at: Time.current - 6.days)
       expired.destroy
-      expect(Event.recent.first.action).to eq(Event::EXPIRED)
+      expect(Event.recent.first).to be_expired_action
     end
 
     it "creates a left event when left due to leave" do
       maintainer.destroy
-      expect(Event.recent.first.action).to eq(Event::LEFT)
+      expect(Event.recent.first).to be_left_action
     end
   end
 

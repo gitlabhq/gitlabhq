@@ -54,7 +54,7 @@ export default {
       <div v-if="canEditBadge" class="table-action-buttons">
         <button
           :disabled="badge.isDeleting"
-          class="btn btn-default append-right-8"
+          class="btn btn-default gl-mr-3"
           type="button"
           @click="editBadge(badge)"
         >

@@ -18,6 +18,7 @@ module Banzai
 
       # Classes used by Asciidoctor to style components
       ADMONITION_CLASSES = %w(fa icon-note icon-tip icon-warning icon-caution icon-important).freeze
+      ALIGNMENT_BUILTINS_CLASSES = %w(text-center text-left text-right text-justify).freeze
       CALLOUT_CLASSES = ['conum'].freeze
       CHECKLIST_CLASSES = %w(fa fa-check-square-o fa-square-o).freeze
       LIST_CLASSES = %w(checklist none no-bullet unnumbered unstyled).freeze
@@ -28,7 +29,7 @@ module Banzai
 
       ELEMENT_CLASSES_WHITELIST = {
         span: %w(big small underline overline line-through).freeze,
-        div: ['admonitionblock'].freeze,
+        div: ALIGNMENT_BUILTINS_CLASSES + ['admonitionblock'].freeze,
         td: ['icon'].freeze,
         i: ADMONITION_CLASSES + CALLOUT_CLASSES + CHECKLIST_CLASSES,
         ul: LIST_CLASSES,

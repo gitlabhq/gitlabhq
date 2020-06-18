@@ -85,7 +85,7 @@ and they will assist you with any issues you are having.
 ## GitLab-specific Kubernetes information
 
 - Minimal config that can be used to test a Kubernetes Helm chart can be found
-  [here](https://gitlab.com/gitlab-org/charts/gitlab/issues/620).
+  [here](https://gitlab.com/gitlab-org/charts/gitlab/-/issues/620).
 
 - Tailing logs of a separate pod. An example for a Webservice pod:
 
@@ -186,7 +186,7 @@ and they will assist you with any issues you are having.
   helm upgrade <release name> <chart path> -f gitlab.yaml
   ```
 
-  After <https://gitlab.com/gitlab-org/charts/gitlab/issues/780> is fixed, it should
+  After <https://gitlab.com/gitlab-org/charts/gitlab/-/issues/780> is fixed, it should
   be possible to use [Updating GitLab using the Helm Chart](https://docs.gitlab.com/charts/index.html#updating-gitlab-using-the-helm-chart)
   for upgrades.
 

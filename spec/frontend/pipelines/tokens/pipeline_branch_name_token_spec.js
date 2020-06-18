@@ -1,7 +1,8 @@
+import Api from '~/api';
 import { GlFilteredSearchToken, GlFilteredSearchSuggestion, GlLoadingIcon } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import PipelineBranchNameToken from '~/pipelines/components/tokens/pipeline_branch_name_token.vue';
-import { branches } from '../mock_data';
+import { branches, mockBranchesAfterMap } from '../mock_data';
 
 describe('Pipeline Branch Name Token', () => {
   let wrapper;
@@ -21,10 +22,9 @@ describe('Pipeline Branch Name Token', () => {
       type: 'ref',
       icon: 'branch',
       title: 'Branch name',
-      dataType: 'ref',
       unique: true,
-      branches,
       projectId: '21',
+      disabled: false,
     },
     value: {
       data: '',
@@ -46,6 +46,8 @@ describe('Pipeline Branch Name Token', () => {
   };
 
   beforeEach(() => {
+    jest.spyOn(Api, 'branches').mockResolvedValue({ data: branches });
+
     createComponent();
   });
 
@@ -56,6 +58,13 @@ describe('Pipeline Branch Name Token', () => {
 
   it('passes config correctly', () => {
     expect(findFilteredSearchToken().props('config')).toEqual(defaultProps.config);
+  });
+
+  it('fetches and sets project branches', () => {
+    expect(Api.branches).toHaveBeenCalled();
+
+    expect(wrapper.vm.branches).toEqual(mockBranchesAfterMap);
+    expect(findLoadingIcon().exists()).toBe(false);
   });
 
   describe('displays loading icon correctly', () => {
@@ -73,7 +82,7 @@ describe('Pipeline Branch Name Token', () => {
   });
 
   describe('shows branches correctly', () => {
-    it('renders all trigger authors', () => {
+    it('renders all branches', () => {
       createComponent({ stubs }, { branches, loading: false });
 
       expect(findAllFilteredSearchSuggestions()).toHaveLength(branches.length);

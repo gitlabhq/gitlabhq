@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe AcmeChallengesController do
+RSpec.describe AcmeChallengesController do
   describe '#show' do
     let!(:acme_order) { create(:pages_domain_acme_order) }
 

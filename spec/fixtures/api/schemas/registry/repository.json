@@ -1,13 +1,7 @@
 {
   "type": "object",
-  "required" : [
-    "id",
-    "name",
-    "path",
-    "location",
-    "created_at"
-  ],
-  "properties" : {
+  "required": ["id", "name", "path", "location", "created_at"],
+  "properties": {
     "id": {
       "type": "integer"
     },
@@ -38,7 +32,10 @@
         { "type": "string", "enum": ["delete_scheduled", "delete_failed"] }
       ]
     },
-    "tags": { "$ref": "tags.json" }
+    "tags": { "$ref": "tags.json" },
+    "tags_count": {
+      "type": "integer"
+    }
   },
   "additionalProperties": false
 }

@@ -58,10 +58,8 @@ class MilestonesFinder
     Milestone.filter_by_state(items, params[:state])
   end
 
-  # rubocop: disable CodeReuse/ActiveRecord
   def order(items)
-    order_statement = Gitlab::Database.nulls_last_order('due_date', 'ASC')
-    items.reorder(order_statement).order('title ASC')
+    sort_by = params[:sort].presence || 'due_date_asc'
+    items.sort_by_attribute(sort_by)
   end
-  # rubocop: enable CodeReuse/ActiveRecord
 end

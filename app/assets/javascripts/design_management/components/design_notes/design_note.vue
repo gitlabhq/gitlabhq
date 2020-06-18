@@ -54,6 +54,9 @@ export default {
         body: this.noteText,
       };
     },
+    isEditButtonVisible() {
+      return !this.isEditing && this.note.userPermissions.adminNote;
+    },
   },
   mounted() {
     if (this.isNoteLinked) {
@@ -107,23 +110,28 @@ export default {
           </template>
         </span>
       </div>
-      <button
-        v-if="!isEditing && note.userPermissions.adminNote"
-        v-gl-tooltip
-        type="button"
-        title="Edit comment"
-        class="note-action-button js-note-edit btn btn-transparent qa-note-edit-button"
-        @click="isEditing = true"
-      >
-        <gl-icon name="pencil" class="link-highlight" />
-      </button>
+      <div class="gl-display-flex">
+        <slot name="resolveDiscussion"></slot>
+        <button
+          v-if="isEditButtonVisible"
+          v-gl-tooltip
+          type="button"
+          :title="__('Edit comment')"
+          class="note-action-button js-note-edit btn btn-transparent qa-note-edit-button"
+          @click="isEditing = true"
+        >
+          <gl-icon name="pencil" class="link-highlight" />
+        </button>
+      </div>
     </div>
-    <div
-      v-if="!isEditing"
-      class="note-text js-note-text md"
-      data-qa-selector="note_content"
-      v-html="note.bodyHtml"
-    ></div>
+    <template v-if="!isEditing">
+      <div
+        class="note-text js-note-text md"
+        data-qa-selector="note_content"
+        v-html="note.bodyHtml"
+      ></div>
+      <slot name="resolvedStatus"></slot>
+    </template>
     <apollo-mutation
       v-else
       #default="{ mutate, loading }"

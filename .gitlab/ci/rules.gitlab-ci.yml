@@ -37,6 +37,9 @@
 .if-merge-request-title-as-if-foss: &if-merge-request-title-as-if-foss
   if: '$CI_MERGE_REQUEST_TITLE =~ /RUN AS-IF-FOSS/'
 
+.if-merge-request-title-update-caches: &if-merge-request-title-update-caches
+  if: '$CI_MERGE_REQUEST_TITLE =~ /UPDATE CACHE/'
+
 .if-security-merge-request: &if-security-merge-request
   if: '$CI_PROJECT_NAMESPACE == "gitlab-org/security" && $CI_MERGE_REQUEST_IID'
 
@@ -48,6 +51,9 @@
 
 .if-dot-com-gitlab-org-merge-request: &if-dot-com-gitlab-org-merge-request
   if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE == "gitlab-org" && $CI_MERGE_REQUEST_IID'
+
+.if-dot-com-gitlab-org-and-security-merge-request: &if-dot-com-gitlab-org-and-security-merge-request
+  if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE =~ /^gitlab-org($|\/security$)/ && $CI_MERGE_REQUEST_IID'
 
 .if-dot-com-gitlab-org-and-security-tag: &if-dot-com-gitlab-org-and-security-tag
   if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE =~ /^gitlab-org($|\/security$)/ && $CI_COMMIT_TAG'
@@ -78,9 +84,11 @@
 
 .frontend-patterns: &frontend-patterns
   - "{package.json,yarn.lock}"
-  - "{babel.config,jest.config}.js"
+  - "babel.config.js"
+  - "jest.config.{base,integration,unit}.js"
   - ".csscomb.json"
   - "Dockerfile.assets"
+  - "config/**/*.js"
   - "vendor/assets/**/*"
   - "{,ee/}{app/assets,app/helpers,app/presenters,app/views,locale,public,symbol}/**/*"
 
@@ -93,7 +101,8 @@
 
 .code-patterns: &code-patterns
   - "{package.json,yarn.lock}"
-  - "{babel.config,jest.config}.js"
+  - "babel.config.js"
+  - "jest.config.{base,integration,unit}.js"
   - ".csscomb.json"
   - "Dockerfile.assets"
   - "vendor/assets/**/*"
@@ -113,7 +122,8 @@
 
 .code-backstage-patterns: &code-backstage-patterns
   - "{package.json,yarn.lock}"
-  - "{babel.config,jest.config}.js"
+  - "babel.config.js"
+  - "jest.config.{base,integration,unit}.js"
   - ".csscomb.json"
   - "Dockerfile.assets"
   - "vendor/assets/**/*"
@@ -135,7 +145,8 @@
 
 .code-qa-patterns: &code-qa-patterns
   - "{package.json,yarn.lock}"
-  - "{babel.config,jest.config}.js"
+  - "babel.config.js"
+  - "jest.config.{base,integration,unit}.js"
   - ".csscomb.json"
   - "Dockerfile.assets"
   - "vendor/assets/**/*"
@@ -154,7 +165,8 @@
 
 .code-backstage-qa-patterns: &code-backstage-qa-patterns
   - "{package.json,yarn.lock}"
-  - "{babel.config,jest.config}.js"
+  - "babel.config.js"
+  - "jest.config.{base,integration,unit}.js"
   - ".csscomb.json"
   - "Dockerfile.assets"
   - "vendor/assets/**/*"
@@ -176,6 +188,14 @@
   # QA changes
   - ".dockerignore"
   - "qa/**/*"
+
+################
+# Shared rules #
+################
+.shared:rules:update-cache:
+  rules:
+    - <<: *if-master-schedule-2-hourly
+    - <<: *if-merge-request-title-update-caches
 
 ####################
 # Cache repo rules #
@@ -238,51 +258,21 @@
 ##################
 # Frontend rules #
 ##################
-# This job only runs on `master` since it pushes to the cache.
-.frontend:rules:gitlab-assets-compile-pull-push-cache:
-  rules:
-    - <<: *if-not-canonical-namespace
-      when: never
-    - <<: *if-master-refs
-      changes: *code-backstage-qa-patterns
-      when: on_success
-
-.frontend:rules:gitlab-assets-compile-pull-cache:
+.frontend:rules:compile-production-assets:
   rules:
     - <<: *if-not-canonical-namespace
       when: never
     - <<: *if-default-refs
       changes: *code-backstage-qa-patterns
-      when: on_success
 
-.frontend:rules:compile-assets-pull-push-cache:
+.frontend:rules:compile-test-assets:
   rules:
-    - <<: *if-master-refs
-      changes: *code-backstage-qa-patterns
-      when: on_success
+    - changes: *code-backstage-qa-patterns
 
-# This job only runs on `master` since it pushes to the cache.
-.frontend:rules:compile-assets-pull-push-cache-as-if-foss:
+.frontend:rules:compile-test-assets-as-if-foss:
   rules:
     - <<: *if-not-ee
       when: never
-    - <<: *if-master-push
-      changes: *code-backstage-qa-patterns
-    - <<: *if-master-schedule-2-hourly
-
-.frontend:rules:compile-assets-pull-cache:
-  rules:
-    - <<: *if-default-refs
-      changes: *code-backstage-qa-patterns
-      when: on_success
-
-.frontend:rules:compile-assets-pull-cache-as-if-foss:
-  rules:
-    - <<: *if-not-ee
-      when: never
-    - <<: *if-master-push
-      changes: *code-backstage-qa-patterns
-    - <<: *if-master-schedule-2-hourly
     - <<: *if-security-merge-request
       changes: *code-backstage-qa-patterns
     - <<: *if-merge-request-title-as-if-foss
@@ -293,15 +283,11 @@
   rules:
     - <<: *if-default-refs
       changes: *code-backstage-patterns
-      when: on_success
 
 .frontend:rules:default-frontend-jobs-as-if-foss:
   rules:
     - <<: *if-not-ee
       when: never
-    - <<: *if-master-push
-      changes: *code-backstage-patterns
-    - <<: *if-master-schedule-2-hourly
     - <<: *if-security-merge-request
       changes: *code-backstage-patterns
     - <<: *if-merge-request-title-as-if-foss
@@ -321,10 +307,8 @@
   rules:
     - <<: *if-master-refs
       changes: *frontend-dependency-patterns
-      when: on_success
     - <<: *if-merge-request
       changes: *frontend-dependency-patterns
-      when: on_success
 
 .frontend:rules:qa-frontend-node-latest:
   rules:
@@ -333,6 +317,12 @@
       allow_failure: true
     - <<: *if-merge-request
       changes: *frontend-dependency-patterns
+      allow_failure: true
+
+.frontend:rules:bundle-size-review:
+  rules:
+    - if: '$DANGER_GITLAB_API_TOKEN && $CI_MERGE_REQUEST_IID && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "master"'
+      changes: *frontend-patterns
       allow_failure: true
 
 ################
@@ -368,9 +358,6 @@
   rules:
     - <<: *if-not-ee
       when: never
-    - <<: *if-master-push
-      changes: *code-qa-patterns
-    - <<: *if-master-schedule-2-hourly
     - <<: *if-security-merge-request
       changes: *code-qa-patterns
     - <<: *if-merge-request-title-as-if-foss
@@ -379,13 +366,13 @@
 
 .qa:rules:package-and-qa:
   rules:
-    - <<: *if-dot-com-gitlab-org-merge-request
+    - <<: *if-dot-com-gitlab-org-and-security-merge-request
       changes: *ci-patterns
       allow_failure: true
-    - <<: *if-dot-com-gitlab-org-merge-request
+    - <<: *if-dot-com-gitlab-org-and-security-merge-request
       changes: *qa-patterns
       allow_failure: true
-    - <<: *if-dot-com-gitlab-org-merge-request
+    - <<: *if-dot-com-gitlab-org-and-security-merge-request
       changes: *code-patterns
       when: manual
       allow_failure: true
@@ -416,9 +403,6 @@
   rules:
     - <<: *if-not-ee
       when: never
-    - <<: *if-master-push
-      changes: *code-backstage-patterns
-    - <<: *if-master-schedule-2-hourly
     - <<: *if-security-merge-request
       changes: *code-backstage-patterns
     - <<: *if-merge-request-title-as-if-foss
@@ -432,6 +416,17 @@
     - <<: *if-merge-request
       changes: *code-backstage-patterns
     - <<: *if-master-refs
+      changes: *code-backstage-patterns
+
+.rails:rules:ee-mr-only:
+  rules:
+    - <<: *if-not-ee
+      when: never
+    - <<: *if-merge-request-title-as-if-foss
+      when: never
+    - <<: *if-security-merge-request
+      changes: *code-backstage-patterns
+    - <<: *if-dot-com-gitlab-org-merge-request
       changes: *code-backstage-patterns
 
 .rails:rules:downtime_check:
@@ -505,7 +500,7 @@
   rules:
     - <<: *if-not-ee
       when: never
-    - <<: *if-dot-com-gitlab-org-merge-request
+    - <<: *if-dot-com-gitlab-org-and-security-merge-request
       changes: *code-qa-patterns
     - <<: *if-dot-com-gitlab-org-schedule
 

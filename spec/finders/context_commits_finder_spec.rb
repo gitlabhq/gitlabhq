@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ContextCommitsFinder do
+RSpec.describe ContextCommitsFinder do
   describe "#execute" do
     let(:project) { create(:project, :repository) }
     let(:merge_request) { create(:merge_request) }

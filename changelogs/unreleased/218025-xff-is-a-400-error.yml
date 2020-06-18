@@ -1,0 +1,5 @@
+---
+title: Convert IP spoofing errors into client errors
+merge_request: 33280
+author:
+type: other

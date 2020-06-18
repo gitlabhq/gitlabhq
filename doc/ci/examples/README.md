@@ -1,4 +1,7 @@
 ---
+stage: Verify
+group: Continuous Integration
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 comments: false
 type: index
 ---
@@ -10,9 +13,8 @@ implement [GitLab CI/CD](../README.md) for your specific use case.
 
 Examples are available in several forms. As a collection of:
 
-- `.gitlab-ci.yml` [template files](https://gitlab.com/gitlab-org/gitlab-foss/tree/master/lib/gitlab/ci/templates) maintained in GitLab. When you create a new file via the UI,
-  GitLab will give you the option to choose one of these templates. This will allow you to start using CI/CD with your project quickly.
-  If your favorite programming language or framework are missing, we would love your help by sending a merge request with a new `.gitlab-ci.yml` to this project.
+- `.gitlab-ci.yml` [template files](#cicd-templates) maintained in GitLab, for many
+  common frameworks and programming languages.
 - Repositories with [example projects](https://gitlab.com/gitlab-examples) for various languages. You can fork and adjust them to your own needs. Projects include demonstrations of [multi-project pipelines](https://gitlab.com/gitlab-examples/multi-project-pipelines) and using [Review Apps with a static site served by NGINX](https://gitlab.com/gitlab-examples/review-apps-nginx/).
 - Examples and [other resources](#other-resources) listed below.
 
@@ -47,9 +49,55 @@ language users and GitLab by sending a merge request with a guide for that langu
 You may want to apply for the [GitLab Community Writers Program](https://about.gitlab.com/community/writers/)
 to get paid for writing complete articles for GitLab.
 
-## Adding templates to your GitLab installation **(PREMIUM ONLY)**
+## CI/CD templates
 
-If you want to have customized examples and templates for your own self-managed GitLab instance available to your team, your GitLab administrator can [designate an instance template repository](../../user/admin_area/settings/instance_template_repository.md) that contains examples and templates specific to your enterprise.
+Get started with GitLab CI/CD and your favorite programming language or framework by using a
+`.gitlab-ci.yml` [template](https://gitlab.com/gitlab-org/gitlab/tree/master/lib/gitlab/ci/templates).
+
+When you create a `gitlab-ci.yml` file in the UI, you can
+choose one of these templates:
+
+- [Android (`Android.gitlab-ci.yml`)](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Android.gitlab-ci.yml)
+- [Android with fastlane (`Android-Fastlane.gitlab-ci.yml`)](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Android-Fastlane.gitlab-ci.yml)
+- [Bash (`Bash.gitlab-ci.yml`)](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Bash.gitlab-ci.yml)
+- [C++ (`C++.gitlab-ci.yml`)](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/C++.gitlab-ci.yml)
+- [Chef (`Chef.gitlab-ci.yml`)](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Chef.gitlab-ci.yml)
+- [Clojure (`Clojure.gitlab-ci.yml`)](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Clojure.gitlab-ci.yml)
+- [Crystal (`Crystal.gitlab-ci.yml`)](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Crystal.gitlab-ci.yml)
+- [Django (`Django.gitlab-ci.yml`)](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Django.gitlab-ci.yml)
+- [Docker (`Docker.gitlab-ci.yml`)](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Docker.gitlab-ci.yml)
+- [dotNET (`dotNET.gitlab-ci.yml`)](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/dotNET.gitlab-ci.yml)
+- [dotNET Core (`dotNET-Core.yml`)](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/dotNET-Core.yml)
+- [Elixir (`Elixir.gitlab-ci.yml`)](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Elixir.gitlab-ci.yml)
+- [goLang (`Go.gitlab-ci.yml`)](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Go.gitlab-ci.yml)
+- [Gradle (`Gradle.gitlab-ci.yml`)](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Gradle.gitlab-ci.yml)
+- [Grails (`Grails.gitlab-ci.yml`)](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Grails.gitlab-ci.yml)
+- [iOS with fastlane (`iOS-Fastlane.gitlab-ci.yml`)](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/iOS-Fastlane.gitlab-ci.yml)
+- [Julia (`Julia.gitlab-ci.yml`)](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Julia.gitlab-ci.yml)
+- [Laravel (`Laravel.gitlab-ci.yml`)](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Laravel.gitlab-ci.yml)
+- [LaTeX (`LaTeX.gitlab-ci.yml`)](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/LaTeX.gitlab-ci.yml)
+- [Maven (`Maven.gitlab-ci.yml`)](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Maven.gitlab-ci.yml)
+- [Mono (`Mono.gitlab-ci.yml`)](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Mono.gitlab-ci.yml)
+- [Node.js (`Nodejs.gitlab-ci.yml`)](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Nodejs.gitlab-ci.yml)
+- [OpenShift (`OpenShift.gitlab-ci.yml`)](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/OpenShift.gitlab-ci.yml)
+- [Packer (`Packer.gitlab-ci.yml`)](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Packer.gitlab-ci.yml)
+- [PHP (`PHP.gitlab-ci.yml`)](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/PHP.gitlab-ci.yml)
+- [Python (`Python.gitlab-ci.yml`)](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Python.gitlab-ci.yml)
+- [Ruby (`Ruby.gitlab-ci.yml`)](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Ruby.gitlab-ci.yml)
+- [Rust (`Rust.gitlab-ci.yml`)](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Rust.gitlab-ci.yml)
+- [Scala (`Scala.gitlab-ci.yml`)](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Scala.gitlab-ci.yml)
+- [Swift (`Swift.gitlab-ci.yml`)](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Swift.gitlab-ci.yml)
+- [Terraform (`Terraform.gitlab-ci.yml`)](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Terraform.gitlab-ci.yml)
+
+If a programming language or framework template is not in this list, you can contribute
+one. To create a template, submit a merge request
+to <https://gitlab.com/gitlab-org/gitlab/tree/master/lib/gitlab/ci/templates>.
+
+### Adding templates to your GitLab installation **(PREMIUM ONLY)**
+
+You can add custom examples and templates to your self-managed GitLab instance.
+Your GitLab administrator can [designate an instance template repository](../../user/admin_area/settings/instance_template_repository.md)
+that contains examples and templates specific to your organization.
 
 ## Other resources
 

@@ -3,21 +3,62 @@
 module Ci
   class Ref < ApplicationRecord
     extend Gitlab::Ci::Model
+    include Gitlab::OptimisticLocking
 
-    STATUSES = %w[success failed fixed].freeze
+    FAILING_STATUSES = %w[failed broken still_failing].freeze
 
-    belongs_to :project
-    belongs_to :last_updated_by_pipeline, foreign_key: :last_updated_by_pipeline_id, class_name: 'Ci::Pipeline'
-    # ActiveRecord doesn't support composite FKs for this reason we have to do the 'unscope(:where)'
-    # hack.
-    has_many :pipelines, ->(ref) {
-      # We use .read_attribute to save 1 extra unneeded query to load the :project.
-      unscope(:where)
-        .where(ref: ref.ref, project_id: ref.read_attribute(:project_id), tag: ref.tag)
-      # Sadly :inverse_of is not supported (yet) by Rails for composite PKs.
-    }, inverse_of: :ref_status
+    belongs_to :project, inverse_of: :ci_refs
+    has_many :pipelines, class_name: 'Ci::Pipeline', foreign_key: :ci_ref_id, inverse_of: :ci_ref
 
-    validates :status, inclusion: { in: STATUSES }
-    validates :last_updated_by_pipeline, presence: true
+    state_machine :status, initial: :unknown do
+      event :succeed do
+        transition unknown: :success
+        transition fixed: :success
+        transition %i[failed broken still_failing] => :fixed
+      end
+
+      event :do_fail do
+        transition unknown: :failed
+        transition %i[failed broken] => :still_failing
+        transition %i[success fixed] => :broken
+      end
+
+      state :unknown, value: 0
+      state :success, value: 1
+      state :failed, value: 2
+      state :fixed, value: 3
+      state :broken, value: 4
+      state :still_failing, value: 5
+    end
+
+    class << self
+      def ensure_for(pipeline)
+        safe_find_or_create_by(project_id: pipeline.project_id,
+                               ref_path: pipeline.source_ref_path)
+      end
+
+      def failing_state?(status_name)
+        FAILING_STATUSES.include?(status_name)
+      end
+    end
+
+    def last_finished_pipeline_id
+      Ci::Pipeline.where(ci_ref_id: self.id).finished.order(id: :desc).select(:id).take&.id
+    end
+
+    def update_status_by!(pipeline)
+      return unless Gitlab::Ci::Features.pipeline_fixed_notifications?
+
+      retry_lock(self) do
+        next unless last_finished_pipeline_id == pipeline.id
+
+        case pipeline.status
+        when 'success' then self.succeed
+        when 'failed' then self.do_fail
+        end
+
+        self.status_name
+      end
+    end
   end
 end

@@ -1,242 +1,194 @@
-import Vue from 'vue';
 import { shallowMount } from '@vue/test-utils';
-import mountComponent from 'helpers/vue_mount_component_helper';
+import { GlSprintf } from '@gitlab/ui';
 import eventHub from '~/clusters/event_hub';
-import { APPLICATION_STATUS } from '~/clusters/constants';
-import applicationRow from '~/clusters/components/application_row.vue';
+import { APPLICATION_STATUS, ELASTIC_STACK } from '~/clusters/constants';
+import ApplicationRow from '~/clusters/components/application_row.vue';
 import UninstallApplicationConfirmationModal from '~/clusters/components/uninstall_application_confirmation_modal.vue';
+import UpdateApplicationConfirmationModal from '~/clusters/components/update_application_confirmation_modal.vue';
 
 import { DEFAULT_APPLICATION_STATE } from '../services/mock_data';
 
 describe('Application Row', () => {
-  let vm;
-  let ApplicationRow;
-
-  beforeEach(() => {
-    ApplicationRow = Vue.extend(applicationRow);
-  });
+  let wrapper;
 
   afterEach(() => {
-    vm.$destroy();
+    wrapper.destroy();
   });
+
+  const mountComponent = data => {
+    wrapper = shallowMount(ApplicationRow, {
+      stubs: { GlSprintf },
+      propsData: {
+        ...DEFAULT_APPLICATION_STATE,
+        ...data,
+      },
+    });
+  };
 
   describe('Title', () => {
     it('shows title', () => {
-      vm = mountComponent(ApplicationRow, {
-        ...DEFAULT_APPLICATION_STATE,
-        titleLink: null,
-      });
-      const title = vm.$el.querySelector('.js-cluster-application-title');
+      mountComponent({ titleLink: null });
 
-      expect(title.tagName).toEqual('SPAN');
-      expect(title.textContent.trim()).toEqual(DEFAULT_APPLICATION_STATE.title);
+      const title = wrapper.find('.js-cluster-application-title');
+
+      expect(title.element).toBeInstanceOf(HTMLSpanElement);
+      expect(title.text()).toEqual(DEFAULT_APPLICATION_STATE.title);
     });
 
     it('shows title link', () => {
       expect(DEFAULT_APPLICATION_STATE.titleLink).toBeDefined();
+      mountComponent();
+      const title = wrapper.find('.js-cluster-application-title');
 
-      vm = mountComponent(ApplicationRow, {
-        ...DEFAULT_APPLICATION_STATE,
-      });
-      const title = vm.$el.querySelector('.js-cluster-application-title');
-
-      expect(title.tagName).toEqual('A');
-      expect(title.textContent.trim()).toEqual(DEFAULT_APPLICATION_STATE.title);
+      expect(title.element).toBeInstanceOf(HTMLAnchorElement);
+      expect(title.text()).toEqual(DEFAULT_APPLICATION_STATE.title);
     });
   });
 
   describe('Install button', () => {
-    it('has indeterminate state on page load', () => {
-      vm = mountComponent(ApplicationRow, {
-        ...DEFAULT_APPLICATION_STATE,
-        status: null,
-      });
+    const button = () => wrapper.find('.js-cluster-application-install-button');
+    const checkButtonState = (label, loading, disabled) => {
+      expect(button().props('label')).toEqual(label);
+      expect(button().props('loading')).toEqual(loading);
+      expect(button().props('disabled')).toEqual(disabled);
+    };
 
-      expect(vm.installButtonLabel).toBeUndefined();
+    it('has indeterminate state on page load', () => {
+      mountComponent({ status: null });
+
+      expect(button().props('label')).toBeUndefined();
     });
 
     it('has install button', () => {
-      const installationBtn = vm.$el.querySelector('.js-cluster-application-install-button');
+      mountComponent();
 
-      expect(installationBtn).not.toBe(null);
+      expect(button().exists()).toBe(true);
     });
 
     it('has disabled "Install" when APPLICATION_STATUS.NOT_INSTALLABLE', () => {
-      vm = mountComponent(ApplicationRow, {
-        ...DEFAULT_APPLICATION_STATE,
-        status: APPLICATION_STATUS.NOT_INSTALLABLE,
-      });
+      mountComponent({ status: APPLICATION_STATUS.NOT_INSTALLABLE });
 
-      expect(vm.installButtonLabel).toEqual('Install');
-      expect(vm.installButtonLoading).toEqual(false);
-      expect(vm.installButtonDisabled).toEqual(true);
+      checkButtonState('Install', false, true);
     });
 
     it('has enabled "Install" when APPLICATION_STATUS.INSTALLABLE', () => {
-      vm = mountComponent(ApplicationRow, {
-        ...DEFAULT_APPLICATION_STATE,
-        status: APPLICATION_STATUS.INSTALLABLE,
-      });
+      mountComponent({ status: APPLICATION_STATUS.INSTALLABLE });
 
-      expect(vm.installButtonLabel).toEqual('Install');
-      expect(vm.installButtonLoading).toEqual(false);
-      expect(vm.installButtonDisabled).toEqual(false);
+      checkButtonState('Install', false, false);
     });
 
     it('has loading "Installing" when APPLICATION_STATUS.INSTALLING', () => {
-      vm = mountComponent(ApplicationRow, {
-        ...DEFAULT_APPLICATION_STATE,
-        status: APPLICATION_STATUS.INSTALLING,
-      });
+      mountComponent({ status: APPLICATION_STATUS.INSTALLING });
 
-      expect(vm.installButtonLabel).toEqual('Installing');
-      expect(vm.installButtonLoading).toEqual(true);
-      expect(vm.installButtonDisabled).toEqual(true);
+      checkButtonState('Installing', true, true);
     });
 
     it('has disabled "Installed" when application is installed and not uninstallable', () => {
-      vm = mountComponent(ApplicationRow, {
-        ...DEFAULT_APPLICATION_STATE,
+      mountComponent({
         status: APPLICATION_STATUS.INSTALLED,
         installed: true,
         uninstallable: false,
       });
 
-      expect(vm.installButtonLabel).toEqual('Installed');
-      expect(vm.installButtonLoading).toEqual(false);
-      expect(vm.installButtonDisabled).toEqual(true);
+      checkButtonState('Installed', false, true);
     });
 
     it('hides when application is installed and uninstallable', () => {
-      vm = mountComponent(ApplicationRow, {
-        ...DEFAULT_APPLICATION_STATE,
+      mountComponent({
         status: APPLICATION_STATUS.INSTALLED,
         installed: true,
         uninstallable: true,
       });
-      const installBtn = vm.$el.querySelector('.js-cluster-application-install-button');
 
-      expect(installBtn).toBe(null);
+      expect(button().exists()).toBe(false);
     });
 
     it('has enabled "Install" when install fails', () => {
-      vm = mountComponent(ApplicationRow, {
-        ...DEFAULT_APPLICATION_STATE,
+      mountComponent({
         status: APPLICATION_STATUS.INSTALLABLE,
         installFailed: true,
       });
 
-      expect(vm.installButtonLabel).toEqual('Install');
-      expect(vm.installButtonLoading).toEqual(false);
-      expect(vm.installButtonDisabled).toEqual(false);
+      checkButtonState('Install', false, false);
     });
 
     it('has enabled "Install" when REQUEST_FAILURE (so you can try installing again)', () => {
-      vm = mountComponent(ApplicationRow, {
-        ...DEFAULT_APPLICATION_STATE,
-        status: APPLICATION_STATUS.INSTALLABLE,
-      });
+      mountComponent({ status: APPLICATION_STATUS.INSTALLABLE });
 
-      expect(vm.installButtonLabel).toEqual('Install');
-      expect(vm.installButtonLoading).toEqual(false);
-      expect(vm.installButtonDisabled).toEqual(false);
+      checkButtonState('Install', false, false);
     });
 
     it('clicking install button emits event', () => {
-      jest.spyOn(eventHub, '$emit');
-      vm = mountComponent(ApplicationRow, {
-        ...DEFAULT_APPLICATION_STATE,
-        status: APPLICATION_STATUS.INSTALLABLE,
-      });
-      const installButton = vm.$el.querySelector('.js-cluster-application-install-button');
+      const spy = jest.spyOn(eventHub, '$emit');
+      mountComponent({ status: APPLICATION_STATUS.INSTALLABLE });
 
-      installButton.click();
+      button().vm.$emit('click');
 
-      expect(eventHub.$emit).toHaveBeenCalledWith('installApplication', {
+      expect(spy).toHaveBeenCalledWith('installApplication', {
         id: DEFAULT_APPLICATION_STATE.id,
         params: {},
       });
     });
 
     it('clicking install button when installApplicationRequestParams are provided emits event', () => {
-      jest.spyOn(eventHub, '$emit');
-      vm = mountComponent(ApplicationRow, {
-        ...DEFAULT_APPLICATION_STATE,
+      const spy = jest.spyOn(eventHub, '$emit');
+      mountComponent({
         status: APPLICATION_STATUS.INSTALLABLE,
         installApplicationRequestParams: { hostname: 'jupyter' },
       });
-      const installButton = vm.$el.querySelector('.js-cluster-application-install-button');
 
-      installButton.click();
+      button().vm.$emit('click');
 
-      expect(eventHub.$emit).toHaveBeenCalledWith('installApplication', {
+      expect(spy).toHaveBeenCalledWith('installApplication', {
         id: DEFAULT_APPLICATION_STATE.id,
         params: { hostname: 'jupyter' },
       });
     });
 
     it('clicking disabled install button emits nothing', () => {
-      jest.spyOn(eventHub, '$emit');
-      vm = mountComponent(ApplicationRow, {
-        ...DEFAULT_APPLICATION_STATE,
-        status: APPLICATION_STATUS.INSTALLING,
-      });
-      const installButton = vm.$el.querySelector('.js-cluster-application-install-button');
+      const spy = jest.spyOn(eventHub, '$emit');
+      mountComponent({ status: APPLICATION_STATUS.INSTALLING });
 
-      expect(vm.installButtonDisabled).toEqual(true);
+      expect(button().props('disabled')).toEqual(true);
 
-      installButton.click();
+      button().vm.$emit('click');
 
-      expect(eventHub.$emit).not.toHaveBeenCalled();
+      expect(spy).not.toHaveBeenCalled();
     });
   });
 
   describe('Uninstall button', () => {
     it('displays button when app is installed and uninstallable', () => {
-      vm = mountComponent(ApplicationRow, {
-        ...DEFAULT_APPLICATION_STATE,
+      mountComponent({
         installed: true,
         uninstallable: true,
         status: APPLICATION_STATUS.NOT_INSTALLABLE,
       });
-      const uninstallButton = vm.$el.querySelector('.js-cluster-application-uninstall-button');
+      const uninstallButton = wrapper.find('.js-cluster-application-uninstall-button');
 
-      expect(uninstallButton).toBeTruthy();
+      expect(uninstallButton.exists()).toBe(true);
     });
 
-    it('displays a success toast message if application uninstall was successful', () => {
-      vm = mountComponent(ApplicationRow, {
-        ...DEFAULT_APPLICATION_STATE,
+    it('displays a success toast message if application uninstall was successful', async () => {
+      mountComponent({
         title: 'GitLab Runner',
         uninstallSuccessful: false,
       });
 
-      vm.$toast = { show: jest.fn() };
-      vm.uninstallSuccessful = true;
+      wrapper.vm.$toast = { show: jest.fn() };
+      wrapper.setProps({ uninstallSuccessful: true });
 
-      return vm.$nextTick(() => {
-        expect(vm.$toast.show).toHaveBeenCalledWith('GitLab Runner uninstalled successfully.');
-      });
+      await wrapper.vm.$nextTick();
+      expect(wrapper.vm.$toast.show).toHaveBeenCalledWith(
+        'GitLab Runner uninstalled successfully.',
+      );
     });
   });
 
   describe('when confirmation modal triggers confirm event', () => {
-    let wrapper;
-
-    beforeEach(() => {
-      wrapper = shallowMount(ApplicationRow, {
-        propsData: {
-          ...DEFAULT_APPLICATION_STATE,
-        },
-      });
-    });
-
-    afterEach(() => {
-      wrapper.destroy();
-    });
-
     it('triggers uninstallApplication event', () => {
       jest.spyOn(eventHub, '$emit');
+      mountComponent();
       wrapper.find(UninstallApplicationConfirmationModal).vm.$emit('confirm');
 
       expect(eventHub.$emit).toHaveBeenCalledWith('uninstallApplication', {
@@ -246,172 +198,226 @@ describe('Application Row', () => {
   });
 
   describe('Update button', () => {
-    it('has indeterminate state on page load', () => {
-      vm = mountComponent(ApplicationRow, {
-        ...DEFAULT_APPLICATION_STATE,
-        status: null,
-      });
-      const updateBtn = vm.$el.querySelector('.js-cluster-application-update-button');
+    const button = () => wrapper.find('.js-cluster-application-update-button');
 
-      expect(updateBtn).toBe(null);
+    it('has indeterminate state on page load', () => {
+      mountComponent();
+
+      expect(button().exists()).toBe(false);
     });
 
     it('has enabled "Update" when "updateAvailable" is true', () => {
-      vm = mountComponent(ApplicationRow, {
-        ...DEFAULT_APPLICATION_STATE,
-        updateAvailable: true,
-      });
-      const updateBtn = vm.$el.querySelector('.js-cluster-application-update-button');
+      mountComponent({ updateAvailable: true });
 
-      expect(updateBtn).not.toBe(null);
-      expect(updateBtn.innerHTML).toContain('Update');
+      expect(button().exists()).toBe(true);
+      expect(button().props('label')).toContain('Update');
     });
 
     it('has enabled "Retry update" when update process fails', () => {
-      vm = mountComponent(ApplicationRow, {
-        ...DEFAULT_APPLICATION_STATE,
+      mountComponent({
         status: APPLICATION_STATUS.INSTALLED,
         updateFailed: true,
       });
-      const updateBtn = vm.$el.querySelector('.js-cluster-application-update-button');
 
-      expect(updateBtn).not.toBe(null);
-      expect(updateBtn.innerHTML).toContain('Retry update');
+      expect(button().exists()).toBe(true);
+      expect(button().props('label')).toContain('Retry update');
     });
 
     it('has disabled "Updating" when APPLICATION_STATUS.UPDATING', () => {
-      vm = mountComponent(ApplicationRow, {
-        ...DEFAULT_APPLICATION_STATE,
-        status: APPLICATION_STATUS.UPDATING,
-      });
-      const updateBtn = vm.$el.querySelector('.js-cluster-application-update-button');
+      mountComponent({ status: APPLICATION_STATUS.UPDATING });
 
-      expect(updateBtn).not.toBe(null);
-      expect(vm.isUpdating).toBe(true);
-      expect(updateBtn.innerHTML).toContain('Updating');
+      expect(button().exists()).toBe(true);
+      expect(button().props('label')).toContain('Updating');
     });
 
     it('clicking update button emits event', () => {
-      jest.spyOn(eventHub, '$emit');
-      vm = mountComponent(ApplicationRow, {
-        ...DEFAULT_APPLICATION_STATE,
+      const spy = jest.spyOn(eventHub, '$emit');
+      mountComponent({
         status: APPLICATION_STATUS.INSTALLED,
         updateAvailable: true,
       });
-      const updateBtn = vm.$el.querySelector('.js-cluster-application-update-button');
 
-      updateBtn.click();
+      button().vm.$emit('click');
 
-      expect(eventHub.$emit).toHaveBeenCalledWith('updateApplication', {
+      expect(spy).toHaveBeenCalledWith('updateApplication', {
         id: DEFAULT_APPLICATION_STATE.id,
         params: {},
       });
     });
 
     it('clicking disabled update button emits nothing', () => {
-      jest.spyOn(eventHub, '$emit');
-      vm = mountComponent(ApplicationRow, {
-        ...DEFAULT_APPLICATION_STATE,
-        status: APPLICATION_STATUS.UPDATING,
-      });
-      const updateBtn = vm.$el.querySelector('.js-cluster-application-update-button');
+      const spy = jest.spyOn(eventHub, '$emit');
+      mountComponent({ status: APPLICATION_STATUS.UPDATING });
 
-      updateBtn.click();
+      button().vm.$emit('click');
 
-      expect(eventHub.$emit).not.toHaveBeenCalled();
+      expect(spy).not.toHaveBeenCalled();
     });
 
     it('displays an error message if application update failed', () => {
-      vm = mountComponent(ApplicationRow, {
-        ...DEFAULT_APPLICATION_STATE,
+      mountComponent({
         title: 'GitLab Runner',
         status: APPLICATION_STATUS.INSTALLED,
         updateFailed: true,
       });
-      const failureMessage = vm.$el.querySelector('.js-cluster-application-update-details');
+      const failureMessage = wrapper.find('.js-cluster-application-update-details');
 
-      expect(failureMessage).not.toBe(null);
-      expect(failureMessage.innerHTML).toContain(
+      expect(failureMessage.exists()).toBe(true);
+      expect(failureMessage.text()).toContain(
         'Update failed. Please check the logs and try again.',
       );
     });
 
-    it('displays a success toast message if application update was successful', () => {
-      vm = mountComponent(ApplicationRow, {
-        ...DEFAULT_APPLICATION_STATE,
+    it('displays a success toast message if application update was successful', async () => {
+      mountComponent({
         title: 'GitLab Runner',
         updateSuccessful: false,
       });
 
-      vm.$toast = { show: jest.fn() };
-      vm.updateSuccessful = true;
+      wrapper.vm.$toast = { show: jest.fn() };
+      wrapper.setProps({ updateSuccessful: true });
 
-      return vm.$nextTick(() => {
-        expect(vm.$toast.show).toHaveBeenCalledWith('GitLab Runner updated successfully.');
+      await wrapper.vm.$nextTick();
+      expect(wrapper.vm.$toast.show).toHaveBeenCalledWith('GitLab Runner updated successfully.');
+    });
+
+    describe('when updating does not require confirmation', () => {
+      beforeEach(() => mountComponent({ updateAvailable: true }));
+
+      it('the modal is not rendered', () => {
+        expect(wrapper.contains(UpdateApplicationConfirmationModal)).toBe(false);
+      });
+
+      it('the correct button is rendered', () => {
+        expect(wrapper.contains("[data-qa-selector='update_button']")).toBe(true);
+      });
+    });
+
+    describe('when updating requires confirmation', () => {
+      beforeEach(() => {
+        mountComponent({
+          updateAvailable: true,
+          id: ELASTIC_STACK,
+          version: '1.1.2',
+        });
+      });
+
+      it('displays a modal', () => {
+        expect(wrapper.contains(UpdateApplicationConfirmationModal)).toBe(true);
+      });
+
+      it('the correct button is rendered', () => {
+        expect(wrapper.contains("[data-qa-selector='update_button_with_confirmation']")).toBe(true);
+      });
+
+      it('triggers updateApplication event', () => {
+        jest.spyOn(eventHub, '$emit');
+        wrapper.find(UpdateApplicationConfirmationModal).vm.$emit('confirm');
+
+        expect(eventHub.$emit).toHaveBeenCalledWith('updateApplication', {
+          id: ELASTIC_STACK,
+          params: {},
+        });
+      });
+    });
+
+    describe('updating Elastic Stack special case', () => {
+      it('needs confirmation if version is lower than 3.0.0', () => {
+        mountComponent({
+          updateAvailable: true,
+          id: ELASTIC_STACK,
+          version: '1.1.2',
+        });
+
+        expect(wrapper.contains("[data-qa-selector='update_button_with_confirmation']")).toBe(true);
+        expect(wrapper.contains(UpdateApplicationConfirmationModal)).toBe(true);
+      });
+
+      it('does not need confirmation is version is 3.0.0', () => {
+        mountComponent({
+          updateAvailable: true,
+          id: ELASTIC_STACK,
+          version: '3.0.0',
+        });
+
+        expect(wrapper.contains("[data-qa-selector='update_button']")).toBe(true);
+        expect(wrapper.contains(UpdateApplicationConfirmationModal)).toBe(false);
+      });
+
+      it('does not need confirmation if version is higher than 3.0.0', () => {
+        mountComponent({
+          updateAvailable: true,
+          id: ELASTIC_STACK,
+          version: '5.2.1',
+        });
+
+        expect(wrapper.contains("[data-qa-selector='update_button']")).toBe(true);
+        expect(wrapper.contains(UpdateApplicationConfirmationModal)).toBe(false);
       });
     });
   });
 
   describe('Version', () => {
+    const updateDetails = () => wrapper.find('.js-cluster-application-update-details');
+    const versionEl = () => wrapper.find('.js-cluster-application-update-version');
+
     it('displays a version number if application has been updated', () => {
       const version = '0.1.45';
-      vm = mountComponent(ApplicationRow, {
-        ...DEFAULT_APPLICATION_STATE,
+      mountComponent({
         status: APPLICATION_STATUS.INSTALLED,
         updateSuccessful: true,
         version,
       });
-      const updateDetails = vm.$el.querySelector('.js-cluster-application-update-details');
-      const versionEl = vm.$el.querySelector('.js-cluster-application-update-version');
 
-      expect(updateDetails.innerHTML).toContain('Updated');
-      expect(versionEl).not.toBe(null);
-      expect(versionEl.innerHTML).toContain(version);
+      expect(updateDetails().text()).toBe(`Updated to chart v${version}`);
     });
 
     it('contains a link to the chart repo if application has been updated', () => {
       const version = '0.1.45';
       const chartRepo = 'https://gitlab.com/gitlab-org/charts/gitlab-runner';
-      vm = mountComponent(ApplicationRow, {
-        ...DEFAULT_APPLICATION_STATE,
+      mountComponent({
         status: APPLICATION_STATUS.INSTALLED,
         updateSuccessful: true,
         chartRepo,
         version,
       });
-      const versionEl = vm.$el.querySelector('.js-cluster-application-update-version');
 
-      expect(versionEl.href).toEqual(chartRepo);
-      expect(versionEl.target).toEqual('_blank');
+      expect(versionEl().attributes('href')).toEqual(chartRepo);
+      expect(versionEl().props('target')).toEqual('_blank');
     });
 
     it('does not display a version number if application update failed', () => {
       const version = '0.1.45';
-      vm = mountComponent(ApplicationRow, {
-        ...DEFAULT_APPLICATION_STATE,
+      mountComponent({
         status: APPLICATION_STATUS.INSTALLED,
         updateFailed: true,
         version,
       });
-      const updateDetails = vm.$el.querySelector('.js-cluster-application-update-details');
-      const versionEl = vm.$el.querySelector('.js-cluster-application-update-version');
 
-      expect(updateDetails.innerHTML).toContain('failed');
-      expect(versionEl).toBe(null);
+      expect(updateDetails().text()).toBe('Update failed');
+      expect(versionEl().exists()).toBe(false);
+    });
+
+    it('displays updating when the application update is currently updating', () => {
+      mountComponent({
+        status: APPLICATION_STATUS.UPDATING,
+        updateSuccessful: true,
+        version: '1.2.3',
+      });
+
+      expect(updateDetails().text()).toBe('Updating');
+      expect(versionEl().exists()).toBe(false);
     });
   });
 
   describe('Error block', () => {
+    const generalErrorMessage = () => wrapper.find('.js-cluster-application-general-error-message');
+
     describe('when nothing fails', () => {
       it('does not show error block', () => {
-        vm = mountComponent(ApplicationRow, {
-          ...DEFAULT_APPLICATION_STATE,
-        });
-        const generalErrorMessage = vm.$el.querySelector(
-          '.js-cluster-application-general-error-message',
-        );
+        mountComponent();
 
-        expect(generalErrorMessage).toBeNull();
+        expect(generalErrorMessage().exists()).toBe(false);
       });
     });
 
@@ -420,8 +426,7 @@ describe('Application Row', () => {
       const requestReason = 'We broke the request 0.0';
 
       beforeEach(() => {
-        vm = mountComponent(ApplicationRow, {
-          ...DEFAULT_APPLICATION_STATE,
+        mountComponent({
           status: APPLICATION_STATUS.ERROR,
           statusReason,
           requestReason,
@@ -430,37 +435,28 @@ describe('Application Row', () => {
       });
 
       it('shows status reason if it is available', () => {
-        const statusErrorMessage = vm.$el.querySelector(
-          '.js-cluster-application-status-error-message',
-        );
+        const statusErrorMessage = wrapper.find('.js-cluster-application-status-error-message');
 
-        expect(statusErrorMessage.textContent.trim()).toEqual(statusReason);
+        expect(statusErrorMessage.text()).toEqual(statusReason);
       });
 
       it('shows request reason if it is available', () => {
-        const requestErrorMessage = vm.$el.querySelector(
-          '.js-cluster-application-request-error-message',
-        );
+        const requestErrorMessage = wrapper.find('.js-cluster-application-request-error-message');
 
-        expect(requestErrorMessage.textContent.trim()).toEqual(requestReason);
+        expect(requestErrorMessage.text()).toEqual(requestReason);
       });
     });
 
     describe('when install fails', () => {
       beforeEach(() => {
-        vm = mountComponent(ApplicationRow, {
-          ...DEFAULT_APPLICATION_STATE,
+        mountComponent({
           status: APPLICATION_STATUS.ERROR,
           installFailed: true,
         });
       });
 
       it('shows a general message indicating the installation failed', () => {
-        const generalErrorMessage = vm.$el.querySelector(
-          '.js-cluster-application-general-error-message',
-        );
-
-        expect(generalErrorMessage.textContent.trim()).toEqual(
+        expect(generalErrorMessage().text()).toEqual(
           `Something went wrong while installing ${DEFAULT_APPLICATION_STATE.title}`,
         );
       });
@@ -468,19 +464,14 @@ describe('Application Row', () => {
 
     describe('when uninstall fails', () => {
       beforeEach(() => {
-        vm = mountComponent(ApplicationRow, {
-          ...DEFAULT_APPLICATION_STATE,
+        mountComponent({
           status: APPLICATION_STATUS.ERROR,
           uninstallFailed: true,
         });
       });
 
       it('shows a general message indicating the uninstalling failed', () => {
-        const generalErrorMessage = vm.$el.querySelector(
-          '.js-cluster-application-general-error-message',
-        );
-
-        expect(generalErrorMessage.textContent.trim()).toEqual(
+        expect(generalErrorMessage().text()).toEqual(
           `Something went wrong while uninstalling ${DEFAULT_APPLICATION_STATE.title}`,
         );
       });

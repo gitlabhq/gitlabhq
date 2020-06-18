@@ -116,6 +116,7 @@ export default {
     </div>
     <div v-else>
       <diff-viewer
+        :diff-file="discussion.diff_file"
         :diff-mode="diffMode"
         :diff-viewer-mode="diffViewerMode"
         :new-path="discussion.diff_file.new_path"

@@ -3,7 +3,7 @@
 An API token is needed when integrating with Jira Cloud, follow the steps
 below to create one:
 
-1. Log in to <https://id.atlassian.com/manage/api-tokens> with your email address.
+1. Log in to [`id.atlassian.com`](https://id.atlassian.com/manage-profile/security/api-tokens) with your email address.
 
    NOTE: **Note**
    It is important that the user associated with this email address has *write* access

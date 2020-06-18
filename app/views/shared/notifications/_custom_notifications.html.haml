@@ -16,7 +16,7 @@
             = hidden_field_tag("hide_label", true) if hide_label
             .row
               .col-lg-4
-                %h4.prepend-top-0= _('Notification events')
+                %h4.gl-mt-0= _('Notification events')
                 %p
                   - notification_link = link_to _('notification emails'), help_page_path('user/profile/notifications'), target: '_blank'
                   - paragraph = _('Custom notification levels are the same as participating levels. With custom notification levels you will also receive notifications for select events. To find out more, check out %{notification_link}.') % { notification_link: notification_link.html_safe }
@@ -26,7 +26,7 @@
                   - next if notification_event_disabled?(event)
                   - field_id = "#{notifications_menu_identifier("modal", notification_setting)}_notification_setting[#{event}]"
                   .form-group
-                    .form-check{ class: ("prepend-top-0" if index == 0) }
+                    .form-check{ class: ("gl-mt-0" if index == 0) }
                       = check_box("notification_setting", event, id: field_id, class: "js-custom-notification-event form-check-input", checked: notification_setting.public_send(event))
                       %label.form-check-label{ for: field_id }
                         %strong

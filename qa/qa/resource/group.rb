@@ -14,6 +14,7 @@ module QA
         end
       end
 
+      attribute :full_path
       attribute :id
       attribute :name
       attribute :runners_token
@@ -73,10 +74,6 @@ module QA
 
       def api_delete_path
         "/groups/#{id}"
-      end
-
-      def full_path
-        sandbox.path + ' / ' + path
       end
     end
   end

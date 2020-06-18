@@ -15,16 +15,16 @@ describe 'Setting the status of an alert' do
       project_path: project.full_path,
       iid: alert.iid.to_s
     }
-    graphql_mutation(:update_alert_status, variables.merge(input),
-                     <<~QL
-                       clientMutationId
-                       errors
-                       alert {
-                         iid
-                         status
-                       }
-                     QL
-    )
+    graphql_mutation(:update_alert_status, variables.merge(input)) do
+      <<~QL
+         clientMutationId
+         errors
+         alert {
+           iid
+           status
+         }
+      QL
+    end
   end
 
   let(:mutation_response) { graphql_mutation_response(:update_alert_status) }

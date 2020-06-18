@@ -7,6 +7,7 @@ class UpdateMergeRequestsWorker # rubocop:disable Scalability/IdempotentWorker
   urgency :high
   worker_resource_boundary :cpu
   weight 3
+  loggable_arguments 2, 3, 4
 
   LOG_TIME_THRESHOLD = 90 # seconds
 

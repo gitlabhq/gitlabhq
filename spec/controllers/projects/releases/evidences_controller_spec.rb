@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Projects::Releases::EvidencesController do
+RSpec.describe Projects::Releases::EvidencesController do
   let!(:project) { create(:project, :repository, :public) }
   let_it_be(:private_project) { create(:project, :repository, :private) }
   let_it_be(:developer)  { create(:user) }
@@ -31,8 +31,8 @@ describe Projects::Releases::EvidencesController do
   end
 
   describe 'GET #show' do
-    let_it_be(:tag_name) { "v1.1.0-evidence" }
-    let!(:release) { create(:release, :with_evidence, project: project, tag: tag_name) }
+    let(:tag_name) { "v1.1.0-evidence" }
+    let!(:release) { create(:release, project: project, tag: tag_name) }
     let(:evidence) { release.evidences.first }
     let(:tag) { CGI.escape(release.tag) }
     let(:format) { :json }
@@ -48,6 +48,8 @@ describe Projects::Releases::EvidencesController do
     end
 
     before do
+      ::Releases::CreateEvidenceService.new(release).execute
+
       sign_in(user)
     end
 
@@ -84,14 +86,9 @@ describe Projects::Releases::EvidencesController do
     end
 
     context 'when release is associated to a milestone which includes an issue' do
-      let_it_be(:project) { create(:project, :repository, :public) }
-      let_it_be(:issue) { create(:issue, project: project) }
-      let_it_be(:milestone) { create(:milestone, project: project, issues: [issue]) }
-      let_it_be(:release) { create(:release, project: project, tag: tag_name, milestones: [milestone]) }
-
-      before do
-        create(:evidence, release: release)
-      end
+      let(:issue) { create(:issue, project: project) }
+      let(:milestone) { create(:milestone, project: project, issues: [issue]) }
+      let(:release) { create(:release, project: project, tag: tag_name, milestones: [milestone]) }
 
       shared_examples_for 'does not show the issue in evidence' do
         it do
@@ -111,7 +108,9 @@ describe Projects::Releases::EvidencesController do
         end
       end
 
-      shared_examples_for 'safely expose evidence' do
+      context 'when user is non-project member' do
+        let(:user) { create(:user) }
+
         it_behaves_like 'does not show the issue in evidence'
 
         context 'when the issue is confidential' do
@@ -127,28 +126,50 @@ describe Projects::Releases::EvidencesController do
         end
 
         context 'when project is private' do
-          let!(:project) { create(:project, :repository, :private) }
+          let(:project) { create(:project, :repository, :private) }
 
           it_behaves_like 'evidence not found'
         end
 
         context 'when project restricts the visibility of issues to project members only' do
-          let!(:project) { create(:project, :repository, :issues_private) }
+          let(:project) { create(:project, :repository, :issues_private) }
 
           it_behaves_like 'evidence not found'
         end
       end
 
-      context 'when user is non-project member' do
-        let(:user) { create(:user) }
-
-        it_behaves_like 'safely expose evidence'
-      end
-
       context 'when user is auditor', if: Gitlab.ee? do
         let(:user) { create(:user, :auditor) }
 
-        it_behaves_like 'safely expose evidence'
+        it_behaves_like 'does not show the issue in evidence'
+
+        context 'when the issue is confidential' do
+          let(:issue) { create(:issue, :confidential, project: project) }
+
+          it_behaves_like 'does not show the issue in evidence'
+        end
+
+        context 'when the user is the author of the confidential issue' do
+          let(:issue) { create(:issue, :confidential, project: project, author: user) }
+
+          it_behaves_like 'does not show the issue in evidence'
+        end
+
+        context 'when project is private' do
+          let(:project) { create(:project, :repository, :private) }
+
+          it 'returns evidence ' do
+            subject
+
+            expect(json_response).to eq(evidence.summary)
+          end
+        end
+
+        context 'when project restricts the visibility of issues to project members only' do
+          let(:project) { create(:project, :repository, :issues_private) }
+
+          it_behaves_like 'evidence not found'
+        end
       end
 
       context 'when external authorization control is enabled' do

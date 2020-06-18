@@ -1,0 +1,16 @@
+#import "~/graphql_shared/fragments/author.fragment.graphql"
+
+fragment AlertNote on Note {
+    id
+    author {
+        id
+        state
+        ...Author
+    }
+    body
+    bodyHtml
+    createdAt
+    discussion {
+        id
+    }
+}

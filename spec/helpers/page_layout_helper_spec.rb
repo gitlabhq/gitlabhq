@@ -117,4 +117,19 @@ describe PageLayoutHelper do
       expect(tags).to include(%q{content="foo&quot; http-equiv=&quot;refresh"})
     end
   end
+
+  describe '#search_context' do
+    subject(:search_context) { helper.search_context }
+
+    describe 'a bare controller' do
+      it 'returns an empty context' do
+        expect(search_context).to have_attributes(project: nil,
+                                                  group: nil,
+                                                  snippets: [],
+                                                  project_metadata: {},
+                                                  group_metadata: {},
+                                                  search_url: '/search')
+      end
+    end
+  end
 end

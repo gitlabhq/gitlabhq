@@ -1,19 +1,20 @@
 - test_reports_enabled = Feature.enabled?(:junit_pipeline_view, @project)
-- dag_pipeline_tab_enabled = Feature.enabled?(:dag_pipeline_tab)
+- dag_pipeline_tab_enabled = Feature.enabled?(:dag_pipeline_tab, @project, default_enabled: false)
 
 .tabs-holder
   %ul.pipelines-tabs.nav-links.no-top.no-bottom.mobile-separator.nav.nav-tabs
     %li.js-pipeline-tab-link
       = link_to project_pipeline_path(@project, @pipeline), data: { target: '#js-tab-pipeline', action: 'pipelines', toggle: 'tab' }, class: 'pipeline-tab' do
         = _('Pipeline')
-    %li.js-builds-tab-link
-      = link_to builds_project_pipeline_path(@project, @pipeline), data: { target: '#js-tab-builds', action: 'builds', toggle: 'tab' }, class: 'builds-tab' do
-        = _('Jobs')
-        %span.badge.badge-pill.js-builds-counter= pipeline.total_size
     - if dag_pipeline_tab_enabled
       %li.js-dag-tab-link
         = link_to dag_project_pipeline_path(@project, @pipeline), data: { target: '#js-tab-dag', action: 'dag', toggle: 'tab' }, class: 'dag-tab' do
           = _('DAG')
+          %span.badge-pill.gl-badge.sm.gl-bg-blue-500.gl-text-white.gl-ml-2= _('Beta')
+    %li.js-builds-tab-link
+      = link_to builds_project_pipeline_path(@project, @pipeline), data: { target: '#js-tab-builds', action: 'builds', toggle: 'tab' }, class: 'builds-tab' do
+        = _('Jobs')
+        %span.badge.badge-pill.js-builds-counter= pipeline.total_size
     - if @pipeline.failed_builds.present?
       %li.js-failures-tab-link
         = link_to failures_project_pipeline_path(@project, @pipeline), data: { target: '#js-tab-failures', action: 'failures', toggle: 'tab' }, class: 'failures-tab' do
@@ -82,6 +83,7 @@
 
   - if dag_pipeline_tab_enabled
     #js-tab-dag.tab-pane
+      #js-pipeline-dag-vue{ data: { pipeline_data_path: dag_project_pipeline_path(@project, @pipeline) } }
 
   #js-tab-tests.tab-pane
     #js-pipeline-tests-detail

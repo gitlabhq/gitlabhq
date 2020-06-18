@@ -15,7 +15,7 @@ module Projects::AlertManagementHelper
     {
       'alert-id' => alert_id,
       'project-path' => project.full_path,
-      'new-issue-path' => new_project_issue_path(project)
+      'project-issues-path' => project_issues_path(project)
     }
   end
 end

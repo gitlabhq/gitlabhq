@@ -6,9 +6,9 @@ import { dateFormats } from './date_time_picker_lib';
 
 const inputGroupText = {
   invalidFeedback: sprintf(__('Format: %{dateFormat}'), {
-    dateFormat: dateFormats.stringDate,
+    dateFormat: dateFormats.inputFormat,
   }),
-  placeholder: dateFormats.stringDate,
+  placeholder: dateFormats.inputFormat,
 };
 
 export default {

@@ -10,12 +10,13 @@ describe 'getting Alert Management Alerts' do
   let_it_be(:resolved_alert) { create(:alert_management_alert, :all_fields, :resolved, project: project, issue: nil, severity: :low) }
   let_it_be(:triggered_alert) { create(:alert_management_alert, :all_fields, project: project, severity: :critical, payload: payload) }
   let_it_be(:other_project_alert) { create(:alert_management_alert, :all_fields) }
+
   let(:params) { {} }
 
   let(:fields) do
     <<~QUERY
       nodes {
-        #{all_graphql_fields_for('AlertManagementAlert'.classify)}
+        #{all_graphql_fields_for('AlertManagementAlert', excluded: ['assignees'])}
       }
     QUERY
   end

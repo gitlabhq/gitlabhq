@@ -37,6 +37,30 @@ describe 'getting merge request information nested in a project' do
     expect(merge_request_graphql_data['webUrl']).to be_present
   end
 
+  it 'includes author' do
+    post_graphql(query, current_user: current_user)
+
+    expect(merge_request_graphql_data['author']['username']).to eq(merge_request.author.username)
+  end
+
+  it 'includes correct mergedAt value when merged' do
+    time = 1.week.ago
+    merge_request.mark_as_merged
+    merge_request.metrics.update_columns(merged_at: time)
+
+    post_graphql(query, current_user: current_user)
+    retrieved = merge_request_graphql_data['mergedAt']
+
+    expect(Time.zone.parse(retrieved)).to be_within(1.second).of(time)
+  end
+
+  it 'includes nil mergedAt value when not merged' do
+    post_graphql(query, current_user: current_user)
+    retrieved = merge_request_graphql_data['mergedAt']
+
+    expect(retrieved).to be_nil
+  end
+
   context 'permissions on the merge request' do
     it 'includes the permissions for the current user on a public project' do
       expected_permissions = {

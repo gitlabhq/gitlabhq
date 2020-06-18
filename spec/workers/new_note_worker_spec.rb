@@ -27,7 +27,7 @@ describe NewNoteWorker do
     let(:unexistent_note_id) { non_existing_record_id }
 
     it 'logs NewNoteWorker process skipping' do
-      expect(Rails.logger).to receive(:error)
+      expect(Gitlab::AppLogger).to receive(:error)
         .with("NewNoteWorker: couldn't find note with ID=#{unexistent_note_id}, skipping job")
 
       described_class.new.perform(unexistent_note_id)
@@ -47,6 +47,16 @@ describe NewNoteWorker do
       expect(Notes::PostProcessService).not_to receive(:new)
 
       described_class.new.perform(unexistent_note_id)
+    end
+  end
+
+  context 'when note is with review' do
+    it 'does not create a new note notification' do
+      note = create(:note, :with_review)
+
+      expect_any_instance_of(NotificationService).not_to receive(:new_note)
+
+      subject.perform(note.id)
     end
   end
 end

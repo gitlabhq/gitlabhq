@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe BoardsResponses do
+RSpec.describe BoardsResponses do
   let(:controller_class) do
     Class.new do
       include BoardsResponses

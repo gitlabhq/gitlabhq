@@ -7,12 +7,13 @@ class Projects::Ci::DailyBuildGroupReportResultsController < Projects::Applicati
   REPORT_WINDOW = 90.days
 
   before_action :validate_feature_flag!
-  before_action :authorize_download_code! # Share the same authorization rules as the graphs controller
+  before_action :authorize_read_build_report_results!
   before_action :validate_param_type!
 
   def index
     respond_to do |format|
-      format.csv { send_data(render_csv(results), type: 'text/csv; charset=utf-8') }
+      format.csv { send_data(render_csv(report_results), type: 'text/csv; charset=utf-8') }
+      format.json { render json: render_json(report_results) }
     end
   end
 
@@ -37,7 +38,11 @@ class Projects::Ci::DailyBuildGroupReportResultsController < Projects::Applicati
     ).render
   end
 
-  def results
+  def render_json(collection)
+    Ci::DailyBuildGroupReportResultSerializer.new.represent(collection, param_type: param_type)
+  end
+
+  def report_results
     Ci::DailyBuildGroupReportResultsFinder.new(finder_params).execute
   end
 

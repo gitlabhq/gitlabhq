@@ -205,9 +205,9 @@ module IssuablesHelper
       author_output
     end
 
-    output << content_tag(:span, (issuable_first_contribution_icon if issuable.first_contribution?), class: 'has-tooltip prepend-left-4', title: _('1st contribution!'))
+    output << content_tag(:span, (issuable_first_contribution_icon if issuable.first_contribution?), class: 'has-tooltip gl-ml-2', title: _('1st contribution!'))
 
-    output << content_tag(:span, (issuable.task_status if issuable.tasks?), id: "task_status", class: "d-none d-sm-none d-md-inline-block prepend-left-8")
+    output << content_tag(:span, (issuable.task_status if issuable.tasks?), id: "task_status", class: "d-none d-sm-none d-md-inline-block gl-ml-3")
     output << content_tag(:span, (issuable.task_status_short if issuable.tasks?), id: "task_status_short", class: "d-md-none")
 
     output.join.html_safe
@@ -276,6 +276,7 @@ module IssuablesHelper
       canUpdate: can?(current_user, :"update_#{issuable.to_ability_name}", issuable),
       canDestroy: can?(current_user, :"destroy_#{issuable.to_ability_name}", issuable),
       issuableRef: issuable.to_reference,
+      issuableStatus: issuable.state,
       markdownPreviewPath: preview_markdown_path(parent),
       markdownDocsPath: help_page_path('user/markdown'),
       lockVersion: issuable.lock_version,

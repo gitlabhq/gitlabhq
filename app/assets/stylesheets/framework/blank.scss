@@ -116,3 +116,17 @@
     }
   }
 }
+
+.experiment-new-project-page-blank-state {
+  @include media-breakpoint-down(md) {
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+  }
+}
+
+$experiment-new-project-indigo-700: #41419f;
+
+.experiment-new-project-page-blank-state-title {
+  color: $experiment-new-project-indigo-700;
+}

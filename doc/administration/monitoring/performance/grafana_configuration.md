@@ -1,3 +1,9 @@
+---
+stage: Monitor
+group: APM
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+---
+
 # Grafana Configuration
 
 [Grafana](https://grafana.com/) is a tool that allows you to visualize time
@@ -57,7 +63,7 @@ repository for more information on this process.
 
 ## Integration with GitLab UI
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/61005) in GitLab 12.1.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/61005) in GitLab 12.1.
 
 If you have set up Grafana, you can enable a link to access it easily from the sidebar:
 

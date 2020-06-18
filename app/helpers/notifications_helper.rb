@@ -122,6 +122,6 @@ module NotificationsHelper
   end
 
   def notification_event_disabled?(event)
-    event == :fixed_pipeline && Feature.disabled?(:ci_pipeline_fixed_notifications)
+    event == :fixed_pipeline && !Gitlab::Ci::Features.pipeline_fixed_notifications?
   end
 end

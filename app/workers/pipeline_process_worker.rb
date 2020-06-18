@@ -7,6 +7,7 @@ class PipelineProcessWorker # rubocop:disable Scalability/IdempotentWorker
   queue_namespace :pipeline_processing
   feature_category :continuous_integration
   urgency :high
+  loggable_arguments 1
 
   # rubocop: disable CodeReuse/ActiveRecord
   def perform(pipeline_id, build_ids = nil)

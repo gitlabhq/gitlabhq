@@ -55,8 +55,8 @@ subgraph "CNG-mirror pipeline"
      each component (e.g. `gitlab-rails-ee`, `gitlab-shell`, `gitaly` etc.)
      based on the commit from the [GitLab pipeline](https://gitlab.com/gitlab-org/gitlab/pipelines/125315730) and stores
      them in its [registry](https://gitlab.com/gitlab-org/build/CNG-mirror/container_registry).
-   - We use the [`CNG-mirror`](https://gitlab.com/gitlab-org/build/CNG-mirror) project so that the `CNG`, (**C**loud
-     **N**ative **G**itLab), project's registry is not overloaded with a
+   - We use the [`CNG-mirror`](https://gitlab.com/gitlab-org/build/CNG-mirror) project so that the `CNG`, (Cloud
+     Native GitLab), project's registry is not overloaded with a
      lot of transient Docker images.
    - Note that the official CNG images are built by the `cloud-native-image`
      job, which runs only for tags, and triggers itself a [`CNG`](https://gitlab.com/gitlab-org/build/CNG) pipeline.
@@ -139,8 +139,8 @@ browser performance testing using a
 The `review-apps-ee` and `review-apps-ce` clusters are currently set up with
 the following node pools:
 
-- `review-apps-ee` of preemptible `e2-highcpu-16` (16 vCPU, 16 GB memory) nodes with autoscaling
-- `review-apps-ce` of preemptible `n1-standard-8` (8 vCPU, 16 GB memory) nodes with autoscaling
+- `review-apps-ee` of pre-emptible `e2-highcpu-16` (16 vCPU, 16 GB memory) nodes with autoscaling
+- `review-apps-ce` of pre-emptible `n1-standard-8` (8 vCPU, 16 GB memory) nodes with autoscaling
 
 ### Helm
 
@@ -152,7 +152,7 @@ used by the `review-deploy` and `review-stop` jobs.
 
 ### Get access to the GCP Review Apps cluster
 
-You need to [open an access request (internal link)](https://gitlab.com/gitlab-com/access-requests/issues/new)
+You need to [open an access request (internal link)](https://gitlab.com/gitlab-com/access-requests/-/issues/new)
 for the `gcp-review-apps-sg` GCP group. In order to join a group, you must specify the desired GCP role in your access request.
 The role is what will grant you specific permissions in order to engage with Review App containers.
 
@@ -212,7 +212,7 @@ If [Review App Stability](https://app.periscopedata.com/app/gitlab/496118/Engine
 dips this may be a signal that the `review-apps-ce/ee` cluster is unhealthy.
 Leading indicators may be health check failures leading to restarts or majority failure for Review App deployments.
 
-The [Review Apps Overview dashboard](https://app.google.stackdriver.com/dashboards/6798952013815386466?project=gitlab-review-apps&timeDomain=1d)
+The [Review Apps Overview dashboard](https://console.cloud.google.com/monitoring/classic/dashboards/6798952013815386466?project=gitlab-review-apps&timeDomain=1d)
 aids in identifying load spikes on the cluster, and if nodes are problematic or the entire cluster is trending towards unhealthy.
 
 ### Release failed with `ImagePullBackOff`
@@ -278,14 +278,14 @@ kubectl top pods | sort --key 2 --numeric
 
 **Potential cause:**
 
-This could be a sign that there are too many stale secrets and/or config maps.
+This could be a sign that there are too many stale secrets and/or configuration maps.
 
 **Where to look for further debugging:**
 
 Look at [the list of Configurations](https://console.cloud.google.com/kubernetes/config?project=gitlab-review-apps)
 or `kubectl get secret,cm --sort-by='{.metadata.creationTimestamp}' | grep 'review-'`.
 
-Any secrets or config maps older than 5 days are suspect and should be deleted.
+Any secrets or configuration maps older than 5 days are suspect and should be deleted.
 
 **Useful commands:**
 
@@ -321,7 +321,7 @@ kubectl get cm --sort-by='{.metadata.creationTimestamp}' | grep 'review-' | grep
 
 #### Finding the problem
 
-[In the past](https://gitlab.com/gitlab-org/gitlab-foss/issues/62834), it happened
+[In the past](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/62834), it happened
 that the `dns-gitlab-review-app-external-dns` Deployment was in a pending state,
 effectively preventing all the Review Apps from getting a DNS record assigned,
 making them unreachable via domain name.
@@ -354,7 +354,7 @@ For the record, the debugging steps to find out this issue were:
 1. Web search for exact error message, following rabbit hole to [a relevant Kubernetes bug report](https://github.com/kubernetes/kubernetes/issues/57345)
 1. Access the node over SSH via the GCP console (**Computer Engine > VM
    instances** then click the "SSH" button for the node where the `dns-gitlab-review-app-external-dns` pod runs)
-1. In the node: `systemctl --version` => systemd 232
+1. In the node: `systemctl --version` => `systemd 232`
 1. Gather some more information:
    - `mount | grep kube | wc -l` => e.g. 290
    - `systemctl list-units --all | grep -i var-lib-kube | wc -l` => e.g. 142
@@ -406,7 +406,7 @@ find a way to limit it to only us.**
 ## Other resources
 
 - [Review Apps integration for CE/EE (presentation)](https://docs.google.com/presentation/d/1QPLr6FO4LduROU8pQIPkX1yfGvD13GEJIBOenqoKxR8/edit?usp=sharing)
-- [Stability issues](https://gitlab.com/gitlab-org/quality/team-tasks/issues/212)
+- [Stability issues](https://gitlab.com/gitlab-org/quality/team-tasks/-/issues/212)
 
 ### Helpful command line tools
 

@@ -12,6 +12,8 @@
     .gl-alert-actions
       = link_to _('Go to Webhooks'), project_hooks_path(@project), class: 'btn gl-alert-action btn-info new-gl-button'
 
-%h4= s_('Integrations')
-%p= s_('Integrations allow you to integrate GitLab with other applications')
+%h4= _('Integrations')
+- integrations_link_start = '<a href="%{url}">'.html_safe % { url: help_page_url('user/project/integrations/overview') }
+- webhooks_link_start = '<a href="%{url}">'.html_safe % { url: project_hooks_path(@project) }
+%p= _("%{integrations_link_start}Integrations%{link_end} enable you to make third-party applications part of your GitLab workflow. If the available integrations don't meet your needs, consider using a %{webhooks_link_start}webhook%{link_end}.").html_safe % { integrations_link_start: integrations_link_start, webhooks_link_start: webhooks_link_start, link_end: '</a>'.html_safe }
 = render 'shared/integrations/index', integrations: @services

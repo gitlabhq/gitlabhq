@@ -19,7 +19,7 @@ Gitlab::Seeder.quiet do
       target_branch = branches.pop
 
       label_ids = project.labels.pluck(:id).sample(3)
-      label_ids += project.group.labels.sample(3) if project.group
+      label_ids += project.group.labels.sample(3).pluck(:id) if project.group
 
       params = {
         source_branch: source_branch,

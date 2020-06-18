@@ -82,9 +82,9 @@ describe AutoMerge::BaseService do
       end
     end
 
-    context 'when failed to save' do
+    context 'when failed to save merge request' do
       before do
-        allow(merge_request).to receive(:save) { false }
+        allow(merge_request).to receive(:save!) { raise ActiveRecord::RecordInvalid.new }
       end
 
       it 'does not yield block' do
@@ -93,6 +93,39 @@ describe AutoMerge::BaseService do
 
       it 'returns failed' do
         is_expected.to eq(:failed)
+      end
+
+      it 'tracks the exception' do
+        expect(Gitlab::ErrorTracking)
+          .to receive(:track_exception).with(kind_of(ActiveRecord::RecordInvalid),
+                                             merge_request_id: merge_request.id)
+
+        subject
+      end
+    end
+
+    context 'when exception happens in yield block' do
+      def execute_with_error_in_yield
+        service.execute(merge_request) { raise 'Something went wrong' }
+      end
+
+      it 'returns failed status' do
+        expect(execute_with_error_in_yield).to eq(:failed)
+      end
+
+      it 'rollback the transaction' do
+        execute_with_error_in_yield
+
+        merge_request.reload
+        expect(merge_request).not_to be_auto_merge_enabled
+      end
+
+      it 'tracks the exception' do
+        expect(Gitlab::ErrorTracking)
+          .to receive(:track_exception).with(kind_of(RuntimeError),
+                                             merge_request_id: merge_request.id)
+
+        execute_with_error_in_yield
       end
     end
   end
@@ -162,7 +195,7 @@ describe AutoMerge::BaseService do
 
     context 'when failed to save' do
       before do
-        allow(merge_request).to receive(:save) { false }
+        allow(merge_request).to receive(:save!) { raise ActiveRecord::RecordInvalid.new }
       end
 
       it 'does not yield block' do
@@ -178,14 +211,41 @@ describe AutoMerge::BaseService do
 
     it_behaves_like 'Canceled or Dropped'
 
-    context 'when failed to save' do
+    context 'when failed to save merge request' do
       before do
-        allow(merge_request).to receive(:save) { false }
+        allow(merge_request).to receive(:save!) { raise ActiveRecord::RecordInvalid.new }
       end
 
       it 'returns error status' do
         expect(subject[:status]).to eq(:error)
         expect(subject[:message]).to eq("Can't cancel the automatic merge")
+      end
+    end
+
+    context 'when exception happens in yield block' do
+      def cancel_with_error_in_yield
+        service.cancel(merge_request) { raise 'Something went wrong' }
+      end
+
+      it 'returns error' do
+        result = cancel_with_error_in_yield
+        expect(result[:status]).to eq(:error)
+        expect(result[:message]).to eq("Can't cancel the automatic merge")
+      end
+
+      it 'rollback the transaction' do
+        cancel_with_error_in_yield
+
+        merge_request.reload
+        expect(merge_request).to be_auto_merge_enabled
+      end
+
+      it 'tracks the exception' do
+        expect(Gitlab::ErrorTracking)
+          .to receive(:track_exception).with(kind_of(RuntimeError),
+                                             merge_request_id: merge_request.id)
+
+        cancel_with_error_in_yield
       end
     end
   end
@@ -200,12 +260,39 @@ describe AutoMerge::BaseService do
 
     context 'when failed to save' do
       before do
-        allow(merge_request).to receive(:save) { false }
+        allow(merge_request).to receive(:save!) { raise ActiveRecord::RecordInvalid.new }
       end
 
       it 'returns error status' do
         expect(subject[:status]).to eq(:error)
         expect(subject[:message]).to eq("Can't abort the automatic merge")
+      end
+    end
+
+    context 'when exception happens in yield block' do
+      def abort_with_error_in_yield
+        service.abort(merge_request, reason) { raise 'Something went wrong' }
+      end
+
+      it 'returns error' do
+        result = abort_with_error_in_yield
+        expect(result[:status]).to eq(:error)
+        expect(result[:message]).to eq("Can't abort the automatic merge")
+      end
+
+      it 'rollback the transaction' do
+        abort_with_error_in_yield
+
+        merge_request.reload
+        expect(merge_request).to be_auto_merge_enabled
+      end
+
+      it 'tracks the exception' do
+        expect(Gitlab::ErrorTracking)
+          .to receive(:track_exception).with(kind_of(RuntimeError),
+                                             merge_request_id: merge_request.id)
+
+        abort_with_error_in_yield
       end
     end
   end

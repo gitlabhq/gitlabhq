@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'User deletes wiki page', :js do
+RSpec.describe 'User deletes wiki page', :js do
   let(:user) { create(:user) }
   let(:project) { create(:project, :wiki_repo, namespace: user.namespace) }
   let(:wiki_page) { create(:wiki_page, wiki: project.wiki) }

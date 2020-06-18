@@ -8,7 +8,7 @@ describe API::DeployKeys do
   let(:admin)       { create(:admin) }
   let(:project)     { create(:project, creator_id: user.id) }
   let(:project2)    { create(:project, creator_id: user.id) }
-  let(:deploy_key)  { create(:deploy_key, public: true) }
+  let(:deploy_key)  { create(:deploy_key, public: true, user: user) }
 
   let!(:deploy_keys_project) do
     create(:deploy_keys_project, project: project, deploy_key: deploy_key)
@@ -40,6 +40,32 @@ describe API::DeployKeys do
         expect(json_response).to be_an Array
         expect(json_response.first['id']).to eq(deploy_keys_project.deploy_key.id)
       end
+
+      it 'returns all deploy keys with comments replaced with'\
+         'a simple identifier of username + hostname' do
+        get api('/deploy_keys', admin)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to include_pagination_headers
+        expect(json_response).to be_an Array
+
+        keys = json_response.map { |key_detail| key_detail['key'] }
+        expect(keys).to all(include("#{user.name} (#{Gitlab.config.gitlab.host}"))
+      end
+
+      context 'N+1 queries' do
+        before do
+          get api('/deploy_keys', admin)
+        end
+
+        it 'avoids N+1 queries', :request_store do
+          control_count = ActiveRecord::QueryRecorder.new { get api('/deploy_keys', admin) }.count
+
+          create_list(:deploy_key, 2, public: true, user: create(:user))
+
+          expect { get api('/deploy_keys', admin) }.not_to exceed_query_limit(control_count)
+        end
+      end
     end
   end
 
@@ -56,6 +82,25 @@ describe API::DeployKeys do
       expect(json_response).to be_an Array
       expect(json_response.first['title']).to eq(deploy_key.title)
     end
+
+    context 'N+1 queries' do
+      before do
+        get api("/projects/#{project.id}/deploy_keys", admin)
+      end
+
+      it 'avoids N+1 queries', :request_store do
+        control_count = ActiveRecord::QueryRecorder.new do
+          get api("/projects/#{project.id}/deploy_keys", admin)
+        end.count
+
+        deploy_key = create(:deploy_key, user: create(:user))
+        create(:deploy_keys_project, project: project, deploy_key: deploy_key)
+
+        expect do
+          get api("/projects/#{project.id}/deploy_keys", admin)
+        end.not_to exceed_query_limit(control_count)
+      end
+    end
   end
 
   describe 'GET /projects/:id/deploy_keys/:key_id' do
@@ -64,6 +109,13 @@ describe API::DeployKeys do
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['title']).to eq(deploy_key.title)
+    end
+
+    it 'exposes key comment as a simple identifier of username + hostname' do
+      get api("/projects/#{project.id}/deploy_keys/#{deploy_key.id}", admin)
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response['key']).to include("#{deploy_key.user_name} (#{Gitlab.config.gitlab.host})")
     end
 
     it 'returns 404 Not Found with invalid ID' do

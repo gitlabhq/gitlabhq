@@ -29,10 +29,30 @@ export default {
       {
         id: 'discussion-id',
         replyId: 'discussion-reply-id',
+        resolved: false,
         notes: {
           nodes: [
             {
               id: 'note-id',
+              body: '123',
+              author: {
+                name: 'Administrator',
+                username: 'root',
+                webUrl: 'link-to-author',
+                avatarUrl: 'link-to-avatar',
+              },
+            },
+          ],
+        },
+      },
+      {
+        id: 'discussion-resolved',
+        replyId: 'discussion-reply-resolved',
+        resolved: true,
+        notes: {
+          nodes: [
+            {
+              id: 'note-resolved',
               body: '123',
               author: {
                 name: 'Administrator',

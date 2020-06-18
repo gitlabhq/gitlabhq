@@ -12,8 +12,8 @@ to familiarize yourself with the concept, the terminology,
 and to learn what you can do with them.
 
 Every merge request starts by creating a branch. You can either
-do it locally through the command line, via a Git CLI application,
-or through the GitLab UI.
+do it locally through the [command line](#new-merge-request-from-your-local-environment), via a Git CLI application,
+or through the [GitLab UI](#new-merge-request-from-a-new-branch-created-through-the-ui).
 
 This document describes the several ways to create a merge request.
 
@@ -100,7 +100,7 @@ button to open the [**New Merge Request** page](#new-merge-request-page).
 A new merge request will be started using the current branch as the source,
 and the default branch in the current project as the target.
 
-## New merge request from you local environment
+## New merge request from your local environment
 
 Assuming you have your repository cloned into your computer and you'd
 like to start working on changes to files, start by creating and

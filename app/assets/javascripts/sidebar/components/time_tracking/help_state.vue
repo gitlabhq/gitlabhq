@@ -1,17 +1,12 @@
 <script>
 import { sprintf, s__ } from '../../../locale';
+import { joinPaths } from '~/lib/utils/url_utility';
 
 export default {
   name: 'TimeTrackingHelpState',
-  props: {
-    rootPath: {
-      type: String,
-      required: true,
-    },
-  },
   computed: {
     href() {
-      return `${this.rootPath}help/workflow/time_tracking.md`;
+      return joinPaths(gon.relative_url_root || '', '/help/user/project/time_tracking.md');
     },
     estimateText() {
       return sprintf(

@@ -3,7 +3,7 @@
 
 = form_for @user, url: profile_preferences_path, remote: true, method: :put, html: { class: 'row prepend-top-default js-preferences-form' } do |f|
   .col-lg-4.application-theme
-    %h4.prepend-top-0
+    %h4.gl-mt-0
       = s_('Preferences|Navigation theme')
     %p
       = s_('Preferences|Customize the appearance of the application header and navigation sidebar.')
@@ -18,7 +18,7 @@
     %hr
 
   .col-lg-4.profile-settings-sidebar
-    %h4.prepend-top-0
+    %h4.gl-mt-0
       = s_('Preferences|Syntax highlighting theme')
     %p
       = s_('Preferences|This setting allows you to customize the appearance of the syntax.')
@@ -35,7 +35,7 @@
     %hr
 
   .col-lg-4.profile-settings-sidebar
-    %h4.prepend-top-0
+    %h4.gl-mt-0
       = s_('Preferences|Behavior')
     %p
       = s_('Preferences|This setting allows you to customize the behavior of the system layout and default views.')
@@ -83,7 +83,7 @@
     %hr
 
   .col-lg-4.profile-settings-sidebar
-    %h4.prepend-top-0
+    %h4.gl-mt-0
       = _('Localization')
     %p
       = _('Customize language and region related settings.')
@@ -104,7 +104,7 @@
     .col-sm-12
       %hr
     .col-lg-4.profile-settings-sidebar
-      %h4.prepend-top-0= s_('Preferences|Time preferences')
+      %h4.gl-mt-0= s_('Preferences|Time preferences')
       %p= s_('Preferences|These settings will update how dates and times are displayed for you.')
     .col-lg-8
       .form-group

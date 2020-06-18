@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Graphql Field feature flags' do
+RSpec.describe 'Graphql Field feature flags' do
   include GraphqlHelpers
 
   let_it_be(:user) { create(:user) }

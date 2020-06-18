@@ -83,7 +83,7 @@ module EE
 end
 ```
 
-This looks working as a workaround, however, this approach has some donwside that:
+This looks working as a workaround, however, this approach has some downsides that:
 
 - Features could move from EE to FOSS or vice versa. Therefore, the offset might be mixed between FOSS and EE in the future.
   e.g. When you move `activity_limit_exceeded` to FOSS, you'll see `{ unknown_failure: 0, config_error: 1, activity_limit_exceeded: 1_000 }`.

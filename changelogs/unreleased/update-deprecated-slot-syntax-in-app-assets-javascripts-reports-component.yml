@@ -1,0 +1,5 @@
+---
+title: Update deprecated slot syntax in app/assets/javascripts/reports/components/grouped_test_reports_app.vue
+merge_request: 31975
+author: Gilang Gumilar
+type: other

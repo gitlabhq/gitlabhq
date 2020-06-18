@@ -3,6 +3,13 @@
 module NotesHelper
   MAX_PRERENDERED_NOTES = 10
 
+  def note_target_title(note)
+    # The design title is already present in `Event#note_target_reference`.
+    return if note.nil? || note.for_design?
+
+    note.title
+  end
+
   def note_target_fields(note)
     if note.noteable
       hidden_field_tag(:target_type, note.noteable.class.name.underscore) +
@@ -54,8 +61,8 @@ module NotesHelper
       class: 'add-diff-note js-add-diff-note-button',
       type: 'submit', name: 'button',
       data: diff_view_line_data(line_code, position, line_type),
-      title: 'Add a comment to this line' do
-      icon('comment-o')
+      title: _('Add a comment to this line') do
+      sprite_icon('comment', size: 12)
     end
   end
 
@@ -162,7 +169,7 @@ module NotesHelper
   end
 
   def notes_data(issuable)
-    {
+    data = {
       discussionsPath: discussions_path(issuable),
       registerPath: new_session_path(:user, redirect_to_referer: 'yes', anchor: 'register-pane'),
       newSessionPath: new_session_path(:user, redirect_to_referer: 'yes'),
@@ -174,6 +181,16 @@ module NotesHelper
       prerenderedNotesCount: issuable.capped_notes_count(MAX_PRERENDERED_NOTES),
       lastFetchedAt: Time.now.to_i
     }
+
+    if issuable.is_a?(MergeRequest)
+      data.merge!(
+        draftsPath: project_merge_request_drafts_path(@project, issuable),
+        draftsPublishPath: publish_project_merge_request_drafts_path(@project, issuable),
+        draftsDiscardPath: discard_project_merge_request_drafts_path(@project, issuable)
+      )
+    end
+
+    data
   end
 
   def discussion_resolved_intro(discussion)

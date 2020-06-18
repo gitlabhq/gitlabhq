@@ -5,13 +5,15 @@ module Snippets
     def execute
       @snippet = build_from_params
 
+      return invalid_params_error(@snippet) unless valid_params?
+
       unless visibility_allowed?(@snippet, @snippet.visibility_level)
-        return error_forbidden_visibility(@snippet)
+        return forbidden_visibility_error(@snippet)
       end
 
       @snippet.author = current_user
 
-      spam_check(@snippet, current_user)
+      spam_check(@snippet, current_user, action: :create)
 
       if save_and_commit
         UserAgentDetailService.new(@snippet, @request).create
@@ -29,10 +31,19 @@ module Snippets
 
     def build_from_params
       if project
-        project.snippets.build(params)
+        project.snippets.build(create_params)
       else
-        PersonalSnippet.new(params)
+        PersonalSnippet.new(create_params)
       end
+    end
+
+    # If the snippet_files param is present
+    # we need to fill content and file_name from
+    # the model
+    def create_params
+      return params if snippet_files.empty?
+
+      params.merge(content: snippet_files[0].content, file_name: snippet_files[0].file_path)
     end
 
     def save_and_commit
@@ -75,19 +86,19 @@ module Snippets
         message: 'Initial commit'
       }
 
-      @snippet.snippet_repository.multi_files_action(current_user, snippet_files, commit_attrs)
-    end
-
-    def snippet_files
-      [{ file_path: params[:file_name], content: params[:content] }]
+      @snippet.snippet_repository.multi_files_action(current_user, files_to_commit(@snippet), commit_attrs)
     end
 
     def move_temporary_files
       return unless @snippet.is_a?(PersonalSnippet)
 
-      uploaded_files.each do |file|
+      uploaded_assets.each do |file|
         FileMover.new(file, from_model: current_user, to_model: @snippet).execute
       end
+    end
+
+    def build_actions_from_params(_snippet)
+      [{ file_path: params[:file_name], content: params[:content] }]
     end
   end
 end

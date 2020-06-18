@@ -25,13 +25,13 @@ describe('init markdown', () => {
         insertMarkdownText({
           textArea,
           text: textArea.value,
-          tag: '* ',
+          tag: '- ',
           blockTag: null,
           selected: '',
           wrap: false,
         });
 
-        expect(textArea.value).toEqual(`${initialValue}* `);
+        expect(textArea.value).toEqual(`${initialValue}- `);
       });
 
       it('inserts the tag on a new line if the current one is not empty', () => {
@@ -43,13 +43,13 @@ describe('init markdown', () => {
         insertMarkdownText({
           textArea,
           text: textArea.value,
-          tag: '* ',
+          tag: '- ',
           blockTag: null,
           selected: '',
           wrap: false,
         });
 
-        expect(textArea.value).toEqual(`${initialValue}\n* `);
+        expect(textArea.value).toEqual(`${initialValue}\n- `);
       });
 
       it('inserts the tag on the same line if the current line only contains spaces', () => {
@@ -61,13 +61,13 @@ describe('init markdown', () => {
         insertMarkdownText({
           textArea,
           text: textArea.value,
-          tag: '* ',
+          tag: '- ',
           blockTag: null,
           selected: '',
           wrap: false,
         });
 
-        expect(textArea.value).toEqual(`${initialValue}* `);
+        expect(textArea.value).toEqual(`${initialValue}- `);
       });
 
       it('inserts the tag on the same line if the current line only contains tabs', () => {
@@ -79,13 +79,13 @@ describe('init markdown', () => {
         insertMarkdownText({
           textArea,
           text: textArea.value,
-          tag: '* ',
+          tag: '- ',
           blockTag: null,
           selected: '',
           wrap: false,
         });
 
-        expect(textArea.value).toEqual(`${initialValue}* `);
+        expect(textArea.value).toEqual(`${initialValue}- `);
       });
 
       it('places the cursor inside the tags', () => {

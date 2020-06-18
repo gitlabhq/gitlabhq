@@ -88,6 +88,9 @@ class MergeRequest < ApplicationRecord
   has_many :deployments,
     through: :deployment_merge_requests
 
+  has_many :draft_notes
+  has_many :reviews, inverse_of: :merge_request
+
   KNOWN_MERGE_PARAMS = [
     :auto_merge_strategy,
     :should_remove_source_branch,
@@ -101,7 +104,7 @@ class MergeRequest < ApplicationRecord
   after_create :ensure_merge_request_diff
   after_update :clear_memoized_shas
   after_update :reload_diff_if_branch_changed
-  after_save :ensure_metrics, unless: :importing?
+  after_commit :ensure_metrics, on: [:create, :update], unless: :importing?
   after_commit :expire_etag_cache, unless: :importing?
 
   # When this attribute is true some MR validation is ignored
@@ -541,13 +544,21 @@ class MergeRequest < ApplicationRecord
     merge_request_diffs.where.not(id: merge_request_diff.id)
   end
 
-  # Overwritten in EE
-  def note_positions_for_paths(paths, _user = nil)
+  def note_positions_for_paths(paths, user = nil)
     positions = notes.new_diff_notes.joins(:note_diff_file)
       .where('note_diff_files.old_path IN (?) OR note_diff_files.new_path IN (?)', paths, paths)
       .positions
 
-    Gitlab::Diff::PositionCollection.new(positions, diff_head_sha)
+    collection = Gitlab::Diff::PositionCollection.new(positions, diff_head_sha)
+
+    return collection unless user
+
+    positions = draft_notes
+      .authored_by(user)
+      .positions
+      .select { |pos| paths.include?(pos.file_path) }
+
+    collection.concat(positions)
   end
 
   def preloads_discussion_diff_highlighting?
@@ -866,7 +877,7 @@ class MergeRequest < ApplicationRecord
 
     check_service = MergeRequests::MergeabilityCheckService.new(self)
 
-    if async && Feature.enabled?(:async_merge_request_check_mergeability, project, default_enabled: true)
+    if async
       check_service.async_execute
     else
       check_service.execute(retry_lease: false)
@@ -885,11 +896,11 @@ class MergeRequest < ApplicationRecord
   end
 
   def merge_event
-    @merge_event ||= target_project.events.where(target_id: self.id, target_type: "MergeRequest", action: Event::MERGED).last
+    @merge_event ||= target_project.events.where(target_id: self.id, target_type: "MergeRequest", action: :merged).last
   end
 
   def closed_event
-    @closed_event ||= target_project.events.where(target_id: self.id, target_type: "MergeRequest", action: Event::CLOSED).last
+    @closed_event ||= target_project.events.where(target_id: self.id, target_type: "MergeRequest", action: :closed).last
   end
 
   def work_in_progress?
@@ -1158,6 +1169,7 @@ class MergeRequest < ApplicationRecord
   def mergeable_ci_state?
     return true unless project.only_allow_merge_if_pipeline_succeeds?
     return false unless actual_head_pipeline
+    return true if project.allow_merge_on_skipped_pipeline? && actual_head_pipeline.skipped?
 
     actual_head_pipeline.success?
   end
@@ -1302,8 +1314,6 @@ class MergeRequest < ApplicationRecord
   end
 
   def has_accessibility_reports?
-    return false unless Feature.enabled?(:accessibility_report_view, project)
-
     actual_head_pipeline.present? && actual_head_pipeline.has_reports?(Ci::JobArtifact.accessibility_reports)
   end
 
@@ -1566,6 +1576,10 @@ class MergeRequest < ApplicationRecord
 
   def recent_visible_deployments
     deployments.visible.includes(:environment).order(id: :desc).limit(10)
+  end
+
+  def banzai_render_context(field)
+    super.merge(label_url_method: :project_merge_requests_url)
   end
 
   private

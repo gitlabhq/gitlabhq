@@ -317,7 +317,7 @@ describe MarkupHelper do
     let(:wiki_repository) { double('Repository') }
     let(:context) do
       {
-        pipeline: :wiki, project: project, project_wiki: wiki,
+        pipeline: :wiki, project: project, wiki: wiki,
         page_slug: 'nested/page', issuable_state_filter_enabled: true,
         repository: wiki_repository
       }
@@ -327,7 +327,7 @@ describe MarkupHelper do
       expect(wiki).to receive(:content).and_return('wiki content')
       expect(wiki).to receive(:slug).and_return('nested/page')
       expect(wiki).to receive(:repository).and_return(wiki_repository)
-      helper.instance_variable_set(:@project_wiki, wiki)
+      helper.instance_variable_set(:@wiki, wiki)
     end
 
     context 'when file is Markdown' do

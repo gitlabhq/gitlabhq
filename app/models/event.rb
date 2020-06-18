@@ -7,36 +7,31 @@ class Event < ApplicationRecord
   include DeleteWithLimit
   include CreatedAtFilterable
   include Gitlab::Utils::StrongMemoize
+  include UsageStatistics
 
-  default_scope { reorder(nil) }
-
-  CREATED   = 1
-  UPDATED   = 2
-  CLOSED    = 3
-  REOPENED  = 4
-  PUSHED    = 5
-  COMMENTED = 6
-  MERGED    = 7
-  JOINED    = 8 # User joined project
-  LEFT      = 9 # User left project
-  DESTROYED = 10
-  EXPIRED   = 11 # User left project due to expiry
+  default_scope { reorder(nil) } # rubocop:disable Cop/DefaultScope
 
   ACTIONS = HashWithIndifferentAccess.new(
-    created:    CREATED,
-    updated:    UPDATED,
-    closed:     CLOSED,
-    reopened:   REOPENED,
-    pushed:     PUSHED,
-    commented:  COMMENTED,
-    merged:     MERGED,
-    joined:     JOINED,
-    left:       LEFT,
-    destroyed:  DESTROYED,
-    expired:    EXPIRED
+    created:    1,
+    updated:    2,
+    closed:     3,
+    reopened:   4,
+    pushed:     5,
+    commented:  6,
+    merged:     7,
+    joined:     8, # User joined project
+    left:       9, # User left project
+    destroyed:  10,
+    expired:    11, # User left project due to expiry
+    approved:   12,
+    archived:   13 # Recoverable deletion
   ).freeze
 
-  WIKI_ACTIONS = [CREATED, UPDATED, DESTROYED].freeze
+  private_constant :ACTIONS
+
+  WIKI_ACTIONS = [:created, :updated, :destroyed].freeze
+
+  DESIGN_ACTIONS = [:created, :updated, :destroyed, :archived].freeze
 
   TARGET_TYPES = HashWithIndifferentAccess.new(
     issue:          Issue,
@@ -46,16 +41,20 @@ class Event < ApplicationRecord
     project:        Project,
     snippet:        Snippet,
     user:           User,
-    wiki:           WikiPage::Meta
+    wiki:           WikiPage::Meta,
+    design:         DesignManagement::Design
   ).freeze
 
   RESET_PROJECT_ACTIVITY_INTERVAL = 1.hour
   REPOSITORY_UPDATED_AT_INTERVAL = 5.minutes
 
+  enum action: ACTIONS, _suffix: true
+
   delegate :name, :email, :public_email, :username, to: :author, prefix: true, allow_nil: true
   delegate :title, to: :issue, prefix: true, allow_nil: true
   delegate :title, to: :merge_request, prefix: true, allow_nil: true
   delegate :title, to: :note, prefix: true, allow_nil: true
+  delegate :title, to: :design, prefix: true, allow_nil: true
 
   belongs_to :author, class_name: "User"
   belongs_to :project
@@ -77,16 +76,16 @@ class Event < ApplicationRecord
   # Callbacks
   after_create :reset_project_activity
   after_create :set_last_repository_updated_at, if: :push_action?
-  after_create :track_user_interacted_projects
+  after_create ->(event) { UserInteractedProject.track(event) }
 
   # Scopes
   scope :recent, -> { reorder(id: :desc) }
-  scope :code_push, -> { where(action: PUSHED) }
-  scope :merged, -> { where(action: MERGED) }
   scope :for_wiki_page, -> { where(target_type: 'WikiPage::Meta') }
+  scope :for_design, -> { where(target_type: 'DesignManagement::Design') }
 
   # Needed to implement feature flag: can be removed when feature flag is removed
   scope :not_wiki_page, -> { where('target_type IS NULL or target_type <> ?', 'WikiPage::Meta') }
+  scope :not_design, -> { where('target_type IS NULL or target_type <> ?', 'DesignManagement::Design') }
 
   scope :with_associations, -> do
     # We're using preload for "push_event_payload" as otherwise the association
@@ -105,6 +104,13 @@ class Event < ApplicationRecord
   # should ensure the ID points to a valid user.
   validates :author_id, presence: true
 
+  validates :action_enum_value,
+    if: :design?,
+    inclusion: {
+      in: actions.values_at(*DESIGN_ACTIONS),
+      message: ->(event, _data) { "#{event.action} is not a valid design action" }
+    }
+
   self.inheritance_column = 'action'
 
   class << self
@@ -113,7 +119,7 @@ class Event < ApplicationRecord
     end
 
     def find_sti_class(action)
-      if action.to_i == PUSHED
+      if actions.fetch(action, action) == actions[:pushed] # action can be integer or symbol
         PushEvent
       else
         Event
@@ -123,17 +129,13 @@ class Event < ApplicationRecord
     # Update Gitlab::ContributionsCalendar#activity_dates if this changes
     def contributions
       where("action = ? OR (target_type IN (?) AND action IN (?)) OR (target_type = ? AND action = ?)",
-            Event::PUSHED,
-            %w(MergeRequest Issue), [Event::CREATED, Event::CLOSED, Event::MERGED],
-            "Note", Event::COMMENTED)
+            actions[:pushed],
+            %w(MergeRequest Issue), [actions[:created], actions[:closed], actions[:merged]],
+            "Note", actions[:commented])
     end
 
     def limit_recent(limit = 20, offset = nil)
       recent.limit(limit).offset(offset)
-    end
-
-    def actions
-      ACTIONS.keys
     end
 
     def target_types
@@ -148,7 +150,9 @@ class Event < ApplicationRecord
   def visible_to_user?(user = nil)
     return false unless capability.present?
 
-    Ability.allowed?(user, capability, permission_object)
+    capability.all? do |rule|
+      Ability.allowed?(user, rule, permission_object)
+    end
   end
 
   def resource_parent
@@ -159,44 +163,8 @@ class Event < ApplicationRecord
     target.try(:title)
   end
 
-  def created_action?
-    action == CREATED
-  end
-
   def push_action?
     false
-  end
-
-  def merged_action?
-    action == MERGED
-  end
-
-  def closed_action?
-    action == CLOSED
-  end
-
-  def reopened_action?
-    action == REOPENED
-  end
-
-  def joined_action?
-    action == JOINED
-  end
-
-  def left_action?
-    action == LEFT
-  end
-
-  def expired_action?
-    action == EXPIRED
-  end
-
-  def destroyed_action?
-    action == DESTROYED
-  end
-
-  def commented_action?
-    action == COMMENTED
   end
 
   def membership_changed?
@@ -208,11 +176,11 @@ class Event < ApplicationRecord
   end
 
   def created_wiki_page?
-    wiki_page? && action == CREATED
+    wiki_page? && created_action?
   end
 
   def updated_wiki_page?
-    wiki_page? && action == UPDATED
+    wiki_page? && updated_action?
   end
 
   def created_target?
@@ -239,12 +207,20 @@ class Event < ApplicationRecord
     target_type == 'WikiPage::Meta'
   end
 
+  def design?
+    target_type == 'DesignManagement::Design'
+  end
+
   def milestone
     target if milestone?
   end
 
   def issue
     target if issue?
+  end
+
+  def design
+    target if design?
   end
 
   def merge_request
@@ -266,6 +242,8 @@ class Event < ApplicationRecord
   def action_name
     if push_action?
       push_action_name
+    elsif design?
+      design_action_names[action.to_sym]
     elsif closed_action?
       "closed"
     elsif merged_action?
@@ -386,34 +364,30 @@ class Event < ApplicationRecord
 
   protected
 
-  # rubocop:disable Metrics/CyclomaticComplexity
-  # rubocop:disable Metrics/PerceivedComplexity
-  #
-  # TODO Refactor this method so we no longer need to disable the above cops
-  # https://gitlab.com/gitlab-org/gitlab/-/issues/216879.
   def capability
     @capability ||= begin
-                      if push_action? || commit_note?
-                        :download_code
-                      elsif membership_changed? || created_project_action?
-                        :read_project
-                      elsif issue? || issue_note?
-                        :read_issue
-                      elsif merge_request? || merge_request_note?
-                        :read_merge_request
-                      elsif personal_snippet_note? || project_snippet_note?
-                        :read_snippet
-                      elsif milestone?
-                        :read_milestone
-                      elsif wiki_page?
-                        :read_wiki
-                      elsif design_note?
-                        :read_design
-                      end
-                    end
+      capabilities.flat_map do |ability, syms|
+        if syms.any? { |sym| send(sym) } # rubocop: disable GitlabSecurity/PublicSend
+          [ability]
+        else
+          []
+        end
+      end
+    end
   end
-  # rubocop:enable Metrics/CyclomaticComplexity
-  # rubocop:enable Metrics/PerceivedComplexity
+
+  def capabilities
+    {
+      download_code: %i[push_action? commit_note?],
+      read_project: %i[membership_changed? created_project_action?],
+      read_issue: %i[issue? issue_note?],
+      read_merge_request: %i[merge_request? merge_request_note?],
+      read_snippet: %i[personal_snippet_note? project_snippet_note?],
+      read_milestone: %i[milestone?],
+      read_wiki: %i[wiki_page?],
+      read_design: %i[design_note? design?]
+    }
+  end
 
   private
 
@@ -455,11 +429,17 @@ class Event < ApplicationRecord
       .update_all(last_repository_updated_at: created_at)
   end
 
-  def track_user_interacted_projects
-    # Note the call to .available? is due to earlier migrations
-    # that would otherwise conflict with the call to .track
-    # (because the table does not exist yet).
-    UserInteractedProject.track(self) if UserInteractedProject.available?
+  def design_action_names
+    {
+      created: _('uploaded'),
+      updated: _('revised'),
+      destroyed: _('deleted'),
+      archived: _('archived')
+    }
+  end
+
+  def action_enum_value
+    self.class.actions[action]
   end
 end
 

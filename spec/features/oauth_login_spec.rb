@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'OAuth Login', :js, :allow_forgery_protection do
+RSpec.describe 'OAuth Login', :js, :allow_forgery_protection do
   include DeviseHelpers
 
   def enter_code(code)

@@ -118,12 +118,7 @@ export const fetchDiffFilesBatch = ({ commit, state }) => {
 
   const getBatch = (page = 1) =>
     axios
-      .get(state.endpointBatch, {
-        params: {
-          ...urlParams,
-          page,
-        },
-      })
+      .get(mergeUrlParams({ ...urlParams, page }, state.endpointBatch))
       .then(({ data: { pagination, diff_files } }) => {
         commit(types.SET_DIFF_DATA_BATCH, { diff_files });
         commit(types.SET_BATCH_LOADING, false);
@@ -507,9 +502,6 @@ export const cacheTreeListWidth = (_, size) => {
   localStorage.setItem(TREE_LIST_WIDTH_STORAGE_KEY, size);
 };
 
-export const requestFullDiff = ({ commit }, filePath) => commit(types.REQUEST_FULL_DIFF, filePath);
-export const receiveFullDiffSucess = ({ commit }, { filePath }) =>
-  commit(types.RECEIVE_FULL_DIFF_SUCCESS, { filePath });
 export const receiveFullDiffError = ({ commit }, filePath) => {
   commit(types.RECEIVE_FULL_DIFF_ERROR, filePath);
   createFlash(s__('MergeRequest|Error loading full diff. Please try again.'));
@@ -600,7 +592,7 @@ export const setExpandedDiffLines = ({ commit, state }, { file, data }) => {
   }
 };
 
-export const fetchFullDiff = ({ dispatch }, file) =>
+export const fetchFullDiff = ({ commit, dispatch }, file) =>
   axios
     .get(file.context_lines_path, {
       params: {
@@ -609,15 +601,16 @@ export const fetchFullDiff = ({ dispatch }, file) =>
       },
     })
     .then(({ data }) => {
-      dispatch('receiveFullDiffSucess', { filePath: file.file_path });
+      commit(types.RECEIVE_FULL_DIFF_SUCCESS, { filePath: file.file_path });
+
       dispatch('setExpandedDiffLines', { file, data });
     })
     .catch(() => dispatch('receiveFullDiffError', file.file_path));
 
-export const toggleFullDiff = ({ dispatch, getters, state }, filePath) => {
+export const toggleFullDiff = ({ dispatch, commit, getters, state }, filePath) => {
   const file = state.diffFiles.find(f => f.file_path === filePath);
 
-  dispatch('requestFullDiff', filePath);
+  commit(types.REQUEST_FULL_DIFF, filePath);
 
   if (file.isShowingFullFile) {
     dispatch('loadCollapsedDiff', file)
@@ -656,11 +649,6 @@ export function switchToFullDiffFromRenamedFile({ commit, dispatch, state }, { d
       commit(types.SET_CURRENT_VIEW_DIFF_FILE_LINES, { filePath: diffFile.file_path, lines });
 
       dispatch('startRenderDiffsQueue');
-    })
-    .catch(error => {
-      dispatch('receiveFullDiffError', diffFile.file_path);
-
-      throw error;
     });
 }
 

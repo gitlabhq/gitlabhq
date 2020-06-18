@@ -120,6 +120,46 @@ describe('new file modal component', () => {
     });
   });
 
+  describe('createFromTemplate', () => {
+    let store;
+
+    beforeEach(() => {
+      store = createStore();
+      store.state.entries = {
+        'test-path/test': {
+          name: 'test',
+          deleted: false,
+        },
+      };
+
+      vm = createComponentWithStore(Component, store).$mount();
+      vm.open('blob');
+
+      jest.spyOn(vm, 'createTempEntry').mockImplementation();
+    });
+
+    it.each`
+      entryName                  | newFilePath
+      ${''}                      | ${'.gitignore'}
+      ${'README.md'}             | ${'.gitignore'}
+      ${'test-path/test/'}       | ${'test-path/test/.gitignore'}
+      ${'test-path/test'}        | ${'test-path/.gitignore'}
+      ${'test-path/test/abc.md'} | ${'test-path/test/.gitignore'}
+    `(
+      'creates a new file with the given template name in appropriate directory for path: $path',
+      ({ entryName, newFilePath }) => {
+        vm.entryName = entryName;
+
+        vm.createFromTemplate({ name: '.gitignore' });
+
+        expect(vm.createTempEntry).toHaveBeenCalledWith({
+          name: newFilePath,
+          type: 'blob',
+        });
+      },
+    );
+  });
+
   describe('submitForm', () => {
     let store;
 

@@ -52,10 +52,10 @@ maintain and support one database with tables with many rows.
 
 There are two ways to deal with this:
 
-- Partioning. Locally split up tables data.
+- Partitioning. Locally split up tables data.
 - Sharding. Distribute data across multiple databases.
 
-Partioning is a built-in PostgreSQL feature and requires minimal changes
+Partitioning is a built-in PostgreSQL feature and requires minimal changes
 in the application. However, it [requires PostgreSQL
 11](https://www.2ndquadrant.com/en/blog/partitioning-evolution-postgresql-11/).
 
@@ -93,12 +93,12 @@ systems.
 #### Database size
 
 A recent [database checkup shows a breakdown of the table sizes on
-GitLab.com](https://gitlab.com/gitlab-com/gl-infra/infrastructure/issues/8022#master-1022016101-8).
+GitLab.com](https://gitlab.com/gitlab-com/gl-infra/infrastructure/-/issues/8022#master-1022016101-8).
 Since `merge_request_diff_files` contains over 1 TB of data, we will want to
 reduce/eliminate this table first. GitLab has support for [storing diffs in
 object storage](../administration/merge_request_diffs.md), which we [will
 want to do on
-GitLab.com](https://gitlab.com/gitlab-com/gl-infra/infrastructure/issues/7356).
+GitLab.com](https://gitlab.com/gitlab-com/gl-infra/infrastructure/-/issues/7356).
 
 #### High availability
 
@@ -116,7 +116,7 @@ database has reached the target time.
 
 On GitLab.com, Consul and Patroni work together to coordinate failovers with
 the read replicas. [Omnibus ships with repmgr instead of
-Consul](../administration/high_availability/database.md).
+Patroni](../administration/postgresql/replication_and_failover.md).
 
 #### Load-balancing
 
@@ -147,10 +147,10 @@ limitation:
 
 - Run multiple PgBouncer instances.
 - Use a multi-threaded connection pooler (e.g.
-  [Odyssey](https://gitlab.com/gitlab-com/gl-infra/infrastructure/issues/7776).
+  [Odyssey](https://gitlab.com/gitlab-com/gl-infra/infrastructure/-/issues/7776).
 
 On some Linux systems, it's possible to run [multiple PgBouncer instances on
-the same port](https://gitlab.com/gitlab-org/omnibus-gitlab/issues/4796).
+the same port](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/4796).
 
 On GitLab.com, we run multiple PgBouncer instances on different ports to
 avoid saturating a single core.
@@ -246,9 +246,9 @@ lifting of many activities, including:
 - Processing CI builds and pipelines.
 
 The full list of jobs can be found in the
-[app/workers](https://gitlab.com/gitlab-org/gitlab/tree/master/app/workers)
+[`app/workers`](https://gitlab.com/gitlab-org/gitlab/tree/master/app/workers)
 and
-[ee/app/workers](https://gitlab.com/gitlab-org/gitlab/tree/master/ee/app/workers)
+[`ee/app/workers`](https://gitlab.com/gitlab-org/gitlab/tree/master/ee/app/workers)
 directories in the GitLab code base.
 
 #### Runaway Queues
@@ -275,13 +275,13 @@ in a timely manner:
 - Redistribute/gerrymander Sidekiq processes by queue
   types. Long-running jobs (e.g. relating to project import) can often
   squeeze out jobs that run fast (e.g. delivering e-mail). [This technique
-  was used in to optimize our existing Sidekiq deployment](https://gitlab.com/gitlab-com/gl-infra/infrastructure/issues/7219#note_218019483).
+  was used in to optimize our existing Sidekiq deployment](https://gitlab.com/gitlab-com/gl-infra/infrastructure/-/issues/7219#note_218019483).
 - Optimize jobs. Eliminating unnecessary work, reducing network calls
   (e.g. SQL, Gitaly, etc.), and optimizing processor time can yield significant
   benefits.
 
 From the Sidekiq logs, it's possible to see which jobs run the most
-frequently and/or take the longest. For example, theis Kibana
+frequently and/or take the longest. For example, these Kibana
 visualizations show the jobs that consume the most total time:
 
 ![Most time-consuming Sidekiq jobs](img/sidekiq_most_time_consuming_jobs.png)

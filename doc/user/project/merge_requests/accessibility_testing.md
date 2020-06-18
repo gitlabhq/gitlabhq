@@ -25,16 +25,6 @@ Accessibility Report in the merge request widget area:
 
 ![Accessibility Merge Request Widget](img/accessibility_mr_widget_v13_0.png)
 
-This widget comes with the `:accessibility_report_view` feature flag disabled by default while we test feature stability.
-Once we have determined the widget is stable, this feature will be enabled by default.
-
-To enable this feature, ask a GitLab administrator with [Rails console access](../../../administration/feature_flags.md#how-to-enable-and-disable-features-behind-flags) to run the
-following command:
-
-```ruby
-Feature.enable(:accessibility_report_view)
-```
-
 ## Configure Accessibility Testing
 
 This example shows how to run [pa11y](https://pa11y.org/)

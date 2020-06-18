@@ -148,7 +148,7 @@ class NotesFinder
 
   # Searches for notes matching the given query.
   #
-  # This method uses ILIKE on PostgreSQL and LIKE on MySQL.
+  # This method uses ILIKE on PostgreSQL.
   #
   def search(notes)
     query = @params[:search]

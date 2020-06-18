@@ -14,6 +14,13 @@ module Releases
 
     scope :sorted, -> { order(created_at: :desc) }
 
+    enum link_type: {
+      other: 0,
+      runbook: 1,
+      package: 2,
+      image: 3
+    }
+
     def internal?
       url.start_with?(release.project.web_url)
     end

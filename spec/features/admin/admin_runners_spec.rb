@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe "Admin Runners" do
+RSpec.describe "Admin Runners" do
   include StubENV
   include FilteredSearchHelpers
   include SortingHelper

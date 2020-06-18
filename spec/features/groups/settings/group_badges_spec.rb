@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Group Badges' do
+RSpec.describe 'Group Badges' do
   include WaitForRequests
 
   let(:user) { create(:user) }

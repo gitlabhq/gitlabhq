@@ -53,12 +53,12 @@ between v3 and v4; please read the [v3 to v4 documentation](v3_to_v4.md)
 ### Current status
 
 Currently only API version v4 is available. Version v3 was removed in
-[GitLab 11.0](https://gitlab.com/gitlab-org/gitlab-foss/issues/36819).
+[GitLab 11.0](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/36819).
 
 ## Basic usage
 
 API requests should be prefixed with `api` and the API version. The API version
-is defined in [`lib/api.rb`](https://gitlab.com/gitlab-org/gitlab-foss/tree/master/lib/api/api.rb). For example, the root of the v4 API
+is defined in [`lib/api.rb`](https://gitlab.com/gitlab-org/gitlab/tree/master/lib/api/api.rb). For example, the root of the v4 API
 is at `/api/v4`.
 
 Example of a valid API request using cURL:
@@ -107,13 +107,13 @@ You can use an [OAuth2 token](oauth2.md) to authenticate with the API by passing
 Example of using the OAuth2 token in a parameter:
 
 ```shell
-curl https://gitlab.example.com/api/v4/projects?access_token=OAUTH-TOKEN
+curl "https://gitlab.example.com/api/v4/projects?access_token=OAUTH-TOKEN"
 ```
 
 Example of using the OAuth2 token in a header:
 
 ```shell
-curl --header "Authorization: Bearer OAUTH-TOKEN" https://gitlab.example.com/api/v4/projects
+curl --header "Authorization: Bearer OAUTH-TOKEN" "https://gitlab.example.com/api/v4/projects"
 ```
 
 Read more about [GitLab as an OAuth2 provider](oauth2.md).
@@ -126,19 +126,19 @@ or the `Private-Token` header.
 Example of using the personal/project access token in a parameter:
 
 ```shell
-curl https://gitlab.example.com/api/v4/projects?private_token=<your_access_token>
+curl "https://gitlab.example.com/api/v4/projects?private_token=<your_access_token>"
 ```
 
 Example of using the personal/project access token in a header:
 
 ```shell
-curl --header "Private-Token: <your_access_token>" https://gitlab.example.com/api/v4/projects
+curl --header "Private-Token: <your_access_token>" "https://gitlab.example.com/api/v4/projects"
 ```
 
 You can also use personal/project access tokens with OAuth-compliant headers:
 
 ```shell
-curl --header "Authorization: Bearer <your_access_token>" https://gitlab.example.com/api/v4/projects
+curl --header "Authorization: Bearer <your_access_token>" "https://gitlab.example.com/api/v4/projects"
 ```
 
 ### Session cookie
@@ -180,7 +180,7 @@ Impersonation tokens are used exactly like regular personal access tokens, and c
 
 #### Disable impersonation
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/40385) in GitLab 11.6.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/40385) in GitLab 11.6.
 
 By default, impersonation is enabled. To disable impersonation:
 
@@ -348,7 +348,7 @@ and we request the second page (`page=2`) of [comments](notes.md) of the issue
 with ID `8` which belongs to the project with ID `8`:
 
 ```shell
-curl --head --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/8/issues/8/notes?per_page=3&page=2
+curl --head --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/8/issues/8/notes?per_page=3&page=2"
 ```
 
 The response will then be:
@@ -417,9 +417,13 @@ The response header includes a link to the next page. For example:
 HTTP/1.1 200 OK
 ...
 Links: <https://gitlab.example.com/api/v4/projects?pagination=keyset&per_page=50&order_by=id&sort=asc&id_after=42>; rel="next"
+Link: <https://gitlab.example.com/api/v4/projects?pagination=keyset&per_page=50&order_by=id&sort=asc&id_after=42>; rel="next"
 Status: 200 OK
 ...
 ```
+
+CAUTION: **Deprecation:**
+The `Links` Header will be removed in GitLab 14.0 to be aligned with the [W3C specification](https://www.w3.org/wiki/LinkHeader)
 
 The link to the next page contains an additional filter `id_after=42` which excludes records we have retrieved already.
 Note the type of filter depends on the `order_by` option used and we may have more than one additional filter.
@@ -450,7 +454,7 @@ The `:id` path parameter needs to be replaced with the project ID, and the `:gro
 The resulting cURL call for a project with ID `5` and a group ID of `17` is then:
 
 ```shell
-curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/share/17
+curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/share/17"
 ```
 
 NOTE: **Note:**
@@ -521,10 +525,10 @@ https://gitlab.example.com/api/v4/projects/import
 `variables` is a parameter of type `array` containing hash key/value pairs `[{ 'key' => 'UPLOAD_TO_S3', 'value' => 'true' }]`:
 
 ```shell
-curl --globoff --request POST --header "PRIVATE-TOKEN: ********************" \
+curl --globoff --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
 "https://gitlab.example.com/api/v4/projects/169/pipeline?ref=master&variables[][key]=VAR1&variables[][value]=hello&variables[][key]=VAR2&variables[][value]=world"
 
-curl --request POST --header "PRIVATE-TOKEN: ********************" \
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
 --header "Content-Type: application/json" \
 --data '{ "ref": "master", "variables": [ {"key": "VAR1", "value": "hello"}, {"key": "VAR2", "value": "world"} ] }' \
 "https://gitlab.example.com/api/v4/projects/169/pipeline"

@@ -4,7 +4,7 @@ type: reference
 
 # Configuring a Monitoring node for Scaling and High Availability
 
-> [Introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/issues/3786) in GitLab 12.0.
+> [Introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/3786) in GitLab 12.0.
 
 You can configure a Prometheus node to monitor GitLab.
 
@@ -22,7 +22,7 @@ Omnibus:
    package you want using **steps 1 and 2** from the GitLab downloads page.
    - Do not complete any other steps on the download page.
 
-1. Make sure to collect [`CONSUL_SERVER_NODES`](database.md#consul-information), which are the IP addresses or DNS records of the Consul server nodes, for the next step. Note they are presented as `Y.Y.Y.Y consul1.gitlab.example.com Z.Z.Z.Z`
+1. Make sure to collect [`CONSUL_SERVER_NODES`](../postgresql/replication_and_failover.md#consul-information), which are the IP addresses or DNS records of the Consul server nodes, for the next step. Note they are presented as `Y.Y.Y.Y consul1.gitlab.example.com Z.Z.Z.Z`
 
 1. Edit `/etc/gitlab/gitlab.rb` and add the contents:
 

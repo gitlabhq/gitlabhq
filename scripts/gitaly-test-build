@@ -14,6 +14,7 @@ class GitalyTestBuild
   def run
     abort 'gitaly build failed' unless system(env, 'make', chdir: tmp_tests_gitaly_dir)
 
+    ensure_gitlab_shell_secret!
     check_gitaly_config!
 
     # Starting gitaly further validates its configuration

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Projects > Files > User replaces files', :js do
+RSpec.describe 'Projects > Files > User replaces files', :js do
   include DropzoneHelper
 
   let(:fork_message) do

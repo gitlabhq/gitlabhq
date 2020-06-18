@@ -1,13 +1,13 @@
 .col-md-6
   .form-group.row
     .col-form-label.col-sm-2
-      = f.label :start_date, "Start Date"
+      = f.label :start_date, _('Start Date')
     .col-sm-10
-      = f.text_field :start_date, class: "datepicker form-control", placeholder: "Select start date", autocomplete: 'off'
-      %a.inline.float-right.prepend-top-5.js-clear-start-date{ href: "#" } Clear start date
+      = f.text_field :start_date, class: "datepicker form-control", placeholder: _('Select start date'), autocomplete: 'off'
+      %a.inline.float-right.prepend-top-5.js-clear-start-date{ href: "#" }= _('Clear start date')
   .form-group.row
     .col-form-label.col-sm-2
-      = f.label :due_date, "Due Date"
+      = f.label :due_date, _('Due Date')
     .col-sm-10
-      = f.text_field :due_date, class: "datepicker form-control", placeholder: "Select due date", autocomplete: 'off'
-      %a.inline.float-right.prepend-top-5.js-clear-due-date{ href: "#" } Clear due date
+      = f.text_field :due_date, class: "datepicker form-control", placeholder: _('Select due date'), autocomplete: 'off'
+      %a.inline.float-right.prepend-top-5.js-clear-due-date{ href: "#" }= _('Clear due date')

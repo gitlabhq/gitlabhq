@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# NOTE: This class is unused and to be removed in 13.1~
 class PipelineUpdateCiRefStatusWorker # rubocop:disable Scalability/IdempotentWorker
   include ApplicationWorker
   include PipelineQueue

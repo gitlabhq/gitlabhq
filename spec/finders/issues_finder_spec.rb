@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe IssuesFinder do
+RSpec.describe IssuesFinder do
   include_context 'IssuesFinder context'
 
   describe '#execute' do

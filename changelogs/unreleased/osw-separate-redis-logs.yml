@@ -1,0 +1,6 @@
+---
+title: Add detailed logs of each Redis instance usage during job execution and web
+  requests
+merge_request: 34110
+author:
+type: added

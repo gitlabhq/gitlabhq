@@ -4,7 +4,6 @@
     "id",
     "title",
     "description",
-    "author",
     "state",
     "iid",
     "confidential",

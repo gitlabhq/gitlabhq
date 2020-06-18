@@ -38,24 +38,141 @@ describe PerformanceMonitoring::PrometheusDashboard do
     end
 
     describe 'validations' do
-      context 'when dashboard is missing' do
-        before do
-          json_content['dashboard'] = nil
+      shared_examples 'validation failed' do |errors_messages|
+        it 'raises error with corresponding messages', :aggregate_failures do
+          expect { subject }.to raise_error do |error|
+            expect(error).to be_kind_of(ActiveModel::ValidationError)
+            expect(error.model.errors.messages).to eq(errors_messages)
+          end
         end
-
-        subject { described_class.from_json(json_content) }
-
-        it { expect { subject }.to raise_error(ActiveModel::ValidationError) }
       end
 
-      context 'when panel groups are missing' do
-        before do
-          json_content['panel_groups'] = []
+      context 'dashboard content is missing' do
+        let(:json_content) { nil }
+
+        it_behaves_like 'validation failed', panel_groups: ["can't be blank"], dashboard: ["can't be blank"]
+      end
+
+      context 'dashboard content is NOT a hash' do
+        let(:json_content) { YAML.safe_load("'test'") }
+
+        it_behaves_like 'validation failed', panel_groups: ["can't be blank"], dashboard: ["can't be blank"]
+      end
+
+      context 'content is an array' do
+        let(:json_content) { [{ "dashboard" => "Dashboard Title" }] }
+
+        it_behaves_like 'validation failed', panel_groups: ["can't be blank"], dashboard: ["can't be blank"]
+      end
+
+      context 'dashboard definition is missing panels_groups and dashboard keys' do
+        let(:json_content) do
+          {
+            "dashboard" => nil
+          }
         end
 
-        subject { described_class.from_json(json_content) }
+        it_behaves_like 'validation failed', panel_groups: ["can't be blank"], dashboard: ["can't be blank"]
+      end
 
-        it { expect { subject }.to raise_error(ActiveModel::ValidationError) }
+      context 'group definition is missing panels and group keys' do
+        let(:json_content) do
+          {
+            "dashboard" => "Dashboard Title",
+            "templating" => {
+              "variables" => {
+                "variable1" => %w(value1 value2 value3)
+              }
+            },
+            "panel_groups" => [{ "group" => nil }]
+          }
+        end
+
+        it_behaves_like 'validation failed', panels: ["can't be blank"], group: ["can't be blank"]
+      end
+
+      context 'panel definition is missing metrics and title keys' do
+        let(:json_content) do
+          {
+            "dashboard" => "Dashboard Title",
+            "templating" => {
+              "variables" => {
+                "variable1" => %w(value1 value2 value3)
+              }
+            },
+            "panel_groups" => [{
+              "group" => "Group Title",
+              "panels" => [{
+                "type" => "area-chart",
+                "y_label" => "Y-Axis"
+              }]
+            }]
+          }
+        end
+
+        it_behaves_like 'validation failed', metrics: ["can't be blank"], title: ["can't be blank"]
+      end
+
+      context 'metrics definition is missing unit, query and query_range keys' do
+        let(:json_content) do
+          {
+            "dashboard" => "Dashboard Title",
+            "templating" => {
+              "variables" => {
+                "variable1" => %w(value1 value2 value3)
+              }
+            },
+            "panel_groups" => [{
+              "group" => "Group Title",
+              "panels" => [{
+                "type" => "area-chart",
+                "title" => "Chart Title",
+                "y_label" => "Y-Axis",
+                "metrics" => [{
+                  "id" => "metric_of_ages",
+                  "label" => "Metric of Ages",
+                  "query_range" => nil
+                }]
+              }]
+            }]
+          }
+        end
+
+        it_behaves_like 'validation failed', unit: ["can't be blank"], query_range: ["can't be blank"], query: ["can't be blank"]
+      end
+
+      # for each parent entry validation first is done to its children,
+      # whole execution is stopped on first encountered error
+      # which is the one that is reported
+      context 'multiple offences on different levels' do
+        let(:json_content) do
+          {
+            "dashboard" => nil,
+            "panel_groups" => [{
+              "group" => nil,
+              "panels" => [{
+                "type" => "area-chart",
+                "title" => nil,
+                "y_label" => "Y-Axis",
+                "metrics" => [{
+                  "id" => "metric_of_ages",
+                  "label" => "Metric of Ages",
+                  "query_range" => 'query'
+                }, {
+                  "id" => "metric_of_ages",
+                  "unit" => "count",
+                  "label" => "Metric of Ages",
+                  "query_range" => nil
+                }]
+              }]
+            }, {
+              "group" => 'group',
+              "panels" => nil
+            }]
+          }
+        end
+
+        it_behaves_like 'validation failed', unit: ["can't be blank"]
       end
     end
   end
@@ -73,18 +190,49 @@ describe PerformanceMonitoring::PrometheusDashboard do
         dashboard_instance = described_class.find_for(project: project, user: user, path: path, options: { environment: environment })
 
         expect(dashboard_instance).to be_instance_of described_class
-        expect(dashboard_instance.environment).to be environment
-        expect(dashboard_instance.path).to be path
+        expect(dashboard_instance.environment).to eq environment
+        expect(dashboard_instance.path).to eq path
       end
     end
 
     context 'dashboard has NOT been found' do
       it 'returns nil' do
-        allow(Gitlab::Metrics::Dashboard::Finder).to receive(:find).and_return(status: :error)
+        allow(Gitlab::Metrics::Dashboard::Finder).to receive(:find).and_return(http_status: :not_found)
 
         dashboard_instance = described_class.find_for(project: project, user: user, path: path, options: { environment: environment })
 
         expect(dashboard_instance).to be_nil
+      end
+    end
+
+    context 'dashboard has invalid schema', :aggregate_failures do
+      it 'still returns dashboard object' do
+        expect(Gitlab::Metrics::Dashboard::Finder).to receive(:find).and_return(http_status: :unprocessable_entity)
+
+        dashboard_instance = described_class.find_for(project: project, user: user, path: path, options: { environment: environment })
+
+        expect(dashboard_instance).to be_instance_of described_class
+        expect(dashboard_instance.environment).to eq environment
+        expect(dashboard_instance.path).to eq path
+      end
+    end
+  end
+
+  describe '#schema_validation_warnings' do
+    context 'when schema is valid' do
+      it 'returns nil' do
+        expect(described_class).to receive(:from_json)
+        expect(described_class.new.schema_validation_warnings).to be_nil
+      end
+    end
+
+    context 'when schema is invalid' do
+      it 'returns array with errors messages' do
+        instance = described_class.new
+        instance.errors.add(:test, 'test error')
+
+        expect(described_class).to receive(:from_json).and_raise(ActiveModel::ValidationError.new(instance))
+        expect(described_class.new.schema_validation_warnings).to eq ['test: test error']
       end
     end
   end

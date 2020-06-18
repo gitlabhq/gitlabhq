@@ -29,11 +29,11 @@ allows clients to request exactly the data they need, making it
 possible to get all required data in a limited number of requests.
 
 The GraphQL data (fields) can be described in the form of types,
-allowing clients to use [clientside GraphQL
+allowing clients to use [client-side GraphQL
 libraries](https://graphql.org/code/#graphql-clients) to consume the
 API and avoid manual parsing.
 
-Since there's no fixed endpoints and datamodel, new abilities can be
+Since there's no fixed endpoints and data model, new abilities can be
 added to the API without creating breaking changes. This allows us to
 have a versionless API as described in [the GraphQL
 documentation](https://graphql.org/learn/best-practices/#versioning).
@@ -57,8 +57,10 @@ The GraphQL API includes the following queries at the root level:
 
 1. `project` : Project information, with many of its associations such as issues and merge requests.
 1. `group` : Basic group information and epics **(ULTIMATE)** are currently supported.
+1. `user` : Information about a particular user.
 1. `namespace` : Within a namespace it is also possible to fetch `projects`.
 1. `currentUser`: Information about the currently logged in user.
+1. `users`: Information about a collection of users.
 1. `metaData`: Metadata about GitLab and the GraphQL API.
 1. `snippets`: Snippets visible to the currently logged in user.
 

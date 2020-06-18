@@ -10,12 +10,6 @@ module Gitlab
       SERVICE_ACCOUNT = 'tiller'
       CLUSTER_ROLE_BINDING = 'tiller-admin'
       CLUSTER_ROLE = 'cluster-admin'
-
-      MANAGED_APPS_LOCAL_TILLER_FEATURE_FLAG = :managed_apps_local_tiller
-
-      def self.local_tiller_enabled?
-        Feature.enabled?(MANAGED_APPS_LOCAL_TILLER_FEATURE_FLAG)
-      end
     end
   end
 end

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Projects::GraphsController do
+RSpec.describe Projects::GraphsController do
   let(:project) { create(:project, :repository) }
   let(:user)    { create(:user) }
 
@@ -42,23 +42,42 @@ describe Projects::GraphsController do
         expect(response).to render_template(:charts)
       end
 
-      it 'sets the daily coverage options' do
-        Timecop.freeze do
-          get(:charts, params: { namespace_id: project.namespace.path, project_id: project.path, id: 'master' })
+      context 'when anonymous users can read build report results' do
+        it 'sets the daily coverage options' do
+          Timecop.freeze do
+            get(:charts, params: { namespace_id: project.namespace.path, project_id: project.path, id: 'master' })
 
-          expect(assigns[:daily_coverage_options]).to eq(
-            base_params: {
-              start_date: Time.current.to_date - 90.days,
-              end_date: Time.current.to_date,
-              ref_path: project.repository.expand_ref('master'),
-              param_type: 'coverage'
-            },
-            download_path: namespace_project_ci_daily_build_group_report_results_path(
-              namespace_id: project.namespace,
-              project_id: project,
-              format: :csv
+            expect(assigns[:daily_coverage_options]).to eq(
+              base_params: {
+                start_date: Date.current - 90.days,
+                end_date: Date.current,
+                ref_path: project.repository.expand_ref('master'),
+                param_type: 'coverage'
+              },
+              download_path: namespace_project_ci_daily_build_group_report_results_path(
+                namespace_id: project.namespace,
+                project_id: project,
+                format: :csv
+              ),
+              graph_api_path: namespace_project_ci_daily_build_group_report_results_path(
+                namespace_id: project.namespace,
+                project_id: project,
+                format: :json
+              )
             )
-          )
+          end
+        end
+      end
+
+      context 'when anonymous users cannot read build report results' do
+        before do
+          project.update_column(:public_builds, false)
+
+          get(:charts, params: { namespace_id: project.namespace.path, project_id: project.path, id: 'master' })
+        end
+
+        it 'does not set daily coverage options' do
+          expect(assigns[:daily_coverage_options]).to be_nil
         end
       end
     end

@@ -1,5 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
-import router from '~/ide/ide_router';
+import { createStore } from '~/ide/stores';
+import { createRouter } from '~/ide/ide_router';
 import Item from '~/ide/components/branches/item.vue';
 import Icon from '~/vue_shared/components/icon.vue';
 import Timeago from '~/vue_shared/components/time_ago_tooltip.vue';
@@ -13,6 +14,8 @@ const TEST_PROJECT_ID = projectData.name_with_namespace;
 
 describe('IDE branch item', () => {
   let wrapper;
+  let store;
+  let router;
 
   function createComponent(props = {}) {
     wrapper = shallowMount(Item, {
@@ -22,8 +25,14 @@ describe('IDE branch item', () => {
         isActive: false,
         ...props,
       },
+      router,
     });
   }
+
+  beforeEach(() => {
+    store = createStore();
+    router = createRouter(store);
+  });
 
   afterEach(() => {
     wrapper.destroy();

@@ -3,17 +3,185 @@
 require 'spec_helper'
 
 describe API::Users, :do_not_mock_admin_mode do
-  let(:user)  { create(:user, username: 'user.with.dot') }
-  let(:admin) { create(:admin) }
-  let(:key) { create(:key, user: user) }
-  let(:gpg_key) { create(:gpg_key, user: user) }
-  let(:email) { create(:email, user: user) }
+  let_it_be(:admin) { create(:admin) }
+  let_it_be(:user, reload: true) { create(:user, username: 'user.with.dot') }
+  let_it_be(:key) { create(:key, user: user) }
+  let_it_be(:gpg_key) { create(:gpg_key, user: user) }
+  let_it_be(:email) { create(:email, user: user) }
   let(:omniauth_user) { create(:omniauth_user) }
-  let(:ldap_user) { create(:omniauth_user, provider: 'ldapmain') }
   let(:ldap_blocked_user) { create(:omniauth_user, provider: 'ldapmain', state: 'ldap_blocked') }
-  let(:not_existing_user_id) { (User.maximum('id') || 0 ) + 10 }
-  let(:not_existing_pat_id) { (PersonalAccessToken.maximum('id') || 0 ) + 10 }
   let(:private_user) { create(:user, private_profile: true) }
+
+  context 'admin notes' do
+    let_it_be(:admin) { create(:admin, note: '2019-10-06 | 2FA added | user requested | www.gitlab.com') }
+    let_it_be(:user, reload: true) { create(:user, note: '2018-11-05 | 2FA removed | user requested | www.gitlab.com') }
+
+    describe 'POST /users' do
+      context 'when unauthenticated' do
+        it 'return authentication error' do
+          post api('/users')
+
+          expect(response).to have_gitlab_http_status(:unauthorized)
+        end
+      end
+
+      context 'when authenticated' do
+        context 'as an admin' do
+          it 'contains the note of the user' do
+            optional_attributes = { note: 'Awesome Note' }
+            attributes = attributes_for(:user).merge(optional_attributes)
+
+            post api('/users', admin), params: attributes
+
+            expect(response).to have_gitlab_http_status(:created)
+            expect(json_response['note']).to eq(optional_attributes[:note])
+          end
+        end
+
+        context 'as a regular user' do
+          it 'does not allow creating new user' do
+            post api('/users', user), params: attributes_for(:user)
+
+            expect(response).to have_gitlab_http_status(:forbidden)
+          end
+        end
+      end
+    end
+
+    describe 'GET /users/:id' do
+      context 'when unauthenticated' do
+        it 'does not contain the note of the user' do
+          get api("/users/#{user.id}")
+
+          expect(json_response).not_to have_key('note')
+        end
+      end
+
+      context 'when authenticated' do
+        context 'as an admin' do
+          it 'contains the note of the user' do
+            get api("/users/#{user.id}", admin)
+
+            expect(json_response).to have_key('note')
+            expect(json_response['note']).to eq(user.note)
+          end
+        end
+
+        context 'as a regular user' do
+          it 'does not contain the note of the user' do
+            get api("/users/#{user.id}", user)
+
+            expect(json_response).not_to have_key('note')
+          end
+        end
+      end
+    end
+
+    describe "PUT /users/:id" do
+      context 'when user is an admin' do
+        it "updates note of the user" do
+          new_note = '2019-07-07 | Email changed | user requested | www.gitlab.com'
+
+          expect do
+            put api("/users/#{user.id}", admin), params: { note: new_note }
+          end.to change { user.reload.note }
+                   .from('2018-11-05 | 2FA removed | user requested | www.gitlab.com')
+                   .to(new_note)
+
+          expect(response).to have_gitlab_http_status(:success)
+          expect(json_response['note']).to eq(new_note)
+        end
+      end
+
+      context 'when user is not an admin' do
+        it "cannot update their own note" do
+          expect do
+            put api("/users/#{user.id}", user), params: { note: 'new note' }
+          end.not_to change { user.reload.note }
+
+          expect(response).to have_gitlab_http_status(:forbidden)
+        end
+      end
+    end
+
+    describe 'GET /users/' do
+      context 'when unauthenticated' do
+        it "does not contain the note of users" do
+          get api("/users"), params: { username: user.username }
+
+          expect(json_response.first).not_to have_key('note')
+        end
+      end
+
+      context 'when authenticated' do
+        context 'as a regular user' do
+          it 'does not contain the note of users' do
+            get api("/users", user), params: { username: user.username }
+
+            expect(json_response.first).not_to have_key('note')
+          end
+        end
+
+        context 'as an admin' do
+          it 'contains the note of users' do
+            get api("/users", admin), params: { username: user.username }
+
+            expect(response).to have_gitlab_http_status(:success)
+            expect(json_response.first).to have_key('note')
+            expect(json_response.first['note']).to eq '2018-11-05 | 2FA removed | user requested | www.gitlab.com'
+          end
+        end
+      end
+    end
+
+    describe 'GET /user' do
+      context 'when authenticated' do
+        context 'as an admin' do
+          context 'accesses their own profile' do
+            it 'contains the note of the user' do
+              get api("/user", admin)
+
+              expect(json_response).to have_key('note')
+              expect(json_response['note']).to eq(admin.note)
+            end
+          end
+
+          context 'sudo' do
+            let(:admin_personal_access_token) { create(:personal_access_token, user: admin, scopes: %w[api sudo]).token }
+
+            context 'accesses the profile of another regular user' do
+              it 'does not contain the note of the user' do
+                get api("/user?private_token=#{admin_personal_access_token}&sudo=#{user.id}")
+
+                expect(json_response['id']).to eq(user.id)
+                expect(json_response).not_to have_key('note')
+              end
+            end
+
+            context 'accesses the profile of another admin' do
+              let(:admin_2) {create(:admin, note: '2010-10-10 | 2FA added | admin requested | www.gitlab.com')}
+
+              it 'contains the note of the user' do
+                get api("/user?private_token=#{admin_personal_access_token}&sudo=#{admin_2.id}")
+
+                expect(json_response['id']).to eq(admin_2.id)
+                expect(json_response).to have_key('note')
+                expect(json_response['note']).to eq(admin_2.note)
+              end
+            end
+          end
+        end
+
+        context 'as a regular user' do
+          it 'does not contain the note of the user' do
+            get api("/user", user)
+
+            expect(json_response).not_to have_key('note')
+          end
+        end
+      end
+    end
+  end
 
   shared_examples 'rendering user status' do
     it 'returns the status if there was one' do
@@ -257,8 +425,9 @@ describe API::Users, :do_not_mock_admin_mode do
       end
 
       it 'returns the correct order when sorted by id' do
-        admin
-        user
+        # order of let_it_be definitions:
+        # - admin
+        # - user
 
         get api('/users', admin), params: { order_by: 'id', sort: 'asc' }
 
@@ -269,8 +438,6 @@ describe API::Users, :do_not_mock_admin_mode do
       end
 
       it 'returns users with 2fa enabled' do
-        admin
-        user
         user_with_2fa = create(:user, :two_factor_via_otp)
 
         get api('/users', admin), params: { two_factor: 'enabled' }
@@ -296,18 +463,6 @@ describe API::Users, :do_not_mock_admin_mode do
         get api('/users', admin), params: { order_by: 'magic', sort: 'asc' }
 
         expect(response).to have_gitlab_http_status(:bad_request)
-      end
-    end
-
-    context "when authenticated and ldap is enabled" do
-      it "returns non-ldap user" do
-        create :omniauth_user, provider: "ldapserver1"
-
-        get api("/users", user), params: { skip_ldap: "true" }
-
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(json_response).to be_an Array
-        expect(json_response.first["username"]).to eq user.username
       end
     end
   end
@@ -492,10 +647,6 @@ describe API::Users, :do_not_mock_admin_mode do
   end
 
   describe "POST /users" do
-    before do
-      admin
-    end
-
     it "creates user" do
       expect do
         post api("/users", admin), params: attributes_for(:user, projects_limit: 3)
@@ -734,8 +885,6 @@ describe API::Users, :do_not_mock_admin_mode do
   end
 
   describe "PUT /users/:id" do
-    let_it_be(:admin_user) { create(:admin) }
-
     it "returns 200 OK on success" do
       put api("/users/#{user.id}", admin), params: { bio: 'new test bio' }
 
@@ -752,8 +901,7 @@ describe API::Users, :do_not_mock_admin_mode do
     end
 
     it "updates user with empty bio" do
-      user.bio = 'previous bio'
-      user.save!
+      user.update!(bio: 'previous bio')
 
       put api("/users/#{user.id}", admin), params: { bio: '' }
 
@@ -870,7 +1018,7 @@ describe API::Users, :do_not_mock_admin_mode do
     end
 
     it "updates private profile to false when nil is given" do
-      user.update(private_profile: true)
+      user.update!(private_profile: true)
 
       put api("/users/#{user.id}", admin), params: { private_profile: nil }
 
@@ -879,7 +1027,7 @@ describe API::Users, :do_not_mock_admin_mode do
     end
 
     it "does not modify private profile when field is not provided" do
-      user.update(private_profile: true)
+      user.update!(private_profile: true)
 
       put api("/users/#{user.id}", admin), params: {}
 
@@ -891,7 +1039,7 @@ describe API::Users, :do_not_mock_admin_mode do
       theme = Gitlab::Themes.each.find { |t| t.id != Gitlab::Themes.default.id }
       scheme = Gitlab::ColorSchemes.each.find { |t| t.id != Gitlab::ColorSchemes.default.id }
 
-      user.update(theme_id: theme.id, color_scheme_id: scheme.id)
+      user.update!(theme_id: theme.id, color_scheme_id: scheme.id)
 
       put api("/users/#{user.id}", admin), params: {}
 
@@ -901,6 +1049,8 @@ describe API::Users, :do_not_mock_admin_mode do
     end
 
     it "does not update admin status" do
+      admin_user = create(:admin)
+
       put api("/users/#{admin_user.id}", admin), params: { can_create_group: false }
 
       expect(response).to have_gitlab_http_status(:ok)
@@ -1071,10 +1221,6 @@ describe API::Users, :do_not_mock_admin_mode do
   end
 
   describe "POST /users/:id/keys" do
-    before do
-      admin
-    end
-
     it "does not create invalid ssh key" do
       post api("/users/#{user.id}/keys", admin), params: { title: "invalid key" }
 
@@ -1096,6 +1242,16 @@ describe API::Users, :do_not_mock_admin_mode do
       end.to change { user.keys.count }.by(1)
     end
 
+    it 'creates SSH key with `expires_at` attribute' do
+      optional_attributes = { expires_at: '2016-01-21T00:00:00.000Z' }
+      attributes = attributes_for(:key).merge(optional_attributes)
+
+      post api("/users/#{user.id}/keys", admin), params: attributes
+
+      expect(response).to have_gitlab_http_status(:created)
+      expect(json_response['expires_at']).to eq(optional_attributes[:expires_at])
+    end
+
     it "returns 400 for invalid ID" do
       post api("/users/0/keys", admin)
       expect(response).to have_gitlab_http_status(:bad_request)
@@ -1104,9 +1260,7 @@ describe API::Users, :do_not_mock_admin_mode do
 
   describe 'GET /user/:id/keys' do
     it 'returns 404 for non-existing user' do
-      user_id = not_existing_user_id
-
-      get api("/users/#{user_id}/keys")
+      get api("/users/#{non_existing_record_id}/keys")
 
       expect(response).to have_gitlab_http_status(:not_found)
       expect(json_response['message']).to eq('404 User Not Found')
@@ -1114,7 +1268,6 @@ describe API::Users, :do_not_mock_admin_mode do
 
     it 'returns array of ssh keys' do
       user.keys << key
-      user.save
 
       get api("/users/#{user.id}/keys")
 
@@ -1123,11 +1276,41 @@ describe API::Users, :do_not_mock_admin_mode do
       expect(json_response).to be_an Array
       expect(json_response.first['title']).to eq(key.title)
     end
+
+    it 'returns array of ssh keys with comments replaced with'\
+      'a simple identifier of username + hostname' do
+      get api("/users/#{user.id}/keys")
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(response).to include_pagination_headers
+      expect(json_response).to be_an Array
+
+      keys = json_response.map { |key_detail| key_detail['key'] }
+      expect(keys).to all(include("#{user.name} (#{Gitlab.config.gitlab.host}"))
+    end
+
+    context 'N+1 queries' do
+      before do
+        get api("/users/#{user.id}/keys")
+      end
+
+      it 'avoids N+1 queries', :request_store do
+        control_count = ActiveRecord::QueryRecorder.new(skip_cached: false) do
+          get api("/users/#{user.id}/keys")
+        end.count
+
+        create_list(:key, 2, user: user)
+
+        expect do
+          get api("/users/#{user.id}/keys")
+        end.not_to exceed_all_query_limit(control_count)
+      end
+    end
   end
 
   describe 'GET /user/:user_id/keys' do
     it 'returns 404 for non-existing user' do
-      get api("/users/#{not_existing_user_id}/keys")
+      get api("/users/#{non_existing_record_id}/keys")
 
       expect(response).to have_gitlab_http_status(:not_found)
       expect(json_response['message']).to eq('404 User Not Found')
@@ -1135,7 +1318,6 @@ describe API::Users, :do_not_mock_admin_mode do
 
     it 'returns array of ssh keys' do
       user.keys << key
-      user.save
 
       get api("/users/#{user.username}/keys")
 
@@ -1147,13 +1329,9 @@ describe API::Users, :do_not_mock_admin_mode do
   end
 
   describe 'DELETE /user/:id/keys/:key_id' do
-    before do
-      admin
-    end
-
     context 'when unauthenticated' do
       it 'returns authentication error' do
-        delete api("/users/#{user.id}/keys/42")
+        delete api("/users/#{user.id}/keys/#{non_existing_record_id}")
         expect(response).to have_gitlab_http_status(:unauthorized)
       end
     end
@@ -1161,7 +1339,6 @@ describe API::Users, :do_not_mock_admin_mode do
     context 'when authenticated' do
       it 'deletes existing key' do
         user.keys << key
-        user.save
 
         expect do
           delete api("/users/#{user.id}/keys/#{key.id}", admin)
@@ -1176,14 +1353,14 @@ describe API::Users, :do_not_mock_admin_mode do
 
       it 'returns 404 error if user not found' do
         user.keys << key
-        user.save
+
         delete api("/users/0/keys/#{key.id}", admin)
         expect(response).to have_gitlab_http_status(:not_found)
         expect(json_response['message']).to eq('404 User Not Found')
       end
 
       it 'returns 404 error if key not foud' do
-        delete api("/users/#{user.id}/keys/42", admin)
+        delete api("/users/#{user.id}/keys/#{non_existing_record_id}", admin)
         expect(response).to have_gitlab_http_status(:not_found)
         expect(json_response['message']).to eq('404 Key Not Found')
       end
@@ -1191,10 +1368,6 @@ describe API::Users, :do_not_mock_admin_mode do
   end
 
   describe 'POST /users/:id/keys' do
-    before do
-      admin
-    end
-
     it 'does not create invalid GPG key' do
       post api("/users/#{user.id}/gpg_keys", admin)
 
@@ -1203,7 +1376,8 @@ describe API::Users, :do_not_mock_admin_mode do
     end
 
     it 'creates GPG key' do
-      key_attrs = attributes_for :gpg_key
+      key_attrs = attributes_for :gpg_key, key: GpgHelpers::User2.public_key
+
       expect do
         post api("/users/#{user.id}/gpg_keys", admin), params: key_attrs
 
@@ -1219,10 +1393,6 @@ describe API::Users, :do_not_mock_admin_mode do
   end
 
   describe 'GET /user/:id/gpg_keys' do
-    before do
-      admin
-    end
-
     context 'when unauthenticated' do
       it 'returns authentication error' do
         get api("/users/#{user.id}/gpg_keys")
@@ -1240,7 +1410,7 @@ describe API::Users, :do_not_mock_admin_mode do
       end
 
       it 'returns 404 error if key not foud' do
-        delete api("/users/#{user.id}/gpg_keys/42", admin)
+        delete api("/users/#{user.id}/gpg_keys/#{non_existing_record_id}", admin)
 
         expect(response).to have_gitlab_http_status(:not_found)
         expect(json_response['message']).to eq('404 GPG Key Not Found')
@@ -1248,7 +1418,6 @@ describe API::Users, :do_not_mock_admin_mode do
 
       it 'returns array of GPG keys' do
         user.gpg_keys << gpg_key
-        user.save
 
         get api("/users/#{user.id}/gpg_keys", admin)
 
@@ -1261,13 +1430,9 @@ describe API::Users, :do_not_mock_admin_mode do
   end
 
   describe 'DELETE /user/:id/gpg_keys/:key_id' do
-    before do
-      admin
-    end
-
     context 'when unauthenticated' do
       it 'returns authentication error' do
-        delete api("/users/#{user.id}/keys/42")
+        delete api("/users/#{user.id}/keys/#{non_existing_record_id}")
 
         expect(response).to have_gitlab_http_status(:unauthorized)
       end
@@ -1276,7 +1441,6 @@ describe API::Users, :do_not_mock_admin_mode do
     context 'when authenticated' do
       it 'deletes existing key' do
         user.gpg_keys << gpg_key
-        user.save
 
         expect do
           delete api("/users/#{user.id}/gpg_keys/#{gpg_key.id}", admin)
@@ -1287,7 +1451,6 @@ describe API::Users, :do_not_mock_admin_mode do
 
       it 'returns 404 error if user not found' do
         user.keys << key
-        user.save
 
         delete api("/users/0/gpg_keys/#{gpg_key.id}", admin)
 
@@ -1296,7 +1459,7 @@ describe API::Users, :do_not_mock_admin_mode do
       end
 
       it 'returns 404 error if key not foud' do
-        delete api("/users/#{user.id}/gpg_keys/42", admin)
+        delete api("/users/#{user.id}/gpg_keys/#{non_existing_record_id}", admin)
 
         expect(response).to have_gitlab_http_status(:not_found)
         expect(json_response['message']).to eq('404 GPG Key Not Found')
@@ -1305,13 +1468,9 @@ describe API::Users, :do_not_mock_admin_mode do
   end
 
   describe 'POST /user/:id/gpg_keys/:key_id/revoke' do
-    before do
-      admin
-    end
-
     context 'when unauthenticated' do
       it 'returns authentication error' do
-        post api("/users/#{user.id}/gpg_keys/42/revoke")
+        post api("/users/#{user.id}/gpg_keys/#{non_existing_record_id}/revoke")
 
         expect(response).to have_gitlab_http_status(:unauthorized)
       end
@@ -1320,7 +1479,6 @@ describe API::Users, :do_not_mock_admin_mode do
     context 'when authenticated' do
       it 'revokes existing key' do
         user.gpg_keys << gpg_key
-        user.save
 
         expect do
           post api("/users/#{user.id}/gpg_keys/#{gpg_key.id}/revoke", admin)
@@ -1331,7 +1489,6 @@ describe API::Users, :do_not_mock_admin_mode do
 
       it 'returns 404 error if user not found' do
         user.gpg_keys << gpg_key
-        user.save
 
         post api("/users/0/gpg_keys/#{gpg_key.id}/revoke", admin)
 
@@ -1340,7 +1497,7 @@ describe API::Users, :do_not_mock_admin_mode do
       end
 
       it 'returns 404 error if key not foud' do
-        post api("/users/#{user.id}/gpg_keys/42/revoke", admin)
+        post api("/users/#{user.id}/gpg_keys/#{non_existing_record_id}/revoke", admin)
 
         expect(response).to have_gitlab_http_status(:not_found)
         expect(json_response['message']).to eq('404 GPG Key Not Found')
@@ -1349,10 +1506,6 @@ describe API::Users, :do_not_mock_admin_mode do
   end
 
   describe "POST /users/:id/emails" do
-    before do
-      admin
-    end
-
     it "does not create invalid email" do
       post api("/users/#{user.id}/emails", admin), params: {}
 
@@ -1390,10 +1543,6 @@ describe API::Users, :do_not_mock_admin_mode do
   end
 
   describe 'GET /user/:id/emails' do
-    before do
-      admin
-    end
-
     context 'when unauthenticated' do
       it 'returns authentication error' do
         get api("/users/#{user.id}/emails")
@@ -1410,7 +1559,6 @@ describe API::Users, :do_not_mock_admin_mode do
 
       it 'returns array of emails' do
         user.emails << email
-        user.save
 
         get api("/users/#{user.id}/emails", admin)
 
@@ -1429,13 +1577,9 @@ describe API::Users, :do_not_mock_admin_mode do
   end
 
   describe 'DELETE /user/:id/emails/:email_id' do
-    before do
-      admin
-    end
-
     context 'when unauthenticated' do
       it 'returns authentication error' do
-        delete api("/users/#{user.id}/emails/42")
+        delete api("/users/#{user.id}/emails/#{non_existing_record_id}")
         expect(response).to have_gitlab_http_status(:unauthorized)
       end
     end
@@ -1443,7 +1587,6 @@ describe API::Users, :do_not_mock_admin_mode do
     context 'when authenticated' do
       it 'deletes existing email' do
         user.emails << email
-        user.save
 
         expect do
           delete api("/users/#{user.id}/emails/#{email.id}", admin)
@@ -1458,14 +1601,14 @@ describe API::Users, :do_not_mock_admin_mode do
 
       it 'returns 404 error if user not found' do
         user.emails << email
-        user.save
+
         delete api("/users/0/emails/#{email.id}", admin)
         expect(response).to have_gitlab_http_status(:not_found)
         expect(json_response['message']).to eq('404 User Not Found')
       end
 
       it 'returns 404 error if email not foud' do
-        delete api("/users/#{user.id}/emails/42", admin)
+        delete api("/users/#{user.id}/emails/#{non_existing_record_id}", admin)
         expect(response).to have_gitlab_http_status(:not_found)
         expect(json_response['message']).to eq('404 Email Not Found')
       end
@@ -1479,19 +1622,16 @@ describe API::Users, :do_not_mock_admin_mode do
   end
 
   describe "DELETE /users/:id" do
-    let!(:namespace) { user.namespace }
-    let!(:issue) { create(:issue, author: user) }
-
-    before do
-      admin
-    end
+    let_it_be(:issue) { create(:issue, author: user) }
 
     it "deletes user", :sidekiq_might_not_need_inline do
+      namespace_id = user.namespace.id
+
       perform_enqueued_jobs { delete api("/users/#{user.id}", admin) }
 
       expect(response).to have_gitlab_http_status(:no_content)
       expect { User.find(user.id) }.to raise_error ActiveRecord::RecordNotFound
-      expect { Namespace.find(namespace.id) }.to raise_error ActiveRecord::RecordNotFound
+      expect { Namespace.find(namespace_id) }.to raise_error ActiveRecord::RecordNotFound
     end
 
     context "sole owner of a group" do
@@ -1560,11 +1700,11 @@ describe API::Users, :do_not_mock_admin_mode do
   end
 
   describe "GET /user" do
-    let(:personal_access_token) { create(:personal_access_token, user: user).token }
-
     shared_examples 'get user info' do |version|
       context 'with regular user' do
         context 'with personal access token' do
+          let(:personal_access_token) { create(:personal_access_token, user: user).token }
+
           it 'returns 403 without private token when sudo is defined' do
             get api("/user?private_token=#{personal_access_token}&sudo=123", version: version)
 
@@ -1632,7 +1772,6 @@ describe API::Users, :do_not_mock_admin_mode do
     context "when authenticated" do
       it "returns array of ssh keys" do
         user.keys << key
-        user.save
 
         get api("/user/keys", user)
 
@@ -1640,6 +1779,36 @@ describe API::Users, :do_not_mock_admin_mode do
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(json_response.first["title"]).to eq(key.title)
+      end
+
+      it 'returns array of ssh keys with comments replaced with'\
+        'a simple identifier of username + hostname' do
+        get api("/user/keys", user)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to include_pagination_headers
+        expect(json_response).to be_an Array
+
+        keys = json_response.map { |key_detail| key_detail['key'] }
+        expect(keys).to all(include("#{user.name} (#{Gitlab.config.gitlab.host}"))
+      end
+
+      context 'N+1 queries' do
+        before do
+          get api("/user/keys", user)
+        end
+
+        it 'avoids N+1 queries', :request_store do
+          control_count = ActiveRecord::QueryRecorder.new(skip_cached: false) do
+            get api("/user/keys", user)
+          end.count
+
+          create_list(:key, 2, user: user)
+
+          expect do
+            get api("/user/keys", user)
+          end.not_to exceed_all_query_limit(control_count)
+        end
       end
 
       context "scopes" do
@@ -1654,14 +1823,21 @@ describe API::Users, :do_not_mock_admin_mode do
   describe "GET /user/keys/:key_id" do
     it "returns single key" do
       user.keys << key
-      user.save
+
       get api("/user/keys/#{key.id}", user)
       expect(response).to have_gitlab_http_status(:ok)
       expect(json_response["title"]).to eq(key.title)
     end
 
+    it 'exposes SSH key comment as a simple identifier of username + hostname' do
+      get api("/user/keys/#{key.id}", user)
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response['key']).to include("#{key.user_name} (#{Gitlab.config.gitlab.host})")
+    end
+
     it "returns 404 Not Found within invalid ID" do
-      get api("/user/keys/42", user)
+      get api("/user/keys/#{non_existing_record_id}", user)
 
       expect(response).to have_gitlab_http_status(:not_found)
       expect(json_response['message']).to eq('404 Key Not Found')
@@ -1669,8 +1845,8 @@ describe API::Users, :do_not_mock_admin_mode do
 
     it "returns 404 error if admin accesses user's ssh key" do
       user.keys << key
-      user.save
       admin
+
       get api("/user/keys/#{key.id}", admin)
       expect(response).to have_gitlab_http_status(:not_found)
       expect(json_response['message']).to eq('404 Key Not Found')
@@ -1697,6 +1873,16 @@ describe API::Users, :do_not_mock_admin_mode do
         post api("/user/keys", user), params: key_attrs
       end.to change { user.keys.count }.by(1)
       expect(response).to have_gitlab_http_status(:created)
+    end
+
+    it 'creates SSH key with `expires_at` attribute' do
+      optional_attributes = { expires_at: '2016-01-21T00:00:00.000Z' }
+      attributes = attributes_for(:key).merge(optional_attributes)
+
+      post api("/user/keys", user), params: attributes
+
+      expect(response).to have_gitlab_http_status(:created)
+      expect(json_response['expires_at']).to eq(optional_attributes[:expires_at])
     end
 
     it "returns a 401 error if unauthorized" do
@@ -1727,7 +1913,6 @@ describe API::Users, :do_not_mock_admin_mode do
   describe "DELETE /user/keys/:key_id" do
     it "deletes existed key" do
       user.keys << key
-      user.save
 
       expect do
         delete api("/user/keys/#{key.id}", user)
@@ -1741,7 +1926,7 @@ describe API::Users, :do_not_mock_admin_mode do
     end
 
     it "returns 404 if key ID not found" do
-      delete api("/user/keys/42", user)
+      delete api("/user/keys/#{non_existing_record_id}", user)
 
       expect(response).to have_gitlab_http_status(:not_found)
       expect(json_response['message']).to eq('404 Key Not Found')
@@ -1749,7 +1934,7 @@ describe API::Users, :do_not_mock_admin_mode do
 
     it "returns 401 error if unauthorized" do
       user.keys << key
-      user.save
+
       delete api("/user/keys/#{key.id}")
       expect(response).to have_gitlab_http_status(:unauthorized)
     end
@@ -1773,7 +1958,6 @@ describe API::Users, :do_not_mock_admin_mode do
     context 'when authenticated' do
       it 'returns array of GPG keys' do
         user.gpg_keys << gpg_key
-        user.save
 
         get api('/user/gpg_keys', user)
 
@@ -1795,7 +1979,6 @@ describe API::Users, :do_not_mock_admin_mode do
   describe 'GET /user/gpg_keys/:key_id' do
     it 'returns a single key' do
       user.gpg_keys << gpg_key
-      user.save
 
       get api("/user/gpg_keys/#{gpg_key.id}", user)
 
@@ -1804,7 +1987,7 @@ describe API::Users, :do_not_mock_admin_mode do
     end
 
     it 'returns 404 Not Found within invalid ID' do
-      get api('/user/gpg_keys/42', user)
+      get api("/user/gpg_keys/#{non_existing_record_id}", user)
 
       expect(response).to have_gitlab_http_status(:not_found)
       expect(json_response['message']).to eq('404 GPG Key Not Found')
@@ -1812,7 +1995,6 @@ describe API::Users, :do_not_mock_admin_mode do
 
     it "returns 404 error if admin accesses user's GPG key" do
       user.gpg_keys << gpg_key
-      user.save
 
       get api("/user/gpg_keys/#{gpg_key.id}", admin)
 
@@ -1836,7 +2018,8 @@ describe API::Users, :do_not_mock_admin_mode do
 
   describe 'POST /user/gpg_keys' do
     it 'creates a GPG key' do
-      key_attrs = attributes_for :gpg_key
+      key_attrs = attributes_for :gpg_key, key: GpgHelpers::User2.public_key
+
       expect do
         post api('/user/gpg_keys', user), params: key_attrs
 
@@ -1861,7 +2044,6 @@ describe API::Users, :do_not_mock_admin_mode do
   describe 'POST /user/gpg_keys/:key_id/revoke' do
     it 'revokes existing GPG key' do
       user.gpg_keys << gpg_key
-      user.save
 
       expect do
         post api("/user/gpg_keys/#{gpg_key.id}/revoke", user)
@@ -1871,7 +2053,7 @@ describe API::Users, :do_not_mock_admin_mode do
     end
 
     it 'returns 404 if key ID not found' do
-      post api('/user/gpg_keys/42/revoke', user)
+      post api("/user/gpg_keys/#{non_existing_record_id}/revoke", user)
 
       expect(response).to have_gitlab_http_status(:not_found)
       expect(json_response['message']).to eq('404 GPG Key Not Found')
@@ -1879,7 +2061,6 @@ describe API::Users, :do_not_mock_admin_mode do
 
     it 'returns 401 error if unauthorized' do
       user.gpg_keys << gpg_key
-      user.save
 
       post api("/user/gpg_keys/#{gpg_key.id}/revoke")
 
@@ -1896,7 +2077,6 @@ describe API::Users, :do_not_mock_admin_mode do
   describe 'DELETE /user/gpg_keys/:key_id' do
     it 'deletes existing GPG key' do
       user.gpg_keys << gpg_key
-      user.save
 
       expect do
         delete api("/user/gpg_keys/#{gpg_key.id}", user)
@@ -1906,7 +2086,7 @@ describe API::Users, :do_not_mock_admin_mode do
     end
 
     it 'returns 404 if key ID not found' do
-      delete api('/user/gpg_keys/42', user)
+      delete api("/user/gpg_keys/#{non_existing_record_id}", user)
 
       expect(response).to have_gitlab_http_status(:not_found)
       expect(json_response['message']).to eq('404 GPG Key Not Found')
@@ -1914,7 +2094,6 @@ describe API::Users, :do_not_mock_admin_mode do
 
     it 'returns 401 error if unauthorized' do
       user.gpg_keys << gpg_key
-      user.save
 
       delete api("/user/gpg_keys/#{gpg_key.id}")
 
@@ -1939,7 +2118,6 @@ describe API::Users, :do_not_mock_admin_mode do
     context "when authenticated" do
       it "returns array of emails" do
         user.emails << email
-        user.save
 
         get api("/user/emails", user)
 
@@ -1961,22 +2139,22 @@ describe API::Users, :do_not_mock_admin_mode do
   describe "GET /user/emails/:email_id" do
     it "returns single email" do
       user.emails << email
-      user.save
+
       get api("/user/emails/#{email.id}", user)
       expect(response).to have_gitlab_http_status(:ok)
       expect(json_response["email"]).to eq(email.email)
     end
 
     it "returns 404 Not Found within invalid ID" do
-      get api("/user/emails/42", user)
+      get api("/user/emails/#{non_existing_record_id}", user)
       expect(response).to have_gitlab_http_status(:not_found)
       expect(json_response['message']).to eq('404 Email Not Found')
     end
 
     it "returns 404 error if admin accesses user's email" do
       user.emails << email
-      user.save
       admin
+
       get api("/user/emails/#{email.id}", admin)
       expect(response).to have_gitlab_http_status(:not_found)
       expect(json_response['message']).to eq('404 Email Not Found')
@@ -2021,7 +2199,6 @@ describe API::Users, :do_not_mock_admin_mode do
   describe "DELETE /user/emails/:email_id" do
     it "deletes existed email" do
       user.emails << email
-      user.save
 
       expect do
         delete api("/user/emails/#{email.id}", user)
@@ -2035,7 +2212,7 @@ describe API::Users, :do_not_mock_admin_mode do
     end
 
     it "returns 404 if email ID not found" do
-      delete api("/user/emails/42", user)
+      delete api("/user/emails/#{non_existing_record_id}", user)
 
       expect(response).to have_gitlab_http_status(:not_found)
       expect(json_response['message']).to eq('404 Email Not Found')
@@ -2043,7 +2220,7 @@ describe API::Users, :do_not_mock_admin_mode do
 
     it "returns 401 error if unauthorized" do
       user.emails << email
-      user.save
+
       delete api("/user/emails/#{email.id}")
       expect(response).to have_gitlab_http_status(:unauthorized)
     end
@@ -2149,7 +2326,7 @@ describe API::Users, :do_not_mock_admin_mode do
       context 'performed by an admin user' do
         context 'for an active user' do
           let(:activity) { {} }
-          let(:user) { create(:user, username: 'user.with.dot', **activity) }
+          let(:user) { create(:user, **activity) }
 
           context 'with no recent activity' do
             let(:activity) { { last_activity_on: ::User::MINIMUM_INACTIVE_DAYS.next.days.ago } }
@@ -2234,10 +2411,6 @@ describe API::Users, :do_not_mock_admin_mode do
   describe 'POST /users/:id/block' do
     let(:blocked_user) { create(:user, state: 'blocked') }
 
-    before do
-      admin
-    end
-
     it 'blocks existing user' do
       post api("/users/#{user.id}/block", admin)
 
@@ -2279,10 +2452,6 @@ describe API::Users, :do_not_mock_admin_mode do
   describe 'POST /users/:id/unblock' do
     let(:blocked_user) { create(:user, state: 'blocked') }
     let(:deactivated_user) { create(:user, state: 'deactivated') }
-
-    before do
-      admin
-    end
 
     it 'unblocks existing user' do
       post api("/users/#{user.id}/unblock", admin)
@@ -2477,21 +2646,21 @@ describe API::Users, :do_not_mock_admin_mode do
   end
 
   describe 'GET /users/:user_id/impersonation_tokens' do
-    let!(:active_personal_access_token) { create(:personal_access_token, user: user) }
-    let!(:revoked_personal_access_token) { create(:personal_access_token, :revoked, user: user) }
-    let!(:expired_personal_access_token) { create(:personal_access_token, :expired, user: user) }
-    let!(:impersonation_token) { create(:personal_access_token, :impersonation, user: user) }
-    let!(:revoked_impersonation_token) { create(:personal_access_token, :impersonation, :revoked, user: user) }
+    let_it_be(:active_personal_access_token) { create(:personal_access_token, user: user) }
+    let_it_be(:revoked_personal_access_token) { create(:personal_access_token, :revoked, user: user) }
+    let_it_be(:expired_personal_access_token) { create(:personal_access_token, :expired, user: user) }
+    let_it_be(:impersonation_token) { create(:personal_access_token, :impersonation, user: user) }
+    let_it_be(:revoked_impersonation_token) { create(:personal_access_token, :impersonation, :revoked, user: user) }
 
     it 'returns a 404 error if user not found' do
-      get api("/users/#{not_existing_user_id}/impersonation_tokens", admin)
+      get api("/users/#{non_existing_record_id}/impersonation_tokens", admin)
 
       expect(response).to have_gitlab_http_status(:not_found)
       expect(json_response['message']).to eq('404 User Not Found')
     end
 
     it 'returns a 403 error when authenticated as normal user' do
-      get api("/users/#{not_existing_user_id}/impersonation_tokens", user)
+      get api("/users/#{non_existing_record_id}/impersonation_tokens", user)
 
       expect(response).to have_gitlab_http_status(:forbidden)
       expect(json_response['message']).to eq('403 Forbidden')
@@ -2540,7 +2709,7 @@ describe API::Users, :do_not_mock_admin_mode do
     end
 
     it 'returns a 404 error if user not found' do
-      post api("/users/#{not_existing_user_id}/impersonation_tokens", admin),
+      post api("/users/#{non_existing_record_id}/impersonation_tokens", admin),
         params: {
           name: name,
           expires_at: expires_at
@@ -2584,18 +2753,18 @@ describe API::Users, :do_not_mock_admin_mode do
   end
 
   describe 'GET /users/:user_id/impersonation_tokens/:impersonation_token_id' do
-    let!(:personal_access_token) { create(:personal_access_token, user: user) }
-    let!(:impersonation_token) { create(:personal_access_token, :impersonation, user: user) }
+    let_it_be(:personal_access_token) { create(:personal_access_token, user: user) }
+    let_it_be(:impersonation_token) { create(:personal_access_token, :impersonation, user: user) }
 
     it 'returns 404 error if user not found' do
-      get api("/users/#{not_existing_user_id}/impersonation_tokens/1", admin)
+      get api("/users/#{non_existing_record_id}/impersonation_tokens/1", admin)
 
       expect(response).to have_gitlab_http_status(:not_found)
       expect(json_response['message']).to eq('404 User Not Found')
     end
 
     it 'returns a 404 error if impersonation token not found' do
-      get api("/users/#{user.id}/impersonation_tokens/#{not_existing_pat_id}", admin)
+      get api("/users/#{user.id}/impersonation_tokens/#{non_existing_record_id}", admin)
 
       expect(response).to have_gitlab_http_status(:not_found)
       expect(json_response['message']).to eq('404 Impersonation Token Not Found')
@@ -2625,18 +2794,18 @@ describe API::Users, :do_not_mock_admin_mode do
   end
 
   describe 'DELETE /users/:user_id/impersonation_tokens/:impersonation_token_id' do
-    let!(:personal_access_token) { create(:personal_access_token, user: user) }
-    let!(:impersonation_token) { create(:personal_access_token, :impersonation, user: user) }
+    let_it_be(:personal_access_token) { create(:personal_access_token, user: user) }
+    let_it_be(:impersonation_token) { create(:personal_access_token, :impersonation, user: user) }
 
     it 'returns a 404 error if user not found' do
-      delete api("/users/#{not_existing_user_id}/impersonation_tokens/1", admin)
+      delete api("/users/#{non_existing_record_id}/impersonation_tokens/1", admin)
 
       expect(response).to have_gitlab_http_status(:not_found)
       expect(json_response['message']).to eq('404 User Not Found')
     end
 
     it 'returns a 404 error if impersonation token not found' do
-      delete api("/users/#{user.id}/impersonation_tokens/#{not_existing_pat_id}", admin)
+      delete api("/users/#{user.id}/impersonation_tokens/#{non_existing_record_id}", admin)
 
       expect(response).to have_gitlab_http_status(:not_found)
       expect(json_response['message']).to eq('404 Impersonation Token Not Found')

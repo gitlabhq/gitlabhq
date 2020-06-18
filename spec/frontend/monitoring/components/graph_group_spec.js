@@ -8,6 +8,7 @@ describe('Graph group component', () => {
   const findGroup = () => wrapper.find({ ref: 'graph-group' });
   const findContent = () => wrapper.find({ ref: 'graph-group-content' });
   const findCaretIcon = () => wrapper.find(Icon);
+  const findToggleButton = () => wrapper.find('[data-testid="group-toggle-button"]');
 
   const createComponent = propsData => {
     wrapper = shallowMount(GraphGroup, {
@@ -41,6 +42,16 @@ describe('Graph group component', () => {
       });
     });
 
+    it('should contain a tabindex', () => {
+      expect(findGroup().contains('[tabindex]')).toBe(true);
+    });
+
+    it('should contain a tab index for the collapse button', () => {
+      const groupToggle = findToggleButton();
+
+      expect(groupToggle.contains('[tabindex]')).toBe(true);
+    });
+
     it('should show the open the group when collapseGroup is set to true', () => {
       wrapper.setProps({
         collapseGroup: true,
@@ -68,6 +79,15 @@ describe('Graph group component', () => {
         wrapper.vm.collapse();
 
         expect(wrapper.vm.caretIcon).toBe('angle-down');
+      });
+
+      it('should call collapse the graph group content when enter is pressed on the caret icon', () => {
+        const graphGroupContent = findContent();
+        const button = findToggleButton();
+
+        button.trigger('keyup.enter');
+
+        expect(graphGroupContent.isVisible()).toBe(false);
       });
     });
 

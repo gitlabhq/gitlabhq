@@ -7,9 +7,19 @@ module Projects
         include Gitlab::Utils::StrongMemoize
         include IncidentManagement::Settings
 
+        # This set of keys identifies a payload as a valid Prometheus
+        # payload and thus processable by this service. See also
+        # https://prometheus.io/docs/alerting/configuration/#webhook_config
+        REQUIRED_PAYLOAD_KEYS = %w[
+          version groupKey status receiver groupLabels commonLabels
+          commonAnnotations externalURL alerts
+        ].to_set.freeze
+
+        SUPPORTED_VERSION = '4'
+
         def execute(token)
           return bad_request unless valid_payload_size?
-          return unprocessable_entity unless valid_version?
+          return unprocessable_entity unless self.class.processable?(params)
           return unauthorized unless valid_alert_manager_token?(token)
 
           process_prometheus_alerts
@@ -18,6 +28,14 @@ module Projects
           process_incident_issues if process_issues?
 
           ServiceResponse.success
+        end
+
+        def self.processable?(params)
+          # Workaround for https://gitlab.com/gitlab-org/gitlab/-/issues/220496
+          return false unless params
+
+          REQUIRED_PAYLOAD_KEYS.subset?(params.keys.to_set) &&
+            params['version'] == SUPPORTED_VERSION
         end
 
         private
@@ -42,12 +60,10 @@ module Projects
           params['alerts']
         end
 
-        def valid_version?
-          params['version'] == '4'
-        end
-
         def valid_alert_manager_token?(token)
-          valid_for_manual?(token) || valid_for_managed?(token)
+          valid_for_manual?(token) ||
+            valid_for_alerts_endpoint?(token) ||
+            valid_for_managed?(token)
         end
 
         def valid_for_manual?(token)
@@ -59,6 +75,13 @@ module Projects
           else
             token.nil?
           end
+        end
+
+        def valid_for_alerts_endpoint?(token)
+          return false unless project.alerts_service_activated?
+
+          # Here we are enforcing the existence of the token
+          compare_token(token, project.alerts_service.token)
         end
 
         def valid_for_managed?(token)

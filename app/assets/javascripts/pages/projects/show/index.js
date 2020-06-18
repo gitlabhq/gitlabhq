@@ -1,4 +1,6 @@
 import $ from 'jquery';
+import 'jquery.waitforimages';
+
 import initBlob from '~/blob_edit/blob_bundle';
 import ShortcutsNavigation from '~/behaviors/shortcuts/shortcuts_navigation';
 import NotificationsForm from '~/notifications_form';
@@ -12,9 +14,12 @@ import initReadMore from '~/read_more';
 import leaveByUrl from '~/namespaces/leave_by_url';
 import Star from '../../../star';
 import notificationsDropdown from '../../../notifications_dropdown';
+import initNamespaceStorageLimitAlert from '~/namespace_storage_limit_alert';
+import { showLearnGitLabProjectPopover } from '~/onboarding_issues';
 
 document.addEventListener('DOMContentLoaded', () => {
   initReadMore();
+  initNamespaceStorageLimitAlert();
   new Star(); // eslint-disable-line no-new
   notificationsDropdown();
   new ShortcutsNavigation(); // eslint-disable-line no-new
@@ -55,4 +60,6 @@ document.addEventListener('DOMContentLoaded', () => {
         throw e;
       });
   }
+
+  showLearnGitLabProjectPopover();
 });

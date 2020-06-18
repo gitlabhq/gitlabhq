@@ -1,11 +1,14 @@
 ---
 type: reference, howto
+stage: Plan
+group: Portfolio Management
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 ---
 
 # Epics **(PREMIUM)**
 
 > - Introduced in [GitLab Ultimate](https://about.gitlab.com/pricing/) 10.2.
-> - Single-level Epics [were moved](https://gitlab.com/gitlab-org/gitlab/issues/37081) to [GitLab Premium](https://about.gitlab.com/pricing/) in 12.8.
+> - Single-level Epics [were moved](https://gitlab.com/gitlab-org/gitlab/-/issues/37081) to [GitLab Premium](https://about.gitlab.com/pricing/) in 12.8.
 
 Epics let you manage your portfolio of projects more efficiently and with less
 effort by tracking groups of issues that share a theme, across projects and
@@ -25,7 +28,7 @@ milestones.
 To learn what you can do with an epic, see [Manage epics](manage_epics.md). Possible actions include:
 
 - [Create an epic](manage_epics.md#create-an-epic)
-- [Bulk-edit epics](manage_epics.md#bulk-edit-epics)
+- [Bulk-edit epics](../bulk_editing/index.md#bulk-edit-epics)
 - [Delete an epic](manage_epics.md#delete-an-epic)
 - [Close an epic](manage_epics.md#close-an-epic)
 - [Reopen a closed epic](manage_epics.md#reopen-a-closed-epic)
@@ -67,7 +70,7 @@ This feature comes with a feature flag enabled by default. For steps to disable 
 
 ## Multi-level child epics **(ULTIMATE)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/8333) in GitLab Ultimate 11.7.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/8333) in GitLab Ultimate 11.7.
 
 Any epic that belongs to a group, or subgroup of the parent epic's group, is eligible to be added.
 New child epics appear at the top of the list of epics in the **Epics and Issues** tab.
@@ -86,11 +89,11 @@ To set a **Start date** and **Due date** for an epic, select one of the followin
 - **Fixed**: Enter a fixed value.
 - **From milestones**: Inherit a dynamic value from the milestones currently assigned to the epic's issues.
   Note that GitLab 12.5 replaced this option with **Inherited**.
-- **Inherited**: Inherit a dynamic value from the epic's issues, child epics, and milestones ([Introduced](https://gitlab.com/gitlab-org/gitlab/issues/7332) in GitLab 12.5 to replace **From milestones**).
+- **Inherited**: Inherit a dynamic value from the epic's issues, child epics, and milestones ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/7332) in GitLab 12.5 to replace **From milestones**).
 
 ### From milestones
 
-> [Replaced](https://gitlab.com/gitlab-org/gitlab/issues/7332) in GitLab 12.5 by **Inherited**.
+> [Replaced](https://gitlab.com/gitlab-org/gitlab/-/issues/7332) in GitLab 12.5 by **Inherited**.
 
 If you select **From milestones** for the start date, GitLab will automatically set the date to be earliest
 start date across all milestones that are currently assigned to the issues that are added to the epic.
@@ -105,7 +108,7 @@ These are dynamic dates which are recalculated if any of the following occur:
 
 ### Inherited
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/7332) in GitLab 12.5 to replace **From milestones**.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/7332) in GitLab 12.5 to replace **From milestones**.
 
 If you select:
 
@@ -127,7 +130,7 @@ then the parent epic's start date will reflect the change and this will propagat
 
 ## Roadmap in epics
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/7327) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.10.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/7327) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.10.
 
 If your epic contains one or more [child epics](#multi-level-child-epics-ultimate) which
 have a [start or due date](#start-date-and-due-date), a

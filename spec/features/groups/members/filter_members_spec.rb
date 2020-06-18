@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Groups > Members > Filter members' do
+RSpec.describe 'Groups > Members > Filter members' do
   let(:user)              { create(:user) }
   let(:nested_group_user) { create(:user) }
   let(:user_with_2fa)     { create(:user, :two_factor_via_otp) }

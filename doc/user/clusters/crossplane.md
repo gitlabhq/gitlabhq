@@ -151,7 +151,7 @@ kubectl describe globaladdress.compute.gcp.crossplane.io gitlab-ad-globaladdress
 
 Resource classes are a way of defining a configuration for the required managed service. We will define the PostgreSQL Resource class
 
-- Define a `gcp-postgres-standard.yaml` resourceclass which contains
+- Define a `gcp-postgres-standard.yaml` resource class which contains
 
 1. A default CloudSQLInstanceClass.
 1. A CloudSQLInstanceClass with labels.

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'User searches for code' do
+RSpec.describe 'User searches for code' do
   let(:user) { create(:user) }
   let(:project) { create(:project, :repository, namespace: user.namespace) }
 

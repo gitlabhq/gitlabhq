@@ -1,0 +1,19 @@
+- @gfm_form = true
+- current_text ||= nil
+- supports_autocomplete = local_assigns.fetch(:supports_autocomplete, true)
+- supports_quick_actions = local_assigns.fetch(:supports_quick_actions, false)
+- qa_selector = local_assigns.fetch(:qa_selector, '')
+.zen-backdrop
+  - classes << ' js-gfm-input js-autosize markdown-area'
+  - if defined?(f) && f
+    = f.text_area attr,
+      class: classes,
+      placeholder: placeholder,
+      dir: 'auto',
+      data: { supports_quick_actions: supports_quick_actions,
+        supports_autocomplete: supports_autocomplete,
+        qa_selector: qa_selector }
+  - else
+    = text_area_tag attr, current_text, class: classes, placeholder: placeholder
+  %a.zen-control.zen-control-leave.js-zen-leave.gl-text-gray-700{ href: "#" }
+    = sprite_icon('compress', size: 16)

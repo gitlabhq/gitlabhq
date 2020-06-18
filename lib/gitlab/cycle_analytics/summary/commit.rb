@@ -5,7 +5,7 @@ module Gitlab
     module Summary
       class Commit < Base
         def title
-          n_('Commit', 'Commits', value)
+          n_('Commit', 'Commits', value.to_i)
         end
 
         def value

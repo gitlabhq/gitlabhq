@@ -7,7 +7,7 @@ describe GitlabSchema.types['MetricsDashboard'] do
 
   it 'has the expected fields' do
     expected_fields = %w[
-        path annotations
+        path annotations schema_validation_warnings
       ]
 
     expect(described_class).to have_graphql_fields(*expected_fields)

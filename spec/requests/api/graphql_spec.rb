@@ -187,4 +187,62 @@ describe 'GraphQL' do
       end
     end
   end
+
+  describe 'keyset pagination' do
+    let_it_be(:project) { create(:project, :public) }
+    let_it_be(:issues) { create_list(:issue, 10, project: project, created_at: Time.now.change(usec: 200)) }
+
+    let(:page_size) { 6 }
+    let(:issues_edges) { %w(data project issues edges) }
+    let(:end_cursor) { %w(data project issues pageInfo endCursor) }
+    let(:query) do
+      <<~GRAPHQL
+        query project($fullPath: ID!, $first: Int, $after: String) {
+            project(fullPath: $fullPath) {
+              issues(first: $first, after: $after) {
+                edges { node { iid } }
+                pageInfo { endCursor }
+              }
+            }
+        }
+      GRAPHQL
+    end
+
+    # TODO: Switch this to use `post_graphql`
+    # This is not performing an actual GraphQL request because the
+    # variables end up being strings when passed through the `post_graphql`
+    # helper.
+    #
+    # https://gitlab.com/gitlab-org/gitlab/-/issues/222432
+    def execute_query(after: nil)
+      GitlabSchema.execute(
+        query,
+        context: { current_user: nil },
+        variables: {
+          fullPath: project.full_path,
+          first: page_size,
+          after: after
+        }
+      )
+    end
+
+    it 'paginates datetimes correctly when they have millisecond data' do
+      # let's make sure we're actually querying a timestamp, just in case
+      expect(Gitlab::Graphql::Pagination::Keyset::QueryBuilder)
+        .to receive(:new).with(anything, anything, hash_including('created_at'), anything).and_call_original
+
+      first_page = execute_query
+      edges = first_page.dig(*issues_edges)
+      cursor = first_page.dig(*end_cursor)
+
+      expect(edges.count).to eq(6)
+      expect(edges.last['node']['iid']).to eq(issues[4].iid.to_s)
+
+      second_page = execute_query(after: cursor)
+      edges = second_page.dig(*issues_edges)
+
+      expect(edges.count).to eq(4)
+      expect(edges.last['node']['iid']).to eq(issues[0].iid.to_s)
+    end
+  end
 end

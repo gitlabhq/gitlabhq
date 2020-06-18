@@ -57,7 +57,7 @@ export default {
 
 <template>
   <div class="card-subtitle d-flex flex-wrap text-secondary">
-    <div class="append-right-8">
+    <div class="gl-mr-3">
       <icon name="commit" class="align-middle" />
       <gl-link v-if="commitUrl" v-gl-tooltip.bottom :title="commit.title" :href="commitUrl">
         {{ commit.shortId }}
@@ -65,7 +65,7 @@ export default {
       <span v-else v-gl-tooltip.bottom :title="commit.title">{{ commit.shortId }}</span>
     </div>
 
-    <div class="append-right-8">
+    <div class="gl-mr-3">
       <icon name="tag" class="align-middle" />
       <gl-link v-if="tagUrl" v-gl-tooltip.bottom :title="__('Tag')" :href="tagUrl">
         {{ release.tagName }}

@@ -49,9 +49,11 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
             get :trace, defaults: { format: 'json' }
             get :raw
             get :terminal
+            get :proxy
 
-            # This route is also defined in gitlab-workhorse. Make sure to update accordingly.
+            # These routes are also defined in gitlab-workhorse. Make sure to update accordingly.
             get '/terminal.ws/authorize', to: 'jobs#terminal_websocket_authorize', format: false
+            get '/proxy.ws/authorize', to: 'jobs#proxy_websocket_authorize', format: false
           end
 
           resource :artifacts, only: [] do
@@ -65,12 +67,10 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
 
         namespace :ci do
           resource :lint, only: [:show, :create]
-          resources :daily_build_group_report_results, only: [:index], constraints: { format: 'csv' }
+          resources :daily_build_group_report_results, only: [:index], constraints: { format: /(csv|json)/ }
         end
 
         namespace :settings do
-          get :members, to: redirect("%{namespace_id}/%{project_id}/-/project_members")
-
           resource :ci_cd, only: [:show, :update], controller: 'ci_cd' do
             post :reset_cache
             put :reset_registration_token
@@ -199,7 +199,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
 
         resources :starrers, only: [:index]
         resources :forks, only: [:index, :new, :create]
-        resources :group_links, only: [:index, :create, :update, :destroy], constraints: { id: /\d+/ }
+        resources :group_links, only: [:create, :update, :destroy], constraints: { id: /\d+/ }
 
         resource :import, only: [:new, :create, :show]
         resource :avatar, only: [:show, :destroy]
@@ -315,6 +315,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
 
         draw :issues
         draw :merge_requests
+        draw :pipelines
 
         # The wiki and repository routing contains wildcard characters so
         # its preferable to keep it below all other project routes
@@ -323,9 +324,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         draw :wiki
 
         namespace :import do
-          resource :jira, only: [:show], controller: :jira do
-            post :import
-          end
+          resource :jira, only: [:show], controller: :jira
         end
       end
       # End of the /-/ scope.
@@ -379,17 +378,6 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
       end
 
       post 'alerts/notify', to: 'alerting/notifications#create'
-
-      # Unscoped route. It will be replaced with redirect to /-/pipelines/
-      # Issue https://gitlab.com/gitlab-org/gitlab/issues/118849
-      draw :pipelines
-
-      # To ensure an old unscoped routing is used for the UI we need to
-      # add prefix 'as' to the scope routing and place it below original routing.
-      # Issue https://gitlab.com/gitlab-org/gitlab/issues/118849
-      scope '-', as: 'scoped' do
-        draw :pipelines
-      end
 
       draw :legacy_builds
 
@@ -472,9 +460,21 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         post :web_ide_pipelines_count
       end
 
+      resources :web_ide_terminals, path: :ide_terminals, only: [:create, :show], constraints: { id: /\d+/, format: :json } do # rubocop: disable Cop/PutProjectRoutesUnderScope
+        member do
+          post :cancel
+          post :retry
+        end
+
+        collection do
+          post :check_config
+        end
+      end
+
       # Deprecated unscoped routing.
       # Issue https://gitlab.com/gitlab-org/gitlab/issues/118849
       scope as: 'deprecated' do
+        draw :pipelines
         draw :repository
       end
 

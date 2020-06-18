@@ -26,7 +26,7 @@ describe Gitlab::ImportExport::Project::TreeRestorer do
           @project = create(:project, :builds_enabled, :issues_disabled, name: 'project', path: 'project')
           @shared = @project.import_export_shared
 
-          allow(Feature).to receive(:enabled?) { true }
+          stub_all_feature_flags
           stub_feature_flags(project_import_ndjson: ndjson_enabled)
 
           setup_import_export_config('complex')

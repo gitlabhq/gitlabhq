@@ -32,6 +32,7 @@ namespace :gemojione do
 
     dir = Gemojione.images_path
     resultant_emoji_map = {}
+    resultant_emoji_map_new = {}
 
     Gitlab::Emoji.emojis.each do |name, emoji_hash|
       # Ignore aliases
@@ -53,12 +54,27 @@ namespace :gemojione do
         }
 
         resultant_emoji_map[name] = entry
+
+        # Our new map is only characters to make the json substantially smaller
+        new_entry = {
+          c: category,
+          e: emoji_hash['moji'],
+          d: emoji_hash['description'],
+          u: Gitlab::Emoji.emoji_unicode_version(name)
+        }
+
+        resultant_emoji_map_new[name] = new_entry
       end
     end
 
     out = File.join(Rails.root, 'fixtures', 'emojis', 'digests.json')
     File.open(out, 'w') do |handle|
       handle.write(Gitlab::Json.pretty_generate(resultant_emoji_map))
+    end
+
+    out_new = File.join(Rails.root, 'public', '-', 'emojis', '1', 'emojis.json')
+    File.open(out_new, 'w') do |handle|
+      handle.write(Gitlab::Json.pretty_generate(resultant_emoji_map_new))
     end
   end
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Metrics::UsersStarredDashboardsFinder do
+RSpec.describe Metrics::UsersStarredDashboardsFinder do
   describe '#execute' do
     subject(:starred_dashboards) { described_class.new(user: user, project: project, params: params).execute }
 

@@ -14,7 +14,7 @@ I/O. The information on this page can be used for either scenario.
 ### Benchmarking with `fio`
 
 We recommend using
-[fio](https://fio.readthedocs.io/en/latest/fio_doc.html) to test I/O
+[Fio](https://fio.readthedocs.io/en/latest/fio_doc.html) to test I/O
 performance. This test should be run both on the NFS server and on the
 application nodes that talk to the NFS server.
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Mutations::AlertManagement::UpdateAlertStatus do
+RSpec.describe Mutations::AlertManagement::UpdateAlertStatus do
   let_it_be(:current_user) { create(:user) }
   let_it_be(:alert) { create(:alert_management_alert, :triggered) }
   let_it_be(:project) { alert.project }
@@ -33,7 +33,7 @@ describe Mutations::AlertManagement::UpdateAlertStatus do
       context 'error occurs when updating' do
         it 'returns the alert with errors' do
           # Stub an error on the alert
-          allow_next_instance_of(Resolvers::AlertManagementAlertResolver) do |resolver|
+          allow_next_instance_of(Resolvers::AlertManagement::AlertResolver) do |resolver|
             allow(resolver).to receive(:resolve).and_return(alert)
           end
 

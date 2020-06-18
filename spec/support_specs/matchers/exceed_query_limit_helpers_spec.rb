@@ -3,16 +3,21 @@
 require 'spec_helper'
 
 describe ExceedQueryLimitHelpers do
-  class TestQueries < ActiveRecord::Base
-    self.table_name = 'schema_migrations'
-  end
+  before do
+    stub_const('TestQueries', Class.new(ActiveRecord::Base))
+    stub_const('TestMatcher', Class.new)
 
-  class TestMatcher
-    include ExceedQueryLimitHelpers
+    TestQueries.class_eval do
+      self.table_name = 'schema_migrations'
+    end
 
-    def expected
-      ActiveRecord::QueryRecorder.new do
-        2.times { TestQueries.count }
+    TestMatcher.class_eval do
+      include ExceedQueryLimitHelpers
+
+      def expected
+        ActiveRecord::QueryRecorder.new do
+          2.times { TestQueries.count }
+        end
       end
     end
   end

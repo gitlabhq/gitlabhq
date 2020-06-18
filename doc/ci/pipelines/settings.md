@@ -1,4 +1,7 @@
 ---
+stage: Verify
+group: Continuous Integration
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 disqus_identifier: 'https://docs.gitlab.com/ee/user/project/pipelines/settings.html'
 type: reference, howto
 ---
@@ -59,7 +62,7 @@ if the job surpasses the threshold, it is marked as failed.
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/17221) in GitLab 10.7.
 
 Project defined timeout (either specific timeout set by user or the default
-60 minutes timeout) may be [overridden on Runner level](../runners/README.md#setting-maximum-job-timeout-for-a-runner).
+60 minutes timeout) may be [overridden on Runner level](../runners/README.md#set-maximum-job-timeout-for-a-runner).
 
 ## Maximum artifacts size **(CORE ONLY)**
 
@@ -69,7 +72,7 @@ For information about setting a maximum artifact size for a project, see
 ## Custom CI configuration path
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/12509) in GitLab 9.4.
-> - [Support for external `.gitlab-ci.yml` locations](https://gitlab.com/gitlab-org/gitlab/issues/14376) introduced in GitLab 12.6.
+> - [Support for external `.gitlab-ci.yml` locations](https://gitlab.com/gitlab-org/gitlab/-/issues/14376) introduced in GitLab 12.6.
 
 By default we look for the `.gitlab-ci.yml` file in the project's root
 directory. If needed, you can specify an alternate path and file name, including locations outside the project.
@@ -118,7 +121,8 @@ job log using a regular expression. In the pipelines settings, search for the
 ![Pipelines settings test coverage](img/pipelines_settings_test_coverage.png)
 
 Leave blank if you want to disable it or enter a Ruby regular expression. You
-can use <https://rubular.com> to test your regex.
+can use <https://rubular.com> to test your regex. The regex returns the **last**
+match found in the output.
 
 If the pipeline succeeds, the coverage is shown in the merge request widget and
 in the jobs table.
@@ -130,15 +134,18 @@ in the jobs table.
 A few examples of known coverage tools for a variety of languages can be found
 in the pipelines settings page.
 
-### Download test coverage history
+### Code Coverage history
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/209121) in GitLab 12.10.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/209121) the ability to download a `.csv` in GitLab 12.10.
+> - [Graph introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/33743) in GitLab 13.1.
 
 If you want to see the evolution of your project code coverage over time,
-you can download a CSV file with this data. From your project:
+you can view a graph or download a CSV file with this data. From your project:
 
-1. Go to **{chart}** **Project Analytics > Repository**.
-1. Click **Download raw data (.csv)**
+1. Go to **{chart}** **Project Analytics > Repository** to see the historic data for each job listed in the dropdown above the graph.
+1. If you want a CSV file of that data, click **Download raw data (.csv)**
+
+![Code coverage graph of a project over time](img/code_coverage_graph_v13_1.png)
 
 ### Removing color codes
 
@@ -205,9 +212,11 @@ you can enable this in the project settings:
 1. Check the **Auto-cancel redundant, pending pipelines** checkbox.
 1. Click **Save changes**.
 
+Note that only jobs with [interruptible](../yaml/README.md#interruptible) set to `true` will be cancelled.
+
 ## Skip outdated deployment jobs
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/25276) in GitLab 12.9.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/25276) in GitLab 12.9.
 
 Your project may have multiple concurrent deployment jobs that are
 scheduled to run within the same time frame.
@@ -223,6 +232,8 @@ To avoid this scenario:
 1. Click **Save changes**.
 
 The pending deployment jobs will be skipped.
+
+For more information, see [Deployment safety](../environments/deployment_safety.md).
 
 ## Pipeline Badges
 
@@ -289,13 +300,23 @@ https://example.gitlab.com/<namespace>/<project>/badges/<branch>/coverage.svg?st
 
 #### Flat square
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/30120) in GitLab 11.8.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/30120) in GitLab 11.8.
 
 ```plaintext
 https://example.gitlab.com/<namespace>/<project>/badges/<branch>/coverage.svg?style=flat-square
 ```
 
 ![Badge flat square style](https://gitlab.com/gitlab-org/gitlab-foss/badges/master/coverage.svg?job=coverage&style=flat-square)
+
+### Custom badge text
+
+The text for a badge can be customized. This can be useful to differentiate between multiple coverage jobs that run in the same pipeline. Customize the badge text and width by adding the `key_text=custom_text` and `key_width=custom_key_width` parameters to the URL:
+
+```plaintext
+https://gitlab.com/gitlab-org/gitlab-foss/badges/master/coverage.svg?job=karma&key_text=Frontend+Coverage&key_width=100
+```
+
+![Badge with custom text and width](https://gitlab.com/gitlab-org/gitlab-foss/badges/master/coverage.svg?job=karma&key_text=Frontend+Coverage&key_width=100)
 
 ## Environment Variables
 

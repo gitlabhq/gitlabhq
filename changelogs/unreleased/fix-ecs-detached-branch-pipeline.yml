@@ -1,0 +1,5 @@
+---
+title: Fix CI rules for ECS related jobs
+merge_request: 33527
+author:
+type: fixed

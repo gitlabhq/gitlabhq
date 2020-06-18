@@ -86,7 +86,7 @@ RSpec.shared_examples 'issuable time tracker' do |issuable_type|
     page.within '.time-tracking-component-wrap' do
       find('.help-button').click
 
-      expect(find_link('Learn more')[:href]).to have_content('/help/workflow/time_tracking.md')
+      expect(find_link('Learn more')[:href]).to have_content('/help/user/project/time_tracking.md')
     end
   end
 end

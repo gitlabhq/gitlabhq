@@ -39,13 +39,18 @@ module Gitlab
 
     private
 
-    override :check_project!
-    def check_project!(cmd, changes)
+    override :check_namespace!
+    def check_namespace!
       return unless snippet.is_a?(ProjectSnippet)
 
-      check_namespace!
-      check_project_accessibility!
-      add_project_moved_message!
+      super
+    end
+
+    override :check_project!
+    def check_project!(cmd)
+      return unless snippet.is_a?(ProjectSnippet)
+
+      super
     end
 
     override :check_push_access!

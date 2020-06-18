@@ -15,7 +15,7 @@ export default el => {
     return result;
   }
 
-  const { type, commentDetail, triggerEvents, ...booleanAttributes } = el.dataset;
+  const { type, commentDetail, triggerEvents, fields, ...booleanAttributes } = el.dataset;
   const {
     showActive,
     activated,
@@ -41,6 +41,7 @@ export default el => {
             initialCommentDetail: commentDetail,
           },
           triggerEvents: JSON.parse(triggerEvents),
+          fields: JSON.parse(fields),
         },
       });
     },

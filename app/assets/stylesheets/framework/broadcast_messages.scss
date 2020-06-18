@@ -14,8 +14,6 @@
 }
 
 .broadcast-banner-message {
-  @extend .broadcast-message;
-  @extend .alert-warning;
   text-align: center;
 
   .broadcast-message-dismiss {
@@ -24,8 +22,6 @@
 }
 
 .broadcast-notification-message {
-  @extend .broadcast-message;
-
   position: fixed;
   bottom: $gl-padding;
   right: $gl-padding;
@@ -42,7 +38,6 @@
   }
 
   .broadcast-message-dismiss {
-    height: 100%;
     color: $gray-800;
   }
 }

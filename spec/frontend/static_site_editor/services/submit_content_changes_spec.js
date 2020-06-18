@@ -8,6 +8,7 @@ import {
   SUBMIT_CHANGES_COMMIT_ERROR,
   SUBMIT_CHANGES_MERGE_REQUEST_ERROR,
   TRACKING_ACTION_CREATE_COMMIT,
+  TRACKING_ACTION_CREATE_MERGE_REQUEST,
 } from '~/static_site_editor/constants';
 import generateBranchName from '~/static_site_editor/services/generate_branch_name';
 import submitContentChanges from '~/static_site_editor/services/submit_content_changes';
@@ -83,15 +84,6 @@ describe('submitContentChanges', () => {
     });
   });
 
-  it('sends the correct tracking event when committing content changes', () => {
-    return submitContentChanges({ username, projectId, sourcePath, content }).then(() => {
-      expect(trackingSpy).toHaveBeenCalledWith(
-        document.body.dataset.page,
-        TRACKING_ACTION_CREATE_COMMIT,
-      );
-    });
-  });
-
   it('notifies error when content could not be committed', () => {
     Api.commitMultiple.mockRejectedValueOnce();
 
@@ -150,6 +142,26 @@ describe('submitContentChanges', () => {
           url: createMergeRequestResponse.web_url,
         },
       });
+    });
+  });
+
+  describe('sends the correct tracking event', () => {
+    beforeEach(() => {
+      return submitContentChanges({ username, projectId, sourcePath, content });
+    });
+
+    it('for committing changes', () => {
+      expect(trackingSpy).toHaveBeenCalledWith(
+        document.body.dataset.page,
+        TRACKING_ACTION_CREATE_COMMIT,
+      );
+    });
+
+    it('for creating a merge request', () => {
+      expect(trackingSpy).toHaveBeenCalledWith(
+        document.body.dataset.page,
+        TRACKING_ACTION_CREATE_MERGE_REQUEST,
+      );
     });
   });
 });

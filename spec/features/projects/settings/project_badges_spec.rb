@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Project Badges' do
+RSpec.describe 'Project Badges' do
   include WaitForRequests
 
   let(:user) { create(:user) }

@@ -15,6 +15,17 @@ module Gitlab
         # this is better than a project being stuck in the "import" state
         # forever.
         sidekiq_options dead: false, retry: 5
+
+        sidekiq_retries_exhausted do |msg, e|
+          Gitlab::Import::Logger.error(
+            event: :github_importer_exhausted,
+            message: msg['error_message'],
+            class: msg['class'],
+            args: msg['args'],
+            exception_message: e.message,
+            exception_backtrace: e.backtrace
+          )
+        end
       end
     end
   end

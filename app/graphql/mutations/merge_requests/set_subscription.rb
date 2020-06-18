@@ -18,7 +18,7 @@ module Mutations
 
         {
           merge_request: merge_request,
-          errors: merge_request.errors.full_messages
+          errors: errors_on_object(merge_request)
         }
       end
     end

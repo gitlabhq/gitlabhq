@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Groups > sidebar' do
+RSpec.describe 'Groups > sidebar' do
   let(:user) { create(:user) }
   let(:group) { create(:group) }
 

@@ -20,7 +20,7 @@ class EmailReceiverWorker # rubocop:disable Scalability/IdempotentWorker
   private
 
   def handle_failure(raw, error)
-    Rails.logger.warn("Email can not be processed: #{error}\n\n#{raw}") # rubocop:disable Gitlab/RailsLogger
+    Gitlab::AppLogger.warn("Email can not be processed: #{error}\n\n#{raw}")
 
     return unless raw.present?
 

@@ -14,7 +14,7 @@ describe RuboCop::Cop::PutProjectRoutesUnderScope do
   end
 
   it 'registers an offense when route is outside scope' do
-    expect_offense(<<~PATTERN.strip_indent)
+    expect_offense(<<~PATTERN)
       scope '-' do
         resource :issues
       end
@@ -25,7 +25,7 @@ describe RuboCop::Cop::PutProjectRoutesUnderScope do
   end
 
   it 'does not register an offense when resource inside the scope' do
-    expect_no_offenses(<<~PATTERN.strip_indent)
+    expect_no_offenses(<<~PATTERN)
       scope '-' do
         resource :issues
         resource :notes
@@ -34,7 +34,7 @@ describe RuboCop::Cop::PutProjectRoutesUnderScope do
   end
 
   it 'does not register an offense when resource is deep inside the scope' do
-    expect_no_offenses(<<~PATTERN.strip_indent)
+    expect_no_offenses(<<~PATTERN)
       scope '-' do
         resource :issues
         resource :projects do

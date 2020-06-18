@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Filter issues', :js do
+RSpec.describe 'Filter issues', :js do
   include FilteredSearchHelpers
 
   let(:project) { create(:project) }

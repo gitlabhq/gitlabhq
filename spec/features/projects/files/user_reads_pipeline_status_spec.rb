@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'user reads pipeline status', :js do
+RSpec.describe 'user reads pipeline status', :js do
   let(:project) { create(:project, :repository) }
   let(:user) { create(:user) }
   let(:v110_pipeline) { create_pipeline('v1.1.0', 'success') }

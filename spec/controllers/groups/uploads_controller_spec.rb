@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Groups::UploadsController do
+RSpec.describe Groups::UploadsController do
   include WorkhorseHelpers
 
   let(:model) { create(:group, :public) }

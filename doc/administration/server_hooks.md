@@ -1,4 +1,7 @@
 ---
+stage: Create
+group: Gitaly
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 type: reference, howto
 disqus_identifier: 'https://docs.gitlab.com/ee/administration/custom_hooks.html'
 ---
@@ -7,7 +10,7 @@ disqus_identifier: 'https://docs.gitlab.com/ee/administration/custom_hooks.html'
 
 > **Notes:**
 >
-> - Server hooks were [introduced](https://gitlab.com/gitlab-org/gitlab/issues/196051) in GitLab 12.8 replacing Custom Hooks.
+> - Server hooks were [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/196051) in GitLab 12.8 replacing Custom Hooks.
 > - Server hooks must be configured on the filesystem of the GitLab server. Only GitLab server administrators will be able to complete these tasks. Please explore [webhooks](../user/project/integrations/webhooks.md) and [GitLab CI/CD](../ci/README.md) as an option if you do not have filesystem access. For a user-configurable Git hook interface, see [Push Rules](../push_rules/push_rules.md), available in GitLab Starter **(STARTER)**.
 > - Server hooks won't be replicated to secondary nodes if you use [GitLab Geo](geo/replication/index.md).
 
@@ -65,9 +68,18 @@ Follow the steps below to properly set up a server hook for all repositories:
    `/home/git/gitlab-shell/hooks`. For Omnibus installs the path is usually
     `/opt/gitlab/embedded/service/gitlab-shell/hooks`.
    To look in a different directory for the global custom hooks,
-   set `custom_hooks_dir` in the GitLab Shell config. For
-   Omnibus installations, this can be set in `gitlab.rb`; and in source
-   installations, this can be set in `gitlab-shell/config.yml`.
+   set `custom_hooks_dir` in the Gitaly config. For Omnibus installations, this is set
+   in `gitlab.rb`. For source installations, the configuration location depends on the
+   GitLab version. For:
+
+   - GitLab 13.0 and earlier, this is set in `gitlab-shell/config.yml`.
+   - GitLab 13.1 and later, this is set in `gitaly/config.toml` under the `[hooks]`
+     section.
+
+   NOTE: **Note:**
+   The `custom_hooks_dir` value in `gitlab-shell/config.yml` is still honored in GitLab
+   13.1 and later if the value in `gitaly/config.toml` is blank or non-existent.
+
 1. Create a new directory in this location. Depending on your hook, it will be
    either a `pre-receive.d`, `post-receive.d`, or `update.d` directory.
 1. Inside this new directory, add your hook. Hooks can be

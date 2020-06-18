@@ -10,14 +10,6 @@ module Gitlab
           @plans = {}
         end
 
-        def pick(keys)
-          terraform_plans = plans.select do |key|
-            keys.include?(key)
-          end
-
-          { plans: terraform_plans }
-        end
-
         def add_plan(name, plan)
           plans[name] = plan
         end

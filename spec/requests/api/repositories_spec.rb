@@ -177,6 +177,12 @@ describe API::Repositories do
         expect(headers['Content-Disposition']).to eq 'inline'
       end
 
+      it_behaves_like 'uncached response' do
+        before do
+          get api(route, current_user)
+        end
+      end
+
       context 'when sha does not exist' do
         it_behaves_like '404 response' do
           let(:request) { get api(route.sub(sample_blob.oid, 'abcd9876'), current_user) }
@@ -278,7 +284,7 @@ describe API::Repositories do
 
       context "when hotlinking detection is enabled" do
         before do
-          Feature.enable(:repository_archive_hotlinking_interception)
+          stub_feature_flags(repository_archive_hotlinking_interception: true)
         end
 
         it_behaves_like "hotlink interceptor" do

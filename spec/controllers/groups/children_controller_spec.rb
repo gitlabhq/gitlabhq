@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Groups::ChildrenController do
+RSpec.describe Groups::ChildrenController do
   include ExternalAuthorizationServiceHelpers
 
   let(:group) { create(:group, :public) }

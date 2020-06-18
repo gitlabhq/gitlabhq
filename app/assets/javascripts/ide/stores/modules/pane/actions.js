@@ -25,6 +25,3 @@ export const open = ({ state, commit }, view) => {
 export const close = ({ commit }) => {
   commit(types.SET_OPEN, false);
 };
-
-// prevent babel-plugin-rewire from generating an invalid default during karma tests
-export default () => {};

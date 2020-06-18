@@ -1,4 +1,7 @@
 ---
+stage: Manage
+group: Access
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 type: howto
 ---
 
@@ -8,7 +11,7 @@ GitLab administrators can deactivate and activate users.
 
 ## Deactivating a user
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/22257) in GitLab 12.4.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/22257) in GitLab 12.4.
 
 In order to temporarily prevent access by a GitLab user that has no recent activity, administrators
 can choose to deactivate the user.
@@ -45,7 +48,7 @@ A deactivated user does not consume a [seat](../../subscriptions/index.md#choosi
 
 ## Activating a user
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/22257) in GitLab 12.4.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/22257) in GitLab 12.4.
 
 A deactivated user can be activated from the Admin Area.
 
@@ -63,4 +66,4 @@ Activating a user will change the user's state to active and it consumes a
 [seat](../../subscriptions/index.md#choosing-the-number-of-users).
 
 TIP: **Tip:**
-A deactivated user can also activate their account by themselves by simply logging back via the UI.
+A deactivated user can also activate their account themselves by simply logging back in via the UI.

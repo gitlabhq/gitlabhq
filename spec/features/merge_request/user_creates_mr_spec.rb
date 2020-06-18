@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Merge request > User creates MR' do
+RSpec.describe 'Merge request > User creates MR' do
   include ProjectForksHelper
 
   before do

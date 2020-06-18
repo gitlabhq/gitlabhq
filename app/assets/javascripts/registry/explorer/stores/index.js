@@ -7,6 +7,7 @@ import state from './state';
 
 Vue.use(Vuex);
 
+// eslint-disable-next-line import/prefer-default-export
 export const createStore = () =>
   new Vuex.Store({
     state,
@@ -14,6 +15,3 @@ export const createStore = () =>
     actions,
     mutations,
   });
-
-// Deprecated and to be removed
-export default createStore();

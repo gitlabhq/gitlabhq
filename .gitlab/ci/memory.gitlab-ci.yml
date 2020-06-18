@@ -1,7 +1,7 @@
 .only-code-memory-job-base:
   extends:
     - .default-retry
-    - .default-cache
+    - .rails-cache
     - .default-before_script
     - .memory:rules
 
@@ -39,12 +39,11 @@ memory-on-boot:
     - .only-code-memory-job-base
     - .use-pg11
   stage: test
-  needs: ["setup-test-env", "compile-assets pull-cache"]
+  needs: ["setup-test-env", "compile-test-assets"]
   variables:
     NODE_ENV: "production"
     RAILS_ENV: "production"
     SETUP_DB: "true"
-    SKIP_STORAGE_VALIDATION: "true"
     # we override the max_old_space_size to prevent OOM errors
     NODE_OPTIONS: --max_old_space_size=3584
   script:

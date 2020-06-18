@@ -21,6 +21,7 @@ module API
       params do
         use :pagination
         optional :tags, type: Boolean, default: false, desc: 'Determines if tags should be included'
+        optional :tags_count, type: Boolean, default: false, desc: 'Determines if the tags count should be included'
       end
       get ':id/registry/repositories' do
         repositories = ContainerRepositoriesFinder.new(
@@ -29,7 +30,7 @@ module API
 
         track_event( 'list_repositories')
 
-        present paginate(repositories), with: Entities::ContainerRegistry::Repository, tags: params[:tags]
+        present paginate(repositories), with: Entities::ContainerRegistry::Repository, tags: params[:tags], tags_count: params[:tags_count]
       end
 
       desc 'Delete repository' do
@@ -69,11 +70,11 @@ module API
       end
       params do
         requires :repository_id, type: Integer, desc: 'The ID of the repository'
-        optional :name_regex_delete, type: String, desc: 'The tag name regexp to delete, specify .* to delete all'
-        optional :name_regex, type: String, desc: 'The tag name regexp to delete, specify .* to delete all'
+        optional :name_regex_delete, type: String, untrusted_regexp: true, desc: 'The tag name regexp to delete, specify .* to delete all'
+        optional :name_regex, type: String, untrusted_regexp: true, desc: 'The tag name regexp to delete, specify .* to delete all'
         # require either name_regex (deprecated) or name_regex_delete, it is ok to have both
         at_least_one_of :name_regex, :name_regex_delete
-        optional :name_regex_keep, type: String, desc: 'The tag name regexp to retain'
+        optional :name_regex_keep, type: String, untrusted_regexp: true, desc: 'The tag name regexp to retain'
         optional :keep_n, type: Integer, desc: 'Keep n of latest tags with matching name'
         optional :older_than, type: String, desc: 'Delete older than: 1h, 1d, 1month'
       end

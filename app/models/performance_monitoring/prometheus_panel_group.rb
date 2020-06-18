@@ -8,15 +8,22 @@ module PerformanceMonitoring
 
     validates :group, presence: true
     validates :panels, presence: true
+    class << self
+      def from_json(json_content)
+        build_from_hash(json_content).tap(&:validate!)
+      end
 
-    def self.from_json(json_content)
-      panel_group = new(
-        group: json_content['group'],
-        priority: json_content['priority'],
-        panels: json_content['panels'].map { |panel| PrometheusPanel.from_json(panel) }
-      )
+      private
 
-      panel_group.tap(&:validate!)
+      def build_from_hash(attributes)
+        return new unless attributes.is_a?(Hash)
+
+        new(
+          group: attributes['group'],
+          priority: attributes['priority'],
+          panels: attributes['panels']&.map { |panel| PrometheusPanel.from_json(panel) }
+        )
+      end
     end
   end
 end

@@ -4,6 +4,7 @@ mutation ($projectPath: ID!, $status: AlertManagementStatus!, $iid: String!) {
     alert {
       iid,
       status,
+      endedAt
     }
   }
 }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'User uses header search field', :js do
+RSpec.describe 'User uses header search field', :js do
   include FilteredSearchHelpers
 
   let(:project) { create(:project) }
@@ -94,14 +94,6 @@ describe 'User uses header search field', :js do
         end
 
         expect(page).not_to have_selector('.dropdown-header', text: /#{scope_name}/i)
-      end
-
-      it 'hides the dropdown when there are no results' do
-        page.within('.search-input-wrap') do
-          fill_in('search', with: 'a_search_term_with_no_results')
-        end
-
-        expect(page).not_to have_selector('.dropdown-menu')
       end
     end
   end

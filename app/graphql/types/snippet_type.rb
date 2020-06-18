@@ -27,9 +27,12 @@ module Types
           authorize: :read_project,
           resolve: -> (snippet, args, context) { Gitlab::Graphql::Loaders::BatchModelLoader.new(Project, snippet.project_id).find }
 
+    # Author can be nil in some scenarios. For example,
+    # when the admin setting restricted visibility
+    # level is set to public
     field :author, Types::UserType,
           description: 'The owner of the snippet',
-          null: false,
+          null: true,
           resolve: -> (snippet, args, context) { Gitlab::Graphql::Loaders::BatchModelLoader.new(User, snippet.author_id).find }
 
     field :file_name, GraphQL::STRING_TYPE,
@@ -62,6 +65,11 @@ module Types
 
     field :blob, type: Types::Snippets::BlobType,
           description: 'Snippet blob',
+          calls_gitaly: true,
+          null: false
+
+    field :blobs, type: [Types::Snippets::BlobType],
+          description: 'Snippet blobs',
           calls_gitaly: true,
           null: false
 

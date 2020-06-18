@@ -8,7 +8,7 @@ describe UserInteractedProject do
 
     let(:event) { build(:event) }
 
-    Event::ACTIONS.each do |action|
+    Event.actions.each_key do |action|
       context "for all actions (event types)" do
         let(:event) { build(:event, action: action) }
 
@@ -41,21 +41,6 @@ describe UserInteractedProject do
       it 'ignores the event' do
         expect { subject }.not_to change { described_class.count }
       end
-    end
-  end
-
-  describe '.available?' do
-    before do
-      described_class.instance_variable_set('@available_flag', nil)
-    end
-
-    it 'checks schema version and properly caches positive result' do
-      expect(ActiveRecord::Migrator).to receive(:current_version).and_return(described_class::REQUIRED_SCHEMA_VERSION - 1 - rand(1000))
-      expect(described_class.available?).to be_falsey
-      expect(ActiveRecord::Migrator).to receive(:current_version).and_return(described_class::REQUIRED_SCHEMA_VERSION + rand(1000))
-      expect(described_class.available?).to be_truthy
-      expect(ActiveRecord::Migrator).not_to receive(:current_version)
-      expect(described_class.available?).to be_truthy # cached response
     end
   end
 

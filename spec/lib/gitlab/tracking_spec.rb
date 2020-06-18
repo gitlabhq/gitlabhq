@@ -27,14 +27,13 @@ describe Gitlab::Tracking do
       expect(subject.snowplow_options(nil)).to match(expected_fields)
     end
 
-    it 'enables features using feature flags' do
-      stub_feature_flags(additional_snowplow_tracking: :__group__)
-      addition_feature_fields = {
+    it 'when feature flag is disabled' do
+      stub_feature_flags(additional_snowplow_tracking: false)
+
+      expect(subject.snowplow_options(nil)).to include(
         formTracking: false,
         linkClickTracking: false
-      }
-
-      expect(subject.snowplow_options(:_group_)).to include(addition_feature_fields)
+      )
     end
   end
 

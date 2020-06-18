@@ -277,7 +277,7 @@ export default {
   <div class="prepend-top-default append-bottom-default js-environment-container">
     <div class="environment-information">
       <ci-icon :status="iconStatus" />
-      <p class="inline append-bottom-0" v-html="environment"></p>
+      <p class="inline gl-mb-0" v-html="environment"></p>
     </div>
   </div>
 </template>

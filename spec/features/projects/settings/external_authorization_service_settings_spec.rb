@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Projects > Settings > External Authorization Classification Label setting' do
+RSpec.describe 'Projects > Settings > External Authorization Classification Label setting' do
   let(:user) { create(:user) }
   let(:project) { create(:project_empty_repo) }
 

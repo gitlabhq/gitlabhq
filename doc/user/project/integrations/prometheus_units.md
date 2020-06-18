@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Unit formats reference
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/201999) in GitLab 12.9.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/201999) in GitLab 12.9.
 
 You can select units to format your charts by adding `format` to your
 [axis configuration](prometheus.md#dashboard-yaml-properties).
@@ -19,7 +19,7 @@ Currently, your [internationalization and localization options](https://en.wikip
 
 For generic or default data, numbers are formatted according to the current locale in [engineering notation](https://en.wikipedia.org/wiki/Engineering_notation).
 
-While an [engineering notation exists for the web](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/NumberFormat), GitLab uses a version based off the [scientific notation](https://en.wikipedia.org/wiki/Scientific_notation). GitLab formatting acts in accordance with SI prefixes. For example, using GitLab notation, `1500.00` becomes `1.5k` instead of `1.5E3`. Keep this distinction in mind when using the engineering notation for your metrics.
+While an [engineering notation exists for the web](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/NumberFormat), GitLab uses a version based off the [scientific notation](https://en.wikipedia.org/wiki/Scientific_notation). GitLab formatting acts in accordance with SI prefixes. For example, using GitLab notation, `1500.00` becomes `1.5k` instead of `1.5E3`. Keep this distinction in mind when using the engineering notation for your metrics.
 
 Formats: `engineering`
 

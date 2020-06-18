@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Projects::Registry::TagsController do
+RSpec.describe Projects::Registry::TagsController do
   let(:user)    { create(:user) }
   let(:project) { create(:project, :private) }
 

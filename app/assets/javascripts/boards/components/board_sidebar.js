@@ -54,7 +54,7 @@ export default Vue.extend({
       return this.issue.milestone ? this.issue.milestone.title : __('No milestone');
     },
     canRemove() {
-      return !this.list.preset;
+      return !this.list?.preset;
     },
     hasLabels() {
       return this.issue.labels && this.issue.labels.length;

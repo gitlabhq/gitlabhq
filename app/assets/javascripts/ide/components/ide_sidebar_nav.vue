@@ -1,0 +1,83 @@
+<script>
+import { GlTooltipDirective, GlIcon } from '@gitlab/ui';
+import { otherSide } from '../utils';
+import { SIDE_RIGHT } from '../constants';
+
+export default {
+  directives: {
+    tooltip: GlTooltipDirective,
+  },
+  components: {
+    GlIcon,
+  },
+  props: {
+    tabs: {
+      type: Array,
+      required: true,
+    },
+    side: {
+      type: String,
+      required: true,
+    },
+    currentView: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    isOpen: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+  },
+  computed: {
+    otherSide() {
+      return otherSide(this.side);
+    },
+  },
+  methods: {
+    isActiveTab(tab) {
+      return this.isOpen && tab.views.some(view => view.name === this.currentView);
+    },
+    buttonClasses(tab) {
+      return [
+        {
+          'is-right': this.side === SIDE_RIGHT,
+          active: this.isActiveTab(tab),
+        },
+        ...(tab.buttonClasses || []),
+      ];
+    },
+    clickTab(e, tab) {
+      e.currentTarget.blur();
+      this.$root.$emit('bv::hide::tooltip');
+
+      if (this.isActiveTab(tab)) {
+        this.$emit('close');
+      } else {
+        this.$emit('open', tab.views[0]);
+      }
+    },
+  },
+};
+</script>
+<template>
+  <nav class="ide-activity-bar">
+    <ul class="list-unstyled">
+      <li v-for="tab of tabs" :key="tab.title">
+        <button
+          v-tooltip="{ container: 'body', placement: otherSide }"
+          :title="tab.title"
+          :aria-label="tab.title"
+          :class="buttonClasses(tab)"
+          :data-qa-selector="`${tab.title.toLowerCase()}_tab_button`"
+          class="ide-sidebar-link"
+          type="button"
+          @click="clickTab($event, tab)"
+        >
+          <gl-icon :size="16" :name="tab.icon" />
+        </button>
+      </li>
+    </ul>
+  </nav>
+</template>

@@ -19,7 +19,7 @@ module Projects
       def initialize(project:, old_disk_path:, logger: nil)
         @project = project
         @old_disk_path = old_disk_path
-        @logger = logger || Rails.logger # rubocop:disable Gitlab/RailsLogger
+        @logger = logger || Gitlab::AppLogger
       end
 
       # Return whether this operation was skipped or not

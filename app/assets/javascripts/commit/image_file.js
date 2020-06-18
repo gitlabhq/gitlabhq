@@ -1,6 +1,7 @@
 /* eslint-disable func-names, consistent-return, one-var, no-return-assign */
 
 import $ from 'jquery';
+import 'jquery.waitforimages';
 
 // Width where images must fits in, for 2-up this gets divided by 2
 const availWidth = 900;

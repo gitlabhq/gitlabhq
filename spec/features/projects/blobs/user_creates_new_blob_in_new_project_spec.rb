@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'User creates blob in new project', :js do
+RSpec.describe 'User creates blob in new project', :js do
   let(:user) { create(:user) }
   let(:project) { create(:project, :empty_repo) }
 

@@ -81,6 +81,12 @@ describe ContainerRepository do
     end
   end
 
+  describe '#tags_count' do
+    it 'returns the count of tags' do
+      expect(repository.tags_count).to eq(1)
+    end
+  end
+
   describe '#has_tags?' do
     it 'has tags' do
       expect(repository).to have_tags

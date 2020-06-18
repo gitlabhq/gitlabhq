@@ -245,7 +245,7 @@ export default {
 
 <template>
   <ul v-if="loading" class="content-list">
-    <li v-for="n in $options.LOADING_LIST_ITEMS_LENGTH" :key="n" class="issue">
+    <li v-for="n in $options.LOADING_LIST_ITEMS_LENGTH" :key="n" class="issue gl-px-5! gl-py-5!">
       <gl-skeleton-loading />
     </li>
   </ul>

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Usage stats consent' do
+RSpec.describe 'Usage stats consent' do
   context 'when signed in' do
     let(:user) { create(:admin, created_at: 8.days.ago) }
     let(:message) { 'To help improve GitLab, we would like to periodically collect usage information.' }

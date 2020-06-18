@@ -142,6 +142,12 @@ module Banzai
       def element_node?(node)
         node.is_a?(Nokogiri::XML::Element)
       end
+
+      private
+
+      def only_path?
+        context[:only_path]
+      end
     end
   end
 end

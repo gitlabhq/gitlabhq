@@ -9,6 +9,7 @@ import { FILTERED_SEARCH } from '~/pages/constants';
 import { ISSUABLE_INDEX } from '~/pages/projects/constants';
 import initIssuablesList from '~/issuables_list';
 import initManualOrdering from '~/manual_ordering';
+import { showLearnGitLabIssuesPopover } from '~/onboarding_issues';
 
 document.addEventListener('DOMContentLoaded', () => {
   IssuableFilteredSearchTokenKeys.addExtraTokensForIssues();
@@ -24,4 +25,5 @@ document.addEventListener('DOMContentLoaded', () => {
 
   initManualOrdering();
   initIssuablesList();
+  showLearnGitLabIssuesPopover();
 });

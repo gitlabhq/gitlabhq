@@ -13,7 +13,8 @@ module Metrics
         STAGES::EndpointInserter,
         STAGES::PanelIdsInserter,
         STAGES::Sorter,
-        STAGES::AlertsInserter
+        STAGES::AlertsInserter,
+        STAGES::UrlValidator
       ].freeze
 
       def get_dashboard

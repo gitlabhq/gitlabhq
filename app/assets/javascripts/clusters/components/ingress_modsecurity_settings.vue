@@ -13,12 +13,12 @@ import {
   GlIcon,
 } from '@gitlab/ui';
 import eventHub from '~/clusters/event_hub';
-import modSecurityLogo from 'images/cluster_app_logos/modsecurity.png';
+import modSecurityLogo from 'images/cluster_app_logos/gitlab.png';
 
 const { UPDATING, UNINSTALLING, INSTALLING, INSTALLED, UPDATED } = APPLICATION_STATUS;
 
 export default {
-  title: 'ModSecurity Web Application Firewall',
+  title: __('Web Application Firewall'),
   modsecurityUrl: 'https://modsecurity.org/about.html',
   components: {
     GlAlert,
@@ -168,7 +168,7 @@ export default {
       }}
     </gl-alert>
     <div class="gl-responsive-table-row-layout" role="row">
-      <div class="table-section append-right-8 section-align-top" role="gridcell">
+      <div class="table-section gl-mr-3 section-align-top" role="gridcell">
         <img
           :src="modSecurityLogo"
           :alt="`${$options.title} logo`"

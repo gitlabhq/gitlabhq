@@ -6,5 +6,6 @@ FactoryBot.define do
     sequence(:name) { |n| "release-18.#{n}.dmg" }
     sequence(:url) { |n| "https://example.com/scrambled-url/app-#{n}.zip" }
     sequence(:filepath) { |n| "/binaries/awesome-app-#{n}" }
+    link_type { 'other' }
   end
 end

@@ -11,9 +11,19 @@ module GraphqlHelpers
     underscored_field_name.to_s.camelize(:lower)
   end
 
-  # Run a loader's named resolver
+  # Run a loader's named resolver in a way that closely mimics the framework.
+  #
+  # First the `ready?` method is called. If it turns out that the resolver is not
+  # ready, then the early return is returned instead.
+  #
+  # Then the resolve method is called.
   def resolve(resolver_class, obj: nil, args: {}, ctx: {}, field: nil)
-    resolver_class.new(object: obj, context: ctx, field: field).resolve(args)
+    resolver = resolver_class.new(object: obj, context: ctx, field: field)
+    ready, early_return = sync_all { resolver.ready?(**args) }
+
+    return early_return unless ready
+
+    resolver.resolve(args)
   end
 
   # Eagerly run a loader's named resolver
@@ -51,12 +61,12 @@ module GraphqlHelpers
   # BatchLoader::GraphQL returns a wrapper, so we need to :sync in order
   # to get the actual values
   def batch_sync(max_queries: nil, &blk)
-    wrapper = proc do
-      lazy_vals = yield
-      lazy_vals.is_a?(Array) ? lazy_vals.map { |val| sync(val) } : sync(lazy_vals)
-    end
+    batch(max_queries: max_queries) { sync_all(&blk) }
+  end
 
-    batch(max_queries: max_queries, &wrapper)
+  def sync_all(&blk)
+    lazy_vals = yield
+    lazy_vals.is_a?(Array) ? lazy_vals.map { |val| sync(val) } : sync(lazy_vals)
   end
 
   def graphql_query_for(name, attributes = {}, fields = nil)
@@ -67,10 +77,14 @@ module GraphqlHelpers
     QUERY
   end
 
-  def graphql_mutation(name, input, fields = nil)
+  def graphql_mutation(name, input, fields = nil, &block)
+    raise ArgumentError, 'Please pass either `fields` parameter or a block to `#graphql_mutation`, but not both.' if fields.present? && block_given?
+
     mutation_name = GraphqlHelpers.fieldnamerize(name)
     input_variable_name = "$#{input_variable_name_for_mutation(name)}"
     mutation_field = GitlabSchema.mutation.fields[mutation_name]
+
+    fields = yield if block_given?
     fields ||= all_graphql_fields_for(mutation_field.type.to_graphql)
 
     query = <<~MUTATION
@@ -139,7 +153,15 @@ module GraphqlHelpers
   end
 
   def wrap_fields(fields)
-    fields = Array.wrap(fields).join("\n")
+    fields = Array.wrap(fields).map do |field|
+      case field
+      when Symbol
+        GraphqlHelpers.fieldnamerize(field)
+      else
+        field
+      end
+    end.join("\n")
+
     return unless fields.present?
 
     <<~FIELDS
@@ -257,8 +279,13 @@ module GraphqlHelpers
   end
 
   def graphql_dig_at(data, *path)
-    keys = path.map { |segment| GraphqlHelpers.fieldnamerize(segment) }
-    data.dig(*keys)
+    keys = path.map { |segment| segment.is_a?(Integer) ? segment : GraphqlHelpers.fieldnamerize(segment) }
+
+    # Allows for array indexing, like this
+    # ['project', 'boards', 'edges', 0, 'node', 'lists']
+    keys.reduce(data) do |memo, key|
+      memo.is_a?(Array) ? memo[key] : memo&.dig(key)
+    end
   end
 
   def graphql_errors
@@ -292,6 +319,22 @@ module GraphqlHelpers
   # Raises an error if no response is found
   def graphql_mutation_response(mutation_name)
     graphql_data.fetch(GraphqlHelpers.fieldnamerize(mutation_name))
+  end
+
+  def scalar_fields_of(type_name)
+    GitlabSchema.types[type_name].fields.map do |name, field|
+      next if nested_fields?(field) || required_arguments?(field)
+
+      name
+    end.compact
+  end
+
+  def nested_fields_of(type_name)
+    GitlabSchema.types[type_name].fields.map do |name, field|
+      next if !nested_fields?(field) || required_arguments?(field)
+
+      [name, field]
+    end.compact
   end
 
   def nested_fields?(field)

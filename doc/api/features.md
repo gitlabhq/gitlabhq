@@ -1,3 +1,9 @@
+---
+stage: Release
+group: Progressive Delivery
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+---
+
 # Features flags API
 
 This API is for managing Flipper-based [feature flags used in development of GitLab](../development/feature_flags/index.md).
@@ -16,7 +22,7 @@ GET /features
 ```
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/features
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/features"
 ```
 
 Example response:
@@ -80,7 +86,7 @@ Note that you can enable or disable a feature for a `feature_group`, a `user`,
 a `group`, and a `project` in a single API call.
 
 ```shell
-curl --data "value=30" --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/features/new_library
+curl --data "value=30" --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/features/new_library"
 ```
 
 Example response:

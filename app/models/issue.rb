@@ -59,6 +59,9 @@ class Issue < ApplicationRecord
 
   has_one :sentry_issue
   has_one :alert_management_alert, class_name: 'AlertManagement::Alert'
+  has_and_belongs_to_many :self_managed_prometheus_alert_events, join_table: :issues_self_managed_prometheus_alert_events # rubocop: disable Rails/HasAndBelongsToMany
+  has_and_belongs_to_many :prometheus_alert_events, join_table: :issues_prometheus_alert_events # rubocop: disable Rails/HasAndBelongsToMany
+  has_many :prometheus_alerts, through: :prometheus_alert_events
 
   accepts_nested_attributes_for :sentry_issue
 
@@ -86,12 +89,14 @@ class Issue < ApplicationRecord
   scope :preload_associated_models, -> { preload(:assignees, :labels, project: :namespace) }
   scope :with_api_entity_associations, -> { preload(:timelogs, :assignees, :author, :notes, :labels, project: [:route, { namespace: :route }] ) }
   scope :with_label_attributes, ->(label_attributes) { joins(:labels).where(labels: label_attributes) }
+  scope :with_alert_management_alerts, -> { joins(:alert_management_alert) }
+  scope :with_prometheus_alert_events, -> { joins(:issues_prometheus_alert_events) }
+  scope :with_self_managed_prometheus_alert_events, -> { joins(:issues_self_managed_prometheus_alert_events) }
 
   scope :public_only, -> { where(confidential: false) }
   scope :confidential_only, -> { where(confidential: true) }
 
   scope :counts_by_state, -> { reorder(nil).group(:state_id).count }
-  scope :with_alert_management_alerts, -> { joins(:alert_management_alert) }
 
   # An issue can be uniquely identified by project_id and iid
   # Takes one or more sets of composite IDs, expressed as hash-like records of
@@ -138,6 +143,10 @@ class Issue < ApplicationRecord
     before_transition closed: :opened do |issue|
       issue.closed_at = nil
       issue.closed_by = nil
+    end
+
+    after_transition any => :closed do |issue|
+      issue.resolve_associated_alert_management_alert
     end
   end
 
@@ -344,8 +353,24 @@ class Issue < ApplicationRecord
     previous_changes['updated_at']&.first || updated_at
   end
 
+  def banzai_render_context(field)
+    super.merge(label_url_method: :project_issues_url)
+  end
+
   def design_collection
     @design_collection ||= ::DesignManagement::DesignCollection.new(self)
+  end
+
+  def resolve_associated_alert_management_alert
+    return unless alert_management_alert
+    return if alert_management_alert.resolve
+
+    Gitlab::AppLogger.warn(
+      message: 'Cannot resolve an associated Alert Management alert',
+      issue_id: id,
+      alert_id: alert_management_alert.id,
+      alert_errors: alert_management_alert.errors.messages
+    )
   end
 
   private

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Issue Boards add issue modal', :js do
+RSpec.describe 'Issue Boards add issue modal', :js do
   let(:project) { create(:project, :public) }
   let(:board) { create(:board, project: project) }
   let(:user) { create(:user) }

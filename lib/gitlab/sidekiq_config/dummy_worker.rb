@@ -12,7 +12,8 @@ module Gitlab
         urgency: :get_urgency,
         resource_boundary: :get_worker_resource_boundary,
         idempotent: :idempotent?,
-        weight: :get_weight
+        weight: :get_weight,
+        tags: :get_tags
       }.freeze
 
       def initialize(queue, attributes = {})

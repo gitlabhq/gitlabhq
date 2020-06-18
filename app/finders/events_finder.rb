@@ -72,9 +72,10 @@ class EventsFinder
 
   # rubocop: disable CodeReuse/ActiveRecord
   def by_action(events)
-    return events unless Event::ACTIONS[params[:action]]
+    safe_action = Event.actions[params[:action]]
+    return events unless safe_action
 
-    events.where(action: Event::ACTIONS[params[:action]])
+    events.where(action: safe_action)
   end
   # rubocop: enable CodeReuse/ActiveRecord
 

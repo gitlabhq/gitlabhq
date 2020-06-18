@@ -11,7 +11,7 @@ describe Gitlab::Experimentation do
       }
     })
 
-    allow(Feature).to receive(:get).with(:test_experiment_experiment_percentage).and_return double(percentage_of_time_value: enabled_percentage)
+    Feature.enable_percentage_of_time(:test_experiment_experiment_percentage, enabled_percentage)
   end
 
   let(:environment) { Rails.env.test? }

@@ -30,7 +30,7 @@ describe Ci::RetryBuildService do
        created_at updated_at started_at finished_at queued_at erased_by
        erased_at auto_canceled_by job_artifacts job_artifacts_archive
        job_artifacts_metadata job_artifacts_trace job_artifacts_junit
-       job_artifacts_sast job_artifacts_dependency_scanning
+       job_artifacts_sast job_artifacts_secret_detection job_artifacts_dependency_scanning
        job_artifacts_container_scanning job_artifacts_dast
        job_artifacts_license_management job_artifacts_license_scanning
        job_artifacts_performance job_artifacts_lsif
@@ -38,7 +38,8 @@ describe Ci::RetryBuildService do
        job_artifacts_codequality job_artifacts_metrics scheduled_at
        job_variables waiting_for_resource_at job_artifacts_metrics_referee
        job_artifacts_network_referee job_artifacts_dotenv
-       job_artifacts_cobertura needs job_artifacts_accessibility].freeze
+       job_artifacts_cobertura needs job_artifacts_accessibility
+       job_artifacts_requirements].freeze
 
   ignore_accessors =
     %i[type lock_version target_url base_tags trace_sections
@@ -49,7 +50,7 @@ describe Ci::RetryBuildService do
        metadata runner_session trace_chunks upstream_pipeline_id
        artifacts_file artifacts_metadata artifacts_size commands
        resource resource_group_id processed security_scans author
-       pipeline_id].freeze
+       pipeline_id report_results].freeze
 
   shared_examples 'build duplication' do
     let(:another_pipeline) { create(:ci_empty_pipeline, project: project) }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'User browses commits' do
+RSpec.describe 'User browses commits' do
   include RepoHelpers
 
   let(:user) { create(:user) }

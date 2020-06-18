@@ -27,8 +27,8 @@ describe ProjectWiki do
         subject.create_page('Test Page', 'This is content')
         wiki_container.reload
 
-        expect(wiki_container.last_activity_at).to be_within(1.minute).of(Time.now)
-        expect(wiki_container.last_repository_updated_at).to be_within(1.minute).of(Time.now)
+        expect(wiki_container.last_activity_at).to be_within(1.minute).of(Time.current)
+        expect(wiki_container.last_repository_updated_at).to be_within(1.minute).of(Time.current)
       end
     end
   end

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Issues > User sees live update', :js do
+RSpec.describe 'Issues > User sees live update', :js do
   let_it_be(:project) { create(:project, :public) }
   let_it_be(:user) { project.creator }
 

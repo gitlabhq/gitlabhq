@@ -1,0 +1,5 @@
+---
+title: Remove non migrated snippets from failed imports
+merge_request: 33621
+author:
+type: fixed

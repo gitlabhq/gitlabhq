@@ -468,6 +468,11 @@ export default class Clusters {
         return;
       }
 
+      if (appId === KNATIVE && !params.hostname && !params.pages_domain_id) {
+        reject(s__('ClusterIntegration|You must specify a domain before you can install Knative.'));
+        return;
+      }
+
       resolve();
     });
   }
@@ -520,6 +525,7 @@ export default class Clusters {
     this.store.updateAppProperty(appId, 'isEditingDomain', true);
     this.store.updateAppProperty(appId, 'hostname', domain);
     this.store.updateAppProperty(appId, 'pagesDomain', domainId ? { id: domainId, domain } : null);
+    this.store.updateAppProperty(appId, 'validationError', null);
   }
 
   setCrossplaneProviderStack(data) {

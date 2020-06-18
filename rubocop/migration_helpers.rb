@@ -7,45 +7,6 @@ module RuboCop
     ].freeze
 
     # Blacklisted tables due to:
-    #   - size in GB (>= 10 GB on GitLab.com as of 02/2020)
-    #   - number of records
-    BLACKLISTED_TABLES = %i[
-       audit_events
-       ci_build_trace_sections
-       ci_builds
-       ci_builds_metadata
-       ci_job_artifacts
-       ci_pipeline_variables
-       ci_pipelines
-       ci_stages
-       deployments
-       events
-       issues
-       merge_request_diff_commits
-       merge_request_diff_files
-       merge_request_diffs
-       merge_request_metrics
-       merge_requests
-       namespaces
-       note_diff_files
-       notes
-       project_authorizations
-       projects
-       project_ci_cd_settings
-       project_features
-       push_event_payloads
-       resource_label_events
-       routes
-       sent_notifications
-       services
-       system_note_metadata
-       taggings
-       todos
-       users
-       web_hook_logs
-    ].freeze
-
-    # Blacklisted tables due to:
     #   - number of columns (> 50 on GitLab.com as of 03/2020)
     #   - number of records
     WIDE_TABLES = %i[
@@ -62,7 +23,11 @@ module RuboCop
 
     # Returns true if the given node originated from the db/migrate directory.
     def in_migration?(node)
-      dirname(node).end_with?('db/migrate', 'db/geo/migrate') || in_post_deployment_migration?(node)
+      in_deployment_migration?(node) || in_post_deployment_migration?(node)
+    end
+
+    def in_deployment_migration?(node)
+      dirname(node).end_with?('db/migrate', 'db/geo/migrate')
     end
 
     def in_post_deployment_migration?(node)
@@ -72,6 +37,16 @@ module RuboCop
     def version(node)
       File.basename(node.location.expression.source_buffer.name).split('_').first.to_i
     end
+
+    # Returns true if a column definition is for an array
+    # rubocop:disable Lint/BooleanSymbol
+    def array_column?(node)
+      node.each_descendant(:pair).any? do |pair_node|
+        pair_node.child_nodes[0].value == :array && # Searching for a (pair (sym :array) (true)) node
+        pair_node.child_nodes[1].type == :true # RuboCop::AST::Node uses symbols for types, even when that is a :true
+      end
+    end
+    # rubocop:enable Lint/BooleanSymbol
 
     private
 

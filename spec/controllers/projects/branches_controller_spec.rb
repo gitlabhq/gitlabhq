@@ -2,14 +2,13 @@
 
 require 'spec_helper'
 
-describe Projects::BranchesController do
+RSpec.describe Projects::BranchesController do
   let(:project)   { create(:project, :repository) }
   let(:user)      { create(:user) }
   let(:developer) { create(:user) }
 
   before do
-    project.add_maintainer(user)
-    project.add_developer(user)
+    project.add_developer(developer)
 
     allow(project).to receive(:branches).and_return(['master', 'foo/bar/baz'])
     allow(project).to receive(:tags).and_return(['v1.0.0', 'v2.0.0'])
@@ -21,7 +20,7 @@ describe Projects::BranchesController do
 
     context "on creation of a new branch" do
       before do
-        sign_in(user)
+        sign_in(developer)
 
         post :create,
              params: {
@@ -80,7 +79,7 @@ describe Projects::BranchesController do
       let(:issue) { create(:issue, project: project) }
 
       before do
-        sign_in(user)
+        sign_in(developer)
       end
 
       it 'redirects' do
@@ -97,7 +96,7 @@ describe Projects::BranchesController do
       end
 
       it 'posts a system note' do
-        expect(SystemNoteService).to receive(:new_issue_branch).with(issue, project, user, "1-feature-branch", branch_project: project)
+        expect(SystemNoteService).to receive(:new_issue_branch).with(issue, project, developer, "1-feature-branch", branch_project: project)
 
         post :create,
              params: {
@@ -136,14 +135,14 @@ describe Projects::BranchesController do
 
         context 'user can update issue' do
           before do
-            confidential_issue_project.add_reporter(user)
+            confidential_issue_project.add_reporter(developer)
           end
 
           context 'issue is under the specified project' do
             let(:issue) { create(:issue, project: confidential_issue_project) }
 
             it 'posts a system note' do
-              expect(SystemNoteService).to receive(:new_issue_branch).with(issue, confidential_issue_project, user, "1-feature-branch", branch_project: project)
+              expect(SystemNoteService).to receive(:new_issue_branch).with(issue, confidential_issue_project, developer, "1-feature-branch", branch_project: project)
 
               create_branch_with_confidential_issue_project
             end
@@ -264,7 +263,7 @@ describe Projects::BranchesController do
 
   describe 'POST create with JSON format' do
     before do
-      sign_in(user)
+      sign_in(developer)
     end
 
     context 'with valid params' do
@@ -305,7 +304,7 @@ describe Projects::BranchesController do
     render_views
 
     before do
-      sign_in(user)
+      sign_in(developer)
     end
 
     it 'returns 303' do
@@ -325,7 +324,7 @@ describe Projects::BranchesController do
     render_views
 
     before do
-      sign_in(user)
+      sign_in(developer)
 
       post :destroy,
            format: format,
@@ -436,7 +435,7 @@ describe Projects::BranchesController do
 
     context 'when user is allowed to push' do
       before do
-        sign_in(user)
+        sign_in(developer)
       end
 
       it 'redirects to branches' do
@@ -454,7 +453,7 @@ describe Projects::BranchesController do
 
     context 'when user is not allowed to push' do
       before do
-        sign_in(developer)
+        sign_in(user)
       end
 
       it 'responds with status 404' do
@@ -469,7 +468,7 @@ describe Projects::BranchesController do
     render_views
 
     before do
-      sign_in(user)
+      sign_in(developer)
     end
 
     context 'when rendering a JSON format' do
@@ -484,6 +483,82 @@ describe Projects::BranchesController do
 
         expect(json_response.length).to eq 1
         expect(json_response.first).to eq 'master'
+      end
+    end
+
+    context 'when a branch has multiple pipelines' do
+      it 'chooses the latest to determine status' do
+        sha = project.repository.create_file(developer, generate(:branch), 'content', message: 'message', branch_name: 'master')
+        create(:ci_pipeline,
+          project: project,
+          user: developer,
+          ref: "master",
+          sha: sha,
+          status: :running,
+          created_at: 6.months.ago)
+        create(:ci_pipeline,
+          project: project,
+          user: developer,
+          ref: "master",
+          sha: sha,
+          status: :success,
+          created_at: 2.months.ago)
+
+        get :index,
+            format: :html,
+            params: {
+              namespace_id: project.namespace,
+              project_id: project,
+              state: 'all'
+            }
+
+        expect(controller.instance_variable_get(:@branch_pipeline_statuses)["master"].group).to eq("success")
+      end
+    end
+
+    context 'when multiple branches exist' do
+      it 'all relevant commit statuses are received' do
+        master_sha = project.repository.create_file(developer, generate(:branch), 'content', message: 'message', branch_name: 'master')
+        create(:ci_pipeline,
+          project: project,
+          user: developer,
+          ref: "master",
+          sha: master_sha,
+          status: :running,
+          created_at: 6.months.ago)
+        test_sha = project.repository.create_file(developer, generate(:branch), 'content', message: 'message', branch_name: 'test')
+        create(:ci_pipeline,
+          project: project,
+          user: developer,
+          ref: "test",
+          sha: test_sha,
+          status: :success,
+          created_at: 2.months.ago)
+
+        get :index,
+            format: :html,
+            params: {
+              namespace_id: project.namespace,
+              project_id: project,
+              state: 'all'
+            }
+
+        expect(controller.instance_variable_get(:@branch_pipeline_statuses)["master"].group).to eq("running")
+        expect(controller.instance_variable_get(:@branch_pipeline_statuses)["test"].group).to eq("success")
+      end
+    end
+
+    context 'when a branch contains no pipelines' do
+      it 'no commit statuses are received' do
+        get :index,
+            format: :html,
+            params: {
+              namespace_id: project.namespace,
+              project_id: project,
+              state: 'all'
+            }
+
+        expect(controller.instance_variable_get(:@branch_pipeline_statuses)).to be_blank
       end
     end
 
@@ -564,7 +639,7 @@ describe Projects::BranchesController do
 
   describe 'GET diverging_commit_counts' do
     before do
-      sign_in(user)
+      sign_in(developer)
     end
 
     it 'returns the commit counts behind and ahead of default branch' do

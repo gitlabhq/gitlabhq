@@ -16,6 +16,8 @@ module QA
           element :activity_link
           element :merge_requests_link
           element :wiki_link
+          element :snippets_link
+          element :members_link
         end
 
         def click_merge_requests
@@ -33,6 +35,18 @@ module QA
         def click_activity
           within_sidebar do
             click_element(:activity_link)
+          end
+        end
+
+        def click_snippets
+          within_sidebar do
+            click_element(:snippets_link)
+          end
+        end
+
+        def click_members
+          within_sidebar do
+            click_element(:members_link)
           end
         end
       end

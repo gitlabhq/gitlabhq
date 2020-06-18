@@ -1,4 +1,7 @@
 ---
+stage: Verify
+group: Continuous Integration
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 comments: false
 description: "Learn how to use GitLab CI/CD, the GitLab built-in Continuous Integration, Continuous Deployment, and Continuous Delivery toolset to build, test, and deploy your application."
 type: index
@@ -57,8 +60,10 @@ the following documents:
 - [GitLab CI/CD basic workflow](introduction/index.md#basic-cicd-workflow).
 - [Step-by-step guide for writing `.gitlab-ci.yml` for the first time](../user/project/pages/getting_started_part_four.md).
 
-If you're coming over from Jenkins, you can also check out our handy [reference](jenkins/index.md)
-for converting your pipelines.
+If you're migrating from another CI/CD tool, check out our handy references:
+
+- [Migrating from CircleCI](migration/circleci.md)
+- [Migrating from Jenkins](jenkins/index.md)
 
 You can also get started by using one of the
 [`.gitlab-ci.yml` templates](https://gitlab.com/gitlab-org/gitlab-foss/tree/master/lib/gitlab/ci/templates)
@@ -66,7 +71,7 @@ available through the UI. You can use them by creating a new file,
 choosing a template that suits your application, and adjusting it
 to your needs:
 
-![Use a .gitlab-ci.yml template](img/add_file_template_11_10.png)
+![Use a `.gitlab-ci.yml` template](img/add_file_template_11_10.png)
 
 For a broader overview, see the [CI/CD getting started](quick_start/README.md) guide.
 
@@ -75,7 +80,7 @@ Once you're familiar with how GitLab CI/CD works, see the
 for all the attributes you can set and use.
 
 NOTE: **Note:**
-GitLab CI/CD and [shared runners](runners/README.md#shared-specific-and-group-runners) are enabled in GitLab.com and available for all users, limited only to the [user's pipelines quota](../user/gitlab_com/index.md#shared-runners).
+GitLab CI/CD and [shared runners](runners/README.md#shared-runners) are enabled in GitLab.com and available for all users, limited only to the [user's pipelines quota](../user/gitlab_com/index.md#shared-runners).
 
 ## Concepts
 
@@ -103,7 +108,7 @@ GitLab CI/CD supports numerous configuration options:
 | [Pipeline triggers](triggers/README.md) | Trigger pipelines through the API. |
 | [Pipelines for Merge Requests](merge_request_pipelines/index.md) | Design a pipeline structure for running a pipeline in merge requests. |
 | [Integrate with Kubernetes clusters](../user/project/clusters/index.md) | Connect your project to Google Kubernetes Engine (GKE) or an existing Kubernetes cluster. |
-| [Optimize GitLab and Runner for large repositories](large_repositories/index.md) | Recommended strategies for handling large repos. |
+| [Optimize GitLab and Runner for large repositories](large_repositories/index.md) | Recommended strategies for handling large repositories. |
 | [`.gitlab-ci.yml` full reference](yaml/README.md) | All the attributes you can use with GitLab CI/CD. |
 
 Note that certain operations can only be performed according to the
@@ -183,22 +188,43 @@ See also the [Why CI/CD?](https://docs.google.com/presentation/d/1OGgk2Tcxbpl7DJ
 As GitLab CI/CD has evolved, certain breaking changes have
 been necessary. These are:
 
+#### 13.0
+
+- [Remove Backported
+  `os.Expand`](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/4915)
+- [Remove Fedora 29 package
+  support](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/16158)
+- [Remove macOS 32-bit
+  support](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/25466)
+- [Removed `debug/jobs/list?v=1`
+  endpoint](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/6361)
+- [Remove support for array of strings when defining services for Docker
+  executor](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/4922)
+- [Remove `--docker-services` flag on register
+  command](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/6404)
+- [Remove legacy build directory
+  caching](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/4180)
+- [Remove `FF_USE_LEGACY_VOLUMES_MOUNTING_ORDER` feature
+  flag](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/6581)
+- [Remove support for Windows Server
+  1803](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/6553)
+
 #### 12.0
 
 - [Use refspec to clone/fetch Git
-  repository](https://gitlab.com/gitlab-org/gitlab-runner/issues/4069).
+  repository](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/4069).
 - [Old cache
-  configuration](https://gitlab.com/gitlab-org/gitlab-runner/issues/4070).
+  configuration](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/4070).
 - [Old metrics server
-  configuration](https://gitlab.com/gitlab-org/gitlab-runner/issues/4072).
+  configuration](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/4072).
 - [Remove
-  `FF_K8S_USE_ENTRYPOINT_OVER_COMMAND`](https://gitlab.com/gitlab-org/gitlab-runner/issues/4073).
+  `FF_K8S_USE_ENTRYPOINT_OVER_COMMAND`](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/4073).
 - [Remove Linux distributions that reach
   EOL](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/1130).
 - [Update command line API for helper
-  images](https://gitlab.com/gitlab-org/gitlab-runner/issues/4013).
+  images](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/4013).
 - [Remove old `git clean`
-  flow](https://gitlab.com/gitlab-org/gitlab-runner/issues/4175).
+  flow](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/4175).
 
 #### 11.0
 

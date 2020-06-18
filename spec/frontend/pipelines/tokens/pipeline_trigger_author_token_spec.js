@@ -1,3 +1,4 @@
+import Api from '~/api';
 import { GlFilteredSearchToken, GlFilteredSearchSuggestion, GlLoadingIcon } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import PipelineTriggerAuthorToken from '~/pipelines/components/tokens/pipeline_trigger_author_token.vue';
@@ -45,6 +46,8 @@ describe('Pipeline Trigger Author Token', () => {
   };
 
   beforeEach(() => {
+    jest.spyOn(Api, 'projectUsers').mockResolvedValue(users);
+
     createComponent();
   });
 
@@ -55,6 +58,13 @@ describe('Pipeline Trigger Author Token', () => {
 
   it('passes config correctly', () => {
     expect(findFilteredSearchToken().props('config')).toEqual(defaultProps.config);
+  });
+
+  it('fetches and sets project users', () => {
+    expect(Api.projectUsers).toHaveBeenCalled();
+
+    expect(wrapper.vm.users).toEqual(users);
+    expect(findLoadingIcon().exists()).toBe(false);
   });
 
   describe('displays loading icon correctly', () => {

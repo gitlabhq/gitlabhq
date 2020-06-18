@@ -90,6 +90,27 @@ describe RuboCop::Cop::Migration::PreventStrings do
       end
     end
 
+    context 'when the string data type is used for arrays' do
+      it 'registers no offense' do
+        expect_no_offenses(<<~RUBY)
+          class TestStringArrays < ActiveRecord::Migration[6.0]
+            DOWNTIME = false
+
+            def up
+              create_table :test_string_arrays, id: false do |t|
+                t.integer :test_id, null: false
+                t.string :name, array: true, default: [], null: false
+              end
+
+              add_column :test_string_arrays, :email, :string, array: true
+              add_column_with_default :test_string_arrays, :role, :string, default: [], array: true
+              change_column_type_concurrently :test_string_arrays, :test_id, :string, array: true
+            end
+          end
+        RUBY
+      end
+    end
+
     context 'on down' do
       it 'registers no offense' do
         expect_no_offenses(<<~RUBY)

@@ -6,13 +6,14 @@ RSpec.shared_examples 'comment on merge request file' do
 
     page.within('.js-discussion-note-form') do
       fill_in(:note_note, with: 'Line is wrong')
-      click_button('Comment')
+      find('.js-comment-button').click
     end
 
     wait_for_requests
 
     page.within('.notes_holder') do
       expect(page).to have_content('Line is wrong')
+      expect(page).not_to have_content('Comment on lines')
     end
 
     visit(merge_request_path(merge_request))

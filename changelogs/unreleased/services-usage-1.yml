@@ -1,0 +1,5 @@
+---
+title: Record audit event when an admin creates a new SSH Key for a user via the API
+merge_request: 33859
+author: Rajendra Kadam
+type: fixed

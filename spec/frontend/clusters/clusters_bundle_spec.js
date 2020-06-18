@@ -268,13 +268,18 @@ describe('Clusters', () => {
 
       cluster.store.state.applications[applicationId].status = INSTALLABLE;
 
+      const params = {};
+      if (applicationId === 'knative') {
+        params.hostname = 'test-example.com';
+      }
+
       // eslint-disable-next-line promise/valid-params
       cluster
-        .installApplication({ id: applicationId })
+        .installApplication({ id: applicationId, params })
         .then(() => {
           expect(cluster.store.state.applications[applicationId].status).toEqual(INSTALLING);
           expect(cluster.store.state.applications[applicationId].requestReason).toEqual(null);
-          expect(cluster.service.installApplication).toHaveBeenCalledWith(applicationId, undefined);
+          expect(cluster.service.installApplication).toHaveBeenCalledWith(applicationId, params);
           done();
         })
         .catch();

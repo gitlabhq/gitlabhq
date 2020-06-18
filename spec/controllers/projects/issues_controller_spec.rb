@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Projects::IssuesController do
+RSpec.describe Projects::IssuesController do
   include ProjectForksHelper
   include_context 'includes Spam constants'
 
@@ -332,8 +332,7 @@ describe Projects::IssuesController do
       end
 
       before do
-        allow(controller).to receive(:find_routable!)
-          .with(Project, project.full_path, any_args).and_return(project)
+        allow(controller).to receive(:find_routable!).and_return(project)
         allow(project).to receive(:default_branch).and_return(master_branch)
         allow_next_instance_of(Issues::RelatedBranchesService) do |service|
           allow(service).to receive(:execute).and_return(related_branches)
@@ -536,7 +535,7 @@ describe Projects::IssuesController do
         before do
           stub_application_setting(recaptcha_enabled: true)
           expect_next_instance_of(Spam::SpamVerdictService) do |verdict_service|
-            expect(verdict_service).to receive(:execute).and_return(REQUIRE_RECAPTCHA)
+            expect(verdict_service).to receive(:execute).and_return(CONDITIONAL_ALLOW)
           end
         end
 
@@ -851,7 +850,7 @@ describe Projects::IssuesController do
           context 'when recaptcha is not verified' do
             before do
               expect_next_instance_of(Spam::SpamVerdictService) do |verdict_service|
-                expect(verdict_service).to receive(:execute).and_return(REQUIRE_RECAPTCHA)
+                expect(verdict_service).to receive(:execute).and_return(CONDITIONAL_ALLOW)
               end
             end
 
@@ -1103,7 +1102,7 @@ describe Projects::IssuesController do
         context 'when captcha is not verified' do
           before do
             expect_next_instance_of(Spam::SpamVerdictService) do |verdict_service|
-              expect(verdict_service).to receive(:execute).and_return(REQUIRE_RECAPTCHA)
+              expect(verdict_service).to receive(:execute).and_return(CONDITIONAL_ALLOW)
             end
           end
 

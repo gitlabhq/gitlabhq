@@ -20,6 +20,7 @@ class Projects::BlameController < Projects::ApplicationController
     environment_params[:find_latest] = true
     @environment = EnvironmentsFinder.new(@project, current_user, environment_params).execute.last
 
-    @blame_groups = Gitlab::Blame.new(@blob, @commit).groups
+    @blame = Gitlab::Blame.new(@blob, @commit)
+    @blame = Gitlab::View::Presenter::Factory.new(@blame, project: @project, path: @path).fabricate!
   end
 end

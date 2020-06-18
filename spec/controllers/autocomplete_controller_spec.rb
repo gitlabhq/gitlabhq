@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe AutocompleteController do
+RSpec.describe AutocompleteController do
   let(:project) { create(:project) }
   let(:user) { project.owner }
 

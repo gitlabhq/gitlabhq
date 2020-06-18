@@ -45,8 +45,8 @@ module Projects
         project_issues_url(project, label_name: INCIDENT_LABEL_NAME)
       end
 
-      def starts_at
-        super&.rfc3339
+      def start_time
+        starts_at&.strftime('%d %B %Y, %-l:%M%p (%Z)')
       end
 
       def issue_summary_markdown
@@ -73,7 +73,7 @@ module Projects
       def metadata_list
         metadata = []
 
-        metadata << list_item('Start time', starts_at) if starts_at
+        metadata << list_item('Start time', start_time) if start_time
         metadata << list_item('full_query', backtick(full_query)) if full_query
         metadata << list_item(service.label.humanize, service.value) if service
         metadata << list_item(monitoring_tool.label.humanize, monitoring_tool.value) if monitoring_tool
@@ -149,7 +149,7 @@ module Projects
       end
 
       def embed_time
-        starts_at ? Time.rfc3339(starts_at) : Time.current
+        starts_at || Time.current
       end
 
       def alert_embed_window_params(time)

@@ -49,11 +49,11 @@ class PagesDomain < ApplicationRecord
   after_update :update_daemon, if: :saved_change_to_pages_config?
   after_destroy :update_daemon
 
-  scope :enabled, -> { where('enabled_until >= ?', Time.now ) }
+  scope :enabled, -> { where('enabled_until >= ?', Time.current ) }
   scope :needs_verification, -> do
     verified_at = arel_table[:verified_at]
     enabled_until = arel_table[:enabled_until]
-    threshold = Time.now + VERIFICATION_THRESHOLD
+    threshold = Time.current + VERIFICATION_THRESHOLD
 
     where(verified_at.eq(nil).or(enabled_until.eq(nil).or(enabled_until.lt(threshold))))
   end
@@ -69,7 +69,7 @@ class PagesDomain < ApplicationRecord
     from_union([user_provided, certificate_not_valid, certificate_expiring])
   end
 
-  scope :for_removal, -> { where("remove_at < ?", Time.now) }
+  scope :for_removal, -> { where("remove_at < ?", Time.current) }
 
   scope :with_logging_info, -> { includes(project: [:namespace, :route]) }
 
@@ -141,7 +141,7 @@ class PagesDomain < ApplicationRecord
   def expired?
     return false unless x509
 
-    current = Time.new
+    current = Time.current
     current < x509.not_before || x509.not_after < current
   end
 

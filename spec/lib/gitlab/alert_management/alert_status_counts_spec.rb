@@ -50,6 +50,19 @@ describe Gitlab::AlertManagement::AlertStatusCounts do
           expect(counts.acknowledged).to eq(0)
         end
       end
+
+      context 'when search param is included' do
+        let(:params) { { search: alert_1.title } }
+
+        it 'returns the correct countss' do
+          expect(counts.open).to eq(0)
+          expect(counts.all).to eq(1)
+          expect(counts.resolved).to eq(1)
+          expect(counts.ignored).to eq(0)
+          expect(counts.triggered).to eq(0)
+          expect(counts.acknowledged).to eq(0)
+        end
+      end
     end
   end
 end

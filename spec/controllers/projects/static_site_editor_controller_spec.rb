@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Projects::StaticSiteEditorController do
+RSpec.describe Projects::StaticSiteEditorController do
   let_it_be(:project) { create(:project, :public, :repository) }
   let_it_be(:user) { create(:user) }
 

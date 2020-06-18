@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Projects (JavaScript fixtures)', type: :controller do
+RSpec.describe 'Projects (JavaScript fixtures)', type: :controller do
   include JavaScriptFixturesHelpers
 
   runners_token = 'runnerstoken:intabulasreferre'

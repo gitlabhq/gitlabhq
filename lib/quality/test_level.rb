@@ -44,6 +44,7 @@ module Quality
         views
         workers
         elastic_integration
+        tooling
       ],
       integration: %w[
         controllers

@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-describe "User deletes comments on a commit", :js do
+RSpec.describe "User deletes comments on a commit", :js do
   include Spec::Support::Helpers::Features::NotesHelpers
   include RepoHelpers
 

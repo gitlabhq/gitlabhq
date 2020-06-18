@@ -1,0 +1,5 @@
+---
+title: Expose Jira imported issues count in GraphQL
+merge_request: 32580
+author:
+type: added

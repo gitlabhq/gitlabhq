@@ -371,6 +371,23 @@ describe('URL utility', () => {
     });
   });
 
+  describe('isBase64DataUrl', () => {
+    it.each`
+      url                                                      | valid
+      ${undefined}                                             | ${false}
+      ${'http://gitlab.com'}                                   | ${false}
+      ${'data:image/png;base64,abcdef'}                        | ${true}
+      ${'data:application/smil+xml;base64,abcdef'}             | ${true}
+      ${'data:application/vnd.syncml+xml;base64,abcdef'}       | ${true}
+      ${'data:application/vnd.3m.post-it-notes;base64,abcdef'} | ${true}
+      ${'notaurl'}                                             | ${false}
+      ${'../relative_url'}                                     | ${false}
+      ${'<a></a>'}                                             | ${false}
+    `('returns $valid for $url', ({ url, valid }) => {
+      expect(urlUtils.isBase64DataUrl(url)).toBe(valid);
+    });
+  });
+
   describe('relativePathToAbsolute', () => {
     it.each`
       path                       | base                                  | result

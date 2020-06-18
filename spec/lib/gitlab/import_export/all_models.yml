@@ -179,10 +179,12 @@ merge_request_context_commits:
 ci_pipelines:
 - project
 - user
+- ci_ref
 - stages
 - statuses
 - latest_statuses_ordered_by_stage
 - builds
+- bridges
 - processables
 - trigger_requests
 - variables
@@ -195,7 +197,7 @@ ci_pipelines:
 - cancelable_statuses
 - manual_actions
 - scheduled_actions
-- artifacts
+- downloadable_artifacts
 - pipeline_schedule
 - merge_requests_as_head_pipeline
 - merge_request
@@ -220,6 +222,11 @@ ci_pipelines:
 - pipeline_config
 - security_scans
 - daily_build_group_report_results
+- latest_builds
+- daily_report_results
+ci_refs:
+- project
+- ci_pipelines
 pipeline_variables:
 - pipeline
 stages:
@@ -236,6 +243,7 @@ statuses:
 - stage
 - user
 - auto_canceled_by
+- needs
 variables:
 - project
 triggers:
@@ -417,6 +425,7 @@ project:
 - deploy_tokens
 - settings
 - ci_cd_settings
+- project_settings
 - import_export_upload
 - repository_languages
 - pool_repository
@@ -479,6 +488,7 @@ project:
 - upstream_project_subscriptions
 - downstream_project_subscriptions
 - service_desk_setting
+- security_setting
 - import_failures
 - container_expiration_policy
 - resource_groups
@@ -494,6 +504,7 @@ project:
 - repository_storage_moves
 - freeze_periods
 - webex_teams_service
+- build_report_results
 award_emoji:
 - awardable
 - user
@@ -579,6 +590,7 @@ boards:
 - board_assignee
 - assignee
 - labels
+- user_preferences
 lists:
 - user
 - milestone
@@ -596,6 +608,7 @@ design: &design
 - versions
 - notes
 - user_mentions
+- events
 designs: *design
 actions:
 - design

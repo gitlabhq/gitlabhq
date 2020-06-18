@@ -27,6 +27,7 @@ describe DesignManagement::Design do
     it { is_expected.to validate_presence_of(:project) }
     it { is_expected.to validate_presence_of(:issue) }
     it { is_expected.to validate_presence_of(:filename) }
+    it { is_expected.to validate_length_of(:filename).is_at_most(255) }
     it { is_expected.to validate_uniqueness_of(:filename).scoped_to(:issue_id) }
 
     it "validates that the extension is an image" do
@@ -460,38 +461,6 @@ describe DesignManagement::Design do
       it 'uses the simple format' do
         expect(reference).to eq "#1[homescreen.jpg]"
       end
-
-      context 'when the filename contains spaces, hyphens, periods, single-quotes, underscores and colons' do
-        let(:filename) { %q{a complex filename: containing - _ : etc., but still 'simple'.gif} }
-
-        it 'uses the simple format' do
-          expect(reference).to eq "#1[#{filename}]"
-        end
-      end
-
-      context 'when the filename contains HTML angle brackets' do
-        let(:filename) { 'a <em>great</em> filename.jpg' }
-
-        it 'uses Base64 encoding' do
-          expect(reference).to eq "#1[base64:#{Base64.strict_encode64(filename)}]"
-        end
-      end
-
-      context 'when the filename contains quotation marks' do
-        let(:filename) { %q{a "great" filename.jpg} }
-
-        it 'uses enclosing quotes, with backslash encoding' do
-          expect(reference).to eq %q{#1["a \"great\" filename.jpg"]}
-        end
-      end
-
-      context 'when the filename contains square brackets' do
-        let(:filename) { %q{a [great] filename.jpg} }
-
-        it 'uses enclosing quotes' do
-          expect(reference).to eq %q{#1["a [great] filename.jpg"]}
-        end
-      end
     end
 
     context 'when full is true' do
@@ -525,31 +494,55 @@ describe DesignManagement::Design do
   end
 
   describe 'reference_pattern' do
-    let(:match) { described_class.reference_pattern.match(ref) }
-    let(:ref) { design.to_reference }
-    let(:design) { build(:design, filename: filename) }
+    it 'is nil' do
+      expect(described_class.reference_pattern).to be_nil
+    end
+  end
 
-    context 'simple_file_name' do
-      let(:filename) { 'simple-file-name.jpg' }
+  describe 'link_reference_pattern' do
+    it 'is not nil' do
+      expect(described_class.link_reference_pattern).not_to be_nil
+    end
 
-      it 'matches :simple_file_name' do
-        expect(match[:simple_file_name]).to eq(filename)
+    it 'does not match the designs tab' do
+      expect(described_class.link_reference_pattern).not_to match(url_for_designs(issue))
+    end
+
+    where(:ext) do
+      (described_class::SAFE_IMAGE_EXT + described_class::DANGEROUS_IMAGE_EXT).flat_map do |ext|
+        [[ext], [ext.upcase]]
       end
     end
 
-    context 'quoted_file_name' do
-      let(:filename) { 'simple "file" name.jpg' }
+    with_them do
+      let(:filename) { "my-file.#{ext}" }
+      let(:design) { build(:design, filename: filename) }
+      let(:url) { url_for_design(design) }
+      let(:captures) { described_class.link_reference_pattern.match(url)&.named_captures }
 
-      it 'matches :simple_file_name' do
-        expect(match[:escaped_filename].gsub(/\\"/, '"')).to eq(filename)
+      it 'matches the URL' do
+        expect(captures).to include(
+          'url_filename' => filename,
+          'issue' => design.issue.iid.to_s,
+          'namespace' => design.project.namespace.to_param,
+          'project' => design.project.name
+        )
       end
-    end
 
-    context 'Base64 name' do
-      let(:filename) { '<>.png' }
+      context 'the file needs to be encoded' do
+        let(:filename) { "my file.#{ext}" }
 
-      it 'matches base_64_encoded_name' do
-        expect(Base64.decode64(match[:base_64_encoded_name])).to eq(filename)
+        it 'extracts the encoded filename' do
+          expect(captures).to include('url_filename' => 'my%20file.' + ext)
+        end
+      end
+
+      context 'the file is all upper case' do
+        let(:filename) { "file.#{ext}".upcase }
+
+        it 'extracts the encoded filename' do
+          expect(captures).to include('url_filename' => filename)
+        end
       end
     end
   end

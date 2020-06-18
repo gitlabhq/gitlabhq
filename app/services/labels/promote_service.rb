@@ -90,7 +90,7 @@ module Labels
 
     # rubocop: disable CodeReuse/ActiveRecord
     def destroy_project_labels(label_ids)
-      Label.where(id: label_ids).destroy_all # rubocop: disable DestroyAll
+      Label.where(id: label_ids).destroy_all # rubocop: disable Cop/DestroyAll
     end
     # rubocop: enable CodeReuse/ActiveRecord
 

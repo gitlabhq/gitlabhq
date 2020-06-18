@@ -9,9 +9,9 @@
       anchor: 'configure-the-commit-message-for-applied-suggestions'),
       target: '_blank'
   .mb-2
-    = form.text_field :suggestion_commit_message, class: 'form-control mb-2', placeholder: Suggestions::ApplyService::DEFAULT_SUGGESTION_COMMIT_MESSAGE
+    = form.text_field :suggestion_commit_message, class: 'form-control mb-2', placeholder: Gitlab::Suggestions::CommitMessage::DEFAULT_SUGGESTION_COMMIT_MESSAGE
     %p.form-text.text-muted
       = s_('ProjectSettings|The variables GitLab supports:')
-      - Suggestions::ApplyService::PLACEHOLDERS.keys.each do |placeholder|
+      - Gitlab::Suggestions::CommitMessage::PLACEHOLDERS.keys.each do |placeholder|
         %code
           = "%{#{placeholder}}".html_safe

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ServerlessDomainFinder do
+RSpec.describe ServerlessDomainFinder do
   let(:function_name) { 'test-function' }
   let(:pages_domain_name) { 'serverless.gitlab.io' }
   let(:valid_cluster_uuid) { 'aba1cdef123456f278' }

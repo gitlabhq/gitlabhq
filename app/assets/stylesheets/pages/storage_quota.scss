@@ -1,0 +1,17 @@
+.storage-type-usage {
+  &:first-child {
+    @include gl-rounded-top-left-base;
+    @include gl-rounded-bottom-left-base;
+  }
+
+  &:last-child {
+    @include gl-rounded-top-right-base;
+    @include gl-rounded-bottom-right-base;
+  }
+
+  &:not(:last-child) {
+    @include gl-border-r-2;
+    @include gl-border-r-solid;
+    @include gl-border-white;
+  }
+}

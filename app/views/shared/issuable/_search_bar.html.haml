@@ -173,6 +173,8 @@
           = render 'shared/issuable/board_create_list_dropdown', board: board
           - if @project
             #js-add-issues-btn.prepend-left-10{ data: { can_admin_list: can?(current_user, :admin_list, @project) } }
+        - if Feature.enabled?(:boards_with_swimlanes, @group)
+          #js-board-epics-swimlanes-toggle
         #js-toggle-focus-btn
       - elsif is_not_boards_modal_or_productivity_analytics && show_sorting_dropdown
         = render 'shared/issuable/sort_dropdown'

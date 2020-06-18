@@ -16,7 +16,7 @@ module Gitlab
       # The series to store events (e.g. Git pushes) in.
       EVENT_SERIES = 'events'
 
-      attr_reader :tags, :method
+      attr_reader :method
 
       def self.current
         Thread.current[THREAD_KEY]
@@ -27,8 +27,6 @@ module Gitlab
 
         @started_at = nil
         @finished_at = nil
-
-        @tags = {}
 
         @memory_before = 0
         @memory_after = 0
@@ -92,6 +90,12 @@ module Gitlab
 
       def set(name, value, use_prometheus = true)
         self.class.transaction_metric(name, :gauge).set(labels, value) if use_prometheus
+      end
+
+      def get(name, type, tags = {})
+        metric = self.class.transaction_metric(name, type)
+
+        metric.get(filter_tags(tags).merge(labels))
       end
 
       def labels

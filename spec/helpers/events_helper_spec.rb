@@ -150,6 +150,21 @@ describe EventsHelper do
 
       expect(helper.event_wiki_page_target_url(event)).to eq(url)
     end
+
+    context 'there is no canonical slug' do
+      let(:event) { create(:wiki_page_event, project: project) }
+
+      before do
+        event.target.slugs.update_all(canonical: false)
+        event.target.clear_memoization(:canonical_slug)
+      end
+
+      it 'links to the home page' do
+        url = helper.project_wiki_url(project, Wiki::HOMEPAGE)
+
+        expect(helper.event_wiki_page_target_url(event)).to eq(url)
+      end
+    end
   end
 
   describe '#event_wiki_title_html' do

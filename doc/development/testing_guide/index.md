@@ -20,7 +20,7 @@ Following are two great articles that everyone should read to understand what
 automated testing means, and what are its principles:
 
 - [Five Factor Testing](https://madeintandem.com/blog/five-factor-testing/): Why do we need tests?
-- [Principles of Automated Testing](http://www.lihaoyi.com/post/PrinciplesofAutomatedTesting.html): Levels of testing. Prioritize tests. Cost of tests.
+- [Principles of Automated Testing](https://www.lihaoyi.com/post/PrinciplesofAutomatedTesting.html): Levels of testing. Prioritize tests. Cost of tests.
 
 ## [Testing levels](testing_levels.md)
 
@@ -58,7 +58,7 @@ Everything you should know about how to test Rake tasks.
 ## [End-to-end tests](end_to_end/index.md)
 
 Everything you should know about how to run end-to-end tests using
-[GitLab QA](ttps://gitlab.com/gitlab-org/gitlab-qa) testing framework.
+[GitLab QA](https://gitlab.com/gitlab-org/gitlab-qa) testing framework.
 
 ## [Migrations tests](testing_migrations_guide.md)
 

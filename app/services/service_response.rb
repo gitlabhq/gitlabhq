@@ -26,6 +26,12 @@ class ServiceResponse
     status == :error
   end
 
+  def errors
+    return [] unless error?
+
+    Array.wrap(message)
+  end
+
   private
 
   attr_writer :status, :message, :http_status, :payload

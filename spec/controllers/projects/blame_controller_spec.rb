@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Projects::BlameController do
+RSpec.describe Projects::BlameController do
   let(:project) { create(:project, :repository) }
   let(:user)    { create(:user) }
 

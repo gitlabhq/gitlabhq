@@ -1,6 +1,6 @@
 # Appearance API **(CORE ONLY)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/16647) in GitLab 12.7.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/16647) in GitLab 12.7.
 
 Appearance API allows you to maintain GitLab's appearance as if using the GitLab UI at
 `/admin/appearance`. The API requires administrator privileges.
@@ -14,7 +14,7 @@ GET /application/appearance
 ```
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/application/appearance
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/application/appearance"
 ```
 
 Example response:
@@ -50,7 +50,7 @@ PUT /application/appearance
 | `description`                     | string  | no       | Markdown text shown on the sign in / sign up page
 | `logo`                            | mixed   | no       | Instance image used on the sign in / sign up page
 | `header_logo`                     | mixed   | no       | Instance image used for the main navigation bar
-| `favicon`                         | mixed   | no       | Instance favicon in .ico/.png format
+| `favicon`                         | mixed   | no       | Instance favicon in `.ico` or `.png` format
 | `new_project_guidelines`          | string  | no       | Markdown text shown on the new project page
 | `profile_image_guidelines`        | string  | no       | Markdown text shown on the profile page below Public Avatar
 | `header_message`                  | string  | no       | Message within the system header bar
@@ -60,7 +60,7 @@ PUT /application/appearance
 | `email_header_and_footer_enabled` | boolean | no       | Add header and footer to all outgoing emails if enabled
 
 ```shell
-curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/application/appearance?email_header_and_footer_enabled=true&header_message=test
+curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/application/appearance?email_header_and_footer_enabled=true&header_message=test"
 ```
 
 Example response:

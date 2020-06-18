@@ -1,174 +1,175 @@
-import Vue from 'vue';
-import mountComponent from 'helpers/vue_mount_component_helper';
-import { shallowMount } from '@vue/test-utils';
-import applications from '~/clusters/components/applications.vue';
-import { CLUSTER_TYPE } from '~/clusters/constants';
+import { shallowMount, mount } from '@vue/test-utils';
+import Applications from '~/clusters/components/applications.vue';
+import { CLUSTER_TYPE, PROVIDER_TYPE } from '~/clusters/constants';
 import { APPLICATIONS_MOCK_STATE } from '../services/mock_data';
 import eventHub from '~/clusters/event_hub';
+import ApplicationRow from '~/clusters/components/application_row.vue';
 import KnativeDomainEditor from '~/clusters/components/knative_domain_editor.vue';
 import CrossplaneProviderStack from '~/clusters/components/crossplane_provider_stack.vue';
 import IngressModsecuritySettings from '~/clusters/components/ingress_modsecurity_settings.vue';
 import FluentdOutputSettings from '~/clusters/components/fluentd_output_settings.vue';
 
 describe('Applications', () => {
-  let vm;
-  let Applications;
+  let wrapper;
 
   beforeEach(() => {
-    Applications = Vue.extend(applications);
-
     gon.features = gon.features || {};
     gon.features.managedAppsLocalTiller = false;
   });
 
+  const createApp = ({ applications, type } = {}, isShallow) => {
+    const mountMethod = isShallow ? shallowMount : mount;
+
+    wrapper = mountMethod(Applications, {
+      stubs: { ApplicationRow },
+      propsData: {
+        type,
+        applications: { ...APPLICATIONS_MOCK_STATE, ...applications },
+      },
+    });
+  };
+
+  const createShallowApp = options => createApp(options, true);
+  const findByTestId = id => wrapper.find(`[data-testid="${id}"]`);
   afterEach(() => {
-    vm.$destroy();
+    wrapper.destroy();
   });
 
   describe('Project cluster applications', () => {
     beforeEach(() => {
-      vm = mountComponent(Applications, {
-        applications: APPLICATIONS_MOCK_STATE,
-        type: CLUSTER_TYPE.PROJECT,
-      });
+      createApp({ type: CLUSTER_TYPE.PROJECT });
     });
 
     it('renders a row for Helm Tiller', () => {
-      expect(vm.$el.querySelector('.js-cluster-application-row-helm')).not.toBeNull();
+      expect(wrapper.find('.js-cluster-application-row-helm').exists()).toBe(true);
     });
 
     it('renders a row for Ingress', () => {
-      expect(vm.$el.querySelector('.js-cluster-application-row-ingress')).not.toBeNull();
+      expect(wrapper.find('.js-cluster-application-row-ingress').exists()).toBe(true);
     });
 
     it('renders a row for Cert-Manager', () => {
-      expect(vm.$el.querySelector('.js-cluster-application-row-cert_manager')).not.toBeNull();
+      expect(wrapper.find('.js-cluster-application-row-cert_manager').exists()).toBe(true);
     });
 
     it('renders a row for Crossplane', () => {
-      expect(vm.$el.querySelector('.js-cluster-application-row-crossplane')).not.toBeNull();
+      expect(wrapper.find('.js-cluster-application-row-crossplane').exists()).toBe(true);
     });
 
     it('renders a row for Prometheus', () => {
-      expect(vm.$el.querySelector('.js-cluster-application-row-prometheus')).not.toBeNull();
+      expect(wrapper.find('.js-cluster-application-row-prometheus').exists()).toBe(true);
     });
 
     it('renders a row for GitLab Runner', () => {
-      expect(vm.$el.querySelector('.js-cluster-application-row-runner')).not.toBeNull();
+      expect(wrapper.find('.js-cluster-application-row-runner').exists()).toBe(true);
     });
 
     it('renders a row for Jupyter', () => {
-      expect(vm.$el.querySelector('.js-cluster-application-row-jupyter')).not.toBeNull();
+      expect(wrapper.find('.js-cluster-application-row-jupyter').exists()).toBe(true);
     });
 
     it('renders a row for Knative', () => {
-      expect(vm.$el.querySelector('.js-cluster-application-row-knative')).not.toBeNull();
+      expect(wrapper.find('.js-cluster-application-row-knative').exists()).toBe(true);
     });
 
     it('renders a row for Elastic Stack', () => {
-      expect(vm.$el.querySelector('.js-cluster-application-row-elastic_stack')).not.toBeNull();
+      expect(wrapper.find('.js-cluster-application-row-elastic_stack').exists()).toBe(true);
     });
 
     it('renders a row for Fluentd', () => {
-      expect(vm.$el.querySelector('.js-cluster-application-row-fluentd')).not.toBeNull();
+      expect(wrapper.find('.js-cluster-application-row-fluentd').exists()).toBe(true);
     });
   });
 
   describe('Group cluster applications', () => {
     beforeEach(() => {
-      vm = mountComponent(Applications, {
-        type: CLUSTER_TYPE.GROUP,
-        applications: APPLICATIONS_MOCK_STATE,
-      });
+      createApp({ type: CLUSTER_TYPE.GROUP });
     });
 
     it('renders a row for Helm Tiller', () => {
-      expect(vm.$el.querySelector('.js-cluster-application-row-helm')).not.toBeNull();
+      expect(wrapper.find('.js-cluster-application-row-helm').exists()).toBe(true);
     });
 
     it('renders a row for Ingress', () => {
-      expect(vm.$el.querySelector('.js-cluster-application-row-ingress')).not.toBeNull();
+      expect(wrapper.find('.js-cluster-application-row-ingress').exists()).toBe(true);
     });
 
     it('renders a row for Cert-Manager', () => {
-      expect(vm.$el.querySelector('.js-cluster-application-row-cert_manager')).not.toBeNull();
+      expect(wrapper.find('.js-cluster-application-row-cert_manager').exists()).toBe(true);
     });
 
     it('renders a row for Crossplane', () => {
-      expect(vm.$el.querySelector('.js-cluster-application-row-crossplane')).not.toBeNull();
+      expect(wrapper.find('.js-cluster-application-row-crossplane').exists()).toBe(true);
     });
 
     it('renders a row for Prometheus', () => {
-      expect(vm.$el.querySelector('.js-cluster-application-row-prometheus')).not.toBeNull();
+      expect(wrapper.find('.js-cluster-application-row-prometheus').exists()).toBe(true);
     });
 
     it('renders a row for GitLab Runner', () => {
-      expect(vm.$el.querySelector('.js-cluster-application-row-runner')).not.toBeNull();
+      expect(wrapper.find('.js-cluster-application-row-runner').exists()).toBe(true);
     });
 
     it('renders a row for Jupyter', () => {
-      expect(vm.$el.querySelector('.js-cluster-application-row-jupyter')).not.toBeNull();
+      expect(wrapper.find('.js-cluster-application-row-jupyter').exists()).toBe(true);
     });
 
     it('renders a row for Knative', () => {
-      expect(vm.$el.querySelector('.js-cluster-application-row-knative')).not.toBeNull();
+      expect(wrapper.find('.js-cluster-application-row-knative').exists()).toBe(true);
     });
 
     it('renders a row for Elastic Stack', () => {
-      expect(vm.$el.querySelector('.js-cluster-application-row-elastic_stack')).not.toBeNull();
+      expect(wrapper.find('.js-cluster-application-row-elastic_stack').exists()).toBe(true);
     });
 
     it('renders a row for Fluentd', () => {
-      expect(vm.$el.querySelector('.js-cluster-application-row-fluentd')).not.toBeNull();
+      expect(wrapper.find('.js-cluster-application-row-fluentd').exists()).toBe(true);
     });
   });
 
   describe('Instance cluster applications', () => {
     beforeEach(() => {
-      vm = mountComponent(Applications, {
-        type: CLUSTER_TYPE.INSTANCE,
-        applications: APPLICATIONS_MOCK_STATE,
-      });
+      createApp({ type: CLUSTER_TYPE.INSTANCE });
     });
 
     it('renders a row for Helm Tiller', () => {
-      expect(vm.$el.querySelector('.js-cluster-application-row-helm')).not.toBeNull();
+      expect(wrapper.find('.js-cluster-application-row-helm').exists()).toBe(true);
     });
 
     it('renders a row for Ingress', () => {
-      expect(vm.$el.querySelector('.js-cluster-application-row-ingress')).not.toBeNull();
+      expect(wrapper.find('.js-cluster-application-row-ingress').exists()).toBe(true);
     });
 
     it('renders a row for Cert-Manager', () => {
-      expect(vm.$el.querySelector('.js-cluster-application-row-cert_manager')).not.toBeNull();
+      expect(wrapper.find('.js-cluster-application-row-cert_manager').exists()).toBe(true);
     });
 
     it('renders a row for Crossplane', () => {
-      expect(vm.$el.querySelector('.js-cluster-application-row-crossplane')).not.toBeNull();
+      expect(wrapper.find('.js-cluster-application-row-crossplane').exists()).toBe(true);
     });
 
     it('renders a row for Prometheus', () => {
-      expect(vm.$el.querySelector('.js-cluster-application-row-prometheus')).not.toBeNull();
+      expect(wrapper.find('.js-cluster-application-row-prometheus').exists()).toBe(true);
     });
 
     it('renders a row for GitLab Runner', () => {
-      expect(vm.$el.querySelector('.js-cluster-application-row-runner')).not.toBeNull();
+      expect(wrapper.find('.js-cluster-application-row-runner').exists()).toBe(true);
     });
 
     it('renders a row for Jupyter', () => {
-      expect(vm.$el.querySelector('.js-cluster-application-row-jupyter')).not.toBeNull();
+      expect(wrapper.find('.js-cluster-application-row-jupyter').exists()).toBe(true);
     });
 
     it('renders a row for Knative', () => {
-      expect(vm.$el.querySelector('.js-cluster-application-row-knative')).not.toBeNull();
+      expect(wrapper.find('.js-cluster-application-row-knative').exists()).toBe(true);
     });
 
     it('renders a row for Elastic Stack', () => {
-      expect(vm.$el.querySelector('.js-cluster-application-row-elastic_stack')).not.toBeNull();
+      expect(wrapper.find('.js-cluster-application-row-elastic_stack').exists()).toBe(true);
     });
 
     it('renders a row for Fluentd', () => {
-      expect(vm.$el.querySelector('.js-cluster-application-row-fluentd')).not.toBeNull();
+      expect(wrapper.find('.js-cluster-application-row-fluentd').exists()).toBe(true);
     });
   });
 
@@ -179,20 +180,21 @@ describe('Applications', () => {
       });
 
       it('does not render a row for Helm Tiller', () => {
-        vm = mountComponent(Applications, {
-          applications: APPLICATIONS_MOCK_STATE,
-        });
-
-        expect(vm.$el.querySelector('.js-cluster-application-row-helm')).toBeNull();
+        createApp();
+        expect(wrapper.find('.js-cluster-application-row-helm').exists()).toBe(false);
       });
     });
   });
 
   describe('Ingress application', () => {
+    it('shows the correct warning message', () => {
+      createApp();
+      expect(findByTestId('ingressCostWarning').element).toMatchSnapshot();
+    });
+
     describe('with nested component', () => {
       const propsData = {
         applications: {
-          ...APPLICATIONS_MOCK_STATE,
           ingress: {
             title: 'Ingress',
             status: 'installed',
@@ -200,13 +202,8 @@ describe('Applications', () => {
         },
       };
 
-      let wrapper;
-      beforeEach(() => {
-        wrapper = shallowMount(Applications, { propsData });
-      });
-      afterEach(() => {
-        wrapper.destroy();
-      });
+      beforeEach(() => createShallowApp(propsData));
+
       it('renders IngressModsecuritySettings', () => {
         const modsecuritySettings = wrapper.find(IngressModsecuritySettings);
         expect(modsecuritySettings.exists()).toBe(true);
@@ -216,9 +213,8 @@ describe('Applications', () => {
     describe('when installed', () => {
       describe('with ip address', () => {
         it('renders ip address with a clipboard button', () => {
-          vm = mountComponent(Applications, {
+          createApp({
             applications: {
-              ...APPLICATIONS_MOCK_STATE,
               ingress: {
                 title: 'Ingress',
                 status: 'installed',
@@ -227,17 +223,16 @@ describe('Applications', () => {
             },
           });
 
-          expect(vm.$el.querySelector('.js-endpoint').value).toEqual('0.0.0.0');
-
-          expect(
-            vm.$el.querySelector('.js-clipboard-btn').getAttribute('data-clipboard-text'),
-          ).toEqual('0.0.0.0');
+          expect(wrapper.find('.js-endpoint').element.value).toEqual('0.0.0.0');
+          expect(wrapper.find('.js-clipboard-btn').attributes('data-clipboard-text')).toEqual(
+            '0.0.0.0',
+          );
         });
       });
 
       describe('with hostname', () => {
         it('renders hostname with a clipboard button', () => {
-          vm = mountComponent(Applications, {
+          createApp({
             applications: {
               ingress: {
                 title: 'Ingress',
@@ -257,19 +252,18 @@ describe('Applications', () => {
             },
           });
 
-          expect(vm.$el.querySelector('.js-endpoint').value).toEqual('localhost.localdomain');
+          expect(wrapper.find('.js-endpoint').element.value).toEqual('localhost.localdomain');
 
-          expect(
-            vm.$el.querySelector('.js-clipboard-btn').getAttribute('data-clipboard-text'),
-          ).toEqual('localhost.localdomain');
+          expect(wrapper.find('.js-clipboard-btn').attributes('data-clipboard-text')).toEqual(
+            'localhost.localdomain',
+          );
         });
       });
 
       describe('without ip address', () => {
         it('renders an input text with a loading icon and an alert text', () => {
-          vm = mountComponent(Applications, {
+          createApp({
             applications: {
-              ...APPLICATIONS_MOCK_STATE,
               ingress: {
                 title: 'Ingress',
                 status: 'installed',
@@ -277,139 +271,136 @@ describe('Applications', () => {
             },
           });
 
-          expect(vm.$el.querySelector('.js-ingress-ip-loading-icon')).not.toBe(null);
-          expect(vm.$el.querySelector('.js-no-endpoint-message')).not.toBe(null);
+          expect(wrapper.find('.js-ingress-ip-loading-icon').exists()).toBe(true);
+          expect(wrapper.find('.js-no-endpoint-message').exists()).toBe(true);
         });
       });
     });
 
     describe('before installing', () => {
       it('does not render the IP address', () => {
-        vm = mountComponent(Applications, {
-          applications: APPLICATIONS_MOCK_STATE,
+        createApp();
+
+        expect(wrapper.text()).not.toContain('Ingress IP Address');
+        expect(wrapper.find('.js-endpoint').exists()).toBe(false);
+      });
+    });
+  });
+
+  describe('Cert-Manager application', () => {
+    it('shows the correct description', () => {
+      createApp();
+      expect(findByTestId('certManagerDescription').element).toMatchSnapshot();
+    });
+
+    describe('when not installed', () => {
+      it('renders email & allows editing', () => {
+        createApp({
+          applications: {
+            cert_manager: {
+              title: 'Cert-Manager',
+              email: 'before@example.com',
+              status: 'installable',
+            },
+          },
         });
 
-        expect(vm.$el.textContent).not.toContain('Ingress IP Address');
-        expect(vm.$el.querySelector('.js-endpoint')).toBe(null);
+        expect(wrapper.find('.js-email').element.value).toEqual('before@example.com');
+        expect(wrapper.find('.js-email').attributes('readonly')).toBe(undefined);
       });
     });
 
-    describe('Cert-Manager application', () => {
-      describe('when not installed', () => {
-        it('renders email & allows editing', () => {
-          vm = mountComponent(Applications, {
-            applications: {
-              ...APPLICATIONS_MOCK_STATE,
-              cert_manager: {
-                title: 'Cert-Manager',
-                email: 'before@example.com',
-                status: 'installable',
-              },
+    describe('when installed', () => {
+      it('renders email in readonly', () => {
+        createApp({
+          applications: {
+            cert_manager: {
+              title: 'Cert-Manager',
+              email: 'after@example.com',
+              status: 'installed',
             },
-          });
-
-          expect(vm.$el.querySelector('.js-email').value).toEqual('before@example.com');
-          expect(vm.$el.querySelector('.js-email').getAttribute('readonly')).toBe(null);
+          },
         });
+
+        expect(wrapper.find('.js-email').element.value).toEqual('after@example.com');
+        expect(wrapper.find('.js-email').attributes('readonly')).toEqual('readonly');
       });
+    });
+  });
 
-      describe('when installed', () => {
-        it('renders email in readonly', () => {
-          vm = mountComponent(Applications, {
-            applications: {
-              ...APPLICATIONS_MOCK_STATE,
-              cert_manager: {
-                title: 'Cert-Manager',
-                email: 'after@example.com',
-                status: 'installed',
-              },
+  describe('Jupyter application', () => {
+    describe('with ingress installed with ip & jupyter installable', () => {
+      it('renders hostname active input', () => {
+        createApp({
+          applications: {
+            ingress: {
+              title: 'Ingress',
+              status: 'installed',
+              externalIp: '1.1.1.1',
             },
-          });
-
-          expect(vm.$el.querySelector('.js-email').value).toEqual('after@example.com');
-          expect(vm.$el.querySelector('.js-email').getAttribute('readonly')).toEqual('readonly');
+          },
         });
+
+        expect(
+          wrapper.find('.js-cluster-application-row-jupyter .js-hostname').attributes('readonly'),
+        ).toEqual(undefined);
       });
     });
 
-    describe('Jupyter application', () => {
-      describe('with ingress installed with ip & jupyter installable', () => {
-        it('renders hostname active input', () => {
-          vm = mountComponent(Applications, {
-            applications: {
-              ...APPLICATIONS_MOCK_STATE,
-              ingress: {
-                title: 'Ingress',
-                status: 'installed',
-                externalIp: '1.1.1.1',
-              },
-            },
-          });
-
-          expect(
-            vm.$el
-              .querySelector('.js-cluster-application-row-jupyter .js-hostname')
-              .getAttribute('readonly'),
-          ).toEqual(null);
+    describe('with ingress installed without external ip', () => {
+      it('does not render hostname input', () => {
+        createApp({
+          applications: {
+            ingress: { title: 'Ingress', status: 'installed' },
+          },
         });
+
+        expect(wrapper.find('.js-cluster-application-row-jupyter .js-hostname').exists()).toBe(
+          false,
+        );
+      });
+    });
+
+    describe('with ingress & jupyter installed', () => {
+      it('renders readonly input', () => {
+        createApp({
+          applications: {
+            ingress: { title: 'Ingress', status: 'installed', externalIp: '1.1.1.1' },
+            jupyter: { title: 'JupyterHub', status: 'installed', hostname: '' },
+          },
+        });
+
+        expect(
+          wrapper.find('.js-cluster-application-row-jupyter .js-hostname').attributes('readonly'),
+        ).toEqual('readonly');
+      });
+    });
+
+    describe('without ingress installed', () => {
+      beforeEach(() => {
+        createApp();
       });
 
-      describe('with ingress installed without external ip', () => {
-        it('does not render hostname input', () => {
-          vm = mountComponent(Applications, {
-            applications: {
-              ...APPLICATIONS_MOCK_STATE,
-              ingress: { title: 'Ingress', status: 'installed' },
-            },
-          });
-
-          expect(vm.$el.querySelector('.js-cluster-application-row-jupyter .js-hostname')).toBe(
-            null,
-          );
-        });
+      it('does not render input', () => {
+        expect(wrapper.find('.js-cluster-application-row-jupyter .js-hostname').exists()).toBe(
+          false,
+        );
       });
 
-      describe('with ingress & jupyter installed', () => {
-        it('renders readonly input', () => {
-          vm = mountComponent(Applications, {
-            applications: {
-              ...APPLICATIONS_MOCK_STATE,
-              ingress: { title: 'Ingress', status: 'installed', externalIp: '1.1.1.1' },
-              jupyter: { title: 'JupyterHub', status: 'installed', hostname: '' },
-            },
-          });
-
-          expect(
-            vm.$el
-              .querySelector('.js-cluster-application-row-jupyter .js-hostname')
-              .getAttribute('readonly'),
-          ).toEqual('readonly');
-        });
+      it('renders disabled install button', () => {
+        expect(
+          wrapper
+            .find('.js-cluster-application-row-jupyter .js-cluster-application-install-button')
+            .attributes('disabled'),
+        ).toEqual('disabled');
       });
+    });
+  });
 
-      describe('without ingress installed', () => {
-        beforeEach(() => {
-          vm = mountComponent(Applications, {
-            applications: APPLICATIONS_MOCK_STATE,
-          });
-        });
-
-        it('does not render input', () => {
-          expect(vm.$el.querySelector('.js-cluster-application-row-jupyter .js-hostname')).toBe(
-            null,
-          );
-        });
-
-        it('renders disabled install button', () => {
-          expect(
-            vm.$el
-              .querySelector(
-                '.js-cluster-application-row-jupyter .js-cluster-application-install-button',
-              )
-              .getAttribute('disabled'),
-          ).toEqual('disabled');
-        });
-      });
+  describe('Prometheus application', () => {
+    it('shows the correct description', () => {
+      createApp();
+      expect(findByTestId('prometheusDescription').element).toMatchSnapshot();
     });
   });
 
@@ -420,7 +411,6 @@ describe('Applications', () => {
     };
     const propsData = {
       applications: {
-        ...APPLICATIONS_MOCK_STATE,
         knative: {
           title: 'Knative',
           hostname: 'example.com',
@@ -432,18 +422,25 @@ describe('Applications', () => {
         },
       },
     };
-    let wrapper;
     let knativeDomainEditor;
 
     beforeEach(() => {
-      wrapper = shallowMount(Applications, { propsData });
+      createShallowApp(propsData);
       jest.spyOn(eventHub, '$emit');
 
       knativeDomainEditor = wrapper.find(KnativeDomainEditor);
     });
 
-    afterEach(() => {
-      wrapper.destroy();
+    it('shows the correct description', async () => {
+      createApp();
+      wrapper.setProps({
+        providerType: PROVIDER_TYPE.GCP,
+        preInstalledKnative: true,
+      });
+
+      await wrapper.vm.$nextTick();
+
+      expect(findByTestId('installedVia').element).toMatchSnapshot();
     });
 
     it('emits saveKnativeDomain event when knative domain editor emits save event', () => {
@@ -492,7 +489,6 @@ describe('Applications', () => {
   describe('Crossplane application', () => {
     const propsData = {
       applications: {
-        ...APPLICATIONS_MOCK_STATE,
         crossplane: {
           title: 'Crossplane',
           stack: {
@@ -502,74 +498,58 @@ describe('Applications', () => {
       },
     };
 
-    let wrapper;
-    beforeEach(() => {
-      wrapper = shallowMount(Applications, { propsData });
-    });
-    afterEach(() => {
-      wrapper.destroy();
-    });
+    beforeEach(() => createShallowApp(propsData));
+
     it('renders the correct Component', () => {
       const crossplane = wrapper.find(CrossplaneProviderStack);
       expect(crossplane.exists()).toBe(true);
+    });
+
+    it('shows the correct description', () => {
+      createApp();
+      expect(findByTestId('crossplaneDescription').element).toMatchSnapshot();
     });
   });
 
   describe('Elastic Stack application', () => {
     describe('with elastic stack installable', () => {
       it('renders hostname active input', () => {
-        vm = mountComponent(Applications, {
-          applications: {
-            ...APPLICATIONS_MOCK_STATE,
-          },
-        });
+        createApp();
 
         expect(
-          vm.$el
-            .querySelector(
+          wrapper
+            .find(
               '.js-cluster-application-row-elastic_stack .js-cluster-application-install-button',
             )
-            .getAttribute('disabled'),
+            .attributes('disabled'),
         ).toEqual('disabled');
       });
     });
 
     describe('elastic stack installed', () => {
       it('renders uninstall button', () => {
-        vm = mountComponent(Applications, {
+        createApp({
           applications: {
-            ...APPLICATIONS_MOCK_STATE,
             elastic_stack: { title: 'Elastic Stack', status: 'installed' },
           },
         });
 
         expect(
-          vm.$el
-            .querySelector(
+          wrapper
+            .find(
               '.js-cluster-application-row-elastic_stack .js-cluster-application-install-button',
             )
-            .getAttribute('disabled'),
+            .attributes('disabled'),
         ).toEqual('disabled');
       });
     });
   });
 
   describe('Fluentd application', () => {
-    const propsData = {
-      applications: {
-        ...APPLICATIONS_MOCK_STATE,
-      },
-    };
+    beforeEach(() => createShallowApp());
 
-    let wrapper;
-    beforeEach(() => {
-      wrapper = shallowMount(Applications, { propsData });
-    });
-    afterEach(() => {
-      wrapper.destroy();
-    });
     it('renders the correct Component', () => {
-      expect(wrapper.contains(FluentdOutputSettings)).toBe(true);
+      expect(wrapper.find(FluentdOutputSettings).exists()).toBe(true);
     });
   });
 });

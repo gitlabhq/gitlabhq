@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Dashboard::TodosController do
+RSpec.describe Dashboard::TodosController do
   let(:user) { create(:user) }
   let(:author)  { create(:user) }
   let(:project) { create(:project) }

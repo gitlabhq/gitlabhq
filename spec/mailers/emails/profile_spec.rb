@@ -160,38 +160,48 @@ describe Emails::Profile do
   describe 'user unknown sign in email' do
     let_it_be(:user) { create(:user) }
     let_it_be(:ip) { '169.0.0.1' }
+    let_it_be(:current_time) { Time.current }
+    let_it_be(:email) { Notify.unknown_sign_in_email(user, ip, current_time) }
 
-    subject { Notify.unknown_sign_in_email(user, ip) }
+    subject { email }
 
     it_behaves_like 'an email sent from GitLab'
     it_behaves_like 'it should not have Gmail Actions links'
     it_behaves_like 'a user cannot unsubscribe through footer link'
 
     it 'is sent to the user' do
-      expect(subject).to deliver_to user.email
+      is_expected.to deliver_to user.email
     end
 
     it 'has the correct subject' do
-      expect(subject).to have_subject /^Unknown sign-in from new location$/
+      is_expected.to have_subject "#{Gitlab.config.gitlab.host} sign-in from new location"
     end
 
-    it 'mentions the unknown sign-in IP' do
-      expect(subject).to have_body_text /A sign-in to your account has been made from the following IP address: #{ip}./
+    it 'mentions the new sign-in IP' do
+      is_expected.to have_body_text ip
     end
 
-    it 'includes a link to the change password page' do
-      expect(subject).to have_body_text /#{edit_profile_password_path}/
+    it 'mentioned the time' do
+      is_expected.to have_body_text current_time.strftime('%Y-%m-%d %l:%M:%S %p %Z')
+    end
+
+    it 'includes a link to the change password documentation' do
+      is_expected.to have_body_text 'https://docs.gitlab.com/ee/user/profile/#changing-your-password'
     end
 
     it 'mentions two factor authentication when two factor is not enabled' do
-      expect(subject).to have_body_text /two-factor authentication/
+      is_expected.to have_body_text 'two-factor authentication'
+    end
+
+    it 'includes a link to two-factor authentication documentation' do
+      is_expected.to have_body_text 'https://docs.gitlab.com/ee/user/profile/account/two_factor_authentication.html'
     end
 
     context 'when two factor authentication is enabled' do
-      it 'does not mention two factor authentication' do
-        two_factor_user = create(:user, :two_factor)
+      let(:user) { create(:user, :two_factor) }
 
-        expect( Notify.unknown_sign_in_email(two_factor_user, ip) )
+      it 'does not mention two factor authentication' do
+        expect( Notify.unknown_sign_in_email(user, ip, current_time) )
           .not_to have_body_text /two-factor authentication/
       end
     end

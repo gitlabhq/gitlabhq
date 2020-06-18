@@ -67,13 +67,13 @@ gitaly_log="$app_root/log/gitaly.log"
 test -f /etc/default/gitlab && . /etc/default/gitlab
 
 # Switch to the app_user if it is not they who are running the script.
-if [ `whoami` != "$app_user" ]; then
+if [ $(whoami) != "$app_user" ]; then
   eval su - "$app_user" -c $(echo \")$shell_path -l -c \'$0 "$@"\'$(echo \"); exit;
 fi
 
 # Switch to the gitlab path, exit on failure.
 if ! cd "$app_root" ; then
- echo "Failed to cd into $app_root, exiting!";  exit 1
+  echo "Failed to cd into $app_root, exiting!";  exit 1
 fi
 
 if [ -z "$SIDEKIQ_WORKERS" ]; then
@@ -341,7 +341,7 @@ start_gitlab() {
       echo "Gitaly is already running with pid $gapid, not restarting"
     else
       $app_root/bin/daemon_with_pidfile $gitaly_pid_path \
-          $gitaly_dir/gitaly $gitaly_dir/config.toml >> $gitaly_log 2>&1 &
+        $gitaly_dir/gitaly $gitaly_dir/config.toml >> $gitaly_log 2>&1 &
     fi
   fi
 
@@ -413,39 +413,39 @@ print_status() {
     return
   fi
   if [ "$web_status" = "0" ]; then
-      echo "The GitLab web server with pid $wpid is running."
+    echo "The GitLab web server with pid $wpid is running."
   else
-      printf "The GitLab web server is \033[31mnot running\033[0m.\n"
+    printf "The GitLab web server is \033[31mnot running\033[0m.\n"
   fi
   if [ "$sidekiq_status" = "0" ]; then
-      echo "The GitLab Sidekiq job dispatcher with pid $spid is running."
+    echo "The GitLab Sidekiq job dispatcher with pid $spid is running."
   else
-      printf "The GitLab Sidekiq job dispatcher is \033[31mnot running\033[0m.\n"
+    printf "The GitLab Sidekiq job dispatcher is \033[31mnot running\033[0m.\n"
   fi
   if [ "$gitlab_workhorse_status" = "0" ]; then
-      echo "The GitLab Workhorse with pid $hpid is running."
+    echo "The GitLab Workhorse with pid $hpid is running."
   else
-      printf "The GitLab Workhorse is \033[31mnot running\033[0m.\n"
+    printf "The GitLab Workhorse is \033[31mnot running\033[0m.\n"
   fi
   if [ "$mail_room_enabled" = true ]; then
     if [ "$mail_room_status" = "0" ]; then
-        echo "The GitLab MailRoom email processor with pid $mpid is running."
+      echo "The GitLab MailRoom email processor with pid $mpid is running."
     else
-        printf "The GitLab MailRoom email processor is \033[31mnot running\033[0m.\n"
+      printf "The GitLab MailRoom email processor is \033[31mnot running\033[0m.\n"
     fi
   fi
   if [ "$gitlab_pages_enabled" = true ]; then
     if [ "$gitlab_pages_status" = "0" ]; then
-        echo "The GitLab Pages with pid $gppid is running."
+      echo "The GitLab Pages with pid $gppid is running."
     else
-        printf "The GitLab Pages is \033[31mnot running\033[0m.\n"
+      printf "The GitLab Pages is \033[31mnot running\033[0m.\n"
     fi
   fi
   if [ "$gitaly_enabled" = true ]; then
     if [ "$gitaly_status" = "0" ]; then
-        echo "Gitaly with pid $gapid is running."
+      echo "Gitaly with pid $gapid is running."
     else
-        printf "Gitaly is \033[31mnot running\033[0m.\n"
+      printf "Gitaly is \033[31mnot running\033[0m.\n"
     fi
   fi
   if [ "$web_status" = "0" ] && [ "$sidekiq_status" = "0" ] && [ "$gitlab_workhorse_status" = "0" ] && { [ "$mail_room_enabled" != true ] || [ "$mail_room_status" = "0" ]; } && { [ "$gitlab_pages_enabled" != true ] || [ "$gitlab_pages_status" = "0" ]; } && { [ "$gitaly_enabled" != true ] || [ "$gitaly_status" = "0" ]; }; then
@@ -490,25 +490,25 @@ restart_gitlab(){
 
 case "$1" in
   start)
-        start_gitlab
-        ;;
+    start_gitlab
+    ;;
   stop)
-        stop_gitlab
-        ;;
+    stop_gitlab
+    ;;
   restart)
-        restart_gitlab
-        ;;
+    restart_gitlab
+    ;;
   reload|force-reload)
-	reload_gitlab
-        ;;
+    reload_gitlab
+    ;;
   status)
-        print_status
-        exit $gitlab_status
-        ;;
+    print_status
+    exit $gitlab_status
+    ;;
   *)
-        echo "Usage: service gitlab {start|stop|restart|reload|status}"
-        exit 1
-        ;;
+    echo "Usage: service gitlab {start|stop|restart|reload|status}"
+    exit 1
+    ;;
 esac
 
 exit

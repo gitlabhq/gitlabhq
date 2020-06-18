@@ -28,7 +28,7 @@ module Gitlab
                 in: %i[release],
                 message: 'release features are not enabled'
               },
-              unless: -> { Feature.enabled?(:ci_release_generation, default_enabled: false) }
+              unless: -> { Gitlab::Ci::Features.release_generation_enabled? }
 
             with_options allow_nil: true do
               validates :allow_failure, boolean: true

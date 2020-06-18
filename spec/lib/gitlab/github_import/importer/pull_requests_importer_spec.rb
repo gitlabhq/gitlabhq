@@ -154,9 +154,11 @@ describe Gitlab::GithubImport::Importer::PullRequestsImporter do
         .to receive(:fetch_remote)
         .with('github', forced: false)
 
-      expect(Rails.logger)
-        .to receive(:info)
-        .with(an_instance_of(String))
+      expect_next_instance_of(Gitlab::Import::Logger) do |logger|
+        expect(logger)
+          .to receive(:info)
+          .with(an_instance_of(Hash))
+      end
 
       expect(importer.repository_updates_counter)
         .to receive(:increment)

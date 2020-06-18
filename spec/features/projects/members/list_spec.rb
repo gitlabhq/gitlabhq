@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Project members list' do
+RSpec.describe 'Project members list' do
   include Select2Helper
   include Spec::Support::Helpers::Features::ListRowsHelpers
 
@@ -113,6 +113,6 @@ describe 'Project members list' do
   end
 
   def visit_members_page
-    visit project_settings_members_path(project)
+    visit project_project_members_path(project)
   end
 end

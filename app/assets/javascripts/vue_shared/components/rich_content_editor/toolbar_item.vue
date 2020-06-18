@@ -1,12 +1,19 @@
 <script>
-import { GlIcon } from '@gitlab/ui';
+import { GlIcon, GlTooltipDirective } from '@gitlab/ui';
 
 export default {
   components: {
     GlIcon,
   },
+  directives: {
+    GlTooltip: GlTooltipDirective,
+  },
   props: {
     icon: {
+      type: String,
+      required: true,
+    },
+    tooltip: {
       type: String,
       required: true,
     },
@@ -14,7 +21,7 @@ export default {
 };
 </script>
 <template>
-  <button class="p-0 gl-display-flex toolbar-button">
-    <gl-icon class="gl-mx-auto" :name="icon" />
+  <button v-gl-tooltip="{ title: tooltip }" class="p-0 gl-display-flex toolbar-button">
+    <gl-icon class="gl-mx-auto gl-align-self-center" :name="icon" />
   </button>
 </template>

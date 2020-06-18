@@ -8,7 +8,6 @@ module Gitlab
 
     ForbiddenError = Class.new(StandardError)
     NotFoundError = Class.new(StandardError)
-    ProjectCreationError = Class.new(StandardError)
     TimeoutError = Class.new(StandardError)
     ProjectMovedError = Class.new(NotFoundError)
 
@@ -24,6 +23,7 @@ module Gitlab
       deploy_key_upload: 'This deploy key does not have write access to this project.',
       no_repo: 'A repository for this project does not exist yet.',
       project_not_found: 'The project you were looking for could not be found.',
+      namespace_not_found: 'The namespace you were looking for could not be found.',
       command_not_allowed: "The command you're trying to execute is not allowed.",
       upload_pack_disabled_over_http: 'Pulling over HTTP is not allowed.',
       receive_pack_disabled_over_http: 'Pushing over HTTP is not allowed.',
@@ -73,7 +73,8 @@ module Gitlab
       return custom_action if custom_action
 
       check_db_accessibility!(cmd)
-      check_project!(changes, cmd)
+      check_namespace!
+      check_project!(cmd)
       check_repository_existence!
 
       case cmd
@@ -110,9 +111,7 @@ module Gitlab
 
     private
 
-    def check_project!(changes, cmd)
-      check_namespace!
-      ensure_project_on_push!(cmd, changes)
+    def check_project!(_cmd)
       check_project_accessibility!
       add_project_moved_message!
     end
@@ -156,7 +155,7 @@ module Gitlab
     def check_namespace!
       return if namespace_path.present?
 
-      raise NotFoundError, ERROR_MESSAGES[:project_not_found]
+      raise NotFoundError, ERROR_MESSAGES[:namespace_not_found]
     end
 
     def check_active_user!
@@ -227,32 +226,6 @@ module Gitlab
       if Gitlab::Database.read_only?
         raise ForbiddenError, push_to_read_only_message
       end
-    end
-
-    def ensure_project_on_push!(cmd, changes)
-      return if project || deploy_key?
-      return unless receive_pack?(cmd) && changes == ANY && authentication_abilities.include?(:push_code)
-
-      namespace = Namespace.find_by_full_path(namespace_path)
-
-      return unless user&.can?(:create_projects, namespace)
-
-      project_params = {
-        path: repository_path,
-        namespace_id: namespace.id,
-        visibility_level: Gitlab::VisibilityLevel::PRIVATE
-      }
-
-      project = Projects::CreateService.new(user, project_params).execute
-
-      unless project.saved?
-        raise ProjectCreationError, "Could not create project: #{project.errors.full_messages.join(', ')}"
-      end
-
-      @project = project
-      user_access.project = @project
-
-      Checks::ProjectCreated.new(repository, user, protocol).add_message
     end
 
     def check_repository_existence!

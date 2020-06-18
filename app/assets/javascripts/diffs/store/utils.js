@@ -40,6 +40,7 @@ export function getFormData(params) {
     diffViewType,
     linePosition,
     positionType,
+    lineRange,
   } = params;
 
   const position = JSON.stringify({
@@ -55,6 +56,7 @@ export function getFormData(params) {
     y: params.y,
     width: params.width,
     height: params.height,
+    line_range: lineRange,
   });
 
   const postData = {

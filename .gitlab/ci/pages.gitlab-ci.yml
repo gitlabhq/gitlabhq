@@ -3,11 +3,16 @@ pages:
     - .default-retry
     - .pages:rules
   stage: pages
-  dependencies: ["rspec:coverage", "karma", "gitlab:assets:compile pull-cache"]
+  dependencies:
+    - rspec:coverage
+    - coverage-frontend
+    - karma
+    - compile-production-assets
   script:
     - mv public/ .public/
     - mkdir public/
     - mv coverage/ public/coverage-ruby/ || true
+    - mv coverage-frontend/ public/coverage-frontend/ || true
     - mv coverage-javascript/ public/coverage-javascript/ || true
     - mv webpack-report/ public/webpack-report/ || true
     - cp .public/assets/application-*.css public/application.css || true

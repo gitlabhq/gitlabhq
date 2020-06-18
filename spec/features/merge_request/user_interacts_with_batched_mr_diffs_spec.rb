@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Batch diffs', :js do
+RSpec.describe 'Batch diffs', :js do
   include MergeRequestDiffHelpers
   include RepoHelpers
 
@@ -22,14 +22,14 @@ describe 'Batch diffs', :js do
     click_diff_line(find('.diff-file.file-holder:first-of-type tr.line_holder.new:first-of-type'))
     page.within('.js-discussion-note-form') do
       fill_in('note_note', with: 'First Line Comment')
-      click_button('Comment')
+      click_button('Add comment now')
     end
 
     # Add discussion to first line of last file
     click_diff_line(find('.diff-file.file-holder:last-of-type tr.line_holder.new:first-of-type'))
     page.within('.js-discussion-note-form') do
       fill_in('note_note', with: 'Last Line Comment')
-      click_button('Comment')
+      click_button('Add comment now')
     end
 
     wait_for_requests

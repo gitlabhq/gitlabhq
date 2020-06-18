@@ -96,6 +96,38 @@ describe Gitlab::UrlBuilder do
       end
     end
 
+    context 'when passing a Wiki' do
+      let(:wiki) { build_stubbed(:project_wiki) }
+
+      describe '#wiki_url' do
+        it 'uses the default collection action' do
+          url = subject.wiki_url(wiki)
+
+          expect(url).to eq "#{Gitlab.config.gitlab.url}/#{wiki.project.full_path}/-/wikis/home"
+        end
+
+        it 'supports a custom collection action' do
+          url = subject.wiki_url(wiki, action: :pages)
+
+          expect(url).to eq "#{Gitlab.config.gitlab.url}/#{wiki.project.full_path}/-/wikis/pages"
+        end
+      end
+
+      describe '#wiki_page_url' do
+        it 'uses the default member action' do
+          url = subject.wiki_page_url(wiki, 'foo')
+
+          expect(url).to eq "#{Gitlab.config.gitlab.url}/#{wiki.project.full_path}/-/wikis/foo"
+        end
+
+        it 'supports a custom member action' do
+          url = subject.wiki_page_url(wiki, 'foo', action: :edit)
+
+          expect(url).to eq "#{Gitlab.config.gitlab.url}/#{wiki.project.full_path}/-/wikis/foo/edit"
+        end
+      end
+    end
+
     context 'when passing a DesignManagement::Design' do
       let(:design) { build_stubbed(:design) }
 

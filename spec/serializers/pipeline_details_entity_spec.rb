@@ -173,44 +173,5 @@ describe PipelineDetailsEntity do
         expect(subject[:triggered].first[:project]).not_to be_nil
       end
     end
-
-    context 'when pipeline has expiring archive artifacts' do
-      let(:pipeline) { create(:ci_empty_pipeline) }
-      let!(:build_1) { create(:ci_build, :artifacts, pipeline: pipeline, artifacts_expire_at: 2.days.from_now, name: 'build_1') }
-      let!(:build_2) { create(:ci_build, :artifacts, pipeline: pipeline, artifacts_expire_at: 2.days.from_now, name: 'build_2') }
-      let!(:build_3) { create(:ci_build, :artifacts, pipeline: pipeline, artifacts_expire_at: 2.days.from_now, name: 'build_3') }
-
-      let(:names) { subject[:details][:artifacts].map { |a| a[:name] } }
-
-      context 'and preload_job_artifacts_archive is not defined in the options' do
-        it 'defaults to true and eager loads the job_artifacts_archive' do
-          recorder = ActiveRecord::QueryRecorder.new do
-            expect(names).to match_array(%w[build_1 build_2 build_3])
-          end
-
-          expected_queries = Gitlab.ee? ? 42 : 29
-
-          # This makes only one query to fetch all job artifacts
-          expect(recorder.count).to eq(expected_queries)
-        end
-      end
-
-      context 'and preload_job_artifacts_archive is set to false' do
-        let(:entity) do
-          described_class.represent(pipeline, request: request, preload_job_artifacts_archive: false)
-        end
-
-        it 'does not eager load the job_artifacts_archive' do
-          recorder = ActiveRecord::QueryRecorder.new do
-            expect(names).to match_array(%w[build_1 build_2 build_3])
-          end
-
-          expected_queries = Gitlab.ee? ? 44 : 31
-
-          # This makes one query for each job artifact
-          expect(recorder.count).to eq(expected_queries)
-        end
-      end
-    end
   end
 end

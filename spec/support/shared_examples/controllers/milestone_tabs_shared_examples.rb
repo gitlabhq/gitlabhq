@@ -2,15 +2,7 @@
 
 RSpec.shared_examples 'milestone tabs' do
   def go(path, extra_params = {})
-    params =
-      case milestone
-      when DashboardMilestone
-        { id: milestone.safe_title, title: milestone.title }
-      when GroupMilestone
-        { group_id: group.to_param, id: milestone.safe_title, title: milestone.title }
-      else
-        { namespace_id: project.namespace.to_param, project_id: project, id: milestone.iid }
-      end
+    params = { namespace_id: project.namespace.to_param, project_id: project, id: milestone.iid }
 
     get path, params: params.merge(extra_params)
   end

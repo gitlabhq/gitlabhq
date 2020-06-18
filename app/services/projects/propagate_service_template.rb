@@ -26,7 +26,7 @@ module Projects
 
     def propagate_projects_with_template
       loop do
-        batch = Project.uncached { project_ids_batch }
+        batch = Project.uncached { project_ids_without_integration }
 
         bulk_create_from_template(batch) unless batch.empty?
 
@@ -35,40 +35,36 @@ module Projects
     end
 
     def bulk_create_from_template(batch)
-      service_list = batch.map do |project_id|
-        service_hash.values << project_id
-      end
+      service_list = ServiceList.new(batch, service_hash).to_array
 
       Project.transaction do
-        results = bulk_insert(Service, service_hash.keys << 'project_id', service_list)
+        results = bulk_insert(*service_list)
 
         if data_fields_present?
-          data_list = results.map { |row| data_hash.values << row['id'] }
+          data_list = DataList.new(results, data_fields_hash, template.data_fields.class).to_array
 
-          bulk_insert(template.data_fields.class, data_hash.keys << 'service_id', data_list)
+          bulk_insert(*data_list)
         end
 
         run_callbacks(batch)
       end
     end
 
-    def project_ids_batch
-      Project.connection.select_values(
-        <<-SQL
-          SELECT id
-          FROM projects
-          WHERE NOT EXISTS (
-            SELECT true
-            FROM services
-            WHERE services.project_id = projects.id
-            AND services.type = #{ActiveRecord::Base.connection.quote(template.type)}
-          )
-          AND projects.pending_delete = false
-          AND projects.archived = false
-          LIMIT #{BATCH_SIZE}
-        SQL
-      )
+    # rubocop: disable CodeReuse/ActiveRecord
+    def project_ids_without_integration
+      services = Service
+        .select('1')
+        .where('services.project_id = projects.id')
+        .where(type: template.type)
+
+      Project
+        .where('NOT EXISTS (?)', services)
+        .where(pending_delete: false)
+        .where(archived: false)
+        .limit(BATCH_SIZE)
+        .pluck(:id)
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def bulk_insert(klass, columns, values_array)
       items_to_insert = values_array.map { |array| Hash[columns.zip(array)] }
@@ -77,11 +73,11 @@ module Projects
     end
 
     def service_hash
-      @service_hash ||= template.as_json(methods: :type, except: %w[id template project_id])
+      @service_hash ||= template.to_service_hash
     end
 
-    def data_hash
-      @data_hash ||= template.data_fields.as_json(only: template.data_fields.class.column_names).except('id', 'service_id')
+    def data_fields_hash
+      @data_fields_hash ||= template.to_data_fields_hash
     end
 
     # rubocop: disable CodeReuse/ActiveRecord

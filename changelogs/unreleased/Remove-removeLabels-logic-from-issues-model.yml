@@ -1,0 +1,5 @@
+---
+title: Remove removeLabels logic from issue model
+merge_request: 32252
+author: nuwe1
+type: other

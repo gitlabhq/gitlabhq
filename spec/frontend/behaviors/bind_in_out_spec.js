@@ -163,14 +163,8 @@ describe('BindInOut', () => {
 
   describe('init', () => {
     beforeEach(() => {
-      // eslint-disable-next-line func-names
-      jest.spyOn(BindInOut.prototype, 'addEvents').mockImplementation(function() {
-        return this;
-      });
-      // eslint-disable-next-line func-names
-      jest.spyOn(BindInOut.prototype, 'updateOut').mockImplementation(function() {
-        return this;
-      });
+      jest.spyOn(BindInOut.prototype, 'addEvents').mockReturnThis();
+      jest.spyOn(BindInOut.prototype, 'updateOut').mockReturnThis();
 
       testContext.init = BindInOut.init({}, {});
     });

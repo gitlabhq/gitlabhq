@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe SortingPreference do
+RSpec.describe SortingPreference do
   let(:user) { create(:user) }
 
   let(:controller_class) do

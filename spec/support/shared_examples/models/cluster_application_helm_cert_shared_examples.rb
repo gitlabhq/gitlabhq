@@ -54,7 +54,7 @@ RSpec.shared_examples 'cluster application helm specs' do |application_name|
 
     context 'managed_apps_local_tiller feature flag is enabled' do
       before do
-        stub_feature_flags(managed_apps_local_tiller: true)
+        stub_feature_flags(managed_apps_local_tiller: application.cluster.clusterable)
       end
 
       it 'does not include cert files' do

@@ -62,6 +62,54 @@ describe 'getting project information' do
     end
   end
 
+  describe 'performance' do
+    before do
+      project.add_developer(current_user)
+      mrs = create_list(:merge_request, 10, :closed, :with_head_pipeline,
+                        source_project: project,
+                        author: current_user)
+      mrs.each do |mr|
+        mr.assignees << create(:user)
+        mr.assignees << current_user
+      end
+    end
+
+    def run_query(number)
+      q = <<~GQL
+      query {
+        project(fullPath: "#{project.full_path}") {
+          mergeRequests(first: #{number}) {
+            nodes {
+              assignees { nodes { username } }
+              headPipeline { status }
+            }
+          }
+        }
+      }
+      GQL
+
+      post_graphql(q, current_user: current_user)
+    end
+
+    it 'returns appropriate results' do
+      run_query(2)
+
+      mrs = graphql_data.dig('project', 'mergeRequests', 'nodes')
+
+      expect(mrs.size).to eq(2)
+      expect(mrs).to all(
+        match(
+          a_hash_including(
+            'assignees' => { 'nodes' => all(match(a_hash_including('username' => be_present))) },
+            'headPipeline' => { 'status' => be_present }
+          )))
+    end
+
+    it 'can lookahead to eliminate N+1 queries', :use_clean_rails_memory_store_caching, :request_store do
+      expect { run_query(10) }.to issue_same_number_of_queries_as { run_query(1) }.or_fewer.ignoring_cached_queries
+    end
+  end
+
   context 'when the user does not have access to the project' do
     it 'returns an empty field' do
       post_graphql(query, current_user: current_user)

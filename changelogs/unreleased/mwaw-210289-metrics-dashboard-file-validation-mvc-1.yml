@@ -1,0 +1,5 @@
+---
+title: Added validation for YAML files with metrics dashboard definitions.
+merge_request: 33202
+author:
+type: added

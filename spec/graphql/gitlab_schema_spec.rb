@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe GitlabSchema do
+RSpec.describe GitlabSchema do
   let_it_be(:connections) { GitlabSchema.connections.all_wrappers }
   let(:user) { build :user }
 
@@ -44,12 +44,6 @@ describe GitlabSchema do
     connection = connections[Gitlab::Graphql::ExternallyPaginatedArray]
 
     expect(connection).to eq(Gitlab::Graphql::Pagination::ExternallyPaginatedArrayConnection)
-  end
-
-  it 'paginates FilterableArray using `Pagination::FilterableArrayConnection`' do
-    connection = connections[Gitlab::Graphql::FilterableArray]
-
-    expect(connection).to eq(Gitlab::Graphql::Pagination::FilterableArrayConnection)
   end
 
   describe '.execute' do

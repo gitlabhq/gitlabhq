@@ -4,9 +4,8 @@ import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import { Blob as MockBlob } from './mock_data';
 import { numberToHumanSize } from '~/lib/utils/number_utils';
 
-const mockHumanReadableSize = 'a lot';
 jest.mock('~/lib/utils/number_utils', () => ({
-  numberToHumanSize: jest.fn(() => mockHumanReadableSize),
+  numberToHumanSize: jest.fn(() => 'a lot'),
 }));
 
 describe('Blob Header Filepath', () => {
@@ -57,7 +56,7 @@ describe('Blob Header Filepath', () => {
     it('renders filesize in a human-friendly format', () => {
       createComponent();
       expect(numberToHumanSize).toHaveBeenCalled();
-      expect(wrapper.vm.blobSize).toBe(mockHumanReadableSize);
+      expect(wrapper.vm.blobSize).toBe('a lot');
     });
 
     it('renders a slot and prepends its contents to the existing one', () => {

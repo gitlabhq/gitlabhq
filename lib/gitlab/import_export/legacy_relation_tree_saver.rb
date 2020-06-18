@@ -7,7 +7,7 @@ module Gitlab
 
       def serialize(exportable, relations_tree)
         Gitlab::ImportExport::FastHashSerializer
-          .new(exportable, relations_tree)
+          .new(exportable, relations_tree, batch_size: batch_size(exportable))
           .execute
       end
 
@@ -17,6 +17,12 @@ module Gitlab
         tree_json = ::JSON.generate(tree)
 
         File.write(File.join(dir_path, filename), tree_json)
+      end
+
+      private
+
+      def batch_size(exportable)
+        Gitlab::ImportExport::JSON::StreamingSerializer.batch_size(exportable)
       end
     end
   end

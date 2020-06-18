@@ -7,6 +7,7 @@ class PostReceive # rubocop:disable Scalability/IdempotentWorker
   urgency :high
   worker_resource_boundary :cpu
   weight 5
+  loggable_arguments 0, 1, 2, 3
 
   def perform(gl_repository, identifier, changes, push_options = {})
     container, project, repo_type = Gitlab::GlRepository.parse(gl_repository)

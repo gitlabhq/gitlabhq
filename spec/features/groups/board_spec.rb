@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Group Boards' do
+RSpec.describe 'Group Boards' do
   let(:group) { create(:group) }
   let!(:project) { create(:project_empty_repo, group: group) }
   let(:user) { create(:group_member, :maintainer, user: create(:user), group: group ).user }

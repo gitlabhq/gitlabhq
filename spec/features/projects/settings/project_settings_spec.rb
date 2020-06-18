@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Projects settings' do
+RSpec.describe 'Projects settings' do
   let_it_be(:project) { create(:project) }
   let(:user) { project.owner }
   let(:panel) { find('.general-settings', match: :first) }

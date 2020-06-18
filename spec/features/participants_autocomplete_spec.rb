@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Member autocomplete', :js do
+RSpec.describe 'Member autocomplete', :js do
   let(:project) { create(:project, :public) }
   let(:user) { create(:user) }
   let(:author) { create(:user) }

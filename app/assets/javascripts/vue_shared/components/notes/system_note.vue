@@ -132,7 +132,7 @@ export default {
           </pre>
           <pre v-else class="wrapper mt-2" v-html="descriptionVersion"></pre>
           <gl-deprecated-button
-            v-if="canDeleteDescriptionVersion"
+            v-if="displayDeleteButton"
             ref="deleteDescriptionVersionButton"
             v-gl-tooltip
             :title="__('Remove description history')"

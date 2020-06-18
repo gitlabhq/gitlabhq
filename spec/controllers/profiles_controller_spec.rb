@@ -2,7 +2,7 @@
 
 require('spec_helper')
 
-describe ProfilesController, :request_store do
+RSpec.describe ProfilesController, :request_store do
   let(:user) { create(:user) }
 
   describe 'POST update' do

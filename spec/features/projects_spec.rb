@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Project' do
+RSpec.describe 'Project' do
   include ProjectForksHelper
   include MobileHelpers
 

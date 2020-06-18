@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe "Dashboard Issues Feed" do
+RSpec.describe "Dashboard Issues Feed" do
   describe "GET /issues" do
     let!(:user)     { create(:user, email: 'private1@example.com', public_email: 'public1@example.com') }
     let!(:assignee) { create(:user, email: 'private2@example.com', public_email: 'public2@example.com') }

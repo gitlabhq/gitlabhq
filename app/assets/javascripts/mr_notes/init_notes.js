@@ -1,7 +1,7 @@
 import $ from 'jquery';
 import Vue from 'vue';
 import { mapActions, mapState, mapGetters } from 'vuex';
-import store from 'ee_else_ce/mr_notes/stores';
+import store from '~/mr_notes/stores';
 import notesApp from '../notes/components/notes_app.vue';
 import discussionKeyboardNavigator from '../notes/components/discussion_keyboard_navigator.vue';
 import initWidget from '../vue_merge_request_widget';

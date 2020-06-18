@@ -7,6 +7,7 @@ module Gitlab
 
       included do
         include ApplicationWorker
+        include ProjectImportOptions
         include Gitlab::JiraImport::QueueOptions
       end
 
@@ -26,7 +27,6 @@ module Gitlab
 
       def can_import?(project)
         return false unless project
-        return false unless project.jira_issues_import_feature_flag_enabled?
 
         project.latest_jira_import&.started?
       end

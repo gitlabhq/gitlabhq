@@ -32,19 +32,7 @@ To add a new theme, follow the following steps:
 3. Copy over all the CSS variables from `_dark.scss` to `_solarized_dark.scss` and assign them your own values.
    Put them under the selector `.ide.theme-solarized-dark`.
 4. Import this newly created SCSS file in `ide.scss` file in the parent directory.
-5. To make sure the variables apply to to your theme, add the selector `.ide.theme-solarized-dark` to the top
-   of `_ide_theme_overrides.scss` file. The file should now look like this:
-
-   ```scss
-   .ide.theme-dark,
-   .ide.theme-solarized-dark {
-     /* file contents */
-   }
-   ```
-
-   This step is temporary until all CSS variables in that file have their
-   default values assigned.
-6. That's it! Raise a merge request with your newly added theme.
+5. That's it! Raise a merge request with your newly added theme.
 
 ## Modifying Monaco Themes
 

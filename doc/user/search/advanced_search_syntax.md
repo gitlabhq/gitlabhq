@@ -4,9 +4,10 @@
 >
 > - Introduced in [GitLab Enterprise Starter](https://about.gitlab.com/pricing/) 9.2
 
-NOTE: **Note**
-Advanced Global Search (powered by Elasticsearch) is not yet available on GitLab.com. We are working on adding it.
-[Follow this epic for the latest updates](https://gitlab.com/groups/gitlab-org/-/epics/153).
+NOTE: **GitLab.com availability:**
+Advanced Global Search (powered by Elasticsearch) is not yet available on GitLab.com.
+It will be progressively enabled for all paid groups in Q3 of 2020.
+[Follow this epic](https://gitlab.com/groups/gitlab-com/-/epics/649) for the latest updates on the timeline.
 
 Use advanced queries for more targeted search results.
 

@@ -33,7 +33,7 @@ describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state do
         expect(subjects.count).to be > 0
 
         expect { subjects.first.destroy }.to raise_error('`destroy` and `destroy_all` are forbidden. Please use `fast_destroy_all`')
-        expect { subjects.destroy_all }.to raise_error('`destroy` and `destroy_all` are forbidden. Please use `fast_destroy_all`') # rubocop: disable DestroyAll
+        expect { subjects.destroy_all }.to raise_error('`destroy` and `destroy_all` are forbidden. Please use `fast_destroy_all`') # rubocop: disable Cop/DestroyAll
 
         expect(subjects.count).to be > 0
         expect(external_data_counter).to be > 0

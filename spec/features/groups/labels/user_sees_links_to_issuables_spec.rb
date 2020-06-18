@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Groups > Labels > User sees links to issuables' do
+RSpec.describe 'Groups > Labels > User sees links to issuables' do
   let_it_be(:group) { create(:group, :public) }
 
   before do

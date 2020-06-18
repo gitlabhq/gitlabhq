@@ -834,6 +834,12 @@ describe API::Issues do
     end
   end
 
+  describe 'PUT /projects/:id/issues/:issue_id' do
+    it_behaves_like 'issuable update endpoint' do
+      let(:entity) { issue }
+    end
+  end
+
   describe 'DELETE /projects/:id/issues/:issue_iid' do
     it 'rejects a non member from deleting an issue' do
       delete api("/projects/#{project.id}/issues/#{issue.iid}", non_member)

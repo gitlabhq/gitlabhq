@@ -17,7 +17,7 @@ NOTE: **Note:**
 From July 2019, the `Internal` visibility setting is disabled for new projects, groups,
 and snippets on GitLab.com. Existing projects, groups, and snippets using the `Internal`
 visibility setting keep this setting. You can read more about the change in the
-[relevant issue](https://gitlab.com/gitlab-org/gitlab/issues/12388).
+[relevant issue](https://gitlab.com/gitlab-org/gitlab/-/issues/12388).
 
 ## List snippets
 
@@ -86,7 +86,7 @@ Parameters:
 Example request:
 
 ```shell
-curl --request POST https://gitlab.com/api/v4/projects/:id/snippets \
+curl --request POST "https://gitlab.com/api/v4/projects/:id/snippets" \
      --header "PRIVATE-TOKEN: <your access token>" \
      --header "Content-Type: application/json" \
      -d @snippet.json
@@ -125,7 +125,7 @@ Parameters:
 Example request:
 
 ```shell
-curl --request PUT https://gitlab.com/api/v4/projects/:id/snippets/:snippet_id \
+curl --request PUT "https://gitlab.com/api/v4/projects/:id/snippets/:snippet_id" \
      --header "PRIVATE-TOKEN: <your_access_token>" \
      --header "Content-Type: application/json" \
      -d @snippet.json
@@ -159,7 +159,7 @@ Parameters:
 Example request:
 
 ```shell
-curl --request DELETE https://gitlab.com/api/v4/projects/:id/snippets/:snippet_id \
+curl --request DELETE "https://gitlab.com/api/v4/projects/:id/snippets/:snippet_id" \
      --header "PRIVATE-TOKEN: <your_access_token>"
 ```
 
@@ -179,13 +179,13 @@ Parameters:
 Example request:
 
 ```shell
-curl https://gitlab.com/api/v4/projects/:id/snippets/:snippet_id/raw \
+curl "https://gitlab.com/api/v4/projects/:id/snippets/:snippet_id/raw" \
      --header "PRIVATE-TOKEN: <your_access_token>"
 ```
 
 ## Get user agent details
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/29508) in GitLab 9.4.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/29508) in GitLab 9.4.
 
 Available only for admins.
 
@@ -201,7 +201,7 @@ GET /projects/:id/snippets/:snippet_id/user_agent_detail
 Example request:
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/1/snippets/2/user_agent_detail
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/snippets/2/user_agent_detail"
 ```
 
 Example response:

@@ -1,4 +1,4 @@
-import { GlLoadingIcon, GlSprintf } from '@gitlab/ui';
+import { GlLink, GlLoadingIcon, GlSprintf } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import axios from '~/lib/utils/axios_utils';
 import MockAdapter from 'axios-mock-adapter';
@@ -38,7 +38,7 @@ describe('MrWidgetTerraformPlan', () => {
 
   describe('loading poll', () => {
     beforeEach(() => {
-      mockPollingApi(200, { 'tfplan.json': plan }, {});
+      mockPollingApi(200, { '123': plan }, {});
 
       return mountWrapper().then(() => {
         wrapper.setData({ loading: true });
@@ -65,7 +65,7 @@ describe('MrWidgetTerraformPlan', () => {
       pollRequest = jest.spyOn(Poll.prototype, 'makeRequest');
       pollStop = jest.spyOn(Poll.prototype, 'stop');
 
-      mockPollingApi(200, { 'tfplan.json': plan }, {});
+      mockPollingApi(200, { '123': plan }, {});
 
       return mountWrapper();
     });
@@ -80,7 +80,7 @@ describe('MrWidgetTerraformPlan', () => {
     });
 
     it('renders button when url is found', () => {
-      expect(wrapper.find('a').text()).toContain('View full log');
+      expect(wrapper.find(GlLink).exists()).toBe(true);
     });
 
     it('does not make additional requests after poll is successful', () => {
@@ -101,7 +101,7 @@ describe('MrWidgetTerraformPlan', () => {
       );
 
       expect(wrapper.find('.js-terraform-report-link').exists()).toBe(false);
-      expect(wrapper.text()).not.toContain('View full log');
+      expect(wrapper.find(GlLink).exists()).toBe(false);
     });
   });
 });

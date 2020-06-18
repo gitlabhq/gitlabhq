@@ -4,7 +4,7 @@ type: reference
 
 # External authorization control **(CORE ONLY)**
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/4216) in [GitLab Premium](https://about.gitlab.com/pricing/) 10.6.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/4216) in [GitLab Premium](https://about.gitlab.com/pricing/) 10.6.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/27056) to [GitLab Core](https://about.gitlab.com/pricing/) in 11.10.
 
 In highly controlled environments, it may be necessary for access policy to be
@@ -31,7 +31,7 @@ functionality that render cross-project data. That includes:
 This is to prevent performing to many requests at once to the external
 authorization service.
 
-Whenever access is granted or denied this is logged in a logfile called
+Whenever access is granted or denied this is logged in a log file called
 `external-policy-access-control.log`.
 Read more about logs GitLab keeps in the [omnibus documentation](https://docs.gitlab.com/omnibus/settings/logs.html).
 
@@ -60,7 +60,7 @@ The available required properties are:
   requesting authorization if no specific label is defined on the project
 
 When using TLS Authentication with a self signed certificate, the CA certificate
-needs to be trusted by the openssl installation. When using GitLab installed using
+needs to be trusted by the OpenSSL installation. When using GitLab installed using
 Omnibus, learn to install a custom CA in the
 [omnibus documentation](https://docs.gitlab.com/omnibus/settings/ssl.html). Alternatively learn where to install
 custom certificates using `openssl version -d`.

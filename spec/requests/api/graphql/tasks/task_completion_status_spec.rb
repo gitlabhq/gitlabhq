@@ -5,9 +5,9 @@ require 'spec_helper'
 describe 'getting task completion status information' do
   include GraphqlHelpers
 
-  DESCRIPTION_0_DONE = '- [ ] task 1\n- [ ] task 2'
-  DESCRIPTION_1_DONE = '- [x] task 1\n- [ ] task 2'
-  DESCRIPTION_2_DONE = '- [x] task 1\n- [x] task 2'
+  description_0_done = '- [ ] task 1\n- [ ] task 2'
+  description_1_done = '- [x] task 1\n- [ ] task 2'
+  description_2_done = '- [x] task 1\n- [x] task 2'
 
   let_it_be(:user1) { create(:user) }
   let_it_be(:project) { create(:project, :repository, :public) }
@@ -42,7 +42,7 @@ describe 'getting task completion status information' do
     end
   end
 
-  [DESCRIPTION_0_DONE, DESCRIPTION_1_DONE, DESCRIPTION_2_DONE].each do |desc|
+  [description_0_done, description_1_done, description_2_done].each do |desc|
     context "with description #{desc}" do
       context 'when type is issue' do
         it_behaves_like 'graphql task completion status provider', 'issue' do

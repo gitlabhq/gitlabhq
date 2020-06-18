@@ -16,10 +16,10 @@ module QA
       it 'shows issue suggestions when creating a new issue' do
         Page::Project::Show.perform(&:go_to_new_issue)
         Page::Project::Issue::New.perform do |new_page|
-          new_page.add_title("issue")
+          new_page.fill_title("issue")
           expect(new_page).to have_content(issue_title)
 
-          new_page.add_title("Issue Board")
+          new_page.fill_title("Issue Board")
           expect(new_page).not_to have_content(issue_title)
         end
       end

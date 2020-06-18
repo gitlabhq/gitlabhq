@@ -1,8 +1,22 @@
 # frozen_string_literal: true
+
 require 'spec_helper'
 
 describe GitlabSchema.types['Discussion'] do
-  specify { expect(described_class).to have_graphql_fields(:id, :created_at, :notes, :reply_id) }
+  it 'exposes the expected fields' do
+    expected_fields = %i[
+      created_at
+      id
+      notes
+      reply_id
+      resolvable
+      resolved
+      resolved_at
+      resolved_by
+    ]
+
+    expect(described_class).to have_graphql_fields(*expected_fields)
+  end
 
   specify { expect(described_class).to require_graphql_authorizations(:read_note) }
 end

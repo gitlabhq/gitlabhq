@@ -8,6 +8,8 @@ class ClusterWaitForAppUpdateWorker # rubocop:disable Scalability/IdempotentWork
   INTERVAL = 10.seconds
   TIMEOUT = 20.minutes
 
+  loggable_arguments 0
+
   def perform(app_name, app_id)
     find_application(app_name, app_id) do |app|
       ::Clusters::Applications::CheckUpgradeProgressService.new(app).execute

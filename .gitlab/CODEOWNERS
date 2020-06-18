@@ -8,11 +8,15 @@
 
 # Technical writing team are the default reviewers for all markdown docs
 /doc/ @gl-docsteam
-# Dev and Doc guidelines
+# Doc subpaths
+/doc/administration/monitoring/ @aqualls
 /doc/development/ @marcia @mjang1
 /doc/development/documentation/ @mikelewis
 /doc/ci @marcel.amirault @sselhorn
-/doc/.linting @marcel.amirault @eread @aqualls @mikelewis
+/doc/user/clusters @aqualls
+/doc/user/infrastructure @aqualls
+/doc/user/project/clusters @aqualls
+/doc/.vale/ @marcel.amirault @eread @aqualls @mikelewis
 
 # Frontend maintainers should see everything in `app/assets/`
 *.scss @annabeldunstone @gitlab-org/maintainers/frontend
@@ -37,7 +41,6 @@
 /ee/app/finders/ @gitlab-org/maintainers/database
 
 # Feature specific owners
-/ee/lib/gitlab/code_owners/ @reprazent @kerrizor
 /ee/lib/ee/gitlab/auth/ldap/ @dblessing @mkozono
 /lib/gitlab/auth/ldap/ @dblessing @mkozono
 /lib/gitlab/ci/templates/ @nolith @zj
@@ -45,6 +48,11 @@
 /lib/gitlab/ci/templates/Security/ @plafoucriere @gonzoyumo @twoodham @sethgitlab
 /ee/app/models/project_alias.rb @patrickbajao
 /ee/lib/api/project_aliases.rb @patrickbajao
+
+# Code Owners
+#
+/ee/lib/gitlab/code_owners/ @reprazent @kerrizor @garyh
+/doc/user/project/code_owners.md @reprazent @kerrizor @garyh
 
 # Quality owned files
 /qa/ @gl-quality

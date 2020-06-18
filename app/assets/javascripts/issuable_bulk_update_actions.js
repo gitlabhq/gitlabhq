@@ -99,8 +99,11 @@ export default {
 
   setOriginalDropdownData() {
     const $labelSelect = $('.bulk-update .js-label-select');
+    const dirtyLabelIds = $labelSelect.data('marked') || [];
+    const chosenLabelIds = [...this.getOriginalMarkedIds(), ...dirtyLabelIds];
+
     $labelSelect.data('common', this.getOriginalCommonIds());
-    $labelSelect.data('marked', this.getOriginalMarkedIds());
+    $labelSelect.data('marked', chosenLabelIds);
     $labelSelect.data('indeterminate', this.getOriginalIndeterminateIds());
   },
 

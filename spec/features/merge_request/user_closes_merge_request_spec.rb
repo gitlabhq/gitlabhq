@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'User closes a merge requests', :js do
+RSpec.describe 'User closes a merge requests', :js do
   let(:project) { create(:project, :repository) }
   let(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
   let(:user) { create(:user) }

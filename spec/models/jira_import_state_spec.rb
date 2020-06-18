@@ -124,7 +124,7 @@ describe JiraImportState do
         jira_import.schedule
 
         expect(jira_import.jid).to eq('some-job-id')
-        expect(jira_import.scheduled_at).to be_within(1.second).of(Time.now)
+        expect(jira_import.scheduled_at).to be_within(1.second).of(Time.current)
       end
     end
 
@@ -160,6 +160,41 @@ describe JiraImportState do
         expect(jira_import.total_issue_count).to eq(5)
         expect(jira_import.failed_to_import_count).to eq(2)
         expect(jira_import.imported_issues_count).to eq(3)
+      end
+    end
+  end
+
+  context 'ensure error_message size on save' do
+    let_it_be(:project) { create(:project) }
+
+    before do
+      stub_const('JiraImportState::ERROR_MESSAGE_SIZE', 10)
+    end
+
+    context 'when jira import has no error_message' do
+      let(:jira_import) { build(:jira_import_state, project: project)}
+
+      it 'does not run the callback', :aggregate_failures do
+        expect { jira_import.save }.to change { JiraImportState.count }.by(1)
+        expect(jira_import.reload.error_message).to be_nil
+      end
+    end
+
+    context 'when jira import error_message does not exceed the limit' do
+      let(:jira_import) { build(:jira_import_state, project: project, error_message: 'error')}
+
+      it 'does not run the callback', :aggregate_failures do
+        expect { jira_import.save }.to change { JiraImportState.count }.by(1)
+        expect(jira_import.reload.error_message).to eq('error')
+      end
+    end
+
+    context 'when error_message exceeds limit' do
+      let(:jira_import) { build(:jira_import_state, project: project, error_message: 'error message longer than the limit')}
+
+      it 'truncates error_message to the limit', :aggregate_failures do
+        expect { jira_import.save! }.to change { JiraImportState.count }.by(1)
+        expect(jira_import.reload.error_message.size).to eq 10
       end
     end
   end

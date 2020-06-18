@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe SearchController do
+RSpec.describe SearchController do
   include ExternalAuthorizationServiceHelpers
 
   let(:user) { create(:user) }
@@ -210,10 +210,5 @@ describe SearchController do
         get :count, params: { search: 'hello' }
       end.to raise_error(ActionController::ParameterMissing)
     end
-  end
-
-  describe 'GET #autocomplete' do
-    it_behaves_like 'when the user cannot read cross project', :autocomplete, { term: 'hello' }
-    it_behaves_like 'with external authorization service enabled', :autocomplete, { term: 'hello' }
   end
 end

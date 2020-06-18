@@ -129,15 +129,11 @@ class IssuableBaseService < BaseService
     add_label_ids = attributes.delete(:add_label_ids)
     remove_label_ids = attributes.delete(:remove_label_ids)
 
-    new_label_ids = existing_label_ids || label_ids || []
+    new_label_ids = label_ids || existing_label_ids || []
     new_label_ids |= extra_label_ids
 
-    if add_label_ids.blank? && remove_label_ids.blank?
-      new_label_ids = label_ids if label_ids
-    else
-      new_label_ids |= add_label_ids if add_label_ids
-      new_label_ids -= remove_label_ids if remove_label_ids
-    end
+    new_label_ids |= add_label_ids if add_label_ids
+    new_label_ids -= remove_label_ids if remove_label_ids
 
     new_label_ids.uniq
   end
@@ -350,7 +346,7 @@ class IssuableBaseService < BaseService
       todo_service.mark_todo(issuable, current_user)
     when 'done'
       todo = TodosFinder.new(current_user).find_by(target: issuable)
-      todo_service.mark_todos_as_done_by_ids(todo, current_user) if todo
+      todo_service.resolve_todo(todo, current_user) if todo
     end
   end
   # rubocop: enable CodeReuse/ActiveRecord

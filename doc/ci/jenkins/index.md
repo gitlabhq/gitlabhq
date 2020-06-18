@@ -1,4 +1,7 @@
 ---
+stage: Verify
+group: Continuous Integration
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 comments: false
 type: index, howto
 ---
@@ -72,13 +75,13 @@ There are some high level differences between the products worth mentioning:
   with the [`rules` syntax](../yaml/README.md#rules).
 - GitLab [pipeline scheduling concepts](../pipelines/schedules.md) are also different than with Jenkins.
 - You can reuse pipeline configurations using the [`include` keyword](../yaml/README.md#include)
-  and [templates](#templates). Your templates can be kept in a central repo (with different
+  and [templates](#templates). Your templates can be kept in a central repository (with different
   permissions), and then any project can use them. This central project could also
   contain scripts or other reusable code.
 - You can also use the [`extends` keyword](../yaml/README.md#extends) to reuse configuration
   within a single pipeline configuration.
 - All jobs within a single stage always run in parallel, and all stages run in sequence. We are planning
-  to allow certain jobs to break this sequencing as needed with our [directed acyclic graph](https://gitlab.com/gitlab-org/gitlab-foss/issues/47063)
+  to allow certain jobs to break this sequencing as needed with our [directed acyclic graph](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/47063)
   feature.
 - The [`parallel`](../yaml/README.md#parallel) keyword can automatically parallelize tasks,
   like tests that support parallelization.
@@ -90,7 +93,7 @@ There are some high level differences between the products worth mentioning:
 - One important difference is that jobs run independently of each other and have a
   fresh environment in each job. Passing artifacts between jobs is controlled using the
   [`artifacts`](../yaml/README.md#artifacts) and [`dependencies`](../yaml/README.md#dependencies)
-  keywords. When finished, the planned [Workspaces](https://gitlab.com/gitlab-org/gitlab/issues/29265)
+  keywords. When finished, the planned [Workspaces](https://gitlab.com/gitlab-org/gitlab/-/issues/29265)
   feature will allow you to more easily persist a common workspace between serial jobs.
 - The `.gitlab-ci.yml` file is checked in to the root of your repository, much like a Jenkinsfile, but
   is in the YAML format (see [complete reference](../yaml/README.md)) instead of a Groovy DSL. It's most
@@ -115,13 +118,13 @@ agents you were using.
 
 There are some important differences in the way Runners work in comparison to agents:
 
-- Runners can be set up as [shared across an instance, be added at the group level, or set up at the project level](../runners/README.md#shared-specific-and-group-runners).
+- Runners can be set up as [shared across an instance, be added at the group level, or set up at the project level](../runners/README.md#types-of-runners).
   They will self-select jobs from the scopes you've defined automatically.
-- You can also [use tags](../runners/README.md#using-tags) for finer control, and
+- You can also [use tags](../runners/README.md#use-tags-to-limit-the-number-of-jobs-using-the-runner) for finer control, and
   associate runners with specific jobs. For example, you can use a tag for jobs that
   require dedicated, more powerful, or specific hardware.
 - GitLab has [autoscaling for Runners](https://docs.gitlab.com/runner/configuration/autoscale.html)
-  which will let configure them to be provisioned as needed, and scaled down when not.
+  which will let you configure them to be provisioned as needed, and scaled down when not.
   This is similar to ephemeral agents in Jenkins.
 
 If you are using `gitlab.com`, you can take advantage of our [shared Runner fleet](../../user/gitlab_com/index.md#shared-runners)
@@ -136,7 +139,7 @@ GitLab works a bit differently, we use the more highly structured [YAML](https:/
 places scripting elements inside of `script:` blocks separate from the pipeline specification itself.
 
 This is a strength of GitLab, in that it helps keep the learning curve much simpler to get up and running
-and avoids some of the problem of unconstrained complexity which can make your Jenkinsfiles hard to understand
+and avoids some of the problem of unconstrained complexity which can make your Jenkinsfile hard to understand
 and manage.
 
 That said, we do of course still value DRY (don't repeat yourself) principles and want to ensure that
@@ -202,12 +205,12 @@ be used by all projects in the group. An instance administrator can set a group 
 the source for [instance project templates](../../user/group/custom_project_templates.md),
 which can be used by projects in that instance.
 
-## Converting Declarative Jenkinsfiles
+## Converting a declarative Jenkinsfile
 
-Declarative Jenkinsfiles contain "Sections" and "Directives" which are used to control the behavior of your
+A declarative Jenkinsfile contains "Sections" and "Directives" which are used to control the behavior of your
 pipelines. There are equivalents for all of these in GitLab, which we've documented below.
 
-This section is based on the [Jenkinsfile syntax documentation](https://jenkins.io/doc/book/pipeline/syntax/)
+This section is based on the [Jenkinsfile syntax documentation](https://www.jenkins.io/doc/book/pipeline/syntax/)
 and is meant to be a mapping of concepts there to concepts in GitLab.
 
 ### Sections
@@ -217,7 +220,7 @@ and is meant to be a mapping of concepts there to concepts in GitLab.
 The agent section is used to define how a pipeline will be executed. For GitLab, we use the [GitLab Runner](../runners/README.md)
 to provide this capability. You can configure your own runners in Kubernetes or on any host, or take advantage
 of our shared runner fleet (note that the shared runner fleet is only available for GitLab.com users.) The link above will bring you to the documentation which will describe how to get
-up and running quickly. We also support using [tags](../runners/README.md#using-tags) to direct different jobs
+up and running quickly. We also support using [tags](../runners/README.md#use-tags-to-limit-the-number-of-jobs-using-the-runner) to direct different jobs
 to different Runners (execution agents).
 
 The `agent` section also allows you to define which Docker images should be used for execution, for which we use

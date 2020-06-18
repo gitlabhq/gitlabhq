@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'User views diffs', :js do
+RSpec.describe 'User views diffs', :js do
   let(:merge_request) do
     create(:merge_request_with_diffs, source_project: project, target_project: project, source_branch: 'merge-test')
   end

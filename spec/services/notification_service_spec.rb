@@ -243,11 +243,12 @@ describe NotificationService, :mailer do
   describe '#unknown_sign_in' do
     let_it_be(:user) { create(:user) }
     let_it_be(:ip) { '127.0.0.1' }
+    let_it_be(:time) { Time.current }
 
-    subject { notification.unknown_sign_in(user, ip) }
+    subject { notification.unknown_sign_in(user, ip, time) }
 
     it 'sends email to the user' do
-      expect { subject }.to have_enqueued_email(user, ip, mail: 'unknown_sign_in_email')
+      expect { subject }.to have_enqueued_email(user, ip, time, mail: 'unknown_sign_in_email')
     end
   end
 
@@ -2860,6 +2861,57 @@ describe NotificationService, :mailer do
       let(:alert_params) { { 'labels' => { 'gitlab_alert_id' => 'unknown' } } }
       let(:notification_target)  { prometheus_alert.project }
       let(:notification_trigger) { subject.prometheus_alerts_fired(prometheus_alert.project, [alert_params]) }
+
+      around do |example|
+        perform_enqueued_jobs { example.run }
+      end
+    end
+  end
+
+  describe '#new_review' do
+    let(:project) { create(:project, :repository) }
+    let(:user) { create(:user) }
+    let(:user2) { create(:user) }
+    let(:reviewer) { create(:user) }
+    let(:merge_request) { create(:merge_request, source_project: project, assignees: [user, user2], author: create(:user)) }
+    let(:review) { create(:review, merge_request: merge_request, project: project, author: reviewer) }
+    let(:note) { create(:diff_note_on_merge_request, project: project, noteable: merge_request, author: reviewer, review: review) }
+
+    before do
+      build_team(review.project)
+      add_users(review.project)
+      add_user_subscriptions(merge_request)
+      project.add_maintainer(merge_request.author)
+      project.add_maintainer(reviewer)
+      merge_request.assignees.each { |assignee| project.add_maintainer(assignee) }
+
+      create(:diff_note_on_merge_request,
+             project: project,
+             noteable: merge_request,
+             author: reviewer,
+             review: review,
+             note: "cc @mention")
+    end
+
+    it 'sends emails' do
+      expect(Notify).not_to receive(:new_review_email).with(review.author.id, review.id)
+      expect(Notify).not_to receive(:new_review_email).with(@unsubscriber.id, review.id)
+      merge_request.assignee_ids.each do |assignee_id|
+        expect(Notify).to receive(:new_review_email).with(assignee_id, review.id).and_call_original
+      end
+      expect(Notify).to receive(:new_review_email).with(merge_request.author.id, review.id).and_call_original
+      expect(Notify).to receive(:new_review_email).with(@u_watcher.id, review.id).and_call_original
+      expect(Notify).to receive(:new_review_email).with(@u_mentioned.id, review.id).and_call_original
+      expect(Notify).to receive(:new_review_email).with(@subscriber.id, review.id).and_call_original
+      expect(Notify).to receive(:new_review_email).with(@watcher_and_subscriber.id, review.id).and_call_original
+      expect(Notify).to receive(:new_review_email).with(@subscribed_participant.id, review.id).and_call_original
+
+      subject.new_review(review)
+    end
+
+    it_behaves_like 'project emails are disabled' do
+      let(:notification_target)  { review }
+      let(:notification_trigger) { subject.new_review(review) }
 
       around do |example|
         perform_enqueued_jobs { example.run }

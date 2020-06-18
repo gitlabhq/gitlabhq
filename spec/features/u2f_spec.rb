@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Using U2F (Universal 2nd Factor) Devices for Authentication', :js do
+RSpec.describe 'Using U2F (Universal 2nd Factor) Devices for Authentication', :js do
   def manage_two_factor_authentication
     click_on 'Manage two-factor authentication'
     expect(page).to have_content("Set up new U2F device")
@@ -257,7 +257,7 @@ describe 'Using U2F (Universal 2nd Factor) Devices for Authentication', :js do
       expect(page).to have_button('Verify code')
       expect(page).to have_css('#user_otp_attempt')
       expect(page).not_to have_link('Sign in via 2FA code')
-      expect(page).not_to have_css('#js-authenticate-u2f')
+      expect(page).not_to have_css('#js-authenticate-token-2fa')
     end
 
     before do

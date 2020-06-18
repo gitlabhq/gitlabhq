@@ -25,7 +25,7 @@ describe Feature::Gitaly do
 
   describe ".server_feature_flags" do
     before do
-      allow(Feature).to receive(:persisted_names).and_return(%w[gitaly_mep_mep foo])
+      stub_feature_flags(gitaly_mep_mep: true, foo: true)
     end
 
     subject { described_class.server_feature_flags }

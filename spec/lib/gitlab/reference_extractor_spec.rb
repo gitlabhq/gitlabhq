@@ -204,7 +204,7 @@ describe Gitlab::ReferenceExtractor do
                                       issue]
       end
 
-      it 'returns only Jira issues if the internal one does not exists' do
+      it 'returns only Jira issues if the internal one does not exist' do
         subject.analyze("JIRA-123 and FOOBAR-4567 and ##{non_existing_record_iid}")
         expect(subject.issues).to eq [ExternalIssue.new('JIRA-123', project),
                                       ExternalIssue.new('FOOBAR-4567', project)]
@@ -236,7 +236,7 @@ describe Gitlab::ReferenceExtractor do
         expect(subject.issues).to eq([issue])
       end
 
-      it 'does not return any issue if the internal one does not exists' do
+      it 'does not return any issue if the internal one does not exist' do
         subject.analyze("JIRA-123 and FOOBAR-4567 and #999")
         expect(subject.issues).to be_empty
       end
@@ -296,7 +296,7 @@ describe Gitlab::ReferenceExtractor do
     end
 
     it 'returns all supported prefixes' do
-      expect(prefixes.keys.uniq).to match_array(%w(@ # ~ % ! $ &))
+      expect(prefixes.keys.uniq).to match_array(%w(@ # ~ % ! $ & *iteration:))
     end
 
     it 'does not allow one prefix for multiple referables if not allowed specificly' do

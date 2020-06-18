@@ -34,7 +34,8 @@ module Clusters
           repository: repository,
           files: files,
           preinstall: migrate_to_3_script,
-          postinstall: post_install_script
+          postinstall: post_install_script,
+          local_tiller_enabled: cluster.local_tiller_enabled?
         )
       end
 
@@ -43,7 +44,8 @@ module Clusters
           name: 'elastic-stack',
           rbac: cluster.platform_kubernetes_rbac?,
           files: files,
-          postdelete: post_delete_script
+          postdelete: post_delete_script,
+          local_tiller_enabled: cluster.local_tiller_enabled?
         )
       end
 
@@ -51,7 +53,7 @@ module Clusters
         super.merge('wait-for-elasticsearch.sh': File.read("#{Rails.root}/vendor/elastic_stack/wait-for-elasticsearch.sh"))
       end
 
-      def elasticsearch_client
+      def elasticsearch_client(timeout: nil)
         strong_memoize(:elasticsearch_client) do
           next unless kube_client
 
@@ -63,6 +65,7 @@ module Clusters
             # ensure TLS certs are properly verified
             faraday.ssl[:verify] = kube_client.ssl_options[:verify_ssl]
             faraday.ssl[:cert_store] = kube_client.ssl_options[:cert_store]
+            faraday.options.timeout = timeout unless timeout.nil?
           end
 
         rescue Kubeclient::HttpError => error
@@ -118,7 +121,8 @@ module Clusters
           Gitlab::Kubernetes::Helm::DeleteCommand.new(
             name: 'elastic-stack',
             rbac: cluster.platform_kubernetes_rbac?,
-            files: files
+            files: files,
+            local_tiller_enabled: cluster.local_tiller_enabled?
           ).delete_command,
           Gitlab::Kubernetes::KubectlCmd.delete("pvc", "--selector", "release=elastic-stack", "--namespace", Gitlab::Kubernetes::Helm::NAMESPACE)
         ]

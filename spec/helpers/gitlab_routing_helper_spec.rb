@@ -121,6 +121,16 @@ describe GitlabRoutingHelper do
       it 'matches the Rails download path' do
         expect(fast_download_project_job_artifacts_path(project, job)).to eq(download_project_job_artifacts_path(project, job))
       end
+
+      context 'when given parameters' do
+        it 'adds them to the path' do
+          expect(
+            fast_download_project_job_artifacts_path(project, job, file_type: :dast)
+          ).to eq(
+            download_project_job_artifacts_path(project, job, file_type: :dast)
+          )
+        end
+      end
     end
 
     describe '#fast_keep_project_job_artifacts_path' do
@@ -226,6 +236,26 @@ describe GitlabRoutingHelper do
     describe '#gitlab_toggle_award_emoji_snippet_url' do
       it 'returns the award url for the personal snippet' do
         expect(gitlab_toggle_award_emoji_snippet_url(personal_snippet)).to eq("http://test.host/snippets/#{personal_snippet.id}/toggle_award_emoji")
+      end
+    end
+
+    describe '#gitlab_dashboard_snippets_path' do
+      it 'returns the personal snippets dashboard path' do
+        expect(gitlab_dashboard_snippets_path(personal_snippet)).to eq("/dashboard/snippets")
+      end
+
+      it 'returns the project snippets dashboard path' do
+        expect(gitlab_dashboard_snippets_path(project_snippet)).to eq("/#{project_snippet.project.full_path}/snippets")
+      end
+    end
+  end
+
+  context 'wikis' do
+    let(:wiki) { create(:project_wiki) }
+
+    describe '#wiki_page_path' do
+      it 'returns the url for the wiki page' do
+        expect(wiki_page_path(wiki, 'page')).to eq("/#{wiki.project.full_path}/-/wikis/page")
       end
     end
   end

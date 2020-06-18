@@ -32,7 +32,7 @@ export default {
       <file-icon :file-name="blob.path" :size="18" aria-hidden="true" css-classes="mr-2" />
       <strong
         class="file-title-name mr-1 js-blob-header-filepath"
-        data-qa-selector="file_title_name"
+        data-qa-selector="file_title_content"
         >{{ blob.path }}</strong
       >
     </template>

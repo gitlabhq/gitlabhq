@@ -139,6 +139,7 @@ RSpec.configure do |config|
   config.include IdempotentWorkerHelper, type: :worker
   config.include RailsHelpers
   config.include SidekiqMiddleware
+  config.include StubActionCableConnection, type: :channel
 
   if ENV['CI'] || ENV['RETRIES']
     # This includes the first try, i.e. tests will be run 4 times before failing.
@@ -172,36 +173,38 @@ RSpec.configure do |config|
   end
 
   config.before do |example|
-    # Enable all features by default for testing
-    allow(Feature).to receive(:enabled?) { true }
+    if example.metadata.fetch(:stub_feature_flags, true)
+      # Enable all features by default for testing
+      stub_all_feature_flags
 
-    enable_rugged = example.metadata[:enable_rugged].present?
+      # The following can be removed when we remove the staged rollout strategy
+      # and we can just enable it using instance wide settings
+      # (ie. ApplicationSetting#auto_devops_enabled)
+      stub_feature_flags(force_autodevops_on_by_default: false)
 
-    # Disable Rugged features by default
-    Gitlab::Git::RuggedImpl::Repository::FEATURE_FLAGS.each do |flag|
-      stub_feature_flags(flag => enable_rugged)
+      # The following can be removed once Vue Issuable Sidebar
+      # is feature-complete and can be made default in place
+      # of older sidebar.
+      # See https://gitlab.com/groups/gitlab-org/-/epics/1863
+      stub_feature_flags(vue_issuable_sidebar: false)
+      stub_feature_flags(vue_issuable_epic_sidebar: false)
+
+      enable_rugged = example.metadata[:enable_rugged].present?
+
+      # Disable Rugged features by default
+      Gitlab::Git::RuggedImpl::Repository::FEATURE_FLAGS.each do |flag|
+        stub_feature_flags(flag => enable_rugged)
+      end
+
+      # Disable the usage of file_identifier_hash by default until it is ready
+      # See https://gitlab.com/gitlab-org/gitlab/-/issues/33867
+      stub_feature_flags(file_identifier_hash: false)
+
+      allow(Gitlab::GitalyClient).to receive(:can_use_disk?).and_return(enable_rugged)
     end
-
-    allow(Gitlab::GitalyClient).to receive(:can_use_disk?).and_return(enable_rugged)
-
-    # The following can be removed when we remove the staged rollout strategy
-    # and we can just enable it using instance wide settings
-    # (ie. ApplicationSetting#auto_devops_enabled)
-    stub_feature_flags(force_autodevops_on_by_default: false)
 
     # Enable Marginalia feature for all specs in the test suite.
     allow(Gitlab::Marginalia).to receive(:cached_feature_enabled?).and_return(true)
-
-    # The following can be removed once Vue Issuable Sidebar
-    # is feature-complete and can be made default in place
-    # of older sidebar.
-    # See https://gitlab.com/groups/gitlab-org/-/epics/1863
-    stub_feature_flags(vue_issuable_sidebar: false)
-    stub_feature_flags(vue_issuable_epic_sidebar: false)
-
-    allow(Feature).to receive(:enabled?)
-      .with(/\Apromo_\w+\z/, default_enabled: false)
-      .and_return(false)
 
     # Stub these calls due to being expensive operations
     # It can be reenabled for specific tests via:

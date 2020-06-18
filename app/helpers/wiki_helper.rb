@@ -22,7 +22,7 @@ module WikiHelper
     page_slug_split
       .map do |dir_or_page|
         current_slug = "#{current_slug}#{dir_or_page}/"
-        add_to_breadcrumb_dropdown link_to(WikiPage.unhyphenize(dir_or_page).capitalize, project_wiki_path(@project, current_slug)), location: :after
+        add_to_breadcrumb_dropdown link_to(WikiPage.unhyphenize(dir_or_page).capitalize, wiki_page_path(@wiki, current_slug)), location: :after
       end
   end
 
@@ -32,7 +32,7 @@ module WikiHelper
     content_tag(:div, class: 'alert alert-danger') do
       case error
       when WikiPage::PageChangedError
-        page_link = link_to s_("WikiPageConflictMessage|the page"), project_wiki_path(@project, @page), target: "_blank"
+        page_link = link_to s_("WikiPageConflictMessage|the page"), wiki_page_path(@wiki, @page), target: "_blank"
         concat(
           (s_("WikiPageConflictMessage|Someone edited the page the same time you did. Please check out %{page_link} and make sure your changes will not unintentionally remove theirs.") % { page_link: page_link }).html_safe
         )
@@ -45,26 +45,63 @@ module WikiHelper
   end
 
   def wiki_attachment_upload_url
-    expose_url(api_v4_projects_wikis_attachments_path(id: @project.id))
+    expose_url(api_v4_projects_wikis_attachments_path(id: @wiki.container.id))
   end
 
-  def wiki_sort_controls(project, sort, direction)
-    sort ||= ProjectWiki::TITLE_ORDER
+  def wiki_sort_controls(wiki, sort, direction)
+    sort ||= Wiki::TITLE_ORDER
     link_class = 'btn btn-default has-tooltip reverse-sort-btn qa-reverse-sort rspec-reverse-sort'
     reversed_direction = direction == 'desc' ? 'asc' : 'desc'
     icon_class = direction == 'desc' ? 'highest' : 'lowest'
 
-    link_to(project_wikis_pages_path(project, sort: sort, direction: reversed_direction),
+    link_to(wiki_path(wiki, action: :pages, sort: sort, direction: reversed_direction),
       type: 'button', class: link_class, title: _('Sort direction')) do
       sprite_icon("sort-#{icon_class}", size: 16)
     end
   end
 
   def wiki_sort_title(key)
-    if key == ProjectWiki::CREATED_AT_ORDER
+    if key == Wiki::CREATED_AT_ORDER
       s_("Wiki|Created date")
     else
       s_("Wiki|Title")
+    end
+  end
+
+  def wiki_empty_state_messages(wiki)
+    case wiki.container
+    when Project
+      {
+        writable: {
+          title: s_('WikiEmpty|The wiki lets you write documentation for your project'),
+          body: s_("WikiEmpty|A wiki is where you can store all the details about your project. This can include why you've created it, its principles, how to use it, and so on.")
+        },
+        issuable: {
+          title: s_('WikiEmpty|This project has no wiki pages'),
+          body: s_('WikiEmptyIssueMessage|You must be a project member in order to add wiki pages. If you have suggestions for how to improve the wiki for this project, consider opening an issue in the %{issues_link}.')
+        },
+        readonly: {
+          title: s_('WikiEmpty|This project has no wiki pages'),
+          body: s_('WikiEmpty|You must be a project member in order to add wiki pages.')
+        }
+      }
+    when Group
+      {
+        writable: {
+          title: s_('WikiEmpty|The wiki lets you write documentation for your group'),
+          body: s_("WikiEmpty|A wiki is where you can store all the details about your group. This can include why you've created it, its principles, how to use it, and so on.")
+        },
+        issuable: {
+          title: s_('WikiEmpty|This group has no wiki pages'),
+          body: s_('WikiEmptyIssueMessage|You must be a group member in order to add wiki pages. If you have suggestions for how to improve the wiki for this group, consider opening an issue in the %{issues_link}.')
+        },
+        readonly: {
+          title: s_('WikiEmpty|This group has no wiki pages'),
+          body: s_('WikiEmpty|You must be a group member in order to add wiki pages.')
+        }
+      }
+    else
+      raise NotImplementedError, "Unknown wiki container type #{wiki.container.class.name}"
     end
   end
 end

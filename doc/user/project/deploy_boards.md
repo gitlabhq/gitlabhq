@@ -1,6 +1,13 @@
+---
+stage: Release
+group: Progressive Delivery
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+type: howto, reference
+---
+
 # Deploy Boards **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/1589) in [GitLab Premium](https://about.gitlab.com/pricing/) 9.0.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/1589) in [GitLab Premium](https://about.gitlab.com/pricing/) 9.0.
 
 GitLab's Deploy Boards offer a consolidated view of the current health and
 status of each CI [environment](../../ci/environments/index.md) running on [Kubernetes](https://kubernetes.io), displaying the status
@@ -33,6 +40,10 @@ knowledge. In particular, you should be familiar with:
 - [Kubernetes labels](https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/)
 - [Kubernetes namespaces](https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/)
 - [Kubernetes canary deployments](https://kubernetes.io/docs/concepts/cluster-administration/manage-deployment/#canary-deployments)
+
+NOTE: **Note:**
+Apps that consist of multiple deployments are shown as duplicates on the deploy board.
+Follow [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/8463) for details.
 
 ## Use cases
 
@@ -68,7 +79,7 @@ To display the Deploy Boards for a specific [environment](../../ci/environments/
    instead of `DeploymentConfiguration`. Otherwise, the Deploy Boards won't render
    correctly. For more information, read the
    [OpenShift docs](https://docs.openshift.com/container-platform/3.7/dev_guide/deployments/kubernetes_deployments.html#kubernetes-deployments-vs-deployment-configurations)
-   and [GitLab issue #4584](https://gitlab.com/gitlab-org/gitlab/issues/4584).
+   and [GitLab issue #4584](https://gitlab.com/gitlab-org/gitlab/-/issues/4584).
 
 1. [Configure GitLab Runner](../../ci/runners/README.md) with the [Docker](https://docs.gitlab.com/runner/executors/docker.html) or
    [Kubernetes](https://docs.gitlab.com/runner/executors/kubernetes.html) executor.

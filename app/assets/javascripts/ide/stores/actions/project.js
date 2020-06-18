@@ -4,7 +4,6 @@ import { __, sprintf } from '~/locale';
 import service from '../../services';
 import api from '../../../api';
 import * as types from '../mutation_types';
-import router from '../../ide_router';
 
 export const getProjectData = ({ commit, state }, { namespace, projectId, force = false } = {}) =>
   new Promise((resolve, reject) => {
@@ -57,7 +56,7 @@ export const createNewBranchFromDefault = ({ state, dispatch, getters }, branch)
     })
     .then(() => {
       dispatch('setErrorMessage', null);
-      router.push(`${router.currentRoute.path}?${Date.now()}`);
+      window.location.reload();
     })
     .catch(() => {
       dispatch('setErrorMessage', {

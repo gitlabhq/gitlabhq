@@ -10,10 +10,6 @@ module Gitlab
             Gitlab::Graphql::Pagination::Keyset::Connection)
 
           schema.connections.add(
-            Gitlab::Graphql::FilterableArray,
-            Gitlab::Graphql::Pagination::FilterableArrayConnection)
-
-          schema.connections.add(
             Gitlab::Graphql::ExternallyPaginatedArray,
             Gitlab::Graphql::Pagination::ExternallyPaginatedArrayConnection)
         end

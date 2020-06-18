@@ -1,6 +1,13 @@
-import { commitItemIconMap } from '~/ide/constants';
-import { getCommitIconMap, isTextFile, registerLanguages, trimPathComponents } from '~/ide/utils';
-import { decorateData } from '~/ide/stores/utils';
+import {
+  isTextFile,
+  registerLanguages,
+  trimPathComponents,
+  insertFinalNewline,
+  trimTrailingWhitespace,
+  getPathParents,
+  getPathParent,
+  readFileAsDataURL,
+} from '~/ide/utils';
 import { languages } from 'monaco-editor';
 
 describe('WebIDE utils', () => {
@@ -59,48 +66,6 @@ describe('WebIDE utils', () => {
 
     it('returns false for non-ASCII content for unknown types', () => {
       expect(isTextFile('{"éêė":"value"}', 'application/octet-stream', 'my.random')).toBeFalsy();
-    });
-  });
-
-  const createFile = (name = 'name', id = name, type = '', parent = null) =>
-    decorateData({
-      id,
-      type,
-      icon: 'icon',
-      url: 'url',
-      name,
-      path: parent ? `${parent.path}/${name}` : name,
-      parentPath: parent ? parent.path : '',
-      lastCommit: {},
-    });
-
-  describe('getCommitIconMap', () => {
-    let entry;
-
-    beforeEach(() => {
-      entry = createFile('Entry item');
-    });
-
-    it('renders "deleted" icon for deleted entries', () => {
-      entry.deleted = true;
-      expect(getCommitIconMap(entry)).toEqual(commitItemIconMap.deleted);
-    });
-
-    it('renders "addition" icon for temp entries', () => {
-      entry.tempFile = true;
-      expect(getCommitIconMap(entry)).toEqual(commitItemIconMap.addition);
-    });
-
-    it('renders "modified" icon for newly-renamed entries', () => {
-      entry.prevPath = 'foo/bar';
-      entry.tempFile = false;
-      expect(getCommitIconMap(entry)).toEqual(commitItemIconMap.modified);
-    });
-
-    it('renders "modified" icon even for temp entries if they are newly-renamed', () => {
-      entry.prevPath = 'foo/bar';
-      entry.tempFile = true;
-      expect(getCommitIconMap(entry)).toEqual(commitItemIconMap.modified);
     });
   });
 
@@ -190,6 +155,88 @@ describe('WebIDE utils', () => {
         ['js', { comments: { blockComment: ['/*', '*/'] } }],
         ['html', { comments: { blockComment: ['<!--', '-->'] } }],
       ]);
+    });
+  });
+
+  describe('trimTrailingWhitespace', () => {
+    it.each`
+      input                                                            | output
+      ${'text     \n   more text   \n'}                                | ${'text\n   more text\n'}
+      ${'text     \n   more text   \n\n   \n'}                         | ${'text\n   more text\n\n\n'}
+      ${'text  \t\t   \n   more text   \n\t\ttext\n   \n\t\t'}         | ${'text\n   more text\n\t\ttext\n\n'}
+      ${'text     \r\n   more text   \r\n'}                            | ${'text\r\n   more text\r\n'}
+      ${'text     \r\n   more text   \r\n\r\n   \r\n'}                 | ${'text\r\n   more text\r\n\r\n\r\n'}
+      ${'text  \t\t   \r\n   more text   \r\n\t\ttext\r\n   \r\n\t\t'} | ${'text\r\n   more text\r\n\t\ttext\r\n\r\n'}
+    `("trims trailing whitespace in each line of file's contents: $input", ({ input, output }) => {
+      expect(trimTrailingWhitespace(input)).toBe(output);
+    });
+  });
+
+  describe('addFinalNewline', () => {
+    it.each`
+      input              | output
+      ${'some text'}     | ${'some text\n'}
+      ${'some text\n'}   | ${'some text\n'}
+      ${'some text\n\n'} | ${'some text\n\n'}
+      ${'some\n text'}   | ${'some\n text\n'}
+    `('adds a newline if it doesnt already exist for input: $input', ({ input, output }) => {
+      expect(insertFinalNewline(input)).toBe(output);
+    });
+
+    it.each`
+      input                  | output
+      ${'some text'}         | ${'some text\r\n'}
+      ${'some text\r\n'}     | ${'some text\r\n'}
+      ${'some text\n'}       | ${'some text\n\r\n'}
+      ${'some text\r\n\r\n'} | ${'some text\r\n\r\n'}
+      ${'some\r\n text'}     | ${'some\r\n text\r\n'}
+    `('works with CRLF newline style; input: $input', ({ input, output }) => {
+      expect(insertFinalNewline(input, '\r\n')).toBe(output);
+    });
+  });
+
+  describe('getPathParents', () => {
+    it.each`
+      path                                  | parents
+      ${'foo/bar/baz/index.md'}             | ${['foo/bar/baz', 'foo/bar', 'foo']}
+      ${'foo/bar/baz'}                      | ${['foo/bar', 'foo']}
+      ${'index.md'}                         | ${[]}
+      ${'path with/spaces to/something.md'} | ${['path with/spaces to', 'path with']}
+    `('gets all parent directory names for path: $path', ({ path, parents }) => {
+      expect(getPathParents(path)).toEqual(parents);
+    });
+
+    it.each`
+      path                      | depth | parents
+      ${'foo/bar/baz/index.md'} | ${0}  | ${[]}
+      ${'foo/bar/baz/index.md'} | ${1}  | ${['foo/bar/baz']}
+      ${'foo/bar/baz/index.md'} | ${2}  | ${['foo/bar/baz', 'foo/bar']}
+      ${'foo/bar/baz/index.md'} | ${3}  | ${['foo/bar/baz', 'foo/bar', 'foo']}
+      ${'foo/bar/baz/index.md'} | ${4}  | ${['foo/bar/baz', 'foo/bar', 'foo']}
+    `('gets only the immediate $depth parents if when depth=$depth', ({ path, depth, parents }) => {
+      expect(getPathParents(path, depth)).toEqual(parents);
+    });
+  });
+
+  describe('getPathParent', () => {
+    it.each`
+      path                                  | parents
+      ${'foo/bar/baz/index.md'}             | ${'foo/bar/baz'}
+      ${'foo/bar/baz'}                      | ${'foo/bar'}
+      ${'index.md'}                         | ${undefined}
+      ${'path with/spaces to/something.md'} | ${'path with/spaces to'}
+    `('gets the immediate parent for path: $path', ({ path, parents }) => {
+      expect(getPathParent(path)).toEqual(parents);
+    });
+  });
+
+  describe('readFileAsDataURL', () => {
+    it('reads a file and returns its output as a data url', () => {
+      const file = new File(['foo'], 'foo.png', { type: 'image/png' });
+
+      return readFileAsDataURL(file).then(contents => {
+        expect(contents).toBe('data:image/png;base64,Zm9v');
+      });
     });
   });
 });

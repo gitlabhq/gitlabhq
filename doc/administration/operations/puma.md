@@ -10,7 +10,8 @@ Unicorn unless explicitly specified not to.
 ## Why switch to Puma?
 
 Puma has a multi-thread architecture which uses less memory than a multi-process
-application server like Unicorn.
+application server like Unicorn. On GitLab.com, we saw a 40% reduction in memory
+consumption.
 
 Most Rails applications requests normally include a proportion of I/O wait time.
 During I/O wait time MRI Ruby will release the GVL (Global VM Lock) to other threads.
@@ -18,9 +19,15 @@ Multi-threaded Puma can therefore still serve more requests than a single proces
 
 ## Configuring Puma to replace Unicorn
 
-If you are currently running Unicorn and would like to switch to Puma, server configuration
-will _not_ carry over automatically. For details on matching Unicorn configuration settings with
-the Puma equivalent, where applicable, see [Converting Unicorn settings to Puma](https://docs.gitlab.com/omnibus/settings/puma.html#converting-unicorn-settings-to-puma).
+Beginning with GitLab 13.0, Puma is the default application server. We plan to remove support for
+Unicorn in GitLab 14.0.
+
+When switching to Puma, Unicorn server configuration
+will _not_ carry over automatically, due to differences between the two application servers. For Omnibus-based
+deployments, see [Configuring Puma Settings](https://docs.gitlab.com/omnibus/settings/puma.html#configuring-puma-settings).
+For Helm based deployments, see the [Webservice Chart documentation](https://docs.gitlab.com/charts/charts/gitlab/webservice/index.html).
+
+Additionally we strongly recommend that multi-node deployments [configure their load balancers to utilize the readiness check](../high_availability/load_balancer.md#readiness-check) due to a difference between Unicorn and Puma in how they handle connections during a restart of the service.
 
 ## Performance caveat when using Puma with Rugged
 

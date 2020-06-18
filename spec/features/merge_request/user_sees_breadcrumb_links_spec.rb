@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'New merge request breadcrumb' do
+RSpec.describe 'New merge request breadcrumb' do
   let(:project) { create(:project, :repository) }
   let(:user) { project.creator }
 

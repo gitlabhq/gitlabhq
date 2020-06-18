@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Search bar', :js do
+RSpec.describe 'Search bar', :js do
   include FilteredSearchHelpers
 
   let!(:project) { create(:project) }

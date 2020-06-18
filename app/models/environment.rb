@@ -339,7 +339,7 @@ class Environment < ApplicationRecord
   end
 
   def auto_stop_in
-    auto_stop_at - Time.now if auto_stop_at
+    auto_stop_at - Time.current if auto_stop_at
   end
 
   def auto_stop_in=(value)

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Admin uses repository checks', :request_store, :clean_gitlab_redis_shared_state, :do_not_mock_admin_mode do
+RSpec.describe 'Admin uses repository checks', :request_store, :clean_gitlab_redis_shared_state, :do_not_mock_admin_mode do
   include StubENV
 
   let(:admin) { create(:admin) }

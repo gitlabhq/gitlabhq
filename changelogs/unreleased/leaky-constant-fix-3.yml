@@ -1,0 +1,5 @@
+---
+title: Add class stubs and fix leaky constant alert in query limit helper spec
+merge_request: 31949
+author: Rajendra Kadam
+type: fixed

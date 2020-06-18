@@ -2,7 +2,7 @@
 
 const BABEL_ENV = process.env.BABEL_ENV || process.env.NODE_ENV || null;
 
-const presets = [
+let presets = [
   [
     '@babel/preset-env',
     {
@@ -49,6 +49,17 @@ if (isJest) {
   https://gitlab.com/gitlab-org/gitlab-foss/issues/58390
   */
   plugins.push('babel-plugin-dynamic-import-node');
+
+  presets = [
+    [
+      '@babel/preset-env',
+      {
+        targets: {
+          node: 'current',
+        },
+      },
+    ],
+  ];
 }
 
 module.exports = { presets, plugins, sourceType: 'unambiguous' };

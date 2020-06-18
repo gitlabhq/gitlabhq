@@ -10,16 +10,6 @@ describe('Design overlay component', () => {
   let wrapper;
 
   const mockDimensions = { width: 100, height: 100 };
-  const mockNoteNotAuthorised = {
-    id: 'note-not-authorised',
-    discussion: { id: 'discussion-not-authorised' },
-    position: {
-      x: 1,
-      y: 80,
-      ...mockDimensions,
-    },
-    userPermissions: {},
-  };
 
   const findOverlay = () => wrapper.find('.image-diff-overlay');
   const findAllNotes = () => wrapper.findAll('.js-image-badge');
@@ -43,6 +33,7 @@ describe('Design overlay component', () => {
           top: '0',
           left: '0',
         },
+        resolvedDiscussionsExpanded: false,
         ...props,
       },
       data() {
@@ -88,19 +79,46 @@ describe('Design overlay component', () => {
   });
 
   describe('with notes', () => {
-    beforeEach(() => {
+    it('should render only the first note', () => {
       createComponent({
         notes,
       });
+      expect(findAllNotes()).toHaveLength(1);
     });
 
-    it('should render a correct amount of notes', () => {
-      expect(findAllNotes()).toHaveLength(notes.length);
-    });
+    describe('with resolved discussions toggle expanded', () => {
+      beforeEach(() => {
+        createComponent({
+          notes,
+          resolvedDiscussionsExpanded: true,
+        });
+      });
 
-    it('should have a correct style for each note badge', () => {
-      expect(findFirstBadge().attributes().style).toBe('left: 10px; top: 15px;');
-      expect(findSecondBadge().attributes().style).toBe('left: 50px; top: 50px;');
+      it('should render all notes', () => {
+        expect(findAllNotes()).toHaveLength(notes.length);
+      });
+
+      it('should have set the correct position for each note badge', () => {
+        expect(findFirstBadge().attributes().style).toBe('left: 10px; top: 15px;');
+        expect(findSecondBadge().attributes().style).toBe('left: 50px; top: 50px;');
+      });
+
+      it('should apply resolved class to the resolved note pin', () => {
+        expect(findSecondBadge().classes()).toContain('resolved');
+      });
+
+      it('when there is an active discussion, should apply inactive class to all pins besides the active one', () => {
+        wrapper.setData({
+          activeDiscussion: {
+            id: notes[0].id,
+            source: 'discussion',
+          },
+        });
+
+        return wrapper.vm.$nextTick().then(() => {
+          expect(findSecondBadge().classes()).toContain('inactive');
+        });
+      });
     });
 
     it('should recalculate badges positions on window resize', () => {
@@ -142,19 +160,6 @@ describe('Design overlay component', () => {
       return wrapper.vm.$nextTick().then(() => {
         findFirstBadge().trigger('mouseup', { clientX: position.x, clientY: position.y });
         expect(mutate).toHaveBeenCalledWith(mutationVariables);
-      });
-    });
-
-    it('when there is an active discussion, should apply inactive class to all pins besides the active one', () => {
-      wrapper.setData({
-        activeDiscussion: {
-          id: notes[0].id,
-          source: 'discussion',
-        },
-      });
-
-      return wrapper.vm.$nextTick().then(() => {
-        expect(findSecondBadge().classes()).toContain('inactive');
       });
     });
   });
@@ -213,20 +218,32 @@ describe('Design overlay component', () => {
         });
     });
 
-    it('should do nothing if [adminNote] permission is not present', () => {
-      createComponent({
-        dimensions: mockDimensions,
-        notes: [mockNoteNotAuthorised],
-      });
+    describe('without [adminNote] permission', () => {
+      const mockNoteNotAuthorised = {
+        ...notes[0],
+        userPermissions: {
+          adminNote: false,
+        },
+      };
 
-      const badge = findAllNotes().at(0);
-      return clickAndDragBadge(
-        badge,
-        { x: mockNoteNotAuthorised.x, y: mockNoteNotAuthorised.y },
-        { x: 20, y: 20 },
-      ).then(() => {
-        expect(wrapper.vm.movingNoteStartPosition).toBeNull();
-        expect(findFirstBadge().attributes().style).toBe('left: 1px; top: 80px;');
+      const mockNoteCoordinates = {
+        x: mockNoteNotAuthorised.position.x,
+        y: mockNoteNotAuthorised.position.y,
+      };
+
+      it('should be unable to move a note', () => {
+        createComponent({
+          dimensions: mockDimensions,
+          notes: [mockNoteNotAuthorised],
+        });
+
+        const badge = findAllNotes().at(0);
+        return clickAndDragBadge(badge, { ...mockNoteCoordinates }, { x: 20, y: 20 }).then(() => {
+          // note position should not change after a click-and-drag attempt
+          expect(findFirstBadge().attributes().style).toContain(
+            `left: ${mockNoteCoordinates.x}px; top: ${mockNoteCoordinates.y}px;`,
+          );
+        });
       });
     });
   });

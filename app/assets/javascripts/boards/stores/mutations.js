@@ -6,8 +6,8 @@ const notImplemented = () => {
 };
 
 export default {
-  [mutationTypes.SET_ENDPOINTS]: () => {
-    notImplemented();
+  [mutationTypes.SET_ENDPOINTS]: (state, endpoints) => {
+    state.endpoints = endpoints;
   },
 
   [mutationTypes.REQUEST_ADD_LIST]: () => {

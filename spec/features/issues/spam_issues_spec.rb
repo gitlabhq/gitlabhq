@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'New issue', :js do
+RSpec.describe 'New issue', :js do
   include StubENV
 
   let(:project) { create(:project, :public) }
@@ -81,7 +81,7 @@ describe 'New issue', :js do
 
     before do
       allow_next_instance_of(Spam::SpamVerdictService) do |verdict_service|
-        allow(verdict_service).to receive(:execute).and_return(REQUIRE_RECAPTCHA)
+        allow(verdict_service).to receive(:execute).and_return(CONDITIONAL_ALLOW)
       end
 
       visit new_project_issue_path(project)
@@ -164,6 +164,8 @@ describe 'New issue', :js do
   end
 
   context 'when the SpamVerdictService allows' do
+    include_context 'includes Spam constants'
+
     before do
       allow_next_instance_of(Spam::SpamVerdictService) do |verdict_service|
         allow(verdict_service).to receive(:execute).and_return(ALLOW)

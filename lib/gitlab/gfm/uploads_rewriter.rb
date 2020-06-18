@@ -22,9 +22,10 @@ module Gitlab
         return @text unless needs_rewrite?
 
         @text.gsub(@pattern) do |markdown|
-          Gitlab::Utils.check_path_traversal!($~[:file])
+          file = find_file($~[:secret], $~[:file])
+          # No file will be returned for a path traversal
+          next if file.nil?
 
-          file = find_file(@source_project, $~[:secret], $~[:file])
           break markdown unless file.try(:exists?)
 
           klass = target_parent.is_a?(Namespace) ? NamespaceFileUploader : FileUploader
@@ -47,7 +48,7 @@ module Gitlab
 
       def files
         referenced_files = @text.scan(@pattern).map do
-          find_file(@source_project, $~[:secret], $~[:file])
+          find_file($~[:secret], $~[:file])
         end
 
         referenced_files.compact.select(&:exists?)
@@ -57,12 +58,8 @@ module Gitlab
         markdown.starts_with?("!")
       end
 
-      private
-
-      def find_file(project, secret, file)
-        uploader = FileUploader.new(project, secret: secret)
-        uploader.retrieve_from_store!(file)
-        uploader
+      def find_file(secret, file_name)
+        UploaderFinder.new(@source_project, secret, file_name).execute
       end
     end
   end

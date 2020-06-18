@@ -73,6 +73,27 @@ describe RuboCop::Cop::Migration::AddLimitToTextColumns do
       end
     end
 
+    context 'when text array columns are defined without a limit' do
+      it 'registers no offense' do
+        expect_no_offenses(<<~RUBY)
+          class TestTextLimits < ActiveRecord::Migration[6.0]
+            DOWNTIME = false
+
+            def up
+              create_table :test_text_limits, id: false do |t|
+                t.integer :test_id, null: false
+                t.text :name, array: true, default: [], null: false
+              end
+
+              add_column :test_text_limits, :email, :text, array: true
+              add_column_with_default :test_text_limits, :role, :text, default: [], array: true
+              change_column_type_concurrently :test_text_limits, :test_id, :text, array: true
+            end
+          end
+        RUBY
+      end
+    end
+
     # Make sure that the cop is properly checking for an `add_text_limit`
     # over the same {table, attribute} as the one that triggered the offence
     context 'when the limit is defined for a same name attribute but different table' do

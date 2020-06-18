@@ -355,7 +355,7 @@ describe PostReceive do
 
   context "webhook" do
     it "fetches the correct project" do
-      expect(Project).to receive(:find_by).with(id: project.id.to_s)
+      expect(Project).to receive(:find_by).with(id: project.id)
 
       perform
     end

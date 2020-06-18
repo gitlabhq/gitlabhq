@@ -1,0 +1,5 @@
+---
+title: Fix pagination for resource label events
+merge_request: 33821
+author:
+type: fixed

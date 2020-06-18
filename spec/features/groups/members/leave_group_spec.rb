@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Groups > Members > Leave group' do
+RSpec.describe 'Groups > Members > Leave group' do
   let(:user) { create(:user) }
   let(:other_user) { create(:user) }
   let(:group) { create(:group) }
@@ -31,6 +31,7 @@ describe 'Groups > Members > Leave group' do
 
     page.accept_confirm
 
+    wait_for_all_requests
     expect(current_path).to eq(dashboard_groups_path)
     expect(group.users).not_to include(user)
   end

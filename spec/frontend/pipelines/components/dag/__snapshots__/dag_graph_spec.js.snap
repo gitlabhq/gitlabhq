@@ -1,0 +1,230 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`The DAG graph in the basic case renders the graph svg 1`] = `
+"<svg viewBox=\\"0,0,1000,540\\" width=\\"1000\\" height=\\"540\\">
+  <g fill=\\"none\\" stroke-opacity=\\"0.8\\">
+    <g id=\\"dag-link43\\" class=\\"dag-link gl-cursor-pointer\\">
+      <linearGradient id=\\"dag-grad53\\" gradientUnits=\\"userSpaceOnUse\\" x1=\\"116\\" x2=\\"361.3333333333333\\">
+        <stop offset=\\"0%\\" stop-color=\\"#e17223\\"></stop>
+        <stop offset=\\"100%\\" stop-color=\\"#83ab4a\\"></stop>
+      </linearGradient>
+      <clipPath id=\\"dag-clip63\\">
+        <path d=\\"
+    M100, 129
+    V158
+    H377.3333333333333
+    V100
+    H100
+    Z
+  \\"></path>
+      </clipPath>
+      <path d=\\"M108,129L190,129L190,129L369.3333333333333,129\\" stroke=\\"url(#dag-grad53)\\" style=\\"stroke-linejoin: round;\\" stroke-width=\\"56\\" clip-path=\\"url(#dag-clip63)\\"></path>
+    </g>
+    <g id=\\"dag-link44\\" class=\\"dag-link gl-cursor-pointer\\">
+      <linearGradient id=\\"dag-grad54\\" gradientUnits=\\"userSpaceOnUse\\" x1=\\"377.3333333333333\\" x2=\\"622.6666666666666\\">
+        <stop offset=\\"0%\\" stop-color=\\"#83ab4a\\"></stop>
+        <stop offset=\\"100%\\" stop-color=\\"#6f3500\\"></stop>
+      </linearGradient>
+      <clipPath id=\\"dag-clip64\\">
+        <path d=\\"
+    M361.3333333333333, 129.0000000000002
+    V158.0000000000002
+    H638.6666666666666
+    V100
+    H361.3333333333333
+    Z
+  \\"></path>
+      </clipPath>
+      <path d=\\"M369.3333333333333,129L509.3333333333333,129L509.3333333333333,129.0000000000002L630.6666666666666,129.0000000000002\\" stroke=\\"url(#dag-grad54)\\" style=\\"stroke-linejoin: round;\\" stroke-width=\\"56\\" clip-path=\\"url(#dag-clip64)\\"></path>
+    </g>
+    <g id=\\"dag-link45\\" class=\\"dag-link gl-cursor-pointer\\">
+      <linearGradient id=\\"dag-grad55\\" gradientUnits=\\"userSpaceOnUse\\" x1=\\"116\\" x2=\\"622.6666666666666\\">
+        <stop offset=\\"0%\\" stop-color=\\"#5772ff\\"></stop>
+        <stop offset=\\"100%\\" stop-color=\\"#6f3500\\"></stop>
+      </linearGradient>
+      <clipPath id=\\"dag-clip65\\">
+        <path d=\\"
+    M100, 187.0000000000002
+    V241.00000000000003
+    H638.6666666666666
+    V158.0000000000002
+    H100
+    Z
+  \\"></path>
+      </clipPath>
+      <path d=\\"M108,212.00000000000003L306,212.00000000000003L306,187.0000000000002L630.6666666666666,187.0000000000002\\" stroke=\\"url(#dag-grad55)\\" style=\\"stroke-linejoin: round;\\" stroke-width=\\"56\\" clip-path=\\"url(#dag-clip65)\\"></path>
+    </g>
+    <g id=\\"dag-link46\\" class=\\"dag-link gl-cursor-pointer\\">
+      <linearGradient id=\\"dag-grad56\\" gradientUnits=\\"userSpaceOnUse\\" x1=\\"116\\" x2=\\"361.3333333333333\\">
+        <stop offset=\\"0%\\" stop-color=\\"#b24800\\"></stop>
+        <stop offset=\\"100%\\" stop-color=\\"#006887\\"></stop>
+      </linearGradient>
+      <clipPath id=\\"dag-clip66\\">
+        <path d=\\"
+    M100, 269.9999999999998
+    V324
+    H377.3333333333333
+    V240.99999999999977
+    H100
+    Z
+  \\"></path>
+      </clipPath>
+      <path d=\\"M108,295L338.93333333333334,295L338.93333333333334,269.9999999999998L369.3333333333333,269.9999999999998\\" stroke=\\"url(#dag-grad56)\\" style=\\"stroke-linejoin: round;\\" stroke-width=\\"56\\" clip-path=\\"url(#dag-clip66)\\"></path>
+    </g>
+    <g id=\\"dag-link47\\" class=\\"dag-link gl-cursor-pointer\\">
+      <linearGradient id=\\"dag-grad57\\" gradientUnits=\\"userSpaceOnUse\\" x1=\\"116\\" x2=\\"361.3333333333333\\">
+        <stop offset=\\"0%\\" stop-color=\\"#25d2d2\\"></stop>
+        <stop offset=\\"100%\\" stop-color=\\"#487900\\"></stop>
+      </linearGradient>
+      <clipPath id=\\"dag-clip67\\">
+        <path d=\\"
+    M100, 352.99999999999994
+    V407.00000000000006
+    H377.3333333333333
+    V323.99999999999994
+    H100
+    Z
+  \\"></path>
+      </clipPath>
+      <path d=\\"M108,378.00000000000006L144.66666666666669,378.00000000000006L144.66666666666669,352.99999999999994L369.3333333333333,352.99999999999994\\" stroke=\\"url(#dag-grad57)\\" style=\\"stroke-linejoin: round;\\" stroke-width=\\"56\\" clip-path=\\"url(#dag-clip67)\\"></path>
+    </g>
+    <g id=\\"dag-link48\\" class=\\"dag-link gl-cursor-pointer\\">
+      <linearGradient id=\\"dag-grad58\\" gradientUnits=\\"userSpaceOnUse\\" x1=\\"377.3333333333333\\" x2=\\"622.6666666666666\\">
+        <stop offset=\\"0%\\" stop-color=\\"#006887\\"></stop>
+        <stop offset=\\"100%\\" stop-color=\\"#d84280\\"></stop>
+      </linearGradient>
+      <clipPath id=\\"dag-clip68\\">
+        <path d=\\"
+    M361.3333333333333, 270.0000000000001
+    V299.0000000000001
+    H638.6666666666666
+    V240.99999999999977
+    H361.3333333333333
+    Z
+  \\"></path>
+      </clipPath>
+      <path d=\\"M369.3333333333333,269.9999999999998L464,269.9999999999998L464,270.0000000000001L630.6666666666666,270.0000000000001\\" stroke=\\"url(#dag-grad58)\\" style=\\"stroke-linejoin: round;\\" stroke-width=\\"56\\" clip-path=\\"url(#dag-clip68)\\"></path>
+    </g>
+    <g id=\\"dag-link49\\" class=\\"dag-link gl-cursor-pointer\\">
+      <linearGradient id=\\"dag-grad59\\" gradientUnits=\\"userSpaceOnUse\\" x1=\\"377.3333333333333\\" x2=\\"622.6666666666666\\">
+        <stop offset=\\"0%\\" stop-color=\\"#487900\\"></stop>
+        <stop offset=\\"100%\\" stop-color=\\"#d84280\\"></stop>
+      </linearGradient>
+      <clipPath id=\\"dag-clip69\\">
+        <path d=\\"
+    M361.3333333333333, 328.0000000000001
+    V381.99999999999994
+    H638.6666666666666
+    V299.0000000000001
+    H361.3333333333333
+    Z
+  \\"></path>
+      </clipPath>
+      <path d=\\"M369.3333333333333,352.99999999999994L522,352.99999999999994L522,328.0000000000001L630.6666666666666,328.0000000000001\\" stroke=\\"url(#dag-grad59)\\" style=\\"stroke-linejoin: round;\\" stroke-width=\\"56\\" clip-path=\\"url(#dag-clip69)\\"></path>
+    </g>
+    <g id=\\"dag-link50\\" class=\\"dag-link gl-cursor-pointer\\">
+      <linearGradient id=\\"dag-grad60\\" gradientUnits=\\"userSpaceOnUse\\" x1=\\"377.3333333333333\\" x2=\\"622.6666666666666\\">
+        <stop offset=\\"0%\\" stop-color=\\"#487900\\"></stop>
+        <stop offset=\\"100%\\" stop-color=\\"#3547de\\"></stop>
+      </linearGradient>
+      <clipPath id=\\"dag-clip70\\">
+        <path d=\\"
+    M361.3333333333333, 411
+    V440
+    H638.6666666666666
+    V381.99999999999994
+    H361.3333333333333
+    Z
+  \\"></path>
+      </clipPath>
+      <path d=\\"M369.3333333333333,410.99999999999994L580,410.99999999999994L580,411L630.6666666666666,411\\" stroke=\\"url(#dag-grad60)\\" style=\\"stroke-linejoin: round;\\" stroke-width=\\"56\\" clip-path=\\"url(#dag-clip70)\\"></path>
+    </g>
+    <g id=\\"dag-link51\\" class=\\"dag-link gl-cursor-pointer\\">
+      <linearGradient id=\\"dag-grad61\\" gradientUnits=\\"userSpaceOnUse\\" x1=\\"638.6666666666666\\" x2=\\"884\\">
+        <stop offset=\\"0%\\" stop-color=\\"#d84280\\"></stop>
+        <stop offset=\\"100%\\" stop-color=\\"#006887\\"></stop>
+      </linearGradient>
+      <clipPath id=\\"dag-clip71\\">
+        <path d=\\"
+    M622.6666666666666, 270.1890725105691
+    V299.1890725105691
+    H900
+    V241.0000000000001
+    H622.6666666666666
+    Z
+  \\"></path>
+      </clipPath>
+      <path d=\\"M630.6666666666666,270.0000000000001L861.6,270.0000000000001L861.6,270.1890725105691L892,270.1890725105691\\" stroke=\\"url(#dag-grad61)\\" style=\\"stroke-linejoin: round;\\" stroke-width=\\"56\\" clip-path=\\"url(#dag-clip71)\\"></path>
+    </g>
+    <g id=\\"dag-link52\\" class=\\"dag-link gl-cursor-pointer\\">
+      <linearGradient id=\\"dag-grad62\\" gradientUnits=\\"userSpaceOnUse\\" x1=\\"638.6666666666666\\" x2=\\"884\\">
+        <stop offset=\\"0%\\" stop-color=\\"#3547de\\"></stop>
+        <stop offset=\\"100%\\" stop-color=\\"#275600\\"></stop>
+      </linearGradient>
+      <clipPath id=\\"dag-clip72\\">
+        <path d=\\"
+    M622.6666666666666, 411
+    V440
+    H900
+    V382
+    H622.6666666666666
+    Z
+  \\"></path>
+      </clipPath>
+      <path d=\\"M630.6666666666666,411L679.9999999999999,411L679.9999999999999,411L892,411\\" stroke=\\"url(#dag-grad62)\\" style=\\"stroke-linejoin: round;\\" stroke-width=\\"56\\" clip-path=\\"url(#dag-clip72)\\"></path>
+    </g>
+  </g>
+  <g>
+    <line class=\\"dag-node gl-cursor-pointer\\" id=\\"dag-node73\\" stroke=\\"#e17223\\" stroke-width=\\"16\\" stroke-linecap=\\"round\\" x1=\\"108\\" x2=\\"108\\" y1=\\"104\\" y2=\\"154.00000000000003\\"></line>
+    <line class=\\"dag-node gl-cursor-pointer\\" id=\\"dag-node74\\" stroke=\\"#83ab4a\\" stroke-width=\\"16\\" stroke-linecap=\\"round\\" x1=\\"369\\" x2=\\"369\\" y1=\\"104\\" y2=\\"154\\"></line>
+    <line class=\\"dag-node gl-cursor-pointer\\" id=\\"dag-node75\\" stroke=\\"#5772ff\\" stroke-width=\\"16\\" stroke-linecap=\\"round\\" x1=\\"108\\" x2=\\"108\\" y1=\\"187.00000000000003\\" y2=\\"237.00000000000003\\"></line>
+    <line class=\\"dag-node gl-cursor-pointer\\" id=\\"dag-node76\\" stroke=\\"#b24800\\" stroke-width=\\"16\\" stroke-linecap=\\"round\\" x1=\\"108\\" x2=\\"108\\" y1=\\"270\\" y2=\\"320.00000000000006\\"></line>
+    <line class=\\"dag-node gl-cursor-pointer\\" id=\\"dag-node77\\" stroke=\\"#25d2d2\\" stroke-width=\\"16\\" stroke-linecap=\\"round\\" x1=\\"108\\" x2=\\"108\\" y1=\\"353.00000000000006\\" y2=\\"403.0000000000001\\"></line>
+    <line class=\\"dag-node gl-cursor-pointer\\" id=\\"dag-node78\\" stroke=\\"#6f3500\\" stroke-width=\\"16\\" stroke-linecap=\\"round\\" x1=\\"630\\" x2=\\"630\\" y1=\\"104.0000000000002\\" y2=\\"212.00000000000009\\"></line>
+    <line class=\\"dag-node gl-cursor-pointer\\" id=\\"dag-node79\\" stroke=\\"#006887\\" stroke-width=\\"16\\" stroke-linecap=\\"round\\" x1=\\"369\\" x2=\\"369\\" y1=\\"244.99999999999977\\" y2=\\"294.99999999999994\\"></line>
+    <line class=\\"dag-node gl-cursor-pointer\\" id=\\"dag-node80\\" stroke=\\"#487900\\" stroke-width=\\"16\\" stroke-linecap=\\"round\\" x1=\\"369\\" x2=\\"369\\" y1=\\"327.99999999999994\\" y2=\\"436\\"></line>
+    <line class=\\"dag-node gl-cursor-pointer\\" id=\\"dag-node81\\" stroke=\\"#d84280\\" stroke-width=\\"16\\" stroke-linecap=\\"round\\" x1=\\"630\\" x2=\\"630\\" y1=\\"245.00000000000009\\" y2=\\"353\\"></line>
+    <line class=\\"dag-node gl-cursor-pointer\\" id=\\"dag-node82\\" stroke=\\"#3547de\\" stroke-width=\\"16\\" stroke-linecap=\\"round\\" x1=\\"630\\" x2=\\"630\\" y1=\\"386\\" y2=\\"436\\"></line>
+    <line class=\\"dag-node gl-cursor-pointer\\" id=\\"dag-node83\\" stroke=\\"#006887\\" stroke-width=\\"16\\" stroke-linecap=\\"round\\" x1=\\"892\\" x2=\\"892\\" y1=\\"245.18907251056908\\" y2=\\"295.1890725105691\\"></line>
+    <line class=\\"dag-node gl-cursor-pointer\\" id=\\"dag-node84\\" stroke=\\"#275600\\" stroke-width=\\"16\\" stroke-linecap=\\"round\\" x1=\\"892\\" x2=\\"892\\" y1=\\"386\\" y2=\\"436\\"></line>
+  </g>
+  <g class=\\"gl-font-sm\\">
+    <foreignObject requiredFeatures=\\"http://www.w3.org/TR/SVG11/feature#Extensibility\\" height=\\"58.00000000000003px\\" width=\\"84\\" x=\\"8\\" y=\\"100\\" class=\\"gl-overflow-visible\\">
+      <div class=\\"gl-display-flex gl-pointer-events-none gl-flex-direction-column gl-justify-content-center gl-overflow-wrap-break\\" style=\\"height: 58.00000000000003px; text-align: right;\\">build_a</div>
+    </foreignObject>
+    <foreignObject requiredFeatures=\\"http://www.w3.org/TR/SVG11/feature#Extensibility\\" height=\\"25px\\" width=\\"84\\" x=\\"369.3333333333333\\" y=\\"75\\" class=\\"gl-overflow-visible\\">
+      <div class=\\"gl-display-flex gl-pointer-events-none gl-flex-direction-column gl-justify-content-center gl-overflow-wrap-break\\" style=\\"height: 25px; text-align: left;\\">test_a</div>
+    </foreignObject>
+    <foreignObject requiredFeatures=\\"http://www.w3.org/TR/SVG11/feature#Extensibility\\" height=\\"58px\\" width=\\"84\\" x=\\"8\\" y=\\"183.00000000000003\\" class=\\"gl-overflow-visible\\">
+      <div class=\\"gl-display-flex gl-pointer-events-none gl-flex-direction-column gl-justify-content-center gl-overflow-wrap-break\\" style=\\"height: 58px; text-align: right;\\">test_b</div>
+    </foreignObject>
+    <foreignObject requiredFeatures=\\"http://www.w3.org/TR/SVG11/feature#Extensibility\\" height=\\"58.00000000000006px\\" width=\\"84\\" x=\\"8\\" y=\\"266\\" class=\\"gl-overflow-visible\\">
+      <div class=\\"gl-display-flex gl-pointer-events-none gl-flex-direction-column gl-justify-content-center gl-overflow-wrap-break\\" style=\\"height: 58.00000000000006px; text-align: right;\\">post_test_a</div>
+    </foreignObject>
+    <foreignObject requiredFeatures=\\"http://www.w3.org/TR/SVG11/feature#Extensibility\\" height=\\"58.00000000000006px\\" width=\\"84\\" x=\\"8\\" y=\\"349.00000000000006\\" class=\\"gl-overflow-visible\\">
+      <div class=\\"gl-display-flex gl-pointer-events-none gl-flex-direction-column gl-justify-content-center gl-overflow-wrap-break\\" style=\\"height: 58.00000000000006px; text-align: right;\\">post_test_b</div>
+    </foreignObject>
+    <foreignObject requiredFeatures=\\"http://www.w3.org/TR/SVG11/feature#Extensibility\\" height=\\"25px\\" width=\\"84\\" x=\\"630.6666666666666\\" y=\\"75.0000000000002\\" class=\\"gl-overflow-visible\\">
+      <div class=\\"gl-display-flex gl-pointer-events-none gl-flex-direction-column gl-justify-content-center gl-overflow-wrap-break\\" style=\\"height: 25px; text-align: right;\\">post_test_c</div>
+    </foreignObject>
+    <foreignObject requiredFeatures=\\"http://www.w3.org/TR/SVG11/feature#Extensibility\\" height=\\"25px\\" width=\\"84\\" x=\\"369.3333333333333\\" y=\\"215.99999999999977\\" class=\\"gl-overflow-visible\\">
+      <div class=\\"gl-display-flex gl-pointer-events-none gl-flex-direction-column gl-justify-content-center gl-overflow-wrap-break\\" style=\\"height: 25px; text-align: left;\\">staging_a</div>
+    </foreignObject>
+    <foreignObject requiredFeatures=\\"http://www.w3.org/TR/SVG11/feature#Extensibility\\" height=\\"25px\\" width=\\"84\\" x=\\"369.3333333333333\\" y=\\"298.99999999999994\\" class=\\"gl-overflow-visible\\">
+      <div class=\\"gl-display-flex gl-pointer-events-none gl-flex-direction-column gl-justify-content-center gl-overflow-wrap-break\\" style=\\"height: 25px; text-align: left;\\">staging_b</div>
+    </foreignObject>
+    <foreignObject requiredFeatures=\\"http://www.w3.org/TR/SVG11/feature#Extensibility\\" height=\\"25px\\" width=\\"84\\" x=\\"630.6666666666666\\" y=\\"216.00000000000009\\" class=\\"gl-overflow-visible\\">
+      <div class=\\"gl-display-flex gl-pointer-events-none gl-flex-direction-column gl-justify-content-center gl-overflow-wrap-break\\" style=\\"height: 25px; text-align: right;\\">canary_a</div>
+    </foreignObject>
+    <foreignObject requiredFeatures=\\"http://www.w3.org/TR/SVG11/feature#Extensibility\\" height=\\"25px\\" width=\\"84\\" x=\\"630.6666666666666\\" y=\\"357\\" class=\\"gl-overflow-visible\\">
+      <div class=\\"gl-display-flex gl-pointer-events-none gl-flex-direction-column gl-justify-content-center gl-overflow-wrap-break\\" style=\\"height: 25px; text-align: right;\\">canary_c</div>
+    </foreignObject>
+    <foreignObject requiredFeatures=\\"http://www.w3.org/TR/SVG11/feature#Extensibility\\" height=\\"58px\\" width=\\"84\\" x=\\"908\\" y=\\"241.18907251056908\\" class=\\"gl-overflow-visible\\">
+      <div class=\\"gl-display-flex gl-pointer-events-none gl-flex-direction-column gl-justify-content-center gl-overflow-wrap-break\\" style=\\"height: 58px; text-align: left;\\">production_a</div>
+    </foreignObject>
+    <foreignObject requiredFeatures=\\"http://www.w3.org/TR/SVG11/feature#Extensibility\\" height=\\"58px\\" width=\\"84\\" x=\\"908\\" y=\\"382\\" class=\\"gl-overflow-visible\\">
+      <div class=\\"gl-display-flex gl-pointer-events-none gl-flex-direction-column gl-justify-content-center gl-overflow-wrap-break\\" style=\\"height: 58px; text-align: left;\\">production_d</div>
+    </foreignObject>
+  </g>
+</svg>"
+`;

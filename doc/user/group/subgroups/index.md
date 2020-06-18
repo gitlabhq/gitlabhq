@@ -4,7 +4,7 @@ type: reference, howto, concepts
 
 # Subgroups
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/2772) in GitLab 9.0.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/2772) in GitLab 9.0.
 
 GitLab supports up to 20 levels of subgroups, also known as nested groups or hierarchical groups.
 levels of groups.
@@ -139,7 +139,7 @@ From the image above, we can deduce the following things:
 - Administrator is the Owner and member of **all** subgroups and for that reason,
   as with User3, there is no indication of an ancestor group.
 
-[From](https://gitlab.com/gitlab-org/gitlab/issues/21727) GitLab 12.6, you can filter
+[From](https://gitlab.com/gitlab-org/gitlab/-/issues/21727) GitLab 12.6, you can filter
 this list using dropdown on the right side:
 
 ![Group members filter](img/group_members_filter_v12_6.png)

@@ -1,22 +1,32 @@
 import { shallowMount } from '@vue/test-utils';
 import DetailedMetric from '~/performance_bar/components/detailed_metric.vue';
 import RequestWarning from '~/performance_bar/components/request_warning.vue';
+import { trimText } from 'helpers/text_helper';
 
 describe('detailedMetric', () => {
-  const createComponent = props =>
-    shallowMount(DetailedMetric, {
+  let wrapper;
+
+  const createComponent = props => {
+    wrapper = shallowMount(DetailedMetric, {
       propsData: {
         ...props,
       },
     });
+  };
+
+  afterEach(() => {
+    wrapper.destroy();
+  });
 
   describe('when the current request has no details', () => {
-    const wrapper = createComponent({
-      currentRequest: {},
-      metric: 'gitaly',
-      header: 'Gitaly calls',
-      details: 'details',
-      keys: ['feature', 'request'],
+    beforeEach(() => {
+      createComponent({
+        currentRequest: {},
+        metric: 'gitaly',
+        header: 'Gitaly calls',
+        details: 'details',
+        keys: ['feature', 'request'],
+      });
     });
 
     it('does not render the element', () => {
@@ -31,20 +41,22 @@ describe('detailedMetric', () => {
     ];
 
     describe('with a default metric name', () => {
-      const wrapper = createComponent({
-        currentRequest: {
-          details: {
-            gitaly: {
-              duration: '123ms',
-              calls: '456',
-              details: requestDetails,
-              warnings: ['gitaly calls: 456 over 30'],
+      beforeEach(() => {
+        createComponent({
+          currentRequest: {
+            details: {
+              gitaly: {
+                duration: '123ms',
+                calls: '456',
+                details: requestDetails,
+                warnings: ['gitaly calls: 456 over 30'],
+              },
             },
           },
-        },
-        metric: 'gitaly',
-        header: 'Gitaly calls',
-        keys: ['feature', 'request'],
+          metric: 'gitaly',
+          header: 'Gitaly calls',
+          keys: ['feature', 'request'],
+        });
       });
 
       it('displays details', () => {
@@ -87,25 +99,49 @@ describe('detailedMetric', () => {
     });
 
     describe('when using a custom metric title', () => {
-      const wrapper = createComponent({
-        currentRequest: {
-          details: {
-            gitaly: {
-              duration: '123ms',
-              calls: '456',
-              details: requestDetails,
+      beforeEach(() => {
+        createComponent({
+          currentRequest: {
+            details: {
+              gitaly: {
+                duration: '123ms',
+                calls: '456',
+                details: requestDetails,
+              },
             },
           },
-        },
-        metric: 'gitaly',
-        title: 'custom',
-        header: 'Gitaly calls',
-        keys: ['feature', 'request'],
+          metric: 'gitaly',
+          title: 'custom',
+          header: 'Gitaly calls',
+          keys: ['feature', 'request'],
+        });
       });
 
       it('displays the custom title', () => {
         expect(wrapper.text()).toContain('custom');
       });
+    });
+  });
+
+  describe('when the details has no duration', () => {
+    beforeEach(() => {
+      createComponent({
+        currentRequest: {
+          details: {
+            bullet: {
+              calls: '456',
+              details: [{ notification: 'notification', backtrace: 'backtrace' }],
+            },
+          },
+        },
+        metric: 'bullet',
+        header: 'Bullet notifications',
+        keys: ['notification'],
+      });
+    });
+
+    it('renders only the number of calls', () => {
+      expect(trimText(wrapper.text())).toEqual('456 notification backtrace bullet');
     });
   });
 });

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Projects::FindFileController do
+RSpec.describe Projects::FindFileController do
   let(:project) { create(:project, :repository) }
   let(:user)    { create(:user) }
 

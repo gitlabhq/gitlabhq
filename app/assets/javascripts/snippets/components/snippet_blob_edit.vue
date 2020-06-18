@@ -35,7 +35,7 @@ export default {
     <div class="file-holder snippet">
       <blob-header-edit
         :value="fileName"
-        data-qa-selector="snippet_file_name"
+        data-qa-selector="file_name_field"
         @input="$emit('name-change', $event)"
       />
       <gl-loading-icon

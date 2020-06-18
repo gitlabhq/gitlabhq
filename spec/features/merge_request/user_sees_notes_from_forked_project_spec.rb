@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Merge request > User sees notes from forked project', :js do
+RSpec.describe 'Merge request > User sees notes from forked project', :js do
   include ProjectForksHelper
 
   let(:project) { create(:project, :public, :repository) }

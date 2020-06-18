@@ -1,0 +1,29 @@
+.signup-page[data-page^='registrations:experience_levels'] {
+  $card-shadow-color: rgba($black, 0.2);
+
+  .page-wrap {
+    background-color: $white;
+  }
+
+  .card-deck {
+    max-width: 828px;
+  }
+
+  .card {
+    transition: box-shadow 0.3s ease-in-out;
+  }
+
+  .card:hover {
+    box-shadow: 0 $gl-spacing-scale-3 $gl-spacing-scale-5 $card-shadow-color;
+  }
+
+  @media (min-width: $breakpoint-sm) {
+    .card-deck .card {
+      margin: 0 $gl-spacing-scale-3;
+    }
+  }
+
+  .stretched-link:hover {
+    text-decoration: none;
+  }
+}

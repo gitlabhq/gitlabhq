@@ -12,24 +12,24 @@ module Gitlab
         params = event
           .payload[:params]
           .each_with_object([]) { |(k, v), array| array << { key: k, value: v } unless IGNORE_PARAMS.include?(k) }
-
         payload = {
           time: Time.now.utc.iso8601(3),
           params: Gitlab::Utils::LogLimitedArray.log_limited_array(params, sentinel: LIMITED_ARRAY_SENTINEL),
           remote_ip: event.payload[:remote_ip],
           user_id: event.payload[:user_id],
           username: event.payload[:username],
-          ua: event.payload[:ua],
-          queue_duration_s: event.payload[:queue_duration_s]
+          ua: event.payload[:ua]
         }
+        add_db_counters!(payload)
 
         payload.merge!(event.payload[:metadata]) if event.payload[:metadata]
 
         ::Gitlab::InstrumentationHelper.add_instrumentation_data(payload)
 
+        payload[:queue_duration_s] = event.payload[:queue_duration_s] if event.payload[:queue_duration_s]
         payload[:response] = event.payload[:response] if event.payload[:response]
         payload[:etag_route] = event.payload[:etag_route] if event.payload[:etag_route]
-        payload[Labkit::Correlation::CorrelationId::LOG_KEY] = Labkit::Correlation::CorrelationId.current_id
+        payload[Labkit::Correlation::CorrelationId::LOG_KEY] = event.payload[Labkit::Correlation::CorrelationId::LOG_KEY] || Labkit::Correlation::CorrelationId.current_id
 
         if cpu_s = Gitlab::Metrics::System.thread_cpu_duration(::Gitlab::RequestContext.instance.start_thread_cpu_time)
           payload[:cpu_s] = cpu_s.round(2)
@@ -46,6 +46,16 @@ module Gitlab
 
         payload
       end
+
+      def self.add_db_counters!(payload)
+        current_transaction = Gitlab::Metrics::Transaction.current
+        if current_transaction
+          payload[:db_count] = current_transaction.get(:db_count, :counter).to_i
+          payload[:db_write_count] = current_transaction.get(:db_write_count, :counter).to_i
+          payload[:db_cached_count] = current_transaction.get(:db_cached_count, :counter).to_i
+        end
+      end
+      private_class_method :add_db_counters!
     end
   end
 end

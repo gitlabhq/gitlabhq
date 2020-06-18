@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe StarredProjectsFinder do
+RSpec.describe StarredProjectsFinder do
   let(:project1) { create(:project, :public, :empty_repo) }
   let(:project2) { create(:project, :public, :empty_repo) }
   let(:other_project) { create(:project, :public, :empty_repo) }

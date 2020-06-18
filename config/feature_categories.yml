@@ -43,6 +43,7 @@
 - digital_experience_management
 - disaster_recovery
 - dynamic_application_security_testing
+- editor_extension
 - epics
 - error_tracking
 - feature_flags
@@ -52,6 +53,7 @@
 - geo_replication
 - git_lfs
 - gitaly
+- gitlab_docs
 - gitlab_handbook
 - gitter
 - global_search
@@ -82,6 +84,7 @@
 - pages
 - pki_management
 - planning_analytics
+- product_analytics
 - quality_management
 - release_evidence
 - release_orchestration
@@ -100,7 +103,6 @@
 - source_code_management
 - static_application_security_testing
 - static_site_editor
-- status_page
 - subgroups
 - templates
 - time_tracking

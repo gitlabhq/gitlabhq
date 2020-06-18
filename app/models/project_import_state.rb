@@ -84,7 +84,11 @@ class ProjectImportState < ApplicationRecord
 
     update_column(:last_error, sanitized_message)
   rescue ActiveRecord::ActiveRecordError => e
-    Rails.logger.error("Error setting import status to failed: #{e.message}. Original error: #{sanitized_message}") # rubocop:disable Gitlab/RailsLogger
+    Gitlab::Import::Logger.error(
+      message: 'Error setting import status to failed',
+      error: e.message,
+      original_error: sanitized_message
+    )
   ensure
     @errors = original_errors
   end

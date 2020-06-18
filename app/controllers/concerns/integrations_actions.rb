@@ -16,10 +16,12 @@ module IntegrationsActions
 
   def update
     saved = integration.update(service_params[:service])
+    overwrite = Gitlab::Utils.to_boolean(params[:overwrite])
 
     respond_to do |format|
       format.html do
         if saved
+          PropagateIntegrationWorker.perform_async(integration.id, overwrite)
           redirect_to scoped_edit_integration_path(integration), notice: success_message
         else
           render 'shared/integrations/edit'
@@ -32,6 +34,10 @@ module IntegrationsActions
         render json: serialize_as_json, status: status
       end
     end
+  end
+
+  def custom_integration_projects
+    Project.with_custom_integration_compared_to(integration).page(params[:page]).per(20)
   end
 
   def test

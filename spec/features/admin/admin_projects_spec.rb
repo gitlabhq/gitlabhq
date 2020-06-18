@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe "Admin::Projects" do
+RSpec.describe "Admin::Projects" do
   include Select2Helper
 
   let(:user) { create :user }

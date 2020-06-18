@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Admin::Serverless::DomainsController do
+RSpec.describe Admin::Serverless::DomainsController do
   let(:admin) { create(:admin) }
   let(:user) { create(:user) }
 

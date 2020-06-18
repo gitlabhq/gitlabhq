@@ -7,11 +7,13 @@ describe Gitlab::Ci::Build::Credentials::Factory do
 
   subject { described_class.new(build).create! }
 
-  class TestProvider
-    def initialize(build); end
-  end
-
   before do
+    stub_const('TestProvider', Class.new)
+
+    TestProvider.class_eval do
+      def initialize(build); end
+    end
+
     allow_next_instance_of(described_class) do |instance|
       allow(instance).to receive(:providers).and_return([TestProvider])
     end

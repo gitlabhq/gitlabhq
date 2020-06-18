@@ -57,14 +57,17 @@ describe Gitlab::Auth::Ldap::Person do
           'attributes' => {
             'name'     => 'cn',
             'email'    => 'mail',
-            'username' => %w(uid mail memberof)
+            'username' => %w(uid mail),
+            'first_name' => ''
           }
         }
       )
       config = Gitlab::Auth::Ldap::Config.new('ldapmain')
       ldap_attributes = described_class.ldap_attributes(config)
 
-      expect(ldap_attributes).to match_array(%w(dn uid cn mail memberof))
+      expect(ldap_attributes).to include('dn', 'uid', 'cn', 'mail')
+      expect(ldap_attributes).to be_present
+      expect(ldap_attributes.uniq!).to eq(nil)
     end
   end
 

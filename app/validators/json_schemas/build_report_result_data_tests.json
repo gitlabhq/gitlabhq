@@ -1,0 +1,13 @@
+{
+  "description": "Build report result data tests",
+  "type": "object",
+  "properties": {
+    "name": { "type": "string" },
+    "duration": { "type": "string" },
+    "failed": { "type": "integer" },
+    "errored": { "type": "integer" },
+    "skipped": { "type": "integer" },
+    "success": { "type": "integer" }
+  },
+  "additionalProperties": false
+}

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Profiles::KeysController do
+RSpec.describe Profiles::KeysController do
   let(:user) { create(:user) }
 
   describe 'POST #create' do

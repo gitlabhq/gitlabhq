@@ -13,7 +13,7 @@
 # - It keeps track of the jobs so we know how many jobs are running for the
 #   project
 # - It refreshes the import jid, so it doesn't get cleaned up by the
-#   `StuckImportJobsWorker`
+#   `Gitlab::Import::StuckProjectImportJobsWorker`
 # - It marks the import as failed if a job failed to many times
 # - It marks the import as finished when all remaining jobs are done
 module Gitlab

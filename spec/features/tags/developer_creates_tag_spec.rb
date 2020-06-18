@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Developer creates tag' do
+RSpec.describe 'Developer creates tag' do
   let(:user) { create(:user) }
   let(:group) { create(:group) }
   let(:project) { create(:project, :repository, namespace: group) }

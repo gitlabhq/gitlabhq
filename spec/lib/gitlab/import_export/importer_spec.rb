@@ -18,6 +18,7 @@ describe Gitlab::ImportExport::Importer do
 
     FileUtils.mkdir_p(shared.export_path)
     ImportExportUpload.create(project: project, import_file: import_file)
+    allow(FileUtils).to receive(:rm_rf).and_call_original
   end
 
   after do
@@ -78,6 +79,13 @@ describe Gitlab::ImportExport::Importer do
         expect(project.import_export_upload.import_file&.file).to be_nil
       end
 
+      it 'removes tmp files' do
+        importer.execute
+
+        expect(FileUtils).to have_received(:rm_rf).with(shared.base_path)
+        expect(Dir.exist?(shared.base_path)).to eq(false)
+      end
+
       it 'sets the correct visibility_level when visibility level is a string' do
         project.create_or_update_import_data(
           data: { override_params: { visibility_level: Gitlab::VisibilityLevel::PRIVATE.to_s } }
@@ -86,6 +94,49 @@ describe Gitlab::ImportExport::Importer do
         importer.execute
 
         expect(project.visibility_level).to eq(Gitlab::VisibilityLevel::PRIVATE)
+      end
+    end
+
+    context 'when import fails' do
+      let(:error_message) { 'foo' }
+
+      shared_examples 'removes any non migrated snippet' do
+        specify do
+          create_list(:project_snippet, 2, project: project)
+          snippet_with_repo = create(:project_snippet, :repository, project: project)
+
+          expect { importer.execute }.to change(Snippet, :count).by(-2).and(raise_error(Projects::ImportService::Error))
+
+          expect(snippet_with_repo.reload).to be_present
+        end
+      end
+
+      context 'when there is a graceful error' do
+        before do
+          allow_next_instance_of(Gitlab::ImportExport::AvatarRestorer) do |instance|
+            allow(instance).to receive(:avatar_export_file).and_raise(StandardError, error_message)
+          end
+        end
+
+        it 'raises and exception' do
+          expect { importer.execute }.to raise_error(Projects::ImportService::Error, error_message)
+        end
+
+        it_behaves_like 'removes any non migrated snippet'
+      end
+
+      context 'when an unexpected exception is raised' do
+        before do
+          allow_next_instance_of(Gitlab::ImportExport::AvatarRestorer) do |instance|
+            allow(instance).to receive(:restore).and_raise(StandardError, error_message)
+          end
+        end
+
+        it 'captures it and raises the Projects::ImportService::Error exception' do
+          expect { importer.execute }.to raise_error(Projects::ImportService::Error, error_message)
+        end
+
+        it_behaves_like 'removes any non migrated snippet'
       end
     end
 

@@ -253,7 +253,7 @@ describe Gitlab::Alerting::Alert do
       include_context 'gitlab alert'
 
       it 'returns a fingerprint' do
-        plain_fingerprint = [alert.metric_id, alert.starts_at].join('/')
+        plain_fingerprint = [alert.metric_id, alert.starts_at_raw].join('/')
 
         is_expected.to eq(Digest::SHA1.hexdigest(plain_fingerprint))
       end
@@ -263,7 +263,7 @@ describe Gitlab::Alerting::Alert do
       include_context 'full query'
 
       it 'returns a fingerprint' do
-        plain_fingerprint = [alert.starts_at, alert.title, alert.full_query].join('/')
+        plain_fingerprint = [alert.starts_at_raw, alert.title, alert.full_query].join('/')
 
         is_expected.to eq(Digest::SHA1.hexdigest(plain_fingerprint))
       end

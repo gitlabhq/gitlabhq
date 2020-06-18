@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe PendingTodosFinder do
+RSpec.describe PendingTodosFinder do
   let(:user) { create(:user) }
 
   describe '#execute' do

@@ -20,7 +20,8 @@ module Gitlab
           hosts: Array(annotations[:hosts]),
           payload: payload,
           started_at: parsed_payload['startsAt'],
-          severity: annotations[:severity]
+          severity: annotations[:severity],
+          fingerprint: annotations[:fingerprint]
         }
       end
 

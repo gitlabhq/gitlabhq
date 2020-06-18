@@ -1,9 +1,15 @@
+---
+stage: Release
+group: Release Management
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+---
+
 # Releases API
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/41766) in GitLab 11.7.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/41766) in GitLab 11.7.
 > - Using this API you can manipulate GitLab's [Release](../../user/project/releases/index.md) entries.
 > - For manipulating links as a release asset, see [Release Links API](links.md).
-> - Release Evidences were [introduced](https://gitlab.com/gitlab-org/gitlab/issues/26019) in GitLab 12.5.
+> - Release Evidences were [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/26019) in GitLab 12.5.
 
 ## List Releases
 
@@ -121,13 +127,15 @@ Example response:
                "id":2,
                "name":"awesome-v0.2.msi",
                "url":"http://192.168.10.15:3000/msi",
-               "external":true
+               "external":true,
+               "link_type":"other"
             },
             {
                "id":1,
                "name":"awesome-v0.2.dmg",
                "url":"http://192.168.10.15:3000",
-               "external":true
+               "external":true,
+               "link_type":"other"
             }
          ],
          "evidence_file_path":"https://gitlab.example.com/root/awesome-app/-/releases/v0.2/evidence.json"
@@ -323,7 +331,8 @@ Example response:
             "id":3,
             "name":"hoge",
             "url":"https://gitlab.example.com/root/awesome-app/-/tags/v0.11.1/binaries/linux-amd64",
-            "external":true
+            "external":true,
+            "link_type":"other"
          }
       ]
    },
@@ -357,13 +366,14 @@ POST /projects/:id/releases
 | `assets:links:name`| string          | required by: `assets:links` | The name of the link.                                                                                                            |
 | `assets:links:url` | string          | required by: `assets:links` | The URL of the link.                                                                                                             |
 | `assets:links:filepath` | string     | no | Optional path for a [Direct Asset link](../../user/project/releases.md).
+| `assets:links:link_type` | string     | no | The type of the link: `other`, `runbook`, `image`, `package`. Defaults to `other`.
 | `released_at`      | datetime        | no                          | The date when the release will be/was ready. Defaults to the current time. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). |
 
 Example request:
 
 ```shell
 curl --header 'Content-Type: application/json' --header "PRIVATE-TOKEN: gDybLx3yrUK_HLp3qPjS" \
-     --data '{ "name": "New release", "tag_name": "v0.3", "description": "Super nice release", "milestones": ["v1.0", "v1.0-rc"], "assets": { "links": [{ "name": "hoge", "url": "https://google.com", "filepath": "/binaries/linux-amd64" }] } }' \
+     --data '{ "name": "New release", "tag_name": "v0.3", "description": "Super nice release", "milestones": ["v1.0", "v1.0-rc"], "assets": { "links": [{ "name": "hoge", "url": "https://google.com", "filepath": "/binaries/linux-amd64", "link_type":"other" }] } }' \
      --request POST https://gitlab.example.com/api/v4/projects/24/releases
 ```
 
@@ -465,7 +475,8 @@ Example response:
             "id":3,
             "name":"hoge",
             "url":"https://gitlab.example.com/root/awesome-app/-/tags/v0.11.1/binaries/linux-amd64",
-            "external":true
+            "external":true,
+            "link_type":"other"
          }
       ],
       "evidence_file_path":"https://gitlab.example.com/root/awesome-app/-/releases/v0.3/evidence.json"
@@ -693,7 +704,7 @@ Example response:
 
 ## Upcoming Releases
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/38105) in GitLab 12.1.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/38105) in GitLab 12.1.
 
 A release with a `released_at` attribute set to a future date will be labeled an **Upcoming Release** in the UI:
 

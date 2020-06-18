@@ -1,3 +1,9 @@
+---
+type: reference
+stage: Manage
+group: Import
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+---
 # Group Import/Export
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/2888) in GitLab 13.0 as an experimental feature. May change in future releases.
@@ -61,7 +67,7 @@ For more details on the specific data persisted in a group export, see the
 
 1. In the **Advanced** section, click the **Export Group** button.
 
-   ![Export group panel](img/export_panel.png)
+   ![Export group panel](img/export_panel_v13_0.png)
 
 1. Once the export is generated, you should receive an e-mail with a link to the [exported contents](#exported-contents)
    in a compressed tar archive, with contents in JSON format.
@@ -69,11 +75,36 @@ For more details on the specific data persisted in a group export, see the
 1. Alternatively, you can come back to the project settings and download the
    file from there by clicking **Download export**, or generate a new file by clicking **Regenerate export**.
 
+NOTE: **Note:**
+The maximum import file size can be set by the Administrator, default is 50MB.
+As an administrator, you can modify the maximum import file size. To do so, use the `max_import_size` option in the [Application settings API](../../../api/settings.md#change-application-settings) or the [Admin UI](../../admin_area/settings/account_and_limit_settings.md).
+
 ### Between CE and EE
 
 You can export groups from the [Community Edition to the Enterprise Edition](https://about.gitlab.com/install/ce-or-ee/) and vice versa.
 
 If you're exporting a group from the Enterprise Edition to the Community Edition, you may lose data that is retained only in the Enterprise Edition. For more information, see [downgrading from EE to CE](../../../README.md).
+
+## Importing the group
+
+1. Navigate to the New Group page, either via the `+` button in the top navigation bar, or the **New subgroup** button
+on an existing group's page.
+
+   ![Navigation paths to create a new group](img/new_group_navigation_v13_1.png)
+
+1. On the New Group page, select the **Import group** tab.
+
+   ![Fill in group details](img/import_panel_v13_1.png)
+
+1. Enter your group name.
+
+1. Accept or modify the associated group URL.
+
+1. Click **Choose file**
+
+1. Select the file that you exported in the [exporting a group](#exporting-a-group) section.
+
+1. Click **Import group** to begin importing. Your newly imported group page will appear shortly.
 
 ## Version history
 
@@ -92,7 +123,8 @@ For example:
 
 To help avoid abuse, users are rate limited to:
 
-| Request Type     | Limit                          |
-| ---------------- | ------------------------------ |
-| Export           | 1 group every 5 minutes        |
-| Download export  | 10 downloads every 10 minutes  |
+| Request Type     | Limit                                    |
+| ---------------- | ---------------------------------------- |
+| Export           | 30 groups every 5 minutes                |
+| Download export  | 10 downloads per group every 10 minutes  |
+| Import           | 30 groups every 5 minutes                |

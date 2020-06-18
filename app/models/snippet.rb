@@ -337,7 +337,7 @@ class Snippet < ApplicationRecord
   class << self
     # Searches for snippets with a matching title, description or file name.
     #
-    # This method uses ILIKE on PostgreSQL and LIKE on MySQL.
+    # This method uses ILIKE on PostgreSQL.
     #
     # query - The search query as a String.
     #

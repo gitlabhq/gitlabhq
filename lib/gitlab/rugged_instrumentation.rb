@@ -3,12 +3,13 @@
 module Gitlab
   module RuggedInstrumentation
     def self.query_time
-      query_time = SafeRequestStore[:rugged_query_time] ||= 0
+      query_time = SafeRequestStore[:rugged_query_time] || 0
       query_time.round(Gitlab::InstrumentationHelper::DURATION_PRECISION)
     end
 
-    def self.query_time=(duration)
-      SafeRequestStore[:rugged_query_time] = duration
+    def self.add_query_time(duration)
+      SafeRequestStore[:rugged_query_time] ||= 0
+      SafeRequestStore[:rugged_query_time] += duration
     end
 
     def self.query_time_ms

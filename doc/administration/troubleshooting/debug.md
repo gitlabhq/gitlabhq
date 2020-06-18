@@ -244,7 +244,7 @@ separate Rails process to debug the issue:
    For example:
 
    ```ruby
-   app.get 'https://gitlab.com/gitlab-org/gitlab-foss/issues/1?private_token=123456'
+   app.get 'https://gitlab.com/gitlab-org/gitlab-foss/-/issues/1?private_token=123456'
    ```
 
 1. In a new window, run `top`. It should show this Ruby process using 100% CPU. Write down the PID.

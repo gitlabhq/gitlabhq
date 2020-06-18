@@ -2,6 +2,8 @@
 
 require 'spec_helper'
 
+require 'raven/transports/dummy'
+
 describe Gitlab::ErrorTracking do
   let(:exception) { RuntimeError.new('boom') }
   let(:issue_url) { 'http://gitlab.com/gitlab-org/gitlab-foss/issues/1' }
@@ -22,7 +24,9 @@ describe Gitlab::ErrorTracking do
     allow(described_class).to receive(:sentry_dsn).and_return(Gitlab.config.sentry.dsn)
     allow(Labkit::Correlation::CorrelationId).to receive(:current_id).and_return('cid')
 
-    described_class.configure
+    described_class.configure do |config|
+      config.encoding = 'json'
+    end
   end
 
   describe '.with_context' do
@@ -177,6 +181,30 @@ describe Gitlab::ErrorTracking do
           .with(exception, a_hash_including(extra: a_hash_including(extra_info)))
 
         described_class.track_exception(exception, extra_info)
+      end
+    end
+
+    context 'with sidekiq args' do
+      it 'ensures extra.sidekiq.args is a string' do
+        extra = { sidekiq: { 'class' => 'PostReceive', 'args' => [1, { 'id' => 2, 'name' => 'hello' }, 'some-value', 'another-value'] } }
+
+        expect(Gitlab::ErrorTracking::Logger).to receive(:error).with(
+          hash_including({ 'extra.sidekiq' => { 'class' => 'PostReceive', 'args' => ['1', '{"id"=>2, "name"=>"hello"}', 'some-value', 'another-value'] } }))
+
+        described_class.track_exception(exception, extra)
+      end
+
+      it 'filters sensitive arguments before sending' do
+        extra = { sidekiq: { 'class' => 'UnknownWorker', 'args' => ['sensitive string', 1, 2] } }
+
+        expect(Gitlab::ErrorTracking::Logger).to receive(:error).with(
+          hash_including('extra.sidekiq' => { 'class' => 'UnknownWorker', 'args' => ['[FILTERED]', '1', '2'] }))
+
+        described_class.track_exception(exception, extra)
+
+        sentry_event = Gitlab::Json.parse(Raven.client.transport.events.last[1])
+
+        expect(sentry_event.dig('extra', 'sidekiq', 'args')).to eq(['[FILTERED]', 1, 2])
       end
     end
   end

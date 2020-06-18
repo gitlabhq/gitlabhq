@@ -218,7 +218,15 @@ describe API::Internal::Base do
         get(api('/internal/authorized_keys'), params: { fingerprint: key.fingerprint, secret_token: secret_token })
 
         expect(response).to have_gitlab_http_status(:ok)
-        expect(json_response["key"]).to eq(key.key)
+        expect(json_response['id']).to eq(key.id)
+        expect(json_response['key'].split[1]).to eq(key.key.split[1])
+      end
+
+      it 'exposes the comment of the key as a simple identifier of username + hostname' do
+        get(api('/internal/authorized_keys'), params: { fingerprint: key.fingerprint, secret_token: secret_token })
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['key']).to include("#{key.user_name} (#{Gitlab.config.gitlab.host})")
       end
     end
 
@@ -239,11 +247,21 @@ describe API::Internal::Base do
     end
 
     context "sending the key" do
-      it "finds the key" do
-        get(api('/internal/authorized_keys'), params: { key: key.key.split[1], secret_token: secret_token })
+      context "using an existing key" do
+        it "finds the key" do
+          get(api('/internal/authorized_keys'), params: { key: key.key.split[1], secret_token: secret_token })
 
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(json_response["key"]).to eq(key.key)
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['id']).to eq(key.id)
+          expect(json_response['key'].split[1]).to eq(key.key.split[1])
+        end
+
+        it 'exposes the comment of the key as a simple identifier of username + hostname' do
+          get(api('/internal/authorized_keys'), params: { fingerprint: key.fingerprint, secret_token: secret_token })
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['key']).to include("#{key.user_name} (#{Gitlab.config.gitlab.host})")
+        end
       end
 
       it "returns 404 with a partial key" do
@@ -396,7 +414,7 @@ describe API::Internal::Base do
 
       context "git pull" do
         before do
-          allow(Feature).to receive(:persisted_names).and_return(%w[gitaly_mep_mep])
+          stub_feature_flags(gitaly_mep_mep: true)
         end
 
         it "has the correct payload" do

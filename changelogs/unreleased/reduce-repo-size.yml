@@ -1,0 +1,5 @@
+---
+title: Add support for `git filter-repo` to repository cleanup
+merge_request: 33576
+author:
+type: added

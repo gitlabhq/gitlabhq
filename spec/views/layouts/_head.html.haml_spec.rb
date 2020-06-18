@@ -50,7 +50,7 @@ describe 'layouts/_head' do
     it 'adds a link preconnect tag' do
       render
 
-      expect(rendered).to match(%Q(<link crossorigin="" href="#{asset_host}" rel="preconnnect">))
+      expect(rendered).to match(%Q(<link crossorigin="" href="#{asset_host}" rel="preconnect">))
     end
   end
 
@@ -64,18 +64,25 @@ describe 'layouts/_head' do
 
   context 'when an asset_host is set and snowplow url is set' do
     let(:asset_host) { 'http://test.host' }
+    let(:snowplow_collector_hostname) { 'www.snow.plow' }
 
     before do
       allow(ActionController::Base).to receive(:asset_host).and_return(asset_host)
       allow(Gitlab::CurrentSettings).to receive(:snowplow_enabled?).and_return(true)
-      allow(Gitlab::CurrentSettings).to receive(:snowplow_collector_hostname).and_return('www.snow.plow')
+      allow(Gitlab::CurrentSettings).to receive(:snowplow_collector_hostname).and_return(snowplow_collector_hostname)
     end
 
     it 'adds a snowplow script tag with asset host' do
       render
       expect(rendered).to match('http://test.host/assets/snowplow/')
       expect(rendered).to match('window.snowplow')
-      expect(rendered).to match('www.snow.plow')
+      expect(rendered).to match(snowplow_collector_hostname)
+    end
+
+    it 'adds a link preconnect tag' do
+      render
+
+      expect(rendered).to match(%Q(<link crossorigin="" href="#{snowplow_collector_hostname}" rel="preconnect">))
     end
   end
 

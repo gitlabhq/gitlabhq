@@ -5,7 +5,8 @@ import { getSvgIconPathContent } from '~/lib/utils/icon_utils';
 import { chartHeight } from '../../constants';
 import { makeDataSeries } from '~/helpers/monitor_helper';
 import { graphDataValidatorForValues } from '../../utils';
-import { getYAxisOptions, getChartGrid } from './options';
+import { getTimeAxisOptions, getYAxisOptions, getChartGrid } from './options';
+import { timezones } from '../../format_date';
 
 export default {
   components: {
@@ -19,6 +20,11 @@ export default {
       type: Object,
       required: true,
       validator: graphDataValidatorForValues.bind(null, false),
+    },
+    timezone: {
+      type: String,
+      required: false,
+      default: timezones.LOCAL,
     },
   },
   data() {
@@ -43,6 +49,8 @@ export default {
       };
     },
     chartOptions() {
+      const xAxis = getTimeAxisOptions({ timezone: this.timezone });
+
       const yAxis = {
         ...getYAxisOptions(this.graphData.yAxis),
         scale: false,
@@ -50,8 +58,9 @@ export default {
 
       return {
         grid: getChartGrid(),
+        xAxis,
         yAxis,
-        dataZoom: this.dataZoomConfig,
+        dataZoom: [this.dataZoomConfig],
       };
     },
     xAxisTitle() {

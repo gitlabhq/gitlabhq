@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'User searches for projects' do
+RSpec.describe 'User searches for projects' do
   let!(:project) { create(:project, :public, name: 'Shop') }
 
   context 'when signed out' do

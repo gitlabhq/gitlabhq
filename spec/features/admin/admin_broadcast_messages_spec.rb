@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Admin Broadcast Messages' do
+RSpec.describe 'Admin Broadcast Messages' do
   before do
     sign_in(create(:admin))
     create(:broadcast_message, :expired, message: 'Migration to new server')

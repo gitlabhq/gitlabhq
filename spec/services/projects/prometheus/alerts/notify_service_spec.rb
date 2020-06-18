@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 describe Projects::Prometheus::Alerts::NotifyService do
+  include PrometheusHelpers
+
   let_it_be(:project, reload: true) { create(:project) }
 
   let(:service) { described_class.new(project, nil, payload) }
@@ -92,9 +94,10 @@ describe Projects::Prometheus::Alerts::NotifyService do
   end
 
   context 'with valid payload' do
-    let(:alert_firing) { create(:prometheus_alert, project: project) }
-    let(:alert_resolved) { create(:prometheus_alert, project: project) }
-    let(:payload_raw) { payload_for(firing: [alert_firing], resolved: [alert_resolved]) }
+    let_it_be(:alert_firing) { create(:prometheus_alert, project: project) }
+    let_it_be(:alert_resolved) { create(:prometheus_alert, project: project) }
+    let_it_be(:cluster) { create(:cluster, :provided_by_user, projects: [project]) }
+    let(:payload_raw) { prometheus_alert_payload(firing: [alert_firing], resolved: [alert_resolved]) }
     let(:payload) { ActionController::Parameters.new(payload_raw).permit! }
     let(:payload_alert_firing) { payload_raw['alerts'].first }
     let(:token) { 'token' }
@@ -116,9 +119,7 @@ describe Projects::Prometheus::Alerts::NotifyService do
 
       with_them do
         before do
-          cluster = create(:cluster, :provided_by_user,
-                           projects: [project],
-                           enabled: cluster_enabled)
+          cluster.update!(enabled: cluster_enabled)
 
           if status
             create(:clusters_applications_prometheus, status,
@@ -165,6 +166,39 @@ describe Projects::Prometheus::Alerts::NotifyService do
             create(:project_alerting_setting,
                    project: project,
                    token: configured_token)
+          end
+        end
+
+        case result = params[:result]
+        when :success
+          it_behaves_like 'notifies alerts'
+        when :failure
+          it_behaves_like 'no notifications', http_status: :unauthorized
+        else
+          raise "invalid result: #{result.inspect}"
+        end
+      end
+    end
+
+    context 'with generic alerts integration' do
+      using RSpec::Parameterized::TableSyntax
+
+      where(:alerts_service, :token, :result) do
+        :active   | :valid    | :success
+        :active   | :invalid  | :failure
+        :active   | nil       | :failure
+        :inactive | :valid    | :failure
+        nil       | nil       | :failure
+      end
+
+      with_them do
+        let(:valid) { project.alerts_service.token }
+        let(:invalid) { 'invalid token' }
+        let(:token_input) { public_send(token) if token }
+
+        before do
+          if alerts_service
+            create(:alerts_service, alerts_service, project: project)
           end
         end
 
@@ -227,7 +261,7 @@ describe Projects::Prometheus::Alerts::NotifyService do
 
       context 'with multiple firing alerts and resolving alerts' do
         let(:payload_raw) do
-          payload_for(firing: [alert_firing, alert_firing], resolved: [alert_resolved])
+          prometheus_alert_payload(firing: [alert_firing, alert_firing], resolved: [alert_resolved])
         end
 
         it 'processes Prometheus alerts' do
@@ -258,7 +292,7 @@ describe Projects::Prometheus::Alerts::NotifyService do
 
         context 'multiple firing alerts' do
           let(:payload_raw) do
-            payload_for(firing: [alert_firing, alert_firing], resolved: [])
+            prometheus_alert_payload(firing: [alert_firing, alert_firing], resolved: [])
           end
 
           it_behaves_like 'processes incident issues', 2
@@ -266,7 +300,7 @@ describe Projects::Prometheus::Alerts::NotifyService do
 
         context 'without firing alerts' do
           let(:payload_raw) do
-            payload_for(firing: [], resolved: [alert_resolved])
+            prometheus_alert_payload(firing: [], resolved: [alert_resolved])
           end
 
           it_behaves_like 'processes incident issues', 1
@@ -284,22 +318,15 @@ describe Projects::Prometheus::Alerts::NotifyService do
   end
 
   context 'with invalid payload' do
-    context 'without version' do
+    context 'when payload is not processable' do
       let(:payload) { {} }
 
+      before do
+        allow(described_class).to receive(:processable?).with(payload)
+          .and_return(false)
+      end
+
       it_behaves_like 'no notifications', http_status: :unprocessable_entity
-    end
-
-    context 'when version is not "4"' do
-      let(:payload) { { 'version' => '5' } }
-
-      it_behaves_like 'no notifications', http_status: :unprocessable_entity
-    end
-
-    context 'with missing alerts' do
-      let(:payload) { { 'version' => '4' } }
-
-      it_behaves_like 'no notifications', http_status: :unauthorized
     end
 
     context 'when the payload is too big' do
@@ -328,50 +355,39 @@ describe Projects::Prometheus::Alerts::NotifyService do
     end
   end
 
-  private
+  describe '.processable?' do
+    let(:valid_payload) { prometheus_alert_payload }
 
-  def payload_for(firing: [], resolved: [])
-    status = firing.any? ? 'firing' : 'resolved'
-    alerts = firing + resolved
-    alert_name = alerts.first.title
-    prometheus_metric_id = alerts.first.prometheus_metric_id.to_s
+    subject { described_class.processable?(payload) }
 
-    alerts_map = \
-      firing.map { |alert| map_alert_payload('firing', alert) } +
-      resolved.map { |alert| map_alert_payload('resolved', alert) }
+    context 'with valid payload' do
+      let(:payload) { valid_payload }
 
-    # See https://prometheus.io/docs/alerting/configuration/#%3Cwebhook_config%3E
-    {
-      'version' => '4',
-      'receiver' => 'gitlab',
-      'status' => status,
-      'alerts' => alerts_map,
-      'groupLabels' => {
-        'alertname' => alert_name
-      },
-      'commonLabels' => {
-        'alertname' => alert_name,
-        'gitlab' => 'hook',
-        'gitlab_alert_id' => prometheus_metric_id
-      },
-      'commonAnnotations' => {},
-      'externalURL' => '',
-      'groupKey' => "{}:{alertname=\'#{alert_name}\'}"
-    }
-  end
+      it { is_expected.to eq(true) }
 
-  def map_alert_payload(status, alert)
-    {
-      'status' => status,
-      'labels' => {
-        'alertname' => alert.title,
-        'gitlab' => 'hook',
-        'gitlab_alert_id' => alert.prometheus_metric_id.to_s
-      },
-      'annotations' => {},
-      'startsAt' => '2018-09-24T08:57:31.095725221Z',
-      'endsAt' => '0001-01-01T00:00:00Z',
-      'generatorURL' => 'http://prometheus-prometheus-server-URL'
-    }
+      context 'containing unrelated keys' do
+        let(:payload) { valid_payload.merge('unrelated' => 'key') }
+
+        it { is_expected.to eq(true) }
+      end
+    end
+
+    context 'with invalid payload' do
+      where(:missing_key) do
+        described_class::REQUIRED_PAYLOAD_KEYS.to_a
+      end
+
+      with_them do
+        let(:payload) { valid_payload.except(missing_key) }
+
+        it { is_expected.to eq(false) }
+      end
+    end
+
+    context 'with unsupported version' do
+      let(:payload) { valid_payload.merge('version' => '5') }
+
+      it { is_expected.to eq(false) }
+    end
   end
 end

@@ -4,7 +4,7 @@ import $ from 'jquery';
 import { escape } from 'lodash';
 import fuzzaldrinPlus from 'fuzzaldrin-plus';
 import axios from './lib/utils/axios_utils';
-import { visitUrl } from './lib/utils/url_utility';
+import { visitUrl } from '~/lib/utils/url_utility';
 import { isObject } from './lib/utils/type_utility';
 import renderItem from './gl_dropdown/render';
 

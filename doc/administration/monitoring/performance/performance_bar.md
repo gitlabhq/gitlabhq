@@ -1,3 +1,9 @@
+---
+stage: Monitor
+group: APM
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+---
+
 # Performance Bar
 
 A Performance Bar can be displayed, to dig into the performance of a page. When
@@ -18,7 +24,7 @@ It allows you to see (from left to right):
   ![Redis profiling using the Performance Bar](img/performance_bar_redis_calls.png)
 - total load timings of the page; click through for details of these calls. Values in the following order:
   - Backend - Time that the actual base page took to load
-  - [First Contentful Paint](https://developers.google.com/web/tools/lighthouse/audits/first-contentful-paint) - Time until something was visible to the user
+  - [First Contentful Paint](hhttps://web.dev/first-contentful-paint/) - Time until something was visible to the user
   - [DomContentLoaded](https://developers.google.com/web/fundamentals/performance/critical-rendering-path/measure-crp) Event
   - Number of Requests that the page loaded
   ![Frontend requests using the Performance Bar](img/performance_bar_frontend.png)

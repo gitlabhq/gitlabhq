@@ -3,6 +3,12 @@
 module QA
   context 'Create', :requires_admin do
     describe 'push after setting the file size limit via admin/application_settings' do
+      # Note: The file size limits in this test should be greater than the limits in
+      # ee/browser_ui/3_create/repository/push_rules_spec to prevent that test from
+      # triggering the limit set in this test (which can happen on Staging where the
+      # tests are run in parallel).
+      # See: https://gitlab.com/gitlab-org/gitlab/-/issues/218620#note_361634705
+
       include Support::Api
 
       before(:context) do
@@ -31,7 +37,7 @@ module QA
       end
 
       it 'push fails when the file size is above the limit' do
-        set_file_size_limit(1)
+        set_file_size_limit(2)
 
         retry_on_fail do
           expect { push_new_file('oversize_file_2.bin', wait_for_push: false) }
@@ -52,7 +58,7 @@ module QA
         output = Resource::Repository::Push.fabricate! do |p|
           p.repository_http_uri = @project.repository_http_location.uri
           p.file_name = file_name
-          p.file_content = SecureRandom.random_bytes(2000000)
+          p.file_content = SecureRandom.random_bytes(3000000)
           p.commit_message = commit_message
           p.new_branch = false
         end

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Ci::JobsFinder, '#execute' do
+RSpec.describe Ci::JobsFinder, '#execute' do
   let_it_be(:user) { create(:user) }
   let_it_be(:admin) { create(:user, :admin) }
   let_it_be(:project) { create(:project, :private, public_builds: false) }

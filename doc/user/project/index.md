@@ -100,7 +100,7 @@ When you create a project in GitLab, you'll have access to a large number of
 - [Maven packages](../packages/maven_repository/index.md): your private Maven repository in GitLab. **(PREMIUM)**
 - [NPM packages](../packages/npm_registry/index.md): your private NPM package registry in GitLab. **(PREMIUM)**
 - [Code owners](code_owners.md): specify code owners for certain files **(STARTER)**
-- [License Compliance](../compliance/license_compliance/index.md): approve and blacklist licenses for projects. **(ULTIMATE)**
+- [License Compliance](../compliance/license_compliance/index.md): approve and deny licenses for projects. **(ULTIMATE)**
 - [Dependency List](../application_security/dependency_list/index.md): view project dependencies. **(ULTIMATE)**
 - [Requirements](requirements/index.md): Requirements allow you to create criteria to check your products against. **(ULTIMATE)**
 - [Static Site Editor](static_site_editor/index.md): quickly edit content on static websites without prior knowledge of the codebase or Git commands.
@@ -143,6 +143,17 @@ To view your starred projects:
    - Number of times this project has been forked
    - Number of open merge requests
    - Number of open issues
+
+### Explore projects
+
+You can explore other popular projects available on GitLab. To explore projects:
+
+1. Click **Projects** in the navigation bar.
+1. Click **Explore Projects**.
+
+GitLab displays a list of projects, sorted by last updated date. To view
+projects with the most [stars](#star-a-project), click **Most stars**. To view
+projects with the largest number of comments in the past month, click **Trending**.
 
 ## Project settings
 
@@ -250,14 +261,14 @@ password <personal_access_token>
 
 ## Access project page with project ID
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/53671) in GitLab 11.8.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/53671) in GitLab 11.8.
 
 To quickly access a project from the GitLab UI using the project ID,
 visit the `/projects/:id` URL in your browser or other tool accessing the project.
 
 ## Project aliases **(PREMIUM ONLY)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/3264) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.1.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/3264) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.1.
 
 When migrating repositories to GitLab and they are being accessed by other systems,
 it's very useful to be able to access them using the same name especially when

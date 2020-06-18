@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Merge request > User sees versions', :js do
+RSpec.describe 'Merge request > User sees versions', :js do
   let(:merge_request) do
     create(:merge_request).tap do |mr|
       mr.merge_request_diff.destroy
@@ -34,7 +34,7 @@ describe 'Merge request > User sees versions', :js do
 
         page.within("form[data-line-code='#{line_code}']") do
           fill_in "note[note]", with: comment
-          find(".js-comment-button").click
+          click_button('Add comment now')
         end
 
         wait_for_requests

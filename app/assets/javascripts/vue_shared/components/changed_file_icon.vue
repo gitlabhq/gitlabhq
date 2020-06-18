@@ -1,7 +1,7 @@
 <script>
 import { GlTooltipDirective } from '@gitlab/ui';
 import Icon from '~/vue_shared/components/icon.vue';
-import { getCommitIconMap } from '~/ide/utils';
+import getCommitIconMap from '~/ide/commit_icon';
 import { __ } from '~/locale';
 
 export default {

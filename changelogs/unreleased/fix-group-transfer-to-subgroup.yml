@@ -1,0 +1,5 @@
+---
+title: Fix group transfer service to deny moving group to its subgroup
+merge_request: 31495
+author: Abhisek Datta
+type: fixed

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Dropdown emoji', :js do
+RSpec.describe 'Dropdown emoji', :js do
   include FilteredSearchHelpers
 
   let!(:project) { create(:project, :public) }

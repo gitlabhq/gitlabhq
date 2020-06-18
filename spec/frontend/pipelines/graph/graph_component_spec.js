@@ -7,6 +7,7 @@ import linkedPipelinesColumn from '~/pipelines/components/graph/linked_pipelines
 import graphJSON from './mock_data';
 import linkedPipelineJSON from './linked_pipelines_mock_data';
 import PipelinesMediator from '~/pipelines/pipeline_details_mediator';
+import { setHTMLFixture } from 'helpers/fixtures';
 
 describe('graph component', () => {
   const store = new PipelineStore();
@@ -14,6 +15,10 @@ describe('graph component', () => {
   const mediator = new PipelinesMediator({ endpoint: '' });
 
   let wrapper;
+
+  beforeEach(() => {
+    setHTMLFixture('<div class="layout-page"></div>');
+  });
 
   afterEach(() => {
     wrapper.destroy();

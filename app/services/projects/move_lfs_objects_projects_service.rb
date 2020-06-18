@@ -20,7 +20,7 @@ module Projects
     end
 
     def remove_remaining_lfs_objects_project
-      source_project.lfs_objects_projects.destroy_all # rubocop: disable DestroyAll
+      source_project.lfs_objects_projects.destroy_all # rubocop: disable Cop/DestroyAll
     end
 
     # rubocop: disable CodeReuse/ActiveRecord

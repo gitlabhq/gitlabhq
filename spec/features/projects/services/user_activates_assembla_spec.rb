@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'User activates Assembla' do
+RSpec.describe 'User activates Assembla' do
   include_context 'project service activation'
 
   before do

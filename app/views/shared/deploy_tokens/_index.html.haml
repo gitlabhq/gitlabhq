@@ -10,7 +10,7 @@
   .settings-content
     - if @new_deploy_token.persisted?
       = render 'shared/deploy_tokens/new_deploy_token', deploy_token: @new_deploy_token
-    %h5.prepend-top-0
+    %h5.gl-mt-0
       = s_('DeployTokens|Add a deploy token')
     = render 'shared/deploy_tokens/form', group_or_project: group_or_project, token: @new_deploy_token, presenter: @deploy_tokens
     %hr

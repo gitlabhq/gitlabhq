@@ -36,7 +36,7 @@ class ActiveSession
       timestamp = Time.current
 
       active_user_session = new(
-        ip_address: request.ip,
+        ip_address: request.remote_ip,
         browser: client.name,
         os: client.os_name,
         device_name: client.device_name,

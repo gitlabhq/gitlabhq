@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Projects::DiscussionsController do
+RSpec.describe Projects::DiscussionsController do
   let(:user) { create(:user) }
   let(:merge_request) { create(:merge_request) }
   let(:project) { merge_request.source_project }

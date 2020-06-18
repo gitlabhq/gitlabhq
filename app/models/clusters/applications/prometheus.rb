@@ -37,7 +37,7 @@ module Clusters
         end
 
         after_transition any => :updating do |application|
-          application.update(last_update_started_at: Time.now)
+          application.update(last_update_started_at: Time.current)
         end
       end
 
@@ -66,7 +66,8 @@ module Clusters
           rbac: cluster.platform_kubernetes_rbac?,
           chart: chart,
           files: files,
-          postinstall: install_knative_metrics
+          postinstall: install_knative_metrics,
+          local_tiller_enabled: cluster.local_tiller_enabled?
         )
       end
 
@@ -76,7 +77,8 @@ module Clusters
           version: version,
           rbac: cluster.platform_kubernetes_rbac?,
           chart: chart,
-          files: files_with_replaced_values(values)
+          files: files_with_replaced_values(values),
+          local_tiller_enabled: cluster.local_tiller_enabled?
         )
       end
 
@@ -85,7 +87,8 @@ module Clusters
           name: name,
           rbac: cluster.platform_kubernetes_rbac?,
           files: files,
-          predelete: delete_knative_istio_metrics
+          predelete: delete_knative_istio_metrics,
+          local_tiller_enabled: cluster.local_tiller_enabled?
         )
       end
 

@@ -1,0 +1,5 @@
+---
+title: Externalize i18n strings from ./app/views/shared/milestones/_form_dates.html.haml
+merge_request: 32162
+author: Gilang Gumilar
+type: changed

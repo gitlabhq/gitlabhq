@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Admin::RunnersController do
+RSpec.describe Admin::RunnersController do
   let_it_be(:runner) { create(:ci_runner) }
 
   before do

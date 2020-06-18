@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Projects::Ci::LintsController do
+RSpec.describe Projects::Ci::LintsController do
   include StubRequests
 
   let(:project) { create(:project, :repository) }

@@ -224,11 +224,26 @@ describe Issues::CloseService do
         expect(email.subject).to include(issue.title)
       end
 
-      it 'creates system note about issue reassign' do
-        close_issue
+      context 'when resource state events are disabled' do
+        before do
+          stub_feature_flags(track_resource_state_change_events: false)
+        end
 
-        note = issue.notes.last
-        expect(note.note).to include "closed"
+        it 'creates system note about the issue being closed' do
+          close_issue
+
+          note = issue.notes.last
+          expect(note.note).to include "closed"
+        end
+      end
+
+      context 'when resource state events are enabled' do
+        it 'creates resource state event about the issue being closed' do
+          close_issue
+
+          event = issue.resource_state_events.last
+          expect(event.state).to eq('closed')
+        end
       end
 
       it 'marks todos as done' do

@@ -11,12 +11,14 @@ module Gitlab
           @query = query
         end
 
+        # rubocop: disable CodeReuse/ActiveRecord
         def seconds
-          @query = @query.select(median_duration_in_seconds.as('median'))
+          @query = @query.select(median_duration_in_seconds.as('median')).reorder(nil)
           result = execute_query(@query).first || {}
 
           result['median'] || nil
         end
+        # rubocop: enable CodeReuse/ActiveRecord
 
         def days
           seconds ? seconds.fdiv(1.day) : nil

@@ -52,7 +52,7 @@ When you're ready, click the **Create page** and the new page will be created.
 
 ### Attachment storage
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/33475) in GitLab 11.3.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/33475) in GitLab 11.3.
 
 Starting with GitLab 11.3, any file that is uploaded to the wiki via GitLab's
 interface will be stored in the wiki Git repository, and it will be available
@@ -184,6 +184,14 @@ them like you would do with every other Git repository.
 
 On the right sidebar, click on **Clone repository** and follow the on-screen
 instructions.
+
+Files that you add to your wiki locally must have one of the following
+supported extensions, depending on the markup language you wish to use,
+otherwise they will not display when pushed to GitLab:
+
+- Markdown extensions: `.mdown`, `.mkd`, `.mkdn`, `.md`, `.markdown`.
+- AsciiDoc extensions: `.adoc`, `.ad`, `.asciidoc`.
+- Other markup extensions: `.textile`, `.rdoc`, `.org`, `.creole`, `.wiki`, `.mediawiki`, `.rst`.
 
 ## Customizing sidebar
 

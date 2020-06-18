@@ -158,7 +158,7 @@ export default {
         <div class="d-inline-block ml-md-2 ml-0">
           <toolbar-button
             :prepend="true"
-            tag="* "
+            tag="- "
             :button-title="__('Add a bullet list')"
             icon="list-bulleted"
           />
@@ -170,7 +170,7 @@ export default {
           />
           <toolbar-button
             :prepend="true"
-            tag="* [ ] "
+            tag="- [ ] "
             :button-title="__('Add a task list')"
             icon="list-task"
           />

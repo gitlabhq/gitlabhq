@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Projects::Settings::RepositoryController do
+RSpec.describe Projects::Settings::RepositoryController do
   let(:project) { create(:project_empty_repo, :public) }
   let(:user) { create(:user) }
 

@@ -6,7 +6,7 @@ module API
       class Evidence < Grape::Entity
         include ::API::Helpers::Presentable
 
-        expose :summary_sha, as: :sha
+        expose :sha
         expose :filepath
         expose :collected_at
       end

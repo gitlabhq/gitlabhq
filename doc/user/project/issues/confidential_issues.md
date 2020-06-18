@@ -1,3 +1,9 @@
+---
+stage: Plan
+group: Project Management
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+---
+
 # Confidential issues
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/3282) in GitLab 8.6.
@@ -80,7 +86,7 @@ project's search results respectively.
 
 ## Merge Requests for Confidential Issues
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/58583) in GitLab 12.1.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/58583) in GitLab 12.1.
 
 To help prevent confidential information being leaked from a public project
 in the process of resolving a confidential issue, confidential issues can be

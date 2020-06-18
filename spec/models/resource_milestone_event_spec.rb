@@ -95,4 +95,34 @@ describe ResourceMilestoneEvent, type: :model do
       end
     end
   end
+
+  describe '#milestone_parent' do
+    let_it_be(:project) { create(:project) }
+    let_it_be(:group) { create(:group) }
+
+    let(:milestone) { create(:milestone, project: project) }
+    let(:event) { create(:resource_milestone_event, milestone: milestone) }
+
+    context 'when milestone parent is project' do
+      it 'returns the expected parent' do
+        expect(event.milestone_parent).to eq(project)
+      end
+    end
+
+    context 'when milestone parent is group' do
+      let(:milestone) { create(:milestone, group: group) }
+
+      it 'returns the expected parent' do
+        expect(event.milestone_parent).to eq(group)
+      end
+    end
+
+    context 'when milestone is nil' do
+      let(:event) { create(:resource_milestone_event, milestone: nil) }
+
+      it 'returns nil' do
+        expect(event.milestone_parent).to be_nil
+      end
+    end
+  end
 end

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe RegistrationsController do
+RSpec.describe RegistrationsController do
   include TermsHelper
 
   before do

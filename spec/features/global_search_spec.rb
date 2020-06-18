@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Global search' do
+RSpec.describe 'Global search' do
   let(:user) { create(:user) }
   let(:project) { create(:project, namespace: user.namespace) }
 
@@ -14,7 +14,8 @@ describe 'Global search' do
   end
 
   it 'increases usage ping searches counter' do
-    expect(Gitlab::UsageDataCounters::SearchCounter).to receive(:increment_navbar_searches_count)
+    expect(Gitlab::UsageDataCounters::SearchCounter).to receive(:count).with(:navbar_searches)
+    expect(Gitlab::UsageDataCounters::SearchCounter).to receive(:count).with(:all_searches)
 
     submit_search('foobar')
   end

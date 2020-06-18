@@ -6,8 +6,8 @@ file, as well as information and history about our changelog process.
 ## Overview
 
 Each bullet point, or **entry**, in our [`CHANGELOG.md`](https://gitlab.com/gitlab-org/gitlab/blob/master/CHANGELOG.md) file is
-generated from a single data file in the [`changelogs/unreleased/`](https://gitlab.com/gitlab-org/gitlab-foss/tree/master/changelogs/)
-(or corresponding EE) folder. The file is expected to be a [YAML](https://en.wikipedia.org/wiki/YAML) file in the
+generated from a single data file in the [`changelogs/unreleased/`](https://gitlab.com/gitlab-org/gitlab/tree/master/changelogs/unreleased/).
+The file is expected to be a [YAML](https://en.wikipedia.org/wiki/YAML) file in the
 following format:
 
 ```yaml
@@ -282,7 +282,7 @@ multiple times per patch release. This was compounded when we had to release
 multiple patches at once due to a security issue.
 
 We needed to automate all of this manual work. So we
-[started brainstorming](https://gitlab.com/gitlab-org/gitlab-foss/issues/17826).
+[started brainstorming](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/17826).
 After much discussion we settled on the current solution of one file per entry,
 and then compiling the entries into the overall `CHANGELOG.md` file during the
 [release process](https://gitlab.com/gitlab-org/release-tools).

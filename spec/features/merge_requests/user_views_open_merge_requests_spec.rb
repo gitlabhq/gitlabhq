@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'User views open merge requests' do
+RSpec.describe 'User views open merge requests' do
   let_it_be(:user) { create(:user) }
 
   shared_examples_for 'shows merge requests' do

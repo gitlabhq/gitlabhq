@@ -1,4 +1,6 @@
-%div{ class: "broadcast-#{message.broadcast_type}-message #{opts[:preview] && 'preview'} js-broadcast-notification-#{message.id} d-flex",
+- is_banner = message.broadcast_type == 'banner'
+
+%div{ class: "broadcast-message #{'alert-warning' if is_banner} broadcast-#{message.broadcast_type}-message #{opts[:preview] && 'preview'} js-broadcast-notification-#{message.id} gl-display-flex",
   style: broadcast_message_style(message), dir: 'auto' }
   .flex-grow-1.text-right.pr-2
     = sprite_icon('bullhorn', size: 16, css_class: 'vertical-align-text-top')

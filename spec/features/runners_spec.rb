@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Runners' do
+RSpec.describe 'Runners' do
   let(:user) { create(:user) }
 
   before do

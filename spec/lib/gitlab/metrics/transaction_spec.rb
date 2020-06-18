@@ -65,18 +65,16 @@ describe Gitlab::Metrics::Transaction do
   describe '#add_event' do
     let(:prometheus_metric) { instance_double(Prometheus::Client::Counter, increment: nil) }
 
-    before do
-      allow(described_class).to receive(:transaction_metric).and_return(prometheus_metric)
-    end
-
     it 'adds a metric' do
       expect(prometheus_metric).to receive(:increment)
+      expect(described_class).to receive(:fetch_metric).with(:counter, :gitlab_transaction_event_meow_total).and_return(prometheus_metric)
 
       transaction.add_event(:meow)
     end
 
     it 'allows tracking of custom tags' do
       expect(prometheus_metric).to receive(:increment).with(hash_including(animal: "dog"))
+      expect(described_class).to receive(:fetch_metric).with(:counter, :gitlab_transaction_event_bau_total).and_return(prometheus_metric)
 
       transaction.add_event(:bau, animal: 'dog')
     end
@@ -84,6 +82,7 @@ describe Gitlab::Metrics::Transaction do
     context 'with sensitive tags' do
       before do
         transaction.add_event(:baubau, **sensitive_tags.merge(sane: 'yes'))
+        allow(described_class).to receive(:transaction_metric).and_return(prometheus_metric)
       end
 
       it 'filters tags' do
@@ -91,6 +90,39 @@ describe Gitlab::Metrics::Transaction do
 
         transaction.add_event(:baubau, **sensitive_tags.merge(sane: 'yes'))
       end
+    end
+  end
+
+  describe '#increment' do
+    let(:prometheus_metric) { instance_double(Prometheus::Client::Counter, increment: nil) }
+
+    it 'adds a metric' do
+      expect(prometheus_metric).to receive(:increment).with(hash_including(:action, :controller), 1)
+      expect(described_class).to receive(:fetch_metric).with(:counter, :gitlab_transaction_meow_total).and_return(prometheus_metric)
+
+      transaction.increment(:meow, 1)
+    end
+  end
+
+  describe '#set' do
+    let(:prometheus_metric) { instance_double(Prometheus::Client::Gauge, set: nil) }
+
+    it 'adds a metric' do
+      expect(prometheus_metric).to receive(:set).with(hash_including(:action, :controller), 1)
+      expect(described_class).to receive(:fetch_metric).with(:gauge, :gitlab_transaction_meow_total).and_return(prometheus_metric)
+
+      transaction.set(:meow, 1)
+    end
+  end
+
+  describe '#get' do
+    let(:prometheus_metric) { instance_double(Prometheus::Client::Counter, get: nil) }
+
+    it 'gets a metric' do
+      expect(described_class).to receive(:fetch_metric).with(:counter, :gitlab_transaction_meow_total).and_return(prometheus_metric)
+      expect(prometheus_metric).to receive(:get)
+
+      transaction.get(:meow, :counter)
     end
   end
 end

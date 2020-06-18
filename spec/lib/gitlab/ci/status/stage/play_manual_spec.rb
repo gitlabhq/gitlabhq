@@ -31,7 +31,7 @@ describe Gitlab::Ci::Status::Stage::PlayManual do
 
     subject { play_manual.action_path }
 
-    it { is_expected.to eq("/#{pipeline.project.full_path}/pipelines/#{pipeline.id}/stages/#{stage.name}/play_manual") }
+    it { is_expected.to eq("/#{pipeline.project.full_path}/-/pipelines/#{pipeline.id}/stages/#{stage.name}/play_manual") }
   end
 
   describe '#action_method' do

@@ -48,7 +48,7 @@ module ChatMessage
     end
 
     def merge_request_message
-      "#{user_combined_name} #{state_or_action_text} #{merge_request_link} in #{project_link}"
+      "#{user_combined_name} #{state_or_action_text} merge request #{merge_request_link} in #{project_link}"
     end
 
     def merge_request_link

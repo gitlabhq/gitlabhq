@@ -47,7 +47,7 @@ There is a chance that your Google Cloud group may already have an image
 built. Search the available images before you do the work to build your
 own.
 
-Build a Google Cloud image with the above shared runners repo by doing the following:
+Build a Google Cloud image with the above shared runners repository by doing the following:
 
 1. Install [Packer](https://www.packer.io/) (tested to work with version 1.5.1).
 1. Install Packer Windows Update Provisioner.
@@ -55,7 +55,7 @@ Build a Google Cloud image with the above shared runners repo by doing the follo
    1. Run the command `go build -o packer-provisioner-windows-update` (requires `go` to be installed).
    1. Verify `packer-provisioner-windows-update` is in the `PATH` environment variable.
 1. Add all [required environment variables](https://gitlab.com/gitlab-org/ci-cd/shared-runners/images/gcp/windows-containers/-/blob/master/packer.json#L2-10)
-   in the `packer.json` file to your environment (perhaps use [direnv](https://direnv.net/)).
+   in the `packer.json` file to your environment (perhaps use [`direnv`](https://direnv.net/)).
 1. Build the image by running the command: `packer build packer.json`.
 
 ## How to use a Windows image in GCP
@@ -96,7 +96,7 @@ Here are a few tips on GCP and Windows.
 ### GCP cost savings
 
 To minimise the cost of your GCP VM instance, stop it when you're not using it.
-If you do, you'll need to redownload the RDP file from the console as the IP
+If you do, you'll need to re-download the RDP file from the console as the IP
 address changes every time you stop and start it.
 
 ### chocolatey
@@ -119,13 +119,13 @@ You can install .NET version 3 support with the following `DISM` command:
 
 `DISM /Online /Enable-Feature /FeatureName:NetFx3 /All`
 
-### nix -> Windows cmd tips
+### nix -> Windows `cmd` tips
 
-The first tip for using the Windows command shell is to open Powershell and use that instead.
+The first tip for using the Windows command shell is to open PowerShell and use that instead.
 
-Start Powershell: `start powershell`.
+Start PowerShell: `start powershell`.
 
-Powershell has aliases for all of the following commands so you don't have to learn the native commands:
+PowerShell has aliases for all of the following commands so you don't have to learn the native commands:
 
 - `ls` ---> `dir`
 - `rm` ---> `del`

@@ -15,7 +15,7 @@ By default, the navigation bar has the GitLab logo, but this can be customized w
 any image desired. It is optimized for images 28px high (any width), but any image can be
 used (less than 1MB) and it will automatically be resized.
 
-![navbar header logo screenshot](img/appearance_header_logo_v12_3.png)
+![Navigation bar header logo screenshot](img/appearance_header_logo_v12_3.png)
 
 Once you select and upload an image, click **Update appearance settings** at the bottom
 of the page to activate it in the GitLab instance.
@@ -38,8 +38,8 @@ of the page to activate it in the GitLab instance.
 
 ## System header and footer messages
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/5023) in [GitLab Premium](https://about.gitlab.com/pricing/) 10.7.
-> - [Added](https://gitlab.com/gitlab-org/gitlab-foss/issues/55057) to [GitLab Core](https://about.gitlab.com/pricing/) in 11.9.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/5023) in [GitLab Premium](https://about.gitlab.com/pricing/) 10.7.
+> - [Added](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/55057) to [GitLab Core](https://about.gitlab.com/pricing/) in 11.9.
 
 You can add a small header message, a small footer message, or both, to the interface
 of your GitLab instance. These messages will appear on all projects and pages of the

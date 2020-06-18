@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Todos (JavaScript fixtures)' do
+RSpec.describe 'Todos (JavaScript fixtures)' do
   include JavaScriptFixturesHelpers
 
   let(:admin) { create(:admin) }

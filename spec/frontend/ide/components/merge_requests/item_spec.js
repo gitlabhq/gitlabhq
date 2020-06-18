@@ -1,63 +1,91 @@
-import Vue from 'vue';
-import router from '~/ide/ide_router';
+import Vuex from 'vuex';
+import { mount, createLocalVue } from '@vue/test-utils';
+import { createStore } from '~/ide/stores';
+import { createRouter } from '~/ide/ide_router';
 import Item from '~/ide/components/merge_requests/item.vue';
-import mountCompontent from '../../../helpers/vue_mount_component_helper';
+
+const TEST_ITEM = {
+  iid: 1,
+  projectPathWithNamespace: 'gitlab-org/gitlab-ce',
+  title: 'Merge request title',
+};
 
 describe('IDE merge request item', () => {
-  const Component = Vue.extend(Item);
-  let vm;
+  const localVue = createLocalVue();
+  localVue.use(Vuex);
+
+  let wrapper;
+  let store;
+  let router;
+
+  const createComponent = (props = {}) => {
+    wrapper = mount(Item, {
+      propsData: {
+        item: {
+          ...TEST_ITEM,
+        },
+        currentId: `${TEST_ITEM.iid}`,
+        currentProjectId: TEST_ITEM.projectPathWithNamespace,
+        ...props,
+      },
+      localVue,
+      router,
+      store,
+    });
+  };
+  const findIcon = () => wrapper.find('.ic-mobile-issue-close');
 
   beforeEach(() => {
-    vm = mountCompontent(Component, {
-      item: {
-        iid: 1,
-        projectPathWithNamespace: 'gitlab-org/gitlab-ce',
-        title: 'Merge request title',
-      },
-      currentId: '1',
-      currentProjectId: 'gitlab-org/gitlab-ce',
-    });
+    store = createStore();
+    router = createRouter(store);
   });
 
   afterEach(() => {
-    vm.$destroy();
+    wrapper.destroy();
+    wrapper = null;
   });
 
-  it('renders merge requests data', () => {
-    expect(vm.$el.textContent).toContain('Merge request title');
-    expect(vm.$el.textContent).toContain('gitlab-org/gitlab-ce!1');
-  });
+  describe('default', () => {
+    beforeEach(() => {
+      createComponent();
+    });
 
-  it('renders link with href', () => {
-    const expectedHref = router.resolve(
-      `/project/${vm.item.projectPathWithNamespace}/merge_requests/${vm.item.iid}`,
-    ).href;
+    it('renders merge requests data', () => {
+      expect(wrapper.text()).toContain('Merge request title');
+      expect(wrapper.text()).toContain('gitlab-org/gitlab-ce!1');
+    });
 
-    expect(vm.$el.tagName.toLowerCase()).toBe('a');
-    expect(vm.$el).toHaveAttr('href', expectedHref);
-  });
+    it('renders link with href', () => {
+      const expectedHref = router.resolve(
+        `/project/${TEST_ITEM.projectPathWithNamespace}/merge_requests/${TEST_ITEM.iid}`,
+      ).href;
 
-  it('renders icon if ID matches currentId', () => {
-    expect(vm.$el.querySelector('.ic-mobile-issue-close')).not.toBe(null);
-  });
+      expect(wrapper.element.tagName.toLowerCase()).toBe('a');
+      expect(wrapper.attributes('href')).toBe(expectedHref);
+    });
 
-  it('does not render icon if ID does not match currentId', done => {
-    vm.currentId = '2';
-
-    vm.$nextTick(() => {
-      expect(vm.$el.querySelector('.ic-mobile-issue-close')).toBe(null);
-
-      done();
+    it('renders icon if ID matches currentId', () => {
+      expect(findIcon().exists()).toBe(true);
     });
   });
 
-  it('does not render icon if project ID does not match', done => {
-    vm.currentProjectId = 'test/test';
+  describe('with different currentId', () => {
+    beforeEach(() => {
+      createComponent({ currentId: `${TEST_ITEM.iid + 1}` });
+    });
 
-    vm.$nextTick(() => {
-      expect(vm.$el.querySelector('.ic-mobile-issue-close')).toBe(null);
+    it('does not render icon', () => {
+      expect(findIcon().exists()).toBe(false);
+    });
+  });
 
-      done();
+  describe('with different project ID', () => {
+    beforeEach(() => {
+      createComponent({ currentProjectId: 'test/test' });
+    });
+
+    it('does not render icon', () => {
+      expect(findIcon().exists()).toBe(false);
     });
   });
 });

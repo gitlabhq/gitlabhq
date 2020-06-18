@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'File blob', :js do
+RSpec.describe 'File blob', :js do
   include MobileHelpers
 
   let(:project) { create(:project, :public, :repository) }
@@ -551,6 +551,53 @@ describe 'File blob', :js do
 
         # shows a learn more link
         expect(page).to have_link('Learn more')
+      end
+    end
+  end
+
+  describe '.gitlab/dashboards/custom-dashboard.yml' do
+    before do
+      project.add_maintainer(project.creator)
+
+      Files::CreateService.new(
+        project,
+        project.creator,
+        start_branch: 'master',
+        branch_name: 'master',
+        commit_message: "Add .gitlab/dashboards/custom-dashboard.yml",
+        file_path: '.gitlab/dashboards/custom-dashboard.yml',
+        file_content: file_content
+      ).execute
+
+      visit_blob('.gitlab/dashboards/custom-dashboard.yml')
+    end
+
+    context 'valid dashboard file' do
+      let(:file_content) { File.read(Rails.root.join('config/prometheus/common_metrics.yml')) }
+
+      it 'displays an auxiliary viewer' do
+        aggregate_failures do
+          # shows that dashboard yaml is valid
+          expect(page).to have_content('Metrics Dashboard YAML definition is valid.')
+
+          # shows a learn more link
+          expect(page).to have_link('Learn more')
+        end
+      end
+    end
+
+    context 'invalid dashboard file' do
+      let(:file_content) { "dashboard: 'invalid'" }
+
+      it 'displays an auxiliary viewer' do
+        aggregate_failures do
+          # shows that dashboard yaml is invalid
+          expect(page).to have_content('Metrics Dashboard YAML definition is invalid:')
+          expect(page).to have_content("panel_groups: can't be blank")
+
+          # shows a learn more link
+          expect(page).to have_link('Learn more')
+        end
       end
     end
   end

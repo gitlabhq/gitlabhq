@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe AbuseReportsController do
+RSpec.describe AbuseReportsController do
   let(:reporter) { create(:user) }
   let(:user)     { create(:user) }
   let(:attrs) do

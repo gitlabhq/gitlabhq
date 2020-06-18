@@ -27,7 +27,7 @@ process boundaries, the correlation ID is injected into the outgoing request. Th
 the propagation of the correlation ID to each downstream subsystem.
 
 Correlation IDs are normally generated in the Rails application in response to
-certain webrequests. Some user facing systems don't generate correlation IDs in
+certain web requests. Some user facing systems don't generate correlation IDs in
 response to user requests (for example, Git pushes over SSH).
 
 ### Developer guidelines for working with correlation IDs

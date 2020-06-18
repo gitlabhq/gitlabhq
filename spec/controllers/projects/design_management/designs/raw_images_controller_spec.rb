@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Projects::DesignManagement::Designs::RawImagesController do
+RSpec.describe Projects::DesignManagement::Designs::RawImagesController do
   include DesignManagementTestHelpers
 
   let_it_be(:project) { create(:project, :private) }

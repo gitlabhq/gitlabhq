@@ -1,4 +1,7 @@
 ---
+stage: Verify
+group: Continuous Integration
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 type: index, howto
 ---
 
@@ -31,7 +34,7 @@ To connect to an external repository:
 
 ## Pipelines for external pull requests
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/65139) in GitLab Premium 12.3.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/65139) in GitLab Premium 12.3.
 
 When using GitLab CI/CD with an [external repository on GitHub](github_integration.md),
 it's possible to run a pipeline in the context of a Pull Request.
@@ -87,10 +90,10 @@ The variable names are prefixed with `CI_EXTERNAL_PULL_REQUEST_`.
 
 ### Limitations
 
-This feature currently does not support Pull Requests from fork repositories. Any Pull Requests from fork repositories will be ignored.  [Read more](https://gitlab.com/gitlab-org/gitlab/issues/5667).
+This feature currently does not support Pull Requests from fork repositories. Any Pull Requests from fork repositories will be ignored.  [Read more](https://gitlab.com/gitlab-org/gitlab/-/issues/5667).
 
 Given that GitLab will create 2 pipelines, if changes are pushed to a remote branch that
 references an open Pull Request, both will contribute to the status of the Pull Request
 via GitHub integration. If you want to exclusively run pipelines on external pull
 requests and not on branches you can add `except: [branches]` to the job specs.
-[Read more](https://gitlab.com/gitlab-org/gitlab/issues/24089#workaround).
+[Read more](https://gitlab.com/gitlab-org/gitlab/-/issues/24089#workaround).

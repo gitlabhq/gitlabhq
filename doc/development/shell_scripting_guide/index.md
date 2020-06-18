@@ -106,7 +106,7 @@ and ignore files starting with a period. To override this, use `-ln` flag to spe
 NOTE: **Note:**
 This is a work in progress.
 
-It is an [ongoing effort](https://gitlab.com/gitlab-org/gitlab-foss/issues/64016) to evaluate different tools for the
+It is an [ongoing effort](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/64016) to evaluate different tools for the
 automated testing of shell scripts (like [BATS](https://github.com/bats-core/bats-core)).
 
 ## Code Review

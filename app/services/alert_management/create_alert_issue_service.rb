@@ -29,8 +29,7 @@ module AlertManagement
     delegate :project, to: :alert
 
     def allowed?
-      Feature.enabled?(:alert_management_create_alert_issue, project) &&
-        user.can?(:create_issue, project)
+      user.can?(:create_issue, project)
     end
 
     def create_issue(alert, user, alert_payload)

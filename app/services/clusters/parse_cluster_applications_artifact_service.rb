@@ -18,13 +18,9 @@ module Clusters
 
       raise ArgumentError, 'Artifact is not cluster_applications file type' unless artifact&.cluster_applications?
 
-      unless artifact.file.size < MAX_ACCEPTABLE_ARTIFACT_SIZE
-        return error(too_big_error_message, :bad_request)
-      end
-
-      unless cluster
-        return error(s_('ClusterIntegration|No deployment cluster found for this job'))
-      end
+      return error(too_big_error_message, :bad_request) unless artifact.file.size < MAX_ACCEPTABLE_ARTIFACT_SIZE
+      return error(no_deployment_message, :bad_request) unless job.deployment
+      return error(no_deployment_cluster_message, :bad_request) unless cluster
 
       parse!(artifact)
 
@@ -61,7 +57,8 @@ module Clusters
 
       Clusters::Cluster.transaction do
         RELEASE_NAMES.each do |release_name|
-          application = find_or_build_application(release_name)
+          application_class = Clusters::Cluster::APPLICATIONS[release_name]
+          application = cluster.find_or_build_application(application_class)
 
           release = release_by_name[release_name]
 
@@ -80,16 +77,18 @@ module Clusters
       end
     end
 
-    def find_or_build_application(application_name)
-      application_class = Clusters::Cluster::APPLICATIONS[application_name]
-
-      cluster.find_or_build_application(application_class)
-    end
-
     def too_big_error_message
       human_size = ActiveSupport::NumberHelper.number_to_human_size(MAX_ACCEPTABLE_ARTIFACT_SIZE)
 
       s_('ClusterIntegration|Cluster_applications artifact too big. Maximum allowable size: %{human_size}') % { human_size: human_size }
+    end
+
+    def no_deployment_message
+      s_('ClusterIntegration|No deployment found for this job')
+    end
+
+    def no_deployment_cluster_message
+      s_('ClusterIntegration|No deployment cluster found for this job')
     end
   end
 end

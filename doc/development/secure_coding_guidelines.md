@@ -23,7 +23,7 @@ For more information about the permission model at GitLab, please see [the GitLa
 ### Impact
 
 Improper permission handling can have significant impacts on the security of an application.
-Some situations may reveal [sensitive data](https://gitlab.com/gitlab-com/gl-infra/production/issues/477) or allow a malicious actor to perform [harmful actions](https://gitlab.com/gitlab-org/gitlab/issues/8180).
+Some situations may reveal [sensitive data](https://gitlab.com/gitlab-com/gl-infra/production/-/issues/477) or allow a malicious actor to perform [harmful actions](https://gitlab.com/gitlab-org/gitlab/-/issues/8180).
 The overall impact depends heavily on what resources can be accessed or modified improperly.
 
 A common vulnerability when permission checks are missing is called [IDOR](https://owasp.org/www-project-web-security-testing-guide/latest/4-Web_Application_Security_Testing/05-Authorization_Testing/04-Testing_for_Insecure_Direct_Object_References) for Insecure Direct Object References.
@@ -48,11 +48,11 @@ Be careful to **also test [visibility levels](https://gitlab.com/gitlab-org/gitl
 
 Some example of well implemented access controls and tests:
 
-1. [example1](https://dev.gitlab.org/gitlab/gitlab-ee/merge_requests/710/diffs?diff_id=13750#af40ef0eaae3c1e018809e1d88086e32bccaca40_43_43)
+1. [example1](https://dev.gitlab.org/gitlab/gitlab-ee/-/merge_requests/710/diffs?diff_id=13750#af40ef0eaae3c1e018809e1d88086e32bccaca40_43_43)
 1. [example2](https://dev.gitlab.org/gitlab/gitlabhq/-/merge_requests/2511/diffs#ed3aaab1510f43b032ce345909a887e5b167e196_142_155)
 1. [example3](https://dev.gitlab.org/gitlab/gitlabhq/-/merge_requests/3170/diffs?diff_id=17494)
 
-**NB:** any input from development team is welcome, e.g. about rubocop rules.
+**NB:** any input from development team is welcome, e.g. about Rubocop rules.
 
 ## Regular Expressions guidelines
 
@@ -67,7 +67,7 @@ matches = re.findall("^bar$",text)
 print(matches)
 ```
 
-The Python example will output an emtpy array (`[]`) as the matcher considers the whole string `foo\nbar` including the newline (`\n`). In contrast Ruby's Regular Expression engine acts differently:
+The Python example will output an empty array (`[]`) as the matcher considers the whole string `foo\nbar` including the newline (`\n`). In contrast Ruby's Regular Expression engine acts differently:
 
 ```ruby
 text = "foo\nbar"
@@ -82,7 +82,7 @@ This Ruby Regex specialty can have security impact, as often regular expressions
 
 #### Examples
 
-GitLab specific examples can be found [here](https://gitlab.com/gitlab-org/gitlab/issues/36029#note_251262187) and [there](https://gitlab.com/gitlab-org/gitlab/issues/33569).
+GitLab specific examples can be found [here](https://gitlab.com/gitlab-org/gitlab/-/issues/36029#note_251262187) and [there](https://gitlab.com/gitlab-org/gitlab/-/issues/33569).
 
 Another example would be this fictional Ruby On Rails controller:
 
@@ -111,7 +111,7 @@ or controls the regular expression (regex) used, and is able to enter user input
 
 ### Impact
 
-The resource, for example Unicorn, Puma, or Sidekiq, can be made to hang as it takes a long time to evaulate the bad regex match.
+The resource, for example Unicorn, Puma, or Sidekiq, can be made to hang as it takes a long time to evaluate the bad regex match.
 
 ### Examples
 
@@ -140,9 +140,9 @@ class Email < ApplicationRecord
 GitLab has `Gitlab::UntrustedRegexp` which internally uses the [`re2`](https://github.com/google/re2/wiki/Syntax) library.
 By utilizing `re2`, we get a strict limit on total execution time, and a smaller subset of available regex features.
 
-All user-provided regexes should use `Gitlab::UntrustedRegexp`.
+All user-provided regular expressions should use `Gitlab::UntrustedRegexp`.
 
-For other regexes, here are a few guidelines:
+For other regular expressions, here are a few guidelines:
 
 - Remove unnecessary backtracking.
 - Avoid nested quantifiers if possible.
@@ -180,11 +180,11 @@ have been reported to GitLab include:
 
 - Network mapping of internal services
   - This can help an attacker gather information about internal services
-  that could be used in further attacks. [More details](https://gitlab.com/gitlab-org/gitlab-foss/issues/51327).
+  that could be used in further attacks. [More details](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/51327).
 - Reading internal services, including cloud service metadata.
   - The latter can be a serious problem, because an attacker can obtain keys that allow control of the victim's cloud infrastructure. (This is also a good reason
-  to give only necessary privileges to the token.). [More details](https://gitlab.com/gitlab-org/gitlab-foss/issues/51490).
-- When combined with CRLF vulnerability, remote code execution. [More details](https://gitlab.com/gitlab-org/gitlab-foss/issues/41293)
+  to give only necessary privileges to the token.). [More details](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/51490).
+- When combined with CRLF vulnerability, remote code execution. [More details](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/41293)
 
 ### When to Consider
 
@@ -206,14 +206,14 @@ The [GitLab::HTTP](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab
 `Outbound requests` options that allow instance administrators to block all internal connections, or limit the networks to which connections can be made.
 
 In some cases, it has been possible to configure GitLab::HTTP as the HTTP
-connection library for 3rd-party gems. This is preferrable over re-implementing
+connection library for 3rd-party gems. This is preferable over re-implementing
 the mitigations for a new feature.
 
 - [More details](https://dev.gitlab.org/gitlab/gitlabhq/-/merge_requests/2530/diffs)
 
 #### Feature-specific Mitigations
 
-For situtions in which a whitelist or GitLab:HTTP cannot be used, it will be necessary to implement mitigations directly in the feature. It is best to validate the destination IP addresses themselves, not just domain names, as DNS can be controlled by the attacker. Below are a list of mitigations that should be implemented.
+For situations in which an allowlist or GitLab:HTTP cannot be used, it will be necessary to implement mitigations directly in the feature. It is best to validate the destination IP addresses themselves, not just domain names, as DNS can be controlled by the attacker. Below are a list of mitigations that should be implemented.
 
 **Important Note:** There are many tricks to bypass common SSRF validations. If feature-specific mitigations are necessary, they should be reviewed by the AppSec team, or a developer who has worked on SSRF mitigations previously.
 
@@ -230,7 +230,7 @@ For situtions in which a whitelist or GitLab:HTTP cannot be used, it will be nec
 - For HTTP connections: Disable redirects or validate the redirect destination
 - To mitigate DNS rebinding attacks, validate and use the first IP address received
 
-See [url_blocker_spec.rb](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/lib/gitlab/url_blocker_spec.rb) for examples of SSRF payloads
+See [`url_blocker_spec.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/lib/gitlab/url_blocker_spec.rb) for examples of SSRF payloads
 
 ## XSS guidelines
 
@@ -276,10 +276,10 @@ For any and all input fields, ensure to define expectations on the type/format o
 - Treat all user input as untrusted.
 - Based on the expectations you [defined above](#setting-expectations):
   - Validate the [input size limits](https://youtu.be/2VFavqfDS6w?t=7582).
-  - Validate the input using a [whitelist approach](https://youtu.be/2VFavqfDS6w?t=7816) to only allow characters through which you are expecting to receive for the field.
+  - Validate the input using an [allowlist approach](https://youtu.be/2VFavqfDS6w?t=7816) to only allow characters through which you are expecting to receive for the field.
     - Input which fails validation should be **rejected**, and not sanitized.
 
-Note that blacklists should be avoided, as it is near impossible to block all [variations of XSS](https://owasp.org/www-community/xss-filter-evasion-cheatsheet).
+Note that denylists should be avoided, as it is near impossible to block all [variations of XSS](https://owasp.org/www-community/xss-filter-evasion-cheatsheet).
 
 #### Output encoding
 
@@ -308,7 +308,7 @@ Once you've [determined when and where](#setting-expectations) the user submitte
 #### Content Security Policy
 
 - [Content Security Policy](https://www.youtube.com/watch?v=2VFavqfDS6w&t=12991s)
-- [Use nonce-based Content Security Policy for inline JavaScript](https://gitlab.com/gitlab-org/gitlab-foss/issues/65330)
+- [Use nonce-based Content Security Policy for inline JavaScript](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/65330)
 
 #### Free form input fields
 
@@ -323,7 +323,7 @@ Once you've [determined when and where](#setting-expectations) the user submitte
 
 ### Select examples of past XSS issues affecting GitLab
 
-- [Stored XSS in user status](https://gitlab.com/gitlab-org/gitlab-foss/issues/55320)
+- [Stored XSS in user status](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/55320)
 
 ### Developer Training
 
@@ -345,5 +345,5 @@ Once you've [determined when and where](#setting-expectations) the user submitte
 - [Input Validation](https://youtu.be/2VFavqfDS6w?t=7489)
 - [Validate size limits](https://youtu.be/2VFavqfDS6w?t=7582)
 - [RoR model validators](https://youtu.be/2VFavqfDS6w?t=7636)
-- [Whitelist input validation](https://youtu.be/2VFavqfDS6w?t=7816)
+- [Allowlist input validation](https://youtu.be/2VFavqfDS6w?t=7816)
 - [Content Security Policy](https://www.youtube.com/watch?v=2VFavqfDS6w&t=12991s)

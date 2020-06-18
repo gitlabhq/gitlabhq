@@ -1,7 +1,7 @@
 # Web IDE
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/4539) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 10.4.
-> - [Brought to GitLab Core](https://gitlab.com/gitlab-org/gitlab-foss/issues/44157) in 10.7.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/4539) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 10.4.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/44157) to GitLab Core in 10.7.
 
 The Web IDE editor makes it faster and easier to contribute changes to your
 projects by providing an advanced editor with commit staging.
@@ -57,10 +57,30 @@ which applies to the entire Web IDE screen.
 |---------------------------------------------------------------|-----------------------------------------|
 | ![Solarized Light Theme](img/solarized_light_theme_v13.0.png) | ![Dark Theme](img/dark_theme_v13.0.png) |
 
+## Configure the Web IDE
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/23352) in [GitLab Core](https://about.gitlab.com/pricing/) 13.1.
+
+The Web IDE supports configuration of certain editor settings by using
+[`.editorconfig` files](https://editorconfig.org/). When opening a file, the
+Web IDE looks for a file named `.editorconfig` in the current directory
+and all parent directories. If a configuration file is found and has settings
+that match the file's path, these settings will be enforced on the opened file.
+
+The Web IDE currently supports the following `.editorconfig` settings:
+
+- `indent_style`
+- `indent_size`
+- `end_of_line`
+- `trim_trailing_whitespace`
+- `tab_width`
+- `insert_final_newline`
+
 ## Commit changes
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/4539) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 10.4 and [brought to GitLab Core](https://gitlab.com/gitlab-org/gitlab-foss/issues/44157) in 10.7.
-> - From [GitLab 12.7 onward](https://gitlab.com/gitlab-org/gitlab/issues/33441), files were automatically staged.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/4539) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 10.4.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/44157) to GitLab Core in 10.7.
+> - From [GitLab 12.7 onward](https://gitlab.com/gitlab-org/gitlab/-/issues/33441), files were automatically staged.
 > - From [GitLab 12.9 onward](https://gitlab.com/gitlab-org/gitlab/-/issues/196609), support for staging files was removed to prevent loss of unstaged data. All your current changes necessarily have to be committed or discarded.
 
 After making your changes, click the **Commit** button on the bottom-left to
@@ -116,6 +136,20 @@ in the top of the sidebar to open a list of branches.
 You will need to commit or discard all your changes before switching to a
 different branch.
 
+## Markdown editing
+
+> - Markdown preview [introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/18059) in [GitLab Core](https://about.gitlab.com/pricing/) 10.7.
+> - Support for pasting images [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/22822) in [GitLab Core](https://about.gitlab.com/pricing/) 13.1.
+
+When you edit Markdown files in the Web IDE, you can preview your changes by
+clicking the **Preview Markdown** tab above the file editor. The Markdown preview
+supports [GitLab Flavored Markdown](../../markdown.md#gitlab-flavored-markdown-gfm).
+
+You can also upload any local images by pasting them directly in the Markdown file.
+The image is uploaded to the same directory and is named `image.png` by default.
+If another file already exists with the same name, a numeric suffix is automatically
+added to the file name.
+
 ## Live Preview
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/19764) in [GitLab Core](https://about.gitlab.com/pricing/) 11.2.
@@ -152,9 +186,10 @@ below.
 }
 ```
 
-## Interactive Web Terminals for the Web IDE **(ULTIMATE ONLY)**
+## Interactive Web Terminals for the Web IDE
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/5426) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.6.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/5426) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.6.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/211685) to GitLab Core in 13.1.
 
 CAUTION: **Warning:**
 Interactive Web Terminals for the Web IDE is currently in **Beta**.
@@ -252,7 +287,8 @@ click **Restart Terminal** to start a new terminal session.
 
 ### File syncing to web terminal
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/5276) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.0.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/5276) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.0.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/211686) to GitLab Core in 13.1.
 
 File changes in the Web IDE can be synced to a running web terminal.
 This enables users to test their code changes in a preconfigured terminal
@@ -284,7 +320,7 @@ terminal:
 
 - The `webide-file-sync` executable must start **after** the project
   directory is available. This is why we need to add `sleep 5` to the `command`.
-  See [this issue](https://gitlab.com/gitlab-org/webide-file-sync/issues/7) for
+  See [this issue](https://gitlab.com/gitlab-org/webide-file-sync/-/issues/7) for
   more information.
 - `$CI_PROJECT_DIR` is a
   [predefined environment variable](../../../ci/variables/predefined_variables.md)

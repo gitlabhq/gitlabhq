@@ -9,6 +9,8 @@ module Ci
     belongs_to :last_pipeline, class_name: 'Ci::Pipeline', foreign_key: :last_pipeline_id
     belongs_to :project
 
+    validates :data, json_schema: { filename: "daily_build_group_report_result_data" }
+
     def self.upsert_reports(data)
       upsert_all(data, unique_by: :index_daily_build_group_report_results_unique_columns) if data.any?
     end

@@ -171,6 +171,58 @@ describe Gitlab::PrometheusClient do
     end
   end
 
+  describe '#aggregate' do
+    let(:query) { 'avg (metric) by (job)' }
+    let(:prometheus_response) do
+      {
+        "status": "success",
+        "data": {
+          "resultType": "vector",
+          "result": [
+            {
+              "metric": { "job" => "gitlab-rails" },
+              "value": [1488758662.506, "1"]
+            },
+            {
+              "metric": { "job" => "gitlab-sidekiq" },
+              "value": [1488758662.506, "2"]
+            }
+          ]
+        }
+      }
+    end
+    let(:query_url) { prometheus_query_with_time_url(query, Time.now.utc) }
+
+    around do |example|
+      Timecop.freeze { example.run }
+    end
+
+    context 'when request returns vector results' do
+      it 'returns data from the API call grouped by labels' do
+        req_stub = stub_prometheus_request(query_url, body: prometheus_response)
+
+        expect(subject.aggregate(query)).to eq({
+          { "job" => "gitlab-rails" } => 1,
+          { "job" => "gitlab-sidekiq" } => 2
+        })
+        expect(req_stub).to have_been_requested
+      end
+    end
+
+    context 'when request returns no data' do
+      it 'returns {}' do
+        req_stub = stub_prometheus_request(query_url, body: prometheus_empty_body('vector'))
+
+        expect(subject.aggregate(query)).to eq({})
+        expect(req_stub).to have_been_requested
+      end
+    end
+
+    it_behaves_like 'failure response' do
+      let(:execute_query) { subject.aggregate(query) }
+    end
+  end
+
   describe '#series' do
     let(:query_url) { prometheus_series_url('series_name', 'other_service') }
 

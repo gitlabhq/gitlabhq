@@ -20,7 +20,9 @@ class AddCanonicalEmails < ActiveRecord::Migration[6.0]
 
   def down
     with_lock_retries do
+      # rubocop:disable Migration/DropTable
       drop_table(:user_canonical_emails)
+      # rubocop:enable Migration/DropTable
     end
   end
 end

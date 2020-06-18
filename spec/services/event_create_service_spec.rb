@@ -5,6 +5,9 @@ require 'spec_helper'
 describe EventCreateService do
   let(:service) { described_class.new }
 
+  let_it_be(:user, reload: true) { create :user }
+  let_it_be(:project) { create(:project) }
+
   describe 'Issues' do
     describe '#open_issue' do
       let(:issue) { create(:issue) }
@@ -13,6 +16,7 @@ describe EventCreateService do
 
       it "creates new event" do
         expect { service.open_issue(issue, issue.author) }.to change { Event.count }
+        expect { service.open_issue(issue, issue.author) }.to change { ResourceStateEvent.count }
       end
     end
 
@@ -23,6 +27,7 @@ describe EventCreateService do
 
       it "creates new event" do
         expect { service.close_issue(issue, issue.author) }.to change { Event.count }
+        expect { service.close_issue(issue, issue.author) }.to change { ResourceStateEvent.count }
       end
     end
 
@@ -33,6 +38,7 @@ describe EventCreateService do
 
       it "creates new event" do
         expect { service.reopen_issue(issue, issue.author) }.to change { Event.count }
+        expect { service.reopen_issue(issue, issue.author) }.to change { ResourceStateEvent.count }
       end
     end
   end
@@ -45,6 +51,7 @@ describe EventCreateService do
 
       it "creates new event" do
         expect { service.open_mr(merge_request, merge_request.author) }.to change { Event.count }
+        expect { service.open_mr(merge_request, merge_request.author) }.to change { ResourceStateEvent.count }
       end
     end
 
@@ -55,6 +62,7 @@ describe EventCreateService do
 
       it "creates new event" do
         expect { service.close_mr(merge_request, merge_request.author) }.to change { Event.count }
+        expect { service.close_mr(merge_request, merge_request.author) }.to change { ResourceStateEvent.count }
       end
     end
 
@@ -65,6 +73,7 @@ describe EventCreateService do
 
       it "creates new event" do
         expect { service.merge_mr(merge_request, merge_request.author) }.to change { Event.count }
+        expect { service.merge_mr(merge_request, merge_request.author) }.to change { ResourceStateEvent.count }
       end
     end
 
@@ -75,13 +84,12 @@ describe EventCreateService do
 
       it "creates new event" do
         expect { service.reopen_mr(merge_request, merge_request.author) }.to change { Event.count }
+        expect { service.reopen_mr(merge_request, merge_request.author) }.to change { ResourceStateEvent.count }
       end
     end
   end
 
   describe 'Milestone' do
-    let(:user) { create :user }
-
     describe '#open_milestone' do
       let(:milestone) { create(:milestone) }
 
@@ -167,7 +175,7 @@ describe EventCreateService do
             wiki_page?: true,
             valid?: true,
             persisted?: true,
-            action: action,
+            action: action.to_s,
             wiki_page: wiki_page,
             author: user
           )
@@ -193,7 +201,7 @@ describe EventCreateService do
       end
     end
 
-    (Event::ACTIONS.values - Event::WIKI_ACTIONS).each do |bad_action|
+    (Event.actions.keys - Event::WIKI_ACTIONS).each do |bad_action|
       context "The action is #{bad_action}" do
         it 'raises an error' do
           expect { service.wiki_event(meta, user, bad_action) }.to raise_error(described_class::IllegalActionError)
@@ -203,9 +211,6 @@ describe EventCreateService do
   end
 
   describe '#push', :clean_gitlab_redis_shared_state do
-    let(:project) { create(:project) }
-    let(:user) { create(:user) }
-
     let(:push_data) do
       {
         commits: [
@@ -227,9 +232,6 @@ describe EventCreateService do
   end
 
   describe '#bulk_push', :clean_gitlab_redis_shared_state do
-    let(:project) { create(:project) }
-    let(:user) { create(:user) }
-
     let(:push_data) do
       {
         action: :created,
@@ -244,9 +246,6 @@ describe EventCreateService do
   end
 
   describe 'Project' do
-    let(:user) { create :user }
-    let(:project) { create(:project) }
-
     describe '#join_project' do
       subject { service.join_project(project, user) }
 
@@ -259,6 +258,83 @@ describe EventCreateService do
 
       it { is_expected.to be_truthy }
       it { expect { subject }.to change { Event.count }.from(0).to(1) }
+    end
+  end
+
+  describe 'design events' do
+    let_it_be(:design) { create(:design, project: project) }
+    let_it_be(:author) { user }
+
+    shared_examples 'feature flag gated multiple event creation' do
+      context 'the feature flag is off' do
+        before do
+          stub_feature_flags(design_activity_events: false)
+        end
+
+        specify { expect(result).to be_empty }
+        specify { expect { result }.not_to change { Event.count } }
+        specify { expect { result }.not_to exceed_query_limit(0) }
+      end
+
+      context 'the feature flag is enabled for a single project' do
+        before do
+          stub_feature_flags(design_activity_events: project)
+        end
+
+        specify { expect(result).not_to be_empty }
+        specify { expect { result }.to change { Event.count }.by(1) }
+      end
+    end
+
+    describe '#save_designs' do
+      let_it_be(:updated) { create_list(:design, 5) }
+      let_it_be(:created) { create_list(:design, 3) }
+
+      let(:result) { service.save_designs(author, create: created, update: updated) }
+
+      specify { expect { result }.to change { Event.count }.by(8) }
+
+      specify { expect { result }.not_to exceed_query_limit(1) }
+
+      it 'creates 3 created design events' do
+        ids = result.pluck('id')
+        events = Event.created_action.where(id: ids)
+
+        expect(events.map(&:design)).to match_array(created)
+      end
+
+      it 'creates 5 created design events' do
+        ids = result.pluck('id')
+        events = Event.updated_action.where(id: ids)
+
+        expect(events.map(&:design)).to match_array(updated)
+      end
+
+      it_behaves_like 'feature flag gated multiple event creation' do
+        let(:project) { created.first.project }
+      end
+    end
+
+    describe '#destroy_designs' do
+      let_it_be(:designs) { create_list(:design, 5) }
+      let_it_be(:author) { create(:user) }
+
+      let(:result) { service.destroy_designs(designs, author) }
+
+      specify { expect { result }.to change { Event.count }.by(5) }
+
+      specify { expect { result }.not_to exceed_query_limit(1) }
+
+      it 'creates 5 destroyed design events' do
+        ids = result.pluck('id')
+        events = Event.destroyed_action.where(id: ids)
+
+        expect(events.map(&:design)).to match_array(designs)
+      end
+
+      it_behaves_like 'feature flag gated multiple event creation' do
+        let(:project) { designs.first.project }
+      end
     end
   end
 end

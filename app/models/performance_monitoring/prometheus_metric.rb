@@ -10,16 +10,24 @@ module PerformanceMonitoring
     validates :query, presence: true, unless: :query_range
     validates :query_range, presence: true, unless: :query
 
-    def self.from_json(json_content)
-      metric = PrometheusMetric.new(
-        id: json_content['id'],
-        unit: json_content['unit'],
-        label: json_content['label'],
-        query: json_content['query'],
-        query_range: json_content['query_range']
-      )
+    class << self
+      def from_json(json_content)
+        build_from_hash(json_content).tap(&:validate!)
+      end
 
-      metric.tap(&:validate!)
+      private
+
+      def build_from_hash(attributes)
+        return new unless attributes.is_a?(Hash)
+
+        new(
+          id: attributes['id'],
+          unit: attributes['unit'],
+          label: attributes['label'],
+          query: attributes['query'],
+          query_range: attributes['query_range']
+        )
+      end
     end
   end
 end

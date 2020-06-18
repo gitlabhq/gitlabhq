@@ -106,7 +106,7 @@ module Gitlab
       end
 
       def gitlab_fingerprint
-        Digest::SHA1.hexdigest(plain_gitlab_fingerprint)
+        Gitlab::AlertManagement::Fingerprint.generate(plain_gitlab_fingerprint)
       end
 
       def valid?
@@ -121,9 +121,9 @@ module Gitlab
 
       def plain_gitlab_fingerprint
         if gitlab_managed?
-          [metric_id, starts_at].join('/')
+          [metric_id, starts_at_raw].join('/')
         else # self managed
-          [starts_at, title, full_query].join('/')
+          [starts_at_raw, title, full_query].join('/')
         end
       end
 
@@ -173,7 +173,10 @@ module Gitlab
         value = payload&.dig(field)
         return unless value
 
-        Time.rfc3339(value)
+        # value is a rfc3339 timestamp
+        # Timestamps from Prometheus and Alertmanager are UTC RFC3339 timestamps like: '2018-03-12T09:06:00Z' (Z represents 0 offset or UTC)
+        # .utc sets the datetime zone to `UTC`
+        Time.rfc3339(value).utc
       rescue ArgumentError
       end
 

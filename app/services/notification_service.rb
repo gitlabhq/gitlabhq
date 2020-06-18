@@ -68,10 +68,10 @@ class NotificationService
 
   # Notify a user when a previously unknown IP or device is used to
   # sign in to their account
-  def unknown_sign_in(user, ip)
+  def unknown_sign_in(user, ip, time)
     return unless user.can?(:receive_notifications)
 
-    mailer.unknown_sign_in_email(user, ip).deliver_later
+    mailer.unknown_sign_in_email(user, ip, time).deliver_later
   end
 
   # When create an issue we should send an email to:
@@ -447,14 +447,14 @@ class NotificationService
     # from the PipelinesEmailService integration.
     return if pipeline.project.emails_disabled?
 
-    ref_status ||= pipeline.status
-    email_template = "pipeline_#{ref_status}_email"
+    status = pipeline_notification_status(ref_status, pipeline)
+    email_template = "pipeline_#{status}_email"
 
     return unless mailer.respond_to?(email_template)
 
     recipients ||= notifiable_users(
       [pipeline.user], :watch,
-      custom_action: :"#{ref_status}_pipeline",
+      custom_action: :"#{status}_pipeline",
       target: pipeline
     ).map do |user|
       user.notification_email_for(pipeline.project.group)
@@ -557,6 +557,15 @@ class NotificationService
     mailer.group_was_not_exported_email(current_user, group, errors).deliver_later
   end
 
+  # Notify users on new review in system
+  def new_review(review)
+    recipients = NotificationRecipients::BuildService.build_new_review_recipients(review)
+
+    recipients.each do |recipient|
+      mailer.new_review_email(recipient.user.id, review.id).deliver_later
+    end
+  end
+
   protected
 
   def new_resource_email(target, method)
@@ -651,6 +660,16 @@ class NotificationService
   end
 
   private
+
+  def pipeline_notification_status(ref_status, pipeline)
+    if Ci::Ref.failing_state?(ref_status)
+      'failed'
+    elsif ref_status
+      ref_status
+    else
+      pipeline.status
+    end
+  end
 
   def owners_and_maintainers_without_invites(project)
     recipients = project.members.active_without_invites_and_requests.owners_and_maintainers

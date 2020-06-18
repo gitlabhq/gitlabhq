@@ -22,8 +22,12 @@ module Projects
       # causing GC to run every time.
       service.increment!
     rescue Projects::HousekeepingService::LeaseTaken => e
-      Rails.logger.info( # rubocop:disable Gitlab/RailsLogger
-        "Could not perform housekeeping for project #{@project.full_path} (#{@project.id}): #{e}")
+      Gitlab::Import::Logger.info(
+        message: 'Project housekeeping failed',
+        project_full_path: @project.full_path,
+        project_id: @project.id,
+        error: e.message
+      )
     end
 
     private

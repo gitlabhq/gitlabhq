@@ -6,11 +6,11 @@
 %div{ class: [("limit-container-width" unless fluid_layout)] }
   = render "home_panel"
 
-  %h4.prepend-top-0.append-bottom-8
+  %h4.gl-mt-0.gl-mb-3
     = _('The repository for this project is empty')
 
   - if @project.can_current_user_push_code?
-    %p.append-bottom-0
+    %p.gl-mb-0
       = _('You can get started by cloning the repository or start adding files to it with one of the following options.')
 
   .project-buttons.qa-quick-actions
@@ -22,7 +22,7 @@
     = render 'stat_anchor_list', anchors: @project.empty_repo_statistics_buttons
 
   - if can?(current_user, :push_code, @project)
-    .empty-wrapper.prepend-top-32
+    .empty-wrapper.gl-mt-7
       %h3#repo-command-line-instructions.page-title-empty
         = _('Command line instructions')
       %p

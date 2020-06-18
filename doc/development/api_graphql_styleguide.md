@@ -346,7 +346,7 @@ GitLab's GraphQL API is versionless, which means we maintain backwards
 compatibility with older versions of the API with every change. Rather
 than removing a field, we need to _deprecate_ the field instead. In
 future, GitLab
-[may remove deprecated fields](https://gitlab.com/gitlab-org/gitlab/issues/32292).
+[may remove deprecated fields](https://gitlab.com/gitlab-org/gitlab/-/issues/32292).
 
 Fields are deprecated using the `deprecated` property. The value
 of the property is a `Hash` of:
@@ -468,6 +468,23 @@ Example:
 field :id, GraphQL::ID_TYPE, description: 'ID of the Issue'
 field :confidential, GraphQL::BOOLEAN_TYPE, description: 'Indicates the issue is confidential'
 field :closed_at, Types::TimeType, description: 'Timestamp of when the issue was closed'
+```
+
+### `copy_field_description` helper
+
+Sometimes we want to ensure that two descriptions will always be identical.
+For example, to keep a type field description the same as a mutation argument
+when they both represent the same property.
+
+Instead of supplying a description, we can use the `copy_field_description` helper,
+passing it the type, and field name to copy the description of.
+
+Example:
+
+```ruby
+argument :title, GraphQL::STRING_TYPE,
+          required: false,
+          description: copy_field_description(Types::MergeRequestType, :title)
 ```
 
 ## Authorization
@@ -602,6 +619,84 @@ lot of dependent objects.
 
 To limit the amount of queries performed, we can use `BatchLoader`.
 
+### Correct use of `Resolver#ready?`
+
+Resolvers have two public API methods as part of the framework: `#ready?(**args)` and `#resolve(**args)`.
+We can use `#ready?` to perform set-up, validation or early-return without invoking `#resolve`.
+
+Good reasons to use `#ready?` include:
+
+- validating mutually exclusive arguments (see [validating arguments](#validating-arguments))
+- Returning `Relation.none` if we know before-hand that no results are possible
+- Performing setup such as initializing instance variables (although consider lazily initialized methods for this)
+
+Implementations of [`Resolver#ready?(**args)`](https://graphql-ruby.org/api-doc/1.10.9/GraphQL/Schema/Resolver#ready%3F-instance_method) should
+return `(Boolean, early_return_data)` as follows:
+
+```ruby
+def ready?(**args)
+  [false, 'have this instead']
+end
+```
+
+For this reason, whenever you call a resolver (mainly in tests - as framework
+abstractions Resolvers should not be considered re-usable, finders are to be
+preferred), remember to call the `ready?` method and check the boolean flag
+before calling `resolve`! An example can be seen in our [`GraphQLHelpers`](https://gitlab.com/gitlab-org/gitlab/-/blob/2d395f32d2efbb713f7bc861f96147a2a67e92f2/spec/support/helpers/graphql_helpers.rb#L20-27).
+
+### Look-Ahead
+
+The full query is known in advance during execution, which means we can make use
+of [lookahead](https://graphql-ruby.org/queries/lookahead.html) to optimize our
+queries, and batch load associations we know we will need. Consider adding
+lookahead support in your resolvers to avoid `N+1` performance issues.
+
+To enable support for common lookahead use-cases (pre-loading associations when
+child fields are requested), you can
+include [`LooksAhead`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/graphql/resolvers/concerns/looks_ahead.rb). For example:
+
+```ruby
+# Assuming a model `MyThing` with attributes `[child_attribute, other_attribute, nested]`,
+# where nested has an attribute named `included_attribute`.
+class MyThingResolver < BaseResolver
+  include LooksAhead
+
+  # Rather than defining `resolve(**args)`, we implement: `resolve_with_lookahead(**args)`
+  def resolve_with_lookahead(**args)
+    apply_lookahead(MyThingFinder.new(current_user).execute)
+  end
+
+  # We list things that should always be preloaded:
+  # For example, if child_attribute is always needed (during authorization
+  # perhaps), then we can include it here.
+  def unconditional_includes
+    [:child_attribute]
+  end
+
+  # We list things that should be included if a certain field is selected:
+  def preloads
+    {
+        field_one: [:other_attribute],
+        field_two: [{ nested: [:included_attribute] }]
+    }
+  end
+end
+```
+
+The final thing that is needed is that every field that uses this resolver needs
+to advertise the need for lookahead:
+
+```ruby
+  # in ParentType
+  field :my_things, MyThingType.connection_type, null: true,
+        extras: [:lookahead], # Necessary
+        resolver: MyThingResolver,
+        description: 'My things'
+```
+
+For an example of real world use, please
+see [`ResolvesMergeRequests`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/graphql/resolvers/concerns/resolves_merge_requests.rb).
+
 ## Mutations
 
 Mutations are used to change any stored values, or to trigger
@@ -613,19 +708,6 @@ To find objects for a mutation, arguments need to be specified. As with
 [resolvers](#resolvers), prefer using internal ID or, if needed, a
 global ID rather than the database ID.
 
-### Fields
-
-In the most common situations, a mutation would return 2 fields:
-
-- The resource being modified
-- A list of errors explaining why the action could not be
-  performed. If the mutation succeeded, this list would be empty.
-
-By inheriting any new mutations from `Mutations::BaseMutation` the
-`errors` field is automatically added. A `clientMutationId` field is
-also added, this can be used by the client to identify the result of a
-single mutation when multiple are performed within a single request.
-
 ### Building Mutations
 
 Mutations live in `app/graphql/mutations` ideally grouped per
@@ -633,11 +715,15 @@ resources they are mutating, similar to our services. They should
 inherit `Mutations::BaseMutation`. The fields defined on the mutation
 will be returned as the result of the mutation.
 
+### Naming conventions
+
 Always provide a consistent GraphQL-name to the mutation, this name is
 used to generate the input types and the field the mutation is mounted
 on. The name should look like `<Resource being modified><Mutation
 class name>`, for example the `Mutations::MergeRequests::SetWip`
 mutation has GraphQL name `MergeRequestSetWip`.
+
+### Arguments
 
 Arguments required by the mutation can be defined as arguments
 required for a field. These will be wrapped up in an input type for
@@ -667,11 +753,28 @@ This would automatically generate an input type called
 `clientMutationId`.
 
 These arguments are then passed to the `resolve` method of a mutation
-as keyword arguments. From here, we can call the service that will
-modify the resource.
+as keyword arguments.
+
+### Fields
+
+In the most common situations, a mutation would return 2 fields:
+
+- The resource being modified
+- A list of errors explaining why the action could not be
+  performed. If the mutation succeeded, this list would be empty.
+
+By inheriting any new mutations from `Mutations::BaseMutation` the
+`errors` field is automatically added. A `clientMutationId` field is
+also added, this can be used by the client to identify the result of a
+single mutation when multiple are performed within a single request.
+
+### The `resolve` method
+
+The `resolve` method receives the mutation's arguments as keyword arguments.
+From here, we can call the service that will modify the resource.
 
 The `resolve` method should then return a hash with the same field
-names as defined on the mutation and an `errors` array. For example,
+names as defined on the mutation including an `errors` array. For example,
 the `Mutations::MergeRequests::SetWip` defines a `merge_request`
 field:
 
@@ -690,12 +793,15 @@ should look like this:
   # The merge request modified, this will be wrapped in the type
   # defined on the field
   merge_request: merge_request,
-  # An array if strings if the mutation failed after authorization
-  errors: merge_request.errors.full_messages
+  # An array of strings if the mutation failed after authorization.
+  # The `errors_on_object` helper collects `errors.full_messages`
+  errors: errors_on_object(merge_request)
 }
 ```
 
-To make the mutation available it should be defined on the mutation
+### Mounting the mutation
+
+To make the mutation available it must be defined on the mutation
 type that lives in `graphql/types/mutation_types`. The
 `mount_mutation` helper method will define a field based on the
 GraphQL-name of the mutation:
@@ -744,6 +850,131 @@ found, we should raise a
 `Gitlab::Graphql::Errors::ResourceNotAvailable` error. Which will be
 correctly rendered to the clients.
 
+### Errors in mutations
+
+We encourage following the practice of [errors as
+data](https://graphql-ruby.org/mutations/mutation_errors) for mutations, which
+distinguishes errors by who they are relevant to, defined by who can deal with
+them.
+
+Key points:
+
+- All mutation responses have an `errors` field. This should be populated on
+  failure, and may be populated on success.
+- Consider who needs to see the error: the **user** or the **developer**.
+- Clients should always request the `errors` field when performing mutations.
+- Errors may be reported to users either at `$root.errors` (top-level error) or at
+  `$root.data.mutationName.errors` (mutation errors). The location depends on what kind of error
+  this is, and what information it holds.
+
+Consider an example mutation `doTheThing` that returns a response with
+two fields: `errors: [String]`, and `thing: ThingType`. The specific nature of
+the `thing` itself is irrelevant to these examples, as we are considering the
+errors.
+
+There are three states a mutation response can be in:
+
+- [Success](#success)
+- [Failure (relevant to the user)](#failure-relevant-to-the-user)
+- [Failure (irrelevant to the user)](#failure-irrelevant-to-the-user)
+
+#### Success
+
+In the happy path, errors *may* be returned, along with the anticipated payload, but
+if everything was successful, then `errors` should be an empty array, since
+there are no problems we need to inform the user of.
+
+```javascript
+{
+  data: {
+    doTheThing: {
+      errors: [] // if successful, this array will generally be empty.
+      thing: { .. }
+    }
+  }
+}
+```
+
+#### Failure (relevant to the user)
+
+An error that affects the **user** occurred. We refer to these as _mutation errors_. In
+this case there is typically no `thing` to return:
+
+```javascript
+{
+  data: {
+    doTheThing: {
+      errors: ["you cannot touch the thing"],
+      thing: null
+    }
+  }
+}
+```
+
+Examples of this include:
+
+- Model validation errors: the user may need to change the inputs.
+- Permission errors: the user needs to know they cannot do this, they may need to request permission or sign in.
+- Problems with application state that prevent the user's action, for example: merge conflicts, the resource was locked, and so on.
+
+Ideally, we should prevent the user from getting this far, but if they do, they
+need to be told what is wrong, so they understand the reason for the failure and
+what they can do to achieve their intent, even if that is as simple as retrying the
+request.
+
+It is possible to return *recoverable* errors alongside mutation data. For example, if
+a user uploads 10 files and 3 of them fail and the rest succeed, the errors for the
+failures can be made available to the user, alongside the information about
+the successes.
+
+#### Failure (irrelevant to the user)
+
+One or more *non-recoverable* errors can be returned at the _top level_. These
+are things over which the **user** has little to no control, and should mainly
+be system or programming problems, that a **developer** needs to know about.
+In this case there is no `data`:
+
+```javascript
+{
+  errors: [
+    {"message": "argument error: expected an integer, got null"},
+  ]
+}
+```
+
+This is the result of raising an error during the mutation. In our implementation,
+the messages of argument errors and validation errors are returned to the client, and all other
+`StandardError` instances are caught, logged and presented to the client with the message set to `"Internal server error"`.
+See [`GraphqlController`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/controllers/graphql_controller.rb) for details.
+
+These represent programming errors, such as:
+
+- A GraphQL syntax error, where an `Int` was passed instead of a `String`, or a required argument was not present.
+- Errors in our schema, such as being unable to provide a value for a non-nullable field.
+- System errors: for example, a Git storage exception, or database unavailability.
+
+The user should not be able to cause such errors in regular usage. This category
+of errors should be treated as internal, and not shown to the user in specific
+detail.
+
+We need to inform the user when the mutation fails, but we do not need to
+tell them why, since they cannot have caused it, and nothing they can do will
+fix it, although we may offer to retry the mutation.
+
+#### Categorizing errors
+
+When we write mutations, we need to be conscious about which of
+these two categories an error state falls into (and communicate about this with
+frontend developers to verify our assumptions). This means distinguishing the
+needs of the _user_ from the needs of the _client_.
+
+> _Never catch an error unless the user needs to know about it._
+
+If the user does need to know about it, communicate with frontend developers
+to make sure the error information we are passing back is useful.
+
+See also the [frontend GraphQL guide](../development/fe_guide/graphql.md#handling-errors).
+
 ## Validating arguments
 
 For validations of single arguments, use the
@@ -751,8 +982,8 @@ For validations of single arguments, use the
 as normal.
 
 Sometimes a mutation or resolver may accept a number of optional
-arguments, but still want to validate that at least one of the optional
-arguments were given. In this situation, consider using the `#ready?`
+arguments, but we still want to validate that at least one of the optional
+arguments is provided. In this situation, consider using the `#ready?`
 method within your mutation or resolver to provide the validation. The
 `#ready?` method will be called before any work is done within the
 `#resolve` method.
@@ -767,7 +998,7 @@ def ready?(**args)
   end
 
   # Always remember to call `#super`
-  super(args)
+  super
 end
 ```
 

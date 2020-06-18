@@ -40,17 +40,13 @@ module Projects
 
         def create_managed_prometheus_alert_event(parsed_alert)
           alert = find_alert(parsed_alert.metric_id)
-          payload_key = PrometheusAlertEvent.payload_key_for(parsed_alert.metric_id, parsed_alert.starts_at_raw)
-
-          event = PrometheusAlertEvent.find_or_initialize_by_payload_key(parsed_alert.project, alert, payload_key)
+          event = PrometheusAlertEvent.find_or_initialize_by_payload_key(parsed_alert.project, alert, parsed_alert.gitlab_fingerprint)
 
           set_status(parsed_alert, event)
         end
 
         def create_self_managed_prometheus_alert_event(parsed_alert)
-          payload_key = SelfManagedPrometheusAlertEvent.payload_key_for(parsed_alert.starts_at_raw, parsed_alert.title, parsed_alert.full_query)
-
-          event = SelfManagedPrometheusAlertEvent.find_or_initialize_by_payload_key(parsed_alert.project, payload_key) do |event|
+          event = SelfManagedPrometheusAlertEvent.find_or_initialize_by_payload_key(parsed_alert.project, parsed_alert.gitlab_fingerprint) do |event|
             event.environment      = parsed_alert.environment
             event.title            = parsed_alert.title
             event.query_expression = parsed_alert.full_query

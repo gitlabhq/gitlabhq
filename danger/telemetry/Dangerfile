@@ -1,12 +1,11 @@
 # frozen_string_literal: true
 
 TELEMETRY_CHANGED_FILES_MESSAGE = <<~MSG
-This merge request includes changes for which a review from the Data team and Telemetry team is recommended.
-Please reach out to @gitlab-org/growth/telemetry/engineers group for a review.
-MSG
+For the following files, a review from the [Data team and Telemetry team](https://gitlab.com/groups/gitlab-org/growth/telemetry/engineers/-/group_members?with_inherited_permissions=exclude) is recommended
+Please check the ~telemetry [guide](https://docs.gitlab.com/ee/development/telemetry/usage_ping.html) and reach out to @gitlab-org/growth/telemetry/engineers group for a review.
 
-USAGE_DATA_FILES_MESSAGE = <<~MSG
-For the following files, a review from the [Data team and Telemetry team](https://gitlab.com/groups/gitlab-org/growth/telemetry/engineers/-/group_members?with_inherited_permissions=exclude) is recommended:
+%<changed_files>s
+
 MSG
 
 tracking_files = [
@@ -16,7 +15,7 @@ tracking_files = [
   'spec/helpers/tracking_helper_spec.rb',
   'app/assets/javascripts/tracking.js',
   'spec/frontend/tracking_spec.js'
-  ]
+]
 
 usage_data_changed_files = git.modified_files.grep(%r{usage_data})
 snowplow_events_changed_files = git.modified_files & tracking_files
@@ -24,9 +23,7 @@ snowplow_events_changed_files = git.modified_files & tracking_files
 changed_files = (usage_data_changed_files + snowplow_events_changed_files)
 
 if changed_files.any?
-  warn format(TELEMETRY_CHANGED_FILES_MESSAGE)
-
-  markdown(USAGE_DATA_FILES_MESSAGE + helper.markdown_list(changed_files))
+  warn format(TELEMETRY_CHANGED_FILES_MESSAGE, changed_files: helper.markdown_list(changed_files))
 
   telemetry_labels = ['telemetry']
   telemetry_labels << 'telemetry::review pending' unless helper.mr_has_labels?('telemetry::reviewed')

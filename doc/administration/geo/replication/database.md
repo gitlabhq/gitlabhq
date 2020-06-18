@@ -1,3 +1,10 @@
+---
+stage: Enablement
+group: Geo
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+type: howto
+---
+
 # Geo database replication **(PREMIUM ONLY)**
 
 NOTE: **Note:**
@@ -23,10 +30,6 @@ The GitLab **primary** node where the write operations happen will connect to
 the **primary** database server, and **secondary** nodes will
 connect to their own database servers (which are also read-only).
 
-NOTE: **Note:**
-In database documentation, you may see "**primary**" being referenced as "master"
-and "**secondary**" as either "slave" or "standby" server (read-only).
-
 We recommend using [PostgreSQL replication slots](https://medium.com/@tk512/replication-slots-in-postgresql-b4b03d277c75)
 to ensure that the **primary** node retains all the data necessary for the **secondary** nodes to
 recover. See below for more details.
@@ -43,7 +46,7 @@ The following guide assumes that:
 
 CAUTION: **Warning:**
 Geo works with streaming replication. Logical replication is not supported at this time.
-There is an [issue where support is being discussed](https://gitlab.com/gitlab-org/gitlab/issues/7420).
+There is an [issue where support is being discussed](https://gitlab.com/gitlab-org/gitlab/-/issues/7420).
 
 ### Step 1. Configure the **primary** server
 
@@ -317,7 +320,7 @@ There is an [issue where support is being discussed](https://gitlab.com/gitlab-o
    to the private key, which is **only** present on the **primary** node.
 
 1. Test that the `gitlab-psql` user can connect to the **primary** node's database
-   (the default Omnibus database name is gitlabhq_production):
+   (the default Omnibus database name is `gitlabhq_production`):
 
    ```shell
    sudo \
@@ -461,7 +464,7 @@ The replication process is now complete.
 PostgreSQL connections. We recommend using PgBouncer if you use GitLab in a
 high-availability configuration with a cluster of nodes supporting a Geo
 **primary** node and another cluster of nodes supporting a Geo **secondary** node. For more
-information, see [High Availability with Omnibus GitLab](../../high_availability/database.md#high-availability-with-omnibus-gitlab-premium-only).
+information, see [High Availability with Omnibus GitLab](../../postgresql/replication_and_failover.md).
 
 For a Geo **secondary** node to work properly with PgBouncer in front of the database,
 it will need a separate read-only user to make [PostgreSQL FDW queries](https://www.postgresql.org/docs/11/postgres-fdw.html)

@@ -1,0 +1,10 @@
+- page_title _('Import in progress')
+- @content_class = "limit-container-width" unless fluid_layout
+
+.save-group-loader
+  .center
+    %h2
+      %i.loading.spinner.spinner-sm
+      = page_title
+    %p
+      = s_('GroupImport|Please wait while we import the group for you. Refresh at will.')

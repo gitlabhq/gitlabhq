@@ -7,9 +7,30 @@ describe 'query Jira import data' do
 
   let_it_be(:current_user) { create(:user) }
   let_it_be(:project) { create(:project, :private, :import_started, import_type: 'jira') }
-  let_it_be(:jira_import1) { create(:jira_import_state, :finished, project: project, jira_project_key: 'AA', user: current_user, created_at: 2.days.ago) }
-  let_it_be(:jira_import2) { create(:jira_import_state, :finished, project: project, jira_project_key: 'BB', user: current_user, created_at: 5.days.ago) }
-
+  let_it_be(:jira_import1) do
+    create(
+      :jira_import_state, :finished,
+      project: project,
+      jira_project_key: 'AA',
+      user: current_user,
+      created_at: 2.days.ago,
+      failed_to_import_count: 2,
+      imported_issues_count: 2,
+      total_issue_count: 4
+    )
+  end
+  let_it_be(:jira_import2) do
+    create(
+      :jira_import_state, :finished,
+      project: project,
+      jira_project_key: 'BB',
+      user: current_user,
+      created_at: 5.days.ago,
+      failed_to_import_count: 1,
+      imported_issues_count: 2,
+      total_issue_count: 3
+    )
+  end
   let(:query) do
     %(
       query {
@@ -23,6 +44,9 @@ describe 'query Jira import data' do
               scheduledBy {
                 username
               }
+              importedIssuesCount
+              failedToImportCount
+              totalIssueCount
             }
           }
         }
@@ -64,10 +88,16 @@ describe 'query Jira import data' do
       it 'retuns list of jira imports' do
         jira_proket_keys = jira_imports.map {|ji| ji['jiraProjectKey']}
         usernames = jira_imports.map {|ji| ji.dig('scheduledBy', 'username')}
+        imported_issues_count = jira_imports.map {|ji| ji.dig('importedIssuesCount')}
+        failed_issues_count = jira_imports.map {|ji| ji.dig('failedToImportCount')}
+        total_issue_count = jira_imports.map {|ji| ji.dig('totalIssueCount')}
 
         expect(jira_imports.size).to eq 2
         expect(jira_proket_keys).to eq %w(BB AA)
         expect(usernames).to eq [current_user.username, current_user.username]
+        expect(imported_issues_count).to eq [2, 2]
+        expect(failed_issues_count).to eq [1, 2]
+        expect(total_issue_count).to eq [3, 4]
       end
     end
 

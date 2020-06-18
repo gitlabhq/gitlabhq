@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe StaticObjectExternalStorage do
+RSpec.describe StaticObjectExternalStorage do
   controller(Projects::ApplicationController) do
     include StaticObjectExternalStorage
 

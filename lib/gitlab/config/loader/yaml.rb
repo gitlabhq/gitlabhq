@@ -21,11 +21,15 @@ module Gitlab
           hash? && !too_big?
         end
 
-        def load!
+        def load_raw!
           raise DataTooLargeError, 'The parsed YAML is too big' if too_big?
           raise Loader::FormatError, 'Invalid configuration format' unless hash?
 
-          @config.deep_symbolize_keys
+          @config
+        end
+
+        def load!
+          @symbolized_config ||= load_raw!.deep_symbolize_keys
         end
 
         private

@@ -1,11 +1,18 @@
 import Vue from 'vue';
 import { createComponentWithStore } from 'helpers/vue_mount_component_helper';
-import store from '~/ide/stores';
+import { createStore } from '~/ide/stores';
 import ide from '~/ide/components/ide.vue';
 import { file, resetStore } from '../helpers';
 import { projectData } from '../mock_data';
+import extendStore from '~/ide/stores/extend';
+
+let store;
 
 function bootstrap(projData) {
+  store = createStore();
+
+  extendStore(store, document.createElement('div'));
+
   const Component = Vue.extend(ide);
 
   store.state.currentProjectId = 'abcproject';

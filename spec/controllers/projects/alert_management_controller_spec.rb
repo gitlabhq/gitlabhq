@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Projects::AlertManagementController do
+RSpec.describe Projects::AlertManagementController do
   let_it_be(:project) { create(:project) }
   let_it_be(:role) { :developer }
   let_it_be(:user) { create(:user) }

@@ -1,14 +1,18 @@
 ---
 type: reference, howto
+stage: Defend
+group: Container Security
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 ---
 
 # Threat Monitoring **(ULTIMATE)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/14707) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.9.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/14707) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.9.
 
-The **Threat Monitoring** page provides metrics for the GitLab
-application runtime security features. You can access these metrics by
-navigating to your project's **Security & Compliance > Threat Monitoring** page.
+The **Threat Monitoring** page provides metrics and policy management
+for the GitLab application runtime security features. You can access
+these by navigating to your project's **Security & Compliance > Threat
+Monitoring** page.
 
 GitLab supports statistics for the following security features:
 
@@ -42,7 +46,7 @@ investigate it for potential threats by
 
 ## Container Network Policy
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/32365) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.9.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/32365) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.9.
 
 The **Container Network Policy** section provides packet flow metrics for
 your application's Kubernetes namespace. This section has the following
@@ -74,3 +78,41 @@ about your packet flow:
 If a significant percentage of packets is dropped, you should
 investigate it for potential threats by
 [examining the Cilium logs](../../clusters/applications.md#install-cilium-using-gitlab-cicd).
+
+## Container Network Policy management
+
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3328) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.1.
+
+The **Threat Monitoring** page's **Policy** tab displays deployed
+network policies for all available environments. You can check a
+network policy's `yaml` manifest and toggle the policy's enforcement
+status. This section has the following prerequisites:
+
+- Your project contains at least one [environment](../../../ci/environments/index.md)
+- You've [installed Cilium](../../clusters/applications.md#install-cilium-using-gitlab-cicd)
+
+Network policies are fetched directly from the selected environment's
+deployment platform. Changes performed outside of this tab are
+reflected upon refresh. Enforcement status changes are deployed
+directly to a deployment namespace of the selected environment.
+
+NOTE: **Note:**
+If you're using [Auto DevOps](../../../topics/autodevops/index.md) and
+change a policy in this section, your `auto-deploy-values.yaml` file
+doesn't update. Auto DevOps users must make changes by following
+the [Container Network Policy documentation](../../../topics/autodevops/stages.md#network-policy).
+
+### Changing enforcement status
+
+To change a network policy's enforcement status:
+
+- Click the network policy you want to update.
+- Click the **Enforcement status** toggle to update the selected policy.
+- Click the **Apply changes** button to deploy network policy changes.
+
+NOTE: **Note:**
+Disabled network policies have the
+`network-policy.gitlab.com/disabled_by: gitlab` selector inside the
+`podSelector` block. This narrows the scope of such a policy and as a
+result it doesn't affect any pods. The policy itself is still deployed
+to the corresponding deployment namespace.

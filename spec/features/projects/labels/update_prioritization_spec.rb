@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Prioritize labels' do
+RSpec.describe 'Prioritize labels' do
   include DragTo
 
   let(:user)     { create(:user) }

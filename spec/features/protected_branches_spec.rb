@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Protected Branches', :js do
+RSpec.describe 'Protected Branches', :js do
   include ProtectedBranchHelpers
 
   let(:user) { create(:user) }

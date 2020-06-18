@@ -13,6 +13,7 @@ class ClusterSerializer < BaseSerializer
         :name,
         :nodes,
         :path,
+        :provider_type,
         :status
       ]
     })

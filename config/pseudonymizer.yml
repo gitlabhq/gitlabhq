@@ -465,7 +465,6 @@ tables:
     - auditor
     - require_two_factor_authentication_from_group
     - two_factor_grace_period
-    - ghost
     - last_activity_on
     - notified_of_own_activity
     - user_type

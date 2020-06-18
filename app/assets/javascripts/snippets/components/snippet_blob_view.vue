@@ -74,6 +74,9 @@ export default {
     canBeCloned() {
       return this.snippet.sshUrlToRepo || this.snippet.httpUrlToRepo;
     },
+    hasRenderError() {
+      return Boolean(this.viewer.renderError);
+    },
   },
   methods: {
     switchViewer(newViewer) {
@@ -92,7 +95,12 @@ export default {
   <div>
     <blob-embeddable v-if="embeddable" class="mb-3" :url="snippet.webUrl" />
     <article class="file-holder snippet-file-content">
-      <blob-header :blob="blob" :active-viewer-type="viewer.type" @viewer-changed="switchViewer">
+      <blob-header
+        :blob="blob"
+        :active-viewer-type="viewer.type"
+        :has-render-error="hasRenderError"
+        @viewer-changed="switchViewer"
+      >
         <template #actions>
           <clone-dropdown-button
             v-if="canBeCloned"

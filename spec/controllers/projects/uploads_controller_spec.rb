@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Projects::UploadsController do
+RSpec.describe Projects::UploadsController do
   include WorkhorseHelpers
 
   let(:model) { create(:project, :public) }

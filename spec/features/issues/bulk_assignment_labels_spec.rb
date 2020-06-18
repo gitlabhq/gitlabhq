@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Issues > Labels bulk assignment' do
+RSpec.describe 'Issues > Labels bulk assignment' do
   let(:user)      { create(:user) }
   let!(:project)  { create(:project) }
   let!(:issue1)   { create(:issue, project: project, title: "Issue 1") }
@@ -302,7 +302,23 @@ describe 'Issues > Labels bulk assignment' do
         sleep 1 # needed
 
         expect(find("#issue_#{issue1.id}")).to have_content 'bug'
-        expect(find("#issue_#{issue1.id}")).not_to have_content 'feature'
+        expect(find("#issue_#{issue1.id}")).to have_content 'feature'
+      end
+    end
+
+    context 'mark previously toggled label' do
+      before do
+        enable_bulk_update
+      end
+
+      it do
+        open_labels_dropdown ['feature']
+
+        check_issue issue1
+
+        update_issues
+
+        expect(find("#issue_#{issue1.id}")).to have_content 'feature'
       end
     end
 

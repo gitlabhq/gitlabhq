@@ -24,8 +24,9 @@ module Mutations
         project = merge_request.project
 
         label_ids = label_ids
+                      .map { |gid| GlobalID.parse(gid) }
                       .select(&method(:label_descendant?))
-                      .map { |gid| GlobalID.parse(gid).model_id } # MergeRequests::UpdateService expects integers
+                      .map(&:model_id) # MergeRequests::UpdateService expects integers
 
         attribute_name = case operation_mode
                          when Types::MutationOperationModeEnum.enum[:append]
@@ -41,12 +42,12 @@ module Mutations
 
         {
           merge_request: merge_request,
-          errors: merge_request.errors.full_messages
+          errors: errors_on_object(merge_request)
         }
       end
 
       def label_descendant?(gid)
-        GlobalID.parse(gid)&.model_class&.ancestors&.include?(Label)
+        gid&.model_class&.ancestors&.include?(Label)
       end
     end
   end

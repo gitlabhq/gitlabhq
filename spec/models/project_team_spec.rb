@@ -96,11 +96,9 @@ describe ProjectTeam do
 
       it 'returns invited members of a group' do
         group_member = create(:group_member)
-
-        project.project_group_links.create!(
-          group: group_member.group,
-          group_access: Gitlab::Access::GUEST
-        )
+        create(:project_group_link, group: group_member.group,
+                                    project: project,
+                                    group_access: Gitlab::Access::GUEST)
 
         expect(project.team.members)
           .to contain_exactly(group_member.user, project.owner)
@@ -108,11 +106,9 @@ describe ProjectTeam do
 
       it 'returns invited members of a group of a specified level' do
         group_member = create(:group_member)
-
-        project.project_group_links.create!(
-          group: group_member.group,
-          group_access: Gitlab::Access::REPORTER
-        )
+        create(:project_group_link, group: group_member.group,
+                                    project: project,
+                                    group_access: Gitlab::Access::REPORTER)
 
         expect(project.team.guests).to be_empty
         expect(project.team.reporters).to contain_exactly(group_member.user)

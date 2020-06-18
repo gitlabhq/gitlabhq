@@ -33,6 +33,9 @@ module RuboCop
         private
 
         def string_operation?(node)
+          # Don't complain about string arrays
+          return false if array_column?(node)
+
           modifier = node.children[0]
           migration_method = node.children[1]
 

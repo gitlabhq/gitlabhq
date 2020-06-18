@@ -10,6 +10,10 @@ describe Projects::UpdateRemoteMirrorService do
 
   subject(:service) { described_class.new(project, project.creator) }
 
+  before do
+    stub_feature_flags(gitaly_ruby_remote_branches_ls_remote: false)
+  end
+
   describe '#execute' do
     subject(:execute!) { service.execute(remote_mirror, 0) }
 
@@ -100,6 +104,19 @@ describe Projects::UpdateRemoteMirrorService do
         expect(remote_mirror.last_error).to include("Some refs have diverged")
         expect(remote_mirror.last_error).to include("refs/heads/master\n")
         expect(remote_mirror.last_error).to include("refs/heads/develop")
+      end
+    end
+
+    # https://gitlab.com/gitlab-org/gitaly/-/issues/2670
+    context 'when `gitaly_ruby_remote_branches_ls_remote` is enabled' do
+      before do
+        stub_feature_flags(gitaly_ruby_remote_branches_ls_remote: true)
+      end
+
+      it 'does not perform a fetch' do
+        expect(project.repository).not_to receive(:fetch_remote)
+
+        execute!
       end
     end
   end

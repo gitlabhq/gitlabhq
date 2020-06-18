@@ -3,6 +3,8 @@
 module QA
   context 'Plan', :smoke do
     describe 'Issue creation' do
+      let(:closed_issue) { Resource::Issue.fabricate_via_api! }
+
       before do
         Flow::Login.sign_in
       end
@@ -14,6 +16,25 @@ module QA
 
         Page::Project::Issue::Index.perform do |index|
           expect(index).to have_issue(issue)
+        end
+      end
+
+      it 'closes an issue' do
+        closed_issue.visit!
+
+        Page::Project::Issue::Show.perform do |issue_page|
+          issue_page.click_close_issue_button
+
+          expect(issue_page).to have_element(:reopen_issue_button)
+        end
+
+        Page::Project::Menu.perform(&:click_issues)
+        Page::Project::Issue::Index.perform do |index|
+          expect(index).not_to have_issue(closed_issue)
+
+          index.click_closed_issues_link
+
+          expect(index).to have_issue(closed_issue)
         end
       end
 

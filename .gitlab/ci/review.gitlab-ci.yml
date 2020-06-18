@@ -1,13 +1,13 @@
 build-qa-image:
   extends:
     - .use-kaniko
-    - .default-retry
     - .review:rules:build-qa-image
   stage: build-images
   needs: []
   script:
     - export QA_IMAGE="${CI_REGISTRY}/${CI_PROJECT_PATH}/gitlab-ee-qa:${CI_COMMIT_REF_SLUG}"
     - /kaniko/executor --context=${CI_PROJECT_DIR} --dockerfile=${CI_PROJECT_DIR}/qa/Dockerfile --destination=${QA_IMAGE} --cache=true
+  retry: 2
 
 review-cleanup:
   extends:
@@ -27,24 +27,25 @@ review-cleanup:
     - ruby -rrubygems scripts/review_apps/automated_cleanup.rb
     - gcp_cleanup
 
-review-build-cng:
-  extends:
-    - .default-retry
-    - .review:rules:review-build-cng
-  image: ruby:2.6-alpine
-  stage: review-prepare
-  before_script:
-    - source scripts/utils.sh
-    - install_api_client_dependencies_with_apk
-    - install_gitlab_gem
-  needs:
-    - job: gitlab:assets:compile pull-cache
-      artifacts: false
-  script:
-    - BUILD_TRIGGER_TOKEN=$REVIEW_APPS_BUILD_TRIGGER_TOKEN ./scripts/trigger-build cng
-    # When the job is manual, review-deploy is also manual and we don't want people
-    # to have to manually start the jobs in sequence, so we do it for them.
-    - '[ -z $CI_JOB_MANUAL ] || play_job "review-deploy"'
+# Temporarily disabling review apps
+#review-build-cng:
+#  extends:
+#    - .default-retry
+#    - .review:rules:review-build-cng
+#  image: ruby:2.6-alpine
+#  stage: review-prepare
+#  before_script:
+#    - source scripts/utils.sh
+#    - install_api_client_dependencies_with_apk
+#    - install_gitlab_gem
+#  needs:
+#    - job: compile-production-assets
+#      artifacts: false
+#  script:
+#    - BUILD_TRIGGER_TOKEN=$REVIEW_APPS_BUILD_TRIGGER_TOKEN ./scripts/trigger-build cng
+#    # When the job is manual, review-deploy is also manual and we don't want people
+#    # to have to manually start the jobs in sequence, so we do it for them.
+#    - '[ -z $CI_JOB_MANUAL ] || play_job "review-deploy"'
 
 .review-workflow-base:
   extends:
@@ -53,43 +54,44 @@ review-build-cng:
   variables:
     HOST_SUFFIX: "${CI_ENVIRONMENT_SLUG}"
     DOMAIN: "-${CI_ENVIRONMENT_SLUG}.${REVIEW_APPS_DOMAIN}"
-    GITLAB_HELM_CHART_REF: "v3.3.3"
+    GITLAB_HELM_CHART_REF: "master"
   environment:
     name: review/${CI_COMMIT_REF_NAME}
     url: https://gitlab-${CI_ENVIRONMENT_SLUG}.${REVIEW_APPS_DOMAIN}
     on_stop: review-stop
     auto_stop_in: 48 hours
 
-review-deploy:
-  extends:
-    - .review-workflow-base
-    - .review:rules:mr-and-schedule-auto-if-frontend-manual-otherwise
-  stage: review
-  dependencies: []
-  resource_group: "review/${CI_COMMIT_REF_NAME}"
-  before_script:
-    - export GITLAB_SHELL_VERSION=$(<GITLAB_SHELL_VERSION)
-    - export GITALY_VERSION=$(<GITALY_SERVER_VERSION)
-    - export GITLAB_WORKHORSE_VERSION=$(<GITLAB_WORKHORSE_VERSION)
-    - echo "${CI_ENVIRONMENT_URL}" > environment_url.txt
-    - source ./scripts/utils.sh
-    - install_api_client_dependencies_with_apk
-    - source scripts/review_apps/review-apps.sh
-  script:
-    - check_kube_domain
-    - ensure_namespace
-    - install_external_dns
-    - download_chart
-    - date
-    - deploy || (display_deployment_debug && exit 1)
-    # When the job is manual, review-qa-smoke is also manual and we don't want people
-    # to have to manually start the jobs in sequence, so we do it for them.
-    - '[ -z $CI_JOB_MANUAL ] || play_job "review-qa-smoke"'
-    - '[ -z $CI_JOB_MANUAL ] || play_job "review-performance"'
-  artifacts:
-    paths: [environment_url.txt]
-    expire_in: 2 days
-    when: always
+# Temporarily disabling review apps
+#review-deploy:
+#  extends:
+#    - .review-workflow-base
+#    - .review:rules:mr-and-schedule-auto-if-frontend-manual-otherwise
+#  stage: review
+#  dependencies: []
+#  resource_group: "review/${CI_COMMIT_REF_NAME}"
+#  before_script:
+#    - export GITLAB_SHELL_VERSION=$(<GITLAB_SHELL_VERSION)
+#    - export GITALY_VERSION=$(<GITALY_SERVER_VERSION)
+#    - export GITLAB_WORKHORSE_VERSION=$(<GITLAB_WORKHORSE_VERSION)
+#    - echo "${CI_ENVIRONMENT_URL}" > environment_url.txt
+#    - source ./scripts/utils.sh
+#    - install_api_client_dependencies_with_apk
+#    - source scripts/review_apps/review-apps.sh
+#  script:
+#    - check_kube_domain
+#    - ensure_namespace
+#    - install_external_dns
+#    - download_chart
+#    - date
+#    - deploy || (display_deployment_debug && exit 1)
+#    # When the job is manual, review-qa-smoke is also manual and we don't want people
+#    # to have to manually start the jobs in sequence, so we do it for them.
+#    - '[ -z $CI_JOB_MANUAL ] || play_job "review-qa-smoke"'
+#    - '[ -z $CI_JOB_MANUAL ] || play_job "review-performance"'
+#  artifacts:
+#    paths: [environment_url.txt]
+#    expire_in: 2 days
+#    when: always
 
 .review-stop-base:
   extends: .review-workflow-base
@@ -122,109 +124,110 @@ review-stop:
   script:
     - delete_release
 
-.review-qa-base:
-  extends:
-    - .default-retry
-    - .use-docker-in-docker
-  image: registry.gitlab.com/gitlab-org/gitlab-build-images:gitlab-qa-alpine-ruby-2.6
-  stage: qa
-  # This is needed so that manual jobs with needs don't block the pipeline.
-  # See https://gitlab.com/gitlab-org/gitlab/-/issues/199979.
-  dependencies: ["review-deploy"]
-  variables:
-    QA_ARTIFACTS_DIR: "${CI_PROJECT_DIR}/qa"
-    QA_CAN_TEST_GIT_PROTOCOL_V2: "false"
-    QA_DEBUG: "true"
-    GITLAB_USERNAME: "root"
-    GITLAB_PASSWORD: "${REVIEW_APPS_ROOT_PASSWORD}"
-    GITLAB_ADMIN_USERNAME: "root"
-    GITLAB_ADMIN_PASSWORD: "${REVIEW_APPS_ROOT_PASSWORD}"
-    GITHUB_ACCESS_TOKEN: "${REVIEW_APPS_QA_GITHUB_ACCESS_TOKEN}"
-    EE_LICENSE: "${REVIEW_APPS_EE_LICENSE}"
-  before_script:
-    - export QA_IMAGE="${CI_REGISTRY}/${CI_PROJECT_PATH}/gitlab-ee-qa:${CI_COMMIT_REF_SLUG}"
-    - export CI_ENVIRONMENT_URL="$(cat environment_url.txt)"
-    - echo "${CI_ENVIRONMENT_URL}"
-    - echo "${QA_IMAGE}"
-    - source scripts/utils.sh
-    - install_api_client_dependencies_with_apk
-    - gem install gitlab-qa --no-document ${GITLAB_QA_VERSION:+ --version ${GITLAB_QA_VERSION}}
-  artifacts:
-    paths:
-      - ./qa/gitlab-qa-run-*
-    expire_in: 7 days
-    when: always
-
-review-qa-smoke:
-  extends:
-    - .review-qa-base
-    - .review:rules:review-qa-smoke
-  script:
-    - gitlab-qa Test::Instance::Smoke "${QA_IMAGE}" "${CI_ENVIRONMENT_URL}"
-
-review-qa-all:
-  extends:
-    - .review-qa-base
-    - .review:rules:mr-only-manual
-  parallel: 5
-  script:
-    - export KNAPSACK_REPORT_PATH=knapsack/master_report.json
-    - export KNAPSACK_TEST_FILE_PATTERN=qa/specs/features/**/*_spec.rb
-    - gitlab-qa Test::Instance::Any "${QA_IMAGE}" "${CI_ENVIRONMENT_URL}" -- --format RspecJunitFormatter --out tmp/rspec-${CI_JOB_ID}.xml --format html --out tmp/rspec.htm --color --format documentation
-
-review-performance:
-  extends:
-    - .default-retry
-    - .review:rules:mr-and-schedule-auto-if-frontend-manual-otherwise
-  image:
-    name: sitespeedio/sitespeed.io:6.3.1
-    entrypoint: [""]
-  stage: qa
-  # This is needed so that manual jobs with needs don't block the pipeline.
-  # See https://gitlab.com/gitlab-org/gitlab/-/issues/199979.
-  dependencies: ["review-deploy"]
-  before_script:
-    - export CI_ENVIRONMENT_URL="$(cat environment_url.txt)"
-    - echo "${CI_ENVIRONMENT_URL}"
-    - mkdir -p gitlab-exporter
-    - wget -O ./gitlab-exporter/index.js https://gitlab.com/gitlab-org/gl-performance/raw/master/index.js
-    - mkdir -p sitespeed-results
-  script:
-    - /start.sh --plugins.add ./gitlab-exporter --outputFolder sitespeed-results "${CI_ENVIRONMENT_URL}"
-  after_script:
-    - mv sitespeed-results/data/performance.json performance.json
-  artifacts:
-    paths:
-      - sitespeed-results/
-    reports:
-      performance: performance.json
-    expire_in: 31d
-
-parallel-spec-reports:
-  extends:
-    - .review:rules:mr-only-manual
-  image: ruby:2.6-alpine
-  stage: post-qa
-  dependencies: ["review-qa-all"]
-  variables:
-    NEW_PARALLEL_SPECS_REPORT: qa/report-new.html
-    BASE_ARTIFACT_URL: "${CI_PROJECT_URL}/-/jobs/${CI_JOB_ID}/artifacts/file/qa/"
-  script:
-    - apk add --update build-base libxml2-dev libxslt-dev && rm -rf /var/cache/apk/*
-    - gem install nokogiri --no-document
-    - cd qa/gitlab-qa-run-*/gitlab-*
-    - ARTIFACT_DIRS=$(pwd |rev| awk -F / '{print $1,$2}' | rev | sed s_\ _/_)
-    - cd -
-    - '[[ -f $NEW_PARALLEL_SPECS_REPORT ]] || echo "{}" > ${NEW_PARALLEL_SPECS_REPORT}'
-    - scripts/merge-html-reports ${NEW_PARALLEL_SPECS_REPORT} ${BASE_ARTIFACT_URL}${ARTIFACT_DIRS} qa/gitlab-qa-run-*/**/rspec.htm
-  artifacts:
-    when: always
-    paths:
-      - qa/report-new.html
-      - qa/gitlab-qa-run-*
-    reports:
-      junit: qa/gitlab-qa-run-*/**/rspec-*.xml
-    expire_in: 31d
+# Temporarily disabling review apps
+#.review-qa-base:
+#  extends:
+#    - .default-retry
+#    - .use-docker-in-docker
+#  image: registry.gitlab.com/gitlab-org/gitlab-build-images:gitlab-qa-alpine-ruby-2.6
+#  stage: qa
+#  # This is needed so that manual jobs with needs don't block the pipeline.
+#  # See https://gitlab.com/gitlab-org/gitlab/-/issues/199979.
+#  dependencies: ["review-deploy"]
+#  variables:
+#    QA_ARTIFACTS_DIR: "${CI_PROJECT_DIR}/qa"
+#    QA_CAN_TEST_GIT_PROTOCOL_V2: "false"
+#    QA_DEBUG: "true"
+#    GITLAB_USERNAME: "root"
+#    GITLAB_PASSWORD: "${REVIEW_APPS_ROOT_PASSWORD}"
+#    GITLAB_ADMIN_USERNAME: "root"
+#    GITLAB_ADMIN_PASSWORD: "${REVIEW_APPS_ROOT_PASSWORD}"
+#    GITHUB_ACCESS_TOKEN: "${REVIEW_APPS_QA_GITHUB_ACCESS_TOKEN}"
+#    EE_LICENSE: "${REVIEW_APPS_EE_LICENSE}"
+#  before_script:
+#    - export QA_IMAGE="${CI_REGISTRY}/${CI_PROJECT_PATH}/gitlab-ee-qa:${CI_COMMIT_REF_SLUG}"
+#    - export CI_ENVIRONMENT_URL="$(cat environment_url.txt)"
+#    - echo "${CI_ENVIRONMENT_URL}"
+#    - echo "${QA_IMAGE}"
+#    - source scripts/utils.sh
+#    - install_api_client_dependencies_with_apk
+#    - gem install gitlab-qa --no-document ${GITLAB_QA_VERSION:+ --version ${GITLAB_QA_VERSION}}
+#  artifacts:
+#    paths:
+#      - ./qa/gitlab-qa-run-*
+#    expire_in: 7 days
+#    when: always
+#
+#review-qa-smoke:
+#  extends:
+#    - .review-qa-base
+#    - .review:rules:review-qa-smoke
+#  script:
+#    - gitlab-qa Test::Instance::Smoke "${QA_IMAGE}" "${CI_ENVIRONMENT_URL}"
+#
+#review-qa-all:
+#  extends:
+#    - .review-qa-base
+#    - .review:rules:mr-only-manual
+#  parallel: 5
+#  script:
+#    - export KNAPSACK_REPORT_PATH=knapsack/master_report.json
+#    - export KNAPSACK_TEST_FILE_PATTERN=qa/specs/features/**/*_spec.rb
+#    - gitlab-qa Test::Instance::Any "${QA_IMAGE}" "${CI_ENVIRONMENT_URL}" -- --format RspecJunitFormatter --out tmp/rspec-${CI_JOB_ID}.xml --format html --out tmp/rspec.htm --color --format documentation
+#
+#review-performance:
+#  extends:
+#    - .default-retry
+#    - .review:rules:mr-and-schedule-auto-if-frontend-manual-otherwise
+#  image:
+#    name: sitespeedio/sitespeed.io:6.3.1
+#    entrypoint: [""]
+#  stage: qa
+#  # This is needed so that manual jobs with needs don't block the pipeline.
+#  # See https://gitlab.com/gitlab-org/gitlab/-/issues/199979.
+#  dependencies: ["review-deploy"]
+#  before_script:
+#    - export CI_ENVIRONMENT_URL="$(cat environment_url.txt)"
+#    - echo "${CI_ENVIRONMENT_URL}"
+#    - mkdir -p gitlab-exporter
+#    - wget -O ./gitlab-exporter/index.js https://gitlab.com/gitlab-org/gl-performance/raw/master/index.js
+#    - mkdir -p sitespeed-results
+#  script:
+#    - /start.sh --plugins.add ./gitlab-exporter --outputFolder sitespeed-results "${CI_ENVIRONMENT_URL}"
+#  after_script:
+#    - mv sitespeed-results/data/performance.json performance.json
+#  artifacts:
+#    paths:
+#      - sitespeed-results/
+#    reports:
+#      performance: performance.json
+#    expire_in: 31d
+#
+#parallel-spec-reports:
+#  extends:
+#    - .review:rules:mr-only-manual
+#  image: ruby:2.6-alpine
+#  stage: post-qa
+#  dependencies: ["review-qa-all"]
+#  variables:
+#    NEW_PARALLEL_SPECS_REPORT: qa/report-new.html
+#    BASE_ARTIFACT_URL: "${CI_PROJECT_URL}/-/jobs/${CI_JOB_ID}/artifacts/file/qa/"
+#  script:
+#    - apk add --update build-base libxml2-dev libxslt-dev && rm -rf /var/cache/apk/*
+#    - gem install nokogiri --no-document
+#    - cd qa/gitlab-qa-run-*/gitlab-*
+#    - ARTIFACT_DIRS=$(pwd |rev| awk -F / '{print $1,$2}' | rev | sed s_\ _/_)
+#    - cd -
+#    - '[[ -f $NEW_PARALLEL_SPECS_REPORT ]] || echo "{}" > ${NEW_PARALLEL_SPECS_REPORT}'
+#    - scripts/merge-html-reports ${NEW_PARALLEL_SPECS_REPORT} ${BASE_ARTIFACT_URL}${ARTIFACT_DIRS} qa/gitlab-qa-run-*/**/rspec.htm
+#  artifacts:
+#    when: always
+#    paths:
+#      - qa/report-new.html
+#      - qa/gitlab-qa-run-*
+#    reports:
+#      junit: qa/gitlab-qa-run-*/**/rspec-*.xml
+#    expire_in: 31d
 
 danger-review:
   extends:
@@ -238,5 +241,3 @@ danger-review:
     - source scripts/utils.sh
     - retry yarn install --frozen-lockfile
     - danger --fail-on-errors=true --verbose
-  cache:
-    policy: pull

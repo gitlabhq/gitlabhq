@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Invites' do
+RSpec.describe 'Invites' do
   let(:user) { create(:user) }
   let(:owner) { create(:user, name: 'John Doe') }
   let(:group) { create(:group, name: 'Owned') }

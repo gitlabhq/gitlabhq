@@ -13,6 +13,7 @@ variables:
   DS_ANALYZER_IMAGE_PREFIX: "$SECURE_ANALYZERS_PREFIX"
 
   DS_DEFAULT_ANALYZERS: "bundler-audit, retire.js, gemnasium, gemnasium-maven, gemnasium-python"
+  DS_EXCLUDED_PATHS: "spec, test, tests, tmp"
   DS_MAJOR_VERSION: 2
   DS_DISABLE_DIND: "true"
 
@@ -125,6 +126,7 @@ gemnasium-maven-dependency_scanning:
           $DS_DEFAULT_ANALYZERS =~ /gemnasium-maven/
       exists:
         - '{build.gradle,*/build.gradle,*/*/build.gradle}'
+        - '{build.gradle.kts,*/build.gradle.kts,*/*/build.gradle.kts}'
         - '{build.sbt,*/build.sbt,*/*/build.sbt}'
         - '{pom.xml,*/pom.xml,*/*/pom.xml}'
 

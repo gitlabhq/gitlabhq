@@ -42,10 +42,6 @@ export default {
       default: false,
       required: false,
     },
-    rootPath: {
-      type: String,
-      required: true,
-    },
   },
   data() {
     return {
@@ -137,7 +133,7 @@ export default {
         :limit-to-hours="limitToHours"
       />
       <transition name="help-state-toggle">
-        <time-tracking-help-state v-if="showHelpState" :root-path="rootPath" />
+        <time-tracking-help-state v-if="showHelpState" />
       </transition>
     </div>
   </div>

@@ -6,6 +6,7 @@ module Gitlab
       class BaseFormatter
         attr_reader :old_path
         attr_reader :new_path
+        attr_reader :file_identifier_hash
         attr_reader :base_sha
         attr_reader :start_sha
         attr_reader :head_sha
@@ -16,6 +17,7 @@ module Gitlab
             attrs[:diff_refs] = diff_file.diff_refs
             attrs[:old_path] = diff_file.old_path
             attrs[:new_path] = diff_file.new_path
+            attrs[:file_identifier_hash] = diff_file.file_identifier_hash
           end
 
           if diff_refs = attrs[:diff_refs]
@@ -26,6 +28,7 @@ module Gitlab
 
           @old_path = attrs[:old_path]
           @new_path = attrs[:new_path]
+          @file_identifier_hash = attrs[:file_identifier_hash]
           @base_sha = attrs[:base_sha]
           @start_sha = attrs[:start_sha]
           @head_sha  = attrs[:head_sha]
@@ -36,7 +39,7 @@ module Gitlab
         end
 
         def to_h
-          {
+          out = {
             base_sha: base_sha,
             start_sha: start_sha,
             head_sha: head_sha,
@@ -44,6 +47,12 @@ module Gitlab
             new_path: new_path,
             position_type: position_type
           }
+
+          if Feature.enabled?(:file_identifier_hash)
+            out[:file_identifier_hash] = file_identifier_hash
+          end
+
+          out
         end
 
         def position_type

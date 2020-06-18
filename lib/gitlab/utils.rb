@@ -3,6 +3,7 @@
 module Gitlab
   module Utils
     extend self
+    PathTraversalAttackError ||= Class.new(StandardError)
 
     # Ensure that the relative path will not traverse outside the base directory
     # We url decode the path to avoid passing invalid paths forward in url encoded format.
@@ -17,7 +18,7 @@ module Gitlab
           path.end_with?("#{File::SEPARATOR}..") ||
           (!allowed_absolute && Pathname.new(path).absolute?)
 
-        raise StandardError.new("Invalid path")
+        raise PathTraversalAttackError.new('Invalid path')
       end
 
       path
@@ -158,6 +159,24 @@ module Gitlab
     def parse_url(uri_string)
       Addressable::URI.parse(uri_string)
     rescue Addressable::URI::InvalidURIError, TypeError
+    end
+
+    # Invert a hash, collecting all keys that map to a given value in an array.
+    #
+    # Unlike `Hash#invert`, where the last encountered pair wins, and which has the
+    # type `Hash[k, v] => Hash[v, k]`, `multiple_key_invert` does not lose any
+    # information, has the type `Hash[k, v] => Hash[v, Array[k]]`, and the original
+    # hash can always be reconstructed.
+    #
+    # example:
+    #
+    #   multiple_key_invert({ a: 1, b: 2, c: 1 })
+    #   # => { 1 => [:a, :c], 2 => [:b] }
+    #
+    def multiple_key_invert(hash)
+      hash.flat_map { |k, v| Array.wrap(v).zip([k].cycle) }
+        .group_by(&:first)
+        .transform_values { |kvs| kvs.map(&:last) }
     end
   end
 end

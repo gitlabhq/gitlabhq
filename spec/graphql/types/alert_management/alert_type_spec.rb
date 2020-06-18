@@ -24,6 +24,9 @@ describe GitlabSchema.types['AlertManagementAlert'] do
       details
       created_at
       updated_at
+      assignees
+      notes
+      discussions
     ]
 
     expect(described_class).to have_graphql_fields(*expected_fields)

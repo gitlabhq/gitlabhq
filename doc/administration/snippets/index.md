@@ -8,7 +8,7 @@ Adjust the snippets' settings of your GitLab instance.
 
 ## Snippets content size limit
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/31133) in GitLab 12.6.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/31133) in GitLab 12.6.
 
 You can set a content size max limit in snippets. This limit can prevent
 abuses of the feature. The default content size limit is **52428800 Bytes** (50MB).

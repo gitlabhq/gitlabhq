@@ -1,22 +1,16 @@
 - type = local_assigns.fetch(:type, :icon)
+- can_edit = can?(current_user, :admin_project, @project)
 
-- if @project.jira_issues_import_feature_flag_enabled?
-  .dropdown.btn-group
-    %button.btn.rounded-right.text-center{ class: ('has-tooltip' if type == :icon), title: (_('Import issues') if type == :icon),
-      data: { toggle: 'dropdown' }, 'aria-label' => _('Import issues'), 'aria-haspopup' => 'true', 'aria-expanded' => 'false' }
-      - if type == :icon
-        = sprite_icon('import')
-      - else
-        = _('Import issues')
-    %ul.dropdown-menu
-      %li
-        %button.btn{ data: { toggle: 'modal', target: '.issues-import-modal' } }
-          = _('Import CSV')
-      %li= link_to _('Import from Jira'), project_import_jira_path(@project)
-- else
-  %button.csv-import-button.btn{ title: _('Import CSV'), class: ('has-tooltip' if type == :icon),
-    data: { toggle: 'modal', target: '.issues-import-modal' } }
+.dropdown.btn-group
+  %button.btn.rounded-right.text-center{ class: ('has-tooltip' if type == :icon), title: (_('Import issues') if type == :icon),
+    data: { toggle: 'dropdown' }, 'aria-label' => _('Import issues'), 'aria-haspopup' => 'true', 'aria-expanded' => 'false' }
     - if type == :icon
       = sprite_icon('import')
     - else
-      = _('Import CSV')
+      = _('Import issues')
+  %ul.dropdown-menu
+    %li
+      %button{ data: { toggle: 'modal', target: '.issues-import-modal' } }
+        = _('Import CSV')
+    - if can_edit
+      %li= link_to _('Import from Jira'), project_import_jira_path(@project)

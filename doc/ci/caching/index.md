@@ -1,4 +1,7 @@
 ---
+stage: Verify
+group: Continuous Integration
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 type: index, concepts, howto
 ---
 
@@ -83,9 +86,9 @@ which type of Runner you are using, cache can act differently.
 From the perspective of the developer, to ensure maximum availability of the
 cache, when declaring `cache` in your jobs, use one or a mix of the following:
 
-- [Tag your Runners](../runners/README.md#using-tags) and use the tag on jobs
+- [Tag your Runners](../runners/README.md#use-tags-to-limit-the-number-of-jobs-using-the-runner) and use the tag on jobs
   that share their cache.
-- [Use sticky Runners](../runners/README.md#locking-a-specific-runner-from-being-enabled-for-other-projects)
+- [Use sticky Runners](../runners/README.md#prevent-a-specific-runner-from-being-enabled-for-other-projects)
   that will be only available to a particular project.
 - [Use a `key`](../yaml/README.md#cachekey) that fits your workflow (for example,
   different caches on each branch). For that, you can take advantage of the
@@ -556,7 +559,7 @@ next run of the pipeline, the cache will be stored in a different location.
 
 ### Clearing the cache manually
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/41249) in GitLab 10.4.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/41249) in GitLab 10.4.
 
 If you want to avoid editing `.gitlab-ci.yml`, you can easily clear the cache
 via GitLab's UI:

@@ -16,6 +16,7 @@ describe ClusterSerializer do
         :name,
         :nodes,
         :path,
+        :provider_type,
         :status)
     end
   end

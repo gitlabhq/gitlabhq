@@ -1,0 +1,5 @@
+---
+title: Implement displaying downstream pipeline error details
+merge_request: 32844
+author:
+type: fixed

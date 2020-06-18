@@ -1,0 +1,13 @@
+<% mr_url = merge_request_url(@merge_request) %>
+<% mr_author_name = sanitize_name(@author_name) %>
+<%= _('Merge request %{mr_link} was reviewed by %{mr_author}') % { mr_link: mr_url, mr_author: mr_author_name } %>
+
+--
+<% @notes.each_with_index do |note, index| %>
+  <% target_url = project_merge_request_url(@project, @merge_request, anchor: "note_#{note.id}") %>
+  <%= render 'note_email', note: note, diff_limit: 3, target_url: target_url %>
+
+  <% if index != @notes.length-1 %>
+--
+  <% end %>
+<% end %>

@@ -12,6 +12,7 @@
 .select2-container.select2-drop-above {
   .select2-choice {
     background: $white;
+    color: $gl-text-color;
     border-color: $input-border;
     height: 34px;
     padding: $gl-vert-padding $gl-input-padding;
@@ -58,6 +59,42 @@
     }
   }
 
+  // Essentially we’re doing @include form-control-focus here (from
+  // bootstrap/scss/mixins/_forms.scss), except that the bootstrap mixin adds a
+  // `&:focus` selector and we’re never actually focusing the .select2-choice
+  // link nor the .select2-container, the Select2 library focuses an off-screen
+  // .select2-focusser element instead.
+  &.select2-container-active:not(.select2-dropdown-open) {
+    .select2-choice {
+      color: $input-focus-color;
+      background-color: $input-focus-bg;
+      border-color: $input-focus-border-color;
+      outline: 0;
+    }
+
+    // Reusable focus “glow” box-shadow
+    @mixin form-control-focus-glow {
+      @if $enable-shadows {
+        box-shadow: $input-box-shadow, $input-focus-box-shadow;
+      } @else {
+        box-shadow: $input-focus-box-shadow;
+      }
+    }
+
+    // Apply the focus “glow” shadow to the .select2-container if it also has
+    // the .block-truncated class as that applies an overflow: hidden, thereby
+    // hiding the glow of the nested .select2-choice element.
+    &.block-truncated {
+      @include form-control-focus-glow;
+    }
+
+    // Apply the glow directly to the .select2-choice link if we’re not
+    // block-truncating the container.
+    &:not(.block-truncated) .select2-choice {
+      @include form-control-focus-glow;
+    }
+  }
+
   &.is-invalid {
     ~ .invalid-feedback {
       display: block;
@@ -72,6 +109,7 @@
 
 .select2-drop,
 .select2-drop.select2-drop-above {
+  background: $white;
   box-shadow: 0 2px 4px $dropdown-shadow-color;
   border-radius: $border-radius-base;
   border: 1px solid $border-color;
@@ -166,7 +204,8 @@
 
   input {
     padding: $grid-size;
-    background: $white image-url('select2.png');
+    background: transparent image-url('select2.png');
+    color: $gl-text-color;
     background-clip: content-box;
     background-origin: content-box;
     background-repeat: no-repeat;

@@ -1,0 +1,4 @@
+1565723794
+conaninfo.txt: 2774ebe649804c1cd9430f26ab0ead14
+include/hello.h: 8727846905bd09baecf8bdc1edb1f46e
+lib/libhello.a: 7f2aaa8b6f3bc316bba59e47b6a0bd43

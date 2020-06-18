@@ -13,3 +13,6 @@ indent_size = 2
 [*.{js,json,vue,scss,rb,haml,yml,md}]
 indent_style = space
 charset = utf-8
+
+[*.{md,markdown}]
+trim_trailing_whitespace = false

@@ -109,6 +109,22 @@ describe ::API::Admin::Ci::Variables do
 
         expect(response).to have_gitlab_http_status(:bad_request)
       end
+
+      it 'does not allow values above 700 characters' do
+        too_long_message = <<~MESSAGE.strip
+          The encrypted value of the provided variable exceeds 1024 bytes. \
+          Variables over 700 characters risk exceeding the limit.
+        MESSAGE
+
+        expect do
+          post api('/admin/ci/variables', admin),
+            params: { key: 'too_long', value: SecureRandom.hex(701) }
+        end.not_to change { ::Ci::InstanceVariable.count }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response).to match('message' =>
+          a_hash_including('encrypted_value' => [too_long_message]))
+      end
     end
 
     context 'authorized user with invalid permissions' do

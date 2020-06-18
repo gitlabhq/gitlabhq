@@ -1,5 +1,8 @@
 ---
 type: howto
+stage: Manage
+group: Access
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 ---
 
 # Two-Factor Authentication
@@ -65,19 +68,22 @@ in a safe place.
 
 ### Enable 2FA via U2F device
 
+> Introduced in [GitLab 8.9](https://about.gitlab.com/blog/2016/06/22/gitlab-adds-support-for-u2f/).
+
 GitLab officially only supports [YubiKey](https://www.yubico.com/products/)
-U2F devices, but users have successfully used [SoloKeys](https://solokeys.com/).
+U2F devices, but users have successfully used [SoloKeys](https://solokeys.com/)
+or [Google Titan Security Key](https://cloud.google.com/titan-security-key).
 
 The U2F workflow is [supported by](https://caniuse.com/#search=U2F) the
 following desktop browsers:
 
 - Chrome
 - Edge
-- Firefox (disabled by default)
+- Firefox 67+
 - Opera
 
 NOTE: **Note:**
-For Firefox, you can enable the FIDO U2F API in
+For Firefox 47-66, you can enable the FIDO U2F API in
 [about:config](https://support.mozilla.org/en-US/kb/about-config-editor-firefox).
 Search for `security.webauth.u2f` and double click on it to toggle to `true`.
 

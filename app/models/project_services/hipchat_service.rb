@@ -252,8 +252,8 @@ class HipchatService < Service
     status = pipeline_attributes[:status]
     duration = pipeline_attributes[:duration]
 
-    branch_link = "<a href=\"#{project_url}/commits/#{CGI.escape(ref)}\">#{ref}</a>"
-    pipeline_url = "<a href=\"#{project_url}/pipelines/#{pipeline_id}\">##{pipeline_id}</a>"
+    branch_link = "<a href=\"#{project_url}/-/commits/#{CGI.escape(ref)}\">#{ref}</a>"
+    pipeline_url = "<a href=\"#{project_url}/-/pipelines/#{pipeline_id}\">##{pipeline_id}</a>"
 
     "#{project_link}: Pipeline #{pipeline_url} of #{branch_link} #{ref_type} by #{user_name} #{humanized_status(status)} in #{duration} second(s)"
   end

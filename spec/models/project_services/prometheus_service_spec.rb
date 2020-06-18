@@ -252,6 +252,26 @@ describe PrometheusService, :use_clean_rails_memory_store_caching do
         end
       end
     end
+
+    context 'behind IAP' do
+      let(:manual_configuration) { true }
+
+      before do
+        # dummy private key generated only for this test to pass openssl validation
+        service.google_iap_service_account_json = '{"type":"service_account","private_key":"-----BEGIN RSA PRIVATE KEY-----\nMIIBOAIBAAJAU85LgUY5o6j6j/07GMLCNUcWJOBA1buZnNgKELayA6mSsHrIv31J\nY8kS+9WzGPQninea7DcM4hHA7smMgQD1BwIDAQABAkAqKxMy6PL3tn7dFL43p0ex\nJyOtSmlVIiAZG1t1LXhE/uoLpYi5DnbYqGgu0oih+7nzLY/dXpNpXUmiRMOUEKmB\nAiEAoTi2rBXbrLSi2C+H7M/nTOjMQQDuZ8Wr4uWpKcjYJTMCIQCFEskL565oFl/7\nRRQVH+cARrAsAAoJSbrOBAvYZ0PI3QIgIEFwis10vgEF86rOzxppdIG/G+JL0IdD\n9IluZuXAGPECIGUo7qSaLr75o2VEEgwtAFH5aptIPFjrL5LFCKwtdB4RAiAYZgFV\nHCMmaooAw/eELuMoMWNYmujZ7VaAnOewGDW0uw==\n-----END RSA PRIVATE KEY-----\n"}'
+        service.google_iap_audience_client_id = "IAP_CLIENT_ID.apps.googleusercontent.com"
+
+        stub_request(:post, "https://oauth2.googleapis.com/token").to_return(status: 200, body: '{"id_token": "FOO"}', headers: { 'Content-Type': 'application/json; charset=UTF-8' })
+
+        stub_feature_flags(prometheus_service_iap_auth: true)
+      end
+
+      it 'includes the authorization header' do
+        expect(service.prometheus_client).not_to be_nil
+        expect(service.prometheus_client.send(:options)).to have_key(:headers)
+        expect(service.prometheus_client.send(:options)[:headers]).to eq(authorization: "Bearer FOO")
+      end
+    end
   end
 
   describe '#prometheus_available?' do
@@ -457,9 +477,34 @@ describe PrometheusService, :use_clean_rails_memory_store_caching do
         }
       ]
     end
+    let(:feature_flagged_fields) do
+      [
+        {
+          type: 'text',
+          name: 'google_iap_audience_client_id',
+          title: 'Google IAP Audience Client ID',
+          placeholder: s_('PrometheusService|Client ID of the IAP secured resource (looks like IAP_CLIENT_ID.apps.googleusercontent.com)'),
+          autocomplete: 'off',
+          required: false
+        },
+        {
+          type: 'textarea',
+          name: 'google_iap_service_account_json',
+          title: 'Google IAP Service Account JSON',
+          placeholder: s_('PrometheusService|Contents of the credentials.json file of your service account, like: { "type": "service_account", "project_id": ... }'),
+          required: false
+        }
+      ]
+    end
 
     it 'returns fields' do
+      stub_feature_flags(prometheus_service_iap_auth: false)
       expect(service.fields).to eq(expected_fields)
+    end
+
+    it 'returns fields with feature flag on' do
+      stub_feature_flags(prometheus_service_iap_auth: true)
+      expect(service.fields).to eq(expected_fields + feature_flagged_fields)
     end
   end
 end

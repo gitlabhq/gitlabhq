@@ -1,5 +1,5 @@
 .auto-deploy:
-  image: "registry.gitlab.com/gitlab-org/cluster-integration/auto-deploy-image:v0.15.0"
+  image: "registry.gitlab.com/gitlab-org/cluster-integration/auto-deploy-image:v0.17.0"
 
 include:
   - template: Jobs/Deploy/ECS.gitlab-ci.yml
@@ -177,6 +177,7 @@ production_manual:
 .manual_rollout_template: &manual_rollout_template
   <<: *rollout_template
   stage: production
+  resource_group: production
   allow_failure: true
   rules:
     - if: '$CI_KUBERNETES_ACTIVE == null || $CI_KUBERNETES_ACTIVE == ""'

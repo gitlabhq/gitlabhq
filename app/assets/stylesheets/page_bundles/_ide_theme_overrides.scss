@@ -1,9 +1,15 @@
 // -------
 // Please see `app/assets/stylesheets/page_bundles/ide_themes/README.md` for a guide on contributing new themes
 // -------
-.ide.theme-dark {
-  a:not(.btn) {
-    color: var(--ide-link-color);
+.ide {
+  $bs-input-focus-border: #80bdff;
+  $bs-input-focus-box-shadow: rgba(0, 123, 255, 0.25);
+
+  a:not(.btn),
+  .btn-link:hover,
+  .btn-link:focus,
+  .btn-link:active {
+    color: var(--ide-link-color, $blue-600);
   }
 
   h1,
@@ -19,156 +25,207 @@
   .context-header > a,
   input,
   textarea,
-  .md-area.is-focused,
   .dropdown-menu li button,
   .dropdown-menu-selectable li a.is-active,
   .dropdown-menu-inner-title,
-  .dropdown-menu-inner-content,
-  .nav-links:not(.quick-links) li:not(.md-header-toolbar) a,
-  .nav-links:not(.quick-links) li:not(.md-header-toolbar) a:hover,
-  .nav-links:not(.quick-links) li:not(.md-header-toolbar) a.active .badge.badge-pill,
-  .nav-links:not(.quick-links) li:not(.md-header-toolbar) a:hover .badge.badge-pill,
-  .badge.badge-pill,
   .bs-callout,
   .ide-pipeline .top-bar,
-  .ide-pipeline .top-bar .controllers .controllers-buttons {
-    color: var(--ide-text-color);
+  .ide-pipeline .top-bar .controllers .controllers-buttons,
+  .controllers-buttons svg,
+  .nav-links li a.active,
+  .md-area.is-focused {
+    color: var(--ide-text-color, $gl-text-color);
   }
 
-  .drag-handle:hover,
-  .card-header .badge.badge-pill {
-    background-color: var(--ide-dropdown-hover-background);
+  .badge.badge-pill {
+    color: var(--ide-text-color, $gray-800);
+    background-color: var(--ide-background, $badge-bg);
   }
 
+  .nav-links:not(.quick-links) li:not(.md-header-toolbar) a,
+  .dropdown-menu-inner-content,
   .file-row .file-row-icon svg,
-  .file-row:hover .file-row-icon svg,
-  .controllers-buttons svg {
-    color: var(--ide-text-color-secondary);
+  .file-row:hover .file-row-icon svg {
+    color: var(--ide-text-color-secondary, $gl-text-color-secondary);
+  }
+
+  .nav-links:not(.quick-links) li:not(.md-header-toolbar) {
+    &:hover a,
+    &.active a,
+    a:hover,
+    a.active {
+      &,
+      .badge.badge-pill {
+        color: var(--ide-text-color, $black);
+        border-color: var(--ide-input-border, $gray-darkest);
+      }
+    }
+  }
+
+  .drag-handle:hover {
+    background-color: var(--ide-dropdown-hover-background, $white-normal);
+  }
+
+  .card-header {
+    background-color: var(--ide-background, $white);
+
+    .badge.badge-pill {
+      background-color: var(--ide-dropdown-hover-background, $badge-bg);
+    }
   }
 
   .text-secondary {
-    color: var(--ide-text-color-secondary) !important;
+    color: var(--ide-text-color-secondary, $gl-text-color-secondary) !important;
   }
 
   input[type='search']::placeholder,
   input[type='text']::placeholder,
-  textarea::placeholder,
+  textarea::placeholder {
+    color: var(--ide-input-border, $gl-text-color-tertiary);
+  }
+
   .dropdown-input .fa {
-    color: var(--ide-input-border);
+    color: var(--ide-input-border, $dropdown-input-fa-color);
   }
 
   .ide-nav-form .input-icon {
-    color: var(--ide-input-border);
+    color: var(--ide-input-border, $dropdown-input-fa-color);
   }
 
-  code,
-  .badge.badge-pill,
-  .card-header,
+  code {
+    background-color: var(--ide-background, $gray-100);
+  }
+
   .bs-callout,
   .ide-pipeline .top-bar,
   .ide-terminal .top-bar {
-    background-color: var(--ide-background);
+    background-color: var(--ide-background, $gray-light);
   }
 
   .bs-callout {
-    border-color: var(--ide-dropdown-background);
+    border-color: var(--ide-dropdown-background, $border-color);
 
     code {
-      background-color: var(--ide-dropdown-background);
+      background-color: var(--ide-dropdown-background, $gray-100);
     }
   }
 
-  .nav-links:not(.quick-links) li:not(.md-header-toolbar) a:hover {
-    border-color: var(--ide-dropdown-hover-background);
+  .common-note-form .md-area {
+    border-color: var(--ide-input-border, $border-color);
   }
 
-  .common-note-form .md-area {
-    border-color: var(--ide-input-border);
+  .md table:not(.code) tr th {
+    background-color: var(--ide-highlight-background, $gray-100);
   }
 
   &,
-  .md table:not(.code) tr th,
-  .common-note-form .md-area,
-  .card {
-    background-color: var(--ide-highlight-background);
+  .card,
+  .common-note-form .md-area {
+    background-color: var(--ide-highlight-background, $white);
   }
 
   .card,
   .card-header,
   .ide-terminal .top-bar,
   .ide-pipeline .top-bar {
-    border-color: var(--ide-border-color);
+    border-color: var(--ide-border-color, $border-color);
   }
 
-  hr,
+  hr {
+    border-color: var(--ide-border-color, darken($gray-normal, 8%));
+  }
+
   .md h1,
   .md h2,
   .md blockquote,
-  pre,
   .md table:not(.code) tbody td,
   .md table:not(.code) tr th,
-  .nav-links:not(.quick-links) {
-    border-color: var(--ide-border-color-alt);
+  .nav-links:not(.quick-links),
+  .common-note-form .md-area.is-focused .nav-links {
+    border-color: var(--ide-border-color-alt, $white-dark);
   }
 
-  .ide-sidebar-link.active {
-    color: var(--ide-highlight-accent);
-    box-shadow: inset 3px 0 var(--ide-highlight-accent);
+  pre {
+    border-color: var(--ide-border-color-alt, $gray-200);
 
-    &.is-right {
-      box-shadow: inset -3px 0 var(--ide-highlight-accent);
+    code {
+      background-color: var(--ide-border-color, inherit);
     }
   }
 
-  .nav-links li.active a,
-  .nav-links li a.active {
-    border-color: var(--ide-highlight-accent);
-    color: var(--ide-text-color);
-  }
+  // highlight accents (based on navigation theme) should only apply
+  // in the default white theme and "none" theme.
+  &:not(.theme-white):not(.theme-none) {
+    .ide-sidebar-link.active {
+      color: var(--ide-highlight-accent, $gl-text-color);
+      box-shadow: inset 3px 0 var(--ide-highlight-accent, $gl-text-color);
 
-  .avatar-container {
-    &,
-    .avatar {
-      color: var(--ide-text-color);
-      background-color: var(--ide-highlight-background);
-      border-color: var(--ide-highlight-background);
+      &.is-right {
+        box-shadow: inset -3px 0 var(--ide-highlight-accent, $gl-text-color);
+      }
+    }
+
+    .nav-links li.active a,
+    .nav-links li a.active {
+      border-color: var(--ide-highlight-accent, $gl-text-color);
+    }
+
+    .dropdown-menu .nav-links li a.active {
+      border-color: var(--ide-highlight-accent, $gl-text-color);
+    }
+
+    // for other themes, suppress different avatar default colors for simplicity
+    .avatar-container {
+      &,
+      .avatar {
+        color: var(--ide-text-color, $gl-text-color);
+        background-color: var(--ide-highlight-background, $white);
+        border-color: var(--ide-highlight-background, rgba($black, $gl-avatar-border-opacity));
+      }
     }
   }
 
   input[type='text'],
   input[type='search'],
   .filtered-search-box {
-    border-color: var(--ide-input-border);
-    background: var(--ide-input-background) !important;
+    border-color: var(--ide-input-border, $border-color);
+    background: var(--ide-input-background, $white) !important;
+  }
+
+  input[type='text']:not([disabled]):not([readonly]):focus,
+  .md-area.is-focused {
+    border-color: var(--ide-input-border, $bs-input-focus-border);
+    box-shadow: 0 0 0 3px var(--ide-dropdown-background, $bs-input-focus-box-shadow);
   }
 
   input[type='text'],
   input[type='search'],
   .filtered-search-box,
   textarea {
-    color: var(--ide-input-color) !important;
+    color: var(--ide-input-color, $gl-text-color) !important;
   }
 
   .filtered-search-box input[type='search'] {
-    border-color: transparent;
+    border-color: transparent !important;
+    box-shadow: none !important;
   }
 
   .filtered-search-token .value-container,
   .filtered-search-term .value-container {
-    background-color: var(--ide-dropdown-hover-background);
-    color: var(--ide-text-color);
+    background-color: var(--ide-dropdown-hover-background, $white-normal);
+    color: var(--ide-text-color, $gl-text-color);
 
     &:hover {
-      background-color: var(--ide-input-border);
+      background-color: var(--ide-input-border, $gray-200);
     }
   }
 
   @function calc-btn-hover-padding($original-padding, $original-border: 1px) {
-    @return calc(#{$original-padding + $original-border} - var(--ide-btn-hover-border-width));
+    @return calc(#{$original-padding + $original-border} - var(--ide-btn-hover-border-width, #{$original-border}));
   }
 
   .btn:not(.btn-link):not([disabled]):hover {
-    border-width: var(--ide-btn-hover-border-width);
+    border-width: var(--ide-btn-hover-border-width, 1px);
     padding: calc-btn-hover-padding(6px) calc-btn-hover-padding(10px);
   }
 
@@ -180,53 +237,71 @@
     padding: calc-btn-hover-padding(6px) 0;
   }
 
-  .btn-inverted,
   .btn-default,
   .dropdown,
   .dropdown-menu-toggle {
-    background-color: var(--ide-input-background) !important;
-    color: var(--ide-input-color) !important;
-    border-color: var(--ide-btn-default-border);
+    background-color: var(--ide-input-background, $white) !important;
+    color: var(--ide-input-color, $gl-text-color) !important;
+    border-color: var(--ide-btn-default-border, $border-color);
   }
 
-  .btn-inverted,
-  .btn-default {
+  .dropdown-menu-toggle {
+    border-color: var(--ide-btn-default-border, $gray-darkest);
+
     &:hover,
     &:focus {
-      border-color: var(--ide-btn-default-hover-border) !important;
+      background-color: var(--ide-dropdown-btn-hover-background, $gray-darker) !important;
+      border-color: var(--ide-dropdown-btn-hover-border, $gray-darkest) !important;
     }
   }
 
-  .dropdown,
-  .dropdown-menu-toggle {
+  // In IDE, the only inverted buttons are `.btn-remove`
+  .btn-inverted.btn-remove {
+    color: var(--ide-input-color, $red-500) !important;
+    background-color: var(--ide-input-background, $white) !important;
+    border-color: var(--ide-btn-default-border, $red-500);
+
     &:hover,
     &:focus {
-      background-color: var(--ide-dropdown-btn-hover-background) !important;
-      border-color: var(--ide-dropdown-btn-hover-border) !important;
+      color: var(--ide-input-color, $red-700) !important;
+      background-color: var(--ide-input-background, $red-100) !important;
+      border-color: var(--ide-btn-default-hover-border, $red-500) !important;
+    }
+
+    &:active {
+      color: var(--ide-input-color, $red-800) !important;
+      background-color: var(--ide-input-background, $red-200) !important;
+      border-color: var(--ide-btn-default-hover-border, $red-600) !important;
+    }
+  }
+
+  .btn-default {
+    &:hover,
+    &:focus {
+      border-color: var(--ide-btn-default-hover-border, $border-white-normal) !important;
+      background-color: var(--ide-input-background, $white-normal) !important;
+    }
+
+    &:active,
+    .active {
+      border-color: var(--ide-btn-default-hover-border, $border-white-normal) !important;
+      background-color: var(--ide-input-background, $white-dark) !important;
     }
   }
 
   .dropdown-menu {
-    color: var(--ide-text-color);
-    border-color: var(--ide-background);
-    background-color: var(--ide-dropdown-background);
+    color: var(--ide-text-color, $gl-text-color);
+    border-color: var(--ide-background, $border-color);
+    background-color: var(--ide-dropdown-background, $white);
 
-    .divider,
     .nav-links:not(.quick-links) {
-      background-color: var(--ide-dropdown-hover-background);
-      border-color: var(--ide-dropdown-hover-background);
+      background-color: var(--ide-dropdown-hover-background, $white);
+      border-color: var(--ide-dropdown-hover-background, $border-color);
     }
 
-    .nav-links li a.active {
-      border-color: var(--ide-highlight-accent);
-    }
-
-    .nav-links:not(.quick-links) li:not(.md-header-toolbar) a {
-      color: var(--ide-text-color);
-
-      &.active {
-        color: var(--ide-text-color);
-      }
+    .divider {
+      background-color: var(--ide-dropdown-hover-background, $gray-200);
+      border-color: var(--ide-dropdown-hover-background, $gray-200);
     }
 
     li > a:not(.disable-hover):hover,
@@ -234,75 +309,88 @@
     li button:not(.disable-hover):hover,
     li button:not(.disable-hover):focus,
     li button.is-focused {
-      background-color: var(--ide-dropdown-hover-background);
-      color: var(--ide-text-color);
+      background-color: var(--ide-dropdown-hover-background, $gray-darker);
+      color: var(--ide-text-color, $gl-text-color);
     }
   }
 
   .dropdown-title,
   .dropdown-input {
-    border-color: var(--ide-dropdown-hover-background) !important;
+    border-color: var(--ide-dropdown-hover-background, $gray-200) !important;
   }
 
   .btn-primary,
   .btn-info {
-    background-color: var(--ide-btn-primary-background);
-    border-color: var(--ide-btn-primary-border) !important;
+    background-color: var(--ide-btn-primary-background, $blue-500);
+    border-color: var(--ide-btn-primary-border, $blue-600) !important;
 
     &:hover,
     &:focus {
-      border-color: var(--ide-btn-primary-hover-border) !important;
+      background-color: var(--ide-btn-primary-background, $blue-600);
+      border-color: var(--ide-btn-primary-hover-border, $blue-700) !important;
+    }
+
+    &:active,
+    &.active {
+      background-color: var(--ide-btn-primary-background, $blue-700);
+      border-color: var(--ide-btn-primary-hover-border, $blue-800) !important;
     }
   }
 
   .btn-success {
-    background-color: var(--ide-btn-success-background);
-    border-color: var(--ide-btn-success-border) !important;
+    background-color: var(--ide-btn-success-background, $green-500);
+    border-color: var(--ide-btn-success-border, $green-600) !important;
 
     &:hover,
     &:focus {
-      border-color: var(--ide-btn-success-hover-border) !important;
+      background-color: var(--ide-btn-success-background, $green-600);
+      border-color: var(--ide-btn-success-hover-border, $green-700) !important;
+    }
+
+    &:active,
+    &.active {
+      background-color: var(--ide-btn-success-background, $green-700);
+      border-color: var(--ide-btn-success-hover-border, $green-800) !important;
     }
   }
 
   .btn[disabled] {
-    background: var(--ide-btn-default-background) !important;
-    border: 1px solid var(--ide-btn-disabled-border) !important;
-    color: var(--ide-btn-disabled-color) !important;
+    background-color: var(--ide-btn-default-background, $gray-light) !important;
+    border: 1px solid var(--ide-btn-disabled-border, $gray-200) !important;
+    color: var(--ide-btn-disabled-color, $gl-text-color-disabled) !important;
   }
 
-  pre code,
   .md table:not(.code) tbody {
-    background-color: var(--ide-border-color);
+    background-color: var(--ide-border-color, $white);
   }
 
   .animation-container {
     [class^='skeleton-line-'] {
-      background-color: var(--ide-animation-gradient-1);
+      background-color: var(--ide-animation-gradient-1, $gray-100);
 
       &::after {
         background-image: linear-gradient(to right,
-        var(--ide-animation-gradient-1) 0%,
-        var(--ide-animation-gradient-2) 20%,
-        var(--ide-animation-gradient-1) 40%,
-        var(--ide-animation-gradient-1) 100%);
+        var(--ide-animation-gradient-1, $gray-100) 0%,
+        var(--ide-animation-gradient-2, $gray-10) 20%,
+        var(--ide-animation-gradient-1, $gray-100) 40%,
+        var(--ide-animation-gradient-1, $gray-100) 100%);
       }
     }
   }
 
   .idiff.addition {
-    background-color: var(--ide-diff-insert);
+    background-color: var(--ide-diff-insert, $line-added-dark);
   }
 
   .idiff.deletion {
-    background-color: var(--ide-diff-remove);
+    background-color: var(--ide-diff-remove, $line-removed-dark);
+  }
+
+  ~ .popover {
+    box-shadow: none;
   }
 }
 
-.navbar.theme-dark {
+.navbar:not(.theme-white):not(.theme-none) {
   border-bottom-color: transparent;
-}
-
-.theme-dark ~ .popover {
-  box-shadow: none;
 }

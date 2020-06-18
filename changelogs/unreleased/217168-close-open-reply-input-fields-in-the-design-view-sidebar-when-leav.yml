@@ -1,0 +1,6 @@
+---
+title: Close open reply input fields in the design view sidebar when leaving a new
+  comment
+merge_request: 33587
+author:
+type: added

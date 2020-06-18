@@ -1,10 +1,6 @@
 - breadcrumb_title _("Details")
 - @content_class = "limit-container-width" unless fluid_layout
 
-= content_for :flash_message do
-  - if Feature.enabled?(:subscribable_banner_subscription)
-    = render_if_exists "layouts/header/ee_subscribable_banner", subscription: true
-
 = content_for :meta_tags do
   = auto_discovery_link_tag(:atom, group_url(@group, rss_url_options), title: "#{@group.name} activity")
 

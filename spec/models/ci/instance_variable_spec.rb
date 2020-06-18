@@ -9,6 +9,26 @@ describe Ci::InstanceVariable do
 
   it { is_expected.to include_module(Ci::Maskable) }
   it { is_expected.to validate_uniqueness_of(:key).with_message(/\(\w+\) has already been taken/) }
+  it { is_expected.to validate_length_of(:encrypted_value).is_at_most(1024).with_message(/Variables over 700 characters risk exceeding the limit/) }
+
+  it_behaves_like 'includes Limitable concern' do
+    subject { build(:ci_instance_variable) }
+  end
+
+  context 'with instance level variable feature flag disabled' do
+    let(:plan_limits) { create(:plan_limits, :default_plan) }
+
+    before do
+      stub_feature_flags(ci_instance_level_variables_limit: false)
+      plan_limits.update(described_class.limit_name => 1)
+      create(:ci_instance_variable)
+    end
+
+    it 'can create new models exceeding the plan limits', :aggregate_failures do
+      expect { subject.save }.to change { described_class.count }
+      expect(subject.errors[:base]).to be_empty
+    end
+  end
 
   describe '.unprotected' do
     subject { described_class.unprotected }
@@ -39,7 +59,7 @@ describe Ci::InstanceVariable do
     it { expect(described_class.all_cached).to contain_exactly(protected_variable, unprotected_variable) }
 
     it 'memoizes the result' do
-      expect(described_class).to receive(:store_cache).with(:ci_instance_variable_data).once.and_call_original
+      expect(described_class).to receive(:unscoped).once.and_call_original
 
       2.times do
         expect(described_class.all_cached).to contain_exactly(protected_variable, unprotected_variable)
@@ -65,15 +85,6 @@ describe Ci::InstanceVariable do
 
       expect(described_class.all_cached).to contain_exactly(protected_variable, unprotected_variable, variable)
     end
-
-    it 'resets the cache when the shared key is missing' do
-      expect(Rails.cache).to receive(:read).with(:ci_instance_variable_changed_at).twice.and_return(nil)
-      expect(described_class).to receive(:store_cache).with(:ci_instance_variable_data).thrice.and_call_original
-
-      3.times do
-        expect(described_class.all_cached).to contain_exactly(protected_variable, unprotected_variable)
-      end
-    end
   end
 
   describe '.unprotected_cached', :use_clean_rails_memory_store_caching do
@@ -83,7 +94,7 @@ describe Ci::InstanceVariable do
     it { expect(described_class.unprotected_cached).to contain_exactly(unprotected_variable) }
 
     it 'memoizes the result' do
-      expect(described_class).to receive(:store_cache).with(:ci_instance_variable_data).once.and_call_original
+      expect(described_class).to receive(:unscoped).once.and_call_original
 
       2.times do
         expect(described_class.unprotected_cached).to contain_exactly(unprotected_variable)

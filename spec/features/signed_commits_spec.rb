@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'GPG signed commits' do
+RSpec.describe 'GPG signed commits' do
   let(:project) { create(:project, :public, :repository) }
 
   it 'changes from unverified to verified when the user changes their email to match the gpg key', :sidekiq_might_not_need_inline do

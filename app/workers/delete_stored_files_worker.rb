@@ -4,6 +4,7 @@ class DeleteStoredFilesWorker # rubocop:disable Scalability/IdempotentWorker
   include ApplicationWorker
 
   feature_category_not_owned!
+  loggable_arguments 0
 
   def perform(class_name, keys)
     klass = begin

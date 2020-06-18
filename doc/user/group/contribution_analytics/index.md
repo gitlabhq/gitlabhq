@@ -2,13 +2,12 @@
 type: reference
 stage: Manage
 group: Analytics
-To determine the technical writer assigned to the Stage/Group associated with this page, see:
-  https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 ---
 # Contribution Analytics **(STARTER)**
 
 > - Introduced in [GitLab Starter](https://about.gitlab.com/pricing/) 8.3.
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/3090) for subgroups in GitLab 12.2.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/3090) for subgroups in GitLab 12.2.
 
 ## Overview
 
@@ -63,7 +62,7 @@ Contributions per group member are also presented in tabular format. Click a col
 - Number of opened issues
 - Number of closed issues
 - Number of opened MRs
-- Number of accepted MRs
+- Number of merged MRs
 - Number of total contributions
 
 ![Contribution analytics contributions table](img/group_stats_table.png)

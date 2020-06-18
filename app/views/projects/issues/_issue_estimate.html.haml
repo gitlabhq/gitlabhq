@@ -1,0 +1,7 @@
+- issue = local_assigns.fetch(:issue)
+
+- if issue.time_estimate > 0
+  %span.issuable-estimate.d-none.d-sm-inline-block.has-tooltip{ data: { container: 'body', qa_selector: 'issuable_estimate' }, title: _('Estimate') }
+    &nbsp;
+    = sprite_icon('timer', size: 16, css_class: 'issue-estimate-icon')
+    = Gitlab::TimeTrackingFormatter.output(issue.time_estimate)

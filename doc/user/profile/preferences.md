@@ -36,6 +36,29 @@ The default theme is Indigo. You can choose between 10 themes:
 
 ![Profile preferences navigation themes](img/profil-preferences-navigation-theme.png)
 
+## Dark mode
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/28252) in GitLab 13.1 as an Alpha release.
+
+GitLab has started work on dark mode! The dark mode Alpha release is available in the
+spirit of iteration and the lower expectations of
+[Alpha versions](https://about.gitlab.com/handbook/product/#alpha).
+
+Progress on dark mode is tracked in the [Dark theme epic](https://gitlab.com/groups/gitlab-org/-/epics/2902). See the epic for:
+
+- A list of known issues.
+- Our planned direction and next steps.
+
+If you find an issue that isn’t listed, please leave a comment on the epic or create a
+new issue.
+
+Dark mode is available as a navigation theme, for MVC and compatibility reasons. In
+the future, we plan to make it configurable in its own section along with support for
+[different navigation themes](https://gitlab.com/gitlab-org/gitlab/-/issues/219512).
+
+NOTE: **Note:**
+Dark theme currently only works with the 'Dark' syntax highlighting.
+
 ## Syntax highlighting theme
 
 NOTE: **Note:**

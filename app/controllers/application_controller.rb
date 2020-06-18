@@ -12,6 +12,7 @@ class ApplicationController < ActionController::Base
   include WorkhorseHelper
   include EnforcesTwoFactorAuthentication
   include WithPerformanceBar
+  include Gitlab::SearchContext::ControllerConcern
   include SessionlessAuthentication
   include SessionsHelper
   include ConfirmEmailWarning

@@ -7,7 +7,7 @@ describe API::ProjectEvents do
   let(:non_member) { create(:user) }
   let(:private_project) { create(:project, :private, creator_id: user.id, namespace: user.namespace) }
   let(:closed_issue) { create(:closed_issue, project: private_project, author: user) }
-  let!(:closed_issue_event) { create(:event, project: private_project, author: user, target: closed_issue, action: Event::CLOSED, created_at: Date.new(2016, 12, 30)) }
+  let!(:closed_issue_event) { create(:event, project: private_project, author: user, target: closed_issue, action: :closed, created_at: Date.new(2016, 12, 30)) }
 
   describe 'GET /projects/:id/events' do
     context 'when unauthenticated ' do
@@ -29,9 +29,9 @@ describe API::ProjectEvents do
     context 'with inaccessible events' do
       let(:public_project) { create(:project, :public, creator_id: user.id, namespace: user.namespace) }
       let(:confidential_issue) { create(:closed_issue, confidential: true, project: public_project, author: user) }
-      let!(:confidential_event) { create(:event, project: public_project, author: user, target: confidential_issue, action: Event::CLOSED) }
+      let!(:confidential_event) { create(:event, project: public_project, author: user, target: confidential_issue, action: :closed) }
       let(:public_issue) { create(:closed_issue, project: public_project, author: user) }
-      let!(:public_event) { create(:event, project: public_project, author: user, target: public_issue, action: Event::CLOSED) }
+      let!(:public_event) { create(:event, project: public_project, author: user, target: public_issue, action: :closed) }
 
       it 'returns only accessible events' do
         get api("/projects/#{public_project.id}/events", non_member)
@@ -53,19 +53,19 @@ describe API::ProjectEvents do
 
       before do
         create(:event,
+               :closed,
                project: public_project,
                target: create(:issue, project: public_project, title: 'Issue 1'),
-               action: Event::CLOSED,
                created_at: Date.parse('2018-12-10'))
         create(:event,
+               :closed,
                project: public_project,
                target: create(:issue, confidential: true, project: public_project, title: 'Confidential event'),
-               action: Event::CLOSED,
                created_at: Date.parse('2018-12-11'))
         create(:event,
+               :closed,
                project: public_project,
                target: create(:issue, project: public_project, title: 'Issue 2'),
-               action: Event::CLOSED,
                created_at: Date.parse('2018-12-12'))
       end
 

@@ -130,10 +130,13 @@ export default class MilestoneSelect {
         fieldName: $dropdown.data('fieldName'),
         text: milestone => escape(milestone.title),
         id: milestone => {
-          if (!useId && !$dropdown.is('.js-issuable-form-dropdown')) {
-            return milestone.name;
+          if (milestone !== undefined) {
+            if (!useId && !$dropdown.is('.js-issuable-form-dropdown')) {
+              return milestone.name;
+            }
+
+            return milestone.id;
           }
-          return milestone.id;
         },
         hidden: () => {
           $selectBox.hide();

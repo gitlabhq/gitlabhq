@@ -1,11 +1,12 @@
 <script>
 import { mapActions, mapGetters } from 'vuex';
 import { GlTooltipDirective } from '@gitlab/ui';
-import diffLineNoteFormMixin from 'ee_else_ce/notes/mixins/diff_line_note_form';
+import diffLineNoteFormMixin from '~/notes/mixins/diff_line_note_form';
 import { s__, __ } from '~/locale';
 import { clearDraft, getDiscussionReplyKey } from '~/lib/utils/autosave';
 import icon from '~/vue_shared/components/icon.vue';
 import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
+import DraftNote from '~/batch_comments/components/draft_note.vue';
 import Flash from '../../flash';
 import userAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
 import diffDiscussionHeader from './diff_discussion_header.vue';
@@ -26,7 +27,7 @@ export default {
     diffDiscussionHeader,
     noteSignedOutWidget,
     noteForm,
-    DraftNote: () => import('ee_component/batch_comments/components/draft_note.vue'),
+    DraftNote,
     TimelineEntryItem,
     DiscussionNotes,
     DiscussionActions,

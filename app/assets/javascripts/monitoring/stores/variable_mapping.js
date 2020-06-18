@@ -47,7 +47,7 @@ const textAdvancedVariableParser = advTextVar => ({
  */
 const normalizeCustomVariableOptions = ({ default: defaultOpt = false, text, value }) => ({
   default: defaultOpt,
-  text,
+  text: text || value,
   value,
 });
 

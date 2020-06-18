@@ -15,11 +15,15 @@ export const monitoringDashboard = {
   state,
 };
 
-export const createStore = () =>
+export const createStore = (initState = {}) =>
   new Vuex.Store({
     modules: {
-      monitoringDashboard,
+      monitoringDashboard: {
+        ...monitoringDashboard,
+        state: {
+          ...state(),
+          ...initState,
+        },
+      },
     },
   });
-
-export default createStore();

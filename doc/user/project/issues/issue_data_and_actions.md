@@ -1,3 +1,9 @@
+---
+stage: Plan
+group: Project Management
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+---
+
 # Issue Data and Actions
 
 Please read through the [GitLab Issue Documentation](index.md) for an overview on GitLab Issues.
@@ -185,7 +191,7 @@ The plain text title and description of the issue fill the top center of the iss
 The description fully supports [GitLab Flavored Markdown](../../markdown.md#gitlab-flavored-markdown-gfm),
 allowing many formatting options.
 
-> [Since GitLab 12.6](https://gitlab.com/gitlab-org/gitlab/issues/10103), changes to an issue's description are listed in the [issue history](#issue-history).**(STARTER)**
+> [Since GitLab 12.6](https://gitlab.com/gitlab-org/gitlab/-/issues/10103), changes to an issue's description are listed in the [issue history](#issue-history).**(STARTER)**
 
 ### Mentions
 
@@ -296,7 +302,7 @@ You can also close the issue from here, so you don't need to scroll to the top o
 
 ### Zoom meetings
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/31103) in GitLab 12.3.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/31103) in GitLab 12.3.
 
 You can attach and remove Zoom meetings to issues using the `/zoom` and `/remove_zoom` [quick actions](../quick_actions.md) as part of
 [GitLab Flavored Markdown](../../markdown.md#gitlab-flavored-markdown-gfm).
@@ -305,3 +311,9 @@ Attaching a [Zoom](https://zoom.us) call an issue
 results in a **Join Zoom meeting** button at the top of the issue, just under the header.
 
 Read more how to [add or remove a zoom meeting](associate_zoom_meeting.md).
+
+### Publish an issue **(ULTIMATE)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/30906) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.1.
+
+If a status page application is associated with the project, you can use the `/publish` [quick action](../quick_actions.md) to publish the issue. Refer to [GitLab Status Page](../status_page/index.md) for more information.

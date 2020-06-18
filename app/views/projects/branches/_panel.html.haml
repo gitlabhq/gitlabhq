@@ -12,7 +12,7 @@
     = panel_title
   %ul.content-list.all-branches.qa-all-branches
     - branches.first(overview_max_branches).each do |branch|
-      = render "projects/branches/branch", branch: branch, merged: project.repository.merged_to_root_ref?(branch)
+      = render "projects/branches/branch", branch: branch, merged: project.repository.merged_to_root_ref?(branch), commit_status: @branch_pipeline_statuses[branch.name], show_commit_status: @branch_pipeline_statuses.any?
   - if branches.size > overview_max_branches
     .card-footer.text-center
       = link_to show_more_text, project_branches_filtered_path(project, state: state), id: "state-#{state}", data: { state: state }

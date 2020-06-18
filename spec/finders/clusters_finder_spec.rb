@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ClustersFinder do
+RSpec.describe ClustersFinder do
   let(:project) { create(:project) }
 
   let_it_be(:user) { create(:user) }

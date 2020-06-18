@@ -6,10 +6,6 @@ describe Iteration do
   let_it_be(:project) { create(:project) }
   let_it_be(:group) { create(:group) }
 
-  it_behaves_like 'a timebox', :iteration do
-    let(:timebox_table_name) { described_class.table_name.to_sym }
-  end
-
   describe "#iid" do
     it "is properly scoped on project and group" do
       iteration1 = create(:iteration, project: project)
@@ -62,7 +58,7 @@ describe Iteration do
           end
 
           context 'when end_date is in range' do
-            let(:start_date) { Time.now }
+            let(:start_date) { Time.current }
             let(:due_date) { 6.days.from_now }
 
             it 'is not valid' do
@@ -94,7 +90,7 @@ describe Iteration do
 
     describe '#future_date' do
       context 'when dates are in the future' do
-        let(:start_date) { Time.now }
+        let(:start_date) { Time.current }
         let(:due_date) { 1.week.from_now }
 
         it { is_expected.to be_valid }
@@ -111,7 +107,7 @@ describe Iteration do
       end
 
       context 'when due_date is in the past' do
-        let(:start_date) { Time.now }
+        let(:start_date) { Time.current }
         let(:due_date) { 1.week.ago }
 
         it 'is not valid' do
@@ -122,7 +118,7 @@ describe Iteration do
 
       context 'when start_date is over 500 years in the future' do
         let(:start_date) { 501.years.from_now }
-        let(:due_date) { Time.now }
+        let(:due_date) { Time.current }
 
         it 'is not valid' do
           expect(subject).not_to be_valid
@@ -131,7 +127,7 @@ describe Iteration do
       end
 
       context 'when due_date is over 500 years in the future' do
-        let(:start_date) { Time.now }
+        let(:start_date) { Time.current }
         let(:due_date) { 501.years.from_now }
 
         it 'is not valid' do
@@ -143,7 +139,7 @@ describe Iteration do
   end
 
   describe '.within_timeframe' do
-    let_it_be(:now) { Time.now }
+    let_it_be(:now) { Time.current }
     let_it_be(:project) { create(:project, :empty_repo) }
     let_it_be(:iteration_1) { create(:iteration, project: project, start_date: now, due_date: 1.day.from_now) }
     let_it_be(:iteration_2) { create(:iteration, project: project, start_date: 2.days.from_now, due_date: 3.days.from_now) }

@@ -16,7 +16,7 @@ are only available internally at GitLab.
 
 ## Docker
 
-The following were tested on docker containers running in the cloud. Support Engineers,
+The following were tested on Docker containers running in the cloud. Support Engineers,
 please see [these docs](https://gitlab.com/gitlab-com/dev-resources/tree/master/dev-resources#running-docker-containers)
 on how to run Docker containers on `dev-resources`. Other setups haven't been tested,
 but contributions are welcome.

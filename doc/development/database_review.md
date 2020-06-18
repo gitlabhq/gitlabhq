@@ -81,13 +81,20 @@ the following preparations into account.
   - Ensure the down method reverts the changes in `db/structure.sql`.
   - Update the migration output whenever you modify the migrations during the review process.
 - Add tests for the migration in `spec/migrations` if necessary. See [Testing Rails migrations at GitLab](testing_guide/testing_migrations_guide.md) for more details.
-- When [high-traffic](https://gitlab.com/gitlab-org/gitlab/-/blob/master/rubocop/migration_helpers.rb#L12) tables are involved in the migration, use the [`with_lock_retries`](migration_style_guide.md#retry-mechanism-when-acquiring-database-locks) helper method. Review the relevant [examples in our documentation](migration_style_guide.md#examples) for use cases and solutions.
+- When [high-traffic](https://gitlab.com/gitlab-org/gitlab/-/blob/master/rubocop/rubocop-migrations.yml#L3) tables are involved in the migration, use the [`with_lock_retries`](migration_style_guide.md#retry-mechanism-when-acquiring-database-locks) helper method. Review the relevant [examples in our documentation](migration_style_guide.md#examples) for use cases and solutions.
 - Ensure RuboCop checks are not disabled unless there's a valid reason to.
+- When adding an index to a [large table](https://gitlab.com/gitlab-org/gitlab/-/blob/master/rubocop/rubocop-migrations.yml#L3),
+test its execution using `CREATE INDEX CONCURRENTLY` in the `#database-lab` Slack channel and add the execution time to the MR description:
+  - Execution time largely varies between `#database-lab` and GitLab.com, but an elevated execution time from `#database-lab`
+    can give a hint that the execution on GitLab.com will also be considerably high.
+  - If the execution from `#database-lab` is longer than `1h`, the index should be moved to a [post-migration](post_deployment_migrations.md).
+    Keep in mind that in this case you may need to split the migration and the application changes in separate releases to ensure the index
+    will be in place when the code that needs it will be deployed.
 
 #### Preparation when adding or modifying queries
 
 - Write the raw SQL in the MR description. Preferably formatted
-  nicely with [sqlformat.darold.net](http://sqlformat.darold.net) or
+  nicely with [pgFormatter](https://sqlformat.darold.net) or
   [paste.depesz.com](https://paste.depesz.com).
 - Include the output of `EXPLAIN (ANALYZE, BUFFERS)` of the relevant
   queries in the description. If the output is too long, wrap it in
@@ -134,6 +141,9 @@ the following preparations into account.
     - [Check indexes are present for foreign keys](migration_style_guide.md#adding-foreign-key-constraints)
   - Ensure that migrations execute in a transaction or only contain
     concurrent index/foreign key helpers (with transactions disabled)
+  - If an index to a large table is added and its execution time was elevated (more than 1h) on `#database-lab`:
+    - Ensure it was added in a post-migration.
+    - Maintainer: After the merge request is merged, notify Release Managers about it on `#f_upcoming_release` Slack channel.
   - Check consistency with `db/structure.sql` and that migrations are [reversible](migration_style_guide.md#reversibility)
   - Check queries timing (If any): Queries executed in a migration
     need to fit comfortably within `15s` - preferably much less than that - on GitLab.com.

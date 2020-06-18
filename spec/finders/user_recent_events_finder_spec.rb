@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe UserRecentEventsFinder do
+RSpec.describe UserRecentEventsFinder do
   let(:current_user)     { create(:user) }
   let(:project_owner)    { create(:user) }
   let(:private_project)  { create(:project, :private, creator: project_owner) }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'User activates PivotalTracker' do
+RSpec.describe 'User activates PivotalTracker' do
   include_context 'project service activation'
 
   before do

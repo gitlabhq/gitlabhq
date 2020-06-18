@@ -284,7 +284,7 @@ creating visualizations in Kibana.
 **Note:**
 The fields of the context are currently only logged for Sidekiq jobs triggered
 through web requests. See the
-[follow-up work](https://gitlab.com/gitlab-com/gl-infra/scalability/issues/68)
+[follow-up work](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/68)
 for more information.
 
 ## Exception Handling
@@ -358,8 +358,8 @@ end
    for most users, but you may need to tweak them in [Omnibus GitLab](https://gitlab.com/gitlab-org/omnibus-gitlab).
 
 1. If you add a new file, submit an issue to the [production
-   tracker](https://gitlab.com/gitlab-com/gl-infra/production/issues) or
-   a merge request to the [gitlab_fluentd](https://gitlab.com/gitlab-cookbooks/gitlab_fluentd)
+   tracker](https://gitlab.com/gitlab-com/gl-infra/production/-/issues) or
+   a merge request to the [`gitlab_fluentd`](https://gitlab.com/gitlab-cookbooks/gitlab_fluentd)
    project. See [this example](https://gitlab.com/gitlab-cookbooks/gitlab_fluentd/-/merge_requests/51/diffs).
 
 1. Be sure to update the [GitLab CE/EE documentation](../administration/logs.md) and the [GitLab.com

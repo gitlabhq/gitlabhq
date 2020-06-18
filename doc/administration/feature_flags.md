@@ -1,4 +1,7 @@
 ---
+stage: Release
+group: Progressive Delivery
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 type: reference
 description: "GitLab administrator: enable and disable GitLab features deployed behind feature flags"
 ---
@@ -29,7 +32,7 @@ them. It can be done by GitLab administrators with access to GitLab Rails
 console.
 
 If you used a certain feature and identified a bug, a misbehavior, or an
-error, it's very important that you [**provide feedback**](https://gitlab.com/gitlab-org/gitlab/issues/new?issue[title]=Docs%20-%20feature%20flag%20feedback%3A%20Feature%20Name&issue[description]=Describe%20the%20problem%20you%27ve%20encountered.%0A%0A%3C!--%20Don%27t%20edit%20below%20this%20line%20--%3E%0A%0A%2Flabel%20~%22docs%5C-comments%22%20) to GitLab as soon
+error, it's very important that you [**provide feedback**](https://gitlab.com/gitlab-org/gitlab/-/issues/new?issue[title]=Docs%20-%20feature%20flag%20feedback%3A%20Feature%20Name&issue[description]=Describe%20the%20problem%20you%27ve%20encountered.%0A%0A%3C!--%20Don%27t%20edit%20below%20this%20line%20--%3E%0A%0A%2Flabel%20~%22docs%5C-comments%22%20) to GitLab as soon
 as possible so we can improve or fix it while behind a flag. When you upgrade
 GitLab to an earlier version, the feature flag status may change.
 
@@ -92,6 +95,18 @@ Example, to disable Evidence Collection:
 
 ```ruby
 Feature.disable(:release_evidence_collection)
+```
+
+Some feature flags can be enabled or disabled on a per project basis:
+
+```ruby
+Feature.enable(:<feature flag>, Project.find(<project id>))
+```
+
+For example, to enable the [`:release_evidence_collection`](../ci/junit_test_reports.md#enabling-the-feature) feature flag for project `1234`:
+
+```ruby
+Feature.enable(:release_evidence_collection, Project.find(1234))
 ```
 
 When the feature is ready, GitLab will remove the feature flag, the option for

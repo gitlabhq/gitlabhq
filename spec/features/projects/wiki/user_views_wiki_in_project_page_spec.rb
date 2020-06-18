@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Projects > Wiki > User views wiki in project page' do
+RSpec.describe 'Projects > Wiki > User views wiki in project page' do
   let(:user) { create(:user) }
 
   before do

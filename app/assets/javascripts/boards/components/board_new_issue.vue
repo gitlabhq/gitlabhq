@@ -92,7 +92,7 @@ export default {
     },
     cancel() {
       this.title = '';
-      eventHub.$emit(`hide-issue-form-${this.list.id}`);
+      eventHub.$emit(`toggle-issue-form-${this.list.id}`);
     },
     setSelectedProject(selectedProject) {
       this.selectedProject = selectedProject;

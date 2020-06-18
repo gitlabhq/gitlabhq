@@ -290,13 +290,13 @@ describe Milestone, 'Milestoneish' do
     end
 
     it 'shows 0 if start_date is a future' do
-      milestone = build_stubbed(:milestone, start_date: Time.now + 2.days)
+      milestone = build_stubbed(:milestone, start_date: Time.current + 2.days)
 
       expect(milestone.elapsed_days).to eq(0)
     end
 
     it 'shows correct amount of days' do
-      milestone = build_stubbed(:milestone, start_date: Time.now - 2.days)
+      milestone = build_stubbed(:milestone, start_date: Time.current - 2.days)
 
       expect(milestone.elapsed_days).to eq(2)
     end

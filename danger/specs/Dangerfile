@@ -1,16 +1,35 @@
 # frozen_string_literal: true
 
 NO_SPECS_LABELS = %w[backstage documentation QA].freeze
-NO_NEW_SPEC_MESSAGE = <<~MSG.freeze
+NO_NEW_SPEC_MESSAGE = <<~MSG
 You've made some app changes, but didn't add any tests.
 That's OK as long as you're refactoring existing code,
 but please consider adding any of the %<labels>s labels.
 MSG
+EE_CHANGE_WITH_FOSS_SPEC_CHANGE_MESSAGE = <<~MSG
+You've made some EE-specific changes, but only made changes to FOSS tests.
+This could be a sign that you're testing an EE-specific behavior in a FOSS test.
 
-has_app_changes = !helper.all_changed_files.grep(%r{\A(ee/)?(app|lib|db/(geo/)?(post_)?migrate)/}).empty?
-has_spec_changes = !helper.all_changed_files.grep(%r{\A(ee/)?spec/}).empty?
+Please make sure the spec files pass in AS-IF-FOSS mode either:
+
+1. Locally with `FOSS_ONLY=1 bin/rspec -- %<spec_files>s`.
+1. In the MR pipeline by verifying that the `rspec foss-impact` job has passed.
+1. In the MR pipelines by including `RUN AS-IF-FOSS` in the MR title (you can do it with the ``/title %<mr_title>s [RUN AS-IF-FOSS]`` quick action) and start a new MR pipeline.
+
+MSG
+
+has_app_changes = helper.all_changed_files.grep(%r{\A(app|lib|db/(geo/)?(post_)?migrate)/}).any?
+has_ee_app_changes = helper.all_changed_files.grep(%r{\Aee/(app|lib|db/(geo/)?(post_)?migrate)/}).any?
+spec_changes = helper.all_changed_files.grep(%r{\Aspec/})
+has_spec_changes = spec_changes.any?
+has_ee_spec_changes = helper.all_changed_files.grep(%r{\Aee/spec/}).any?
 new_specs_needed = (gitlab.mr_labels & NO_SPECS_LABELS).empty?
 
-if has_app_changes && !has_spec_changes && new_specs_needed
+if (has_app_changes || has_ee_app_changes) && !(has_spec_changes || has_ee_spec_changes) && new_specs_needed
   warn format(NO_NEW_SPEC_MESSAGE, labels: helper.labels_list(NO_SPECS_LABELS)), sticky: false
+end
+
+# The only changes outside `ee/` are in `spec/`
+if has_ee_app_changes && has_spec_changes && !(has_app_changes || has_ee_spec_changes)
+  warn format(EE_CHANGE_WITH_FOSS_SPEC_CHANGE_MESSAGE, spec_files: spec_changes.join(" "), mr_title: gitlab.mr_json['title']), sticky: false
 end

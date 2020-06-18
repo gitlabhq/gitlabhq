@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Projects::CompareController do
+RSpec.describe Projects::CompareController do
   let(:project) { create(:project, :repository) }
   let(:user) { create(:user) }
 

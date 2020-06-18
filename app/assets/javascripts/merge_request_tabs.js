@@ -126,6 +126,13 @@ export default class MergeRequestTabs {
 
   bindEvents() {
     $('.merge-request-tabs a[data-toggle="tabvue"]').on('click', this.clickTab);
+    window.addEventListener('popstate', event => {
+      if (event.state && event.state.action) {
+        this.tabShown(event.state.action, event.target.location);
+        this.currentAction = event.state.action;
+        this.eventHub.$emit('MergeRequestTabChange', this.getCurrentAction());
+      }
+    });
   }
 
   // Used in tests
@@ -155,6 +162,12 @@ export default class MergeRequestTabs {
       } else if (action) {
         const href = e.currentTarget.getAttribute('href');
         this.tabShown(action, href);
+
+        if (this.setUrl) {
+          this.setCurrentAction(action);
+        }
+
+        this.eventHub.$emit('MergeRequestTabChange', this.getCurrentAction());
       }
     }
   }
@@ -213,11 +226,6 @@ export default class MergeRequestTabs {
         this.resetViewContainer();
         this.destroyPipelinesView();
       }
-      if (this.setUrl) {
-        this.setCurrentAction(action);
-      }
-
-      this.eventHub.$emit('MergeRequestTabChange', this.getCurrentAction());
     } else if (action === this.currentAction) {
       // ContentTop is used to handle anything at the top of the page before the main content
       const mainContentContainer = document.querySelector('.content-wrapper');
@@ -287,19 +295,25 @@ export default class MergeRequestTabs {
     // Ensure parameters and hash come along for the ride
     newState += location.search + location.hash;
 
-    // TODO: Consider refactoring in light of turbolinks removal.
-
-    // Replace the current history state with the new one without breaking
-    // Turbolinks' history.
-    //
-    // See https://github.com/rails/turbolinks/issues/363
-    window.history.replaceState(
-      {
-        url: newState,
-      },
-      document.title,
-      newState,
-    );
+    if (window.history.state && window.history.state.url && window.location.pathname !== newState) {
+      window.history.pushState(
+        {
+          url: newState,
+          action: this.currentAction,
+        },
+        document.title,
+        newState,
+      );
+    } else {
+      window.history.replaceState(
+        {
+          url: window.location.href,
+          action,
+        },
+        document.title,
+        window.location.href,
+      );
+    }
 
     return newState;
   }

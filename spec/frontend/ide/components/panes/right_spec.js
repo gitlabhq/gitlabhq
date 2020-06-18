@@ -5,6 +5,7 @@ import { createStore } from '~/ide/stores';
 import RightPane from '~/ide/components/panes/right.vue';
 import CollapsibleSidebar from '~/ide/components/panes/collapsible_sidebar.vue';
 import { rightSidebarViews } from '~/ide/constants';
+import extendStore from '~/ide/stores/extend';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
@@ -14,6 +15,8 @@ describe('ide/components/panes/right.vue', () => {
   let store;
 
   const createComponent = props => {
+    extendStore(store, document.createElement('div'));
+
     wrapper = shallowMount(RightPane, {
       localVue,
       store,
@@ -30,26 +33,6 @@ describe('ide/components/panes/right.vue', () => {
   afterEach(() => {
     wrapper.destroy();
     wrapper = null;
-  });
-
-  it('allows tabs to be added via extensionTabs prop', () => {
-    createComponent({
-      extensionTabs: [
-        {
-          show: true,
-          title: 'FakeTab',
-        },
-      ],
-    });
-
-    expect(wrapper.find(CollapsibleSidebar).props('extensionTabs')).toEqual(
-      expect.arrayContaining([
-        expect.objectContaining({
-          show: true,
-          title: 'FakeTab',
-        }),
-      ]),
-    );
   });
 
   describe('pipelines tab', () => {
@@ -94,6 +77,40 @@ describe('ide/components/panes/right.vue', () => {
                 name: rightSidebarViews.clientSidePreview.name,
               }),
             ]),
+          }),
+        ]),
+      );
+    });
+  });
+
+  describe('terminal tab', () => {
+    beforeEach(() => {
+      createComponent();
+    });
+
+    it('adds terminal tab', () => {
+      store.state.terminal.isVisible = true;
+
+      return wrapper.vm.$nextTick().then(() => {
+        expect(wrapper.find(CollapsibleSidebar).props('extensionTabs')).toEqual(
+          expect.arrayContaining([
+            expect.objectContaining({
+              show: true,
+              title: 'Terminal',
+            }),
+          ]),
+        );
+      });
+    });
+
+    it('hides terminal tab when not visible', () => {
+      store.state.terminal.isVisible = false;
+
+      expect(wrapper.find(CollapsibleSidebar).props('extensionTabs')).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            show: false,
+            title: 'Terminal',
           }),
         ]),
       );

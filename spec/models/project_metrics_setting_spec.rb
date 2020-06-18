@@ -44,12 +44,20 @@ describe ProjectMetricsSetting do
       it { is_expected.to be_valid }
     end
 
-    context 'external_dashboard_url is blank' do
-      before do
-        subject.external_dashboard_url = ''
-      end
+    context 'dashboard_timezone' do
+      it { is_expected.to define_enum_for(:dashboard_timezone).with_values({ local: 0, utc: 1 }) }
 
-      it { is_expected.to be_invalid }
+      it 'defaults to local' do
+        expect(subject.dashboard_timezone).to eq('local')
+      end
+    end
+  end
+
+  describe '#dashboard_timezone=' do
+    it 'downcases string' do
+      subject.dashboard_timezone = 'UTC'
+
+      expect(subject.dashboard_timezone).to eq('utc')
     end
   end
 end

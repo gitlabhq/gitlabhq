@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe "User edits milestone", :js do
+RSpec.describe "User edits milestone", :js do
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project) }
   let_it_be(:milestone) { create(:milestone, project: project, start_date: Date.today, due_date: 5.days.from_now) }

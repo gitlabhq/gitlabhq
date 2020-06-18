@@ -3,74 +3,93 @@ import { GlFilteredSearch } from '@gitlab/ui';
 import { __, s__ } from '~/locale';
 import PipelineTriggerAuthorToken from './tokens/pipeline_trigger_author_token.vue';
 import PipelineBranchNameToken from './tokens/pipeline_branch_name_token.vue';
-import Api from '~/api';
-import createFlash from '~/flash';
-import { FETCH_AUTHOR_ERROR_MESSAGE, FETCH_BRANCH_ERROR_MESSAGE } from '../constants';
+import PipelineStatusToken from './tokens/pipeline_status_token.vue';
+import PipelineTagNameToken from './tokens/pipeline_tag_name_token.vue';
+import { map } from 'lodash';
 
 export default {
+  userType: 'username',
+  branchType: 'ref',
+  tagType: 'tag',
+  statusType: 'status',
+  defaultTokensLength: 1,
   components: {
     GlFilteredSearch,
   },
   props: {
-    pipelines: {
-      type: Array,
-      required: true,
-    },
     projectId: {
       type: String,
+      required: true,
+    },
+    params: {
+      type: Object,
       required: true,
     },
   },
   data() {
     return {
-      projectUsers: null,
-      projectBranches: null,
+      internalValue: [],
     };
   },
   computed: {
+    selectedTypes() {
+      return this.value.map(i => i.type);
+    },
     tokens() {
       return [
         {
-          type: 'username',
+          type: this.$options.userType,
           icon: 'user',
           title: s__('Pipeline|Trigger author'),
           unique: true,
           token: PipelineTriggerAuthorToken,
           operators: [{ value: '=', description: __('is'), default: 'true' }],
-          triggerAuthors: this.projectUsers,
           projectId: this.projectId,
         },
         {
-          type: 'ref',
+          type: this.$options.branchType,
           icon: 'branch',
           title: s__('Pipeline|Branch name'),
           unique: true,
           token: PipelineBranchNameToken,
           operators: [{ value: '=', description: __('is'), default: 'true' }],
-          branches: this.projectBranches,
           projectId: this.projectId,
+          disabled: this.selectedTypes.includes(this.$options.tagType),
+        },
+        {
+          type: this.$options.tagType,
+          icon: 'tag',
+          title: s__('Pipeline|Tag name'),
+          unique: true,
+          token: PipelineTagNameToken,
+          operators: [{ value: '=', description: __('is'), default: 'true' }],
+          projectId: this.projectId,
+          disabled: this.selectedTypes.includes(this.$options.branchType),
+        },
+        {
+          type: this.$options.statusType,
+          icon: 'status',
+          title: s__('Pipeline|Status'),
+          unique: true,
+          token: PipelineStatusToken,
+          operators: [{ value: '=', description: __('is'), default: 'true' }],
         },
       ];
     },
-  },
-  created() {
-    Api.projectUsers(this.projectId)
-      .then(users => {
-        this.projectUsers = users;
-      })
-      .catch(err => {
-        createFlash(FETCH_AUTHOR_ERROR_MESSAGE);
-        throw err;
-      });
-
-    Api.branches(this.projectId)
-      .then(({ data }) => {
-        this.projectBranches = data.map(branch => branch.name);
-      })
-      .catch(err => {
-        createFlash(FETCH_BRANCH_ERROR_MESSAGE);
-        throw err;
-      });
+    parsedParams() {
+      return map(this.params, (val, key) => ({
+        type: key,
+        value: { data: val, operator: '=' },
+      }));
+    },
+    value: {
+      get() {
+        return this.internalValue.length > 0 ? this.internalValue : this.parsedParams;
+      },
+      set(value) {
+        this.internalValue = value;
+      },
+    },
   },
   methods: {
     onSubmit(filters) {
@@ -83,6 +102,7 @@ export default {
 <template>
   <div class="row-content-block">
     <gl-filtered-search
+      v-model="value"
       :placeholder="__('Filter pipelines')"
       :available-tokens="tokens"
       @submit="onSubmit"

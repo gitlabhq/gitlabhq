@@ -8,10 +8,10 @@
   .git-access-header.w-100.d-flex.flex-column.justify-content-center
     %span
       = _("Clone repository")
-      %strong= @project_wiki.full_path
+      %strong= @wiki.full_path
 
   .pt-3.pt-lg-0.w-100
-    = render "shared/clone_panel", project: @project_wiki
+    = render "shared/clone_panel", project: @wiki
 
 .wiki-git-access
   %h3= s_("WikiClone|Install Gollum")
@@ -22,8 +22,8 @@
   %h3= s_("WikiClone|Clone your wiki")
   %pre.dark
     :preserve
-      git clone #{ content_tag(:span, h(default_url_to_repo(@project_wiki)), class: 'clone')}
-      cd #{h @project_wiki.path}
+      git clone #{ content_tag(:span, h(default_url_to_repo(@wiki)), class: 'clone')}
+      cd #{h @wiki.path}
 
   %h3= s_("WikiClone|Start Gollum and edit locally")
   %pre.dark
@@ -34,4 +34,4 @@
       >> Maximum connections set to 1024
       >> Listening on 0.0.0.0:4567, CTRL+C to stop
 
-= render 'sidebar'
+= render 'shared/wikis/sidebar'

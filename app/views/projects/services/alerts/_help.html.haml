@@ -1,3 +1,6 @@
 .js-alerts-service-settings{ data: { activated: @service.activated?.to_s,
   form_path: scoped_integration_path(@service),
-  authorization_key: @service.token, url: @service.url || _('<namespace / project>'), learn_more_url: 'https://docs.gitlab.com/ee/user/project/integrations/generic_alerts.html' } }
+  authorization_key: @service.token,
+  url: @service.url || _('<namespace / project>'),
+  alerts_setup_url: help_page_path('user/project/integrations/generic_alerts.html', anchor: 'setting-up-generic-alerts'),
+  alerts_usage_url: help_page_path('user/project/operations/alert_management.html') } }

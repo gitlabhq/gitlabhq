@@ -29,4 +29,6 @@ describe GitlabSchema.types['Group'] do
       is_expected.to have_graphql_type(Types::BoardType.connection_type)
     end
   end
+
+  it_behaves_like 'a GraphQL type with labels'
 end

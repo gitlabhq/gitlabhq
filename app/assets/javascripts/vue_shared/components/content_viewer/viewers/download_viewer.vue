@@ -52,7 +52,7 @@ export default {
         :download="fileName"
         target="_blank"
       >
-        <icon :size="16" name="download" class="float-left append-right-8" />
+        <icon :size="16" name="download" class="float-left gl-mr-3" />
         {{ __('Download') }}
       </gl-link>
     </div>

@@ -35,8 +35,39 @@
   }
 
   @include media-breakpoint-down(xs) {
-    .alert-details-create-issue-button {
+    .alert-details-issue-button {
       width: 100%;
     }
+  }
+
+  .toggle-sidebar-mobile-button {
+    right: 0;
+  }
+
+  .dropdown-menu-toggle {
+    &:hover {
+      background-color: $white;
+    }
+  }
+
+  .assignee-dropdown-item {
+    .dropdown-item {
+      display: flex;
+      align-items: center;
+
+      &::before {
+        top: 50% !important;
+      }
+
+      &.is-active {
+        &:last-child {
+          border-bottom: 1px solid $gray-200;
+        }
+      }
+    }
+  }
+
+  .note-header-info {
+    margin-top: 1px;
   }
 }

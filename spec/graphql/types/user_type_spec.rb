@@ -9,7 +9,19 @@ describe GitlabSchema.types['User'] do
 
   it 'has the expected fields' do
     expected_fields = %w[
-      id user_permissions snippets name username avatarUrl webUrl todos state
+      id
+      user_permissions
+      snippets
+      name
+      username
+      avatarUrl
+      webUrl
+      todos
+      state
+      authoredMergeRequests
+      assignedMergeRequests
+      groupMemberships
+      projectMemberships
     ]
 
     expect(described_class).to have_graphql_fields(*expected_fields)

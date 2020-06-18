@@ -1,3 +1,9 @@
+---
+stage: Package
+group: Package
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+---
+
 # GitLab Package Registry administration **(PREMIUM ONLY)**
 
 GitLab Packages allows organizations to utilize GitLab as a private repository
@@ -9,10 +15,12 @@ The Packages feature allows GitLab to act as a repository for the following:
 | Software repository | Description | Available in GitLab version |
 | ------------------- | ----------- | --------------------------- |
 | [PyPi Repository](../../user/packages/pypi_repository/index.md) | The GitLab PyPi Repository enables every project in GitLab to have its own space to store [PyPi](https://pypi.org/) packages. | 12.10+ |
+| [Composer Repository](../../user/packages/composer_repository/index.md) | The GitLab Composer Repository enables every project in GitLab to have its own space to store [Composer](https://getcomposer.org/) packages. | 13.1+ |
 | [NuGet Repository](../../user/packages/nuget_repository/index.md) | The GitLab NuGet Repository enables every project in GitLab to have its own space to store [NuGet](https://www.nuget.org/) packages. | 12.8+ |
 | [Conan Repository](../../user/packages/conan_repository/index.md) | The GitLab Conan Repository enables every project in GitLab to have its own space to store [Conan](https://conan.io/) packages. | 12.4+ |
 | [Maven Repository](../../user/packages/maven_repository/index.md) | The GitLab Maven Repository enables every project in GitLab to have its own space to store [Maven](https://maven.apache.org/) packages. | 11.3+ |
 | [NPM Registry](../../user/packages/npm_registry/index.md)   | The GitLab NPM Registry enables every project in GitLab to have its own space to store [NPM](https://www.npmjs.com/) packages. | 11.7+ |
+| [Go Proxy](../../user/packages/go_proxy/index.md) | The Go proxy for GitLab enables every project in GitLab to be fetched with the [Go proxy protocol](https://proxy.golang.org/). | 13.1+ |
 
 Don't you see your package management system supported yet?
 Please consider contributing

@@ -3,12 +3,12 @@
 
 .row.prepend-top-default
   .col-lg-4.profile-settings-sidebar
-    %h4.prepend-top-0
+    %h4.gl-mt-0
       = page_title
     %p
       = _('Control emails linked to your account')
   .col-lg-8
-    %h4.prepend-top-0
+    %h4.gl-mt-0
       = _('Add email address')
     = form_for 'email', url: profile_emails_path do |f|
       .form-group
@@ -17,7 +17,7 @@
       .prepend-top-default
         = f.submit _('Add email address'), class: 'btn btn-success', data: { qa_selector: 'add_email_address_button' }
     %hr
-    %h4.prepend-top-0
+    %h4.gl-mt-0
       = _('Linked emails (%{email_count})') % { email_count: @emails.load.size + 1 }
     .account-well.append-bottom-default
       %ul

@@ -3,16 +3,17 @@
 require 'spec_helper'
 
 describe Projects::GroupLinks::CreateService, '#execute' do
-  let(:user) { create :user }
-  let(:group) { create :group }
-  let(:project) { create :project }
+  let_it_be(:user) { create :user }
+  let_it_be(:group) { create :group }
+  let_it_be(:project) { create :project }
   let(:opts) do
     {
       link_group_access: '30',
       expires_at: nil
     }
   end
-  let(:subject) { described_class.new(project, user, opts) }
+
+  subject { described_class.new(project, user, opts) }
 
   before do
     group.add_developer(user)
@@ -20,6 +21,12 @@ describe Projects::GroupLinks::CreateService, '#execute' do
 
   it 'adds group to project' do
     expect { subject.execute(group) }.to change { project.project_group_links.count }.from(0).to(1)
+  end
+
+  it 'updates authorization' do
+    expect { subject.execute(group) }.to(
+      change { Ability.allowed?(user, :read_project, project) }
+        .from(false).to(true))
   end
 
   it 'returns false if group is blank' do

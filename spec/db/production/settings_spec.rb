@@ -3,7 +3,7 @@
 require 'spec_helper'
 require 'rainbow/ext/string'
 
-describe 'seed production settings' do
+RSpec.describe 'seed production settings' do
   let(:settings_file) { Rails.root.join('db/fixtures/production/010_settings.rb') }
   let(:settings) { Gitlab::CurrentSettings.current_application_settings }
 

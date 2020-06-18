@@ -1,4 +1,4 @@
-/* eslint-disable no-shadow, no-param-reassign */
+/* eslint-disable no-shadow, no-param-reassign,consistent-return */
 /* global List */
 
 import $ from 'jquery';
@@ -22,6 +22,7 @@ import ListLabel from '../models/label';
 import ListAssignee from '../models/assignee';
 import ListMilestone from '../models/milestone';
 
+const PER_PAGE = 20;
 const boardsStore = {
   disabled: false,
   timeTracking: {
@@ -42,6 +43,7 @@ const boardsStore = {
   },
   detail: {
     issue: {},
+    list: {},
   },
   moving: {
     issue: {},
@@ -73,6 +75,7 @@ const boardsStore = {
     this.filter.path = getUrlParamsArray().join('&');
     this.detail = {
       issue: {},
+      list: {},
     };
   },
   showPage(page) {
@@ -133,6 +136,21 @@ const boardsStore = {
       path: '',
     });
   },
+
+  findIssueLabel(issue, findLabel) {
+    return issue.labels.find(label => label.id === findLabel.id);
+  },
+
+  goToNextPage(list) {
+    if (list.issuesSize > list.issues.length) {
+      if (list.issues.length / PER_PAGE >= 1) {
+        list.page += 1;
+      }
+
+      return list.getIssues(false);
+    }
+  },
+
   addListIssue(list, issue, listFrom, newIndex) {
     let moveBeforeId = null;
     let moveAfterId = null;
@@ -177,6 +195,10 @@ const boardsStore = {
       }
     }
   },
+  findListIssue(list, id) {
+    return list.issues.find(issue => issue.id === id);
+  },
+
   welcomeIsHidden() {
     return parseBoolean(Cookies.get('issue_board_welcome_hidden'));
   },
@@ -241,6 +263,33 @@ const boardsStore = {
         list.updateMultipleIssues(issues, listFrom, moveBeforeId, moveAfterId);
       }
     }
+  },
+
+  removeListIssues(list, removeIssue) {
+    list.issues = list.issues.filter(issue => {
+      const matchesRemove = removeIssue.id === issue.id;
+
+      if (matchesRemove) {
+        list.issuesSize -= 1;
+        issue.removeLabel(list.label);
+      }
+
+      return !matchesRemove;
+    });
+  },
+  removeListMultipleIssues(list, removeIssues) {
+    const ids = removeIssues.map(issue => issue.id);
+
+    list.issues = list.issues.filter(issue => {
+      const matchesRemove = ids.includes(issue.id);
+
+      if (matchesRemove) {
+        list.issuesSize -= 1;
+        issue.removeLabel(list.label);
+      }
+
+      return !matchesRemove;
+    });
   },
 
   startMoving(list, issue) {
@@ -516,8 +565,24 @@ const boardsStore = {
     });
   },
 
+  updateListFunc(list) {
+    const collapsed = !list.isExpanded;
+    return this.updateList(list.id, list.position, collapsed).catch(() => {
+      // TODO: handle request error
+    });
+  },
+
   destroyList(id) {
     return axios.delete(`${this.state.endpoints.listsEndpoint}/${id}`);
+  },
+  destroy(list) {
+    const index = this.state.lists.indexOf(list);
+    this.state.lists.splice(index, 1);
+    this.updateNewListDropdown(list.id);
+
+    this.destroyList(list.id).catch(() => {
+      // TODO: handle request error
+    });
   },
 
   saveList(list) {
@@ -591,6 +656,15 @@ const boardsStore = {
     });
   },
 
+  moveListIssues(list, issue, oldIndex, newIndex, moveBeforeId, moveAfterId) {
+    list.issues.splice(oldIndex, 1);
+    list.issues.splice(newIndex, 0, issue);
+
+    this.moveIssue(issue.id, null, null, moveBeforeId, moveAfterId).catch(() => {
+      // TODO: handle request error
+    });
+  },
+
   moveMultipleIssues({ ids, fromListId, toListId, moveBeforeId, moveAfterId }) {
     return axios.put(this.generateMultiDragPath(this.state.endpoints.boardId), {
       from_list_id: fromListId,
@@ -607,6 +681,15 @@ const boardsStore = {
     });
   },
 
+  newListIssue(list, issue) {
+    list.addIssue(issue, null, 0);
+    list.issuesSize += 1;
+
+    return this.newIssue(list.id, issue)
+      .then(res => res.data)
+      .then(data => list.onNewIssueResponse(issue, data));
+  },
+
   getBacklog(data) {
     return axios.get(
       mergeUrlParams(
@@ -614,6 +697,21 @@ const boardsStore = {
         `${gon.relative_url_root}/-/boards/${this.state.endpoints.boardId}/issues.json`,
       ),
     );
+  },
+  removeIssueLabel(issue, removeLabel) {
+    if (removeLabel) {
+      issue.labels = issue.labels.filter(label => removeLabel.id !== label.id);
+    }
+  },
+
+  addIssueAssignee(issue, assignee) {
+    if (!issue.findAssignee(assignee)) {
+      issue.assignees.push(new ListAssignee(assignee));
+    }
+  },
+
+  removeIssueLabels(issue, labels) {
+    labels.forEach(issue.removeLabel.bind(issue));
   },
 
   bulkUpdate(issueIds, extraData = {}) {
@@ -682,10 +780,49 @@ const boardsStore = {
       ...this.multiSelect.list.slice(index + 1),
     ];
   },
+  removeIssueAssignee(issue, removeAssignee) {
+    if (removeAssignee) {
+      issue.assignees = issue.assignees.filter(assignee => assignee.id !== removeAssignee.id);
+    }
+  },
+
+  findIssueAssignee(issue, findAssignee) {
+    return issue.assignees.find(assignee => assignee.id === findAssignee.id);
+  },
 
   clearMultiSelect() {
     this.multiSelect.list = [];
   },
+
+  removeAllIssueAssignees(issue) {
+    issue.assignees = [];
+  },
+
+  addIssueMilestone(issue, milestone) {
+    const miletoneId = issue.milestone ? issue.milestone.id : null;
+    if (IS_EE && milestone.id !== miletoneId) {
+      issue.milestone = new ListMilestone(milestone);
+    }
+  },
+
+  setIssueLoadingState(issue, key, value) {
+    issue.isLoading[key] = value;
+  },
+
+  updateIssueData(issue, newData) {
+    Object.assign(issue, newData);
+  },
+
+  setIssueFetchingState(issue, key, value) {
+    issue.isFetching[key] = value;
+  },
+
+  removeIssueMilestone(issue, removeMilestone) {
+    if (IS_EE && removeMilestone && removeMilestone.id === issue.milestone.id) {
+      issue.milestone = {};
+    }
+  },
+
   refreshIssueData(issue, obj) {
     issue.id = obj.id;
     issue.iid = obj.iid;
@@ -716,6 +853,11 @@ const boardsStore = {
 
     if (obj.assignees) {
       issue.assignees = obj.assignees.map(a => new ListAssignee(a));
+    }
+  },
+  addIssueLabel(issue, label) {
+    if (!issue.findLabel(label)) {
+      issue.labels.push(new ListLabel(label));
     }
   },
   updateIssue(issue) {

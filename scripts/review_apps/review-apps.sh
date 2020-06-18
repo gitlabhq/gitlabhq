@@ -245,7 +245,7 @@ function deploy() {
   IMAGE_REPOSITORY="registry.gitlab.com/gitlab-org/build/cng-mirror"
   gitlab_migrations_image_repository="${IMAGE_REPOSITORY}/gitlab-rails-ee"
   gitlab_sidekiq_image_repository="${IMAGE_REPOSITORY}/gitlab-sidekiq-ee"
-  gitlab_unicorn_image_repository="${IMAGE_REPOSITORY}/gitlab-webservice-ee"
+  gitlab_webservice_image_repository="${IMAGE_REPOSITORY}/gitlab-webservice-ee"
   gitlab_task_runner_image_repository="${IMAGE_REPOSITORY}/gitlab-task-runner-ee"
   gitlab_gitaly_image_repository="${IMAGE_REPOSITORY}/gitaly"
   gitlab_shell_image_repository="${IMAGE_REPOSITORY}/gitlab-shell"
@@ -275,11 +275,11 @@ HELM_CMD=$(cat << EOF
     --set gitlab.sidekiq.annotations.commit="${CI_COMMIT_SHORT_SHA}" \
     --set gitlab.sidekiq.image.repository="${gitlab_sidekiq_image_repository}" \
     --set gitlab.sidekiq.image.tag="${CI_COMMIT_REF_SLUG}" \
-    --set gitlab.unicorn.annotations.commit="${CI_COMMIT_SHORT_SHA}" \
-    --set gitlab.unicorn.image.repository="${gitlab_unicorn_image_repository}" \
-    --set gitlab.unicorn.image.tag="${CI_COMMIT_REF_SLUG}" \
-    --set gitlab.unicorn.workhorse.image="${gitlab_workhorse_image_repository}" \
-    --set gitlab.unicorn.workhorse.tag="${CI_COMMIT_REF_SLUG}" \
+    --set gitlab.webservice.annotations.commit="${CI_COMMIT_SHORT_SHA}" \
+    --set gitlab.webservice.image.repository="${gitlab_webservice_image_repository}" \
+    --set gitlab.webservice.image.tag="${CI_COMMIT_REF_SLUG}" \
+    --set gitlab.webservice.workhorse.image="${gitlab_workhorse_image_repository}" \
+    --set gitlab.webservice.workhorse.tag="${CI_COMMIT_REF_SLUG}" \
     --set gitlab.task-runner.image.repository="${gitlab_task_runner_image_repository}" \
     --set gitlab.task-runner.image.tag="${CI_COMMIT_REF_SLUG}"
 EOF

@@ -26,7 +26,7 @@ export default {
 </script>
 <template>
   <div class="report-block-list-issue-description prepend-top-5 append-bottom-5">
-    <div class="report-block-list-issue-description-text">
+    <div class="report-block-list-issue-description-text" data-testid="test-issue-body-description">
       <button
         type="button"
         class="btn-link btn-blank text-left break-link vulnerability-name-button"

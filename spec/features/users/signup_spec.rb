@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-shared_examples 'Signup' do
+RSpec.shared_examples 'Signup' do
   include TermsHelper
 
   let(:new_user) { build_stubbed(:user) }
@@ -420,7 +420,7 @@ shared_examples 'Signup' do
   end
 end
 
-shared_examples 'Signup name validation' do |field, max_length|
+RSpec.shared_examples 'Signup name validation' do |field, max_length|
   before do
     visit new_user_registration_path
   end
@@ -458,7 +458,7 @@ shared_examples 'Signup name validation' do |field, max_length|
   end
 end
 
-describe 'With original flow' do
+RSpec.describe 'With original flow' do
   before do
     stub_experiment(signup_flow: false)
     stub_experiment_for_user(signup_flow: false)
@@ -468,7 +468,7 @@ describe 'With original flow' do
   it_behaves_like 'Signup name validation', 'new_user_name', 255
 end
 
-describe 'With experimental flow' do
+RSpec.describe 'With experimental flow' do
   before do
     stub_experiment(signup_flow: true)
     stub_experiment_for_user(signup_flow: true)

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-describe ApplicationController do
+RSpec.describe ApplicationController do
   include TermsHelper
 
   let(:user) { create(:user) }
@@ -306,13 +306,6 @@ describe ApplicationController do
 
       it 'returns true if a 2FA requirement is set on the user' do
         user.require_two_factor_authentication_from_group = true
-        allow(controller).to receive(:current_user).and_return(user)
-
-        expect(subject).to be_truthy
-      end
-
-      it 'returns true if user has signed up using omniauth-ultraauth' do
-        user = create(:omniauth_user, provider: 'ultraauth')
         allow(controller).to receive(:current_user).and_return(user)
 
         expect(subject).to be_truthy

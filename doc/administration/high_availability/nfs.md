@@ -59,7 +59,7 @@ management between systems:
 We recommend that all NFS users disable the NFS server delegation feature. This
 is to avoid a [Linux kernel bug](https://bugzilla.redhat.com/show_bug.cgi?id=1552203)
 which causes NFS clients to slow precipitously due to
-[excessive network traffic from numerous `TEST_STATEID` NFS messages](https://gitlab.com/gitlab-org/gitlab-foss/issues/52017).
+[excessive network traffic from numerous `TEST_STATEID` NFS messages](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/52017).
 
 To disable NFS server delegation, do the following:
 
@@ -146,7 +146,7 @@ Additionally, this configuration is specifically warned against in the
 >to the NFS server can cause data corruption problems.
 
 For supported database architecture, please see our documentation on
-[Configuring a Database for GitLab HA](database.md).
+[Configuring a Database for GitLab HA](../postgresql/replication_and_failover.md).
 
 ## NFS Client mount options
 
@@ -164,7 +164,7 @@ Note there are several options that you should consider using:
 
 | Setting | Description |
 | ------- | ----------- |
-| `vers=4.1` |NFS v4.1 should be used instead of v4.0 because there is a Linux [NFS client bug in v4.0](https://gitlab.com/gitlab-org/gitaly/issues/1339) that can cause significant problems due to stale data.
+| `vers=4.1` |NFS v4.1 should be used instead of v4.0 because there is a Linux [NFS client bug in v4.0](https://gitlab.com/gitlab-org/gitaly/-/issues/1339) that can cause significant problems due to stale data.
 | `nofail` | Don't halt boot process waiting for this mount to become available
 | `lookupcache=positive` | Tells the NFS client to honor `positive` cache results but invalidates any `negative` cache results. Negative cache results cause problems with Git. Specifically, a `git push` can fail to register uniformly across all NFS clients. The negative cache causes the clients to 'remember' that the files did not exist previously.
 | `hard` | Instead of `soft`. [Further details](#soft-mount-option).
@@ -194,7 +194,7 @@ use the `hard` option, because (from the man page):
 
 Other vendors make similar recommendations, including
 [SAP](http://wiki.scn.sap.com/wiki/x/PARnFQ) and NetApp's
-[knowledge base](https://kb.netapp.com/app/answers/answer_view/a_id/1004893/~/hard-mount-vs-soft-mount-),
+[knowledge base](https://kb.netapp.com/Advice_and_Troubleshooting/Data_Storage_Software/ONTAP_OS/What_are_the_differences_between_hard_mount_and_soft_mount),
 they highlight that if the NFS client driver caches data, `soft` means there is no certainty if
 writes by GitLab are actually on disk.
 
@@ -284,7 +284,7 @@ are empty before attempting a restore. Read more about the
 
 Read more on high-availability configuration:
 
-1. [Configure the database](database.md)
+1. [Configure the database](../postgresql/replication_and_failover.md)
 1. [Configure Redis](redis.md)
 1. [Configure the GitLab application servers](gitlab.md)
 1. [Configure the load balancers](load_balancer.md)

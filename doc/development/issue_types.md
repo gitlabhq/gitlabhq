@@ -5,9 +5,9 @@ Sometimes when a new resource type is added it's not clear if it should be only 
 (similar to Issue, Epic, Merge Request, Snippet).
 
 The idea of Issue Types was first proposed in [this
-issue](https://gitlab.com/gitlab-org/gitlab/issues/8767) and its usage was
+issue](https://gitlab.com/gitlab-org/gitlab/-/issues/8767) and its usage was
 discussed few times since then, for example in [incident
-management](https://gitlab.com/gitlab-org/gitlab-foss/issues/55532).
+management](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/55532).
 
 ## What is an Issue Type
 

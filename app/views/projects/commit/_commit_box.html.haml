@@ -22,8 +22,8 @@
 
   .header-action-buttons
     - if defined?(@notes_count) && @notes_count > 0
-      %span.btn.disabled.btn-grouped.d-none.d-sm-block.append-right-10
-        = icon('comment')
+      %span.btn.disabled.btn-grouped.d-none.d-sm-block.append-right-10.has-tooltip{ title: n_("%d comment on this commit", "%d comments on this commit", @notes_count) % @notes_count }
+        = sprite_icon('comment')
         = @notes_count
     = link_to project_tree_path(@project, @commit), class: "btn btn-default append-right-10 d-none d-sm-none d-md-inline" do
       #{ _('Browse files') }

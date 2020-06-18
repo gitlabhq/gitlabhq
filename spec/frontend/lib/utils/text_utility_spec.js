@@ -126,6 +126,8 @@ describe('text_utility', () => {
       ${'snake case'}          | ${'snake_case'}
       ${'snake_case'}          | ${'snake_case'}
       ${'snakeCasesnake Case'} | ${'snake_casesnake_case'}
+      ${'123'}                 | ${'123'}
+      ${'123 456'}             | ${'123_456'}
     `('converts string $txt to $result string', ({ txt, result }) => {
       expect(textUtils.convertToSnakeCase(txt)).toEqual(result);
     });
@@ -189,6 +191,20 @@ describe('text_utility', () => {
       expect(textUtils.truncatePathMiddleToLength('app/test/merge_request/diff', 13)).toEqual(
         'app/…/…/diff',
       );
+    });
+
+    describe('given a path too long for the maxWidth', () => {
+      it.each`
+        path          | maxWidth | result
+        ${'aa/bb/cc'} | ${1}     | ${'…'}
+        ${'aa/bb/cc'} | ${2}     | ${'…'}
+        ${'aa/bb/cc'} | ${3}     | ${'…/…'}
+        ${'aa/bb/cc'} | ${4}     | ${'…/…'}
+        ${'aa/bb/cc'} | ${5}     | ${'…/…/…'}
+      `('truncates ($path, $maxWidth) to $result', ({ path, maxWidth, result }) => {
+        expect(result.length).toBeLessThanOrEqual(maxWidth);
+        expect(textUtils.truncatePathMiddleToLength(path, maxWidth)).toEqual(result);
+      });
     });
   });
 

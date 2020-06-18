@@ -66,6 +66,8 @@ class Todo < ApplicationRecord
   scope :with_entity_associations, -> { preload(:target, :author, :note, group: :route, project: [:route, { namespace: :route }]) }
   scope :joins_issue_and_assignees, -> { left_joins(issue: :assignees) }
 
+  enum resolved_by_action: { system_done: 0, api_all_done: 1, api_done: 2, mark_all_done: 3, mark_done: 4 }, _prefix: :resolved_by
+
   state_machine :state, initial: :pending do
     event :done do
       transition [:pending] => :done
@@ -100,17 +102,17 @@ class Todo < ApplicationRecord
       state.nil? ? exists?(target: target) : exists?(target: target, state: state)
     end
 
-    # Updates the state of a relation of todos to the new state.
+    # Updates attributes of a relation of todos to the new state.
     #
-    # new_state - The new state of the todos.
+    # new_attributes - The new attributes of the todos.
     #
     # Returns an `Array` containing the IDs of the updated todos.
-    def update_state(new_state)
-      # Only update those that are not really on that state
-      base = where.not(state: new_state).except(:order)
+    def batch_update(**new_attributes)
+      # Only update those that have different state
+      base = where.not(state: new_attributes[:state]).except(:order)
       ids = base.pluck(:id)
 
-      base.update_all(state: new_state, updated_at: Time.now)
+      base.update_all(new_attributes.merge(updated_at: Time.current))
 
       ids
     end
@@ -185,6 +187,10 @@ class Todo < ApplicationRecord
 
   def for_design?
     target_type == DesignManagement::Design.name
+  end
+
+  def for_alert?
+    target_type == AlertManagement::Alert.name
   end
 
   # override to return commits, which are not active record

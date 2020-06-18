@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'factories' do
+RSpec.describe 'factories' do
   FactoryBot.factories.each do |factory|
     describe "#{factory.name} factory" do
       it 'does not raise error when built' do

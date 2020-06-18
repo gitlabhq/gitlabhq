@@ -1,3 +1,9 @@
+---
+stage: Plan
+group: Project Management
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+---
+
 # Todos API
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/3188) in GitLab 8.10.
@@ -23,7 +29,7 @@ Parameters:
 | `type` | string | no | The type of a todo. Can be either `Issue` or `MergeRequest` |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/todos
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/todos"
 ```
 
 Example Response:
@@ -197,7 +203,7 @@ Parameters:
 | `id` | integer | yes | The ID of a todo |
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/todos/130/mark_as_done
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/todos/130/mark_as_done"
 ```
 
 Example Response:
@@ -288,5 +294,5 @@ POST /todos/mark_as_done
 ```
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/todos/mark_as_done
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/todos/mark_as_done"
 ```

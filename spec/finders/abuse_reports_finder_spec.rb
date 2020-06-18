@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe AbuseReportsFinder, '#execute' do
+RSpec.describe AbuseReportsFinder, '#execute' do
   let(:params) { {} }
   let!(:user1) { create(:user) }
   let!(:user2) { create(:user) }

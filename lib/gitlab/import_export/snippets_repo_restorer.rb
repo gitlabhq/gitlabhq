@@ -10,15 +10,13 @@ module Gitlab
       end
 
       def restore
-        return true unless Dir.exist?(snippets_repo_bundle_path)
-
-        @project.snippets.find_each.all? do |snippet|
+        @project.snippets.find_each.map do |snippet|
           Gitlab::ImportExport::SnippetRepoRestorer.new(snippet: snippet,
                                                         user: @user,
                                                         shared: @shared,
                                                         path_to_bundle: snippet_repo_bundle_path(snippet))
                                                    .restore
-        end
+        end.all?(true)
       end
 
       private

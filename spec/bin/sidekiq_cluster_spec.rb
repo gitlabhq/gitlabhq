@@ -3,7 +3,7 @@
 require 'spec_helper'
 require 'shellwords'
 
-describe 'bin/sidekiq-cluster' do
+RSpec.describe 'bin/sidekiq-cluster' do
   using RSpec::Parameterized::TableSyntax
 
   context 'when selecting some queues and excluding others' do

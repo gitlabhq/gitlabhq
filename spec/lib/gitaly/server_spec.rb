@@ -20,6 +20,7 @@ describe Gitaly::Server do
   it { is_expected.to respond_to(:git_binary_version) }
   it { is_expected.to respond_to(:up_to_date?) }
   it { is_expected.to respond_to(:address) }
+  it { is_expected.to respond_to(:replication_factor) }
 
   describe 'readable?' do
     context 'when the storage is readable' do
@@ -131,6 +132,24 @@ describe Gitaly::Server do
         allow(server).to receive(:server_version).and_return(server_version)
 
         expect(server.expected_version?).to eq(result)
+      end
+    end
+  end
+
+  describe 'replication_factor' do
+    context 'when examining for a given server' do
+      let(:storage_status) { double('storage_status', storage_name: 'default') }
+
+      before do
+        response = double('response', storage_statuses: [storage_status])
+        allow_next_instance_of(Gitlab::GitalyClient::ServerService) do |instance|
+          allow(instance).to receive(:info).and_return(response)
+        end
+      end
+
+      it do
+        allow(storage_status).to receive(:replication_factor).and_return(2)
+        expect(server.replication_factor).to eq(2)
       end
     end
   end

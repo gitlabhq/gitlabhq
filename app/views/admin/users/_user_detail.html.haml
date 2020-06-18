@@ -3,10 +3,10 @@
     = image_tag avatar_icon_for_user(user), class: 'avatar s32 d-none d-md-flex', alt: _('Avatar for %{name}') % { name: sanitize_name(user.name) }
     .row-main-content
       .row-title.str-truncated-100
-        = image_tag avatar_icon_for_user(user), class: 'avatar s16 d-xs-flex d-md-none mr-1 prepend-top-2', alt: _('Avatar for %{name}') % { name: sanitize_name(user.name) }
+        = image_tag avatar_icon_for_user(user), class: 'avatar s16 d-xs-flex d-md-none mr-1 gl-mt-2', alt: _('Avatar for %{name}') % { name: sanitize_name(user.name) }
         = link_to user.name, admin_user_path(user), class: 'text-plain js-user-link', data: { user_id: user.id, qa_selector: 'username_link' }
 
-      = render_if_exists 'admin/users/user_listing_note', user: user
+      = render 'admin/users/user_listing_note', user: user
 
       - user_badges_in_admin_section(user).each do |badge|
         - css_badge = "badge badge-#{badge[:variant]}" if badge[:variant].present?

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe "GitLab Flavored Markdown" do
+RSpec.describe "GitLab Flavored Markdown" do
   let(:user) { create(:user) }
   let(:project) { create(:project) }
   let(:issue) { create(:issue, project: project) }

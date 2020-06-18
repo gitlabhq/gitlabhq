@@ -134,7 +134,7 @@ export default {
     addMultipleToDiscussionWarning() {
       return sprintf(
         __(
-          '%{icon}You are about to add %{usersTag} people to the discussion. Proceed with caution.',
+          '%{icon}You are about to add %{usersTag} people to the discussion. They will all receive a notification.',
         ),
         {
           icon: '<i class="fa fa-exclamation-triangle" aria-hidden="true"></i>',
@@ -245,11 +245,11 @@ export default {
       <div class="zen-backdrop">
         <slot name="textarea"></slot>
         <a
-          class="zen-control zen-control-leave js-zen-leave"
+          class="zen-control zen-control-leave js-zen-leave gl-text-gray-700"
           href="#"
-          :aria-label="__('Enter zen mode')"
+          :aria-label="__('Leave zen mode')"
         >
-          <icon :size="32" name="screen-normal" />
+          <icon :size="16" name="screen-normal" />
         </a>
         <markdown-toolbar
           :markdown-docs-path="markdownDocsPath"

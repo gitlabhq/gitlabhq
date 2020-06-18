@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Projects::MilestonesController do
+RSpec.describe Projects::MilestonesController do
   let(:project) { create(:project, :repository) }
   let(:user)    { create(:user) }
   let(:milestone) { create(:milestone, project: project) }
@@ -145,7 +145,7 @@ describe Projects::MilestonesController do
       delete :destroy, params: { namespace_id: project.namespace.id, project_id: project.id, id: milestone.iid }, format: :js
       expect(response).to be_successful
 
-      expect(Event.recent.first.action).to eq(Event::DESTROYED)
+      expect(Event.recent.first).to be_destroyed_action
 
       expect { Milestone.find(milestone.id) }.to raise_exception(ActiveRecord::RecordNotFound)
       issue.reload

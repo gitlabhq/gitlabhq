@@ -1,3 +1,3 @@
-import initU2F from '../../../shared/sessions/u2f';
+import { mount2faAuthentication } from '~/authentication/mount_2fa';
 
-document.addEventListener('DOMContentLoaded', initU2F);
+document.addEventListener('DOMContentLoaded', mount2faAuthentication);

@@ -2,8 +2,6 @@
 
 module API
   class GroupImport < Grape::API
-    MAXIMUM_FILE_SIZE = 50.megabytes.freeze
-
     helpers Helpers::FileUploadHelpers
 
     helpers do
@@ -40,7 +38,10 @@ module API
         status 200
         content_type Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE
 
-        ImportExportUploader.workhorse_authorize(has_length: false, maximum_size: MAXIMUM_FILE_SIZE)
+        ImportExportUploader.workhorse_authorize(
+          has_length: false,
+          maximum_size: Gitlab::CurrentSettings.max_import_size.megabytes
+        )
       end
 
       desc 'Create a new group import' do
@@ -69,7 +70,7 @@ module API
         group = ::Groups::CreateService.new(current_user, group_params).execute
 
         if group.persisted?
-          GroupImportWorker.perform_async(current_user.id, group.id) # rubocop:disable CodeReuse/Worker
+          ::Groups::ImportExport::ImportService.new(group: group, user: current_user).async_execute
 
           accepted!
         else

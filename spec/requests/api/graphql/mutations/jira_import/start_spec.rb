@@ -29,10 +29,6 @@ describe 'Starting a Jira Import' do
   end
 
   context 'when the user does not have permission' do
-    before do
-      stub_feature_flags(jira_issue_import: true)
-    end
-
     shared_examples 'Jira import does not start' do
       it 'does not start the Jira import' do
         post_graphql_mutation(mutation, current_user: current_user)
@@ -83,53 +79,39 @@ describe 'Starting a Jira Import' do
         end
       end
 
-      context 'when feature jira_issue_import feature flag is disabled' do
-        before do
-          stub_feature_flags(jira_issue_import: false)
-        end
-
-        it_behaves_like 'a mutation that returns errors in the response', errors: ['Jira import feature is disabled.']
+      context 'when project has no Jira service' do
+        it_behaves_like 'a mutation that returns errors in the response', errors: ['Jira integration not configured.']
       end
 
-      context 'when feature jira_issue_import feature flag is enabled' do
+      context 'when when project has Jira service' do
+        let!(:service) { create(:jira_service, project: project) }
+
         before do
-          stub_feature_flags(jira_issue_import: true)
+          project.reload
+
+          stub_jira_service_test
         end
 
-        context 'when project has no Jira service' do
-          it_behaves_like 'a mutation that returns errors in the response', errors: ['Jira integration not configured.']
+        context 'when issues feature are disabled' do
+          let_it_be(:project, reload: true) { create(:project, :issues_disabled) }
+
+          it_behaves_like 'a mutation that returns errors in the response', errors: ['Cannot import because issues are not available in this project.']
         end
 
-        context 'when when project has Jira service' do
-          let!(:service) { create(:jira_service, project: project) }
+        context 'when jira_project_key not provided' do
+          let(:jira_project_key) { '' }
 
-          before do
-            project.reload
+          it_behaves_like 'a mutation that returns errors in the response', errors: ['Unable to find Jira project to import data from.']
+        end
 
-            stub_jira_service_test
-          end
+        context 'when Jira import successfully scheduled' do
+          it 'schedules a Jira import' do
+            post_graphql_mutation(mutation, current_user: current_user)
 
-          context 'when issues feature are disabled' do
-            let_it_be(:project, reload: true) { create(:project, :issues_disabled) }
-
-            it_behaves_like 'a mutation that returns errors in the response', errors: ['Cannot import because issues are not available in this project.']
-          end
-
-          context 'when jira_project_key not provided' do
-            let(:jira_project_key) { '' }
-
-            it_behaves_like 'a mutation that returns errors in the response', errors: ['Unable to find Jira project to import data from.']
-          end
-
-          context 'when Jira import successfully scheduled' do
-            it 'schedules a Jira import' do
-              post_graphql_mutation(mutation, current_user: current_user)
-
-              expect(jira_import['jiraProjectKey']).to eq 'AA'
-              expect(jira_import['scheduledBy']['username']).to eq current_user.username
-              expect(project.latest_jira_import).not_to be_nil
-              expect(project.latest_jira_import).to be_scheduled
-            end
+            expect(jira_import['jiraProjectKey']).to eq 'AA'
+            expect(jira_import['scheduledBy']['username']).to eq current_user.username
+            expect(project.latest_jira_import).not_to be_nil
+            expect(project.latest_jira_import).to be_scheduled
           end
         end
       end

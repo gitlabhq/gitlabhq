@@ -41,23 +41,11 @@ module IncidentManagement
     end
 
     def find_gitlab_managed_event(alert)
-      payload_key = payload_key_for_alert(alert)
-
-      PrometheusAlertEvent.find_by_payload_key(payload_key)
+      PrometheusAlertEvent.find_by_payload_key(alert.gitlab_fingerprint)
     end
 
     def find_self_managed_event(alert)
-      payload_key = payload_key_for_alert(alert)
-
-      SelfManagedPrometheusAlertEvent.find_by_payload_key(payload_key)
-    end
-
-    def payload_key_for_alert(alert)
-      if alert.gitlab_managed?
-        PrometheusAlertEvent.payload_key_for(alert.metric_id, alert.starts_at_raw)
-      else
-        SelfManagedPrometheusAlertEvent.payload_key_for(alert.starts_at_raw, alert.title, alert.full_query)
-      end
+      SelfManagedPrometheusAlertEvent.find_by_payload_key(alert.gitlab_fingerprint)
     end
 
     def create_issue(project, alert)

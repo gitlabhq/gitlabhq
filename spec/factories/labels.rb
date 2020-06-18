@@ -6,6 +6,18 @@ FactoryBot.define do
     color { "#990000" }
   end
 
+  trait :described do
+    description { "Description of #{title}" }
+  end
+
+  trait :scoped do
+    transient do
+      prefix { 'scope' }
+    end
+
+    title { "#{prefix}::#{generate(:label_title)}" }
+  end
+
   factory :label, traits: [:base_label], class: 'ProjectLabel' do
     project
 

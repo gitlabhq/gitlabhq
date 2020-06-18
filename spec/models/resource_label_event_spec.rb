@@ -96,4 +96,48 @@ RSpec.describe ResourceLabelEvent, type: :model do
       expect(subject.outdated_markdown?).to be false
     end
   end
+
+  describe '.visible_to_user?' do
+    let_it_be(:user) { create(:user) }
+    let_it_be(:issue_project) { create(:project) }
+    let_it_be(:issue) { create(:issue, project: issue_project) }
+
+    subject { described_class.visible_to_user?(user, issue.resource_label_events.inc_relations) }
+
+    it 'returns events with labels accessible by user' do
+      label = create(:label, project: issue_project)
+      event = create_event(label)
+      issue_project.add_guest(user)
+
+      expect(subject).to eq [event]
+    end
+
+    it 'filters events with public project labels if issues and MRs are private' do
+      project = create(:project, :public, :issues_private, :merge_requests_private)
+      label = create(:label, project: project)
+      create_event(label)
+
+      expect(subject).to be_empty
+    end
+
+    it 'filters events with project labels not accessible by user' do
+      project = create(:project, :private)
+      label = create(:label, project: project)
+      create_event(label)
+
+      expect(subject).to be_empty
+    end
+
+    it 'filters events with group labels not accessible by user' do
+      group = create(:group, :private)
+      label = create(:group_label, group: group)
+      create_event(label)
+
+      expect(subject).to be_empty
+    end
+
+    def create_event(label)
+      create(:resource_label_event, issue: issue, label: label)
+    end
+  end
 end

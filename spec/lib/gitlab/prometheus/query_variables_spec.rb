@@ -7,8 +7,9 @@ describe Gitlab::Prometheus::QueryVariables do
     let(:project) { environment.project }
     let(:environment) { create(:environment) }
     let(:slug) { environment.slug }
+    let(:params) { {} }
 
-    subject { described_class.call(environment) }
+    subject { described_class.call(environment, params) }
 
     it { is_expected.to include(ci_environment_slug: slug) }
     it { is_expected.to include(ci_project_name: project.name) }
@@ -51,6 +52,43 @@ describe Gitlab::Prometheus::QueryVariables do
         end
 
         it { is_expected.to include(kube_namespace: kube_namespace) }
+      end
+    end
+
+    context '__range' do
+      context 'when start_time and end_time are present' do
+        let(:params) do
+          {
+            start_time: Time.rfc3339('2020-05-29T07:23:05.008Z'),
+            end_time: Time.rfc3339('2020-05-29T15:23:05.008Z')
+          }
+        end
+
+        it { is_expected.to include(__range: "#{8.hours.to_i}s") }
+      end
+
+      context 'when start_time and end_time are not present' do
+        it { is_expected.to include(__range: nil) }
+      end
+
+      context 'when end_time is not present' do
+        let(:params) do
+          {
+            start_time: Time.rfc3339('2020-05-29T07:23:05.008Z')
+          }
+        end
+
+        it { is_expected.to include(__range: nil) }
+      end
+
+      context 'when start_time is not present' do
+        let(:params) do
+          {
+            end_time: Time.rfc3339('2020-05-29T07:23:05.008Z')
+          }
+        end
+
+        it { is_expected.to include(__range: nil) }
       end
     end
   end

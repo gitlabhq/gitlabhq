@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-describe Projects::RepositoriesController do
+RSpec.describe Projects::RepositoriesController do
   let(:project) { create(:project, :repository) }
 
   describe "GET archive" do

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Session TTLs', :clean_gitlab_redis_shared_state do
+RSpec.describe 'Session TTLs', :clean_gitlab_redis_shared_state do
   it 'creates a session with a short TTL when login fails' do
     visit new_user_session_path
     # The session key only gets created after a post

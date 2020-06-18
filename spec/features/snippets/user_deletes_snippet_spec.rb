@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'User deletes snippet' do
+RSpec.describe 'User deletes snippet' do
   let(:user) { create(:user) }
   let(:content) { 'puts "test"' }
   let(:snippet) { create(:personal_snippet, :public, content: content, author: user) }

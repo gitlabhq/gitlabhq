@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'User searches for merge requests', :js do
+RSpec.describe 'User searches for merge requests', :js do
   let(:user) { create(:user) }
   let(:project) { create(:project, namespace: user.namespace) }
   let!(:merge_request1) { create(:merge_request, title: 'Foo', source_project: project, target_project: project) }

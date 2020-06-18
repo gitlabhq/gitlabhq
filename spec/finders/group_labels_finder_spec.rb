@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe GroupLabelsFinder, '#execute' do
+RSpec.describe GroupLabelsFinder, '#execute' do
   let!(:group) { create(:group) }
   let!(:user)  { create(:user) }
   let!(:label1) { create(:group_label, title: 'Foo', description: 'Lorem ipsum', group: group) }

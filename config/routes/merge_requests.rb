@@ -55,6 +55,15 @@ resources :merge_requests, concerns: :awardable, except: [:new, :create, :show],
       delete :resolve, action: :unresolve
     end
   end
+
+  scope module: :merge_requests do
+    resources :drafts, only: [:index, :update, :create, :destroy] do
+      collection do
+        post :publish
+        delete :discard
+      end
+    end
+  end
 end
 
 scope path: 'merge_requests', controller: 'merge_requests/creations' do

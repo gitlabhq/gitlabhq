@@ -66,5 +66,13 @@ describe('Blob Header Default Actions', () => {
 
       expect(buttons.at(0).attributes('disabled')).toBeTruthy();
     });
+
+    it('does not render the copy button if a rendering error is set', () => {
+      createComponent({
+        hasRenderError: true,
+      });
+
+      expect(wrapper.find('[data-testid="copyContentsButton"]').exists()).toBe(false);
+    });
   });
 });

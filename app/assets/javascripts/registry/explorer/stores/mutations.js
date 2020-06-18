@@ -1,14 +1,14 @@
 import * as types from './mutation_types';
-import { parseIntPagination, normalizeHeaders } from '~/lib/utils/common_utils';
-import { IMAGE_DELETE_SCHEDULED_STATUS, IMAGE_FAILED_DELETED_STATUS } from '../constants';
+import { parseIntPagination, normalizeHeaders, parseBoolean } from '~/lib/utils/common_utils';
+import { IMAGE_DELETE_SCHEDULED_STATUS, IMAGE_FAILED_DELETED_STATUS } from '../constants/index';
 
 export default {
   [types.SET_INITIAL_STATE](state, config) {
     state.config = {
       ...config,
       expirationPolicy: config.expirationPolicy ? JSON.parse(config.expirationPolicy) : undefined,
-      isGroupPage: config.isGroupPage !== undefined,
-      isAdmin: config.isAdmin !== undefined,
+      isGroupPage: parseBoolean(config.isGroupPage),
+      isAdmin: parseBoolean(config.isAdmin),
     };
   },
 

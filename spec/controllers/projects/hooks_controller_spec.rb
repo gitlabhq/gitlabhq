@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Projects::HooksController do
+RSpec.describe Projects::HooksController do
   let(:project) { create(:project) }
   let(:user) { create(:user) }
 

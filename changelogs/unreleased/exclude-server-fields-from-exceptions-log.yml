@@ -1,0 +1,5 @@
+---
+title: Exclude extra.server fields from exceptions_json.log
+merge_request: 32770
+author:
+type: changed

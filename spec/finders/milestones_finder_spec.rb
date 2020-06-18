@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe MilestonesFinder do
+RSpec.describe MilestonesFinder do
   let(:now) { Time.now }
   let(:group) { create(:group) }
   let(:project_1) { create(:project, namespace: group) }

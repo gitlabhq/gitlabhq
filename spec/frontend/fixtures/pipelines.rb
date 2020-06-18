@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Projects::PipelinesController, '(JavaScript fixtures)', type: :controller do
+RSpec.describe Projects::PipelinesController, '(JavaScript fixtures)', type: :controller do
   include JavaScriptFixturesHelpers
 
   let(:admin) { create(:admin) }

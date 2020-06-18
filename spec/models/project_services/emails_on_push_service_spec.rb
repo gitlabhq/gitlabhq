@@ -21,23 +21,25 @@ describe EmailsOnPushService do
     end
   end
 
-  context 'when properties is missing branches_to_be_notified' do
-    subject { described_class.new(properties: {}) }
+  describe '.new' do
+    context 'when properties is missing branches_to_be_notified' do
+      subject { described_class.new(properties: {}) }
 
-    it 'sets the default value to all' do
-      expect(subject.branches_to_be_notified).to eq('all')
+      it 'sets the default value to all' do
+        expect(subject.branches_to_be_notified).to eq('all')
+      end
+    end
+
+    context 'when branches_to_be_notified is already set' do
+      subject { described_class.new(properties: { branches_to_be_notified: 'protected' }) }
+
+      it 'does not overwrite it with the default value' do
+        expect(subject.branches_to_be_notified).to eq('protected')
+      end
     end
   end
 
-  context 'when branches_to_be_notified is already set' do
-    subject { described_class.new(properties: { branches_to_be_notified: 'protected' }) }
-
-    it 'does not overwrite it with the default value' do
-      expect(subject.branches_to_be_notified).to eq('protected')
-    end
-  end
-
-  context 'project emails' do
+  describe '#execute' do
     let(:push_data) { { object_kind: 'push' } }
     let(:project)   { create(:project, :repository) }
     let(:service)   { create(:emails_on_push_service, project: project) }

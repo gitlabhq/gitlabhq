@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe MergeRequestTargetProjectFinder do
+RSpec.describe MergeRequestTargetProjectFinder do
   include ProjectForksHelper
 
   let(:user) { create(:user) }

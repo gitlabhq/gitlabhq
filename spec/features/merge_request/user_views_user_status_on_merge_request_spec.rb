@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Project > Merge request > View user status' do
+RSpec.describe 'Project > Merge request > View user status' do
   let(:project) { create(:project, :public, :repository) }
   let(:merge_request) do
     create(:merge_request, source_project: project, target_project: project, author: create(:user))

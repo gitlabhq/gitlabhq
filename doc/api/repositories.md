@@ -124,7 +124,7 @@ Parameters:
 - `sha` (optional) - The commit SHA to download. A tag, branch reference, or SHA can be used. This defaults to the tip of the default branch if not specified. For example:
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.com/api/v4/projects/<project_id>/repository/archive?sha=<commit_sha>
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.com/api/v4/projects/<project_id>/repository/archive?sha=<commit_sha>"
 ```
 
 ## Compare branches, tags or commits

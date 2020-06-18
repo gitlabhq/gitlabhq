@@ -7,7 +7,7 @@ type: reference
 
 # Review Apps
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/21971) in GitLab 8.12. Further additions were made in GitLab 8.13 and 8.14.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/21971) in GitLab 8.12. Further additions were made in GitLab 8.13 and 8.14.
 > - Inspired by [Heroku's Review Apps](https://devcenter.heroku.com/articles/github-integration-review-apps), which itself was inspired by [Fourchette](https://github.com/rainforestapp/fourchette).
 
 Review Apps is a collaboration tool that takes the hard work out of providing an environment to showcase product changes.
@@ -65,7 +65,7 @@ The process of configuring Review Apps is as follows:
 
 ### Enable Review Apps button
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/118844) in GitLab 12.8.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/118844) in GitLab 12.8.
 
 When configuring Review Apps for a project, you need to add a new job to `.gitlab-ci.yml`,
 as mentioned above. To facilitate this and if you are using Kubernetes, you can click
@@ -95,8 +95,11 @@ The following are example projects that demonstrate Review App configuration:
 - [NGINX](https://gitlab.com/gitlab-examples/review-apps-nginx).
 - [OpenShift](https://gitlab.com/gitlab-examples/review-apps-openshift).
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
-See also the video [Demo: Cloud Native Development with GitLab](https://www.youtube.com/watch?v=jfIyQEwrocw), which includes a Review Apps example.
+Other examples of Review Apps:
+
+- <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+[Cloud Native Development with GitLab](https://www.youtube.com/watch?v=jfIyQEwrocw).
+- [Review Apps for Android](https://about.gitlab.com/blog/2020/05/06/how-to-create-review-apps-for-android-with-gitlab-fastlane-and-appetize-dot-io/).
 
 ## Route Maps
 
@@ -185,7 +188,7 @@ Once you have the route mapping set up, it will take effect in the following loc
 
 ## Visual Reviews **(STARTER)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/10761) in GitLab Starter 12.0.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/10761) in GitLab Starter 12.0.
 
 With Visual Reviews, you can provide a feedback form to your Review Apps so
 that reviewers can post comments directly from the app back to the merge request
@@ -258,7 +261,7 @@ Then, when your app is deployed via GitLab CI/CD, those variables should get
 replaced with their real values.
 
 NOTE: **Note:**
-Future enhancements [are planned](https://gitlab.com/gitlab-org/gitlab/issues/11322)
+Future enhancements [are planned](https://gitlab.com/gitlab-org/gitlab/-/issues/11322)
 to make this process even easier.
 
 ### Determining merge request ID

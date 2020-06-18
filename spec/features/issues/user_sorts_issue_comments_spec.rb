@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Comment sort direction' do
+RSpec.describe 'Comment sort direction' do
   let_it_be(:project) { create(:project, :public, :repository) }
   let_it_be(:issue) { create(:issue, project: project) }
   let_it_be(:comment_1) { create(:note_on_issue, noteable: issue, project: project, note: 'written first') }

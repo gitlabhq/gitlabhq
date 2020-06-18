@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'User changes public project visibility', :js do
+RSpec.describe 'User changes public project visibility', :js do
   include ProjectForksHelper
 
   before do

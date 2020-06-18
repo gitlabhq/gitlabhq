@@ -26,7 +26,7 @@ module Gitlab
       @default_project_filter = default_project_filter
     end
 
-    def objects(scope, page: nil, per_page: DEFAULT_PER_PAGE, without_count: true)
+    def objects(scope, page: nil, per_page: DEFAULT_PER_PAGE, without_count: true, preload_method: nil)
       collection = case scope
                    when 'projects'
                      projects

@@ -97,26 +97,6 @@ module Milestoneish
     due_date && due_date.past?
   end
 
-  def group_milestone?
-    false
-  end
-
-  def project_milestone?
-    false
-  end
-
-  def legacy_group_milestone?
-    false
-  end
-
-  def dashboard_milestone?
-    false
-  end
-
-  def global_milestone?
-    false
-  end
-
   def total_time_spent
     @total_time_spent ||= issues.joins(:timelogs).sum(:time_spent) + merge_requests.joins(:timelogs).sum(:time_spent)
   end

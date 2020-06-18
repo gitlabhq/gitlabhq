@@ -4,7 +4,7 @@ This API is a project-specific version of these endpoints:
 
 - [Dockerfile templates](templates/dockerfiles.md)
 - [Gitignore templates](templates/gitignores.md)
-- [GitLab CI/CD Config templates](templates/gitlab_ci_ymls.md)
+- [GitLab CI/CD Configuration templates](templates/gitlab_ci_ymls.md)
 - [Open source license templates](templates/licenses.md)
 
 It deprecates these endpoints, which will be removed for API version 5.
@@ -16,7 +16,7 @@ Support will be added for [Issue and Merge Request templates](../user/project/de
 in a future release.
 
 Support for [Group-level file templates](../user/group/index.md#group-file-templates-premium)
-**(PREMIUM)** was [added](https://gitlab.com/gitlab-org/gitlab/issues/5987)
+**(PREMIUM)** was [added](https://gitlab.com/gitlab-org/gitlab/-/issues/5987)
 in GitLab 11.5
 
 ## Get all templates of a particular type

@@ -22,7 +22,7 @@
           **tracking_attrs(track_label, 'click_button', 'bitbucket_cloud') do
             = icon('bitbucket', text: 'Bitbucket Cloud')
           - unless bitbucket_import_configured?
-            = render 'bitbucket_import_modal'
+            = render 'projects/bitbucket_import_modal'
       - if bitbucket_server_import_enabled?
         %div
           = link_to status_import_bitbucket_server_path, class: "btn import_bitbucket", **tracking_attrs(track_label, 'click_button', 'bitbucket_server') do
@@ -34,7 +34,7 @@
           **tracking_attrs(track_label, 'click_button', 'gitlab_com') do
             = icon('gitlab', text: 'GitLab.com')
           - unless gitlab_import_configured?
-            = render 'gitlab_import_modal'
+            = render 'projects/gitlab_import_modal'
 
       - if google_code_import_enabled?
         %div
@@ -73,4 +73,4 @@
     = form_for @project, html: { class: 'new_project' } do |f|
       %hr
       = render "shared/import_form", f: f
-      = render 'new_project_fields', f: f, project_name_id: "import-url-name", hide_init_with_readme: true, track_label: track_label
+      = render 'projects/new_project_fields', f: f, project_name_id: "import-url-name", hide_init_with_readme: true, track_label: track_label

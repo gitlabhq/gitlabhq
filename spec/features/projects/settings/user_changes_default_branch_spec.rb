@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Projects > Settings > User changes default branch' do
+RSpec.describe 'Projects > Settings > User changes default branch' do
   include Select2Helper
 
   let(:user) { create(:user) }

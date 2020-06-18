@@ -15,7 +15,6 @@ describe Gitlab::JiraImport::LabelsImporter do
   subject { importer.execute }
 
   before do
-    stub_feature_flags(jira_issue_import: true)
     stub_const('Gitlab::JiraImport::LabelsImporter::MAX_LABELS', 2)
   end
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Milestone' do
+RSpec.describe 'Milestone' do
   let(:group) { create(:group, :public) }
   let(:project) { create(:project, :public, namespace: group) }
   let(:user) { create(:user) }
@@ -108,20 +108,6 @@ describe 'Milestone' do
       visit group_milestones_path(group)
 
       expect(page).to have_selector('.js-delete-milestone-button', count: 0)
-    end
-  end
-
-  describe 'deprecation popover', :js do
-    it 'opens deprecation popover' do
-      milestone = create(:milestone, project: project)
-
-      visit group_milestone_path(group, milestone, title: milestone.title)
-
-      expect(page).to have_selector('.milestone-deprecation-message')
-
-      find('.milestone-deprecation-message .js-popover-link').click
-
-      expect(page).to have_selector('.popover')
     end
   end
 

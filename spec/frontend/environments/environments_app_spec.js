@@ -53,7 +53,7 @@ describe('Environment', () => {
     describe('without environments', () => {
       beforeEach(() => {
         mockRequest(200, { environments: [] });
-        return createWrapper(true);
+        return createWrapper();
       });
 
       it('should render the empty state', () => {
@@ -118,7 +118,7 @@ describe('Environment', () => {
   describe('unsuccessful request', () => {
     beforeEach(() => {
       mockRequest(500, {});
-      return createWrapper(true);
+      return createWrapper();
     });
 
     it('should render empty state', () => {

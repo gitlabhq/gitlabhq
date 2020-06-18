@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe NotificationSettingsController do
+RSpec.describe NotificationSettingsController do
   let(:project) { create(:project) }
   let(:group) { create(:group, :internal) }
   let(:user) { create(:user) }

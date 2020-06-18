@@ -5,7 +5,6 @@ module IssuableCollections
   include PaginatedCollection
   include SortingHelper
   include SortingPreference
-  include Gitlab::IssuableMetadata
   include Gitlab::Utils::StrongMemoize
 
   included do
@@ -44,7 +43,7 @@ module IssuableCollections
   def set_pagination
     @issuables          = @issuables.page(params[:page])
     @issuables          = per_page_for_relative_position if params[:sort] == 'relative_position'
-    @issuable_meta_data = issuable_meta_data(@issuables, collection_type, current_user)
+    @issuable_meta_data = Gitlab::IssuableMetadata.new(current_user, @issuables).data
     @total_pages        = issuable_page_count(@issuables)
   end
   # rubocop:enable Gitlab/ModuleWithInstanceVariables

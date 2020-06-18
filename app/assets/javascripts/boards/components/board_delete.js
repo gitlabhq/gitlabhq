@@ -1,8 +1,15 @@
 import $ from 'jquery';
 import Vue from 'vue';
+import { GlButton, GlTooltipDirective } from '@gitlab/ui';
 import { __ } from '~/locale';
 
 export default Vue.extend({
+  components: {
+    GlButton,
+  },
+  directives: {
+    GlTooltip: GlTooltipDirective,
+  },
   props: {
     list: {
       type: Object,

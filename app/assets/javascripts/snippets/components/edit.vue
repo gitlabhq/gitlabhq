@@ -11,7 +11,11 @@ import FormFooterActions from '~/vue_shared/components/form/form_footer_actions.
 import UpdateSnippetMutation from '../mutations/updateSnippet.mutation.graphql';
 import CreateSnippetMutation from '../mutations/createSnippet.mutation.graphql';
 import { getSnippetMixin } from '../mixins/snippets';
-import { SNIPPET_VISIBILITY_PRIVATE } from '../constants';
+import {
+  SNIPPET_VISIBILITY_PRIVATE,
+  SNIPPET_CREATE_MUTATION_ERROR,
+  SNIPPET_UPDATE_MUTATION_ERROR,
+} from '../constants';
 import SnippetBlobEdit from './snippet_blob_edit.vue';
 import SnippetVisibilityEdit from './snippet_visibility_edit.vue';
 import SnippetDescriptionEdit from './snippet_description_edit.vue';
@@ -98,7 +102,11 @@ export default {
       this.fileName = newName;
     },
     flashAPIFailure(err) {
-      Flash(sprintf(__("Can't update snippet: %{err}"), { err }));
+      const defaultErrorMsg = this.newSnippet
+        ? SNIPPET_CREATE_MUTATION_ERROR
+        : SNIPPET_UPDATE_MUTATION_ERROR;
+      Flash(sprintf(defaultErrorMsg, { err }));
+      this.isUpdating = false;
     },
     onNewSnippetFetched() {
       this.newSnippet = true;
@@ -129,29 +137,45 @@ export default {
         this.onExistingSnippetFetched();
       }
     },
+    getAttachedFiles() {
+      const fileInputs = Array.from(this.$el.querySelectorAll('[name="files[]"]'));
+      return fileInputs.map(node => node.value);
+    },
+    createMutation() {
+      return {
+        mutation: CreateSnippetMutation,
+        variables: {
+          input: {
+            ...this.apiData,
+            uploadedFiles: this.getAttachedFiles(),
+            projectPath: this.projectPath,
+          },
+        },
+      };
+    },
+    updateMutation() {
+      return {
+        mutation: UpdateSnippetMutation,
+        variables: {
+          input: this.apiData,
+        },
+      };
+    },
     handleFormSubmit() {
       this.isUpdating = true;
       this.$apollo
-        .mutate({
-          mutation: this.newSnippet ? CreateSnippetMutation : UpdateSnippetMutation,
-          variables: {
-            input: {
-              ...this.apiData,
-              projectPath: this.newSnippet ? this.projectPath : undefined,
-            },
-          },
-        })
+        .mutate(this.newSnippet ? this.createMutation() : this.updateMutation())
         .then(({ data }) => {
           const baseObj = this.newSnippet ? data?.createSnippet : data?.updateSnippet;
 
           const errors = baseObj?.errors;
           if (errors.length) {
             this.flashAPIFailure(errors[0]);
+          } else {
+            redirectTo(baseObj.snippet.webUrl);
           }
-          redirectTo(baseObj.snippet.webUrl);
         })
         .catch(e => {
-          this.isUpdating = false;
           this.flashAPIFailure(e);
         });
     },
@@ -168,6 +192,8 @@ export default {
   <form
     class="snippet-form js-requires-input js-quick-submit common-note-form"
     :data-snippet-type="isProjectSnippet ? 'project' : 'personal'"
+    data-testid="snippet-edit-form"
+    @submit.prevent="handleFormSubmit"
   >
     <gl-loading-icon
       v-if="isLoading"
@@ -179,7 +205,7 @@ export default {
       <title-field
         :id="titleFieldId"
         v-model="snippet.title"
-        data-qa-selector="snippet_title"
+        data-qa-selector="snippet_title_field"
         required
         :autofocus="true"
       />
@@ -203,17 +229,17 @@ export default {
       <form-footer-actions>
         <template #prepend>
           <gl-button
-            type="submit"
             category="primary"
+            type="submit"
             variant="success"
             :disabled="updatePrevented"
             data-qa-selector="submit_button"
-            @click="handleFormSubmit"
+            data-testid="snippet-submit-btn"
             >{{ saveButtonLabel }}</gl-button
           >
         </template>
         <template #append>
-          <gl-button data-testid="snippet-cancel-btn" :href="cancelButtonHref">{{
+          <gl-button type="cancel" data-testid="snippet-cancel-btn" :href="cancelButtonHref">{{
             __('Cancel')
           }}</gl-button>
         </template>

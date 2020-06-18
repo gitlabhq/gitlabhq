@@ -128,7 +128,7 @@ module SystemNotes
       body = cross_reference_note_content(gfm_reference)
 
       if noteable.is_a?(ExternalIssue)
-        noteable.project.issues_tracker.create_cross_reference_note(noteable, mentioner, author)
+        noteable.project.external_issue_tracker.create_cross_reference_note(noteable, mentioner, author)
       else
         create_note(NoteSummary.new(noteable, noteable.project, author, body, action: 'cross_reference'))
       end
@@ -225,7 +225,12 @@ module SystemNotes
 
       action = status == 'reopened' ? 'opened' : status
 
-      create_note(NoteSummary.new(noteable, project, author, body, action: action))
+      # A state event which results in a synthetic note will be
+      # created by EventCreateService if change event tracking
+      # is enabled.
+      unless state_change_tracking_enabled?
+        create_note(NoteSummary.new(noteable, project, author, body, action: action))
+      end
     end
 
     # Check if a cross reference to a noteable from a mentioner already exists
@@ -317,6 +322,11 @@ module SystemNotes
 
     def self.cross_reference?(note_text)
       note_text =~ /\A#{cross_reference_note_prefix}/i
+    end
+
+    def state_change_tracking_enabled?
+      noteable.respond_to?(:resource_state_events) &&
+        ::Feature.enabled?(:track_resource_state_change_events, noteable.project)
     end
   end
 end

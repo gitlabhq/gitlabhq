@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'View error details page', :js, :use_clean_rails_memory_store_caching, :sidekiq_inline do
+RSpec.describe 'View error details page', :js, :use_clean_rails_memory_store_caching, :sidekiq_inline do
   include_context 'sentry error tracking context feature'
 
   context 'with current user as project owner' do

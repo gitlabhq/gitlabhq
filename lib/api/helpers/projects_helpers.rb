@@ -44,6 +44,7 @@ module API
         optional :public_builds, type: Boolean, desc: 'Perform public builds'
         optional :request_access_enabled, type: Boolean, desc: 'Allow users to request member access'
         optional :only_allow_merge_if_pipeline_succeeds, type: Boolean, desc: 'Only allow to merge if builds succeed'
+        optional :allow_merge_on_skipped_pipeline, type: Boolean, desc: 'Allow to merge if pipeline is skipped'
         optional :only_allow_merge_if_all_discussions_are_resolved, type: Boolean, desc: 'Only allow to merge if all discussions are resolved'
         optional :tag_list, type: Array[String], desc: 'The list of tags for a project'
         # TODO: remove rubocop disable - https://gitlab.com/gitlab-org/gitlab/issues/14960
@@ -92,6 +93,7 @@ module API
 
       def self.update_params_at_least_one_of
         [
+          :allow_merge_on_skipped_pipeline,
           :autoclose_referenced_issues,
           :auto_devops_enabled,
           :auto_devops_deploy_strategy,

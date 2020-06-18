@@ -3,7 +3,6 @@ import flash from '~/flash';
 import httpStatusCodes from '~/lib/utils/http_status';
 import * as rootTypes from '../../mutation_types';
 import { createCommitPayload, createNewMergeRequestUrl } from '../../utils';
-import router from '../../../ide_router';
 import service from '../../../services';
 import * as types from './mutation_types';
 import consts from './constants';
@@ -196,8 +195,10 @@ export const commitChanges = ({ commit, state, getters, dispatch, rootState, roo
             dispatch('updateViewer', 'editor', { root: true });
 
             if (rootGetters.activeFile) {
-              router.push(
+              dispatch(
+                'router/push',
                 `/project/${rootState.currentProjectId}/blob/${branchName}/-/${rootGetters.activeFile.path}`,
+                { root: true },
               );
             }
           }
@@ -234,6 +235,3 @@ export const commitChanges = ({ commit, state, getters, dispatch, rootState, roo
       window.dispatchEvent(new Event('resize'));
     });
 };
-
-// prevent babel-plugin-rewire from generating an invalid default during karma tests
-export default () => {};

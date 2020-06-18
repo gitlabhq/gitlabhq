@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-shared_examples "installing applications for a cluster" do |managed_apps_local_tiller|
+RSpec.shared_examples "installing applications for a cluster" do |managed_apps_local_tiller|
   before do
     stub_feature_flags(managed_apps_local_tiller: managed_apps_local_tiller)
 
@@ -279,7 +279,7 @@ shared_examples "installing applications for a cluster" do |managed_apps_local_t
   end
 end
 
-shared_examples "installing applications on a cluster" do
+RSpec.shared_examples "installing applications on a cluster" do
   it_behaves_like "installing applications for a cluster", false
   it_behaves_like "installing applications for a cluster", true
 end

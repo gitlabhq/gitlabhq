@@ -273,7 +273,7 @@ Sublime Text, Atom, Dreamweaver, Brackets, etc).
 
 ## Force HTTPS for GitLab Pages websites
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/28857) in GitLab 10.7.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/28857) in GitLab 10.7.
 
 To make your website's visitors even more secure, you can choose to
 force HTTPS for GitLab Pages. By doing so, all attempts to visit your
@@ -286,6 +286,9 @@ To enable this setting:
 
 1. Navigate to your project's **Settings > Pages**.
 1. Tick the checkbox **Force HTTPS (requires valid certificates)**.
+
+NOTE: **Note**
+If you use CloudFlare CDN in front of GitLab Pages, make sure to set the SSL connection setting to `full` instead of `flexible`. For more details, see the [CloudFlare CDN directions](https://support.cloudflare.com/hc/en-us/articles/200170416-End-to-end-HTTPS-with-Cloudflare-Part-3-SSL-options#h_4e0d1a7c-eb71-4204-9e22-9d3ef9ef7fef).
 
 <!-- ## Troubleshooting
 

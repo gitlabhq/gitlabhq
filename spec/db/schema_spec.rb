@@ -3,7 +3,7 @@
 require 'spec_helper'
 require Rails.root.join('ee', 'spec', 'db', 'schema_support') if Gitlab.ee?
 
-describe 'Database schema' do
+RSpec.describe 'Database schema' do
   prepend_if_ee('EE::DB::SchemaSupport')
 
   let(:connection) { ActiveRecord::Base.connection }
@@ -92,7 +92,8 @@ describe 'Database schema' do
         let(:indexes) { connection.indexes(table) }
         let(:columns) { connection.columns(table) }
         let(:foreign_keys) { connection.foreign_keys(table) }
-        let(:primary_key_column) { connection.primary_key(table) }
+        # take the first column in case we're using a composite primary key
+        let(:primary_key_column) { Array(connection.primary_key(table)).first }
 
         context 'all foreign keys' do
           # for index to be effective, the FK constraint has to be at first place

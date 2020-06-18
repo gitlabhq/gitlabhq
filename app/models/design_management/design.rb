@@ -20,9 +20,11 @@ module DesignManagement
     has_many :notes, as: :noteable, dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
     has_many :user_mentions, class_name: 'DesignUserMention', dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
 
+    has_many :events, as: :target, dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
+
     validates :project, :filename, presence: true
     validates :issue, presence: true, unless: :importing?
-    validates :filename, uniqueness: { scope: :issue_id }
+    validates :filename, uniqueness: { scope: :issue_id }, length: { maximum: 255 }
     validate :validate_file_is_image
 
     alias_attribute :title, :filename
@@ -126,68 +128,23 @@ module DesignManagement
     #   #12["filename with [] in it.jpg"]
     def to_reference(from = nil, full: false)
       infix = full ? '/designs' : ''
-      totally_simple = %r{ \A #{self.class.simple_file_name} \z }x
-      safe_name = if totally_simple.match?(filename)
-                    filename
-                  elsif filename =~ /[<>]/
-                    %Q{base64:#{Base64.strict_encode64(filename)}}
-                  else
-                    escaped = filename.gsub(%r{[\\"]}) { |x| "\\#{x}" }
-                    %Q{"#{escaped}"}
-                  end
+      safe_name = Sanitize.fragment(filename)
 
       "#{issue.to_reference(from, full: full)}#{infix}[#{safe_name}]"
     end
 
     def self.reference_pattern
-      @reference_pattern ||= begin
-        # Filenames can be escaped with double quotes to name filenames
-        # that include square brackets, or other special characters
-        %r{
-          #{Issue.reference_pattern}
-          (\/designs)?
-          \[
-            (?<design> #{simple_file_name} | #{quoted_file_name} | #{base_64_encoded_name})
-          \]
-        }x
-      end
-    end
-
-    def self.simple_file_name
-      %r{
-          (?<simple_file_name>
-           ( \w | [_:,'-] | \. | \s )+
-           \.
-           \w+
-          )
-      }x
-    end
-
-    def self.base_64_encoded_name
-      %r{
-          base64:
-          (?<base_64_encoded_name>
-           [A-Za-z0-9+\n]+
-           =?
-          )
-      }x
-    end
-
-    def self.quoted_file_name
-      %r{
-          "
-          (?<escaped_filename>
-            (\\ \\ | \\ " | [^"\\])+
-          )
-          "
-      }x
+      # no-op: We only support link_reference_pattern parsing
     end
 
     def self.link_reference_pattern
       @link_reference_pattern ||= begin
-        exts = SAFE_IMAGE_EXT + DANGEROUS_IMAGE_EXT
         path_segment = %r{issues/#{Gitlab::Regex.issue}/designs}
-        filename_pattern = %r{(?<simple_file_name>[a-z0-9_=-]+\.(#{exts.join('|')}))}i
+        ext = Regexp.new(Regexp.union(SAFE_IMAGE_EXT + DANGEROUS_IMAGE_EXT).source, Regexp::IGNORECASE)
+        valid_char = %r{[^/\s]} # any char that is not a forward slash or whitespace
+        filename_pattern = %r{
+          (?<url_filename> #{valid_char}+ \. #{ext})
+        }x
 
         super(path_segment, filename_pattern)
       end
@@ -233,6 +190,11 @@ module DesignManagement
     end
     alias_method :after_note_created,   :after_note_changed
     alias_method :after_note_destroyed, :after_note_changed
+
+    # Part of the interface of objects we can create events about
+    def resource_parent
+      project
+    end
 
     private
 

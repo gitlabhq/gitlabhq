@@ -1254,3 +1254,16 @@ export const discussionFiltersMock = [
     value: 2,
   },
 ];
+
+export const batchSuggestionsInfoMock = [
+  {
+    suggestionId: 'a123',
+    noteId: 'b456',
+    discussionId: 'c789',
+  },
+  {
+    suggestionId: 'a001',
+    noteId: 'b002',
+    discussionId: 'c003',
+  },
+];

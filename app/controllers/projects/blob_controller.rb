@@ -71,6 +71,7 @@ class Projects::BlobController < Projects::ApplicationController
 
   def update
     @path = params[:file_path] if params[:file_path].present?
+
     create_commit(Files::UpdateService, success_path: -> { after_edit_path },
                                         failure_view: :edit,
                                         failure_path: project_blob_path(@project, @id))
@@ -93,7 +94,6 @@ class Projects::BlobController < Projects::ApplicationController
   def destroy
     create_commit(Files::DeleteService, success_notice: _("The file has been successfully deleted."),
                                         success_path: -> { after_delete_path },
-                                        failure_view: :show,
                                         failure_path: project_blob_path(@project, @id))
   end
 
@@ -114,6 +114,8 @@ class Projects::BlobController < Projects::ApplicationController
   end
 
   private
+
+  attr_reader :branch_name
 
   def blob
     @blob ||= @repository.blob_at(@commit.id, @path)
@@ -254,3 +256,5 @@ class Projects::BlobController < Projects::ApplicationController
     params.permit(:full, :since, :to, :bottom, :unfold, :offset, :indent)
   end
 end
+
+Projects::BlobController.prepend_if_ee('EE::Projects::BlobController')

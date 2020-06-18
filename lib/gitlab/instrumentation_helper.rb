@@ -4,30 +4,56 @@ module Gitlab
   module InstrumentationHelper
     extend self
 
-    KEYS = %i(gitaly_calls gitaly_duration_s rugged_calls rugged_duration_s redis_calls redis_duration_s).freeze
     DURATION_PRECISION = 6 # microseconds
 
+    def keys
+      @keys ||= [:gitaly_calls,
+                 :gitaly_duration_s,
+                 :rugged_calls,
+                 :rugged_duration_s,
+                 :elasticsearch_calls,
+                 :elasticsearch_duration_s,
+                 *::Gitlab::Instrumentation::Redis.known_payload_keys]
+    end
+
     def add_instrumentation_data(payload)
+      instrument_gitaly(payload)
+      instrument_rugged(payload)
+      instrument_redis(payload)
+      instrument_elasticsearch(payload)
+    end
+
+    def instrument_gitaly(payload)
       gitaly_calls = Gitlab::GitalyClient.get_request_count
 
-      if gitaly_calls > 0
-        payload[:gitaly_calls] = gitaly_calls
-        payload[:gitaly_duration_s] = Gitlab::GitalyClient.query_time
-      end
+      return if gitaly_calls == 0
 
+      payload[:gitaly_calls] = gitaly_calls
+      payload[:gitaly_duration_s] = Gitlab::GitalyClient.query_time
+    end
+
+    def instrument_rugged(payload)
       rugged_calls = Gitlab::RuggedInstrumentation.query_count
 
-      if rugged_calls > 0
-        payload[:rugged_calls] = rugged_calls
-        payload[:rugged_duration_s] = Gitlab::RuggedInstrumentation.query_time
-      end
+      return if rugged_calls == 0
 
-      redis_calls = Gitlab::Instrumentation::Redis.get_request_count
+      payload[:rugged_calls] = rugged_calls
+      payload[:rugged_duration_s] = Gitlab::RuggedInstrumentation.query_time
+    end
 
-      if redis_calls > 0
-        payload[:redis_calls] = redis_calls
-        payload[:redis_duration_s] = Gitlab::Instrumentation::Redis.query_time
-      end
+    def instrument_redis(payload)
+      payload.merge! ::Gitlab::Instrumentation::Redis.payload
+    end
+
+    def instrument_elasticsearch(payload)
+      # Elasticsearch integration is only available in EE but instrumentation
+      # only depends on the Gem which is also available in FOSS.
+      elasticsearch_calls = Gitlab::Instrumentation::ElasticsearchTransport.get_request_count
+
+      return if elasticsearch_calls == 0
+
+      payload[:elasticsearch_calls] = elasticsearch_calls
+      payload[:elasticsearch_duration_s] = Gitlab::Instrumentation::ElasticsearchTransport.query_time
     end
 
     # Returns the queuing duration for a Sidekiq job in seconds, as a float, if the

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Admin > Users > Impersonation Tokens', :js do
+RSpec.describe 'Admin > Users > Impersonation Tokens', :js do
   let(:admin) { create(:admin) }
   let!(:user) { create(:user) }
 

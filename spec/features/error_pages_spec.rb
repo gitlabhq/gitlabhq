@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Error Pages' do
+RSpec.describe 'Error Pages' do
   let(:user) { create(:user) }
   let(:project) { create(:project, :public) }
 

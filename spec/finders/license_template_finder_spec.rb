@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe LicenseTemplateFinder do
+RSpec.describe LicenseTemplateFinder do
   describe '#execute' do
     subject(:result) { described_class.new(nil, params).execute }
 

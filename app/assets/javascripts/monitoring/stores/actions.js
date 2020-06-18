@@ -3,8 +3,6 @@ import * as types from './mutation_types';
 import axios from '~/lib/utils/axios_utils';
 import createFlash from '~/flash';
 import { convertToFixedRange } from '~/lib/utils/datetime_range';
-import { parseTemplatingVariables } from './variable_mapping';
-import { mergeURLVariables } from '../utils';
 import {
   gqClient,
   parseEnvironmentsResponse,
@@ -161,7 +159,6 @@ export const receiveMetricsDashboardSuccess = ({ commit, dispatch }, { response 
 
   commit(types.SET_ALL_DASHBOARDS, all_dashboards);
   commit(types.RECEIVE_METRICS_DASHBOARD_SUCCESS, dashboard);
-  commit(types.SET_VARIABLES, mergeURLVariables(parseTemplatingVariables(dashboard.templating)));
   commit(types.SET_ENDPOINTS, convertObjectPropsToCamelCase(metrics_data));
 
   return dispatch('fetchDashboardData');
@@ -223,7 +220,7 @@ export const fetchPrometheusMetric = (
     queryParams.step = metric.step;
   }
 
-  if (Object.keys(state.promVariables).length > 0) {
+  if (Object.keys(state.variables).length > 0) {
     queryParams = {
       ...queryParams,
       ...getters.getCustomVariablesParams,
@@ -317,8 +314,7 @@ export const receiveEnvironmentsDataFailure = ({ commit }) => {
 
 export const fetchAnnotations = ({ state, dispatch }) => {
   const { start } = convertToFixedRange(state.timeRange);
-  const dashboardPath =
-    state.currentDashboard === '' ? DEFAULT_DASHBOARD_PATH : state.currentDashboard;
+  const dashboardPath = state.currentDashboard || DEFAULT_DASHBOARD_PATH;
   return gqClient
     .mutate({
       mutation: getAnnotations,
@@ -373,7 +369,7 @@ export const toggleStarredValue = ({ commit, state, getters }) => {
     method,
   })
     .then(() => {
-      commit(types.RECEIVE_DASHBOARD_STARRING_SUCCESS, newStarredValue);
+      commit(types.RECEIVE_DASHBOARD_STARRING_SUCCESS, { selectedDashboard, newStarredValue });
     })
     .catch(() => {
       commit(types.RECEIVE_DASHBOARD_STARRING_FAILURE);
@@ -419,8 +415,10 @@ export const duplicateSystemDashboard = ({ state }, payload) => {
 
 // Variables manipulation
 
-export const updateVariableValues = ({ commit }, updatedVariable) => {
-  commit(types.UPDATE_VARIABLE_VALUES, updatedVariable);
+export const updateVariablesAndFetchData = ({ commit, dispatch }, updatedVariable) => {
+  commit(types.UPDATE_VARIABLES, updatedVariable);
+
+  return dispatch('fetchDashboardData');
 };
 
 // prevent babel-plugin-rewire from generating an invalid default during karma tests

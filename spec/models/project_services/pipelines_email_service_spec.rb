@@ -37,22 +37,6 @@ describe PipelinesEmailService, :mailer do
     end
   end
 
-  describe '#test_data' do
-    let(:build)   { create(:ci_build) }
-    let(:project) { build.project }
-    let(:user)    { create(:user) }
-
-    before do
-      project.add_developer(user)
-    end
-
-    it 'builds test data' do
-      data = subject.test_data(project, user)
-
-      expect(data[:object_kind]).to eq('pipeline')
-    end
-  end
-
   shared_examples 'sending email' do |branches_to_be_notified: nil|
     before do
       subject.recipients = recipients

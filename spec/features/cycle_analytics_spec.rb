@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Value Stream Analytics', :js do
+RSpec.describe 'Value Stream Analytics', :js do
   let(:user) { create(:user) }
   let(:guest) { create(:user) }
   let(:project) { create(:project, :repository) }

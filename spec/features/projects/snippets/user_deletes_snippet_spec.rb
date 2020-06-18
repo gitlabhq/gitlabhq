@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Projects > Snippets > User deletes a snippet' do
+RSpec.describe 'Projects > Snippets > User deletes a snippet' do
   let(:project) { create(:project) }
   let!(:snippet) { create(:project_snippet, project: project, author: user) }
   let(:user) { create(:user) }

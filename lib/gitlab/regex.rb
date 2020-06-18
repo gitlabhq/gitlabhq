@@ -2,7 +2,93 @@
 
 module Gitlab
   module Regex
+    module Packages
+      CONAN_RECIPE_FILES = %w[conanfile.py conanmanifest.txt].freeze
+      CONAN_PACKAGE_FILES = %w[conaninfo.txt conanmanifest.txt conan_package.tgz].freeze
+
+      def conan_file_name_regex
+        @conan_file_name_regex ||=
+          %r{\A#{(CONAN_RECIPE_FILES + CONAN_PACKAGE_FILES).join("|")}\z}.freeze
+      end
+
+      def conan_package_reference_regex
+        @conan_package_reference_regex ||= %r{\A[A-Za-z0-9]+\z}.freeze
+      end
+
+      def conan_revision_regex
+        @conan_revision_regex ||= %r{\A0\z}.freeze
+      end
+
+      def conan_recipe_component_regex
+        @conan_recipe_component_regex ||= %r{\A[a-zA-Z0-9_][a-zA-Z0-9_\+\.-]{1,49}\z}.freeze
+      end
+
+      def composer_package_version_regex
+        @composer_package_version_regex ||= %r{^v?(\d+(\.(\d+|x))*(-.+)?)}.freeze
+      end
+
+      def package_name_regex
+        @package_name_regex ||= %r{\A\@?(([\w\-\.\+]*)\/)*([\w\-\.]+)@?(([\w\-\.\+]*)\/)*([\w\-\.]*)\z}.freeze
+      end
+
+      def maven_file_name_regex
+        @maven_file_name_regex ||= %r{\A[A-Za-z0-9\.\_\-\+]+\z}.freeze
+      end
+
+      def maven_path_regex
+        @maven_path_regex ||= %r{\A\@?(([\w\-\.]*)/)*([\w\-\.\+]*)\z}.freeze
+      end
+
+      def maven_app_name_regex
+        @maven_app_name_regex ||= /\A[\w\-\.]+\z/.freeze
+      end
+
+      def maven_app_group_regex
+        maven_app_name_regex
+      end
+
+      def unbounded_semver_regex
+        # See the official regex: https://semver.org/#is-there-a-suggested-regular-expression-regex-to-check-a-semver-string
+
+        # The order of the alternatives in <prerelease> are intentionally
+        # reordered to be greedy. Without this change, the unbounded regex would
+        # only partially match "v0.0.0-20201230123456-abcdefabcdef".
+        @unbounded_semver_regex ||= /
+          (?<major>0|[1-9]\d*)
+          \.(?<minor>0|[1-9]\d*)
+          \.(?<patch>0|[1-9]\d*)
+          (?:-(?<prerelease>(?:\d*[a-zA-Z-][0-9a-zA-Z-]*|[1-9]\d*|0)(?:\.(?:\d*[a-zA-Z-][0-9a-zA-Z-]*|[1-9]\d*|0))*))?
+          (?:\+(?<build>[0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?
+        /x.freeze
+      end
+
+      def semver_regex
+        @semver_regex ||= Regexp.new("\\A#{::Gitlab::Regex.unbounded_semver_regex.source}\\z", ::Gitlab::Regex.unbounded_semver_regex.options)
+      end
+
+      def go_package_regex
+        # A Go package name looks like a URL but is not; it:
+        #   - Must not have a scheme, such as http:// or https://
+        #   - Must not have a port number, such as :8080 or :8443
+
+        @go_package_regex ||= /
+          \b (?# word boundary)
+          (?<domain>
+            [0-9a-z](?:(?:-|[0-9a-z]){0,61}[0-9a-z])? (?# first domain)
+            (?:\.[0-9a-z](?:(?:-|[0-9a-z]){0,61}[0-9a-z])?)* (?# inner domains)
+            \.[a-z]{2,} (?# top-level domain)
+          )
+          (?<path>\/(?:
+            [-\/$_.+!*'(),0-9a-z] (?# plain URL character)
+            | %[0-9a-f]{2})* (?# URL encoded character)
+          )? (?# path)
+          \b (?# word boundary)
+        /ix.freeze
+      end
+    end
+
     extend self
+    extend Packages
 
     def project_name_regex
       # The character range \p{Alnum} overlaps with \u{00A9}-\u{1f9ff}
@@ -162,6 +248,10 @@ module Gitlab
 
     def issue
       @issue ||= /(?<issue>\d+\b)/
+    end
+
+    def base64_regex
+      @base64_regex ||= /(?:[A-Za-z0-9+\/]{4})*(?:[A-Za-z0-9+\/]{2}==|[A-Za-z0-9+\/]{3}=)?/.freeze
     end
   end
 end

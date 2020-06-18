@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe FinderWithCrossProjectAccess do
+RSpec.describe FinderWithCrossProjectAccess do
   let(:finder_class) do
     Class.new do
       prepend FinderWithCrossProjectAccess

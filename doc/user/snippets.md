@@ -129,7 +129,7 @@ different visibility level from the dropdown menu.
 
 ## Snippet comments
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/12910) in GitLab 9.2.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/12910) in GitLab 9.2.
 
 With GitLab Snippets you engage in a conversation about that piece of code,
 facilitating the collaboration among users.
@@ -147,8 +147,8 @@ snippet was created using the GitLab web interface the original line ending is W
 
 > Introduced in GitLab 10.8.
 
-Public snippets can not only be shared, but also embedded on any website. This
-allows us to reuse a GitLab snippet in multiple places and any change to the source
+Public snippets can not only be shared, but also embedded on any website. With
+this, you can reuse a GitLab snippet in multiple places and any change to the source
 is automatically reflected in the embedded snippet.
 
 To embed a snippet, first make sure that:
@@ -172,6 +172,6 @@ Here's how an embedded snippet looks like:
 
 <script src="https://gitlab.com/gitlab-org/gitlab-foss/snippets/1717978.js"></script>
 
-Embedded snippets are displayed with a header that shows the file name is defined,
+Embedded snippets are displayed with a header that shows the file name if it's defined,
 the snippet size, a link to GitLab, and the actual snippet content. Actions in
 the header allow users to see the snippet in raw format and download it.

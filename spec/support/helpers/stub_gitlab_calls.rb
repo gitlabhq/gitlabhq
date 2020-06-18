@@ -141,6 +141,12 @@ module StubGitlabCalls
       .to_return(status: 200, body: "", headers: {})
   end
 
+  def stub_webide_config_file(content, sha: anything)
+    allow_any_instance_of(Repository)
+      .to receive(:blob_data_at).with(sha, '.gitlab/.gitlab-webide.yml')
+      .and_return(content)
+  end
+
   def project_hash_array
     f = File.read(Rails.root.join('spec/support/gitlab_stubs/projects.json'))
     Gitlab::Json.parse(f)

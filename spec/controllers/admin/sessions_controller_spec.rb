@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Admin::SessionsController, :do_not_mock_admin_mode do
+RSpec.describe Admin::SessionsController, :do_not_mock_admin_mode do
   include_context 'custom session'
 
   let(:user) { create(:user) }

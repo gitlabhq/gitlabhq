@@ -96,6 +96,21 @@ describe CommitStatus do
 
         it { is_expected.to be_truthy }
       end
+
+      it "processed state is always persisted" do
+        commit_status.update!(retried: false, status: :pending)
+
+        # another process does mark object as processed
+        CommitStatus.find(commit_status.id).update_column(:processed, true)
+
+        # subsequent status transitions on the same instance
+        # always saves processed=false to DB even though
+        # the current value did not change
+        commit_status.update!(retried: false, status: :running)
+
+        # we look at a persisted state in DB
+        expect(CommitStatus.find(commit_status.id).processed).to eq(false)
+      end
     end
   end
 
@@ -235,7 +250,7 @@ describe CommitStatus do
 
     context 'if the building process has started' do
       before do
-        commit_status.started_at = Time.now - 1.minute
+        commit_status.started_at = Time.current - 1.minute
         commit_status.finished_at = nil
       end
 
@@ -708,7 +723,7 @@ describe CommitStatus do
   end
 
   describe '#enqueue' do
-    let!(:current_time) { Time.new(2018, 4, 5, 14, 0, 0) }
+    let!(:current_time) { Time.zone.local(2018, 4, 5, 14, 0, 0) }
 
     before do
       allow(Time).to receive(:now).and_return(current_time)

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Hook logs' do
+RSpec.describe 'Hook logs' do
   let(:web_hook_log) { create(:web_hook_log, response_body: '<script>') }
   let(:project) { web_hook_log.web_hook.project }
   let(:user) { create(:user) }

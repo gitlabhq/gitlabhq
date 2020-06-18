@@ -59,6 +59,8 @@
 
         = render_if_exists 'namespaces/shared_runner_status', namespace: @group
 
+    = render 'shared/custom_attributes', custom_attributes: @group.custom_attributes
+
     = render_if_exists 'ldap_group_links/ldap_group_links_show', group: @group
 
     .card

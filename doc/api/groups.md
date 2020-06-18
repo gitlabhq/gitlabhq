@@ -20,6 +20,7 @@ Parameters:
 | `with_custom_attributes` | boolean           | no       | Include [custom attributes](custom_attributes.md) in response (admins only) |
 | `owned`                  | boolean           | no       | Limit to groups explicitly owned by the current user |
 | `min_access_level`       | integer           | no       | Limit to groups where current user has at least this [access level](members.md) |
+| `top_level_only`         | boolean           | no       | Limit to top level groups, excluding all subgroups |
 
 ```plaintext
 GET /groups
@@ -399,13 +400,13 @@ The `projects` and `shared_projects` attributes in the response are deprecated a
 To get the details of all projects within a group, use either the [list a group's projects](#list-a-groups-projects) or the [list a group's shared projects](#list-a-groups-shared-projects) endpoint.
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/groups/4
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/4"
 ```
 
 This endpoint returns:
 
 - All projects and shared projects in GitLab 12.5 and earlier.
-- A maximum of 100 projects and shared projects [in GitLab 12.6](https://gitlab.com/gitlab-org/gitlab/issues/31031)
+- A maximum of 100 projects and shared projects [in GitLab 12.6](https://gitlab.com/gitlab-org/gitlab/-/issues/31031)
   and later. To get the details of all projects within a group, use the
   [list a group's projects endpoint](#list-a-groups-projects) instead.
 
@@ -427,6 +428,15 @@ Example response:
   "file_template_project_id": 1,
   "parent_id": null,
   "created_at": "2020-01-15T12:36:29.590Z",
+  "shared_with_groups": [
+    {
+      "group_id": 28,
+      "group_name": "H5bp",
+      "group_full_path": "h5bp",
+      "group_access_level": 20,
+      "expires_at": null
+    }
+  ],
   "projects": [ // Deprecated and will be removed in API v5
     {
       "id": 7,
@@ -577,10 +587,22 @@ Additional response parameters:
 }
 ```
 
+Users on GitLab [Silver, Premium, or higher](https://about.gitlab.com/pricing/) will also see
+the `marked_for_deletion_on` attribute:
+
+```json
+{
+  "id": 4,
+  "description": "Aliquid qui quis dignissimos distinctio ut commodi voluptas est.",
+  "marked_for_deletion_on": "2020-04-03",
+  ...
+}
+```
+
 When adding the parameter `with_projects=false`, projects will not be returned.
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/groups/4?with_projects=false
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/4?with_projects=false"
 ```
 
 Example response:
@@ -638,7 +660,7 @@ Parameters:
 | `auto_devops_enabled`                | boolean | no       | Default to Auto DevOps pipeline for all projects within this group. |
 | `subgroup_creation_level`            | string  | no       | Allowed to create subgroups. Can be `owner` (Owners), or `maintainer` (Maintainers). |
 | `emails_disabled`                    | boolean | no       | Disable email notifications |
-| `avatar`                             | mixed   | no       | Image file for avatar of the group. [Introduced in GitLab 12.9](https://gitlab.com/gitlab-org/gitlab/issues/36681) |
+| `avatar`                             | mixed   | no       | Image file for avatar of the group. [Introduced in GitLab 12.9](https://gitlab.com/gitlab-org/gitlab/-/issues/36681) |
 | `mentions_disabled`                  | boolean | no       | Disable the capability of a group from getting mentioned |
 | `lfs_enabled`                        | boolean | no       | Enable/disable Large File Storage (LFS) for the projects in this group. |
 | `request_access_enabled`             | boolean | no       | Allow users to request member access. |
@@ -657,6 +679,19 @@ The `default_branch_protection` attribute determines whether developers and main
 | `1`   | Partial protection. Developers and maintainers can:  <br>- Push new commits |
 | `2`   | Full protection. Only maintainers can:  <br>- Push new commits |
 
+## New Subgroup
+
+This is similar to creating a [New group](#new-group). You'll need the `parent_id` from the [List groups](#list-groups) call. You can then enter the desired:
+
+- `subgroup_path`
+- `subgroup_name`
+
+```shell
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --header "Content-Type: application/json" \
+  --data '{"path": "<subgroup_path>", "name": "<subgroup_name>", "parent_id": <parent_group_id> } \
+  "https://gitlab.example.com/api/v4/groups/"
+```
+
 ## Transfer project to group
 
 Transfer a project to the Group namespace. Available only to instance administrators, although an [alternative API endpoint](projects.md#transfer-a-project-to-a-new-namespace) is available which does not require instance administrator access. Transferring projects may fail when tagged packages exist in the project's repository.
@@ -673,7 +708,7 @@ Parameters:
 | `project_id` | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/groups/4/projects/56
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/4/projects/56"
 ```
 
 ## Update group
@@ -699,7 +734,7 @@ PUT /groups/:id
 | `auto_devops_enabled`                | boolean | no       | Default to Auto DevOps pipeline for all projects within this group. |
 | `subgroup_creation_level`            | string  | no       | Allowed to create subgroups. Can be `owner` (Owners), or `maintainer` (Maintainers). |
 | `emails_disabled`                    | boolean | no       | Disable email notifications |
-| `avatar`                             | mixed   | no       | Image file for avatar of the group. [Introduced in GitLab 12.9](https://gitlab.com/gitlab-org/gitlab/issues/36681) |
+| `avatar`                             | mixed   | no       | Image file for avatar of the group. [Introduced in GitLab 12.9](https://gitlab.com/gitlab-org/gitlab/-/issues/36681) |
 | `mentions_disabled`                  | boolean | no       | Disable the capability of a group from getting mentioned |
 | `lfs_enabled` (optional)             | boolean | no       | Enable/disable Large File Storage (LFS) for the projects in this group. |
 | `request_access_enabled`             | boolean | no       | Allow users to request member access. |
@@ -719,7 +754,7 @@ curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab
 This endpoint returns:
 
 - All projects and shared projects in GitLab 12.5 and earlier.
-- A maximum of 100 projects and shared projects [in GitLab 12.6](https://gitlab.com/gitlab-org/gitlab/issues/31031)
+- A maximum of 100 projects and shared projects [in GitLab 12.6](https://gitlab.com/gitlab-org/gitlab/-/issues/31031)
   and later. To get the details of all projects within a group, use the
   [list a group's projects endpoint](#list-a-groups-projects) instead.
 
@@ -803,7 +838,7 @@ Only available to group owners and administrators.
 This endpoint either:
 
 - Removes group, and queues a background job to delete all projects in the group as well.
-- Since [GitLab 12.8](https://gitlab.com/gitlab-org/gitlab/issues/33257), on [Premium or Silver](https://about.gitlab.com/pricing/) or higher tiers, marks a group for deletion. The deletion will happen 7 days later by default, but this can be changed in the [instance settings](../user/admin_area/settings/visibility_and_access_controls.md#default-deletion-adjourned-period-premium-only).
+- Since [GitLab 12.8](https://gitlab.com/gitlab-org/gitlab/-/issues/33257), on [Premium or Silver](https://about.gitlab.com/pricing/) or higher tiers, marks a group for deletion. The deletion will happen 7 days later by default, but this can be changed in the [instance settings](../user/admin_area/settings/visibility_and_access_controls.md#default-deletion-adjourned-period-premium-only).
 
 ```plaintext
 DELETE /groups/:id
@@ -819,7 +854,7 @@ The response will be `202 Accepted` if the user has authorization.
 
 ## Restore group marked for deletion **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/33257) in GitLab 12.8.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/33257) in GitLab 12.8.
 
 Restores a group marked for deletion.
 
@@ -1088,3 +1123,35 @@ Read more in the [Group Badges](group_badges.md) documentation.
 ## Group Import/Export
 
 Read more in the [Group Import/Export](group_import_export.md) documentation.
+
+## Share Groups with Groups
+
+These endpoints create and delete links for sharing a group with another group. For more information, see the related discussion in the [GitLab Groups](../user/group/index.md#sharing-a-group-with-another-group) page.
+
+### Create a link to share a group with another group
+
+Share group with another group. Returns `200` and the [group details](#details-of-a-group) on success.
+
+```plaintext
+POST /groups/:id/share
+```
+
+| Attribute | Type           | Required | Description |
+| --------- | -------------- | -------- | ----------- |
+| `id`      | integer/string | yes      | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) |
+| `group_id` | integer | yes | The ID of the group to share with |
+| `group_access` | integer | yes | The [permissions level](members.md) to grant the group |
+| `expires_at` | string | no | Share expiration date in ISO 8601 format: 2016-09-26 |
+
+### Delete link sharing group with another group
+
+Unshare the group from another group. Returns `204` and no content on success.
+
+```plaintext
+DELETE /groups/:id/share/:group_id
+```
+
+| Attribute | Type           | Required | Description |
+| --------- | -------------- | -------- | ----------- |
+| `id`      | integer/string | yes      | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) |
+| `group_id` | integer | yes | The ID of the group to share with |

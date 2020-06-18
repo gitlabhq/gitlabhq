@@ -133,7 +133,7 @@ module API
 
         if resolved
           parent = noteable_parent(noteable)
-          ::Discussions::ResolveService.new(parent, current_user, merge_request: noteable).execute(discussion)
+          ::Discussions::ResolveService.new(parent, current_user, one_or_more_discussions: discussion).execute
         else
           discussion.unresolve!
         end

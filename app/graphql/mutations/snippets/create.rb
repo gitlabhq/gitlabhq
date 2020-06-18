@@ -3,7 +3,7 @@
 module Mutations
   module Snippets
     class Create < BaseMutation
-      include Mutations::ResolvesProject
+      include ResolvesProject
 
       graphql_name 'CreateSnippet'
 
@@ -60,7 +60,7 @@ module Mutations
         snippet = service_response.payload[:snippet]
 
         {
-          snippet: snippet.valid? ? snippet : nil,
+          snippet: service_response.success? ? snippet : nil,
           errors: errors_on_object(snippet)
         }
       end

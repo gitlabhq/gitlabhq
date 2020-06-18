@@ -1,0 +1,13 @@
+---
+# Warning: gitlab.SentenceLength
+#
+# Counts words in a sentence and alerts if a sentence exceeds 25 words.
+#
+# For a list of all options, see https://errata-ai.github.io/vale/styles/
+extends: occurrence
+message: 'Shorter sentences improve readability (max 25 words).'
+scope: sentence
+link: https://docs.gitlab.com/ee/development/documentation/styleguide.html#language
+level: warning
+max: 25
+token: \b(\w+)\b

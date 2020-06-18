@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Autocomplete::ProjectFinder do
+RSpec.describe Autocomplete::ProjectFinder do
   let(:user) { create(:user) }
 
   describe '#execute' do

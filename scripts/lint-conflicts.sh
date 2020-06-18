@@ -1,5 +1,5 @@
 #!/bin/sh
 
-output=`git grep -En '^<<<<<<< '`
+output=$(git grep -En '^<<<<<<< ')
 echo $output
 test -z "$output"

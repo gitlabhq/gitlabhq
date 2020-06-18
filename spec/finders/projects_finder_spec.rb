@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ProjectsFinder, :do_not_mock_admin_mode do
+RSpec.describe ProjectsFinder, :do_not_mock_admin_mode do
   include AdminModeHelper
 
   describe '#execute' do

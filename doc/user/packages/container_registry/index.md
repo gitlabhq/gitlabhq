@@ -1,3 +1,9 @@
+---
+stage: Package
+group: Package
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+---
+
 # GitLab Container Registry
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/4040) in GitLab 8.8.
@@ -20,7 +26,7 @@ have its own space to store its Docker images.
 
 You can read more about Docker Registry at <https://docs.docker.com/registry/introduction/>.
 
-![Container Registry repositories](img/container_registry_repositories_v13_0.png)
+![Container Registry repositories](img/container_registry_repositories_v13_1.png)
 
 ## Enable the Container Registry for your project
 
@@ -56,7 +62,7 @@ for both projects and groups.
 
 Navigate to your project's **{package}** **Packages & Registries > Container Registry**.
 
-![Container Registry project repositories](img/container_registry_repositories_with_quickstart_v13_0.png)
+![Container Registry project repositories](img/container_registry_repositories_with_quickstart_v13_1.png)
 
 This view will:
 
@@ -71,7 +77,7 @@ This view will:
 
 Navigate to your groups's **{package}** **Packages & Registries > Container Registry**.
 
-![Container Registry group repositories](img/container_registry_group_repositories_v13_0.png)
+![Container Registry group repositories](img/container_registry_group_repositories_v13_1.png)
 
 This view will:
 
@@ -237,29 +243,29 @@ For private and internal projects:
 
 ### Container Registry examples with GitLab CI/CD
 
-If you're using docker-in-docker on your Runners, this is how your `.gitlab-ci.yml`
+If you're using Docker-in-Docker on your Runners, this is how your `.gitlab-ci.yml`
 should look similar to this:
 
 ```yaml
 build:
-  image: docker:19.03.8
+  image: docker:19.03.11
   stage: build
   services:
-    - docker:19.03.8-dind
+    - docker:19.03.11-dind
   script:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     - docker build -t $CI_REGISTRY/group/project/image:latest .
     - docker push $CI_REGISTRY/group/project/image:latest
 ```
 
-You can also make use of [other variables](../../../ci/variables/README.md) to avoid hardcoding:
+You can also make use of [other variables](../../../ci/variables/README.md) to avoid hard-coding:
 
 ```yaml
 build:
-  image: docker:19.03.8
+  image: docker:19.03.11
   stage: build
   services:
-    - docker:19.03.8-dind
+    - docker:19.03.11-dind
   variables:
     IMAGE_TAG: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
   script:
@@ -282,9 +288,9 @@ when needed. Changes to `master` also get tagged as `latest` and deployed using
 an application-specific deploy script:
 
 ```yaml
-image: docker:19.03.8
+image: docker:19.03.11
 services:
-  - docker:19.03.8-dind
+  - docker:19.03.11-dind
 
 stages:
   - build
@@ -344,11 +350,11 @@ or [Kubernetes](https://docs.gitlab.com/runner/executors/kubernetes.html) execut
 make sure that [`pull_policy`](https://docs.gitlab.com/runner/executors/docker.html#how-pull-policies-work)
 is set to `always`.
 
-### Using a docker-in-docker image from your Container Registry
+### Using a Docker-in-Docker image from your Container Registry
 
-If you want to use your own Docker images for docker-in-docker, there are a few
+If you want to use your own Docker images for Docker-in-Docker, there are a few
 things you need to do in addition to the steps in the
-[docker-in-docker](../../../ci/docker/using_docker_build.md#use-docker-in-docker-workflow-with-docker-executor) section:
+[Docker-in-Docker](../../../ci/docker/using_docker_build.md#use-docker-in-docker-workflow-with-docker-executor) section:
 
 1. Update the `image` and `service` to point to your registry.
 1. Add a service [alias](../../../ci/yaml/README.md#servicesalias).
@@ -357,9 +363,9 @@ Below is an example of what your `.gitlab-ci.yml` should look like:
 
 ```yaml
  build:
-   image: $CI_REGISTRY/group/project/docker:19.03.8
+   image: $CI_REGISTRY/group/project/docker:19.03.11
    services:
-     - name: $CI_REGISTRY/group/project/docker:19.03.8-dind
+     - name: $CI_REGISTRY/group/project/docker:19.03.11-dind
        alias: docker
    stage: build
    script:
@@ -367,7 +373,7 @@ Below is an example of what your `.gitlab-ci.yml` should look like:
      - docker run my-docker-image /script/to/run/tests
 ```
 
-If you forget to set the service alias, the `docker:19.03.8` image won't find the
+If you forget to set the service alias, the `docker:19.03.11` image won't find the
 `dind` service, and an error like the following will be thrown:
 
 ```plaintext
@@ -437,10 +443,10 @@ stages:
   - clean
 
 build_image:
-  image: docker:19.03.8
+  image: docker:19.03.11
   stage: build
   services:
-    - docker:19.03.8-dind
+    - docker:19.03.11-dind
   variables:
     IMAGE_TAG: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
   script:
@@ -453,10 +459,10 @@ build_image:
     - master
 
 delete_image:
-  image: docker:19.03.8
+  image: docker:19.03.11
   stage: clean
   services:
-    - docker:19.03.8-dind
+    - docker:19.03.11-dind
   variables:
     IMAGE_TAG: $CI_PROJECT_PATH:$CI_COMMIT_REF_SLUG
     REG_SHA256: ade837fc5224acd8c34732bf54a94f579b47851cc6a7fd5899a98386b782e228
@@ -487,11 +493,12 @@ older tags and images are regularly removed from the Container Registry.
 
 ## Expiration policy
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/15398) in GitLab 12.8.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15398) in GitLab 12.8.
 
 NOTE: **Note:**
-Expiration policies for projects created before GitLab 12.8 may be enabled by an
-admin in the [CI/CD Package Registry settings](./../../admin_area/settings/index.md#cicd).
+For GitLab.com, expiration policies are not available for projects created before GitLab 12.8.
+For self-managed instances, expiration policies may be enabled by an admin in the
+[CI/CD Package Registry settings](./../../admin_area/settings/index.md#cicd).
 Note the inherent [risks involved](./index.md#use-with-external-container-registries).
 
 It is possible to create a per-project expiration policy, so that you can make sure that
@@ -506,7 +513,7 @@ then goes through a process of excluding tags from it until only the ones to be 
 1. Excludes any tags that do not have a manifest (not part of the options).
 1. Orders the remaining tags by `created_date`.
 1. Excludes from the list the N tags based on the `keep_n` value (Number of tags to retain).
-1. Excludes from the list the tags older than the `older_than` value (Expiration interval).
+1. Excludes from the list the tags more recent than the `older_than` value (Expiration interval).
 1. Excludes from the list any tags matching the `name_regex_keep` value (Images to preserve).
 1. Finally, the remaining tags in the list are deleted from the Container Registry.
 
@@ -524,6 +531,17 @@ The UI allows you to configure the following:
 - **Number of tags to retain:** how many tags to _always_ keep for each image.
 - **Docker tags with names matching this regex pattern will expire:** the regex used to determine what tags should be expired. To qualify all tags for expiration, use the default value of `.*`.
 - **Docker tags with names matching this regex pattern will be preserved:** the regex used to determine what tags should be preserved. To preserve all tags, use the default value of `.*`.
+
+#### Troubleshooting expiration policies
+
+If you see the following message:
+
+"Something went wrong while updating the expiration policy."
+
+Check the regex patterns to ensure they are valid.
+
+You can use [Rubular](https://rubular.com/) to check your regex.
+View some common [regex pattern examples](#regex-pattern-examples).
 
 ### Managing project expiration policy through the API
 
@@ -547,6 +565,36 @@ a policy that will remove large quantities of tags (in the thousands), the GitLa
 run the policy may get backed up or fail completely. It is recommended you only enable container expiration
 policies for projects that were created before GitLab 12.8 if you are confident the amount of tags
 being cleaned up will be minimal.
+
+### Regex pattern examples
+
+Expiration policies use regex patterns to determine which tags should be preserved or removed, both in the UI and the API.
+
+Here are examples of regex patterns you may want to use:
+
+- Match all tags:
+
+  ```plaintext
+  .*
+  ```
+
+- Match tags that start with `v`:
+
+  ```plaintext
+  v.+
+  ```
+
+- Match tags that contain `master`:
+
+  ```plaintext
+  master
+  ```
+
+- Match tags that either start with `v`, contain `master`, or contain `release`:
+
+  ```plaintext
+  (?:v.+|master|release)
+  ```
 
 ## Limitations
 

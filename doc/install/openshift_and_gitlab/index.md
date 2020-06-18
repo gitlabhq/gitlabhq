@@ -253,7 +253,7 @@ related object definitions to be created together, as well as a set of
 parameters for those objects.
 
 The template for GitLab resides in the Omnibus GitLab repository under the
-docker directory. Let's download it locally with `wget`:
+Docker directory. Let's download it locally with `wget`:
 
 ```shell
 wget https://gitlab.com/gitlab-org/omnibus-gitlab/raw/master/docker/openshift-template.json
@@ -324,7 +324,7 @@ Now that we configured this, let's see how to manage and scale GitLab.
 
 Setting up GitLab for the first time might take a while depending on your
 internet connection and the resources you have attached to the all-in-one VM.
-GitLab's docker image is quite big (~500MB), so you'll have to wait until
+GitLab's Docker image is quite big (~500MB), so you'll have to wait until
 it's downloaded and configured before you use it.
 
 ### Watch while GitLab gets deployed

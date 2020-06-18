@@ -50,6 +50,7 @@ class Blob < SimpleDelegator
     BlobViewer::License,
     BlobViewer::Contributing,
     BlobViewer::Changelog,
+    BlobViewer::MetricsDashboardYml,
 
     BlobViewer::CargoToml,
     BlobViewer::Cartfile,
@@ -57,6 +58,7 @@ class Blob < SimpleDelegator
     BlobViewer::Gemfile,
     BlobViewer::Gemspec,
     BlobViewer::GodepsJson,
+    BlobViewer::GoMod,
     BlobViewer::PackageJson,
     BlobViewer::Podfile,
     BlobViewer::Podspec,

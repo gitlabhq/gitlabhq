@@ -2,7 +2,6 @@ import { createLocalVue, shallowMount } from '@vue/test-utils';
 import { ApolloMutation } from 'vue-apollo';
 import VueRouter from 'vue-router';
 import { GlEmptyState } from '@gitlab/ui';
-
 import Index from '~/design_management/pages/index.vue';
 import uploadDesignQuery from '~/design_management/graphql/mutations/uploadDesign.mutation.graphql';
 import DesignDestroyer from '~/design_management/components/design_destroyer.vue';
@@ -14,20 +13,21 @@ import {
   EXISTING_DESIGN_DROP_INVALID_FILENAME_MESSAGE,
 } from '~/design_management/utils/error_messages';
 import createFlash from '~/flash';
-
-const localVue = createLocalVue();
-localVue.use(VueRouter);
-const router = new VueRouter({
-  routes: [
-    {
-      name: DESIGNS_ROUTE_NAME,
-      path: '/designs',
-      component: Index,
-    },
-  ],
-});
+import createRouter from '~/design_management/router';
+import * as utils from '~/design_management/utils/design_management_utils';
+import { DESIGN_DETAIL_LAYOUT_CLASSLIST } from '~/design_management/constants';
 
 jest.mock('~/flash.js');
+const mockPageEl = {
+  classList: {
+    remove: jest.fn(),
+  },
+};
+jest.spyOn(utils, 'getPageLayoutElement').mockReturnValue(mockPageEl);
+
+const localVue = createLocalVue();
+const router = createRouter();
+localVue.use(VueRouter);
 
 const mockDesigns = [
   {
@@ -528,6 +528,16 @@ describe('Design management index page', () => {
       document.dispatchEvent(event);
 
       expect(wrapper.vm.onUploadDesign).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('when navigating', () => {
+    it('ensures fullscreen layout is not applied', () => {
+      createComponent(true);
+
+      wrapper.vm.$router.push('/designs');
+      expect(mockPageEl.classList.remove).toHaveBeenCalledTimes(1);
+      expect(mockPageEl.classList.remove).toHaveBeenCalledWith(...DESIGN_DETAIL_LAYOUT_CLASSLIST);
     });
   });
 });

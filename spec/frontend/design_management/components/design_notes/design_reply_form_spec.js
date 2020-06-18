@@ -18,7 +18,7 @@ describe('Design reply form component', () => {
   const findCancelButton = () => wrapper.find({ ref: 'cancelButton' });
   const findModal = () => wrapper.find({ ref: 'cancelCommentModal' });
 
-  function createComponent(props = {}) {
+  function createComponent(props = {}, mountOptions = {}) {
     wrapper = mount(DesignReplyForm, {
       propsData: {
         value: '',
@@ -26,6 +26,7 @@ describe('Design reply form component', () => {
         ...props,
       },
       stubs: { GlModal },
+      ...mountOptions,
     });
   }
 
@@ -34,7 +35,8 @@ describe('Design reply form component', () => {
   });
 
   it('textarea has focus after component mount', () => {
-    createComponent();
+    // We need to attach to document, so that `document.activeElement` is properly set in jsdom
+    createComponent({}, { attachToDocument: true });
 
     expect(findTextarea().element).toEqual(document.activeElement);
   });

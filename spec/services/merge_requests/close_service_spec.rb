@@ -19,45 +19,54 @@ describe MergeRequests::CloseService do
   describe '#execute' do
     it_behaves_like 'cache counters invalidator'
 
-    context 'valid params' do
-      let(:service) { described_class.new(project, user, {}) }
+    [true, false].each do |state_tracking_enabled|
+      context "valid params with state_tracking #{state_tracking_enabled ? 'enabled' : 'disabled'}" do
+        let(:service) { described_class.new(project, user, {}) }
 
-      before do
-        allow(service).to receive(:execute_hooks)
+        before do
+          stub_feature_flags(track_resource_state_change_events: state_tracking_enabled)
 
-        perform_enqueued_jobs do
-          @merge_request = service.execute(merge_request)
+          allow(service).to receive(:execute_hooks)
+
+          perform_enqueued_jobs do
+            @merge_request = service.execute(merge_request)
+          end
         end
-      end
 
-      it { expect(@merge_request).to be_valid }
-      it { expect(@merge_request).to be_closed }
+        it { expect(@merge_request).to be_valid }
+        it { expect(@merge_request).to be_closed }
 
-      it 'executes hooks with close action' do
-        expect(service).to have_received(:execute_hooks)
+        it 'executes hooks with close action' do
+          expect(service).to have_received(:execute_hooks)
                                .with(@merge_request, 'close')
-      end
+        end
 
-      it 'sends email to user2 about assign of new merge_request', :sidekiq_might_not_need_inline do
-        email = ActionMailer::Base.deliveries.last
-        expect(email.to.first).to eq(user2.email)
-        expect(email.subject).to include(merge_request.title)
-      end
+        it 'sends email to user2 about assign of new merge_request', :sidekiq_might_not_need_inline do
+          email = ActionMailer::Base.deliveries.last
+          expect(email.to.first).to eq(user2.email)
+          expect(email.subject).to include(merge_request.title)
+        end
 
-      it 'creates system note about merge_request reassign' do
-        note = @merge_request.notes.last
-        expect(note.note).to include 'closed'
-      end
+        it 'creates system note about merge_request reassign' do
+          if state_tracking_enabled
+            event = @merge_request.resource_state_events.last
+            expect(event.state).to eq('closed')
+          else
+            note = @merge_request.notes.last
+            expect(note.note).to include 'closed'
+          end
+        end
 
-      it 'marks todos as done' do
-        expect(todo.reload).to be_done
-      end
+        it 'marks todos as done' do
+          expect(todo.reload).to be_done
+        end
 
-      context 'when auto merge is enabled' do
-        let(:merge_request) { create(:merge_request, :merge_when_pipeline_succeeds) }
+        context 'when auto merge is enabled' do
+          let(:merge_request) { create(:merge_request, :merge_when_pipeline_succeeds) }
 
-        it 'cancels the auto merge' do
-          expect(@merge_request).not_to be_auto_merge_enabled
+          it 'cancels the auto merge' do
+            expect(@merge_request).not_to be_auto_merge_enabled
+          end
         end
       end
     end

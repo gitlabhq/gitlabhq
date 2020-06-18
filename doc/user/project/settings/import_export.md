@@ -1,6 +1,6 @@
 # Project import/export
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/3050) in GitLab 8.9.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/3050) in GitLab 8.9.
 > - From GitLab 10.0, administrators can disable the project export option on the GitLab instance.
 
 Existing projects running on any GitLab instance or GitLab.com can be exported with all their related
@@ -158,12 +158,16 @@ If use of the `Internal` visibility level
 [is restricted](../../../public_access/public_access.md#restricting-the-use-of-public-or-internal-projects),
 all imported projects are given the visibility of `Private`.
 
+NOTE: **Note:**
+The maximum import file size can be set by the Administrator, default is 50MB.
+As an administrator, you can modify the maximum import file size. To do so, use the `max_import_size` option in the [Application settings API](../../../api/settings.md#change-application-settings) or the [Admin UI](../../admin_area/settings/account_and_limit_settings.md).
+
 ## Rate limits
 
 To help avoid abuse, users are rate limited to:
 
-| Request Type     | Limit                       |
-| ---------------- | --------------------------- |
-| Export           | 1 project per 5 minutes     |
-| Download export  | 10 projects per 10 minutes  |
-| Import           | 30 projects per 5 minutes  |
+| Request Type     | Limit                                     |
+| ---------------- | ----------------------------------------- |
+| Export           | 30 projects per 5 minutes                 |
+| Download export  | 10 downloads per project every 10 minutes |
+| Import           | 30 projects per 5 minutes                 |

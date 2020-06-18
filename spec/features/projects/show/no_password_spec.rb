@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'No Password Alert' do
+RSpec.describe 'No Password Alert' do
   let(:project) { create(:project, :repository, namespace: user.namespace) }
 
   context 'with internal auth enabled' do

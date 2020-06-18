@@ -1,0 +1,5 @@
+---
+title: Allow wiki pages with +<> characters in their title to be saved
+merge_request: 33803
+author:
+type: fixed

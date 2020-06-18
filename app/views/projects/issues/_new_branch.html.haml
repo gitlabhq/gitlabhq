@@ -41,7 +41,7 @@
               = _('Create branch')
           %li.divider.droplab-item-ignore
 
-          %li.droplab-item-ignore.prepend-left-8.append-right-8.prepend-top-16
+          %li.droplab-item-ignore.gl-ml-3.gl-mr-3.prepend-top-16
             - if can_create_confidential_merge_request?
               #js-forked-project{ data: { namespace_path: @project.namespace.full_path, project_path: @project.full_path, new_fork_path: new_project_fork_path(@project), help_page_path: help_page_path('user/project/merge_requests') } }
             .form-group

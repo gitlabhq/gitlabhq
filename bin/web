@@ -3,19 +3,18 @@
 set -e
 
 cd $(dirname $0)/..
-app_root=$(pwd)
 
 case "$USE_WEB_SERVER" in
-    puma|"") # and the "" defines default
-        exec bin/web_puma "$@"
-        ;;
+  puma|"") # and the "" defines default
+    exec bin/web_puma "$@"
+    ;;
 
-    unicorn)
-        exec bin/web_unicorn "$@"
-        ;;
+  unicorn)
+    exec bin/web_unicorn "$@"
+    ;;
 
-    *)
-        echo "Unkown web server used by USE_WEB_SERVER: $USE_WEB_SERVER."
-        exit 1
-        ;;
+  *)
+    echo "Unkown web server used by USE_WEB_SERVER: $USE_WEB_SERVER."
+    exit 1
+    ;;
 esac

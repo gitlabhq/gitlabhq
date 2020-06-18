@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Slack slash commands' do
+RSpec.describe 'Slack slash commands', :js do
   include_context 'project service activation'
 
   before do
@@ -10,7 +10,7 @@ describe 'Slack slash commands' do
   end
 
   it 'shows a token placeholder' do
-    token_placeholder = find_field('service_token')['placeholder']
+    token_placeholder = find_field('Token')['placeholder']
 
     expect(token_placeholder).to eq('XXxxXXxxXXxxXXxxXXxxXXxx')
   end
@@ -19,8 +19,8 @@ describe 'Slack slash commands' do
     expect(page).to have_content('This service allows users to perform common')
   end
 
-  it 'redirects to the integrations page after saving but not activating', :js do
-    fill_in 'service_token', with: 'token'
+  it 'redirects to the integrations page after saving but not activating' do
+    fill_in 'Token', with: 'token'
     click_active_toggle
     click_on 'Save'
 
@@ -28,8 +28,8 @@ describe 'Slack slash commands' do
     expect(page).to have_content('Slack slash commands settings saved, but not activated.')
   end
 
-  it 'redirects to the integrations page after activating', :js do
-    fill_in 'service_token', with: 'token'
+  it 'redirects to the integrations page after activating' do
+    fill_in 'Token', with: 'token'
     click_on 'Save'
 
     expect(current_path).to eq(project_settings_integrations_path(project))

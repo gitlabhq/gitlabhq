@@ -11,6 +11,9 @@ module QA
 
             view 'app/assets/javascripts/monitoring/components/dashboard.vue' do
               element :prometheus_graphs
+            end
+
+            view 'app/assets/javascripts/monitoring/components/dashboard_header.vue' do
               element :dashboards_filter_dropdown
               element :environments_dropdown
               element :edit_dashboard_button

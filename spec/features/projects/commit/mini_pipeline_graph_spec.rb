@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Mini Pipeline Graph in Commit View', :js do
+RSpec.describe 'Mini Pipeline Graph in Commit View', :js do
   let(:project) { create(:project, :public, :repository) }
 
   context 'when commit has pipelines' do

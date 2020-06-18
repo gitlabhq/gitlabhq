@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe EnforcesAdminAuthentication do
+RSpec.describe EnforcesAdminAuthentication do
   include AdminModeHelper
 
   let(:user) { create(:user) }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Projects > Show > Collaboration links', :js do
+RSpec.describe 'Projects > Show > Collaboration links', :js do
   using RSpec::Parameterized::TableSyntax
 
   let(:project) { create(:project, :repository, :public) }

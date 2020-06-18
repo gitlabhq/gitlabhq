@@ -54,7 +54,7 @@ describe Git::WikiPushService, services: true do
       it 'handles all known actions' do
         run_service
 
-        expect(Event.last(count).pluck(:action)).to match_array(Event::WIKI_ACTIONS)
+        expect(Event.last(count).pluck(:action)).to match_array(Event::WIKI_ACTIONS.map(&:to_s))
       end
     end
 
@@ -77,7 +77,7 @@ describe Git::WikiPushService, services: true do
       it 'creates appropriate events' do
         run_service
 
-        expect(Event.last(2)).to all(have_attributes(wiki_page?: true, action: Event::CREATED))
+        expect(Event.last(2)).to all(have_attributes(wiki_page?: true, action: 'created'))
       end
     end
 
@@ -100,7 +100,7 @@ describe Git::WikiPushService, services: true do
       it 'creates a wiki page creation event' do
         expect { run_service }.to change(Event, :count).by(1)
 
-        expect(Event.last).to have_attributes(wiki_page?: true, action: Event::CREATED)
+        expect(Event.last).to have_attributes(wiki_page?: true, action: 'created')
       end
 
       it 'creates one metadata record' do
@@ -129,7 +129,7 @@ describe Git::WikiPushService, services: true do
 
         expect(Event.last).to have_attributes(
           wiki_page?: true,
-          action: Event::CREATED
+          action: 'created'
         )
       end
     end
@@ -158,7 +158,7 @@ describe Git::WikiPushService, services: true do
 
         expect(Event.last).to have_attributes(
           wiki_page?: true,
-          action: Event::UPDATED
+          action: 'updated'
         )
       end
     end
@@ -182,7 +182,7 @@ describe Git::WikiPushService, services: true do
 
         expect(Event.last).to have_attributes(
           wiki_page?: true,
-          action: Event::UPDATED
+          action: 'updated'
         )
       end
     end
@@ -206,7 +206,7 @@ describe Git::WikiPushService, services: true do
 
         expect(Event.last).to have_attributes(
           wiki_page?: true,
-          action: Event::DESTROYED
+          action: 'destroyed'
         )
       end
     end
@@ -218,7 +218,7 @@ describe Git::WikiPushService, services: true do
       message = 'something went very very wrong'
       allow_next_instance_of(WikiPages::EventCreateService, current_user) do |service|
         allow(service).to receive(:execute)
-          .with(String, WikiPage, Integer)
+          .with(String, WikiPage, Symbol)
           .and_return(ServiceResponse.error(message: message))
       end
 

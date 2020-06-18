@@ -1,25 +1,25 @@
 function retry() {
-    if eval "$@"; then
-        return 0
-    fi
+  if eval "$@"; then
+    return 0
+  fi
 
-    for i in 2 1; do
-        sleep 3s
-        echo "Retrying $i..."
-        if eval "$@"; then
-            return 0
-        fi
-    done
-    return 1
+  for i in 2 1; do
+    sleep 3s
+    echo "Retrying $i..."
+    if eval "$@"; then
+      return 0
+    fi
+  done
+  return 1
 }
 
 function setup_db_user_only() {
-    source scripts/create_postgres_user.sh
+  source scripts/create_postgres_user.sh
 }
 
 function setup_db() {
-    run_timed_command "setup_db_user_only"
-    run_timed_command "bundle exec rake db:drop db:create db:structure:load db:migrate gitlab:db:setup_ee"
+  run_timed_command "setup_db_user_only"
+  run_timed_command "bundle exec rake db:drop db:create db:structure:load db:migrate gitlab:db:setup_ee"
 }
 
 function install_api_client_dependencies_with_apk() {

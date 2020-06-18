@@ -45,13 +45,20 @@ module Emails
       end
     end
 
-    def unknown_sign_in_email(user, ip)
+    def unknown_sign_in_email(user, ip, time)
       @user = user
       @ip = ip
+      @time = time
       @target_url = edit_profile_password_url
 
       Gitlab::I18n.with_locale(@user.preferred_language) do
-        mail(to: @user.notification_email, subject: subject(_("Unknown sign-in from new location")))
+        mail(
+          to: @user.notification_email,
+          subject: subject(_("%{host} sign-in from new location") % { host: Gitlab.config.gitlab.host })
+        ) do |format|
+          format.html { render layout: 'mailer' }
+          format.text { render layout: 'mailer' }
+        end
       end
     end
   end

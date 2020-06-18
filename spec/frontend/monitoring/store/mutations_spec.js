@@ -93,14 +93,20 @@ describe('Monitoring mutations', () => {
       });
 
       it('sets a dashboard as starred', () => {
-        mutations[types.RECEIVE_DASHBOARD_STARRING_SUCCESS](stateCopy, true);
+        mutations[types.RECEIVE_DASHBOARD_STARRING_SUCCESS](stateCopy, {
+          selectedDashboard: stateCopy.allDashboards[1],
+          newStarredValue: true,
+        });
 
         expect(stateCopy.isUpdatingStarredValue).toBe(false);
         expect(stateCopy.allDashboards[1].starred).toBe(true);
       });
 
       it('sets a dashboard as unstarred', () => {
-        mutations[types.RECEIVE_DASHBOARD_STARRING_SUCCESS](stateCopy, false);
+        mutations[types.RECEIVE_DASHBOARD_STARRING_SUCCESS](stateCopy, {
+          selectedDashboard: stateCopy.allDashboards[1],
+          newStarredValue: false,
+        });
 
         expect(stateCopy.isUpdatingStarredValue).toBe(false);
         expect(stateCopy.allDashboards[1].starred).toBe(false);
@@ -128,13 +134,11 @@ describe('Monitoring mutations', () => {
   describe('SET_INITIAL_STATE', () => {
     it('should set all the endpoints', () => {
       mutations[types.SET_INITIAL_STATE](stateCopy, {
-        metricsEndpoint: 'additional_metrics.json',
         deploymentsEndpoint: 'deployments.json',
         dashboardEndpoint: 'dashboard.json',
         projectPath: '/gitlab-org/gitlab-foss',
         currentEnvironmentName: 'production',
       });
-      expect(stateCopy.metricsEndpoint).toEqual('additional_metrics.json');
       expect(stateCopy.deploymentsEndpoint).toEqual('deployments.json');
       expect(stateCopy.dashboardEndpoint).toEqual('dashboard.json');
       expect(stateCopy.projectPath).toEqual('/gitlab-org/gitlab-foss');
@@ -179,12 +183,10 @@ describe('Monitoring mutations', () => {
   describe('SET_ENDPOINTS', () => {
     it('should set all the endpoints', () => {
       mutations[types.SET_ENDPOINTS](stateCopy, {
-        metricsEndpoint: 'additional_metrics.json',
         deploymentsEndpoint: 'deployments.json',
         dashboardEndpoint: 'dashboard.json',
         projectPath: '/gitlab-org/gitlab-foss',
       });
-      expect(stateCopy.metricsEndpoint).toEqual('additional_metrics.json');
       expect(stateCopy.deploymentsEndpoint).toEqual('deployments.json');
       expect(stateCopy.dashboardEndpoint).toEqual('dashboard.json');
       expect(stateCopy.projectPath).toEqual('/gitlab-org/gitlab-foss');
@@ -412,26 +414,26 @@ describe('Monitoring mutations', () => {
     it('stores an empty variables array when no custom variables are given', () => {
       mutations[types.SET_VARIABLES](stateCopy, {});
 
-      expect(stateCopy.promVariables).toEqual({});
+      expect(stateCopy.variables).toEqual({});
     });
 
     it('stores variables in the key key_value format in the array', () => {
       mutations[types.SET_VARIABLES](stateCopy, { pod: 'POD', stage: 'main ops' });
 
-      expect(stateCopy.promVariables).toEqual({ pod: 'POD', stage: 'main ops' });
+      expect(stateCopy.variables).toEqual({ pod: 'POD', stage: 'main ops' });
     });
   });
 
-  describe('UPDATE_VARIABLE_VALUES', () => {
+  describe('UPDATE_VARIABLES', () => {
     afterEach(() => {
       mutations[types.SET_VARIABLES](stateCopy, {});
     });
 
-    it('updates only the value of the variable in promVariables', () => {
+    it('updates only the value of the variable in variables', () => {
       mutations[types.SET_VARIABLES](stateCopy, { environment: { value: 'prod', type: 'text' } });
-      mutations[types.UPDATE_VARIABLE_VALUES](stateCopy, { key: 'environment', value: 'new prod' });
+      mutations[types.UPDATE_VARIABLES](stateCopy, { key: 'environment', value: 'new prod' });
 
-      expect(stateCopy.promVariables).toEqual({ environment: { value: 'new prod', type: 'text' } });
+      expect(stateCopy.variables).toEqual({ environment: { value: 'new prod', type: 'text' } });
     });
   });
 });

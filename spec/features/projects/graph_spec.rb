@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Project Graph', :js do
+RSpec.describe 'Project Graph', :js do
   let(:user) { create :user }
   let(:project) { create(:project, :repository, namespace: user.namespace) }
   let(:branch_name) { 'master' }

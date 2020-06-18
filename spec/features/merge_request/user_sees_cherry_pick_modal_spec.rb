@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Merge request > User cherry-picks', :js do
+RSpec.describe 'Merge request > User cherry-picks', :js do
   let(:group) { create(:group) }
   let(:project) { create(:project, :repository, namespace: group) }
   let(:user) { project.creator }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Task Lists' do
+RSpec.describe 'Task Lists' do
   include Warden::Test::Helpers
 
   let(:project) { create(:project, :public, :repository) }

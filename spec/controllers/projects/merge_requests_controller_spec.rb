@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Projects::MergeRequestsController do
+RSpec.describe Projects::MergeRequestsController do
   include ProjectForksHelper
   include Gitlab::Routing
 
@@ -1183,15 +1183,19 @@ describe Projects::MergeRequestsController do
           subject
 
           expect(response).to have_gitlab_http_status(:ok)
-          expect(json_response).to match(
-            a_hash_including(
-              'tfplan.json' => hash_including(
-                'create' => 0,
-                'delete' => 0,
-                'update' => 1
+
+          pipeline.builds.each do |build|
+            expect(json_response).to match(
+              a_hash_including(
+                build.id.to_s => hash_including(
+                  'create' => 0,
+                  'delete' => 0,
+                  'update' => 1,
+                  'job_name' => build.options.dig(:artifacts, :name).to_s
+                )
               )
             )
-          )
+          end
         end
       end
 
@@ -1406,20 +1410,6 @@ describe Projects::MergeRequestsController do
           expect(response).to have_gitlab_http_status(:not_found)
           expect(response.body).to be_blank
         end
-      end
-    end
-
-    context 'when feature flag is disabled' do
-      let(:accessibility_comparison) { { status: :parsed, data: { summary: 1 } } }
-
-      before do
-        stub_feature_flags(accessibility_report_view: false)
-      end
-
-      it 'returns 204 HTTP status' do
-        subject
-
-        expect(response).to have_gitlab_http_status(:no_content)
       end
     end
 

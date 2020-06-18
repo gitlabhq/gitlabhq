@@ -21,25 +21,12 @@ namespace :gitlab do
           gitlab_url: gitlab_url,
           http_settings: { self_signed_cert: false }.stringify_keys,
           auth_file: File.join(user_home, ".ssh", "authorized_keys"),
-          redis: {
-            bin: `which redis-cli`.chomp,
-            namespace: "resque:gitlab"
-          }.stringify_keys,
           log_level: "INFO",
           audit_usernames: false
         }.stringify_keys
 
-        redis_url = URI.parse(ENV['REDIS_URL'] || "redis://localhost:6379")
-
-        if redis_url.scheme == 'unix'
-          config['redis']['socket'] = redis_url.path
-        else
-          config['redis']['host'] = redis_url.host
-          config['redis']['port'] = redis_url.port
-        end
-
         # Generate config.yml based on existing gitlab settings
-        File.open("config.yml", "w+") {|f| f.puts config.to_yaml}
+        File.open("config.yml", "w+") {|f| f.puts config.to_yaml }
 
         [
           %w(bin/install) + repository_storage_paths_args,

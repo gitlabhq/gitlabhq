@@ -1,18 +1,22 @@
 <script>
 import { mapState, mapGetters, mapActions } from 'vuex';
-import diffLineNoteFormMixin from 'ee_else_ce/notes/mixins/diff_line_note_form';
+import diffLineNoteFormMixin from '~/notes/mixins/diff_line_note_form';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { s__ } from '~/locale';
 import noteForm from '../../notes/components/note_form.vue';
+import MultilineCommentForm from '../../notes/components/multiline_comment_form.vue';
 import autosave from '../../notes/mixins/autosave';
 import userAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
 import { DIFF_NOTE_TYPE } from '../constants';
+import { commentLineOptions } from '../../notes/components/multiline_comment_utils';
 
 export default {
   components: {
     noteForm,
     userAvatarLink,
+    MultilineCommentForm,
   },
-  mixins: [autosave, diffLineNoteFormMixin],
+  mixins: [autosave, diffLineNoteFormMixin, glFeatureFlagsMixin()],
   props: {
     diffFileHash: {
       type: String,
@@ -36,6 +40,14 @@ export default {
       required: false,
       default: '',
     },
+  },
+  data() {
+    return {
+      commentLineStart: {
+        lineCode: this.line.line_code,
+        type: this.line.type,
+      },
+    };
   },
   computed: {
     ...mapState({
@@ -62,10 +74,19 @@ export default {
         diffViewType: this.diffViewType,
         diffFile: this.diffFile,
         linePosition: this.linePosition,
+        lineRange: {
+          start_line_code: this.commentLineStart.lineCode,
+          start_line_type: this.commentLineStart.type,
+          end_line_code: this.line.line_code,
+          end_line_type: this.line.type,
+        },
       };
     },
     diffFile() {
       return this.getDiffFileByHash(this.diffFileHash);
+    },
+    commentLineOptions() {
+      return commentLineOptions(this.diffFile.highlighted_diff_lines, this.line.line_code);
     },
   },
   mounted() {
@@ -83,7 +104,6 @@ export default {
   methods: {
     ...mapActions('diffs', [
       'cancelCommentForm',
-      'assignDiscussionsToDiff',
       'saveDiffDiscussion',
       'setSuggestPopoverDismissed',
     ]),
@@ -116,6 +136,16 @@ export default {
 
 <template>
   <div class="content discussion-form discussion-form-container discussion-notes">
+    <div
+      v-if="glFeatures.multilineComments"
+      class="gl-mb-3 gl-text-gray-700 gl-border-gray-200 gl-border-b-solid gl-border-b-1 gl-pb-3"
+    >
+      <multiline-comment-form
+        v-model="commentLineStart"
+        :line="line"
+        :comment-line-options="commentLineOptions"
+      />
+    </div>
     <user-avatar-link
       v-if="author"
       :link-href="author.path"
@@ -133,7 +163,7 @@ export default {
       :diff-file="diffFile"
       :show-suggest-popover="showSuggestPopover"
       save-button-title="Comment"
-      class="diff-comment-form"
+      class="diff-comment-form prepend-top-10"
       @handleFormUpdateAddToReview="addToReview"
       @cancelForm="handleCancelCommentForm"
       @handleFormUpdate="handleSaveNote"

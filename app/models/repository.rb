@@ -950,7 +950,6 @@ class Repository
     async_remove_remote(remote_name) if tmp_remote_name
   end
 
-  # rubocop:disable Gitlab/RailsLogger
   def async_remove_remote(remote_name)
     return unless remote_name
     return unless project
@@ -958,14 +957,13 @@ class Repository
     job_id = RepositoryRemoveRemoteWorker.perform_async(project.id, remote_name)
 
     if job_id
-      Rails.logger.info("Remove remote job scheduled for #{project.id} with remote name: #{remote_name} job ID #{job_id}.")
+      Gitlab::AppLogger.info("Remove remote job scheduled for #{project.id} with remote name: #{remote_name} job ID #{job_id}.")
     else
-      Rails.logger.info("Remove remote job failed to create for #{project.id} with remote name #{remote_name}.")
+      Gitlab::AppLogger.info("Remove remote job failed to create for #{project.id} with remote name #{remote_name}.")
     end
 
     job_id
   end
-  # rubocop:enable Gitlab/RailsLogger
 
   def fetch_source_branch!(source_repository, source_branch, local_ref)
     raw_repository.fetch_source_branch!(source_repository.raw_repository, source_branch, local_ref)
@@ -1171,7 +1169,7 @@ class Repository
       if target
         target.committed_date
       else
-        Time.now
+        Time.current
       end
     end
   end

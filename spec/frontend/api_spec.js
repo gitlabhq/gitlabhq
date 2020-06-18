@@ -691,4 +691,60 @@ describe('Api', () => {
       });
     });
   });
+
+  describe('updateIssue', () => {
+    it('update an issue with the given payload', done => {
+      const projectId = 8;
+      const issue = 1;
+      const expectedArray = [1, 2, 3];
+      const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/projects/${projectId}/issues/${issue}`;
+      mock.onPut(expectedUrl).reply(200, { assigneeIds: expectedArray });
+
+      Api.updateIssue(projectId, issue, { assigneeIds: expectedArray })
+        .then(({ data }) => {
+          expect(data.assigneeIds).toEqual(expectedArray);
+          done();
+        })
+        .catch(done.fail);
+    });
+  });
+
+  describe('updateMergeRequest', () => {
+    it('update an issue with the given payload', done => {
+      const projectId = 8;
+      const mergeRequest = 1;
+      const expectedArray = [1, 2, 3];
+      const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/projects/${projectId}/merge_requests/${mergeRequest}`;
+      mock.onPut(expectedUrl).reply(200, { assigneeIds: expectedArray });
+
+      Api.updateMergeRequest(projectId, mergeRequest, { assigneeIds: expectedArray })
+        .then(({ data }) => {
+          expect(data.assigneeIds).toEqual(expectedArray);
+          done();
+        })
+        .catch(done.fail);
+    });
+  });
+
+  describe('tags', () => {
+    it('fetches all tags of a particular project', done => {
+      const query = 'dummy query';
+      const options = { unused: 'option' };
+      const projectId = 8;
+      const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/projects/${projectId}/repository/tags`;
+      mock.onGet(expectedUrl).reply(200, [
+        {
+          name: 'test',
+        },
+      ]);
+
+      Api.tags(projectId, query, options)
+        .then(({ data }) => {
+          expect(data.length).toBe(1);
+          expect(data[0].name).toBe('test');
+        })
+        .then(done)
+        .catch(done.fail);
+    });
+  });
 });

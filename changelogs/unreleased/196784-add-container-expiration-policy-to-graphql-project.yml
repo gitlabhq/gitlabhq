@@ -1,0 +1,5 @@
+---
+title: Add the container expiration policy attribute to the project GraphQL type
+merge_request: 32100
+author:
+type: added

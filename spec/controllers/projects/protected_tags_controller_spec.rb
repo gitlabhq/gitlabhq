@@ -2,7 +2,7 @@
 
 require('spec_helper')
 
-describe Projects::ProtectedTagsController do
+RSpec.describe Projects::ProtectedTagsController do
   describe "GET #index" do
     let(:project) { create(:project_empty_repo, :public) }
 

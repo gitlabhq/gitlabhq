@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Projects > Settings > User transfers a project', :js do
+RSpec.describe 'Projects > Settings > User transfers a project', :js do
   let(:user) { create(:user) }
   let(:project) { create(:project, :repository, namespace: user.namespace) }
   let(:group) { create(:group) }

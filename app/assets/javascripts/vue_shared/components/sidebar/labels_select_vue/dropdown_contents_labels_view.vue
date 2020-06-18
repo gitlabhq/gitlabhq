@@ -3,15 +3,20 @@ import { mapState, mapGetters, mapActions } from 'vuex';
 import { GlLoadingIcon, GlButton, GlSearchBoxByType, GlLink } from '@gitlab/ui';
 
 import { UP_KEY_CODE, DOWN_KEY_CODE, ENTER_KEY_CODE, ESC_KEY_CODE } from '~/lib/utils/keycodes';
+import SmartVirtualList from '~/vue_shared/components/smart_virtual_list.vue';
 
 import LabelItem from './label_item.vue';
 
+import { LIST_BUFFER_SIZE } from './constants';
+
 export default {
+  LIST_BUFFER_SIZE,
   components: {
     GlLoadingIcon,
     GlButton,
     GlSearchBoxByType,
     GlLink,
+    SmartVirtualList,
     LabelItem,
   },
   data() {
@@ -139,10 +144,18 @@ export default {
       <gl-search-box-by-type v-model="searchKey" :autofocus="true" />
     </div>
     <div v-show="!labelsFetchInProgress" ref="labelsListContainer" class="dropdown-content">
-      <ul class="list-unstyled mb-0">
+      <smart-virtual-list
+        :length="visibleLabels.length"
+        :remain="$options.LIST_BUFFER_SIZE"
+        :size="$options.LIST_BUFFER_SIZE"
+        wclass="list-unstyled mb-0"
+        wtag="ul"
+        class="h-100"
+      >
         <li v-for="(label, index) in visibleLabels" :key="label.id" class="d-block text-left">
           <label-item
             :label="label"
+            :is-label-set="label.set"
             :highlight="index === currentHighlightItem"
             @clickLabel="handleLabelClick(label)"
           />
@@ -150,7 +163,7 @@ export default {
         <li v-show="!visibleLabels.length" class="p-2 text-center">
           {{ __('No matching results') }}
         </li>
-      </ul>
+      </smart-virtual-list>
     </div>
     <div v-if="isDropdownVariantSidebar" class="dropdown-footer">
       <ul class="list-unstyled">
@@ -162,9 +175,9 @@ export default {
           >
         </li>
         <li>
-          <gl-link :href="labelsManagePath" class="d-flex flex-row text-break-word label-item">{{
-            footerManageLabelTitle
-          }}</gl-link>
+          <gl-link :href="labelsManagePath" class="d-flex flex-row text-break-word label-item">
+            {{ footerManageLabelTitle }}
+          </gl-link>
         </li>
       </ul>
     </div>

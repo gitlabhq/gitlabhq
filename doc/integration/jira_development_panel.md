@@ -1,6 +1,6 @@
 # GitLab Jira development panel integration **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/2381) in [GitLab Premium](https://about.gitlab.com/pricing/) 10.0.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/2381) in [GitLab Premium](https://about.gitlab.com/pricing/) 10.0.
 
 Complementary to our [existing Jira](../user/project/integrations/jira.md) project integration, you're now able to integrate
 GitLab projects with [Jira Development Panel](https://confluence.atlassian.com/adminjiraserver070/). Both can be used
@@ -173,8 +173,8 @@ Click the links to see your GitLab repository data.
 
 ### 11.10
 
-- [Instance admins can now setup integration for all namespaces](https://gitlab.com/gitlab-org/gitlab/issues/8902)
+- [Instance admins can now setup integration for all namespaces](https://gitlab.com/gitlab-org/gitlab/-/issues/8902)
 
 ### 11.1
 
-- [Support GitLab subgroups in Jira development panel](https://gitlab.com/gitlab-org/gitlab/issues/3561)
+- [Support GitLab subgroups in Jira development panel](https://gitlab.com/gitlab-org/gitlab/-/issues/3561)

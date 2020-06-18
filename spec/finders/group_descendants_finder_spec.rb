@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe GroupDescendantsFinder do
+RSpec.describe GroupDescendantsFinder do
   let(:user) { create(:user) }
   let(:group) { create(:group) }
   let(:params) { {} }

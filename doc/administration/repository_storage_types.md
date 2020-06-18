@@ -1,6 +1,6 @@
 # Repository storage types **(CORE ONLY)**
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/28283) in GitLab 10.0.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/28283) in GitLab 10.0.
 > - Hashed storage became the default for new installations in GitLab 12.0
 > - Hashed storage is enabled by default for new and renamed projects in GitLab 13.0.
 
@@ -108,7 +108,7 @@ The output includes the project ID and the project name:
 
 ### Hashed object pools
 
-> [Introduced](https://gitlab.com/gitlab-org/gitaly/issues/1606) in GitLab 12.1.
+> [Introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/1606) in GitLab 12.1.
 
 DANGER: **Danger:**
 Do not run `git prune` or `git gc` in pool repositories! This can

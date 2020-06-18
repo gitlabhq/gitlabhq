@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Project > Commit > View user status' do
+RSpec.describe 'Project > Commit > View user status' do
   include RepoHelpers
 
   let_it_be(:project) { create(:project, :repository) }

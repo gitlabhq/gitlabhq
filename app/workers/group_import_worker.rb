@@ -9,15 +9,16 @@ class GroupImportWorker # rubocop:disable Scalability/IdempotentWorker
   def perform(user_id, group_id)
     current_user = User.find(user_id)
     group = Group.find(group_id)
-    group_import = group.build_import_state(jid: self.jid)
+    group_import_state = group.import_state || group.build_import_state
 
-    group_import.start!
+    group_import_state.jid = self.jid
+    group_import_state.start!
 
     ::Groups::ImportExport::ImportService.new(group: group, user: current_user).execute
 
-    group_import.finish!
+    group_import_state.finish!
   rescue StandardError => e
-    group_import&.fail_op(e.message)
+    group_import_state&.fail_op(e.message)
 
     raise e
   end

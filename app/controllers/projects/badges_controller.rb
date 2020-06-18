@@ -8,14 +8,21 @@ class Projects::BadgesController < Projects::ApplicationController
 
   def pipeline
     pipeline_status = Gitlab::Badge::Pipeline::Status
-      .new(project, params[:ref])
+      .new(project, params[:ref], opts: {
+        key_text: params[:key_text],
+        key_width: params[:key_width]
+      })
 
     render_badge pipeline_status
   end
 
   def coverage
     coverage_report = Gitlab::Badge::Coverage::Report
-      .new(project, params[:ref], params[:job])
+      .new(project, params[:ref], opts: {
+        job: params[:job],
+        key_text: params[:key_text],
+        key_width: params[:key_width]
+      })
 
     render_badge coverage_report
   end

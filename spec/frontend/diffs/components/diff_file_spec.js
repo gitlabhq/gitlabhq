@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import { createStore } from 'ee_else_ce/mr_notes/stores';
+import { createStore } from '~/mr_notes/stores';
 import { createComponentWithStore } from 'helpers/vue_mount_component_helper';
 import { mockTracking, triggerEvent } from 'helpers/tracking_helper';
 import DiffFileComponent from '~/diffs/components/diff_file.vue';

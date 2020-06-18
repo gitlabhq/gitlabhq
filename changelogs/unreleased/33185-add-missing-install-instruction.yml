@@ -1,0 +1,5 @@
+---
+doc: "doc: install: add missing exiftool dependency"
+merge_request: 33185
+author: Stefan Schrijvers
+type: fixed

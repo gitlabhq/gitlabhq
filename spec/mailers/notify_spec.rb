@@ -104,7 +104,11 @@ describe Notify do
 
         it 'contains a link to issue author' do
           is_expected.to have_body_text(issue.author_name)
-          is_expected.to have_body_text 'created an issue:'
+          is_expected.to have_body_text 'created an issue'
+        end
+
+        it 'contains a link to the issue' do
+          is_expected.to have_body_text(issue.to_reference(full: false))
         end
       end
 
@@ -1720,6 +1724,61 @@ describe Notify do
     it 'links to the personal snippet' do
       target_url = gitlab_snippet_url(personal_snippet_note.noteable)
       is_expected.to have_body_text target_url
+    end
+  end
+
+  describe 'merge request reviews' do
+    let!(:review) { create(:review, project: project, merge_request: merge_request) }
+    let!(:notes) { create_list(:note, 3, review: review, project: project, author: review.author, noteable: merge_request) }
+
+    subject { described_class.new_review_email(recipient.id, review.id) }
+
+    it_behaves_like 'an answer to an existing thread with reply-by-email enabled' do
+      let(:model) { review.merge_request }
+    end
+
+    it_behaves_like 'it should show Gmail Actions View Merge request link'
+    it_behaves_like 'an unsubscribeable thread'
+
+    it 'is sent to the given recipient as the author' do
+      sender = subject.header[:from].addrs[0]
+
+      aggregate_failures do
+        expect(sender.display_name).to eq(review.author_name)
+        expect(sender.address).to eq(gitlab_sender)
+        expect(subject).to deliver_to(recipient.notification_email)
+      end
+    end
+
+    it 'contains the message from the notes of the review' do
+      review.notes.each do |note|
+        is_expected.to have_body_text note.note
+      end
+    end
+
+    context 'when diff note' do
+      let!(:notes) { create_list(:diff_note_on_merge_request, 3, review: review, project: project, author: review.author, noteable: merge_request) }
+
+      it 'links to notes' do
+        review.notes.each do |note|
+          # Text part
+          expect(subject.text_part.body.raw_source).to include(
+            project_merge_request_url(project, merge_request, anchor: "note_#{note.id}")
+          )
+        end
+      end
+    end
+
+    it 'contains review author name' do
+      is_expected.to have_body_text review.author_name
+    end
+
+    it 'has the correct subject and body' do
+      aggregate_failures do
+        is_expected.to have_subject "Re: #{project.name} | #{merge_request.title} (#{merge_request.to_reference})"
+
+        is_expected.to have_body_text project_merge_request_path(project, merge_request)
+      end
     end
   end
 end

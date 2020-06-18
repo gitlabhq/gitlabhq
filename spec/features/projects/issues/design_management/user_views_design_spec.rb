@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'User views issue designs', :js do
+RSpec.describe 'User views issue designs', :js do
   include DesignManagementTestHelpers
 
   let_it_be(:project) { create(:project_empty_repo, :public) }

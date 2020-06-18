@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Import/Export - project import integration test', :js do
+RSpec.describe 'Import/Export - project import integration test', :js do
   include GitHelpers
 
   let(:user) { create(:user) }

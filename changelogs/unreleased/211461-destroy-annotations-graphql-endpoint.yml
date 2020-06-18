@@ -1,0 +1,5 @@
+---
+title: Added delete action for Dashboard Annotations in GraphQL
+merge_request: 33468
+author:
+type: added

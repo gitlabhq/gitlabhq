@@ -27,7 +27,11 @@ module Projects
       remote_mirror.update_start!
 
       remote_mirror.ensure_remote!
-      repository.fetch_remote(remote_mirror.remote_name, ssh_auth: remote_mirror, no_tags: true)
+
+      # https://gitlab.com/gitlab-org/gitaly/-/issues/2670
+      if Feature.disabled?(:gitaly_ruby_remote_branches_ls_remote)
+        repository.fetch_remote(remote_mirror.remote_name, ssh_auth: remote_mirror, no_tags: true)
+      end
 
       response = remote_mirror.update_repository
 

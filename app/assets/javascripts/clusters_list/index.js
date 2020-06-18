@@ -9,12 +9,10 @@ export default () => {
     return;
   }
 
-  const { endpoint } = entryPoint.dataset;
-
   // eslint-disable-next-line no-new
   new Vue({
     el: '#js-clusters-list-app',
-    store: createStore({ endpoint }),
+    store: createStore(entryPoint.dataset),
     render(createElement) {
       return createElement(Clusters);
     },

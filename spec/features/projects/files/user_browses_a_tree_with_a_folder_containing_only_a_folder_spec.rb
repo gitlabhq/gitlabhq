@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 # This is a regression test for https://gitlab.com/gitlab-org/gitlab-foss/issues/37569
-describe 'Projects > Files > User browses a tree with a folder containing only a folder', :js do
+RSpec.describe 'Projects > Files > User browses a tree with a folder containing only a folder', :js do
   let(:project) { create(:project, :empty_repo) }
   let(:user) { project.owner }
 

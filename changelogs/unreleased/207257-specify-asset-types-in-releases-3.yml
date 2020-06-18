@@ -1,0 +1,5 @@
+---
+title: Add `link_type` to `ReleaseLink` GraphQL type
+merge_request: 33386
+author:
+type: added

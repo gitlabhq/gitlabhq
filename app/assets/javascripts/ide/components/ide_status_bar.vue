@@ -1,7 +1,7 @@
 <script>
 /* eslint-disable @gitlab/vue-require-i18n-strings */
 import { mapActions, mapState, mapGetters } from 'vuex';
-import IdeStatusList from 'ee_else_ce/ide/components/ide_status_list.vue';
+import IdeStatusList from './ide_status_list.vue';
 import IdeStatusMr from './ide_status_mr.vue';
 import icon from '~/vue_shared/components/icon.vue';
 import tooltip from '~/vue_shared/directives/tooltip';

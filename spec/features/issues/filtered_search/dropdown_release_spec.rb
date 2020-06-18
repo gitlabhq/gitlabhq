@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Dropdown release', :js do
+RSpec.describe 'Dropdown release', :js do
   include FilteredSearchHelpers
 
   let!(:project) { create(:project, :repository) }

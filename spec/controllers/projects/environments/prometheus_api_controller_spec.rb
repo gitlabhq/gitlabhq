@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Projects::Environments::PrometheusApiController do
+RSpec.describe Projects::Environments::PrometheusApiController do
   let_it_be(:project) { create(:project) }
   let_it_be(:environment) { create(:environment, project: project) }
   let_it_be(:user) { create(:user) }

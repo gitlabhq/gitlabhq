@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe "User views milestones" do
+RSpec.describe "User views milestones" do
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project) }
   let_it_be(:milestone) { create(:milestone, project: project) }
@@ -65,7 +65,7 @@ describe "User views milestones" do
   end
 end
 
-describe "User views milestones with no MR" do
+RSpec.describe "User views milestones with no MR" do
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project, :merge_requests_disabled) }
   let_it_be(:milestone) { create(:milestone, project: project) }

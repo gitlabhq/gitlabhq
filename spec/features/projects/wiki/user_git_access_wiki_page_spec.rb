@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Projects > Wiki > User views Git access wiki page' do
+RSpec.describe 'Projects > Wiki > User views Git access wiki page' do
   let(:user) { create(:user) }
   let(:project) { create(:project, :wiki_repo, :public) }
   let(:wiki_page) { create(:wiki_page, wiki: project.wiki, title: 'home', content: '[some link](other-page)') }

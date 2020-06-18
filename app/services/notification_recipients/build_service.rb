@@ -32,7 +32,9 @@ module NotificationRecipients
     def self.build_new_release_recipients(*args)
       ::NotificationRecipients::Builder::NewRelease.new(*args).notification_recipients
     end
+
+    def self.build_new_review_recipients(*args)
+      ::NotificationRecipients::Builder::NewReview.new(*args).notification_recipients
+    end
   end
 end
-
-NotificationRecipients::BuildService.prepend_if_ee('EE::NotificationRecipients::BuildService')

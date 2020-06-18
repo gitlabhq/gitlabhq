@@ -162,7 +162,7 @@ class NotifyPreview < ActionMailer::Preview
   end
 
   def unknown_sign_in_email
-    Notify.unknown_sign_in_email(user, '127.0.0.1').message
+    Notify.unknown_sign_in_email(user, '127.0.0.1', Time.current).message
   end
 
   private

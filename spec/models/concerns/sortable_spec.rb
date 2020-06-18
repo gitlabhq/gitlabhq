@@ -91,7 +91,7 @@ describe Sortable do
       Group.all.order_by(order).map(&:name)
     end
 
-    let!(:ref_time) { Time.parse('2018-05-01 00:00:00') }
+    let!(:ref_time) { Time.zone.parse('2018-05-01 00:00:00') }
     let!(:group1) { create(:group, name: 'aa', id: 1, created_at: ref_time - 15.seconds, updated_at: ref_time) }
     let!(:group2) { create(:group, name: 'AAA', id: 2, created_at: ref_time - 10.seconds, updated_at: ref_time - 5.seconds) }
     let!(:group3) { create(:group, name: 'BB', id: 3, created_at: ref_time - 5.seconds, updated_at: ref_time - 10.seconds) }

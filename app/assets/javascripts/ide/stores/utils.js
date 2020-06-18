@@ -1,5 +1,10 @@
 import { commitActionTypes, FILE_VIEW_MODE_EDITOR } from '../constants';
-import { relativePathToAbsolute, isAbsolute, isRootRelative } from '~/lib/utils/url_utility';
+import {
+  relativePathToAbsolute,
+  isAbsolute,
+  isRootRelative,
+  isBase64DataUrl,
+} from '~/lib/utils/url_utility';
 
 export const dataStructure = () => ({
   id: '',
@@ -19,8 +24,6 @@ export const dataStructure = () => ({
   active: false,
   changed: false,
   staged: false,
-  replaces: false,
-  lastCommitPath: '',
   lastCommitSha: '',
   lastCommit: {
     id: '',
@@ -29,23 +32,14 @@ export const dataStructure = () => ({
     updatedAt: '',
     author: '',
   },
-  blamePath: '',
-  commitsPath: '',
-  permalink: '',
   rawPath: '',
   binary: false,
-  html: '',
   raw: '',
   content: '',
-  parentTreeUrl: '',
-  renderError: false,
-  base64: false,
   editorRow: 1,
   editorColumn: 1,
   fileLanguage: '',
-  eol: '',
   viewMode: FILE_VIEW_MODE_EDITOR,
-  previewMode: null,
   size: 0,
   parentPath: null,
   lastOpenedAt: 0,
@@ -63,19 +57,14 @@ export const decorateData = entity => {
     url,
     name,
     path,
-    renderError,
     content = '',
     tempFile = false,
     active = false,
     opened = false,
     changed = false,
-    parentTreeUrl = '',
-    base64 = false,
     binary = false,
     rawPath = '',
-    previewMode,
     file_lock,
-    html,
     parentPath = '',
   } = entity;
 
@@ -91,24 +80,14 @@ export const decorateData = entity => {
     tempFile,
     opened,
     active,
-    parentTreeUrl,
     changed,
-    renderError,
     content,
-    base64,
     binary,
     rawPath,
-    previewMode,
     file_lock,
-    html,
     parentPath,
   });
 };
-
-export const findEntry = (tree, type, name, prop = 'name') =>
-  tree.find(f => f.type === type && f[prop] === name);
-
-export const findIndexOfFile = (state, file) => state.findIndex(f => f.path === file.path);
 
 export const setPageTitle = title => {
   document.title = title;
@@ -124,7 +103,7 @@ export const commitActionForFile = file => {
     return commitActionTypes.move;
   } else if (file.deleted) {
     return commitActionTypes.delete;
-  } else if (file.tempFile && !file.replaces) {
+  } else if (file.tempFile) {
     return commitActionTypes.create;
   }
 
@@ -155,9 +134,8 @@ export const createCommitPayload = ({
     file_path: f.path,
     previous_path: f.prevPath || undefined,
     content: f.prevPath && !f.changed ? null : f.content || undefined,
-    encoding: f.base64 ? 'base64' : 'text',
-    last_commit_id:
-      newBranch || f.deleted || f.prevPath || f.replaces ? undefined : f.lastCommitSha,
+    encoding: isBase64DataUrl(f.rawPath) ? 'base64' : 'text',
+    last_commit_id: newBranch || f.deleted || f.prevPath ? undefined : f.lastCommitSha,
   })),
   start_sha: newBranch ? rootGetters.lastCommit.id : undefined,
 });
@@ -271,10 +249,6 @@ export const pathsAreEqual = (a, b) => {
 
   return cleanA === cleanB;
 };
-
-// if the contents of a file dont end with a newline, this function adds a newline
-export const addFinalNewlineIfNeeded = content =>
-  content.charAt(content.length - 1) !== '\n' ? `${content}\n` : content;
 
 export function extractMarkdownImagesFromEntries(mdFile, entries) {
   /**

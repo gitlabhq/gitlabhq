@@ -64,7 +64,7 @@ export default {
       :title="buttonTitle"
       :loading="isLoading"
       :disabled="isActionInProgress"
-      :class="`btn btn-default btn-sm inline prepend-left-4 ${containerClasses}`"
+      :class="`btn btn-default btn-sm inline gl-ml-2 ${containerClasses}`"
       @click="$emit('click')"
     >
       <span class="d-inline-flex align-items-baseline">

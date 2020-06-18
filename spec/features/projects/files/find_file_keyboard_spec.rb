@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Projects > Files > Find file keyboard shortcuts', :js do
+RSpec.describe 'Projects > Files > Find file keyboard shortcuts', :js do
   let(:project) { create(:project, :repository) }
   let(:user) { project.owner }
 

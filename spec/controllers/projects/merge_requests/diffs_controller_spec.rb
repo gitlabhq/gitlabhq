@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Projects::MergeRequests::DiffsController do
+RSpec.describe Projects::MergeRequests::DiffsController do
   include ProjectForksHelper
 
   shared_examples '404 for unexistent diffable' do

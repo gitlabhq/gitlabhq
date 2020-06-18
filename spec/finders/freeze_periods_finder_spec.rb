@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe FreezePeriodsFinder do
+RSpec.describe FreezePeriodsFinder do
   subject(:finder) { described_class.new(project, user).execute }
 
   let(:project) { create(:project, :private) }

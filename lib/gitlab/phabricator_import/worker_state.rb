@@ -40,7 +40,7 @@ module Gitlab
       def timeout
         # Make sure we get rid of all the information after a job is marked
         # as failed/succeeded
-        StuckImportJobsWorker::IMPORT_JOBS_EXPIRATION
+        Gitlab::Import::StuckImportJob::IMPORT_JOBS_EXPIRATION
       end
     end
   end

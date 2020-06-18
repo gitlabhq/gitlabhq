@@ -1,6 +1,6 @@
 # Project Aliases API **(PREMIUM ONLY)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/3264) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.1.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/3264) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.1.
 
 All methods require administrator authorization.
 

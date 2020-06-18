@@ -29,9 +29,18 @@ Example:
 gitlab_rails['env'] = {"SIDEKIQ_LOG_ARGUMENTS" => "1"}
 ```
 
-Please note: It is not recommend to enable this setting in production because some
-Sidekiq jobs (such as sending a password reset email) take secret arguments (for
-example the password reset token).
+This does not log all job arguments. To avoid logging sensitive
+information (for instance, password reset tokens), it logs numeric
+arguments for all workers, with overrides for some specific workers
+where their arguments are not sensitive.
+
+Example log output:
+
+```json
+{"severity":"INFO","time":"2020-06-08T14:37:37.892Z","class":"AdminEmailsWorker","args":["[FILTERED]","[FILTERED]","[FILTERED]"],"retry":3,"queue":"admin_emails","backtrace":true,"jid":"9e35e2674ac7b12d123e13cc","created_at":"2020-06-08T14:37:37.373Z","meta.user":"root","meta.caller_id":"Admin::EmailsController#create","correlation_id":"37D3lArJmT1","uber-trace-id":"2d942cc98cc1b561:6dc94409cfdd4d77:9fbe19bdee865293:1","enqueued_at":"2020-06-08T14:37:37.410Z","pid":65011,"message":"AdminEmailsWorker JID-9e35e2674ac7b12d123e13cc: done: 0.48085 sec","job_status":"done","scheduling_latency_s":0.001012,"redis_calls":9,"redis_duration_s":0.004608,"redis_read_bytes":696,"redis_write_bytes":6141,"duration_s":0.48085,"cpu_s":0.308849,"completed_at":"2020-06-08T14:37:37.892Z","db_duration_s":0.010742}
+{"severity":"INFO","time":"2020-06-08T14:37:37.894Z","class":"ActiveJob::QueueAdapters::SidekiqAdapter::JobWrapper","wrapped":"ActionMailer::DeliveryJob","queue":"mailers","args":["[FILTERED]"],"retry":3,"backtrace":true,"jid":"e47a4f6793d475378432e3c8","created_at":"2020-06-08T14:37:37.884Z","meta.user":"root","meta.caller_id":"AdminEmailsWorker","correlation_id":"37D3lArJmT1","uber-trace-id":"2d942cc98cc1b561:29344de0f966446d:5c3b0e0e1bef987b:1","enqueued_at":"2020-06-08T14:37:37.885Z","pid":65011,"message":"ActiveJob::QueueAdapters::SidekiqAdapter::JobWrapper JID-e47a4f6793d475378432e3c8: start","job_status":"start","scheduling_latency_s":0.009473}
+{"severity":"INFO","time":"2020-06-08T14:39:50.648Z","class":"NewIssueWorker","args":["455","1"],"retry":3,"queue":"new_issue","backtrace":true,"jid":"a24af71f96fd129ec47f5d1e","created_at":"2020-06-08T14:39:50.643Z","meta.user":"root","meta.project":"h5bp/html5-boilerplate","meta.root_namespace":"h5bp","meta.caller_id":"Projects::IssuesController#create","correlation_id":"f9UCZHqhuP7","uber-trace-id":"28f65730f99f55a3:a5d2b62dec38dffc:48ddd092707fa1b7:1","enqueued_at":"2020-06-08T14:39:50.646Z","pid":65011,"message":"NewIssueWorker JID-a24af71f96fd129ec47f5d1e: start","job_status":"start","scheduling_latency_s":0.001144}
+```
 
 When using [Sidekiq JSON logging](../logs.md#sidekiqlog),
 arguments logs are limited to a maximum size of 10 kilobytes of text;
@@ -86,13 +95,13 @@ sudo apt-get install linux-tools-common linux-tools-generic linux-tools-`uname -
 sudo yum install perf
 ```
 
-Run perf against the Sidekiq PID:
+Run `perf` against the Sidekiq PID:
 
 ```shell
 sudo perf record -p <sidekiq_pid>
 ```
 
-Let this run for 30-60 seconds and then press Ctrl-C. Then view the perf report:
+Let this run for 30-60 seconds and then press Ctrl-C. Then view the `perf` report:
 
 ```shell
 $ sudo perf report
@@ -105,13 +114,13 @@ Samples: 348K of event 'cycles', Event count (approx.): 280908431073
   0.10%            ruby  libc-2.12.so        [.] _int_free
 ```
 
-Above you see sample output from a perf report. It shows that 97% of the CPU is
+Above you see sample output from a `perf` report. It shows that 97% of the CPU is
 being spent inside Nokogiri and `xmlXPathNodeSetMergeAndClear`. For something
 this obvious you should then go investigate what job in GitLab would use
 Nokogiri and XPath. Combine with `TTIN` or `gdb` output to show the
 corresponding Ruby code where this is happening.
 
-## The GNU Project Debugger (gdb)
+## The GNU Project Debugger (`gdb`)
 
 `gdb` can be another effective tool for debugging Sidekiq. It gives you a little
 more interactive way to look at each thread and see what's causing problems.

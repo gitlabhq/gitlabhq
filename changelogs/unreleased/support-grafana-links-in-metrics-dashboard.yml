@@ -1,0 +1,5 @@
+---
+title: Support user-defined Grafana links in metrics dashboard
+merge_request: 34003
+author:
+type: added

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Admin::GitalyServersController do
+RSpec.describe Admin::GitalyServersController do
   describe '#index' do
     before do
       sign_in(create(:admin))

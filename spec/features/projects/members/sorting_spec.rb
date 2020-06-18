@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Projects > Members > Sorting' do
+RSpec.describe 'Projects > Members > Sorting' do
   let(:maintainer) { create(:user, name: 'John Doe') }
   let(:developer) { create(:user, name: 'Mary Jane', last_sign_in_at: 5.days.ago) }
   let(:project) { create(:project, namespace: maintainer.namespace, creator: maintainer) }

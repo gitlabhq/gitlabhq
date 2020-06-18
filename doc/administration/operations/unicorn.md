@@ -40,9 +40,9 @@ master process has PID 56227 below.
 [2015-06-05T10:58:08.708824 #62538]  INFO -- : worker=10 ready
 ```
 
-### Tunables
+### Tunable options
 
-The main tunables for Unicorn are the number of worker processes and the
+The main tunable options for Unicorn are the number of worker processes and the
 request timeout after which the Unicorn master terminates a worker process.
 See the [Omnibus GitLab Unicorn settings
 documentation](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/doc/settings/unicorn.md)

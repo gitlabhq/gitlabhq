@@ -1,23 +1,24 @@
 <script>
-/* eslint-disable vue/require-default-prop */
-/* eslint-disable @gitlab/vue-require-i18n-strings */
-import { GlLink, GlModalDirective } from '@gitlab/ui';
+import { GlLink, GlModalDirective, GlSprintf } from '@gitlab/ui';
 import { s__, __, sprintf } from '~/locale';
 import eventHub from '../event_hub';
 import identicon from '../../vue_shared/components/identicon.vue';
 import loadingButton from '../../vue_shared/components/loading_button.vue';
 import UninstallApplicationButton from './uninstall_application_button.vue';
 import UninstallApplicationConfirmationModal from './uninstall_application_confirmation_modal.vue';
+import UpdateApplicationConfirmationModal from './update_application_confirmation_modal.vue';
 
-import { APPLICATION_STATUS } from '../constants';
+import { APPLICATION_STATUS, ELASTIC_STACK } from '../constants';
 
 export default {
   components: {
     loadingButton,
     identicon,
     GlLink,
+    GlSprintf,
     UninstallApplicationButton,
     UninstallApplicationConfirmationModal,
+    UpdateApplicationConfirmationModal,
   },
   directives: {
     GlModalDirective,
@@ -34,15 +35,17 @@ export default {
     titleLink: {
       type: String,
       required: false,
+      default: '',
     },
     manageLink: {
       type: String,
       required: false,
+      default: '',
     },
     logoUrl: {
       type: String,
       required: false,
-      default: null,
+      default: '',
     },
     disabled: {
       type: Boolean,
@@ -57,14 +60,17 @@ export default {
     status: {
       type: String,
       required: false,
+      default: '',
     },
     statusReason: {
       type: String,
       required: false,
+      default: '',
     },
     requestReason: {
       type: String,
       required: false,
+      default: '',
     },
     installed: {
       type: Boolean,
@@ -76,17 +82,15 @@ export default {
       required: false,
       default: false,
     },
-    installedVia: {
-      type: String,
-      required: false,
-    },
     version: {
       type: String,
       required: false,
+      default: '',
     },
     chartRepo: {
       type: String,
       required: false,
+      default: '',
     },
     updateAvailable: {
       type: Boolean,
@@ -204,15 +208,6 @@ export default {
 
       return sprintf(errorDescription, { title: this.title });
     },
-    versionLabel() {
-      if (this.updateFailed) {
-        return __('Update failed');
-      } else if (this.isUpdating) {
-        return __('Updating');
-      }
-
-      return this.updateSuccessful ? __('Updated to') : __('Updated');
-    },
     updateFailureDescription() {
       return s__('ClusterIntegration|Update failed. Please check the logs and try again.');
     },
@@ -233,6 +228,17 @@ export default {
 
       return label;
     },
+    updatingNeedsConfirmation() {
+      if (this.version) {
+        const majorVersion = parseInt(this.version.split('.')[0], 10);
+
+        if (!Number.isNaN(majorVersion)) {
+          return this.id === ELASTIC_STACK && majorVersion < 3;
+        }
+      }
+
+      return false;
+    },
     isUpdating() {
       // Since upgrading is handled asynchronously on the backend we need this check to prevent any delay on the frontend
       return this.status === APPLICATION_STATUS.UPDATING;
@@ -247,6 +253,12 @@ export default {
       return sprintf(s__('ClusterIntegration|%{title} uninstalled successfully.'), {
         title: this.title,
       });
+    },
+    updateModalId() {
+      return `update-${this.id}`;
+    },
+    uninstallModalId() {
+      return `uninstall-${this.id}`;
     },
   },
   watch: {
@@ -263,12 +275,16 @@ export default {
   },
   methods: {
     installClicked() {
+      if (this.disabled || this.installButtonDisabled) return;
+
       eventHub.$emit('installApplication', {
         id: this.id,
         params: this.installApplicationRequestParams,
       });
     },
-    updateClicked() {
+    updateConfirmed() {
+      if (this.isUpdating) return;
+
       eventHub.$emit('updateApplication', {
         id: this.id,
         params: this.installApplicationRequestParams,
@@ -294,7 +310,7 @@ export default {
     :data-qa-selector="id"
   >
     <div class="gl-responsive-table-row-layout" role="row">
-      <div class="table-section append-right-8 section-align-top" role="gridcell">
+      <div class="table-section gl-mr-3 section-align-top" role="gridcell">
         <img
           v-if="hasLogo"
           :src="logoUrl"
@@ -315,14 +331,12 @@ export default {
           >
           <span v-else class="js-cluster-application-title">{{ title }}</span>
         </strong>
-        <span
-          v-if="installedVia"
-          class="js-cluster-application-installed-via"
-          v-html="installedVia"
-        ></span>
-        <slot name="description"></slot>
+        <slot name="installedVia"></slot>
+        <div>
+          <slot name="description"></slot>
+        </div>
         <div v-if="hasError" class="cluster-application-error text-danger prepend-top-10">
-          <p class="js-cluster-application-general-error-message append-bottom-0">
+          <p class="js-cluster-application-general-error-message gl-mb-0">
             {{ generalErrorDescription }}
           </p>
           <ul v-if="statusReason || requestReason">
@@ -340,14 +354,20 @@ export default {
             v-if="shouldShowUpdateDetails"
             class="form-text text-muted label p-0 js-cluster-application-update-details"
           >
-            {{ versionLabel }}
-            <gl-link
-              v-if="updateSuccessful"
-              :href="chartRepo"
-              target="_blank"
-              class="js-cluster-application-update-version"
-              >chart v{{ version }}</gl-link
-            >
+            <template v-if="updateFailed">{{ __('Update failed') }}</template>
+            <template v-else-if="isUpdating">{{ __('Updating') }}</template>
+            <template v-else>
+              <gl-sprintf :message="__('Updated to %{linkStart}chart v%{linkEnd}')">
+                <template #link="{ content }">
+                  <gl-link
+                    :href="chartRepo"
+                    target="_blank"
+                    class="js-cluster-application-update-version"
+                    >{{ content }}{{ version }}</gl-link
+                  >
+                </template>
+              </gl-sprintf>
+            </template>
           </div>
 
           <div
@@ -356,14 +376,36 @@ export default {
           >
             {{ updateFailureDescription }}
           </div>
-          <loading-button
-            v-if="updateAvailable || updateFailed || isUpdating"
-            class="btn btn-primary js-cluster-application-update-button mt-2"
-            :loading="isUpdating"
-            :disabled="isUpdating"
-            :label="updateButtonLabel"
-            @click="updateClicked"
-          />
+          <template v-if="updateAvailable || updateFailed || isUpdating">
+            <template v-if="updatingNeedsConfirmation">
+              <loading-button
+                v-gl-modal-directive="updateModalId"
+                class="btn btn-primary js-cluster-application-update-button mt-2"
+                :loading="isUpdating"
+                :disabled="isUpdating"
+                :label="updateButtonLabel"
+                data-qa-selector="update_button_with_confirmation"
+                :data-qa-application="id"
+              />
+
+              <update-application-confirmation-modal
+                :application="id"
+                :application-title="title"
+                @confirm="updateConfirmed()"
+              />
+            </template>
+
+            <loading-button
+              v-else
+              class="btn btn-primary js-cluster-application-update-button mt-2"
+              :loading="isUpdating"
+              :disabled="isUpdating"
+              :label="updateButtonLabel"
+              data-qa-selector="update_button"
+              :data-qa-application="id"
+              @click="updateConfirmed"
+            />
+          </template>
         </div>
       </div>
       <div
@@ -389,7 +431,7 @@ export default {
           />
           <uninstall-application-button
             v-if="displayUninstallButton"
-            v-gl-modal-directive="'uninstall-' + id"
+            v-gl-modal-directive="uninstallModalId"
             :status="status"
             data-qa-selector="uninstall_button"
             :data-qa-application="id"

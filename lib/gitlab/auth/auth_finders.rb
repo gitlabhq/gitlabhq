@@ -56,6 +56,7 @@ module Gitlab
 
       def find_user_from_job_token
         return unless route_authentication_setting[:job_token_allowed]
+        return find_user_from_basic_auth_job if route_authentication_setting[:job_token_allowed] == :basic_auth
 
         token = current_request.params[JOB_TOKEN_PARAM].presence ||
           current_request.params[RUNNER_JOB_TOKEN_PARAM].presence ||

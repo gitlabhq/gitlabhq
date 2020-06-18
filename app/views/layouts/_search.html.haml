@@ -1,12 +1,8 @@
-- if @group && @group.persisted? && @group.path
-  - group_data_attrs = { group_path: j(@group.path), name: j(@group.name), issues_path: issues_group_path(@group), mr_path: merge_requests_group_path(@group) }
-- if @project && @project.persisted?
-  - project_data_attrs = { project_path: j(@project.path), name: j(@project.name), issues_path: project_issues_path(@project), mr_path: project_merge_requests_path(@project), issues_disabled: !@project.issues_enabled? }
 .search.search-form{ data: { track_label: "navbar_search", track_event: "activate_form_input", track_value: "" } }
   = form_tag search_path, method: :get, class: 'form-inline' do |f|
     .search-input-container
       .search-input-wrap
-        .dropdown{ data: { url: search_autocomplete_path } }
+        .dropdown
           = search_field_tag 'search', nil, placeholder: _('Search or jump to…'),
                                             class: 'search-input dropdown-menu-toggle no-outline js-search-dashboard-options',
                                             spellcheck: false,
@@ -27,27 +23,17 @@
           = sprite_icon('search', size: 16, css_class: 'search-icon')
           = sprite_icon('close', size: 16, css_class: 'clear-icon js-clear-input')
 
-    = hidden_field_tag :group_id, @group.try(:id), class: 'js-search-group-options', data: group_data_attrs
+    = hidden_field_tag :group_id, search_context.for_group? ? search_context.group.id : '', class: 'js-search-group-options', data: search_context.group_metadata
+    = hidden_field_tag :project_id, search_context.for_project? ? search_context.project.id : '', id: 'search_project_id', class: 'js-search-project-options', data: search_context.project_metadata
 
-    = hidden_field_tag :project_id, @project && @project.persisted? ? @project.id : '', id: 'search_project_id', class: 'js-search-project-options', data: project_data_attrs
+    - if search_context.for_project?
+      = hidden_field_tag :scope, search_context.scope
+      = hidden_field_tag :search_code, search_context.code_search?
 
-    - if @project && @project.persisted?
-      - if current_controller?(:issues)
-        = hidden_field_tag :scope, 'issues'
-      - elsif current_controller?(:merge_requests)
-        = hidden_field_tag :scope, 'merge_requests'
-      - elsif current_controller?(:wikis)
-        = hidden_field_tag :scope, 'wiki_blobs'
-      - elsif current_controller?(:commits)
-        = hidden_field_tag :scope, 'commits'
-      - else
-        = hidden_field_tag :search_code, true
-
-    - if @snippet || @snippets
-      = hidden_field_tag :snippets, true
-    = hidden_field_tag :repository_ref, @ref
+    = hidden_field_tag :snippets, search_context.for_snippets?
+    = hidden_field_tag :repository_ref, search_context.ref
     = hidden_field_tag :nav_source, 'navbar'
+
     -# workaround for non-JS feature specs, see spec/support/helpers/search_helpers.rb
     - if ENV['RAILS_ENV'] == 'test'
       %noscript= button_tag 'Search'
-    .search-autocomplete-opts.hide{ :'data-autocomplete-path' => search_autocomplete_path, :'data-autocomplete-project-id' => @project.try(:id), :'data-autocomplete-project-ref' => @ref }

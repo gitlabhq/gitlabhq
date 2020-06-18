@@ -184,6 +184,84 @@ describe VisibilityLevelHelper do
     end
   end
 
+  shared_examples_for 'available visibility level' do
+    using RSpec::Parameterized::TableSyntax
+
+    let(:user) { create(:user) }
+
+    subject { helper.available_visibility_levels(form_model) }
+
+    public_vis = Gitlab::VisibilityLevel::PUBLIC
+    internal_vis = Gitlab::VisibilityLevel::INTERNAL
+    private_vis = Gitlab::VisibilityLevel::PRIVATE
+
+    where(:restricted_visibility_levels, :expected) do
+      [] | [private_vis, internal_vis, public_vis]
+      [private_vis] | [internal_vis, public_vis]
+      [private_vis, internal_vis] | [public_vis]
+      [private_vis, public_vis] | [internal_vis]
+      [internal_vis] | [private_vis, public_vis]
+      [internal_vis, private_vis] | [public_vis]
+      [internal_vis, public_vis] | [private_vis]
+      [public_vis] | [private_vis, internal_vis]
+      [public_vis, private_vis] | [internal_vis]
+      [public_vis, internal_vis] | [private_vis]
+    end
+
+    before do
+      allow(helper).to receive(:current_user) { user }
+    end
+
+    with_them do
+      before do
+        stub_application_setting(restricted_visibility_levels: restricted_visibility_levels)
+      end
+
+      it { is_expected.to eq(expected) }
+    end
+
+    it 'excludes disallowed visibility levels' do
+      stub_application_setting(restricted_visibility_levels: [])
+      allow(helper).to receive(:disallowed_visibility_level?).with(form_model, private_vis) { true }
+      allow(helper).to receive(:disallowed_visibility_level?).with(form_model, internal_vis) { false }
+      allow(helper).to receive(:disallowed_visibility_level?).with(form_model, public_vis) { false }
+
+      expect(subject).to eq([internal_vis, public_vis])
+    end
+  end
+
+  describe '#available_visibility_levels' do
+    it_behaves_like 'available visibility level' do
+      let(:form_model) { project_snippet }
+    end
+
+    it_behaves_like 'available visibility level' do
+      let(:form_model) { personal_snippet }
+    end
+
+    it_behaves_like 'available visibility level' do
+      let(:form_model) { project }
+    end
+
+    it_behaves_like 'available visibility level' do
+      let(:form_model) { group }
+    end
+  end
+
+  describe '#snippets_selected_visibility_level' do
+    let(:available_levels) { [Gitlab::VisibilityLevel::PUBLIC, Gitlab::VisibilityLevel::INTERNAL] }
+
+    it 'returns the selected visibility level' do
+      expect(helper.snippets_selected_visibility_level(available_levels, Gitlab::VisibilityLevel::PUBLIC))
+        .to eq(Gitlab::VisibilityLevel::PUBLIC)
+    end
+
+    it "fallbacks using the lowest available visibility level when selected level isn't available" do
+      expect(helper.snippets_selected_visibility_level(available_levels, Gitlab::VisibilityLevel::PRIVATE))
+       .to eq(Gitlab::VisibilityLevel::INTERNAL)
+    end
+  end
+
   describe 'multiple_visibility_levels_restricted?' do
     using RSpec::Parameterized::TableSyntax
 

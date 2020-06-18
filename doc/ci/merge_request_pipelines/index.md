@@ -1,11 +1,14 @@
 ---
+stage: Verify
+group: Continuous Integration
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 type: reference, index
 last_update: 2019-07-03
 ---
 
 # Pipelines for Merge Requests
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/15310) in GitLab 11.6.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/15310) in GitLab 11.6.
 
 In a [basic configuration](../pipelines/pipeline_architectures.md#basic-pipelines), GitLab runs a pipeline each time
 changes are pushed to a branch.
@@ -143,7 +146,7 @@ test:
 
 Instead, you can use the
 [`$CI_COMMIT_REF_NAME` predefined environment
-variable](../variables/predefined_variables.md#variables-reference) in
+variable](../variables/predefined_variables.md) in
 combination with
 [`only:variables`](../yaml/README.md#onlyvariablesexceptvariables) to
 accomplish this behavior:

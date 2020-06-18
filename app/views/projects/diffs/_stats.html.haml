@@ -22,8 +22,8 @@
         - diff_files.each do |diff_file|
           %li
             %a.diff-changed-file{ href: "##{hexdigest(diff_file.file_path)}", title: diff_file.new_path }
-              = sprite_icon(diff_file_changed_icon(diff_file), size: 16, css_class: "#{diff_file_changed_icon_color(diff_file)} diff-file-changed-icon append-right-8")
-              %span.diff-changed-file-content.append-right-8
+              = sprite_icon(diff_file_changed_icon(diff_file), size: 16, css_class: "#{diff_file_changed_icon_color(diff_file)} diff-file-changed-icon gl-mr-3")
+              %span.diff-changed-file-content.gl-mr-3
                 - if diff_file.file_path
                   %strong.diff-changed-file-name
                     = diff_file.file_path

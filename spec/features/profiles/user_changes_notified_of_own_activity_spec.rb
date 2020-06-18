@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Profile > Notifications > User changes notified_of_own_activity setting', :js do
+RSpec.describe 'Profile > Notifications > User changes notified_of_own_activity setting', :js do
   let(:user) { create(:user) }
 
   before do

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-context 'U2F' do
+RSpec.context 'U2F' do
   include JavaScriptFixturesHelpers
 
   let(:user) { create(:user, :two_factor_via_u2f, otp_secret: 'otpsecret:coolkids') }

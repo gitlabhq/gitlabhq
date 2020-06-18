@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'OAuth Provider' do
+RSpec.describe 'OAuth Provider' do
   describe 'Standard OAuth Authorization' do
     let(:application) { create(:oauth_application, scopes: 'read_user') }
 

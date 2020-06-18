@@ -1,6 +1,7 @@
 <script>
 import { mapActions } from 'vuex';
 import PanelResizer from '~/vue_shared/components/panel_resizer.vue';
+import { SIDEBAR_MIN_WIDTH } from '../constants';
 
 export default {
   components: {
@@ -14,11 +15,16 @@ export default {
     minSize: {
       type: Number,
       required: false,
-      default: 340,
+      default: SIDEBAR_MIN_WIDTH,
     },
     side: {
       type: String,
       required: true,
+    },
+    resizable: {
+      type: Boolean,
+      required: false,
+      default: true,
     },
   },
   data() {
@@ -28,7 +34,7 @@ export default {
   },
   computed: {
     panelStyle() {
-      if (!this.collapsed) {
+      if (this.resizable) {
         return {
           width: `${this.width}px`,
         };
@@ -45,9 +51,10 @@ export default {
 </script>
 
 <template>
-  <div :style="panelStyle" class="multi-file-commit-panel">
+  <div class="gl-relative" :style="panelStyle">
     <slot></slot>
     <panel-resizer
+      v-show="resizable"
       :size.sync="width"
       :start-size="initialWidth"
       :min-size="minSize"

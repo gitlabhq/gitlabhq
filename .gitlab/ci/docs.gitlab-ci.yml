@@ -62,7 +62,7 @@ docs lint:
 graphql-reference-verify:
   extends:
     - .default-retry
-    - .default-cache
+    - .rails-cache
     - .default-before_script
     - .docs:rules:graphql-reference-verify
     - .use-pg11

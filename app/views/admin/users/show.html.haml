@@ -86,7 +86,7 @@
         %li
           %span.light Current sign-in IP:
           %strong
-            - if @user.current_sign_in_ip
+            - if @user.current_sign_in_ip # rubocop:disable Style/RedundantCondition
               = @user.current_sign_in_ip
             - else
               never
@@ -102,7 +102,7 @@
         %li
           %span.light Last sign-in IP:
           %strong
-            - if @user.last_sign_in_ip
+            - if @user.last_sign_in_ip # rubocop:disable Style/RedundantCondition
               = @user.last_sign_in_ip
             - else
               never
@@ -141,6 +141,8 @@
 
         = render_if_exists 'namespaces/shared_runner_status', namespace: @user.namespace
 
+    = render 'shared/custom_attributes', custom_attributes: @user.custom_attributes
+
   .col-md-6
     - unless @user == current_user
       - unless @user.confirmed?
@@ -154,7 +156,7 @@
             %br
             = link_to 'Confirm user', confirm_admin_user_path(@user), method: :put, class: "btn btn-info", data: { confirm: 'Are you sure?', qa_selector: 'confirm_user_button' }
 
-      = render_if_exists 'admin/users/user_detail_note'
+      = render 'admin/users/user_detail_note'
 
       - if @user.deactivated?
         .card.border-info

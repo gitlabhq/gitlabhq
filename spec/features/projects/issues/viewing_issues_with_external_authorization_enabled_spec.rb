@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'viewing an issue with cross project references' do
+RSpec.describe 'viewing an issue with cross project references' do
   include ExternalAuthorizationServiceHelpers
   include Gitlab::Routing.url_helpers
 

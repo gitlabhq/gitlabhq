@@ -1,3 +1,13 @@
+# WARNING (post-GitLab 13.0):
+#
+# This CI template should NOT be included in your own CI configuration files:
+# 'review_ecs' and 'production_ecs' are two temporary names given to the jobs below.
+#
+# Should this template be included in your CI configuration, the upcoming name changes could
+# then result in potentially breaking your future pipelines.
+#
+# More about including CI templates: https://docs.gitlab.com/ee/ci/yaml/#includetemplate
+
 .deploy_to_ecs:
   image: 'registry.gitlab.com/gitlab-org/cloud-deploy/aws-ecs:latest'
   script:
@@ -15,7 +25,9 @@ review_ecs:
       when: never
     - if: '$REVIEW_DISABLED'
       when: never
-    - if: '$CI_COMMIT_BRANCH != "master"'
+    - if: '$CI_COMMIT_BRANCH == "master"'
+      when: never
+    - if: '$CI_COMMIT_TAG || $CI_COMMIT_BRANCH'
 
 production_ecs:
   extends: .deploy_to_ecs
@@ -27,4 +39,6 @@ production_ecs:
       when: never
     - if: '$CI_KUBERNETES_ACTIVE'
       when: never
-    - if: '$CI_COMMIT_BRANCH == "master"'
+    - if: '$CI_COMMIT_BRANCH != "master"'
+      when: never
+    - if: '$CI_COMMIT_TAG || $CI_COMMIT_BRANCH'

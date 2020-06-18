@@ -2,7 +2,8 @@
 - page_description @project.description    unless page_description
 - header_title     project_title(@project) unless header_title
 - nav              "project"
-- @left_sidebar    = true
+- display_subscription_banner!
+- @left_sidebar = true
 
 - content_for :project_javascripts do
   - project = @target_project || @project

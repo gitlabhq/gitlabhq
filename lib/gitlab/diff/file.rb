@@ -225,6 +225,10 @@ module Gitlab
         new_path.presence || old_path
       end
 
+      def file_hash
+        Digest::SHA1.hexdigest(file_path)
+      end
+
       def added_lines
         @stats&.additions || diff_lines.count(&:added?)
       end
@@ -235,6 +239,10 @@ module Gitlab
 
       def file_identifier
         "#{file_path}-#{new_file?}-#{deleted_file?}-#{renamed_file?}"
+      end
+
+      def file_identifier_hash
+        Digest::SHA1.hexdigest(file_identifier)
       end
 
       def diffable?

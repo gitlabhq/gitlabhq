@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Showing analytics' do
+RSpec.describe 'Showing analytics' do
   before do
     sign_in user if user
   end

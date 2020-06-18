@@ -1,3 +1,10 @@
+---
+stage: Enablement
+group: Geo
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+type: howto
+---
+
 # Geo data types support
 
 A Geo data type is a specific class of data that is required by one or more GitLab features to
@@ -129,11 +136,11 @@ successfully, you must replicate their data using some other means.
 | Application data in PostgreSQL                                       | **Yes**                                                  | **Yes**                                                 |                                                                                                            |
 | Project repository                                                   | **Yes**                                                  | **Yes**                                                 |                                                                                                            |
 | Project wiki repository                                              | **Yes**                                                  | **Yes**                                                 |                                                                                                            |
-| Project designs repository                                           | **Yes**                                                  | [No](https://gitlab.com/gitlab-org/gitlab/issues/32467) |                                                                                                            |
+| Project designs repository                                           | **Yes**                                                  | [No](https://gitlab.com/gitlab-org/gitlab/-/issues/32467) |                                                                                                            |
 | Uploads                                                              | **Yes**                                                  | [No](https://gitlab.com/groups/gitlab-org/-/epics/1817) | Verified only on transfer, or manually (*1*)                                                               |
-| LFS objects                                                          | **Yes**                                                  | [No](https://gitlab.com/gitlab-org/gitlab/issues/8922)  | Verified only on transfer, or manually (*1*). Unavailable for new LFS objects in 11.11.x and 12.0.x (*2*). |
-| CI job artifacts (other than traces)                                 | **Yes**                                                  | [No](https://gitlab.com/gitlab-org/gitlab/issues/8923)  | Verified only manually (*1*)                                                                               |
-| Archived traces                                                      | **Yes**                                                  | [No](https://gitlab.com/gitlab-org/gitlab/issues/8923)  | Verified only on transfer, or manually (*1*)                                                               |
+| LFS objects                                                          | **Yes**                                                  | [No](https://gitlab.com/gitlab-org/gitlab/-/issues/8922)  | Verified only on transfer, or manually (*1*). Unavailable for new LFS objects in 11.11.x and 12.0.x (*2*). |
+| CI job artifacts (other than traces)                                 | **Yes**                                                  | [No](https://gitlab.com/gitlab-org/gitlab/-/issues/8923)  | Verified only manually (*1*)                                                                               |
+| Archived traces                                                      | **Yes**                                                  | [No](https://gitlab.com/gitlab-org/gitlab/-/issues/8923)  | Verified only on transfer, or manually (*1*)                                                               |
 | Personal snippets                                                    | **Yes**                                                  | **Yes**                                                 |                                                                                                            |
 | [Versioned snippets](../../../user/snippets.md#versioned-snippets) | [No](https://gitlab.com/groups/gitlab-org/-/epics/2809)  | [No](https://gitlab.com/groups/gitlab-org/-/epics/2810) |                                                                                                            |
 | Project snippets                                                     | **Yes**                                                  | **Yes**                                                 |                                                                                                            |
@@ -147,11 +154,16 @@ successfully, you must replicate their data using some other means.
 | [Conan Repository](../../../user/packages/conan_repository/index.md) | [No](https://gitlab.com/groups/gitlab-org/-/epics/2346)  | No                                                      |                                                                                                            |
 | [NuGet Repository](../../../user/packages/nuget_repository/index.md) | [No](https://gitlab.com/groups/gitlab-org/-/epics/2346)  | No                                                      |                                                                                                            |
 | [PyPi Repository](../../../user/packages/pypi_repository/index.md)   | [No](https://gitlab.com/groups/gitlab-org/-/epics/2554)  | No                                                      |                                                                                                            |
-| [External merge request diffs](../../merge_request_diffs.md)         | [No](https://gitlab.com/gitlab-org/gitlab/issues/33817)  | No                                                      |                                                                                                            |
+| [Composer Repository](../../../user/packages/composer_repository/index.md) | [No](https://gitlab.com/groups/gitlab-org/-/epics/3096)  | No                                                      |                                                                                                            |
+| [External merge request diffs](../../merge_request_diffs.md)         | [No](https://gitlab.com/gitlab-org/gitlab/-/issues/33817)  | No                                                      |                                           |
+| [Terraform State](../../terraform_state.md)                                                                  | [No](https://gitlab.com/groups/gitlab-org/-/epics/3112)(*3*) | No                                                        |                                                                                                            |
+| [Vulnerability Export](../../../user/application_security/security_dashboard/#export-vulnerabilities-1)      | [No](https://gitlab.com/groups/gitlab-org/-/epics/3111)(*3*) | No                                                        |                                                                                                            |                                                                                                            |
 | Content in object storage                                            | **Yes**                                                  | No                                                      |                                                                                                            |
 
 - (*1*): The integrity can be verified manually using
   [Integrity Check Rake Task](../../raketasks/check.md) on both nodes and comparing
   the output between them.
 - (*2*): GitLab versions 11.11.x and 12.0.x are affected by [a bug that prevents any new
-  LFS objects from replicating](https://gitlab.com/gitlab-org/gitlab/issues/32696).
+  LFS objects from replicating](https://gitlab.com/gitlab-org/gitlab/-/issues/32696).
+- (*3*): If you are using Object Storage, the replication can be performed by the
+  Object Storage provider if supported. Please see [Geo with Object Storage](object_storage.md)

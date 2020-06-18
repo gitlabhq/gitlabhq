@@ -57,10 +57,6 @@ module Gitlab
             '--tls-key', "#{files_dir}/key.pem"
           ]
         end
-
-        def local_tiller_enabled?
-          ::Gitlab::Kubernetes::Helm.local_tiller_enabled?
-        end
       end
     end
   end

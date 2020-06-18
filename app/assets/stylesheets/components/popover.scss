@@ -1,7 +1,7 @@
 .popover {
   max-width: $popover-max-width;
   border: 1px solid $gray-200;
-  box-shadow: 0 2px 3px 1px $gray-200;
+  box-shadow: $popover-box-shadow;
   font-size: $gl-font-size-small;
 
   /**

@@ -11,6 +11,7 @@ describe Note do
     it { is_expected.to belong_to(:author).class_name('User') }
 
     it { is_expected.to have_many(:todos) }
+    it { is_expected.to belong_to(:review).inverse_of(:notes) }
   end
 
   describe 'modules' do
@@ -285,7 +286,7 @@ describe Note do
   end
 
   describe "edited?" do
-    let(:note) { build(:note, updated_by_id: nil, created_at: Time.now, updated_at: Time.now + 5.hours) }
+    let(:note) { build(:note, updated_by_id: nil, created_at: Time.current, updated_at: Time.current + 5.hours) }
 
     context "with updated_by" do
       it "returns true" do
@@ -304,11 +305,22 @@ describe Note do
 
   describe '#confidential?' do
     context 'when note is not confidential' do
-      it 'is true when a noteable is confidential' do
-        issue = create(:issue, :confidential)
-        note = build(:note, noteable: issue, project: issue.project)
+      context 'when include_noteable is set to true' do
+        it 'is true when a noteable is confidential ' do
+          issue = create(:issue, :confidential)
+          note = build(:note, noteable: issue, project: issue.project)
 
-        expect(note.confidential?).to be_truthy
+          expect(note.confidential?(include_noteable: true)).to be_truthy
+        end
+      end
+
+      context 'when include_noteable is not set to true' do
+        it 'is false when a noteable is confidential ' do
+          issue = create(:issue, :confidential)
+          note = build(:note, noteable: issue, project: issue.project)
+
+          expect(note.confidential?).to be_falsey
+        end
       end
 
       it 'is false when a noteable is not confidential' do
@@ -318,7 +330,7 @@ describe Note do
         expect(note.confidential?).to be_falsy
       end
 
-      it "is falsey when noteable can't be confidential" do
+      it "is false when noteable can't be confidential" do
         commit_note = build(:note_on_commit)
 
         expect(commit_note.confidential?).to be_falsy
@@ -816,6 +828,10 @@ describe Note do
 
     it 'returns commit for a commit note' do
       expect(build(:note_on_commit).noteable_ability_name).to eq('commit')
+    end
+
+    it 'returns alert_management_alert for an alert note' do
+      expect(build(:note_on_alert).noteable_ability_name).to eq('alert_management_alert')
     end
   end
 
@@ -1349,6 +1365,30 @@ describe Note do
         let(:noteable) { create(:personal_snippet) }
 
         it_behaves_like 'author check'
+      end
+    end
+  end
+
+  describe 'banzai_render_context' do
+    let(:project) { build(:project_empty_repo) }
+
+    context 'when noteable is a merge request' do
+      let(:noteable) { build :merge_request, target_project: project, source_project: project }
+
+      subject(:context) { noteable.banzai_render_context(:title) }
+
+      it 'sets the label_url_method in the context' do
+        expect(context[:label_url_method]).to eq(:project_merge_requests_url)
+      end
+    end
+
+    context 'when noteable is an issue' do
+      let(:noteable) { build :issue, project: project }
+
+      subject(:context) { noteable.banzai_render_context(:title) }
+
+      it 'sets the label_url_method in the context' do
+        expect(context[:label_url_method]).to eq(:project_issues_url)
       end
     end
   end

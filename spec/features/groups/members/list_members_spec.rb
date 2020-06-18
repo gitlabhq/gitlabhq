@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Groups > Members > List members' do
+RSpec.describe 'Groups > Members > List members' do
   include Select2Helper
   include Spec::Support::Helpers::Features::ListRowsHelpers
 

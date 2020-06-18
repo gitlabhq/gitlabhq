@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Container Registry', :js do
+RSpec.describe 'Container Registry', :js do
   let(:user) { create(:user) }
   let(:group) { create(:group) }
   let(:project) { create(:project, namespace: group) }
@@ -22,6 +22,13 @@ describe 'Container Registry', :js do
     visit_container_registry
 
     expect(page).to have_title _('Container Registry')
+  end
+
+  it 'sidebar menu is open' do
+    visit_container_registry
+
+    sidebar = find('.nav-sidebar')
+    expect(sidebar).to have_link _('Container Registry')
   end
 
   context 'when there are no image repositories' do
@@ -75,7 +82,7 @@ describe 'Container Registry', :js do
         expect(service).to receive(:execute).with(container_repository) { { status: :success } }
         expect(Projects::ContainerRepository::DeleteTagsService).to receive(:new).with(container_repository.project, user, tags: ['latest']) { service }
 
-        click_on(class: 'js-delete-registry')
+        first('[data-testid="singleDeleteButton"]').click
         expect(find('.modal .modal-title')).to have_content _('Remove tag')
         find('.modal .modal-footer .btn-danger').click
       end

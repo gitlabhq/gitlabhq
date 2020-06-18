@@ -15,10 +15,4 @@ class SelfManagedPrometheusAlertEvent < ApplicationRecord
       yield event if block_given?
     end
   end
-
-  def self.payload_key_for(started_at, alert_name, query_expression)
-    plain = [started_at, alert_name, query_expression].join('/')
-
-    Digest::SHA1.hexdigest(plain)
-  end
 end

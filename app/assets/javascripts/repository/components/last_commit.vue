@@ -149,7 +149,7 @@ export default {
           <pre
             v-if="commit.description"
             :class="{ 'd-block': showDescription }"
-            class="commit-row-description append-bottom-8"
+            class="commit-row-description gl-mb-3"
             >{{ commit.description }}</pre
           >
         </div>

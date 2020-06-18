@@ -1,6 +1,13 @@
+---
+type: howto
+stage: Manage
+group: Import
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+---
+
 # Import multiple repositories by uploading a manifest file
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/28811) in GitLab 11.2.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/28811) in GitLab 11.2.
 
 GitLab allows you to import all the required Git repositories
 based on a manifest file like the one used by the

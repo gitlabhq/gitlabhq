@@ -6,7 +6,7 @@ import {
   DEFAULT_PAGE,
   DEFAULT_PAGE_SIZE,
   FETCH_TAGS_LIST_ERROR_MESSAGE,
-} from '../constants';
+} from '../constants/index';
 import { decodeAndParse } from '../utils';
 
 export const setInitialState = ({ commit }, data) => commit(types.SET_INITIAL_STATE, data);

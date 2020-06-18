@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Group show page' do
+RSpec.describe 'Group show page' do
   let(:group) { create(:group) }
   let(:path) { group_path(group) }
 

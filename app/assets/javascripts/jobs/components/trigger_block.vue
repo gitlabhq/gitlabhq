@@ -46,7 +46,7 @@ export default {
     <p
       v-if="trigger.short_token"
       class="js-short-token"
-      :class="{ 'append-bottom-5': hasVariables, 'append-bottom-0': !hasVariables }"
+      :class="{ 'append-bottom-5': hasVariables, 'gl-mb-0': !hasVariables }"
     >
       <span class="font-weight-bold">{{ __('Trigger token:') }}</span> {{ trigger.short_token }}
     </p>

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Project Jobs Permissions' do
+RSpec.describe 'Project Jobs Permissions' do
   let(:user) { create(:user) }
   let(:group) { create(:group, name: 'some group') }
   let(:project) { create(:project, :repository, namespace: group) }

@@ -39,7 +39,7 @@ module Gitlab
             *config.attributes['name'],
             *config.attributes['email'],
             *config.attributes['username']
-          ].compact.uniq
+          ].compact.uniq.reject(&:blank?)
         end
 
         def self.normalize_dn(dn)

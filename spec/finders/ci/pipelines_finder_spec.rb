@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Ci::PipelinesFinder do
+RSpec.describe Ci::PipelinesFinder do
   let(:project) { create(:project, :public, :repository) }
   let(:current_user) { nil }
   let(:params) { {} }

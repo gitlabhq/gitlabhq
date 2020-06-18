@@ -1,6 +1,5 @@
 <script>
-import { mapGetters, mapActions } from 'vuex';
-import noteFormMixin from 'ee_else_ce/notes/mixins/note_form';
+import { mapGetters, mapActions, mapState } from 'vuex';
 import { mergeUrlParams } from '~/lib/utils/url_utility';
 import eventHub from '../event_hub';
 import issueWarning from '../../vue_shared/components/issue/issue_warning.vue';
@@ -16,7 +15,7 @@ export default {
     issueWarning,
     markdownField,
   },
-  mixins: [issuableStateMixin, resolvable, noteFormMixin],
+  mixins: [issuableStateMixin, resolvable],
   props: {
     noteBody: {
       type: String,
@@ -82,6 +81,11 @@ export default {
       required: false,
       default: false,
     },
+    isDraft: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     let updatedNoteBody = this.noteBody;
@@ -107,6 +111,16 @@ export default {
       'getNotesDataByProp',
       'getUserDataByProp',
     ]),
+    ...mapState({
+      withBatchComments: state => state.batchComments?.withBatchComments,
+    }),
+    ...mapGetters('batchComments', ['hasDrafts']),
+    showBatchCommentsActions() {
+      return this.withBatchComments && this.noteId === '' && !this.discussion.for_commit;
+    },
+    showResolveDiscussionToggle() {
+      return (this.discussion?.id && this.discussion.resolvable) || this.isDraft;
+    },
     noteHash() {
       if (this.noteId) {
         return `#note_${this.noteId}`;
@@ -202,8 +216,6 @@ export default {
   methods: {
     ...mapActions(['toggleResolveNote']),
     shouldToggleResolved(shouldResolve, beforeSubmitDiscussionState) {
-      // shouldBeResolved() checks the actual resolution state,
-      // considering batchComments (EEP), if applicable/enabled.
       const newResolvedStateAfterUpdate =
         this.shouldBeResolved && this.shouldBeResolved(shouldResolve);
 
@@ -233,6 +245,50 @@ export default {
         const { autosaveKey, updatedNoteBody: text } = this;
         updateDraft(autosaveKey, text);
       }
+    },
+    handleKeySubmit() {
+      if (this.showBatchCommentsActions) {
+        this.handleAddToReview();
+      } else {
+        this.handleUpdate();
+      }
+    },
+    handleUpdate(shouldResolve) {
+      const beforeSubmitDiscussionState = this.discussionResolved;
+      this.isSubmitting = true;
+
+      this.$emit(
+        'handleFormUpdate',
+        this.updatedNoteBody,
+        this.$refs.editNoteForm,
+        () => {
+          this.isSubmitting = false;
+
+          if (this.shouldToggleResolved(shouldResolve, beforeSubmitDiscussionState)) {
+            this.resolveHandler(beforeSubmitDiscussionState);
+          }
+        },
+        this.discussionResolved ? !this.isUnresolving : this.isResolving,
+      );
+    },
+    shouldBeResolved(resolveStatus) {
+      if (this.withBatchComments) {
+        return (
+          (this.discussionResolved && !this.isUnresolving) ||
+          (!this.discussionResolved && this.isResolving)
+        );
+      }
+
+      return resolveStatus;
+    },
+    handleAddToReview() {
+      // check if draft should resolve thread
+      const shouldResolve =
+        (this.discussionResolved && !this.isUnresolving) ||
+        (!this.discussionResolved && this.isResolving);
+      this.isSubmitting = true;
+
+      this.$emit('handleFormUpdateAddToReview', this.updatedNoteBody, shouldResolve);
     },
   },
 };
@@ -293,6 +349,7 @@ export default {
                 <input
                   v-model="isUnresolving"
                   type="checkbox"
+                  class="js-unresolve-checkbox"
                   data-qa-selector="unresolve_review_discussion_checkbox"
                 />
                 {{ __('Unresolve thread') }}
@@ -301,6 +358,7 @@ export default {
                 <input
                   v-model="isResolving"
                   type="checkbox"
+                  class="js-resolve-checkbox"
                   data-qa-selector="resolve_review_discussion_checkbox"
                 />
                 {{ __('Resolve thread') }}
@@ -320,7 +378,7 @@ export default {
             <button
               :disabled="isDisabled"
               type="button"
-              class="btn qa-comment-now"
+              class="btn qa-comment-now js-comment-button"
               @click="handleUpdate()"
             >
               {{ __('Add comment now') }}

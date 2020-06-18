@@ -1,0 +1,31 @@
+- @content_class = "limit-container-width" unless fluid_layout
+- add_to_breadcrumbs _("Wiki"), wiki_page_path(@wiki, @page)
+- breadcrumb_title @page.persisted? ? _("Edit") : _("New")
+- page_title @page.persisted? ? _("Edit") : _("New"), @page.human_title, _("Wiki")
+
+= wiki_page_errors(@error)
+
+.wiki-page-header.top-area.has-sidebar-toggle.flex-column.flex-lg-row
+  %button.btn.btn-default.sidebar-toggle.js-sidebar-wiki-toggle{ role: "button", type: "button" }
+    = icon('angle-double-left')
+
+  .nav-text
+    %h2.wiki-page-title
+      - if @page.persisted?
+        = link_to @page.human_title, wiki_page_path(@wiki, @page)
+        %span.light
+          &middot;
+          = s_("Wiki|Edit Page")
+      - else
+        = s_("Wiki|Create New Page")
+
+  .nav-controls.pb-md-3.pb-lg-0
+    - if @page.persisted?
+      = link_to wiki_page_path(@wiki, @page, action: :history), class: "btn" do
+        = s_("Wiki|Page history")
+      - if can?(current_user, :admin_wiki, @wiki.container)
+        #delete-wiki-modal-wrapper{ data: { delete_wiki_url: wiki_page_path(@wiki, @page), page_title: @page.human_title } }
+
+= render 'shared/wikis/form', uploads_path: wiki_attachment_upload_url
+
+= render 'shared/wikis/sidebar'

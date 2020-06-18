@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Projects::Prometheus::AlertsFinder do
+RSpec.describe Projects::Prometheus::AlertsFinder do
   let(:finder) { described_class.new(params) }
   let(:params) { {} }
 

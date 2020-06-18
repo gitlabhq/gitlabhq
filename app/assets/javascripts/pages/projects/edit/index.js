@@ -4,12 +4,12 @@ import setupTransferEdit from '~/transfer_edit';
 import initConfirmDangerModal from '~/confirm_danger_modal';
 import mountBadgeSettings from '~/pages/shared/mount_badge_settings';
 import dirtySubmitFactory from '~/dirty_submit/dirty_submit_factory';
-import initAvatarPicker from '~/avatar_picker';
+import initFilePickers from '~/file_pickers';
 import initProjectLoadingSpinner from '../shared/save_project_loader';
 import initProjectPermissionsSettings from '../shared/permissions';
 
 document.addEventListener('DOMContentLoaded', () => {
-  initAvatarPicker();
+  initFilePickers();
   initConfirmDangerModal();
   initSettingsPanels();
   mountBadgeSettings(PROJECT_BADGE);

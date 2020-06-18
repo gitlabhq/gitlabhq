@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Dashboard Todos' do
+RSpec.describe 'Dashboard Todos' do
   let_it_be(:user)    { create(:user, username: 'john') }
   let_it_be(:author)  { create(:user) }
   let_it_be(:project) { create(:project, :public) }
@@ -114,7 +114,7 @@ describe 'Dashboard Todos' do
     context 'todo is stale on the page' do
       before do
         todos = TodosFinder.new(user, state: :pending).execute
-        TodoService.new.mark_todos_as_done(todos, user)
+        TodoService.new.resolve_todos(todos, user)
       end
 
       it_behaves_like 'deleting the todo'

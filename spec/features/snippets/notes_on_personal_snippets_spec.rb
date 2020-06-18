@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Comments on personal snippets', :js do
+RSpec.describe 'Comments on personal snippets', :js do
   include NoteInteractionHelpers
 
   let!(:user)    { create(:user) }

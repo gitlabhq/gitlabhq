@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe SentryIssueFinder do
+RSpec.describe SentryIssueFinder do
   let(:user)          { create(:user) }
   let(:project)       { create(:project, :repository) }
   let(:issue)         { create(:issue, project: project) }

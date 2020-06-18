@@ -12,11 +12,14 @@ describe('Mutations Registry Explorer Store', () => {
     it('should set the initial state', () => {
       const payload = {
         endpoint: 'foo',
-        isGroupPage: true,
+        isGroupPage: '',
         expirationPolicy: { foo: 'bar' },
-        isAdmin: true,
+        isAdmin: '',
       };
-      const expectedState = { ...mockState, config: payload };
+      const expectedState = {
+        ...mockState,
+        config: { ...payload, isGroupPage: false, isAdmin: false },
+      };
       mutations[types.SET_INITIAL_STATE](mockState, {
         ...payload,
         expirationPolicy: JSON.stringify(payload.expirationPolicy),

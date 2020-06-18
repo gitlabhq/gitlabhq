@@ -1,0 +1,5 @@
+---
+title: Fix spelling error on Ci::RunnersFinder
+merge_request: 32985
+author: Arthur de Lapertosa Lisboa
+type: fixed

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'User edits snippet', :js do
+RSpec.describe 'User edits snippet', :js do
   include DropzoneHelper
 
   let_it_be(:file_name) { 'test.rb' }

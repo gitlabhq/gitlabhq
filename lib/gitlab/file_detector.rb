@@ -32,6 +32,8 @@ module Gitlab
       gemfile_lock: 'Gemfile.lock',
       gemspec: %r{\A[^/]*\.gemspec\z},
       godeps_json: 'Godeps.json',
+      go_mod: 'go.mod',
+      go_sum: 'go.sum',
       package_json: 'package.json',
       podfile: 'Podfile',
       podspec_json: %r{\A[^/]*\.podspec\.json\z},

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe UsersFinder do
+RSpec.describe UsersFinder do
   describe '#execute' do
     include_context 'UsersFinder#execute filter by project context'
 
@@ -17,6 +17,12 @@ describe UsersFinder do
 
       it 'filters by username' do
         users = described_class.new(user, username: 'johndoe').execute
+
+        expect(users).to contain_exactly(normal_user)
+      end
+
+      it 'filters by id' do
+        users = described_class.new(user, id: normal_user.id).execute
 
         expect(users).to contain_exactly(normal_user)
       end
@@ -69,6 +75,12 @@ describe UsersFinder do
         ).execute
 
         expect(users).to contain_exactly(user, normal_user, blocked_user, omniauth_user)
+      end
+
+      it 'orders returned results' do
+        users = described_class.new(user, sort: 'id_asc').execute
+
+        expect(users).to eq([normal_user, blocked_user, omniauth_user, user])
       end
     end
 

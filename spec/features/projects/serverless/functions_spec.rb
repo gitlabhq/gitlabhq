@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Functions', :js do
+RSpec.describe 'Functions', :js do
   include KubernetesHelpers
   include ReactiveCachingHelpers
 

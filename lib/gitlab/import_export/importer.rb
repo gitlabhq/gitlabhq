@@ -24,8 +24,14 @@ module Gitlab
           raise Projects::ImportService::Error.new(shared.errors.to_sentence)
         end
       rescue => e
+        # If some exception was raised could mean that the SnippetsRepoRestorer
+        # was not called. This would leave us with snippets without a repository.
+        # This is a state we don't want them to be, so we better delete them.
+        remove_non_migrated_snippets
+
         raise Projects::ImportService::Error.new(e.message)
       ensure
+        remove_base_tmp_dir
         remove_import_file
       end
 
@@ -147,6 +153,18 @@ module Gitlab
         strong_memoize(:project_to_overwrite) do
           ::Project.find_by_full_path("#{project.namespace.full_path}/#{original_path}")
         end
+      end
+
+      def remove_base_tmp_dir
+        FileUtils.rm_rf(@shared.base_path)
+      end
+
+      def remove_non_migrated_snippets
+        project
+          .snippets
+          .left_joins(:snippet_repository)
+          .where(snippet_repositories: { snippet_id: nil })
+          .delete_all
       end
     end
   end

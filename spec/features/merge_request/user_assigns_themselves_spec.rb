@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Merge request > User assigns themselves' do
+RSpec.describe 'Merge request > User assigns themselves' do
   let(:project) { create(:project, :public, :repository) }
   let(:user) { project.creator }
   let(:issue1) { create(:issue, project: project) }

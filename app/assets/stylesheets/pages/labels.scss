@@ -86,7 +86,7 @@
     justify-content: space-between;
     padding: $gl-padding;
     border-radius: $border-radius-default;
-    border: 1px solid $gray-100;
+    border: 1px solid $gray-50;
 
     &:last-child {
       margin-bottom: 0;
@@ -276,7 +276,7 @@
 }
 
 .label-badge-gray {
-  background-color: $gray-100;
+  background-color: $gray-50;
 }
 
 .label-links {

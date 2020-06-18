@@ -25,6 +25,7 @@ module Gitlab
     require_dependency Rails.root.join('lib/gitlab/middleware/read_only')
     require_dependency Rails.root.join('lib/gitlab/middleware/basic_health_check')
     require_dependency Rails.root.join('lib/gitlab/middleware/same_site_cookies')
+    require_dependency Rails.root.join('lib/gitlab/middleware/handle_ip_spoof_attack_error')
     require_dependency Rails.root.join('lib/gitlab/runtime')
 
     # Settings in config/environments/* take precedence over those specified here.
@@ -163,6 +164,8 @@ module Gitlab
     config.assets.paths << Gemojione.images_path
     config.assets.paths << "#{config.root}/vendor/assets/fonts"
 
+    config.assets.precompile << "application_dark.css"
+
     config.assets.precompile << "print.css"
     config.assets.precompile << "mailer.css"
     config.assets.precompile << "mailer_client_specific.css"
@@ -235,6 +238,8 @@ module Gitlab
 
     config.middleware.insert_before ActionDispatch::Cookies, ::Gitlab::Middleware::SameSiteCookies
 
+    config.middleware.insert_before ActionDispatch::RemoteIp, ::Gitlab::Middleware::HandleIpSpoofAttackError
+
     # Allow access to GitLab API from other domains
     config.middleware.insert_before Warden::Manager, Rack::Cors do
       headers_to_expose = %w[Link X-Total X-Total-Pages X-Per-Page X-Page X-Next-Page X-Prev-Page X-Gitlab-Blob-Id X-Gitlab-Commit-Id X-Gitlab-Content-Sha256 X-Gitlab-Encoding X-Gitlab-File-Name X-Gitlab-File-Path X-Gitlab-Last-Commit-Id X-Gitlab-Ref X-Gitlab-Size]
@@ -298,7 +303,10 @@ module Gitlab
     end
 
     config.after_initialize do
-      Rails.application.reload_routes!
+      # Devise (see initializers/8_devise.rb) already reloads routes if
+      # eager loading is enabled, so don't do this twice since it's
+      # expensive.
+      Rails.application.reload_routes! unless config.eager_load
 
       project_url_helpers = Module.new do
         extend ActiveSupport::Concern
@@ -316,7 +324,7 @@ module Gitlab
       # conflict with the methods defined in `project_url_helpers`, and we want
       # these methods available in the same places.
       Gitlab::Routing.add_helpers(project_url_helpers)
-      Gitlab::Routing.add_helpers(MilestonesRoutingHelper)
+      Gitlab::Routing.add_helpers(TimeboxesRoutingHelper)
     end
   end
 end

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Ci::PipelineSchedulesFinder do
+RSpec.describe Ci::PipelineSchedulesFinder do
   let(:project) { create(:project) }
 
   let!(:active_schedule) { create(:ci_pipeline_schedule, project: project) }

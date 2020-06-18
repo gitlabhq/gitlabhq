@@ -128,7 +128,7 @@ export default {
           :key="id"
           v-gl-tooltip.bottom
           :title="tooltipTitle"
-          class="suggestion-help-hover prepend-left-8 text-tertiary"
+          class="suggestion-help-hover gl-ml-3 text-tertiary"
         >
           <icon :name="icon" /> {{ count }}
         </span>

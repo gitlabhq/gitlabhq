@@ -5,7 +5,7 @@
 .js-two-factor-auth{ 'data-two-factor-skippable' => "#{two_factor_skippable?}", 'data-two_factor_skip_url' => skip_profile_two_factor_auth_path }
   .row.prepend-top-default
     .col-lg-4
-      %h4.prepend-top-0
+      %h4.gl-mt-0
         = _('Register Two-Factor Authenticator')
       %p
         = _('Use an one time password authenticator on your mobile device or computer to enable two-factor authentication (2FA).')
@@ -33,13 +33,13 @@
             = raw @qr_code
           .col-md-8
             .account-well
-              %p.prepend-top-0.append-bottom-0
+              %p.gl-mt-0.gl-mb-0
                 = _("Can't scan the code?")
-              %p.prepend-top-0.append-bottom-0
+              %p.gl-mt-0.gl-mb-0
                 = _('To add the entry manually, provide the following details to the application on your phone.')
-              %p.prepend-top-0.append-bottom-0
+              %p.gl-mt-0.gl-mb-0
                 = _('Account: %{account}') % { account: @account_string }
-              %p.prepend-top-0.append-bottom-0
+              %p.gl-mt-0.gl-mb-0
                 = _('Key: %{key}') %{ key: current_user.otp_secret.scan(/.{4}/).join(' ') }
               %p.two-factor-new-manual-content
                 = _('Time based: Yes')
@@ -57,7 +57,7 @@
 
   .row.prepend-top-default
     .col-lg-4
-      %h4.prepend-top-0
+      %h4.gl-mt-0
         = _('Register Universal Two-Factor (U2F) Device')
       %p
         = _('Use a hardware device to add the second factor of authentication.')

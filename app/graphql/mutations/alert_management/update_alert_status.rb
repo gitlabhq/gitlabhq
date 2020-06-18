@@ -27,7 +27,7 @@ module Mutations
       def prepare_response(result)
         {
           alert: result.payload[:alert],
-          errors: result.error? ? [result.message] : []
+          errors: result.errors
         }
       end
     end

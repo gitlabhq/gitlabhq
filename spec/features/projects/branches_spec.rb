@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Branches' do
+RSpec.describe 'Branches' do
   let(:user) { create(:user) }
   let(:project) { create(:project, :public, :repository) }
   let(:repository) { project.repository }
@@ -227,6 +227,44 @@ describe 'Branches' do
     it 'does not show merge request button' do
       page.within first('.all-branches li') do
         expect(page).not_to have_content 'Merge request'
+      end
+    end
+  end
+
+  context 'with one or more pipeline', :js do
+    before do
+      sha = create_file(branch_name: "branch")
+      create(:ci_pipeline,
+        project: project,
+        user: user,
+        ref: "branch",
+        sha: sha,
+        status: :success,
+        created_at: 5.months.ago)
+      visit project_branches_path(project)
+    end
+
+    it 'shows pipeline status when available' do
+      page.within first('.all-branches li') do
+        expect(page).to have_css 'a.ci-status-icon-success'
+      end
+    end
+
+    it 'displays a placeholder when not available' do
+      page.all('.all-branches li') do |li|
+        expect(li).to have_css 'svg.s24'
+      end
+    end
+  end
+
+  context 'with no pipelines', :js do
+    before do
+      visit project_branches_path(project)
+    end
+
+    it 'does not show placeholder or pipeline status' do
+      page.all('.all-branches') do |branches|
+        expect(branches).not_to have_css 'svg.s24'
       end
     end
   end

@@ -14,8 +14,8 @@ module Gitlab
     ].compact.freeze
 
     DEFAULT_WORKERS = [
-      DummyWorker.new('default', weight: 1),
-      DummyWorker.new('mailers', weight: 2)
+      DummyWorker.new('default', weight: 1, tags: []),
+      DummyWorker.new('mailers', weight: 2, tags: [])
     ].map { |worker| Gitlab::SidekiqConfig::Worker.new(worker, ee: false) }.freeze
 
     class << self

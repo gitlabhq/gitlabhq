@@ -13,6 +13,7 @@ module Projects
         )
 
         if link.save
+          group.refresh_members_authorized_projects
           success(link: link)
         else
           error(link.errors.full_messages.to_sentence, 409)

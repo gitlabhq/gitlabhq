@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'User uploads avatar to group' do
+RSpec.describe 'User uploads avatar to group' do
   it 'they see the new avatar' do
     user = create(:user)
     group = create(:group)

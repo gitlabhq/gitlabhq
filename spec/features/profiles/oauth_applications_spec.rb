@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Profile > Applications' do
+RSpec.describe 'Profile > Applications' do
   let(:user) { create(:user) }
   let(:application) { create(:oauth_application, owner: user) }
 

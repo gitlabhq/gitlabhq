@@ -107,9 +107,13 @@ Recorded transactions can be found by navigating to `/sherlock/transactions`.
 
 ## Bullet
 
-Bullet is a Gem that can be used to track down N+1 query problems. Because
-Bullet adds quite a bit of logging noise it's disabled by default. To enable
-Bullet, set the environment variable `ENABLE_BULLET` to a non-empty value before
+Bullet is a Gem that can be used to track down N+1 query problems. Bullet section is
+displayed on the [performance-bar](../administration/monitoring/performance/performance_bar.md).
+
+![Bullet](img/bullet_v13_0.png)
+
+Because Bullet adds quite a bit of logging noise the logging is disabled by default.
+To enable the logging, set the environment variable `ENABLE_BULLET` to a non-empty value before
 starting GitLab. For example:
 
 ```shell

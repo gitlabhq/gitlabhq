@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'issuable list' do
+RSpec.describe 'issuable list' do
   let(:project) { create(:project) }
   let(:user)    { create(:user) }
 

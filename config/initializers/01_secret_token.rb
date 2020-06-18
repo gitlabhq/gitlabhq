@@ -61,6 +61,8 @@ def generate_new_rsa_private_key
 end
 
 def warn_missing_secret(secret)
+  return if Rails.env.test?
+
   warn "Missing Rails.application.secrets.#{secret} for #{Rails.env} environment. The secret will be generated and stored in config/secrets.yml."
 end
 

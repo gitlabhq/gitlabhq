@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Project > Activity > User sees private activity', :js do
+RSpec.describe 'Project > Activity > User sees private activity', :js do
   let(:project) { create(:project, :public) }
   let(:author) { create(:user) }
   let(:user) { create(:user) }

@@ -2,7 +2,7 @@
 
 require('spec_helper')
 
-describe Projects::TodosController do
+RSpec.describe Projects::TodosController do
   let(:user)          { create(:user) }
   let(:project)       { create(:project) }
   let(:issue)         { create(:issue, project: project) }

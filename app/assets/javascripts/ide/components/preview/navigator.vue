@@ -119,7 +119,7 @@ export default {
     >
       <icon :size="18" name="retry" class="m-auto" />
     </button>
-    <div class="position-relative w-100 prepend-left-4">
+    <div class="position-relative w-100 gl-ml-2">
       <input
         :value="path || '/'"
         type="text"

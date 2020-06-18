@@ -5,7 +5,6 @@ module API
     include PaginationParams
     helpers Helpers::IssuesHelpers
     helpers Helpers::RateLimiter
-    helpers ::Gitlab::IssuableMetadata
 
     before { authenticate_non_get! }
 
@@ -67,6 +66,8 @@ module API
         optional :assignee_id,  type: Integer, desc: '[Deprecated] The ID of a user to assign issue'
         optional :milestone_id, type: Integer, desc: 'The ID of a milestone to assign issue'
         optional :labels, type: Array[String], coerce_with: Validations::Types::LabelsList.coerce, desc: 'Comma-separated list of label names'
+        optional :add_labels, type: Array[String], coerce_with: Validations::Types::LabelsList.coerce, desc: 'Comma-separated list of label names'
+        optional :remove_labels, type: Array[String], coerce_with: Validations::Types::LabelsList.coerce, desc: 'Comma-separated list of label names'
         optional :due_date, type: String, desc: 'Date string in the format YEAR-MONTH-DAY'
         optional :confidential, type: Boolean, desc: 'Boolean parameter if the issue should be confidential'
         optional :discussion_locked, type: Boolean, desc: " Boolean parameter indicating if the issue's discussion is locked"
@@ -106,7 +107,7 @@ module API
           with: Entities::Issue,
           with_labels_details: declared_params[:with_labels_details],
           current_user: current_user,
-          issuable_metadata: issuable_meta_data(issues, 'Issue', current_user),
+          issuable_metadata: Gitlab::IssuableMetadata.new(current_user, issues).data,
           include_subscribed: false
         }
 
@@ -132,7 +133,7 @@ module API
           with: Entities::Issue,
           with_labels_details: declared_params[:with_labels_details],
           current_user: current_user,
-          issuable_metadata: issuable_meta_data(issues, 'Issue', current_user),
+          issuable_metadata: Gitlab::IssuableMetadata.new(current_user, issues).data,
           include_subscribed: false,
           group: user_group
         }
@@ -169,7 +170,7 @@ module API
           with_labels_details: declared_params[:with_labels_details],
           current_user: current_user,
           project: user_project,
-          issuable_metadata: issuable_meta_data(issues, 'Issue', current_user),
+          issuable_metadata: Gitlab::IssuableMetadata.new(current_user, issues).data,
           include_subscribed: false
         }
 

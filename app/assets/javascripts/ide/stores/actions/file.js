@@ -3,8 +3,7 @@ import { __ } from '~/locale';
 import eventHub from '../../eventhub';
 import service from '../../services';
 import * as types from '../mutation_types';
-import router from '../../ide_router';
-import { addFinalNewlineIfNeeded, setPageTitleForFile } from '../utils';
+import { setPageTitleForFile } from '../utils';
 import { viewerTypes, stageKeys } from '../../constants';
 
 export const closeFile = ({ commit, state, dispatch }, file) => {
@@ -30,10 +29,10 @@ export const closeFile = ({ commit, state, dispatch }, file) => {
         keyPrefix: nextFileToOpen.staged ? 'staged' : 'unstaged',
       });
     } else {
-      router.push(`/project${nextFileToOpen.url}`);
+      dispatch('router/push', `/project${nextFileToOpen.url}`, { root: true });
     }
   } else if (!state.openFiles.length) {
-    router.push(`/project/${file.projectId}/tree/${file.branchId}/`);
+    dispatch('router/push', `/project/${file.projectId}/tree/${file.branchId}/`, { root: true });
   }
 
   eventHub.$emit(`editor.update.model.dispose.${file.key}`);
@@ -152,7 +151,7 @@ export const changeFileContent = ({ commit, state, getters }, { path, content })
   const file = state.entries[path];
   commit(types.UPDATE_FILE_CONTENT, {
     path,
-    content: addFinalNewlineIfNeeded(content),
+    content,
   });
 
   const indexOfChangedFile = state.changedFiles.findIndex(f => f.path === path);
@@ -167,12 +166,6 @@ export const changeFileContent = ({ commit, state, getters }, { path, content })
 export const setFileLanguage = ({ getters, commit }, { fileLanguage }) => {
   if (getters.activeFile) {
     commit(types.SET_FILE_LANGUAGE, { file: getters.activeFile, fileLanguage });
-  }
-};
-
-export const setFileEOL = ({ getters, commit }, { eol }) => {
-  if (getters.activeFile) {
-    commit(types.SET_FILE_EOL, { file: getters.activeFile, eol });
   }
 };
 
@@ -226,7 +219,7 @@ export const discardFileChanges = ({ dispatch, state, commit, getters }, path) =
   if (!isDestructiveDiscard && file.path === getters.activeFile?.path) {
     dispatch('updateDelayViewerUpdated', true)
       .then(() => {
-        router.push(`/project${file.url}`);
+        dispatch('router/push', `/project${file.url}`, { root: true });
       })
       .catch(e => {
         throw e;
@@ -275,14 +268,16 @@ export const unstageChange = ({ commit, dispatch, getters }, path) => {
   }
 };
 
-export const openPendingTab = ({ commit, getters, state }, { file, keyPrefix }) => {
+export const openPendingTab = ({ commit, dispatch, getters, state }, { file, keyPrefix }) => {
   if (getters.activeFile && getters.activeFile.key === `${keyPrefix}-${file.key}`) return false;
 
   state.openFiles.forEach(f => eventHub.$emit(`editor.update.model.dispose.${f.key}`));
 
   commit(types.ADD_PENDING_TAB, { file, keyPrefix });
 
-  router.push(`/project/${file.projectId}/tree/${state.currentBranchId}/`);
+  dispatch('router/push', `/project/${file.projectId}/tree/${state.currentBranchId}/`, {
+    root: true,
+  });
 
   return true;
 };

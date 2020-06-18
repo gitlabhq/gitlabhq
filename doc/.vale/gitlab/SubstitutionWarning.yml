@@ -1,4 +1,6 @@
 ---
+# Warning: gitlab.SubstitutionWarning
+#
 # Warns against using common shorthand for terms.
 # For substitutions flagged as errors, see Substitutions.yml
 #
@@ -10,7 +12,9 @@ level: warning
 ignorecase: true
 swap:
   admin: administrator
+  blacklist(ed|ing)?: denylist
   config: configuration
   distro: distribution
   info: information
   repo: repository
+  whitelist(ed|ing)?: allowlist

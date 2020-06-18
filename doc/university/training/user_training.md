@@ -222,7 +222,7 @@ See GitLab merge requests for examples: <https://gitlab.com/gitlab-org/gitlab-fo
 
 - Dashboard
 - User Preferences
-- ReadMe, Changelog, License shortcuts
+- README, Changelog, License shortcuts
 - Issues
 - Milestones and Labels
 - Manage project members
@@ -314,7 +314,7 @@ Squash the commits on the same branch we used for the merge conflicts step.
 git rebase -i master
 ```
 
-In the editor, leave the first commit as 'pick' and set others to 'fixup'.
+In the editor, leave the first commit as `pick` and set others to `fixup`.
 
 ## Questions?
 

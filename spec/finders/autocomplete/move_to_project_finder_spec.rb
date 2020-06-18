@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Autocomplete::MoveToProjectFinder do
+RSpec.describe Autocomplete::MoveToProjectFinder do
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project) }
 

@@ -2,12 +2,6 @@ import dateformat from 'dateformat';
 import { __ } from '~/locale';
 
 /**
- * Valid strings for this regex are
- * 2019-10-01 and 2019-10-01 01:02:03
- */
-const dateTimePickerRegex = /^(\d{4})-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])(?: (0[0-9]|1[0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9]))?$/;
-
-/**
  * Default time ranges for the date picker.
  * @see app/assets/javascripts/lib/utils/datetime_range.js
  */
@@ -34,23 +28,33 @@ export const defaultTimeRanges = [
 export const defaultTimeRange = defaultTimeRanges.find(tr => tr.default);
 
 export const dateFormats = {
-  ISODate: "yyyy-mm-dd'T'HH:MM:ss'Z'",
-  stringDate: 'yyyy-mm-dd HH:MM:ss',
+  /**
+   * Format used by users to input dates
+   *
+   * Note: Should be a format that can be parsed by Date.parse.
+   */
+  inputFormat: 'yyyy-mm-dd HH:MM:ss',
+  /**
+   * Format used to strip timezone from inputs
+   */
+  stripTimezoneFormat: "yyyy-mm-dd'T'HH:MM:ss'Z'",
 };
 
 /**
- * The URL params start and end need to be validated
- * before passing them down to other components.
+ * Returns true if the date can be parsed succesfully after
+ * being typed by a user.
  *
- * @param {string} dateString
- * @returns true if the string is a valid date, false otherwise
+ * It allows some ambiguity so validation is not strict.
+ *
+ * @param {string} value - Value as typed by the user
+ * @returns true if the value can be parsed as a valid date, false otherwise
  */
-export const isValidDate = dateString => {
+export const isValidInputString = value => {
   try {
     // dateformat throws error that can be caught.
     // This is better than using `new Date()`
-    if (dateString && dateString.trim()) {
-      dateformat(dateString, 'isoDateTime');
+    if (value && value.trim()) {
+      dateformat(value, 'isoDateTime');
       return true;
     }
     return false;
@@ -60,25 +64,30 @@ export const isValidDate = dateString => {
 };
 
 /**
- * Convert the input in Time picker component to ISO date.
+ * Convert the input in time picker component to an ISO date.
  *
- * @param {string} val
- * @returns {string}
+ * @param {string} value
+ * @param {Boolean} utc - If true, it forces the date to by
+ * formatted using UTC format, ignoring the local time.
+ * @returns {Date}
  */
-export const stringToISODate = val =>
-  dateformat(new Date(val.replace(/-/g, '/')), dateFormats.ISODate, true);
+export const inputStringToIsoDate = (value, utc = false) => {
+  let date = new Date(value);
+  if (utc) {
+    // Forces date to be interpreted as UTC by stripping the timezone
+    // by formatting to a string with 'Z' and skipping timezone
+    date = dateformat(date, dateFormats.stripTimezoneFormat);
+  }
+  return dateformat(date, 'isoUtcDateTime');
+};
 
 /**
- * Convert the ISO date received from the URL to string
- * for the Time picker component.
+ * Converts a iso date string to a formatted string for the Time picker component.
  *
- * @param {Date} date
+ * @param {String} ISO Formatted date
  * @returns {string}
  */
-export const ISODateToString = date => dateformat(date, dateFormats.stringDate);
-
-export const truncateZerosInDateTime = datetime => datetime.replace(' 00:00:00', '');
-
-export const isDateTimePickerInputValid = val => dateTimePickerRegex.test(val);
+export const isoDateToInputString = (date, utc = false) =>
+  dateformat(date, dateFormats.inputFormat, utc);
 
 export default {};

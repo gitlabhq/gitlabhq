@@ -12,22 +12,6 @@ describe 'shared/milestones/_top.html.haml' do
     allow(milestone).to receive(:milestone) { milestone }
   end
 
-  it 'renders a deprecation message for a legacy milestone' do
-    allow(milestone).to receive(:legacy_group_milestone?) { true }
-
-    render 'shared/milestones/top', milestone: milestone
-
-    expect(rendered).to have_css('.milestone-deprecation-message')
-  end
-
-  it 'renders a deprecation message for a dashboard milestone' do
-    allow(milestone).to receive(:dashboard_milestone?) { true }
-
-    render 'shared/milestones/top', milestone: milestone
-
-    expect(rendered).to have_css('.milestone-deprecation-message')
-  end
-
   it 'does not render a deprecation message for a non-legacy and non-dashboard milestone' do
     assign :group, group
 

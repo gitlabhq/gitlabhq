@@ -1,3 +1,9 @@
+---
+stage: Plan
+group: Project Management
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+---
+
 # GitLab Markdown
 
 This Markdown guide is **valid only for GitLab's internal Markdown rendering system for entries and files**.
@@ -5,7 +11,7 @@ It is **not** valid for the [GitLab documentation website](https://docs.gitlab.c
 or [GitLab's main website](https://about.gitlab.com), as they both use
 [Kramdown](https://kramdown.gettalong.org) as their Markdown engine. The documentation
 website uses an extended Kramdown gem, [GitLab Kramdown](https://gitlab.com/gitlab-org/gitlab_kramdown).
-Consult the [GitLab Kramdown Guide](https://about.gitlab.com/handbook/engineering/ux/technical-writing/markdown-guide/)
+Consult the [GitLab Kramdown Guide](https://about.gitlab.com/handbook/markdown-guide/)
 for a complete Kramdown reference.
 
 NOTE: **Note:** We encourage you to view this document as [rendered by GitLab itself](https://gitlab.com/gitlab-org/gitlab/blob/master/doc/user/markdown.md).
@@ -76,7 +82,7 @@ NOTE: **Note:** We will flag any significant differences between Redcarpet and C
 If you have a large volume of Markdown files, it can be tedious to determine
 if they will display correctly or not. You can use the
 [diff_redcarpet_cmark](https://gitlab.com/digitalmoksha/diff_redcarpet_cmark)
-tool (not an officially supported product) to generate a list of files, and the
+tool (not an officially supported product) to generate a list of files and the
 differences between how RedCarpet and CommonMark render the files. It can give
 an indication if anything needs to be changed - often nothing will need
 to change.
@@ -253,7 +259,7 @@ Consult the [Emoji Cheat Sheet](https://www.webfx.com/tools/emoji-cheat-sheet/) 
 > **Note:** The emoji example above uses hard-coded images for this documentation. The emoji,
 when rendered within GitLab, may appear different depending on the OS and browser used.
 
-Most emoji are natively supported on macOS, Windows, iOS, Android and will fallback to image-based emoji where there is lack of support.
+Most emoji are natively supported on macOS, Windows, iOS, Android, and will fall back on image-based emoji where there is no support.
 
 NOTE: **Note:** On Linux, you can download [Noto Color Emoji](https://www.google.com/get/noto/help/emoji/)
 to get full native emoji support. Ubuntu 18.04 (like many modern Linux distributions) has
@@ -272,7 +278,7 @@ in a box at the top of the document, before the rendered HTML content. To view a
 you can toggle between the source and rendered version of a [GitLab documentation file](https://gitlab.com/gitlab-org/gitlab/blob/master/doc/README.md).
 
 In GitLab, front matter is only used in Markdown files and wiki pages, not the other
-places where Markdown formatting is supported. It must be at the very top of the document,
+places where Markdown formatting is supported. It must be at the very top of the document
 and must be between delimiters, as explained below.
 
 The following delimiters are supported:
@@ -405,7 +411,7 @@ GFM recognizes special GitLab related references. For example, you can easily re
 an issue, a commit, a team member, or even the whole team within a project. GFM will turn
 that reference into a link so you can navigate between them easily.
 
-Additionally, GFM recognizes certain cross-project references, and also has a shorthand
+Additionally, GFM recognizes certain cross-project references and also has a shorthand
 version to reference other projects from the same namespace.
 
 GFM will recognize the following:
@@ -435,8 +441,8 @@ GFM will recognize the following:
 In addition to this, links to some objects are also recognized and formatted. Some examples of these are:
 
 - Comments on issues: `"https://gitlab.com/gitlab-org/gitlab/-/issues/1234#note_101075757"`, which will be rendered as `#1234 (note1)`
-- The issues designs tab: `"https://gitlab.com/gitlab-org/gitlab/issues/1234/designs"`, which will be rendered as `#1234 (designs)`.
-  **(PREMIUM)**
+- The issues designs tab: `"https://gitlab.com/gitlab-org/gitlab/-/issues/1234/designs"`, which will be rendered as `#1234 (designs)`.
+- Links to individual designs: `"https://gitlab.com/gitlab-org/gitlab/-/issues/1234/designs/layout.png"`, which will be rendered as `#1234[layout.png]`.
 
 ### Task lists
 
@@ -825,7 +831,7 @@ Regardless of the tag names, the relative order of the reference tags determines
 numbering.
 
 Reference tags can use letters and other characters. Avoid using lowercase `w` or an underscore
-(`_`) in footnote tag names until [this bug](https://gitlab.com/gitlab-org/gitlab/issues/24423) is
+(`_`) in footnote tag names until [this bug](https://gitlab.com/gitlab-org/gitlab/-/issues/24423) is
 resolved.
 
 <!--
@@ -1011,7 +1017,7 @@ You can also use raw HTML in your Markdown, and it will usually work pretty well
 
 See the documentation for HTML::Pipeline's [SanitizationFilter](https://github.com/jch/html-pipeline/blob/v2.12.3/lib/html/pipeline/sanitization_filter.rb#L42)
 class for the list of allowed HTML tags and attributes. In addition to the default
-`SanitizationFilter` whitelist, GitLab allows `span`, `abbr`, `details` and `summary` elements.
+`SanitizationFilter` allowlist, GitLab allows `span`, `abbr`, `details` and `summary` elements.
 
 ```html
 <dl>
@@ -1102,6 +1108,11 @@ These details <em>will</em> remain <strong>hidden</strong> until expanded.
 ---
 
 Markdown inside these tags is supported as well.
+
+NOTE: **Note:**
+If your Markdown isn't rendering correctly, try adding
+`{::options parse_block_html="true" /}` to the top of the page, and add
+`markdown="span"` to the opening summary tag like this: `<summary markdown="span">`.
 
 Remember to leave a blank line after the `</summary>` tag and before the `</details>` tag,
 as shown in the example:
@@ -1427,7 +1438,9 @@ Example:
 Additionally, you can choose the alignment of text within columns by adding colons (`:`)
 to the sides of the "dash" lines in the second row. This will affect every cell in the column.
 
-> Note that the headers are always right aligned [within GitLab itself](https://gitlab.com/gitlab-org/gitlab/blob/master/doc/user/markdown.md#tables).
+NOTE: **Note:**
+[Within GitLab itself](https://gitlab.com/gitlab-org/gitlab/blob/master/doc/user/markdown.md#tables),
+the headers are always left-aligned in Chrome and Firefox, and centered in Safari.
 
 ```markdown
 | Left Aligned | Centered | Right Aligned | Left Aligned | Centered | Right Aligned |
@@ -1443,7 +1456,7 @@ to the sides of the "dash" lines in the second row. This will affect every cell 
 
 #### Copy from spreadsheet and paste in Markdown
 
-[Introduced](https://gitlab.com/gitlab-org/gitlab/issues/27205) in GitLab 12.7.
+[Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/27205) in GitLab 12.7.
 
 If you're working in spreadsheet software (for example, Microsoft Excel, Google
 Sheets, or Apple Numbers), you can copy from a spreadsheet, and GitLab will

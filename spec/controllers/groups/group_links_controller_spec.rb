@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Groups::GroupLinksController do
+RSpec.describe Groups::GroupLinksController do
   let(:shared_with_group) { create(:group, :private) }
   let(:shared_group) { create(:group, :private) }
   let(:user) { create(:user) }

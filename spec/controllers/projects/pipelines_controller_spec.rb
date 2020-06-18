@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Projects::PipelinesController do
+RSpec.describe Projects::PipelinesController do
   include ApiHelpers
 
   let_it_be(:user) { create(:user) }
@@ -25,10 +25,6 @@ describe Projects::PipelinesController do
 
     context 'when using persisted stages', :request_store do
       render_views
-
-      before do
-        stub_feature_flags(ci_pipeline_persisted_stages: true)
-      end
 
       it 'returns serialized pipelines' do
         expect(::Gitlab::GitalyClient).to receive(:allow_ref_name_caching).and_call_original
@@ -61,46 +57,6 @@ describe Projects::PipelinesController do
 
         # There appears to be one extra query for Pipelines#has_warnings? for some reason
         expect { get_pipelines_index_json }.not_to exceed_query_limit(control_count + 1)
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(json_response['pipelines'].count).to eq 12
-      end
-    end
-
-    context 'when using legacy stages', :request_store do
-      before do
-        stub_feature_flags(ci_pipeline_persisted_stages: false)
-      end
-
-      it 'returns JSON with serialized pipelines' do
-        get_pipelines_index_json
-
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(response).to match_response_schema('pipeline')
-
-        expect(json_response).to include('pipelines')
-        expect(json_response['pipelines'].count).to eq 6
-        expect(json_response['count']['all']).to eq '6'
-        expect(json_response['count']['running']).to eq '2'
-        expect(json_response['count']['pending']).to eq '1'
-        expect(json_response['count']['finished']).to eq '3'
-
-        json_response.dig('pipelines', 0, 'details', 'stages').tap do |stages|
-          expect(stages.count).to eq 3
-        end
-      end
-
-      it 'does not execute N+1 queries' do
-        get_pipelines_index_json
-
-        control_count = ActiveRecord::QueryRecorder.new do
-          get_pipelines_index_json
-        end.count
-
-        create_all_pipeline_types
-
-        # There appears to be one extra query for Pipelines#has_warnings? for some reason
-        expect { get_pipelines_index_json }.not_to exceed_query_limit(control_count + 1)
-
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['pipelines'].count).to eq 12
       end
@@ -211,6 +167,40 @@ describe Projects::PipelinesController do
           get_pipelines_index_json(ref: 'invalid-ref')
 
           check_pipeline_response(returned: 0, all: 0, running: 0, pending: 0, finished: 0)
+        end
+      end
+    end
+
+    context 'filter by status' do
+      context 'when pipelines with the status exists' do
+        it 'returns matched pipelines' do
+          get_pipelines_index_json(status: 'success')
+
+          check_pipeline_response(returned: 1, all: 1, running: 0, pending: 0, finished: 1)
+        end
+
+        context 'when filter by unrelated scope' do
+          it 'returns empty list' do
+            get_pipelines_index_json(status: 'success', scope: 'running')
+
+            check_pipeline_response(returned: 0, all: 1, running: 0, pending: 0, finished: 1)
+          end
+        end
+      end
+
+      context 'when no pipeline with the status exists' do
+        it 'returns empty list' do
+          get_pipelines_index_json(status: 'manual')
+
+          check_pipeline_response(returned: 0, all: 0, running: 0, pending: 0, finished: 0)
+        end
+      end
+
+      context 'when invalid status' do
+        it 'returns all list' do
+          get_pipelines_index_json(status: 'invalid-status')
+
+          check_pipeline_response(returned: 6, all: 6, running: 2, pending: 1, finished: 3)
         end
       end
     end
@@ -548,6 +538,39 @@ describe Projects::PipelinesController do
     end
   end
 
+  describe 'GET dag.json' do
+    let(:pipeline) { create(:ci_pipeline, project: project) }
+
+    before do
+      create_build('build', 1, 'build')
+      create_build('test', 2, 'test', scheduling_type: 'dag').tap do |job|
+        create(:ci_build_need, build: job, name: 'build')
+      end
+    end
+
+    it 'returns the pipeline with DAG serialization' do
+      get :dag, params: { namespace_id: project.namespace, project_id: project, id: pipeline }, format: :json
+
+      expect(response).to have_gitlab_http_status(:ok)
+
+      expect(json_response.fetch('stages')).not_to be_empty
+
+      build_stage = json_response['stages'].first
+      expect(build_stage.fetch('name')).to eq 'build'
+      expect(build_stage.fetch('groups').first.fetch('jobs'))
+        .to eq [{ 'name' => 'build', 'scheduling_type' => 'stage' }]
+
+      test_stage = json_response['stages'].last
+      expect(test_stage.fetch('name')).to eq 'test'
+      expect(test_stage.fetch('groups').first.fetch('jobs'))
+        .to eq [{ 'name' => 'test', 'scheduling_type' => 'dag', 'needs' => ['build'] }]
+    end
+
+    def create_build(stage, stage_idx, name, params = {})
+      create(:ci_build, pipeline: pipeline, stage: stage, stage_idx: stage_idx, name: name, **params)
+    end
+  end
+
   describe 'GET stages.json' do
     let(:pipeline) { create(:ci_pipeline, project: project) }
 
@@ -685,7 +708,7 @@ describe Projects::PipelinesController do
       end
 
       shared_examples 'creates a pipeline' do
-        it do
+        specify do
           expect { post_request }.to change { project.ci_pipelines.count }.by(1)
 
           pipeline = project.ci_pipelines.last

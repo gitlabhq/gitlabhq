@@ -1,0 +1,5 @@
+---
+title: Pass hard delete option to snippets bulk destroy
+merge_request: 33520
+author:
+type: fixed

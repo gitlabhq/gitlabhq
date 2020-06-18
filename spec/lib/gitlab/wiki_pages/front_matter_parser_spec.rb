@@ -7,7 +7,7 @@ describe Gitlab::WikiPages::FrontMatterParser do
 
   let(:content) { 'This is the content' }
   let(:end_divider) { '---' }
-  let(:gate) { double('Gate') }
+  let(:gate) { stub_feature_flag_gate('Gate') }
 
   let(:with_front_matter) do
     <<~MD

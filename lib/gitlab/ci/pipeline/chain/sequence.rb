@@ -27,6 +27,7 @@ module Gitlab
               yield @pipeline, self if block_given?
 
               @command.observe_creation_duration(Time.now - @start)
+              @command.observe_pipeline_size(@pipeline)
             end
           end
 

@@ -14,7 +14,7 @@ GET /projects/:id/jobs
 | `scope`   | string **or** array of strings | no       | Scope of jobs to show. Either one of or an array of the following: `created`, `pending`, `running`, `failed`, `success`, `canceled`, `skipped`, or `manual`. All jobs are returned if `scope` is not provided. |
 
 ```shell
-curl --globoff --header "PRIVATE-TOKEN: <your_access_token>" 'https://gitlab.example.com/api/v4/projects/1/jobs?scope[]=pending&scope[]=running'
+curl --globoff --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/jobs?scope[]=pending&scope[]=running"
 ```
 
 Example of response
@@ -149,7 +149,7 @@ GET /projects/:id/pipelines/:pipeline_id/jobs
 | `scope`       | string **or** array of strings | no       | Scope of jobs to show. Either one of or an array of the following: `created`, `pending`, `running`, `failed`, `success`, `canceled`, `skipped`, or `manual`. All jobs are returned if `scope` is not provided. |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" 'https://gitlab.example.com/api/v4/projects/1/pipelines/6/jobs?scope[]=pending&scope[]=running'
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/pipelines/6/jobs?scope[]=pending&scope[]=running"
 ```
 
 Example of response
@@ -264,6 +264,90 @@ Example of response
       "twitter": "",
       "website_url": "",
       "organization": ""
+    }
+  }
+]
+```
+
+## List pipeline bridges
+
+Get a list of bridge jobs for a pipeline.
+
+```plaintext
+GET /projects/:id/pipelines/:pipeline_id/bridges
+```
+
+| Attribute     | Type                           | Required | Description                                                                                                                                                                                                    |
+|---------------|--------------------------------|----------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `id`          | integer/string                 | yes      | ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user.                                                                                               |
+| `pipeline_id` | integer                        | yes      | ID of a pipeline.                                                                                                                                                                                          |
+| `scope`       | string **or** array of strings | no       | Scope of jobs to show. Either one of or an array of the following: `created`, `pending`, `running`, `failed`, `success`, `canceled`, `skipped`, or `manual`. All jobs are returned if `scope` is not provided. |
+
+```shell
+curl --header "PRIVATE-TOKEN: <your_access_token>" 'https://gitlab.example.com/api/v4/projects/1/pipelines/6/bridges?scope[]=pending&scope[]=running'
+```
+
+Example of response
+
+```json
+[
+  {
+    "commit": {
+      "author_email": "admin@example.com",
+      "author_name": "Administrator",
+      "created_at": "2015-12-24T16:51:14.000+01:00",
+      "id": "0ff3ae198f8601a285adcf5c0fff204ee6fba5fd",
+      "message": "Test the CI integration.",
+      "short_id": "0ff3ae19",
+      "title": "Test the CI integration."
+    },
+    "coverage": null,
+    "allow_failure": false,
+    "created_at": "2015-12-24T15:51:21.802Z",
+    "started_at": "2015-12-24T17:54:27.722Z",
+    "finished_at": "2015-12-24T17:58:27.895Z",
+    "duration": 240,
+    "id": 7,
+    "name": "teaspoon",
+    "pipeline": {
+      "id": 6,
+      "ref": "master",
+      "sha": "0ff3ae198f8601a285adcf5c0fff204ee6fba5fd",
+      "status": "pending",
+      "created_at": "2015-12-24T15:50:16.123Z",
+      "updated_at": "2015-12-24T18:00:44.432Z",
+      "web_url": "https://example.com/foo/bar/pipelines/6"
+    },
+    "ref": "master",
+    "stage": "test",
+    "status": "pending",
+    "tag": false,
+    "web_url": "https://example.com/foo/bar/-/jobs/7",
+    "user": {
+      "id": 1,
+      "name": "Administrator",
+      "username": "root",
+      "state": "active",
+      "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
+      "web_url": "http://gitlab.dev/root",
+      "created_at": "2015-12-21T13:14:24.077Z",
+      "bio": null,
+      "location": null,
+      "public_email": "",
+      "skype": "",
+      "linkedin": "",
+      "twitter": "",
+      "website_url": "",
+      "organization": ""
+    },
+    "downstream_pipeline": {
+      "id": 5,
+      "sha": "f62a4b2fb89754372a346f24659212eb8da13601",
+      "ref": "master",
+      "status": "pending",
+      "created_at": "2015-12-24T17:54:27.722Z",
+      "updated_at": "2015-12-24T17:58:27.896Z",
+      "web_url": "https://example.com/diaspora/diaspora-client/pipelines/5"
     }
   }
 ]

@@ -28,12 +28,20 @@ const useLocalStorage = fn => {
 /**
  * Create an object with the localStorage interface but `jest.fn()` implementations.
  */
-export const createLocalStorageSpy = () => ({
-  clear: jest.fn(),
-  getItem: jest.fn(),
-  setItem: jest.fn(),
-  removeItem: jest.fn(),
-});
+export const createLocalStorageSpy = () => {
+  let storage = {};
+
+  return {
+    clear: jest.fn(() => {
+      storage = {};
+    }),
+    getItem: jest.fn(key => storage[key]),
+    setItem: jest.fn((key, value) => {
+      storage[key] = value;
+    }),
+    removeItem: jest.fn(key => delete storage[key]),
+  };
+};
 
 /**
  * Before each test, overwrite `window.localStorage` with a spy implementation.

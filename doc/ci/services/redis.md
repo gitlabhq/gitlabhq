@@ -1,4 +1,7 @@
 ---
+stage: Verify
+group: Runner
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 type: reference
 ---
 
@@ -30,7 +33,7 @@ Host: redis
 And that's it. Redis will now be available to be used within your testing
 framework.
 
-You can also use any other docker image available on [Docker Hub](https://hub.docker.com/_/redis).
+You can also use any other Docker image available on [Docker Hub](https://hub.docker.com/_/redis).
 For example, to use Redis 2.8 the service becomes `redis:2.8`.
 
 ## Use Redis with the Shell executor

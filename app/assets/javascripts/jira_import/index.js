@@ -28,7 +28,6 @@ export default function mountJiraImportApp() {
           isJiraConfigured: parseBoolean(el.dataset.isJiraConfigured),
           issuesPath: el.dataset.issuesPath,
           jiraIntegrationPath: el.dataset.jiraIntegrationPath,
-          jiraProjects: el.dataset.jiraProjects ? JSON.parse(el.dataset.jiraProjects) : [],
           projectPath: el.dataset.projectPath,
           setupIllustration: el.dataset.setupIllustration,
         },

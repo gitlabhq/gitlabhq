@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Admin::HooksController do
+RSpec.describe Admin::HooksController do
   let(:admin) { create(:admin) }
 
   before do

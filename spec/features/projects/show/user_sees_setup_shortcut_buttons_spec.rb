@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Projects > Show > User sees setup shortcut buttons' do
+RSpec.describe 'Projects > Show > User sees setup shortcut buttons' do
   # For "New file", "Add license" functionality,
   # see spec/features/projects/files/project_owner_creates_license_file_spec.rb
   # see spec/features/projects/files/project_owner_sees_link_to_create_license_file_in_empty_project_spec.rb

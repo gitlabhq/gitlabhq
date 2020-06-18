@@ -7,6 +7,8 @@ module Types
 
       authorize :read_note
 
+      implements(Types::ResolvableInterface)
+
       field :id, GraphQL::ID_TYPE, null: false,
             description: "ID of this discussion"
       field :reply_id, GraphQL::ID_TYPE, null: false,

@@ -69,7 +69,6 @@ class User < ApplicationRecord
 
   MINIMUM_INACTIVE_DAYS = 180
 
-  ignore_column :bot_type, remove_with: '13.1', remove_after: '2020-05-22'
   ignore_column :ghost, remove_with: '13.2', remove_after: '2020-06-22'
 
   # Override Devise::Models::Trackable#update_tracked_fields!
@@ -181,6 +180,8 @@ class User < ApplicationRecord
   has_one :user_highest_role
   has_one :user_canonical_email
 
+  has_many :reviews, foreign_key: :author_id, inverse_of: :author
+
   #
   # Validations
   #
@@ -264,18 +265,21 @@ class User < ApplicationRecord
   # User's role
   enum role: { software_developer: 0, development_team_lead: 1, devops_engineer: 2, systems_administrator: 3, security_analyst: 4, data_analyst: 5, product_manager: 6, product_designer: 7, other: 8 }, _suffix: true
 
+  delegate  :notes_filter_for,
+            :set_notes_filter,
+            :first_day_of_week, :first_day_of_week=,
+            :timezone, :timezone=,
+            :time_display_relative, :time_display_relative=,
+            :time_format_in_24h, :time_format_in_24h=,
+            :show_whitespace_in_diffs, :show_whitespace_in_diffs=,
+            :tab_width, :tab_width=,
+            :sourcegraph_enabled, :sourcegraph_enabled=,
+            :setup_for_company, :setup_for_company=,
+            :render_whitespace_in_code, :render_whitespace_in_code=,
+            :experience_level, :experience_level=,
+            to: :user_preference
+
   delegate :path, to: :namespace, allow_nil: true, prefix: true
-  delegate :notes_filter_for, to: :user_preference
-  delegate :set_notes_filter, to: :user_preference
-  delegate :first_day_of_week, :first_day_of_week=, to: :user_preference
-  delegate :timezone, :timezone=, to: :user_preference
-  delegate :time_display_relative, :time_display_relative=, to: :user_preference
-  delegate :time_format_in_24h, :time_format_in_24h=, to: :user_preference
-  delegate :show_whitespace_in_diffs, :show_whitespace_in_diffs=, to: :user_preference
-  delegate :tab_width, :tab_width=, to: :user_preference
-  delegate :sourcegraph_enabled, :sourcegraph_enabled=, to: :user_preference
-  delegate :setup_for_company, :setup_for_company=, to: :user_preference
-  delegate :render_whitespace_in_code, :render_whitespace_in_code=, to: :user_preference
   delegate :job_title, :job_title=, to: :user_detail, allow_nil: true
 
   accepts_nested_attributes_for :user_preference, update_only: true
@@ -342,6 +346,7 @@ class User < ApplicationRecord
     where('EXISTS (?)',
           ::PersonalAccessToken
             .where('personal_access_tokens.user_id = users.id')
+            .without_impersonation
             .expiring_and_not_notified(at).select(1))
   end
   scope :order_recent_sign_in, -> { reorder(Gitlab::Database.nulls_last_order('current_sign_in_at', 'DESC')) }
@@ -517,7 +522,7 @@ class User < ApplicationRecord
 
     # Searches users matching the given query.
     #
-    # This method uses ILIKE on PostgreSQL and LIKE on MySQL.
+    # This method uses ILIKE on PostgreSQL.
     #
     # query - The search query as a String
     #
@@ -560,7 +565,7 @@ class User < ApplicationRecord
 
     # searches user by given pattern
     # it compares name, email, username fields and user's secondary emails with given pattern
-    # This method uses ILIKE on PostgreSQL and LIKE on MySQL.
+    # This method uses ILIKE on PostgreSQL.
 
     def search_with_secondary_emails(query)
       return none if query.blank?
@@ -689,7 +694,7 @@ class User < ApplicationRecord
     @reset_token, enc = Devise.token_generator.generate(self.class, :reset_password_token)
 
     self.reset_password_token   = enc
-    self.reset_password_sent_at = Time.now.utc
+    self.reset_password_sent_at = Time.current.utc
 
     @reset_token
   end
@@ -716,7 +721,7 @@ class User < ApplicationRecord
         otp_grace_period_started_at: nil,
         otp_backup_codes:            nil
       )
-      self.u2f_registrations.destroy_all # rubocop: disable DestroyAll
+      self.u2f_registrations.destroy_all # rubocop: disable Cop/DestroyAll
     end
   end
 
@@ -957,11 +962,11 @@ class User < ApplicationRecord
   end
 
   def allow_password_authentication_for_web?
-    Gitlab::CurrentSettings.password_authentication_enabled_for_web? && !ldap_user? && !ultraauth_user?
+    Gitlab::CurrentSettings.password_authentication_enabled_for_web? && !ldap_user?
   end
 
   def allow_password_authentication_for_git?
-    Gitlab::CurrentSettings.password_authentication_enabled_for_git? && !ldap_user? && !ultraauth_user?
+    Gitlab::CurrentSettings.password_authentication_enabled_for_git? && !ldap_user?
   end
 
   def can_change_username?
@@ -1049,14 +1054,6 @@ class User < ApplicationRecord
     end
   end
 
-  def ultraauth_user?
-    if identities.loaded?
-      identities.find { |identity| Gitlab::Auth::OAuth::Provider.ultraauth_provider?(identity.provider) && !identity.extern_uid.nil? }
-    else
-      identities.exists?(["provider = ? AND extern_uid IS NOT NULL", "ultraauth"])
-    end
-  end
-
   def ldap_identity
     @ldap_identity ||= identities.find_by(["provider LIKE ?", "ldap%"])
   end
@@ -1129,7 +1126,7 @@ class User < ApplicationRecord
     if !Gitlab.config.ldap.enabled
       false
     elsif ldap_user?
-      !last_credential_check_at || (last_credential_check_at + ldap_sync_time) < Time.now
+      !last_credential_check_at || (last_credential_check_at + ldap_sync_time) < Time.current
     else
       false
     end
@@ -1378,7 +1375,7 @@ class User < ApplicationRecord
   def contributed_projects
     events = Event.select(:project_id)
       .contributions.where(author_id: self)
-      .where("created_at > ?", Time.now - 1.year)
+      .where("created_at > ?", Time.current - 1.year)
       .distinct
       .reorder(nil)
 
@@ -1642,16 +1639,12 @@ class User < ApplicationRecord
     super.presence || build_user_detail
   end
 
-  def todos_limited_to(ids)
-    todos.where(id: ids)
-  end
-
   def pending_todo_for(target)
     todos.find_by(target: target, state: :pending)
   end
 
   def password_expired?
-    !!(password_expires_at && password_expires_at < Time.now)
+    !!(password_expires_at && password_expires_at < Time.current)
   end
 
   def can_be_deactivated?
@@ -1832,7 +1825,7 @@ class User < ApplicationRecord
   def update_highest_role?
     return false unless persisted?
 
-    (previous_changes.keys & %w(state user_type ghost)).any?
+    (previous_changes.keys & %w(state user_type)).any?
   end
 
   def update_highest_role_attribute

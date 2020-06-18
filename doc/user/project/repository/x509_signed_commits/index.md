@@ -65,11 +65,11 @@ git config --global gpg.format x509
 
 ### Windows and MacOS
 
-Install [smimesign](https://github.com/github/smimesign) by downloading the
+Install [S/MIME Sign](https://github.com/github/smimesign) by downloading the
 installer or via `brew install smimesign` on MacOS.
 
 Get the ID of your certificate with `smimesign --list-keys` and set your
-signingkey `git config --global user.signingkey ID`, then configure X.509:
+signing key `git config --global user.signingkey ID`, then configure X.509:
 
 ```shell
 git config --global gpg.x509.program smimesign
