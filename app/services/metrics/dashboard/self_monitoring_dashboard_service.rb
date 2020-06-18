@@ -10,7 +10,8 @@ module Metrics
 
       SEQUENCE = [
         STAGES::CustomMetricsInserter,
-        STAGES::EndpointInserter,
+        STAGES::MetricEndpointInserter,
+        STAGES::VariableEndpointInserter,
         STAGES::PanelIdsInserter,
         STAGES::Sorter
       ].freeze

@@ -16,7 +16,7 @@ describe GitlabSchema.types['ReleaseAssets'] do
   describe 'links field' do
     subject { described_class.fields['links'] }
 
-    it { is_expected.to have_graphql_type(Types::ReleaseLinkType.connection_type) }
+    it { is_expected.to have_graphql_type(Types::ReleaseAssetLinkType.connection_type) }
   end
 
   describe 'sources field' do

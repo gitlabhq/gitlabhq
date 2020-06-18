@@ -5,7 +5,7 @@ import { GlAreaChart } from '@gitlab/ui/dist/charts';
 
 import axios from '~/lib/utils/axios_utils';
 import CodeCoverage from '~/pages/projects/graphs/components/code_coverage.vue';
-import codeCoverageMockData from './mock_data';
+import { codeCoverageMockData, sortedDataByDates } from './mock_data';
 import waitForPromises from 'helpers/wait_for_promises';
 import httpStatusCodes from '~/lib/utils/http_status';
 
@@ -50,6 +50,10 @@ describe('Code Coverage', () => {
 
     it('renders the area chart', () => {
       expect(findAreaChart().exists()).toBe(true);
+    });
+
+    it('sorts the dates in ascending order', () => {
+      expect(wrapper.vm.sortedData).toEqual(sortedDataByDates);
     });
 
     it('matches the snapshot', () => {

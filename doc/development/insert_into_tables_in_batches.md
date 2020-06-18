@@ -121,10 +121,10 @@ These callbacks cannot be used with bulk insertions, since they are meant to be 
 every instance that is saved or created. Since these events do not fire when
 records are inserted in bulk, we currently disallow their use.
 
-The specifics around which callbacks are disallowed are defined in
+The specifics around which callbacks are explicitly allowed are defined in
 [`BulkInsertSafe`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/models/concerns/bulk_insert_safe.rb).
-Consult the module source code for details. If your class uses any of the blacklisted
-functionality, and you `include BulkInsertSafe`, the application will fail with an error.
+Consult the module source code for details. If your class uses callbacks that are not explicitly designated
+safe and you `include BulkInsertSafe` the application will fail with an error.
 
 ### `BulkInsertSafe` versus `InsertAll`
 

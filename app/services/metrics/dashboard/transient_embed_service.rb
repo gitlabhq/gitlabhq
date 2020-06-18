@@ -30,7 +30,7 @@ module Metrics
 
       override :sequence
       def sequence
-        [STAGES::EndpointInserter]
+        [STAGES::MetricEndpointInserter]
       end
 
       override :identifiers

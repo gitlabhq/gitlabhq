@@ -12,7 +12,8 @@ module Metrics
         STAGES::CommonMetricsInserter,
         STAGES::CustomMetricsInserter,
         STAGES::CustomMetricsDetailsInserter,
-        STAGES::EndpointInserter,
+        STAGES::MetricEndpointInserter,
+        STAGES::VariableEndpointInserter,
         STAGES::PanelIdsInserter,
         STAGES::Sorter,
         STAGES::AlertsInserter

@@ -24,6 +24,12 @@ templating:
         - value: 'value_option_2'
           text: 'Option 2'
           default: true
+    metric_label_values_variable:
+      label: 'Variable 3'
+      type: metric_label_values
+      options:
+        series_selector: 'backend:haproxy_backend_availability:ratio{env="{{env}}"}'
+        label: 'backend'
 panel_groups:
 - group: Group A
   priority: 1

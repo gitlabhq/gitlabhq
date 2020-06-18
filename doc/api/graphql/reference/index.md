@@ -1415,6 +1415,18 @@ Represents a release
 | `tagName` | String | Name of the tag associated with the release |
 | `tagPath` | String | Relative web path to the tag associated with the release |
 
+## ReleaseAssetLink
+
+Represents an asset link associated with a release
+
+| Name  | Type  | Description |
+| ---   |  ---- | ----------  |
+| `external` | Boolean | Indicates the link points to an external resource |
+| `id` | ID! | ID of the link |
+| `linkType` | ReleaseAssetLinkType | Type of the link: `other`, `runbook`, `image`, `package`; defaults to `other` |
+| `name` | String | Name of the link |
+| `url` | String | URL of the link |
+
 ## ReleaseAssets
 
 A container for all assets associated with a release
@@ -1433,18 +1445,6 @@ Evidence for a release
 | `filepath` | String | URL from where the evidence can be downloaded |
 | `id` | ID! | ID of the evidence |
 | `sha` | String | SHA1 ID of the evidence hash |
-
-## ReleaseLink
-
-Represents an asset link associated with a release
-
-| Name  | Type  | Description |
-| ---   |  ---- | ----------  |
-| `external` | Boolean | Indicates the link points to an external resource |
-| `id` | ID! | ID of the link |
-| `linkType` | ReleaseLinkType | Type of the link: `other`, `runbook`, `image`, `package`; defaults to `other` |
-| `name` | String | Name of the link |
-| `url` | String | URL of the link |
 
 ## ReleaseSource
 

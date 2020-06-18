@@ -1,0 +1,12 @@
+{
+  "type": "object",
+  "required": [
+    "series_selector", "label", "prometheus_endpoint_path"
+  ],
+  "properties": {
+    "series_selector": { "type": "string" },
+    "label": { "type": "string" },
+    "prometheus_endpoint_path": { "type": "string" }
+  },
+  "additionalProperties": false
+}

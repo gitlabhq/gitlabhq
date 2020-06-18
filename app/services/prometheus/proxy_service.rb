@@ -22,16 +22,20 @@ module Prometheus
 
     attr_accessor :proxyable, :method, :path, :params
 
+    PROMETHEUS_QUERY_API = 'query'
+    PROMETHEUS_QUERY_RANGE_API = 'query_range'
+    PROMETHEUS_SERIES_API = 'series'
+
     PROXY_SUPPORT = {
-      'query' => {
+      PROMETHEUS_QUERY_API => {
         method: ['GET'],
         params: %w(query time timeout)
       },
-      'query_range' => {
+      PROMETHEUS_QUERY_RANGE_API => {
         method: ['GET'],
         params: %w(query start end step timeout)
       },
-      'series' => {
+      PROMETHEUS_SERIES_API => {
         method: %w(GET),
         params: %w(match start end)
       }

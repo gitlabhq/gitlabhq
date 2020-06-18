@@ -28,7 +28,7 @@ export default {
     columnClass() {
       const positionValues = {
         right: 'prepend-left-64',
-        left: 'append-right-32',
+        left: 'gl-mr-7',
       };
       return `graph-position-${this.graphPosition} ${positionValues[this.graphPosition]}`;
     },

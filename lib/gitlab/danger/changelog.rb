@@ -3,7 +3,14 @@
 module Gitlab
   module Danger
     module Changelog
-      NO_CHANGELOG_LABELS = %w[backstage ci-build meta].freeze
+      NO_CHANGELOG_LABELS = [
+        'backstage', # To be removed by https://gitlab.com/gitlab-org/gitlab/-/issues/222360.
+        'tooling',
+        'tooling::pipelines',
+        'tooling::workflow',
+        'ci-build',
+        'meta'
+      ].freeze
       NO_CHANGELOG_CATEGORIES = %i[docs none].freeze
 
       def needed?

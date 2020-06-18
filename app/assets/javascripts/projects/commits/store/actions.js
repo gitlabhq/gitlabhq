@@ -18,7 +18,7 @@ export default {
   fetchAuthors({ dispatch, state }, author = null) {
     const { projectId } = state;
     return axios
-      .get(joinPaths(gon.relative_url_root || '', '/autocomplete/users.json'), {
+      .get(joinPaths(gon.relative_url_root || '', '/-/autocomplete/users.json'), {
         params: {
           project_id: projectId,
           active: true,

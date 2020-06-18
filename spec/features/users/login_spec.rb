@@ -110,7 +110,7 @@ RSpec.describe 'Login' do
 
         gitlab_sign_in(user)
 
-        expect(page).not_to have_content('You have to confirm your email address before continuing.')
+        expect(page).not_to have_content(I18n.t('devise.failure.unconfirmed'))
         expect(page).not_to have_link('Resend confirmation email', href: new_user_confirmation_path)
       end
     end
@@ -124,7 +124,7 @@ RSpec.describe 'Login' do
 
           gitlab_sign_in(user)
 
-          expect(page).to have_content('You have to confirm your email address before continuing.')
+          expect(page).to have_content(I18n.t('devise.failure.unconfirmed'))
           expect(page).to have_link('Resend confirmation email', href: new_user_confirmation_path)
         end
       end
@@ -820,7 +820,7 @@ RSpec.describe 'Login' do
           gitlab_sign_in(user)
 
           expect(current_path).to eq new_user_session_path
-          expect(page).to have_content('You have to confirm your email address before continuing.')
+          expect(page).to have_content(I18n.t('devise.failure.unconfirmed'))
         end
       end
     end

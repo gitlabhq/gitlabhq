@@ -151,7 +151,7 @@ describe UpdateIndexApprovalRuleNameForCodeOwnersRuleType do
         expect(MergeRequests::SyncCodeOwnerApprovalRules)
           .to receive(:new).with(MergeRequest.find(merge_request.id)).once.and_call_original
 
-        # We expect approval_rules.count to be changed by -2 as we're deleting the
+        # We expect approval_rules.count to be changed by -3 as we're deleting the
         #   3 rules created above, and MergeRequests::SyncCodeOwnerApprovalRules
         #   will not be able to create new one with an empty (or missing)
         #   CODEOWNERS file.

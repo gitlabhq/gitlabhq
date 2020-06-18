@@ -126,7 +126,7 @@ export default {
     updateAssigneesDropdown() {
       this.isDropdownSearching = true;
       return axios
-        .get(this.buildUrl(gon.relative_url_root, '/autocomplete/users.json'), {
+        .get(this.buildUrl(gon.relative_url_root, '/-/autocomplete/users.json'), {
           params: {
             search: this.search,
             per_page: 20,

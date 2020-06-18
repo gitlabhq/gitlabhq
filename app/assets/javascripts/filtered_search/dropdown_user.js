@@ -5,7 +5,7 @@ export default class DropdownUser extends DropdownAjaxFilter {
   constructor(options = {}) {
     super({
       ...options,
-      endpoint: '/autocomplete/users.json',
+      endpoint: '/-/autocomplete/users.json',
       symbol: '@',
     });
   }

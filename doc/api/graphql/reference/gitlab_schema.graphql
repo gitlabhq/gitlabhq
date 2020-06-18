@@ -10208,6 +10208,96 @@ type Release {
 }
 
 """
+Represents an asset link associated with a release
+"""
+type ReleaseAssetLink {
+  """
+  Indicates the link points to an external resource
+  """
+  external: Boolean
+
+  """
+  ID of the link
+  """
+  id: ID!
+
+  """
+  Type of the link: `other`, `runbook`, `image`, `package`; defaults to `other`
+  """
+  linkType: ReleaseAssetLinkType
+
+  """
+  Name of the link
+  """
+  name: String
+
+  """
+  URL of the link
+  """
+  url: String
+}
+
+"""
+The connection type for ReleaseAssetLink.
+"""
+type ReleaseAssetLinkConnection {
+  """
+  A list of edges.
+  """
+  edges: [ReleaseAssetLinkEdge]
+
+  """
+  A list of nodes.
+  """
+  nodes: [ReleaseAssetLink]
+
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: PageInfo!
+}
+
+"""
+An edge in a connection.
+"""
+type ReleaseAssetLinkEdge {
+  """
+  A cursor for use in pagination.
+  """
+  cursor: String!
+
+  """
+  The item at the end of the edge.
+  """
+  node: ReleaseAssetLink
+}
+
+"""
+Type of the link: `other`, `runbook`, `image`, `package`; defaults to `other`
+"""
+enum ReleaseAssetLinkType {
+  """
+  Image link type
+  """
+  IMAGE
+
+  """
+  Other link type
+  """
+  OTHER
+
+  """
+  Package link type
+  """
+  PACKAGE
+
+  """
+  Runbook link type
+  """
+  RUNBOOK
+}
+
+"""
 A container for all assets associated with a release
 """
 type ReleaseAssets {
@@ -10239,7 +10329,7 @@ type ReleaseAssets {
     Returns the last _n_ elements from the list.
     """
     last: Int
-  ): ReleaseLinkConnection
+  ): ReleaseAssetLinkConnection
 
   """
   Sources of the release
@@ -10360,96 +10450,6 @@ type ReleaseEvidenceEdge {
   The item at the end of the edge.
   """
   node: ReleaseEvidence
-}
-
-"""
-Represents an asset link associated with a release
-"""
-type ReleaseLink {
-  """
-  Indicates the link points to an external resource
-  """
-  external: Boolean
-
-  """
-  ID of the link
-  """
-  id: ID!
-
-  """
-  Type of the link: `other`, `runbook`, `image`, `package`; defaults to `other`
-  """
-  linkType: ReleaseLinkType
-
-  """
-  Name of the link
-  """
-  name: String
-
-  """
-  URL of the link
-  """
-  url: String
-}
-
-"""
-The connection type for ReleaseLink.
-"""
-type ReleaseLinkConnection {
-  """
-  A list of edges.
-  """
-  edges: [ReleaseLinkEdge]
-
-  """
-  A list of nodes.
-  """
-  nodes: [ReleaseLink]
-
-  """
-  Information to aid in pagination.
-  """
-  pageInfo: PageInfo!
-}
-
-"""
-An edge in a connection.
-"""
-type ReleaseLinkEdge {
-  """
-  A cursor for use in pagination.
-  """
-  cursor: String!
-
-  """
-  The item at the end of the edge.
-  """
-  node: ReleaseLink
-}
-
-"""
-Type of the link: `other`, `runbook`, `image`, `package`; defaults to `other`
-"""
-enum ReleaseLinkType {
-  """
-  Image link type
-  """
-  IMAGE
-
-  """
-  Other link type
-  """
-  OTHER
-
-  """
-  Package link type
-  """
-  PACKAGE
-
-  """
-  Runbook link type
-  """
-  RUNBOOK
 }
 
 """

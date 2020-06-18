@@ -13,7 +13,7 @@ describe Gitlab::Metrics::Dashboard::Processor do
         Gitlab::Metrics::Dashboard::Stages::CommonMetricsInserter,
         Gitlab::Metrics::Dashboard::Stages::CustomMetricsInserter,
         Gitlab::Metrics::Dashboard::Stages::CustomMetricsDetailsInserter,
-        Gitlab::Metrics::Dashboard::Stages::EndpointInserter,
+        Gitlab::Metrics::Dashboard::Stages::MetricEndpointInserter,
         Gitlab::Metrics::Dashboard::Stages::Sorter,
         Gitlab::Metrics::Dashboard::Stages::AlertsInserter,
         Gitlab::Metrics::Dashboard::Stages::PanelIdsInserter,
@@ -98,7 +98,7 @@ describe Gitlab::Metrics::Dashboard::Processor do
         let(:sequence) do
           [
             Gitlab::Metrics::Dashboard::Stages::CommonMetricsInserter,
-            Gitlab::Metrics::Dashboard::Stages::EndpointInserter,
+            Gitlab::Metrics::Dashboard::Stages::MetricEndpointInserter,
             Gitlab::Metrics::Dashboard::Stages::Sorter
           ]
         end

@@ -10,7 +10,7 @@ export default class DropdownEmoji extends FilteredSearchDropdown {
     super(options);
     this.config = {
       Ajax: {
-        endpoint: `${gon.relative_url_root || ''}/autocomplete/award_emojis`,
+        endpoint: `${gon.relative_url_root || ''}/-/autocomplete/award_emojis`,
         method: 'setData',
         loadingTemplate: this.loadingTemplate,
         onError() {

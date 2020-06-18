@@ -18,6 +18,10 @@ module MetricsDashboardHelpers
     project.repository.refresh_method_caches([:metrics_dashboard])
   end
 
+  def load_sample_dashboard
+    YAML.safe_load(fixture_file('lib/gitlab/metrics/dashboard/sample_dashboard.yml'))
+  end
+
   def system_dashboard_path
     Metrics::Dashboard::SystemDashboardService::DASHBOARD_PATH
   end

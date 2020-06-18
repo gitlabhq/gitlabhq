@@ -9,7 +9,8 @@
             "type": "array",
             "items": { "type": "string" }
           },
-          { "$ref": "custom_variable_full_syntax.json" }
+          { "$ref": "custom_variable_full_syntax.json" },
+          { "$ref": "metric_label_values_variable_full_syntax.json" }
         ]
       }
   },

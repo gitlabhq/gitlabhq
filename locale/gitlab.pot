@@ -8555,6 +8555,9 @@ msgstr ""
 msgid "Environment does not have deployments"
 msgstr ""
 
+msgid "Environment is required for Stages::VariableEndpointInserter"
+msgstr ""
+
 msgid "Environment scope"
 msgstr ""
 

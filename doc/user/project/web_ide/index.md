@@ -213,16 +213,19 @@ to work:
 
 - The Runner needs to have
   [`[session_server]` configured properly](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-session_server-section).
+  This section requires at least a `session_timeout` value (which defaults to 1800
+  seconds) and a `listen_address` value. If `advertise_address` is not defined, `listen_address` is used.
 - If you are using a reverse proxy with your GitLab instance, web terminals need to be
   [enabled](../../../administration/integration/terminal.md#enabling-and-disabling-terminal-support). **(ULTIMATE ONLY)**
 
 If you have the terminal open and the job has finished with its tasks, the
 terminal will block the job from finishing for the duration configured in
-[`[session_server].terminal_max_retention_time`](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-session_server-section)
+[`[session_server].session_timeout`](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-session_server-section)
 until you close the terminal window.
 
 NOTE: **Note:** Not all executors are
-[supported](https://docs.gitlab.com/runner/executors/#compatibility-chart)
+[supported](https://docs.gitlab.com/runner/executors/#compatibility-chart).
+The [File Sync](#file-syncing-to-web-terminal) feature is supported on Kubernetes runners only.
 
 ### Web IDE configuration file
 
@@ -246,6 +249,8 @@ In the code below there is an example of this configuration file:
 
 ```yaml
 terminal:
+  # This can be any image that has the necessary runtime environment for your project.
+  image: node:10-alpine
   before_script:
     - apt-get update
   script: sleep 60

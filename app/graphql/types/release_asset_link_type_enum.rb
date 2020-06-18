@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 module Types
-  class ReleaseLinkTypeEnum < BaseEnum
-    graphql_name 'ReleaseLinkType'
+  class ReleaseAssetLinkTypeEnum < BaseEnum
+    graphql_name 'ReleaseAssetLinkType'
     description 'Type of the link: `other`, `runbook`, `image`, `package`; defaults to `other`'
 
     ::Releases::Link.link_types.keys.each do |link_type|
