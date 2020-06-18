@@ -19,6 +19,8 @@ const allNodesPresent = (clusters, retryCount) => {
 export const fetchClusters = ({ state, commit }) => {
   let retryCount = 0;
 
+  commit(types.SET_LOADING_NODES, true);
+
   const poll = new Poll({
     resource: {
       fetchClusters: paginatedEndPoint => axios.get(paginatedEndPoint),
@@ -34,14 +36,18 @@ export const fetchClusters = ({ state, commit }) => {
           const paginationInformation = parseIntPagination(normalizedHeaders);
 
           commit(types.SET_CLUSTERS_DATA, { data, paginationInformation });
-          commit(types.SET_LOADING_STATE, false);
+          commit(types.SET_LOADING_CLUSTERS, false);
 
           if (allNodesPresent(data.clusters, retryCount)) {
             poll.stop();
+            commit(types.SET_LOADING_NODES, false);
           }
         }
       } catch (error) {
         poll.stop();
+
+        commit(types.SET_LOADING_CLUSTERS, false);
+        commit(types.SET_LOADING_NODES, false);
 
         Sentry.withScope(scope => {
           scope.setTag('javascript_clusters_list', 'fetchClustersSuccessCallback');
@@ -52,7 +58,8 @@ export const fetchClusters = ({ state, commit }) => {
     errorCallback: response => {
       poll.stop();
 
-      commit(types.SET_LOADING_STATE, false);
+      commit(types.SET_LOADING_CLUSTERS, false);
+      commit(types.SET_LOADING_NODES, false);
       flash(__('Clusters|An error occurred while loading clusters'));
 
       Sentry.withScope(scope => {

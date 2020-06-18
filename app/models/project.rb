@@ -377,6 +377,7 @@ class Project < ApplicationRecord
   delegate :forward_deployment_enabled, :forward_deployment_enabled=, :forward_deployment_enabled?, to: :ci_cd_settings
   delegate :actual_limits, :actual_plan_name, to: :namespace, allow_nil: true
   delegate :allow_merge_on_skipped_pipeline, :allow_merge_on_skipped_pipeline?, :allow_merge_on_skipped_pipeline=, to: :project_setting
+  delegate :active?, to: :prometheus_service, allow_nil: true, prefix: true
 
   # Validations
   validates :creator, presence: true, on: :create

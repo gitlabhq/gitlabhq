@@ -19,6 +19,10 @@
     "milestones": {
       "type": "array",
       "items": { "$ref": "milestone.json" }
+    },
+    "report_artifacts": {
+      "type": "array",
+      "items": { "$ref": "build_artifact.json" }
     }
   },
   "additionalProperties": false

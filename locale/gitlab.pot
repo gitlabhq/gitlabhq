@@ -1942,7 +1942,7 @@ msgstr ""
 msgid "AlertManagement|No alert data to display."
 msgstr ""
 
-msgid "AlertManagement|No alerts available to display. If you think you're seeing this message in error, refresh the page."
+msgid "AlertManagement|No alerts available to display. See %{linkStart}enabling alert management%{linkEnd} for more information on adding alerts to the list."
 msgstr ""
 
 msgid "AlertManagement|No alerts to display."
@@ -21875,6 +21875,9 @@ msgid "Suggestions are not applicable as their lines cannot overlap."
 msgstr ""
 
 msgid "Suggestions must all be on the same branch."
+msgstr ""
+
+msgid "Suggestions that change line count can't be added to batches, yet."
 msgstr ""
 
 msgid "Suggestions:"

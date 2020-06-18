@@ -8,6 +8,7 @@ import {
   normalizeQueryResponseData,
   convertToGrafanaTimeRange,
   addDashboardMetaDataToLink,
+  normalizeCustomDashboardPath,
 } from '~/monitoring/stores/utils';
 import { annotationsData } from '../mock_data';
 import { NOT_IN_DB_PREFIX } from '~/monitoring/constants';
@@ -698,5 +699,26 @@ describe('normalizeQueryResponseData', () => {
         ],
       },
     ]);
+  });
+});
+
+describe('normalizeCustomDashboardPath', () => {
+  it.each`
+    input                                                               | expected
+    ${[undefined]}                                                      | ${''}
+    ${[null]}                                                           | ${''}
+    ${[]}                                                               | ${''}
+    ${['links.yml']}                                                    | ${'links.yml'}
+    ${['links.yml', '.gitlab/dashboards']}                              | ${'.gitlab/dashboards/links.yml'}
+    ${['config/prometheus/common_metrics.yml']}                         | ${'config/prometheus/common_metrics.yml'}
+    ${['config/prometheus/common_metrics.yml', '.gitlab/dashboards']}   | ${'config/prometheus/common_metrics.yml'}
+    ${['dir1/links.yml', '.gitlab/dashboards']}                         | ${'.gitlab/dashboards/dir1/links.yml'}
+    ${['dir1/dir2/links.yml', '.gitlab/dashboards']}                    | ${'.gitlab/dashboards/dir1/dir2/links.yml'}
+    ${['.gitlab/dashboards/links.yml']}                                 | ${'.gitlab/dashboards/links.yml'}
+    ${['.gitlab/dashboards/links.yml', '.gitlab/dashboards']}           | ${'.gitlab/dashboards/links.yml'}
+    ${['.gitlab/dashboards/dir1/links.yml', '.gitlab/dashboards']}      | ${'.gitlab/dashboards/dir1/links.yml'}
+    ${['.gitlab/dashboards/dir1/dir2/links.yml', '.gitlab/dashboards']} | ${'.gitlab/dashboards/dir1/dir2/links.yml'}
+  `(`normalizeCustomDashboardPath returns $expected for $input`, ({ input, expected }) => {
+    expect(normalizeCustomDashboardPath(...input)).toEqual(expected);
   });
 });

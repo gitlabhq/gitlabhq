@@ -4,7 +4,7 @@ import ClusterStore from '~/clusters_list/store';
 import MockAdapter from 'axios-mock-adapter';
 import { apiData } from '../mock_data';
 import { mount } from '@vue/test-utils';
-import { GlLoadingIcon, GlTable, GlPagination } from '@gitlab/ui';
+import { GlLoadingIcon, GlPagination, GlSkeletonLoading, GlTable } from '@gitlab/ui';
 import * as Sentry from '@sentry/browser';
 
 describe('Clusters', () => {
@@ -64,7 +64,7 @@ describe('Clusters', () => {
   describe('clusters table', () => {
     describe('when data is loading', () => {
       beforeEach(() => {
-        wrapper.vm.$store.state.loading = true;
+        wrapper.vm.$store.state.loadingClusters = true;
         return wrapper.vm.$nextTick();
       });
 
@@ -131,19 +131,48 @@ describe('Clusters', () => {
   });
 
   describe('nodes present', () => {
-    it.each`
-      nodeSize     | lineNumber
-      ${'Unknown'} | ${0}
-      ${'1'}       | ${1}
-      ${'2'}       | ${2}
-      ${'1'}       | ${3}
-      ${'1'}       | ${4}
-      ${'Unknown'} | ${5}
-    `('renders node size for each cluster', ({ nodeSize, lineNumber }) => {
-      const sizes = findTable().findAll('td:nth-child(3)');
-      const size = sizes.at(lineNumber);
+    describe('nodes while loading', () => {
+      it.each`
+        nodeSize | lineNumber
+        ${null}  | ${0}
+        ${'1'}   | ${1}
+        ${'2'}   | ${2}
+        ${'1'}   | ${3}
+        ${'1'}   | ${4}
+        ${null}  | ${5}
+      `('renders node size for each cluster', ({ nodeSize, lineNumber }) => {
+        const sizes = findTable().findAll('td:nth-child(3)');
+        const size = sizes.at(lineNumber);
 
-      expect(size.text()).toBe(nodeSize);
+        if (nodeSize) {
+          expect(size.text()).toBe(nodeSize);
+        } else {
+          expect(size.find(GlSkeletonLoading).exists()).toBe(true);
+        }
+      });
+    });
+
+    describe('nodes finish loading', () => {
+      beforeEach(() => {
+        wrapper.vm.$store.state.loadingNodes = false;
+        return wrapper.vm.$nextTick();
+      });
+
+      it.each`
+        nodeSize     | lineNumber
+        ${'Unknown'} | ${0}
+        ${'1'}       | ${1}
+        ${'2'}       | ${2}
+        ${'1'}       | ${3}
+        ${'1'}       | ${4}
+        ${'Unknown'} | ${5}
+      `('renders node size for each cluster', ({ nodeSize, lineNumber }) => {
+        const sizes = findTable().findAll('td:nth-child(3)');
+        const size = sizes.at(lineNumber);
+
+        expect(size.text()).toBe(nodeSize);
+        expect(size.find(GlSkeletonLoading).exists()).toBe(false);
+      });
     });
 
     describe('nodes with unknown quantity', () => {

@@ -48,8 +48,9 @@ describe('Clusters store actions', () => {
         { endpoint: apiData.endpoint },
         {},
         [
+          { type: types.SET_LOADING_NODES, payload: true },
           { type: types.SET_CLUSTERS_DATA, payload: { data: apiData, paginationInformation } },
-          { type: types.SET_LOADING_STATE, payload: false },
+          { type: types.SET_LOADING_CLUSTERS, payload: false },
         ],
         [],
         () => done(),
@@ -63,7 +64,11 @@ describe('Clusters store actions', () => {
         actions.fetchClusters,
         { endpoint: apiData.endpoint },
         {},
-        [{ type: types.SET_LOADING_STATE, payload: false }],
+        [
+          { type: types.SET_LOADING_NODES, payload: true },
+          { type: types.SET_LOADING_CLUSTERS, payload: false },
+          { type: types.SET_LOADING_NODES, payload: false },
+        ],
         [],
         () => {
           expect(flashError).toHaveBeenCalledWith(expect.stringMatching('error'));
@@ -100,8 +105,9 @@ describe('Clusters store actions', () => {
           { endpoint: apiData.endpoint },
           {},
           [
+            { type: types.SET_LOADING_NODES, payload: true },
             { type: types.SET_CLUSTERS_DATA, payload: { data: apiData, paginationInformation } },
-            { type: types.SET_LOADING_STATE, payload: false },
+            { type: types.SET_LOADING_CLUSTERS, payload: false },
           ],
           [],
           () => {
@@ -149,11 +155,14 @@ describe('Clusters store actions', () => {
           { endpoint: apiData.endpoint },
           {},
           [
+            { type: types.SET_LOADING_NODES, payload: true },
             {
               type: types.SET_CLUSTERS_DATA,
               payload: { data: badApiResponse, paginationInformation },
             },
-            { type: types.SET_LOADING_STATE, payload: false },
+            { type: types.SET_LOADING_CLUSTERS, payload: false },
+            { type: types.SET_LOADING_CLUSTERS, payload: false },
+            { type: types.SET_LOADING_NODES, payload: false },
           ],
           [],
           () => {

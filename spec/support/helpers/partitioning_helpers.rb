@@ -8,8 +8,8 @@ module PartitioningHelpers
     expect(columns_with_part_type).to match_array(actual_columns)
   end
 
-  def expect_range_partition_of(partition_name, table_name, min_value, max_value)
-    definition = find_partition_definition(partition_name)
+  def expect_range_partition_of(partition_name, table_name, min_value, max_value, schema: 'partitions_dynamic')
+    definition = find_partition_definition(partition_name, schema: schema)
 
     expect(definition).not_to be_nil
     expect(definition['base_table']).to eq(table_name.to_s)
@@ -40,7 +40,7 @@ module PartitioningHelpers
     SQL
   end
 
-  def find_partition_definition(partition)
+  def find_partition_definition(partition, schema: 'partitions_dynamic')
     connection.select_one(<<~SQL)
       select
         parent_class.relname as base_table,
@@ -48,7 +48,10 @@ module PartitioningHelpers
       from pg_class
       inner join pg_inherits i on pg_class.oid = inhrelid
       inner join pg_class parent_class on parent_class.oid = inhparent
-      where pg_class.relname = '#{partition}' and pg_class.relispartition;
+      inner join pg_namespace ON pg_namespace.oid = pg_class.relnamespace
+      where pg_namespace.nspname = '#{schema}'
+        and pg_class.relname = '#{partition}'
+        and pg_class.relispartition
     SQL
   end
 end

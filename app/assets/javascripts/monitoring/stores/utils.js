@@ -3,10 +3,10 @@ import createGqClient, { fetchPolicies } from '~/lib/graphql';
 import { SUPPORTED_FORMATS } from '~/lib/utils/unit_format';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { parseTemplatingVariables } from './variable_mapping';
-import { NOT_IN_DB_PREFIX, linkTypes } from '../constants';
 import { DATETIME_RANGE_TYPES } from '~/lib/utils/constants';
 import { timeRangeToParams, getRangeType } from '~/lib/utils/datetime_range';
 import { isSafeURL, mergeUrlParams } from '~/lib/utils/url_utility';
+import { NOT_IN_DB_PREFIX, linkTypes, DEFAULT_DASHBOARD_PATH } from '../constants';
 
 export const gqClient = createGqClient(
   {},
@@ -440,3 +440,31 @@ export const normalizeQueryResponseData = data => {
  * @returns {String}
  */
 export const addPrefixToCustomVariableParams = key => `variables[${key}]`;
+
+/**
+ * Normalize custom dashboard paths. This method helps support
+ * metrics dashboard to work with custom dashboard file names instead
+ * of the entire path.
+ *
+ * If dashboard is empty, it is the default dashboard.
+ * If dashboard is set, it usually is a custom dashboard unless
+ * explicitly it is set to default dashboard path.
+ *
+ * @param {String} dashboard dashboard path
+ * @param {String} dashboardPrefix custom dashboard directory prefix
+ * @returns {String} normalized dashboard path
+ */
+export const normalizeCustomDashboardPath = (dashboard, dashboardPrefix = '') => {
+  const currDashboard = dashboard || '';
+  let dashboardPath = `${dashboardPrefix}/${currDashboard}`;
+
+  if (!currDashboard) {
+    dashboardPath = '';
+  } else if (
+    currDashboard.startsWith(dashboardPrefix) ||
+    currDashboard.startsWith(DEFAULT_DASHBOARD_PATH)
+  ) {
+    dashboardPath = currDashboard;
+  }
+  return dashboardPath;
+};

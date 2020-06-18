@@ -1811,6 +1811,50 @@ describe Ci::Build do
     end
   end
 
+  describe '.keep_artifacts!' do
+    let!(:build) { create(:ci_build, artifacts_expire_at: Time.current + 7.days) }
+    let!(:builds_for_update) do
+      Ci::Build.where(id: create_list(:ci_build, 3, artifacts_expire_at: Time.current + 7.days).map(&:id))
+    end
+
+    it 'resets expire_at' do
+      builds_for_update.keep_artifacts!
+
+      builds_for_update.each do |build|
+        expect(build.reload.artifacts_expire_at).to be_nil
+      end
+    end
+
+    it 'does not reset expire_at for other builds' do
+      builds_for_update.keep_artifacts!
+
+      expect(build.reload.artifacts_expire_at).to be_present
+    end
+
+    context 'when having artifacts files' do
+      let!(:artifact) { create(:ci_job_artifact, job: build, expire_in: '7 days') }
+      let!(:artifacts_for_update) do
+        builds_for_update.map do |build|
+          create(:ci_job_artifact, job: build, expire_in: '7 days')
+        end
+      end
+
+      it 'resets dependent objects' do
+        builds_for_update.keep_artifacts!
+
+        artifacts_for_update.each do |artifact|
+          expect(artifact.reload.expire_at).to be_nil
+        end
+      end
+
+      it 'does not reset dependent object for other builds' do
+        builds_for_update.keep_artifacts!
+
+        expect(artifact.reload.expire_at).to be_present
+      end
+    end
+  end
+
   describe '#keep_artifacts!' do
     let(:build) { create(:ci_build, artifacts_expire_at: Time.current + 7.days) }
 

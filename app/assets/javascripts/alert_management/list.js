@@ -11,7 +11,12 @@ export default () => {
   const selector = '#js-alert_management';
 
   const domEl = document.querySelector(selector);
-  const { projectPath, enableAlertManagementPath, emptyAlertSvgPath } = domEl.dataset;
+  const {
+    projectPath,
+    enableAlertManagementPath,
+    emptyAlertSvgPath,
+    populatingAlertsHelpUrl,
+  } = domEl.dataset;
   let { alertManagementEnabled, userCanEnableAlertManagement } = domEl.dataset;
 
   alertManagementEnabled = parseBoolean(alertManagementEnabled);
@@ -45,6 +50,7 @@ export default () => {
         props: {
           projectPath,
           enableAlertManagementPath,
+          populatingAlertsHelpUrl,
           emptyAlertSvgPath,
           alertManagementEnabled,
           userCanEnableAlertManagement,

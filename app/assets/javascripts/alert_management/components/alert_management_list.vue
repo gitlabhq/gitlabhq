@@ -8,10 +8,12 @@ import {
   GlIcon,
   GlDropdown,
   GlDropdownItem,
+  GlLink,
   GlTabs,
   GlTab,
   GlBadge,
   GlPagination,
+  GlSprintf,
 } from '@gitlab/ui';
 import createFlash from '~/flash';
 import { s__ } from '~/locale';
@@ -47,7 +49,7 @@ const initialPaginationState = {
 export default {
   i18n: {
     noAlertsMsg: s__(
-      "AlertManagement|No alerts available to display. If you think you're seeing this message in error, refresh the page.",
+      'AlertManagement|No alerts available to display. See %{linkStart}enabling alert management%{linkEnd} for more information on adding alerts to the list.',
     ),
     errorMsg: s__(
       "AlertManagement|There was an error displaying the alerts. Confirm your endpoint's configuration details to ensure alerts appear.",
@@ -119,10 +121,12 @@ export default {
     GlDropdown,
     GlDropdownItem,
     GlIcon,
+    GlLink,
     GlTabs,
     GlTab,
     GlBadge,
     GlPagination,
+    GlSprintf,
   },
   props: {
     projectPath: {
@@ -134,6 +138,10 @@ export default {
       required: true,
     },
     enableAlertManagementPath: {
+      type: String,
+      required: true,
+    },
+    populatingAlertsHelpUrl: {
       type: String,
       required: true,
     },
@@ -319,7 +327,17 @@ export default {
   <div>
     <div v-if="alertManagementEnabled" class="alert-management-list">
       <gl-alert v-if="showNoAlertsMsg" @dismiss="isAlertDismissed = true">
-        {{ $options.i18n.noAlertsMsg }}
+        <gl-sprintf :message="$options.i18n.noAlertsMsg">
+          <template #link="{ content }">
+            <gl-link
+              class="gl-display-inline-block"
+              :href="populatingAlertsHelpUrl"
+              target="_blank"
+            >
+              {{ content }}
+            </gl-link>
+          </template>
+        </gl-sprintf>
       </gl-alert>
       <gl-alert v-if="showErrorMsg" variant="danger" @dismiss="isErrorAlertDismissed = true">
         {{ $options.i18n.errorMsg }}

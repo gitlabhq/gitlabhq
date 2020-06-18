@@ -69,9 +69,11 @@ module Gitlab
 
       private
 
-      def create_range_partition(partition_name, table_name, lower_bound, upper_bound)
+      def create_range_partition(partition_name, table_name, lower_bound, upper_bound, schema:)
+        raise ArgumentError, 'explicit schema is required but currently missing' unless schema
+
         execute(<<~SQL)
-          CREATE TABLE #{partition_name} PARTITION OF #{table_name}
+          CREATE TABLE #{schema}.#{partition_name} PARTITION OF #{table_name}
           FOR VALUES FROM (#{lower_bound}) TO (#{upper_bound})
         SQL
       end

@@ -117,12 +117,12 @@ export const fetchData = ({ dispatch }) => {
 
 // Metrics dashboard
 
-export const fetchDashboard = ({ state, commit, dispatch }) => {
+export const fetchDashboard = ({ state, commit, dispatch, getters }) => {
   dispatch('requestMetricsDashboard');
 
   const params = {};
-  if (state.currentDashboard) {
-    params.dashboard = state.currentDashboard;
+  if (getters.fullDashboardPath) {
+    params.dashboard = getters.fullDashboardPath;
   }
 
   return backOffRequest(() => axios.get(state.dashboardEndpoint, { params }))
@@ -204,7 +204,7 @@ export const fetchDashboardData = ({ state, dispatch, getters }) => {
 
   return Promise.all(promises)
     .then(() => {
-      const dashboardType = state.currentDashboard === '' ? 'default' : 'custom';
+      const dashboardType = getters.fullDashboardPath === '' ? 'default' : 'custom';
       trackDashboardLoad({
         label: `${dashboardType}_metrics_dashboard`,
         value: getters.metricsWithData().length,
@@ -322,9 +322,9 @@ export const receiveEnvironmentsDataFailure = ({ commit }) => {
   commit(types.RECEIVE_ENVIRONMENTS_DATA_FAILURE);
 };
 
-export const fetchAnnotations = ({ state, dispatch }) => {
+export const fetchAnnotations = ({ state, dispatch, getters }) => {
   const { start } = convertToFixedRange(state.timeRange);
-  const dashboardPath = state.currentDashboard || DEFAULT_DASHBOARD_PATH;
+  const dashboardPath = getters.fullDashboardPath || DEFAULT_DASHBOARD_PATH;
   return gqClient
     .mutate({
       mutation: getAnnotations,

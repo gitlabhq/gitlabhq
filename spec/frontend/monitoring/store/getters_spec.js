@@ -4,6 +4,7 @@ import mutations from '~/monitoring/stores/mutations';
 import * as types from '~/monitoring/stores/mutation_types';
 import { metricStates } from '~/monitoring/constants';
 import {
+  customDashboardBasePath,
   environmentData,
   metricsResult,
   dashboardGitResponse,
@@ -364,45 +365,53 @@ describe('Monitoring store Getters', () => {
 
   describe('selectedDashboard', () => {
     const { selectedDashboard } = getters;
+    const localGetters = state => ({
+      fullDashboardPath: getters.fullDashboardPath(state),
+    });
 
     it('returns a dashboard', () => {
       const state = {
         allDashboards: dashboardGitResponse,
         currentDashboard: dashboardGitResponse[0].path,
+        customDashboardBasePath,
       };
-      expect(selectedDashboard(state)).toEqual(dashboardGitResponse[0]);
+      expect(selectedDashboard(state, localGetters(state))).toEqual(dashboardGitResponse[0]);
     });
 
     it('returns a non-default dashboard', () => {
       const state = {
         allDashboards: dashboardGitResponse,
         currentDashboard: dashboardGitResponse[1].path,
+        customDashboardBasePath,
       };
-      expect(selectedDashboard(state)).toEqual(dashboardGitResponse[1]);
+      expect(selectedDashboard(state, localGetters(state))).toEqual(dashboardGitResponse[1]);
     });
 
     it('returns a default dashboard when no dashboard is selected', () => {
       const state = {
         allDashboards: dashboardGitResponse,
         currentDashboard: null,
+        customDashboardBasePath,
       };
-      expect(selectedDashboard(state)).toEqual(dashboardGitResponse[0]);
+      expect(selectedDashboard(state, localGetters(state))).toEqual(dashboardGitResponse[0]);
     });
 
     it('returns a default dashboard when dashboard cannot be found', () => {
       const state = {
         allDashboards: dashboardGitResponse,
         currentDashboard: 'wrong_path',
+        customDashboardBasePath,
       };
-      expect(selectedDashboard(state)).toEqual(dashboardGitResponse[0]);
+      expect(selectedDashboard(state, localGetters(state))).toEqual(dashboardGitResponse[0]);
     });
 
     it('returns null when no dashboards are present', () => {
       const state = {
         allDashboards: [],
         currentDashboard: dashboardGitResponse[0].path,
+        customDashboardBasePath,
       };
-      expect(selectedDashboard(state)).toEqual(null);
+      expect(selectedDashboard(state, localGetters(state))).toEqual(null);
     });
   });
 

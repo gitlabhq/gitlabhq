@@ -5,9 +5,10 @@ module Projects::AlertManagementHelper
     {
       'project-path' => project.full_path,
       'enable-alert-management-path' => edit_project_service_path(project, AlertsService),
+      'populating-alerts-help-url' => help_page_url('user/project/operations/alert_management.html', anchor: 'enable-alert-management'),
       'empty-alert-svg-path' => image_path('illustrations/alert-management-empty-state.svg'),
       'user-can-enable-alert-management' => can?(current_user, :admin_project, project).to_s,
-      'alert-management-enabled' => (!!project.alerts_service_activated?).to_s
+      'alert-management-enabled' => alert_management_enabled?(project).to_s
     }
   end
 
@@ -18,5 +19,11 @@ module Projects::AlertManagementHelper
       'project-id' => project.id,
       'project-issues-path' => project_issues_path(project)
     }
+  end
+
+  private
+
+  def alert_management_enabled?(project)
+    !!(project.alerts_service_activated? || project.prometheus_service_active?)
   end
 end

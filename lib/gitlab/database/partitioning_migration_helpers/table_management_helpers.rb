@@ -8,6 +8,7 @@ module Gitlab
 
         WHITELISTED_TABLES = %w[audit_events].freeze
         ERROR_SCOPE = 'table partitioning'
+        DYNAMIC_PARTITIONS_SCHEMA = 'partitions_dynamic'
 
         # Creates a partitioned copy of an existing table, using a RANGE partitioning strategy on a timestamp column.
         # One partition is created per month between the given `min_date` and `max_date`.
@@ -125,7 +126,7 @@ module Gitlab
           min_date = min_date.beginning_of_month.to_date
           max_date = max_date.next_month.beginning_of_month.to_date
 
-          create_range_partition_safely("#{table_name}_000000", table_name, 'MINVALUE', to_sql_date_literal(min_date))
+          create_range_partition_safely("#{table_name}_000000", table_name, 'MINVALUE', to_sql_date_literal(min_date), schema: DYNAMIC_PARTITIONS_SCHEMA)
 
           while min_date < max_date
             partition_name = "#{table_name}_#{min_date.strftime('%Y%m')}"
@@ -133,7 +134,7 @@ module Gitlab
             lower_bound = to_sql_date_literal(min_date)
             upper_bound = to_sql_date_literal(next_date)
 
-            create_range_partition_safely(partition_name, table_name, lower_bound, upper_bound)
+            create_range_partition_safely(partition_name, table_name, lower_bound, upper_bound, schema: DYNAMIC_PARTITIONS_SCHEMA)
             min_date = next_date
           end
         end
@@ -142,8 +143,8 @@ module Gitlab
           connection.quote(date.strftime('%Y-%m-%d'))
         end
 
-        def create_range_partition_safely(partition_name, table_name, lower_bound, upper_bound)
-          if table_exists?(partition_name)
+        def create_range_partition_safely(partition_name, table_name, lower_bound, upper_bound, schema:)
+          if table_exists?("#{schema}.#{partition_name}")
             # rubocop:disable Gitlab/RailsLogger
             Rails.logger.warn "Partition not created because it already exists" \
               " (this may be due to an aborted migration or similar): partition_name: #{partition_name}"
@@ -151,7 +152,7 @@ module Gitlab
             return
           end
 
-          create_range_partition(partition_name, table_name, lower_bound, upper_bound)
+          create_range_partition(partition_name, table_name, lower_bound, upper_bound, schema: schema)
         end
 
         def create_sync_trigger(source_table, target_table, unique_key)

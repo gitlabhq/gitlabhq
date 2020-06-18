@@ -241,7 +241,7 @@ describe Gitlab::Database::PartitioningMigrationHelpers::TableManagementHelpers 
 
   describe '#drop_partitioned_table_for' do
     let(:expected_tables) do
-      %w[000000 201912 202001 202002].map { |suffix| "#{partitioned_table}_#{suffix}" }.unshift(partitioned_table)
+      %w[000000 201912 202001 202002].map { |suffix| "partitions_dynamic.#{partitioned_table}_#{suffix}" }.unshift(partitioned_table)
     end
 
     context 'when the table is not whitelisted' do

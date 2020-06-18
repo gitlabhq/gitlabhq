@@ -6,6 +6,7 @@ import {
   GlLink,
   GlLoadingIcon,
   GlPagination,
+  GlSkeletonLoading,
   GlSprintf,
   GlTable,
 } from '@gitlab/ui';
@@ -21,6 +22,7 @@ export default {
     GlLink,
     GlLoadingIcon,
     GlPagination,
+    GlSkeletonLoading,
     GlSprintf,
     GlTable,
   },
@@ -28,7 +30,18 @@ export default {
     tooltip,
   },
   computed: {
-    ...mapState(['clusters', 'clustersPerPage', 'loading', 'page', 'providers', 'totalCulsters']),
+    ...mapState([
+      'clusters',
+      'clustersPerPage',
+      'loadingClusters',
+      'loadingNodes',
+      'page',
+      'providers',
+      'totalCulsters',
+    ]),
+    contentAlignClasses() {
+      return 'gl-display-flex gl-align-items-center gl-justify-content-end gl-justify-content-md-start';
+    },
     currentPage: {
       get() {
         return this.page;
@@ -180,14 +193,12 @@ export default {
 </script>
 
 <template>
-  <gl-loading-icon v-if="loading" size="md" class="mt-3" />
+  <gl-loading-icon v-if="loadingClusters" size="md" class="gl-mt-3" />
 
   <section v-else>
     <gl-table :items="clusters" :fields="fields" stacked="md" class="qa-clusters-table">
       <template #cell(name)="{ item }">
-        <div
-          class="gl-display-flex gl-align-items-center gl-justify-content-end gl-justify-content-md-start js-status"
-        >
+        <div :class="[contentAlignClasses, 'js-status']">
           <img
             :src="selectedProvider(item.provider_type).path"
             :alt="selectedProvider(item.provider_type).text"
@@ -214,6 +225,9 @@ export default {
 
       <template #cell(node_size)="{ item }">
         <span v-if="item.nodes">{{ item.nodes.length }}</span>
+
+        <gl-skeleton-loading v-else-if="loadingNodes" :lines="1" :class="contentAlignClasses" />
+
         <small v-else class="gl-font-sm gl-font-style-italic gl-text-gray-400">{{
           __('Unknown')
         }}</small>
@@ -231,6 +245,8 @@ export default {
             >
           </gl-sprintf>
         </span>
+
+        <gl-skeleton-loading v-else-if="loadingNodes" :lines="1" :class="contentAlignClasses" />
       </template>
 
       <template #cell(total_memory)="{ item }">
@@ -245,6 +261,8 @@ export default {
             >
           </gl-sprintf>
         </span>
+
+        <gl-skeleton-loading v-else-if="loadingNodes" :lines="1" :class="contentAlignClasses" />
       </template>
 
       <template #cell(cluster_type)="{value}">

@@ -6,6 +6,7 @@ import statusCodes from '~/lib/utils/http_status';
 import * as commonUtils from '~/lib/utils/common_utils';
 import createFlash from '~/flash';
 import { defaultTimeRange } from '~/vue_shared/constants';
+import * as getters from '~/monitoring/stores/getters';
 import { ENVIRONMENT_AVAILABLE_STATE } from '~/monitoring/constants';
 
 import { createStore } from '~/monitoring/stores';
@@ -62,7 +63,7 @@ describe('Monitoring store actions', () => {
   let state;
 
   beforeEach(() => {
-    store = createStore();
+    store = createStore({ getters });
     state = store.state.monitoringDashboard;
     mock = new MockAdapter(axios);
 
@@ -265,6 +266,11 @@ describe('Monitoring store actions', () => {
       state.projectPath = 'gitlab-org/gitlab-test';
       state.currentEnvironmentName = 'production';
       state.currentDashboard = '.gitlab/dashboards/custom_dashboard.yml';
+      // testAction doesn't have access to getters. The state is passed in as getters
+      // instead of the actual getters inside the testAction method implementation.
+      // All methods downstream that needs access to getters will throw and error.
+      // For that reason, the result of the getter is set as a state variable.
+      state.fullDashboardPath = store.getters['monitoringDashboard/fullDashboardPath'];
     });
 
     it('fetches annotations data and dispatches receiveAnnotationsSuccess', () => {
@@ -581,9 +587,12 @@ describe('Monitoring store actions', () => {
       let result;
       beforeEach(() => {
         const params = {};
+        const localGetters = {
+          fullDashboardPath: store.getters['monitoringDashboard/fullDashboardPath'],
+        };
         result = () => {
           mock.onGet(state.dashboardEndpoint).replyOnce(500, mockDashboardsErrorResponse);
-          return fetchDashboard({ state, commit, dispatch }, params);
+          return fetchDashboard({ state, commit, dispatch, getters: localGetters }, params);
         };
       });
 
@@ -712,10 +721,10 @@ describe('Monitoring store actions', () => {
     });
 
     it('commits empty state when state.groups is empty', done => {
-      const getters = {
+      const localGetters = {
         metricsWithData: () => [],
       };
-      fetchDashboardData({ state, commit, dispatch, getters })
+      fetchDashboardData({ state, commit, dispatch, getters: localGetters })
         .then(() => {
           expect(Tracking.event).toHaveBeenCalledWith(
             document.body.dataset.page,
@@ -740,11 +749,11 @@ describe('Monitoring store actions', () => {
       );
 
       const [metric] = state.dashboard.panelGroups[0].panels[0].metrics;
-      const getters = {
+      const localGetters = {
         metricsWithData: () => [metric.id],
       };
 
-      fetchDashboardData({ state, commit, dispatch, getters })
+      fetchDashboardData({ state, commit, dispatch, getters: localGetters })
         .then(() => {
           expect(dispatch).toHaveBeenCalledWith('fetchPrometheusMetric', {
             metric,

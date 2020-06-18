@@ -17,16 +17,40 @@ being developed, efficiency and awareness can be increased.
 NOTE: **Note:**
 You will need at least Maintainer [permissions](../../permissions.md) to enable the Alert Management feature.
 
-1. Follow the [instructions for toggling generic alerts](../integrations/generic_alerts.md#setting-up-generic-alerts)
-1. You can now visit **{cloud-gear}** **Operations > Alerts** in your project's sidebar to [view a list](#alert-management-list) of alerts.
+There are several ways to accept alerts into your GitLab project, as outlined below.
+Enabling any of these methods will allow the Alerts list to display. After configuring
+alerts, visit **{cloud-gear}** **Operations > Alerts** in your project's sidebar
+to [view the list](#alert-management-list) of alerts.
 
-![Alert Management Toggle](img/alert_management_1_v13_1.png)
+### Enable a Generic Alerts endpoint
 
-## Populate Alert data
+GitLab provides the Generic Alerts endpoint so you can accept alerts from a third-party
+alerts service. See the
+[instructions for toggling generic alerts](../integrations/generic_alerts.md#setting-up-generic-alerts)
+to add this option. After configuring the endpoint, the
+[Alerts list](#alert-management-list) is enabled.
 
-To populate data, see the instructions for
-[customizing the payload](../integrations/generic_alerts.md) and making a
-request to the alerts endpoint.
+To populate the alerts with data, see [Customizing the payload](../integrations/generic_alerts.md#customizing-the-payload) for requests to the alerts endpoint.
+
+### Enable GitLab-managed Prometheus alerts
+
+You can install the GitLab-managed Prometheus application on your Kubernetes
+cluster. For more information, see
+[Managed Prometheus on Kubernetes](../integrations/prometheus.md#managed-prometheus-on-kubernetes).
+When GitLab-managed Prometheus is installed, the [Alerts list](#alert-management-list)
+is also enabled.
+
+To populate the alerts with data, see
+[GitLab-Managed Prometheus instances](../integrations/prometheus.md#managed-prometheus-instances).
+
+### Enable external Prometheus alerts
+
+You can configure an externally-managed Prometheus instance to send alerts
+to GitLab. To set up this configuration, see the [configuring Prometheus](../integrations/prometheus.md#external-prometheus-instances) documentation. Activating the external Prometheus
+configuration also enables the [Alerts list](#alert-management-list).
+
+To populate the alerts with data, see
+[External Prometheus instances](../integrations/prometheus.md#external-prometheus-instances).
 
 ## Alert Management severity
 

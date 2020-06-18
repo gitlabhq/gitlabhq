@@ -22,6 +22,8 @@ export const propsData = {
   validateQueryPath: '',
 };
 
+export const customDashboardBasePath = '.gitlab/dashboards';
+
 const customDashboardsData = new Array(30).fill(null).map((_, idx) => ({
   default: false,
   display_name: `Custom Dashboard ${idx}`,

@@ -153,11 +153,20 @@ RSpec.configure do |config|
     # fixed. If we raised the `JSException` the fixed test would be marked as
     # failed again.
     if example.exception && !example.exception.is_a?(RSpec::Core::Pending::PendingExampleFixedError)
-      console = page.driver.browser.manage.logs.get(:browser)&.reject { |log| log.message =~ JS_CONSOLE_FILTER }
+      begin
+        console = page.driver.browser.manage.logs.get(:browser)&.reject { |log| log.message =~ JS_CONSOLE_FILTER }
 
-      if console.present?
-        message = "Unexpected browser console output:\n" + console.map(&:message).join("\n")
-        raise JSConsoleError, message
+        if console.present?
+          message = "Unexpected browser console output:\n" + console.map(&:message).join("\n")
+          raise JSConsoleError, message
+        end
+      rescue Selenium::WebDriver::Error::WebDriverError => error
+        if error.message =~ /unknown command: session\/[0-9a-zA-Z]+(?:\/se)?\/log/
+          message = "Unable to access Chrome javascript console logs. You may be using an outdated version of ChromeDriver."
+          raise JSConsoleError, message
+        else
+          raise error
+        end
       end
     end
 

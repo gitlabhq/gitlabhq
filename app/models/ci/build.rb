@@ -801,6 +801,11 @@ module Ci
       has_expiring_artifacts? && job_artifacts_archive.present?
     end
 
+    def self.keep_artifacts!
+      update_all(artifacts_expire_at: nil)
+      Ci::JobArtifact.where(job: self.select(:id)).update_all(expire_at: nil)
+    end
+
     def keep_artifacts!
       self.update(artifacts_expire_at: nil)
       self.job_artifacts.update_all(expire_at: nil)

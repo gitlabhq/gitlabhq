@@ -5886,6 +5886,30 @@ describe Project do
     end
   end
 
+  describe '#prometheus_service_active?' do
+    let(:project) { create(:project) }
+
+    subject { project.prometheus_service_active? }
+
+    before do
+      create(:prometheus_service, project: project, manual_configuration: manual_configuration)
+    end
+
+    context 'when project has an activated prometheus service' do
+      let(:manual_configuration) { true }
+
+      it { is_expected.to be_truthy }
+    end
+
+    context 'when project has an inactive prometheus service' do
+      let(:manual_configuration) { false }
+
+      it 'the service is marked as inactive' do
+        expect(subject).to be_falsey
+      end
+    end
+  end
+
   describe '#self_monitoring?' do
     let_it_be(:project) { create(:project) }
 

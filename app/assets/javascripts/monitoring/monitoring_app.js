@@ -22,6 +22,7 @@ export default (props = {}) => {
       currentEnvironmentName,
       dashboardTimezone,
       metricsDashboardBasePath,
+      customDashboardBasePath,
       ...dataProps
     } = el.dataset;
 
@@ -34,6 +35,7 @@ export default (props = {}) => {
       projectPath,
       logsPath,
       currentEnvironmentName,
+      customDashboardBasePath,
     });
 
     // HTML attributes are always strings, parse other types.
