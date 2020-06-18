@@ -170,11 +170,10 @@ export const convertVariablesForURL = variables =>
  * begin with a constant prefix so that it doesn't collide with
  * other URL params.
  *
- * @param {String} New URL
+ * @param {String} search URL
  * @returns {Object} The custom variables defined by the user in the URL
  */
-
-export const getPromCustomVariablesFromUrl = (search = window.location.search) => {
+export const templatingVariablesFromUrl = (search = window.location.search) => {
   const params = queryToObject(search);
   // pick the params with variable prefix
   const paramsWithVars = pickBy(params, (val, key) => key.startsWith(VARIABLE_PREFIX));
@@ -352,40 +351,5 @@ export const barChartsDataParser = (data = []) =>
     }),
     {},
   );
-
-/**
- * Custom variables are defined in the dashboard yml file
- * and their values can be passed through the URL.
- *
- * On component load, this method merges variables data
- * from the yml file with URL data to store in the Vuex store.
- * Not all params coming from the URL need to be stored. Only
- * the ones that have a corresponding variable defined in the
- * yml file.
- *
- * This ensures that there is always a single source of truth
- * for variables
- *
- * This method can be improved further. See the below issue
- * https://gitlab.com/gitlab-org/gitlab/-/issues/217713
- *
- * @param {Object} varsFromYML template variables from yml file
- * @returns {Object}
- */
-export const mergeURLVariables = (varsFromYML = {}) => {
-  const varsFromURL = getPromCustomVariablesFromUrl();
-  const variables = {};
-  Object.keys(varsFromYML).forEach(key => {
-    if (Object.prototype.hasOwnProperty.call(varsFromURL, key)) {
-      variables[key] = {
-        ...varsFromYML[key],
-        value: varsFromURL[key],
-      };
-    } else {
-      variables[key] = varsFromYML[key];
-    }
-  });
-  return variables;
-};
 
 export default {};

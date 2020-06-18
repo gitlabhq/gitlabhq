@@ -22,7 +22,7 @@ See the [authentication topic](../../topics/authentication/index.md) for more de
 
 ### Unknown sign-in
 
-GitLab will notify you if a sign-in occurs that is from an unknown IP address.
+GitLab will notify you if a sign-in occurs that is from an unknown IP address or device.
 See [Unknown Sign-In Notification](unknown_sign_in_notification.md) for more details.
 
 ## User profile

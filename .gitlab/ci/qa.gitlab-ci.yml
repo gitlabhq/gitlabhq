@@ -49,7 +49,6 @@ update-qa-cache:
 .package-and-qa-base:
   image: ruby:2.6-alpine
   stage: qa
-  dependencies: []
   retry: 0
   script:
     - source scripts/utils.sh

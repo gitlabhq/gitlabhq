@@ -1,4 +1,5 @@
 import { isString } from 'lodash';
+import { templatingVariablesFromUrl } from '../utils';
 import { VARIABLE_TYPES } from '../constants';
 
 /**
@@ -163,5 +164,40 @@ export const parseTemplatingVariables = ({ variables = {} } = {}) =>
     }
     return acc;
   }, {});
+
+/**
+ * Custom variables are defined in the dashboard yml file
+ * and their values can be passed through the URL.
+ *
+ * On component load, this method merges variables data
+ * from the yml file with URL data to store in the Vuex store.
+ * Not all params coming from the URL need to be stored. Only
+ * the ones that have a corresponding variable defined in the
+ * yml file.
+ *
+ * This ensures that there is always a single source of truth
+ * for variables
+ *
+ * This method can be improved further. See the below issue
+ * https://gitlab.com/gitlab-org/gitlab/-/issues/217713
+ *
+ * @param {Object} varsFromYML template variables from yml file
+ * @returns {Object}
+ */
+export const mergeURLVariables = (varsFromYML = {}) => {
+  const varsFromURL = templatingVariablesFromUrl();
+  const variables = {};
+  Object.keys(varsFromYML).forEach(key => {
+    if (Object.prototype.hasOwnProperty.call(varsFromURL, key)) {
+      variables[key] = {
+        ...varsFromYML[key],
+        value: varsFromURL[key],
+      };
+    } else {
+      variables[key] = varsFromYML[key];
+    }
+  });
+  return variables;
+};
 
 export default {};

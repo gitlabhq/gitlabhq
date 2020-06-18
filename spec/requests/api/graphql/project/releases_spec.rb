@@ -5,9 +5,10 @@ require 'spec_helper'
 describe 'Query.project(fullPath).releases()' do
   include GraphqlHelpers
 
+  let_it_be(:stranger) { create(:user) }
   let_it_be(:guest) { create(:user) }
   let_it_be(:reporter) { create(:user) }
-  let_it_be(:stranger) { create(:user) }
+  let_it_be(:developer) { create(:user) }
 
   let(:query) do
     graphql_query_for(:project, { fullPath: project.full_path },
@@ -33,14 +34,24 @@ describe 'Query.project(fullPath).releases()' do
               sha
             }
           }
+          links {
+            selfUrl
+            mergeRequestsUrl
+            issuesUrl
+          }
         }
       }
     })
   end
 
+  let(:params_for_issues_and_mrs) { { scope: 'all', state: 'opened', release_tag: release.tag } }
   let(:post_query) { post_graphql(query, current_user: current_user) }
 
   let(:data) { graphql_data.dig('project', 'releases', 'nodes', 0) }
+
+  before do
+    stub_default_url_options(host: 'www.example.com')
+  end
 
   shared_examples 'full access to all repository-related fields' do
     describe 'repository-related fields' do
@@ -57,7 +68,7 @@ describe 'Query.project(fullPath).releases()' do
           { 'sha' => e.sha }
         end
 
-        expect(data).to eq({
+        expect(data).to eq(
           'tagName' => release.tag,
           'tagPath' => project_tag_path(project, release.tag),
           'name' => release.name,
@@ -72,8 +83,13 @@ describe 'Query.project(fullPath).releases()' do
           },
           'evidences' => {
             'nodes' => expected_evidences
+          },
+          'links' => {
+            'selfUrl' => project_release_url(project, release),
+            'mergeRequestsUrl' => project_merge_requests_url(project, params_for_issues_and_mrs),
+            'issuesUrl' => project_issues_url(project, params_for_issues_and_mrs)
           }
-        })
+        )
       end
     end
   end
@@ -85,7 +101,7 @@ describe 'Query.project(fullPath).releases()' do
       end
 
       it 'does not return data for fields that expose repository information' do
-        expect(data).to eq({
+        expect(data).to eq(
           'tagName' => nil,
           'tagPath' => nil,
           'name' => "Release-#{release.id}",
@@ -98,9 +114,76 @@ describe 'Query.project(fullPath).releases()' do
           },
           'evidences' => {
             'nodes' => []
+          },
+          'links' => nil
+        )
+      end
+    end
+  end
+
+  # editUrl is tested separately becuase its permissions
+  # are slightly different than other release fields
+  shared_examples 'access to editUrl' do
+    let(:query) do
+      graphql_query_for(:project, { fullPath: project.full_path },
+        %{
+          releases {
+            nodes {
+              links {
+                editUrl
+              }
+            }
           }
         })
-      end
+    end
+
+    before do
+      post_query
+    end
+
+    it 'returns editUrl' do
+      expect(data).to eq(
+        'links' => {
+          'editUrl' => edit_project_release_url(project, release)
+        }
+      )
+    end
+  end
+
+  shared_examples 'no access to editUrl' do
+    let(:query) do
+      graphql_query_for(:project, { fullPath: project.full_path },
+        %{
+          releases {
+            nodes {
+              links {
+                editUrl
+              }
+            }
+          }
+        })
+    end
+
+    before do
+      post_query
+    end
+
+    it 'does not return editUrl' do
+      expect(data).to eq(
+        'links' => {
+          'editUrl' => nil
+        }
+      )
+    end
+  end
+
+  shared_examples 'no access to any release data' do
+    before do
+      post_query
+    end
+
+    it 'returns nil' do
+      expect(data).to eq(nil)
     end
   end
 
@@ -112,6 +195,13 @@ describe 'Query.project(fullPath).releases()' do
       before_all do
         project.add_guest(guest)
         project.add_reporter(reporter)
+        project.add_developer(developer)
+      end
+
+      context 'when the user is not logged in' do
+        let(:current_user) { stranger }
+
+        it_behaves_like 'no access to any release data'
       end
 
       context 'when the user has Guest permissions' do
@@ -124,6 +214,14 @@ describe 'Query.project(fullPath).releases()' do
         let(:current_user) { reporter }
 
         it_behaves_like 'full access to all repository-related fields'
+        it_behaves_like 'no access to editUrl'
+      end
+
+      context 'when the user has Developer permissions' do
+        let(:current_user) { developer }
+
+        it_behaves_like 'full access to all repository-related fields'
+        it_behaves_like 'access to editUrl'
       end
     end
 
@@ -134,18 +232,35 @@ describe 'Query.project(fullPath).releases()' do
       before_all do
         project.add_guest(guest)
         project.add_reporter(reporter)
+        project.add_developer(developer)
       end
 
       context 'when the user is not logged in' do
         let(:current_user) { stranger }
 
         it_behaves_like 'full access to all repository-related fields'
+        it_behaves_like 'no access to editUrl'
       end
 
       context 'when the user has Guest permissions' do
         let(:current_user) { guest }
 
         it_behaves_like 'full access to all repository-related fields'
+        it_behaves_like 'no access to editUrl'
+      end
+
+      context 'when the user has Reporter permissions' do
+        let(:current_user) { reporter }
+
+        it_behaves_like 'full access to all repository-related fields'
+        it_behaves_like 'no access to editUrl'
+      end
+
+      context 'when the user has Developer permissions' do
+        let(:current_user) { developer }
+
+        it_behaves_like 'full access to all repository-related fields'
+        it_behaves_like 'access to editUrl'
       end
     end
   end

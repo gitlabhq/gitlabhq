@@ -47,6 +47,19 @@ project. If you create the project again, it will be created in its default stat
    It can take a few seconds for it to be deleted.
 1. After the project is deleted, GitLab displays a message confirming your action.
 
+## Dashboards available in Omnibus GitLab
+
+Omnibus GitLab provides a dashboard that displays CPU and memory usage
+of each GitLab server. To select the servers to be displayed in the
+panels, provide a regular expression in the **Instance label regex** field.
+The dashboard uses metrics available in
+[Omnibus GitLab](https://docs.gitlab.com/omnibus/) installations.
+
+![GitLab self monitoring default dashboard](img/self_monitoring_default_dashboard.png)
+
+You can also
+[create your own dashboards](../../../user/project/integrations/prometheus.md#defining-custom-dashboards-per-project).
+
 ## Connection to Prometheus
 
 The project will be automatically configured to connect to the

@@ -67,6 +67,10 @@ module Noteable
     false
   end
 
+  def has_any_diff_note_positions?
+    notes.any? && DiffNotePosition.where(note: notes).exists?
+  end
+
   def discussion_notes
     notes
   end

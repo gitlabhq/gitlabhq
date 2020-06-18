@@ -1410,6 +1410,7 @@ Represents a release
 | `createdAt` | Time | Timestamp of when the release was created |
 | `description` | String | Description (also known as "release notes") of the release |
 | `descriptionHtml` | String | The GitLab Flavored Markdown rendering of `description` |
+| `links` | ReleaseLinks | Links of the release |
 | `name` | String | Name of the release |
 | `releasedAt` | Time | Timestamp of when the release was released |
 | `tagName` | String | Name of the tag associated with the release |
@@ -1445,6 +1446,15 @@ Evidence for a release
 | `filepath` | String | URL from where the evidence can be downloaded |
 | `id` | ID! | ID of the evidence |
 | `sha` | String | SHA1 ID of the evidence hash |
+
+## ReleaseLinks
+
+| Name  | Type  | Description |
+| ---   |  ---- | ----------  |
+| `editUrl` | String | HTTP URL of the release's edit page |
+| `issuesUrl` | String | HTTP URL of the issues page filtered by this release |
+| `mergeRequestsUrl` | String | HTTP URL of the merge request page filtered by this release |
+| `selfUrl` | String | HTTP URL of the release |
 
 ## ReleaseSource
 

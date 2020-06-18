@@ -28,6 +28,8 @@ module Types
           description: 'Timestamp of when the release was released'
     field :assets, Types::ReleaseAssetsType, null: true, method: :itself,
           description: 'Assets of the release'
+    field :links, Types::ReleaseLinksType, null: true, method: :itself,
+          description: 'Links of the release'
     field :milestones, Types::MilestoneType.connection_type, null: true,
           description: 'Milestones associated to the release'
     field :evidences, Types::EvidenceType.connection_type, null: true,

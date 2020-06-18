@@ -313,6 +313,11 @@ Here is an example of a Release Evidence object:
         "created_at": "2019-04-17 15:45:12 UTC",
         "issues": []
       }
+    ],
+    "report_artifacts": [
+      {
+        "url":"https://gitlab.example.com/root/project-name/-/jobs/111/artifacts/download"
+      }
     ]
   }
 }
@@ -340,6 +345,37 @@ Releases page.
 
 Evidence collection can be initiated by using an [API call](../../../api/releases/index.md#collect-release-evidence-premium-only) at any time. Evidence snapshots are visible on
 the Release page, along with the timestamp the Evidence was collected.
+
+### Include report artifacts as release evidence **(ULTIMATE ONLY)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/32773) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.2.
+
+When you create a release, if [job artifacts](../../../ci/pipelines/job_artifacts.md#artifactsreports) are included in the last pipeline that ran, they are automatically included in the release as release evidence.
+
+Although job artifacts normally expire, artifacts included in release evidence do not expire.
+
+To enable job artifact collection you need to specify both:
+
+1. [`artifacts:paths`](../../../ci/yaml/README.md#artifactspaths)
+1. [`artifacts:reports`](../../../ci/pipelines/job_artifacts.md#artifactsreports)
+
+```yaml
+ruby:
+  script:
+    - gem install bundler
+    - bundle install
+    - bundle exec rspec --format progress --format RspecJunitFormatter --out rspec.xml
+  artifacts:
+    paths:
+      - rspec.xml
+    reports:
+      junit: rspec.xml
+```
+
+If the pipeline ran successfully, when you create your release, the `rspec.xml` file is saved as release evidence.
+
+NOTE: **Note:**
+If you [schedule release evidence collection](#schedule-release-evidence-collection), some artifacts may already be expired by the time of evidence collection. To avoid this you can use the [`artifacts:expire_in`](../../../ci/yaml/README.md#artifactsexpire_in) keyword. Learn more in [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/222351).
 
 ### Schedule release evidence collection
 

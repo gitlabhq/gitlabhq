@@ -10162,6 +10162,11 @@ type Release {
   ): ReleaseEvidenceConnection
 
   """
+  Links of the release
+  """
+  links: ReleaseLinks
+
+  """
   Milestones associated to the release
   """
   milestones(
@@ -10450,6 +10455,28 @@ type ReleaseEvidenceEdge {
   The item at the end of the edge.
   """
   node: ReleaseEvidence
+}
+
+type ReleaseLinks {
+  """
+  HTTP URL of the release's edit page
+  """
+  editUrl: String
+
+  """
+  HTTP URL of the issues page filtered by this release
+  """
+  issuesUrl: String
+
+  """
+  HTTP URL of the merge request page filtered by this release
+  """
+  mergeRequestsUrl: String
+
+  """
+  HTTP URL of the release
+  """
+  selfUrl: String
 }
 
 """

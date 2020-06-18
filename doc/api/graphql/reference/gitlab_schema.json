@@ -29728,6 +29728,20 @@
               "deprecationReason": null
             },
             {
+              "name": "links",
+              "description": "Links of the release",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "ReleaseLinks",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "milestones",
               "description": "Milestones associated to the release",
               "args": [
@@ -30495,6 +30509,75 @@
               "type": {
                 "kind": "OBJECT",
                 "name": "ReleaseEvidence",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [
+
+          ],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "ReleaseLinks",
+          "description": null,
+          "fields": [
+            {
+              "name": "editUrl",
+              "description": "HTTP URL of the release's edit page",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "issuesUrl",
+              "description": "HTTP URL of the issues page filtered by this release",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "mergeRequestsUrl",
+              "description": "HTTP URL of the merge request page filtered by this release",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "selfUrl",
+              "description": "HTTP URL of the release",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
                 "ofType": null
               },
               "isDeprecated": false,

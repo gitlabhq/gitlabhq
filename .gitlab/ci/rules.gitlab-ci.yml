@@ -71,6 +71,22 @@
   - ".gitlab-ci.yml"
   - ".gitlab/ci/**/*"
 
+.ci-build-images-patterns: &ci-build-images-patterns
+  - ".gitlab-ci.yml"
+  - ".gitlab/ci/build-images.gitlab-ci.yml"
+
+.ci-review-patterns: &ci-review-patterns
+  - ".gitlab-ci.yml"
+  - ".gitlab/ci/frontend.gitlab-ci.yml"
+  - ".gitlab/ci/build-images.gitlab-ci.yml"
+  - ".gitlab/ci/review.gitlab-ci.yml"
+
+.ci-qa-patterns: &ci-qa-patterns
+  - ".gitlab-ci.yml"
+  - ".gitlab/ci/frontend.gitlab-ci.yml"
+  - ".gitlab/ci/build-images.gitlab-ci.yml"
+  - ".gitlab/ci/qa.gitlab-ci.yml"
+
 .yaml-patterns: &yaml-patterns
   - "**/*.yml"
 
@@ -207,6 +223,26 @@
   rules:
     - <<: *if-master-schedule-2-hourly
     - <<: *if-merge-request-title-update-caches
+
+######################
+# Build images rules #
+######################
+.build-images:rules:build-qa-image:
+  rules:
+    - <<: *if-not-ee
+      when: never
+    - <<: *if-dot-com-gitlab-org-and-security-merge-request
+      changes: *ci-build-images-patterns
+    - <<: *if-dot-com-gitlab-org-and-security-merge-request
+      changes: *code-qa-patterns
+    - <<: *if-dot-com-gitlab-org-schedule
+
+.build-images:rules:build-assets-image:
+  rules:
+    - <<: *if-not-canonical-namespace
+      when: never
+    - changes: *ci-build-images-patterns
+    - changes: *code-backstage-qa-patterns
 
 ####################
 # Cache repo rules #
@@ -378,7 +414,7 @@
 .qa:rules:package-and-qa:
   rules:
     - <<: *if-dot-com-gitlab-org-and-security-merge-request
-      changes: *ci-patterns
+      changes: *ci-qa-patterns
       allow_failure: true
     - <<: *if-dot-com-gitlab-org-and-security-merge-request
       changes: *qa-patterns
@@ -569,18 +605,12 @@
 ################
 # Review rules #
 ################
-.review:rules:build-qa-image:
+.review:rules:review-build-cng:
   rules:
     - <<: *if-not-ee
       when: never
-    - <<: *if-dot-com-gitlab-org-and-security-merge-request
-      changes: *code-qa-patterns
-    - <<: *if-dot-com-gitlab-org-schedule
-
-.review:rules:review-build-cng:
-  rules:
     - <<: *if-dot-com-gitlab-org-merge-request
-      changes: *ci-patterns
+      changes: *ci-review-patterns
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *frontend-patterns
     - <<: *if-dot-com-gitlab-org-merge-request
@@ -594,7 +624,7 @@
     - <<: *if-not-ee
       when: never
     - <<: *if-dot-com-gitlab-org-merge-request
-      changes: *ci-patterns
+      changes: *ci-review-patterns
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *frontend-patterns
       allow_failure: true
@@ -617,7 +647,7 @@
     - <<: *if-not-ee
       when: never
     - <<: *if-dot-com-gitlab-org-merge-request
-      changes: *ci-patterns
+      changes: *ci-review-patterns
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *frontend-patterns
       allow_failure: true

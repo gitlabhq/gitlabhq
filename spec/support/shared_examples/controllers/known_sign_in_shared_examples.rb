@@ -9,14 +9,57 @@ RSpec.shared_examples 'known sign in' do
     user.update!(current_sign_in_ip: ip)
   end
 
-  context 'with a valid post' do
-    context 'when remote IP does not match user last sign in IP' do
-      before do
-        stub_user_ip('127.0.0.1')
-        stub_remote_ip('169.0.0.1')
+  def stub_cookie(value = user.id)
+    cookies.encrypted[KnownSignIn::KNOWN_SIGN_IN_COOKIE] = {
+      value: value, expires: KnownSignIn::KNOWN_SIGN_IN_COOKIE_EXPIRY
+    }
+  end
+
+  context 'when the remote IP and the last sign in IP match' do
+    before do
+      stub_user_ip('169.0.0.1')
+      stub_remote_ip('169.0.0.1')
+    end
+
+    it 'does not notify the user' do
+      expect_any_instance_of(NotificationService).not_to receive(:unknown_sign_in)
+
+      post_action
+    end
+
+    it 'sets/updates the encrypted cookie' do
+      post_action
+
+      expect(cookies.encrypted[KnownSignIn::KNOWN_SIGN_IN_COOKIE]).to eq(user.id)
+    end
+  end
+
+  context 'when the remote IP and the last sign in IP do not match' do
+    before do
+      stub_user_ip('127.0.0.1')
+      stub_remote_ip('169.0.0.1')
+    end
+
+    context 'when the cookie is not previously set' do
+      it 'notifies the user' do
+        expect_next_instance_of(NotificationService) do |instance|
+          expect(instance).to receive(:unknown_sign_in)
+        end
+
+        post_action
       end
 
-      it 'notifies the user' do
+      it 'sets the encrypted cookie' do
+        post_action
+
+        expect(cookies.encrypted[KnownSignIn::KNOWN_SIGN_IN_COOKIE]).to eq(user.id)
+      end
+    end
+
+    it 'notifies the user when the cookie is expired' do
+      stub_cookie
+
+      Timecop.freeze((KnownSignIn::KNOWN_SIGN_IN_COOKIE_EXPIRY + 1.day).from_now) do
         expect_next_instance_of(NotificationService) do |instance|
           expect(instance).to receive(:unknown_sign_in)
         end
@@ -25,35 +68,30 @@ RSpec.shared_examples 'known sign in' do
       end
     end
 
-    context 'when remote IP matches an active session' do
-      before do
-        existing_sessions = ActiveSession.session_ids_for_user(user.id)
-        existing_sessions.each { |sessions| ActiveSession.destroy(user, sessions) }
+    it 'notifies the user when the cookie is for another user' do
+      stub_cookie(create(:user).id)
 
-        stub_user_ip('169.0.0.1')
-        stub_remote_ip('127.0.0.1')
-
-        ActiveSession.set(user, request)
+      expect_next_instance_of(NotificationService) do |instance|
+        expect(instance).to receive(:unknown_sign_in)
       end
 
-      it 'does not notify the user' do
-        expect_any_instance_of(NotificationService).not_to receive(:unknown_sign_in)
-
-        post_action
-      end
+      post_action
     end
 
-    context 'when remote IP address matches last sign in IP' do
-      before do
-        stub_user_ip('127.0.0.1')
-        stub_remote_ip('127.0.0.1')
-      end
+    it 'does not notify the user when remote IP matches an active session' do
+      ActiveSession.set(user, request)
 
-      it 'does not notify the user' do
-        expect_any_instance_of(NotificationService).not_to receive(:unknown_sign_in)
+      expect_any_instance_of(NotificationService).not_to receive(:unknown_sign_in)
 
-        post_action
-      end
+      post_action
+    end
+
+    it 'does not notify the user when the cookie is present and not expired' do
+      stub_cookie
+
+      expect_any_instance_of(NotificationService).not_to receive(:unknown_sign_in)
+
+      post_action
     end
   end
 end

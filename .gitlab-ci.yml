@@ -61,6 +61,7 @@ variables:
   DOCKER_VERSION: "19.03.0"
 
 include:
+  - local: .gitlab/ci/build-images.gitlab-ci.yml
   - local: .gitlab/ci/cache-repo.gitlab-ci.yml
   - local: .gitlab/ci/cng.gitlab-ci.yml
   - local: .gitlab/ci/docs.gitlab-ci.yml

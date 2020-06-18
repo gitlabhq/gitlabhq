@@ -306,9 +306,11 @@ stages:
 deploy:
   stage: deploy
   script:
-    - echo '//gitlab.com/api/v4/projects/<your_project_id>/packages/npm/:_authToken=${CI_JOB_TOKEN}'>.npmrc
+    - echo '//gitlab.com/api/v4/projects/${CI_PROJECT_ID}/packages/npm/:_authToken=${CI_JOB_TOKEN}'>.npmrc
     - npm publish
 ```
+
+Learn more about [using `CI_JOB_TOKEN` to authenticate to the GitLab NPM registry](#authenticating-with-a-ci-job-token).
 
 ## Troubleshooting
 

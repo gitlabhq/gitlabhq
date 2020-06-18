@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require 'pp'
 
 describe 'Query.project(fullPath).release(tagName)' do
   include GraphqlHelpers
@@ -12,15 +11,19 @@ describe 'Query.project(fullPath).release(tagName)' do
   let_it_be(:reporter) { create(:user) }
   let_it_be(:stranger) { create(:user) }
 
+  let(:params_for_issues_and_mrs) { { scope: 'all', state: 'opened', release_tag: release.tag } }
+  let(:post_query) { post_graphql(query, current_user: current_user) }
+  let(:path_prefix) { %w[project release] }
+  let(:data) { graphql_data.dig(*path) }
+
   def query(rq = release_fields)
     graphql_query_for(:project, { fullPath: project.full_path },
       query_graphql_field(:release, { tagName: release.tag }, rq))
   end
 
-  let(:post_query) { post_graphql(query, current_user: current_user) }
-  let(:path_prefix) { %w[project release] }
-
-  let(:data) { graphql_data.dig(*path) }
+  before do
+    stub_default_url_options(host: 'www.example.com')
+  end
 
   shared_examples 'full access to the release field' do
     describe 'scalar fields' do
@@ -83,10 +86,10 @@ describe 'Query.project(fullPath).release(tagName)' do
       it 'finds the author of the release' do
         post_query
 
-        expect(data).to eq({
+        expect(data).to eq(
           'id' => global_id_of(release.author),
           'username' => release.author.username
-        })
+        )
       end
     end
 
@@ -100,7 +103,7 @@ describe 'Query.project(fullPath).release(tagName)' do
       it 'finds the commit associated with the release' do
         post_query
 
-        expect(data).to eq({ 'sha' => release.commit.sha })
+        expect(data).to eq('sha' => release.commit.sha)
       end
     end
 
@@ -115,7 +118,7 @@ describe 'Query.project(fullPath).release(tagName)' do
         it 'returns the number of assets associated to the release' do
           post_query
 
-          expect(data).to eq({ 'count' => release.sources.size + release.links.size })
+          expect(data).to eq('count' => release.sources.size + release.links.size)
         end
       end
 
@@ -166,6 +169,28 @@ describe 'Query.project(fullPath).release(tagName)' do
       end
     end
 
+    describe 'links' do
+      let(:path) { path_prefix + %w[links] }
+
+      let(:release_fields) do
+        query_graphql_field(:links, nil, %{
+          selfUrl
+          mergeRequestsUrl
+          issuesUrl
+        })
+      end
+
+      it 'finds all release links' do
+        post_query
+
+        expect(data).to eq(
+          'selfUrl' => project_release_url(project, release),
+          'mergeRequestsUrl' => project_merge_requests_url(project, params_for_issues_and_mrs),
+          'issuesUrl' => project_issues_url(project, params_for_issues_and_mrs)
+        )
+      end
+    end
+
     describe 'evidences' do
       let(:path) { path_prefix + %w[evidences] }
 
@@ -177,14 +202,13 @@ describe 'Query.project(fullPath).release(tagName)' do
         post_query
 
         evidence = release.evidences.first.present
-        expected = {
+
+        expect(data["nodes"].first).to eq(
           'id' => global_id_of(evidence),
           'sha' => evidence.sha,
           'filepath' => evidence.filepath,
           'collectedAt' => evidence.collected_at.utc.iso8601
-        }
-
-        expect(data["nodes"].first).to eq(expected)
+        )
       end
     end
   end
@@ -204,6 +228,38 @@ describe 'Query.project(fullPath).release(tagName)' do
       it 'returns nil' do
         expect(data).to eq(nil)
       end
+    end
+  end
+
+  shared_examples 'access to editUrl' do
+    let(:path) { path_prefix + %w[links] }
+
+    let(:release_fields) do
+      query_graphql_field(:links, nil, 'editUrl')
+    end
+
+    before do
+      post_query
+    end
+
+    it 'returns editUrl' do
+      expect(data).to eq('editUrl' => edit_project_release_url(project, release))
+    end
+  end
+
+  shared_examples 'no access to editUrl' do
+    let(:path) { path_prefix + %w[links] }
+
+    let(:release_fields) do
+      query_graphql_field(:links, nil, 'editUrl')
+    end
+
+    before do
+      post_query
+    end
+
+    it 'does not return editUrl' do
+      expect(data).to eq('editUrl' => nil)
     end
   end
 
@@ -238,12 +294,14 @@ describe 'Query.project(fullPath).release(tagName)' do
         let(:current_user) { reporter }
 
         it_behaves_like 'full access to the release field'
+        it_behaves_like 'no access to editUrl'
       end
 
       context 'when the user has Developer permissions' do
         let(:current_user) { developer }
 
         it_behaves_like 'full access to the release field'
+        it_behaves_like 'access to editUrl'
       end
     end
 
@@ -265,12 +323,21 @@ describe 'Query.project(fullPath).release(tagName)' do
         let(:current_user) { stranger }
 
         it_behaves_like 'full access to the release field'
+        it_behaves_like 'no access to editUrl'
       end
 
       context 'when the user has Guest permissions' do
         let(:current_user) { guest }
 
         it_behaves_like 'full access to the release field'
+        it_behaves_like 'no access to editUrl'
+      end
+
+      context 'when the user has Reporter permissions' do
+        let(:current_user) { reporter }
+
+        it_behaves_like 'full access to the release field'
+        it_behaves_like 'no access to editUrl'
       end
 
       context 'when the user has Reporter permissions' do
@@ -283,6 +350,7 @@ describe 'Query.project(fullPath).release(tagName)' do
         let(:current_user) { developer }
 
         it_behaves_like 'full access to the release field'
+        it_behaves_like 'access to editUrl'
       end
     end
   end

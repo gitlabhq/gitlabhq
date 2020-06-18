@@ -117,6 +117,23 @@ module DeclarativePolicy
         own_delegations[name] = delegation_block
       end
 
+      # Declare that the given abilities should not be read from delegates.
+      #
+      # This is useful if you have an ability that you want to define
+      # differently in a policy than in a delegated policy, but still want to
+      # delegate all other abilities.
+      #
+      # example:
+      #
+      #   delegate { @subect.parent }
+      #
+      #   overrides :drive_car, :watch_tv
+      #
+      def overrides(*names)
+        @overrides ||= [].to_set
+        @overrides.merge(names)
+      end
+
       # Declares a rule, constructed using RuleDsl, and returns
       # a PolicyDsl which is used for registering the rule with
       # this class. PolicyDsl will call back into Base.enable_when,
@@ -265,9 +282,13 @@ module DeclarativePolicy
       @runners ||= {}
       @runners[ability] ||=
         begin
-          delegated_runners = delegated_policies.values.compact.map { |p| p.runner(ability) }
           own_runner = Runner.new(own_steps(ability))
-          delegated_runners.inject(own_runner, &:merge_runner)
+          if self.class.overrides.include?(ability)
+            own_runner
+          else
+            delegated_runners = delegated_policies.values.compact.map { |p| p.runner(ability) }
+            delegated_runners.inject(own_runner, &:merge_runner)
+          end
         end
     end
 
