@@ -1,6 +1,6 @@
-#import "./designNote.fragment.graphql"
-#import "./designList.fragment.graphql"
-#import "./diffRefs.fragment.graphql"
+#import "./design_note.fragment.graphql"
+#import "./design_list.fragment.graphql"
+#import "./diff_refs.fragment.graphql"
 #import "./discussion_resolved_status.fragment.graphql"
 
 fragment DesignItem on Design {

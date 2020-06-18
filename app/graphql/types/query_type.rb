@@ -47,11 +47,6 @@ module Types
           null: false,
           description: 'Fields related to design management'
 
-    field :user, Types::UserType,
-          null: true,
-          description: 'Find a user',
-          resolver: Resolvers::UserResolver
-
     field :users, Types::UserType.connection_type,
           null: true,
           description: 'Find users',
@@ -61,8 +56,9 @@ module Types
           description: 'Text to echo back',
           resolver: Resolvers::EchoResolver
 
-    field :user, Types::UserType, null: true,
-          description: 'Find a user on this instance',
+    field :user, Types::UserType,
+          null: true,
+          description: 'Find a user',
           resolver: Resolvers::UserResolver
 
     def design_management

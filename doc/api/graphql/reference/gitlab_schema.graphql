@@ -9942,7 +9942,7 @@ type Query {
   ): SnippetConnection
 
   """
-  Find a user on this instance
+  Find a user
   """
   user(
     """

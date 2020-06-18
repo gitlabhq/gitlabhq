@@ -63,7 +63,10 @@ Dark theme currently only works with the 'Dark' syntax highlighting.
 
 NOTE: **Note:**
 GitLab uses the [rouge Ruby library](http://rouge.jneen.net/ "Rouge website")
-for syntax highlighting. For a list of supported languages visit the rouge website.
+for syntax highlighting outside of any Editor context. The WebIDE (like Snippets)
+uses [Monaco Editor](https://microsoft.github.io/monaco-editor/) and it's provided [Monarch](https://microsoft.github.io/monaco-editor/monarch.html) library for
+syntax highlighting. For a list of supported languages, visit the documentation of
+the respective libraries.
 
 Changing this setting allows you to customize the color theme when viewing any
 syntax highlighted code on GitLab.
@@ -80,8 +83,9 @@ The default syntax theme is White, and you can choose among 5 different themes:
 
 [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/2389) in 13.0, the theme
 you choose also applies to the [Web IDE](../project/web_ide/index.md)'s code editor and [Snippets](../snippets.md).
-The themes are available only in the Web IDE file editor, except for the [dark theme](https://gitlab.com/gitlab-org/gitlab/-/issues/209808),
-which applies to the entire Web IDE screen.
+The themes are available only in the Web IDE file editor, except for the [dark theme](https://gitlab.com/gitlab-org/gitlab/-/issues/209808) and
+the [solarized dark theme](https://gitlab.com/gitlab-org/gitlab/-/issues/219228),
+which apply to the entire Web IDE screen.
 
 ## Behavior
 

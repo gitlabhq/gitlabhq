@@ -22,6 +22,8 @@ class PersonalAccessToken < ApplicationRecord
   scope :inactive, -> { where("revoked = true OR expires_at < NOW()") }
   scope :with_impersonation, -> { where(impersonation: true) }
   scope :without_impersonation, -> { where(impersonation: false) }
+  scope :revoked, -> { where(revoked: true) }
+  scope :not_revoked, -> { where(revoked: [false, nil]) }
   scope :for_user, -> (user) { where(user: user) }
   scope :preload_users, -> { preload(:user) }
   scope :order_expires_at_asc, -> { reorder(expires_at: :asc) }

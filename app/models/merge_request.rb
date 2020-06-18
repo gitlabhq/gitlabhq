@@ -1374,9 +1374,9 @@ class MergeRequest < ApplicationRecord
   # TODO: consider renaming this as with exposed artifacts we generate reports,
   # not always compare
   # issue: https://gitlab.com/gitlab-org/gitlab/issues/34224
-  def compare_reports(service_class, current_user = nil)
-    with_reactive_cache(service_class.name, current_user&.id) do |data|
-      unless service_class.new(project, current_user, id: id)
+  def compare_reports(service_class, current_user = nil, report_type = nil )
+    with_reactive_cache(service_class.name, current_user&.id, report_type) do |data|
+      unless service_class.new(project, current_user, id: id, report_type: report_type)
         .latest?(base_pipeline, actual_head_pipeline, data)
         raise InvalidateReactiveCache
       end
@@ -1385,7 +1385,7 @@ class MergeRequest < ApplicationRecord
     end || { status: :parsing }
   end
 
-  def calculate_reactive_cache(identifier, current_user_id = nil, *args)
+  def calculate_reactive_cache(identifier, current_user_id = nil, report_type = nil, *args)
     service_class = identifier.constantize
 
     # TODO: the type check should change to something that includes exposed artifacts service
@@ -1393,7 +1393,7 @@ class MergeRequest < ApplicationRecord
     raise NameError, service_class unless service_class < Ci::CompareReportsBaseService
 
     current_user = User.find_by(id: current_user_id)
-    service_class.new(project, current_user, id: id).execute(base_pipeline, actual_head_pipeline)
+    service_class.new(project, current_user, id: id, report_type: report_type).execute(base_pipeline, actual_head_pipeline)
   end
 
   def all_commits

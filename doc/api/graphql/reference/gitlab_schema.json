@@ -29206,7 +29206,7 @@
             },
             {
               "name": "user",
-              "description": "Find a user on this instance",
+              "description": "Find a user",
               "args": [
                 {
                   "name": "id",

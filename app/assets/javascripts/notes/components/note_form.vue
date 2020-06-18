@@ -2,7 +2,7 @@
 import { mapGetters, mapActions, mapState } from 'vuex';
 import { mergeUrlParams } from '~/lib/utils/url_utility';
 import eventHub from '../event_hub';
-import issueWarning from '../../vue_shared/components/issue/issue_warning.vue';
+import NoteableWarning from '../../vue_shared/components/notes/noteable_warning.vue';
 import markdownField from '../../vue_shared/components/markdown/field.vue';
 import issuableStateMixin from '../mixins/issuable_state';
 import resolvable from '../mixins/resolvable';
@@ -12,7 +12,7 @@ import { getDraft, updateDraft } from '~/lib/utils/autosave';
 export default {
   name: 'NoteForm',
   components: {
-    issueWarning,
+    NoteableWarning,
     markdownField,
   },
   mixins: [issuableStateMixin, resolvable],
@@ -303,12 +303,12 @@ export default {
     ></div>
     <div class="flash-container timeline-content"></div>
     <form :data-line-code="lineCode" class="edit-note common-note-form js-quick-submit gfm-form">
-      <issue-warning
+      <noteable-warning
         v-if="hasWarning(getNoteableData)"
         :is-locked="isLocked(getNoteableData)"
         :is-confidential="isConfidential(getNoteableData)"
-        :locked-issue-docs-path="lockedIssueDocsPath"
-        :confidential-issue-docs-path="confidentialIssueDocsPath"
+        :locked-noteable-docs-path="lockedIssueDocsPath"
+        :confidential-noteable-docs-path="confidentialIssueDocsPath"
       />
 
       <markdown-field

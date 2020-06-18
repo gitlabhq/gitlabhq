@@ -8,6 +8,18 @@ function buildDocsLinkStart(path) {
   return `<a href="${escape(path)}" target="_blank" rel="noopener noreferrer">`;
 }
 
+const NoteableType = {
+  Issue: 'issue',
+  Epic: 'epic',
+  MergeRequest: 'merge_request',
+};
+
+const NoteableTypeText = {
+  [NoteableType.Issue]: __('issue'),
+  [NoteableType.Epic]: __('epic'),
+  [NoteableType.MergeRequest]: __('merge request'),
+};
+
 export default {
   components: {
     icon,
@@ -24,12 +36,17 @@ export default {
       default: false,
       required: false,
     },
-    lockedIssueDocsPath: {
+    noteableType: {
+      type: String,
+      required: false,
+      default: NoteableType.Issue,
+    },
+    lockedNoteableDocsPath: {
       type: String,
       required: false,
       default: '',
     },
-    confidentialIssueDocsPath: {
+    confidentialNoteableDocsPath: {
       type: String,
       required: false,
       default: '',
@@ -45,18 +62,32 @@ export default {
     isLockedAndConfidential() {
       return this.isConfidential && this.isLocked;
     },
+    noteableTypeText() {
+      return NoteableTypeText[this.noteableType];
+    },
     confidentialAndLockedDiscussionText() {
       return sprintf(
         __(
-          'This issue is %{confidentialLinkStart}confidential%{linkEnd} and %{lockedLinkStart}locked%{linkEnd}.',
+          'This %{noteableTypeText} is %{confidentialLinkStart}confidential%{linkEnd} and %{lockedLinkStart}locked%{linkEnd}.',
         ),
         {
-          confidentialLinkStart: buildDocsLinkStart(this.confidentialIssueDocsPath),
-          lockedLinkStart: buildDocsLinkStart(this.lockedIssueDocsPath),
+          noteableTypeText: this.noteableTypeText,
+          confidentialLinkStart: buildDocsLinkStart(this.confidentialNoteableDocsPath),
+          lockedLinkStart: buildDocsLinkStart(this.lockedNoteableDocsPath),
           linkEnd: '</a>',
         },
         false,
       );
+    },
+    confidentialContextText() {
+      return sprintf(__('This is a confidential %{noteableTypeText}.'), {
+        noteableTypeText: this.noteableTypeText,
+      });
+    },
+    lockedContextText() {
+      return sprintf(__('This %{noteableTypeText} is locked.'), {
+        noteableTypeText: this.noteableTypeText,
+      });
     },
   },
 };
@@ -73,19 +104,15 @@ export default {
     </span>
 
     <span v-else-if="isConfidential" ref="confidential">
-      {{ __('This is a confidential issue.') }}
+      {{ confidentialContextText }}
       {{ __('People without permission will never get a notification.') }}
-      <gl-link :href="confidentialIssueDocsPath" target="_blank">
-        {{ __('Learn more') }}
-      </gl-link>
+      <gl-link :href="confidentialNoteableDocsPath" target="_blank">{{ __('Learn more') }}</gl-link>
     </span>
 
     <span v-else-if="isLocked" ref="locked">
-      {{ __('This issue is locked.') }}
+      {{ lockedContextText }}
       {{ __('Only project members can comment.') }}
-      <gl-link :href="lockedIssueDocsPath" target="_blank">
-        {{ __('Learn more') }}
-      </gl-link>
+      <gl-link :href="lockedNoteableDocsPath" target="_blank">{{ __('Learn more') }}</gl-link>
     </span>
   </div>
 </template>

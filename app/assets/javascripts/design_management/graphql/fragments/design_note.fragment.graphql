@@ -1,4 +1,4 @@
-#import "./diffRefs.fragment.graphql"
+#import "./diff_refs.fragment.graphql"
 #import "~/graphql_shared/fragments/author.fragment.graphql"
 #import "./note_permissions.fragment.graphql"
 

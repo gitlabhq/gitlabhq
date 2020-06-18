@@ -8,6 +8,7 @@ RSpec.describe 'Database schema' do
 
   let(:connection) { ActiveRecord::Base.connection }
   let(:tables) { connection.tables }
+  let(:columns_name_with_jsonb) { retrieve_columns_name_with_jsonb }
 
   # Use if you are certain that this column should not have a foreign key
   # EE: edit the ee/spec/db/schema_support.rb
@@ -169,7 +170,53 @@ RSpec.describe 'Database schema' do
     end
   end
 
+  # These pre-existing columns does not use a schema validation yet
+  IGNORED_JSONB_COLUMNS = {
+    "ApplicationSetting" => %w[repository_storages_weighted],
+    "AlertManagement::Alert" => %w[payload],
+    "Ci::BuildMetadata" => %w[config_options config_variables],
+    "Geo::Event" => %w[payload],
+    "GeoNodeStatus" => %w[status],
+    "Operations::FeatureFlagScope" => %w[strategies],
+    "Operations::FeatureFlags::Strategy" => %w[parameters],
+    "Packages::Composer::Metadatum" => %w[composer_json],
+    "Releases::Evidence" => %w[summary]
+  }.freeze
+
+  # We are skipping GEO models for now as it adds up complexity
+  describe 'for jsonb columns' do
+    it 'uses json schema validator' do
+      columns_name_with_jsonb.each do |hash|
+        next if models_by_table_name[hash["table_name"]].nil?
+
+        models_by_table_name[hash["table_name"]].each do |model|
+          jsonb_columns = [hash["column_name"]] - ignored_jsonb_columns(model.name)
+
+          expect(model).to validate_jsonb_schema(jsonb_columns)
+        end
+      end
+    end
+  end
+
   private
+
+  def retrieve_columns_name_with_jsonb
+    sql = <<~SQL
+        SELECT table_name, column_name, data_type
+          FROM information_schema.columns
+        WHERE table_catalog = '#{ApplicationRecord.connection_config[:database]}'
+          AND table_schema = 'public'
+          AND table_name NOT LIKE 'pg_%'
+          AND data_type = 'jsonb'
+      ORDER BY table_name, column_name, data_type
+    SQL
+
+    ApplicationRecord.connection.select_all(sql).to_a
+  end
+
+  def models_by_table_name
+    @models_by_table_name ||= ApplicationRecord.descendants.reject(&:abstract_class).group_by(&:table_name)
+  end
 
   def ignored_fk_columns(column)
     IGNORED_FK_COLUMNS.fetch(column, [])
@@ -177,5 +224,9 @@ RSpec.describe 'Database schema' do
 
   def ignored_limit_enums(model)
     IGNORED_LIMIT_ENUMS.fetch(model, [])
+  end
+
+  def ignored_jsonb_columns(model)
+    IGNORED_JSONB_COLUMNS.fetch(model, [])
   end
 end

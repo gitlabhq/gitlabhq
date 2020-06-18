@@ -8,7 +8,7 @@ import Design from '../components/list/item.vue';
 import DesignDestroyer from '../components/design_destroyer.vue';
 import DesignVersionDropdown from '../components/upload/design_version_dropdown.vue';
 import DesignDropzone from '../components/upload/design_dropzone.vue';
-import uploadDesignMutation from '../graphql/mutations/uploadDesign.mutation.graphql';
+import uploadDesignMutation from '../graphql/mutations/upload_design.mutation.graphql';
 import permissionsQuery from '../graphql/queries/design_permissions.query.graphql';
 import getDesignListQuery from '../graphql/queries/get_design_list.query.graphql';
 import allDesignsMixin from '../mixins/all_designs';

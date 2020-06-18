@@ -11,10 +11,10 @@ import DesignScaler from '../../components/design_scaler.vue';
 import DesignPresentation from '../../components/design_presentation.vue';
 import DesignReplyForm from '../../components/design_notes/design_reply_form.vue';
 import DesignSidebar from '../../components/design_sidebar.vue';
-import getDesignQuery from '../../graphql/queries/getDesign.query.graphql';
-import appDataQuery from '../../graphql/queries/appData.query.graphql';
-import createImageDiffNoteMutation from '../../graphql/mutations/createImageDiffNote.mutation.graphql';
-import updateImageDiffNoteMutation from '../../graphql/mutations/updateImageDiffNote.mutation.graphql';
+import getDesignQuery from '../../graphql/queries/get_design.query.graphql';
+import appDataQuery from '../../graphql/queries/app_data.query.graphql';
+import createImageDiffNoteMutation from '../../graphql/mutations/create_image_diff_note.mutation.graphql';
+import updateImageDiffNoteMutation from '../../graphql/mutations/update_image_diff_note.mutation.graphql';
 import updateActiveDiscussionMutation from '../../graphql/mutations/update_active_discussion.mutation.graphql';
 import {
   extractDiscussions,

@@ -14,12 +14,12 @@ following format:
 ---
 title: "Change[log]s"
 merge_request: 1972
-author: Black Sabbath
+author: Black Sabbath @bsabbath
 type: added
 ```
 
 The `merge_request` value is a reference to a merge request that adds this
-entry, and the `author` key is used to give attribution to community
+entry, and the `author` key (format: `<full name> <GitLab username>`) is used to give attribution to community
 contributors. **Both are optional**.
 The `type` field maps the category of the change,
 valid options are: added, fixed, changed, deprecated, removed, security, performance, other. **Type field is mandatory**.

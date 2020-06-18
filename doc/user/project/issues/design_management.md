@@ -184,17 +184,23 @@ so that everyone involved can participate in the discussion.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13049) in GitLab 13.1.
 
-Discussion threads can be resolved on Designs. You can mark a thread as resolved
-or unresolved by clicking the **Resolve thread** icon at the first comment of the
-discussion.
+Discussion threads can be resolved on Designs.
 
-![Resolve thread icon](img/resolve_design-discussion_icon_v13_1.png)
+There are two ways to resolve/unresolve a Design thread:
 
-Pinned comments can also be resolved or unresolved in their threads.
-When replying to a comment, you will see a checkbox that you can click in order to resolve or unresolve
-the thread once published.
+1. You can mark a thread as resolved or unresolved by clicking the checkmark icon for **Resolve thread** in the top-right corner of the first comment of the discussion:
 
-![Resolve checkbox](img/resolve_design-discussion_checkbox_v13_1.png)
+  ![Resolve thread icon](img/resolve_design-discussion_icon_v13_1.png)
+
+1. Design threads can also be resolved or unresolved in their threads by using a checkbox.
+  When replying to a comment, you will see a checkbox that you can click in order to resolve or unresolve
+  the thread once published:
+
+  ![Resolve checkbox](img/resolve_design-discussion_checkbox_v13_1.png)
+
+Note that your resolved comment pins will disappear from the Design to free up space for new discussions.
+However, if you need to revisit or find a resolved discussion, all of your resolved threads will be
+available in the **Resolved Comment** area at the bottom of the right sidebar.
 
 ## Referring to designs in Markdown
 

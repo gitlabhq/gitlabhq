@@ -187,6 +187,20 @@ describe PersonalAccessToken do
         expect(described_class.without_impersonation).to contain_exactly(personal_access_token)
       end
     end
+
+    describe 'revoke scopes' do
+      let_it_be(:revoked_token) { create(:personal_access_token, :revoked) }
+      let_it_be(:non_revoked_token) { create(:personal_access_token, revoked: false) }
+      let_it_be(:non_revoked_token2) { create(:personal_access_token, revoked: nil) }
+
+      describe '.revoked' do
+        it { expect(described_class.revoked).to contain_exactly(revoked_token) }
+      end
+
+      describe '.not_revoked' do
+        it { expect(described_class.not_revoked).to contain_exactly(non_revoked_token, non_revoked_token2) }
+      end
+    end
   end
 
   describe '.simple_sorts' do

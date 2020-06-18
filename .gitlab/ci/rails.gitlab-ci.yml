@@ -112,10 +112,10 @@ downtime_check:
 .rspec-base-pg11:
   extends:
     - .rspec-base
-    - .rails:rules:ee-and-foss
     - .use-pg11
 
 .rspec-base-migration:
+  extends: .rails:rules:ee-and-foss-migration
   script:
     - run_timed_command "scripts/gitaly-test-build"
     - run_timed_command "scripts/gitaly-test-spawn"
@@ -129,26 +129,34 @@ rspec migration pg11:
   parallel: 5
 
 rspec unit pg11:
-  extends: .rspec-base-pg11
+  extends:
+    - .rspec-base-pg11
+    - .rails:rules:ee-and-foss-unit
   parallel: 20
 
 rspec integration pg11:
-  extends: .rspec-base-pg11
+  extends:
+    - .rspec-base-pg11
+    - .rails:rules:ee-and-foss-integration
   parallel: 8
 
 rspec system pg11:
-  extends: .rspec-base-pg11
+  extends:
+    - .rspec-base-pg11
+    - .rails:rules:ee-and-foss-system
   parallel: 24
 
 rspec fast_spec_helper:
-  extends: .rspec-base-pg11
+  extends:
+    - .rspec-base-pg11
+    - .rails:rules:ee-and-foss-fast_spec_helper
   script:
     - bin/rspec spec/fast_spec_helper.rb
 
 .db-job-base:
   extends:
     - .rails-job-base
-    - .rails:rules:ee-and-foss
+    - .rails:rules:ee-and-foss-migration
     - .use-pg11
   stage: test
   needs: ["setup-test-env"]
@@ -253,62 +261,70 @@ rspec:coverage:
 
 ##################################################
 # EE: default refs (MRs, master, schedules) jobs #
-.rspec-base-ee:
-  extends:
-    - .rspec-base
-    - .rails:rules:ee-only
-
 .rspec-base-pg11-as-if-foss:
   extends:
     - .rspec-base
-    - .rails:rules:as-if-foss
     - .as-if-foss
     - .use-pg11
   needs: ["setup-test-env", "retrieve-tests-metadata", "compile-test-assets as-if-foss"]
-
-.rspec-ee-base-pg11:
-  extends:
-    - .rspec-base-ee
-    - .use-pg11-ee
 
 rspec migration pg11-as-if-foss:
   extends:
     - .rspec-base-pg11-as-if-foss
     - .rspec-base-migration
+    - .rails:rules:as-if-foss-migration
   parallel: 5
 
 rspec unit pg11-as-if-foss:
-  extends: .rspec-base-pg11-as-if-foss
+  extends:
+    - .rspec-base-pg11-as-if-foss
+    - .rails:rules:as-if-foss-unit
   parallel: 20
 
 rspec integration pg11-as-if-foss:
-  extends: .rspec-base-pg11-as-if-foss
+  extends:
+    - .rspec-base-pg11-as-if-foss
+    - .rails:rules:as-if-foss-integration
   parallel: 8
 
 rspec system pg11-as-if-foss:
-  extends: .rspec-base-pg11-as-if-foss
+  extends:
+    - .rspec-base-pg11-as-if-foss
+    - .rails:rules:as-if-foss-system
   parallel: 24
+
+.rspec-ee-base-pg11:
+  extends:
+    - .rspec-base
+    - .use-pg11-ee
 
 rspec-ee migration pg11:
   extends:
     - .rspec-ee-base-pg11
     - .rspec-base-migration
+    - .rails:rules:ee-only-migration
   parallel: 2
 
 rspec-ee unit pg11:
-  extends: .rspec-ee-base-pg11
+  extends:
+    - .rspec-ee-base-pg11
+    - .rails:rules:ee-only-unit
   parallel: 10
 
 rspec-ee integration pg11:
-  extends: .rspec-ee-base-pg11
+  extends:
+    - .rspec-ee-base-pg11
+    - .rails:rules:ee-only-integration
   parallel: 4
 
 rspec-ee system pg11:
-  extends: .rspec-ee-base-pg11
+  extends:
+    - .rspec-ee-base-pg11
+    - .rails:rules:ee-only-system
   parallel: 6
 
 .rspec-ee-base-geo:
-  extends: .rspec-base-ee
+  extends: .rspec-base
   script:
     - run_timed_command "scripts/gitaly-test-build"
     - run_timed_command "scripts/gitaly-test-spawn"
@@ -322,19 +338,25 @@ rspec-ee system pg11:
     - .use-pg11-ee
 
 rspec-ee unit pg11 geo:
-  extends: .rspec-ee-base-geo-pg11
+  extends:
+    - .rspec-ee-base-geo-pg11
+    - .rails:rules:ee-only-unit
   parallel: 2
 
 rspec-ee integration pg11 geo:
-  extends: .rspec-ee-base-geo-pg11
+  extends:
+    - .rspec-ee-base-geo-pg11
+    - .rails:rules:ee-only-integration
 
 rspec-ee system pg11 geo:
-  extends: .rspec-ee-base-geo-pg11
+  extends:
+    - .rspec-ee-base-geo-pg11
+    - .rails:rules:ee-only-system
 
 db:rollback geo:
   extends:
     - db:rollback
-    - .rails:rules:ee-only
+    - .rails:rules:ee-only-migration
   script:
     - bundle exec rake geo:db:migrate VERSION=20170627195211
     - bundle exec rake geo:db:migrate

@@ -15,7 +15,7 @@ module Gitlab
                             allow_failure type when start_in artifacts cache
                             dependencies before_script needs after_script
                             environment coverage retry parallel interruptible timeout
-                            resource_group release].freeze
+                            resource_group release secrets].freeze
 
           REQUIRED_BY_NEEDS = %i[stage].freeze
 
@@ -191,3 +191,5 @@ module Gitlab
     end
   end
 end
+
+::Gitlab::Ci::Config::Entry::Job.prepend_if_ee('::EE::Gitlab::Ci::Config::Entry::Job')

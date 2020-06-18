@@ -1,4 +1,4 @@
-#import "../fragments/designNote.fragment.graphql"
+#import "../fragments/design_note.fragment.graphql"
 
 mutation updateNote($input: UpdateNoteInput!) {
   updateNote(input: $input) {

@@ -6,7 +6,7 @@ import createFlash from '~/flash';
 import DesignIndex from '~/design_management/pages/design/index.vue';
 import DesignSidebar from '~/design_management/components/design_sidebar.vue';
 import DesignPresentation from '~/design_management/components/design_presentation.vue';
-import createImageDiffNoteMutation from '~/design_management/graphql/mutations/createImageDiffNote.mutation.graphql';
+import createImageDiffNoteMutation from '~/design_management/graphql/mutations/create_image_diff_note.mutation.graphql';
 import design from '../../mock_data/design';
 import mockResponseWithDesigns from '../../mock_data/designs';
 import mockResponseNoDesigns from '../../mock_data/no_designs';

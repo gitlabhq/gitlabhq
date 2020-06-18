@@ -810,6 +810,14 @@ class BuildMetadata
 end
 ```
 
+When using a `JSONB` column, use the [JsonSchemaValidator](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/validators/json_schema_validator.rb) to keep control of the data being inserted over time.
+
+```ruby
+class BuildMetadata
+  validates: :config_options, json_schema: { filename: 'build_metadata_config_option' }
+end
+```
+
 ## Testing
 
 See the [Testing Rails migrations](testing_guide/testing_migrations_guide.md) style guide.

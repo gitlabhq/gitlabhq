@@ -33,7 +33,7 @@ describe Gitlab::Ci::Config::Entry::Job do
            inherit]
       end
 
-      it { is_expected.to match_array result }
+      it { is_expected.to include(*result) }
     end
   end
 

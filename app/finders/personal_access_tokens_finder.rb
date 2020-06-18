@@ -51,6 +51,8 @@ class PersonalAccessTokensFinder
       tokens.active
     when 'inactive'
       tokens.inactive
+    when 'active_or_expired'
+      tokens.not_revoked.expired.or(tokens.active)
     else
       tokens
     end
