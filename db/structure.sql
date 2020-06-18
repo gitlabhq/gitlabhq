@@ -1,9 +1,5 @@
 SET search_path=public;
 
-CREATE SCHEMA partitions_dynamic;
-
-COMMENT ON SCHEMA partitions_dynamic IS 'Schema to hold partitions managed dynamically from the application, e.g. for time space partitioning.';
-
 CREATE EXTENSION IF NOT EXISTS pg_trgm WITH SCHEMA public;
 
 CREATE TABLE public.abuse_reports (
@@ -14068,7 +14064,6 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200610130002
 20200613104045
 20200615083635
-20200615101135
 20200615121217
 20200615123055
 20200615232735

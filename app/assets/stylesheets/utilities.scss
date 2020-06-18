@@ -100,3 +100,11 @@
 .gl-pl-7 {
   padding-left: $gl-spacing-scale-7;
 }
+
+.gl-transition-property-stroke-opacity {
+  transition-property: stroke-opacity;
+}
+
+.gl-transition-property-stroke {
+  transition-property: stroke;
+}

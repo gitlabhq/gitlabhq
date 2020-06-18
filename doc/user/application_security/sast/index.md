@@ -242,7 +242,7 @@ a `before_script` execution to prepare your scan job.
 
 To pass your project's dependencies as artifacts, the dependencies must be included
 in the project's working directory and specified using the `artifacts:path` configuration.
-If all dependencies are present, the `-compile=false` flag can be provided to the
+If all dependencies are present, the `COMPILE=false` variable can be provided to the
 analyzer and compilation will be skipped:
 
 ```yaml
@@ -267,10 +267,9 @@ build:
 spotbugs-sast:
   dependencies:
     - build
-  script:
-    - /analyzer run -compile=false
   variables:
     MAVEN_REPO_PATH: ./.m2/repository
+    COMPILE: false
   artifacts:
     reports:
       sast: gl-sast-report.json
@@ -339,6 +338,7 @@ Some analyzers can be customized with environment variables.
 | `SCAN_KUBERNETES_MANIFESTS`           | Kubesec              | Set to `"true"` to scan Kubernetes manifests. |
 | `KUBESEC_HELM_CHARTS_PATH`            | Kubesec              | Optional path to Helm charts that `helm` will use to generate a Kubernetes manifest that `kubesec` will scan. If dependencies are defined, `helm dependency build` should be ran in a `before_script` to fetch the necessary dependencies. |
 | `KUBESEC_HELM_OPTIONS`                | Kubesec              | Additional arguments for the `helm` executable. |
+| `COMPILE`                             | SpotBugs             | Set to `"false"` to disable project compilation and dependency fetching |
 | `ANT_HOME`                            | SpotBugs             | The `ANT_HOME` environment variable. |
 | `ANT_PATH`                            | SpotBugs             | Path to the `ant` executable. |
 | `GRADLE_PATH`                         | SpotBugs             | Path to the `gradle` executable. |

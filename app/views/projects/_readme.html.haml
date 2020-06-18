@@ -1,10 +1,14 @@
 - if (readme = @repository.readme) && readme.rich_viewer
+  .tree-holder
+    .nav-block.mt-0
+      = render 'projects/tree/tree_header', tree: @tree
   %article.file-holder.readme-holder{ id: 'readme', class: ("limited-width-container" unless fluid_layout) }
-    .js-file-title.file-title
-      = blob_icon readme.mode, readme.name
-      = link_to project_blob_path(@project, tree_join(@ref, readme.path)) do
-        %strong
-          = readme.name
+    .js-file-title.file-title-flex-parent
+      .file-header-content
+        = blob_icon readme.mode, readme.name
+        = link_to project_blob_path(@project, tree_join(@ref, readme.path)) do
+          %strong
+            = readme.name
     = render 'projects/blob/viewer', viewer: readme.rich_viewer, viewer_url: namespace_project_blob_path(@project.namespace, @project, tree_join(@ref, readme.path), viewer: :rich, format: :json)
 
 - else

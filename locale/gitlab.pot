@@ -972,6 +972,9 @@ msgstr ""
 msgid "A Let's Encrypt account will be configured for this GitLab installation using your email address. You will receive emails to warn of expiring certificates."
 msgstr ""
 
+msgid "A Terraform report was generated in your pipelines."
+msgstr ""
+
 msgid "A basic page and serverless function that uses AWS Lambda, AWS API Gateway, and GitLab Pages"
 msgstr ""
 
@@ -1057,9 +1060,6 @@ msgid "A subscription will trigger a new pipeline on the default branch of this 
 msgstr ""
 
 msgid "A suggestion is not applicable."
-msgstr ""
-
-msgid "A terraform report was generated in your pipelines."
 msgstr ""
 
 msgid "A user with write access to the source branch selected this option"
@@ -2390,9 +2390,6 @@ msgid "An error occurred while loading milestones"
 msgstr ""
 
 msgid "An error occurred while loading project creation UI"
-msgstr ""
-
-msgid "An error occurred while loading terraform report"
 msgstr ""
 
 msgid "An error occurred while loading the data. Please try again."
@@ -4052,9 +4049,6 @@ msgid "Changes are shown as if the <b>source</b> revision was being merged into 
 msgstr ""
 
 msgid "Changes are still tracked. Useful for cluster/index migrations."
-msgstr ""
-
-msgid "Changes are unknown"
 msgstr ""
 
 msgid "Changes suppressed. Click to show."
@@ -10185,6 +10179,9 @@ msgid "Generate key"
 msgstr ""
 
 msgid "Generate new export"
+msgstr ""
+
+msgid "Generating the report caused an error."
 msgstr ""
 
 msgid "Geo"
@@ -22233,6 +22230,9 @@ msgid "The Issue Tracker is the place to add things that need to be improved or 
 msgstr ""
 
 msgid "The Prometheus server responded with \"bad request\". Please check your queries are correct and are supported in your Prometheus version. %{documentationLink}"
+msgstr ""
+
+msgid "The Terraform report %{name} was generated in your pipelines."
 msgstr ""
 
 msgid "The URL defined on the primary node that secondary nodes should use to contact it. Defaults to URL"

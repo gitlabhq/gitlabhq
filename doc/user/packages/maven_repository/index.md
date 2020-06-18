@@ -821,6 +821,16 @@ user's home location (in this case the user is `root` since it runs in a
 Docker container), and Maven will use the configured CI
 [environment variables](../../../ci/variables/README.md#predefined-environment-variables).
 
+### Version validation
+
+The version string is validated using the following regex.
+
+```ruby
+\A(\.?[\w\+-]+\.?)+\z
+```
+
+You can play around with the regex and try your version strings on [this regular expression editor](https://rubular.com/r/rrLQqUXjfKEoL6).
+
 ## Troubleshooting
 
 ### Useful Maven command line options

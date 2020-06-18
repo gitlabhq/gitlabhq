@@ -25,6 +25,11 @@ export default {
     containerClasses: ['dag-graph-container', 'gl-display-flex', 'gl-flex-direction-column'].join(
       ' ',
     ),
+    hoverFadeClasses: [
+      'gl-cursor-pointer',
+      'gl-transition-duration-slow',
+      'gl-transition-timing-function-ease',
+    ].join(' '),
   },
   gitLabColorRotation: [
     '#e17223',
@@ -230,7 +235,10 @@ export default {
         .attr('id', d => {
           return this.createAndAssignId(d, 'uid', LINK_SELECTOR);
         })
-        .classed(`${LINK_SELECTOR} gl-cursor-pointer`, true);
+        .classed(
+          `${LINK_SELECTOR} gl-transition-property-stroke-opacity ${this.$options.viewOptions.hoverFadeClasses}`,
+          true,
+        );
     },
 
     generateNodes(svg, nodeData) {
@@ -242,7 +250,10 @@ export default {
         .data(nodeData)
         .enter()
         .append('line')
-        .classed(`${NODE_SELECTOR} gl-cursor-pointer`, true)
+        .classed(
+          `${NODE_SELECTOR} gl-transition-property-stroke ${this.$options.viewOptions.hoverFadeClasses}`,
+          true,
+        )
         .attr('id', d => {
           return this.createAndAssignId(d, 'uid', NODE_SELECTOR);
         })

@@ -43,6 +43,10 @@ module Gitlab
         @maven_app_name_regex ||= /\A[\w\-\.]+\z/.freeze
       end
 
+      def maven_version_regex
+        @maven_version_regex ||= /\A(\.?[\w\+-]+\.?)+\z/.freeze
+      end
+
       def maven_app_group_regex
         maven_app_name_regex
       end
