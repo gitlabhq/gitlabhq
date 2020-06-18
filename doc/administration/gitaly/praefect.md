@@ -749,28 +749,27 @@ If you prefer write availability over consistency, this behavior can be turned o
 
 ### Checking for data loss
 
-The Praefect `dataloss` sub-command helps identify lost writes by counting the number of dead replication jobs for each repository within a given time frame. This command must be executed on a Praefect node.
-
-A time frame to search can be specified with `-from` and `-to`:
+The Praefect `dataloss` sub-command helps identify lost writes by checking for uncompleted replication jobs. This is useful for identifying possible data loss cases after a failover. This command must be executed on a Praefect node.
 
 ```shell
-sudo /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml dataloss -from <rfc3339-time> -to <rfc3339-time>
-```
+sudo /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml dataloss [-virtual-storage <virtual-storage>]
 
-If the time frame is not specified, dead replication jobs from the last six hours are counted:
+If the virtual storage is not specified, every configured virtual storage is checked for data loss.
 
 ```shell
 sudo /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml dataloss
 
-Failed replication jobs between [2020-01-02 00:00:00 +0000 UTC, 2020-01-02 06:00:00 +0000 UTC):
-@hashed/fa/53/fa539965395b8382145f8370b34eab249cf610d2d6f2943c95b9b9d08a63d4a3.git: 2 jobs
+Virtual storage: default
+  Current read-only primary: gitaly-2
+  Previous write-enabled primary: gitaly-1
+    Nodes with data loss from failing over from gitaly-1:
+      @hashed/2c/62/2c624232cdd221771294dfbb310aca000a0df6ac8b66b696d90ef06fdefb64a3.git: gitaly-0
+      @hashed/4b/22/4b227777d4dd1fc61c6f884f48641d02b4d121d3fd328cb08b5531fcacdabf8a.git: gitaly-0, gitaly-2
 ```
 
-To specify a time frame in UTC, run:
+Currently `dataloss` only considers a repository up to date if it has been directly replicated to from the previous write-enabled primary. While reconciling from an up to date secondary can recover the data, this is not visible in the data loss report. This is due for improvement via [Gitaly#2866](https://gitlab.com/gitlab-org/gitaly/-/issues/2866).
 
-```shell
-sudo /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml dataloss -from 2020-01-02T00:00:00+00:00 -to 2020-01-02T00:02:00+00:00
-```
+NOTE: **NOTE** `dataloss` is still in beta and the output format is subject to change.
 
 ### Checking repository checksums
 

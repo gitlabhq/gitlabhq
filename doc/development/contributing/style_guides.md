@@ -56,6 +56,16 @@ Additionally, we have a dedicated
 [newlines style guide](../newlines_styleguide.md), as well as dedicated
 [test-specific style guides and best practices](../testing_guide/index.md).
 
+### Creating new RuboCop cops
+
+Typically it is better for the linting rules to be enforced programmatically as it
+reduces the aforementioned [bike-shedding](https://en.wiktionary.org/wiki/bikeshedding).
+
+To that end, we encourage creation of new RuboCop rules in the codebase.
+
+When creating a new cop that could be applied to multiple applications, we encourage you
+to add it to our [GitLab Styles](https://gitlab.com/gitlab-org/gitlab-styles) gem.
+
 ## Database migrations
 
 See the dedicated [Database Migrations Style Guide](../migration_style_guide.md).

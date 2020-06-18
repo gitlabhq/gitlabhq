@@ -22,6 +22,7 @@ module QA
 
           view 'app/assets/javascripts/pipelines/components/graph/linked_pipeline.vue' do
             element :linked_pipeline_button
+            element :child_pipeline
           end
 
           view 'app/assets/javascripts/vue_shared/components/ci_icon.vue' do
@@ -58,6 +59,10 @@ module QA
             within_element(:pipeline_badges) do
               has_selector?('.badge', text: tag_name)
             end
+          end
+
+          def has_child_pipeline?
+            has_element? :child_pipeline
           end
 
           def click_job(job_name)

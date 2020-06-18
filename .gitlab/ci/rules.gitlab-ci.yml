@@ -263,7 +263,7 @@
     - <<: *if-not-canonical-namespace
       when: never
     - <<: *if-default-refs
-      changes: *code-backstage-qa-patterns
+      changes: *code-qa-patterns
 
 .frontend:rules:compile-test-assets:
   rules:

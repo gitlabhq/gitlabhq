@@ -355,7 +355,7 @@ rspec foss-impact:
     - run_timed_command "scripts/gitaly-test-spawn"
     - source scripts/rspec_helpers.sh
     - tooling/bin/find_foss_tests tmp/matching_foss_tests.txt
-    - rspec_matched_tests tmp/matching_foss_tests.txt "--tag ~quarantine --tag ~geo --tag ~level:migration"
+    - rspec_matched_tests tmp/matching_foss_tests.txt "--tag ~quarantine"
   artifacts:
     expire_in: 7d
     paths:

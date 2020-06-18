@@ -77,6 +77,7 @@ export default {
     ref="linkedPipeline"
     class="linked-pipeline build"
     :class="{ 'child-pipeline': childPipeline }"
+    data-qa-selector="child_pipeline"
   >
     <gl-deprecated-button
       :id="buttonId"

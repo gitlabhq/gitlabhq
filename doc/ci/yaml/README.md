@@ -699,6 +699,101 @@ job:
     - Write-Host "This text is not colored"
 ```
 
+#### Multiline commands
+
+You can split long commands into multi-line commands to improve readability
+using [`|` (literal) and `>` (folded) YAML multiline block scalar indicators](https://yaml-multiline.info/).
+
+CAUTION: **Warning:**
+If multiple commands are combined into one command string, only the last command's
+failure or success will be reported,
+[incorrectly ignoring failures from earlier commands due to a bug](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/25394).
+If the success of the job depends on the success or failure of these commands,
+you can run the commands as separate `script:` items, or add `exit 1` commands
+as appropriate to the command string where needed.
+
+You can use the `|` (literal) YAML multiline block scalar indicator to write
+commands over multiple lines in the `script` section of a job description.
+Each line is treated as a separate command.
+Only the first command is repeated in the job log, but additional
+commands are still executed:
+
+```yaml
+job:
+  script:
+    - |
+      echo "First command line."
+      echo "Second command line."
+      echo "Third command line."
+```
+
+The example above renders in the job log as:
+
+```shell
+$ echo First command line # collapsed multi-line command
+First command line
+Second command line.
+Third command line.
+```
+
+The `>` (folded) YAML multiline block scalar indicator treats empty lines between
+sections as the start of a new command:
+
+```yaml
+job:
+  script:
+    - >
+      echo "First command line
+      is split over two lines."
+
+      echo "Second command line."
+```
+
+This behaves similarly to writing multiline commands without the `>` or `|` block
+scalar indicators:
+
+```yaml
+job:
+  script:
+    - echo "First command line
+      is split over two lines."
+
+      echo "Second command line."
+```
+
+Both examples above render in the job log as:
+
+```shell
+$ echo First command line is split over two lines. # collapsed multi-line command
+First command line is split over two lines.
+Second command line.
+```
+
+When the `>` or `|` block scalar indicators are omitted, GitLab will form the command
+by concatenating non-empty lines, so make sure the lines can run when concatenated.
+
+Shell [here documents](https://en.wikipedia.org/wiki/Here_document) work with the
+`|` and `>` operators as well. The example below transliterates the lower case letters
+to upper case:
+
+```yaml
+job:
+  script:
+    - |
+      tr a-z A-Z << END_TEXT
+        one two three
+        four five six
+      END_TEXT
+```
+
+Results in:
+
+```shell
+$ tr a-z A-Z << END_TEXT # collapsed multi-line command
+  ONE TWO THREE
+  FOUR FIVE SIX
+```
+
 ### `stage`
 
 `stage` is defined per-job and relies on [`stages`](#stages) which is defined

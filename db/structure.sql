@@ -1227,7 +1227,8 @@ CREATE TABLE public.ci_job_artifacts (
     file_sha256 bytea,
     file_format smallint,
     file_location smallint,
-    locked boolean
+    locked boolean,
+    CONSTRAINT check_27f0f6dbab CHECK ((file_store IS NOT NULL))
 );
 
 CREATE SEQUENCE public.ci_job_artifacts_id_seq
@@ -3801,7 +3802,8 @@ CREATE TABLE public.lfs_objects (
     created_at timestamp without time zone,
     updated_at timestamp without time zone,
     file character varying,
-    file_store integer DEFAULT 1
+    file_store integer DEFAULT 1,
+    CONSTRAINT check_eecfc5717d CHECK ((file_store IS NOT NULL))
 );
 
 CREATE SEQUENCE public.lfs_objects_id_seq
@@ -6736,7 +6738,8 @@ CREATE TABLE public.uploads (
     created_at timestamp without time zone NOT NULL,
     store integer DEFAULT 1,
     mount_point character varying,
-    secret character varying
+    secret character varying,
+    CONSTRAINT check_5e9547379c CHECK ((store IS NOT NULL))
 );
 
 CREATE SEQUENCE public.uploads_id_seq
@@ -8260,15 +8263,6 @@ ALTER TABLE ONLY public.chat_teams
 
 ALTER TABLE public.design_management_designs
     ADD CONSTRAINT check_07155e2715 CHECK ((char_length((filename)::text) <= 255)) NOT VALID;
-
-ALTER TABLE public.ci_job_artifacts
-    ADD CONSTRAINT check_27f0f6dbab CHECK ((file_store IS NOT NULL)) NOT VALID;
-
-ALTER TABLE public.uploads
-    ADD CONSTRAINT check_5e9547379c CHECK ((store IS NOT NULL)) NOT VALID;
-
-ALTER TABLE public.lfs_objects
-    ADD CONSTRAINT check_eecfc5717d CHECK ((file_store IS NOT NULL)) NOT VALID;
 
 ALTER TABLE ONLY public.ci_build_needs
     ADD CONSTRAINT ci_build_needs_pkey PRIMARY KEY (id);
@@ -14080,5 +14074,11 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200615121217
 20200615123055
 20200615232735
+20200617000757
+20200617001001
+20200617001118
+20200617001637
+20200617001848
+20200617002030
 \.
 

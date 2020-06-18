@@ -11,6 +11,7 @@ import {
   GlTab,
   GlBadge,
   GlPagination,
+  GlSearchBoxByType,
 } from '@gitlab/ui';
 import { visitUrl } from '~/lib/utils/url_utility';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
@@ -49,6 +50,7 @@ describe('AlertManagementList', () => {
   const findSeverityFields = () => wrapper.findAll('[data-testid="severityField"]');
   const findSeverityColumnHeader = () => wrapper.findAll('th').at(0);
   const findPagination = () => wrapper.find(GlPagination);
+  const findSearch = () => wrapper.find(GlSearchBoxByType);
   const alertsCount = {
     open: 14,
     triggered: 10,
@@ -485,6 +487,28 @@ describe('AlertManagementList', () => {
           expect(wrapper.vm.nextPage).toBeNull();
         });
       });
+    });
+  });
+
+  describe('Search', () => {
+    beforeEach(() => {
+      mountComponent({
+        props: { alertManagementEnabled: true, userCanEnableAlertManagement: true },
+        data: { alerts: { list: mockAlerts }, alertsCount, errored: false },
+        loading: false,
+      });
+    });
+
+    it('renders the search component', () => {
+      expect(findSearch().exists()).toBe(true);
+    });
+
+    it('sets the `searchTerm` graphql variable', () => {
+      const SEARCH_TERM = 'Simple Alert';
+
+      findSearch().vm.$emit('input', SEARCH_TERM);
+
+      expect(wrapper.vm.$data.searchTerm).toBe(SEARCH_TERM);
     });
   });
 });

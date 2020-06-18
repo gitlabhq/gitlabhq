@@ -79,7 +79,7 @@ You will need at least Developer [permissions](../../permissions.md) to view the
 You can find the Alert Management list at **{cloud-gear}** **Operations > Alerts** in your project's sidebar.
 Each alert contains the following metrics:
 
-![Alert Management List](img/alert_management_1_v13_0.png)
+![Alert Management List](img/alert_list_v13_1.png)
 
 - **Severity** - The current importance of a alert and how much attention it should receive.
 - **Start time** - How long ago the alert fired. This field uses the standard GitLab pattern of `X time ago`, but is supported by a granular date/time tooltip depending on the user's locale.
@@ -99,6 +99,21 @@ To see if a column is sortable, point your mouse at the header. Sortable columns
 display an arrow next to the column name, as shown in this example:
 
 ![Alert Management List Sorting](img/alert_list_sort_v13_1.png)
+
+### Searching alerts
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/213884) in GitLab 13.1.
+
+The alert list supports a simple free text search.
+
+![Alert List Search](img/alert_list_search_v13_1.png)
+
+This search filters on the following fields:
+
+- Title
+- Description
+- Monitoring tool
+- Service
 
 ### Alert Management statuses
 

@@ -29,12 +29,8 @@ module QA
         view_pipelines
 
         Page::Project::Pipeline::Show.perform do |parent_pipeline|
+          expect(parent_pipeline).to have_child_pipeline
           expect(parent_pipeline).to have_passed
-
-          parent_pipeline.retry_on_exception(sleep_interval: 1.0) do
-            parent_pipeline.click_linked_job(project.name)
-          end
-          expect(parent_pipeline).to have_job("child_job")
         end
       end
 
@@ -43,12 +39,8 @@ module QA
         view_pipelines
 
         Page::Project::Pipeline::Show.perform do |parent_pipeline|
+          expect(parent_pipeline).to have_child_pipeline
           expect(parent_pipeline).to have_failed
-
-          parent_pipeline.retry_on_exception(sleep_interval: 1.0) do
-            parent_pipeline.click_linked_job(project.name)
-          end
-          expect(parent_pipeline).to have_job("child_job")
         end
       end
 

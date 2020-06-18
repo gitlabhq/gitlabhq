@@ -122,7 +122,11 @@ Note the following when promoting a secondary:
    roles ['geo_secondary_role']
    ```
 
-1. Promote the **secondary** node to the **primary** node. Execute:
+1. Promote the **secondary** node to the **primary** node.
+
+   Before promoting a secondary node to primary, preflight checks should be run. They can be run separately or along with the promotion script.
+
+   To promote the secondary node to primary along with preflight checks:
 
    ```shell
    gitlab-ctl promote-to-primary-node
@@ -132,6 +136,12 @@ Note the following when promoting a secondary:
 
    ```shell
    gitlab-ctl promote-to-primary-node --skip-preflight-check
+   ```
+
+   You can also run preflight checks separately:
+
+   ```shell
+   gitlab-ctl promotion-preflight-checks
    ```
 
 1. Verify you can connect to the newly promoted **primary** node using the URL used

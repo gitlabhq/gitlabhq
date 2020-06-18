@@ -27672,10 +27672,13 @@ msgstr ""
 msgid "suggestPipeline|2/2: Commit your changes"
 msgstr ""
 
+msgid "suggestPipeline|Choose %{boldStart}Code Quality%{boldEnd} to add a pipeline that tests the quality of your code."
+msgstr ""
+
 msgid "suggestPipeline|The template is ready! You can now commit it to create your first pipeline."
 msgstr ""
 
-msgid "suggestPipeline|We recommend the %{boldStart}Code Quality%{boldEnd} template, which will add a report widget to your Merge Requests. This way you’ll learn about code quality degradations much sooner. %{footerStart} Goodbye technical debt! %{footerEnd}"
+msgid "suggestPipeline|We’re adding a GitLab CI configuration file to add a pipeline to the project. You could create it manually, but we recommend that you start with a GitLab template that works out of the box."
 msgstr ""
 
 msgid "syntax is correct"

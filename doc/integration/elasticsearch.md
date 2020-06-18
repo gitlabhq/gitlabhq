@@ -187,7 +187,7 @@ To disable the Elasticsearch integration:
 1. Expand the **Elasticsearch** section and uncheck **Elasticsearch indexing**
    and **Search with Elasticsearch enabled**.
 1. Click **Save changes** for the changes to take effect.
-1. (Optional) Delete the existing index by running one of these commands:
+1. (Optional) Delete the existing index:
 
    ```shell
    # Omnibus installations
@@ -209,7 +209,7 @@ To backfill existing data, you can use one of the methods below to index it in b
 To index via the Admin Area:
 
 1. [Configure your Elasticsearch host and port](#enabling-elasticsearch).
-1. Create empty indexes using one of the following commands:
+1. Create empty indexes:
 
    ```shell
    # Omnibus installations
@@ -222,7 +222,7 @@ To index via the Admin Area:
 1. [Enable **Elasticsearch indexing**](#enabling-elasticsearch).
 1. Click **Index all projects** in **Admin Area > Settings > Integrations > Elasticsearch**.
 1. Click **Check progress** in the confirmation message to see the status of the background jobs.
-1. Personal snippets need to be indexed manually by running one of these commands:
+1. Personal snippets need to be indexed manually:
 
    ```shell
    # Omnibus installations
@@ -246,7 +246,7 @@ This will delete your existing indexes.
 If the database size is less than 500 MiB, and the size of all hosted repos is less than 5 GiB:
 
 1. [Enable **Elasticsearch indexing** and configure your host and port](#enabling-elasticsearch).
-1. Index your data using one of the following commands:
+1. Index your data:
 
    ```shell
    # Omnibus installations
@@ -266,7 +266,7 @@ Make sure to prepare for this task by having a [Scalable and Highly Available Se
 or creating [extra Sidekiq processes](../administration/operations/extra_sidekiq_processes.md)
 
 1. [Configure your Elasticsearch host and port](#enabling-elasticsearch).
-1. Create empty indexes using one of the following commands:
+1. Create empty indexes:
 
    ```shell
    # Omnibus installations
@@ -274,6 +274,16 @@ or creating [extra Sidekiq processes](../administration/operations/extra_sidekiq
 
    # Installations from source
    bundle exec rake gitlab:elastic:create_empty_index RAILS_ENV=production
+   ```
+
+1. If this is a re-index of your GitLab instance, clear the index status:
+
+   ```shell
+   # Omnibus installations
+   sudo gitlab-rake gitlab:elastic:clear_index_status
+
+   # Installations from source
+   bundle exec rake gitlab:elastic:clear_index_status RAILS_ENV=production
    ```
 
 1. [Enable **Elasticsearch indexing**](#enabling-elasticsearch).
@@ -350,8 +360,7 @@ or creating [extra Sidekiq processes](../administration/operations/extra_sidekiq
    indexer to "forget" all progress, so it will retry the indexing process from the
    start.
 
-1. Personal snippets are not associated with a project and need to be indexed separately
-   by running one of these commands:
+1. Personal snippets are not associated with a project and need to be indexed separately:
 
    ```shell
    # Omnibus installations

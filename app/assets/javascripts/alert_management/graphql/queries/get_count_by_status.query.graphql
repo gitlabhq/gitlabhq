@@ -1,6 +1,11 @@
-query getAlertsCount($projectPath: ID!) {
+query getAlertsCount(
+    $searchTerm: String,
+    $projectPath: ID!
+) {
     project(fullPath: $projectPath) {
-        alertManagementAlertStatusCounts {
+        alertManagementAlertStatusCounts(
+            search: $searchTerm
+        ) {
             all
             open
             acknowledged

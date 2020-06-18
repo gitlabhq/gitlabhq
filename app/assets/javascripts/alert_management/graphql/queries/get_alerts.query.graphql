@@ -1,6 +1,7 @@
 #import "../fragments/list_item.fragment.graphql"
 
 query getAlerts(
+    $searchTerm: String,
     $projectPath: ID!,
     $statuses: [AlertManagementStatus!],
     $sort: AlertManagementAlertSort,
@@ -11,6 +12,7 @@ query getAlerts(
 ) {
     project(fullPath: $projectPath, ) {
         alertManagementAlerts(
+            search: $searchTerm,
             statuses: $statuses,
             sort: $sort,
             first: $firstPageSize
