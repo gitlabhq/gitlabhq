@@ -217,8 +217,8 @@ A tag expiration policy designed to keep only the images that matter most
 | `createdAt` | Time! | Timestamp of when the container expiration policy was created |
 | `enabled` | Boolean! | Indicates whether this container expiration policy is enabled |
 | `keepN` | ContainerExpirationPolicyKeepEnum | Number of tags to retain |
-| `nameRegex` | String | Tags with names matching this regex pattern will expire |
-| `nameRegexKeep` | String | Tags with names matching this regex pattern will be preserved |
+| `nameRegex` | UntrustedRegexp | Tags with names matching this regex pattern will expire |
+| `nameRegexKeep` | UntrustedRegexp | Tags with names matching this regex pattern will be preserved |
 | `nextRunAt` | Time | Next time that this container expiration policy will get executed |
 | `olderThan` | ContainerExpirationPolicyOlderThanEnum | Tags older that this will expire |
 | `updatedAt` | Time! | Timestamp of when the container expiration policy was updated |

@@ -507,6 +507,7 @@ project:
 - freeze_periods
 - webex_teams_service
 - build_report_results
+- vulnerability_statistic
 award_emoji:
 - awardable
 - user

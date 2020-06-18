@@ -7268,6 +7268,30 @@ CREATE SEQUENCE public.vulnerability_scanners_id_seq
 
 ALTER SEQUENCE public.vulnerability_scanners_id_seq OWNED BY public.vulnerability_scanners.id;
 
+CREATE TABLE public.vulnerability_statistics (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    project_id bigint NOT NULL,
+    total integer DEFAULT 0 NOT NULL,
+    critical integer DEFAULT 0 NOT NULL,
+    high integer DEFAULT 0 NOT NULL,
+    medium integer DEFAULT 0 NOT NULL,
+    low integer DEFAULT 0 NOT NULL,
+    unknown integer DEFAULT 0 NOT NULL,
+    info integer DEFAULT 0 NOT NULL,
+    letter_grade smallint NOT NULL
+);
+
+CREATE SEQUENCE public.vulnerability_statistics_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE public.vulnerability_statistics_id_seq OWNED BY public.vulnerability_statistics.id;
+
 CREATE TABLE public.vulnerability_user_mentions (
     id bigint NOT NULL,
     vulnerability_id bigint NOT NULL,
@@ -8086,6 +8110,8 @@ ALTER TABLE ONLY public.vulnerability_occurrence_pipelines ALTER COLUMN id SET D
 ALTER TABLE ONLY public.vulnerability_occurrences ALTER COLUMN id SET DEFAULT nextval('public.vulnerability_occurrences_id_seq'::regclass);
 
 ALTER TABLE ONLY public.vulnerability_scanners ALTER COLUMN id SET DEFAULT nextval('public.vulnerability_scanners_id_seq'::regclass);
+
+ALTER TABLE ONLY public.vulnerability_statistics ALTER COLUMN id SET DEFAULT nextval('public.vulnerability_statistics_id_seq'::regclass);
 
 ALTER TABLE ONLY public.vulnerability_user_mentions ALTER COLUMN id SET DEFAULT nextval('public.vulnerability_user_mentions_id_seq'::regclass);
 
@@ -9127,6 +9153,9 @@ ALTER TABLE ONLY public.vulnerability_occurrences
 
 ALTER TABLE ONLY public.vulnerability_scanners
     ADD CONSTRAINT vulnerability_scanners_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY public.vulnerability_statistics
+    ADD CONSTRAINT vulnerability_statistics_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY public.vulnerability_user_mentions
     ADD CONSTRAINT vulnerability_user_mentions_pkey PRIMARY KEY (id);
@@ -11165,6 +11194,10 @@ CREATE INDEX index_vulnerability_occurrences_on_vulnerability_id ON public.vulne
 
 CREATE UNIQUE INDEX index_vulnerability_scanners_on_project_id_and_external_id ON public.vulnerability_scanners USING btree (project_id, external_id);
 
+CREATE INDEX index_vulnerability_statistics_on_letter_grade ON public.vulnerability_statistics USING btree (letter_grade);
+
+CREATE INDEX index_vulnerability_statistics_on_project_id ON public.vulnerability_statistics USING btree (project_id);
+
 CREATE UNIQUE INDEX index_vulnerability_user_mentions_on_note_id ON public.vulnerability_user_mentions USING btree (note_id) WHERE (note_id IS NOT NULL);
 
 CREATE UNIQUE INDEX index_vulns_user_mentions_on_vulnerability_id ON public.vulnerability_user_mentions USING btree (vulnerability_id) WHERE (note_id IS NULL);
@@ -12629,6 +12662,9 @@ ALTER TABLE ONLY public.metrics_dashboard_annotations
 ALTER TABLE ONLY public.pool_repositories
     ADD CONSTRAINT fk_rails_af3f8c5d62 FOREIGN KEY (shard_id) REFERENCES public.shards(id) ON DELETE RESTRICT;
 
+ALTER TABLE ONLY public.vulnerability_statistics
+    ADD CONSTRAINT fk_rails_af61a7df4c FOREIGN KEY (project_id) REFERENCES public.projects(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY public.resource_label_events
     ADD CONSTRAINT fk_rails_b126799f57 FOREIGN KEY (label_id) REFERENCES public.labels(id) ON DELETE SET NULL;
 
@@ -14004,6 +14040,7 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200609142507
 20200609142508
 20200609212701
+20200610130002
 20200613104045
 20200615083635
 20200615101135

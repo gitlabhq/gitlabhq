@@ -48,13 +48,48 @@ describe 'Updating the container expiration policy' do
     end
   end
 
-  RSpec.shared_examples 'updating the container expiration policy' do
+  RSpec.shared_examples 'rejecting invalid regex for' do |field_name|
+    context "for field #{field_name}" do
+      let_it_be(:invalid_regex) { '*production' }
+      let(:params) do
+        {
+          :project_path => project.full_path,
+          field_name => invalid_regex
+        }
+      end
+
+      it_behaves_like 'returning response status', :success
+
+      it_behaves_like 'not creating the container expiration policy'
+
+      it 'returns an error' do
+        subject
+
+        expect(graphql_errors.size).to eq(1)
+        expect(graphql_errors.first['message']).to include("#{invalid_regex} is an invalid regexp")
+      end
+    end
+  end
+
+  RSpec.shared_examples 'accepting the mutation request updating the container expiration policy' do
     it_behaves_like 'updating the container expiration policy attributes', mode: :update, from: { cadence: '1d', keep_n: 10, older_than: '90d' }, to: { cadence: '3month', keep_n: 100, older_than: '14d' }
 
     it_behaves_like 'returning a success'
+
+    it_behaves_like 'rejecting invalid regex for', :name_regex
+    it_behaves_like 'rejecting invalid regex for', :name_regex_keep
   end
 
-  RSpec.shared_examples 'denying access to container expiration policy' do
+  RSpec.shared_examples 'accepting the mutation request creating the container expiration policy' do
+    it_behaves_like 'creating the container expiration policy'
+
+    it_behaves_like 'returning a success'
+
+    it_behaves_like 'rejecting invalid regex for', :name_regex
+    it_behaves_like 'rejecting invalid regex for', :name_regex_keep
+  end
+
+  RSpec.shared_examples 'denying the mutation request' do
     it_behaves_like 'not creating the container expiration policy'
 
     it_behaves_like 'returning response status', :success
@@ -71,11 +106,11 @@ describe 'Updating the container expiration policy' do
 
     context 'with existing container expiration policy' do
       where(:user_role, :shared_examples_name) do
-        :maintainer | 'updating the container expiration policy'
-        :developer  | 'updating the container expiration policy'
-        :reporter   | 'denying access to container expiration policy'
-        :guest      | 'denying access to container expiration policy'
-        :anonymous  | 'denying access to container expiration policy'
+        :maintainer | 'accepting the mutation request updating the container expiration policy'
+        :developer  | 'accepting the mutation request updating the container expiration policy'
+        :reporter   | 'denying the mutation request'
+        :guest      | 'denying the mutation request'
+        :anonymous  | 'denying the mutation request'
       end
 
       with_them do
@@ -91,11 +126,11 @@ describe 'Updating the container expiration policy' do
       let_it_be(:project, reload: true) { create(:project, :without_container_expiration_policy) }
 
       where(:user_role, :shared_examples_name) do
-        :maintainer | 'creating the container expiration policy'
-        :developer  | 'creating the container expiration policy'
-        :reporter   | 'denying access to container expiration policy'
-        :guest      | 'denying access to container expiration policy'
-        :anonymous  | 'denying access to container expiration policy'
+        :maintainer | 'accepting the mutation request creating the container expiration policy'
+        :developer  | 'accepting the mutation request creating the container expiration policy'
+        :reporter   | 'denying the mutation request'
+        :guest      | 'denying the mutation request'
+        :anonymous  | 'denying the mutation request'
       end
 
       with_them do

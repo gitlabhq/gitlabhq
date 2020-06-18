@@ -656,10 +656,10 @@ Particular attention should be shown to:
    Repository > Repository storage** to make the newly configured Praefect
    cluster the storage location for new Git repositories.
 
-   - The default option is unchecked.
-   - The Praefect option is checked.
+   - The default weight is 0.
+   - The Praefect weight is 100.
 
-   ![Update repository storage](img/praefect_storage_v12_10.png)
+   ![Update repository storage](img/praefect_storage_v13_1.png)
 
 1. Verify everything is still working by creating a new project. Check the
    "Initialize repository with a README" box so that there is content in the

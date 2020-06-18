@@ -2818,7 +2818,7 @@ job:
 expire and are therefore deleted, counting from the time they are uploaded and
 stored on GitLab. If the expiry time is not defined, it defaults to the
 [instance wide setting](../../user/admin_area/settings/continuous_integration.md#default-artifacts-expiration-core-only)
-(30 days by default, forever on GitLab.com).
+(30 days by default).
 
 You can use the **Keep** button on the job page to override expiration and
 keep artifacts forever.

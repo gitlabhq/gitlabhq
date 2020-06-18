@@ -265,8 +265,8 @@ group.
 | View Issues analytics **(PREMIUM)**                    | ✓     | ✓        | ✓         | ✓          | ✓     |
 | View Productivity analytics **(PREMIUM)**              |       | ✓        | ✓         | ✓          | ✓     |
 | View Value Stream analytics                            | ✓     | ✓        | ✓         | ✓          | ✓     |
-| View Billing **(FREE ONLY)**                           | ✓     | ✓        | ✓         | ✓          | ✓ (4) |
-| View Usage Quotas **(FREE ONLY)**                      | ✓     | ✓        | ✓         | ✓          | ✓ (4) |
+| View Billing **(FREE ONLY)**                           |       |          |           |            | ✓ (4) |
+| View Usage Quotas **(FREE ONLY)**                      |       |          |           |            | ✓ (4) |
 
 1. Groups can be set to [allow either Owners or Owners and
   Maintainers to create subgroups](group/subgroups/index.md#creating-a-subgroup)

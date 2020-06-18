@@ -70,8 +70,7 @@ The setting at all levels is only available to GitLab administrators.
 The default expiration time of the [job artifacts](../../../administration/job_artifacts.md)
 can be set in the Admin Area of your GitLab instance. The syntax of duration is
 described in [`artifacts:expire_in`](../../../ci/yaml/README.md#artifactsexpire_in)
-and the default value is `30 days`. On GitLab.com they
-[never expire](../../gitlab_com/index.md#gitlab-cicd).
+and the default value is `30 days`.
 
 1. Go to **Admin Area > Settings > CI/CD**.
 1. Change the value of default expiration time.

@@ -24,4 +24,20 @@ describe GitlabSchema.types['ContainerExpirationPolicy'] do
       is_expected.to have_graphql_type(Types::ContainerExpirationPolicyKeepEnum)
     end
   end
+
+  describe 'name_regex field' do
+    subject { described_class.fields['nameRegex'] }
+
+    it 'returns untrusted regexp type' do
+      is_expected.to have_graphql_type(Types::UntrustedRegexp)
+    end
+  end
+
+  describe 'name_regex_keep field' do
+    subject { described_class.fields['nameRegexKeep'] }
+
+    it 'returns untrusted regexp type' do
+      is_expected.to have_graphql_type(Types::UntrustedRegexp)
+    end
+  end
 end

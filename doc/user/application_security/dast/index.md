@@ -143,6 +143,22 @@ The only changes to the site should be from the DAST scanner. Be aware that any
 changes that users, scheduled tasks, database changes, code changes, other pipelines, or other scanners make to
 the site during a scan could lead to inaccurate results.
 
+### Hide sensitive information
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/36332) in GitLab 13.1.
+
+HTTP request and response headers may contain sensitive information, including cookies and
+authorization credentials. By default, the following headers are masked:
+
+- `Authorization`.
+- `Proxy-Authorization`.
+- `Set-Cookie` (values only).
+- `Cookie` (values only).
+
+Using the [`DAST_MASK_HTTP_HEADERS` variable](#available-variables), you can list the
+headers whose values you want masked. For details on how to mask headers, see
+[Customizing the DAST settings](#customizing-the-dast-settings).
+
 ### Authentication
 
 It's also possible to authenticate the user before performing the DAST checks.
@@ -455,6 +471,7 @@ DAST can be [configured](#customizing-the-dast-settings) using environment varia
 | `DAST_PASSWORD` | no | The password to authenticate to in the website. |
 | `DAST_USERNAME_FIELD` | no | The name of username field at the sign-in HTML form. |
 | `DAST_PASSWORD_FIELD` | no | The name of password field at the sign-in HTML form. |
+| `DAST_MASK_HTTP_HEADERS` | no | Comma-separated list of request and response headers to be masked (introduced in GitLab 13.1). Must contain **all** headers to be masked. Refer to [list of headers that are masked by default](#hide-sensitive-information). |
 | `DAST_AUTH_EXCLUDE_URLS` | no | The URLs to skip during the authenticated scan; comma-separated, no spaces in between. Not supported for API scans. |
 | `DAST_TARGET_AVAILABILITY_TIMEOUT` | no | Time limit in seconds to wait for target availability. Scan is attempted nevertheless if it runs out. Integer. Defaults to `60`. |
 | `DAST_FULL_SCAN_ENABLED` | no | Switches the tool to execute [ZAP Full Scan](https://github.com/zaproxy/zaproxy/wiki/ZAP-Full-Scan) instead of [ZAP Baseline Scan](https://github.com/zaproxy/zaproxy/wiki/ZAP-Baseline-Scan). Boolean. `true`, `True`, or `1` are considered as true value, otherwise false. Defaults to `false`. |
@@ -683,18 +700,6 @@ Once a vulnerability is found, you can interact with it. Read more on how to
 For more information about the vulnerabilities database update, check the
 [maintenance table](../index.md#maintenance-and-update-of-the-vulnerabilities-database).
 
-<!-- ## Troubleshooting
-
-Include any troubleshooting steps that you can foresee. If you know beforehand what issues
-one might have when setting this up, or when something is changed, or on upgrading, it's
-important to describe those, too. Think of things that may go wrong and include them here.
-This is important to minimize requests for support, and to avoid doc comments with
-questions that you know someone might ask.
-
-Each scenario can be a third-level heading, e.g. `### Getting error message X`.
-If you have none to add when creating a doc, leave this section in place
-but commented out to help encourage others to add to it in the future. -->
-
 ## Optimizing DAST
 
 By default, DAST will download all artifacts defined by previous jobs in the pipeline. If
@@ -734,3 +739,15 @@ variables:
 
 Here, DAST is being allocated 3072 MB.
 Change the number after `-Xmx` to the required memory amount.
+
+<!-- ## Troubleshooting
+
+Include any troubleshooting steps that you can foresee. If you know beforehand what issues
+one might have when setting this up, or when something is changed, or on upgrading, it's
+important to describe those, too. Think of things that may go wrong and include them here.
+This is important to minimize requests for support, and to avoid doc comments with
+questions that you know someone might ask.
+
+Each scenario can be a third-level heading, e.g. `### Getting error message X`.
+If you have none to add when creating a doc, leave this section in place
+but commented out to help encourage others to add to it in the future. -->

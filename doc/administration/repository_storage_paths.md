@@ -110,7 +110,10 @@ Once you set the multiple storage paths, you can choose where new repositories
 will be stored under **Admin Area > Settings > Repository >
 Repository storage > Storage nodes for new repositories**.
 
-![Choose repository storage path in Admin Area](img/repository_storages_admin_ui_v12_10.png)
+Each storage can be assigned a weight from 0-100. When a new project is created, these weights will be used
+to determine the storage location the repository will be created.
+
+![Choose repository storage path in Admin Area](img/repository_storages_admin_ui_v13_1.png)
 
 Beginning with GitLab 8.13.4, multiple paths can be chosen. New repositories
 will be randomly placed on one of the selected paths.

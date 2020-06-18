@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 NOTE: **Note:**
 Bulk editing issues and merge requests is also available at the **project level**.
-For more details, see [Bulk editing issues, epics, and merge requests](../../project/bulk_editing.md).
+For more details, see [Bulk editing issues and merge requests at the project level](../../project/bulk_editing.md).
 
 If you want to update attributes across multiple issues, epics, or merge requests in a group, you
 can do it by bulk editing them, that is, editing them together.
