@@ -1400,6 +1400,8 @@ Represents a Project Member
 
 ## Release
 
+Represents a release
+
 | Name  | Type  | Description |
 | ---   |  ---- | ----------  |
 | `assets` | ReleaseAssets | Assets of the release |
@@ -1410,14 +1412,16 @@ Represents a Project Member
 | `descriptionHtml` | String | The GitLab Flavored Markdown rendering of `description` |
 | `name` | String | Name of the release |
 | `releasedAt` | Time | Timestamp of when the release was released |
-| `tagName` | String! | Name of the tag associated with the release |
+| `tagName` | String | Name of the tag associated with the release |
 | `tagPath` | String | Relative web path to the tag associated with the release |
 
 ## ReleaseAssets
 
+A container for all assets associated with a release
+
 | Name  | Type  | Description |
 | ---   |  ---- | ----------  |
-| `assetsCount` | Int | Number of assets of the release |
+| `count` | Int | Number of assets of the release |
 
 ## ReleaseEvidence
 
@@ -1432,6 +1436,8 @@ Evidence for a release
 
 ## ReleaseLink
 
+Represents an asset link associated with a release
+
 | Name  | Type  | Description |
 | ---   |  ---- | ----------  |
 | `external` | Boolean | Indicates the link points to an external resource |
@@ -1441,6 +1447,8 @@ Evidence for a release
 | `url` | String | URL of the link |
 
 ## ReleaseSource
+
+Represents the source code attached to a release in a particular format
 
 | Name  | Type  | Description |
 | ---   |  ---- | ----------  |

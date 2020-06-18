@@ -3208,6 +3208,23 @@ CREATE TABLE public.group_deploy_keys (
     CONSTRAINT check_f58fa0a0f7 CHECK ((char_length(key) <= 4096))
 );
 
+CREATE TABLE public.group_deploy_keys_groups (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    group_id bigint NOT NULL,
+    group_deploy_key_id bigint NOT NULL
+);
+
+CREATE SEQUENCE public.group_deploy_keys_groups_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE public.group_deploy_keys_groups_id_seq OWNED BY public.group_deploy_keys_groups.id;
+
 CREATE SEQUENCE public.group_deploy_keys_id_seq
     START WITH 1
     INCREMENT BY 1
@@ -7759,6 +7776,8 @@ ALTER TABLE ONLY public.group_custom_attributes ALTER COLUMN id SET DEFAULT next
 
 ALTER TABLE ONLY public.group_deploy_keys ALTER COLUMN id SET DEFAULT nextval('public.group_deploy_keys_id_seq'::regclass);
 
+ALTER TABLE ONLY public.group_deploy_keys_groups ALTER COLUMN id SET DEFAULT nextval('public.group_deploy_keys_groups_id_seq'::regclass);
+
 ALTER TABLE ONLY public.group_deploy_tokens ALTER COLUMN id SET DEFAULT nextval('public.group_deploy_tokens_id_seq'::regclass);
 
 ALTER TABLE ONLY public.group_group_links ALTER COLUMN id SET DEFAULT nextval('public.group_group_links_id_seq'::regclass);
@@ -8568,6 +8587,9 @@ ALTER TABLE ONLY public.group_custom_attributes
 
 ALTER TABLE ONLY public.group_deletion_schedules
     ADD CONSTRAINT group_deletion_schedules_pkey PRIMARY KEY (group_id);
+
+ALTER TABLE ONLY public.group_deploy_keys_groups
+    ADD CONSTRAINT group_deploy_keys_groups_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY public.group_deploy_keys
     ADD CONSTRAINT group_deploy_keys_pkey PRIMARY KEY (id);
@@ -10031,6 +10053,10 @@ CREATE INDEX index_group_custom_attributes_on_key_and_value ON public.group_cust
 CREATE INDEX index_group_deletion_schedules_on_marked_for_deletion_on ON public.group_deletion_schedules USING btree (marked_for_deletion_on);
 
 CREATE INDEX index_group_deletion_schedules_on_user_id ON public.group_deletion_schedules USING btree (user_id);
+
+CREATE UNIQUE INDEX index_group_deploy_keys_group_on_group_deploy_key_and_group_ids ON public.group_deploy_keys_groups USING btree (group_id, group_deploy_key_id);
+
+CREATE INDEX index_group_deploy_keys_groups_on_group_deploy_key_id ON public.group_deploy_keys_groups USING btree (group_deploy_key_id);
 
 CREATE UNIQUE INDEX index_group_deploy_keys_on_fingerprint ON public.group_deploy_keys USING btree (fingerprint);
 
@@ -12746,6 +12772,9 @@ ALTER TABLE ONLY public.project_repositories
 ALTER TABLE ONLY public.packages_nuget_dependency_link_metadata
     ADD CONSTRAINT fk_rails_c3313ee2e4 FOREIGN KEY (dependency_link_id) REFERENCES public.packages_dependency_links(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY public.group_deploy_keys_groups
+    ADD CONSTRAINT fk_rails_c3854f19f5 FOREIGN KEY (group_deploy_key_id) REFERENCES public.group_deploy_keys(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY public.merge_request_user_mentions
     ADD CONSTRAINT fk_rails_c440b9ea31 FOREIGN KEY (note_id) REFERENCES public.notes(id) ON DELETE CASCADE;
 
@@ -12883,6 +12912,9 @@ ALTER TABLE ONLY public.merge_request_metrics
 
 ALTER TABLE ONLY public.draft_notes
     ADD CONSTRAINT fk_rails_e753681674 FOREIGN KEY (merge_request_id) REFERENCES public.merge_requests(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY public.group_deploy_keys_groups
+    ADD CONSTRAINT fk_rails_e87145115d FOREIGN KEY (group_id) REFERENCES public.namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY public.description_versions
     ADD CONSTRAINT fk_rails_e8f4caf9c7 FOREIGN KEY (epic_id) REFERENCES public.epics(id) ON DELETE CASCADE;
@@ -13987,6 +14019,7 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200521225327
 20200521225337
 20200521225346
+20200522205606
 20200522235146
 20200525114553
 20200525121014

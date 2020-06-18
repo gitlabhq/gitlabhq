@@ -46,8 +46,10 @@ module SimpleCovEnv
       add_filter 'lib/gitlab/sidekiq_middleware/'
       add_filter 'lib/system_check/'
 
+      add_group 'Channels',    'app/channels'
       add_group 'Controllers', 'app/controllers'
       add_group 'Finders',     'app/finders'
+      add_group 'GraphQL',     'app/graphql'
       add_group 'Helpers',     'app/helpers'
       add_group 'Libraries',   'lib'
       add_group 'Mailers',     'app/mailers'

@@ -251,7 +251,8 @@ module Types
           null: true,
           description: 'A single release of the project',
           resolver: Resolvers::ReleasesResolver.single,
-          feature_flag: :graphql_release_data
+          feature_flag: :graphql_release_data,
+          authorize: :download_code
 
     field :container_expiration_policy,
           Types::ContainerExpirationPolicyType,

@@ -717,8 +717,7 @@ will be returned as the result of the mutation.
 
 ### Naming conventions
 
-Each mutation must define a `graphql_name`, which is the name of the
-mutation in the GraphQL schema.
+Each mutation must define a `graphql_name`, which is the name of the mutation in the GraphQL schema.
 
 Example:
 
@@ -728,9 +727,8 @@ class UserUpdateMutation < BaseMutation
 end
 ```
 
-Our GraphQL mutation names are historically inconsistent, but new
-mutation names should follow the convention `'{Resource}{Action}'`
-or `'{Resource}{Action}{Attribute}'`.
+Our GraphQL mutation names are historically inconsistent, but new mutation names should follow the
+convention `'{Resource}{Action}'` or `'{Resource}{Action}{Attribute}'`.
 
 Mutations that **create** new resources should use the verb `Create`.
 
@@ -738,9 +736,10 @@ Example:
 
 - `CommitCreate`
 
-Mutations that **update** data should use the verb `Update` or a
-domain-specific verb like `Set`, `Add`, or `Toggle` if more
-appropriate.
+Mutations that **update** data should use:
+
+- The verb `Update`.
+- A domain-specific verb like `Set`, `Add`, or `Toggle` if more appropriate.
 
 Examples:
 
@@ -749,17 +748,17 @@ Examples:
 - `IssueUpdate`
 - `TodoMarkDone`
 
-Mutations that **remove** data should use the verb `Delete` rather than
-`Destroy`. Or use a domain-specific verb like `Remove` if more
-appropriate.
+Mutations that **remove** data should use:
+
+- The verb `Delete` rather than `Destroy`.
+- A domain-specific verb like `Remove` if more appropriate.
 
 Examples:
 
 - `AwardEmojiRemove`
 - `NoteDelete`
 
-If you need advice for mutation naming, canvass the Slack `#graphql`
-channel for feedback.
+If you need advice for mutation naming, canvass the Slack `#graphql` channel for feedback.
 
 ### Arguments
 

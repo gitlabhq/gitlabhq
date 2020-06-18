@@ -112,4 +112,36 @@ describe ReleasePresenter do
       it { is_expected.to be_nil }
     end
   end
+
+  describe '#assets_count' do
+    subject { presenter.assets_count }
+
+    it 'returns the number of assets associated to the release' do
+      is_expected.to be release.assets_count
+    end
+
+    context 'when a user is not allowed to download release sources' do
+      let(:presenter) { described_class.new(release, current_user: guest) }
+
+      it 'returns the number of all non-source assets associated to the release' do
+        is_expected.to be release.assets_count(except: [:sources])
+      end
+    end
+  end
+
+  describe '#name' do
+    subject { presenter.name }
+
+    it 'returns the release name' do
+      is_expected.to eq release.name
+    end
+
+    context "when a user is not allowed to access any repository information" do
+      let(:presenter) { described_class.new(release, current_user: guest) }
+
+      it 'returns a replacement name to avoid potentially leaking tag information' do
+        is_expected.to eq "Release-#{release.id}"
+      end
+    end
+  end
 end

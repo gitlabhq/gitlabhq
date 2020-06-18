@@ -7,7 +7,7 @@ describe GitlabSchema.types['ReleaseAssets'] do
 
   it 'has the expected fields' do
     expected_fields = %w[
-      assets_count links sources
+      count links sources
     ]
 
     expect(described_class).to include_graphql_fields(*expected_fields)

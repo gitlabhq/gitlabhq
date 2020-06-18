@@ -54,8 +54,10 @@ The minimum required Go version is 1.13.
 
 ### Git versions
 
-GitLab 11.11 and higher only supports Git 2.24.x and newer, and
-[dropped support for older versions](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/54255).
+From GitLab 13.1:
+
+- Git 2.25.x and later is required.
+- Git 2.27.x and later [is recommended](https://gitlab.com/gitlab-org/gitaly/-/issues/2829).
 
 ### Node.js versions
 

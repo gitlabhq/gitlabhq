@@ -44,6 +44,5 @@ describe GitlabSchema.types['Release'] do
     subject { described_class.fields['commit'] }
 
     it { is_expected.to have_graphql_type(Types::CommitType) }
-    it { is_expected.to require_graphql_authorizations(:reporter_access) }
   end
 end

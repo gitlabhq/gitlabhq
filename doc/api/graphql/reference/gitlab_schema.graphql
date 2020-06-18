@@ -10102,6 +10102,9 @@ enum RegistryState {
   SYNCED
 }
 
+"""
+Represents a release
+"""
 type Release {
   """
   Assets of the release
@@ -10196,7 +10199,7 @@ type Release {
   """
   Name of the tag associated with the release
   """
-  tagName: String!
+  tagName: String
 
   """
   Relative web path to the tag associated with the release
@@ -10204,11 +10207,14 @@ type Release {
   tagPath: String
 }
 
+"""
+A container for all assets associated with a release
+"""
 type ReleaseAssets {
   """
   Number of assets of the release
   """
-  assetsCount: Int
+  count: Int
 
   """
   Asset links of the release
@@ -10356,6 +10362,9 @@ type ReleaseEvidenceEdge {
   node: ReleaseEvidence
 }
 
+"""
+Represents an asset link associated with a release
+"""
 type ReleaseLink {
   """
   Indicates the link points to an external resource
@@ -10443,6 +10452,9 @@ enum ReleaseLinkType {
   RUNBOOK
 }
 
+"""
+Represents the source code attached to a release in a particular format
+"""
 type ReleaseSource {
   """
   Format of the source

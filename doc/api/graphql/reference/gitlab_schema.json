@@ -29588,7 +29588,7 @@
         {
           "kind": "OBJECT",
           "name": "Release",
-          "description": null,
+          "description": "Represents a release",
           "fields": [
             {
               "name": "assets",
@@ -29815,13 +29815,9 @@
 
               ],
               "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                }
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
               },
               "isDeprecated": false,
               "deprecationReason": null
@@ -29851,10 +29847,10 @@
         {
           "kind": "OBJECT",
           "name": "ReleaseAssets",
-          "description": null,
+          "description": "A container for all assets associated with a release",
           "fields": [
             {
-              "name": "assetsCount",
+              "name": "count",
               "description": "Number of assets of the release",
               "args": [
 
@@ -30281,7 +30277,7 @@
         {
           "kind": "OBJECT",
           "name": "ReleaseLink",
-          "description": null,
+          "description": "Represents an asset link associated with a release",
           "fields": [
             {
               "name": "external",
@@ -30515,7 +30511,7 @@
         {
           "kind": "OBJECT",
           "name": "ReleaseSource",
-          "description": null,
+          "description": "Represents the source code attached to a release in a particular format",
           "fields": [
             {
               "name": "format",

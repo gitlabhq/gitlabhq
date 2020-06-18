@@ -4302,15 +4302,15 @@ describe Ci::Build do
       end
     end
 
-    context 'when `release_steps` feature is required by build' do
+    context 'when `multi_build_steps` feature is required by build' do
       before do
         expect(build).to receive(:runner_required_feature_names) do
-          [:release_steps]
+          [:multi_build_steps]
         end
       end
 
       context 'when runner provides given feature' do
-        let(:runner_features) { { release_steps: true } }
+        let(:runner_features) { { multi_build_steps: true } }
 
         it { is_expected.to be_truthy }
       end

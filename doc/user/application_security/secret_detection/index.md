@@ -118,15 +118,15 @@ declare a job with the same name as the SAST job to override. Place this new job
 inclusion and specify any additional keys under it.
 
 In the following example, we include the Secret Detection template and at the same time we
-override the `secret-scan` job with the `SECRET_DETECTION_HISTORIC_SCAN` variable to `true`:
+override the `secret_detection` job with the `SECRET_DETECTION_HISTORIC_SCAN` variable to `true`:
 
 ```yaml
 include:
   - template: Secret-Detection.gitlab-ci.yml
 
-secrets-scan:
+secret_detection:
   variables:
-    SECRET_DETECTION_HISTORIC_SCAN: true
+    SECRET_DETECTION_HISTORIC_SCAN: "true"
 ```
 
 Because the template is [evaluated before](../../../ci/yaml/README.md#include)

@@ -5,9 +5,7 @@ module API
     class Release < Grape::Entity
       include ::API::Helpers::Presentable
 
-      expose :name do |release, _|
-        can_download_code? ? release.name : "Release-#{release.id}"
-      end
+      expose :name
       expose :tag, as: :tag_name, if: ->(_, _) { can_download_code? }
       expose :description
       expose :description_html do |entity|
@@ -23,10 +21,7 @@ module API
       expose :tag_path, expose_nil: false
 
       expose :assets do
-        expose :assets_count, as: :count do |release, _|
-          assets_to_exclude = can_download_code? ? [] : [:sources]
-          release.assets_count(except: assets_to_exclude)
-        end
+        expose :assets_count, as: :count
         expose :sources, using: Entities::Releases::Source, if: ->(_, _) { can_download_code? }
         expose :links, using: Entities::Releases::Link do |release, options|
           release.links.sorted

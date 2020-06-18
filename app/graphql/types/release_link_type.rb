@@ -3,6 +3,7 @@
 module Types
   class ReleaseLinkType < BaseObject
     graphql_name 'ReleaseLink'
+    description 'Represents an asset link associated with a release'
 
     authorize :read_release
 

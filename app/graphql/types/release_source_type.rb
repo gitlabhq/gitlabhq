@@ -3,8 +3,9 @@
 module Types
   class ReleaseSourceType < BaseObject
     graphql_name 'ReleaseSource'
+    description 'Represents the source code attached to a release in a particular format'
 
-    authorize :read_release_sources
+    authorize :download_code
 
     field :format, GraphQL::STRING_TYPE, null: true,
           description: 'Format of the source'
