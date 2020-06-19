@@ -1,5 +1,0 @@
----
-title: Fix leaky constant issue in sidekiq middleware client metric spec
-merge_request: 32108
-author: Rajendra Kadam
-type: fixed

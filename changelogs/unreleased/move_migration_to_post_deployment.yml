@@ -1,5 +1,0 @@
----
-title: Move migration related to ci_builds to post_deployment
-merge_request: 33416
-author:
-type: performance

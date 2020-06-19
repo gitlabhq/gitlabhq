@@ -1,5 +1,0 @@
----
-title: Optimize container repository for groups query
-merge_request: 34364
-author:
-type: performance

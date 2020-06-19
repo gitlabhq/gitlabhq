@@ -1,5 +1,0 @@
----
-title: Filter potentially-sensitive Sidekiq arguments from logs and Sentry
-merge_request: 33967
-author:
-type: changed

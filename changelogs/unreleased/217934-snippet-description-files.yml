@@ -1,5 +1,0 @@
----
-title: Send information about attached files to the GraphQL mutation
-merge_request: 34221
-author:
-type: fixed

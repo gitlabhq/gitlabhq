@@ -1,5 +1,0 @@
----
-title: Update validates_hostname gem with support for more TLDs
-merge_request: 34010
-author:
-type: fixed
