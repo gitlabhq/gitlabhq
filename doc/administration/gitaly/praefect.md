@@ -322,6 +322,8 @@ application server, or a Gitaly node.
    }
    ```
 
+1. [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/2013) in GitLab 13.1 and later, enable [distribution of reads](#distributed-reads).
+
 1. Save the changes to `/etc/gitlab/gitlab.rb` and [reconfigure
    Praefect](../restart_gitlab.md#omnibus-gitlab-reconfigure):
 
@@ -711,6 +713,43 @@ To get started quickly:
 
 Congratulations! You've configured an observable highly available Praefect
 cluster.
+
+## Distributed reads
+
+> Introduced in GitLab 13.1 in [beta](https://about.gitlab.com/handbook/product/#alpha-beta-ga) with feature flag `gitaly_distributed_reads` set to disabled.
+
+Praefect supports distribution of read operations across Gitaly nodes that are
+configured for the virtual node.
+
+To allow for [performance testing](https://gitlab.com/gitlab-org/quality/performance/-/issues/231),
+distributed reads are currently in
+[beta](https://about.gitlab.com/handbook/product/#alpha-beta-ga) and disabled by
+default. To enable distributed reads, the `gitaly_distributed_reads`
+[feature flag](../feature_flags.md) must be enabled in a Ruby console:
+
+```ruby
+Feature.enable(:gitaly_distributed_reads)
+```
+
+If enabled, all RPCs marked with `ACCESSOR` option like
+[GetBlob](https://gitlab.com/gitlab-org/gitaly/-/blob/v12.10.6/proto/blob.proto#L16)
+are redirected to an up to date and healthy Gitaly node.
+
+_Up to date_ in this context means that:
+
+- There is no replication operations scheduled for this node.
+- The last replication operation is in _completed_ state.
+
+If there is no such nodes, or any other error occurs during node selection, the primary
+node will be chosen to serve the request.
+
+To track distribution of read operations, you can use the `gitaly_praefect_read_distribution`
+Prometheus counter metric. It has two labels:
+
+- `virtual_storage`.
+- `storage`.
+
+They reflect configuration defined for this instance of Praefect.
 
 ## Automatic failover and leader election
 

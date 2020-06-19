@@ -593,7 +593,7 @@ RSpec.describe 'File blob', :js do
         aggregate_failures do
           # shows that dashboard yaml is invalid
           expect(page).to have_content('Metrics Dashboard YAML definition is invalid:')
-          expect(page).to have_content("panel_groups: can't be blank")
+          expect(page).to have_content("panel_groups: should be an array of panel_groups objects")
 
           # shows a learn more link
           expect(page).to have_link('Learn more')

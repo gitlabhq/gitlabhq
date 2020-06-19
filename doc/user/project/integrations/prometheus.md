@@ -353,11 +353,11 @@ and files with invalid syntax display **Metrics Dashboard YAML definition is inv
 When **Metrics Dashboard YAML definition is invalid** at least one of the following messages is displayed:
 
 1. `dashboard: can't be blank` [learn more](#dashboard-top-level-properties)
-1. `panel_groups: can't be blank` [learn more](#dashboard-top-level-properties)
+1. `panel_groups: should be an array of panel_groups objects` [learn more](#dashboard-top-level-properties)
 1. `group: can't be blank` [learn more](#panel-group-panel_groups-properties)
-1. `panels: can't be blank` [learn more](#panel-group-panel_groups-properties)
-1. `metrics: can't be blank` [learn more](#panel-panels-properties)
+1. `panels: should be an array of panels objects` [learn more](#panel-group-panel_groups-properties)
 1. `title: can't be blank` [learn more](#panel-panels-properties)
+1. `metrics: should be an array of metrics objects` [learn more](#panel-panels-properties)
 1. `query: can't be blank` [learn more](#metrics-metrics-properties)
 1. `query_range: can't be blank` [learn more](#metrics-metrics-properties)
 1. `unit: can't be blank` [learn more](#metrics-metrics-properties)

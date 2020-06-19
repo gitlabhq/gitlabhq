@@ -27624,6 +27624,9 @@ msgstr ""
 msgid "severity|Unknown"
 msgstr ""
 
+msgid "should be an array of %{object_name} objects"
+msgstr ""
+
 msgid "should be greater than or equal to %{access} inherited membership from group %{group_name}"
 msgstr ""
 

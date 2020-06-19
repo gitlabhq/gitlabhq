@@ -62,12 +62,12 @@ describe 'Getting Metrics Dashboard' do
 
       context 'invalid dashboard' do
         let(:path) { '.gitlab/dashboards/metrics.yml' }
-        let(:project) { create(:project, :repository, :custom_repo, namespace: current_user.namespace, files: { path => "---\ndasboard: ''" }) }
+        let(:project) { create(:project, :repository, :custom_repo, namespace: current_user.namespace, files: { path => "---\ndashboard: 'test'" }) }
 
         it 'returns metrics dashboard' do
           dashboard = graphql_data.dig('project', 'environments', 'nodes', 0, 'metricsDashboard')
 
-          expect(dashboard).to eql("path" => path, "schemaValidationWarnings" => ["dashboard: can't be blank", "panel_groups: can't be blank"])
+          expect(dashboard).to eql("path" => path, "schemaValidationWarnings" => ["panel_groups: should be an array of panel_groups objects"])
         end
       end
 
@@ -78,7 +78,7 @@ describe 'Getting Metrics Dashboard' do
         it 'returns metrics dashboard' do
           dashboard = graphql_data.dig('project', 'environments', 'nodes', 0, 'metricsDashboard')
 
-          expect(dashboard).to eql("path" => path, "schemaValidationWarnings" => ["dashboard: can't be blank", "panel_groups: can't be blank"])
+          expect(dashboard).to eql("path" => path, "schemaValidationWarnings" => ["dashboard: can't be blank", "panel_groups: should be an array of panel_groups objects"])
         end
       end
     end

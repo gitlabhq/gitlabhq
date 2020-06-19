@@ -62,12 +62,12 @@ function disableJQueryAnimations() {
 }
 
 // Disable jQuery animations
-if (gon && gon.disable_animations) {
+if (gon?.disable_animations) {
   disableJQueryAnimations();
 }
 
 // inject test utilities if necessary
-if (process.env.NODE_ENV !== 'production' && gon && gon.test_env) {
+if (process.env.NODE_ENV !== 'production' && gon?.test_env) {
   disableJQueryAnimations();
   import(/* webpackMode: "eager" */ './test_utils/'); // eslint-disable-line no-unused-expressions
 }
@@ -132,27 +132,6 @@ function deferredInitialisation() {
       .fadeOut();
   });
 
-  // Initialize select2 selects
-  if ($('select.select2').length) {
-    import(/* webpackChunkName: 'select2' */ 'select2/select2')
-      .then(() => {
-        $('select.select2').select2({
-          width: 'resolve',
-          minimumResultsForSearch: 10,
-          dropdownAutoWidth: true,
-        });
-
-        // Close select2 on escape
-        $('.js-select2').on('select2-close', () => {
-          setTimeout(() => {
-            $('.select2-container-active').removeClass('select2-container-active');
-            $(':focus').blur();
-          }, 1);
-        });
-      })
-      .catch(() => {});
-  }
-
   const glTooltipDelay = localStorage.getItem('gl-tooltip-delay');
   const delay = glTooltipDelay ? JSON.parse(glTooltipDelay) : 0;
 
@@ -179,9 +158,7 @@ function deferredInitialisation() {
 document.addEventListener('DOMContentLoaded', () => {
   const $body = $('body');
   const $document = $(document);
-  const $window = $(window);
-  const $sidebarGutterToggle = $('.js-sidebar-toggle');
-  let bootstrapBreakpoint = bp.getBreakpointSize();
+  const bootstrapBreakpoint = bp.getBreakpointSize();
 
   if (document.querySelector('#js-peek')) initPerformanceBar({ container: '#js-peek' });
 
@@ -199,6 +176,15 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
+  /**
+   * TODO: Apparently we are collapsing the right sidebar on certain screensizes per default
+   * except on issue board pages. Why can't we do it with CSS?
+   *
+   * Proposal: Expose a global sidebar API, which we could import wherever we are manipulating
+   * the visibility of the sidebar.
+   *
+   * Quick fix: Get rid of jQuery for this implementation
+   */
   const isBoardsPage = /(projects|groups):boards:show/.test(document.body.dataset.page);
   if (!isBoardsPage && (bootstrapBreakpoint === 'sm' || bootstrapBreakpoint === 'xs')) {
     const $rightSidebar = $('aside.right-sidebar');
@@ -225,14 +211,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
   localTimeAgo($('abbr.timeago, .js-timeago'), true);
 
-  // Form submitter
-  $('.trigger-submit').on('change', function triggerSubmitCallback() {
-    $(this)
-      .parents('form')
-      .submit();
-  });
-
-  // Disable form buttons while a form is submitting
+  /**
+   * This disables form buttons while a form is submitting
+   * We do not difinitively know all of the places where this is used
+   *
+   * TODO: Defer execution, migrate to behaviors, and add sentry logging
+   */
   $body.on('ajax:complete, ajax:beforeSend, submit', 'form', function ajaxCompleteCallback(e) {
     const $buttons = $('[type="submit"], .js-disable-on-submit', this).not('.js-no-auto-disable');
     switch (e.type) {
@@ -259,7 +243,11 @@ document.addEventListener('DOMContentLoaded', () => {
     $('.header-content').toggleClass('menu-expanded');
   });
 
-  // Commit show suppressed diff
+  /**
+   * Show suppressed commit diff
+   *
+   * TODO: Move to commit diff pages
+   */
   $document.on('click', '.diff-content .js-show-suppressed-diff', function showDiffCallback() {
     const $container = $(this).parent();
     $container.next('table').show();
@@ -289,39 +277,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     $(document).trigger('toggle.comments');
   });
-
-  $document.on('breakpoint:change', (e, breakpoint) => {
-    const breakpointSizes = ['md', 'sm', 'xs'];
-    if (breakpointSizes.includes(breakpoint)) {
-      const $gutterIcon = $sidebarGutterToggle.find('i');
-      if ($gutterIcon.hasClass('fa-angle-double-right')) {
-        $sidebarGutterToggle.trigger('click');
-      }
-
-      const sidebarGutterVueToggleEl = document.querySelector('.js-sidebar-vue-toggle');
-
-      // Sidebar has an icon which corresponds to collapsing the sidebar
-      // only then trigger the click.
-      if (sidebarGutterVueToggleEl) {
-        const collapseIcon = sidebarGutterVueToggleEl.querySelector('i.fa-angle-double-right');
-
-        if (collapseIcon) {
-          collapseIcon.click();
-        }
-      }
-    }
-  });
-
-  function fitSidebarForSize() {
-    const oldBootstrapBreakpoint = bootstrapBreakpoint;
-    bootstrapBreakpoint = bp.getBreakpointSize();
-
-    if (bootstrapBreakpoint !== oldBootstrapBreakpoint) {
-      $document.trigger('breakpoint:change', [bootstrapBreakpoint]);
-    }
-  }
-
-  $window.on('resize.app', fitSidebarForSize);
 
   $('form.filter-form').on('submit', function filterFormSubmitCallback(event) {
     const link = document.createElement('a');

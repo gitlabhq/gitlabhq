@@ -11,9 +11,13 @@ import './requires_input';
 import initPageShortcuts from './shortcuts';
 import './toggler_behavior';
 import './preview_markdown';
+import initCollapseSidebarOnWindowResize from './collapse_sidebar_on_window_resize';
+import initSelect2Dropdowns from './select2';
 
 installGlEmojiElement();
 initGFMInput();
 initCopyAsGFM();
 initCopyToClipboard();
 initPageShortcuts();
+initCollapseSidebarOnWindowResize();
+initSelect2Dropdowns();

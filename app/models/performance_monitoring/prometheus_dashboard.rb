@@ -7,7 +7,7 @@ module PerformanceMonitoring
     attr_accessor :dashboard, :panel_groups, :path, :environment, :priority, :templating, :links
 
     validates :dashboard, presence: true
-    validates :panel_groups, presence: true
+    validates :panel_groups, array_members: { member_class: PerformanceMonitoring::PrometheusPanelGroup }
 
     class << self
       def from_json(json_content)
@@ -35,8 +35,14 @@ module PerformanceMonitoring
 
         new(
           dashboard: attributes['dashboard'],
-          panel_groups: attributes['panel_groups']&.map { |group| PrometheusPanelGroup.from_json(group) }
+          panel_groups: initialize_children_collection(attributes['panel_groups'])
         )
+      end
+
+      def initialize_children_collection(children)
+        return unless children.is_a?(Array)
+
+        children.map { |group| PerformanceMonitoring::PrometheusPanelGroup.from_json(group) }
       end
     end
 
@@ -47,13 +53,21 @@ module PerformanceMonitoring
     # This method is planned to be refactored as a part of https://gitlab.com/gitlab-org/gitlab/-/issues/219398
     # implementation. For new existing logic was reused to faster deliver MVC
     def schema_validation_warnings
-      self.class.from_json(self.as_json)
+      self.class.from_json(reload_schema)
       nil
     rescue ActiveModel::ValidationError => exception
       exception.model.errors.map { |attr, error| "#{attr}: #{error}" }
     end
 
     private
+
+    # dashboard finder methods are somehow limited, #find includes checking if
+    # user is authorised to view selected dashboard, but modifies schema, which in some cases may
+    # cause false positives returned from validation, and #find_raw does not authorise users
+    def reload_schema
+      project = environment&.project
+      project.nil? ? self.as_json : Gitlab::Metrics::Dashboard::Finder.find_raw(project, dashboard_path: path)
+    end
 
     def yaml_valid_attributes
       %w(panel_groups panels metrics group priority type title y_label weight id unit label query query_range dashboard)
