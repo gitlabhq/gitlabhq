@@ -120,7 +120,7 @@ module API
 
         authorize! :read_build, pipeline
 
-        present pipeline.test_reports, with: TestReportEntity
+        present pipeline.test_reports, with: TestReportEntity, details: true
       end
 
       desc 'Deletes a pipeline' do

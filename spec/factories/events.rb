@@ -21,7 +21,7 @@ FactoryBot.define do
 
     factory :closed_issue_event do
       action { :closed }
-      target factory: :closed_issue
+      target { association(:closed_issue, project: project) }
     end
 
     factory :wiki_page_event do

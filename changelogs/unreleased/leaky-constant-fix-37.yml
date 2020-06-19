@@ -1,0 +1,5 @@
+---
+title: Fix leaky constant issue in migration helpers, with lock retries and ignored cols spec
+merge_request: 32170
+author: Rajendra Kadam
+type: fixed

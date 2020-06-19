@@ -242,3 +242,35 @@ To disable it:
 ```ruby
 Feature.disable(:design_management_reference_filter_gfm_pipeline)
 ```
+
+## Design activity records
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/33051) in GitLab 13.1
+> - It's deployed behind a feature flag, disabled by default.
+> - It's enabled on GitLab.com.
+> - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-design-events-core-only). **(CORE ONLY)**
+
+User activity events on designs (creation, deletion, and updates) are tracked by GitLab and
+displayed on the [user profile](../../profile/index.md#user-profile),
+[group](../../group/index.md#view-group-activity),
+and [project](../index.md#project-activity) activity pages.
+
+### Enable or disable Design Events **(CORE ONLY)**
+
+User activity for designs is under development and not ready for production use. It is
+deployed behind a feature flag that is **disabled by default**.
+[GitLab administrators with access to the GitLab Rails console](../../../administration/troubleshooting/navigating_gitlab_via_rails_console.md#starting-a-rails-console-session)
+can enable it for your instance. You're welcome to test it, but use it at your
+own risk.
+
+To enable it:
+
+```ruby
+Feature.enable(:design_activity_events)
+```
+
+To disable it:
+
+```ruby
+Feature.disable(:design_activity_events)
+```

@@ -1,0 +1,5 @@
+---
+title: Fix bug in snippet create mutation with non ActiveRecord errors
+merge_request: 33085
+author:
+type: fixed

@@ -1,0 +1,5 @@
+---
+title: Fix Runner heartbeats that results in considering them offline
+merge_request: 32851
+author:
+type: fixed

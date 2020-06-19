@@ -212,18 +212,17 @@ Let's explore how to configure a GitLab Terraform Report artifact:
        - terraform plan -out=$PLAN
        - terraform show --json $PLAN | convert_report > $PLAN_JSON
      artifacts:
-       name: plan
-       paths:
-         - $PLAN
        reports:
          terraform: $PLAN_JSON
    ```
 
    For a full example, see [Example `.gitlab-ci.yaml` file](#example-gitlab-ciyaml-file).
 
+   For an example displaying multiple reports, see [`.gitlab-ci.yaml` multiple reports file](#mulitple-terraform-plan-reports).
+
 1. Running the pipeline displays the widget in the merge request, like this:
 
-   ![MR Terraform widget](img/terraform_plan_widget_v13_0.png)
+   ![MR Terraform widget](img/terraform_plan_widget_v13_2.png)
 
 1. Clicking the **View Full Log** button in the widget takes you directly to the
    plan output present in the pipeline logs:
@@ -273,9 +272,6 @@ plan:
     - terraform plan -out=$PLAN
     - terraform show --json $PLAN | convert_report > $PLAN_JSON
   artifacts:
-    name: plan
-    paths:
-      - ${TF_ROOT}/plan.tfplan
     reports:
       terraform: ${TF_ROOT}/tfplan.json
 
@@ -293,4 +289,61 @@ apply:
   only:
     - master
 
+```
+
+### Mulitple Terraform Plan reports
+
+Starting with 13.2, you can display mutiple reports on the Merge Request page. The reports will also display the `artifact: name:`. See example below for a suggested setup.
+
+```yaml
+image:
+  name: registry.gitlab.com/gitlab-org/gitlab-build-images:terraform
+  entrypoint:
+    - '/usr/bin/env'
+    - 'PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
+
+cache:
+  paths:
+    - .terraform
+
+stages:
+  - build
+
+.terraform-plan-generation:
+  stage: build
+  variables:
+    PLAN: plan.tfplan
+    JSON_PLAN_FILE: tfplan.json
+  before_script:
+    - cd ${TERRAFORM_DIRECTORY}
+    - terraform --version
+    - terraform init
+    - apk --no-cache add jq
+  script:
+    - terraform validate
+    - terraform plan -out=${PLAN}
+    - terraform show --json ${PLAN} | jq -r '([.resource_changes[]?.change.actions?]|flatten)|{"create":(map(select(.=="create"))|length),"update":(map(select(.=="update"))|length),"delete":(map(select(.=="delete"))|length)}' > ${JSON_PLAN_FILE}
+  artifacts:
+    reports:
+      terraform: ${TERRAFORM_DIRECTORY}/${JSON_PLAN_FILE}
+
+review_plan:
+  extends: .terraform-plan-generation
+  variables:
+    TERRAFORM_DIRECTORY: "review/"
+  # Review will not include an artifact name
+
+staging_plan:
+  extends: .terraform-plan-generation
+  variables:
+    TERRAFORM_DIRECTORY: "staging/"
+  artifacts:
+    name: Staging
+
+production_plan:
+  extends: .terraform-plan-generation
+  variables:
+    TERRAFORM_DIRECTORY: "production/"
+  artifacts:
+    name: Production
 ```

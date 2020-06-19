@@ -1,0 +1,6 @@
+---
+title: Backfill StatusPage::Published incidents and enable a publish quick action
+  for EE
+merge_request: 30906
+author:
+type: added

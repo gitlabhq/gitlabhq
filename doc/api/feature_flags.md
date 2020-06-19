@@ -9,7 +9,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/9566) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.5.
 
 NOTE: **Note**
-This API is behind a [feature flag](../user/project/operations/feature_flags.md#feature-flag-behavior-change-in-130). If this flag is not enabled in your environment, you can use the [legacy feature flags API](feature_flags_legacy.md).
+This API is behind a [feature flag](../user/project/operations/feature_flags.md#enable-or-disable-feature-flag-strategies).
+If this flag is not enabled in your environment, you can use the [legacy feature flags API](feature_flags_legacy.md).
 
 API for accessing resources of [GitLab Feature Flags](../user/project/operations/feature_flags.md).
 

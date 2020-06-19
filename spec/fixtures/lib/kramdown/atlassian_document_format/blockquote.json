@@ -1,0 +1,24 @@
+{
+  "version": 1,
+  "type": "doc",
+  "content": [
+    {
+      "type": "blockquote",
+      "content": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "This is a sample quote"
+            },
+            {
+              "type": "text",
+              "text": " with lorem ipsum dolor sit amet..."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,5 @@
+---
+title: Add setting to allow merge on skipped pipeline
+merge_request: 27490
+author: Mathieu Parent
+type: added

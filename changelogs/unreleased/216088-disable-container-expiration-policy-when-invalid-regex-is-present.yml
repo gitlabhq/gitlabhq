@@ -1,0 +1,5 @@
+---
+title: Validate regex before sending them to CleanupContainerRepositoryWorker
+merge_request: 34282
+author:
+type: added

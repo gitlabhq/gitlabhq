@@ -8,6 +8,7 @@ class ProjectsController < Projects::ApplicationController
   include SendFileUpload
   include RecordUserLastActivity
   include ImportUrlParams
+  include FiltersEvents
 
   prepend_before_action(only: [:show]) { authenticate_sessionless_user!(:rss) }
 

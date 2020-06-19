@@ -661,4 +661,61 @@ describe GroupPolicy do
       end
     end
   end
+
+  describe 'design activity' do
+    let_it_be(:group) { create(:group, :public) }
+    let(:current_user) { nil }
+
+    subject { described_class.new(current_user, group) }
+
+    context 'when design management is not available' do
+      it { is_expected.not_to be_allowed(:read_design_activity) }
+
+      context 'even when there are projects in the group' do
+        before do
+          create_list(:project_group_link, 2, group: group)
+        end
+
+        it { is_expected.not_to be_allowed(:read_design_activity) }
+      end
+    end
+
+    context 'when design management is available globally' do
+      include DesignManagementTestHelpers
+
+      before do
+        enable_design_management
+      end
+
+      context 'the group has no projects' do
+        it { is_expected.not_to be_allowed(:read_design_activity) }
+      end
+
+      context 'the group has a project' do
+        let(:project) { create(:project, :public) }
+
+        before do
+          create(:project_group_link, project: project, group: group)
+        end
+
+        it { is_expected.to be_allowed(:read_design_activity) }
+
+        context 'which does not have design management enabled' do
+          before do
+            project.update(lfs_enabled: false)
+          end
+
+          it { is_expected.not_to be_allowed(:read_design_activity) }
+
+          context 'but another project does' do
+            before do
+              create(:project_group_link, project: create(:project, :public), group: group)
+            end
+
+            it { is_expected.to be_allowed(:read_design_activity) }
+          end
+        end
+      end
+    end
+  end
 end

@@ -1,0 +1,5 @@
+---
+title: Add link_type column to release_links table
+merge_request: 33156
+author:
+type: changed

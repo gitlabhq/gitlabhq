@@ -1,0 +1,5 @@
+---
+title: Fix a bug where some Vue apps would be unable to load when DAG tab is disabled
+merge_request: 32966
+author:
+type: fixed

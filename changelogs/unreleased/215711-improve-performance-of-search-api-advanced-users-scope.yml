@@ -1,0 +1,5 @@
+---
+title: Reduce redundant queries for Search API users scope.
+merge_request: 33795
+author:
+type: performance

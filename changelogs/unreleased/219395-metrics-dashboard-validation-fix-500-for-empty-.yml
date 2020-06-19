@@ -1,0 +1,6 @@
+---
+title: Fixed dashboard YAML file validaiton for files which do not contain object
+  as root element
+merge_request: 33935
+author:
+type: fixed

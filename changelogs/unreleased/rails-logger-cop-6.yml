@@ -1,0 +1,5 @@
+---
+title: Use applogger in cache attrs and highest role ruby files
+merge_request: 32189
+author: Rajendra Kadam
+type: fixed

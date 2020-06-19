@@ -275,15 +275,6 @@ describe EventCreateService do
         specify { expect { result }.not_to change { Event.count } }
         specify { expect { result }.not_to exceed_query_limit(0) }
       end
-
-      context 'the feature flag is enabled for a single project' do
-        before do
-          stub_feature_flags(design_activity_events: project)
-        end
-
-        specify { expect(result).not_to be_empty }
-        specify { expect { result }.to change { Event.count }.by(1) }
-      end
     end
 
     describe '#save_designs' do
@@ -310,9 +301,7 @@ describe EventCreateService do
         expect(events.map(&:design)).to match_array(updated)
       end
 
-      it_behaves_like 'feature flag gated multiple event creation' do
-        let(:project) { created.first.project }
-      end
+      it_behaves_like 'feature flag gated multiple event creation'
     end
 
     describe '#destroy_designs' do
@@ -332,9 +321,7 @@ describe EventCreateService do
         expect(events.map(&:design)).to match_array(designs)
       end
 
-      it_behaves_like 'feature flag gated multiple event creation' do
-        let(:project) { designs.first.project }
-      end
+      it_behaves_like 'feature flag gated multiple event creation'
     end
   end
 end

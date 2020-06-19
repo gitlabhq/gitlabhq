@@ -2,6 +2,7 @@
 
 class DashboardController < Dashboard::ApplicationController
   include IssuableCollectionsAction
+  include FiltersEvents
 
   prepend_before_action(only: [:issues]) { authenticate_sessionless_user!(:rss) }
   prepend_before_action(only: [:issues_calendar]) { authenticate_sessionless_user!(:ics) }

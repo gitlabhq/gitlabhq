@@ -38,7 +38,8 @@ module Snippets
       # Once we can perform different operations through this service
       # we won't need to keep track of the `content` and `file_name` fields
       if snippet_files.any?
-        params.merge!(content: snippet_files[0].content, file_name: snippet_files[0].file_path)
+        params[:content] = snippet_files[0].content if snippet_files[0].content
+        params[:file_name] = snippet_files[0].file_path
       end
 
       snippet.assign_attributes(params)

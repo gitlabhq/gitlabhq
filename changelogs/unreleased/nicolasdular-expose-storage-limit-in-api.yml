@@ -1,0 +1,5 @@
+---
+title: Expose storage size limit for namespaces in GraphQL
+merge_request: 34882
+author:
+type: changed

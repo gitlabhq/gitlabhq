@@ -6,6 +6,7 @@ class Dashboard::ProjectsController < Dashboard::ApplicationController
   include OnboardingExperimentHelper
   include SortingHelper
   include SortingPreference
+  include FiltersEvents
 
   prepend_before_action(only: [:index]) { authenticate_sessionless_user!(:rss) }
   before_action :set_non_archived_param

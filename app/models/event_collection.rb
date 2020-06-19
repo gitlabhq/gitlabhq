@@ -45,9 +45,10 @@ class EventCollection
   private
 
   def apply_feature_flags(events)
-    return events if ::Feature.enabled?(:wiki_events)
+    events = events.not_wiki_page unless ::Feature.enabled?(:wiki_events)
+    events = events.not_design unless ::Feature.enabled?(:design_activity_events)
 
-    events.not_wiki_page
+    events
   end
 
   def project_events

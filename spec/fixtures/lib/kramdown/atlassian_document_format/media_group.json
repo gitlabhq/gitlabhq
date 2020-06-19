@@ -1,0 +1,59 @@
+{
+  "version": 1,
+  "type": "doc",
+  "content": [
+    {
+      "type": "mediaGroup",
+      "content": [
+        {
+          "type": "media",
+          "attrs": {
+            "id": "79411c6b-50e0-477f-b4ed-ac3a5887750c",
+            "type": "file",
+            "collection": "jira-10050-field-description",
+            "width": 400,
+            "height": 400
+          }
+        },
+        {
+          "type": "media",
+          "attrs": {
+            "id": "79411c6b-50e0-477f-b4ed-abcde",
+            "type": "file",
+            "collection": "jira-10050-field-description",
+            "width": 400,
+            "height": 400
+          }
+        }
+      ]
+    },
+    {
+      "type": "rule"
+    },
+    {
+      "type": "mediaGroup",
+      "content": [
+        {
+          "type": "media",
+          "attrs": {
+            "id": "79411c6b-50e0-477f-b4ed-ac3a5887750c-link1",
+            "type": "link",
+            "collection": "jira-10050-field-description-links",
+            "width": 400,
+            "height": 400
+          }
+        },
+        {
+          "type": "media",
+          "attrs": {
+            "id": "79411c6b-50e0-477f-b4ed-ac3a5887750c-link2",
+            "type": "link",
+            "collection": "jira-10050-field-description-links",
+            "width": 400,
+            "height": 400
+          }
+        }
+      ]
+    }
+  ]
+}

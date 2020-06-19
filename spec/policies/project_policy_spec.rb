@@ -855,6 +855,28 @@ describe ProjectPolicy do
     end
   end
 
+  describe 'design permissions' do
+    subject { described_class.new(guest, project) }
+
+    let(:design_permissions) do
+      %i[read_design_activity read_design]
+    end
+
+    context 'when design management is not available' do
+      it { is_expected.not_to be_allowed(*design_permissions) }
+    end
+
+    context 'when design management is available' do
+      include DesignManagementTestHelpers
+
+      before do
+        enable_design_management
+      end
+
+      it { is_expected.to be_allowed(*design_permissions) }
+    end
+  end
+
   describe 'read_build_report_results' do
     subject { described_class.new(guest, project) }
 

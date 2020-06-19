@@ -60,6 +60,38 @@ describe ObjectStorage::DirectUpload do
     end
   end
 
+  describe '#get_url' do
+    subject { described_class.new(credentials, bucket_name, object_name, has_length: true) }
+
+    context 'when AWS is used' do
+      it 'calls the proper method' do
+        expect_next_instance_of(::Fog::Storage, credentials) do |connection|
+          expect(connection).to receive(:get_object_url).once
+        end
+
+        subject.get_url
+      end
+    end
+
+    context 'when Google is used' do
+      let(:credentials) do
+        {
+          provider: 'Google',
+          google_storage_access_key_id: 'GOOGLE_ACCESS_KEY_ID',
+          google_storage_secret_access_key: 'GOOGLE_SECRET_ACCESS_KEY'
+        }
+      end
+
+      it 'calls the proper method' do
+        expect_next_instance_of(::Fog::Storage, credentials) do |connection|
+          expect(connection).to receive(:get_object_https_url).once
+        end
+
+        subject.get_url
+      end
+    end
+  end
+
   describe '#to_hash' do
     subject { direct_upload.to_hash }
 

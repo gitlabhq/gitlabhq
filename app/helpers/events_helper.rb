@@ -29,7 +29,11 @@ module EventsHelper
 
   def event_action_name(event)
     target =  if event.target_type
-                if event.note?
+                if event.design? || event.design_note?
+                  'design'
+                elsif event.wiki_page?
+                  'wiki page'
+                elsif event.note?
                   event.note_target_type
                 else
                   event.target_type.titleize.downcase
@@ -58,9 +62,28 @@ module EventsHelper
   end
 
   def event_filter_visible(feature_key)
+    return designs_visible? if feature_key == :designs
     return true unless @project
 
     @project.feature_available?(feature_key, current_user)
+  end
+
+  def designs_visible?
+    return false unless Feature.enabled?(:design_activity_events)
+
+    if @project
+      design_activity_enabled?(@project)
+    elsif @group
+      design_activity_enabled?(@group)
+    elsif @projects
+      @projects.with_namespace.include_project_feature.any? { |p| design_activity_enabled?(p) }
+    else
+      true
+    end
+  end
+
+  def design_activity_enabled?(project)
+    Ability.allowed?(current_user, :read_design_activity, project)
   end
 
   def comments_visible?
@@ -93,6 +116,12 @@ module EventsHelper
       words << "at"
     elsif event.milestone?
       words << "##{event.target_iid}" if event.target_iid
+      words << "in"
+    elsif event.design?
+      words << event.design.to_reference
+      words << "in"
+    elsif event.wiki_page?
+      words << event.target_title
       words << "in"
     elsif event.target
       prefix =
@@ -187,6 +216,15 @@ module EventsHelper
     end
   end
 
+  def event_design_title_html(event)
+    capture do
+      concat content_tag(:span, _('design'), class: "event-target-type append-right-4")
+      concat link_to(event.design.reference_link_text, design_url(event.design),
+                     title: event.target_title,
+                     class: 'has-tooltip event-design event-target-link append-right-4')
+    end
+  end
+
   def event_wiki_page_target_url(event)
     project_wiki_url(event.project, event.target&.canonical_slug || Wiki::HOMEPAGE)
   end
@@ -214,6 +252,18 @@ module EventsHelper
     sprite_icon(icon_name, size: size) if icon_name
   end
 
+  DESIGN_ICONS = {
+    'created' => 'upload',
+    'updated' => 'pencil',
+    'destroyed' => ICON_NAMES_BY_EVENT_TYPE['destroyed'],
+    'archived' => 'archive'
+  }.freeze
+
+  def design_event_icon(action, size: 24)
+    icon_name = DESIGN_ICONS[action]
+    sprite_icon(icon_name, size: size) if icon_name
+  end
+
   def icon_for_profile_event(event)
     if current_path?('users#show')
       content_tag :div, class: "system-note-image #{event.action_name.parameterize}-icon" do
@@ -229,6 +279,8 @@ module EventsHelper
   def inline_event_icon(event)
     unless current_path?('users#show')
       content_tag :span, class: "system-note-image-inline d-none d-sm-flex append-right-4 #{event.action_name.parameterize}-icon align-self-center" do
+        next design_event_icon(event.action, size: 14) if event.design?
+
         icon_for_event(event.action_name, size: 14)
       end
     end
@@ -244,7 +296,7 @@ module EventsHelper
 
   private
 
-  def design_url(design, opts)
+  def design_url(design, opts = {})
     designs_project_issue_url(
       design.project,
       design.issue,

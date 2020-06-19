@@ -545,11 +545,13 @@ class ProjectPolicy < BasePolicy
 
   rule { can?(:read_issue) }.policy do
     enable :read_design
+    enable :read_design_activity
   end
 
   # Design abilities could also be prevented in the issue policy.
   rule { design_management_disabled }.policy do
     prevent :read_design
+    prevent :read_design_activity
     prevent :create_design
     prevent :destroy_design
   end

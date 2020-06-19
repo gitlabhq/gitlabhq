@@ -21,6 +21,19 @@ should be leveraged:
 - Merge requests that make changes hidden behind a feature flag, or remove an
   existing feature flag because a feature is deemed stable must have the
   ~"feature flag" label assigned.
+- When development of a feature will be spread across multiple merge
+  requests, you can use the following workflow:
+
+  1. Introduce a feature flag which is **off** by default, in the first merge request.
+  1. Submit incremental changes via one or more merge requests, ensuring that any
+     new code added can only be reached if the feature flag is **on**.
+     You can keep the feature flag enabled on your local GDK during development.
+  1. When the feature is ready to be tested, enable the feature flag for
+     a specific project and ensure that there are no issues with the implementation.
+  1. When the feature is ready to be announced, create a merge request that adds
+     documentation about the feature, including [documentation for the feature flag itself](../documentation/feature_flags.md),
+     and a changelog entry. In the same merge request either flip the feature flag to
+     be **on by default** or remove it entirely in order to enable the new behavior.
 
 One might be tempted to think that feature flags will delay the release of a
 feature by at least one month (= one release). This is not the case. A feature
@@ -28,6 +41,8 @@ flag does not have to stick around for a specific amount of time
 (e.g. at least one release), instead they should stick around until the feature
 is deemed stable. Stable means it works on GitLab.com without causing any
 problems, such as outages.
+
+Please also read the [development guide for feature flags](development.md).
 
 ### When to use feature flags
 

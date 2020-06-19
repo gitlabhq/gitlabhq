@@ -1,0 +1,44 @@
+{
+  "version": 1,
+  "type": "doc",
+  "content": [
+    {
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "This is a "
+        },
+        {
+          "type": "text",
+          "text": "link without title",
+          "marks": [
+            {
+              "type": "link",
+              "attrs": {
+                "href": "http://example.com"
+              }
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "text": " and a "
+        },
+        {
+          "type": "text",
+          "text": "link with title",
+          "marks": [
+            {
+              "type": "link",
+              "attrs": {
+                "href": "http://example.net",
+                "title": "Link Title"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

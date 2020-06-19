@@ -80,6 +80,7 @@ module Ci
     has_one :pipeline_config, class_name: 'Ci::PipelineConfig', inverse_of: :pipeline
 
     has_many :daily_build_group_report_results, class_name: 'Ci::DailyBuildGroupReportResult', foreign_key: :last_pipeline_id
+    has_many :latest_builds_report_results, through: :latest_builds, source: :report_results
 
     accepts_nested_attributes_for :variables, reject_if: :persisted?
 
@@ -800,6 +801,10 @@ module Ci
 
     def has_reports?(reports_scope)
       complete? && latest_report_builds(reports_scope).exists?
+    end
+
+    def test_report_summary
+      Gitlab::Ci::Reports::TestReportSummary.new(latest_builds_report_results)
     end
 
     def test_reports

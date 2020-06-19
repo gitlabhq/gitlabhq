@@ -186,7 +186,7 @@ class Projects::PipelinesController < Projects::ApplicationController
       format.json do
         render json: TestReportSerializer
           .new(current_user: @current_user)
-          .represent(pipeline_test_report, project: project)
+          .represent(pipeline_test_report, project: project, details: true)
       end
     end
   end

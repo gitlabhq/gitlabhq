@@ -1,0 +1,5 @@
+---
+title: Fix leaky constant issue in uninstall progress service check
+merge_request: 32036
+author: Rajendra Kadam
+type: fixed

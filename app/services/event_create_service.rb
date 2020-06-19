@@ -97,23 +97,16 @@ class EventCreateService
   end
 
   def save_designs(current_user, create: [], update: [])
-    created = create.group_by(&:project).flat_map do |project, designs|
-      Feature.enabled?(:design_activity_events, project) ? designs : []
-    end.to_set
-    updated = update.group_by(&:project).flat_map do |project, designs|
-      Feature.enabled?(:design_activity_events, project) ? designs : []
-    end.to_set
-    return [] if created.empty? && updated.empty?
+    return [] unless Feature.enabled?(:design_activity_events)
 
-    records = created.zip([:created].cycle) + updated.zip([:updated].cycle)
+    records = create.zip([:created].cycle) + update.zip([:updated].cycle)
+    return [] if records.empty?
 
     create_record_events(records, current_user)
   end
 
   def destroy_designs(designs, current_user)
-    designs = designs.select do |design|
-      Feature.enabled?(:design_activity_events, design.project)
-    end
+    return [] unless Feature.enabled?(:design_activity_events)
     return [] unless designs.present?
 
     create_record_events(designs.zip([:destroyed].cycle), current_user)

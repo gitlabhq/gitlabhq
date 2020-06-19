@@ -1,0 +1,5 @@
+---
+title: Add blobs field to SnippetType in GraphQL
+merge_request: 33657
+author:
+type: changed

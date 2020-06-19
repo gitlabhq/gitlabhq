@@ -1,0 +1,28 @@
+{
+  "version": 1,
+  "type": "doc",
+  "content": [
+    {
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "This is a sample paragraph"
+        },
+        {
+          "type": "text",
+          "text": " with lorem ipsum dolor sit amet..."
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "This is a second paragraph"
+        }
+      ]
+    }
+  ]
+}

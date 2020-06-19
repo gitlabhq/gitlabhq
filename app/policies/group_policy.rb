@@ -42,6 +42,14 @@ class GroupPolicy < BasePolicy
     @subject.subgroup_creation_level == ::Gitlab::Access::MAINTAINER_SUBGROUP_ACCESS
   end
 
+  condition(:design_management_enabled) do
+    group_projects_for(user: @user, group: @subject, only_owned: false).any? { |p| p.design_management_enabled? }
+  end
+
+  rule { design_management_enabled }.policy do
+    enable :read_design_activity
+  end
+
   rule { public_group }.policy do
     enable :read_group
     enable :read_package
@@ -68,6 +76,10 @@ class GroupPolicy < BasePolicy
     enable :read_list
     enable :read_label
     enable :read_board
+  end
+
+  rule { ~can?(:read_group) }.policy do
+    prevent :read_design_activity
   end
 
   rule { has_access }.enable :read_namespace

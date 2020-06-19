@@ -1,0 +1,5 @@
+---
+title: Adjust wrong column reference for ResetMergeStatus (background job)
+merge_request: 33899
+author:
+type: fixed

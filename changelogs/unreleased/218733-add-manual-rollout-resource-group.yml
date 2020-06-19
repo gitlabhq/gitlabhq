@@ -1,0 +1,6 @@
+---
+title: Prevent multiple Auto DevOps deployment jobs running concurrently when using
+  manual rollout
+merge_request: 32824
+author:
+type: fixed

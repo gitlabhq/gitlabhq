@@ -1,0 +1,5 @@
+---
+title: Fix leaky constant issue in path regex spec
+merge_request: 32115
+author: Rajendra Kadam
+type: fixed

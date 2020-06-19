@@ -1,0 +1,5 @@
+---
+title: Lazy load commit_date and authored_date on Commit
+merge_request: 34181
+author:
+type: performance

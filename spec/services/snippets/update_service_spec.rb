@@ -349,6 +349,18 @@ describe Snippets::UpdateService do
         end
       end
 
+      context 'when snippet_file content is not present' do
+        let(:snippet_files) { [{ action: :move, previous_path: file_path, file_path: 'new_file_path' }] }
+
+        it 'does not update snippet content' do
+          content = snippet.content
+
+          expect(subject).to be_success
+
+          expect(snippet.reload.content).to eq content
+        end
+      end
+
       context 'when snippet_files param is invalid' do
         let(:snippet_files) { [{ action: 'invalid_action' }] }
 

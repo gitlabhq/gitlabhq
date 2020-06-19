@@ -1,0 +1,5 @@
+---
+title: Display dates on metrics dashboards in UTC time zone
+merge_request: 32746
+author:
+type: added

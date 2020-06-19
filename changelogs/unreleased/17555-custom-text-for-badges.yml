@@ -1,0 +1,5 @@
+---
+title: Allow customization of badge key_text and key_width
+merge_request: 29381
+author: Fabian Schneider @fabsrc
+type: added

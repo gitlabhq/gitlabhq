@@ -1,0 +1,5 @@
+---
+title: Use applogger in akismet service
+merge_request: 32205
+author: Rajendra Kadam
+type: fixed

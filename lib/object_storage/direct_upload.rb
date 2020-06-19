@@ -92,7 +92,11 @@ module ObjectStorage
 
     # Implements https://docs.aws.amazon.com/AmazonS3/latest/API/RESTObjectGET.html
     def get_url
-      connection.get_object_url(bucket_name, object_name, expire_at)
+      if google?
+        connection.get_object_https_url(bucket_name, object_name, expire_at)
+      else
+        connection.get_object_url(bucket_name, object_name, expire_at)
+      end
     end
 
     # Implements https://docs.aws.amazon.com/AmazonS3/latest/API/RESTObjectDELETE.html
@@ -164,6 +168,10 @@ module ObjectStorage
 
     def aws?
       provider == 'AWS'
+    end
+
+    def google?
+      provider == 'Google'
     end
 
     def requires_multipart_upload?

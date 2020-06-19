@@ -3,12 +3,18 @@
 require 'spec_helper'
 
 describe EventCollection do
+  include DesignManagementTestHelpers
+
   describe '#to_a' do
     let_it_be(:group) { create(:group) }
     let_it_be(:project) { create(:project_empty_repo, group: group) }
     let_it_be(:projects) { Project.where(id: project.id) }
     let_it_be(:user) { create(:user) }
     let_it_be(:merge_request) { create(:merge_request) }
+
+    before do
+      enable_design_management
+    end
 
     context 'with project events' do
       let_it_be(:push_event_payloads) do
@@ -21,11 +27,13 @@ describe EventCollection do
       let_it_be(:merge_request_events) { create_list(:event, 10, :commented, project: project, target: merge_request) }
       let_it_be(:closed_issue_event) { create(:closed_issue_event, project: project, author: user) }
       let_it_be(:wiki_page_event) { create(:wiki_page_event, project: project) }
+      let_it_be(:design_event) { create(:design_event, project: project) }
       let(:push_events) { push_event_payloads.map(&:event) }
 
       it 'returns an Array of events', :aggregate_failures do
         most_recent_20_events = [
           wiki_page_event,
+          design_event,
           closed_issue_event,
           *push_events,
           *merge_request_events
@@ -52,6 +60,31 @@ describe EventCollection do
 
           expect(events).not_to include(wiki_page_event)
         end
+      end
+
+      context 'the design_activity_events feature flag is disabled' do
+        before do
+          stub_feature_flags(design_activity_events: false)
+        end
+
+        it 'omits the design events when using to_a' do
+          events = described_class.new(projects).to_a
+
+          expect(events).not_to include(design_event)
+        end
+
+        it 'omits the wiki page events when using all_project_events' do
+          events = described_class.new(projects).all_project_events
+
+          expect(events).not_to include(design_event)
+        end
+      end
+
+      it 'includes the design events' do
+        collection = described_class.new(projects)
+
+        expect(collection.to_a).to include(design_event)
+        expect(collection.all_project_events).to include(design_event)
       end
 
       context 'the wiki_events feature flag is enabled' do
@@ -81,7 +114,7 @@ describe EventCollection do
       it 'can paginate through events' do
         events = described_class.new(projects, offset: 20).to_a
 
-        expect(events.length).to eq(1)
+        expect(events.length).to eq(2)
       end
 
       it 'returns an empty Array when crossing the maximum page number' do

@@ -1,0 +1,46 @@
+{
+  "version": 1,
+  "type": "doc",
+  "content": [
+    {
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "An inline card (url): "
+        },
+        {
+          "type": "inlineCard",
+          "attrs": {
+            "url": "https://gitlab-jira.atlassian.net/browse/DEMO-1"
+          }
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "Some prelude text "
+        },
+        {
+          "type": "inlineCard",
+          "attrs": {
+            "data": {
+              "@context": "https://json-ld.org/contexts/person.jsonld",
+              "@id": "http://dbpedia.org/resource/John_Lennon",
+              "name": "John Lennon",
+              "born": "1940-10-09",
+              "spouse": "http://dbpedia.org/resource/Cynthia_Lennon"
+            }
+          }
+        },
+        {
+          "type": "text",
+          "text": " some following text"
+        }
+      ]
+    }
+  ]
+}

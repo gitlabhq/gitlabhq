@@ -1,0 +1,5 @@
+---
+title: Automatically resolve alert when associated issue closes
+merge_request: 33278
+author:
+type: added

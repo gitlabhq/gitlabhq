@@ -1,0 +1,5 @@
+---
+title: Fix invisible emoji modal on Set Status form when clicked the second time
+merge_request: 33398
+author:
+type: fixed

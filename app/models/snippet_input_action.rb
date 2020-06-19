@@ -18,6 +18,7 @@ class SnippetInputAction
   validates :file_path, presence: true
   validates :content, presence: true, if: -> (action) { action.create_action? || action.update_action? }
   validate :ensure_same_file_path_and_previous_path, if: :update_action?
+  validate :ensure_different_file_path_and_previous_path, if: :move_action?
   validate :ensure_allowed_action
 
   def initialize(action: nil, previous_path: nil, file_path: nil, content: nil, allowed_actions: nil)
@@ -50,6 +51,12 @@ class SnippetInputAction
     return if previous_path == file_path
 
     errors.add(:file_path, "can't be different from the previous_path attribute")
+  end
+
+  def ensure_different_file_path_and_previous_path
+    return if previous_path != file_path
+
+    errors.add(:file_path, 'must be different from the previous_path attribute')
   end
 
   def ensure_allowed_action

@@ -1,0 +1,5 @@
+---
+title: Fix force_remove_source_branch not working in API
+merge_request: 33804
+author:
+type: fixed

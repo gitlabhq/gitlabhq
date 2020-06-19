@@ -1,0 +1,5 @@
+---
+title: Removed default artifact name for Terraform template
+merge_request: 34557
+author:
+type: fixed

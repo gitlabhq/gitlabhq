@@ -1,0 +1,5 @@
+---
+title: Clean up gitlab-shell install-from-source path
+merge_request: 33057
+author:
+type: changed

@@ -2891,6 +2891,39 @@ describe Ci::Pipeline, :mailer do
     end
   end
 
+  describe '#test_report_summary' do
+    subject { pipeline.test_report_summary }
+
+    context 'when pipeline has multiple builds with report results' do
+      let(:pipeline) { create(:ci_pipeline, :success, project: project) }
+
+      before do
+        create(:ci_build, :success, :report_results, name: 'rspec', pipeline: pipeline, project: project)
+        create(:ci_build, :success, :report_results, name: 'java', pipeline: pipeline, project: project)
+      end
+
+      it 'returns test report summary with collected data', :aggregate_failures do
+        expect(subject.total_time).to be(0.84)
+        expect(subject.total_count).to be(4)
+        expect(subject.success_count).to be(0)
+        expect(subject.failed_count).to be(0)
+        expect(subject.error_count).to be(4)
+        expect(subject.skipped_count).to be(0)
+      end
+    end
+
+    context 'when pipeline does not have any builds with report results' do
+      it 'returns empty test report sumary', :aggregate_failures do
+        expect(subject.total_time).to be(0)
+        expect(subject.total_count).to be(0)
+        expect(subject.success_count).to be(0)
+        expect(subject.failed_count).to be(0)
+        expect(subject.error_count).to be(0)
+        expect(subject.skipped_count).to be(0)
+      end
+    end
+  end
+
   describe '#test_reports' do
     subject { pipeline.test_reports }
 

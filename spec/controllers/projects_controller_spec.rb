@@ -86,11 +86,13 @@ RSpec.describe ProjectsController do
   end
 
   describe "GET #activity as JSON" do
+    include DesignManagementTestHelpers
     render_views
 
     let(:project) { create(:project, :public, issues_access_level: ProjectFeature::PRIVATE) }
 
     before do
+      enable_design_management
       create(:event, :created, project: project, target: create(:issue))
 
       sign_in(user)
@@ -103,10 +105,43 @@ RSpec.describe ProjectsController do
         project.add_developer(user)
       end
 
-      it 'returns count' do
+      def get_activity(project)
         get :activity, params: { namespace_id: project.namespace, id: project, format: :json }
+      end
+
+      it 'returns count' do
+        get_activity(project)
 
         expect(json_response['count']).to eq(1)
+      end
+
+      context 'design events are visible' do
+        include DesignManagementTestHelpers
+        let(:other_project) { create(:project, namespace: user.namespace) }
+
+        before do
+          enable_design_management
+          create(:design_event, project: project)
+          request.cookies[:event_filter] = EventFilter::DESIGNS
+        end
+
+        it 'returns correct count' do
+          get_activity(project)
+
+          expect(json_response['count']).to eq(1)
+        end
+
+        context 'the feature flag is disabled' do
+          before do
+            stub_feature_flags(design_activity_events: false)
+          end
+
+          it 'returns correct count' do
+            get_activity(project)
+
+            expect(json_response['count']).to eq(0)
+          end
+        end
       end
     end
 

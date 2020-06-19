@@ -1,0 +1,13 @@
+- return unless page_startup_api_calls.present?
+
+= javascript_tag nonce: true do
+  :plain
+    var gl = window.gl || {};
+    gl.startup_calls = #{page_startup_api_calls.to_json};
+    if (gl.startup_calls && window.fetch) {
+      Object.keys(gl.startup_calls).forEach(apiCall => {
+        gl.startup_calls[apiCall] = {
+          fetchCall: fetch(apiCall)
+        };
+      });
+    }

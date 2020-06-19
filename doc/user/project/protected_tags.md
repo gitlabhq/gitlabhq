@@ -12,7 +12,7 @@ This feature evolved out of [protected branches](protected_branches.md)
 
 ## Overview
 
-Protected tags will prevent anyone from updating or deleting the tag, as and will prevent creation of matching tags based on the permissions you have selected. By default, anyone without Maintainer permission will be prevented from creating tags.
+Protected tags will prevent anyone from updating or deleting the tag, and will prevent creation of matching tags based on the permissions you have selected. By default, anyone without Maintainer permission will be prevented from creating tags.
 
 ## Configuring protected tags
 

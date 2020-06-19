@@ -1,0 +1,5 @@
+---
+title: Enable CI Atomic Processing by default
+merge_request:
+author:
+type: performance

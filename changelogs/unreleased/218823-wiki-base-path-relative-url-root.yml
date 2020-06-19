@@ -1,0 +1,5 @@
+---
+title: Fix relative URL root in wiki_base_path
+merge_request: 33841
+author:
+type: fixed

@@ -1,0 +1,5 @@
+---
+title: Fix plural message in account deletion section
+merge_request: 32868
+author:
+type: fixed

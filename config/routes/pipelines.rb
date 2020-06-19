@@ -26,6 +26,12 @@ resources :pipelines, only: [:index, :new, :create, :show, :destroy] do
     resources :stages, only: [], param: :name do
       post :play_manual
     end
+
+    resources :tests, only: [], controller: 'pipelines/tests' do
+      collection do
+        get :summary
+      end
+    end
   end
 end
 

@@ -209,6 +209,16 @@ describe ApplicationHelper do
     end
   end
 
+  describe '#page_startup_api_calls' do
+    it 'returns map containing JS Page Startup Calls' do
+      helper.add_page_startup_api_call("testURL")
+
+      startup_calls = helper.page_startup_api_calls
+
+      expect(startup_calls["testURL"]).to eq({})
+    end
+  end
+
   describe '#autocomplete_data_sources' do
     let(:project) { create(:project) }
     let(:noteable_type) { Issue }

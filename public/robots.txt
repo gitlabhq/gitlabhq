@@ -8,7 +8,10 @@
 # Only some crawlers respect this setting, e.g. Googlebot does not
 # Crawl-delay: 1
 
-# Based on details in https://gitlab.com/gitlab-org/gitlab/blob/master/config/routes.rb, https://gitlab.com/gitlab-org/gitlab/blob/master/spec/routing, and using application
+# Based on details in https://gitlab.com/gitlab-org/gitlab/blob/master/config/routes.rb,
+# https://gitlab.com/gitlab-org/gitlab/blob/master/spec/routing, and using application
+
+# Global routes
 User-Agent: *
 Disallow: /autocomplete/users
 Disallow: /search
@@ -16,62 +19,48 @@ Disallow: /api
 Disallow: /admin
 Disallow: /profile
 Disallow: /dashboard
-Disallow: /projects/new
-Disallow: /groups/new
-Disallow: /groups/*/edit
 Disallow: /users
 Disallow: /help
+Disallow: /s/
 # Only specifically allow the Sign In page to avoid very ugly search results
 Allow: /users/sign_in
 
-# Global snippets
+# Generic resource routes like new, edit, raw
+# This will block routes like:
+# - /projects/new
+# - /gitlab-org/gitlab-foss/issues/123/-/edit
 User-Agent: *
-Disallow: /s/
-Disallow: /snippets/new
-Disallow: /snippets/*/edit
-Disallow: /snippets/*/raw
+Disallow: /*/new
+Disallow: /*/edit
+Disallow: /*/raw
+
+# Group details
+User-Agent: *
+Disallow: /groups/*/analytics
+Disallow: /groups/*/contribution_analytics
+Disallow: /groups/*/group_members
 
 # Project details
 User-Agent: *
 Disallow: /*/*.git
-Disallow: /*/*/fork/new
-Disallow: /*/-/archive/
-Disallow: /*/*/repository/archive*
-Disallow: /*/*/activity
-Disallow: /*/*/new
-Disallow: /*/*/edit
-Disallow: /*/*/raw
-Disallow: /*/*/blame
-Disallow: /*/*/commits/*/*
-Disallow: /*/*/commit/*.patch
-Disallow: /*/*/commit/*.diff
-Disallow: /*/*/compare
-Disallow: /*/*/branches/new
-Disallow: /*/*/tags/new
-Disallow: /*/*/network
-Disallow: /*/*/graphs
-Disallow: /*/*/milestones/new
-Disallow: /*/*/milestones/*/edit
-Disallow: /*/*/issues/new
-Disallow: /*/*/issues/*/edit
-Disallow: /*/*/-/merge_requests/new
-Disallow: /*/*/-/merge_requests/*.patch
-Disallow: /*/*/-/merge_requests/*.diff
-Disallow: /*/*/-/merge_requests/*/edit
-Disallow: /*/*/-/merge_requests/*/diffs
-Disallow: /*/*/project_members/import
-Disallow: /*/*/labels/new
-Disallow: /*/*/labels/*/edit
-Disallow: /*/*/wikis/*/edit
-Disallow: /*/*/snippets/new
-Disallow: /*/*/snippets/*/edit
-Disallow: /*/*/snippets/*/raw
-Disallow: /*/*/deploy_keys
-Disallow: /*/*/hooks
-Disallow: /*/*/services
-Disallow: /*/*/protected_branches
-Disallow: /*/*/uploads/
-Disallow: /*/-/group_members
+Disallow: /*/archive/
+Disallow: /*/repository/archive*
+Disallow: /*/activity
+Disallow: /*/blame
+Disallow: /*/commits
+Disallow: /*/commit
+Disallow: /*/commit/*.patch
+Disallow: /*/commit/*.diff
+Disallow: /*/compare
+Disallow: /*/network
+Disallow: /*/graphs
+Disallow: /*/merge_requests/*.patch
+Disallow: /*/merge_requests/*.diff
+Disallow: /*/merge_requests/*/diffs
+Disallow: /*/deploy_keys
+Disallow: /*/hooks
+Disallow: /*/services
+Disallow: /*/protected_branches
+Disallow: /*/uploads/
 Disallow: /*/project_members
-Disallow: /groups/*/-/contribution_analytics
-Disallow: /groups/*/-/analytics
+Disallow: /*/settings

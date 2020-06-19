@@ -1,0 +1,5 @@
+---
+title: Filter pipelines based on url query params
+merge_request: 32230
+author:
+type: added

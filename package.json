@@ -216,7 +216,7 @@
     "yarn-deduplicate": "^1.1.1"
   },
   "blockedDependencies": {
-    "bootstrap-vue": "https://docs.gitlab.com/ee/development/fe_guide/dependencies.md#bootstrapvue"
+    "bootstrap-vue": "https://docs.gitlab.com/ee/development/fe_guide/dependencies.html#bootstrapvue"
   },
   "resolutions": {
     "chokidar": "^3.4.0",

@@ -1,0 +1,5 @@
+---
+title: Remove temporary datepicker position fix as it is no longer required
+merge_request: 31836
+author: Arun Kumar Mohan
+type: removed

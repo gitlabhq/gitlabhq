@@ -1,0 +1,5 @@
+---
+title: Move review related controllers/workers outside EE
+merge_request: 32663
+author:
+type: changed

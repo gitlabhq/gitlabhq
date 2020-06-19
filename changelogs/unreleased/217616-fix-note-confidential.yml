@@ -1,0 +1,5 @@
+---
+title: Don't display confidential note icon on confidential issue public notes
+merge_request: 32571
+author:
+type: fixed

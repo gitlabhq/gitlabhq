@@ -32,8 +32,8 @@ request removing the feature flag or the merge request where the default value o
 the feature flag is set to true. If the feature contains any DB migration it
 should include a changelog entry for DB changes.
 
-In the rare case that you need the feature flag to be on automatically, use
-`default_enabled: true` when checking:
+If you need the feature flag to be on automatically, use `default_enabled: true`
+when checking:
 
 ```ruby
 Feature.enabled?(:feature_flag, project, default_enabled: true)

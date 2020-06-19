@@ -1,0 +1,5 @@
+---
+title: "Web IDE: Create template files in the folder from which new file request was made"
+merge_request: 33585
+author: Ashesh Vidyut
+type: fixed

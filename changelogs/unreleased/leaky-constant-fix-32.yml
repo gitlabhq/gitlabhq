@@ -1,0 +1,5 @@
+---
+title: Fix leaky constant issue importer and cache headers spec
+merge_request: 32122
+author: Rajendra Kadam
+type: fixed

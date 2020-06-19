@@ -1,0 +1,5 @@
+---
+title: Squash database migrations prior to 2019 into one
+merge_request: 31936
+author:
+type: other

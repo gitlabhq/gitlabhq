@@ -1,0 +1,5 @@
+---
+title: Fix broken CSS classes inside alert management list
+merge_request: 33038
+author:
+type: fixed

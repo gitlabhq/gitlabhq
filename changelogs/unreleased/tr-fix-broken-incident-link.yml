@@ -1,0 +1,5 @@
+---
+title: Fix broken help link on operations settings page
+merge_request: 32722
+author:
+type: fixed

@@ -9104,6 +9104,9 @@ msgstr ""
 msgid "EventFilterBy|Filter by comments"
 msgstr ""
 
+msgid "EventFilterBy|Filter by designs"
+msgstr ""
+
 msgid "EventFilterBy|Filter by epic events"
 msgstr ""
 

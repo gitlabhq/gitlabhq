@@ -1,0 +1,5 @@
+---
+title: Use applogger in commit signature worker
+merge_request: 32207
+author: Rajendra Kadam
+type: fixed

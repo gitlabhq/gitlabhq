@@ -1,0 +1,5 @@
+---
+title: Groups API has top_level_only option to exclude subgroups
+merge_request: 32870
+author:
+type: added

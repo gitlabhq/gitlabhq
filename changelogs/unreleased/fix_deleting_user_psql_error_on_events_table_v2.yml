@@ -1,0 +1,5 @@
+---
+title: Remove not null constraint from events tables
+merge_request: 34190
+author:
+type: fixed
