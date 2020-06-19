@@ -1,5 +1,0 @@
----
-title: Fix overflow issue in MR and Issue comments
-merge_request: 33100
-author:
-type: fixed

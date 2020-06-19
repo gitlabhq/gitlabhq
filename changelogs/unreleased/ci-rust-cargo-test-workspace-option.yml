@@ -1,5 +1,0 @@
----
-title: "Rust CI template: Replace --all with --workspace on cargo test."
-merge_request: 33517
-author: Markus Becker
-type: fixed

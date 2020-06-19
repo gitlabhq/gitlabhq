@@ -1,5 +1,0 @@
----
-title: Improve performance of commit search by limiting the number of results requested
-merge_request: 32260
-author:
-type: performance

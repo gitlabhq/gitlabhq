@@ -1,5 +1,0 @@
----
-title: Avoid refresh to show endedAt after mutation
-merge_request: 32636
-author:
-type: fixed

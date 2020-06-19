@@ -1,5 +1,0 @@
----
-title: Fix leaky constant issue in creds factory spec
-merge_request: 32176
-author: Rajendra Kadam
-type: fixed

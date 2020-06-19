@@ -1,5 +1,0 @@
----
-title: Remove async_merge_request_check_mergeability feature flag
-merge_request: 33917
-author:
-type: changed
