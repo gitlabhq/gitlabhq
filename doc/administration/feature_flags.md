@@ -103,10 +103,10 @@ Some feature flags can be enabled or disabled on a per project basis:
 Feature.enable(:<feature flag>, Project.find(<project id>))
 ```
 
-For example, to enable the [`:release_evidence_collection`](../ci/junit_test_reports.md#enabling-the-feature) feature flag for project `1234`:
+For example, to enable the [`:junit_pipeline_view`](../ci/junit_test_reports.md#enabling-the-junit-test-reports-feature-core-only) feature flag for project `1234`:
 
 ```ruby
-Feature.enable(:release_evidence_collection, Project.find(1234))
+Feature.enable(:junit_pipeline_view, Project.find(1234))
 ```
 
 When the feature is ready, GitLab will remove the feature flag, the option for

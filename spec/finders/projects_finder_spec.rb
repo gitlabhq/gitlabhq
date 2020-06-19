@@ -262,6 +262,17 @@ RSpec.describe ProjectsFinder, :do_not_mock_admin_mode do
         it { is_expected.to match_array([public_project]) }
       end
 
+      describe 'filter by repository_storage' do
+        let(:params) { { repository_storage: 'nfs-05' } }
+        let!(:project) { create(:project, :public) }
+
+        before do
+          project.update_columns(repository_storage: 'nfs-05')
+        end
+
+        it { is_expected.to match_array([project]) }
+      end
+
       describe 'sorting' do
         let(:params) { { sort: 'name_asc' } }
 

@@ -1925,6 +1925,7 @@ class Project < ApplicationRecord
       .append(key: 'CI_PROJECT_PATH', value: full_path)
       .append(key: 'CI_PROJECT_PATH_SLUG', value: full_path_slug)
       .append(key: 'CI_PROJECT_NAMESPACE', value: namespace.full_path)
+      .append(key: 'CI_PROJECT_ROOT_NAMESPACE', value: namespace.root_ancestor.path)
       .append(key: 'CI_PROJECT_URL', value: web_url)
       .append(key: 'CI_PROJECT_VISIBILITY', value: Gitlab::VisibilityLevel.string_level(visibility_level))
       .append(key: 'CI_PROJECT_REPOSITORY_LANGUAGES', value: repository_languages.map(&:name).join(',').downcase)

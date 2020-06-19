@@ -6,7 +6,7 @@ module Gitlab
       module Stages
         class MetricEndpointInserter < BaseStage
           def transform!
-            raise Errors::DashboardProcessingError.new('Environment is required for Stages::MetricEndpointInserter') unless params[:environment]
+            raise Errors::DashboardProcessingError.new(_('Environment is required for Stages::MetricEndpointInserter')) unless params[:environment]
 
             for_metrics do |metric|
               metric[:prometheus_endpoint_path] = endpoint_for_metric(metric)
@@ -33,7 +33,11 @@ module Gitlab
           end
 
           def query_type(metric)
-            metric[:query] ? :query : :query_range
+            if metric[:query]
+              ::Prometheus::ProxyService::PROMETHEUS_QUERY_API.to_sym
+            else
+              ::Prometheus::ProxyService::PROMETHEUS_QUERY_RANGE_API.to_sym
+            end
           end
 
           def query_for_metric(metric)

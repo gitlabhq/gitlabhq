@@ -105,6 +105,9 @@ class GlobalPolicy < BasePolicy
     enable :update_custom_attribute
   end
 
+  # We can't use `read_statistics` because the user may have different permissions for different projects
+  rule { admin }.enable :use_project_statistics_filters
+
   rule { external_user }.prevent :create_snippet
 end
 

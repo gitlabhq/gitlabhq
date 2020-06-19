@@ -42,6 +42,10 @@ module Gitlab
         @cd_diffs ||= compare(new_diff_refs.start_sha, new_diff_refs.head_sha)
       end
 
+      def diff_file(position)
+        position.diff_file(project.repository)
+      end
+
       private
 
       def compare(start_sha, head_sha, straight: false)

@@ -135,8 +135,11 @@ export default {
     :label-for="fieldId"
     :invalid-feedback="__('This field is required.')"
     :state="valid"
-    :description="help"
   >
+    <template #description>
+      <span v-html="help"></span>
+    </template>
+
     <template v-if="isCheckbox">
       <input :name="fieldName" type="hidden" value="false" />
       <gl-form-checkbox v-model="model" v-bind="sharedProps">

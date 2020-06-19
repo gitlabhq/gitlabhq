@@ -10643,6 +10643,12 @@ CREATE INDEX index_project_statistics_on_namespace_id ON public.project_statisti
 
 CREATE UNIQUE INDEX index_project_statistics_on_project_id ON public.project_statistics USING btree (project_id);
 
+CREATE INDEX index_project_statistics_on_repository_size_and_project_id ON public.project_statistics USING btree (repository_size, project_id);
+
+CREATE INDEX index_project_statistics_on_storage_size_and_project_id ON public.project_statistics USING btree (storage_size, project_id);
+
+CREATE INDEX index_project_statistics_on_wiki_size_and_project_id ON public.project_statistics USING btree (wiki_size, project_id);
+
 CREATE UNIQUE INDEX index_project_tracing_settings_on_project_id ON public.project_tracing_settings USING btree (project_id);
 
 CREATE INDEX index_projects_api_created_at_id_desc ON public.projects USING btree (created_at, id DESC);
@@ -14055,6 +14061,9 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200604174558
 20200605003204
 20200605093113
+20200605160806
+20200605160836
+20200605160851
 20200608072931
 20200608075553
 20200608214008

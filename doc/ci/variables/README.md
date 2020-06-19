@@ -341,6 +341,7 @@ export CI_PROJECT_DIR="/builds/gitlab-org/gitlab-foss"
 export CI_PROJECT_NAME="gitlab-foss"
 export CI_PROJECT_TITLE="GitLab FOSS"
 export CI_PROJECT_NAMESPACE="gitlab-org"
+export CI_PROJECT_ROOT_NAMESPACE="gitlab-org"
 export CI_PROJECT_PATH="gitlab-org/gitlab-foss"
 export CI_PROJECT_URL="https://example.com/gitlab-org/gitlab-foss"
 export CI_REGISTRY="registry.example.com"
@@ -909,6 +910,8 @@ if [[ -d "/builds/gitlab-examples/ci-debug-trace/.git" ]]; then
 ++ CI_PROJECT_PATH_SLUG=gitlab-examples-ci-debug-trace
 ++ export CI_PROJECT_NAMESPACE=gitlab-examples
 ++ CI_PROJECT_NAMESPACE=gitlab-examples
+++ export CI_PROJECT_ROOT_NAMESPACE=gitlab-examples
+++ CI_PROJECT_ROOT_NAMESPACE=gitlab-examples
 ++ export CI_PROJECT_URL=https://gitlab.com/gitlab-examples/ci-debug-trace
 ++ CI_PROJECT_URL=https://gitlab.com/gitlab-examples/ci-debug-trace
 ++ export CI_PROJECT_VISIBILITY=public

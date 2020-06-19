@@ -54,9 +54,8 @@ module IntegrationsActions
   end
 
   def integration
-    # Using instance variable `@service` still required as it's used in ServiceParams
-    # and app/views/shared/_service_settings.html.haml. Should be removed once
-    # those 2 are refactored to use `@integration`.
+    # Using instance variable `@service` still required as it's used in ServiceParams.
+    # Should be removed once that is refactored to use `@integration`.
     @integration = @service ||= find_or_initialize_integration(params[:id]) # rubocop:disable Gitlab/ModuleWithInstanceVariables
   end
 

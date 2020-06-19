@@ -45,7 +45,7 @@ GET /projects
 | --------- | ---- | -------- | ----------- |
 | `archived`                    | boolean  | no | Limit by archived status |
 | `visibility`                  | string   | no | Limit by visibility `public`, `internal`, or `private` |
-| `order_by`                    | string   | no | Return projects ordered by `id`, `name`, `path`, `created_at`, `updated_at`, or `last_activity_at` fields. Default is `created_at` |
+| `order_by`                    | string   | no | Return projects ordered by `id`, `name`, `path`, `created_at`, `updated_at`, or `last_activity_at` fields. `repository_size`, `storage_size`, or `wiki_size` fields are only allowed for admins. Default is `created_at` |
 | `sort`                        | string   | no | Return projects sorted in `asc` or `desc` order. Default is `desc` |
 | `search`                      | string   | no | Return list of projects matching the search criteria |
 | `search_namespaces`           | boolean  | no | Include ancestor namespaces when matching search criteria. Default is `false` |
@@ -65,6 +65,7 @@ GET /projects
 | `id_before`                   | integer  | no | Limit results to projects with IDs less than the specified ID |
 | `last_activity_after`         | datetime | no | Limit results to projects with last_activity after specified time. Format: ISO 8601 YYYY-MM-DDTHH:MM:SSZ |
 | `last_activity_before`        | datetime | no | Limit results to projects with last_activity before specified time. Format: ISO 8601 YYYY-MM-DDTHH:MM:SSZ |
+| `repository_storage`          | string   | no | Limit results to projects stored on repository_storage. Available for admins only. |
 
 NOTE: **Note:**
 This endpoint supports [keyset pagination](README.md#keyset-based-pagination) for selected `order_by` options.

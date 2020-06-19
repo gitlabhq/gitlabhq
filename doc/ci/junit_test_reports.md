@@ -206,7 +206,7 @@ cunit:
       junit: ./my-cunit-test.xml
 ```
 
-### .Net example
+### .NET example
 
 The [JunitXML.TestLogger](https://www.nuget.org/packages/JunitXml.TestLogger/) NuGet
 package can generate test reports for .Net Framework and .Net Core applications. The following
@@ -234,7 +234,9 @@ Test:
 
 ## Viewing JUnit test reports on GitLab
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/24792) in GitLab 12.5.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/24792) in GitLab 12.5.
+> - It's deployed behind a feature flag, disabled by default.
+> - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enabling-the-junit-test-reports-feature-core-only). **(CORE ONLY)**
 
 If JUnit XML files are generated and uploaded as part of a pipeline, these reports
 can be viewed inside the pipelines details page. The **Tests** tab on this page will
@@ -248,7 +250,7 @@ with failed showing at the top, skipped next and successful cases last.
 
 You can also retrieve the reports via the [GitLab API](../api/pipelines.md#get-a-pipelines-test-report).
 
-### Enabling the feature
+### Enabling the JUnit test reports feature **(CORE ONLY)**
 
 This feature comes with the `:junit_pipeline_view` feature flag disabled by default. This
 feature is disabled due to some performance issues with very large data sets.
@@ -266,7 +268,9 @@ Feature.enable(:junit_pipeline_view, Project.find(<your-project-id-here>))
 
 ## Viewing JUnit screenshots on GitLab
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/202114) in GitLab 13.0.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/202114) in GitLab 13.0.
+> - It's deployed behind a feature flag, disabled by default.
+> - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enabling-the-junit-screenshots-feature-core-only). **(CORE ONLY)**
 
 If JUnit XML files contain an `attachment` tag, GitLab parses the attachment.
 
@@ -280,7 +284,7 @@ Upload your screenshots as [artifacts](pipelines/job_artifacts.md#artifactsrepor
 
 When [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/6061) is complete, the attached file will be visible on the pipeline details page.
 
-### Enabling the feature
+### Enabling the JUnit screenshots feature **(CORE ONLY)**
 
 This feature comes with the `:junit_pipeline_screenshots_view` feature flag disabled by default.
 

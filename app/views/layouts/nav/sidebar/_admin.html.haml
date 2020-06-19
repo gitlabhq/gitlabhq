@@ -216,7 +216,7 @@
               %strong.fly-out-top-item-name
                 = _('Appearance')
 
-      = nav_link(controller: :application_settings) do
+      = nav_link(controller: [:application_settings, :integrations]) do
         = link_to general_admin_application_settings_path do
           .nav-icon-container
             = sprite_icon('settings')
@@ -224,7 +224,7 @@
             = _('Settings')
 
         %ul.sidebar-sub-level-items.qa-admin-sidebar-settings-submenu
-          = nav_link(controller: :application_settings, html_options: { class: "fly-out-top-item" } ) do
+          = nav_link(controller: [:application_settings, :integrations], html_options: { class: "fly-out-top-item" } ) do
             = link_to general_admin_application_settings_path do
               %strong.fly-out-top-item-name
                 = _('Settings')
@@ -233,7 +233,7 @@
               = link_to general_admin_application_settings_path, title: _('General'), class: 'qa-admin-settings-general-item' do
                 %span
                   = _('General')
-            = nav_link(path: 'application_settings#integrations') do
+            = nav_link(path: ['application_settings#integrations', 'integrations#edit']) do
               = link_to integrations_admin_application_settings_path, title: _('Integrations'), data: { qa_selector: 'integration_settings_link' } do
                 %span
                   = _('Integrations')

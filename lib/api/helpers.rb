@@ -543,6 +543,7 @@ module API
       finder_params[:id_before] = params[:id_before] if params[:id_before]
       finder_params[:last_activity_after] = params[:last_activity_after] if params[:last_activity_after]
       finder_params[:last_activity_before] = params[:last_activity_before] if params[:last_activity_before]
+      finder_params[:repository_storage] = params[:repository_storage] if params[:repository_storage]
       finder_params
     end
 

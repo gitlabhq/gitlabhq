@@ -142,7 +142,7 @@ Example of response
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/202525) in GitLab 13.0.
 
 CAUTION: **Caution:**
-This API route is part of the [JUnit test report](../ci/junit_test_reports.md) feature. It is protected by a [feature flag](../development/feature_flags/index.md) that is **disabled** due to performance issues with very large data sets. See [the documentation for the feature](../ci/junit_test_reports.md#enabling-the-feature) for further details.
+This API route is part of the [JUnit test report](../ci/junit_test_reports.md) feature. It is protected by a [feature flag](../development/feature_flags/index.md) that is **disabled** due to performance issues with very large data sets.
 
 ```plaintext
 GET /projects/:id/pipelines/:pipeline_id/test_report

@@ -1,5 +1,6 @@
 - add_to_breadcrumbs "Service Templates", admin_application_settings_services_path
 - breadcrumb_title @service.title
 - page_title @service.title, "Service Templates"
+- @content_class = 'limit-container-width' unless fluid_layout
 
 = render 'form'

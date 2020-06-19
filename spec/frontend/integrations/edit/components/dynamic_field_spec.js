@@ -147,6 +147,20 @@ describe('DynamicField', () => {
             .text(),
         ).toBe(defaultProps.help);
       });
+
+      it('renders description with help text as HTML', () => {
+        const helpHTML = 'The <strong>URL</strong> of the project';
+
+        createComponent({
+          help: helpHTML,
+        });
+
+        expect(
+          findGlFormGroup()
+            .find('small')
+            .html(),
+        ).toContain(helpHTML);
+      });
     });
 
     describe('label text', () => {

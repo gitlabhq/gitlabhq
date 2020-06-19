@@ -11,7 +11,7 @@
       %p= @service.detailed_description
   .col-lg-8
     = form_for(@service, as: :service, url: scoped_integration_path(@service), method: :put, html: { class: 'gl-show-field-errors integration-settings-form js-integration-settings-form', data: { 'can-test' => @service.can_test?, 'test-url' => test_project_service_path(@project, @service) } }) do |form|
-      = render 'shared/service_settings', form: form, service: @service
+      = render 'shared/service_settings', form: form, integration: @service
       .footer-block.row-content-block
         %input{ id: 'services_redirect_to', type: 'hidden', name: 'redirect_to', value: request.referrer }
         = service_save_button

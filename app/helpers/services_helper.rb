@@ -44,13 +44,6 @@ module ServicesHelper
     end
   end
 
-  def event_action_description(action)
-    case action
-    when "comment"
-      s_("ProjectService|Comment will be posted on each event")
-    end
-  end
-
   def service_save_button
     button_tag(class: 'btn btn-success', type: 'submit', data: { qa_selector: 'save_changes_button' }) do
       icon('spinner spin', class: 'hidden js-btn-spinner') +
@@ -90,7 +83,7 @@ module ServicesHelper
 
   def scoped_test_integration_path(integration)
     if @project.present?
-      test_project_settings_integration_path(@project, integration)
+      test_project_service_path(@project, integration)
     elsif @group.present?
       test_group_settings_integration_path(@group, integration)
     else
@@ -102,22 +95,36 @@ module ServicesHelper
     Feature.enabled?(:integration_form_refactor, @project)
   end
 
-  def trigger_events_for_service
-    return [] unless integration_form_refactor?
-
-    ServiceEventSerializer.new(service: @service).represent(@service.configurable_events).to_json
+  def integration_form_data(integration)
+    {
+      show_active: integration.show_active_box?.to_s,
+      activated: (integration.active || integration.new_record?).to_s,
+      type: integration.to_param,
+      merge_request_events: integration.merge_requests_events.to_s,
+      commit_events: integration.commit_events.to_s,
+      enable_comments: integration.comment_on_event_enabled.to_s,
+      comment_detail: integration.comment_detail,
+      trigger_events: trigger_events_for_service(integration),
+      fields: fields_for_service(integration)
+    }
   end
 
-  def fields_for_service
+  def trigger_events_for_service(integration)
     return [] unless integration_form_refactor?
 
-    ServiceFieldSerializer.new(service: @service).represent(@service.global_fields).to_json
+    ServiceEventSerializer.new(service: integration).represent(integration.configurable_events).to_json
   end
 
-  def show_service_trigger_events?
-    return false if @service.is_a?(JiraService) || integration_form_refactor?
+  def fields_for_service(integration)
+    return [] unless integration_form_refactor?
 
-    @service.configurable_events.present?
+    ServiceFieldSerializer.new(service: integration).represent(integration.global_fields).to_json
+  end
+
+  def show_service_trigger_events?(integration)
+    return false if integration.is_a?(JiraService) || integration_form_refactor?
+
+    integration.configurable_events.present?
   end
 
   extend self

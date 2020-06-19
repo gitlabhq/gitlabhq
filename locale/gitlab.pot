@@ -326,6 +326,9 @@ msgstr[1] ""
 msgid "%{count} related %{pluralized_subject}: %{links}"
 msgstr ""
 
+msgid "%{dashboard_path} could not be found."
+msgstr ""
+
 msgid "%{days} days until tags are automatically removed"
 msgstr ""
 
@@ -4669,7 +4672,13 @@ msgstr ""
 msgid "Cluster does not exist"
 msgstr ""
 
+msgid "Cluster is required for Stages::ClusterEndpointInserter"
+msgstr ""
+
 msgid "Cluster level"
+msgstr ""
+
+msgid "Cluster type must be specificed for Stages::ClusterEndpointInserter"
 msgstr ""
 
 msgid "ClusterIntegration| %{custom_domain_start}More information%{custom_domain_end}."
@@ -7070,6 +7079,9 @@ msgstr ""
 msgid "Dashboard"
 msgstr ""
 
+msgid "Dashboard uid not found"
+msgstr ""
+
 msgid "DashboardProjects|All"
 msgstr ""
 
@@ -7092,6 +7104,9 @@ msgid "Dashboard|Unable to add %{invalidProjects}. This dashboard is available f
 msgstr ""
 
 msgid "Data is still calculating..."
+msgstr ""
+
+msgid "Datasource name not found"
 msgstr ""
 
 msgid "Date"
@@ -8553,6 +8568,9 @@ msgid "Environment"
 msgstr ""
 
 msgid "Environment does not have deployments"
+msgstr ""
+
+msgid "Environment is required for Stages::MetricEndpointInserter"
 msgstr ""
 
 msgid "Environment is required for Stages::VariableEndpointInserter"
@@ -10967,6 +10985,9 @@ msgstr ""
 msgid "Grafana URL"
 msgstr ""
 
+msgid "Grafana response contains invalid json"
+msgstr ""
+
 msgid "GrafanaIntegration|API Token"
 msgstr ""
 
@@ -11082,6 +11103,9 @@ msgid "Group import could not be scheduled"
 msgstr ""
 
 msgid "Group info:"
+msgstr ""
+
+msgid "Group is required when cluster_type is :group"
 msgstr ""
 
 msgid "Group maintainers can register group runners in the %{link}"
@@ -15068,6 +15092,9 @@ msgstr ""
 msgid "No other labels with such name or description"
 msgstr ""
 
+msgid "No panels matching properties %{opts}"
+msgstr ""
+
 msgid "No parent group"
 msgstr ""
 
@@ -15992,6 +16019,9 @@ msgid "Parent epic doesn't exist."
 msgstr ""
 
 msgid "Parent epic is not present."
+msgstr ""
+
+msgid "Parsing error for param :embed_json. %{message}"
 msgstr ""
 
 msgid "Part of merge request changes"
@@ -17299,6 +17329,9 @@ msgstr ""
 msgid "Project has too many %{label_for_message} to search"
 msgstr ""
 
+msgid "Project is required when cluster_type is :project"
+msgstr ""
+
 msgid "Project members"
 msgstr ""
 
@@ -17414,9 +17447,6 @@ msgid "ProjectService|%{service_title}: status on"
 msgstr ""
 
 msgid "ProjectService|Comment"
-msgstr ""
-
-msgid "ProjectService|Comment will be posted on each event"
 msgstr ""
 
 msgid "ProjectService|Perform common operations on GitLab project: %{project_name}"
@@ -18209,6 +18239,9 @@ msgid "Protocol"
 msgstr ""
 
 msgid "Provider"
+msgstr ""
+
+msgid "Proxy support for this API is not available currently"
 msgstr ""
 
 msgid "Pseudonymizer data collection"
@@ -24210,6 +24243,9 @@ msgid "Unmarks this %{noun} as Work In Progress."
 msgstr ""
 
 msgid "Unreachable"
+msgstr ""
+
+msgid "Unrecognized cluster type"
 msgstr ""
 
 msgid "Unresolve"
