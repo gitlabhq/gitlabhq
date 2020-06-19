@@ -1331,6 +1331,43 @@ by running the following command:
 kubectl delete -f https://gitlab.com/gitlab-org/cluster-integration/cluster-applications/-/raw/02c8231e30ef5b6725e6ba368bc63863ceb3c07d/src/default-data/knative/istio-metrics.yaml
 ```
 
+### Install AppArmor using GitLab CI/CD
+
+> [Introduced](https://gitlab.com/gitlab-org/cluster-integration/cluster-applications/-/merge_requests/100) in GitLab 13.1.
+
+To install AppArmor into the `gitlab-managed-apps` namespace of your cluster using GitLab CI/CD, define the following configuration in `.gitlab/managed-apps/config.yaml`:
+
+```yaml
+apparmor:
+  installed: true
+```
+
+You can define one or more AppArmor profiles by adding them into `.gitlab/managed-apps/apparmor/values.yaml` as the following:
+
+```yaml
+profiles:
+  profile-one: |-
+    profile profile-one {
+      file,
+    }
+```
+
+Refer to the [AppArmor chart](https://gitlab.com/gitlab-org/charts/apparmor) for more information on this chart.
+
+#### Using AppArmor profiles in your deployments
+
+After installing AppAmor, you can use profiles by adding Pod Annotations. If you're using Auto
+DevOps, you can [customize `auto-deploy-values.yaml`](../../topics/autodevops/customize.md#customize-values-for-helm-chart)
+to annotate your pods. Although it's helpful to be aware of the [list of custom attributes](https://gitlab.com/gitlab-org/charts/auto-deploy-app#gitlabs-auto-deploy-helm-chart), you're only required to set
+`podAnnotations` as follows:
+
+```yaml
+podAnnotations:
+  container.apparmor.security.beta.kubernetes.io/auto-deploy-app: localhost/profile-one
+```
+
+The only information to be changed here is the profile name which is `profile-one` in this example. Refer to the [AppArmor tutorial](https://kubernetes.io/docs/tutorials/clusters/apparmor/#securing-a-pod) for more information on how AppArmor is integrated in Kubernetes.
+
 ## Upgrading applications
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/24789) in GitLab 11.8.

@@ -146,6 +146,18 @@ Secret Detection can be customized by defining available variables:
 | `SECRET_DETECTION_COMMIT_TO` | -       | The commit a Gitleaks scan ends at. |
 | `SECRET_DETECTION_HISTORIC_SCAN` | false | Flag to enable a historic Gitleaks scan. |
 
+### Logging Level
+
+You can control the verbosity of logs by setting the `SECURE_LOG_LEVEL` env var. It's default is set to `info`, you can set it to any of the following levels:
+
+- `panic`
+- `fatal`
+- `error`
+- `warn`
+- `info`
+- `debug`
+- `trace`
+
 ## Full History Secret Scan
 
 GitLab 12.11 introduced support for scanning the full history of a repository. This new functionality

@@ -232,6 +232,34 @@ to colorize the messages they write to the Unix standard output and standard err
 We recommend using red to report errors, yellow for warnings, and green for notices.
 Also, we recommend prefixing error messages with `[ERRO]`, warnings with `[WARN]`, and notices with `[INFO]`.
 
+#### Logging level
+
+The scanner should filter out a log message if its log level is lower than the
+one set in the `SECURE_LOG_LEVEL` variable. For instance, `info` and `warn`
+messages should be skipped when `SECURE_LOG_LEVEL` is set to `error`. Accepted
+values are as follows, listed from highest to lowest:
+
+- `panic`
+- `fatal`
+- `error`
+- `warn`
+- `info`
+- `debug`
+- `trace`
+
+It is recommended to use the `debug` and `trace` levels for verbose logging
+that could be useful when debugging. The default value for `SECURE_LOG_LEVEL`
+should be set to `info`.
+
+#### common logutil package
+
+If you are using [go](https://golang.org/) and
+[common](https://gitlab.com/gitlab-org/security-products/analyzers/common),
+then it is suggested that you use [logrus](https://github.com/Sirupsen/logrus)
+and [common's logutil package](https://gitlab.com/gitlab-org/security-products/analyzers/common/-/tree/master/logutil)
+to configure the formatter for [logrus](https://github.com/Sirupsen/logrus).
+See the [logutil README.md](https://gitlab.com/gitlab-org/security-products/analyzers/common/-/tree/master/logutil/README.md)
+
 ## Report
 
 The report is a JSON document that combines vulnerabilities with possible remediations.

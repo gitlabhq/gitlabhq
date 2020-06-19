@@ -242,7 +242,7 @@
     - <<: *if-not-canonical-namespace
       when: never
     - changes: *ci-build-images-patterns
-    - changes: *code-backstage-qa-patterns
+    - changes: *code-qa-patterns
 
 ####################
 # Cache repo rules #

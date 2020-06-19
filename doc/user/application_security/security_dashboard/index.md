@@ -200,6 +200,19 @@ When using [Auto DevOps](../../../topics/autodevops/index.md), use
 [special environment variables](../../../topics/autodevops/customize.md#environment-variables)
 to configure daily security scans.
 
+## Vulnerability list
+
+Each dashboard's vulnerability list contains new vulnerabilities discovered in the latest scans.
+Click any vulnerability in the table to see more information on that vulnerability. To create an
+issue associated with the vulnerability, click the **Create Issue** button.
+
+![Create an issue for the vulnerability](img/standalone_vulnerability_page_v13_1.png)
+
+Once you create the issue, the vulnerability list contains a link to the issue and an icon whose
+color indicates the issue's status (green for open issues, blue for closed issues).
+
+![Display attached issues](img/vulnerability_list_table_v13_1.png)
+
 <!-- ## Troubleshooting
 
 Include any troubleshooting steps that you can foresee. If you know beforehand what issues

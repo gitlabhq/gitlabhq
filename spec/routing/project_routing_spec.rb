@@ -778,6 +778,12 @@ describe 'project routing' do
     end
   end
 
+  describe Projects::Settings::OperationsController, 'routing' do
+    it 'to #reset_alerting_token' do
+      expect(post('/gitlab/gitlabhq/-/settings/operations/reset_alerting_token')).to route_to('projects/settings/operations#reset_alerting_token', namespace_id: 'gitlab', project_id: 'gitlabhq')
+    end
+  end
+
   describe Projects::Settings::RepositoryController, 'routing' do
     it 'to #show' do
       expect(get('/gitlab/gitlabhq/-/settings/repository')).to route_to('projects/settings/repository#show', namespace_id: 'gitlab', project_id: 'gitlabhq')

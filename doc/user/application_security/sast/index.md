@@ -285,6 +285,18 @@ See [Analyzer settings](#analyzer-settings) for the complete list of available o
 
 SAST can be [configured](#customizing-the-sast-settings) using environment variables.
 
+#### Logging Level
+
+You can control the verbosity of logs by setting the `SECURE_LOG_LEVEL` env var. It's default is set to `info`, you can set it to any of the following levels:
+
+- `panic`
+- `fatal`
+- `error`
+- `warn`
+- `info`
+- `debug`
+- `trace`
+
 #### Custom Certificate Authority
 
 To trust a custom Certificate Authority, set the `ADDITIONAL_CA_CERT_BUNDLE` variable to the bundle
