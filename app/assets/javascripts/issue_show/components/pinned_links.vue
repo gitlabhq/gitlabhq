@@ -1,11 +1,10 @@
 <script>
-import { GlLink } from '@gitlab/ui';
-import Icon from '~/vue_shared/components/icon.vue';
+import { GlButton } from '@gitlab/ui';
+import { STATUS_PAGE_PUBLISHED, JOIN_ZOOM_MEETING } from '../constants';
 
 export default {
   components: {
-    Icon,
-    GlLink,
+    GlButton,
   },
   props: {
     zoomMeetingUrl: {
@@ -19,32 +18,46 @@ export default {
       default: '',
     },
   },
+  computed: {
+    pinnedLinks() {
+      return [
+        {
+          id: 'publishedIncidentUrl',
+          url: this.publishedIncidentUrl,
+          text: STATUS_PAGE_PUBLISHED,
+          icon: 'tanuki',
+        },
+        {
+          id: 'zoomMeetingUrl',
+          url: this.zoomMeetingUrl,
+          text: JOIN_ZOOM_MEETING,
+          icon: 'brand-zoom',
+        },
+      ];
+    },
+  },
+  methods: {
+    needsPaddingClass(i) {
+      return i < this.pinnedLinks.length - 1;
+    },
+  },
 };
 </script>
 
 <template>
   <div class="border-bottom gl-mb-6 gl-display-flex gl-justify-content-start">
-    <div v-if="publishedIncidentUrl" class="gl-pr-3">
-      <gl-link
-        :href="publishedIncidentUrl"
-        target="_blank"
-        class="btn btn-inverted btn-secondary btn-sm text-dark mb-3"
-        data-testid="publishedIncidentUrl"
-      >
-        <icon name="tanuki" :size="14" />
-        <strong class="vertical-align-top">{{ __('Published on status page') }}</strong>
-      </gl-link>
-    </div>
-    <div v-if="zoomMeetingUrl">
-      <gl-link
-        :href="zoomMeetingUrl"
-        target="_blank"
-        class="btn btn-inverted btn-secondary btn-sm text-dark mb-3"
-        data-testid="zoomMeetingUrl"
-      >
-        <icon name="brand-zoom" :size="14" />
-        <strong class="vertical-align-top">{{ __('Join Zoom meeting') }}</strong>
-      </gl-link>
-    </div>
+    <template v-for="(link, i) in pinnedLinks">
+      <div v-if="link.url" :key="link.id" :class="{ 'gl-pr-3': needsPaddingClass(i) }">
+        <gl-button
+          :href="link.url"
+          target="_blank"
+          :icon="link.icon"
+          size="small"
+          class="gl-font-weight-bold gl-mb-5"
+          :data-testid="link.id"
+          >{{ link.text }}</gl-button
+        >
+      </div>
+    </template>
   </div>
 </template>

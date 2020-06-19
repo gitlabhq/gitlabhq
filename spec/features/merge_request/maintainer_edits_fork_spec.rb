@@ -37,7 +37,7 @@ RSpec.describe 'a maintainer edits files on a source-branch of an MR from a fork
   end
 
   it 'allows committing to the source branch' do
-    find('.ace_text-input', visible: false).send_keys('Updated the readme')
+    execute_script("monaco.editor.getModels()[0].setValue('Updated the readme')")
 
     click_button 'Commit changes'
     wait_for_requests

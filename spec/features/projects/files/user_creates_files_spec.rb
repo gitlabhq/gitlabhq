@@ -67,7 +67,7 @@ RSpec.describe 'Projects > Files > User creates files', :js do
         file_name = find('#file_name')
         file_name.set options[:file_name] || 'README.md'
 
-        find('.ace_text-input', visible: false).send_keys.native.send_keys options[:file_content] || 'Some content'
+        find('.monaco-editor textarea').send_keys.native.send_keys options[:file_content] || 'Some content'
 
         click_button 'Commit changes'
       end
@@ -89,7 +89,7 @@ RSpec.describe 'Projects > Files > User creates files', :js do
 
       it 'creates and commit a new file' do
         find('#editor')
-        execute_script("ace.edit('editor').setValue('*.rbca')")
+        execute_script("monaco.editor.getModels()[0].setValue('*.rbca')")
         fill_in(:file_name, with: 'not_a_file.md')
         fill_in(:commit_message, with: 'New commit message', visible: true)
         click_button('Commit changes')
@@ -105,7 +105,7 @@ RSpec.describe 'Projects > Files > User creates files', :js do
 
       it 'creates and commit a new file with new lines at the end of file' do
         find('#editor')
-        execute_script('ace.edit("editor").setValue("Sample\n\n\n")')
+        execute_script('monaco.editor.getModels()[0].setValue("Sample\n\n\n")')
         fill_in(:file_name, with: 'not_a_file.md')
         fill_in(:commit_message, with: 'New commit message', visible: true)
         click_button('Commit changes')
@@ -117,7 +117,7 @@ RSpec.describe 'Projects > Files > User creates files', :js do
         find('.js-edit-blob').click
 
         find('#editor')
-        expect(evaluate_script('ace.edit("editor").getValue()')).to eq("Sample\n\n\n")
+        expect(evaluate_script('monaco.editor.getModels()[0].getValue()')).to eq("Sample\n\n\n")
       end
 
       it 'creates and commit a new file with a directory name' do
@@ -126,7 +126,7 @@ RSpec.describe 'Projects > Files > User creates files', :js do
         expect(page).to have_selector('.file-editor')
 
         find('#editor')
-        execute_script("ace.edit('editor').setValue('*.rbca')")
+        execute_script("monaco.editor.getModels()[0].setValue('*.rbca')")
         fill_in(:commit_message, with: 'New commit message', visible: true)
         click_button('Commit changes')
 
@@ -141,7 +141,7 @@ RSpec.describe 'Projects > Files > User creates files', :js do
         expect(page).to have_selector('.file-editor')
 
         find('#editor')
-        execute_script("ace.edit('editor').setValue('*.rbca')")
+        execute_script("monaco.editor.getModels()[0].setValue('*.rbca')")
         fill_in(:file_name, with: 'not_a_file.md')
         fill_in(:commit_message, with: 'New commit message', visible: true)
         fill_in(:branch_name, with: 'new_branch_name', visible: true)
@@ -176,7 +176,7 @@ RSpec.describe 'Projects > Files > User creates files', :js do
         expect(page).to have_selector('.file-editor')
 
         find('#editor')
-        execute_script("ace.edit('editor').setValue('*.rbca')")
+        execute_script("monaco.editor.getModels()[0].setValue('*.rbca')")
 
         fill_in(:file_name, with: 'not_a_file.md')
         fill_in(:commit_message, with: 'New commit message', visible: true)

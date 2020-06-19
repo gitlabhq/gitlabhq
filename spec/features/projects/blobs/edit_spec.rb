@@ -36,8 +36,7 @@ RSpec.describe 'Editing file blob', :js do
 
     def fill_editor(content: 'class NextFeature\\nend\\n')
       wait_for_requests
-      find('#editor')
-      execute_script("ace.edit('editor').setValue('#{content}')")
+      execute_script("monaco.editor.getModels()[0].setValue('#{content}')")
     end
 
     context 'from MR diff' do
@@ -65,6 +64,15 @@ RSpec.describe 'Editing file blob', :js do
       visit project_edit_blob_path(project, tree_join(branch, 'ci/.gitlab-ci.yml'))
 
       expect(find_by_id('file_path').value).to eq('ci/.gitlab-ci.yml')
+    end
+
+    it 'updating file path updates syntax highlighting' do
+      visit project_edit_blob_path(project, tree_join(branch, readme_file_path))
+      expect(find('#editor')['data-mode-id']).to eq('markdown')
+
+      find('#file_path').send_keys('foo.txt') do
+        expect(find('#editor')['data-mode-id']).to eq('plaintext')
+      end
     end
 
     context 'from blob file path' do

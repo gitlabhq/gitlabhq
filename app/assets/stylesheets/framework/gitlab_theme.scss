@@ -74,19 +74,6 @@
             }
           }
 
-          &:focus:hover,
-          &:focus {
-            &.header-user-dropdown-toggle .header-user-notification-dot {
-              border-color: $white;
-            }
-          }
-
-          &:hover {
-            &.header-user-dropdown-toggle .header-user-notification-dot {
-              border-color: $nav-svg-color + 33;
-            }
-          }
-
           &:hover,
           &:focus {
             @include media-breakpoint-up(sm) {
@@ -95,6 +82,10 @@
 
             svg {
               fill: currentColor;
+            }
+
+            &.header-user-dropdown-toggle .header-user-notification-dot {
+              border-color: $nav-svg-color + 33;
             }
           }
         }
@@ -108,6 +99,10 @@
             svg {
               fill: $nav-svg-color;
             }
+          }
+
+          &.header-user-dropdown-toggle .header-user-notification-dot {
+            border-color: $white;
           }
         }
 

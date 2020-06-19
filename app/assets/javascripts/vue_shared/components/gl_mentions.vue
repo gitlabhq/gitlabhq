@@ -3,18 +3,19 @@ import { escape } from 'lodash';
 import Tribute from 'tributejs';
 import axios from '~/lib/utils/axios_utils';
 import { spriteIcon } from '~/lib/utils/common_utils';
+import SidebarMediator from '~/sidebar/sidebar_mediator';
 
 /**
  * Creates the HTML template for each row of the mentions dropdown.
  *
- * @param original An object from the array returned from the `autocomplete_sources/members` API
- * @returns {string} An HTML template
+ * @param original - An object from the array returned from the `autocomplete_sources/members` API
+ * @returns {string} - An HTML template
  */
 function menuItemTemplate({ original }) {
   const rectAvatarClass = original.type === 'Group' ? 'rect-avatar' : '';
 
   const avatarClasses = `avatar avatar-inline center s26 ${rectAvatarClass}
-    gl-display-inline-flex gl-align-items-center gl-justify-content-center`;
+    gl-display-inline-flex! gl-align-items-center gl-justify-content-center`;
 
   const avatarTag = original.avatar_url
     ? `<img
@@ -48,6 +49,7 @@ export default {
   },
   data() {
     return {
+      assignees: undefined,
       members: undefined,
     };
   },
@@ -76,18 +78,36 @@ export default {
      */
     getMembers(inputText, processValues) {
       if (this.members) {
-        processValues(this.members);
+        processValues(this.getFilteredMembers());
       } else if (this.dataSources.members) {
         axios
           .get(this.dataSources.members)
           .then(response => {
             this.members = response.data;
-            processValues(response.data);
+            processValues(this.getFilteredMembers());
           })
           .catch(() => {});
       } else {
         processValues([]);
       }
+    },
+    getFilteredMembers() {
+      const fullText = this.$slots.default[0].elm.value;
+
+      if (!this.assignees) {
+        this.assignees =
+          SidebarMediator.singleton?.store?.assignees?.map(assignee => assignee.username) || [];
+      }
+
+      if (fullText.startsWith('/assign @')) {
+        return this.members.filter(member => !this.assignees.includes(member.username));
+      }
+
+      if (fullText.startsWith('/unassign @')) {
+        return this.members.filter(member => this.assignees.includes(member.username));
+      }
+
+      return this.members;
     },
   },
   render(createElement) {

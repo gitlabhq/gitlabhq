@@ -27,7 +27,7 @@ class Plan < ApplicationRecord
   end
 
   def actual_limits
-    self.limits || PlanLimits.new
+    self.limits || self.build_limits
   end
 
   def default?

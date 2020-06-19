@@ -186,7 +186,8 @@ updated every 15 minutes at most, so may not reflect recent activity. The displa
 
 The project size may differ slightly from one instance to another due to compression, housekeeping, and other factors.
 
-[Repository size limit](../../admin_area/settings/account_and_limit_settings.md) may be set by admins. GitLab.com's repository size limit [is set by GitLab](../../gitlab_com/index.md#repository-size-limit).
+[Repository size limit](../../admin_area/settings/account_and_limit_settings.md) may be set by admins.
+GitLab.com's repository size limit [is set by GitLab](../../gitlab_com/index.md#repository-size-limit).
 
 ## Contributors
 

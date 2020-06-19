@@ -77,10 +77,10 @@ To set this limit on a self-managed installation, run the following in the
 # Plan.default.create_limits!
 
 # For project webhooks
-Plan.default.limits.update!(project_hooks: 100)
+Plan.default.actual_limits.update!(project_hooks: 100)
 
 # For group webhooks
-Plan.default.limits.update!(group_hooks: 100)
+Plan.default.actual_limits.update!(group_hooks: 100)
 ```
 
 NOTE: **Note:** Set the limit to `0` to disable it.
@@ -115,7 +115,7 @@ To set this limit on a self-managed installation, run the following in the
 # If limits don't exist for the default plan, you can create one with:
 # Plan.default.create_limits!
 
-Plan.default.limits.update!(offset_pagination_limit: 10000)
+Plan.default.actual_limits.update!(offset_pagination_limit: 10000)
 ```
 
 - **Default offset pagination limit:** 50000
@@ -149,7 +149,7 @@ To set this limit on a self-managed installation, run the following in the
 # If limits don't exist for the default plan, you can create one with:
 # Plan.default.create_limits!
 
-Plan.default.limits.update!(ci_active_jobs: 500)
+Plan.default.actual_limits.update!(ci_active_jobs: 500)
 ```
 
 NOTE: **Note:** Set the limit to `0` to disable it.
@@ -171,7 +171,7 @@ To set this limit on a self-managed installation, run the following in the
 [GitLab Rails console](troubleshooting/debug.md#starting-a-rails-console-session):
 
 ```ruby
-Plan.default.limits.update!(ci_project_subscriptions: 500)
+Plan.default.actual_limits.update!(ci_project_subscriptions: 500)
 ```
 
 NOTE: **Note:** Set the limit to `0` to disable it.
@@ -196,7 +196,7 @@ To set this limit on a self-managed installation, run the following in the
 [GitLab Rails console](troubleshooting/debug.md#starting-a-rails-console-session):
 
 ```ruby
-Plan.default.limits.update!(ci_pipeline_schedules: 100)
+Plan.default.actual_limits.update!(ci_pipeline_schedules: 100)
 ```
 
 ### Number of instance level variables
@@ -214,7 +214,7 @@ To update this limit to a new value on a self-managed installation, run the foll
 [GitLab Rails console](troubleshooting/debug.md#starting-a-rails-console-session):
 
 ```ruby
-Plan.default.limits.update!(ci_instance_level_variables: 30)
+Plan.default.actual_limits.update!(ci_instance_level_variables: 30)
 ```
 
 ## Instance monitoring and metrics

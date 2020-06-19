@@ -8,8 +8,9 @@ RSpec.describe 'Projects > Files > User uses soft wrap while editing file', :js 
     user = project.owner
     sign_in user
     visit project_new_blob_path(project, 'master', file_name: 'test_file-name')
+
     page.within('.file-editor.code') do
-      find('.ace_text-input', visible: false).send_keys 'Touch water with paw then recoil in horror chase dog then
+      find('.inputarea', visible: false).send_keys 'Touch water with paw then recoil in horror chase dog then
         run away chase the pig around the house eat owner\'s food, and knock
         dish off table head butt cant eat out of my own dish. Cat is love, cat
         is life rub face on everything poop on grasses so meow. Playing with
@@ -26,17 +27,20 @@ RSpec.describe 'Projects > Files > User uses soft wrap while editing file', :js 
 
   it 'user clicks the "Soft wrap" button and then "No wrap" button' do
     wrapped_content_width = get_content_width
-    toggle_button.click
-    expect(toggle_button).to have_content 'No wrap'
-    unwrapped_content_width = get_content_width
-    expect(unwrapped_content_width).to be < wrapped_content_width
 
-    toggle_button.click
-    expect(toggle_button).to have_content 'Soft wrap'
-    expect(get_content_width).to be > unwrapped_content_width
+    toggle_button.click do
+      expect(toggle_button).to have_content 'Soft wrap'
+      unwrapped_content_width = get_content_width
+      expect(unwrapped_content_width).to be > wrapped_content_width
+    end
+
+    toggle_button.click do
+      expect(toggle_button).to have_content 'No wrap'
+      expect(get_content_width).to be < unwrapped_content_width
+    end
   end
 
   def get_content_width
-    find('.ace_content')[:style].slice!(/width: \d+/).slice!(/\d+/).to_i
+    find('.view-lines', visible: false)[:style].slice!(/width: \d+/).slice!(/\d+/).to_i
   end
 end

@@ -9,13 +9,15 @@ export default class GLForm {
     this.form = form;
     this.textarea = this.form.find('textarea.js-gfm-input');
     this.enableGFM = { ...defaultAutocompleteConfig, ...enableGFM };
+
     // Disable autocomplete for keywords which do not have dataSources available
     const dataSources = (gl.GfmAutoComplete && gl.GfmAutoComplete.dataSources) || {};
     Object.keys(this.enableGFM).forEach(item => {
-      if (item !== 'emojis') {
-        this.enableGFM[item] = Boolean(dataSources[item]);
+      if (item !== 'emojis' && !dataSources[item]) {
+        this.enableGFM[item] = false;
       }
     });
+
     // Before we start, we should clean up any previous data for this form
     this.destroy();
     // Set up the form

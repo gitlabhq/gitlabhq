@@ -87,15 +87,17 @@ Below are the current settings regarding [GitLab CI/CD](../../ci/README.md).
 
 ## Repository size limit
 
-The maximum size your Git repository is allowed to be, including LFS. If you are near
-or over the size limit, you can [reduce your repository size with Git](../project/repository/reducing_the_repo_size_using_git.md).
+GitLab.com has the following [account limits](../admin_area/settings/account_and_limit_settings.md) enabled. If a setting is not listed, it is set to the default value.
 
-| Setting                 | GitLab.com        | Default       |
-| -----------             | ----------------- | ------------- |
-| Repository size including LFS | 10G         | Unlimited     |
+If you are near
+or over the repository size limit, you can [reduce your repository size with Git](../project/repository/reducing_the_repo_size_using_git.md).
+
+| Setting                       | GitLab.com  | Default       |
+| -----------                   | ----------- | ------------- |
+| Repository size including LFS | 10 GB       | Unlimited     |
 
 NOTE: **Note:**
-`git push` and GitLab project imports are limited to 5GB per request. Git LFS and imports other than a file upload are not affected by this limit.
+`git push` and GitLab project imports are limited to 5 GB per request through Cloudflare. Git LFS and imports other than a file upload are not affected by this limit.
 
 ## IP range
 

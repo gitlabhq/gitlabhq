@@ -1,4 +1,4 @@
-import { editor as monacoEditor, languages as monacoLanguages, Uri } from 'monaco-editor';
+import { editor as monacoEditor, languages as monacoLanguages, Position, Uri } from 'monaco-editor';
 import { DEFAULT_THEME, themes } from '~/ide/lib/themes';
 import languages from '~/ide/lib/languages';
 import { defaultEditorOptions } from '~/ide/lib/editor_options';
@@ -70,6 +70,22 @@ export default class Editor {
   }
 
   getValue() {
-    return this.model.getValue();
+    return this.instance.getValue();
+  }
+
+  setValue(val) {
+    this.instance.setValue(val);
+  }
+
+  focus() {
+    this.instance.focus();
+  }
+
+  navigateFileStart() {
+    this.instance.setPosition(new Position(1, 1));
+  }
+
+  updateOptions(options = {}) {
+    this.instance.updateOptions(options);
   }
 }

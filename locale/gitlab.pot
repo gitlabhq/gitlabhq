@@ -520,6 +520,9 @@ msgstr ""
 msgid "%{primary} (%{secondary})"
 msgstr ""
 
+msgid "%{ref} cannot be added: %{error}"
+msgstr ""
+
 msgid "%{releases} release"
 msgid_plural "%{releases} releases"
 msgstr[0] ""
@@ -2441,6 +2444,9 @@ msgid "An error occurred while removing issues."
 msgstr ""
 
 msgid "An error occurred while rendering preview broadcast message"
+msgstr ""
+
+msgid "An error occurred while rendering the editor"
 msgstr ""
 
 msgid "An error occurred while reordering issues."

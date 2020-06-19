@@ -10,7 +10,73 @@ describe Gitlab::UsageData, :aggregate_failures do
     stub_object_store_settings
   end
 
-  describe '#uncached_data' do
+  describe '.uncached_data' do
+    describe '.usage_activity_by_stage' do
+      it 'includes usage_activity_by_stage data' do
+        expect(described_class.uncached_data).to include(:usage_activity_by_stage)
+        expect(described_class.uncached_data).to include(:usage_activity_by_stage_monthly)
+      end
+
+      context 'for configure' do
+        it 'includes accurate usage_activity_by_stage data' do
+          for_defined_days_back do
+            user = create(:user)
+            cluster = create(:cluster, user: user)
+            create(:clusters_applications_cert_manager, :installed, cluster: cluster)
+            create(:clusters_applications_helm, :installed, cluster: cluster)
+            create(:clusters_applications_ingress, :installed, cluster: cluster)
+            create(:clusters_applications_knative, :installed, cluster: cluster)
+            create(:cluster, :disabled, user: user)
+            create(:cluster_provider_gcp, :created)
+            create(:cluster_provider_aws, :created)
+            create(:cluster_platform_kubernetes)
+            create(:cluster, :group, :disabled, user: user)
+            create(:cluster, :group, user: user)
+            create(:cluster, :instance, :disabled, :production_environment)
+            create(:cluster, :instance, :production_environment)
+            create(:cluster, :management_project)
+          end
+
+          expect(described_class.uncached_data[:usage_activity_by_stage][:configure]).to include(
+            clusters_applications_cert_managers: 2,
+            clusters_applications_helm: 2,
+            clusters_applications_ingress: 2,
+            clusters_applications_knative: 2,
+            clusters_management_project: 2,
+            clusters_disabled: 4,
+            clusters_enabled: 12,
+            clusters_platforms_gke: 2,
+            clusters_platforms_eks: 2,
+            clusters_platforms_user: 2,
+            instance_clusters_disabled: 2,
+            instance_clusters_enabled: 2,
+            group_clusters_disabled: 2,
+            group_clusters_enabled: 2,
+            project_clusters_disabled: 2,
+            project_clusters_enabled: 10
+          )
+          expect(described_class.uncached_data[:usage_activity_by_stage_monthly][:configure]).to include(
+            clusters_applications_cert_managers: 1,
+            clusters_applications_helm: 1,
+            clusters_applications_ingress: 1,
+            clusters_applications_knative: 1,
+            clusters_management_project: 1,
+            clusters_disabled: 2,
+            clusters_enabled: 6,
+            clusters_platforms_gke: 1,
+            clusters_platforms_eks: 1,
+            clusters_platforms_user: 1,
+            instance_clusters_disabled: 1,
+            instance_clusters_enabled: 1,
+            group_clusters_disabled: 1,
+            group_clusters_enabled: 1,
+            project_clusters_disabled: 1,
+            project_clusters_enabled: 5
+          )
+        end
+      end
+    end
+
     it 'ensures recorded_at is set before any other usage data calculation' do
       %i(alt_usage_data redis_usage_data distinct_count count).each do |method|
         expect(described_class).not_to receive(method)
@@ -596,6 +662,14 @@ describe Gitlab::UsageData, :aggregate_failures do
       expect(described_class.merge_requests_usage(time_period)).to eq(
         merge_requests_users: 2
       )
+    end
+  end
+
+  def for_defined_days_back(days: [29, 2])
+    days.each do |n|
+      Timecop.travel(n.days.ago) do
+        yield
+      end
     end
   end
 end

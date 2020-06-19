@@ -15,3 +15,6 @@ export const IssuableType = {
   Epic: 'epic',
   MergeRequest: 'merge_request',
 };
+
+export const STATUS_PAGE_PUBLISHED = __('Published on status page');
+export const JOIN_ZOOM_MEETING = __('Join Zoom meeting');

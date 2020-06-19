@@ -1,7 +1,8 @@
 - breadcrumb_title "Repository"
 - page_title "Edit", @blob.path, @ref
-- content_for :page_specific_javascripts do
-  = page_specific_javascript_tag('lib/ace.js')
+- unless Feature.enabled?(:monaco_blobs)
+  - content_for :page_specific_javascripts do
+    = page_specific_javascript_tag('lib/ace.js')
 
 - if @conflict
   .alert.alert-danger

@@ -328,9 +328,9 @@ module API
         user = User.find_by(id: params.delete(:id))
         not_found!('User') unless user
 
-        key = user.gpg_keys.new(declared_params(include_missing: false))
+        key = ::GpgKeys::CreateService.new(user, declared_params(include_missing: false)).execute
 
-        if key.save
+        if key.persisted?
           present key, with: Entities::GpgKey
         else
           render_validation_error!(key)
@@ -792,9 +792,9 @@ module API
         requires :key, type: String, desc: 'The new GPG key'
       end
       post 'gpg_keys' do
-        key = current_user.gpg_keys.new(declared_params)
+        key = ::GpgKeys::CreateService.new(current_user, declared_params(include_missing: false)).execute
 
-        if key.save
+        if key.persisted?
           present key, with: Entities::GpgKey
         else
           render_validation_error!(key)

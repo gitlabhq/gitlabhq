@@ -46,6 +46,7 @@ class Projects::IssuesController < Projects::ApplicationController
 
   before_action do
     push_frontend_feature_flag(:vue_issuable_sidebar, project.group)
+    push_frontend_feature_flag(:tribute_autocomplete, @project)
   end
 
   before_action only: :show do

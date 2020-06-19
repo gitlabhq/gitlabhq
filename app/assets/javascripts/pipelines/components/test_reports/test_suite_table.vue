@@ -3,6 +3,7 @@ import { mapGetters } from 'vuex';
 import Icon from '~/vue_shared/components/icon.vue';
 import store from '~/pipelines/stores/test_reports';
 import { __ } from '~/locale';
+import { GlTooltipDirective } from '@gitlab/ui';
 import SmartVirtualList from '~/vue_shared/components/smart_virtual_list.vue';
 
 export default {
@@ -10,6 +11,9 @@ export default {
   components: {
     Icon,
     SmartVirtualList,
+  },
+  directives: {
+    GlTooltip: GlTooltipDirective,
   },
   store,
   props: {
@@ -69,12 +73,24 @@ export default {
         >
           <div class="table-section section-20 section-wrap">
             <div role="rowheader" class="table-mobile-header">{{ __('Class') }}</div>
-            <div class="table-mobile-content pr-md-1 text-truncate">{{ testCase.classname }}</div>
+            <div
+              v-gl-tooltip
+              :title="testCase.classname"
+              class="table-mobile-content pr-md-1 text-truncate"
+            >
+              {{ testCase.classname }}
+            </div>
           </div>
 
           <div class="table-section section-20 section-wrap">
             <div role="rowheader" class="table-mobile-header">{{ __('Name') }}</div>
-            <div class="table-mobile-content pr-md-1 text-truncate">{{ testCase.name }}</div>
+            <div
+              v-gl-tooltip
+              :title="testCase.name"
+              class="table-mobile-content pr-md-1 text-truncate"
+            >
+              {{ testCase.name }}
+            </div>
           </div>
 
           <div class="table-section section-10 section-wrap">

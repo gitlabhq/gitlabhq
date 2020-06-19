@@ -6,8 +6,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Resource milestone events API
 
-Resource milestone events keep track of what happens to GitLab [issues](../user/project/issues/),
-[merge requests](../user/project/merge_requests/), and [epics](../user/group/epics/).
+Resource milestone events keep track of what happens to GitLab [issues](../user/project/issues/) and
+[merge requests](../user/project/merge_requests/).
 
 Use them to track which milestone was added or removed, who did it, and when it happened.
 
