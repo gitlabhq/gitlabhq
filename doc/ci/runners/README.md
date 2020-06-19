@@ -38,9 +38,14 @@ multiple projects.
 If you are using a self-managed instance of GitLab, your administrator can create
 shared Runners and configure them to use the
 [executor](https://docs.gitlab.com/runner/executors/README.html) you want.
+The administrator can also configure a maximum number of Shared Runner [pipeline minutes for
+each group](../../user/admin_area/settings/continuous_integration.md#shared-runners-pipeline-minutes-quota-starter-only).
 
 If you are using GitLab.com, you can select from a list of
 [shared Runners that GitLab maintains](../../user/gitlab_com/index.md#shared-runners).
+You can use Shared Runners for a limited number of
+[minutes](../../subscriptions/index.md#ci-pipeline-minutes) each month, based on
+your [GitLab.com tier](https://about.gitlab.com/pricing/).
 
 #### How shared Runners pick jobs
 

@@ -83,3 +83,5 @@ module Ci
     end
   end
 end
+
+Ci::BuildMetadata.prepend_if_ee('EE::Ci::BuildMetadata')

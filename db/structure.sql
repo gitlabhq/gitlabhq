@@ -1075,7 +1075,8 @@ CREATE TABLE public.ci_builds_metadata (
     config_variables jsonb,
     has_exposed_artifacts boolean,
     environment_auto_stop_in character varying(255),
-    expanded_environment_name character varying(255)
+    expanded_environment_name character varying(255),
+    secrets jsonb DEFAULT '{}'::jsonb NOT NULL
 );
 
 CREATE SEQUENCE public.ci_builds_metadata_id_seq
@@ -14047,6 +14048,7 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200602143020
 20200603073101
 20200603180338
+20200604001128
 20200604143628
 20200604145731
 20200604174544

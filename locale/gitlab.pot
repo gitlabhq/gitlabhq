@@ -27428,6 +27428,9 @@ msgstr ""
 msgid "needs to be between 10 minutes and 1 month"
 msgstr ""
 
+msgid "never"
+msgstr ""
+
 msgid "never expires"
 msgstr ""
 

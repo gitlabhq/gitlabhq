@@ -86,34 +86,22 @@
         %li
           %span.light Current sign-in IP:
           %strong
-            - if @user.current_sign_in_ip # rubocop:disable Style/RedundantCondition
-              = @user.current_sign_in_ip
-            - else
-              never
+            = @user.current_sign_in_ip || _('never')
 
         %li
           %span.light Current sign-in at:
           %strong
-            - if @user.current_sign_in_at
-              = @user.current_sign_in_at.to_s(:medium)
-            - else
-              never
+            = @user.current_sign_in_at&.to_s(:medium) || _('never')
 
         %li
           %span.light Last sign-in IP:
           %strong
-            - if @user.last_sign_in_ip # rubocop:disable Style/RedundantCondition
-              = @user.last_sign_in_ip
-            - else
-              never
+            = @user.last_sign_in_ip || _('never')
 
         %li
           %span.light Last sign-in at:
           %strong
-            - if @user.last_sign_in_at
-              = @user.last_sign_in_at.to_s(:medium)
-            - else
-              never
+            = @user.last_sign_in_at&.to_s(:medium) || _('never')
 
         %li
           %span.light Sign-in count:

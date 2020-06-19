@@ -22,7 +22,7 @@
     - elsif type == 'checkbox'
       = form.check_box name
     - elsif type == 'select'
-      = form.select name, options_for_select(choices, value ? value : default_choice), {}, { class: "form-control"} # rubocop:disable Style/RedundantCondition
+      = form.select name, options_for_select(choices, value || default_choice), {}, { class: "form-control"}
     - elsif type == 'password'
       = form.password_field name, autocomplete: "new-password", placeholder: placeholder, class: "form-control", required: value.blank? && required, data: { qa_selector: "#{name.downcase.gsub('\s', '')}_field" }
     - if help

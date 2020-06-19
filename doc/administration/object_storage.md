@@ -163,7 +163,7 @@ configuration.
 
 #### Encrypted S3 buckets
 
-> Introduced in [GitLab 13.1](https://gitlab.com/gitlab-org/gitlab-workhorse/-/merge_requests/466) only for instance profiles.
+> Introduced in [GitLab 13.1](https://gitlab.com/gitlab-org/gitlab-workhorse/-/merge_requests/466) for instance profiles only.
 
 When configured to use an instance profile, GitLab Workhorse
 will properly upload files to S3 buckets that have [SSE-S3 or SSE-KMS
@@ -185,44 +185,48 @@ that properly computes and sends the `Content-MD5` header to the server,
 which eliminates the need for comparing ETag headers. If the data is
 corrupted in transit, the S3 server will reject the file.
 
-#### IAM Permissions
+##### Disabling the feature
 
-To set up an instance profile, create an Amazon Identity Access and
-Management (IAM) role with the necessary permissions. The following
-example is a role for an S3 bucket named `test-bucket`:
+The Workhorse S3 client is enabled by default when the
+[`use_iam_profile` configuration option](#iam-permissions) is set to `true`.
 
-```json
-{
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Sid": "VisualEditor0",
-            "Effect": "Allow",
-            "Action": [
-                "s3:PutObject",
-                "s3:GetObject",
-                "s3:AbortMultipartUpload",
-                "s3:DeleteObject"
-            ],
-            "Resource": "arn:aws:s3:::test-bucket/*"
-        }
-    ]
-}
-```
-
-Associate this role with your GitLab instance, and then configure GitLab
-to use it via the `use_iam_profile` configuration option. For example,
-when configuring uploads to use object storage, see the `AWS IAM profiles`
-section in [S3 compatible connection settings](uploads.md#s3-compatible-connection-settings).
-
-#### Disabling the feature
-
-The Workhorse S3 client is only enabled when the `use_iam_profile`
-configuration flag is `true`.
-
-To disable this feature, ask a GitLab administrator with [Rails console access](feature_flags.md#how-to-enable-and-disable-features-behind-flags) to run the
+The feature can be disabled using the `:use_workhorse_s3_client` feature flag. To disable the
+feature, ask a GitLab administrator with
+[Rails console access](feature_flags.md#how-to-enable-and-disable-features-behind-flags) to run the
 following command:
 
 ```ruby
 Feature.disable(:use_workhorse_s3_client)
 ```
+
+#### IAM Permissions
+
+To set up an instance profile:
+
+1. Create an Amazon Identity Access and Management (IAM) role with the necessary permissions. The
+   following example is a role for an S3 bucket named `test-bucket`:
+
+   ```json
+   {
+       "Version": "2012-10-17",
+       "Statement": [
+           {
+               "Sid": "VisualEditor0",
+               "Effect": "Allow",
+               "Action": [
+                   "s3:PutObject",
+                   "s3:GetObject",
+                   "s3:AbortMultipartUpload",
+                   "s3:DeleteObject"
+               ],
+               "Resource": "arn:aws:s3:::test-bucket/*"
+           }
+       ]
+   }
+   ```
+
+1. [Attach this role](https://aws.amazon.com/premiumsupport/knowledge-center/attach-replace-ec2-instance-profile/)
+   to the EC2 instance hosting your GitLab instance.
+1. Configure GitLab to use it via the `use_iam_profile` configuration option. For example, when
+   configuring uploads to use object storage, see the `AWS IAM profiles` section in
+   [S3-compatible connection settings](uploads.md#s3-compatible-connection-settings).

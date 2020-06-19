@@ -15,7 +15,7 @@ cloud provider more easily.
 
 ## AWS
 
-GitLab provides Docker images to simplify working with AWS, and a template to make
+GitLab provides Docker images that you can use to [run AWS commands from GitLab CI/CD](#run-aws-commands-from-gitlab-cicd), and a template to make
 it easier to [deploy to AWS](#deploy-your-application-to-the-aws-elastic-container-service-ecs).
 
 ### Run AWS commands from GitLab CI/CD
@@ -86,6 +86,11 @@ path to point to your ECR image.
 GitLab provides a series of [CI templates that you can include in your project](../yaml/README.md#include).
 To automate deployments of your application to your [Amazon Elastic Container Service](https://aws.amazon.com/ecs/) (AWS ECS)
 cluster, you can `include` the `Deploy-ECS.gitlab-ci.yml` template in your `.gitlab-ci.yml` file.
+
+GitLab also provides [Docker images](https://gitlab.com/gitlab-org/cloud-deploy/-/tree/master/aws) that can be used in your `gitlab-ci.yml` file to simplify working with AWS:
+
+- Use `registry.gitlab.com/gitlab-org/cloud-deploy/aws-base:latest` to use AWS CLI commands.
+- Use `registry.gitlab.com/gitlab-org/cloud-deploy/aws-ecs:latest` to deploy your application to AWS ECS.
 
 Before getting started with this process, you need a cluster on AWS ECS, as well as related
 components, like an ECS service, ECS task definition, a database on AWS RDS, etc.

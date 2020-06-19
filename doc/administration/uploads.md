@@ -70,7 +70,7 @@ For source installations the following settings are nested under `uploads:` and 
 | `proxy_download` | Set to true to enable proxying all files served. Option allows to reduce egress traffic as this allows clients to download directly from remote storage instead of proxying all data | `false` |
 | `connection` | Various connection options described below | |
 
-### S3 compatible connection settings
+### S3-compatible connection settings
 
 The connection settings match those provided by [Fog](https://github.com/fog), and are as follows:
 
