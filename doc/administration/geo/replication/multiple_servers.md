@@ -46,7 +46,7 @@ for PostgreSQL and Redis, it is not covered by this Geo multi-server documentati
 
 For more information about setting up a multi-server PostgreSQL cluster and Redis cluster using the omnibus package see the multi-server documentation for
 [PostgreSQL](../../postgresql/replication_and_failover.md) and
-[Redis](../../high_availability/redis.md), respectively.
+[Redis](../../redis/replication_and_failover.md), respectively.
 
 NOTE: **Note:**
 It is possible to use cloud hosted services for PostgreSQL and Redis, but this is beyond the scope of this document.
@@ -95,7 +95,7 @@ application servers, and connections from the application servers to those
 services on the backend servers configured, during normal GitLab multi-server set up. See
 multi-server configuration documentation for
 [PostgreSQL](../../postgresql/replication_and_failover.md#configuring-the-application-nodes)
-and [Redis](../../high_availability/redis.md#example-configuration-for-the-gitlab-application).
+and [Redis](../../redis/replication_and_failover.md#example-configuration-for-the-gitlab-application).
 
 ### Step 2: Configure the **primary** database
 
@@ -131,7 +131,7 @@ and are not related to Geo setup.
 Configure the following services, again using the non-Geo multi-server
 documentation:
 
-- [Configuring Redis for GitLab](../../high_availability/redis.md) for multiple servers.
+- [Configuring Redis for GitLab](../../redis/replication_and_failover.md#example-configuration-for-the-gitlab-application) for multiple servers.
 - [Gitaly](../../high_availability/gitaly.md), which will store data that is
   synchronized from the **primary** node.
 

@@ -65,7 +65,7 @@ export const getFileData = (
   if (file.raw || (file.tempFile && !file.prevPath && !fileDeletedAndReadded))
     return Promise.resolve();
 
-  commit(types.TOGGLE_LOADING, { entry: file });
+  commit(types.TOGGLE_LOADING, { entry: file, forceValue: true });
 
   const url = joinPaths(
     gon.relative_url_root || '/',
@@ -84,10 +84,8 @@ export const getFileData = (
       if (data) commit(types.SET_FILE_DATA, { data, file });
       if (openFile) commit(types.TOGGLE_FILE_OPEN, path);
       if (makeFileActive) dispatch('setFileActive', path);
-      commit(types.TOGGLE_LOADING, { entry: file });
     })
     .catch(() => {
-      commit(types.TOGGLE_LOADING, { entry: file });
       dispatch('setErrorMessage', {
         text: __('An error occurred while loading the file.'),
         action: payload =>
@@ -95,6 +93,9 @@ export const getFileData = (
         actionText: __('Please try again'),
         actionPayload: { path, makeFileActive },
       });
+    })
+    .finally(() => {
+      commit(types.TOGGLE_LOADING, { entry: file, forceValue: false });
     });
 };
 
@@ -106,45 +107,41 @@ export const getRawFileData = ({ state, commit, dispatch, getters }, { path }) =
   const file = state.entries[path];
   const stagedFile = state.stagedFiles.find(f => f.path === path);
 
-  return new Promise((resolve, reject) => {
-    const fileDeletedAndReadded = getters.isFileDeletedAndReadded(path);
-    service
-      .getRawFileData(fileDeletedAndReadded ? stagedFile : file)
-      .then(raw => {
-        if (!(file.tempFile && !file.prevPath && !fileDeletedAndReadded))
-          commit(types.SET_FILE_RAW_DATA, { file, raw, fileDeletedAndReadded });
+  const fileDeletedAndReadded = getters.isFileDeletedAndReadded(path);
+  commit(types.TOGGLE_LOADING, { entry: file, forceValue: true });
+  return service
+    .getRawFileData(fileDeletedAndReadded ? stagedFile : file)
+    .then(raw => {
+      if (!(file.tempFile && !file.prevPath && !fileDeletedAndReadded))
+        commit(types.SET_FILE_RAW_DATA, { file, raw, fileDeletedAndReadded });
 
-        if (file.mrChange && file.mrChange.new_file === false) {
-          const baseSha =
-            (getters.currentMergeRequest && getters.currentMergeRequest.baseCommitSha) || '';
+      if (file.mrChange && file.mrChange.new_file === false) {
+        const baseSha =
+          (getters.currentMergeRequest && getters.currentMergeRequest.baseCommitSha) || '';
 
-          service
-            .getBaseRawFileData(file, baseSha)
-            .then(baseRaw => {
-              commit(types.SET_FILE_BASE_RAW_DATA, {
-                file,
-                baseRaw,
-              });
-              resolve(raw);
-            })
-            .catch(e => {
-              reject(e);
-            });
-        } else {
-          resolve(raw);
-        }
-      })
-      .catch(() => {
-        dispatch('setErrorMessage', {
-          text: __('An error occurred while loading the file content.'),
-          action: payload =>
-            dispatch('getRawFileData', payload).then(() => dispatch('setErrorMessage', null)),
-          actionText: __('Please try again'),
-          actionPayload: { path },
+        return service.getBaseRawFileData(file, baseSha).then(baseRaw => {
+          commit(types.SET_FILE_BASE_RAW_DATA, {
+            file,
+            baseRaw,
+          });
+          return raw;
         });
-        reject();
+      }
+      return raw;
+    })
+    .catch(e => {
+      dispatch('setErrorMessage', {
+        text: __('An error occurred while loading the file content.'),
+        action: payload =>
+          dispatch('getRawFileData', payload).then(() => dispatch('setErrorMessage', null)),
+        actionText: __('Please try again'),
+        actionPayload: { path },
       });
-  });
+      throw e;
+    })
+    .finally(() => {
+      commit(types.TOGGLE_LOADING, { entry: file, forceValue: false });
+    });
 };
 
 export const changeFileContent = ({ commit, state, getters }, { path, content }) => {

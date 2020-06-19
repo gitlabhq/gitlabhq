@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils';
-import { GlLink } from '@gitlab/ui';
+import { GlLink, GlSprintf } from '@gitlab/ui';
 import suggestPipelineComponent from '~/vue_merge_request_widget/components/mr_widget_suggest_pipeline.vue';
 import stubChildren from 'helpers/stub_children';
 import PipelineTourState from '~/vue_merge_request_widget/components/states/mr_widget_pipeline_tour.vue';
@@ -18,6 +18,7 @@ describe('MRWidgetHeader', () => {
       propsData: { pipelinePath, pipelineSvgPath, humanAccess },
       stubs: {
         ...stubChildren(PipelineTourState),
+        GlSprintf,
       },
     });
   });

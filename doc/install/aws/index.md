@@ -360,7 +360,7 @@ persistence and is used to store session data, temporary cache information, and 
 
 1. Navigate back to the ElastiCache dashboard.
 1. Select **Redis** on the left menu and click **Create** to create a new
-   Redis cluster. Do not enable **Cluster Mode** as it is [not supported](../../administration/high_availability/redis.md#provide-your-own-redis-instance-core-only). Even without cluster mode on, you still get the
+   Redis cluster. Do not enable **Cluster Mode** as it is [not supported](../../administration/redis/replication_and_failover_external.md#requirements). Even without cluster mode on, you still get the
    chance to deploy Redis in multiple availability zones.
 1. In the settings section:
    1. Give the cluster a name (`gitlab-redis`) and a description.

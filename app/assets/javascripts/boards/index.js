@@ -202,7 +202,7 @@ export default () => {
       updateTokens() {
         this.filterManager.updateTokens();
       },
-      updateDetailIssue(newIssue, multiSelect = false) {
+      updateDetailIssue([newIssue, multiSelect = false]) {
         const { sidebarInfoEndpoint } = newIssue;
         if (sidebarInfoEndpoint && newIssue.subscribed === undefined) {
           newIssue.setFetchingState('subscriptions', true);

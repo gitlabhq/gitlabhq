@@ -1138,20 +1138,20 @@
   dependencies:
     defer-to-connect "^1.0.1"
 
-"@toast-ui/editor@2.1.2", "@toast-ui/editor@^2.1.2":
-  version "2.1.2"
-  resolved "https://registry.yarnpkg.com/@toast-ui/editor/-/editor-2.1.2.tgz#0472431bd039ae70882d77910e83f0ad222d0b1c"
-  integrity sha512-yoWRVyp2m1dODH+bmzJaILUgl2L57GCQJ8c8+XRgJMwfxb/TFz5U+oT8JGAU5VwozIzKF0SyVMs8AEePwwhIIA==
+"@toast-ui/editor@^2.2.0":
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/@toast-ui/editor/-/editor-2.2.0.tgz#77fd790c6ae876d5de738bc022d6ebc5c84a6feb"
+  integrity sha512-WiqrY7OeCOS08NlznJobCwtxOWJC/5my8QefHCKTZyX9/70kkojcnyQ8aoiQQ5kIfGUJ6dKt6/JuKD5OOib+bQ==
   dependencies:
     "@types/codemirror" "0.0.71"
     codemirror "^5.48.4"
 
-"@toast-ui/vue-editor@2.1.2":
-  version "2.1.2"
-  resolved "https://registry.yarnpkg.com/@toast-ui/vue-editor/-/vue-editor-2.1.2.tgz#a790e69fcf7fb426e6b8ea190733477c3cc756aa"
-  integrity sha512-RK01W6D8FqtNq4MjWsXk6KRzOU/vL6mpiADAnH5l/lFK4G6UQJhLKsMRfmxIqCH+ivm8VtQzGdd9obUfD+XbCw==
+"@toast-ui/vue-editor@^2.2.0":
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/@toast-ui/vue-editor/-/vue-editor-2.2.0.tgz#bae8e6e6c0a7d6fb40a4f6b8e616aada3923118d"
+  integrity sha512-z8q60tEIfrIOk1fQitRg56ZxztOUyp2A1gLlTVuTpFNts21lTsMfFcUNdZsAivWUN6ToQu4qP8Bz80h9FZBLBg==
   dependencies:
-    "@toast-ui/editor" "^2.1.2"
+    "@toast-ui/editor" "^2.2.0"
 
 "@types/anymatch@*":
   version "1.3.0"

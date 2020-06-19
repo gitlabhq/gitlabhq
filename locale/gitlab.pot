@@ -15113,7 +15113,7 @@ msgstr ""
 msgid "No test coverage"
 msgstr ""
 
-msgid "No thanks, don't show this again"
+msgid "No thanks"
 msgstr ""
 
 msgid "No vulnerabilities present"
@@ -20598,7 +20598,7 @@ msgstr ""
 msgid "Show me everything"
 msgstr ""
 
-msgid "Show me how"
+msgid "Show me how to add a pipeline"
 msgstr ""
 
 msgid "Show me more advanced stuff"
@@ -27218,9 +27218,6 @@ msgstr ""
 msgid "mrWidget|Deployment statistics are not available currently"
 msgstr ""
 
-msgid "mrWidget|Detect issues before deployment with a CI pipeline that continuously tests your code. We created a quick guide that will show you how to create one. Make your code more secure and more robust in just a minute."
-msgstr ""
-
 msgid "mrWidget|Did not close"
 msgstr ""
 
@@ -27381,6 +27378,9 @@ msgid "mrWidget|This project is archived, write access has been disabled"
 msgstr ""
 
 msgid "mrWidget|To approve this merge request, please enter your password. This project requires all approvals to be authenticated."
+msgstr ""
+
+msgid "mrWidget|Use %{linkStart}CI pipelines to test your code%{linkEnd}, simply add a GitLab CI configuration file to your project. It only takes a minute to make your code more secure and robust."
 msgstr ""
 
 msgid "mrWidget|When this merge request is ready, remove the WIP: prefix from the title to allow it to be merged"

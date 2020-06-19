@@ -196,7 +196,7 @@ describe('Board card', () => {
       wrapper.trigger('mousedown');
       wrapper.trigger('mouseup');
 
-      expect(eventHub.$emit).toHaveBeenCalledWith('newDetailIssue', wrapper.vm.issue, undefined);
+      expect(eventHub.$emit).toHaveBeenCalledWith('newDetailIssue', [wrapper.vm.issue, undefined]);
       expect(boardsStore.detail.list).toEqual(wrapper.vm.list);
     });
 

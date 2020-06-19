@@ -123,7 +123,7 @@ export default {
         this.updateGroups(res, Boolean(filterGroupsBy));
       });
     },
-    fetchPage(page, filterGroupsBy, sortBy, archived) {
+    fetchPage([page, filterGroupsBy, sortBy, archived]) {
       this.isLoading = true;
 
       return this.fetchGroups({
@@ -169,7 +169,7 @@ export default {
         parentGroup.isOpen = false;
       }
     },
-    showLeaveGroupModal(group, parentGroup) {
+    showLeaveGroupModal([group, parentGroup]) {
       const { fullName } = group;
       this.targetGroup = group;
       this.targetParentGroup = parentGroup;

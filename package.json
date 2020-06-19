@@ -46,8 +46,8 @@
     "@rails/actioncable": "^6.0.3-1",
     "@sentry/browser": "^5.10.2",
     "@sourcegraph/code-host-integration": "0.0.48",
-    "@toast-ui/editor": "2.1.2",
-    "@toast-ui/vue-editor": "2.1.2",
+    "@toast-ui/editor": "^2.2.0",
+    "@toast-ui/vue-editor": "^2.2.0",
     "apollo-cache-inmemory": "^1.6.3",
     "apollo-client": "^2.6.4",
     "apollo-link": "^1.2.11",
@@ -155,10 +155,10 @@
     "xterm": "^3.5.0"
   },
   "devDependencies": {
-    "acorn": "^6.3.0",
     "@babel/plugin-transform-modules-commonjs": "^7.10.1",
     "@gitlab/eslint-plugin": "3.1.0",
     "@vue/test-utils": "^1.0.0-beta.30",
+    "acorn": "^6.3.0",
     "axios-mock-adapter": "^1.15.0",
     "babel-jest": "^24.1.0",
     "babel-plugin-dynamic-import-node": "^2.2.0",

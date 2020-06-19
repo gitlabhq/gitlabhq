@@ -50,7 +50,7 @@ following the [2,000-user reference architecture](2k_users.md).
    For medium sized installs (3,000 - 5,000) we suggest one Redis cluster for all
    classes and that Redis Sentinel is hosted alongside Consul.
    For larger architectures (10,000 users or more) we suggest running a separate
-   [Redis Cluster](../high_availability/redis.md#running-multiple-redis-clusters) for the Cache class
+   [Redis Cluster](../redis/replication_and_failover.md#running-multiple-redis-clusters) for the Cache class
    and another for the Queues and Shared State classes respectively. We also recommend
    that you run the Redis Sentinel clusters separately for each Redis Cluster.
 

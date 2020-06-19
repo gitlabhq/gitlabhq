@@ -30,9 +30,12 @@ export default {
     doAction() {
       this.isLoading = true;
 
-      eventHub.$emit(`${this.type}.key`, this.deployKey, () => {
-        this.isLoading = false;
-      });
+      eventHub.$emit(`${this.type}.key`, [
+        this.deployKey,
+        () => {
+          this.isLoading = false;
+        },
+      ]);
     },
   },
 };

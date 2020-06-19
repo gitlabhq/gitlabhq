@@ -1,0 +1,4 @@
+---
+title: Resolve "WebIDE displays blank file incorrectly"
+merge_request: 33391
+type: fixed

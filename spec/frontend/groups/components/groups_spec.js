@@ -41,13 +41,12 @@ describe('GroupsComponent', () => {
 
         vm.change(2);
 
-        expect(eventHub.$emit).toHaveBeenCalledWith(
-          'fetchPage',
+        expect(eventHub.$emit).toHaveBeenCalledWith('fetchPage', [
           2,
           expect.any(Object),
           expect.any(Object),
           expect.any(Object),
-        );
+        ]);
       });
     });
   });

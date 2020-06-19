@@ -1,5 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
-import { GlPopover } from '@gitlab/ui';
+import { GlPopover, GlLink, GlSprintf } from '@gitlab/ui';
 import Cookies from 'js-cookie';
 import { mockTracking, triggerEvent, unmockTracking } from 'helpers/tracking_helper';
 import pipelineTourState from '~/vue_merge_request_widget/components/states/mr_widget_pipeline_tour.vue';
@@ -51,6 +51,9 @@ describe('MRWidgetPipelineTour', () => {
         Cookies.remove(cookieKey);
         wrapper = shallowMount(pipelineTourState, {
           propsData: popoverProps,
+          stubs: {
+            GlSprintf,
+          },
         });
       });
 
@@ -58,6 +61,13 @@ describe('MRWidgetPipelineTour', () => {
         const popover = wrapper.find(GlPopover);
 
         expect(popover.exists()).toBe(true);
+      });
+
+      it('renders the help link', () => {
+        const link = wrapper.find(GlLink);
+
+        expect(link.exists()).toBe(true);
+        expect(link.attributes('href')).toBe(wrapper.vm.$options.helpURL);
       });
 
       it('renders the show me how button', () => {

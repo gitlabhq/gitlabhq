@@ -174,7 +174,7 @@ RSpec.describe 'Database schema' do
   IGNORED_JSONB_COLUMNS = {
     "ApplicationSetting" => %w[repository_storages_weighted],
     "AlertManagement::Alert" => %w[payload],
-    "Ci::BuildMetadata" => %w[config_options config_variables],
+    "Ci::BuildMetadata" => %w[config_options config_variables secrets], # secrets has an EE-only validator
     "Geo::Event" => %w[payload],
     "GeoNodeStatus" => %w[status],
     "Operations::FeatureFlagScope" => %w[strategies],

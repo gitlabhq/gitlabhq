@@ -88,7 +88,7 @@ describe('Deploy keys app component', () => {
         jest.spyOn(wrapper.vm.service, 'getKeys').mockImplementation(() => {});
         jest.spyOn(wrapper.vm.service, 'enableKey').mockImplementation(() => Promise.resolve());
 
-        eventHub.$emit('enable.key', key);
+        eventHub.$emit('enable.key', [key]);
 
         return wrapper.vm.$nextTick();
       })
@@ -106,7 +106,7 @@ describe('Deploy keys app component', () => {
         jest.spyOn(wrapper.vm.service, 'getKeys').mockImplementation(() => {});
         jest.spyOn(wrapper.vm.service, 'disableKey').mockImplementation(() => Promise.resolve());
 
-        eventHub.$emit('disable.key', key);
+        eventHub.$emit('disable.key', [key]);
 
         return wrapper.vm.$nextTick();
       })
@@ -124,7 +124,7 @@ describe('Deploy keys app component', () => {
         jest.spyOn(wrapper.vm.service, 'getKeys').mockImplementation(() => {});
         jest.spyOn(wrapper.vm.service, 'disableKey').mockImplementation(() => Promise.resolve());
 
-        eventHub.$emit('remove.key', key);
+        eventHub.$emit('remove.key', [key]);
 
         return wrapper.vm.$nextTick();
       })

@@ -1,9 +1,10 @@
 <script>
-import { GlPopover, GlDeprecatedButton } from '@gitlab/ui';
+import { GlPopover, GlDeprecatedButton, GlSprintf, GlLink } from '@gitlab/ui';
 import Icon from '~/vue_shared/components/icon.vue';
 import Cookies from 'js-cookie';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import Tracking from '~/tracking';
+import { s__ } from '~/locale';
 
 const trackingMixin = Tracking.mixin();
 
@@ -14,10 +15,16 @@ export default {
   dismissTrackValue: 20,
   showTrackValue: 10,
   trackEvent: 'click_button',
+  helpContent: s__(
+    `mrWidget|Use %{linkStart}CI pipelines to test your code%{linkEnd}, simply add a GitLab CI configuration file to your project. It only takes a minute to make your code more secure and robust.`,
+  ),
+  helpURL: 'https://about.gitlab.com/blog/2019/07/12/guide-to-ci-cd-pipelines/',
   components: {
     GlPopover,
     GlDeprecatedButton,
     Icon,
+    GlSprintf,
+    GlLink,
   },
   mixins: [trackingMixin],
   props: {
@@ -97,13 +104,13 @@ export default {
     <div class="svg-content svg-150 pt-1">
       <img :src="pipelineSvgPath" />
     </div>
-    <p>
-      {{
-        s__(
-          'mrWidget|Detect issues before deployment with a CI pipeline that continuously tests your code. We created a quick guide that will show you how to create one. Make your code more secure and more robust in just a minute.',
-        )
-      }}
-    </p>
+    <gl-sprintf :message="$options.helpContent">
+      <template #link="{ content }">
+        <gl-link :href="$options.helpURL" target="_blank" class="font-size-inherit">{{
+          content
+        }}</gl-link>
+      </template>
+    </gl-sprintf>
     <gl-deprecated-button
       ref="ok"
       category="primary"
@@ -116,7 +123,7 @@ export default {
       :data-track-event="$options.trackEvent"
       :data-track-label="trackLabel"
     >
-      {{ __('Show me how') }}
+      {{ __('Show me how to add a pipeline') }}
     </gl-deprecated-button>
     <gl-deprecated-button
       ref="no-thanks"
@@ -130,7 +137,7 @@ export default {
       :data-track-label="trackLabel"
       @click="dismissPopover"
     >
-      {{ __("No thanks, don't show this again") }}
+      {{ __('No thanks') }}
     </gl-deprecated-button>
   </gl-popover>
 </template>

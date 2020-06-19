@@ -25,11 +25,6 @@ export default {
       default: '',
       required: false,
     },
-    canEdit: {
-      type: Boolean,
-      default: false,
-      required: false,
-    },
   },
   computed: {
     hasValue() {

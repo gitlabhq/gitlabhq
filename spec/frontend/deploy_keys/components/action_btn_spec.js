@@ -32,7 +32,7 @@ describe('Deploy keys action btn', () => {
     wrapper.trigger('click');
 
     return wrapper.vm.$nextTick().then(() => {
-      expect(eventHub.$emit).toHaveBeenCalledWith('enable.key', deployKey, expect.anything());
+      expect(eventHub.$emit).toHaveBeenCalledWith('enable.key', [deployKey, expect.any(Function)]);
     });
   });
 

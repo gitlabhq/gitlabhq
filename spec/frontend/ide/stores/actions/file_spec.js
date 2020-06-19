@@ -446,6 +446,54 @@ describe('IDE store file actions', () => {
           })
           .catch(done.fail);
       });
+
+      describe('sets file loading to true', () => {
+        let loadingWhenGettingRawData;
+        let loadingWhenGettingBaseRawData;
+
+        beforeEach(() => {
+          loadingWhenGettingRawData = undefined;
+          loadingWhenGettingBaseRawData = undefined;
+
+          jest.spyOn(service, 'getRawFileData').mockImplementation(f => {
+            loadingWhenGettingRawData = f.loading;
+            return Promise.resolve('raw');
+          });
+          jest.spyOn(service, 'getBaseRawFileData').mockImplementation(f => {
+            loadingWhenGettingBaseRawData = f.loading;
+            return Promise.resolve('rawBase');
+          });
+        });
+
+        it('when getting raw file data', async () => {
+          expect(tmpFile.loading).toBe(false);
+
+          await store.dispatch('getRawFileData', { path: tmpFile.path });
+
+          expect(loadingWhenGettingRawData).toBe(true);
+          expect(tmpFile.loading).toBe(false);
+        });
+
+        it('when getting base raw file data', async () => {
+          tmpFile.mrChange = { new_file: false };
+
+          expect(tmpFile.loading).toBe(false);
+
+          await store.dispatch('getRawFileData', { path: tmpFile.path });
+
+          expect(loadingWhenGettingBaseRawData).toBe(true);
+          expect(tmpFile.loading).toBe(false);
+        });
+
+        it('when file was already loading', async () => {
+          tmpFile.loading = true;
+
+          await store.dispatch('getRawFileData', { path: tmpFile.path });
+
+          expect(loadingWhenGettingRawData).toBe(true);
+          expect(tmpFile.loading).toBe(false);
+        });
+      });
     });
 
     describe('return JSON', () => {
@@ -488,6 +536,12 @@ describe('IDE store file actions', () => {
               },
             });
           });
+      });
+
+      it('toggles loading off after error', async () => {
+        await expect(store.dispatch('getRawFileData', { path: tmpFile.path })).rejects.toThrow();
+
+        expect(tmpFile.loading).toBe(false);
       });
     });
   });
