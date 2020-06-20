@@ -2551,7 +2551,7 @@ msgstr ""
 msgid "Analyze your dependencies for known vulnerabilities."
 msgstr ""
 
-msgid "Analyze your source code and git history for secrets"
+msgid "Analyze your source code and git history for secrets."
 msgstr ""
 
 msgid "Analyze your source code for known vulnerabilities."
