@@ -655,3 +655,30 @@ The fix is to correct the source file permissions and restart Pages:
 sudo chmod 644 /opt/gitlab/embedded/ssl/certs/cacert.pem
 sudo gitlab-ctl restart gitlab-pages
 ```
+
+### `dial tcp: lookup gitlab.example.com` and `x509: certificate signed by unknown authority`
+
+When setting both `inplace_chroot` and `access_control` to `true`, you might encounter errors like:
+
+```plaintext
+dial tcp: lookup gitlab.example.com on [::1]:53: dial udp [::1]:53: connect: cannot assign requested address
+```
+
+Or:
+
+```plaintext
+open /opt/gitlab/embedded/ssl/certs/cacert.pem: no such file or directory
+x509: certificate signed by unknown authority
+```
+
+The reason for those errors is that the files `resolv.conf` and `ca-bundle.pem` are missing inside the chroot.
+The fix is to copy the host's `/etc/resolv.conf` and GitLab's certificate bundle inside the chroot:
+
+```shell
+sudo mkdir -p /var/opt/gitlab/gitlab-rails/shared/pages/etc/ssl
+sudo mkdir -p /var/opt/gitlab/gitlab-rails/shared/pages/opt/gitlab/embedded/ssl/certs/
+
+sudo cp /etc/resolv.conf /var/opt/gitlab/gitlab-rails/shared/pages/etc
+sudo cp /opt/gitlab/embedded/ssl/certs/cacert.pem /var/opt/gitlab/gitlab-rails/shared/pages/opt/gitlab/embedded/ssl/certs/
+sudo cp /opt/gitlab/embedded/ssl/certs/cacert.pem /var/opt/gitlab/gitlab-rails/shared/pages/etc/ssl/ca-bundle.pem
+```

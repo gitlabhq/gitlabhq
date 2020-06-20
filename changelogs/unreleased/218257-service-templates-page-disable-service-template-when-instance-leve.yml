@@ -1,0 +1,5 @@
+---
+title: Add UI to disable Service template when instance-level integration is active
+merge_request: 33490
+author:
+type: changed

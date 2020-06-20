@@ -10,7 +10,7 @@ RSpec.describe Admin::ServicesController do
   end
 
   describe 'GET #edit' do
-    let!(:service) do
+    let(:service) do
       create(:jira_service, :template)
     end
 
@@ -18,6 +18,26 @@ RSpec.describe Admin::ServicesController do
       get :edit, params: { id: service.id }
 
       expect(response).to have_gitlab_http_status(:ok)
+    end
+
+    context 'when integration does not exists' do
+      it 'redirects to the admin application integration page' do
+        get :edit, params: { id: 'invalid' }
+
+        expect(response).to redirect_to(admin_application_settings_services_path)
+      end
+    end
+
+    context 'when instance integration exists' do
+      before do
+        create(:jira_service, :instance)
+      end
+
+      it 'redirects to the admin application integration page' do
+        get :edit, params: { id: service.id }
+
+        expect(response).to redirect_to(admin_application_settings_services_path)
+      end
     end
   end
 

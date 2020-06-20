@@ -1637,6 +1637,9 @@ msgstr ""
 msgid "AdminSettings|Integrations configured here will automatically apply to all projects on this instance."
 msgstr ""
 
+msgid "AdminSettings|Moved to integrations"
+msgstr ""
+
 msgid "AdminSettings|No required pipeline"
 msgstr ""
 
