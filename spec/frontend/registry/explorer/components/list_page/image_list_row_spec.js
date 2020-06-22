@@ -1,11 +1,14 @@
 import { shallowMount } from '@vue/test-utils';
 import { GlIcon, GlSprintf } from '@gitlab/ui';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
-import Component from '~/registry/explorer/components/list_page/image_list_row.vue';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
+import Component from '~/registry/explorer/components/list_page/image_list_row.vue';
+import ListItem from '~/registry/explorer/components/list_item.vue';
+import DeleteButton from '~/registry/explorer/components/delete_button.vue';
 import {
   ROW_SCHEDULED_FOR_DELETION,
   LIST_DELETE_BUTTON_DISABLED,
+  REMOVE_REPOSITORY_LABEL,
 } from '~/registry/explorer/constants';
 import { RouterLink } from '../../stubs';
 import { imagesListResponse } from '../../mock_data';
@@ -13,10 +16,10 @@ import { imagesListResponse } from '../../mock_data';
 describe('Image List Row', () => {
   let wrapper;
   const item = imagesListResponse.data[0];
-  const findDeleteBtn = () => wrapper.find('[data-testid="deleteImageButton"]');
+
   const findDetailsLink = () => wrapper.find('[data-testid="detailsLink"]');
   const findTagsCount = () => wrapper.find('[data-testid="tagsCount"]');
-  const findDeleteButtonWrapper = () => wrapper.find('[data-testid="deleteButtonWrapper"]');
+  const findDeleteBtn = () => wrapper.find(DeleteButton);
   const findClipboardButton = () => wrapper.find(ClipboardButton);
 
   const mountComponent = props => {
@@ -24,6 +27,7 @@ describe('Image List Row', () => {
       stubs: {
         RouterLink,
         GlSprintf,
+        ListItem,
       },
       propsData: {
         item,
@@ -72,29 +76,24 @@ describe('Image List Row', () => {
     });
   });
 
-  describe('delete button wrapper', () => {
-    it('has a tooltip', () => {
-      mountComponent();
-      const tooltip = getBinding(findDeleteButtonWrapper().element, 'gl-tooltip');
-      expect(tooltip).toBeDefined();
-      expect(tooltip.value.title).toBe(LIST_DELETE_BUTTON_DISABLED);
-    });
-    it('tooltip is enabled when destroy_path is falsy', () => {
-      mountComponent({ item: { ...item, destroy_path: null } });
-      const tooltip = getBinding(findDeleteButtonWrapper().element, 'gl-tooltip');
-      expect(tooltip.value.disabled).toBeFalsy();
-    });
-  });
-
   describe('delete button', () => {
     it('exists', () => {
       mountComponent();
       expect(findDeleteBtn().exists()).toBe(true);
     });
 
+    it('has the correct props', () => {
+      mountComponent();
+      expect(findDeleteBtn().attributes()).toMatchObject({
+        title: REMOVE_REPOSITORY_LABEL,
+        tooltipdisabled: `${Boolean(item.destroy_path)}`,
+        tooltiptitle: LIST_DELETE_BUTTON_DISABLED,
+      });
+    });
+
     it('emits a delete event', () => {
       mountComponent();
-      findDeleteBtn().vm.$emit('click');
+      findDeleteBtn().vm.$emit('delete');
       expect(wrapper.emitted('delete')).toEqual([[item]]);
     });
 

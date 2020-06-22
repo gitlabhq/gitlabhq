@@ -1,3 +1,9 @@
+---
+stage: Defend
+group: Container Security
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+---
+
 # Getting started with the Web Application Firewall
 
 This is a step-by-step guide that will help you use GitLab's [Web Application Firewall](index.md) after

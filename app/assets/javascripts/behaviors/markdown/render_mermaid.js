@@ -174,7 +174,7 @@ export default function renderMermaid($els) {
   if (!$els.length) return;
 
   const visibleMermaids = $els.filter(function filter() {
-    return $(this).closest('details').length === 0;
+    return $(this).closest('details').length === 0 && $(this).is(':visible');
   });
 
   renderMermaids(visibleMermaids);

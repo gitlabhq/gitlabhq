@@ -132,7 +132,8 @@ export default {
       return this.graphData?.title || '';
     },
     graphDataHasResult() {
-      return this.graphData?.metrics?.[0]?.result?.length > 0;
+      const metrics = this.graphData?.metrics || [];
+      return metrics.some(({ result }) => result?.length > 0);
     },
     graphDataIsLoading() {
       const metrics = this.graphData?.metrics || [];
@@ -207,7 +208,17 @@ export default {
       return MonitorTimeSeriesChart;
     },
     isContextualMenuShown() {
-      return Boolean(this.graphDataHasResult && !this.basicChartComponent);
+      if (!this.graphDataHasResult) {
+        return false;
+      }
+      // Only a few charts have a contextual menu, support
+      // for more chart types planned at:
+      // https://gitlab.com/groups/gitlab-org/-/epics/3573
+      return (
+        this.isPanelType(panelTypes.AREA_CHART) ||
+        this.isPanelType(panelTypes.LINE_CHART) ||
+        this.isPanelType(panelTypes.SINGLE_STAT)
+      );
     },
     editCustomMetricLink() {
       if (this.graphData.metrics.length > 1) {
@@ -223,7 +234,10 @@ export default {
       return metrics.some(({ metricId }) => this.metricsSavedToDb.includes(metricId));
     },
     alertWidgetAvailable() {
+      const supportsAlerts =
+        this.isPanelType(panelTypes.AREA_CHART) || this.isPanelType(panelTypes.LINE_CHART);
       return (
+        supportsAlerts &&
         this.prometheusAlertsAvailable &&
         this.alertsEndpoint &&
         this.graphData &&
@@ -284,7 +298,7 @@ export default {
 </script>
 <template>
   <div v-gl-resize-observer="onResize" class="prometheus-graph">
-    <div class="d-flex align-items-center mr-3">
+    <div class="d-flex align-items-center">
       <slot name="topLeft"></slot>
       <h5
         ref="graphTitle"
@@ -375,7 +389,7 @@ export default {
               {{ __('Alerts') }}
             </gl-dropdown-item>
 
-            <template v-if="graphData.links.length">
+            <template v-if="graphData.links && graphData.links.length">
               <gl-dropdown-divider />
               <gl-dropdown-item
                 v-for="(link, index) in graphData.links"

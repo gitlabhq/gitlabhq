@@ -99,6 +99,10 @@ describe SnippetsController, "routing" do
   it "to #destroy" do
     expect(delete("/snippets/1")).to route_to('snippets#destroy', id: '1')
   end
+
+  it 'to #show from scope routing' do
+    expect(get("/-/snippets/1")).to route_to('snippets#show', id: '1')
+  end
 end
 
 #            help GET /help(.:format)                 help#index

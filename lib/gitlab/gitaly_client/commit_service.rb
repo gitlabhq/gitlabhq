@@ -72,9 +72,9 @@ module Gitlab
 
       def commit_deltas(commit)
         request = Gitaly::CommitDeltaRequest.new(diff_from_parent_request_params(commit))
-        response = GitalyClient.call(@repository.storage, :diff_service, :commit_delta, request, timeout: GitalyClient.fast_timeout)
-
-        response.flat_map { |msg| msg.deltas }
+        GitalyClient.streaming_call(@repository.storage, :diff_service, :commit_delta, request, timeout: GitalyClient.fast_timeout) do |response|
+          response.flat_map { |msg| msg.deltas }
+        end
       end
 
       def tree_entry(ref, path, limit = nil)
@@ -349,10 +349,10 @@ module Gitlab
           end
         end
 
-        response = GitalyClient.call(@repository.storage, :commit_service, :filter_shas_with_signatures, enum, timeout: GitalyClient.fast_timeout)
-
-        response.flat_map do |msg|
-          msg.shas.map { |sha| EncodingHelper.encode!(sha) }
+        GitalyClient.streaming_call(@repository.storage, :commit_service, :filter_shas_with_signatures, enum, timeout: GitalyClient.fast_timeout) do |response|
+          response.flat_map do |msg|
+            msg.shas.map { |sha| EncodingHelper.encode!(sha) }
+          end
         end
       end
 
@@ -400,8 +400,9 @@ module Gitlab
         request_params.merge!(Gitlab::Git::DiffCollection.limits(options).to_h)
 
         request = Gitaly::CommitDiffRequest.new(request_params)
-        response = GitalyClient.call(@repository.storage, :diff_service, :commit_diff, request, timeout: GitalyClient.medium_timeout)
-        GitalyClient::DiffStitcher.new(response)
+        GitalyClient.streaming_call(@repository.storage, :diff_service, :commit_diff, request, timeout: GitalyClient.medium_timeout) do |response|
+          GitalyClient::DiffStitcher.new(response)
+        end
       end
 
       def diff_from_parent_request_params(commit, options = {})

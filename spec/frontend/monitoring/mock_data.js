@@ -369,6 +369,7 @@ export const singleStatMetricsResult = {
         {
           metric: { job: 'prometheus' },
           value: ['2019-06-26T21:03:20.881Z', 91],
+          values: [['2019-06-26T21:03:20.881Z', 91]],
         },
       ],
     },

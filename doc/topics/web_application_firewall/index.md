@@ -1,3 +1,10 @@
+---
+stage: Defend
+group: Container Security
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+---
+
+
 # Web Application Firewall - ModSecurity
 
 A web application firewall (or WAF) filters, monitors, and blocks HTTP traffic to

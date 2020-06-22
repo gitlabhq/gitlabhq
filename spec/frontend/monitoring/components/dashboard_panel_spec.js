@@ -233,23 +233,32 @@ describe('Dashboard Panel', () => {
         expect(wrapper.find(MonitorTimeSeriesChart).isVueInstance()).toBe(true);
       });
 
-      it.each`
-        data                                       | component
-        ${dataWithType(panelTypes.AREA_CHART)}     | ${MonitorTimeSeriesChart}
-        ${dataWithType(panelTypes.LINE_CHART)}     | ${MonitorTimeSeriesChart}
-        ${anomalyMockGraphData}                    | ${MonitorAnomalyChart}
-        ${dataWithType(panelTypes.COLUMN)}         | ${MonitorColumnChart}
-        ${dataWithType(panelTypes.STACKED_COLUMN)} | ${MonitorStackedColumnChart}
-        ${singleStatMetricsResult}                 | ${MonitorSingleStatChart}
-        ${graphDataPrometheusQueryRangeMultiTrack} | ${MonitorHeatmapChart}
-        ${barMockData}                             | ${MonitorBarChart}
-      `('wrapps a $data.type component binding attributes', ({ data, component }) => {
+      describe.each`
+        data                                       | component                    | hasCtxMenu
+        ${dataWithType(panelTypes.AREA_CHART)}     | ${MonitorTimeSeriesChart}    | ${true}
+        ${dataWithType(panelTypes.LINE_CHART)}     | ${MonitorTimeSeriesChart}    | ${true}
+        ${singleStatMetricsResult}                 | ${MonitorSingleStatChart}    | ${true}
+        ${anomalyMockGraphData}                    | ${MonitorAnomalyChart}       | ${false}
+        ${dataWithType(panelTypes.COLUMN)}         | ${MonitorColumnChart}        | ${false}
+        ${dataWithType(panelTypes.STACKED_COLUMN)} | ${MonitorStackedColumnChart} | ${false}
+        ${graphDataPrometheusQueryRangeMultiTrack} | ${MonitorHeatmapChart}       | ${false}
+        ${barMockData}                             | ${MonitorBarChart}           | ${false}
+      `('when $data.type data is provided', ({ data, component, hasCtxMenu }) => {
         const attrs = { attr1: 'attr1Value', attr2: 'attr2Value' };
-        createWrapper({ graphData: data }, { attrs });
 
-        expect(wrapper.find(component).exists()).toBe(true);
-        expect(wrapper.find(component).isVueInstance()).toBe(true);
-        expect(wrapper.find(component).attributes()).toMatchObject(attrs);
+        beforeEach(() => {
+          createWrapper({ graphData: data }, { attrs });
+        });
+
+        it(`renders the chart component and binds attributes`, () => {
+          expect(wrapper.find(component).exists()).toBe(true);
+          expect(wrapper.find(component).isVueInstance()).toBe(true);
+          expect(wrapper.find(component).attributes()).toMatchObject(attrs);
+        });
+
+        it(`contextual menu is ${hasCtxMenu ? '' : 'not '}shown`, () => {
+          expect(findCtxMenu().exists()).toBe(hasCtxMenu);
+        });
       });
     });
   });

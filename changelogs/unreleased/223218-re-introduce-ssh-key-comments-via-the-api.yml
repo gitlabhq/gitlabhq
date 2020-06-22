@@ -1,0 +1,5 @@
+---
+title: Do not mask key comments for DeployKeys
+merge_request: 35014
+author:
+type: fixed

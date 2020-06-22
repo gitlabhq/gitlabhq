@@ -226,6 +226,8 @@ export default class MergeRequestTabs {
         this.resetViewContainer();
         this.destroyPipelinesView();
       }
+
+      $('.detail-page-description').renderGFM();
     } else if (action === this.currentAction) {
       // ContentTop is used to handle anything at the top of the page before the main content
       const mainContentContainer = document.querySelector('.content-wrapper');

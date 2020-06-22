@@ -2,7 +2,7 @@
   .sidebar-container
     .block.wiki-sidebar-header.gl-mb-3.w-100
       %a.gutter-toggle.float-right.d-block.d-sm-block.d-md-none.js-sidebar-wiki-toggle{ href: "#" }
-        = icon('angle-double-right')
+        = sprite_icon('chevron-double-lg-right', size: 16, css_class: 'gl-icon')
 
       - git_access_url = wiki_path(@wiki, action: :git_access)
       = link_to git_access_url, class: active_nav_link?(path: 'wikis#git_access') ? 'active' : '', data: { qa_selector: 'clone_repository_link' } do

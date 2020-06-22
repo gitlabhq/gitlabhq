@@ -1007,7 +1007,7 @@ falco:
 You can customize Falco's Helm variables by defining the
 `.gitlab/managed-apps/falco/values.yaml` file in your cluster
 management project. Refer to the
-[Falco chart](https://github.com/helm/charts/blob/master/stable/falco/)
+[Falco chart](https://github.com/falcosecurity/charts/tree/master/falco)
 for the available configuration options.
 
 CAUTION: **Caution:**

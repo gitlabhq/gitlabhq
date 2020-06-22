@@ -262,6 +262,14 @@ Rails.application.routes.draw do
   draw :user
   draw :project
 
+  # Serve snippet routes under /-/snippets.
+  # To ensure an old unscoped routing is used for the UI we need to
+  # add prefix 'as' to the scope routing and place it below original routing.
+  # Issue https://gitlab.com/gitlab-org/gitlab/-/issues/210024
+  scope '-', as: :scoped do
+    draw :snippets
+  end
+
   root to: "root#index"
 
   get '*unmatched_route', to: 'application#route_not_found'
