@@ -9,8 +9,8 @@ module ActionDispatch
     module Path
       class Pattern
         def requirements_for_missing_keys_check
-          @requirements_for_missing_keys_check ||= requirements.each_with_object({}) do |(key, regex), hash|
-            hash[key] = /\A#{regex}\Z/
+          @requirements_for_missing_keys_check ||= requirements.transform_values do |regex|
+            /\A#{regex}\Z/
           end
         end
       end

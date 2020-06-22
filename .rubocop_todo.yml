@@ -569,21 +569,6 @@ Style/HashTransformKeys:
     - 'lib/banzai/filter/commit_trailers_filter.rb'
     - 'lib/gitlab/analytics/cycle_analytics/stage_events.rb'
 
-# Offense count: 10
-# Cop supports --auto-correct.
-Style/HashTransformValues:
-  Exclude:
-    - 'app/validators/addressable_url_validator.rb'
-    - 'config/initializers/action_dispatch_journey_formatter.rb'
-    - 'ee/app/helpers/compliance_management/compliance_framework/project_settings_helper.rb'
-    - 'ee/app/services/packages/nuget/metadata_extraction_service.rb'
-    - 'lib/gitlab/config/entry/configurable.rb'
-    - 'lib/gitlab/config/entry/node.rb'
-    - 'lib/gitlab/discussions_diff/file_collection.rb'
-    - 'lib/gitlab/error_tracking.rb'
-    - 'lib/rspec_flaky/flaky_examples_collection.rb'
-    - 'spec/lib/gitlab/database_importers/common_metrics/prometheus_metric_spec.rb'
-
 # Offense count: 31
 # Configuration parameters: AllowIfModifier.
 Style/IfInsideElse:

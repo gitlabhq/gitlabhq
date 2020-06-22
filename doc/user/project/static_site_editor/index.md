@@ -7,6 +7,8 @@ description: "The static site editor enables users to edit content on static web
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/28758) in GitLab 12.10.
 > - WYSIWYG editor [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/214559) in GitLab 13.0.
+> - Support for adding images through the WYSIWYG editor [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/216640) in GitLab 13.1.
+> - Markdown front matter hidden on the WYSIWYG editor [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/216834) in GitLab 13.1.
 
 DANGER: **Danger:**
 In GitLab 13.0, we [introduced breaking changes](https://gitlab.com/gitlab-org/gitlab/-/issues/213282)
@@ -77,6 +79,11 @@ or [create a new project from a template](../../../gitlab-basics/create-project.
 Anyone satisfying the [requirements](#requirements) will be able to edit the
 content of the pages without prior knowledge of Git nor of your site's
 codebase.
+
+NOTE: **Note:**
+From GitLab 13.1 onwards, the YAML front matter of Markdown files is hidden on the
+WYSIWYG editor to avoid unintended changes. To edit it, use the Markdown editing mode, the regular
+GitLab file editor, or the Web IDE.
 
 ### Use the Static Site Editor to edit your content
 

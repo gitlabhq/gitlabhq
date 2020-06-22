@@ -95,9 +95,9 @@ class AddressableUrlValidator < ActiveModel::EachValidator
   end
 
   def current_options
-    options.map do |option, value|
-      [option, value.is_a?(Proc) ? value.call(record) : value]
-    end.to_h
+    options.transform_values do |value|
+      value.is_a?(Proc) ? value.call(record) : value
+    end
   end
 
   def blocker_args

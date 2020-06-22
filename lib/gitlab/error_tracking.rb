@@ -173,8 +173,7 @@ module Gitlab
                             .connection
                             .schema_cache
                             .instance_variable_get(:@columns_hash)
-                            .map { |k, v| [k, v.map(&:first)] }
-                            .to_h
+                            .transform_values { |v| v.map(&:first) }
 
           event.extra.merge!(columns_hash)
         end

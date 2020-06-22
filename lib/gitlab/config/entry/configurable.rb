@@ -62,7 +62,9 @@ module Gitlab
 
         class_methods do
           def nodes
-            Hash[(@nodes || {}).map { |key, factory| [key, factory.dup] }]
+            return {} unless @nodes
+
+            @nodes.transform_values(&:dup)
           end
 
           def reserved_node_names

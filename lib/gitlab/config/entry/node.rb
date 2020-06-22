@@ -68,7 +68,7 @@ module Gitlab
               value.specified? && value.relevant?
             end
 
-            Hash[meaningful.map { |key, entry| [key, entry.value] }]
+            meaningful.transform_values { |entry| entry.value }
           end
         end
 
