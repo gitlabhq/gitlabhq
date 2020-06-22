@@ -368,3 +368,10 @@ describe AutocompleteController, 'routing' do
     expect(get("/autocomplete/award_emojis")).to route_to('autocomplete#award_emojis')
   end
 end
+
+describe Snippets::BlobsController, "routing" do
+  it "to #raw" do
+    expect(get('/-/snippets/1/raw/master/lib/version.rb'))
+      .to route_to('snippets/blobs#raw', snippet_id: '1', ref: 'master', path: 'lib/version.rb')
+  end
+end

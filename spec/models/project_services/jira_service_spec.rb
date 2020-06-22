@@ -5,8 +5,6 @@ require 'spec_helper'
 describe JiraService do
   include AssetsHelpers
 
-  let(:title) { 'custom title' }
-  let(:description) { 'custom description' }
   let(:url) { 'http://jira.example.com' }
   let(:api_url) { 'http://api-jira.example.com' }
   let(:username) { 'jira-username' }
@@ -93,7 +91,6 @@ describe JiraService do
     let(:params) do
       {
         project: create(:project),
-        title: 'custom title', description: 'custom description',
         url: url, api_url: api_url,
         username: username, password: password,
         jira_issue_transition_id: transition_id
@@ -104,19 +101,6 @@ describe JiraService do
 
     it 'does not store data into properties' do
       expect(subject.properties).to be_nil
-    end
-
-    it 'sets title correctly' do
-      service = subject
-
-      expect(service.title).to eq('custom title')
-    end
-
-    it 'sets service data correctly' do
-      service = subject
-
-      expect(service.title).to eq('custom title')
-      expect(service.description).to eq('custom description')
     end
 
     it 'stores data in data_fields correcty' do
@@ -209,7 +193,6 @@ describe JiraService do
               end
 
               it 'does not reset password if url "changed" to the same url as before' do
-                service.title = 'aaaaaa'
                 service.url = 'http://jira.example.com'
                 service.save
 
@@ -318,45 +301,31 @@ describe JiraService do
 
     # this  will be removed as part of https://gitlab.com/gitlab-org/gitlab/issues/29404
     context 'when data are stored in properties' do
-      let(:properties) { data_params.merge(title: title, description: description) }
+      let(:properties) { data_params }
       let!(:service) do
         create(:jira_service, :without_properties_callback, properties: properties.merge(additional: 'something'))
       end
 
-      it_behaves_like 'issue tracker fields'
       it_behaves_like 'handles jira fields'
     end
 
     context 'when data are stored in separated fields' do
       let(:service) do
-        create(:jira_service, data_params.merge(properties: {}, title: title, description: description))
+        create(:jira_service, data_params.merge(properties: {}))
       end
 
-      it_behaves_like 'issue tracker fields'
       it_behaves_like 'handles jira fields'
     end
 
     context 'when data are stored in both properties and separated fields' do
-      let(:properties) { data_params.merge(title: title, description: description) }
+      let(:properties) { data_params }
       let(:service) do
         create(:jira_service, :without_properties_callback, active: false, properties: properties).tap do |service|
           create(:jira_tracker_data, data_params.merge(service: service))
         end
       end
 
-      it_behaves_like 'issue tracker fields'
       it_behaves_like 'handles jira fields'
-    end
-
-    context 'when no title & description are set' do
-      let(:service) do
-        create(:jira_service, properties: access_params)
-      end
-
-      it 'returns default values' do
-        expect(service.title).to eq('Jira')
-        expect(service.description).to eq(s_('JiraService|Jira issue tracker'))
-      end
     end
   end
 
@@ -700,59 +669,6 @@ describe JiraService do
         )
 
         expect(jira_service.test(nil)).to eq(success: false, result: error_message)
-      end
-    end
-  end
-
-  describe 'description and title' do
-    let(:title) { 'Jira One' }
-    let(:description) { 'Jira One issue tracker' }
-    let(:properties) do
-      {
-        url: 'http://jira.example.com/web',
-        username: 'mic',
-        password: 'password',
-        title: title,
-        description: description
-      }
-    end
-
-    context 'when it is not set' do
-      it 'default values are returned' do
-        service = create(:jira_service)
-
-        expect(service.title).to eq('Jira')
-        expect(service.description).to eq(s_('JiraService|Jira issue tracker'))
-      end
-    end
-
-    context 'when it is set in properties' do
-      it 'values from properties are returned' do
-        service = create(:jira_service, :without_properties_callback, properties: properties)
-
-        expect(service.title).to eq(title)
-        expect(service.description).to eq(description)
-      end
-    end
-
-    context 'when it is in title & description fields' do
-      it 'values from title and description fields are returned' do
-        service = create(:jira_service, title: title, description: description)
-
-        expect(service.title).to eq(title)
-        expect(service.description).to eq(description)
-      end
-    end
-
-    context 'when it is in both properites & title & description fields' do
-      it 'values from title and description fields are returned' do
-        title2 = 'Jira 2'
-        description2 = 'Jira description 2'
-
-        service = create(:jira_service, title: title2, description: description2, properties: properties)
-
-        expect(service.title).to eq(title2)
-        expect(service.description).to eq(description2)
       end
     end
   end

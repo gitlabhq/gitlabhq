@@ -262,9 +262,11 @@ excluded_attributes:
     - :token
     - :token_encrypted
   services:
+    - :description
     - :inherit_from_id
     - :instance
     - :template
+    - :title
   error_tracking_setting:
     - :encrypted_token
     - :encrypted_token_iv

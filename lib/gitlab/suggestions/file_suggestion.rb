@@ -7,17 +7,14 @@ module Gitlab
 
       SuggestionForDifferentFileError = Class.new(StandardError)
 
-      def initialize
-        @suggestions = []
-      end
+      attr_reader :file_path
+      attr_reader :blob
+      attr_reader :suggestions
 
-      def add_suggestion(new_suggestion)
-        if for_different_file?(new_suggestion)
-          raise SuggestionForDifferentFileError,
-                'Only add suggestions for the same file.'
-        end
-
-        suggestions << new_suggestion
+      def initialize(file_path, suggestions)
+        @file_path = file_path
+        @suggestions = suggestions.sort_by(&:from_line_index)
+        @blob = suggestions.first&.diff_file&.new_blob
       end
 
       def line_conflict?
@@ -30,17 +27,7 @@ module Gitlab
         @new_content ||= _new_content
       end
 
-      def file_path
-        @file_path ||= _file_path
-      end
-
       private
-
-      attr_accessor :suggestions
-
-      def blob
-        first_suggestion&.diff_file&.new_blob
-      end
 
       def blob_data_lines
         blob.load_all_data!
@@ -53,31 +40,19 @@ module Gitlab
 
       def _new_content
         current_content.tap do |content|
+          # NOTE: We need to cater for line number changes when the range is more than one line.
+          offset = 0
+
           suggestions.each do |suggestion|
-            range = line_range(suggestion)
+            range = line_range(suggestion, offset)
             content[range] = suggestion.to_content
+            offset += range.count - 1
           end
         end.join
       end
 
-      def line_range(suggestion)
-        suggestion.from_line_index..suggestion.to_line_index
-      end
-
-      def for_different_file?(suggestion)
-        file_path && file_path != suggestion_file_path(suggestion)
-      end
-
-      def suggestion_file_path(suggestion)
-        suggestion&.diff_file&.file_path
-      end
-
-      def first_suggestion
-        suggestions.first
-      end
-
-      def _file_path
-        suggestion_file_path(first_suggestion)
+      def line_range(suggestion, offset = 0)
+        (suggestion.from_line_index - offset)..(suggestion.to_line_index - offset)
       end
 
       def _line_conflict?

@@ -374,9 +374,10 @@ module API
         key = user.gpg_keys.find_by(id: params[:key_id])
         not_found!('GPG Key') unless key
 
-        key.destroy
-
-        no_content!
+        destroy_conditionally!(key) do |key|
+          destroy_service = ::GpgKeys::DestroyService.new(current_user)
+          destroy_service.execute(key)
+        end
       end
       # rubocop: enable CodeReuse/ActiveRecord
 

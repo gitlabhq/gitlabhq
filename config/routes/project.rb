@@ -313,6 +313,12 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           end
         end
 
+        get '/snippets/:snippet_id/raw/:ref/*path',
+          to: 'snippets/blobs#raw',
+          format: false,
+          as: :snippet_blob_raw,
+          constraints: { snippet_id: /\d+/ }
+
         draw :issues
         draw :merge_requests
         draw :pipelines

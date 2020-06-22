@@ -5,8 +5,8 @@
 
 = render_dashboard_gold_trial(current_user)
 
-- page_title    "Projects"
-- header_title  "Projects", dashboard_projects_path
+- page_title    _("Projects")
+- header_title  _("Projects"), dashboard_projects_path
 
 = render "projects/last_push"
 - if show_projects?(@projects, params)

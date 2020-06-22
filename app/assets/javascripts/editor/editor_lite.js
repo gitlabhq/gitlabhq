@@ -88,4 +88,9 @@ export default class Editor {
   updateOptions(options = {}) {
     this.instance.updateOptions(options);
   }
+
+  use(exts = []) {
+    const extensions = Array.isArray(exts) ? exts : [exts];
+    Object.assign(this, ...extensions);
+  }
 }

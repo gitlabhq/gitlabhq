@@ -6274,7 +6274,7 @@ type JiraService implements Service {
   active: Boolean
 
   """
-  List of Jira projects fetched through Jira REST API
+  List of all Jira projects fetched through Jira REST API
   """
   projects(
     """
@@ -13561,6 +13561,11 @@ type Vulnerability {
   id: ID!
 
   """
+  Identifiers of the vulnerability.
+  """
+  identifiers: [VulnerabilityIdentifier!]!
+
+  """
   List of issue links related to the vulnerability
   """
   issueLinks(
@@ -13596,6 +13601,11 @@ type Vulnerability {
   location: VulnerabilityLocation
 
   """
+  Primary identifier of the vulnerability.
+  """
+  primaryIdentifier: VulnerabilityIdentifier
+
+  """
   The project on which the vulnerability was found
   """
   project: Project
@@ -13605,6 +13615,11 @@ type Vulnerability {
   DEPENDENCY_SCANNING, CONTAINER_SCANNING, DAST, SECRET_DETECTION)
   """
   reportType: VulnerabilityReportType
+
+  """
+  Scanner metadata for the vulnerability.
+  """
+  scanner: VulnerabilityScanner
 
   """
   Severity of the vulnerability (INFO, UNKNOWN, LOW, MEDIUM, HIGH, CRITICAL)
@@ -13670,6 +13685,31 @@ type VulnerabilityEdge {
   The item at the end of the edge.
   """
   node: Vulnerability
+}
+
+"""
+Represents a vulnerability identifier.
+"""
+type VulnerabilityIdentifier {
+  """
+  External ID of the vulnerability identifier
+  """
+  externalId: String
+
+  """
+  External type of the vulnerability identifier
+  """
+  externalType: String
+
+  """
+  Name of the vulnerability identifier
+  """
+  name: String
+
+  """
+  URL of the vulnerability identifier
+  """
+  url: String
 }
 
 """
@@ -13914,6 +13954,21 @@ enum VulnerabilityReportType {
   DEPENDENCY_SCANNING
   SAST
   SECRET_DETECTION
+}
+
+"""
+Represents a vulnerability scanner.
+"""
+type VulnerabilityScanner {
+  """
+  External ID of the vulnerability scanner
+  """
+  externalId: String
+
+  """
+  Name of the vulnerability scanner
+  """
+  name: String
 }
 
 """

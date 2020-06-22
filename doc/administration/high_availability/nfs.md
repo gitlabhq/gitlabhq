@@ -17,6 +17,14 @@ performance, especially for actions that read or write to Git repositories. See
 [Filesystem Performance Benchmarking](../operations/filesystem_benchmarking.md)
 for steps to test filesystem performance.
 
+## Known kernel version incompatibilities
+
+The following kernel versions should NOT be used with GitLab:
+
+|Distribution |Kernel Versions|Affected GitLab versions|Details|
+|-------------|---------------|------------------------|-------|
+|RHEL/CentOS|`3.10.0-1127*`|All prior to GitLab 13.1|[Uploads fail to copy over NFS](https://gitlab.com/gitlab-org/gitlab/-/issues/218999)|
+
 ## NFS Server features
 
 ### Required features

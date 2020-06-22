@@ -7,7 +7,6 @@
 
    | Field | Description |
    | ----- | ----------- |
-   | `description`   | A name for the issue tracker (to differentiate between instances, for example) |
    | `project_url`   | The URL to the project in Redmine which is being linked to this GitLab project |
    | `issues_url`    | The URL to the issue in Redmine project that is linked to this GitLab project. Note that the `issues_url` requires `:id` in the URL. This ID is used by GitLab as a placeholder to replace the issue number. |
    | `new_issue_url` | This is the URL to create a new issue in Redmine for the project linked to this GitLab project. **This is currently not being used and will be removed in a future release.** |

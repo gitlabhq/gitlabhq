@@ -26,10 +26,10 @@ module Gitlab
       end
 
       def actions
-        @actions ||= suggestions_per_file.map do |file_path, file_suggestion|
+        @actions ||= suggestions_per_file.map do |file_suggestion|
           {
             action: 'update',
-            file_path: file_path,
+            file_path: file_suggestion.file_path,
             content: file_suggestion.new_content
           }
         end
@@ -50,19 +50,9 @@ module Gitlab
       end
 
       def _suggestions_per_file
-        suggestions.each_with_object({}) do |suggestion, result|
-          file_path = suggestion.diff_file.file_path
-          file_suggestion = result[file_path] ||= FileSuggestion.new
-          file_suggestion.add_suggestion(suggestion)
-        end
-      end
-
-      def file_suggestions
-        suggestions_per_file.values
-      end
-
-      def first_file_suggestion
-        file_suggestions.first
+        suggestions
+          .group_by { |suggestion| suggestion.diff_file.file_path }
+          .map { |file_path, group| FileSuggestion.new(file_path, group) }
       end
 
       def _error_message
@@ -72,7 +62,7 @@ module Gitlab
           return message if message
         end
 
-        has_line_conflict = file_suggestions.any? do |file_suggestion|
+        has_line_conflict = suggestions_per_file.any? do |file_suggestion|
           file_suggestion.line_conflict?
         end
 

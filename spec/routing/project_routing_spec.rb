@@ -878,4 +878,12 @@ describe 'project routing' do
       expect(get('/gitlab/gitlabhq/-/design_management/designs/1/c6f00aa50b80887ada30a6fe517670be9f8f9ece/resized_image/small')).to route_to('application#route_not_found', unmatched_route: 'gitlab/gitlabhq/-/design_management/designs/1/c6f00aa50b80887ada30a6fe517670be9f8f9ece/resized_image/small')
     end
   end
+
+  describe Projects::Snippets::BlobsController, "routing" do
+    it "to #raw" do
+      expect(get('/gitlab/gitlabhq/-/snippets/1/raw/master/lib/version.rb'))
+        .to route_to('projects/snippets/blobs#raw', namespace_id: 'gitlab',
+                     project_id: 'gitlabhq', snippet_id: '1', ref: 'master', path: 'lib/version.rb')
+    end
+  end
 end

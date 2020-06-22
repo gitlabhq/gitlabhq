@@ -1526,6 +1526,9 @@ msgstr ""
 msgid "Admin Note"
 msgstr ""
 
+msgid "Admin Notifications"
+msgstr ""
+
 msgid "Admin Overview"
 msgstr ""
 
@@ -3064,6 +3067,9 @@ msgstr ""
 msgid "Audit Events is a way to keep track of important events that happened in GitLab."
 msgstr ""
 
+msgid "Audit Log"
+msgstr ""
+
 msgid "AuditEvents|(removed)"
 msgstr ""
 
@@ -3499,7 +3505,13 @@ msgstr ""
 msgid "Bitbucket Server Import"
 msgstr ""
 
+msgid "Bitbucket Server import"
+msgstr ""
+
 msgid "Bitbucket import"
+msgstr ""
+
+msgid "Blame"
 msgstr ""
 
 msgid "Blocked"
@@ -3713,6 +3725,9 @@ msgid "Broadcast Message was successfully created."
 msgstr ""
 
 msgid "Broadcast Message was successfully updated."
+msgstr ""
+
+msgid "Broadcast Messages"
 msgstr ""
 
 msgid "Browse Directory"
@@ -8159,6 +8174,9 @@ msgstr ""
 msgid "Edit Release"
 msgstr ""
 
+msgid "Edit Slack integration"
+msgstr ""
+
 msgid "Edit Snippet"
 msgstr ""
 
@@ -8244,6 +8262,9 @@ msgid "Elastic|None. Select projects to index."
 msgstr ""
 
 msgid "Email"
+msgstr ""
+
+msgid "Email Notification"
 msgstr ""
 
 msgid "Email address"
@@ -9965,6 +9986,9 @@ msgstr ""
 msgid "Filter..."
 msgstr ""
 
+msgid "Find File"
+msgstr ""
+
 msgid "Find by path"
 msgstr ""
 
@@ -11459,6 +11483,9 @@ msgstr ""
 msgid "Groups (%{groups})"
 msgstr ""
 
+msgid "Groups and projects"
+msgstr ""
+
 msgid "Groups can also be nested by creating %{subgroup_docs_link_start}subgroups%{subgroup_docs_link_end}."
 msgstr ""
 
@@ -11764,6 +11791,9 @@ msgid "ID"
 msgstr ""
 
 msgid "ID:"
+msgstr ""
+
+msgid "IDE"
 msgstr ""
 
 msgid "IDE|Allow live previews of JavaScript projects in the Web IDE using CodeSandbox Live Preview."
@@ -12220,6 +12250,9 @@ msgid "Instance"
 msgid_plural "Instances"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "Instance Configuration"
+msgstr ""
 
 msgid "Instance Statistics visibility"
 msgstr ""
@@ -12821,6 +12854,9 @@ msgstr ""
 msgid "Keep divergent refs"
 msgstr ""
 
+msgid "Kerberos access denied"
+msgstr ""
+
 msgid "Key"
 msgstr ""
 
@@ -12834,6 +12870,9 @@ msgid "Keyboard Shortcuts"
 msgstr ""
 
 msgid "Keyboard shortcuts"
+msgstr ""
+
+msgid "Keys"
 msgstr ""
 
 msgid "Ki"
@@ -12876,6 +12915,9 @@ msgid "Kubernetes popover"
 msgstr ""
 
 msgid "LDAP"
+msgstr ""
+
+msgid "LDAP Synchronization"
 msgstr ""
 
 msgid "LDAP settings"
@@ -13616,6 +13658,9 @@ msgstr ""
 msgid "Manifest file import"
 msgstr ""
 
+msgid "Manifest import"
+msgstr ""
+
 msgid "Manual job"
 msgstr ""
 
@@ -13857,6 +13902,9 @@ msgid "Merge"
 msgstr ""
 
 msgid "Merge (when the pipeline succeeds)"
+msgstr ""
+
+msgid "Merge Conflicts"
 msgstr ""
 
 msgid "Merge Request"
@@ -14778,7 +14826,16 @@ msgstr ""
 msgid "New Application"
 msgstr ""
 
+msgid "New Branch"
+msgstr ""
+
+msgid "New Deploy Key"
+msgstr ""
+
 msgid "New Environment"
+msgstr ""
+
+msgid "New File"
 msgstr ""
 
 msgid "New Geo Node"
@@ -14807,6 +14864,9 @@ msgstr ""
 msgid "New Label"
 msgstr ""
 
+msgid "New Merge Request"
+msgstr ""
+
 msgid "New Milestone"
 msgstr ""
 
@@ -14823,6 +14883,9 @@ msgid "New Project"
 msgstr ""
 
 msgid "New Snippet"
+msgstr ""
+
+msgid "New User"
 msgstr ""
 
 msgid "New branch"
@@ -18169,6 +18232,9 @@ msgstr ""
 msgid "Protected Branch"
 msgstr ""
 
+msgid "Protected Branches"
+msgstr ""
+
 msgid "Protected Environment"
 msgstr ""
 
@@ -18179,6 +18245,9 @@ msgid "Protected Paths"
 msgstr ""
 
 msgid "Protected Tag"
+msgstr ""
+
+msgid "Protected Tags"
 msgstr ""
 
 msgid "Protected branches"
@@ -19082,6 +19151,9 @@ msgid "Request Access"
 msgstr ""
 
 msgid "Request Headers"
+msgstr ""
+
+msgid "Request details"
 msgstr ""
 
 msgid "Request parameter %{param} is missing."
@@ -24101,6 +24173,9 @@ msgstr ""
 msgid "U2F only works with HTTPS-enabled websites. Contact your administrator for more details."
 msgstr ""
 
+msgid "UI Development Kit"
+msgstr ""
+
 msgid "URL"
 msgstr ""
 
@@ -24456,6 +24531,9 @@ msgid "Upload <code>GoogleCodeProjectHosting.json</code> here:"
 msgstr ""
 
 msgid "Upload CSV file"
+msgstr ""
+
+msgid "Upload License"
 msgstr ""
 
 msgid "Upload New File"

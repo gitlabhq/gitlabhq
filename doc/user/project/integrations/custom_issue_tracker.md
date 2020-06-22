@@ -11,8 +11,6 @@ To enable the Custom Issue Tracker integration in a project:
 
    | Field           | Description |
    | --------------- | ----------- |
-   | **Title**         | A title for the issue tracker (for example, to differentiate between instances). |
-   | **Description**   | A name for the issue tracker (for example, to differentiate between instances). |
    | **Project URL**   | The URL to the project in the custom issue tracker. |
    | **Issues URL**    | The URL to the issue in the issue tracker project that is linked to this GitLab project. Note that the `issues_url` requires `:id` in the URL. This ID is used by GitLab as a placeholder to replace the issue number. For example, `https://customissuetracker.com/project-name/:id`. |
    | **New issue URL** | Currently unused. Will be changed in a future release. |

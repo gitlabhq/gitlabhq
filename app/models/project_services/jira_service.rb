@@ -64,8 +64,6 @@ class JiraService < IssueTrackerService
   def set_default_data
     return unless issues_tracker.present?
 
-    self.title ||= issues_tracker['title']
-
     return if url
 
     data_fields.url ||= issues_tracker['url']
@@ -103,11 +101,11 @@ class JiraService < IssueTrackerService
     [Jira service documentation](#{help_page_url('user/project/integrations/jira')})."
   end
 
-  def default_title
+  def title
     'Jira'
   end
 
-  def default_description
+  def description
     s_('JiraService|Jira issue tracker')
   end
 

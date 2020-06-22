@@ -1,5 +1,5 @@
-- breadcrumb_title "Repository"
-- page_title "New File", @path.presence, @ref
+- breadcrumb_title _("Repository")
+- page_title _("New File"), @path.presence, @ref
 - unless Feature.enabled?(:monaco_blobs)
   - content_for :page_specific_javascripts do
     = page_specific_javascript_tag('lib/ace.js')

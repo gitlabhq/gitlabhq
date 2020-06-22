@@ -1,4 +1,4 @@
-fragment Project on Snippet {
+fragment SnippetProject on Snippet {
   project {
     fullPath
     webUrl

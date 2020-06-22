@@ -115,6 +115,76 @@ describe('Base editor', () => {
     });
   });
 
+  describe('extensions', () => {
+    const foo1 = jest.fn();
+    const foo2 = jest.fn();
+    const bar = jest.fn();
+    const MyExt1 = {
+      foo: foo1,
+    };
+    const MyExt2 = {
+      bar,
+    };
+    const MyExt3 = {
+      foo: foo2,
+    };
+    beforeEach(() => {
+      editor.createInstance({ el: editorEl, blobPath, blobContent });
+    });
+
+    afterEach(() => {
+      editor.model.dispose();
+    });
+
+    it('is extensible with the extensions', () => {
+      expect(editor.foo).toBeUndefined();
+
+      editor.use(MyExt1);
+      expect(editor.foo).toEqual(foo1);
+    });
+
+    it('does not fail if no extensions supplied', () => {
+      const spy = jest.spyOn(global.console, 'error');
+      editor.use();
+
+      expect(spy).not.toHaveBeenCalled();
+    });
+
+    it('is extensible with multiple extensions', () => {
+      expect(editor.foo).toBeUndefined();
+      expect(editor.bar).toBeUndefined();
+
+      editor.use([MyExt1, MyExt2]);
+
+      expect(editor.foo).toEqual(foo1);
+      expect(editor.bar).toEqual(bar);
+    });
+
+    it('uses the last definition of a method in case of an overlap', () => {
+      editor.use([MyExt1, MyExt2, MyExt3]);
+      expect(editor).toEqual(
+        expect.objectContaining({
+          foo: foo2,
+          bar,
+        }),
+      );
+    });
+
+    it('correctly resolves references withing extensions', () => {
+      const FunctionExt = {
+        inst() {
+          return this.instance;
+        },
+        mod() {
+          return this.model;
+        },
+      };
+      editor.use(FunctionExt);
+      expect(editor.inst()).toEqual(editor.instance);
+      expect(editor.mod()).toEqual(editor.model);
+    });
+  });
+
   describe('languages', () => {
     it('registers custom languages defined with Monaco', () => {
       expect(monacoLanguages.getLanguages()).toEqual(

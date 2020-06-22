@@ -1,0 +1,5 @@
+---
+title: Remove the ability to customize the title and description of some integrations (Bugzilla, Custom Issue Tracker, Redmine, and YouTrack).
+merge_request: 33298
+author:
+type: removed

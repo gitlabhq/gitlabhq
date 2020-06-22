@@ -6,8 +6,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Issues API
 
-Every API call to issues must be authenticated.
-
 If a user is not a member of a project and the project is private, a `GET`
 request on that project will result in a `404` status code.
 
@@ -188,6 +186,9 @@ the `weight` parameter:
 
 Get a list of a group's issues.
 
+If the group is private, credentials will need to be provided for authorization.
+The preferred way to do this, is by using [personal access tokens](../user/profile/personal_access_tokens.md).
+
 ```plaintext
 GET /groups/:id/issues
 GET /groups/:id/issues?state=opened
@@ -342,6 +343,9 @@ the `weight` parameter:
 ## List project issues
 
 Get a list of a project's issues.
+
+If the project is private, credentials will need to be provided for authorization.
+The preferred way to do this, is by using [personal access tokens](../user/profile/personal_access_tokens.md).
 
 ```plaintext
 GET /projects/:id/issues
@@ -503,6 +507,9 @@ the `weight` parameter:
 ## Single issue
 
 Get a single project issue.
+
+If the project is private or the issue is confidential, credentials will need to be provided for authorization.
+The preferred way to do this, is by using [personal access tokens](../user/profile/personal_access_tokens.md).
 
 ```plaintext
 GET /projects/:id/issues/:issue_iid
@@ -1413,6 +1420,9 @@ Example response:
 
 ## Get time tracking stats
 
+If the project is private or the issue is confidential, credentials will need to be provided for authorization.
+The preferred way to do this, is by using [personal access tokens](../user/profile/personal_access_tokens.md).
+
 ```plaintext
 GET /projects/:id/issues/:issue_iid/time_stats
 ```
@@ -1440,6 +1450,9 @@ Example response:
 ## List merge requests related to issue
 
 Get all the merge requests that are related to the issue.
+
+If the project is private or the issue is confidential, credentials will need to be provided for authorization.
+The preferred way to do this, is by using [personal access tokens](../user/profile/personal_access_tokens.md).
 
 ```plaintext
 GET /projects/:id/issues/:issue_id/related_merge_requests
@@ -1597,6 +1610,9 @@ Example response:
 
 Get all the merge requests that will close issue when merged.
 
+If the project is private or the issue is confidential, credentials will need to be provided for authorization.
+The preferred way to do this, is by using [personal access tokens](../user/profile/personal_access_tokens.md).
+
 ```plaintext
 GET /projects/:id/issues/:issue_iid/closed_by
 ```
@@ -1669,6 +1685,9 @@ Example response:
 ```
 
 ## Participants on issues
+
+If the project is private or the issue is confidential, credentials will need to be provided for authorization.
+The preferred way to do this, is by using [personal access tokens](../user/profile/personal_access_tokens.md).
 
 ```plaintext
 GET /projects/:id/issues/:issue_iid/participants

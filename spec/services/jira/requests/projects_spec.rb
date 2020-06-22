@@ -32,14 +32,6 @@ describe Jira::Requests::Projects do
     end
 
     context 'with jira_service' do
-      context 'when limit is invalid' do
-        let(:params) { { limit: 0 } }
-
-        it 'returns a paylod with no projects returned' do
-          expect(subject.payload[:projects]).to be_empty
-        end
-      end
-
       context 'when validations and params are ok' do
         let(:client) { double(options: { site: 'https://jira.example.com' }) }
 
@@ -60,7 +52,7 @@ describe Jira::Requests::Projects do
 
         context 'when the request does not return any values' do
           before do
-            expect(client).to receive(:get).and_return({ 'someKey' => 'value' })
+            expect(client).to receive(:get).and_return([])
           end
 
           it 'returns a paylod with no projects returned' do
@@ -74,19 +66,15 @@ describe Jira::Requests::Projects do
 
         context 'when the request returns values' do
           before do
-            expect(client).to receive(:get).and_return(
-              { 'values' => %w(project1 project2), 'isLast' => false }
-            )
-            expect(JIRA::Resource::Project).to receive(:build).with(client, 'project1').and_return('jira_project1')
-            expect(JIRA::Resource::Project).to receive(:build).with(client, 'project2').and_return('jira_project2')
+            expect(client).to receive(:get).and_return([{ "key" => 'project1' }, { "key" => 'project2' }])
           end
 
           it 'returns a paylod with jira projets' do
             payload = subject.payload
 
             expect(subject.success?).to be_truthy
-            expect(payload[:projects]).to eq(%w(jira_project1 jira_project2))
-            expect(payload[:is_last]).to be_falsey
+            expect(payload[:projects].map(&:key)).to eq(%w(project1 project2))
+            expect(payload[:is_last]).to be_truthy
           end
         end
       end

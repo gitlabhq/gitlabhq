@@ -5,22 +5,16 @@ module Jira
     class Base
       include ProjectServicesLoggable
 
-      PER_PAGE = 50
+      attr_reader :jira_service, :project, :query
 
-      attr_reader :jira_service, :project, :limit, :start_at, :query
-
-      def initialize(jira_service, limit: PER_PAGE, start_at: 0, query: nil)
+      def initialize(jira_service, query: nil)
         @project = jira_service&.project
         @jira_service = jira_service
-
-        @limit    = limit
-        @start_at = start_at
-        @query    = query
+        @query = query
       end
 
       def execute
         return ServiceResponse.error(message: _('Jira service not configured.')) unless jira_service&.active?
-        return ServiceResponse.success(payload: empty_payload) if limit.to_i <= 0
 
         request
       end

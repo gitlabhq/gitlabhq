@@ -144,7 +144,6 @@
   "services": [
     {
       "id": 100,
-      "title": "JetBrains TeamCity CI",
       "project_id": 5,
       "created_at": "2016-06-14T15:01:51.315Z",
       "updated_at": "2016-06-14T15:01:51.315Z",
@@ -165,7 +164,6 @@
     },
     {
       "id": 101,
-      "title": "Jira",
       "project_id": 5,
       "created_at": "2016-06-14T15:01:51.315Z",
       "updated_at": "2016-06-14T15:01:51.315Z",

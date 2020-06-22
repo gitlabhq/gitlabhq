@@ -7,6 +7,9 @@ class Service < ApplicationRecord
   include Importable
   include ProjectServicesLoggable
   include DataFields
+  include IgnorableColumns
+
+  ignore_columns %i[title description], remove_with: '13.4', remove_after: '2020-09-22'
 
   SERVICE_NAMES = %w[
     alerts asana assembla bamboo bugzilla buildkite campfire custom_issue_tracker discord
