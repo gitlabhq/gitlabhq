@@ -1008,9 +1008,9 @@ module Gitlab
         end
       end
 
-      def last_commit_for_path(sha, path)
+      def last_commit_for_path(sha, path, literal_pathspec: false)
         wrapped_gitaly_errors do
-          gitaly_commit_client.last_commit_for_path(sha, path)
+          gitaly_commit_client.last_commit_for_path(sha, path, literal_pathspec: literal_pathspec)
         end
       end
 

@@ -50,10 +50,7 @@ module Spam
         # @TODO metrics/logging
         # Expecting:
         # error: (string or nil)
-        # result: (string or nil)
-        verdict = json_result[:verdict]
-        return unless SUPPORTED_VERDICTS.include?(verdict)
-
+        # verdict: (string or nil)
         # @TODO log if json_result[:error]
 
         json_result[:verdict]

@@ -192,8 +192,8 @@ describe Spam::SpamVerdictService do
         context 'the verdict is an unexpected string' do
           let(:verdict) { 'this is fine' }
 
-          it 'returns nil' do
-            expect(subject).to be_nil
+          it 'returns the string' do
+            expect(subject).to eq verdict
           end
         end
 
@@ -209,7 +209,7 @@ describe Spam::SpamVerdictService do
           let(:verdict) { '' }
 
           it 'returns nil' do
-            expect(subject).to be_nil
+            expect(subject).to eq verdict
           end
         end
 

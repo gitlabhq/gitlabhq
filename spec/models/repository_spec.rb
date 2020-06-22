@@ -252,6 +252,21 @@ describe Repository do
         end
       end
     end
+
+    context 'with filename with glob characters' do
+      let(:filename) { ':wq' }
+      let(:newrev) { project.repository.commit('master').sha }
+
+      before do
+        create_file_in_repo(project, 'master', 'master', filename, 'Test file')
+      end
+
+      subject { repository.last_commit_for_path('master', filename, literal_pathspec: true).id }
+
+      it 'returns a commit SHA' do
+        expect(subject).to eq(newrev)
+      end
+    end
   end
 
   describe '#last_commit_id_for_path' do
@@ -274,6 +289,21 @@ describe Repository do
         expect_to_raise_storage_error do
           broken_repository.last_commit_for_path(sample_commit.id, '.gitignore').id
         end
+      end
+    end
+
+    context 'with filename with glob characters' do
+      let(:filename) { ':wq' }
+      let(:newrev) { project.repository.commit('master').sha }
+
+      before do
+        create_file_in_repo(project, 'master', 'master', filename, 'Test file')
+      end
+
+      subject { repository.last_commit_id_for_path('master', filename, literal_pathspec: true) }
+
+      it 'returns a commit SHA' do
+        expect(subject).to eq(newrev)
       end
     end
   end

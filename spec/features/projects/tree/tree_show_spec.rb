@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe 'Projects tree', :js do
+  include RepoHelpers
+
   let(:user) { create(:user) }
   let(:project) { create(:project, :repository) }
   let(:gravatar_enabled) { true }
@@ -45,6 +47,26 @@ RSpec.describe 'Projects tree', :js do
     expect(page).to have_content('Files, encoding and much more')
     expect(page).to have_content('テスト.txt')
     expect(page).not_to have_selector('.flash-alert')
+  end
+
+  context "with a tree that contains glob characters" do
+    let(:path) { ':wq' }
+    let(:filename) { File.join(path, 'test.txt') }
+    let(:newrev) { project.repository.commit('master').sha }
+    let(:message) { 'Glob characters'}
+
+    before do
+      create_file_in_repo(project, 'master', 'master', filename, 'Test file', commit_message: message)
+      visit project_tree_path(project, File.join('master', path))
+      wait_for_requests
+    end
+
+    # Disabled until https://gitlab.com/gitlab-org/gitaly/-/issues/2888 is resolved
+    xit "renders tree table without errors" do
+      expect(page).to have_selector('.tree-item')
+      expect(page).to have_content('test.txt')
+      expect(page).to have_content(message)
+    end
   end
 
   context 'gravatar disabled' do

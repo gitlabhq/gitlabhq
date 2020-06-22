@@ -684,16 +684,16 @@ class Repository
     end
   end
 
-  def last_commit_for_path(sha, path)
-    commit = raw_repository.last_commit_for_path(sha, path)
+  def last_commit_for_path(sha, path, literal_pathspec: false)
+    commit = raw_repository.last_commit_for_path(sha, path, literal_pathspec: literal_pathspec)
     ::Commit.new(commit, container) if commit
   end
 
-  def last_commit_id_for_path(sha, path)
+  def last_commit_id_for_path(sha, path, literal_pathspec: false)
     key = path.blank? ? "last_commit_id_for_path:#{sha}" : "last_commit_id_for_path:#{sha}:#{Digest::SHA1.hexdigest(path)}"
 
     cache.fetch(key) do
-      last_commit_for_path(sha, path)&.id
+      last_commit_for_path(sha, path, literal_pathspec: literal_pathspec)&.id
     end
   end
 

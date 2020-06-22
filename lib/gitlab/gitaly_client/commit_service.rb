@@ -180,11 +180,12 @@ module Gitlab
         end
       end
 
-      def last_commit_for_path(revision, path)
+      def last_commit_for_path(revision, path, literal_pathspec: false)
         request = Gitaly::LastCommitForPathRequest.new(
           repository: @gitaly_repo,
           revision: encode_binary(revision),
-          path: encode_binary(path.to_s)
+          path: encode_binary(path.to_s),
+          literal_pathspec: literal_pathspec
         )
 
         gitaly_commit = GitalyClient.call(@repository.storage, :commit_service, :last_commit_for_path, request, timeout: GitalyClient.fast_timeout).commit
