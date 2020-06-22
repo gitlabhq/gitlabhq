@@ -1,7 +1,11 @@
 # frozen_string_literal: true
 
 class InstanceStatistics::CohortsController < InstanceStatistics::ApplicationController
+  include Analytics::UniqueVisitsHelper
+
   before_action :authenticate_usage_ping_enabled_or_admin!
+
+  track_unique_visits :index, target_id: 'i_analytics_cohorts'
 
   def index
     if Gitlab::CurrentSettings.usage_ping_enabled

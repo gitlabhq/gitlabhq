@@ -244,7 +244,6 @@ module MarkupHelper
     content_tag :button,
       type: 'button',
       class: 'toolbar-btn js-md has-tooltip',
-      tabindex: -1,
       data: data,
       title: options[:title],
       aria: { label: options[:title] } do

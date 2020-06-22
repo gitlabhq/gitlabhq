@@ -45,6 +45,10 @@ module PolicyActor
     false
   end
 
+  def support_bot?
+    false
+  end
+
   def deactivated?
     false
   end

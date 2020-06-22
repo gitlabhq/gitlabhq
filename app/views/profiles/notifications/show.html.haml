@@ -47,7 +47,7 @@
         = _('Projects (%{count})') % { count: @project_notifications.size }
       %p.account-well
         = _('To specify the notification level per project of a group you belong to, you need to visit project page and change notification level there.')
-      .append-bottom-default
+      .gl-mb-3
         %ul.bordered-list
           - @project_notifications.each do |setting|
             = render 'project_settings', setting: setting, project: setting.source

@@ -93,25 +93,25 @@ module Projects
       old_repository_storage = project.repository_storage
       new_project_path = moved_path(project.disk_path)
 
-      # Notice that the block passed to `run_after_commit` will run with `project`
+      # Notice that the block passed to `run_after_commit` will run with `repository_storage_move`
       # as its context
-      project.run_after_commit do
+      repository_storage_move.run_after_commit do
         GitlabShellWorker.perform_async(:mv_repository,
                                         old_repository_storage,
-                                        disk_path,
+                                        project.disk_path,
                                         new_project_path)
 
-        if wiki.repository_exists?
+        if project.wiki.repository_exists?
           GitlabShellWorker.perform_async(:mv_repository,
                                           old_repository_storage,
-                                          wiki.disk_path,
+                                          project.wiki.disk_path,
                                           "#{new_project_path}.wiki")
         end
 
-        if design_repository.exists?
+        if project.design_repository.exists?
           GitlabShellWorker.perform_async(:mv_repository,
                                           old_repository_storage,
-                                          design_repository.disk_path,
+                                          project.design_repository.disk_path,
                                           "#{new_project_path}.design")
         end
       end

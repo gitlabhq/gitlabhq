@@ -14,7 +14,7 @@ describe Gitlab::Ci::Status::External::Factory do
   end
 
   context 'when external status has a simple core status' do
-    HasStatus::AVAILABLE_STATUSES.each do |simple_status|
+    Ci::HasStatus::AVAILABLE_STATUSES.each do |simple_status|
       context "when core status is #{simple_status}" do
         let(:resource) do
           create(:generic_commit_status, status: simple_status,

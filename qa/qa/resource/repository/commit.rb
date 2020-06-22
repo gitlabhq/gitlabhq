@@ -29,6 +29,30 @@ module QA
           @add_files = files
         end
 
+        def add_directory(dir)
+          raise "Must set directory as a Pathname" unless dir.is_a?(Pathname)
+
+          files_to_add = []
+
+          dir.each_child do |child|
+            case child.ftype?
+            when "file"
+              files_to_add.append({
+                file_path: child.to_s,
+                content: child.read
+              })
+            when "directory"
+              add_directory(child)
+            else
+              continue
+            end
+          end
+
+          validate_files!(files_to_add)
+
+          @add_files.merge(files_to_add)
+        end
+
         def update_files(files)
           validate_files!(files)
 

@@ -16,6 +16,7 @@ class AuditEvent < ApplicationRecord
 
   scope :by_entity_type, -> (entity_type) { where(entity_type: entity_type) }
   scope :by_entity_id, -> (entity_id) { where(entity_id: entity_id) }
+  scope :by_author_id, -> (author_id) { where(author_id: author_id) }
 
   after_initialize :initialize_details
 

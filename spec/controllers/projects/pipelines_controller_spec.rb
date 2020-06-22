@@ -689,6 +689,15 @@ RSpec.describe Projects::PipelinesController do
     end
   end
 
+  describe 'GET #charts' do
+    let(:pipeline) { create(:ci_pipeline, project: project) }
+
+    it_behaves_like 'tracking unique visits', :charts do
+      let(:request_params) { { namespace_id: project.namespace, project_id: project, id: pipeline.id } }
+      let(:target_id) { 'p_analytics_pipelines' }
+    end
+  end
+
   describe 'POST create' do
     let(:project) { create(:project, :public, :repository) }
 

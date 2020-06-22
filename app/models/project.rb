@@ -2414,6 +2414,11 @@ class Project < ApplicationRecord
     super || build_metrics_setting
   end
 
+  def service_desk_enabled
+    false
+  end
+  alias_method :service_desk_enabled?, :service_desk_enabled
+
   private
 
   def find_service(services, name)

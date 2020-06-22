@@ -42,7 +42,7 @@ export default {
       </div>
     </div>
 
-    <div v-if="hasSuites" class="test-reports-table append-bottom-default js-test-cases-table">
+    <div v-if="hasSuites" class="test-reports-table gl-mb-3 js-test-cases-table">
       <div role="row" class="gl-responsive-table-row table-row-header font-weight-bold fgray">
         <div role="rowheader" class="table-section section-20">
           {{ __('Class') }}

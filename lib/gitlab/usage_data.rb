@@ -27,7 +27,7 @@ module Gitlab
       end
 
       def uncached_data
-        clear_memoized_limits
+        clear_memoized
 
         with_finished_at(:recording_ce_finished_at) do
           license_usage_data
@@ -39,6 +39,7 @@ module Gitlab
             .merge(topology_usage_data)
             .merge(usage_activity_by_stage)
             .merge(usage_activity_by_stage(:usage_activity_by_stage_monthly, default_time_period))
+            .merge(analytics_unique_visits_data)
         end
       end
 
@@ -511,7 +512,22 @@ module Gitlab
         {}
       end
 
+      def analytics_unique_visits_data
+        results = ::Gitlab::Analytics::UniqueVisits::TARGET_IDS.each_with_object({}) do |target_id, hash|
+          hash[target_id] = redis_usage_data { unique_visit_service.weekly_unique_visits_for_target(target_id) }
+        end
+        results['analytics_unique_visits_for_any_target'] = redis_usage_data { unique_visit_service.weekly_unique_visits_for_any_target }
+
+        { analytics_unique_visits: results }
+      end
+
       private
+
+      def unique_visit_service
+        strong_memoize(:unique_visit_service) do
+          ::Gitlab::Analytics::UniqueVisits.new
+        end
+      end
 
       def total_alert_issues
         # Remove prometheus table queries once they are deprecated
@@ -535,9 +551,10 @@ module Gitlab
         end
       end
 
-      def clear_memoized_limits
+      def clear_memoized
         clear_memoization(:user_minimum_id)
         clear_memoization(:user_maximum_id)
+        clear_memoization(:unique_visit_service)
       end
 
       # rubocop: disable CodeReuse/ActiveRecord

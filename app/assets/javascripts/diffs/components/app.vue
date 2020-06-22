@@ -398,7 +398,7 @@ export default {
         class="files d-flex"
       >
         <div
-          v-show="showTreeList"
+          v-if="showTreeList"
           :style="{ width: `${treeWidth}px` }"
           class="diff-tree-list js-diff-tree-list mr-3"
         >

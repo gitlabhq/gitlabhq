@@ -80,7 +80,7 @@ module Ci
           # TODO: This is hack to support
           # the same exact behaviour for Atomic and Legacy processing
           # that DAG is blocked from executing if dependent is not "complete"
-          if dag && statuses.any? { |status| HasStatus::COMPLETED_STATUSES.exclude?(status[:status]) }
+          if dag && statuses.any? { |status| Ci::HasStatus::COMPLETED_STATUSES.exclude?(status[:status]) }
             return 'pending'
           end
 

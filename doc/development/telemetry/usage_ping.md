@@ -597,6 +597,21 @@ appear to be associated to any of the services running, since they all appear to
 | `sd`                                                      | `avg_cycle_analytics - production`   |               |                  |         |                                                                            |
 | `missing`                                                 | `avg_cycle_analytics - production`   |               |                  |         |                                                                            |
 | `total`                                                   | `avg_cycle_analytics`                |               |                  |         |                                                                            |
+| `g_analytics_contribution`                                | `analytics_unique_visits`            | `manage`      |                  |         | Visits to /groups/:group/-/contribution_analytics                          |
+| `g_analytics_insights`                                    | `analytics_unique_visits`            | `manage`      |                  |         | Visits to /groups/:group/-/insights                                        |
+| `g_analytics_issues`                                      | `analytics_unique_visits`            | `manage`      |                  |         | Visits to /groups/:group/-/issues_analytics                                |
+| `g_analytics_productivity`                                | `analytics_unique_visits`            | `manage`      |                  |         | Visits to /groups/:group/-/analytics/productivity_analytics                |
+| `g_analytics_valuestream`                                 | `analytics_unique_visits`            | `manage`      |                  |         | Visits to /groups/:group/-/analytics/value_stream_analytics                |
+| `p_analytics_pipelines`                                   | `analytics_unique_visits`            | `manage`      |                  |         | Visits to /:group/:project/pipelines/charts                                |
+| `p_analytics_code_reviews`                                | `analytics_unique_visits`            | `manage`      |                  |         | Visits to /:group/:project/-/analytics/code_reviews                        |
+| `p_analytics_valuestream`                                 | `analytics_unique_visits`            | `manage`      |                  |         | Visits to /:group/:project/-/value_stream_analytics                        |
+| `p_analytics_insights`                                    | `analytics_unique_visits`            | `manage`      |                  |         | Visits to /:group/:project/insights                                        |
+| `p_analytics_issues`                                      | `analytics_unique_visits`            | `manage`      |                  |         | Visits to /:group/:project/-/analytics/issues_analytics                    |
+| `p_analytics_repo`                                        | `analytics_unique_visits`            | `manage`      |                  |         | Visits to /:group/:project/-/graphs/master/charts                          |
+| `u_analytics_todos`                                       | `analytics_unique_visits`            | `manage`      |                  |         | Visits to /dashboard/todos                                                 |
+| `i_analytics_cohorts`                                     | `analytics_unique_visits`            | `manage`      |                  |         | Visits to /-/instance_statistics/cohorts                                   |
+| `i_analytics_dev_ops_score`                               | `analytics_unique_visits`            | `manage`      |                  |         | Visits to /-/instance_statistics/dev_ops_score                             |
+| `analytics_unique_visits_for_any_target`                  | `analytics_unique_visits`            | `manage`      |                  |         | Visits to any of the pages listed above                                    |
 | `clusters_applications_cert_managers`                     | `usage_activity_by_stage`            | `configure`   |                  | CE+EE   | Unique clusters with certificate managers enabled                          |
 | `clusters_applications_helm`                              | `usage_activity_by_stage`            | `configure`   |                  | CE+EE   | Unique clusters with Helm enabled                                          |
 | `clusters_applications_ingress`                           | `usage_activity_by_stage`            | `configure`   |                  | CE+EE   | Unique clusters with Ingress enabled                                       |
@@ -765,6 +780,10 @@ The following is example content of the Usage Ping payload.
       "missing": 999
     },
     "total": 999
+  },
+  "analytics_unique_visits": {
+    "g_analytics_contribution": 999,
+    ...
   },
   "usage_activity_by_stage": {
     "configure": {

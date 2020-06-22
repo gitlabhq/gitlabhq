@@ -34,7 +34,7 @@ export default {
 };
 </script>
 <template>
-  <div :id="$options.popoverContainer" class="d-flex mr-pipeline-suggest append-bottom-default">
+  <div :id="$options.popoverContainer" class="d-flex mr-pipeline-suggest gl-mb-3">
     <mr-widget-icon :name="$options.iconName" />
     <div :id="$options.popoverTarget">
       <gl-sprintf

@@ -147,7 +147,7 @@ class Environment < ApplicationRecord
       Ci::Build.joins(inner_join_stop_actions)
                .with(cte.to_arel)
                .where(ci_builds[:commit_id].in(pipeline_ids))
-               .where(status: HasStatus::BLOCKED_STATUS)
+               .where(status: Ci::HasStatus::BLOCKED_STATUS)
                .preload_project_and_pipeline_project
                .preload(:user, :metadata, :deployment)
     end

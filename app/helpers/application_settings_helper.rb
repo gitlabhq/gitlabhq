@@ -244,6 +244,7 @@ module ApplicationSettingsHelper
       :metrics_method_call_threshold,
       :minimum_password_length,
       :mirror_available,
+      :notify_on_unknown_sign_in,
       :pages_domain_verification_enabled,
       :password_authentication_enabled_for_web,
       :password_authentication_enabled_for_git,

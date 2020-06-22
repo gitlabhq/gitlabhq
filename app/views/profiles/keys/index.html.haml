@@ -20,5 +20,5 @@
     %hr
     %h5
       = _('Your SSH keys (%{count})') % { count:@keys.count }
-    .append-bottom-default
+    .gl-mb-3
       = render 'key_table'

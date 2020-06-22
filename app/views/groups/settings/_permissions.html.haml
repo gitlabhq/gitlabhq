@@ -7,7 +7,7 @@
     .form-group
       = render 'shared/allow_request_access', form: f
 
-    .form-group.append-bottom-default
+    .form-group.gl-mb-3
       .form-check
         = f.check_box :share_with_group_lock, disabled: !can_change_share_with_group_lock?(@group), class: 'form-check-input'
         = f.label :share_with_group_lock, class: 'form-check-label' do
@@ -16,14 +16,14 @@
             = s_('GroupSettings|Prevent sharing a project within %{group} with other groups').html_safe % { group: group_link }
           %span.js-descr.text-muted= share_with_group_lock_help_text(@group)
 
-    .form-group.append-bottom-default
+    .form-group.gl-mb-3
       .form-check
         = f.check_box :emails_disabled, checked: @group.emails_disabled?, disabled: !can_disable_group_emails?(@group), class: 'form-check-input'
         = f.label :emails_disabled, class: 'form-check-label' do
           %span.d-block= s_('GroupSettings|Disable email notifications')
           %span.text-muted= s_('GroupSettings|This setting will override user notification preferences for all members of the group, subgroups, and projects.')
 
-    .form-group.append-bottom-default
+    .form-group.gl-mb-3
       .form-check
         = f.check_box :mentions_disabled, checked: @group.mentions_disabled?, class: 'form-check-input'
         = f.label :mentions_disabled, class: 'form-check-label' do

@@ -4,9 +4,12 @@ class Projects::CycleAnalyticsController < Projects::ApplicationController
   include ActionView::Helpers::DateHelper
   include ActionView::Helpers::TextHelper
   include CycleAnalyticsParams
+  include Analytics::UniqueVisitsHelper
 
   before_action :whitelist_query_limiting, only: [:show]
   before_action :authorize_read_cycle_analytics!
+
+  track_unique_visits :show, target_id: 'p_analytics_valuestream'
 
   def show
     @cycle_analytics = ::CycleAnalytics::ProjectLevel.new(@project, options: options(cycle_analytics_project_params))

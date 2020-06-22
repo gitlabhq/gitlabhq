@@ -10,7 +10,7 @@ module KnownSignIn
   private
 
   def verify_known_sign_in
-    return unless current_user
+    return unless Gitlab::CurrentSettings.notify_on_unknown_sign_in? && current_user
 
     notify_user unless known_device? || known_remote_ip?
 

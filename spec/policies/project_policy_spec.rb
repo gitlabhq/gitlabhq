@@ -496,6 +496,33 @@ describe ProjectPolicy do
     end
   end
 
+  context 'support bot' do
+    let(:current_user) { User.support_bot }
+
+    subject { described_class.new(current_user, project) }
+
+    context 'with service desk disabled' do
+      it { expect_allowed(:guest_access) }
+      it { expect_disallowed(:create_note, :read_project) }
+    end
+
+    context 'with service desk enabled' do
+      before do
+        allow(project).to receive(:service_desk_enabled?).and_return(true)
+      end
+
+      it { expect_allowed(:reporter_access, :create_note, :read_issue) }
+
+      context 'when issues are protected members only' do
+        before do
+          project.project_feature.update!(issues_access_level: ProjectFeature::PRIVATE)
+        end
+
+        it { expect_allowed(:reporter_access, :create_note, :read_issue) }
+      end
+    end
+  end
+
   describe 'read_prometheus_alerts' do
     subject { described_class.new(current_user, project) }
 

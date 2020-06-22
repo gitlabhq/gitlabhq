@@ -2087,7 +2087,7 @@ describe Ci::Pipeline, :mailer do
 
       it 'raises an exception' do
         expect { pipeline.update_legacy_status }
-          .to raise_error(HasStatus::UnknownStatusError)
+          .to raise_error(Ci::HasStatus::UnknownStatusError)
       end
     end
   end

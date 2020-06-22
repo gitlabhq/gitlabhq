@@ -33,6 +33,15 @@
         = f.label :require_two_factor_authentication, class: 'form-check-label' do
           Require all users to set up Two-factor authentication
     .form-group
+      = f.label :unknown_sign_in, _('Email notification for unknown sign-ins'), class: 'label-bold'
+      .form-check
+        = f.check_box :notify_on_unknown_sign_in, class: 'form-check-input'
+        = f.label :notify_on_unknown_sign_in, class: 'form-check-label' do
+          = _('Notify users by email when sign-in location is not recognized')
+          = link_to icon('question-circle'),
+          'https://docs.gitlab.com/ee/user/profile/unknown_sign_in_notification.html',
+          target: '_blank'
+    .form-group
       = f.label :two_factor_authentication, 'Two-factor grace period (hours)', class: 'label-bold'
       = f.number_field :two_factor_grace_period, min: 0, class: 'form-control', placeholder: '0'
       .form-text.text-muted Amount of time (in hours) that users are allowed to skip forced configuration of two-factor authentication

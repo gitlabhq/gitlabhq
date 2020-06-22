@@ -172,7 +172,7 @@ describe Gitlab::Auth, :use_clean_rails_memory_store_caching do
         end
       end
 
-      (HasStatus::AVAILABLE_STATUSES - ['running']).each do |build_status|
+      (Ci::HasStatus::AVAILABLE_STATUSES - ['running']).each do |build_status|
         context "for #{build_status} build" do
           let!(:build) { create(:ci_build, status: build_status) }
           let(:project) { build.project }

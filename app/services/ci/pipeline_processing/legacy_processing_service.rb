@@ -35,7 +35,7 @@ module Ci
       def process_stage_for_stage_scheduling(index)
         current_status = status_for_prior_stages(index)
 
-        return unless HasStatus::COMPLETED_STATUSES.include?(current_status)
+        return unless Ci::HasStatus::COMPLETED_STATUSES.include?(current_status)
 
         created_stage_scheduled_processables_in_stage(index).find_each.select do |build|
           process_build(build, current_status)
@@ -73,7 +73,7 @@ module Ci
       def process_dag_build_with_needs(build)
         current_status = status_for_build_needs(build.needs.map(&:name))
 
-        return unless HasStatus::COMPLETED_STATUSES.include?(current_status)
+        return unless Ci::HasStatus::COMPLETED_STATUSES.include?(current_status)
 
         process_build(build, current_status)
       end

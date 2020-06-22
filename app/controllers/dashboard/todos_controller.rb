@@ -3,10 +3,13 @@
 class Dashboard::TodosController < Dashboard::ApplicationController
   include ActionView::Helpers::NumberHelper
   include PaginatedCollection
+  include Analytics::UniqueVisitsHelper
 
   before_action :authorize_read_project!, only: :index
   before_action :authorize_read_group!, only: :index
   before_action :find_todos, only: [:index, :destroy_all]
+
+  track_unique_visits :index, target_id: 'u_analytics_todos'
 
   def index
     @sort = params[:sort]

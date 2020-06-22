@@ -84,7 +84,7 @@ export default {
           v-for="(suggestion, index) in issues"
           :key="suggestion.id"
           :class="{
-            'append-bottom-default': index !== issues.length - 1,
+            'gl-mb-3': index !== issues.length - 1,
           }"
         >
           <suggestion :suggestion="suggestion" />

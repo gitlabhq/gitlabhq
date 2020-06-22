@@ -24,7 +24,7 @@ describe Gitlab::Ci::Status::Stage::Factory do
   end
 
   context 'when stage has a core status' do
-    (HasStatus::AVAILABLE_STATUSES - %w(manual skipped scheduled)).each do |core_status|
+    (Ci::HasStatus::AVAILABLE_STATUSES - %w(manual skipped scheduled)).each do |core_status|
       context "when core status is #{core_status}" do
         before do
           create(:ci_build, pipeline: pipeline, stage: 'test', status: core_status)
@@ -68,7 +68,7 @@ describe Gitlab::Ci::Status::Stage::Factory do
   end
 
   context 'when stage has manual builds' do
-    (HasStatus::BLOCKED_STATUS + ['skipped']).each do |core_status|
+    (Ci::HasStatus::BLOCKED_STATUS + ['skipped']).each do |core_status|
       context "when status is #{core_status}" do
         before do
           create(:ci_build, pipeline: pipeline, stage: 'test', status: core_status)

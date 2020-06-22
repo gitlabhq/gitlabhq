@@ -38,6 +38,9 @@ RSpec.shared_examples 'moves repository to another storage' do |repository_type|
         .with(repository.raw)
       allow(repository_double).to receive(:checksum)
         .and_return(repository_checksum)
+
+      expect(GitlabShellWorker).to receive(:perform_async).with(:mv_repository, 'default', anything, anything)
+        .twice.and_call_original
     end
 
     it "moves the project and its #{repository_type} repository to the new storage and unmarks the repository as read only" do

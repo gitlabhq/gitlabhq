@@ -4,9 +4,14 @@ type: reference
 
 # Sign-in restrictions **(CORE ONLY)**
 
-You can use sign-in restrictions to limit the authentication with password
-for web interface and Git over HTTP(S), two-factor authentication enforcing, as well as
-as configuring the home page URL and after sign-out path.
+You can use **Sign-in restrictions** to customize authentication restrictions for web interfaces as well as Git over HTTP(S).
+
+## Settings
+
+To access sign-in restriction settings:
+
+1. Navigate to the **Admin Area > Settings > General**.
+1. Expand the **Sign-in restrictions** section.
 
 ## Password authentication enabled
 
@@ -25,6 +30,13 @@ period in hours.
 
 ![Two-factor grace period](img/two_factor_grace_period.png)
 
+## Email notification for unknown sign-ins
+
+When enabled, GitLab notifies users of sign-ins from unknown IP addresses or devices. For more information,
+see [Email notification for unknown sign-ins](../../profile/unknown_sign_in_notification.md).
+
+![Email notification for unknown sign-ins](img/email_notification_for_unknown_sign_ins_v13_2.png)
+
 ## Sign-in information
 
 All users that are not logged-in will be redirected to the page represented by the configured
@@ -35,13 +47,6 @@ after sign out if value is not empty.
 
 If a "Sign in text" in Markdown format is provided, then every user will be presented with
 this message after logging-in.
-
-## Settings
-
-To access this feature:
-
-1. Navigate to the **Admin Area > Settings > General**.
-1. Expand the **Sign-in restrictions** section.
 
 <!-- ## Troubleshooting
 

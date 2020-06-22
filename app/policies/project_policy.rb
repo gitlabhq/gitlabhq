@@ -123,6 +123,9 @@ class ProjectPolicy < BasePolicy
     !@subject.design_management_enabled?
   end
 
+  with_scope :subject
+  condition(:service_desk_enabled) { @subject.service_desk_enabled? }
+
   # We aren't checking `:read_issue` or `:read_merge_request` in this case
   # because it could be possible for a user to see an issuable-iid
   # (`:read_issue_iid` or `:read_merge_request_iid`) but then wouldn't be
@@ -578,6 +581,12 @@ class ProjectPolicy < BasePolicy
     enable :read_build_report_results
   end
 
+  rule { support_bot }.enable :guest_access
+  rule { support_bot & ~service_desk_enabled }.policy do
+    prevent :create_note
+    prevent :read_project
+  end
+
   private
 
   def team_member?
@@ -626,6 +635,7 @@ class ProjectPolicy < BasePolicy
 
   def lookup_access_level!
     return ::Gitlab::Access::REPORTER if alert_bot?
+    return ::Gitlab::Access::REPORTER if support_bot? && service_desk_enabled?
 
     # NOTE: max_member_access has its own cache
     project.team.max_member_access(@user.id)

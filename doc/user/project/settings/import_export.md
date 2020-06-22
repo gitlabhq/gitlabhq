@@ -164,19 +164,12 @@ As an administrator, you can modify the maximum import file size. To do so, use 
 
 ### Project import status
 
-The status of an import [can be queried via the API](../../../api/project_import_export.md#import-status).
+You can query an import through the [Project import/export API](../../../api/project_import_export.md#import-status).
+As described in the API documentation, the query may return an import error or exceptions.
 
-If the import fails, the API returns the error message, and if it completes, the API will return any
-issues which were encountered.
+### Import large projects **(CORE ONLY)**
 
-### Project import with a Rake task. **(CORE ONLY)**
-
-Projects can be imported to a self-managed GitLab instance using a Rake task.
-
-The Rake task is often more effective at importing large project exports that don't complete
-when imported using the web interface.
-
-Further details in the [developer documentation](../../../development/import_project.md#importing-via-a-rake-task).
+If you have a larger project, consider using a Rake task, as described in our [developer documentation](../../../development/import_project.md#importing-via-a-rake-task).
 
 ## Rate limits
 

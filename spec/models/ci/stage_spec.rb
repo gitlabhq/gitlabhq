@@ -172,7 +172,7 @@ describe Ci::Stage, :models do
 
       it 'raises an exception' do
         expect { stage.update_legacy_status }
-          .to raise_error(HasStatus::UnknownStatusError)
+          .to raise_error(Ci::HasStatus::UnknownStatusError)
       end
     end
   end

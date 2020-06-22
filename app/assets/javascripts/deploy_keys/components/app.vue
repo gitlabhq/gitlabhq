@@ -115,7 +115,7 @@ export default {
 </script>
 
 <template>
-  <div class="append-bottom-default deploy-keys">
+  <div class="gl-mb-3 deploy-keys">
     <gl-loading-icon
       v-if="isLoading && !hasKeys"
       :label="s__('DeployKeys|Loading deploy keys')"

@@ -8,7 +8,7 @@ describe Gitlab::Ci::Status::Factory do
   let(:factory) { described_class.new(resource, user) }
 
   context 'when object has a core status' do
-    HasStatus::AVAILABLE_STATUSES.each do |simple_status|
+    Ci::HasStatus::AVAILABLE_STATUSES.each do |simple_status|
       context "when simple core status is #{simple_status}" do
         let(:resource) { double('resource', status: simple_status) }
 

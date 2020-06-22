@@ -77,7 +77,7 @@ export default {
 };
 </script>
 <template>
-  <div class="d-flex mr-source-target append-bottom-default">
+  <div class="d-flex mr-source-target gl-mb-3">
     <mr-widget-icon name="git-merge" />
     <div class="git-merge-container d-flex">
       <div class="normal">

@@ -17,5 +17,5 @@
     %hr
     %h5
       = _('Your GPG keys (%{count})') % { count:@gpg_keys.count}
-    .append-bottom-default
+    .gl-mb-3
       = render 'key_table'

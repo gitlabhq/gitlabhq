@@ -25,7 +25,7 @@
     - history_link = link_to s_("WikiHistoricalPage|history"), wiki_page_path(@wiki, @page, action: :history)
     = (s_("WikiHistoricalPage|You can view the %{most_recent_link} or browse the %{history_link}.") % { most_recent_link: most_recent_link, history_link: history_link }).html_safe
 
-.prepend-top-default.append-bottom-default
+.prepend-top-default.gl-mb-3
   .md{ data: { qa_selector: 'wiki_page_content' } }
     = render_wiki_content(@page)
 

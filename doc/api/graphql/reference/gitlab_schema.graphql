@@ -5128,6 +5128,11 @@ type Group {
     reportType: [VulnerabilityReportType!]
 
     """
+    Filter vulnerabilities by scanner
+    """
+    scanner: [String!]
+
+    """
     Filter vulnerabilities by severity
     """
     severity: [VulnerabilitySeverity!]
@@ -9455,6 +9460,11 @@ type Project {
     reportType: [VulnerabilityReportType!]
 
     """
+    Filter vulnerabilities by scanner
+    """
+    scanner: [String!]
+
+    """
     Filter vulnerabilities by severity
     """
     severity: [VulnerabilitySeverity!]
@@ -10099,6 +10109,11 @@ type Query {
     Filter vulnerabilities by report type
     """
     reportType: [VulnerabilityReportType!]
+
+    """
+    Filter vulnerabilities by scanner
+    """
+    scanner: [String!]
 
     """
     Filter vulnerabilities by severity

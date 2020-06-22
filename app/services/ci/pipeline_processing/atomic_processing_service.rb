@@ -77,7 +77,7 @@ module Ci
 
       def update_processable!(processable)
         status = processable_status(processable)
-        return unless HasStatus::COMPLETED_STATUSES.include?(status)
+        return unless Ci::HasStatus::COMPLETED_STATUSES.include?(status)
 
         # transition status if possible
         Gitlab::OptimisticLocking.retry_lock(processable) do |subject|

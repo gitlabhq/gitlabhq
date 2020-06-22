@@ -100,7 +100,7 @@
           .hint
             = parsed_with_gfm
 
-      .prepend-top-default.append-bottom-default
+      .prepend-top-default.gl-mb-3
         = f.submit 'Update appearance settings', class: 'btn btn-success'
         - if @appearance.persisted? || @appearance.updated_at
           .mt-4

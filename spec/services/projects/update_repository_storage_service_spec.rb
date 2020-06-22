@@ -43,6 +43,8 @@ describe Projects::UpdateRepositoryStorageService do
             .with(project.repository.raw)
           expect(project_repository_double).to receive(:checksum)
             .and_return(checksum)
+          expect(GitlabShellWorker).to receive(:perform_async).with(:mv_repository, 'default', anything, anything)
+            .and_call_original
 
           result = subject.execute
 

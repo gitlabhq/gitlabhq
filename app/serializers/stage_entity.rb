@@ -59,13 +59,13 @@ class StageEntity < Grape::Entity
   end
 
   def latest_statuses
-    HasStatus::ORDERED_STATUSES.flat_map do |ordered_status|
+    Ci::HasStatus::ORDERED_STATUSES.flat_map do |ordered_status|
       grouped_statuses.fetch(ordered_status, [])
     end
   end
 
   def retried_statuses
-    HasStatus::ORDERED_STATUSES.flat_map do |ordered_status|
+    Ci::HasStatus::ORDERED_STATUSES.flat_map do |ordered_status|
       grouped_retried_statuses.fetch(ordered_status, [])
     end
   end

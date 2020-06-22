@@ -672,4 +672,36 @@ describe Gitlab::UsageData, :aggregate_failures do
       end
     end
   end
+
+  describe '.analytics_unique_visits_data' do
+    subject { described_class.analytics_unique_visits_data }
+
+    it 'returns the number of unique visits to pages with analytics features' do
+      ::Gitlab::Analytics::UniqueVisits::TARGET_IDS.each do |target_id|
+        expect_any_instance_of(::Gitlab::Analytics::UniqueVisits).to receive(:weekly_unique_visits_for_target).with(target_id).and_return(123)
+      end
+
+      expect_any_instance_of(::Gitlab::Analytics::UniqueVisits).to receive(:weekly_unique_visits_for_any_target).and_return(543)
+
+      expect(subject).to eq({
+        analytics_unique_visits: {
+          'g_analytics_contribution' => 123,
+          'g_analytics_insights' => 123,
+          'g_analytics_issues' => 123,
+          'g_analytics_productivity' => 123,
+          'g_analytics_valuestream' => 123,
+          'p_analytics_pipelines' => 123,
+          'p_analytics_code_reviews' => 123,
+          'p_analytics_valuestream' => 123,
+          'p_analytics_insights' => 123,
+          'p_analytics_issues' => 123,
+          'p_analytics_repo' => 123,
+          'u_analytics_todos' => 123,
+          'i_analytics_cohorts' => 123,
+          'i_analytics_dev_ops_score' => 123,
+          'analytics_unique_visits_for_any_target' => 543
+        }
+      })
+    end
+  end
 end

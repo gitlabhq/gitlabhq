@@ -859,6 +859,28 @@ use `gitlab-backup restore` to avoid this issue.
 The GitLab Helm chart uses a different process, documented in
 [restoring a GitLab Helm chart installation](https://gitlab.com/gitlab-org/charts/gitlab/blob/master/doc/backup-restore/restore.md).
 
+### Restoring only one or a few project(s) or group(s) from a backup
+
+While the Rake task used to restore a GitLab instance doesn't support
+restoring a single project or group, you can use a workaround by
+restoring your backup to a separate, temporary GitLab instance, and
+export your project or group from there:
+
+1. [Install a new GitLab](../install/README.md) instance at the same version as
+   the backed-up instance from which you want to restore.
+1. [Restore the backup](#restore-gitlab) into this new instance and
+   export your [project](../user/project/settings/import_export.md)
+   or [group](../user/group/settings/import_export.md). Make sure to
+   read the **Important Notes** on either export feature's documentation
+   to understand what will be exported and what not.
+1. Once the export is complete, go to the old instance and import it.
+1. After importing only the project(s) or group(s) that you wanted is complete,
+   you may delete the new, temporary GitLab instance.
+
+NOTE: **Note**
+A feature request to provide direct restore of individual projects or groups
+is being discussed in [issue #17517](https://gitlab.com/gitlab-org/gitlab/-/issues/17517).
+
 ## Alternative backup strategies
 
 If your GitLab server contains a lot of Git repository data you may find the GitLab backup script to be too slow.

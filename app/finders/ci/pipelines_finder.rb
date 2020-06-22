@@ -71,7 +71,7 @@ module Ci
 
     # rubocop: disable CodeReuse/ActiveRecord
     def by_status(items)
-      return items unless HasStatus::AVAILABLE_STATUSES.include?(params[:status])
+      return items unless Ci::HasStatus::AVAILABLE_STATUSES.include?(params[:status])
 
       items.where(status: params[:status])
     end

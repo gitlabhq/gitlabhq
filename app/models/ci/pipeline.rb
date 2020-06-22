@@ -3,7 +3,7 @@
 module Ci
   class Pipeline < ApplicationRecord
     extend Gitlab::Ci::Model
-    include HasStatus
+    include Ci::HasStatus
     include Importable
     include AfterCommitQueue
     include Presentable
@@ -640,7 +640,7 @@ module Ci
         when 'manual' then block
         when 'scheduled' then delay
         else
-          raise HasStatus::UnknownStatusError,
+          raise Ci::HasStatus::UnknownStatusError,
                 "Unknown status `#{new_status}`"
         end
       end

@@ -164,7 +164,7 @@ export default {
 <template>
   <form
     :class="{ 'was-validated': wasValidated }"
-    class="prepend-top-default append-bottom-default needs-validation"
+    class="prepend-top-default gl-mb-3 needs-validation"
     novalidate
     @submit.prevent.stop="onSubmit"
   >

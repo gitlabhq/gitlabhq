@@ -5,13 +5,21 @@
 ---
 - :name: authorized_project_update:authorized_project_update_project_create
   :feature_category: :authentication_and_authorization
-  :has_external_dependencies: 
+  :has_external_dependencies:
   :urgency: :low
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: true
   :tags: []
 - :name: authorized_project_update:authorized_project_update_project_group_link_create
+  :feature_category: :authentication_and_authorization
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+- :name: authorized_project_update:authorized_project_update_user_refresh_over_user_range
   :feature_category: :authentication_and_authorization
   :has_external_dependencies: 
   :urgency: :low
@@ -106,6 +114,14 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: 
+  :tags: []
+- :name: cronjob:authorized_project_update_periodic_recalculate
+  :feature_category: :source_code_management
+  :has_external_dependencies: 
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
   :tags: []
 - :name: cronjob:ci_archive_traces_cron
   :feature_category: :continuous_integration

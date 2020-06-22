@@ -1,4 +1,4 @@
-.row.prepend-top-default.append-bottom-default.triggers-container
+.row.prepend-top-default.gl-mb-3.triggers-container
   .col-lg-12
     .card
       .card-header
@@ -21,7 +21,7 @@
                 %th
               = render partial: 'projects/triggers/trigger', collection: @triggers, as: :trigger
         - else
-          %p.settings-message.text-center.append-bottom-default
+          %p.settings-message.text-center.gl-mb-3
             No triggers have been created yet. Add one using the form above.
 
       .card-footer

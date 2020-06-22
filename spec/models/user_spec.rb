@@ -4634,7 +4634,8 @@ describe User do
           [
             { state: 'blocked' },
             { user_type: :ghost },
-            { user_type: :alert_bot }
+            { user_type: :alert_bot },
+            { user_type: :support_bot }
           ]
         end
 
@@ -4688,6 +4689,7 @@ describe User do
       where(:user_type, :expected_result) do
         'human'             | true
         'alert_bot'         | false
+        'support_bot'       | false
       end
 
       with_them do
@@ -4756,19 +4758,26 @@ describe User do
     end
   end
 
-  describe '#migration_bot' do
-    it 'creates the user if it does not exist' do
-      expect do
-        described_class.migration_bot
-      end.to change { User.where(user_type: :migration_bot).count }.by(1)
+  context 'bot users' do
+    shared_examples 'bot users' do |bot_type|
+      it 'creates the user if it does not exist' do
+        expect do
+          described_class.public_send(bot_type)
+        end.to change { User.where(user_type: bot_type).count }.by(1)
+      end
+
+      it 'does not create a new user if it already exists' do
+        described_class.public_send(bot_type)
+
+        expect do
+          described_class.public_send(bot_type)
+        end.not_to change { User.count }
+      end
     end
 
-    it 'does not create a new user if it already exists' do
-      described_class.migration_bot
-
-      expect do
-        described_class.migration_bot
-      end.not_to change { User.count }
-    end
+    it_behaves_like 'bot users', :alert_bot
+    it_behaves_like 'bot users', :support_bot
+    it_behaves_like 'bot users', :migration_bot
+    it_behaves_like 'bot users', :ghost
   end
 end

@@ -21,6 +21,10 @@ class BasePolicy < DeclarativePolicy::Base
   with_options scope: :user, score: 0
   condition(:deactivated) { @user&.deactivated? }
 
+  desc "User is support bot"
+  with_options scope: :user, score: 0
+  condition(:support_bot) { @user&.support_bot? }
+
   desc "User email is unconfirmed or user account is locked"
   with_options scope: :user, score: 0
   condition(:inactive) do

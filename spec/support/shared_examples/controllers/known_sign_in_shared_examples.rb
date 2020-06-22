@@ -22,7 +22,7 @@ RSpec.shared_examples 'known sign in' do
     end
 
     it 'does not notify the user' do
-      expect_any_instance_of(NotificationService).not_to receive(:unknown_sign_in)
+      expect(NotificationService).not_to receive(:new)
 
       post_action
     end
@@ -68,6 +68,24 @@ RSpec.shared_examples 'known sign in' do
       end
     end
 
+    context 'when notify_on_unknown_sign_in global setting is false' do
+      before do
+        stub_application_setting(notify_on_unknown_sign_in: false)
+      end
+
+      it 'does not notify the user' do
+        expect(NotificationService).not_to receive(:new)
+
+        post_action
+      end
+
+      it 'does not set a cookie' do
+        post_action
+
+        expect(cookies.encrypted[KnownSignIn::KNOWN_SIGN_IN_COOKIE]).to be_nil
+      end
+    end
+
     it 'notifies the user when the cookie is for another user' do
       stub_cookie(create(:user).id)
 
@@ -81,7 +99,7 @@ RSpec.shared_examples 'known sign in' do
     it 'does not notify the user when remote IP matches an active session' do
       ActiveSession.set(user, request)
 
-      expect_any_instance_of(NotificationService).not_to receive(:unknown_sign_in)
+      expect(NotificationService).not_to receive(:new)
 
       post_action
     end
@@ -89,7 +107,7 @@ RSpec.shared_examples 'known sign in' do
     it 'does not notify the user when the cookie is present and not expired' do
       stub_cookie
 
-      expect_any_instance_of(NotificationService).not_to receive(:unknown_sign_in)
+      expect(NotificationService).not_to receive(:new)
 
       post_action
     end

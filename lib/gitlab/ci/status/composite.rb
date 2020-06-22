@@ -112,13 +112,13 @@ module Gitlab
         def success_with_warnings?(status)
           @allow_failure_key &&
             status[@allow_failure_key] &&
-            HasStatus::PASSED_WITH_WARNINGS_STATUSES.include?(status[@status_key])
+            ::Ci::HasStatus::PASSED_WITH_WARNINGS_STATUSES.include?(status[@status_key])
         end
 
         def ignored_status?(status)
           @allow_failure_key &&
             status[@allow_failure_key] &&
-            HasStatus::EXCLUDE_IGNORED_STATUSES.include?(status[@status_key])
+            ::Ci::HasStatus::EXCLUDE_IGNORED_STATUSES.include?(status[@status_key])
         end
       end
     end
