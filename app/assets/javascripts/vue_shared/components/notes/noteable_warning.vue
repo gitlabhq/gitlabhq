@@ -8,16 +8,10 @@ function buildDocsLinkStart(path) {
   return `<a href="${escape(path)}" target="_blank" rel="noopener noreferrer">`;
 }
 
-const NoteableType = {
-  Issue: 'issue',
-  Epic: 'epic',
-  MergeRequest: 'merge_request',
-};
-
 const NoteableTypeText = {
-  [NoteableType.Issue]: __('issue'),
-  [NoteableType.Epic]: __('epic'),
-  [NoteableType.MergeRequest]: __('merge request'),
+  Issue: __('issue'),
+  Epic: __('epic'),
+  MergeRequest: __('merge request'),
 };
 
 export default {
@@ -39,7 +33,8 @@ export default {
     noteableType: {
       type: String,
       required: false,
-      default: NoteableType.Issue,
+      // eslint-disable-next-line @gitlab/require-i18n-strings
+      default: 'Issue',
     },
     lockedNoteableDocsPath: {
       type: String,

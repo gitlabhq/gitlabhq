@@ -81,17 +81,6 @@ describe Spam::SpamVerdictService do
         end
       end
 
-      context 'and one is supported' do
-        before do
-          allow(service).to receive(:akismet_verdict).and_return('nonsense')
-          allow(service).to receive(:spam_verdict).and_return(BLOCK_USER)
-        end
-
-        it 'renders the more restrictive verdict' do
-          expect(subject).to eq BLOCK_USER
-        end
-      end
-
       context 'and none are supported' do
         before do
           allow(service).to receive(:akismet_verdict).and_return('nonsense')

@@ -19,7 +19,7 @@ describe Gitlab::Ci::Build::Releaser do
       end
 
       it 'generates the script' do
-        expect(subject).to eq('release-cli create --name "Release $CI_COMMIT_SHA" --description "Created using the release-cli $EXTRA_DESCRIPTION" --tag-name "release-$CI_COMMIT_SHA" --ref "$CI_COMMIT_SHA"')
+        expect(subject).to eq(['release-cli create --name "Release $CI_COMMIT_SHA" --description "Created using the release-cli $EXTRA_DESCRIPTION" --tag-name "release-$CI_COMMIT_SHA" --ref "$CI_COMMIT_SHA"'])
       end
     end
 
@@ -43,7 +43,7 @@ describe Gitlab::Ci::Build::Releaser do
         end
 
         it 'generates the script' do
-          expect(subject).to eq(result)
+          expect(subject).to eq([result])
         end
       end
     end

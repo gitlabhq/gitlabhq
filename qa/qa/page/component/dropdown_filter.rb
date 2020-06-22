@@ -8,7 +8,7 @@ module QA
           page.has_css?('.dropdown-input-field', wait: QA::Support::Repeater::DEFAULT_MAX_WAIT_TIME)
 
           find('.dropdown-input-field').set(item)
-          click_link item
+          click_on item
         end
       end
     end

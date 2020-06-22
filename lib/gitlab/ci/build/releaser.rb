@@ -16,7 +16,7 @@ module Gitlab
           command = BASE_COMMAND.dup
           config.each { |k, v| command.concat(" --#{k.to_s.dasherize} \"#{v}\"") }
 
-          command
+          [command]
         end
       end
     end

@@ -6,7 +6,7 @@
                           footer_content: true,
                           data: { show_no: true, show_any: true, show_upcoming: true,
                                   selected: params[:protected_tag_name],
-                                  project_id: @project.try(:id) } }) do
+                                  project_id: @project.try(:id), qa_selector: 'tags_dropdown' } }) do
 
   %ul.dropdown-footer-list
     %li

@@ -96,7 +96,11 @@ module QA
       end
 
       def has_file?(file_path)
-        repository_tree.any? { |file| file[:path] == file_path }
+        response = repository_tree
+
+        raise ResourceNotFoundError, "#{response[:message]}" if response.is_a?(Hash) && response.has_key?(:message)
+
+        response.any? { |file| file[:path] == file_path }
       end
 
       def api_get_path

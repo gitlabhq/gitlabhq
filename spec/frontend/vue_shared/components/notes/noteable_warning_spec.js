@@ -60,9 +60,12 @@ describe('Issue Warning Component', () => {
       });
     });
 
-    it('renders information about confidential issue', () => {
+    it('renders information about confidential issue', async () => {
       expect(findConfidentialBlock().exists()).toBe(true);
       expect(findConfidentialBlock().element).toMatchSnapshot();
+
+      await wrapper.vm.$nextTick();
+      expect(findConfidentialBlock(wrapper).text()).toContain('This is a confidential issue.');
     });
 
     it('renders warning icon', () => {
@@ -142,13 +145,13 @@ describe('Issue Warning Component', () => {
 
     it('renders confidential & locked messages with noteable "epic"', async () => {
       wrapperLocked.setProps({
-        noteableType: 'epic',
+        noteableType: 'Epic',
       });
       wrapperConfidential.setProps({
-        noteableType: 'epic',
+        noteableType: 'Epic',
       });
       wrapperLockedAndConfidential.setProps({
-        noteableType: 'epic',
+        noteableType: 'Epic',
       });
 
       await wrapperLocked.vm.$nextTick();
@@ -167,13 +170,13 @@ describe('Issue Warning Component', () => {
 
     it('renders confidential & locked messages with noteable "merge request"', async () => {
       wrapperLocked.setProps({
-        noteableType: 'merge_request',
+        noteableType: 'MergeRequest',
       });
       wrapperConfidential.setProps({
-        noteableType: 'merge_request',
+        noteableType: 'MergeRequest',
       });
       wrapperLockedAndConfidential.setProps({
-        noteableType: 'merge_request',
+        noteableType: 'MergeRequest',
       });
 
       await wrapperLocked.vm.$nextTick();

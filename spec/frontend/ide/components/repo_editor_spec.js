@@ -546,7 +546,7 @@ describe('RepoEditor', () => {
           store.state.viewer = viewerTypes.diff;
 
           // we delay returning the file to make sure editor doesn't initialize before we fetch file content
-          await waitUsingRealTimer(10);
+          await waitUsingRealTimer(30);
           return 'rawFileData123\n';
         });
 
@@ -555,8 +555,7 @@ describe('RepoEditor', () => {
 
         vm.file = f;
 
-        // use the real timer to accurately simulate the race condition
-        await waitUsingRealTimer(20);
+        await waitForEditorSetup();
         expect(vm.model.getModel().getValue()).toBe('rawFileData123\n');
       });
 
@@ -575,14 +574,13 @@ describe('RepoEditor', () => {
           })
           .mockImplementationOnce(async () => {
             // we delay returning fileB content to make sure the editor doesn't initialize prematurely
-            await waitUsingRealTimer(10);
+            await waitUsingRealTimer(30);
             return 'fileB-rawContent\n';
           });
 
         vm.file = fileA;
 
-        // use the real timer to accurately simulate the race condition
-        await waitUsingRealTimer(20);
+        await waitForEditorSetup();
         expect(vm.model.getModel().getValue()).toBe('fileB-rawContent\n');
       });
     });

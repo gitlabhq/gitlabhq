@@ -76,7 +76,7 @@ As soon as a requirement is reopened, it no longer appears in the **Archived** t
 
 ## Search for a requirement from the requirements list page
 
-> - Introduced in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.1.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/212543) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.1.
 
 You can search for a requirement from the list of requirements using filtered search bar (similar to
 that of Issues and Merge Requests) based on following parameters:
@@ -96,7 +96,8 @@ You can also sort requirements list by:
 
 ## Allow requirements to be satisfied from a CI job
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/2859) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.1.
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/2859) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.1.
+> - [Added](https://gitlab.com/gitlab-org/gitlab/-/issues/215514) ability to specify individual requirements and their statuses in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.2.
 
 GitLab supports [requirements test
 reports](../../../ci/pipelines/job_artifacts.md#artifactsreportsrequirements-ultimate) now.
@@ -131,6 +132,32 @@ When you manually trigger this job, the `requirements.json` file containing
 the requirement report is checked for the "all passed" record
 (`{"*":"passed"}`), and on success, it marks all existing open requirements as
 Satisfied.
+
+#### Specifying individual requirements
+
+It is possible to specify individual requirements and their statuses.
+
+If the following requirements exist:
+
+- `REQ-1` (with IID `1`)
+- `REQ-2` (with IID `2`)
+- `REQ-3` (with IID `3`)
+
+It is possible to specify that the first requirement passed, and the second failed.
+Valid values are "passed" and "failed".
+By omitting a requirement IID (in this case `REQ-3`'s IID `3`), no result is noted.
+
+```yaml
+requirements_confirmation:
+  when: manual
+  allow_failure: false
+  script:
+    - mkdir tmp
+    - echo "{\"1\":\"passed\", \"2\":\"failed\"}" > tmp/requirements.json
+  artifacts:
+    reports:
+      requirements: tmp/requirements.json
+```
 
 ### Add the manual job to CI conditionally
 
