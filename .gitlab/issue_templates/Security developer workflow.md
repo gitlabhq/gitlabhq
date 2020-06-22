@@ -64,7 +64,7 @@ After your merge request has been approved according to our [approval guidelines
 | Thanks | | |
 
 [security process for developers]: https://gitlab.com/gitlab-org/release/docs/blob/master/general/security/developer.md
-[secpick documentation]: https://gitlab.com/gitlab-org/release/docs/blob/master/general/security/developer.md#secpick-script
+[secpick documentation]: https://gitlab.com/gitlab-org/release/docs/-/blob/master/general/security/utilities/secpick_script.md
 [security Release merge request template]: https://gitlab.com/gitlab-org/security/gitlab/blob/master/.gitlab/merge_request_templates/Security%20Release.md
 [code review process]: https://docs.gitlab.com/ee/development/code_review.html
 [approval guidelines]: https://docs.gitlab.com/ee/development/code_review.html#approval-guidelines

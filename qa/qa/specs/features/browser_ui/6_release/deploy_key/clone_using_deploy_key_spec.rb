@@ -20,7 +20,7 @@ module QA
           resource.project = @project
           resource.name = @runner_name
           resource.tags = %w[qa docker]
-          resource.image = 'gitlab/gitlab-runner:ubuntu'
+          resource.image = 'gitlab/gitlab-runner:alpine'
         end
       end
 
@@ -51,6 +51,7 @@ module QA
           gitlab_ci = <<~YAML
           cat-config:
             script:
+              - apk add --update --no-cache openssh-client
               - mkdir -p ~/.ssh
               - ssh-keyscan -p #{@repository_location.port} #{@repository_location.host} >> ~/.ssh/known_hosts
               - eval $(ssh-agent -s)

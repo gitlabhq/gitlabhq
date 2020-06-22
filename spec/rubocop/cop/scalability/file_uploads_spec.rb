@@ -6,7 +6,6 @@ require_relative '../../../../rubocop/cop/scalability/file_uploads'
 
 describe RuboCop::Cop::Scalability::FileUploads, type: :rubocop do
   include CopHelper
-  include ExpectOffense
 
   subject(:cop) { described_class.new }
 

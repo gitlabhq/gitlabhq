@@ -4,7 +4,7 @@ require_relative "helpers/stub_configuration"
 require_relative "helpers/stub_metrics"
 require_relative "helpers/stub_object_storage"
 require_relative "helpers/stub_env"
-require_relative "helpers/expect_offense"
+require 'rubocop/rspec/support'
 
 RSpec.configure do |config|
   config.mock_with :rspec
@@ -15,5 +15,5 @@ RSpec.configure do |config|
   config.include StubObjectStorage
   config.include StubENV
 
-  config.include ExpectOffense, type: :rubocop
+  config.include RuboCop::RSpec::ExpectOffense, type: :rubocop
 end

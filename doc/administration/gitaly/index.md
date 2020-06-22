@@ -49,6 +49,12 @@ To change Gitaly settings:
 1. Edit `/home/git/gitaly/config.toml` and add or change the [Gitaly settings](https://gitlab.com/gitlab-org/gitaly/blob/master/config.toml.example).
 1. Save the file and [restart GitLab](../restart_gitlab.md#installations-from-source).
 
+The following configuration options are also available:
+
+- Enabling [TLS support](#enable-tls-support).
+- Configuring the [number of `gitaly-ruby` workers](#configure-number-of-gitaly-ruby-workers).
+- Limiting [RPC concurrency](#limit-rpc-concurrency).
+
 ## Run Gitaly on its own server
 
 By default, Gitaly is run on the same server as Gitaly clients and is
@@ -72,6 +78,7 @@ The process for setting up Gitaly on its own server is:
 1. [Configure authentication](#configure-authentication).
 1. [Configure Gitaly servers](#configure-gitaly-servers).
 1. [Configure Gitaly clients](#configure-gitaly-clients).
+1. [Disable Gitaly where not required](#disable-gitaly-where-not-required-optional) (optional).
 
 When running Gitaly on its own server, note the following regarding GitLab versions:
 
@@ -116,7 +123,7 @@ The following list depicts the network architecture of Gitaly:
 DANGER: **Danger:**
 Gitaly servers must not be exposed to the public internet as Gitaly's network traffic is unencrypted
 by default. The use of firewall is highly recommended to restrict access to the Gitaly server.
-Another option is to [use TLS](#tls-support).
+Another option is to [use TLS](#enable-tls-support).
 
 In the following sections, we describe how to configure two Gitaly servers with secret token
 `abc123secret`:
@@ -457,15 +464,15 @@ If you have [server hooks](../server_hooks.md) configured, either per repository
 must move these to the Gitaly servers. If you have multiple Gitaly servers, copy your server hooks
 to all Gitaly servers.
 
-### Disabling the Gitaly service in a cluster environment
+### Disable Gitaly where not required (optional)
 
-If you are running Gitaly [as a remote
-service](#run-gitaly-on-its-own-server) you may want to disable
-the local Gitaly service that runs on your GitLab server by default.
-Disabling Gitaly only makes sense when you run GitLab in a custom
-cluster configuration, where different services run on different
-machines. Disabling Gitaly on all machines in the cluster is not a
-valid configuration.
+If you are running Gitaly [as a remote service](#run-gitaly-on-its-own-server) you may want to
+disable the local Gitaly service that runs on your GitLab server by default, leaving it only running
+where required.
+
+Disabling Gitaly on the GitLab instance only makes sense when you run GitLab in a custom cluster configuration, where
+Gitaly runs on a separate machine from the GitLab instance. Disabling Gitaly on all machines in the cluster is not
+a valid configuration (some machines much act as Gitaly servers).
 
 To disable Gitaly on a GitLab server:
 
@@ -489,43 +496,44 @@ To disable Gitaly on a GitLab server:
 
 1. Save the file and [restart GitLab](../restart_gitlab.md#installations-from-source).
 
-## TLS support
+## Enable TLS support
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/22602) in GitLab 11.8.
 
-Gitaly supports TLS encryption. To be able to communicate
-with a Gitaly instance that listens for secure connections you will need to use `tls://` URL
-scheme in the `gitaly_address` of the corresponding storage entry in the GitLab configuration.
+Gitaly supports TLS encryption. To communicate with a Gitaly instance that listens for secure
+connections, you must use `tls://` URL scheme in the `gitaly_address` of the corresponding
+storage entry in the GitLab configuration.
 
-You will need to bring your own certificates as this isn't provided automatically.
-The certificate corresponding to each Gitaly server will need to be installed
-on that Gitaly server.
+You must supply your own certificates as this isn't provided automatically. The certificate
+corresponding to each Gitaly server must be installed on that Gitaly server.
 
-Additionally the certificate, or its certificate authority, must be installed on all Gitaly servers
-(including the Gitaly server using the certificate) and on all Gitaly clients
-that communicate with it following the procedure described in
-[GitLab custom certificate configuration](https://docs.gitlab.com/omnibus/settings/ssl.html#install-custom-public-certificates) (and repeated below).
+Additionally, the certificate (or its certificate authority) must be installed on all:
 
-NOTE: **Note**
-The certificate must specify the address you use to access the
-Gitaly server. If you are addressing the Gitaly server by a hostname, you can
-either use the Common Name field for this, or add it as a Subject Alternative
-Name. If you are addressing the Gitaly server by its IP address, you must add it
-as a Subject Alternative Name to the certificate.
-[gRPC does not support using an IP address as Common Name in a certificate](https://github.com/grpc/grpc/issues/2691).
+- Gitaly servers, including the Gitaly server using the certificate.
+- Gitaly clients that communicate with it.
 
-NOTE: **Note:**
-It is possible to configure Gitaly servers with both an
-unencrypted listening address `listen_addr` and an encrypted listening
-address `tls_listen_addr` at the same time. This allows you to do a
-gradual transition from unencrypted to encrypted traffic, if necessary.
+The process is documented in the
+[GitLab custom certificate configuration](https://docs.gitlab.com/omnibus/settings/ssl.html#install-custom-public-certificates)
+and repeated below.
+
+Note the following:
+
+- The certificate must specify the address you use to access the Gitaly server. If you are:
+  - Addressing the Gitaly server by a hostname, you can either use the Common Name field for this,
+    or add it as a Subject Alternative Name.
+  - Addressing the Gitaly server by its IP address, you must add it as a Subject Alternative Name to
+    the certificate. [gRPC does not support using an IP address as Common Name in a certificate](https://github.com/grpc/grpc/issues/2691).
+- You can configure Gitaly servers with both an unencrypted listening address `listen_addr` and an
+  encrypted listening address `tls_listen_addr` at the same time. This allows you to gradually
+  transition from unencrypted to encrypted traffic if necessary.
 
 To configure Gitaly with TLS:
 
 **For Omnibus GitLab**
 
 1. Create certificates for Gitaly servers.
-1. On the Gitaly clients, copy the certificates, or their certificate authority, into the `/etc/gitlab/trusted-certs`:
+1. On the Gitaly clients, copy the certificates (or their certificate authority) into
+   `/etc/gitlab/trusted-certs`:
 
    ```shell
    sudo cp cert.pem /etc/gitlab/trusted-certs/
@@ -542,7 +550,8 @@ To configure Gitaly with TLS:
    ```
 
 1. Save the file and [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
-1. On the Gitaly servers, create the `/etc/gitlab/ssl` directory and copy your key and certificate there:
+1. On the Gitaly servers, create the `/etc/gitlab/ssl` directory and copy your key and certificate
+   there:
 
    ```shell
    sudo mkdir -p /etc/gitlab/ssl
@@ -551,8 +560,9 @@ To configure Gitaly with TLS:
    sudo chmod 644 key.pem cert.pem
    ```
 
-1. Copy all Gitaly server certificates, or their certificate authority, to `/etc/gitlab/trusted-certs` so Gitaly server will trust the certificate when
-calling into itself or other Gitaly servers:
+1. Copy all Gitaly server certificates (or their certificate authority) to
+   `/etc/gitlab/trusted-certs` so that Gitaly servers will trust the certificate when calling into themselves
+   or other Gitaly servers:
 
    ```shell
    sudo cp cert1.pem cert2.pem /etc/gitlab/trusted-certs/
@@ -572,10 +582,13 @@ calling into itself or other Gitaly servers:
    ```
 
 1. Save the file and [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
-1. (Optional) After [verifying that all Gitaly traffic is being served over TLS](#observe-type-of-gitaly-connections),
-   you can improve security by disabling non-TLS connections by commenting out
-   or deleting `gitaly['listen_addr']` in `/etc/gitlab/gitlab.rb`, saving the file,
-   and [reconfiguring GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
+1. Verify Gitaly traffic is being served over TLS by
+   [observing the types of Gitaly connections](#observe-type-of-gitaly-connections).
+1. (Optional) Improve security by:
+   1. Disabling non-TLS connections by commenting out or deleting `gitaly['listen_addr']` in
+      `/etc/gitlab/gitlab.rb`.
+   1. Saving the file.
+   1. [Reconfiguring GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
 
 **For installations from source**
 
@@ -605,9 +618,9 @@ calling into itself or other Gitaly servers:
    ```
 
    NOTE: **Note:**
-   `/some/dummy/path` should be set to a local folder that exists, however no
-   data will be stored in this folder. This will no longer be necessary after
-   [this issue](https://gitlab.com/gitlab-org/gitaly/-/issues/1282) is resolved.
+   `/some/dummy/path` should be set to a local folder that exists, however no data will be stored
+   in this folder. This will no longer be necessary after
+   [Gitaly issue #1282](https://gitlab.com/gitlab-org/gitaly/-/issues/1282) is resolved.
 
 1. Save the file and [restart GitLab](../restart_gitlab.md#installations-from-source).
 1. On the Gitaly servers, create or edit `/etc/default/gitlab` and add:
@@ -625,7 +638,9 @@ calling into itself or other Gitaly servers:
    sudo chmod 644 key.pem cert.pem
    ```
 
-1. Copy all Gitaly server certificates, or their certificate authority, to the system trusted certificates so Gitaly server will trust the certificate when calling into itself or other Gitaly servers.
+1. Copy all Gitaly server certificates (or their certificate authority) to the system trusted
+   certificates folder so Gitaly server will trust the certificate when calling into itself or other Gitaly
+   servers.
 
    ```shell
    sudo cp cert.pem /usr/local/share/ca-certificates/gitaly.crt
@@ -643,15 +658,18 @@ calling into itself or other Gitaly servers:
    ```
 
 1. Save the file and [restart GitLab](../restart_gitlab.md#installations-from-source).
-1. (Optional) After [verifying that all Gitaly traffic is being served over TLS](#observe-type-of-gitaly-connections),
-   you can improve security by disabling non-TLS connections by commenting out
-   or deleting `listen_addr` in `/home/git/gitaly/config.toml`, saving the file,
-   and [restarting GitLab](../restart_gitlab.md#installations-from-source).
+1. Verify Gitaly traffic is being served over TLS by
+   [observing the types of Gitaly connections](#observe-type-of-gitaly-connections).
+1. (Optional) Improve security by:
+   1. Disabling non-TLS connections by commenting out or deleting `listen_addr` in
+      `/home/git/gitaly/config.toml`.
+   1. Saving the file.
+   1. [Restarting GitLab](../restart_gitlab.md#installations-from-source).
 
 ### Observe type of Gitaly connections
 
-To observe what type of connections are actually being used in a
-production environment you can use the following Prometheus query:
+[Prometheus](../monitoring/prometheus/index.md) can be used observe what type of connections Gitaly
+is serving a production environment. Use the following Prometheus query:
 
 ```prometheus
 sum(rate(gitaly_connections_total[5m])) by (type)
@@ -660,24 +678,26 @@ sum(rate(gitaly_connections_total[5m])) by (type)
 ## `gitaly-ruby`
 
 Gitaly was developed to replace the Ruby application code in GitLab.
-In order to save time and/or avoid the risk of rewriting existing
-application logic, in some cases we chose to copy some application code
-from GitLab into Gitaly almost as-is. To be able to run that code,
-`gitaly-ruby` was created, which is a "sidecar" process for the main Gitaly Go
-process. Some examples of things that are implemented in `gitaly-ruby` are
-RPCs that deal with wikis, and RPCs that create commits on behalf of
-a user, such as merge commits.
 
-### Number of `gitaly-ruby` workers
+To save time and avoid the risk of rewriting existing application logic, we chose to copy some
+application code from GitLab into Gitaly.
 
-`gitaly-ruby` has much less capacity than Gitaly itself. If your Gitaly
-server has to handle a lot of requests, the default setting of having
-just one active `gitaly-ruby` sidecar might not be enough. If you see
-`ResourceExhausted` errors from Gitaly, it's very likely that you have not
-enough `gitaly-ruby` capacity.
+To be able to run that code, `gitaly-ruby` was created, which is a "sidecar" process for the main
+Gitaly Go process. Some examples of things that are implemented in `gitaly-ruby` are:
 
-You can increase the number of `gitaly-ruby` processes on your Gitaly
-server with the following settings.
+- RPCs that deal with wikis.
+- RPCs that create commits on behalf of a user, such as merge commits.
+
+### Configure number of `gitaly-ruby` workers
+
+`gitaly-ruby` has much less capacity than Gitaly implemented in Go. If your Gitaly server has to handle lots of
+requests, the default setting of having just one active `gitaly-ruby` sidecar might not be enough.
+
+If you see `ResourceExhausted` errors from Gitaly, it's very likely that you have not enough
+`gitaly-ruby` capacity.
+
+You can increase the number of `gitaly-ruby` processes on your Gitaly server with the following
+settings:
 
 **For Omnibus GitLab**
 
@@ -702,13 +722,16 @@ server with the following settings.
 
 1. Save the file and [restart GitLab](../restart_gitlab.md#installations-from-source).
 
-## Limiting RPC concurrency
+## Limit RPC concurrency
 
-It can happen that CI clone traffic puts a large strain on your Gitaly
-service. The bulk of the work gets done in the SSHUploadPack (for Git
-SSH) and PostUploadPack (for Git HTTP) RPC's. To prevent such workloads
-from overcrowding your Gitaly server you can set concurrency limits in
-Gitaly's configuration file.
+Clone traffic can put a large strain on your Gitaly service. The bulk of the work gets done in the
+either of the following RPCs:
+
+- `SSHUploadPack` (for Git SSH).
+- `PostUploadPack` (for Git HTTP).
+
+To prevent such workloads from overwhelming your Gitaly server, you can set concurrency limits in
+Gitaly's configuration file. For example:
 
 ```ruby
 # in /etc/gitlab/gitlab.rb
@@ -725,24 +748,28 @@ gitaly['concurrency'] = [
 ]
 ```
 
-This will limit the number of in-flight RPC calls for the given RPC's.
-The limit is applied per repository. In the example above, each on the
-Gitaly server can have at most 20 simultaneous `PostUploadPack` calls in
-flight, and the same for `SSHUploadPack`. If another request comes in for
-a repository that has used up its 20 slots, that request will get
-queued.
+This limits the number of in-flight RPC calls for the given RPCs. The limit is applied per
+repository. In the example above:
 
-You can observe the behavior of this queue via the Gitaly logs and via
-Prometheus. In the Gitaly logs, you can look for the string (or
-structured log field) `acquire_ms`. Messages that have this field are
-reporting about the concurrency limiter. In Prometheus, look for the
-`gitaly_rate_limiting_in_progress`, `gitaly_rate_limiting_queued` and
-`gitaly_rate_limiting_seconds` metrics.
+- Each repository served by the Gitaly server can have at most 20 simultaneous `PostUploadPack` RPC
+  calls in flight, and the same for `SSHUploadPack`.
+- If another request comes in for a repository that has used up its 20 slots, that request gets
+  queued.
 
-The name of the Prometheus metric is not quite right because this is a
-concurrency limiter, not a rate limiter. If a Gitaly client makes 1000 requests
-in a row in a very short timespan, the concurrency will not exceed 1,
-and this mechanism (the concurrency limiter) will do nothing.
+You can observe the behavior of this queue using the Gitaly logs and Prometheus:
+
+- In the Gitaly logs, look for the string (or structured log field) `acquire_ms`. Messages that have
+  this field are reporting about the concurrency limiter.
+- In Prometheus, look for the following metrics:
+
+  - `gitaly_rate_limiting_in_progress`.
+  - `gitaly_rate_limiting_queued`.
+  - `gitaly_rate_limiting_seconds`.
+
+NOTE: **Note:**
+Though the name of the Prometheus metric contains `rate_limiting`, it is a concurrency limiter, not
+a rate limiter. If a Gitaly client makes 1000 requests in a row very quickly, concurrency will not
+exceed 1 and the concurrency limiter has no effect.
 
 ## Rotating a Gitaly authentication token
 

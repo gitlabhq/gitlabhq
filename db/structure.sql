@@ -4258,6 +4258,12 @@ CREATE TABLE public.namespace_aggregation_schedules (
     namespace_id integer NOT NULL
 );
 
+CREATE TABLE public.namespace_limits (
+    additional_purchased_storage_size bigint DEFAULT 0 NOT NULL,
+    additional_purchased_storage_ends_on date,
+    namespace_id integer NOT NULL
+);
+
 CREATE TABLE public.namespace_root_storage_statistics (
     namespace_id integer NOT NULL,
     updated_at timestamp with time zone NOT NULL,
@@ -8718,6 +8724,9 @@ ALTER TABLE ONLY public.milestones
 ALTER TABLE ONLY public.namespace_aggregation_schedules
     ADD CONSTRAINT namespace_aggregation_schedules_pkey PRIMARY KEY (namespace_id);
 
+ALTER TABLE ONLY public.namespace_limits
+    ADD CONSTRAINT namespace_limits_pkey PRIMARY KEY (namespace_id);
+
 ALTER TABLE ONLY public.namespace_root_storage_statistics
     ADD CONSTRAINT namespace_root_storage_statistics_pkey PRIMARY KEY (namespace_id);
 
@@ -12319,6 +12328,9 @@ ALTER TABLE ONLY public.resource_label_events
 ALTER TABLE ONLY public.approval_merge_request_rules_groups
     ADD CONSTRAINT fk_rails_5b2ecf6139 FOREIGN KEY (approval_merge_request_rule_id) REFERENCES public.approval_merge_request_rules(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY public.namespace_limits
+    ADD CONSTRAINT fk_rails_5b3f2bc334 FOREIGN KEY (namespace_id) REFERENCES public.namespaces(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY public.protected_environment_deploy_access_levels
     ADD CONSTRAINT fk_rails_5b9f6970fe FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE;
 
@@ -14088,6 +14100,7 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200617001637
 20200617001848
 20200617002030
+20200617150041
 20200618105638
 20200618134223
 20200618134723

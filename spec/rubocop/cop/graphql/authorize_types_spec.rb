@@ -2,11 +2,10 @@
 
 require 'fast_spec_helper'
 require 'rubocop'
-require 'rubocop/rspec/support'
+
 require_relative '../../../../rubocop/cop/graphql/authorize_types'
 
-describe RuboCop::Cop::Graphql::AuthorizeTypes do
-  include RuboCop::RSpec::ExpectOffense
+describe RuboCop::Cop::Graphql::AuthorizeTypes, type: :rubocop do
   include CopHelper
 
   subject(:cop) { described_class.new }

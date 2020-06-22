@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
 require 'fast_spec_helper'
+require 'rubocop'
 require_relative '../../../../rubocop/cop/performance/ar_exists_and_present_blank.rb'
 
 describe RuboCop::Cop::Performance::ARExistsAndPresentBlank, type: :rubocop do
   include CopHelper
-  include ExpectOffense
 
   subject(:cop) { described_class.new }
 

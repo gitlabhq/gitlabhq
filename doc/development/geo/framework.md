@@ -215,7 +215,7 @@ For example, to add support for files referenced by a `Widget` model with a
 
    require 'spec_helper'
 
-   describe Geo::WidgetReplicator do
+   RSpec.describe Geo::WidgetReplicator do
      let(:model_record) { build(:widget) }
 
      it_behaves_like 'a blob replicator'
@@ -301,7 +301,7 @@ For example, to add support for files referenced by a `Widget` model with a
 
    require 'spec_helper'
 
-   describe Geo::WidgetRegistry, :geo, type: :model do
+   RSpec.describe Geo::WidgetRegistry, :geo, type: :model do
      let_it_be(:registry) { create(:widget_registry) }
 
      specify 'factory is valid' do
@@ -428,7 +428,7 @@ Widgets should now be verified by Geo!
 
    require 'spec_helper'
 
-   describe Resolvers::Geo::WidgetRegistriesResolver do
+   RSpec.describe Resolvers::Geo::WidgetRegistriesResolver do
      it_behaves_like 'a Geo registries resolver', :widget_registry
    end
    ```
@@ -452,7 +452,7 @@ Widgets should now be verified by Geo!
 
    require 'spec_helper'
 
-   describe Geo::WidgetRegistryFinder do
+   RSpec.describe Geo::WidgetRegistryFinder do
      it_behaves_like 'a framework registry finder', :widget_registry
    end
    ```
@@ -484,7 +484,7 @@ Widgets should now be verified by Geo!
 
    require 'spec_helper'
 
-   describe GitlabSchema.types['WidgetRegistry'] do
+   RSpec.describe GitlabSchema.types['WidgetRegistry'] do
      it_behaves_like 'a Geo registry type'
 
      it 'has the expected fields (other than those included in RegistryType)' do

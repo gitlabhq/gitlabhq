@@ -8,6 +8,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 ## GitLab managed Terraform State
 
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/2673) in GitLab 13.0.
+
 [Terraform remote backends](https://www.terraform.io/docs/backends/index.html)
 enable you to store the state file in a remote, shared store. GitLab uses the
 [Terraform HTTP backend](https://www.terraform.io/docs/backends/types/http.html)
@@ -95,64 +97,73 @@ to the repository.
    }
    ```
 
-1. In the root directory of your project repository, configure a `.gitlab-ci.yaml` file.
-   This example uses a pre-built image:
+1. In the root directory of your project repository, configure a
+   `.gitlab-ci.yaml` file. This example uses a pre-built image which includes a
+   `gitlab-terraform` helper. For supported Terraform versions, see the [GitLab
+   Terraform Images project](https://gitlab.com/gitlab-org/terraform-images).
 
    ```yaml
-   image:
-     name: hashicorp/terraform:light
-     entrypoint:
-       - '/usr/bin/env'
-       - 'PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
+   image: registry.gitlab.com/gitlab-org/terraform-images/stable:latest
    ```
 
-1. In the `.gitlab-ci.yaml` file, define some environment variables to ease development. In this
-   example, `GITLAB_TF_ADDRESS` is the URL of the GitLab instance where this pipeline
-   runs, and `TF_ROOT` is the directory where the Terraform commands must be executed:
+1. In the `.gitlab-ci.yaml` file, define some environment variables to ease
+   development. In this example, `TF_STATE` is the name of the Terraform state
+   (projects may have multiple states), `TF_ADDRESS` is the URL to the state on
+   the GitLab instance where this pipeline runs, and `TF_ROOT` is the directory
+   where the Terraform commands must be executed:
 
    ```yaml
    variables:
-     GITLAB_TF_ADDRESS: ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/terraform/state/${CI_PROJECT_NAME}
+     TF_STATE: ${CI_PROJECT_NAME}
+     TF_ADDRESS: ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/terraform/state/${TF_STATE}
      TF_ROOT: ${CI_PROJECT_DIR}/environments/cloudflare/production
 
    cache:
+     key: ${TF_STATE}
      paths:
-       - .terraform
+       - ${TF_ROOT}/.terraform
    ```
 
-1. In a `before_script`, pass a `terraform init` call containing configuration parameters
-   corresponding to variables required by the
-   [HTTP backend](https://www.terraform.io/docs/backends/types/http.html):
+1. In a `before_script`, change to your `TF_ROOT`:
 
    ```yaml
    before_script:
      - cd ${TF_ROOT}
-     - terraform --version
-     - terraform init -backend-config="address=${GITLAB_TF_ADDRESS}" -backend-config="lock_address=${GITLAB_TF_ADDRESS}/lock" -backend-config="unlock_address=${GITLAB_TF_ADDRESS}/lock" -backend-config="username=gitlab-ci-token" -backend-config="password=${CI_JOB_TOKEN}" -backend-config="lock_method=POST" -backend-config="unlock_method=DELETE" -backend-config="retry_wait_min=5"
 
    stages:
+     - prepare
      - validate
      - build
-     - test
      - deploy
+
+   init:
+     stage: prepare
+     script:
+       - gitlab-terraform init
 
    validate:
      stage: validate
      script:
-       - terraform validate
+       - gitlab-terraform validate
 
    plan:
      stage: build
      script:
-       - terraform plan
-       - terraform show
+       - gitlab-terraform plan
+       - gitlab-terraform plan-json
+     artifacts:
+       name: plan
+       paths:
+         - ${TF_ROOT}/plan.cache
+       reports:
+         terraform: ${TF_ROOT}/plan.json
 
    apply:
      stage: deploy
      environment:
        name: production
      script:
-       - terraform apply
+       - gitlab-terraform apply
      dependencies:
        - plan
      when: manual
@@ -160,8 +171,9 @@ to the repository.
        - master
    ```
 
-1. Push your project to GitLab, which triggers a CI job pipeline. This pipeline runs
-   the `terraform init`, `terraform validate`, and `terraform plan` commands.
+1. Push your project to GitLab, which triggers a CI job pipeline. This pipeline
+   runs the `gitlab-terraform init`, `gitlab-terraform validate`, and
+   `gitlab-terraform plan` commands.
 
 The output from the above `terraform` commands should be viewable in the job logs.
 
@@ -176,15 +188,18 @@ you can expose details from `terraform plan` runs directly into a merge request 
 enabling you to see statistics about the resources that Terraform will create,
 modify, or destroy.
 
-Let's explore how to configure a GitLab Terraform Report artifact:
+Let's explore how to configure a GitLab Terraform Report artifact. You can
+either use a pre-built image which includes a `gitlab-terraform` helper as
+above, where `gitlab-terraform plan-json` outputs the required artifact, or you
+can configure this manually as follows:
 
 1. For simplicity, let's define a few reusable variables to allow us to
    refer to these files multiple times:
 
    ```yaml
    variables:
-     PLAN: plan.tfplan
-     PLAN_JSON: tfplan.json
+     PLAN: plan.cache
+     PLAN_JSON: plan.json
    ```
 
 1. Install `jq`, a
@@ -216,7 +231,8 @@ Let's explore how to configure a GitLab Terraform Report artifact:
          terraform: $PLAN_JSON
    ```
 
-   For a full example, see [Example `.gitlab-ci.yaml` file](#example-gitlab-ciyaml-file).
+   For a full example using the pre-built image, see [Example `.gitlab-ci.yaml`
+   file](#example-gitlab-ciyaml-file).
 
    For an example displaying multiple reports, see [`.gitlab-ci.yaml` multiple reports file](#mulitple-terraform-plan-reports).
 
@@ -232,63 +248,60 @@ Let's explore how to configure a GitLab Terraform Report artifact:
 ### Example `.gitlab-ci.yaml` file
 
 ```yaml
-image:
-  name: hashicorp/terraform:light
-  entrypoint:
-    - '/usr/bin/env'
-    - 'PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
+image: registry.gitlab.com/gitlab-org/terraform-images/stable:latest
 
-# Default output file for Terraform plan
 variables:
-  GITLAB_TF_ADDRESS: ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/terraform/state/${CI_PROJECT_NAME}
-  PLAN: plan.tfplan
-  PLAN_JSON: tfplan.json
-  TF_ROOT: ${CI_PROJECT_DIR}
+  TF_STATE: ${CI_PROJECT_NAME}
+  TF_ADDRESS: ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/terraform/state/${TF_STATE}
+  TF_ROOT: ${CI_PROJECT_DIR}/environments/cloudflare/production
 
 cache:
+  key: ${TF_STATE}
   paths:
-    - .terraform
+    - ${TF_ROOT}/.terraform
 
 before_script:
-  - apk --no-cache add jq
-  - alias convert_report="jq -r '([.resource_changes[]?.change.actions?]|flatten)|{\"create\":(map(select(.==\"create\"))|length),\"update\":(map(select(.==\"update\"))|length),\"delete\":(map(select(.==\"delete\"))|length)}'"
   - cd ${TF_ROOT}
-  - terraform --version
-  - terraform init -backend-config="address=${GITLAB_TF_ADDRESS}" -backend-config="lock_address=${GITLAB_TF_ADDRESS}/lock" -backend-config="unlock_address=${GITLAB_TF_ADDRESS}/lock" -backend-config="username=${GITLAB_USER_LOGIN}" -backend-config="password=${GITLAB_TF_PASSWORD}" -backend-config="lock_method=POST" -backend-config="unlock_method=DELETE" -backend-config="retry_wait_min=5"
 
 stages:
+  - prepare
   - validate
   - build
   - deploy
 
+init:
+  stage: prepare
+  script:
+    - gitlab-terraform init
+
 validate:
   stage: validate
   script:
-    - terraform validate
+    - gitlab-terraform validate
 
 plan:
   stage: build
   script:
-    - terraform plan -out=$PLAN
-    - terraform show --json $PLAN | convert_report > $PLAN_JSON
+    - gitlab-terraform plan
+    - gitlab-terraform plan-json
   artifacts:
+    name: plan
+    paths:
+      - ${TF_ROOT}/plan.cache
     reports:
-      terraform: ${TF_ROOT}/tfplan.json
+      terraform: ${TF_ROOT}/plan.json
 
-# Separate apply job for manual launching Terraform as it can be destructive
-# action.
 apply:
   stage: deploy
   environment:
     name: production
   script:
-    - terraform apply -input=false $PLAN
+    - gitlab-terraform apply
   dependencies:
     - plan
   when: manual
   only:
     - master
-
 ```
 
 ### Mulitple Terraform Plan reports

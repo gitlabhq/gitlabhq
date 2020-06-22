@@ -112,7 +112,7 @@ migration. You can find the complete spec in
 require 'spec_helper'
 require Rails.root.join('db', 'post_migrate', '20170526185842_migrate_pipeline_stages.rb')
 
-describe MigratePipelineStages do
+RSpec.describe MigratePipelineStages do
   # Create test data - pipeline and CI/CD jobs.
   let(:jobs) { table(:ci_builds) }
   let(:stages) { table(:ci_stages) }
