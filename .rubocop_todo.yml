@@ -560,15 +560,6 @@ Style/GuardClause:
 Style/HashEachMethods:
   Enabled: false
 
-# Offense count: 6
-# Cop supports --auto-correct.
-Style/HashTransformKeys:
-  Exclude:
-    - 'ee/app/models/vulnerabilities/occurrence.rb'
-    - 'ee/spec/lib/gitlab/ci/templates/dependency_scanning_gitlab_ci_yaml_spec.rb'
-    - 'lib/banzai/filter/commit_trailers_filter.rb'
-    - 'lib/gitlab/analytics/cycle_analytics/stage_events.rb'
-
 # Offense count: 31
 # Configuration parameters: AllowIfModifier.
 Style/IfInsideElse:

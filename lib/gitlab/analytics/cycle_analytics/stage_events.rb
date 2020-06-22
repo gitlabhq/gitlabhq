@@ -60,7 +60,7 @@ module Gitlab
 
         # hash for defining ActiveRecord enum: identifier => number
         def self.to_enum
-          enum_mapping.each_with_object({}) { |(k, v), hash| hash[k.identifier] = v }
+          enum_mapping.transform_keys { |k| k.identifier }
         end
 
         def self.pairing_rules
