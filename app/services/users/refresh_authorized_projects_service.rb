@@ -85,8 +85,6 @@ module Users
     # remove - The IDs of the authorization rows to remove.
     # add - Rows to insert in the form `[user id, project id, access level]`
     def update_authorizations(remove = [], add = [])
-      return if remove.empty? && add.empty?
-
       User.transaction do
         user.remove_project_authorizations(remove) unless remove.empty?
         ProjectAuthorization.insert_authorizations(add) unless add.empty?

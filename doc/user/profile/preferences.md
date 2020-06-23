@@ -80,8 +80,9 @@ The default syntax theme is White, and you can choose among 5 different themes:
 
 [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/2389) in 13.0, the theme
 you choose also applies to the [Web IDE](../project/web_ide/index.md)'s code editor and [Snippets](../snippets.md).
-The themes are available only in the Web IDE file editor, except for the [dark theme](https://gitlab.com/gitlab-org/gitlab/-/issues/209808),
-which applies to the entire Web IDE screen.
+The themes are available only in the Web IDE file editor, except for the [dark theme](https://gitlab.com/gitlab-org/gitlab/-/issues/209808) and
+the [solarized dark theme](https://gitlab.com/gitlab-org/gitlab/-/issues/219228),
+which apply to the entire Web IDE screen.
 
 ## Behavior
 

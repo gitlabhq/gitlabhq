@@ -169,8 +169,8 @@ describe('monitoring/utils', () => {
     });
   });
 
-  describe('getPromCustomVariablesFromUrl', () => {
-    const { getPromCustomVariablesFromUrl } = monitoringUtils;
+  describe('templatingVariablesFromUrl', () => {
+    const { templatingVariablesFromUrl } = monitoringUtils;
 
     beforeEach(() => {
       jest.spyOn(urlUtils, 'queryToObject');
@@ -195,7 +195,7 @@ describe('monitoring/utils', () => {
         'var-pod': 'POD',
       });
 
-      expect(getPromCustomVariablesFromUrl()).toEqual(expect.objectContaining({ pod: 'POD' }));
+      expect(templatingVariablesFromUrl()).toEqual(expect.objectContaining({ pod: 'POD' }));
     });
 
     it('returns an empty object when no custom variables are present', () => {
@@ -203,7 +203,7 @@ describe('monitoring/utils', () => {
         dashboard: '.gitlab/dashboards/custom_dashboard.yml',
       });
 
-      expect(getPromCustomVariablesFromUrl()).toStrictEqual({});
+      expect(templatingVariablesFromUrl()).toStrictEqual({});
     });
   });
 
@@ -424,76 +424,6 @@ describe('monitoring/utils', () => {
       ${'var-pod-1-var-'} | ${'pod-1-var-'}
     `('removePrefixFromLabel returns $expected with input $input', ({ input, expected }) => {
       expect(monitoringUtils.removePrefixFromLabel(input)).toEqual(expected);
-    });
-  });
-
-  describe('mergeURLVariables', () => {
-    beforeEach(() => {
-      jest.spyOn(urlUtils, 'queryToObject');
-    });
-
-    afterEach(() => {
-      urlUtils.queryToObject.mockRestore();
-    });
-
-    it('returns empty object if variables are not defined in yml or URL', () => {
-      urlUtils.queryToObject.mockReturnValueOnce({});
-
-      expect(monitoringUtils.mergeURLVariables({})).toEqual({});
-    });
-
-    it('returns empty object if variables are defined in URL but not in yml', () => {
-      urlUtils.queryToObject.mockReturnValueOnce({
-        'var-env': 'one',
-        'var-instance': 'localhost',
-      });
-
-      expect(monitoringUtils.mergeURLVariables({})).toEqual({});
-    });
-
-    it('returns yml variables if variables defined in yml but not in the URL', () => {
-      urlUtils.queryToObject.mockReturnValueOnce({});
-
-      const params = {
-        env: 'one',
-        instance: 'localhost',
-      };
-
-      expect(monitoringUtils.mergeURLVariables(params)).toEqual(params);
-    });
-
-    it('returns yml variables if variables defined in URL do not match with yml variables', () => {
-      const urlParams = {
-        'var-env': 'one',
-        'var-instance': 'localhost',
-      };
-      const ymlParams = {
-        pod: { value: 'one' },
-        service: { value: 'database' },
-      };
-      urlUtils.queryToObject.mockReturnValueOnce(urlParams);
-
-      expect(monitoringUtils.mergeURLVariables(ymlParams)).toEqual(ymlParams);
-    });
-
-    it('returns merged yml and URL variables if there is some match', () => {
-      const urlParams = {
-        'var-env': 'one',
-        'var-instance': 'localhost:8080',
-      };
-      const ymlParams = {
-        instance: { value: 'localhost' },
-        service: { value: 'database' },
-      };
-
-      const merged = {
-        instance: { value: 'localhost:8080' },
-        service: { value: 'database' },
-      };
-
-      urlUtils.queryToObject.mockReturnValueOnce(urlParams);
-
-      expect(monitoringUtils.mergeURLVariables(ymlParams)).toEqual(merged);
     });
   });
 

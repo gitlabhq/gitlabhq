@@ -9,6 +9,7 @@ import {
   convertToGrafanaTimeRange,
   addDashboardMetaDataToLink,
 } from '~/monitoring/stores/utils';
+import * as urlUtils from '~/lib/utils/url_utility';
 import { annotationsData } from '../mock_data';
 import { NOT_IN_DB_PREFIX } from '~/monitoring/constants';
 
@@ -395,6 +396,118 @@ describe('mapToDashboardViewModel', () => {
       expect(getMappedMetric(dashboard)).toMatchObject({
         x_label: 'Another label',
         unkown_option: 'unkown_data',
+      });
+    });
+  });
+
+  describe('templating variables mapping', () => {
+    beforeEach(() => {
+      jest.spyOn(urlUtils, 'queryToObject');
+    });
+
+    afterEach(() => {
+      urlUtils.queryToObject.mockRestore();
+    });
+
+    it('sets variables as-is from yml file if URL has no variables', () => {
+      const response = {
+        dashboard: 'Dashboard Name',
+        links: [],
+        templating: {
+          variables: {
+            pod: 'kubernetes',
+            pod_2: 'kubernetes-2',
+          },
+        },
+      };
+
+      urlUtils.queryToObject.mockReturnValueOnce();
+
+      expect(mapToDashboardViewModel(response)).toMatchObject({
+        dashboard: 'Dashboard Name',
+        links: [],
+        variables: {
+          pod: {
+            label: 'pod',
+            type: 'text',
+            value: 'kubernetes',
+          },
+          pod_2: {
+            label: 'pod_2',
+            type: 'text',
+            value: 'kubernetes-2',
+          },
+        },
+      });
+    });
+
+    it('sets variables as-is from yml file if URL has no matching variables', () => {
+      const response = {
+        dashboard: 'Dashboard Name',
+        links: [],
+        templating: {
+          variables: {
+            pod: 'kubernetes',
+            pod_2: 'kubernetes-2',
+          },
+        },
+      };
+
+      urlUtils.queryToObject.mockReturnValueOnce({
+        'var-environment': 'POD',
+      });
+
+      expect(mapToDashboardViewModel(response)).toMatchObject({
+        dashboard: 'Dashboard Name',
+        links: [],
+        variables: {
+          pod: {
+            label: 'pod',
+            type: 'text',
+            value: 'kubernetes',
+          },
+          pod_2: {
+            label: 'pod_2',
+            type: 'text',
+            value: 'kubernetes-2',
+          },
+        },
+      });
+    });
+
+    it('merges variables from URL with the ones from yml file', () => {
+      const response = {
+        dashboard: 'Dashboard Name',
+        links: [],
+        templating: {
+          variables: {
+            pod: 'kubernetes',
+            pod_2: 'kubernetes-2',
+          },
+        },
+      };
+
+      urlUtils.queryToObject.mockReturnValueOnce({
+        'var-environment': 'POD',
+        'var-pod': 'POD1',
+        'var-pod_2': 'POD2',
+      });
+
+      expect(mapToDashboardViewModel(response)).toMatchObject({
+        dashboard: 'Dashboard Name',
+        links: [],
+        variables: {
+          pod: {
+            label: 'pod',
+            type: 'text',
+            value: 'POD1',
+          },
+          pod_2: {
+            label: 'pod_2',
+            type: 'text',
+            value: 'POD2',
+          },
+        },
       });
     });
   });

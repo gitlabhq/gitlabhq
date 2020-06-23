@@ -499,6 +499,9 @@ Settings.cron_jobs['x509_issuer_crl_check_worker']['job_class'] = 'X509IssuerCrl
 Settings.cron_jobs['users_create_statistics_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['users_create_statistics_worker']['cron'] ||= '2 15 * * *'
 Settings.cron_jobs['users_create_statistics_worker']['job_class'] = 'Users::CreateStatisticsWorker'
+Settings.cron_jobs['authorized_project_update_periodic_recalculate_worker'] ||= Settingslogic.new({})
+Settings.cron_jobs['authorized_project_update_periodic_recalculate_worker']['cron'] ||= '45 1 * * 6'
+Settings.cron_jobs['authorized_project_update_periodic_recalculate_worker']['job_class'] = 'AuthorizedProjectUpdate::PeriodicRecalculateWorker'
 
 Gitlab.ee do
   Settings.cron_jobs['adjourned_group_deletion_worker'] ||= Settingslogic.new({})

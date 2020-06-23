@@ -2,8 +2,8 @@ import { slugify } from '~/lib/utils/text_utility';
 import createGqClient, { fetchPolicies } from '~/lib/graphql';
 import { SUPPORTED_FORMATS } from '~/lib/utils/unit_format';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
-import { parseTemplatingVariables } from './variable_mapping';
 import { NOT_IN_DB_PREFIX, linkTypes } from '../constants';
+import { mergeURLVariables, parseTemplatingVariables } from './variable_mapping';
 import { DATETIME_RANGE_TYPES } from '~/lib/utils/constants';
 import { timeRangeToParams, getRangeType } from '~/lib/utils/datetime_range';
 import { isSafeURL, mergeUrlParams } from '~/lib/utils/url_utility';
@@ -289,7 +289,7 @@ export const mapToDashboardViewModel = ({
 }) => {
   return {
     dashboard,
-    variables: parseTemplatingVariables(templating),
+    variables: mergeURLVariables(parseTemplatingVariables(templating)),
     links: links.map(mapLinksToViewModel),
     panelGroups: panel_groups.map(mapToPanelGroupViewModel),
   };
