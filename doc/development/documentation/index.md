@@ -492,122 +492,138 @@ The output should be similar to:
 Note that this requires you to either have the required lint tools installed on your machine,
 or a working Docker installation, in which case an image with these tools pre-installed will be used.
 
-### Local linting
+### Local linters
 
 To help adhere to the [documentation style guidelines](styleguide.md), and improve the content
-added to documentation, consider locally installing and running documentation linters. This will
-help you catch common issues before raising merge requests for review of documentation.
+added to documentation, [install documentation linters](#install-linters) and
+[integrate them with your code editor](#configure-editors).
 
-Running the following locally allows you to match the checks in the build pipeline:
+At GitLab, we mostly use:
 
-- [markdownlint](#markdownlint).
-- [Vale](#vale).
-
-NOTE: **Note:**
-This list does not limit what other linters you can add to your local documentation writing toolchain.
+- [markdownlint](#markdownlint)
+- [Vale](#vale)
 
 #### markdownlint
 
-[markdownlint](https://github.com/DavidAnson/markdownlint) checks that Markdown
-syntax follows [certain rules](https://github.com/DavidAnson/markdownlint/blob/master/doc/Rules.md#rules),
-and is used by the [`docs-lint` test](#testing) with a [configuration file](#markdownlint-configuration).
-Our [Documentation Style Guide](styleguide.md#markdown) and [Markdown Guide](https://about.gitlab.com/handbook/markdown-guide/)
-elaborate on which choices must be made when selecting Markdown syntax for GitLab
-documentation. This tool helps catch deviations from those guidelines.
+[markdownlint](https://github.com/DavidAnson/markdownlint) checks that Markdown syntax follows
+[certain rules](https://github.com/DavidAnson/markdownlint/blob/master/doc/Rules.md#rules), and is
+used by the [`docs-lint` test](#testing).
 
-markdownlint can be used [on the command line](https://github.com/igorshubovych/markdownlint-cli#markdownlint-cli--),
-either on a single Markdown file or on all Markdown files in a project. For example, to run
-markdownlint on all documentation in the [`gitlab` project](https://gitlab.com/gitlab-org/gitlab),
-run the following commands from within your `gitlab` project root directory, which will
-automatically detect the [`.markdownlint.json`](#markdownlint-configuration) configuration
-file in the root of the project, and test all files in `/doc` and its subdirectories:
+Our [Documentation Style Guide](styleguide.md#markdown) and
+[Markdown Guide](https://about.gitlab.com/handbook/markdown-guide/) elaborate on which choices must
+be made when selecting Markdown syntax for GitLab documentation. This tool helps catch deviations
+from those guidelines.
 
-```shell
-markdownlint 'doc/**/*.md'
-```
+markdownlint configuration is found in the following projects:
 
-If you wish to use a different configuration file, use the `-c` flag:
+- [`gitlab`](https://gitlab.com/gitlab-org/gitlab/blob/master/.markdownlint.json)
+- [`gitlab-runner`](https://gitlab.com/gitlab-org/gitlab-runner/blob/master/.markdownlint.json)
+- [`omnibus-gitlab`](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/.markdownlint.json)
+- [`charts`](https://gitlab.com/gitlab-org/charts/gitlab/-/blob/master/.markdownlint.json)
+- [`gitlab-development-kit`](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/master/.markdownlint.json)
 
-```shell
-markdownlint -c <config-file-name> 'doc/**/*.md'
-```
+This configuration is also used within build pipelines.
 
-##### Run markdownlint in an editor
+You can use markdownlint:
 
-markdownlint can also be run as a linter within text editors using [plugins/extensions](https://github.com/DavidAnson/markdownlint#related),
-such as:
+- [On the command line](https://github.com/igorshubovych/markdownlint-cli#markdownlint-cli--).
+- [Within a code editor](#configure-editors).
+
+#### Vale
+
+[Vale](https://errata-ai.gitbook.io/vale/) is a grammar, style, and word usage linter for the
+English language. Vale's configuration is stored in the
+[`.vale.ini`](https://gitlab.com/gitlab-org/gitlab/blob/master/.vale.ini) file located in the root
+directory of projects.
+
+Vale supports creating [custom tests](https://errata-ai.github.io/vale/styles/) that extend any of
+several types of checks, which we store in the `.linting/vale/styles/gitlab` directory within the
+documentation directory of projects.
+
+Vale configuration is found in the following projects:
+
+- [`gitlab`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/doc/.vale/gitlab)
+- [`gitlab-runner`](https://gitlab.com/gitlab-org/gitlab-runner/-/tree/master/docs/.vale/gitlab)
+- [`omnibus-gitlab`](https://gitlab.com/gitlab-org/omnibus-gitlab/-/tree/master/doc/.vale/gitlab)
+- [`charts`](https://gitlab.com/gitlab-org/charts/gitlab/-/tree/master/doc/.vale/gitlab)
+- [`gitlab-development-kit`](https://gitlab.com/gitlab-org/gitlab-development-kit/-/tree/master/doc/.vale/gitlab)
+
+This configuration is also used within build pipelines.
+
+You can use Vale:
+
+- [On the command line](https://errata-ai.gitbook.io/vale/getting-started/usage).
+- [Within a code editor](#configure-editors).
+
+#### Install linters
+
+At a minimum, install [markdownlint](#markdownlint) and [Vale](#vale) to match the checks run in
+build pipelines:
+
+1. Install `markdownlint-cli`, using either:
+
+   - `npm`:
+
+     ```shell
+     npm install -g markdownlint-cli
+     ```
+
+   - `yarn`:
+
+     ```shell
+     yarn global add markdownlint-cli
+     ```
+
+     We recommend installing the version of `markdownlint-cli` currently used in the documentation
+     linting [Docker image](https://gitlab.com/gitlab-org/gitlab-docs/-/blob/master/dockerfiles/Dockerfile.gitlab-docs-lint#L38).
+
+1. Install [`vale`](https://github.com/errata-ai/vale/releases). For example, to install using
+   `brew` for macOS, run:
+
+   ```shell
+   brew install vale
+   ```
+
+   We recommend installing the version of Vale currently used in the documentation linting
+   [Docker image](https://gitlab.com/gitlab-org/gitlab-docs/-/blob/master/dockerfiles/Dockerfile.gitlab-docs-lint#L16).
+
+In addition to using markdownlint and Vale at the command line, these tools can be
+[integrated with your code editor](#configure-editors).
+
+#### Configure editors
+
+To configure markdownlint within your editor, install one of the following as appropriate:
 
 - [Sublime Text](https://packagecontrol.io/packages/SublimeLinter-contrib-markdownlint)
 - [Visual Studio Code](https://marketplace.visualstudio.com/items?itemName=DavidAnson.vscode-markdownlint)
 - [Atom](https://atom.io/packages/linter-node-markdownlint)
 
-It is best to use the [same configuration file](#markdownlint-configuration) as what
-is in use in the four repositories that are the sources for <https://docs.gitlab.com>. Each
-plugin/extension has different requirements regarding the configuration file, which
-is explained in each editor's docs.
-
-##### markdownlint configuration
-
-Each formatting issue that markdownlint checks has an associated
-[rule](https://github.com/DavidAnson/markdownlint/blob/master/doc/Rules.md#rules).
-These rules are configured in the `.markdownlint.json` files located in the root of
-four repositories that are the sources for <https://docs.gitlab.com>:
-
-- [`gitlab`](https://gitlab.com/gitlab-org/gitlab/blob/master/.markdownlint.json)
-- [`gitlab-runner`](https://gitlab.com/gitlab-org/gitlab-runner/blob/master/.markdownlint.json)
-- [`omnibus-gitlab`](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/.markdownlint.json)
-- [`charts`](https://gitlab.com/charts/gitlab/blob/master/.markdownlint.json)
-
-By default all rules are enabled, so the configuration file is used to disable unwanted
-rules, and also to configure optional parameters for enabled rules as needed. You can
-also check [the issue](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/64352) that
-tracked the changes required to implement these rules, and details which rules were
-on or off when markdownlint was enabled on the docs.
-
-#### Vale
-
-[Vale](https://errata-ai.gitbook.io/vale/) is a grammar, style, and word usage linter
-for the English language. Vale's configuration is stored in the
-[`.vale.ini`](https://gitlab.com/gitlab-org/gitlab/blob/master/.vale.ini) file
-located in the root directory of the [GitLab repository](https://gitlab.com/gitlab-org/gitlab).
-
-Vale supports creating [custom tests](https://errata-ai.github.io/vale/styles/),
-stored in the `doc/.linting/vale/styles/gitlab` directory, that extend any of
-several types of checks.
-
-To view linting suggestions locally, you must install Vale on your own machine,
-and from GitLab's root directory (where `.vale.ini` is located), run:
-
-```shell
-vale --glob='*.{md}' doc
-```
-
-Vale's error-level test results [are displayed](#testing) in CI pipelines.
-
-##### Run Vale in an editor
-
-You can run Vale as a linter within your text editor of choice, with:
+To configure Vale within your editor, install one of the following as appropriate:
 
 - The Sublime Text [`SublimeLinter-contrib-vale` plugin](https://packagecontrol.io/packages/SublimeLinter-contrib-vale)
 - The Visual Studio Code [`testthedocs.vale` extension](https://marketplace.visualstudio.com/items?itemName=testthedocs.vale)
 
 We don't use [Vale Server](https://errata-ai.github.io/vale/#using-vale-with-a-text-editor-or-another-third-party-application).
 
-##### Disable a Vale test
+#### Disable Vale tests
 
-You can disable a specific Vale linting rule or all Vale linting rules for any portion of a document:
+You can disable a specific Vale linting rule or all Vale linting rules for any portion of a
+document:
 
-- To disable a specific rule, add a `<!-- vale gitlab.rulename = NO -->` tag
-  before the text, and a `<!-- vale gitlab.rulename = YES -->` tag after the text,
-  replacing `rulename` with the filename of a test in the [GitLab styles](https://gitlab.com/gitlab-org/gitlab/-/tree/master/doc/.linting/vale/styles/gitlab) directory.
-- To disable all Vale linting rules, add a `<!-- vale off -->` tag before the text,
-  and a `<!-- vale on -->` tag after the text.
+- To disable a specific rule, add a `<!-- vale gitlab.rulename = NO -->` tag before the text, and a
+  `<!-- vale gitlab.rulename = YES -->` tag after the text, replacing `rulename` with the filename
+  of a test in the
+  [GitLab styles](https://gitlab.com/gitlab-org/gitlab/-/tree/master/doc/.linting/vale/styles/gitlab)
+  directory.
+- To disable all Vale linting rules, add a `<!-- vale off -->` tag before the text, and a
+  `<!-- vale on -->` tag after the text.
 
-Whenever possible, exclude only the problematic rule and line(s).
-In some cases, such as list items, you may need to disable linting for the entire
-list until ["Ignore comments are not honored in a Markdown file"](https://github.com/errata-ai/vale/issues/175) is resolved.
+Whenever possible, exclude only the problematic rule and line(s). In some cases, such as list items,
+you may need to disable linting for the entire list until
+[Vale issue #175](https://github.com/errata-ai/vale/issues/175) is resolved.
 
-For more information, see [Vale's documentation](https://errata-ai.gitbook.io/vale/getting-started/markup#markup-based-configuration).
+For more information, see
+[Vale's documentation](https://errata-ai.gitbook.io/vale/getting-started/markup#markup-based-configuration).
 
 ## Danger Bot
 

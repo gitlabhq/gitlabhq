@@ -1037,92 +1037,28 @@ the `.template` job, and uses the `alpine` Docker image as defined in the local 
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/27863) in GitLab 12.3.
 
-`rules` allows for a list of individual rule objects to be evaluated
-*in order*, until one matches and dynamically provides attributes to the job.
+The `rules` keyword is a way to set job policies that determine whether or not jobs
+are added to pipelines.
+
+A list of individual rule clauses are evaluated *in order*, until one matches. When
+matched, the job is either included or excluded from the pipeline, depending
+on the configuration. If included, the job also has [certain attributes](#rules-attributes)
+added to it.
 
 CAUTION: **Caution:**
-`rules` can't be used in combination with `only/except` as it is a replacement for that functionality. If you attempt to do this, the linter will return a
+`rules` can't be used in combination with [`only/except`](#onlyexcept-basic) because it is a replacement for
+that functionality. If you attempt to do this, the linter returns a
 `key may not be used with rules` error.
 
-#### Key details when using `rules`
+#### Rules attributes
 
-A very important difference between `rules` and `only/except`, is that jobs defined
-with `rules` trigger merge request pipelines by default, but `only/except` jobs do not.
-This may be surprising if migrating from `only` and `except`, so new users of `rules`
-can use one of the [`workflow: rules` templates](#workflowrules-templates) to get started.
-This will ensure that the behavior is more stable as you start adding additional `rules`
-blocks, and will avoid issues like creating a duplicate, merge request (detached) pipeline.
+The job attributes allowed by `rules` are:
 
-We don't recommend mixing `only/except` jobs with `rules` jobs in the same pipeline.
-It may not cause YAML errors, but debugging the exact execution behavior can be complex
-due to the different default behaviors of `only/except` and `rules`.
+- [`when`](#when): If not defined, defaults to `when: on_success`.
+  - If used as `when: delayed`, `start_in` is also required.
+- [`allow_failure`](#allow_failure): If not defined, defaults to `allow_failure: false`.
 
-### Rules clauses
-
-Available rule clauses include:
-
-- [`if`](#rulesif) (similar to [`only:variables`](#onlyvariablesexceptvariables))
-- [`changes`](#ruleschanges) (same as [`only:changes`](#onlychangesexceptchanges))
-- [`exists`](#rulesexists)
-
-For example, using `if`. This configuration specifies that `job` should be built
-and run for every pipeline on merge requests targeting `master`, regardless of
-the status of other builds:
-
-```yaml
-job:
-  script: "echo Hello, Rules!"
-  rules:
-    - if: '$CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "master"'
-      when: always
-    - if: '$VAR =~ /pattern/'
-      when: manual
-    - when: on_success
-```
-
-In this example, if the first rule:
-
-- Matches, the job will be given the `when:always` attribute.
-- Does not match, the second and third rules will be evaluated sequentially
-  until a match is found. That is, the job will be given either the:
-  - `when: manual` attribute if the second rule matches. **The stage won't complete until this manual job is triggered and completes successfully.**
-  - `when: on_success` attribute if the second rule does not match. The third
-    rule will always match when reached because it has no conditional clauses.
-
-#### `rules:if`
-
-`rules:if` differs slightly from `only:variables` by accepting only a single
-expression string, rather than an array of them. Any set of expressions to be
-evaluated should be conjoined into a single expression using `&&` or `||`, and use
-the [variable matching syntax](../variables/README.md#syntax-of-environment-variable-expressions).
-
-For example:
-
-```yaml
-job:
-  script: "echo Hello, Rules!"
-  rules:
-    - if: '$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME =~ /^feature/ && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "master"' # This rule will be evaluated
-      when: always
-    - if: '$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME =~ /^feature/' # This rule will only be evaluated if the target branch is not "master"
-      when: manual
-    - if: '$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME' # If neither of the first two match but the simple presence does, we set to "on_success" by default
-```
-
-Some details regarding the logic that determines the `when` for the job:
-
-- If none of the provided rules match, the job is set to `when: never`, and is
-  not included in the pipeline.
-- A rule without any conditional clause, such as a `when` or `allow_failure`
-  rule without `if` or `changes`, always matches, and is always used if reached.
-- If a rule matches and has no `when` defined, the rule will use the `when`
-  defined for the job, which defaults to `on_success` if not defined.
-
-#### `rules:changes`
-
-`rules: changes` works exactly the same way as `only: changes` and `except: changes`,
-accepting an array of paths. Similarly, it will always return true if there is no
-Git push event. See [`only/except: changes`](#onlychangesexceptchanges) for more information.
+If `when` is evaluated to any value except `never`, the job is included in the pipeline.
 
 For example:
 
@@ -1130,20 +1066,264 @@ For example:
 docker build:
   script: docker build -t my-image:$CI_COMMIT_REF_SLUG .
   rules:
-    - changes: # Will include the job and set to when:manual if any of the follow paths match a modified file.
-      - Dockerfile
-      when: manual
-    - if: '$VAR == "string value"'
-      when: manual # Will include the job and set to when:manual if the expression evaluates to true, after the `changes:` rule fails to match.
-    - when: on_success # If neither of the first rules match, set to on_success
+    - if: '$CI_COMMIT_BRANCH == "master"'
+      when: delayed
+      start_in: '3 hours'
+      allow_failure: true
 ```
 
-In this example, a job either set to:
+Additional job configuration may be added to rules in the future. If something
+useful is not available, please [open an issue](https://gitlab.com/gitlab-org/gitlab/-/issues).
 
-- Run manually if `Dockerfile` has changed OR `$VAR == "string value"`.
-- `when:on_success` by the last rule, where no earlier clauses evaluate to true.
+#### Rules clauses
 
-#### `rules:exists`
+Available rule clauses are:
+
+| Clause                     | Description                                                                                                                        |
+|----------------------------|------------------------------------------------------------------------------------------------------------------------------------|
+| [`if`](#rulesif)           | Add or exclude jobs from a pipeline by evaluating an `if` statement. Similar to [`only:variables`](#onlyvariablesexceptvariables). |
+| [`changes`](#ruleschanges) | Add or exclude jobs from a pipeline based on what files are changed. Same as [`only:changes`](#onlychangesexceptchanges).          |
+| [`exists`](#rulesexists)   | Add or exclude jobs from a pipeline based on the presence of specific files.                                                       |
+
+Rules are evaluated in order until a match is found. If a match is found, the attributes
+are checked to see if the job should be added to the pipeline. If no attributes are defined,
+the defaults are:
+
+- `when: on_success`
+- `allow_failure: false`
+
+The job is added to the pipeline:
+
+- If a rule matches and has `when: on_success`, `when: delayed` or `when: always`.
+- If no rules match, but the last clause is `when: on_success`, `when: delayed`
+  or `when: always` (with no rule).
+
+The job is not added to the pipeline:
+
+- If no rules match, and there is no standalone `when: on_success`, `when: delayed` or
+  `when: always`.
+- If a rule matches, and has `when: never` as the attribute.
+
+For example, using `if` clauses to strictly limit when jobs run:
+
+```yaml
+job:
+  script: "echo Hello, Rules!"
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      when: manual
+      allow_failure: true
+    - if: '$CI_PIPELINE_SOURCE == "schedule"'
+```
+
+In this example:
+
+- If the pipeline is for a merge request, the first rule matches, and the job
+  is added to the [merge request pipeline](../merge_request_pipelines/index.md)
+  with attributes of:
+  - `when: manual` (manual job)
+  - `allow_failure: true` (allows the pipeline to continue running even if the manual job is not run)
+- If the pipeline is **not** for a merge request, the first rule doesn't match, and the
+  second rule is evaluated.
+- If the pipeline is a scheduled pipeline, the second rule matches, and the job
+  is added to the scheduled pipeline. Since no attributes were defined, it is added
+  with:
+  - `when: on_success` (default)
+  - `allow_failure: false` (default)
+- In **all other cases**, no rules match, so the job is **not** added to any other pipeline.
+
+Alternatively, you can define a set of rules to exclude jobs in a few cases, but
+run them in all other cases:
+
+```yaml
+job:
+  script: "echo Hello, Rules!"
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      when: never
+    - if: '$CI_PIPELINE_SOURCE == "schedule"'
+      when: never
+    - when: on_success
+```
+
+- If the pipeline is for a merge request, the job is **not** be added to the pipeline.
+- If the pipeline is a scheduled pipeline, the job is **not** be added to the pipeline.
+- In **all other cases**, the job is added to the pipeline, with `when: on_success`.
+
+CAUTION: **Caution**
+If you use `when: on_success`, `always`, or `delayed` as the final rule, two
+simultaneous pipelines may start. Both push pipelines and merge request pipelines can
+be triggered by the same event (a push to the source branch for an open merge request).
+See the [important differences between `rules` and `only`/`except`](#differences-between-rules-and-onlyexcept)
+for more details.
+
+#### Differences between `rules` and `only`/`except`
+
+A very important difference between `rules` and `only/except`, is that jobs defined
+with `only/except` do not trigger merge request pipelines without explicit configuration.
+`rules` *can* trigger all types of pipelines, without explicitly configuring each
+type.
+
+For example:
+
+```yaml
+job:
+  script: "echo This creates double pipelines!"
+  rules:
+    - if: '$CUSTOM_VARIABLE == "false"'
+      when: never
+    - when: always
+```
+
+This job does not run when `$CUSTOM_VARIABLE` is false, but it *does* run in **all**
+other pipelines, including **both** push (branch) and merge request pipelines. With
+this configuration, every push to an open merge request's source branch
+causes duplicated pipelines. Explicitly allowing both push and merge request pipelines
+in the same job could have the same effect.
+
+We recommend using [`workflow: rules`](#workflowrules) to limit which types of pipelines
+are permitted. Allowing only merge request pipelines, or only branch pipelines,
+eliminates duplicated pipelines. Alternatively, you can rewrite the rules to be
+stricter, or avoid using a final `when` (`always`, `on_success` or `delayed`).
+
+Also, we don't recommend mixing `only/except` jobs with `rules` jobs in the same pipeline.
+It may not cause YAML errors, but debugging the exact execution behavior can be complex
+due to the different default behaviors of `only/except` and `rules`.
+
+##### `rules:if`
+
+`rules:if` clauses determine whether or not jobs are added to a pipeline by evaluating
+a simple `if` statement. If the `if` statement is true, the job is either included
+or excluded from a pipeline. In plain English, `if` rules can be interpreted as one of:
+
+- "If this rule evaluates to true, add the job" (default).
+- "If this rule evaluates to true, do not add the job" (by adding `when: never`).
+
+`rules:if` differs slightly from `only:variables` by accepting only a single
+expression string per rule, rather than an array of them. Any set of expressions to be
+evaluated can be conjoined into a single expression by using `&&` or `||`, and use
+the [variable matching syntax](../variables/README.md#syntax-of-environment-variable-expressions).
+
+`if:` clauses are evaluated based on the values of [predefined environment variables](../variables/predefined_variables.md)
+or [custom environment variables](../variables/README.md#custom-environment-variables).
+
+For example:
+
+```yaml
+job:
+  script: "echo Hello, Rules!"
+  rules:
+    - if: '$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME =~ /^feature/ && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "master"'
+      when: always
+    - if: '$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME =~ /^feature/'
+      when: manual
+      allow_failure: true
+    - if: '$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME' # Checking for the presence of a variable is possible
+```
+
+Some details regarding the logic that determines the `when` for the job:
+
+- If none of the provided rules match, the job is set to `when: never` and is
+  not included in the pipeline.
+- A rule without any conditional clause, such as a `when` or `allow_failure`
+  rule without `if` or `changes`, always matches, and is always used if reached.
+- If a rule matches and has no `when` defined, the rule uses the `when`
+  defined for the job, which defaults to `on_success` if not defined.
+
+For behavior similar to the [`only`/`except` keywords](#onlyexcept-basic), you can
+check the value of the `$CI_PIPELINE_SOURCE` variable.
+
+| Value                         | Description                                                                                                                                                                                                                                                                                                                                           |
+|-------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `push`                        | For pipelines triggered by a `git push` event, including for branches and tags.                                                                                                                                                                                                                                                                       |
+| `web`                         | For pipelines created by using **Run pipeline** button in the GitLab UI, from the project's **CI/CD > Pipelines** section.                                                                                                                                                                                                                            |
+| `trigger`                     | For pipelines created by using a trigger token.                                                                                                                                                                                                                                                                                                       |
+| `schedule`                    | For [scheduled pipelines](../pipelines/schedules.md).                                                                                                                                                                                                                                                                                                 |
+| `api`                         | For pipelines triggered by the [pipelines API](../../api/pipelines.md#create-a-new-pipeline).                                                                                                                                                                                                                                                         |
+| `external`                    | When using CI services other than GitLab.                                                                                                                                                                                                                                                                                                             |
+| `pipelines`                   | For multi-project pipelines created by [using the API with `CI_JOB_TOKEN`](../triggers/README.md#when-used-with-multi-project-pipelines).                                                                                                                                                                                                             |
+| `chat`                        | For pipelines created by using a [GitLab ChatOps](../chatops/README.md) command.                                                                                                                                                                                                                                                                      |
+| `webide`                      | For pipelines created by using the [WebIDE](../../user/project/web_ide/index.md).                                                                                                                                                                                                                                                                     |
+| `merge_request_event`         | For pipelines created when a merge request is created or updated. Required to enable [merge request pipelines](../merge_request_pipelines/index.md), [merged results pipelines](../merge_request_pipelines/pipelines_for_merged_results/index.md), and [merge trains](../merge_request_pipelines/pipelines_for_merged_results/merge_trains/index.md). |
+| `external_pull_request_event` | When an external pull request on GitHub is created or updated. See [Pipelines for external pull requests](../ci_cd_for_external_repos/index.md#pipelines-for-external-pull-requests).                                                                                                                                                                 |
+| `parent_pipeline`             | For pipelines triggered by a [parent/child pipeline](../parent_child_pipelines.md) with `rules`, use this in the child pipeline configuration so that it can be triggered by the parent pipeline.                                                                                                                                                     |
+
+For example:
+
+```yaml
+job:
+  script: "echo Hello, Rules!"
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "schedule"'
+      when: manual
+      allow_failure: true
+    - if: '$CI_PIPELINE_SOURCE == "push"'
+```
+
+This example runs the job as a manual job in scheduled pipelines or in push
+pipelines (to branches or tags), with `when: on_success` (default). It does not
+add the job to any other pipeline type.
+
+Another example:
+
+```yaml
+job:
+  script: "echo Hello, Rules!"
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+    - if: '$CI_PIPELINE_SOURCE == "schedule"'
+```
+
+This example runs the job as a `when: on_success` job in [merge request pipelines](../merge_request_pipelines/index.md)
+and scheduled pipelines. It does not run in any other pipeline type.
+
+Other commonly used variables for `if` clauses:
+
+- `if: $CI_COMMIT_TAG`: If changes are pushed for a tag.
+- `if: $CI_COMMIT_BRANCH`: If changes are pushed to any branch.
+- `if: '$CI_COMMIT_BRANCH == "master"'`: If changes are pushed to `master`.
+- `if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'`: If changes are pushed to the default
+  branch (usually `master`). Useful if reusing the same configuration in multiple
+  projects with potentially different default branches.
+- `if: '$CI_COMMIT_BRANCH =~ /regex-expression/'`: If the commit branch matches a regular expression.
+- `if: '$CUSTOM_VARIABLE !~ /regex-expression/'`: If the [custom variable](../variables/README.md#custom-environment-variables)
+  `CUSTOM_VARIABLE` does **not** match a regular expression.
+- `if: '$CUSTOM_VARIABLE == "value1"'`: If the custom variable `CUSTOM_VARIABLE` is
+  exactly `value1`.
+
+##### `rules:changes`
+
+To determine if jobs should be added to a pipeline, `rules: changes` clauses check
+the files changed by Git push events.
+
+`rules: changes` works exactly the same way as [`only: changes` and `except: changes`](#onlychangesexceptchanges),
+accepting an array of paths. Similarly, it always returns true if there is no
+Git push event. It should only be used for branch pipelines or merge request pipelines.
+
+For example:
+
+```yaml
+workflow:
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+
+docker build:
+  script: docker build -t my-image:$CI_COMMIT_REF_SLUG .
+  rules:
+    - changes:
+      - Dockerfile
+      when: manual
+      allow_failure: true
+```
+
+In this example:
+
+- [`workflow: rules`](#workflowrules) allows only pipelines for merge requests for all jobs.
+- If `Dockerfile` has changed, add the job to the pipeline as a manual job, and allow the pipeline
+  to continue running even if the job is not triggered (`allow_failure: true`).
+- If `Dockerfile` has not changed, do not add job to any pipeline (same as `when: never`).
+
+##### `rules:exists`
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/24021) in GitLab 12.4.
 
@@ -1177,7 +1357,7 @@ NOTE: **Note:**
 For performance reasons, using `exists` with patterns is limited to 10000
 checks. After the 10000th check, rules with patterned globs will always match.
 
-#### `rules:allow_failure`
+##### `rules:allow_failure`
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30235) in GitLab 12.8.
 
@@ -1223,46 +1403,11 @@ docker build:
   # - when: never would be redundant here, this is implied any time rules are listed.
 ```
 
-The only clauses currently available are:
-
-- `if`
-- `changes`
-- `exists`
-
 Keywords such as `branches` or `refs` that are currently available for
 `only`/`except` are not yet available in `rules` as they are being individually
 considered for their usage and behavior in this context. Future keyword improvements
 are being discussed in our [epic for improving `rules`](https://gitlab.com/groups/gitlab-org/-/epics/2783),
 where anyone can add suggestions or requests.
-
-#### Permitted attributes
-
-The only job attributes currently set by `rules` are:
-
-- `when`.
-- `start_in`, if `when` is set to `delayed`.
-- `allow_failure`.
-
-A job will be included in a pipeline if `when` is evaluated to any value
-except `never`.
-
-Delayed jobs require a `start_in` value, so rule objects do as well. For
-example:
-
-```yaml
-docker build:
-  script: docker build -t my-image:$CI_COMMIT_REF_SLUG .
-  rules:
-    - changes: # Will include the job and delay 3 hours when the Dockerfile has changed
-      - Dockerfile
-      when: delayed
-      start_in: '3 hours'
-    - when: on_success # Otherwise include the job and set to run normally
-```
-
-Additional job configuration may be added to rules in the future. If something
-useful is not available, please
-[open an issue](https://gitlab.com/gitlab-org/gitlab/-/issues).
 
 ### `only`/`except` (basic)
 
@@ -1288,20 +1433,20 @@ There are a few rules that apply to the usage of job policy:
 
 In addition, `only` and `except` allow the use of special keywords:
 
-| **Value** |  **Description**  |
-| --------- |  ---------------- |
-| `branches`       | When a Git reference of a pipeline is a branch.  |
-| `tags`           | When a Git reference of a pipeline is a tag.  |
-| `api`            | When pipeline has been triggered by a second pipelines API (not triggers API).  |
-| `external`       | When using CI services other than GitLab. |
-| `pipelines`      | For multi-project triggers, created using the API with `CI_JOB_TOKEN`. |
-| `pushes`         | Pipeline is triggered by a `git push` by the user. |
-| `schedules`      | For [scheduled pipelines](../pipelines/schedules.md). |
-| `triggers`       | For pipelines created using a trigger token. |
-| `web`            | For pipelines created using **Run pipeline** button in GitLab UI (under your project's **Pipelines**). |
-| `merge_requests` | When a merge request is created or updated (See [pipelines for merge requests](../merge_request_pipelines/index.md)). |
-| `external_pull_requests`| When an external pull request on GitHub is created or updated (See [Pipelines for external pull requests](../ci_cd_for_external_repos/index.md#pipelines-for-external-pull-requests)). |
-| `chat`          | For jobs created using a [GitLab ChatOps](../chatops/README.md) command. |
+| **Value**                | **Description**                                                                                                                                                                        |
+|--------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `branches`               | When the Git reference for a pipeline is a branch.                                                                                                                                        |
+| `tags`                   | When the Git reference for a pipeline is a tag.                                                                                                                                           |
+| `api`                    | For pipelines triggered by the [pipelines API](../../api/pipelines.md#create-a-new-pipeline).                                                                                                         |
+| `external`               | When using CI services other than GitLab.                                                                                                                                              |
+| `pipelines`              | For multi-project pipelines created by using the API with `CI_JOB_TOKEN`.                                                                                                              |
+| `pushes`                 | For pipelines triggered by a `git push` event, including for branches and tags.                                                                                                        |
+| `schedules`              | For [scheduled pipelines](../pipelines/schedules.md).                                                                                                                                  |
+| `triggers`               | For pipelines created by using a trigger token.                                                                                                                                        |
+| `web`                    | For pipelines created by using **Run pipeline** button in the GitLab UI, from the project's **CI/CD > Pipelines** section.                                                             |
+| `merge_requests`         | For pipelines created when a merge request is created or updated. Enables [merge request pipelines](../merge_request_pipelines/index.md), [merged results pipelines](../merge_request_pipelines/pipelines_for_merged_results/index.md), and [merge trains](../merge_request_pipelines/pipelines_for_merged_results/merge_trains/index.md).                                                                  |
+| `external_pull_requests` | When an external pull request on GitHub is created or updated (See [Pipelines for external pull requests](../ci_cd_for_external_repos/index.md#pipelines-for-external-pull-requests)). |
+| `chat`                   | For pipelines created by using a [GitLab ChatOps](../chatops/README.md) command.                                                                                                       |
 
 In the example below, `job` will run only for refs that start with `issue-`,
 whereas all branches will be skipped:

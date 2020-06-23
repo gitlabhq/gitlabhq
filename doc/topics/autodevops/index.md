@@ -358,6 +358,53 @@ Auto Deploy will fail if GitLab can't create a Kubernetes namespace and
 service account for your project. For help debugging this issue, see
 [Troubleshooting failed deployment jobs](../../user/project/clusters/index.md#troubleshooting).
 
+### Detected an existing PostgreSQL database
+
+After upgrading to GitLab 13.0, you may encounter this message when deploying
+with Auto DevOps:
+
+> Detected an existing PostgreSQL database installed on the
+deprecated channel 1, but the current channel is set to 2. The default
+channel changed to 2 in of GitLab 13.0.
+> [...]
+
+Auto DevOps, by default, installs an in-cluster PostgreSQL database alongside
+your application. The default installation method changed in GitLab 13.0, and
+upgrading existing databases requires user involvement. The two installation
+methods are:
+
+- **channel 1 (deprecated):** Pulls in the database as a dependency of the associated
+  Helm chart. Only supports Kubernetes versions up to version 1.15.
+- **channel 2 (current):** Installs the database as an independent Helm chart. Required
+  for using the in-cluster database feature with Kubernetes versions 1.16 and greater.
+
+If you receive this error, you can do one of the following actions:
+
+- You can *safely* ignore the warning and continue using the channel 1 PostgreSQL
+  database by setting `AUTO_DEVOPS_POSTGRES_CHANNEL` to `1` and redeploying.
+
+- You can delete the channel 1 PostgreSQL database and install a fresh channel 2
+  database by setting `AUTO_DEVOPS_POSTGRES_DELETE_V1` to a non-empty value and
+  redeploying.
+
+  DANGER: **Danger:**
+  Deleting the channel 1 PostgreSQL database permanently deletes the existing
+  channel 1 database and all its data. See
+  [Upgrading PostgreSQL](upgrading_postgresql.md)
+  for more information on backing up and upgrading your database.
+
+- If you are not using the in-cluster database, you can set
+  `POSTGRES_ENABLED` to `false` and re-deploy. This option is especially relevant to
+  users of *custom charts without the in-chart PostgreSQL dependency*.
+  Database auto-detection is based on the `postgresql.enabled` Helm value for
+  your release. This value is set based on the `POSTGRES_ENABLED` CI variable
+  and persisted by Helm, regardless of whether or not your chart uses the
+  variable.
+
+DANGER: **Danger:**
+Setting `POSTGRES_ENABLED` to `false` permanently deletes any existing
+channel 1 database for your environment.
+
 ## Development guides
 
 [Development guide for Auto DevOps](../../development/auto_devops.md)

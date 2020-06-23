@@ -414,6 +414,10 @@ variables:
 
 ### Customizing the DAST settings
 
+CAUTION: **Deprecation:**
+Beginning in GitLab 13.0, the use of [`only` and `except`](../../../ci/yaml/README.md#onlyexcept-basic)
+is no longer supported. When overriding the template, you must use [`rules`](../../../ci/yaml/README.md#rules) instead.
+
 The DAST settings can be changed through environment variables by using the
 [`variables`](../../../ci/yaml/README.md#variables) parameter in `.gitlab-ci.yml`.
 These variables are documented in [available variables](#available-variables).
@@ -431,31 +435,6 @@ variables:
 
 Because the template is [evaluated before](../../../ci/yaml/README.md#include) the pipeline
 configuration, the last mention of the variable will take precedence.
-
-### Overriding the DAST template
-
-CAUTION: **Deprecation:**
-Beginning in GitLab 13.0, the use of [`only` and `except`](../../../ci/yaml/README.md#onlyexcept-basic)
-is no longer supported. When overriding the template, you must use [`rules`](../../../ci/yaml/README.md#rules) instead.
-
-If you want to override the job definition (for example, change properties like
-`variables` or `dependencies`), you need to declare a `dast` job after the
-template inclusion and specify any additional keys under it. For example:
-
-```yaml
-include:
-  - template: DAST.gitlab-ci.yml
-
-dast:
-  stage: dast # IMPORTANT: don't forget to add this
-  variables:
-    DAST_WEBSITE: https://example.com
-    CI_DEBUG_TRACE: "true"
-```
-
-As the DAST job belongs to a separate `dast` stage that runs after all
-[default stages](../../../ci/yaml/README.md#stages),
-don't forget to add `stage: dast` when you override the template job definition.
 
 ### Available variables
 
@@ -549,7 +528,7 @@ A DAST job has two executing processes:
 
 Debug mode of the scripts can be enabled by using the `DAST_DEBUG` environment variable. This can help when troubleshooting the job,
 and will output statements indicating what percentage of the scan is complete.
-For details on using variables, see [Overriding the DAST template](#overriding-the-dast-template).
+For details on using variables, see [Overriding the DAST template](#customizing-the-dast-settings).
 
 Debug mode of the ZAP server can be enabled using the `DAST_ZAP_LOG_CONFIGURATION` environment variable.
 The following table outlines examples of values that can be set and the effect that they have on the output that is logged.

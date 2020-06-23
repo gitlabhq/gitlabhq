@@ -26,6 +26,9 @@ involves:
    This varies based on Kubernetes providers.
 1. Prepare for downtime. The steps below include taking the application offline
    so that the in-cluster database does not get modified after the database dump is created.
+1. Ensure you have not set `POSTGRES_ENABLED` to `false`, as this setting deletes
+   any existing channel 1 database. For more information, see
+   [Detected an existing PostgreSQL database](index.md#detected-an-existing-postgresql-database).
 
 TIP: **Tip:** If you have configured Auto DevOps to have staging,
 consider trying out the backup and restore steps on staging first, or
@@ -160,8 +163,7 @@ pvc-9085e3d3-5239-11ea-9c8d-42010a8e0096   8Gi        RWO            Retain     
 
 CAUTION: **Caution:** Using the newer version of PostgreSQL will delete
 the older 0.7.1 PostgreSQL. To prevent the underlying data from being
-deleted, you can choose to retain the [persistent
-volume](#retain-persistent-volumes).
+deleted, you can choose to retain the [persistent volume](#retain-persistent-volumes).
 
 TIP: **Tip:** You can also
 [scope](../../ci/environments/index.md#scoping-environments-with-specs) the

@@ -207,7 +207,7 @@ The variable names begin with the `CI_MERGE_REQUEST_` prefix.
 ### Two pipelines created when pushing to a merge request
 
 If you are experiencing duplicated pipelines when using `rules`, take a look at
-the [key details when using `rules`](../yaml/README.md#key-details-when-using-rules),
+the [important differences between `rules` and `only`/`except`](../yaml/README.md#differences-between-rules-and-onlyexcept),
 which will help you get your starting configuration correct.
 
 If you are seeing two pipelines when using `only/except`, please see the caveats

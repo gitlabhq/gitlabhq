@@ -773,7 +773,7 @@ response back to the user directly.
 
 When referring to `~git` in the pictures it means the home directory of the Git user which is typically `/home/git`.
 
-GitLab is primarily installed within the `/home/git` user home directory as `git` user. Within the home directory is where the gitlabhq server software resides as well as the repositories (though the repository location is configurable).
+GitLab is primarily installed within the `/home/git` user home directory as `git` user. Within the home directory is where the GitLab server software resides as well as the repositories (though the repository location is configurable).
 
 The bare repositories are located in `/home/git/repositories`. GitLab is a Ruby on rails application so the particulars of the inner workings can be learned by studying how a Ruby on rails application works.
 
@@ -849,7 +849,7 @@ Usage: /etc/init.d/postgresql {start|stop|restart|reload|force-reload|status} [v
 
 ### Log locations of the services
 
-gitlabhq (includes Unicorn and Sidekiq logs):
+GitLab (includes Unicorn and Sidekiq logs):
 
 - `/home/git/gitlab/log/` contains `application.log`, `production.log`, `sidekiq.log`, `unicorn.stdout.log`, `git_json.log` and `unicorn.stderr.log` normally.
 
