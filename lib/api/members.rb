@@ -145,6 +145,8 @@ module API
         desc 'Removes a user from a group or project.'
         params do
           requires :user_id, type: Integer, desc: 'The user ID of the member'
+          optional :unassign_issuables, type: Boolean, default: false,
+                   desc: 'Flag indicating if the removed member should be unassigned from any issues or merge requests within given group or project'
         end
         # rubocop: disable CodeReuse/ActiveRecord
         delete ":id/members/:user_id" do
@@ -152,7 +154,7 @@ module API
           member = source.members.find_by!(user_id: params[:user_id])
 
           destroy_conditionally!(member) do
-            ::Members::DestroyService.new(current_user).execute(member)
+            ::Members::DestroyService.new(current_user).execute(member, unassign_issuables: params[:unassign_issuables])
           end
         end
         # rubocop: enable CodeReuse/ActiveRecord

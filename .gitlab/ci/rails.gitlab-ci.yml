@@ -256,6 +256,8 @@ rspec:coverage:
       - coverage/index.html
       - coverage/assets/
       - tmp/memory_test/
+    reports:
+      cobertura: coverage/coverage.xml
 # EE/FOSS: default refs (MRs, master, schedules) jobs #
 #######################################################
 

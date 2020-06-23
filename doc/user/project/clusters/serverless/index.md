@@ -835,7 +835,7 @@ The instructions below relate to installing and running Certbot on a Linux serve
 ## Using an older version of `gitlabktl`
 
 There may be situations where you want to run an older version of `gitlabktl`. This
-requires setting an older version of the `gitlabktl` image in the `.gitlab-ci.yml file.`
+requires setting an older version of the `gitlabktl` image in the `.gitlab-ci.yml` file.
 
 To set an older version, add `image:` to the `functions:deploy` block. For example:
 

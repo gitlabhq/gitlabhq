@@ -4,6 +4,7 @@ require 'spec_helper'
 
 describe AlertManagement::Alerts::UpdateService do
   let_it_be(:user_with_permissions) { create(:user) }
+  let_it_be(:other_user_with_permissions) { create(:user) }
   let_it_be(:user_without_permissions) { create(:user) }
   let_it_be(:alert, reload: true) { create(:alert_management_alert) }
   let_it_be(:project) { alert.project }
@@ -15,48 +16,57 @@ describe AlertManagement::Alerts::UpdateService do
 
   before_all do
     project.add_developer(user_with_permissions)
+    project.add_developer(other_user_with_permissions)
   end
 
   describe '#execute' do
+    shared_examples 'does not add a todo' do
+      specify { expect { response }.not_to change(Todo, :count) }
+    end
+
+    shared_examples 'does not add a system note' do
+      specify { expect { response }.not_to change(Note, :count) }
+    end
+
+    shared_examples 'error response' do |message|
+      it_behaves_like 'does not add a todo'
+      it_behaves_like 'does not add a system note'
+
+      it 'has an informative message' do
+        expect(response).to be_error
+        expect(response.message).to eq(message)
+      end
+    end
+
     subject(:response) { service.execute }
 
     context 'when the current_user is nil' do
       let(:current_user) { nil }
 
-      it 'results in an error' do
-        expect(response).to be_error
-        expect(response.message).to eq('You have no permissions')
-      end
+      it_behaves_like 'error response', 'You have no permissions'
     end
 
-    context 'when user does not have permission to update alerts' do
+    context 'when current_user does not have permission to update alerts' do
       let(:current_user) { user_without_permissions }
 
-      it 'results in an error' do
-        expect(response).to be_error
-        expect(response.message).to eq('You have no permissions')
-      end
+      it_behaves_like 'error response', 'You have no permissions'
     end
 
     context 'when no parameters are included' do
-      it 'results in an error' do
-        expect(response).to be_error
-        expect(response.message).to eq('Please provide attributes to update')
-      end
+      it_behaves_like 'error response', 'Please provide attributes to update'
     end
 
-    context 'when an error occures during update' do
+    context 'when an error occurs during update' do
       let(:params) { { title: nil } }
 
-      it 'results in an error' do
-        expect { response }.not_to change { alert.reload.notes.count }
-        expect(response).to be_error
-        expect(response.message).to eq("Title can't be blank")
-      end
+      it_behaves_like 'error response', "Title can't be blank"
     end
 
     context 'when a model attribute is included without assignees' do
       let(:params) { { title: 'This is an updated alert.' } }
+
+      it_behaves_like 'does not add a todo'
+      it_behaves_like 'does not add a system note'
 
       it 'updates the attribute' do
         original_title = alert.title
@@ -64,70 +74,73 @@ describe AlertManagement::Alerts::UpdateService do
         expect { response }.to change { alert.title }.from(original_title).to(params[:title])
         expect(response).to be_success
       end
-
-      it 'skips adding a todo' do
-        expect { response }.not_to change(Todo, :count)
-      end
     end
 
     context 'when assignees are included' do
-      let(:params) { { assignees: [user_with_permissions] } }
+      shared_examples 'adds a todo' do
+        let(:assignee) { expected_assignees.first }
 
-      after do
-        alert.assignees = []
+        specify do
+          expect { response }.to change { assignee.reload.todos.count }.by(1)
+          expect(assignee.todos.last.author).to eq(current_user)
+        end
       end
 
-      it 'assigns the user' do
-        expect { response }.to change { alert.reload.assignees }.from([]).to(params[:assignees])
-        expect(response).to be_success
+      shared_examples 'adds a system note' do
+        specify { expect { response }.to change { alert.reload.notes.count }.by(1) }
       end
 
-      it 'creates a system note for the assignment' do
-        expect { response }.to change { alert.reload.notes.count }.by(1)
-      end
+      shared_examples 'successful assignment' do
+        it_behaves_like 'adds a system note'
+        it_behaves_like 'adds a todo'
 
-      it 'adds a todo' do
-        expect { response }.to change { Todo.where(user: user_with_permissions).count }.by(1)
-      end
-
-      context 'when current user is not the assignee' do
-        let(:assignee_user) { create(:user) }
-        let(:params) { { assignees: [assignee_user] } }
-
-        it 'skips adding todo for assignee without permission to read alert' do
-          expect { response }.not_to change(Todo, :count)
+        after do
+          alert.assignees = []
         end
 
-        context 'when assignee has read permission' do
-          before do
-            project.add_developer(assignee_user)
-          end
+        specify do
+          expect { response }.to change { alert.reload.assignees }.from([]).to(expected_assignees)
+          expect(response).to be_success
+        end
+      end
 
-          it 'adds a todo' do
-            response
+      let(:expected_assignees) { params[:assignees] }
 
-            expect(Todo.first.author).to eq(current_user)
-          end
+      context 'when the assignee is the current user' do
+        let(:params) { { assignees: [current_user] } }
+
+        it_behaves_like 'successful assignment'
+      end
+
+      context 'when the assignee has read permissions' do
+        let(:params) { { assignees: [other_user_with_permissions] } }
+
+        it_behaves_like 'successful assignment'
+      end
+
+      context 'when the assignee does not have read permissions' do
+        let(:params) { { assignees: [user_without_permissions] } }
+
+        it_behaves_like 'error response', 'Assignee has no permissions'
+      end
+
+      context 'when user is already assigned' do
+        let(:params) { { assignees: [user_with_permissions] } }
+
+        before do
+          alert.assignees << user_with_permissions
         end
 
-        context 'when current_user is nil' do
-          let(:current_user) { nil }
-
-          it 'skips adding todo if current_user is nil' do
-            project.add_developer(assignee_user)
-
-            expect { response }.not_to change(Todo, :count)
-          end
-        end
+        it_behaves_like 'does not add a system note'
+        # TODO: We should not add another todo in this scenario
+        it_behaves_like 'adds a todo'
       end
 
       context 'with multiple users included' do
         let(:params) { { assignees: [user_with_permissions, user_without_permissions] } }
+        let(:expected_assignees) { [user_with_permissions] }
 
-        it 'assigns the first permissioned user' do
-          expect { response }.to change { alert.reload.assignees }.from([]).to([user_with_permissions])
-          expect(response).to be_success
-        end
+        it_behaves_like 'successful assignment'
       end
     end
   end

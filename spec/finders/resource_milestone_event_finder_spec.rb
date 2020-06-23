@@ -42,18 +42,6 @@ RSpec.describe ResourceMilestoneEventFinder do
       expect(subject).to be_empty
     end
 
-    it 'paginates results' do
-      milestone = create(:milestone, project: issue_project)
-      create_event(milestone)
-      create_event(milestone)
-      issue_project.add_guest(user)
-
-      paginated = described_class.new(user, issue, per_page: 1).execute
-
-      expect(subject.count).to eq 2
-      expect(paginated.count).to eq 1
-    end
-
     context 'when multiple events share the same milestone' do
       it 'avoids N+1 queries' do
         issue_project.add_developer(user)
@@ -71,8 +59,8 @@ RSpec.describe ResourceMilestoneEventFinder do
         create_event(milestone2, :add)
         create_event(milestone2, :remove)
 
-        # 1 events + 1 milestones + 1 project + 1 user + 4 ability
-        expect { described_class.new(user, issue).execute }.not_to exceed_query_limit(control_count + 7)
+        # 1 milestones + 1 project + 1 user + 4 ability
+        expect { described_class.new(user, issue).execute }.not_to exceed_query_limit(control_count + 6)
       end
     end
 

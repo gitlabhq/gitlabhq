@@ -92,6 +92,17 @@ describe Snippet do
     end
   end
 
+  describe 'callbacks' do
+    it 'creates snippet statistics when the snippet is created' do
+      snippet = build(:snippet)
+      expect(snippet.statistics).to be_nil
+
+      snippet.save
+
+      expect(snippet.statistics).to be_persisted
+    end
+  end
+
   describe '#to_reference' do
     context 'when snippet belongs to a project' do
       let(:project) { build(:project, name: 'sample-project') }

@@ -163,9 +163,10 @@ class User < ApplicationRecord
   has_many :award_emoji,              dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :triggers,                 dependent: :destroy, class_name: 'Ci::Trigger', foreign_key: :owner_id # rubocop:disable Cop/ActiveRecordDependent
 
-  has_many :issue_assignees
+  has_many :issue_assignees, inverse_of: :assignee
+  has_many :merge_request_assignees, inverse_of: :assignee
   has_many :assigned_issues, class_name: "Issue", through: :issue_assignees, source: :issue
-  has_many :assigned_merge_requests, dependent: :nullify, foreign_key: :assignee_id, class_name: "MergeRequest" # rubocop:disable Cop/ActiveRecordDependent
+  has_many :assigned_merge_requests, class_name: "MergeRequest", through: :merge_request_assignees, source: :merge_request
 
   has_many :custom_attributes, class_name: 'UserCustomAttribute'
   has_many :callouts, class_name: 'UserCallout'

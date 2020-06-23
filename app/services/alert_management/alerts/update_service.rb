@@ -19,6 +19,8 @@ module AlertManagement
         return error_no_updates if params.empty?
 
         filter_assignees
+        return error_no_assignee_permissions if unauthorized_assignees?
+
         old_assignees = alert.assignees.to_a
 
         if alert.update(params)
@@ -36,10 +38,6 @@ module AlertManagement
 
       def allowed?
         current_user&.can?(:update_alert_management_alert, alert)
-      end
-
-      def assignee_todo_allowed?
-        assignee&.can?(:read_alert_management_alert, alert)
       end
 
       def todo_service
@@ -64,18 +62,20 @@ module AlertManagement
         error(_('Please provide attributes to update'))
       end
 
+      def error_no_assignee_permissions
+        error(_('Assignee has no permissions'))
+      end
+
       # ----- Assignee-related behavior ------
+      def unauthorized_assignees?
+        params[:assignees]&.any? { |user| !user.can?(:read_alert_management_alert, alert) }
+      end
+
       def filter_assignees
         return if params[:assignees].nil?
 
-        params[:assignees] = Array(assignee)
-      end
-
-      def assignee
-        strong_memoize(:assignee) do
-          # Take first assignee while multiple are not currently supported
-          params[:assignees]&.first
-        end
+        # Always take first assignee while multiple are not currently supported
+        params[:assignees] = Array(params[:assignees].first)
       end
 
       def process_assignement(old_assignees)
@@ -84,8 +84,7 @@ module AlertManagement
       end
 
       def assign_todo
-        # Remove check in follow-up issue https://gitlab.com/gitlab-org/gitlab/-/issues/222672
-        return unless assignee_todo_allowed?
+        return if alert.assignees.empty?
 
         todo_service.assign_alert(alert, current_user)
       end

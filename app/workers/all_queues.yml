@@ -1115,6 +1115,14 @@
   :weight: 1
   :idempotent: 
   :tags: []
+- :name: unassign_issuables:members_destroyer_unassign_issuables
+  :feature_category: :authentication_and_authorization
+  :has_external_dependencies: 
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: update_namespace_statistics:namespaces_root_statistics
   :feature_category: :source_code_management
   :has_external_dependencies: 

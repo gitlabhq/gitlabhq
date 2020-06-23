@@ -26,8 +26,7 @@ module API
         get ":id/#{eventables_str}/:eventable_id/resource_milestone_events" do
           eventable = find_noteable(eventable_type, params[:eventable_id])
 
-          opts = { page: params[:page], per_page: params[:per_page] }
-          events = ResourceMilestoneEventFinder.new(current_user, eventable, opts).execute
+          events = ResourceMilestoneEventFinder.new(current_user, eventable).execute
 
           present paginate(events), with: Entities::ResourceMilestoneEvent
         end

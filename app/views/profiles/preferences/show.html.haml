@@ -8,11 +8,12 @@
     %p
       = s_('Preferences|Customize the appearance of the application header and navigation sidebar.')
   .col-lg-8.application-theme
-    - Gitlab::Themes.each do |theme|
-      = label_tag do
-        .preview{ class: theme.css_class }
-        = f.radio_button :theme_id, theme.id, checked: Gitlab::Themes.for_user(@user).id == theme.id
-        = theme.name
+    .row
+      - Gitlab::Themes.each do |theme|
+        %label.col-6.col-sm-4.col-md-3.gl-mb-5.gl-text-center
+          .preview{ class: theme.css_class }
+          = f.radio_button :theme_id, theme.id, checked: Gitlab::Themes.for_user(@user).id == theme.id
+          = theme.name
 
   .col-sm-12
     %hr

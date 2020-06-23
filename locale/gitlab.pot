@@ -2011,6 +2011,9 @@ msgstr ""
 msgid "AlertManagement|There was an error while updating the status of the alert. Please try again."
 msgstr ""
 
+msgid "AlertManagement|This assignee cannot be assigned to this alert."
+msgstr ""
+
 msgid "AlertManagement|Tool"
 msgstr ""
 
@@ -3019,6 +3022,9 @@ msgid "Assignee"
 msgid_plural "%d Assignees"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "Assignee has no permissions"
+msgstr ""
 
 msgid "Assignee lists not available with your current license"
 msgstr ""

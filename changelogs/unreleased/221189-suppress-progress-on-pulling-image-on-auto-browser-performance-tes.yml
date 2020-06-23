@@ -1,0 +1,5 @@
+---
+title: Suppress progress on pulling on Performance Test
+merge_request: 34368
+author: Takuya Noguchi
+type: other

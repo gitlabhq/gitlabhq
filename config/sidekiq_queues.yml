@@ -262,6 +262,8 @@
   - 1
 - - todos_destroyer
   - 1
+- - unassign_issuables
+  - 1
 - - update_external_pull_requests
   - 3
 - - update_highest_role

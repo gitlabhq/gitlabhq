@@ -159,6 +159,7 @@ karma:
       - tmp/tests/frontend/
     reports:
       junit: junit_karma.xml
+      cobertura: coverage-javascript/cobertura-coverage.xml
 
 karma-as-if-foss:
   extends:
@@ -226,6 +227,8 @@ coverage-frontend:
     expire_in: 31d
     paths:
       - coverage-frontend/
+    reports:
+      cobertura: coverage-frontend/cobertura-coverage.xml
 
 .qa-frontend-node:
   extends:

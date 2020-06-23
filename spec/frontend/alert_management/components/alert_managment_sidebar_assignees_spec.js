@@ -59,7 +59,7 @@ describe('Alert Details Sidebar Assignees', () => {
   describe('updating the alert status', () => {
     const mockUpdatedMutationResult = {
       data: {
-        updateAlertStatus: {
+        alertSetAssignees: {
           errors: [],
           alert: {
             assigneeUsernames: ['root'],
@@ -122,6 +122,26 @@ describe('Alert Details Sidebar Assignees', () => {
             projectPath: 'projectPath',
           },
         });
+      });
+    });
+
+    it('shows an error when request contains error messages', () => {
+      wrapper.setData({ isDropdownSearching: false });
+      const errorMutationResult = {
+        data: {
+          alertSetAssignees: {
+            errors: ['There was a problem for sure.'],
+            alert: {},
+          },
+        },
+      };
+
+      jest.spyOn(wrapper.vm.$apollo, 'mutate').mockResolvedValue(errorMutationResult);
+
+      return wrapper.vm.$nextTick().then(() => {
+        const SideBarAssigneeItem = wrapper.findAll(SidebarAssignee).at(0);
+        SideBarAssigneeItem.vm.$emit('click');
+        expect(wrapper.emitted('alert-refresh')).toBeUndefined();
       });
     });
 

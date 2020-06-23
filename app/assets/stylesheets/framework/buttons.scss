@@ -171,7 +171,7 @@
     @include btn-green;
   }
 
-  &.btn-inverted {
+  &.btn-inverted:not(.disabled):not(:disabled) {
     &.btn-success {
       @include btn-outline($white, $green-600, $green-500, $green-100, $green-700, $green-500, $green-200, $green-600, $green-800);
     }
@@ -501,18 +501,19 @@
 
 // All disabled buttons, regardless of color, type, etc
 %disabled {
-  background-color: $gray-light !important;
-  border-color: $gray-200 !important;
-  color: $gl-text-color-disabled !important;
-  opacity: 1 !important;
-  cursor: default !important;
+  background-color: $gray-light;
+  border-color: $gray-200;
+  color: $gl-text-color-disabled;
+  opacity: 1;
+  text-decoration: none;
+  cursor: default;
 
   &.cursor-not-allowed {
-    cursor: not-allowed !important;
+    cursor: not-allowed;
   }
 
   i {
-    color: $gl-text-color-disabled !important;
+    color: $gl-text-color-disabled;
   }
 }
 
@@ -525,6 +526,10 @@ fieldset[disabled] .btn,
 
   &:hover {
     @extend %disabled;
+  }
+
+  &.btn-link {
+    background-color: transparent;
   }
 }
 

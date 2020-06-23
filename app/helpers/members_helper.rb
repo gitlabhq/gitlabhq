@@ -48,6 +48,14 @@ module MembersHelper
     "#{request.path}?#{options.to_param}"
   end
 
+  def member_path(member, unassign_issuables: false)
+    if member.is_a?(GroupMember)
+      group_group_member_path(member.source, member, { unassign_issuables: unassign_issuables })
+    else
+      project_project_member_path(member.source, member, { unassign_issuables: unassign_issuables })
+    end
+  end
+
   private
 
   def source_text(member)

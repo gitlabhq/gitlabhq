@@ -407,6 +407,10 @@ describe 'project routing' do
     it 'to #destroy' do
       expect(delete('/gitlab/gitlabhq/snippets/1')).to route_to('projects/snippets#destroy', namespace_id: 'gitlab', project_id: 'gitlabhq', id: '1')
     end
+
+    it 'to #show from scope routing' do
+      expect(get('/gitlab/gitlabhq/-/snippets/1')).to route_to('projects/snippets#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: '1')
+    end
   end
 
   # test_project_hook POST    /:project_id/hooks/:id/test(.:format) hooks#test

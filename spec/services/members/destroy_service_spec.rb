@@ -56,12 +56,23 @@ describe Members::DestroyService do
       expect(member_user.todos_pending_count).to be(1)
       expect(member_user.todos_done_count).to be(1)
 
-      described_class.new(current_user).execute(member, opts)
+      service = described_class.new(current_user)
+
+      if opts[:unassign_issuables]
+        expect(service).to receive(:enqueue_unassign_issuables).with(member)
+      end
+
+      service.execute(member, opts)
 
       expect(member_user.assigned_open_merge_requests_count).to be(0)
       expect(member_user.assigned_open_issues_count).to be(0)
       expect(member_user.todos_pending_count).to be(0)
       expect(member_user.todos_done_count).to be(0)
+
+      unless opts[:unassign_issuables]
+        expect(member_user.assigned_merge_requests.opened.count).to be(1)
+        expect(member_user.assigned_issues.opened.count).to be(1)
+      end
     end
   end
 
@@ -100,7 +111,7 @@ describe Members::DestroyService do
         it_behaves_like 'a service raising Gitlab::Access::AccessDeniedError'
 
         it_behaves_like 'a service destroying a member with access' do
-          let(:opts) { { skip_authorization: true } }
+          let(:opts) { { skip_authorization: true, unassign_issuables: true } }
         end
       end
 
@@ -114,7 +125,7 @@ describe Members::DestroyService do
         it_behaves_like 'a service raising Gitlab::Access::AccessDeniedError'
 
         it_behaves_like 'a service destroying a member with access' do
-          let(:opts) { { skip_authorization: true } }
+          let(:opts) { { skip_authorization: true, unassign_issuables: true } }
         end
       end
     end
@@ -133,6 +144,12 @@ describe Members::DestroyService do
         end
 
         it_behaves_like 'a service destroying a member with access'
+
+        context 'unassign issuables' do
+          it_behaves_like 'a service destroying a member with access' do
+            let(:opts) { { unassign_issuables: true } }
+          end
+        end
       end
 
       context 'with a group member' do
@@ -143,6 +160,12 @@ describe Members::DestroyService do
         end
 
         it_behaves_like 'a service destroying a member with access'
+
+        context 'unassign issuables' do
+          it_behaves_like 'a service destroying a member with access' do
+            let(:opts) { { unassign_issuables: true } }
+          end
+        end
       end
     end
   end

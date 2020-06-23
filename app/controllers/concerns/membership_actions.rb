@@ -31,7 +31,10 @@ module MembershipActions
 
   def destroy
     member = membershipable.members_and_requesters.find(params[:id])
-    Members::DestroyService.new(current_user).execute(member)
+    # !! is used in case unassign_issuables contains empty string which would result in nil
+    unassign_issuables = !!ActiveRecord::Type::Boolean.new.cast(params.delete(:unassign_issuables))
+
+    Members::DestroyService.new(current_user).execute(member, unassign_issuables: unassign_issuables)
 
     respond_to do |format|
       format.html do

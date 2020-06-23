@@ -118,7 +118,7 @@
                       data: { confirm: leave_confirmation_message(member.source) },
                       class: "btn btn-remove align-self-center m-0 #{'ml-sm-2' unless force_mobile_view}"
           - elsif !user&.project_bot?
-            = link_to member,
+            = link_to member_path(member.member),
                       method: :delete,
                       data: { confirm: remove_member_message(member), qa_selector: 'delete_member_button' },
                       class: "btn btn-remove align-self-center m-0 #{'ml-sm-2' unless force_mobile_view}",
