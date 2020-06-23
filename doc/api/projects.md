@@ -891,6 +891,7 @@ GET /projects/:id
   "suggestion_commit_message": null,
   "marked_for_deletion_at": "2020-04-03", // Deprecated and will be removed in API v5 in favor of marked_for_deletion_on
   "marked_for_deletion_on": "2020-04-03",
+  "compliance_frameworks": [ "sox" ],
   "statistics": {
     "commit_count": 37,
     "storage_size": 1038090,

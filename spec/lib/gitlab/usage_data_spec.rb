@@ -110,6 +110,10 @@ describe Gitlab::UsageData, :aggregate_failures do
       expect(UsageDataHelpers::COUNTS_KEYS - count_data.keys).to be_empty
     end
 
+    it 'gathers usage counts monthly hash' do
+      expect(subject[:counts_monthly]).to be_an(Hash)
+    end
+
     it 'gathers projects data correctly' do
       count_data = subject[:counts]
 
@@ -169,6 +173,8 @@ describe Gitlab::UsageData, :aggregate_failures do
       expect(count_data[:grafana_integrated_projects]).to eq(2)
       expect(count_data[:clusters_applications_jupyter]).to eq(1)
       expect(count_data[:clusters_management_project]).to eq(1)
+
+      expect(count_data[:snippets]).to eq(2)
     end
 
     it 'gathers object store usage correctly' do
@@ -244,6 +250,18 @@ describe Gitlab::UsageData, :aggregate_failures do
         .to receive(:find_in_batches).and_raise(ActiveRecord::StatementInvalid.new(''))
 
       expect { described_class.jira_usage }.not_to raise_error
+    end
+  end
+
+  describe '.system_usage_data_monthly' do
+    let!(:ud) { build(:usage_data) }
+
+    subject { described_class.system_usage_data_monthly }
+
+    it 'gathers projects data correctly' do
+      counts_monthly = subject[:counts_monthly]
+
+      expect(counts_monthly[:snippets]).to eq(1)
     end
   end
 

@@ -32,6 +32,7 @@ module Gitlab
         with_finished_at(:recording_ce_finished_at) do
           license_usage_data
             .merge(system_usage_data)
+            .merge(system_usage_data_monthly)
             .merge(features_usage_data)
             .merge(components_usage_data)
             .merge(cycle_analytics_usage_data)
@@ -164,8 +165,16 @@ module Gitlab
           )
         }
       end
-      # rubocop: enable CodeReuse/ActiveRecord
       # rubocop: enable Metrics/AbcSize
+
+      def system_usage_data_monthly
+        {
+          counts_monthly: {
+            snippets: count(Snippet.where(default_time_period))
+          }
+        }
+      end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       def cycle_analytics_usage_data
         Gitlab::CycleAnalytics::UsageData.new.to_json

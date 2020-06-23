@@ -18,8 +18,7 @@ module Repositories
     skip_around_action :set_session_storage
     skip_before_action :verify_authenticity_token
 
-    before_action :parse_repo_path
-    before_action :authenticate_user
+    prepend_before_action :authenticate_user, :parse_repo_path
 
     private
 

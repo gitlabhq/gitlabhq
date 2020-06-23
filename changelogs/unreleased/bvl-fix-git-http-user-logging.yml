@@ -1,0 +1,5 @@
+---
+title: Load user before logging git http-requests
+merge_request: 34923
+author:
+type: fixed

@@ -10,6 +10,15 @@ describe Gitlab::Analytics::UniqueVisits, :clean_gitlab_redis_shared_state do
   let(:visitor1_id) { 'dfb9d2d2-f56c-4c77-8aeb-6cddc4a1f857' }
   let(:visitor2_id) { '1dd9afb2-a3ee-4de1-8ae3-a405579c8584' }
 
+  around do |example|
+    # We need to freeze to a reference time
+    # because visits are grouped by the week number in the year
+    # Without freezing the time, the test may behave inconsistently
+    # depending on which day of the week test is run.
+    reference_time = Time.utc(2020, 6, 1)
+    Timecop.freeze(reference_time) { example.run }
+  end
+
   describe '#track_visit' do
     it 'tracks the unique weekly visits for targets' do
       unique_visits.track_visit(visitor1_id, target1_id, 7.days.ago)

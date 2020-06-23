@@ -328,7 +328,7 @@ describe Snippets::UpdateService do
         expect(snippet.content).to eq(content)
       end
 
-      it 'commit the files to the repository' do
+      it 'commits the files to the repository' do
         subject
 
         blob = snippet.repository.blob_at('master', file_path)
@@ -386,6 +386,218 @@ describe Snippets::UpdateService do
           expect(snippet.title).to eq(new_title)
           expect(snippet.file_name).to eq(file_path)
           expect(snippet.content).to eq(content)
+        end
+      end
+
+      context 'commit actions' do
+        let(:new_path) { 'created_new_file' }
+        let(:base_opts) { { snippet_files: snippet_files } }
+
+        shared_examples 'returns an error' do |error_msg|
+          specify do
+            response = subject
+
+            expect(response).to be_error
+            expect(response.message).to eq error_msg
+          end
+        end
+
+        context 'update action' do
+          let(:snippet_files) { [{ action: :update, file_path: file_path, content: content }] }
+
+          it 'updates the file content' do
+            expect(subject).to be_success
+
+            blob = blob(file_path)
+
+            expect(blob.data).to eq content
+          end
+
+          context 'when previous_path is present' do
+            let(:snippet_files) { [{ action: :update, previous_path: file_path, file_path: file_path, content: content }] }
+
+            it 'updates the file content' do
+              expect(subject).to be_success
+
+              blob = blob(file_path)
+
+              expect(blob.data).to eq content
+            end
+          end
+
+          context 'when content is not present' do
+            let(:snippet_files) { [{ action: :update, file_path: file_path }] }
+
+            it_behaves_like 'returns an error', 'Snippet files have invalid data'
+          end
+
+          context 'when file_path does not exist' do
+            let(:snippet_files) { [{ action: :update, file_path: 'makeup_name', content: content }] }
+
+            it_behaves_like 'returns an error', 'Repository Error updating the snippet'
+          end
+        end
+
+        context 'move action' do
+          context 'when file_path and previous_path are the same' do
+            let(:snippet_files) { [{ action: :move, previous_path: file_path, file_path: file_path }] }
+
+            it_behaves_like 'returns an error', 'Snippet files have invalid data'
+          end
+
+          context 'when file_path and previous_path are different' do
+            let(:snippet_files) { [{ action: :move, previous_path: file_path, file_path: new_path }] }
+
+            it 'renames the file' do
+              old_blob = blob(file_path)
+
+              expect(subject).to be_success
+
+              blob = blob(new_path)
+
+              expect(blob).to be_present
+              expect(blob.data).to eq old_blob.data
+            end
+          end
+
+          context 'when previous_path does not exist' do
+            let(:snippet_files) { [{ action: :move, previous_path: 'makeup_name', file_path: new_path }] }
+
+            it_behaves_like 'returns an error', 'Repository Error updating the snippet'
+          end
+
+          context 'when user wants to rename the file and update content' do
+            let(:snippet_files) { [{ action: :move, previous_path: file_path, file_path: new_path, content: content }] }
+
+            it 'performs both operations' do
+              expect(subject).to be_success
+
+              blob = blob(new_path)
+
+              expect(blob).to be_present
+              expect(blob.data).to eq content
+            end
+          end
+        end
+
+        context 'delete action' do
+          let(:snippet_files) { [{ action: :delete, file_path: file_path }] }
+
+          shared_examples 'deletes the file' do
+            specify do
+              old_blob = blob(file_path)
+              expect(old_blob).to be_present
+
+              expect(subject).to be_success
+              expect(blob(file_path)).to be_nil
+            end
+          end
+
+          it_behaves_like 'deletes the file'
+
+          context 'when previous_path is present and same as file_path' do
+            let(:snippet_files) { [{ action: :delete, previous_path: file_path, file_path: file_path }] }
+
+            it_behaves_like 'deletes the file'
+          end
+
+          context 'when previous_path is present and is different from file_path' do
+            let(:snippet_files) { [{ action: :delete, previous_path: 'foo', file_path: file_path }] }
+
+            it_behaves_like 'deletes the file'
+          end
+
+          context 'when content is present' do
+            let(:snippet_files) { [{ action: :delete, file_path: file_path, content: 'foo' }] }
+
+            it_behaves_like 'deletes the file'
+          end
+
+          context 'when file_path does not exist' do
+            let(:snippet_files) { [{ action: :delete, file_path: 'makeup_name' }] }
+
+            it_behaves_like 'returns an error', 'Repository Error updating the snippet'
+          end
+        end
+
+        context 'create action' do
+          let(:snippet_files) { [{ action: :create, file_path: new_path, content: content }] }
+
+          it 'creates the file' do
+            expect(subject).to be_success
+
+            blob = blob(new_path)
+            expect(blob).to be_present
+            expect(blob.data).to eq content
+          end
+
+          context 'when content is not present' do
+            let(:snippet_files) { [{ action: :create, file_path: new_path }] }
+
+            it_behaves_like 'returns an error', 'Snippet files have invalid data'
+          end
+
+          context 'when file_path is not present' do
+            let(:snippet_files) { [{ action: :create, content: content }] }
+
+            it_behaves_like 'returns an error', 'Snippet files have invalid data'
+          end
+
+          context 'when file_path already exists in the repository' do
+            let(:snippet_files) { [{ action: :create, file_path: file_path, content: content }] }
+
+            it_behaves_like 'returns an error', 'Repository Error updating the snippet'
+          end
+
+          context 'when previous_path is present' do
+            let(:snippet_files) { [{ action: :create, previous_path: 'foo', file_path: new_path, content: content }] }
+
+            it 'creates the file' do
+              expect(subject).to be_success
+
+              blob = blob(new_path)
+              expect(blob).to be_present
+              expect(blob.data).to eq content
+            end
+          end
+        end
+
+        context 'combination of actions' do
+          let(:delete_file_path) { 'CHANGELOG' }
+          let(:create_file_path) { 'created_new_file' }
+          let(:update_file_path) { 'LICENSE' }
+          let(:move_previous_path) { 'VERSION' }
+          let(:move_file_path) { 'VERSION_new' }
+
+          let(:snippet_files) do
+            [
+              { action: :create, file_path: create_file_path, content: content },
+              { action: :update, file_path: update_file_path, content: content },
+              { action: :delete, file_path: delete_file_path },
+              { action: :move, previous_path: move_previous_path, file_path: move_file_path, content: content }
+            ]
+          end
+
+          it 'performs all operations' do
+            expect(subject).to be_success
+
+            expect(blob(delete_file_path)).to be_nil
+
+            created_blob = blob(create_file_path)
+            expect(created_blob.data).to eq content
+
+            updated_blob = blob(update_file_path)
+            expect(updated_blob.data).to eq content
+
+            expect(blob(move_previous_path)).to be_nil
+
+            moved_blob = blob(move_file_path)
+            expect(moved_blob.data).to eq content
+          end
+        end
+
+        def blob(path)
+          snippet.repository.blob_at('master', path)
         end
       end
     end

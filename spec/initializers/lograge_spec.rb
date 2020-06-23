@@ -99,6 +99,8 @@ describe 'lograge', type: :request do
   end
 
   context 'with a log subscriber' do
+    include_context 'parsed logs'
+
     let(:subscriber) { Lograge::LogSubscribers::ActionController.new }
 
     let(:event) do
@@ -117,16 +119,6 @@ describe 'lograge', type: :request do
         db_runtime: 0.02,
         view_runtime: 0.01
       )
-    end
-
-    let(:log_output) { StringIO.new }
-    let(:logger) do
-      Logger.new(log_output).tap { |logger| logger.formatter = ->(_, _, _, msg) { msg } }
-    end
-    let(:log_data) { Gitlab::Json.parse(log_output.string) }
-
-    before do
-      Lograge.logger = logger
     end
 
     describe 'with an exception' do

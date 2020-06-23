@@ -89,6 +89,11 @@ FactoryBot.define do
       create(:grafana_integration, project: projects[2], enabled: false)
 
       ProjectFeature.first.update_attribute('repository_access_level', 0)
+
+      # Create fresh & a month (28-days SMAU) old  data
+      [2, 29].each do |n|
+        create(:snippet, created_at: n.days.ago)
+      end
     end
   end
 end

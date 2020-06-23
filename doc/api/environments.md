@@ -13,6 +13,7 @@ GET /projects/:id/environments
 | `id`      | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
 | `name`    | string  | no       | Return the environment with this name. Mutually exclusive with `search` |
 | `search`  | string  | no       | Return list of environments matching the search criteria. Mutually exclusive with `name` |
+| `states`  | string  | no       | List all environments that match a specific state. Accepted values: `available` or `stopped`. If no state value given, returns all environments. |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/environments?name=review%2Ffix-foo"
