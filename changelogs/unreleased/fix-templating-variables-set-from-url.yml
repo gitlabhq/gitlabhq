@@ -1,5 +1,0 @@
----
-title: Fix missing templating vars set from URL in metrics dashboard
-merge_request: 34668
-author:
-type: fixed
