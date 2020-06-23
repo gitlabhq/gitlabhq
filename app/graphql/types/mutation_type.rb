@@ -57,4 +57,5 @@ module Types
   end
 end
 
+::Types::MutationType.prepend(::Types::DeprecatedMutations)
 ::Types::MutationType.prepend_if_ee('::EE::Types::MutationType')

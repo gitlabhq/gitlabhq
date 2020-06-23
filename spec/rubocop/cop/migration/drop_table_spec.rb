@@ -17,20 +17,70 @@ describe RuboCop::Cop::Migration::DropTable do
       allow(cop).to receive(:in_deployment_migration?).and_return(true)
     end
 
-    it 'registers an offense' do
-      expect_offense(<<~PATTERN)
-        def change
-          drop_table :table
-          ^^^^^^^^^^ #{described_class::MSG}
-
-          add_column(:users, :username, :text)
-
-          execute "DROP TABLE table"
-          ^^^^^^^ #{described_class::MSG}
-
-          execute "CREATE UNIQUE INDEX email_index ON users (email);"
+    context 'with drop_table DSL method' do
+      context 'when in down method' do
+        it 'does not register an offense' do
+          expect_no_offenses(<<~PATTERN)
+            def down
+              drop_table :table
+            end
+          PATTERN
         end
-      PATTERN
+      end
+
+      context 'when in up method' do
+        it 'registers an offense' do
+          expect_offense(<<~PATTERN)
+            def up
+              drop_table :table
+              ^^^^^^^^^^ #{described_class::MSG}
+            end
+          PATTERN
+        end
+      end
+
+      context 'when in change method' do
+        it 'registers an offense' do
+          expect_offense(<<~PATTERN)
+            def change
+              drop_table :table
+              ^^^^^^^^^^ #{described_class::MSG}
+            end
+          PATTERN
+        end
+      end
+    end
+
+    context 'with DROP TABLE SQL literal' do
+      it 'does not register an offense' do
+        expect_no_offenses(<<~PATTERN)
+          def down
+            execute "DROP TABLE table"
+          end
+        PATTERN
+      end
+    end
+
+    context 'when in up method' do
+      it 'registers an offense' do
+        expect_offense(<<~PATTERN)
+          def up
+            execute "DROP TABLE table"
+            ^^^^^^^ #{described_class::MSG}
+          end
+        PATTERN
+      end
+    end
+
+    context 'when in change method' do
+      it 'registers an offense' do
+        expect_offense(<<~PATTERN)
+          def change
+            execute "DROP TABLE table"
+            ^^^^^^^ #{described_class::MSG}
+          end
+        PATTERN
+      end
     end
   end
 

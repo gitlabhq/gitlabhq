@@ -17644,7 +17644,7 @@ msgstr ""
 msgid "ProjectSettings|Forks"
 msgstr ""
 
-msgid "ProjectSettings|Git Large File Storage"
+msgid "ProjectSettings|Git Large File Storage (LFS)"
 msgstr ""
 
 msgid "ProjectSettings|Internal"

@@ -20,8 +20,6 @@ class AddGroupImportStatesTable < ActiveRecord::Migration[6.0]
   # rubocop:enable Migration/AddLimitToTextColumns
 
   def down
-    # rubocop:disable Migration/DropTable
     drop_table :group_import_states
-    # rubocop:enable Migration/DropTable
   end
 end

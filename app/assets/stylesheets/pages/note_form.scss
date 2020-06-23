@@ -489,6 +489,7 @@ table {
   border: 0;
   font-size: 14px;
   line-height: 16px;
+  vertical-align: initial;
 
   &:hover,
   &:focus {
@@ -497,6 +498,10 @@ table {
     .text-attach-file {
       text-decoration: underline;
     }
+  }
+
+  .gl-icon:not(:last-child) {
+    margin-right: 0;
   }
 }
 

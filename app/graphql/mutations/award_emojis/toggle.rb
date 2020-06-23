@@ -3,7 +3,7 @@
 module Mutations
   module AwardEmojis
     class Toggle < Base
-      graphql_name 'ToggleAwardEmoji'
+      graphql_name 'AwardEmojiToggle'
 
       field :toggledOn, GraphQL::BOOLEAN_TYPE, null: false,
             description: 'Indicates the status of the emoji. ' \

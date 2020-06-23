@@ -426,7 +426,7 @@ export default {
           v-if="lfsAvailable"
           ref="git-lfs-settings"
           :help-path="lfsHelpPath"
-          :label="s__('ProjectSettings|Git Large File Storage')"
+          :label="s__('ProjectSettings|Git Large File Storage (LFS)')"
           :help-text="
             s__('ProjectSettings|Manages large files such as audio, video, and graphics files')
           "

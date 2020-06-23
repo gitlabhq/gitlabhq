@@ -97,6 +97,7 @@ snippets:
 - user_agent_detail
 - user_mentions
 - snippet_repository
+- statistics
 releases:
 - author
 - project

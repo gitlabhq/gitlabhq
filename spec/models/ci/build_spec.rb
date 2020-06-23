@@ -4095,6 +4095,10 @@ describe Ci::Build do
         it 'parses blobs and add the results to the terraform report' do
           expect { build.collect_terraform_reports!(terraform_reports) }.not_to raise_error
 
+          terraform_reports.plans.each do |key, hash_value|
+            expect(hash_value.keys).to match_array(%w[create delete job_id job_name job_path update])
+          end
+
           expect(terraform_reports.plans).to match(
             a_hash_including(
               build.id.to_s => a_hash_including(
@@ -4113,9 +4117,19 @@ describe Ci::Build do
           create(:ci_job_artifact, :terraform_with_corrupted_data, job: build, project: build.project)
         end
 
-        it 'raises an error' do
-          expect { build.collect_terraform_reports!(terraform_reports) }.to raise_error(
-            Gitlab::Ci::Parsers::Terraform::Tfplan::TfplanParserError
+        it 'adds invalid plan report' do
+          expect { build.collect_terraform_reports!(terraform_reports) }.not_to raise_error
+
+          terraform_reports.plans.each do |key, hash_value|
+            expect(hash_value.keys).to match_array(%w[job_id job_name job_path tf_report_error])
+          end
+
+          expect(terraform_reports.plans).to match(
+            a_hash_including(
+              build.id.to_s => a_hash_including(
+                'tf_report_error' => :invalid_json_format
+              )
+            )
           )
         end
       end

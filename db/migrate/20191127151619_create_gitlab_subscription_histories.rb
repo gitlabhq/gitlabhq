@@ -23,8 +23,6 @@ class CreateGitlabSubscriptionHistories < ActiveRecord::Migration[5.2]
   end
 
   def down
-    # rubocop:disable Migration/DropTable
     drop_table :gitlab_subscription_histories
-    # rubocop:enable Migration/DropTable
   end
 end

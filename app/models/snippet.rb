@@ -44,6 +44,7 @@ class Snippet < ApplicationRecord
   has_many :notes, as: :noteable, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :user_mentions, class_name: "SnippetUserMention", dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
   has_one :snippet_repository, inverse_of: :snippet
+  has_one :statistics, class_name: 'SnippetStatistics'
 
   delegate :name, :email, to: :author, prefix: true, allow_nil: true
 

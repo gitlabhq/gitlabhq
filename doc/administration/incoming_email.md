@@ -69,6 +69,11 @@ and [allowed less secure apps to access the account](https://support.google.com/
 or [turn-on 2-step validation](https://support.google.com/accounts/answer/185839)
 and use [an application password](https://support.google.com/mail/answer/185833).
 
+If you want to use Office 365, and two-factor authentication is enabled, make sure
+you're using an
+[app password](https://docs.microsoft.com/en-us/azure/active-directory/user-help/multi-factor-authentication-end-user-app-passwords)
+instead of the regular password for the mailbox.
+
 To set up a basic Postfix mail server with IMAP access on Ubuntu, follow the
 [Postfix setup documentation](reply_by_email_postfix_setup.md).
 

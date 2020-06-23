@@ -147,7 +147,7 @@ Example: Let's have some tea - add a `:tea:` reaction emoji to an issue.
 
 ```graphql
 mutation {
-  addAwardEmoji(input: { awardableId: "gid://gitlab/Issue/27039960",
+  awardEmojiAdd(input: { awardableId: "gid://gitlab/Issue/27039960",
       name: "tea"
     }) {
     awardEmoji {
