@@ -201,6 +201,20 @@ project.repository_read_only = true; project.save
 project.update!(repository_read_only: true)
 ```
 
+### Transfer project from one namespace to another
+
+```ruby
+ p= Project.find_by_full_path('')
+
+ # To set the owner of the project
+ current_user= p.creator
+
+# Namespace where you want this to be moved.
+namespace = Namespace.find_by_full_path("")
+
+::Projects::TransferService.new(p, current_user).execute(namespace)
+```
+
 ### Bulk update service integration password for _all_ projects
 
 For example, change the Jira user's password for all projects that have the Jira

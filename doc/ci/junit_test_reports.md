@@ -103,7 +103,8 @@ ruby:
 
 ### Go example
 
-Use the following job in `.gitlab-ci.yml`:
+Use the following job in `.gitlab-ci.yml`, and ensure you use `-set-exit-code`,
+otherwise the pipeline will be marked successful, even if the tests fail:
 
 ```yaml
 ## Use https://github.com/jstemmer/go-junit-report to generate a JUnit report with go
@@ -111,7 +112,7 @@ golang:
   stage: test
   script:
     - go get -u github.com/jstemmer/go-junit-report
-    - go test -v 2>&1 | go-junit-report > report.xml
+    - go test -v 2>&1 | go-junit-report -set-exit-code > report.xml
   artifacts:
     reports:
       junit: report.xml

@@ -205,7 +205,6 @@ export const closeIssue = ({ commit, dispatch, state }) => {
     commit(types.CLOSE_ISSUE);
     dispatch('emitStateChangedEvent', data);
     dispatch('toggleStateButtonLoading', false);
-    dispatch('toggleBlockedIssueWarning', false);
   });
 };
 

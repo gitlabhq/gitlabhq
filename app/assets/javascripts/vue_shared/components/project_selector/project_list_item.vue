@@ -17,7 +17,10 @@ export default {
     project: {
       type: Object,
       required: true,
-      validator: p => Number.isFinite(p.id) && isString(p.name) && isString(p.name_with_namespace),
+      validator: p =>
+        (Number.isFinite(p.id) || isString(p.id)) &&
+        isString(p.name) &&
+        (isString(p.name_with_namespace) || isString(p.nameWithNamespace)),
     },
     selected: {
       type: Boolean,
@@ -30,8 +33,11 @@ export default {
     },
   },
   computed: {
+    projectNameWithNamespace() {
+      return this.project.nameWithNamespace || this.project.name_with_namespace;
+    },
     truncatedNamespace() {
-      return truncateNamespace(this.project.name_with_namespace);
+      return truncateNamespace(this.projectNameWithNamespace);
     },
     highlightedProjectName() {
       return highlight(this.project.name, this.matcher);
@@ -58,7 +64,7 @@ export default {
     <div class="d-flex flex-wrap project-namespace-name-container">
       <div
         v-if="truncatedNamespace"
-        :title="project.name_with_namespace"
+        :title="projectNameWithNamespace"
         class="text-secondary text-truncate js-project-namespace"
       >
         {{ truncatedNamespace }}

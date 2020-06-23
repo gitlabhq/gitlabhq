@@ -11,7 +11,7 @@ import { __ } from './locale';
 
 export default class Issue {
   constructor() {
-    if ($('a.btn-close').length) this.initIssueBtnEventListeners();
+    if ($('.btn-close, .btn-reopen').length) this.initIssueBtnEventListeners();
 
     if ($('.js-close-blocked-issue-warning').length) this.initIssueWarningBtnEventListener();
 
@@ -32,8 +32,8 @@ export default class Issue {
       Issue.initRelatedBranches();
     }
 
-    this.closeButtons = $('a.btn-close');
-    this.reopenButtons = $('a.btn-reopen');
+    this.closeButtons = $('.btn-close');
+    this.reopenButtons = $('.btn-reopen');
 
     this.initCloseReopenReport();
 
@@ -103,7 +103,7 @@ export default class Issue {
     // NOTE: data attribute seems unnecessary but is actually necessary
     return $('.js-issuable-buttons[data-action="close-reopen"]').on(
       'click',
-      'a.btn-close, a.btn-reopen, a.btn-close-anyway',
+      '.btn-close, .btn-reopen, .btn-close-anyway',
       e => {
         e.preventDefault();
         e.stopImmediatePropagation();
@@ -120,7 +120,7 @@ export default class Issue {
         } else {
           this.disableCloseReopenButton($button);
 
-          const url = $button.attr('href');
+          const url = $button.data('endpoint');
 
           return axios
             .put(url)

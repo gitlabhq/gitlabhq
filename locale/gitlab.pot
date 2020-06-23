@@ -20115,6 +20115,9 @@ msgstr ""
 msgid "SecurityReports|There was an error while generating the report."
 msgstr ""
 
+msgid "SecurityReports|Unable to add %{invalidProjectsMessage}"
+msgstr ""
+
 msgid "SecurityReports|Unable to add %{invalidProjects}"
 msgstr ""
 
@@ -21194,6 +21197,9 @@ msgid "Something went wrong, unable to remove project"
 msgstr ""
 
 msgid "Something went wrong, unable to search projects"
+msgstr ""
+
+msgid "Something went wrong."
 msgstr ""
 
 msgid "Something went wrong. Please try again."

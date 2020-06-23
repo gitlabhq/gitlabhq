@@ -125,8 +125,12 @@ export default {
     canToggleIssueState() {
       return (
         this.getNoteableData.current_user.can_update &&
-        this.getNoteableData.state !== constants.MERGED
+        this.getNoteableData.state !== constants.MERGED &&
+        !this.closedAndLocked
       );
+    },
+    closedAndLocked() {
+      return !this.isOpen && this.isLocked(this.getNoteableData);
     },
     endpoint() {
       return this.getNoteableData.create_note_path;

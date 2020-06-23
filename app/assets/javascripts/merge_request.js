@@ -1,6 +1,7 @@
 /* eslint-disable func-names, no-underscore-dangle, consistent-return */
 
 import $ from 'jquery';
+import axios from './lib/utils/axios_utils';
 import { __ } from '~/locale';
 import createFlash from '~/flash';
 import TaskList from './task_list';
@@ -65,9 +66,17 @@ MergeRequest.prototype.showAllCommits = function() {
 
 MergeRequest.prototype.initMRBtnListeners = function() {
   const _this = this;
-  return $('a.btn-close, a.btn-reopen').on('click', function(e) {
+  return $('.btn-close, .btn-reopen').on('click', function(e) {
     const $this = $(this);
     const shouldSubmit = $this.hasClass('btn-comment');
+    if ($this.hasClass('js-btn-issue-action')) {
+      const url = $this.data('endpoint');
+      return axios
+        .put(url)
+        .then(() => window.location.reload())
+        .catch(() => createFlash(__('Something went wrong.')));
+    }
+
     if (shouldSubmit && $this.data('submitted')) {
       return;
     }

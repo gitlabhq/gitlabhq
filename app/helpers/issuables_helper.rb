@@ -367,15 +367,6 @@ module IssuablesHelper
     end
   end
 
-  def issuable_close_reopen_button_method(issuable)
-    case issuable
-    when Issue
-      ''
-    when MergeRequest
-      'put'
-    end
-  end
-
   def issuable_author_is_current_user(issuable)
     issuable.author == current_user
   end
