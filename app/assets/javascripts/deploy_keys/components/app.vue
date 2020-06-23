@@ -90,13 +90,13 @@ export default {
           return new Flash(s__('DeployKeys|Error getting deploy keys'));
         });
     },
-    enableKey([deployKey]) {
+    enableKey(deployKey) {
       this.service
         .enableKey(deployKey.id)
         .then(this.fetchKeys)
         .catch(() => new Flash(s__('DeployKeys|Error enabling deploy key')));
     },
-    disableKey([deployKey, callback]) {
+    disableKey(deployKey, callback) {
       if (
         // eslint-disable-next-line no-alert
         window.confirm(s__('DeployKeys|You are going to remove this deploy key. Are you sure?'))

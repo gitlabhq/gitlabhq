@@ -37,7 +37,7 @@ export default {
   },
   methods: {
     onLeaveGroup() {
-      eventHub.$emit(`${this.action}showLeaveGroupModal`, [this.group, this.parentGroup]);
+      eventHub.$emit(`${this.action}showLeaveGroupModal`, this.group, this.parentGroup);
     },
   },
 };

@@ -402,6 +402,17 @@ git_data_dirs({
 })
 ```
 
+You should use configuration similar to the following:
+
+```ruby
+git_data_dirs({
+  'default' => { 'gitaly_address' => 'tcp://gitaly1.internal:8075' },
+  # this should be the IP address of the GitLab server that has Gitaly running on it
+  'storage1' => { 'gitaly_address' => 'tcp://gitlab.internal:8075' },
+  'storage2' => { 'gitaly_address' => 'tcp://gitaly2.internal:8075' },
+})
+```
+
 **For Omnibus GitLab**
 
 1. Edit `/etc/gitlab/gitlab.rb`:

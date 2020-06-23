@@ -89,10 +89,10 @@ export default {
           eventHub.$emit('clearDetailIssue', isMultiSelect);
 
           if (isMultiSelect) {
-            eventHub.$emit('newDetailIssue', [this.issue, isMultiSelect]);
+            eventHub.$emit('newDetailIssue', this.issue, isMultiSelect);
           }
         } else {
-          eventHub.$emit('newDetailIssue', [this.issue, isMultiSelect]);
+          eventHub.$emit('newDetailIssue', this.issue, isMultiSelect);
           boardsStore.setListDetail(this.list);
         }
       }

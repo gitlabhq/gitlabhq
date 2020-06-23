@@ -335,8 +335,6 @@ Puma
 Python
 Qualys
 Rackspace
-Raketask
-Raketasks
 reachability
 rebase
 rebased

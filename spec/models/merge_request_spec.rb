@@ -1170,6 +1170,12 @@ describe MergeRequest do
       expect(subject.can_remove_source_branch?(user)).to be_falsey
     end
 
+    it "can't be removed because source project has been deleted" do
+      subject.source_project = nil
+
+      expect(subject.can_remove_source_branch?(user)).to be_falsey
+    end
+
     it "can't remove a root ref" do
       subject.update(source_branch: 'master', target_branch: 'feature')
 

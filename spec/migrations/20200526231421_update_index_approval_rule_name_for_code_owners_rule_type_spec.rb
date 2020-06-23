@@ -78,8 +78,8 @@ describe UpdateIndexApprovalRuleNameForCodeOwnersRuleType do
 
       disable_migrations_output { migrate! }
 
-      # After running the migration, expect `section == nil` rules to still
-      #   be blocked by the legacy indices, but sectional rules are allowed.
+      # After running the migration, expect `section == nil` rules to still be
+      #   blocked by the legacy indices, but sectional rules are allowed.
       #
       expect { create_sectional_approval_rules }
         .to change { approval_rules.count }.by(2)
@@ -115,8 +115,8 @@ describe UpdateIndexApprovalRuleNameForCodeOwnersRuleType do
           described_class::LEGACY_INDEX_NAME_CODE_OWNERS
         )
 
-        # Since ApprovalMergeRequestRules are EE-specific, we expect none to
-        #   be deleted during the migration.
+        # Since ApprovalMergeRequestRules are EE-specific, we expect none to be
+        #   deleted during the migration.
         #
         expect { disable_migrations_output { migration.down } }
           .not_to change { approval_rules.count }
@@ -144,17 +144,14 @@ describe UpdateIndexApprovalRuleNameForCodeOwnersRuleType do
         expect { create_two_matching_nil_section_approval_rules }
           .to raise_exception(ActiveRecord::RecordNotUnique)
 
-        # Run the down migration. This will remove the 2 approval rules we create
-        #   above, and call MergeRequests::SyncCodeOwnerApprovalRules to recreate
-        #   new ones.
-        #
         expect(MergeRequests::SyncCodeOwnerApprovalRules)
           .to receive(:new).with(MergeRequest.find(merge_request.id)).once.and_call_original
 
-        # We expect approval_rules.count to be changed by -3 as we're deleting the
-        #   3 rules created above, and MergeRequests::SyncCodeOwnerApprovalRules
-        #   will not be able to create new one with an empty (or missing)
-        #   CODEOWNERS file.
+        # Run the down migration. This will remove the 3 approval rules we create
+        #   above, and call MergeRequests::SyncCodeOwnerApprovalRules to recreate
+        #   new ones. However, as there is no CODEOWNERS file in this test
+        #   context, no approval rules will be created, so we can expect
+        #   approval_rules.count to be changed by -3.
         #
         expect { disable_migrations_output { migration.down } }
           .to change { approval_rules.count }.by(-3)

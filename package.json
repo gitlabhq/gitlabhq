@@ -105,7 +105,6 @@
     "mermaid": "^8.5.2",
     "mersenne-twister": "1.1.0",
     "minimatch": "^3.0.4",
-    "mitt": "^1.2.0",
     "monaco-editor": "^0.18.1",
     "monaco-editor-webpack-plugin": "^1.7.0",
     "mousetrap": "^1.4.6",

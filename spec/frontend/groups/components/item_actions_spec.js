@@ -31,10 +31,11 @@ describe('ItemActionsComponent', () => {
         jest.spyOn(eventHub, '$emit').mockImplementation(() => {});
         vm.onLeaveGroup();
 
-        expect(eventHub.$emit).toHaveBeenCalledWith('showLeaveGroupModal', [
+        expect(eventHub.$emit).toHaveBeenCalledWith(
+          'showLeaveGroupModal',
           vm.group,
           vm.parentGroup,
-        ]);
+        );
       });
     });
   });

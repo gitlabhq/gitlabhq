@@ -946,7 +946,8 @@ class MergeRequest < ApplicationRecord
   end
 
   def can_remove_source_branch?(current_user)
-    !ProtectedBranch.protected?(source_project, source_branch) &&
+    source_project &&
+      !ProtectedBranch.protected?(source_project, source_branch) &&
       !source_project.root_ref?(source_branch) &&
       Ability.allowed?(current_user, :push_code, source_project) &&
       diff_head_sha == source_branch_head.try(:sha)

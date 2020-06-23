@@ -7310,6 +7310,9 @@ msgstr ""
 msgid "Delete this attachment"
 msgstr ""
 
+msgid "Delete user list"
+msgstr ""
+
 msgid "Delete variable"
 msgstr ""
 
@@ -24761,6 +24764,9 @@ msgstr ""
 msgid "User key was successfully removed."
 msgstr ""
 
+msgid "User list %{name} will be removed. Are you sure?"
+msgstr ""
+
 msgid "User map"
 msgstr ""
 
@@ -24780,6 +24786,12 @@ msgid "User was successfully removed from project."
 msgstr ""
 
 msgid "User was successfully updated."
+msgstr ""
+
+msgid "UserList|Delete %{name}?"
+msgstr ""
+
+msgid "UserList|created %{timeago}"
 msgstr ""
 
 msgid "UserOnboardingTour|%{activeTour}/%{totalTours}"
@@ -26942,9 +26954,6 @@ msgid "created"
 msgstr ""
 
 msgid "created %{timeAgo}"
-msgstr ""
-
-msgid "created %{timeago}"
 msgstr ""
 
 msgid "customize"

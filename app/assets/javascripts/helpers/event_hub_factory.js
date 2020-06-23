@@ -1,26 +1,18 @@
-import mitt from 'mitt';
+import Vue from 'vue';
 
+/**
+ * Return a Vue like event hub
+ *
+ * - $on
+ * - $off
+ * - $once
+ * - $emit
+ *
+ * Please note, this was once implemented with `mitt`, but since then has been reverted
+ * because of some API issues. https://gitlab.com/gitlab-org/gitlab/-/merge_requests/35074
+ *
+ * We'd like to shy away from using a full fledged Vue instance from this in the future.
+ */
 export default () => {
-  const emitter = mitt();
-
-  const originalEmit = emitter.emit;
-
-  emitter.once = (event, handler) => {
-    const wrappedHandler = evt => {
-      handler(evt);
-      emitter.off(event, wrappedHandler);
-    };
-    emitter.on(event, wrappedHandler);
-  };
-
-  emitter.emit = (event, args = []) => {
-    originalEmit(event, args);
-  };
-
-  emitter.$on = emitter.on;
-  emitter.$once = emitter.once;
-  emitter.$off = emitter.off;
-  emitter.$emit = emitter.emit;
-
-  return emitter;
+  return new Vue();
 };

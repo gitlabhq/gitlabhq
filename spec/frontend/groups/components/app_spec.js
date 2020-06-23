@@ -184,7 +184,7 @@ describe('AppComponent', () => {
         jest.spyOn(window.history, 'replaceState').mockImplementation(() => {});
         jest.spyOn($, 'scrollTo').mockImplementation(() => {});
 
-        const fetchPagePromise = vm.fetchPage([2, null, null, true]);
+        const fetchPagePromise = vm.fetchPage(2, null, null, true);
 
         expect(vm.isLoading).toBe(true);
         expect(vm.fetchGroups).toHaveBeenCalledWith({
@@ -275,7 +275,7 @@ describe('AppComponent', () => {
 
         expect(vm.targetGroup).toBe(null);
         expect(vm.targetParentGroup).toBe(null);
-        vm.showLeaveGroupModal([group, mockParentGroupItem]);
+        vm.showLeaveGroupModal(group, mockParentGroupItem);
 
         expect(vm.targetGroup).not.toBe(null);
         expect(vm.targetParentGroup).not.toBe(null);
@@ -286,7 +286,7 @@ describe('AppComponent', () => {
 
         expect(vm.showModal).toBe(false);
         expect(vm.groupLeaveConfirmationMessage).toBe('');
-        vm.showLeaveGroupModal([group, mockParentGroupItem]);
+        vm.showLeaveGroupModal(group, mockParentGroupItem);
 
         expect(vm.showModal).toBe(true);
         expect(vm.groupLeaveConfirmationMessage).toBe(
@@ -298,7 +298,7 @@ describe('AppComponent', () => {
     describe('hideLeaveGroupModal', () => {
       it('hides modal confirmation which is shown before leaving the group', () => {
         const group = { ...mockParentGroupItem };
-        vm.showLeaveGroupModal([group, mockParentGroupItem]);
+        vm.showLeaveGroupModal(group, mockParentGroupItem);
 
         expect(vm.showModal).toBe(true);
         vm.hideLeaveGroupModal();

@@ -1,6 +1,6 @@
-import createEventHub from '~/helpers/event_hub_factory';
+import Vue from 'vue';
 
-const eventHub = createEventHub();
+const eventHub = new Vue();
 
 // TODO: remove eventHub hack after code splitting refactor
 window.emitSidebarEvent = (...args) => eventHub.$emit(...args);

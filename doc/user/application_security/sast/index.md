@@ -287,7 +287,7 @@ SAST can be [configured](#customizing-the-sast-settings) using environment varia
 
 #### Logging Level
 
-You can control the verbosity of logs by setting the `SECURE_LOG_LEVEL` env var. It's default is set to `info`, you can set it to any of the following levels:
+You can control the verbosity of logs by setting the `SECURE_LOG_LEVEL` env var. The default is set to `info`, you can set it to any of the following levels:
 
 - `panic`
 - `fatal`
