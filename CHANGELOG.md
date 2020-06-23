@@ -2,6 +2,20 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 13.1.1 (2020-06-23)
+
+### Fixed (4 changes)
+
+- Fix missing templating vars set from URL in metrics dashboard. !34668
+- Fix edit status dropdown overflow. !34847
+- Load user before logging git http-requests. !34923
+- Do not mask key comments for DeployKeys. !35014
+
+### Added (1 change)
+
+- Periodically recompute project authorizations. !34071
+
+
 ## 13.1.0 (2020-06-22)
 
 ### Removed (4 changes, 2 of them are from the community)
