@@ -8,10 +8,6 @@ RSpec.describe AlertManagement::CreateAlertIssueService do
   let_it_be(:project) { create(:project, group: group) }
   let_it_be(:payload) do
     {
-      'title' => 'Alert title',
-      'annotations' => {
-        'title' => 'Alert title'
-      },
       'startsAt' => '2020-04-27T10:10:22.265949279Z',
       'generatorURL' => 'http://8d467bd4607a:9090/graph?g0.expr=vector%281%29&g0.tab=1'
     }
@@ -19,6 +15,7 @@ RSpec.describe AlertManagement::CreateAlertIssueService do
   let_it_be(:generic_alert, reload: true) { create(:alert_management_alert, :triggered, project: project, payload: payload) }
   let_it_be(:prometheus_alert, reload: true) { create(:alert_management_alert, :triggered, :prometheus, project: project, payload: payload) }
   let(:alert) { generic_alert }
+  let(:alert_presenter) { alert.present }
   let(:created_issue) { Issue.last! }
 
   describe '#execute' do
@@ -61,7 +58,7 @@ RSpec.describe AlertManagement::CreateAlertIssueService do
       end
 
       it 'sets the issue title' do
-        expect(created_issue.title).to eq(alert_presenter.title)
+        expect(created_issue.title).to eq(alert.title)
       end
 
       it 'sets the issue description' do
@@ -165,9 +162,6 @@ RSpec.describe AlertManagement::CreateAlertIssueService do
 
       context 'when the alert is prometheus alert' do
         let(:alert) { prometheus_alert }
-        let(:alert_presenter) do
-          Gitlab::Alerting::Alert.new(project: project, payload: alert.payload).present
-        end
 
         it_behaves_like 'creating an alert issue'
         it_behaves_like 'setting an issue attributes'
@@ -176,10 +170,6 @@ RSpec.describe AlertManagement::CreateAlertIssueService do
 
       context 'when the alert is generic' do
         let(:alert) { generic_alert }
-        let(:alert_presenter) do
-          alert_payload = Gitlab::Alerting::NotificationPayloadParser.call(alert.payload.to_h)
-          Gitlab::Alerting::Alert.new(project: project, payload: alert_payload).present
-        end
 
         it_behaves_like 'creating an alert issue'
         it_behaves_like 'setting an issue attributes'
@@ -187,11 +177,11 @@ RSpec.describe AlertManagement::CreateAlertIssueService do
       end
 
       context 'when issue cannot be created' do
-        let(:alert) { prometheus_alert }
+        let(:alert) { generic_alert }
 
         before do
-          # set invalid payload for Prometheus alert
-          alert.update!(payload: {})
+          # Invalid alert
+          alert.update_columns(title: '')
         end
 
         it 'has an unsuccessful status' do

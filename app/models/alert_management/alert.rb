@@ -10,6 +10,7 @@ module AlertManagement
     include Sortable
     include Noteable
     include Gitlab::SQL::Pattern
+    include Presentable
 
     STATUSES = {
       triggered: 0,
@@ -24,6 +25,8 @@ module AlertManagement
       resolved: :resolve,
       ignored: :ignore
     }.freeze
+
+    DETAILS_IGNORED_PARAMS = %w(start_time).freeze
 
     belongs_to :project
     belongs_to :issue, optional: true
@@ -136,7 +139,7 @@ module AlertManagement
     end
 
     def details
-      details_payload = payload.except(*attributes.keys)
+      details_payload = payload.except(*attributes.keys, *DETAILS_IGNORED_PARAMS)
 
       Gitlab::Utils::InlineHash.merge_keys(details_payload)
     end
@@ -159,6 +162,12 @@ module AlertManagement
       return unless project.has_active_services?(:alert_hooks)
 
       project.execute_services(hook_data, :alert_hooks)
+    end
+
+    def present
+      return super(presenter_class: AlertManagement::PrometheusAlertPresenter) if prometheus?
+
+      super
     end
 
     private

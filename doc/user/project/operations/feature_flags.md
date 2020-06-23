@@ -35,18 +35,16 @@ To create and enable a feature flag:
 
 1. Navigate to your project's **Operations > Feature Flags**.
 1. Click the **New feature flag** button.
-1. Fill in the details:
-   - Enter a name that starts with a letter and contains only lowercase letters, digits, underscores (`_`),
-     or dashes (`-`), and does not end with a dash (`-`) or underscore (`_`).
-   - Enter a description (optional, 255 characters max).
+1. Enter a name that starts with a letter and contains only lowercase letters, digits, underscores (`_`),
+   or dashes (`-`), and does not end with a dash (`-`) or underscore (`_`).
+1. Enter a description (optional, 255 characters max).
+1. Enter details about how the flag should be applied:
    - In GitLab 13.0 and earlier, add **Environment specs**. For each environment,
-     include the:
-     - Status (default enabled)
-     - [Rollout strategy](#rollout-strategy-legacy) (defaults to all users)
-   - In GitLab 13.1 and later, add Feature Flag [**Strategies**](#feature-flag-strategies). For
-     each strategy, include the:
-     - Type (defaults to [All users](#all-users))
-     - Environment (defaults to all environments)
+     include the **Status** (default enabled) and [**Rollout strategy**](#rollout-strategy-legacy)
+     (defaults to **All users**).
+   - In GitLab 13.1 and later, add Feature Flag [**Strategies**](#feature-flag-strategies).
+     For each strategy, include the **Type** (defaults to [**All users**](#all-users))
+     and **Environments** (defaults to all environments).
 1. Click **Create feature flag**.
 
 You can change these settings by clicking the **{pencil}** (edit) button

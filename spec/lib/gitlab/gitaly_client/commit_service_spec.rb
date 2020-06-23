@@ -381,4 +381,15 @@ describe Gitlab::GitalyClient::CommitService do
       commits.map { |commit| Gitlab::Git::Commit.new(repository, commit) }
     end
   end
+
+  describe '#list_commits_by_ref_name' do
+    it 'lists latest commits grouped by a ref name' do
+      response = client.list_commits_by_ref_name(%w[master feature v1.0.0 nonexistent])
+
+      expect(response.fetch('master').id).to eq 'b83d6e391c22777fca1ed3012fce84f633d7fed0'
+      expect(response.fetch('feature').id).to eq '0b4bc9a49b562e85de7cc9e834518ea6828729b9'
+      expect(response.fetch('v1.0.0').id).to eq '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9'
+      expect(response).not_to have_key 'nonexistent'
+    end
+  end
 end

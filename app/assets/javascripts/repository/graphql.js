@@ -30,7 +30,7 @@ const defaultClient = createDefaultClient(
       },
       readme(_, { url }) {
         return axios
-          .get(url, { params: { viewer: 'rich', format: 'json' } })
+          .get(url, { params: { format: 'json', viewer: 'rich' } })
           .then(({ data }) => ({ ...data, __typename: 'ReadmeFile' }));
       },
     },

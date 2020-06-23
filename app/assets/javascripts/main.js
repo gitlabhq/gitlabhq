@@ -19,6 +19,7 @@ import { getLocationHash, visitUrl } from './lib/utils/url_utility';
 
 // everything else
 import loadAwardsHandler from './awards_handler';
+import applyGitLabUIConfig from '@gitlab/ui/dist/config';
 import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
 import Flash, { removeFlashClickListener } from './flash';
 import './gl_dropdown';
@@ -41,6 +42,8 @@ import { initUserTracking } from './tracking';
 import { __ } from './locale';
 
 import 'ee_else_ce/main_ee';
+
+applyGitLabUIConfig();
 
 // expose jQuery as global (TODO: remove these)
 window.jQuery = jQuery;

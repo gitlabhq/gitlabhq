@@ -9,7 +9,8 @@ import {
   updateHistory,
 } from '~/lib/utils/url_utility';
 import axios from '~/lib/utils/axios_utils';
-import { mockProjectDir, propsData } from '../mock_data';
+import { mockProjectDir } from '../mock_data';
+import { dashboardProps } from '../fixture_data';
 
 import Dashboard from '~/monitoring/components/dashboard.vue';
 import DashboardHeader from '~/monitoring/components/dashboard_header.vue';
@@ -26,7 +27,7 @@ describe('dashboard invalid url parameters', () => {
 
   const createMountedWrapper = (props = { hasMetrics: true }, options = {}) => {
     wrapper = mount(Dashboard, {
-      propsData: { ...propsData, ...props },
+      propsData: { ...dashboardProps, ...props },
       store,
       stubs: { 'graph-group': true, 'dashboard-panel': true, 'dashboard-header': DashboardHeader },
       ...options,

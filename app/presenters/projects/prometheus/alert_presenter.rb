@@ -58,6 +58,21 @@ module Projects
         MARKDOWN
       end
 
+      def annotation_list
+        strong_memoize(:annotation_list) do
+          annotations
+            .reject { |annotation| annotation.label.in?(RESERVED_ANNOTATIONS | GENERIC_ALERT_SUMMARY_ANNOTATIONS) }
+            .map { |annotation| list_item(annotation.label, annotation.value) }
+            .join(MARKDOWN_LINE_BREAK)
+        end
+      end
+
+      def metric_embed_for_alert
+        url = embed_url_for_gitlab_alert || embed_url_for_self_managed_alert
+
+        "\n[](#{url})" if url
+      end
+
       private
 
       def alert_title
@@ -93,15 +108,6 @@ module Projects
         end
       end
 
-      def annotation_list
-        strong_memoize(:annotation_list) do
-          annotations
-            .reject { |annotation| annotation.label.in?(RESERVED_ANNOTATIONS | GENERIC_ALERT_SUMMARY_ANNOTATIONS) }
-            .map { |annotation| list_item(annotation.label, annotation.value) }
-            .join(MARKDOWN_LINE_BREAK)
-        end
-      end
-
       def list_item(key, value)
         "**#{key}:** #{value}".strip
       end
@@ -118,12 +124,6 @@ module Projects
 
       def host_links
         Array(hosts.value).join(' ')
-      end
-
-      def metric_embed_for_alert
-        url = embed_url_for_gitlab_alert || embed_url_for_self_managed_alert
-
-        "\n[](#{url})" if url
       end
 
       def embed_url_for_gitlab_alert

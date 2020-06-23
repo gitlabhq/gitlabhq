@@ -27,17 +27,22 @@ const setupAxiosStartupCalls = axios => {
     if (existing) {
       // eslint-disable-next-line no-param-reassign
       req.adapter = () =>
-        existing.fetchCall.then(res =>
+        existing.fetchCall.then(res => {
+          const fetchHeaders = {};
+          res.headers.forEach((val, key) => {
+            fetchHeaders[key] = val;
+          });
+
           // eslint-disable-next-line promise/no-nesting
-          res.json().then(data => ({
+          return res.json().then(data => ({
             data,
             status: res.status,
             statusText: res.statusText,
-            headers: res.headers,
+            headers: fetchHeaders,
             config: req,
             request: req,
-          })),
-        );
+          }));
+        });
     }
 
     return req;

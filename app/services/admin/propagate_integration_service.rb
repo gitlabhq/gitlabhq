@@ -64,7 +64,7 @@ module Admin
 
     def create_integration_for_projects_without_integration
       loop do
-        batch = Project.uncached { project_ids_without_integration }
+        batch = Project.uncached { Project.ids_without_integration(integration, BATCH_SIZE) }
 
         bulk_create_from_integration(batch) unless batch.empty?
 
@@ -113,22 +113,6 @@ module Admin
     def active_external_wiki?
       integration.type == 'ExternalWikiService'
     end
-
-    # rubocop: disable CodeReuse/ActiveRecord
-    def project_ids_without_integration
-      services = Service
-        .select('1')
-        .where('services.project_id = projects.id')
-        .where(type: integration.type)
-
-      Project
-        .where('NOT EXISTS (?)', services)
-        .where(pending_delete: false)
-        .where(archived: false)
-        .limit(BATCH_SIZE)
-        .pluck(:id)
-    end
-    # rubocop: enable CodeReuse/ActiveRecord
 
     def service_hash
       @service_hash ||= integration.to_service_hash

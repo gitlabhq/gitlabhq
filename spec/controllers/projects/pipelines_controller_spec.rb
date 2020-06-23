@@ -77,9 +77,9 @@ RSpec.describe Projects::PipelinesController do
 
         expect(::Gitlab::GitalyClient).to receive(:allow_ref_name_caching).and_call_original
 
-        # ListCommitsByOid, RepositoryExists, HasLocalBranches
+        # ListCommitsByOid, RepositoryExists, HasLocalBranches, ListCommitsByRefNames
         expect { get_pipelines_index_json }
-          .to change { Gitlab::GitalyClient.get_request_count }.by(3)
+          .to change { Gitlab::GitalyClient.get_request_count }.by(4)
       end
     end
 
@@ -111,13 +111,15 @@ RSpec.describe Projects::PipelinesController do
       context 'scope is branches or tags' do
         before do
           create(:ci_pipeline, :failed, project: project, ref: 'v1.0.0', tag: true)
+          create(:ci_pipeline, :failed, project: project, ref: 'master', tag: false)
+          create(:ci_pipeline, :failed, project: project, ref: 'feature', tag: false)
         end
 
         context 'when scope is branches' do
           it 'returns matched pipelines' do
             get_pipelines_index_json(scope: 'branches')
 
-            check_pipeline_response(returned: 1, all: 7, running: 2, pending: 1, finished: 4)
+            check_pipeline_response(returned: 2, all: 9, running: 2, pending: 1, finished: 6)
           end
         end
 
@@ -125,7 +127,7 @@ RSpec.describe Projects::PipelinesController do
           it 'returns matched pipelines' do
             get_pipelines_index_json(scope: 'tags')
 
-            check_pipeline_response(returned: 1, all: 7, running: 2, pending: 1, finished: 4)
+            check_pipeline_response(returned: 1, all: 9, running: 2, pending: 1, finished: 6)
           end
         end
       end
@@ -234,7 +236,8 @@ RSpec.describe Projects::PipelinesController do
       user = create(:user)
       pipeline = create(:ci_empty_pipeline, status: status,
                                             project: project,
-                                            sha: sha,
+                                            sha: sha.id,
+                                            ref: sha.id.first(8),
                                             user: user,
                                             merge_request: merge_request)
 

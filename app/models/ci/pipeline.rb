@@ -553,10 +553,28 @@ module Ci
       end
     end
 
+    def lazy_ref_commit
+      return unless ::Gitlab::Ci::Features.pipeline_latest?
+
+      BatchLoader.for(ref).batch do |refs, loader|
+        next unless project.repository_exists?
+
+        project.repository.list_commits_by_ref_name(refs).then do |commits|
+          loader.call(ref, commits[ref])
+        end
+      end
+    end
+
     def latest?
       return false unless git_ref && commit.present?
 
-      project.commit(git_ref) == commit
+      unless ::Gitlab::Ci::Features.pipeline_latest?
+        return project.commit(git_ref) == commit
+      end
+
+      return false if lazy_ref_commit.nil?
+
+      lazy_ref_commit.id == commit.id
     end
 
     def retried

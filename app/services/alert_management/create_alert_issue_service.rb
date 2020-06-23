@@ -17,7 +17,7 @@ module AlertManagement
       return error_no_permissions unless allowed?
       return error_issue_already_exists if alert.issue
 
-      result = create_issue(user, alert_payload)
+      result = create_issue
       @issue = result.payload[:issue]
 
       return error(result.message) if result.error?
@@ -36,7 +36,7 @@ module AlertManagement
       user.can?(:create_issue, project)
     end
 
-    def create_issue(user, alert_payload)
+    def create_issue
       issue = do_create_issue(label_ids: issue_label_ids)
 
       # Create an unlabelled issue if we couldn't create the issue
@@ -51,14 +51,6 @@ module AlertManagement
 
       @issue = issue
       success
-    end
-
-    def alert_payload
-      if alert.prometheus?
-        alert.payload
-      else
-        Gitlab::Alerting::NotificationPayloadParser.call(alert.payload.to_h)
-      end
     end
 
     def update_alert_issue_id
@@ -85,24 +77,16 @@ module AlertManagement
       Issues::CreateService.new(
         project,
         user,
-        title: issue_title,
-        description: issue_description,
+        title: alert_presenter.title,
+        description: alert_presenter.issue_description,
         **params
       ).execute
     end
 
-    def issue_title
-      alert_presenter.full_title
-    end
-
-    def issue_description
-      horizontal_line = "\n\n---\n\n"
-
-      [
-        alert_summary,
-        alert_markdown,
-        issue_template_content
-      ].compact.join(horizontal_line)
+    def alert_presenter
+      strong_memoize(:alert_presenter) do
+        alert.present
+      end
     end
 
     def issue_label_ids
@@ -115,31 +99,6 @@ module AlertManagement
       Labels::FindOrCreateService
         .new(user, project, **params)
         .execute
-    end
-
-    def alert_summary
-      alert_presenter.issue_summary_markdown
-    end
-
-    def alert_markdown
-      alert_presenter.alert_markdown
-    end
-
-    def alert_presenter
-      strong_memoize(:alert_presenter) do
-        Gitlab::Alerting::Alert.new(project: project, payload: alert_payload).present
-      end
-    end
-
-    def issue_template_content
-      incident_management_setting.issue_template_content
-    end
-
-    def incident_management_setting
-      strong_memoize(:incident_management_setting) do
-        project.incident_management_setting ||
-          project.build_incident_management_setting
-      end
     end
 
     def issue_errors(issue)

@@ -1488,6 +1488,12 @@ describe Ci::Pipeline, :mailer do
              sha: project.commit.sha)
     end
 
+    describe '#lazy_ref_commit' do
+      it 'returns the latest commit for a ref lazily' do
+        expect(pipeline.lazy_ref_commit.id).to eq project.commit(pipeline.ref).id
+      end
+    end
+
     describe '#latest?' do
       context 'with latest sha' do
         it 'returns true' do
@@ -1496,17 +1502,26 @@ describe Ci::Pipeline, :mailer do
       end
 
       context 'with a branch name as the ref' do
-        it 'looks up commit with the full ref name' do
-          expect(pipeline.project).to receive(:commit).with('refs/heads/master').and_call_original
+        it 'looks up a commit for a branch' do
+          expect(pipeline.ref).to eq 'master'
+          expect(pipeline).to be_latest
+        end
+      end
 
+      context 'with a tag name as a ref' do
+        it 'looks up a commit for a tag' do
+          expect(project.repository.branch_names).not_to include 'v1.0.0'
+
+          pipeline.update(sha: project.commit('v1.0.0').sha, ref: 'v1.0.0', tag: true)
+
+          expect(pipeline).to be_tag
           expect(pipeline).to be_latest
         end
       end
 
       context 'with not latest sha' do
         before do
-          pipeline.update(
-            sha: project.commit("#{project.default_branch}~1").sha)
+          pipeline.update(sha: project.commit("#{project.default_branch}~1").sha)
         end
 
         it 'returns false' do

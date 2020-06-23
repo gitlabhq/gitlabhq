@@ -38,6 +38,10 @@ module Gitlab
         ::Feature.enabled?(:ci_atomic_processing, project, default_enabled: true)
       end
 
+      def self.pipeline_latest?
+        ::Feature.enabled?(:ci_pipeline_latest, default_enabled: true)
+      end
+
       def self.release_generation_enabled?
         ::Feature.enabled?(:ci_release_generation)
       end

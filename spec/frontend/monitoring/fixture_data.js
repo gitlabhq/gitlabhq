@@ -1,5 +1,7 @@
 import { mapToDashboardViewModel } from '~/monitoring/stores/utils';
 import { metricStates } from '~/monitoring/constants';
+import { parseBoolean, convertObjectProps } from '~/lib/utils/common_utils';
+import { convertToCamelCase } from '~/lib/utils/text_utility';
 
 import { metricsResult } from './mock_data';
 
@@ -8,6 +10,20 @@ export const metricsDashboardResponse = getJSONFixture(
   'metrics_dashboard/environment_metrics_dashboard.json',
 );
 export const metricsDashboardPayload = metricsDashboardResponse.dashboard;
+
+const metricsData = convertObjectProps(
+  // Some props use kebab-case, convert to snake_case first
+  key => convertToCamelCase(key.replace(/-/g, '_')),
+  metricsDashboardResponse.metrics_data,
+);
+
+export const dashboardProps = {
+  ...metricsData,
+  hasMetrics: parseBoolean(metricsData.hasMetrics),
+  customMetricsAvailable: parseBoolean(metricsData.customMetricsAvailable),
+  prometheusAlertsAvailable: parseBoolean(metricsData.prometheusAlertsAvailable),
+};
+
 export const metricsDashboardViewModel = mapToDashboardViewModel(metricsDashboardPayload);
 
 export const metricsDashboardPanelCount = 22;

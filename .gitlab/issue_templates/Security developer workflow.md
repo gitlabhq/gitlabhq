@@ -41,7 +41,6 @@ After your merge request has been approved according to our [approval guidelines
 - [ ] Fill in any upgrade notes that users may need to take into account in the [details section](#details)
 - [ ] Add Yes/No and further details if needed to the migration and settings columns in the [details section](#details)
 - [ ] Add the nickname of the external user who found the issue (and/or HackerOne profile) to the Thanks row in the [details section](#details)
-- [ ] Once your `master` MR is merged, comment on the original security issue with a link to that MR indicating the issue is fixed.
 
 ## Summary
 

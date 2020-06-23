@@ -28,8 +28,9 @@ describe Gitlab::Ci::Pipeline::Preloader do
       end
     end
 
-    it 'preloads commit authors and number of warnings' do
+    it 'preloads commit authors, number of warnings and ref commits' do
       expect(commit).to receive(:lazy_author)
+      expect(pipeline).to receive(:lazy_ref_commit)
       expect(pipeline).to receive(:number_of_warnings)
       expect(stage).to receive(:number_of_warnings)
 
@@ -38,6 +39,7 @@ describe Gitlab::Ci::Pipeline::Preloader do
 
     it 'returns original collection' do
       allow(commit).to receive(:lazy_author)
+      allow(pipeline).to receive(:lazy_ref_commit)
       allow(pipeline).to receive(:number_of_warnings)
       allow(stage).to receive(:number_of_warnings)
 

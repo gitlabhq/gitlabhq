@@ -391,6 +391,21 @@ module Gitlab
         messages
       end
 
+      def list_commits_by_ref_name(refs)
+        request = Gitaly::ListCommitsByRefNameRequest
+          .new(repository: @gitaly_repo, ref_names: refs)
+
+        response = GitalyClient.call(@repository.storage, :commit_service, :list_commits_by_ref_name, request, timeout: GitalyClient.medium_timeout)
+
+        commit_refs = response.flat_map do |message|
+          message.commit_refs.map do |commit_ref|
+            [commit_ref.ref_name, Gitlab::Git::Commit.new(@repository, commit_ref.commit)]
+          end
+        end
+
+        Hash[commit_refs]
+      end
+
       private
 
       def call_commit_diff(request_params, options = {})

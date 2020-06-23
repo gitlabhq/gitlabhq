@@ -11,8 +11,8 @@ import MockAdapter from 'axios-mock-adapter';
 import Dashboard from '~/monitoring/components/dashboard.vue';
 import { createStore } from '~/monitoring/stores';
 import axios from '~/lib/utils/axios_utils';
-import { mockApiEndpoint, propsData } from '../mock_data';
-import { metricsDashboardPayload } from '../fixture_data';
+import { mockApiEndpoint } from '../mock_data';
+import { metricsDashboardPayload, dashboardProps } from '../fixture_data';
 import { setupStoreWithData } from '../store_utils';
 
 const localVue = createLocalVue();
@@ -56,7 +56,7 @@ describe('Dashboard', () => {
       component = new DashboardComponent({
         el: document.querySelector('.prometheus-graphs'),
         propsData: {
-          ...propsData,
+          ...dashboardProps,
           hasMetrics: true,
           showPanels: true,
         },
