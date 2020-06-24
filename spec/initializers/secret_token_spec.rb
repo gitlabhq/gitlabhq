@@ -19,6 +19,30 @@ RSpec.describe 'create_tokens' do
     allow(self).to receive(:exit)
   end
 
+  describe 'ensure acknowledged secrets in any installations' do
+    let(:acknowledged_secrets) do
+      %w[secret_key_base otp_key_base db_key_base openid_connect_signing_key]
+    end
+
+    it 'does not allow to add a new secret without a proper handling' do
+      create_tokens
+
+      secrets_hash = YAML.load_file(Rails.root.join('config/secrets.yml'))
+
+      secrets_hash.each do |environment, secrets|
+        new_secrets = secrets.keys - acknowledged_secrets
+
+        expect(new_secrets).to be_empty,
+         <<~EOS
+           CAUTION:
+           It looks like you have just added new secret(s) #{new_secrets.inspect} to the secrets.yml.
+           Please read the development guide for GitLab secrets at doc/development/application_secrets.md before you proceed this change.
+           If you're absolutely sure that the change is safe, please add the new secrets to the 'acknowledged_secrets' in order to silence this warning.
+         EOS
+      end
+    end
+  end
+
   context 'setting secret keys' do
     context 'when none of the secrets exist' do
       before do

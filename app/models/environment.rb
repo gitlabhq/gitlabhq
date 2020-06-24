@@ -362,6 +362,11 @@ class Environment < ApplicationRecord
   def generate_slug
     self.slug = Gitlab::Slug::Environment.new(name).generate
   end
+
+  # Overrides ReactiveCaching default to activate limit checking behind a FF
+  def reactive_cache_limit_enabled?
+    Feature.enabled?(:reactive_caching_limit_environment, project)
+  end
 end
 
 Environment.prepend_if_ee('EE::Environment')

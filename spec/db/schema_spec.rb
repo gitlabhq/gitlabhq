@@ -10,8 +10,8 @@ RSpec.describe 'Database schema' do
   let(:tables) { connection.tables }
   let(:columns_name_with_jsonb) { retrieve_columns_name_with_jsonb }
 
-  # Use if you are certain that this column should not have a foreign key
-  # EE: edit the ee/spec/db/schema_support.rb
+  # List of columns historically missing a FK, don't add more columns
+  # See: https://docs.gitlab.com/ce/development/foreign_keys.html#naming-foreign-keys
   IGNORED_FK_COLUMNS = {
     abuse_reports: %w[reporter_id user_id],
     application_settings: %w[performance_bar_allowed_group_id slack_app_id snowplow_app_id eks_account_id eks_access_key_id],
@@ -119,7 +119,11 @@ RSpec.describe 'Database schema' do
           let(:ignored_columns) { ignored_fk_columns(table) }
 
           it 'do have the foreign keys' do
-            expect(column_names_with_id - ignored_columns).to contain_exactly(*foreign_keys_columns)
+            expect(column_names_with_id - ignored_columns).to match_array(foreign_keys_columns)
+          end
+
+          it 'and having foreign key are not in the ignore list' do
+            expect(ignored_columns).to match_array(ignored_columns - foreign_keys)
           end
         end
       end

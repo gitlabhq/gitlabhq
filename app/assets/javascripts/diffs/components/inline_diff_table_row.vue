@@ -28,10 +28,6 @@ export default {
       type: String,
       required: true,
     },
-    contextLinesPath: {
-      type: String,
-      required: true,
-    },
     line: {
       type: Object,
       required: true,
@@ -106,7 +102,6 @@ export default {
   >
     <diff-table-cell
       :file-hash="fileHash"
-      :context-lines-path="contextLinesPath"
       :line="line"
       :line-type="oldLineType"
       :is-bottom="isBottom"
@@ -117,7 +112,6 @@ export default {
     />
     <diff-table-cell
       :file-hash="fileHash"
-      :context-lines-path="contextLinesPath"
       :line="line"
       :line-type="newLineType"
       :is-bottom="isBottom"

@@ -25434,6 +25434,9 @@ msgstr ""
 msgid "VulnerabilityManagement|Something went wrong while trying to delete the comment. Please try again later."
 msgstr ""
 
+msgid "VulnerabilityManagement|Something went wrong while trying to refresh the vulnerability. Please try again later."
+msgstr ""
+
 msgid "VulnerabilityManagement|Something went wrong while trying to retrieve the vulnerability history. Please try again later."
 msgstr ""
 

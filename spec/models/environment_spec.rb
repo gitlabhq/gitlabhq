@@ -847,6 +847,20 @@ describe Environment, :use_clean_rails_memory_store_caching do
 
     subject { environment.calculate_reactive_cache }
 
+    it 'overrides default reactive_cache_hard_limit to 10 Mb' do
+      expect(described_class.reactive_cache_hard_limit).to eq(10.megabyte)
+    end
+
+    it 'overrides reactive_cache_limit_enabled? with a FF' do
+      environment_with_enabled_ff = FactoryBot.build(:environment)
+      environment_with_disabled_ff = FactoryBot.build(:environment)
+
+      stub_feature_flags(reactive_caching_limit_environment: environment_with_enabled_ff.project)
+
+      expect(environment_with_enabled_ff.send(:reactive_cache_limit_enabled?)).to be_truthy
+      expect(environment_with_disabled_ff.send(:reactive_cache_limit_enabled?)).to be_falsey
+    end
+
     it 'returns cache data from the deployment platform' do
       expect(environment.deployment_platform).to receive(:calculate_reactive_cache_for)
         .with(environment).and_return(pods: %w(pod1 pod2))

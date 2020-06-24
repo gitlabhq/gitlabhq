@@ -846,6 +846,29 @@ templating:
           default: true                  # (Optional) This option should be the default value of this variable.
 ```
 
+##### `metric_label_values` variable type
+
+CAUTION: **Warning:**
+This variable type is an _alpha_ feature, and is subject to change at any time
+without prior notice!
+
+###### Full syntax
+
+This example creates a variable called `variable2`. The values of the dropdown will
+be all the different values of the `backend` label in the Prometheus series described by
+`up{env="production"}`.
+
+```yaml
+templating:
+  variables:
+    variable2:                           # The variable name that can be interpolated in queries.
+      label: 'Variable 2'                # (Optional) label that will appear in the UI for this dropdown.
+      type: metric_label_values
+      options:
+        series_selector: 'up{env="production"}'
+        label: 'backend'
+```
+
 ### Add related links to custom dashboards
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/216385) in GitLab 13.1.

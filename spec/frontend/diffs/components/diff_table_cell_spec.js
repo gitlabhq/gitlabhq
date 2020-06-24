@@ -100,7 +100,11 @@ describe('DiffTableCell', () => {
         setWindowLocation({ href: `${TEST_HOST}?${query}` });
         createComponent({ showCommentButton });
 
-        expect(findNoteButton().exists()).toBe(expectation);
+        wrapper.setData({ isCommentButtonRendered: showCommentButton });
+
+        return wrapper.vm.$nextTick().then(() => {
+          expect(findNoteButton().exists()).toBe(expectation);
+        });
       },
     );
 
@@ -108,7 +112,6 @@ describe('DiffTableCell', () => {
       isHover  | otherProps                                      | discussions | expectation
       ${true}  | ${{}}                                           | ${[]}       | ${true}
       ${false} | ${{}}                                           | ${[]}       | ${false}
-      ${true}  | ${{ line: { ...line, type: 'match' } }}         | ${[]}       | ${false}
       ${true}  | ${{ line: { ...line, type: 'context' } }}       | ${[]}       | ${false}
       ${true}  | ${{ line: { ...line, type: 'old-nonewline' } }} | ${[]}       | ${false}
       ${true}  | ${{}}                                           | ${[{}]}     | ${false}
@@ -122,7 +125,13 @@ describe('DiffTableCell', () => {
           ...otherProps,
         });
 
-        expect(findNoteButton().isVisible()).toBe(expectation);
+        wrapper.setData({
+          isCommentButtonRendered: true,
+        });
+
+        return wrapper.vm.$nextTick().then(() => {
+          expect(findNoteButton().isVisible()).toBe(expectation);
+        });
       },
     );
   });

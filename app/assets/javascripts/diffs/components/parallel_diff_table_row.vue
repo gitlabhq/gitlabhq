@@ -31,10 +31,6 @@ export default {
       type: String,
       required: true,
     },
-    contextLinesPath: {
-      type: String,
-      required: true,
-    },
     line: {
       type: Object,
       required: true,
@@ -144,7 +140,6 @@ export default {
     <template v-if="line.left && !isMatchLineLeft">
       <diff-table-cell
         :file-hash="fileHash"
-        :context-lines-path="contextLinesPath"
         :line="line.left"
         :line-type="oldLineType"
         :is-bottom="isBottom"
@@ -172,7 +167,6 @@ export default {
     <template v-if="line.right && !isMatchLineRight">
       <diff-table-cell
         :file-hash="fileHash"
-        :context-lines-path="contextLinesPath"
         :line="line.right"
         :line-type="newLineType"
         :is-bottom="isBottom"
