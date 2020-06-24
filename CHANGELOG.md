@@ -628,6 +628,13 @@ entry.
 - Use visitUrl in Alert management. !32414
 
 
+## 12.10.12 (2020-06-24)
+
+### Fixed (1 change)
+
+- Correctly count wiki pages in sidebar. !30508
+
+
 ## 12.10.11 (2020-06-10)
 
 - No changes.
