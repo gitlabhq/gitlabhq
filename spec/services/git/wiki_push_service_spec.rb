@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Git::WikiPushService, services: true do
+RSpec.describe Git::WikiPushService, services: true do
   include RepoHelpers
 
   let_it_be(:key_id) { create(:key, user: current_user).shell_id }

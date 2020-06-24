@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Git::BranchPushService, services: true do
+RSpec.describe Git::BranchPushService, services: true do
   include RepoHelpers
 
   let_it_be(:user) { create(:user) }

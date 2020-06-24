@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe MergeRequests::AddTodoWhenBuildFailsService do
+RSpec.describe MergeRequests::AddTodoWhenBuildFailsService do
   let(:user) { create(:user) }
   let(:project) { create(:project, :repository) }
   let(:sha) { '1234567890abcdef1234567890abcdef12345678' }

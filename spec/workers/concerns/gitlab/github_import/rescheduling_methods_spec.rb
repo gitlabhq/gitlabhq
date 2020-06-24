@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::GithubImport::ReschedulingMethods do
+RSpec.describe Gitlab::GithubImport::ReschedulingMethods do
   let(:worker) do
     Class.new { include(Gitlab::GithubImport::ReschedulingMethods) }.new
   end

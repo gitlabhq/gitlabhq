@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-shared_examples 'project import rate limiter' do
+RSpec.shared_examples 'project import rate limiter' do
   let(:user) { create(:user) }
 
   before do

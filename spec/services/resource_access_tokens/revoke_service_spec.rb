@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ResourceAccessTokens::RevokeService do
+RSpec.describe ResourceAccessTokens::RevokeService do
   subject { described_class.new(user, resource, access_token).execute }
 
   let_it_be(:user) { create(:user) }

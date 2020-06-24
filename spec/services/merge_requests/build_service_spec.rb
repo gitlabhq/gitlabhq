@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-describe MergeRequests::BuildService do
+RSpec.describe MergeRequests::BuildService do
   using RSpec::Parameterized::TableSyntax
   include RepoHelpers
   include ProjectForksHelper

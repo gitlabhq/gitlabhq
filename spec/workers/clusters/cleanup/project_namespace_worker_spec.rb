@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Clusters::Cleanup::ProjectNamespaceWorker do
+RSpec.describe Clusters::Cleanup::ProjectNamespaceWorker do
   describe '#perform' do
     context 'when cluster.cleanup_status is cleanup_removing_project_namespaces' do
       let!(:cluster) { create(:cluster, :with_environments, :cleanup_removing_project_namespaces) }

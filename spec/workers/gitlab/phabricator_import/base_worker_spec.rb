@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-describe Gitlab::PhabricatorImport::BaseWorker do
+RSpec.describe Gitlab::PhabricatorImport::BaseWorker do
   let(:subclass) do
     # Creating an anonymous class for a worker is complicated, as we generate the
     # queue name from the class name.

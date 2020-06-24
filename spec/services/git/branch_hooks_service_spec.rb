@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Git::BranchHooksService do
+RSpec.describe Git::BranchHooksService do
   include RepoHelpers
   include ProjectForksHelper
 

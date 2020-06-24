@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Projects::UpdateService do
+RSpec.describe Projects::UpdateService do
   include ExternalAuthorizationServiceHelpers
   include ProjectForksHelper
 

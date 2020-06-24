@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Todos::Destroy::ProjectPrivateService do
+RSpec.describe Todos::Destroy::ProjectPrivateService do
   let(:group)          { create(:group, :public) }
   let(:project)        { create(:project, :public, group: group) }
   let(:user)           { create(:user) }

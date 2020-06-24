@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Members::DestroyService do
+RSpec.describe Members::DestroyService do
   let(:current_user) { create(:user) }
   let(:member_user) { create(:user) }
   let(:group) { create(:group, :public) }

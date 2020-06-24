@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ChatNotificationWorker do
+RSpec.describe ChatNotificationWorker do
   let(:worker) { described_class.new }
   let(:chat_build) do
     create(:ci_build, pipeline: create(:ci_pipeline, source: :chat))

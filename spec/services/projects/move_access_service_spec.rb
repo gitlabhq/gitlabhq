@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Projects::MoveAccessService do
+RSpec.describe Projects::MoveAccessService do
   let(:user) { create(:user) }
   let(:group) { create(:group) }
   let(:project_with_access) { create(:project, namespace: user.namespace) }

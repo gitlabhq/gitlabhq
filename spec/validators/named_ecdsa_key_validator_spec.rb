@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe NamedEcdsaKeyValidator do
+RSpec.describe NamedEcdsaKeyValidator do
   let(:validator) { described_class.new(attributes: [:key]) }
   let!(:domain) { build(:pages_domain) }
 

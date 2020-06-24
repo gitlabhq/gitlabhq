@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-shared_examples 'allowed user IDs are cached' do
+RSpec.shared_examples 'allowed user IDs are cached' do
   it 'caches the allowed user IDs in cache', :use_clean_rails_memory_store_caching do
     expect do
       expect(described_class.l1_cache_backend).to receive(:fetch).and_call_original

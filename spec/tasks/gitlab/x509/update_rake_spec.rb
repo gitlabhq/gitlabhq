@@ -2,7 +2,7 @@
 
 require 'rake_helper'
 
-describe 'gitlab:x509 namespace rake task' do
+RSpec.describe 'gitlab:x509 namespace rake task' do
   before :all do
     Rake.application.rake_require 'tasks/gitlab/x509/update'
   end

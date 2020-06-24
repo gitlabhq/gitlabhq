@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::JiraImport::Stage::ImportAttachmentsWorker do
+RSpec.describe Gitlab::JiraImport::Stage::ImportAttachmentsWorker do
   let_it_be(:project) { create(:project, import_type: 'jira') }
 
   describe 'modules' do

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Repositories::DestroyService do
+RSpec.describe Repositories::DestroyService do
   let_it_be(:user) { create(:user) }
   let!(:project) { create(:project, :repository, namespace: user.namespace) }
   let(:repository) { project.repository }

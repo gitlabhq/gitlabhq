@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Todos::Destroy::ConfidentialIssueService do
+RSpec.describe Todos::Destroy::ConfidentialIssueService do
   let(:project)        { create(:project, :public) }
   let(:user)           { create(:user) }
   let(:author)         { create(:user) }

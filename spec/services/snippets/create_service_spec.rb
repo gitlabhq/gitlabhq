@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Snippets::CreateService do
+RSpec.describe Snippets::CreateService do
   describe '#execute' do
     let_it_be(:user) { create(:user) }
     let_it_be(:admin) { create(:user, :admin) }

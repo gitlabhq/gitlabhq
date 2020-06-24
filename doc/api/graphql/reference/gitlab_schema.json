@@ -21488,6 +21488,20 @@
               "deprecationReason": null
             },
             {
+              "name": "stats",
+              "description": "Milestone statistics",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "MilestoneStats",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "subgroupMilestone",
               "description": "Indicates if milestone is at subgroup level",
               "args": [
@@ -21700,6 +21714,47 @@
               "deprecationReason": null
             }
           ],
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "MilestoneStats",
+          "description": "Contains statistics about a milestone",
+          "fields": [
+            {
+              "name": "closedIssuesCount",
+              "description": "Number of closed issues associated with the milestone",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "totalIssuesCount",
+              "description": "Total number of issues associated with the milestone",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [
+
+          ],
+          "enumValues": null,
           "possibleTypes": null
         },
         {

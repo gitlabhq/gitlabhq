@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'admin/users/_user.html.haml' do
+RSpec.describe 'admin/users/_user.html.haml' do
   before do
     allow(view).to receive(:user).and_return(user)
   end

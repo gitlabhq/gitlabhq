@@ -3,7 +3,7 @@
 require 'spec_helper'
 require 'carrierwave/storage/fog'
 
-describe GitlabUploader do
+RSpec.describe GitlabUploader do
   let(:uploader_class) { Class.new(described_class) }
 
   subject { uploader_class.new(double) }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Projects::MoveProjectGroupLinksService do
+RSpec.describe Projects::MoveProjectGroupLinksService do
   let!(:user) { create(:user) }
   let(:project_with_groups) { create(:project, namespace: user.namespace) }
   let(:target_project) { create(:project, namespace: user.namespace) }

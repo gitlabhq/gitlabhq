@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe WebHookService do
+RSpec.describe WebHookService do
   include StubRequests
 
   let(:project) { create(:project) }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Issuable::Clone::ContentRewriter do
+RSpec.describe Issuable::Clone::ContentRewriter do
   let(:user) { create(:user) }
   let(:group) { create(:group) }
   let(:project1) { create(:project, :public, group: group) }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'projects/_home_panel' do
+RSpec.describe 'projects/_home_panel' do
   include ProjectForksHelper
 
   context 'notifications' do

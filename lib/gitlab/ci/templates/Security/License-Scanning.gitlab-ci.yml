@@ -18,7 +18,6 @@ license_scanning:
     name: "$SECURE_ANALYZERS_PREFIX/license-finder:$LICENSE_MANAGEMENT_VERSION"
     entrypoint: [""]
   variables:
-    LM_REPORT_FILE: gl-license-scanning-report.json
     LM_REPORT_VERSION: '2.1'
     SETUP_CMD: $LICENSE_MANAGEMENT_SETUP_CMD
   allow_failure: true
@@ -26,7 +25,7 @@ license_scanning:
     - /run.sh analyze .
   artifacts:
     reports:
-      license_scanning: $LM_REPORT_FILE
+      license_scanning: gl-license-scanning-report.json
   dependencies: []
   rules:
     - if: $LICENSE_MANAGEMENT_DISABLED

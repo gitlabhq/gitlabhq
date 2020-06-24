@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe InvalidGpgSignatureUpdateWorker do
+RSpec.describe InvalidGpgSignatureUpdateWorker do
   context 'when GpgKey is found' do
     it 'calls NotificationService.new.run' do
       gpg_key = create(:gpg_key)

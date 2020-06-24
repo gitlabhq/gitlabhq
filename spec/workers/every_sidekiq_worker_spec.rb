@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Every Sidekiq worker' do
+RSpec.describe 'Every Sidekiq worker' do
   let(:workers_without_defaults) do
     Gitlab::SidekiqConfig.workers - Gitlab::SidekiqConfig::DEFAULT_WORKERS
   end

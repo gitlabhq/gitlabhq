@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Lfs::UnlockFileService do
+RSpec.describe Lfs::UnlockFileService do
   let(:project)      { create(:project) }
   let(:current_user) { create(:user) }
   let(:lock_author)  { create(:user) }

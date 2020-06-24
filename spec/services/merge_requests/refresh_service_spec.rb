@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe MergeRequests::RefreshService do
+RSpec.describe MergeRequests::RefreshService do
   include ProjectForksHelper
   include ProjectHelpers
 

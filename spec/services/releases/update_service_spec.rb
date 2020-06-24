@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Releases::UpdateService do
+RSpec.describe Releases::UpdateService do
   let(:project) { create(:project, :repository) }
   let(:user) { create(:user) }
   let(:new_name) { 'A new name' }

@@ -1,0 +1,5 @@
+---
+title: Expose ref, milestones, released_at to releaser-cli
+merge_request: 35115
+author:
+type: added

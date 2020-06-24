@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-describe Projects::LfsPointers::LfsLinkService do
+RSpec.describe Projects::LfsPointers::LfsLinkService do
   let!(:project) { create(:project, lfs_enabled: true) }
   let!(:lfs_objects_project) { create_list(:lfs_objects_project, 2, project: project) }
   let(:new_oids) { { 'oid1' => 123, 'oid2' => 125 } }

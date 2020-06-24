@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ExpireBuildInstanceArtifactsWorker do
+RSpec.describe ExpireBuildInstanceArtifactsWorker do
   include RepoHelpers
 
   let(:worker) { described_class.new }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Labels::TransferService do
+RSpec.describe Labels::TransferService do
   describe '#execute' do
     let_it_be(:user) { create(:admin) }
 

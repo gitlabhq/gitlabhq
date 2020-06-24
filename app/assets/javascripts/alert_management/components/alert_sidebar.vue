@@ -49,7 +49,7 @@ export default {
         :project-path="projectPath"
         :alert="alert"
         @toggle-sidebar="$emit('toggle-sidebar')"
-        @alert-sidebar-error="$emit('alert-sidebar-error', $event)"
+        @alert-error="$emit('alert-error', $event)"
       />
       <sidebar-assignees
         :project-path="projectPath"
@@ -58,7 +58,7 @@ export default {
         :sidebar-collapsed="sidebarCollapsed"
         @alert-refresh="$emit('alert-refresh')"
         @toggle-sidebar="$emit('toggle-sidebar')"
-        @alert-sidebar-error="$emit('alert-sidebar-error', $event)"
+        @alert-error="$emit('alert-error', $event)"
       />
       <div class="block"></div>
     </div>

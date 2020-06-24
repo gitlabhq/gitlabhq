@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'shared/runners/show.html.haml' do
+RSpec.describe 'shared/runners/show.html.haml' do
   include PageLayoutHelper
 
   let(:runner) do

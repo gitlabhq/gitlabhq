@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe CreateCommitSignatureWorker do
+RSpec.describe CreateCommitSignatureWorker do
   let(:project) { create(:project, :repository) }
   let(:commits) { project.repository.commits('HEAD', limit: 3).commits }
   let(:commit_shas) { commits.map(&:id) }

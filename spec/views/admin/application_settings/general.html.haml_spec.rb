@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'admin/application_settings/general.html.haml' do
+RSpec.describe 'admin/application_settings/general.html.haml' do
   let(:app_settings) { build(:application_setting) }
   let(:user) { create(:admin) }
 

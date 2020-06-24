@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe RepositoryCheckQueue do
+RSpec.describe RepositoryCheckQueue do
   let(:worker) do
     Class.new do
       def self.name

@@ -1,4 +1,9 @@
-import { isString } from 'lodash';
+import { isString, memoize } from 'lodash';
+
+import {
+  TRUNCATE_WIDTH_DEFAULT_WIDTH,
+  TRUNCATE_WIDTH_DEFAULT_FONT_SIZE,
+} from '~/lib/utils/constants';
 
 /**
  * Adds a , to a string composed by numbers, at every 3 chars.
@@ -73,7 +78,79 @@ export const slugifyWithUnderscore = str => slugify(str, '_');
  * @param {Number} maxLength
  * @returns {String}
  */
-export const truncate = (string, maxLength) => `${string.substr(0, maxLength - 3)}...`;
+export const truncate = (string, maxLength) => {
+  if (string.length - 1 > maxLength) {
+    return `${string.substr(0, maxLength - 1)}…`;
+  }
+
+  return string;
+};
+
+/**
+ * This function calculates the average char width. It does so by placing a string in the DOM and measuring the width.
+ * NOTE: This will cause a reflow and should be used sparsely!
+ * The default fontFamily is 'sans-serif' and 12px in ECharts, so that is the default basis for calculating the average with.
+ * https://echarts.apache.org/en/option.html#xAxis.nameTextStyle.fontFamily
+ * https://echarts.apache.org/en/option.html#xAxis.nameTextStyle.fontSize
+ * @param  {Object} options
+ * @param  {Number} options.fontSize style to size the text for measurement
+ * @param  {String} options.fontFamily style of font family to measure the text with
+ * @param  {String} options.chars string of chars to use as a basis for calculating average width
+ * @return {Number}
+ */
+const getAverageCharWidth = memoize(function getAverageCharWidth(options = {}) {
+  const {
+    fontSize = 12,
+    fontFamily = 'sans-serif',
+    // eslint-disable-next-line @gitlab/require-i18n-strings
+    chars = ' ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789',
+  } = options;
+  const div = document.createElement('div');
+
+  div.style.fontFamily = fontFamily;
+  div.style.fontSize = `${fontSize}px`;
+  // Place outside of view
+  div.style.position = 'absolute';
+  div.style.left = -1000;
+  div.style.top = -1000;
+
+  div.innerHTML = chars;
+
+  document.body.appendChild(div);
+  const width = div.clientWidth;
+  document.body.removeChild(div);
+
+  return width / chars.length / fontSize;
+});
+
+/**
+ * This function returns a truncated version of `string` if its estimated rendered width is longer than `maxWidth`,
+ * otherwise it will return the original `string`
+ * Inspired by https://bl.ocks.org/tophtucker/62f93a4658387bb61e4510c37e2e97cf
+ * @param  {String} string text to truncate
+ * @param  {Object} options
+ * @param  {Number} options.maxWidth largest rendered width the text may have
+ * @param  {Number} options.fontSize size of the font used to render the text
+ * @return {String} either the original string or a truncated version
+ */
+export const truncateWidth = (string, options = {}) => {
+  const {
+    maxWidth = TRUNCATE_WIDTH_DEFAULT_WIDTH,
+    fontSize = TRUNCATE_WIDTH_DEFAULT_FONT_SIZE,
+  } = options;
+  const { truncateIndex } = string.split('').reduce(
+    (memo, char, index) => {
+      let newIndex = index;
+      if (memo.width > maxWidth) {
+        newIndex = memo.truncateIndex;
+      }
+      return { width: memo.width + getAverageCharWidth() * fontSize, truncateIndex: newIndex };
+    },
+    { width: 0, truncateIndex: 0 },
+  );
+
+  return truncate(string, truncateIndex);
+};
 
 /**
  * Truncate SHA to 8 characters

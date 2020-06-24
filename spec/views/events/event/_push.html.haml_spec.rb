@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'events/event/_push.html.haml' do
+RSpec.describe 'events/event/_push.html.haml' do
   let(:event) { build_stubbed(:push_event) }
 
   context 'with a branch' do

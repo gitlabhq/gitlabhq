@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Projects::UnlinkForkService, :use_clean_rails_memory_store_caching do
+RSpec.describe Projects::UnlinkForkService, :use_clean_rails_memory_store_caching do
   include ProjectForksHelper
 
   subject { described_class.new(forked_project, user) }

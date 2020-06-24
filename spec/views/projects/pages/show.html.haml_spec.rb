@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'projects/pages/show' do
+RSpec.describe 'projects/pages/show' do
   include LetsEncryptHelpers
 
   let(:project) { create(:project, :repository) }

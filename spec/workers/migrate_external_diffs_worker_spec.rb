@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe MigrateExternalDiffsWorker do
+RSpec.describe MigrateExternalDiffsWorker do
   let(:worker) { described_class.new }
   let(:diff) { create(:merge_request).merge_request_diff }
 

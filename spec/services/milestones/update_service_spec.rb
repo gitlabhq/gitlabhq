@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-describe Milestones::UpdateService do
+RSpec.describe Milestones::UpdateService do
   let(:project) { create(:project) }
   let(:user) { build(:user) }
   let(:milestone) { create(:milestone, project: project) }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe MergeRequests::UpdateService, :mailer do
+RSpec.describe MergeRequests::UpdateService, :mailer do
   include ProjectForksHelper
 
   let(:group) { create(:group, :public) }

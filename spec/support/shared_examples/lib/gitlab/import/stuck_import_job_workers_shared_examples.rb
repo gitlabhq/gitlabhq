@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-shared_examples 'stuck import job detection' do
+RSpec.shared_examples 'stuck import job detection' do
   context 'when the job has completed' do
     context 'when the import status was already updated' do
       before do

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Metrics::Dashboard::Annotations::DeleteService do
+RSpec.describe Metrics::Dashboard::Annotations::DeleteService do
   let(:user) { create(:user) }
   let(:service_instance) { described_class.new(user, annotation) }
 

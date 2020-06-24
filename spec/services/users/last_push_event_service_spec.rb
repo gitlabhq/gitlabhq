@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Users::LastPushEventService do
+RSpec.describe Users::LastPushEventService do
   let(:user) { build(:user, id: 1) }
   let(:project) { build(:project, id: 2) }
   let(:event) { build(:push_event, id: 3, author: user, project: project) }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Metrics::Dashboard::Annotations::CreateService do
+RSpec.describe Metrics::Dashboard::Annotations::CreateService do
   let_it_be(:user) { create(:user) }
   let(:description) { 'test annotation' }
   let(:dashboard_path) { 'config/prometheus/common_metrics.yml' }

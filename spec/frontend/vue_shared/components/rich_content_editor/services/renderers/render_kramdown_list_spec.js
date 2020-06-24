@@ -2,7 +2,7 @@ import renderer from '~/vue_shared/components/rich_content_editor/services/rende
 import {
   buildUneditableOpenTokens,
   buildUneditableCloseToken,
-} from '~/vue_shared/components/rich_content_editor/services/renderers//build_uneditable_token';
+} from '~/vue_shared/components/rich_content_editor/services/renderers/build_uneditable_token';
 
 import { kramdownListNode, normalListNode } from '../../mock_data';
 

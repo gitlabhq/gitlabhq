@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe DesignManagement::DesignV432x230Uploader do
+RSpec.describe DesignManagement::DesignV432x230Uploader do
   include CarrierWave::Test::Matchers
 
   let(:model) { create(:design_action, :with_image_v432x230) }

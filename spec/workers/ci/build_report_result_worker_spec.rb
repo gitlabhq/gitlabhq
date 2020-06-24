@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Ci::BuildReportResultWorker do
+RSpec.describe Ci::BuildReportResultWorker do
   subject { described_class.new.perform(build_id) }
 
   context 'when build exists' do

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe GitlabShellWorker do
+RSpec.describe GitlabShellWorker do
   let(:worker) { described_class.new }
 
   describe '#perform' do

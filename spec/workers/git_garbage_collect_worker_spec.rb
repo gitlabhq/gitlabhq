@@ -4,7 +4,7 @@ require 'fileutils'
 
 require 'spec_helper'
 
-describe GitGarbageCollectWorker do
+RSpec.describe GitGarbageCollectWorker do
   include GitHelpers
 
   let(:project) { create(:project, :repository) }

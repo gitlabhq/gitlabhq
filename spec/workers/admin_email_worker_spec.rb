@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe AdminEmailWorker do
+RSpec.describe AdminEmailWorker do
   subject(:worker) { described_class.new }
 
   describe '.perform' do

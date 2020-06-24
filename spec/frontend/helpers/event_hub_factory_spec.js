@@ -1,17 +1,21 @@
 import createEventHub from '~/helpers/event_hub_factory';
 
 const TEST_EVENT = 'foobar';
+const TEST_EVENT_2 = 'testevent';
 
 describe('event bus factory', () => {
   let eventBus;
   let handler;
+  let otherHandlers;
 
   beforeEach(() => {
     eventBus = createEventHub();
     handler = jest.fn();
+    otherHandlers = [jest.fn(), jest.fn()];
   });
 
   afterEach(() => {
+    eventBus.dispose();
     eventBus = null;
   });
 
@@ -47,22 +51,6 @@ describe('event bus factory', () => {
       eventBus.$emit(TEST_EVENT, 'arg1', 'arg2', 'arg3');
 
       expect(handler).toHaveBeenCalledTimes(2);
-    });
-
-    it('does not call handler after $off with handler', () => {
-      eventBus.$off(TEST_EVENT, handler);
-
-      eventBus.$emit(TEST_EVENT);
-
-      expect(handler).not.toHaveBeenCalled();
-    });
-
-    it('does not call handler after $off', () => {
-      eventBus.$off(TEST_EVENT);
-
-      eventBus.$emit(TEST_EVENT);
-
-      expect(handler).not.toHaveBeenCalled();
     });
   });
 
@@ -100,6 +88,57 @@ describe('event bus factory', () => {
 
         expect(handler).toHaveBeenCalledTimes(1);
       });
+    });
+  });
+
+  describe('$off', () => {
+    beforeEach(() => {
+      otherHandlers.forEach(x => eventBus.$on(TEST_EVENT, x));
+      eventBus.$on(TEST_EVENT, handler);
+    });
+
+    it('can be called on event with no handlers', () => {
+      expect(() => {
+        eventBus.$off(TEST_EVENT_2);
+      }).not.toThrow();
+    });
+
+    it('can be called on event with no handlers, with a handler', () => {
+      expect(() => {
+        eventBus.$off(TEST_EVENT_2, handler);
+      }).not.toThrow();
+    });
+
+    it('with a handler, will no longer call that handler', () => {
+      eventBus.$off(TEST_EVENT, handler);
+
+      eventBus.$emit(TEST_EVENT);
+
+      expect(handler).not.toHaveBeenCalled();
+      expect(otherHandlers.map(x => x.mock.calls.length)).toEqual(otherHandlers.map(() => 1));
+    });
+
+    it('without a handler, will no longer call any handlers', () => {
+      eventBus.$off(TEST_EVENT);
+
+      eventBus.$emit(TEST_EVENT);
+
+      expect(handler).not.toHaveBeenCalled();
+      expect(otherHandlers.map(x => x.mock.calls.length)).toEqual(otherHandlers.map(() => 0));
+    });
+  });
+
+  describe('$emit', () => {
+    beforeEach(() => {
+      otherHandlers.forEach(x => eventBus.$on(TEST_EVENT_2, x));
+      eventBus.$on(TEST_EVENT, handler);
+    });
+
+    it('only calls handlers for given type', () => {
+      eventBus.$emit(TEST_EVENT, 'arg1');
+
+      expect(handler).toHaveBeenCalledWith('arg1');
+      expect(otherHandlers.map(x => x.mock.calls.length)).toEqual(otherHandlers.map(() => 0));
     });
   });
 });

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe PagesDomainRemovalCronWorker do
+RSpec.describe PagesDomainRemovalCronWorker do
   subject(:worker) { described_class.new }
 
   describe '#perform' do

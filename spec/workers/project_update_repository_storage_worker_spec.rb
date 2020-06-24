@@ -3,7 +3,7 @@
 require 'spec_helper'
 require 'securerandom'
 
-describe ProjectUpdateRepositoryStorageWorker do
+RSpec.describe ProjectUpdateRepositoryStorageWorker do
   let(:project) { create(:project, :repository) }
 
   subject { described_class.new }

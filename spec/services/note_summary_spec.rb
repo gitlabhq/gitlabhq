@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe NoteSummary do
+RSpec.describe NoteSummary do
   let(:project)  { build(:project) }
   let(:noteable) { build(:issue) }
   let(:user)     { build(:user) }

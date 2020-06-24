@@ -2,7 +2,7 @@
 
 require 'rake_helper'
 
-describe 'gitlab:gitaly namespace rake task' do
+RSpec.describe 'gitlab:gitaly namespace rake task' do
   before :all do
     Rake.application.rake_require 'tasks/gitlab/gitaly'
   end

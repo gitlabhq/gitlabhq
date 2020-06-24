@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ProtectedBranches::CreateService do
+RSpec.describe ProtectedBranches::CreateService do
   let(:project) { create(:project) }
   let(:user) { project.owner }
   let(:params) do

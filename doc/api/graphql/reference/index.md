@@ -1180,10 +1180,20 @@ Represents a milestone.
 | `projectMilestone` | Boolean! | Indicates if milestone is at project level |
 | `startDate` | Time | Timestamp of the milestone start date |
 | `state` | MilestoneStateEnum! | State of the milestone |
+| `stats` | MilestoneStats | Milestone statistics |
 | `subgroupMilestone` | Boolean! | Indicates if milestone is at subgroup level |
 | `title` | String! | Title of the milestone |
 | `updatedAt` | Time! | Timestamp of last milestone update |
 | `webPath` | String! | Web path of the milestone |
+
+## MilestoneStats
+
+Contains statistics about a milestone
+
+| Name  | Type  | Description |
+| ---   |  ---- | ----------  |
+| `closedIssuesCount` | Int | Number of closed issues associated with the milestone |
+| `totalIssuesCount` | Int | Total number of issues associated with the milestone |
 
 ## Namespace
 

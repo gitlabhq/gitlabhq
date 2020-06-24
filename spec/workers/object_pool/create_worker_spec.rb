@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ObjectPool::CreateWorker do
+RSpec.describe ObjectPool::CreateWorker do
   let(:pool) { create(:pool_repository, :scheduled) }
 
   subject { described_class.new }

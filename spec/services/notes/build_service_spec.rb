@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Notes::BuildService do
+RSpec.describe Notes::BuildService do
   let(:note) { create(:discussion_note_on_issue) }
   let(:project) { note.project }
   let(:author) { note.author }

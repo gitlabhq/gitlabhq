@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Projects::UpdatePagesConfigurationService do
+RSpec.describe Projects::UpdatePagesConfigurationService do
   let(:project) { create(:project) }
   let(:service) { described_class.new(project) }
 

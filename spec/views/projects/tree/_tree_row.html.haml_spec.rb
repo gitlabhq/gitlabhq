@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'projects/tree/_tree_row' do
+RSpec.describe 'projects/tree/_tree_row' do
   let(:project) { create(:project, :repository) }
   let(:repository) { project.repository }
 

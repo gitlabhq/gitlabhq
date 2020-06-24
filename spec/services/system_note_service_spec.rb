@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe SystemNoteService do
+RSpec.describe SystemNoteService do
   include Gitlab::Routing
   include RepoHelpers
   include AssetsHelpers

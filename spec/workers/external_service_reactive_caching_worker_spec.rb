@@ -2,6 +2,6 @@
 
 require 'spec_helper'
 
-describe ExternalServiceReactiveCachingWorker do
+RSpec.describe ExternalServiceReactiveCachingWorker do
   it_behaves_like 'reactive cacheable worker'
 end

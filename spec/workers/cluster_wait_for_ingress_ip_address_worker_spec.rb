@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ClusterWaitForIngressIpAddressWorker do
+RSpec.describe ClusterWaitForIngressIpAddressWorker do
   describe '#perform' do
     let(:service) { instance_double(Clusters::Applications::CheckIngressIpAddressService, execute: true) }
     let(:application) { instance_double(Clusters::Applications::Ingress) }

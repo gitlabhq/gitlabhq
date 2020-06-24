@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Projects::Alerting::NotifyService do
+RSpec.describe Projects::Alerting::NotifyService do
   let_it_be(:project, reload: true) { create(:project) }
 
   before do

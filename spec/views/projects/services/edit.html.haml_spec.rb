@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'projects/services/edit' do
+RSpec.describe 'projects/services/edit' do
   let(:service) { create(:drone_ci_service, project: project) }
   let(:project) { create(:project) }
 

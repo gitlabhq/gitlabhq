@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-shared_examples 'a resource event' do
+RSpec.shared_examples 'a resource event' do
   let_it_be(:user1) { create(:user) }
   let_it_be(:user2) { create(:user) }
 
@@ -54,7 +54,7 @@ shared_examples 'a resource event' do
   end
 end
 
-shared_examples 'a resource event for issues' do
+RSpec.shared_examples 'a resource event for issues' do
   let_it_be(:user1) { create(:user) }
   let_it_be(:user2) { create(:user) }
 
@@ -103,7 +103,7 @@ shared_examples 'a resource event for issues' do
   end
 end
 
-shared_examples 'a resource event for merge requests' do
+RSpec.shared_examples 'a resource event for merge requests' do
   let_it_be(:user1) { create(:user) }
   let_it_be(:user2) { create(:user) }
 

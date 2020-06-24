@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ProcessCommitWorker do
+RSpec.describe ProcessCommitWorker do
   let(:worker) { described_class.new }
   let(:user) { create(:user) }
   let(:project) { create(:project, :public, :repository) }

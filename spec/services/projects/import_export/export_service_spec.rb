@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Projects::ImportExport::ExportService do
+RSpec.describe Projects::ImportExport::ExportService do
   describe '#execute' do
     let!(:user) { create(:user) }
     let(:project) { create(:project) }

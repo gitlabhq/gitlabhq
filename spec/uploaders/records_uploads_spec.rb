@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe RecordsUploads do
+RSpec.describe RecordsUploads do
   let!(:uploader) do
     stub_const('RecordsUploadsExampleUploader', Class.new(GitlabUploader))
 

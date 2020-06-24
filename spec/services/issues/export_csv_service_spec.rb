@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Issues::ExportCsvService do
+RSpec.describe Issues::ExportCsvService do
   let_it_be(:user) { create(:user) }
   let(:group) { create(:group) }
   let(:project) { create(:project, :public, group: group) }

@@ -4,7 +4,7 @@ import Icon from '~/vue_shared/components/icon.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { ASSET_LINK_TYPE } from '../constants';
 import { __, s__, sprintf } from '~/locale';
-import { difference } from 'lodash';
+import { difference, get } from 'lodash';
 
 export default {
   name: 'ReleaseBlockAssets',
@@ -54,7 +54,7 @@ export default {
     sections() {
       return [
         {
-          links: this.assets.sources.map(s => ({
+          links: get(this.assets, 'sources', []).map(s => ({
             url: s.url,
             name: sprintf(__('Source code (%{fileExtension})'), { fileExtension: s.format }),
           })),

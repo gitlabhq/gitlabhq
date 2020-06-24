@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Tags::DestroyService do
+RSpec.describe Tags::DestroyService do
   let(:project) { create(:project, :repository) }
   let(:repository) { project.repository }
   let(:user) { create(:user) }

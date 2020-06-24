@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-describe DraftNotes::PublishService do
+RSpec.describe DraftNotes::PublishService do
   include RepoHelpers
 
   let(:merge_request) { create(:merge_request) }

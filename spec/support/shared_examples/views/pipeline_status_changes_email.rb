@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-shared_examples 'pipeline status changes email' do
+RSpec.shared_examples 'pipeline status changes email' do
   include Devise::Test::ControllerHelpers
 
   let(:user) { create(:user, developer_projects: [project]) }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'projects/deployments/_confirm_rollback_modal' do
+RSpec.describe 'projects/deployments/_confirm_rollback_modal' do
   let(:environment) { create(:environment, :with_review_app) }
   let(:deployments) { environment.deployments }
   let(:project) { environment.project }

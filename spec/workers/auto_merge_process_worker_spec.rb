@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe AutoMergeProcessWorker do
+RSpec.describe AutoMergeProcessWorker do
   describe '#perform' do
     subject { described_class.new.perform(merge_request&.id) }
 

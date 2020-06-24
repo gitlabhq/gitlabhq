@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::GithubImport::ObjectImporter do
+RSpec.describe Gitlab::GithubImport::ObjectImporter do
   let(:worker) do
     Class.new do
       def self.name

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ErrorTrackingIssueLinkWorker do
+RSpec.describe ErrorTrackingIssueLinkWorker do
   let_it_be(:error_tracking) { create(:project_error_tracking_setting) }
   let_it_be(:project) { error_tracking.project }
   let_it_be(:issue) { create(:issue, project: project) }

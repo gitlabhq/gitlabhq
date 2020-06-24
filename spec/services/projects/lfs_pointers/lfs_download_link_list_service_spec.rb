@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-describe Projects::LfsPointers::LfsDownloadLinkListService do
+RSpec.describe Projects::LfsPointers::LfsDownloadLinkListService do
   let(:import_url) { 'http://www.gitlab.com/demo/repo.git' }
   let(:lfs_endpoint) { "#{import_url}/info/lfs/objects/batch" }
   let!(:project) { create(:project, import_url: import_url) }

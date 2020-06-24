@@ -4,7 +4,7 @@ require 'fast_spec_helper'
 
 ActiveSupport::Dependencies.autoload_paths << 'app/services'
 
-describe ServiceResponse do
+RSpec.describe ServiceResponse do
   describe '.success' do
     it 'creates a successful response without a message' do
       expect(described_class.success).to be_success

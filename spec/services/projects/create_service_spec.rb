@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Projects::CreateService, '#execute' do
+RSpec.describe Projects::CreateService, '#execute' do
   include ExternalAuthorizationServiceHelpers
   include GitHelpers
 

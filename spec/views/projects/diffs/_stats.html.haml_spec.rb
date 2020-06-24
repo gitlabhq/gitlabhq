@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'projects/diffs/_stats.html.haml' do
+RSpec.describe 'projects/diffs/_stats.html.haml' do
   let(:project) { create(:project, :repository) }
   let(:commit) { project.commit('570e7b2abdd848b95f2f578043fc23bd6f6fd24d') }
 

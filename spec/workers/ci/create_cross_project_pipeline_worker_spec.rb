@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Ci::CreateCrossProjectPipelineWorker do
+RSpec.describe Ci::CreateCrossProjectPipelineWorker do
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project) }
   let_it_be(:pipeline) { create(:ci_pipeline, project: project) }

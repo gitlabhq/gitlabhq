@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe NotificationRecipients::Builder::Default do
+RSpec.describe NotificationRecipients::Builder::Default do
   describe '#build!' do
     let_it_be(:group)   { create(:group, :public) }
     let_it_be(:project) { create(:project, :public, group: group).tap { |p| p.add_developer(project_watcher) } }

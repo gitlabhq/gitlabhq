@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-shared_context 'project show action' do
+RSpec.shared_context 'project show action' do
   let(:project) { create(:project, :repository) }
   let(:issue) { create(:issue, project: project, author: user) }
   let(:user) { create(:user) }

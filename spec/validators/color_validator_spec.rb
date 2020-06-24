@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ColorValidator do
+RSpec.describe ColorValidator do
   using RSpec::Parameterized::TableSyntax
 
   subject do

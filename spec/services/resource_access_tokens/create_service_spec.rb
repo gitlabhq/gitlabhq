@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ResourceAccessTokens::CreateService do
+RSpec.describe ResourceAccessTokens::CreateService do
   subject { described_class.new(user, resource, params).execute }
 
   let_it_be(:user) { create(:user) }

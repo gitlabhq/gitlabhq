@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe QuickActions::InterpretService do
+RSpec.describe QuickActions::InterpretService do
   let(:project) { create(:project, :public) }
   let(:developer) { create(:user) }
   let(:developer2) { create(:user) }

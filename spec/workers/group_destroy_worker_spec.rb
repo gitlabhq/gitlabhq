@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe GroupDestroyWorker do
+RSpec.describe GroupDestroyWorker do
   let(:group) { create(:group) }
   let(:user) { create(:admin) }
   let!(:project) { create(:project, namespace: group) }

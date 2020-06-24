@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ProjectExportOptions do
+RSpec.describe ProjectExportOptions do
   let(:project) { create(:project) }
   let(:project_export_job) { create(:project_export_job, project: project, jid: '123', status: 1) }
   let(:job) { { 'args' => [project.owner.id, project.id, nil, nil], 'jid' => '123' } }

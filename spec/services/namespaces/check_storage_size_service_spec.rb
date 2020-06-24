@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Namespaces::CheckStorageSizeService, '#execute' do
+RSpec.describe Namespaces::CheckStorageSizeService, '#execute' do
   let(:namespace) { build_stubbed(:namespace) }
   let(:user) { build(:user, namespace: namespace) }
   let(:service) { described_class.new(namespace, user) }

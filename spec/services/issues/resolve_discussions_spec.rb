@@ -2,7 +2,7 @@
 
 require 'spec_helper.rb'
 
-describe Issues::ResolveDiscussions do
+RSpec.describe Issues::ResolveDiscussions do
   let(:project) { create(:project, :repository) }
   let(:user) { create(:user) }
 

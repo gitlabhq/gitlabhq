@@ -336,7 +336,7 @@ export default {
         :sidebar-collapsed="sidebarCollapsed"
         @alert-refresh="alertRefresh"
         @toggle-sidebar="toggleSidebar"
-        @alert-sidebar-error="handleAlertSidebarError"
+        @alert-error="handleAlertSidebarError"
       />
     </div>
   </div>

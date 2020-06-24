@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Projects::UpdateStatisticsService do
+RSpec.describe Projects::UpdateStatisticsService do
   let(:service) { described_class.new(project, nil, statistics: statistics)}
   let(:statistics) { %w(repository_size) }
 

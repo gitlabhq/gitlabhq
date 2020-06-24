@@ -6,8 +6,6 @@ import {
   GlTable,
   GlAlert,
   GlIcon,
-  GlDropdown,
-  GlDropdownItem,
   GlLink,
   GlTabs,
   GlTab,
@@ -16,12 +14,13 @@ import {
   GlSearchBoxByType,
   GlSprintf,
 } from '@gitlab/ui';
-import createFlash from '~/flash';
 import { __, s__ } from '~/locale';
 import { debounce, trim } from 'lodash';
 import { joinPaths, visitUrl } from '~/lib/utils/url_utility';
 import { fetchPolicies } from '~/lib/graphql';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
+import { convertToSnakeCase } from '~/lib/utils/text_utility';
+import Tracking from '~/tracking';
 import getAlerts from '../graphql/queries/get_alerts.query.graphql';
 import getAlertsCountByStatus from '../graphql/queries/get_count_by_status.query.graphql';
 import {
@@ -31,9 +30,7 @@ import {
   trackAlertListViewsOptions,
   trackAlertStatusUpdateOptions,
 } from '../constants';
-import updateAlertStatus from '../graphql/mutations/update_alert_status.graphql';
-import { convertToSnakeCase } from '~/lib/utils/text_utility';
-import Tracking from '~/tracking';
+import AlertStatus from './alert_status.vue';
 
 const tdClass = 'table-col gl-display-flex d-md-table-cell gl-align-items-center';
 const thClass = 'gl-hover-bg-blue-50';
@@ -107,11 +104,6 @@ export default {
       sortable: true,
     },
   ],
-  statuses: {
-    TRIGGERED: s__('AlertManagement|Triggered'),
-    ACKNOWLEDGED: s__('AlertManagement|Acknowledged'),
-    RESOLVED: s__('AlertManagement|Resolved'),
-  },
   severityLabels: ALERTS_SEVERITY_LABELS,
   statusTabs: ALERTS_STATUS_TABS,
   components: {
@@ -121,8 +113,6 @@ export default {
     GlAlert,
     GlDeprecatedButton,
     TimeAgo,
-    GlDropdown,
-    GlDropdownItem,
     GlIcon,
     GlLink,
     GlTabs,
@@ -131,6 +121,7 @@ export default {
     GlPagination,
     GlSearchBoxByType,
     GlSprintf,
+    AlertStatus,
   },
   props: {
     projectPath: {
@@ -204,6 +195,7 @@ export default {
     return {
       searchTerm: '',
       errored: false,
+      errorMessage: '',
       isAlertDismissed: false,
       isErrorAlertDismissed: false,
       sort: 'STARTED_AT_DESC',
@@ -275,30 +267,6 @@ export default {
         this.searchTerm = trimmedInput;
       }
     }, 500),
-    updateAlertStatus(status, iid) {
-      this.$apollo
-        .mutate({
-          mutation: updateAlertStatus,
-          variables: {
-            iid,
-            status: status.toUpperCase(),
-            projectPath: this.projectPath,
-          },
-        })
-        .then(() => {
-          this.trackStatusUpdate(status);
-          this.$apollo.queries.alerts.refetch();
-          this.$apollo.queries.alertsCount.refetch();
-          this.resetPagination();
-        })
-        .catch(() => {
-          createFlash(
-            s__(
-              'AlertManagement|There was an error while updating the status of the alert. Please try again.',
-            ),
-          );
-        });
-    },
     navigateToAlertDetails({ iid }) {
       return visitUrl(joinPaths(window.location.pathname, iid, 'details'));
     },
@@ -338,6 +306,14 @@ export default {
     resetPagination() {
       this.pagination = initialPaginationState;
     },
+    handleAlertError(errorMessage) {
+      this.errored = true;
+      this.errorMessage = errorMessage;
+    },
+    dismissError() {
+      this.isErrorAlertDismissed = true;
+      this.errorMessage = '';
+    },
   },
 };
 </script>
@@ -357,8 +333,13 @@ export default {
           </template>
         </gl-sprintf>
       </gl-alert>
-      <gl-alert v-if="showErrorMsg" variant="danger" @dismiss="isErrorAlertDismissed = true">
-        {{ $options.i18n.errorMsg }}
+      <gl-alert
+        v-if="showErrorMsg"
+        variant="danger"
+        data-testid="alert-error"
+        @dismiss="dismissError"
+      >
+        {{ errorMessage || $options.i18n.errorMsg }}
       </gl-alert>
 
       <gl-tabs content-class="gl-p-0" @input="filterAlertsByStatus">
@@ -437,22 +418,12 @@ export default {
         </template>
 
         <template #cell(status)="{ item }">
-          <gl-dropdown :text="$options.statuses[item.status]" class="w-100" right>
-            <gl-dropdown-item
-              v-for="(label, field) in $options.statuses"
-              :key="field"
-              @click="updateAlertStatus(label, item.iid)"
-            >
-              <span class="d-flex">
-                <gl-icon
-                  class="flex-shrink-0 append-right-4"
-                  :class="{ invisible: label.toUpperCase() !== item.status }"
-                  name="mobile-issue-close"
-                />
-                {{ label }}
-              </span>
-            </gl-dropdown-item>
-          </gl-dropdown>
+          <alert-status
+            :alert="item"
+            :project-path="projectPath"
+            :is-sidebar="false"
+            @alert-error="handleAlertError"
+          />
         </template>
 
         <template #empty>

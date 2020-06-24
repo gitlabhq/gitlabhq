@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe PruneOldEventsWorker do
+RSpec.describe PruneOldEventsWorker do
   describe '#perform' do
     let(:user) { create(:user) }
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Metrics::Dashboard::GitlabAlertEmbedService do
+RSpec.describe Metrics::Dashboard::GitlabAlertEmbedService do
   include MetricsDashboardHelpers
 
   let_it_be(:alert) { create(:prometheus_alert) }

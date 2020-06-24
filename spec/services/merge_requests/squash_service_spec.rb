@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe MergeRequests::SquashService do
+RSpec.describe MergeRequests::SquashService do
   include GitHelpers
 
   let(:service) { described_class.new(project, user, { merge_request: merge_request }) }

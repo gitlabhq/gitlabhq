@@ -668,7 +668,7 @@ RSpec.describe API::Runner, :clean_gitlab_redis_shared_state do
                   {
                     "name" => "release",
                     "script" =>
-                    ["release-cli create --ref \"$CI_COMMIT_SHA\" --name \"Release $CI_COMMIT_SHA\" --tag-name \"release-$CI_COMMIT_SHA\" --description \"Created using the release-cli $EXTRA_DESCRIPTION\""],
+                    ["release-cli create --name \"Release $CI_COMMIT_SHA\" --description \"Created using the release-cli $EXTRA_DESCRIPTION\" --tag-name \"release-$CI_COMMIT_SHA\" --ref \"$CI_COMMIT_SHA\""],
                     "timeout" => 3600,
                     "when" => "on_success",
                     "allow_failure" => false

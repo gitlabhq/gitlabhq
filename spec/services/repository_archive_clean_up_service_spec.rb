@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe RepositoryArchiveCleanUpService do
+RSpec.describe RepositoryArchiveCleanUpService do
   subject(:service) { described_class.new }
 
   describe '#execute (new archive locations)' do

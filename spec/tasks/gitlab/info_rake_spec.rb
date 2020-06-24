@@ -2,7 +2,7 @@
 
 require 'rake_helper'
 
-describe 'gitlab:env:info' do
+RSpec.describe 'gitlab:env:info' do
   before do
     Rake.application.rake_require 'tasks/gitlab/info'
 

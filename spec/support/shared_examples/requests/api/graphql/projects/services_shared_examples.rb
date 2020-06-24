@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-shared_examples 'unauthorized users cannot read services' do
+RSpec.shared_examples 'unauthorized users cannot read services' do
   before do
     post_graphql(query, current_user: current_user)
   end

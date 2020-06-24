@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-describe Labels::AvailableLabelsService do
+RSpec.describe Labels::AvailableLabelsService do
   let(:user) { create(:user) }
   let(:project) { create(:project, :public, group: group) }
   let(:group) { create(:group) }

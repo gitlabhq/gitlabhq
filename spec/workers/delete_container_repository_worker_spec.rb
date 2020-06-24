@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe DeleteContainerRepositoryWorker do
+RSpec.describe DeleteContainerRepositoryWorker do
   let(:registry) { create(:container_repository) }
   let(:project) { registry.project }
   let(:user) { project.owner }

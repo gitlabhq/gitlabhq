@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'projects/buttons/_dropdown' do
+RSpec.describe 'projects/buttons/_dropdown' do
   let(:user) { create(:user) }
 
   context 'user with all abilities' do

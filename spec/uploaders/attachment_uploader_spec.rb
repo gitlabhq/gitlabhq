@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe AttachmentUploader do
+RSpec.describe AttachmentUploader do
   let(:note) { create(:note, :with_attachment) }
   let(:uploader) { note.attachment }
   let(:upload) { create(:upload, :attachment_upload, model: uploader.model) }

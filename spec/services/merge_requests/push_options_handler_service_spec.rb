@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe MergeRequests::PushOptionsHandlerService do
+RSpec.describe MergeRequests::PushOptionsHandlerService do
   include ProjectForksHelper
 
   let(:user) { create(:user) }

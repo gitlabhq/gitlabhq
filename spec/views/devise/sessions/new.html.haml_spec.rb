@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'devise/sessions/new' do
+RSpec.describe 'devise/sessions/new' do
   describe 'ldap' do
     include LdapHelpers
 

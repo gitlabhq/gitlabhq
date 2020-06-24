@@ -2,6 +2,6 @@
 
 require 'spec_helper'
 
-describe WikiPages::DestroyService do
+RSpec.describe WikiPages::DestroyService do
   it_behaves_like 'WikiPages::DestroyService#execute', :project
 end

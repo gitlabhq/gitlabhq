@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::JiraImport::ImportIssueWorker do
+RSpec.describe Gitlab::JiraImport::ImportIssueWorker do
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project) }
   let_it_be(:jira_issue_label_1) { create(:label, project: project) }

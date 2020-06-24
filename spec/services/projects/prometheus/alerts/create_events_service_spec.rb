@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Projects::Prometheus::Alerts::CreateEventsService do
+RSpec.describe Projects::Prometheus::Alerts::CreateEventsService do
   let(:user) { create(:user) }
   let_it_be(:project) { create(:project) }
   let(:metric) { create(:prometheus_metric, project: project) }

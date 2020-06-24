@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Projects::ForkService do
+RSpec.describe Projects::ForkService do
   include ProjectForksHelper
 
   shared_examples 'forks count cache refresh' do

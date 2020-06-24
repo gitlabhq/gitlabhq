@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ResourceEvents::MergeIntoNotesService do
+RSpec.describe ResourceEvents::MergeIntoNotesService do
   def create_event(params)
     event_params = { action: :add, label: label, issue: resource,
                      user: user }

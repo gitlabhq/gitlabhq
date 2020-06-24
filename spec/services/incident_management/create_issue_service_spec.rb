@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe IncidentManagement::CreateIssueService do
+RSpec.describe IncidentManagement::CreateIssueService do
   let(:project) { create(:project, :repository, :private) }
   let_it_be(:user) { User.alert_bot }
   let(:service) { described_class.new(project, alert_payload) }

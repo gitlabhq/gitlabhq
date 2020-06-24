@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'projects/merge_requests/edit.html.haml' do
+RSpec.describe 'projects/merge_requests/edit.html.haml' do
   include Devise::Test::ControllerHelpers
   include ProjectForksHelper
 

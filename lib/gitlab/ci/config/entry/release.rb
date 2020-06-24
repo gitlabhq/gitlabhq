@@ -12,8 +12,9 @@ module Gitlab
           include ::Gitlab::Config::Entry::Validatable
           include ::Gitlab::Config::Entry::Attributable
 
-          ALLOWED_KEYS = %i[tag_name name description assets].freeze
-          attributes %i[tag_name name assets].freeze
+          ALLOWED_KEYS = %i[tag_name name description ref released_at milestones assets].freeze
+          attributes %i[tag_name name ref milestones assets].freeze
+          attr_reader :released_at
 
           # Attributable description conflicts with
           # ::Gitlab::Config::Entry::Node.description
@@ -29,8 +30,25 @@ module Gitlab
 
           validations do
             validates :config, allowed_keys: ALLOWED_KEYS
-            validates :tag_name, presence: true
+            validates :tag_name, type: String, presence: true
             validates :description, type: String, presence: true
+            validates :milestones, array_of_strings_or_string: true, allow_blank: true
+            validate do
+              next unless config[:released_at]
+
+              begin
+                @released_at = DateTime.iso8601(config[:released_at])
+              rescue ArgumentError
+                errors.add(:released_at, "must be a valid datetime")
+              end
+            end
+            validate do
+              next unless config[:ref]
+
+              unless Commit.reference_valid?(config[:ref])
+                errors.add(:ref, "must be a valid ref")
+              end
+            end
           end
 
           def value

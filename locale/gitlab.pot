@@ -24656,9 +24656,6 @@ msgstr ""
 msgid "UsageQuota|Storage"
 msgstr ""
 
-msgid "UsageQuota|Storage usage:"
-msgstr ""
-
 msgid "UsageQuota|This namespace has no projects which use shared runners"
 msgstr ""
 
@@ -24687,6 +24684,12 @@ msgid "UsageQuota|Wiki"
 msgstr ""
 
 msgid "UsageQuota|Wikis"
+msgstr ""
+
+msgid "UsageQuota|You used: %{usage} %{limit}"
+msgstr ""
+
+msgid "UsageQuota|out of %{formattedLimit} of your namespace storage"
 msgstr ""
 
 msgid "Use %{code_start}::%{code_end} to create a %{link_start}scoped label set%{link_end} (eg. %{code_start}priority::1%{code_end})"

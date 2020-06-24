@@ -2,7 +2,7 @@
 
 require 'rake_helper'
 
-describe 'clearing redis cache' do
+RSpec.describe 'clearing redis cache' do
   before do
     Rake.application.rake_require 'tasks/cache'
   end

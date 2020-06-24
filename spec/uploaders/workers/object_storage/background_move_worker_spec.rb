@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ObjectStorage::BackgroundMoveWorker do
+RSpec.describe ObjectStorage::BackgroundMoveWorker do
   let(:local) { ObjectStorage::Store::LOCAL }
   let(:remote) { ObjectStorage::Store::REMOTE }
 

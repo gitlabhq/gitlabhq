@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe BuildTraceSectionsWorker do
+RSpec.describe BuildTraceSectionsWorker do
   describe '#perform' do
     context 'when build exists' do
       let!(:build) { create(:ci_build) }

@@ -2,7 +2,7 @@ import {
   buildUneditableOpenTokens,
   buildUneditableCloseToken,
   buildUneditableTokens,
-} from '~/vue_shared/components/rich_content_editor/services/renderers//build_uneditable_token';
+} from '~/vue_shared/components/rich_content_editor/services/renderers/build_uneditable_token';
 
 import {
   originToken,

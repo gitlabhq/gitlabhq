@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ErrorTracking::ListProjectsService do
+RSpec.describe ErrorTracking::ListProjectsService do
   let_it_be(:user) { create(:user) }
   let_it_be(:project, reload: true) { create(:project) }
 

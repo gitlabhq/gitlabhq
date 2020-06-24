@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Issues::DuplicateService do
+RSpec.describe Issues::DuplicateService do
   let(:user) { create(:user) }
   let(:canonical_project) { create(:project) }
   let(:duplicate_project) { create(:project) }

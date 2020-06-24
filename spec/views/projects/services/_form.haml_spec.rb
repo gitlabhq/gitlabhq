@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'projects/services/_form' do
+RSpec.describe 'projects/services/_form' do
   let(:project) { create(:redmine_project) }
   let(:user) { create(:admin) }
 

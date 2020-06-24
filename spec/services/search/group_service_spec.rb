@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Search::GroupService do
+RSpec.describe Search::GroupService do
   shared_examples_for 'group search' do
     context 'finding projects by name' do
       let(:user) { create(:user) }

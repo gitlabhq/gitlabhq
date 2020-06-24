@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Environments::AutoStopService, :clean_gitlab_redis_shared_state do
+RSpec.describe Environments::AutoStopService, :clean_gitlab_redis_shared_state do
   include CreateEnvironmentsHelpers
   include ExclusiveLeaseHelpers
 

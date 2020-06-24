@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-shared_examples 'a milestone events creator' do
+RSpec.shared_examples 'a milestone events creator' do
   let_it_be(:user) { create(:user) }
 
   let(:created_at_time) { Time.utc(2019, 12, 30) }

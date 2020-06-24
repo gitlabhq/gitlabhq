@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'projects/commit/branches.html.haml' do
+RSpec.describe 'projects/commit/branches.html.haml' do
   let(:project) { create(:project, :repository) }
 
   before do

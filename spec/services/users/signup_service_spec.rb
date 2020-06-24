@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Users::SignupService do
+RSpec.describe Users::SignupService do
   let(:user) { create(:user, setup_for_company: true) }
 
   describe '#execute' do

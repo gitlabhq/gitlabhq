@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Projects::AfterImportService do
+RSpec.describe Projects::AfterImportService do
   include GitHelpers
 
   subject { described_class.new(project) }

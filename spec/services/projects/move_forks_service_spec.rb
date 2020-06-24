@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Projects::MoveForksService do
+RSpec.describe Projects::MoveForksService do
   include ProjectForksHelper
 
   let!(:user) { create(:user) }

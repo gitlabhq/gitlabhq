@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Projects::MoveUsersStarProjectsService do
+RSpec.describe Projects::MoveUsersStarProjectsService do
   let!(:user) { create(:user) }
   let!(:project_with_stars) { create(:project, namespace: user.namespace) }
   let!(:target_project) { create(:project, namespace: user.namespace) }

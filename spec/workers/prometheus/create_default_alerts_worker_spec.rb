@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Prometheus::CreateDefaultAlertsWorker do
+RSpec.describe Prometheus::CreateDefaultAlertsWorker do
   let_it_be(:project) { create(:project) }
   let(:worker) { described_class.new }
   let(:logger) { worker.send(:logger) }

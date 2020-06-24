@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ObjectStorage::MigrateUploadsWorker do
+RSpec.describe ObjectStorage::MigrateUploadsWorker do
   let(:model_class) { Project }
   let(:uploads) { Upload.all }
   let(:to_store) { ObjectStorage::Store::REMOTE }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe TestHooks::ProjectService do
+RSpec.describe TestHooks::ProjectService do
   let(:current_user) { create(:user) }
 
   describe '#execute' do

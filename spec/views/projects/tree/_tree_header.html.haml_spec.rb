@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'projects/tree/_tree_header' do
+RSpec.describe 'projects/tree/_tree_header' do
   let(:project) { create(:project, :repository) }
   let(:current_user) { create(:user) }
   let(:repository) { project.repository }

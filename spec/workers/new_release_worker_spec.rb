@@ -4,7 +4,7 @@
 # https://gitlab.com/gitlab-org/gitlab/-/issues/218231
 require 'spec_helper'
 
-describe NewReleaseWorker do
+RSpec.describe NewReleaseWorker do
   let(:release) { create(:release) }
 
   it 'sends a new release notification' do

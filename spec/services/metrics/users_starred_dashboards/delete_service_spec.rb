@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Metrics::UsersStarredDashboards::DeleteService do
+RSpec.describe Metrics::UsersStarredDashboards::DeleteService do
   subject(:service_instance) { described_class.new(user, project, dashboard_path) }
 
   let_it_be(:user) { create(:user) }

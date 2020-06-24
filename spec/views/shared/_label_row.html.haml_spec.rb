@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-describe 'shared/_label_row.html.haml' do
+RSpec.describe 'shared/_label_row.html.haml' do
   label_types = {
     'project label': :label,
     'group label': :group_label

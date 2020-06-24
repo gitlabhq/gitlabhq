@@ -2,7 +2,7 @@
 
 require 'rake_helper'
 
-describe 'tokens rake tasks' do
+RSpec.describe 'tokens rake tasks' do
   let!(:user) { create(:user) }
 
   before do

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe PipelineUpdateWorker do
+RSpec.describe PipelineUpdateWorker do
   describe '#perform' do
     context 'when pipeline exists' do
       let(:pipeline) { create(:ci_pipeline) }

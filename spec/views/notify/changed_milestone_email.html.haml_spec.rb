@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'notify/changed_milestone_email.html.haml' do
+RSpec.describe 'notify/changed_milestone_email.html.haml' do
   let(:milestone) { create(:milestone, title: 'some-milestone') }
   let(:milestone_link) { milestone_url(milestone) }
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'projects/issues/show' do
+RSpec.describe 'projects/issues/show' do
   include_context 'project show action'
 
   context 'when the issue is closed' do

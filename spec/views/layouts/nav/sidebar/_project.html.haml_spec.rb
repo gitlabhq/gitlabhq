@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'layouts/nav/sidebar/_project' do
+RSpec.describe 'layouts/nav/sidebar/_project' do
   let(:project) { create(:project, :repository) }
 
   before do

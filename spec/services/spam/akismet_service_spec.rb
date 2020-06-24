@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Spam::AkismetService do
+RSpec.describe Spam::AkismetService do
   let(:fake_akismet_client) { double(:akismet_client) }
 
   let_it_be(:text) { "Would you like to buy some tinned meat product?" }

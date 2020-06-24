@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Reenqueuer do
+RSpec.describe Reenqueuer do
   include ExclusiveLeaseHelpers
 
   let_it_be(:worker_class) do
@@ -93,7 +93,7 @@ describe Reenqueuer do
   end
 end
 
-describe Reenqueuer::ReenqueuerSleeper do
+RSpec.describe Reenqueuer::ReenqueuerSleeper do
   let_it_be(:dummy_class) do
     Class.new do
       include Reenqueuer::ReenqueuerSleeper

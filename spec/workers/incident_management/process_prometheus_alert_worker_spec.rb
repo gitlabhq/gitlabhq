@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe IncidentManagement::ProcessPrometheusAlertWorker do
+RSpec.describe IncidentManagement::ProcessPrometheusAlertWorker do
   describe '#perform' do
     let_it_be(:project) { create(:project) }
     let_it_be(:prometheus_alert) { create(:prometheus_alert, project: project) }

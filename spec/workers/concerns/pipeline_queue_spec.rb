@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe PipelineQueue do
+RSpec.describe PipelineQueue do
   let(:worker) do
     Class.new do
       def self.name

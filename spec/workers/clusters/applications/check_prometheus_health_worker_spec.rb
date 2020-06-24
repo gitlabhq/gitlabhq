@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Clusters::Applications::CheckPrometheusHealthWorker, '#perform' do
+RSpec.describe Clusters::Applications::CheckPrometheusHealthWorker, '#perform' do
   subject { described_class.new.perform }
 
   it 'triggers health service' do

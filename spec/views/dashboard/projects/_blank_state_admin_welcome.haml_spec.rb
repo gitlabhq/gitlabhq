@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'dashboard/projects/_blank_state_admin_welcome.html.haml' do
+RSpec.describe 'dashboard/projects/_blank_state_admin_welcome.html.haml' do
   let(:user) { create(:admin) }
 
   before do

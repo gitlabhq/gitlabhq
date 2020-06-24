@@ -2,7 +2,7 @@
 
 require 'rake_helper'
 
-describe 'gitlab:web_hook namespace rake tasks' do
+RSpec.describe 'gitlab:web_hook namespace rake tasks' do
   let_it_be(:group, refind: true) { create(:group) }
   let_it_be(:project1, reload: true) { create(:project, namespace: group) }
   let_it_be(:project2, reload: true) { create(:project, namespace: group) }

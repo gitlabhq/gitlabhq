@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Terraform::RemoteStateHandler do
+RSpec.describe Terraform::RemoteStateHandler do
   let_it_be(:project) { create(:project) }
   let_it_be(:user) { create(:user) }
 

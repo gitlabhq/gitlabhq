@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ShaValidator do
+RSpec.describe ShaValidator do
   let(:validator) { described_class.new(attributes: [:base_commit_sha]) }
   let!(:merge_diff) { build(:merge_request_diff) }
 

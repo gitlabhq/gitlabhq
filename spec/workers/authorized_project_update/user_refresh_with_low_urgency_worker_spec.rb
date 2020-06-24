@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe AuthorizedProjectUpdate::UserRefreshWithLowUrgencyWorker do
+RSpec.describe AuthorizedProjectUpdate::UserRefreshWithLowUrgencyWorker do
   it 'is labeled as low urgency' do
     expect(described_class.get_urgency).to eq(:low)
   end

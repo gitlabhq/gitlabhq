@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-describe Files::UpdateService do
+RSpec.describe Files::UpdateService do
   subject { described_class.new(project, user, commit_params) }
 
   let(:project) { create(:project, :repository) }

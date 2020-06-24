@@ -2,7 +2,7 @@
 
 require 'spec_helper.rb'
 
-describe Issues::ReferencedMergeRequestsService do
+RSpec.describe Issues::ReferencedMergeRequestsService do
   def create_referencing_mr(attributes = {})
     create(:merge_request, attributes).tap do |merge_request|
       create(:note, :system, project: project, noteable: issue, author: user, note: merge_request.to_reference(full: true))

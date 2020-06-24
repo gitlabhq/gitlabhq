@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe JiraImport::UsersMapper do
+RSpec.describe JiraImport::UsersMapper do
   let_it_be(:project) { create(:project) }
 
   subject { described_class.new(project, jira_users).execute }

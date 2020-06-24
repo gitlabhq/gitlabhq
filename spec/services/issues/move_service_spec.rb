@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Issues::MoveService do
+RSpec.describe Issues::MoveService do
   let(:user) { create(:user) }
   let(:author) { create(:user) }
   let(:title) { 'Some issue' }

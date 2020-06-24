@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe PipelineMetricsWorker do
+RSpec.describe PipelineMetricsWorker do
   let(:project) { create(:project, :repository) }
 
   let!(:merge_request) do

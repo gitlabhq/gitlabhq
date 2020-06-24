@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Notes::RenderService do
+RSpec.describe Notes::RenderService do
   describe '#execute' do
     it 'renders a Note' do
       note = double(:note)

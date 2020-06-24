@@ -2,7 +2,7 @@
 
 require 'rake_helper'
 
-describe 'gitlab:seed:group_seed rake task' do
+RSpec.describe 'gitlab:seed:group_seed rake task' do
   let(:username) { 'group_seed' }
   let!(:user) { create(:user, username: username) }
   let(:task_params) { [2, username] }

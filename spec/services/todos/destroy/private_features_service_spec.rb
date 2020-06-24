@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Todos::Destroy::PrivateFeaturesService do
+RSpec.describe Todos::Destroy::PrivateFeaturesService do
   let(:project)        { create(:project, :public) }
   let(:user)           { create(:user) }
   let(:another_user)   { create(:user) }

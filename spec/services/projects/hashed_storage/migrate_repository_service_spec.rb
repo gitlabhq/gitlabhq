@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Projects::HashedStorage::MigrateRepositoryService do
+RSpec.describe Projects::HashedStorage::MigrateRepositoryService do
   include GitHelpers
 
   let(:gitlab_shell) { Gitlab::Shell.new }

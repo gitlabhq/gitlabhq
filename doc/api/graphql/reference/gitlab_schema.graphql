@@ -7677,6 +7677,11 @@ type Milestone {
   state: MilestoneStateEnum!
 
   """
+  Milestone statistics
+  """
+  stats: MilestoneStats
+
+  """
   Indicates if milestone is at subgroup level
   """
   subgroupMilestone: Boolean!
@@ -7735,6 +7740,21 @@ type MilestoneEdge {
 enum MilestoneStateEnum {
   active
   closed
+}
+
+"""
+Contains statistics about a milestone
+"""
+type MilestoneStats {
+  """
+  Number of closed issues associated with the milestone
+  """
+  closedIssuesCount: Int
+
+  """
+  Total number of issues associated with the milestone
+  """
+  totalIssuesCount: Int
 }
 
 """

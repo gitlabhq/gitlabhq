@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'projects/pipelines/_stage' do
+RSpec.describe 'projects/pipelines/_stage' do
   let(:project) { create(:project, :repository) }
   let(:pipeline) { create(:ci_pipeline, project: project) }
   let(:stage) { build(:ci_stage, pipeline: pipeline) }

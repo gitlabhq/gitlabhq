@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Discussions::CaptureDiffNotePositionsService do
+RSpec.describe Discussions::CaptureDiffNotePositionsService do
   context 'when merge request has a discussion' do
     let(:source_branch) { 'compare-with-merge-head-source' }
     let(:target_branch) { 'compare-with-merge-head-target' }

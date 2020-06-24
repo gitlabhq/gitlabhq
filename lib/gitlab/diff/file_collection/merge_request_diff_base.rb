@@ -20,7 +20,7 @@ module Gitlab
           strong_memoize(:diff_files) do
             diff_files = super
 
-            diff_files.each { |diff_file| cache.decorate(diff_file) }
+            diff_files.each { |diff_file| highlight_cache.decorate(diff_file) }
 
             diff_files
           end
@@ -28,16 +28,14 @@ module Gitlab
 
         override :write_cache
         def write_cache
-          cache.write_if_empty
+          highlight_cache.write_if_empty
+          diff_stats_cache&.write_if_empty(diff_stats_collection)
         end
 
         override :clear_cache
         def clear_cache
-          cache.clear
-        end
-
-        def cache_key
-          cache.key
+          highlight_cache.clear
+          diff_stats_cache&.clear
         end
 
         def real_size
@@ -46,8 +44,27 @@ module Gitlab
 
         private
 
-        def cache
-          @cache ||= Gitlab::Diff::HighlightCache.new(self)
+        def highlight_cache
+          strong_memoize(:highlight_cache) do
+            Gitlab::Diff::HighlightCache.new(self)
+          end
+        end
+
+        def diff_stats_cache
+          strong_memoize(:diff_stats_cache) do
+            if Feature.enabled?(:cache_diff_stats_merge_request, project)
+              Gitlab::Diff::StatsCache.new(cachable_key: @merge_request_diff.cache_key)
+            end
+          end
+        end
+
+        override :diff_stats_collection
+        def diff_stats_collection
+          strong_memoize(:diff_stats) do
+            next unless fetch_diff_stats?
+
+            diff_stats_cache&.read || super
+          end
         end
       end
     end

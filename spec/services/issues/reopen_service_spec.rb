@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Issues::ReopenService do
+RSpec.describe Issues::ReopenService do
   let(:project) { create(:project) }
   let(:issue) { create(:issue, :closed, project: project) }
 

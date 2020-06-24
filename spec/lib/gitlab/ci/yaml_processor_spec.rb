@@ -1397,6 +1397,9 @@ module Gitlab
                 tag_name: "$CI_COMMIT_TAG",
                 name: "Release $CI_TAG_NAME",
                 description: "./release_changelog.txt",
+                ref: 'b3235930aa443112e639f941c69c578912189bdd',
+                released_at: '2019-03-15T08:00:00Z',
+                milestones: %w[m1 m2 m3],
                 assets: {
                   links: [
                     {

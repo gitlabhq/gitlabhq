@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Projects::Prometheus::Metrics::UpdateService do
+RSpec.describe Projects::Prometheus::Metrics::UpdateService do
   let(:metric) { create(:prometheus_metric) }
 
   it 'updates the prometheus metric' do

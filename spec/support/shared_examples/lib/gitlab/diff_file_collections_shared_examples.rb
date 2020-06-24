@@ -10,7 +10,7 @@ RSpec.shared_examples 'diff statistics' do |test_include_stats_flag: true|
     end
   end
 
-  context 'when should request diff stats' do
+  context 'when include_stats is true' do
     it 'Repository#diff_stats is called' do
       expect(diffable.project.repository)
         .to receive(:diff_stats)
@@ -59,43 +59,134 @@ RSpec.shared_examples 'unfoldable diff' do
 end
 
 RSpec.shared_examples 'cacheable diff collection' do
-  let(:cache) { instance_double(Gitlab::Diff::HighlightCache) }
+  let(:highlight_cache) { instance_double(Gitlab::Diff::HighlightCache, write_if_empty: true, clear: nil, decorate: nil) }
+  let(:stats_cache) { instance_double(Gitlab::Diff::StatsCache, read: nil, write_if_empty: true, clear: nil) }
 
   before do
-    expect(Gitlab::Diff::HighlightCache).to receive(:new).with(subject) { cache }
+    expect(Gitlab::Diff::HighlightCache).to receive(:new).with(subject) { highlight_cache }
   end
 
   describe '#write_cache' do
     it 'calls Gitlab::Diff::HighlightCache#write_if_empty' do
-      expect(cache).to receive(:write_if_empty).once
+      expect(highlight_cache).to receive(:write_if_empty).once
 
       subject.write_cache
+    end
+
+    context 'when the feature flag is enabled' do
+      before do
+        stub_feature_flags(cache_diff_stats_merge_request: true)
+        expect(Gitlab::Diff::StatsCache).to receive(:new).with(cachable_key: diffable.cache_key) { stats_cache }
+      end
+
+      it 'calls Gitlab::Diff::StatsCache#write_if_empty with diff stats' do
+        diff_stats = Gitlab::Git::DiffStatsCollection.new([])
+
+        expect(diffable.project.repository)
+          .to receive(:diff_stats).and_return(diff_stats)
+
+        expect(stats_cache).to receive(:write_if_empty).once.with(diff_stats)
+
+        subject.write_cache
+      end
+    end
+
+    context 'when the feature flag is disabled' do
+      before do
+        stub_feature_flags(cache_diff_stats_merge_request: false)
+      end
+
+      it 'does not call Gitlab::Diff::StatsCache#write_if_empty' do
+        expect(stats_cache).not_to receive(:write_if_empty)
+
+        subject.write_cache
+      end
     end
   end
 
   describe '#clear_cache' do
     it 'calls Gitlab::Diff::HighlightCache#clear' do
-      expect(cache).to receive(:clear).once
+      expect(highlight_cache).to receive(:clear).once
 
       subject.clear_cache
     end
-  end
 
-  describe '#cache_key' do
-    it 'calls Gitlab::Diff::HighlightCache#key' do
-      expect(cache).to receive(:key).once
+    context 'when the feature flag is enabled' do
+      before do
+        stub_feature_flags(cache_diff_stats_merge_request: true)
+        expect(Gitlab::Diff::StatsCache).to receive(:new).with(cachable_key: diffable.cache_key) { stats_cache }
+      end
 
-      subject.cache_key
+      it 'calls Gitlab::Diff::StatsCache#clear' do
+        expect(stats_cache).to receive(:clear).once
+
+        subject.clear_cache
+      end
+    end
+
+    context 'when the feature flag is disabled' do
+      before do
+        stub_feature_flags(cache_diff_stats_merge_request: false)
+      end
+
+      it 'does not calls Gitlab::Diff::StatsCache#clear' do
+        expect(stats_cache).not_to receive(:clear)
+
+        subject.clear_cache
+      end
     end
   end
 
   describe '#diff_files' do
     it 'calls Gitlab::Diff::HighlightCache#decorate' do
-      expect(cache).to receive(:decorate)
+      expect(highlight_cache).to receive(:decorate)
         .with(instance_of(Gitlab::Diff::File))
         .exactly(cacheable_files_count).times
 
       subject.diff_files
+    end
+
+    context 'when the feature swtich is enabled' do
+      before do
+        stub_feature_flags(cache_diff_stats_merge_request: true)
+        expect(Gitlab::Diff::StatsCache).to receive(:new).with(cachable_key: diffable.cache_key) { stats_cache }
+      end
+
+      context 'when there are stats cached' do
+        before do
+          allow(stats_cache).to receive(:read).and_return(Gitlab::Git::DiffStatsCollection.new([]))
+        end
+
+        it 'does not make a diff stats rpc call' do
+          expect(diffable.project.repository).not_to receive(:diff_stats)
+
+          subject.diff_files
+        end
+      end
+
+      context 'when there are no stats cached' do
+        it 'makes a diff stats rpc call' do
+          expect(diffable.project.repository)
+            .to receive(:diff_stats)
+            .with(diffable.diff_refs.base_sha, diffable.diff_refs.head_sha)
+
+          subject.diff_files
+        end
+      end
+    end
+
+    context 'when the feature switch is disabled' do
+      before do
+        stub_feature_flags(cache_diff_stats_merge_request: false)
+      end
+
+      it 'makes a diff stats rpc call' do
+        expect(diffable.project.repository)
+          .to receive(:diff_stats)
+          .with(diffable.diff_refs.base_sha, diffable.diff_refs.head_sha)
+
+        subject.diff_files
+      end
     end
   end
 end

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-shared_context 'sentry error tracking context feature' do
+RSpec.shared_context 'sentry error tracking context feature' do
   include ReactiveCachingHelpers
 
   let_it_be(:project) { create(:project) }

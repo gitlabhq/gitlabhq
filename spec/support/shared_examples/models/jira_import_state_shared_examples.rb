@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-shared_examples 'multiple running imports not allowed' do
+RSpec.shared_examples 'multiple running imports not allowed' do
   it 'returns not valid' do
     new_import = build(:jira_import_state, project: project)
 
@@ -9,21 +9,21 @@ shared_examples 'multiple running imports not allowed' do
   end
 end
 
-shared_examples 'in progress' do |status|
+RSpec.shared_examples 'in progress' do |status|
   it 'returns true' do
     jira_import_state = build(:jira_import_state, status: status)
     expect(jira_import_state).to be_in_progress
   end
 end
 
-shared_examples 'not in progress' do |status|
+RSpec.shared_examples 'not in progress' do |status|
   it 'returns false' do
     jira_import_state = build(:jira_import_state, status: status)
     expect(jira_import_state).not_to be_in_progress
   end
 end
 
-shared_examples 'can transition' do |states|
+RSpec.shared_examples 'can transition' do |states|
   states.each do |state|
     it 'returns true' do
       expect(jira_import.send(state)).to be true
@@ -31,7 +31,7 @@ shared_examples 'can transition' do |states|
   end
 end
 
-shared_examples 'cannot transition' do |states|
+RSpec.shared_examples 'cannot transition' do |states|
   states.each do |state|
     it 'returns false' do
       expect(jira_import.send(state)).to be false

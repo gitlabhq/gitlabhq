@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe QuickActions::TargetService do
+RSpec.describe QuickActions::TargetService do
   let(:project) { create(:project) }
   let(:user) { create(:user) }
   let(:service) { described_class.new(project, user) }

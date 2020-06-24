@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe DeleteUserWorker do
+RSpec.describe DeleteUserWorker do
   let!(:user)         { create(:user) }
   let!(:current_user) { create(:user) }
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Jira::Requests::Projects do
+RSpec.describe Jira::Requests::Projects do
   let(:jira_service) { create(:jira_service) }
   let(:params) { {} }
 

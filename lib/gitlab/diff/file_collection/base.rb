@@ -88,13 +88,16 @@ module Gitlab
 
         def diff_stats_collection
           strong_memoize(:diff_stats) do
-            # There are scenarios where we don't need to request Diff Stats,
-            # when caching for instance.
-            next unless @include_stats
-            next unless diff_refs
+            next unless fetch_diff_stats?
 
             @repository.diff_stats(diff_refs.base_sha, diff_refs.head_sha)
           end
+        end
+
+        def fetch_diff_stats?
+          # There are scenarios where we don't need to request Diff Stats,
+          # when caching for instance.
+          @include_stats && diff_refs
         end
 
         def decorate_diff!(diff)

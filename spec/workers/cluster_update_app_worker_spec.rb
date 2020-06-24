@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ClusterUpdateAppWorker do
+RSpec.describe ClusterUpdateAppWorker do
   include ExclusiveLeaseHelpers
 
   let_it_be(:project) { create(:project) }

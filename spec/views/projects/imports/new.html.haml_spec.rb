@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-describe "projects/imports/new.html.haml" do
+RSpec.describe "projects/imports/new.html.haml" do
   let(:user) { create(:user) }
 
   context 'when import fails' do

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'admin/sessions/new.html.haml' do
+RSpec.describe 'admin/sessions/new.html.haml' do
   let(:user) { create(:admin) }
 
   before do

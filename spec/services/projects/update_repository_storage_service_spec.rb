@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Projects::UpdateRepositoryStorageService do
+RSpec.describe Projects::UpdateRepositoryStorageService do
   include Gitlab::ShellAdapter
 
   subject { described_class.new(repository_storage_move) }

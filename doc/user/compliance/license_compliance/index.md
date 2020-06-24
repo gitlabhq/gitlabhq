@@ -616,8 +616,7 @@ From the project's settings:
 To allow or deny a license:
 
 1. Either use the **Manage licenses** button in the merge request widget, or
-   navigate to the project's **Settings > CI/CD** and expand the
-   **License Compliance** section.
+   select **Security & Compliance > License Compliance** in the project's sidebar navigation.
 1. Click the **Add a license** button.
 
    ![License Compliance Add License](img/license_compliance_add_license_v13_0.png)

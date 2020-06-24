@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe JiraImport::StartImportService do
+RSpec.describe JiraImport::StartImportService do
   include JiraServiceHelper
 
   let_it_be(:user) { create(:user) }

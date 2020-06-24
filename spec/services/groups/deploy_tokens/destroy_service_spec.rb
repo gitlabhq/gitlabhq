@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Groups::DeployTokens::DestroyService do
+RSpec.describe Groups::DeployTokens::DestroyService do
   it_behaves_like 'a deploy token deletion service' do
     let_it_be(:entity) { create(:group) }
     let_it_be(:deploy_token_class) { GroupDeployToken }

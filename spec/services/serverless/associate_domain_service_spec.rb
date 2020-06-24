@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Serverless::AssociateDomainService do
+RSpec.describe Serverless::AssociateDomainService do
   subject { described_class.new(knative, pages_domain_id: pages_domain_id, creator: creator) }
 
   let(:sdc) { create(:serverless_domain_cluster, pages_domain: create(:pages_domain, :instance_serverless)) }

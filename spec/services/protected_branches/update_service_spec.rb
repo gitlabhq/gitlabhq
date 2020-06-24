@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ProtectedBranches::UpdateService do
+RSpec.describe ProtectedBranches::UpdateService do
   let(:protected_branch) { create(:protected_branch) }
   let(:project) { protected_branch.project }
   let(:user) { project.owner }

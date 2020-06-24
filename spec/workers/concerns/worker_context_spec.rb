@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe WorkerContext do
+RSpec.describe WorkerContext do
   let(:worker) do
     Class.new do
       def self.name

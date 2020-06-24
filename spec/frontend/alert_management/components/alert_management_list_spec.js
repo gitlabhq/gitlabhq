@@ -15,7 +15,6 @@ import {
 } from '@gitlab/ui';
 import { visitUrl } from '~/lib/utils/url_utility';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
-import createFlash from '~/flash';
 import AlertManagementList from '~/alert_management/components/alert_management_list.vue';
 import {
   ALERTS_STATUS_TABS,
@@ -25,8 +24,6 @@ import {
 import updateAlertStatus from '~/alert_management/graphql/mutations/update_alert_status.graphql';
 import mockAlerts from '../mocks/alerts.json';
 import Tracking from '~/tracking';
-
-jest.mock('~/flash');
 
 jest.mock('~/lib/utils/url_utility', () => ({
   visitUrl: jest.fn().mockName('visitUrlMock'),
@@ -391,14 +388,15 @@ describe('AlertManagementList', () => {
       });
     });
 
-    it('calls `createFlash` when request fails', () => {
+    it('shows an error when request fails', () => {
       jest.spyOn(wrapper.vm.$apollo, 'mutate').mockReturnValue(Promise.reject(new Error()));
       findFirstStatusOption().vm.$emit('click');
+      wrapper.setData({
+        errored: true,
+      });
 
-      setImmediate(() => {
-        expect(createFlash).toHaveBeenCalledWith(
-          'There was an error while updating the status of the alert. Please try again.',
-        );
+      wrapper.vm.$nextTick(() => {
+        expect(wrapper.find('[data-testid="alert-error"]').exists()).toBe(true);
       });
     });
   });

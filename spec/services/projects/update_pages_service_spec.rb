@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-describe Projects::UpdatePagesService do
+RSpec.describe Projects::UpdatePagesService do
   let_it_be(:project, refind: true) { create(:project, :repository) }
   let_it_be(:pipeline) { create(:ci_pipeline, project: project, sha: project.commit('HEAD').sha) }
   let(:build) { create(:ci_build, pipeline: pipeline, ref: 'HEAD') }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe PagesDomains::RetryAcmeOrderService do
+RSpec.describe PagesDomains::RetryAcmeOrderService do
   let(:domain) { create(:pages_domain, auto_ssl_enabled: true, auto_ssl_failed: true) }
 
   let(:service) { described_class.new(domain) }

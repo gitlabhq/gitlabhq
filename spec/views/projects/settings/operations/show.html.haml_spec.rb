@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'projects/settings/operations/show' do
+RSpec.describe 'projects/settings/operations/show' do
   let(:project) { create(:project) }
   let(:user) { create(:user) }
 

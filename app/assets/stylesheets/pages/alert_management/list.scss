@@ -74,7 +74,7 @@
               content: none !important;
             }
 
-            div {
+            div:not(.dropdown-title) {
               width: 100% !important;
               padding: 0 !important;
             }

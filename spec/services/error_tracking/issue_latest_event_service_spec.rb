@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ErrorTracking::IssueLatestEventService do
+RSpec.describe ErrorTracking::IssueLatestEventService do
   include_context 'sentry error tracking context'
 
   subject { described_class.new(project, user) }

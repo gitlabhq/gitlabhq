@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ProjectDestroyWorker do
+RSpec.describe ProjectDestroyWorker do
   let(:project) { create(:project, :repository, pending_delete: true) }
   let(:path) do
     Gitlab::GitalyClient::StorageSettings.allow_disk_access do

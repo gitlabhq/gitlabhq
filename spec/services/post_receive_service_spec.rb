@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe PostReceiveService do
+RSpec.describe PostReceiveService do
   include Gitlab::Routing
 
   let_it_be(:user) { create(:user) }

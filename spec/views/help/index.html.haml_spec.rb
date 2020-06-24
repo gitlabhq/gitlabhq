@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'help/index' do
+RSpec.describe 'help/index' do
   include StubVersion
 
   describe 'version information' do

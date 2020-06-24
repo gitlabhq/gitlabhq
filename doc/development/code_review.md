@@ -386,9 +386,12 @@ author.
 - Learning how to find the right balance takes time; that is why we have
   reviewers that become maintainers after some time spent on reviewing merge
   requests.
-- Finding bugs and improving code style is important, but thinking about good
-  design is important as well. Building abstractions and good design is what
-  makes it possible to hide complexity and makes future changes easier.
+- Finding bugs is important, but thinking about good design is important as
+  well. Building abstractions and good design is what makes it possible to hide
+  complexity and makes future changes easier.
+- Enforcing and improving [code style](contributing/style_guides.md) should be primarily done through
+  [automation](https://about.gitlab.com/handbook/values/#cleanup-over-sign-off)
+  instead of review comments.
 - Asking the author to change the design sometimes means the complete rewrite
   of the contributed code. It's usually a good idea to ask another maintainer or
   reviewer before doing it, but have the courage to do it when you believe it is

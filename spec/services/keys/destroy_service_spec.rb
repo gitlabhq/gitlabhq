@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Keys::DestroyService do
+RSpec.describe Keys::DestroyService do
   let(:user) { create(:user) }
 
   subject { described_class.new(user) }

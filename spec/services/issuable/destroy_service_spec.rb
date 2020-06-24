@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Issuable::DestroyService do
+RSpec.describe Issuable::DestroyService do
   let(:user) { create(:user) }
   let(:project) { create(:project, :public) }
 

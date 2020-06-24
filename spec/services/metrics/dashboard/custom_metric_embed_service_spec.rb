@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Metrics::Dashboard::CustomMetricEmbedService do
+RSpec.describe Metrics::Dashboard::CustomMetricEmbedService do
   include MetricsDashboardHelpers
 
   let_it_be(:project, reload: true) { build(:project) }

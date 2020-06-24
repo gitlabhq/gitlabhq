@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'admin/dashboard/index.html.haml' do
+RSpec.describe 'admin/dashboard/index.html.haml' do
   include Devise::Test::ControllerHelpers
 
   before do

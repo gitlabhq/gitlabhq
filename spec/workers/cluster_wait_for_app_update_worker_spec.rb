@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ClusterWaitForAppUpdateWorker do
+RSpec.describe ClusterWaitForAppUpdateWorker do
   let(:check_upgrade_progress_service) { spy }
 
   before do

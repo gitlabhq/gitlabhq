@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Users::ActivityService do
+RSpec.describe Users::ActivityService do
   include ExclusiveLeaseHelpers
 
   let(:user) { create(:user, last_activity_on: last_activity_on) }

@@ -142,7 +142,7 @@ export default {
           this.users = data;
         })
         .catch(() => {
-          this.$emit('alert-sidebar-error', this.$options.FETCH_USERS_ERROR);
+          this.$emit('alert-error', this.$options.FETCH_USERS_ERROR);
         })
         .finally(() => {
           this.isDropdownSearching = false;
@@ -172,7 +172,7 @@ export default {
           return this.$emit('alert-refresh');
         })
         .catch(() => {
-          this.$emit('alert-sidebar-error', this.$options.UPDATE_ALERT_ASSIGNEES_ERROR);
+          this.$emit('alert-error', this.$options.UPDATE_ALERT_ASSIGNEES_ERROR);
         })
         .finally(() => {
           this.isUpdating = false;

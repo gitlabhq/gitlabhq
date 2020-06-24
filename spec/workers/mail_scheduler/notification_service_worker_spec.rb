@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe MailScheduler::NotificationServiceWorker do
+RSpec.describe MailScheduler::NotificationServiceWorker do
   let(:worker) { described_class.new }
   let(:method) { 'new_key' }
 

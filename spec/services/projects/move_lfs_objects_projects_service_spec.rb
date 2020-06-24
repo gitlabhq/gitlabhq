@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Projects::MoveLfsObjectsProjectsService do
+RSpec.describe Projects::MoveLfsObjectsProjectsService do
   let!(:user) { create(:user) }
   let!(:project_with_lfs_objects) { create(:project, namespace: user.namespace) }
   let!(:target_project) { create(:project, namespace: user.namespace) }

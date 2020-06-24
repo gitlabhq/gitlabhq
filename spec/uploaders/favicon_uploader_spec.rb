@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe FaviconUploader do
+RSpec.describe FaviconUploader do
   let_it_be(:model) { build_stubbed(:user) }
   let_it_be(:uploader) { described_class.new(model, :favicon) }
 

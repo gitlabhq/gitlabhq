@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ExpireBuildArtifactsWorker do
+RSpec.describe ExpireBuildArtifactsWorker do
   let(:worker) { described_class.new }
 
   describe '#perform' do

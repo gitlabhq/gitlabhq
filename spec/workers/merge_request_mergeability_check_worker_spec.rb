@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe MergeRequestMergeabilityCheckWorker do
+RSpec.describe MergeRequestMergeabilityCheckWorker do
   subject { described_class.new }
 
   describe '#perform' do

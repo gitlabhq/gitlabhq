@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe NotificationService, :mailer do
+RSpec.describe NotificationService, :mailer do
   include EmailSpec::Matchers
   include ExternalAuthorizationServiceHelpers
   include NotificationHelpers

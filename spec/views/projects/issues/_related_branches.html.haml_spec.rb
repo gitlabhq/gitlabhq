@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'projects/issues/_related_branches' do
+RSpec.describe 'projects/issues/_related_branches' do
   include Devise::Test::ControllerHelpers
 
   let(:pipeline) { build(:ci_pipeline, :success) }

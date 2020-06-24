@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::GithubImport::RefreshImportJidWorker do
+RSpec.describe Gitlab::GithubImport::RefreshImportJidWorker do
   let(:worker) { described_class.new }
 
   describe '.perform_in_the_future' do

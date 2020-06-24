@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe MergeRequests::CreatePipelineService do
+RSpec.describe MergeRequests::CreatePipelineService do
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:user) { create(:user) }
   let(:service) { described_class.new(project, user, params) }

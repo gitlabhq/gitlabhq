@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Clusters::Applications::WaitForUninstallAppWorker, '#perform' do
+RSpec.describe Clusters::Applications::WaitForUninstallAppWorker, '#perform' do
   let(:app) { create(:clusters_applications_helm) }
   let(:app_name) { app.name }
   let(:app_id) { app.id }

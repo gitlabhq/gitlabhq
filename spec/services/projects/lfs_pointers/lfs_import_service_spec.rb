@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-describe Projects::LfsPointers::LfsImportService do
+RSpec.describe Projects::LfsPointers::LfsImportService do
   let(:project) { create(:project) }
   let(:user) { project.creator }
   let(:import_url) { 'http://www.gitlab.com/demo/repo.git' }

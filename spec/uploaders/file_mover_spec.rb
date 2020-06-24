@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe FileMover do
+RSpec.describe FileMover do
   include FileMoverHelpers
 
   let(:user) { create(:user) }

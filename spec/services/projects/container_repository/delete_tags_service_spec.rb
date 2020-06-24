@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Projects::ContainerRepository::DeleteTagsService do
+RSpec.describe Projects::ContainerRepository::DeleteTagsService do
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project, :private) }
   let_it_be(:repository) { create(:container_repository, :root, project: project) }

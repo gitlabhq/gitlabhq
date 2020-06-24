@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::GithubImport::Stage::ImportNotesWorker do
+RSpec.describe Gitlab::GithubImport::Stage::ImportNotesWorker do
   let(:project) { create(:project) }
   let(:worker) { described_class.new }
 

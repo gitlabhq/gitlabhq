@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'groups/edit.html.haml' do
+RSpec.describe 'groups/edit.html.haml' do
   include Devise::Test::ControllerHelpers
 
   describe '"Share with group lock" setting' do

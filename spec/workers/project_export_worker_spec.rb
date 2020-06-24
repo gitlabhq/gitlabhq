@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ProjectExportWorker do
+RSpec.describe ProjectExportWorker do
   let!(:user) { create(:user) }
   let!(:project) { create(:project) }
 

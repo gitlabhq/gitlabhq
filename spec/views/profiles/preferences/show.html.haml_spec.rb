@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'profiles/preferences/show' do
+RSpec.describe 'profiles/preferences/show' do
   using RSpec::Parameterized::TableSyntax
 
   let_it_be(:user) { build(:user) }

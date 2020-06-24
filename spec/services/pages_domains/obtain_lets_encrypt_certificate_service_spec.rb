@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe PagesDomains::ObtainLetsEncryptCertificateService do
+RSpec.describe PagesDomains::ObtainLetsEncryptCertificateService do
   include LetsEncryptHelpers
 
   let(:pages_domain) { create(:pages_domain, :without_certificate, :without_key) }

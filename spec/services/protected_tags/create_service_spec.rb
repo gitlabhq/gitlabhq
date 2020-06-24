@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ProtectedTags::CreateService do
+RSpec.describe ProtectedTags::CreateService do
   let(:project) { create(:project) }
   let(:user) { project.owner }
   let(:params) do

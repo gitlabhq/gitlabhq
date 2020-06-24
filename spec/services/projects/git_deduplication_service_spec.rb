@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Projects::GitDeduplicationService do
+RSpec.describe Projects::GitDeduplicationService do
   include ExclusiveLeaseHelpers
 
   let(:pool) { create(:pool_repository, :ready) }

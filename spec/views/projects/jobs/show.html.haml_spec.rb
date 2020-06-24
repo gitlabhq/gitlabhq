@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'projects/jobs/show' do
+RSpec.describe 'projects/jobs/show' do
   let(:user) { create(:user) }
   let(:project) { create(:project, :repository) }
   let(:build) { create(:ci_build, pipeline: pipeline) }

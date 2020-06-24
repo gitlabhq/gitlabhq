@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe PipelineScheduleWorker do
+RSpec.describe PipelineScheduleWorker do
   include ExclusiveLeaseHelpers
 
   subject { described_class.new.perform }

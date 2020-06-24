@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'shared/milestones/_issuables.html.haml' do
+RSpec.describe 'shared/milestones/_issuables.html.haml' do
   let(:issuables_size) { 100 }
 
   before do

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Emails::CreateService do
+RSpec.describe Emails::CreateService do
   let(:user) { create(:user) }
   let(:opts) { { email: 'new@email.com', user: user } }
 

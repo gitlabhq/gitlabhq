@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-shared_context 'jira projects request context' do
+RSpec.shared_context 'jira projects request context' do
   let(:url) { 'https://jira.example.com' }
   let(:username) { 'jira-username' }
   let(:password) { 'jira-password' }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'layouts/_head' do
+RSpec.describe 'layouts/_head' do
   include StubConfiguration
 
   before do

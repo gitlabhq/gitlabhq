@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ExceedQueryLimitHelpers do
+RSpec.describe ExceedQueryLimitHelpers do
   before do
     stub_const('TestQueries', Class.new(ActiveRecord::Base))
     stub_const('TestMatcher', Class.new)

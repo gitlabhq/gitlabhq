@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ResourceEvents::ChangeStateService do
+RSpec.describe ResourceEvents::ChangeStateService do
   let_it_be(:project) { create(:project) }
   let_it_be(:user) { create(:user) }
 

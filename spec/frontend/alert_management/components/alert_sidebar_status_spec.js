@@ -1,4 +1,4 @@
-import { shallowMount } from '@vue/test-utils';
+import { mount } from '@vue/test-utils';
 import { GlDropdownItem, GlLoadingIcon } from '@gitlab/ui';
 import { trackAlertStatusUpdateOptions } from '~/alert_management/constants';
 import AlertSidebarStatus from '~/alert_management/components/sidebar/sidebar_status.vue';
@@ -14,7 +14,7 @@ describe('Alert Details Sidebar Status', () => {
   const findStatusLoadingIcon = () => wrapper.find(GlLoadingIcon);
 
   function mountComponent({ data, sidebarCollapsed = true, loading = false, stubs = {} } = {}) {
-    wrapper = shallowMount(AlertSidebarStatus, {
+    wrapper = mount(AlertSidebarStatus, {
       propsData: {
         alert: { ...mockAlert },
         ...data,

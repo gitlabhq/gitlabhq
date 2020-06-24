@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe QualifiedDomainArrayValidator do
+RSpec.describe QualifiedDomainArrayValidator do
   let(:qualified_domain_array_validator_test_class) do
     Class.new do
       include ActiveModel::Validations

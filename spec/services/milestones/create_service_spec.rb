@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Milestones::CreateService do
+RSpec.describe Milestones::CreateService do
   let(:project) { create(:project) }
   let(:user) { create(:user) }
 

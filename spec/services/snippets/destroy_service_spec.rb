@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Snippets::DestroyService do
+RSpec.describe Snippets::DestroyService do
   let_it_be(:project) { create(:project) }
   let_it_be(:user) { create(:user) }
   let_it_be(:other_user) { create(:user) }

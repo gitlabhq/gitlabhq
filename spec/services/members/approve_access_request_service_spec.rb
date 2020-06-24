@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Members::ApproveAccessRequestService do
+RSpec.describe Members::ApproveAccessRequestService do
   let(:project) { create(:project, :public) }
   let(:group) { create(:group, :public) }
   let(:current_user) { create(:user) }

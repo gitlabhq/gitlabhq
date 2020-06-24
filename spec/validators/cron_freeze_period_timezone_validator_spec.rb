@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe CronFreezePeriodTimezoneValidator do
+RSpec.describe CronFreezePeriodTimezoneValidator do
   using RSpec::Parameterized::TableSyntax
 
   subject { create :ci_freeze_period }

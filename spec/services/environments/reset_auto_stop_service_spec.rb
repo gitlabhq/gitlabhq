@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Environments::ResetAutoStopService do
+RSpec.describe Environments::ResetAutoStopService do
   let_it_be(:project) { create(:project) }
   let_it_be(:developer) { create(:user).tap { |user| project.add_developer(user) } }
   let_it_be(:reporter) { create(:user).tap { |user| project.add_reporter(user) } }
