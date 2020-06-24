@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe TreeHelper do
+RSpec.describe TreeHelper do
   let(:project) { create(:project, :repository) }
   let(:repository) { project.repository }
   let(:sha) { 'c1c67abbaf91f624347bb3ae96eabe3a1b742478' }

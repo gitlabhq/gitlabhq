@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe PreferencesHelper do
+RSpec.describe PreferencesHelper do
   describe '#dashboard_choices' do
     let(:user) { build(:user) }
 

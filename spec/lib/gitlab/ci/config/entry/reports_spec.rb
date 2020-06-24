@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Ci::Config::Entry::Reports do
+RSpec.describe Gitlab::Ci::Config::Entry::Reports do
   let(:entry) { described_class.new(config) }
 
   describe 'validates ALLOWED_KEYS' do

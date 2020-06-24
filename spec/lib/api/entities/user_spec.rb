@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe API::Entities::User do
+RSpec.describe API::Entities::User do
   let(:user) { create(:user) }
   let(:current_user) { create(:user) }
 

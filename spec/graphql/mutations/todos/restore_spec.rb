@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Mutations::Todos::Restore do
+RSpec.describe Mutations::Todos::Restore do
   let_it_be(:current_user) { create(:user) }
   let_it_be(:author) { create(:user) }
   let_it_be(:other_user) { create(:user) }

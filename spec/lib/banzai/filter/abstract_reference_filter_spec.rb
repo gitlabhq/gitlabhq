@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Banzai::Filter::AbstractReferenceFilter do
+RSpec.describe Banzai::Filter::AbstractReferenceFilter do
   let_it_be(:project) { create(:project) }
 
   let(:doc) { Nokogiri::HTML.fragment('') }

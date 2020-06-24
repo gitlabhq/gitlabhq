@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe RunnersHelper do
+RSpec.describe RunnersHelper do
   it "returns - not contacted yet" do
     runner = FactoryBot.build :ci_runner
     expect(runner_status_icon(runner)).to include("not connected yet")

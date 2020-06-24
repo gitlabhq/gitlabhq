@@ -1,0 +1,5 @@
+---
+title: Use CodeQuality 0.85.10 in the CI template
+merge_request: 34329
+author:
+type: changed

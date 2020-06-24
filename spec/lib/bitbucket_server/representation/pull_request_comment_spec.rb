@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe BitbucketServer::Representation::PullRequestComment do
+RSpec.describe BitbucketServer::Representation::PullRequestComment do
   let(:activities) { Gitlab::Json.parse(fixture_file('importers/bitbucket_server/activities.json'))['values'] }
   let(:comment) { activities.second }
 

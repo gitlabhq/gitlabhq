@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe X509Helper do
+RSpec.describe X509Helper do
   describe '#x509_subject' do
     let(:search_uppercase) { %w[CN OU O] }
     let(:search_lowercase) { %w[cn ou o] }

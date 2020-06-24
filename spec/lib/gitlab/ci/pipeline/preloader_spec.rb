@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Ci::Pipeline::Preloader do
+RSpec.describe Gitlab::Ci::Pipeline::Preloader do
   let(:stage) { double(:stage) }
   let(:commit) { double(:commit) }
 

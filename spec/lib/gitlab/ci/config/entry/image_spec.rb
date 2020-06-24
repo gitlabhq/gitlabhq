@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Ci::Config::Entry::Image do
+RSpec.describe Gitlab::Ci::Config::Entry::Image do
   let(:entry) { described_class.new(config) }
 
   context 'when configuration is a string' do

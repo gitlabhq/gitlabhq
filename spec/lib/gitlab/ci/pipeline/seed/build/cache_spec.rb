@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Ci::Pipeline::Seed::Build::Cache do
+RSpec.describe Gitlab::Ci::Pipeline::Seed::Build::Cache do
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:head_sha) { project.repository.head_commit.id }
   let_it_be(:pipeline) { create(:ci_pipeline, project: project, sha: head_sha) }

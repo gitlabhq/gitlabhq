@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Checks::SnippetCheck do
+RSpec.describe Gitlab::Checks::SnippetCheck do
   include_context 'change access checks context'
 
   let(:snippet) { create(:personal_snippet, :repository) }

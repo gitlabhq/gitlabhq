@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Ci::Build::Policy do
+RSpec.describe Gitlab::Ci::Build::Policy do
   let(:policy) { spy('policy specification') }
 
   before do

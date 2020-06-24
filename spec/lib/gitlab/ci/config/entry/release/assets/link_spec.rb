@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Ci::Config::Entry::Release::Assets::Link do
+RSpec.describe Gitlab::Ci::Config::Entry::Release::Assets::Link do
   let(:entry) { described_class.new(config) }
 
   describe 'validation' do

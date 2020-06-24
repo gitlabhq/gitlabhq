@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Banzai::Filter::InlineGrafanaMetricsFilter do
+RSpec.describe Banzai::Filter::InlineGrafanaMetricsFilter do
   include FilterSpecHelper
 
   let_it_be(:project) { create(:project) }

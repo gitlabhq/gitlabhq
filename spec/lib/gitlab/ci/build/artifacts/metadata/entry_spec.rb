@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Ci::Build::Artifacts::Metadata::Entry do
+RSpec.describe Gitlab::Ci::Build::Artifacts::Metadata::Entry do
   let(:entries) do
     { 'path/' => {},
       'path/dir_1/' => {},

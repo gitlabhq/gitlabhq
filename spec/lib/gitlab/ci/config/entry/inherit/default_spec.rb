@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ::Gitlab::Ci::Config::Entry::Inherit::Default do
+RSpec.describe ::Gitlab::Ci::Config::Entry::Inherit::Default do
   using RSpec::Parameterized::TableSyntax
 
   subject { described_class.new(config) }

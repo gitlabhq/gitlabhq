@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Auth::OAuth::AuthHash do
+RSpec.describe Gitlab::Auth::OAuth::AuthHash do
   let(:provider) { 'ldap'.freeze }
   let(:auth_hash) do
     described_class.new(

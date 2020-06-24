@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ContainerExpirationPoliciesHelper do
+RSpec.describe ContainerExpirationPoliciesHelper do
   describe '#keep_n_options' do
     it 'returns keep_n options formatted for dropdown usage' do
       expected_result = [

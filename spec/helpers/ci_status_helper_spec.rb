@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe CiStatusHelper do
+RSpec.describe CiStatusHelper do
   include IconsHelper
 
   let(:success_commit) { double("Ci::Pipeline", status: 'success') }

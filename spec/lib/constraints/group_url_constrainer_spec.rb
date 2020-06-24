@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Constraints::GroupUrlConstrainer do
+RSpec.describe Constraints::GroupUrlConstrainer do
   let!(:group) { create(:group, path: 'gitlab') }
 
   describe '#matches?' do

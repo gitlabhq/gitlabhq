@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe BroadcastMessagesHelper do
+RSpec.describe BroadcastMessagesHelper do
   describe 'current_broadcast_notification_message' do
     subject { helper.current_broadcast_notification_message }
 

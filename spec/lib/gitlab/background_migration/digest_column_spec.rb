@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::BackgroundMigration::DigestColumn, schema: 20180913142237 do
+RSpec.describe Gitlab::BackgroundMigration::DigestColumn, schema: 20180913142237 do
   let(:personal_access_tokens) { table(:personal_access_tokens) }
   let(:users) { table(:users) }
 

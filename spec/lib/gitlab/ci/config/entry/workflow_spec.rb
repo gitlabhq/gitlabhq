@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Ci::Config::Entry::Workflow do
+RSpec.describe Gitlab::Ci::Config::Entry::Workflow do
   let(:factory) { Gitlab::Config::Entry::Factory.new(described_class).value(rules_hash) }
   let(:config)  { factory.create! }
 

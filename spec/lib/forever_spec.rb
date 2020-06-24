@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Forever do
+RSpec.describe Forever do
   describe '.date' do
     subject { described_class.date }
 

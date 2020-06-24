@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Analytics::CycleAnalytics::StageEvents::StageEvent do
+RSpec.describe Gitlab::Analytics::CycleAnalytics::StageEvents::StageEvent do
   let(:instance) { described_class.new({}) }
 
   it { expect(described_class).to respond_to(:name) }

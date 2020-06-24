@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::BitbucketImport::Importer do
+RSpec.describe Gitlab::BitbucketImport::Importer do
   include ImportSpecHelper
 
   before do

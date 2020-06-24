@@ -1,0 +1,263 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Design management index page designs does not render toolbar when there is no permission 1`] = `
+<div>
+  <!---->
+   
+  <div
+    class="mt-4"
+  >
+    <ol
+      class="list-unstyled row"
+    >
+      <li
+        class="col-md-6 col-lg-4 mb-3"
+      >
+        <design-dropzone-stub
+          class="design-list-item"
+        />
+      </li>
+       
+      <li
+        class="col-md-6 col-lg-4 mb-3"
+      >
+        <design-dropzone-stub>
+          <design-stub
+            event="NONE"
+            filename="design-1-name"
+            id="design-1"
+            image="design-1-image"
+            notescount="0"
+          />
+        </design-dropzone-stub>
+         
+        <!---->
+      </li>
+      <li
+        class="col-md-6 col-lg-4 mb-3"
+      >
+        <design-dropzone-stub>
+          <design-stub
+            event="NONE"
+            filename="design-2-name"
+            id="design-2"
+            image="design-2-image"
+            notescount="1"
+          />
+        </design-dropzone-stub>
+         
+        <!---->
+      </li>
+      <li
+        class="col-md-6 col-lg-4 mb-3"
+      >
+        <design-dropzone-stub>
+          <design-stub
+            event="NONE"
+            filename="design-3-name"
+            id="design-3"
+            image="design-3-image"
+            notescount="0"
+          />
+        </design-dropzone-stub>
+         
+        <!---->
+      </li>
+    </ol>
+  </div>
+   
+  <router-view-stub
+    name="default"
+  />
+</div>
+`;
+
+exports[`Design management index page designs renders designs list and header with upload button 1`] = `
+<div>
+  <header
+    class="row-content-block border-top-0 p-2 d-flex"
+  >
+    <div
+      class="d-flex justify-content-between align-items-center w-100"
+    >
+      <design-version-dropdown-stub />
+       
+      <div
+        class="qa-selector-toolbar d-flex"
+      >
+        <gl-deprecated-button-stub
+          class="mr-2 js-select-all"
+          size="md"
+          variant="link"
+        >
+          Select all
+        </gl-deprecated-button-stub>
+         
+        <div>
+          <delete-button-stub
+            buttonclass="btn-danger btn-inverted mr-2"
+            buttonvariant=""
+          >
+            
+            Delete selected
+            
+            <!---->
+          </delete-button-stub>
+        </div>
+         
+        <upload-button-stub />
+      </div>
+    </div>
+  </header>
+   
+  <div
+    class="mt-4"
+  >
+    <ol
+      class="list-unstyled row"
+    >
+      <li
+        class="col-md-6 col-lg-4 mb-3"
+      >
+        <design-dropzone-stub
+          class="design-list-item"
+        />
+      </li>
+       
+      <li
+        class="col-md-6 col-lg-4 mb-3"
+      >
+        <design-dropzone-stub>
+          <design-stub
+            event="NONE"
+            filename="design-1-name"
+            id="design-1"
+            image="design-1-image"
+            notescount="0"
+          />
+        </design-dropzone-stub>
+         
+        <input
+          class="design-checkbox"
+          type="checkbox"
+        />
+      </li>
+      <li
+        class="col-md-6 col-lg-4 mb-3"
+      >
+        <design-dropzone-stub>
+          <design-stub
+            event="NONE"
+            filename="design-2-name"
+            id="design-2"
+            image="design-2-image"
+            notescount="1"
+          />
+        </design-dropzone-stub>
+         
+        <input
+          class="design-checkbox"
+          type="checkbox"
+        />
+      </li>
+      <li
+        class="col-md-6 col-lg-4 mb-3"
+      >
+        <design-dropzone-stub>
+          <design-stub
+            event="NONE"
+            filename="design-3-name"
+            id="design-3"
+            image="design-3-image"
+            notescount="0"
+          />
+        </design-dropzone-stub>
+         
+        <input
+          class="design-checkbox"
+          type="checkbox"
+        />
+      </li>
+    </ol>
+  </div>
+   
+  <router-view-stub
+    name="default"
+  />
+</div>
+`;
+
+exports[`Design management index page designs renders error 1`] = `
+<div>
+  <!---->
+   
+  <div
+    class="mt-4"
+  >
+    <gl-alert-stub
+      dismisslabel="Dismiss"
+      primarybuttonlink=""
+      primarybuttontext=""
+      secondarybuttonlink=""
+      secondarybuttontext=""
+      title=""
+      variant="danger"
+    >
+      
+      An error occurred while loading designs. Please try again.
+    
+    </gl-alert-stub>
+  </div>
+   
+  <router-view-stub
+    name="default"
+  />
+</div>
+`;
+
+exports[`Design management index page designs renders loading icon 1`] = `
+<div>
+  <!---->
+   
+  <div
+    class="mt-4"
+  >
+    <gl-loading-icon-stub
+      color="orange"
+      label="Loading"
+      size="md"
+    />
+  </div>
+   
+  <router-view-stub
+    name="default"
+  />
+</div>
+`;
+
+exports[`Design management index page when has no designs renders empty text 1`] = `
+<div>
+  <!---->
+   
+  <div
+    class="mt-4"
+  >
+    <ol
+      class="list-unstyled row"
+    >
+      <li
+        class="col-md-6 col-lg-4 mb-3"
+      >
+        <design-dropzone-stub
+          class="design-list-item"
+        />
+      </li>
+       
+    </ol>
+  </div>
+   
+  <router-view-stub
+    name="default"
+  />
+</div>
+`;

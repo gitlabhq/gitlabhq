@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Analytics::CycleAnalytics::Median do
+RSpec.describe Gitlab::Analytics::CycleAnalytics::Median do
   let_it_be(:project) { create(:project, :repository) }
   let(:query) { Project.joins(merge_requests: :metrics) }
 

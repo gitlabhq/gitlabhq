@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Types::PermissionTypes::Issue do
+RSpec.describe Types::PermissionTypes::Issue do
   it do
     expected_permissions = [
       :read_issue, :admin_issue, :update_issue, :reopen_issue,

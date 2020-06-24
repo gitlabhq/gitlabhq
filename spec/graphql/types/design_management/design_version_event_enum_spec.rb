@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe GitlabSchema.types['DesignVersionEvent'] do
+RSpec.describe GitlabSchema.types['DesignVersionEvent'] do
   it { expect(described_class.graphql_name).to eq('DesignVersionEvent') }
 
   it 'exposes the correct event states' do

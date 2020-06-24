@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Ci::Pipeline::Expression::Lexeme::NotEquals do
+RSpec.describe Gitlab::Ci::Pipeline::Expression::Lexeme::NotEquals do
   let(:left) { double('left') }
   let(:right) { double('right') }
 

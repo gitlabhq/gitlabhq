@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Resolvers::MetadataResolver do
+RSpec.describe Resolvers::MetadataResolver do
   include GraphqlHelpers
 
   describe '#resolve' do

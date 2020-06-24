@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Ci::Config::Entry::Root do
+RSpec.describe Gitlab::Ci::Config::Entry::Root do
   let(:root) { described_class.new(hash) }
 
   describe '.nodes' do

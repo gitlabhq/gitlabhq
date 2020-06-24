@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Banzai::Filter::SpacedLinkFilter do
+RSpec.describe Banzai::Filter::SpacedLinkFilter do
   include FilterSpecHelper
 
   let(:link)  { '[example](page slug)' }

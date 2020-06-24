@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Resolvers::LastCommitResolver do
+RSpec.describe Resolvers::LastCommitResolver do
   include GraphqlHelpers
 
   let(:repository) { create(:project, :repository).repository }

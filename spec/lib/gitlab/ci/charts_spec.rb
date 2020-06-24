@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Ci::Charts do
+RSpec.describe Gitlab::Ci::Charts do
   context "yearchart" do
     let(:project) { create(:project) }
     let(:chart) { Gitlab::Ci::Charts::YearChart.new(project) }

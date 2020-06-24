@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Banzai::Filter::CommitRangeReferenceFilter do
+RSpec.describe Banzai::Filter::CommitRangeReferenceFilter do
   include FilterSpecHelper
 
   let(:project) { create(:project, :public, :repository) }

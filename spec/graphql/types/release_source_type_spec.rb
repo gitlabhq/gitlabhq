@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe GitlabSchema.types['ReleaseSource'] do
+RSpec.describe GitlabSchema.types['ReleaseSource'] do
   it { expect(described_class).to require_graphql_authorizations(:download_code) }
 
   it 'has the expected fields' do

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Banzai::Filter::HtmlEntityFilter do
+RSpec.describe Banzai::Filter::HtmlEntityFilter do
   include FilterSpecHelper
 
   let(:unescaped) { 'foo <strike attr="foo">&&amp;&</strike>' }

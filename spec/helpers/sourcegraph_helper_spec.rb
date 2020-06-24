@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe SourcegraphHelper do
+RSpec.describe SourcegraphHelper do
   describe '#sourcegraph_url_message' do
     let(:sourcegraph_url) { 'http://sourcegraph.example.com' }
 

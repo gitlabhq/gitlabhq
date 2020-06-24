@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Checks::ProjectMoved, :clean_gitlab_redis_shared_state do
+RSpec.describe Gitlab::Checks::ProjectMoved, :clean_gitlab_redis_shared_state do
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project, :repository, :wiki_repo, namespace: user.namespace) }
   let(:repository) { project.repository }

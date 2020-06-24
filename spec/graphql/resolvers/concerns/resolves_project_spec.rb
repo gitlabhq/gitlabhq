@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ResolvesProject do
+RSpec.describe ResolvesProject do
   include GraphqlHelpers
 
   let(:implementing_class) do

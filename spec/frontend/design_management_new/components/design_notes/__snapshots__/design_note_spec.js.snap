@@ -1,0 +1,67 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Design note component should match the snapshot 1`] = `
+<timeline-entry-item-stub
+  class="design-note note-form"
+  id="note_123"
+>
+  <user-avatar-link-stub
+    imgalt=""
+    imgcssclasses=""
+    imgsize="40"
+    imgsrc=""
+    linkhref=""
+    tooltipplacement="top"
+    tooltiptext=""
+    username=""
+  />
+   
+  <div
+    class="d-flex justify-content-between"
+  >
+    <div>
+      <a
+        class="js-user-link"
+        data-user-id="author-id"
+      >
+        <span
+          class="note-header-author-name bold"
+        >
+          
+        </span>
+         
+        <!---->
+         
+        <span
+          class="note-headline-light"
+        >
+          @
+        </span>
+      </a>
+       
+      <span
+        class="note-headline-light note-headline-meta"
+      >
+        <span
+          class="system-note-message"
+        />
+         
+        <!---->
+      </span>
+    </div>
+     
+    <div
+      class="gl-display-flex"
+    >
+       
+      <!---->
+    </div>
+  </div>
+   
+  <div
+    class="note-text js-note-text md"
+    data-qa-selector="note_content"
+  />
+   
+</timeline-entry-item-stub>
+`;

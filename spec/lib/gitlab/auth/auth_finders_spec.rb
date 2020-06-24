@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Auth::AuthFinders do
+RSpec.describe Gitlab::Auth::AuthFinders do
   include described_class
   include HttpBasicAuthHelpers
 

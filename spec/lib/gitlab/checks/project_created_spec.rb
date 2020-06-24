@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Checks::ProjectCreated, :clean_gitlab_redis_shared_state do
+RSpec.describe Gitlab::Checks::ProjectCreated, :clean_gitlab_redis_shared_state do
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project, :repository, namespace: user.namespace) }
   let(:protocol) { 'http' }

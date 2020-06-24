@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Bitbucket::Representation::Repo do
+RSpec.describe Bitbucket::Representation::Repo do
   describe '#has_wiki?' do
     it { expect(described_class.new({ 'has_wiki' => false }).has_wiki?).to be_falsey }
     it { expect(described_class.new({ 'has_wiki' => true }).has_wiki?).to be_truthy }

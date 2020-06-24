@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe GitlabSchema.types['AlertManagementSeverity'] do
+RSpec.describe GitlabSchema.types['AlertManagementSeverity'] do
   specify { expect(described_class.graphql_name).to eq('AlertManagementSeverity') }
 
   it 'exposes all the severity values' do

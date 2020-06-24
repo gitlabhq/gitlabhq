@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Allowable do
+RSpec.describe Gitlab::Allowable do
   subject do
     Class.new.include(described_class).new
   end

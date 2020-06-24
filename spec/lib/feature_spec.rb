@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Feature, stub_feature_flags: false do
+RSpec.describe Feature, stub_feature_flags: false do
   before do
     # reset Flipper AR-engine
     Feature.reset

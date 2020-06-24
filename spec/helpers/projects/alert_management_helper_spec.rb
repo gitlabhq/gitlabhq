@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Projects::AlertManagementHelper do
+RSpec.describe Projects::AlertManagementHelper do
   include Gitlab::Routing.url_helpers
 
   let_it_be(:project, reload: true) { create(:project) }

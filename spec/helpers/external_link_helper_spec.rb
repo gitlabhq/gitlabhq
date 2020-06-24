@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ExternalLinkHelper do
+RSpec.describe ExternalLinkHelper do
   include IconsHelper
 
   it 'returns external link with icon' do

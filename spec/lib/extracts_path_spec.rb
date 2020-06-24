@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ExtractsPath do
+RSpec.describe ExtractsPath do
   include described_class
   include RepoHelpers
   include Gitlab::Routing

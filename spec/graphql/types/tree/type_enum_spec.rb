@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Types::Tree::TypeEnum do
+RSpec.describe Types::Tree::TypeEnum do
   specify { expect(described_class.graphql_name).to eq('EntryType') }
 
   it 'exposes all tree entry types' do

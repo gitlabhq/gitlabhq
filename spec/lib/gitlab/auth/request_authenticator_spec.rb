@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Auth::RequestAuthenticator do
+RSpec.describe Gitlab::Auth::RequestAuthenticator do
   let(:env) do
     {
       'rack.input' => '',

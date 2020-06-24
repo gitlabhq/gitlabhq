@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::BitbucketServerImport::Importer do
+RSpec.describe Gitlab::BitbucketServerImport::Importer do
   include ImportSpecHelper
 
   let(:import_url) { 'http://my-bitbucket' }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe AwardEmojiHelper do
+RSpec.describe AwardEmojiHelper do
   describe '.toggle_award_url' do
     subject { helper.toggle_award_url(awardable) }
 

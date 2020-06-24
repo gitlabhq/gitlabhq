@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Types::PermissionTypes::MergeRequest do
+RSpec.describe Types::PermissionTypes::MergeRequest do
   it do
     expected_permissions = [
       :read_merge_request, :admin_merge_request, :update_merge_request,

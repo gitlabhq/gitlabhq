@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Banzai::Filter::BroadcastMessageSanitizationFilter do
+RSpec.describe Banzai::Filter::BroadcastMessageSanitizationFilter do
   include FilterSpecHelper
 
   it_behaves_like 'default whitelist'

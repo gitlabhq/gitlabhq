@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Ci::Config::Entry::Commands do
+RSpec.describe Gitlab::Ci::Config::Entry::Commands do
   let(:entry) { described_class.new(config) }
 
   context 'when entry config value is an array of strings' do

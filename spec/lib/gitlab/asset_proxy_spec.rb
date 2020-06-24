@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::AssetProxy do
+RSpec.describe Gitlab::AssetProxy do
   context 'when asset proxy is disabled' do
     before do
       stub_asset_proxy_setting(enabled: false)

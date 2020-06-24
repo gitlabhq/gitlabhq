@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe GitlabSchema.types['SnippetBlobViewer'] do
+RSpec.describe GitlabSchema.types['SnippetBlobViewer'] do
   let_it_be(:snippet) { create(:personal_snippet, :repository) }
   let_it_be(:blob) { snippet.repository.blob_at('HEAD', 'files/images/6049019_460s.jpg') }
 

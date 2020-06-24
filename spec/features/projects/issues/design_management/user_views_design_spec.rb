@@ -11,6 +11,7 @@ RSpec.describe 'User views issue designs', :js do
 
   before do
     enable_design_management
+    stub_feature_flags(design_management_moved: false)
 
     visit project_issue_path(project, issue)
 

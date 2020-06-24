@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Chat::Responder do
+RSpec.describe Gitlab::Chat::Responder do
   describe '.responder_for' do
     context 'using a regular build' do
       it 'returns nil' do

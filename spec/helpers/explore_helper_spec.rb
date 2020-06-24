@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ExploreHelper do
+RSpec.describe ExploreHelper do
   let(:user) { build(:user) }
 
   before do

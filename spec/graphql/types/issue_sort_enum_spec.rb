@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe GitlabSchema.types['IssueSort'] do
+RSpec.describe GitlabSchema.types['IssueSort'] do
   specify { expect(described_class.graphql_name).to eq('IssueSort') }
 
   it_behaves_like 'common sort values'

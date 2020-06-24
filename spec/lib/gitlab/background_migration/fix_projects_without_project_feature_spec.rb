@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::BackgroundMigration::FixProjectsWithoutProjectFeature, schema: 2020_01_27_111840 do
+RSpec.describe Gitlab::BackgroundMigration::FixProjectsWithoutProjectFeature, schema: 2020_01_27_111840 do
   let(:namespaces) { table(:namespaces) }
   let(:projects) { table(:projects) }
   let(:project_features) { table(:project_features) }

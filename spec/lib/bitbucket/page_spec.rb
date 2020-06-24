@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Bitbucket::Page do
+RSpec.describe Bitbucket::Page do
   let(:response) { { 'values' => [{ 'username' => 'Ben' }], 'pagelen' => 2, 'next' => '' } }
 
   before do

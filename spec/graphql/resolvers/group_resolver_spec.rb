@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Resolvers::GroupResolver do
+RSpec.describe Resolvers::GroupResolver do
   include GraphqlHelpers
 
   let_it_be(:group1) { create(:group) }

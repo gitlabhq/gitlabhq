@@ -1,0 +1,216 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Design management design index page renders design index 1`] = `
+<div
+  class="design-detail js-design-detail fixed-top w-100 position-bottom-0 d-flex justify-content-center flex-column flex-lg-row"
+>
+  <div
+    class="d-flex overflow-hidden flex-grow-1 flex-column position-relative"
+  >
+    <design-destroyer-stub
+      filenames="test.jpg"
+      iid="1"
+      projectpath=""
+    />
+     
+    <!---->
+     
+    <design-presentation-stub
+      discussions="[object Object],[object Object]"
+      image="test.jpg"
+      imagename="test.jpg"
+      scale="1"
+    />
+     
+    <div
+      class="design-scaler-wrapper position-absolute mb-4 d-flex-center"
+    >
+      <design-scaler-stub />
+    </div>
+  </div>
+   
+  <div
+    class="image-notes"
+  >
+    <h2
+      class="gl-font-weight-bold gl-mt-0"
+    >
+      
+    My precious issue
+  
+    </h2>
+     
+    <a
+      class="gl-text-gray-600 gl-text-decoration-none gl-mb-6 gl-display-block"
+      href="full-issue-url"
+    >
+      ull-issue-path
+    </a>
+     
+    <participants-stub
+      class="gl-mb-4"
+      numberoflessparticipants="7"
+      participants="[object Object]"
+    />
+     
+    <!---->
+     
+    <design-discussion-stub
+      data-testid="unresolved-discussion"
+      designid="test"
+      discussion="[object Object]"
+      discussionwithopenform=""
+      markdownpreviewpath="//preview_markdown?target_type=Issue"
+      noteableid="design-id"
+    />
+     
+    <gl-button-stub
+      category="tertiary"
+      class="link-inherit-color gl-text-black-normal gl-text-decoration-none gl-font-weight-bold gl-mb-4"
+      data-testid="resolved-comments"
+      icon="chevron-right"
+      id="resolved-comments"
+      size="medium"
+      variant="link"
+    >
+      Resolved Comments (1)
+    
+    </gl-button-stub>
+     
+    <gl-popover-stub
+      container="popovercontainer"
+      cssclasses=""
+      placement="top"
+      show="true"
+      target="resolved-comments"
+      title="Resolved Comments"
+    >
+      <p>
+        
+        Comments you resolve can be viewed and unresolved by going to the "Resolved Comments" section below
+      
+      </p>
+       
+      <a
+        href="#"
+        rel="noopener noreferrer"
+        target="_blank"
+      >
+        Learn more about resolving comments
+      </a>
+    </gl-popover-stub>
+     
+    <gl-collapse-stub
+      class="gl-mt-3"
+    >
+      <design-discussion-stub
+        data-testid="resolved-discussion"
+        designid="test"
+        discussion="[object Object]"
+        discussionwithopenform=""
+        markdownpreviewpath="//preview_markdown?target_type=Issue"
+        noteableid="design-id"
+      />
+    </gl-collapse-stub>
+     
+  </div>
+</div>
+`;
+
+exports[`Design management design index page sets loading state 1`] = `
+<div
+  class="design-detail js-design-detail fixed-top w-100 position-bottom-0 d-flex justify-content-center flex-column flex-lg-row"
+>
+  <gl-loading-icon-stub
+    class="align-self-center"
+    color="orange"
+    label="Loading"
+    size="xl"
+  />
+</div>
+`;
+
+exports[`Design management design index page with error GlAlert is rendered in correct position with correct content 1`] = `
+<div
+  class="design-detail js-design-detail fixed-top w-100 position-bottom-0 d-flex justify-content-center flex-column flex-lg-row"
+>
+  <div
+    class="d-flex overflow-hidden flex-grow-1 flex-column position-relative"
+  >
+    <design-destroyer-stub
+      filenames="test.jpg"
+      iid="1"
+      projectpath=""
+    />
+     
+    <div
+      class="p-3"
+    >
+      <gl-alert-stub
+        dismissible="true"
+        dismisslabel="Dismiss"
+        primarybuttonlink=""
+        primarybuttontext=""
+        secondarybuttonlink=""
+        secondarybuttontext=""
+        title=""
+        variant="danger"
+      >
+        
+          woops
+        
+      </gl-alert-stub>
+    </div>
+     
+    <design-presentation-stub
+      discussions=""
+      image="test.jpg"
+      imagename="test.jpg"
+      scale="1"
+    />
+     
+    <div
+      class="design-scaler-wrapper position-absolute mb-4 d-flex-center"
+    >
+      <design-scaler-stub />
+    </div>
+  </div>
+   
+  <div
+    class="image-notes"
+  >
+    <h2
+      class="gl-font-weight-bold gl-mt-0"
+    >
+      
+    My precious issue
+  
+    </h2>
+     
+    <a
+      class="gl-text-gray-600 gl-text-decoration-none gl-mb-6 gl-display-block"
+      href="full-issue-url"
+    >
+      ull-issue-path
+    </a>
+     
+    <participants-stub
+      class="gl-mb-4"
+      numberoflessparticipants="7"
+      participants="[object Object]"
+    />
+     
+    <h2
+      class="new-discussion-disclaimer gl-font-base gl-m-0 gl-mb-4"
+      data-testid="new-discussion-disclaimer"
+    >
+      
+    Click the image where you'd like to start a new discussion
+  
+    </h2>
+      
+    <!---->
+     
+  </div>
+</div>
+`;

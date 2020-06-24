@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Analytics::CycleAnalytics::StageEvents::CodeStageStart do
+RSpec.describe Gitlab::Analytics::CycleAnalytics::StageEvents::CodeStageStart do
   let(:subject) { described_class.new({}) }
   let(:project) { create(:project) }
 

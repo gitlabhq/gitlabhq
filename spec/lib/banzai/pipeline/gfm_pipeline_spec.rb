@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Banzai::Pipeline::GfmPipeline do
+RSpec.describe Banzai::Pipeline::GfmPipeline do
   describe 'integration between parsing regular and external issue references' do
     let(:project) { create(:redmine_project, :public) }
 

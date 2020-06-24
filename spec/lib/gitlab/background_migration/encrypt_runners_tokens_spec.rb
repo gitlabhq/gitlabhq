@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::BackgroundMigration::EncryptRunnersTokens, schema: 20181121111200 do
+RSpec.describe Gitlab::BackgroundMigration::EncryptRunnersTokens, schema: 20181121111200 do
   let(:settings) { table(:application_settings) }
   let(:namespaces) { table(:namespaces) }
   let(:projects) { table(:projects) }

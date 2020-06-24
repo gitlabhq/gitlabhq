@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Ci::Build::Rules::Rule do
+RSpec.describe Gitlab::Ci::Build::Rules::Rule do
   let(:seed) do
     double('build seed',
       to_resource: ci_build,

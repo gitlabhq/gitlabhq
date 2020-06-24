@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe GitlabSchema.types['Note'] do
+RSpec.describe GitlabSchema.types['Note'] do
   it 'exposes the expected fields' do
     expected_fields = %i[
       author

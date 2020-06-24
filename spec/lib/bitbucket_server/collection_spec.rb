@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe BitbucketServer::Collection do
+RSpec.describe BitbucketServer::Collection do
   let(:connection) { instance_double(BitbucketServer::Connection) }
   let(:page) { 1 }
   let(:paginator) { BitbucketServer::Paginator.new(connection, 'http://more-data', :pull_request, page_offset: page) }

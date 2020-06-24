@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe EventFilter do
+RSpec.describe EventFilter do
   describe '#filter' do
     it 'returns "all" if given filter is nil' do
       expect(described_class.new(nil).filter).to eq(described_class::ALL)

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe DiffHelper do
+RSpec.describe DiffHelper do
   include RepoHelpers
 
   let(:project) { create(:project, :repository) }

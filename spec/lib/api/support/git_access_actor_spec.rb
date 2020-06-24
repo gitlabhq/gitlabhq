@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe API::Support::GitAccessActor do
+RSpec.describe API::Support::GitAccessActor do
   let(:user) { nil }
   let(:key) { nil }
 

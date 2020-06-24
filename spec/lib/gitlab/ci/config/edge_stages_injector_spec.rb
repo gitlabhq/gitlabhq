@@ -2,7 +2,7 @@
 
 require 'fast_spec_helper'
 
-describe Gitlab::Ci::Config::EdgeStagesInjector do
+RSpec.describe Gitlab::Ci::Config::EdgeStagesInjector do
   describe '#call' do
     subject { described_class.new(config).to_hash }
 

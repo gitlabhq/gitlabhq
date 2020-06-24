@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'HangoutsChat::Sender Gitlab::HTTP override' do
+RSpec.describe 'HangoutsChat::Sender Gitlab::HTTP override' do
   describe 'HangoutsChat::Sender::HTTP#post' do
     it 'calls Gitlab::HTTP.post with default protection settings' do
       webhook_url = 'https://example.gitlab.com'

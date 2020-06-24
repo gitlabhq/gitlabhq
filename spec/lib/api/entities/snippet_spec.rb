@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ::API::Entities::Snippet do
+RSpec.describe ::API::Entities::Snippet do
   let_it_be(:user) { create(:user) }
   let_it_be(:personal_snippet) { create(:personal_snippet, :repository, author: user ) }
   let_it_be(:project_snippet) { create(:project_snippet, :repository, author: user) }

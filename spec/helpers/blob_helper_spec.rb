@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe BlobHelper do
+RSpec.describe BlobHelper do
   include TreeHelper
 
   describe '#highlight' do

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe GitlabSchema.types['User'] do
+RSpec.describe GitlabSchema.types['User'] do
   specify { expect(described_class.graphql_name).to eq('User') }
 
   specify { expect(described_class).to require_graphql_authorizations(:read_user) }

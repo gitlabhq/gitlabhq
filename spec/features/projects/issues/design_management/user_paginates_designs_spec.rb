@@ -10,6 +10,7 @@ RSpec.describe 'User paginates issue designs', :js do
 
   before do
     enable_design_management
+    stub_feature_flags(design_management_moved: false)
 
     create_list(:design, 2, :with_file, issue: issue)
 

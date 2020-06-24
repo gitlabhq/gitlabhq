@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Ci::Build::Step do
+RSpec.describe Gitlab::Ci::Build::Step do
   describe '#from_commands' do
     subject { described_class.from_commands(job) }
 

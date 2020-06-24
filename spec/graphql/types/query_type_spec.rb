@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe GitlabSchema.types['Query'] do
+RSpec.describe GitlabSchema.types['Query'] do
   it 'is called Query' do
     expect(described_class.graphql_name).to eq('Query')
   end

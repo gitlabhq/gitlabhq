@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe CalendarHelper do
+RSpec.describe CalendarHelper do
   describe '#calendar_url_options' do
     context 'when signed in' do
       it "includes the current_user's feed_token" do

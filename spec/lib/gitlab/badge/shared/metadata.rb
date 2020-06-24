@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-shared_examples 'badge metadata' do
+RSpec.shared_examples 'badge metadata' do
   describe '#to_html' do
     let(:html) { Nokogiri::HTML.parse(metadata.to_html) }
     let(:a_href) { html.at('a') }

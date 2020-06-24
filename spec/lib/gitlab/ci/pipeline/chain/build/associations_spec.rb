@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Ci::Pipeline::Chain::Build::Associations do
+RSpec.describe Gitlab::Ci::Pipeline::Chain::Build::Associations do
   let(:project) { create(:project, :repository) }
   let(:user) { create(:user, developer_projects: [project]) }
   let(:pipeline) { Ci::Pipeline.new }

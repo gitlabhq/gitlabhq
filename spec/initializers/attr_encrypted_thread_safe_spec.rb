@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe AttrEncrypted do
+RSpec.describe AttrEncrypted do
   describe '#encrypted_attributes' do
     subject do
       Class.new(ActiveRecord::Base) do

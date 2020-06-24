@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe GitlabSchema.types['Namespace'] do
+RSpec.describe GitlabSchema.types['Namespace'] do
   specify { expect(described_class.graphql_name).to eq('Namespace') }
 
   it 'has the expected fields' do

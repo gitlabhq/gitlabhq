@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe EventsHelper do
+RSpec.describe EventsHelper do
   include Gitlab::Routing
 
   describe '#event_commit_title' do

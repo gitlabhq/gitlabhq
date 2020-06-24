@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe API::Helpers::LabelHelpers do
+RSpec.describe API::Helpers::LabelHelpers do
   describe 'create_service_params' do
     let(:label_helper) do
       Class.new do

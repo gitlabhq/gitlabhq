@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Backup::Files do
+RSpec.describe Backup::Files do
   let(:progress) { StringIO.new }
   let!(:project) { create(:project) }
 

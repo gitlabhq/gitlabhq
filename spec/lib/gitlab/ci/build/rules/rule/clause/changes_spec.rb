@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Ci::Build::Rules::Rule::Clause::Changes do
+RSpec.describe Gitlab::Ci::Build::Rules::Rule::Clause::Changes do
   describe '#satisfied_by?' do
     it_behaves_like 'a glob matching rule' do
       let(:pipeline) { build(:ci_pipeline) }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Banzai::Filter::PlantumlFilter do
+RSpec.describe Banzai::Filter::PlantumlFilter do
   include FilterSpecHelper
 
   it 'replaces plantuml pre tag with img tag' do

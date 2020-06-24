@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Ci::Config::Entry::Retry do
+RSpec.describe Gitlab::Ci::Config::Entry::Retry do
   let(:entry) { described_class.new(config) }
 
   shared_context 'when retry value is a numeric', :numeric do

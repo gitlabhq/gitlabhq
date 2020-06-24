@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Ci::Build::Image do
+RSpec.describe Gitlab::Ci::Build::Image do
   let(:job) { create(:ci_build, :no_options) }
 
   describe '#from_image' do

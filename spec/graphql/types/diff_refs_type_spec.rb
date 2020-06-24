@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe GitlabSchema.types['DiffRefs'] do
+RSpec.describe GitlabSchema.types['DiffRefs'] do
   specify { expect(described_class.graphql_name).to eq('DiffRefs') }
 
   specify { expect(described_class).to have_graphql_fields(:head_sha, :base_sha, :start_sha).only }

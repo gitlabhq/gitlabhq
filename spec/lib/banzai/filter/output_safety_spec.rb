@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Banzai::Filter::OutputSafety do
+RSpec.describe Banzai::Filter::OutputSafety do
   subject do
     Class.new do
       include Banzai::Filter::OutputSafety

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Types::BaseField do
+RSpec.describe Types::BaseField do
   context 'when considering complexity' do
     let(:resolver) do
       Class.new(described_class) do

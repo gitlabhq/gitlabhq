@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Ci::Build::Artifacts::Path do
+RSpec.describe Gitlab::Ci::Build::Artifacts::Path do
   describe '#valid?' do
     context 'when path contains a zero character' do
       it 'is not valid' do

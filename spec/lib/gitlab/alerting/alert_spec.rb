@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Alerting::Alert do
+RSpec.describe Gitlab::Alerting::Alert do
   let_it_be(:project) { create(:project) }
 
   let(:alert) { build(:alerting_alert, project: project, payload: payload) }

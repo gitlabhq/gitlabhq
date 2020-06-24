@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Types::Ci::DetailedStatusType do
+RSpec.describe Types::Ci::DetailedStatusType do
   specify { expect(described_class.graphql_name).to eq('DetailedStatus') }
 
   it "has all fields" do

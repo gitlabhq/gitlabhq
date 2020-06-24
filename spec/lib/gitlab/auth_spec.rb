@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Auth, :use_clean_rails_memory_store_caching do
+RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching do
   let_it_be(:project) { create(:project) }
   let(:gl_auth) { described_class }
 

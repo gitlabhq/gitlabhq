@@ -2,7 +2,7 @@
 #
 require 'spec_helper'
 
-describe Constraints::AdminConstrainer, :do_not_mock_admin_mode do
+RSpec.describe Constraints::AdminConstrainer, :do_not_mock_admin_mode do
   let(:user) { create(:user) }
 
   let(:session) { {} }

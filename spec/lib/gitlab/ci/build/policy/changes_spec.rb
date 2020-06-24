@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Ci::Build::Policy::Changes do
+RSpec.describe Gitlab::Ci::Build::Policy::Changes do
   let_it_be(:project) { create(:project) }
 
   describe '#satisfied_by?' do

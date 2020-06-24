@@ -526,14 +526,14 @@ To enable it:
 
 ```ruby
 # Instance-wide
-Feature.enable(:batched_suggestions)
+Feature.enable(:batch_suggestions)
 ```
 
 To disable it:
 
 ```ruby
 # Instance-wide
-Feature.disable(:batched_suggestions)
+Feature.disable(:batch_suggestions)
 ```
 
 ## Start a thread by replying to a standard comment

@@ -17,7 +17,7 @@ class TestPaginator
   end
 end
 
-describe Bitbucket::Collection do
+RSpec.describe Bitbucket::Collection do
   it "iterates paginator" do
     collection = described_class.new(TestPaginator.new)
 

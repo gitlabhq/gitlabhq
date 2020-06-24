@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Ci::Config::Entry::Environment do
+RSpec.describe Gitlab::Ci::Config::Entry::Environment do
   let(:entry) { described_class.new(config) }
 
   before do

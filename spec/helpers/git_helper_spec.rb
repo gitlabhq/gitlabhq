@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe GitHelper do
+RSpec.describe GitHelper do
   describe '#short_sha' do
     let(:short_sha) { helper.short_sha('d4e043f6c20749a3ab3f4b8e23f2a8979f4b9100') }
 

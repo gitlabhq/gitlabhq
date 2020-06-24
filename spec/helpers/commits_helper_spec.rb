@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe CommitsHelper do
+RSpec.describe CommitsHelper do
   describe 'commit_author_link' do
     it 'escapes the author email' do
       commit = double(

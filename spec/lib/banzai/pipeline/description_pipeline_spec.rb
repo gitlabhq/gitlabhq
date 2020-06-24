@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Banzai::Pipeline::DescriptionPipeline do
+RSpec.describe Banzai::Pipeline::DescriptionPipeline do
   let_it_be(:project) { create(:project) }
 
   def parse(html)

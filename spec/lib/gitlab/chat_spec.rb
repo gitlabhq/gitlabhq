@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Chat, :use_clean_rails_memory_store_caching do
+RSpec.describe Gitlab::Chat, :use_clean_rails_memory_store_caching do
   describe '.available?' do
     it 'returns true when the chatops feature is available' do
       stub_feature_flags(chatops: true)

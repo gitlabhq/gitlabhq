@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe IssuablesHelper do
+RSpec.describe IssuablesHelper do
   let(:label)  { build_stubbed(:label) }
   let(:label2) { build_stubbed(:label) }
 

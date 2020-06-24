@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::BackgroundMigration::MigrateUsersBioToUserDetails, :migration, schema: 20200323074147 do
+RSpec.describe Gitlab::BackgroundMigration::MigrateUsersBioToUserDetails, :migration, schema: 20200323074147 do
   let(:users) { table(:users) }
 
   let(:user_details) do

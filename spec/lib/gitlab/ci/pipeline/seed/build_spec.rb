@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Ci::Pipeline::Seed::Build do
+RSpec.describe Gitlab::Ci::Pipeline::Seed::Build do
   let(:project) { create(:project, :repository) }
   let(:head_sha) { project.repository.head_commit.id }
   let(:pipeline) { create(:ci_empty_pipeline, project: project, sha: head_sha) }

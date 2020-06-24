@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Banzai::Filter::ExternalIssueReferenceFilter do
+RSpec.describe Banzai::Filter::ExternalIssueReferenceFilter do
   include FilterSpecHelper
 
   shared_examples_for "external issue tracker" do

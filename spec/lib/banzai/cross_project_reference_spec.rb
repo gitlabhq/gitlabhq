@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Banzai::CrossProjectReference do
+RSpec.describe Banzai::CrossProjectReference do
   let(:including_class) { Class.new.include(described_class).new }
 
   before do

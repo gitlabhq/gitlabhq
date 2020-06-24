@@ -13,14 +13,15 @@ export default function() {
   initSentryErrorStackTraceApp();
   initRelatedMergeRequestsApp();
 
-  // .js-design-management is currently EE-only.
-  // This will be moved to CE as part of https://gitlab.com/gitlab-org/gitlab/-/issues/212566#frontend
-  // at which point this conditional can be removed.
-  if (document.querySelector('.js-design-management')) {
-    import(/* webpackChunkName: 'design_management' */ '~/design_management')
-      .then(module => module.default())
-      .catch(() => {});
-  }
+  import(/* webpackChunkName: 'design_management' */ '~/design_management')
+    .then(module => module.default())
+    .catch(() => {});
+
+  // This will be removed when we remove the `design_management_moved` feature flag
+  // See https://gitlab.com/gitlab-org/gitlab/-/issues/223197
+  import(/* webpackChunkName: 'design_management' */ '~/design_management_new')
+    .then(module => module.default())
+    .catch(() => {});
 
   new Issue(); // eslint-disable-line no-new
   new ShortcutsIssuable(); // eslint-disable-line no-new

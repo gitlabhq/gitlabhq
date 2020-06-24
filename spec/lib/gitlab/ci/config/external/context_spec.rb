@@ -2,7 +2,7 @@
 
 require 'fast_spec_helper'
 
-describe Gitlab::Ci::Config::External::Context do
+RSpec.describe Gitlab::Ci::Config::External::Context do
   let(:project) { double('Project') }
   let(:user) { double('User') }
   let(:sha) { '12345' }

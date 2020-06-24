@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Auth::Saml::OriginValidator do
+RSpec.describe Gitlab::Auth::Saml::OriginValidator do
   let(:session) { instance_double(ActionDispatch::Request::Session) }
 
   subject { described_class.new(session) }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ProjectsHelper do
+RSpec.describe ProjectsHelper do
   include ProjectForksHelper
 
   let_it_be(:project) { create(:project) }

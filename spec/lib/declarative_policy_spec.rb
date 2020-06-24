@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe DeclarativePolicy do
+RSpec.describe DeclarativePolicy do
   describe '.class_for' do
     it 'uses declarative_policy_class if present' do
       instance = Gitlab::ErrorTracking::ErrorEvent.new

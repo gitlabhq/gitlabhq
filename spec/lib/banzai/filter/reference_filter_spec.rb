@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Banzai::Filter::ReferenceFilter do
+RSpec.describe Banzai::Filter::ReferenceFilter do
   let(:project) { build_stubbed(:project) }
 
   describe '#each_node' do

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Banzai::Pipeline::PostProcessPipeline do
+RSpec.describe Banzai::Pipeline::PostProcessPipeline do
   context 'when a document only has upload links' do
     it 'does not make any Gitaly calls', :request_store do
       markdown = <<-MARKDOWN.strip_heredoc

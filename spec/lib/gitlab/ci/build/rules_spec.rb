@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Ci::Build::Rules do
+RSpec.describe Gitlab::Ci::Build::Rules do
   let(:pipeline) { create(:ci_pipeline) }
   let(:ci_build) { build(:ci_build, pipeline: pipeline) }
 

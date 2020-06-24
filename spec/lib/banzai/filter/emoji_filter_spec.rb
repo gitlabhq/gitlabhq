@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Banzai::Filter::EmojiFilter do
+RSpec.describe Banzai::Filter::EmojiFilter do
   include FilterSpecHelper
 
   it 'replaces supported name emoji' do

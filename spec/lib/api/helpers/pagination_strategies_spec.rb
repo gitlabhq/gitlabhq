@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe API::Helpers::PaginationStrategies do
+RSpec.describe API::Helpers::PaginationStrategies do
   subject { Class.new.include(described_class).new }
 
   let(:expected_result) { double("result") }

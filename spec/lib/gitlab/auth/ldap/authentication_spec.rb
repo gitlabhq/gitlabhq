@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Auth::Ldap::Authentication do
+RSpec.describe Gitlab::Auth::Ldap::Authentication do
   let(:dn)       { 'uid=John Smith, ou=People, dc=example, dc=com' }
   let(:user)     { create(:omniauth_user, extern_uid: Gitlab::Auth::Ldap::Person.normalize_dn(dn)) }
   let(:login)    { 'john' }

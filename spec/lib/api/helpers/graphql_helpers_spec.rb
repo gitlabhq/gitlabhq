@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe API::Helpers::GraphqlHelpers do
+RSpec.describe API::Helpers::GraphqlHelpers do
   describe 'run_graphql!' do
     let(:query) { '{ metadata { version } }' }
 

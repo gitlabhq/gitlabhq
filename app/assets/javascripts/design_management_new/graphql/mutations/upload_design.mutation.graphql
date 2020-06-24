@@ -1,0 +1,21 @@
+#import "../fragments/design.fragment.graphql"
+
+mutation uploadDesign($files: [Upload!]!, $projectPath: ID!, $iid: ID!) {
+  designManagementUpload(input: { projectPath: $projectPath, iid: $iid, files: $files }) {
+    designs {
+      ...DesignItem
+      versions {
+        edges {
+          node {
+            id
+            sha
+          }
+        }
+      },
+    }
+    skippedDesigns {
+      filename
+    }
+    errors
+  }
+}

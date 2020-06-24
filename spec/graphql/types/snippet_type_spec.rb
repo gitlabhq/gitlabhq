@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe GitlabSchema.types['Snippet'] do
+RSpec.describe GitlabSchema.types['Snippet'] do
   let_it_be(:user) { create(:user) }
 
   it 'has the correct fields' do

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Ci::Config::Entry::Bridge do
+RSpec.describe Gitlab::Ci::Config::Entry::Bridge do
   subject { described_class.new(config, name: :my_bridge) }
 
   it_behaves_like 'with inheritable CI config' do

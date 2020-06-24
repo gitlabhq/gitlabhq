@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Banzai::Filter::AssetProxyFilter do
+RSpec.describe Banzai::Filter::AssetProxyFilter do
   include FilterSpecHelper
 
   def image(path)

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Resolvers::BranchCommitResolver do
+RSpec.describe Resolvers::BranchCommitResolver do
   include GraphqlHelpers
 
   subject(:commit) { resolve(described_class, obj: branch) }

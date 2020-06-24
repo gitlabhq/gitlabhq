@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe AutoDevopsHelper do
+RSpec.describe AutoDevopsHelper do
   let_it_be(:project, reload: true) { create(:project) }
   let_it_be(:user) { create(:user) }
 

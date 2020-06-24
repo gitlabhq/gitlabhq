@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::BackgroundMigration::FixPromotedEpicsDiscussionIds, schema: 20190715193142 do
+RSpec.describe Gitlab::BackgroundMigration::FixPromotedEpicsDiscussionIds, schema: 20190715193142 do
   let(:namespaces) { table(:namespaces) }
   let(:users) { table(:users) }
   let(:epics) { table(:epics) }

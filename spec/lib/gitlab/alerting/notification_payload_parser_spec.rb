@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Alerting::NotificationPayloadParser do
+RSpec.describe Gitlab::Alerting::NotificationPayloadParser do
   describe '.call' do
     let(:starts_at) { Time.current.change(usec: 0) }
     let(:payload) do

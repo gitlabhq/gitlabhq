@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe TimeboxesHelper do
+RSpec.describe TimeboxesHelper do
   describe '#milestones_filter_dropdown_path' do
     let(:project) { create(:project) }
     let(:project2) { create(:project) }

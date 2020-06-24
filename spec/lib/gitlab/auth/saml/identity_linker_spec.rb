@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Auth::Saml::IdentityLinker do
+RSpec.describe Gitlab::Auth::Saml::IdentityLinker do
   let(:user) { create(:user) }
   let(:provider) { 'saml' }
   let(:uid) { user.email }

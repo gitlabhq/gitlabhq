@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ComponentsHelper do
+RSpec.describe ComponentsHelper do
   describe '#gitlab_workhorse_version' do
     context 'without a Gitlab-Workhorse header' do
       it 'shows the version from Gitlab::Workhorse.version' do

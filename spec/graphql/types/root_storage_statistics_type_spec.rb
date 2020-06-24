@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe GitlabSchema.types['RootStorageStatistics'] do
+RSpec.describe GitlabSchema.types['RootStorageStatistics'] do
   specify { expect(described_class.graphql_name).to eq('RootStorageStatistics') }
 
   it 'has all the required fields' do

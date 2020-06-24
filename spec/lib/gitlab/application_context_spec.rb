@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::ApplicationContext do
+RSpec.describe Gitlab::ApplicationContext do
   describe '.with_context' do
     it 'yields the block' do
       expect { |b| described_class.with_context({}, &b) }.to yield_control

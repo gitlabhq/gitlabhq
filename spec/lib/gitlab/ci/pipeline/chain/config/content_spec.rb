@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Ci::Pipeline::Chain::Config::Content do
+RSpec.describe Gitlab::Ci::Pipeline::Chain::Config::Content do
   let(:project) { create(:project, ci_config_path: ci_config_path) }
   let(:pipeline) { build(:ci_pipeline, project: project) }
   let(:command) { Gitlab::Ci::Pipeline::Chain::Command.new(project: project) }

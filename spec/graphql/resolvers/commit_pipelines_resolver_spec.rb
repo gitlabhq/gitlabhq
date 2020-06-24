@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Resolvers::CommitPipelinesResolver do
+RSpec.describe Resolvers::CommitPipelinesResolver do
   include GraphqlHelpers
 
   let_it_be(:project) { create(:project) }

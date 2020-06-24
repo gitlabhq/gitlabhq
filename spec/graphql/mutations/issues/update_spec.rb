@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Mutations::Issues::Update do
+RSpec.describe Mutations::Issues::Update do
   let(:issue) { create(:issue) }
   let(:user) { create(:user) }
   let(:expected_attributes) do

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe NamespacesHelper do
+RSpec.describe NamespacesHelper do
   let!(:admin) { create(:admin) }
   let!(:admin_project_creation_level) { nil }
   let!(:admin_group) do

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe GitlabSchema.types['SentryErrorStackTrace'] do
+RSpec.describe GitlabSchema.types['SentryErrorStackTrace'] do
   specify { expect(described_class.graphql_name).to eq('SentryErrorStackTrace') }
 
   specify { expect(described_class).to require_graphql_authorizations(:read_sentry_issue) }

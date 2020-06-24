@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Resolvers::IssuesResolver do
+RSpec.describe Resolvers::IssuesResolver do
   include GraphqlHelpers
 
   let(:current_user) { create(:user) }

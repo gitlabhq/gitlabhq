@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Banzai::Filter::AsciiDocPostProcessingFilter do
+RSpec.describe Banzai::Filter::AsciiDocPostProcessingFilter do
   include FilterSpecHelper
 
   it "adds class for elements with data-math-style" do

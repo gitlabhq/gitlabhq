@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Auth::Ldap::Access do
+RSpec.describe Gitlab::Auth::Ldap::Access do
   include LdapHelpers
 
   let(:user) { create(:omniauth_user) }

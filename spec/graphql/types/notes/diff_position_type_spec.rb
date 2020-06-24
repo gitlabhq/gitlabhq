@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe GitlabSchema.types['DiffPosition'] do
+RSpec.describe GitlabSchema.types['DiffPosition'] do
   it 'exposes the expected fields' do
     expected_fields = %i[
       diff_refs

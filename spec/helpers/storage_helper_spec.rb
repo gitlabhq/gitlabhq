@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-describe StorageHelper do
+RSpec.describe StorageHelper do
   describe "#storage_counter" do
     it "formats bytes to one decimal place" do
       expect(helper.storage_counter(1.23.megabytes)).to eq("1.2 MB")

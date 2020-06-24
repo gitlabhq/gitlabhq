@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe BitbucketServer::Connection do
+RSpec.describe BitbucketServer::Connection do
   let(:options) { { base_uri: 'https://test:7990', user: 'bitbucket', password: 'mypassword' } }
   let(:payload) { { 'test' => 1 } }
   let(:headers) { { "Content-Type" => "application/json" } }

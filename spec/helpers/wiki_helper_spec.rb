@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe WikiHelper do
+RSpec.describe WikiHelper do
   describe '#breadcrumb' do
     context 'when the page is at the root level' do
       it 'returns the capitalized page name' do

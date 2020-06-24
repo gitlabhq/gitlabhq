@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Badge::Pipeline::Status do
+RSpec.describe Gitlab::Badge::Pipeline::Status do
   let(:project) { create(:project, :repository) }
   let(:sha) { project.commit.sha }
   let(:branch) { 'master' }

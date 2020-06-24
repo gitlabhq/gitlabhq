@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe GitlabSchema.types['BaseService'] do
+RSpec.describe GitlabSchema.types['BaseService'] do
   specify { expect(described_class.graphql_name).to eq('BaseService') }
 
   it 'has basic expected fields' do

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ::Gitlab::BareRepositoryImport::Repository do
+RSpec.describe ::Gitlab::BareRepositoryImport::Repository do
   context 'legacy storage' do
     subject { described_class.new('/full/path/', '/full/path/to/repo.git') }
 

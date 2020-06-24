@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Banzai::ReferenceParser::CommitRangeParser do
+RSpec.describe Banzai::ReferenceParser::CommitRangeParser do
   include ReferenceParserHelpers
 
   let(:project) { create(:project, :public) }

@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_relative '../../config/initializers/1_settings' unless defined?(Settings)
 
-describe Settings do
+RSpec.describe Settings do
   describe '#ldap' do
     it 'can be accessed with dot syntax all the way down' do
       expect(Gitlab.config.ldap.servers.main.label).to eq('ldap')

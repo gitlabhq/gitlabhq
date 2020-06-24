@@ -2,7 +2,7 @@
 
 require 'fast_spec_helper'
 
-describe Gitlab::Ci::Pipeline::Expression::Token do
+RSpec.describe Gitlab::Ci::Pipeline::Expression::Token do
   let(:value) { '$VARIABLE' }
   let(:lexeme) { Gitlab::Ci::Pipeline::Expression::Lexeme::Variable }
 

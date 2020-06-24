@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Types::PermissionTypes::User do
+RSpec.describe Types::PermissionTypes::User do
   it 'returns user permissions' do
     expected_permissions = [
       :create_snippet

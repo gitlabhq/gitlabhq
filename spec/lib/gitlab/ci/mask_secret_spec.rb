@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Ci::MaskSecret do
+RSpec.describe Gitlab::Ci::MaskSecret do
   subject { described_class }
 
   describe '#mask' do

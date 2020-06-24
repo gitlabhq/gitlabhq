@@ -2,7 +2,7 @@
 
 require 'fast_spec_helper'
 
-describe Gitlab::Ci::Config::Extendable do
+RSpec.describe Gitlab::Ci::Config::Extendable do
   subject { described_class.new(hash) }
 
   describe '#each' do

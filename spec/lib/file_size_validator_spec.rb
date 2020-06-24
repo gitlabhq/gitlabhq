@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe FileSizeValidator do
+RSpec.describe FileSizeValidator do
   let(:validator) { described_class.new(options) }
   let(:note) { create(:note) }
   let(:attachment) { AttachmentUploader.new(note) }

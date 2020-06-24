@@ -1,0 +1,5 @@
+---
+title: Allow files with .md.erb extension for the Static Site Editor
+merge_request: 35136
+author:
+type: added

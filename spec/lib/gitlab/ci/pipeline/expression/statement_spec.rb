@@ -3,7 +3,7 @@
 require 'fast_spec_helper'
 require 'rspec-parameterized'
 
-describe Gitlab::Ci::Pipeline::Expression::Statement do
+RSpec.describe Gitlab::Ci::Pipeline::Expression::Statement do
   subject do
     described_class.new(text, variables)
   end

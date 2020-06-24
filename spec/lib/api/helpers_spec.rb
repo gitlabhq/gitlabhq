@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe API::Helpers do
+RSpec.describe API::Helpers do
   subject { Class.new.include(described_class).new }
 
   describe '#find_project' do

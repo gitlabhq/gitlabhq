@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Resolvers::AlertManagement::AlertStatusCountsResolver do
+RSpec.describe Resolvers::AlertManagement::AlertStatusCountsResolver do
   include GraphqlHelpers
 
   describe '#resolve' do

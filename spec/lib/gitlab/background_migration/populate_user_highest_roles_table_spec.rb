@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::BackgroundMigration::PopulateUserHighestRolesTable, schema: 20200311130802 do
+RSpec.describe Gitlab::BackgroundMigration::PopulateUserHighestRolesTable, schema: 20200311130802 do
   let(:members) { table(:members) }
   let(:users) { table(:users) }
   let(:user_highest_roles) { table(:user_highest_roles) }

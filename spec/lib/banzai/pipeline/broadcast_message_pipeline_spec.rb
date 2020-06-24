@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Banzai::Pipeline::BroadcastMessagePipeline do
+RSpec.describe Banzai::Pipeline::BroadcastMessagePipeline do
   before do
     stub_commonmark_sourcepos_disabled
   end

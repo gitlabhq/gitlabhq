@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::BranchPushMergeCommitAnalyzer do
+RSpec.describe Gitlab::BranchPushMergeCommitAnalyzer do
   let(:project) { create(:project, :repository) }
   let(:oldrev) { 'merge-commit-analyze-before' }
   let(:newrev) { 'merge-commit-analyze-after' }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Database config initializer' do
+RSpec.describe 'Database config initializer' do
   subject do
     load Rails.root.join('config/initializers/database_config.rb')
   end

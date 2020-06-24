@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Chat::Output do
+RSpec.describe Gitlab::Chat::Output do
   let(:build) do
     create(:ci_build, pipeline: create(:ci_pipeline, source: :chat))
   end

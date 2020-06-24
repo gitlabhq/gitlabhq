@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::BackgroundMigration::BackfillSnippetRepositories, :migration, schema: 2020_04_20_094444 do
+RSpec.describe Gitlab::BackgroundMigration::BackfillSnippetRepositories, :migration, schema: 2020_04_20_094444 do
   let(:gitlab_shell) { Gitlab::Shell.new }
   let(:users) { table(:users) }
   let(:snippets) { table(:snippets) }

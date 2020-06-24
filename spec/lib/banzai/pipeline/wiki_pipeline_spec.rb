@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Banzai::Pipeline::WikiPipeline do
+RSpec.describe Banzai::Pipeline::WikiPipeline do
   let_it_be(:namespace) { create(:namespace, name: "wiki_link_ns") }
   let_it_be(:project)   { create(:project, :public, name: "wiki_link_project", namespace: namespace) }
   let_it_be(:wiki)      { ProjectWiki.new(project, double(:user)) }

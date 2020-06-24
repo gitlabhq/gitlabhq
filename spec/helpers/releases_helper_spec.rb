@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ReleasesHelper do
+RSpec.describe ReleasesHelper do
   describe '#illustration' do
     it 'returns the correct image path' do
       expect(helper.illustration).to match(/illustrations\/releases-(\w+)\.svg/)

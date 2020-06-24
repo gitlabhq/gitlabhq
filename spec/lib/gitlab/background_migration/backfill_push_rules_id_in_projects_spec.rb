@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::BackgroundMigration::BackfillPushRulesIdInProjects, :migration, schema: 2020_03_25_162730 do
+RSpec.describe Gitlab::BackgroundMigration::BackfillPushRulesIdInProjects, :migration, schema: 2020_03_25_162730 do
   let(:push_rules) { table(:push_rules) }
   let(:projects) { table(:projects) }
   let(:project_settings) { table(:project_settings) }

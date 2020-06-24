@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Banzai::Filter::FootnoteFilter do
+RSpec.describe Banzai::Filter::FootnoteFilter do
   include FilterSpecHelper
 
   # first[^1] and second[^second]

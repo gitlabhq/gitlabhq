@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Banzai::Filter::ImageLinkFilter do
+RSpec.describe Banzai::Filter::ImageLinkFilter do
   include FilterSpecHelper
 
   def image(path)

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'GitLab monkey-patches to AttrEncrypted' do
+RSpec.describe 'GitLab monkey-patches to AttrEncrypted' do
   describe '#attribute_instance_methods_as_symbols_available?' do
     it 'returns false' do
       expect(ActiveRecord::Base.__send__(:attribute_instance_methods_as_symbols_available?)).to be_falsy

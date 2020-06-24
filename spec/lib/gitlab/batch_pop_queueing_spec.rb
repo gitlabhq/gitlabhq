@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::BatchPopQueueing do
+RSpec.describe Gitlab::BatchPopQueueing do
   include ExclusiveLeaseHelpers
   using RSpec::Parameterized::TableSyntax
 

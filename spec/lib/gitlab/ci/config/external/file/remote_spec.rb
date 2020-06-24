@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Ci::Config::External::File::Remote do
+RSpec.describe Gitlab::Ci::Config::External::File::Remote do
   include StubRequests
 
   let(:context_params) { { sha: '12345' } }

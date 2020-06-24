@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Ci::Build::Credentials::Factory do
+RSpec.describe Gitlab::Ci::Build::Credentials::Factory do
   let(:build) { create(:ci_build, name: 'spinach', stage: 'test', stage_idx: 0) }
 
   subject { described_class.new(build).create! }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::BackgroundMigration::LinkLfsObjectsProjects, :migration, schema: 2020_03_10_075115 do
+RSpec.describe Gitlab::BackgroundMigration::LinkLfsObjectsProjects, :migration, schema: 2020_03_10_075115 do
   let(:namespaces) { table(:namespaces) }
   let(:projects) { table(:projects) }
   let(:fork_networks) { table(:fork_networks) }

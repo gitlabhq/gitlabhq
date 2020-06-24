@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe OnboardingExperimentHelper, type: :helper do
+RSpec.describe OnboardingExperimentHelper, type: :helper do
   describe '.allow_access_to_onboarding?' do
     context "when we're not gitlab.com or dev env" do
       it 'returns false' do

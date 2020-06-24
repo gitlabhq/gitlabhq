@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::AlertManagement::Fingerprint do
+RSpec.describe Gitlab::AlertManagement::Fingerprint do
   using RSpec::Parameterized::TableSyntax
 
   let_it_be(:alert) { create(:alert_management_alert) }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ClustersHelper do
+RSpec.describe ClustersHelper do
   describe '#has_rbac_enabled?' do
     context 'when kubernetes platform has been created' do
       let(:platform_kubernetes) { build_stubbed(:cluster_platform_kubernetes) }

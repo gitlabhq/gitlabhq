@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe GitlabSchema.types['AlertManagementAlert'] do
+RSpec.describe GitlabSchema.types['AlertManagementAlert'] do
   specify { expect(described_class.graphql_name).to eq('AlertManagementAlert') }
 
   specify { expect(described_class).to require_graphql_authorizations(:read_alert_management_alert) }

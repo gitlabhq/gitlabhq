@@ -3655,7 +3655,9 @@ CREATE TABLE public.jira_tracker_data (
     encrypted_username_iv character varying,
     encrypted_password character varying,
     encrypted_password_iv character varying,
-    jira_issue_transition_id character varying
+    jira_issue_transition_id character varying,
+    project_key text,
+    CONSTRAINT check_214cf6a48b CHECK ((char_length(project_key) <= 255))
 );
 
 CREATE SEQUENCE public.jira_tracker_data_id_seq
@@ -14113,6 +14115,8 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200618105638
 20200618134223
 20200618134723
+20200619154527
+20200619154528
 20200622103836
 20200622235737
 20200623000148

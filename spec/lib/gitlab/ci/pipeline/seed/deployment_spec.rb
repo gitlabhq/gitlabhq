@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Ci::Pipeline::Seed::Deployment do
+RSpec.describe Gitlab::Ci::Pipeline::Seed::Deployment do
   let_it_be(:project, refind: true) { create(:project, :repository) }
   let(:pipeline) do
     create(:ci_pipeline, project: project,

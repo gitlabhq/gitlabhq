@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe API::Validations::Validators::Limit do
+RSpec.describe API::Validations::Validators::Limit do
   include ApiValidatorsHelpers
 
   subject do

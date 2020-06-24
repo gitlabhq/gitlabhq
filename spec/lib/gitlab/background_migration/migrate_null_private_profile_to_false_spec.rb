@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::BackgroundMigration::MigrateNullPrivateProfileToFalse, schema: 20190620105427 do
+RSpec.describe Gitlab::BackgroundMigration::MigrateNullPrivateProfileToFalse, schema: 20190620105427 do
   let(:users) { table(:users) }
 
   it 'correctly migrates nil private_profile to false' do

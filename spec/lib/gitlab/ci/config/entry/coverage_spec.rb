@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Ci::Config::Entry::Coverage do
+RSpec.describe Gitlab::Ci::Config::Entry::Coverage do
   let(:entry) { described_class.new(config) }
 
   describe 'validations' do

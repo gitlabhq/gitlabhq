@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe GitlabSchema.types['MergeRequest'] do
+RSpec.describe GitlabSchema.types['MergeRequest'] do
   specify { expect(described_class).to expose_permissions_using(Types::PermissionTypes::MergeRequest) }
 
   specify { expect(described_class).to require_graphql_authorizations(:read_merge_request) }

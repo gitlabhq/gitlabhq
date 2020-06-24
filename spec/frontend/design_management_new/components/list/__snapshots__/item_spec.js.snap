@@ -1,0 +1,472 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Design management list item component when item appears in view after image is loaded renders media broken icon when image onerror triggered 1`] = `
+<gl-icon-stub
+  class="text-secondary"
+  name="media-broken"
+  size="32"
+/>
+`;
+
+exports[`Design management list item component with no notes renders item with correct status icon for creation event 1`] = `
+<router-link-stub
+  class="card cursor-pointer text-plain js-design-list-item design-list-item"
+  to="[object Object]"
+>
+  <div
+    class="card-body p-0 d-flex-center overflow-hidden position-relative"
+  >
+    <div
+      class="design-event position-absolute"
+    >
+      <span
+        aria-label="Added in this version"
+        title="Added in this version"
+      >
+        <icon-stub
+          class="text-success-500"
+          name="file-addition-solid"
+          size="18"
+        />
+      </span>
+    </div>
+     
+    <gl-intersection-observer-stub
+      options="[object Object]"
+    >
+      <!---->
+       
+      <img
+        alt="test"
+        class="block mx-auto mw-100 mh-100 design-img"
+        data-qa-selector="design_image"
+        src=""
+      />
+    </gl-intersection-observer-stub>
+  </div>
+   
+  <div
+    class="card-footer d-flex w-100"
+  >
+    <div
+      class="d-flex flex-column str-truncated-100"
+    >
+      <span
+        class="bold str-truncated-100"
+        data-qa-selector="design_file_name"
+      >
+        test
+      </span>
+       
+      <span
+        class="str-truncated-100"
+      >
+        
+        Updated 
+        <timeago-stub
+          cssclass=""
+          time="01-01-2019"
+          tooltipplacement="bottom"
+        />
+      </span>
+    </div>
+     
+    <!---->
+  </div>
+</router-link-stub>
+`;
+
+exports[`Design management list item component with no notes renders item with correct status icon for deletion event 1`] = `
+<router-link-stub
+  class="card cursor-pointer text-plain js-design-list-item design-list-item"
+  to="[object Object]"
+>
+  <div
+    class="card-body p-0 d-flex-center overflow-hidden position-relative"
+  >
+    <div
+      class="design-event position-absolute"
+    >
+      <span
+        aria-label="Deleted in this version"
+        title="Deleted in this version"
+      >
+        <icon-stub
+          class="text-danger-500"
+          name="file-deletion-solid"
+          size="18"
+        />
+      </span>
+    </div>
+     
+    <gl-intersection-observer-stub
+      options="[object Object]"
+    >
+      <!---->
+       
+      <img
+        alt="test"
+        class="block mx-auto mw-100 mh-100 design-img"
+        data-qa-selector="design_image"
+        src=""
+      />
+    </gl-intersection-observer-stub>
+  </div>
+   
+  <div
+    class="card-footer d-flex w-100"
+  >
+    <div
+      class="d-flex flex-column str-truncated-100"
+    >
+      <span
+        class="bold str-truncated-100"
+        data-qa-selector="design_file_name"
+      >
+        test
+      </span>
+       
+      <span
+        class="str-truncated-100"
+      >
+        
+        Updated 
+        <timeago-stub
+          cssclass=""
+          time="01-01-2019"
+          tooltipplacement="bottom"
+        />
+      </span>
+    </div>
+     
+    <!---->
+  </div>
+</router-link-stub>
+`;
+
+exports[`Design management list item component with no notes renders item with correct status icon for modification event 1`] = `
+<router-link-stub
+  class="card cursor-pointer text-plain js-design-list-item design-list-item"
+  to="[object Object]"
+>
+  <div
+    class="card-body p-0 d-flex-center overflow-hidden position-relative"
+  >
+    <div
+      class="design-event position-absolute"
+    >
+      <span
+        aria-label="Modified in this version"
+        title="Modified in this version"
+      >
+        <icon-stub
+          class="text-primary-500"
+          name="file-modified-solid"
+          size="18"
+        />
+      </span>
+    </div>
+     
+    <gl-intersection-observer-stub
+      options="[object Object]"
+    >
+      <!---->
+       
+      <img
+        alt="test"
+        class="block mx-auto mw-100 mh-100 design-img"
+        data-qa-selector="design_image"
+        src=""
+      />
+    </gl-intersection-observer-stub>
+  </div>
+   
+  <div
+    class="card-footer d-flex w-100"
+  >
+    <div
+      class="d-flex flex-column str-truncated-100"
+    >
+      <span
+        class="bold str-truncated-100"
+        data-qa-selector="design_file_name"
+      >
+        test
+      </span>
+       
+      <span
+        class="str-truncated-100"
+      >
+        
+        Updated 
+        <timeago-stub
+          cssclass=""
+          time="01-01-2019"
+          tooltipplacement="bottom"
+        />
+      </span>
+    </div>
+     
+    <!---->
+  </div>
+</router-link-stub>
+`;
+
+exports[`Design management list item component with no notes renders item with no status icon for none event 1`] = `
+<router-link-stub
+  class="card cursor-pointer text-plain js-design-list-item design-list-item"
+  to="[object Object]"
+>
+  <div
+    class="card-body p-0 d-flex-center overflow-hidden position-relative"
+  >
+    <!---->
+     
+    <gl-intersection-observer-stub
+      options="[object Object]"
+    >
+      <!---->
+       
+      <img
+        alt="test"
+        class="block mx-auto mw-100 mh-100 design-img"
+        data-qa-selector="design_image"
+        src=""
+      />
+    </gl-intersection-observer-stub>
+  </div>
+   
+  <div
+    class="card-footer d-flex w-100"
+  >
+    <div
+      class="d-flex flex-column str-truncated-100"
+    >
+      <span
+        class="bold str-truncated-100"
+        data-qa-selector="design_file_name"
+      >
+        test
+      </span>
+       
+      <span
+        class="str-truncated-100"
+      >
+        
+        Updated 
+        <timeago-stub
+          cssclass=""
+          time="01-01-2019"
+          tooltipplacement="bottom"
+        />
+      </span>
+    </div>
+     
+    <!---->
+  </div>
+</router-link-stub>
+`;
+
+exports[`Design management list item component with no notes renders loading spinner when isUploading is true 1`] = `
+<router-link-stub
+  class="card cursor-pointer text-plain js-design-list-item design-list-item"
+  to="[object Object]"
+>
+  <div
+    class="card-body p-0 d-flex-center overflow-hidden position-relative"
+  >
+    <!---->
+     
+    <gl-intersection-observer-stub
+      options="[object Object]"
+    >
+      <gl-loading-icon-stub
+        color="orange"
+        label="Loading"
+        size="md"
+      />
+       
+      <img
+        alt="test"
+        class="block mx-auto mw-100 mh-100 design-img"
+        data-qa-selector="design_image"
+        src=""
+        style="display: none;"
+      />
+    </gl-intersection-observer-stub>
+  </div>
+   
+  <div
+    class="card-footer d-flex w-100"
+  >
+    <div
+      class="d-flex flex-column str-truncated-100"
+    >
+      <span
+        class="bold str-truncated-100"
+        data-qa-selector="design_file_name"
+      >
+        test
+      </span>
+       
+      <span
+        class="str-truncated-100"
+      >
+        
+        Updated 
+        <timeago-stub
+          cssclass=""
+          time="01-01-2019"
+          tooltipplacement="bottom"
+        />
+      </span>
+    </div>
+     
+    <!---->
+  </div>
+</router-link-stub>
+`;
+
+exports[`Design management list item component with notes renders item with multiple comments 1`] = `
+<router-link-stub
+  class="card cursor-pointer text-plain js-design-list-item design-list-item"
+  to="[object Object]"
+>
+  <div
+    class="card-body p-0 d-flex-center overflow-hidden position-relative"
+  >
+    <!---->
+     
+    <gl-intersection-observer-stub
+      options="[object Object]"
+    >
+      <!---->
+       
+      <img
+        alt="test"
+        class="block mx-auto mw-100 mh-100 design-img"
+        data-qa-selector="design_image"
+        src=""
+      />
+    </gl-intersection-observer-stub>
+  </div>
+   
+  <div
+    class="card-footer d-flex w-100"
+  >
+    <div
+      class="d-flex flex-column str-truncated-100"
+    >
+      <span
+        class="bold str-truncated-100"
+        data-qa-selector="design_file_name"
+      >
+        test
+      </span>
+       
+      <span
+        class="str-truncated-100"
+      >
+        
+        Updated 
+        <timeago-stub
+          cssclass=""
+          time="01-01-2019"
+          tooltipplacement="bottom"
+        />
+      </span>
+    </div>
+     
+    <div
+      class="ml-auto d-flex align-items-center text-secondary"
+    >
+      <icon-stub
+        class="ml-1"
+        name="comments"
+        size="16"
+      />
+       
+      <span
+        aria-label="2 comments"
+        class="ml-1"
+      >
+        
+        2
+      
+      </span>
+    </div>
+  </div>
+</router-link-stub>
+`;
+
+exports[`Design management list item component with notes renders item with single comment 1`] = `
+<router-link-stub
+  class="card cursor-pointer text-plain js-design-list-item design-list-item"
+  to="[object Object]"
+>
+  <div
+    class="card-body p-0 d-flex-center overflow-hidden position-relative"
+  >
+    <!---->
+     
+    <gl-intersection-observer-stub
+      options="[object Object]"
+    >
+      <!---->
+       
+      <img
+        alt="test"
+        class="block mx-auto mw-100 mh-100 design-img"
+        data-qa-selector="design_image"
+        src=""
+      />
+    </gl-intersection-observer-stub>
+  </div>
+   
+  <div
+    class="card-footer d-flex w-100"
+  >
+    <div
+      class="d-flex flex-column str-truncated-100"
+    >
+      <span
+        class="bold str-truncated-100"
+        data-qa-selector="design_file_name"
+      >
+        test
+      </span>
+       
+      <span
+        class="str-truncated-100"
+      >
+        
+        Updated 
+        <timeago-stub
+          cssclass=""
+          time="01-01-2019"
+          tooltipplacement="bottom"
+        />
+      </span>
+    </div>
+     
+    <div
+      class="ml-auto d-flex align-items-center text-secondary"
+    >
+      <icon-stub
+        class="ml-1"
+        name="comments"
+        size="16"
+      />
+       
+      <span
+        aria-label="1 comment"
+        class="ml-1"
+      >
+        
+        1
+      
+      </span>
+    </div>
+  </div>
+</router-link-stub>
+`;

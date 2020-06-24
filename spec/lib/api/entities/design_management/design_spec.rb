@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe API::Entities::DesignManagement::Design do
+RSpec.describe API::Entities::DesignManagement::Design do
   let_it_be(:design) { create(:design) }
   let(:entity) { described_class.new(design, request: double) }
 

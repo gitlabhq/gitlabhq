@@ -2,7 +2,7 @@
 
 require 'fast_spec_helper'
 
-describe Gitlab::Ci::Parsers::Accessibility::Pa11y do
+RSpec.describe Gitlab::Ci::Parsers::Accessibility::Pa11y do
   describe '#parse!' do
     subject { described_class.new.parse!(pa11y, accessibility_report) }
 

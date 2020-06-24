@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Mutations::MergeRequests::SetAssignees do
+RSpec.describe Mutations::MergeRequests::SetAssignees do
   let(:merge_request) { create(:merge_request) }
   let(:user) { create(:user) }
 

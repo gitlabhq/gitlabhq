@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe LabelsHelper do
+RSpec.describe LabelsHelper do
   describe '#show_label_issuables_link?' do
     shared_examples 'a valid response to show_label_issuables_link?' do |issuables_type, when_enabled = true, when_disabled = false|
       context "when asking for a #{issuables_type} link" do

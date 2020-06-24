@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe GitlabSchema.types['MetricsDashboardAnnotation'] do
+RSpec.describe GitlabSchema.types['MetricsDashboardAnnotation'] do
   specify { expect(described_class.graphql_name).to eq('MetricsDashboardAnnotation') }
 
   it 'has the expected fields' do

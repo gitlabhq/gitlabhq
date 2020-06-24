@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Ci::Pipeline::Chain::Command do
+RSpec.describe Gitlab::Ci::Pipeline::Chain::Command do
   let_it_be(:project) { create(:project, :repository) }
 
   describe '#initialize' do

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe BitbucketServer::Representation::Activity do
+RSpec.describe BitbucketServer::Representation::Activity do
   let(:activities) { Gitlab::Json.parse(fixture_file('importers/bitbucket_server/activities.json'))['values'] }
   let(:inline_comment) { activities.first }
   let(:comment) { activities[3] }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Auth::CurrentUserMode, :do_not_mock_admin_mode, :request_store do
+RSpec.describe Gitlab::Auth::CurrentUserMode, :do_not_mock_admin_mode, :request_store do
   let(:user) { build_stubbed(:user) }
 
   subject { described_class.new(user) }

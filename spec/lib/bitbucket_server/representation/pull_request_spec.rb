@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe BitbucketServer::Representation::PullRequest do
+RSpec.describe BitbucketServer::Representation::PullRequest do
   let(:sample_data) { Gitlab::Json.parse(fixture_file('importers/bitbucket_server/pull_request.json')) }
 
   subject { described_class.new(sample_data) }

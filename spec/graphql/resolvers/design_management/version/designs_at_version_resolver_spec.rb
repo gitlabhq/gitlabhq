@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Resolvers::DesignManagement::Version::DesignsAtVersionResolver do
+RSpec.describe Resolvers::DesignManagement::Version::DesignsAtVersionResolver do
   include GraphqlHelpers
 
   include_context 'four designs in three versions'

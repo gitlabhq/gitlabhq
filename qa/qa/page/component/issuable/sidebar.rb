@@ -25,11 +25,25 @@ module QA
             base.view 'app/views/shared/issuable/_sidebar.html.haml' do
               element :assignee_block
               element :dropdown_menu_labels
-              element :edit_link_labels
+              element :edit_labels_link
+              element :edit_milestone_link
               element :labels_block
               element :milestone_block
               element :milestone_link
             end
+          end
+
+          def assign_milestone(milestone)
+            click_element(:edit_milestone_link)
+            within_element(:milestone_block) do
+              click_link("#{milestone.title}")
+            end
+
+            wait_until(reload: false) do
+              has_element?(:milestone_block, text: milestone.title, wait: 0)
+            end
+
+            refresh
           end
 
           def click_milestone_link
@@ -55,7 +69,7 @@ module QA
           end
 
           def has_milestone?(milestone_title)
-            within_element(:milestone_block) do
+            wait_milestone_block_finish_loading do
               has_element?(:milestone_link, title: milestone_title)
             end
           end
@@ -66,7 +80,7 @@ module QA
 
           def select_labels_and_refresh(labels)
             Support::Retrier.retry_until do
-              click_element(:edit_link_labels)
+              click_element(:edit_labels_link)
               has_element?(:dropdown_menu_labels, text: labels.first)
             end
 
@@ -76,7 +90,7 @@ module QA
               end
             end
 
-            click_element(:edit_link_labels)
+            click_element(:edit_labels_link)
 
             labels.each do |label|
               has_element?(:labels_block, text: label, wait: 0)
@@ -97,6 +111,15 @@ module QA
 
           def wait_assignees_block_finish_loading
             within_element(:assignee_block) do
+              wait_until(reload: false, max_duration: 10, sleep_interval: 1) do
+                finished_loading_block?
+                yield
+              end
+            end
+          end
+
+          def wait_milestone_block_finish_loading
+            within_element(:milestone_block) do
               wait_until(reload: false, max_duration: 10, sleep_interval: 1) do
                 finished_loading_block?
                 yield

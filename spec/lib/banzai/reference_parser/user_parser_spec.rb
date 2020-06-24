@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Banzai::ReferenceParser::UserParser do
+RSpec.describe Banzai::ReferenceParser::UserParser do
   include ReferenceParserHelpers
 
   let(:group) { create(:group) }

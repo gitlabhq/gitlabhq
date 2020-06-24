@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Ci::Config::Entry::Kubernetes do
+RSpec.describe Gitlab::Ci::Config::Entry::Kubernetes do
   subject { described_class.new(config) }
 
   describe 'attributes' do

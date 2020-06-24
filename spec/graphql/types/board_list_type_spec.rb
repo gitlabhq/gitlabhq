@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe GitlabSchema.types['BoardList'] do
+RSpec.describe GitlabSchema.types['BoardList'] do
   specify { expect(described_class.graphql_name).to eq('BoardList') }
 
   it 'has specific fields' do

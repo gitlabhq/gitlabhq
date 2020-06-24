@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::BackgroundMigration::RemoveRestrictedTodos, schema: 20180704204006 do
+RSpec.describe Gitlab::BackgroundMigration::RemoveRestrictedTodos, schema: 20180704204006 do
   let(:projects)               { table(:projects) }
   let(:users)                  { table(:users) }
   let(:todos)                  { table(:todos) }

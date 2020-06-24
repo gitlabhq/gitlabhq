@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::AlertManagement::AlertStatusCounts do
+RSpec.describe Gitlab::AlertManagement::AlertStatusCounts do
   let_it_be(:current_user) { create(:user) }
   let_it_be(:project) { create(:project) }
   let_it_be(:alert_1) { create(:alert_management_alert, :resolved, project: project) }

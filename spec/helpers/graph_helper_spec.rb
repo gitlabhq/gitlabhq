@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe GraphHelper do
+RSpec.describe GraphHelper do
   describe '#get_refs' do
     let(:project) { create(:project, :repository) }
     let(:commit)  { project.commit("master") }

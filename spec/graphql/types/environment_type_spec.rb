@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe GitlabSchema.types['Environment'] do
+RSpec.describe GitlabSchema.types['Environment'] do
   specify { expect(described_class.graphql_name).to eq('Environment') }
 
   it 'has the expected fields' do

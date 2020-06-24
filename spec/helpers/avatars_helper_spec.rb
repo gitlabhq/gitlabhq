@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe AvatarsHelper do
+RSpec.describe AvatarsHelper do
   include UploadHelpers
 
   let(:user) { create(:user) }

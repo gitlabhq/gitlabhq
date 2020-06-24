@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe IconsHelper do
+RSpec.describe IconsHelper do
   let(:icons_path) { ActionController::Base.helpers.image_path("icons.svg") }
 
   describe 'icon' do

@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-describe IssuesHelper do
+RSpec.describe IssuesHelper do
   let(:project) { create(:project) }
   let(:issue) { create :issue, project: project }
   let(:ext_project) { create :redmine_project }

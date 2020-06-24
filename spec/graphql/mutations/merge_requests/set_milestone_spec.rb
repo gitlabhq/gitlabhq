@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Mutations::MergeRequests::SetMilestone do
+RSpec.describe Mutations::MergeRequests::SetMilestone do
   let(:merge_request) { create(:merge_request) }
   let(:user) { create(:user) }
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe GitlabSchema.types['JiraService'] do
+RSpec.describe GitlabSchema.types['JiraService'] do
   specify { expect(described_class.graphql_name).to eq('JiraService') }
 
   it 'has basic expected fields' do

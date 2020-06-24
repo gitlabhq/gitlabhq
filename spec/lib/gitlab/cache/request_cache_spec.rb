@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Cache::RequestCache do
+RSpec.describe Gitlab::Cache::RequestCache do
   let(:klass) do
     Class.new do
       extend Gitlab::Cache::RequestCache

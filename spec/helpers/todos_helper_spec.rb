@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe TodosHelper do
+RSpec.describe TodosHelper do
   let_it_be(:user) { create(:user) }
   let_it_be(:author) { create(:user) }
   let_it_be(:issue) { create(:issue, title: 'Issue 1') }

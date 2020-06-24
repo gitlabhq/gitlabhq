@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe VisibilityLevelHelper do
+RSpec.describe VisibilityLevelHelper do
   include ProjectForksHelper
 
   let(:project)          { build(:project) }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Blame do
+RSpec.describe Gitlab::Blame do
   let(:project) { create(:project, :repository) }
   let(:path) { 'files/ruby/popen.rb' }
   let(:commit) { project.commit('master') }

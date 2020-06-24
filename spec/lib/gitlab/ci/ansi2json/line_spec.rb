@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Ci::Ansi2json::Line do
+RSpec.describe Gitlab::Ci::Ansi2json::Line do
   let(:offset) { 0 }
   let(:style) { Gitlab::Ci::Ansi2json::Style.new }
 

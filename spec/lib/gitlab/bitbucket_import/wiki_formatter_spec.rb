@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::BitbucketImport::WikiFormatter do
+RSpec.describe Gitlab::BitbucketImport::WikiFormatter do
   let(:project) do
     create(:project,
            namespace: create(:namespace, path: 'gitlabhq'),

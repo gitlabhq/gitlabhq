@@ -30,6 +30,22 @@ describe Gitlab::StaticSiteEditor::Config do
       )
     end
 
+    context 'when file has .md.erb extension' do
+      let(:file_path) { 'README.md.erb' }
+
+      before do
+        repository.create_file(
+          project.creator,
+          file_path,
+          '',
+          message: 'message',
+          branch_name: 'master'
+        )
+      end
+
+      it { is_expected.to include(is_supported_content: 'true') }
+    end
+
     context 'when file path is nested' do
       let(:file_path) { 'lib/README.md' }
 

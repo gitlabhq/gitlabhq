@@ -4,7 +4,7 @@ require 'spec_helper'
 require './db/post_migrate/20200128134110_migrate_commit_notes_mentions_to_db'
 require './db/post_migrate/20200211155539_migrate_merge_request_mentions_to_db'
 
-describe Gitlab::BackgroundMigration::UserMentions::CreateResourceUserMention, schema: 20200211155539 do
+RSpec.describe Gitlab::BackgroundMigration::UserMentions::CreateResourceUserMention, schema: 20200211155539 do
   include MigrationsHelpers
 
   context 'when migrating data' do

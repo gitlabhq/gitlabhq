@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Ci::Status::Bridge::Factory do
+RSpec.describe Gitlab::Ci::Status::Bridge::Factory do
   let(:user) { create(:user) }
   let(:project) { bridge.project }
   let(:status) { factory.fabricate! }

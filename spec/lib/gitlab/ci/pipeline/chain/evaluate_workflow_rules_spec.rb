@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Ci::Pipeline::Chain::EvaluateWorkflowRules do
+RSpec.describe Gitlab::Ci::Pipeline::Chain::EvaluateWorkflowRules do
   let(:project)  { create(:project) }
   let(:user)     { create(:user) }
   let(:pipeline) { build(:ci_pipeline, project: project) }

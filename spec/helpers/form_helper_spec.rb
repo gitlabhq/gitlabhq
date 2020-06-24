@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe FormHelper do
+RSpec.describe FormHelper do
   describe 'form_errors' do
     it 'returns nil when model has no errors' do
       model = double(errors: [])

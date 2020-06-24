@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Banzai::Filter::InlineMetricsFilter do
+RSpec.describe Banzai::Filter::InlineMetricsFilter do
   include FilterSpecHelper
 
   let(:params) { ['foo', 'bar', 12] }

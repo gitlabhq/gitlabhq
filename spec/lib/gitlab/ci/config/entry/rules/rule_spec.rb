@@ -5,7 +5,7 @@ require 'gitlab_chronic_duration'
 require 'support/helpers/stub_feature_flags'
 require_dependency 'active_model'
 
-describe Gitlab::Ci::Config::Entry::Rules::Rule do
+RSpec.describe Gitlab::Ci::Config::Entry::Rules::Rule do
   let(:factory) do
     Gitlab::Config::Entry::Factory.new(described_class)
       .metadata(metadata)

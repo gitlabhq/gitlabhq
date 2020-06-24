@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Resolvers::ErrorTracking::SentryErrorsResolver do
+RSpec.describe Resolvers::ErrorTracking::SentryErrorsResolver do
   include GraphqlHelpers
 
   let_it_be(:project) { create(:project) }

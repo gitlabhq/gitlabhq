@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Ci::Reports::TestReports do
+RSpec.describe Gitlab::Ci::Reports::TestReports do
   include TestReportsHelper
 
   let(:test_reports) { described_class.new }

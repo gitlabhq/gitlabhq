@@ -4,7 +4,7 @@ require 'fast_spec_helper'
 require 'support/helpers/stub_feature_flags'
 require_dependency 'active_model'
 
-describe Gitlab::Ci::Config::Entry::Policy do
+RSpec.describe Gitlab::Ci::Config::Entry::Policy do
   let(:entry) { described_class.new(config) }
 
   context 'when using simplified policy' do

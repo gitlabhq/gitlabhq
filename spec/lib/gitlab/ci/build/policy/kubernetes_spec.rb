@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Ci::Build::Policy::Kubernetes do
+RSpec.describe Gitlab::Ci::Build::Policy::Kubernetes do
   let(:pipeline) { create(:ci_pipeline, project: project) }
 
   context 'when kubernetes service is active' do

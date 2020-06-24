@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::BackgroundMigration::MigrateBuildStage, schema: 20180212101928 do
+RSpec.describe Gitlab::BackgroundMigration::MigrateBuildStage, schema: 20180212101928 do
   let(:projects) { table(:projects) }
   let(:pipelines) { table(:ci_pipelines) }
   let(:stages) { table(:ci_stages) }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe GitlabRoutingHelper do
+RSpec.describe GitlabRoutingHelper do
   let(:project) { build_stubbed(:project) }
   let(:group) { build_stubbed(:group) }
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Resolvers::MergeRequestsResolver do
+RSpec.describe Resolvers::MergeRequestsResolver do
   include GraphqlHelpers
 
   let_it_be(:project) { create(:project, :repository) }

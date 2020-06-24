@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Banzai::Filter::TableOfContentsFilter do
+RSpec.describe Banzai::Filter::TableOfContentsFilter do
   include FilterSpecHelper
 
   def header(level, text)

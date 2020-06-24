@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Checks::ChangeAccess do
+RSpec.describe Gitlab::Checks::ChangeAccess do
   describe '#exec' do
     include_context 'change access checks context'
 

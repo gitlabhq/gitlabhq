@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Auth::Ldap::AuthHash do
+RSpec.describe Gitlab::Auth::Ldap::AuthHash do
   include LdapHelpers
 
   let(:auth_hash) do

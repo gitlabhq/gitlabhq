@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'instrument_classes' do
+RSpec.describe 'instrument_classes' do
   let(:config) { double(:config) }
 
   before do

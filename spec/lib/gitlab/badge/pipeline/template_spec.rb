@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Badge::Pipeline::Template do
+RSpec.describe Gitlab::Badge::Pipeline::Template do
   let(:badge) { double(entity: 'pipeline', status: 'success', customization: {}) }
   let(:template) { described_class.new(badge) }
 

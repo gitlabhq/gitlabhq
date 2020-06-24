@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Analytics::CycleAnalytics::BaseQueryBuilder do
+RSpec.describe Gitlab::Analytics::CycleAnalytics::BaseQueryBuilder do
   let_it_be(:project) { create(:project, :empty_repo) }
   let_it_be(:mr1) { create(:merge_request, target_project: project, source_project: project, allow_broken: true, created_at: 3.months.ago) }
   let_it_be(:mr2) { create(:merge_request, target_project: project, source_project: project, allow_broken: true, created_at: 1.month.ago) }

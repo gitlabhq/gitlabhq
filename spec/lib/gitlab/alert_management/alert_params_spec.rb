@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::AlertManagement::AlertParams do
+RSpec.describe Gitlab::AlertManagement::AlertParams do
   let_it_be(:project) { create(:project, :repository, :private) }
 
   describe '.from_generic_alert' do

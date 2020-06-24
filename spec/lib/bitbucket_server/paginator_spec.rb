@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe BitbucketServer::Paginator do
+RSpec.describe BitbucketServer::Paginator do
   let(:last_page) { double(:page, next?: false, items: ['item_2']) }
   let(:first_page) { double(:page, next?: true, next: last_page, items: ['item_1']) }
   let(:connection) { instance_double(BitbucketServer::Connection) }

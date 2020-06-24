@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe BitbucketServer::Representation::Repo do
+RSpec.describe BitbucketServer::Representation::Repo do
   let(:sample_data) do
     <<~DATA
     {

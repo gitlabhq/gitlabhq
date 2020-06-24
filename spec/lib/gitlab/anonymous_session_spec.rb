@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::AnonymousSession, :clean_gitlab_redis_shared_state do
+RSpec.describe Gitlab::AnonymousSession, :clean_gitlab_redis_shared_state do
   let(:default_session_id) { '6919a6f1bb119dd7396fadc38fd18d0d' }
   let(:additional_session_id) { '7919a6f1bb119dd7396fadc38fd18d0d' }
 

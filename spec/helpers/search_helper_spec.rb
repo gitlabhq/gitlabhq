@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe SearchHelper do
+RSpec.describe SearchHelper do
   # Override simple_sanitize for our testing purposes
   def simple_sanitize(str)
     str
