@@ -312,6 +312,7 @@ describe "User creates wiki page" do
         visit(project_wikis_path(project))
 
         expect(page).to have_content('another')
+        expect(page).not_to have_link('View All Pages')
       end
 
       context 'when there is a customized sidebar' do
@@ -328,17 +329,31 @@ describe "User creates wiki page" do
       end
     end
 
-    context 'when there are more than 15 existing pages' do
+    context 'when there are 15 existing pages' do
       before do
-        create(:wiki_page, wiki: wiki, attrs: { title: 'home', content: 'home' })
-        (1..14).each { |i| create(:wiki_page, wiki: wiki, attrs: { title: "page-#{i}", content: "page #{i}" }) }
+        (1..5).each { |i| create(:wiki_page, wiki: wiki, title: "my page #{i}") }
+        (6..10).each { |i| create(:wiki_page, wiki: wiki, title: "parent/my page #{i}") }
+        (11..15).each { |i| create(:wiki_page, wiki: wiki, title: "grandparent/parent/my page #{i}") }
       end
 
-      it 'renders a default sidebar when there is no customized sidebar' do
+      it 'shows all pages in the sidebar' do
         visit(project_wikis_path(project))
 
-        expect(page).to have_content('View All Pages')
-        expect(page).to have_content('page 1')
+        (1..15).each { |i| expect(page).to have_content("my page #{i}") }
+        expect(page).not_to have_link('View All Pages')
+      end
+
+      context 'when there are more than 15 existing pages' do
+        before do
+          create(:wiki_page, wiki: wiki, title: 'my page 16')
+        end
+
+        it 'shows the first 15 pages in the sidebar' do
+          visit(project_wikis_path(project))
+
+          expect(page).to have_text('my page', count: 15)
+          expect(page).to have_link('View All Pages')
+        end
       end
     end
   end

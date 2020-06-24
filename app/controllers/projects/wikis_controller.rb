@@ -144,7 +144,7 @@ class Projects::WikisController < Projects::ApplicationController
     @sidebar_page = @project_wiki.find_sidebar(params[:version_id])
 
     unless @sidebar_page # Fallback to default sidebar
-      @sidebar_wiki_entries = WikiPage.group_by_directory(@project_wiki.list_pages(limit: 15))
+      @sidebar_wiki_entries, @sidebar_limited = @project_wiki.sidebar_entries
     end
   rescue ProjectWiki::CouldNotCreateWikiError
     flash[:notice] = _("Could not create Wiki Repository at this time. Please try again later.")

@@ -114,6 +114,14 @@ class ProjectWiki
     end
   end
 
+  def sidebar_entries(limit: Gitlab::WikiPages::MAX_SIDEBAR_PAGES, **options)
+    pages = list_pages(**options.merge(limit: limit + 1))
+    limited = pages.size > limit
+    pages = pages.first(limit) if limited
+
+    [WikiPage.group_by_directory(pages), limited]
+  end
+
   # Finds a page within the repository based on a tile
   # or slug.
   #

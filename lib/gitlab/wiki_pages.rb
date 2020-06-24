@@ -11,5 +11,8 @@ module Gitlab
     # through the GitLab web interface and API:
     MAX_TITLE_BYTES = 245 # reserving 10 bytes for the file extension
     MAX_DIRECTORY_BYTES = 255
+
+    # Limit the number of pages displayed in the wiki sidebar.
+    MAX_SIDEBAR_PAGES = 15
   end
 end

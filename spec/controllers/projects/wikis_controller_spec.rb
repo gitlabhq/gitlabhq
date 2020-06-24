@@ -98,13 +98,12 @@ describe Projects::WikisController do
       let(:id) { wiki_title }
 
       it 'limits the retrieved pages for the sidebar' do
-        expect(controller).to receive(:load_wiki).and_return(project_wiki)
-        expect(project_wiki).to receive(:list_pages).with(limit: 15).and_call_original
-
         subject
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(assigns(:page).title).to eq(wiki_title)
+        expect(assigns(:sidebar_wiki_entries)).to contain_exactly(an_instance_of(WikiPage))
+        expect(assigns(:sidebar_limited)).to be(false)
       end
 
       context 'when page content encoding is invalid' do
