@@ -226,7 +226,7 @@ To get started with GitLab CI/CD, you need to familiarize yourself
 with the [`.gitlab-ci.yml`](../yaml/README.md) configuration file
 syntax and with its attributes.
 
-This document [introduces the concepts of GitLab CI/CD in the scope of GitLab Pages](../../user/project/pages/getting_started_part_four.md), for deploying static websites.
+This document [introduces the concepts of GitLab CI/CD in the scope of GitLab Pages](../../user/project/pages/getting_started/pages_from_scratch.md), for deploying static websites.
 Although it's meant for users who want to write their own Pages
 script from scratch, it also serves as an introduction to the setup process for GitLab CI/CD.
 It covers the very first general steps of writing a CI/CD configuration

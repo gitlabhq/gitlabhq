@@ -19,9 +19,7 @@ class CreateGroupDeployKeysGroup < ActiveRecord::Migration[6.0]
 
   def down
     with_lock_retries do
-      # rubocop:disable Migration/DropTable
       drop_table :group_deploy_keys_groups
-      # rubocop:enable Migration/DropTable
     end
   end
 end

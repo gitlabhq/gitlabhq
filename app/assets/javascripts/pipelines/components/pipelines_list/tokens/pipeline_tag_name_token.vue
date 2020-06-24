@@ -1,7 +1,7 @@
 <script>
 import { GlFilteredSearchToken, GlFilteredSearchSuggestion, GlLoadingIcon } from '@gitlab/ui';
 import Api from '~/api';
-import { FETCH_TAG_ERROR_MESSAGE, FILTER_PIPELINES_SEARCH_DELAY } from '../../constants';
+import { FETCH_TAG_ERROR_MESSAGE, FILTER_PIPELINES_SEARCH_DELAY } from '../../../constants';
 import createFlash from '~/flash';
 import { debounce } from 'lodash';
 

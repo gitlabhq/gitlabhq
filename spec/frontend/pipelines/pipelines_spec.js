@@ -3,7 +3,7 @@ import { mount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
 import waitForPromises from 'helpers/wait_for_promises';
-import PipelinesComponent from '~/pipelines/components/pipelines.vue';
+import PipelinesComponent from '~/pipelines/components/pipelines_list/pipelines.vue';
 import Store from '~/pipelines/stores/pipelines_store';
 import { pipelineWithStages, stageReply, users, mockSearch, branches } from './mock_data';
 import { RAW_TEXT_WARNING } from '~/pipelines/constants';

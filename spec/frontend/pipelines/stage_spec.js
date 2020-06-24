@@ -1,7 +1,7 @@
 import { mount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
-import StageComponent from '~/pipelines/components/stage.vue';
+import StageComponent from '~/pipelines/components/pipelines_list/stage.vue';
 import eventHub from '~/pipelines/event_hub';
 import { stageReply } from './mock_data';
 import waitForPromises from 'helpers/wait_for_promises';

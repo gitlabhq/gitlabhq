@@ -353,10 +353,7 @@ export default {
         </gl-deprecated-button>
       </div>
 
-      <div
-        v-if="externalDashboardUrl && externalDashboardUrl.length"
-        class="mb-2 mr-2 d-flex d-sm-block"
-      >
+      <div v-if="externalDashboardUrl.length" class="mb-2 mr-2 d-flex d-sm-block">
         <gl-deprecated-button
           class="flex-grow-1 js-external-dashboard-link"
           variant="primary"

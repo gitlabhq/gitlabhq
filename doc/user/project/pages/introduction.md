@@ -130,7 +130,7 @@ pages:
 
 ### `.gitlab-ci.yml` for a static site generator
 
-See this document for a [step-by-step guide](getting_started_part_four.md).
+See this document for a [step-by-step guide](getting_started/pages_from_scratch.md).
 
 ### `.gitlab-ci.yml` for a repository where there's also actual code
 

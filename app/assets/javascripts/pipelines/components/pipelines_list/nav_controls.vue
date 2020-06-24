@@ -1,6 +1,6 @@
 <script>
 import { GlDeprecatedButton } from '@gitlab/ui';
-import LoadingButton from '../../vue_shared/components/loading_button.vue';
+import LoadingButton from '~/vue_shared/components/loading_button.vue';
 
 export default {
   name: 'PipelineNavControls',

@@ -70,7 +70,12 @@ When SSO enforcement is enabled for a group, users cannot share a project in the
 
 #### Group-managed accounts
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/709) in GitLab 12.1.
+CAUTION: **Warning:**
+This is a [Closed Beta](https://about.gitlab.com/handbook/product/#closed-beta) feature.
+
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/709) in GitLab 12.1.
+> - It's deployed behind a feature flag, disabled by default.
+> - It's disabled on GitLab.com. If you want to enable it for your subscription, contact Product Management through [GitLab Support](https://support.gitlab.com).
 
 When SSO is being enforced, groups can enable an additional level of protection by enforcing the creation of dedicated user accounts to access the group.
 

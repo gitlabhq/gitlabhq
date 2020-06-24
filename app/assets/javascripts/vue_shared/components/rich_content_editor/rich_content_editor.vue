@@ -16,7 +16,7 @@ import {
   removeCustomEventListener,
   addImage,
   getMarkdown,
-} from './editor_service';
+} from './services/editor_service';
 
 export default {
   components: {

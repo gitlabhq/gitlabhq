@@ -18,8 +18,8 @@ import {
   singleStatMetricsResult,
   graphDataPrometheusQueryRangeMultiTrack,
   barMockData,
+  propsData,
 } from '../mock_data';
-import { dashboardProps, graphData, graphDataEmpty } from '../fixture_data';
 
 import { panelTypes } from '~/monitoring/constants';
 
@@ -32,6 +32,7 @@ import MonitorColumnChart from '~/monitoring/components/charts/column.vue';
 import MonitorBarChart from '~/monitoring/components/charts/bar.vue';
 import MonitorStackedColumnChart from '~/monitoring/components/charts/stacked_column.vue';
 
+import { graphData, graphDataEmpty } from '../fixture_data';
 import { createStore, monitoringDashboard } from '~/monitoring/stores';
 import { createStore as createEmbedGroupStore } from '~/monitoring/stores/embed_group';
 
@@ -62,7 +63,7 @@ describe('Dashboard Panel', () => {
     wrapper = shallowMount(DashboardPanel, {
       propsData: {
         graphData,
-        settingsPath: dashboardProps.settingsPath,
+        settingsPath: propsData.settingsPath,
         ...props,
       },
       store,
@@ -315,7 +316,7 @@ describe('Dashboard Panel', () => {
 
       return wrapper.vm.$nextTick(() => {
         expect(findEditCustomMetricLink().text()).toBe('Edit metrics');
-        expect(findEditCustomMetricLink().attributes('href')).toBe(dashboardProps.settingsPath);
+        expect(findEditCustomMetricLink().attributes('href')).toBe(propsData.settingsPath);
       });
     });
   });
@@ -432,7 +433,7 @@ describe('Dashboard Panel', () => {
       wrapper = shallowMount(DashboardPanel, {
         propsData: {
           clipboardText: exampleText,
-          settingsPath: dashboardProps.settingsPath,
+          settingsPath: propsData.settingsPath,
           graphData: {
             y_label: 'metric',
             ...graphData,
@@ -482,7 +483,7 @@ describe('Dashboard Panel', () => {
       wrapper = shallowMount(DashboardPanel, {
         propsData: {
           graphData,
-          settingsPath: dashboardProps.settingsPath,
+          settingsPath: propsData.settingsPath,
           namespace: mockNamespace,
         },
         store,

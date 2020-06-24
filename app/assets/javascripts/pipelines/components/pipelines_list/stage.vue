@@ -14,13 +14,13 @@
 
 import $ from 'jquery';
 import { GlLoadingIcon, GlTooltipDirective } from '@gitlab/ui';
-import { __ } from '../../locale';
-import Flash from '../../flash';
-import axios from '../../lib/utils/axios_utils';
-import eventHub from '../event_hub';
-import Icon from '../../vue_shared/components/icon.vue';
-import JobItem from './graph/job_item.vue';
-import { PIPELINES_TABLE } from '../constants';
+import { __ } from '~/locale';
+import Flash from '~/flash';
+import axios from '~/lib/utils/axios_utils';
+import eventHub from '../../event_hub';
+import Icon from '~/vue_shared/components/icon.vue';
+import JobItem from '../graph/job_item.vue';
+import { PIPELINES_TABLE } from '../../constants';
 
 export default {
   components: {

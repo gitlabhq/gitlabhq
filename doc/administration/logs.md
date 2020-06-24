@@ -794,7 +794,7 @@ Omnibus GitLab packages or in `/home/git/gitlab/log/service_measurement.log` for
 installations from source.
 
 It contain only a single structured log with measurements for each service execution.
-It will contain measurement such as: number of SQL calls, `execution_time`, `gc_stats`, memory usage, etc...
+It will contain measurement such as: number of SQL calls, `execution_time`, `gc_stats`, `memory_usage`, etc...
 
 For example:
 

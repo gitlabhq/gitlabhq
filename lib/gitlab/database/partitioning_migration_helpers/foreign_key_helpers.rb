@@ -99,7 +99,7 @@ module Gitlab
               drop_function(fn_name, if_exists: true)
             else
               create_or_replace_fk_function(fn_name, final_keys)
-              create_trigger(trigger_name, fn_name, fires: "AFTER DELETE ON #{to_table}")
+              create_trigger(to_table, trigger_name, fn_name, fires: 'AFTER DELETE')
             end
           end
         end

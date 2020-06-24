@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import ToolbarItem from './toolbar_item.vue';
+import ToolbarItem from '../toolbar_item.vue';
 
 const buildWrapper = propsData => {
   const instance = new Vue({

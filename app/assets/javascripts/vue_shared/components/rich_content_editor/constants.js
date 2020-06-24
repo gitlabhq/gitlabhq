@@ -1,5 +1,5 @@
 import { __ } from '~/locale';
-import { generateToolbarItem } from './editor_service';
+import { generateToolbarItem } from './services/editor_service';
 import buildCustomHTMLRenderer from './services/build_custom_renderer';
 
 export const CUSTOM_EVENTS = {

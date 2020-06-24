@@ -17,6 +17,6 @@ class CreateNamespaceLimits < ActiveRecord::Migration[6.0]
   end
 
   def down
-    drop_table :namespace_limits # rubocop:disable Migration/DropTable
+    drop_table :namespace_limits
   end
 end

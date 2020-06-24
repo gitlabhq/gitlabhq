@@ -1,6 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
 import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
-import pipelineTriggerer from '~/pipelines/components/pipeline_triggerer.vue';
+import pipelineTriggerer from '~/pipelines/components/pipelines_list/pipeline_triggerer.vue';
 
 describe('Pipelines Triggerer', () => {
   let wrapper;

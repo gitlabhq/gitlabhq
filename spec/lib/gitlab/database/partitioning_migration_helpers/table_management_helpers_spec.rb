@@ -25,7 +25,7 @@ describe Gitlab::Database::PartitioningMigrationHelpers::TableManagementHelpers 
     allow(migration).to receive(:partitioned_table_name).and_return(partitioned_table)
     allow(migration).to receive(:sync_function_name).and_return(function_name)
     allow(migration).to receive(:sync_trigger_name).and_return(trigger_name)
-    allow(migration).to receive(:assert_table_is_whitelisted)
+    allow(migration).to receive(:assert_table_is_allowed)
   end
 
   describe '#partition_table_by_date' do
@@ -33,15 +33,19 @@ describe Gitlab::Database::PartitioningMigrationHelpers::TableManagementHelpers 
     let(:old_primary_key) { 'id' }
     let(:new_primary_key) { [old_primary_key, partition_column] }
 
-    context 'when the table is not whitelisted' do
-      let(:template_table) { :this_table_is_not_whitelisted }
+    before do
+      allow(migration).to receive(:queue_background_migration_jobs_by_range_at_intervals)
+    end
+
+    context 'when the table is not allowed' do
+      let(:template_table) { :this_table_is_not_allowed }
 
       it 'raises an error' do
-        expect(migration).to receive(:assert_table_is_whitelisted).with(template_table).and_call_original
+        expect(migration).to receive(:assert_table_is_allowed).with(template_table).and_call_original
 
         expect do
           migration.partition_table_by_date template_table, partition_column, min_date: min_date, max_date: max_date
-        end.to raise_error(/#{template_table} is not whitelisted for use/)
+        end.to raise_error(/#{template_table} is not allowed for use/)
       end
     end
 
@@ -237,6 +241,36 @@ describe Gitlab::Database::PartitioningMigrationHelpers::TableManagementHelpers 
         expect(model.find(second_todo.id).attributes).to eq(second_todo.attributes)
       end
     end
+
+    describe 'copying historic data to the partitioned table' do
+      let(:template_table) { 'todos' }
+      let(:migration_class) { '::Gitlab::Database::PartitioningMigrationHelpers::BackfillPartitionedTable' }
+      let(:sub_batch_size) { described_class::SUB_BATCH_SIZE }
+      let(:pause_seconds) { described_class::PAUSE_SECONDS }
+      let!(:first_id) { create(:todo).id }
+      let!(:second_id) { create(:todo).id }
+      let!(:third_id) { create(:todo).id }
+
+      before do
+        stub_const("#{described_class.name}::BATCH_SIZE", 2)
+
+        expect(migration).to receive(:queue_background_migration_jobs_by_range_at_intervals).and_call_original
+      end
+
+      it 'enqueues jobs to copy each batch of data' do
+        Sidekiq::Testing.fake! do
+          migration.partition_table_by_date template_table, partition_column, min_date: min_date, max_date: max_date
+
+          expect(BackgroundMigrationWorker.jobs.size).to eq(2)
+
+          first_job_arguments = [first_id, second_id, template_table, partitioned_table, 'id']
+          expect(BackgroundMigrationWorker.jobs[0]['args']).to eq([migration_class, first_job_arguments])
+
+          second_job_arguments = [third_id, third_id, template_table, partitioned_table, 'id']
+          expect(BackgroundMigrationWorker.jobs[1]['args']).to eq([migration_class, second_job_arguments])
+        end
+      end
+    end
   end
 
   describe '#drop_partitioned_table_for' do
@@ -244,15 +278,15 @@ describe Gitlab::Database::PartitioningMigrationHelpers::TableManagementHelpers 
       %w[000000 201912 202001 202002].map { |suffix| "#{partitioned_table}_#{suffix}" }.unshift(partitioned_table)
     end
 
-    context 'when the table is not whitelisted' do
-      let(:template_table) { :this_table_is_not_whitelisted }
+    context 'when the table is not allowed' do
+      let(:template_table) { :this_table_is_not_allowed }
 
       it 'raises an error' do
-        expect(migration).to receive(:assert_table_is_whitelisted).with(template_table).and_call_original
+        expect(migration).to receive(:assert_table_is_allowed).with(template_table).and_call_original
 
         expect do
           migration.drop_partitioned_table_for template_table
-        end.to raise_error(/#{template_table} is not whitelisted for use/)
+        end.to raise_error(/#{template_table} is not allowed for use/)
       end
     end
 

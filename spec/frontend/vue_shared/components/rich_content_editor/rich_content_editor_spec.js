@@ -13,10 +13,10 @@ import {
   addCustomEventListener,
   removeCustomEventListener,
   addImage,
-} from '~/vue_shared/components/rich_content_editor/editor_service';
+} from '~/vue_shared/components/rich_content_editor/services/editor_service';
 
-jest.mock('~/vue_shared/components/rich_content_editor/editor_service', () => ({
-  ...jest.requireActual('~/vue_shared/components/rich_content_editor/editor_service'),
+jest.mock('~/vue_shared/components/rich_content_editor/services/editor_service', () => ({
+  ...jest.requireActual('~/vue_shared/components/rich_content_editor/services/editor_service'),
   addCustomEventListener: jest.fn(),
   removeCustomEventListener: jest.fn(),
   addImage: jest.fn(),

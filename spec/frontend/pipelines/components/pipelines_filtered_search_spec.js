@@ -2,7 +2,7 @@ import Api from '~/api';
 import { mount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
-import PipelinesFilteredSearch from '~/pipelines/components/pipelines_filtered_search.vue';
+import PipelinesFilteredSearch from '~/pipelines/components/pipelines_list/pipelines_filtered_search.vue';
 import { users, mockSearch, branches, tags } from '../mock_data';
 import { GlFilteredSearch } from '@gitlab/ui';
 

@@ -5,7 +5,7 @@ import flash from '~/flash';
 import { s__, __, sprintf } from '~/locale';
 import GlCountdown from '~/vue_shared/components/gl_countdown.vue';
 import Icon from '~/vue_shared/components/icon.vue';
-import eventHub from '../event_hub';
+import eventHub from '../../event_hub';
 
 export default {
   directives: {

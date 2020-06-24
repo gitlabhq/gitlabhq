@@ -1,7 +1,7 @@
 import Api from '~/api';
 import { GlFilteredSearchToken, GlFilteredSearchSuggestion, GlLoadingIcon } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import PipelineBranchNameToken from '~/pipelines/components/tokens/pipeline_branch_name_token.vue';
+import PipelineBranchNameToken from '~/pipelines/components/pipelines_list/tokens/pipeline_branch_name_token.vue';
 import { branches, mockBranchesAfterMap } from '../mock_data';
 
 describe('Pipeline Branch Name Token', () => {

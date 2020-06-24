@@ -1,8 +1,8 @@
 <script>
 import iconTimerSvg from 'icons/_icon_timer.svg';
-import '../../lib/utils/datetime_utility';
-import tooltip from '../../vue_shared/directives/tooltip';
-import timeagoMixin from '../../vue_shared/mixins/timeago';
+import '~/lib/utils/datetime_utility';
+import tooltip from '~/vue_shared/directives/tooltip';
+import timeagoMixin from '~/vue_shared/mixins/timeago';
 
 export default {
   directives: {

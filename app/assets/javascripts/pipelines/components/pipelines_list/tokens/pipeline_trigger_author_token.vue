@@ -13,7 +13,7 @@ import {
   ANY_TRIGGER_AUTHOR,
   FETCH_AUTHOR_ERROR_MESSAGE,
   FILTER_PIPELINES_SEARCH_DELAY,
-} from '../../constants';
+} from '../../../constants';
 
 export default {
   anyTriggerAuthor: ANY_TRIGGER_AUTHOR,

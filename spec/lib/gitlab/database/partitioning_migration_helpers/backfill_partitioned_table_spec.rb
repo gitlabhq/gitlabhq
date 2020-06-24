@@ -1,0 +1,164 @@
+# frozen_string_literal: true
+
+require 'spec_helper'
+
+describe Gitlab::Database::PartitioningMigrationHelpers::BackfillPartitionedTable, '#perform' do
+  subject { described_class.new }
+
+  let(:source_table) { '_test_partitioning_backfills' }
+  let(:destination_table) { "#{source_table}_part" }
+  let(:unique_key) { 'id' }
+
+  before do
+    allow(subject).to receive(:transaction_open?).and_return(false)
+  end
+
+  context 'when the destination table exists' do
+    before do
+      connection.execute(<<~SQL)
+        CREATE TABLE #{source_table} (
+          id serial NOT NULL PRIMARY KEY,
+          col1 int NOT NULL,
+          col2 text NOT NULL,
+          created_at timestamptz NOT NULL
+        )
+      SQL
+
+      connection.execute(<<~SQL)
+        CREATE TABLE #{destination_table} (
+          id serial NOT NULL,
+          col1 int NOT NULL,
+          col2 text NOT NULL,
+          created_at timestamptz NOT NULL,
+          PRIMARY KEY (id, created_at)
+        ) PARTITION BY RANGE (created_at)
+      SQL
+
+      connection.execute(<<~SQL)
+        CREATE TABLE #{destination_table}_202001 PARTITION OF #{destination_table}
+        FOR VALUES FROM ('2020-01-01') TO ('2020-02-01')
+      SQL
+
+      connection.execute(<<~SQL)
+        CREATE TABLE #{destination_table}_202002 PARTITION OF #{destination_table}
+        FOR VALUES FROM ('2020-02-01') TO ('2020-03-01')
+      SQL
+
+      source_model.table_name = source_table
+      destination_model.table_name = destination_table
+
+      stub_const("#{described_class}::SUB_BATCH_SIZE", 2)
+      stub_const("#{described_class}::PAUSE_SECONDS", pause_seconds)
+
+      allow(subject).to receive(:sleep)
+    end
+
+    let(:connection) { ActiveRecord::Base.connection }
+    let(:source_model) { Class.new(ActiveRecord::Base) }
+    let(:destination_model) { Class.new(ActiveRecord::Base) }
+    let(:timestamp) { Time.utc(2020, 1, 2).round }
+    let(:pause_seconds) { 1 }
+
+    let!(:source1) { create_source_record(timestamp) }
+    let!(:source2) { create_source_record(timestamp + 1.day) }
+    let!(:source3) { create_source_record(timestamp + 1.month) }
+
+    it 'copies data into the destination table idempotently' do
+      expect(destination_model.count).to eq(0)
+
+      subject.perform(source1.id, source3.id, source_table, destination_table, unique_key)
+
+      expect(destination_model.count).to eq(3)
+
+      source_model.find_each do |source_record|
+        destination_record = destination_model.find_by_id(source_record.id)
+
+        expect(destination_record.attributes).to eq(source_record.attributes)
+      end
+
+      subject.perform(source1.id, source3.id, source_table, destination_table, unique_key)
+
+      expect(destination_model.count).to eq(3)
+    end
+
+    it 'breaks the assigned batch into smaller batches' do
+      expect_next_instance_of(described_class::BulkCopy) do |bulk_copy|
+        expect(bulk_copy).to receive(:copy_between).with(source1.id, source2.id)
+        expect(bulk_copy).to receive(:copy_between).with(source3.id, source3.id)
+      end
+
+      subject.perform(source1.id, source3.id, source_table, destination_table, unique_key)
+    end
+
+    it 'pauses after copying each sub-batch' do
+      expect(subject).to receive(:sleep).with(pause_seconds).twice
+
+      subject.perform(source1.id, source3.id, source_table, destination_table, unique_key)
+    end
+
+    context 'when the feature flag is disabled' do
+      let(:mock_connection) { double('connection') }
+
+      before do
+        allow(subject).to receive(:connection).and_return(mock_connection)
+        stub_feature_flags(backfill_partitioned_audit_events: false)
+      end
+
+      it 'exits without attempting to copy data' do
+        expect(mock_connection).not_to receive(:execute)
+
+        subject.perform(1, 100, source_table, destination_table, unique_key)
+
+        expect(destination_model.count).to eq(0)
+      end
+    end
+
+    context 'when the job is run within an explicit transaction block' do
+      let(:mock_connection) { double('connection') }
+
+      before do
+        allow(subject).to receive(:connection).and_return(mock_connection)
+        allow(subject).to receive(:transaction_open?).and_return(true)
+      end
+
+      it 'raises an error before copying data' do
+        expect(mock_connection).not_to receive(:execute)
+
+        expect do
+          subject.perform(1, 100, source_table, destination_table, unique_key)
+        end.to raise_error(/Aborting job to backfill partitioned #{source_table}/)
+
+        expect(destination_model.count).to eq(0)
+      end
+    end
+  end
+
+  context 'when the destination table does not exist' do
+    let(:mock_connection) { double('connection') }
+    let(:mock_logger) { double('logger') }
+
+    before do
+      allow(subject).to receive(:connection).and_return(mock_connection)
+      allow(subject).to receive(:logger).and_return(mock_logger)
+
+      expect(mock_connection).to receive(:table_exists?).with(destination_table).and_return(false)
+      allow(mock_logger).to receive(:warn)
+    end
+
+    it 'exits without attempting to copy data' do
+      expect(mock_connection).not_to receive(:execute)
+
+      subject.perform(1, 100, source_table, destination_table, unique_key)
+    end
+
+    it 'logs a warning message that the job was skipped' do
+      expect(mock_logger).to receive(:warn).with(/#{destination_table} does not exist/)
+
+      subject.perform(1, 100, source_table, destination_table, unique_key)
+    end
+  end
+
+  def create_source_record(timestamp)
+    source_model.create!(col1: 123, col2: 'original value', created_at: timestamp)
+  end
+end

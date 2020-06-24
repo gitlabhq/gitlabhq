@@ -117,7 +117,7 @@ module Ci
     after_save :update_file_store, if: :saved_change_to_file?
 
     scope :not_expired, -> { where('expire_at IS NULL OR expire_at > ?', Time.current) }
-    scope :with_files_stored_locally, -> { where(file_store: [nil, ::JobArtifactUploader::Store::LOCAL]) }
+    scope :with_files_stored_locally, -> { where(file_store: ::JobArtifactUploader::Store::LOCAL) }
     scope :with_files_stored_remotely, -> { where(file_store: ::JobArtifactUploader::Store::REMOTE) }
     scope :for_sha, ->(sha, project_id) { joins(job: :pipeline).where(ci_pipelines: { sha: sha, project_id: project_id }) }
     scope :for_ref, ->(ref, project_id) { joins(job: :pipeline).where(ci_pipelines: { ref: ref, project_id: project_id }) }

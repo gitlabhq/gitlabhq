@@ -1,16 +1,16 @@
 <script>
-import eventHub from '../event_hub';
+import eventHub from '../../event_hub';
 import PipelinesActionsComponent from './pipelines_actions.vue';
 import PipelinesArtifactsComponent from './pipelines_artifacts.vue';
-import CiBadge from '../../vue_shared/components/ci_badge_link.vue';
+import CiBadge from '~/vue_shared/components/ci_badge_link.vue';
 import PipelineStage from './stage.vue';
 import PipelineUrl from './pipeline_url.vue';
 import PipelineTriggerer from './pipeline_triggerer.vue';
 import PipelinesTimeago from './time_ago.vue';
-import CommitComponent from '../../vue_shared/components/commit.vue';
-import LoadingButton from '../../vue_shared/components/loading_button.vue';
-import Icon from '../../vue_shared/components/icon.vue';
-import { PIPELINES_TABLE } from '../constants';
+import CommitComponent from '~/vue_shared/components/commit.vue';
+import LoadingButton from '~/vue_shared/components/loading_button.vue';
+import Icon from '~/vue_shared/components/icon.vue';
+import { PIPELINES_TABLE } from '../../constants';
 
 /**
  * Pipeline table row.

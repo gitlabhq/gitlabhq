@@ -10,6 +10,7 @@ $note-form-margin-left: 72px;
     top: 0;
     bottom: 0;
     left: $left;
+    height: calc(100% - 20px);
   }
 }
 

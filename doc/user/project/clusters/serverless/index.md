@@ -570,7 +570,7 @@ The simplest way to accomplish this is to
 use [Certbot to manually obtain Let's Encrypt certificates](https://knative.dev/docs/serving/using-a-tls-cert/#using-certbot-to-manually-obtain-let-s-encrypt-certificates). Certbot is a free, open source software tool for automatically using Let’s Encrypt certificates on manually-administrated websites to enable HTTPS.
 
 NOTE: **Note:**
-The instructions below relate to installing and running Certbot on a Linux server and may not work on other operating systems.
+The instructions below relate to installing and running Certbot on a Linux server that has Python 3 installed and may not work on other operating systems or with other versions of Python.
 
 1. Install Certbot by running the
    [`certbot-auto` wrapper script](https://certbot.eff.org/docs/install.html#certbot-auto).
@@ -580,7 +580,7 @@ The instructions below relate to installing and running Certbot on a Linux serve
    wget https://dl.eff.org/certbot-auto
    sudo mv certbot-auto /usr/local/bin/certbot-auto
    sudo chown root /usr/local/bin/certbot-auto
-   chmod 0755 /usr/local/bin/certbot-auto
+   sudo chmod 0755 /usr/local/bin/certbot-auto
    /usr/local/bin/certbot-auto --help
    ```
 
@@ -609,7 +609,7 @@ The instructions below relate to installing and running Certbot on a Linux serve
    using DNS challenge during authorization:
 
    ```shell
-   ./certbot-auto certonly --manual --preferred-challenges dns -d '*.<namespace>.example.com'
+   /usr/local/bin/certbot-auto certonly --manual --preferred-challenges dns -d '*.<namespace>.example.com'
    ```
 
    Where `<namespace>` is the namespace created by GitLab for your serverless project (composed of `<project_name>-<project_id>-<environment>`) and

@@ -68,6 +68,6 @@
   }
 
   .note-header-info {
-    margin-top: 1px;
+    @include gl-mt-1;
   }
 }

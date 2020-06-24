@@ -12,15 +12,24 @@ A lot of GitLab users have successfully migrated to GitLab CI/CD from Jenkins. T
 easier if you're just getting started, we've collected several resources here that you might find useful
 before diving in. Think of this page as a "GitLab CI/CD for Jenkins Users" guide.
 
-First of all, our [Quick Start Guide](../quick_start/README.md) contains a good overview of how GitLab CI/CD works.
-You may also be interested in [Auto DevOps](../../topics/autodevops/index.md) which can potentially be used to build, test,
-and deploy your applications with little to no configuration needed at all.
+The following list of recommended steps was created after observing organizations
+that were able to quickly complete this migration:
+
+1. Start by reading the GitLab CI/CD [Quick Start Guide](../quick_start/README.md) and [important product differences](#important-product-differences).
+1. Learn the importance of [managing the organizational transition](#managing-the-organizational-transition).
+1. [Add Runners](../runners/README.md) to your GitLab instance.
+1. Educate and enable your developers to independently perform the following steps in their projects:
+   1. Review the [Quick Start Guide](../quick_start/README.md) and [Pipeline Configuration Reference](../yaml/README.md).
+   1. Use the [Jenkins Wrapper](#jenkinsfile-wrapper) to temporarily maintain fragile Jenkins jobs.
+   1. Migrate the build and CI jobs and configure them to show results directly in your merge requests. They can use [Auto DevOps](../../topics/autodevops/index.md) as a starting point, and [customize](../../topics/autodevops/customize.md) or [decompose](../../topics/autodevops/customize.md#using-components-of-auto-devops) the configuration as needed.
+   1. Add [Review Apps](../review_apps/index.md).
+   1. Migrate the deployment jobs using [cloud deployment templates](../cloud_deployment/index.md), adding [environments](../environments/index.md), and [deploy boards](../..//user/project/deploy_boards.md).
+   1. Work to unwrap any jobs still running with the use of the Jenkins wrapper.
+1. Take stock of any common CI/CD job definitions then create and share [templates](#templates) for them.
 
 For an example of how to convert a Jenkins pipeline into a GitLab CI/CD pipeline,
 or how to use Auto DevOps to test your code automatically, watch the
 [Migrating from Jenkins to GitLab](https://www.youtube.com/watch?v=RlEVGOpYF5Y) video.
-
-For advanced CI/CD teams, [templates](#templates) can enable the reuse of pipeline configurations.
 
 Otherwise, read on for important information that will help you get the ball rolling. Welcome
 to GitLab!

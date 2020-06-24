@@ -1,7 +1,7 @@
 import Api from '~/api';
 import { GlFilteredSearchToken, GlFilteredSearchSuggestion, GlLoadingIcon } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import PipelineTriggerAuthorToken from '~/pipelines/components/tokens/pipeline_trigger_author_token.vue';
+import PipelineTriggerAuthorToken from '~/pipelines/components/pipelines_list/tokens/pipeline_trigger_author_token.vue';
 import { users } from '../mock_data';
 
 describe('Pipeline Trigger Author Token', () => {

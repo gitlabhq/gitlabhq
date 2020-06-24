@@ -18,7 +18,7 @@ class CreateSnippetStatistics < ActiveRecord::Migration[6.0]
 
   def down
     with_lock_retries do
-      drop_table :snippet_statistics # rubocop:disable Migration/DropTable
+      drop_table :snippet_statistics
     end
   end
 end

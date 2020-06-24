@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import emptyStateComp from '~/pipelines/components/empty_state.vue';
+import emptyStateComp from '~/pipelines/components/pipelines_list/empty_state.vue';
 import mountComponent from '../helpers/vue_mount_component_helper';
 
 describe('Pipelines Empty State', () => {

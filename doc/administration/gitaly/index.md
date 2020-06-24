@@ -19,12 +19,13 @@ In the Gitaly documentation:
   - [GitLab Shell](https://gitlab.com/gitlab-org/gitlab-shell).
   - [GitLab Workhorse](https://gitlab.com/gitlab-org/gitlab-workhorse).
 
-GitLab end users do not have direct access to Gitaly.
+GitLab end users do not have direct access to Gitaly. Gitaly only manages Git
+repository access for GitLab. Other types of GitLab data aren't accessed using Gitaly.
 
 CAUTION: **Caution:**
-From GitLab 13.0, using NFS for Git repositories is deprecated. In GitLab 14.0,
-support for NFS for Git repositories is scheduled to be removed. Upgrade to
-[Gitaly Cluster](praefect.md) as soon as possible.
+From GitLab 13.0, Gitaly support for NFS is deprecated. In GitLab 14.0, Gitaly support
+for NFS is scheduled to be removed. Upgrade to [Gitaly Cluster](praefect.md) as soon as
+possible.
 
 ## Architecture
 

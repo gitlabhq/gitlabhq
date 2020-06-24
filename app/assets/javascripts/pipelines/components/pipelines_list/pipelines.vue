@@ -1,17 +1,17 @@
 <script>
 import { isEqual } from 'lodash';
-import { __, sprintf, s__ } from '../../locale';
-import createFlash from '../../flash';
-import PipelinesService from '../services/pipelines_service';
-import pipelinesMixin from '../mixins/pipelines';
-import TablePagination from '../../vue_shared/components/pagination/table_pagination.vue';
-import NavigationTabs from '../../vue_shared/components/navigation_tabs.vue';
+import { __, sprintf, s__ } from '~/locale';
+import createFlash from '~/flash';
+import PipelinesService from '../../services/pipelines_service';
+import pipelinesMixin from '../../mixins/pipelines';
+import TablePagination from '~/vue_shared/components/pagination/table_pagination.vue';
+import NavigationTabs from '~/vue_shared/components/navigation_tabs.vue';
 import NavigationControls from './nav_controls.vue';
-import { getParameterByName } from '../../lib/utils/common_utils';
-import CIPaginationMixin from '../../vue_shared/mixins/ci_pagination_api_mixin';
+import { getParameterByName } from '~/lib/utils/common_utils';
+import CIPaginationMixin from '~/vue_shared/mixins/ci_pagination_api_mixin';
 import PipelinesFilteredSearch from './pipelines_filtered_search.vue';
-import { validateParams } from '../utils';
-import { ANY_TRIGGER_AUTHOR, RAW_TEXT_WARNING, FILTER_TAG_IDENTIFIER } from '../constants';
+import { validateParams } from '../../utils';
+import { ANY_TRIGGER_AUTHOR, RAW_TEXT_WARNING, FILTER_TAG_IDENTIFIER } from '../../constants';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 export default {

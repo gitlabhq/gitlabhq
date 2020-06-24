@@ -4,7 +4,7 @@ import {
   removeCustomEventListener,
   addImage,
   getMarkdown,
-} from '~/vue_shared/components/rich_content_editor/editor_service';
+} from '~/vue_shared/components/rich_content_editor/services/editor_service';
 
 describe('Editor Service', () => {
   const mockInstance = {
