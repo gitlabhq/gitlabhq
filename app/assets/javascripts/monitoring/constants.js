@@ -230,6 +230,7 @@ export const OPERATORS = {
 export const VARIABLE_TYPES = {
   custom: 'custom',
   text: 'text',
+  metric_label_values: 'metric_label_values',
 };
 
 /**

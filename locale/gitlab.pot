@@ -14308,6 +14308,9 @@ msgstr ""
 msgid "Metrics|Refresh dashboard"
 msgstr ""
 
+msgid "Metrics|Select a value"
+msgstr ""
+
 msgid "Metrics|Star dashboard"
 msgstr ""
 
@@ -14333,6 +14336,9 @@ msgid "Metrics|There was an error getting deployment information."
 msgstr ""
 
 msgid "Metrics|There was an error getting environments information."
+msgstr ""
+
+msgid "Metrics|There was an error getting options for variable \"%{name}\"."
 msgstr ""
 
 msgid "Metrics|There was an error trying to validate your query"

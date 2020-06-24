@@ -29,6 +29,7 @@ import {
   toggleStarredValue,
   duplicateSystemDashboard,
   updateVariablesAndFetchData,
+  fetchVariableMetricLabelValues,
 } from '~/monitoring/stores/actions';
 import {
   gqClient,
@@ -384,14 +385,22 @@ describe('Monitoring store actions', () => {
               value: 0,
             },
           );
-          expect(dispatch).toHaveBeenCalledTimes(1);
+          expect(dispatch).toHaveBeenCalledTimes(2);
           expect(dispatch).toHaveBeenCalledWith('fetchDeploymentsData');
+          expect(dispatch).toHaveBeenCalledWith('fetchVariableMetricLabelValues', {
+            defaultQueryParams: {
+              start_time: expect.any(String),
+              end_time: expect.any(String),
+              step: expect.any(Number),
+            },
+          });
 
           expect(createFlash).not.toHaveBeenCalled();
           done();
         })
         .catch(done.fail);
     });
+
     it('dispatches fetchPrometheusMetric for each panel query', done => {
       state.dashboard.panelGroups = convertObjectPropsToCamelCase(
         metricsDashboardResponse.dashboard.panel_groups,
@@ -434,21 +443,27 @@ describe('Monitoring store actions', () => {
       const metric = state.dashboard.panelGroups[0].panels[0].metrics[0];
 
       dispatch.mockResolvedValueOnce(); // fetchDeploymentsData
+      dispatch.mockResolvedValueOnce(); // fetchVariableMetricLabelValues
       // Mock having one out of four metrics failing
       dispatch.mockRejectedValueOnce(new Error('Error fetching this metric'));
       dispatch.mockResolvedValue();
 
       fetchDashboardData({ state, commit, dispatch })
         .then(() => {
-          expect(dispatch).toHaveBeenCalledTimes(metricsDashboardPanelCount + 1); // plus 1 for deployments
+          const defaultQueryParams = {
+            start_time: expect.any(String),
+            end_time: expect.any(String),
+            step: expect.any(Number),
+          };
+
+          expect(dispatch).toHaveBeenCalledTimes(metricsDashboardPanelCount + 2); // plus 1 for deployments
           expect(dispatch).toHaveBeenCalledWith('fetchDeploymentsData');
+          expect(dispatch).toHaveBeenCalledWith('fetchVariableMetricLabelValues', {
+            defaultQueryParams,
+          });
           expect(dispatch).toHaveBeenCalledWith('fetchPrometheusMetric', {
             metric,
-            defaultQueryParams: {
-              start_time: expect.any(String),
-              end_time: expect.any(String),
-              step: expect.any(Number),
-            },
+            defaultQueryParams,
           });
 
           expect(createFlash).toHaveBeenCalledTimes(1);
@@ -1116,14 +1131,14 @@ describe('Monitoring store actions', () => {
   // Variables manipulation
 
   describe('updateVariablesAndFetchData', () => {
-    it('should commit UPDATE_VARIABLES mutation and fetch data', done => {
+    it('should commit UPDATE_VARIABLE_VALUE mutation and fetch data', done => {
       testAction(
         updateVariablesAndFetchData,
         { pod: 'POD' },
         state,
         [
           {
-            type: types.UPDATE_VARIABLES,
+            type: types.UPDATE_VARIABLE_VALUE,
             payload: { pod: 'POD' },
           },
         ],
@@ -1133,6 +1148,74 @@ describe('Monitoring store actions', () => {
           },
         ],
         done,
+      );
+    });
+  });
+
+  describe('fetchVariableMetricLabelValues', () => {
+    const variable = {
+      type: 'metric_label_values',
+      options: {
+        prometheusEndpointPath: '/series',
+        label: 'job',
+      },
+    };
+    const defaultQueryParams = {
+      start_time: '2019-08-06T12:40:02.184Z',
+      end_time: '2019-08-06T20:40:02.184Z',
+    };
+
+    beforeEach(() => {
+      state = {
+        ...state,
+        timeRange: defaultTimeRange,
+        variables: {
+          label1: variable,
+        },
+      };
+    });
+
+    it('should commit UPDATE_VARIABLE_METRIC_LABEL_VALUES mutation and fetch data', () => {
+      const data = [
+        {
+          __name__: 'up',
+          job: 'prometheus',
+        },
+        {
+          __name__: 'up',
+          job: 'POD',
+        },
+      ];
+
+      mock.onGet('/series').reply(200, {
+        status: 'success',
+        data,
+      });
+
+      return testAction(
+        fetchVariableMetricLabelValues,
+        { defaultQueryParams },
+        state,
+        [
+          {
+            type: types.UPDATE_VARIABLE_METRIC_LABEL_VALUES,
+            payload: { variable, label: 'job', data },
+          },
+        ],
+        [],
+      );
+    });
+
+    it('should notify the user that dynamic options were not loaded', () => {
+      mock.onGet('/series').reply(500);
+
+      return testAction(fetchVariableMetricLabelValues, { defaultQueryParams }, state, [], []).then(
+        () => {
+          expect(createFlash).toHaveBeenCalledTimes(1);
+          expect(createFlash).toHaveBeenCalledWith(
+            expect.stringContaining('error getting options for variable "label1"'),
+          );
+        },
       );
     });
   });

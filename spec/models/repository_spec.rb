@@ -2895,6 +2895,29 @@ describe Repository do
     end
   end
 
+  describe '#project' do
+    it 'returns the project for a project snippet' do
+      snippet = create(:project_snippet)
+
+      expect(snippet.repository.project).to be(snippet.project)
+    end
+
+    it 'returns nil for a personal snippet' do
+      snippet = create(:personal_snippet)
+
+      expect(snippet.repository.project).to be_nil
+    end
+
+    it 'returns the container if it is a project' do
+      expect(repository.project).to be(project)
+    end
+
+    it 'returns nil if the container is not a project' do
+      expect(repository).to receive(:container).and_return(Group.new)
+      expect(repository.project).to be_nil
+    end
+  end
+
   describe '#submodule_links' do
     it 'returns an instance of Gitlab::SubmoduleLinks' do
       expect(repository.submodule_links).to be_a(Gitlab::SubmoduleLinks)

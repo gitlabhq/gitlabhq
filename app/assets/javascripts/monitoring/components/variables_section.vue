@@ -1,13 +1,14 @@
 <script>
 import { mapState, mapActions } from 'vuex';
-import CustomVariable from './variables/custom_variable.vue';
-import TextVariable from './variables/text_variable.vue';
+import DropdownField from './variables/dropdown_field.vue';
+import TextField from './variables/text_field.vue';
 import { setCustomVariablesFromUrl } from '../utils';
+import { VARIABLE_TYPES } from '../constants';
 
 export default {
   components: {
-    CustomVariable,
-    TextVariable,
+    DropdownField,
+    TextField,
   },
   computed: {
     ...mapState('monitoringDashboard', ['variables']),
@@ -27,12 +28,11 @@ export default {
         setCustomVariablesFromUrl(this.variables);
       }
     },
-    variableComponent(type) {
-      const types = {
-        text: TextVariable,
-        custom: CustomVariable,
-      };
-      return types[type] || TextVariable;
+    variableField(type) {
+      if (type === VARIABLE_TYPES.custom || type === VARIABLE_TYPES.metric_label_values) {
+        return DropdownField;
+      }
+      return TextField;
     },
   },
 };
@@ -41,7 +41,7 @@ export default {
   <div ref="variablesSection" class="d-sm-flex flex-sm-wrap pt-2 pr-1 pb-0 pl-2 variables-section">
     <div v-for="(variable, key) in variables" :key="key" class="mb-1 pr-2 d-flex d-sm-block">
       <component
-        :is="variableComponent(variable.type)"
+        :is="variableField(variable.type)"
         class="mb-0 flex-grow-1"
         :label="variable.label"
         :value="variable.value"

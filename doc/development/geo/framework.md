@@ -511,6 +511,13 @@ Widgets should now be verified by Geo!
 Individual widget synchronization and verification data should now be available
 via the GraphQL API!
 
+1. Take care of replicating "update" events. Geo Framework does not currently support
+   replicating "update" events because all entities added to the framework, by this time,
+   are immutable. If this is the case
+   for the entity you're going to add, please follow [https://gitlab.com/gitlab-org/gitlab/-/issues/118743]
+   and [https://gitlab.com/gitlab-org/gitlab/-/issues/118745] as examples to add the new event type.
+   Please also remove this notice when you've added it.
+
 #### Admin UI
 
 To do: This should be done as part of

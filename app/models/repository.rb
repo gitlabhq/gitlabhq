@@ -1113,7 +1113,7 @@ class Repository
   def project
     if repo_type.snippet?
       container.project
-    else
+    elsif container.is_a?(Project)
       container
     end
   end

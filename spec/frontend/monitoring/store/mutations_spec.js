@@ -441,16 +441,57 @@ describe('Monitoring mutations', () => {
     });
   });
 
-  describe('UPDATE_VARIABLES', () => {
+  describe('UPDATE_VARIABLE_VALUE', () => {
     afterEach(() => {
       mutations[types.SET_VARIABLES](stateCopy, {});
     });
 
     it('updates only the value of the variable in variables', () => {
       mutations[types.SET_VARIABLES](stateCopy, { environment: { value: 'prod', type: 'text' } });
-      mutations[types.UPDATE_VARIABLES](stateCopy, { key: 'environment', value: 'new prod' });
+      mutations[types.UPDATE_VARIABLE_VALUE](stateCopy, { key: 'environment', value: 'new prod' });
 
       expect(stateCopy.variables).toEqual({ environment: { value: 'new prod', type: 'text' } });
+    });
+  });
+
+  describe('UPDATE_VARIABLE_METRIC_LABEL_VALUES', () => {
+    it('updates options in a variable', () => {
+      const data = [
+        {
+          __name__: 'up',
+          job: 'prometheus',
+          env: 'prd',
+        },
+        {
+          __name__: 'up',
+          job: 'prometheus',
+          env: 'stg',
+        },
+        {
+          __name__: 'up',
+          job: 'node',
+          env: 'prod',
+        },
+        {
+          __name__: 'up',
+          job: 'node',
+          env: 'stg',
+        },
+      ];
+
+      const variable = {
+        options: {},
+      };
+
+      mutations[types.UPDATE_VARIABLE_METRIC_LABEL_VALUES](stateCopy, {
+        variable,
+        label: 'job',
+        data,
+      });
+
+      expect(variable.options).toEqual({
+        values: [{ text: 'prometheus', value: 'prometheus' }, { text: 'node', value: 'node' }],
+      });
     });
   });
 });

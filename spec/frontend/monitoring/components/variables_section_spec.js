@@ -1,8 +1,8 @@
 import { shallowMount } from '@vue/test-utils';
 import Vuex from 'vuex';
 import VariablesSection from '~/monitoring/components/variables_section.vue';
-import CustomVariable from '~/monitoring/components/variables/custom_variable.vue';
-import TextVariable from '~/monitoring/components/variables/text_variable.vue';
+import DropdownField from '~/monitoring/components/variables/dropdown_field.vue';
+import TextField from '~/monitoring/components/variables/text_field.vue';
 import { updateHistory, mergeUrlParams } from '~/lib/utils/url_utility';
 import { createStore } from '~/monitoring/stores';
 import { convertVariablesForURL } from '~/monitoring/utils';
@@ -21,6 +21,7 @@ describe('Metrics dashboard/variables section component', () => {
     label1: mockTemplatingDataResponses.simpleText.simpleText,
     label2: mockTemplatingDataResponses.advText.advText,
     label3: mockTemplatingDataResponses.simpleCustom.simpleCustom,
+    label4: mockTemplatingDataResponses.metricLabelValues.simple,
   };
 
   const createShallowWrapper = () => {
@@ -29,8 +30,8 @@ describe('Metrics dashboard/variables section component', () => {
     });
   };
 
-  const findTextInput = () => wrapper.findAll(TextVariable);
-  const findCustomInput = () => wrapper.findAll(CustomVariable);
+  const findTextInputs = () => wrapper.findAll(TextField);
+  const findCustomInputs = () => wrapper.findAll(DropdownField);
 
   beforeEach(() => {
     store = createStore();
@@ -40,19 +41,29 @@ describe('Metrics dashboard/variables section component', () => {
 
   it('does not show the variables section', () => {
     createShallowWrapper();
-    const allInputs = findTextInput().length + findCustomInput().length;
+    const allInputs = findTextInputs().length + findCustomInputs().length;
 
     expect(allInputs).toBe(0);
   });
 
-  it('shows the variables section', () => {
-    createShallowWrapper();
-    store.commit(`monitoringDashboard/${types.SET_VARIABLES}`, sampleVariables);
+  describe('when variables are set', () => {
+    beforeEach(() => {
+      createShallowWrapper();
+      store.commit(`monitoringDashboard/${types.SET_VARIABLES}`, sampleVariables);
+      return wrapper.vm.$nextTick;
+    });
 
-    return wrapper.vm.$nextTick(() => {
-      const allInputs = findTextInput().length + findCustomInput().length;
+    it('shows the variables section', () => {
+      const allInputs = findTextInputs().length + findCustomInputs().length;
 
       expect(allInputs).toBe(Object.keys(sampleVariables).length);
+    });
+
+    it('shows the right custom variable inputs', () => {
+      const customInputs = findCustomInputs();
+
+      expect(customInputs.at(0).props('name')).toBe('label3');
+      expect(customInputs.at(1).props('name')).toBe('label4');
     });
   });
 
@@ -79,7 +90,7 @@ describe('Metrics dashboard/variables section component', () => {
     });
 
     it('merges the url params and refreshes the dashboard when a text-based variables inputs are updated', () => {
-      const firstInput = findTextInput().at(0);
+      const firstInput = findTextInputs().at(0);
 
       firstInput.vm.$emit('onUpdate', 'label1', 'test');
 
@@ -94,7 +105,7 @@ describe('Metrics dashboard/variables section component', () => {
     });
 
     it('merges the url params and refreshes the dashboard when a custom-based variables inputs are updated', () => {
-      const firstInput = findCustomInput().at(0);
+      const firstInput = findCustomInputs().at(0);
 
       firstInput.vm.$emit('onUpdate', 'label1', 'test');
 
@@ -109,7 +120,7 @@ describe('Metrics dashboard/variables section component', () => {
     });
 
     it('does not merge the url params and refreshes the dashboard if the value entered is not different that is what currently stored', () => {
-      const firstInput = findTextInput().at(0);
+      const firstInput = findTextInputs().at(0);
 
       firstInput.vm.$emit('onUpdate', 'label1', 'Simple text');
 

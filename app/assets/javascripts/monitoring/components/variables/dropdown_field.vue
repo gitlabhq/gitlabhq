@@ -22,13 +22,13 @@ export default {
       default: '',
     },
     options: {
-      type: Array,
+      type: Object,
       required: true,
     },
   },
   computed: {
-    defaultText() {
-      const selectedOpt = this.options.find(opt => opt.value === this.value);
+    text() {
+      const selectedOpt = this.options.values?.find(opt => opt.value === this.value);
       return selectedOpt?.text || this.value;
     },
   },
@@ -41,10 +41,13 @@ export default {
 </script>
 <template>
   <gl-form-group :label="label">
-    <gl-dropdown toggle-class="dropdown-menu-toggle" :text="defaultText">
-      <gl-dropdown-item v-for="(opt, key) in options" :key="key" @click="onUpdate(opt.value)">{{
-        opt.text
-      }}</gl-dropdown-item>
+    <gl-dropdown toggle-class="dropdown-menu-toggle" :text="text || s__('Metrics|Select a value')">
+      <gl-dropdown-item
+        v-for="val in options.values"
+        :key="val.value"
+        @click="onUpdate(val.value)"
+        >{{ val.text }}</gl-dropdown-item
+      >
     </gl-dropdown>
   </gl-form-group>
 </template>

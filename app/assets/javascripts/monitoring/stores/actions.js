@@ -21,6 +21,7 @@ import {
   PROMETHEUS_TIMEOUT,
   ENVIRONMENT_AVAILABLE_STATE,
   DEFAULT_DASHBOARD_PATH,
+  VARIABLE_TYPES,
 } from '../constants';
 
 function prometheusMetricQueryParams(timeRange) {
@@ -191,7 +192,11 @@ export const fetchDashboardData = ({ state, dispatch, getters }) => {
     return Promise.reject();
   }
 
+  // Time range params must be pre-calculated once for all metrics and options
+  // A subsequent call, may calculate a different time range
   const defaultQueryParams = prometheusMetricQueryParams(state.timeRange);
+
+  dispatch('fetchVariableMetricLabelValues', { defaultQueryParams });
 
   const promises = [];
   state.dashboard.panelGroups.forEach(group => {
@@ -466,9 +471,40 @@ export const duplicateSystemDashboard = ({ state }, payload) => {
 // Variables manipulation
 
 export const updateVariablesAndFetchData = ({ commit, dispatch }, updatedVariable) => {
-  commit(types.UPDATE_VARIABLES, updatedVariable);
+  commit(types.UPDATE_VARIABLE_VALUE, updatedVariable);
 
   return dispatch('fetchDashboardData');
+};
+
+export const fetchVariableMetricLabelValues = ({ state, commit }, { defaultQueryParams }) => {
+  const { start_time, end_time } = defaultQueryParams;
+  const optionsRequests = [];
+
+  Object.entries(state.variables).forEach(([key, variable]) => {
+    if (variable.type === VARIABLE_TYPES.metric_label_values) {
+      const { prometheusEndpointPath, label } = variable.options;
+
+      const optionsRequest = backOffRequest(() =>
+        axios.get(prometheusEndpointPath, {
+          params: { start_time, end_time },
+        }),
+      )
+        .then(({ data }) => data.data)
+        .then(data => {
+          commit(types.UPDATE_VARIABLE_METRIC_LABEL_VALUES, { variable, label, data });
+        })
+        .catch(() => {
+          createFlash(
+            sprintf(s__('Metrics|There was an error getting options for variable "%{name}".'), {
+              name: key,
+            }),
+          );
+        });
+      optionsRequests.push(optionsRequest);
+    }
+  });
+
+  return Promise.all(optionsRequests);
 };
 
 // prevent babel-plugin-rewire from generating an invalid default during karma tests
