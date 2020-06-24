@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'view user notifications' do
+RSpec.describe 'view user notifications' do
   let(:user) do
     create(:user) do |user|
       user.emails.create(email: 'original@example.com', confirmed_at: Time.current)

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe API::Notes do
+RSpec.describe API::Notes do
   let!(:user) { create(:user) }
   let!(:project) { create(:project, :public) }
   let(:private_user) { create(:user) }

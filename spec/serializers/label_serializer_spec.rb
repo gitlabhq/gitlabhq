@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe LabelSerializer do
+RSpec.describe LabelSerializer do
   let(:user) { create(:user) }
 
   let(:serializer) do

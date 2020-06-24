@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe AuditEventService do
+RSpec.describe AuditEventService do
   let(:project) { create(:project) }
   let(:user) { create(:user, :with_sign_ins) }
   let(:project_member) { create(:project_member, user: user) }

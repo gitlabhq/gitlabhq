@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe AnalyticsBuildEntity do
+RSpec.describe AnalyticsBuildEntity do
   let(:entity) do
     described_class.new(build, request: double)
   end

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Query.project(fullPath).issue(iid)' do
+RSpec.describe 'Query.project(fullPath).issue(iid)' do
   include GraphqlHelpers
 
   let_it_be(:project) { create(:project) }

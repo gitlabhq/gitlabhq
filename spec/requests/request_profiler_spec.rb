@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Request Profiler' do
+RSpec.describe 'Request Profiler' do
   let(:user) { create(:user) }
 
   shared_examples 'profiling a request' do |profile_type, extension|

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Projects::Prometheus::AlertPresenter do
+RSpec.describe Projects::Prometheus::AlertPresenter do
   let_it_be(:project, reload: true) { create(:project) }
 
   let(:presenter) { described_class.new(alert) }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Setting locked status of a merge request' do
+RSpec.describe 'Setting locked status of a merge request' do
   include GraphqlHelpers
 
   let(:current_user) { create(:user) }

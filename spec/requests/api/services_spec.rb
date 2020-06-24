@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-describe API::Services do
+RSpec.describe API::Services do
   let_it_be(:user) { create(:user) }
   let_it_be(:user2) { create(:user) }
 

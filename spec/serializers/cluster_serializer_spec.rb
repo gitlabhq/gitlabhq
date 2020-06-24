@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ClusterSerializer do
+RSpec.describe ClusterSerializer do
   let(:cluster) { create(:cluster, :project, provider_type: :user) }
 
   describe '#represent_list' do

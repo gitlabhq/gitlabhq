@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Ci::CreatePipelineService do
+RSpec.describe Ci::CreatePipelineService do
   include ProjectForksHelper
 
   let_it_be(:project, reload: true) { create(:project, :repository) }

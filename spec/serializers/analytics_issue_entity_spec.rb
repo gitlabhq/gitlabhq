@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe AnalyticsIssueEntity do
+RSpec.describe AnalyticsIssueEntity do
   let(:user) { create(:user) }
   let(:entity_hash) do
     {

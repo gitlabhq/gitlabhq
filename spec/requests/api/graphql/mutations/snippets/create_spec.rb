@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Creating a Snippet' do
+RSpec.describe 'Creating a Snippet' do
   include GraphqlHelpers
 
   let_it_be(:user) { create(:user) }

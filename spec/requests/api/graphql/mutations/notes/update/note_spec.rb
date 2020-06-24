@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Updating a Note' do
+RSpec.describe 'Updating a Note' do
   include GraphqlHelpers
 
   let!(:note) { create(:note, note: original_body) }

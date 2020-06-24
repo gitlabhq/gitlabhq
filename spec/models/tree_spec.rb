@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Tree do
+RSpec.describe Tree do
   let(:repository) { create(:project, :repository).repository }
   let(:sha) { repository.root_ref }
 

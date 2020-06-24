@@ -3,7 +3,7 @@
 #
 # Checks for use of first person pronouns.
 #
-# For a list of all options, see https://errata-ai.github.io/vale/styles/
+# For a list of all options, see https://errata-ai.gitbook.io/vale/getting-started/styles
 extends: existence
 message: '"%s" is a first-person pronoun. Use second- or third-person pronouns (like we, you, us, one) instead.'
 level: warning

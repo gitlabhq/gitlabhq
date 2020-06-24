@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe API::ProjectClusters do
+RSpec.describe API::ProjectClusters do
   include KubernetesHelpers
 
   let_it_be(:current_user) { create(:user) }

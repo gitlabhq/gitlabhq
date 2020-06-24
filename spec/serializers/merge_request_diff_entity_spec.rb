@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe MergeRequestDiffEntity do
+RSpec.describe MergeRequestDiffEntity do
   let_it_be(:project) { create(:project, :repository) }
   let(:request) { EntityRequest.new(project: project) }
   let(:merge_request) { create(:merge_request_with_diffs, target_project: project, source_project: project) }

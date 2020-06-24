@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe SentryIssue do
+RSpec.describe SentryIssue do
   describe 'associations' do
     it { is_expected.to belong_to(:issue) }
   end

@@ -5,7 +5,7 @@ require 'rubocop'
 require 'rubocop/rspec/support'
 require_relative '../../../rubocop/cop/group_public_or_visible_to_user'
 
-describe RuboCop::Cop::GroupPublicOrVisibleToUser, type: :rubocop do
+RSpec.describe RuboCop::Cop::GroupPublicOrVisibleToUser, type: :rubocop do
   include CopHelper
 
   subject(:cop) { described_class.new }

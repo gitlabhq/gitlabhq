@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'git_http routing' do
+RSpec.describe 'git_http routing' do
   include RSpec::Rails::RequestExampleGroup
 
   describe 'wiki.git routing', 'routing' do

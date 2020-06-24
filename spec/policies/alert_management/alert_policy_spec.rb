@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe AlertManagement::AlertPolicy, :models do
+RSpec.describe AlertManagement::AlertPolicy, :models do
   let(:alert) { create(:alert_management_alert) }
   let(:project) { alert.project }
   let(:user) { create(:user) }

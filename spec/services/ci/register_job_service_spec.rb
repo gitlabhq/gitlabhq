@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 module Ci
-  describe RegisterJobService do
+  RSpec.describe RegisterJobService do
     let_it_be(:group) { create(:group) }
     let_it_be(:project, reload: true) { create(:project, group: group, shared_runners_enabled: false, group_runners_enabled: false) }
     let_it_be(:pipeline) { create(:ci_pipeline, project: project) }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe AccessibilityReportsComparerSerializer do
+RSpec.describe AccessibilityReportsComparerSerializer do
   let(:project) { double(:project) }
   let(:serializer) { described_class.new(project: project).represent(comparer) }
   let(:comparer) { Gitlab::Ci::Reports::AccessibilityReportsComparer.new(base_report, head_report) }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe UserStatus do
+RSpec.describe UserStatus do
   it { is_expected.to validate_presence_of(:user) }
 
   it { is_expected.to allow_value('smirk').for(:emoji) }

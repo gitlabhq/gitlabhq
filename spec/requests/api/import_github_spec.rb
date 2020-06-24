@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe API::ImportGithub do
+RSpec.describe API::ImportGithub do
   let(:token) { "asdasd12345" }
   let(:provider) { :github }
   let(:access_params) { { github_access_token: token } }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe PipelineDetailsEntity do
+RSpec.describe PipelineDetailsEntity do
   let_it_be(:user) { create(:user) }
   let(:request) { double('request') }
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe DeploymentEntity do
+RSpec.describe DeploymentEntity do
   let(:user) { developer }
   let(:developer) { create(:user) }
   let(:reporter) { create(:user) }

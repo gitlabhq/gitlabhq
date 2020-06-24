@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe MergeRequests::AssignsMergeParams do
+RSpec.describe MergeRequests::AssignsMergeParams do
   it 'raises an error when used from an instance that does not respond to #current_user' do
     define_class = -> { Class.new { include MergeRequests::AssignsMergeParams }.new }
 

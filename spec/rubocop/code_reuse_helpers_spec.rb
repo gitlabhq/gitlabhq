@@ -5,7 +5,7 @@ require 'rubocop'
 require 'parser/current'
 require_relative '../../rubocop/code_reuse_helpers'
 
-describe RuboCop::CodeReuseHelpers do
+RSpec.describe RuboCop::CodeReuseHelpers do
   def parse_source(source, path = 'foo.rb')
     buffer = Parser::Source::Buffer.new(path)
     buffer.source = source

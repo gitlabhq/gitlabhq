@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe API::API do
+RSpec.describe API::API do
   include GroupAPIHelpers
 
   describe 'Record user last activity in after hook' do

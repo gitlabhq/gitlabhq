@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe API::Badges do
+RSpec.describe API::Badges do
   let(:maintainer) { create(:user, username: 'maintainer_user') }
   let(:developer) { create(:user) }
   let(:access_requester) { create(:user) }

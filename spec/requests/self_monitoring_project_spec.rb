@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Self-Monitoring project requests' do
+RSpec.describe 'Self-Monitoring project requests' do
   let(:admin) { create(:admin) }
 
   describe 'POST #create_self_monitoring_project' do

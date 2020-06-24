@@ -6,7 +6,7 @@
 # - No spaces.
 # - More than one space.
 #
-# For a list of all options, see https://errata-ai.github.io/vale/styles/
+# For a list of all options, see https://errata-ai.gitbook.io/vale/getting-started/styles
 extends: existence
 message: '"%s" must contain one and only one space.'
 link: https://docs.gitlab.com/ee/development/documentation/styleguide.html#punctuation

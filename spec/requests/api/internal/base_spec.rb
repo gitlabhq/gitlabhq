@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe API::Internal::Base do
+RSpec.describe API::Internal::Base do
   let_it_be(:user, reload: true) { create(:user) }
   let_it_be(:project, reload: true) { create(:project, :repository, :wiki_repo) }
   let_it_be(:personal_snippet) { create(:personal_snippet, :repository, author: user) }

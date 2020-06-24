@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Evidences::EvidenceEntity do
+RSpec.describe Evidences::EvidenceEntity do
   let_it_be(:project) { create(:project) }
   let(:release) { create(:release, project: project) }
   let(:evidence) { build(:evidence, release: release) }

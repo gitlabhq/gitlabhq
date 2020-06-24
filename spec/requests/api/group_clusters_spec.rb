@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe API::GroupClusters do
+RSpec.describe API::GroupClusters do
   include KubernetesHelpers
 
   let(:current_user) { create(:user) }

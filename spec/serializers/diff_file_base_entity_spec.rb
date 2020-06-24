@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe DiffFileBaseEntity do
+RSpec.describe DiffFileBaseEntity do
   let(:project) { create(:project, :repository) }
   let(:repository) { project.repository }
   let(:entity) { described_class.new(diff_file, options).as_json }

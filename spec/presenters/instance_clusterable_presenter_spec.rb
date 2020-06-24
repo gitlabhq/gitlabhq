@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe InstanceClusterablePresenter do
+RSpec.describe InstanceClusterablePresenter do
   include Gitlab::Routing.url_helpers
 
   let(:presenter) { described_class.new(instance) }

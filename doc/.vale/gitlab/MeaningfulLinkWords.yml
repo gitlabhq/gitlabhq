@@ -3,7 +3,7 @@
 #
 # Checks for the presence of semantically unhelpful words in link text.
 #
-# For a list of all options, see https://errata-ai.github.io/vale/styles/
+# For a list of all options, see https://errata-ai.gitbook.io/vale/getting-started/styles
 extends: existence
 message: 'Improve SEO and accessibility by rewriting "%s" in the link text.'
 level: warning

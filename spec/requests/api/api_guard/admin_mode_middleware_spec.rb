@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe API::APIGuard::AdminModeMiddleware, :do_not_mock_admin_mode, :request_store do
+RSpec.describe API::APIGuard::AdminModeMiddleware, :do_not_mock_admin_mode, :request_store do
   let(:user) { create(:admin) }
 
   it 'is loaded' do

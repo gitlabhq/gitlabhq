@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Deployments::AfterCreateService do
+RSpec.describe Deployments::AfterCreateService do
   let(:user) { create(:user) }
   let(:project) { create(:project, :repository) }
   let(:options) { { name: 'production' } }

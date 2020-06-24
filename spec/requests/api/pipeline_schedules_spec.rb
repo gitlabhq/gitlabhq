@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe API::PipelineSchedules do
+RSpec.describe API::PipelineSchedules do
   let_it_be(:developer) { create(:user) }
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project, :repository, public_builds: false) }

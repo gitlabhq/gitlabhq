@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe API::Runners do
+RSpec.describe API::Runners do
   let_it_be(:admin) { create(:user, :admin) }
   let_it_be(:user) { create(:user) }
   let_it_be(:user2) { create(:user) }

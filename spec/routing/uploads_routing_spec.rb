@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Uploads', 'routing' do
+RSpec.describe 'Uploads', 'routing' do
   it 'allows creating uploads for personal snippets' do
     expect(post('/uploads/personal_snippet?id=1')).to route_to(
       controller: 'uploads',

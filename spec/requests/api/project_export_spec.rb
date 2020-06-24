@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe API::ProjectExport, :clean_gitlab_redis_cache do
+RSpec.describe API::ProjectExport, :clean_gitlab_redis_cache do
   let_it_be(:project) { create(:project) }
   let_it_be(:project_none) { create(:project) }
   let_it_be(:project_started) { create(:project) }

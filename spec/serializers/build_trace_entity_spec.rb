@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe BuildTraceEntity do
+RSpec.describe BuildTraceEntity do
   let(:build) { build_stubbed(:ci_build) }
   let(:request) { double('request') }
 

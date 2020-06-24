@@ -6,7 +6,7 @@ require 'excon'
 
 require 'spec_helper'
 
-describe 'Unicorn' do
+RSpec.describe 'Unicorn' do
   before(:all) do
     project_root = File.expand_path('../..', __dir__)
 

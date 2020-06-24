@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Clusters::Aws::FinalizeCreationService do
+RSpec.describe Clusters::Aws::FinalizeCreationService do
   describe '#execute' do
     let(:provider) { create(:cluster_provider_aws, :creating) }
     let(:platform) { provider.cluster.platform_kubernetes }

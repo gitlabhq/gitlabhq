@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe MoveToProjectSerializer do
+RSpec.describe MoveToProjectSerializer do
   describe '#represent' do
     it 'includes the name and name with namespace' do
       project = build(:project, id: 1)

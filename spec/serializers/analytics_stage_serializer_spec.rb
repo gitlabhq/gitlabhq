@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe AnalyticsStageSerializer do
+RSpec.describe AnalyticsStageSerializer do
   subject do
     described_class.new.represent(resource)
   end

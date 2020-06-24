@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ReleasePresenter do
+RSpec.describe ReleasePresenter do
   include Gitlab::Routing.url_helpers
 
   let_it_be(:project) { create(:project, :repository) }

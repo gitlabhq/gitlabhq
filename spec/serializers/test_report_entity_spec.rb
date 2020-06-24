@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe TestReportEntity do
+RSpec.describe TestReportEntity do
   let(:pipeline) { create(:ci_pipeline, :with_test_reports) }
   let(:entity) { described_class.new(pipeline.test_reports) }
 

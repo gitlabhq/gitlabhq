@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe API::Jobs do
+RSpec.describe API::Jobs do
   include HttpIOHelpers
 
   shared_examples 'a job with artifacts and trace' do |result_is_array: true|

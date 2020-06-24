@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe UserSerializer do
+RSpec.describe UserSerializer do
   let(:user1) { create(:user) }
   let(:user2) { create(:user) }
 

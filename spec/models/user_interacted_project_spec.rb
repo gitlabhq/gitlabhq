@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe UserInteractedProject do
+RSpec.describe UserInteractedProject do
   describe '.track' do
     subject { described_class.track(event) }
 

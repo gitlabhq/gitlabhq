@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe StageSerializer do
+RSpec.describe StageSerializer do
   let(:project) { create(:project, :repository) }
   let(:user) { create(:user) }
   let(:resource) { create(:ci_stage_entity) }

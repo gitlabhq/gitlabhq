@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe EntityDateHelper do
+RSpec.describe EntityDateHelper do
   let(:date_helper_class) { Class.new { include EntityDateHelper }.new }
 
   it 'converts 0 seconds' do

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ProjectImportEntity do
+RSpec.describe ProjectImportEntity do
   include ImportHelper
 
   let_it_be(:project) { create(:project, import_status: :started, import_source: 'namespace/project') }

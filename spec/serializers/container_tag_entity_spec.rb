@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ContainerTagEntity do
+RSpec.describe ContainerTagEntity do
   let_it_be(:project) { create(:project) }
   let_it_be(:user) { create(:user) }
   let_it_be(:repository) { create(:container_repository, name: 'image', project: project) }

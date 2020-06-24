@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe API::ProtectedBranches do
+RSpec.describe API::ProtectedBranches do
   let(:user) { create(:user) }
   let!(:project) { create(:project, :repository) }
   let(:protected_name) { 'feature' }

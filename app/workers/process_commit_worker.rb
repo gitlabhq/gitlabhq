@@ -80,7 +80,7 @@ class ProcessCommitWorker
     # manually parse these values.
     hash.each do |key, value|
       if key.to_s.end_with?(date_suffix) && value.is_a?(String)
-        hash[key] = Time.parse(value)
+        hash[key] = Time.zone.parse(value)
       end
     end
 

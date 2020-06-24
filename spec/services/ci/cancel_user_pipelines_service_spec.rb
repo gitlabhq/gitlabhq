@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Ci::CancelUserPipelinesService do
+RSpec.describe Ci::CancelUserPipelinesService do
   describe '#execute' do
     let(:user) { create(:user) }
 

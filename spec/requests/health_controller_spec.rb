@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe HealthController do
+RSpec.describe HealthController do
   include StubENV
 
   let(:token) { Gitlab::CurrentSettings.health_check_access_token }

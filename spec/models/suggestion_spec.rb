@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Suggestion do
+RSpec.describe Suggestion do
   let(:suggestion) { create(:suggestion) }
 
   describe 'associations' do

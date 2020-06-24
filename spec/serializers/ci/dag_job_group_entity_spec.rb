@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Ci::DagJobGroupEntity do
+RSpec.describe Ci::DagJobGroupEntity do
   let_it_be(:request) { double(:request) }
   let_it_be(:pipeline) { create(:ci_pipeline) }
   let_it_be(:stage) { create(:ci_stage, pipeline: pipeline) }

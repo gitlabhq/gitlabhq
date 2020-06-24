@@ -450,6 +450,11 @@ Rails/TimeZone:
     - 'spec/models/**/*'
     - 'ee/app/models/**/*'
     - 'ee/spec/models/**/*'
+    - 'app/workers/**/*'
+    - 'spec/workers/**/*'
+    - 'ee/app/workers/**/*'
+    - 'ee/spec/workers/**/*'
+
 
 # WIP: See https://gitlab.com/gitlab-org/gitlab/-/issues/220040
 Rails/SaveBang:

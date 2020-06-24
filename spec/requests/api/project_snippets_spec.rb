@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe API::ProjectSnippets do
+RSpec.describe API::ProjectSnippets do
   let_it_be(:project) { create(:project, :public) }
   let_it_be(:user) { create(:user) }
   let_it_be(:admin) { create(:admin) }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Clusters::ParseClusterApplicationsArtifactService do
+RSpec.describe Clusters::ParseClusterApplicationsArtifactService do
   let_it_be(:project) { create(:project) }
   let_it_be(:user) { create(:user) }
 

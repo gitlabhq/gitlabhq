@@ -1012,6 +1012,34 @@ to make sure the error information we are passing back is useful.
 
 See also the [frontend GraphQL guide](../development/fe_guide/graphql.md#handling-errors).
 
+### Aliasing and deprecating mutations
+
+The `#mount_aliased_mutation` helper allows us to alias a mutation as
+another name within `MutationType`.
+
+For example, to alias a mutation called `FooMutation` as `BarMutation`:
+
+```ruby
+mount_aliased_mutation 'BarMutation', Mutations::FooMutation
+```
+
+This allows us to rename a mutation and continue to support the old name,
+when coupled with the [`deprecated`](#deprecating-fields) argument.
+
+Example:
+
+```ruby
+mount_aliased_mutation 'UpdateFoo',
+                        Mutations::Foo::Update,
+                        deprecated: { reason: 'Use fooUpdate', milestone: '13.2' }
+```
+
+Deprecated mutations should be added to `Types::DeprecatedMutations` and
+tested for within the unit test of `Types::MutationType`. The merge request
+[!34798](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/34798)
+can be referred to as an example of this, including the method of testing
+deprecated aliased mutations.
+
 ## Validating arguments
 
 For validations of single arguments, use the

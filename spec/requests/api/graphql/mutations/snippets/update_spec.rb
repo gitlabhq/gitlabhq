@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Updating a Snippet' do
+RSpec.describe 'Updating a Snippet' do
   include GraphqlHelpers
 
   let_it_be(:original_content) { 'Initial content' }

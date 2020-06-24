@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe GroupMemberPresenter do
+RSpec.describe GroupMemberPresenter do
   let(:user) { double(:user) }
   let(:group) { double(:group) }
   let(:group_member) { double(:group_member, source: group) }

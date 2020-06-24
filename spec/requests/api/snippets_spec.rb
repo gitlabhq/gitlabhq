@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe API::Snippets do
+RSpec.describe API::Snippets do
   let_it_be(:user) { create(:user) }
 
   describe 'GET /snippets/' do

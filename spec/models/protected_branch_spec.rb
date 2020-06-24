@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ProtectedBranch do
+RSpec.describe ProtectedBranch do
   subject { build_stubbed(:protected_branch) }
 
   describe 'Associations' do

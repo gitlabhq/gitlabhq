@@ -5,7 +5,7 @@ require 'rubocop'
 require 'rubocop/rspec/support'
 require_relative '../../../rubocop/cop/avoid_break_from_strong_memoize'
 
-describe RuboCop::Cop::AvoidBreakFromStrongMemoize do
+RSpec.describe RuboCop::Cop::AvoidBreakFromStrongMemoize do
   include CopHelper
 
   subject(:cop) { described_class.new }

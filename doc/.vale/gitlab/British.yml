@@ -3,7 +3,7 @@
 #
 # Checks that US spelling is used over British spelling.
 #
-# For a list of all options, see https://errata-ai.github.io/vale/styles/
+# For a list of all options, see https://errata-ai.gitbook.io/vale/getting-started/styles
 extends: substitution
 message: 'Use the US spelling "%s" instead of the British "%s".'
 link: https://about.gitlab.com/handbook/communication/#top-misused-terms

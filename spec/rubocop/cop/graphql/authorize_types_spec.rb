@@ -5,7 +5,7 @@ require 'rubocop'
 
 require_relative '../../../../rubocop/cop/graphql/authorize_types'
 
-describe RuboCop::Cop::Graphql::AuthorizeTypes, type: :rubocop do
+RSpec.describe RuboCop::Cop::Graphql::AuthorizeTypes, type: :rubocop do
   include CopHelper
 
   subject(:cop) { described_class.new }

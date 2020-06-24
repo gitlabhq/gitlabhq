@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ContainerRepositoriesSerializer do
+RSpec.describe ContainerRepositoriesSerializer do
   let(:user) { create(:user) }
   let(:project) { create(:project) }
   let(:resource) { create(:container_repository, name: 'image', project: project) }

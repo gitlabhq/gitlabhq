@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Setting WIP status of a merge request' do
+RSpec.describe 'Setting WIP status of a merge request' do
   include GraphqlHelpers
 
   let(:current_user) { create(:user) }

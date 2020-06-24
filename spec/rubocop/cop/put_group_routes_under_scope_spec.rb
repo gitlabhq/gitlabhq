@@ -4,7 +4,7 @@ require 'fast_spec_helper'
 require 'rubocop'
 require_relative '../../../rubocop/cop/put_group_routes_under_scope'
 
-describe RuboCop::Cop::PutGroupRoutesUnderScope, type: :rubocop do
+RSpec.describe RuboCop::Cop::PutGroupRoutesUnderScope, type: :rubocop do
   include CopHelper
 
   subject(:cop) { described_class.new }

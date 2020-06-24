@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Starting a Jira Import' do
+RSpec.describe 'Starting a Jira Import' do
   include JiraServiceHelper
   include GraphqlHelpers
 

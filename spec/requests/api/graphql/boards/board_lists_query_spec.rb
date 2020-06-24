@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'get board lists' do
+RSpec.describe 'get board lists' do
   include GraphqlHelpers
 
   let_it_be(:user)           { create(:user) }

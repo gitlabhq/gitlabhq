@@ -5,7 +5,7 @@ require 'rubocop'
 require 'rubocop/rspec/support'
 require_relative '../../../../rubocop/cop/code_reuse/service_class'
 
-describe RuboCop::Cop::CodeReuse::ServiceClass, type: :rubocop do
+RSpec.describe RuboCop::Cop::CodeReuse::ServiceClass, type: :rubocop do
   include CopHelper
 
   subject(:cop) { described_class.new }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe SuggestionEntity do
+RSpec.describe SuggestionEntity do
   include RepoHelpers
 
   let(:user) { create(:user) }

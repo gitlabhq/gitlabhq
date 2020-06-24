@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Requests on a read-only node' do
+RSpec.describe 'Requests on a read-only node' do
   include GraphqlHelpers
 
   before do

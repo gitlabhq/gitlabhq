@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Ci::DestroyExpiredJobArtifactsService, :clean_gitlab_redis_shared_state do
+RSpec.describe Ci::DestroyExpiredJobArtifactsService, :clean_gitlab_redis_shared_state do
   include ExclusiveLeaseHelpers
 
   describe '.execute' do

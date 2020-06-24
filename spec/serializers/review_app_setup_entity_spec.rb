@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ReviewAppSetupEntity do
+RSpec.describe ReviewAppSetupEntity do
   let_it_be(:user) { create(:admin) }
   let(:project) { create(:project) }
   let(:presenter) { ProjectPresenter.new(project, current_user: user) }

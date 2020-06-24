@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ProjectPolicy do
+RSpec.describe ProjectPolicy do
   include ExternalAuthorizationServiceHelpers
   include_context 'ProjectPolicy context'
   let_it_be(:other_user) { create(:user) }

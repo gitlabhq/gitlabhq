@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'merge requests discussions' do
+RSpec.describe 'merge requests discussions' do
   # Further tests can be found at merge_requests_controller_spec.rb
   describe 'GET /:namespace/:project/-/merge_requests/:iid/discussions' do
     let(:project) { create(:project, :repository) }

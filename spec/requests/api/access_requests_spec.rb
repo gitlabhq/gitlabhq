@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe API::AccessRequests do
+RSpec.describe API::AccessRequests do
   let_it_be(:maintainer) { create(:user) }
   let_it_be(:developer) { create(:user) }
   let_it_be(:access_requester) { create(:user) }

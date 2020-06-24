@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Ci::CreatePipelineService do
+RSpec.describe Ci::CreatePipelineService do
   context 'cache' do
     let(:user)     { create(:admin) }
     let(:ref)      { 'refs/heads/master' }

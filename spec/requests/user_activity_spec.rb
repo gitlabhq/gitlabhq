@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Update of user activity' do
+RSpec.describe 'Update of user activity' do
   let(:user) { create(:user, last_activity_on: nil) }
 
   before do

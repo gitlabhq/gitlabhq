@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe MergeRequestSidebarBasicEntity do
+RSpec.describe MergeRequestSidebarBasicEntity do
   let(:project) { create :project, :repository }
   let(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
   let(:user) { create(:user) }

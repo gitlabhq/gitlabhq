@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Commits::TagService do
+RSpec.describe Commits::TagService do
   let(:project) { create(:project, :repository) }
   let(:user) { create(:user) }
 

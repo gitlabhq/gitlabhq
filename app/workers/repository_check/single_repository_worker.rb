@@ -17,7 +17,7 @@ module RepositoryCheck
     def update_repository_check_status(project, healthy)
       project.update_columns(
         last_repository_check_failed: !healthy,
-        last_repository_check_at: Time.now
+        last_repository_check_at: Time.current
       )
     end
 

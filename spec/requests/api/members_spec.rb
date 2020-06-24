@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe API::Members do
+RSpec.describe API::Members do
   let(:maintainer) { create(:user, username: 'maintainer_user') }
   let(:developer) { create(:user) }
   let(:access_requester) { create(:user) }

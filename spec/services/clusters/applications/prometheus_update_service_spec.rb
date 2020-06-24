@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Clusters::Applications::PrometheusUpdateService do
+RSpec.describe Clusters::Applications::PrometheusUpdateService do
   describe '#execute' do
     let(:project) { create(:project) }
     let(:environment) { create(:environment, project: project) }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Blobs::UnfoldPresenter do
+RSpec.describe Blobs::UnfoldPresenter do
   include FakeBlobHelpers
 
   let(:project) { create(:project, :repository) }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe API::SystemHooks do
+RSpec.describe API::SystemHooks do
   include StubRequests
 
   let(:user) { create(:user) }

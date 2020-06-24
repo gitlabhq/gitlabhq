@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe IssuePolicy do
+RSpec.describe IssuePolicy do
   include ExternalAuthorizationServiceHelpers
 
   let(:guest) { create(:user) }

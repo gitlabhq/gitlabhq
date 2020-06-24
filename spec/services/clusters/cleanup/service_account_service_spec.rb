@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Clusters::Cleanup::ServiceAccountService do
+RSpec.describe Clusters::Cleanup::ServiceAccountService do
   describe '#execute' do
     subject { service.execute }
 

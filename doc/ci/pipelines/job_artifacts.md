@@ -114,14 +114,15 @@ The `dotenv` report collects a set of environment variables as artifacts.
 The collected variables are registered as runtime-created variables of the job,
 which is useful to [set dynamic environment URLs after a job finishes](../environments/index.md#set-dynamic-environment-urls-after-a-job-finishes).
 
-There are a couple of limitations on top of the [original dotenv rules](https://github.com/motdotla/dotenv#rules).
+There are a couple of exceptions to the [original dotenv rules](https://github.com/motdotla/dotenv#rules):
 
-- The variable key can contain only letters, digits and underscore ('_').
-- The size of the dotenv file must be smaller than 5 kilobytes.
-- The number of variables must be less than 10.
-- It does not support variable substitution in the dotenv file itself.
-- It does not support empty lines and comments (`#`) in dotenv file.
-- It does not support quote escape, spaces in a quote, a new line expansion in a quote, in dotenv file.
+- The variable key can contain only letters, digits, and underscores (`_`).
+- The maximum size of the `.env` file is 5 KB.
+- The maximum number of variables is 10.
+- Variable substitution in the `.env` file is not supported.
+- The `.env` file can't have empty lines or comments (starting with `#`).
+- Key values in the `env` file cannot have spaces or newline characters (`\n`), including when using single or double quotes.
+- Quote escaping during parsing (`key = 'value'` -> `{key: "value"}`) is not supported.
 
 #### `artifacts:reports:cobertura`
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe JobEntity do
+RSpec.describe JobEntity do
   let(:user) { create(:user) }
   let(:job) { create(:ci_build) }
   let(:project) { job.project }

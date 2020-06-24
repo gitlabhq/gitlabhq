@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe EnvironmentSerializer do
+RSpec.describe EnvironmentSerializer do
   let(:user) { create(:user) }
   let(:project) { create(:project) }
 

@@ -210,10 +210,19 @@ actors.
 Feature.enabled?(:some_feature, group)
 ```
 
-NOTE:
-
+NOTE: **Note:**
 **Percentage of time** rollout is not a good idea if what you want is to make sure a feature
 is always on or off to the users. In that case, **Percentage of actors** rollout is a better method.
+
+Lastly, to verify that the feature is deemed stable in as many cases as possible,
+you should fully roll out the feature by enabling the flag **globally** by running:
+
+```shell
+/chatops run feature set some_feature true
+```
+
+This changes the feature flag state to be **enabled** always, which overrides the
+existing gates (e.g. `--group=gitlab-org`) in the above processes.
 
 ### Feature flag change logging
 

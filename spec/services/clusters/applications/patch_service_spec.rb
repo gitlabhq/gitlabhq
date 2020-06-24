@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Clusters::Applications::PatchService do
+RSpec.describe Clusters::Applications::PatchService do
   describe '#execute' do
     let(:application) { create(:clusters_applications_knative, :scheduled) }
     let!(:update_command) { application.update_command }

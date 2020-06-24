@@ -22,6 +22,19 @@ configured to run when changes to Ruby files are detected. By default, it runs i
 the [`.pre` stage](../../../ci/yaml/README.md#pre-and-post) of a GitLab CI/CD pipeline,
 before all other stages.
 
+## Example use case
+
+Fail fast testing is useful when adding new functionality to a project and adding
+new automated tests.
+
+Your project could have hundreds of thousands of tests that take a long time to complete.
+You may be confident that a new test will pass, but you have to wait for all the tests
+to complete to verify it. This could take an hour or more, even when using parallelization.
+
+Fail fast testing gives you a faster feedback loop from the pipeline. It lets you
+know quickly that the new tests are passing and the new functionality did not break
+other tests.
+
 ## Requirements
 
 This template requires:

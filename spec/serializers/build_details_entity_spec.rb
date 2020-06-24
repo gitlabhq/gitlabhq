@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe BuildDetailsEntity do
+RSpec.describe BuildDetailsEntity do
   include ProjectForksHelper
 
   let_it_be(:user) { create(:admin) }

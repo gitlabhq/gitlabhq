@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe GlobalPolicy do
+RSpec.describe GlobalPolicy do
   include TermsHelper
 
   let_it_be(:project_bot) { create(:user, :project_bot) }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Clusters::Applications::PrometheusConfigService do
+RSpec.describe Clusters::Applications::PrometheusConfigService do
   include Gitlab::Routing.url_helpers
 
   let_it_be(:project) { create(:project) }

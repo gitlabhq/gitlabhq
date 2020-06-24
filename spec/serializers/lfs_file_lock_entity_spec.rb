@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe LfsFileLockEntity do
+RSpec.describe LfsFileLockEntity do
   let(:user)     { create(:user) }
   let(:resource) { create(:lfs_file_lock, user: user) }
 

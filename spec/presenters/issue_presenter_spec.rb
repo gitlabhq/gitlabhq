@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe IssuePresenter do
+RSpec.describe IssuePresenter do
   include Gitlab::Routing.url_helpers
 
   let(:user)      { create(:user) }

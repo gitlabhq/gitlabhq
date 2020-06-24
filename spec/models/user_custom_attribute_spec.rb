@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe UserCustomAttribute do
+RSpec.describe UserCustomAttribute do
   describe 'assocations' do
     it { is_expected.to belong_to(:user) }
   end

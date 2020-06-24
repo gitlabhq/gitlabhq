@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'OpenID Connect requests' do
+RSpec.describe 'OpenID Connect requests' do
   let(:user) do
     create(
       :user,

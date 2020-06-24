@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe UserDetail do
+RSpec.describe UserDetail do
   it { is_expected.to belong_to(:user) }
 
   describe 'validations' do

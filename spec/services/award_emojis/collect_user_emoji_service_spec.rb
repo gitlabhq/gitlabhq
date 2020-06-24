@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe AwardEmojis::CollectUserEmojiService do
+RSpec.describe AwardEmojis::CollectUserEmojiService do
   describe '#execute' do
     it 'returns an Array containing the awarded emoji names' do
       user = create(:user)

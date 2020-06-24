@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Ci::BuildReportResultService do
+RSpec.describe Ci::BuildReportResultService do
   describe "#execute" do
     subject(:build_report_result) { described_class.new.execute(build) }
 

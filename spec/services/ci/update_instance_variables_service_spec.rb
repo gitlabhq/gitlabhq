@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Ci::UpdateInstanceVariablesService do
+RSpec.describe Ci::UpdateInstanceVariablesService do
   let(:params) { { variables_attributes: variables_attributes } }
 
   subject { described_class.new(params) }

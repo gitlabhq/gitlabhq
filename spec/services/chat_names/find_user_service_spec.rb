@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ChatNames::FindUserService, :clean_gitlab_redis_shared_state do
+RSpec.describe ChatNames::FindUserService, :clean_gitlab_redis_shared_state do
   describe '#execute' do
     let(:service) { create(:service) }
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Clusters::InstancePolicy do
+RSpec.describe Clusters::InstancePolicy do
   let(:user) { create(:user) }
   let(:policy) { described_class.new(user, Clusters::Instance.new) }
 

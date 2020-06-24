@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Clusters::Applications::CheckUninstallProgressService do
+RSpec.describe Clusters::Applications::CheckUninstallProgressService do
   reschedule_phases = Gitlab::Kubernetes::Pod::PHASES - [Gitlab::Kubernetes::Pod::SUCCEEDED, Gitlab::Kubernetes::Pod::FAILED].freeze
 
   let(:application) { create(:clusters_applications_prometheus, :uninstalling) }

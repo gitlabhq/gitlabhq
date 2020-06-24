@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Clusters::ClusterPresenter do
+RSpec.describe Clusters::ClusterPresenter do
   include Gitlab::Routing.url_helpers
 
   let(:cluster) { create(:cluster, :provided_by_gcp, :project) }

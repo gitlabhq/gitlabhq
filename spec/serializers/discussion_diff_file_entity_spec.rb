@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe DiscussionDiffFileEntity do
+RSpec.describe DiscussionDiffFileEntity do
   include RepoHelpers
 
   let(:project) { create(:project, :repository) }

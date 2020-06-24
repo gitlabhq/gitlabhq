@@ -73,7 +73,7 @@ module Reenqueuer
     #   end
     #
     def ensure_minimum_duration(minimum_duration)
-      start_time = Time.now
+      start_time = Time.current
 
       result = yield
 
@@ -95,7 +95,7 @@ module Reenqueuer
     end
 
     def elapsed_time(start_time)
-      Time.now - start_time
+      Time.current - start_time
     end
   end
 end

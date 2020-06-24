@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ClusterApplicationEntity do
+RSpec.describe ClusterApplicationEntity do
   describe '#as_json' do
     let(:application) { build(:clusters_applications_helm, version: '0.1.1') }
 

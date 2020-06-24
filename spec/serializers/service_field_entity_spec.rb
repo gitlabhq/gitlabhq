@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ServiceFieldEntity do
+RSpec.describe ServiceFieldEntity do
   let(:request) { double('request') }
 
   subject { described_class.new(field, request: request, service: service).as_json }

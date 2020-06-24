@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-describe API::MergeRequestDiffs, 'MergeRequestDiffs' do
+RSpec.describe API::MergeRequestDiffs, 'MergeRequestDiffs' do
   let!(:user)          { create(:user) }
   let!(:merge_request) { create(:merge_request, importing: true) }
   let!(:project)       { merge_request.target_project }

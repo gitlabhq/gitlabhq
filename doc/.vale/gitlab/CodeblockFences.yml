@@ -3,7 +3,7 @@
 #
 # Ensures all codeblock language tags use the full name, not aliases.
 #
-# For a list of all options, see https://errata-ai.github.io/vale/styles/
+# For a list of all options, see https://errata-ai.gitbook.io/vale/getting-started/styles
 extends: existence
 message: 'Syntax highlighting hint "%s" must be one of: yaml, ruby, plaintext, markdown, javascript, shell, golang, python, dockerfile, or typescript.'
 link: https://docs.gitlab.com/ee/development/documentation/styleguide.html#code-blocks

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-shared_examples 'languages and percentages JSON response' do
+RSpec.shared_examples 'languages and percentages JSON response' do
   let(:expected_languages) { project.repository.languages.map { |language| language.values_at(:label, :value)}.to_h }
 
   before do
@@ -46,7 +46,7 @@ shared_examples 'languages and percentages JSON response' do
   end
 end
 
-describe API::Projects do
+RSpec.describe API::Projects do
   include ProjectForksHelper
 
   let(:user) { create(:user) }

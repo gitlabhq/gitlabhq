@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe MoveToProjectEntity do
+RSpec.describe MoveToProjectEntity do
   describe '#as_json' do
     let(:project) { build(:project, id: 1) }
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Branches::DeleteService do
+RSpec.describe Branches::DeleteService do
   let(:project) { create(:project, :repository) }
   let(:repository) { project.repository }
   let(:user) { create(:user) }

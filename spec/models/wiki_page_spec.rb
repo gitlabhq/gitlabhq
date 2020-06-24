@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-describe WikiPage do
+RSpec.describe WikiPage do
   let_it_be(:user) { create(:user) }
   let(:container) { create(:project, :wiki_repo) }
   let(:wiki) { Wiki.for_container(container, user) }

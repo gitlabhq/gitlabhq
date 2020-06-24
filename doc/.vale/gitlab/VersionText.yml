@@ -13,7 +13,7 @@
 # immediately on the next line is ok. However, this will often highlight where multi-line version
 # text is attempted without `-` characters.
 #
-# For a list of all options, see https://errata-ai.github.io/vale/styles/
+# For a list of all options, see https://errata-ai.gitbook.io/vale/getting-started/styles
 extends: existence
 message: '"%s" is not formatted correctly.'
 link: https://docs.gitlab.com/ee/development/documentation/styleguide.html#text-for-documentation-requiring-version-text

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Mark snippet as spam', :do_not_mock_admin_mode do
+RSpec.describe 'Mark snippet as spam', :do_not_mock_admin_mode do
   include GraphqlHelpers
 
   let_it_be(:admin) { create(:admin) }

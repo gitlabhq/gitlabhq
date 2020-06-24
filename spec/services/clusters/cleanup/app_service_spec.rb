@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Clusters::Cleanup::AppService do
+RSpec.describe Clusters::Cleanup::AppService do
   describe '#execute' do
     let!(:cluster) { create(:cluster, :project, :cleanup_uninstalling_applications, provider_type: :gcp) }
     let(:service) { described_class.new(cluster) }

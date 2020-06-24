@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Ci::GroupVariablePresenter do
+RSpec.describe Ci::GroupVariablePresenter do
   include Gitlab::Routing.url_helpers
 
   let(:group) { create(:group) }

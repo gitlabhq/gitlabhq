@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe API::Runner, :clean_gitlab_redis_shared_state do
+RSpec.describe API::Runner, :clean_gitlab_redis_shared_state do
   include StubGitlabCalls
   include RedisHelpers
   include WorkhorseHelpers

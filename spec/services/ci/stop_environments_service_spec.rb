@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Ci::StopEnvironmentsService do
+RSpec.describe Ci::StopEnvironmentsService do
   include CreateEnvironmentsHelpers
 
   let(:project) { create(:project, :private, :repository) }

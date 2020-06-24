@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe API::Branches do
+RSpec.describe API::Branches do
   let_it_be(:user) { create(:user) }
   let(:project) { create(:project, :repository, creator: user, path: 'my.project') }
   let(:guest) { create(:user).tap { |u| project.add_guest(u) } }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe API::ProjectTemplates do
+RSpec.describe API::ProjectTemplates do
   let_it_be(:public_project) { create(:project, :public, path: 'path.with.dot') }
   let_it_be(:private_project) { create(:project, :private) }
   let_it_be(:developer) { create(:user) }

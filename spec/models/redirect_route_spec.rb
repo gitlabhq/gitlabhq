@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe RedirectRoute do
+RSpec.describe RedirectRoute do
   let(:group) { create(:group) }
   let!(:redirect_route) { group.redirect_routes.create(path: 'gitlabb') }
 

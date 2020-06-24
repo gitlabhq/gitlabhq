@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe DeployKeyEntity do
+RSpec.describe DeployKeyEntity do
   include RequestAwareEntity
 
   let(:user) { create(:user) }

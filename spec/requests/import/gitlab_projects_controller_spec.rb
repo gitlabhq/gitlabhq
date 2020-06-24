@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Import::GitlabProjectsController do
+RSpec.describe Import::GitlabProjectsController do
   include WorkhorseHelpers
 
   let(:workhorse_token) { JWT.encode({ 'iss' => 'gitlab-workhorse' }, Gitlab::Workhorse.secret, 'HS256') }

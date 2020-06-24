@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Destroying a Snippet' do
+RSpec.describe 'Destroying a Snippet' do
   include GraphqlHelpers
 
   let(:current_user) { snippet.author }

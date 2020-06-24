@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe BuildActionEntity do
+RSpec.describe BuildActionEntity do
   let(:job) { create(:ci_build, name: 'test_job') }
   let(:request) { double('request') }
   let(:user) { create(:user) }

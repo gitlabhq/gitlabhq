@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Metrics::Dashboard::AnnotationPolicy, :models do
+RSpec.describe Metrics::Dashboard::AnnotationPolicy, :models do
   shared_examples 'metrics dashboard annotation policy' do
     context 'when guest' do
       before do

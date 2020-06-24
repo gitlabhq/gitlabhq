@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'rendering namespace statistics' do
+RSpec.describe 'rendering namespace statistics' do
   include GraphqlHelpers
 
   let(:namespace) { user.namespace }

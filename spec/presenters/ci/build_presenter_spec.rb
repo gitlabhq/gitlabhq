@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Ci::BuildPresenter do
+RSpec.describe Ci::BuildPresenter do
   let(:project) { create(:project) }
   let(:pipeline) { create(:ci_pipeline, project: project) }
   let(:build) { create(:ci_build, pipeline: pipeline) }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe MergeRequestPolicy do
+RSpec.describe MergeRequestPolicy do
   include ExternalAuthorizationServiceHelpers
 
   let(:guest) { create(:user) }

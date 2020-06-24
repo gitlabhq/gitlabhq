@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Clusters::Aws::FetchCredentialsService do
+RSpec.describe Clusters::Aws::FetchCredentialsService do
   describe '#execute' do
     let(:user) { create(:user) }
     let(:provider) { create(:cluster_provider_aws, region: 'ap-southeast-2') }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe API::Pipelines do
+RSpec.describe API::Pipelines do
   let_it_be(:user) { create(:user) }
   let_it_be(:non_member) { create(:user) }
 

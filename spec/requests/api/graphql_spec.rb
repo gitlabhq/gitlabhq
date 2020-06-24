@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-describe 'GraphQL' do
+RSpec.describe 'GraphQL' do
   include GraphqlHelpers
 
   let(:query) { graphql_query_for('echo', 'text' => 'Hello world' ) }

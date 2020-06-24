@@ -3,7 +3,7 @@
 require 'spec_helper'
 require 'mime/types'
 
-describe API::Commits do
+RSpec.describe API::Commits do
   include ProjectForksHelper
 
   let(:user) { create(:user) }

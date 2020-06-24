@@ -12,7 +12,7 @@ describe ClusterUpdateAppWorker do
   subject { described_class.new }
 
   around do |example|
-    Timecop.freeze(Time.now) { example.run }
+    Timecop.freeze(Time.current) { example.run }
   end
 
   before do
@@ -22,11 +22,11 @@ describe ClusterUpdateAppWorker do
   describe '#perform' do
     context 'when the application last_update_started_at is higher than the time the job was scheduled in' do
       it 'does nothing' do
-        application = create(:clusters_applications_prometheus, :updated, last_update_started_at: Time.now)
+        application = create(:clusters_applications_prometheus, :updated, last_update_started_at: Time.current)
 
         expect(prometheus_update_service).not_to receive(:execute)
 
-        expect(subject.perform(application.name, application.id, project.id, Time.now - 5.minutes)).to be_nil
+        expect(subject.perform(application.name, application.id, project.id, Time.current - 5.minutes)).to be_nil
       end
     end
 
@@ -34,7 +34,7 @@ describe ClusterUpdateAppWorker do
       it 'returns nil' do
         application = create(:clusters_applications_prometheus, :updating)
 
-        expect(subject.perform(application.name, application.id, project.id, Time.now)).to be_nil
+        expect(subject.perform(application.name, application.id, project.id, Time.current)).to be_nil
       end
     end
 
@@ -43,7 +43,7 @@ describe ClusterUpdateAppWorker do
 
       expect(prometheus_update_service).to receive(:execute)
 
-      subject.perform(application.name, application.id, project.id, Time.now)
+      subject.perform(application.name, application.id, project.id, Time.current)
     end
 
     context 'with exclusive lease' do
@@ -60,7 +60,7 @@ describe ClusterUpdateAppWorker do
       it 'does not allow same app to be updated concurrently by same project' do
         expect(Clusters::Applications::PrometheusUpdateService).not_to receive(:new)
 
-        subject.perform(application.name, application.id, project.id, Time.now)
+        subject.perform(application.name, application.id, project.id, Time.current)
       end
 
       it 'does not allow same app to be updated concurrently by different project', :aggregate_failures do
@@ -68,7 +68,7 @@ describe ClusterUpdateAppWorker do
 
         expect(Clusters::Applications::PrometheusUpdateService).not_to receive(:new)
 
-        subject.perform(application.name, application.id, project1.id, Time.now)
+        subject.perform(application.name, application.id, project1.id, Time.current)
       end
 
       it 'allows different app to be updated concurrently by same project' do
@@ -80,7 +80,7 @@ describe ClusterUpdateAppWorker do
         expect(Clusters::Applications::PrometheusUpdateService).to receive(:new)
           .with(application2, project)
 
-        subject.perform(application2.name, application2.id, project.id, Time.now)
+        subject.perform(application2.name, application2.id, project.id, Time.current)
       end
 
       it 'allows different app to be updated by different project', :aggregate_failures do
@@ -94,7 +94,7 @@ describe ClusterUpdateAppWorker do
         expect(Clusters::Applications::PrometheusUpdateService).to receive(:new)
           .with(application2, project2)
 
-        subject.perform(application2.name, application2.id, project2.id, Time.now)
+        subject.perform(application2.name, application2.id, project2.id, Time.current)
       end
     end
   end

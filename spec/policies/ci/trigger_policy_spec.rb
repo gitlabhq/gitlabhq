@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Ci::TriggerPolicy do
+RSpec.describe Ci::TriggerPolicy do
   let(:user) { create(:user) }
   let(:project) { create(:project) }
   let(:trigger) { create(:ci_trigger, project: project, owner: create(:user)) }

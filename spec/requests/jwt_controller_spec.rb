@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe JwtController do
+RSpec.describe JwtController do
   include_context 'parsed logs'
 
   let(:service) { double(execute: {}) }

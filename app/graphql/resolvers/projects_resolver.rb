@@ -10,7 +10,7 @@ module Resolvers
 
     argument :search, GraphQL::STRING_TYPE,
              required: false,
-             description: 'Search criteria'
+             description: 'Search query for project name, path, or description'
 
     def resolve(**args)
       ProjectsFinder

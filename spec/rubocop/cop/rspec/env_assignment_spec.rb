@@ -7,7 +7,7 @@ require 'rubocop/rspec/support'
 
 require_relative '../../../../rubocop/cop/rspec/env_assignment'
 
-describe RuboCop::Cop::RSpec::EnvAssignment, type: :rubocop do
+RSpec.describe RuboCop::Cop::RSpec::EnvAssignment, type: :rubocop do
   include CopHelper
 
   offense_call_single_quotes_key = %(ENV['FOO'] = 'bar').freeze

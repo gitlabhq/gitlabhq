@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe AwardEmojiPresenter do
+RSpec.describe AwardEmojiPresenter do
   let(:emoji_name) { 'thumbsup' }
   let(:award_emoji) { build(:award_emoji, name: emoji_name) }
   let(:presenter) { described_class.new(award_emoji) }

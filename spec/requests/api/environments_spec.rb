@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe API::Environments do
+RSpec.describe API::Environments do
   let(:user)          { create(:user) }
   let(:non_member)    { create(:user) }
   let(:project)       { create(:project, :private, :repository, namespace: user.namespace) }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Ci::DagPipelineEntity do
+RSpec.describe Ci::DagPipelineEntity do
   let_it_be(:request) { double(:request) }
 
   let(:pipeline) { create(:ci_pipeline) }

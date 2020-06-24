@@ -6,10 +6,10 @@ describe RepositoryUpdateRemoteMirrorWorker, :clean_gitlab_redis_shared_state do
   subject { described_class.new }
 
   let(:remote_mirror) { create(:remote_mirror) }
-  let(:scheduled_time) { Time.now - 5.minutes }
+  let(:scheduled_time) { Time.current - 5.minutes }
 
   around do |example|
-    Timecop.freeze(Time.now) { example.run }
+    Timecop.freeze(Time.current) { example.run }
   end
 
   def expect_mirror_service_to_return(mirror, result, tries = 0)
@@ -26,7 +26,7 @@ describe RepositoryUpdateRemoteMirrorWorker, :clean_gitlab_redis_shared_state do
     end
 
     it 'does not do anything if the mirror was already updated' do
-      remote_mirror.update(last_update_started_at: Time.now, update_status: :finished)
+      remote_mirror.update(last_update_started_at: Time.current, update_status: :finished)
 
       expect(Projects::UpdateRemoteMirrorService).not_to receive(:new)
 
@@ -48,7 +48,7 @@ describe RepositoryUpdateRemoteMirrorWorker, :clean_gitlab_redis_shared_state do
       expect_next_instance_of(Projects::UpdateRemoteMirrorService) do |service|
         expect(service).to receive(:execute).with(remote_mirror, 1).and_raise('Unexpected!')
       end
-      expect { subject.perform(remote_mirror.id, Time.now, 1) }.to raise_error('Unexpected!')
+      expect { subject.perform(remote_mirror.id, Time.current, 1) }.to raise_error('Unexpected!')
 
       lease = Gitlab::ExclusiveLease.new("#{described_class.name}:#{remote_mirror.id}", timeout: 1.second)
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe MergeRequestPollWidgetEntity do
+RSpec.describe MergeRequestPollWidgetEntity do
   include ProjectForksHelper
 
   let(:project)  { create :project, :repository }

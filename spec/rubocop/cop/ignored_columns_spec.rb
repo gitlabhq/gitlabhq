@@ -5,7 +5,7 @@ require 'rubocop'
 require 'rubocop/rspec/support'
 require_relative '../../../rubocop/cop/ignored_columns'
 
-describe RuboCop::Cop::IgnoredColumns, type: :rubocop do
+RSpec.describe RuboCop::Cop::IgnoredColumns, type: :rubocop do
   include CopHelper
 
   subject(:cop) { described_class.new }

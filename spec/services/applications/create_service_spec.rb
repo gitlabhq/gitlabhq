@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-describe ::Applications::CreateService do
+RSpec.describe ::Applications::CreateService do
   include TestRequestHelpers
 
   let(:user) { create(:user) }

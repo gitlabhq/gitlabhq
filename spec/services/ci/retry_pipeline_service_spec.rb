@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Ci::RetryPipelineService, '#execute' do
+RSpec.describe Ci::RetryPipelineService, '#execute' do
   include ProjectForksHelper
 
   let(:user) { create(:user) }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe MergeRequestPresenter do
+RSpec.describe MergeRequestPresenter do
   let(:resource) { create(:merge_request, source_project: project) }
   let(:project) { create(:project) }
   let(:user) { create(:user) }

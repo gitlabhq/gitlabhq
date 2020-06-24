@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe RunnerEntity do
+RSpec.describe RunnerEntity do
   let(:project) { create(:project) }
   let(:runner) { create(:ci_runner, :project, projects: [project]) }
   let(:entity) { described_class.new(runner, request: request, current_user: user) }

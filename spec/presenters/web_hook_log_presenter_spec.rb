@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe WebHookLogPresenter do
+RSpec.describe WebHookLogPresenter do
   include Gitlab::Routing.url_helpers
 
   describe '#details_path' do

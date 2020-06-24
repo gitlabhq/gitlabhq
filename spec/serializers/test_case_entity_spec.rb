@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe TestCaseEntity do
+RSpec.describe TestCaseEntity do
   include TestReportsHelper
 
   let(:entity) { described_class.new(test_case) }

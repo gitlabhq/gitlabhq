@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe PrometheusAlertEntity do
+RSpec.describe PrometheusAlertEntity do
   let(:user) { create(:user) }
   let(:prometheus_alert) { create(:prometheus_alert) }
   let(:request) { double('prometheus_alert', current_user: user) }

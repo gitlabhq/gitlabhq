@@ -5,7 +5,7 @@ require 'rubocop'
 require 'rubocop/rspec/support'
 require_relative '../../../rubocop/cop/line_break_around_conditional_block'
 
-describe RuboCop::Cop::LineBreakAroundConditionalBlock, type: :rubocop do
+RSpec.describe RuboCop::Cop::LineBreakAroundConditionalBlock, type: :rubocop do
   include CopHelper
 
   subject(:cop) { described_class.new }

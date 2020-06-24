@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Ci::PlayManualStageService, '#execute' do
+RSpec.describe Ci::PlayManualStageService, '#execute' do
   let(:current_user) { create(:user) }
   let(:pipeline) { create(:ci_pipeline, user: current_user) }
   let(:project) { pipeline.project }

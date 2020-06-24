@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'project routing' do
+RSpec.describe 'project routing' do
   before do
     allow(Project).to receive(:find_by_full_path).and_return(false)
     allow(Project).to receive(:find_by_full_path).with('gitlab/gitlabhq', any_args).and_return(true)

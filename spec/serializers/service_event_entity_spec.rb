@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ServiceEventEntity do
+RSpec.describe ServiceEventEntity do
   let(:request) { double('request') }
 
   subject { described_class.new(event, request: request, service: service).as_json }

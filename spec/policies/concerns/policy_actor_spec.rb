@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe PolicyActor do
+RSpec.describe PolicyActor do
   it 'implements all the methods from user' do
     methods = subject.instance_methods
 

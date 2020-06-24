@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Import::GitlabGroupsController do
+RSpec.describe Import::GitlabGroupsController do
   include WorkhorseHelpers
 
   let(:import_path) { "#{Dir.tmpdir}/gitlab_groups_controller_spec" }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe API::GroupImport do
+RSpec.describe API::GroupImport do
   include WorkhorseHelpers
 
   let_it_be(:user) { create(:user) }

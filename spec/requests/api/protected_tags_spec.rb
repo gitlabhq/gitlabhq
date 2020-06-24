@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe API::ProtectedTags do
+RSpec.describe API::ProtectedTags do
   let(:user) { create(:user) }
   let!(:project) { create(:project, :repository) }
   let(:project2) { create(:project, path: 'project2', namespace: user.namespace) }

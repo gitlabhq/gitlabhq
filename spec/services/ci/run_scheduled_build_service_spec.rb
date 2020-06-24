@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Ci::RunScheduledBuildService do
+RSpec.describe Ci::RunScheduledBuildService do
   let(:user) { create(:user) }
   let(:project) { create(:project) }
   let(:pipeline) { create(:ci_pipeline, project: project) }

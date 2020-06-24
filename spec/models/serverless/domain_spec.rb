@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ::Serverless::Domain do
+RSpec.describe ::Serverless::Domain do
   let(:function_name) { 'test-function' }
   let(:pages_domain_name) { 'serverless.gitlab.io' }
   let(:pages_domain) { create(:pages_domain, :instance_serverless, domain: pages_domain_name) }

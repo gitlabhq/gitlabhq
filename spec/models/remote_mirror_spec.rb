@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe RemoteMirror, :mailer do
+RSpec.describe RemoteMirror, :mailer do
   include GitHelpers
 
   describe 'URL validation' do

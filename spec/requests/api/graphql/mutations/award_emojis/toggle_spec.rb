@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Toggling an AwardEmoji' do
+RSpec.describe 'Toggling an AwardEmoji' do
   include GraphqlHelpers
 
   let_it_be(:current_user) { create(:user) }

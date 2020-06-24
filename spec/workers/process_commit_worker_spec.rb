@@ -200,9 +200,9 @@ describe ProcessCommitWorker do
     it 'parses date strings into Time instances' do
       commit = worker.build_commit(project,
                                    id: '123',
-                                   authored_date: Time.now.to_s)
+                                   authored_date: Time.current.to_s)
 
-      expect(commit.authored_date).to be_an_instance_of(Time)
+      expect(commit.authored_date).to be_a_kind_of(Time)
     end
   end
 end

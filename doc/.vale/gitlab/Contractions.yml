@@ -3,7 +3,7 @@
 #
 # Checks for use of common and uncommon contractions.
 #
-# For a list of all options, see https://errata-ai.github.io/vale/styles/
+# For a list of all options, see https://errata-ai.gitbook.io/vale/getting-started/styles
 extends: substitution
 message: 'Use "%s" instead of "%s", for a friendly, informal tone.'
 link: https://docs.gitlab.com/ee/development/documentation/styleguide.html#language

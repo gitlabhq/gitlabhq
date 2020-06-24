@@ -3,7 +3,7 @@
 #
 # Ensures all codeblocks using curl quote any URL strings.
 #
-# For a list of all options, see https://errata-ai.github.io/vale/styles/
+# For a list of all options, see https://errata-ai.gitbook.io/vale/getting-started/styles
 extends: existence
 message: 'Curl commands must wrap URLs in double quotes ("): %s'
 link: https://docs.gitlab.com/ee/development/documentation/styleguide.html#curl-commands

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe SnippetRepository do
+RSpec.describe SnippetRepository do
   let_it_be(:user) { create(:user) }
   let(:snippet) { create(:personal_snippet, :repository, author: user) }
   let(:snippet_repository) { snippet.snippet_repository }

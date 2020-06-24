@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe UserHighestRole do
+RSpec.describe UserHighestRole do
   describe 'associations' do
     it { is_expected.to belong_to(:user).required }
   end

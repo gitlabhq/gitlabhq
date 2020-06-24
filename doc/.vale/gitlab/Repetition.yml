@@ -3,7 +3,7 @@
 #
 # Checks for duplicate words, like `the the` or `and and`.
 #
-# For a list of all options, see https://errata-ai.github.io/vale/styles/
+# For a list of all options, see https://errata-ai.gitbook.io/vale/getting-started/styles
 extends: repetition
 message: '"%s" is repeated.'
 level: error

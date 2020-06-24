@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Clusters::Applications::UpdateService do
+RSpec.describe Clusters::Applications::UpdateService do
   include TestRequestHelpers
 
   let(:cluster) { create(:cluster, :project, :provided_by_gcp) }

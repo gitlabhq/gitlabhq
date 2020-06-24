@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Admin::Serverless::DomainsController do
+RSpec.describe Admin::Serverless::DomainsController do
   it 'routes to #index' do
     expect(get: '/admin/serverless/domains').to route_to('admin/serverless/domains#index')
   end

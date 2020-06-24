@@ -17,7 +17,7 @@ module Types
             resolver: Resolvers::ErrorTracking::SentryErrorsResolver do
               argument :search_term,
                       String,
-                      description: 'Search term for the Sentry error.',
+                      description: 'Search query for the Sentry error details',
                       required: false
               argument :sort,
                       String,

@@ -8,7 +8,7 @@ module Resolvers
 
     argument :search, GraphQL::STRING_TYPE,
               required: false,
-              description: 'Search query'
+              description: 'Search query for environment name'
 
     argument :states, [GraphQL::STRING_TYPE],
               required: false,

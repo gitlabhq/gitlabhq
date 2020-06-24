@@ -7,7 +7,7 @@ require 'rubocop/rspec/support'
 
 require_relative '../../../../rubocop/cop/migration/schedule_async'
 
-describe RuboCop::Cop::Migration::ScheduleAsync do
+RSpec.describe RuboCop::Cop::Migration::ScheduleAsync do
   include CopHelper
 
   let(:cop) { described_class.new }

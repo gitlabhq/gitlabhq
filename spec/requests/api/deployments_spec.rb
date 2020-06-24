@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe API::Deployments do
+RSpec.describe API::Deployments do
   let(:user)        { create(:user) }
   let(:non_member)  { create(:user) }
 

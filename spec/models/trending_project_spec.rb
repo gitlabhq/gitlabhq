@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe TrendingProject do
+RSpec.describe TrendingProject do
   let(:user) { create(:user) }
   let(:public_project1) { create(:project, :public, :repository) }
   let(:public_project2) { create(:project, :public, :repository) }

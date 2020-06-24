@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Repository do
+RSpec.describe Repository do
   include RepoHelpers
   include GitHelpers
 

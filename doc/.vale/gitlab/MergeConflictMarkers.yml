@@ -3,7 +3,7 @@
 #
 # Checks for the presence of merge conflict markers.
 #
-# For a list of all options, see https://errata-ai.github.io/vale/styles/
+# For a list of all options, see https://errata-ai.gitbook.io/vale/getting-started/styles
 extends: existence
 message: 'Merge conflict marker "%s" found.'
 link: https://docs.gitlab.com/ee/development/code_review.html#merging-a-merge-request

@@ -3,8 +3,10 @@
  * This is tightly coupled to projects/issues/_issue.html.haml,
  * any changes done to the haml need to be reflected here.
  */
+
+// TODO: need to move this component to graphql - https://gitlab.com/gitlab-org/gitlab/-/issues/221246
 import { escape, isNumber } from 'lodash';
-import { GlLink, GlTooltipDirective as GlTooltip } from '@gitlab/ui';
+import { GlLink, GlTooltipDirective as GlTooltip, GlLabel } from '@gitlab/ui';
 import {
   dateInWords,
   formatDate,
@@ -18,16 +20,21 @@ import initUserPopovers from '~/user_popovers';
 import { mergeUrlParams } from '~/lib/utils/url_utility';
 import Icon from '~/vue_shared/components/icon.vue';
 import IssueAssignees from '~/vue_shared/components/issue/issue_assignees.vue';
+import { isScopedLabel } from '~/lib/utils/common_utils';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 export default {
+  isScopedLabel,
   components: {
     Icon,
     IssueAssignees,
     GlLink,
+    GlLabel,
   },
   directives: {
     GlTooltip,
   },
+  mixins: [glFeatureFlagsMixin()],
   props: {
     issuable: {
       type: Object,
@@ -57,8 +64,8 @@ export default {
 
       return this.issuableLink({ milestone_title: title });
     },
-    hasLabels() {
-      return Boolean(this.issuable.labels && this.issuable.labels.length);
+    scopedLabelsAvailable() {
+      return this.glFeatures.scopedLabels;
     },
     hasWeight() {
       return isNumber(this.issuable.weight);
@@ -163,14 +170,11 @@ export default {
     initUserPopovers([this.$refs.openedAgoByContainer.querySelector('a')]);
   },
   methods: {
-    labelStyle(label) {
-      return {
-        backgroundColor: label.color,
-        color: label.text_color,
-      };
-    },
     issuableLink(params) {
       return mergeUrlParams(params, this.baseUrl);
+    },
+    isScoped({ name }) {
+      return isScopedLabel({ title: name }) && this.scopedLabelsAvailable;
     },
     labelHref({ name }) {
       return this.issuableLink({ 'label_name[]': name });
@@ -221,9 +225,9 @@ export default {
             ></i>
             <gl-link :href="issuable.web_url">{{ issuable.title }}</gl-link>
           </span>
-          <span v-if="issuable.has_tasks" class="ml-1 task-status d-none d-sm-inline-block">{{
-            issuable.task_status
-          }}</span>
+          <span v-if="issuable.has_tasks" class="ml-1 task-status d-none d-sm-inline-block">
+            {{ issuable.task_status }}
+          </span>
         </div>
 
         <div class="issuable-info">
@@ -256,22 +260,19 @@ export default {
             {{ dueDateWords }}
           </span>
 
-          <span v-if="hasLabels" class="js-labels">
-            <gl-link
-              v-for="label in issuable.labels"
-              :key="label.id"
-              class="label-link mr-1"
-              :href="labelHref(label)"
-            >
-              <span
-                v-gl-tooltip
-                class="badge color-label"
-                :style="labelStyle(label)"
-                :title="label.description"
-                >{{ label.name }}</span
-              >
-            </gl-link>
-          </span>
+          <gl-label
+            v-for="label in issuable.labels"
+            :key="label.id"
+            :target="labelHref(label)"
+            :background-color="label.color"
+            :description="label.description"
+            :color="label.text_color"
+            :title="label.name"
+            :scoped="isScoped(label)"
+            size="sm"
+            class="mr-1"
+            >{{ label.name }}</gl-label
+          >
 
           <span
             v-if="hasWeight"

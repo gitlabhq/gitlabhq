@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Clusters::CreateService do
+RSpec.describe Clusters::CreateService do
   let(:access_token) { 'xxx' }
   let(:project) { create(:project) }
   let(:user) { create(:user) }

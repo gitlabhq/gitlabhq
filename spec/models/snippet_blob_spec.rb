@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe SnippetBlob do
+RSpec.describe SnippetBlob do
   let(:snippet) { create(:snippet) }
 
   subject { described_class.new(snippet) }

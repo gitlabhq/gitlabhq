@@ -4,7 +4,7 @@ require 'spec_helper'
 
 # Based on spec/requests/api/groups_spec.rb
 # Should follow closely in order to ensure all situations are covered
-describe 'getting group information', :do_not_mock_admin_mode do
+RSpec.describe 'getting group information', :do_not_mock_admin_mode do
   include GraphqlHelpers
   include UploadHelpers
 

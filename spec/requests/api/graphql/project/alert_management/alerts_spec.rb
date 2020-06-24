@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-describe 'getting Alert Management Alerts' do
+RSpec.describe 'getting Alert Management Alerts' do
   include GraphqlHelpers
 
   let_it_be(:payload) { { 'custom' => { 'alert' => 'payload' } } }

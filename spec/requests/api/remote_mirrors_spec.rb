@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe API::RemoteMirrors do
+RSpec.describe API::RemoteMirrors do
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project, :repository, :remote_mirror) }
   let_it_be(:developer) { create(:user) { |u| project.add_developer(u) } }

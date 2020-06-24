@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe PagesDomainPresenter do
+RSpec.describe PagesDomainPresenter do
   using RSpec::Parameterized::TableSyntax
   include LetsEncryptHelpers
 

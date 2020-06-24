@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe DiffViewerEntity do
+RSpec.describe DiffViewerEntity do
   include RepoHelpers
 
   let(:project) { create(:project, :repository) }

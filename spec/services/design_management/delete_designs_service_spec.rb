@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-describe DesignManagement::DeleteDesignsService do
+RSpec.describe DesignManagement::DeleteDesignsService do
   include DesignManagementTestHelpers
 
   let_it_be(:project) { create(:project) }

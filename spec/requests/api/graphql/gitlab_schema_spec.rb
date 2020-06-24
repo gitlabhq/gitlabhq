@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'GitlabSchema configurations' do
+RSpec.describe 'GitlabSchema configurations' do
   include GraphqlHelpers
 
   let_it_be(:project) { create(:project) }

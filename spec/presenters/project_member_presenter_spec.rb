@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ProjectMemberPresenter do
+RSpec.describe ProjectMemberPresenter do
   let(:user) { double(:user) }
   let(:project) { double(:project) }
   let(:project_member) { double(:project_member, source: project) }

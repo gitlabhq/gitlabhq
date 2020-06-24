@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ProjectStatisticsPolicy do
+RSpec.describe ProjectStatisticsPolicy do
   using RSpec::Parameterized::TableSyntax
 
   describe '#rules' do

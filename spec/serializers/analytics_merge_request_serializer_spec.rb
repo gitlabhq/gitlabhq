@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe AnalyticsMergeRequestSerializer do
+RSpec.describe AnalyticsMergeRequestSerializer do
   subject do
     described_class
       .new(entity: :merge_request)

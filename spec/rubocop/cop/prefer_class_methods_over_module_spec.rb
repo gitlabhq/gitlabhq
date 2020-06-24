@@ -5,7 +5,7 @@ require 'rubocop'
 require 'rubocop/rspec/support'
 require_relative '../../../rubocop/cop/prefer_class_methods_over_module'
 
-describe RuboCop::Cop::PreferClassMethodsOverModule, type: :rubocop do
+RSpec.describe RuboCop::Cop::PreferClassMethodsOverModule, type: :rubocop do
   include CopHelper
 
   subject(:cop) { described_class.new }

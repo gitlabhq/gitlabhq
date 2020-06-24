@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Clusters::Kubernetes::ConfigureIstioIngressService, '#execute' do
+RSpec.describe Clusters::Kubernetes::ConfigureIstioIngressService, '#execute' do
   include KubernetesHelpers
 
   let(:cluster) { create(:cluster, :project, :provided_by_gcp) }

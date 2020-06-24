@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe SentryErrorPresenter do
+RSpec.describe SentryErrorPresenter do
   let(:error) { build(:detailed_error_tracking_error) }
   let(:presenter) { described_class.new(error) }
 

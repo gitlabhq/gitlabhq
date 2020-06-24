@@ -3,7 +3,7 @@
 #
 # Counts words in a sentence and alerts if a sentence exceeds 25 words.
 #
-# For a list of all options, see https://errata-ai.github.io/vale/styles/
+# For a list of all options, see https://errata-ai.gitbook.io/vale/getting-started/styles
 extends: occurrence
 message: 'Shorter sentences improve readability (max 25 words).'
 scope: sentence

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe SnippetBlobPresenter do
+RSpec.describe SnippetBlobPresenter do
   describe '#rich_data' do
     before do
       allow_next_instance_of(described_class) do |instance|

@@ -44,7 +44,7 @@ module Resolvers
               description: 'Issues closed after this date'
     argument :search, GraphQL::STRING_TYPE,
               required: false,
-              description: 'Search query for finding issues by title or description'
+              description: 'Search query for issue title or description'
     argument :sort, Types::IssueSortEnum,
               description: 'Sort issues by this criteria',
               required: false,

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ChatNames::AuthorizeUserService do
+RSpec.describe ChatNames::AuthorizeUserService do
   describe '#execute' do
     subject { described_class.new(service, params) }
 

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-describe Ci::CreatePipelineService do
+RSpec.describe Ci::CreatePipelineService do
   let(:user)        { create(:admin) }
   let(:ref)         { 'refs/heads/master' }
   let(:source)      { :push }

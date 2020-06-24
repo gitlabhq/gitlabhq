@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Getting Metrics Dashboard' do
+RSpec.describe 'Getting Metrics Dashboard' do
   include GraphqlHelpers
 
   let_it_be(:current_user) { create(:user) }

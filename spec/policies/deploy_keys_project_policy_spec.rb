@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe DeployKeysProjectPolicy do
+RSpec.describe DeployKeysProjectPolicy do
   subject { described_class.new(current_user, deploy_key.deploy_keys_project_for(project)) }
 
   describe 'updating a deploy_keys_project' do

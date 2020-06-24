@@ -5,7 +5,7 @@ require 'rubocop'
 require 'rubocop/rspec/support'
 require_relative '../../../rubocop/cop/destroy_all'
 
-describe RuboCop::Cop::DestroyAll, type: :rubocop do
+RSpec.describe RuboCop::Cop::DestroyAll, type: :rubocop do
   include CopHelper
 
   subject(:cop) { described_class.new }

@@ -9497,7 +9497,7 @@
                 },
                 {
                   "name": "search",
-                  "description": "Filter epics by title and description",
+                  "description": "Search query for epic title or description",
                   "type": {
                     "kind": "SCALAR",
                     "name": "String",
@@ -13076,7 +13076,7 @@
                 },
                 {
                   "name": "search",
-                  "description": "Filter epics by title and description",
+                  "description": "Search query for epic title or description",
                   "type": {
                     "kind": "SCALAR",
                     "name": "String",
@@ -13205,7 +13205,7 @@
                 },
                 {
                   "name": "search",
-                  "description": "Filter epics by title and description",
+                  "description": "Search query for epic title or description",
                   "type": {
                     "kind": "SCALAR",
                     "name": "String",
@@ -13544,7 +13544,7 @@
                 },
                 {
                   "name": "search",
-                  "description": "Search query for finding issues by title or description",
+                  "description": "Search query for issue title or description",
                   "type": {
                     "kind": "SCALAR",
                     "name": "String",
@@ -25957,7 +25957,7 @@
                 },
                 {
                   "name": "search",
-                  "description": "Search query",
+                  "description": "Search query for environment name",
                   "type": {
                     "kind": "SCALAR",
                     "name": "String",
@@ -26294,7 +26294,7 @@
                 },
                 {
                   "name": "search",
-                  "description": "Search query for finding issues by title or description",
+                  "description": "Search query for issue title or description",
                   "type": {
                     "kind": "SCALAR",
                     "name": "String",
@@ -26473,7 +26473,7 @@
                 },
                 {
                   "name": "search",
-                  "description": "Search query for finding issues by title or description",
+                  "description": "Search query for issue title or description",
                   "type": {
                     "kind": "SCALAR",
                     "name": "String",
@@ -27483,7 +27483,7 @@
                 },
                 {
                   "name": "search",
-                  "description": "Filter requirements by title search",
+                  "description": "Search query for requirement title",
                   "type": {
                     "kind": "SCALAR",
                     "name": "String",
@@ -27586,7 +27586,7 @@
                 },
                 {
                   "name": "search",
-                  "description": "Filter requirements by title search",
+                  "description": "Search query for requirement title",
                   "type": {
                     "kind": "SCALAR",
                     "name": "String",
@@ -29710,7 +29710,7 @@
                 },
                 {
                   "name": "search",
-                  "description": "Search criteria",
+                  "description": "Search query for project name, path, or description",
                   "type": {
                     "kind": "SCALAR",
                     "name": "String",
@@ -33629,7 +33629,7 @@
                 },
                 {
                   "name": "searchTerm",
-                  "description": "Search term for the Sentry error.",
+                  "description": "Search query for the Sentry error details",
                   "type": {
                     "kind": "SCALAR",
                     "name": "String",

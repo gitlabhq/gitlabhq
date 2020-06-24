@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe WikiPage::Slug do
+RSpec.describe WikiPage::Slug do
   let_it_be(:meta) { create(:wiki_page_meta) }
 
   describe 'Associations' do

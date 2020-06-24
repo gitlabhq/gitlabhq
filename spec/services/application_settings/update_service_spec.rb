@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ApplicationSettings::UpdateService do
+RSpec.describe ApplicationSettings::UpdateService do
   include ExternalAuthorizationServiceHelpers
 
   let(:application_settings) { create(:application_setting) }

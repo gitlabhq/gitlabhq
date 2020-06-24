@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ::Serverless::DomainCluster do
+RSpec.describe ::Serverless::DomainCluster do
   subject { create(:serverless_domain_cluster) }
 
   describe 'validations' do

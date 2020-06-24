@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Ci::DagPipelineSerializer do
+RSpec.describe Ci::DagPipelineSerializer do
   describe '#represent' do
     subject { described_class.new.represent(pipeline) }
 

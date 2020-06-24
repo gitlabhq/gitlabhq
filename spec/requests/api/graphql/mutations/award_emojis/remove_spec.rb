@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Removing an AwardEmoji' do
+RSpec.describe 'Removing an AwardEmoji' do
   include GraphqlHelpers
 
   let(:current_user) { create(:user) }

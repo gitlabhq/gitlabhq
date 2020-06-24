@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe TodoPolicy do
+RSpec.describe TodoPolicy do
   let_it_be(:author) { create(:user) }
 
   let_it_be(:user1) { create(:user) }

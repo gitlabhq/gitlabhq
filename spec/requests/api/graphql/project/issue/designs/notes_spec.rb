@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Getting designs related to an issue' do
+RSpec.describe 'Getting designs related to an issue' do
   include GraphqlHelpers
   include DesignManagementTestHelpers
 

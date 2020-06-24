@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ServiceHookPresenter do
+RSpec.describe ServiceHookPresenter do
   let(:web_hook_log) { create(:web_hook_log, web_hook: service_hook) }
   let(:service_hook) { create(:service_hook, service: service) }
   let(:service) { create(:drone_ci_service, project: project) }

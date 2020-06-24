@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe API::ErrorTracking do
+RSpec.describe API::ErrorTracking do
   let_it_be(:user) { create(:user) }
   let(:setting) { create(:project_error_tracking_setting) }
   let(:project) { setting.project }

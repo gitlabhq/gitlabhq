@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe "Groups", "routing" do
+RSpec.describe "Groups", "routing" do
   let(:group_path) { 'complex.group-namegit' }
   let!(:group) { create(:group, path: group_path) }
 

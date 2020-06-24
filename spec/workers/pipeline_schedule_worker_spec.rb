@@ -33,7 +33,7 @@ describe PipelineScheduleWorker do
           expect(Ci::Pipeline.last).to be_schedule
 
           pipeline_schedule.reload
-          expect(pipeline_schedule.next_run_at).to be > Time.now
+          expect(pipeline_schedule.next_run_at).to be > Time.current
           expect(pipeline_schedule).to eq(project.ci_pipelines.last.pipeline_schedule)
           expect(pipeline_schedule).to be_active
         end

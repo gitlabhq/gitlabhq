@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-describe 'Git LFS API and storage' do
+RSpec.describe 'Git LFS API and storage' do
   include LfsHttpHelpers
   include ProjectForksHelper
   include WorkhorseHelpers

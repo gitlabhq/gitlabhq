@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-describe DesignManagement::DesignPolicy do
+RSpec.describe DesignManagement::DesignPolicy do
   include DesignManagementTestHelpers
 
   include_context 'ProjectPolicy context'

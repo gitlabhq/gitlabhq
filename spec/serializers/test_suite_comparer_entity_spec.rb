@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe TestSuiteComparerEntity do
+RSpec.describe TestSuiteComparerEntity do
   include TestReportsHelper
 
   let(:entity) { described_class.new(comparer) }

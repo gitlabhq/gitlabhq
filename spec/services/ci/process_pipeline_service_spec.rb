@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Ci::ProcessPipelineService do
+RSpec.describe Ci::ProcessPipelineService do
   let(:user) { create(:user) }
   let(:project) { create(:project) }
 

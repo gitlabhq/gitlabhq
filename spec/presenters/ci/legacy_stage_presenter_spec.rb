@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Ci::LegacyStagePresenter do
+RSpec.describe Ci::LegacyStagePresenter do
   let(:legacy_stage) { create(:ci_stage) }
   let(:presenter) { described_class.new(legacy_stage) }
 

@@ -3424,7 +3424,7 @@ type Epic implements Noteable {
     last: Int
 
     """
-    Filter epics by title and description
+    Search query for epic title or description
     """
     search: String
 
@@ -4701,7 +4701,7 @@ type Group {
     labelName: [String!]
 
     """
-    Filter epics by title and description
+    Search query for epic title or description
     """
     search: String
 
@@ -4778,7 +4778,7 @@ type Group {
     last: Int
 
     """
-    Filter epics by title and description
+    Search query for epic title or description
     """
     search: String
 
@@ -4899,7 +4899,7 @@ type Group {
     milestoneTitle: [String]
 
     """
-    Search query for finding issues by title or description
+    Search query for issue title or description
     """
     search: String
 
@@ -8730,7 +8730,7 @@ type Project {
     name: String
 
     """
-    Search query
+    Search query for environment name
     """
     search: String
 
@@ -8830,7 +8830,7 @@ type Project {
     milestoneTitle: [String]
 
     """
-    Search query for finding issues by title or description
+    Search query for issue title or description
     """
     search: String
 
@@ -8930,7 +8930,7 @@ type Project {
     milestoneTitle: [String]
 
     """
-    Search query for finding issues by title or description
+    Search query for issue title or description
     """
     search: String
 
@@ -9338,7 +9338,7 @@ type Project {
     iids: [ID!]
 
     """
-    Filter requirements by title search
+    Search query for requirement title
     """
     search: String
 
@@ -9398,7 +9398,7 @@ type Project {
     last: Int
 
     """
-    Filter requirements by title search
+    Search query for requirement title
     """
     search: String
 
@@ -10089,7 +10089,7 @@ type Query {
     membership: Boolean
 
     """
-    Search criteria
+    Search query for project name, path, or description
     """
     search: String
   ): ProjectConnection
@@ -11440,7 +11440,7 @@ type SentryErrorCollection {
     last: Int
 
     """
-    Search term for the Sentry error.
+    Search query for the Sentry error details
     """
     searchTerm: String
 

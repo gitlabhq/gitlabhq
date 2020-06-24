@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ProjectNoteEntity do
+RSpec.describe ProjectNoteEntity do
   include Gitlab::Routing
 
   let(:request) { double('request', current_user: user, noteable: note.noteable) }

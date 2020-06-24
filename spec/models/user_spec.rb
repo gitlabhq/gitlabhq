@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe User do
+RSpec.describe User do
   include ProjectForksHelper
   include TermsHelper
   include ExclusiveLeaseHelpers

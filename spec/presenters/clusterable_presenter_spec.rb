@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ClusterablePresenter do
+RSpec.describe ClusterablePresenter do
   include Gitlab::Routing.url_helpers
 
   describe '.fabricate' do

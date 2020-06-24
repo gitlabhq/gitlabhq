@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ClusterEntity do
+RSpec.describe ClusterEntity do
   describe '#as_json' do
     subject { described_class.new(cluster).as_json }
 

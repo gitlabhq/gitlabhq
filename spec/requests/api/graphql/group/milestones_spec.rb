@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Milestones through GroupQuery' do
+RSpec.describe 'Milestones through GroupQuery' do
   include GraphqlHelpers
 
   let_it_be(:user) { create(:user) }

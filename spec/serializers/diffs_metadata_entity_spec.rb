@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe DiffsMetadataEntity do
+RSpec.describe DiffsMetadataEntity do
   let(:user) { create(:user) }
   let(:project) { create(:project, :repository) }
   let(:request) { EntityRequest.new(project: project, current_user: user) }

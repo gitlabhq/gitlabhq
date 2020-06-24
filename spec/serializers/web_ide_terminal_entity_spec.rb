@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe WebIdeTerminalEntity do
+RSpec.describe WebIdeTerminalEntity do
   let(:build) { create(:ci_build) }
   let(:entity) { described_class.new(WebIdeTerminal.new(build)) }
 

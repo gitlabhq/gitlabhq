@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe GroupPolicy do
+RSpec.describe GroupPolicy do
   include_context 'GroupPolicy context'
 
   context 'public group with no user' do

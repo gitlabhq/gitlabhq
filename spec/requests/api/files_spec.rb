@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe API::Files do
+RSpec.describe API::Files do
   include RepoHelpers
 
   let(:user) { create(:user) }

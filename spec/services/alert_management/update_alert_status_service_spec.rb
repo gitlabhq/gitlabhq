@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe AlertManagement::UpdateAlertStatusService do
+RSpec.describe AlertManagement::UpdateAlertStatusService do
   let(:project) { alert.project }
   let_it_be(:user) { build(:user) }
 

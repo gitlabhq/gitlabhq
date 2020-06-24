@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ::API::Admin::Ci::Variables do
+RSpec.describe ::API::Admin::Ci::Variables do
   let_it_be(:admin) { create(:admin) }
   let_it_be(:user) { create(:user) }
 

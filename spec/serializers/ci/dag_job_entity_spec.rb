@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Ci::DagJobEntity do
+RSpec.describe Ci::DagJobEntity do
   let_it_be(:request) { double(:request) }
 
   let(:job) { create(:ci_build, name: 'dag_job') }

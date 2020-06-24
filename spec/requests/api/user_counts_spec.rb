@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe API::UserCounts do
+RSpec.describe API::UserCounts do
   let(:user) { create(:user) }
   let(:project) { create(:project, :public) }
 

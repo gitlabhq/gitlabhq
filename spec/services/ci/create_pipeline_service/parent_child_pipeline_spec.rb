@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Ci::CreatePipelineService, '#execute' do
+RSpec.describe Ci::CreatePipelineService, '#execute' do
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:user) { create(:user) }
   let(:ref_name) { 'master' }

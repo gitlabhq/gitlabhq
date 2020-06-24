@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe API::Terraform::State do
+RSpec.describe API::Terraform::State do
   include HttpBasicAuthHelpers
 
   let_it_be(:project) { create(:project) }

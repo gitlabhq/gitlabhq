@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Ci::PipelinePresenter do
+RSpec.describe Ci::PipelinePresenter do
   include Gitlab::Routing
 
   let(:user) { create(:user) }

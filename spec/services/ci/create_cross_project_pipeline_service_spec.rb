@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Ci::CreateCrossProjectPipelineService, '#execute' do
+RSpec.describe Ci::CreateCrossProjectPipelineService, '#execute' do
   let_it_be(:user) { create(:user) }
   let(:upstream_project) { create(:project, :repository) }
   let_it_be(:downstream_project) { create(:project, :repository) }

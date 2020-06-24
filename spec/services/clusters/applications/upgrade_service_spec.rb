@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Clusters::Applications::UpgradeService do
+RSpec.describe Clusters::Applications::UpgradeService do
   describe '#execute' do
     let(:application) { create(:clusters_applications_helm, :scheduled) }
     let!(:install_command) { application.install_command }
