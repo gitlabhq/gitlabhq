@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Clusters::Providers::Aws do
+RSpec.describe Clusters::Providers::Aws do
   it { is_expected.to belong_to(:cluster) }
 
   it { is_expected.to validate_length_of(:key_name).is_at_least(1).is_at_most(255) }

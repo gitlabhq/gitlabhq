@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe PagesDomain do
+RSpec.describe PagesDomain do
   using RSpec::Parameterized::TableSyntax
 
   subject(:pages_domain) { described_class.new }

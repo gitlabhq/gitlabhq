@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::GithubImport::ParallelScheduling do
+RSpec.describe Gitlab::GithubImport::ParallelScheduling do
   let(:importer_class) do
     Class.new do
       include(Gitlab::GithubImport::ParallelScheduling)

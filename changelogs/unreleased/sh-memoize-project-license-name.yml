@@ -1,0 +1,5 @@
+---
+title: Only load project license if needed
+merge_request: 35068
+author:
+type: performance

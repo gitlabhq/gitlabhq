@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe DeprecatedAssignee do
+RSpec.describe DeprecatedAssignee do
   let(:user) { create(:user) }
 
   describe '#assignee_id=' do

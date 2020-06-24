@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-describe Gitlab::MarkdownCache::ActiveRecord::Extension do
+RSpec.describe Gitlab::MarkdownCache::ActiveRecord::Extension do
   let(:klass) do
     Class.new(ActiveRecord::Base) do
       self.table_name = 'issues'

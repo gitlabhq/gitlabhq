@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Kubernetes::ServiceAccountToken do
+RSpec.describe Gitlab::Kubernetes::ServiceAccountToken do
   let(:name) { 'token-name' }
   let(:service_account_name) { 'a_service_account' }
   let(:namespace_name) { 'a_namespace' }

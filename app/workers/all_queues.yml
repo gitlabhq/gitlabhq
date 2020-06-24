@@ -5,7 +5,7 @@
 ---
 - :name: authorized_project_update:authorized_project_update_project_create
   :feature_category: :authentication_and_authorization
-  :has_external_dependencies:
+  :has_external_dependencies: 
   :urgency: :low
   :resource_boundary: :unknown
   :weight: 1
@@ -13,7 +13,7 @@
   :tags: []
 - :name: authorized_project_update:authorized_project_update_project_group_link_create
   :feature_category: :authentication_and_authorization
-  :has_external_dependencies:
+  :has_external_dependencies: 
   :urgency: :low
   :resource_boundary: :unknown
   :weight: 1
@@ -978,7 +978,8 @@
   :resource_boundary: :cpu
   :weight: 5
   :idempotent: 
-  :tags: []
+  :tags:
+  - :requires_disk_io
 - :name: pipeline_processing:build_queue
   :feature_category: :continuous_integration
   :has_external_dependencies: 

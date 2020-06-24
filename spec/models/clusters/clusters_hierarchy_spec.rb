@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Clusters::ClustersHierarchy do
+RSpec.describe Clusters::ClustersHierarchy do
   describe '#base_and_ancestors' do
     def base_and_ancestors(clusterable, include_management_project: true)
       described_class.new(clusterable, include_management_project: include_management_project).base_and_ancestors

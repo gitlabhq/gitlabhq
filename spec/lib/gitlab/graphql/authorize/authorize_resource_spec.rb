@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Graphql::Authorize::AuthorizeResource do
+RSpec.describe Gitlab::Graphql::Authorize::AuthorizeResource do
   let(:fake_class) do
     Class.new do
       include Gitlab::Graphql::Authorize::AuthorizeResource

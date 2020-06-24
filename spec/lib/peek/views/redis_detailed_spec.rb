@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Peek::Views::RedisDetailed, :request_store do
+RSpec.describe Peek::Views::RedisDetailed, :request_store do
   subject { described_class.new }
 
   using RSpec::Parameterized::TableSyntax

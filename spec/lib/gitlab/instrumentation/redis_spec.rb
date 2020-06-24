@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Instrumentation::Redis do
+RSpec.describe Gitlab::Instrumentation::Redis do
   def stub_storages(method, value)
     described_class::STORAGES.each do |storage|
       allow(storage).to receive(method) { value }

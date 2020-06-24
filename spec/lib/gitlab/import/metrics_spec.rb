@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Import::Metrics do
+RSpec.describe Gitlab::Import::Metrics do
   let(:importer) { :test_importer }
   let(:project) { create(:project) }
   let(:histogram) { double(:histogram) }

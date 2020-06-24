@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::View::Presenter::Delegated do
+RSpec.describe Gitlab::View::Presenter::Delegated do
   let(:project) { double(:project, user: 'John Doe') }
   let(:presenter_class) do
     Class.new(described_class)

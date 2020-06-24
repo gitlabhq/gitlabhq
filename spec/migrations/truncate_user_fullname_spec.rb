@@ -3,7 +3,7 @@
 require 'spec_helper'
 require Rails.root.join('db', 'migrate', '20190325080727_truncate_user_fullname.rb')
 
-describe TruncateUserFullname do
+RSpec.describe TruncateUserFullname do
   let(:users) { table(:users) }
 
   let(:user_short) { create_user(name: 'abc', email: 'test_short@example.com') }

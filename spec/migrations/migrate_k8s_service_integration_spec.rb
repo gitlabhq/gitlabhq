@@ -3,7 +3,7 @@
 require 'spec_helper'
 require Rails.root.join('db', 'post_migrate', '20190517153211_migrate_k8s_service_integration.rb')
 
-describe MigrateK8sServiceIntegration do
+RSpec.describe MigrateK8sServiceIntegration do
   context 'template service' do
     context 'with namespace' do
       let!(:service) do

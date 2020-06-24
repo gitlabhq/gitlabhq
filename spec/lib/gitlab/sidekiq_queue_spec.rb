@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::SidekiqQueue, :clean_gitlab_redis_queues do
+RSpec.describe Gitlab::SidekiqQueue, :clean_gitlab_redis_queues do
   around do |example|
     Sidekiq::Queue.new('authorized_projects').clear
     Sidekiq::Testing.disable!(&example)

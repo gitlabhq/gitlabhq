@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Redis::Wrapper do
+RSpec.describe Gitlab::Redis::Wrapper do
   let(:config_file_name) { "config/resque.yml" }
   let(:environment_config_file_name) { "GITLAB_REDIS_CONFIG_FILE" }
   let(:config_old_format_socket) { "spec/fixtures/config/redis_old_format_socket.yml" }

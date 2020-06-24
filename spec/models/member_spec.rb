@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Member do
+RSpec.describe Member do
   include ExclusiveLeaseHelpers
 
   using RSpec::Parameterized::TableSyntax

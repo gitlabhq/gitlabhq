@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::GitalyClient::OperationService do
+RSpec.describe Gitlab::GitalyClient::OperationService do
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project, :repository) }
   let(:repository) { project.repository.raw }

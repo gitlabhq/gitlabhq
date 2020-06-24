@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ReactiveCaching, :use_clean_rails_memory_store_caching do
+RSpec.describe ReactiveCaching, :use_clean_rails_memory_store_caching do
   include ExclusiveLeaseHelpers
   include ReactiveCachingHelpers
 

@@ -3,7 +3,7 @@
 require 'fast_spec_helper'
 require 'rspec-parameterized'
 
-describe Gitlab::SidekiqConfig::CliMethods do
+RSpec.describe Gitlab::SidekiqConfig::CliMethods do
   let(:dummy_root) { '/tmp/' }
 
   describe '.worker_queues' do

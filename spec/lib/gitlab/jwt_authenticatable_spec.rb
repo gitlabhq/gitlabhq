@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::JwtAuthenticatable do
+RSpec.describe Gitlab::JwtAuthenticatable do
   let(:test_class) do
     Class.new do
       include Gitlab::JwtAuthenticatable

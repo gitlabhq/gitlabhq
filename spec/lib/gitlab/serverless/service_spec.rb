@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Serverless::Service do
+RSpec.describe Gitlab::Serverless::Service do
   let(:cluster) { create(:cluster) }
   let(:environment) { create(:environment) }
   let(:attributes) do

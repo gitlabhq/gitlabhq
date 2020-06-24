@@ -2,7 +2,7 @@
 
 require 'fast_spec_helper'
 
-describe Peek::Views::DetailedView, :request_store do
+RSpec.describe Peek::Views::DetailedView, :request_store do
   context 'when a class defines thresholds' do
     let(:threshold_view) do
       Class.new(described_class) do

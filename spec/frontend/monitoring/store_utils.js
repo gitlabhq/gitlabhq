@@ -63,3 +63,24 @@ export const setupStoreWithData = store => {
 
   setEnvironmentData(store);
 };
+
+export const setupStoreWithDataForPanelCount = (store, panelCount) => {
+  const payloadPanelGroup = metricsDashboardPayload.panel_groups[0];
+
+  const panelGroupCustom = {
+    ...payloadPanelGroup,
+    panels: payloadPanelGroup.panels.slice(0, panelCount),
+  };
+
+  const metricsDashboardPayloadCustom = {
+    ...metricsDashboardPayload,
+    panel_groups: [panelGroupCustom],
+  };
+
+  store.commit(
+    `monitoringDashboard/${types.RECEIVE_METRICS_DASHBOARD_SUCCESS}`,
+    metricsDashboardPayloadCustom,
+  );
+
+  setMetricResult({ store, result: metricsResult, panel: 0 });
+};

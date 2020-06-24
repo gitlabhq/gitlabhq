@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::RequestForgeryProtection, :allow_forgery_protection do
+RSpec.describe Gitlab::RequestForgeryProtection, :allow_forgery_protection do
   let(:csrf_token) { SecureRandom.base64(ActionController::RequestForgeryProtection::AUTHENTICITY_TOKEN_LENGTH) }
   let(:env) do
     {

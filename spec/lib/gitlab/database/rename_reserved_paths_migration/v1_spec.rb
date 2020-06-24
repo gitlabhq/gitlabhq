@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-shared_examples 'renames child namespaces' do |type|
+RSpec.shared_examples 'renames child namespaces' do |type|
   it 'renames namespaces' do
     rename_namespaces = double
     expect(described_class::RenameNamespaces)
@@ -15,7 +15,7 @@ shared_examples 'renames child namespaces' do |type|
   end
 end
 
-describe Gitlab::Database::RenameReservedPathsMigration::V1, :delete do
+RSpec.describe Gitlab::Database::RenameReservedPathsMigration::V1, :delete do
   let(:subject) { FakeRenameReservedPathMigrationV1.new }
 
   before do

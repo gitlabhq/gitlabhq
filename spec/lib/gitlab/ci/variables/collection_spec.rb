@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Ci::Variables::Collection do
+RSpec.describe Gitlab::Ci::Variables::Collection do
   describe '.new' do
     it 'can be initialized with an array' do
       variable = { key: 'VAR', value: 'value', public: true, masked: false }

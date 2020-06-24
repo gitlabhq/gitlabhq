@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Verify::Uploads do
+RSpec.describe Gitlab::Verify::Uploads do
   include GitlabVerifyHelpers
 
   it_behaves_like 'Gitlab::Verify::BatchVerifier subclass' do

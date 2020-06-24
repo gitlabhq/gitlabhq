@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Prometheus::MetricGroup do
+RSpec.describe Gitlab::Prometheus::MetricGroup do
   describe '.common_metrics' do
     let!(:project_metric) { create(:prometheus_metric) }
     let!(:common_metric_group_a) { create(:prometheus_metric, :common, group: :aws_elb) }

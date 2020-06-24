@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Issue::Metrics do
+RSpec.describe Issue::Metrics do
   let(:project) { create(:project) }
 
   subject { create(:issue, project: project) }

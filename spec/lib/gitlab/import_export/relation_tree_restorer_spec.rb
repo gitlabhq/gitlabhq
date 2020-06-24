@@ -9,7 +9,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::ImportExport::RelationTreeRestorer do
+RSpec.describe Gitlab::ImportExport::RelationTreeRestorer do
   include ImportExport::CommonUtil
 
   let(:user) { create(:user) }

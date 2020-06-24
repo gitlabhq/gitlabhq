@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Database::PostgresqlAdapter::ForceDisconnectableMixin do
+RSpec.describe Gitlab::Database::PostgresqlAdapter::ForceDisconnectableMixin do
   describe 'checking in a connection to the pool' do
     let(:model) do
       Class.new(ActiveRecord::Base) do

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Ci::Status::WaitingForResource do
+RSpec.describe Gitlab::Ci::Status::WaitingForResource do
   subject do
     described_class.new(double('subject'), double('user'))
   end

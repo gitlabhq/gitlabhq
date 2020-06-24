@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ::Gitlab::LetsEncrypt::Client do
+RSpec.describe ::Gitlab::LetsEncrypt::Client do
   include LetsEncryptHelpers
 
   let(:client) { described_class.new }

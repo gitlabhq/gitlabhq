@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::TimeTrackingFormatter do
+RSpec.describe Gitlab::TimeTrackingFormatter do
   describe '#parse' do
     subject { described_class.parse(duration_string) }
 

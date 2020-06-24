@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::VisibilityLevelChecker do
+RSpec.describe Gitlab::VisibilityLevelChecker do
   let(:user) { create(:user) }
   let(:project) { create(:project) }
   let(:visibility_level_checker) { }

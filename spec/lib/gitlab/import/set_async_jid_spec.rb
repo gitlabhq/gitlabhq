@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-describe Gitlab::Import::SetAsyncJid do
+RSpec.describe Gitlab::Import::SetAsyncJid do
   describe '.set_jid', :clean_gitlab_redis_shared_state do
     let(:project) { create(:project, :import_scheduled) }
 

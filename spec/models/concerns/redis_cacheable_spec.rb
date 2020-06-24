@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe RedisCacheable do
+RSpec.describe RedisCacheable do
   let(:model) do
     Struct.new(:id, :attributes) do
       def read_attribute(attribute)

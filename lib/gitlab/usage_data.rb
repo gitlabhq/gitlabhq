@@ -124,7 +124,7 @@ module Gitlab
             issues_created_manually_from_alerts: issues_created_manually_from_alerts,
             incident_issues: alert_bot_incident_count,
             alert_bot_incident_issues: alert_bot_incident_count,
-            incident_labeled_issues: count(::Issue.with_label_attributes(IncidentManagement::CreateIssueService::INCIDENT_LABEL)),
+            incident_labeled_issues: count(::Issue.with_label_attributes(IncidentManagement::CreateIncidentLabelService::LABEL_PROPERTIES)),
             keys: count(Key),
             label_lists: count(List.label),
             lfs_objects: count(LfsObject),
@@ -143,7 +143,6 @@ module Gitlab
             protected_branches: count(ProtectedBranch),
             releases: count(Release),
             remote_mirrors: count(RemoteMirror),
-            snippets: count(Snippet),
             personal_snippets: count(PersonalSnippet),
             project_snippets: count(ProjectSnippet),
             suggestions: count(Suggestion),
@@ -162,7 +161,9 @@ module Gitlab
             ingress_modsecurity_usage,
             container_expiration_policies_usage,
             merge_requests_usage(default_time_period)
-          )
+          ).tap do |data|
+            data[:snippets] = data[:personal_snippets] + data[:project_snippets]
+          end
         }
       end
       # rubocop: enable Metrics/AbcSize
@@ -170,8 +171,11 @@ module Gitlab
       def system_usage_data_monthly
         {
           counts_monthly: {
-            snippets: count(Snippet.where(default_time_period))
-          }
+            personal_snippets: count(PersonalSnippet.where(default_time_period)),
+            project_snippets: count(ProjectSnippet.where(default_time_period))
+          }.tap do |data|
+            data[:snippets] = data[:personal_snippets] + data[:project_snippets]
+          end
         }
       end
       # rubocop: enable CodeReuse/ActiveRecord

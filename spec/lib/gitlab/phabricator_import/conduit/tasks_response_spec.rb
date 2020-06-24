@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-describe Gitlab::PhabricatorImport::Conduit::TasksResponse do
+RSpec.describe Gitlab::PhabricatorImport::Conduit::TasksResponse do
   let(:conduit_response) do
     Gitlab::PhabricatorImport::Conduit::Response
       .new(Gitlab::Json.parse(fixture_file('phabricator_responses/maniphest.search.json')))

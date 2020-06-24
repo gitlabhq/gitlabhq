@@ -166,13 +166,7 @@ export default {
         class="diff-toggle-caret append-right-5"
         @click.stop="handleToggleFile"
       />
-      <a
-        v-once
-        ref="titleWrapper"
-        class="append-right-4"
-        :href="titleLink"
-        @click="handleFileNameClick"
-      >
+      <a v-once ref="titleWrapper" class="gl-mr-2" :href="titleLink" @click="handleFileNameClick">
         <file-icon
           :file-name="filePath"
           :size="18"

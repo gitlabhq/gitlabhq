@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Ci::BuildDependencies do
+RSpec.describe Ci::BuildDependencies do
   let_it_be(:user) { create(:user) }
   let_it_be(:project, reload: true) { create(:project, :repository) }
 

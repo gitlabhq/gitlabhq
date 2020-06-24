@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::UserAccess do
+RSpec.describe Gitlab::UserAccess do
   include ProjectForksHelper
 
   let(:access) { described_class.new(user, project: project) }

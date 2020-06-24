@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Utils do
+RSpec.describe Gitlab::Utils do
   delegate :to_boolean, :boolean_to_yes_no, :slugify, :random_string, :which,
            :ensure_array_from_string, :to_exclusive_sentence, :bytes_to_megabytes,
            :append_path, :check_path_traversal!, :ms_to_round_sec, to: :described_class

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe IssueCollection do
+RSpec.describe IssueCollection do
   let(:user) { create(:user) }
   let(:project) { create(:project) }
   let(:issue1) { create(:issue, project: project) }

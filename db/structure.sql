@@ -5455,7 +5455,8 @@ CREATE TABLE public.project_statistics (
     shared_runners_seconds bigint DEFAULT 0 NOT NULL,
     shared_runners_seconds_last_reset timestamp without time zone,
     packages_size bigint DEFAULT 0 NOT NULL,
-    wiki_size bigint
+    wiki_size bigint,
+    snippets_size bigint
 );
 
 CREATE SEQUENCE public.project_statistics_id_seq
@@ -14117,6 +14118,7 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200618134723
 20200619154527
 20200619154528
+20200622095419
 20200622103836
 20200622235737
 20200623000148

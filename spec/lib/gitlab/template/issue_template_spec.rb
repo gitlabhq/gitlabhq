@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Template::IssueTemplate do
+RSpec.describe Gitlab::Template::IssueTemplate do
   let(:project) { create(:project, :repository, create_templates: :issue) }
 
   describe '.all' do

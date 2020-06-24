@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe GpgKeySubkey do
+RSpec.describe GpgKeySubkey do
   subject { build(:gpg_key_subkey) }
 
   describe 'associations' do

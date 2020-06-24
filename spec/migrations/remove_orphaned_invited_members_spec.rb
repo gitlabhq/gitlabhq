@@ -3,7 +3,7 @@
 require 'spec_helper'
 require Rails.root.join('db', 'migrate', '20200424050250_remove_orphaned_invited_members.rb')
 
-describe RemoveOrphanedInvitedMembers do
+RSpec.describe RemoveOrphanedInvitedMembers do
   let(:members_table) { table(:members) }
   let(:users_table) { table(:users) }
   let(:namespaces_table) { table(:namespaces) }

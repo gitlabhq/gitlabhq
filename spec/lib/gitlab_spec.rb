@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab do
+RSpec.describe Gitlab do
   describe '.root' do
     it 'returns the root path of the app' do
       expect(described_class.root).to eq(Pathname.new(File.expand_path('../..', __dir__)))

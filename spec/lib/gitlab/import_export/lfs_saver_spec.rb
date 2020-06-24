@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::ImportExport::LfsSaver do
+RSpec.describe Gitlab::ImportExport::LfsSaver do
   let(:shared) { project.import_export_shared }
   let(:export_path) { "#{Dir.tmpdir}/project_tree_saver_spec" }
   let(:project) { create(:project) }

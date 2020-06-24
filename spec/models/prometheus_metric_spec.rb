@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe PrometheusMetric do
+RSpec.describe PrometheusMetric do
   subject { build(:prometheus_metric) }
 
   it_behaves_like 'having unique enum values'

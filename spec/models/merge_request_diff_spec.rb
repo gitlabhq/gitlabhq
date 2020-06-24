@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe MergeRequestDiff do
+RSpec.describe MergeRequestDiff do
   using RSpec::Parameterized::TableSyntax
 
   include RepoHelpers

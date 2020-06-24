@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe PersonalAccessToken do
+RSpec.describe PersonalAccessToken do
   subject { described_class }
 
   describe '.build' do

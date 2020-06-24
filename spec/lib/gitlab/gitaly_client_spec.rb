@@ -4,7 +4,7 @@ require 'spec_helper'
 
 # We stub Gitaly in `spec/support/gitaly.rb` for other tests. We don't want
 # those stubs while testing the GitalyClient itself.
-describe Gitlab::GitalyClient do
+RSpec.describe Gitlab::GitalyClient do
   let(:sample_cert) { Rails.root.join('spec/fixtures/clusters/sample_cert.pem').to_s }
 
   before do

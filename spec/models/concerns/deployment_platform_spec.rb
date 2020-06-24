@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe DeploymentPlatform do
+RSpec.describe DeploymentPlatform do
   let(:project) { create(:project) }
 
   describe '#deployment_platform' do

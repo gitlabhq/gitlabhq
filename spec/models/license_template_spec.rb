@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe LicenseTemplate do
+RSpec.describe LicenseTemplate do
   describe '#content' do
     it 'calls a proc exactly once if provided' do
       content_proc = -> { 'bar' }

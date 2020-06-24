@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe DeploymentMetrics do
+RSpec.describe DeploymentMetrics do
   describe '#has_metrics?' do
     subject { described_class.new(deployment.project, deployment).has_metrics? }
 

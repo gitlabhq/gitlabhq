@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::GitalyClient::PraefectInfoService do
+RSpec.describe Gitlab::GitalyClient::PraefectInfoService do
   let(:project) { create(:project, :repository) }
   let(:repository) { project.repository }
   let(:gitaly_repository) { repository.gitaly_repository }

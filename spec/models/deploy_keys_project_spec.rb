@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe DeployKeysProject do
+RSpec.describe DeployKeysProject do
   describe "Associations" do
     it { is_expected.to belong_to(:deploy_key) }
     it { is_expected.to belong_to(:project) }

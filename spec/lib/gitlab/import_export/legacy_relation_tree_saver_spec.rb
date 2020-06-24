@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::ImportExport::LegacyRelationTreeSaver do
+RSpec.describe Gitlab::ImportExport::LegacyRelationTreeSaver do
   let(:exportable) { create(:group) }
   let(:relation_tree_saver) { described_class.new }
   let(:tree) { {} }

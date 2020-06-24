@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Peek::Views::BulletDetailed do
+RSpec.describe Peek::Views::BulletDetailed do
   subject { described_class.new }
 
   before do

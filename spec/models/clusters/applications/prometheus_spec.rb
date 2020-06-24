@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Clusters::Applications::Prometheus do
+RSpec.describe Clusters::Applications::Prometheus do
   include KubernetesHelpers
   include StubRequests
 

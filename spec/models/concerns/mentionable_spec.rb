@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Mentionable do
+RSpec.describe Mentionable do
   before do
     stub_const('Example', Class.new)
     Example.class_eval do
@@ -67,7 +67,7 @@ describe Mentionable do
   end
 end
 
-describe Issue, "Mentionable" do
+RSpec.describe Issue, "Mentionable" do
   describe '#mentioned_users' do
     let!(:user) { create(:user, username: 'stranger') }
     let!(:user2) { create(:user, username: 'john') }
@@ -222,7 +222,7 @@ describe Issue, "Mentionable" do
   end
 end
 
-describe Commit, 'Mentionable' do
+RSpec.describe Commit, 'Mentionable' do
   let(:project) { create(:project, :public, :repository) }
   let(:commit)  { project.commit }
 
@@ -291,7 +291,7 @@ describe Commit, 'Mentionable' do
   end
 end
 
-describe MergeRequest, 'Mentionable' do
+RSpec.describe MergeRequest, 'Mentionable' do
   describe '#store_mentions!' do
     it_behaves_like 'mentions in description', :merge_request
     it_behaves_like 'mentions in notes', :merge_request do
@@ -312,7 +312,7 @@ describe MergeRequest, 'Mentionable' do
   end
 end
 
-describe Snippet, 'Mentionable' do
+RSpec.describe Snippet, 'Mentionable' do
   describe '#store_mentions!' do
     it_behaves_like 'mentions in description', :project_snippet
     it_behaves_like 'mentions in notes', :project_snippet do
@@ -329,7 +329,7 @@ describe Snippet, 'Mentionable' do
   end
 end
 
-describe PersonalSnippet, 'Mentionable' do
+RSpec.describe PersonalSnippet, 'Mentionable' do
   describe '#store_mentions!' do
     it_behaves_like 'mentions in description', :personal_snippet
     it_behaves_like 'mentions in notes', :personal_snippet do
@@ -346,7 +346,7 @@ describe PersonalSnippet, 'Mentionable' do
   end
 end
 
-describe DesignManagement::Design do
+RSpec.describe DesignManagement::Design do
   describe '#store_mentions!' do
     it_behaves_like 'mentions in notes', :design do
       let(:note) { create(:diff_note_on_design) }

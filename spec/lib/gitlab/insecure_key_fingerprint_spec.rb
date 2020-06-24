@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::InsecureKeyFingerprint do
+RSpec.describe Gitlab::InsecureKeyFingerprint do
   let(:key) do
     'ssh-rsa AAAAB3NzaC1yc2EAAAABJQAAAIEAiPWx6WM4lhHNedGfBpPJNPpZ7yKu+dnn' \
     '1SJejgt4596k6YjzGGphH2TUxwKzxcKDKKezwkpfnxPkSMkuEspGRt/aZZ9wa++Oi7Qk' \

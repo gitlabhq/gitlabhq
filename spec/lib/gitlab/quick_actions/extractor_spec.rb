@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::QuickActions::Extractor do
+RSpec.describe Gitlab::QuickActions::Extractor do
   let(:definitions) do
     Class.new do
       include Gitlab::QuickActions::Dsl

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Clusters::Applications::Runner do
+RSpec.describe Clusters::Applications::Runner do
   let(:ci_runner) { create(:ci_runner) }
 
   include_examples 'cluster application core specs', :clusters_applications_runner

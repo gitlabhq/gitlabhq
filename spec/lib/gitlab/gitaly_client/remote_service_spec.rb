@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::GitalyClient::RemoteService do
+RSpec.describe Gitlab::GitalyClient::RemoteService do
   let(:project) { create(:project) }
   let(:storage_name) { project.repository_storage }
   let(:relative_path) { project.disk_path + '.git' }

@@ -126,12 +126,12 @@ export default {
             v-gl-tooltip
             :title="milestone.description"
             :href="milestone.webUrl"
-            class="append-right-4"
+            class="gl-mr-2"
           >
             {{ milestone.title }}
           </gl-link>
           <template v-if="shouldRenderBullet(index)">
-            <span :key="'bullet-' + milestone.id" class="append-right-4">&bull;</span>
+            <span :key="'bullet-' + milestone.id" class="gl-mr-2">&bull;</span>
           </template>
           <template v-if="shouldRenderShowMoreLink(index)">
             <gl-button :key="'more-button-' + milestone.id" variant="link" @click="toggleShowAll">

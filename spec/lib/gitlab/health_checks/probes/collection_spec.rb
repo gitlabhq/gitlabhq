@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::HealthChecks::Probes::Collection do
+RSpec.describe Gitlab::HealthChecks::Probes::Collection do
   let(:readiness) { described_class.new(*checks) }
 
   describe '#execute' do

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::QueryLimiting::ActiveSupportSubscriber do
+RSpec.describe Gitlab::QueryLimiting::ActiveSupportSubscriber do
   let(:transaction) { instance_double(Gitlab::QueryLimiting::Transaction, increment: true) }
 
   before do

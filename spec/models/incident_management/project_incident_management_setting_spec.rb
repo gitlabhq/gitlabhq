@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe IncidentManagement::ProjectIncidentManagementSetting do
+RSpec.describe IncidentManagement::ProjectIncidentManagementSetting do
   let_it_be(:project) { create(:project, :repository, create_templates: :issue) }
 
   describe 'Associations' do

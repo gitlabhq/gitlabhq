@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe RspecFlaky::Listener, :aggregate_failures do
+RSpec.describe RspecFlaky::Listener, :aggregate_failures do
   let(:already_flaky_example_uid) { '6e869794f4cfd2badd93eb68719371d1' }
   let(:suite_flaky_example_report) do
     {

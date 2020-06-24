@@ -2,7 +2,7 @@
 
 require 'fast_spec_helper'
 
-describe Gitlab::Utils::Override do
+RSpec.describe Gitlab::Utils::Override do
   let(:base) do
     Struct.new(:good) do
       def self.good

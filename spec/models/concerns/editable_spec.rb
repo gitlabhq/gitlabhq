@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Editable do
+RSpec.describe Editable do
   describe '#edited?' do
     let(:issue) { create(:issue, last_edited_at: nil) }
     let(:edited_issue) { create(:issue, created_at: 3.days.ago, last_edited_at: 2.days.ago) }

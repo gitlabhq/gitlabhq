@@ -3,7 +3,7 @@
 require 'spec_helper'
 require Rails.root.join('db', 'post_migrate', '20190613231640_migrate_managed_clusters_with_no_token_to_unmanaged.rb')
 
-describe MigrateManagedClustersWithNoTokenToUnmanaged do
+RSpec.describe MigrateManagedClustersWithNoTokenToUnmanaged do
   let(:cluster_type) { 'project_type' }
   let(:created_at) { Date.new(2018, 11, 1).midnight }
 

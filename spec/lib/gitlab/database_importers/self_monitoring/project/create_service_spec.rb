@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::DatabaseImporters::SelfMonitoring::Project::CreateService do
+RSpec.describe Gitlab::DatabaseImporters::SelfMonitoring::Project::CreateService do
   describe '#execute' do
     let(:result) { subject.execute }
 

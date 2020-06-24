@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Ci::Ref do
+RSpec.describe Ci::Ref do
   it { is_expected.to belong_to(:project) }
 
   describe '.ensure_for' do

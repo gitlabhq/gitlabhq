@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe DesignManagement::DesignAtVersion do
+RSpec.describe DesignManagement::DesignAtVersion do
   include DesignManagementTestHelpers
 
   let_it_be(:issue, reload: true) { create(:issue) }

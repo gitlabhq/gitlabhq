@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::RepositoryCache do
+RSpec.describe Gitlab::RepositoryCache do
   let_it_be(:project) { create(:project) }
   let(:backend) { double('backend').as_null_object }
   let(:repository) { project.repository }

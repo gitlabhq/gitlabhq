@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::JiraImport::UserMapper do
+RSpec.describe Gitlab::JiraImport::UserMapper do
   let_it_be(:group)   { create(:group) }
   let_it_be(:project) { create(:project, group: group) }
   let_it_be(:user)    { create(:user, email: 'user@example.com') }

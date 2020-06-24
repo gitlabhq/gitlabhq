@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe GroupCustomAttribute do
+RSpec.describe GroupCustomAttribute do
   describe 'assocations' do
     it { is_expected.to belong_to(:group) }
   end

@@ -3,7 +3,7 @@
 require 'spec_helper'
 require 'email_spec'
 
-describe Emails::Groups do
+RSpec.describe Emails::Groups do
   include EmailSpec::Matchers
 
   let(:group) { create(:group) }

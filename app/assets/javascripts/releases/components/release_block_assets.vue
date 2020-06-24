@@ -157,7 +157,7 @@ export default {
       <ul v-if="assets.links.length" class="pl-0 mb-0 gl-mt-3 list-unstyled js-assets-list">
         <li v-for="link in assets.links" :key="link.name" class="gl-mb-3">
           <gl-link v-gl-tooltip.bottom :title="__('Download asset')" :href="link.directAssetUrl">
-            <icon name="package" class="align-middle append-right-4 align-text-bottom" />
+            <icon name="package" class="align-middle gl-mr-2 align-text-bottom" />
             {{ link.name }}
             <span v-if="link.external" data-testid="external-link-indicator">{{
               __('(external source)')
@@ -174,7 +174,7 @@ export default {
           aria-haspopup="true"
           aria-expanded="false"
         >
-          <icon name="doc-code" class="align-top append-right-4" />
+          <icon name="doc-code" class="align-top gl-mr-2" />
           {{ __('Source code') }}
           <icon name="chevron-down" />
         </button>

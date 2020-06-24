@@ -5,7 +5,7 @@ require 'fast_spec_helper'
 # Patching ActiveSupport::Concern
 require_relative '../../../../config/initializers/0_as_concern'
 
-describe Gitlab::Patch::Prependable do
+RSpec.describe Gitlab::Patch::Prependable do
   before do
     @prepended_modules = []
   end

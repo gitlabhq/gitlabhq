@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Iteration do
+RSpec.describe Iteration do
   let_it_be(:project) { create(:project) }
   let_it_be(:group) { create(:group) }
 

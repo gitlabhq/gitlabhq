@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-describe Ci::FreezePeriodStatus do
+RSpec.describe Ci::FreezePeriodStatus do
   let(:project) { create :project }
   # '0 23 * * 5' == "At 23:00 on Friday."", '0 7 * * 1' == "At 07:00 on Monday.""
   let(:friday_2300) { '0 23 * * 5' }

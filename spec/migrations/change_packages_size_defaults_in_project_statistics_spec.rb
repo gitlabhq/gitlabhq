@@ -3,7 +3,7 @@
 require 'spec_helper'
 require Rails.root.join('db', 'migrate', '20190516155724_change_packages_size_defaults_in_project_statistics.rb')
 
-describe ChangePackagesSizeDefaultsInProjectStatistics do
+RSpec.describe ChangePackagesSizeDefaultsInProjectStatistics do
   let(:project_statistics) { table(:project_statistics) }
   let(:projects)           { table(:projects) }
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::ConfigChecker::ExternalDatabaseChecker do
+RSpec.describe Gitlab::ConfigChecker::ExternalDatabaseChecker do
   describe '#check' do
     subject { described_class.check }
 

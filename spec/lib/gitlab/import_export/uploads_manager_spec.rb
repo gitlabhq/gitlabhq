@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::ImportExport::UploadsManager do
+RSpec.describe Gitlab::ImportExport::UploadsManager do
   let(:shared) { project.import_export_shared }
   let(:export_path) { "#{Dir.tmpdir}/project_tree_saver_spec" }
   let(:project) { create(:project) }

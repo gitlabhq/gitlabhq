@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ProjectAuthorization do
+RSpec.describe ProjectAuthorization do
   let(:user) { create(:user) }
   let(:project1) { create(:project) }
   let(:project2) { create(:project) }

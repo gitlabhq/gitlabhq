@@ -82,7 +82,7 @@ export default {
           v-gl-tooltip
           name="eye-slash"
           :title="__('Confidential')"
-          class="confidential-icon append-right-4 align-self-baseline align-self-md-auto mt-xl-0"
+          class="confidential-icon gl-mr-2 align-self-baseline align-self-md-auto mt-xl-0"
           :aria-label="__('Confidential')"
         />
         <a :href="computedPath" class="sortable-link gl-font-weight-normal">{{ title }}</a>

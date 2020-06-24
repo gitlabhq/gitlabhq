@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Ci::HasVariable do
+RSpec.describe Ci::HasVariable do
   subject { build(:ci_variable) }
 
   it { is_expected.to validate_presence_of(:key) }

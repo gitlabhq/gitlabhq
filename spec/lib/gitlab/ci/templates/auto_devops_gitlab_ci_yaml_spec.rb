@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Auto-DevOps.gitlab-ci.yml' do
+RSpec.describe 'Auto-DevOps.gitlab-ci.yml' do
   subject(:template) { Gitlab::Template::GitlabCiYmlTemplate.find('Auto-DevOps') }
 
   describe 'the created pipeline' do

@@ -3,7 +3,7 @@
 require 'spec_helper'
 require Rails.root.join('db', 'migrate', '20191023152913_add_default_and_free_plans.rb')
 
-describe AddDefaultAndFreePlans do
+RSpec.describe AddDefaultAndFreePlans do
   describe 'migrate' do
     let(:plans) { table(:plans) }
 

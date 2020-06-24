@@ -3,7 +3,7 @@
 require 'spec_helper'
 require Rails.root.join('db', 'post_migrate', '20200511145545_change_variable_interpolation_format_in_common_metrics')
 
-describe ChangeVariableInterpolationFormatInCommonMetrics, :migration do
+RSpec.describe ChangeVariableInterpolationFormatInCommonMetrics, :migration do
   let(:prometheus_metrics) { table(:prometheus_metrics) }
 
   let!(:common_metric) do

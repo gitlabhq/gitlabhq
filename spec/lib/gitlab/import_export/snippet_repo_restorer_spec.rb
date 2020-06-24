@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::ImportExport::SnippetRepoRestorer do
+RSpec.describe Gitlab::ImportExport::SnippetRepoRestorer do
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project, namespace: user.namespace) }
   let(:snippet) { create(:project_snippet, project: project, author: user) }

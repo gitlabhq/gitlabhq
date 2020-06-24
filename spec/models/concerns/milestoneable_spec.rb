@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Milestoneable do
+RSpec.describe Milestoneable do
   let(:user) { create(:user) }
   let(:milestone) { create(:milestone, project: project) }
 

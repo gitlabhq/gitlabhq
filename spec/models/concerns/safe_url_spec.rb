@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe SafeUrl do
+RSpec.describe SafeUrl do
   describe '#safe_url' do
     let(:safe_url_test_class) do
       Class.new do

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe GroupDescendant do
+RSpec.describe GroupDescendant do
   let(:parent) { create(:group) }
   let(:subgroup) { create(:group, parent: parent) }
   let(:subsub_group) { create(:group, parent: subgroup) }

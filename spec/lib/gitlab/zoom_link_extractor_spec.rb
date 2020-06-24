@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::ZoomLinkExtractor do
+RSpec.describe Gitlab::ZoomLinkExtractor do
   describe "#links" do
     using RSpec::Parameterized::TableSyntax
 

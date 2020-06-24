@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Kubernetes::Namespace do
+RSpec.describe Gitlab::Kubernetes::Namespace do
   let(:name) { 'a_namespace' }
   let(:client) { double('kubernetes client') }
   let(:labels) { nil }

@@ -6,7 +6,7 @@ require_relative 'danger_spec_helper'
 
 require 'gitlab/danger/helper'
 
-describe Gitlab::Danger::Helper do
+RSpec.describe Gitlab::Danger::Helper do
   using RSpec::Parameterized::TableSyntax
   include DangerSpecHelper
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe PerformanceMonitoring::PrometheusPanel do
+RSpec.describe PerformanceMonitoring::PrometheusPanel do
   let(:json_content) do
     {
       "max_value" => 1,

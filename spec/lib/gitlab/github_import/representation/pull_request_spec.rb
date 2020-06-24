@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::GithubImport::Representation::PullRequest do
+RSpec.describe Gitlab::GithubImport::Representation::PullRequest do
   let(:created_at) { Time.new(2017, 1, 1, 12, 00) }
   let(:updated_at) { Time.new(2017, 1, 1, 12, 15) }
   let(:merged_at) { Time.new(2017, 1, 1, 12, 17) }

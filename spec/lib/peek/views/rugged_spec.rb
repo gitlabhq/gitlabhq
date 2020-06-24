@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Peek::Views::Rugged, :request_store do
+RSpec.describe Peek::Views::Rugged, :request_store do
   subject { described_class.new }
 
   let(:project) { create(:project) }

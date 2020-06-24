@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::SQL::Glob do
+RSpec.describe Gitlab::SQL::Glob do
   describe '.to_like' do
     it 'matches * as %' do
       expect(glob('apple', '*')).to be(true)

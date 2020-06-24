@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe BlobViewer::License do
+RSpec.describe BlobViewer::License do
   include FakeBlobHelpers
 
   let(:project) { create(:project, :repository) }

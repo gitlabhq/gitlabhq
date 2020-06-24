@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Metrics::Dashboard::Stages::PanelIdsInserter do
+RSpec.describe Gitlab::Metrics::Dashboard::Stages::PanelIdsInserter do
   let(:project) { build_stubbed(:project) }
 
   def fetch_panel_ids(dashboard_hash)

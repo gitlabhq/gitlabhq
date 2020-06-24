@@ -37,41 +37,28 @@ export default {
       saveable: false,
       parsedSource: parseSourceFile(this.content),
       editorMode: EDITOR_TYPES.wysiwyg,
+      isModified: false,
     };
   },
   computed: {
     editableContent() {
-      return this.parsedSource.editable;
-    },
-    editableKey() {
-      return this.isWysiwygMode ? 'body' : 'raw';
+      return this.parsedSource.content(this.isWysiwygMode);
     },
     isWysiwygMode() {
       return this.editorMode === EDITOR_TYPES.wysiwyg;
     },
-    modified() {
-      return this.isWysiwygMode
-        ? this.parsedSource.isModifiedBody()
-        : this.parsedSource.isModifiedRaw();
-    },
   },
   methods: {
-    syncSource() {
-      if (this.isWysiwygMode) {
-        this.parsedSource.syncBodyToRaw();
-        return;
-      }
-
-      this.parsedSource.syncRawToBody();
+    onInputChange(newVal) {
+      this.parsedSource.sync(newVal, this.isWysiwygMode);
+      this.isModified = this.parsedSource.isModified();
     },
     onModeChange(mode) {
-      // Sequentially sync then switch modes (rich-content-editor's v-model computed source content update)
-      this.syncSource();
       this.editorMode = mode;
+      this.$refs.editor.resetInitialValue(this.editableContent);
     },
     onSubmit() {
-      this.syncSource();
-      this.$emit('submit', { content: this.editableContent.raw });
+      this.$emit('submit', { content: this.parsedSource.content() });
     },
   },
 };
@@ -80,16 +67,18 @@ export default {
   <div class="d-flex flex-grow-1 flex-column h-100">
     <edit-header class="py-2" :title="title" />
     <rich-content-editor
-      v-model="editableContent[editableKey]"
+      ref="editor"
+      :content="editableContent"
       :initial-edit-type="editorMode"
       class="mb-9 h-100"
       @modeChange="onModeChange"
+      @input="onInputChange"
     />
-    <unsaved-changes-confirm-dialog :modified="modified" />
+    <unsaved-changes-confirm-dialog :modified="isModified" />
     <publish-toolbar
       class="gl-fixed gl-left-0 gl-bottom-0 gl-w-full"
       :return-url="returnUrl"
-      :saveable="modified"
+      :saveable="isModified"
       :saving-changes="savingChanges"
       @submit="onSubmit"
     />

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Ci::Status::Composite do
+RSpec.describe Gitlab::Ci::Status::Composite do
   let_it_be(:pipeline) { create(:ci_pipeline) }
 
   before_all do

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Graphql::Pagination::Keyset::QueryBuilder do
+RSpec.describe Gitlab::Graphql::Pagination::Keyset::QueryBuilder do
   context 'when number of ordering fields is 0' do
     it 'raises an error' do
       expect { described_class.new(Issue.arel_table, [], {}, :after) }

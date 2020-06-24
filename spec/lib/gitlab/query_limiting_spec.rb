@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::QueryLimiting do
+RSpec.describe Gitlab::QueryLimiting do
   describe '.enable?' do
     it 'returns true in a test environment' do
       expect(described_class.enable?).to eq(true)

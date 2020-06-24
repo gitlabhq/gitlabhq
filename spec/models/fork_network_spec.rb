@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ForkNetwork do
+RSpec.describe ForkNetwork do
   include ProjectForksHelper
 
   describe '#add_root_as_member' do

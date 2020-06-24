@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Participable do
+RSpec.describe Participable do
   let(:model) do
     Class.new do
       include Participable

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::ImportExport::RepoRestorer do
+RSpec.describe Gitlab::ImportExport::RepoRestorer do
   include GitHelpers
 
   describe 'bundle a project Git repo' do

@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-describe Gitlab::Git::Tree, :seed_helper do
+RSpec.describe Gitlab::Git::Tree, :seed_helper do
   let(:repository) { Gitlab::Git::Repository.new('default', TEST_REPO_PATH, '', 'group/project') }
 
   shared_examples :repo do

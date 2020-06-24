@@ -3,7 +3,7 @@
 require 'fast_spec_helper'
 require 'request_store'
 
-describe Gitlab::WithRequestStore do
+RSpec.describe Gitlab::WithRequestStore do
   let(:fake_class) { Class.new { include Gitlab::WithRequestStore } }
 
   subject(:object) { fake_class.new }

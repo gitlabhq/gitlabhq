@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::LogTimestampFormatter do
+RSpec.describe Gitlab::LogTimestampFormatter do
   subject { described_class.new }
 
   let(:formatted_timestamp) { Time.now.utc.iso8601(3) }

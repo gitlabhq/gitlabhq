@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Ci::Status::Build::Play do
+RSpec.describe Gitlab::Ci::Status::Build::Play do
   let(:user) { create(:user) }
   let(:project) { create(:project, :stubbed_repository) }
   let(:build) { create(:ci_build, :manual, project: project) }

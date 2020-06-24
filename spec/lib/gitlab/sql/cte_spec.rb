@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::SQL::CTE do
+RSpec.describe Gitlab::SQL::CTE do
   describe '#to_arel' do
     it 'generates an Arel relation for the CTE body' do
       relation = User.where(id: 1)

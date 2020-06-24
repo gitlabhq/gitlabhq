@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe NoteDiffFile do
+RSpec.describe NoteDiffFile do
   describe 'associations' do
     it { is_expected.to belong_to(:diff_note) }
   end

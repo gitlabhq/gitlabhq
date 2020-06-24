@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Import::MergeRequestCreator do
+RSpec.describe Gitlab::Import::MergeRequestCreator do
   let(:project) { create(:project, :repository) }
 
   subject { described_class.new(project) }

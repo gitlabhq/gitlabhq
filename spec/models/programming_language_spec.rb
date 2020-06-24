@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ProgrammingLanguage do
+RSpec.describe ProgrammingLanguage do
   it { is_expected.to respond_to(:name) }
   it { is_expected.to respond_to(:color) }
 

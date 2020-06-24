@@ -2,7 +2,7 @@
 
 require 'fast_spec_helper'
 
-describe Gitlab::Regex do
+RSpec.describe Gitlab::Regex do
   shared_examples_for 'project/group name regex' do
     it { is_expected.to match('gitlab-ce') }
     it { is_expected.to match('GitLab CE') }

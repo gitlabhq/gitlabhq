@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Metrics::Dashboard::Finder, :use_clean_rails_memory_store_caching do
+RSpec.describe Gitlab::Metrics::Dashboard::Finder, :use_clean_rails_memory_store_caching do
   include MetricsDashboardHelpers
 
   let_it_be(:project) { create(:project) }

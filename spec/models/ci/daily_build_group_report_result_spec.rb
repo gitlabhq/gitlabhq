@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Ci::DailyBuildGroupReportResult do
+RSpec.describe Ci::DailyBuildGroupReportResult do
   let(:daily_build_group_report_result) { build(:ci_daily_build_group_report_result)}
 
   describe 'associations' do

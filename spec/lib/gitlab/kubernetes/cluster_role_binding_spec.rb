@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Kubernetes::ClusterRoleBinding do
+RSpec.describe Gitlab::Kubernetes::ClusterRoleBinding do
   let(:cluster_role_binding) { described_class.new(name, cluster_role_name, subjects) }
   let(:name) { 'cluster-role-binding-name' }
   let(:cluster_role_name) { 'cluster-admin' }

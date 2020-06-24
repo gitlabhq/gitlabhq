@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe SafeZip::Extract do
+RSpec.describe SafeZip::Extract do
   let(:target_path) { Dir.mktmpdir('safe-zip') }
   let(:directories) { %w(public) }
   let(:object) { described_class.new(archive) }

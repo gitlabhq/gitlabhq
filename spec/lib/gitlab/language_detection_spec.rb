@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::LanguageDetection do
+RSpec.describe Gitlab::LanguageDetection do
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:ruby) { create(:programming_language, name: 'Ruby') }
   let_it_be(:haskell) { create(:programming_language, name: 'Haskell') }

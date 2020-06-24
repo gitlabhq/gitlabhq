@@ -469,6 +469,7 @@ project:
 - prometheus_alert_events
 - self_managed_prometheus_alert_events
 - software_license_policies
+- software_licenses
 - project_registry
 - packages
 - package_files

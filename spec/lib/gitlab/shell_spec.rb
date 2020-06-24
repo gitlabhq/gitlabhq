@@ -3,7 +3,7 @@
 require 'spec_helper'
 require 'stringio'
 
-describe Gitlab::Shell do
+RSpec.describe Gitlab::Shell do
   let_it_be(:project) { create(:project, :repository) }
   let(:repository) { project.repository }
   let(:gitlab_shell) { described_class.new }

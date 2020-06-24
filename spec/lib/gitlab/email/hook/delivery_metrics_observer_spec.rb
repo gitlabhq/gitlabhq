@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Email::Hook::DeliveryMetricsObserver do
+RSpec.describe Gitlab::Email::Hook::DeliveryMetricsObserver do
   let(:email) do
     ActionMailer::Base.mail(to: 'test@example.com',
                             from: 'info@example.com',

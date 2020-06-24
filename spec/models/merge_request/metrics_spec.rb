@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe MergeRequest::Metrics do
+RSpec.describe MergeRequest::Metrics do
   describe 'associations' do
     it { is_expected.to belong_to(:merge_request) }
     it { is_expected.to belong_to(:latest_closed_by).class_name('User') }

@@ -6,7 +6,7 @@ require_relative 'danger_spec_helper'
 
 require 'gitlab/danger/commit_linter'
 
-describe Gitlab::Danger::CommitLinter do
+RSpec.describe Gitlab::Danger::CommitLinter do
   using RSpec::Parameterized::TableSyntax
 
   let(:total_files_changed) { 2 }

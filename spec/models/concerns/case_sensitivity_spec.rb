@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe CaseSensitivity do
+RSpec.describe CaseSensitivity do
   describe '.iwhere' do
     let(:connection) { ActiveRecord::Base.connection }
     let(:model) do

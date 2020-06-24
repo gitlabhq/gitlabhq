@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe MergeRequestDiffFile do
+RSpec.describe MergeRequestDiffFile do
   it_behaves_like 'a BulkInsertSafe model', MergeRequestDiffFile do
     let(:valid_items_for_bulk_insertion) { build_list(:merge_request_diff_file, 10) }
     let(:invalid_items_for_bulk_insertion) { [] } # class does not have any validations defined

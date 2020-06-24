@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe InstanceConfiguration do
+RSpec.describe InstanceConfiguration do
   context 'without cache' do
     describe '#settings' do
       describe '#ssh_algorithms_hashes' do

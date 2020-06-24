@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Monitor::DemoProjects do
+RSpec.describe Gitlab::Monitor::DemoProjects do
   describe '#primary_keys' do
     subject { described_class.primary_keys }
 

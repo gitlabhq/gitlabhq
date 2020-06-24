@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Grafana::Client do
+RSpec.describe Grafana::Client do
   let(:grafana_url) { 'https://grafanatest.com/-/grafana-project' }
   let(:token) { 'test-token' }
 

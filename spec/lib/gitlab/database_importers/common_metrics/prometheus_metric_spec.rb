@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::DatabaseImporters::CommonMetrics::PrometheusMetric do
+RSpec.describe Gitlab::DatabaseImporters::CommonMetrics::PrometheusMetric do
   it 'group enum equals ::PrometheusMetric' do
     expect(described_class.groups).to eq(::PrometheusMetric.groups)
   end

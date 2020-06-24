@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ::Gitlab::LetsEncrypt::Order do
+RSpec.describe ::Gitlab::LetsEncrypt::Order do
   include LetsEncryptHelpers
 
   let(:acme_order) { acme_order_double }

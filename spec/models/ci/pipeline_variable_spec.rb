@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Ci::PipelineVariable do
+RSpec.describe Ci::PipelineVariable do
   subject { build(:ci_pipeline_variable) }
 
   it_behaves_like "CI variable"

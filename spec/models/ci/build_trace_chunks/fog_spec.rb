@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Ci::BuildTraceChunks::Fog do
+RSpec.describe Ci::BuildTraceChunks::Fog do
   let(:data_store) { described_class.new }
 
   before do

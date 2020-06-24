@@ -5,7 +5,7 @@ require 'rspec-parameterized'
 
 require 'gitlab/danger/emoji_checker'
 
-describe Gitlab::Danger::EmojiChecker do
+RSpec.describe Gitlab::Danger::EmojiChecker do
   using RSpec::Parameterized::TableSyntax
 
   describe '#includes_text_emoji?' do

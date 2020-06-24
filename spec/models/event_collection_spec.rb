@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe EventCollection do
+RSpec.describe EventCollection do
   include DesignManagementTestHelpers
 
   describe '#to_a' do

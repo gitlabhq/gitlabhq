@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Ci::InstanceVariable do
+RSpec.describe Ci::InstanceVariable do
   subject { build(:ci_instance_variable) }
 
   it_behaves_like "CI variable"

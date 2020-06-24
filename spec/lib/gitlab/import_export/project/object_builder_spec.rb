@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::ImportExport::Project::ObjectBuilder do
+RSpec.describe Gitlab::ImportExport::Project::ObjectBuilder do
   let!(:group) { create(:group, :private) }
   let!(:subgroup) { create(:group, :private, parent: group) }
   let!(:project) do

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Email::Smime::Signer do
+RSpec.describe Gitlab::Email::Smime::Signer do
   include SmimeHelper
 
   let_it_be(:root_ca) { generate_root }

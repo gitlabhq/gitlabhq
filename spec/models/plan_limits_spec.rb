@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe PlanLimits do
+RSpec.describe PlanLimits do
   let(:plan_limits) { create(:plan_limits) }
   let(:model) { ProjectHook }
   let(:count) { model.count }

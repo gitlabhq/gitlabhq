@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::QuickActions::SubstitutionDefinition do
+RSpec.describe Gitlab::QuickActions::SubstitutionDefinition do
   let(:content) do
     <<EOF
 Hello! Let's do this!

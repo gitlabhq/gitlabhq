@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::DataBuilder::Build do
+RSpec.describe Gitlab::DataBuilder::Build do
   let(:runner) { create(:ci_runner, :instance) }
   let(:user) { create(:user) }
   let(:build) { create(:ci_build, :running, runner: runner, user: user) }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Gfm::UploadsRewriter do
+RSpec.describe Gitlab::Gfm::UploadsRewriter do
   let(:user) { create(:user) }
   let(:old_project) { create(:project) }
   let(:new_project) { create(:project) }

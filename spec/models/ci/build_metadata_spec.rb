@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Ci::BuildMetadata do
+RSpec.describe Ci::BuildMetadata do
   let_it_be(:user) { create(:user) }
   let_it_be(:group) { create(:group) }
   let_it_be(:project) { create(:project, :repository, group: group, build_timeout: 2000) }

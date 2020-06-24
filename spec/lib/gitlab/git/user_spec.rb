@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Git::User do
+RSpec.describe Gitlab::Git::User do
   let(:username) { 'janedoe' }
   let(:name) { 'Jane Doé' }
   let(:email) { 'janedoé@example.com' }

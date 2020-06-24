@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::ImportExport::Project::TreeSaver do
+RSpec.describe Gitlab::ImportExport::Project::TreeSaver do
   let_it_be(:export_path) { "#{Dir.tmpdir}/project_tree_saver_spec" }
   let_it_be(:exportable_path) { 'project' }
 

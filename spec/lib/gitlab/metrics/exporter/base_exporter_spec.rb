@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Metrics::Exporter::BaseExporter do
+RSpec.describe Gitlab::Metrics::Exporter::BaseExporter do
   let(:exporter) { described_class.new }
   let(:log_filename) { File.join(Rails.root, 'log', 'sidekiq_exporter.log') }
   let(:settings) { double('settings') }

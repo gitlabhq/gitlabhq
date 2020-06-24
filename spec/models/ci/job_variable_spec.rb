@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Ci::JobVariable do
+RSpec.describe Ci::JobVariable do
   subject { build(:ci_job_variable) }
 
   it_behaves_like "CI variable"

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::SlashCommands::Presenters::Access do
+RSpec.describe Gitlab::SlashCommands::Presenters::Access do
   shared_examples_for 'displays an error message' do
     it do
       expect(subject[:text]).to match(error_message)

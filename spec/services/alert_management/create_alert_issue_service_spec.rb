@@ -66,88 +66,6 @@ RSpec.describe AlertManagement::CreateAlertIssueService do
       end
     end
 
-    shared_examples 'sets issue labels' do
-      let(:title) { 'incident' }
-      let(:color) { '#CC0033' }
-      let(:description) do
-        <<~DESCRIPTION.chomp
-          Denotes a disruption to IT services and \
-          the associated issues require immediate attention
-        DESCRIPTION
-      end
-
-      shared_examples 'existing label' do
-        it 'does not create new label' do
-          expect { execute }.not_to change(Label, :count)
-        end
-
-        it 'adds the existing label' do
-          execute
-
-          expect(created_issue.labels).to eq([label])
-        end
-      end
-
-      shared_examples 'new label' do
-        it 'adds newly created label' do
-          expect { execute }.to change(Label, :count).by(1)
-        end
-
-        it 'sets label attributes' do
-          execute
-
-          created_label = project.reload.labels.last!
-          expect(created_issue.labels).to eq([created_label])
-          expect(created_label.title).to eq(title)
-          expect(created_label.color).to eq(color)
-          expect(created_label.description).to eq(description)
-        end
-      end
-
-      context 'with predefined project label' do
-        it_behaves_like 'existing label' do
-          let!(:label) { create(:label, project: project, title: title) }
-        end
-      end
-
-      context 'with predefined group label' do
-        it_behaves_like 'existing label' do
-          let!(:label) { create(:group_label, group: group, title: title) }
-        end
-      end
-
-      context 'without label' do
-        it_behaves_like 'new label'
-      end
-
-      context 'with duplicate labels', issue: 'https://gitlab.com/gitlab-org/gitlab-foss/issues/65042' do
-        before do
-          # Replicate race condition to create duplicates
-          build(:label, project: project, title: title).save!(validate: false)
-          build(:label, project: project, title: title).save!(validate: false)
-        end
-
-        it 'create an issue without labels' do
-          # Verify we have duplicates
-          expect(project.labels.size).to eq(2)
-          expect(project.labels.map(&:title)).to all(eq(title))
-
-          message = <<~MESSAGE.chomp
-            Cannot create incident issue with labels ["#{title}"] for \
-            "#{project.full_name}": Labels is invalid.
-            Retrying without labels.
-          MESSAGE
-
-          expect(Gitlab::AppLogger)
-            .to receive(:info)
-            .with(message)
-
-          expect(execute).to be_success
-          expect(created_issue.labels).to be_empty
-        end
-      end
-    end
-
     context 'when a user is allowed to create an issue' do
       let(:can_create) { true }
 
@@ -162,18 +80,20 @@ RSpec.describe AlertManagement::CreateAlertIssueService do
 
       context 'when the alert is prometheus alert' do
         let(:alert) { prometheus_alert }
+        let(:issue) { subject.payload[:issue] }
 
         it_behaves_like 'creating an alert issue'
         it_behaves_like 'setting an issue attributes'
-        it_behaves_like 'sets issue labels'
+        it_behaves_like 'create alert issue sets issue labels'
       end
 
       context 'when the alert is generic' do
         let(:alert) { generic_alert }
+        let(:issue) { subject.payload[:issue] }
 
         it_behaves_like 'creating an alert issue'
         it_behaves_like 'setting an issue attributes'
-        it_behaves_like 'sets issue labels'
+        it_behaves_like 'create alert issue sets issue labels'
       end
 
       context 'when issue cannot be created' do

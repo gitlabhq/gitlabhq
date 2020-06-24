@@ -2,7 +2,7 @@
 
 require 'fast_spec_helper'
 
-describe Gitlab::Patch::DrawRoute do
+RSpec.describe Gitlab::Patch::DrawRoute do
   subject do
     Class.new do
       include Gitlab::Patch::DrawRoute

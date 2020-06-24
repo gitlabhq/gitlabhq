@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Config::Entry::Factory do
+RSpec.describe Gitlab::Config::Entry::Factory do
   describe '#create!' do
     before do
       stub_const('Script', Class.new(Gitlab::Config::Entry::Node))

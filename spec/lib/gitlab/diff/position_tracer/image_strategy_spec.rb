@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Diff::PositionTracer::ImageStrategy do
+RSpec.describe Gitlab::Diff::PositionTracer::ImageStrategy do
   include PositionTracerHelpers
 
   let(:project) { create(:project, :repository) }

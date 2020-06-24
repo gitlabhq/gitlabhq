@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::StaticSiteEditor::Config do
+RSpec.describe Gitlab::StaticSiteEditor::Config do
   subject(:config) { described_class.new(repository, ref, file_path, return_url) }
 
   let_it_be(:namespace) { create(:namespace, name: 'namespace') }

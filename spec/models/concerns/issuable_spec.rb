@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Issuable do
+RSpec.describe Issuable do
   include ProjectForksHelper
 
   let(:issuable_class) { Issue }

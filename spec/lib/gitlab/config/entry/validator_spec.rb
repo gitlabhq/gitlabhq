@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Config::Entry::Validator do
+RSpec.describe Gitlab::Config::Entry::Validator do
   let(:validator) { Class.new(described_class) }
   let(:validator_instance) { validator.new(node) }
   let(:node) { spy('node') }

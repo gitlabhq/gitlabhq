@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe X509SerialNumberAttribute do
+RSpec.describe X509SerialNumberAttribute do
   let(:model) { Class.new { include X509SerialNumberAttribute } }
 
   before do

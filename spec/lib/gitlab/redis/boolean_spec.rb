@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-describe Gitlab::Redis::Boolean do
+RSpec.describe Gitlab::Redis::Boolean do
   subject(:redis_boolean) { described_class.new(bool) }
 
   let(:bool) { true }

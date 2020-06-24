@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::ContributionsCalendar do
+RSpec.describe Gitlab::ContributionsCalendar do
   let(:contributor) { create(:user) }
   let(:user) { create(:user) }
 

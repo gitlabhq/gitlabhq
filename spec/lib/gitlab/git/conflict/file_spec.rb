@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Git::Conflict::File do
+RSpec.describe Gitlab::Git::Conflict::File do
   let(:conflict) { { theirs: { path: 'foo', mode: 33188 }, ours: { path: 'foo', mode: 33188 } } }
   let(:invalid_content) { described_class.new(nil, nil, conflict, (+"a\xC4\xFC").force_encoding(Encoding::ASCII_8BIT)) }
   let(:valid_content) { described_class.new(nil, nil, conflict, (+"Espa\xC3\xB1a").force_encoding(Encoding::ASCII_8BIT)) }

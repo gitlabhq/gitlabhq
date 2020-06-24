@@ -3,7 +3,7 @@
 require 'spec_helper'
 require 'email_spec'
 
-describe Notify do
+RSpec.describe Notify do
   include EmailSpec::Helpers
   include EmailSpec::Matchers
   include EmailHelpers

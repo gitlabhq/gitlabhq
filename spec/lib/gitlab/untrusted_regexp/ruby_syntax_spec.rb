@@ -4,7 +4,7 @@ require 'fast_spec_helper'
 require 'support/shared_examples/lib/gitlab/malicious_regexp_shared_examples'
 require 'support/helpers/stub_feature_flags'
 
-describe Gitlab::UntrustedRegexp::RubySyntax do
+RSpec.describe Gitlab::UntrustedRegexp::RubySyntax do
   describe '.matches_syntax?' do
     it 'returns true if regexp is valid' do
       expect(described_class.matches_syntax?('/some .* thing/'))

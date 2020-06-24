@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::DeviseFailure do
+RSpec.describe Gitlab::DeviseFailure do
   let(:env) do
     {
       'REQUEST_URI' => 'http://test.host/',

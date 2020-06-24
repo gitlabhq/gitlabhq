@@ -4,7 +4,7 @@ require 'spec_helper'
 require Rails.root.join('db', 'post_migrate', '20200217225719_schedule_migrate_security_scans.rb')
 
 # rubocop: disable RSpec/FactoriesInMigrationSpecs
-describe ScheduleMigrateSecurityScans, :sidekiq do
+RSpec.describe ScheduleMigrateSecurityScans, :sidekiq do
   let(:migration) { described_class.new }
   let(:namespaces) { table(:namespaces) }
   let(:projects) { table(:projects) }

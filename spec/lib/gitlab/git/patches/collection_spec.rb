@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-describe Gitlab::Git::Patches::Collection do
+RSpec.describe Gitlab::Git::Patches::Collection do
   let(:patches_folder) { Rails.root.join('spec/fixtures/patchfiles') }
   let(:patch_content1) do
     File.read(File.join(patches_folder, "0001-This-does-not-apply-to-the-feature-branch.patch"))

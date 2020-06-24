@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Metrics::Samplers::PumaSampler do
+RSpec.describe Gitlab::Metrics::Samplers::PumaSampler do
   subject { described_class.new }
 
   let(:null_metric) { double('null_metric', set: nil, observe: nil) }

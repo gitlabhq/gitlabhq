@@ -4,7 +4,7 @@ require 'spec_helper'
 
 require 'raven/transports/dummy'
 
-describe Gitlab::ErrorTracking do
+RSpec.describe Gitlab::ErrorTracking do
   let(:exception) { RuntimeError.new('boom') }
   let(:issue_url) { 'http://gitlab.com/gitlab-org/gitlab-foss/issues/1' }
 

@@ -3,7 +3,7 @@
 require 'fast_spec_helper'
 require 'rspec-parameterized'
 
-describe Gitlab::PerformanceBar::WithTopLevelWarnings do
+RSpec.describe Gitlab::PerformanceBar::WithTopLevelWarnings do
   using RSpec::Parameterized::TableSyntax
 
   subject { Module.new }

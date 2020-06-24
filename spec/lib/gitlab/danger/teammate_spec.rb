@@ -6,7 +6,7 @@ require 'rspec-parameterized'
 
 require 'gitlab/danger/teammate'
 
-describe Gitlab::Danger::Teammate do
+RSpec.describe Gitlab::Danger::Teammate do
   subject { described_class.new(options.stringify_keys) }
 
   let(:options) { { username: 'luigi', projects: projects, role: role } }

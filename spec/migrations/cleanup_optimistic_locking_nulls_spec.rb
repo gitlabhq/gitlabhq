@@ -3,7 +3,7 @@
 require 'spec_helper'
 require Rails.root.join('db', 'post_migrate', '20200128210353_cleanup_optimistic_locking_nulls')
 
-describe CleanupOptimisticLockingNulls do
+RSpec.describe CleanupOptimisticLockingNulls do
   let(:epics) { table(:epics) }
   let(:merge_requests) { table(:merge_requests) }
   let(:issues) { table(:issues) }

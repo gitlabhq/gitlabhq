@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::ImportExport::FileImporter do
+RSpec.describe Gitlab::ImportExport::FileImporter do
   include ExportFileHelper
 
   let(:shared) { Gitlab::ImportExport::Shared.new(nil) }

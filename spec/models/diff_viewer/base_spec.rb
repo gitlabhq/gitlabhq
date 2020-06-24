@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe DiffViewer::Base do
+RSpec.describe DiffViewer::Base do
   include FakeBlobHelpers
 
   let(:project) { create(:project, :repository) }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Import::DatabaseHelpers do
+RSpec.describe Gitlab::Import::DatabaseHelpers do
   let(:database_helper) do
     Class.new do
       include Gitlab::Import::DatabaseHelpers

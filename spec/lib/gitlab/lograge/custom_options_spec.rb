@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Lograge::CustomOptions do
+RSpec.describe Gitlab::Lograge::CustomOptions do
   describe '.call' do
     let(:params) do
       {

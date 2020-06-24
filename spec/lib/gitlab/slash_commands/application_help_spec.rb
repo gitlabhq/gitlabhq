@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::SlashCommands::ApplicationHelp do
+RSpec.describe Gitlab::SlashCommands::ApplicationHelp do
   let(:params) { { command: '/gitlab', text: 'help' } }
   let(:project) { build(:project) }
 

@@ -174,8 +174,8 @@ RSpec.describe EventsHelper do
       url = helper.event_wiki_page_target_url(event)
       title = event.target_title
       html = [
-        "<span class=\"event-target-type append-right-4\">wiki page</span>",
-        "<a title=\"#{title}\" class=\"has-tooltip event-target-link append-right-4\" href=\"#{url}\">",
+        "<span class=\"event-target-type gl-mr-2\">wiki page</span>",
+        "<a title=\"#{title}\" class=\"has-tooltip event-target-link gl-mr-2\" href=\"#{url}\">",
         title,
         "</a>"
       ].join

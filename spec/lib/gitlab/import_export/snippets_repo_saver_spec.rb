@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::ImportExport::SnippetsRepoSaver do
+RSpec.describe Gitlab::ImportExport::SnippetsRepoSaver do
   describe 'bundle a project Git repo' do
     let_it_be(:user) { create(:user) }
     let!(:project) { create(:project) }

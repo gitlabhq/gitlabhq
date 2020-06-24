@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe GrafanaIntegration do
+RSpec.describe GrafanaIntegration do
   describe 'associations' do
     it { is_expected.to belong_to(:project) }
   end

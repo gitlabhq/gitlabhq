@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::UsageDataCounters::SnippetCounter do
+RSpec.describe Gitlab::UsageDataCounters::SnippetCounter do
   it_behaves_like 'a redis usage counter', 'Snippet', :create
   it_behaves_like 'a redis usage counter', 'Snippet', :update
 

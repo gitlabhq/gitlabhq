@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::CiAccess do
+RSpec.describe Gitlab::CiAccess do
   let(:access) { described_class.new }
 
   describe '#can_do_action?' do

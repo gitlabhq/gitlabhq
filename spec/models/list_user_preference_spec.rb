@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ListUserPreference do
+RSpec.describe ListUserPreference do
   let_it_be(:user) { create(:user) }
   let_it_be(:list) { create(:list) }
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::CrossProjectAccess::CheckCollection do
+RSpec.describe Gitlab::CrossProjectAccess::CheckCollection do
   subject(:collection) { described_class.new }
 
   describe '#add_collection' do

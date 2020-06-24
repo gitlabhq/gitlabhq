@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-describe Gitlab::Graphql::MarkdownField::Resolver do
+RSpec.describe Gitlab::Graphql::MarkdownField::Resolver do
   include Gitlab::Routing
   let(:resolver) { described_class.new(:note) }
 

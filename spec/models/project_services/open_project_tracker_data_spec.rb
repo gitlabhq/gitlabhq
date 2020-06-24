@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe OpenProjectTrackerData do
+RSpec.describe OpenProjectTrackerData do
   describe 'Associations' do
     it { is_expected.to belong_to(:service) }
   end

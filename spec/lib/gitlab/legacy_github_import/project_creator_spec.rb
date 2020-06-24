@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::LegacyGithubImport::ProjectCreator do
+RSpec.describe Gitlab::LegacyGithubImport::ProjectCreator do
   let(:user) { create(:user) }
   let(:namespace) { create(:group) }
 

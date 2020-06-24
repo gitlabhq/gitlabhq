@@ -3,7 +3,7 @@
 require 'spec_helper'
 require Rails.root.join('db', 'migrate', '20191213184609_backfill_operations_feature_flags_active.rb')
 
-describe BackfillOperationsFeatureFlagsActive do
+RSpec.describe BackfillOperationsFeatureFlagsActive do
   let(:namespaces)   { table(:namespaces) }
   let(:projects)     { table(:projects) }
   let(:flags)        { table(:operations_feature_flags) }

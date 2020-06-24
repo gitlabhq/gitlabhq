@@ -3,7 +3,7 @@
 require 'json'
 require 'timecop'
 
-describe JSONWebToken::HMACToken do
+RSpec.describe JSONWebToken::HMACToken do
   let(:secret) { 'shh secret squirrel' }
 
   shared_examples 'a valid, non-expired token' do

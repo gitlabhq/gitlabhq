@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe RepositoryCheckMailer do
+RSpec.describe RepositoryCheckMailer do
   include EmailSpec::Matchers
 
   describe '.notify' do

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::JsonLogger do
+RSpec.describe Gitlab::JsonLogger do
   subject { described_class.new('/dev/null') }
 
   let(:now) { Time.now }

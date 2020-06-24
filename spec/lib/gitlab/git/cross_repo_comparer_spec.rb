@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Git::CrossRepoComparer do
+RSpec.describe Gitlab::Git::CrossRepoComparer do
   let(:source_project) { create(:project, :repository) }
   let(:target_project) { create(:project, :repository) }
 

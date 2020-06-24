@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Utils::DeepSize do
+RSpec.describe Gitlab::Utils::DeepSize do
   let(:data) do
     {
       a: [1, 2, 3],

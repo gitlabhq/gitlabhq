@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Cluster::PumaWorkerKillerObserver do
+RSpec.describe Gitlab::Cluster::PumaWorkerKillerObserver do
   let(:counter) { Gitlab::Metrics::NullMetric.instance }
 
   before do

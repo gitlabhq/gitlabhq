@@ -27,7 +27,7 @@ export default {
     AddImageModal,
   },
   props: {
-    value: {
+    content: {
       type: String,
       required: true,
     },
@@ -66,23 +66,6 @@ export default {
       return this.$refs.editor;
     },
   },
-  watch: {
-    value(newVal) {
-      const isSameMode = this.previousMode === this.editorApi.currentMode;
-      if (!isSameMode) {
-        /*
-        The ToastUI Editor consumes its content via the `initial-value` prop and then internally
-        manages changes. If we desire the `v-model` to work as expected, we need to manually call
-        `setMarkdown`. However, if we do this in each v-model change we'll continually prevent
-        the editor from internally managing changes. Thus we use the `previousMode` flag as
-        confirmation to actually update its internals. This is initially designed so that front
-        matter is excluded from editing in wysiwyg mode, but included in markdown mode.
-        */
-        this.editorInstance.invoke('setMarkdown', newVal);
-        this.previousMode = this.editorApi.currentMode;
-      }
-    },
-  },
   beforeDestroy() {
     removeCustomEventListener(
       this.editorApi,
@@ -93,6 +76,9 @@ export default {
     this.editorApi.eventManager.removeEventHandler('changeMode', this.onChangeMode);
   },
   methods: {
+    resetInitialValue(newVal) {
+      this.editorInstance.invoke('setMarkdown', newVal);
+    },
     onContentChanged() {
       this.$emit('input', getMarkdown(this.editorInstance));
     },
@@ -123,7 +109,7 @@ export default {
   <div>
     <toast-editor
       ref="editor"
-      :initial-value="value"
+      :initial-value="content"
       :options="editorOptions"
       :preview-style="previewStyle"
       :initial-edit-type="initialEditType"

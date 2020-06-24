@@ -2,7 +2,7 @@
 
 require 'fast_spec_helper'
 
-describe Gitlab::RequestProfiler::Profile do
+RSpec.describe Gitlab::RequestProfiler::Profile do
   let(:profile) { described_class.new(filename) }
 
   describe '.new' do

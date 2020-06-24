@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::FileFinder do
+RSpec.describe Gitlab::FileFinder do
   describe '#find' do
     let(:project) { create(:project, :public, :repository) }
 

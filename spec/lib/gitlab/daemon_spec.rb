@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Daemon do
+RSpec.describe Gitlab::Daemon do
   subject { described_class.new }
 
   before do

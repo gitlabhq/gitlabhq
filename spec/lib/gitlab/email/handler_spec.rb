@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Email::Handler do
+RSpec.describe Gitlab::Email::Handler do
   let(:email) { Mail.new { body 'email' } }
 
   describe '.for' do

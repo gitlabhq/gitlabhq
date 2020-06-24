@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Workhorse do
+RSpec.describe Gitlab::Workhorse do
   let_it_be(:project) { create(:project, :repository) }
   let(:repository) { project.repository }
 

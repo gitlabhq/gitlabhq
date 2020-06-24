@@ -4,8 +4,6 @@ module AlertManagement
   class CreateAlertIssueService
     include Gitlab::Utils::StrongMemoize
 
-    INCIDENT_LABEL = ::IncidentManagement::CreateIssueService::INCIDENT_LABEL
-
     # @param alert [AlertManagement::Alert]
     # @param user [User]
     def initialize(alert, user)
@@ -18,17 +16,17 @@ module AlertManagement
       return error_issue_already_exists if alert.issue
 
       result = create_issue
-      @issue = result.payload[:issue]
+      issue = result.payload[:issue]
 
-      return error(result.message) if result.error?
-      return error(alert.errors.full_messages.to_sentence) unless update_alert_issue_id
+      return error(result.message, issue) if result.error?
+      return error(object_errors(alert), issue) unless associate_alert_with_issue(issue)
 
-      success
+      result
     end
 
     private
 
-    attr_reader :alert, :user, :issue
+    attr_reader :alert, :user
 
     delegate :project, to: :alert
 
@@ -37,31 +35,35 @@ module AlertManagement
     end
 
     def create_issue
-      issue = do_create_issue(label_ids: issue_label_ids)
+      label_result = find_or_create_incident_label
 
-      # Create an unlabelled issue if we couldn't create the issue
-      # due to labels errors.
+      # Create an unlabelled issue if we couldn't create the label
+      # due to a race condition.
       # See https://gitlab.com/gitlab-org/gitlab-foss/issues/65042
-      if issue.errors.include?(:labels)
-        log_label_error(issue)
-        issue = do_create_issue
-      end
+      extra_params = label_result.success? ? { label_ids: [label_result.payload[:label].id] } : {}
 
-      return error(issue_errors(issue)) unless issue.valid?
+      issue = Issues::CreateService.new(
+        project,
+        user,
+        title: alert_presenter.title,
+        description: alert_presenter.issue_description,
+        **extra_params
+      ).execute
 
-      @issue = issue
-      success
+      return error(object_errors(issue), issue) unless issue.valid?
+
+      success(issue)
     end
 
-    def update_alert_issue_id
+    def associate_alert_with_issue(issue)
       alert.update(issue_id: issue.id)
     end
 
-    def success
+    def success(issue)
       ServiceResponse.success(payload: { issue: issue })
     end
 
-    def error(message)
+    def error(message, issue = nil)
       ServiceResponse.error(payload: { issue: issue }, message: message)
     end
 
@@ -73,47 +75,18 @@ module AlertManagement
       error(_('You have no permissions'))
     end
 
-    def do_create_issue(**params)
-      Issues::CreateService.new(
-        project,
-        user,
-        title: alert_presenter.title,
-        description: alert_presenter.issue_description,
-        **params
-      ).execute
-    end
-
     def alert_presenter
       strong_memoize(:alert_presenter) do
         alert.present
       end
     end
 
-    def issue_label_ids
-      [
-        find_or_create_label(**INCIDENT_LABEL)
-      ].compact.map(&:id)
+    def find_or_create_incident_label
+      IncidentManagement::CreateIncidentLabelService.new(project, user).execute
     end
 
-    def find_or_create_label(**params)
-      Labels::FindOrCreateService
-        .new(user, project, **params)
-        .execute
-    end
-
-    def issue_errors(issue)
-      issue.errors.full_messages.to_sentence
-    end
-
-    def log_label_error(issue)
-      Gitlab::AppLogger.info(
-        <<~TEXT.chomp
-          Cannot create incident issue with labels \
-          #{issue.labels.map(&:title).inspect} \
-          for "#{project.full_name}": #{issue.errors.full_messages.to_sentence}.
-          Retrying without labels.
-        TEXT
-      )
+    def object_errors(object)
+      object.errors.full_messages.to_sentence
     end
   end
 end

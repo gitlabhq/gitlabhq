@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe DiffNotePosition, type: :model do
+RSpec.describe DiffNotePosition, type: :model do
   describe '.create_or_update_by' do
     context 'when a diff note' do
       let(:note) { create(:diff_note_on_merge_request) }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe DeployKey, :mailer do
+RSpec.describe DeployKey, :mailer do
   describe "Associations" do
     it { is_expected.to have_many(:deploy_keys_projects) }
     it { is_expected.to have_many(:projects) }

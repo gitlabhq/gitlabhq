@@ -3,7 +3,7 @@
 require 'spec_helper'
 require Rails.root.join('db', 'post_migrate', '20200406102120_backfill_deployment_clusters_from_deployments.rb')
 
-describe BackfillDeploymentClustersFromDeployments, :migration, :sidekiq, schema: 20200227140242 do
+RSpec.describe BackfillDeploymentClustersFromDeployments, :migration, :sidekiq, schema: 20200227140242 do
   describe '#up' do
     it 'schedules BackfillDeploymentClustersFromDeployments background jobs' do
       stub_const("#{described_class}::BATCH_SIZE", 2)

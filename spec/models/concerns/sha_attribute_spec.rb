@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ShaAttribute do
+RSpec.describe ShaAttribute do
   let(:model) { Class.new { include ShaAttribute } }
 
   before do

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Ci::Status::Build::Factory do
+RSpec.describe Gitlab::Ci::Status::Build::Factory do
   let(:user) { create(:user) }
   let(:project) { build.project }
   let(:status) { factory.fabricate! }

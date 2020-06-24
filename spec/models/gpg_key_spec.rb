@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe GpgKey do
+RSpec.describe GpgKey do
   describe "associations" do
     it { is_expected.to belong_to(:user) }
     it { is_expected.to have_many(:subkeys) }

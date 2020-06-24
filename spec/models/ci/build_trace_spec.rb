@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Ci::BuildTrace do
+RSpec.describe Ci::BuildTrace do
   let(:build) { build_stubbed(:ci_build) }
   let(:state) { nil }
   let(:data) { StringIO.new('the-stream') }

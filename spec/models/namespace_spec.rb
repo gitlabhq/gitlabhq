@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Namespace do
+RSpec.describe Namespace do
   include ProjectForksHelper
   include GitHelpers
 

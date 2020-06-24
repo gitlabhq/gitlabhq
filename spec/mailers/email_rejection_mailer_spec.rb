@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe EmailRejectionMailer do
+RSpec.describe EmailRejectionMailer do
   include EmailSpec::Matchers
 
   describe '#rejection' do

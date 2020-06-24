@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::SidekiqStatus do
+RSpec.describe Gitlab::SidekiqStatus do
   describe '.set', :clean_gitlab_redis_shared_state do
     it 'stores the job ID' do
       described_class.set('123')

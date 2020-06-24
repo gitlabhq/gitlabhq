@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe User do
+RSpec.describe User do
   specify 'types consistency checks', :aggregate_failures do
     expect(described_class::USER_TYPES.keys)
       .to match_array(%w[human ghost alert_bot project_bot support_bot service_user visual_review_bot migration_bot])

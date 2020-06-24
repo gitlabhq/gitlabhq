@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Octokit::Middleware do
+RSpec.describe Gitlab::Octokit::Middleware do
   let(:app) { double(:app) }
   let(:middleware) { described_class.new(app) }
 

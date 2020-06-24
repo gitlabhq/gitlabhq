@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Ci::Status::SuccessWarning do
+RSpec.describe Gitlab::Ci::Status::SuccessWarning do
   let(:status) { double('status') }
 
   subject do

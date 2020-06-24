@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe DeploymentCluster do
+RSpec.describe DeploymentCluster do
   let(:cluster) { create(:cluster) }
   let(:deployment) { create(:deployment) }
   let(:kubernetes_namespace) { 'an-example-namespace' }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Utils::UsageData do
+RSpec.describe Gitlab::Utils::UsageData do
   describe '#count' do
     let(:relation) { double(:relation) }
 

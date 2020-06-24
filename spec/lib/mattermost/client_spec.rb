@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Mattermost::Client do
+RSpec.describe Mattermost::Client do
   let(:user) { build(:user) }
 
   subject { described_class.new(user) }

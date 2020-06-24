@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe MilestoneNote do
+RSpec.describe MilestoneNote do
   describe '.from_event' do
     let(:author) { create(:user) }
     let(:project) { create(:project, :repository) }

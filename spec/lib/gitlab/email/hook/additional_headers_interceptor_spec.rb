@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Email::Hook::AdditionalHeadersInterceptor do
+RSpec.describe Gitlab::Email::Hook::AdditionalHeadersInterceptor do
   let(:mail) do
     ActionMailer::Base.mail(to: 'test@mail.com', from: 'info@mail.com', body: 'hello')
   end

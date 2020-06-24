@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Diff::PositionTracer::LineStrategy do
+RSpec.describe Gitlab::Diff::PositionTracer::LineStrategy do
   # Douwe's diary                                    New York City, 2016-06-28
   # --------------------------------------------------------------------------
   #

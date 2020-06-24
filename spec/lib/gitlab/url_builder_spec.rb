@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::UrlBuilder do
+RSpec.describe Gitlab::UrlBuilder do
   subject { described_class }
 
   describe '#build' do

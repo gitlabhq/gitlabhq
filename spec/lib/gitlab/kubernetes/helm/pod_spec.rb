@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Kubernetes::Helm::Pod do
+RSpec.describe Gitlab::Kubernetes::Helm::Pod do
   describe '#generate' do
     let(:app) { create(:clusters_applications_prometheus) }
     let(:command) { app.install_command }

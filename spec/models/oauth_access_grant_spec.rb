@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe OauthAccessGrant do
+RSpec.describe OauthAccessGrant do
   let(:user) { create(:user) }
   let(:application) { create(:oauth_application, owner: user) }
 

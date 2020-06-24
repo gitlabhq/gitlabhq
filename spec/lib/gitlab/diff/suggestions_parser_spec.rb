@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Diff::SuggestionsParser do
+RSpec.describe Gitlab::Diff::SuggestionsParser do
   describe '.parse' do
     let(:merge_request) { create(:merge_request) }
     let(:project) { merge_request.project }

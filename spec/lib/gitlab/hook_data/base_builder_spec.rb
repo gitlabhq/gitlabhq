@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::HookData::BaseBuilder do
+RSpec.describe Gitlab::HookData::BaseBuilder do
   describe '#absolute_image_urls' do
     let(:subclass) do
       Class.new(described_class) do

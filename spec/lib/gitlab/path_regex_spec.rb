@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::PathRegex do
+RSpec.describe Gitlab::PathRegex do
   let(:starting_with_namespace) { %r{^/\*namespace_id/:(project_)?id} }
   let(:non_param_parts) { %r{[^:*][a-z\-_/]*} }
   let(:any_other_path_part) { %r{[a-z\-_/:]*} }

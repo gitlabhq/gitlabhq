@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::DependencyLinker::PodfileLinker do
+RSpec.describe Gitlab::DependencyLinker::PodfileLinker do
   describe '.support?' do
     it 'supports Podfile' do
       expect(described_class.support?('Podfile')).to be_truthy

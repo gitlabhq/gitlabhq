@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Prometheus::QueryVariables do
+RSpec.describe Gitlab::Prometheus::QueryVariables do
   describe '.call' do
     let(:project) { environment.project }
     let(:environment) { create(:environment) }

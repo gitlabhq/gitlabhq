@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Metrics::SidekiqMiddleware do
+RSpec.describe Gitlab::Metrics::SidekiqMiddleware do
   let(:middleware) { described_class.new }
   let(:message) { { 'args' => ['test'], 'enqueued_at' => Time.new(2016, 6, 23, 6, 59).to_f } }
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe JiraTrackerData do
+RSpec.describe JiraTrackerData do
   let(:service) { create(:jira_service, active: false) }
 
   describe 'Associations' do

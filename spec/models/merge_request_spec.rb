@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe MergeRequest do
+RSpec.describe MergeRequest do
   include RepoHelpers
   include ProjectForksHelper
   include ReactiveCachingHelpers

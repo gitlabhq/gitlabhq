@@ -4,7 +4,7 @@ require 'spec_helper'
 
 require Rails.root.join('db', 'post_migrate', '20200420162730_remove_additional_application_settings_rows.rb')
 
-describe RemoveAdditionalApplicationSettingsRows do
+RSpec.describe RemoveAdditionalApplicationSettingsRows do
   let(:application_settings) { table(:application_settings) }
 
   it 'removes additional rows from application settings' do

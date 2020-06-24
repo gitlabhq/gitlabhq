@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::FileDetector do
+RSpec.describe Gitlab::FileDetector do
   describe '.types_in_paths' do
     it 'returns the file types for the given paths' do
       expect(described_class.types_in_paths(%w(README.md CHANGELOG VERSION VERSION)))

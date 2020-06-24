@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe BlobViewer::GitlabCiYml do
+RSpec.describe BlobViewer::GitlabCiYml do
   include FakeBlobHelpers
   include RepoHelpers
 

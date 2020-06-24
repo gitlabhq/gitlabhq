@@ -3,7 +3,7 @@
 require 'spec_helper'
 require Rails.root.join('db', 'post_migrate', '20200211155539_migrate_merge_request_mentions_to_db')
 
-describe MigrateMergeRequestMentionsToDb, :migration do
+RSpec.describe MigrateMergeRequestMentionsToDb, :migration do
   let(:users) { table(:users) }
   let(:projects) { table(:projects) }
   let(:namespaces) { table(:namespaces) }

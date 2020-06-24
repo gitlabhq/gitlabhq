@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe EmailsOnPushService do
+RSpec.describe EmailsOnPushService do
   describe 'Validations' do
     context 'when service is active' do
       before do

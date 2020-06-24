@@ -3,7 +3,7 @@
 require 'spec_helper'
 require Rails.root.join('db', 'migrate', '20191030152934_move_limits_from_plans.rb')
 
-describe MoveLimitsFromPlans do
+RSpec.describe MoveLimitsFromPlans do
   let(:plans) { table(:plans) }
   let(:plan_limits) { table(:plan_limits) }
 

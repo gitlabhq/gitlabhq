@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Ci::Trace::SectionParser do
+RSpec.describe Gitlab::Ci::Trace::SectionParser do
   def lines_with_pos(text)
     pos = 0
     StringIO.new(text).each_line do |line|

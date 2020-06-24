@@ -172,7 +172,7 @@ export default {
             :class="{
               'has-upstream prepend-left-64': hasUpstream(index),
               'has-only-one-job': hasOnlyOneJob(stage),
-              'append-right-46': shouldAddRightMargin(index),
+              'gl-mr-26': shouldAddRightMargin(index),
             }"
             :title="capitalizeStageName(stage.name)"
             :groups="stage.groups"

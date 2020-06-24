@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::CycleAnalytics::Permissions do
+RSpec.describe Gitlab::CycleAnalytics::Permissions do
   let(:project) { create(:project, public_builds: false) }
   let(:user) { create(:user) }
 

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-describe Gitlab::MarkdownCache::Redis::Store, :clean_gitlab_redis_cache do
+RSpec.describe Gitlab::MarkdownCache::Redis::Store, :clean_gitlab_redis_cache do
   let(:storable_class) do
     Class.new do
       cattr_reader :cached_markdown_fields do

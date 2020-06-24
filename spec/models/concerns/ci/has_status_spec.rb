@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Ci::HasStatus do
+RSpec.describe Ci::HasStatus do
   describe '.slow_composite_status' do
     using RSpec::Parameterized::TableSyntax
 

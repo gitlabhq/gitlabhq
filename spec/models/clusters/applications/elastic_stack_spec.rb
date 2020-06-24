@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Clusters::Applications::ElasticStack do
+RSpec.describe Clusters::Applications::ElasticStack do
   include KubernetesHelpers
 
   include_examples 'cluster application core specs', :clusters_applications_elastic_stack

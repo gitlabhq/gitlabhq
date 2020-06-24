@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Discussion do
+RSpec.describe Discussion do
   subject { described_class.new([first_note, second_note, third_note]) }
 
   let(:first_note) { create(:diff_note_on_merge_request) }

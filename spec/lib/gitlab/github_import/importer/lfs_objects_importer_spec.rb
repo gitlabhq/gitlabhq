@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::GithubImport::Importer::LfsObjectsImporter do
+RSpec.describe Gitlab::GithubImport::Importer::LfsObjectsImporter do
   let(:project) { double(:project, id: 4, import_source: 'foo/bar') }
   let(:client) { double(:client) }
   let(:download_link) { "http://www.gitlab.com/lfs_objects/oid" }

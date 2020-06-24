@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe IgnorableColumns do
+RSpec.describe IgnorableColumns do
   let(:record_class) do
     Class.new(ApplicationRecord) do
       include IgnorableColumns

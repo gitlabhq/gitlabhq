@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::ExternalAuthorization::Cache, :clean_gitlab_redis_cache do
+RSpec.describe Gitlab::ExternalAuthorization::Cache, :clean_gitlab_redis_cache do
   let(:user) { build_stubbed(:user) }
   let(:cache_key) { "external_authorization:user-#{user.id}:label-dummy_label" }
 

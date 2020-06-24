@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Database::PartitioningMigrationHelpers::TableManagementHelpers do
+RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::TableManagementHelpers do
   include PartitioningHelpers
   include TriggerHelpers
 

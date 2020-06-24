@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::NullRequestStore do
+RSpec.describe Gitlab::NullRequestStore do
   let(:null_store) { described_class.new }
 
   describe '#store' do

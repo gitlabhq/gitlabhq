@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Metrics::WebTransaction do
+RSpec.describe Gitlab::Metrics::WebTransaction do
   let(:env) { {} }
   let(:transaction) { described_class.new(env) }
   let(:prometheus_metric) { double("prometheus metric") }

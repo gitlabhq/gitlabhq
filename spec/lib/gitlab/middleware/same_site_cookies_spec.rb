@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Middleware::SameSiteCookies do
+RSpec.describe Gitlab::Middleware::SameSiteCookies do
   include Rack::Test::Methods
 
   let(:mock_app) do

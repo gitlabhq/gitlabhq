@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Milestone, 'Milestoneish' do
+RSpec.describe Milestone, 'Milestoneish' do
   let(:author) { create(:user) }
   let(:assignee) { create(:user) }
   let(:non_member) { create(:user) }

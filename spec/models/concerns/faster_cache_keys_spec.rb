@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe FasterCacheKeys do
+RSpec.describe FasterCacheKeys do
   describe '#cache_key' do
     it 'returns a String' do
       # We're using a fixed string here so it's easier to set an expectation for

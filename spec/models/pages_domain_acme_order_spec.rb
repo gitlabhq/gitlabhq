@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe PagesDomainAcmeOrder do
+RSpec.describe PagesDomainAcmeOrder do
   using RSpec::Parameterized::TableSyntax
 
   describe '.expired' do

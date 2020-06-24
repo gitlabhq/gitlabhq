@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe UsageStatistics do
+RSpec.describe UsageStatistics do
   describe '.distinct_count_by' do
     let_it_be(:issue_1) { create(:issue) }
     let_it_be(:issue_2) { create(:issue) }

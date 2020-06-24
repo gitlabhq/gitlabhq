@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Gpg::Commit do
+RSpec.describe Gitlab::Gpg::Commit do
   describe '#signature' do
     shared_examples 'returns the cached signature on second call' do
       it 'returns the cached signature on second call' do

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::PhabricatorImport::Cache::Map, :clean_gitlab_redis_cache do
+RSpec.describe Gitlab::PhabricatorImport::Cache::Map, :clean_gitlab_redis_cache do
   let_it_be(:project) { create(:project) }
   let(:redis) { Gitlab::Redis::Cache }
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Popen do
+RSpec.describe Gitlab::Popen do
   let(:path) { Rails.root.join('tmp').to_s }
 
   before do

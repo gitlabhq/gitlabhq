@@ -7,8 +7,14 @@ module DeployTokensHelper
       Rails.env.test?
   end
 
-  def container_registry_enabled?(project)
+  def container_registry_enabled?(subject)
     Gitlab.config.registry.enabled &&
-      can?(current_user, :read_container_image, project)
+      can?(current_user, :read_container_image, subject)
+  end
+
+  def packages_registry_enabled?(subject)
+    Gitlab.config.packages.enabled &&
+      subject.feature_available?(:packages) &&
+      can?(current_user, :read_package, subject)
   end
 end

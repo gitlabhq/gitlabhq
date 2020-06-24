@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::DependencyLinker::CartfileLinker do
+RSpec.describe Gitlab::DependencyLinker::CartfileLinker do
   describe '.support?' do
     it 'supports Cartfile' do
       expect(described_class.support?('Cartfile')).to be_truthy

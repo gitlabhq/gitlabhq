@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::QuickActions::CommandDefinition do
+RSpec.describe Gitlab::QuickActions::CommandDefinition do
   subject { described_class.new(:command) }
 
   describe "#all_names" do

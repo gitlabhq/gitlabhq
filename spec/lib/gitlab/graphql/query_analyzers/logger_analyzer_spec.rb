@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Graphql::QueryAnalyzers::LoggerAnalyzer do
+RSpec.describe Gitlab::Graphql::QueryAnalyzers::LoggerAnalyzer do
   subject { described_class.new }
 
   describe '#analyze?' do

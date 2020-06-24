@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe BoardProjectRecentVisit do
+RSpec.describe BoardProjectRecentVisit do
   let(:user)    { create(:user) }
   let(:project) { create(:project) }
   let(:board)   { create(:board, project: project) }

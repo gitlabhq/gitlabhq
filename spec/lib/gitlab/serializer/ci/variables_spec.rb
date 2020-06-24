@@ -2,7 +2,7 @@
 
 require 'fast_spec_helper'
 
-describe Gitlab::Serializer::Ci::Variables do
+RSpec.describe Gitlab::Serializer::Ci::Variables do
   subject do
     described_class.load(described_class.dump(object))
   end

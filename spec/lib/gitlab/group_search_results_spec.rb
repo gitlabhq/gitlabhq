@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::GroupSearchResults do
+RSpec.describe Gitlab::GroupSearchResults do
   let(:user) { create(:user) }
 
   describe 'user search' do

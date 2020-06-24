@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Plan do
+RSpec.describe Plan do
   describe '#default?' do
     subject { plan.default? }
 

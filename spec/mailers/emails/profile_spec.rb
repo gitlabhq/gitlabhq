@@ -3,7 +3,7 @@
 require 'spec_helper'
 require 'email_spec'
 
-describe Emails::Profile do
+RSpec.describe Emails::Profile do
   include EmailSpec::Matchers
   include_context 'gitlab email notification'
 

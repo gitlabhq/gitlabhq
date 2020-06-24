@@ -4,7 +4,7 @@ require 'spec_helper'
 
 module Gitlab
   module Ci
-    describe YamlProcessor do
+    RSpec.describe YamlProcessor do
       include StubRequests
 
       subject { described_class.new(config, user: nil) }

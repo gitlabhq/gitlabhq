@@ -3,7 +3,7 @@
 require 'fast_spec_helper'
 require 'support/helpers/fixture_helpers'
 
-describe Sentry::PaginationParser do
+RSpec.describe Sentry::PaginationParser do
   include FixtureHelpers
 
   describe '.parse' do

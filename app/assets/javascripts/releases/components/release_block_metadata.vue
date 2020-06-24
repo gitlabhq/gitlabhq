@@ -75,7 +75,7 @@ export default {
 
     <release-block-milestones v-if="shouldRenderMilestones" :milestones="release.milestones" />
 
-    <div class="append-right-4">
+    <div class="gl-mr-2">
       &bull;
       <span
         v-gl-tooltip.bottom

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::ProjectTemplate do
+RSpec.describe Gitlab::ProjectTemplate do
   describe '.all' do
     it 'returns all templates' do
       expected = %w[

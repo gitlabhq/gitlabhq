@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ProjectFeaturesCompatibility do
+RSpec.describe ProjectFeaturesCompatibility do
   let(:project) { create(:project) }
   let(:features_enabled) { %w(issues wiki builds merge_requests snippets) }
   let(:features) { features_enabled + %w(repository pages) }

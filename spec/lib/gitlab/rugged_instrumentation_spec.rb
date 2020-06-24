@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::RuggedInstrumentation, :request_store do
+RSpec.describe Gitlab::RuggedInstrumentation, :request_store do
   subject { described_class }
 
   describe '.query_time' do

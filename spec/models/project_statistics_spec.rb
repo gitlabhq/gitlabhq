@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ProjectStatistics do
+RSpec.describe ProjectStatistics do
   let(:project) { create :project }
   let(:statistics) { project.statistics }
 

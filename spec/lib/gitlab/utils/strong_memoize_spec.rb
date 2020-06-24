@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Utils::StrongMemoize do
+RSpec.describe Gitlab::Utils::StrongMemoize do
   let(:klass) do
     struct = Struct.new(:value) do
       def method_name

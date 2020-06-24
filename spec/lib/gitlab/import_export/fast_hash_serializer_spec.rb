@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::ImportExport::FastHashSerializer do
+RSpec.describe Gitlab::ImportExport::FastHashSerializer do
   # FastHashSerializer#execute generates the hash which is not easily accessible
   # and includes `JSONBatchRelation` items which are serialized at this point.
   # Wrapping the result into JSON generating/parsing is for making

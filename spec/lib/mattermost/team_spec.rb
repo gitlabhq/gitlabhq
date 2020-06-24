@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Mattermost::Team do
+RSpec.describe Mattermost::Team do
   before do
     session = Mattermost::Session.new(nil)
     session.base_uri = 'http://mattermost.example.com'

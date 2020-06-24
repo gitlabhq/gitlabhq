@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Git::KeepAround do
+RSpec.describe Gitlab::Git::KeepAround do
   include RepoHelpers
 
   let(:repository) { create(:project, :repository).repository }

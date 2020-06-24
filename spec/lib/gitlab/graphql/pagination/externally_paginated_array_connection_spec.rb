@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Graphql::Pagination::ExternallyPaginatedArrayConnection do
+RSpec.describe Gitlab::Graphql::Pagination::ExternallyPaginatedArrayConnection do
   let(:prev_cursor) { 1 }
   let(:next_cursor) { 6 }
   let(:values) { [2, 3, 4, 5] }

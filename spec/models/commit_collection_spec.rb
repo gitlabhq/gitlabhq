@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe CommitCollection do
+RSpec.describe CommitCollection do
   let(:project) { create(:project, :repository) }
   let(:commit) { project.commit("c1c67abbaf91f624347bb3ae96eabe3a1b742478") }
 

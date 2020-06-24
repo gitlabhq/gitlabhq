@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe List do
+RSpec.describe List do
   it_behaves_like 'having unique enum values'
 
   describe 'relationships' do

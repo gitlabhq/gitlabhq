@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe BlobViewer::Gemspec do
+RSpec.describe BlobViewer::Gemspec do
   include FakeBlobHelpers
 
   let(:project) { build_stubbed(:project) }

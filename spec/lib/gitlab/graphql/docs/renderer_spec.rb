@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Graphql::Docs::Renderer do
+RSpec.describe Gitlab::Graphql::Docs::Renderer do
   describe '#contents' do
     # Returns a Schema that uses the given `type`
     def mock_schema(type)

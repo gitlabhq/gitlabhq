@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Marginalia spec' do
+RSpec.describe 'Marginalia spec' do
   class MarginaliaTestController < ActionController::Base
     def first_user
       User.first

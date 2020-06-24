@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::WebIde::Config::Entry::Global do
+RSpec.describe Gitlab::WebIde::Config::Entry::Global do
   let(:global) { described_class.new(hash) }
 
   describe '.nodes' do

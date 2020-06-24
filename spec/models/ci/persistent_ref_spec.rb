@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Ci::PersistentRef do
+RSpec.describe Ci::PersistentRef do
   it 'cleans up persistent refs after pipeline finished' do
     pipeline = create(:ci_pipeline, :running)
 

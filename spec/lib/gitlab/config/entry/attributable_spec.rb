@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Config::Entry::Attributable do
+RSpec.describe Gitlab::Config::Entry::Attributable do
   let(:node) do
     Class.new do
       include Gitlab::Config::Entry::Attributable

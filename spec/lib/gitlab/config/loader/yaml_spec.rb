@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Config::Loader::Yaml do
+RSpec.describe Gitlab::Config::Loader::Yaml do
   let(:loader) { described_class.new(yml) }
 
   let(:yml) do

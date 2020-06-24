@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::UsageDataCounters::WebIdeCounter, :clean_gitlab_redis_shared_state do
+RSpec.describe Gitlab::UsageDataCounters::WebIdeCounter, :clean_gitlab_redis_shared_state do
   shared_examples 'counter examples' do |event|
     it 'increments counter and return the total count' do
       expect(described_class.public_send(:total_count, event)).to eq(0)

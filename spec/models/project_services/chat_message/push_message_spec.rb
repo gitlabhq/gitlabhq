@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ChatMessage::PushMessage do
+RSpec.describe ChatMessage::PushMessage do
   subject { described_class.new(args) }
 
   let(:args) do

@@ -3,7 +3,7 @@
 require 'fast_spec_helper'
 require 'rspec-parameterized'
 
-describe Gitlab::SidekiqCluster do
+RSpec.describe Gitlab::SidekiqCluster do
   describe '.trap_signals' do
     it 'traps the given signals' do
       expect(described_class).to receive(:trap).ordered.with(:INT)

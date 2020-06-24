@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-describe Gitlab::Git::Commit, :seed_helper do
+RSpec.describe Gitlab::Git::Commit, :seed_helper do
   include GitHelpers
 
   let(:repository) { Gitlab::Git::Repository.new('default', TEST_REPO_PATH, '', 'group/project') }
@@ -560,7 +560,7 @@ describe Gitlab::Git::Commit, :seed_helper do
   end
 
   skip 'move this test to gitaly-ruby' do
-    describe '#init_from_rugged' do
+    RSpec.describe '#init_from_rugged' do
       let(:gitlab_commit) { described_class.new(repository, rugged_commit) }
 
       subject { gitlab_commit }

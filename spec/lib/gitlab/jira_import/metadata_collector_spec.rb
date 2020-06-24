@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::JiraImport::MetadataCollector do
+RSpec.describe Gitlab::JiraImport::MetadataCollector do
   describe '#execute' do
     let(:key) { 'PROJECT-5' }
     let(:summary) { 'some title' }

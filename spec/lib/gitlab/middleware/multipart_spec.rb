@@ -4,7 +4,7 @@ require 'spec_helper'
 
 require 'tempfile'
 
-describe Gitlab::Middleware::Multipart do
+RSpec.describe Gitlab::Middleware::Multipart do
   include_context 'multipart middleware context'
 
   RSpec.shared_examples_for 'multipart upload files' do

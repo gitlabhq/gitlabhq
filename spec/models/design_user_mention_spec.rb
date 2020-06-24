@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe DesignUserMention do
+RSpec.describe DesignUserMention do
   describe 'associations' do
     it { is_expected.to belong_to(:design) }
     it { is_expected.to belong_to(:note) }

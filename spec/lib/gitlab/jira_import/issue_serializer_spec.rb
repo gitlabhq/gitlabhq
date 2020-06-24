@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::JiraImport::IssueSerializer do
+RSpec.describe Gitlab::JiraImport::IssueSerializer do
   describe '#execute' do
     let_it_be(:group) { create(:group) }
     let_it_be(:project) { create(:project, group: group) }

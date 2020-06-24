@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::DependencyLinker::Parser::Gemfile do
+RSpec.describe Gitlab::DependencyLinker::Parser::Gemfile do
   describe '#parse' do
     let(:file_content) do
       <<-CONTENT.strip_heredoc

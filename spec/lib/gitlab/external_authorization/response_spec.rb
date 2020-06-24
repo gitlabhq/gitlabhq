@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::ExternalAuthorization::Response do
+RSpec.describe Gitlab::ExternalAuthorization::Response do
   let(:excon_response) { double }
 
   subject(:response) { described_class.new(excon_response) }

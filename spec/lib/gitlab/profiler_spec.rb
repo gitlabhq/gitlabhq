@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Profiler do
+RSpec.describe Gitlab::Profiler do
   let(:null_logger) { Logger.new('/dev/null') }
   let(:private_token) { 'private' }
 

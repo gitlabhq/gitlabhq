@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Template::Finders::GlobalTemplateFinder do
+RSpec.describe Gitlab::Template::Finders::GlobalTemplateFinder do
   let(:base_dir) { Dir.mktmpdir }
 
   def create_template!(name_with_category)

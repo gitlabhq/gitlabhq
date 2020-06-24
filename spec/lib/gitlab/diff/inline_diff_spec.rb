@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Diff::InlineDiff do
+RSpec.describe Gitlab::Diff::InlineDiff do
   describe '.for_lines' do
     let(:diff) do
       <<-EOF.strip_heredoc

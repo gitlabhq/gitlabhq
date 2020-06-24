@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Metrics::BackgroundTransaction do
+RSpec.describe Gitlab::Metrics::BackgroundTransaction do
   let(:test_worker_class) { double(:class, name: 'TestWorker') }
 
   subject { described_class.new(test_worker_class) }

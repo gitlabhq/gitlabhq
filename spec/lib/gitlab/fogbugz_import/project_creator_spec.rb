@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::FogbugzImport::ProjectCreator do
+RSpec.describe Gitlab::FogbugzImport::ProjectCreator do
   let(:user) { create(:user) }
 
   let(:repo) do

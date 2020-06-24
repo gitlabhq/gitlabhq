@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::ImportExport::JSON::StreamingSerializer do
+RSpec.describe Gitlab::ImportExport::JSON::StreamingSerializer do
   let_it_be(:user) { create(:user) }
   let_it_be(:release) { create(:release) }
   let_it_be(:group) { create(:group) }

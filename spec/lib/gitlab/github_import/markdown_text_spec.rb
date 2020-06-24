@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::GithubImport::MarkdownText do
+RSpec.describe Gitlab::GithubImport::MarkdownText do
   describe '.format' do
     it 'formats the text' do
       author = double(:author, login: 'Alice')

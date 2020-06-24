@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::CrossProjectAccess do
+RSpec.describe Gitlab::CrossProjectAccess do
   let(:super_class) { Class.new }
   let(:descendant_class) { Class.new(super_class) }
   let(:current_instance) { described_class.new }

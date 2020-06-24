@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe GroupMember do
+RSpec.describe GroupMember do
   context 'scopes' do
     shared_examples '.count_users_by_group_id' do
       it 'counts users by group ID' do

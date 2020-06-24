@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-describe Gitlab::PhabricatorImport::ProjectCreator do
+RSpec.describe Gitlab::PhabricatorImport::ProjectCreator do
   let(:user) { create(:user) }
   let(:params) do
     { path: 'new-phab-import',

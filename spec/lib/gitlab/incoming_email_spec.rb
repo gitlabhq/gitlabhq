@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-describe Gitlab::IncomingEmail do
+RSpec.describe Gitlab::IncomingEmail do
   describe "self.enabled?" do
     context "when reply by email is enabled" do
       before do

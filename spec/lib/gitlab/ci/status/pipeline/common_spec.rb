@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Ci::Status::Pipeline::Common do
+RSpec.describe Gitlab::Ci::Status::Pipeline::Common do
   let(:user) { create(:user) }
   let(:project) { create(:project, :private) }
   let(:pipeline) { create(:ci_pipeline, project: project) }

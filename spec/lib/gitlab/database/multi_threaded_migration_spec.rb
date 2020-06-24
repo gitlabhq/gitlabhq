@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Database::MultiThreadedMigration do
+RSpec.describe Gitlab::Database::MultiThreadedMigration do
   let(:migration) do
     Class.new { include Gitlab::Database::MultiThreadedMigration }.new
   end

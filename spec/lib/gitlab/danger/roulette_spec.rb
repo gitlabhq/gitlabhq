@@ -5,7 +5,7 @@ require 'webmock/rspec'
 
 require 'gitlab/danger/roulette'
 
-describe Gitlab::Danger::Roulette do
+RSpec.describe Gitlab::Danger::Roulette do
   let(:backend_maintainer) do
     {
       username: 'backend-maintainer',

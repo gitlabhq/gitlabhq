@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Config::Entry::Simplifiable do
+RSpec.describe Gitlab::Config::Entry::Simplifiable do
   describe '.strategy' do
     let(:entry) do
       Class.new(described_class) do

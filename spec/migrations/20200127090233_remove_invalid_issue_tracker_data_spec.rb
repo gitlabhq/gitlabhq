@@ -3,7 +3,7 @@
 require 'spec_helper'
 require Rails.root.join('db', 'post_migrate', '20200127090233_remove_invalid_issue_tracker_data.rb')
 
-describe RemoveInvalidIssueTrackerData do
+RSpec.describe RemoveInvalidIssueTrackerData do
   let(:issue_tracker_data) { table(:issue_tracker_data) }
   let(:services) { table(:services) }
 

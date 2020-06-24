@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::CodeNavigationPath do
+RSpec.describe Gitlab::CodeNavigationPath do
   context 'when there is an artifact with code navigation data' do
     let_it_be(:project) { create(:project, :repository) }
     let_it_be(:sha) { project.repository.commits('master', limit: 5).last.id }

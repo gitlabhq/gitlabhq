@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ProjectGroupLink do
+RSpec.describe ProjectGroupLink do
   describe "Associations" do
     it { is_expected.to belong_to(:group) }
     it { is_expected.to belong_to(:project) }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Email::Receiver do
+RSpec.describe Gitlab::Email::Receiver do
   include_context :email_shared_context
 
   shared_examples 'correctly finds the mail key' do

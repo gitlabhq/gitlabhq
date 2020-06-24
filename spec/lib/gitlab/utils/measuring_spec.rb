@@ -2,7 +2,7 @@
 
 require 'fast_spec_helper'
 
-describe Gitlab::Utils::Measuring do
+RSpec.describe Gitlab::Utils::Measuring do
   describe '#with_measuring' do
     let(:base_log_data) { {} }
     let(:result) { "result" }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe TeamcityService, :use_clean_rails_memory_store_caching do
+RSpec.describe TeamcityService, :use_clean_rails_memory_store_caching do
   include ReactiveCachingHelpers
   include StubRequests
 

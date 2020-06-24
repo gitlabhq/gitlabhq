@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Diff::Formatters::ImageFormatter do
+RSpec.describe Gitlab::Diff::Formatters::ImageFormatter do
   let(:base_attrs) do
     {
       base_sha: 123,

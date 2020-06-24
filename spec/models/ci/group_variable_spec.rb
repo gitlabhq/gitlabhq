@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Ci::GroupVariable do
+RSpec.describe Ci::GroupVariable do
   subject { build(:ci_group_variable) }
 
   it_behaves_like "CI variable"

@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_relative 'shared_example.rb'
 
-describe Gitlab::ImportExport::JSON::LegacyReader::File do
+RSpec.describe Gitlab::ImportExport::JSON::LegacyReader::File do
   it_behaves_like 'import/export json legacy reader' do
     let(:valid_path) { 'spec/fixtures/lib/gitlab/import_export/light/project.json' }
     let(:data) { valid_path }

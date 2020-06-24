@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::TreeSummary do
+RSpec.describe Gitlab::TreeSummary do
   using RSpec::Parameterized::TableSyntax
 
   let(:project) { create(:project, :empty_repo) }

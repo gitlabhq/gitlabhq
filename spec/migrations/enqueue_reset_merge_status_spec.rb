@@ -3,7 +3,7 @@
 require 'spec_helper'
 require Rails.root.join('db', 'post_migrate', '20190528180441_enqueue_reset_merge_status.rb')
 
-describe EnqueueResetMergeStatus do
+RSpec.describe EnqueueResetMergeStatus do
   let(:namespaces) { table(:namespaces) }
   let(:projects) { table(:projects) }
   let(:namespace) { namespaces.create(name: 'gitlab', path: 'gitlab-org') }

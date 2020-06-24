@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe WebHook do
+RSpec.describe WebHook do
   let(:hook) { build(:project_hook) }
 
   describe 'associations' do

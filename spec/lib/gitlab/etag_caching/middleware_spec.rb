@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::EtagCaching::Middleware do
+RSpec.describe Gitlab::EtagCaching::Middleware do
   let(:app) { double(:app) }
   let(:middleware) { described_class.new(app) }
   let(:app_status_code) { 200 }

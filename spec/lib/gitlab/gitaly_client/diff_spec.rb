@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::GitalyClient::Diff do
+RSpec.describe Gitlab::GitalyClient::Diff do
   let(:diff_fields) do
     {
       to_path: ".gitmodules",

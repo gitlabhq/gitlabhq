@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::GlRepository::Identifier do
+RSpec.describe Gitlab::GlRepository::Identifier do
   let_it_be(:project) { create(:project) }
   let_it_be(:personal_snippet) { create(:personal_snippet, author: project.owner) }
   let_it_be(:project_snippet) { create(:project_snippet, project: project, author: project.owner) }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::ExternalAuthorization::Access, :clean_gitlab_redis_cache do
+RSpec.describe Gitlab::ExternalAuthorization::Access, :clean_gitlab_redis_cache do
   subject(:access) { described_class.new(build(:user), 'dummy_label') }
 
   describe '#loaded?' do

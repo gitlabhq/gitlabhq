@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Expirable do
+RSpec.describe Expirable do
   describe 'ProjectMember' do
     let(:no_expire) { create(:project_member) }
     let(:expire_later) { create(:project_member, expires_at: Time.current + 6.days) }

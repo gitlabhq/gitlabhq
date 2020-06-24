@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Git::PreReceiveError do
+RSpec.describe Gitlab::Git::PreReceiveError do
   Gitlab::Git::PreReceiveError::SAFE_MESSAGE_PREFIXES.each do |prefix|
     context "error messages prefixed with #{prefix}" do
       it 'accepts only errors lines with the prefix' do

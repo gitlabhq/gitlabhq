@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Diff::LinesUnfolder do
+RSpec.describe Gitlab::Diff::LinesUnfolder do
   let(:raw_diff) do
     <<-DIFF.strip_heredoc
       @@ -7,9 +7,6 @@

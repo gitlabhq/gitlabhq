@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe AssemblaService do
+RSpec.describe AssemblaService do
   include StubRequests
 
   describe "Associations" do

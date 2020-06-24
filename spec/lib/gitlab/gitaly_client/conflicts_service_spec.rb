@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::GitalyClient::ConflictsService do
+RSpec.describe Gitlab::GitalyClient::ConflictsService do
   let(:project) { create(:project, :repository) }
   let(:target_project) { create(:project, :repository) }
   let(:source_repository) { project.repository.raw }

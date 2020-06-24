@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-describe ProjectTeam do
+RSpec.describe ProjectTeam do
   let(:maintainer) { create(:user) }
   let(:reporter) { create(:user) }
   let(:guest) { create(:user) }

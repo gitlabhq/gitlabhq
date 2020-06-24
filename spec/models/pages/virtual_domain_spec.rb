@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Pages::VirtualDomain do
+RSpec.describe Pages::VirtualDomain do
   describe '#certificate and #key pair' do
     let(:domain) { nil }
     let(:project) { instance_double(Project) }

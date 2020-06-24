@@ -37,16 +37,63 @@ RSpec.describe TodosFinder do
         end
 
         context 'when filtering by type' do
-          it 'returns correct todos when filtered by a type' do
+          it 'returns todos by type when filtered by a single type' do
             todos = finder.new(user, { type: 'Issue' }).execute
 
             expect(todos).to match_array([todo1])
           end
 
-          it 'returns the correct todos when filtering for multiple types' do
+          it 'returns todos by type when filtered by multiple types' do
+            design_todo = create(:todo, user: user, group: group, target: create(:design))
+
             todos = finder.new(user, { type: %w[Issue MergeRequest] }).execute
 
-            expect(todos).to match_array([todo1, todo2])
+            expect(todos).to contain_exactly(todo1, todo2)
+            expect(todos).not_to include(design_todo)
+          end
+
+          it 'returns all todos when type is nil' do
+            todos = finder.new(user, { type: nil }).execute
+
+            expect(todos).to contain_exactly(todo1, todo2)
+          end
+
+          it 'returns all todos when type is an empty collection' do
+            todos = finder.new(user, { type: [] }).execute
+
+            expect(todos).to contain_exactly(todo1, todo2)
+          end
+
+          it 'returns all todos when type is blank' do
+            todos = finder.new(user, { type: '' }).execute
+
+            expect(todos).to contain_exactly(todo1, todo2)
+          end
+
+          it 'returns todos by type when blank type is in type collection' do
+            todos = finder.new(user, { type: ['', 'MergeRequest'] }).execute
+
+            expect(todos).to contain_exactly(todo2)
+          end
+
+          it 'returns todos of all types when only blanks are in a collection' do
+            todos = finder.new(user, { type: ['', ''] }).execute
+
+            expect(todos).to contain_exactly(todo1, todo2)
+          end
+
+          it 'returns all todos when no type param' do
+            todos = finder.new(user).execute
+
+            expect(todos).to contain_exactly(todo1, todo2)
+          end
+
+          it 'raises an argument error when invalid type is passed' do
+            create(:todo, user: user, group: group, target: create(:design))
+
+            todos_finder = finder.new(user, { type: %w[Issue MergeRequest NotAValidType] })
+
+            expect { todos_finder.execute }.to raise_error(ArgumentError)
           end
         end
 

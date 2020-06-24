@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe AbuseReport do
+RSpec.describe AbuseReport do
   let_it_be(:report, reload: true) { create(:abuse_report) }
   let_it_be(:user, reload: true) { create(:admin) }
   subject { report }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Jobs/Browser-Performance-Testing.gitlab-ci.yml' do
+RSpec.describe 'Jobs/Browser-Performance-Testing.gitlab-ci.yml' do
   subject(:template) do
     <<~YAML
       stages:

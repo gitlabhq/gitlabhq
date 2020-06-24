@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::ImportExport::MembersMapper do
+RSpec.describe Gitlab::ImportExport::MembersMapper do
   describe 'map members' do
     shared_examples 'imports exported members' do
       let(:user) { create(:admin) }

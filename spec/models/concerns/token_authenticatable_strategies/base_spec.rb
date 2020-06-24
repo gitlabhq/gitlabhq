@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe TokenAuthenticatableStrategies::Base do
+RSpec.describe TokenAuthenticatableStrategies::Base do
   let(:instance) { double(:instance) }
   let(:field) { double(:field) }
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Mattermost::Command do
+RSpec.describe Mattermost::Command do
   let(:params) { { 'token' => 'token', team_id: 'abc' } }
 
   before do

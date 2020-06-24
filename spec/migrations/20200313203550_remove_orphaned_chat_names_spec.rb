@@ -3,7 +3,7 @@
 require 'spec_helper'
 require Rails.root.join('db', 'post_migrate', '20200313203550_remove_orphaned_chat_names.rb')
 
-describe RemoveOrphanedChatNames, schema: 20200313202430 do
+RSpec.describe RemoveOrphanedChatNames, schema: 20200313202430 do
   let(:projects) { table(:projects) }
   let(:namespaces) { table(:namespaces) }
   let(:services) { table(:services) }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::GithubImport do
+RSpec.describe Gitlab::GithubImport do
   let(:project) { double(:project) }
 
   describe '.new_client_for' do

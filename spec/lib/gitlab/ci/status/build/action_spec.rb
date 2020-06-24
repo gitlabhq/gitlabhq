@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Ci::Status::Build::Action do
+RSpec.describe Gitlab::Ci::Status::Build::Action do
   let(:status) { double('core status') }
   let(:user) { double('user') }
 

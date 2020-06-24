@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe MergeRequestAssignee do
+RSpec.describe MergeRequestAssignee do
   let(:merge_request) { create(:merge_request) }
 
   subject { merge_request.merge_request_assignees.build(assignee: create(:user)) }

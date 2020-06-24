@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ProjectFeature do
+RSpec.describe ProjectFeature do
   using RSpec::Parameterized::TableSyntax
 
   let(:project) { create(:project) }

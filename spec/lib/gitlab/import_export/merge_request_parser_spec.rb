@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::ImportExport::MergeRequestParser do
+RSpec.describe Gitlab::ImportExport::MergeRequestParser do
   include ProjectForksHelper
 
   let(:user) { create(:user) }

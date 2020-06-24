@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Database do
+RSpec.describe Gitlab::Database do
   before do
     stub_const('MigrationTest', Class.new { include Gitlab::Database })
   end

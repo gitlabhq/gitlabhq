@@ -3,7 +3,7 @@
 require 'spec_helper'
 require Rails.root.join('db', 'post_migrate', '20190606175050_encrypt_feature_flags_clients_tokens.rb')
 
-describe EncryptFeatureFlagsClientsTokens do
+RSpec.describe EncryptFeatureFlagsClientsTokens do
   let(:migration) { described_class.new }
   let(:feature_flags_clients) { table(:operations_feature_flags_clients) }
   let(:projects) { table(:projects) }

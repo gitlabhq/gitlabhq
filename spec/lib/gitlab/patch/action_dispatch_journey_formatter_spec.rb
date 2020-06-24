@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Patch::ActionDispatchJourneyFormatter do
+RSpec.describe Gitlab::Patch::ActionDispatchJourneyFormatter do
   let(:group) { create(:group) }
   let(:project) { create(:project, namespace: group) }
   let(:pipeline) { create(:ci_empty_pipeline, project: project) }

@@ -2,7 +2,7 @@
 require 'fast_spec_helper'
 require 'active_support/concern'
 
-describe Gitlab::Utils::LazyAttributes do
+RSpec.describe Gitlab::Utils::LazyAttributes do
   subject(:klass) do
     Class.new do
       include Gitlab::Utils::LazyAttributes

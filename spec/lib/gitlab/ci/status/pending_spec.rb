@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Ci::Status::Pending do
+RSpec.describe Gitlab::Ci::Status::Pending do
   subject do
     described_class.new(double('subject'), double('user'))
   end

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Diff::PositionTracer do
+RSpec.describe Gitlab::Diff::PositionTracer do
   include PositionTracerHelpers
 
   subject do

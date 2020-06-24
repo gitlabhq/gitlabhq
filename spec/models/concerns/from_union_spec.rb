@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe FromUnion do
+RSpec.describe FromUnion do
   describe '.from_union' do
     let(:model) do
       Class.new(ActiveRecord::Base) do

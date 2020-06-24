@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Gfm::ReferenceRewriter do
+RSpec.describe Gitlab::Gfm::ReferenceRewriter do
   let_it_be(:group) { create(:group) }
   let_it_be(:user) { create(:user) }
 

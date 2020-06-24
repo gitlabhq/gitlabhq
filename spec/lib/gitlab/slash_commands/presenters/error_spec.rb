@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::SlashCommands::Presenters::Error do
+RSpec.describe Gitlab::SlashCommands::Presenters::Error do
   subject { described_class.new('Error').message }
 
   it { is_expected.to be_a(Hash) }

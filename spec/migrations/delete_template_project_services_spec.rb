@@ -3,7 +3,7 @@
 require 'spec_helper'
 require Rails.root.join('db', 'migrate', '20200305151736_delete_template_project_services.rb')
 
-describe DeleteTemplateProjectServices, :migration do
+RSpec.describe DeleteTemplateProjectServices, :migration do
   let(:services) { table(:services) }
   let(:project) { table(:projects).create!(namespace_id: 1) }
 

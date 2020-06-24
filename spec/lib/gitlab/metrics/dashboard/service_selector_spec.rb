@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Metrics::Dashboard::ServiceSelector do
+RSpec.describe Gitlab::Metrics::Dashboard::ServiceSelector do
   include MetricsDashboardHelpers
 
   describe '#call' do

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-describe Gitlab::Utils::MergeHash do
+RSpec.describe Gitlab::Utils::MergeHash do
   describe '.crush' do
     it 'can flatten a hash to each element' do
       input = { hello: "world", this: { crushes: ["an entire", "hash"] } }

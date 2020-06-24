@@ -4,7 +4,7 @@ require 'spec_helper'
 
 require Rails.root.join('db', 'migrate', '20200311074438_migrate_bot_type_to_user_type.rb')
 
-describe MigrateBotTypeToUserType, :migration do
+RSpec.describe MigrateBotTypeToUserType, :migration do
   let(:users) { table(:users) }
 
   it 'updates bots & ignores humans' do

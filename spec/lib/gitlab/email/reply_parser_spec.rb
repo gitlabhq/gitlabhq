@@ -3,7 +3,7 @@
 require "spec_helper"
 
 # Inspired in great part by Discourse's Email::Receiver
-describe Gitlab::Email::ReplyParser do
+RSpec.describe Gitlab::Email::ReplyParser do
   describe '#execute' do
     def test_parse_body(mail_string, params = {})
       described_class.new(Mail::Message.new(mail_string), params).execute

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-describe Gitlab::Tracking do
+RSpec.describe Gitlab::Tracking do
   let(:timestamp) { Time.utc(2017, 3, 22) }
 
   before do

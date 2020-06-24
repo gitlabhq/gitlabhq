@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::SlashCommands::IssueMove, service: true do
+RSpec.describe Gitlab::SlashCommands::IssueMove, service: true do
   describe '#match' do
     shared_examples_for 'move command' do |text_command|
       it 'can be parsed to extract the needed fields' do

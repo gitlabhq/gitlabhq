@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ApplicationSetting::Term do
+RSpec.describe ApplicationSetting::Term do
   describe 'validations' do
     it { is_expected.to validate_presence_of(:terms) }
   end

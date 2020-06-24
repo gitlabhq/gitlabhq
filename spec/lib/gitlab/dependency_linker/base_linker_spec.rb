@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::DependencyLinker::BaseLinker do
+RSpec.describe Gitlab::DependencyLinker::BaseLinker do
   let(:linker_class) do
     Class.new(described_class) do
       def link_dependencies

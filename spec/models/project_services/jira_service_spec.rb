@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe JiraService do
+RSpec.describe JiraService do
   include AssetsHelpers
 
   let(:url) { 'http://jira.example.com' }

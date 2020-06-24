@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe AlertsService do
+RSpec.describe AlertsService do
   let_it_be(:project) { create(:project) }
   let(:service_params) { { project: project, active: active } }
   let(:active) { true }

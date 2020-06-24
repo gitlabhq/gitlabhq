@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe GoogleApi::Auth do
+RSpec.describe GoogleApi::Auth do
   let(:redirect_uri) { 'http://localhost:3000/google_api/authorizations/callback' }
   let(:redirect_to) { 'http://localhost:3000/namaspace/project/clusters' }
 

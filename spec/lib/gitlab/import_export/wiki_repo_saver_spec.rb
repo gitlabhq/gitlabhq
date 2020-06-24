@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::ImportExport::WikiRepoSaver do
+RSpec.describe Gitlab::ImportExport::WikiRepoSaver do
   describe 'bundle a wiki Git repo' do
     let_it_be(:user) { create(:user) }
     let_it_be(:project) { create(:project, :wiki_repo) }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Runtime do
+RSpec.describe Gitlab::Runtime do
   shared_examples "valid runtime" do |runtime, max_threads|
     it "identifies itself" do
       expect(subject.identify).to eq(runtime)

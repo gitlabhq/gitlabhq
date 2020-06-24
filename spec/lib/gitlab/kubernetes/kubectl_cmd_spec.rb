@@ -2,7 +2,7 @@
 
 require 'fast_spec_helper'
 
-describe Gitlab::Kubernetes::KubectlCmd do
+RSpec.describe Gitlab::Kubernetes::KubectlCmd do
   describe '.delete' do
     it 'constructs string properly' do
       args = %w(resource_type type --flag-1 --flag-2)

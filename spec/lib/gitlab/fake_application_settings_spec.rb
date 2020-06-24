@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::FakeApplicationSettings do
+RSpec.describe Gitlab::FakeApplicationSettings do
   let(:defaults) do
     described_class.defaults.merge(
       foobar: 'asdf',

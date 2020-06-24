@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe DeploymentMergeRequest do
+RSpec.describe DeploymentMergeRequest do
   let(:mr) { create(:merge_request, :merged) }
   let(:deployment) { create(:deployment, :success, project: project) }
   let(:project) { mr.project }

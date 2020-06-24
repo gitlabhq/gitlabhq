@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Metrics::Subscribers::ActiveRecord do
+RSpec.describe Gitlab::Metrics::Subscribers::ActiveRecord do
   let(:env) { {} }
   let(:transaction) { Gitlab::Metrics::WebTransaction.new(env) }
   let(:subscriber)  { described_class.new }

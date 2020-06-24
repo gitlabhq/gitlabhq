@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::DependencyLinker::CargoTomlLinker do
+RSpec.describe Gitlab::DependencyLinker::CargoTomlLinker do
   describe '.support?' do
     it 'supports Cargo.toml' do
       expect(described_class.support?('Cargo.toml')).to be_truthy

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Ci::Status::External::Factory do
+RSpec.describe Gitlab::Ci::Status::External::Factory do
   let(:user) { create(:user) }
   let(:project) { resource.project }
   let(:status) { factory.fabricate! }

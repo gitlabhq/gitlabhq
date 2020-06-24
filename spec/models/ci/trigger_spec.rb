@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Ci::Trigger do
+RSpec.describe Ci::Trigger do
   let(:project) { create :project }
 
   describe 'associations' do

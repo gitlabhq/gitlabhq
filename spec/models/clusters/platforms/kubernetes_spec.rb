@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Clusters::Platforms::Kubernetes do
+RSpec.describe Clusters::Platforms::Kubernetes do
   include KubernetesHelpers
 
   it { is_expected.to belong_to(:cluster) }

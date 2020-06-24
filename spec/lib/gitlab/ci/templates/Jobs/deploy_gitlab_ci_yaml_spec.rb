@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Jobs/Deploy.gitlab-ci.yml' do
+RSpec.describe 'Jobs/Deploy.gitlab-ci.yml' do
   subject(:template) do
     <<~YAML
       stages:

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::GraphqlLogger do
+RSpec.describe Gitlab::GraphqlLogger do
   subject { described_class.new('/dev/null') }
 
   let(:now) { Time.now }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::PhabricatorImport::Representation::Task do
+RSpec.describe Gitlab::PhabricatorImport::Representation::Task do
   subject(:task) do
     described_class.new(
       {

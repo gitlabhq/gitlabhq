@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::ImportExport::CommandLineUtil do
+RSpec.describe Gitlab::ImportExport::CommandLineUtil do
   include ExportFileHelper
 
   let(:path) { "#{Dir.tmpdir}/symlink_test" }

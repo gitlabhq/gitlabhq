@@ -3,7 +3,7 @@
 require 'spec_helper'
 require 'rspec-parameterized'
 
-describe Gitlab::InstrumentationHelper do
+RSpec.describe Gitlab::InstrumentationHelper do
   using RSpec::Parameterized::TableSyntax
 
   describe '.keys' do

@@ -25,13 +25,13 @@ jest.mock('~/vue_shared/components/rich_content_editor/services/editor_service',
 describe('Rich Content Editor', () => {
   let wrapper;
 
-  const value = '## Some Markdown';
+  const content = '## Some Markdown';
   const findEditor = () => wrapper.find({ ref: 'editor' });
   const findAddImageModal = () => wrapper.find(AddImageModal);
 
   beforeEach(() => {
     wrapper = shallowMount(RichContentEditor, {
-      propsData: { value },
+      propsData: { content },
     });
   });
 
@@ -41,7 +41,7 @@ describe('Rich Content Editor', () => {
     });
 
     it('renders the correct content', () => {
-      expect(findEditor().props().initialValue).toBe(value);
+      expect(findEditor().props().initialValue).toBe(content);
     });
 
     it('provides the correct editor options', () => {
@@ -70,6 +70,18 @@ describe('Rich Content Editor', () => {
       findEditor().vm.$emit('change');
 
       expect(wrapper.emitted().input[0][0]).toBe(changedMarkdown);
+    });
+  });
+
+  describe('when content is reset', () => {
+    it('should reset the content via setMarkdown', () => {
+      const newContent = 'Just the body content excluding the front matter for example';
+      const mockInstance = { invoke: jest.fn() };
+      wrapper.vm.$refs.editor = mockInstance;
+
+      wrapper.vm.resetInitialValue(newContent);
+
+      expect(mockInstance.invoke).toHaveBeenCalledWith('setMarkdown', newContent);
     });
   });
 

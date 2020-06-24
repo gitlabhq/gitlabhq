@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-describe Gitlab::PhabricatorImport::Conduit::Client do
+RSpec.describe Gitlab::PhabricatorImport::Conduit::Client do
   let(:client) do
     described_class.new('https://see-ya-later.phabricator', 'api-token')
   end

@@ -3,7 +3,7 @@
 require 'spec_helper'
 require Rails.root.join('db', 'migrate', '20200513235532_fill_file_store_ci_job_artifacts.rb')
 
-describe FillFileStoreCiJobArtifacts do
+RSpec.describe FillFileStoreCiJobArtifacts do
   let(:namespaces) { table(:namespaces) }
   let(:projects) { table(:projects) }
   let(:builds) { table(:ci_builds) }

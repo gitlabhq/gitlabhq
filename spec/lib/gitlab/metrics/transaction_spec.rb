@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Metrics::Transaction do
+RSpec.describe Gitlab::Metrics::Transaction do
   let(:transaction) { described_class.new }
 
   let(:sensitive_tags) do

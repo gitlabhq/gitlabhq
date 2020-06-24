@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ErrorTracking::ProjectErrorTrackingSetting do
+RSpec.describe ErrorTracking::ProjectErrorTrackingSetting do
   include ReactiveCachingHelpers
   include Gitlab::Routing
 

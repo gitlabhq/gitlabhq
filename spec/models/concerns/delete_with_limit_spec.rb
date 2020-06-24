@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe DeleteWithLimit do
+RSpec.describe DeleteWithLimit do
   describe '.delete_with_limit' do
     it 'deletes a limited amount of rows' do
       create_list(:web_hook_log, 4)

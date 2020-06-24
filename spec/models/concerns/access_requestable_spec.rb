@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe AccessRequestable do
+RSpec.describe AccessRequestable do
   describe 'Group' do
     describe '#request_access' do
       let(:group) { create(:group, :public) }

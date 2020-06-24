@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::HashedStorage::Migrator, :redis do
+RSpec.describe Gitlab::HashedStorage::Migrator, :redis do
   describe '#bulk_schedule_migration' do
     it 'schedules job to HashedStorage::MigratorWorker' do
       Sidekiq::Testing.fake! do

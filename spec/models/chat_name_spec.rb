@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ChatName do
+RSpec.describe ChatName do
   let_it_be(:chat_name) { create(:chat_name) }
   subject { chat_name }
 

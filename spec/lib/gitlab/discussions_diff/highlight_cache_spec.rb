@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::DiscussionsDiff::HighlightCache, :clean_gitlab_redis_cache do
+RSpec.describe Gitlab::DiscussionsDiff::HighlightCache, :clean_gitlab_redis_cache do
   def fake_file(offset)
     {
       text: 'foo',

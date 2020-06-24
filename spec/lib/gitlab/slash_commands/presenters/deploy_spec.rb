@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::SlashCommands::Presenters::Deploy do
+RSpec.describe Gitlab::SlashCommands::Presenters::Deploy do
   let(:build) { create(:ci_build) }
 
   describe '#present' do

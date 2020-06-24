@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'cycle analytics events' do
+RSpec.describe 'cycle analytics events' do
   let(:project) { create(:project, :repository) }
   let(:from_date) { 10.days.ago }
   let(:user) { create(:user, :admin) }

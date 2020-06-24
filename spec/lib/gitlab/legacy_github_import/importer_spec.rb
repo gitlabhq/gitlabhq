@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::LegacyGithubImport::Importer do
+RSpec.describe Gitlab::LegacyGithubImport::Importer do
   shared_examples 'Gitlab::LegacyGithubImport::Importer#execute' do
     let(:expected_not_called) { [] }
 

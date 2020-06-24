@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe PivotaltrackerService do
+RSpec.describe PivotaltrackerService do
   include StubRequests
 
   describe 'Associations' do

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ManualInverseAssociation do
+RSpec.describe ManualInverseAssociation do
   let(:model) do
     Class.new(MergeRequest) do
       belongs_to :manual_association, class_name: 'MergeRequestDiff', foreign_key: :latest_merge_request_diff_id

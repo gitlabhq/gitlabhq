@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-describe Gitlab::PhabricatorImport::Conduit::Response do
+RSpec.describe Gitlab::PhabricatorImport::Conduit::Response do
   let(:response) { described_class.new(Gitlab::Json.parse(fixture_file('phabricator_responses/maniphest.search.json')))}
   let(:error_response) { described_class.new(Gitlab::Json.parse(fixture_file('phabricator_responses/auth_failed.json'))) }
 

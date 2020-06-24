@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Ci::ResourceGroup do
+RSpec.describe Ci::ResourceGroup do
   describe 'validation' do
     it 'valids when key includes allowed character' do
       resource_group = build(:ci_resource_group, key: 'test')

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Group, 'Routable' do
+RSpec.describe Group, 'Routable' do
   let!(:group) { create(:group, name: 'foo') }
 
   describe 'Validations' do
@@ -164,7 +164,7 @@ describe Group, 'Routable' do
   end
 end
 
-describe Project, 'Routable' do
+RSpec.describe Project, 'Routable' do
   describe '#full_path' do
     let(:project) { build_stubbed(:project) }
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Diff::Formatters::TextFormatter do
+RSpec.describe Gitlab::Diff::Formatters::TextFormatter do
   let!(:base) do
     {
       base_sha: 123,

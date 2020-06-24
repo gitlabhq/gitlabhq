@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Ci::BuildTraceChunks::Database do
+RSpec.describe Ci::BuildTraceChunks::Database do
   let(:data_store) { described_class.new }
 
   describe '#available?' do

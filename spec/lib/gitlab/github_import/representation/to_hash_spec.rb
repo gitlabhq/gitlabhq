@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::GithubImport::Representation::ToHash do
+RSpec.describe Gitlab::GithubImport::Representation::ToHash do
   describe '#to_hash' do
     let(:user) { double(:user, attributes: { login: 'alice' }) }
 

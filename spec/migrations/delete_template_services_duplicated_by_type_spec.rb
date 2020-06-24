@@ -3,7 +3,7 @@
 require 'spec_helper'
 require Rails.root.join('db', 'migrate', '20200304160801_delete_template_services_duplicated_by_type.rb')
 
-describe DeleteTemplateServicesDuplicatedByType do
+RSpec.describe DeleteTemplateServicesDuplicatedByType do
   let(:services) { table(:services) }
 
   before do

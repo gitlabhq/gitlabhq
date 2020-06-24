@@ -3,7 +3,7 @@
 require 'spec_helper'
 require Rails.root.join('db', 'post_migrate', '20190204115450_migrate_auto_dev_ops_domain_to_cluster_domain.rb')
 
-describe MigrateAutoDevOpsDomainToClusterDomain do
+RSpec.describe MigrateAutoDevOpsDomainToClusterDomain do
   include MigrationHelpers::ClusterHelpers
 
   let(:migration) { described_class.new }

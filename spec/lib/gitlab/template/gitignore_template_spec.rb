@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Template::GitignoreTemplate do
+RSpec.describe Gitlab::Template::GitignoreTemplate do
   subject { described_class }
 
   describe '.all' do

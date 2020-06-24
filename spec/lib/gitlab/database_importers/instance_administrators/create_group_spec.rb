@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::DatabaseImporters::InstanceAdministrators::CreateGroup do
+RSpec.describe Gitlab::DatabaseImporters::InstanceAdministrators::CreateGroup do
   describe '#execute' do
     let(:result) { subject.execute }
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::CycleAnalytics::CodeStage do
+RSpec.describe Gitlab::CycleAnalytics::CodeStage do
   let(:stage_name) { :code }
 
   let(:project) { create(:project) }

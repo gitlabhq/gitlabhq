@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Ci::BuildNeed, model: true do
+RSpec.describe Ci::BuildNeed, model: true do
   let(:build_need) { build(:ci_build_need) }
 
   it { is_expected.to belong_to(:build) }

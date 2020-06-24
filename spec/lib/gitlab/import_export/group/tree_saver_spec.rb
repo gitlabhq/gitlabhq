@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::ImportExport::Group::TreeSaver do
+RSpec.describe Gitlab::ImportExport::Group::TreeSaver do
   describe 'saves the group tree into a json object' do
     let_it_be(:user) { create(:user) }
     let_it_be(:group) { setup_groups }

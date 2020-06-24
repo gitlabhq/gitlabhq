@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Ci::Pipeline, :mailer do
+RSpec.describe Ci::Pipeline, :mailer do
   include ProjectForksHelper
   include StubRequests
 

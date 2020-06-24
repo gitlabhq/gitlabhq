@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe PerformanceMonitoring::PrometheusDashboard do
+RSpec.describe PerformanceMonitoring::PrometheusDashboard do
   let(:json_content) do
     {
       "dashboard" => "Dashboard Title",

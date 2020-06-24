@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::ImportSources do
+RSpec.describe Gitlab::ImportSources do
   describe '.options' do
     it 'returns a hash' do
       expected =

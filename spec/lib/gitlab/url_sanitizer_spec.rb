@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::UrlSanitizer do
+RSpec.describe Gitlab::UrlSanitizer do
   using RSpec::Parameterized::TableSyntax
 
   describe '.sanitize' do

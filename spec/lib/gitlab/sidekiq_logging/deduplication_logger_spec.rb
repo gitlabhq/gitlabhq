@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::SidekiqLogging::DeduplicationLogger do
+RSpec.describe Gitlab::SidekiqLogging::DeduplicationLogger do
   describe '#log_deduplication' do
     let(:job) do
       {

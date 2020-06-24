@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Clusters::Applications::CertManager do
+RSpec.describe Clusters::Applications::CertManager do
   let(:cert_manager) { create(:clusters_applications_cert_manager) }
 
   include_examples 'cluster application core specs', :clusters_applications_cert_manager

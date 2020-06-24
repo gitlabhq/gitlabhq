@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Commit do
+RSpec.describe Commit do
   let_it_be(:project) { create(:project, :public, :repository) }
   let_it_be(:personal_snippet) { create(:personal_snippet, :repository) }
   let_it_be(:project_snippet) { create(:project_snippet, :repository) }

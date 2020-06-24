@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe GroupBadge do
+RSpec.describe GroupBadge do
   describe 'associations' do
     it { is_expected.to belong_to(:group) }
   end

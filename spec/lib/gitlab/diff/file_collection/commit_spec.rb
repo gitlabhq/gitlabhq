@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Diff::FileCollection::Commit do
+RSpec.describe Gitlab::Diff::FileCollection::Commit do
   let(:project) { create(:project, :repository) }
 
   it_behaves_like 'diff statistics' do

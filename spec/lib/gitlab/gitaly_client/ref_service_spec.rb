@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::GitalyClient::RefService do
+RSpec.describe Gitlab::GitalyClient::RefService do
   let(:project) { create(:project, :repository) }
   let(:storage_name) { project.repository_storage }
   let(:relative_path) { project.disk_path + '.git' }

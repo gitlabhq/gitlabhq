@@ -3,7 +3,7 @@
 require 'fast_spec_helper'
 require 'timecop'
 
-describe Gitlab::SidekiqMiddleware::DuplicateJobs::Strategies::UntilExecuting do
+RSpec.describe Gitlab::SidekiqMiddleware::DuplicateJobs::Strategies::UntilExecuting do
   let(:fake_duplicate_job) do
     instance_double(Gitlab::SidekiqMiddleware::DuplicateJobs::DuplicateJob)
   end

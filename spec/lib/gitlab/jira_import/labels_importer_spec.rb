@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::JiraImport::LabelsImporter do
+RSpec.describe Gitlab::JiraImport::LabelsImporter do
   include JiraServiceHelper
 
   let_it_be(:user) { create(:user) }

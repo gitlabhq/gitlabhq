@@ -316,6 +316,16 @@ export default {
       // As a fallback, switch to default time range instead
       this.selectedTimeRange = defaultTimeRange;
     },
+    isPanelHalfWidth(panelIndex, totalPanels) {
+      /**
+       * A single panel on a row should take the full width of its parent.
+       * All others should have half the width their parent.
+       */
+      const isNumberOfPanelsEven = totalPanels % 2 === 0;
+      const isLastPanel = panelIndex === totalPanels - 1;
+
+      return isNumberOfPanelsEven || !isLastPanel;
+    },
   },
   i18n: {
     goBackLabel: s__('Metrics|Go back (Esc)'),
@@ -391,8 +401,12 @@ export default {
             <div
               v-for="(graphData, graphIndex) in groupData.panels"
               :key="`dashboard-panel-${graphIndex}`"
-              class="col-12 col-lg-6 px-2 mb-2 draggable"
-              :class="{ 'draggable-enabled': isRearrangingPanels }"
+              data-testid="dashboard-panel-layout-wrapper"
+              class="col-12 px-2 mb-2 draggable"
+              :class="{
+                'draggable-enabled': isRearrangingPanels,
+                'col-lg-6': isPanelHalfWidth(graphIndex, groupData.panels.length),
+              }"
             >
               <div class="position-relative draggable-panel js-draggable-panel">
                 <div

@@ -3,7 +3,7 @@
 require 'spec_helper'
 require 'email_spec'
 
-describe Emails::MergeRequests do
+RSpec.describe Emails::MergeRequests do
   include EmailSpec::Matchers
 
   describe "#resolved_all_discussions_email" do

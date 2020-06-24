@@ -3,7 +3,7 @@
 require 'spec_helper'
 require 'rake_helper'
 
-describe SystemCheck::Orphans::RepositoryCheck do
+RSpec.describe SystemCheck::Orphans::RepositoryCheck do
   let(:storages) { Gitlab.config.repositories.storages.reject { |key, _| key.eql? 'broken' } }
 
   before do

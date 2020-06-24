@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::SidekiqSignals do
+RSpec.describe Gitlab::SidekiqSignals do
   describe '.install' do
     let(:result) { Hash.new { |h, k| h[k] = 0 } }
     let(:int_handler) { -> (_) { result['INT'] += 1 } }

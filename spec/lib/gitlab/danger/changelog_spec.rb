@@ -6,7 +6,7 @@ require_relative 'danger_spec_helper'
 
 require 'gitlab/danger/changelog'
 
-describe Gitlab::Danger::Changelog do
+RSpec.describe Gitlab::Danger::Changelog do
   using RSpec::Parameterized::TableSyntax
   include DangerSpecHelper
 

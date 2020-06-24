@@ -3,7 +3,7 @@
 require 'spec_helper'
 require Rails.root.join('db', 'migrate', '20200210135504_remove_packages_deprecated_dependencies.rb')
 
-describe RemovePackagesDeprecatedDependencies do
+RSpec.describe RemovePackagesDeprecatedDependencies do
   let(:projects) { table(:projects) }
   let(:packages) { table(:packages_packages) }
   let(:dependency_links) { table(:packages_dependency_links) }

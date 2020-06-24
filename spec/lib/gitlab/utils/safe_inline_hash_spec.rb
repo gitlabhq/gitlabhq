@@ -2,7 +2,7 @@
 
 require 'fast_spec_helper'
 
-describe Gitlab::Utils::SafeInlineHash do
+RSpec.describe Gitlab::Utils::SafeInlineHash do
   describe '.merge_keys!' do
     let(:source) { { 'foo' => { 'bar' => 'baz' } } }
     let(:validator) { instance_double(Gitlab::Utils::DeepSize, valid?: valid) }

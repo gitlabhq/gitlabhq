@@ -2,7 +2,7 @@
 
 require 'fast_spec_helper'
 
-describe Gitlab::Kubernetes::Helm::Parsers::ListV2 do
+RSpec.describe Gitlab::Kubernetes::Helm::Parsers::ListV2 do
   let(:valid_file_contents) do
     <<~EOF
     {

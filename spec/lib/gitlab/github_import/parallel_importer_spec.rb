@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::GithubImport::ParallelImporter do
+RSpec.describe Gitlab::GithubImport::ParallelImporter do
   describe '.async?' do
     it 'returns true' do
       expect(described_class).to be_async

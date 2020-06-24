@@ -4,15 +4,6 @@ module IncidentManagement
   class CreateIssueService < BaseService
     include Gitlab::Utils::StrongMemoize
 
-    INCIDENT_LABEL = {
-      title: 'incident',
-      color: '#CC0033',
-      description: <<~DESCRIPTION.chomp
-        Denotes a disruption to IT services and \
-        the associated issues require immediate attention
-      DESCRIPTION
-    }.freeze
-
     def initialize(project, params)
       super(project, User.alert_bot, params)
     end
@@ -30,26 +21,19 @@ module IncidentManagement
     private
 
     def create_issue
-      issue = do_create_issue(label_ids: issue_label_ids)
+      label_result = find_or_create_incident_label
 
-      # Create an unlabelled issue if we couldn't create the issue
-      # due to labels errors.
+      # Create an unlabelled issue if we couldn't create the label
+      # due to a race condition.
       # See https://gitlab.com/gitlab-org/gitlab-foss/issues/65042
-      if issue.errors.include?(:labels)
-        log_label_error(issue)
-        issue = do_create_issue
-      end
+      extra_params = label_result.success? ? { label_ids: [label_result.payload[:label].id] } : {}
 
-      issue
-    end
-
-    def do_create_issue(**params)
       Issues::CreateService.new(
         project,
         current_user,
         title: issue_title,
         description: issue_description,
-        **params
+        **extra_params
       ).execute
     end
 
@@ -67,16 +51,8 @@ module IncidentManagement
       ].compact.join(horizontal_line)
     end
 
-    def issue_label_ids
-      [
-        find_or_create_label(**INCIDENT_LABEL)
-      ].compact.map(&:id)
-    end
-
-    def find_or_create_label(**params)
-      Labels::FindOrCreateService
-        .new(current_user, project, **params)
-        .execute
+    def find_or_create_incident_label
+      IncidentManagement::CreateIncidentLabelService.new(project, current_user).execute
     end
 
     def alert_summary
@@ -106,15 +82,6 @@ module IncidentManagement
 
     def issue_errors(issue)
       issue.errors.full_messages.to_sentence
-    end
-
-    def log_label_error(issue)
-      log_info <<~TEXT.chomp
-        Cannot create incident issue with labels \
-        #{issue.labels.map(&:title).inspect} \
-        for "#{project.full_name}": #{issue.errors.full_messages.to_sentence}.
-        Retrying without labels.
-      TEXT
     end
 
     def error_with(message)

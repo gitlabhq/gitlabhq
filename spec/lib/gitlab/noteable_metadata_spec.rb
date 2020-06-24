@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::NoteableMetadata do
+RSpec.describe Gitlab::NoteableMetadata do
   subject { Class.new { include Gitlab::NoteableMetadata }.new }
 
   it 'returns an empty Hash if an empty collection is provided' do

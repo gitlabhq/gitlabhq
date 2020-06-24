@@ -384,9 +384,12 @@ module ProjectsHelper
   end
 
   def project_license_name(project)
-    project.repository.license&.name
+    key = "project:#{project.id}:license_name"
+
+    Gitlab::SafeRequestStore.fetch(key) { project.repository.license&.name }
   rescue GRPC::Unavailable, GRPC::DeadlineExceeded, Gitlab::Git::CommandError => e
     Gitlab::ErrorTracking.track_exception(e)
+    Gitlab::SafeRequestStore[key] = nil
 
     nil
   end

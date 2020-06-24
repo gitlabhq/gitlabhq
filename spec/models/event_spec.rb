@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Event do
+RSpec.describe Event do
   describe "Associations" do
     it { is_expected.to belong_to(:project) }
     it { is_expected.to belong_to(:target) }

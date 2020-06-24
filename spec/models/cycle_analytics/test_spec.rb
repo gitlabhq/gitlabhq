@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'CycleAnalytics#test' do
+RSpec.describe 'CycleAnalytics#test' do
   extend CycleAnalyticsHelpers::TestGeneration
 
   let_it_be(:project) { create(:project, :repository) }

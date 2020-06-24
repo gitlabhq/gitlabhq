@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::ImportExport::Error do
+RSpec.describe Gitlab::ImportExport::Error do
   describe '.permission_error' do
     subject(:error) do
       described_class.permission_error(user, importable)

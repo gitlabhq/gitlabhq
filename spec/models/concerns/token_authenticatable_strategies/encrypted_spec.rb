@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe TokenAuthenticatableStrategies::Encrypted do
+RSpec.describe TokenAuthenticatableStrategies::Encrypted do
   let(:model) { double(:model) }
   let(:instance) { double(:instance) }
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Prometheus::CleanupMultiprocDirService do
+RSpec.describe Prometheus::CleanupMultiprocDirService do
   describe '.call' do
     subject { described_class.new.execute }
 

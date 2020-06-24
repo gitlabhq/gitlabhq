@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::GrapeLogging::Loggers::PerfLogger do
+RSpec.describe Gitlab::GrapeLogging::Loggers::PerfLogger do
   subject { described_class.new }
 
   describe ".parameters" do

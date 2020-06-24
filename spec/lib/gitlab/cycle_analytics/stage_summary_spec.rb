@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::CycleAnalytics::StageSummary do
+RSpec.describe Gitlab::CycleAnalytics::StageSummary do
   let(:project) { create(:project, :repository) }
   let(:options) { { from: 1.day.ago, current_user: user } }
   let(:user) { create(:user, :admin) }

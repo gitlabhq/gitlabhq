@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::RepositoryUrlBuilder do
+RSpec.describe Gitlab::RepositoryUrlBuilder do
   describe '.build' do
     using RSpec::Parameterized::TableSyntax
 

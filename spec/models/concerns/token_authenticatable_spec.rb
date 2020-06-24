@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-shared_examples 'TokenAuthenticatable' do
+RSpec.shared_examples 'TokenAuthenticatable' do
   describe 'dynamically defined methods' do
     it { expect(described_class).to respond_to("find_by_#{token_field}") }
     it { is_expected.to respond_to("ensure_#{token_field}") }
@@ -11,7 +11,7 @@ shared_examples 'TokenAuthenticatable' do
   end
 end
 
-describe User, 'TokenAuthenticatable' do
+RSpec.describe User, 'TokenAuthenticatable' do
   let(:token_field) { :feed_token }
 
   it_behaves_like 'TokenAuthenticatable'
@@ -23,7 +23,7 @@ describe User, 'TokenAuthenticatable' do
   end
 end
 
-describe ApplicationSetting, 'TokenAuthenticatable' do
+RSpec.describe ApplicationSetting, 'TokenAuthenticatable' do
   let(:token_field) { :runners_registration_token }
   let(:settings) { described_class.new }
 
@@ -100,7 +100,7 @@ describe ApplicationSetting, 'TokenAuthenticatable' do
   end
 end
 
-describe PersonalAccessToken, 'TokenAuthenticatable' do
+RSpec.describe PersonalAccessToken, 'TokenAuthenticatable' do
   shared_examples 'changes personal access token' do
     it 'sets new token' do
       subject
@@ -205,7 +205,7 @@ describe PersonalAccessToken, 'TokenAuthenticatable' do
   end
 end
 
-describe Ci::Build, 'TokenAuthenticatable' do
+RSpec.describe Ci::Build, 'TokenAuthenticatable' do
   let(:token_field) { :token }
   let(:build) { FactoryBot.build(:ci_build) }
 

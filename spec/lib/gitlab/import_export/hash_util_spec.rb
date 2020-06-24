@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::ImportExport::HashUtil do
+RSpec.describe Gitlab::ImportExport::HashUtil do
   let(:stringified_array) { [{ 'test' => 1 }] }
   let(:stringified_array_with_date) { [{ 'test_date' => '2016-04-06 06:17:44 +0200' }] }
 

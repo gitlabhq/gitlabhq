@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Ci::Bridge do
+RSpec.describe Ci::Bridge do
   let_it_be(:project) { create(:project) }
   let_it_be(:target_project) { create(:project, name: 'project', namespace: create(:namespace, name: 'my')) }
   let_it_be(:pipeline) { create(:ci_pipeline, project: project) }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Ci::Status::Build::Canceled do
+RSpec.describe Gitlab::Ci::Status::Build::Canceled do
   let(:user) { create(:user) }
 
   subject do

@@ -3,7 +3,7 @@
 require 'spec_helper'
 require Rails.root.join('db', 'migrate', '20200214085940_clean_grafana_url.rb')
 
-describe CleanGrafanaUrl do
+RSpec.describe CleanGrafanaUrl do
   let(:application_settings_table) { table(:application_settings) }
 
   [

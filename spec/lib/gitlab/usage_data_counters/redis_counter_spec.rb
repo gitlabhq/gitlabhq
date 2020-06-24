@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::UsageDataCounters::RedisCounter, :clean_gitlab_redis_shared_state do
+RSpec.describe Gitlab::UsageDataCounters::RedisCounter, :clean_gitlab_redis_shared_state do
   let(:redis_key) { 'foobar' }
 
   subject { Class.new.extend(described_class) }

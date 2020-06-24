@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Routing do
+RSpec.describe Gitlab::Routing do
   context 'when module is included' do
     subject do
       Class.new.include(described_class).new

@@ -3,7 +3,7 @@
 require 'fast_spec_helper'
 require 'rspec-parameterized'
 
-describe Gitlab::ImportExport::Config do
+RSpec.describe Gitlab::ImportExport::Config do
   let(:yaml_file) { described_class.new }
 
   describe '#to_h' do

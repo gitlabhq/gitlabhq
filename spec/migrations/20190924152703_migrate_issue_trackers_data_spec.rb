@@ -3,7 +3,7 @@
 require 'spec_helper'
 require Rails.root.join('db', 'post_migrate', '20190924152703_migrate_issue_trackers_data.rb')
 
-describe MigrateIssueTrackersData do
+RSpec.describe MigrateIssueTrackersData do
   let(:services) { table(:services) }
   let(:migration_class) { Gitlab::BackgroundMigration::MigrateIssueTrackersSensitiveData }
   let(:migration_name)  { migration_class.to_s.demodulize }

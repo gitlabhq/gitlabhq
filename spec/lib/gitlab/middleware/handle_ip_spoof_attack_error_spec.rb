@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Middleware::HandleIpSpoofAttackError do
+RSpec.describe Gitlab::Middleware::HandleIpSpoofAttackError do
   let(:spoof_error) { ActionDispatch::RemoteIp::IpSpoofAttackError.new('sensitive') }
   let(:standard_error) { StandardError.new('error') }
   let(:app) { -> (env) { env.is_a?(Exception) ? raise(env) : env } }

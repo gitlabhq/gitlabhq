@@ -5,7 +5,7 @@ require 'simple_po_parser'
 
 # Disabling this cop to allow for multi-language examples in comments
 # rubocop:disable Style/AsciiComments
-describe Gitlab::I18n::PoLinter do
+RSpec.describe Gitlab::I18n::PoLinter do
   let(:linter) { described_class.new(po_path) }
   let(:po_path) { 'spec/fixtures/valid.po' }
 

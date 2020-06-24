@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-describe Gitlab::Git::Branch, :seed_helper do
+RSpec.describe Gitlab::Git::Branch, :seed_helper do
   let(:repository) { Gitlab::Git::Repository.new('default', TEST_REPO_PATH, '', 'group/project') }
   let(:rugged) do
     Rugged::Repository.new(File.join(TestEnv.repos_path, repository.relative_path))

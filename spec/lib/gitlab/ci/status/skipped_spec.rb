@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Ci::Status::Skipped do
+RSpec.describe Gitlab::Ci::Status::Skipped do
   subject do
     described_class.new(double('subject'), double('user'))
   end

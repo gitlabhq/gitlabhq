@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Sentry::Client::Issue do
+RSpec.describe Sentry::Client::Issue do
   include SentryClientHelpers
 
   let(:token) { 'test-token' }

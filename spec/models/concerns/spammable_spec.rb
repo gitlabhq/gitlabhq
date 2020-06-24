@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Spammable do
+RSpec.describe Spammable do
   let(:issue) { create(:issue, description: 'Test Desc.') }
 
   describe 'Associations' do

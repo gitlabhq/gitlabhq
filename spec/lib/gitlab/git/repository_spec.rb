@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-describe Gitlab::Git::Repository, :seed_helper do
+RSpec.describe Gitlab::Git::Repository, :seed_helper do
   include Gitlab::EncodingHelper
   include RepoHelpers
   using RSpec::Parameterized::TableSyntax

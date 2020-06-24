@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Pages::LookupPath do
+RSpec.describe Pages::LookupPath do
   let(:project) do
     instance_double(Project,
       id: 12345,

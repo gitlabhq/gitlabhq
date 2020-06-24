@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Graphql::CopyFieldDescription do
+RSpec.describe Gitlab::Graphql::CopyFieldDescription do
   subject { Class.new.include(described_class) }
 
   describe '.copy_field_description' do

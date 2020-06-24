@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::LegacyGithubImport::IssuableFormatter do
+RSpec.describe Gitlab::LegacyGithubImport::IssuableFormatter do
   let(:raw_data) do
     double(number: 42)
   end

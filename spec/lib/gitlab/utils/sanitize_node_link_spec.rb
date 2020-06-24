@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Utils::SanitizeNodeLink do
+RSpec.describe Gitlab::Utils::SanitizeNodeLink do
   let(:klass) do
     struct = Struct.new(:value)
     struct.include(described_class)

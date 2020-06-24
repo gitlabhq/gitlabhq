@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Note do
+RSpec.describe Note do
   include RepoHelpers
 
   describe 'associations' do

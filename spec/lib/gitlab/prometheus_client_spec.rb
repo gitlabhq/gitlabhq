@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::PrometheusClient do
+RSpec.describe Gitlab::PrometheusClient do
   include PrometheusHelpers
 
   subject { described_class.new('https://prometheus.example.com') }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::SlashCommands::IssueClose do
+RSpec.describe Gitlab::SlashCommands::IssueClose do
   describe '#execute' do
     let(:issue) { create(:issue, project: project) }
     let(:project) { create(:project) }

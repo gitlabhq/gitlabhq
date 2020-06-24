@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Prometheus::Queries::ValidateQuery do
+RSpec.describe Gitlab::Prometheus::Queries::ValidateQuery do
   include PrometheusHelpers
 
   let(:api_url) { 'https://prometheus.example.com' }

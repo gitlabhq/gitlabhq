@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe WebHookLog do
+RSpec.describe WebHookLog do
   it { is_expected.to belong_to(:web_hook) }
 
   it { is_expected.to serialize(:request_headers).as(Hash) }

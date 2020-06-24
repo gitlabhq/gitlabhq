@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Ci::Build do
+RSpec.describe Ci::Build do
   let_it_be(:user) { create(:user) }
   let_it_be(:group, reload: true) { create(:group) }
   let_it_be(:project, reload: true) { create(:project, :repository, group: group) }

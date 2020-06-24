@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::GitAccessSnippet do
+RSpec.describe Gitlab::GitAccessSnippet do
   include ProjectHelpers
   include TermsHelper
   include_context 'ProjectPolicyTable context'

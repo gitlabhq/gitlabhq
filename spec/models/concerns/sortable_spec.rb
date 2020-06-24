@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Sortable do
+RSpec.describe Sortable do
   describe '.order_by' do
     let(:arel_table) { Group.arel_table }
     let(:relation) { Group.all }

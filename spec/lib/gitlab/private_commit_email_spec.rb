@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::PrivateCommitEmail do
+RSpec.describe Gitlab::PrivateCommitEmail do
   let(:hostname) { Gitlab::CurrentSettings.current_application_settings.commit_email_hostname }
   let(:id) { 1 }
   let(:valid_email) { "#{id}-foo@#{hostname}" }

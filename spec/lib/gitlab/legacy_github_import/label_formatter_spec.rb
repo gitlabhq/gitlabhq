@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::LegacyGithubImport::LabelFormatter do
+RSpec.describe Gitlab::LegacyGithubImport::LabelFormatter do
   let(:project) { create(:project) }
   let(:raw) { double(name: 'improvements', color: 'e6e6e6') }
 

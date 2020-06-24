@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Metrics::Instrumentation do
+RSpec.describe Gitlab::Metrics::Instrumentation do
   let(:env) { {} }
   let(:transaction) { Gitlab::Metrics::WebTransaction.new(env) }
 

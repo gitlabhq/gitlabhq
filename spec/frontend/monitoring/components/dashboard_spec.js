@@ -16,6 +16,7 @@ import DashboardsDropdown from '~/monitoring/components/dashboards_dropdown.vue'
 import EmptyState from '~/monitoring/components/empty_state.vue';
 import GroupEmptyState from '~/monitoring/components/group_empty_state.vue';
 import DashboardPanel from '~/monitoring/components/dashboard_panel.vue';
+import GraphGroup from '~/monitoring/components/graph_group.vue';
 import LinksSection from '~/monitoring/components/links_section.vue';
 import { createStore } from '~/monitoring/stores';
 import * as types from '~/monitoring/stores/mutation_types';
@@ -24,6 +25,7 @@ import {
   setupStoreWithDashboard,
   setMetricResult,
   setupStoreWithData,
+  setupStoreWithDataForPanelCount,
   setupStoreWithVariable,
   setupStoreWithLinks,
 } from '../store_utils';
@@ -153,6 +155,75 @@ describe('Dashboard', () => {
 
       return wrapper.vm.$nextTick().then(() => {
         expect(store.dispatch).toHaveBeenCalled();
+      });
+    });
+  });
+
+  describe('panel containers layout', () => {
+    const findPanelLayoutWrapperAt = index => {
+      return wrapper
+        .find(GraphGroup)
+        .findAll('[data-testid="dashboard-panel-layout-wrapper"]')
+        .at(index);
+    };
+
+    beforeEach(() => {
+      createMountedWrapper({ hasMetrics: true });
+
+      return wrapper.vm.$nextTick();
+    });
+
+    describe('when the graph group has an even number of panels', () => {
+      it('2 panels - all panel wrappers take half width of their parent', () => {
+        setupStoreWithDataForPanelCount(store, 2);
+
+        wrapper.vm.$nextTick(() => {
+          expect(findPanelLayoutWrapperAt(0).classes('col-lg-6')).toBe(true);
+          expect(findPanelLayoutWrapperAt(1).classes('col-lg-6')).toBe(true);
+        });
+      });
+
+      it('4 panels - all panel wrappers take half width of their parent', () => {
+        setupStoreWithDataForPanelCount(store, 4);
+
+        wrapper.vm.$nextTick(() => {
+          expect(findPanelLayoutWrapperAt(0).classes('col-lg-6')).toBe(true);
+          expect(findPanelLayoutWrapperAt(1).classes('col-lg-6')).toBe(true);
+          expect(findPanelLayoutWrapperAt(2).classes('col-lg-6')).toBe(true);
+          expect(findPanelLayoutWrapperAt(3).classes('col-lg-6')).toBe(true);
+        });
+      });
+    });
+
+    describe('when the graph group has an odd number of panels', () => {
+      it('1 panel - panel wrapper does not take half width of its parent', () => {
+        setupStoreWithDataForPanelCount(store, 1);
+
+        wrapper.vm.$nextTick(() => {
+          expect(findPanelLayoutWrapperAt(0).classes('col-lg-6')).toBe(false);
+        });
+      });
+
+      it('3 panels - all panels but last take half width of their parents', () => {
+        setupStoreWithDataForPanelCount(store, 3);
+
+        wrapper.vm.$nextTick(() => {
+          expect(findPanelLayoutWrapperAt(0).classes('col-lg-6')).toBe(true);
+          expect(findPanelLayoutWrapperAt(1).classes('col-lg-6')).toBe(true);
+          expect(findPanelLayoutWrapperAt(2).classes('col-lg-6')).toBe(false);
+        });
+      });
+
+      it('5 panels - all panels but last take half width of their parents', () => {
+        setupStoreWithDataForPanelCount(store, 5);
+
+        wrapper.vm.$nextTick(() => {
+          expect(findPanelLayoutWrapperAt(0).classes('col-lg-6')).toBe(true);
+          expect(findPanelLayoutWrapperAt(1).classes('col-lg-6')).toBe(true);
+          expect(findPanelLayoutWrapperAt(2).classes('col-lg-6')).toBe(true);
+          expect(findPanelLayoutWrapperAt(3).classes('col-lg-6')).toBe(true);
+          expect(findPanelLayoutWrapperAt(4).classes('col-lg-6')).toBe(false);
+        });
       });
     });
   });

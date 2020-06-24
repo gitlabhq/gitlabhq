@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Gpg do
+RSpec.describe Gitlab::Gpg do
   describe '.fingerprints_from_key' do
     before do
       # make sure that each method is using the temporary keychain
@@ -244,7 +244,7 @@ describe Gitlab::Gpg do
   end
 end
 
-describe Gitlab::Gpg::CurrentKeyChain do
+RSpec.describe Gitlab::Gpg::CurrentKeyChain do
   around do |example|
     Gitlab::Gpg.using_tmp_keychain do
       example.run

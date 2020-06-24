@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe SystemCheck::App::AuthorizedKeysPermissionCheck do
+RSpec.describe SystemCheck::App::AuthorizedKeysPermissionCheck do
   subject(:system_check) { described_class.new }
 
   describe '#skip?' do

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ApplicationRecord do
+RSpec.describe ApplicationRecord do
   describe '#id_in' do
     let(:records) { create_list(:user, 3) }
 

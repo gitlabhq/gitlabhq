@@ -81,7 +81,7 @@ export default {
         @handleUpdateNote="update"
         @toggleResolveStatus="toggleResolveDiscussion(draft.id)"
       >
-        <strong slot="note-header-info" class="badge draft-pending-label append-right-4">
+        <strong slot="note-header-info" class="badge draft-pending-label gl-mr-2">
           {{ __('Pending') }}
         </strong>
       </noteable-note>

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe IssueTrackerData do
+RSpec.describe IssueTrackerData do
   let(:service) { create(:custom_issue_tracker_service, active: false, properties: {}) }
 
   describe 'Associations' do

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::I18n do
+RSpec.describe Gitlab::I18n do
   let(:user) { create(:user, preferred_language: 'es') }
 
   describe '.locale=' do

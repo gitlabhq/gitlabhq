@@ -4,7 +4,7 @@ require 'spec_helper'
 require 'json'
 require 'tempfile'
 
-describe Gitlab::Git::RuggedImpl::UseRugged, :seed_helper do
+RSpec.describe Gitlab::Git::RuggedImpl::UseRugged, :seed_helper do
   let(:project) { create(:project, :repository) }
   let(:repository) { project.repository }
   let(:feature_flag_name) { 'feature-flag-name' }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe OptionallySearch do
+RSpec.describe OptionallySearch do
   describe '.search' do
     let(:model) do
       Class.new do

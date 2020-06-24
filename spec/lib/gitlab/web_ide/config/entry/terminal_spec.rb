@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::WebIde::Config::Entry::Terminal do
+RSpec.describe Gitlab::WebIde::Config::Entry::Terminal do
   let(:entry) { described_class.new(config, with_image_ports: true) }
 
   describe '.nodes' do

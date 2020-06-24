@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Conflict::File do
+RSpec.describe Gitlab::Conflict::File do
   include GitHelpers
 
   let(:project) { create(:project, :repository) }

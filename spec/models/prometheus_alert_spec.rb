@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe PrometheusAlert do
+RSpec.describe PrometheusAlert do
   let_it_be(:project) { build(:project) }
   let(:metric) { build(:prometheus_metric) }
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::StringPlaceholderReplacer do
+RSpec.describe Gitlab::StringPlaceholderReplacer do
   describe '.render_url' do
     it 'returns the nil if the string is blank' do
       expect(described_class.replace_string_placeholders(nil, /whatever/)).to be_blank

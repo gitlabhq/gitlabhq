@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Blob do
+RSpec.describe Blob do
   include FakeBlobHelpers
 
   using RSpec::Parameterized::TableSyntax

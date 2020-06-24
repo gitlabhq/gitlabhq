@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Diff::InlineDiffMarker do
+RSpec.describe Gitlab::Diff::InlineDiffMarker do
   describe '#mark' do
     let(:inline_diffs) { [2..5] }
     let(:raw) { "abc 'def'" }

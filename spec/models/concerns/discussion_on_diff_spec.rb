@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe DiscussionOnDiff do
+RSpec.describe DiscussionOnDiff do
   subject { create(:diff_note_on_merge_request, line_number: 18).to_discussion }
 
   describe "#truncated_diff_lines" do

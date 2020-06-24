@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::GitalyClient::RepositoryService do
+RSpec.describe Gitlab::GitalyClient::RepositoryService do
   using RSpec::Parameterized::TableSyntax
 
   let(:project) { create(:project) }

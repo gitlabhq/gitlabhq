@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::QuickActions::Dsl do
+RSpec.describe Gitlab::QuickActions::Dsl do
   before :all do
     DummyClass = Struct.new(:project) do
       include Gitlab::QuickActions::Dsl

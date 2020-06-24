@@ -977,18 +977,31 @@ RSpec.describe ProjectsHelper do
     end
   end
 
-  describe '#project_license_name(project)' do
+  describe '#project_license_name(project)', :request_store do
     let_it_be(:project) { create(:project) }
     let_it_be(:repository) { project.repository }
 
     subject { project_license_name(project) }
 
-    context 'gitaly is working appropriately' do
-      it 'returns the license name' do
-        license = Licensee::License.new('mit')
-        allow(repository).to receive(:license).and_return(license)
+    def license_name
+      project_license_name(project)
+    end
 
+    context 'gitaly is working appropriately' do
+      let(:license) { Licensee::License.new('mit') }
+
+      before do
+        expect(repository).to receive(:license).and_return(license)
+      end
+
+      it 'returns the license name' do
         expect(subject).to eq(license.name)
+      end
+
+      it 'memoizes the value' do
+        expect do
+          2.times { expect(license_name).to eq(license.name) }
+        end.to change { Gitlab::GitalyClient.get_request_count }.by_at_most(1)
       end
     end
 
@@ -1003,10 +1016,16 @@ RSpec.describe ProjectsHelper do
 
           subject
         end
+
+        it 'memoizes the nil value' do
+          expect do
+            2.times { expect(license_name).to be_nil }
+          end.to change { Gitlab::GitalyClient.get_request_count }.by_at_most(1)
+        end
       end
 
       before do
-        allow(repository).to receive(:license).and_raise(exception)
+        expect(repository).to receive(:license).and_raise(exception)
       end
 
       context "Gitlab::Git::CommandError" do

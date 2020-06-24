@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Database::MigrationHelpers do
+RSpec.describe Gitlab::Database::MigrationHelpers do
   let(:model) do
     ActiveRecord::Migration.new.extend(described_class)
   end

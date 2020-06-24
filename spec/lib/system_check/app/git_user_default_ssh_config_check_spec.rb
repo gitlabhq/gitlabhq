@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe SystemCheck::App::GitUserDefaultSSHConfigCheck do
+RSpec.describe SystemCheck::App::GitUserDefaultSSHConfigCheck do
   let(:username) { '_this_user_will_not_exist_unless_it_is_stubbed' }
   let(:base_dir) { Dir.mktmpdir }
   let(:home_dir) { File.join(base_dir, "/var/lib/#{username}") }

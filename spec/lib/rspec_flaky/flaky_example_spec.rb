@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe RspecFlaky::FlakyExample, :aggregate_failures do
+RSpec.describe RspecFlaky::FlakyExample, :aggregate_failures do
   let(:flaky_example_attrs) do
     {
       example_id: 'spec/foo/bar_spec.rb:2',

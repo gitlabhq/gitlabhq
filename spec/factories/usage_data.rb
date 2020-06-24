@@ -46,7 +46,7 @@ FactoryBot.define do
       create(:sentry_issue, issue: projects[0].issues[0])
 
       # Incident Labeled Issues
-      incident_label_attrs = IncidentManagement::CreateIssueService::INCIDENT_LABEL
+      incident_label_attrs = IncidentManagement::CreateIncidentLabelService::LABEL_PROPERTIES
       incident_label = create(:label, project: projects[0], **incident_label_attrs)
       create(:labeled_issue, project: projects[0], labels: [incident_label])
       incident_group = create(:group)
@@ -92,7 +92,8 @@ FactoryBot.define do
 
       # Create fresh & a month (28-days SMAU) old  data
       [2, 29].each do |n|
-        create(:snippet, created_at: n.days.ago)
+        create_list(:project_snippet, 2, project: projects[0], created_at: n.days.ago)
+        create(:personal_snippet, created_at: n.days.ago)
       end
     end
   end

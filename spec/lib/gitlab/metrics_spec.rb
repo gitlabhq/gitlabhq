@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Metrics do
+RSpec.describe Gitlab::Metrics do
   include StubENV
 
   describe '.settings' do

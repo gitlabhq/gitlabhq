@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Metrics::Dashboard::Url do
+RSpec.describe Gitlab::Metrics::Dashboard::Url do
   include Gitlab::Routing.url_helpers
 
   describe '#metrics_regex' do

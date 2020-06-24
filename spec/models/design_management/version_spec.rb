@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-describe DesignManagement::Version do
+RSpec.describe DesignManagement::Version do
   let_it_be(:issue) { create(:issue) }
 
   describe 'relations' do

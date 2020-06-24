@@ -22,33 +22,43 @@ const parseSourceFile = raw => {
     return buildPayload(source, '', '', source);
   };
 
-  const computedRaw = () => `${editable.header}${editable.spacing}${editable.body}`;
-
-  const syncRawToBody = () => {
+  const syncEditable = () => {
     /*
     We re-parse as markdown editing could have added non-body changes (preFrontMatter, frontMatter, or spacing).
-    Re-parsing additionally gets us the desired body that was extracted from the mutated editable.raw
-    Additionally we intentionally mutate the existing editable's key values as opposed to reassigning the object itself so consumers of the potentially reactive property stay in sync.
+    Re-parsing additionally gets us the desired body that was extracted from the potentially mutated editable.raw
     */
-    Object.assign(editable, parse(editable.raw));
+    editable = parse(editable.raw);
   };
 
   const syncBodyToRaw = () => {
-    editable.raw = computedRaw();
+    editable.raw = `${editable.header}${editable.spacing}${editable.body}`;
   };
 
-  const isModifiedRaw = () => initial.raw !== editable.raw;
-  const isModifiedBody = () => initial.raw !== computedRaw();
+  const sync = (newVal, isBodyToRaw) => {
+    const editableKey = isBodyToRaw ? 'body' : 'raw';
+    editable[editableKey] = newVal;
+
+    if (isBodyToRaw) {
+      syncBodyToRaw();
+    }
+
+    syncEditable();
+  };
+
+  const content = (isBody = false) => {
+    const editableKey = isBody ? 'body' : 'raw';
+    return editable[editableKey];
+  };
+
+  const isModified = () => initial.raw !== editable.raw;
 
   initial = parse(raw);
   editable = parse(raw);
 
   return {
-    editable,
-    isModifiedRaw,
-    isModifiedBody,
-    syncBodyToRaw,
-    syncRawToBody,
+    content,
+    isModified,
+    sync,
   };
 };
 

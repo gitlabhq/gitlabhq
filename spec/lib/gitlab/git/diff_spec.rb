@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-describe Gitlab::Git::Diff, :seed_helper do
+RSpec.describe Gitlab::Git::Diff, :seed_helper do
   let(:repository) { Gitlab::Git::Repository.new('default', TEST_REPO_PATH, '', 'group/project') }
   let(:gitaly_diff) do
     Gitlab::GitalyClient::Diff.new(

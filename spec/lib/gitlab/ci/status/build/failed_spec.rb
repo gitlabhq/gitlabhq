@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Ci::Status::Build::Failed do
+RSpec.describe Gitlab::Ci::Status::Build::Failed do
   let(:build) { create(:ci_build, :script_failure) }
   let(:status) { double('core status') }
   let(:user) { double('user') }

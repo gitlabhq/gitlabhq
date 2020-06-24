@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::HealthChecks::PumaCheck do
+RSpec.describe Gitlab::HealthChecks::PumaCheck do
   let(:result_class) { Gitlab::HealthChecks::Result }
   let(:readiness) { described_class.readiness }
   let(:metrics) { described_class.metrics }

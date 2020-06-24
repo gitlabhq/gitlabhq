@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::UrlBlockers::DomainWhitelistEntry do
+RSpec.describe Gitlab::UrlBlockers::DomainWhitelistEntry do
   let(:domain) { 'www.example.com' }
 
   describe '#initialize' do

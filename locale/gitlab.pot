@@ -199,6 +199,11 @@ msgid_plural "%d metrics"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "%d milestone"
+msgid_plural "%d milestones"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%d minute"
 msgid_plural "%d minutes"
 msgstr[0] ""
@@ -5689,7 +5694,7 @@ msgstr ""
 msgid "Collapse approvers"
 msgstr ""
 
-msgid "Collapse child epics"
+msgid "Collapse milestones"
 msgstr ""
 
 msgid "Collapse replies"
@@ -9296,13 +9301,13 @@ msgstr ""
 msgid "Expand approvers"
 msgstr ""
 
-msgid "Expand child epics"
-msgstr ""
-
 msgid "Expand down"
 msgstr ""
 
 msgid "Expand dropdown"
+msgstr ""
+
+msgid "Expand milestones"
 msgstr ""
 
 msgid "Expand sidebar"
@@ -18749,6 +18754,9 @@ msgstr ""
 msgid "Releases documentation"
 msgstr ""
 
+msgid "Releases|New Release"
+msgstr ""
+
 msgid "Release|Something went wrong while getting the release details"
 msgstr ""
 
@@ -24450,6 +24458,9 @@ msgid "Unsubscribed from this %{quick_action_target}."
 msgstr ""
 
 msgid "Unsubscribes from this %{quick_action_target}."
+msgstr ""
+
+msgid "Unsupported todo type passed. Supported todo types are: %{todo_types}"
 msgstr ""
 
 msgid "Until"

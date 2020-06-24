@@ -3,7 +3,7 @@
 require 'spec_helper'
 require 'fileutils'
 
-describe Gitlab::ImportExport::Shared do
+RSpec.describe Gitlab::ImportExport::Shared do
   let(:project) { build(:project) }
 
   subject { project.import_export_shared }
