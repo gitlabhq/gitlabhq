@@ -416,6 +416,8 @@ Read the documentation on [links](#add-related-links-to-custom-dashboards).
 | `priority` | number | optional, defaults to order in file | Order to appear on the dashboard. Higher number means higher priority, which will be higher on the page. Numbers do not need to be consecutive. |
 | `panels` | array | required | The panels which should be in the panel group. |
 
+Panels in a panel group are laid out in rows consisting of two panels per row. An exception to this rule are single panels on a row: these panels will take the full width of their containing row.
+
 ##### **Panel (`panels`) properties**
 
 | Property | Type | Required | Description |

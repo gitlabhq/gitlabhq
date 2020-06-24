@@ -11,6 +11,15 @@ with [onboarding as a partner](https://about.gitlab.com/partners/integrate/).
 The steps below are a high-level view of what needs to be done to complete an
 integration as well as linking to more detailed resources for how to do so.
 
+## Integration Tiers
+
+GitLab's security offerings are designed for GitLab Gold and GitLab Ultimate users, and the
+[DevSecOps](https://about.gitlab.com/handbook/use-cases/#4-devsecops-shift-left-security)
+use case. All the features are in those tiers. This includes the APIs and standard reporting
+framework needed to provide a consistent experience for users to easily bring their preferred
+security tools into GitLab. We ask that our integration partners focus their work on those license
+tiers so that we can provide the most value to our mutual customers.
+
 ## What is the GitLab Developer Workflow?
 
 This workflow is how GitLab users interact with our product and expect it to

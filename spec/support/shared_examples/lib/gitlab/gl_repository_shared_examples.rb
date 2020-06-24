@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples 'parsing gl_repository identifier' do
-  subject { described_class.new(identifier) }
+  subject { described_class.parse(identifier) }
 
   it 'returns correct information' do
-    aggregate_failures do
-      expect(subject.repo_type).to eq(expected_type)
-      expect(subject.fetch_container!).to eq(expected_container)
-    end
+    expect(subject).to have_attributes(
+      repo_type: expected_type,
+      container: expected_container
+    )
   end
 end

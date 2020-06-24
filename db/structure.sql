@@ -1793,6 +1793,24 @@ CREATE SEQUENCE public.clusters_applications_cert_managers_id_seq
 
 ALTER SEQUENCE public.clusters_applications_cert_managers_id_seq OWNED BY public.clusters_applications_cert_managers.id;
 
+CREATE TABLE public.clusters_applications_cilium (
+    id bigint NOT NULL,
+    cluster_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    status integer NOT NULL,
+    status_reason text
+);
+
+CREATE SEQUENCE public.clusters_applications_cilium_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE public.clusters_applications_cilium_id_seq OWNED BY public.clusters_applications_cilium.id;
+
 CREATE TABLE public.clusters_applications_crossplane (
     id integer NOT NULL,
     created_at timestamp with time zone NOT NULL,
@@ -7659,6 +7677,8 @@ ALTER TABLE ONLY public.clusters ALTER COLUMN id SET DEFAULT nextval('public.clu
 
 ALTER TABLE ONLY public.clusters_applications_cert_managers ALTER COLUMN id SET DEFAULT nextval('public.clusters_applications_cert_managers_id_seq'::regclass);
 
+ALTER TABLE ONLY public.clusters_applications_cilium ALTER COLUMN id SET DEFAULT nextval('public.clusters_applications_cilium_id_seq'::regclass);
+
 ALTER TABLE ONLY public.clusters_applications_crossplane ALTER COLUMN id SET DEFAULT nextval('public.clusters_applications_crossplane_id_seq'::regclass);
 
 ALTER TABLE ONLY public.clusters_applications_elastic_stacks ALTER COLUMN id SET DEFAULT nextval('public.clusters_applications_elastic_stacks_id_seq'::regclass);
@@ -8388,6 +8408,9 @@ ALTER TABLE ONLY public.cluster_providers_gcp
 
 ALTER TABLE ONLY public.clusters_applications_cert_managers
     ADD CONSTRAINT clusters_applications_cert_managers_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY public.clusters_applications_cilium
+    ADD CONSTRAINT clusters_applications_cilium_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY public.clusters_applications_crossplane
     ADD CONSTRAINT clusters_applications_crossplane_pkey PRIMARY KEY (id);
@@ -9711,6 +9734,8 @@ CREATE INDEX index_cluster_providers_gcp_on_cloud_run ON public.cluster_provider
 CREATE UNIQUE INDEX index_cluster_providers_gcp_on_cluster_id ON public.cluster_providers_gcp USING btree (cluster_id);
 
 CREATE UNIQUE INDEX index_clusters_applications_cert_managers_on_cluster_id ON public.clusters_applications_cert_managers USING btree (cluster_id);
+
+CREATE UNIQUE INDEX index_clusters_applications_cilium_on_cluster_id ON public.clusters_applications_cilium USING btree (cluster_id);
 
 CREATE UNIQUE INDEX index_clusters_applications_crossplane_on_cluster_id ON public.clusters_applications_crossplane USING btree (cluster_id);
 
@@ -12323,6 +12348,9 @@ ALTER TABLE ONLY public.issue_user_mentions
 ALTER TABLE ONLY public.merge_request_assignees
     ADD CONSTRAINT fk_rails_579d375628 FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY public.clusters_applications_cilium
+    ADD CONSTRAINT fk_rails_59dc12eea6 FOREIGN KEY (cluster_id) REFERENCES public.clusters(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY public.analytics_cycle_analytics_group_stages
     ADD CONSTRAINT fk_rails_5a22f40223 FOREIGN KEY (start_event_label_id) REFERENCES public.labels(id) ON DELETE CASCADE;
 
@@ -14105,6 +14133,7 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200615123055
 20200615193524
 20200615232735
+20200615234047
 20200616145031
 20200617000757
 20200617001001

@@ -43,10 +43,10 @@ module Gitlab
     end
 
     def self.parse(gl_repository)
-      result = ::Gitlab::GlRepository::Identifier.new(gl_repository)
+      identifier = ::Gitlab::GlRepository::Identifier.parse(gl_repository)
 
-      repo_type = result.repo_type
-      container = result.fetch_container!
+      repo_type = identifier.repo_type
+      container = identifier.container
 
       [container, repo_type.project_for(container), repo_type]
     end

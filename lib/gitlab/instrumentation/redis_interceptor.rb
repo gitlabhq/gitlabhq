@@ -7,6 +7,9 @@ module Gitlab
     module RedisInterceptor
       def call(*args, &block)
         start = Time.now
+
+        instrumentation_class.redis_cluster_validate!(args.first)
+
         super(*args, &block)
       ensure
         duration = (Time.now - start)

@@ -43,7 +43,9 @@ module Gitlab
         keys = TARGET_IDS.map { |target_id| key(target_id, week_of) }
 
         Gitlab::Redis::SharedState.with do |redis|
-          redis.pfcount(*keys)
+          Gitlab::Instrumentation::RedisClusterValidator.allow_cross_slot_commands do
+            redis.pfcount(*keys)
+          end
         end
       end
 

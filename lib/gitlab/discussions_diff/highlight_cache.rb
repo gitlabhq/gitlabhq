@@ -36,7 +36,9 @@ module Gitlab
 
           content =
             Redis::Cache.with do |redis|
-              redis.mget(keys)
+              Gitlab::Instrumentation::RedisClusterValidator.allow_cross_slot_commands do
+                redis.mget(keys)
+              end
             end
 
           content.map! do |lines|
@@ -58,7 +60,11 @@ module Gitlab
 
           keys = raw_keys.map { |id| cache_key_for(id) }
 
-          Redis::Cache.with { |redis| redis.del(keys) }
+          Redis::Cache.with do |redis|
+            Gitlab::Instrumentation::RedisClusterValidator.allow_cross_slot_commands do
+              redis.del(keys)
+            end
+          end
         end
 
         def cache_key_for(raw_key)

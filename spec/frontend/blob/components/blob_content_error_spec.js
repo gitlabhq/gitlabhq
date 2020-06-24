@@ -24,9 +24,9 @@ describe('Blob Content Error component', () => {
 
   describe('collapsed and too large blobs', () => {
     it.each`
-      error                                   | reason                            | options
-      ${BLOB_RENDER_ERRORS.REASONS.COLLAPSED} | ${'it is larger than 1.00 MiB'}   | ${[BLOB_RENDER_ERRORS.OPTIONS.LOAD.text, BLOB_RENDER_ERRORS.OPTIONS.DOWNLOAD.text]}
-      ${BLOB_RENDER_ERRORS.REASONS.TOO_LARGE} | ${'it is larger than 100.00 MiB'} | ${[BLOB_RENDER_ERRORS.OPTIONS.DOWNLOAD.text]}
+      error                                   | reason                           | options
+      ${BLOB_RENDER_ERRORS.REASONS.COLLAPSED} | ${'it is larger than 1.00 MiB'}  | ${[BLOB_RENDER_ERRORS.OPTIONS.LOAD.text, BLOB_RENDER_ERRORS.OPTIONS.DOWNLOAD.text]}
+      ${BLOB_RENDER_ERRORS.REASONS.TOO_LARGE} | ${'it is larger than 10.00 MiB'} | ${[BLOB_RENDER_ERRORS.OPTIONS.DOWNLOAD.text]}
     `('renders correct reason for $error.id', ({ error, reason, options }) => {
       createComponent({
         viewerError: error.id,

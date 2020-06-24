@@ -779,14 +779,6 @@
   :weight: 2
   :idempotent: 
   :tags: []
-- :name: notifications:new_release
-  :feature_category: :release_orchestration
-  :has_external_dependencies: 
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 2
-  :idempotent: 
-  :tags: []
 - :name: object_pool:object_pool_create
   :feature_category: :gitaly
   :has_external_dependencies: 

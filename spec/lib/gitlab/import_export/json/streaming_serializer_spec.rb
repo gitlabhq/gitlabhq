@@ -61,6 +61,20 @@ RSpec.describe Gitlab::ImportExport::JSON::StreamingSerializer do
 
         subject.execute
       end
+
+      context 'relation ordering' do
+        before do
+          create_list(:issue, 5, project: exportable)
+        end
+
+        it 'orders exported issues by primary key' do
+          expected_issues = exportable.issues.reorder(:id).map(&:to_json)
+
+          expect(json_writer).to receive(:write_relation_array).with(exportable_path, :issues, expected_issues)
+
+          subject.execute
+        end
+      end
     end
 
     context 'with single relation' do

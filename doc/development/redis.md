@@ -33,6 +33,8 @@ stop being consulted if the project is renamed. If the contents of the key are
 invalidated by a name change, it is better to include a hook that will expire
 the entry, instead of relying on the key changing.
 
+### Multi-key commands
+
 We don't use [Redis Cluster](https://redis.io/topics/cluster-tutorial) at the
 moment, but may wish to in the future: [#118820](https://gitlab.com/gitlab-org/gitlab/-/issues/118820).
 
@@ -41,3 +43,8 @@ operations that require several keys to be held on the same Redis server - for
 instance, diffing two sets held in Redis - the keys should ensure that by
 enclosing the changeable parts in curly braces, such as, `project:{1}:set_a` and
 `project:{1}:set_b`.
+
+Currently, we validate this in the development and test environments
+with the [`RedisClusterValidator`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/instrumentation/redis_cluster_validator.rb),
+which is enabled for the `cache` and `shared_state`
+[Redis instances](https://docs.gitlab.com/omnibus/settings/redis.html#running-with-multiple-redis-instances)..

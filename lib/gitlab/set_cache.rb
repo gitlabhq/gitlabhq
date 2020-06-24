@@ -20,7 +20,10 @@ module Gitlab
 
       with do |redis|
         keys = keys.map { |key| cache_key(key) }
-        unlink_or_delete(redis, keys)
+
+        Gitlab::Instrumentation::RedisClusterValidator.allow_cross_slot_commands do
+          unlink_or_delete(redis, keys)
+        end
       end
     end
 
