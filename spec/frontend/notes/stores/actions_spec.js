@@ -18,6 +18,8 @@ import {
   batchSuggestionsInfoMock,
 } from '../mock_data';
 import axios from '~/lib/utils/axios_utils';
+import * as utils from '~/notes/stores/utils';
+import updateIssueConfidentialMutation from '~/sidebar/components/confidential/queries/update_issue_confidential.mutation.graphql';
 
 const TEST_ERROR_MESSAGE = 'Test error message';
 jest.mock('~/flash');
@@ -1142,6 +1144,14 @@ describe('Actions Notes Store', () => {
     });
   });
 
+  describe('setConfidentiality', () => {
+    it('calls the correct mutation with the correct args', () => {
+      testAction(actions.setConfidentiality, true, { noteableData: { confidential: false } }, [
+        { type: mutationTypes.SET_ISSUE_CONFIDENTIAL, payload: true },
+      ]);
+    });
+  });
+
   describe('updateAssignees', () => {
     it('update the assignees state', done => {
       testAction(
@@ -1152,6 +1162,51 @@ describe('Actions Notes Store', () => {
         [],
         done,
       );
+    });
+  });
+
+  describe('updateConfidentialityOnIssue', () => {
+    state = { noteableData: { confidential: false } };
+    const iid = '1';
+    const projectPath = 'full/path';
+    const getters = { getNoteableData: { iid } };
+    const actionArgs = { fullPath: projectPath, confidential: true };
+    const confidential = true;
+
+    beforeEach(() => {
+      jest
+        .spyOn(utils.gqClient, 'mutate')
+        .mockResolvedValue({ data: { issueSetConfidential: { issue: { confidential } } } });
+    });
+
+    it('calls gqClient mutation one time', () => {
+      actions.updateConfidentialityOnIssue({ commit: () => {}, state, getters }, actionArgs);
+
+      expect(utils.gqClient.mutate).toHaveBeenCalledTimes(1);
+    });
+
+    it('calls gqClient mutation with the correct values', () => {
+      actions.updateConfidentialityOnIssue({ commit: () => {}, state, getters }, actionArgs);
+
+      expect(utils.gqClient.mutate).toHaveBeenCalledWith({
+        mutation: updateIssueConfidentialMutation,
+        variables: { input: { iid, projectPath, confidential } },
+      });
+    });
+
+    describe('on success of mutation', () => {
+      it('calls commit with the correct values', () => {
+        const commitSpy = jest.fn();
+
+        return actions
+          .updateConfidentialityOnIssue({ commit: commitSpy, state, getters }, actionArgs)
+          .then(() => {
+            expect(commitSpy).toHaveBeenCalledWith(
+              mutationTypes.SET_ISSUE_CONFIDENTIAL,
+              confidential,
+            );
+          });
+      });
     });
   });
 });

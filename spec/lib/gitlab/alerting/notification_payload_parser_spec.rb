@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Alerting::NotificationPayloadParser do
+  let_it_be(:project) { build(:project) }
+
   describe '.call' do
     let(:starts_at) { Time.current.change(usec: 0) }
     let(:payload) do
@@ -17,7 +19,7 @@ RSpec.describe Gitlab::Alerting::NotificationPayloadParser do
       }
     end
 
-    subject { described_class.call(payload) }
+    subject { described_class.call(payload, project) }
 
     it 'returns Prometheus-like payload' do
       is_expected.to eq(

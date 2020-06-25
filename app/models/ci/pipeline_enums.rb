@@ -45,7 +45,8 @@ module Ci
         webide_source: 3,
         remote_source: 4,
         external_project_source: 5,
-        bridge_source: 6
+        bridge_source: 6,
+        parameter_source: 7
       }
     end
 

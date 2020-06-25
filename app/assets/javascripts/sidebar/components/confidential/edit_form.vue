@@ -11,9 +11,9 @@ export default {
       required: true,
       type: Boolean,
     },
-    updateConfidentialAttribute: {
+    fullPath: {
       required: true,
-      type: Function,
+      type: String,
     },
   },
   computed: {
@@ -37,10 +37,7 @@ export default {
       <div>
         <p v-if="!isConfidential" v-html="confidentialityOnWarning"></p>
         <p v-else v-html="confidentialityOffWarning"></p>
-        <edit-form-buttons
-          :is-confidential="isConfidential"
-          :update-confidential-attribute="updateConfidentialAttribute"
-        />
+        <edit-form-buttons :full-path="fullPath" />
       </div>
     </div>
   </div>

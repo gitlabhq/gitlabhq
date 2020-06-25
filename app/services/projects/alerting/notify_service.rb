@@ -76,7 +76,7 @@ module Projects
       end
 
       def parsed_payload
-        Gitlab::Alerting::NotificationPayloadParser.call(params.to_h)
+        Gitlab::Alerting::NotificationPayloadParser.call(params.to_h, project)
       end
 
       def valid_token?(token)

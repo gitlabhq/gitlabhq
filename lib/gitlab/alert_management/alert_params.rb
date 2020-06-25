@@ -8,7 +8,7 @@ module Gitlab
       }.freeze
 
       def self.from_generic_alert(project:, payload:)
-        parsed_payload = Gitlab::Alerting::NotificationPayloadParser.call(payload).with_indifferent_access
+        parsed_payload = Gitlab::Alerting::NotificationPayloadParser.call(payload, project).with_indifferent_access
         annotations = parsed_payload[:annotations]
 
         {

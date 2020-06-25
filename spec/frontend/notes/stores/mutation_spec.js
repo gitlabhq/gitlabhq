@@ -806,6 +806,20 @@ describe('Notes Store mutations', () => {
     });
   });
 
+  describe('SET_ISSUE_CONFIDENTIAL', () => {
+    let state;
+
+    beforeEach(() => {
+      state = { noteableData: { confidential: false } };
+    });
+
+    it('sets sort order', () => {
+      mutations.SET_ISSUE_CONFIDENTIAL(state, true);
+
+      expect(state.noteableData.confidential).toBe(true);
+    });
+  });
+
   describe('UPDATE_ASSIGNEES', () => {
     it('should update assignees', () => {
       const state = {

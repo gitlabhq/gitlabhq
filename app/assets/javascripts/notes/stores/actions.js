@@ -13,10 +13,34 @@ import sidebarTimeTrackingEventHub from '../../sidebar/event_hub';
 import { isInViewport, scrollToElement, isInMRPage } from '../../lib/utils/common_utils';
 import { mergeUrlParams } from '../../lib/utils/url_utility';
 import mrWidgetEventHub from '../../vue_merge_request_widget/event_hub';
+import updateIssueConfidentialMutation from '~/sidebar/components/confidential/queries/update_issue_confidential.mutation.graphql';
 import { __, sprintf } from '~/locale';
 import Api from '~/api';
 
 let eTagPoll;
+
+export const updateConfidentialityOnIssue = ({ commit, getters }, { confidential, fullPath }) => {
+  const { iid } = getters.getNoteableData;
+
+  return utils.gqClient
+    .mutate({
+      mutation: updateIssueConfidentialMutation,
+      variables: {
+        input: {
+          projectPath: fullPath,
+          iid: String(iid),
+          confidential,
+        },
+      },
+    })
+    .then(({ data }) => {
+      const {
+        issueSetConfidential: { issue },
+      } = data;
+
+      commit(types.SET_ISSUE_CONFIDENTIAL, issue.confidential);
+    });
+};
 
 export const expandDiscussion = ({ commit, dispatch }, data) => {
   if (data.discussionId) {
@@ -31,6 +55,8 @@ export const collapseDiscussion = ({ commit }, data) => commit(types.COLLAPSE_DI
 export const setNotesData = ({ commit }, data) => commit(types.SET_NOTES_DATA, data);
 
 export const setNoteableData = ({ commit }, data) => commit(types.SET_NOTEABLE_DATA, data);
+
+export const setConfidentiality = ({ commit }, data) => commit(types.SET_ISSUE_CONFIDENTIAL, data);
 
 export const setUserData = ({ commit }, data) => commit(types.SET_USER_DATA, data);
 

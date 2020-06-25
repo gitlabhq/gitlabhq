@@ -43,7 +43,7 @@ module Ci
     end
 
     def last_finished_pipeline_id
-      Ci::Pipeline.where(ci_ref_id: self.id).finished.order(id: :desc).select(:id).take&.id
+      Ci::Pipeline.last_finished_for_ref_id(self.id)&.id
     end
 
     def update_status_by!(pipeline)

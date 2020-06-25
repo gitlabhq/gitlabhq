@@ -1,0 +1,5 @@
+---
+title: Fix pages_url for projects with mixed case path
+merge_request: 35300
+author:
+type: fixed

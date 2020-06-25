@@ -1,5 +1,5 @@
 <script>
-import { mapState } from 'vuex';
+import { mapState, mapActions } from 'vuex';
 import { __ } from '~/locale';
 import Flash from '~/flash';
 import tooltip from '~/vue_shared/directives/tooltip';
@@ -18,6 +18,10 @@ export default {
   },
   mixins: [recaptchaModalImplementor],
   props: {
+    fullPath: {
+      required: true,
+      type: String,
+    },
     isEditable: {
       required: true,
       type: Boolean,
@@ -42,16 +46,24 @@ export default {
     },
   },
   created() {
+    eventHub.$on('updateConfidentialAttribute', this.updateConfidentialAttribute);
     eventHub.$on('closeConfidentialityForm', this.toggleForm);
   },
   beforeDestroy() {
+    eventHub.$off('updateConfidentialAttribute', this.updateConfidentialAttribute);
     eventHub.$off('closeConfidentialityForm', this.toggleForm);
   },
   methods: {
+    ...mapActions(['setConfidentiality']),
     toggleForm() {
       this.edit = !this.edit;
     },
-    updateConfidentialAttribute(confidential) {
+    closeForm() {
+      this.edit = false;
+    },
+    updateConfidentialAttribute() {
+      // TODO: rm when FF is defaulted to on.
+      const confidential = !this.confidential;
       this.service
         .update('issue', { confidential })
         .then(({ data }) => this.checkForSpam(data))
@@ -97,12 +109,8 @@ export default {
       >
     </div>
     <div class="value sidebar-item-value hide-collapsed">
-      <edit-form
-        v-if="edit"
-        :is-confidential="confidential"
-        :update-confidential-attribute="updateConfidentialAttribute"
-      />
-      <div v-if="!confidential" class="no-value sidebar-item-value">
+      <edit-form v-if="edit" :is-confidential="confidential" :full-path="fullPath" />
+      <div v-if="!confidential" class="no-value sidebar-item-value" data-testid="not-confidential">
         <icon :size="16" name="eye" aria-hidden="true" class="sidebar-item-icon inline" />
         {{ __('Not confidential') }}
       </div>

@@ -33,7 +33,7 @@ export default {
   errorTexts: {
     [LOAD_FAILURE]: __('We are currently unable to fetch data for this graph.'),
     [PARSE_FAILURE]: __('There was an error parsing the data for this graph.'),
-    [UNSUPPORTED_DATA]: __('A DAG must have two dependent jobs to be visualized on this tab.'),
+    [UNSUPPORTED_DATA]: __('DAG visualization requires at least 3 dependent jobs.'),
     [DEFAULT]: __('An unknown error occurred while loading this graph.'),
   },
   computed: {

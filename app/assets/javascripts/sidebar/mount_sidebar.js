@@ -52,20 +52,30 @@ function mountAssigneesComponent(mediator) {
 function mountConfidentialComponent(mediator) {
   const el = document.getElementById('js-confidential-entry-point');
 
+  const { fullPath, iid } = getSidebarOptions();
+
   if (!el) return;
 
   const dataNode = document.getElementById('js-confidential-issue-data');
   const initialData = JSON.parse(dataNode.innerHTML);
 
-  const ConfidentialComp = Vue.extend(ConfidentialIssueSidebar);
-
-  new ConfidentialComp({
+  // eslint-disable-next-line no-new
+  new Vue({
+    el,
     store,
-    propsData: {
-      isEditable: initialData.is_editable,
-      service: mediator.service,
+    components: {
+      ConfidentialIssueSidebar,
     },
-  }).$mount(el);
+    render: createElement =>
+      createElement('confidential-issue-sidebar', {
+        props: {
+          iid: String(iid),
+          fullPath,
+          isEditable: initialData.is_editable,
+          service: mediator.service,
+        },
+      }),
+  });
 }
 
 function mountLockComponent(mediator) {

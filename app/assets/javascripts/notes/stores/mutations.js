@@ -95,6 +95,10 @@ export default {
     Object.assign(state, { noteableData: data });
   },
 
+  [types.SET_ISSUE_CONFIDENTIAL](state, data) {
+    state.noteableData.confidential = data;
+  },
+
   [types.SET_USER_DATA](state, data) {
     Object.assign(state, { userData: data });
   },

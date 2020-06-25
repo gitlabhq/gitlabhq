@@ -8,14 +8,15 @@ module API
       expose :project_id
 
       expose :last_pipeline do |commit, options|
-        pipeline = commit.last_pipeline if can_read_pipeline?
+        pipeline = commit.latest_pipeline if can_read_pipeline?
+
         ::API::Entities::PipelineBasic.represent(pipeline, options)
       end
 
       private
 
       def can_read_pipeline?
-        Ability.allowed?(options[:current_user], :read_pipeline, object.last_pipeline)
+        Ability.allowed?(options[:current_user], :read_pipeline, object.latest_pipeline)
       end
     end
   end

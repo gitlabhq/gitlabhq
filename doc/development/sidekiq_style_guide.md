@@ -225,6 +225,47 @@ work between two different workers, one with `urgency :high` code that
 executes quickly, and the other with `urgency :low`, which has no
 execution latency requirements (but also has lower scheduling targets).
 
+### Changing a queue's urgency
+
+On GitLab.com, we run Sidekiq in several
+[shards](https://dashboards.gitlab.net/d/sidekiq-shard-detail/sidekiq-shard-detail),
+each of which represents a particular type of workload.
+
+When changing a queue's urgency, or adding a new queue, we need to take
+into account the expected workload on the new shard. Note that, if we're
+changing an existing queue, there is also an effect on the old shard,
+but that will always be a reduction in work.
+
+To do this, we want to calculate the expected increase in total execution time
+and RPS (throughput) for the new shard. We can get these values from:
+
+- The [Queue Detail
+  dashboard](https://dashboards.gitlab.net/d/sidekiq-queue-detail/sidekiq-queue-detail)
+  has values for the queue itself. For a new queue, we can look for
+  queues that have similar patterns or are scheduled in similar
+  circumstances.
+- The [Shard Detail
+  dashboard](https://dashboards.gitlab.net/d/sidekiq-shard-detail/sidekiq-shard-detail)
+  has Total Execution Time and Throughput (RPS). The Shard Utilization
+  panel will show if there is currently any excess capacity for this
+  shard.
+
+We can then calculate the RPS * average runtime (estimated for new jobs)
+for the queue we're changing to see what the relative increase in RPS and
+execution time we expect for the new shard:
+
+```ruby
+new_queue_consumption = queue_rps * queue_duration_avg
+shard_consumption = shard_rps * shard_duration_avg
+
+(new_queue_consumption / shard_consumption) * 100
+```
+
+If we expect an increase of **less than 5%**, then no further action is needed.
+
+Otherwise, please ping `@gitlab-org/scalability` on the merge request and ask
+for a review.
+
 ## Jobs with External Dependencies
 
 Most background jobs in the GitLab application communicate with other GitLab

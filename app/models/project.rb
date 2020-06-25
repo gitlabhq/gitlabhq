@@ -520,6 +520,10 @@ class Project < ApplicationRecord
             group: :ip_restrictions, namespace: [:route, :owner])
   }
 
+  scope :with_api_commit_entity_associations, -> {
+    preload(:project_feature, :route, namespace: [:route, :owner])
+  }
+
   enum auto_cancel_pending_pipelines: { disabled: 0, enabled: 1 }
 
   chronic_duration_attr :build_timeout_human_readable, :build_timeout,
@@ -1699,7 +1703,7 @@ class Project < ApplicationRecord
 
   def pages_url
     url = pages_group_url
-    url_path = full_path.partition('/').last
+    url_path = full_path.partition('/').last.downcase
 
     # If the project path is the same as host, we serve it as group page
     return url if url == "#{Settings.pages.protocol}://#{url_path}"

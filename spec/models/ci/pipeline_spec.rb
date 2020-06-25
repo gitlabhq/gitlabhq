@@ -1923,6 +1923,37 @@ RSpec.describe Ci::Pipeline, :mailer do
       end
     end
 
+    context 'when there are two pipelines for a ref, sha across multiple projects' do
+      let(:project_2) { create(:project) }
+
+      let!(:commit_456_project_2_ref_test) do
+        create(
+          :ci_empty_pipeline,
+          status: 'success',
+          ref: 'test',
+          sha: '456',
+          project: project_2
+        )
+      end
+
+      context 'when project_key is false' do
+        it 'returns the latest pipeline' do
+          result = described_class.latest_pipeline_per_commit(%w[456])
+
+          expect(result).to match('456' => commit_456_project_2_ref_test)
+        end
+      end
+
+      context 'when project_key is true' do
+        it 'returns the latest pipeline per project' do
+          result = described_class.latest_pipeline_per_commit(%w[456], project_key: true)
+
+          expect(result[project.id]).to match('456' => commit_456_ref_test)
+          expect(result[project_2.id]).to match('456' => commit_456_project_2_ref_test)
+        end
+      end
+    end
+
     context 'with a ref' do
       it 'only includes the pipelines for the given ref' do
         result = described_class.latest_pipeline_per_commit(%w[123 456], 'master')
@@ -1944,6 +1975,23 @@ RSpec.describe Ci::Pipeline, :mailer do
     it 'returns expected pipeline ids' do
       expect(described_class.latest_successful_ids_per_project)
         .to contain_exactly(pipeline2, pipeline4)
+    end
+  end
+
+  describe '.last_finished_for_ref_id' do
+    let(:project) { create(:project, :repository) }
+    let(:branch) { project.default_branch }
+    let(:ref) { project.ci_refs.take }
+    let(:config_source) { Ci::PipelineEnums.config_sources[:parameter_source] }
+    let!(:pipeline1) { create(:ci_pipeline, :success, project: project, ref: branch) }
+    let!(:pipeline2) { create(:ci_pipeline, :success, project: project, ref: branch) }
+    let!(:pipeline3) { create(:ci_pipeline, :failed, project: project, ref: branch) }
+    let!(:pipeline4) { create(:ci_pipeline, :success, project: project, ref: branch) }
+    let!(:pipeline5) { create(:ci_pipeline, :success, project: project, ref: branch, config_source: config_source) }
+
+    it 'returns the expected pipeline' do
+      result = described_class.last_finished_for_ref_id(ref.id)
+      expect(result).to eq(pipeline4)
     end
   end
 
