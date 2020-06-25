@@ -178,6 +178,10 @@ For example, to add support for files referenced by a `Widget` model with a
 
      mount_uploader :file, WidgetUploader
 
+     def self.replicables_for_geo_node
+       # Should be implemented. The idea of the method is to restrict
+       # the set of synced items depending on synchronization settings
+     end
      ...
    end
    ```
@@ -257,11 +261,22 @@ For example, to add support for files referenced by a `Widget` model with a
    class Geo::WidgetRegistry < Geo::BaseRegistry
      include Geo::StateMachineRegistry
 
+     MODEL_CLASS = ::Widget
      MODEL_FOREIGN_KEY = :widget_id
 
      belongs_to :widget, class_name: 'Widget'
+
+     def self.has_create_events?
+       true
+     end
    end
    ```
+
+   The method `has_create_events?` should return `true` in most of the cases.
+   However, if the entity you add doesn't have the create event, don't add the
+   method at all.
+
+1. Update `REGISTRY_CLASSES` in `ee/app/workers/geo/secondary/registry_consistency_worker.rb`.
 
 1. Create `ee/spec/factories/geo/widget_registry.rb`:
 
@@ -269,7 +284,7 @@ For example, to add support for files referenced by a `Widget` model with a
    # frozen_string_literal: true
 
    FactoryBot.define do
-     factory :widget_registry, class: 'Geo::WidgetRegistry' do
+     factory :geo_widget_registry, class: 'Geo::WidgetRegistry' do
        widget
        state { Geo::WidgetRegistry.state_value(:pending) }
 
@@ -302,13 +317,17 @@ For example, to add support for files referenced by a `Widget` model with a
    require 'spec_helper'
 
    RSpec.describe Geo::WidgetRegistry, :geo, type: :model do
-     let_it_be(:registry) { create(:widget_registry) }
+     let_it_be(:registry) { create(:geo_widget_registry) }
 
      specify 'factory is valid' do
        expect(registry).to be_valid
      end
 
      include_examples 'a Geo framework registry'
+
+     describe '.find_registry_differences' do
+       ... # To be implemented
+     end
    end
    ```
 
@@ -429,7 +448,7 @@ Widgets should now be verified by Geo!
    require 'spec_helper'
 
    RSpec.describe Resolvers::Geo::WidgetRegistriesResolver do
-     it_behaves_like 'a Geo registries resolver', :widget_registry
+     it_behaves_like 'a Geo registries resolver', :geo_widget_registry
    end
    ```
 
@@ -453,7 +472,7 @@ Widgets should now be verified by Geo!
    require 'spec_helper'
 
    RSpec.describe Geo::WidgetRegistryFinder do
-     it_behaves_like 'a framework registry finder', :widget_registry
+     it_behaves_like 'a framework registry finder', :geo_widget_registry
    end
    ```
 
@@ -503,7 +522,7 @@ Widgets should now be verified by Geo!
    it_behaves_like 'gets registries for', {
      field_name: 'widgetRegistries',
      registry_class_name: 'WidgetRegistry',
-     registry_factory: :widget_registry,
+     registry_factory: :geo_widget_registry,
      registry_foreign_key_field_name: 'widgetId'
    }
    ```

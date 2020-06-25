@@ -1,5 +1,5 @@
 - content_for :create_access_levels do
-  .create_access_levels-container
+  .create_access_levels-container{ data: { qa_selector: 'access_levels_content' } }
     = dropdown_tag('Select',
                    options: { toggle_class: 'js-allowed-to-create wide',
                    dropdown_class: 'dropdown-menu-selectable capitalize-header',

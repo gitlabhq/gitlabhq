@@ -3,8 +3,8 @@
     = search_filter_link 'users', _("Users")
 
 .scrolling-tabs-container.inner-page-scroll-tabs.is-smaller
-  .fade-left= icon('angle-left')
-  .fade-right= icon('angle-right')
+  .fade-left= sprite_icon('chevron-lg-left', size: 12)
+  .fade-right= sprite_icon('chevron-lg-right', size: 12)
   %ul.nav-links.search-filter.scrolling-tabs.nav.nav-tabs
     - if @project
       - if project_search_tabs?(:blobs)

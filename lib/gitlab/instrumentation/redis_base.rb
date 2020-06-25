@@ -72,7 +72,7 @@ module Gitlab
         end
 
         def redis_cluster_validate!(command)
-          RedisClusterValidator.validate!(command) if @redis_cluster_validation
+          ::Gitlab::Instrumentation::RedisClusterValidator.validate!(command) if @redis_cluster_validation
         end
 
         def enable_redis_cluster_validation

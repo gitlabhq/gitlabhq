@@ -47,6 +47,20 @@ RSpec.describe Gitlab::HealthChecks::Probes::Collection do
             status: 'failed', message: 'check error')
         end
       end
+
+      context 'when check raises exception not handled inside the check' do
+        before do
+          expect(Gitlab::HealthChecks::Redis::RedisCheck).to receive(:readiness).and_raise(
+            ::Redis::CannotConnectError, 'Redis down')
+        end
+
+        it 'responds with failure including the exception info' do
+          expect(subject.http_status).to eq(500)
+
+          expect(subject.json[:status]).to eq('failed')
+          expect(subject.json[:message]).to eq('Redis::CannotConnectError : Redis down')
+        end
+      end
     end
 
     context 'without checks' do

@@ -1,6 +1,6 @@
 .scrolling-tabs-container.inner-page-scroll-tabs.is-smaller
-  .fade-left= icon('angle-left')
-  .fade-right= icon('angle-right')
+  .fade-left= sprite_icon('chevron-lg-left', size: 12)
+  .fade-right= sprite_icon('chevron-lg-right', size: 12)
   %ul.nav-links.scrolling-tabs.js-milestone-tabs.nav.nav-tabs
     %li.nav-item
       = link_to '#tab-issues', class: 'nav-link active', data: { toggle: 'tab', show: '.tab-issues-buttons' } do

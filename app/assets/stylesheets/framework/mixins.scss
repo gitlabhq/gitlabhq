@@ -137,7 +137,8 @@
     transition-duration: 0.3s;
   }
 
-  .fa {
+  .fa,
+  svg {
     position: relative;
     top: 5px;
     font-size: 18px;

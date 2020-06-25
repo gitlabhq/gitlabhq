@@ -183,7 +183,6 @@ module QA
       autoload :OAuth, 'qa/page/main/oauth'
       autoload :SignUp, 'qa/page/main/sign_up'
       autoload :Terms, 'qa/page/main/terms'
-      autoload :Onboarding, 'qa/page/main/onboarding'
     end
 
     module Settings

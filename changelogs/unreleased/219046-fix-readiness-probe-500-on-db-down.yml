@@ -1,0 +1,5 @@
+---
+title: Expand healtchecks `500`s when DB is not available
+merge_request: 34844
+author:
+type: fixed

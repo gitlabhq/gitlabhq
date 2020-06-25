@@ -9,6 +9,7 @@ import NavigationTabs from '~/vue_shared/components/navigation_tabs.vue';
 import NavigationControls from './nav_controls.vue';
 import { getParameterByName } from '~/lib/utils/common_utils';
 import CIPaginationMixin from '~/vue_shared/mixins/ci_pagination_api_mixin';
+import Icon from '~/vue_shared/components/icon.vue';
 import PipelinesFilteredSearch from './pipelines_filtered_search.vue';
 import { validateParams } from '../../utils';
 import { ANY_TRIGGER_AUTHOR, RAW_TEXT_WARNING, FILTER_TAG_IDENTIFIER } from '../../constants';
@@ -20,6 +21,7 @@ export default {
     NavigationTabs,
     NavigationControls,
     PipelinesFilteredSearch,
+    Icon,
   },
   mixins: [pipelinesMixin, CIPaginationMixin, glFeatureFlagsMixin()],
   props: {
@@ -298,8 +300,8 @@ export default {
       v-if="shouldRenderTabs || shouldRenderButtons"
       class="top-area scrolling-tabs-container inner-page-scroll-tabs"
     >
-      <div class="fade-left"><i class="fa fa-angle-left" aria-hidden="true"> </i></div>
-      <div class="fade-right"><i class="fa fa-angle-right" aria-hidden="true"> </i></div>
+      <div class="fade-left"><icon name="chevron-lg-left" :size="12" /></div>
+      <div class="fade-right"><icon name="chevron-lg-right" :size="12" /></div>
 
       <navigation-tabs
         v-if="shouldRenderTabs"

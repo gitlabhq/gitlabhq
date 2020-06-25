@@ -137,8 +137,8 @@ This check is being exempt from Rack Attack.
 
 ## Access token (Deprecated)
 
-> NOTE: **Note:**
-> Access token has been deprecated in GitLab 9.4 in favor of [IP whitelist](#ip-whitelist).
+NOTE: **Note:**
+Access token has been deprecated in GitLab 9.4 in favor of [IP whitelist](#ip-whitelist).
 
 An access token needs to be provided while accessing the probe endpoints. The current
 accepted token can be found under the **Admin Area > Monitoring > Health check**
@@ -151,6 +151,10 @@ The access token can be passed as a URL parameter:
 ```plaintext
 https://gitlab.example.com/-/readiness?token=ACCESS_TOKEN
 ```
+
+NOTE: **Note:**
+In case the database or Redis service are unaccessible, the probe endpoints response is not guaranteed to be correct.
+You should switch to [IP whitelist](#ip-whitelist) from deprecated access token to avoid it.
 
 <!-- ## Troubleshooting
 

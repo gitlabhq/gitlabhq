@@ -129,6 +129,40 @@ RSpec.describe HealthController do
           expect(response).to have_gitlab_http_status(:service_unavailable)
           expect(response.headers['X-GitLab-Custom-Error']).to eq(1)
         end
+
+        context 'when DB is not accessible and connection raises an exception' do
+          before do
+            expect(Gitlab::HealthChecks::DbCheck)
+              .to receive(:readiness)
+              .and_raise(PG::ConnectionBad, 'could not connect to server')
+          end
+
+          it 'responds with 500 including the exception info' do
+            subject
+
+            expect(response).to have_gitlab_http_status(:internal_server_error)
+            expect(response.headers['X-GitLab-Custom-Error']).to eq(1)
+            expect(json_response).to eq(
+              { 'status' => 'failed', 'message' => 'PG::ConnectionBad : could not connect to server' })
+          end
+        end
+
+        context 'when any exception happens during the probing' do
+          before do
+            expect(Gitlab::HealthChecks::Redis::RedisCheck)
+              .to receive(:readiness)
+              .and_raise(::Redis::CannotConnectError, 'Redis down')
+          end
+
+          it 'responds with 500 including the exception info' do
+            subject
+
+            expect(response).to have_gitlab_http_status(:internal_server_error)
+            expect(response.headers['X-GitLab-Custom-Error']).to eq(1)
+            expect(json_response).to eq(
+              { 'status' => 'failed', 'message' => 'Redis::CannotConnectError : Redis down' })
+          end
+        end
       end
     end
 

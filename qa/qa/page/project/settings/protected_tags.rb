@@ -12,6 +12,7 @@ module QA
           end
 
           view 'app/views/projects/protected_tags/_create_protected_tag.html.haml' do
+            element :access_levels_content
             element :access_levels_dropdown
           end
 
@@ -26,7 +27,9 @@ module QA
 
           def choose_access_level_role(role)
             click_element :access_levels_dropdown
-            click_on role
+            within_element(:access_levels_content) do
+              click_on role
+            end
           end
 
           def click_protect_tag_button

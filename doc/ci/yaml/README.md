@@ -375,6 +375,8 @@ otherwise the external file won't be included.
 | [`remote`](#includeremote)      | Include a file from a remote URL. Must be publicly accessible.    |
 | [`template`](#includetemplate)  | Include templates which are provided by GitLab.                   |
 
+The `include` methods do not support [variable expansion](../variables/where_variables_can_be_used.md#variables-usage).
+
 NOTE: **Note:**
 `.gitlab-ci.yml` configuration included by all methods is evaluated at pipeline creation.
 The configuration is a snapshot in time and persisted in the database. Any changes to
