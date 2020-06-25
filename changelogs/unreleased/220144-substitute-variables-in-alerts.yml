@@ -1,5 +1,0 @@
----
-title: Fix bug with variable substitution in alerts
-merge_request: 33772
-author:
-type: fixed
