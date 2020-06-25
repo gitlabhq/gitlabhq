@@ -8,6 +8,7 @@ RSpec.shared_examples_for 'cycle analytics event' do
   it { expect(described_class.identifier).to be_a_kind_of(Symbol) }
   it { expect(instance.object_type.ancestors).to include(ApplicationRecord) }
   it { expect(instance).to respond_to(:timestamp_projection) }
+  it { expect(instance.column_list).to be_a_kind_of(Array) }
 
   describe '#apply_query_customization' do
     it 'expects an ActiveRecord::Relation object as argument and returns a modified version of it' do

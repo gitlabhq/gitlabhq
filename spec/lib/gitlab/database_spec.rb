@@ -7,6 +7,14 @@ RSpec.describe Gitlab::Database do
     stub_const('MigrationTest', Class.new { include Gitlab::Database })
   end
 
+  describe 'EXTRA_SCHEMAS' do
+    it 'contains only schemas starting with gitlab_ prefix' do
+      described_class::EXTRA_SCHEMAS.each do |schema|
+        expect(schema.to_s).to start_with('gitlab_')
+      end
+    end
+  end
+
   describe '.config' do
     it 'returns a Hash' do
       expect(described_class.config).to be_an_instance_of(Hash)

@@ -10,6 +10,10 @@ module Gitlab
             query.joins(:metrics)
           end
           # rubocop: enable CodeReuse/ActiveRecord
+
+          def column_list
+            [timestamp_projection]
+          end
         end
       end
     end

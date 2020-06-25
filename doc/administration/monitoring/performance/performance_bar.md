@@ -31,7 +31,8 @@ From left to right, it displays:
   ![Redis profiling using the Performance Bar](img/performance_bar_redis_calls.png)
 - **Elasticsearch calls**: the time taken (in milliseconds) and the total number of
   Elasticsearch calls. Click to display a modal window with more details.
-- **Load timings** of the page: several values in milliseconds, separated by slashes.
+- **Load timings** of the page: if your browser supports load timings (Chromium
+  and Chrome) several values in milliseconds, separated by slashes.
   Click to display a modal window with more details. The values, from left to right:
   - **Backend**: time needed for the base page to load.
   - [**First Contentful Paint**](https://web.dev/first-contentful-paint/):

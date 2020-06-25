@@ -22,6 +22,29 @@ module Gitlab
             stage.start_event.timestamp_projection
           )
         end
+
+        # rubocop: disable CodeReuse/ActiveRecord
+        def order_by_end_event(query)
+          ordered_query = query.reorder(stage.end_event.timestamp_projection.desc)
+
+          # When filtering for more than one label, postgres requires the columns in ORDER BY to be present in the GROUP BY clause
+          if requires_grouping?
+            column_list = [
+              ordered_query.arel_table[:id],
+              *stage.end_event.column_list,
+              *stage.start_event.column_list
+            ]
+
+            ordered_query = ordered_query.group(column_list)
+          end
+
+          ordered_query
+        end
+        # rubocop: enable CodeReuse/ActiveRecord
+
+        def requires_grouping?
+          Array(params[:label_name]).size > 1
+        end
       end
     end
   end

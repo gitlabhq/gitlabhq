@@ -18,10 +18,14 @@ module Gitlab
           end
 
           def timestamp_projection
-            Arel::Nodes::NamedFunction.new('COALESCE', [
+            Arel::Nodes::NamedFunction.new('COALESCE', column_list)
+          end
+
+          def column_list
+            [
               issue_metrics_table[:first_associated_with_milestone_at],
               issue_metrics_table[:first_added_to_board_at]
-            ])
+            ]
           end
 
           # rubocop: disable CodeReuse/ActiveRecord

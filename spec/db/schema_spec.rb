@@ -202,6 +202,36 @@ RSpec.describe 'Database schema' do
     end
   end
 
+  context 'existence of Postgres schemas' do
+    def get_schemas
+      sql = <<~SQL
+        SELECT schema_name FROM
+        information_schema.schemata
+        WHERE
+        NOT schema_name ~* '^pg_' AND NOT schema_name = 'information_schema'
+        AND catalog_name = current_database()
+      SQL
+
+      ApplicationRecord.connection.select_all(sql).map do |row|
+        row['schema_name']
+      end
+    end
+
+    it 'we have a public schema' do
+      expect(get_schemas).to include('public')
+    end
+
+    Gitlab::Database::EXTRA_SCHEMAS.each do |schema|
+      it "we have a '#{schema}' schema'" do
+        expect(get_schemas).to include(schema.to_s)
+      end
+    end
+
+    it 'we do not have unexpected schemas' do
+      expect(get_schemas.size).to eq(Gitlab::Database::EXTRA_SCHEMAS.size + 1)
+    end
+  end
+
   private
 
   def retrieve_columns_name_with_jsonb

@@ -39,6 +39,11 @@ namespace :gitlab do
       # PG: http://www.postgresql.org/docs/current/static/ddl-depend.html
       # Add `IF EXISTS` because cascade could have already deleted a table.
       tables.each { |t| connection.execute("DROP TABLE IF EXISTS #{connection.quote_table_name(t)} CASCADE") }
+
+      # Drop all extra schema objects GitLab owns
+      Gitlab::Database::EXTRA_SCHEMAS.each do |schema|
+        connection.execute("DROP SCHEMA IF EXISTS #{connection.quote_table_name(schema)}")
+      end
     end
 
     desc 'GitLab | DB | Configures the database by running migrate, or by loading the schema and seeding if needed'

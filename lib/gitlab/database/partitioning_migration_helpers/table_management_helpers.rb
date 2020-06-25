@@ -152,7 +152,7 @@ module Gitlab
         end
 
         def create_range_partition_safely(partition_name, table_name, lower_bound, upper_bound)
-          if table_exists?(partition_name)
+          if table_exists?(table_for_range_partition(partition_name))
             # rubocop:disable Gitlab/RailsLogger
             Rails.logger.warn "Partition not created because it already exists" \
               " (this may be due to an aborted migration or similar): partition_name: #{partition_name}"
