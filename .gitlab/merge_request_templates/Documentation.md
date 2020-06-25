@@ -48,6 +48,8 @@ All reviewers can help ensure accuracy, clarity, completeness, and adherence to 
 - [ ] Optional: Technical writer review. If not requested for this MR, must be scheduled post-merge. To request for this MR, assign the writer listed for the applicable [DevOps stage](https://about.gitlab.com/handbook/product/categories/#devops-stages).
   - [ ] Add ~"Technical Writing" and `docs::` workflow label.
   - [ ] Add ~docs-only when the only files changed are under `doc/*`.
+  - [ ] Add ~tw::doing when starting work on the MR.
+  - [ ] Add ~tw::finished after approving and/or merging the MR.
 
 **3. Maintainer**
 

@@ -302,7 +302,7 @@ with the number of approvals required greater than zero.
 
 Once this group is added to your project, the approval rule is enabled for all Merge Requests. To
 configure how this rule behaves, you can choose which licenses to `allow` or `deny` in the
-[project policies for License Compliance](../compliance/license_compliance/index.md#project-policies-for-license-compliance)
+[project policies for License Compliance](../compliance/license_compliance/index.md#policies)
 section.
 
 Any code changes cause the approvals required to reset.

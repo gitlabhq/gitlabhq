@@ -213,7 +213,7 @@ control over how the Pages daemon runs and serves content in your environment.
 | `internal_gitlab_server` | Internal GitLab server address used exclusively for API requests. Useful if you want to send that traffic over an internal load balancer. Defaults to GitLab `external_url`.
 | `listen_proxy` |  The addresses to listen on for reverse-proxy requests. Pages will bind to these addresses' network socket and receives incoming requests from it. Sets the value of `proxy_pass` in `$nginx-dir/conf/gitlab-pages.conf`.
 | `log_directory` |  Absolute path to a log directory.
-| `log_format` |  The log output format: 'text' or 'json'.
+| `log_format` |  The log output format: `text` or `json`.
 | `log_verbose` |  Verbose logging, true/false.
 | `max_connections` |  Limit on the number of concurrent connections to the HTTP, HTTPS or proxy listeners.
 | `metrics_address` |  The address to listen on for metrics requests.

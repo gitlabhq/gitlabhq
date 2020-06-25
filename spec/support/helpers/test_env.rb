@@ -169,8 +169,9 @@ module TestEnv
       task: "gitlab:gitaly:install[#{install_gitaly_args}]") do
         Gitlab::SetupHelper::Gitaly.create_configuration(gitaly_dir, { 'default' => repos_path }, force: true)
         Gitlab::SetupHelper::Praefect.create_configuration(gitaly_dir, { 'praefect' => repos_path }, force: true)
-        start_gitaly(gitaly_dir)
       end
+
+    start_gitaly(gitaly_dir)
   end
 
   def gitaly_socket_path
@@ -463,7 +464,6 @@ module TestEnv
   end
 
   def component_timed_setup(component, install_dir:, version:, task:)
-    puts "\n==> Setting up #{component}..."
     start = Time.now
 
     ensure_component_dir_name_is_correct!(component, install_dir)
@@ -472,22 +472,22 @@ module TestEnv
     return if File.exist?(install_dir) && ci?
 
     if component_needs_update?(install_dir, version)
+      puts "\n==> Setting up #{component}..."
       # Cleanup the component entirely to ensure we start fresh
       FileUtils.rm_rf(install_dir)
 
       unless system('rake', task)
         raise ComponentFailedToInstallError
       end
+
+      yield if block_given?
+
+      puts "    #{component} set up in #{Time.now - start} seconds...\n"
     end
-
-    yield if block_given?
-
   rescue ComponentFailedToInstallError
     puts "\n#{component} failed to install, cleaning up #{install_dir}!\n"
     FileUtils.rm_rf(install_dir)
     exit 1
-  ensure
-    puts "    #{component} set up in #{Time.now - start} seconds...\n"
   end
 
   def ci?

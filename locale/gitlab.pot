@@ -249,11 +249,6 @@ msgid_plural "%d unresolved threads"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "%d url scanned"
-msgid_plural "%d urls scanned"
-msgstr[0] ""
-msgstr[1] ""
-
 msgid "%d vulnerability"
 msgid_plural "%d vulnerabilities"
 msgstr[0] ""
@@ -5886,6 +5881,9 @@ msgid "Compliance framework (optional)"
 msgstr ""
 
 msgid "Compliance frameworks"
+msgstr ""
+
+msgid "ComplianceDashboard|created by:"
 msgstr ""
 
 msgid "ComplianceFramework|GDPR"
@@ -11700,6 +11698,9 @@ msgid_plural "Hide charts"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "Hide details"
+msgstr ""
+
 msgid "Hide file browser"
 msgstr ""
 
@@ -11707,6 +11708,9 @@ msgid "Hide group projects"
 msgstr ""
 
 msgid "Hide host keys manual input"
+msgstr ""
+
+msgid "Hide list"
 msgstr ""
 
 msgid "Hide marketing-related entries from help"
@@ -20087,6 +20091,9 @@ msgstr ""
 msgid "SecurityReports|Return to dashboard"
 msgstr ""
 
+msgid "SecurityReports|Scan details"
+msgstr ""
+
 msgid "SecurityReports|Security Dashboard"
 msgstr ""
 
@@ -20774,6 +20781,9 @@ msgstr ""
 msgid "Show complete raw log"
 msgstr ""
 
+msgid "Show details"
+msgstr ""
+
 msgid "Show file browser"
 msgstr ""
 
@@ -20781,6 +20791,9 @@ msgid "Show file contents"
 msgstr ""
 
 msgid "Show latest version"
+msgstr ""
+
+msgid "Show list"
 msgstr ""
 
 msgid "Show me everything"

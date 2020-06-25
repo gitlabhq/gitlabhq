@@ -92,12 +92,6 @@ module Gitlab
         self.class.transaction_metric(name, :gauge).set(labels, value) if use_prometheus
       end
 
-      def get(name, type, tags = {})
-        metric = self.class.transaction_metric(name, type)
-
-        metric.get(filter_tags(tags).merge(labels))
-      end
-
       def labels
         BASE_LABELS
       end

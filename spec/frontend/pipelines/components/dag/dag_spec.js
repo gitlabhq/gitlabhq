@@ -5,14 +5,18 @@ import waitForPromises from 'helpers/wait_for_promises';
 import { GlAlert } from '@gitlab/ui';
 import Dag from '~/pipelines/components/dag/dag.vue';
 import DagGraph from '~/pipelines/components/dag/dag_graph.vue';
+import DagAnnotations from '~/pipelines/components/dag/dag_annotations.vue';
 
 import {
+  ADD_NOTE,
+  REMOVE_NOTE,
+  REPLACE_NOTES,
   DEFAULT,
   PARSE_FAILURE,
   LOAD_FAILURE,
   UNSUPPORTED_DATA,
 } from '~/pipelines/components/dag//constants';
-import { mockBaseData, tooSmallGraph, unparseableGraph } from './mock_data';
+import { mockBaseData, tooSmallGraph, unparseableGraph, singleNote, multiNote } from './mock_data';
 
 describe('Pipeline DAG graph wrapper', () => {
   let wrapper;
@@ -20,6 +24,7 @@ describe('Pipeline DAG graph wrapper', () => {
   const getAlert = () => wrapper.find(GlAlert);
   const getAllAlerts = () => wrapper.findAll(GlAlert);
   const getGraph = () => wrapper.find(DagGraph);
+  const getNotes = () => wrapper.find(DagAnnotations);
   const getErrorText = type => wrapper.vm.$options.errorTexts[type];
 
   const dataPath = '/root/test/pipelines/90/dag.json';
@@ -132,6 +137,55 @@ describe('Pipeline DAG graph wrapper', () => {
             expect(getGraph().exists()).toBe(false);
           });
       });
+    });
+  });
+
+  describe('annotations', () => {
+    beforeEach(() => {
+      mock.onGet(dataPath).replyOnce(200, mockBaseData);
+      createComponent({ graphUrl: dataPath }, mount);
+    });
+
+    it('toggles on link mouseover and mouseout', () => {
+      const currentNote = singleNote['dag-link103'];
+
+      expect(getNotes().exists()).toBe(false);
+
+      return wrapper.vm
+        .$nextTick()
+        .then(waitForPromises)
+        .then(() => {
+          getGraph().vm.$emit('update-annotation', { type: ADD_NOTE, data: currentNote });
+          return wrapper.vm.$nextTick();
+        })
+        .then(() => {
+          expect(getNotes().exists()).toBe(true);
+          getGraph().vm.$emit('update-annotation', { type: REMOVE_NOTE, data: currentNote });
+          return wrapper.vm.$nextTick();
+        })
+        .then(() => {
+          expect(getNotes().exists()).toBe(false);
+        });
+    });
+
+    it('toggles on node and link click', () => {
+      expect(getNotes().exists()).toBe(false);
+
+      return wrapper.vm
+        .$nextTick()
+        .then(waitForPromises)
+        .then(() => {
+          getGraph().vm.$emit('update-annotation', { type: REPLACE_NOTES, data: multiNote });
+          return wrapper.vm.$nextTick();
+        })
+        .then(() => {
+          expect(getNotes().exists()).toBe(true);
+          getGraph().vm.$emit('update-annotation', { type: REPLACE_NOTES, data: {} });
+          return wrapper.vm.$nextTick();
+        })
+        .then(() => {
+          expect(getNotes().exists()).toBe(false);
+        });
     });
   });
 });

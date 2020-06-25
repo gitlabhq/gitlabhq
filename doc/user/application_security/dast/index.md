@@ -430,7 +430,7 @@ include:
 
 variables:
   DAST_WEBSITE: https://example.com
-  DAST_TARGET_AVAILABILITY_TIMEOUT: 120
+  DAST_SPIDER_MINS: 120
 ```
 
 Because the template is [evaluated before](../../../ci/yaml/README.md#include) the pipeline
@@ -440,34 +440,33 @@ configuration, the last mention of the variable will take precedence.
 
 DAST can be [configured](#customizing-the-dast-settings) using environment variables.
 
-| Environment variable        | Required   | Description                                                                    |
+| Environment variable        | Type | Description                                                                    |
 |-----------------------------| -----------|--------------------------------------------------------------------------------|
-| `SECURE_ANALYZERS_PREFIX`   | no | Set the Docker registry base address from which to download the analyzer. |
-| `DAST_WEBSITE`  | no| The URL of the website to scan. `DAST_API_SPECIFICATION` must be specified if this is omitted. |
-| `DAST_API_SPECIFICATION`  | no | The API specification to import. `DAST_WEBSITE` must be specified if this is omitted. |
-| `DAST_AUTH_URL` | no | The authentication URL of the website to scan. Not supported for API scans. |
-| `DAST_USERNAME` | no | The username to authenticate to in the website. |
-| `DAST_PASSWORD` | no | The password to authenticate to in the website. |
-| `DAST_USERNAME_FIELD` | no | The name of username field at the sign-in HTML form. |
-| `DAST_PASSWORD_FIELD` | no | The name of password field at the sign-in HTML form. |
-| `DAST_MASK_HTTP_HEADERS` | no | Comma-separated list of request and response headers to be masked (introduced in GitLab 13.1). Must contain **all** headers to be masked. Refer to [list of headers that are masked by default](#hide-sensitive-information). |
-| `DAST_AUTH_EXCLUDE_URLS` | no | The URLs to skip during the authenticated scan; comma-separated, no spaces in between. Not supported for API scans. |
-| `DAST_TARGET_AVAILABILITY_TIMEOUT` | no | Time limit in seconds to wait for target availability. Scan is attempted nevertheless if it runs out. Integer. Defaults to `60`. |
-| `DAST_FULL_SCAN_ENABLED` | no | Switches the tool to execute [ZAP Full Scan](https://github.com/zaproxy/zaproxy/wiki/ZAP-Full-Scan) instead of [ZAP Baseline Scan](https://github.com/zaproxy/zaproxy/wiki/ZAP-Baseline-Scan). Boolean. `true`, `True`, or `1` are considered as true value, otherwise false. Defaults to `false`. |
-| `DAST_FULL_SCAN_DOMAIN_VALIDATION_REQUIRED` | no | Requires [domain validation](#domain-validation) when running DAST full scans. Boolean. `true`, `True`, or `1` are considered as true value, otherwise false. Defaults to `false`. Not supported for API scans. |
-| `DAST_AUTO_UPDATE_ADDONS` | no | By default the versions of ZAP add-ons are pinned to those provided with the DAST image. Set to `true` to allow ZAP to download the latest versions. |
-| `DAST_API_HOST_OVERRIDE` | no | Used to override domains defined in API specification files. |
-| `DAST_EXCLUDE_RULES` | no | Set to a comma-separated list of Vulnerability Rule IDs to exclude them from the scan report. Currently, excluded rules will get executed but the alerts from them will be suppressed. Rule IDs are numbers and can be found from the DAST log or on the [ZAP project](https://github.com/zaproxy/zaproxy/blob/develop/docs/scanners.md). For example, `HTTP Parameter Override` has a rule ID of `10026`. |
-| `DAST_REQUEST_HEADERS` | no | Set to a comma-separated list of request header names and values. For example, `Cache-control: no-cache,User-Agent: DAST/1.0` |
-| `DAST_DEBUG` | no | Enable debug message output. Boolean. `true`, `True`, or `1` are considered as true value, otherwise false. Defaults to `false`. |
-| `DAST_SPIDER_MINS` | no | The maximum duration of the spider scan in minutes. Set to zero for unlimited. Defaults to one minute, or unlimited when the scan is a full scan. |
-| `DAST_HTML_REPORT` | no | The file name of the HTML report written at the end of a scan. |
-| `DAST_MARKDOWN_REPORT` | no | The file name of the Markdown report written at the end of a scan. |
-| `DAST_XML_REPORT` | no | The file name of the XML report written at the end of a scan. |
-| `DAST_INCLUDE_ALPHA_VULNERABILITIES` | no | Include alpha passive and active scan rules. Boolean. `true`, `True`, or `1` are considered as true value, otherwise false. Defaults to `false`. |
-| `DAST_USE_AJAX_SPIDER` | no | Use the AJAX spider in addition to the traditional spider, useful for crawling sites that require JavaScript. Boolean. `true`, `True`, or `1` are considered as true value, otherwise false. Defaults to `false`. |
-| `DAST_ZAP_CLI_OPTIONS` | no | ZAP server command-line options. For example, `-Xmx3072m` would set the Java maximum memory allocation pool size. |
-| `DAST_ZAP_LOG_CONFIGURATION` | no | Set to a semicolon-separated list of additional log4j properties for the ZAP Server. For example, `log4j.logger.org.parosproxy.paros.network.HttpSender=DEBUG` |
+| `SECURE_ANALYZERS_PREFIX`   | URL | Set the Docker registry base address from which to download the analyzer. |
+| `DAST_WEBSITE`  | URL | The URL of the website to scan. `DAST_API_SPECIFICATION` must be specified if this is omitted. |
+| `DAST_API_SPECIFICATION`  | URL or string | The API specification to import. The specification can be hosted at a URL, or the name of a file present in the `/zap/wrk` directory. `DAST_WEBSITE` must be specified if this is omitted. |
+| `DAST_AUTH_URL` | URL | The URL of the page containing the sign-in HTML form on the target website. `DAST_USERNAME` and `DAST_PASSWORD` will be submitted with the login form to create an authenticated scan. Not supported for API scans. |
+| `DAST_USERNAME` | string | The username to authenticate to in the website. |
+| `DAST_PASSWORD` | string | The password to authenticate to in the website. |
+| `DAST_USERNAME_FIELD` | string | The name of username field at the sign-in HTML form. |
+| `DAST_PASSWORD_FIELD` | string | The name of password field at the sign-in HTML form. |
+| `DAST_MASK_HTTP_HEADERS` | string | Comma-separated list of request and response headers to be masked (introduced in GitLab 13.1). Must contain **all** headers to be masked. Refer to [list of headers that are masked by default](#hide-sensitive-information). |
+| `DAST_AUTH_EXCLUDE_URLS` | URLs | The URLs to skip during the authenticated scan; comma-separated, no spaces in between. Not supported for API scans. |
+| `DAST_FULL_SCAN_ENABLED` | boolean | Set to `true` to run a [ZAP Full Scan](https://github.com/zaproxy/zaproxy/wiki/ZAP-Full-Scan) instead of a [ZAP Baseline Scan](https://github.com/zaproxy/zaproxy/wiki/ZAP-Baseline-Scan). Default: `false` |
+| `DAST_FULL_SCAN_DOMAIN_VALIDATION_REQUIRED` | boolean | Set to `true` to require [domain validation](#domain-validation) when running DAST full scans. Not supported for API scans. Default: `false` |
+| `DAST_AUTO_UPDATE_ADDONS` | boolean | ZAP add-ons are pinned to specific versions in the DAST Docker image. Set to `true` to download the latest versions when the scan starts. Default: `false` |
+| `DAST_API_HOST_OVERRIDE` | string | Used to override domains defined in API specification files. Example: `example.com:8080` |
+| `DAST_EXCLUDE_RULES` | string | Set to a comma-separated list of Vulnerability Rule IDs to exclude them from the scan report. Currently, excluded rules will get executed but the alerts from them will be suppressed. Rule IDs are numbers and can be found from the DAST log or on the [ZAP project](https://github.com/zaproxy/zaproxy/blob/develop/docs/scanners.md). For example, `HTTP Parameter Override` has a rule ID of `10026`. |
+| `DAST_REQUEST_HEADERS` | string | Set to a comma-separated list of request header names and values. Headers will be added to every request made by DAST. For example, `Cache-control: no-cache,User-Agent: DAST/1.0` |
+| `DAST_DEBUG` | boolean | Enable debug message output. Default: `false` |
+| `DAST_SPIDER_MINS` | number | The maximum duration of the spider scan in minutes. Set to `0` for unlimited. Default: One minute, or unlimited when the scan is a full scan. |
+| `DAST_HTML_REPORT` | string | The file name of the HTML report written at the end of a scan. |
+| `DAST_MARKDOWN_REPORT` | string | The file name of the Markdown report written at the end of a scan. |
+| `DAST_XML_REPORT` | string | The file name of the XML report written at the end of a scan. |
+| `DAST_INCLUDE_ALPHA_VULNERABILITIES` | boolean | Set to `true` to include alpha passive and active scan rules. Default: `false` |
+| `DAST_USE_AJAX_SPIDER` | boolean | Set to `true` to use the AJAX spider in addition to the traditional spider, useful for crawling sites that require JavaScript. Default: `false` |
+| `DAST_ZAP_CLI_OPTIONS` | string | ZAP server command-line options. For example, `-Xmx3072m` would set the Java maximum memory allocation pool size. |
+| `DAST_ZAP_LOG_CONFIGURATION` | string | Set to a semicolon-separated list of additional log4j properties for the ZAP Server. For example, `log4j.logger.org.parosproxy.paros.network.HttpSender=DEBUG` |
 
 ### DAST command-line options
 

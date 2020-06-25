@@ -1,8 +1,17 @@
 <script>
 import * as d3 from 'd3';
 import { uniqueId } from 'lodash';
-import { LINK_SELECTOR, NODE_SELECTOR, PARSE_FAILURE } from './constants';
 import {
+  LINK_SELECTOR,
+  NODE_SELECTOR,
+  PARSE_FAILURE,
+  ADD_NOTE,
+  REMOVE_NOTE,
+  REPLACE_NOTES,
+} from './constants';
+import {
+  currentIsLive,
+  getLiveLinksAsDict,
   highlightLinks,
   restoreLinks,
   toggleLinkHighlight,
@@ -55,8 +64,8 @@ export default {
   data() {
     return {
       color: () => {},
-      width: 0,
       height: 0,
+      width: 0,
     };
   },
   mounted() {
@@ -65,7 +74,7 @@ export default {
     try {
       countedAndTransformed = this.transformData(this.graphData);
     } catch {
-      this.$emit('onFailure', PARSE_FAILURE);
+      this.$emit('on-failure', PARSE_FAILURE);
       return;
     }
 
@@ -95,17 +104,33 @@ export default {
     },
 
     appendLinkInteractions(link) {
+      const { baseOpacity } = this.$options.viewOptions;
       return link
-        .on('mouseover', highlightLinks)
-        .on('mouseout', restoreLinks.bind(null, this.$options.viewOptions.baseOpacity))
-        .on('click', toggleLinkHighlight.bind(null, this.$options.viewOptions.baseOpacity));
+        .on('mouseover', (d, idx, collection) => {
+          if (currentIsLive(idx, collection)) {
+            return;
+          }
+          this.$emit('update-annotation', { type: ADD_NOTE, data: d });
+          highlightLinks(d, idx, collection);
+        })
+        .on('mouseout', (d, idx, collection) => {
+          if (currentIsLive(idx, collection)) {
+            return;
+          }
+          this.$emit('update-annotation', { type: REMOVE_NOTE, data: d });
+          restoreLinks(baseOpacity);
+        })
+        .on('click', (d, idx, collection) => {
+          toggleLinkHighlight(baseOpacity, d, idx, collection);
+          this.$emit('update-annotation', { type: REPLACE_NOTES, data: getLiveLinksAsDict() });
+        });
     },
 
     appendNodeInteractions(node) {
-      return node.on(
-        'click',
-        togglePathHighlights.bind(null, this.$options.viewOptions.baseOpacity),
-      );
+      return node.on('click', (d, idx, collection) => {
+        togglePathHighlights(this.$options.viewOptions.baseOpacity, d, idx, collection);
+        this.$emit('update-annotation', { type: REPLACE_NOTES, data: getLiveLinksAsDict() });
+      });
     },
 
     appendLabelAsForeignObject(d, i, n) {
@@ -271,6 +296,11 @@ export default {
         .attr('y2', d => d.y1 - 4);
     },
 
+    initColors() {
+      const colorFn = d3.scaleOrdinal(this.$options.gitLabColorRotation);
+      return ({ name }) => colorFn(name);
+    },
+
     labelNodes(svg, nodeData) {
       return svg
         .append('g')
@@ -280,11 +310,6 @@ export default {
         .enter()
         .append('foreignObject')
         .each(this.appendLabelAsForeignObject);
-    },
-
-    initColors() {
-      const colorFn = d3.scaleOrdinal(this.$options.gitLabColorRotation);
-      return ({ name }) => colorFn(name);
     },
 
     transformData(parsed) {

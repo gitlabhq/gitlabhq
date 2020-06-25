@@ -7306,7 +7306,8 @@ CREATE TABLE public.vulnerability_scanners (
     updated_at timestamp with time zone NOT NULL,
     project_id integer NOT NULL,
     external_id character varying NOT NULL,
-    name character varying NOT NULL
+    name character varying NOT NULL,
+    vendor text DEFAULT 'GitLab'::text NOT NULL
 );
 
 CREATE SEQUENCE public.vulnerability_scanners_id_seq
@@ -8295,6 +8296,9 @@ ALTER TABLE ONLY public.chat_teams
 
 ALTER TABLE public.design_management_designs
     ADD CONSTRAINT check_07155e2715 CHECK ((char_length((filename)::text) <= 255)) NOT VALID;
+
+ALTER TABLE public.vulnerability_scanners
+    ADD CONSTRAINT check_37608c9db5 CHECK ((char_length(vendor) <= 255)) NOT VALID;
 
 ALTER TABLE ONLY public.ci_build_needs
     ADD CONSTRAINT ci_build_needs_pkey PRIMARY KEY (id);
@@ -14151,6 +14155,8 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200618134723
 20200619154527
 20200619154528
+20200622070606
+20200622070620
 20200622095419
 20200622103836
 20200622235737

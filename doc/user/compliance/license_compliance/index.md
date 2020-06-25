@@ -23,8 +23,8 @@ GitLab checks the License Compliance report, compares the licenses between the
 source and target branches, and shows the information right on the merge request.
 Denied licenses will be clearly visible with an `x` red icon next to them
 as well as new licenses which need a decision from you. In addition, you can
-[manually allow or deny](#project-policies-for-license-compliance)
-licenses in your project's settings.
+[manually allow or deny](#policies)
+licenses in your project's license compliance policy section.
 
 NOTE: **Note:**
 If the license compliance report doesn't have anything to compare to, no information
@@ -601,67 +601,8 @@ Additional configuration may be needed for connecting to
 [private Python repositories](#using-private-python-repos),
 and [private Yarn registries](#using-private-yarn-registries).
 
-Exact name matches are required for [project policies](#project-policies-for-license-compliance)
+Exact name matches are required for [project policies](#policies)
 when running in an offline environment ([see related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/212388)).
-
-## Project policies for License Compliance
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/5940) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.4.
-
-From the project's settings:
-
-- The list of licenses and their status can be managed.
-- Licenses can be manually allowed or denied.
-
-To allow or deny a license:
-
-1. Either use the **Manage licenses** button in the merge request widget, or
-   select **Security & Compliance > License Compliance** in the project's sidebar navigation.
-1. Click the **Add a license** button.
-
-   ![License Compliance Add License](img/license_compliance_add_license_v13_0.png)
-
-1. In the **License name** dropdown, either:
-   - Select one of the available licenses. You can search for licenses in the field
-     at the top of the list.
-   - Enter arbitrary text in the field at the top of the list. This will cause the text to be
-     added as a license name to the list.
-1. Select the **Allow** or **Deny** radio button to allow or deny respectively
-   the selected license.
-
-To modify an existing license:
-
-1. In the **License Compliance** list, click the **Allow/Deny** dropdown to change it to the desired status.
-
-   ![License Compliance Settings](img/license_compliance_settings_v13_0.png)
-
-Searching for Licenses:
-
-1. Use the **Search** box to search for a specific license.
-
-   ![License Compliance Search](img/license_compliance_search_v13_0.png)
-
-## License Compliance report under pipelines
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/5491) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.2.
-
-From your project's left sidebar, navigate to **CI/CD > Pipelines** and click on the
-pipeline ID that has a `license_scanning` job to see the Licenses tab with the listed
-licenses (if any).
-
-![License Compliance Pipeline Tab](img/license_compliance_pipeline_tab_v13_0.png)
-
-<!-- ## Troubleshooting
-
-Include any troubleshooting steps that you can foresee. If you know beforehand what issues
-one might have when setting this up, or when something is changed, or on upgrading, it's
-important to describe those, too. Think of things that may go wrong and include them here.
-This is important to minimize requests for support, and to avoid doc comments with
-questions that you know someone might ask.
-
-Each scenario can be a third-level heading, e.g. `### Getting error message X`.
-If you have none to add when creating a doc, leave this section in place
-but commented out to help encourage others to add to it in the future. -->
 
 ## License list
 
@@ -701,6 +642,28 @@ Policies can be configured by maintainers of the project.
 Developers of the project can view the policies configured in a project.
 
 ![View Policies](img/policies_v13_0.png)
+
+## License Compliance report under pipelines
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/5491) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.2.
+
+From your project's left sidebar, navigate to **CI/CD > Pipelines** and click on the
+pipeline ID that has a `license_scanning` job to see the Licenses tab with the listed
+licenses (if any).
+
+![License Compliance Pipeline Tab](img/license_compliance_pipeline_tab_v13_0.png)
+
+<!-- ## Troubleshooting
+
+Include any troubleshooting steps that you can foresee. If you know beforehand what issues
+one might have when setting this up, or when something is changed, or on upgrading, it's
+important to describe those, too. Think of things that may go wrong and include them here.
+This is important to minimize requests for support, and to avoid doc comments with
+questions that you know someone might ask.
+
+Each scenario can be a third-level heading, e.g. `### Getting error message X`.
+If you have none to add when creating a doc, leave this section in place
+but commented out to help encourage others to add to it in the future. -->
 
 ## Troubleshooting
 

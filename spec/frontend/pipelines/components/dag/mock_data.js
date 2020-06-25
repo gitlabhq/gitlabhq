@@ -388,3 +388,43 @@ export const parsedData = {
     },
   ],
 };
+
+export const singleNote = {
+  'dag-link103': {
+    uid: 'dag-link103',
+    source: {
+      name: 'canary_a',
+      color: '#b31756',
+    },
+    target: {
+      name: 'production_a',
+      color: '#b24800',
+    },
+  },
+};
+
+export const multiNote = {
+  ...singleNote,
+  'dag-link104': {
+    uid: 'dag-link104',
+    source: {
+      name: 'build_a',
+      color: '#e17223',
+    },
+    target: {
+      name: 'test_c',
+      color: '#006887',
+    },
+  },
+  'dag-link105': {
+    uid: 'dag-link105',
+    source: {
+      name: 'test_c',
+      color: '#006887',
+    },
+    target: {
+      name: 'post_test_c',
+      color: '#3547de',
+    },
+  },
+};
