@@ -354,4 +354,21 @@ RSpec.describe 'Query.project(fullPath).release(tagName)' do
       end
     end
   end
+
+  describe 'ensures that the release data can be contolled by a feature flag' do
+    context 'when the graphql_release_data feature flag is disabled' do
+      let_it_be(:project) { create(:project, :repository, :public) }
+      let_it_be(:release) { create(:release, project: project) }
+
+      let(:current_user) { developer }
+
+      before do
+        stub_feature_flags(graphql_release_data: false)
+
+        project.add_developer(developer)
+      end
+
+      it_behaves_like 'no access to the release field'
+    end
+  end
 end

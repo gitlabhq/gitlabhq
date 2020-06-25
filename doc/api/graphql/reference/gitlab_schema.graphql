@@ -9289,7 +9289,7 @@ type Project {
   publicJobs: Boolean
 
   """
-  A single release of the project. Available only when feature flag `graphql_release_data` is enabled
+  A single release of the project
   """
   release(
     """
@@ -9299,7 +9299,7 @@ type Project {
   ): Release
 
   """
-  Releases of the project. Available only when feature flag `graphql_release_data` is enabled
+  Releases of the project
   """
   releases(
     """

@@ -70,7 +70,28 @@ See the [Structure](styleguide.md#structure) section of the [Documentation Style
 ## Metadata
 
 To provide additional directives or useful information, we add metadata in YAML
-format to the beginning of each product documentation page.
+format to the beginning of each product documentation page (YAML front matter).
+All values are treated as strings and are only used for the
+[docs website](site_architecture/index.md).
+
+### Stage and group metadata
+
+Each page should ideally have metadata related to the stage and group it
+belongs to, as well as an information block as described below:
+
+- `stage`: The [Stage](https://about.gitlab.com/handbook/product/categories/#devops-stages)
+  to which the majority of the page's content belongs.
+- `group`: The [Group](https://about.gitlab.com/company/team/structure/#product-groups)
+  to which the majority of the page's content belongs.
+- `info`: The following line, which provides direction to contributors regarding
+  how to contact the Technical Writer associated with the page's Stage and
+  Group:
+
+  ```plaintext
+  To determine the technical writer assigned to the Stage/Group
+  associated with this page, see
+  https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+  ```
 
 For example, the following metadata would be at the beginning of a product
 documentation page whose content is primarily associated with the Audit Events
@@ -84,23 +105,63 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 ---
 ```
 
-The following list describes the YAML parameters in use:
+### Page type metadata
+
+Originally discussed in [this epic](https://gitlab.com/groups/gitlab-org/-/epics/1280),
+each page should have a `type` metadata. It can be one or more of the following:
+
+- `index`: Index/overview pages. They serve as a list to other pages. Doesn't
+  necessarily mean the page should be named `index.md`. [Example page](../../install/README.md).
+- `concepts`: What you need to know before using product. Informational, not
+  instructional. For example, abstract ideas, explain meaning or benefit, support
+  understanding of tasks. They are read for background information, for example
+  "Why X is important". [Example page](../../topics/autodevops/index.md).
+- `howto`: Specific use case instructions. [Example page](../../ssh/README.md).
+- `tutorial`: Learn a process/concept by doing. [Example page](../../gitlab-basics/start-using-git.md).
+- `reference`: Covers what things are/do. Things like specific settings, facts
+  without too much explanation that are read for detailed information.
+  [Example page](../../ci/yaml/README.md).
+
+### Redirection metadata
+
+The following metadata should be added when a page is moved to another location:
 
 - `redirect_to`: The relative path and filename (with an `.md` extension) of the
   location to which visitors should be redirected for a moved page.
   [Learn more](#changing-document-location).
-- `stage`: The [Stage](https://about.gitlab.com/handbook/product/categories/#devops-stages)
-  to which the majority of the page's content belongs.
-- `group`: The [Group](https://about.gitlab.com/company/team/structure/#product-groups)
-  to which the majority of the page's content belongs.
-- `info`: The following line, which provides direction to contributors regarding
-  how to contact the Technical Writer associated with the page's Stage and
-  Group: `To determine the technical writer assigned to the Stage/Group
-  associated with this page, see
-  https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers`
 - `disqus_identifier`: Identifier for Disqus commenting system. Used to keep
   comments with a page that's been moved to a new URL.
   [Learn more](#redirections-for-pages-with-disqus-comments).
+
+### Comments metadata
+
+The [docs website](site_architecture/index.md) has comments (provided by Disqus)
+enabled by default. In case you want to disable them (for example in index pages),
+set it to `false`:
+
+```yaml
+---
+comments: false
+---
+```
+
+### Additional page metadata
+
+Each page can have additional (optional) metadata (set in the
+[default.html](https://gitlab.com/gitlab-org/gitlab-docs/-/blob/fc3577921343173d589dfa43d837b4307e4e620f/layouts/default.html#L30-52)
+Nanoc layout), which will be shown to the top of the page if defined:
+
+- `author`: The name of the author of a page, usually a tutorial. It requires `author_gitlab` in order to be shown.
+- `author_gitlab`: The username of the author on GitLab.com. It requires `author` in order to be shown.
+- `date`: The date the page was created, usually for tutorials.
+- `article_type`: The type of article. Can be either `tutorial` or `user guide`.
+- `level`: The level of complexity of a how-to or tutorial. Can be either `beginner`,
+  `advanced`, or `intermediate`.
+- `last_updated`: The date in ISO format when the page was last updated. For example `2020-02-14`.
+- `reading_time`: If you want to add an indication of the approximate reading
+  time of a page, you can set `reading_time` to `true`. This uses a simple
+  [algorithm](https://gitlab.com/gitlab-org/gitlab-docs/-/blob/master/lib/helpers/reading_time.rb)
+  to calculate the reading time based on the number of words.
 
 ## Changing document location
 

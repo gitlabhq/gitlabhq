@@ -876,8 +876,6 @@ Inside the document:
 - Always use a proper description for what the image is about. That way, when a
   browser fails to show the image, this text will be used as an alternative
   description.
-- If a heading is placed right after an image, always add three dashes (`---`)
-  between the image and the heading.
 
 ### Remove image shadow
 
@@ -1335,6 +1333,22 @@ a helpful link back to how the feature was developed.
   > - [Moved](<link-to-issue>) to [GitLab Starter](https://about.gitlab.com/pricing/) in 11.8.
   > - [Moved](<link-to-issue>) to GitLab Core in 12.0.
   ```
+
+- If a feature is deprecated, include a link to a replacement (when available):
+
+  ```markdown
+  > - [Deprecated](<link-to-issue>) in GitLab 11.3. Replaced by [meaningful text](<link-to-appropriate-documentation>).
+  ```
+
+   It's also acceptable to describe the replacement in surrounding text, if available.
+
+   If the deprecation is not obvious in existing text, you may want to include a warning such as:
+
+   ```markdown
+   CAUTION: **Warning:**
+   This feature was [deprecated](link-to-issue) in GitLab 12.3
+   and replaced by [Feature name](link-to-feature-documentation).
+   ```
 
 NOTE: **Note:**
 Version text must be on its own line and surrounded by blank lines to render correctly.

@@ -243,15 +243,13 @@ module Types
           Types::ReleaseType.connection_type,
           null: true,
           description: 'Releases of the project',
-          resolver: Resolvers::ReleasesResolver,
-          feature_flag: :graphql_release_data
+          resolver: Resolvers::ReleasesResolver
 
     field :release,
           Types::ReleaseType,
           null: true,
           description: 'A single release of the project',
           resolver: Resolvers::ReleasesResolver.single,
-          feature_flag: :graphql_release_data,
           authorize: :download_code
 
     field :container_expiration_policy,

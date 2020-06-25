@@ -79,12 +79,6 @@ module API
       @project ||= find_project!(params[:id])
     end
 
-    def wiki_page
-      page = ProjectWiki.new(user_project, current_user).find_page(params[:slug])
-
-      page || not_found!('Wiki Page')
-    end
-
     def available_labels_for(label_parent, include_ancestor_groups: true)
       search_params = { include_ancestor_groups: include_ancestor_groups }
 

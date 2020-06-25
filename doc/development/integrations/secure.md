@@ -239,17 +239,15 @@ one set in the `SECURE_LOG_LEVEL` variable. For instance, `info` and `warn`
 messages should be skipped when `SECURE_LOG_LEVEL` is set to `error`. Accepted
 values are as follows, listed from highest to lowest:
 
-- `panic`
 - `fatal`
 - `error`
 - `warn`
 - `info`
 - `debug`
-- `trace`
 
-It is recommended to use the `debug` and `trace` levels for verbose logging
-that could be useful when debugging. The default value for `SECURE_LOG_LEVEL`
-should be set to `info`.
+It is recommended to use the `debug` level for verbose logging that could be
+useful when debugging. The default value for `SECURE_LOG_LEVEL` should be set
+to `info`.
 
 #### common logutil package
 

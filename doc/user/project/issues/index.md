@@ -175,8 +175,6 @@ requires [GraphQL](../../../api/graphql/index.md) to be enabled.
 
 ![Similar issues](img/similar_issues.png)
 
----
-
 ### Health status **(ULTIMATE)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/36427) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.10.

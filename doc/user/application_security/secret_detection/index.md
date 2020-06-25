@@ -150,13 +150,11 @@ Secret Detection can be customized by defining available variables:
 
 You can control the verbosity of logs by setting the `SECURE_LOG_LEVEL` env var. The default is set to `info`, you can set it to any of the following levels:
 
-- `panic`
 - `fatal`
 - `error`
 - `warn`
 - `info`
 - `debug`
-- `trace`
 
 ## Full History Secret Scan
 

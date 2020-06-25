@@ -1353,7 +1353,7 @@ Information about pagination in a connection.
 | `pipeline` | Pipeline | Build pipeline of the project |
 | `printingMergeRequestLinkEnabled` | Boolean | Indicates if a link to create or view a merge request should display after a push to Git repositories of the project from the command line |
 | `publicJobs` | Boolean | Indicates if there is public access to pipelines and job details of the project, including output logs and artifacts |
-| `release` | Release | A single release of the project. Available only when feature flag `graphql_release_data` is enabled |
+| `release` | Release | A single release of the project |
 | `removeSourceBranchAfterMerge` | Boolean | Indicates if `Delete source branch` option should be enabled by default for all new merge requests of the project |
 | `repository` | Repository | Git repository of the project |
 | `requestAccessEnabled` | Boolean | Indicates if users can request member access to the project |

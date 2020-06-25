@@ -27364,7 +27364,7 @@
             },
             {
               "name": "release",
-              "description": "A single release of the project. Available only when feature flag `graphql_release_data` is enabled",
+              "description": "A single release of the project",
               "args": [
                 {
                   "name": "tagName",
@@ -27391,7 +27391,7 @@
             },
             {
               "name": "releases",
-              "description": "Releases of the project. Available only when feature flag `graphql_release_data` is enabled",
+              "description": "Releases of the project",
               "args": [
                 {
                   "name": "after",

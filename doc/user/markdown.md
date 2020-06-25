@@ -502,8 +502,6 @@ Second section content.
 
 ![Preview of an auto-generated TOC in a Wiki](img/markdown_toc_preview_v12_9.png)
 
----
-
 ### Wiki-specific Markdown
 
 The following examples show how links inside wikis behave.
