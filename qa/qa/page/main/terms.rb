@@ -15,7 +15,7 @@ module QA
         end
 
         def accept_terms
-          click_element :accept_terms_button, Page::Main::Menu
+          click_element :accept_terms_button
         end
       end
     end

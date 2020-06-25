@@ -3076,6 +3076,46 @@ type DiffRefs {
   startSha: String!
 }
 
+"""
+Changes to a single file
+"""
+type DiffStats {
+  """
+  Number of lines added to this file
+  """
+  additions: Int!
+
+  """
+  Number of lines deleted from this file
+  """
+  deletions: Int!
+
+  """
+  File path, relative to repository root
+  """
+  path: String!
+}
+
+"""
+Aggregated summary of changes
+"""
+type DiffStatsSummary {
+  """
+  Number of lines added
+  """
+  additions: Int!
+
+  """
+  Number of lines changed
+  """
+  changes: Int!
+
+  """
+  Number of lines deleted
+  """
+  deletions: Int!
+}
+
 type Discussion implements ResolvableInterface {
   """
   Timestamp of the discussion's creation
@@ -6664,6 +6704,21 @@ type MergeRequest implements Noteable {
   References of the base SHA, the head SHA, and the start SHA for this merge request
   """
   diffRefs: DiffRefs
+
+  """
+  Details about which files were changed in this merge request
+  """
+  diffStats(
+    """
+    A specific file-path
+    """
+    path: String
+  ): [DiffStats!]
+
+  """
+  Summary of which files were changed in this merge request
+  """
+  diffStatsSummary: DiffStatsSummary
 
   """
   Indicates if comments on the merge request are locked to members only
