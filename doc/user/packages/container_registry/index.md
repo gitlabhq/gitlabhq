@@ -495,14 +495,18 @@ older tags and images are regularly removed from the Container Registry.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15398) in GitLab 12.8.
 
+For a specific project, if you want to remove tags you no longer need,
+you can create an expiration policy. When the policy is applied, tags matching the regex pattern are removed.
+The underlying layers and images remain.
+
+To delete the underlying layers and images no longer associated with any tags, Instance Administrators can use
+[garbage collection](../../../administration/packages/container_registry.md#removing-unused-layers-not-referenced-by-manifests) with the `-m` switch.
+
 NOTE: **Note:**
 For GitLab.com, expiration policies are not available for projects created before GitLab 12.8.
 For self-managed instances, expiration policies may be enabled by an admin in the
 [CI/CD Package Registry settings](./../../admin_area/settings/index.md#cicd).
 Note the inherent [risks involved](./index.md#use-with-external-container-registries).
-
-It is possible to create a per-project expiration policy, so that you can make sure that
-older tags and images are regularly removed from the Container Registry.
 
 The expiration policy algorithm starts by collecting all the tags for a given repository in a list,
 then goes through a process of excluding tags from it until only the ones to be deleted remain:

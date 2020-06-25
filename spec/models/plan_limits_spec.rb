@@ -52,6 +52,7 @@ RSpec.describe PlanLimits do
         ci_active_pipelines
         ci_pipeline_size
         ci_active_jobs
+        storage_size_limit
       ]
     end
 
