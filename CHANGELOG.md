@@ -2,6 +2,24 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 13.0.7 (2020-06-25)
+
+### Fixed (7 changes)
+
+- Group authorization refresh to consider shared groups. !31204
+- Fix Value Stream Analytics summary when using non-english locale. !33717
+- Fix bug with variable substitution in alerts. !33772
+- Fix relative URL root in wiki_base_path. !33841
+- Adjust wrong column reference for ResetMergeStatus (background job). !33899
+- Updated Auto DevOps with a fix to delete PostgreSQL PVC on environment cleanup. !34657
+- Load user before logging git http-requests. !34923
+
+### Added (2 changes)
+
+- Provide `__range` variable for Prometheus queries. !33521
+- Periodically recompute project authorizations. !34071
+
+
 ## 13.0.6 (2020-06-10)
 
 - No changes.
