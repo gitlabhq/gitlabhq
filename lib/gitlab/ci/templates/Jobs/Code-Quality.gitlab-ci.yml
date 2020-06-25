@@ -8,6 +8,7 @@ code_quality:
     DOCKER_DRIVER: overlay2
     DOCKER_TLS_CERTDIR: ""
     CODE_QUALITY_IMAGE: "registry.gitlab.com/gitlab-org/ci-cd/codequality:0.85.10"
+  needs: []
   script:
     - |
       if ! docker info &>/dev/null; then

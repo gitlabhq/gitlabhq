@@ -21,6 +21,7 @@ license_scanning:
     LM_REPORT_VERSION: '2.1'
     SETUP_CMD: $LICENSE_MANAGEMENT_SETUP_CMD
   allow_failure: true
+  needs: []
   script:
     - /run.sh analyze .
   artifacts:

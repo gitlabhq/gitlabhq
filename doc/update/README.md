@@ -192,6 +192,12 @@ possible.
 
 ## Version specific upgrading instructions
 
+### 13.2.0
+
+GitLab installations that have multiple web nodes will need to be
+[upgraded to 13.1](#1310) before upgrading to 13.2 (and later) due to a
+breaking change in Rails that can result in authorization issues.
+
 ### 13.1.0
 
 In 13.1.0, you must upgrade to either:
@@ -201,6 +207,27 @@ In 13.1.0, you must upgrade to either:
 
 Failure to do so will result in internal errors in the Gitaly service in some RPCs due
 to the use of the new `--end-of-options` Git flag.
+
+Additionally, in GitLab 13.1.0, the version of [Rails was upgraded from 6.0.3 to
+6.0.3.1](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/33454).
+The Rails upgrade included a change to CSRF token generation which is
+not backwards-compatible - GitLab servers with the new Rails version
+will generate CSRF tokens that are not recognizable by GitLab servers
+with the older Rails version - which could cause non-GET requests to
+fail for [multi-node GitLab installations](https://docs.gitlab.com/omnibus/update/#multi-node--ha-deployment).
+
+So, if you are using multiple Rails servers and specifically upgrading from 13.0,
+all servers must first be upgraded to 13.1.0 before upgrading to later versions:
+
+1. Ensure all GitLab web nodes are on GitLab 13.1.0.
+1. Optionally, enable the `global_csrf_token` feature flag to enable new
+   method of CSRF token generation:
+
+   ```ruby
+   Feature.enable(:global_csrf_token)
+   ```
+
+1. Only then, continue to upgrade to later versions of GitLab.
 
 ### 12.2.0
 

@@ -213,6 +213,26 @@ For information on configuring Geo, see [Geo configuration](configuration.md).
 
 For information on how to update your Geo nodes to the latest GitLab version, see [Updating the Geo nodes](updating_the_geo_nodes.md).
 
+### Pausing and resuming replication
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/35913) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.2.
+
+In some circumstances, like during [upgrades](updating_the_geo_nodes.md) or a [planned failover](../disaster_recovery/planned_failover.md), it is desirable to pause replication between the primary and secondary.
+
+Pausing and resuming replication is done via a command line tool from the secondary node.
+
+**To Pause: (from secondary)**
+
+```shell
+gitlab-ctl geo-replication-pause
+```
+
+**To Resume: (from secondary)**
+
+```shell
+gitlab-ctl geo-replication-resume
+```
+
 ### Configuring Geo for multiple servers
 
 For information on configuring Geo for multiple servers, see [Geo for multiple servers](multiple_servers.md).

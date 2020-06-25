@@ -17,7 +17,7 @@ You can find it in the **Admin Area > Settings > CI/CD**.
 To enable (or disable) [Auto DevOps](../../../topics/autodevops/index.md)
 for all projects:
 
-1. Go to **Admin Area > Settings > CI/CD**
+1. Go to **Admin Area > Settings > CI/CD**.
 1. Check (or uncheck to disable) the box that says **Default to Auto DevOps pipeline for all projects**.
 1. Optionally, set up the [Auto DevOps base domain](../../../topics/autodevops/index.md#auto-devops-base-domain)
    which is going to be used for Auto Deploy and Auto Review Apps.

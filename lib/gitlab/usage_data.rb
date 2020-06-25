@@ -347,15 +347,9 @@ module Gitlab
 
       # rubocop: disable CodeReuse/ActiveRecord
       def services_usage
-        results = Service.available_services_names.without('jira').each_with_object({}) do |service_name, response|
+        Service.available_services_names.without('jira').each_with_object({}) do |service_name, response|
           response["projects_#{service_name}_active".to_sym] = count(Service.active.where(template: false, type: "#{service_name}_service".camelize))
-        end
-
-        # Keep old Slack keys for backward compatibility, https://gitlab.com/gitlab-data/analytics/issues/3241
-        results[:projects_slack_notifications_active] = results[:projects_slack_active]
-        results[:projects_slack_slash_active] = results[:projects_slack_slash_commands_active]
-
-        results.merge(jira_usage).merge(jira_import_usage)
+        end.merge(jira_usage).merge(jira_import_usage)
       end
 
       def jira_usage

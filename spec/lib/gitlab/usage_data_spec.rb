@@ -126,8 +126,6 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
       expect(count_data[:jira_imports_projects_count]).to eq(2)
       expect(count_data[:jira_imports_total_imported_count]).to eq(3)
       expect(count_data[:jira_imports_total_imported_issues_count]).to eq(13)
-      expect(count_data[:projects_slack_notifications_active]).to eq(2)
-      expect(count_data[:projects_slack_slash_active]).to eq(1)
       expect(count_data[:projects_slack_active]).to eq(2)
       expect(count_data[:projects_slack_slash_commands_active]).to eq(1)
       expect(count_data[:projects_custom_issue_tracker_active]).to eq(1)

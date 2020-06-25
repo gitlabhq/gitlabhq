@@ -89,8 +89,6 @@ module UsageDataHelpers
       projects_jira_active
       projects_jira_server_active
       projects_jira_cloud_active
-      projects_slack_notifications_active
-      projects_slack_slash_active
       projects_slack_active
       projects_slack_slash_commands_active
       projects_custom_issue_tracker_active
