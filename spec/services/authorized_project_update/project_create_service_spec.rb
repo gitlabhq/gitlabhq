@@ -56,21 +56,47 @@ describe AuthorizedProjectUpdate::ProjectCreateService do
     end
 
     context 'membership overrides' do
-      before do
-        create(:group_member, access_level: Gitlab::Access::REPORTER, group: group_parent, user: group_user)
-        create(:group_member, access_level: Gitlab::Access::DEVELOPER, group: group, user: group_user)
-        ProjectAuthorization.delete_all
+      context 'group hierarchy' do
+        before do
+          create(:group_member, access_level: Gitlab::Access::REPORTER, group: group_parent, user: group_user)
+          create(:group_member, access_level: Gitlab::Access::DEVELOPER, group: group, user: group_user)
+          ProjectAuthorization.delete_all
+        end
+
+        it 'creates project authorization' do
+          expect { service.execute }.to(
+            change { ProjectAuthorization.count }.from(0).to(1))
+
+          project_authorization = ProjectAuthorization.where(
+            project_id: group_project.id,
+            user_id: group_user.id,
+            access_level: Gitlab::Access::DEVELOPER)
+          expect(project_authorization).to exist
+        end
       end
 
-      it 'creates project authorization' do
-        expect { service.execute }.to(
-          change { ProjectAuthorization.count }.from(0).to(1))
+      context 'group sharing' do
+        let!(:shared_with_group) { create(:group) }
 
-        project_authorization = ProjectAuthorization.where(
-          project_id: group_project.id,
-          user_id: group_user.id,
-          access_level: Gitlab::Access::DEVELOPER)
-        expect(project_authorization).to exist
+        before do
+          create(:group_member, access_level: Gitlab::Access::REPORTER, group: group, user: group_user)
+          create(:group_member, access_level: Gitlab::Access::MAINTAINER, group: shared_with_group, user: group_user)
+
+          create(:group_group_link, shared_group: group, shared_with_group: shared_with_group, group_access: Gitlab::Access::DEVELOPER)
+
+          ProjectAuthorization.delete_all
+        end
+
+        it 'creates project authorization' do
+          expect { service.execute }.to(
+            change { ProjectAuthorization.count }.from(0).to(1))
+
+          project_authorization = ProjectAuthorization.where(
+            project_id: group_project.id,
+            user_id: group_user.id,
+            access_level: Gitlab::Access::DEVELOPER)
+          expect(project_authorization).to exist
+        end
       end
     end
 

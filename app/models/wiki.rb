@@ -205,7 +205,7 @@ class Wiki
   end
 
   def wiki_base_path
-    Gitlab.config.gitlab.relative_url_root + web_url(only_path: true).sub(%r{/#{Wiki::HOMEPAGE}\z}, '')
+    web_url(only_path: true).sub(%r{/#{Wiki::HOMEPAGE}\z}, '')
   end
 
   private

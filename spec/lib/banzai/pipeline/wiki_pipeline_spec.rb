@@ -63,7 +63,7 @@ describe Banzai::Pipeline::WikiPipeline do
       'when GitLab is hosted at a relative URL' => '/nested/relative/gitlab' }.each do |test_name, relative_url_root|
       context test_name do
         before do
-          allow(Gitlab.config.gitlab).to receive(:relative_url_root).and_return(relative_url_root)
+          allow(Rails.application.routes).to receive(:default_url_options).and_return(script_name: relative_url_root)
         end
 
         describe "linking to pages within the wiki" do

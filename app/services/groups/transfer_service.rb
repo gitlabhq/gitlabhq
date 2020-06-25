@@ -82,6 +82,7 @@ module Groups
       end
 
       @group.parent = @new_parent_group
+      @group.clear_memoization(:self_and_ancestors_ids)
       @group.save!
     end
 

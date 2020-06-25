@@ -1,0 +1,5 @@
+---
+title: Fix Value Stream Analytics summary when using non-english locale
+merge_request: 33717
+author:
+type: fixed

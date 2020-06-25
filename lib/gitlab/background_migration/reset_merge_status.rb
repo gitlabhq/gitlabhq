@@ -7,7 +7,7 @@ module Gitlab
     class ResetMergeStatus
       def perform(from_id, to_id)
         relation = MergeRequest.where(id: from_id..to_id,
-                                      state: 'opened',
+                                      state_id: 1, # opened
                                       merge_status: 'can_be_merged')
 
         relation.update_all(merge_status: 'unchecked')

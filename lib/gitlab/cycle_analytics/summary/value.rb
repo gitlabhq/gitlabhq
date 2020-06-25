@@ -15,6 +15,14 @@ module Gitlab
         end
 
         class None < self
+          def raw_value
+            0
+          end
+
+          def to_i
+            raw_value
+          end
+
           def to_s
             '-'
           end
@@ -27,6 +35,10 @@ module Gitlab
 
           def to_s
             value.zero? ? '0' : value.to_s
+          end
+
+          def to_i
+            raw_value
           end
         end
 

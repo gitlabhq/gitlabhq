@@ -1,0 +1,5 @@
+---
+title: Group authorization refresh to consider shared groups
+merge_request: 31204
+author:
+type: fixed

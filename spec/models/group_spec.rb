@@ -662,6 +662,19 @@ describe Group do
       expect(group.members_with_parents).to include(developer)
       expect(group.members_with_parents).to include(maintainer)
     end
+
+    context 'group sharing' do
+      let!(:shared_group) { create(:group) }
+
+      before do
+        create(:group_group_link, shared_group: shared_group, shared_with_group: group)
+      end
+
+      it 'returns shared with group members' do
+        expect(shared_group.members_with_parents).to(
+          include(developer))
+      end
+    end
   end
 
   describe '#members_from_self_and_ancestors_with_effective_access_level' do
@@ -799,6 +812,22 @@ describe Group do
 
       expect(group.user_ids_for_project_authorizations)
         .to include(maintainer.id, developer.id)
+    end
+
+    context 'group sharing' do
+      let_it_be(:group) { create(:group) }
+      let_it_be(:group_user) { create(:user) }
+      let_it_be(:shared_group) { create(:group) }
+
+      before do
+        group.add_developer(group_user)
+        create(:group_group_link, shared_group: shared_group, shared_with_group: group)
+      end
+
+      it 'returns the user IDs for shared with group members' do
+        expect(shared_group.user_ids_for_project_authorizations).to(
+          include(group_user.id))
+      end
     end
   end
 

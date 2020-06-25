@@ -93,6 +93,25 @@ describe Gitlab::SidekiqMiddleware::DuplicateJobs::DuplicateJob, :clean_gitlab_r
     end
   end
 
+  describe '#scheduled?' do
+    it 'returns false for non-scheduled jobs' do
+      expect(duplicate_job.scheduled?).to be(false)
+    end
+
+    context 'scheduled jobs' do
+      let(:job) do
+        { 'class' => 'AuthorizedProjectsWorker',
+          'args' => [1],
+          'jid' => '123',
+          'at' => 42 }
+      end
+
+      it 'returns true' do
+        expect(duplicate_job.scheduled?).to be(true)
+      end
+    end
+  end
+
   describe '#duplicate?' do
     it "raises an error if the check wasn't performed" do
       expect { duplicate_job.duplicate? }.to raise_error /Call `#check!` first/
@@ -112,33 +131,53 @@ describe Gitlab::SidekiqMiddleware::DuplicateJobs::DuplicateJob, :clean_gitlab_r
     end
   end
 
-  describe 'droppable?' do
-    where(:idempotent, :duplicate, :prevent_deduplication) do
-      # [true, false].repeated_permutation(3)
-      [[true, true, true],
-       [true, true, false],
-       [true, false, true],
-       [true, false, false],
-       [false, true, true],
-       [false, true, false],
-       [false, false, true],
-       [false, false, false]]
+  describe '#droppable?' do
+    where(:idempotent, :prevent_deduplication) do
+      # [true, false].repeated_permutation(2)
+      [[true, true],
+       [true, false],
+       [false, true],
+       [false, false]]
     end
 
     with_them do
       before do
         allow(AuthorizedProjectsWorker).to receive(:idempotent?).and_return(idempotent)
-        allow(duplicate_job).to receive(:duplicate?).and_return(duplicate)
         stub_feature_flags("disable_#{queue}_deduplication" => prevent_deduplication)
       end
 
       it 'is droppable when all conditions are met' do
-        if idempotent && duplicate && !prevent_deduplication
+        if idempotent && !prevent_deduplication
           expect(duplicate_job).to be_droppable
         else
           expect(duplicate_job).not_to be_droppable
         end
       end
+    end
+  end
+
+  describe '#scheduled_at' do
+    let(:scheduled_at) { 42 }
+    let(:job) do
+      { 'class' => 'AuthorizedProjectsWorker',
+        'args' => [1],
+        'jid' => '123',
+        'at' => scheduled_at }
+    end
+
+    it 'returns when the job is scheduled at' do
+      expect(duplicate_job.scheduled_at).to eq(scheduled_at)
+    end
+  end
+
+  describe '#options' do
+    let(:worker_options) { { foo: true } }
+
+    it 'returns worker options' do
+      allow(AuthorizedProjectsWorker).to(
+        receive(:get_deduplication_options).and_return(worker_options))
+
+      expect(duplicate_job.options).to eq(worker_options)
     end
   end
 

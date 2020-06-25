@@ -3,19 +3,14 @@
 require 'spec_helper'
 
 describe JwtController do
+  include_context 'parsed logs'
+
   let(:service) { double(execute: {}) }
   let(:service_class) { double(new: service) }
   let(:service_name) { 'test' }
   let(:parameters) { { service: service_name } }
-  let(:log_output) { StringIO.new }
-  let(:logger) do
-    Logger.new(log_output).tap { |logger| logger.formatter = ->(_, _, _, msg) { msg } }
-  end
-  let(:log_data) { Gitlab::Json.parse(log_output.string) }
 
   before do
-    Lograge.logger = logger
-
     stub_const('JwtController::SERVICES', service_name => service_class)
   end
 
