@@ -92,7 +92,7 @@ See the dedicated [Shell scripting standards and style guidelines](../shell_scri
 
 ## Markdown
 
-We're following [Ciro Santilli's Markdown Style Guide](https://cirosantilli.com/markdown-style-guide).
+We're following [Ciro Santilli's Markdown Style Guide](https://cirosantilli.com/markdown-style-guide/).
 
 ## Documentation
 

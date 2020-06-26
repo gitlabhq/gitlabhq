@@ -231,7 +231,7 @@ export default {
 <template>
   <div
     ref="gl-form"
-    :class="{ 'prepend-top-default gl-mb-3': addSpacingClasses }"
+    :class="{ 'gl-mt-3 gl-mb-3': addSpacingClasses }"
     class="js-vue-markdown-field md-area position-relative"
   >
     <markdown-header

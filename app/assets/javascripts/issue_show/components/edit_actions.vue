@@ -63,7 +63,7 @@ export default {
 </script>
 
 <template>
-  <div class="prepend-top-default gl-mb-3 clearfix">
+  <div class="gl-mt-3 gl-mb-3 clearfix">
     <button
       :class="{ disabled: formState.updateLoading || !isSubmitEnabled }"
       :disabled="formState.updateLoading || !isSubmitEnabled"

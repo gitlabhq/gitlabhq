@@ -270,7 +270,7 @@ export default {
         <div
           v-if="job.archived"
           ref="sticky"
-          class="js-archived-job prepend-top-default archived-job"
+          class="js-archived-job gl-mt-3 archived-job"
           :class="{ 'sticky-top border-bottom-0': hasTrace }"
         >
           <icon name="lock" class="align-text-bottom" />
@@ -280,7 +280,7 @@ export default {
         <div
           v-if="hasTrace"
           class="build-trace-container position-relative"
-          :class="{ 'prepend-top-default': !job.archived }"
+          :class="{ 'gl-mt-3': !job.archived }"
         >
           <log-top-bar
             :class="{

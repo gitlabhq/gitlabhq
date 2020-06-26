@@ -26,7 +26,7 @@ export default {
 
 <template>
   <div>
-    <gl-loading-icon v-if="loading && !stages.length" size="lg" class="prepend-top-default" />
+    <gl-loading-icon v-if="loading && !stages.length" size="lg" class="gl-mt-3" />
     <template v-else>
       <stage
         v-for="stage in stages"

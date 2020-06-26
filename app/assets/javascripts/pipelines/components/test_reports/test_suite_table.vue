@@ -36,7 +36,7 @@ export default {
 
 <template>
   <div>
-    <div class="row prepend-top-default">
+    <div class="row gl-mt-3">
       <div class="col-12">
         <h4>{{ heading }}</h4>
       </div>

@@ -3,7 +3,7 @@
 - @content_class = "limit-container-width" unless fluid_layout
 
 .js-two-factor-auth{ 'data-two-factor-skippable' => "#{two_factor_skippable?}", 'data-two_factor_skip_url' => skip_profile_two_factor_auth_path }
-  .row.prepend-top-default
+  .row.gl-mt-3
     .col-lg-4
       %h4.gl-mt-0
         = _('Register Two-Factor Authenticator')
@@ -50,12 +50,12 @@
           .form-group
             = label_tag :pin_code, _('Pin code'), class: "label-bold"
             = text_field_tag :pin_code, nil, class: "form-control", required: true
-          .prepend-top-default
+          .gl-mt-3
             = submit_tag _('Register with two-factor app'), class: 'btn btn-success'
 
   %hr
 
-  .row.prepend-top-default
+  .row.gl-mt-3
     .col-lg-4
       %h4.gl-mt-0
         = _('Register Universal Two-Factor (U2F) Device')

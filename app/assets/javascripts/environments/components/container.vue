@@ -67,12 +67,7 @@ export default {
 
 <template>
   <div class="environments-container">
-    <gl-loading-icon
-      v-if="isLoading"
-      size="md"
-      class="prepend-top-default"
-      label="Loading environments"
-    />
+    <gl-loading-icon v-if="isLoading" size="md" class="gl-mt-3" label="Loading environments" />
 
     <slot name="emptyState"></slot>
 

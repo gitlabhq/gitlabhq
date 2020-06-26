@@ -487,11 +487,11 @@ For example, to customize the commit message to output
 
 NOTE: **Note:**
 Custom commit messages for each applied Suggestion (and for batch Suggestions) will be
-introduced by [#25381](https://gitlab.com/gitlab-org/gitlab/issues/25381).
+introduced by [#25381](https://gitlab.com/gitlab-org/gitlab/-/issues/25381).
 
 ### Batch Suggestions
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/25486) in GitLab 13.1 as an [alpha feature](https://about.gitlab.com/handbook/product/#alpha).
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/25486) in GitLab 13.1 as an [alpha feature](https://about.gitlab.com/handbook/product/#alpha).
 > - It's deployed behind a feature flag, disabled by default.
 > - It's disabled on GitLab.com.
 > - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-batch-suggestions).

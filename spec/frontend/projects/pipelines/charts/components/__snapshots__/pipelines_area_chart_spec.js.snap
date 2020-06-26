@@ -2,7 +2,7 @@
 
 exports[`PipelinesAreaChart matches the snapshot 1`] = `
 <div
-  class="prepend-top-default"
+  class="gl-mt-3"
 >
   <p>
     Some title

@@ -1,6 +1,6 @@
 - page_title _('System Info')
 
-.prepend-top-default
+.gl-mt-3
 .row
   .col-sm
     .bg-light.light-well
@@ -11,7 +11,7 @@
         - else
           = icon('warning', class: 'text-warning')
           = _('Unable to collect CPU info')
-    .bg-light.light-well.prepend-top-default
+    .bg-light.light-well.gl-mt-3
       %h4= _('Memory Usage')
       .data
         - if @memory
@@ -19,7 +19,7 @@
         - else
           = icon('warning', class: 'text-warning')
           = _('Unable to collect memory info')
-    .bg-light.light-well.prepend-top-default
+    .bg-light.light-well.gl-mt-3
       %h4= _('Uptime')
       .data
         %h2= distance_of_time_in_words_to_now(Rails.application.config.booted_at)

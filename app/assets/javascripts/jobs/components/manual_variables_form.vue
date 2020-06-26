@@ -172,7 +172,7 @@ export default {
         </div>
       </div>
     </div>
-    <div class="d-flex prepend-top-default justify-content-center">
+    <div class="d-flex gl-mt-3 justify-content-center">
       <p class="text-muted" v-html="helpText"></p>
     </div>
     <div class="d-flex justify-content-center">

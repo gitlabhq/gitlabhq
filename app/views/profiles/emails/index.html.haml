@@ -1,7 +1,7 @@
 - page_title _('Emails')
 - @content_class = "limit-container-width" unless fluid_layout
 
-.row.prepend-top-default
+.row.gl-mt-3
   .col-lg-4.profile-settings-sidebar
     %h4.gl-mt-0
       = page_title
@@ -14,7 +14,7 @@
       .form-group
         = f.label :email, _('Email'), class: 'label-bold'
         = f.text_field :email, class: 'form-control', data: { qa_selector: 'email_address_field' }
-      .prepend-top-default
+      .gl-mt-3
         = f.submit _('Add email address'), class: 'btn btn-success', data: { qa_selector: 'add_email_address_button' }
     %hr
     %h4.gl-mt-0

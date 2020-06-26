@@ -45,7 +45,7 @@ export default {
 
 <template>
   <div v-if="isLoading">
-    <gl-loading-icon size="lg" class="prepend-top-default js-loading-spinner" />
+    <gl-loading-icon size="lg" class="gl-mt-3 js-loading-spinner" />
   </div>
 
   <div
@@ -73,7 +73,7 @@ export default {
   </div>
 
   <div v-else>
-    <div class="row prepend-top-default">
+    <div class="row gl-mt-3">
       <div class="col-12">
         <p class="js-no-tests-to-show">{{ s__('TestReports|There are no tests to show.') }}</p>
       </div>

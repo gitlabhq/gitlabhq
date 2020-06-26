@@ -75,7 +75,7 @@ to a `trainee_maintainer database`:
       - trainee_maintainer database
 ```
 
-The first step is to a create a [Trainee Database Maintainer Issue](https://gitlab.com/gitlab-com/www-gitlab-com/issues/new?issuable_template=trainee-database-maintainer).
+The first step is to a create a [Trainee Database Maintainer Issue](https://gitlab.com/gitlab-com/www-gitlab-com/-/issues/new?issuable_template=trainee-database-maintainer).
 Use and follow the process described in the 'Trainee database maintainer' template.
 
 Note that [trainee maintainers](https://about.gitlab.com/handbook/engineering/workflow/code-review/#trainee-maintainer)

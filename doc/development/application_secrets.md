@@ -30,8 +30,8 @@ GitLab.com environments prior to changing this file.
 
 **Examples**
 
-- [Change for source installation](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/27581)
-- [Change for omnibus installation](https://gitlab.com/gitlab-org/omnibus-gitlab/merge_requests/3267)
+- [Change for source installation](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/27581)
+- [Change for omnibus installation](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/3267)
 - [Change for omnibus installation](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/4158)
 - [Change for Cloud Native installation](https://gitlab.com/gitlab-org/charts/gitlab/-/merge_requests/1318)
 

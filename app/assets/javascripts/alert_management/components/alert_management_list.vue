@@ -441,7 +441,7 @@ export default {
         :prev-page="prevPage"
         :next-page="nextPage"
         align="center"
-        class="gl-pagination prepend-top-default"
+        class="gl-pagination gl-mt-3"
         @input="handlePageChange"
       />
     </div>

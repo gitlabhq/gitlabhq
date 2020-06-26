@@ -1630,6 +1630,13 @@ and email address of a user. Don't use real user information in API calls:
 - **Names**: Use strings like `Example Username`. Alternatively, use diverse or non-gendered names with
   common surnames, such as `Sidney Jones`, `Zhang Wei`. or `Maria Garcia`.
 
+### Fake URLs
+
+When including sample URLs in the documentation, use:
+
+- `example.com` when the domain name is generic.
+- `gitlab.example.com` when referring to self-managed instances of GitLab.
+
 ### Fake tokens
 
 There may be times where a token is needed to demonstrate an API call using

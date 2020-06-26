@@ -198,7 +198,7 @@ can cause `git-annex` to raise unpredicted warnings and errors.
 
 Consult the [Annex upgrade page](https://git-annex.branchable.com/upgrades/) for more information about
 the differences between versions. You can find out which version is installed
-on your server by navigating to <https://pkgs.org/download/git-annex> and
+on your server by navigating to `https://pkgs.org/download/git-annex` and
 searching for your distribution.
 
 Although there is no general guide for `git-annex` errors, there are a few tips

@@ -71,16 +71,48 @@ can lead to confusion during deployments.
 
 > - Introduced in GitLab 10.2 for project-level clusters.
 > - Introduced in GitLab 11.6 for group-level clusters.
+> - A local Tiller option was introduced in GitLab 13.2 behind a feature flag, disabled by default.
+> - The feature flag for local Tiller is enabled on GitLab.com.
 
 [Helm](https://helm.sh/docs/) is a package manager for Kubernetes and is
 required to install all the other applications. It is installed in its
 own pod inside the cluster which can run the `helm` CLI in a safe
 environment.
 
+The [Tiller](https://v2.helm.sh/docs/glossary/#tiller) server used by Helm is
+installed into the `gitlab-managed-apps` namespace, but this is changing to
+instead use a *local Tiller* server. It can be enabled or disabled using the
+`managed_apps_local_tiller` feature flag. When the local Tiller feature is
+enabled, the Helm application does not need to be installed and will not be
+shown in the list of applications.
+
 NOTE: **Note:**
 Installing Helm as a GitLab-managed App behind a proxy is not supported,
 but a [workaround](../../topics/autodevops/index.md#installing-helm-behind-a-proxy)
 is available.
+
+### Enable or disable local Tiller **(CORE ONLY)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/209736) in GitLab 13.2
+
+Local Tiller is under development, but is ready for production use. It is
+deployed behind a feature flag that is **disabled by default**.
+[GitLab administrators with access to the GitLab Rails console](../../administration/feature_flags.md)
+can enable it for your instance.
+
+To enable it:
+
+```ruby
+# Instance-wide
+Feature.enable(:managed_apps_local_tiller)
+```
+
+To disable it:
+
+```ruby
+# Instance-wide
+Feature.disable(:managed_apps_local_tiller)
+```
 
 ### cert-manager
 

@@ -6,7 +6,7 @@
     .flash-warning#milestone-issue-count-warning
       = milestone_issues_count_message(@milestone)
 
-.row.prepend-top-default
+.row.gl-mt-3
   .col-md-4
     = render 'shared/milestones/issuables', args.merge(title: s_('Milestones|Unstarted Issues (open and unassigned)'), issuables: issues.opened.unassigned, id: 'unassigned', show_counter: true)
   .col-md-4

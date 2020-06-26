@@ -86,7 +86,7 @@ which means that the reported licenses might be incomplete or inaccurate.
 | Elixir     | [mix](https://elixir-lang.org/getting-started/mix-otp/introduction-to-mix.html) |[License Finder](https://github.com/pivotal/LicenseFinder)|
 | C++/C      | [conan](https://conan.io/) |[License Finder](https://github.com/pivotal/LicenseFinder)|
 | Scala      | [sbt](https://www.scala-sbt.org/) |[License Finder](https://github.com/pivotal/LicenseFinder)|
-| Rust       | [cargo](https://crates.io/) |[License Finder](https://github.com/pivotal/LicenseFinder)|
+| Rust       | [cargo](https://crates.io) |[License Finder](https://github.com/pivotal/LicenseFinder)|
 | PHP        | [composer](https://getcomposer.org/) |[License Finder](https://github.com/pivotal/LicenseFinder)|
 
 ## Requirements

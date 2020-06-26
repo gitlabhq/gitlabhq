@@ -568,7 +568,7 @@ module ProjectsHelper
   end
 
   def project_child_container_class(view_path)
-    view_path == "projects/issues/issues" ? "prepend-top-default" : "project-show-#{view_path}"
+    view_path == "projects/issues/issues" ? "gl-mt-3" : "project-show-#{view_path}"
   end
 
   def project_issues(project)

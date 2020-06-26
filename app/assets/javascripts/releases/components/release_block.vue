@@ -108,7 +108,7 @@ export default {
       <release-block-assets v-if="shouldRenderAssets" :assets="assets" />
       <evidence-block v-if="hasEvidence && shouldShowEvidence" :release="release" />
 
-      <div ref="gfm-content" class="card-text prepend-top-default">
+      <div ref="gfm-content" class="card-text gl-mt-3">
         <div class="md" v-html="release.descriptionHtml"></div>
       </div>
     </div>

@@ -9,10 +9,10 @@
 = render_if_exists 'shared/milestones/burndown', milestone: @milestone, project: @project
 
 - if can?(current_user, :read_issue, @project) && @milestone.total_issues_count.zero?
-  .alert.alert-success.prepend-top-default
+  .alert.alert-success.gl-mt-3
     %span= _('Assign some issues to this milestone.')
 - elsif @milestone.complete? && @milestone.active?
-  .alert.alert-success.prepend-top-default
+  .alert.alert-success.gl-mt-3
     %span= _('All issues for this milestone are closed. You may close this milestone now.')
 
 = render 'shared/milestones/tabs', milestone: @milestone

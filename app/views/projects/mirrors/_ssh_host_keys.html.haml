@@ -28,6 +28,6 @@
         = _('Input host keys manually')
       %span.label-hide
         = _('Hide host keys manual input')
-  .js-ssh-known-hosts.collapse.prepend-top-default
+  .js-ssh-known-hosts.collapse.gl-mt-3
     = f.label :ssh_known_hosts, _('SSH host keys'), class: 'label-bold'
     = f.text_area :ssh_known_hosts, class: 'form-control known-hosts js-known-hosts', rows: '10'

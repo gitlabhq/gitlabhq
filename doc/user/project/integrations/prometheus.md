@@ -1019,7 +1019,7 @@ For manually configured Prometheus servers, a notify endpoint is provided to use
 
 ![Prometheus service configuration of Alerts](img/prometheus_service_alerts.png)
 
-To send GitLab alert notifications, copy the *URL* and *Authorization Key* into the [`webhook_configs`](https://prometheus.io/docs/alerting/configuration/#webhook_config) section of your Prometheus Alertmanager configuration:
+To send GitLab alert notifications, copy the *URL* and *Authorization Key* into the [`webhook_configs`](https://prometheus.io/docs/alerting/latest/configuration/#webhook_config) section of your Prometheus Alertmanager configuration:
 
 ```yaml
 receivers:

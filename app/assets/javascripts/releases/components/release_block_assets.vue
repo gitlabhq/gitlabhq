@@ -96,7 +96,7 @@ export default {
 </script>
 
 <template>
-  <div class="card-text prepend-top-default">
+  <div class="card-text gl-mt-3">
     <template v-if="glFeatures.releaseAssetLinkType">
       <gl-button
         data-testid="accordion-button"

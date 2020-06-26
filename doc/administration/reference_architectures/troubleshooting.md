@@ -17,7 +17,7 @@ with the Fog library that GitLab uses. Symptoms include:
 ### GitLab Pages requires NFS
 
 If you intend to use [GitLab Pages](../../user/project/pages/index.md), this currently requires
-[NFS](../high_availability/nfs.md). There is [work in progress](https://gitlab.com/gitlab-org/gitlab-pages/issues/196)
+[NFS](../high_availability/nfs.md). There is [work in progress](https://gitlab.com/gitlab-org/gitlab-pages/-/issues/196)
 to remove this dependency. In the future, GitLab Pages may use
 [object storage](https://gitlab.com/gitlab-org/gitlab/-/issues/208135).
 
@@ -291,7 +291,7 @@ unset https_proxy
 
 When updating the `gitaly['listen_addr']` or `gitaly['prometheus_listen_addr']` values, Gitaly may continue to listen on the old address after a `sudo gitlab-ctl reconfigure`.
 
-When this occurs, performing a `sudo gitlab-ctl restart` will resolve the issue. This will no longer be necessary after [this issue](https://gitlab.com/gitlab-org/gitaly/issues/2521) is resolved.
+When this occurs, performing a `sudo gitlab-ctl restart` will resolve the issue. This will no longer be necessary after [this issue](https://gitlab.com/gitlab-org/gitaly/-/issues/2521) is resolved.
 
 ### Permission denied errors appearing in Gitaly logs when accessing repositories from a standalone Gitaly node
 

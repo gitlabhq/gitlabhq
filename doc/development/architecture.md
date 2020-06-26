@@ -196,7 +196,7 @@ GitLab can be considered to have two layers from a process perspective:
 - Process: `alertmanager`
 - GitLab.com: [Monitoring of GitLab.com](https://about.gitlab.com/handbook/engineering/monitoring/)
 
-[Alert manager](https://prometheus.io/docs/alerting/alertmanager/) is a tool provided by Prometheus that _"handles alerts sent by client applications such as the Prometheus server. It takes care of deduplicating, grouping, and routing them to the correct receiver integration such as email, PagerDuty, or OpsGenie. It also takes care of silencing and inhibition of alerts."_ You can read more in [issue #45740](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/45740) about what we will be alerting on.
+[Alert manager](https://prometheus.io/docs/alerting/latest/alertmanager/) is a tool provided by Prometheus that _"handles alerts sent by client applications such as the Prometheus server. It takes care of deduplicating, grouping, and routing them to the correct receiver integration such as email, PagerDuty, or OpsGenie. It also takes care of silencing and inhibition of alerts."_ You can read more in [issue #45740](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/45740) about what we will be alerting on.
 
 #### Certificate management
 

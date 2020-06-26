@@ -75,7 +75,7 @@ export default {
 
 <template>
   <section id="serverless-functions" class="flex-grow">
-    <gl-loading-icon v-if="checkingInstalled" size="lg" class="prepend-top-default gl-mb-3" />
+    <gl-loading-icon v-if="checkingInstalled" size="lg" class="gl-mt-3 gl-mb-3" />
 
     <div v-else-if="isInstalled">
       <div v-if="hasFunctionData">
@@ -91,11 +91,7 @@ export default {
             </ul>
           </div>
         </template>
-        <gl-loading-icon
-          v-if="isLoading"
-          size="lg"
-          class="prepend-top-default gl-mb-3 js-functions-loader"
-        />
+        <gl-loading-icon v-if="isLoading" size="lg" class="gl-mt-3 gl-mb-3 js-functions-loader" />
       </div>
       <div v-else class="empty-state js-empty-state">
         <div class="text-content">

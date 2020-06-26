@@ -7,7 +7,7 @@
     = _('Search')
   = render_if_exists 'search/form_elasticsearch', attrs: { class: 'ml-sm-auto' }
 
-.prepend-top-default
+.gl-mt-3
   = render 'search/form'
 - if @search_term
   = render 'search/category'

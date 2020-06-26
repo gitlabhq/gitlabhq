@@ -96,7 +96,7 @@ export default {
             <preview-item :draft="draft" :is-last="isLast(index)" />
           </li>
         </ul>
-        <gl-loading-icon v-else size="lg" class="prepend-top-default gl-mb-3" />
+        <gl-loading-icon v-else size="lg" class="gl-mt-3 gl-mb-3" />
       </div>
       <div class="dropdown-footer">
         <publish-button

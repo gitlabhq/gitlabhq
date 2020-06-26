@@ -64,7 +64,7 @@ export default {
 <template>
   <gl-pagination
     v-if="showPagination"
-    class="justify-content-center prepend-top-default"
+    class="justify-content-center gl-mt-3"
     v-bind="$attrs"
     :value="pageInfo.page"
     :per-page="pageInfo.perPage"

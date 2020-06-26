@@ -43,4 +43,4 @@ In forms we should use the `for` attribute in the label statement:
 
 - [Chrome Accessibility Developer Tools](https://github.com/GoogleChrome/accessibility-developer-tools) for testing accessibility
 - [Audit Rules Page](https://github.com/GoogleChrome/accessibility-developer-tools/wiki/Audit-Rules) for best practices
-- [Lighthouse Accessibility Score](https://developers.google.com/web/tools/lighthouse/scoring#a11y) for accessibility audits
+- [Lighthouse Accessibility Score](https://web.dev/performance-scoring/) for accessibility audits

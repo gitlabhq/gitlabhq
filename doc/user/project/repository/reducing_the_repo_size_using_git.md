@@ -29,7 +29,7 @@ you begin. The best way back up a repository is to
 
 To make cloning your project faster, rewrite branches and tags to remove unwanted files.
 
-1. [Install `git filter-repo`](https://github.com/newren/git-filter-repo/blob/master/INSTALL.md)
+1. [Install `git filter-repo`](https://github.com/newren/git-filter-repo/blob/main/INSTALL.md)
    using a supported package manager or from source.
 
 1. Clone a fresh copy of the repository using `--bare`:
@@ -103,7 +103,7 @@ cannot be fetched at all.
 
 However, these refs can be accessed from the Git bundle inside a project export.
 
-1. [Install `git filter-repo`](https://github.com/newren/git-filter-repo/blob/master/INSTALL.md)
+1. [Install `git filter-repo`](https://github.com/newren/git-filter-repo/blob/main/INSTALL.md)
    using a supported package manager or from source.
 
 1. Generate a fresh [export from the

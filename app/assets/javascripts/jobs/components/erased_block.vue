@@ -27,7 +27,7 @@ export default {
 };
 </script>
 <template>
-  <div class="prepend-top-default js-build-erased">
+  <div class="gl-mt-3 js-build-erased">
     <div class="erased alert alert-warning">
       <template v-if="isErasedByUser">
         {{ s__('Job|Job has been erased by') }}
