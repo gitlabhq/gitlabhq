@@ -341,7 +341,7 @@ RSpec.describe "User browses files" do
     end
   end
 
-  context "when browsing a file with glob characters" do
+  context "when browsing a file with pathspec characters" do
     let(:filename) { ':wq' }
     let(:newrev) { project.repository.commit('master').sha }
 

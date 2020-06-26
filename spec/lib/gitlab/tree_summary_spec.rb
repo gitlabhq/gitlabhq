@@ -47,15 +47,17 @@ RSpec.describe Gitlab::TreeSummary do
   end
 
   describe '#summarize (entries)' do
-    let(:limit) { 2 }
+    let(:limit) { 4 }
 
     custom_files = {
       'a.txt' => '',
       'b.txt' => '',
-      'directory/c.txt' => ''
+      'directory/c.txt' => '',
+      ':dir/test.txt' => '',
+      ':file' => ''
     }
 
-    let(:project) { create(:project, :custom_repo, files: custom_files) }
+    let!(:project) { create(:project, :custom_repo, files: custom_files) }
     let(:commit) { repo.head_commit }
 
     subject(:entries) { summary.summarize.first }
@@ -63,13 +65,16 @@ RSpec.describe Gitlab::TreeSummary do
     it 'summarizes the entries within the window' do
       is_expected.to contain_exactly(
         a_hash_including(type: :tree, file_name: 'directory'),
-        a_hash_including(type: :blob, file_name: 'a.txt')
+        a_hash_including(type: :blob, file_name: 'a.txt'),
+        a_hash_including(type: :blob, file_name: ':file'),
+        a_hash_including(type: :tree, file_name: ':dir')
         # b.txt is excluded by the limit
       )
     end
 
     it 'references the commit and commit path in entries' do
-      entry = entries.first
+      # There are 2 trees and the summary is not ordered
+      entry = entries.find { |entry| entry[:commit].id == commit.id }
       expected_commit_path = Gitlab::Routing.url_helpers.project_commit_path(project, commit)
 
       expect(entry[:commit]).to be_a(::Commit)
@@ -85,6 +90,14 @@ RSpec.describe Gitlab::TreeSummary do
       end
     end
 
+    context 'in a subdirectory with a pathspec character' do
+      let(:path) { ':dir' }
+
+      it 'summarizes the entries in the subdirectory' do
+        is_expected.to contain_exactly(a_hash_including(type: :blob, file_name: 'test.txt'))
+      end
+    end
+
     context 'in a non-existent subdirectory' do
       let(:path) { 'tmp' }
 
@@ -92,7 +105,7 @@ RSpec.describe Gitlab::TreeSummary do
     end
 
     context 'custom offset and limit' do
-      let(:offset) { 2 }
+      let(:offset) { 4 }
 
       it 'returns entries from the offset' do
         is_expected.to contain_exactly(a_hash_including(type: :blob, file_name: 'b.txt'))

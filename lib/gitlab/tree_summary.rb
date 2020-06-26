@@ -97,7 +97,7 @@ module Gitlab
           File.join(*[path, ""])
         end
 
-      commits_hsh = repository.list_last_commits_for_tree(commit.id, ensured_path, offset: offset, limit: limit)
+      commits_hsh = repository.list_last_commits_for_tree(commit.id, ensured_path, offset: offset, limit: limit, literal_pathspec: true)
       prerender_commit_full_titles!(commits_hsh.values)
 
       entries.each do |entry|

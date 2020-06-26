@@ -49,10 +49,11 @@ RSpec.describe 'Projects tree', :js do
     expect(page).not_to have_selector('.flash-alert')
   end
 
-  context "with a tree that contains glob characters" do
+  context "with a tree that contains pathspec characters" do
     let(:path) { ':wq' }
     let(:filename) { File.join(path, 'test.txt') }
     let(:newrev) { project.repository.commit('master').sha }
+    let(:short_newrev) { project.repository.commit('master').short_id }
     let(:message) { 'Glob characters'}
 
     before do
@@ -61,11 +62,14 @@ RSpec.describe 'Projects tree', :js do
       wait_for_requests
     end
 
-    # Disabled until https://gitlab.com/gitlab-org/gitaly/-/issues/2888 is resolved
-    xit "renders tree table without errors" do
+    it "renders tree table without errors" do
       expect(page).to have_selector('.tree-item')
       expect(page).to have_content('test.txt')
       expect(page).to have_content(message)
+
+      # Check last commit
+      expect(find('.commit-content').text).to include(message)
+      expect(find('.commit-sha-group').text).to eq(short_newrev)
     end
   end
 

@@ -567,12 +567,6 @@ msgstr ""
 msgid "%{retryButtonStart}Try again%{retryButtonEnd} or %{newFileButtonStart}attach a new file%{newFileButtonEnd}"
 msgstr ""
 
-msgid "%{screenreaderOnlyStart}Keyboard shorcuts%{screenreaderOnlyEnd} Disabled"
-msgstr ""
-
-msgid "%{screenreaderOnlyStart}Keyboard shorcuts%{screenreaderOnlyEnd} Enabled"
-msgstr ""
-
 msgid "%{service_title} %{message}."
 msgstr ""
 
@@ -733,9 +727,6 @@ msgid "(%{mrCount} merged)"
 msgstr ""
 
 msgid "(No changes)"
-msgstr ""
-
-msgid "(Show all)"
 msgstr ""
 
 msgid "(check progress)"
@@ -11778,9 +11769,6 @@ msgstr[1] ""
 msgid "Hide values"
 msgstr ""
 
-msgid "Hiding all labels"
-msgstr ""
-
 msgid "High or unknown vulnerabilities present"
 msgstr ""
 
@@ -12939,9 +12927,6 @@ msgid "Key (PEM)"
 msgstr ""
 
 msgid "Key: %{key}"
-msgstr ""
-
-msgid "Keyboard Shortcuts"
 msgstr ""
 
 msgid "Keyboard shortcuts"
@@ -20565,12 +20550,6 @@ msgstr ""
 msgid "Service Desk is enabled but not yet active"
 msgstr ""
 
-msgid "Service Desk is off"
-msgstr ""
-
-msgid "Service Desk is on"
-msgstr ""
-
 msgid "Service Templates"
 msgstr ""
 
@@ -20891,9 +20870,6 @@ msgid "Showing Version #%{versionNumber}"
 msgstr ""
 
 msgid "Showing all issues"
-msgstr ""
-
-msgid "Showing all labels"
 msgstr ""
 
 msgid "Showing last %{size} of log -"

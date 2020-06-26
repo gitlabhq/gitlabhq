@@ -227,6 +227,34 @@ RSpec.describe Gitlab::Git::Commit, :seed_helper do
         end
       end
 
+      context 'pathspec' do
+        let(:pathspec) { 'files/ruby/*' }
+
+        context 'with default literal_pathspec value' do
+          it 'finds the seed commit' do
+            commit = described_class.last_for_path(repository, 'master', pathspec)
+
+            expect(commit.id).to eq(SeedRepo::Commit::ID)
+          end
+        end
+
+        context 'with literal_pathspec set to false' do
+          it 'finds the seed commit' do
+            commit = described_class.last_for_path(repository, 'master', pathspec, literal_pathspec: false)
+
+            expect(commit.id).to eq(SeedRepo::Commit::ID)
+          end
+        end
+
+        context 'with literal_pathspec set to true' do
+          it 'does not find the seed commit' do
+            commit = described_class.last_for_path(repository, 'master', pathspec, literal_pathspec: true)
+
+            expect(commit).to be_nil
+          end
+        end
+      end
+
       context 'ref + path' do
         subject { described_class.last_for_path(repository, SeedRepo::Commit::ID, 'encoding') }
 

@@ -16,9 +16,7 @@ exports[`Expiration Policy Form renders 1`] = `
     >
       <gl-toggle-stub
         id="expiration-policy-toggle"
-        labeloff="Toggle Status: OFF"
-        labelon="Toggle Status: ON"
-        labelposition="hidden"
+        labelposition="top"
       />
        
       <span

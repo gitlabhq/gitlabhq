@@ -99,10 +99,6 @@ module QA
             refresh
           end
 
-          def text_of_labels_block
-            find_element(:labels_block)
-          end
-
           def toggle_more_assignees_link
             click_element(:more_assignees_link)
           end

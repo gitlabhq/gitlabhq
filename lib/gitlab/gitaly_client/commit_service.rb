@@ -162,13 +162,14 @@ module Gitlab
         [response.left_count, response.right_count]
       end
 
-      def list_last_commits_for_tree(revision, path, offset: 0, limit: 25)
+      def list_last_commits_for_tree(revision, path, offset: 0, limit: 25, literal_pathspec: false)
         request = Gitaly::ListLastCommitsForTreeRequest.new(
           repository: @gitaly_repo,
           revision: encode_binary(revision),
           path: encode_binary(path.to_s),
           offset: offset,
-          limit: limit
+          limit: limit,
+          global_options: parse_global_options!(literal_pathspec: literal_pathspec)
         )
 
         response = GitalyClient.call(@repository.storage, :commit_service, :list_last_commits_for_tree, request, timeout: GitalyClient.medium_timeout)
@@ -185,7 +186,7 @@ module Gitlab
           repository: @gitaly_repo,
           revision: encode_binary(revision),
           path: encode_binary(path.to_s),
-          literal_pathspec: literal_pathspec
+          global_options: parse_global_options!(literal_pathspec: literal_pathspec)
         )
 
         gitaly_commit = GitalyClient.call(@repository.storage, :commit_service, :last_commit_for_path, request, timeout: GitalyClient.fast_timeout).commit
@@ -244,14 +245,15 @@ module Gitlab
         []
       end
 
-      def commits_by_message(query, revision: '', path: '', limit: 1000, offset: 0)
+      def commits_by_message(query, revision: '', path: '', limit: 1000, offset: 0, literal_pathspec: true)
         request = Gitaly::CommitsByMessageRequest.new(
           repository: @gitaly_repo,
           query: query,
           revision: encode_binary(revision),
           path: encode_binary(path),
           limit: limit.to_i,
-          offset: offset.to_i
+          offset: offset.to_i,
+          global_options: parse_global_options!(literal_pathspec: literal_pathspec)
         )
 
         GitalyClient.streaming_call(@repository.storage, :commit_service, :commits_by_message, request, timeout: GitalyClient.medium_timeout) do |response|
@@ -321,6 +323,7 @@ module Gitlab
           skip_merges:  options[:skip_merges],
           all:          !!options[:all],
           first_parent: !!options[:first_parent],
+          global_options: parse_global_options!(options),
           disable_walk: true # This option is deprecated. The 'walk' implementation is being removed.
         )
         request.after    = GitalyClient.timestamp(options[:after]) if options[:after]
@@ -407,6 +410,11 @@ module Gitlab
       end
 
       private
+
+      def parse_global_options!(options)
+        literal_pathspec = options.delete(:literal_pathspec)
+        Gitaly::GlobalOptions.new(literal_pathspecs: literal_pathspec)
+      end
 
       def call_commit_diff(request_params, options = {})
         request_params[:ignore_whitespace_change] = options.fetch(:ignore_whitespace_change, false)

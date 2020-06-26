@@ -1002,9 +1002,9 @@ module Gitlab
         end
       end
 
-      def list_last_commits_for_tree(sha, path, offset: 0, limit: 25)
+      def list_last_commits_for_tree(sha, path, offset: 0, limit: 25, literal_pathspec: false)
         wrapped_gitaly_errors do
-          gitaly_commit_client.list_last_commits_for_tree(sha, path, offset: offset, limit: limit)
+          gitaly_commit_client.list_last_commits_for_tree(sha, path, offset: offset, limit: limit, literal_pathspec: literal_pathspec)
         end
       end
 

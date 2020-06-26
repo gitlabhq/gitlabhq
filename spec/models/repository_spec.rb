@@ -253,7 +253,7 @@ RSpec.describe Repository do
       end
     end
 
-    context 'with filename with glob characters' do
+    context 'with filename with pathspec characters' do
       let(:filename) { ':wq' }
       let(:newrev) { project.repository.commit('master').sha }
 
@@ -292,7 +292,7 @@ RSpec.describe Repository do
       end
     end
 
-    context 'with filename with glob characters' do
+    context 'with filename with pathspec characters' do
       let(:filename) { ':wq' }
       let(:newrev) { project.repository.commit('master').sha }
 

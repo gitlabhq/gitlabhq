@@ -185,7 +185,7 @@ RSpec.describe API::Files do
         expect(response.content_type).to eq('application/json')
       end
 
-      context 'with filename with glob characters' do
+      context 'with filename with pathspec characters' do
         let(:file_path) { ':wq' }
         let(:newrev) { project.repository.commit('master').sha }
 
