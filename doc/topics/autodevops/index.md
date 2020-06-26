@@ -363,10 +363,12 @@ service account for your project. For help debugging this issue, see
 After upgrading to GitLab 13.0, you may encounter this message when deploying
 with Auto DevOps:
 
-> Detected an existing PostgreSQL database installed on the
+```plaintext
+Detected an existing PostgreSQL database installed on the
 deprecated channel 1, but the current channel is set to 2. The default
 channel changed to 2 in of GitLab 13.0.
-> [...]
+[...]
+```
 
 Auto DevOps, by default, installs an in-cluster PostgreSQL database alongside
 your application. The default installation method changed in GitLab 13.0, and

@@ -5,92 +5,17 @@
   .tree-ref-holder
     = render 'shared/ref_switcher', destination: 'tree', path: @path, show_create: true
 
-    - if on_top_of_branch?
-      - addtotree_toggle_attributes = { 'data-toggle': 'dropdown', 'data-target': '.add-to-tree-dropdown', 'data-boundary': 'window' }
-    - else
-      - addtotree_toggle_attributes = { title: _("You can only add files when you are on a branch"), data: { container: 'body' }, class: 'disabled has-tooltip' }
-
-  - if vue_file_list_enabled?
-    #js-repo-breadcrumb{ data: breadcrumb_data_attributes }
-  - else
-    %ul.breadcrumb.repo-breadcrumb
-      %li.breadcrumb-item
-        = link_to project_tree_path(@project, @ref) do
-          = @project.path
-      - path_breadcrumbs do |title, path|
-        %li.breadcrumb-item
-          = link_to truncate(title, length: 40), project_tree_path(@project, tree_join(@ref, path))
-
-      - if can_collaborate || can_create_mr_from_fork
-        %li.breadcrumb-item
-          %button.btn.add-to-tree.qa-add-to-tree{ addtotree_toggle_attributes, type: 'button' }
-            = sprite_icon('plus', size: 16, css_class: 'float-left')
-            = sprite_icon('chevron-down', size: 16, css_class: 'float-left')
-          - if on_top_of_branch?
-            .add-to-tree-dropdown
-              %ul.dropdown-menu
-                - if can_edit_tree?
-                  %li.dropdown-header
-                    #{ _('This directory') }
-                  %li
-                    = link_to project_new_blob_path(@project, @id), class: 'qa-new-file-option' do
-                      #{ _('New file') }
-                  %li
-                    = link_to '#modal-upload-blob', { 'data-target' => '#modal-upload-blob', 'data-toggle' => 'modal' } do
-                      #{ _('Upload file') }
-                  %li
-                    = link_to '#modal-create-new-dir', { 'data-target' => '#modal-create-new-dir', 'data-toggle' => 'modal' } do
-                      #{ _('New directory') }
-                - elsif can_create_mr_from_fork
-                  %li
-                    - continue_params = { to: project_new_blob_path(@project, @id),
-                                          notice: edit_in_new_fork_notice,
-                                          notice_now: edit_in_new_fork_notice_now }
-                    - fork_path = project_forks_path(@project, namespace_key: current_user.namespace.id, continue: continue_params)
-                    = link_to fork_path, method: :post do
-                      #{ _('New file') }
-                  %li
-                    - continue_params = { to: request.fullpath,
-                                          notice: edit_in_new_fork_notice + " Try to upload a file again.",
-                                          notice_now: edit_in_new_fork_notice_now }
-                    - fork_path = project_forks_path(@project, namespace_key: current_user.namespace.id, continue: continue_params)
-                    = link_to fork_path, method: :post do
-                      #{ _('Upload file') }
-                  %li
-                    - continue_params = { to: request.fullpath,
-                                          notice: edit_in_new_fork_notice + " Try to create a new directory again.",
-                                          notice_now: edit_in_new_fork_notice_now }
-                    - fork_path = project_forks_path(@project, namespace_key: current_user.namespace.id, continue: continue_params)
-                    = link_to fork_path, method: :post do
-                      #{ _('New directory') }
-
-                - if can?(current_user, :push_code, @project)
-                  %li.divider
-                  %li.dropdown-header
-                    #{ _('This repository') }
-                  %li
-                    = link_to new_project_branch_path(@project) do
-                      #{ _('New branch') }
-                  %li
-                    = link_to new_project_tag_path(@project) do
-                      #{ _('New tag') }
+  #js-repo-breadcrumb{ data: breadcrumb_data_attributes }
 
 .tree-controls
   .d-block.d-sm-flex.flex-wrap.align-items-start.gl-children-ml-sm-3<
     = render_if_exists 'projects/tree/lock_link'
-    - if vue_file_list_enabled?
-      #js-tree-history-link.d-inline-block{ data: { history_link: project_commits_path(@project, @ref) } }
-    - else
-      = link_to s_('Commits|History'), project_commits_path(@project, @id), class: 'btn'
+    #js-tree-history-link.d-inline-block{ data: { history_link: project_commits_path(@project, @ref) } }
 
     = render 'projects/find_file_link'
 
     - if can_collaborate || current_user&.already_forked?(@project)
-      - if vue_file_list_enabled?
-        #js-tree-web-ide-link.d-inline-block
-      - else
-        = link_to ide_edit_path(@project, @ref, @path), class: 'btn btn-default qa-web-ide-button' do
-          = _('Web IDE')
+      #js-tree-web-ide-link.d-inline-block
     - elsif can_create_mr_from_fork
       = link_to '#modal-confirm-fork', class: 'btn btn-default qa-web-ide-button', data: { target: '#modal-confirm-fork', toggle: 'modal'} do
         = _('Web IDE')

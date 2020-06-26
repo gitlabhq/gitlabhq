@@ -134,7 +134,9 @@ RSpec.describe Projects::Alerting::NotifyService do
               monitoring_tool: payload_raw.fetch(:monitoring_tool),
               service: payload_raw.fetch(:service),
               fingerprint: Digest::SHA1.hexdigest(fingerprint),
-              ended_at: nil
+              ended_at: nil,
+              prometheus_alert_id: nil,
+              environment_id: nil
             )
           end
 
@@ -193,7 +195,9 @@ RSpec.describe Projects::Alerting::NotifyService do
                 monitoring_tool: nil,
                 service: nil,
                 fingerprint: nil,
-                ended_at: nil
+                ended_at: nil,
+                prometheus_alert_id: nil,
+                environment_id: nil
               )
             end
           end

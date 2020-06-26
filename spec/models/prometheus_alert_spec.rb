@@ -33,6 +33,10 @@ RSpec.describe PrometheusAlert do
   describe 'associations' do
     it { is_expected.to belong_to(:project) }
     it { is_expected.to belong_to(:environment) }
+    it { is_expected.to belong_to(:prometheus_metric) }
+    it { is_expected.to have_many(:prometheus_alert_events) }
+    it { is_expected.to have_many(:related_issues) }
+    it { is_expected.to have_many(:alert_management_alerts) }
   end
 
   describe 'project validations' do

@@ -80,7 +80,7 @@ export default {
         <table-header v-once />
         <tbody>
           <parent-row
-            v-show="showParentRow"
+            v-if="showParentRow"
             :commit-ref="escapedRef"
             :path="path"
             :loading-path="loadingPath"

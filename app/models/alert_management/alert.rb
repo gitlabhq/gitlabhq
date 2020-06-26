@@ -30,6 +30,8 @@ module AlertManagement
 
     belongs_to :project
     belongs_to :issue, optional: true
+    belongs_to :prometheus_alert, optional: true
+    belongs_to :environment, optional: true
 
     has_many :alert_assignees, inverse_of: :alert
     has_many :assignees, through: :alert_assignees

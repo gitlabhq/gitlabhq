@@ -18,6 +18,7 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching do
   it { is_expected.to belong_to(:project).required }
   it { is_expected.to have_many(:deployments) }
   it { is_expected.to have_many(:metrics_dashboard_annotations) }
+  it { is_expected.to have_many(:alert_management_alerts) }
 
   it { is_expected.to delegate_method(:stop_action).to(:last_deployment) }
   it { is_expected.to delegate_method(:manual_actions).to(:last_deployment) }

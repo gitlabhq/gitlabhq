@@ -1,13 +1,16 @@
 # frozen_string_literal: true
 
-# A collection of Commit instances for a specific Git reference.
+# A collection of Commit instances for a specific container and Git reference.
 class CommitCollection
   include Enumerable
   include Gitlab::Utils::StrongMemoize
 
   attr_reader :container, :ref, :commits
 
-  # container - The object the commits belong to (each commit project will be used if not provided).
+  delegate :repository, to: :container, allow_nil: true
+  delegate :project, to: :repository, allow_nil: true
+
+  # container - The object the commits belong to.
   # commits - The Commit instances to store.
   # ref - The name of the ref (e.g. "master").
   def initialize(container, commits, ref = nil)
@@ -39,13 +42,12 @@ class CommitCollection
   # Setting the pipeline for each commit ahead of time removes the need for running
   # a query for every commit we're displaying.
   def with_latest_pipeline(ref = nil)
-    # since commit ids are not unique across all projects, use project_key = true to get commits by project
-    pipelines = ::Ci::Pipeline.ci_sources.latest_pipeline_per_commit(map(&:id), ref, project_key: true)
+    return self unless project
 
-    # set the pipeline for each commit by project_id and commit for the latest pipeline for ref
+    pipelines = project.ci_pipelines.latest_pipeline_per_commit(map(&:id), ref)
+
     each do |commit|
-      project_id = container&.id || commit.project_id
-      commit.set_latest_pipeline_for_ref(ref, pipelines.dig(project_id, commit.id))
+      commit.set_latest_pipeline_for_ref(ref, pipelines[commit.id])
     end
 
     self
@@ -62,19 +64,16 @@ class CommitCollection
   # Batch load any commits that are not backed by full gitaly data, and
   # replace them in the collection.
   def enrich!
-    return self if fully_enriched?
-
-    # Batch load full Commits from the repository
-    # and map to a Hash of id => Commit
-
     # A container is needed in order to fetch data from gitaly. Containers
     # can be absent from commits in certain rare situations (like when
     # viewing a MR of a deleted fork). In these cases, assume that the
     # enriched data is not needed.
-    commits_to_enrich = unenriched.select { |c| container.present? || c.container.present? }
-    replacements = Hash[commits_to_enrich.map do |c|
-      commit_container = container || c.container
-      [c.id, Commit.lazy(commit_container, c.id)]
+    return self if container.blank? || fully_enriched?
+
+    # Batch load full Commits from the repository
+    # and map to a Hash of id => Commit
+    replacements = Hash[unenriched.map do |c|
+      [c.id, Commit.lazy(container, c.id)]
     end.compact]
 
     # Replace the commits, keeping the same order

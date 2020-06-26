@@ -8736,6 +8736,8 @@ CREATE TABLE public.alert_management_alerts (
     monitoring_tool text,
     hosts text[] DEFAULT '{}'::text[] NOT NULL,
     payload jsonb DEFAULT '{}'::jsonb NOT NULL,
+    prometheus_alert_id integer,
+    environment_id integer,
     CONSTRAINT check_2df3e2fdc1 CHECK ((char_length(monitoring_tool) <= 100)),
     CONSTRAINT check_5e9e57cadb CHECK ((char_length(description) <= 1000)),
     CONSTRAINT check_bac14dddde CHECK ((char_length(service) <= 100)),
@@ -18337,11 +18339,15 @@ CREATE INDEX index_alert_assignees_on_alert_id ON public.alert_management_alert_
 
 CREATE UNIQUE INDEX index_alert_assignees_on_user_id_and_alert_id ON public.alert_management_alert_assignees USING btree (user_id, alert_id);
 
+CREATE INDEX index_alert_management_alerts_on_environment_id ON public.alert_management_alerts USING btree (environment_id) WHERE (environment_id IS NOT NULL);
+
 CREATE INDEX index_alert_management_alerts_on_issue_id ON public.alert_management_alerts USING btree (issue_id);
 
 CREATE UNIQUE INDEX index_alert_management_alerts_on_project_id_and_fingerprint ON public.alert_management_alerts USING btree (project_id, fingerprint);
 
 CREATE UNIQUE INDEX index_alert_management_alerts_on_project_id_and_iid ON public.alert_management_alerts USING btree (project_id, iid);
+
+CREATE INDEX index_alert_management_alerts_on_prometheus_alert_id ON public.alert_management_alerts USING btree (prometheus_alert_id) WHERE (prometheus_alert_id IS NOT NULL);
 
 CREATE UNIQUE INDEX index_alert_user_mentions_on_alert_id ON public.alert_management_alert_user_mentions USING btree (alert_management_alert_id) WHERE (note_id IS NULL);
 
@@ -20779,6 +20785,9 @@ ALTER TABLE ONLY public.geo_event_log
 ALTER TABLE ONLY public.ci_build_trace_sections
     ADD CONSTRAINT fk_4ebe41f502 FOREIGN KEY (build_id) REFERENCES public.ci_builds(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY public.alert_management_alerts
+    ADD CONSTRAINT fk_51ab4b6089 FOREIGN KEY (prometheus_alert_id) REFERENCES public.prometheus_alerts(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY public.path_locks
     ADD CONSTRAINT fk_5265c98f24 FOREIGN KEY (project_id) REFERENCES public.projects(id) ON DELETE CASCADE;
 
@@ -20985,6 +20994,9 @@ ALTER TABLE ONLY public.merge_requests
 
 ALTER TABLE ONLY public.epics
     ADD CONSTRAINT fk_aa5798e761 FOREIGN KEY (closed_by_id) REFERENCES public.users(id) ON DELETE SET NULL;
+
+ALTER TABLE ONLY public.alert_management_alerts
+    ADD CONSTRAINT fk_aad61aedca FOREIGN KEY (environment_id) REFERENCES public.environments(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY public.identities
     ADD CONSTRAINT fk_aade90f0fc FOREIGN KEY (saml_provider_id) REFERENCES public.saml_providers(id) ON DELETE CASCADE;
@@ -23400,6 +23412,7 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200618134723
 20200619154527
 20200619154528
+20200622040750
 20200622070606
 20200622070620
 20200622095419
@@ -23411,5 +23424,6 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200623170000
 20200623185440
 20200624075411
+20200625045442
 \.
 

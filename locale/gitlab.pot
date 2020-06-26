@@ -26156,9 +26156,6 @@ msgstr ""
 msgid "You can now submit a merge request to get this change into the original project."
 msgstr ""
 
-msgid "You can only add files when you are on a branch"
-msgstr ""
-
 msgid "You can only edit files when you are on a branch"
 msgstr ""
 

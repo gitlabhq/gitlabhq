@@ -51,9 +51,12 @@ module QA
           element :quick_actions
         end
 
-        view 'app/views/projects/tree/_tree_header.html.haml' do
+        view 'app/assets/javascripts/repository/components/breadcrumbs.vue' do
           element :add_to_tree
           element :new_file_option
+        end
+
+        view 'app/assets/javascripts/repository/index.js' do
           element :web_ide_button
         end
 

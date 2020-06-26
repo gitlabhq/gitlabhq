@@ -5,7 +5,9 @@ require 'spec_helper'
 RSpec.describe AlertManagement::Alert do
   describe 'associations' do
     it { is_expected.to belong_to(:project) }
-    it { is_expected.to belong_to(:issue) }
+    it { is_expected.to belong_to(:issue).optional }
+    it { is_expected.to belong_to(:prometheus_alert).optional }
+    it { is_expected.to belong_to(:environment).optional }
     it { is_expected.to have_many(:assignees).through(:alert_assignees) }
     it { is_expected.to have_many(:notes) }
     it { is_expected.to have_many(:ordered_notes) }

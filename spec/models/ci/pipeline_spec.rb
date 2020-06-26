@@ -1923,37 +1923,6 @@ RSpec.describe Ci::Pipeline, :mailer do
       end
     end
 
-    context 'when there are two pipelines for a ref, sha across multiple projects' do
-      let(:project_2) { create(:project) }
-
-      let!(:commit_456_project_2_ref_test) do
-        create(
-          :ci_empty_pipeline,
-          status: 'success',
-          ref: 'test',
-          sha: '456',
-          project: project_2
-        )
-      end
-
-      context 'when project_key is false' do
-        it 'returns the latest pipeline' do
-          result = described_class.latest_pipeline_per_commit(%w[456])
-
-          expect(result).to match('456' => commit_456_project_2_ref_test)
-        end
-      end
-
-      context 'when project_key is true' do
-        it 'returns the latest pipeline per project' do
-          result = described_class.latest_pipeline_per_commit(%w[456], project_key: true)
-
-          expect(result[project.id]).to match('456' => commit_456_ref_test)
-          expect(result[project_2.id]).to match('456' => commit_456_project_2_ref_test)
-        end
-      end
-    end
-
     context 'with a ref' do
       it 'only includes the pipelines for the given ref' do
         result = described_class.latest_pipeline_per_commit(%w[123 456], 'master')

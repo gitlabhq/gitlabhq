@@ -20,21 +20,13 @@ class Projects::TreeController < Projects::ApplicationController
   end
 
   def show
-    return render_404 unless @repository.commit(@ref)
+    return render_404 unless @commit
 
     if tree.entries.empty?
       if @repository.blob_at(@commit.id, @path)
         return redirect_to project_blob_path(@project, File.join(@ref, @path))
       elsif @path.present?
         return redirect_to_tree_root_for_missing_path(@project, @ref, @path)
-      end
-    end
-
-    respond_to do |format|
-      format.html do
-        lfs_blob_ids if Feature.disabled?(:vue_file_list, @project, default_enabled: true)
-
-        @last_commit = @repository.last_commit_for_path(@commit.id, @tree.path, literal_pathspec: true) || @commit
       end
     end
   end

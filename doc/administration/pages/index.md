@@ -190,7 +190,7 @@ control over how the Pages daemon runs and serves content in your environment.
 | Setting | Description |
 | ------- | ----------- |
 | `pages_external_url` | The URL where GitLab Pages is accessible, including protocol (HTTP / HTTPS). If `https://` is used, you must also set `gitlab_pages['ssl_certificate']` and `gitlab_pages['ssl_certificate_key']`.
-| **gitlab_pages[]** | |
+| `gitlab_pages[]` | |
 | `access_control` |  Whether to enable [access control](index.md#access-control).
 | `api_secret_key`  | Full path to file with secret key used to authenticate with the GitLab API. Auto-generated when left unset.
 | `artifacts_server` |  Enable viewing [artifacts](../job_artifacts.md) in GitLab Pages.
@@ -225,14 +225,14 @@ control over how the Pages daemon runs and serves content in your environment.
 | `tls_max_version` |  Specifies the maximum SSL/TLS version ("ssl3", "tls1.0", "tls1.1" or "tls1.2").
 | `tls_min_version` |  Specifies the minimum SSL/TLS version ("ssl3", "tls1.0", "tls1.1" or "tls1.2").
 | `use_http2` |  Enable HTTP2 support.
-| **gitlab_pages['env'][]** | |
+| `gitlab_pages['env'][]` | |
 | `http_proxy` |  Configure GitLab Pages to use an HTTP Proxy to mediate traffic between Pages and GitLab. Sets an environment variable `http_proxy` when starting Pages daemon.
-| **gitlab_rails[]** | |
+| `gitlab_rails[]` | |
 | `pages_domain_verification_cron_worker` | Schedule for verifying custom GitLab Pages domains.
 | `pages_domain_ssl_renewal_cron_worker` | Schedule for obtaining and renewing SSL certificates through Let's Encrypt for GitLab Pages domains.
 | `pages_domain_removal_cron_worker` | Schedule for removing unverified custom GitLab Pages domains.
 | `pages_path` | The directory on disk where pages are stored, defaults to `GITLAB-RAILS/shared/pages`.
-| **pages_nginx[]** | |
+| `pages_nginx[]` | |
 | `enable` | Include a virtual host `server{}` block for Pages inside NGINX. Needed for NGINX to proxy traffic back to the Pages daemon. Set to `false` if the Pages daemon should directly receive all requests, for example, when using [custom domains](index.md#custom-domains).
 
 ---

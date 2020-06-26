@@ -352,10 +352,15 @@ const normalizeStringResult = result => [
  * [
  *  {
  *    "metric": { "<label_name>": "<label_value>", ... },
- *    "value": [ <unix_time>, "<sample_value>" ]
+ *    "value": [ <unix_time>, "<sample_value>" ],
+ *    "values": [ [ <unix_time>, "<sample_value>" ] ]
  *  },
  *  ...
  * ]
+ *
+ * `metric` - Key-value pairs object representing metric measured
+ * `value` - The vector result
+ * `values` - An array with a single value representing the result
  *
  * This method also adds the matrix version of the vector
  * by introducing a `values` array with a single element. This
@@ -379,16 +384,28 @@ const normalizeVectorResult = result =>
  *
  * {
  *   "metric": { "<label_name>": "<label_value>", ... },
+ *   "value": [ <unix_time>, "<sample_value>" ],
  *   "values": [ [ <unix_time>, "<sample_value>" ], ... ]
  * },
+ *
+ * `metric` - Key-value pairs object representing metric measured
+ * `value` - The last (more recent) result
+ * `values` - A range of results for the metric
  *
  * See https://prometheus.io/docs/prometheus/latest/querying/api/#range-vectors
  *
  * @param {array} result
- * @returns {array}
+ * @returns {object} Normalized result.
  */
 const normalizeResultMatrix = result =>
-  result.map(({ metric, values }) => ({ metric, values: values.map(mapScalarValue) }));
+  result.map(({ metric, values }) => {
+    const mappedValues = values.map(mapScalarValue);
+    return {
+      metric,
+      value: mappedValues[mappedValues.length - 1],
+      values: mappedValues,
+    };
+  });
 
 /**
  * Parse response data from a Prometheus Query that comes

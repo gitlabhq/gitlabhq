@@ -411,8 +411,8 @@ module Issuable
     changes = previous_changes
 
     if old_associations
-      old_labels = old_associations.fetch(:labels, [])
-      old_assignees = old_associations.fetch(:assignees, [])
+      old_labels = old_associations.fetch(:labels, labels)
+      old_assignees = old_associations.fetch(:assignees, assignees)
 
       if old_labels != labels
         changes[:labels] = [old_labels.map(&:hook_attrs), labels.map(&:hook_attrs)]
@@ -423,7 +423,7 @@ module Issuable
       end
 
       if self.respond_to?(:total_time_spent)
-        old_total_time_spent = old_associations.fetch(:total_time_spent, nil)
+        old_total_time_spent = old_associations.fetch(:total_time_spent, total_time_spent)
 
         if old_total_time_spent != total_time_spent
           changes[:total_time_spent] = [old_total_time_spent, total_time_spent]

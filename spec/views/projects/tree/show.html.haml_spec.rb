@@ -39,26 +39,4 @@ RSpec.describe 'projects/tree/show' do
       expect(rendered).to have_css('.js-project-refs-dropdown .dropdown-toggle-text', text: ref)
     end
   end
-
-  context 'commit signatures' do
-    context 'with vue tree view disabled' do
-      before do
-        stub_feature_flags(vue_file_list: false)
-      end
-
-      it 'rendered via js-signature-container' do
-        render
-
-        expect(rendered).to have_css('.js-signature-container')
-      end
-    end
-
-    context 'with vue tree view enabled' do
-      it 'are not rendered via js-signature-container' do
-        render
-
-        expect(rendered).not_to have_css('.js-signature-container')
-      end
-    end
-  end
 end

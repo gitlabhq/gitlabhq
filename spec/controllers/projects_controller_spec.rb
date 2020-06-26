@@ -386,36 +386,6 @@ RSpec.describe ProjectsController do
       end
     end
 
-    context 'lfs_blob_ids instance variable' do
-      let(:project) { create(:project, :public, :repository) }
-
-      before do
-        sign_in(user)
-      end
-
-      context 'with vue tree view enabled' do
-        before do
-          get :show, params: { namespace_id: project.namespace, id: project }
-        end
-
-        it 'is not set' do
-          expect(assigns[:lfs_blob_ids]).to be_nil
-        end
-      end
-
-      context 'with vue tree view disabled' do
-        before do
-          stub_feature_flags(vue_file_list: false)
-
-          get :show, params: { namespace_id: project.namespace, id: project }
-        end
-
-        it 'is set' do
-          expect(assigns[:lfs_blob_ids]).not_to be_nil
-        end
-      end
-    end
-
     context 'namespace storage limit' do
       let_it_be(:project) { create(:project, :public, :repository ) }
       let(:namespace) { project.namespace }

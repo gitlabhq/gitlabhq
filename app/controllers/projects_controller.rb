@@ -22,7 +22,6 @@ class ProjectsController < Projects::ApplicationController
   before_action :assign_ref_vars, if: -> { action_name == 'show' && repo_exists? }
   before_action :tree,
     if: -> { action_name == 'show' && repo_exists? && project_view_files? }
-  before_action :lfs_blob_ids, if: :show_blob_ids?, only: :show
   before_action :project_export_enabled, only: [:export, :download_export, :remove_export, :generate_new_export]
   before_action :present_project, only: [:edit]
   before_action :authorize_download_code!, only: [:refs]
@@ -301,10 +300,6 @@ class ProjectsController < Projects::ApplicationController
   end
 
   private
-
-  def show_blob_ids?
-    repo_exists? && project_view_files? && Feature.disabled?(:vue_file_list, @project, default_enabled: true)
-  end
 
   # Render project landing depending of which features are available
   # So if page is not available in the list it renders the next page
