@@ -72,7 +72,7 @@ Plans are underway for supporting the following languages, dependency managers, 
 
 | Language (package managers)  | Supported files | Scan tool(s) | Issue |
 |----------------------------- | --------------- | ------------ | ----- |
-| Python ([Poetry](http://python-poetry.org/)) | `poetry.lock` | [Gemnasium](https://gitlab.com/gitlab-org/security-products/gemnasium) | [GitLab#7006](https://gitlab.com/gitlab-org/gitlab/-/issues/7006) |
+| Python ([Poetry](https://python-poetry.org/)) | `poetry.lock` | [Gemnasium](https://gitlab.com/gitlab-org/security-products/gemnasium) | [GitLab#7006](https://gitlab.com/gitlab-org/gitlab/-/issues/7006) |
 | Python ([Pipenv](https://pipenv.pypa.io/en/latest/)) | `Pipfile.lock` | [Gemnasium](https://gitlab.com/gitlab-org/security-products/gemnasium) | [GitLab#11756](https://gitlab.com/gitlab-org/gitlab/-/issues/11756) |
 
 ## Contribute your scanner

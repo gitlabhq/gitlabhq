@@ -19,7 +19,11 @@ module WikiActions
     end
 
     before_action only: [:edit, :update], unless: :valid_encoding? do
-      redirect_to wiki_page_path(wiki, page)
+      if params[:id].present?
+        redirect_to wiki_page_path(wiki, page || params[:id])
+      else
+        redirect_to wiki_path(wiki)
+      end
     end
   end
 

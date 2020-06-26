@@ -93,7 +93,7 @@ class Iteration < ApplicationRecord
 
   # ensure dates do not overlap with other Iterations in the same group/project
   def dates_do_not_overlap
-    return unless resource_parent.iterations.within_timeframe(start_date, due_date).exists?
+    return unless resource_parent.iterations.where.not(id: self.id).within_timeframe(start_date, due_date).exists?
 
     errors.add(:base, s_("Iteration|Dates cannot overlap with other existing Iterations"))
   end

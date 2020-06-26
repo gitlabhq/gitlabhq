@@ -1050,8 +1050,7 @@ Alerts can be used to trigger actions, like opening an issue automatically (disa
 1. Optionally, select whether to send an email notification to the developers of the project.
 1. Click **Save changes**.
 
-Once enabled, an issue will be opened automatically when an alert is triggered which contains values extracted from [alert's payload](https://prometheus.io/docs/alerting/configuration/#webhook_config
-):
+Once enabled, an issue will be opened automatically when an alert is triggered which contains values extracted from [alert's payload](https://prometheus.io/docs/alerting/latest/configuration/#webhook_config):
 
 - Issue author: `GitLab Alert Bot`
 - Issue title: Extract from `annotations/title`, `annotations/summary` or `labels/alertname`

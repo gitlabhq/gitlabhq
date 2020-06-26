@@ -211,8 +211,26 @@ RSpec.shared_examples 'wiki controller actions' do
     end
   end
 
-  describe 'GET #edit' do
-    subject { get(:edit, params: routing_params.merge(id: wiki_title)) }
+  shared_examples 'edit action' do
+    context 'when the page does not exist' do
+      let(:id_param) { 'invalid' }
+
+      it 'redirects to show' do
+        subject
+
+        expect(response).to redirect_to_wiki(wiki, 'invalid')
+      end
+    end
+
+    context 'when id param is blank' do
+      let(:id_param) { ' ' }
+
+      it 'redirects to the home page' do
+        subject
+
+        expect(response).to redirect_to_wiki(wiki, 'home')
+      end
+    end
 
     context 'when page content encoding is invalid' do
       it 'redirects to show' do
@@ -236,6 +254,14 @@ RSpec.shared_examples 'wiki controller actions' do
         expect(response).to redirect_to_wiki(wiki, page)
       end
     end
+  end
+
+  describe 'GET #edit' do
+    let(:id_param) { wiki_title }
+
+    subject { get(:edit, params: routing_params.merge(id: id_param)) }
+
+    it_behaves_like 'edit action'
 
     context 'when page content encoding is valid' do
       render_views
@@ -252,23 +278,17 @@ RSpec.shared_examples 'wiki controller actions' do
   describe 'PATCH #update' do
     let(:new_title) { 'New title' }
     let(:new_content) { 'New content' }
+    let(:id_param) { wiki_title }
 
     subject do
       patch(:update,
             params: routing_params.merge(
-              id: wiki_title,
+              id: id_param,
               wiki: { title: new_title, content: new_content }
             ))
     end
 
-    context 'when page content encoding is invalid' do
-      it 'redirects to show' do
-        allow(controller).to receive(:valid_encoding?).and_return(false)
-
-        subject
-        expect(response).to redirect_to_wiki(wiki, wiki.list_pages.first)
-      end
-    end
+    it_behaves_like 'edit action'
 
     context 'when page content encoding is valid' do
       render_views

@@ -1233,6 +1233,9 @@ msgstr ""
 msgid "Action to take when receiving an alert."
 msgstr ""
 
+msgid "Actions"
+msgstr ""
+
 msgid "Activate"
 msgstr ""
 
@@ -2252,6 +2255,9 @@ msgid "An error occurred when trying to resolve a discussion. Please try again."
 msgstr ""
 
 msgid "An error occurred when updating the issue weight"
+msgstr ""
+
+msgid "An error occurred while acknowledging the notification. Refresh the page and try again."
 msgstr ""
 
 msgid "An error occurred while adding formatted title for epic"
@@ -8231,6 +8237,9 @@ msgstr ""
 msgid "Edit issues"
 msgstr ""
 
+msgid "Edit iteration"
+msgstr ""
+
 msgid "Edit public deploy key"
 msgstr ""
 
@@ -9507,6 +9516,12 @@ msgid "Failed to get ref."
 msgstr ""
 
 msgid "Failed to install."
+msgstr ""
+
+msgid "Failed to load assignees. Please try again."
+msgstr ""
+
+msgid "Failed to load authors. Please try again."
 msgstr ""
 
 msgid "Failed to load emoji list."
@@ -12662,6 +12677,9 @@ msgstr ""
 msgid "Iteration removed"
 msgstr ""
 
+msgid "Iteration updated"
+msgstr ""
+
 msgid "Iterations"
 msgstr ""
 
@@ -14884,9 +14902,6 @@ msgid "New Issue"
 msgid_plural "New Issues"
 msgstr[0] ""
 msgstr[1] ""
-
-msgid "New Iteration"
-msgstr ""
 
 msgid "New Jira import"
 msgstr ""
@@ -24513,6 +24528,9 @@ msgid "Update failed. Please try again."
 msgstr ""
 
 msgid "Update it"
+msgstr ""
+
+msgid "Update iteration"
 msgstr ""
 
 msgid "Update now"

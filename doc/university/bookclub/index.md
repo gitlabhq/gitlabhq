@@ -15,7 +15,7 @@ See the [book list](booklist.md) for additional recommendations.
 1. **Remote: Office not required**
 
    David Heinemeier Hansson and Jason Fried, 2013
-   ([amazon](https://www.amazon.co.uk/Remote-Required-David-Heinemeier-Hansson/dp/0091954673))
+   ([Amazon](https://www.amazon.co.uk/dp/0091954673/ref=cm_sw_r_tw_dp_x_0yy9EbZ2WXJ6Y))
 
 1. **The Year Without Pants**
 

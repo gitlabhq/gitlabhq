@@ -54,7 +54,7 @@ repository that were written using some of the nuances of GitLab's RedCarpet ver
 of Markdown. Since CommonMark uses slightly stricter syntax, these documents
 might now appear a little differently since we have transitioned to CommonMark.
 
-It's usually quite easy to fix. For example, numbered lists with nested lists may
+For example, numbered lists with nested lists may
 render incorrectly:
 
 ```markdown
@@ -63,8 +63,8 @@ render incorrectly:
   - milk
 ```
 
-Simply add a space to each nested item to align the `-` with the first character of
-the top list item (`C` in this case):
+To correct their rendering, add a space to each nested item to align the `-` with the first
+character of the top list item (`C` in this case):
 
 ```markdown
 1. Chocolate
@@ -241,7 +241,7 @@ Sometimes you want to :monkey: around a bit and add some :star2: to your :speech
 
 You can use it to point out a :bug: or warn about :speak_no_evil: patches. And if someone improves your really :snail: code, send them some :birthday:. People will :heart: you for that.
 
-If you're new to this, don't be :fearful:. You can easily join the emoji :family:. All you need to do is to look up one of the supported codes.
+If you're new to this, don't be :fearful:. You can join the emoji :family:. All you need to do is to look up one of the supported codes.
 
 Consult the [Emoji Cheat Sheet](https://www.emojicopy.com) for a list of all supported emoji codes. :thumbsup:
 ```
@@ -252,7 +252,7 @@ Sometimes you want to <img src="https://gitlab.com/gitlab-org/gitlab-foss/raw/ma
 
 You can use it to point out a <img src="https://gitlab.com/gitlab-org/gitlab-foss/raw/master/app/assets/images/emoji/bug.png" width="20px" height="20px" style="display:inline;margin:0"> or warn about <img src="https://gitlab.com/gitlab-org/gitlab-foss/raw/master/app/assets/images/emoji/speak_no_evil.png" width="20px" height="20px" style="display:inline;margin:0"> patches. And if someone improves your really <img src="https://gitlab.com/gitlab-org/gitlab-foss/raw/master/app/assets/images/emoji/snail.png" width="20px" height="20px" style="display:inline;margin:0"> code, send them some <img src="https://gitlab.com/gitlab-org/gitlab-foss/raw/master/app/assets/images/emoji/birthday.png" width="20px" height="20px" style="display:inline;margin:0">. People will <img src="https://gitlab.com/gitlab-org/gitlab-foss/raw/master/app/assets/images/emoji/heart.png" width="20px" height="20px" style="display:inline;margin:0"> you for that.
 
-If you're new to this, don't be <img src="https://gitlab.com/gitlab-org/gitlab-foss/raw/master/app/assets/images/emoji/fearful.png" width="20px" height="20px" style="display:inline;margin:0">. You can easily join the emoji <img src="https://gitlab.com/gitlab-org/gitlab-foss/raw/master/app/assets/images/emoji/family.png" width="20px" height="20px" style="display:inline;margin:0">. All you need to do is to look up one of the supported codes.
+If you're new to this, don't be <img src="https://gitlab.com/gitlab-org/gitlab-foss/raw/master/app/assets/images/emoji/fearful.png" width="20px" height="20px" style="display:inline;margin:0">. You can join the emoji <img src="https://gitlab.com/gitlab-org/gitlab-foss/raw/master/app/assets/images/emoji/family.png" width="20px" height="20px" style="display:inline;margin:0">. All you need to do is to look up one of the supported codes.
 
 Consult the [Emoji Cheat Sheet](https://www.webfx.com/tools/emoji-cheat-sheet/) for a list of all supported emoji codes. <img src="https://gitlab.com/gitlab-org/gitlab-foss/raw/master/app/assets/images/emoji/thumbsup.png" width="20px" height="20px" style="display:inline;margin:0">
 
@@ -407,9 +407,9 @@ the [Asciidoctor user manual](https://asciidoctor.org/docs/user-manual/#activati
 
 ### Special GitLab references
 
-GFM recognizes special GitLab related references. For example, you can easily reference
+GFM recognizes special GitLab related references. For example, you can reference
 an issue, a commit, a team member, or even the whole team within a project. GFM will turn
-that reference into a link so you can navigate between them easily.
+that reference into a link so you can navigate between them.
 
 Additionally, GFM recognizes certain cross-project references and also has a shorthand
 version to reference other projects from the same namespace.
@@ -589,7 +589,7 @@ If a functionality is extended, the new option will be listed as a sub-section.
 
 ### Blockquotes
 
-Blockquotes are an easy way to highlight information, such as a side-note. It's generated
+Blockquotes are useful to highlight information, such as a side-note. It's generated
 by starting the lines of the blockquote with `>`:
 
 ```markdown
@@ -635,9 +635,9 @@ you can quote that without having to manually prepend `>` to every line!
 
 ### Code spans and blocks
 
-You can easily highlight anything that should be viewed as code and not simple text.
+You can highlight anything that should be viewed as code and not simple text.
 
-Simple inline code is easily highlighted with single backticks `` ` ``:
+Simple inline code is highlighted with single backticks `` ` ``:
 
 ```markdown
 Inline `code` has `back-ticks around` it.
@@ -1148,7 +1148,7 @@ A line break will be inserted (a new paragraph will start) if the previous text 
 ended with two newlines, like when you hit <kbd>Enter</kbd> twice in a row. If you only
 use one newline (hit <kbd>Enter</kbd> once), the next sentence will be part of the
 same paragraph. This is useful if you want to keep long lines from wrapping, and keep
-them easily editable:
+them editable:
 
 ```markdown
 Here's a line for us to start with.
@@ -1273,7 +1273,7 @@ GFM will auto-link almost any URL you put into your text:
 
 ### Lists
 
-Ordered and unordered lists can be easily created.
+Ordered and unordered lists can be created.
 
 For an ordered list, add the number you want the list
 to start with, like `1.`, followed by a space, at the start of each line for ordered lists.

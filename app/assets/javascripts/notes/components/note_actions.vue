@@ -257,15 +257,6 @@ export default {
             {{ __('Copy link') }}
           </button>
         </li>
-        <li v-if="canEdit">
-          <button
-            class="btn btn-transparent js-note-delete js-note-delete"
-            type="button"
-            @click.prevent="onDelete"
-          >
-            <span class="text-danger">{{ __('Delete comment') }}</span>
-          </button>
-        </li>
         <li v-if="isIssue">
           <button
             class="btn-default btn-transparent"
@@ -274,6 +265,15 @@ export default {
             @click="assignUser"
           >
             {{ displayAssignUserText }}
+          </button>
+        </li>
+        <li v-if="canEdit">
+          <button
+            class="btn btn-transparent js-note-delete js-note-delete"
+            type="button"
+            @click.prevent="onDelete"
+          >
+            <span class="text-danger">{{ __('Delete comment') }}</span>
           </button>
         </li>
       </ul>

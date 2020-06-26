@@ -75,7 +75,11 @@ export default {
         name="eye-slash"
         class="suggestion-help-hover mr-1 suggestion-confidential"
       />
-      <gl-link :href="suggestion.webUrl" target="_blank" class="suggestion bold str-truncated-100">
+      <gl-link
+        :href="suggestion.webUrl"
+        target="_blank"
+        class="suggestion bold str-truncated-100 gl-text-gray-900!"
+      >
         {{ suggestion.title }}
       </gl-link>
     </div>

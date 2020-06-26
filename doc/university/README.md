@@ -72,7 +72,7 @@ The GitLab University curriculum is composed of GitLab videos, screencasts, pres
 
 1. [Getting Help](https://about.gitlab.com/get-help/)
    - Proposing Features and Reporting and Tracking bugs for GitLab
-   - The GitLab IRC channel, Gitter Chat Room, Community Forum and Mailing List
+   - The GitLab IRC channel, Gitter Chat Room, Community Forum, and Mailing List
    - Getting Technical Support
    - Being part of our Great Community and Contributing to GitLab
 1. [Getting Started with the GitLab Development Kit (GDK)](https://about.gitlab.com/blog/2016/06/08/getting-started-with-gitlab-development-kit/)
@@ -140,11 +140,11 @@ The GitLab University curriculum is composed of GitLab videos, screencasts, pres
 
 ## 3. GitLab Advanced
 
-### 3.1. Dev Ops
+### 3.1. DevOps
 
-1. [Xebia Labs: Dev Ops Terminology](https://xebialabs.com/glossary/)
-1. [Xebia Labs: Periodic Table of DevOps Tools](https://xebialabs.com/periodic-table-of-devops-tools/)
-1. [Puppet Labs: State of Dev Ops 2016 - Book](https://puppet.com/resources/report/2016-state-devops-report/)
+1. [XebiaLabs: DevOps Terminology](https://xebialabs.com/glossary/)
+1. [XebiaLabs: Periodic Table of DevOps Tools](https://digital.ai/periodic-table-of-devops-tools)
+1. [Puppet Labs: State of DevOps 2016 - Book](https://puppet.com/resources/report/2016-state-devops-report/)
 
 ### 3.2. Installing GitLab with Omnibus
 

@@ -38,7 +38,7 @@ From there you can create a new iteration or click an iteration to get a more de
 ## Create an iteration
 
 NOTE: **Note:**
-A permission level of [Developer or higher](../../permissions.md) is required to create iterations.
+You need Developer [permissions](../../permissions.md) or higher to create an iteration.
 
 To create an iteration:
 
@@ -47,7 +47,16 @@ To create an iteration:
 1. Enter the title, a description (optional), a start date, and a due date.
 1. Click **Create iteration**. The iteration details page opens.
 
-### Enable Iterations **(CORE ONLY)**
+## Edit an iteration
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/218277) in [GitLab Starter](https://about.gitlab.com/pricing/) 13.2.
+
+NOTE: **Note:**
+You need Developer [permissions](../../permissions.md) or higher to edit an iteration.
+
+To edit an iteration, click the three-dot menu (**{ellipsis_v}**) > **Edit iteration**.
+
+## Enable Iterations **(CORE ONLY)**
 
 GitLab Iterations feature is under development and not ready for production use.
 It is deployed behind a feature flag that is **disabled by default**.

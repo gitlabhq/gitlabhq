@@ -226,6 +226,11 @@ class Environment < ApplicationRecord
     available? && stop_action.present?
   end
 
+  def cancel_deployment_jobs!
+    jobs = all_deployments.active.with_deployable
+    jobs.each { |deployment| deployment.deployable.cancel! }
+  end
+
   def stop_with_action!(current_user)
     return unless available?
 

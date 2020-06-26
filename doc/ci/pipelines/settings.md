@@ -283,7 +283,7 @@ Markdown code will embed the test coverage report badge of the `coverage` job
 into your `README.md`:
 
 ```markdown
-![coverage](https://gitlab.com/gitlab-org/gitlab-foss/badges/master/coverage.svg?job=coverage)
+![coverage](https://gitlab.com/gitlab-org/gitlab/badges/master/coverage.svg?job=coverage)
 ```
 
 ### Badge styles
@@ -296,7 +296,7 @@ Pipeline badges can be rendered in different styles by adding the `style=style_n
 https://example.gitlab.com/<namespace>/<project>/badges/<branch>/coverage.svg?style=flat
 ```
 
-![Badge flat style](https://gitlab.com/gitlab-org/gitlab-foss/badges/master/coverage.svg?job=coverage&style=flat)
+![Badge flat style](https://gitlab.com/gitlab-org/gitlab/badges/master/coverage.svg?job=coverage&style=flat)
 
 #### Flat square
 
@@ -306,17 +306,17 @@ https://example.gitlab.com/<namespace>/<project>/badges/<branch>/coverage.svg?st
 https://example.gitlab.com/<namespace>/<project>/badges/<branch>/coverage.svg?style=flat-square
 ```
 
-![Badge flat square style](https://gitlab.com/gitlab-org/gitlab-foss/badges/master/coverage.svg?job=coverage&style=flat-square)
+![Badge flat square style](https://gitlab.com/gitlab-org/gitlab/badges/master/coverage.svg?job=coverage&style=flat-square)
 
 ### Custom badge text
 
 The text for a badge can be customized. This can be useful to differentiate between multiple coverage jobs that run in the same pipeline. Customize the badge text and width by adding the `key_text=custom_text` and `key_width=custom_key_width` parameters to the URL:
 
 ```plaintext
-https://gitlab.com/gitlab-org/gitlab-foss/badges/master/coverage.svg?job=karma&key_text=Frontend+Coverage&key_width=100
+https://gitlab.com/gitlab-org/gitlab/badges/master/coverage.svg?job=karma&key_text=Frontend+Coverage&key_width=100
 ```
 
-![Badge with custom text and width](https://gitlab.com/gitlab-org/gitlab-foss/badges/master/coverage.svg?job=karma&key_text=Frontend+Coverage&key_width=100)
+![Badge with custom text and width](https://gitlab.com/gitlab-org/gitlab/badges/master/coverage.svg?job=karma&key_text=Frontend+Coverage&key_width=100)
 
 ## Environment Variables
 

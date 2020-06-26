@@ -21,7 +21,7 @@ end
 scope path: '-' do
   get '/snippets/:snippet_id/raw/:ref/*path',
     to: 'snippets/blobs#raw',
-    as: :snippet_raw,
+    as: :snippet_blob_raw,
     format: false,
     constraints: { snippet_id: /\d+/ }
 end

@@ -29,6 +29,11 @@ module MergeRequests
                                  .execute_for_merge_request(merge_request)
     end
 
+    def cancel_review_app_jobs!(merge_request)
+      environments = merge_request.environments.in_review_folder.available
+      environments.each { |environment| environment.cancel_deployment_jobs! }
+    end
+
     def source_project
       @source_project ||= merge_request.source_project
     end

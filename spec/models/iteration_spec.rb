@@ -45,6 +45,14 @@ RSpec.describe Iteration do
         it { is_expected.to be_valid }
       end
 
+      context 'when updated iteration dates overlap with its own dates' do
+        it 'is valid' do
+          existing_iteration.start_date = 5.days.from_now
+
+          expect(existing_iteration).to be_valid
+        end
+      end
+
       context 'when dates overlap' do
         context 'same group' do
           context 'when start_date is in range' do

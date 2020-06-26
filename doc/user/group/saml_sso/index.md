@@ -75,7 +75,7 @@ This is a [Closed Beta](https://about.gitlab.com/handbook/product/#closed-beta) 
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/709) in GitLab 12.1.
 > - It's deployed behind a feature flag, disabled by default.
-> - It's disabled on GitLab.com. If you want to enable it for your subscription, contact Product Management through [GitLab Support](https://support.gitlab.com/hc).
+> - It's disabled on GitLab.com. If you want to enable it for your subscription, contact Product Management through [GitLab Support](https://support.gitlab.com/hc/en-us).
 
 When SSO is being enforced, groups can enable an additional level of protection by enforcing the creation of dedicated user accounts to access the group.
 

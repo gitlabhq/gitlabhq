@@ -1,0 +1,5 @@
+---
+title: Fix job log text color in dark mode
+merge_request: 35387
+author:
+type: fixed

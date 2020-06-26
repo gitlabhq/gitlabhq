@@ -5,7 +5,7 @@
   font-size: 13px;
   word-break: break-all;
   word-wrap: break-word;
-  color: $gl-text-color-inverted;
+  color: color-yiq($builds-trace-bg);
   border-radius: $border-radius-small;
   min-height: 42px;
   background-color: $builds-trace-bg;

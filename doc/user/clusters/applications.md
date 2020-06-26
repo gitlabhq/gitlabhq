@@ -1084,8 +1084,8 @@ customRules:
 ```
 
 By default, Falco only outputs security events to logs as JSON objects. To set it to output to an
-[external API](https://falco.org/docs/alerts#https-output-send-alerts-to-an-https-end-point)
-or [application](https://falco.org/docs/alerts#program-output),
+[external API](https://falco.org/docs/alerts/#https-output-send-alerts-to-an-https-end-point)
+or [application](https://falco.org/docs/alerts/#program-output),
 add the following to `.gitlab/managed-apps/falco/values.yaml`:
 
 ```yaml

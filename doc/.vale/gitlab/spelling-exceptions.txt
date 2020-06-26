@@ -248,6 +248,7 @@ memoization
 memoize
 memoized
 memoizing
+Memorystore
 mergeable
 Microsoft
 middleware
@@ -335,6 +336,7 @@ Puma
 Python
 Qualys
 Rackspace
+Raspbian
 reachability
 rebase
 rebased
@@ -422,6 +424,7 @@ storages
 strace
 strikethrough
 strikethroughs
+stunnel
 subpath
 subfolder
 subfolders
