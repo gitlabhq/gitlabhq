@@ -1,0 +1,5 @@
+---
+title: Fix styling bug for disabled merge button
+merge_request: 35365
+author:
+type: fixed

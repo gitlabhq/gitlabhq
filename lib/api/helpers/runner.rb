@@ -60,7 +60,7 @@ module API
 
       def current_job
         strong_memoize(:current_job) do
-          Ci::Build.find_by_id(params[:id])
+          ::Ci::Build.find_by_id(params[:id])
         end
       end
 

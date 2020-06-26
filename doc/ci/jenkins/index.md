@@ -62,8 +62,7 @@ We are building a [JenkinsFile Wrapper](https://gitlab.com/gitlab-org/jfr-contai
 you to run a complete Jenkins instance inside of a GitLab job, including plugins. This can help ease the process
 of transition, by letting you delay the migration of less urgent pipelines for a period of time.
 
-If you are interested, join our [public testing issue](https://gitlab.com/gitlab-org/gitlab/-/issues/215675) to
-If you are interested, you might be able to [help GitLab test the wrapper](https://gitlab.com/gitlab-org/gitlab/-/issues/215675).
+If you are interested in helping GitLab test the wrapper, join our [public testing issue](https://gitlab.com/gitlab-org/gitlab/-/issues/215675) for instructions and to provide your feedback.
 
 ## Important product differences
 

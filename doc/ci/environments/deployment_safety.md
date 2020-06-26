@@ -7,7 +7,7 @@ that help maintain deployment security and stability.
 You can:
 
 - [Restrict write-access to a critical environment](#restrict-write-access-to-a-critical-environment)
-- [Restrict deployments for a particular period](#restrict-deployments-for-a-particular-period)
+- [Prevent deployments during deploy freeze windows](#prevent-deployments-during-deploy-freeze-windows)
 
 If you are using a continuous deployment workflow and want to ensure that concurrent deployments to the same environment do not happen, you should enable the following options:
 
@@ -77,10 +77,10 @@ The improved pipeline flow **after** enabling Skip outdated deployment jobs:
 1. The `deploy` job in Pipeline-B finishes first, and deploys the newer code.
 1. The `deploy` job in Pipeline-A is automatically cancelled, so that it doesn't overwrite the deployment from the newer pipeline.
 
-## Restrict deployments for a particular period
+## Prevent deployments during deploy freeze windows
 
 If you want to prevent deployments for a particular period, for example during a planned
-vacation period when most employees are out, you can set up a [Deploy Freeze](../../user/project/releases/index.md#set-a-deploy-freeze).
+vacation period when most employees are out, you can set up a [Deploy Freeze](../../user/project/releases/index.md#prevent-unintentional-releases-by-setting-a-deploy-freeze).
 During a deploy freeze period, no deployment can be executed. This is helpful to
 ensure that deployments do not happen unexpectedly.
 

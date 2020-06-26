@@ -162,10 +162,6 @@ $mr-widget-min-height: 69px;
   .btn {
     font-size: $gl-font-size;
 
-    &[disabled] {
-      opacity: 0.3;
-    }
-
     &.dropdown-toggle {
       .fa {
         color: inherit;

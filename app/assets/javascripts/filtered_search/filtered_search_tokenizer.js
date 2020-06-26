@@ -6,7 +6,7 @@ export default class FilteredSearchTokenizer {
     // Values that start with a double quote must end in a double quote (same for single)
 
     const tokenRegex = new RegExp(
-      `(${allowedKeys.join('|')}):(=|!=)?([~%@]?)(?:('[^']*'{0,1})|("[^"]*"{0,1})|(\\S+))`,
+      `(${allowedKeys.join('|')}):(=|!=)?([~%@&]?)(?:('[^']*'{0,1})|("[^"]*"{0,1})|(\\S+))`,
       'g',
     );
     const tokens = [];
@@ -15,17 +15,19 @@ export default class FilteredSearchTokenizer {
     const searchToken =
       input
         .replace(tokenRegex, (match, key, operator, symbol, v1, v2, v3) => {
+          const prefixedTokens = ['~', '%', '@', '&'];
+          const comparisonTokens = ['!=', '='];
           let tokenValue = v1 || v2 || v3;
           let tokenSymbol = symbol;
           let tokenIndex = '';
           let tokenOperator = operator;
 
-          if (tokenValue === '~' || tokenValue === '%' || tokenValue === '@') {
+          if (prefixedTokens.includes(tokenValue)) {
             tokenSymbol = tokenValue;
             tokenValue = '';
           }
 
-          if (tokenValue === '!=' || tokenValue === '=') {
+          if (comparisonTokens.includes(tokenValue)) {
             tokenOperator = tokenValue;
             tokenValue = '';
           }

@@ -56,7 +56,7 @@ module API
         requires :value, type: String, desc: 'The value of the variable'
         optional :protected, type: Boolean, desc: 'Whether the variable is protected'
         optional :masked, type: Boolean, desc: 'Whether the variable is masked'
-        optional :variable_type, type: String, values: Ci::Variable.variable_types.keys, desc: 'The type of variable, must be one of env_var or file. Defaults to env_var'
+        optional :variable_type, type: String, values: ::Ci::Variable.variable_types.keys, desc: 'The type of variable, must be one of env_var or file. Defaults to env_var'
         optional :environment_scope, type: String, desc: 'The environment_scope of the variable'
       end
       post ':id/variables' do
@@ -80,7 +80,7 @@ module API
         optional :value, type: String, desc: 'The value of the variable'
         optional :protected, type: Boolean, desc: 'Whether the variable is protected'
         optional :masked, type: Boolean, desc: 'Whether the variable is masked'
-        optional :variable_type, type: String, values: Ci::Variable.variable_types.keys, desc: 'The type of variable, must be one of env_var or file'
+        optional :variable_type, type: String, values: ::Ci::Variable.variable_types.keys, desc: 'The type of variable, must be one of env_var or file'
         optional :environment_scope, type: String, desc: 'The environment_scope of the variable'
       end
       # rubocop: disable CodeReuse/ActiveRecord

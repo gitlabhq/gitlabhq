@@ -604,6 +604,10 @@ module Ci
       project.deployment_platform&.active?
     end
 
+    def freeze_period?
+      Ci::FreezePeriodStatus.new(project: project).execute
+    end
+
     def has_warnings?
       number_of_warnings.positive?
     end
@@ -714,6 +718,7 @@ module Ci
         end
 
         variables.append(key: 'CI_KUBERNETES_ACTIVE', value: 'true') if has_kubernetes_active?
+        variables.append(key: 'CI_DEPLOY_FREEZE', value: 'true') if freeze_period?
 
         if external_pull_request_event? && external_pull_request
           variables.concat(external_pull_request.predefined_variables)

@@ -2974,19 +2974,6 @@ RSpec.describe Ci::Build do
       it { is_expected.to include(deployment_variable) }
     end
 
-    context 'when build has a freeze period' do
-      let(:freeze_variable) { { key: 'CI_DEPLOY_FREEZE', value: 'true', masked: false, public: true } }
-
-      before do
-        expect_next_instance_of(Ci::FreezePeriodStatus) do |freeze_period|
-          expect(freeze_period).to receive(:execute)
-            .and_return(true)
-        end
-      end
-
-      it { is_expected.to include(freeze_variable) }
-    end
-
     context 'when project has default CI config path' do
       let(:ci_config_path) { { key: 'CI_CONFIG_PATH', value: '.gitlab-ci.yml', public: true, masked: false } }
 

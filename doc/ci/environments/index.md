@@ -431,7 +431,7 @@ in GitLab that helps maintain deployment security and stability.
 - [Restrict write-access to a critical environment](deployment_safety.md#restrict-write-access-to-a-critical-environment)
 - [Limit the job-concurrency for deployment jobs](deployment_safety.md#ensure-only-one-deployment-job-runs-at-a-time)
 - [Skip outdated deployment jobs](deployment_safety.md#skip-outdated-deployment-jobs)
-- [Restrict deployments for a particular period](deployment_safety.md#restrict-deployments-for-a-particular-period)
+- [Prevent deployments during deploy freeze windows](deployment_safety.md#prevent-deployments-during-deploy-freeze-windows)
 
 ### Complete example
 

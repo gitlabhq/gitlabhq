@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Runners do
+RSpec.describe API::Ci::Runners do
   let_it_be(:admin) { create(:user, :admin) }
   let_it_be(:user) { create(:user) }
   let_it_be(:user2) { create(:user) }
@@ -266,7 +266,7 @@ RSpec.describe API::Runners do
               delete api("/runners/#{unused_project_runner.id}", admin)
 
               expect(response).to have_gitlab_http_status(:no_content)
-            end.to change { Ci::Runner.project_type.count }.by(-1)
+            end.to change { ::Ci::Runner.project_type.count }.by(-1)
           end
         end
 
@@ -493,7 +493,7 @@ RSpec.describe API::Runners do
             delete api("/runners/#{shared_runner.id}", admin)
 
             expect(response).to have_gitlab_http_status(:no_content)
-          end.to change { Ci::Runner.instance_type.count }.by(-1)
+          end.to change { ::Ci::Runner.instance_type.count }.by(-1)
         end
 
         it_behaves_like '412 response' do
@@ -507,7 +507,7 @@ RSpec.describe API::Runners do
             delete api("/runners/#{project_runner.id}", admin)
 
             expect(response).to have_gitlab_http_status(:no_content)
-          end.to change { Ci::Runner.project_type.count }.by(-1)
+          end.to change { ::Ci::Runner.project_type.count }.by(-1)
         end
       end
 
@@ -542,7 +542,7 @@ RSpec.describe API::Runners do
             delete api("/runners/#{project_runner.id}", user)
 
             expect(response).to have_gitlab_http_status(:no_content)
-          end.to change { Ci::Runner.project_type.count }.by(-1)
+          end.to change { ::Ci::Runner.project_type.count }.by(-1)
         end
 
         it 'does not delete group runner with guest access' do
@@ -574,7 +574,7 @@ RSpec.describe API::Runners do
             delete api("/runners/#{group_runner_a.id}", user)
 
             expect(response).to have_gitlab_http_status(:no_content)
-          end.to change { Ci::Runner.group_type.count }.by(-1)
+          end.to change { ::Ci::Runner.group_type.count }.by(-1)
         end
 
         it 'deletes inherited group runner with owner access' do
@@ -582,7 +582,7 @@ RSpec.describe API::Runners do
             delete api("/runners/#{group_runner_b.id}", user)
 
             expect(response).to have_gitlab_http_status(:no_content)
-          end.to change { Ci::Runner.group_type.count }.by(-1)
+          end.to change { ::Ci::Runner.group_type.count }.by(-1)
         end
 
         it_behaves_like '412 response' do
@@ -968,7 +968,7 @@ RSpec.describe API::Runners do
       end
 
       it 'does not enable locked runner' do
-        project_runner2.update(locked: true)
+        project_runner2.update!(locked: true)
 
         expect do
           post api("/projects/#{project.id}/runners", user), params: { runner_id: project_runner2.id }

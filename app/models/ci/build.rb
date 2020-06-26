@@ -539,7 +539,6 @@ module Ci
           .concat(job_variables)
           .concat(environment_changed_page_variables)
           .concat(persisted_environment_variables)
-          .concat(deploy_freeze_variables)
           .to_runner_variables
       end
     end
@@ -593,18 +592,6 @@ module Ci
         variables.append(key: 'CI_DEPLOY_USER', value: gitlab_deploy_token.username)
         variables.append(key: 'CI_DEPLOY_PASSWORD', value: gitlab_deploy_token.token, public: false, masked: true)
       end
-    end
-
-    def deploy_freeze_variables
-      Gitlab::Ci::Variables::Collection.new.tap do |variables|
-        break variables unless freeze_period?
-
-        variables.append(key: 'CI_DEPLOY_FREEZE', value: 'true')
-      end
-    end
-
-    def freeze_period?
-      Ci::FreezePeriodStatus.new(project: project).execute
     end
 
     def dependency_variables

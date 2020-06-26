@@ -1,0 +1,5 @@
+---
+title: Properly set CI_DEPLOY_FREEZE variable in pipelines
+merge_request: 35226
+author:
+type: fixed

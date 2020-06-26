@@ -29,7 +29,7 @@ Similarly, milestones can be used as releases. To do so:
 1. Set the milestone title to the version of your release, such as `Version 9.4`.
 1. Add an issue to your release by associating the desired milestone from the issue's right-hand sidebar.
 
-Additionally, you can integrate milestones with GitLab's [Releases feature](../releases/index.md#releases-associated-with-milestones).
+Additionally, you can integrate milestones with GitLab's [Releases feature](../releases/index.md#associate-milestones-with-a-release).
 
 ## Project milestones and group milestones
 

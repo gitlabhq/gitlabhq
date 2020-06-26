@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Runner, :clean_gitlab_redis_shared_state do
+RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
   include StubGitlabCalls
   include RedisHelpers
   include WorkhorseHelpers
@@ -13,7 +13,7 @@ RSpec.describe API::Runner, :clean_gitlab_redis_shared_state do
     stub_feature_flags(ci_enable_live_trace: true)
     stub_gitlab_calls
     stub_application_setting(runners_registration_token: registration_token)
-    allow_any_instance_of(Ci::Runner).to receive(:cache_attributes)
+    allow_any_instance_of(::Ci::Runner).to receive(:cache_attributes)
   end
 
   describe '/api/v4/runners' do
@@ -38,7 +38,7 @@ RSpec.describe API::Runner, :clean_gitlab_redis_shared_state do
         it 'creates runner with default values' do
           post api('/runners'), params: { token: registration_token }
 
-          runner = Ci::Runner.first
+          runner = ::Ci::Runner.first
 
           expect(response).to have_gitlab_http_status(:created)
           expect(json_response['id']).to eq(runner.id)
@@ -57,7 +57,7 @@ RSpec.describe API::Runner, :clean_gitlab_redis_shared_state do
 
             expect(response).to have_gitlab_http_status(:created)
             expect(project.runners.size).to eq(1)
-            runner = Ci::Runner.first
+            runner = ::Ci::Runner.first
             expect(runner.token).not_to eq(registration_token)
             expect(runner.token).not_to eq(project.runners_token)
             expect(runner).to be_project_type
@@ -72,7 +72,7 @@ RSpec.describe API::Runner, :clean_gitlab_redis_shared_state do
 
             expect(response).to have_gitlab_http_status(:created)
             expect(group.runners.reload.size).to eq(1)
-            runner = Ci::Runner.first
+            runner = ::Ci::Runner.first
             expect(runner.token).not_to eq(registration_token)
             expect(runner.token).not_to eq(group.runners_token)
             expect(runner).to be_group_type
@@ -88,7 +88,7 @@ RSpec.describe API::Runner, :clean_gitlab_redis_shared_state do
                                 }
 
           expect(response).to have_gitlab_http_status(:created)
-          expect(Ci::Runner.first.description).to eq('server.hostname')
+          expect(::Ci::Runner.first.description).to eq('server.hostname')
         end
       end
 
@@ -100,7 +100,7 @@ RSpec.describe API::Runner, :clean_gitlab_redis_shared_state do
                                 }
 
           expect(response).to have_gitlab_http_status(:created)
-          expect(Ci::Runner.first.tag_list.sort).to eq(%w(tag1 tag2))
+          expect(::Ci::Runner.first.tag_list.sort).to eq(%w(tag1 tag2))
         end
       end
 
@@ -114,8 +114,8 @@ RSpec.describe API::Runner, :clean_gitlab_redis_shared_state do
                                   }
 
             expect(response).to have_gitlab_http_status(:created)
-            expect(Ci::Runner.first.run_untagged).to be false
-            expect(Ci::Runner.first.tag_list.sort).to eq(['tag'])
+            expect(::Ci::Runner.first.run_untagged).to be false
+            expect(::Ci::Runner.first.tag_list.sort).to eq(['tag'])
           end
         end
 
@@ -141,7 +141,7 @@ RSpec.describe API::Runner, :clean_gitlab_redis_shared_state do
                                 }
 
           expect(response).to have_gitlab_http_status(:created)
-          expect(Ci::Runner.first.locked).to be true
+          expect(::Ci::Runner.first.locked).to be true
         end
       end
 
@@ -154,7 +154,7 @@ RSpec.describe API::Runner, :clean_gitlab_redis_shared_state do
                                   }
 
             expect(response).to have_gitlab_http_status(:created)
-            expect(Ci::Runner.first.active).to be true
+            expect(::Ci::Runner.first.active).to be true
           end
         end
 
@@ -166,7 +166,7 @@ RSpec.describe API::Runner, :clean_gitlab_redis_shared_state do
                                   }
 
             expect(response).to have_gitlab_http_status(:created)
-            expect(Ci::Runner.first.active).to be false
+            expect(::Ci::Runner.first.active).to be false
           end
         end
       end
@@ -180,7 +180,7 @@ RSpec.describe API::Runner, :clean_gitlab_redis_shared_state do
                                   }
 
             expect(response).to have_gitlab_http_status(:created)
-            expect(Ci::Runner.first.ref_protected?).to be true
+            expect(::Ci::Runner.first.ref_protected?).to be true
           end
         end
 
@@ -192,7 +192,7 @@ RSpec.describe API::Runner, :clean_gitlab_redis_shared_state do
                                   }
 
             expect(response).to have_gitlab_http_status(:created)
-            expect(Ci::Runner.first.ref_protected?).to be false
+            expect(::Ci::Runner.first.ref_protected?).to be false
           end
         end
       end
@@ -205,7 +205,7 @@ RSpec.describe API::Runner, :clean_gitlab_redis_shared_state do
                                 }
 
           expect(response).to have_gitlab_http_status(:created)
-          expect(Ci::Runner.first.maximum_timeout).to eq(9000)
+          expect(::Ci::Runner.first.maximum_timeout).to eq(9000)
         end
 
         context 'when maximum job timeout is empty' do
@@ -216,7 +216,7 @@ RSpec.describe API::Runner, :clean_gitlab_redis_shared_state do
                                   }
 
             expect(response).to have_gitlab_http_status(:created)
-            expect(Ci::Runner.first.maximum_timeout).to be_nil
+            expect(::Ci::Runner.first.maximum_timeout).to be_nil
           end
         end
       end
@@ -232,7 +232,7 @@ RSpec.describe API::Runner, :clean_gitlab_redis_shared_state do
                                   }
 
             expect(response).to have_gitlab_http_status(:created)
-            expect(Ci::Runner.first.read_attribute(param.to_sym)).to eq(value)
+            expect(::Ci::Runner.first.read_attribute(param.to_sym)).to eq(value)
           end
         end
       end
@@ -243,7 +243,7 @@ RSpec.describe API::Runner, :clean_gitlab_redis_shared_state do
              headers: { 'X-Forwarded-For' => '123.111.123.111' }
 
         expect(response).to have_gitlab_http_status(:created)
-        expect(Ci::Runner.first.ip_address).to eq('123.111.123.111')
+        expect(::Ci::Runner.first.ip_address).to eq('123.111.123.111')
       end
     end
 
@@ -271,7 +271,7 @@ RSpec.describe API::Runner, :clean_gitlab_redis_shared_state do
           delete api('/runners'), params: { token: runner.token }
 
           expect(response).to have_gitlab_http_status(:no_content)
-          expect(Ci::Runner.count).to eq(0)
+          expect(::Ci::Runner.count).to eq(0)
         end
 
         it_behaves_like '412 response' do
@@ -537,7 +537,7 @@ RSpec.describe API::Runner, :clean_gitlab_redis_shared_state do
           end
 
           it 'creates persistent ref' do
-            expect_any_instance_of(Ci::PersistentRef).to receive(:create_ref)
+            expect_any_instance_of(::Ci::PersistentRef).to receive(:create_ref)
               .with(job.sha, "refs/#{Repository::REF_PIPELINES}/#{job.commit_id}")
 
             request_job info: { platform: :darwin }
@@ -749,7 +749,7 @@ RSpec.describe API::Runner, :clean_gitlab_redis_shared_state do
 
           context 'when concurrently updating a job' do
             before do
-              expect_any_instance_of(Ci::Build).to receive(:run!)
+              expect_any_instance_of(::Ci::Build).to receive(:run!)
                   .and_raise(ActiveRecord::StaleObjectError.new(nil, nil))
             end
 
@@ -890,7 +890,7 @@ RSpec.describe API::Runner, :clean_gitlab_redis_shared_state do
             let!(:trigger_request) { create(:ci_trigger_request, pipeline: pipeline, builds: [job], trigger: trigger) }
 
             before do
-              project.variables << Ci::Variable.new(key: 'SECRET_KEY', value: 'secret_value')
+              project.variables << ::Ci::Variable.new(key: 'SECRET_KEY', value: 'secret_value')
             end
 
             shared_examples 'expected variables behavior' do
@@ -1099,7 +1099,7 @@ RSpec.describe API::Runner, :clean_gitlab_redis_shared_state do
         let_it_be(:project) { create(:project, :repository) }
 
         let(:runner) { create(:ci_runner, :project, projects: [project]) }
-        let(:service) { Ci::CreateWebIdeTerminalService.new(project, user, ref: 'master').execute }
+        let(:service) { ::Ci::CreateWebIdeTerminalService.new(project, user, ref: 'master').execute }
         let(:pipeline) { service[:pipeline] }
         let(:build) { pipeline.builds.first }
         let(:job) { {} }
@@ -2258,7 +2258,7 @@ RSpec.describe API::Runner, :clean_gitlab_redis_shared_state do
             FileUtils.remove_entry(new_tmpdir)
           end
 
-          it' "fails to post artifacts for outside of tmp path"' do
+          it 'fails to post artifacts for outside of tmp path' do
             upload_artifacts(file_upload, headers_with_token)
 
             expect(response).to have_gitlab_http_status(:bad_request)

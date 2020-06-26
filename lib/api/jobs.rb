@@ -160,7 +160,7 @@ module API
         authorize!(:update_build, build)
         break forbidden!('Job is not retryable') unless build.retryable?
 
-        build = Ci::Build.retry(build, current_user)
+        build = ::Ci::Build.retry(build, current_user)
 
         present build, with: Entities::Job
       end

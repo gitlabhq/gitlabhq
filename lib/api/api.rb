@@ -131,6 +131,8 @@ module API
       mount ::API::Boards
       mount ::API::Branches
       mount ::API::BroadcastMessages
+      mount ::API::Ci::Runner
+      mount ::API::Ci::Runners
       mount ::API::Commits
       mount ::API::CommitStatuses
       mount ::API::ContainerRegistryEvent
@@ -195,8 +197,6 @@ module API
       mount ::API::Release::Links
       mount ::API::RemoteMirrors
       mount ::API::Repositories
-      mount ::API::Runner
-      mount ::API::Runners
       mount ::API::Search
       mount ::API::Services
       mount ::API::Settings

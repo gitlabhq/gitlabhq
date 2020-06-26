@@ -165,10 +165,13 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::TableManagementHe
       it 'creates a partition spanning over each month in the range given' do
         migration.partition_table_by_date template_table, partition_column, min_date: min_date, max_date: max_date
 
-        expect_range_partition_of("#{partitioned_table}_000000", partitioned_table, 'MINVALUE', "'2019-12-01 00:00:00'")
-        expect_range_partition_of("#{partitioned_table}_201912", partitioned_table, "'2019-12-01 00:00:00'", "'2020-01-01 00:00:00'")
-        expect_range_partition_of("#{partitioned_table}_202001", partitioned_table, "'2020-01-01 00:00:00'", "'2020-02-01 00:00:00'")
-        expect_range_partition_of("#{partitioned_table}_202002", partitioned_table, "'2020-02-01 00:00:00'", "'2020-03-01 00:00:00'")
+        expect_range_partitions_for(partitioned_table, {
+          '000000' => ['MINVALUE', "'2019-12-01 00:00:00'"],
+          '201912' => ["'2019-12-01 00:00:00'", "'2020-01-01 00:00:00'"],
+          '202001' => ["'2020-01-01 00:00:00'", "'2020-02-01 00:00:00'"],
+          '202002' => ["'2020-02-01 00:00:00'", "'2020-03-01 00:00:00'"],
+          '202003' => ["'2020-03-01 00:00:00'", "'2020-04-01 00:00:00'"]
+        })
       end
     end
 
