@@ -3,14 +3,14 @@
 require "spec_helper"
 
 RSpec.describe UserCalloutsHelper do
-  let(:user) { create(:user) }
+  let_it_be(:user) { create(:user) }
 
   before do
     allow(helper).to receive(:current_user).and_return(user)
   end
 
   describe '.show_gke_cluster_integration_callout?' do
-    let(:project) { create(:project) }
+    let_it_be(:project) { create(:project) }
 
     subject { helper.show_gke_cluster_integration_callout?(project) }
 
@@ -61,6 +61,26 @@ RSpec.describe UserCalloutsHelper do
     context 'when user dismissed' do
       before do
         allow(helper).to receive(:user_dismissed?).with(described_class::ADMIN_INTEGRATIONS_MOVED) { true }
+      end
+
+      it { is_expected.to be false }
+    end
+  end
+
+  describe '.show_alerts_moved_alert?' do
+    subject { helper.show_alerts_moved_alert? }
+
+    context 'when user has not dismissed' do
+      before do
+        allow(helper).to receive(:user_dismissed?).with(described_class::ALERTS_MOVED) { false }
+      end
+
+      it { is_expected.to be true }
+    end
+
+    context 'when user dismissed' do
+      before do
+        allow(helper).to receive(:user_dismissed?).with(described_class::ALERTS_MOVED) { true }
       end
 
       it { is_expected.to be false }

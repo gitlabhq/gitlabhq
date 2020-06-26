@@ -53,7 +53,6 @@
     = stylesheet_link_tag "application_dark", media: "all"
   - else
     = stylesheet_link_tag "application", media: "all"
-  = stylesheet_link_tag "print", media: "print"
   = stylesheet_link_tag "disable_animations", media: "all" if Rails.env.test? || Gitlab.config.gitlab['disable_animations']
   = stylesheet_link_tag 'performance_bar' if performance_bar_enabled?
 

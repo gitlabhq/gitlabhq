@@ -70,6 +70,23 @@ module Gitlab
           drop_table(part_table_name)
         end
 
+        def create_hash_partitions(table_name, number_of_partitions)
+          transaction do
+            (0..number_of_partitions - 1).each do |partition|
+              decimals = Math.log10(number_of_partitions).ceil
+              suffix = "%0#{decimals}d" % partition
+              partition_name = "#{table_name}_#{suffix}"
+              schema = Gitlab::Database::STATIC_PARTITIONS_SCHEMA
+
+              execute(<<~SQL)
+                CREATE TABLE #{schema}.#{partition_name}
+                PARTITION OF #{table_name}
+                FOR VALUES WITH (MODULUS #{number_of_partitions}, REMAINDER #{partition});
+              SQL
+            end
+          end
+        end
+
         private
 
         def assert_table_is_allowed(table_name)

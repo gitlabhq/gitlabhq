@@ -491,6 +491,28 @@ GET /api/v4/projects/1/branches/my%2Fbranch/commits
 GET /api/v4/projects/1/repository/tags/my%2Ftag
 ```
 
+## Request Payload
+
+API Requests can use parameters sent as [query strings](https://en.wikipedia.org/wiki/Query_string)
+or as a [payload body](https://tools.ietf.org/html/draft-ietf-httpbis-p3-payload-14#section-3.2).
+GET requests usually send a query string, while PUT/POST requests usually send the payload body:
+
+- Query string:
+
+  ```shell
+  curl --request POST "https://gitlab/api/v4/projects?name=<example-name>&description=<example-description>"
+  ```
+
+- Request payload (JSON):
+
+  ```shell
+  curl --request POST --header "Content-Type: application/json" --data '{"name":"<example-name>", "description":"<example-description"}' "https://gitlab/api/v4/projects"
+  ```
+
+URL encoded query strings have a length limitation. Requests that are too large will
+result in a `414 Request-URI Too Large` error message. This can be resolved by using
+a payload body instead.
+
 ## Encoding API parameters of `array` and `hash` types
 
 We can call the API with `array` and `hash` types parameters as shown below:

@@ -31,6 +31,14 @@ module PartitioningHelpers
     expect_total_partitions(table_name, partitions.size, schema: Gitlab::Database::DYNAMIC_PARTITIONS_SCHEMA)
   end
 
+  def expect_hash_partition_of(partition_name, table_name, modulus, remainder)
+    definition = find_partition_definition(partition_name, schema: Gitlab::Database::STATIC_PARTITIONS_SCHEMA)
+
+    expect(definition).not_to be_nil
+    expect(definition['base_table']).to eq(table_name.to_s)
+    expect(definition['condition']).to eq("FOR VALUES WITH (modulus #{modulus}, remainder #{remainder})")
+  end
+
   private
 
   def find_partitioned_columns(table)
@@ -55,7 +63,7 @@ module PartitioningHelpers
     SQL
   end
 
-  def find_partition_definition(partition, schema: Gitlab::Database::DYNAMIC_PARTITIONS_SCHEMA)
+  def find_partition_definition(partition, schema: )
     connection.select_one(<<~SQL)
       select
         parent_class.relname as base_table,

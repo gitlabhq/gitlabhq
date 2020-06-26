@@ -14,8 +14,11 @@ export default el => {
     formPath,
     authorizationKey,
     url,
+    disabled,
   } = el.dataset;
+
   const activated = parseBoolean(activatedStr);
+  const isDisabled = parseBoolean(disabled);
 
   return new Vue({
     el,
@@ -28,6 +31,7 @@ export default el => {
           formPath,
           initialAuthorizationKey: authorizationKey,
           url,
+          isDisabled,
         },
       });
     },

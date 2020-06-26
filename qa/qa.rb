@@ -79,6 +79,7 @@ module QA
     autoload :PersonalAccessToken, 'qa/resource/personal_access_token'
     autoload :User, 'qa/resource/user'
     autoload :ProjectMilestone, 'qa/resource/project_milestone'
+    autoload :GroupMilestone, 'qa/resource/group_milestone'
     autoload :Members, 'qa/resource/members'
     autoload :File, 'qa/resource/file'
     autoload :Fork, 'qa/resource/fork'

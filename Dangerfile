@@ -6,6 +6,7 @@ require_relative 'lib/gitlab/danger/request_helper'
 danger.import_plugin('danger/plugins/helper.rb')
 danger.import_plugin('danger/plugins/roulette.rb')
 danger.import_plugin('danger/plugins/changelog.rb')
+danger.import_plugin('danger/plugins/sidekiq_queues.rb')
 
 return if helper.release_automation?
 

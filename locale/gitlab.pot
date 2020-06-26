@@ -534,6 +534,36 @@ msgstr[1] ""
 msgid "%{remaining_approvals} left"
 msgstr ""
 
+msgid "%{reportType} %{status} detected %{critical} critical and %{high} high severity vulnerabilities out of %{total}."
+msgstr ""
+
+msgid "%{reportType} %{status} detected %{critical} critical and %{high} high severity vulnerabilities."
+msgstr ""
+
+msgid "%{reportType} %{status} detected %{critical} critical severity vulnerabilities out of %{total}."
+msgstr ""
+
+msgid "%{reportType} %{status} detected %{critical} critical severity vulnerability."
+msgid_plural "%{reportType} %{status} detected %{critical} critical severity vulnerabilities."
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "%{reportType} %{status} detected %{high} high severity vulnerabilities out of %{total}."
+msgstr ""
+
+msgid "%{reportType} %{status} detected %{high} high severity vulnerability."
+msgid_plural "%{reportType} %{status} detected %{high} high severity vulnerabilities."
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "%{reportType} %{status} detected %{other} vulnerability."
+msgid_plural "%{reportType} %{status} detected %{other} vulnerabilities."
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "%{reportType} %{status} detected no new vulnerabilities."
+msgstr ""
+
 msgid "%{retryButtonStart}Try again%{retryButtonEnd} or %{newFileButtonStart}attach a new file%{newFileButtonEnd}"
 msgstr ""
 
@@ -8007,6 +8037,9 @@ msgid "Dismissed on pipeline %{pipelineLink}"
 msgstr ""
 
 msgid "Dismissed on pipeline %{pipelineLink} at %{projectLink}"
+msgstr ""
+
+msgid "Display alerts from all your monitoring tools directly within GitLab."
 msgstr ""
 
 msgid "Display name"
@@ -25389,6 +25422,9 @@ msgstr ""
 msgid "VisibilityLevel|Unknown"
 msgstr ""
 
+msgid "Visit settings page"
+msgstr ""
+
 msgid "VisualReviewApp|%{stepStart}Step 1%{stepEnd}. Copy the following script:"
 msgstr ""
 
@@ -26111,6 +26147,9 @@ msgstr ""
 msgid "You can now export your security dashboard to a CSV report."
 msgstr ""
 
+msgid "You can now manage alert endpoint configuration in the Alerts section on the Operations settings page. Fields on this page have been deprecated."
+msgstr ""
+
 msgid "You can now submit a merge request to get this change into the original branch."
 msgstr ""
 
@@ -26777,55 +26816,6 @@ msgid "ciReport|%{linkStartTag}Learn more about codequality reports %{linkEndTag
 msgstr ""
 
 msgid "ciReport|%{remainingPackagesCount} more"
-msgstr ""
-
-msgid "ciReport|%{reportType} %{status} detected %{dismissedCount} dismissed vulnerability"
-msgid_plural "ciReport|%{reportType} %{status} detected %{dismissedCount} dismissed vulnerabilities"
-msgstr[0] ""
-msgstr[1] ""
-
-msgid "ciReport|%{reportType} %{status} detected %{dismissedCount} dismissed vulnerability for the source branch only"
-msgid_plural "ciReport|%{reportType} %{status} detected %{dismissedCount} dismissed vulnerabilities for the source branch only"
-msgstr[0] ""
-msgstr[1] ""
-
-msgid "ciReport|%{reportType} %{status} detected %{fixedCount} fixed vulnerability"
-msgid_plural "ciReport|%{reportType} %{status} detected %{fixedCount} fixed vulnerabilities"
-msgstr[0] ""
-msgstr[1] ""
-
-msgid "ciReport|%{reportType} %{status} detected %{fixedCount} fixed, and %{dismissedCount} dismissed vulnerabilities"
-msgstr ""
-
-msgid "ciReport|%{reportType} %{status} detected %{newCount} new vulnerability"
-msgid_plural "ciReport|%{reportType} %{status} detected %{newCount} new vulnerabilities"
-msgstr[0] ""
-msgstr[1] ""
-
-msgid "ciReport|%{reportType} %{status} detected %{newCount} new, %{fixedCount} fixed, and %{dismissedCount} dismissed vulnerabilities"
-msgstr ""
-
-msgid "ciReport|%{reportType} %{status} detected %{newCount} new, and %{dismissedCount} dismissed vulnerabilities"
-msgstr ""
-
-msgid "ciReport|%{reportType} %{status} detected %{newCount} new, and %{dismissedCount} dismissed vulnerabilities for the source branch only"
-msgstr ""
-
-msgid "ciReport|%{reportType} %{status} detected %{newCount} new, and %{fixedCount} fixed vulnerabilities"
-msgstr ""
-
-msgid "ciReport|%{reportType} %{status} detected %{newCount} vulnerability for the source branch only"
-msgid_plural "ciReport|%{reportType} %{status} detected %{newCount} vulnerabilities for the source branch only"
-msgstr[0] ""
-msgstr[1] ""
-
-msgid "ciReport|%{reportType} %{status} detected no new vulnerabilities"
-msgstr ""
-
-msgid "ciReport|%{reportType} %{status} detected no vulnerabilities"
-msgstr ""
-
-msgid "ciReport|%{reportType} %{status} detected no vulnerabilities for the source branch only"
 msgstr ""
 
 msgid "ciReport|%{reportType} is loading"

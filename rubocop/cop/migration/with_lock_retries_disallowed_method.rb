@@ -10,6 +10,7 @@ module RuboCop
 
         ALLOWED_MIGRATION_METHODS = %i[
           create_table
+          create_hash_partitions
           drop_table
           add_foreign_key
           remove_foreign_key

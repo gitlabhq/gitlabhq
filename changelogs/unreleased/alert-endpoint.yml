@@ -1,0 +1,5 @@
+---
+title: Move configuration for Alerts endpoint from "Settings > Integration" to "Settings > Operations > Alerts"
+merge_request: 35187
+author:
+type: other

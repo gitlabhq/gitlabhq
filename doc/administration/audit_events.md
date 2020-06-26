@@ -56,9 +56,7 @@ From there, you can see the following actions:
 - User sign-in via [Group SAML](../user/group/saml_sso/index.md)
 - Permissions changes of a user assigned to a group
 - Removed user from group
-- Project imported in to group
-- Project added to group and with which visibility level
-- Project removed from group
+- Project repository imported into group
 - [Project shared with group](../user/project/members/share_project_with_groups.md)
   and with which [permissions](../user/permissions.md)
 - Removal of a previously shared group with a project
@@ -80,7 +78,7 @@ To view a project's audit events, navigate to **Project > Settings > Audit Event
 From there, you can see the following actions:
 
 - Added or removed deploy keys
-- Project created, deleted, renamed, moved(transferred), changed path
+- Project created, deleted, renamed, moved (transferred), changed path
 - Project changed visibility level
 - User was added to project and with which [permissions](../user/permissions.md)
 - Permission changes of a user assigned to a project

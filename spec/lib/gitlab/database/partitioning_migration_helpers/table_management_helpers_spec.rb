@@ -320,6 +320,38 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::TableManagementHe
     end
   end
 
+  describe '#create_hash_partitions' do
+    before do
+      connection.execute(<<~SQL)
+        CREATE TABLE #{partitioned_table}
+          (id serial not null, some_id integer not null, PRIMARY KEY (id, some_id))
+          PARTITION BY HASH (some_id);
+      SQL
+    end
+
+    it 'creates partitions for the full hash space (8 partitions)' do
+      partitions = 8
+
+      migration.create_hash_partitions(partitioned_table, partitions)
+
+      (0..partitions - 1).each do |partition|
+        partition_name = "#{partitioned_table}_#{"%01d" % partition}"
+        expect_hash_partition_of(partition_name, partitioned_table, partitions, partition)
+      end
+    end
+
+    it 'creates partitions for the full hash space (16 partitions)' do
+      partitions = 16
+
+      migration.create_hash_partitions(partitioned_table, partitions)
+
+      (0..partitions - 1).each do |partition|
+        partition_name = "#{partitioned_table}_#{"%02d" % partition}"
+        expect_hash_partition_of(partition_name, partitioned_table, partitions, partition)
+      end
+    end
+  end
+
   def filter_columns_by_name(columns, names)
     columns.reject { |c| names.include?(c.name) }
   end

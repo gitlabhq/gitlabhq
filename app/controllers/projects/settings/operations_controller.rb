@@ -11,7 +11,7 @@ module Projects
       helper_method :error_tracking_setting
 
       def show
-        render locals: { prometheus_service: prometheus_service }
+        render locals: { prometheus_service: prometheus_service, alerts_service: alerts_service }
       end
 
       def update
@@ -50,6 +50,10 @@ module Projects
 
       def prometheus_service
         project.find_or_initialize_service(::PrometheusService.to_param)
+      end
+
+      def alerts_service
+        project.find_or_initialize_service(::AlertsService.to_param)
       end
 
       def render_update_response(result)

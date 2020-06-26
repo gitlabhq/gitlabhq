@@ -46,3 +46,8 @@
 
 // Gitlab UI util classes
 @import "@gitlab/ui/src/scss/utilities";
+
+/* print styles */
+@media print {
+  @import "print";
+}

@@ -17,7 +17,8 @@ module UserCalloutEnums
       suggest_popover_dismissed: 9,
       tabs_position_highlight: 10,
       webhooks_moved: 13,
-      admin_integrations_moved: 15
+      admin_integrations_moved: 15,
+      alerts_moved: 20
     }
   end
 end

@@ -22,12 +22,15 @@ module Gitlab
     MIN_SCHEMA_VERSION = 20190506135400
     MIN_SCHEMA_GITLAB_VERSION = '11.11.0'
 
-    # Schema we store dynamically managed partitions in
+    # Schema we store dynamically managed partitions in (e.g. for time partitioning)
     DYNAMIC_PARTITIONS_SCHEMA = :gitlab_partitions_dynamic
+
+    # Schema we store static partitions in (e.g. for hash partitioning)
+    STATIC_PARTITIONS_SCHEMA = :gitlab_partitions_static
 
     # This is an extensive list of postgres schemas owned by GitLab
     # It does not include the default public schema
-    EXTRA_SCHEMAS = [DYNAMIC_PARTITIONS_SCHEMA].freeze
+    EXTRA_SCHEMAS = [DYNAMIC_PARTITIONS_SCHEMA, STATIC_PARTITIONS_SCHEMA].freeze
 
     define_histogram :gitlab_database_transaction_seconds do
       docstring "Time spent in database transactions, in seconds"

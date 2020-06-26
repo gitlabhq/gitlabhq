@@ -63,6 +63,7 @@ RSpec.describe 'Database schema' do
     oauth_access_tokens: %w[resource_owner_id application_id],
     oauth_applications: %w[owner_id],
     open_project_tracker_data: %w[closed_status_id],
+    product_analytics_events_experimental: %w[event_id txn_id user_id],
     project_group_links: %w[group_id],
     project_statistics: %w[namespace_id],
     projects: %w[creator_id ci_id mirror_user_id],

@@ -79,6 +79,7 @@ class Namespace < ApplicationRecord
         'COALESCE(SUM(ps.storage_size), 0) AS storage_size',
         'COALESCE(SUM(ps.repository_size), 0) AS repository_size',
         'COALESCE(SUM(ps.wiki_size), 0) AS wiki_size',
+        'COALESCE(SUM(ps.snippets_size), 0) AS snippets_size',
         'COALESCE(SUM(ps.lfs_objects_size), 0) AS lfs_objects_size',
         'COALESCE(SUM(ps.build_artifacts_size), 0) AS build_artifacts_size',
         'COALESCE(SUM(ps.packages_size), 0) AS packages_size'

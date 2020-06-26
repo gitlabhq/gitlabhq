@@ -28,7 +28,7 @@ You can take advantage of SAST by doing one of the following:
 GitLab checks the SAST report, compares the found vulnerabilities between the
 source and target branches, and shows the information right on the merge request.
 
-![SAST Widget](img/sast_v13_0.png)
+![SAST Widget](img/sast_v13_1.png)
 
 The results are sorted by the priority of the vulnerability:
 

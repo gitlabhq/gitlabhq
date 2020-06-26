@@ -79,6 +79,7 @@ class Snippet < ApplicationRecord
   scope :fresh, -> { order("created_at DESC") }
   scope :inc_author, -> { includes(:author) }
   scope :inc_relations_for_view, -> { includes(author: :status) }
+  scope :with_statistics, -> { joins(:statistics) }
 
   attr_mentionable :description
 
