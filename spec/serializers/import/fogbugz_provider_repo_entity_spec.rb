@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Import::FogbugzProviderRepoEntity do
+RSpec.describe Import::FogbugzProviderRepoEntity do
   let(:provider_url) { 'https://demo.fogbugz.com/' }
   let(:repo_data) do
     {

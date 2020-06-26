@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Projects > Activity > User sees design Activity', :js do
+RSpec.describe 'Projects > Activity > User sees design Activity', :js do
   include DesignManagementTestHelpers
 
   let_it_be(:uploader) { create(:user) }

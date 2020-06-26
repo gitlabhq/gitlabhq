@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'projects/issues/import_csv/_button' do
+RSpec.describe 'projects/issues/import_csv/_button' do
   include Devise::Test::ControllerHelpers
 
   context 'when the user does not have edit permissions' do

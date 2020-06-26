@@ -1,4 +1,3 @@
-import RealTagsTable from '~/registry/explorer/components/details_page/tags_table.vue';
 import RealDeleteModal from '~/registry/explorer/components/details_page/delete_modal.vue';
 
 export const GlModal = {
@@ -16,11 +15,6 @@ export const GlEmptyState = {
 export const RouterLink = {
   template: `<div><slot></slot></div>`,
   props: ['to'],
-};
-
-export const TagsTable = {
-  props: RealTagsTable.props,
-  template: `<div><slot name="empty"></slot><slot name="loader"></slot></div>`,
 };
 
 export const DeleteModal = {

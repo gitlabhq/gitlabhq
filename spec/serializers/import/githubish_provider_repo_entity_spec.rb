@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Import::GithubishProviderRepoEntity do
+RSpec.describe Import::GithubishProviderRepoEntity do
   let(:provider_url) { 'https://github.com/' }
   let(:repo) do
     {

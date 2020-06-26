@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-describe Analytics::UniqueVisitsHelper do
+RSpec.describe Analytics::UniqueVisitsHelper do
   include Devise::Test::ControllerHelpers
 
   describe '#track_visit' do

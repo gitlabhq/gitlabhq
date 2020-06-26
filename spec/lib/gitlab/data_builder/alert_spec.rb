@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::DataBuilder::Alert do
+RSpec.describe Gitlab::DataBuilder::Alert do
   let_it_be(:project) { create(:project) }
   let_it_be(:alert) { create(:alert_management_alert, project: project) }
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe API::Validations::Validators::UntrustedRegexp do
+RSpec.describe API::Validations::Validators::UntrustedRegexp do
   include ApiValidatorsHelpers
 
   subject do

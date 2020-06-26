@@ -112,9 +112,10 @@
   - "Gemfile{,.lock}"
   - "Rakefile"
   - "config.ru"
-  # List explicitly all the app/ dirs that aren't backend (i.e. all except app/assets).
+  # List explicitly all the app/ dirs that are backend (i.e. all except app/assets).
   - "{,ee/}{app/channels,app/controllers,app/finders,app/graphql,app/helpers,app/mailers,app/models,app/policies,app/presenters,app/serializers,app/services,app/uploaders,app/validators,app/views,app/workers}/**/*"
   - "{,ee/}{bin,cable,config,db,lib}/**/*"
+  - "{,ee/}spec/**/*.rb"
 
 .db-patterns: &db-patterns
   - "{,ee/}{db}/**/*"

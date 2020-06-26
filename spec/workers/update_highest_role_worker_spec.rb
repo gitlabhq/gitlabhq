@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe UpdateHighestRoleWorker, :clean_gitlab_redis_shared_state do
+RSpec.describe UpdateHighestRoleWorker, :clean_gitlab_redis_shared_state do
   include ExclusiveLeaseHelpers
 
   let(:worker) { described_class.new }

@@ -106,9 +106,8 @@ export default {
         </gl-sprintf>
       </span>
     </template>
-    <template #right>
+    <template #right-action>
       <delete-button
-        class="gl-display-none d-sm-block"
         :title="$options.i18n.REMOVE_REPOSITORY_LABEL"
         :disabled="disabledDelete"
         :tooltip-disabled="Boolean(item.destroy_path)"

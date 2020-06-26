@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::DependencyLinker::GoSumLinker do
+RSpec.describe Gitlab::DependencyLinker::GoSumLinker do
   let(:file_name) { 'go.sum' }
   let(:file_content) do
     <<-CONTENT.strip_heredoc

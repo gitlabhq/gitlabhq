@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Types::ProjectMemberType do
+RSpec.describe Types::ProjectMemberType do
   specify { expect(described_class).to expose_permissions_using(Types::PermissionTypes::Project) }
 
   specify { expect(described_class.graphql_name).to eq('ProjectMember') }

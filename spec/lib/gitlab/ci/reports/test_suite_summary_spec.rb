@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Ci::Reports::TestSuiteSummary do
+RSpec.describe Gitlab::Ci::Reports::TestSuiteSummary do
   let(:build_report_result_1) { build(:ci_build_report_result) }
   let(:build_report_result_2) { build(:ci_build_report_result, :with_junit_success) }
   let(:test_suite_summary) { described_class.new([build_report_result_1, build_report_result_2]) }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe AuthorizedProjectUpdate::PeriodicRecalculateWorker do
+RSpec.describe AuthorizedProjectUpdate::PeriodicRecalculateWorker do
   describe '#perform' do
     it 'calls AuthorizedProjectUpdate::PeriodicRecalculateService' do
       expect_next_instance_of(AuthorizedProjectUpdate::PeriodicRecalculateService) do |service|

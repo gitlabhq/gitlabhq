@@ -3,7 +3,7 @@
 require 'spec_helper'
 require 'fileutils'
 
-describe RepositoryCheck::SingleRepositoryWorker do
+RSpec.describe RepositoryCheck::SingleRepositoryWorker do
   subject(:worker) { described_class.new }
 
   it 'skips when the project has no push events' do

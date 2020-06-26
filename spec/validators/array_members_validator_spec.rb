@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ArrayMembersValidator do
+RSpec.describe ArrayMembersValidator do
   using RSpec::Parameterized::TableSyntax
 
   child_class = Class.new

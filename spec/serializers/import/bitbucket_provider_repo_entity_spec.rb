@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Import::BitbucketProviderRepoEntity do
+RSpec.describe Import::BitbucketProviderRepoEntity do
   let(:repo_data) do
     {
       'name' => 'repo_name',

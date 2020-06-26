@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe StageUpdateWorker do
+RSpec.describe StageUpdateWorker do
   describe '#perform' do
     context 'when stage exists' do
       let(:stage) { create(:ci_stage_entity) }

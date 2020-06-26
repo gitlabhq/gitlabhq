@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Updating the container expiration policy' do
+RSpec.describe 'Updating the container expiration policy' do
   include GraphqlHelpers
   using RSpec::Parameterized::TableSyntax
 

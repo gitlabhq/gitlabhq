@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Metrics::Dashboard::Stages::VariableEndpointInserter do
+RSpec.describe Gitlab::Metrics::Dashboard::Stages::VariableEndpointInserter do
   include MetricsDashboardHelpers
 
   let(:project) { build_stubbed(:project) }

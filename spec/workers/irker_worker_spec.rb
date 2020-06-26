@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe IrkerWorker, '#perform' do
+RSpec.describe IrkerWorker, '#perform' do
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:user) { create(:user) }
   let_it_be(:push_data) { HashWithIndifferentAccess.new(Gitlab::DataBuilder::Push.build_sample(project, user)) }

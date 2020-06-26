@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe API::Entities::DeployKey do
+RSpec.describe API::Entities::DeployKey do
   describe '#as_json' do
     subject { entity.as_json }
 

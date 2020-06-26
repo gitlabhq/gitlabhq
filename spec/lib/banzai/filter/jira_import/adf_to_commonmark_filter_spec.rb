@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Banzai::Filter::JiraImport::AdfToCommonmarkFilter do
+RSpec.describe Banzai::Filter::JiraImport::AdfToCommonmarkFilter do
   include FilterSpecHelper
 
   let_it_be(:fixtures_path) { 'lib/kramdown/atlassian_document_format' }

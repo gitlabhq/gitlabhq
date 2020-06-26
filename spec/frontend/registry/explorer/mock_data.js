@@ -71,7 +71,7 @@ export const tagsListResponse = {
       layers: 10,
       location: 'location',
       path: 'bar',
-      created_at: 1505828744434,
+      created_at: '1505828744434',
       destroy_path: 'path',
     },
     {
@@ -82,7 +82,7 @@ export const tagsListResponse = {
       layers: 10,
       path: 'foo',
       location: 'location-2',
-      created_at: 1505828744434,
+      created_at: '1505828744434',
     },
   ],
   headers,

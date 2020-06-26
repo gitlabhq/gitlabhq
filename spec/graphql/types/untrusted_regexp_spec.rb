@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe GitlabSchema.types['UntrustedRegexp'] do
+RSpec.describe GitlabSchema.types['UntrustedRegexp'] do
   using RSpec::Parameterized::TableSyntax
 
   specify { expect(described_class.graphql_name).to eq('UntrustedRegexp') }

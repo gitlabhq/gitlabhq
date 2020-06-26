@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe RepositoryRemoveRemoteWorker do
+RSpec.describe RepositoryRemoveRemoteWorker do
   include ExclusiveLeaseHelpers
   include GitHelpers
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Ci::DailyBuildGroupReportResultEntity do
+RSpec.describe Ci::DailyBuildGroupReportResultEntity do
   let(:report_result) { double(date: '2020-05-20', group_name: 'rspec', data: { 'coverage' => 79.1 }) }
   let(:entity) { described_class.new(report_result, param_type: param_type) }
   let(:param_type) { 'coverage' }

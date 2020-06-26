@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-context Kramdown::Parser::AtlassianDocumentFormat do
+RSpec.context Kramdown::Parser::AtlassianDocumentFormat do
   let_it_be(:options) { { input: 'AtlassianDocumentFormat', html_tables: true } }
   let_it_be(:fixtures_path) { 'lib/kramdown/atlassian_document_format' }
 

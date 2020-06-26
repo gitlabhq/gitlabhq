@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Query.project(fullPath).releases()' do
+RSpec.describe 'Query.project(fullPath).releases()' do
   include GraphqlHelpers
 
   let_it_be(:stranger) { create(:user) }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe RepositoryUpdateRemoteMirrorWorker, :clean_gitlab_redis_shared_state do
+RSpec.describe RepositoryUpdateRemoteMirrorWorker, :clean_gitlab_redis_shared_state do
   subject { described_class.new }
 
   let(:remote_mirror) { create(:remote_mirror) }

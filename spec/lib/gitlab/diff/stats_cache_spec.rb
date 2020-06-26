@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Diff::StatsCache, :use_clean_rails_memory_store_caching do
+RSpec.describe Gitlab::Diff::StatsCache, :use_clean_rails_memory_store_caching do
   subject(:stats_cache) { described_class.new(cachable_key: cachable_key) }
 
   let(:key) { ['diff_stats', cachable_key, described_class::VERSION].join(":") }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe LooksAhead do
+RSpec.describe LooksAhead do
   include GraphqlHelpers
 
   let_it_be(:the_user) { create(:user) }

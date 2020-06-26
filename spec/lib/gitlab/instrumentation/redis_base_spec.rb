@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Instrumentation::RedisBase, :request_store do
+RSpec.describe Gitlab::Instrumentation::RedisBase, :request_store do
   let(:instrumentation_class_a) do
     stub_const('InstanceA', Class.new(described_class))
   end

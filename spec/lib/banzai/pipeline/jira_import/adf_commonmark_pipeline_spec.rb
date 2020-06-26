@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Banzai::Pipeline::JiraImport::AdfCommonmarkPipeline do
+RSpec.describe Banzai::Pipeline::JiraImport::AdfCommonmarkPipeline do
   let_it_be(:fixtures_path) { 'lib/kramdown/atlassian_document_format' }
 
   it 'converts text in Atlassian Document Format ' do

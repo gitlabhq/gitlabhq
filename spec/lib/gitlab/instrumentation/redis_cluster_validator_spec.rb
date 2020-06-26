@@ -4,7 +4,7 @@ require 'fast_spec_helper'
 require 'support/helpers/rails_helpers'
 require 'rspec-parameterized'
 
-describe Gitlab::Instrumentation::RedisClusterValidator do
+RSpec.describe Gitlab::Instrumentation::RedisClusterValidator do
   include RailsHelpers
 
   describe '.validate!' do

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe AuthorizedProjectUpdate::RecalculateForUserRangeService do
+RSpec.describe AuthorizedProjectUpdate::RecalculateForUserRangeService do
   describe '#execute' do
     let_it_be(:users) { create_list(:user, 2) }
 

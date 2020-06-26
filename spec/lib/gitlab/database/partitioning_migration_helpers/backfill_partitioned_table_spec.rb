@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Database::PartitioningMigrationHelpers::BackfillPartitionedTable, '#perform' do
+RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::BackfillPartitionedTable, '#perform' do
   subject { described_class.new }
 
   let(:source_table) { '_test_partitioning_backfills' }

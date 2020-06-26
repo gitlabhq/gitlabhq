@@ -7,7 +7,7 @@ require 'rubocop/rspec/support'
 
 require_relative '../../../../rubocop/cop/migration/drop_table'
 
-describe RuboCop::Cop::Migration::DropTable do
+RSpec.describe RuboCop::Cop::Migration::DropTable do
   include CopHelper
 
   subject(:cop) { described_class.new }

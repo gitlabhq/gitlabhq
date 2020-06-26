@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::DependencyLinker::GoModLinker do
+RSpec.describe Gitlab::DependencyLinker::GoModLinker do
   let(:file_name) { 'go.mod' }
   let(:file_content) do
     <<-CONTENT.strip_heredoc

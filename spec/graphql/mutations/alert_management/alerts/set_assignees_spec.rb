@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Mutations::AlertManagement::Alerts::SetAssignees do
+RSpec.describe Mutations::AlertManagement::Alerts::SetAssignees do
   let_it_be(:starting_assignee) { create(:user) }
   let_it_be(:unassigned_user) { create(:user) }
   let_it_be(:alert) { create(:alert_management_alert, assignees: [starting_assignee]) }

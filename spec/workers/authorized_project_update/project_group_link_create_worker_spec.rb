@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe AuthorizedProjectUpdate::ProjectGroupLinkCreateWorker do
+RSpec.describe AuthorizedProjectUpdate::ProjectGroupLinkCreateWorker do
   let_it_be(:group) { create(:group, :private) }
   let_it_be(:group_project) { create(:project, group: group) }
   let_it_be(:shared_with_group) { create(:group, :private) }

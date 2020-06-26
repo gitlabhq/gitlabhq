@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Projects::Pipelines::TestsController do
+RSpec.describe Projects::Pipelines::TestsController do
   let(:user) { create(:user) }
   let(:project) { create(:project, :public, :repository) }
   let(:pipeline) { create(:ci_pipeline, project: project) }

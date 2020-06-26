@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe UploadChecksumWorker do
+RSpec.describe UploadChecksumWorker do
   describe '#perform' do
     subject { described_class.new }
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Types::Snippets::FileInputActionEnum do
+RSpec.describe Types::Snippets::FileInputActionEnum do
   specify { expect(described_class.graphql_name).to eq('SnippetFileInputActionEnum') }
 
   it 'exposes all file input action types' do

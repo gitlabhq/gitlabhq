@@ -6082,9 +6082,6 @@ msgstr ""
 msgid "ContainerRegistry|CLI Commands"
 msgstr ""
 
-msgid "ContainerRegistry|Compressed Size"
-msgstr ""
-
 msgid "ContainerRegistry|Container Registry"
 msgstr ""
 
@@ -6098,6 +6095,9 @@ msgid "ContainerRegistry|Copy login command"
 msgstr ""
 
 msgid "ContainerRegistry|Copy push command"
+msgstr ""
+
+msgid "ContainerRegistry|Delete selected"
 msgstr ""
 
 msgid "ContainerRegistry|Docker connection error"
@@ -6133,16 +6133,16 @@ msgstr ""
 msgid "ContainerRegistry|If you are not already logged in, you need to authenticate to the Container Registry by using your GitLab username and password. If you have %{twofaDocLinkStart}Two-Factor Authentication%{twofaDocLinkEnd} enabled, use a %{personalAccessTokensDocLinkStart}Personal Access Token%{personalAccessTokensDocLinkEnd} instead of a password."
 msgstr ""
 
-msgid "ContainerRegistry|Image ID"
+msgid "ContainerRegistry|Image ID: %{imageId}"
 msgstr ""
 
 msgid "ContainerRegistry|Image Repositories"
 msgstr ""
 
-msgid "ContainerRegistry|Keep and protect the images that matter most."
+msgid "ContainerRegistry|Image tags"
 msgstr ""
 
-msgid "ContainerRegistry|Last Updated"
+msgid "ContainerRegistry|Keep and protect the images that matter most."
 msgstr ""
 
 msgid "ContainerRegistry|Login"
@@ -6155,6 +6155,9 @@ msgid "ContainerRegistry|Number of tags to retain:"
 msgstr ""
 
 msgid "ContainerRegistry|Please contact your administrator."
+msgstr ""
+
+msgid "ContainerRegistry|Published %{timeInfo}"
 msgstr ""
 
 msgid "ContainerRegistry|Push an image"
@@ -6170,9 +6173,6 @@ msgid "ContainerRegistry|Remember to run %{docLinkStart}garbage collection%{docL
 msgstr ""
 
 msgid "ContainerRegistry|Remove repository"
-msgstr ""
-
-msgid "ContainerRegistry|Remove selected tags"
 msgstr ""
 
 msgid "ContainerRegistry|Remove tag"
@@ -6202,9 +6202,6 @@ msgid "ContainerRegistry|Something went wrong while updating the expiration poli
 msgstr ""
 
 msgid "ContainerRegistry|Sorry, your filter produced no results."
-msgstr ""
-
-msgid "ContainerRegistry|Tag"
 msgstr ""
 
 msgid "ContainerRegistry|Tag expiration policy"

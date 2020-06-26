@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Metrics::Dashboard::Stages::UrlValidator do
+RSpec.describe Gitlab::Metrics::Dashboard::Stages::UrlValidator do
   let(:project) { build_stubbed(:project) }
 
   describe '#transform!' do

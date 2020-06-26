@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe GitlabSchema.types['MilestoneStats'] do
+RSpec.describe GitlabSchema.types['MilestoneStats'] do
   it { expect(described_class).to require_graphql_authorizations(:read_milestone) }
 
   it 'has the expected fields' do

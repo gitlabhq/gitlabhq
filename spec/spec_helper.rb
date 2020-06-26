@@ -331,6 +331,8 @@ RSpec.configure do |config|
       Ability.allowed?(*args)
     end
   end
+
+  config.disable_monkey_patching!
 end
 
 ActiveRecord::Migration.maintain_test_schema!

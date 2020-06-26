@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Database::DynamicModelHelpers do
+RSpec.describe Gitlab::Database::DynamicModelHelpers do
   describe '#define_batchable_model' do
     subject { including_class.new.define_batchable_model(table_name) }
 

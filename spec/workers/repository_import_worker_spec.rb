@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe RepositoryImportWorker do
+RSpec.describe RepositoryImportWorker do
   describe 'modules' do
     it 'includes ProjectImportOptions' do
       expect(described_class).to include_module(ProjectImportOptions)

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe AuthorizedProjectUpdate::UserRefreshOverUserRangeWorker do
+RSpec.describe AuthorizedProjectUpdate::UserRefreshOverUserRangeWorker do
   let(:start_user_id) { 42 }
   let(:end_user_id) { 4242 }
 

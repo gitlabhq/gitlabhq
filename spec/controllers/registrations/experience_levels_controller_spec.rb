@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Registrations::ExperienceLevelsController do
+RSpec.describe Registrations::ExperienceLevelsController do
   let_it_be(:namespace) { create(:group, path: 'group-path' ) }
   let_it_be(:user) { create(:user) }
 

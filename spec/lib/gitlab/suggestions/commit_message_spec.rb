@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Suggestions::CommitMessage do
+RSpec.describe Gitlab::Suggestions::CommitMessage do
   def create_suggestion(file_path, new_line, to_content)
     position = Gitlab::Diff::Position.new(old_path: file_path,
                                           new_path: file_path,

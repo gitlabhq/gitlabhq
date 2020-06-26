@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Types::Snippets::FileInputType do
+RSpec.describe Types::Snippets::FileInputType do
   specify { expect(described_class.graphql_name).to eq('SnippetFileInputType') }
 
   it 'has the correct arguments' do

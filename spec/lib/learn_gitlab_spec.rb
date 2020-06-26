@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe LearnGitlab do
+RSpec.describe LearnGitlab do
   let_it_be(:current_user) { create(:user) }
   let_it_be(:learn_gitlab_project) { create(:project, name: LearnGitlab::PROJECT_NAME) }
   let_it_be(:learn_gitlab_board) { create(:board, project: learn_gitlab_project, name: LearnGitlab::BOARD_NAME) }

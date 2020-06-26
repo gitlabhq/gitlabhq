@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe UpdateMergeRequestsWorker do
+RSpec.describe UpdateMergeRequestsWorker do
   include RepoHelpers
 
   let(:project) { create(:project, :repository) }

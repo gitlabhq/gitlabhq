@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'ProjectMember' do
+RSpec.describe 'ProjectMember' do
   include GraphqlHelpers
 
   let_it_be(:member) { create(:project_member, :developer) }

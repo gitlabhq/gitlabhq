@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-describe Gitlab::Graphql::MountMutation do
+RSpec.describe Gitlab::Graphql::MountMutation do
   let_it_be(:mutation) do
     Class.new(Mutations::BaseMutation) do
       graphql_name 'TestMutation'

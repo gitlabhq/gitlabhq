@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::UsageDataConcerns::Topology do
+RSpec.describe Gitlab::UsageDataConcerns::Topology do
   include UsageDataHelpers
 
   describe '#topology_usage_data' do

@@ -6,7 +6,7 @@ import Tracking from '~/tracking';
 import DeleteAlert from '../components/details_page/delete_alert.vue';
 import DeleteModal from '../components/details_page/delete_modal.vue';
 import DetailsHeader from '../components/details_page/details_header.vue';
-import TagsTable from '../components/details_page/tags_table.vue';
+import TagsList from '../components/details_page/tags_list.vue';
 import TagsLoader from '../components/details_page/tags_loader.vue';
 import EmptyTagsState from '../components/details_page/empty_tags_state.vue';
 
@@ -24,7 +24,7 @@ export default {
     DetailsHeader,
     GlPagination,
     DeleteModal,
-    TagsTable,
+    TagsList,
     TagsLoader,
     EmptyTagsState,
   },
@@ -65,10 +65,8 @@ export default {
   },
   methods: {
     ...mapActions(['requestTagsList', 'requestDeleteTag', 'requestDeleteTags']),
-    deleteTags(toBeDeletedList) {
-      this.itemsToBeDeleted = toBeDeletedList.map(name => ({
-        ...this.tags.find(t => t.name === name),
-      }));
+    deleteTags(toBeDeleted) {
+      this.itemsToBeDeleted = this.tags.filter(tag => toBeDeleted[tag.name]);
       this.track('click_button');
       this.$refs.deleteModal.show();
     },
@@ -114,24 +112,21 @@ export default {
 </script>
 
 <template>
-  <div v-gl-resize-observer="handleResize" class="my-3 w-100 slide-enter-to-element">
+  <div v-gl-resize-observer="handleResize" class="gl-my-3 gl-w-full slide-enter-to-element">
     <delete-alert
       v-model="deleteAlertType"
       :garbage-collection-help-page-path="config.garbageCollectionHelpPagePath"
       :is-admin="config.isAdmin"
-      class="my-2"
+      class="gl-my-2"
     />
 
     <details-header :image-name="imageName" />
 
-    <tags-table :tags="tags" :is-loading="isLoading" :is-desktop="isDesktop" @delete="deleteTags">
-      <template #empty>
-        <empty-tags-state :no-containers-image="config.noContainersImage" />
-      </template>
-      <template #loader>
-        <tags-loader v-once />
-      </template>
-    </tags-table>
+    <tags-loader v-if="isLoading" />
+    <template v-else>
+      <empty-tags-state v-if="tags.length === 0" :no-containers-image="config.noContainersImage" />
+      <tags-list v-else :tags="tags" :is-desktop="isDesktop" @delete="deleteTags" />
+    </template>
 
     <gl-pagination
       v-if="!isLoading"
@@ -140,7 +135,7 @@ export default {
       :per-page="tagsPagination.perPage"
       :total-items="tagsPagination.total"
       align="center"
-      class="w-100"
+      class="gl-w-full gl-mt-3"
     />
 
     <delete-modal

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe AlertManagement::AlertUserMention do
+RSpec.describe AlertManagement::AlertUserMention do
   describe 'associations' do
     it { is_expected.to belong_to(:alert_management_alert) }
     it { is_expected.to belong_to(:note) }

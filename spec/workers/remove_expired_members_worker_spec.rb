@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe RemoveExpiredMembersWorker do
+RSpec.describe RemoveExpiredMembersWorker do
   let(:worker) { described_class.new }
 
   describe '#perform' do

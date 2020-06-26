@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe GroupImportState do
+RSpec.describe GroupImportState do
   describe 'validations' do
     let_it_be(:group) { create(:group) }
 

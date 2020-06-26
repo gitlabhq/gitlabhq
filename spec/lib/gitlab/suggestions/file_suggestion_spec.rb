@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Suggestions::FileSuggestion do
+RSpec.describe Gitlab::Suggestions::FileSuggestion do
   def create_suggestion(new_line, to_content, lines_above = 0, lines_below = 0)
     position = Gitlab::Diff::Position.new(old_path: file_path,
                                           new_path: file_path,

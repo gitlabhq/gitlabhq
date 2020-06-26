@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ExtractsRef do
+RSpec.describe ExtractsRef do
   include described_class
   include RepoHelpers
 

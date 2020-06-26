@@ -3,7 +3,7 @@
 require 'spec_helper'
 require Rails.root.join('db', 'migrate', '20200609212701_add_incident_settings_to_all_existing_projects.rb')
 
-describe AddIncidentSettingsToAllExistingProjects, :migration do
+RSpec.describe AddIncidentSettingsToAllExistingProjects, :migration do
   let(:project_incident_management_settings) { table(:project_incident_management_settings) }
   let(:labels) { table(:labels) }
   let(:label_links) { table(:label_links) }

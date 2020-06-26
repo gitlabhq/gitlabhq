@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Analytics::UniqueVisits, :clean_gitlab_redis_shared_state do
+RSpec.describe Gitlab::Analytics::UniqueVisits, :clean_gitlab_redis_shared_state do
   let(:unique_visits) { Gitlab::Analytics::UniqueVisits.new }
   let(:target1_id) { 'g_analytics_contribution' }
   let(:target2_id) { 'g_analytics_insights' }

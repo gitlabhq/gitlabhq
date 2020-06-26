@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ChatMessage::AlertMessage do
+RSpec.describe ChatMessage::AlertMessage do
   subject { described_class.new(args) }
 
   let_it_be(:start_time) { Time.current }

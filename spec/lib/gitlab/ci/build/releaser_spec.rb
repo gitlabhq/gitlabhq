@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Ci::Build::Releaser do
+RSpec.describe Gitlab::Ci::Build::Releaser do
   subject { described_class.new(config: config[:release]).script }
 
   describe '#script' do

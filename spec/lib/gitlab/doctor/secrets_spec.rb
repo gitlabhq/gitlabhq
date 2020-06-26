@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Doctor::Secrets do
+RSpec.describe Gitlab::Doctor::Secrets do
   let!(:user) { create(:user, otp_secret: "test") }
   let!(:group) { create(:group, runners_token: "test") }
   let(:logger) { double(:logger).as_null_object }

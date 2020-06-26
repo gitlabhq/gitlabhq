@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe SubscribableBannerHelper do
+RSpec.describe SubscribableBannerHelper do
   describe '#display_subscription_banner!' do
     it 'is over-written in EE' do
       expect { helper.display_subscription_banner! }.not_to raise_error

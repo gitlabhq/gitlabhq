@@ -3,7 +3,7 @@
 require 'spec_helper'
 require Rails.root.join('db', 'migrate', '20200526231421_update_index_approval_rule_name_for_code_owners_rule_type.rb')
 
-describe UpdateIndexApprovalRuleNameForCodeOwnersRuleType do
+RSpec.describe UpdateIndexApprovalRuleNameForCodeOwnersRuleType do
   let(:migration) { described_class.new }
 
   let(:approval_rules) { table(:approval_merge_request_rules) }

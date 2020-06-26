@@ -66,7 +66,7 @@ one major version. For example, it is safe to:
   - `9.5.5` -> `9.5.9`
   - `8.9.2` -> `8.9.6`
 
-NOTE **Note** Version specific changes in Omnibus GitLab Linux packages can be found in [the Omnibus GitLab documentation](https://docs.gitlab.com/omnibus/update/README.html#version-specific-changes).
+NOTE: **Note** Version specific changes in Omnibus GitLab Linux packages can be found in [the Omnibus GitLab documentation](https://docs.gitlab.com/omnibus/update/README.html#version-specific-changes).
 
 NOTE: **Note:**
 Instructions are available for downloading an Omnibus GitLab Linux package locally and [manually installing](https://docs.gitlab.com/omnibus/manual_install.html) it.
@@ -107,7 +107,7 @@ Please see the table below for some examples:
 
 | Target version | Your version | Recommended upgrade path | Note |
 | --------------------- | ------------ | ------------------------ | ---- |
-| `13.2.0`                | `11.5.0`      | `11.5.0` -> `11.11.8` -> `12.0.12` -> `12.10.6` -> `13.0.0` -> `13.2.0` | Four intermediate versions are required: the final 11.11, 12.0, and 12.10 releases, plus 13.0. |
+| `13.2.0`                | `11.5.0`      | `11.5.0` -> `11.11.8` -> `12.0.12` -> `12.10.6` -> `13.0.0` -> `13.2.0` | Four intermediate versions are required: the final `11.11`, `12.0`, and `12.10` releases, plus `13.0`. |
 | `13.0.1`              | `11.10.8`      | `11.10.5` -> `11.11.8` -> `12.0.12` -> `12.10.6` -> `13.0.1` | Three intermediate versions are required: `11.11`, `12.0`, and `12.10`. |
 | `12.10.6`             | `11.3.4`       | `11.3.4` -> `11.11.8` -> `12.0.12` -> `12.10.6`             |  Two intermediate versions are required: `11.11` and `12.0` |
 | `12.9.5.`             | `10.4.5`       | `10.4.5` -> `10.8.7` -> `11.11.8` -> `12.0.12` -> `12.9.5`   | Three intermediate versions are required: `10.8`, `11.11`, and `12.0`, then `12.9.5` |

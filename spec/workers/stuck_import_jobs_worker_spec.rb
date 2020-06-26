@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe StuckImportJobsWorker do
+RSpec.describe StuckImportJobsWorker do
   let(:worker) { described_class.new }
 
   describe 'with scheduled import_status' do

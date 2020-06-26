@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Emoji do
+RSpec.describe Gitlab::Emoji do
   let_it_be(:emojis) { Gemojione.index.instance_variable_get(:@emoji_by_name) }
   let_it_be(:emojis_by_moji) { Gemojione.index.instance_variable_get(:@emoji_by_moji) }
   let_it_be(:emoji_unicode_versions_by_name) { Gitlab::Json.parse(File.read(Rails.root.join('fixtures', 'emojis', 'emoji-unicode-version-map.json'))) }

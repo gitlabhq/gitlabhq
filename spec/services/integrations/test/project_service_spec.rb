@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Integrations::Test::ProjectService do
+RSpec.describe Integrations::Test::ProjectService do
   let(:user) { double('user') }
 
   describe '#execute' do

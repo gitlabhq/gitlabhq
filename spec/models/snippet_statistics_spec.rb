@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe SnippetStatistics do
+RSpec.describe SnippetStatistics do
   let_it_be(:snippet_without_repo) { create(:snippet) }
   let_it_be(:snippet_with_repo) { create(:snippet, :repository) }
 
