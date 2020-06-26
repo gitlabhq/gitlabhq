@@ -1140,8 +1140,8 @@ The following are examples of source Markdown for menu items with their publishe
 Whenever you need to call special attention to particular sentences,
 use the following markup for highlighting.
 
-_Note that the alert boxes only work for one paragraph only. Multiple paragraphs,
-lists, headers and so on, will not render correctly. For multiple lines, use blockquotes instead._
+Note that the alert boxes only work for one paragraph only. Multiple paragraphs,
+lists, headers and so on, will not render correctly. For multiple lines, use [blockquotes](#blockquotes) instead.
 
 Alert boxes only render on the GitLab Docs site (<https://docs.gitlab.com>).
 Within GitLab itself, they will appear as plain Markdown text (like the examples
