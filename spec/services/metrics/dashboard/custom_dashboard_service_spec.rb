@@ -9,16 +9,23 @@ RSpec.describe Metrics::Dashboard::CustomDashboardService, :use_clean_rails_memo
   let_it_be(:project) { create(:project) }
   let_it_be(:environment) { create(:environment, project: project) }
 
+  let(:dashboard_path) { '.gitlab/dashboards/test.yml' }
+  let(:service_params) { [project, user, { environment: environment, dashboard_path: dashboard_path }] }
+
+  subject { described_class.new(*service_params) }
+
   before do
     project.add_maintainer(user)
   end
 
-  describe '#get_dashboard' do
-    let(:dashboard_path) { '.gitlab/dashboards/test.yml' }
-    let(:service_params) { [project, user, { environment: environment, dashboard_path: dashboard_path }] }
-    let(:service_call) { subject.get_dashboard }
+  describe '#raw_dashboard' do
+    let(:project) { project_with_dashboard(dashboard_path) }
 
-    subject { described_class.new(*service_params) }
+    it_behaves_like '#raw_dashboard raises error if dashboard loading fails'
+  end
+
+  describe '#get_dashboard' do
+    let(:service_call) { subject.get_dashboard }
 
     context 'when the dashboard does not exist' do
       it_behaves_like 'misconfigured dashboard service response', :not_found

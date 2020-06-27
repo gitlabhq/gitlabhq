@@ -84,6 +84,17 @@ module Metrics
         params[:dashboard_path]
       end
 
+      def load_yaml(data)
+        ::Gitlab::Config::Loader::Yaml.new(data).load_raw!
+      rescue Gitlab::Config::Loader::Yaml::NotHashError
+        # Raise more informative error in app/models/performance_monitoring/prometheus_dashboard.rb.
+        {}
+      rescue Gitlab::Config::Loader::Yaml::DataTooLargeError => exception
+        raise Gitlab::Metrics::Dashboard::Errors::LayoutError, exception.message
+      rescue Gitlab::Config::Loader::FormatError
+        raise Gitlab::Metrics::Dashboard::Errors::LayoutError, _('Invalid yaml')
+      end
+
       # @return [Hash] an unmodified dashboard
       def get_raw_dashboard
         raise NotImplementedError

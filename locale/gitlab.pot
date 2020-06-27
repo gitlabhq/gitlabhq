@@ -12464,6 +12464,9 @@ msgstr ""
 msgid "Invalid two-factor code."
 msgstr ""
 
+msgid "Invalid yaml"
+msgstr ""
+
 msgid "Invitation"
 msgstr ""
 

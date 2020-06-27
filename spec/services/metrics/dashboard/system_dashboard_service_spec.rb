@@ -9,16 +9,21 @@ RSpec.describe Metrics::Dashboard::SystemDashboardService, :use_clean_rails_memo
   let_it_be(:project) { create(:project) }
   let_it_be(:environment) { create(:environment, project: project) }
 
+  let(:dashboard_path) { described_class::DASHBOARD_PATH }
+  let(:service_params) { [project, user, { environment: environment, dashboard_path: dashboard_path }] }
+
+  subject { described_class.new(*service_params) }
+
   before do
     project.add_maintainer(user)
   end
 
-  describe '#get_dashboard' do
-    let(:dashboard_path) { described_class::DASHBOARD_PATH }
-    let(:service_params) { [project, user, { environment: environment, dashboard_path: dashboard_path }] }
-    let(:service_call) { subject.get_dashboard }
+  describe '#raw_dashboard' do
+    it_behaves_like '#raw_dashboard raises error if dashboard loading fails'
+  end
 
-    subject { described_class.new(*service_params) }
+  describe '#get_dashboard' do
+    let(:service_call) { subject.get_dashboard }
 
     it_behaves_like 'valid dashboard service response'
     it_behaves_like 'raises error for users with insufficient permissions'

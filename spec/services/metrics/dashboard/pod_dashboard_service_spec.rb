@@ -9,8 +9,17 @@ RSpec.describe Metrics::Dashboard::PodDashboardService, :use_clean_rails_memory_
   let_it_be(:project) { create(:project) }
   let_it_be(:environment) { create(:environment, project: project) }
 
+  let(:dashboard_path) { described_class::DASHBOARD_PATH }
+  let(:service_params) { [project, user, { environment: environment, dashboard_path: dashboard_path }] }
+
   before do
     project.add_maintainer(user)
+  end
+
+  subject { described_class.new(*service_params) }
+
+  describe '#raw_dashboard' do
+    it_behaves_like '#raw_dashboard raises error if dashboard loading fails'
   end
 
   describe '.valid_params?' do
@@ -34,11 +43,7 @@ RSpec.describe Metrics::Dashboard::PodDashboardService, :use_clean_rails_memory_
   end
 
   describe '#get_dashboard' do
-    let(:dashboard_path) { described_class::DASHBOARD_PATH }
-    let(:service_params) { [project, user, { environment: environment, dashboard_path: dashboard_path }] }
     let(:service_call) { subject.get_dashboard }
-
-    subject { described_class.new(*service_params) }
 
     it_behaves_like 'valid dashboard service response'
     it_behaves_like 'caches the unprocessed dashboard for subsequent calls'

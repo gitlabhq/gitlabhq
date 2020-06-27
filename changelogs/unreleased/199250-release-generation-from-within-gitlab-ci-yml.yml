@@ -1,0 +1,5 @@
+---
+title: Release generation via gitlab-ci.yml documentation
+merge_request: 19237
+author:
+type: added

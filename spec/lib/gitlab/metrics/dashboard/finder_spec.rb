@@ -118,7 +118,7 @@ RSpec.describe Gitlab::Metrics::Dashboard::Finder, :use_clean_rails_memory_store
   end
 
   describe '.find_raw' do
-    let(:dashboard) { YAML.load_file(Rails.root.join('config', 'prometheus', 'common_metrics.yml')) }
+    let(:dashboard) { load_dashboard_yaml(File.read(Rails.root.join('config', 'prometheus', 'common_metrics.yml'))) }
     let(:params) { {} }
 
     subject { described_class.find_raw(project, **params) }
@@ -132,7 +132,7 @@ RSpec.describe Gitlab::Metrics::Dashboard::Finder, :use_clean_rails_memory_store
     end
 
     context 'when an existing project dashboard is specified' do
-      let(:dashboard) { YAML.safe_load(fixture_file('lib/gitlab/metrics/dashboard/sample_dashboard.yml')) }
+      let(:dashboard) { load_sample_dashboard }
       let(:params) { { dashboard_path: '.gitlab/dashboards/test.yml' } }
       let(:project) { project_with_dashboard(params[:dashboard_path]) }
 

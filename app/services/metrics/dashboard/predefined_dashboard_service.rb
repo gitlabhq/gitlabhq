@@ -40,7 +40,7 @@ module Metrics
       def get_raw_dashboard
         yml = File.read(Rails.root.join(dashboard_path))
 
-        YAML.safe_load(yml)
+        load_yaml(yml)
       end
 
       def sequence

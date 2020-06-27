@@ -3,9 +3,11 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Metrics::Dashboard::Processor do
+  include MetricsDashboardHelpers
+
   let(:project) { build(:project) }
   let(:environment) { create(:environment, project: project) }
-  let(:dashboard_yml) { YAML.load_file('spec/fixtures/lib/gitlab/metrics/dashboard/sample_dashboard.yml') }
+  let(:dashboard_yml) { load_sample_dashboard }
 
   describe 'process' do
     let(:sequence) do

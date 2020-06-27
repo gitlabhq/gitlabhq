@@ -29,8 +29,10 @@ RSpec.shared_examples 'valid dashboard service response' do
 end
 
 RSpec.shared_examples 'caches the unprocessed dashboard for subsequent calls' do
-  it do
-    expect(YAML).to receive(:safe_load).once.and_call_original
+  specify do
+    expect_next_instance_of(::Gitlab::Config::Loader::Yaml) do |loader|
+      expect(loader).to receive(:load_raw!).once.and_call_original
+    end
 
     described_class.new(*service_params).get_dashboard
     described_class.new(*service_params).get_dashboard
@@ -126,5 +128,52 @@ RSpec.shared_examples 'updates gitlab_metrics_dashboard_processing_time_ms metri
     labels = subject.send(:processing_time_metric_labels)
 
     expect(metric.get(labels)).to be > 0
+  end
+end
+
+RSpec.shared_examples '#raw_dashboard raises error if dashboard loading fails' do
+  context 'when yaml is too large' do
+    before do
+      allow_next_instance_of(::Gitlab::Config::Loader::Yaml) do |loader|
+        allow(loader).to receive(:load_raw!)
+          .and_raise(Gitlab::Config::Loader::Yaml::DataTooLargeError, 'The parsed YAML is too big')
+      end
+    end
+
+    it 'raises error' do
+      expect { subject.raw_dashboard }.to raise_error(
+        Gitlab::Metrics::Dashboard::Errors::LayoutError,
+        'The parsed YAML is too big'
+      )
+    end
+  end
+
+  context 'when yaml loader returns error' do
+    before do
+      allow_next_instance_of(::Gitlab::Config::Loader::Yaml) do |loader|
+        allow(loader).to receive(:load_raw!)
+          .and_raise(Gitlab::Config::Loader::FormatError, 'Invalid configuration format')
+      end
+    end
+
+    it 'raises error' do
+      expect { subject.raw_dashboard }.to raise_error(
+        Gitlab::Metrics::Dashboard::Errors::LayoutError,
+        'Invalid yaml'
+      )
+    end
+  end
+
+  context 'when yaml is not a hash' do
+    before do
+      allow_next_instance_of(::Gitlab::Config::Loader::Yaml) do |loader|
+        allow(loader).to receive(:load_raw!)
+          .and_raise(Gitlab::Config::Loader::Yaml::NotHashError, 'Invalid configuration format')
+      end
+    end
+
+    it 'returns nil' do
+      expect(subject.raw_dashboard).to eq({})
+    end
   end
 end

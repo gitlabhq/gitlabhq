@@ -130,6 +130,7 @@ The following table lists available parameters for jobs:
 | [`variables`](#variables)                          | Define job variables on a job level.                                                                                                                                                |
 | [`interruptible`](#interruptible)                  | Defines if a job can be canceled when made redundant by a newer run.                                                                                                                |
 | [`resource_group`](#resource_group)                | Limit job concurrency.                                                                                                                                                              |
+| [`release`](#release) | Instructs the Runner to generate a [Release](../../user/project/releases/index.md) object. |
 
 NOTE: **Note:**
 Parameters `types` and `type` are [deprecated](#deprecated-parameters).
@@ -256,8 +257,8 @@ karma:
 
 ### `stages`
 
-`stages` is used to define stages that can be used by jobs and is defined
-globally.
+`stages` is used to define stages that contain jobs and is defined
+globally for the pipeline.
 
 The specification of `stages` allows for having flexible multi stage pipelines.
 The ordering of elements in `stages` defines the ordering of jobs' execution:
@@ -3593,6 +3594,164 @@ This key can only contain letters, digits, `-`, `_`, `/`, `$`, `{`, `}`, `.`, an
 It can't start or end with `/`.
 
 For more information, see [Deployments Safety](../environments/deployment_safety.md).
+
+### `release`
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/merge_requests/19298) in GitLab 13.2.
+
+`release` indicates that the job will create a [Release](../../user/project/releases/index.md),
+and optionally include URLs for Release assets.
+
+These methods are supported:
+
+- [`name`](#releasename)
+- [`description`](#releasedescription)
+- [`tag_name`](#releasetag_name)
+- [`ref`](#releaseref)
+- [`milestones`](#releasemilestones)
+- [`released_at`](#releasereleased_at)
+
+The Release is created only if the job processes without error. If the Rails API
+returns an error during Release creation, the `release` job fails.
+
+#### Tags
+
+A `release` job should not be run against a tag commit, or it will continually re-trigger itself. This can be specified by including:
+
+```yaml
+only:
+  - tags
+```
+
+#### `release-cli` Docker image
+
+The Docker image to use for the `release-cli` must be specified, using the following directive:
+
+```yaml
+image: registry.gitlab.com/gitlab-org/release-cli:stable
+```
+
+#### Script
+
+All jobs require a `script` tag at a minimum. A `:release` job can use the output of a
+`:script` tag, but if this is not necessary, a placeholder script can be used, for example:
+
+```yaml
+script:
+  - echo 'release job'
+```
+
+An [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/223856) exists to remove this requirement in an upcoming version of GitLab.
+
+A pipeline can have multiple `release` jobs, for example:
+
+```yaml
+ios-release:
+  script: release > changelog.md
+  release:
+     tag_name: v1.0.0-ios
+     description: changelog.md
+
+android-release:
+  script: release > changelog.md
+  release:
+     tag_name: v1.0.0-android
+     description: changelog.md
+```
+
+#### `release:tag_name`
+
+The `tag_name` must be specified. It can refer to an existing Git tag or can be specified by the user.
+
+When the specified tag doesn't exist in repository, a new tag is created from the associated SHA of the pipeline.
+
+For example, when creating a Release from a Git tag:
+
+```yaml
+job:
+  release:
+    tag_name: $CI_COMMIT_TAG
+    description: changelog.txt
+  only:
+    - tags
+```
+
+It is also possible to create any unique tag, in which case `only: tags` is not mandatory.
+A semantic versioning example:
+
+```yaml
+job:
+  release:
+    tag_name: ${MAJOR}_${MINOR}_${REVISION}
+    description: changelog.txt
+```
+
+- The Release is created only if the job's main script succeeds.
+- If the Release already exists, it is not updated and the job with the `release` keyword fails.
+- The `release` section executes after the `script` tag and before the `after_script`.
+
+#### `release:name`
+
+The Release name. This is an optional field. If omitted, it is populated with
+`release:tag_name`.
+
+#### `release:description`
+
+Specifies a file containing the longer description of the Release. This is a mandatory
+field and can point to a changelog.
+
+#### `release:ref`
+
+When the `tag_name` does not exist, `release:ref` specifies the commit to be used instead of the pipeline `ref`. If `tag_name` doesn’t exist, the release will be created from `ref`. `ref` can be a commit SHA, another tag name, or a branch name.
+
+#### `release:milestones`
+
+The title of each milestone the release is associated with.
+
+#### `release:released_at`
+
+The date when the release will be or was ready. Defaults to the current time. Expected in ISO 8601 format (2019-03-15T08:00:00Z).
+
+#### Complete example for `release`
+
+Combining the individual examples given above for `release`, we'd have the following code snippet:
+
+```yaml
+stages:
+- build
+- test
+- release-stg
+
+release_job:
+  stage: release
+  image: registry.gitlab.com/gitlab-org/release-cli:stable
+  only:
+    - tags
+  script:
+    - echo 'running release_job'
+  release:
+     name: 'Release $CI_COMMIT_SHA'
+     description: 'Created using the release-cli $EXTRA_DESCRIPTION'
+     tag_name: 'release-$CI_COMMIT_SHA'
+     ref: '$CI_COMMIT_SHA'
+     milestones:
+       - 'm1'
+       - 'm2'
+       - 'm3'
+     released_at: '2020-07-15T08:00:00Z'
+```
+
+#### `releaser-cli` command line
+
+The entries under the `:release` node are transformed into a `bash` command line and sent
+to the Docker container, which contains the [release-cli](https://gitlab.com/gitlab-org/release-cli).
+You can also call the `release-cli` directly from a `script` entry.
+
+The YAML described above would be transferred into a command line like this:
+
+```shell
+release-cli create --name "Release $CI_COMMIT_SHA" --description "Created using the release-cli $EXTRA_DESCRIPTION" --tag-name "release-$CI_COMMIT_SHA" --ref "$CI_COMMIT_SHA" --released-at "2020-07-15T08:00:00Z" --milestone "m1" --milestone "m2" --milestone "m3"
+```
 
 ### `pages`
 

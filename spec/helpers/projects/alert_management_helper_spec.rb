@@ -19,7 +19,7 @@ RSpec.describe Projects::AlertManagementHelper do
     before do
       allow(helper)
         .to receive(:can?)
-        .with(current_user, :admin_project, project)
+        .with(current_user, :admin_operations, project)
         .and_return(user_can_enable_alert_management)
     end
 

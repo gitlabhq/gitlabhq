@@ -19,7 +19,11 @@ module MetricsDashboardHelpers
   end
 
   def load_sample_dashboard
-    YAML.safe_load(fixture_file('lib/gitlab/metrics/dashboard/sample_dashboard.yml'))
+    load_dashboard_yaml(fixture_file('lib/gitlab/metrics/dashboard/sample_dashboard.yml'))
+  end
+
+  def load_dashboard_yaml(data)
+    ::Gitlab::Config::Loader::Yaml.new(data).load_raw!
   end
 
   def system_dashboard_path

@@ -42,7 +42,7 @@ module Metrics
       def get_raw_dashboard
         yml = self.class.file_finder(project).read(dashboard_path)
 
-        YAML.safe_load(yml)
+        load_yaml(yml)
       end
 
       def cache_key

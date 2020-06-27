@@ -9,13 +9,22 @@ RSpec.describe Metrics::Dashboard::SelfMonitoringDashboardService, :use_clean_ra
   let_it_be(:project) { create(:project) }
   let_it_be(:environment) { create(:environment, project: project) }
 
+  let(:service_params) { [project, user, { environment: environment }] }
+
   before do
     project.add_maintainer(user)
     stub_application_setting(self_monitoring_project_id: project.id)
   end
 
+  subject do
+    described_class.new(service_params)
+  end
+
+  describe '#raw_dashboard' do
+    it_behaves_like '#raw_dashboard raises error if dashboard loading fails'
+  end
+
   describe '#get_dashboard' do
-    let(:service_params) { [project, user, { environment: environment }] }
     let(:service_call) { subject.get_dashboard }
 
     subject { described_class.new(*service_params) }
