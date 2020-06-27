@@ -43,9 +43,8 @@ each group](../../user/admin_area/settings/continuous_integration.md#shared-runn
 
 If you are using GitLab.com, you can select from a list of
 [shared Runners that GitLab maintains](../../user/gitlab_com/index.md#shared-runners).
-You can use Shared Runners for a limited number of
-[minutes](../../subscriptions/index.md#ci-pipeline-minutes) each month, based on
-your [GitLab.com tier](https://about.gitlab.com/pricing/).
+When you use the GitLab.com shared Runners, they consume the
+[pipelines minutes](../../subscriptions/index.md#ci-pipeline-minutes) included with your account.
 
 #### How shared Runners pick jobs
 
