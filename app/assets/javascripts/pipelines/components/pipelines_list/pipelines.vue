@@ -1,6 +1,6 @@
 <script>
 import { isEqual } from 'lodash';
-import { __, sprintf, s__ } from '~/locale';
+import { __, s__ } from '~/locale';
 import createFlash from '~/flash';
 import PipelinesService from '../../services/pipelines_service';
 import pipelinesMixin from '../../mixins/pipelines';
@@ -117,8 +117,6 @@ export default {
   },
   scopes: {
     all: 'all',
-    pending: 'pending',
-    running: 'running',
     finished: 'finished',
     branches: 'branches',
     tags: 'tags',
@@ -171,13 +169,8 @@ export default {
     },
 
     emptyTabMessage() {
-      const { scopes } = this.$options;
-      const possibleScopes = [scopes.pending, scopes.running, scopes.finished];
-
-      if (possibleScopes.includes(this.scope)) {
-        return sprintf(s__('Pipelines|There are currently no %{scope} pipelines.'), {
-          scope: this.scope,
-        });
+      if (this.scope === this.$options.scopes.finished) {
+        return s__('Pipelines|There are currently no finished pipelines.');
       }
 
       return s__('Pipelines|There are currently no pipelines.');
@@ -195,21 +188,8 @@ export default {
           isActive: this.scope === 'all',
         },
         {
-          name: __('Pending'),
-          scope: scopes.pending,
-          count: count.pending,
-          isActive: this.scope === 'pending',
-        },
-        {
-          name: __('Running'),
-          scope: scopes.running,
-          count: count.running,
-          isActive: this.scope === 'running',
-        },
-        {
           name: __('Finished'),
           scope: scopes.finished,
-          count: count.finished,
           isActive: this.scope === 'finished',
         },
         {
