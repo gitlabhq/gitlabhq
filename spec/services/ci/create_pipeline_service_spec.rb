@@ -2231,8 +2231,8 @@ RSpec.describe Ci::CreatePipelineService do
           end
 
           context 'when outside freeze period' do
-            Timecop.freeze(2020, 4, 10, 22, 59) do
-              it 'creates two jobs' do
+            it 'creates two jobs' do
+              Timecop.freeze(2020, 4, 10, 22, 59) do
                 expect(pipeline).to be_persisted
                 expect(build_names).to contain_exactly('test-job', 'deploy-job')
               end
@@ -2265,8 +2265,8 @@ RSpec.describe Ci::CreatePipelineService do
           end
 
           context 'when outside freeze period' do
-            Timecop.freeze(2020, 4, 10, 22, 59) do
-              it 'creates two jobs' do
+            it 'creates two jobs' do
+              Timecop.freeze(2020, 4, 10, 22, 59) do
                 expect(pipeline).to be_persisted
                 expect(build_names).to contain_exactly('deploy-job')
               end
