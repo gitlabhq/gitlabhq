@@ -58,7 +58,7 @@ module WikiActions
 
       render 'shared/wikis/show'
     elsif file_blob
-      send_blob(wiki.repository, file_blob, allow_caching: container.public?)
+      send_blob(wiki.repository, file_blob)
     elsif show_create_form?
       # Assign a title to the WikiPage unless `id` is a randomly generated slug from #new
       title = params[:id] unless params[:random_title].present?

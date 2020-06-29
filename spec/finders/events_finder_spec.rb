@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe EventsFinder do
   let_it_be(:user) { create(:user) }
+  let(:private_user) { create(:user, private_profile: true) }
   let(:other_user) { create(:user) }
 
   let(:project1) { create(:project, :private, creator_id: user.id, namespace: user.namespace) }
@@ -54,6 +55,12 @@ RSpec.describe EventsFinder do
       expect(Ability).to receive(:allowed?).with(user, :read_cross_project) { false }
 
       events = described_class.new(source: user, current_user: user).execute
+
+      expect(events).to be_empty
+    end
+
+    it 'returns nothing when the target profile is private' do
+      events = described_class.new(source: private_user, current_user: other_user).execute
 
       expect(events).to be_empty
     end
