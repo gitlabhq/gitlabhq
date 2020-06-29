@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe AlertManagement::ProcessPrometheusAlertService do
-  let_it_be(:project) { create(:project) }
+  let_it_be(:project) { create(:project, :repository) }
 
   before do
     allow(ProjectServiceWorker).to receive(:perform_async)
@@ -35,9 +35,9 @@ RSpec.describe AlertManagement::ProcessPrometheusAlertService do
         }
       end
 
-      context 'when Prometheus alert status is firing' do
-        let(:status) { 'firing' }
+      let(:status) { 'firing' }
 
+      context 'when Prometheus alert status is firing' do
         context 'when alert with the same fingerprint already exists' do
           let!(:alert) { create(:alert_management_alert, :resolved, project: project, fingerprint: parsed_alert.gitlab_fingerprint) }
 
@@ -143,6 +143,33 @@ RSpec.describe AlertManagement::ProcessPrometheusAlertService do
         end
 
         it { is_expected.to be_success }
+      end
+
+      context 'environment given' do
+        let(:environment) { create(:environment, project: project) }
+
+        it 'sets the environment' do
+          payload['labels']['gitlab_environment_name'] = environment.name
+          execute
+
+          alert = project.alert_management_alerts.last
+
+          expect(alert.environment).to eq(environment)
+        end
+      end
+
+      context 'prometheus alert given' do
+        let(:prometheus_alert) { create(:prometheus_alert, project: project) }
+
+        it 'sets the prometheus alert and environment' do
+          payload['labels']['gitlab_alert_id'] = prometheus_alert.prometheus_metric_id
+          execute
+
+          alert = project.alert_management_alerts.last
+
+          expect(alert.prometheus_alert).to eq(prometheus_alert)
+          expect(alert.environment).to eq(prometheus_alert.environment)
+        end
       end
     end
 
