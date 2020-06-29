@@ -26467,6 +26467,9 @@ msgstr ""
 msgid "cannot block others"
 msgstr ""
 
+msgid "cannot contain HTML/XML tags, including any word between angle brackets (<,>)."
+msgstr ""
+
 msgid "cannot include leading slash or directory traversal."
 msgstr ""
 
