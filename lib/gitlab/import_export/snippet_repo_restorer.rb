@@ -3,7 +3,9 @@
 module Gitlab
   module ImportExport
     class SnippetRepoRestorer < RepoRestorer
-      attr_reader :snippet
+      attr_reader :snippet, :user
+
+      SnippetRepositoryError = Class.new(StandardError)
 
       def initialize(snippet:, user:, shared:, path_to_bundle:)
         @snippet = snippet
@@ -31,6 +33,16 @@ module Gitlab
       def create_repository_from_bundle
         repository.create_from_bundle(path_to_bundle)
         snippet.track_snippet_repository(repository.storage)
+
+        response = Snippets::RepositoryValidationService.new(user, snippet).execute
+
+        if response.error?
+          repository.remove
+          snippet.snippet_repository.delete
+          snippet.repository.expire_exists_cache
+
+          raise SnippetRepositoryError, _("Invalid repository bundle for snippet with id %{snippet_id}") % { snippet_id: snippet.id }
+        end
       end
 
       def create_repository_from_db
