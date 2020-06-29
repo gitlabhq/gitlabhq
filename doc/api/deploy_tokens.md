@@ -136,7 +136,8 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://git
 
 ## Group deploy tokens
 
-These endpoints require group maintainer access or higher.
+Group maintainers and owners can list group deploy
+tokens. Only group owners can create and delete group deploy tokens.
 
 ### List group deploy tokens
 

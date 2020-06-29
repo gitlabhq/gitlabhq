@@ -54,7 +54,7 @@
       - @repos.each do |repo|
         %tr{ id: "repo_#{repo.project_key}___#{repo.slug}", data: { project: repo.project_key, repository: repo.slug } }
           %td
-            = link_to repo.browse_url, repo.browse_url, target: '_blank', rel: 'noopener noreferrer'
+            = sanitize(link_to(repo.browse_url, repo.browse_url, target: '_blank', rel: 'noopener noreferrer'), attributes: %w(href target rel))
           %td.import-target
             %fieldset.row
             .input-group
@@ -75,7 +75,7 @@
       - @incompatible_repos.each do |repo|
         %tr{ id: "repo_#{repo.project_key}___#{repo.slug}" }
           %td
-            = link_to repo.browse_url, repo.browse_url, target: '_blank', rel: 'noopener noreferrer'
+            = sanitize(link_to(repo.browse_url, repo.browse_url, target: '_blank', rel: 'noopener noreferrer'), attributes: %w(href target rel))
           %td.import-target
           %td.import-actions-job-status
             = label_tag 'Incompatible Project', nil, class: 'label badge-danger'

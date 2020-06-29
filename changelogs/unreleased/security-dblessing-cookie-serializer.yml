@@ -1,0 +1,5 @@
+---
+title: Change from hybrid to JSON cookies serializer
+merge_request:
+author:
+type: security

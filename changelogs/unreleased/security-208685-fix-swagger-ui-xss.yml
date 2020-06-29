@@ -1,0 +1,5 @@
+---
+title: Upgrade swagger-ui to solve XSS issues
+merge_request:
+author:
+type: security

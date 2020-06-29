@@ -38,7 +38,7 @@ module Banzai
       private
 
       def unescape_and_scrub_uri(uri)
-        Addressable::URI.unescape(uri).scrub
+        Addressable::URI.unescape(uri).scrub.delete("\0")
       end
     end
   end

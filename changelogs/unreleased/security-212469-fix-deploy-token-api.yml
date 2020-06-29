@@ -1,0 +1,5 @@
+---
+title: Fix group deploy token API authorizations
+merge_request:
+author:
+type: security
