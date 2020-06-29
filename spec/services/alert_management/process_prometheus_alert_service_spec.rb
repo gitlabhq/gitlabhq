@@ -123,6 +123,21 @@ RSpec.describe AlertManagement::ProcessPrometheusAlertService do
           it 'resolves an existing alert' do
             expect { execute }.to change { alert.reload.resolved? }.to(true)
           end
+
+          context 'existing issue' do
+            let!(:alert) { create(:alert_management_alert, :with_issue, project: project, fingerprint: parsed_alert.gitlab_fingerprint) }
+
+            it 'closes the issue' do
+              issue = alert.issue
+
+              expect { execute }
+                .to change { issue.reload.state }
+                .from('opened')
+                .to('closed')
+            end
+
+            specify { expect { execute }.to change(Note, :count).by(1) }
+          end
         end
 
         context 'when status change did not succeed' do

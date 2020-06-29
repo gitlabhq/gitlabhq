@@ -179,7 +179,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   end
 
   def update
-    @merge_request = ::MergeRequests::UpdateService.new(project, current_user, merge_request_params).execute(@merge_request)
+    @merge_request = ::MergeRequests::UpdateService.new(project, current_user, merge_request_update_params).execute(@merge_request)
 
     respond_to do |format|
       format.html do
@@ -312,6 +312,10 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   end
 
   private
+
+  def merge_request_update_params
+    merge_request_params.merge!(params.permit(:merge_request_diff_head_sha))
+  end
 
   def head_pipeline
     strong_memoize(:head_pipeline) do

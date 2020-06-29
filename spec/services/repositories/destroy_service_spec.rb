@@ -34,6 +34,21 @@ RSpec.describe Repositories::DestroyService do
     project.touch
   end
 
+  context 'on a read-only instance' do
+    before do
+      allow(Gitlab::Database).to receive(:read_only?).and_return(true)
+    end
+
+    it 'schedules the repository deletion' do
+      expect(Repositories::ShellDestroyService).to receive(:new).with(repository).and_call_original
+
+      expect(GitlabShellWorker).to receive(:perform_in)
+        .with(Repositories::ShellDestroyService::REPO_REMOVAL_DELAY, :remove_repository, project.repository_storage, remove_path)
+
+      subject
+    end
+  end
+
   it 'removes the repository', :sidekiq_inline do
     subject
 

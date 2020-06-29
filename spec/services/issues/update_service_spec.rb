@@ -866,5 +866,10 @@ RSpec.describe Issues::UpdateService, :mailer do
         end
       end
     end
+
+    it_behaves_like 'issuable record that supports quick actions' do
+      let(:existing_issue) { create(:issue, project: project) }
+      let(:issuable) { described_class.new(project, user, params).execute(existing_issue) }
+    end
   end
 end

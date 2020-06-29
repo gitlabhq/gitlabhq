@@ -259,7 +259,7 @@ For example, to add support for files referenced by a `Widget` model with a
    # frozen_string_literal: true
 
    class Geo::WidgetRegistry < Geo::BaseRegistry
-     include Geo::StateMachineRegistry
+     include Geo::ReplicableRegistry
 
      MODEL_CLASS = ::Widget
      MODEL_FOREIGN_KEY = :widget_id

@@ -88,7 +88,6 @@ class GfmAutoComplete {
     if (this.enableMap.labels) this.setupLabels($input);
     if (this.enableMap.snippets) this.setupSnippets($input);
 
-    // We don't instantiate the quick actions autocomplete for note and issue/MR edit forms
     $input.filter('[data-supports-quick-actions="true"]').atwho({
       at: '/',
       alias: 'commands',

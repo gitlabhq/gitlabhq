@@ -9,7 +9,7 @@
   .col-md-12.col-lg-6
     - if can?(current_user, :read_cross_project)
       .activities-block
-        .prepend-top-16
+        .gl-mt-5
           .d-flex.align-items-center.border-bottom
             %h4.flex-grow
               = s_('UserProfile|Activity')
@@ -20,7 +20,7 @@
 
   .col-md-12.col-lg-6
     .projects-block
-      .prepend-top-16
+      .gl-mt-5
         .d-flex.align-items-center.border-bottom
           %h4.flex-grow
             = s_('UserProfile|Personal projects')

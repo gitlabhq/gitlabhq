@@ -737,5 +737,10 @@ RSpec.describe MergeRequests::UpdateService, :mailer do
           .to change { merge_request.reload.force_remove_source_branch? }.from(nil).to(true)
       end
     end
+
+    it_behaves_like 'issuable record that supports quick actions' do
+      let(:existing_merge_request) { create(:merge_request, source_project: project) }
+      let(:issuable) { described_class.new(project, user, params).execute(existing_merge_request) }
+    end
   end
 end

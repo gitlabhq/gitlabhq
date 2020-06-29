@@ -16,7 +16,9 @@ FactoryBot.define do
     end
 
     trait :with_issue do
-      issue
+      after(:create) do |alert|
+        create(:issue, alert_management_alert: alert, project: alert.project)
+      end
     end
 
     trait :with_assignee do |alert|

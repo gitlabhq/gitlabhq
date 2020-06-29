@@ -2,6 +2,7 @@
 
 module MergeRequests
   class BaseService < ::IssuableBaseService
+    extend ::Gitlab::Utils::Override
     include MergeRequests::AssignsMergeParams
 
     def create_note(merge_request, state = merge_request.state)
@@ -61,6 +62,12 @@ module MergeRequests
       self.params = assign_allowed_merge_params(merge_request, params)
 
       super
+    end
+
+    override :handle_quick_actions
+    def handle_quick_actions(merge_request)
+      super
+      handle_wip_event(merge_request)
     end
 
     def handle_wip_event(merge_request)

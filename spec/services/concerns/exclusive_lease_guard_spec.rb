@@ -51,7 +51,7 @@ RSpec.describe ExclusiveLeaseGuard, :clean_gitlab_redis_shared_state do
 
       it 'does not call internal_method but logs error', :aggregate_failures do
         expect(subject).not_to receive(:internal_method)
-        expect(Gitlab::AppLogger).to receive(:error).with('Cannot obtain an exclusive lease. There must be another instance already in execution.')
+        expect(Gitlab::AppLogger).to receive(:error).with("Cannot obtain an exclusive lease for #{subject.class.name}. There must be another instance already in execution.")
 
         subject.call
       end

@@ -389,7 +389,7 @@ export default {
             </markdown-field>
             <gl-alert
               v-if="isToggleBlockedIssueWarning"
-              class="prepend-top-16"
+              class="gl-mt-5"
               :title="__('Are you sure you want to close this blocked issue?')"
               :primary-button-text="__('Yes, close issue')"
               :secondary-button-text="__('Cancel')"

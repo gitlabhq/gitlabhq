@@ -3,23 +3,22 @@
 require 'spec_helper'
 
 RSpec.describe 'GFM autocomplete', :js do
-  let(:issue_xss_title) { 'This will execute alert<img src=x onerror=alert(2)&lt;img src=x onerror=alert(1)&gt;' }
-  let(:user_xss_title) { 'eve <img src=x onerror=alert(2)&lt;img src=x onerror=alert(1)&gt;' }
-  let(:label_xss_title) { 'alert label &lt;img src=x onerror="alert(\'Hello xss\');" a' }
-  let(:milestone_xss_title) { 'alert milestone &lt;img src=x onerror="alert(\'Hello xss\');" a' }
+  let_it_be(:user_xss_title) { 'eve <img src=x onerror=alert(2)&lt;img src=x onerror=alert(1)&gt;' }
+  let_it_be(:user_xss) { create(:user, name: user_xss_title, username: 'xss.user') }
+  let_it_be(:user) { create(:user, name: '💃speciąl someone💃', username: 'someone.special') }
+  let_it_be(:project) { create(:project) }
+  let_it_be(:label) { create(:label, project: project, title: 'special+') }
 
-  let(:user_xss) { create(:user, name: user_xss_title, username: 'xss.user') }
-  let(:user) { create(:user, name: '💃speciąl someone💃', username: 'someone.special') }
-  let(:project) { create(:project) }
-  let(:label) { create(:label, project: project, title: 'special+') }
   let(:issue) { create(:issue, project: project) }
+
+  before_all do
+    project.add_maintainer(user)
+    project.add_maintainer(user_xss)
+  end
 
   describe 'when tribute_autocomplete feature flag is off' do
     before do
       stub_feature_flags(tribute_autocomplete: false)
-
-      project.add_maintainer(user)
-      project.add_maintainer(user_xss)
 
       sign_in(user)
       visit project_issue_path(project, issue)
@@ -45,6 +44,14 @@ RSpec.describe 'GFM autocomplete', :js do
       expect(find('.description')).to have_content(user.to_reference)
     end
 
+    it 'opens quick action autocomplete when updating description' do
+      find('.js-issuable-edit').click
+
+      find('#issue-description').native.send_keys('/')
+
+      expect(page).to have_selector('.atwho-container')
+    end
+
     it 'opens autocomplete menu when field starts with text' do
       page.within '.timeline-content-form' do
         find('#note-body').native.send_keys('@')
@@ -54,6 +61,7 @@ RSpec.describe 'GFM autocomplete', :js do
     end
 
     it 'opens autocomplete menu for Issues when field starts with text with item escaping HTML characters' do
+      issue_xss_title = 'This will execute alert<img src=x onerror=alert(2)&lt;img src=x onerror=alert(1)&gt;'
       create(:issue, project: project, title: issue_xss_title)
 
       page.within '.timeline-content-form' do
@@ -84,6 +92,7 @@ RSpec.describe 'GFM autocomplete', :js do
     end
 
     it 'opens autocomplete menu for Milestone when field starts with text with item escaping HTML characters' do
+      milestone_xss_title = 'alert milestone &lt;img src=x onerror="alert(\'Hello xss\');" a'
       create(:milestone, project: project, title: milestone_xss_title)
 
       page.within '.timeline-content-form' do
@@ -327,6 +336,7 @@ RSpec.describe 'GFM autocomplete', :js do
 
     context 'labels' do
       it 'opens autocomplete menu for Labels when field starts with text with item escaping HTML characters' do
+        label_xss_title = 'alert label &lt;img src=x onerror="alert(\'Hello xss\');" a'
         create(:label, project: project, title: label_xss_title)
 
         note = find('#note-body')
@@ -461,9 +471,6 @@ RSpec.describe 'GFM autocomplete', :js do
   describe 'when tribute_autocomplete feature flag is on' do
     before do
       stub_feature_flags(tribute_autocomplete: true)
-
-      project.add_maintainer(user)
-      project.add_maintainer(user_xss)
 
       sign_in(user)
       visit project_issue_path(project, issue)

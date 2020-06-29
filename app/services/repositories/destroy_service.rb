@@ -14,8 +14,17 @@ class Repositories::DestroyService < Repositories::BaseService
       log_info(%Q{Repository "#{disk_path}" moved to "#{removal_path}" for repository "#{full_path}"})
 
       current_repository = repository
-      container.run_after_commit do
+
+      # Because GitlabShellWorker is inside a run_after_commit callback it will
+      # never be triggered on a read-only instance.
+      #
+      # Issue: https://gitlab.com/gitlab-org/gitlab/-/issues/223272
+      if Gitlab::Database.read_only?
         Repositories::ShellDestroyService.new(current_repository).execute
+      else
+        container.run_after_commit do
+          Repositories::ShellDestroyService.new(current_repository).execute
+        end
       end
 
       log_info("Repository \"#{full_path}\" was removed")

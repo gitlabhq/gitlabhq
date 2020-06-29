@@ -339,13 +339,14 @@ RSpec.describe MergeRequests::CreateService, :clean_gitlab_redis_shared_state do
       end
     end
 
-    it_behaves_like 'new issuable record that supports quick actions' do
+    it_behaves_like 'issuable record that supports quick actions' do
       let(:default_params) do
         {
           source_branch: 'feature',
           target_branch: 'master'
         }
       end
+      let(:issuable) { described_class.new(project, user, params).execute }
     end
 
     context 'Quick actions' do

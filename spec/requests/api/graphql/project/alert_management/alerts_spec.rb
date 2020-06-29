@@ -78,7 +78,7 @@ RSpec.describe 'getting Alert Management Alerts' do
 
         expect(second_alert).to include(
           'iid' => resolved_alert.iid.to_s,
-          'issueIid' => nil,
+          'issueIid' => resolved_alert.issue_iid.to_s,
           'status' => 'RESOLVED',
           'endedAt' => resolved_alert.ended_at.strftime('%Y-%m-%dT%H:%M:%SZ')
         )
