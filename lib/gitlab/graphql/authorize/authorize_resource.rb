@@ -30,8 +30,7 @@ module Gitlab
         end
 
         def authorized_find!(*args)
-          object = find_object(*args)
-          object = object.sync if object.respond_to?(:sync)
+          object = Graphql::Lazy.force(find_object(*args))
 
           authorize!(object)
 

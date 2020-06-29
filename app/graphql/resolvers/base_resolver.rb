@@ -83,5 +83,10 @@ module Resolvers
     def current_user
       context[:current_user]
     end
+
+    # Overridden in sub-classes (see .single, .last)
+    def select_result(results)
+      results
+    end
   end
 end

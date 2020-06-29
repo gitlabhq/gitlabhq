@@ -95,7 +95,7 @@ module Ci
     def execute!(*args, &block)
       execute(*args, &block).tap do |pipeline|
         unless pipeline.persisted?
-          raise CreateError, pipeline.error_messages
+          raise CreateError, pipeline.full_error_messages
         end
       end
     end

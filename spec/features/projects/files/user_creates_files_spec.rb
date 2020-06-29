@@ -14,7 +14,7 @@ RSpec.describe 'Projects > Files > User creates files', :js do
   let(:user) { create(:user) }
 
   before do
-    stub_feature_flags(web_ide_default: false, code_navigation: false)
+    stub_feature_flags(web_ide_default: false)
 
     project.add_maintainer(user)
     sign_in(user)

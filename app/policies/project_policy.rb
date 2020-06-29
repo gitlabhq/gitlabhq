@@ -176,6 +176,7 @@ class ProjectPolicy < BasePolicy
   rule { guest | admin }.enable :read_project_for_iids
 
   rule { admin }.enable :update_max_artifacts_size
+  rule { can?(:read_all_resources) }.enable :read_confidential_issues
 
   rule { guest }.enable :guest_access
   rule { reporter }.enable :reporter_access
@@ -257,6 +258,7 @@ class ProjectPolicy < BasePolicy
     enable :read_prometheus
     enable :read_metrics_dashboard_annotation
     enable :metrics_dashboard
+    enable :read_confidential_issues
   end
 
   # We define `:public_user_access` separately because there are cases in gitlab-ee

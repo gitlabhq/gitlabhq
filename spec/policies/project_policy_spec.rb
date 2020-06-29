@@ -30,7 +30,7 @@ RSpec.describe ProjectPolicy do
       admin_issue admin_label admin_list read_commit_status read_build
       read_container_image read_pipeline read_environment read_deployment
       read_merge_request download_wiki_code read_sentry_issue read_metrics_dashboard_annotation
-      metrics_dashboard
+      metrics_dashboard read_confidential_issues
     ]
   end
 

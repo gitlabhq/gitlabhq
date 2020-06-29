@@ -175,7 +175,8 @@ When the user is authenticated and `simple` is not set this returns something li
       "wiki_size" : 0,
       "lfs_objects_size": 0,
       "job_artifacts_size": 0,
-      "packages_size": 0
+      "packages_size": 0,
+      "snippets_size": 0
     },
     "_links": {
       "self": "http://example.com/api/v4/projects",
@@ -277,7 +278,8 @@ When the user is authenticated and `simple` is not set this returns something li
       "wiki_size" : 0,
       "lfs_objects_size": 0,
       "job_artifacts_size": 0,
-      "packages_size": 0
+      "packages_size": 0,
+      "snippets_size": 0
     },
     "_links": {
       "self": "http://example.com/api/v4/projects",
@@ -426,7 +428,8 @@ This endpoint supports [keyset pagination](README.md#keyset-based-pagination) fo
       "wiki_size" : 0,
       "lfs_objects_size": 0,
       "job_artifacts_size": 0,
-      "packages_size": 0
+      "packages_size": 0,
+      "snippets_size": 0
     },
     "_links": {
       "self": "http://example.com/api/v4/projects",
@@ -528,7 +531,8 @@ This endpoint supports [keyset pagination](README.md#keyset-based-pagination) fo
       "wiki_size" : 0,
       "lfs_objects_size": 0,
       "job_artifacts_size": 0,
-      "packages_size": 0
+      "packages_size": 0,
+      "snippets_size": 0
     },
     "_links": {
       "self": "http://example.com/api/v4/projects",
@@ -899,7 +903,8 @@ GET /projects/:id
     "wiki_size" : 0,
     "lfs_objects_size": 0,
     "job_artifacts_size": 0,
-    "packages_size": 0
+    "packages_size": 0,
+    "snippets_size": 0
   },
   "_links": {
     "self": "http://example.com/api/v4/projects",

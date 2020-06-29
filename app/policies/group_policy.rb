@@ -67,6 +67,10 @@ class GroupPolicy < BasePolicy
     enable :update_max_artifacts_size
   end
 
+  rule { can?(:read_all_resources) }.policy do
+    enable :read_confidential_issues
+  end
+
   rule { has_projects }.policy do
     enable :read_group
   end

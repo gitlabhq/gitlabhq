@@ -38,6 +38,7 @@ RSpec.shared_context 'GroupPolicy context' do
       :update_default_branch_protection
     ].compact
   end
+  let(:admin_permissions) { %i[read_confidential_issues] }
 
   before_all do
     group.add_guest(guest)

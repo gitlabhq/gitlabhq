@@ -65,18 +65,10 @@ const getSeriesLabel = (queryLabel, metricAttributes) => {
  */
 // eslint-disable-next-line import/prefer-default-export
 export const makeDataSeries = (queryResults, defaultConfig) =>
-  queryResults
-    .map(result => {
-      // NaN values may disrupt avg., max. & min. calculations in the legend, filter them out
-      const data = result.values.filter(([, value]) => !Number.isNaN(value));
-      if (!data.length) {
-        return null;
-      }
-      const series = { data };
-      return {
-        ...defaultConfig,
-        ...series,
-        name: getSeriesLabel(defaultConfig.name, result.metric),
-      };
-    })
-    .filter(series => series !== null);
+  queryResults.map(result => {
+    return {
+      ...defaultConfig,
+      data: result.values,
+      name: getSeriesLabel(defaultConfig.name, result.metric),
+    };
+  });

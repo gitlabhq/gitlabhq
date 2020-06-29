@@ -57,7 +57,7 @@
       = f.text_field :user_default_internal_regex, placeholder: _('Regex pattern'), class: 'form-control prepend-top-5'
       .help-block
         = _('Specify an e-mail address regex pattern to identify default internal users.')
-        = link_to _('More information'), help_page_path('user/permissions', anchor: 'external-users-permissions'),
+        = link_to _('More information'), help_page_path('user/permissions', anchor: 'setting-new-users-to-external'),
           target: '_blank'
     .form-group
       = f.label :user_show_add_ssh_key_message, _('Prompt users to upload SSH keys'), class: 'label-bold'

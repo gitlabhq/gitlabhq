@@ -194,6 +194,7 @@ RSpec.describe Ci::CreatePipelineService do
 
             expect(head_pipeline).to be_persisted
             expect(head_pipeline.yaml_errors).to be_present
+            expect(head_pipeline.messages).to be_present
             expect(merge_request.reload.head_pipeline).to eq head_pipeline
           end
         end
@@ -1695,6 +1696,7 @@ RSpec.describe Ci::CreatePipelineService do
             expect(pipeline).to be_persisted
             expect(pipeline.builds).to be_empty
             expect(pipeline.yaml_errors).to eq("test_a: needs 'build_a'")
+            expect(pipeline.messages.pluck(:content)).to contain_exactly("test_a: needs 'build_a'")
             expect(pipeline.errors[:base]).to contain_exactly("test_a: needs 'build_a'")
           end
         end
@@ -1706,6 +1708,7 @@ RSpec.describe Ci::CreatePipelineService do
             expect(pipeline).not_to be_persisted
             expect(pipeline.builds).to be_empty
             expect(pipeline.yaml_errors).to be_nil
+            expect(pipeline.messages).not_to be_empty
             expect(pipeline.errors[:base]).to contain_exactly("test_a: needs 'build_a'")
           end
         end

@@ -11,16 +11,10 @@ module ResolvesMergeRequests
   end
 
   def resolve_with_lookahead(**args)
-    args[:iids] = Array.wrap(args[:iids]) if args[:iids]
-    args.compact!
+    mr_finder = MergeRequestsFinder.new(current_user, args.compact)
+    finder = Gitlab::Graphql::Loaders::IssuableLoader.new(project, mr_finder)
 
-    if project && args.keys == [:iids]
-      batch_load_merge_requests(args[:iids])
-    else
-      args[:project_id] ||= project
-
-      apply_lookahead(MergeRequestsFinder.new(current_user, args).execute)
-    end.then(&(single? ? :first : :itself))
+    select_result(finder.batching_find_all { |query| apply_lookahead(query) })
   end
 
   def ready?(**args)
@@ -34,22 +28,6 @@ module ResolvesMergeRequests
   end
 
   private
-
-  def batch_load_merge_requests(iids)
-    iids.map { |iid| batch_load(iid) }.select(&:itself) # .compact doesn't work on BatchLoader
-  end
-
-  # rubocop: disable CodeReuse/ActiveRecord
-  def batch_load(iid)
-    BatchLoader::GraphQL.for(iid.to_s).batch(key: project) do |iids, loader, args|
-      query = args[:key].merge_requests.where(iid: iids)
-
-      apply_lookahead(query).each do |mr|
-        loader.call(mr.iid.to_s, mr)
-      end
-    end
-  end
-  # rubocop: enable CodeReuse/ActiveRecord
 
   def unconditional_includes
     [:target_project]

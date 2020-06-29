@@ -110,7 +110,9 @@ class IssuableFinder
 
     def group
       strong_memoize(:group) do
-        if params[:group_id].present?
+        if params[:group_id].is_a?(Group)
+          params[:group_id]
+        elsif params[:group_id].present?
           Group.find(params[:group_id])
         else
           nil

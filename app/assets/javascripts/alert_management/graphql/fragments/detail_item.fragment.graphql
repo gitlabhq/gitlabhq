@@ -8,6 +8,7 @@ fragment AlertDetailItem on AlertManagementAlert {
   service
   description
   updatedAt
+  endedAt
   details
   notes {
     nodes {

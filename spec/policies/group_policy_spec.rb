@@ -154,13 +154,17 @@ RSpec.describe GroupPolicy do
   context 'admin' do
     let(:current_user) { admin }
 
-    it do
+    specify do
       expect_allowed(*read_group_permissions)
       expect_allowed(*guest_permissions)
       expect_allowed(*reporter_permissions)
       expect_allowed(*developer_permissions)
       expect_allowed(*maintainer_permissions)
       expect_allowed(*owner_permissions)
+    end
+
+    context 'with admin mode', :enable_admin_mode do
+      specify { expect_allowed(*admin_permissions) }
     end
   end
 

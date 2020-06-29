@@ -101,12 +101,10 @@ RSpec.describe Resolvers::IssuesResolver do
         end
 
         it 'uses project search optimization' do
-          expected_arguments = {
+          expected_arguments = a_hash_including(
             search: 'foo',
-            attempt_project_search_optimizations: true,
-            iids: [],
-            project_id: project.id
-          }
+            attempt_project_search_optimizations: true
+          )
           expect(IssuesFinder).to receive(:new).with(anything, expected_arguments).and_call_original
 
           resolve_issues(search: 'foo')
@@ -217,16 +215,32 @@ RSpec.describe Resolvers::IssuesResolver do
         expect(resolve_issues).to contain_exactly(issue1, issue2)
       end
 
-      it 'finds a specific issue with iid' do
-        expect(resolve_issues(iid: issue1.iid)).to contain_exactly(issue1)
+      it 'finds a specific issue with iid', :request_store do
+        result = batch_sync(max_queries: 2) { resolve_issues(iid: issue1.iid) }
+
+        expect(result).to contain_exactly(issue1)
       end
 
-      it 'finds a specific issue with iids' do
-        expect(resolve_issues(iids: issue1.iid)).to contain_exactly(issue1)
+      it 'batches queries that only include IIDs', :request_store do
+        result = batch_sync(max_queries: 2) do
+          resolve_issues(iid: issue1.iid) + resolve_issues(iids: issue2.iid)
+        end
+
+        expect(result).to contain_exactly(issue1, issue2)
+      end
+
+      it 'finds a specific issue with iids', :request_store do
+        result = batch_sync(max_queries: 2) do
+          resolve_issues(iids: [issue1.iid])
+        end
+
+        expect(result).to contain_exactly(issue1)
       end
 
       it 'finds multiple issues with iids' do
-        expect(resolve_issues(iids: [issue1.iid, issue2.iid]))
+        create(:issue, project: project, author: current_user)
+
+        expect(batch_sync { resolve_issues(iids: [issue1.iid, issue2.iid]) })
           .to contain_exactly(issue1, issue2)
       end
 
@@ -238,7 +252,7 @@ RSpec.describe Resolvers::IssuesResolver do
           create(:issue, project: another_project, iid: iid)
         end
 
-        expect(resolve_issues(iids: iids)).to contain_exactly(issue1, issue2)
+        expect(batch_sync { resolve_issues(iids: iids) }).to contain_exactly(issue1, issue2)
       end
     end
   end

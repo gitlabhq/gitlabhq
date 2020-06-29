@@ -254,7 +254,10 @@ RSpec.describe API::Projects do
         expect(response).to have_gitlab_http_status(:ok)
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
-        expect(json_response.first).to include 'statistics'
+
+        statistics = json_response.first['statistics']
+        expect(statistics).to be_present
+        expect(statistics).to include('commit_count', 'storage_size', 'repository_size', 'wiki_size', 'lfs_objects_size', 'job_artifacts_size', 'snippets_size')
       end
 
       it "does not include license by default" do

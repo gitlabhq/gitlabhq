@@ -11,7 +11,12 @@ module Gitlab
               pipeline.yaml_errors = message
             end
 
+            pipeline.add_error_message(message)
             pipeline.drop!(drop_reason) if drop_reason
+
+            # TODO: consider not to rely on AR errors directly as they can be
+            # polluted with other unrelated errors (e.g. state machine)
+            # https://gitlab.com/gitlab-org/gitlab/-/issues/220823
             pipeline.errors.add(:base, message)
           end
         end

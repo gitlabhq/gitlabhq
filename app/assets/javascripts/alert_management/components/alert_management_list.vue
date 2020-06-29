@@ -32,7 +32,8 @@ import {
 } from '../constants';
 import AlertStatus from './alert_status.vue';
 
-const tdClass = 'table-col gl-display-flex d-md-table-cell gl-align-items-center';
+const tdClass =
+  'table-col gl-display-flex d-md-table-cell gl-align-items-center gl-white-space-nowrap';
 const thClass = 'gl-hover-bg-blue-50';
 const bodyTrClass =
   'gl-border-1 gl-border-t-solid gl-border-gray-100 gl-hover-bg-blue-50 gl-hover-cursor-pointer gl-hover-border-b-solid gl-hover-border-blue-200';
@@ -60,40 +61,34 @@ export default {
       key: 'severity',
       label: s__('AlertManagement|Severity'),
       tdClass: `${tdClass} rounded-top text-capitalize`,
-      thClass,
+      thClass: `${thClass} gl-w-eighth`,
       sortable: true,
     },
     {
       key: 'startedAt',
       label: s__('AlertManagement|Start time'),
-      thClass: `${thClass} js-started-at`,
-      tdClass,
-      sortable: true,
-    },
-    {
-      key: 'endedAt',
-      label: s__('AlertManagement|End time'),
-      thClass,
+      thClass: `${thClass} js-started-at w-15p`,
       tdClass,
       sortable: true,
     },
     {
       key: 'title',
       label: s__('AlertManagement|Alert'),
-      thClass: `${thClass} w-30p gl-pointer-events-none`,
+      thClass: `${thClass} gl-pointer-events-none`,
       tdClass,
       sortable: false,
     },
     {
       key: 'eventCount',
       label: s__('AlertManagement|Events'),
-      thClass: `${thClass} text-right gl-pr-9 w-3rem`,
+      thClass: `${thClass} text-right gl-w-12`,
       tdClass: `${tdClass} text-md-right`,
       sortable: true,
     },
     {
       key: 'assignees',
       label: s__('AlertManagement|Assignees'),
+      thClass: 'gl-w-eighth',
       tdClass,
     },
     {
@@ -377,6 +372,7 @@ export default {
         :sort-desc.sync="sortDesc"
         :sort-by.sync="sortBy"
         sort-icon-left
+        fixed
         @row-clicked="navigateToAlertDetails"
         @sort-changed="fetchSortedData"
       >
@@ -399,16 +395,12 @@ export default {
           <time-ago v-if="item.startedAt" :time="item.startedAt" />
         </template>
 
-        <template #cell(endedAt)="{ item }">
-          <time-ago v-if="item.endedAt" :time="item.endedAt" />
-        </template>
-
         <template #cell(eventCount)="{ item }">
           {{ item.eventCount }}
         </template>
 
         <template #cell(title)="{ item }">
-          <div class="gl-max-w-full text-truncate">{{ item.title }}</div>
+          <div class="gl-max-w-full text-truncate" :title="item.title">{{ item.title }}</div>
         </template>
 
         <template #cell(assignees)="{ item }">

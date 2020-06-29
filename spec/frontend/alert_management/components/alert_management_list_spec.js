@@ -289,7 +289,6 @@ describe('AlertManagementList', () => {
                   iid: 1,
                   status: 'acknowledged',
                   startedAt: '2020-03-17T23:18:14.996Z',
-                  endedAt: '2020-04-17T23:18:14.996Z',
                   severity: 'high',
                   assignees: { nodes: [] },
                 },
@@ -300,7 +299,7 @@ describe('AlertManagementList', () => {
           },
           loading: false,
         });
-        expect(findDateFields().length).toBe(2);
+        expect(findDateFields().length).toBe(1);
       });
 
       it('should not display time ago dates when values not provided', () => {
@@ -312,7 +311,6 @@ describe('AlertManagementList', () => {
                 iid: 1,
                 status: 'acknowledged',
                 startedAt: null,
-                endedAt: null,
                 severity: 'high',
               },
             ],

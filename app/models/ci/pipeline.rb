@@ -51,6 +51,8 @@ module Ci
     has_many :latest_builds, -> { latest }, foreign_key: :commit_id, inverse_of: :pipeline, class_name: 'Ci::Build'
     has_many :downloadable_artifacts, -> { not_expired.downloadable }, through: :latest_builds, source: :job_artifacts
 
+    has_many :messages, class_name: 'Ci::PipelineMessage', inverse_of: :pipeline
+
     # Merge requests for which the current pipeline is running against
     # the merge request's latest commit.
     has_many :merge_requests_as_head_pipeline, foreign_key: "head_pipeline_id", class_name: 'MergeRequest'
@@ -634,6 +636,12 @@ module Ci
       yaml_errors.present?
     end
 
+    def add_error_message(content)
+      return unless Gitlab::Ci::Features.store_pipeline_messages?(project)
+
+      messages.error.build(content: content)
+    end
+
     # Manually set the notes for a Ci::Pipeline
     # There is no ActiveRecord relation between Ci::Pipeline and notes
     # as they are related to a commit sha. This method helps importing
@@ -957,7 +965,7 @@ module Ci
       stages.find_by!(name: name)
     end
 
-    def error_messages
+    def full_error_messages
       errors ? errors.full_messages.to_sentence : ""
     end
 

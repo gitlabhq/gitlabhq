@@ -1,4 +1,9 @@
 .alert-management-list {
+  // Migrate this to gitlab-ui
+  .gl-w-12 {
+    width: $gl-spacing-scale-12;
+  }
+
   // these styles need to be deleted once GlTable component looks in GitLab same as in @gitlab/ui
   table {
     color: $gray-700;

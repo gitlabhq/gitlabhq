@@ -289,7 +289,42 @@ Once the Code Quality job has completed:
   [downloadable artifact](../../../ci/pipelines/job_artifacts.md#downloading-artifacts)
   for the `code_quality` job.
 
+## Extending functionality
+
+### Using Analysis Plugins
+
+Should there be a need to extend the default functionality provided by Code Quality, as stated in [Code Quality](#code-quality-starter), [Analysis Plugins](https://docs.codeclimate.com/docs/list-of-engines) are available.
+
+For example, to use the [SonarJava analyzer](https://docs.codeclimate.com/docs/sonar-java),
+add a file named `.codeclimate.yml` containing the [enablement code](https://docs.codeclimate.com/docs/sonar-java#enable-the-plugin)
+for the plugin to the root of your repository:
+
+```yaml
+version: "2"
+plugins:
+  sonar-java:
+    enabled: true
+```
+
+This adds SonarJava to the `plugins:` section of the [default `.codeclimate.yml`](https://gitlab.com/gitlab-org/ci-cd/codequality/-/blob/master/codeclimate_defaults/.codeclimate.yml)
+included in your project.
+
+Changes to the `plugins:` section do not affect the `exclude_patterns` section of the
+defeault `.codeclimate.yml`. See the Code Climate documentation for
+[excluding files and folders](https://docs.codeclimate.com/docs/excluding-files-and-folders)
+for more details.
+
+Here's [an example project](https://gitlab.com/jheimbuck_gl/jh_java_example_project) that uses Code Quality with a `.codeclimate.yml` file.
+
 ## Troubleshooting
+
+### Changing the default configuration has no effect
+
+A common issue is that the terms `Code Quality` (GitLab specific) and `Code Climate`
+(Engine used by GitLab) are very similar. You must add a **`.codeclimate.yml`** file
+to change the default configuration, **not** a `.codequality.yml` file. If you use
+the wrong filename, the [default `.codeclimate.yml`](https://gitlab.com/gitlab-org/ci-cd/codequality/-/blob/master/codeclimate_defaults/.codeclimate.yml)
+is still used.
 
 ### No Code Quality report is displayed in a Merge Request
 

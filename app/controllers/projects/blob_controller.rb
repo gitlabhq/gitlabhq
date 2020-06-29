@@ -30,7 +30,7 @@ class Projects::BlobController < Projects::ApplicationController
   before_action :set_last_commit_sha, only: [:edit, :update]
 
   before_action only: :show do
-    push_frontend_feature_flag(:code_navigation, @project)
+    push_frontend_feature_flag(:code_navigation, @project, default_enabled: true)
     push_frontend_feature_flag(:suggest_pipeline) if experiment_enabled?(:suggest_pipeline)
   end
 

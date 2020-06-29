@@ -107,6 +107,12 @@ FactoryBot.define do
     issue_tracker
   end
 
+  factory :gitlab_issue_tracker_service do
+    project
+    active { true }
+    issue_tracker
+  end
+
   trait :issue_tracker do
     transient do
       create_data { true }

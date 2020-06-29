@@ -815,6 +815,50 @@ describe('normalizeQueryResponseData', () => {
       },
     ]);
   });
+
+  it('processes a scalar result with a NaN result', () => {
+    // Queries may return "NaN" string values.
+    // e.g. when Prometheus cannot find a metric the query
+    // `scalar(does_not_exist)` will return a "NaN" value.
+
+    const mockScalar = {
+      resultType: 'scalar',
+      result: [1435781451.781, 'NaN'],
+    };
+
+    expect(normalizeQueryResponseData(mockScalar)).toEqual([
+      {
+        metric: {},
+        value: ['2015-07-01T20:10:51.781Z', NaN],
+        values: [['2015-07-01T20:10:51.781Z', NaN]],
+      },
+    ]);
+  });
+
+  it('processes a matrix result with a "NaN" value', () => {
+    // Queries may return "NaN" string values.
+    const mockMatrix = {
+      resultType: 'matrix',
+      result: [
+        {
+          metric: {
+            __name__: 'up',
+            job: 'prometheus',
+            instance: 'localhost:9090',
+          },
+          values: [[1435781430.781, '1'], [1435781460.781, 'NaN']],
+        },
+      ],
+    };
+
+    expect(normalizeQueryResponseData(mockMatrix)).toEqual([
+      {
+        metric: { __name__: 'up', instance: 'localhost:9090', job: 'prometheus' },
+        value: ['2015-07-01T20:11:00.781Z', NaN],
+        values: [['2015-07-01T20:10:30.781Z', 1], ['2015-07-01T20:11:00.781Z', NaN]],
+      },
+    ]);
+  });
 });
 
 describe('normalizeCustomDashboardPath', () => {
