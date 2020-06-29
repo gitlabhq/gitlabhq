@@ -2,7 +2,7 @@
 
 module API
   module Ci
-    class Runners < Grape::API
+    class Runners < Grape::API::Instance
       include PaginationParams
 
       before { authenticate! }
@@ -18,7 +18,7 @@ module API
                           desc: 'The type of the runners to show'
           optional :status, type: String, values: ::Ci::Runner::AVAILABLE_STATUSES,
                             desc: 'The status of the runners to show'
-          optional :tag_list, type: Array[String], desc: 'The tags of the runners to show'
+          optional :tag_list, type: Array[String], coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce, desc: 'The tags of the runners to show'
           use :pagination
         end
         get do
@@ -41,7 +41,7 @@ module API
                           desc: 'The type of the runners to show'
           optional :status, type: String, values: ::Ci::Runner::AVAILABLE_STATUSES,
                             desc: 'The status of the runners to show'
-          optional :tag_list, type: Array[String], desc: 'The tags of the runners to show'
+          optional :tag_list, type: Array[String], coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce, desc: 'The tags of the runners to show'
           use :pagination
         end
         get 'all' do
@@ -76,7 +76,7 @@ module API
           requires :id, type: Integer, desc: 'The ID of the runner'
           optional :description, type: String, desc: 'The description of the runner'
           optional :active, type: Boolean, desc: 'The state of a runner'
-          optional :tag_list, type: Array[String], desc: 'The list of tags for a runner'
+          optional :tag_list, type: Array[String], coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce, desc: 'The list of tags for a runner'
           optional :run_untagged, type: Boolean, desc: 'Flag indicating the runner can execute untagged jobs'
           optional :locked, type: Boolean, desc: 'Flag indicating the runner is locked'
           optional :access_level, type: String, values: ::Ci::Runner.access_levels.keys,
@@ -146,7 +146,7 @@ module API
                           desc: 'The type of the runners to show'
           optional :status, type: String, values: ::Ci::Runner::AVAILABLE_STATUSES,
                             desc: 'The status of the runners to show'
-          optional :tag_list, type: Array[String], desc: 'The tags of the runners to show'
+          optional :tag_list, type: Array[String], coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce, desc: 'The tags of the runners to show'
           use :pagination
         end
         get ':id/runners' do
@@ -209,7 +209,7 @@ module API
                   desc: 'The type of the runners to show'
           optional :status, type: String, values: ::Ci::Runner::AVAILABLE_STATUSES,
                   desc: 'The status of the runners to show'
-          optional :tag_list, type: Array[String], desc: 'The tags of the runners to show'
+          optional :tag_list, type: Array[String], coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce, desc: 'The tags of the runners to show'
           use :pagination
         end
         get ':id/runners' do

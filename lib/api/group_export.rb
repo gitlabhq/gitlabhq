@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module API
-  class GroupExport < Grape::API
+  class GroupExport < Grape::API::Instance
     helpers Helpers::RateLimiter
 
     before do

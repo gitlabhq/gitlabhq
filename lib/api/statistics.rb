@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module API
-  class Statistics < Grape::API
+  class Statistics < Grape::API::Instance
     before { authenticated_as_admin! }
 
     COUNTED_ITEMS = [Project, User, Group, ForkNetworkMember, ForkNetwork, Issue,

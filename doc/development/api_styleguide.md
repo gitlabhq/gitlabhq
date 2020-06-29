@@ -98,6 +98,46 @@ For instance:
 Model.create(foo: params[:foo])
 ```
 
+## Array types
+
+With Grape v1.3+, Array types must be defined with a `coerce_with`
+block, or parameters will fail to validate when passed a string from an
+API request. See the [Grape upgrading
+documentation](https://github.com/ruby-grape/grape/blob/master/UPGRADING.md#ensure-that-array-types-have-explicit-coercions)
+for more details.
+
+### Automatic coercion of nil inputs
+
+Prior to Grape v1.3.3, Array parameters with `nil` values would
+automatically be coerced to an empty Array. However, due to [this pull
+request in v1.3.3](https://github.com/ruby-grape/grape/pull/2040), this
+is no longer the case. For example, suppose you define a PUT `/test`
+request that has an optional parameter:
+
+```ruby
+optional :user_ids, type: Array[Integer], coerce_with: ::API::Validations::Types::CommaSeparatedToIntegerArray.coerce, desc: 'The user ids for this rule'
+```
+
+Normally, a request to PUT `/test?user_ids` would cause Grape to pass
+`params` of `{ user_ids: nil }`.
+
+This may introduce errors with endpoints that expect a blank array and
+do not handle `nil` inputs properly. To preserve the previous behavior,
+there is a helper method `coerce_nil_params_to_array!` that is used
+in the `before` block of all API calls:
+
+```ruby
+before do
+  coerce_nil_params_to_array!
+end
+```
+
+With this change, a request to PUT `/test?user_ids` will cause Grape to
+pass `params` to be `{ user_ids: [] }`.
+
+There is [an open issue in the Grape tracker](https://github.com/ruby-grape/grape/issues/2068)
+to make this easier.
+
 ## Using HTTP status helpers
 
 For non-200 HTTP responses, use the provided helpers in `lib/api/helpers.rb` to ensure correct behavior (`not_found!`, `no_content!` etc.). These will `throw` inside Grape and abort the execution of your endpoint.

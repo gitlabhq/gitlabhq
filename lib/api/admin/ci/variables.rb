@@ -3,7 +3,7 @@
 module API
   module Admin
     module Ci
-      class Variables < Grape::API
+      class Variables < Grape::API::Instance
         include PaginationParams
 
         before { authenticated_as_admin! }

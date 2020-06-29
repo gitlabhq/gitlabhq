@@ -51,12 +51,12 @@ module Gitlab
           partition_column = find_column_definition(table_name, column_name)
           raise "partition column #{column_name} does not exist on #{table_name}" if partition_column.nil?
 
-          new_table_name = partitioned_table_name(table_name)
+          partitioned_table_name = make_partitioned_table_name(table_name)
 
-          create_range_partitioned_copy(new_table_name, table_name, partition_column, primary_key)
-          create_daterange_partitions(new_table_name, partition_column.name, min_date, max_date)
-          create_trigger_to_sync_tables(table_name, new_table_name, primary_key)
-          enqueue_background_migration(table_name, new_table_name, primary_key)
+          create_range_partitioned_copy(table_name, partitioned_table_name, partition_column, primary_key)
+          create_daterange_partitions(partitioned_table_name, partition_column.name, min_date, max_date)
+          create_trigger_to_sync_tables(table_name, partitioned_table_name, primary_key)
+          enqueue_background_migration(table_name, partitioned_table_name, primary_key)
         end
 
         # Clean up a partitioned copy of an existing table. This deletes the partitioned table and all partitions.
@@ -70,15 +70,15 @@ module Gitlab
           assert_not_in_transaction_block(scope: ERROR_SCOPE)
 
           with_lock_retries do
-            trigger_name = sync_trigger_name(table_name)
+            trigger_name = make_sync_trigger_name(table_name)
             drop_trigger(table_name, trigger_name)
           end
 
-          function_name = sync_function_name(table_name)
+          function_name = make_sync_function_name(table_name)
           drop_function(function_name)
 
-          part_table_name = partitioned_table_name(table_name)
-          drop_table(part_table_name)
+          partitioned_table_name = make_partitioned_table_name(table_name)
+          drop_table(partitioned_table_name)
         end
 
         def create_hash_partitions(table_name, number_of_partitions)
@@ -107,15 +107,15 @@ module Gitlab
             "for more information please contact the database team"
         end
 
-        def partitioned_table_name(table)
+        def make_partitioned_table_name(table)
           tmp_table_name("#{table}_part")
         end
 
-        def sync_function_name(table)
+        def make_sync_function_name(table)
           object_name(table, 'table_sync_function')
         end
 
-        def sync_trigger_name(table)
+        def make_sync_trigger_name(table)
           object_name(table, 'table_sync_trigger')
         end
 
@@ -123,11 +123,11 @@ module Gitlab
           connection.columns(table).find { |c| c.name == column.to_s }
         end
 
-        def create_range_partitioned_copy(table_name, template_table_name, partition_column, primary_key)
-          if table_exists?(table_name)
+        def create_range_partitioned_copy(source_table_name, partitioned_table_name, partition_column, primary_key)
+          if table_exists?(partitioned_table_name)
             # rubocop:disable Gitlab/RailsLogger
             Rails.logger.warn "Partitioned table not created because it already exists" \
-              " (this may be due to an aborted migration or similar): table_name: #{table_name} "
+              " (this may be due to an aborted migration or similar): table_name: #{partitioned_table_name} "
             # rubocop:enable Gitlab/RailsLogger
             return
           end
@@ -135,20 +135,20 @@ module Gitlab
           tmp_column_name = object_name(partition_column.name, 'partition_key')
           transaction do
             execute(<<~SQL)
-              CREATE TABLE #{table_name} (
-                LIKE #{template_table_name} INCLUDING ALL EXCLUDING INDEXES,
+              CREATE TABLE #{partitioned_table_name} (
+                LIKE #{source_table_name} INCLUDING ALL EXCLUDING INDEXES,
                 #{tmp_column_name} #{partition_column.sql_type} NOT NULL,
                 PRIMARY KEY (#{[primary_key, tmp_column_name].join(", ")})
               ) PARTITION BY RANGE (#{tmp_column_name})
             SQL
 
-            remove_column(table_name, partition_column.name)
-            rename_column(table_name, tmp_column_name, partition_column.name)
-            change_column_default(table_name, primary_key, nil)
+            remove_column(partitioned_table_name, partition_column.name)
+            rename_column(partitioned_table_name, tmp_column_name, partition_column.name)
+            change_column_default(partitioned_table_name, primary_key, nil)
 
-            if column_of_type?(table_name, primary_key, :integer)
+            if column_of_type?(partitioned_table_name, primary_key, :integer)
               # Default to int8 primary keys to prevent overflow
-              change_column(table_name, primary_key, :bigint)
+              change_column(partitioned_table_name, primary_key, :bigint)
             end
           end
         end
@@ -191,19 +191,19 @@ module Gitlab
           create_range_partition(partition_name, table_name, lower_bound, upper_bound)
         end
 
-        def create_trigger_to_sync_tables(source_table, target_table, unique_key)
-          function_name = sync_function_name(source_table)
-          trigger_name = sync_trigger_name(source_table)
+        def create_trigger_to_sync_tables(source_table_name, partitioned_table_name, unique_key)
+          function_name = make_sync_function_name(source_table_name)
+          trigger_name = make_sync_trigger_name(source_table_name)
 
           with_lock_retries do
-            create_sync_function(function_name, target_table, unique_key)
-            create_comment('FUNCTION', function_name, "Partitioning migration: table sync for #{source_table} table")
+            create_sync_function(function_name, partitioned_table_name, unique_key)
+            create_comment('FUNCTION', function_name, "Partitioning migration: table sync for #{source_table_name} table")
 
-            create_sync_trigger(source_table, trigger_name, function_name)
+            create_sync_trigger(source_table_name, trigger_name, function_name)
           end
         end
 
-        def create_sync_function(name, target_table, unique_key)
+        def create_sync_function(name, partitioned_table_name, unique_key)
           if function_exists?(name)
             # rubocop:disable Gitlab/RailsLogger
             Rails.logger.warn "Partitioning sync function not created because it already exists" \
@@ -213,20 +213,20 @@ module Gitlab
           end
 
           delimiter = ",\n    "
-          column_names = connection.columns(target_table).map(&:name)
+          column_names = connection.columns(partitioned_table_name).map(&:name)
           set_statements = build_set_statements(column_names, unique_key)
           insert_values = column_names.map { |name| "NEW.#{name}" }
 
           create_trigger_function(name, replace: false) do
             <<~SQL
               IF (TG_OP = 'DELETE') THEN
-                DELETE FROM #{target_table} where #{unique_key} = OLD.#{unique_key};
+                DELETE FROM #{partitioned_table_name} where #{unique_key} = OLD.#{unique_key};
               ELSIF (TG_OP = 'UPDATE') THEN
-                UPDATE #{target_table}
+                UPDATE #{partitioned_table_name}
                 SET #{set_statements.join(delimiter)}
-                WHERE #{target_table}.#{unique_key} = NEW.#{unique_key};
+                WHERE #{partitioned_table_name}.#{unique_key} = NEW.#{unique_key};
               ELSIF (TG_OP = 'INSERT') THEN
-                INSERT INTO #{target_table} (#{column_names.join(delimiter)})
+                INSERT INTO #{partitioned_table_name} (#{column_names.join(delimiter)})
                 VALUES (#{insert_values.join(delimiter)});
               END IF;
               RETURN NULL;
@@ -250,15 +250,15 @@ module Gitlab
           create_trigger(table_name, trigger_name, function_name, fires: 'AFTER INSERT OR UPDATE OR DELETE')
         end
 
-        def enqueue_background_migration(source_table, partitioned_table, source_key)
-          model_class = define_batchable_model(source_table)
+        def enqueue_background_migration(source_table_name, partitioned_table_name, source_key)
+          source_model = define_batchable_model(source_table_name)
 
           queue_background_migration_jobs_by_range_at_intervals(
-            model_class,
+            source_model,
             MIGRATION_CLASS_NAME,
             BATCH_INTERVAL,
             batch_size: BATCH_SIZE,
-            other_job_arguments: [source_table.to_s, partitioned_table, source_key])
+            other_job_arguments: [source_table_name.to_s, partitioned_table_name, source_key])
         end
       end
     end

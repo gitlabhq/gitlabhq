@@ -3,7 +3,7 @@
 module API
   # Pages Internal API
   module Internal
-    class Pages < Grape::API
+    class Pages < Grape::API::Instance
       before do
         authenticate_gitlab_pages_request!
       end

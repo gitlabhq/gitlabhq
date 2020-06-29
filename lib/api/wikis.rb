@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module API
-  class Wikis < Grape::API
+  class Wikis < Grape::API::Instance
     helpers ::API::Helpers::WikisHelpers
 
     helpers do
@@ -112,7 +112,7 @@ module API
           success Entities::WikiAttachment
         end
         params do
-          requires :file, types: [::API::Validations::Types::SafeFile, ::API::Validations::Types::WorkhorseFile], desc: 'The attachment file to be uploaded'
+          requires :file, types: [Rack::Multipart::UploadedFile, ::API::Validations::Types::WorkhorseFile], desc: 'The attachment file to be uploaded'
           optional :branch, type: String, desc: 'The name of the branch'
         end
         post ":id/wikis/attachments" do

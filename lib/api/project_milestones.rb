@@ -1,13 +1,11 @@
 # frozen_string_literal: true
 
 module API
-  class ProjectMilestones < Grape::API
+  class ProjectMilestones < Grape::API::Instance
     include PaginationParams
     include MilestoneResponses
 
-    before do
-      authenticate!
-    end
+    before { authenticate! }
 
     params do
       requires :id, type: String, desc: 'The ID of a project'

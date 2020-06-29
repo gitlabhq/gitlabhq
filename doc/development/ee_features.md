@@ -512,12 +512,12 @@ do that, so we'll follow regular object-oriented practices that we define the
 interface first here.
 
 For example, suppose we have a few more optional parameters for EE. We can move the
-parameters out of the `Grape::API` class to a helper module, so we can inject it
+parameters out of the `Grape::API::Instance` class to a helper module, so we can inject it
 before it would be used in the class.
 
 ```ruby
 module API
-  class Projects < Grape::API
+  class Projects < Grape::API::Instance
     helpers Helpers::ProjectsHelpers
   end
 end
@@ -578,7 +578,7 @@ class definition to make it easy and clear:
 
 ```ruby
 module API
-  class JobArtifacts < Grape::API
+  class JobArtifacts < Grape::API::Instance
     # EE::API::JobArtifacts would override the following helpers
     helpers do
       def authorize_download_artifacts!
@@ -622,7 +622,7 @@ route. Something like this:
 
 ```ruby
 module API
-  class MergeRequests < Grape::API
+  class MergeRequests < Grape::API::Instance
     helpers do
       # EE::API::MergeRequests would override the following helpers
       def update_merge_request_ee(merge_request)
@@ -691,7 +691,7 @@ least argument. We would approach this as follows:
 ```ruby
 # api/merge_requests/parameters.rb
 module API
-  class MergeRequests < Grape::API
+  class MergeRequests < Grape::API::Instance
     module Parameters
       def self.update_params_at_least_one_of
         %i[
@@ -707,7 +707,7 @@ API::MergeRequests::Parameters.prepend_if_ee('EE::API::MergeRequests::Parameters
 
 # api/merge_requests.rb
 module API
-  class MergeRequests < Grape::API
+  class MergeRequests < Grape::API::Instance
     params do
       at_least_one_of(*Parameters.update_params_at_least_one_of)
     end

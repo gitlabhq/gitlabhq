@@ -57,21 +57,10 @@ class Projects::RefsController < Projects::ApplicationController
 
         render json: logs
       end
-
-      # Deprecated due to https://gitlab.com/gitlab-org/gitlab/-/issues/36863
-      # Will be removed soon https://gitlab.com/gitlab-org/gitlab/-/merge_requests/29895
-      format.js do
-        @logs, _ = tree_summary.summarize
-        @more_log_url = more_url(tree_summary.next_offset) if tree_summary.more?
-      end
     end
   end
 
   private
-
-  def more_url(offset)
-    logs_file_project_ref_path(@project, @ref, @path, offset: offset)
-  end
 
   def validate_ref_id
     return not_found! if params[:id].present? && params[:id] !~ Gitlab::PathRegex.git_reference_regex

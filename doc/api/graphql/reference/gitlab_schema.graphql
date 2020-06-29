@@ -6368,6 +6368,11 @@ input JiraImportStartInput {
   The project to import the Jira project into
   """
   projectPath: ID!
+
+  """
+  The mapping of Jira to GitLab users
+  """
+  usersMapping: [JiraUsersMappingInputType!]
 }
 
 """
@@ -6544,6 +6549,18 @@ type JiraUser {
   Email of the Jira user, returned only for users with public emails
   """
   jiraEmail: String
+}
+
+input JiraUsersMappingInputType {
+  """
+  Id of the GitLab user
+  """
+  gitlabId: Int
+
+  """
+  Jira account id of the user
+  """
+  jiraAccountId: String!
 }
 
 type Label {

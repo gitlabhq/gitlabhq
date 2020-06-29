@@ -308,6 +308,18 @@ Gitlab/Union:
     - 'spec/**/*'
     - 'ee/spec/**/*'
 
+API/GrapeAPIInstance:
+  Enabled: true
+  Include:
+    - 'lib/**/api/**/*.rb'
+    - 'ee/**/api/**/*.rb'
+
+API/GrapeArrayMissingCoerce:
+  Enabled: true
+  Include:
+    - 'lib/**/api/**/*.rb'
+    - 'ee/**/api/**/*.rb'
+
 Cop/SidekiqOptionsQueue:
   Enabled: true
   Exclude:

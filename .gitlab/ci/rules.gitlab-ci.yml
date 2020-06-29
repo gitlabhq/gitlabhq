@@ -119,6 +119,7 @@
 
 .db-patterns: &db-patterns
   - "{,ee/}{db}/**/*"
+  - "{,ee}/spec/{db,migrations}/**/*"
 
 .backstage-patterns: &backstage-patterns
   - "Dangerfile"

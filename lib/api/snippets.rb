@@ -2,7 +2,7 @@
 
 module API
   # Snippets API
-  class Snippets < Grape::API
+  class Snippets < Grape::API::Instance
     include PaginationParams
 
     before { authenticate! }

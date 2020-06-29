@@ -19,6 +19,9 @@ By using subgroups you can do the following:
 - **Make it easier to manage people and control visibility.** Give people
   different [permissions](../../permissions.md#group-members-permissions) depending on their group [membership](#membership).
 
+For more information on allowed permissions in groups and projects, see
+[visibility levels](../../../development/permissions.md#general-permissions).
+
 ## Overview
 
 A group can have many subgroups inside it, and at the same time a group can have

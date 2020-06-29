@@ -74,14 +74,15 @@ RSpec.describe API::Applications, :api do
         expect(json_response['error']).to eq('scopes is missing')
       end
 
-      it 'does not allow creating an application with confidential set to nil' do
+      it 'defaults to creating an application with confidential' do
         expect do
           post api('/applications', admin_user), params: { name: 'application_name', redirect_uri: 'http://application.url', scopes: '', confidential: nil }
-        end.not_to change { Doorkeeper::Application.count }
+        end.to change { Doorkeeper::Application.count }.by(1)
 
-        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(response).to have_gitlab_http_status(:created)
         expect(json_response).to be_a Hash
-        expect(json_response['message']['confidential'].first).to eq('is not included in the list')
+        expect(json_response['callback_url']).to eq('http://application.url')
+        expect(json_response['confidential']).to be true
       end
     end
 

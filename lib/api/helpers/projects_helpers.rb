@@ -48,7 +48,7 @@ module API
         optional :only_allow_merge_if_pipeline_succeeds, type: Boolean, desc: 'Only allow to merge if builds succeed'
         optional :allow_merge_on_skipped_pipeline, type: Boolean, desc: 'Allow to merge if pipeline is skipped'
         optional :only_allow_merge_if_all_discussions_are_resolved, type: Boolean, desc: 'Only allow to merge if all discussions are resolved'
-        optional :tag_list, type: Array[String], desc: 'The list of tags for a project'
+        optional :tag_list, type: Array[String], coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce, desc: 'The list of tags for a project'
         # TODO: remove rubocop disable - https://gitlab.com/gitlab-org/gitlab/issues/14960
         optional :avatar, type: File, desc: 'Avatar image for project' # rubocop:disable Scalability/FileUploads
         optional :printing_merge_request_link_enabled, type: Boolean, desc: 'Show link to create/view merge request when pushing from the command line'

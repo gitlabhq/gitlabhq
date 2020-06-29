@@ -15,7 +15,7 @@ module API
         params :list_params do
           optional :state, type: String, values: %w[active closed all], default: 'all',
                            desc: 'Return "active", "closed", or "all" milestones'
-          optional :iids, type: Array[Integer], desc: 'The IIDs of the milestones'
+          optional :iids, type: Array[Integer], coerce_with: ::API::Validations::Types::CommaSeparatedToIntegerArray.coerce, desc: 'The IIDs of the milestones'
           optional :title, type: String, desc: 'The title of the milestones'
           optional :search, type: String, desc: 'The search criteria for the title or description of the milestone'
           use :pagination

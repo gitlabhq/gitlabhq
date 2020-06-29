@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module API
-  class Members < Grape::API
+  class Members < Grape::API::Instance
     include PaginationParams
 
     before { authenticate! }
@@ -18,7 +18,7 @@ module API
         end
         params do
           optional :query, type: String, desc: 'A query string to search for members'
-          optional :user_ids, type: Array[Integer], desc: 'Array of user ids to look up for membership'
+          optional :user_ids, type: Array[Integer], coerce_with: ::API::Validations::Types::CommaSeparatedToIntegerArray.coerce, desc: 'Array of user ids to look up for membership'
           optional :show_seat_info, type: Boolean, desc: 'Show seat information for members'
           use :optional_filter_params_ee
           use :pagination
@@ -37,7 +37,7 @@ module API
         end
         params do
           optional :query, type: String, desc: 'A query string to search for members'
-          optional :user_ids, type: Array[Integer], desc: 'Array of user ids to look up for membership'
+          optional :user_ids, type: Array[Integer], coerce_with: ::API::Validations::Types::CommaSeparatedToIntegerArray.coerce, desc: 'Array of user ids to look up for membership'
           optional :show_seat_info, type: Boolean, desc: 'Show seat information for members'
           use :pagination
         end

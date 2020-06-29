@@ -62,14 +62,14 @@ RSpec.describe API::Settings, 'Settings' do
             default_projects_limit: 3,
             default_project_creation: 2,
             password_authentication_enabled_for_web: false,
-            repository_storages: ['custom'],
+            repository_storages: 'custom',
             plantuml_enabled: true,
             plantuml_url: 'http://plantuml.example.com',
             sourcegraph_enabled: true,
             sourcegraph_url: 'https://sourcegraph.com',
             sourcegraph_public_only: false,
             default_snippet_visibility: 'internal',
-            restricted_visibility_levels: ['public'],
+            restricted_visibility_levels: 'public',
             default_artifacts_expire_in: '2 days',
             help_page_text: 'custom help text',
             help_page_hide_commercial_content: true,
@@ -94,7 +94,9 @@ RSpec.describe API::Settings, 'Settings' do
             issues_create_limit: 300,
             raw_blob_request_limit: 300,
             spam_check_endpoint_enabled: true,
-            spam_check_endpoint_url: 'https://example.com/spam_check'
+            spam_check_endpoint_url: 'https://example.com/spam_check',
+            disabled_oauth_sign_in_sources: 'unknown',
+            import_sources: 'github,bitbucket'
           }
 
         expect(response).to have_gitlab_http_status(:ok)
@@ -135,6 +137,8 @@ RSpec.describe API::Settings, 'Settings' do
         expect(json_response['raw_blob_request_limit']).to eq(300)
         expect(json_response['spam_check_endpoint_enabled']).to be_truthy
         expect(json_response['spam_check_endpoint_url']).to eq('https://example.com/spam_check')
+        expect(json_response['disabled_oauth_sign_in_sources']).to eq([])
+        expect(json_response['import_sources']).to match_array(%w(github bitbucket))
       end
     end
 

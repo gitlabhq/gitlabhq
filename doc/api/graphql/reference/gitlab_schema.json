@@ -17606,6 +17606,24 @@
               "defaultValue": null
             },
             {
+              "name": "usersMapping",
+              "description": "The mapping of Jira to GitLab users",
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "INPUT_OBJECT",
+                    "name": "JiraUsersMappingInputType",
+                    "ofType": null
+                  }
+                }
+              },
+              "defaultValue": null
+            },
+            {
               "name": "clientMutationId",
               "description": "A unique identifier for the client performing the mutation.",
               "type": {
@@ -18164,6 +18182,41 @@
           "interfaces": [
 
           ],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "INPUT_OBJECT",
+          "name": "JiraUsersMappingInputType",
+          "description": null,
+          "fields": null,
+          "inputFields": [
+            {
+              "name": "jiraAccountId",
+              "description": "Jira account id of the user",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "gitlabId",
+              "description": "Id of the GitLab user",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "defaultValue": null
+            }
+          ],
+          "interfaces": null,
           "enumValues": null,
           "possibleTypes": null
         },

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module API
-  class Settings < Grape::API
+  class Settings < Grape::API::Instance
     before { authenticated_as_admin! }
 
     helpers Helpers::SettingsHelpers
@@ -49,7 +49,7 @@ module API
       optional :default_project_visibility, type: String, values: Gitlab::VisibilityLevel.string_values, desc: 'The default project visibility'
       optional :default_projects_limit, type: Integer, desc: 'The maximum number of personal projects'
       optional :default_snippet_visibility, type: String, values: Gitlab::VisibilityLevel.string_values, desc: 'The default snippet visibility'
-      optional :disabled_oauth_sign_in_sources, type: Array[String], desc: 'Disable certain OAuth sign-in sources'
+      optional :disabled_oauth_sign_in_sources, type: Array[String], coerce_with: Validations::Types::CommaSeparatedToArray.coerce, desc: 'Disable certain OAuth sign-in sources'
       optional :domain_blacklist_enabled, type: Boolean, desc: 'Enable domain blacklist for sign ups'
       optional :domain_blacklist, type: Array[String], coerce_with: Validations::Types::CommaSeparatedToArray.coerce, desc: 'Users with e-mail addresses that match these domain(s) will NOT be able to sign-up. Wildcards allowed. Use separate lines for multiple entries. Ex: domain.com, *.domain.com'
       optional :domain_whitelist, type: Array[String], coerce_with: Validations::Types::CommaSeparatedToArray.coerce, desc: 'ONLY users with e-mail addresses that match these domain(s) will be able to sign-up. Wildcards allowed. Use separate lines for multiple entries. Ex: domain.com, *.domain.com'
@@ -79,7 +79,8 @@ module API
         requires :housekeeping_incremental_repack_period, type: Integer, desc: "Number of Git pushes after which an incremental 'git repack' is run."
       end
       optional :html_emails_enabled, type: Boolean, desc: 'By default GitLab sends emails in HTML and plain text formats so mail clients can choose what format to use. Disable this option if you only want to send emails in plain text format.'
-      optional :import_sources, type: Array[String], values: %w[github bitbucket bitbucket_server gitlab google_code fogbugz git gitlab_project gitea manifest phabricator],
+      optional :import_sources, type: Array[String], coerce_with: Validations::Types::CommaSeparatedToArray.coerce,
+                                values: %w[github bitbucket bitbucket_server gitlab google_code fogbugz git gitlab_project gitea manifest phabricator],
                                 desc: 'Enabled sources for code import during project creation. OmniAuth must be configured for GitHub, Bitbucket, and GitLab.com'
       optional :max_artifacts_size, type: Integer, desc: "Set the maximum file size for each job's artifacts"
       optional :max_attachment_size, type: Integer, desc: 'Maximum attachment size in MB'
@@ -113,13 +114,13 @@ module API
         requires :recaptcha_private_key, type: String, desc: 'Generate private key at http://www.google.com/recaptcha'
       end
       optional :repository_checks_enabled, type: Boolean, desc: "GitLab will periodically run 'git fsck' in all project and wiki repositories to look for silent disk corruption issues."
-      optional :repository_storages, type: Array[String], desc: 'Storage paths for new projects'
+      optional :repository_storages, type: Array[String], coerce_with: Validations::Types::CommaSeparatedToArray.coerce, desc: 'Storage paths for new projects'
       optional :repository_storages_weighted, type: Hash, desc: 'Storage paths for new projects with a weighted value between 0 and 100'
       optional :require_two_factor_authentication, type: Boolean, desc: 'Require all users to set up Two-factor authentication'
       given require_two_factor_authentication: ->(val) { val } do
         requires :two_factor_grace_period, type: Integer, desc: 'Amount of time (in hours) that users are allowed to skip forced configuration of two-factor authentication'
       end
-      optional :restricted_visibility_levels, type: Array[String], desc: 'Selected levels cannot be used by non-admin users for groups, projects or snippets. If the public level is restricted, user profiles are only visible to logged in users.'
+      optional :restricted_visibility_levels, type: Array[String], coerce_with: Validations::Types::CommaSeparatedToArray.coerce, desc: 'Selected levels cannot be used by non-admin users for groups, projects or snippets. If the public level is restricted, user profiles are only visible to logged in users.'
       optional :send_user_confirmation_email, type: Boolean, desc: 'Send confirmation email on sign-up'
       optional :session_expire_delay, type: Integer, desc: 'Session duration in minutes. GitLab restart is required to apply changes.'
       optional :shared_runners_enabled, type: Boolean, desc: 'Enable shared runners for new projects'

@@ -3,7 +3,7 @@
 require_dependency 'declarative_policy'
 
 module API
-  class Projects < Grape::API
+  class Projects < Grape::API::Instance
     include PaginationParams
     include Helpers::CustomAttributes
 
@@ -546,7 +546,7 @@ module API
       end
       params do
         optional :search, type: String, desc: 'Return list of users matching the search criteria'
-        optional :skip_users, type: Array[Integer], desc: 'Filter out users with the specified IDs'
+        optional :skip_users, type: Array[Integer], coerce_with: ::API::Validations::Types::CommaSeparatedToIntegerArray.coerce, desc: 'Filter out users with the specified IDs'
         use :pagination
       end
       get ':id/users' do

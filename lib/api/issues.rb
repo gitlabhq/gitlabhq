@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module API
-  class Issues < Grape::API
+  class Issues < Grape::API::Instance
     include PaginationParams
     helpers Helpers::IssuesHelpers
     helpers Helpers::RateLimiter
@@ -10,9 +10,9 @@ module API
 
     helpers do
       params :negatable_issue_filter_params do
-        optional :labels, type: Array[String], coerce_with: Validations::Types::LabelsList.coerce, desc: 'Comma-separated list of label names'
+        optional :labels, type: Array[String], coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce, desc: 'Comma-separated list of label names'
         optional :milestone, type: String, desc: 'Milestone title'
-        optional :iids, type: Array[Integer], desc: 'The IID array of issues'
+        optional :iids, type: Array[Integer], coerce_with: ::API::Validations::Types::CommaSeparatedToIntegerArray.coerce, desc: 'The IID array of issues'
         optional :search, type: String, desc: 'Search issues for text present in the title, description, or any combination of these'
         optional :in, type: String, desc: '`title`, `description`, or a string joining them with comma'
 
@@ -62,12 +62,12 @@ module API
 
       params :issue_params do
         optional :description, type: String, desc: 'The description of an issue'
-        optional :assignee_ids, type: Array[Integer], desc: 'The array of user IDs to assign issue'
+        optional :assignee_ids, type: Array[Integer], coerce_with: ::API::Validations::Types::CommaSeparatedToIntegerArray.coerce, desc: 'The array of user IDs to assign issue'
         optional :assignee_id,  type: Integer, desc: '[Deprecated] The ID of a user to assign issue'
         optional :milestone_id, type: Integer, desc: 'The ID of a milestone to assign issue'
-        optional :labels, type: Array[String], coerce_with: Validations::Types::LabelsList.coerce, desc: 'Comma-separated list of label names'
-        optional :add_labels, type: Array[String], coerce_with: Validations::Types::LabelsList.coerce, desc: 'Comma-separated list of label names'
-        optional :remove_labels, type: Array[String], coerce_with: Validations::Types::LabelsList.coerce, desc: 'Comma-separated list of label names'
+        optional :labels, type: Array[String], coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce, desc: 'Comma-separated list of label names'
+        optional :add_labels, type: Array[String], coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce, desc: 'Comma-separated list of label names'
+        optional :remove_labels, type: Array[String], coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce, desc: 'Comma-separated list of label names'
         optional :due_date, type: String, desc: 'Date string in the format YEAR-MONTH-DAY'
         optional :confidential, type: Boolean, desc: 'Boolean parameter if the issue should be confidential'
         optional :discussion_locked, type: Boolean, desc: " Boolean parameter indicating if the issue's discussion is locked"

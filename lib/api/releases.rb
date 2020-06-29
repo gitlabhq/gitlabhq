@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module API
-  class Releases < Grape::API
+  class Releases < Grape::API::Instance
     include PaginationParams
 
     RELEASE_ENDPOINT_REQUIREMENTS = API::NAMESPACE_OR_PROJECT_REQUIREMENTS
@@ -54,7 +54,7 @@ module API
             requires :url, type: String
           end
         end
-        optional :milestones, type: Array, desc: 'The titles of the related milestones', default: []
+        optional :milestones, type: Array[String], coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce, desc: 'The titles of the related milestones', default: []
         optional :released_at, type: DateTime, desc: 'The date when the release will be/was ready. Defaults to the current time.'
       end
       route_setting :authentication, job_token_allowed: true
