@@ -9,6 +9,9 @@ require 'selenium-webdriver'
 # Give CI some extra time
 timeout = ENV['CI'] || ENV['CI_SERVER'] ? 60 : 30
 
+# Support running Capybara on a specific port to allow saving commonly used pages
+Capybara.server_port = ENV['CAPYBARA_PORT'] if ENV['CAPYBARA_PORT']
+
 # Define an error class for JS console messages
 JSConsoleError = Class.new(StandardError)
 

@@ -10135,6 +10135,11 @@ type ProjectStatistics {
   repositorySize: Float!
 
   """
+  Snippets size of the project
+  """
+  snippetsSize: Float
+
+  """
   Storage size of the project
   """
   storageSize: Float!

@@ -23,10 +23,6 @@ module Banzai
         issue_url(issue, project)
       end
 
-      def projects_relation_for_paths(paths)
-        super(paths).includes(:gitlab_issue_tracker_service)
-      end
-
       def parent_records(parent, ids)
         parent.issues.where(iid: ids.to_a)
       end

@@ -508,7 +508,7 @@ RSpec.describe Service do
 
   describe 'initialize service with no properties' do
     let(:service) do
-      GitlabIssueTrackerService.create(
+      BugzillaService.create(
         project: create(:project),
         project_url: 'http://gitlab.example.com'
       )

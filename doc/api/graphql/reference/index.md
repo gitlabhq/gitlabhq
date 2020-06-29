@@ -1478,6 +1478,7 @@ Represents a Project Member
 | `lfsObjectsSize` | Float! | Large File Storage (LFS) object size of the project |
 | `packagesSize` | Float! | Packages size of the project |
 | `repositorySize` | Float! | Repository size of the project |
+| `snippetsSize` | Float | Snippets size of the project |
 | `storageSize` | Float! | Storage size of the project |
 | `wikiSize` | Float | Wiki size of the project |
 

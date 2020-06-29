@@ -29953,6 +29953,20 @@
               "deprecationReason": null
             },
             {
+              "name": "snippetsSize",
+              "description": "Snippets size of the project",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Float",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "storageSize",
               "description": "Storage size of the project",
               "args": [

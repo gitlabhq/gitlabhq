@@ -55,11 +55,9 @@ class Service < ApplicationRecord
   validates :instance, uniqueness: { scope: :type }, if: -> { instance? }
   validate :validate_is_instance_or_template
 
-  scope :visible, -> { where.not(type: 'GitlabIssueTrackerService') }
   scope :issue_trackers, -> { where(category: 'issue_tracker') }
   scope :external_wikis, -> { where(type: 'ExternalWikiService').active }
   scope :active, -> { where(active: true) }
-  scope :without_defaults, -> { where(default: false) }
   scope :by_type, -> (type) { where(type: type) }
   scope :by_active_flag, -> (flag) { where(active: flag) }
   scope :templates, -> { where(template: true, type: available_services_types) }
@@ -77,7 +75,7 @@ class Service < ApplicationRecord
   scope :wiki_page_hooks, -> { where(wiki_page_events: true, active: true) }
   scope :deployment_hooks, -> { where(deployment_events: true, active: true) }
   scope :alert_hooks, -> { where(alert_events: true, active: true) }
-  scope :external_issue_trackers, -> { issue_trackers.active.without_defaults }
+  scope :external_issue_trackers, -> { issue_trackers.active }
   scope :deployment, -> { where(category: 'deployment') }
 
   default_value_for :category, 'common'

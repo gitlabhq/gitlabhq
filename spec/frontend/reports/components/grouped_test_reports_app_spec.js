@@ -15,19 +15,28 @@ localVue.use(Vuex);
 
 describe('Grouped test reports app', () => {
   const endpoint = 'endpoint.json';
+  const pipelinePath = '/path/to/pipeline';
   const Component = localVue.extend(GroupedTestReportsApp);
   let wrapper;
   let mockStore;
 
-  const mountComponent = () => {
+  const mountComponent = ({
+    glFeatures = { junitPipelineView: false },
+    props = { pipelinePath },
+  } = {}) => {
     wrapper = mount(Component, {
       store: mockStore,
       localVue,
       propsData: {
         endpoint,
+        pipelinePath,
+        ...props,
       },
       methods: {
         fetchReports: () => {},
+      },
+      provide: {
+        glFeatures,
       },
     });
   };
@@ -39,6 +48,7 @@ describe('Grouped test reports app', () => {
   };
 
   const findHeader = () => wrapper.find('[data-testid="report-section-code-text"]');
+  const findFullTestReportLink = () => wrapper.find('[data-testid="group-test-reports-full-link"]');
   const findSummaryDescription = () => wrapper.find('[data-testid="test-summary-row-description"]');
   const findIssueDescription = () => wrapper.find('[data-testid="test-issue-body-description"]');
   const findAllIssueDescriptions = () =>
@@ -64,6 +74,38 @@ describe('Grouped test reports app', () => {
       expect(findHeader().text()).toBe(
         'Test summary contained no changed test results out of 11 total tests',
       );
+    });
+  });
+
+  describe('`View full report` button', () => {
+    it('should not render the full test report link', () => {
+      expect(findFullTestReportLink().exists()).toBe(false);
+    });
+
+    describe('With junitPipelineView feature flag enabled', () => {
+      beforeEach(() => {
+        mountComponent({ glFeatures: { junitPipelineView: true } });
+      });
+
+      it('should render the full test report link', () => {
+        const fullTestReportLink = findFullTestReportLink();
+
+        expect(fullTestReportLink.exists()).toBe(true);
+        expect(fullTestReportLink.attributes('href')).toBe(`${pipelinePath}/test_report`);
+      });
+    });
+
+    describe('Without a pipelinePath', () => {
+      beforeEach(() => {
+        mountComponent({
+          glFeatures: { junitPipelineView: true },
+          props: { pipelinePath: '' },
+        });
+      });
+
+      it('should not render the full test report link', () => {
+        expect(findFullTestReportLink().exists()).toBe(false);
+      });
     });
   });
 

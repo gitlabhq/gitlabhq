@@ -59,10 +59,6 @@ $item-remove-button-space: 42px;
     flex-basis: 100%;
     font-size: $gl-font-size-small;
 
-    &.mr-title {
-      font-weight: $gl-font-weight-bold;
-    }
-
     .sortable-link {
       color: $gray-900;
     }
@@ -77,20 +73,12 @@ $item-remove-button-space: 42px;
     overflow: hidden;
     white-space: nowrap;
   }
-
-  .health-label-short {
-    display: none;
-  }
 }
 
 .item-body,
 .card-header {
   .health-label-short {
     max-width: 0;
-  }
-
-  .health-label-long {
-    display: none;
   }
 
   .status {
@@ -158,19 +146,16 @@ $item-remove-button-space: 42px;
     max-width: $item-milestone-max-width;
 
     .ic-clock {
-      color: $gl-text-color-secondary;
       margin-right: $gl-padding-4;
     }
   }
 
   .item-weight {
     max-width: $item-weight-max-width;
-
-    .ic-weight {
-      color: $gl-text-color-secondary;
-    }
   }
 
+  .item-milestone .ic-clock,
+  .item-weight .ic-weight,
   .item-due-date .ic-calendar {
     color: $gl-text-color-secondary;
   }
@@ -314,10 +299,6 @@ $item-remove-button-space: 42px;
       max-width: 100px;
     }
   }
-
-  .health-label-long {
-    display: none;
-  }
 }
 
 /* Large devices (large desktops, 1200px and up) */
@@ -329,10 +310,6 @@ $item-remove-button-space: 42px;
       flex-shrink: 1;
       font-weight: $gl-font-weight-normal;
     }
-  }
-
-  .health-label-long {
-    display: none;
   }
 
   .item-contents {
@@ -371,12 +348,8 @@ $item-remove-button-space: 42px;
 
 @media only screen and (min-width: 1500px) {
   .card-header {
-    .health-label-short {
-      display: none;
-    }
-
     .health-label-long {
-      display: initial;
+      display: block;
     }
   }
 }
