@@ -21,7 +21,7 @@ RSpec.describe Projects::Alerting::NotifyService do
     it 'processes issues' do
       expect(IncidentManagement::ProcessAlertWorker)
         .to receive(:perform_async)
-        .with(project.id, kind_of(Hash), kind_of(Integer))
+        .with(nil, nil, kind_of(Integer))
         .once
 
       Sidekiq::Testing.inline! do
