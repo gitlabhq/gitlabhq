@@ -4,7 +4,7 @@
  * any changes done to the haml need to be reflected here.
  */
 import { escape, isNumber } from 'lodash';
-import { GlLink, GlTooltipDirective as GlTooltip } from '@gitlab/ui';
+import { GlLink, GlTooltipDirective as GlTooltip, GlSprintf } from '@gitlab/ui';
 import {
   dateInWords,
   formatDate,
@@ -20,10 +20,14 @@ import Icon from '~/vue_shared/components/icon.vue';
 import IssueAssignees from '~/vue_shared/components/issue/issue_assignees.vue';
 
 export default {
+  i18n: {
+    openedAgo: __('opened %{timeAgoString} by %{user}'),
+  },
   components: {
     Icon,
     IssueAssignees,
     GlLink,
+    GlSprintf,
   },
   directives: {
     GlTooltip,
@@ -98,23 +102,21 @@ export default {
       }
       return __('Milestone');
     },
-    openedAgoByString() {
-      const { author, created_at } = this.issuable;
+    issuableAuthor() {
+      return this.issuable.author;
+    },
+    issuableCreatedAt() {
+      return getTimeago().format(this.issuable.created_at);
+    },
+    popoverDataAttrs() {
+      const { id, username, name, avatar_url } = this.issuableAuthor;
 
-      return sprintf(
-        __('opened %{timeAgoString} by %{user}'),
-        {
-          timeAgoString: escape(getTimeago().format(created_at)),
-          user: `<a href="${escape(author.web_url)}"
-            data-user-id=${escape(author.id)}
-            data-username=${escape(author.username)}
-            data-name=${escape(author.name)}
-            data-avatar-url="${escape(author.avatar_url)}">
-            ${escape(author.name)}
-          </a>`,
-        },
-        false,
-      );
+      return {
+        'data-user-id': id,
+        'data-username': username,
+        'data-name': name,
+        'data-avatar-url': avatar_url,
+      };
     },
     referencePath() {
       return this.issuable.references.relative;
@@ -160,7 +162,7 @@ export default {
   mounted() {
     // TODO: Refactor user popover to use its own component instead of
     // spawning event listeners on Vue-rendered elements.
-    initUserPopovers([this.$refs.openedAgoByContainer.querySelector('a')]);
+    initUserPopovers([this.$refs.openedAgoByContainer.$el]);
   },
   methods: {
     labelStyle(label) {
@@ -221,17 +223,30 @@ export default {
             ></i>
             <gl-link :href="issuable.web_url">{{ issuable.title }}</gl-link>
           </span>
-          <span v-if="issuable.has_tasks" class="ml-1 task-status d-none d-sm-inline-block">{{
-            issuable.task_status
-          }}</span>
+          <span v-if="issuable.has_tasks" class="ml-1 task-status d-none d-sm-inline-block">
+            {{ issuable.task_status }}
+          </span>
         </div>
 
         <div class="issuable-info">
           <span class="js-ref-path">{{ referencePath }}</span>
 
-          <span class="d-none d-sm-inline-block mr-1">
+          <span data-testid="openedByMessage" class="d-none d-sm-inline-block mr-1">
             &middot;
-            <span ref="openedAgoByContainer" v-html="openedAgoByString"></span>
+            <gl-sprintf :message="$options.i18n.openedAgo">
+              <template #timeAgoString>
+                <span>{{ issuableCreatedAt }}</span>
+              </template>
+              <template #user>
+                <gl-link
+                  ref="openedAgoByContainer"
+                  v-bind="popoverDataAttrs"
+                  :href="issuableAuthor.web_url"
+                >
+                  {{ issuableAuthor.name }}
+                </gl-link>
+              </template>
+            </gl-sprintf>
           </span>
 
           <gl-link
