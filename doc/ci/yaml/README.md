@@ -3628,7 +3628,7 @@ only:
 The Docker image to use for the `release-cli` must be specified, using the following directive:
 
 ```yaml
-image: registry.gitlab.com/gitlab-org/release-cli:stable
+image: registry.gitlab.com/gitlab-org/release-cli:latest
 ```
 
 #### Script
@@ -3724,7 +3724,7 @@ stages:
 
 release_job:
   stage: release
-  image: registry.gitlab.com/gitlab-org/release-cli:stable
+  image: registry.gitlab.com/gitlab-org/release-cli:latest
   only:
     - tags
   script:

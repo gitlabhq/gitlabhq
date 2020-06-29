@@ -1,9 +1,14 @@
-- empty_state_path = local_assigns.fetch(:empty_state_path, 'shared/empty_states/issues')
+- if Feature.enabled?(:vue_issuables_list, @project)
+  .js-issuables-list{ data: { endpoint: expose_url(api_v4_projects_issues_path(id: @project.id)),
+    'can-bulk-edit': @can_bulk_update.to_json,
+    'empty-svg-path': image_path('illustrations/issues.svg'),
+    'sort-key': @sort } }
+- else
+  - empty_state_path = local_assigns.fetch(:empty_state_path, 'shared/empty_states/issues')
+  %ul.content-list.issues-list.issuable-list{ class: ("manual-ordering" if @sort == 'relative_position') }
+    = render partial: "projects/issues/issue", collection: @issues
+    - if @issues.blank?
+      = render empty_state_path
 
-%ul.content-list.issues-list.issuable-list{ class: ("manual-ordering" if @sort == 'relative_position') }
-  = render partial: "projects/issues/issue", collection: @issues
-  - if @issues.blank?
-    = render empty_state_path
-
-- if @issues.present?
-  = paginate @issues, theme: "gitlab", total_pages: @total_pages
+  - if @issues.present?
+    = paginate @issues, theme: "gitlab", total_pages: @total_pages

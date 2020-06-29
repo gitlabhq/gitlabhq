@@ -2,13 +2,15 @@
 
 require 'spec_helper'
 
-RSpec.describe 'issuable list' do
+RSpec.describe 'issuable list', :js do
   let(:project) { create(:project) }
   let(:user)    { create(:user) }
 
   issuable_types = [:issue, :merge_request]
 
   before do
+    stub_feature_flags(vue_issuables_list: false)
+    # something is going on
     project.add_user(user, :developer)
     sign_in(user)
     issuable_types.each { |type| create_issuables(type) }

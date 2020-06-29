@@ -7,6 +7,8 @@ RSpec.describe 'User filters issues' do
   let_it_be(:project) { create(:project_empty_repo, :public) }
 
   before do
+    stub_feature_flags(vue_issuables_list: false)
+
     %w[foobar barbaz].each do |title|
       create(:issue,
              author: user,

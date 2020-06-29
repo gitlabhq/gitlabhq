@@ -13,6 +13,10 @@ RSpec.describe 'Issue prioritization' do
   let(:label_4) { create(:label, title: 'label_4', project: project, priority: 4) }
   let(:label_5) { create(:label, title: 'label_5', project: project) } # no priority
 
+  before do
+    stub_feature_flags(vue_issuables_list: false)
+  end
+
   # According to https://gitlab.com/gitlab-org/gitlab-foss/issues/14189#note_4360653
   context 'when issues have one label' do
     it 'Are sorted properly' do

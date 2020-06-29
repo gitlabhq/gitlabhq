@@ -47,12 +47,17 @@ class Projects::IssuesController < Projects::ApplicationController
   before_action do
     push_frontend_feature_flag(:vue_issuable_sidebar, project.group)
     push_frontend_feature_flag(:tribute_autocomplete, @project)
+    push_frontend_feature_flag(:vue_issuables_list, project)
   end
 
   before_action only: :show do
     push_frontend_feature_flag(:real_time_issue_sidebar, @project)
     push_frontend_feature_flag(:confidential_notes, @project)
     push_frontend_feature_flag(:confidential_apollo_sidebar, @project)
+  end
+
+  before_action only: :index do
+    push_frontend_feature_flag(:scoped_labels, @project)
   end
 
   around_action :allow_gitaly_ref_name_caching, only: [:discussions]

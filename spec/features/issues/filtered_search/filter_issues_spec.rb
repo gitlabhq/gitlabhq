@@ -26,6 +26,8 @@ RSpec.describe 'Filter issues', :js do
   end
 
   before do
+    stub_feature_flags(vue_issuables_list: false)
+
     project.add_maintainer(user)
 
     create(:issue, project: project, author: user2, title: "Bug report 1")
