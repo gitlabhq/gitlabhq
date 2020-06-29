@@ -109,9 +109,7 @@ class GroupPolicy < BasePolicy
     enable :create_cluster
     enable :update_cluster
     enable :admin_cluster
-    enable :destroy_deploy_token
     enable :read_deploy_token
-    enable :create_deploy_token
     enable :admin_wiki
   end
 
@@ -123,6 +121,8 @@ class GroupPolicy < BasePolicy
 
     enable :set_note_created_at
     enable :set_emails_disabled
+    enable :create_deploy_token
+    enable :destroy_deploy_token
   end
 
   rule { can?(:read_nested_project_resources) }.policy do
