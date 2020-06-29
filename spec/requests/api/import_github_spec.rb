@@ -26,6 +26,21 @@ describe API::ImportGithub do
       end
     end
 
+    it 'rejects requests when Github Importer is disabled' do
+      # Max value for PG `serial` type: https://www.postgresql.org/docs/12/datatype-numeric.html
+      non_existing_record_id = 2147483647
+
+      stub_application_setting(import_sources: nil)
+
+      post api("/import/github", user), params: {
+        target_namespace: user.namespace_path,
+        personal_access_token: token,
+        repo_id: non_existing_record_id
+      }
+
+      expect(response).to have_gitlab_http_status(:forbidden)
+    end
+
     it 'returns 201 response when the project is imported successfully' do
       allow(Gitlab::LegacyGithubImport::ProjectCreator)
         .to receive(:new).with(provider_repo, provider_repo.name, user.namespace, user, access_params, type: provider)

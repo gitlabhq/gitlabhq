@@ -1,0 +1,5 @@
+---
+title: Fix null byte error in upload path
+merge_request:
+author:
+type: security
