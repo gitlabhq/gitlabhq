@@ -240,13 +240,21 @@ RSpec.describe Projects::CreateService, '#execute' do
   end
 
   context 'import data' do
-    it 'stores import data and URL' do
-      import_data = { data: { 'test' => 'some data' } }
-      project = create_project(user, { name: 'test', import_url: 'http://import-url', import_data: import_data })
+    let(:import_data) { { data: { 'test' => 'some data' } } }
+    let(:imported_project) { create_project(user, { name: 'test', import_url: 'http://import-url', import_data: import_data }) }
 
-      expect(project.import_data).to be_persisted
-      expect(project.import_data.data).to eq(import_data[:data])
-      expect(project.import_url).to eq('http://import-url')
+    it 'does not write repository config' do
+      expect_next_instance_of(Project) do |project|
+        expect(project).not_to receive(:write_repository_config)
+      end
+
+      imported_project
+    end
+
+    it 'stores import data and URL' do
+      expect(imported_project.import_data).to be_persisted
+      expect(imported_project.import_data.data).to eq(import_data[:data])
+      expect(imported_project.import_url).to eq('http://import-url')
     end
   end
 

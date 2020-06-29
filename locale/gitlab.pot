@@ -13201,6 +13201,9 @@ msgstr ""
 msgid "Learn more about group-level project templates"
 msgstr ""
 
+msgid "Learn more about job dependencies"
+msgstr ""
+
 msgid "Learn more about signing commits"
 msgstr ""
 
@@ -21646,6 +21649,9 @@ msgstr ""
 msgid "Start thread & reopen %{noteable_name}"
 msgstr ""
 
+msgid "Start using Directed Acyclic Graphs (DAG)"
+msgstr ""
+
 msgid "Start your Free Gold Trial"
 msgstr ""
 
@@ -23393,6 +23399,9 @@ msgid "This page is unavailable because you are not allowed to read information 
 msgstr ""
 
 msgid "This page will be removed in a future release."
+msgstr ""
+
+msgid "This pipeline does not use the %{codeStart}needs%{codeEnd} keyword and can't be represented as a directed acyclic graph."
 msgstr ""
 
 msgid "This pipeline makes use of a predefined CI/CD configuration enabled by %{strongStart}Auto DevOps.%{strongEnd}"
@@ -25167,6 +25176,9 @@ msgid "UsersSelect|No assignee - %{openingTag} assign yourself %{closingTag}"
 msgstr ""
 
 msgid "UsersSelect|Unassigned"
+msgstr ""
+
+msgid "Using %{codeStart}needs%{codeEnd} allows jobs to run before their stage is reached, as soon as their individual dependencies are met, which speeds up your pipelines."
 msgstr ""
 
 msgid "Using %{code_start}::%{code_end} denotes a %{link_start}scoped label set%{link_end}"

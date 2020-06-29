@@ -23,13 +23,17 @@ describe('Render Kramdown List renderer', () => {
     it('should return uneditable open tokens when entering', () => {
       const context = { entering: true, origin };
 
-      expect(renderer.render(context)).toStrictEqual(buildUneditableOpenTokens(origin()));
+      expect(renderer.render(kramdownListNode, context)).toStrictEqual(
+        buildUneditableOpenTokens(origin()),
+      );
     });
 
     it('should return an uneditable close tokens when exiting', () => {
       const context = { entering: false, origin };
 
-      expect(renderer.render(context)).toStrictEqual(buildUneditableCloseToken(origin()));
+      expect(renderer.render(kramdownListNode, context)).toStrictEqual(
+        buildUneditableCloseToken(origin()),
+      );
     });
   });
 });

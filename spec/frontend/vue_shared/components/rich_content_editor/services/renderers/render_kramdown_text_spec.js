@@ -20,7 +20,9 @@ describe('Render Kramdown Text renderer', () => {
     it('should return uneditable tokens', () => {
       const context = { origin };
 
-      expect(renderer.render(context)).toStrictEqual(buildUneditableTokens(origin()));
+      expect(renderer.render(kramdownTextNode, context)).toStrictEqual(
+        buildUneditableTokens(origin()),
+      );
     });
   });
 });

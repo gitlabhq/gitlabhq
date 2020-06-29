@@ -241,7 +241,7 @@ can configure this manually as follows:
    For a full example using the pre-built image, see [Example `.gitlab-ci.yaml`
    file](#example-gitlab-ciyaml-file).
 
-   For an example displaying multiple reports, see [`.gitlab-ci.yaml` multiple reports file](#mulitple-terraform-plan-reports).
+   For an example displaying multiple reports, see [`.gitlab-ci.yaml` multiple reports file](#multiple-terraform-plan-reports).
 
 1. Running the pipeline displays the widget in the merge request, like this:
 
@@ -311,7 +311,7 @@ apply:
     - master
 ```
 
-### Mulitple Terraform Plan reports
+### Multiple Terraform Plan reports
 
 Starting with 13.2, you can display mutiple reports on the Merge Request page. The reports will also display the `artifact: name:`. See example below for a suggested setup.
 

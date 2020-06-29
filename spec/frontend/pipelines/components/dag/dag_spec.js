@@ -2,7 +2,7 @@ import { mount, shallowMount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
 import waitForPromises from 'helpers/wait_for_promises';
-import { GlAlert } from '@gitlab/ui';
+import { GlAlert, GlEmptyState } from '@gitlab/ui';
 import Dag from '~/pipelines/components/dag/dag.vue';
 import DagGraph from '~/pipelines/components/dag/dag_graph.vue';
 import DagAnnotations from '~/pipelines/components/dag/dag_annotations.vue';
@@ -16,7 +16,14 @@ import {
   LOAD_FAILURE,
   UNSUPPORTED_DATA,
 } from '~/pipelines/components/dag//constants';
-import { mockBaseData, tooSmallGraph, unparseableGraph, singleNote, multiNote } from './mock_data';
+import {
+  mockBaseData,
+  tooSmallGraph,
+  unparseableGraph,
+  graphWithoutDependencies,
+  singleNote,
+  multiNote,
+} from './mock_data';
 
 describe('Pipeline DAG graph wrapper', () => {
   let wrapper;
@@ -26,6 +33,7 @@ describe('Pipeline DAG graph wrapper', () => {
   const getGraph = () => wrapper.find(DagGraph);
   const getNotes = () => wrapper.find(DagAnnotations);
   const getErrorText = type => wrapper.vm.$options.errorTexts[type];
+  const getEmptyState = () => wrapper.find(GlEmptyState);
 
   const dataPath = '/root/test/pipelines/90/dag.json';
 
@@ -35,7 +43,11 @@ describe('Pipeline DAG graph wrapper', () => {
     }
 
     wrapper = method(Dag, {
-      propsData,
+      propsData: {
+        emptySvgPath: '/my-svg',
+        dagDocPath: '/my-doc',
+        ...propsData,
+      },
       data() {
         return {
           showFailureAlert: false,
@@ -64,6 +76,10 @@ describe('Pipeline DAG graph wrapper', () => {
       expect(getAlert().text()).toBe(getErrorText(DEFAULT));
       expect(getGraph().exists()).toBe(false);
     });
+
+    it('does not render the empty state', () => {
+      expect(getEmptyState().exists()).toBe(false);
+    });
   });
 
   describe('when there is a dataUrl', () => {
@@ -83,6 +99,10 @@ describe('Pipeline DAG graph wrapper', () => {
             expect(getGraph().exists()).toBe(false);
           });
       });
+
+      it('does not render the empty state', () => {
+        expect(getEmptyState().exists()).toBe(false);
+      });
     });
 
     describe('the data fetch succeeds but the parse fails', () => {
@@ -100,6 +120,10 @@ describe('Pipeline DAG graph wrapper', () => {
             expect(getAlert().text()).toBe(getErrorText(PARSE_FAILURE));
             expect(getGraph().exists()).toBe(false);
           });
+      });
+
+      it('does not render the empty state', () => {
+        expect(getEmptyState().exists()).toBe(false);
       });
     });
 
@@ -119,6 +143,15 @@ describe('Pipeline DAG graph wrapper', () => {
             expect(getGraph().exists()).toBe(true);
           });
       });
+
+      it('does not render the empty state', () => {
+        return wrapper.vm
+          .$nextTick()
+          .then(waitForPromises)
+          .then(() => {
+            expect(getEmptyState().exists()).toBe(false);
+          });
+      });
     });
 
     describe('the data fetch and parse succeeds, but the resulting graph is too small', () => {
@@ -135,6 +168,42 @@ describe('Pipeline DAG graph wrapper', () => {
             expect(getAlert().exists()).toBe(true);
             expect(getAlert().text()).toBe(getErrorText(UNSUPPORTED_DATA));
             expect(getGraph().exists()).toBe(false);
+          });
+      });
+
+      it('does not show the empty dag graph state', () => {
+        return wrapper.vm
+          .$nextTick()
+          .then(waitForPromises)
+          .then(() => {
+            expect(getEmptyState().exists()).toBe(false);
+          });
+      });
+    });
+
+    describe('the data fetch and parse succeeds, but the resulting graph is empty', () => {
+      beforeEach(() => {
+        mock.onGet(dataPath).replyOnce(200, graphWithoutDependencies);
+        createComponent({ graphUrl: dataPath }, mount);
+      });
+
+      it('does not render an error alert or the graph', () => {
+        return wrapper.vm
+          .$nextTick()
+          .then(waitForPromises)
+          .then(() => {
+            expect(getAllAlerts().length).toBe(1);
+            expect(getAlert().text()).toContain('This feature is currently in beta.');
+            expect(getGraph().exists()).toBe(false);
+          });
+      });
+
+      it('shows the empty dag graph state', () => {
+        return wrapper.vm
+          .$nextTick()
+          .then(waitForPromises)
+          .then(() => {
+            expect(getEmptyState().exists()).toBe(true);
           });
       });
     });

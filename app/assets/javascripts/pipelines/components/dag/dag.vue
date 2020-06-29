@@ -1,5 +1,5 @@
 <script>
-import { GlAlert, GlLink, GlSprintf } from '@gitlab/ui';
+import { GlAlert, GlButton, GlEmptyState, GlLink, GlSprintf } from '@gitlab/ui';
 import { isEmpty } from 'lodash';
 import axios from '~/lib/utils/axios_utils';
 import { __ } from '~/locale';
@@ -25,11 +25,23 @@ export default {
     GlAlert,
     GlLink,
     GlSprintf,
+    GlEmptyState,
+    GlButton,
   },
   props: {
     graphUrl: {
       type: String,
       required: false,
+      default: '',
+    },
+    emptySvgPath: {
+      type: String,
+      required: true,
+      default: '',
+    },
+    dagDocPath: {
+      type: String,
+      required: true,
       default: '',
     },
   },
@@ -40,6 +52,7 @@ export default {
       graphData: null,
       showFailureAlert: false,
       showBetaInfo: true,
+      hasNoDependentJobs: false,
     };
   },
   errorTexts: {
@@ -47,6 +60,16 @@ export default {
     [PARSE_FAILURE]: __('There was an error parsing the data for this graph.'),
     [UNSUPPORTED_DATA]: __('DAG visualization requires at least 3 dependent jobs.'),
     [DEFAULT]: __('An unknown error occurred while loading this graph.'),
+  },
+  emptyStateTexts: {
+    title: __('Start using Directed Acyclic Graphs (DAG)'),
+    firstDescription: __(
+      "This pipeline does not use the %{codeStart}needs%{codeEnd} keyword and can't be represented as a directed acyclic graph.",
+    ),
+    secondDescription: __(
+      'Using %{codeStart}needs%{codeEnd} allows jobs to run before their stage is reached, as soon as their individual dependencies are met, which speeds up your pipelines.',
+    ),
+    button: __('Learn more about job dependencies'),
   },
   computed: {
     betaMessage() {
@@ -114,8 +137,15 @@ export default {
         return;
       }
 
-      if (parsed.links.length < 2) {
+      if (parsed.links.length === 1) {
         this.reportFailure(UNSUPPORTED_DATA);
+        return;
+      }
+
+      // If there are no links, we don't report failure
+      // as it simply means the user does not use job dependencies
+      if (parsed.links.length === 0) {
+        this.hasNoDependentJobs = true;
         return;
       }
 
@@ -172,9 +202,38 @@ export default {
       <dag-graph
         v-if="shouldDisplayGraph"
         :graph-data="graphData"
-        @on-failure="reportFailure"
+        @onFailure="reportFailure"
         @update-annotation="updateAnnotation"
       />
+      <gl-empty-state
+        v-else-if="hasNoDependentJobs"
+        :svg-path="emptySvgPath"
+        :title="$options.emptyStateTexts.title"
+      >
+        <template #description>
+          <div class="gl-text-left">
+            <p>
+              <gl-sprintf :message="$options.emptyStateTexts.firstDescription">
+                <template #code="{ content }">
+                  <code>{{ content }}</code>
+                </template>
+              </gl-sprintf>
+            </p>
+            <p>
+              <gl-sprintf :message="$options.emptyStateTexts.secondDescription">
+                <template #code="{ content }">
+                  <code>{{ content }}</code>
+                </template>
+              </gl-sprintf>
+            </p>
+          </div>
+        </template>
+        <template #actions>
+          <gl-button :href="dagDocPath" target="__blank" variant="success">
+            {{ $options.emptyStateTexts.button }}
+          </gl-button>
+        </template>
+      </gl-empty-state>
     </div>
   </div>
 </template>

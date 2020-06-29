@@ -4663,6 +4663,7 @@ RSpec.describe Project do
       expect(project).to receive(:refresh_markdown_cache!)
       expect(InternalId).to receive(:flush_records!).with(project: project)
       expect(DetectRepositoryLanguagesWorker).to receive(:perform_async).with(project.id)
+      expect(project).to receive(:write_repository_config)
 
       project.after_import
     end

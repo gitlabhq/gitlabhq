@@ -218,6 +218,16 @@ be used both locally in development and on any deployed GitLab instance to
 diagnose poor search performance. This will show the exact queries being made,
 which is useful to diagnose why a search might be slow.
 
+### Correlation ID and X-Opaque-Id
+
+Our [correlation
+ID](./distributed_tracing.md#developer-guidelines-for-working-with-correlation-ids)
+is forwarded by all requests from Rails to Elasticsearch as the
+[`X-Opaque-Id`](https://www.elastic.co/guide/en/elasticsearch/reference/current/tasks.html#_identifying_running_tasks)
+header which allows us to track any
+[tasks](https://www.elastic.co/guide/en/elasticsearch/reference/current/tasks.html)
+in the cluster back the request in GitLab.
+
 ## Troubleshooting
 
 ### Getting `flood stage disk watermark [95%] exceeded`

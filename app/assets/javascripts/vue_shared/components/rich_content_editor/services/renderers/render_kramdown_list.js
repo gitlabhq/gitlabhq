@@ -21,7 +21,7 @@ const canRender = node => {
   return false;
 };
 
-const render = ({ entering, origin }) =>
+const render = (_, { entering, origin }) =>
   entering ? buildUneditableOpenTokens(origin()) : buildUneditableCloseToken();
 
 export default { canRender, render };

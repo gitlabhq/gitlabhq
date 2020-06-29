@@ -83,6 +83,46 @@ export const tooSmallGraph = {
   ],
 };
 
+export const graphWithoutDependencies = {
+  stages: [
+    {
+      name: 'test',
+      groups: [
+        {
+          name: 'jest',
+          size: 2,
+          jobs: [{ name: 'jest 1/2' }, { name: 'jest 2/2' }],
+        },
+        {
+          name: 'rspec',
+          size: 1,
+          jobs: [{ name: 'rspec' }],
+        },
+      ],
+    },
+    {
+      name: 'fixtures',
+      groups: [
+        {
+          name: 'frontend fixtures',
+          size: 1,
+          jobs: [{ name: 'frontend fixtures' }],
+        },
+      ],
+    },
+    {
+      name: 'un-needed',
+      groups: [
+        {
+          name: 'un-needed',
+          size: 1,
+          jobs: [{ name: 'un-needed' }],
+        },
+      ],
+    },
+  ],
+};
+
 export const unparseableGraph = [
   {
     name: 'test',

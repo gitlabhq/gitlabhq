@@ -1798,6 +1798,7 @@ class Project < ApplicationRecord
     after_create_default_branch
     join_pool_repository
     refresh_markdown_cache!
+    write_repository_config
   end
 
   def update_project_counter_caches

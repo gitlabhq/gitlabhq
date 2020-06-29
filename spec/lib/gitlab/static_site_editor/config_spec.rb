@@ -6,7 +6,10 @@ RSpec.describe Gitlab::StaticSiteEditor::Config do
   subject(:config) { described_class.new(repository, ref, file_path, return_url) }
 
   let_it_be(:namespace) { create(:namespace, name: 'namespace') }
+  let_it_be(:root_group) { create(:group, name: 'group') }
+  let_it_be(:subgroup) { create(:group, name: 'subgroup', parent: root_group) }
   let_it_be(:project) { create(:project, :public, :repository, name: 'project', namespace: namespace) }
+  let_it_be(:project_with_subgroup) { create(:project, :public, :repository, name: 'project', group: subgroup) }
   let_it_be(:repository) { project.repository }
 
   let(:ref) { 'master' }
@@ -28,6 +31,18 @@ RSpec.describe Gitlab::StaticSiteEditor::Config do
         is_supported_content: 'true',
         base_url: '/namespace/project/-/sse/master%2FREADME.md'
       )
+    end
+
+    context 'when namespace is a subgroup' do
+      let(:repository) { project_with_subgroup.repository }
+
+      it 'returns data for the frontend component' do
+        is_expected.to include(
+          namespace: 'group/subgroup',
+          project: 'project',
+          base_url: '/group/subgroup/project/-/sse/master%2FREADME.md'
+        )
+      end
     end
 
     context 'when file has .md.erb extension' do

@@ -21,6 +21,7 @@ module Gitlab
             Arel::Nodes::NamedFunction.new('COALESCE', column_list)
           end
 
+          override :column_list
           def column_list
             [
               issue_metrics_table[:first_associated_with_milestone_at],

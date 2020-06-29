@@ -21,6 +21,11 @@ GitLab has several features based on receiving incoming emails:
 
 ## Requirements
 
+NOTE: **Note:**
+It is **not** recommended to use an email address that receives or will receive any
+messages not intended for the GitLab instance. Any incoming emails not intended
+for GitLab will receive a reject notice.
+
 Handling incoming emails requires an [IMAP](https://en.wikipedia.org/wiki/Internet_Message_Access_Protocol)-enabled
 email account. GitLab requires one of the following three strategies:
 
@@ -105,6 +110,16 @@ Alternatively, use a dedicated domain for GitLab email communications such as
 
 See GitLab issue [#30366](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/30366)
 for a real-world example of this exploit.
+
+CAUTION:**Caution:**
+Be sure to use a mail server that has been configured to reduce
+spam.
+A Postfix mail server that is running on a default configuration, for example,
+can result in abuse. All messages received on the configured mailbox will be processed
+and messages that are not intended for the GitLab instance will receive a reject notice.
+If the sender's address is spoofed, the reject notice will be delivered to the spoofed
+`FROM` address, which can cause the mail server's IP or domain to appear on a block
+list.
 
 ### Omnibus package installations
 

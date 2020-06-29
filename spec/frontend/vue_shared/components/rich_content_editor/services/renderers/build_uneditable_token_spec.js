@@ -1,6 +1,7 @@
 import {
   buildUneditableOpenTokens,
   buildUneditableCloseToken,
+  buildUneditableCloseTokens,
   buildUneditableTokens,
 } from '~/vue_shared/components/rich_content_editor/services/renderers/build_uneditable_token';
 
@@ -8,6 +9,7 @@ import {
   originToken,
   uneditableOpenTokens,
   uneditableCloseToken,
+  uneditableCloseTokens,
   uneditableTokens,
 } from '../../mock_data';
 
@@ -24,6 +26,15 @@ describe('Build Uneditable Token renderer helper', () => {
   describe('buildUneditableCloseToken', () => {
     it('returns an object literal representing the uneditable close token', () => {
       expect(buildUneditableCloseToken()).toStrictEqual(uneditableCloseToken);
+    });
+  });
+
+  describe('buildUneditableCloseTokens', () => {
+    it('returns a 2-item array of tokens with the originToken prepended to a close token', () => {
+      const result = buildUneditableCloseTokens(originToken);
+
+      expect(result).toHaveLength(2);
+      expect(result).toStrictEqual(uneditableCloseTokens);
     });
   });
 

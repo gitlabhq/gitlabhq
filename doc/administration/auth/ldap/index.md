@@ -605,6 +605,12 @@ When enabled, the following applies:
 - Users are not allowed to share project with other groups or invite members to
   a project created in a group.
 
+To enable it you need to:
+
+1. [Enable LDAP](#configuration-core-only)
+1. Navigate to **(admin)** **Admin Area > Settings -> Visibility and access controls**.
+1. Make sure the "Lock memberships to LDAP synchronization" checkbox is enabled.
+
 ### Adjusting LDAP group sync schedule **(STARTER ONLY)**
 
 NOTE: **Note:**

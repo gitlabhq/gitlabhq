@@ -11,6 +11,7 @@ module Gitlab
           end
           # rubocop: enable CodeReuse/ActiveRecord
 
+          override :column_list
           def column_list
             [timestamp_projection]
           end

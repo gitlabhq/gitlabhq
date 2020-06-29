@@ -1155,7 +1155,7 @@ below are examples and should be replaced with settings specific to your environ
 ui:
   enabled: true
 server:
-  # Disable the built in data storage volume as it's not safe for Hight Availablity mode
+  # Disable the built in data storage volume as it's not safe for Hight Availability mode
   dataStorage:
     enabled: false
   # Enable High Availability Mode

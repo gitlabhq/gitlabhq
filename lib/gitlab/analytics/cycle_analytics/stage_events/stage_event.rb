@@ -7,6 +7,7 @@ module Gitlab
         # Base class for expressing an event that can be used for a stage.
         class StageEvent
           include Gitlab::CycleAnalytics::MetricsTables
+          extend Gitlab::Utils::Override
 
           delegate :label_based?, to: :class
 

@@ -20,7 +20,7 @@ module Gitlab
           commit_id: commit_id,
           project_id: project.id,
           project: project.path,
-          namespace: project.namespace.path,
+          namespace: project.namespace.full_path,
           return_url: sanitize_url(return_url),
           is_supported_content: supported_content?.to_s,
           base_url: Gitlab::Routing.url_helpers.project_show_sse_path(project, full_path)

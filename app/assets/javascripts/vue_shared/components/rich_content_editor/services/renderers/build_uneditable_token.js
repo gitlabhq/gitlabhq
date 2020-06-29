@@ -16,6 +16,10 @@ export const buildUneditableOpenTokens = token => {
 
 export const buildUneditableCloseToken = () => buildToken('closeTag', 'div');
 
+export const buildUneditableCloseTokens = token => {
+  return [token, buildToken('closeTag', 'div')];
+};
+
 export const buildUneditableTokens = token => {
   return [...buildUneditableOpenTokens(token), buildUneditableCloseToken()];
 };

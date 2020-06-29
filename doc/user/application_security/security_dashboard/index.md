@@ -90,7 +90,7 @@ Once you're on the dashboard, at the top you should see a series of filters for:
 NOTE: **Note:**
 The dashboard only shows projects with [security reports](#supported-reports) enabled in a group.
 
-![Dashboard with action buttons and metrics](img/group_security_dashboard_v13_0.png)
+![Dashboard with action buttons and metrics](img/group_security_dashboard_v13_2.png)
 
 Selecting one or more filters will filter the results in this page.
 
@@ -162,7 +162,7 @@ To add projects to the dashboard:
 Once added, the dashboard will display the vulnerabilities found in your chosen
 projects.
 
-![Instance Security Dashboard with projects](img/instance_security_dashboard_with_projects_v13_0.png)
+![Instance Security Dashboard with projects](img/instance_security_dashboard_with_projects_v13_2.png)
 
 ### Export vulnerabilities
 

@@ -1,11 +1,12 @@
 import { buildUneditableTokens } from './build_uneditable_token';
 
+const kramdownRegex = /(^{:.+}$)/;
+
 const canRender = ({ literal }) => {
-  const kramdownRegex = /(^{:.+}$)/gm;
   return kramdownRegex.test(literal);
 };
 
-const render = ({ origin }) => {
+const render = (_, { origin }) => {
   return buildUneditableTokens(origin());
 };
 

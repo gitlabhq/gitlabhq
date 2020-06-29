@@ -1,0 +1,5 @@
+---
+title: 'Static Site Editor can’t be opened in projects belonging to a subgroup'
+merge_request: 35378
+author:
+type: fixed

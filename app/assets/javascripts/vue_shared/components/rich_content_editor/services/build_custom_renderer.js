@@ -1,13 +1,14 @@
 import renderKramdownList from './renderers/render_kramdown_list';
 import renderKramdownText from './renderers/render_kramdown_text';
+import renderIdentifierText from './renderers/render_identifier_text';
 
 const listRenderers = [renderKramdownList];
-const textRenderers = [renderKramdownText];
+const textRenderers = [renderKramdownText, renderIdentifierText];
 
 const executeRenderer = (renderers, node, context) => {
   const availableRenderer = renderers.find(renderer => renderer.canRender(node, context));
 
-  return availableRenderer ? availableRenderer.render(context) : context.origin();
+  return availableRenderer ? availableRenderer.render(node, context) : context.origin();
 };
 
 const buildCustomRendererFunctions = (customRenderers, defaults) => {
