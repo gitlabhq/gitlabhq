@@ -877,6 +877,8 @@ describe('normalizeCustomDashboardPath', () => {
     ${['.gitlab/dashboards/links.yml', '.gitlab/dashboards']}           | ${'.gitlab/dashboards/links.yml'}
     ${['.gitlab/dashboards/dir1/links.yml', '.gitlab/dashboards']}      | ${'.gitlab/dashboards/dir1/links.yml'}
     ${['.gitlab/dashboards/dir1/dir2/links.yml', '.gitlab/dashboards']} | ${'.gitlab/dashboards/dir1/dir2/links.yml'}
+    ${['config/prometheus/pod_metrics.yml', '.gitlab/dashboards']}      | ${'config/prometheus/pod_metrics.yml'}
+    ${['config/prometheus/pod_metrics.yml']}                            | ${'config/prometheus/pod_metrics.yml'}
   `(`normalizeCustomDashboardPath returns $expected for $input`, ({ input, expected }) => {
     expect(normalizeCustomDashboardPath(...input)).toEqual(expected);
   });

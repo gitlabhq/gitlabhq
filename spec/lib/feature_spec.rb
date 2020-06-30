@@ -21,65 +21,28 @@ RSpec.describe Feature, stub_feature_flags: false do
   end
 
   describe '.persisted_names' do
-    context 'when FF_LEGACY_PERSISTED_NAMES=false' do
-      before do
-        stub_env('FF_LEGACY_PERSISTED_NAMES', 'false')
-      end
+    it 'returns the names of the persisted features' do
+      Feature.enable('foo')
 
-      it 'returns the names of the persisted features' do
-        Feature.enable('foo')
-
-        expect(described_class.persisted_names).to contain_exactly('foo')
-      end
-
-      it 'returns an empty Array when no features are presisted' do
-        expect(described_class.persisted_names).to be_empty
-      end
-
-      it 'caches the feature names when request store is active',
-       :request_store, :use_clean_rails_memory_store_caching do
-        Feature.enable('foo')
-
-        expect(Gitlab::ProcessMemoryCache.cache_backend)
-          .to receive(:fetch)
-          .once
-          .with('flipper/v1/features', expires_in: 1.minute)
-          .and_call_original
-
-        2.times do
-          expect(described_class.persisted_names).to contain_exactly('foo')
-        end
-      end
+      expect(described_class.persisted_names).to contain_exactly('foo')
     end
 
-    context 'when FF_LEGACY_PERSISTED_NAMES=true' do
-      before do
-        stub_env('FF_LEGACY_PERSISTED_NAMES', 'true')
-      end
+    it 'returns an empty Array when no features are presisted' do
+      expect(described_class.persisted_names).to be_empty
+    end
 
-      it 'returns the names of the persisted features' do
-        Feature.enable('foo')
+    it 'caches the feature names when request store is active',
+      :request_store, :use_clean_rails_memory_store_caching do
+      Feature.enable('foo')
 
+      expect(Gitlab::ProcessMemoryCache.cache_backend)
+        .to receive(:fetch)
+        .once
+        .with('flipper/v1/features', expires_in: 1.minute)
+        .and_call_original
+
+      2.times do
         expect(described_class.persisted_names).to contain_exactly('foo')
-      end
-
-      it 'returns an empty Array when no features are presisted' do
-        expect(described_class.persisted_names).to be_empty
-      end
-
-      it 'caches the feature names when request store is active',
-       :request_store, :use_clean_rails_memory_store_caching do
-        Feature.enable('foo')
-
-        expect(Gitlab::ProcessMemoryCache.cache_backend)
-          .to receive(:fetch)
-          .once
-          .with('flipper:persisted_names', expires_in: 1.minute)
-          .and_call_original
-
-        2.times do
-          expect(described_class.persisted_names).to contain_exactly('foo')
-        end
       end
     end
 

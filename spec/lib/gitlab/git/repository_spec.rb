@@ -2187,34 +2187,47 @@ RSpec.describe Gitlab::Git::Repository, :seed_helper do
         'gitaly_address' => Gitlab.config.repositories.storages.default.gitaly_address,
         'path' => TestEnv::SECOND_STORAGE_PATH
       })
-      new_repository.create_repository
     end
 
     after do
       new_repository.remove
     end
 
-    it 'mirrors the source repository' do
-      subject
-
-      expect(refs(new_repository_path)).to eq(refs(repository_path))
-    end
-
-    context 'with keep-around refs' do
-      let(:sha) { SeedRepo::Commit::ID }
-      let(:keep_around_ref) { "refs/keep-around/#{sha}" }
-      let(:tmp_ref) { "refs/tmp/#{SecureRandom.hex}" }
-
-      before do
-        repository.write_ref(keep_around_ref, sha)
-        repository.write_ref(tmp_ref, sha)
-      end
-
-      it 'includes the temporary and keep-around refs' do
+    context 'destination does not exist' do
+      it 'mirrors the source repository' do
         subject
 
-        expect(refs(new_repository_path)).to include(keep_around_ref)
-        expect(refs(new_repository_path)).to include(tmp_ref)
+        expect(refs(new_repository_path)).to eq(refs(repository_path))
+      end
+    end
+
+    context 'destination exists' do
+      before do
+        new_repository.create_repository
+      end
+
+      it 'mirrors the source repository' do
+        subject
+
+        expect(refs(new_repository_path)).to eq(refs(repository_path))
+      end
+
+      context 'with keep-around refs' do
+        let(:sha) { SeedRepo::Commit::ID }
+        let(:keep_around_ref) { "refs/keep-around/#{sha}" }
+        let(:tmp_ref) { "refs/tmp/#{SecureRandom.hex}" }
+
+        before do
+          repository.write_ref(keep_around_ref, sha)
+          repository.write_ref(tmp_ref, sha)
+        end
+
+        it 'includes the temporary and keep-around refs' do
+          subject
+
+          expect(refs(new_repository_path)).to include(keep_around_ref)
+          expect(refs(new_repository_path)).to include(tmp_ref)
+        end
       end
     end
   end

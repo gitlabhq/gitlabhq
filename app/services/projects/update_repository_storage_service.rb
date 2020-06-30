@@ -79,8 +79,6 @@ module Projects
         full_path
       )
 
-      new_repository.create_repository
-
       new_repository.replicate(raw_repository)
       new_checksum = new_repository.checksum
 

@@ -1048,6 +1048,7 @@ POST /projects
 | `wiki_access_level` | string | no | One of `disabled`, `private` or `enabled` |
 | `snippets_access_level` | string | no | One of `disabled`, `private` or `enabled` |
 | `pages_access_level` | string | no | One of `disabled`, `private`, `enabled` or `public` |
+| `requirements_access_level` | string | no | One of `disabled`, `private`, `enabled` or `public` |
 | `emails_disabled` | boolean | no | Disable email notifications |
 | `show_default_award_emojis` | boolean | no | Show default award emojis |
 | `resolve_outdated_diff_discussions` | boolean | no | Automatically resolve merge request diffs discussions on lines changed with a push |
@@ -1119,6 +1120,7 @@ POST /projects/user/:user_id
 | `wiki_access_level` | string | no | One of `disabled`, `private` or `enabled` |
 | `snippets_access_level` | string | no | One of `disabled`, `private` or `enabled` |
 | `pages_access_level` | string | no | One of `disabled`, `private`, `enabled` or `public` |
+| `requirements_access_level` | string | no | One of `disabled`, `private`, `enabled` or `public` |
 | `emails_disabled` | boolean | no | Disable email notifications |
 | `show_default_award_emojis` | boolean | no | Show default award emojis |
 | `resolve_outdated_diff_discussions` | boolean | no | Automatically resolve merge request diffs discussions on lines changed with a push |
@@ -1189,6 +1191,7 @@ PUT /projects/:id
 | `wiki_access_level` | string | no | One of `disabled`, `private` or `enabled` |
 | `snippets_access_level` | string | no | One of `disabled`, `private` or `enabled` |
 | `pages_access_level` | string | no | One of `disabled`, `private`, `enabled` or `public` |
+| `requirements_access_level` | string | no | One of `disabled`, `private`, `enabled` or `public` |
 | `emails_disabled` | boolean | no | Disable email notifications |
 | `show_default_award_emojis` | boolean | no | Show default award emojis |
 | `resolve_outdated_diff_discussions` | boolean | no | Automatically resolve merge request diffs discussions on lines changed with a push |

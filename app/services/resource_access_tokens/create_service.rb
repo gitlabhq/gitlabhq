@@ -13,8 +13,6 @@ module ResourceAccessTokens
       return unless feature_enabled?
       return error("User does not have permission to create #{resource_type} Access Token") unless has_permission_to_create?
 
-      # We skip authorization by default, since the user creating the bot is not an admin
-      # and project/group bot users are not created via sign-up
       user = create_user
 
       return error(user.errors.full_messages.to_sentence) unless user.persisted?
@@ -49,6 +47,11 @@ module ResourceAccessTokens
     end
 
     def create_user
+      # Even project maintainers can create project access tokens, which in turn
+      # creates a bot user, and so it becomes necessary to  have `skip_authorization: true`
+      # since someone like a project maintainer does not inherently have the ability
+      # to create a new user in the system.
+
       Users::CreateService.new(current_user, default_user_params).execute(skip_authorization: true)
     end
 
@@ -57,7 +60,8 @@ module ResourceAccessTokens
         name: params[:name] || "#{resource.name.to_s.humanize} bot",
         email: generate_email,
         username: generate_username,
-        user_type: "#{resource_type}_bot".to_sym
+        user_type: "#{resource_type}_bot".to_sym,
+        skip_confirmation: true # Bot users should always have their emails confirmed.
       }
     end
 

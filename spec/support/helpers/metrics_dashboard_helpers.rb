@@ -7,6 +7,12 @@ module MetricsDashboardHelpers
     create(:project, :custom_repo, files: { dashboard_path => dashboard_yml })
   end
 
+  def project_with_dashboard_namespace(dashboard_path, dashboard_yml = nil)
+    dashboard_yml ||= fixture_file('lib/gitlab/metrics/dashboard/sample_dashboard.yml')
+
+    create(:project, :custom_repo, namespace: namespace, path: 'monitor-project', files: { dashboard_path => dashboard_yml })
+  end
+
   def delete_project_dashboard(project, user, dashboard_path)
     project.repository.delete_file(
       user,

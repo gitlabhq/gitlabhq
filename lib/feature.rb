@@ -34,26 +34,13 @@ class Feature
     def persisted_names
       return [] unless Gitlab::Database.exists?
 
-      if Gitlab::Utils.to_boolean(ENV['FF_LEGACY_PERSISTED_NAMES'])
-        # To be removed:
-        # This uses a legacy persisted names that are know to work (always)
-        Gitlab::SafeRequestStore[:flipper_persisted_names] ||=
-          begin
-            # We saw on GitLab.com, this database request was called 2300
-            # times/s. Let's cache it for a minute to avoid that load.
-            Gitlab::ProcessMemoryCache.cache_backend.fetch('flipper:persisted_names', expires_in: 1.minute) do
-              FlipperFeature.feature_names
-            end.to_set
-          end
-      else
-        # This loads names of all stored feature flags
-        # and returns a stable Set in the following order:
-        # - Memoized: using Gitlab::SafeRequestStore or @flipper
-        # - L1: using Process cache
-        # - L2: using Redis cache
-        # - DB: using a single SQL query
-        flipper.adapter.features
-      end
+      # This loads names of all stored feature flags
+      # and returns a stable Set in the following order:
+      # - Memoized: using Gitlab::SafeRequestStore or @flipper
+      # - L1: using Process cache
+      # - L2: using Redis cache
+      # - DB: using a single SQL query
+      flipper.adapter.features
     end
 
     def persisted_name?(feature_name)

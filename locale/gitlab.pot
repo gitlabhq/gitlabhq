@@ -476,6 +476,9 @@ msgstr ""
 msgid "%{name} found %{resultsString}"
 msgstr ""
 
+msgid "%{name} is already being used for another emoji"
+msgstr ""
+
 msgid "%{name} is scheduled for %{action}"
 msgstr ""
 
@@ -17782,6 +17785,12 @@ msgstr ""
 msgid "ProjectSettings|Repository"
 msgstr ""
 
+msgid "ProjectSettings|Requirements"
+msgstr ""
+
+msgid "ProjectSettings|Requirements management system for this project"
+msgstr ""
+
 msgid "ProjectSettings|Share code pastes with others out of Git repository"
 msgstr ""
 
@@ -19222,7 +19231,7 @@ msgstr ""
 msgid "Repository sync capacity"
 msgstr ""
 
-msgid "Repository: %{counter_repositories} / Wikis: %{counter_wikis} / Build Artifacts: %{counter_build_artifacts} / LFS: %{counter_lfs_objects}"
+msgid "Repository: %{counter_repositories} / Wikis: %{counter_wikis} / Build Artifacts: %{counter_build_artifacts} / LFS: %{counter_lfs_objects} / Snippets: %{counter_snippets}"
 msgstr ""
 
 msgid "RepositorySettingsAccessLevel|Select"
@@ -24726,6 +24735,9 @@ msgid "UsageQuota|Repositories"
 msgstr ""
 
 msgid "UsageQuota|Repository"
+msgstr ""
+
+msgid "UsageQuota|Snippets"
 msgstr ""
 
 msgid "UsageQuota|Storage"

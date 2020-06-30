@@ -67,6 +67,11 @@ export default {
       required: false,
       default: false,
     },
+    requirementsAvailable: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     visibilityHelpPath: {
       type: String,
       required: false,
@@ -131,6 +136,7 @@ export default {
       snippetsAccessLevel: featureAccessLevel.EVERYONE,
       pagesAccessLevel: featureAccessLevel.EVERYONE,
       metricsDashboardAccessLevel: featureAccessLevel.PROJECT_MEMBERS,
+      requirementsAccessLevel: featureAccessLevel.EVERYONE,
       containerRegistryEnabled: true,
       lfsEnabled: true,
       requestAccessEnabled: true,
@@ -233,6 +239,10 @@ export default {
           featureAccessLevel.PROJECT_MEMBERS,
           this.metricsDashboardAccessLevel,
         );
+        this.requirementsAccessLevel = Math.min(
+          featureAccessLevel.PROJECT_MEMBERS,
+          this.requirementsAccessLevel,
+        );
         if (this.pagesAccessLevel === featureAccessLevel.EVERYONE) {
           // When from Internal->Private narrow access for only members
           this.pagesAccessLevel = featureAccessLevel.PROJECT_MEMBERS;
@@ -256,6 +266,9 @@ export default {
           this.pagesAccessLevel = featureAccessLevel.EVERYONE;
         if (this.metricsDashboardAccessLevel === featureAccessLevel.PROJECT_MEMBERS)
           this.metricsDashboardAccessLevel = featureAccessLevel.EVERYONE;
+        if (this.requirementsAccessLevel === featureAccessLevel.PROJECT_MEMBERS)
+          this.requirementsAccessLevel = featureAccessLevel.EVERYONE;
+
         this.highlightChanges();
       }
     },
@@ -470,6 +483,18 @@ export default {
           />
         </project-setting-row>
       </div>
+      <project-setting-row
+        v-if="requirementsAvailable"
+        ref="requirements-settings"
+        :label="s__('ProjectSettings|Requirements')"
+        :help-text="s__('ProjectSettings|Requirements management system for this project')"
+      >
+        <project-feature-setting
+          v-model="requirementsAccessLevel"
+          :options="featureAccessLevelOptions"
+          name="project[project_feature_attributes][requirements_access_level]"
+        />
+      </project-setting-row>
       <project-setting-row
         ref="wiki-settings"
         :label="s__('ProjectSettings|Wiki')"

@@ -37,8 +37,6 @@ RSpec.describe Projects::UpdateRepositoryStorageService do
             project.repository.path_to_repo
           end
 
-          expect(project_repository_double).to receive(:create_repository)
-            .and_return(true)
           expect(project_repository_double).to receive(:replicate)
             .with(project.repository.raw)
           expect(project_repository_double).to receive(:checksum)
@@ -72,8 +70,6 @@ RSpec.describe Projects::UpdateRepositoryStorageService do
           allow(Gitlab::GitalyClient).to receive(:filesystem_id).with('default').and_call_original
           allow(Gitlab::GitalyClient).to receive(:filesystem_id).with('test_second_storage').and_return(SecureRandom.uuid)
 
-          expect(project_repository_double).to receive(:create_repository)
-            .and_return(true)
           expect(project_repository_double).to receive(:replicate)
             .with(project.repository.raw)
             .and_raise(Gitlab::Git::CommandError)
@@ -92,8 +88,6 @@ RSpec.describe Projects::UpdateRepositoryStorageService do
           allow(Gitlab::GitalyClient).to receive(:filesystem_id).with('default').and_call_original
           allow(Gitlab::GitalyClient).to receive(:filesystem_id).with('test_second_storage').and_return(SecureRandom.uuid)
 
-          expect(project_repository_double).to receive(:create_repository)
-            .and_return(true)
           expect(project_repository_double).to receive(:replicate)
             .with(project.repository.raw)
           expect(project_repository_double).to receive(:checksum)
@@ -115,8 +109,6 @@ RSpec.describe Projects::UpdateRepositoryStorageService do
           allow(Gitlab::GitalyClient).to receive(:filesystem_id).with('default').and_call_original
           allow(Gitlab::GitalyClient).to receive(:filesystem_id).with('test_second_storage').and_return(SecureRandom.uuid)
 
-          expect(project_repository_double).to receive(:create_repository)
-            .and_return(true)
           expect(project_repository_double).to receive(:replicate)
             .with(project.repository.raw)
           expect(project_repository_double).to receive(:checksum)

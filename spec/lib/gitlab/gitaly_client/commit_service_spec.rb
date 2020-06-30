@@ -387,12 +387,16 @@ RSpec.describe Gitlab::GitalyClient::CommitService do
   end
 
   describe '#list_commits_by_ref_name' do
-    it 'lists latest commits grouped by a ref name' do
-      response = client.list_commits_by_ref_name(%w[master feature v1.0.0 nonexistent])
+    let(:project) { create(:project, :repository, create_branch: 'ü/unicode/multi-byte') }
 
+    it 'lists latest commits grouped by a ref name' do
+      response = client.list_commits_by_ref_name(%w[master feature v1.0.0 nonexistent ü/unicode/multi-byte])
+
+      expect(response.keys.count).to eq 4
       expect(response.fetch('master').id).to eq 'b83d6e391c22777fca1ed3012fce84f633d7fed0'
       expect(response.fetch('feature').id).to eq '0b4bc9a49b562e85de7cc9e834518ea6828729b9'
       expect(response.fetch('v1.0.0').id).to eq '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9'
+      expect(response.fetch('ü/unicode/multi-byte')).to be_present
       expect(response).not_to have_key 'nonexistent'
     end
   end

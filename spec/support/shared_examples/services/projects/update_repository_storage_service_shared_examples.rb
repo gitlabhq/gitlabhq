@@ -25,15 +25,11 @@ RSpec.shared_examples 'moves repository to another storage' do |repository_type|
       allow(Gitlab::GitalyClient).to receive(:filesystem_id).with('default').and_call_original
       allow(Gitlab::GitalyClient).to receive(:filesystem_id).with('test_second_storage').and_return(SecureRandom.uuid)
 
-      allow(project_repository_double).to receive(:create_repository)
-        .and_return(true)
       allow(project_repository_double).to receive(:replicate)
         .with(project.repository.raw)
       allow(project_repository_double).to receive(:checksum)
         .and_return(project_repository_checksum)
 
-      allow(repository_double).to receive(:create_repository)
-        .and_return(true)
       allow(repository_double).to receive(:replicate)
         .with(repository.raw)
       allow(repository_double).to receive(:checksum)
@@ -104,15 +100,11 @@ RSpec.shared_examples 'moves repository to another storage' do |repository_type|
     it 'unmarks the repository as read-only without updating the repository storage' do
       allow(Gitlab::GitalyClient).to receive(:filesystem_id).with('default').and_call_original
       allow(Gitlab::GitalyClient).to receive(:filesystem_id).with('test_second_storage').and_return(SecureRandom.uuid)
-      allow(project_repository_double).to receive(:create_repository)
-        .and_return(true)
       allow(project_repository_double).to receive(:replicate)
         .with(project.repository.raw)
       allow(project_repository_double).to receive(:checksum)
         .and_return(project_repository_checksum)
 
-      allow(repository_double).to receive(:create_repository)
-        .and_return(true)
       allow(repository_double).to receive(:replicate)
         .with(repository.raw)
         .and_raise(Gitlab::Git::CommandError)
@@ -131,15 +123,11 @@ RSpec.shared_examples 'moves repository to another storage' do |repository_type|
     it 'unmarks the repository as read-only without updating the repository storage' do
       allow(Gitlab::GitalyClient).to receive(:filesystem_id).with('default').and_call_original
       allow(Gitlab::GitalyClient).to receive(:filesystem_id).with('test_second_storage').and_return(SecureRandom.uuid)
-      allow(project_repository_double).to receive(:create_repository)
-        .and_return(true)
       allow(project_repository_double).to receive(:replicate)
         .with(project.repository.raw)
       allow(project_repository_double).to receive(:checksum)
         .and_return(project_repository_checksum)
 
-      allow(repository_double).to receive(:create_repository)
-        .and_return(true)
       allow(repository_double).to receive(:replicate)
         .with(repository.raw)
       allow(repository_double).to receive(:checksum)

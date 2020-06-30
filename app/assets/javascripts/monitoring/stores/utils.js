@@ -6,7 +6,7 @@ import { mergeURLVariables, parseTemplatingVariables } from './variable_mapping'
 import { DATETIME_RANGE_TYPES } from '~/lib/utils/constants';
 import { timeRangeToParams, getRangeType } from '~/lib/utils/datetime_range';
 import { isSafeURL, mergeUrlParams } from '~/lib/utils/url_utility';
-import { NOT_IN_DB_PREFIX, linkTypes, DEFAULT_DASHBOARD_PATH } from '../constants';
+import { NOT_IN_DB_PREFIX, linkTypes, OUT_OF_THE_BOX_DASHBOARDS_PATH_PREFIX } from '../constants';
 
 export const gqClient = createGqClient(
   {},
@@ -479,7 +479,7 @@ export const normalizeCustomDashboardPath = (dashboard, dashboardPrefix = '') =>
     dashboardPath = '';
   } else if (
     currDashboard.startsWith(dashboardPrefix) ||
-    currDashboard.startsWith(DEFAULT_DASHBOARD_PATH)
+    currDashboard.startsWith(OUT_OF_THE_BOX_DASHBOARDS_PATH_PREFIX)
   ) {
     dashboardPath = currDashboard;
   }

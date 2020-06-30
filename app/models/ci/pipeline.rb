@@ -566,7 +566,7 @@ module Ci
         next unless project.repository_exists?
 
         project.repository.list_commits_by_ref_name(refs).then do |commits|
-          loader.call(ref, commits[ref])
+          commits.each { |key, commit| loader.call(key, commits[key]) }
         end
       end
     end

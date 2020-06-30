@@ -2,6 +2,7 @@ export default {
   data() {
     return {
       packagesEnabled: false,
+      requirementsEnabled: false,
     };
   },
   watch: {

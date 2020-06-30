@@ -95,6 +95,20 @@ RSpec.describe Gitlab::Emoji do
     end
   end
 
+  describe '.emoji_exists?' do
+    it 'returns true if the name exists' do
+      emoji_exists = described_class.emoji_exists?('100')
+
+      expect(emoji_exists).to be_truthy
+    end
+
+    it 'returns false if the name does not exist' do
+      emoji_exists = described_class.emoji_exists?('random')
+
+      expect(emoji_exists).to be_falsey
+    end
+  end
+
   describe '.gl_emoji_tag' do
     it 'returns gl emoji tag if emoji is found' do
       gl_tag = described_class.gl_emoji_tag('small_airplane')

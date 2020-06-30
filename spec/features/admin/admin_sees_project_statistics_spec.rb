@@ -15,7 +15,7 @@ RSpec.describe "Admin > Admin sees project statistics" do
     let(:project) { create(:project, :repository) }
 
     it "shows project statistics" do
-      expect(page).to have_content("Storage: 0 Bytes (Repository: 0 Bytes / Wikis: 0 Bytes / Build Artifacts: 0 Bytes / LFS: 0 Bytes)")
+      expect(page).to have_content("Storage: 0 Bytes (Repository: 0 Bytes / Wikis: 0 Bytes / Build Artifacts: 0 Bytes / LFS: 0 Bytes / Snippets: 0 Bytes)")
     end
   end
 

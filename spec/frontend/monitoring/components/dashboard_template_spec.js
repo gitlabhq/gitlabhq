@@ -5,7 +5,7 @@ import Dashboard from '~/monitoring/components/dashboard.vue';
 import DashboardHeader from '~/monitoring/components/dashboard_header.vue';
 import { createStore } from '~/monitoring/stores';
 import { setupAllDashboards } from '../store_utils';
-import { propsData } from '../mock_data';
+import { dashboardProps } from '../fixture_data';
 
 jest.mock('~/lib/utils/url_utility');
 
@@ -29,7 +29,7 @@ describe('Dashboard template', () => {
 
   it('matches the default snapshot', () => {
     wrapper = shallowMount(Dashboard, {
-      propsData: { ...propsData },
+      propsData: { ...dashboardProps },
       store,
       stubs: {
         DashboardHeader,

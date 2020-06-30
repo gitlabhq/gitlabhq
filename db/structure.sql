@@ -10818,6 +10818,26 @@ CREATE SEQUENCE public.conversational_development_index_metrics_id_seq
 
 ALTER SEQUENCE public.conversational_development_index_metrics_id_seq OWNED BY public.conversational_development_index_metrics.id;
 
+CREATE TABLE public.custom_emoji (
+    id bigint NOT NULL,
+    namespace_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    name text NOT NULL,
+    file text NOT NULL,
+    CONSTRAINT check_8c586dd507 CHECK ((char_length(name) <= 36)),
+    CONSTRAINT check_dd5d60f1fb CHECK ((char_length(file) <= 255))
+);
+
+CREATE SEQUENCE public.custom_emoji_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE public.custom_emoji_id_seq OWNED BY public.custom_emoji.id;
+
 CREATE TABLE public.dependency_proxy_blobs (
     id integer NOT NULL,
     group_id integer NOT NULL,
@@ -13956,7 +13976,8 @@ CREATE TABLE public.project_features (
     repository_access_level integer DEFAULT 20 NOT NULL,
     pages_access_level integer NOT NULL,
     forking_access_level integer,
-    metrics_dashboard_access_level integer
+    metrics_dashboard_access_level integer,
+    requirements_access_level integer DEFAULT 20 NOT NULL
 );
 
 CREATE SEQUENCE public.project_features_id_seq
@@ -16393,6 +16414,8 @@ ALTER TABLE ONLY public.container_repositories ALTER COLUMN id SET DEFAULT nextv
 
 ALTER TABLE ONLY public.conversational_development_index_metrics ALTER COLUMN id SET DEFAULT nextval('public.conversational_development_index_metrics_id_seq'::regclass);
 
+ALTER TABLE ONLY public.custom_emoji ALTER COLUMN id SET DEFAULT nextval('public.custom_emoji_id_seq'::regclass);
+
 ALTER TABLE ONLY public.dependency_proxy_blobs ALTER COLUMN id SET DEFAULT nextval('public.dependency_proxy_blobs_id_seq'::regclass);
 
 ALTER TABLE ONLY public.dependency_proxy_group_settings ALTER COLUMN id SET DEFAULT nextval('public.dependency_proxy_group_settings_id_seq'::regclass);
@@ -17347,6 +17370,9 @@ ALTER TABLE ONLY public.container_repositories
 
 ALTER TABLE ONLY public.conversational_development_index_metrics
     ADD CONSTRAINT conversational_development_index_metrics_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY public.custom_emoji
+    ADD CONSTRAINT custom_emoji_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY public.dependency_proxy_blobs
     ADD CONSTRAINT dependency_proxy_blobs_pkey PRIMARY KEY (id);
@@ -18813,6 +18839,8 @@ CREATE INDEX index_container_repositories_on_project_id ON public.container_repo
 CREATE UNIQUE INDEX index_container_repositories_on_project_id_and_name ON public.container_repositories USING btree (project_id, name);
 
 CREATE INDEX index_container_repository_on_name_trigram ON public.container_repositories USING gin (name public.gin_trgm_ops);
+
+CREATE UNIQUE INDEX index_custom_emoji_on_namespace_id_and_name ON public.custom_emoji USING btree (namespace_id, name);
 
 CREATE UNIQUE INDEX index_daily_build_group_report_results_unique_columns ON public.ci_daily_build_group_report_results USING btree (project_id, ref_path, date, group_name);
 
@@ -21778,6 +21806,9 @@ ALTER TABLE ONLY public.project_custom_attributes
 ALTER TABLE ONLY public.slack_integrations
     ADD CONSTRAINT fk_rails_73db19721a FOREIGN KEY (service_id) REFERENCES public.services(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY public.custom_emoji
+    ADD CONSTRAINT fk_rails_745925b412 FOREIGN KEY (namespace_id) REFERENCES public.namespaces(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY public.merge_request_context_commit_diff_files
     ADD CONSTRAINT fk_rails_74a00a1787 FOREIGN KEY (merge_request_context_commit_id) REFERENCES public.merge_request_context_commits(id) ON DELETE CASCADE;
 
@@ -23073,6 +23104,7 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200227164113
 20200227165129
 20200228160542
+20200229171700
 20200302142052
 20200302152516
 20200303055348
@@ -23427,6 +23459,7 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200615121217
 20200615123055
 20200615193524
+20200615203153
 20200615232735
 20200615234047
 20200616145031

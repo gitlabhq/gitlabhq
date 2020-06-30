@@ -813,6 +813,40 @@ file which is used by the `spec/fast_spec_helper.rb` file. See
 [Fast unit tests](#fast-unit-tests) for more details about the
 `spec/fast_spec_helper.rb` file.
 
+### Test environment logging
+
+Services for the test environment are automatically configured and started when
+tests are run, including Gitaly, Workhorse, Elasticsearch, and Capybara. When run in CI, or
+if the service needs to be installed, the test environment will log information
+about set-up time, producing log messages like the following:
+
+```plaintext
+==> Setting up Gitaly...
+    Gitaly set up in 31.459649 seconds...
+
+==> Setting up GitLab Workhorse...
+    GitLab Workhorse set up in 29.695619 seconds...
+fatal: update refs/heads/diff-files-symlink-to-image: invalid <newvalue>: 8cfca84
+From https://gitlab.com/gitlab-org/gitlab-test
+ * [new branch]      diff-files-image-to-symlink -> origin/diff-files-image-to-symlink
+ * [new branch]      diff-files-symlink-to-image -> origin/diff-files-symlink-to-image
+ * [new branch]      diff-files-symlink-to-text -> origin/diff-files-symlink-to-text
+ * [new branch]      diff-files-text-to-symlink -> origin/diff-files-text-to-symlink
+   b80faa8..40232f7  snippet/multiple-files -> origin/snippet/multiple-files
+ * [new branch]      testing/branch-with-#-hash -> origin/testing/branch-with-#-hash
+
+==> Setting up GitLab Elasticsearch Indexer...
+    GitLab Elasticsearch Indexer set up in 26.514623 seconds...
+```
+
+This information is omitted when running locally and when no action needs
+to be performed. If you would always like to see these messages, set the
+following environment variable:
+
+```shell
+GITLAB_TESTING_LOG_LEVEL=debug
+```
+
 ---
 
 [Return to Testing documentation](index.md)

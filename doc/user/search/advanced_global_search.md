@@ -22,7 +22,6 @@ now search for code within other teams that can help your own project.
 GitLab leverages the search capabilities of [Elasticsearch](https://www.elastic.co/elasticsearch/) and enables it when
 searching in:
 
-- GitLab application
 - Projects
 - Repositories
 - Commits

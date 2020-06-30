@@ -1489,8 +1489,31 @@ RSpec.describe Ci::Pipeline, :mailer do
     end
 
     describe '#lazy_ref_commit' do
+      let(:another) do
+        create(:ci_pipeline,
+               project: project,
+               ref: 'feature',
+               sha: project.commit('feature').sha)
+      end
+
+      let(:unicode) do
+        create(:ci_pipeline,
+               project: project,
+               ref: 'ü/unicode/multi-byte')
+      end
+
       it 'returns the latest commit for a ref lazily' do
-        expect(pipeline.lazy_ref_commit.id).to eq project.commit(pipeline.ref).id
+        expect(project.repository)
+          .to receive(:list_commits_by_ref_name).once
+          .and_call_original
+
+        pipeline.lazy_ref_commit
+        another.lazy_ref_commit
+        unicode.lazy_ref_commit
+
+        expect(pipeline.lazy_ref_commit.id).to eq pipeline.sha
+        expect(another.lazy_ref_commit.id).to eq another.sha
+        expect(unicode.lazy_ref_commit).to be_nil
       end
     end
 

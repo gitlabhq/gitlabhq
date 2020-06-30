@@ -27,7 +27,7 @@ module Types
           description: 'Indicates if Large File Storage (LFS) is enabled for namespace'
     field :request_access_enabled, GraphQL::BOOLEAN_TYPE, null: true,
           description: 'Indicates if users can request access to namespace'
-    field :storage_size_limit, GraphQL::INT_TYPE, null: true,
+    field :storage_size_limit, GraphQL::FLOAT_TYPE, null: true,
           description: 'Total storage limit of the root namespace in bytes',
           resolve: -> (obj, _args, _ctx) { Namespace::RootStorageSize.new(obj).limit }
 

@@ -29,8 +29,12 @@ import {
   setupStoreWithVariable,
   setupStoreWithLinks,
 } from '../store_utils';
-import { environmentData, dashboardGitResponse, propsData } from '../mock_data';
-import { metricsDashboardViewModel, metricsDashboardPanelCount } from '../fixture_data';
+import { environmentData, dashboardGitResponse } from '../mock_data';
+import {
+  metricsDashboardViewModel,
+  metricsDashboardPanelCount,
+  dashboardProps,
+} from '../fixture_data';
 import createFlash from '~/flash';
 
 jest.mock('~/flash');
@@ -50,7 +54,7 @@ describe('Dashboard', () => {
 
   const createShallowWrapper = (props = {}, options = {}) => {
     wrapper = shallowMount(Dashboard, {
-      propsData: { ...propsData, ...props },
+      propsData: { ...dashboardProps, ...props },
       store,
       stubs: {
         DashboardHeader,
@@ -61,7 +65,7 @@ describe('Dashboard', () => {
 
   const createMountedWrapper = (props = {}, options = {}) => {
     wrapper = mount(Dashboard, {
-      propsData: { ...propsData, ...props },
+      propsData: { ...dashboardProps, ...props },
       store,
       stubs: {
         'graph-group': true,

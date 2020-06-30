@@ -45,6 +45,27 @@ RSpec.describe ResourceAccessTokens::CreateService do
         expect(access_token.user.reload.user_type).to eq("#{resource_type}_bot")
       end
 
+      context 'email confirmation status' do
+        shared_examples_for 'creates a user that has their email confirmed' do
+          it 'creates a user that has their email confirmed' do
+            response = subject
+            access_token = response.payload[:access_token]
+
+            expect(access_token.user.reload.confirmed?).to eq(true)
+          end
+        end
+
+        context 'when created by an admin' do
+          it_behaves_like 'creates a user that has their email confirmed' do
+            let(:user) { create(:admin) }
+          end
+        end
+
+        context 'when created by a non-admin' do
+          it_behaves_like 'creates a user that has their email confirmed'
+        end
+      end
+
       context 'bot name' do
         context 'when no value is passed' do
           it 'uses default value' do

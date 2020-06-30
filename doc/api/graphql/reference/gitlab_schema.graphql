@@ -5236,7 +5236,7 @@ type Group {
   """
   Total storage limit of the root namespace in bytes
   """
-  storageSizeLimit: Int
+  storageSizeLimit: Float
 
   """
   The permission level required to create subgroups within the group
@@ -8081,7 +8081,7 @@ type Namespace {
   """
   Total storage limit of the root namespace in bytes
   """
-  storageSizeLimit: Int
+  storageSizeLimit: Float
 
   """
   Visibility of the namespace
