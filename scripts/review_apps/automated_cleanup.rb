@@ -40,7 +40,7 @@ class AutomatedCleanup
   end
 
   def review_apps_namespace
-    self.class.ee? ? 'review-apps-ee' : 'review-apps-ce'
+    'review-apps'
   end
 
   def helm

@@ -12,13 +12,15 @@ import {
   GlTable,
 } from '@gitlab/ui';
 import { s__ } from '~/locale';
-import query from '../graphql/queries/details.query.graphql';
+import alertQuery from '../graphql/queries/details.query.graphql';
+import sidebarStatusQuery from '../graphql/queries/sidebar_status.query.graphql';
 import { fetchPolicies } from '~/lib/graphql';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import highlightCurrentUser from '~/behaviors/markdown/highlight_current_user';
 import initUserPopovers from '~/user_popovers';
 import { ALERTS_SEVERITY_LABELS, trackAlertsDetailsViewsOptions } from '../constants';
-import createIssueQuery from '../graphql/mutations/create_issue_from_alert.graphql';
+import createIssueMutation from '../graphql/mutations/create_issue_from_alert.graphql';
+import toggleSidebarStatusMutation from '../graphql/mutations/toggle_sidebar_status.mutation.graphql';
 import { visitUrl, joinPaths } from '~/lib/utils/url_utility';
 import Tracking from '~/tracking';
 import { toggleContainerClasses } from '~/lib/utils/dom_utils';
@@ -52,28 +54,27 @@ export default {
     AlertSidebar,
     SystemNote,
   },
-  props: {
+  inject: {
+    projectPath: {
+      default: '',
+    },
     alertId: {
       type: String,
-      required: true,
+      default: '',
     },
     projectId: {
       type: String,
-      required: true,
-    },
-    projectPath: {
-      type: String,
-      required: true,
+      default: '',
     },
     projectIssuesPath: {
       type: String,
-      required: true,
+      default: '',
     },
   },
   apollo: {
     alert: {
       fetchPolicy: fetchPolicies.CACHE_AND_NETWORK,
-      query,
+      query: alertQuery,
       variables() {
         return {
           fullPath: this.projectPath,
@@ -88,15 +89,18 @@ export default {
         Sentry.captureException(error);
       },
     },
+    sidebarStatus: {
+      query: sidebarStatusQuery,
+    },
   },
   data() {
     return {
       alert: null,
       errored: false,
+      sidebarStatus: false,
       isErrorDismissed: false,
       createIssueError: '',
       issueCreationInProgress: false,
-      sidebarCollapsed: false,
       sidebarErrorMessage: '',
     };
   },
@@ -132,10 +136,10 @@ export default {
       this.sidebarErrorMessage = '';
     },
     toggleSidebar() {
-      this.sidebarCollapsed = !this.sidebarCollapsed;
+      this.$apollo.mutate({ mutation: toggleSidebarStatusMutation });
       toggleContainerClasses(containerEl, {
-        'right-sidebar-collapsed': this.sidebarCollapsed,
-        'right-sidebar-expanded': !this.sidebarCollapsed,
+        'right-sidebar-collapsed': !this.sidebarStatus,
+        'right-sidebar-expanded': this.sidebarStatus,
       });
     },
     handleAlertSidebarError(errorMessage) {
@@ -147,7 +151,7 @@ export default {
 
       this.$apollo
         .mutate({
-          mutation: createIssueQuery,
+          mutation: createIssueMutation,
           variables: {
             iid: this.alert.iid,
             projectPath: this.projectPath,
@@ -197,7 +201,7 @@ export default {
     <div
       v-if="alert"
       class="alert-management-details gl-relative"
-      :class="{ 'pr-sm-8': sidebarCollapsed }"
+      :class="{ 'pr-sm-8': sidebarStatus }"
     >
       <div
         class="gl-display-flex gl-justify-content-space-between gl-align-items-baseline gl-px-1 py-3 py-md-4 gl-border-b-1 gl-border-b-gray-200 gl-border-b-solid flex-column flex-sm-row"
@@ -330,10 +334,7 @@ export default {
         </gl-tab>
       </gl-tabs>
       <alert-sidebar
-        :project-path="projectPath"
-        :project-id="projectId"
         :alert="alert"
-        :sidebar-collapsed="sidebarCollapsed"
         @alert-refresh="alertRefresh"
         @toggle-sidebar="toggleSidebar"
         @alert-error="handleAlertSidebarError"

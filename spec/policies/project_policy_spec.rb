@@ -80,7 +80,6 @@ RSpec.describe ProjectPolicy do
   let(:additional_guest_permissions) { [] }
   let(:additional_reporter_permissions) { [] }
   let(:additional_maintainer_permissions) { [] }
-  let(:additional_owner_permissions) { [] }
 
   let(:guest_permissions) { base_guest_permissions + additional_guest_permissions }
   let(:reporter_permissions) { base_reporter_permissions + additional_reporter_permissions }

@@ -1,7 +1,9 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Design management index page designs does not render toolbar when there is no permission 1`] = `
-<div>
+<div
+  data-testid="designs-root"
+>
   <!---->
    
   <div
@@ -73,7 +75,9 @@ exports[`Design management index page designs does not render toolbar when there
 `;
 
 exports[`Design management index page designs renders designs list and header with upload button 1`] = `
-<div>
+<div
+  data-testid="designs-root"
+>
   <header
     class="row-content-block border-top-0 p-2 d-flex"
   >
@@ -188,7 +192,9 @@ exports[`Design management index page designs renders designs list and header wi
 `;
 
 exports[`Design management index page designs renders error 1`] = `
-<div>
+<div
+  data-testid="designs-root"
+>
   <!---->
    
   <div
@@ -216,7 +222,9 @@ exports[`Design management index page designs renders error 1`] = `
 `;
 
 exports[`Design management index page designs renders loading icon 1`] = `
-<div>
+<div
+  data-testid="designs-root"
+>
   <!---->
    
   <div
@@ -236,7 +244,9 @@ exports[`Design management index page designs renders loading icon 1`] = `
 `;
 
 exports[`Design management index page when has no designs renders empty text 1`] = `
-<div>
+<div
+  data-testid="designs-root"
+>
   <!---->
    
   <div

@@ -25,21 +25,28 @@ export default {
     deleteNum() {
       return Number(this.plan.delete);
     },
+    iconType() {
+      return this.validPlanValues ? 'doc-changes' : 'warning';
+    },
     reportChangeText() {
       if (this.validPlanValues) {
         return __(
-          'Reported Resource Changes: %{addNum} to add, %{changeNum} to change, %{deleteNum} to delete',
+          'Terraform|Reported Resource Changes: %{addNum} to add, %{changeNum} to change, %{deleteNum} to delete',
         );
       }
 
-      return __('Generating the report caused an error.');
+      return __('Terraform|Generating the report caused an error.');
     },
     reportHeaderText() {
-      if (this.plan.job_name) {
-        return __('The Terraform report %{name} was generated in your pipelines.');
+      if (this.validPlanValues) {
+        return this.plan.job_name
+          ? __('Terraform|The Terraform report %{name} was generated in your pipelines.')
+          : __('Terraform|A Terraform report was generated in your pipelines.');
       }
 
-      return __('A Terraform report was generated in your pipelines.');
+      return this.plan.job_name
+        ? __('Terraform|The Terraform report %{name} failed to generate.')
+        : __('Terraform|A Terraform report failed to generate.');
     },
     validPlanValues() {
       return this.addNum + this.changeNum + this.deleteNum >= 0;
@@ -53,11 +60,11 @@ export default {
     <span
       class="gl-display-flex gl-align-items-center gl-justify-content-center append-right-default gl-align-self-start gl-mt-1"
     >
-      <gl-icon name="status_warning" :size="24" />
+      <gl-icon :name="iconType" :size="18" data-testid="change-type-icon" />
     </span>
 
     <div class="gl-display-flex gl-flex-fill-1 gl-flex-direction-column flex-md-row">
-      <div class="terraform-mr-plan-text normal gl-display-flex gl-flex-direction-column">
+      <div class="gl-flex-fill-1 gl-display-flex gl-flex-direction-column">
         <p class="gl-m-0 gl-pr-1">
           <gl-sprintf :message="reportHeaderText">
             <template #name>
@@ -88,10 +95,11 @@ export default {
           v-if="plan.job_path"
           :href="plan.job_path"
           target="_blank"
+          data-testid="terraform-report-link"
           data-track-event="click_terraform_mr_plan_button"
           data-track-label="mr_widget_terraform_mr_plan_button"
           data-track-property="terraform_mr_plan_button"
-          class="btn btn-sm js-terraform-report-link"
+          class="btn btn-sm"
           rel="noopener"
         >
           {{ __('View full log') }}

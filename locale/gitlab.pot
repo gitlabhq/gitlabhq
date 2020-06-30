@@ -999,9 +999,6 @@ msgstr ""
 msgid "A Let's Encrypt account will be configured for this GitLab installation using your email address. You will receive emails to warn of expiring certificates."
 msgstr ""
 
-msgid "A Terraform report was generated in your pipelines."
-msgstr ""
-
 msgid "A basic page and serverless function that uses AWS Lambda, AWS API Gateway, and GitLab Pages"
 msgstr ""
 
@@ -3823,6 +3820,9 @@ msgstr ""
 msgid "By %{user_name}"
 msgstr ""
 
+msgid "By URL"
+msgstr ""
+
 msgid "By default GitLab sends emails in HTML and plain text formats so mail clients can choose what format to use. Disable this option if you only want to send emails in plain text format."
 msgstr ""
 
@@ -6550,6 +6550,12 @@ msgid "Country"
 msgstr ""
 
 msgid "Coverage"
+msgstr ""
+
+msgid "Coverage Fuzzing"
+msgstr ""
+
+msgid "Crash State"
 msgstr ""
 
 msgid "Create"
@@ -10028,6 +10034,9 @@ msgstr ""
 msgid "Find File"
 msgstr ""
 
+msgid "Find bugs in your code with coverage-guided fuzzing"
+msgstr ""
+
 msgid "Find by path"
 msgstr ""
 
@@ -10272,9 +10281,6 @@ msgid "Generate key"
 msgstr ""
 
 msgid "Generate new export"
-msgstr ""
-
-msgid "Generating the report caused an error."
 msgstr ""
 
 msgid "Geo"
@@ -13862,6 +13868,9 @@ msgstr ""
 msgid "Maximum field length"
 msgstr ""
 
+msgid "Maximum file size is 2MB. Please select a smaller file."
+msgstr ""
+
 msgid "Maximum import size (MB)"
 msgstr ""
 
@@ -16660,6 +16669,9 @@ msgstr ""
 msgid "Please check your email (%{email}) to verify that you own this address and unlock the power of CI/CD. Didn't receive it? %{resend_link}. Wrong email address? %{update_link}."
 msgstr ""
 
+msgid "Please choose a file"
+msgstr ""
+
 msgid "Please choose a group URL with no special characters."
 msgstr ""
 
@@ -17783,12 +17795,6 @@ msgid "ProjectSettings|Public"
 msgstr ""
 
 msgid "ProjectSettings|Repository"
-msgstr ""
-
-msgid "ProjectSettings|Requirements"
-msgstr ""
-
-msgid "ProjectSettings|Requirements management system for this project"
 msgstr ""
 
 msgid "ProjectSettings|Share code pastes with others out of Git repository"
@@ -19100,9 +19106,6 @@ msgstr ""
 msgid "Reported %{timeAgo} by %{reportedBy}"
 msgstr ""
 
-msgid "Reported Resource Changes: %{addNum} to add, %{changeNum} to change, %{deleteNum} to delete"
-msgstr ""
-
 msgid "Reporter"
 msgstr ""
 
@@ -20308,6 +20311,9 @@ msgid "Select branch/tag"
 msgstr ""
 
 msgid "Select due date"
+msgstr ""
+
+msgid "Select file"
 msgstr ""
 
 msgid "Select group or project"
@@ -21556,6 +21562,9 @@ msgstr ""
 msgid "Stack trace"
 msgstr ""
 
+msgid "Stacktrace snippet"
+msgstr ""
+
 msgid "Stage"
 msgstr ""
 
@@ -22363,6 +22372,34 @@ msgstr ""
 msgid "Terms of Service and Privacy Policy"
 msgstr ""
 
+msgid "Terraform|%{number} Terraform report failed to generate"
+msgid_plural "Terraform|%{number} Terraform reports failed to generate"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Terraform|%{number} Terraform report was generated in your pipelines"
+msgid_plural "Terraform|%{number} Terraform reports were generated in your pipelines"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Terraform|A Terraform report failed to generate."
+msgstr ""
+
+msgid "Terraform|A Terraform report was generated in your pipelines."
+msgstr ""
+
+msgid "Terraform|Generating the report caused an error."
+msgstr ""
+
+msgid "Terraform|Reported Resource Changes: %{addNum} to add, %{changeNum} to change, %{deleteNum} to delete"
+msgstr ""
+
+msgid "Terraform|The Terraform report %{name} failed to generate."
+msgstr ""
+
+msgid "Terraform|The Terraform report %{name} was generated in your pipelines."
+msgstr ""
+
 msgid "Test"
 msgstr ""
 
@@ -22488,9 +22525,6 @@ msgid "The Issue Tracker is the place to add things that need to be improved or 
 msgstr ""
 
 msgid "The Prometheus server responded with \"bad request\". Please check your queries are correct and are supported in your Prometheus version. %{documentationLink}"
-msgstr ""
-
-msgid "The Terraform report %{name} was generated in your pipelines."
 msgstr ""
 
 msgid "The URL defined on the primary node that secondary nodes should use to contact it."
@@ -25575,6 +25609,9 @@ msgstr ""
 msgid "Vulnerability|Class"
 msgstr ""
 
+msgid "Vulnerability|Crash Address"
+msgstr ""
+
 msgid "Vulnerability|Description"
 msgstr ""
 
@@ -26866,6 +26903,9 @@ msgstr ""
 msgid "ciReport|Container scanning detects known vulnerabilities in your docker images."
 msgstr ""
 
+msgid "ciReport|Coverage Fuzzing"
+msgstr ""
+
 msgid "ciReport|Create a merge request to implement this solution, or download and apply the patch manually."
 msgstr ""
 
@@ -27175,9 +27215,6 @@ msgid "here"
 msgstr ""
 
 msgid "https://your-bitbucket-server"
-msgstr ""
-
-msgid "image"
 msgstr ""
 
 msgid "image diff"

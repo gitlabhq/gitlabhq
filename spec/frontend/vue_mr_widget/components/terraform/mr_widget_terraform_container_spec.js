@@ -1,8 +1,9 @@
-import { GlSkeletonLoading } from '@gitlab/ui';
-import { plans } from './mock_data';
+import { GlSkeletonLoading, GlSprintf } from '@gitlab/ui';
+import { invalidPlanWithName, plans, validPlanWithName } from './mock_data';
 import { shallowMount } from '@vue/test-utils';
 import axios from '~/lib/utils/axios_utils';
 import MockAdapter from 'axios-mock-adapter';
+import MrWidgetExpanableSection from '~/vue_merge_request_widget/components/mr_widget_expandable_section.vue';
 import MrWidgetTerraformContainer from '~/vue_merge_request_widget/components/terraform/mr_widget_terraform_container.vue';
 import Poll from '~/lib/utils/poll';
 import TerraformPlan from '~/vue_merge_request_widget/components/terraform/terraform_plan.vue';
@@ -13,6 +14,7 @@ describe('MrWidgetTerraformConainer', () => {
 
   const propsData = { endpoint: '/path/to/terraform/report.json' };
 
+  const findHeader = () => wrapper.find('[data-testid="terraform-header-text"]');
   const findPlans = () => wrapper.findAll(TerraformPlan).wrappers.map(x => x.props('plan'));
 
   const mockPollingApi = (response, body, header) => {
@@ -20,7 +22,10 @@ describe('MrWidgetTerraformConainer', () => {
   };
 
   const mountWrapper = () => {
-    wrapper = shallowMount(MrWidgetTerraformContainer, { propsData });
+    wrapper = shallowMount(MrWidgetTerraformContainer, {
+      propsData,
+      stubs: { MrWidgetExpanableSection, GlSprintf },
+    });
     return axios.waitForAll();
   };
 
@@ -44,9 +49,76 @@ describe('MrWidgetTerraformConainer', () => {
     });
 
     it('diplays loading skeleton', () => {
-      expect(wrapper.find(GlSkeletonLoading).exists()).toBe(true);
+      expect(wrapper.contains(GlSkeletonLoading)).toBe(true);
+      expect(wrapper.contains(MrWidgetExpanableSection)).toBe(false);
+    });
+  });
 
-      expect(findPlans()).toEqual([]);
+  describe('when data has finished loading', () => {
+    beforeEach(() => {
+      mockPollingApi(200, plans, {});
+      return mountWrapper();
+    });
+
+    it('displays terraform content', () => {
+      expect(wrapper.contains(GlSkeletonLoading)).toBe(false);
+      expect(wrapper.contains(MrWidgetExpanableSection)).toBe(true);
+      expect(findPlans()).toEqual(Object.values(plans));
+    });
+
+    describe('when data includes one invalid plan', () => {
+      beforeEach(() => {
+        const invalidPlanGroup = { bad_plan: invalidPlanWithName };
+        mockPollingApi(200, invalidPlanGroup, {});
+        return mountWrapper();
+      });
+
+      it('displays header text for one invalid plan', () => {
+        expect(findHeader().text()).toBe('1 Terraform report failed to generate');
+      });
+    });
+
+    describe('when data includes multiple invalid plans', () => {
+      beforeEach(() => {
+        const invalidPlanGroup = {
+          bad_plan_one: invalidPlanWithName,
+          bad_plan_two: invalidPlanWithName,
+        };
+
+        mockPollingApi(200, invalidPlanGroup, {});
+        return mountWrapper();
+      });
+
+      it('displays header text for multiple invalid plans', () => {
+        expect(findHeader().text()).toBe('2 Terraform reports failed to generate');
+      });
+    });
+
+    describe('when data includes one valid plan', () => {
+      beforeEach(() => {
+        const validPlanGroup = { valid_plan: validPlanWithName };
+        mockPollingApi(200, validPlanGroup, {});
+        return mountWrapper();
+      });
+
+      it('displays header text for one valid plans', () => {
+        expect(findHeader().text()).toBe('1 Terraform report was generated in your pipelines');
+      });
+    });
+
+    describe('when data includes multiple valid plans', () => {
+      beforeEach(() => {
+        const validPlanGroup = {
+          valid_plan_one: validPlanWithName,
+          valid_plan_two: validPlanWithName,
+        };
+        mockPollingApi(200, validPlanGroup, {});
+        return mountWrapper();
+      });
+
+      it('displays header text for multiple valid plans', () => {
+        expect(findHeader().text()).toBe('2 Terraform reports were generated in your pipelines');
+      });
     });
   });
 
@@ -71,12 +143,6 @@ describe('MrWidgetTerraformConainer', () => {
         return mountWrapper();
       });
 
-      it('diplays terraform components and stops loading', () => {
-        expect(wrapper.find(GlSkeletonLoading).exists()).toBe(false);
-
-        expect(findPlans()).toEqual(Object.values(plans));
-      });
-
       it('does not make additional requests after poll is successful', () => {
         expect(pollRequest).toHaveBeenCalledTimes(1);
         expect(pollStop).toHaveBeenCalledTimes(1);
@@ -90,11 +156,11 @@ describe('MrWidgetTerraformConainer', () => {
       });
 
       it('stops loading', () => {
-        expect(wrapper.find(GlSkeletonLoading).exists()).toBe(false);
+        expect(wrapper.contains(GlSkeletonLoading)).toBe(false);
       });
 
       it('generates one broken plan', () => {
-        expect(findPlans()).toEqual([{}]);
+        expect(findPlans()).toEqual([{ tf_report_error: 'api_error' }]);
       });
 
       it('does not make additional requests after poll is unsuccessful', () => {

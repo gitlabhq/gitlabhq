@@ -27,6 +27,11 @@ module Snippets
 
       attempt_destroy!
 
+      # Update project statistics if the snippet is a Project one
+      if snippet.project_id
+        ProjectCacheWorker.perform_async(snippet.project_id, [], [:snippets_size])
+      end
+
       ServiceResponse.success(message: 'Snippet was deleted.')
     rescue DestroyError
       service_response_error('Failed to remove snippet repository.', 400)

@@ -79,7 +79,7 @@ class PostReceive # rubocop:disable Scalability/IdempotentWorker
     return false unless user
 
     expire_caches(post_received, snippet.repository)
-    snippet.repository.expire_statistics_caches
+    Snippets::UpdateStatisticsService.new(snippet).execute
   end
 
   # Expire the repository status, branch, and tag cache once per push.

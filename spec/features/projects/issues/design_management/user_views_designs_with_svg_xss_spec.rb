@@ -12,7 +12,6 @@ RSpec.describe 'User views an SVG design that contains XSS', :js do
 
   before do
     enable_design_management
-    stub_feature_flags(design_management_moved: false)
 
     visit designs_project_issue_path(
       project,
@@ -30,6 +29,7 @@ RSpec.describe 'User views an SVG design that contains XSS', :js do
   end
 
   it 'displays the SVG' do
+    find("[data-testid='close-design']").click
     expect(page).to have_selector("img.design-img[alt='xss.svg']", count: 1, visible: false)
   end
 

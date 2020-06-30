@@ -70,6 +70,7 @@ export default {
       >
         <gl-form-select
           id="jira-project-select"
+          data-qa-selector="jira_project_dropdown"
           class="mb-2"
           :options="jiraProjects"
           :state="selectState"
@@ -135,7 +136,13 @@ export default {
       </gl-form-group>
 
       <div class="footer-block row-content-block d-flex justify-content-between">
-        <gl-button type="submit" category="primary" variant="success" class="js-no-auto-disable">
+        <gl-button
+          type="submit"
+          category="primary"
+          variant="success"
+          class="js-no-auto-disable"
+          data-qa-selector="jira_issues_import_button"
+        >
           {{ __('Next') }}
         </gl-button>
         <gl-button :href="issuesPath">{{ __('Cancel') }}</gl-button>

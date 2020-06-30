@@ -1,16 +1,15 @@
 # PostgreSQL replication and failover with Omnibus GitLab **(PREMIUM ONLY)**
 
-> Important notes:
->
-> - This document will focus only on configuration supported with [GitLab Premium](https://about.gitlab.com/pricing/), using the Omnibus GitLab package.
-> - If you are a Community Edition or Starter user, consider using a cloud hosted solution.
-> - This document will not cover installations from source.
->
-> - If a setup with replication and failover is not what you were looking for, see the [database configuration document](https://docs.gitlab.com/omnibus/settings/database.html)
->   for the Omnibus GitLab packages.
->
-> Please read this document fully before attempting to configure PostgreSQL with
-> replication and failover for GitLab.
+This document will focus only on configuration supported with [GitLab Premium](https://about.gitlab.com/pricing/), using the Omnibus GitLab package.
+If you are a Community Edition or Starter user, consider using a cloud hosted solution.
+This document will not cover installations from source.
+
+If a setup with replication and failover is not what you were looking for, see
+the [database configuration document](https://docs.gitlab.com/omnibus/settings/database.html)
+for the Omnibus GitLab packages.
+
+It's recommended to read this document fully before attempting to configure PostgreSQL with
+replication and failover for GitLab.
 
 ## Architecture
 

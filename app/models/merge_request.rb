@@ -21,6 +21,8 @@ class MergeRequest < ApplicationRecord
   include MilestoneEventable
   include StateEventable
 
+  extend ::Gitlab::Utils::Override
+
   sha_attribute :squash_commit_sha
 
   self.reactive_cache_key = ->(model) { [model.project.id, model.iid] }
@@ -1580,6 +1582,23 @@ class MergeRequest < ApplicationRecord
 
   def banzai_render_context(field)
     super.merge(label_url_method: :project_merge_requests_url)
+  end
+
+  override :ensure_metrics
+  def ensure_metrics
+    MergeRequest::Metrics.safe_find_or_create_by(merge_request_id: id).tap do |metrics_record|
+      # Make sure we refresh the loaded association object with the newly created/loaded item.
+      # This is needed in order to have the exact functionality than before.
+      #
+      # Example:
+      #
+      # merge_request.metrics.destroy
+      # merge_request.ensure_metrics
+      # merge_request.metrics # should return the metrics record and not nil
+      # merge_request.metrics.merge_request # should return the same MR record
+      metrics_record.association(:merge_request).target = self
+      association(:metrics).target = metrics_record
+    end
   end
 
   private

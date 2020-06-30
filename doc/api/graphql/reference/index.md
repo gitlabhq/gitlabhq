@@ -69,6 +69,7 @@ Describes an alert from the project's Alert Management
 | `hosts` | String! => Array | List of hosts the alert came from |
 | `iid` | ID! | Internal ID of the alert |
 | `issueIid` | ID | Internal ID of the GitLab issue attached to the alert |
+| `metricsDashboardUrl` | String | URL for metrics embed for the alert |
 | `monitoringTool` | String | Monitoring tool the alert came from |
 | `service` | String | Service the alert came from |
 | `severity` | AlertManagementSeverity | Severity of the alert |
@@ -1642,6 +1643,7 @@ Represents summary of a security report
 | Name  | Type  | Description |
 | ---   |  ---- | ----------  |
 | `containerScanning` | SecurityReportSummarySection | Aggregated counts for the container_scanning scan |
+| `coverageFuzzing` | SecurityReportSummarySection | Aggregated counts for the coverage_fuzzing scan |
 | `dast` | SecurityReportSummarySection | Aggregated counts for the dast scan |
 | `dependencyScanning` | SecurityReportSummarySection | Aggregated counts for the dependency_scanning scan |
 | `sast` | SecurityReportSummarySection | Aggregated counts for the sast scan |
@@ -2100,7 +2102,7 @@ Represents a vulnerability.
 | `location` | VulnerabilityLocation | Location metadata for the vulnerability. Its fields depend on the type of security scan that found the vulnerability |
 | `primaryIdentifier` | VulnerabilityIdentifier | Primary identifier of the vulnerability. |
 | `project` | Project | The project on which the vulnerability was found |
-| `reportType` | VulnerabilityReportType | Type of the security report that found the vulnerability (SAST, DEPENDENCY_SCANNING, CONTAINER_SCANNING, DAST, SECRET_DETECTION) |
+| `reportType` | VulnerabilityReportType | Type of the security report that found the vulnerability (SAST, DEPENDENCY_SCANNING, CONTAINER_SCANNING, DAST, SECRET_DETECTION, COVERAGE_FUZZING) |
 | `scanner` | VulnerabilityScanner | Scanner metadata for the vulnerability. |
 | `severity` | VulnerabilitySeverity | Severity of the vulnerability (INFO, UNKNOWN, LOW, MEDIUM, HIGH, CRITICAL) |
 | `state` | VulnerabilityState | State of the vulnerability (DETECTED, DISMISSED, RESOLVED, CONFIRMED) |

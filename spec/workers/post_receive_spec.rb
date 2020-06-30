@@ -428,7 +428,12 @@ RSpec.describe PostReceive do
           it 'expires the status cache' do
             expect(snippet.repository).to receive(:empty?).and_return(true)
             expect(snippet.repository).to receive(:expire_status_cache)
-            expect(snippet.repository).to receive(:expire_statistics_caches)
+
+            perform
+          end
+
+          it 'updates snippet statistics' do
+            expect(Snippets::UpdateStatisticsService).to receive(:new).with(snippet).and_call_original
 
             perform
           end

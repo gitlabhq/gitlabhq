@@ -7,7 +7,7 @@ global:
       external-dns.alpha.kubernetes.io/ttl: 10
     configureCertmanager: false
     tls:
-      secretName: tls-cert
+      secretName: review-apps-tls
   initialRootPassword:
     secret: shared-gitlab-initial-root-password
 certmanager:
@@ -61,11 +61,11 @@ gitlab:
   task-runner:
     resources:
       requests:
-        cpu: 50m
-        memory: 350M
+        cpu: 300m
+        memory: 800M
       limits:
-        cpu: 100m
-        memory: 700M
+        cpu: 450m
+        memory: 1200M
   webservice:
     resources:
       requests:

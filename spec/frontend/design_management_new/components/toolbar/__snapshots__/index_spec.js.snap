@@ -7,6 +7,7 @@ exports[`Design management toolbar component renders design and updated data 1`]
   <a
     aria-label="Go back to designs"
     class="mr-3 text-plain d-flex justify-content-center align-items-center"
+    data-testid="close-design"
   >
     <icon-stub
       name="close"

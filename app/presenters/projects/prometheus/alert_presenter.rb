@@ -68,9 +68,13 @@ module Projects
       end
 
       def metric_embed_for_alert
-        url = embed_url_for_gitlab_alert || embed_url_for_self_managed_alert
+        "\n[](#{metrics_dashboard_url})" if metrics_dashboard_url
+      end
 
-        "\n[](#{url})" if url
+      def metrics_dashboard_url
+        strong_memoize(:metrics_dashboard_url) do
+          embed_url_for_gitlab_alert || embed_url_for_self_managed_alert
+        end
       end
 
       private
@@ -133,6 +137,7 @@ module Projects
           project,
           gitlab_alert.prometheus_metric_id,
           environment_id: environment.id,
+          embedded: true,
           **alert_embed_window_params(embed_time)
         )
       end
@@ -144,6 +149,7 @@ module Projects
           project,
           environment,
           embed_json: dashboard_for_self_managed_alert.to_json,
+          embedded: true,
           **alert_embed_window_params(embed_time)
         )
       end

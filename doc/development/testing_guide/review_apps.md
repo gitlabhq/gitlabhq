@@ -30,7 +30,7 @@ subgraph "2. gitlab `review-prepare` stage"
   end
 
 subgraph "3. gitlab `review` stage"
-  C["review-deploy<br><br>Helm deploys the Review App using the Cloud<br/>Native images built by the CNG-mirror pipeline.<br><br>Cloud Native images are deployed to the `review-apps-ce` or `review-apps-ee`<br>Kubernetes (GKE) cluster, in the GCP `gitlab-review-apps` project."]
+  C["review-deploy<br><br>Helm deploys the Review App using the Cloud<br/>Native images built by the CNG-mirror pipeline.<br><br>Cloud Native images are deployed to the `review-apps`<br>Kubernetes (GKE) cluster, in the GCP `gitlab-review-apps` project."]
   end
 
 subgraph "4. gitlab `qa` stage"
@@ -62,7 +62,7 @@ subgraph "CNG-mirror pipeline"
      job, which runs only for tags, and triggers itself a [`CNG`](https://gitlab.com/gitlab-org/build/CNG) pipeline.
 1. Once the `test` stage is done, the [`review-deploy`](https://gitlab.com/gitlab-org/gitlab/-/jobs/467724810) job
    deploys the Review App using [the official GitLab Helm chart](https://gitlab.com/gitlab-org/charts/gitlab/) to
-   the [`review-apps-ce`](https://console.cloud.google.com/kubernetes/clusters/details/us-central1-a/review-apps-ce?project=gitlab-review-apps) / [`review-apps-ee`](https://console.cloud.google.com/kubernetes/clusters/details/us-central1-b/review-apps-ee?project=gitlab-review-apps)
+   the [`review-apps`](https://console.cloud.google.com/kubernetes/clusters/details/us-central1-b/review-apps?project=gitlab-review-apps)
    Kubernetes cluster on GCP.
    - The actual scripts used to deploy the Review App can be found at
      [`scripts/review_apps/review-apps.sh`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/scripts/review_apps/review-apps.sh).
@@ -136,11 +136,10 @@ browser performance testing using a
 
 ### Node pools
 
-The `review-apps-ee` and `review-apps-ce` clusters are currently set up with
+The `review-apps` cluster is currently set up with
 the following node pools:
 
-- `review-apps-ee` of pre-emptible `e2-highcpu-16` (16 vCPU, 16 GB memory) nodes with autoscaling
-- `review-apps-ce` of pre-emptible `n1-standard-8` (8 vCPU, 16 GB memory) nodes with autoscaling
+- `e2-highcpu-16` (16 vCPU, 16 GB memory) pre-emptible nodes with autoscaling
 
 ### Helm
 
@@ -189,9 +188,7 @@ secure note named `gitlab-{ce,ee} Review App's root password`.
 1. Click on the `KUBECTL` dropdown, then `Exec` -> `task-runner`.
 1. Replace `-c task-runner -- ls` with `-it -- gitlab-rails console` from the
    default command or
-   - Run `kubectl exec --namespace review-apps-ce review-qa-raise-e-12chm0-task-runner-d5455cc8-2lsvz -it -- gitlab-rails console` and
-     - Replace `review-apps-ce` with `review-apps-ee` if the Review App
-       is running EE, and
+   - Run `kubectl exec --namespace review-apps review-qa-raise-e-12chm0-task-runner-d5455cc8-2lsvz -it -- gitlab-rails console` and
      - Replace `review-qa-raise-e-12chm0-task-runner-d5455cc8-2lsvz`
        with your Pod's name.
 

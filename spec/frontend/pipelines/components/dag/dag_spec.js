@@ -84,20 +84,19 @@ describe('Pipeline DAG graph wrapper', () => {
 
   describe('when there is a dataUrl', () => {
     describe('but the data fetch fails', () => {
-      beforeEach(() => {
+      beforeEach(async () => {
         mock.onGet(dataPath).replyOnce(500);
         createComponent({ graphUrl: dataPath });
+
+        await wrapper.vm.$nextTick();
+
+        return waitForPromises();
       });
 
       it('shows the LOAD_FAILURE alert and not the graph', () => {
-        return wrapper.vm
-          .$nextTick()
-          .then(waitForPromises)
-          .then(() => {
-            expect(getAlert().exists()).toBe(true);
-            expect(getAlert().text()).toBe(getErrorText(LOAD_FAILURE));
-            expect(getGraph().exists()).toBe(false);
-          });
+        expect(getAlert().exists()).toBe(true);
+        expect(getAlert().text()).toBe(getErrorText(LOAD_FAILURE));
+        expect(getGraph().exists()).toBe(false);
       });
 
       it('does not render the empty state', () => {
@@ -106,20 +105,19 @@ describe('Pipeline DAG graph wrapper', () => {
     });
 
     describe('the data fetch succeeds but the parse fails', () => {
-      beforeEach(() => {
+      beforeEach(async () => {
         mock.onGet(dataPath).replyOnce(200, unparseableGraph);
         createComponent({ graphUrl: dataPath });
+
+        await wrapper.vm.$nextTick();
+
+        return waitForPromises();
       });
 
       it('shows the PARSE_FAILURE alert and not the graph', () => {
-        return wrapper.vm
-          .$nextTick()
-          .then(waitForPromises)
-          .then(() => {
-            expect(getAlert().exists()).toBe(true);
-            expect(getAlert().text()).toBe(getErrorText(PARSE_FAILURE));
-            expect(getGraph().exists()).toBe(false);
-          });
+        expect(getAlert().exists()).toBe(true);
+        expect(getAlert().text()).toBe(getErrorText(PARSE_FAILURE));
+        expect(getGraph().exists()).toBe(false);
       });
 
       it('does not render the empty state', () => {
@@ -128,133 +126,103 @@ describe('Pipeline DAG graph wrapper', () => {
     });
 
     describe('and the data fetch and parse succeeds', () => {
-      beforeEach(() => {
+      beforeEach(async () => {
         mock.onGet(dataPath).replyOnce(200, mockBaseData);
         createComponent({ graphUrl: dataPath }, mount);
+
+        await wrapper.vm.$nextTick();
+
+        return waitForPromises();
       });
 
-      it('shows the graph and not the beta alert', () => {
-        return wrapper.vm
-          .$nextTick()
-          .then(waitForPromises)
-          .then(() => {
-            expect(getAllAlerts().length).toBe(1);
-            expect(getAlert().text()).toContain('This feature is currently in beta.');
-            expect(getGraph().exists()).toBe(true);
-          });
+      it('shows the graph and the beta alert', () => {
+        expect(getAllAlerts().length).toBe(1);
+        expect(getAlert().text()).toContain('This feature is currently in beta.');
+        expect(getGraph().exists()).toBe(true);
       });
 
       it('does not render the empty state', () => {
-        return wrapper.vm
-          .$nextTick()
-          .then(waitForPromises)
-          .then(() => {
-            expect(getEmptyState().exists()).toBe(false);
-          });
+        expect(getEmptyState().exists()).toBe(false);
       });
     });
 
     describe('the data fetch and parse succeeds, but the resulting graph is too small', () => {
-      beforeEach(() => {
+      beforeEach(async () => {
         mock.onGet(dataPath).replyOnce(200, tooSmallGraph);
         createComponent({ graphUrl: dataPath });
+
+        await wrapper.vm.$nextTick();
+
+        return waitForPromises();
       });
 
       it('shows the UNSUPPORTED_DATA alert and not the graph', () => {
-        return wrapper.vm
-          .$nextTick()
-          .then(waitForPromises)
-          .then(() => {
-            expect(getAlert().exists()).toBe(true);
-            expect(getAlert().text()).toBe(getErrorText(UNSUPPORTED_DATA));
-            expect(getGraph().exists()).toBe(false);
-          });
+        expect(getAlert().exists()).toBe(true);
+        expect(getAlert().text()).toBe(getErrorText(UNSUPPORTED_DATA));
+        expect(getGraph().exists()).toBe(false);
       });
 
       it('does not show the empty dag graph state', () => {
-        return wrapper.vm
-          .$nextTick()
-          .then(waitForPromises)
-          .then(() => {
-            expect(getEmptyState().exists()).toBe(false);
-          });
+        expect(getEmptyState().exists()).toBe(false);
       });
     });
 
-    describe('the data fetch and parse succeeds, but the resulting graph is empty', () => {
-      beforeEach(() => {
+    describe('the data fetch succeeds but the returned data is empty', () => {
+      beforeEach(async () => {
         mock.onGet(dataPath).replyOnce(200, graphWithoutDependencies);
         createComponent({ graphUrl: dataPath }, mount);
+
+        await wrapper.vm.$nextTick();
+
+        return waitForPromises();
       });
 
       it('does not render an error alert or the graph', () => {
-        return wrapper.vm
-          .$nextTick()
-          .then(waitForPromises)
-          .then(() => {
-            expect(getAllAlerts().length).toBe(1);
-            expect(getAlert().text()).toContain('This feature is currently in beta.');
-            expect(getGraph().exists()).toBe(false);
-          });
+        expect(getAllAlerts().length).toBe(1);
+        expect(getAlert().text()).toContain('This feature is currently in beta.');
+        expect(getGraph().exists()).toBe(false);
       });
 
       it('shows the empty dag graph state', () => {
-        return wrapper.vm
-          .$nextTick()
-          .then(waitForPromises)
-          .then(() => {
-            expect(getEmptyState().exists()).toBe(true);
-          });
+        expect(getEmptyState().exists()).toBe(true);
       });
     });
   });
 
   describe('annotations', () => {
-    beforeEach(() => {
+    beforeEach(async () => {
       mock.onGet(dataPath).replyOnce(200, mockBaseData);
       createComponent({ graphUrl: dataPath }, mount);
+
+      await wrapper.vm.$nextTick();
+
+      return waitForPromises();
     });
 
-    it('toggles on link mouseover and mouseout', () => {
+    it('toggles on link mouseover and mouseout', async () => {
       const currentNote = singleNote['dag-link103'];
 
       expect(getNotes().exists()).toBe(false);
 
-      return wrapper.vm
-        .$nextTick()
-        .then(waitForPromises)
-        .then(() => {
-          getGraph().vm.$emit('update-annotation', { type: ADD_NOTE, data: currentNote });
-          return wrapper.vm.$nextTick();
-        })
-        .then(() => {
-          expect(getNotes().exists()).toBe(true);
-          getGraph().vm.$emit('update-annotation', { type: REMOVE_NOTE, data: currentNote });
-          return wrapper.vm.$nextTick();
-        })
-        .then(() => {
-          expect(getNotes().exists()).toBe(false);
-        });
+      getGraph().vm.$emit('update-annotation', { type: ADD_NOTE, data: currentNote });
+      await wrapper.vm.$nextTick();
+      expect(getNotes().exists()).toBe(true);
+
+      getGraph().vm.$emit('update-annotation', { type: REMOVE_NOTE, data: currentNote });
+      await wrapper.vm.$nextTick();
+      expect(getNotes().exists()).toBe(false);
     });
 
-    it('toggles on node and link click', () => {
+    it('toggles on node and link click', async () => {
       expect(getNotes().exists()).toBe(false);
 
-      return wrapper.vm
-        .$nextTick()
-        .then(waitForPromises)
-        .then(() => {
-          getGraph().vm.$emit('update-annotation', { type: REPLACE_NOTES, data: multiNote });
-          return wrapper.vm.$nextTick();
-        })
-        .then(() => {
-          expect(getNotes().exists()).toBe(true);
-          getGraph().vm.$emit('update-annotation', { type: REPLACE_NOTES, data: {} });
-          return wrapper.vm.$nextTick();
-        })
-        .then(() => {
-          expect(getNotes().exists()).toBe(false);
-        });
+      getGraph().vm.$emit('update-annotation', { type: REPLACE_NOTES, data: multiNote });
+      await wrapper.vm.$nextTick();
+      expect(getNotes().exists()).toBe(true);
+
+      getGraph().vm.$emit('update-annotation', { type: REPLACE_NOTES, data: {} });
+      await wrapper.vm.$nextTick();
+      expect(getNotes().exists()).toBe(false);
     });
   });
 });

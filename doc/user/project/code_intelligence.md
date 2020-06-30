@@ -23,12 +23,14 @@ Enable code intelligence for a project by adding a GitLab CI/CD job to the proje
 
 ```yaml
 code_navigation:
+  image: golang:1.14.0
+  allow_failure: true # recommended
   script:
     - go get github.com/sourcegraph/lsif-go/cmd/lsif-go
     - lsif-go
-artifacts:
-  reports:
-    lsif: dump.lsif
+  artifacts:
+    reports:
+      lsif: dump.lsif
 ```
 
 The generated LSIF file must be less than 170MiB.

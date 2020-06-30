@@ -717,6 +717,20 @@
               "deprecationReason": null
             },
             {
+              "name": "metricsDashboardUrl",
+              "description": "URL for metrics embed for the alert",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "monitoringTool",
               "description": "Monitoring tool the alert came from",
               "args": [
@@ -33205,6 +33219,20 @@
               "deprecationReason": null
             },
             {
+              "name": "coverageFuzzing",
+              "description": "Aggregated counts for the coverage_fuzzing scan",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "SecurityReportSummarySection",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "dast",
               "description": "Aggregated counts for the dast scan",
               "args": [
@@ -41227,7 +41255,7 @@
             },
             {
               "name": "reportType",
-              "description": "Type of the security report that found the vulnerability (SAST, DEPENDENCY_SCANNING, CONTAINER_SCANNING, DAST, SECRET_DETECTION)",
+              "description": "Type of the security report that found the vulnerability (SAST, DEPENDENCY_SCANNING, CONTAINER_SCANNING, DAST, SECRET_DETECTION, COVERAGE_FUZZING)",
               "args": [
 
               ],
@@ -42294,6 +42322,12 @@
             },
             {
               "name": "SECRET_DETECTION",
+              "description": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "COVERAGE_FUZZING",
               "description": null,
               "isDeprecated": false,
               "deprecationReason": null

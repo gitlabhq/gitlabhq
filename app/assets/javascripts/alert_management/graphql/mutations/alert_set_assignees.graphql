@@ -1,4 +1,4 @@
-mutation($projectPath: ID!, $assigneeUsernames: [String!]!, $iid: String!) {
+mutation alertSetAssignees($projectPath: ID!, $assigneeUsernames: [String!]!, $iid: String!) {
   alertSetAssignees(
     input: { iid: $iid, assigneeUsernames: $assigneeUsernames, projectPath: $projectPath }
   ) {

@@ -11,20 +11,28 @@ describe('Alert Details Sidebar', () => {
   let wrapper;
   let mock;
 
-  function mountComponent({
-    sidebarCollapsed = true,
-    mountMethod = shallowMount,
-    stubs = {},
-    alert = {},
-  } = {}) {
+  function mountComponent({ mountMethod = shallowMount, stubs = {}, alert = {} } = {}) {
     wrapper = mountMethod(AlertSidebar, {
+      data() {
+        return {
+          sidebarStatus: false,
+        };
+      },
       propsData: {
         alert,
-        sidebarCollapsed,
+      },
+      provide: {
         projectPath: 'projectPath',
         projectId: '1',
       },
       stubs,
+      mocks: {
+        $apollo: {
+          queries: {
+            sidebarStatus: {},
+          },
+        },
+      },
     });
   }
 
@@ -42,7 +50,7 @@ describe('Alert Details Sidebar', () => {
     });
 
     it('open as default', () => {
-      expect(wrapper.props('sidebarCollapsed')).toBe(true);
+      expect(wrapper.classes('right-sidebar-expanded')).toBe(true);
     });
 
     it('should render side bar assignee dropdown', () => {

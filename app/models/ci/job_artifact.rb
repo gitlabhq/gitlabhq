@@ -40,7 +40,8 @@ module Ci
       cobertura: 'cobertura-coverage.xml',
       terraform: 'tfplan.json',
       cluster_applications: 'gl-cluster-applications.json',
-      requirements: 'requirements.json'
+      requirements: 'requirements.json',
+      coverage_fuzzing: 'gl-coverage-fuzzing.json'
     }.freeze
 
     INTERNAL_TYPES = {
@@ -73,7 +74,8 @@ module Ci
       license_scanning: :raw,
       performance: :raw,
       terraform: :raw,
-      requirements: :raw
+      requirements: :raw,
+      coverage_fuzzing: :raw
     }.freeze
 
     DOWNLOADABLE_TYPES = %w[
@@ -187,7 +189,8 @@ module Ci
       accessibility: 19,
       cluster_applications: 20,
       secret_detection: 21, ## EE-specific
-      requirements: 22 ## EE-specific
+      requirements: 22, ## EE-specific
+      coverage_fuzzing: 23 ## EE-specific
     }
 
     enum file_format: {

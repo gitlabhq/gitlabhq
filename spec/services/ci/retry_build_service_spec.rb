@@ -39,7 +39,7 @@ RSpec.describe Ci::RetryBuildService do
        job_variables waiting_for_resource_at job_artifacts_metrics_referee
        job_artifacts_network_referee job_artifacts_dotenv
        job_artifacts_cobertura needs job_artifacts_accessibility
-       job_artifacts_requirements].freeze
+       job_artifacts_requirements job_artifacts_coverage_fuzzing].freeze
 
   ignore_accessors =
     %i[type lock_version target_url base_tags trace_sections

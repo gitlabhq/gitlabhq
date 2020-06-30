@@ -1,6 +1,8 @@
 <script>
-import { GlSkeletonLoading } from '@gitlab/ui';
+import { n__ } from '~/locale';
+import { GlSkeletonLoading, GlSprintf } from '@gitlab/ui';
 import axios from '~/lib/utils/axios_utils';
+import MrWidgetExpanableSection from '../mr_widget_expandable_section.vue';
 import Poll from '~/lib/utils/poll';
 import TerraformPlan from './terraform_plan.vue';
 
@@ -8,6 +10,8 @@ export default {
   name: 'MRWidgetTerraformContainer',
   components: {
     GlSkeletonLoading,
+    GlSprintf,
+    MrWidgetExpanableSection,
     TerraformPlan,
   },
   props: {
@@ -19,9 +23,42 @@ export default {
   data() {
     return {
       loading: true,
-      plans: {},
+      plansObject: {},
       poll: null,
     };
+  },
+  computed: {
+    inValidPlanCountText() {
+      if (this.numberOfInvalidPlans === 0) {
+        return null;
+      }
+
+      return n__(
+        'Terraform|%{number} Terraform report failed to generate',
+        'Terraform|%{number} Terraform reports failed to generate',
+        this.numberOfInvalidPlans,
+      );
+    },
+    numberOfInvalidPlans() {
+      return Object.values(this.plansObject).filter(plan => plan.tf_report_error).length;
+    },
+    numberOfPlans() {
+      return Object.keys(this.plansObject).length;
+    },
+    numberOfValidPlans() {
+      return this.numberOfPlans - this.numberOfInvalidPlans;
+    },
+    validPlanCountText() {
+      if (this.numberOfValidPlans === 0) {
+        return null;
+      }
+
+      return n__(
+        'Terraform|%{number} Terraform report was generated in your pipelines',
+        'Terraform|%{number} Terraform reports were generated in your pipelines',
+        this.numberOfValidPlans,
+      );
+    },
   },
   created() {
     this.fetchPlans();
@@ -40,15 +77,15 @@ export default {
         data: this.endpoint,
         method: 'fetchPlans',
         successCallback: ({ data }) => {
-          this.plans = data;
+          this.plansObject = data;
 
-          if (Object.keys(this.plans).length) {
+          if (this.numberOfPlans > 0) {
             this.loading = false;
             this.poll.stop();
           }
         },
         errorCallback: () => {
-          this.plans = { bad_plan: {} };
+          this.plansObject = { bad_plan: { tf_report_error: 'api_error' } };
           this.loading = false;
           this.poll.stop();
         },
@@ -62,16 +99,42 @@ export default {
 
 <template>
   <section class="mr-widget-section">
-    <div v-if="loading" class="mr-widget-body media">
+    <div v-if="loading" class="mr-widget-body">
       <gl-skeleton-loading />
     </div>
 
-    <terraform-plan
-      v-for="(plan, key) in plans"
-      v-else
-      :key="key"
-      :plan="plan"
-      class="mr-widget-body media"
-    />
+    <mr-widget-expanable-section v-else>
+      <template #header>
+        <div
+          data-testid="terraform-header-text"
+          class="gl-flex-fill-1 gl-display-flex gl-flex-direction-column"
+        >
+          <p v-if="validPlanCountText" class="gl-m-0">
+            <gl-sprintf :message="validPlanCountText">
+              <template #number>
+                <strong>{{ numberOfValidPlans }}</strong>
+              </template>
+            </gl-sprintf>
+          </p>
+
+          <p v-if="inValidPlanCountText" class="gl-m-0">
+            <gl-sprintf :message="inValidPlanCountText">
+              <template #number>
+                <strong>{{ numberOfInvalidPlans }}</strong>
+              </template>
+            </gl-sprintf>
+          </p>
+        </div>
+      </template>
+
+      <template #content>
+        <terraform-plan
+          v-for="(plan, key) in plansObject"
+          :key="key"
+          :plan="plan"
+          class="mr-widget-body"
+        />
+      </template>
+    </mr-widget-expanable-section>
   </section>
 </template>

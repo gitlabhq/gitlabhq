@@ -901,6 +901,25 @@ DELETE /projects/:id/issues/:issue_iid
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/4/issues/85"
 ```
 
+## Reorder an issue
+
+Reorders an issue, you can see the results when sorting issues manually
+
+```plaintext
+PUT /projects/:id/issues/:issue_iid/reorder
+```
+
+| Attribute   | Type    | Required | Description                          |
+|-------------|---------|----------|--------------------------------------|
+| `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user  |
+| `issue_iid` | integer | yes      | The internal ID of a project's issue |
+| `move_after_id` | integer | no | The ID of a projet's issue to move this issue after |
+| `move_before_id` | integer | no | The ID of a projet's issue to move this issue before |
+
+```shell
+curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/4/issues/85/reorder?move_after_id=51&move_before_id=92"
+```
+
 ## Move an issue
 
 Moves an issue to a different project. If the target project

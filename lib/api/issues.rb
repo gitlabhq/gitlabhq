@@ -289,6 +289,30 @@ module API
       end
       # rubocop: enable CodeReuse/ActiveRecord
 
+      desc 'Reorder an existing issue' do
+        success Entities::Issue
+      end
+      params do
+        requires :issue_iid, type: Integer, desc: 'The internal ID of a project issue'
+        optional :move_after_id, type: Integer, desc: 'The ID of the issue we want to be after'
+        optional :move_before_id, type: Integer, desc: 'The ID of the issue we want to be before'
+        at_least_one_of :move_after_id, :move_before_id
+      end
+      # rubocop: disable CodeReuse/ActiveRecord
+      put ':id/issues/:issue_iid/reorder' do
+        issue = user_project.issues.find_by(iid: params[:issue_iid])
+        not_found!('Issue') unless issue
+
+        authorize! :update_issue, issue
+
+        if ::Issues::ReorderService.new(user_project, current_user, params).execute(issue)
+          present issue, with: Entities::Issue, current_user: current_user, project: user_project
+        else
+          render_api_error!({ error: 'Unprocessable Entity' }, 422)
+        end
+      end
+      # rubocop: enable CodeReuse/ActiveRecord
+
       desc 'Move an existing issue' do
         success Entities::Issue
       end

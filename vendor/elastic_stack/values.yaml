@@ -14,8 +14,12 @@ filebeat:
   filebeatConfig:
     filebeat.yml: |
       output.file.enabled: false
+      setup.ilm.enabled: false
+      setup.template.name: 'filebeat'
+      setup.template.pattern: 'filebeat-*'
       output.elasticsearch:
         hosts: ["http://elastic-stack-elasticsearch-master:9200"]
+        index: "filebeat-%{[agent.version]}-%{+yyyy.MM.dd}"
       filebeat.inputs:
       - type: container
         paths:

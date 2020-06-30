@@ -1,12 +1,18 @@
-import { invalidPlan, validPlan } from './mock_data';
 import { GlLink, GlSprintf } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import TerraformPlan from '~/vue_merge_request_widget/components/terraform/terraform_plan.vue';
+import {
+  invalidPlanWithName,
+  invalidPlanWithoutName,
+  validPlanWithName,
+  validPlanWithoutName,
+} from './mock_data';
 
 describe('TerraformPlan', () => {
   let wrapper;
 
-  const findLogButton = () => wrapper.find('.js-terraform-report-link');
+  const findIcon = () => wrapper.find('[data-testid="change-type-icon"]');
+  const findLogButton = () => wrapper.find('[data-testid="terraform-report-link"]');
 
   const mountWrapper = propsData => {
     wrapper = shallowMount(TerraformPlan, { stubs: { GlLink, GlSprintf }, propsData });
@@ -16,20 +22,24 @@ describe('TerraformPlan', () => {
     wrapper.destroy();
   });
 
-  describe('validPlan', () => {
+  describe('valid plan with job_name', () => {
     beforeEach(() => {
-      mountWrapper({ plan: validPlan });
+      mountWrapper({ plan: validPlanWithName });
     });
 
-    it('diplays the plan job_name', () => {
+    it('displays a document icon', () => {
+      expect(findIcon().attributes('name')).toBe('doc-changes');
+    });
+
+    it('diplays the header text with a name', () => {
       expect(wrapper.text()).toContain(
-        `The Terraform report ${validPlan.job_name} was generated in your pipelines.`,
+        `The Terraform report ${validPlanWithName.job_name} was generated in your pipelines.`,
       );
     });
 
     it('diplays the reported changes', () => {
       expect(wrapper.text()).toContain(
-        `Reported Resource Changes: ${validPlan.create} to add, ${validPlan.update} to change, ${validPlan.delete} to delete`,
+        `Reported Resource Changes: ${validPlanWithName.create} to add, ${validPlanWithName.update} to change, ${validPlanWithName.delete} to delete`,
       );
     });
 
@@ -39,17 +49,43 @@ describe('TerraformPlan', () => {
     });
   });
 
-  describe('invalidPlan', () => {
+  describe('valid plan without job_name', () => {
     beforeEach(() => {
-      mountWrapper({ plan: invalidPlan });
+      mountWrapper({ plan: validPlanWithoutName });
     });
 
-    it('diplays generic header since job_name is missing', () => {
+    it('diplays the header text without a name', () => {
       expect(wrapper.text()).toContain('A Terraform report was generated in your pipelines.');
+    });
+  });
+
+  describe('invalid plan with job_name', () => {
+    beforeEach(() => {
+      mountWrapper({ plan: invalidPlanWithName });
+    });
+
+    it('displays a warning icon', () => {
+      expect(findIcon().attributes('name')).toBe('warning');
+    });
+
+    it('diplays the header text with a name', () => {
+      expect(wrapper.text()).toContain(
+        `The Terraform report ${invalidPlanWithName.job_name} failed to generate.`,
+      );
     });
 
     it('diplays generic error since report values are missing', () => {
       expect(wrapper.text()).toContain('Generating the report caused an error.');
+    });
+  });
+
+  describe('invalid plan with out job_name', () => {
+    beforeEach(() => {
+      mountWrapper({ plan: invalidPlanWithoutName });
+    });
+
+    it('diplays the header text without a name', () => {
+      expect(wrapper.text()).toContain('A Terraform report failed to generate.');
     });
 
     it('does not render button because url is missing', () => {

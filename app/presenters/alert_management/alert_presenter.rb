@@ -37,6 +37,8 @@ module AlertManagement
       MARKDOWN
     end
 
+    def metrics_dashboard_url; end
+
     private
 
     attr_reader :alert, :project

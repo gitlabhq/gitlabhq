@@ -66,7 +66,7 @@ gem 'u2f', '~> 0.2.1'
 gem 'validates_hostname', '~> 1.0.10'
 gem 'rubyzip', '~> 2.0.0', require: 'zip'
 # GitLab Pages letsencrypt support
-gem 'acme-client', '~> 2.0.5'
+gem 'acme-client', '~> 2.0', '>= 2.0.6'
 
 # Browser detection
 gem 'browser', '~> 2.5'

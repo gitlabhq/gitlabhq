@@ -27,6 +27,20 @@ RSpec.describe Clusters::Applications::ElasticStack do
       expect(subject.preinstall).to be_empty
     end
 
+    context 'within values.yaml' do
+      let(:values_yaml_content) {subject.files[:"values.yaml"]}
+
+      it 'contains the disabled index lifecycle management' do
+        expect(values_yaml_content).to include "setup.ilm.enabled: false"
+      end
+
+      it 'contains daily indices with respective template' do
+        expect(values_yaml_content).to include "index: \"filebeat-%{[agent.version]}-%{+yyyy.MM.dd}\""
+        expect(values_yaml_content).to include "setup.template.name: 'filebeat'"
+        expect(values_yaml_content).to include "setup.template.pattern: 'filebeat-*'"
+      end
+    end
+
     context 'on a non rbac enabled cluster' do
       before do
         elastic_stack.cluster.platform_kubernetes.abac!

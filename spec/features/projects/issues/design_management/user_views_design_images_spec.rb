@@ -13,7 +13,6 @@ RSpec.describe 'Users views raw design image files' do
 
   before do
     enable_design_management
-    stub_feature_flags(design_management_moved: false)
   end
 
   it 'serves the latest design version when no ref is given' do

@@ -309,6 +309,7 @@ module QA
         autoload :New, 'qa/page/project/issue/new'
         autoload :Show, 'qa/page/project/issue/show'
         autoload :Index, 'qa/page/project/issue/index'
+        autoload :JiraImport, 'qa/page/project/issue/jira_import'
       end
 
       module Fork

@@ -12,7 +12,6 @@ import DesignPresentation from '../../components/design_presentation.vue';
 import DesignReplyForm from '../../components/design_notes/design_reply_form.vue';
 import DesignSidebar from '../../components/design_sidebar.vue';
 import getDesignQuery from '../../graphql/queries/get_design.query.graphql';
-import appDataQuery from '../../graphql/queries/app_data.query.graphql';
 import createImageDiffNoteMutation from '../../graphql/mutations/create_image_diff_note.mutation.graphql';
 import updateImageDiffNoteMutation from '../../graphql/mutations/update_image_diff_note.mutation.graphql';
 import updateActiveDiscussionMutation from '../../graphql/mutations/update_active_discussion.mutation.graphql';
@@ -62,22 +61,12 @@ export default {
       design: {},
       comment: '',
       annotationCoordinates: null,
-      projectPath: '',
       errorMessage: '',
-      issueIid: '',
       scale: 1,
       resolvedDiscussionsExpanded: false,
     };
   },
   apollo: {
-    appData: {
-      query: appDataQuery,
-      manual: true,
-      result({ data: { projectPath, issueIid } }) {
-        this.projectPath = projectPath;
-        this.issueIid = issueIid;
-      },
-    },
     design: {
       query: getDesignQuery,
       // We want to see cached design version if we have one, and fetch newer version on the background to update discussions

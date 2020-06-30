@@ -10,7 +10,7 @@ exports[`Design management design index page renders design index 1`] = `
     <design-destroyer-stub
       filenames="test.jpg"
       iid="1"
-      projectpath=""
+      project-path="project-path"
     />
      
     <!---->
@@ -60,7 +60,7 @@ exports[`Design management design index page renders design index 1`] = `
       designid="test"
       discussion="[object Object]"
       discussionwithopenform=""
-      markdownpreviewpath="//preview_markdown?target_type=Issue"
+      markdownpreviewpath="/project-path/preview_markdown?target_type=Issue"
       noteableid="design-id"
     />
      
@@ -108,7 +108,7 @@ exports[`Design management design index page renders design index 1`] = `
         designid="test"
         discussion="[object Object]"
         discussionwithopenform=""
-        markdownpreviewpath="//preview_markdown?target_type=Issue"
+        markdownpreviewpath="/project-path/preview_markdown?target_type=Issue"
         noteableid="design-id"
       />
     </gl-collapse-stub>
@@ -140,7 +140,7 @@ exports[`Design management design index page with error GlAlert is rendered in c
     <design-destroyer-stub
       filenames="test.jpg"
       iid="1"
-      projectpath=""
+      project-path="project-path"
     />
      
     <div

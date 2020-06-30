@@ -95,9 +95,12 @@ describe('Design management design index page', () => {
         DesignSidebar,
         DesignReplyForm,
       },
+      provide: {
+        issueIid: '1',
+        projectPath: 'project-path',
+      },
       data() {
         return {
-          issueIid: '1',
           activeDiscussion: {
             id: null,
             source: null,
@@ -149,7 +152,7 @@ describe('Design management design index page', () => {
 
     expect(findSidebar().props()).toEqual({
       design,
-      markdownPreviewPath: '//preview_markdown?target_type=Issue',
+      markdownPreviewPath: '/project-path/preview_markdown?target_type=Issue',
       resolvedDiscussionsExpanded: false,
     });
   });

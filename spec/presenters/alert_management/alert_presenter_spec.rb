@@ -38,4 +38,10 @@ RSpec.describe AlertManagement::AlertPresenter do
       )
     end
   end
+
+  describe '#metrics_dashboard_url' do
+    it 'is not defined' do
+      expect(presenter.metrics_dashboard_url).to be_nil
+    end
+  end
 end

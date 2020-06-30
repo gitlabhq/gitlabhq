@@ -1,0 +1,5 @@
+---
+title: Make logrotate run as git user for source installations
+merge_request: 35519
+author:
+type: security

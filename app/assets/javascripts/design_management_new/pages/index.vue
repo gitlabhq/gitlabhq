@@ -259,7 +259,7 @@ export default {
 </script>
 
 <template>
-  <div>
+  <div data-testid="designs-root">
     <header v-if="showToolbar" class="row-content-block border-top-0 p-2 d-flex">
       <div class="d-flex justify-content-between align-items-center w-100">
         <design-version-dropdown />
@@ -274,8 +274,6 @@ export default {
           <design-destroyer
             #default="{ mutate, loading }"
             :filenames="selectedDesigns"
-            :project-path="projectPath"
-            :iid="issueIid"
             @done="onDesignDelete"
             @error="onDesignDeleteError"
           >

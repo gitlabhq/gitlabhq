@@ -105,6 +105,13 @@ RSpec.describe Snippets::DestroyService do
 
         it_behaves_like 'a successful destroy'
         it_behaves_like 'deletes the snippet repository'
+
+        it 'schedules a project cache update for snippet_size' do
+          expect(ProjectCacheWorker).to receive(:perform_async)
+                                          .with(snippet.project_id, [], [:snippets_size])
+
+          subject
+        end
       end
 
       context 'when user is not able to admin_project_snippet' do
@@ -122,6 +129,12 @@ RSpec.describe Snippets::DestroyService do
 
         it_behaves_like 'a successful destroy'
         it_behaves_like 'deletes the snippet repository'
+
+        it 'does not schedule a project cache update' do
+          expect(ProjectCacheWorker).not_to receive(:perform_async)
+
+          subject
+        end
       end
 
       context 'when user is not able to admin_personal_snippet' do

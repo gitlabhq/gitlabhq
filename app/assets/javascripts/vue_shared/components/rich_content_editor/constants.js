@@ -43,3 +43,7 @@ export const EDITOR_TYPES = {
 export const EDITOR_HEIGHT = '100%';
 
 export const EDITOR_PREVIEW_STYLE = 'horizontal';
+
+export const IMAGE_TABS = { UPLOAD_TAB: 0, URL_TAB: 1 };
+
+export const MAX_FILE_SIZE = 2097152; // 2Mb

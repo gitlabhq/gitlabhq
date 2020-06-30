@@ -3,7 +3,7 @@
 require 'fast_spec_helper'
 
 RSpec.describe Quality::Helm3Client do
-  let(:namespace) { 'review-apps-ee' }
+  let(:namespace) { 'review-apps' }
   let(:release_name) { 'my-release' }
   let(:raw_helm_list_page1) do
     <<~OUTPUT

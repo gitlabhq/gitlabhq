@@ -15,7 +15,7 @@ module Gitlab
             %i[junit codequality sast secret_detection dependency_scanning container_scanning
                dast performance license_management license_scanning metrics lsif
                dotenv cobertura terraform accessibility cluster_applications
-               requirements].freeze
+               requirements coverage_fuzzing].freeze
 
           attributes ALLOWED_KEYS
 
@@ -25,7 +25,8 @@ module Gitlab
 
             with_options allow_nil: true do
               validates :junit, array_of_strings_or_string: true
-              validates :codequality, array_of_strings_or_string: true
+              validates :coverage_fuzzing, array_of_strings_or_string: true
+              validates :sast, array_of_strings_or_string: true
               validates :sast, array_of_strings_or_string: true
               validates :secret_detection, array_of_strings_or_string: true
               validates :dependency_scanning, array_of_strings_or_string: true

@@ -92,19 +92,23 @@ describe('Design management index page', () => {
     };
 
     wrapper = shallowMount(Index, {
+      data() {
+        return {
+          designs,
+          allVersions,
+          permissions: {
+            createDesign,
+          },
+        };
+      },
       mocks: { $apollo },
       localVue,
       router,
       stubs: { DesignDestroyer, ApolloMutation, ...stubs },
       attachToDocument: true,
-    });
-
-    wrapper.setData({
-      designs,
-      allVersions,
-      issueIid: '1',
-      permissions: {
-        createDesign,
+      provide: {
+        projectPath: 'project-path',
+        issueIid: '1',
       },
     });
   }
@@ -117,9 +121,7 @@ describe('Design management index page', () => {
     it('renders loading icon', () => {
       createComponent({ loading: true });
 
-      return wrapper.vm.$nextTick().then(() => {
-        expect(wrapper.element).toMatchSnapshot();
-      });
+      expect(wrapper.element).toMatchSnapshot();
     });
 
     it('renders error', () => {
@@ -135,25 +137,19 @@ describe('Design management index page', () => {
     it('renders a toolbar with buttons when there are designs', () => {
       createComponent({ designs: mockDesigns, allVersions: [mockVersion] });
 
-      return wrapper.vm.$nextTick().then(() => {
-        expect(findToolbar().exists()).toBe(true);
-      });
+      expect(findToolbar().exists()).toBe(true);
     });
 
     it('renders designs list and header with upload button', () => {
       createComponent({ designs: mockDesigns, allVersions: [mockVersion] });
 
-      return wrapper.vm.$nextTick().then(() => {
-        expect(wrapper.element).toMatchSnapshot();
-      });
+      expect(wrapper.element).toMatchSnapshot();
     });
 
     it('does not render toolbar when there is no permission', () => {
       createComponent({ designs: mockDesigns, allVersions: [mockVersion], createDesign: false });
 
-      return wrapper.vm.$nextTick().then(() => {
-        expect(wrapper.element).toMatchSnapshot();
-      });
+      expect(wrapper.element).toMatchSnapshot();
     });
   });
 
@@ -185,7 +181,7 @@ describe('Design management index page', () => {
         mutation: uploadDesignQuery,
         variables: {
           files: [{ name: 'test' }],
-          projectPath: '',
+          projectPath: 'project-path',
           iid: '1',
         },
         optimisticResponse: {
@@ -442,9 +438,9 @@ describe('Design management index page', () => {
     });
   });
 
-  it('on latest version when has no designs does not render toolbar buttons', () => {
+  it('on latest version when has no designs toolbar buttons are invisible', () => {
     createComponent({ designs: [], allVersions: [mockVersion] });
-    expect(findToolbar().exists()).toBe(false);
+    expect(findToolbar().classes()).toContain('d-none');
   });
 
   describe('on non-latest version', () => {
@@ -535,7 +531,7 @@ describe('Design management index page', () => {
     it('ensures fullscreen layout is not applied', () => {
       createComponent(true);
 
-      wrapper.vm.$router.push('/designs');
+      wrapper.vm.$router.push('/');
       expect(mockPageEl.classList.remove).toHaveBeenCalledTimes(1);
       expect(mockPageEl.classList.remove).toHaveBeenCalledWith(...DESIGN_DETAIL_LAYOUT_CLASSLIST);
     });

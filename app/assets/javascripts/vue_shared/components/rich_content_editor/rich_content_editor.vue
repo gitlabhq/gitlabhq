@@ -2,7 +2,7 @@
 import 'codemirror/lib/codemirror.css';
 import '@toast-ui/editor/dist/toastui-editor.css';
 
-import AddImageModal from './modals/add_image_modal.vue';
+import AddImageModal from './modals/add_image/add_image_modal.vue';
 import {
   EDITOR_OPTIONS,
   EDITOR_TYPES,
@@ -17,6 +17,8 @@ import {
   addImage,
   getMarkdown,
 } from './services/editor_service';
+
+import { getUrl } from './services/image_service';
 
 export default {
   components: {
@@ -96,7 +98,16 @@ export default {
     onOpenAddImageModal() {
       this.$refs.addImageModal.show();
     },
-    onAddImage(image) {
+    onAddImage({ imageUrl, altText, file }) {
+      const image = { imageUrl, altText };
+
+      if (file) {
+        image.imageUrl = getUrl(file);
+        // TODO - persist images locally (local image repository)
+        // TODO - ensure that the actual repo URL for the image is used in Markdown mode
+        // TODO - upload images to the project repository (on submit)
+      }
+
       addImage(this.editorInstance, image);
     },
     onChangeMode(newMode) {

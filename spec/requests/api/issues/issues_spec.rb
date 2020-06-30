@@ -886,4 +886,53 @@ RSpec.describe API::Issues do
 
     include_examples 'time tracking endpoints', 'issue'
   end
+
+  describe 'PUT /projects/:id/issues/:issue_iid/reorder' do
+    let_it_be(:project) { create(:project) }
+    let_it_be(:issue1) { create(:issue, project: project, relative_position: 10) }
+    let_it_be(:issue2) { create(:issue, project: project, relative_position: 20) }
+    let_it_be(:issue3) { create(:issue, project: project, relative_position: 30) }
+
+    context 'when user has access' do
+      before do
+        project.add_developer(user)
+      end
+
+      context 'with valid params' do
+        it 'reorders issues and returns a successful 200 response' do
+          put api("/projects/#{project.id}/issues/#{issue1.iid}/reorder", user), params: { move_after_id: issue2.id, move_before_id: issue3.id }
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(issue1.reload.relative_position)
+                .to be_between(issue2.reload.relative_position, issue3.reload.relative_position)
+        end
+      end
+
+      context 'with invalid params' do
+        it 'returns a unprocessable entity 422 response for invalid move ids' do
+          put api("/projects/#{project.id}/issues/#{issue1.iid}/reorder", user), params: { move_after_id: issue2.id, move_before_id: non_existing_record_id }
+
+          expect(response).to have_gitlab_http_status(:unprocessable_entity)
+        end
+
+        it 'returns a not found 404 response for invalid issue id' do
+          put api("/projects/#{project.id}/issues/#{non_existing_record_iid}/reorder", user), params: { move_after_id: issue2.id, move_before_id: issue3.id }
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
+    end
+
+    context 'with unauthorized user' do
+      before do
+        project.add_guest(user)
+      end
+
+      it 'responds with 403 forbidden' do
+        put api("/projects/#{project.id}/issues/#{issue1.iid}/reorder", user), params: { move_after_id: issue2.id, move_before_id: issue3.id }
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+      end
+    end
+  end
 end

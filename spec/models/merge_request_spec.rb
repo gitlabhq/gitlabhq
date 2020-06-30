@@ -280,6 +280,21 @@ RSpec.describe MergeRequest do
 
         expect(MergeRequest::Metrics.count).to eq(1)
       end
+
+      it 'does not create duplicated metrics records when MR is concurrently updated' do
+        merge_request = create(:merge_request)
+
+        merge_request.metrics.destroy
+
+        instance1 = MergeRequest.find(merge_request.id)
+        instance2 = MergeRequest.find(merge_request.id)
+
+        instance1.ensure_metrics
+        instance2.ensure_metrics
+
+        metrics_records = MergeRequest::Metrics.where(merge_request_id: merge_request.id)
+        expect(metrics_records.size).to eq(1)
+      end
     end
   end
 

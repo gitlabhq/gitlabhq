@@ -2,6 +2,10 @@
 
 module AlertManagement
   class PrometheusAlertPresenter < AlertManagement::AlertPresenter
+    def metrics_dashboard_url
+      alerting_alert.metrics_dashboard_url
+    end
+
     private
 
     def alert_markdown

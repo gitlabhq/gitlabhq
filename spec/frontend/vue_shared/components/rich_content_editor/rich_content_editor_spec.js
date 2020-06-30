@@ -1,6 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
 import RichContentEditor from '~/vue_shared/components/rich_content_editor/rich_content_editor.vue';
-import AddImageModal from '~/vue_shared/components/rich_content_editor/modals/add_image_modal.vue';
+import AddImageModal from '~/vue_shared/components/rich_content_editor/modals/add_image/add_image_modal.vue';
 import {
   EDITOR_OPTIONS,
   EDITOR_TYPES,
@@ -119,7 +119,7 @@ describe('Rich Content Editor', () => {
     });
 
     it('calls the onAddImage method when the addImage event is emitted', () => {
-      const mockImage = { imageUrl: 'some/url.png', description: 'some description' };
+      const mockImage = { imageUrl: 'some/url.png', altText: 'some description' };
       const mockInstance = { exec: jest.fn() };
       wrapper.vm.$refs.editor = mockInstance;
 

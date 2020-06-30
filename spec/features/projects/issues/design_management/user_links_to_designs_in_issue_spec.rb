@@ -27,10 +27,6 @@ RSpec.describe 'viewing issues with design references' do
     MD
   end
 
-  before do
-    stub_feature_flags(design_management_moved: false)
-  end
-
   def visit_page_with_design_references
     public_issue = create(:issue, project: public_project, description: description)
     visit project_issue_path(public_issue.project, public_issue)

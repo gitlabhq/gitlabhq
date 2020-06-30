@@ -66,7 +66,7 @@ function kubectl_cleanup_release() {
   local release="${2}"
 
   echoinfo "Deleting all K8s resources matching '${release}'..." true
-  kubectl --namespace "${namespace}" get ingress,svc,pdb,hpa,deploy,statefulset,job,pod,secret,configmap,pvc,secret,clusterrole,clusterrolebinding,role,rolebinding,sa,crd 2>&1 \
+  kubectl --namespace "${namespace}" get ingress,svc,pdb,hpa,deploy,statefulset,job,pod,secret,configmap,pvc,clusterrole,clusterrolebinding,role,rolebinding,sa,crd 2>&1 \
     | grep "${release}" \
     | awk '{print $1}' \
     | xargs kubectl --namespace "${namespace}" delete \
@@ -126,6 +126,38 @@ function get_pod() {
   echo "${pod_name}"
 }
 
+function run_task() {
+  local namespace="${KUBE_NAMESPACE}"
+  local ruby_cmd="${1}"
+  local task_runner_pod=$(get_pod "task-runner")
+
+  kubectl exec -it --namespace "${namespace}" "${task_runner_pod}" -- gitlab-rails runner "${ruby_cmd}"
+}
+
+function disable_sign_ups() {
+  if [ -z ${REVIEW_APPS_ROOT_TOKEN+x} ]; then
+    echoerr "In order to protect Review Apps, REVIEW_APPS_ROOT_TOKEN variable must be set"
+    false
+  else
+    true
+  fi
+
+  # Create the root token
+  local ruby_cmd="token = User.find_by_username('root').personal_access_tokens.create(scopes: [:api], name: 'Token to disable sign-ups'); token.set_token('${REVIEW_APPS_ROOT_TOKEN}'); begin; token.save!; rescue(ActiveRecord::RecordNotUnique); end"
+  run_task "${ruby_cmd}"
+
+  # Disable sign-ups
+  curl  --silent --show-error --request PUT --header "PRIVATE-TOKEN: ${REVIEW_APPS_ROOT_TOKEN}" "${CI_ENVIRONMENT_URL}/api/v4/application/settings?signup_enabled=false"
+
+  local signup_enabled=$(curl --silent --show-error --request GET --header "PRIVATE-TOKEN: ${REVIEW_APPS_ROOT_TOKEN}" "${CI_ENVIRONMENT_URL}/api/v4/application/settings" | jq ".signup_enabled")
+  if [[ "${signup_enabled}" == "false" ]]; then
+    echoinfo "Sign-ups have been disabled successfully."
+  else
+    echoerr "Sign-ups should be disabled but are still enabled!"
+    false
+  fi
+}
+
 function check_kube_domain() {
   echoinfo "Checking that Kube domain exists..." true
 
@@ -178,6 +210,32 @@ function install_external_dns() {
       --set resources.limits.memory=200M
   else
     echoinfo "The external-dns Helm chart is already successfully deployed."
+  fi
+}
+
+# This script is used to install cert-manager in the cluster
+# The installation steps are documented in
+# https://gitlab.com/gitlab-org/quality/team-tasks/snippets/1990286
+function install_certmanager() {
+  local namespace="${KUBE_NAMESPACE}"
+  local release="cert-manager-review-app-helm3"
+
+  echoinfo "Installing cert-manager..." true
+
+  if ! deploy_exists "${namespace}" "${release}" || previous_deploy_failed "${namespace}" "${release}" ; then
+    kubectl apply \
+    -f https://raw.githubusercontent.com/jetstack/cert-manager/release-0.10/deploy/manifests/00-crds.yaml
+
+    echoinfo "Installing cert-manager Helm chart"
+    helm repo add jetstack https://charts.jetstack.io
+    helm repo update
+
+    helm install "${release}" jetstack/cert-manager \
+      --namespace "${namespace}" \
+      --version v0.15.1 \
+      --set installCRDS=true
+  else
+    echoinfo "The cert-manager Helm chart is already successfully deployed."
   fi
 }
 
