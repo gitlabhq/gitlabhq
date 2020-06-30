@@ -20,7 +20,8 @@ review:
     url: http://$CI_PROJECT_ID-$CI_ENVIRONMENT_SLUG.$KUBE_INGRESS_BASE_DOMAIN
     on_stop: stop_review
   artifacts:
-    paths: [environment_url.txt]
+    paths: [environment_url.txt, tiller.log]
+    when: always
   rules:
     - if: '$CI_KUBERNETES_ACTIVE == null || $CI_KUBERNETES_ACTIVE == ""'
       when: never
@@ -122,7 +123,8 @@ canary:
     name: production
     url: http://$CI_PROJECT_PATH_SLUG.$KUBE_INGRESS_BASE_DOMAIN
   artifacts:
-    paths: [environment_url.txt]
+    paths: [environment_url.txt, tiller.log]
+    when: always
 
 production:
   <<: *production_template
@@ -172,7 +174,8 @@ production_manual:
     name: production
     url: http://$CI_PROJECT_PATH_SLUG.$KUBE_INGRESS_BASE_DOMAIN
   artifacts:
-    paths: [environment_url.txt]
+    paths: [environment_url.txt, tiller.log]
+    when: always
 
 .manual_rollout_template: &manual_rollout_template
   <<: *rollout_template

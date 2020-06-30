@@ -1,0 +1,6 @@
+---
+title: Add tiller.log to Auto DevOps deployment job artifacts when AUTO_DEVOPS_DEPLOY_DEBUG
+  is set
+merge_request: 35458
+author:
+type: fixed
