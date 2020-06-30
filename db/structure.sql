@@ -9144,6 +9144,8 @@ CREATE TABLE public.application_settings (
     enforce_pat_expiration boolean DEFAULT true NOT NULL,
     compliance_frameworks smallint[] DEFAULT '{}'::smallint[] NOT NULL,
     notify_on_unknown_sign_in boolean DEFAULT true NOT NULL,
+    default_branch_name text,
+    CONSTRAINT check_51700b31b5 CHECK ((char_length(default_branch_name) <= 255)),
     CONSTRAINT check_d03919528d CHECK ((char_length(container_registry_vendor) <= 255)),
     CONSTRAINT check_d820146492 CHECK ((char_length(spam_check_endpoint_url) <= 255)),
     CONSTRAINT check_e5aba18f02 CHECK ((char_length(container_registry_version) <= 255))
@@ -23452,7 +23454,9 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200623170000
 20200623185440
 20200624075411
+20200624222443
 20200625045442
+20200625190458
 20200626130220
 \.
 

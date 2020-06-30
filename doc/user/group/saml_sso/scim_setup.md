@@ -175,7 +175,7 @@ For role information, please see the [Group SAML page](index.md#user-access-and-
 To rescind access to the group, we recommend removing the user from the identity
 provider or users list for the specific app.
 
-Upon the next sync, the user will be deprovisioned, which means that the user will be removed from the group. The user account will not be deleted unless using [group managed accounts](index.md#group-managed-accounts).
+Upon the next sync, the user will be deprovisioned, which means that the user will be removed from the group. The user account will not be deleted unless using [group managed accounts](group_managed_accounts.md).
 
 ## Troubleshooting
 
