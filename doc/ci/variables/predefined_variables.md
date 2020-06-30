@@ -23,6 +23,9 @@ future GitLab releases.**
 You can add a command to your `.gitlab-ci.yml` file to
 [output the values of all variables available for a job](README.md#list-all-environment-variables).
 
+Kubernetes-specific environment variables are detailed in the
+[Kubernetes deployment variables](../../user/project/clusters/index.md#deployment-variables) section.
+
 | Variable                                      | GitLab | Runner | Description                                                                                                                                                                                                                                                                                                                                                |
 |-----------------------------------------------|--------|--------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `CHAT_CHANNEL`                                | 10.6   | all    | Source chat channel which triggered the [ChatOps](../chatops/README.md) command                                                                                                                                                                                                                                                                            |

@@ -27740,6 +27740,9 @@ msgstr ""
 msgid "nounSeries|%{firstItem} and %{lastItem}"
 msgstr ""
 
+msgid "nounSeries|%{item}"
+msgstr ""
+
 msgid "nounSeries|%{item}, %{nextItem}"
 msgstr ""
 

@@ -1,7 +1,7 @@
 = form_tag project_compare_index_path(@project), method: :post, class: 'form-inline js-requires-input js-signature-container', data: { 'signatures-path' => signatures_namespace_project_compare_index_path } do
   - if params[:to] && params[:from]
     .compare-switch-container
-      = link_to icon('exchange'), { from: params[:to], to: params[:from] }, class: 'commits-compare-switch has-tooltip btn btn-white', title: 'Swap revisions'
+      = link_to sprite_icon('substitute'), { from: params[:to], to: params[:from] }, class: 'commits-compare-switch has-tooltip btn btn-white', title: 'Swap revisions'
   .form-group.dropdown.compare-form-group.to.js-compare-to-dropdown
     .input-group.inline-input-group
       %span.input-group-prepend

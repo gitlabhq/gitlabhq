@@ -67,7 +67,7 @@ module QA
           # attachment option should be an absolute path
           def comment(text, attachment: nil, filter: :all_activities)
             method("select_#{filter}_filter").call
-            fill_element :comment_input, text
+            fill_element :comment_input, "#{text}\n"
 
             unless attachment.nil?
               QA::Page::Component::Dropzone.new(self, '.new-note')

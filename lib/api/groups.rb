@@ -76,9 +76,6 @@ module API
           params: project_finder_params,
           options: finder_options
         ).execute
-        projects = projects.with_issues_available_for_user(current_user) if params[:with_issues_enabled]
-        projects = projects.with_merge_requests_enabled if params[:with_merge_requests_enabled]
-        projects = projects.visible_to_user_and_access_level(current_user, params[:min_access_level]) if params[:min_access_level]
         projects = reorder_projects(projects)
         paginate(projects)
       end

@@ -528,6 +528,8 @@ module API
 
     def project_finder_params_ce
       finder_params = project_finder_params_visibility_ce
+      finder_params[:with_issues_enabled] = true if params[:with_issues_enabled].present?
+      finder_params[:with_merge_requests_enabled] = true if params[:with_merge_requests_enabled].present?
       finder_params[:without_deleted] = true
       finder_params[:search] = params[:search] if params[:search]
       finder_params[:search_namespaces] = true if params[:search_namespaces].present?
