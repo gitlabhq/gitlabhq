@@ -13,6 +13,11 @@ GitLab offers integrated cluster creation for the following Kubernetes providers
 
 GitLab can also integrate with any standard Kubernetes provider, either on-premise or hosted.
 
+NOTE: **Scalable app deployment with GitLab and Google Cloud Platform**
+[Watch the webcast](https://about.gitlab.com/webcast/scalable-app-deploy/) and
+learn how to spin up a Kubernetes cluster managed by Google Cloud Platform (GCP)
+in a few clicks.
+
 TIP: **Tip:**
 Every new Google Cloud Platform (GCP) account receives [$300 in credit upon sign up](https://console.cloud.google.com/freetrial),
 and in partnership with Google, GitLab is able to offer an additional $200 for new GCP accounts to get started with GitLab's

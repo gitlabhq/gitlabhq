@@ -56,6 +56,8 @@ module MergeRequests
           'Only fast-forward merge is allowed for your project. Please update your source branch'
         elsif !@merge_request.mergeable?
           'Merge request is not mergeable'
+        elsif !@merge_request.squash && project.squash_always?
+          'This project requires squashing commits when merge requests are accepted.'
         end
 
       raise_error(error) if error

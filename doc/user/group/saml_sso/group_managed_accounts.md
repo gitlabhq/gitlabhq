@@ -13,7 +13,7 @@ This is a [Closed Beta](https://about.gitlab.com/handbook/product/#closed-beta) 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/709) in GitLab 12.1.
 > - It's deployed behind a feature flag, disabled by default.
 
-When [SSO for Groups]](index.md) is being enforced, groups can enable an additional level of protection by enforcing the creation of dedicated user accounts to access the group.
+When [SSO for Groups](index.md) is being enforced, groups can enable an additional level of protection by enforcing the creation of dedicated user accounts to access the group.
 
 With group-managed accounts enabled, users are required to create a new, dedicated user linked to the group.
 The notification email address associated with the user is locked to the email address received from the configured identity provider.

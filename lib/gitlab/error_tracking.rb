@@ -10,7 +10,6 @@ module Gitlab
       Acme::Client::Error::Timeout
       Acme::Client::Error::UnsupportedOperation
       ActiveRecord::ConnectionTimeoutError
-      ActiveRecord::QueryCanceled
       Gitlab::RequestContext::RequestDeadlineExceeded
       GRPC::DeadlineExceeded
       JIRA::HTTPError

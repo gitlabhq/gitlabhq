@@ -20,7 +20,7 @@ module MergeRequests
 
     def source
       strong_memoize(:source) do
-        if merge_request.squash
+        if merge_request.squash_on_merge?
           squash_sha!
         else
           merge_request.diff_head_sha

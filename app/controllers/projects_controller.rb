@@ -405,6 +405,7 @@ class ProjectsController < Projects::ApplicationController
       ],
       project_setting_attributes: %i[
         show_default_award_emojis
+        squash_option
       ]
     ]
   end

@@ -14163,6 +14163,7 @@ CREATE TABLE public.project_settings (
     push_rule_id bigint,
     show_default_award_emojis boolean DEFAULT true,
     allow_merge_on_skipped_pipeline boolean,
+    squash_option smallint DEFAULT 3,
     CONSTRAINT check_bde223416c CHECK ((show_default_award_emojis IS NOT NULL))
 );
 
@@ -23417,6 +23418,7 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200526153844
 20200526164946
 20200526164947
+20200526193555
 20200526231421
 20200527092027
 20200527094322

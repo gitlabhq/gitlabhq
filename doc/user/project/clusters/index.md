@@ -12,15 +12,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/39840) in
 >   GitLab 11.11 for [instances](../../instance/clusters/index.md).
 
-GitLab provides many features with a Kubernetes integration. Kubernetes can be
-integrated with projects, but also:
-
-- [Groups](../../group/clusters/index.md).
-- [Instances](../../instance/clusters/index.md).
-
-NOTE: **Scalable app deployment with GitLab and Google Cloud Platform**
-[Watch the webcast](https://about.gitlab.com/webcast/scalable-app-deploy/) and learn how to spin up a Kubernetes cluster managed by Google Cloud Platform (GCP) in a few clicks.
-
 ## Overview
 
 Using the GitLab project Kubernetes integration, you can:
@@ -28,17 +19,26 @@ Using the GitLab project Kubernetes integration, you can:
 - Use [Review Apps](../../../ci/review_apps/index.md).
 - Run [pipelines](../../../ci/pipelines/index.md).
 - [Deploy](#deploying-to-a-kubernetes-cluster) your applications.
-- Detect and [monitor Kubernetes](#kubernetes-monitoring).
+- Detect and [monitor Kubernetes](#monitoring-your-kubernetes-cluster).
 - Use it with [Auto DevOps](#auto-devops).
 - Use [Web terminals](#web-terminals).
 - Use [Deploy Boards](#deploy-boards-premium). **(PREMIUM)**
 - Use [Canary Deployments](#canary-deployments-premium). **(PREMIUM)**
-- View [Logs](#logs).
+- View [Logs](#viewing-pod-logs).
 - Run serverless workloads on [Kubernetes with Knative](serverless/index.md).
+
+Besides integration at the project level, Kubernetes clusters can also be
+integrated at the [group level](../../group/clusters/index.md) or
+[GitLab instance level](../../instance/clusters/index.md).
+
+## Setting up
 
 ### Supported cluster versions
 
-GitLab is committed to support at least two production-ready Kubernetes minor versions at any given time. We regularly review the versions we support, and provide a four-month deprecation period before we remove support of a specific version. The range of supported versions is based on the evaluation of:
+GitLab is committed to support at least two production-ready Kubernetes minor
+versions at any given time. We regularly review the versions we support, and
+provide a four-month deprecation period before we remove support of a specific
+version. The range of supported versions is based on the evaluation of:
 
 - Our own needs.
 - The versions supported by major managed Kubernetes providers.
@@ -55,71 +55,7 @@ Currently, GitLab supports the following Kubernetes versions:
 NOTE: **Note:**
 Some GitLab features may support versions outside the range provided here.
 
-### Deploy Boards **(PREMIUM)**
-
-GitLab's Deploy Boards offer a consolidated view of the current health and
-status of each CI [environment](../../../ci/environments/index.md) running on Kubernetes,
-displaying the status of the pods in the deployment. Developers and other
-teammates can view the progress and status of a rollout, pod by pod, in the
-workflow they already use without any need to access Kubernetes.
-
-[Read more about Deploy Boards](../deploy_boards.md)
-
-### Canary Deployments **(PREMIUM)**
-
-Leverage [Kubernetes' Canary deployments](https://kubernetes.io/docs/concepts/cluster-administration/manage-deployment/#canary-deployments)
-and visualize your canary deployments right inside the Deploy Board, without
-the need to leave GitLab.
-
-[Read more about Canary Deployments](../canary_deployments.md)
-
-### Logs
-
-GitLab makes it easy to view the logs of running pods in connected Kubernetes clusters. By displaying the logs directly in GitLab, developers can avoid having to manage console tools or jump to a different interface.
-
-[Read more about Kubernetes logs](kubernetes_pod_logs.md)
-
-### Kubernetes monitoring
-
-Automatically detect and monitor Kubernetes metrics. Automatic monitoring of
-[NGINX Ingress](../integrations/prometheus_library/nginx.md) is also supported.
-
-[Read more about Kubernetes monitoring](../integrations/prometheus_library/kubernetes.md)
-
-### Auto DevOps
-
-Auto DevOps automatically detects, builds, tests, deploys, and monitors your
-applications.
-
-To make full use of Auto DevOps(Auto Deploy, Auto Review Apps, and Auto Monitoring)
-you will need the Kubernetes project integration enabled.
-
-[Read more about Auto DevOps](../../../topics/autodevops/index.md)
-
-NOTE: **Note**
-Kubernetes clusters can be used without Auto DevOps.
-
-### Web terminals
-
-> Introduced in GitLab 8.15.
-
-When enabled, the Kubernetes integration adds [web terminal](../../../ci/environments/index.md#web-terminals)
-support to your [environments](../../../ci/environments/index.md). This is based on the `exec` functionality found in
-Docker and Kubernetes, so you get a new shell session within your existing
-containers. To use this integration, you should deploy to Kubernetes using
-the deployment variables above, ensuring any deployments, replica sets, and
-pods are annotated with:
-
-- `app.gitlab.com/env: $CI_ENVIRONMENT_SLUG`
-- `app.gitlab.com/app: $CI_PROJECT_PATH_SLUG`
-
-`$CI_ENVIRONMENT_SLUG` and `$CI_PROJECT_PATH_SLUG` are the values of
-the CI variables.
-
-You must be the project owner or have `maintainer` permissions to use terminals. Support is limited
-to the first container in the first pod of your environment.
-
-## Adding and removing clusters
+### Adding and removing clusters
 
 See [Adding and removing Kubernetes clusters](add_remove_clusters.md) for details on how
 to:
@@ -128,7 +64,73 @@ to:
   (EKS) using GitLab's UI.
 - Add an integration to an existing cluster from any Kubernetes platform.
 
-## Cluster configuration
+### Multiple Kubernetes clusters **(PREMIUM)**
+
+> Introduced in [GitLab Premium](https://about.gitlab.com/pricing/) 10.3.
+
+With GitLab Premium, you can associate more than one Kubernetes cluster to your
+project. That way you can have different clusters for different environments,
+like dev, staging, production, and so on.
+
+Simply add another cluster, like you did the first time, and make sure to
+[set an environment scope](#setting-the-environment-scope-premium) that will
+differentiate the new cluster with the rest.
+
+#### Setting the environment scope **(PREMIUM)**
+
+When adding more than one Kubernetes cluster to your project, you need to differentiate
+them with an environment scope. The environment scope associates clusters with [environments](../../../ci/environments/index.md) similar to how the
+[environment-specific variables](../../../ci/variables/README.md#limit-the-environment-scopes-of-environment-variables) work.
+
+The default environment scope is `*`, which means all jobs, regardless of their
+environment, will use that cluster. Each scope can only be used by a single
+cluster in a project, and a validation error will occur if otherwise.
+Also, jobs that don't have an environment keyword set will not be able to access any cluster.
+
+For example, let's say the following Kubernetes clusters exist in a project:
+
+| Cluster     | Environment scope |
+| ----------- | ----------------- |
+| Development | `*`               |
+| Production  | `production`      |
+
+And the following environments are set in
+[`.gitlab-ci.yml`](../../../ci/yaml/README.md):
+
+```yaml
+stages:
+- test
+- deploy
+
+test:
+  stage: test
+  script: sh test
+
+deploy to staging:
+  stage: deploy
+  script: make deploy
+  environment:
+    name: staging
+    url: https://staging.example.com/
+
+deploy to production:
+  stage: deploy
+  script: make deploy
+  environment:
+    name: production
+    url: https://example.com/
+```
+
+The result will then be:
+
+- The Development cluster details will be available in the `deploy to staging`
+  job.
+- The production cluster details will be available in the `deploy to production`
+  job.
+- No cluster details will be available in the `test` job because it doesn't
+  define any environment.
+
+## Configuring your Kubernetes cluster
 
 After [adding a Kubernetes cluster](add_remove_clusters.md) to GitLab, read this section that covers
 important considerations for configuring Kubernetes clusters with GitLab.
@@ -203,72 +205,6 @@ you can either:
 - Create an `A` record that points to the Ingress IP address with your domain provider.
 - Enter a wildcard DNS address using a service such as nip.io or xip.io. For example, `192.168.1.1.xip.io`.
 
-### Setting the environment scope **(PREMIUM)**
-
-When adding more than one Kubernetes cluster to your project, you need to differentiate
-them with an environment scope. The environment scope associates clusters with [environments](../../../ci/environments/index.md) similar to how the
-[environment-specific variables](../../../ci/variables/README.md#limit-the-environment-scopes-of-environment-variables) work.
-
-The default environment scope is `*`, which means all jobs, regardless of their
-environment, will use that cluster. Each scope can only be used by a single
-cluster in a project, and a validation error will occur if otherwise.
-Also, jobs that don't have an environment keyword set will not be able to access any cluster.
-
-For example, let's say the following Kubernetes clusters exist in a project:
-
-| Cluster     | Environment scope |
-| ----------- | ----------------- |
-| Development | `*`               |
-| Production  | `production`      |
-
-And the following environments are set in
-[`.gitlab-ci.yml`](../../../ci/yaml/README.md):
-
-```yaml
-stages:
-- test
-- deploy
-
-test:
-  stage: test
-  script: sh test
-
-deploy to staging:
-  stage: deploy
-  script: make deploy
-  environment:
-    name: staging
-    url: https://staging.example.com/
-
-deploy to production:
-  stage: deploy
-  script: make deploy
-  environment:
-    name: production
-    url: https://example.com/
-```
-
-The result will then be:
-
-- The Development cluster details will be available in the `deploy to staging`
-  job.
-- The production cluster details will be available in the `deploy to production`
-  job.
-- No cluster details will be available in the `test` job because it doesn't
-  define any environment.
-
-### Multiple Kubernetes clusters **(PREMIUM)**
-
-> Introduced in [GitLab Premium](https://about.gitlab.com/pricing/) 10.3.
-
-With GitLab Premium, you can associate more than one Kubernetes cluster to your
-project. That way you can have different clusters for different environments,
-like dev, staging, production, and so on.
-
-Simply add another cluster, like you did the first time, and make sure to
-[set an environment scope](#setting-the-environment-scope-premium) that will
-differentiate the new cluster with the rest.
-
 ## Installing applications
 
 GitLab can install and manage some applications like Helm, GitLab Runner, Ingress,
@@ -276,6 +212,19 @@ Prometheus, and so on, in your project-level cluster. For more information on
 installing, upgrading, uninstalling, and troubleshooting applications for
 your project cluster, see
 [GitLab Managed Apps](../../clusters/applications.md).
+
+## Auto DevOps
+
+Auto DevOps automatically detects, builds, tests, deploys, and monitors your
+applications.
+
+To make full use of Auto DevOps (Auto Deploy, Auto Review Apps, and
+Auto Monitoring) you will need the Kubernetes project integration enabled.
+
+[Read more about Auto DevOps](../../../topics/autodevops/index.md)
+
+NOTE: **Note**
+Kubernetes clusters can be used without Auto DevOps.
 
 ## Deploying to a Kubernetes cluster
 
@@ -329,6 +278,54 @@ NOTE: **Note:** When using a [GitLab-managed cluster](#gitlab-managed-clusters),
 namespaces are created automatically prior to deployment and [can not be
 customized](https://gitlab.com/gitlab-org/gitlab/-/issues/38054).
 
+### Integrations
+
+#### Canary Deployments **(PREMIUM)**
+
+Leverage [Kubernetes' Canary deployments](https://kubernetes.io/docs/concepts/cluster-administration/manage-deployment/#canary-deployments)
+and visualize your canary deployments right inside the Deploy Board, without
+the need to leave GitLab.
+
+[Read more about Canary Deployments](../canary_deployments.md)
+
+#### Deploy Boards **(PREMIUM)**
+
+GitLab's Deploy Boards offer a consolidated view of the current health and
+status of each CI [environment](../../../ci/environments/index.md) running on Kubernetes,
+displaying the status of the pods in the deployment. Developers and other
+teammates can view the progress and status of a rollout, pod by pod, in the
+workflow they already use without any need to access Kubernetes.
+
+[Read more about Deploy Boards](../deploy_boards.md)
+
+#### Viewing pod logs
+
+GitLab makes it easy to view the logs of running pods in connected Kubernetes
+clusters. By displaying the logs directly in GitLab, developers can avoid having
+to manage console tools or jump to a different interface.
+
+[Read more about Kubernetes logs](kubernetes_pod_logs.md)
+
+#### Web terminals
+
+> Introduced in GitLab 8.15.
+
+When enabled, the Kubernetes integration adds [web terminal](../../../ci/environments/index.md#web-terminals)
+support to your [environments](../../../ci/environments/index.md). This is based
+on the `exec` functionality found in Docker and Kubernetes, so you get a new
+shell session within your existing containers. To use this integration, you
+should deploy to Kubernetes using the deployment variables above, ensuring any
+deployments, replica sets, and pods are annotated with:
+
+- `app.gitlab.com/env: $CI_ENVIRONMENT_SLUG`
+- `app.gitlab.com/app: $CI_PROJECT_PATH_SLUG`
+
+`$CI_ENVIRONMENT_SLUG` and `$CI_PROJECT_PATH_SLUG` are the values of
+the CI variables.
+
+You must be the project owner or have `maintainer` permissions to use terminals.
+Support is limited to the first container in the first pod of your environment.
+
 ### Troubleshooting
 
 Before the deployment jobs starts, GitLab creates the following specifically for
@@ -359,7 +356,14 @@ in a way that causes this error. Ensure you deselect the
 [GitLab-managed cluster](#gitlab-managed-clusters) option if you want to manage
 namespaces and service accounts yourself.
 
-## Monitoring your Kubernetes cluster **(ULTIMATE)**
+## Monitoring your Kubernetes cluster
+
+Automatically detect and monitor Kubernetes metrics. Automatic monitoring of
+[NGINX Ingress](../integrations/prometheus_library/nginx.md) is also supported.
+
+[Read more about Kubernetes monitoring](../integrations/prometheus_library/kubernetes.md)
+
+### Visualizing cluster health **(ULTIMATE)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/4701) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 10.6.
 

@@ -94,7 +94,8 @@ GET /groups?statistics=true
       "wiki_size" : 100,
       "lfs_objects_size" : 123,
       "job_artifacts_size" : 57,
-      "packages_size": 0
+      "packages_size": 0,
+      "snippets_size" : 50,
     }
   }
 ]

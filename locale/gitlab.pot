@@ -13264,6 +13264,9 @@ msgstr ""
 msgid "License History"
 msgstr ""
 
+msgid "License ID:"
+msgstr ""
+
 msgid "License URL"
 msgstr ""
 
@@ -14094,6 +14097,9 @@ msgid "MergeRequests|Saving the comment failed"
 msgstr ""
 
 msgid "MergeRequests|Squash task canceled: another squash is already in progress."
+msgstr ""
+
+msgid "MergeRequests|This project does not allow squashing commits when merge requests are accepted."
 msgstr ""
 
 msgid "MergeRequests|Thread stays resolved"

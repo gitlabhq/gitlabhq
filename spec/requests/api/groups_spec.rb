@@ -184,11 +184,12 @@ RSpec.describe API::Groups do
 
       it "includes statistics if requested" do
         attributes = {
-          storage_size: 1158,
+          storage_size: 2392,
           repository_size: 123,
           wiki_size: 456,
           lfs_objects_size: 234,
-          build_artifacts_size: 345
+          build_artifacts_size: 345,
+          snippets_size: 1234
         }.stringify_keys
         exposed_attributes = attributes.dup
         exposed_attributes['job_artifacts_size'] = exposed_attributes.delete('build_artifacts_size')

@@ -83,7 +83,6 @@ Each alert contains the following metrics:
 
 - **Severity** - The current importance of a alert and how much attention it should receive.
 - **Start time** - How long ago the alert fired. This field uses the standard GitLab pattern of `X time ago`, but is supported by a granular date/time tooltip depending on the user's locale.
-- **End time** - How long ago the alert fired was resolved. This field uses the standard GitLab pattern of `X time ago`, but is supported by a granular date/time tooltip depending on the user's locale.
 - **Alert description** - The description of the alert, which attempts to capture the most meaningful data.
 - **Event count** - The number of times that an alert has fired.
 - **Status** - The [current status](#alert-management-statuses) of the alert.

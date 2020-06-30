@@ -1930,7 +1930,7 @@ RSpec.describe API::MergeRequests do
     it "updates the MR's squash attribute" do
       expect do
         put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/merge", user), params: { squash: true }
-      end.to change { merge_request.reload.squash }
+      end.to change { merge_request.reload.squash_on_merge? }
 
       expect(response).to have_gitlab_http_status(:ok)
     end

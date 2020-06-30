@@ -16,7 +16,7 @@ module MergeRequests
                                      merge_request.target_branch,
                                      merge_request: merge_request)
 
-      if merge_request.squash
+      if merge_request.squash_on_merge?
         merge_request.update_column(:squash_commit_sha, merge_request.in_progress_merge_commit_sha)
       end
 

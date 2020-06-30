@@ -360,6 +360,25 @@ RSpec.describe MergeRequests::MergeService do
         expect(Gitlab::AppLogger).to have_received(:error).with(a_string_matching(error_message))
       end
 
+      context 'when squashing is required' do
+        before do
+          merge_request.update!(source_branch: 'master', target_branch: 'feature')
+          merge_request.target_project.project_setting.squash_always!
+        end
+
+        it 'raises an error if squashing is not done' do
+          error_message = 'requires squashing commits'
+
+          service.execute(merge_request)
+
+          expect(merge_request).to be_open
+
+          expect(merge_request.merge_commit_sha).to be_nil
+          expect(merge_request.merge_error).to include(error_message)
+          expect(Gitlab::AppLogger).to have_received(:error).with(a_string_matching(error_message))
+        end
+      end
+
       context 'when squashing' do
         before do
           merge_request.update!(source_branch: 'master', target_branch: 'feature')
