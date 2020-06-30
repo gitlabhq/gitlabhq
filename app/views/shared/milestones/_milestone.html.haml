@@ -5,17 +5,17 @@
 %li{ class: "milestone milestone-#{milestone.closed? ? 'closed' : 'open'}", id: custom_dom_id }
   .row
     .col-sm-6
-      .append-bottom-5
+      .gl-mb-2
         %strong= link_to truncate(milestone.title, length: 100), milestone_path(milestone)
         - if @group
           = " - #{milestone_type}"
 
       - if milestone.due_date || milestone.start_date
-        .text-tertiary.append-bottom-5
+        .text-tertiary.gl-mb-2
           = milestone_date_range(milestone)
       - recent_releases, total_count, more_count = recent_releases_with_counts(milestone)
       - unless total_count.zero?
-        .text-tertiary.append-bottom-5.milestone-release-links
+        .text-tertiary.gl-mb-2.milestone-release-links
           = sprite_icon("rocket", size: 12)
           = n_('Release', 'Releases', total_count)
           - recent_releases.each do |release|

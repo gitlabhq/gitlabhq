@@ -34,13 +34,9 @@ module QA
           merge_request_page.mark_to_squash
           merge_request_page.merge!
 
-          merge_request.project.visit!
-
           Git::Repository.perform do |repository|
-            repository.uri = merge_request.project.repository_http_location.uri
-
+            repository.uri = project.repository_http_location.uri
             repository.use_default_credentials
-
             repository.clone
 
             expect(repository.commits.size).to eq 3

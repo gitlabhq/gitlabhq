@@ -25,7 +25,7 @@ export default {
 };
 </script>
 <template>
-  <div class="report-block-list-issue-description prepend-top-5 append-bottom-5">
+  <div class="report-block-list-issue-description prepend-top-5 gl-mb-2">
     <div class="report-block-list-issue-description-text" data-testid="test-issue-body-description">
       <button
         type="button"

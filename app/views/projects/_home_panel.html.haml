@@ -10,7 +10,7 @@
         = project_icon(@project, alt: @project.name, class: 'avatar avatar-tile s64', width: 64, height: 64)
       .d-flex.flex-column.flex-wrap.align-items-baseline
         .d-inline-flex.align-items-baseline
-          %h1.home-panel-title.gl-mt-3.append-bottom-5{ data: { qa_selector: 'project_name_content' } }
+          %h1.home-panel-title.gl-mt-3.gl-mb-2{ data: { qa_selector: 'project_name_content' } }
             = @project.name
             %span.visibility-icon.text-secondary.gl-ml-2.has-tooltip{ data: { container: 'body' }, title: visibility_icon_description(@project) }
               = visibility_level_icon(@project.visibility_level, fw: false, options: {class: 'icon'})
