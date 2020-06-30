@@ -52,7 +52,6 @@ class Projects::IssuesController < Projects::ApplicationController
 
   before_action only: :show do
     push_frontend_feature_flag(:real_time_issue_sidebar, @project)
-    push_frontend_feature_flag(:confidential_notes, @project)
     push_frontend_feature_flag(:confidential_apollo_sidebar, @project)
   end
 

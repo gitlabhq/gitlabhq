@@ -224,7 +224,7 @@ gitlab:setup:
 rspec:coverage:
   extends:
     - .rails-job-base
-    - .rails:rules:ee-mr-and-master-only
+    - .rails:rules:rspec-coverage
   stage: post-test
   # We cannot use needs since it would mean needing 84 jobs (since most are parallelized)
   # so we use `dependencies` here.

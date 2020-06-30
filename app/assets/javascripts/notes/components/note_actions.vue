@@ -128,6 +128,9 @@ export default {
     isIssue() {
       return this.targetType === 'issue';
     },
+    canAssign() {
+      return this.getNoteableData.current_user?.can_update && this.isIssue;
+    },
   },
   methods: {
     onEdit() {
@@ -257,7 +260,7 @@ export default {
             {{ __('Copy link') }}
           </button>
         </li>
-        <li v-if="isIssue">
+        <li v-if="canAssign">
           <button
             class="btn-default btn-transparent"
             data-testid="assign-user"

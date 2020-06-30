@@ -12975,7 +12975,8 @@ CREATE TABLE public.namespace_root_storage_statistics (
     wiki_size bigint DEFAULT 0 NOT NULL,
     build_artifacts_size bigint DEFAULT 0 NOT NULL,
     storage_size bigint DEFAULT 0 NOT NULL,
-    packages_size bigint DEFAULT 0 NOT NULL
+    packages_size bigint DEFAULT 0 NOT NULL,
+    snippets_size bigint DEFAULT 0 NOT NULL
 );
 
 CREATE TABLE public.namespace_statistics (
@@ -23456,6 +23457,7 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200624075411
 20200624222443
 20200625045442
+20200625082258
 20200625190458
 20200626130220
 \.

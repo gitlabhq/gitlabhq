@@ -142,7 +142,7 @@ When you notice there are more job artifacts files on disk than there
 should be, you can run:
 
 ```shell
-gitlab-rake gitlab:cleanup:orphan_job_artifact_files
+sudo gitlab-rake gitlab:cleanup:orphan_job_artifact_files
 ```
 
 This command:
@@ -156,13 +156,13 @@ delete. Run the command with `DRY_RUN=false` if you actually want to
 delete the files:
 
 ```shell
-gitlab-rake gitlab:cleanup:orphan_job_artifact_files DRY_RUN=false
+sudo gitlab-rake gitlab:cleanup:orphan_job_artifact_files DRY_RUN=false
 ```
 
 You can also limit the number of files to delete with `LIMIT`:
 
 ```shell
-gitlab-rake gitlab:cleanup:orphan_job_artifact_files LIMIT=100
+sudo gitlab-rake gitlab:cleanup:orphan_job_artifact_files LIMIT=100
 ```
 
 This will only delete up to 100 files from disk. You can use this to

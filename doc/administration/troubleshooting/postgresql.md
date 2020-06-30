@@ -46,7 +46,7 @@ This section is for links to information elsewhere in the GitLab documentation.
 - Managing Omnibus PostgreSQL versions [from the development docs](https://docs.gitlab.com/omnibus/development/managing-postgresql-versions.html)
 
 - [PostgreSQL scaling](../postgresql/replication_and_failover.md)
-  - including [troubleshooting](../postgresql/replication_and_failover.md#troubleshooting) `gitlab-ctl repmgr-check-master` and PgBouncer errors
+  - including [troubleshooting](../postgresql/replication_and_failover.md#troubleshooting) `gitlab-ctl repmgr-check-master` (or `gitlab-ctl patroni check-leader` if you are using Patroni) and PgBouncer errors
 
 - [Developer database documentation](../../development/README.md#database-guides) - some of which is absolutely not for production use. Including:
   - understanding EXPLAIN plans

@@ -1,5 +1,4 @@
 <script>
-import * as Sentry from '@sentry/browser';
 import { mapState, mapActions } from 'vuex';
 import {
   GlDeprecatedBadge as GlBadge,
@@ -88,7 +87,7 @@ export default {
     this.fetchClusters();
   },
   methods: {
-    ...mapActions(['fetchClusters', 'setPage']),
+    ...mapActions(['fetchClusters', 'reportSentryError', 'setPage']),
     k8sQuantityToGb(quantity) {
       if (!quantity) {
         return 0;
@@ -150,7 +149,7 @@ export default {
           };
         }
       } catch (error) {
-        Sentry.captureException(error);
+        this.reportSentryError({ error, tag: 'totalMemoryAndUsageError' });
       }
 
       return { totalMemory: null, freeSpacePercentage: null };
@@ -183,7 +182,7 @@ export default {
           };
         }
       } catch (error) {
-        Sentry.captureException(error);
+        this.reportSentryError({ error, tag: 'totalCpuAndUsageError' });
       }
 
       return { totalCpu: null, freeSpacePercentage: null };

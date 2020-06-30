@@ -17,6 +17,7 @@ eslint-report.html
 .rbx/
 /.ruby-gemset
 /.ruby-version
+/.tool-versions
 /.rvmrc
 .sass-cache/
 /.secret
