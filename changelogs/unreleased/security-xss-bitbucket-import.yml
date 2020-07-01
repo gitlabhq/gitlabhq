@@ -1,5 +1,0 @@
----
-title: Sanitize bitbucket repo urls to mitigate XSS
-merge_request:
-author:
-type: security
