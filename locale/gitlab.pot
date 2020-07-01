@@ -1391,6 +1391,9 @@ msgstr ""
 msgid "Add approval rule"
 msgstr ""
 
+msgid "Add approvers"
+msgstr ""
+
 msgid "Add bold text"
 msgstr ""
 
@@ -2279,6 +2282,9 @@ msgid "An error occurred when updating the issue weight"
 msgstr ""
 
 msgid "An error occurred while acknowledging the notification. Refresh the page and try again."
+msgstr ""
+
+msgid "An error occurred while adding approvers"
 msgstr ""
 
 msgid "An error occurred while adding formatted title for epic"
@@ -12716,6 +12722,9 @@ msgstr ""
 msgid "January"
 msgstr ""
 
+msgid "Jira Issues"
+msgstr ""
+
 msgid "Jira import is already running."
 msgstr ""
 
@@ -13261,6 +13270,12 @@ msgstr ""
 msgid "License-Check"
 msgstr ""
 
+msgid "LicenseCompliance|%{docLinkStart}License Approvals%{docLinkEnd} are active"
+msgstr ""
+
+msgid "LicenseCompliance|%{docLinkStart}License Approvals%{docLinkEnd} are inactive"
+msgstr ""
+
 msgid "LicenseCompliance|Add a license"
 msgstr ""
 
@@ -13282,7 +13297,13 @@ msgstr ""
 msgid "LicenseCompliance|Deny"
 msgstr ""
 
+msgid "LicenseCompliance|Learn more about %{linkStart}License Approvals%{linkEnd}"
+msgstr ""
+
 msgid "LicenseCompliance|License"
+msgstr ""
+
+msgid "LicenseCompliance|License Approvals"
 msgstr ""
 
 msgid "LicenseCompliance|License Compliance detected %d license and policy violation for the source branch only; approval required"
@@ -24573,6 +24594,9 @@ msgstr ""
 msgid "Update approval rule"
 msgstr ""
 
+msgid "Update approvers"
+msgstr ""
+
 msgid "Update failed"
 msgstr ""
 
@@ -27184,6 +27208,9 @@ msgid "limit of %{project_limit} reached"
 msgstr ""
 
 msgid "load it anyway"
+msgstr ""
+
+msgid "loading"
 msgstr ""
 
 msgid "locked by %{path_lock_user_name} %{created_at}"

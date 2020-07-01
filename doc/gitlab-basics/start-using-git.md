@@ -1,7 +1,7 @@
 ---
 type: howto, tutorial
 description: "Introduction to using Git through the command line."
-last_updated: 2020-04-22
+last_updated: 2020-06-30
 ---
 
 # Start using Git on the command line

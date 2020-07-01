@@ -20,7 +20,7 @@ Adjust your project's name, description, avatar, [default branch](../repository/
 
 The project description also partially supports [standard Markdown](../../markdown.md#standard-markdown-and-extensions-in-gitlab). You can use [emphasis](../../markdown.md#emphasis), [links](../../markdown.md#links), and [line-breaks](../../markdown.md#line-breaks) to add more context to the project description.
 
-#### Compliance framework **(ULTIMATE)**
+#### Compliance framework **(PREMIUM)**
 
 You can select a framework label to identify that your project has certain compliance requirements or needs additional oversight. Available labels include:
 

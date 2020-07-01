@@ -39,7 +39,7 @@ module Gitlab
             .merge(object_store_usage_data)
             .merge(topology_usage_data)
             .merge(usage_activity_by_stage)
-            .merge(usage_activity_by_stage(:usage_activity_by_stage_monthly, default_time_period))
+            .merge(usage_activity_by_stage(:usage_activity_by_stage_monthly, last_28_days_time_period))
             .merge(analytics_unique_visits_data)
         end
       end
@@ -160,7 +160,7 @@ module Gitlab
             user_preferences_usage,
             ingress_modsecurity_usage,
             container_expiration_policies_usage,
-            merge_requests_usage(default_time_period)
+            merge_requests_usage(last_28_days_time_period)
           ).tap do |data|
             data[:snippets] = data[:personal_snippets] + data[:project_snippets]
           end
@@ -171,8 +171,8 @@ module Gitlab
       def system_usage_data_monthly
         {
           counts_monthly: {
-            personal_snippets: count(PersonalSnippet.where(default_time_period)),
-            project_snippets: count(ProjectSnippet.where(default_time_period))
+            personal_snippets: count(PersonalSnippet.where(last_28_days_time_period)),
+            project_snippets: count(ProjectSnippet.where(last_28_days_time_period))
           }.tap do |data|
             data[:snippets] = data[:personal_snippets] + data[:project_snippets]
           end
@@ -433,7 +433,7 @@ module Gitlab
         end
       end
 
-      def default_time_period
+      def last_28_days_time_period
         { created_at: 28.days.ago..Time.current }
       end
 
