@@ -1,7 +1,5 @@
 <script>
-import { escape } from 'lodash';
-import { GlTooltip } from '@gitlab/ui';
-import { __, sprintf } from '~/locale';
+import { GlTooltip, GlSprintf } from '@gitlab/ui';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import FileIcon from '~/vue_shared/components/file_icon.vue';
 import Icon from '~/vue_shared/components/icon.vue';
@@ -11,6 +9,7 @@ export default {
     ClipboardButton,
     FileIcon,
     Icon,
+    GlSprintf,
   },
   directives: {
     GlTooltip,
@@ -57,36 +56,6 @@ export default {
     collapseIcon() {
       return this.isExpanded ? 'chevron-down' : 'chevron-right';
     },
-    errorFnText() {
-      return this.errorFn
-        ? sprintf(
-            __(`%{spanStart}in%{spanEnd} %{errorFn}`),
-            {
-              errorFn: `<strong>${escape(this.errorFn)}</strong>`,
-              spanStart: `<span class="text-tertiary">`,
-              spanEnd: `</span>`,
-            },
-            false,
-          )
-        : '';
-    },
-    errorPositionText() {
-      return this.errorLine
-        ? sprintf(
-            __(`%{spanStart}at line%{spanEnd} %{errorLine}%{errorColumn}`),
-            {
-              errorLine: `<strong>${this.errorLine}</strong>`,
-              errorColumn: this.errorColumn ? `:<strong>${this.errorColumn}</strong>` : ``,
-              spanStart: `<span class="text-tertiary">`,
-              spanEnd: `</span>`,
-            },
-            false,
-          )
-        : '';
-    },
-    errorInfo() {
-      return `${this.errorFnText} ${this.errorPositionText}`;
-    },
   },
   methods: {
     isHighlighted(lineNum) {
@@ -132,7 +101,27 @@ export default {
           :text="filePath"
           css-class="btn-default btn-transparent btn-clipboard position-static"
         />
-        <span v-html="errorInfo"></span>
+
+        <gl-sprintf v-if="errorFn" :message="__('%{spanStart}in%{spanEnd} %{errorFn}')">
+          <template #span="{content}">
+            <span class="gl-text-gray-400">{{ content }}&nbsp;</span>
+          </template>
+          <template #errorFn>
+            <strong>{{ errorFn }}&nbsp;</strong>
+          </template>
+        </gl-sprintf>
+
+        <gl-sprintf :message="__('%{spanStart}at line%{spanEnd} %{errorLine}%{errorColumn}')">
+          <template #span="{content}">
+            <span class="gl-text-gray-400">{{ content }}&nbsp;</span>
+          </template>
+          <template #errorLine>
+            <strong>{{ errorLine }}</strong>
+          </template>
+          <template #errorColumn>
+            <strong v-if="errorColumn">:{{ errorColumn }}</strong>
+          </template>
+        </gl-sprintf>
       </div>
     </div>
 

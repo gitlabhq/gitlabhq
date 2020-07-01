@@ -4,6 +4,10 @@ module API
   class ImportGithub < Grape::API
     rescue_from Octokit::Unauthorized, with: :provider_unauthorized
 
+    before do
+      forbidden! unless Gitlab::CurrentSettings.import_sources&.include?('github')
+    end
+
     helpers do
       def client
         @client ||= Gitlab::LegacyGithubImport::Client.new(params[:personal_access_token], client_options)

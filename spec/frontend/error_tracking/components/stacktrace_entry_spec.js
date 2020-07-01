@@ -1,8 +1,10 @@
 import { shallowMount } from '@vue/test-utils';
+import { GlSprintf } from '@gitlab/ui';
 import StackTraceEntry from '~/error_tracking/components/stacktrace_entry.vue';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import FileIcon from '~/vue_shared/components/file_icon.vue';
 import Icon from '~/vue_shared/components/icon.vue';
+import { trimText } from 'helpers/text_helper';
 
 describe('Stacktrace Entry', () => {
   let wrapper;
@@ -20,6 +22,9 @@ describe('Stacktrace Entry', () => {
         filePath: 'sidekiq/util.rb',
         errorLine: 24,
         ...props,
+      },
+      stubs: {
+        GlSprintf,
       },
     });
   }
@@ -53,7 +58,7 @@ describe('Stacktrace Entry', () => {
       const extraInfo = { errorLine: 34, errorFn: 'errorFn', errorColumn: 77 };
       mountComponent({ expanded: false, lines: [], ...extraInfo });
       expect(wrapper.find(Icon).exists()).toBe(false);
-      expect(findFileHeaderContent()).toContain(
+      expect(trimText(findFileHeaderContent())).toContain(
         `in ${extraInfo.errorFn} at line ${extraInfo.errorLine}:${extraInfo.errorColumn}`,
       );
     });
@@ -61,17 +66,17 @@ describe('Stacktrace Entry', () => {
     it('should render only lineNo:columnNO when there is no errorFn ', () => {
       const extraInfo = { errorLine: 34, errorFn: null, errorColumn: 77 };
       mountComponent({ expanded: false, lines: [], ...extraInfo });
-      expect(findFileHeaderContent()).not.toContain(`in ${extraInfo.errorFn}`);
-      expect(findFileHeaderContent()).toContain(`${extraInfo.errorLine}:${extraInfo.errorColumn}`);
+      const fileHeaderContent = trimText(findFileHeaderContent());
+      expect(fileHeaderContent).not.toContain(`in ${extraInfo.errorFn}`);
+      expect(fileHeaderContent).toContain(`${extraInfo.errorLine}:${extraInfo.errorColumn}`);
     });
 
     it('should render only lineNo when there is no errorColumn ', () => {
       const extraInfo = { errorLine: 34, errorFn: 'errorFn', errorColumn: null };
       mountComponent({ expanded: false, lines: [], ...extraInfo });
-      expect(findFileHeaderContent()).toContain(
-        `in ${extraInfo.errorFn} at line ${extraInfo.errorLine}`,
-      );
-      expect(findFileHeaderContent()).not.toContain(`:${extraInfo.errorColumn}`);
+      const fileHeaderContent = trimText(findFileHeaderContent());
+      expect(fileHeaderContent).toContain(`in ${extraInfo.errorFn} at line ${extraInfo.errorLine}`);
+      expect(fileHeaderContent).not.toContain(`:${extraInfo.errorColumn}`);
     });
   });
 });
