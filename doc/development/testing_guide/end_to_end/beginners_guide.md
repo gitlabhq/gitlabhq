@@ -62,7 +62,7 @@ end-to-end flows, and is easiest to understand.
 The GitLab QA end-to-end tests are organized by the different
 [stages in the DevOps lifecycle](https://gitlab.com/gitlab-org/gitlab-foss/tree/master/qa/qa/specs/features/browser_ui).
 Determine where the test should be placed by
-[stage](https://about.gitlab.com/handbook/product/categories/#devops-stages),
+[stage](https://about.gitlab.com/handbook/product/product-categories/#devops-stages),
 determine which feature the test will belong to, and then place it in a subdirectory
 under the stage.
 

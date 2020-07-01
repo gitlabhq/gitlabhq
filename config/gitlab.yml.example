@@ -521,6 +521,11 @@ production: &base
     elastic_index_initial_bulk_cron_worker:
       cron: "*/1 * * * *"
 
+    # Elasticsearch reindexing worker
+    # NOTE: This will only take effect if elasticsearch is enabled.
+    elastic_index_initial_bulk_cron_worker:
+      cron: "*/10 * * * *"
+
   registry:
     # enabled: true
     # host: registry.example.com

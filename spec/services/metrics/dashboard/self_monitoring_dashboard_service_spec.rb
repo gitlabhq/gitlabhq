@@ -44,7 +44,8 @@ RSpec.describe Metrics::Dashboard::SelfMonitoringDashboardService, :use_clean_ra
           path: described_class::DASHBOARD_PATH,
           display_name: described_class::DASHBOARD_NAME,
           default: true,
-          system_dashboard: false
+          system_dashboard: false,
+          out_of_the_box_dashboard: true
         }]
       )
     end

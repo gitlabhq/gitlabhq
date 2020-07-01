@@ -356,13 +356,8 @@ module Ci
       end
 
       context 'runner feature set is verified' do
-        let!(:pending_job) { create(:ci_build, :pending, pipeline: pipeline) }
-
-        before do
-          expect_any_instance_of(Ci::Build).to receive(:runner_required_feature_names) do
-            [:runner_required_feature]
-          end
-        end
+        let(:options) { { artifacts: { reports: { junit: "junit.xml" } } } }
+        let!(:pending_job) { create(:ci_build, :pending, pipeline: pipeline, options: options) }
 
         subject { execute(specific_runner, params) }
 
@@ -378,7 +373,7 @@ module Ci
 
         context 'when feature is supported by runner' do
           let(:params) do
-            { info: { features: { runner_required_feature: true } } }
+            { info: { features: { upload_multiple_artifacts: true } } }
           end
 
           it 'does pick job' do

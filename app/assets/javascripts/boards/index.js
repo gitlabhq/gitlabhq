@@ -80,15 +80,7 @@ export default () => {
     el: $boardApp,
     components: {
       BoardContent,
-      Board: () =>
-        window?.gon?.features?.sfcIssueBoards
-          ? import('ee_else_ce/boards/components/board_column.vue')
-          : /**
-             * Please have a look at, we are moving to the SFC soon:
-             * https://gitlab.com/gitlab-org/gitlab/-/issues/212300
-             * @deprecated
-             */
-            import('ee_else_ce/boards/components/board'),
+      Board: () => import('ee_else_ce/boards/components/board_column.vue'),
       BoardSidebar,
       BoardAddIssuesModal,
       BoardSettingsSidebar: () =>

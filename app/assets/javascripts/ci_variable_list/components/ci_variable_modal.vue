@@ -230,6 +230,7 @@ export default {
           rows="3"
           max-rows="6"
           data-qa-selector="ci_variable_value_field"
+          class="gl-font-monospace!"
         />
       </gl-form-group>
 

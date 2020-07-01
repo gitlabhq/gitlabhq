@@ -88,11 +88,26 @@ RSpec.describe MetricsDashboard do
 
         context 'in all_dashboard list' do
           let(:system_dashboard) { json_response['all_dashboards'].find { |dashboard| dashboard["system_dashboard"] == true } }
-          let(:project_dashboard) { json_response['all_dashboards'].find { |dashboard| dashboard["system_dashboard"] == false } }
+
+          let(:project_dashboard) do
+            json_response['all_dashboards'].find do |dashboard|
+              dashboard['path'] == '.gitlab/dashboards/test.yml'
+            end
+          end
 
           it 'includes project_blob_path only for project dashboards' do
             expect(system_dashboard['project_blob_path']).to be_nil
             expect(project_dashboard['project_blob_path']).to eq("/#{project.namespace.path}/#{project.name}/-/blob/master/.gitlab/dashboards/test.yml")
+          end
+
+          it 'allows editing only for project dashboards' do
+            expect(system_dashboard['can_edit']).to be(false)
+            expect(project_dashboard['can_edit']).to be(true)
+          end
+
+          it 'includes out_of_the_box_dashboard key' do
+            expect(system_dashboard['out_of_the_box_dashboard']).to be(true)
+            expect(project_dashboard['out_of_the_box_dashboard']).to be(false)
           end
 
           describe 'project permissions' do

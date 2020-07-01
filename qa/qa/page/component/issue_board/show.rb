@@ -39,11 +39,6 @@ module QA
             element :boards_list
           end
 
-          view 'app/views/shared/boards/components/_board.html.haml' do
-            element :board_list
-            element :board_list_header
-          end
-
           view 'app/assets/javascripts/boards/toggle_focus.js' do
             element :focus_mode_button
           end

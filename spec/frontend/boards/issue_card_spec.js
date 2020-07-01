@@ -6,7 +6,7 @@ import '~/boards/models/assignee';
 import '~/boards/models/issue';
 import '~/boards/models/list';
 import IssueCardInner from '~/boards/components/issue_card_inner.vue';
-import { listObj } from '../../javascripts/boards/mock_data';
+import { listObj } from './mock_data';
 import store from '~/boards/stores';
 import { GlLabel } from '@gitlab/ui';
 

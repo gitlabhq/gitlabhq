@@ -47,7 +47,8 @@ RSpec.describe Metrics::Dashboard::SystemDashboardService, :use_clean_rails_memo
           path: described_class::DASHBOARD_PATH,
           display_name: described_class::DASHBOARD_NAME,
           default: true,
-          system_dashboard: true
+          system_dashboard: true,
+          out_of_the_box_dashboard: true
         }]
       )
     end

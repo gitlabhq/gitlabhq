@@ -4,7 +4,7 @@ import { shallowMount } from '@vue/test-utils';
 import IssueMilestone from '~/vue_shared/components/issue/issue_milestone.vue';
 import Icon from '~/vue_shared/components/icon.vue';
 
-import { mockMilestone } from '../../../../javascripts/boards/mock_data';
+import { mockMilestone } from 'jest/boards/mock_data';
 
 const createComponent = (milestone = mockMilestone) => {
   const Component = Vue.extend(IssueMilestone);

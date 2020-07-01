@@ -11093,6 +11093,32 @@ CREATE SEQUENCE public.draft_notes_id_seq
 
 ALTER SEQUENCE public.draft_notes_id_seq OWNED BY public.draft_notes.id;
 
+CREATE TABLE public.elastic_reindexing_tasks (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    documents_count integer,
+    state smallint DEFAULT 0 NOT NULL,
+    in_progress boolean DEFAULT true NOT NULL,
+    index_name_from text,
+    index_name_to text,
+    elastic_task text,
+    error_message text,
+    CONSTRAINT check_04151aca42 CHECK ((char_length(index_name_from) <= 255)),
+    CONSTRAINT check_7f64acda8e CHECK ((char_length(error_message) <= 255)),
+    CONSTRAINT check_85ebff7124 CHECK ((char_length(index_name_to) <= 255)),
+    CONSTRAINT check_942e5aae53 CHECK ((char_length(elastic_task) <= 255))
+);
+
+CREATE SEQUENCE public.elastic_reindexing_tasks_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE public.elastic_reindexing_tasks_id_seq OWNED BY public.elastic_reindexing_tasks.id;
+
 CREATE TABLE public.elasticsearch_indexed_namespaces (
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
@@ -16440,6 +16466,8 @@ ALTER TABLE ONLY public.diff_note_positions ALTER COLUMN id SET DEFAULT nextval(
 
 ALTER TABLE ONLY public.draft_notes ALTER COLUMN id SET DEFAULT nextval('public.draft_notes_id_seq'::regclass);
 
+ALTER TABLE ONLY public.elastic_reindexing_tasks ALTER COLUMN id SET DEFAULT nextval('public.elastic_reindexing_tasks_id_seq'::regclass);
+
 ALTER TABLE ONLY public.emails ALTER COLUMN id SET DEFAULT nextval('public.emails_id_seq'::regclass);
 
 ALTER TABLE ONLY public.environments ALTER COLUMN id SET DEFAULT nextval('public.environments_id_seq'::regclass);
@@ -17412,6 +17440,9 @@ ALTER TABLE ONLY public.diff_note_positions
 
 ALTER TABLE ONLY public.draft_notes
     ADD CONSTRAINT draft_notes_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY public.elastic_reindexing_tasks
+    ADD CONSTRAINT elastic_reindexing_tasks_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY public.emails
     ADD CONSTRAINT emails_pkey PRIMARY KEY (id);
@@ -18925,6 +18956,10 @@ CREATE INDEX index_draft_notes_on_author_id ON public.draft_notes USING btree (a
 CREATE INDEX index_draft_notes_on_discussion_id ON public.draft_notes USING btree (discussion_id);
 
 CREATE INDEX index_draft_notes_on_merge_request_id ON public.draft_notes USING btree (merge_request_id);
+
+CREATE UNIQUE INDEX index_elastic_reindexing_tasks_on_in_progress ON public.elastic_reindexing_tasks USING btree (in_progress) WHERE in_progress;
+
+CREATE INDEX index_elastic_reindexing_tasks_on_state ON public.elastic_reindexing_tasks USING btree (state);
 
 CREATE INDEX index_elasticsearch_indexed_namespaces_on_created_at ON public.elasticsearch_indexed_namespaces USING btree (created_at);
 
@@ -23488,6 +23523,7 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200623000148
 20200623000320
 20200623121135
+20200623141544
 20200623170000
 20200623185440
 20200624075411

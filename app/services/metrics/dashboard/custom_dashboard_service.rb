@@ -21,7 +21,8 @@ module Metrics
                 path: filepath,
                 display_name: name_for_path(filepath),
                 default: false,
-                system_dashboard: false
+                system_dashboard: false,
+                out_of_the_box_dashboard: out_of_the_box_dashboard?
               }
             end
         end

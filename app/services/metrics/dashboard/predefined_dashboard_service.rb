@@ -24,6 +24,10 @@ module Metrics
         def matching_dashboard?(filepath)
           filepath == self::DASHBOARD_PATH
         end
+
+        def out_of_the_box_dashboard?
+          true
+        end
       end
 
       private

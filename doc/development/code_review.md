@@ -95,7 +95,7 @@ with [domain expertise](#domain-experts).
    **approved by a [Distribution team member](https://about.gitlab.com/company/team/)**. See how to work with the [Distribution team](https://about.gitlab.com/handbook/engineering/development/enablement/distribution/#how-to-work-with-distribution) for more details.
 1. If your merge request includes documentation changes, it must be **approved
    by a [Technical writer](https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers)**, based on
-   the appropriate [product category](https://about.gitlab.com/handbook/product/categories/).
+   the appropriate [product category](https://about.gitlab.com/handbook/product/product-categories/).
 1. If your merge request includes Quality and non-Quality-related changes (*3*), it must be **approved
    by a [Software Engineer in Test](https://about.gitlab.com/handbook/engineering/quality/#individual-contributors)**.
 1. If your merge request includes _only_ Quality-related changes (*3*), it must be **approved

@@ -41,7 +41,7 @@ module MetricsDashboard
   end
 
   def amend_dashboard(dashboard)
-    project_dashboard = project_for_dashboard && !dashboard[:system_dashboard]
+    project_dashboard = project_for_dashboard && !dashboard[:out_of_the_box_dashboard]
 
     dashboard[:can_edit] = project_dashboard ? can_edit?(dashboard) : false
     dashboard[:project_blob_path] = project_dashboard ? dashboard_project_blob_path(dashboard) : nil

@@ -9,7 +9,6 @@ class Projects::BoardsController < Projects::ApplicationController
   before_action :assign_endpoint_vars
   before_action do
     push_frontend_feature_flag(:multi_select_board, default_enabled: true)
-    push_frontend_feature_flag(:sfc_issue_boards, default_enabled: true)
   end
 
   private

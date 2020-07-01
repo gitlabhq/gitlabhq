@@ -1,7 +1,7 @@
 import { shallowMount } from '@vue/test-utils';
 import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
 import IssueAssignees from '~/vue_shared/components/issue/issue_assignees.vue';
-import { mockAssigneesList } from '../../../../javascripts/boards/mock_data';
+import { mockAssigneesList } from 'jest/boards/mock_data';
 
 const TEST_CSS_CLASSES = 'test-classes';
 const TEST_MAX_VISIBLE = 4;

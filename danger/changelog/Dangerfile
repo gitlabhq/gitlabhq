@@ -50,7 +50,7 @@ rescue Psych::SyntaxError, Psych::DisallowedClass, Psych::BadAlias
   # YAML could not be parsed, fail the build.
   fail "#{gitlab.html_link(path)} isn't valid YAML! #{SEE_DOC}"
 rescue StandardError => e
-  warn "There was a problem trying to check the Changelog. Exception: #{e.name} - #{e.message}"
+  warn "There was a problem trying to check the Changelog. Exception: #{e.class.name} - #{e.message}"
 end
 
 def check_changelog_path(path)

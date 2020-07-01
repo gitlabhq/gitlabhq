@@ -13,7 +13,6 @@
 - content_for :page_specific_javascripts do
 
   -# haml-lint:disable InlineJavaScript
-  %script#js-board-template{ type: "text/x-template" }= render "shared/boards/components/board"
   %script#js-board-modal-filter{ type: "text/x-template" }= render "shared/issuable/search_bar", type: :boards_modal, show_sorting_dropdown: false
   %script#js-board-promotion{ type: "text/x-template" }= render_if_exists "shared/promotions/promote_issue_board"
 

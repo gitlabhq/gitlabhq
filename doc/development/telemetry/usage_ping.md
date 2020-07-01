@@ -22,8 +22,8 @@ More useful links:
 
 - [Telemetry Direction](https://about.gitlab.com/direction/telemetry/)
 - [Data Analysis Process](https://about.gitlab.com/handbook/business-ops/data-team/#-data-analysis-process)
-- [Data for Product Managers](https://about.gitlab.com/handbook/business-ops/data-team/data-for-product-managers/)
-- [Data Infrastructure](https://about.gitlab.com/handbook/business-ops/data-team/data-infrastructure/)
+- [Data for Product Managers](https://about.gitlab.com/handbook/business-ops/data-team/data-programs/data-for-product-managers/)
+- [Data Infrastructure](https://about.gitlab.com/handbook/business-ops/data-team/data-platform/data-infrastructure/)
 
 ## What is Usage Ping?
 
@@ -326,7 +326,7 @@ When adding, changing, or updating metrics, please update the [Usage Statistics 
 
 Check if new metrics need to be added to the Versions Application. See `usage_data` [schema](https://gitlab.com/gitlab-services/version-gitlab-com/-/blob/master/db/schema.rb#L147) and usage data [parameters accepted](https://gitlab.com/gitlab-services/version-gitlab-com/-/blob/master/app/services/usage_ping.rb). Any metrics added under the `counts` key are saved in the `counts` column.
 
-For further details, see the [Process to add additional instrumentation to the Usage Ping](https://about.gitlab.com/handbook/product/feature-instrumentation/#process-to-add-additional-instrumentation-to-the-usage-ping).
+For further details, see the [Process to add additional instrumentation to the Usage Ping](https://about.gitlab.com/handbook/product/product-processes/#process-to-add-additional-instrumentation-to-the-usage-ping).
 
 ### 6. Add the feature label
 

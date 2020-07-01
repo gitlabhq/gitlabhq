@@ -1,4 +1,5 @@
 import * as monitoringUtils from '~/monitoring/utils';
+import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import * as urlUtils from '~/lib/utils/url_utility';
 import { TEST_HOST } from 'jest/helpers/test_constants';
 import {
@@ -7,7 +8,7 @@ import {
   anomalyMockGraphData,
   barMockData,
 } from './mock_data';
-import { metricsDashboardViewModel, graphData } from './fixture_data';
+import { metricsDashboardResponse, metricsDashboardViewModel, graphData } from './fixture_data';
 
 const mockPath = `${TEST_HOST}${mockProjectDir}/-/environments/29/metrics`;
 
@@ -25,6 +26,15 @@ const rollingRange = {
 };
 
 describe('monitoring/utils', () => {
+  describe('stateAndPropsFromDataset', () => {
+    it('initial monitoring data from fixture should match snapshot', () => {
+      const datasetState = monitoringUtils.stateAndPropsFromDataset(
+        convertObjectPropsToCamelCase(metricsDashboardResponse.metrics_data),
+      );
+      expect(datasetState).toMatchSnapshot();
+    });
+  });
+
   describe('trackGenerateLinkToChartEventOptions', () => {
     it('should return Cluster Monitoring options if located on Cluster Health Dashboard', () => {
       document.body.dataset.page = 'groups:clusters:show';

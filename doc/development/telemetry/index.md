@@ -45,8 +45,8 @@ More useful links:
 
 - [Telemetry Direction](https://about.gitlab.com/direction/telemetry/)
 - [Data Analysis Process](https://about.gitlab.com/handbook/business-ops/data-team/#-data-analysis-process)
-- [Data for Product Managers](https://about.gitlab.com/handbook/business-ops/data-team/data-for-product-managers/)
-- [Data Infrastructure](https://about.gitlab.com/handbook/business-ops/data-team/data-infrastructure/)
+- [Data for Product Managers](https://about.gitlab.com/handbook/business-ops/data-team/data-programs/data-for-product-managers/)
+- [Data Infrastructure](https://about.gitlab.com/handbook/business-ops/data-team/data-platform/data-infrastructure/)
 
 ## Our tracking tools
 
@@ -144,7 +144,7 @@ The systems overview is a simplified diagram showing the interactions between Gi
 
 For Telemetry purposes, GitLab Inc has three major components:
 
-1. [Data Infrastructure](https://about.gitlab.com/handbook/business-ops/data-team/data-infrastructure/): This contains everything managed by our data team including Sisense Dashboards for visualization, Snowflake for Data Warehousing, incoming data sources such as PostgreSQL Pipeline and S3 Bucket, and lastly our data collectors [GitLab.com's Snowplow Collector](https://about.gitlab.com/handbook/engineering/infrastructure/library/snowplow/) and GitLab's Versions Application.
+1. [Data Infrastructure](https://about.gitlab.com/handbook/business-ops/data-team/data-platform/data-infrastructure/): This contains everything managed by our data team including Sisense Dashboards for visualization, Snowflake for Data Warehousing, incoming data sources such as PostgreSQL Pipeline and S3 Bucket, and lastly our data collectors [GitLab.com's Snowplow Collector](https://about.gitlab.com/handbook/engineering/infrastructure/library/snowplow/) and GitLab's Versions Application.
 1. GitLab.com: This is the production GitLab application which is made up of a Client and Server. On the Client or browser side, a Snowplow JS Tracker (Frontend) is used to track client-side events. On the Server or application side, a Snowplow Ruby Tracker (Backend) is used to track server-side events. The server also contains Usage Ping which leverages a PostgreSQL database and a Redis in-memory data store to report on usage data. Lastly, the server also contains System Logs which are generated from running the GitLab application.
 1. [Monitoring infrastructure](https://about.gitlab.com/handbook/engineering/monitoring/): This is the infrastructure used to ensure GitLab.com is operating smoothly. System Logs are sent from GitLab.com to our monitoring infrastructure and collected by a FluentD collector. From FluentD, logs are either sent to long term Google Cloud Services cold storage via Stackdriver, or, they are sent to our Elastic Cluster via Cloud Pub/Sub which can be explored in real-time using Kibana.
 

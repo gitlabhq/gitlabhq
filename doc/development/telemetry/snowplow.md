@@ -25,8 +25,8 @@ More useful links:
 
 - [Telemetry Direction](https://about.gitlab.com/direction/telemetry/)
 - [Data Analysis Process](https://about.gitlab.com/handbook/business-ops/data-team/#-data-analysis-process)
-- [Data for Product Managers](https://about.gitlab.com/handbook/business-ops/data-team/data-for-product-managers/)
-- [Data Infrastructure](https://about.gitlab.com/handbook/business-ops/data-team/data-infrastructure/)
+- [Data for Product Managers](https://about.gitlab.com/handbook/business-ops/data-team/data-programs/data-for-product-managers/)
+- [Data Infrastructure](https://about.gitlab.com/handbook/business-ops/data-team/data-platform/data-infrastructure/)
 
 ## What is Snowplow
 
@@ -49,7 +49,7 @@ From [Snowplow's documentation](https://github.com/snowplow/snowplow), Snowplow 
 We currently have many definitions of Snowplow's schema. We have an active issue to [standardize this schema](https://gitlab.com/gitlab-org/gitlab/-/issues/207930) including the following definitions:
 
 - Frontend and backend taxonomy as listed below
-- [Feature instrumentation taxonomy](https://about.gitlab.com/handbook/product/feature-instrumentation/#taxonomy)
+- [Feature instrumentation taxonomy](https://about.gitlab.com/handbook/product/product-processes/#taxonomy)
 - [Self describing events](https://github.com/snowplow/snowplow/wiki/Custom-events#self-describing-events)
 - [Iglu schema](https://gitlab.com/gitlab-org/iglu/)
 - [Snowplow authored events](https://github.com/snowplow/snowplow/wiki/Snowplow-authored-events)
@@ -101,13 +101,13 @@ sequenceDiagram
 
 ## Implementing Snowplow JS (Frontend) tracking
 
-GitLab provides `Tracking`, an interface that wraps the [Snowplow JavaScript Tracker](https://github.com/snowplow/snowplow/wiki/javascript-tracker) for tracking custom events. There are a few ways to utilize tracking, but each generally requires at minimum, a `category` and an `action`. Additional data can be provided that adheres to our [Feature instrumentation taxonomy](https://about.gitlab.com/handbook/product/feature-instrumentation/#taxonomy).
+GitLab provides `Tracking`, an interface that wraps the [Snowplow JavaScript Tracker](https://github.com/snowplow/snowplow/wiki/javascript-tracker) for tracking custom events. There are a few ways to utilize tracking, but each generally requires at minimum, a `category` and an `action`. Additional data can be provided that adheres to our [Feature instrumentation taxonomy](https://about.gitlab.com/handbook/product/product-processes/#taxonomy).
 
 | field      | type   | default value              | description |
 |:-----------|:-------|:---------------------------|:------------|
 | `category` | string | document.body.dataset.page | Page or subsection of a page that events are being captured within. |
 | `action`   | string | 'generic'                  | Action the user is taking. Clicks should be `click` and activations should be `activate`, so for example, focusing a form field would be `activate_form_input`, and clicking a button would be `click_button`. |
-| `data`     | object | {}                         | Additional data such as `label`, `property`, `value`, and `context` as described [in our Feature Instrumentation taxonomy](https://about.gitlab.com/handbook/product/feature-instrumentation/#taxonomy). |
+| `data`     | object | {}                         | Additional data such as `label`, `property`, `value`, and `context` as described [in our Feature Instrumentation taxonomy](https://about.gitlab.com/handbook/product/product-processes/#taxonomy). |
 
 ### Tracking in HAML (or Vue Templates)
 
@@ -134,10 +134,10 @@ Below is a list of supported `data-track-*` attributes:
 | attribute             | required | description |
 |:----------------------|:---------|:------------|
 | `data-track-event`    | true     | Action the user is taking. Clicks must be prepended with `click` and activations must be prepended with `activate`. For example, focusing a form field would be `activate_form_input` and clicking a button would be `click_button`. |
-| `data-track-label`    | false    | The `label` as described [in our Feature Instrumentation taxonomy](https://about.gitlab.com/handbook/product/feature-instrumentation/#taxonomy). |
-| `data-track-property` | false    | The `property` as described [in our Feature Instrumentation taxonomy](https://about.gitlab.com/handbook/product/feature-instrumentation/#taxonomy). |
-| `data-track-value`    | false    | The `value` as described [in our Feature Instrumentation taxonomy](https://about.gitlab.com/handbook/product/feature-instrumentation/#taxonomy). If omitted, this will be the element's `value` property or an empty string. For checkboxes, the default value will be the element's checked attribute or `false` when unchecked. |
-| `data-track-context`  | false    | The `context` as described [in our Feature Instrumentation taxonomy](https://about.gitlab.com/handbook/product/feature-instrumentation/#taxonomy). |
+| `data-track-label`    | false    | The `label` as described [in our Feature Instrumentation taxonomy](https://about.gitlab.com/handbook/product/product-processes/#taxonomy). |
+| `data-track-property` | false    | The `property` as described [in our Feature Instrumentation taxonomy](https://about.gitlab.com/handbook/product/product-processes/#taxonomy). |
+| `data-track-value`    | false    | The `value` as described [in our Feature Instrumentation taxonomy](https://about.gitlab.com/handbook/product/product-processes/#taxonomy). If omitted, this will be the element's `value` property or an empty string. For checkboxes, the default value will be the element's checked attribute or `false` when unchecked. |
+| `data-track-context`  | false    | The `context` as described [in our Feature Instrumentation taxonomy](https://about.gitlab.com/handbook/product/product-processes/#taxonomy). |
 
 ### Tracking within Vue components
 
@@ -282,7 +282,7 @@ Custom event tracking and instrumentation can be added by directly calling the `
 |:-----------|:-------|:---------------------------|:------------|
 | `category` | string | 'application'              | Area or aspect of the application. This could be `HealthCheckController` or `Lfs::FileTransformer` for instance. |
 | `action`   | string | 'generic'                  | The action being taken, which can be anything from a controller action like `create` to something like an Active Record callback. |
-| `data`     | object | {}                         | Additional data such as `label`, `property`, `value`, and `context` as described [in our Feature Instrumentation taxonomy](https://about.gitlab.com/handbook/product/feature-instrumentation/#taxonomy). These will be set as empty strings if you don't provide them. |
+| `data`     | object | {}                         | Additional data such as `label`, `property`, `value`, and `context` as described [in our Feature Instrumentation taxonomy](https://about.gitlab.com/handbook/product/product-processes/#taxonomy). These will be set as empty strings if you don't provide them. |
 
 Tracking can be viewed as either tracking user behavior, or can be utilized for instrumentation to monitor and visual performance over time in an area or aspect of code.
 

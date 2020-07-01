@@ -99,7 +99,8 @@ RSpec.describe Metrics::Dashboard::CustomDashboardService, :use_clean_rails_memo
             path: dashboard_path,
             display_name: 'test.yml',
             default: false,
-            system_dashboard: false
+            system_dashboard: false,
+            out_of_the_box_dashboard: false
           }]
         )
       end

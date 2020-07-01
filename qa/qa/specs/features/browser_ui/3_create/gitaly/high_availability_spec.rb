@@ -11,14 +11,14 @@ module QA
         end
         let(:initial_file) { 'pushed_to_primary.txt' }
         let(:final_file) { 'pushed_to_secondary.txt' }
+        let(:praefect_manager) { Service::PraefectManager.new }
 
         before do
-          @praefect_manager = Service::PraefectManager.new
           Flow::Login.sign_in
         end
 
         after do
-          @praefect_manager.reset
+          praefect_manager.reset
         end
 
         it 'makes sure that automatic failover is happening' do
@@ -30,7 +30,7 @@ module QA
             push.file_content = "This should exist on both nodes"
           end
 
-          @praefect_manager.stop_primary_node
+          praefect_manager.stop_primary_node
 
           project.visit!
 
