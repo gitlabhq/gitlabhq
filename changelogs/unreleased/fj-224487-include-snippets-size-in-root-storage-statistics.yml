@@ -1,0 +1,5 @@
+---
+title: Include snippets_size statistic inside RootStorageStatistics
+merge_request: 35601
+author:
+type: changed

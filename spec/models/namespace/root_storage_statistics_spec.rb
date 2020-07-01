@@ -43,6 +43,7 @@ RSpec.describe Namespace::RootStorageStatistics, type: :model do
         total_build_artifacts_size = stat1.build_artifacts_size + stat2.build_artifacts_size
         total_packages_size = stat1.packages_size + stat2.packages_size
         total_storage_size = stat1.storage_size + stat2.storage_size
+        total_snippets_size = stat1.snippets_size + stat2.snippets_size
 
         expect(root_storage_statistics.repository_size).to eq(total_repository_size)
         expect(root_storage_statistics.wiki_size).to eq(total_wiki_size)
@@ -50,6 +51,7 @@ RSpec.describe Namespace::RootStorageStatistics, type: :model do
         expect(root_storage_statistics.build_artifacts_size).to eq(total_build_artifacts_size)
         expect(root_storage_statistics.packages_size).to eq(total_packages_size)
         expect(root_storage_statistics.storage_size).to eq(total_storage_size)
+        expect(root_storage_statistics.snippets_size).to eq(total_snippets_size)
       end
 
       it 'works when there are no projects' do
@@ -64,6 +66,7 @@ RSpec.describe Namespace::RootStorageStatistics, type: :model do
         expect(root_storage_statistics.build_artifacts_size).to eq(0)
         expect(root_storage_statistics.packages_size).to eq(0)
         expect(root_storage_statistics.storage_size).to eq(0)
+        expect(root_storage_statistics.snippets_size).to eq(0)
       end
     end
 
