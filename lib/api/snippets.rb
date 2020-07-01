@@ -31,7 +31,7 @@ module API
         use :pagination
       end
       get do
-        present paginate(snippets_for_current_user), with: Entities::Snippet
+        present paginate(snippets_for_current_user), with: Entities::Snippet, current_user: current_user
       end
 
       desc 'List all public personal snippets current_user has access to' do
@@ -42,7 +42,7 @@ module API
         use :pagination
       end
       get 'public' do
-        present paginate(public_snippets), with: Entities::PersonalSnippet
+        present paginate(public_snippets), with: Entities::PersonalSnippet, current_user: current_user
       end
 
       desc 'Get a single snippet' do
@@ -57,7 +57,7 @@ module API
 
         break not_found!('Snippet') unless snippet
 
-        present snippet, with: Entities::PersonalSnippet
+        present snippet, with: Entities::PersonalSnippet, current_user: current_user
       end
 
       desc 'Create new snippet' do
@@ -82,7 +82,7 @@ module API
         snippet = service_response.payload[:snippet]
 
         if service_response.success?
-          present snippet, with: Entities::PersonalSnippet
+          present snippet, with: Entities::PersonalSnippet, current_user: current_user
         else
           render_spam_error! if snippet.spam?
 
@@ -116,7 +116,7 @@ module API
         snippet = service_response.payload[:snippet]
 
         if service_response.success?
-          present snippet, with: Entities::PersonalSnippet
+          present snippet, with: Entities::PersonalSnippet, current_user: current_user
         else
           render_spam_error! if snippet.spam?
 

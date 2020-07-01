@@ -265,10 +265,6 @@ For example, to add support for files referenced by a `Widget` model with a
      MODEL_FOREIGN_KEY = :widget_id
 
      belongs_to :widget, class_name: 'Widget'
-
-     def self.has_create_events?
-       true
-     end
    end
    ```
 

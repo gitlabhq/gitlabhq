@@ -7,6 +7,16 @@
       "project_id": { "type": ["integer", "null"] },
       "title": { "type": "string" },
       "file_name": { "type": ["string", "null"] },
+      "files" : {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "path": { "type": "string" },
+            "raw_url": { "type": "string" }
+          }
+        }
+      },
       "description": { "type": ["string", "null"] },
       "visibility": { "type": "string" },
       "web_url": { "type": "string" },

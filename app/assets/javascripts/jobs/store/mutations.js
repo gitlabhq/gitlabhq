@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import * as types from './mutation_types';
-import { logLinesParser, updateIncrementalTrace, isNewJobLogActive } from './utils';
+import { logLinesParser, updateIncrementalTrace } from './utils';
 
 export default {
   [types.SET_JOB_ENDPOINT](state, endpoint) {
@@ -25,22 +25,16 @@ export default {
     }
 
     if (log.append) {
-      if (isNewJobLogActive()) {
-        state.trace = log.lines ? updateIncrementalTrace(log.lines, state.trace) : state.trace;
-      } else {
-        state.trace += log.html;
-      }
+      state.trace = log.lines ? updateIncrementalTrace(log.lines, state.trace) : state.trace;
+
       state.traceSize += log.size;
     } else {
       // When the job still does not have a trace
       // the trace response will not have a defined
       // html or size. We keep the old value otherwise these
       // will be set to `null`
-      if (isNewJobLogActive()) {
-        state.trace = log.lines ? logLinesParser(log.lines) : state.trace;
-      } else {
-        state.trace = log.html || state.trace;
-      }
+      state.trace = log.lines ? logLinesParser(log.lines) : state.trace;
+
       state.traceSize = log.size || state.traceSize;
     }
 

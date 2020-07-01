@@ -87,12 +87,41 @@ RSpec.describe Gitlab::UrlBuilder do
     end
 
     context 'when passing a Snippet' do
-      let(:snippet) { build_stubbed(:personal_snippet) }
+      let_it_be(:personal_snippet) { create(:personal_snippet, :repository) }
+      let_it_be(:project_snippet)  { create(:project_snippet, :repository) }
+      let(:blob)                   { snippet.blobs.first }
+      let(:ref)                    { blob.repository.root_ref }
 
-      it 'returns a raw snippet URL if requested' do
-        url = subject.build(snippet, raw: true)
+      context 'for a PersonalSnippet' do
+        let(:snippet) { personal_snippet }
 
-        expect(url).to eq "#{Gitlab.config.gitlab.url}/snippets/#{snippet.id}/raw"
+        it 'returns a raw snippet URL if requested' do
+          url = subject.build(snippet, raw: true)
+
+          expect(url).to eq "#{Gitlab.config.gitlab.url}/snippets/#{snippet.id}/raw"
+        end
+
+        it 'returns a raw snippet blob URL if requested' do
+          url = subject.build(snippet, file: blob.path, ref: ref)
+
+          expect(url).to eq "#{Gitlab.config.gitlab.url}/-/snippets/#{snippet.id}/raw/#{ref}/#{blob.path}"
+        end
+      end
+
+      context 'for a ProjectSnippet' do
+        let(:snippet) { project_snippet }
+
+        it 'returns a raw snippet URL if requested' do
+          url = subject.build(snippet, raw: true)
+
+          expect(url).to eq "#{Gitlab.config.gitlab.url}/#{snippet.project.full_path}/snippets/#{snippet.id}/raw"
+        end
+
+        it 'returns a raw snippet blob URL if requested' do
+          url = subject.build(snippet, file: blob.path, ref: ref)
+
+          expect(url).to eq "#{Gitlab.config.gitlab.url}/#{snippet.project.full_path}/-/snippets/#{snippet.id}/raw/#{ref}/#{blob.path}"
+        end
       end
     end
 

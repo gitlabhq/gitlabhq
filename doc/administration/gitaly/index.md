@@ -789,207 +789,212 @@ Though the name of the Prometheus metric contains `rate_limiting`, it is a concu
 a rate limiter. If a Gitaly client makes 1000 requests in a row very quickly, concurrency will not
 exceed 1 and the concurrency limiter has no effect.
 
-## Rotating a Gitaly authentication token
+## Rotate Gitaly authentication token
 
-Rotating credentials in a production environment often either requires
-downtime, or causes outages, or both. If you are careful, though, you
-*can* rotate Gitaly credentials without a service interruption.
+Rotating credentials in a production environment often requires downtime, causes outages, or both.
 
-This procedure also works if you are running GitLab on a single server.
-In that case, "Gitaly server" and "Gitaly client" refers to the same
-machine.
+However, you can rotate Gitaly credentials without a service interruption. Rotating a Gitaly
+authentication token involves:
 
-### 1. Monitor current authentication behavior
+- [Verifying authentication monitoring](#verify-authentication-monitoring).
+- [Enabling "auth transitioning" mode](#enable-auth-transitioning-mode).
+- [Updating Gitaly authentication tokens](#update-gitaly-authentication-token).
+- [Ensuring there are no authentication failures](#ensure-there-are-no-authentication-failures).
+- [Disabling "auth transitioning" mode](#disable-auth-transitioning-mode).
+- [Verifying authentication is enforced](#verify-authentication-is-enforced).
 
-Use Prometheus to see what the current authentication behavior of your
-GitLab installation is.
+This procedure also works if you are running GitLab on a single server. In that case, "Gitaly
+server" and "Gitaly client" refers to the same machine.
+
+### Verify authentication monitoring
+
+Before rotating a Gitaly authentication token, verify that you can monitor the authentication
+behavior of your GitLab installation using Prometheus. Use the following Prometheus query:
 
 ```prometheus
 sum(rate(gitaly_authentications_total[5m])) by (enforced, status)
 ```
 
-In a system where authentication is configured correctly, and where you
-have live traffic, you will see something like this:
+In a system where authentication is configured correctly and where you have live traffic, you will
+see something like this:
 
 ```prometheus
 {enforced="true",status="ok"}  4424.985419441742
 ```
 
-There may also be other numbers with rate 0. We only care about the
-non-zero numbers.
+There may also be other numbers with rate 0. We only care about the non-zero numbers.
 
-The only non-zero number should have `enforced="true",status="ok"`. If
-you have other non-zero numbers, something is wrong in your
-configuration.
+The only non-zero number should have `enforced="true",status="ok"`. If you have other non-zero
+numbers, something is wrong in your configuration.
 
-The `status="ok"` number reflects your current request rate. In the example
-above, Gitaly is handling about 4000 requests per second.
+The `status="ok"` number reflects your current request rate. In the example above, Gitaly is
+handling about 4000 requests per second.
 
-Now you have established that you can monitor the Gitaly authentication
-behavior of your GitLab installation.
+Now that you have established that you can monitor the Gitaly authentication behavior of your GitLab
+installation, you can begin the rest of the procedure.
 
-### 2. Reconfigure all Gitaly servers to be in "auth transitioning" mode
+### Enable "auth transitioning" mode
 
-The second step is to temporarily disable authentication on the Gitaly servers.
+Temporarily disable Gitaly authentication on the Gitaly servers by putting them into "auth
+transitioning" mode as follows:
 
 ```ruby
 # in /etc/gitlab/gitlab.rb
 gitaly['auth_transitioning'] = true
 ```
 
-After you have applied this, your Prometheus query should return
-something like this:
+After you have made this change, your [Prometheus query](#verify-authentication-monitoring)
+should return something like:
 
 ```prometheus
 {enforced="false",status="would be ok"}  4424.985419441742
 ```
 
-Because `enforced="false"`, it will be safe to start rolling out the new
-token.
+Because `enforced="false"`, it is safe to start rolling out the new token.
 
-### 3. Update Gitaly token on all clients and servers
+### Update Gitaly authentication token
 
-```ruby
-# in /etc/gitlab/gitlab.rb
+To update to a new Gitaly authentication token, on each Gitaly client **and** Gitaly server:
 
-gitaly['auth_token'] = 'my new secret token'
-```
+1. Update the configuration:
 
-Remember to apply this on both your Gitaly clients *and* servers. If you
-check your Prometheus query while this change is being rolled out, you
-will see non-zero values for the `enforced="false",status="denied"` counter.
+   ```ruby
+   # in /etc/gitlab/gitlab.rb
 
-### 4. Use Prometheus to ensure there are no authentication failures
+   gitaly['auth_token'] = '<new secret token>'
+   ```
 
-After you applied the Gitaly token change everywhere, and all services
-involved have been restarted, you should will temporarily see a mix of
-`status="would be ok"` and `status="denied"`.
+1. Restart Gitaly:
 
-After the new token has been picked up by all Gitaly clients and
-servers, the **only non-zero rate** should be
-`enforced="false",status="would be ok"`.
+   ```shell
+   gitlab-ctl restart gitaly
+   ```
 
-### 5. Disable "auth transitioning" Mode
+If you run your [Prometheus query](#verify-authentication-monitoring) while this change is
+being rolled out, you will see non-zero values for the `enforced="false",status="denied"` counter.
 
-Now we turn off the 'auth transitioning' mode. These final steps are
-important: without them, you have **no authentication**.
+### Ensure there are no authentication failures
 
-Update the configuration on your Gitaly servers:
+After the new token is set, and all services involved have been restarted, you will
+[temporarily see](#verify-authentication-monitoring) a mix of:
+
+- `status="would be ok"`.
+- `status="denied"`.
+
+After the new token has been picked up by all Gitaly clients and Gitaly servers, the
+**only non-zero rate** should be `enforced="false",status="would be ok"`.
+
+### Disable "auth transitioning" mode
+
+To re-enable Gitaly authentication, disable "auth transitioning" mode. Update the configuration on
+your Gitaly servers as follows:
 
 ```ruby
 # in /etc/gitlab/gitlab.rb
 gitaly['auth_transitioning'] = false
 ```
 
-### 6. Verify that authentication is enforced again
+CAUTION: **Caution:**
+Without completing this step, you have **no Gitaly authentication**.
 
-Refresh your Prometheus query. You should now see the same kind of
-result as you did in the beginning:
+### Verify authentication is enforced
+
+Refresh your [Prometheus query](#verify-authentication-monitoring). You should now see a similar
+result as you did at the start. For example:
 
 ```prometheus
 {enforced="true",status="ok"}  4424.985419441742
 ```
 
-Note that `enforced="true"`, meaning that authentication is being enforced.
+Note that `enforced="true"` means that authentication is being enforced.
 
-## Direct Git access in GitLab Rails
+## Direct access to Git in GitLab
 
-Also known as "the Rugged patches".
+Direct access to Git uses code in GitLab known as the "Rugged patches".
 
 ### History
 
-Before Gitaly existed, the things that are now Gitaly clients used to
-access Git repositories directly. Either on a local disk in the case of
-e.g. a single-machine Omnibus GitLab installation, or via NFS in the
-case of a horizontally scaled GitLab installation.
+Before Gitaly existed, what are now Gitaly clients used to access Git repositories directly, either:
 
-Besides running plain `git` commands, in GitLab Rails we also used to
-use a Ruby gem (library) called
+- On a local disk in the case of a single-machine Omnibus GitLab installation
+- Using NFS in the case of a horizontally-scaled GitLab installation.
+
+Besides running plain `git` commands, GitLab used to use a Ruby library called
 [Rugged](https://github.com/libgit2/rugged). Rugged is a wrapper around
-[libgit2](https://libgit2.org/), a stand-alone implementation of Git in
-the form of a C library.
+[libgit2](https://libgit2.org/), a stand-alone implementation of Git in the form of a C library.
 
-Over time it has become clear to use that Rugged, and particularly
-Rugged in combination with the [Unicorn](https://yhbt.net/unicorn/)
-web server, is extremely efficient. Because libgit2 is a *library* and
-not an external process, there was very little overhead between GitLab
-application code that tried to look up data in Git repositories, and the
-Git implementation itself.
+Over time it became clear that Rugged, particularly in combination with
+[Unicorn](https://yhbt.net/unicorn/), is extremely efficient. Because `libgit2` is a library and
+not an external process, there was very little overhead between:
 
-Because Rugged+Unicorn was so efficient, GitLab's application code ended
-up with lots of duplicate Git object lookups (like looking up the
-`master` commit a dozen times in one request). We could write
-inefficient code without being punished for it.
+- GitLab application code that tried to look up data in Git repositories.
+- The Git implementation itself.
 
-When we migrated these Git lookups to Gitaly calls, we were suddenly
-getting a much higher fixed cost per Git lookup. Even when Gitaly is
-able to re-use an already-running `git` process to look up e.g. a commit
-you still have the cost of a network roundtrip to Gitaly, and within
-Gitaly a write/read roundtrip on the Unix pipes that connect Gitaly to
-the `git` process.
+Because the combination of Rugged and Unicorn was so efficient, GitLab's application code ended up with lots of
+duplicate Git object lookups. For example, looking up the `master` commit a dozen times in one
+request. We could write inefficient code without poor performance.
 
-Using GitLab.com performance as our yardstick, we pushed down the number
-of Gitaly calls per request until the loss of Rugged's efficiency was no
-longer felt. It also helped that we run Gitaly itself directly on the
-Git file severs, rather than via NFS mounts: this gave us a speed boost
-that counteracted the negative effect of not using Rugged anymore.
+When we migrated these Git lookups to Gitaly calls, we suddenly had a much higher fixed cost per Git
+lookup. Even when Gitaly is able to re-use an already-running `git` process (for example, to look up
+a commit), you still have:
 
-Unfortunately, some *other* deployments of GitLab could not ditch NFS
-like we did on GitLab.com and they got the worst of both worlds: the
-slowness of NFS and the increased inherent overhead of Gitaly.
+- The cost of a network roundtrip to Gitaly.
+- Within Gitaly, a write/read roundtrip on the Unix pipes that connect Gitaly to the `git` process.
 
-As a performance band-aid for these stuck-on-NFS deployments, we
-re-introduced some of the old Rugged code that got deleted from
-GitLab Rails during the Gitaly migration project. These pieces of
-re-introduced code are informally referred to as "the Rugged patches".
+Using GitLab.com to measure, we reduced the number of Gitaly calls per request until the loss of
+Rugged's efficiency was no longer felt. It also helped that we run Gitaly itself directly on the Git
+file severs, rather than via NFS mounts. This gave us a speed boost that counteracted the negative
+effect of not using Rugged anymore.
 
-### Activation of direct Git access in GitLab Rails
+Unfortunately, other deployments of GitLab could not remove NFS like we did on GitLab.com, and they
+got the worst of both worlds:
 
-The Ruby methods that perform direct Git access are hidden behind [feature
-flags](../../development/gitaly.md#legacy-rugged-code). These feature
-flags are off by default. It is not good if you need to know about
-feature flags to get the best performance so in a second iteration, we
-added an automatic mechanism that will enable direct Git access.
+- The slowness of NFS.
+- The increased inherent overhead of Gitaly.
 
-When GitLab Rails calls a function that has a Rugged patch it performs
-two checks. The result of both of these checks is cached.
+The code removed from GitLab during the Gitaly migration project affected these deployments. As a
+performance workaround for these NFS-based deployments, we re-introduced some of the old Rugged
+code. This re-introduced code is informally referred to as the "Rugged patches".
 
-1. Is the feature flag for this patch set in the database? If so, do
-    what the feature flag says.
-1. If the feature flag is not set (i.e. neither true nor false), try to
-    see if we can access filesystem underneath the Gitaly server
-    directly. If so, use the Rugged patch.
+### How it works
 
-To see if GitLab Rails can access the repository filesystem directly, we use
-the following heuristic:
+The Ruby methods that perform direct Git access are behind
+[feature flags](../../development/gitaly.md#legacy-rugged-code), disabled by default. It wasn't
+convenient to set feature flags to get the best performance, so we added an automatic mechanism that
+enables direct Git access.
 
-- Gitaly ensures that the filesystem has a metadata file in its root
-  with a UUID in it.
-- Gitaly reports this UUID to GitLab Rails via the `ServerInfo` RPC.
-- GitLab Rails tries to read the metadata file directly. If it exists,
-  and if the UUID's match, assume we have direct access.
+When GitLab calls a function that has a "Rugged patch", it performs two checks:
 
-Because of the way the UUID check works, and because Omnibus GitLab will
-fill in the correct repository paths in the GitLab Rails config file
-`config/gitlab.yml`, **direct Git access in GitLab Rails is on by default in
-Omnibus**.
+- Is the feature flag for this patch set in the database? If so, the feature flag setting controls
+  GitLab's use of "Rugged patch" code.
+- If the feature flag is not set, GitLab tries accessing the filesystem underneath the
+  Gitaly server directly. If it can, it will use the "Rugged patch".
 
-### Plans to remove direct Git access in GitLab Rails
+The result of both of these checks is cached.
 
-For the sake of removing complexity it is desirable that we get rid of
-direct Git access in GitLab Rails. For as long as some GitLab installations are stuck
-with Git repositories on slow NFS, however, we cannot just remove them.
+To see if GitLab can access the repository filesystem directly, we use the following heuristic:
 
-There are two prongs to our efforts to remove direct Git access in GitLab Rails:
+- Gitaly ensures that the filesystem has a metadata file in its root with a UUID in it.
+- Gitaly reports this UUID to GitLab via the `ServerInfo` RPC.
+- GitLab Rails tries to read the metadata file directly. If it exists, and if the UUID's match,
+  assume we have direct access.
 
-1. Reduce the number of (inefficient) Gitaly queries made by
-   GitLab Rails.
-1. Persuade everybody who runs a Highly Available / horizontally scaled
-   GitLab installation to move off of NFS.
+Direct Git access is enable by default in Omnibus GitLab because it fills in the correct repository
+paths in the GitLab configuration file `config/gitlab.yml`. This satisfies the UUID check.
 
-The second prong is the only real solution. For this we need [Gitaly
-HA](https://gitlab.com/groups/gitlab-org/-/epics?scope=all&utf8=%E2%9C%93&state=opened&label_name[]=Gitaly%20HA),
-which is still under development as of December 2019.
+### Transition to Gitaly Cluster
+
+For the sake of removing complexity, we must remove direct Git access in GitLab. However, we can't
+remove it as long some GitLab installations require Git repositories on NFS.
+
+There are two facets to our efforts to remove direct Git access in GitLab:
+
+- Reduce the number of inefficient Gitaly queries made by GitLab.
+- Persuade administrators of fault-tolerant or horizontally-scaled GitLab instances to migrate off
+  NFS.
+
+The second facet presents the only real solution. For this, we developed
+[Gitaly Cluster](praefect.md).
 
 ## Troubleshooting Gitaly
 

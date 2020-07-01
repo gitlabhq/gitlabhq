@@ -71,7 +71,11 @@ module Gitlab
       end
 
       def snippet_url(snippet, **options)
-        if options.delete(:raw).present?
+        if options[:file].present?
+          file, ref = options.values_at(:file, :ref)
+
+          instance.gitlab_raw_snippet_blob_url(snippet, file, ref)
+        elsif options.delete(:raw).present?
           instance.gitlab_raw_snippet_url(snippet, **options)
         else
           instance.gitlab_snippet_url(snippet, **options)

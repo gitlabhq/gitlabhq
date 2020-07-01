@@ -12731,6 +12731,9 @@ msgstr ""
 msgid "Jira integration not configured."
 msgstr ""
 
+msgid "Jira project key is not configured"
+msgstr ""
+
 msgid "Jira project: %{importProject}"
 msgstr ""
 

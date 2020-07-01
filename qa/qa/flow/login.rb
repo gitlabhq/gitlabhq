@@ -22,9 +22,9 @@ module QA
         end
       end
 
-      def sign_in(as: nil, address: :gitlab)
+      def sign_in(as: nil, address: :gitlab, skip_page_validation: false)
         Runtime::Browser.visit(address, Page::Main::Login)
-        Page::Main::Login.perform { |login| login.sign_in_using_credentials(user: as) }
+        Page::Main::Login.perform { |login| login.sign_in_using_credentials(user: as, skip_page_validation: skip_page_validation) }
       end
 
       def sign_in_as_admin(address: :gitlab)

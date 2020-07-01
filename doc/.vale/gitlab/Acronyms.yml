@@ -72,6 +72,7 @@ exceptions:
   - USB
   - URI
   - URL
+  - UUID
   - VPC
   - WIP
   - XML

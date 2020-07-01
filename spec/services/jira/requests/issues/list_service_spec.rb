@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Jira::Requests::Projects do
+RSpec.describe Jira::Requests::Issues::ListService do
   let(:jira_service) { create(:jira_service) }
   let(:params) { {} }
 
@@ -55,26 +55,32 @@ RSpec.describe Jira::Requests::Projects do
             expect(client).to receive(:get).and_return([])
           end
 
-          it 'returns a paylod with no projects returned' do
+          it 'returns a paylod with no issues' do
             payload = subject.payload
 
             expect(subject.success?).to be_truthy
-            expect(payload[:projects]).to be_empty
+            expect(payload[:issues]).to be_empty
             expect(payload[:is_last]).to be_truthy
           end
         end
 
         context 'when the request returns values' do
           before do
-            expect(client).to receive(:get).and_return([{ "key" => 'project1' }, { "key" => 'project2' }])
+            expect(client).to receive(:get).and_return(
+              {
+                "total" => 375,
+                "startAt" => 0,
+                "issues" => [{ "key" => 'TST-1' }, { "key" => 'TST-2' }]
+              }
+            )
           end
 
-          it 'returns a paylod with jira projets' do
+          it 'returns a paylod with jira issues' do
             payload = subject.payload
 
             expect(subject.success?).to be_truthy
-            expect(payload[:projects].map(&:key)).to eq(%w(project1 project2))
-            expect(payload[:is_last]).to be_truthy
+            expect(payload[:issues].map(&:key)).to eq(%w[TST-1 TST-2])
+            expect(payload[:is_last]).to be_falsy
           end
         end
       end

@@ -3,12 +3,13 @@
 class ProjectExportWorker # rubocop:disable Scalability/IdempotentWorker
   include ApplicationWorker
   include ExceptionBacktrace
-  include ProjectExportOptions
 
   feature_category :importers
   worker_resource_boundary :memory
   urgency :throttled
   loggable_arguments 2, 3
+  sidekiq_options retry: false
+  sidekiq_options status_expiration: StuckExportJobsWorker::EXPORT_JOBS_EXPIRATION
 
   def perform(current_user_id, project_id, after_export_strategy = {}, params = {})
     current_user = User.find(current_user_id)

@@ -716,6 +716,10 @@ management project. Refer to the
 [chart](https://github.com/helm/charts/tree/master/stable/nginx-ingress)
 for the available configuration options.
 
+NOTE: **Note:**
+Support for installing the Ingress managed application is provided by the GitLab Configure group.
+If you run into unknown issues, please [open a new issue](https://gitlab.com/gitlab-org/gitlab/-/issues/new) and ping at least 2 people from the [Configure group](https://about.gitlab.com/handbook/product/categories/#configure-group).
+
 ### Install cert-manager using GitLab CI/CD
 
 cert-manager is installed using GitLab CI/CD by defining configuration in
@@ -752,6 +756,10 @@ You can customize the installation of cert-manager by defining a
 management project. Refer to the
 [chart](https://hub.helm.sh/charts/jetstack/cert-manager) for the
 available configuration options.
+
+NOTE: **Note:**
+Support for installing the Cert Manager managed application is provided by the GitLab Configure group.
+If you run into unknown issues, please [open a new issue](https://gitlab.com/gitlab-org/gitlab/-/issues/new) and ping at least 2 people from the [Configure group](https://about.gitlab.com/handbook/product/categories/#configure-group).
 
 ### Install Sentry using GitLab CI/CD
 
@@ -813,6 +821,10 @@ ingress:
 postgresql:
   postgresqlPassword: example-postgresql-password
 ```
+
+NOTE: **Note:**
+Support for installing the Sentry managed application is provided by the GitLab Health group.
+If you run into unknown issues, please [open a new issue](https://gitlab.com/gitlab-org/gitlab/-/issues/new) and ping at least 2 people from the [Health group](https://about.gitlab.com/handbook/product/product-categories/#health-group).
 
 ### Install PostHog using GitLab CI/CD
 
@@ -885,6 +897,10 @@ project. Refer to the
 [Configuration section of the Prometheus chart's README](https://github.com/helm/charts/tree/master/stable/prometheus#configuration)
 for the available configuration options.
 
+NOTE: **Note:**
+Support for installing the Prometheus managed application is provided by the GitLab APM group.
+If you run into unknown issues, please [open a new issue](https://gitlab.com/gitlab-org/gitlab/-/issues/new) and ping at least 2 people from the [APM group](https://about.gitlab.com/handbook/product/product-categories/#apm-group).
+
 ### Install GitLab Runner using GitLab CI/CD
 
 GitLab Runner is installed using GitLab CI/CD by defining configuration in
@@ -915,6 +931,10 @@ You can customize the installation of GitLab Runner by defining
 management project. Refer to the
 [chart](https://gitlab.com/gitlab-org/charts/gitlab-runner) for the
 available configuration options.
+
+NOTE: **Note:**
+Support for installing the Elastic Stack managed application is provided by the GitLab Runner group.
+If you run into unknown issues, please [open a new issue](https://gitlab.com/gitlab-org/gitlab/-/issues/new) and ping at least 2 people from the [Runner group](https://about.gitlab.com/handbook/product/product-categories/#runner-group).
 
 ### Install Cilium using GitLab CI/CD
 
@@ -1019,6 +1039,10 @@ metrics:
     - 'flow:sourceContext=namespace;destinationContext=namespace'
 ```
 
+NOTE: **Note:**
+Support for installing the Cilium managed application is provided by the GitLab Container Security group.
+If you run into unknown issues, please [open a new issue](https://gitlab.com/gitlab-org/gitlab/-/issues/new) and ping at least 2 people from the [Container Security group](https://about.gitlab.com/handbook/product/product-categories/#container-security-group).
+
 ### Install Falco using GitLab CI/CD
 
 > [Introduced](https://gitlab.com/gitlab-org/cluster-integration/cluster-applications/-/merge_requests/91) in GitLab 13.1.
@@ -1105,6 +1129,10 @@ You can check these logs with the following command:
 ```shell
 kubectl logs -l app=falco -n gitlab-managed-apps
 ```
+
+NOTE: **Note:**
+Support for installing the Falco managed application is provided by the GitLab Container Security group.
+If you run into unknown issues, please [open a new issue](https://gitlab.com/gitlab-org/gitlab/-/issues/new) and ping at least 2 people from the [Container Security group](https://about.gitlab.com/handbook/product/product-categories/#container-security-group).
 
 ### Install Vault using GitLab CI/CD
 
@@ -1195,6 +1223,10 @@ kubectl -n gitlab-managed-apps exec -it vault-0 sh
 This should give you your unseal keys and initial root token. Make sure to note these down
 and keep these safe as you will need them to unseal the Vault throughout its lifecycle.
 
+NOTE: **Note:**
+Support for installing the Vault managed application is provided by the GitLab Release Management group.
+If you run into unknown issues, please [open a new issue](https://gitlab.com/gitlab-org/gitlab/-/issues/new) and ping at least 2 people from the [Release Management group](https://about.gitlab.com/handbook/product/product-categories/#release-management-group).
+
 ### Install JupyterHub using GitLab CI/CD
 
 > [Introduced](https://gitlab.com/gitlab-org/cluster-integration/cluster-applications/-/merge_requests/40) in GitLab 12.8.
@@ -1244,6 +1276,10 @@ Refer to the
 [chart reference](https://zero-to-jupyterhub.readthedocs.io/en/stable/reference/reference.html) for the
 available configuration options.
 
+NOTE: **Note:**
+Support for installing the JupyterHub managed application is provided by the GitLab Configure group.
+If you run into unknown issues, please [open a new issue](https://gitlab.com/gitlab-org/gitlab/-/issues/new) and ping at least 2 people from the [Configure group](https://about.gitlab.com/handbook/product/categories/#configure-group).
+
 ### Install Elastic Stack using GitLab CI/CD
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/25138) in GitLab 12.8.
@@ -1271,6 +1307,10 @@ available configuration options.
 NOTE: **Note:**
 In this alpha implementation of installing Elastic Stack through CI, reading the environment logs through Elasticsearch is unsupported. This is supported if [installed via the UI](#elastic-stack).
 
+NOTE: **Note:**
+Support for installing the Elastic Stack managed application is provided by the GitLab APM group.
+If you run into unknown issues, please [open a new issue](https://gitlab.com/gitlab-org/gitlab/-/issues/new) and ping at least 2 people from the [APM group](https://about.gitlab.com/handbook/product/product-categories/#apm-group).
+
 ### Install Crossplane using GitLab CI/CD
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/35675) in GitLab 12.9.
@@ -1297,6 +1337,10 @@ management project. Refer to the
 [chart](https://github.com/crossplane/crossplane/tree/master/cluster/charts/crossplane#configuration) for the
 available configuration options. Note that this link points to the documentation for the current development release, which may differ from the version you have installed.
 
+NOTE: **Note:**
+Support for the Crossplane managed application is provided by the Crossplane team.
+If you run into issues, please [open a support ticket](https://github.com/crossplane/crossplane/issues/new/choose) directly.
+
 ### Install Fluentd using GitLab CI/CD
 
 > [Introduced](https://gitlab.com/gitlab-org/cluster-integration/cluster-applications/-/merge_requests/76) in GitLab 12.10.
@@ -1321,6 +1365,10 @@ The configuration chart link points to the current development release, which
 may differ from the version you have installed. To ensure compatibility, switch
 to the specific branch or tag you are using.
 
+NOTE: **Note:**
+Support for installing the Fluentd managed application is provided by the GitLab Container Security group.
+If you run into unknown issues, please [open a new issue](https://gitlab.com/gitlab-org/gitlab/-/issues/new) and ping at least 2 people from the [Container Security group](https://about.gitlab.com/handbook/product/product-categories/#container-security-group).
+
 ### Install Knative using GitLab CI/CD
 
 To install Knative, define the `.gitlab/managed-apps/config.yaml` file
@@ -1342,6 +1390,10 @@ domain: 'my.wildcard.A.record.dns'
 ```
 
 If you plan to use GitLab Serverless capabilities, be sure to set an A record wildcard domain on your custom configuration.
+
+NOTE: **Note:**
+Support for installing the Knative managed application is provided by the GitLab Configure group.
+If you run into unknown issues, please [open a new issue](https://gitlab.com/gitlab-org/gitlab/-/issues/new) and ping at least 2 people from the [Configure group](https://about.gitlab.com/handbook/product/categories/#configure-group).
 
 #### Knative Metrics
 
@@ -1399,6 +1451,10 @@ podAnnotations:
 ```
 
 The only information to be changed here is the profile name which is `profile-one` in this example. Refer to the [AppArmor tutorial](https://kubernetes.io/docs/tutorials/clusters/apparmor/#securing-a-pod) for more information on how AppArmor is integrated in Kubernetes.
+
+NOTE: **Note:**
+Support for installing the AppArmor managed application is provided by the GitLab Container Security group.
+If you run into unknown issues, please [open a new issue](https://gitlab.com/gitlab-org/gitlab/-/issues/new) and ping at least 2 people from the [Container Security group](https://about.gitlab.com/handbook/product/product-categories/#container-security-group).
 
 ## Upgrading applications
 

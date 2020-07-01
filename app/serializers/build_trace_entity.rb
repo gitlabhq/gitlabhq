@@ -12,6 +12,5 @@ class BuildTraceEntity < Grape::Entity
   expose :size
   expose :total
 
-  expose :json_lines, as: :lines, if: ->(*) { object.json? }
-  expose :html_lines, as: :html, if: ->(*) { object.html? }
+  expose :lines
 end

@@ -75,6 +75,18 @@ RSpec.describe CommitCollection do
     end
   end
 
+  describe '#with_markdown_cache' do
+    let(:commits) { [commit] }
+    let(:collection) { described_class.new(project, commits) }
+
+    it 'preloads commits cache markdown' do
+      aggregate_failures do
+        expect(Commit).to receive(:preload_markdown_cache!).with(commits)
+        expect(collection.with_markdown_cache).to eq(collection)
+      end
+    end
+  end
+
   describe 'enrichment methods' do
     let(:gitaly_commit) { commit }
     let(:hash_commit) { Commit.from_hash(gitaly_commit.to_hash, project) }

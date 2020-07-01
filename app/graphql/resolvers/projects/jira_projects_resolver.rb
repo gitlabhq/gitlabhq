@@ -37,7 +37,7 @@ module Resolvers
       def jira_projects(name:)
         args = { query: name }.compact
 
-        return Jira::Requests::Projects.new(project.jira_service, args).execute
+        return Jira::Requests::Projects::ListService.new(project.jira_service, args).execute
       end
     end
   end

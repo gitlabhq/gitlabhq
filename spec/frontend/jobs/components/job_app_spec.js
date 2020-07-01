@@ -397,132 +397,31 @@ describe('Job App', () => {
     });
   });
 
-  describe('trace output', () => {
-    describe('with append flag', () => {
-      it('appends the log content to the existing one', () =>
-        setupAndMount({
-          traceData: {
-            html: '<span>More<span>',
-            status: 'running',
-            state: 'newstate',
-            append: true,
-            complete: true,
-          },
-        })
-          .then(() => {
-            store.state.trace = 'Update';
+  describe('trace controls', () => {
+    beforeEach(() =>
+      setupAndMount({
+        traceData: {
+          html: '<span>Update</span>',
+          status: 'success',
+          append: false,
+          size: 50,
+          total: 100,
+          complete: true,
+        },
+      }),
+    );
 
-            return wrapper.vm.$nextTick();
-          })
-          .then(() => {
-            expect(
-              wrapper
-                .find('.js-build-trace')
-                .text()
-                .trim(),
-            ).toEqual('Update');
-          }));
+    it('should render scroll buttons', () => {
+      expect(wrapper.find('.js-scroll-top').exists()).toBe(true);
+      expect(wrapper.find('.js-scroll-bottom').exists()).toBe(true);
     });
 
-    describe('without append flag', () => {
-      it('replaces the trace', () =>
-        setupAndMount({
-          traceData: {
-            html: '<span>Different<span>',
-            status: 'running',
-            append: false,
-            complete: true,
-          },
-        }).then(() => {
-          expect(
-            wrapper
-              .find('.js-build-trace')
-              .text()
-              .trim(),
-          ).toEqual('Different');
-        }));
+    it('should render link to raw ouput', () => {
+      expect(wrapper.find('.js-raw-link-controller').exists()).toBe(true);
     });
 
-    describe('truncated information', () => {
-      describe('when size is less than total', () => {
-        it('shows information about truncated log', () => {
-          mock.onGet(`${props.pagePath}/trace.json`).reply(200, {
-            html: '<span>Update</span>',
-            status: 'success',
-            append: false,
-            size: 50,
-            total: 100,
-            complete: true,
-          });
-
-          return setupAndMount({
-            traceData: {
-              html: '<span>Update</span>',
-              status: 'success',
-              append: false,
-              size: 50,
-              total: 100,
-              complete: true,
-            },
-          }).then(() => {
-            expect(
-              wrapper
-                .find('.js-truncated-info')
-                .text()
-                .trim(),
-            ).toContain('Showing last 50 bytes');
-          });
-        });
-      });
-
-      describe('when size is equal than total', () => {
-        it('does not show the truncated information', () =>
-          setupAndMount({
-            traceData: {
-              html: '<span>Update</span>',
-              status: 'success',
-              append: false,
-              size: 100,
-              total: 100,
-              complete: true,
-            },
-          }).then(() => {
-            expect(
-              wrapper
-                .find('.js-truncated-info')
-                .text()
-                .trim(),
-            ).toEqual('');
-          }));
-      });
-    });
-
-    describe('trace controls', () => {
-      beforeEach(() =>
-        setupAndMount({
-          traceData: {
-            html: '<span>Update</span>',
-            status: 'success',
-            append: false,
-            size: 50,
-            total: 100,
-            complete: true,
-          },
-        }),
-      );
-
-      it('should render scroll buttons', () => {
-        expect(wrapper.find('.js-scroll-top').exists()).toBe(true);
-        expect(wrapper.find('.js-scroll-bottom').exists()).toBe(true);
-      });
-
-      it('should render link to raw ouput', () => {
-        expect(wrapper.find('.js-raw-link-controller').exists()).toBe(true);
-      });
-
-      it('should render link to erase job', () => {
-        expect(wrapper.find('.js-erase-link').exists()).toBe(true);
-      });
+    it('should render link to erase job', () => {
+      expect(wrapper.find('.js-erase-link').exists()).toBe(true);
     });
   });
 });

@@ -98,3 +98,15 @@ RSpec.shared_examples 'snippet blob content' do
     end
   end
 end
+
+RSpec.shared_examples 'snippet_multiple_files feature disabled' do
+  before do
+    stub_feature_flags(snippet_multiple_files: false)
+
+    subject
+  end
+
+  it 'does not return files attributes' do
+    expect(json_response).not_to have_key('files')
+  end
+end

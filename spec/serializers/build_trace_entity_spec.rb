@@ -13,7 +13,7 @@ RSpec.describe BuildTraceEntity do
   end
 
   let(:build_trace) do
-    Ci::BuildTrace.new(build: build, stream: stream, content_format: content_format, state: nil)
+    Ci::BuildTrace.new(build: build, stream: stream, state: nil)
   end
 
   let(:entity) do
@@ -22,42 +22,24 @@ RSpec.describe BuildTraceEntity do
 
   subject { entity.as_json }
 
-  shared_examples 'includes build and trace metadata' do
-    it 'includes build attributes' do
-      expect(subject[:id]).to eq(build.id)
-      expect(subject[:status]).to eq(build.status)
-      expect(subject[:complete]).to eq(build.complete?)
-    end
-
-    it 'includes trace metadata' do
-      expect(subject).to include(:state)
-      expect(subject).to include(:append)
-      expect(subject).to include(:truncated)
-      expect(subject).to include(:offset)
-      expect(subject).to include(:size)
-      expect(subject).to include(:total)
-    end
+  it 'includes build attributes' do
+    expect(subject[:id]).to eq(build.id)
+    expect(subject[:status]).to eq(build.status)
+    expect(subject[:complete]).to eq(build.complete?)
   end
 
-  context 'when content format is :json' do
-    let(:content_format) { :json }
-
-    it_behaves_like 'includes build and trace metadata'
-
-    it 'includes the trace content in json' do
-      expect(subject[:lines]).to eq([
-        { offset: 0, content: [{ text: 'the-trace' }] }
-      ])
-    end
+  it 'includes trace metadata' do
+    expect(subject).to include(:state)
+    expect(subject).to include(:append)
+    expect(subject).to include(:truncated)
+    expect(subject).to include(:offset)
+    expect(subject).to include(:size)
+    expect(subject).to include(:total)
   end
 
-  context 'when content format is :html' do
-    let(:content_format) { :html }
-
-    it_behaves_like 'includes build and trace metadata'
-
-    it 'includes the trace content in json' do
-      expect(subject[:html]).to eq('<span>the-trace</span>')
-    end
+  it 'includes the trace content in json' do
+    expect(subject[:lines]).to eq([
+      { offset: 0, content: [{ text: 'the-trace' }] }
+    ])
   end
 end

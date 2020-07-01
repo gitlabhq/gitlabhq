@@ -762,4 +762,29 @@ RSpec.describe Snippet do
       end
     end
   end
+
+  describe '#list_files' do
+    let_it_be(:snippet) { create(:snippet, :repository) }
+    let(:ref) { 'test-ref' }
+
+    subject { snippet.list_files(ref) }
+
+    context 'when snippet has a repository' do
+      it 'lists files from the repository with the ref' do
+        expect(snippet.repository).to receive(:ls_files).with(ref)
+
+        subject
+      end
+    end
+
+    context 'when snippet does not have a repository' do
+      before do
+        allow(snippet.repository).to receive(:empty?).and_return(true)
+      end
+
+      it 'returns an empty array' do
+        expect(subject).to eq []
+      end
+    end
+  end
 end

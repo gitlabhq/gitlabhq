@@ -39,7 +39,7 @@
                 = _('To add the entry manually, provide the following details to the application on your phone.')
               %p.gl-mt-0.gl-mb-0
                 = _('Account: %{account}') % { account: @account_string }
-              %p.gl-mt-0.gl-mb-0
+              %p.gl-mt-0.gl-mb-0{ data: { qa_selector: 'otp_secret_content' } }
                 = _('Key: %{key}') %{ key: current_user.otp_secret.scan(/.{4}/).join(' ') }
               %p.two-factor-new-manual-content
                 = _('Time based: Yes')
@@ -49,9 +49,9 @@
               = @error
           .form-group
             = label_tag :pin_code, _('Pin code'), class: "label-bold"
-            = text_field_tag :pin_code, nil, class: "form-control", required: true
+            = text_field_tag :pin_code, nil, class: "form-control", required: true, data: { qa_selector: 'pin_code_field' }
           .gl-mt-3
-            = submit_tag _('Register with two-factor app'), class: 'btn btn-success'
+            = submit_tag _('Register with two-factor app'), class: 'btn btn-success', data: { qa_selector: 'register_2fa_app_button' }
 
   %hr
 

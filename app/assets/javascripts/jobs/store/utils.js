@@ -177,5 +177,3 @@ export const updateIncrementalTrace = (newLog = [], oldParsed = []) => {
 
   return logLinesParser(newLog, parsedLog);
 };
-
-export const isNewJobLogActive = () => gon && gon.features && gon.features.jobLogJson;

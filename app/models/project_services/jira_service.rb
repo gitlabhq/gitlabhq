@@ -23,7 +23,7 @@ class JiraService < IssueTrackerService
 
   # TODO: we can probably just delegate as part of
   # https://gitlab.com/gitlab-org/gitlab/issues/29404
-  data_field :username, :password, :url, :api_url, :jira_issue_transition_id
+  data_field :username, :password, :url, :api_url, :jira_issue_transition_id, :project_key
 
   before_update :reset_password
 

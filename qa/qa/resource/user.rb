@@ -117,7 +117,10 @@ module QA
             user.password = password
           end
         else
-          self.fabricate!
+          self.fabricate! do |user|
+            user.username = username if username
+            user.password = password if password
+          end
         end
       end
 

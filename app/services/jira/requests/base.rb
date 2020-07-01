@@ -5,12 +5,11 @@ module Jira
     class Base
       include ProjectServicesLoggable
 
-      attr_reader :jira_service, :project, :query
+      JIRA_API_VERSION = 2
 
-      def initialize(jira_service, query: nil)
+      def initialize(jira_service, params = {})
         @project = jira_service&.project
         @jira_service = jira_service
-        @query = query
       end
 
       def execute
@@ -19,7 +18,18 @@ module Jira
         request
       end
 
+      def base_api_url
+        "/rest/api/#{api_version}"
+      end
+
       private
+
+      attr_reader :jira_service, :project
+
+      # override this method in the specific request class implementation if a differnt API version is required
+      def api_version
+        JIRA_API_VERSION
+      end
 
       def client
         @client ||= jira_service.client

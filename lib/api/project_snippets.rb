@@ -37,7 +37,7 @@ module API
         use :pagination
       end
       get ":id/snippets" do
-        present paginate(snippets_for_current_user), with: Entities::ProjectSnippet
+        present paginate(snippets_for_current_user), with: Entities::ProjectSnippet, current_user: current_user
       end
 
       desc 'Get a single project snippet' do
@@ -48,7 +48,7 @@ module API
       end
       get ":id/snippets/:snippet_id" do
         snippet = snippets_for_current_user.find(params[:snippet_id])
-        present snippet, with: Entities::ProjectSnippet
+        present snippet, with: Entities::ProjectSnippet, current_user: current_user
       end
 
       desc 'Create a new project snippet' do
@@ -71,7 +71,7 @@ module API
         snippet = service_response.payload[:snippet]
 
         if service_response.success?
-          present snippet, with: Entities::ProjectSnippet
+          present snippet, with: Entities::ProjectSnippet, current_user: current_user
         else
           render_spam_error! if snippet.spam?
 
@@ -107,7 +107,7 @@ module API
         snippet = service_response.payload[:snippet]
 
         if service_response.success?
-          present snippet, with: Entities::ProjectSnippet
+          present snippet, with: Entities::ProjectSnippet, current_user: current_user
         else
           render_spam_error! if snippet.spam?
 

@@ -334,7 +334,13 @@ class Snippet < ApplicationRecord
   def file_name_on_repo
     return if repository.empty?
 
-    repository.ls_files(repository.root_ref).first
+    list_files(repository.root_ref).first
+  end
+
+  def list_files(ref = nil)
+    return [] if repository.empty?
+
+    repository.ls_files(ref)
   end
 
   class << self

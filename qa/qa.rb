@@ -182,6 +182,7 @@ module QA
       autoload :Login, 'qa/page/main/login'
       autoload :Menu, 'qa/page/main/menu'
       autoload :OAuth, 'qa/page/main/oauth'
+      autoload :TwoFactorAuth, 'qa/page/main/two_factor_auth'
       autoload :SignUp, 'qa/page/main/sign_up'
       autoload :Terms, 'qa/page/main/terms'
     end
@@ -564,6 +565,7 @@ module QA
     autoload :Retrier, 'qa/support/retrier'
     autoload :Waiter, 'qa/support/waiter'
     autoload :WaitForRequests, 'qa/support/wait_for_requests'
+    autoload :OTP, 'qa/support/otp'
   end
 end
 

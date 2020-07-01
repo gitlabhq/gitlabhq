@@ -194,6 +194,14 @@ module QA
         ENV['GITLAB_QA_PASSWORD_6']
       end
 
+      def gitlab_qa_2fa_owner_username_1
+        ENV['GITLAB_QA_2FA_OWNER_USERNAME_1'] || 'gitlab-qa-2fa-owner-user1'
+      end
+
+      def gitlab_qa_2fa_owner_password_1
+        ENV['GITLAB_QA_2FA_OWNER_PASSWORD_1']
+      end
+
       def gitlab_qa_1p_email
         ENV['GITLAB_QA_1P_EMAIL']
       end

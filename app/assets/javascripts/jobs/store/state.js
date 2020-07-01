@@ -1,5 +1,3 @@
-import { isNewJobLogActive } from './utils';
-
 export default () => ({
   jobEndpoint: null,
   traceEndpoint: null,
@@ -18,7 +16,7 @@ export default () => ({
   // Used to check if we should keep the automatic scroll
   isScrolledToBottomBeforeReceivingTrace: true,
 
-  trace: isNewJobLogActive() ? [] : '',
+  trace: [],
   isTraceComplete: false,
   traceSize: 0,
   isTraceSizeVisible: false,

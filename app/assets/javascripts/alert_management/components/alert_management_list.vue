@@ -74,9 +74,8 @@ export default {
     {
       key: 'title',
       label: s__('AlertManagement|Alert'),
-      thClass: `${thClass} gl-pointer-events-none`,
+      thClass: `gl-pointer-events-none`,
       tdClass,
-      sortable: false,
     },
     {
       key: 'eventCount',
@@ -88,7 +87,7 @@ export default {
     {
       key: 'assignees',
       label: s__('AlertManagement|Assignees'),
-      thClass: 'gl-w-eighth',
+      thClass: 'gl-w-eighth gl-pointer-events-none',
       tdClass,
     },
     {

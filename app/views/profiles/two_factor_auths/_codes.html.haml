@@ -9,5 +9,5 @@
         %span.monospace= code
 
 .d-flex
-  = link_to _('Proceed'), profile_account_path, class: 'btn btn-success append-right-10'
+  = link_to _('Proceed'), profile_account_path, class: 'btn btn-success append-right-10', data: { qa_selector: 'proceed_button' }
   = link_to _('Download codes'), "data:text/plain;charset=utf-8,#{CGI.escape(@codes.join("\n"))}", download: "gitlab-recovery-codes.txt", class: 'btn btn-default'
