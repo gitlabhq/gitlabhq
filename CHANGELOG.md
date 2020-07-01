@@ -2,6 +2,30 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 13.1.2 (2020-07-01)
+
+### Security (18 changes)
+
+- Update xterm js dependency to latest stable 3.x version.
+- Do not show activity for users with private profiles.
+- Fix stored XSS in markdown renderer.
+- Upgrade swagger-ui to solve XSS issues.
+- Fix group deploy token API authorizations.
+- Check access when sending TODOs related to merge requests.
+- Change from hybrid to JSON cookies serializer.
+- Prevent XSS in group name validations.
+- Disable caching for wiki attachments.
+- Disable Github Importer API by settings.
+- Fix null byte error in upload path.
+- Update permissions for time tracking endpoints.
+- Add snippet repository validation after bundle import.
+- Update Kaminari gem.
+- Fix note author name rendering.
+- Sanitize bitbucket repo urls to mitigate XSS.
+- Stored XSS on the Error Tracking page.
+- Fix security issue when rendering issuable.
+
+
 ## 13.1.1 (2020-06-23)
 
 ### Fixed (4 changes)
@@ -14,6 +38,30 @@ entry.
 ### Added (1 change)
 
 - Periodically recompute project authorizations. !34071
+
+
+## 13.0.8 (2020-07-01)
+
+### Security (18 changes)
+
+- Update xterm js dependency to latest stable 3.x version.
+- Do not show activity for users with private profiles.
+- Fix stored XSS in markdown renderer.
+- Upgrade swagger-ui to solve XSS issues.
+- Fix group deploy token API authorizations.
+- Check access when sending TODOs related to merge requests.
+- Change from hybrid to JSON cookies serializer.
+- Prevent XSS in group name validations.
+- Disable caching for wiki attachments.
+- Disable Github Importer API by settings.
+- Fix null byte error in upload path.
+- Update permissions for time tracking endpoints.
+- Add snippet repository validation after bundle import.
+- Update Kaminari gem.
+- Fix note author name rendering.
+- Sanitize bitbucket repo urls to mitigate XSS.
+- Stored XSS on the Error Tracking page.
+- Fix security issue when rendering issuable.
 
 
 ## 13.0.7 (2020-06-25)
@@ -644,6 +692,27 @@ entry.
 - Update GitLab Elasticsearch Indexer to v2.3.0. !32199
 - Update asciidoctor-plantuml gem to v0.0.12. !32376
 - Use visitUrl in Alert management. !32414
+
+
+## 12.10.13 (2020-07-01)
+
+### Security (15 changes)
+
+- Do not show activity for users with private profiles.
+- Fix stored XSS in markdown renderer.
+- Upgrade swagger-ui to solve XSS issues.
+- Fix group deploy token API authorizations.
+- Check access when sending TODOs related to merge requests.
+- Change from hybrid to JSON cookies serializer.
+- Prevent XSS in group name validations.
+- Disable caching for wiki attachments.
+- Fix null byte error in upload path.
+- Update permissions for time tracking endpoints.
+- Update Kaminari gem.
+- Fix note author name rendering.
+- Sanitize bitbucket repo urls to mitigate XSS.
+- Stored XSS on the Error Tracking page.
+- Fix security issue when rendering issuable.
 
 
 ## 12.10.12 (2020-06-24)
