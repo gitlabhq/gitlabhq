@@ -1,5 +1,0 @@
----
-title: Fix stored XSS in markdown renderer
-merge_request:
-author:
-type: security
