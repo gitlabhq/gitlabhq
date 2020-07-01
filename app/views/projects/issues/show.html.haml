@@ -24,10 +24,7 @@
       %span.d-none.d-sm-block Open
 
     .issuable-meta
-      - if @issue.confidential
-        .issuable-warning-icon.inline= sprite_icon('eye-slash', size: 16, css_class: 'icon')
-      - if @issue.discussion_locked?
-        .issuable-warning-icon.inline= sprite_icon('lock', size: 16, css_class: 'icon')
+      #js-issuable-header-warnings
       = issuable_meta(@issue, @project, "Issue")
 
     %a.btn.btn-default.float-right.d-block.d-sm-none.gutter-toggle.issuable-gutter-toggle.js-sidebar-toggle{ href: "#" }

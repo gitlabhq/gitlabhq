@@ -27,9 +27,28 @@ function lineAfter(text, textarea) {
     .split('\n')[0];
 }
 
+function convertMonacoSelectionToAceFormat(sel) {
+  return {
+    start: {
+      row: sel.startLineNumber,
+      column: sel.startColumn,
+    },
+    end: {
+      row: sel.endLineNumber,
+      column: sel.endColumn,
+    },
+  };
+}
+
+function getEditorSelectionRange(editor) {
+  return window.gon.features?.monacoBlobs
+    ? convertMonacoSelectionToAceFormat(editor.getSelection())
+    : editor.getSelectionRange();
+}
+
 function editorBlockTagText(text, blockTag, selected, editor) {
   const lines = text.split('\n');
-  const selectionRange = editor.getSelectionRange();
+  const selectionRange = getEditorSelectionRange(editor);
   const shouldRemoveBlock =
     lines[selectionRange.start.row - 1] === blockTag &&
     lines[selectionRange.end.row + 1] === blockTag;
@@ -90,8 +109,12 @@ function moveCursor({
       const endPosition = startPosition + select.length;
       return textArea.setSelectionRange(startPosition, endPosition);
     } else if (editor) {
-      editor.navigateLeft(tag.length - tag.indexOf(select));
-      editor.getSelection().selectAWord();
+      if (window.gon.features?.monacoBlobs) {
+        editor.selectWithinSelection(select, tag);
+      } else {
+        editor.navigateLeft(tag.length - tag.indexOf(select));
+        editor.getSelection().selectAWord();
+      }
       return;
     }
   }
@@ -115,7 +138,11 @@ function moveCursor({
     }
   } else if (editor && editorSelectionStart.row === editorSelectionEnd.row) {
     if (positionBetweenTags) {
-      editor.navigateLeft(tag.length);
+      if (window.gon.features?.monacoBlobs) {
+        editor.moveCursor(tag.length * -1);
+      } else {
+        editor.navigateLeft(tag.length);
+      }
     }
   }
 }
@@ -140,7 +167,7 @@ export function insertMarkdownText({
   let textToInsert;
 
   if (editor) {
-    const selectionRange = editor.getSelectionRange();
+    const selectionRange = getEditorSelectionRange(editor);
 
     editorSelectionStart = selectionRange.start;
     editorSelectionEnd = selectionRange.end;
@@ -237,7 +264,11 @@ export function insertMarkdownText({
   }
 
   if (editor) {
-    editor.insert(textToInsert);
+    if (window.gon.features?.monacoBlobs) {
+      editor.replaceSelectedText(textToInsert, select);
+    } else {
+      editor.insert(textToInsert);
+    }
   } else {
     insertText(textArea, textToInsert);
   }

@@ -8,15 +8,16 @@ import TemplateSelectorMediator from '../blob/file_template_mediator';
 import getModeByFileExtension from '~/lib/utils/ace_utils';
 import { addEditorMarkdownListeners } from '~/lib/utils/text_markdown';
 
-const monacoEnabled = window?.gon?.features?.monacoBlobs;
+const monacoEnabledGlobally = window.gon.features?.monacoBlobs;
 
 export default class EditBlob {
   // The options object has:
   // assetsPath, filePath, currentAction, projectId, isMarkdown
   constructor(options) {
     this.options = options;
-    const { isMarkdown } = this.options;
-    Promise.resolve()
+    this.options.monacoEnabled = this.options.monacoEnabled ?? monacoEnabledGlobally;
+    const { isMarkdown, monacoEnabled } = this.options;
+    return Promise.resolve()
       .then(() => {
         return monacoEnabled ? this.configureMonacoEditor() : this.configureAceEditor();
       })
@@ -33,8 +34,15 @@ export default class EditBlob {
   }
 
   configureMonacoEditor() {
-    return import(/* webpackChunkName: 'monaco_editor_lite' */ '~/editor/editor_lite').then(
-      EditorModule => {
+    const EditorPromise = import(
+      /* webpackChunkName: 'monaco_editor_lite' */ '~/editor/editor_lite'
+    );
+    const MarkdownExtensionPromise = this.options.isMarkdown
+      ? import('~/editor/editor_markdown_ext')
+      : Promise.resolve(false);
+
+    return Promise.all([EditorPromise, MarkdownExtensionPromise])
+      .then(([EditorModule, MarkdownExtension]) => {
         const EditorLite = EditorModule.default;
         const editorEl = document.getElementById('editor');
         const fileNameEl =
@@ -43,6 +51,10 @@ export default class EditBlob {
         const form = document.querySelector('.js-edit-blob-form');
 
         this.editor = new EditorLite();
+
+        if (MarkdownExtension) {
+          this.editor.use(MarkdownExtension.default);
+        }
 
         this.editor.createInstance({
           el: editorEl,
@@ -57,8 +69,8 @@ export default class EditBlob {
         form.addEventListener('submit', () => {
           fileContentEl.value = this.editor.getValue();
         });
-      },
-    );
+      })
+      .catch(() => createFlash(BLOB_EDITOR_ERROR));
   }
 
   configureAceEditor() {
@@ -126,7 +138,7 @@ export default class EditBlob {
   }
 
   initSoftWrap() {
-    this.isSoftWrapped = Boolean(monacoEnabled);
+    this.isSoftWrapped = Boolean(this.options.monacoEnabled);
     this.$toggleButton = $('.soft-wrap-toggle');
     this.$toggleButton.toggleClass('soft-wrap-active', this.isSoftWrapped);
     this.$toggleButton.on('click', () => this.toggleSoftWrap());
@@ -135,7 +147,7 @@ export default class EditBlob {
   toggleSoftWrap() {
     this.isSoftWrapped = !this.isSoftWrapped;
     this.$toggleButton.toggleClass('soft-wrap-active', this.isSoftWrapped);
-    if (monacoEnabled) {
+    if (this.options.monacoEnabled) {
       this.editor.updateOptions({ wordWrap: this.isSoftWrapped ? 'on' : 'off' });
     } else {
       this.editor.getSession().setUseWrapMode(this.isSoftWrapped);

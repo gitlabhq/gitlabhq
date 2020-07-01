@@ -20,6 +20,7 @@ The following are available Rake tasks:
 | [Back up and restore](backup_restore.md)                                                            | Back up, restore, and migrate GitLab instances between servers.                           |
 | [Clean up](cleanup.md)                                                                              | Clean up unneeded items from GitLab instances.                                            |
 | [Development](../development/rake_tasks.md)                                                         | Tasks for GitLab contributors.                                                            |
+| [Doctor tasks](../administration/raketasks/doctor.md)                                               | Checks for data integrity issues.                                                         |
 | [Elasticsearch](../integration/elasticsearch.md#gitlab-elasticsearch-rake-tasks) **(STARTER ONLY)** | Maintain Elasticsearch in a GitLab instance.                                              |
 | [Enable namespaces](features.md)                                                                    | Enable usernames and namespaces for user projects.                                        |
 | [General maintenance](../administration/raketasks/maintenance.md)                                   | General maintenance and self-check tasks.                                                 |

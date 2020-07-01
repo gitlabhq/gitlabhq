@@ -36,6 +36,12 @@ class UsersController < ApplicationController
     end
   end
 
+  # Get all keys of a user(params[:username]) in a text format
+  # Helpful for sysadmins to put in respective servers
+  def ssh_keys
+    render plain: user.all_ssh_keys.join("\n")
+  end
+
   def activity
     respond_to do |format|
       format.html { render 'show' }

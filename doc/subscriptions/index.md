@@ -161,16 +161,17 @@ To change payment method or update credit card information:
 
 ### Change the linked account
 
-To change the GitLab.com account associated with a Customers Portal
+To change the GitLab.com account associated with your Customers Portal
 account:
 
 1. Log in to the
    [Customers Portal](https://customers.gitlab.com/customers/sign_in).
-1. Go to [GitLab.com](https://gitlab.com) in a separate browser tab. Ensure you
+1. In a separate browser tab, go to [GitLab.com](https://gitlab.com) and ensure you
    are not logged in.
-1. On the Customers Portal page, select the **My account** drop-down and click on [**Account details**](https://customers.gitlab.com/customers/edit).
-1. Under **Your GitLab.com account**, click **Change linked account** button.
-1. Log in to the [GitLab.com](https://gitlab.com) account you want to link to the Customers Portal.
+1. On the Customers Portal page, click **My account > Account details**.
+1. Under **Your GitLab.com account**, click **Change linked account**.
+1. Log in to the [GitLab.com](https://gitlab.com) account you want to link to the Customers Portal
+   account.
 
 ### Change the associated namespace
 

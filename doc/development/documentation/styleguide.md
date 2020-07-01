@@ -1453,7 +1453,7 @@ For GitLab.com only tiers (when the feature is not available for self-managed in
 
 The tier should be ideally added to headers, so that the full badge will be displayed.
 However, it can be also mentioned from paragraphs, list items, and table cells. For these cases,
-the tier mention will be represented by an orange question mark that will show the tiers on hover.
+the tier mention will be represented by an orange info icon **(information)** that will show the tiers on hover.
 
 Use the lowest tier at the page level, even if higher-level tiers exist on the page. For example, you might have a page that is marked as Starter but a section badged as Premium.
 

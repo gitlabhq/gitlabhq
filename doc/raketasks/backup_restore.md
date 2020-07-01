@@ -26,14 +26,6 @@ installed on your system.
     sudo yum install rsync
     ```
 
-- **Tar**: Backup and restore tasks use `tar` under the hood to create and extract
-  archives. Ensure you have version 1.30 or above of `tar` available in your
-  system. To check the version, run:
-
-  ```shell
-  tar --version
-  ```
-
 ## Backup timestamp
 
 NOTE: **Note:**
@@ -679,7 +671,7 @@ You can only restore a backup to **exactly the same version and type (CE/EE)** o
 GitLab that you created it on, for example CE 9.1.0.
 
 If your backup is a different version than the current installation, you will
-need to [downgrade your GitLab installation](https://docs.gitlab.com/omnibus/update/README.html#downgrading)
+need to [downgrade your GitLab installation](https://docs.gitlab.com/omnibus/update/README.html#downgrade)
 before restoring the backup.
 
 ### Restore prerequisites
@@ -936,7 +928,7 @@ Be advised that, backup is successfully restored in spite of these warnings.
 The Rake task runs this as the `gitlab` user which does not have the superuser access to the database. When restore is initiated it will also run as `gitlab` user but it will also try to alter the objects it does not have access to.
 Those objects have no influence on the database backup/restore but they give this annoying warning.
 
-For more information see similar questions on PostgreSQL issue tracker[here](https://www.postgresql.org/message-id/201110220712.30886.adrian.klaver@gmail.com) and [here](https://www.postgresql.org/message-id/2039.1177339749@sss.pgh.pa.us) as well as [stack overflow](https://stackoverflow.com/questions/4368789/error-must-be-owner-of-language-plpgsql).
+For more information see similar questions on PostgreSQL issue tracker [here](https://www.postgresql.org/message-id/201110220712.30886.adrian.klaver@gmail.com) and [here](https://www.postgresql.org/message-id/2039.1177339749@sss.pgh.pa.us) as well as [stack overflow](https://stackoverflow.com/questions/4368789/error-must-be-owner-of-language-plpgsql).
 
 ### When the secrets file is lost
 
@@ -962,6 +954,9 @@ experience some unexpected behavior such as:
 
 - Stuck jobs.
 - 500 errors.
+
+You can check whether you have undecryptable values in the database using
+the [Secrets Doctor Rake task](../administration/raketasks/doctor.md).
 
 In this case, you are required to reset all the tokens for CI/CD variables
 and Runner Authentication, which is described in more detail below. After

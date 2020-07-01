@@ -45,7 +45,7 @@ be found in `/var/opt/gitlab/gitlab-rails/shared/pages` if using Omnibus).
 
 ## Preflight checks
 
-Run this command to list out all preflight checks before scheduling a planned failover to ensure the process will go smoothly:
+Run this command to list out all preflight checks and automatically check if replication and verification are complete before scheduling a planned failover to ensure the process will go smoothly:
 
 ```shell
 gitlab-ctl promotion-preflight-checks
