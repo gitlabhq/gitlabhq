@@ -1,5 +1,6 @@
 ---
 # Suggestion: gitlab.CurrentStatus
+#
 # Checks for words that indicate a product or feature may change in the future.
 #
 # For a list of all options, see https://errata-ai.gitbook.io/vale/getting-started/styles

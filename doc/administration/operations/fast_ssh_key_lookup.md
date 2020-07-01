@@ -67,8 +67,11 @@ sudo service ssh reload
 sudo service sshd reload
 ```
 
-Confirm that SSH is working by removing your user's SSH key in the UI, adding a
-new one, and attempting to pull a repository.
+Confirm that SSH is working by commenting out your user's key in the `authorized_keys`
+(start the line with a `#` to comment it), and attempting to pull a repository.
+
+A successful pull would mean that GitLab was able to find the key in the database,
+since it is not present in the file anymore.
 
 NOTE: **Note:** For Omnibus Docker, `AuthorizedKeysCommand` is setup by default in
 GitLab 11.11 and later.
@@ -96,6 +99,8 @@ Again, confirm that SSH is working by removing your user's SSH key in the UI,
 adding a new one, and attempting to pull a repository.
 
 Then you can backup and delete your `authorized_keys` file for best performance.
+The current users' keys are already present in the database, so there is no need for migration
+or for asking users to re-add their keys.
 
 ## How to go back to using the `authorized_keys` file
 
@@ -200,3 +205,13 @@ the database. The following instructions can be used to build OpenSSH 7.5:
    # Only run this if you run into a problem logging in
    yum downgrade openssh-server openssh openssh-clients
    ```
+
+## SELinux support and limitations
+
+> [Introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/2855) in GitLab 10.5.
+
+GitLab supports `authorized_keys` database lookups with [SELinux](https://en.wikipedia.org/wiki/Security-Enhanced_Linux).
+
+Because the SELinux policy is static, GitLab doesn't support the ability to change
+internal Unicorn ports at the moment. Admins would have to create a special `.te`
+file for the environment, since it isn't generated dynamically.
