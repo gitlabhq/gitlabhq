@@ -33,6 +33,8 @@ class EventsFinder
   end
 
   def execute
+    return Event.none if cannot_access_private_profile?
+
     events = get_events
 
     events = by_current_user_access(events)
@@ -102,6 +104,10 @@ class EventsFinder
     events.where('events.created_at > ?', params[:after].end_of_day)
   end
   # rubocop: enable CodeReuse/ActiveRecord
+
+  def cannot_access_private_profile?
+    source.is_a?(User) && !Ability.allowed?(current_user, :read_user_profile, source)
+  end
 
   def sort(events)
     return events unless params[:sort]

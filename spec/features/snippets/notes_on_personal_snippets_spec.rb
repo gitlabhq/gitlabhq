@@ -5,15 +5,17 @@ require 'spec_helper'
 RSpec.describe 'Comments on personal snippets', :js do
   include NoteInteractionHelpers
 
-  let!(:user)    { create(:user) }
-  let!(:snippet) { create(:personal_snippet, :public) }
+  let_it_be(:snippet) { create(:personal_snippet, :public) }
+  let_it_be(:other_note) { create(:note_on_personal_snippet) }
+
+  let(:user_name) { 'Test User' }
+  let!(:user) { create(:user, name: user_name) }
   let!(:snippet_notes) do
     [
       create(:note_on_personal_snippet, noteable: snippet, author: user),
       create(:note_on_personal_snippet, noteable: snippet)
     ]
   end
-  let!(:other_note) { create(:note_on_personal_snippet) }
 
   before do
     stub_feature_flags(snippets_vue: false)
@@ -54,6 +56,26 @@ RSpec.describe 'Comments on personal snippets', :js do
 
       within("#note_#{snippet_notes[0].id}") do
         expect(page).to show_user_status(status)
+      end
+    end
+
+    it 'shows the author name' do
+      visit snippet_path(snippet)
+
+      within("#note_#{snippet_notes[0].id}") do
+        expect(page).to have_content(user_name)
+      end
+    end
+
+    context 'when the author name contains HTML' do
+      let(:user_name) { '<h1><a href="https://bad.link/malicious.exe" class="evil">Fake Content<img class="fake-icon" src="image.png"></a></h1>' }
+
+      it 'renders the name as plain text' do
+        visit snippet_path(snippet)
+
+        content = find("#note_#{snippet_notes[0].id} .note-header-author-name").text
+
+        expect(content).to eq user_name
       end
     end
   end
