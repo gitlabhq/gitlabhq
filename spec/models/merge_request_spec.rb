@@ -3458,7 +3458,7 @@ describe MergeRequest do
 
   describe '#merge_participants' do
     it 'contains author' do
-      expect(subject.merge_participants).to eq([subject.author])
+      expect(subject.merge_participants).to contain_exactly(subject.author)
     end
 
     describe 'when merge_when_pipeline_succeeds? is true' do
@@ -3472,8 +3472,20 @@ describe MergeRequest do
                  author: user)
         end
 
-        it 'contains author only' do
-          expect(subject.merge_participants).to eq([subject.author])
+        context 'author is not a project member' do
+          it 'is empty' do
+            expect(subject.merge_participants).to be_empty
+          end
+        end
+
+        context 'author is a project member' do
+          before do
+            subject.project.team.add_reporter(user)
+          end
+
+          it 'contains author only' do
+            expect(subject.merge_participants).to contain_exactly(subject.author)
+          end
         end
       end
 
@@ -3486,8 +3498,24 @@ describe MergeRequest do
                  merge_user: merge_user)
         end
 
-        it 'contains author and merge user' do
-          expect(subject.merge_participants).to eq([subject.author, merge_user])
+        before do
+          subject.project.team.add_reporter(subject.author)
+        end
+
+        context 'merge user is not a member' do
+          it 'contains author only' do
+            expect(subject.merge_participants).to contain_exactly(subject.author)
+          end
+        end
+
+        context 'both author and merge users are project members' do
+          before do
+            subject.project.team.add_reporter(merge_user)
+          end
+
+          it 'contains author and merge user' do
+            expect(subject.merge_participants).to contain_exactly(subject.author, merge_user)
+          end
         end
       end
     end

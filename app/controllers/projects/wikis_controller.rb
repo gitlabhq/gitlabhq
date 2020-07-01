@@ -45,7 +45,7 @@ class Projects::WikisController < Projects::ApplicationController
 
       render 'show'
     elsif file_blob
-      send_blob(@project_wiki.repository, file_blob, allow_caching: @project.public?)
+      send_blob(@project_wiki.repository, file_blob)
     elsif show_create_form?
       # Assign a title to the WikiPage unless `id` is a randomly generated slug from #new
       title = params[:id] unless params[:random_title].present?

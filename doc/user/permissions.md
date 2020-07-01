@@ -239,6 +239,8 @@ group.
 | Edit epic comments (posted by any user) **(ULTIMATE)** |       |          |           | ✓ (2)      | ✓ (2) |
 | Edit group                                             |       |          |           |            | ✓     |
 | Manage group level CI/CD variables                     |       |          |           |            | ✓     |
+| List group deploy tokens                               |       |          |           | ✓          | ✓     |
+| Create/Delete group deploy tokens                      |       |          |           |            | ✓     |
 | Manage group members                                   |       |          |           |            | ✓     |
 | Remove group                                           |       |          |           |            | ✓     |
 | Delete group epic **(ULTIMATE)**                       |       |          |           |            | ✓     |
