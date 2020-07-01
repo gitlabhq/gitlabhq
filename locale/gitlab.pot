@@ -12434,6 +12434,9 @@ msgstr ""
 msgid "Invalid query"
 msgstr ""
 
+msgid "Invalid repository bundle for snippet with id %{snippet_id}"
+msgstr ""
+
 msgid "Invalid repository path"
 msgstr ""
 
@@ -19225,13 +19228,31 @@ msgstr ""
 msgid "Repository cleanup has started. You will receive an email once the cleanup operation is complete."
 msgstr ""
 
+msgid "Repository files count over the limit"
+msgstr ""
+
+msgid "Repository has an invalid default branch name."
+msgstr ""
+
+msgid "Repository has more than one branch."
+msgstr ""
+
 msgid "Repository has no locks."
+msgstr ""
+
+msgid "Repository has tags."
 msgstr ""
 
 msgid "Repository maintenance"
 msgstr ""
 
 msgid "Repository mirroring"
+msgstr ""
+
+msgid "Repository must contain at least 1 file."
+msgstr ""
+
+msgid "Repository size is above the limit."
 msgstr ""
 
 msgid "Repository static objects"
@@ -26682,6 +26703,9 @@ msgid "cannot be modified"
 msgstr ""
 
 msgid "cannot block others"
+msgstr ""
+
+msgid "cannot contain HTML/XML tags, including any word between angle brackets (<,>)."
 msgstr ""
 
 msgid "cannot include leading slash or directory traversal."

@@ -205,6 +205,14 @@ RSpec.describe 'Dashboard Projects' do
 
       it_behaves_like 'hidden pipeline status'
     end
+
+    context "when last_pipeline is missing" do
+      before do
+        project.last_pipeline.delete
+      end
+
+      it_behaves_like 'hidden pipeline status'
+    end
   end
 
   context 'last push widget', :use_clean_rails_memory_store_caching do

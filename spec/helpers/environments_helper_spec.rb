@@ -18,30 +18,30 @@ RSpec.describe EnvironmentsHelper do
 
     it 'returns data' do
       expect(metrics_data).to include(
-        'settings_path' => edit_project_service_path(project, 'prometheus'),
-        'clusters_path' => project_clusters_path(project),
-        'metrics_dashboard_base_path' => environment_metrics_path(environment),
-        'current_environment_name' => environment.name,
-        'documentation_path' => help_page_path('administration/monitoring/prometheus/index.md'),
-        'empty_getting_started_svg_path' => match_asset_path('/assets/illustrations/monitoring/getting_started.svg'),
-        'empty_loading_svg_path' => match_asset_path('/assets/illustrations/monitoring/loading.svg'),
-        'empty_no_data_svg_path' => match_asset_path('/assets/illustrations/monitoring/no_data.svg'),
-        'empty_unable_to_connect_svg_path' => match_asset_path('/assets/illustrations/monitoring/unable_to_connect.svg'),
-        'metrics_endpoint' => additional_metrics_project_environment_path(project, environment, format: :json),
-        'deployments_endpoint' => project_environment_deployments_path(project, environment, format: :json),
-        'default_branch' => 'master',
-        'project_path' => project_path(project),
-        'tags_path' => project_tags_path(project),
-        'has_metrics' => "#{environment.has_metrics?}",
-        'prometheus_status' => "#{environment.prometheus_status}",
-        'external_dashboard_url' => nil,
-        'environment_state' => environment.state,
-        'custom_metrics_path' => project_prometheus_metrics_path(project),
-        'validate_query_path' => validate_query_project_prometheus_metrics_path(project),
-        'custom_metrics_available' => 'true',
-        'alerts_endpoint' => project_prometheus_alerts_path(project, environment_id: environment.id, format: :json),
-        'prometheus_alerts_available' => 'true',
-        'custom_dashboard_base_path' => Metrics::Dashboard::CustomDashboardService::DASHBOARD_ROOT
+        'settings-path' => edit_project_service_path(project, 'prometheus'),
+        'clusters-path' => project_clusters_path(project),
+        'metrics-dashboard-base-path' => environment_metrics_path(environment),
+        'current-environment-name' => environment.name,
+        'documentation-path' => help_page_path('administration/monitoring/prometheus/index.md'),
+        'empty-getting-started-svg-path' => match_asset_path('/assets/illustrations/monitoring/getting_started.svg'),
+        'empty-loading-svg-path' => match_asset_path('/assets/illustrations/monitoring/loading.svg'),
+        'empty-no-data-svg-path' => match_asset_path('/assets/illustrations/monitoring/no_data.svg'),
+        'empty-unable-to-connect-svg-path' => match_asset_path('/assets/illustrations/monitoring/unable_to_connect.svg'),
+        'metrics-endpoint' => additional_metrics_project_environment_path(project, environment, format: :json),
+        'deployments-endpoint' => project_environment_deployments_path(project, environment, format: :json),
+        'default-branch' => 'master',
+        'project-path' => project_path(project),
+        'tags-path' => project_tags_path(project),
+        'has-metrics' => "#{environment.has_metrics?}",
+        'prometheus-status' => "#{environment.prometheus_status}",
+        'external-dashboard-url' => nil,
+        'environment-state' => environment.state,
+        'custom-metrics-path' => project_prometheus_metrics_path(project),
+        'validate-query-path' => validate_query_project_prometheus_metrics_path(project),
+        'custom-metrics-available' => 'true',
+        'alerts-endpoint' => project_prometheus_alerts_path(project, environment_id: environment.id, format: :json),
+        'prometheus-alerts-available' => 'true',
+        'custom-dashboard-base-path' => Metrics::Dashboard::CustomDashboardService::DASHBOARD_ROOT
       )
     end
 
@@ -54,7 +54,7 @@ RSpec.describe EnvironmentsHelper do
 
       it 'returns false' do
         expect(metrics_data).to include(
-          'prometheus_alerts_available' => 'false'
+          'prometheus-alerts-available' => 'false'
         )
       end
     end
@@ -65,7 +65,7 @@ RSpec.describe EnvironmentsHelper do
       end
 
       it 'adds external_dashboard_url' do
-        expect(metrics_data['external_dashboard_url']).to eq('http://gitlab.com')
+        expect(metrics_data['external-dashboard-url']).to eq('http://gitlab.com')
       end
     end
 
@@ -76,7 +76,7 @@ RSpec.describe EnvironmentsHelper do
 
       subject { metrics_data }
 
-      it { is_expected.to include('environment_state' => 'stopped') }
+      it { is_expected.to include('environment-state' => 'stopped') }
     end
   end
 

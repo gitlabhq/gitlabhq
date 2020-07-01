@@ -6,6 +6,7 @@ RSpec.describe "User views issues" do
   let!(:closed_issue) { create(:closed_issue, project: project) }
   let!(:open_issue1) { create(:issue, project: project) }
   let!(:open_issue2) { create(:issue, project: project) }
+  let!(:moved_open_issue) { create(:issue, project: project, moved_to: create(:issue)) }
 
   let_it_be(:user) { create(:user) }
 
@@ -36,6 +37,7 @@ RSpec.describe "User views issues" do
           .and have_content(open_issue1.title)
           .and have_content(open_issue2.title)
           .and have_no_content(closed_issue.title)
+          .and have_content(moved_open_issue.title)
           .and have_no_selector(".js-new-board-list")
       end
 
@@ -66,6 +68,7 @@ RSpec.describe "User views issues" do
           .and have_content(closed_issue.title)
           .and have_no_content(open_issue1.title)
           .and have_no_content(open_issue2.title)
+          .and have_no_content(moved_open_issue.title)
           .and have_no_selector(".js-new-board-list")
       end
 
@@ -86,6 +89,8 @@ RSpec.describe "User views issues" do
           .and have_content(closed_issue.title)
           .and have_content(open_issue1.title)
           .and have_content(open_issue2.title)
+          .and have_content(moved_open_issue.title)
+          .and have_no_content('CLOSED (MOVED)')
           .and have_no_selector(".js-new-board-list")
       end
 

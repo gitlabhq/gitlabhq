@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  context 'Monitor' do
+  RSpec.describe 'Monitor' do
     describe 'with Prometheus in a Gitlab-managed cluster', :orchestrated, :kubernetes do
       before :all do
         @cluster = Service::KubernetesCluster.new.create!

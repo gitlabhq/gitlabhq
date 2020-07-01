@@ -158,46 +158,18 @@ RSpec.shared_examples 'wiki controller actions' do
     context 'when page is a file' do
       include WikiHelpers
 
-      let(:id) { upload_file_to_wiki(container, user, file_name) }
+      where(:file_name) { ['dk.png', 'unsanitized.svg', 'git-cheat-sheet.pdf'] }
 
-      context 'when file is an image' do
-        let(:file_name) { 'dk.png' }
+      with_them do
+        let(:id) { upload_file_to_wiki(container, user, file_name) }
 
-        it 'delivers the image' do
+        it 'delivers the file with the correct headers' do
           subject
 
           expect(response.headers['Content-Disposition']).to match(/^inline/)
-          expect(response.headers[Gitlab::Workhorse::DETECT_HEADER]).to eq "true"
-        end
-
-        context 'when file is a svg' do
-          let(:file_name) { 'unsanitized.svg' }
-
-          it 'delivers the image' do
-            subject
-
-            expect(response.headers['Content-Disposition']).to match(/^inline/)
-            expect(response.headers[Gitlab::Workhorse::DETECT_HEADER]).to eq "true"
-          end
-        end
-
-        it_behaves_like 'project cache control headers' do
-          let(:project) { container }
-        end
-      end
-
-      context 'when file is a pdf' do
-        let(:file_name) { 'git-cheat-sheet.pdf' }
-
-        it 'sets the content type to sets the content response headers' do
-          subject
-
-          expect(response.headers['Content-Disposition']).to match(/^inline/)
-          expect(response.headers[Gitlab::Workhorse::DETECT_HEADER]).to eq "true"
-        end
-
-        it_behaves_like 'project cache control headers' do
-          let(:project) { container }
+          expect(response.headers[Gitlab::Workhorse::DETECT_HEADER]).to eq('true')
+          expect(response.cache_control[:public]).to be(false)
+          expect(response.cache_control[:extras]).to include('no-store')
         end
       end
     end

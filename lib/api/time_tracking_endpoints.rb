@@ -14,8 +14,8 @@ module API
           "#{issuable_name}_iid".to_sym
         end
 
-        def update_issuable_key
-          "update_#{issuable_name}".to_sym
+        def admin_issuable_key
+          "admin_#{issuable_name}".to_sym
         end
 
         def read_issuable_key
@@ -60,7 +60,7 @@ module API
         requires :duration, type: String, desc: 'The duration to be parsed'
       end
       post ":id/#{issuable_collection_name}/:#{issuable_key}/time_estimate" do
-        authorize! update_issuable_key, load_issuable
+        authorize! admin_issuable_key, load_issuable
 
         status :ok
         update_issuable(time_estimate: Gitlab::TimeTrackingFormatter.parse(params.delete(:duration)))
@@ -71,7 +71,7 @@ module API
         requires issuable_key, type: Integer, desc: "The ID of a project #{issuable_name}"
       end
       post ":id/#{issuable_collection_name}/:#{issuable_key}/reset_time_estimate" do
-        authorize! update_issuable_key, load_issuable
+        authorize! admin_issuable_key, load_issuable
 
         status :ok
         update_issuable(time_estimate: 0)
@@ -83,7 +83,7 @@ module API
         requires :duration, type: String, desc: 'The duration to be parsed'
       end
       post ":id/#{issuable_collection_name}/:#{issuable_key}/add_spent_time" do
-        authorize! update_issuable_key, load_issuable
+        authorize! admin_issuable_key, load_issuable
 
         update_issuable(spend_time: {
           duration: Gitlab::TimeTrackingFormatter.parse(params.delete(:duration)),
@@ -96,7 +96,7 @@ module API
         requires issuable_key, type: Integer, desc: "The ID of a project #{issuable_name}"
       end
       post ":id/#{issuable_collection_name}/:#{issuable_key}/reset_spent_time" do
-        authorize! update_issuable_key, load_issuable
+        authorize! admin_issuable_key, load_issuable
 
         status :ok
         update_issuable(spend_time: { duration: :reset, user_id: current_user.id })

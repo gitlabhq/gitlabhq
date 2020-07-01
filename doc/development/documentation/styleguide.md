@@ -328,6 +328,9 @@ tenses, words, and phrases:
 - Don't use profanity or obscenities. Doing so may negatively affect other
   users and contributors, which is contrary to GitLab's value of
   [diversity and inclusion](https://about.gitlab.com/handbook/values/#diversity-inclusion).
+- Avoid the use of [racially-insensitive terminology or phrases](https://www.marketplace.org/2020/06/17/tech-companies-update-language-to-avoid-offensive-terms/). For example:
+  - Use *primary* and *secondary* for database and server relationships.
+  - Use *allowlist* and *denylist* to describe access control lists.
 
 ### Word usage clarifications
 
@@ -848,19 +851,42 @@ To indicate the steps of navigation through the UI:
 
 ## Images
 
+Images, including screenshots, can help a reader better understand a concept.
+However, they can be hard to maintain, and should be used sparingly.
+
+Before including an image in the documentation, ensure it provides value to the reader.
+
+### Capture the image
+
+Use images to help the reader understand where they are in a process, or how they need to
+interact with the application.
+
+When you take screenshots:
+
+- *Capture the most relevant area of the page.* Don't include unnecessary white
+  space or areas of the page that don't help illustrate your point. Also, don't
+  include the entire page if you don't have to, but also ensure the image
+  contains enough information to allow the user to determine where things are.
+- *Be consistent.* Find a browser window size that works for you that also
+  displays all areas of the product, including the left navigation (usually >
+  1200px wide). For consistency, use this browser window size for your
+  screenshots by installing a browser extension for setting a window to a
+  specific size (for example,
+  [Window Resizer](https://chrome.google.com/webstore/detail/window-resizer/kkelicaakdanhinjdeammmilcgefonfh/related?hl=en)
+  for Google Chrome).
+
+### Save the image
+
+- Save the image with a lowercase file name that is descriptive of the feature
+  or concept in the image. If the image is of the GitLab interface, append the
+  GitLab version to the file name, based on the following format:
+  `image_name_vX_Y.png`. For example, for a screenshot taken from the pipelines
+  page of GitLab 11.1, a valid name is `pipelines_v11_1.png`. If you're adding an
+  illustration that doesn't include parts of the user interface, add the release
+  number corresponding to the release the image was added to; for an MR added to
+  11.1's milestone, a valid name for an illustration is `devops_diagram_v11_1.png`.
 - Place images in a separate directory named `img/` in the same directory where
   the `.md` document that you're working on is located.
-- Images should have a specific, non-generic name that will
-  differentiate and describe them properly.
-- For screenshots of GitLab software, append the GitLab version the screenshot was taken from to the
-  file name. Use the following format: `image_name_vX_Y.png`.
-- For example, for a screenshot taken from the pipelines page of
-  GitLab 11.1, a valid name is `pipelines_v11_1.png`. If you're
-  adding an illustration that does not include parts of the UI,
-  add the release number corresponding to the release the image
-  was added to. Example, for an MR added to 11.1's milestone,
-  a valid name for an illustration is `devops_diagram_v11_1.png`.
-- Keep all file names in lower case.
 - Consider using PNG images instead of JPEG.
 - [Compress all PNG images](#compress-images).
 - Compress gifs with <https://ezgif.com/optimize> or similar tool.
@@ -869,13 +895,20 @@ To indicate the steps of navigation through the UI:
 - Max image size: 100KB (gifs included).
 - See also how to link and embed [videos](#videos) to illustrate the docs.
 
-Inside the document:
+### Add the image link to content
 
-- The Markdown way of using an image inside a document is:
-  `![Proper description what the image is about](img/document_image_title_vX_Y.png)`
-- Always use a proper description for what the image is about. That way, when a
-  browser fails to show the image, this text will be used as an alternative
-  description.
+The Markdown code for including an image in a document is:
+`![Image description which will be the alt tag](img/document_image_title_vX_Y.png)`
+
+The image description is the alt text for the rendered image on the docs site.
+For accessibility and SEO, use [descriptions](https://webaim.org/techniques/alttext/)
+that:
+
+- Are accurate, succinct, and unique.
+- Don't use *image of …* or *graphic of…* to describe the image.
+
+Also, if a heading immediately follows an image, be sure to add three dashes
+(`---`) between the image and the heading.
 
 ### Remove image shadow
 

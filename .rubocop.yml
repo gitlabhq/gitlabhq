@@ -471,6 +471,8 @@ Rails/TimeZone:
 # WIP: See https://gitlab.com/gitlab-org/gitlab/-/issues/220040
 Rails/SaveBang:
   Enabled: true
+  AllowImplicitReturn: false
+  AllowedReceivers: ['ActionDispatch::TestRequest']
   Include:
     - 'spec/**/*.rb'
     - 'ee/spec/**/*.rb'

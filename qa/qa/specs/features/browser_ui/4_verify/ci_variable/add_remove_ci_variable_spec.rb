@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  context 'Verify' do
+  RSpec.describe 'Verify' do
     describe 'Add or Remove CI variable via UI', :smoke do
       let!(:project) do
         Resource::Project.fabricate_via_api! do |project|

@@ -98,6 +98,7 @@ export default {
             input: {
               projectPath: this.projectPath,
               jiraProjectKey: project,
+              usersMapping: [],
             },
           },
           update: (store, { data }) =>

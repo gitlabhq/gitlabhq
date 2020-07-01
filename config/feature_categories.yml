@@ -8,6 +8,7 @@
 #
 ---
 - accessibility_testing
+- advanced_deployments
 - alert_management
 - analysis
 - api
@@ -28,7 +29,7 @@
 - code_testing
 - collection
 - compliance_management
-- container_behavior_analytics
+- container_host_security
 - container_network_security
 - container_registry
 - container_scanning
@@ -39,6 +40,7 @@
 - dependency_proxy
 - dependency_scanning
 - design_management
+- design_system
 - devops_reports
 - digital_experience_management
 - disaster_recovery
@@ -60,7 +62,6 @@
 - helm_chart_registry
 - importers
 - incident_management
-- incremental_rollout
 - infrastructure_as_code
 - integrations
 - interactive_application_security_testing
@@ -79,17 +80,18 @@
 - malware_scanning
 - merge_trains
 - metrics
+- navigation
 - omnibus_package
 - package_registry
 - pages
 - pki_management
 - planning_analytics
 - product_analytics
+- projects
 - quality_management
 - release_evidence
 - release_orchestration
 - requirements_management
-- responsible_disclosure
 - review_apps
 - roadmaps
 - runbooks

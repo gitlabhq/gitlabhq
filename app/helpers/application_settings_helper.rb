@@ -190,6 +190,7 @@ module ApplicationSettingsHelper
       :container_expiration_policies_enable_historic_entries,
       :container_registry_token_expire_delay,
       :default_artifacts_expire_in,
+      :default_branch_name,
       :default_branch_protection,
       :default_ci_config_path,
       :default_group_visibility,

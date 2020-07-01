@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Groups::DeployTokensController < Groups::ApplicationController
-  before_action :authorize_admin_group!
+  before_action :authorize_destroy_deploy_token!
 
   def revoke
     @token = @group.deploy_tokens.find(params[:id])

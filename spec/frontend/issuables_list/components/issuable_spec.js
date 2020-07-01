@@ -1,5 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
-import { GlLabel } from '@gitlab/ui';
+import { GlSprintf, GlLabel } from '@gitlab/ui';
 import { TEST_HOST } from 'helpers/test_constants';
 import { trimText } from 'helpers/text_helper';
 import initUserPopovers from '~/user_popovers';
@@ -50,6 +50,10 @@ describe('Issuable component', () => {
           scopedLabels,
         },
       },
+      stubs: {
+        'gl-sprintf': GlSprintf,
+        'gl-link': '<a><slot></slot></a>',
+      },
     });
   };
 
@@ -73,7 +77,7 @@ describe('Issuable component', () => {
 
   const findConfidentialIcon = () => wrapper.find('.fa-eye-slash');
   const findTaskStatus = () => wrapper.find('.task-status');
-  const findOpenedAgoContainer = () => wrapper.find({ ref: 'openedAgoByContainer' });
+  const findOpenedAgoContainer = () => wrapper.find('[data-testid="openedByMessage"]');
   const findMilestone = () => wrapper.find('.js-milestone');
   const findMilestoneTooltip = () => findMilestone().attributes('title');
   const findDueDate = () => wrapper.find('.js-due-date');
@@ -94,7 +98,7 @@ describe('Issuable component', () => {
 
       factory();
 
-      expect(initUserPopovers).toHaveBeenCalledWith([findOpenedAgoContainer().find('a').element]);
+      expect(initUserPopovers).toHaveBeenCalledWith([wrapper.vm.$refs.openedAgoByContainer.$el]);
     });
   });
 
@@ -191,7 +195,7 @@ describe('Issuable component', () => {
     });
 
     it('renders fuzzy opened date and author', () => {
-      expect(trimText(findOpenedAgoContainer().text())).toEqual(
+      expect(trimText(findOpenedAgoContainer().text())).toContain(
         `opened 1 month ago by ${TEST_USER_NAME}`,
       );
     });

@@ -38,6 +38,7 @@ RSpec.describe Gitlab::ImportExport::SnippetsRepoRestorer do
         expect(snippet1.repository_exists?).to be false
         expect(snippet2.repository_exists?).to be false
 
+        allow_any_instance_of(Snippets::RepositoryValidationService).to receive(:execute).and_return(ServiceResponse.success)
         expect(Gitlab::ImportExport::SnippetRepoRestorer).to receive(:new).with(hash_including(snippet: snippet1, path_to_bundle: bundle_path(snippet1))).and_call_original
         expect(Gitlab::ImportExport::SnippetRepoRestorer).to receive(:new).with(hash_including(snippet: snippet2, path_to_bundle: bundle_path(snippet2))).and_call_original
         expect(restorer.restore).to be_truthy

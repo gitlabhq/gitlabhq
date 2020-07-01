@@ -229,6 +229,7 @@ RSpec.describe Banzai::Filter::UploadLinkFilter do
       'invalid UTF-8 byte sequences' | '%FF'
       'garbled path'                 | 'open(/var/tmp/):%20/location%0Afrom:%20/test'
       'whitespace'                   | "d18213acd3732630991986120e167e3d/Landscape_8.jpg\nand more"
+      'null byte'                    | "%00"
     end
 
     with_them do

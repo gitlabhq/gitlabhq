@@ -4,6 +4,16 @@ RSpec.shared_examples 'an unauthorized API user' do
   it { is_expected.to eq(403) }
 end
 
+RSpec.shared_examples 'API user with insufficient permissions' do
+  context 'with non member that is the author' do
+    before do
+      issuable.update!(author: non_member) # an external author can't admin issuable
+    end
+
+    it_behaves_like 'an unauthorized API user'
+  end
+end
+
 RSpec.shared_examples 'time tracking endpoints' do |issuable_name|
   let(:non_member) { create(:user) }
 
@@ -14,6 +24,7 @@ RSpec.shared_examples 'time tracking endpoints' do |issuable_name|
       subject { post(api("/projects/#{project.id}/#{issuable_collection_name}/#{issuable.iid}/time_estimate", non_member), params: { duration: '1w' }) }
 
       it_behaves_like 'an unauthorized API user'
+      it_behaves_like 'API user with insufficient permissions'
     end
 
     it "sets the time estimate for #{issuable_name}" do
@@ -53,6 +64,7 @@ RSpec.shared_examples 'time tracking endpoints' do |issuable_name|
       subject { post(api("/projects/#{project.id}/#{issuable_collection_name}/#{issuable.iid}/reset_time_estimate", non_member)) }
 
       it_behaves_like 'an unauthorized API user'
+      it_behaves_like 'API user with insufficient permissions'
     end
 
     it "resets the time estimate for #{issuable_name}" do
@@ -70,6 +82,7 @@ RSpec.shared_examples 'time tracking endpoints' do |issuable_name|
       end
 
       it_behaves_like 'an unauthorized API user'
+      it_behaves_like 'API user with insufficient permissions'
     end
 
     it "add spent time for #{issuable_name}" do
@@ -119,6 +132,7 @@ RSpec.shared_examples 'time tracking endpoints' do |issuable_name|
       subject { post(api("/projects/#{project.id}/#{issuable_collection_name}/#{issuable.iid}/reset_spent_time", non_member)) }
 
       it_behaves_like 'an unauthorized API user'
+      it_behaves_like 'API user with insufficient permissions'
     end
 
     it "resets spent time for #{issuable_name}" do

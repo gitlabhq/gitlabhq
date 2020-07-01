@@ -192,6 +192,19 @@ RSpec.describe API::Events do
         end
       end
 
+      context 'when target users profile is private' do
+        it 'returns no events' do
+          user.update!(private_profile: true)
+          private_project.add_developer(non_member)
+
+          get api("/users/#{user.username}/events", non_member)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to include_pagination_headers
+          expect(json_response).to eq([])
+        end
+      end
+
       context 'when scope is passed' do
         context 'when unauthenticated' do
           it 'returns no user events' do

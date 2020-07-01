@@ -92,6 +92,9 @@ class MergeRequest < ApplicationRecord
   has_many :draft_notes
   has_many :reviews, inverse_of: :merge_request
 
+  has_many :approvals, dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
+  has_many :approved_by_users, through: :approvals, source: :user
+
   KNOWN_MERGE_PARAMS = [
     :auto_merge_strategy,
     :should_remove_source_branch,
@@ -519,7 +522,7 @@ class MergeRequest < ApplicationRecord
       participants << merge_user
     end
 
-    participants
+    participants.select { |participant| Ability.allowed?(participant, :read_merge_request, self) }
   end
 
   def first_commit

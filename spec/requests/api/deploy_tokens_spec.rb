@@ -204,7 +204,7 @@ RSpec.describe API::DeployTokens do
   end
 
   context 'deploy token creation' do
-    shared_examples 'creating a deploy token' do |entity, unauthenticated_response|
+    shared_examples 'creating a deploy token' do |entity, unauthenticated_response, authorized_role|
       let(:expires_time) { 1.year.from_now }
       let(:params) do
         {
@@ -231,9 +231,9 @@ RSpec.describe API::DeployTokens do
         it { is_expected.to have_gitlab_http_status(:forbidden) }
       end
 
-      context 'when authenticated as maintainer' do
+      context "when authenticated as #{authorized_role}" do
         before do
-          send(entity).add_maintainer(user)
+          send(entity).send("add_#{authorized_role}", user)
         end
 
         it 'creates the deploy token' do
@@ -282,7 +282,7 @@ RSpec.describe API::DeployTokens do
         response
       end
 
-      it_behaves_like 'creating a deploy token', :project, :not_found
+      it_behaves_like 'creating a deploy token', :project, :not_found, :maintainer
     end
 
     describe 'POST /groups/:id/deploy_tokens' do
@@ -291,7 +291,17 @@ RSpec.describe API::DeployTokens do
         response
       end
 
-      it_behaves_like 'creating a deploy token', :group, :forbidden
+      it_behaves_like 'creating a deploy token', :group, :forbidden, :owner
+
+      context 'when authenticated as maintainer' do
+        before do
+          group.add_maintainer(user)
+        end
+
+        let(:params) { { name: 'test', scopes: ['read_repository'] } }
+
+        it { is_expected.to have_gitlab_http_status(:forbidden) }
+      end
     end
   end
 
@@ -318,6 +328,14 @@ RSpec.describe API::DeployTokens do
     context 'when authenticated as maintainer' do
       before do
         group.add_maintainer(user)
+      end
+
+      it { is_expected.to have_gitlab_http_status(:forbidden) }
+    end
+
+    context 'when authenticated as owner' do
+      before do
+        group.add_owner(user)
       end
 
       it 'calls the deploy token destroy service' do

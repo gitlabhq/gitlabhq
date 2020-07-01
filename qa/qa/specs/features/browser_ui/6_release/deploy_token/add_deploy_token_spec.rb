@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  context 'Release', quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/213222', type: :flaky } do
+  RSpec.describe 'Release', quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/213222', type: :flaky } do
     describe 'Deploy token creation' do
       it 'user adds a deploy token' do
         Flow::Login.sign_in

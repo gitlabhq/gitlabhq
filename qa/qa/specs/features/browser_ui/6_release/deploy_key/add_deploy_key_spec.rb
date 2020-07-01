@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  context 'Release' do
+  RSpec.describe 'Release' do
     describe 'Deploy key creation' do
       it 'user adds a deploy key' do
         Flow::Login.sign_in

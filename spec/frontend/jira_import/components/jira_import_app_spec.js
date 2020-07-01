@@ -258,6 +258,7 @@ describe('JiraImportApp', () => {
           input: {
             jiraProjectKey: 'MTG',
             projectPath: 'gitlab-org/gitlab-test',
+            usersMapping: [],
           },
         },
       };

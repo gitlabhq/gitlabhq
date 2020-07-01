@@ -147,8 +147,35 @@ puts Sidekiq::Queue.new("background_migration").size
 Sidekiq::ScheduledSet.new.select { |r| r.klass == 'BackgroundMigrationWorker' }.size
 ```
 
-There is also a [Rake task](../administration/raketasks/maintenance.md#display-status-of-database-migrations)
-for displaying the status of each database migration.
+### What do I do if my background migrations are stuck?
+
+CAUTION: **Warning:** The following operations can disrupt your GitLab performance.
+
+NOTE: **Note:** It is safe to re-execute these commands, especially if you have 1000+ pending jobs which would likely overflow your runtime memory.
+
+**For Omnibus installations**
+
+```shell
+# Start the rails console
+sudo gitlab-rails c
+
+# Execute the following in the rails console
+scheduled_queue = Sidekiq::ScheduledSet.new
+pending_job_classes = scheduled_queue.select { |job| job["class"] == "BackgroundMigrationWorker" }.map { |job| job["args"].first }.uniq
+pending_job_classes.each { |job_class| Gitlab::BackgroundMigration.steal(job_class) }
+```
+
+**For installations from source**
+
+```shell
+# Start the rails console
+sudo -u git -H bundle exec rails RAILS_ENV=production
+
+# Execute the following in the rails console
+scheduled_queue = Sidekiq::ScheduledSet.new
+pending_job_classes = scheduled_queue.select { |job| job["class"] == "BackgroundMigrationWorker" }.map { |job| job["args"].first }.uniq
+pending_job_classes.each { |job_class| Gitlab::BackgroundMigration.steal(job_class) }
+```
 
 ## Upgrading to a new major version
 

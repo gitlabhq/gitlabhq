@@ -32,7 +32,7 @@
         .note-header-info
           %a{ href: user_path(note.author) }
             %span.note-header-author-name.bold
-              = sanitize(note.author.name)
+              = note.author.name
             = user_status(note.author)
             %span.note-headline-light
               = note.author.to_reference
