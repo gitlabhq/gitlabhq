@@ -334,9 +334,8 @@ module Gitlab
 
       def search_files_by_content(ref, query, options = {})
         request = Gitaly::SearchFilesByContentRequest.new(repository: @gitaly_repo, ref: ref, query: query)
-        GitalyClient.streaming_call(@storage, :repository_service, :search_files_by_content, request, timeout: GitalyClient.default_timeout) do |response|
-          search_results_from_response(response, options)
-        end
+        response = GitalyClient.call(@storage, :repository_service, :search_files_by_content, request, timeout: GitalyClient.default_timeout)
+        search_results_from_response(response, options)
       end
 
       def disconnect_alternates
@@ -403,15 +402,14 @@ module Gitlab
 
       def gitaly_fetch_stream_to_file(save_path, rpc_name, request_class, timeout)
         request = request_class.new(repository: @gitaly_repo)
-        GitalyClient.streaming_call(
+        response = GitalyClient.call(
           @storage,
           :repository_service,
           rpc_name,
           request,
           timeout: timeout
-        ) do |response|
-          write_stream_to_file(response, save_path)
-        end
+        )
+        write_stream_to_file(response, save_path)
       end
 
       def write_stream_to_file(response, save_path)

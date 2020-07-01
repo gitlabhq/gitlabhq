@@ -13,15 +13,14 @@ module Gitlab
       end
 
       def apply_bfg_object_map_stream(io, &blk)
-        GitalyClient.streaming_call(
+        response = GitalyClient.call(
           storage,
           :cleanup_service,
           :apply_bfg_object_map_stream,
           build_object_map_enum(io),
           timeout: GitalyClient.long_timeout
-        ) do |response|
-          response.each(&blk)
-        end
+        )
+        response.each(&blk)
       end
 
       private

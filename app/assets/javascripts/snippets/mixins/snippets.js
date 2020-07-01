@@ -11,6 +11,7 @@ export const getSnippetMixin = {
       },
       update: data => data.snippets.edges[0]?.node,
       result(res) {
+        this.blobs = res.data.snippets.edges[0].node.blobs;
         if (this.onSnippetFetch) {
           this.onSnippetFetch(res);
         }
@@ -27,6 +28,7 @@ export const getSnippetMixin = {
     return {
       snippet: {},
       newSnippet: false,
+      blobs: [],
     };
   },
   computed: {

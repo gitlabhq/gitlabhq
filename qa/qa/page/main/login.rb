@@ -165,8 +165,6 @@ module QA
             terms.accept_terms if terms.visible?
           end
 
-          skip_onboarding if respond_to?(:skip_onboarding)
-
           Page::Main::Menu.validate_elements_present! unless skip_page_validation
         end
 
@@ -181,5 +179,3 @@ module QA
     end
   end
 end
-
-QA::Page::Main::Login.prepend_if_ee('QA::EE::Page::Main::Login')

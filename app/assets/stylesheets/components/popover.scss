@@ -100,26 +100,6 @@
   }
 }
 
-.onboarding-popover {
-  box-shadow: 0 2px 4px $dropdown-shadow-color;
-  max-width: 280px;
-
-  .popover-body {
-    font-size: $gl-font-size;
-    line-height: $gl-line-height;
-    padding: $gl-padding;
-  }
-
-  .popover-header {
-    display: none;
-  }
-
-  .accept-mr-label {
-    background-color: $accepting-mr-label-color;
-    color: $white;
-  }
-}
-
 /**
 * user_popover component
 */
@@ -129,13 +109,6 @@
 
   .category-icon {
     color: $gray-600;
-  }
-}
-
-.onboarding-welcome-page {
-  .popover {
-    min-width: auto;
-    max-width: 40%;
   }
 }
 

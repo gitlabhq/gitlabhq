@@ -22,11 +22,5 @@ RSpec.describe Gitlab::GitalyClient::CleanupService do
 
       client.apply_bfg_object_map_stream(StringIO.new)
     end
-
-    it 'is wrapped as a streaming call' do
-      expect(Gitlab::GitalyClient).to receive(:streaming_call).with(anything, :cleanup_service, :apply_bfg_object_map_stream, anything, anything)
-
-      client.apply_bfg_object_map_stream(StringIO.new)
-    end
   end
 end

@@ -65,14 +65,17 @@ export default {
     };
   },
   computed: {
+    snippetHasBinary() {
+      return Boolean(this.snippet.blobs.find(blob => blob.binary));
+    },
     personalSnippetActions() {
       return [
         {
           condition: this.snippet.userPermissions.updateSnippet,
           text: __('Edit'),
           href: this.editLink,
-          disabled: this.snippet.blob.binary,
-          title: this.snippet.blob.binary
+          disabled: this.snippetHasBinary,
+          title: this.snippetHasBinary
             ? __('Snippets with non-text files can only be edited via Git.')
             : undefined,
         },

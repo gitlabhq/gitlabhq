@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  context 'Plan' do
+  context 'Plan', quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/225409', type: :bug } do
     describe 'Jira issue import', :jira, :orchestrated, :requires_admin do
       let(:jira_project_key) { "JITD" }
       let(:jira_issue_title) { "[#{jira_project_key}-1] Jira to GitLab Test Issue" }

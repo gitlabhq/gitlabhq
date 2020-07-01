@@ -1,0 +1,5 @@
+---
+title: Add instrumentation to Gitaly streamed responses
+merge_request: 35283
+author:
+type: fixed

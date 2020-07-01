@@ -1623,6 +1623,7 @@ Counts of requirements by their state.
 | `lfsObjectsSize` | Float! | The LFS objects size in bytes |
 | `packagesSize` | Float! | The packages size in bytes |
 | `repositorySize` | Float! | The Git repository size in bytes |
+| `snippetsSize` | Float! | The snippets size in bytes |
 | `storageSize` | Float! | The total storage in bytes |
 | `wikiSize` | Float! | The wiki size in bytes |
 

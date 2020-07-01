@@ -11245,6 +11245,11 @@ type RootStorageStatistics {
   repositorySize: Float!
 
   """
+  The snippets size in bytes
+  """
+  snippetsSize: Float!
+
+  """
   The total storage in bytes
   """
   storageSize: Float!

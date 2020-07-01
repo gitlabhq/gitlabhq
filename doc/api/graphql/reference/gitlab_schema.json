@@ -33012,6 +33012,24 @@
               "deprecationReason": null
             },
             {
+              "name": "snippetsSize",
+              "description": "The snippets size in bytes",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Float",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "storageSize",
               "description": "The total storage in bytes",
               "args": [

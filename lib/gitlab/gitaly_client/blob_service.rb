@@ -15,9 +15,8 @@ module Gitlab
           oid: oid,
           limit: limit
         )
-        GitalyClient.streaming_call(@gitaly_repo.storage_name, :blob_service, :get_blob, request, timeout: GitalyClient.fast_timeout) do |response|
-          consume_blob_response(response)
-        end
+        response = GitalyClient.call(@gitaly_repo.storage_name, :blob_service, :get_blob, request, timeout: GitalyClient.fast_timeout)
+        consume_blob_response(response)
       end
 
       def batch_lfs_pointers(blob_ids)
@@ -28,9 +27,8 @@ module Gitlab
           blob_ids: blob_ids
         )
 
-        GitalyClient.streaming_call(@gitaly_repo.storage_name, :blob_service, :get_lfs_pointers, request, timeout: GitalyClient.medium_timeout) do |response|
-          map_lfs_pointers(response)
-        end
+        response = GitalyClient.call(@gitaly_repo.storage_name, :blob_service, :get_lfs_pointers, request, timeout: GitalyClient.medium_timeout)
+        map_lfs_pointers(response)
       end
 
       def get_blobs(revision_paths, limit = -1)
@@ -46,15 +44,14 @@ module Gitlab
           limit: limit
         )
 
-        GitalyClient.streaming_call(
+        response = GitalyClient.call(
           @gitaly_repo.storage_name,
           :blob_service,
           :get_blobs,
           request,
-          timeout: GitalyClient.fast_timeout
-        ) do |response|
-          GitalyClient::BlobsStitcher.new(response)
-        end
+          timeout: GitalyClient.fast_timeout)
+
+        GitalyClient::BlobsStitcher.new(response)
       end
 
       def get_blob_types(revision_paths, limit = -1)
@@ -70,15 +67,14 @@ module Gitlab
           limit: limit
         )
 
-        GitalyClient.streaming_call(
+        response = GitalyClient.call(
           @gitaly_repo.storage_name,
           :blob_service,
           :get_blobs,
           request,
           timeout: GitalyClient.fast_timeout
-        ) do |response|
-          map_blob_types(response)
-        end
+        )
+        map_blob_types(response)
       end
 
       def get_new_lfs_pointers(revision, limit, not_in, dynamic_timeout = nil)
@@ -101,15 +97,14 @@ module Gitlab
             GitalyClient.medium_timeout
           end
 
-        GitalyClient.streaming_call(
+        response = GitalyClient.call(
           @gitaly_repo.storage_name,
           :blob_service,
           :get_new_lfs_pointers,
           request,
           timeout: timeout
-        ) do |response|
-          map_lfs_pointers(response)
-        end
+        )
+        map_lfs_pointers(response)
       end
 
       def get_all_lfs_pointers
@@ -117,9 +112,8 @@ module Gitlab
           repository: @gitaly_repo
         )
 
-        GitalyClient.streaming_call(@gitaly_repo.storage_name, :blob_service, :get_all_lfs_pointers, request, timeout: GitalyClient.medium_timeout) do |response|
-          map_lfs_pointers(response)
-        end
+        response = GitalyClient.call(@gitaly_repo.storage_name, :blob_service, :get_all_lfs_pointers, request, timeout: GitalyClient.medium_timeout)
+        map_lfs_pointers(response)
       end
 
       private
