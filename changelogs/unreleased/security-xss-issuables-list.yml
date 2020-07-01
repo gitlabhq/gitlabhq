@@ -1,5 +1,0 @@
----
-title: Fix security issue when rendering issuable
-merge_request:
-author:
-type: security

@@ -1,5 +1,0 @@
----
-title: Prevent XSS in group name validations
-merge_request:
-author:
-type: security
