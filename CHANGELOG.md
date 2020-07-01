@@ -670,6 +670,27 @@ entry.
 - Use visitUrl in Alert management. !32414
 
 
+## 12.10.13 (2020-07-01)
+
+### Security (15 changes)
+
+- Do not show activity for users with private profiles.
+- Fix stored XSS in markdown renderer.
+- Upgrade swagger-ui to solve XSS issues.
+- Fix group deploy token API authorizations.
+- Check access when sending TODOs related to merge requests.
+- Change from hybrid to JSON cookies serializer.
+- Prevent XSS in group name validations.
+- Disable caching for wiki attachments.
+- Fix null byte error in upload path.
+- Update permissions for time tracking endpoints.
+- Update Kaminari gem.
+- Fix note author name rendering.
+- Sanitize bitbucket repo urls to mitigate XSS.
+- Stored XSS on the Error Tracking page.
+- Fix security issue when rendering issuable.
+
+
 ## 12.10.12 (2020-06-24)
 
 ### Fixed (1 change)
