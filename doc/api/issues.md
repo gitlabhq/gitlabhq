@@ -627,7 +627,6 @@ the `epic` property:
 {
    "project_id" : 4,
    "description" : "Omnis vero earum sunt corporis dolor et placeat.",
-   "epic": {
    "epic_iid" : 5, //deprecated, use `iid` of the `epic` attribute
    "epic": {
      "id" : 42,

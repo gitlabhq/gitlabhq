@@ -121,6 +121,22 @@ RSpec.describe Oauth::ApplicationsController do
     end
   end
 
+  describe 'locale' do
+    let(:user) { create(:user, preferred_language: 'uk') }
+
+    before do
+      sign_in(user)
+
+      allow(Gitlab::I18n).to receive(:with_locale).and_call_original
+    end
+
+    it "sets user's locale" do
+      expect(Gitlab::I18n).to receive(:with_locale).with('uk')
+
+      get :new
+    end
+  end
+
   def disable_user_oauth
     allow(Gitlab::CurrentSettings.current_application_settings).to receive(:user_oauth_applications?).and_return(false)
   end

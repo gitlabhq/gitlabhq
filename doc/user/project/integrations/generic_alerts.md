@@ -23,11 +23,14 @@ In GitLab versions 13.1 and greater, you can configure [External Prometheus inst
 
 ## Setting up generic alerts
 
-To set up the generic alerts integration:
+To obtain credentials for setting up a generic alerts integration:
 
-1. Navigate to **Settings > Integrations** in a project.
-1. Click on **Alerts endpoint**.
-1. Toggle the **Active** alert setting. The `URL` and `Authorization Key` for the webhook configuration can be found there.
+- Sign in to GitLab as a user with maintainer [permissions](../../permissions.md) for a project.
+- Navigate to the **Operations** page for your project, depending on your installed version of GitLab:
+  - *In GitLab versions 13.1 and greater,* navigate to **{settings}** **Settings > Operations** in your project.
+  - *In GitLab versions prior to 13.1,* navigate to **{settings}** **Settings > Integrations** in your project. GitLab will display a banner encouraging you to enable the Alerts endpoint in **{settings}** **Settings > Operations** instead.
+- Click **Alerts endpoint**.
+- Toggle the **Active** alert setting to display the **URL** and **Authorization Key** for the webhook configuration.
 
 ## Customizing the payload
 

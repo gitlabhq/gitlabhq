@@ -17,6 +17,8 @@ class Oauth::ApplicationsController < Doorkeeper::ApplicationsController
   before_action :add_gon_variables
   before_action :load_scopes, only: [:index, :create, :edit, :update]
 
+  around_action :set_locale
+
   helper_method :can?
 
   layout 'profile'
@@ -69,5 +71,9 @@ class Oauth::ApplicationsController < Doorkeeper::ApplicationsController
     application_params.tap do |params|
       params[:owner] = current_user
     end
+  end
+
+  def set_locale(&block)
+    Gitlab::I18n.with_user_locale(current_user, &block)
   end
 end

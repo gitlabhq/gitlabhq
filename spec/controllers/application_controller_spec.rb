@@ -968,4 +968,26 @@ RSpec.describe ApplicationController do
       end
     end
   end
+
+  describe 'locale' do
+    let(:user) { create(:user, preferred_language: 'uk') }
+
+    controller(described_class) do
+      def index
+        :ok
+      end
+    end
+
+    before do
+      sign_in(user)
+
+      allow(Gitlab::I18n).to receive(:with_locale).and_call_original
+    end
+
+    it "sets user's locale" do
+      expect(Gitlab::I18n).to receive(:with_locale).with('uk')
+
+      get :index
+    end
+  end
 end

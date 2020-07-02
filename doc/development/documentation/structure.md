@@ -47,6 +47,9 @@ When done, remove all of this commented-out text, except a commented-out Trouble
 which, if empty, can be left in place to encourage future use.-->
 ---
 description: "Short document description." # Up to ~200 chars long. They will be displayed in Google Search snippets. It may help to write the page intro first, and then reuse it here.
+stage: "Add the stage name here, and remove the quotation marks"
+group: "Add the group name here, and remove the quotation marks"
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 ---
 
 # Feature Name or Use Case Name **[TIER]** (1)
