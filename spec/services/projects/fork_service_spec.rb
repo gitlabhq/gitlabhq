@@ -327,7 +327,7 @@ RSpec.describe Projects::ForkService do
         destination_storage_name: 'test_second_storage'
       )
       Projects::UpdateRepositoryStorageService.new(storage_move).execute
-      fork_after_move = fork_project(project)
+      fork_after_move = fork_project(project.reload)
       pool_repository_before_move = PoolRepository.joins(:shard)
                                       .find_by(source_project: project, shards: { name: 'default' })
       pool_repository_after_move = PoolRepository.joins(:shard)

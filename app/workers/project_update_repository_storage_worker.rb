@@ -1,8 +1,9 @@
 # frozen_string_literal: true
 
-class ProjectUpdateRepositoryStorageWorker # rubocop:disable Scalability/IdempotentWorker
+class ProjectUpdateRepositoryStorageWorker
   include ApplicationWorker
 
+  idempotent!
   feature_category :gitaly
 
   def perform(project_id, new_repository_storage_key, repository_storage_move_id = nil)

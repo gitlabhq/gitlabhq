@@ -88,12 +88,20 @@ RSpec.describe Gitlab::Utils::UsageData do
     end
 
     context 'when Prometheus is disabled' do
-      it 'returns nil' do
+      before do
         expect(Gitlab::Prometheus::Internal).to receive(:prometheus_enabled?).and_return(false)
+      end
 
+      it 'returns nil by default' do
         result = described_class.with_prometheus_client { |client| client }
 
         expect(result).to be nil
+      end
+
+      it 'returns fallback if provided' do
+        result = described_class.with_prometheus_client(fallback: []) { |client| client }
+
+        expect(result).to eq([])
       end
     end
   end

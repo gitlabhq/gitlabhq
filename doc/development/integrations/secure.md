@@ -100,13 +100,12 @@ the project repository contains Java source code and the `dependency_scanning` f
 
 ```yaml
 mysec_dependency_scanning:
-  except:
-    variables:
-      - $DEPENDENCY_SCANNING_DISABLED
-  only:
-    variables:
-      - $GITLAB_FEATURES =~ /\bdependency_scanning\b/ &&
-        $CI_PROJECT_REPOSITORY_LANGUAGES =~ /\bjava\b/
+  rules:
+    - if: $DEPENDENCY_SCANNING_DISABLED
+      when: never
+    - if: $GITLAB_FEATURES =~ /\bdependency_scanning\b/
+      exists:
+        - '**/*.java'
 ```
 
 Any additional job policy should only be configured by users based on their needs.

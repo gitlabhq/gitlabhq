@@ -9,7 +9,7 @@ type: howto
 
 > - Introduced in GitLab Enterprise Edition 8.9.
 > - Using Geo in combination with
->   [multi-server architectures](../../reference_architectures/index.md)
+>   [multi-node architectures](../../reference_architectures/index.md)
 >   is considered **Generally Available** (GA) in
 >   [GitLab Premium](https://about.gitlab.com/pricing/) 10.4.
 
@@ -233,9 +233,9 @@ gitlab-ctl geo-replication-pause
 gitlab-ctl geo-replication-resume
 ```
 
-### Configuring Geo for multiple servers
+### Configuring Geo for multiple nodes
 
-For information on configuring Geo for multiple servers, see [Geo for multiple servers](multiple_servers.md).
+For information on configuring Geo for multiple nodes, see [Geo for multiple servers](multiple_servers.md).
 
 ### Configuring Geo with Object Storage
 

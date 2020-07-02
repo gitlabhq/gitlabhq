@@ -14,5 +14,13 @@ FactoryBot.define do
     trait :started do
       state { ProjectRepositoryStorageMove.state_machines[:state].states[:started].value }
     end
+
+    trait :finished do
+      state { ProjectRepositoryStorageMove.state_machines[:state].states[:finished].value }
+    end
+
+    trait :failed do
+      state { ProjectRepositoryStorageMove.state_machines[:state].states[:failed].value }
+    end
   end
 end

@@ -71,7 +71,7 @@ can lead to confusion during deployments.
 
 > - Introduced in GitLab 10.2 for project-level clusters.
 > - Introduced in GitLab 11.6 for group-level clusters.
-> - A local Tiller option was introduced in GitLab 13.2 behind a feature flag, disabled by default.
+> - A local Tiller option was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/209736) in GitLab 13.2 behind a feature flag, disabled by default.
 > - The feature flag for local Tiller is enabled on GitLab.com.
 
 [Helm](https://helm.sh/docs/) is a package manager for Kubernetes and is

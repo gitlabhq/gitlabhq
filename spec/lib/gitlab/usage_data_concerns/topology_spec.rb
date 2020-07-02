@@ -19,18 +19,14 @@ RSpec.describe Gitlab::UsageDataConcerns::Topology do
         expect(Gitlab::Prometheus::Internal).to receive(:uri).and_return('http://prom:9090')
       end
 
-      it 'contains a topology element' do
-        allow_prometheus_queries
-
-        expect(subject).to have_key(:topology)
-      end
-
       context 'tracking node metrics' do
         it 'contains node level metrics for each instance' do
           expect_prometheus_api_to(
             receive_node_memory_query,
             receive_node_cpu_count_query,
-            receive_node_service_memory_query,
+            receive_node_service_memory_rss_query,
+            receive_node_service_memory_uss_query,
+            receive_node_service_memory_pss_query,
             receive_node_service_process_count_query
           )
 
@@ -82,19 +78,51 @@ RSpec.describe Gitlab::UsageDataConcerns::Topology do
           expect_prometheus_api_to(
             receive_node_memory_query(result: []),
             receive_node_cpu_count_query,
-            receive_node_service_memory_query,
+            receive_node_service_memory_rss_query(result: []),
+            receive_node_service_memory_uss_query(result: []),
+            receive_node_service_memory_pss_query,
             receive_node_service_process_count_query
           )
 
-          keys = subject[:topology][:nodes].flat_map(&:keys)
-          expect(keys).not_to include(:node_memory_total_bytes)
-          expect(keys).to include(:node_cpus, :node_services)
+          expect(subject[:topology]).to eq({
+            duration_s: 0,
+            nodes: [
+              {
+                node_cpus: 16,
+                node_services: [
+                  {
+                    name: 'sidekiq',
+                    process_count: 15,
+                    process_memory_pss: 401
+                  },
+                  {
+                    name: 'redis',
+                    process_count: 1
+                  }
+                ]
+              },
+              {
+                node_cpus: 8,
+                node_services: [
+                  {
+                    name: 'web',
+                    process_count: 10,
+                    process_memory_pss: 302
+                  },
+                  {
+                    name: 'sidekiq',
+                    process_count: 5
+                  }
+                ]
+              }
+            ]
+          })
         end
       end
 
       context 'and no results are found' do
         it 'does not report anything' do
-          expect_prometheus_api_to receive(:aggregate).at_least(:once).and_return({})
+          expect_prometheus_api_to receive(:query).at_least(:once).and_return({})
 
           expect(subject[:topology]).to eq({
             duration_s: 0,
@@ -105,7 +133,7 @@ RSpec.describe Gitlab::UsageDataConcerns::Topology do
 
       context 'and a connection error is raised' do
         it 'does not report anything' do
-          expect_prometheus_api_to receive(:aggregate).and_raise('Connection failed')
+          expect_prometheus_api_to receive(:query).and_raise('Connection failed')
 
           expect(subject[:topology]).to eq({ duration_s: 0 })
         end
@@ -123,7 +151,7 @@ RSpec.describe Gitlab::UsageDataConcerns::Topology do
 
   def receive_node_memory_query(result: nil)
     receive(:query)
-      .with(/node_memory_MemTotal_bytes/, an_instance_of(Hash))
+      .with(/node_memory_total_bytes/, an_instance_of(Hash))
       .and_return(result || [
         {
           'metric' => { 'instance' => 'instance1:8080' },
@@ -138,7 +166,7 @@ RSpec.describe Gitlab::UsageDataConcerns::Topology do
 
   def receive_node_cpu_count_query(result: nil)
     receive(:query)
-      .with(/node_cpu_seconds_total/, an_instance_of(Hash))
+      .with(/node_cpus/, an_instance_of(Hash))
       .and_return(result || [
         {
           'metric' => { 'instance' => 'instance2:8090' },
@@ -151,46 +179,59 @@ RSpec.describe Gitlab::UsageDataConcerns::Topology do
       ])
   end
 
-  def receive_node_service_memory_query(result: nil)
+  def receive_node_service_memory_rss_query(result: nil)
     receive(:query)
-      .with(/process_.+_memory_bytes/, an_instance_of(Hash))
+      .with(/process_resident_memory_bytes/, an_instance_of(Hash))
       .and_return(result || [
-        # instance 1: runs Puma + a small Sidekiq
         {
-          'metric' => { 'instance' => 'instance1:8080', 'job' => 'gitlab-rails', '__name__' => 'ruby_process_resident_memory_bytes' },
+          'metric' => { 'instance' => 'instance1:8080', 'job' => 'gitlab-rails' },
           'value' =>  [1000, '300']
         },
         {
-          'metric' => { 'instance' => 'instance1:8080', 'job' => 'gitlab-rails', '__name__' => 'ruby_process_unique_memory_bytes' },
-          'value' => [1000, '301']
-        },
-        {
-          'metric' => { 'instance' => 'instance1:8080', 'job' => 'gitlab-rails', '__name__' => 'ruby_process_proportional_memory_bytes' },
-          'value' => [1000, '302']
-        },
-        {
-          'metric' => { 'instance' => 'instance1:8090', 'job' => 'gitlab-sidekiq', '__name__' => 'ruby_process_resident_memory_bytes' },
+          'metric' => { 'instance' => 'instance1:8090', 'job' => 'gitlab-sidekiq' },
           'value' => [1000, '303']
         },
         # instance 2: runs a dedicated Sidekiq + Redis (which uses a different metric name)
         {
-          'metric' => { 'instance' => 'instance2:8090', 'job' => 'gitlab-sidekiq', '__name__' => 'ruby_process_resident_memory_bytes' },
+          'metric' => { 'instance' => 'instance2:8090', 'job' => 'gitlab-sidekiq' },
           'value' => [1000, '400']
         },
         {
-          'metric' => { 'instance' => 'instance2:8090', 'job' => 'gitlab-sidekiq', '__name__' => 'ruby_process_proportional_memory_bytes' },
-          'value' => [1000, '401']
+          'metric' => { 'instance' => 'instance2:9121', 'job' => 'redis' },
+          'value' => [1000, '402']
+        }
+      ])
+  end
+
+  def receive_node_service_memory_uss_query(result: nil)
+    receive(:query)
+      .with(/process_unique_memory_bytes/, an_instance_of(Hash))
+      .and_return(result || [
+        {
+          'metric' => { 'instance' => 'instance1:8080', 'job' => 'gitlab-rails' },
+          'value' => [1000, '301']
+        }
+      ])
+  end
+
+  def receive_node_service_memory_pss_query(result: nil)
+    receive(:query)
+      .with(/process_proportional_memory_bytes/, an_instance_of(Hash))
+      .and_return(result || [
+        {
+          'metric' => { 'instance' => 'instance1:8080', 'job' => 'gitlab-rails' },
+          'value' => [1000, '302']
         },
         {
-          'metric' => { 'instance' => 'instance2:9121', 'job' => 'redis', '__name__' => 'process_resident_memory_bytes' },
-          'value' => [1000, '402']
+          'metric' => { 'instance' => 'instance2:8090', 'job' => 'gitlab-sidekiq' },
+          'value' => [1000, '401']
         }
       ])
   end
 
   def receive_node_service_process_count_query(result: nil)
     receive(:query)
-      .with(/process_start_time_seconds/, an_instance_of(Hash))
+      .with(/service_process:count/, an_instance_of(Hash))
       .and_return(result || [
         # instance 1
         {

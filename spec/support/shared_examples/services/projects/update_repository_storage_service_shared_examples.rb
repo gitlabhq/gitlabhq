@@ -47,6 +47,7 @@ RSpec.shared_examples 'moves repository to another storage' do |repository_type|
       old_repository_path = repository.full_path
 
       result = subject.execute
+      project.reload
 
       expect(result).to be_success
       expect(project).not_to be_repository_read_only

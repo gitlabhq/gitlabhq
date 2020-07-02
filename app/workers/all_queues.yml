@@ -1530,7 +1530,7 @@
   :urgency: :low
   :resource_boundary: :unknown
   :weight: 1
-  :idempotent: 
+  :idempotent: true
   :tags: []
 - :name: prometheus_create_default_alerts
   :feature_category: :incident_management
