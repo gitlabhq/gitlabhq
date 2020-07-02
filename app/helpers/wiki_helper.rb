@@ -3,6 +3,30 @@
 module WikiHelper
   include API::Helpers::RelatedResourcesHelpers
 
+  def wiki_page_title(page, action = nil)
+    titles = [_('Wiki')]
+
+    if page.persisted?
+      titles << page.human_title
+      breadcrumb_title(page.human_title)
+      wiki_breadcrumb_dropdown_links(page.slug)
+    end
+
+    titles << action if action
+    page_title(*titles.reverse)
+    add_to_breadcrumbs(_('Wiki'), wiki_path(page.wiki))
+  end
+
+  def link_to_wiki_page(page, **options)
+    link_to page.human_title, wiki_page_path(page.wiki, page), **options
+  end
+
+  def wiki_sidebar_toggle_button
+    content_tag :button, class: 'btn btn-default sidebar-toggle js-sidebar-wiki-toggle', role: 'button', type: 'button' do
+      sprite_icon('chevron-double-lg-left')
+    end
+  end
+
   # Produces a pure text breadcrumb for a given page.
   #
   # page_slug - The slug of a WikiPage object.

@@ -51,6 +51,20 @@ RSpec.describe CommitsHelper do
     end
   end
 
+  describe '#view_file_button' do
+    let(:project) { build(:project) }
+    let(:path) { 'path/to/file' }
+    let(:sha) { '1234567890' }
+
+    subject do
+      helper.view_file_button(sha, path, project)
+    end
+
+    it 'links to project files' do
+      expect(subject).to have_link('1234567', href: helper.project_blob_path(project, "#{sha}/#{path}"))
+    end
+  end
+
   describe '#view_on_environment_button' do
     let(:project) { create(:project) }
     let(:environment) { create(:environment, external_url: 'http://example.com') }

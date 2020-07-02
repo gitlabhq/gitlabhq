@@ -220,7 +220,7 @@ ci_pipelines:
 - parent_pipeline
 - downstream_bridges
 - job_artifacts
-- vulnerabilities_occurrence_pipelines
+- vulnerabilities_finding_pipelines
 - vulnerability_findings
 - pipeline_config
 - security_scans

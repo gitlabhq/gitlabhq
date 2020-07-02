@@ -1,7 +1,7 @@
 import { shallowMount } from '@vue/test-utils';
 import DashboardPage from '~/monitoring/pages/dashboard_page.vue';
 import Dashboard from '~/monitoring/components/dashboard.vue';
-import { propsData } from '../mock_data';
+import { dashboardProps } from '../fixture_data';
 
 describe('monitoring/pages/dashboard_page', () => {
   let wrapper;
@@ -28,9 +28,18 @@ describe('monitoring/pages/dashboard_page', () => {
   });
 
   it('renders the dashboard page with dashboard component', () => {
-    buildWrapper({ dashboardProps: propsData });
+    buildWrapper({ dashboardProps });
 
-    expect(findDashboardComponent().props()).toMatchObject(propsData);
+    const allProps = {
+      ...dashboardProps,
+      // default props values
+      rearrangePanelsAvailable: false,
+      showHeader: true,
+      showPanels: true,
+      smallEmptyState: false,
+    };
+
     expect(findDashboardComponent()).toExist();
+    expect(allProps).toMatchObject(findDashboardComponent().props());
   });
 });

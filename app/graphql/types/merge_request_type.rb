@@ -153,11 +153,11 @@ module Types
     end
 
     def diff_stats_summary
-      nil_stats = { additions: 0, deletions: 0 }
+      nil_stats = { additions: 0, deletions: 0, file_count: 0 }
       return nil_stats unless object.diff_stats.present?
 
       object.diff_stats.each_with_object(nil_stats) do |status, hash|
-        hash.merge!(additions: status.additions, deletions: status.deletions) { |_, x, y| x + y }
+        hash.merge!(additions: status.additions, deletions: status.deletions, file_count: 1) { |_, x, y| x + y }
       end
     end
   end

@@ -33,7 +33,7 @@ const hasExitingPotential = literal => literal.includes(']: ');
 const hasAdjacentExit = node => {
   let currentNode = node;
 
-  while (currentNode.next && currentNode.literal !== null) {
+  while (currentNode && currentNode.literal !== null) {
     if (hasExitingPotential(currentNode.literal)) {
       return true;
     }

@@ -120,10 +120,10 @@ export default {
     ]),
     ...mapGetters('details', ['stacktrace']),
     firstReleaseLink() {
-      return `${this.error.externalBaseUrl}/releases/${this.error.firstReleaseShortVersion}`;
+      return `${this.error.externalBaseUrl}/releases/${this.error.firstReleaseVersion}`;
     },
     lastReleaseLink() {
-      return `${this.error.externalBaseUrl}/releases/${this.error.lastReleaseShortVersion}`;
+      return `${this.error.externalBaseUrl}/releases/${this.error.lastReleaseVersion}`;
     },
     showStacktrace() {
       return Boolean(this.stacktrace?.length);
@@ -400,18 +400,18 @@ export default {
               <icon name="external-link" class="ml-1 flex-shrink-0" />
             </gl-link>
           </li>
-          <li v-if="error.firstReleaseShortVersion">
+          <li v-if="error.firstReleaseVersion">
             <strong class="bold">{{ __('First seen') }}:</strong>
             <time-ago-tooltip :time="error.firstSeen" />
             <gl-link :href="firstReleaseLink" target="_blank">
-              <span>{{ __('Release') }}: {{ error.firstReleaseShortVersion.substr(0, 10) }}</span>
+              <span>{{ __('Release') }}: {{ error.firstReleaseVersion }}</span>
             </gl-link>
           </li>
-          <li v-if="error.lastReleaseShortVersion">
+          <li v-if="error.lastReleaseVersion">
             <strong class="bold">{{ __('Last seen') }}:</strong>
             <time-ago-tooltip :time="error.lastSeen" />
             <gl-link :href="lastReleaseLink" target="_blank">
-              <span>{{ __('Release') }}: {{ error.lastReleaseShortVersion.substr(0, 10) }}</span>
+              <span>{{ __('Release') }}: {{ error.lastReleaseVersion }}</span>
             </gl-link>
           </li>
           <li>

@@ -31,6 +31,8 @@ RSpec.describe GitlabSchema.types['SentryDetailedError'] do
       lastReleaseLastCommit
       firstReleaseShortVersion
       lastReleaseShortVersion
+      firstReleaseVersion
+      lastReleaseVersion
       gitlabIssuePath
       gitlabCommit
       gitlabCommitPath

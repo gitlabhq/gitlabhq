@@ -191,6 +191,20 @@ RSpec.describe Gitlab::GitalyClient::OperationService do
 
       it { expect(subject).to be_nil }
     end
+
+    context "when the pre-receive hook fails" do
+      let(:response) do
+        Gitaly::UserFFBranchResponse.new(
+          branch_update: nil,
+          pre_receive_error: "pre-receive hook error message\n"
+        )
+      end
+
+      it "raises the error" do
+        # the PreReceiveError class strips the GL-HOOK-ERR prefix from this error
+        expect { subject }.to raise_error(Gitlab::Git::PreReceiveError, "pre-receive hook failed.")
+      end
+    end
   end
 
   shared_examples 'cherry pick and revert errors' do

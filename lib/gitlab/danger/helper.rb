@@ -73,16 +73,16 @@ module Gitlab
       # @return [Hash<String,Array<String>>]
       def changes_by_category
         all_changed_files.each_with_object(Hash.new { |h, k| h[k] = [] }) do |file, hash|
-          hash[category_for_file(file)] << file
+          categories_for_file(file).each { |category| hash[category] << file }
         end
       end
 
-      # Determines the category a file is in, e.g., `:frontend` or `:backend`
-      # @return[Symbol]
-      def category_for_file(file)
-        _, category = CATEGORIES.find { |regexp, _| regexp.match?(file) }
+      # Determines the categories a file is in, e.g., `[:frontend]`, `[:backend]`, or  `%i[frontend engineering_productivity]`.
+      # @return Array<Symbol>
+      def categories_for_file(file)
+        _, categories = CATEGORIES.find { |regexp, _| regexp.match?(file) }
 
-        category || :unknown
+        Array(categories || :unknown)
       end
 
       # Returns the GFM for a category label, making its best guess if it's not
@@ -125,9 +125,12 @@ module Gitlab
           jest\.config\.js |
           package\.json |
           yarn\.lock |
-          config/.+\.js |
-          \.gitlab/ci/frontend\.gitlab-ci\.yml
+          config/.+\.js
         )\z}x => :frontend,
+
+        %r{(\A|/)(
+          \.gitlab/ci/frontend\.gitlab-ci\.yml
+        )\z}x => %i[frontend engineering_productivity],
 
         %r{\A(ee/)?db/(?!fixtures)[^/]+} => :database,
         %r{\A(ee/)?lib/gitlab/(database|background_migration|sql|github_import)(/|\.rb)} => :database,

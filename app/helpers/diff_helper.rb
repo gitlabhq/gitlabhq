@@ -135,8 +135,7 @@ module DiffHelper
 
   def diff_file_html_data(project, diff_file_path, diff_commit_id)
     {
-      blob_diff_path: project_blob_diff_path(project,
-                                                       tree_join(diff_commit_id, diff_file_path)),
+      blob_diff_path: project_blob_diff_path(project, tree_join(diff_commit_id, diff_file_path)),
       view: diff_view
     }
   end

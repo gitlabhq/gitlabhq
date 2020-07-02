@@ -748,6 +748,11 @@ Note the following properties:
 
 ![heatmap panel type](img/heatmap_panel_type.png)
 
+CAUTION: **Warning:**
+When a query returns too many data points, the heatmap data bucket dimensions tend downwards to 0, making the chart's data invisible, as shown in the image below. To fix this problem, limit the amount of data returned by changing the time range filter on the metrics dashboard UI, or adding the **step** property to your dashboard's YAML file.
+
+![heatmap chart_too_much_data](img/heatmap_chart_too_much_data_v_13_2.png)
+
 ### Templating variables for metrics dashboards
 
 Templating variables can be used to make your metrics dashboard more versatile.

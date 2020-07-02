@@ -545,6 +545,7 @@ Aggregated summary of changes
 | `additions` | Int! | Number of lines added |
 | `changes` | Int! | Number of lines changed |
 | `deletions` | Int! | Number of lines deleted |
+| `fileCount` | Int! | Number of files changed |
 
 ## Discussion
 
@@ -1679,7 +1680,8 @@ A Sentry error.
 | `externalBaseUrl` | String! | External Base URL of the Sentry Instance |
 | `externalUrl` | String! | External URL of the error |
 | `firstReleaseLastCommit` | String | Commit the error was first seen |
-| `firstReleaseShortVersion` | String | Release version the error was first seen |
+| `firstReleaseShortVersion` | String | Release short version the error was first seen |
+| `firstReleaseVersion` | String | Release version the error was first seen |
 | `firstSeen` | Time! | Timestamp when the error was first seen |
 | `frequency` | SentryErrorFrequency! => Array | Last 24hr stats of the error |
 | `gitlabCommit` | String | GitLab commit SHA attributed to the Error based on the release version |
@@ -1687,7 +1689,8 @@ A Sentry error.
 | `gitlabIssuePath` | String | URL of GitLab Issue |
 | `id` | ID! | ID (global ID) of the error |
 | `lastReleaseLastCommit` | String | Commit the error was last seen |
-| `lastReleaseShortVersion` | String | Release version the error was last seen |
+| `lastReleaseShortVersion` | String | Release short version the error was last seen |
+| `lastReleaseVersion` | String | Release version the error was last seen |
 | `lastSeen` | Time! | Timestamp when the error was last seen |
 | `message` | String | Sentry metadata message of the error |
 | `sentryId` | String! | ID (Sentry ID) of the error |
@@ -2219,6 +2222,8 @@ Represents a vulnerability scanner.
 | ---   |  ---- | ----------  |
 | `externalId` | String | External ID of the vulnerability scanner |
 | `name` | String | Name of the vulnerability scanner |
+| `reportType` | VulnerabilityReportType | Type of the vulnerability report |
+| `vendor` | String | Vendor of the vulnerability scanner |
 
 ## VulnerabilitySeveritiesCount
 

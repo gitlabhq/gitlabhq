@@ -22,6 +22,9 @@ module QA
           element :groups_dropdown, required: true
           element :more_dropdown
           element :snippets_link
+          element :groups_link
+          element :activity_link
+          element :milestones_link
         end
 
         view 'app/views/layouts/nav/projects_dropdown/_show.html.haml' do
@@ -53,10 +56,10 @@ module QA
           end
         end
 
-        def go_to_snippets
+        def go_to_more_dropdown_option(option_name)
           within_top_menu do
             click_element :more_dropdown
-            click_element :snippets_link
+            click_element option_name
           end
         end
 
@@ -148,3 +151,5 @@ module QA
     end
   end
 end
+
+QA::Page::Main::Menu.prepend_if_ee('QA::EE::Page::Main::Menu')

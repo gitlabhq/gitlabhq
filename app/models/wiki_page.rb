@@ -301,6 +301,10 @@ class WikiPage
     version&.commit&.committed_date
   end
 
+  def diffs(diff_options = {})
+    Gitlab::Diff::FileCollection::WikiPage.new(self, diff_options: diff_options)
+  end
+
   private
 
   def serialize_front_matter(hash)

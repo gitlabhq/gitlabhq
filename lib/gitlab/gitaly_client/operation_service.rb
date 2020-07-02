@@ -178,6 +178,10 @@ module Gitlab
           timeout: GitalyClient.long_timeout
         )
 
+        if response.pre_receive_error.present?
+          raise Gitlab::Git::PreReceiveError.new("GL-HOOK-ERR: pre-receive hook failed.")
+        end
+
         Gitlab::Git::OperationService::BranchUpdate.from_gitaly(response.branch_update)
       rescue GRPC::FailedPrecondition => e
         raise Gitlab::Git::CommitError, e

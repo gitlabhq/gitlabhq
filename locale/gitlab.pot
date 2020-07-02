@@ -10187,9 +10187,6 @@ msgstr ""
 msgid "Forks"
 msgstr ""
 
-msgid "Format"
-msgstr ""
-
 msgid "Format: %{dateFormat}"
 msgstr ""
 
@@ -10278,6 +10275,9 @@ msgid "Generate key"
 msgstr ""
 
 msgid "Generate new export"
+msgstr ""
+
+msgid "GenericReports|Report"
 msgstr ""
 
 msgid "Geo"
@@ -11234,16 +11234,16 @@ msgstr ""
 msgid "Group: %{name}"
 msgstr ""
 
-msgid "GroupActivityMetrics|New Members created"
+msgid "GroupActivityMetrics|Issues opened"
 msgstr ""
 
-msgid "GroupActivyMetrics|Issues created"
+msgid "GroupActivityMetrics|Members added"
 msgstr ""
 
-msgid "GroupActivyMetrics|Merge Requests created"
+msgid "GroupActivityMetrics|Merge Requests opened"
 msgstr ""
 
-msgid "GroupActivyMetrics|Recent activity (last 90 days)"
+msgid "GroupActivityMetrics|Recent activity (last 90 days)"
 msgstr ""
 
 msgid "GroupImport|Failed to import group."
@@ -15309,9 +15309,6 @@ msgid "No template"
 msgstr ""
 
 msgid "No test coverage"
-msgstr ""
-
-msgid "No thanks"
 msgstr ""
 
 msgid "No vulnerabilities present"
@@ -25306,6 +25303,9 @@ msgstr ""
 msgid "View open merge request"
 msgstr ""
 
+msgid "View page @ "
+msgstr ""
+
 msgid "View performance dashboard."
 msgstr ""
 
@@ -27551,7 +27551,7 @@ msgstr ""
 msgid "mrWidget|To approve this merge request, please enter your password. This project requires all approvals to be authenticated."
 msgstr ""
 
-msgid "mrWidget|Use %{linkStart}CI pipelines to test your code%{linkEnd}, simply add a GitLab CI configuration file to your project. It only takes a minute to make your code more secure and robust."
+msgid "mrWidget|Use %{linkStart}CI pipelines to test your code%{linkEnd} by simply adding a GitLab CI configuration file to your project. It only takes a minute to make your code more secure and robust."
 msgstr ""
 
 msgid "mrWidget|When this merge request is ready, remove the WIP: prefix from the title to allow it to be merged"

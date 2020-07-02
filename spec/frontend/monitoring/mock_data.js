@@ -5,23 +5,6 @@ import { TEST_HOST } from '../helpers/test_constants';
 export const mockProjectDir = '/frontend-fixtures/environments-project';
 export const mockApiEndpoint = `${TEST_HOST}/monitoring/mock`;
 
-export const propsData = {
-  hasMetrics: false,
-  documentationPath: '/path/to/docs',
-  settingsPath: '/path/to/settings',
-  clustersPath: '/path/to/clusters',
-  tagsPath: '/path/to/tags',
-  defaultBranch: 'master',
-  emptyGettingStartedSvgPath: '/path/to/getting-started.svg',
-  emptyLoadingSvgPath: '/path/to/loading.svg',
-  emptyNoDataSvgPath: '/path/to/no-data.svg',
-  emptyNoDataSmallSvgPath: '/path/to/no-data-small.svg',
-  emptyUnableToConnectSvgPath: '/path/to/unable-to-connect.svg',
-  customMetricsAvailable: false,
-  customMetricsPath: '',
-  validateQueryPath: '',
-};
-
 export const customDashboardBasePath = '.gitlab/dashboards';
 
 const customDashboardsData = new Array(30).fill(null).map((_, idx) => ({

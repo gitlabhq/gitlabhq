@@ -14,6 +14,8 @@ module Types
           description: 'Number of lines deleted'
     field :changes, GraphQL::INT_TYPE, null: false,
           description: 'Number of lines changed'
+    field :file_count, GraphQL::INT_TYPE, null: false,
+          description: 'Number of files changed'
 
     def changes
       object[:additions] + object[:deletions]

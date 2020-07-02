@@ -37,7 +37,7 @@
                     an outdated change in
                   commit
 
-                  %span.commit-sha= Commit.truncate_sha(discussion.commit_id)
+                  %span.commit-sha= truncate_sha(discussion.commit_id)
                 - else
                   - unless discussion.active?
                     an old version of

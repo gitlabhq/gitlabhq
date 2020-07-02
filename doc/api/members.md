@@ -290,7 +290,7 @@ Example response:
 
 ### Set override flag for a member of a group
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/4875) in GitLab 12.10.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/4875) in GitLab 13.0.
 
 By default, the access level of LDAP group members is set to the value specified
 by LDAP through Group Sync. You can allow access level overrides by calling this endpoint.
@@ -326,7 +326,7 @@ Example response:
 
 ### Remove override for a member of a group
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/4875) in GitLab 12.10.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/4875) in GitLab 13.0.
 
 Sets the override flag to false and allows LDAP Group Sync to reset the access
 level to the LDAP-prescribed value.

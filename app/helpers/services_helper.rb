@@ -96,7 +96,7 @@ module ServicesHelper
   end
 
   def integration_form_refactor?
-    Feature.enabled?(:integration_form_refactor, @project)
+    Feature.enabled?(:integration_form_refactor, @project, default_enabled: true)
   end
 
   def integration_form_data(integration)

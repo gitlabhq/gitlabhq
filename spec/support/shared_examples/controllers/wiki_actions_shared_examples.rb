@@ -104,6 +104,35 @@ RSpec.shared_examples 'wiki controller actions' do
     end
   end
 
+  describe 'GET #diff' do
+    context 'when commit exists' do
+      it 'renders the diff' do
+        get :diff, params: routing_params.merge(id: wiki_title, version_id: wiki.repository.commit.id)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to render_template('shared/wikis/diff')
+        expect(assigns(:diffs)).to be_a(Gitlab::Diff::FileCollection::Base)
+        expect(assigns(:diff_notes_disabled)).to be(true)
+      end
+    end
+
+    context 'when commit does not exist' do
+      it 'returns a 404 error' do
+        get :diff, params: routing_params.merge(id: wiki_title, version_id: 'invalid')
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
+    context 'when page does not exist' do
+      it 'returns a 404 error' do
+        get :diff, params: routing_params.merge(id: 'invalid')
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+  end
+
   describe 'GET #show' do
     render_views
 

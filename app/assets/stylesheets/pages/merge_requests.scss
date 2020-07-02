@@ -397,6 +397,16 @@ $mr-widget-min-height: 69px;
         }
       }
     }
+
+    &.mr-pipeline-suggest {
+      border-radius: $border-radius-default;
+      line-height: 20px;
+      border: 1px solid $border-color;
+
+      .circle-icon-container {
+        color: $gl-text-color-quaternary;
+      }
+    }
   }
 
   .mr-widget-help {
@@ -593,26 +603,6 @@ $mr-widget-min-height: 69px;
 
   .diverged-commits-count {
     color: $gl-text-color-secondary;
-  }
-}
-
-.mr-pipeline-suggest {
-  flex-wrap: wrap;
-  border-radius: $border-radius-default;
-  padding: $gl-padding;
-  border: 1px solid $border-color;
-  min-height: $mr-widget-min-height;
-
-  @include media-breakpoint-up(md) {
-    align-items: center;
-  }
-
-  .circle-icon-container {
-    color: $gl-text-color-quaternary;
-  }
-
-  .popover {
-    z-index: 240;
   }
 }
 

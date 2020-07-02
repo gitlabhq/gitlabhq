@@ -856,7 +856,8 @@ Some regressions only affect a specific browser version. We can install and test
 
 [BrowserStack](https://www.browserstack.com/) allows you to test more than 1200 mobile devices and browsers.
 You can use it directly through the [live app](https://www.browserstack.com/live) or you can install the [chrome extension](https://chrome.google.com/webstore/detail/browserstack/nkihdmlheodkdfojglpcjjmioefjahjb) for easy access.
-You can find the credentials on 1Password, under `frontendteam@gitlab.com`.
+Sign in to BrowserStack with the credentials saved in the **Engineering** vault of GitLab's
+[shared 1Password account](https://about.gitlab.com/handbook/security/#1password-guide).
 
 ### Firefox
 

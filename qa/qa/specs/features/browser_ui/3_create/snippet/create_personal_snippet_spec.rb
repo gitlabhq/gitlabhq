@@ -6,7 +6,9 @@ module QA
       it 'User creates a personal snippet' do
         Flow::Login.sign_in
 
-        Page::Main::Menu.perform(&:go_to_snippets)
+        Page::Main::Menu.perform do |menu|
+          menu.go_to_more_dropdown_option(:snippets_link)
+        end
 
         Resource::Snippet.fabricate_via_browser_ui! do |snippet|
           snippet.title = 'Snippet title'

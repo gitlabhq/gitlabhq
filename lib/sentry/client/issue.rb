@@ -168,7 +168,8 @@ module Sentry
           first_release_short_version: issue.dig('firstRelease', 'shortVersion'),
           first_release_version: issue.dig('firstRelease', 'version'),
           last_release_last_commit: issue.dig('lastRelease', 'lastCommit'),
-          last_release_short_version: issue.dig('lastRelease', 'shortVersion')
+          last_release_short_version: issue.dig('lastRelease', 'shortVersion'),
+          last_release_version: issue.dig('lastRelease', 'version')
         })
       end
 

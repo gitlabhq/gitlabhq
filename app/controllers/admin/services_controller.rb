@@ -6,7 +6,7 @@ class Admin::ServicesController < Admin::ApplicationController
   before_action :service, only: [:edit, :update]
   before_action :whitelist_query_limiting, only: [:index]
   before_action only: :edit do
-    push_frontend_feature_flag(:integration_form_refactor)
+    push_frontend_feature_flag(:integration_form_refactor, default_enabled: true)
   end
 
   def index

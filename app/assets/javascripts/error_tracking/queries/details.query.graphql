@@ -18,8 +18,8 @@ query errorDetails($fullPath: ID!, $errorId: ID!) {
                 }
                 externalUrl
                 externalBaseUrl
-                firstReleaseShortVersion
-                lastReleaseShortVersion
+                firstReleaseVersion
+                lastReleaseVersion
                 gitlabCommit
                 gitlabCommitPath
                 gitlabIssuePath

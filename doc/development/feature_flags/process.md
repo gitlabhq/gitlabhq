@@ -88,7 +88,7 @@ Take into consideration that such action can make the feature available on
 GitLab.com shortly after the change to the feature flag is merged.
 
 Changing the default state or removing the feature flag has to be done before
-the 22nd of the month, _at least_ 2 working days before, in order for the change
+the 22nd of the month, _at least_ 3-4 working days before, in order for the change
 to be included in the final self-managed release.
 
 In addition to this, the feature behind feature flag should:

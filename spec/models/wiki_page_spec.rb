@@ -864,6 +864,24 @@ RSpec.describe WikiPage do
     end
   end
 
+  describe '#diffs' do
+    subject { existing_page }
+
+    it 'returns a diff instance' do
+      diffs = subject.diffs(foo: 'bar')
+
+      expect(diffs).to be_a(Gitlab::Diff::FileCollection::WikiPage)
+      expect(diffs.diffable).to be_a(Commit)
+      expect(diffs.diffable.id).to eq(subject.version.id)
+      expect(diffs.project).to be(subject.wiki)
+      expect(diffs.diff_options).to include(
+        expanded: true,
+        paths: [subject.path],
+        foo: 'bar'
+      )
+    end
+  end
+
   private
 
   def get_slugs(page_or_dir)

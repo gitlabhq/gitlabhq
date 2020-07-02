@@ -234,6 +234,7 @@ RSpec.describe Sentry::Client::Issue do
         :first_release_short_version | [:firstRelease, :shortVersion]
         :last_release_short_version  | [:lastRelease, :shortVersion]
         :first_release_version       | [:firstRelease, :version]
+        :last_release_version        | [:lastRelease, :version]
       end
 
       with_them do

@@ -55,7 +55,12 @@ RSpec.describe 'getting merge request information nested in a project' do
 
     expect(merge_request_graphql_data).to include(
       'diffStats' => all(a_hash_including('path' => String, 'additions' => be_natural, 'deletions' => be_natural)),
-      'diffStatsSummary' => a_hash_including('additions' => be_natural, 'deletions' => be_natural, 'changes' => be_natural)
+      'diffStatsSummary' => a_hash_including(
+        'fileCount' => merge_request.diff_stats.count,
+        'additions' => be_natural,
+        'deletions' => be_natural,
+        'changes' => be_natural
+      )
     )
 
     # diff_stats is consistent with summary

@@ -3164,6 +3164,11 @@ type DiffStatsSummary {
   Number of lines deleted
   """
   deletions: Int!
+
+  """
+  Number of files changed
+  """
+  fileCount: Int!
 }
 
 type Discussion implements ResolvableInterface {
@@ -5394,6 +5399,31 @@ type Group {
   ): VulnerabilitiesCountByDayAndSeverityConnection
 
   """
+  Vulnerability scanners reported on the project vulnerabilties of the group and its subgroups
+  """
+  vulnerabilityScanners(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+  ): VulnerabilityScannerConnection
+
+  """
   Web URL of the group
   """
   webUrl: String!
@@ -5520,6 +5550,31 @@ type InstanceSecurityDashboard {
     """
     last: Int
   ): ProjectConnection!
+
+  """
+  Vulnerability scanners reported on the vulnerabilties from projects selected in Instance Security Dashboard
+  """
+  vulnerabilityScanners(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+  ): VulnerabilityScannerConnection
 }
 
 """
@@ -9772,6 +9827,31 @@ type Project {
   ): VulnerabilityConnection
 
   """
+  Vulnerability scanners reported on the project vulnerabilties
+  """
+  vulnerabilityScanners(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+  ): VulnerabilityScannerConnection
+
+  """
   Counts for each severity of vulnerability of the project
   """
   vulnerabilitySeveritiesCount: VulnerabilitySeveritiesCount
@@ -11465,9 +11545,14 @@ type SentryDetailedError {
   firstReleaseLastCommit: String
 
   """
-  Release version the error was first seen
+  Release short version the error was first seen
   """
   firstReleaseShortVersion: String
+
+  """
+  Release version the error was first seen
+  """
+  firstReleaseVersion: String
 
   """
   Timestamp when the error was first seen
@@ -11505,9 +11590,14 @@ type SentryDetailedError {
   lastReleaseLastCommit: String
 
   """
-  Release version the error was last seen
+  Release short version the error was last seen
   """
   lastReleaseShortVersion: String
+
+  """
+  Release version the error was last seen
+  """
+  lastReleaseVersion: String
 
   """
   Timestamp when the error was last seen
@@ -14443,6 +14533,51 @@ type VulnerabilityScanner {
   Name of the vulnerability scanner
   """
   name: String
+
+  """
+  Type of the vulnerability report
+  """
+  reportType: VulnerabilityReportType
+
+  """
+  Vendor of the vulnerability scanner
+  """
+  vendor: String
+}
+
+"""
+The connection type for VulnerabilityScanner.
+"""
+type VulnerabilityScannerConnection {
+  """
+  A list of edges.
+  """
+  edges: [VulnerabilityScannerEdge]
+
+  """
+  A list of nodes.
+  """
+  nodes: [VulnerabilityScanner]
+
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: PageInfo!
+}
+
+"""
+An edge in a connection.
+"""
+type VulnerabilityScannerEdge {
+  """
+  A cursor for use in pagination.
+  """
+  cursor: String!
+
+  """
+  The item at the end of the edge.
+  """
+  node: VulnerabilityScanner
 }
 
 """
