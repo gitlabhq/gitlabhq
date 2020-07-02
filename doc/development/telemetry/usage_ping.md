@@ -666,8 +666,9 @@ appear to be associated to any of the services running, since they all appear to
 | `clusters_applications_runner`                            | `usage_activity_by_stage`            | `verify`      |                  |         | Unique clusters with Runner enabled                                        |
 | `projects_reporting_ci_cd_back_to_github: 0`              | `usage_activity_by_stage`            | `verify`      |                  |         | Unique projects with a GitHub pipeline enabled                             |
 | `merge_requests_users`                                    | `usage_activity_by_stage_monthly`    | `create`      |                  |         | Unique count of users who used a merge request                             |
-| `nodes`                                                   | `topology`                           | `enablement`  |                  |         | The list of server nodes on which GitLab components are running            |
 | `duration_s`                                              | `topology`                           | `enablement`  |                  |         | Time it took to collect topology data                                      |
+| `application_requests_per_hour`                           | `topology`                           | `enablement`  |                  |         | Number of requests to the web application per hour                         |
+| `nodes`                                                   | `topology`                           | `enablement`  |                  |         | The list of server nodes on which GitLab components are running            |
 | `node_memory_total_bytes`                                 | `topology > nodes`                   | `enablement`  |                  |         | The total available memory of this node                                    |
 | `node_cpus`                                               | `topology > nodes`                   | `enablement`  |                  |         | The number of CPU cores of this node                                       |
 | `node_services`                                           | `topology > nodes`                   | `enablement`  |                  |         | The list of GitLab services running on this node                           |
@@ -873,6 +874,8 @@ The following is example content of the Usage Ping payload.
     }
   },
   "topology": {
+    "duration_s": 0.013836685999194742,
+    "application_requests_per_hour": 4224,
     "nodes": [
       {
         "node_memory_total_bytes": 33269903360,
@@ -897,8 +900,7 @@ The following is example content of the Usage Ping payload.
         ...
       },
       ...
-    ],
-    "duration_s": 0.013836685999194742
+    ]
   }
 }
 ```

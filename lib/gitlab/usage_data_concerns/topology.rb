@@ -28,9 +28,18 @@ module Gitlab
       def topology_fetch_all_data
         with_prometheus_client(fallback: {}) do |client|
           {
+            application_requests_per_hour: topology_app_requests_per_hour(client),
             nodes: topology_node_data(client)
-          }
+          }.compact
         end
+      end
+
+      def topology_app_requests_per_hour(client)
+        result = client.query(one_week_average('gitlab_usage_ping:ops:rate5m')).first
+        return unless result
+
+        # the metric is recorded as a per-second rate
+        (result['value'].last.to_f * 1.hour).to_i
       end
 
       def topology_node_data(client)

@@ -3,7 +3,7 @@ import LogLine from './line.vue';
 import LogLineHeader from './line_header.vue';
 
 export default {
-  name: 'CollpasibleLogSection',
+  name: 'CollapsibleLogSection',
   components: {
     LogLine,
     LogLineHeader,

@@ -7,8 +7,6 @@ module RuboCop
         MSG = 'Add an `authorize :ability` call to the type: '\
               'https://docs.gitlab.com/ee/development/api_graphql_styleguide.html#type-authorization'
 
-        TYPES_DIR = 'app/graphql/types'
-
         # We want to exclude our own basetypes and scalars
         WHITELISTED_TYPES = %w[BaseEnum BaseScalar BasePermissionType MutationType
                                QueryType GraphQL::Schema BaseUnion].freeze
@@ -18,7 +16,6 @@ module RuboCop
         PATTERN
 
         def on_class(node)
-          return unless in_type?(node)
           return if whitelisted?(class_constant(node))
           return if whitelisted?(superclass_constant(node))
 
@@ -26,12 +23,6 @@ module RuboCop
         end
 
         private
-
-        def in_type?(node)
-          path = node.location.expression.source_buffer.name
-
-          path.include? TYPES_DIR
-        end
 
         def whitelisted?(class_node)
           class_const = class_node&.const_name

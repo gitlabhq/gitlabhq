@@ -10964,6 +10964,9 @@ msgstr ""
 msgid "Go to find file"
 msgstr ""
 
+msgid "Go to fork"
+msgstr ""
+
 msgid "Go to issue boards"
 msgstr ""
 
@@ -11529,6 +11532,9 @@ msgid "Groups (%{groups})"
 msgstr ""
 
 msgid "Groups and projects"
+msgstr ""
+
+msgid "Groups and subgroups"
 msgstr ""
 
 msgid "Groups can also be nested by creating %{subgroup_docs_link_start}subgroups%{subgroup_docs_link_end}."
@@ -15129,6 +15135,9 @@ msgid "No approvers"
 msgstr ""
 
 msgid "No authentication methods configured."
+msgstr ""
+
+msgid "No available groups to fork the project."
 msgstr ""
 
 msgid "No available namespaces to fork the project."
@@ -19831,6 +19840,9 @@ msgstr ""
 msgid "Search by author"
 msgstr ""
 
+msgid "Search by name"
+msgstr ""
+
 msgid "Search files"
 msgstr ""
 
@@ -22977,6 +22989,9 @@ msgid "There is no data available. Please change your selection."
 msgstr ""
 
 msgid "There was a problem communicating with your device."
+msgstr ""
+
+msgid "There was a problem fetching groups."
 msgstr ""
 
 msgid "There was a problem fetching project branches."
@@ -26254,6 +26269,9 @@ msgid "You must disassociate %{domain} from all clusters it is attached to befor
 msgstr ""
 
 msgid "You must have maintainer access to force delete a lock"
+msgstr ""
+
+msgid "You must have permission to create a project in a group before forking."
 msgstr ""
 
 msgid "You must have permission to create a project in a namespace before forking."

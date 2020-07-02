@@ -1,0 +1,147 @@
+<script>
+import {
+  GlLink,
+  GlButton,
+  GlIcon,
+  GlAvatar,
+  GlTooltipDirective,
+  GlTooltip,
+  GlBadge,
+} from '@gitlab/ui';
+import { VISIBILITY_TYPE_ICON, GROUP_VISIBILITY_TYPE } from '~/groups/constants';
+import { __ } from '~/locale';
+import csrf from '~/lib/utils/csrf';
+
+export default {
+  components: {
+    GlIcon,
+    GlAvatar,
+    GlBadge,
+    GlButton,
+    GlTooltip,
+    GlLink,
+  },
+  directives: {
+    GlTooltip: GlTooltipDirective,
+  },
+  props: {
+    group: {
+      type: Object,
+      required: true,
+    },
+    hasReachedProjectLimit: {
+      type: Boolean,
+      required: true,
+    },
+  },
+  data() {
+    return { namespaces: null };
+  },
+
+  computed: {
+    rowClass() {
+      return {
+        'has-description': this.group.description,
+        'being-removed': this.isGroupPendingRemoval,
+      };
+    },
+    isGroupPendingRemoval() {
+      return this.group.marked_for_deletion;
+    },
+    hasForkedProject() {
+      return Boolean(this.group.forked_project_path);
+    },
+    visibilityIcon() {
+      return VISIBILITY_TYPE_ICON[this.group.visibility];
+    },
+    visibilityTooltip() {
+      return GROUP_VISIBILITY_TYPE[this.group.visibility];
+    },
+    isSelectButtonDisabled() {
+      return this.hasReachedProjectLimit || !this.group.can_create_project;
+    },
+    selectButtonDisabledTooltip() {
+      return this.hasReachedProjectLimit
+        ? this.$options.i18n.hasReachedProjectLimitMessage
+        : this.$options.i18n.insufficientPermissionsMessage;
+    },
+  },
+
+  i18n: {
+    hasReachedProjectLimitMessage: __('You have reached your project limit'),
+    insufficientPermissionsMessage: __(
+      'You must have permission to create a project in a namespace before forking.',
+    ),
+  },
+
+  csrf,
+};
+</script>
+<template>
+  <li :class="rowClass" class="group-row">
+    <div class="group-row-contents gl-display-flex gl-align-items-center gl-py-3 gl-pr-5">
+      <div class="folder-toggle-wrap gl-mr-2 gl-display-flex gl-align-items-center">
+        <gl-icon name="folder-o" />
+      </div>
+      <gl-link
+        :href="group.relative_path"
+        class="gl-display-none gl-flex-shrink-0 gl-display-sm-flex gl-mr-3"
+      >
+        <gl-avatar :size="32" shape="rect" :entity-name="group.name" :src="group.avatarUrl" />
+      </gl-link>
+      <div class="gl-min-w-0 gl-display-flex gl-flex-grow-1 gl-flex-shrink-1 gl-align-items-center">
+        <div class="gl-min-w-0 gl-flex-grow-1 flex-shrink-1">
+          <div class="title gl-display-flex gl-align-items-center gl-flex-wrap gl-mr-3">
+            <gl-link :href="group.relative_path" class="gl-mt-3 gl-mr-3 gl-text-gray-900!">{{
+              group.full_name
+            }}</gl-link>
+            <gl-icon
+              v-gl-tooltip.hover.bottom
+              class="gl-mr-0 gl-inline-flex gl-mt-3 text-secondary"
+              :name="visibilityIcon"
+              :title="visibilityTooltip"
+            />
+            <gl-badge
+              v-if="isGroupPendingRemoval"
+              variant="warning"
+              class="gl-display-none gl-display-sm-flex gl-mt-3 gl-mr-1"
+              >{{ __('pending removal') }}</gl-badge
+            >
+            <span v-if="group.permission" class="user-access-role gl-mt-3">
+              {{ group.permission }}
+            </span>
+          </div>
+          <div v-if="group.description" class="description">
+            <span v-html="group.markdown_description"> </span>
+          </div>
+        </div>
+        <div class="gl-display-flex gl-flex-shrink-0">
+          <gl-button
+            v-if="hasForkedProject"
+            class="gl-h-7 gl-text-decoration-none!"
+            :href="group.forked_project_path"
+            >{{ __('Go to fork') }}</gl-button
+          >
+          <template v-else>
+            <div ref="selectButtonWrapper">
+              <form method="POST" :action="group.fork_path">
+                <input type="hidden" name="authenticity_token" :value="$options.csrf.token" />
+                <gl-button
+                  type="submit"
+                  class="gl-h-7 gl-text-decoration-none!"
+                  :data-qa-name="group.full_name"
+                  variant="success"
+                  :disabled="isSelectButtonDisabled"
+                  >{{ __('Select') }}</gl-button
+                >
+              </form>
+            </div>
+            <gl-tooltip v-if="isSelectButtonDisabled" :target="() => $refs.selectButtonWrapper">
+              {{ selectButtonDisabledTooltip }}
+            </gl-tooltip>
+          </template>
+        </div>
+      </div>
+    </div>
+  </li>
+</template>

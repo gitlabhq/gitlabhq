@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils';
-import CollpasibleSection from '~/jobs/components/log/collapsible_section.vue';
+import CollapsibleSection from '~/jobs/components/log/collapsible_section.vue';
 import { collapsibleSectionClosed, collapsibleSectionOpened } from './mock_data';
 
 describe('Job Log Collapsible Section', () => {
@@ -11,7 +11,7 @@ describe('Job Log Collapsible Section', () => {
   const findCollapsibleLineSvg = () => wrapper.find('.collapsible-line svg');
 
   const createComponent = (props = {}) => {
-    wrapper = mount(CollpasibleSection, {
+    wrapper = mount(CollapsibleSection, {
       propsData: {
         ...props,
       },

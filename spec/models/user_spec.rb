@@ -4766,6 +4766,12 @@ RSpec.describe User do
         end.to change { User.where(user_type: bot_type).count }.by(1)
       end
 
+      it 'creates a route for the namespace of the created user' do
+        bot_user = described_class.public_send(bot_type)
+
+        expect(bot_user.namespace.route).to be_present
+      end
+
       it 'does not create a new user if it already exists' do
         described_class.public_send(bot_type)
 

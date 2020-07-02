@@ -22,6 +22,7 @@ RSpec.describe Gitlab::UsageDataConcerns::Topology do
       context 'tracking node metrics' do
         it 'contains node level metrics for each instance' do
           expect_prometheus_api_to(
+            receive_app_request_volume_query,
             receive_node_memory_query,
             receive_node_cpu_count_query,
             receive_node_service_memory_rss_query,
@@ -32,6 +33,7 @@ RSpec.describe Gitlab::UsageDataConcerns::Topology do
 
           expect(subject[:topology]).to eq({
             duration_s: 0,
+            application_requests_per_hour: 36,
             nodes: [
               {
                 node_memory_total_bytes: 512,
@@ -76,6 +78,7 @@ RSpec.describe Gitlab::UsageDataConcerns::Topology do
       context 'and some node memory metrics are missing' do
         it 'removes the respective entries' do
           expect_prometheus_api_to(
+            receive_app_request_volume_query(result: []),
             receive_node_memory_query(result: []),
             receive_node_cpu_count_query,
             receive_node_service_memory_rss_query(result: []),
@@ -147,6 +150,17 @@ RSpec.describe Gitlab::UsageDataConcerns::Topology do
         expect(subject[:topology]).to eq({ duration_s: 0 })
       end
     end
+  end
+
+  def receive_app_request_volume_query(result: nil)
+    receive(:query)
+      .with(/gitlab_usage_ping:ops:rate/)
+      .and_return(result || [
+        {
+          'metric' => { 'component' => 'http_requests', 'service' => 'workhorse' },
+          'value' => [1000, '0.01']
+        }
+      ])
   end
 
   def receive_node_memory_query(result: nil)

@@ -328,6 +328,9 @@ Cop/SidekiqOptionsQueue:
 
 Graphql/AuthorizeTypes:
   Enabled: true
+  Include:
+    - 'app/graphql/types/**/*'
+    - 'ee/app/graphql/types/**/*'
   Exclude:
     - 'spec/**/*.rb'
     - 'ee/spec/**/*.rb'
