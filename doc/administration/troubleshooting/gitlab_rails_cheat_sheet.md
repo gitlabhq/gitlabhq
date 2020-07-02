@@ -461,7 +461,7 @@ group = Group.find_by_path_or_name("groupname")
 # Count users from subgroup and up (inherited)
 group.members_with_parents.count
 
-# Count users from parent group and down (specific grants)
+# Count users from the parent group and down (specific grants)
 parent.members_with_descendants.count
 ```
 

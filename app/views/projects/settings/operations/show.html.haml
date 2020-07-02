@@ -2,7 +2,7 @@
 - page_title _('Operations Settings')
 - breadcrumb_title _('Operations Settings')
 
-= render 'projects/settings/operations/alert_management', service: alerts_service
+= render 'projects/settings/operations/alert_management', alerts_service: alerts_service, prometheus_service: prometheus_service
 = render 'projects/settings/operations/incidents'
 = render 'projects/settings/operations/error_tracking'
 = render 'projects/settings/operations/prometheus', service: prometheus_service if Feature.enabled?(:settings_operations_prometheus_service)

@@ -188,7 +188,7 @@ For example, to add support for files referenced by a `Widget` model with a
 
 1. Create `ee/app/replicators/geo/widget_replicator.rb`. Implement the
    `#carrierwave_uploader` method which should return a `CarrierWave::Uploader`.
-   And implement the private `#model` method to return the `Widget` class.
+   And implement the class method `.model` to return the `Widget` class.
 
    ```ruby
    # frozen_string_literal: true
@@ -197,14 +197,12 @@ For example, to add support for files referenced by a `Widget` model with a
      class WidgetReplicator < Gitlab::Geo::Replicator
        include ::Geo::BlobReplicatorStrategy
 
-       def carrierwave_uploader
-         model_record.file
+       def self.model
+         ::Widget
        end
 
-       private
-
-       def model
-         ::Widget
+       def carrierwave_uploader
+         model_record.file
        end
      end
    end
@@ -235,20 +233,32 @@ For example, to add support for files referenced by a `Widget` model with a
    class CreateWidgetRegistry < ActiveRecord::Migration[6.0]
      DOWNTIME = false
 
-     def change
-       create_table :widget_registry, id: :serial, force: :cascade do |t|
-         t.integer :widget_id, null: false
-         t.integer :state, default: 0, null: false
-         t.integer :retry_count, default: 0
-         t.string :last_sync_failure, limit: 255
-         t.datetime_with_timezone :retry_at
-         t.datetime_with_timezone :last_synced_at
-         t.datetime_with_timezone :created_at, null: false
+     disable_ddl_transaction!
 
-         t.index :widget_id, name:  :index_widget_registry_on_repository_id, using: :btree
-         t.index :retry_at, name: :index_widget_registry_on_retry_at,  using: :btree
-         t.index :state, name: :index_widget_registry_on_state, using:  :btree
+     def up
+       unless table_exists?(:widget_registry)
+         ActiveRecord::Base.transaction do
+           create_table :widget_registry, id: :bigserial, force: :cascade do |t|
+             t.integer :widget_id, null: false
+             t.integer :state, default: 0, null: false, limit: 2
+             t.integer :retry_count, default: 0, limit: 2
+             t.text :last_sync_failure
+             t.datetime_with_timezone :retry_at
+             t.datetime_with_timezone :last_synced_at
+             t.datetime_with_timezone :created_at, null: false
+
+             t.index :widget_id
+             t.index :retry_at
+             t.index :state
+           end
+         end
        end
+
+       add_text_limit :widget_registry, :last_sync_failure, 255
+     end
+
+     def down
+       drop_table :widget_registry
      end
    end
    ```

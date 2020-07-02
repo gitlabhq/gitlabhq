@@ -55,10 +55,10 @@ levels are available (defined in the `Gitlab::Access` module):
 - Maintainer (`40`)
 - Owner (`50`)
 
-If a user is the member of both a project and the project parent group, the
+If a user is the member of both a project and the project parent group(s), the
 higher permission is taken into account for the project.
 
-If a user is the member of a project, but not the parent group (or groups), they
+If a user is the member of a project, but not the parent group(s), they
 can still view the groups and their entities (like epics).
 
 Project membership (where the group membership is already taken into account)

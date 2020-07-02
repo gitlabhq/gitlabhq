@@ -41,6 +41,11 @@ export default {
       type: String,
       required: true,
     },
+    disabled: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -88,7 +93,11 @@ export default {
         <div class="input-group">
           <gl-form-input id="notify-url" :readonly="true" :value="notifyUrl" />
           <span class="input-group-append">
-            <clipboard-button :text="notifyUrl" :title="$options.copyToClipboard" />
+            <clipboard-button
+              :text="notifyUrl"
+              :title="$options.copyToClipboard"
+              :disabled="disabled"
+            />
           </span>
         </div>
       </gl-form-group>
@@ -100,7 +109,11 @@ export default {
         <div class="input-group">
           <gl-form-input id="authorization-key" :readonly="true" :value="authorizationKey" />
           <span class="input-group-append">
-            <clipboard-button :text="authorizationKey" :title="$options.copyToClipboard" />
+            <clipboard-button
+              :text="authorizationKey"
+              :title="$options.copyToClipboard"
+              :disabled="disabled"
+            />
           </span>
         </div>
       </gl-form-group>
@@ -118,13 +131,20 @@ export default {
             )
           }}
         </gl-modal>
-        <gl-deprecated-button v-gl-modal.authKeyModal class="js-reset-auth-key">{{
-          __('Reset key')
-        }}</gl-deprecated-button>
+        <gl-deprecated-button
+          v-gl-modal.authKeyModal
+          class="js-reset-auth-key"
+          :disabled="disabled"
+          >{{ __('Reset key') }}</gl-deprecated-button
+        >
       </template>
-      <gl-deprecated-button v-else class="js-reset-auth-key" @click="resetKey">{{
-        __('Generate key')
-      }}</gl-deprecated-button>
+      <gl-deprecated-button
+        v-else
+        :disabled="disabled"
+        class="js-reset-auth-key"
+        @click="resetKey"
+        >{{ __('Generate key') }}</gl-deprecated-button
+      >
     </div>
   </div>
 </template>

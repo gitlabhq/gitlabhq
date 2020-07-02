@@ -153,16 +153,14 @@ module API
                 { scope: e.scopes })
             end
 
-          finished_response = nil
-          response.finish do |rack_response|
-            # Grape expects a Rack::Response
-            # (https://github.com/ruby-grape/grape/commit/c117bff7d22971675f4b34367d3a98bc31c8fc02),
-            # and we need to retrieve it here:
-            # https://github.com/nov/rack-oauth2/blob/40c9a99fd80486ccb8de0e4869ae384547c0d703/lib/rack/oauth2/server/abstract/error.rb#L28
-            finished_response = rack_response
-          end
+          status, headers, body = response.finish
 
-          finished_response
+          # Grape expects a Rack::Response
+          # (https://github.com/ruby-grape/grape/commit/c117bff7d22971675f4b34367d3a98bc31c8fc02),
+          # so we need to recreate the response again even though
+          # response.finish already does this.
+          # (https://github.com/nov/rack-oauth2/blob/40c9a99fd80486ccb8de0e4869ae384547c0d703/lib/rack/oauth2/server/abstract/error.rb#L26).
+          Rack::Response.new(body, status, headers)
         end
       end
     end

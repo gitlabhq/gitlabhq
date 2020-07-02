@@ -18393,6 +18393,10 @@ CREATE UNIQUE INDEX idx_project_id_payload_key_self_managed_prometheus_alert_eve
 
 CREATE INDEX idx_project_repository_check_partial ON public.projects USING btree (repository_storage, created_at) WHERE (last_repository_check_at IS NULL);
 
+CREATE INDEX idx_projects_id_created_at_disable_overriding_approvers_false ON public.projects USING btree (id, created_at) WHERE ((disable_overriding_approvers_per_merge_request = false) OR (disable_overriding_approvers_per_merge_request IS NULL));
+
+CREATE INDEX idx_projects_id_created_at_disable_overriding_approvers_true ON public.projects USING btree (id, created_at) WHERE (disable_overriding_approvers_per_merge_request = true);
+
 CREATE INDEX idx_projects_on_repository_storage_last_repository_updated_at ON public.projects USING btree (id, repository_storage, last_repository_updated_at);
 
 CREATE INDEX idx_repository_states_on_last_repository_verification_ran_at ON public.project_repository_states USING btree (project_id, last_repository_verification_ran_at) WHERE ((repository_verification_checksum IS NOT NULL) AND (last_repository_verification_failure IS NULL));
@@ -23531,6 +23535,7 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200625045442
 20200625082258
 20200625190458
+20200626060151
 20200626130220
 \.
 

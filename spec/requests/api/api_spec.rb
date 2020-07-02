@@ -36,6 +36,14 @@ RSpec.describe API::API do
         expect(response).to have_gitlab_http_status(:ok)
       end
 
+      it 'does not authorize user for revoked token' do
+        revoked = create(:personal_access_token, :revoked, user: user, scopes: [:read_api])
+
+        get api('/groups', personal_access_token: revoked)
+
+        expect(response).to have_gitlab_http_status(:unauthorized)
+      end
+
       it 'does not authorize user for post request' do
         params = attributes_for_group_api
 

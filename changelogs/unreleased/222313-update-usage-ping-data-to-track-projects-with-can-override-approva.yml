@@ -1,0 +1,5 @@
+---
+title: Add project count with overridden approval rules in merge request to usage ping
+merge_request: 35224
+author:
+type: added

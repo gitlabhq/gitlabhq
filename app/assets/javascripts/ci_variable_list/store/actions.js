@@ -65,10 +65,10 @@ export const receiveUpdateVariableError = ({ commit }, error) => {
   commit(types.RECEIVE_UPDATE_VARIABLE_ERROR, error);
 };
 
-export const updateVariable = ({ state, dispatch }, variable) => {
+export const updateVariable = ({ state, dispatch }) => {
   dispatch('requestUpdateVariable');
 
-  const updatedVariable = prepareDataForApi(variable);
+  const updatedVariable = prepareDataForApi(state.variable);
   updatedVariable.secrect_value = updateVariable.value;
 
   return axios
@@ -121,13 +121,13 @@ export const receiveDeleteVariableError = ({ commit }, error) => {
   commit(types.RECEIVE_DELETE_VARIABLE_ERROR, error);
 };
 
-export const deleteVariable = ({ dispatch, state }, variable) => {
+export const deleteVariable = ({ dispatch, state }) => {
   dispatch('requestDeleteVariable');
 
   const destroy = true;
 
   return axios
-    .patch(state.endpoint, { variables_attributes: [prepareDataForApi(variable, destroy)] })
+    .patch(state.endpoint, { variables_attributes: [prepareDataForApi(state.variable, destroy)] })
     .then(() => {
       dispatch('receiveDeleteVariableSuccess');
       dispatch('fetchVariables');
@@ -175,4 +175,24 @@ export const resetSelectedEnvironment = ({ commit }) => {
 
 export const setSelectedEnvironment = ({ commit }, environment) => {
   commit(types.SET_SELECTED_ENVIRONMENT, environment);
+};
+
+export const updateVariableKey = ({ commit }, { key }) => {
+  commit(types.UPDATE_VARIABLE_KEY, key);
+};
+
+export const updateVariableValue = ({ commit }, { secret_value }) => {
+  commit(types.UPDATE_VARIABLE_VALUE, secret_value);
+};
+
+export const updateVariableType = ({ commit }, { variable_type }) => {
+  commit(types.UPDATE_VARIABLE_TYPE, variable_type);
+};
+
+export const updateVariableProtected = ({ commit }, { protected_variable }) => {
+  commit(types.UPDATE_VARIABLE_PROTECTED, protected_variable);
+};
+
+export const updateVariableMasked = ({ commit }, { masked }) => {
+  commit(types.UPDATE_VARIABLE_MASKED, masked);
 };

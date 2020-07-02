@@ -65,7 +65,8 @@ export default {
   },
 
   [types.VARIABLE_BEING_EDITED](state, variable) {
-    state.variableBeingEdited = variable;
+    state.variableBeingEdited = true;
+    state.variable = variable;
   },
 
   [types.CLEAR_MODAL](state) {
@@ -80,16 +81,12 @@ export default {
   },
 
   [types.RESET_EDITING](state) {
-    state.variableBeingEdited = null;
+    state.variableBeingEdited = false;
     state.showInputValue = false;
   },
 
   [types.SET_ENVIRONMENT_SCOPE](state, environment) {
-    if (state.variableBeingEdited) {
-      state.variableBeingEdited.environment_scope = environment;
-    } else {
-      state.variable.environment_scope = environment;
-    }
+    state.variable.environment_scope = environment;
   },
 
   [types.ADD_WILD_CARD_SCOPE](state, environment) {
@@ -107,5 +104,25 @@ export default {
 
   [types.SET_VARIABLE_PROTECTED](state) {
     state.variable.protected = true;
+  },
+
+  [types.UPDATE_VARIABLE_KEY](state, key) {
+    state.variable.key = key;
+  },
+
+  [types.UPDATE_VARIABLE_VALUE](state, value) {
+    state.variable.secret_value = value;
+  },
+
+  [types.UPDATE_VARIABLE_TYPE](state, type) {
+    state.variable.variable_type = type;
+  },
+
+  [types.UPDATE_VARIABLE_PROTECTED](state, bool) {
+    state.variable.protected_variable = bool;
+  },
+
+  [types.UPDATE_VARIABLE_MASKED](state, bool) {
+    state.variable.masked = bool;
   },
 };

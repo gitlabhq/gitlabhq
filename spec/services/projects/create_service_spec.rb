@@ -446,14 +446,35 @@ RSpec.describe Projects::CreateService, '#execute' do
   end
 
   context 'when readme initialization is requested' do
-    it 'creates README.md' do
+    let(:project) { create_project(user, opts) }
+
+    before do
       opts[:initialize_with_readme] = '1'
+    end
 
-      project = create_project(user, opts)
+    shared_examples 'creates README.md' do
+      it { expect(project.repository.commit_count).to be(1) }
+      it { expect(project.repository.readme.name).to eql('README.md') }
+      it { expect(project.repository.readme.data).to include('# GitLab') }
+    end
 
-      expect(project.repository.commit_count).to be(1)
-      expect(project.repository.readme.name).to eql('README.md')
-      expect(project.repository.readme.data).to include('# GitLab')
+    it_behaves_like 'creates README.md'
+
+    context 'and a default_branch_name is specified' do
+      before do
+        allow(Gitlab::CurrentSettings)
+          .to receive(:default_branch_name)
+          .and_return('example_branch')
+      end
+
+      it_behaves_like 'creates README.md'
+
+      it 'creates README.md within the specified branch rather than master' do
+        branches = project.repository.branches
+
+        expect(branches.size).to eq(1)
+        expect(branches.collect(&:name)).to contain_exactly('example_branch')
+      end
     end
   end
 

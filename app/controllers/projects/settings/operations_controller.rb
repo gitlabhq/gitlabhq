@@ -5,14 +5,13 @@ module Projects
     class OperationsController < Projects::ApplicationController
       before_action :authorize_admin_operations!
       before_action :authorize_read_prometheus_alerts!, only: [:reset_alerting_token]
+      before_action do
+        push_frontend_feature_flag(:alert_integrations_dropdown, project)
+      end
 
       respond_to :json, only: [:reset_alerting_token]
 
       helper_method :error_tracking_setting
-
-      def show
-        render locals: { prometheus_service: prometheus_service, alerts_service: alerts_service }
-      end
 
       def update
         result = ::Projects::Operations::UpdateService.new(project, current_user, update_params).execute
@@ -46,14 +45,6 @@ module Projects
 
       def alerting_params
         { alerting_setting_attributes: { regenerate_token: true } }
-      end
-
-      def prometheus_service
-        project.find_or_initialize_service(::PrometheusService.to_param)
-      end
-
-      def alerts_service
-        project.find_or_initialize_service(::AlertsService.to_param)
       end
 
       def render_update_response(result)

@@ -18,6 +18,7 @@ export const prepareDataForDisplay = variables => {
     if (variableCopy.environment_scope === types.allEnvironmentsType) {
       variableCopy.environment_scope = displayText.allEnvironmentsText;
     }
+    variableCopy.protected_variable = variableCopy.protected;
     variablesToDisplay.push(variableCopy);
   });
   return variablesToDisplay;
@@ -25,7 +26,8 @@ export const prepareDataForDisplay = variables => {
 
 export const prepareDataForApi = (variable, destroy = false) => {
   const variableCopy = cloneDeep(variable);
-  variableCopy.protected = variableCopy.protected.toString();
+  variableCopy.protected = variableCopy.protected_variable.toString();
+  delete variableCopy.protected_variable;
   variableCopy.masked = variableCopy.masked.toString();
   variableCopy.variable_type = variableTypeHandler(variableCopy.variable_type);
   if (variableCopy.environment_scope === displayText.allEnvironmentsText) {

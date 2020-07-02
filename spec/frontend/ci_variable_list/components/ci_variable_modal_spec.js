@@ -159,10 +159,7 @@ describe('Ci variable modal', () => {
 
     it('Update variable button dispatches updateVariable with correct variable', () => {
       addOrUpdateButton(2).vm.$emit('click');
-      expect(store.dispatch).toHaveBeenCalledWith(
-        'updateVariable',
-        store.state.variableBeingEdited,
-      );
+      expect(store.dispatch).toHaveBeenCalledWith('updateVariable');
     });
 
     it('Resets the editing state once modal is hidden', () => {
@@ -172,7 +169,7 @@ describe('Ci variable modal', () => {
 
     it('dispatches deleteVariable with correct variable to delete', () => {
       deleteVariableButton().vm.$emit('click');
-      expect(store.dispatch).toHaveBeenCalledWith('deleteVariable', mockData.mockVariables[0]);
+      expect(store.dispatch).toHaveBeenCalledWith('deleteVariable');
     });
   });
 

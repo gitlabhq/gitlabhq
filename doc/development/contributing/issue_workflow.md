@@ -312,22 +312,13 @@ We want to avoid a situation when a contributor picks an
 because we realize that it does not fit our vision, or we want to solve it in a
 different way.
 
-We add the ~"Accepting merge requests" label to:
+We automatically add the ~"Accepting merge requests" label to issues
+that match the [triage policy](https://about.gitlab.com/handbook/engineering/quality/triage-operations/#accepting-merge-requests).
 
-- Low priority ~bug issues (i.e. we do not add it to the bugs that we want to
-  solve in the ~"Next Patch Release")
-- Small ~feature
-- Small ~"technical debt" issues
-
-After adding the ~"Accepting merge requests" label, we try to estimate the
-[weight](#issue-weight) of the issue. We use issue weight to let contributors
-know how difficult the issue is. Additionally:
-
-- We advertise [`Accepting merge requests` issues with weight < 5](https://gitlab.com/groups/gitlab-org/-/issues?state=opened&label_name[]=Accepting+merge+requests&assignee_id=None&sort=weight)
-  as suitable for people that have never contributed to GitLab before on the
-  [Up For Grabs campaign](https://up-for-grabs.net/#/)
-- We encourage people that have never contributed to any open source project to
-  look for [`Accepting merge requests` issues with a weight of 1](https://gitlab.com/groups/gitlab-org/-/issues?state=opened&label_name[]=Accepting+merge+requests&assignee_id=None&sort=weight&weight=1)
+We recommend people that have never contributed to any open source project to
+look for issues labeled `~"Accepting merge requests"` with a [weight of 1](https://gitlab.com/groups/gitlab-org/-/issues?state=opened&label_name[]=Accepting+merge+requests&assignee_id=None&sort=weight&weight=1).
+More experienced contributors are very welcome to tackle
+[any of them](https://gitlab.com/groups/gitlab-org/-/issues?state=opened&label_name[]=Accepting+merge+requests&assignee_id=None).
 
 If you've decided that you would like to work on an issue, please @-mention
 the [appropriate product manager](https://about.gitlab.com/handbook/product/#who-to-talk-to-for-what)

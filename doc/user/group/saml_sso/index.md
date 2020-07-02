@@ -215,7 +215,7 @@ On subsequent visits, you should be able to go [sign in to GitLab.com with SAML]
 
 ### Role
 
-The first time you sign in, GitLab adds you to the parent group with the Guest role. Existing members with appropriate privileges can promote that new user.
+The first time you sign in, GitLab adds you to the top-level parent group with the Guest role. Existing members with appropriate privileges can promote that new user.
 
 If a user is already a member of the group, linking the SAML identity does not change their role.
 

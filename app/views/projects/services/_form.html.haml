@@ -17,7 +17,7 @@
       = render 'shared/service_settings', form: form, integration: @service
       .footer-block.row-content-block{ :class => "#{'gl-display-none' if @service.is_a?(AlertsService)}" }
         %input{ id: 'services_redirect_to', type: 'hidden', name: 'redirect_to', value: request.referrer }
-        = service_save_button
+        = service_save_button(disabled: @service.is_a?(AlertsService))
         &nbsp;
         = link_to _('Cancel'), project_settings_integrations_path(@project), class: 'btn btn-cancel'
 

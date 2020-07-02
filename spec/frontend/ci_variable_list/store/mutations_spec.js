@@ -4,15 +4,6 @@ import * as types from '~/ci_variable_list/store/mutation_types';
 
 describe('CI variable list mutations', () => {
   let stateCopy;
-  const variableBeingEdited = {
-    environment_scope: '*',
-    id: 63,
-    key: 'test_var',
-    masked: false,
-    protected: false,
-    value: 'test_val',
-    variable_type: 'env_var',
-  };
 
   beforeEach(() => {
     stateCopy = state();
@@ -29,18 +20,18 @@ describe('CI variable list mutations', () => {
   });
 
   describe('VARIABLE_BEING_EDITED', () => {
-    it('should set variable that is being edited', () => {
-      mutations[types.VARIABLE_BEING_EDITED](stateCopy, variableBeingEdited);
+    it('should set the variable that is being edited', () => {
+      mutations[types.VARIABLE_BEING_EDITED](stateCopy);
 
-      expect(stateCopy.variableBeingEdited).toEqual(variableBeingEdited);
+      expect(stateCopy.variableBeingEdited).toBe(true);
     });
   });
 
   describe('RESET_EDITING', () => {
-    it('should reset variableBeingEdited to null', () => {
+    it('should reset variableBeingEdited to false', () => {
       mutations[types.RESET_EDITING](stateCopy);
 
-      expect(stateCopy.variableBeingEdited).toEqual(null);
+      expect(stateCopy.variableBeingEdited).toBe(false);
     });
   });
 
@@ -74,15 +65,7 @@ describe('CI variable list mutations', () => {
   describe('SET_ENVIRONMENT_SCOPE', () => {
     const environment = 'production';
 
-    it('should set scope to variable being updated if updating variable', () => {
-      stateCopy.variableBeingEdited = variableBeingEdited;
-
-      mutations[types.SET_ENVIRONMENT_SCOPE](stateCopy, environment);
-
-      expect(stateCopy.variableBeingEdited.environment_scope).toBe('production');
-    });
-
-    it('should set scope to variable if adding new variable', () => {
+    it('should set environment scope on variable', () => {
       mutations[types.SET_ENVIRONMENT_SCOPE](stateCopy, environment);
 
       expect(stateCopy.variable.environment_scope).toBe('production');
@@ -103,6 +86,51 @@ describe('CI variable list mutations', () => {
       mutations[types.SET_VARIABLE_PROTECTED](stateCopy);
 
       expect(stateCopy.variable.protected).toBe(true);
+    });
+  });
+
+  describe('UPDATE_VARIABLE_KEY', () => {
+    it('should update variable key value', () => {
+      const key = 'new_var';
+      mutations[types.UPDATE_VARIABLE_KEY](stateCopy, key);
+
+      expect(stateCopy.variable.key).toBe(key);
+    });
+  });
+
+  describe('UPDATE_VARIABLE_VALUE', () => {
+    it('should update variable value', () => {
+      const value = 'variable_value';
+      mutations[types.UPDATE_VARIABLE_VALUE](stateCopy, value);
+
+      expect(stateCopy.variable.secret_value).toBe(value);
+    });
+  });
+
+  describe('UPDATE_VARIABLE_TYPE', () => {
+    it('should update variable type value', () => {
+      const type = 'File';
+      mutations[types.UPDATE_VARIABLE_TYPE](stateCopy, type);
+
+      expect(stateCopy.variable.variable_type).toBe(type);
+    });
+  });
+
+  describe('UPDATE_VARIABLE_PROTECTED', () => {
+    it('should update variable protected value', () => {
+      const protectedValue = true;
+      mutations[types.UPDATE_VARIABLE_PROTECTED](stateCopy, protectedValue);
+
+      expect(stateCopy.variable.protected_variable).toBe(protectedValue);
+    });
+  });
+
+  describe('UPDATE_VARIABLE_MASKED', () => {
+    it('should update variable masked value', () => {
+      const masked = true;
+      mutations[types.UPDATE_VARIABLE_MASKED](stateCopy, masked);
+
+      expect(stateCopy.variable.masked).toBe(masked);
     });
   });
 });

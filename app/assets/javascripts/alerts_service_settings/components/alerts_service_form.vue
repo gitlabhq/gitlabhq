@@ -123,9 +123,6 @@ export default {
         .then(() => {
           this.activated = value;
           this.loadingActivated = false;
-          if (value) {
-            window.location.reload();
-          }
         })
         .catch(() => {
           createFlash(__('Update failed. Please try again.'));

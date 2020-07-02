@@ -1,0 +1,10 @@
+- return unless Feature.enabled?(:alert_integrations_dropdown, @service.project) && @service.manual_configuration?
+
+.row
+  .col-lg-12
+    .gl-alert.gl-alert-info.js-alerts-moved-alert{ role: 'alert' }
+      = sprite_icon('information-o', size: 16, css_class: 'gl-icon gl-alert-icon gl-alert-icon-no-title')
+      .gl-alert-body
+        = s_('AlertSettings|You can now set up alert endpoints for manually configured Prometheus instances in the Alerts section on the Operations settings page. Alert endpoint fields on this page have been deprecated.')
+      .gl-alert-actions
+        = link_to _('Visit settings page'), project_settings_operations_path(@project), class: 'btn gl-alert-action btn-info gl-button'

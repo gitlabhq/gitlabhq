@@ -1,11 +1,7 @@
-- return unless show_alerts_moved_alert?
-
 .row
   .col-lg-12
-    .gl-alert.gl-alert-info.js-alerts-moved-alert{ role: 'alert', data: { feature_id: UserCalloutsHelper::ALERTS_MOVED, dismiss_endpoint: user_callouts_path } }
+    .gl-alert.gl-alert-info.js-alerts-moved-alert{ role: 'alert' }
       = sprite_icon('information-o', size: 16, css_class: 'gl-icon gl-alert-icon gl-alert-icon-no-title')
-      %button.js-close.gl-alert-dismiss{ type: 'button', 'aria-label' => _('Dismiss') }
-        = sprite_icon('close', size: 16, css_class: 'gl-icon')
       .gl-alert-body
         = _('You can now manage alert endpoint configuration in the Alerts section on the Operations settings page. Fields on this page have been deprecated.')
       .gl-alert-actions

@@ -229,7 +229,7 @@ To move an issue to another epic:
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/37081) to [GitLab Premium](https://about.gitlab.com/pricing/) in 12.8.
 
 If you have the necessary [permissions](../../permissions.md) to close an issue and create an
-epic in the parent group, you can promote an issue to an epic with the `/promote`
+epic in the immediate parent group, you can promote an issue to an epic with the `/promote`
 [quick action](../../project/quick_actions.md#quick-actions-for-issues-merge-requests-and-epics).
 Only issues from projects that are in groups can be promoted. When attempting to promote a confidential
 issue, a warning will display. Promoting a confidential issue to an epic will make all information

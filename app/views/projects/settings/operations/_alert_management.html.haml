@@ -10,9 +10,4 @@
       = _('Display alerts from all your monitoring tools directly within GitLab.')
       = link_to _('More information'), help_page_path('user/project/operations/alert_management'), target: '_blank', rel: 'noopener noreferrer'
   .settings-content
-    .js-alerts-service-settings{ data: { activated: service.activated?.to_s,
-      form_path: scoped_integration_path(service),
-      authorization_key: service.token,
-      url: service.url || _('<namespace / project>'),
-      alerts_setup_url: help_page_path('user/project/integrations/generic_alerts.html', anchor: 'setting-up-generic-alerts'),
-      alerts_usage_url: project_alert_management_index_path(@project) } }
+    .js-alerts-settings{ data: alerts_settings_data }

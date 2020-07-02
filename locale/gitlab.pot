@@ -16,6 +16,9 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
+msgid "  AlertSettings|URL cannot be blank and must start with http or https"
+msgstr ""
+
 msgid " %{start} to %{end}"
 msgstr ""
 
@@ -2057,6 +2060,66 @@ msgid "AlertService|Review your external service's documentation to learn where 
 msgstr ""
 
 msgid "AlertService|You must provide this URL and authorization key to authorize an external service to send alerts to GitLab. You can provide this URL and key to multiple services. After configuring an external service, alerts from your service will display on the GitLab %{linkStart}Alerts%{linkEnd} page."
+msgstr ""
+
+msgid "AlertSettings|Active"
+msgstr ""
+
+msgid "AlertSettings|Add URL and auth key to your Prometheus config file"
+msgstr ""
+
+msgid "AlertSettings|Alerts endpoint successfully activated."
+msgstr ""
+
+msgid "AlertSettings|Authorization key"
+msgstr ""
+
+msgid "AlertSettings|Copy"
+msgstr ""
+
+msgid "AlertSettings|External Prometheus"
+msgstr ""
+
+msgid "AlertSettings|Generic"
+msgstr ""
+
+msgid "AlertSettings|Integrations"
+msgstr ""
+
+msgid "AlertSettings|Learn more about our %{linkStart}upcoming integrations%{linkEnd}"
+msgstr ""
+
+msgid "AlertSettings|Prometheus API Base URL"
+msgstr ""
+
+msgid "AlertSettings|Reset key"
+msgstr ""
+
+msgid "AlertSettings|Resetting the authorization key for this project will require updating the authorization key in every alert source it is enabled in."
+msgstr ""
+
+msgid "AlertSettings|Review your external service's documentation to learn where to provide this information to your external service, and the %{linkStart}GitLab documentation%{linkEnd} to learn more about configuring your endpoint."
+msgstr ""
+
+msgid "AlertSettings|There was an error updating the the alert settings. Please refresh the page to try again."
+msgstr ""
+
+msgid "AlertSettings|There was an error while trying to enable the alert settings. Please ensure you are using a valid URL."
+msgstr ""
+
+msgid "AlertSettings|There was an error while trying to reset the key. Please refresh the page to try again."
+msgstr ""
+
+msgid "AlertSettings|Webhook URL"
+msgstr ""
+
+msgid "AlertSettings|You can now set up alert endpoints for manually configured Prometheus instances in the Alerts section on the Operations settings page. Alert endpoint fields on this page have been deprecated."
+msgstr ""
+
+msgid "AlertSettings|You must provide this URL and authorization key to authorize an external service to send alerts to GitLab. You can provide this URL and key to multiple services. After configuring an external service, alerts from your service will display on the GitLab %{linkStart}Alerts%{linkEnd} page."
+msgstr ""
+
+msgid "AlertSettings|http://prometheus.example.com/"
 msgstr ""
 
 msgid "Alerts"
@@ -19715,6 +19778,9 @@ msgid "Save"
 msgstr ""
 
 msgid "Save Changes"
+msgstr ""
+
+msgid "Save and test changes"
 msgstr ""
 
 msgid "Save anyway"

@@ -16,6 +16,7 @@ import {
 } from '@gitlab/ui';
 import Cookies from 'js-cookie';
 import { mapActions, mapState } from 'vuex';
+import { mapComputed } from '~/vuex_shared/bindings';
 import { __ } from '~/locale';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import {
@@ -30,6 +31,9 @@ import CiEnvironmentsDropdown from './ci_environments_dropdown.vue';
 
 export default {
   modalId: ADD_CI_VARIABLE_MODAL_ID,
+  tokens: awsTokens,
+  tokenList: awsTokenList,
+  awsTipMessage: AWS_TIP_MESSAGE,
   components: {
     CiEnvironmentsDropdown,
     CiKeyField,
@@ -48,9 +52,6 @@ export default {
     GlSprintf,
   },
   mixins: [glFeatureFlagsMixin()],
-  tokens: awsTokens,
-  tokenList: awsTokenList,
-  awsTipMessage: AWS_TIP_MESSAGE,
   data() {
     return {
       isTipDismissed: Cookies.get(AWS_TIP_DISMISSED_COOKIE_NAME) === 'true',
@@ -74,31 +75,40 @@ export default {
       'protectedEnvironmentVariablesLink',
       'maskedEnvironmentVariablesLink',
     ]),
+    ...mapComputed(
+      [
+        { key: 'key', updateFn: 'updateVariableKey' },
+        { key: 'secret_value', updateFn: 'updateVariableValue' },
+        { key: 'variable_type', updateFn: 'updateVariableType' },
+        { key: 'environment_scope', updateFn: 'setEnvironmentScope' },
+        { key: 'protected_variable', updateFn: 'updateVariableProtected' },
+        { key: 'masked', updateFn: 'updateVariableMasked' },
+      ],
+      false,
+      'variable',
+    ),
     isTipVisible() {
-      return !this.isTipDismissed && AWS_TOKEN_CONSTANTS.includes(this.variableData.key);
+      return !this.isTipDismissed && AWS_TOKEN_CONSTANTS.includes(this.variable.key);
     },
     canSubmit() {
       return (
         this.variableValidationState &&
-        this.variableData.key !== '' &&
-        this.variableData.secret_value !== ''
+        this.variable.key !== '' &&
+        this.variable.secret_value !== ''
       );
     },
     canMask() {
       const regex = RegExp(this.maskableRegex);
-      return regex.test(this.variableData.secret_value);
+      return regex.test(this.variable.secret_value);
     },
     displayMaskedError() {
-      return !this.canMask && this.variableData.masked;
+      return !this.canMask && this.variable.masked;
     },
     maskedState() {
       if (this.displayMaskedError) {
         return false;
       }
       return true;
-    },
-    variableData() {
-      return this.variableBeingEdited || this.variable;
     },
     modalActionText() {
       return this.variableBeingEdited ? __('Update variable') : __('Add variable');
@@ -107,7 +117,7 @@ export default {
       return this.displayMaskedError ? __('This variable can not be masked.') : '';
     },
     tokenValidationFeedback() {
-      const tokenSpecificFeedback = this.$options.tokens?.[this.variableData.key]?.invalidMessage;
+      const tokenSpecificFeedback = this.$options.tokens?.[this.variable.key]?.invalidMessage;
       if (!this.tokenValidationState && tokenSpecificFeedback) {
         return tokenSpecificFeedback;
       }
@@ -119,10 +129,10 @@ export default {
         return true;
       }
 
-      const validator = this.$options.tokens?.[this.variableData.key]?.validation;
+      const validator = this.$options.tokens?.[this.variable.key]?.validation;
 
       if (validator) {
-        return validator(this.variableData.secret_value);
+        return validator(this.variable.secret_value);
       }
 
       return true;
@@ -131,14 +141,7 @@ export default {
       return `${this.tokenValidationFeedback} ${this.maskedFeedback}`;
     },
     variableValidationState() {
-      if (
-        this.variableData.secret_value === '' ||
-        (this.tokenValidationState && this.maskedState)
-      ) {
-        return true;
-      }
-
-      return false;
+      return this.variable.secret_value === '' || (this.tokenValidationState && this.maskedState);
     },
   },
   methods: {
@@ -160,7 +163,7 @@ export default {
       this.isTipDismissed = true;
     },
     deleteVarAndClose() {
-      this.deleteVariable(this.variableBeingEdited);
+      this.deleteVariable();
       this.hideModal();
     },
     hideModal() {
@@ -169,14 +172,14 @@ export default {
     resetModalHandler() {
       if (this.variableBeingEdited) {
         this.resetEditing();
-      } else {
-        this.clearModal();
       }
+
+      this.clearModal();
       this.resetSelectedEnvironment();
     },
     updateOrAddVariable() {
       if (this.variableBeingEdited) {
-        this.updateVariable(this.variableBeingEdited);
+        this.updateVariable();
       } else {
         this.addVariable();
       }
@@ -204,14 +207,14 @@ export default {
     <form>
       <ci-key-field
         v-if="glFeatures.ciKeyAutocomplete"
-        v-model="variableData.key"
+        v-model="key"
         :token-list="$options.tokenList"
       />
 
       <gl-form-group v-else :label="__('Key')" label-for="ci-variable-key">
         <gl-form-input
           id="ci-variable-key"
-          v-model="variableData.key"
+          v-model="key"
           data-qa-selector="ci_variable_key_field"
         />
       </gl-form-group>
@@ -225,7 +228,7 @@ export default {
         <gl-form-textarea
           id="ci-variable-value"
           ref="valueField"
-          v-model="variableData.secret_value"
+          v-model="secret_value"
           :state="variableValidationState"
           rows="3"
           max-rows="6"
@@ -241,11 +244,7 @@ export default {
           class="w-50 append-right-15"
           :class="{ 'w-100': isGroup }"
         >
-          <gl-form-select
-            id="ci-variable-type"
-            v-model="variableData.variable_type"
-            :options="typeOptions"
-          />
+          <gl-form-select id="ci-variable-type" v-model="variable_type" :options="typeOptions" />
         </gl-form-group>
 
         <gl-form-group
@@ -256,7 +255,7 @@ export default {
         >
           <ci-environments-dropdown
             class="w-100"
-            :value="variableData.environment_scope"
+            :value="environment_scope"
             @selectEnvironment="setEnvironmentScope"
             @createClicked="addWildCardScope"
           />
@@ -264,7 +263,7 @@ export default {
       </div>
 
       <gl-form-group :label="__('Flags')" label-for="ci-variable-flags">
-        <gl-form-checkbox v-model="variableData.protected" class="mb-0">
+        <gl-form-checkbox v-model="protected_variable" class="mb-0">
           {{ __('Protect variable') }}
           <gl-link target="_blank" :href="protectedEnvironmentVariablesLink">
             <gl-icon name="question" :size="12" />
@@ -276,7 +275,7 @@ export default {
 
         <gl-form-checkbox
           ref="masked-ci-variable"
-          v-model="variableData.masked"
+          v-model="masked"
           data-qa-selector="ci_variable_masked_checkbox"
         >
           {{ __('Mask variable') }}

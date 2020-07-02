@@ -31,7 +31,7 @@ Each group on the **Groups** page is listed with:
 
 - How many subgroups it has.
 - How many projects it contains.
-- How many members the group has, not including members inherited from parent groups.
+- How many members the group has, not including members inherited from parent group(s).
 - The group's visibility.
 - A link to the group's settings, if you have sufficient permissions.
 - A link to leave the group, if you are a member.
@@ -397,7 +397,7 @@ When transferring groups, note:
 - Changing a group's parent can have unintended side effects. See [Redirects when changing repository paths](../project/index.md#redirects-when-changing-repository-paths).
 - You can only transfer groups to groups you manage.
 - You must update your local repositories to point to the new location.
-- If the parent group's visibility is lower than the group's current visibility, visibility levels for subgroups and projects will change to match the new parent group's visibility.
+- If the immediate parent group's visibility is lower than the group's current visibility, visibility levels for subgroups and projects will change to match the new parent group's visibility.
 - Only explicit group membership is transferred, not inherited membership. If the group's owners have only inherited membership, this leaves the group without an owner. In this case, the user transferring the group becomes the group's owner.
 
 ## Group settings
@@ -571,9 +571,9 @@ You can only choose projects in the group as the template source.
 This includes projects shared with the group, but it **excludes** projects in
 subgroups or parent groups of the group being configured.
 
-You can configure this feature for both subgroups and parent groups. A project
+You can configure this feature for both subgroups and immediate parent groups. A project
 in a subgroup will have access to the templates for that subgroup, as well as
-any parent groups.
+any immediate parent groups.
 
 ![Group file template dropdown](img/group_file_template_dropdown.png)
 
