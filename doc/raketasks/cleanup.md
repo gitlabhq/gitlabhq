@@ -2,7 +2,7 @@
 
 GitLab provides Rake tasks for cleaning up GitLab instances.
 
-## Remove unreferenced LFS files from filesystem
+## Remove unreferenced LFS files
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/36628) in GitLab 12.10.
 
@@ -42,7 +42,7 @@ Note that this Rake task only removes the references to LFS files. Unreferenced 
 later (once a day). If you need to garbage collect them immediately, run
 `rake gitlab:cleanup:orphan_lfs_files` described below.
 
-## Remove unreferenced LFS files
+### Remove unreferenced LFS files immediately
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/36628) in GitLab 12.10.
 

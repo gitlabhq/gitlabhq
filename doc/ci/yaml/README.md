@@ -383,7 +383,7 @@ NOTE: **Note:**
 The configuration is a snapshot in time and persisted in the database. Any changes to
 referenced `.gitlab-ci.yml` configuration won't be reflected in GitLab until the next pipeline is created.
 
-The files defined in `include` are:
+The files defined by `include` are:
 
 - Deep merged with those in `.gitlab-ci.yml`.
 - Always evaluated first and merged with the content of `.gitlab-ci.yml`,
@@ -391,11 +391,11 @@ The files defined in `include` are:
 
 TIP: **Tip:**
 Use merging to customize and override included CI/CD configurations with local
-definitions.
+definitions. Local definitions in `.gitlab-ci.yml` will override included definitions.
 
 NOTE: **Note:**
-Using YAML aliases across different YAML files sourced by `include` is not
-supported. You must only refer to aliases in the same file. Instead
+Using [YAML anchors](#anchors) across different YAML files sourced by `include` is not
+supported. You must only refer to anchors in the same file. Instead
 of using YAML anchors, you can use the [`extends` keyword](#extends).
 
 #### `include:local`
@@ -972,24 +972,38 @@ spinach:
 ```
 
 In GitLab 12.0 and later, it's also possible to use multiple parents for
-`extends`. The algorithm used for merge is "closest scope wins", so
-keys from the last member will always shadow anything defined on other
+`extends`.
+
+#### Merge details
+
+`extends` is able to merge hashes but not arrays.
+The algorithm used for merge is "closest scope wins", so
+keys from the last member will always override anything defined on other
 levels. For example:
 
 ```yaml
 .only-important:
+  variables:
+    URL: "http://my-url.internal"
+    IMPORTANT_VAR: "the details"
   only:
     - master
     - stable
   tags:
     - production
+  script:
+    - echo "Hello world!"
 
 .in-docker:
+  variables:
+    URL: "http://docker-url.internal"
   tags:
     - docker
   image: alpine
 
 rspec:
+  variables:
+    GITLAB: "is-awesome"
   extends:
     - .only-important
     - .in-docker
@@ -1001,6 +1015,10 @@ This results in the following `rspec` job:
 
 ```yaml
 rspec:
+  variables:
+    URL: "http://docker-url.internal"
+    IMPORTANT_VAR: "the details"
+    GITLAB: "is-awesome"
   only:
     - master
     - stable
@@ -1010,6 +1028,15 @@ rspec:
   script:
     - rake rspec
 ```
+
+Note that in the example above:
+
+- `variables` sections have been merged but that `URL: "http://my-url.internal"`
+has been overwritten by `URL: "http://docker-url.internal"`.
+- `tags: ['production']` has been overwritten by `tags: ['docker']`.
+- `script` has not been merged but rather `script: ['echo "Hello world!"']` has
+  been overwritten by `script: ['rake rspec']`. Arrays can be
+  merged using [YAML anchors](#anchors).
 
 #### Using `extends` and `include` together
 
@@ -4149,6 +4176,10 @@ of `.gitlab-ci.yml`.
 
 Read more about the various [YAML features](https://learnxinyminutes.com/docs/yaml/).
 
+In most cases, the [`extends` keyword](#extends) is more user friendly and should
+be used over these special YAML features. YAML anchors may still
+need to be used to merge arrays.
+
 ### Anchors
 
 > Introduced in GitLab 8.6 and GitLab Runner v1.1.1.
@@ -4273,7 +4304,8 @@ You can see that the hidden jobs are conveniently used as templates.
 
 NOTE: **Note:**
 You can't use YAML anchors across multiple files when leveraging the [`include`](#include)
-feature. Anchors are only valid within the file they were defined in.
+feature. Anchors are only valid within the file they were defined in. Instead
+of using YAML anchors, you can use the [`extends` keyword](#extends).
 
 #### YAML anchors for `before_script` and `after_script`
 

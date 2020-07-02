@@ -131,8 +131,6 @@ with secure tokens as you complete the setup process.
    Praefect cluster directly; that could lead to data loss.
 1. `PRAEFECT_SQL_PASSWORD`: this password is used by Praefect to connect to
    PostgreSQL.
-1. `GRAFANA_PASSWORD`: this password is used to access the `admin`
-   account in the Grafana dashboards.
 
 We will note in the instructions below where these secrets are required.
 
