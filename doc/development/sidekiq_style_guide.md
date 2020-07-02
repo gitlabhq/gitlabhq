@@ -175,9 +175,9 @@ Jobs can have an `urgency` attribute set, which can be `:high`,
 
 | **Urgency**  | **Queue Scheduling Target** | **Execution Latency Requirement**  |
 |--------------|-----------------------------|------------------------------------|
-| `:high`      | 100 milliseconds            | p50 of 1 second, p99 of 10 seconds |
-| `:low`       | 1 minute                    | Maximum run time of 1 hour         |
-| `:throttled` | None                        | Maximum run time of 1 hour         |
+| `:high`      | 10 seconds                  | p50 of 1 second, p99 of 10 seconds |
+| `:low`       | 1 minute                    | Maximum run time of 5 minutes      |
+| `:throttled` | None                        | Maximum run time of 5 minutes      |
 
 To set a job's urgency, use the `urgency` class method:
 

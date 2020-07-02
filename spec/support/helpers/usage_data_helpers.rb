@@ -78,7 +78,6 @@ module UsageDataHelpers
       labels
       lfs_objects
       merge_requests
-      merge_requests_users
       milestone_lists
       milestones
       notes

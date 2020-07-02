@@ -242,6 +242,36 @@ RSpec.describe Feature, stub_feature_flags: false do
         end
       end
     end
+
+    context 'validates usage of feature flag with YAML definition' do
+      let(:definition) do
+        Feature::Definition.new('development/my_feature_flag.yml',
+          name: 'my_feature_flag',
+          type: 'development',
+          default_enabled: false
+        ).tap(&:validate!)
+      end
+
+      before do
+        allow(Feature::Definition).to receive(:definitions) do
+          { definition.key => definition }
+        end
+      end
+
+      it 'when usage is correct' do
+        expect { described_class.enabled?(:my_feature_flag) }.not_to raise_error
+      end
+
+      it 'when invalid type is used' do
+        expect { described_class.enabled?(:my_feature_flag, type: :licensed) }
+          .to raise_error(/The `type:` of/)
+      end
+
+      it 'when invalid default_enabled is used' do
+        expect { described_class.enabled?(:my_feature_flag, default_enabled: true) }
+          .to raise_error(/The `default_enabled:` of/)
+      end
+    end
   end
 
   describe '.disable?' do

@@ -35,6 +35,12 @@ RSpec.describe Gitlab::ImportExport::SnippetRepoRestorer do
       end
     end
 
+    it 'does not call snippet update statistics service' do
+      expect(Snippets::UpdateStatisticsService).not_to receive(:new).with(snippet)
+
+      restorer.restore
+    end
+
     context 'when the repository creation fails' do
       it 'returns false' do
         allow_any_instance_of(Gitlab::BackgroundMigration::BackfillSnippetRepositories).to receive(:perform_by_ids).and_return(nil)
@@ -66,6 +72,10 @@ RSpec.describe Gitlab::ImportExport::SnippetRepoRestorer do
 
     before do
       expect(exporter.save).to be_truthy
+
+      allow_next_instance_of(Snippets::RepositoryValidationService) do |instance|
+        allow(instance).to receive(:execute).and_return(ServiceResponse.success)
+      end
     end
 
     context 'when it is valid' do
@@ -114,6 +124,20 @@ RSpec.describe Gitlab::ImportExport::SnippetRepoRestorer do
           expect(gitlab_shell.repository_exists?(shard_name, path)).to eq false
         end
       end
+    end
+
+    it 'refreshes snippet statistics' do
+      expect(snippet.statistics.commit_count).to be_zero
+      expect(snippet.statistics.file_count).to be_zero
+      expect(snippet.statistics.repository_size).to be_zero
+
+      expect(Snippets::UpdateStatisticsService).to receive(:new).with(snippet).and_call_original
+
+      restorer.restore
+
+      expect(snippet.statistics.commit_count).not_to be_zero
+      expect(snippet.statistics.file_count).not_to be_zero
+      expect(snippet.statistics.repository_size).not_to be_zero
     end
   end
 end

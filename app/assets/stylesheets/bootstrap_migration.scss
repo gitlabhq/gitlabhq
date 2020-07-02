@@ -6,7 +6,7 @@ $brand-info: $blue-500;
 $brand-warning: $orange-500;
 $brand-danger: $red-500;
 
-$border-radius-base: 3px !default;
+$border-radius-base: $gl-border-radius-base;
 
 $modal-body-bg: $white;
 $input-border: $border-color;

@@ -5,4 +5,6 @@
 - content_for :page_specific_javascripts do
   = stylesheet_link_tag 'page_bundles/xterm'
 
+= render_if_exists "shared/shared_runners_minutes_limit_flash_message"
+
 #js-job-vue-app{ data: jobs_data }

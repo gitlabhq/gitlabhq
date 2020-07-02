@@ -42,6 +42,8 @@ module Gitlab
           snippet.repository.expire_exists_cache
 
           raise SnippetRepositoryError, _("Invalid repository bundle for snippet with id %{snippet_id}") % { snippet_id: snippet.id }
+        else
+          Snippets::UpdateStatisticsService.new(snippet).execute
         end
       end
 

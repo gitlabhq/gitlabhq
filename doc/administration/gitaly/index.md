@@ -908,6 +908,21 @@ result as you did at the start. For example:
 
 Note that `enforced="true"` means that authentication is being enforced.
 
+## Direct Git access bypassing Gitaly
+
+While it is possible to access Gitaly repositories stored on disk directly with a Git client,
+it is not advisable because Gitaly is being continuously improved and changed. Theses improvements may invalidate assumptions, resulting in performance degradation, instability, and even data loss.
+
+Gitaly has optimizations, such as the
+[`info/refs` advertisement cache](https://gitlab.com/gitlab-org/gitaly/blob/master/doc/design_diskcache.md),
+that rely on Gitaly controlling and monitoring access to repositories via the
+official gRPC interface. Likewise, Praefect has optimizations, such as fault
+tolerance and distributed reads, that depend on the gRPC interface and
+database to determine repository state.
+
+For these reasons, **accessing repositories directly is done at your own risk
+and is not supported**.
+
 ## Direct access to Git in GitLab
 
 Direct access to Git uses code in GitLab known as the "Rugged patches".

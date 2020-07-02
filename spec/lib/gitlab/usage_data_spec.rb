@@ -77,6 +77,22 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
       end
     end
 
+    context 'for create' do
+      it 'include usage_activity_by_stage data' do
+        expect(described_class.uncached_data[:usage_activity_by_stage][:create])
+          .not_to include(
+            :merge_requests_users
+          )
+      end
+
+      it 'includes monthly usage_activity_by_stage data' do
+        expect(described_class.uncached_data[:usage_activity_by_stage_monthly][:create])
+          .to include(
+            :merge_requests_users
+          )
+      end
+    end
+
     it 'ensures recorded_at is set before any other usage data calculation' do
       %i(alt_usage_data redis_usage_data distinct_count count).each do |method|
         expect(described_class).not_to receive(method)
@@ -662,7 +678,7 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
     end
   end
 
-  describe '.merge_requests_usage' do
+  describe '.merge_requests_users' do
     let(:time_period) { { created_at: 2.days.ago..Time.current } }
     let(:merge_request) { create(:merge_request) }
     let(:other_user) { create(:user) }
@@ -679,9 +695,7 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
     end
 
     it 'returns the distinct count of users using merge requests (via events table) within the specified time period' do
-      expect(described_class.merge_requests_usage(time_period)).to eq(
-        merge_requests_users: 2
-      )
+      expect(described_class.merge_requests_users(time_period)).to eq(2)
     end
   end
 

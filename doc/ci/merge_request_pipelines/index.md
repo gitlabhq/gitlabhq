@@ -32,7 +32,6 @@ pipelines for merge requests take precedence over the other regular pipelines.
 
 To enable pipelines for merge requests:
 
-- You must have maintainer [permissions](../../user/permissions.md).
 - Your repository must be a GitLab repository, not an
   [external repository](../ci_cd_for_external_repos/index.md).
 - [In GitLab 11.10 and later](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/25504),

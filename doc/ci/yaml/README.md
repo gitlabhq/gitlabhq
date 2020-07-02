@@ -2465,8 +2465,6 @@ The `stop_review_app` job is **required** to have the following keywords defined
 - `when` - [reference](#when)
 - `environment:name`
 - `environment:action`
-- `stage` should be the same as the `review_app` in order for the environment
-  to stop automatically when the branch is deleted
 
 Additionally, both jobs should have matching [`rules`](../yaml/README.md#onlyexcept-basic)
 or [`only/except`](../yaml/README.md#onlyexcept-basic) configuration. In the example
