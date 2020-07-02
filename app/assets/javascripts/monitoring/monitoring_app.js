@@ -11,7 +11,8 @@ export default (props = {}) => {
   const el = document.getElementById('prometheus-graphs');
 
   if (el && el.dataset) {
-    const [currentDashboard] = getParameterValues('dashboard');
+    const [encodedDashboard] = getParameterValues('dashboard');
+    const currentDashboard = encodedDashboard ? decodeURIComponent(encodedDashboard) : null;
     const { metricsDashboardBasePath, ...dataset } = el.dataset;
 
     const { initState, dataProps } = stateAndPropsFromDataset({ currentDashboard, ...dataset });

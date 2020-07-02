@@ -426,6 +426,32 @@ describe('Dashboard', () => {
         );
       });
     });
+
+    describe('when custom dashboard is selected', () => {
+      const windowLocation = window.location;
+      const findDashboardDropdown = () => wrapper.find(DashboardHeader).find(DashboardsDropdown);
+
+      beforeEach(() => {
+        delete window.location;
+        window.location = { ...windowLocation, assign: jest.fn() };
+        createMountedWrapper();
+
+        return wrapper.vm.$nextTick();
+      });
+
+      afterEach(() => {
+        window.location = windowLocation;
+      });
+
+      it('encodes dashboard param', () => {
+        findDashboardDropdown().vm.$emit('selectDashboard', {
+          path: 'dashboard&copy.yml',
+        });
+        expect(window.location.assign).toHaveBeenCalledWith(
+          'http://localhost/?dashboard=dashboard%2526copy.yml',
+        );
+      });
+    });
   });
 
   describe('when all requests have been commited by the store', () => {

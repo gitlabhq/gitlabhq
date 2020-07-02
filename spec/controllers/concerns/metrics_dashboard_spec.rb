@@ -76,6 +76,22 @@ RSpec.describe MetricsDashboard do
         end
       end
 
+      context 'when dashboard path includes encoded characters' do
+        let(:params) { { dashboard_path: 'dashboard%26copy.yml' } }
+
+        before do
+          allow(controller)
+            .to receive(:metrics_dashboard_params)
+                  .and_return(params)
+        end
+
+        it 'decodes dashboard path' do
+          expect(::Gitlab::Metrics::Dashboard::Finder).to receive(:find).with(anything, anything, hash_including(dashboard_path: 'dashboard&copy.yml'))
+
+          json_response
+        end
+      end
+
       context 'when parameters are provided and the list of all dashboards is required' do
         before do
           allow(controller).to receive(:include_all_dashboards?).and_return(true)

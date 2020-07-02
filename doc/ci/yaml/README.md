@@ -4187,7 +4187,8 @@ need to be used to merge arrays.
 YAML has a handy feature called 'anchors', which lets you easily duplicate
 content across your document. Anchors can be used to duplicate/inherit
 properties, and is a perfect example to be used with [hidden jobs](#hide-jobs)
-to provide templates for your jobs.
+to provide templates for your jobs. When there is duplicate keys, GitLab will
+perform a reverse deep merge based on the keys.
 
 The following example uses anchors and map merging. It will create two jobs,
 `test1` and `test2`, that will inherit the parameters of `.job_template`, each
@@ -4248,6 +4249,8 @@ directive defined in `.postgres_services` and `.mysql_services` respectively:
 .job_template: &job_definition
   script:
     - test project
+  tags:
+    - dev
 
 .postgres_services:
   services: &postgres_definition
@@ -4262,6 +4265,8 @@ directive defined in `.postgres_services` and `.mysql_services` respectively:
 test:postgres:
   <<: *job_definition
   services: *postgres_definition
+  tags:
+    - postgres
 
 test:mysql:
   <<: *job_definition
@@ -4274,6 +4279,8 @@ The expanded version looks like this:
 .job_template:
   script:
     - test project
+  tags:
+    - dev
 
 .postgres_services:
   services:
@@ -4291,6 +4298,8 @@ test:postgres:
   services:
     - postgres
     - ruby
+  tags:
+    - postgres
 
 test:mysql:
   script:
@@ -4298,9 +4307,14 @@ test:mysql:
   services:
     - mysql
     - ruby
+  tags:
+    - dev
 ```
 
 You can see that the hidden jobs are conveniently used as templates.
+
+NOTE: **Note:**
+Note that `tags: [dev]` has been overwritten by `tags: [postgres]`.
 
 NOTE: **Note:**
 You can't use YAML anchors across multiple files when leveraging the [`include`](#include)

@@ -136,7 +136,7 @@ export default {
     ]),
     selectDashboard(dashboard) {
       const params = {
-        dashboard: dashboard.path,
+        dashboard: encodeURIComponent(dashboard.path),
       };
       redirectTo(mergeUrlParams(params, window.location.href));
     },

@@ -814,7 +814,7 @@ When using a `JSONB` column, use the [JsonSchemaValidator](https://gitlab.com/gi
 
 ```ruby
 class BuildMetadata
-  validates: :config_options, json_schema: { filename: 'build_metadata_config_option' }
+  validates :config_options, json_schema: { filename: 'build_metadata_config_option' }
 end
 ```
 
