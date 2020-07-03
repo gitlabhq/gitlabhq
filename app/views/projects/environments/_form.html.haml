@@ -3,7 +3,7 @@
     %h4.gl-mt-0
       = _("Environments")
     %p
-      - link_to_read_more = link_to(_("Read more about environments"), help_page_path("ci/environments/index.md"))
+      - link_to_read_more = link_to(_("More information"), help_page_path("ci/environments/index.md"))
       = _("Environments allow you to track deployments of your application %{link_to_read_more}.").html_safe % { link_to_read_more: link_to_read_more }
 
   = form_for [@project.namespace.becomes(Namespace), @project, @environment], html: { class: 'col-lg-9' } do |f|

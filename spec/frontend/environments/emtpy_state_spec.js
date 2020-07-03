@@ -7,8 +7,6 @@ describe('environments empty state', () => {
   beforeEach(() => {
     vm = shallowMount(EmptyState, {
       propsData: {
-        newPath: 'foo',
-        canCreateEnvironment: true,
         helpPath: 'bar',
       },
     });
@@ -22,19 +20,5 @@ describe('environments empty state', () => {
     expect(vm.find('.js-blank-state-title').text()).toEqual(
       "You don't have any environments right now",
     );
-  });
-
-  it('renders the new environment button', () => {
-    expect(vm.find('.js-new-environment-button').attributes('href')).toEqual('foo');
-  });
-
-  describe('without permission', () => {
-    beforeEach(() => {
-      vm.setProps({ canCreateEnvironment: false });
-    });
-
-    it('does not render the new environment button', () => {
-      expect(vm.find('.js-new-environment-button').exists()).toBe(false);
-    });
   });
 });

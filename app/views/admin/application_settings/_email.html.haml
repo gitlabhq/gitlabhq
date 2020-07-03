@@ -20,7 +20,7 @@
       = f.label :commit_email_hostname, _('Custom hostname (for private commit emails)'), class: 'label-bold'
       = f.text_field :commit_email_hostname, class: 'form-control'
       .form-text.text-muted
-        - commit_email_hostname_docs_link = link_to _('Learn more'), help_page_path('user/admin_area/settings/email', anchor: 'custom-private-commit-email-hostname'), target: '_blank'
+        - commit_email_hostname_docs_link = link_to _('Learn more'), help_page_path('user/admin_area/settings/email.md', anchor: 'custom-hostname-for-private-commit-emails'), target: '_blank'
         = _("This setting will update the hostname that is used to generate private commit emails. %{learn_more}").html_safe % { learn_more: commit_email_hostname_docs_link }
 
     = render_if_exists 'admin/application_settings/email_additional_text_setting', form: f

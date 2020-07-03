@@ -32,7 +32,7 @@ RSpec.describe OperationsHelper do
           'url' => alerts_service.url,
           'authorization_key' => nil,
           'form_path' => project_service_path(project, alerts_service),
-          'alerts_setup_url' => help_page_path('user/project/integrations/generic_alerts.html', anchor: 'setting-up-generic-alerts'),
+          'alerts_setup_url' => help_page_path('user/project/integrations/generic_alerts.md', anchor: 'setting-up-generic-alerts'),
           'alerts_usage_url' => project_alert_management_index_path(project),
           'prometheus_form_path' => project_service_path(project, prometheus_service),
           'prometheus_reset_key_path' => reset_alerting_token_project_settings_operations_path(project),

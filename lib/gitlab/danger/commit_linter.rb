@@ -8,8 +8,6 @@ module Gitlab
     class CommitLinter
       MIN_SUBJECT_WORDS_COUNT = 3
       MAX_LINE_LENGTH = 72
-      WARN_SUBJECT_LENGTH = 50
-      URL_LIMIT_SUBJECT = "https://chris.beams.io/posts/git-commit/#limit-50"
       MAX_CHANGED_FILES_IN_COMMIT = 3
       MAX_CHANGED_LINES_IN_COMMIT = 30
       SHORT_REFERENCE_REGEX = %r{([\w\-\/]+)?(#|!|&|%)\d+\b}.freeze
@@ -18,7 +16,6 @@ module Gitlab
       PROBLEMS = {
         subject_too_short: "The %s must contain at least #{MIN_SUBJECT_WORDS_COUNT} words",
         subject_too_long: "The %s may not be longer than #{MAX_LINE_LENGTH} characters",
-        subject_above_warning: "The %s length is acceptable, but please try to [reduce it to #{WARN_SUBJECT_LENGTH} characters](#{URL_LIMIT_SUBJECT})",
         subject_starts_with_lowercase: "The %s must start with a capital letter",
         subject_ends_with_a_period: "The %s must not end with a period",
         separator_missing: "The commit subject and body must be separated by a blank line",
@@ -88,8 +85,6 @@ module Gitlab
 
         if subject_too_long?
           add_problem(:subject_too_long, subject_description)
-        elsif subject_above_warning?
-          add_problem(:subject_above_warning, subject_description)
         end
 
         if subject_starts_with_lowercase?
@@ -193,10 +188,6 @@ module Gitlab
 
       def subject_too_long?
         line_too_long?(subject)
-      end
-
-      def subject_above_warning?
-        subject.length > WARN_SUBJECT_LENGTH
       end
 
       def subject_starts_with_lowercase?

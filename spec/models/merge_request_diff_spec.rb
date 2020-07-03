@@ -177,6 +177,30 @@ RSpec.describe MergeRequestDiff do
       expect(diff.external_diff_store).to eq(file_store)
     end
 
+    it 'safely handles a transaction error when migrating to external storage' do
+      expect(diff).not_to be_stored_externally
+      expect(diff.external_diff).not_to be_exists
+
+      stub_external_diffs_setting(enabled: true)
+
+      expect(diff).not_to receive(:save!)
+      expect(Gitlab::Database)
+        .to receive(:bulk_insert)
+        .with('merge_request_diff_files', anything)
+        .and_raise(ActiveRecord::Rollback)
+
+      expect { diff.migrate_files_to_external_storage! }.not_to change(diff, :merge_request_diff_files)
+
+      diff.reload
+
+      expect(diff).not_to be_stored_externally
+
+      # The diff is written outside of the transaction, which is desirable to
+      # avoid long transaction times when migrating, but it does mean we can
+      # leave the file dangling on failure
+      expect(diff.external_diff).to be_exists
+    end
+
     it 'converts from in-database to external object storage' do
       expect(diff).not_to be_stored_externally
 

@@ -1213,7 +1213,7 @@ test:
     # has been pushed).
     # when: always
     # The location where external diffs are stored (default: shared/external-diffs).
-    # storage_path: shared/external-diffs
+    storage_path: tmp/tests/external-diffs
     object_store:
       enabled: false
       remote_directory: external-diffs # The bucket name

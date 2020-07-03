@@ -156,7 +156,7 @@ RSpec.describe Gitlab::Danger::CommitLinter do
       context 'when subject is a WIP' do
         let(:final_message) { 'A B C' }
         # commit message with prefix will be over max length. commit message without prefix will be of maximum size
-        let(:commit_message) { described_class::WIP_PREFIX + final_message + 'D' * (described_class::WARN_SUBJECT_LENGTH - final_message.size) }
+        let(:commit_message) { described_class::WIP_PREFIX + final_message + 'D' * (described_class::MAX_LINE_LENGTH - final_message.size) }
 
         it 'does not have any problems' do
           commit_linter.lint
@@ -171,16 +171,6 @@ RSpec.describe Gitlab::Danger::CommitLinter do
         it 'adds a problem' do
           expect(commit_linter).to receive(:add_problem).with(:subject_too_short, described_class::DEFAULT_SUBJECT_DESCRIPTION)
           expect(commit_linter).to receive(:add_problem).with(:subject_too_long, described_class::DEFAULT_SUBJECT_DESCRIPTION)
-
-          commit_linter.lint
-        end
-      end
-
-      context 'when subject is above warning' do
-        let(:commit_message) { 'A B ' + 'C' * described_class::WARN_SUBJECT_LENGTH }
-
-        it 'adds a problem' do
-          expect(commit_linter).to receive(:add_problem).with(:subject_above_warning, described_class::DEFAULT_SUBJECT_DESCRIPTION)
 
           commit_linter.lint
         end

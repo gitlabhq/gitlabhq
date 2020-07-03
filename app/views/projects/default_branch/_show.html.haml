@@ -26,6 +26,6 @@
               %strong= _("Auto-close referenced issues on default branch")
             .form-text.text-muted
               = _("Issues referenced by merge requests and commits within the default branch will be closed automatically")
-              = link_to icon('question-circle'), help_page_path('user/project/issues/managing_issues.html', anchor: 'disabling-automatic-issue-closing'), target: '_blank'
+              = link_to icon('question-circle'), help_page_path('user/project/issues/managing_issues.md', anchor: 'disabling-automatic-issue-closing'), target: '_blank'
 
       = f.submit 'Save changes', class: "btn btn-success"

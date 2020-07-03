@@ -1,3 +1,5 @@
+#import "../fragments/alert_note.fragment.graphql"
+
 mutation alertSetAssignees($projectPath: ID!, $assigneeUsernames: [String!]!, $iid: String!) {
   alertSetAssignees(
     input: { iid: $iid, assigneeUsernames: $assigneeUsernames, projectPath: $projectPath }
@@ -8,6 +10,11 @@ mutation alertSetAssignees($projectPath: ID!, $assigneeUsernames: [String!]!, $i
       assignees {
         nodes {
           username
+        }
+      }
+      notes {
+        nodes {
+          ...AlertNote
         }
       }
     }

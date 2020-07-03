@@ -414,10 +414,16 @@ class MergeRequestDiff < ApplicationRecord
     return if stored_externally? || !use_external_diff? || merge_request_diff_files.count == 0
 
     rows = build_merge_request_diff_files(merge_request_diff_files)
+    rows = build_external_merge_request_diff_files(rows)
+
+    # Perform carrierwave activity before entering the database transaction.
+    # This is safe as until the `external_diff_store` column is changed, we will
+    # continue to consult the in-database content.
+    self.external_diff.store!
 
     transaction do
       MergeRequestDiffFile.where(merge_request_diff_id: id).delete_all
-      create_merge_request_diff_files(rows)
+      Gitlab::Database.bulk_insert('merge_request_diff_files', rows) # rubocop:disable Gitlab/BulkInsert
       save!
     end
 
@@ -487,8 +493,6 @@ class MergeRequestDiff < ApplicationRecord
     self.stored_externally = true
 
     rows
-  ensure
-    tempfile&.unlink
   end
 
   def create_merge_request_diff_files(rows)
@@ -499,17 +503,19 @@ class MergeRequestDiff < ApplicationRecord
   end
 
   def build_external_diff_tempfile(rows)
-    Tempfile.open(external_diff.filename) do |file|
-      rows.each do |row|
-        data = row.delete(:diff)
-        row[:external_diff_offset] = file.pos
-        row[:external_diff_size] = data.bytesize
+    pos = 0
 
-        file.write(data)
-      end
+    segments = rows.map do |row|
+      segment = row.delete(:diff)
 
-      file
+      row[:external_diff_offset] = pos
+      row[:external_diff_size] = segment.bytesize
+      pos += segment.bytesize
+
+      segment
     end
+
+    CarrierWaveStringFile.new(segments.join(''), external_diff.filename)
   end
 
   def build_merge_request_diff_files(diffs)

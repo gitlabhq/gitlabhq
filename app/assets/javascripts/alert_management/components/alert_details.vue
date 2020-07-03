@@ -177,9 +177,6 @@ export default {
       const { category, action } = trackAlertsDetailsViewsOptions;
       Tracking.event(category, action);
     },
-    alertRefresh() {
-      this.$apollo.queries.alert.refetch();
-    },
   },
 };
 </script>
@@ -335,7 +332,6 @@ export default {
       </gl-tabs>
       <alert-sidebar
         :alert="alert"
-        @alert-refresh="alertRefresh"
         @toggle-sidebar="toggleSidebar"
         @alert-error="handleAlertSidebarError"
       />

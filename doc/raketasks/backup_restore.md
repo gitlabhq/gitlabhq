@@ -820,6 +820,12 @@ If there is a GitLab version mismatch between your backup tar file and the insta
 version of GitLab, the restore command will abort with an error. Install the
 [correct GitLab version](https://packages.gitlab.com/gitlab/) and try again.
 
+NOTE: **Note**
+There is currently a [known issue](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/3470) for restore not working
+with `pgbouncer`. In order to workaround the issue, the Rails node will need to bypass `pgbouncer` and connect
+directly to the primary database node. This can be done by setting `gitlab_rails['db_host']` and `gitlab_rails['port']`
+to connect to the primary database node and [reconfiguring GitLab](../administration/restart_gitlab.md#omnibus-gitlab-reconfigure).
+
 ### Restore for Docker image and GitLab Helm chart installations
 
 For GitLab installations using the Docker image or the GitLab Helm chart on

@@ -65,7 +65,6 @@ export default {
         :project-id="projectId"
         :alert="alert"
         :sidebar-collapsed="sidebarStatus"
-        @alert-refresh="$emit('alert-refresh')"
         @toggle-sidebar="$emit('toggle-sidebar')"
         @alert-error="$emit('alert-error', $event)"
       />
