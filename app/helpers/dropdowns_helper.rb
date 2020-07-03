@@ -15,7 +15,10 @@ module DropdownsHelper
         dropdown_output = dropdown_toggle_link(toggle_text, data_attr, options)
       end
 
-      dropdown_output << content_tag(:div, class: "dropdown-menu dropdown-select #{options[:dropdown_class] if options.key?(:dropdown_class)}") do
+      content_tag_options = { class: "dropdown-menu dropdown-select #{options[:dropdown_class] if options.key?(:dropdown_class)}" }
+      content_tag_options[:data] = { qa_selector: "#{options[:dropdown_qa_selector]}" } if options[:dropdown_qa_selector]
+
+      dropdown_output << content_tag(:div, content_tag_options) do
         output = []
 
         if options.key?(:title)

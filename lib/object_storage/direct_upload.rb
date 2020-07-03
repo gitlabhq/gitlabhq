@@ -23,9 +23,9 @@ module ObjectStorage
     MINIMUM_MULTIPART_SIZE = 5.megabytes
 
     attr_reader :credentials, :bucket_name, :object_name
-    attr_reader :has_length, :maximum_size
+    attr_reader :has_length, :maximum_size, :consolidated_settings
 
-    def initialize(credentials, bucket_name, object_name, has_length:, maximum_size: nil)
+    def initialize(credentials, bucket_name, object_name, has_length:, maximum_size: nil, consolidated_settings: false)
       unless has_length
         raise ArgumentError, 'maximum_size has to be specified if length is unknown' unless maximum_size
       end
@@ -35,6 +35,7 @@ module ObjectStorage
       @object_name = object_name
       @has_length = has_length
       @maximum_size = maximum_size
+      @consolidated_settings = consolidated_settings
     end
 
     def to_hash
@@ -80,10 +81,12 @@ module ObjectStorage
     end
 
     def use_workhorse_s3_client?
-      Feature.enabled?(:use_workhorse_s3_client, default_enabled: true) &&
-        credentials.fetch(:use_iam_profile, false) &&
-        # The Golang AWS SDK does not support V2 signatures
-        credentials.fetch(:aws_signature_version, 4).to_i >= 4
+      return false unless Feature.enabled?(:use_workhorse_s3_client, default_enabled: true)
+      return false unless credentials.fetch(:use_iam_profile, false) || consolidated_settings
+      # The Golang AWS SDK does not support V2 signatures
+      return false unless credentials.fetch(:aws_signature_version, 4).to_i >= 4
+
+      true
     end
 
     def provider

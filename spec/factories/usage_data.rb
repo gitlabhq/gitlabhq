@@ -5,7 +5,8 @@ FactoryBot.define do
     skip_create # non-model factories (i.e. without #save)
 
     initialize_with do
-      projects = create_list(:project, 4)
+      projects = create_list(:project, 3)
+      projects << create(:project, :repository)
       create(:board, project: projects[0])
       create(:jira_service, project: projects[0])
       create(:jira_service, :without_properties_callback, project: projects[1])
@@ -91,7 +92,11 @@ FactoryBot.define do
       ProjectFeature.first.update_attribute('repository_access_level', 0)
 
       # Create fresh & a month (28-days SMAU) old  data
+      env = create(:environment, project: projects[3])
       [2, 29].each do |n|
+        deployment_options = { created_at: n.days.ago, project: env.project, environment: env }
+        create(:deployment, :failed, deployment_options)
+        create(:deployment, :success, deployment_options)
         create_list(:project_snippet, 2, project: projects[0], created_at: n.days.ago)
         create(:personal_snippet, created_at: n.days.ago)
       end

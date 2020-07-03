@@ -1905,9 +1905,6 @@ msgid_plural "Alerts"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "AlertManagement| assign yourself"
-msgstr ""
-
 msgid "AlertManagement|Acknowledged"
 msgstr ""
 
@@ -1932,13 +1929,7 @@ msgstr ""
 msgid "AlertManagement|All alerts"
 msgstr ""
 
-msgid "AlertManagement|Assign To"
-msgstr ""
-
 msgid "AlertManagement|Assign status"
-msgstr ""
-
-msgid "AlertManagement|Assignee"
 msgstr ""
 
 msgid "AlertManagement|Assignees"
@@ -1980,9 +1971,6 @@ msgstr ""
 msgid "AlertManagement|More information"
 msgstr ""
 
-msgid "AlertManagement|No Matching Results"
-msgstr ""
-
 msgid "AlertManagement|No alert data to display."
 msgstr ""
 
@@ -1993,9 +1981,6 @@ msgid "AlertManagement|No alerts to display."
 msgstr ""
 
 msgid "AlertManagement|None"
-msgstr ""
-
-msgid "AlertManagement|None -"
 msgstr ""
 
 msgid "AlertManagement|Open"
@@ -3075,6 +3060,9 @@ msgid "Assign"
 msgstr ""
 
 msgid "Assign Iteration"
+msgstr ""
+
+msgid "Assign To"
 msgstr ""
 
 msgid "Assign custom color like #FF0000"
@@ -15193,6 +15181,9 @@ msgstr ""
 msgid "No Epic"
 msgstr ""
 
+msgid "No Matching Results"
+msgstr ""
+
 msgid "No Scopes"
 msgstr ""
 
@@ -24546,6 +24537,9 @@ msgid "Unarchiving the project will restore people's ability to make changes to 
 msgstr ""
 
 msgid "Unassign from commenting user"
+msgstr ""
+
+msgid "Unassigned"
 msgstr ""
 
 msgid "Unblock"

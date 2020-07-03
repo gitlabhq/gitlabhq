@@ -11,7 +11,7 @@ import {
   GlSprintf,
 } from '@gitlab/ui';
 import axios from '~/lib/utils/axios_utils';
-import { s__ } from '~/locale';
+import { s__, __ } from '~/locale';
 import alertSetAssignees from '../../graphql/mutations/alert_set_assignees.graphql';
 import SidebarAssignee from './sidebar_assignee.vue';
 import { debounce } from 'lodash';
@@ -19,15 +19,18 @@ import { debounce } from 'lodash';
 const DATA_REFETCH_DELAY = 250;
 
 export default {
-  FETCH_USERS_ERROR: s__(
-    'AlertManagement|There was an error while updating the assignee(s) list. Please try again.',
-  ),
-  UPDATE_ALERT_ASSIGNEES_ERROR: s__(
-    'AlertManagement|There was an error while updating the assignee(s) of the alert. Please try again.',
-  ),
-  UPDATE_ALERT_ASSIGNEES_GRAPHQL_ERROR: s__(
-    'AlertManagement|This assignee cannot be assigned to this alert.',
-  ),
+  i18n: {
+    FETCH_USERS_ERROR: s__(
+      'AlertManagement|There was an error while updating the assignee(s) list. Please try again.',
+    ),
+    UPDATE_ALERT_ASSIGNEES_ERROR: s__(
+      'AlertManagement|There was an error while updating the assignee(s) of the alert. Please try again.',
+    ),
+    UPDATE_ALERT_ASSIGNEES_GRAPHQL_ERROR: s__(
+      'AlertManagement|This assignee cannot be assigned to this alert.',
+    ),
+    ASSIGNEES_BLOCK: s__('AlertManagement|Alert assignee(s): %{assignees}'),
+  },
   components: {
     GlIcon,
     GlDropdown,
@@ -80,7 +83,7 @@ export default {
       return this.alert?.assignees?.nodes[0]?.username;
     },
     assignedUser() {
-      return this.userName || s__('AlertManagement|None');
+      return this.userName || __('None');
     },
     sortedUsers() {
       return this.users
@@ -142,7 +145,7 @@ export default {
           this.users = data;
         })
         .catch(() => {
-          this.$emit('alert-error', this.$options.FETCH_USERS_ERROR);
+          this.$emit('alert-error', this.$options.i18n.FETCH_USERS_ERROR);
         })
         .finally(() => {
           this.isDropdownSearching = false;
@@ -165,14 +168,14 @@ export default {
           if (errors[0]) {
             return this.$emit(
               'alert-sidebar-error',
-              `${this.$options.UPDATE_ALERT_ASSIGNEES_GRAPHQL_ERROR} ${errors[0]}.`,
+              `${this.$options.i18n.UPDATE_ALERT_ASSIGNEES_GRAPHQL_ERROR} ${errors[0]}.`,
             );
           }
 
           return this.$emit('alert-refresh');
         })
         .catch(() => {
-          this.$emit('alert-error', this.$options.UPDATE_ALERT_ASSIGNEES_ERROR);
+          this.$emit('alert-error', this.$options.i18n.UPDATE_ALERT_ASSIGNEES_ERROR);
         })
         .finally(() => {
           this.isUpdating = false;
@@ -189,7 +192,7 @@ export default {
       <gl-loading-icon v-if="isUpdating" />
     </div>
     <gl-tooltip :target="() => $refs.status" boundary="viewport" placement="left">
-      <gl-sprintf :message="s__('AlertManagement|Alert assignee(s): %{assignees}')">
+      <gl-sprintf :message="$options.i18n.ASSIGNEES_BLOCK">
         <template #assignees>
           {{ assignedUser }}
         </template>
@@ -198,7 +201,7 @@ export default {
 
     <div class="hide-collapsed">
       <p class="title gl-display-flex gl-justify-content-space-between">
-        {{ s__('AlertManagement|Assignee') }}
+        {{ __('Assignee') }}
         <a
           v-if="isEditable"
           ref="editButton"
@@ -207,7 +210,7 @@ export default {
           @click="toggleFormDropdown"
           @keydown.esc="hideDropdown"
         >
-          {{ s__('AlertManagement|Edit') }}
+          {{ __('Edit') }}
         </a>
       </p>
 
@@ -222,7 +225,7 @@ export default {
           @hide="hideDropdown"
         >
           <div class="dropdown-title">
-            <span class="alert-title">{{ s__('AlertManagement|Assign To') }}</span>
+            <span class="alert-title">{{ __('Assign To') }}</span>
             <gl-button
               :aria-label="__('Close')"
               variant="link"
@@ -247,12 +250,12 @@ export default {
                 active-class="is-active"
                 @click="updateAlertAssignees('')"
               >
-                {{ s__('AlertManagement|Unassigned') }}
+                {{ __('Unassigned') }}
               </gl-dropdown-item>
               <gl-dropdown-divider />
 
               <gl-dropdown-header class="mt-0">
-                {{ s__('AlertManagement|Assignee') }}
+                {{ __('Assignee') }}
               </gl-dropdown-header>
               <sidebar-assignee
                 v-for="user in sortedUsers"
@@ -263,7 +266,7 @@ export default {
               />
             </template>
             <gl-dropdown-item v-else-if="userListEmpty">
-              {{ s__('AlertManagement|No Matching Results') }}
+              {{ __('No Matching Results') }}
             </gl-dropdown-item>
             <gl-loading-icon v-else />
           </div>
@@ -276,7 +279,7 @@ export default {
           assignedUser
         }}</span>
         <span v-else class="gl-display-flex gl-align-items-center">
-          {{ s__('AlertManagement|None -') }}
+          {{ __('None') }} -
           <gl-button
             class="gl-pl-2"
             href="#"
@@ -284,7 +287,7 @@ export default {
             data-testid="unassigned-users"
             @click="updateAlertAssignees(currentUser)"
           >
-            {{ s__('AlertManagement| assign yourself') }}
+            {{ __('assign yourself') }}
           </gl-button>
         </span>
       </p>

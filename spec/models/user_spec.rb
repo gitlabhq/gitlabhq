@@ -214,7 +214,7 @@ RSpec.describe User do
 
   describe 'validations' do
     describe 'password' do
-      let!(:user) { create(:user) }
+      let!(:user) { build_stubbed(:user) }
 
       before do
         allow(Devise).to receive(:password_length).and_return(8..128)

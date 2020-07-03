@@ -109,6 +109,7 @@ class ObjectStoreSettings
 
       # Map bucket (external name) -> remote_directory (internal representation)
       target_config['remote_directory'] = target_config.delete('bucket')
+      target_config['consolidated_settings'] = true
       section['object_store'] = target_config
     end
   end
@@ -120,7 +121,7 @@ class ObjectStoreSettings
   # 2. The legacy settings are not defined
   def use_consolidated_settings?
     return false unless settings.dig('object_store', 'enabled')
-    return false unless settings.dig('object_store', 'connection')
+    return false unless settings.dig('object_store', 'connection').present?
 
     SUPPORTED_TYPES.each do |store|
       # to_h is needed because something strange happens to
@@ -135,7 +136,8 @@ class ObjectStoreSettings
       next unless section
 
       return false if section.dig('object_store', 'enabled')
-      return false if section.dig('object_store', 'connection')
+      # Omnibus defaults to an empty hash
+      return false if section.dig('object_store', 'connection').present?
     end
 
     true

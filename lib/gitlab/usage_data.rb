@@ -170,6 +170,9 @@ module Gitlab
       def system_usage_data_monthly
         {
           counts_monthly: {
+            deployments: count(Deployment.where(last_28_days_time_period)),
+            successful_deployments: count(Deployment.success.where(last_28_days_time_period)),
+            failed_deployments: count(Deployment.failed.where(last_28_days_time_period)),
             personal_snippets: count(PersonalSnippet.where(last_28_days_time_period)),
             project_snippets: count(ProjectSnippet.where(last_28_days_time_period))
           }.tap do |data|

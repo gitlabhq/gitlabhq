@@ -155,7 +155,7 @@ RSpec.describe 'User comments on a diff', :js do
       end
     end
 
-    it 'can apply multiple suggestions as a batch' do
+    it 'can apply multiple suggestions as a batch', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/224100' do
       files.each_with_index do |file, index|
         page.within("[id='#{file[:hash]}']") do
           find("button[title='Show full file']").click

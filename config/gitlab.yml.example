@@ -210,7 +210,6 @@ production: &base
   ## within the types (e.g. artifacts, lfs, etc.).
   # object_store:
   #   enabled: false
-  #   remote_directory: artifacts # The bucket name
   #   proxy_download: false # Passthrough all downloads via GitLab instead of using Redirects to Object Storage
   #   connection:
   #     provider: AWS # Only AWS supported at the moment

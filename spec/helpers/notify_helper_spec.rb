@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe NotifyHelper do
+RSpec.describe NotifyHelper do
   include ActionView::Helpers::UrlHelper
 
   describe 'merge_request_reference_link' do

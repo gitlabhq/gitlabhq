@@ -130,7 +130,7 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
       expect(subject[:counts_monthly]).to be_an(Hash)
     end
 
-    it 'gathers projects data correctly' do
+    it 'gathers usage counts correctly' do
       count_data = subject[:counts]
 
       expect(count_data[:projects]).to eq(4)
@@ -188,6 +188,9 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
       expect(count_data[:clusters_applications_jupyter]).to eq(1)
       expect(count_data[:clusters_management_project]).to eq(1)
 
+      expect(count_data[:deployments]).to eq(4)
+      expect(count_data[:successful_deployments]).to eq(2)
+      expect(count_data[:failed_deployments]).to eq(2)
       expect(count_data[:snippets]).to eq(6)
       expect(count_data[:personal_snippets]).to eq(2)
       expect(count_data[:project_snippets]).to eq(4)
@@ -274,9 +277,12 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
 
     subject { described_class.system_usage_data_monthly }
 
-    it 'gathers projects data correctly' do
+    it 'gathers monthly usage counts correctly' do
       counts_monthly = subject[:counts_monthly]
 
+      expect(counts_monthly[:deployments]).to eq(2)
+      expect(counts_monthly[:successful_deployments]).to eq(1)
+      expect(counts_monthly[:failed_deployments]).to eq(1)
       expect(counts_monthly[:snippets]).to eq(3)
       expect(counts_monthly[:personal_snippets]).to eq(1)
       expect(counts_monthly[:project_snippets]).to eq(2)

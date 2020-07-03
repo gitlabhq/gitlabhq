@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class Admin::JobsController < Admin::ApplicationController
+  BUILDS_PER_PAGE = 30
+
   def index
     # We need all builds for tabs counters
     @all_builds = Ci::JobsFinder.new(current_user: current_user).execute
@@ -8,7 +10,7 @@ class Admin::JobsController < Admin::ApplicationController
     @scope = params[:scope]
     @builds = Ci::JobsFinder.new(current_user: current_user, params: params).execute
     @builds = @builds.eager_load_everything
-    @builds = @builds.page(params[:page]).per(30)
+    @builds = @builds.page(params[:page]).per(BUILDS_PER_PAGE).without_count
   end
 
   def cancel_all

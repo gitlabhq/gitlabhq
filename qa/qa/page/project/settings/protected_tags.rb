@@ -26,6 +26,8 @@ module QA
           end
 
           def choose_access_level_role(role)
+            return if find_element(:access_levels_dropdown).text == role
+
             click_element :access_levels_dropdown
             within_element(:access_levels_content) do
               click_on role
