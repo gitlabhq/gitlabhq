@@ -102,12 +102,16 @@ describe('Tags List', () => {
     it('the correct props are bound to it', () => {
       mountComponent();
 
-      expect(
-        findTagsListRow()
-          .at(0)
-          .attributes(),
-      ).toMatchObject({
-        index: '0',
+      const rows = findTagsListRow();
+
+      expect(rows.at(0).attributes()).toMatchObject({
+        first: 'true',
+        isdesktop: 'true',
+      });
+
+      // The list has only two tags and for some reasons .at(-1) does not work
+      expect(rows.at(1).attributes()).toMatchObject({
+        last: 'true',
         isdesktop: 'true',
       });
     });

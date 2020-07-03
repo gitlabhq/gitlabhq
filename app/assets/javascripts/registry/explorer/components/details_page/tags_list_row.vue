@@ -30,16 +30,12 @@ export default {
       type: Object,
       required: true,
     },
-    index: {
-      type: Number,
-      required: true,
-    },
-    selected: {
+    isDesktop: {
       type: Boolean,
       default: false,
       required: false,
     },
-    isDesktop: {
+    selected: {
       type: Boolean,
       default: false,
       required: false,
@@ -66,7 +62,7 @@ export default {
 </script>
 
 <template>
-  <list-item :index="index" :selected="selected">
+  <list-item v-bind="$attrs" :selected="selected">
     <template #left-action>
       <gl-form-checkbox class="gl-m-0" :checked="selected" @change="$emit('select')" />
     </template>

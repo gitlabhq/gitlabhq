@@ -1,3 +1,4 @@
+import { GlButton } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import component from '~/registry/explorer/components/list_item.vue';
 
@@ -10,8 +11,10 @@ describe('list item', () => {
   const findRightPrimarySlot = () => wrapper.find('[data-testid="right-primary"]');
   const findRightSecondarySlot = () => wrapper.find('[data-testid="right-secondary"]');
   const findRightActionSlot = () => wrapper.find('[data-testid="right-action"]');
+  const findDetailsSlot = name => wrapper.find(`[data-testid="${name}"]`);
+  const findToggleDetailsButton = () => wrapper.find(GlButton);
 
-  const mountComponent = propsData => {
+  const mountComponent = (propsData, slots) => {
     wrapper = shallowMount(component, {
       propsData,
       slots: {
@@ -21,6 +24,7 @@ describe('list item', () => {
         'right-primary': '<div data-testid="right-primary" />',
         'right-secondary': '<div data-testid="right-secondary" />',
         'right-action': '<div data-testid="right-action" />',
+        ...slots,
       },
     });
   };
@@ -44,6 +48,50 @@ describe('list item', () => {
     expect(finderFunction().exists()).toBe(true);
   });
 
+  describe.each`
+    slotNames
+    ${['details_foo']}
+    ${['details_foo', 'details_bar']}
+    ${['details_foo', 'details_bar', 'details_baz']}
+  `('$slotNames details slots', ({ slotNames }) => {
+    const slotMocks = slotNames.reduce((acc, current) => {
+      acc[current] = `<div data-testid="${current}" />`;
+      return acc;
+    }, {});
+
+    it('are visible when details is shown', async () => {
+      mountComponent({}, slotMocks);
+
+      await wrapper.vm.$nextTick();
+      findToggleDetailsButton().vm.$emit('click');
+
+      await wrapper.vm.$nextTick();
+      slotNames.forEach(name => {
+        expect(findDetailsSlot(name).exists()).toBe(true);
+      });
+    });
+    it('are not visible when details are not shown', () => {
+      mountComponent({}, slotMocks);
+
+      slotNames.forEach(name => {
+        expect(findDetailsSlot(name).exists()).toBe(false);
+      });
+    });
+  });
+
+  describe('details toggle button', () => {
+    it('is visible when at least one details slot exists', async () => {
+      mountComponent({}, { details_foo: '<span></span>' });
+      await wrapper.vm.$nextTick();
+      expect(findToggleDetailsButton().exists()).toBe(true);
+    });
+
+    it('is hidden without details slot', () => {
+      mountComponent();
+      expect(findToggleDetailsButton().exists()).toBe(false);
+    });
+  });
+
   describe('disabled prop', () => {
     it('when true applies disabled-content class', () => {
       mountComponent({ disabled: true });
@@ -58,21 +106,31 @@ describe('list item', () => {
     });
   });
 
-  describe('index prop', () => {
-    it('when index is 0 displays a top border', () => {
-      mountComponent({ index: 0 });
+  describe('first prop', () => {
+    it('when is true displays a double top border', () => {
+      mountComponent({ first: true });
 
-      expect(wrapper.classes()).toEqual(
-        expect.arrayContaining(['gl-border-t-solid', 'gl-border-t-1']),
-      );
+      expect(wrapper.classes('gl-border-t-2')).toBe(true);
     });
 
-    it('when index is not 0 hides top border', () => {
-      mountComponent({ index: 1 });
+    it('when is false display a single top border', () => {
+      mountComponent({ first: false });
 
-      expect(wrapper.classes()).toEqual(
-        expect.not.arrayContaining(['gl-border-t-solid', 'gl-border-t-1']),
-      );
+      expect(wrapper.classes('gl-border-t-1')).toBe(true);
+    });
+  });
+
+  describe('last prop', () => {
+    it('when is true displays a double bottom border', () => {
+      mountComponent({ last: true });
+
+      expect(wrapper.classes('gl-border-b-2')).toBe(true);
+    });
+
+    it('when is false display a single bottom border', () => {
+      mountComponent({ last: false });
+
+      expect(wrapper.classes('gl-border-b-1')).toBe(true);
     });
   });
 

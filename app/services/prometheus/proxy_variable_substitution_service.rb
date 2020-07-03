@@ -19,10 +19,52 @@ module Prometheus
       :substitute_params,
       :substitute_variables
 
+    # @param environment [Environment]
+    # @param params [Hash<Symbol,Any>]
+    # @param params - query [String] The Prometheus query string.
+    # @param params - start [String] (optional) A time string in the rfc3339 format.
+    # @param params - start_time [String] (optional) A time string in the rfc3339 format.
+    # @param params - end [String] (optional) A time string in the rfc3339 format.
+    # @param params - end_time [String] (optional) A time string in the rfc3339 format.
+    # @param params - variables [ActionController::Parameters] (optional) Variables with their values.
+    #     The keys in the Hash should be the name of the variable. The value should be the value of the
+    #     variable. Ex: `ActionController::Parameters.new(variable1: 'value 1', variable2: 'value 2').permit!`
+    # @return [Prometheus::ProxyVariableSubstitutionService]
+    #
+    # Example:
+    #      Prometheus::ProxyVariableSubstitutionService.new(environment, {
+    #        params: {
+    #          start_time: '2020-07-03T06:08:36Z',
+    #          end_time: '2020-07-03T14:08:52Z',
+    #          query: 'up{instance="{{instance}}"}',
+    #          variables: { instance: 'srv1' }
+    #        }
+    #      })
     def initialize(environment, params = {})
       @environment, @params = environment, params.deep_dup
     end
 
+    # @return - params [Hash<Symbol,Any>] Returns a Hash containing a params key which is
+    #   similar to the `params` that is passed to the initialize method with 2 differences:
+    #     1. Variables in the query string are substituted with their values.
+    #        If a variable present in the query string has no known value (values
+    #        are obtained from the `variables` Hash in `params` or from
+    #        `Gitlab::Prometheus::QueryVariables.call`), it will not be substituted.
+    #     2. `start` and `end` keys are added, with their values copied from `start_time`
+    #        and `end_time`.
+    #
+    # Example output:
+    #
+    # {
+    #   params: {
+    #     start_time: '2020-07-03T06:08:36Z',
+    #     start: '2020-07-03T06:08:36Z',
+    #     end_time: '2020-07-03T14:08:52Z',
+    #     end: '2020-07-03T14:08:52Z',
+    #     query: 'up{instance="srv1"}',
+    #     variables: { instance: 'srv1' }
+    #   }
+    # }
     def execute
       execute_steps
     end

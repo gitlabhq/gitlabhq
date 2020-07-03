@@ -15,6 +15,7 @@ RSpec.describe API::Groups do
   let_it_be(:project1) { create(:project, namespace: group1) }
   let_it_be(:project2) { create(:project, namespace: group2) }
   let_it_be(:project3) { create(:project, namespace: group1, path: 'test', visibility_level: Gitlab::VisibilityLevel::PRIVATE) }
+  let_it_be(:archived_project) { create(:project, namespace: group1, archived: true) }
 
   before do
     group1.add_owner(user1)
@@ -471,7 +472,7 @@ RSpec.describe API::Groups do
         expect(json_response['shared_with_groups'][0]['group_access_level']).to eq(link.group_access)
         expect(json_response['shared_with_groups'][0]).to have_key('expires_at')
         expect(json_response['projects']).to be_an Array
-        expect(json_response['projects'].length).to eq(2)
+        expect(json_response['projects'].length).to eq(3)
         expect(json_response['shared_projects']).to be_an Array
         expect(json_response['shared_projects'].length).to eq(1)
         expect(json_response['shared_projects'][0]['id']).to eq(project.id)
@@ -696,7 +697,7 @@ RSpec.describe API::Groups do
         expect(json_response['parent_id']).to eq(nil)
         expect(json_response['created_at']).to be_present
         expect(json_response['projects']).to be_an Array
-        expect(json_response['projects'].length).to eq(2)
+        expect(json_response['projects'].length).to eq(3)
         expect(json_response['shared_projects']).to be_an Array
         expect(json_response['shared_projects'].length).to eq(0)
         expect(json_response['default_branch_protection']).to eq(::Gitlab::Access::MAINTAINER_PROJECT_ACCESS)
@@ -822,10 +823,41 @@ RSpec.describe API::Groups do
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(response).to include_pagination_headers
-        expect(json_response.length).to eq(2)
+        expect(json_response.length).to eq(3)
         project_names = json_response.map { |proj| proj['name'] }
-        expect(project_names).to match_array([project1.name, project3.name])
+        expect(project_names).to match_array([project1.name, project3.name, archived_project.name])
         expect(json_response.first['visibility']).to be_present
+      end
+
+      context 'and using archived' do
+        it "returns the group's archived projects" do
+          get api("/groups/#{group1.id}/projects?archived=true", user1)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to include_pagination_headers
+          expect(json_response).to be_an Array
+          expect(json_response.length).to eq(Project.public_or_visible_to_user(user1).where(archived: true).size)
+          expect(json_response.map { |project| project['id'] }).to include(archived_project.id)
+        end
+
+        it "returns the group's non-archived projects" do
+          get api("/groups/#{group1.id}/projects?archived=false", user1)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to include_pagination_headers
+          expect(json_response).to be_an Array
+          expect(json_response.length).to eq(Project.public_or_visible_to_user(user1).where(archived: false).size)
+          expect(json_response.map { |project| project['id'] }).not_to include(archived_project.id)
+        end
+
+        it "returns all of the group's projects" do
+          get api("/groups/#{group1.id}/projects", user1)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to include_pagination_headers
+          expect(json_response).to be_an Array
+          expect(json_response.map { |project| project['id'] }).to contain_exactly(*Project.public_or_visible_to_user(user1).pluck(:id))
+        end
       end
 
       it "returns the group's projects with simple representation" do
@@ -833,9 +865,9 @@ RSpec.describe API::Groups do
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(response).to include_pagination_headers
-        expect(json_response.length).to eq(2)
+        expect(json_response.length).to eq(3)
         project_names = json_response.map { |proj| proj['name'] }
-        expect(project_names).to match_array([project1.name, project3.name])
+        expect(project_names).to match_array([project1.name, project3.name, archived_project.name])
         expect(json_response.first['visibility']).not_to be_present
       end
 
@@ -861,7 +893,7 @@ RSpec.describe API::Groups do
         expect(response).to have_gitlab_http_status(:ok)
         expect(response).to include_pagination_headers
         expect(json_response).to be_an(Array)
-        expect(json_response.length).to eq(2)
+        expect(json_response.length).to eq(3)
       end
 
       it "returns projects including those in subgroups" do
@@ -874,7 +906,7 @@ RSpec.describe API::Groups do
         expect(response).to have_gitlab_http_status(:ok)
         expect(response).to include_pagination_headers
         expect(json_response).to be_an(Array)
-        expect(json_response.length).to eq(4)
+        expect(json_response.length).to eq(5)
       end
 
       it "does not return a non existing group" do
@@ -959,7 +991,7 @@ RSpec.describe API::Groups do
         expect(response).to have_gitlab_http_status(:ok)
         expect(response).to include_pagination_headers
         project_names = json_response.map { |proj| proj['name'] }
-        expect(project_names).to match_array([project1.name, project3.name])
+        expect(project_names).to match_array([project1.name, project3.name, archived_project.name])
       end
 
       it 'does not return a non existing group' do

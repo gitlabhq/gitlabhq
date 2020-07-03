@@ -29,11 +29,6 @@ export default {
       type: Object,
       required: true,
     },
-    index: {
-      type: Number,
-      default: 0,
-      required: false,
-    },
   },
   i18n: {
     LIST_DELETE_BUTTON_DISABLED,
@@ -71,7 +66,7 @@ export default {
       disabled: !item.deleting,
       title: $options.i18n.ROW_SCHEDULED_FOR_DELETION,
     }"
-    :index="index"
+    v-bind="$attrs"
     :disabled="item.deleting"
   >
     <template #left-primary>
