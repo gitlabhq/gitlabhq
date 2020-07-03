@@ -62,7 +62,8 @@
     background-color: $white;
 
     &.is-focused {
-      @extend .form-control:focus;
+      border-color: $input-focus-border-color;
+      box-shadow: $input-focus-box-shadow;
 
       .comment-toolbar,
       .nav-links {

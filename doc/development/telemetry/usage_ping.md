@@ -594,6 +594,7 @@ appear to be associated to any of the services running, since they all appear to
 | `ldap_enabled`                                            |                                      |               |                  |         |                                                                            |
 | `mattermost_enabled`                                      |                                      |               |                  |         |                                                                            |
 | `omniauth_enabled`                                        |                                      |               |                  |         |                                                                            |
+| `prometheus_enabled`                                      |                                      |               |                  |         | Whether the bundled Prometheus is enabled                                  |
 | `prometheus_metrics_enabled`                              |                                      |               |                  |         |                                                                            |
 | `reply_by_email_enabled`                                  |                                      |               |                  |         |                                                                            |
 | `average`                                                 | `avg_cycle_analytics - code`         |               |                  |         |                                                                            |
@@ -671,6 +672,7 @@ appear to be associated to any of the services running, since they all appear to
 | `merge_requests_users`                                    | `usage_activity_by_stage_monthly`    | `create`      |                  |         | Unique count of users who used a merge request                             |
 | `duration_s`                                              | `topology`                           | `enablement`  |                  |         | Time it took to collect topology data                                      |
 | `application_requests_per_hour`                           | `topology`                           | `enablement`  |                  |         | Number of requests to the web application per hour                         |
+| `failures`                                                | `topology`                           | `enablement`  |                  |         | Contains information about failed queries                                  |
 | `nodes`                                                   | `topology`                           | `enablement`  |                  |         | The list of server nodes on which GitLab components are running            |
 | `node_memory_total_bytes`                                 | `topology > nodes`                   | `enablement`  |                  |         | The total available memory of this node                                    |
 | `node_cpus`                                               | `topology > nodes`                   | `enablement`  |                  |         | The number of CPU cores of this node                                       |
@@ -723,6 +725,7 @@ The following is example content of the Usage Ping payload.
   "ldap_enabled": false,
   "mattermost_enabled": false,
   "omniauth_enabled": true,
+  "prometheus_enabled": false,
   "prometheus_metrics_enabled": false,
   "reply_by_email_enabled": "incoming+%{key}@incoming.gitlab.com",
   "signup_enabled": true,
@@ -879,6 +882,7 @@ The following is example content of the Usage Ping payload.
   "topology": {
     "duration_s": 0.013836685999194742,
     "application_requests_per_hour": 4224,
+    "failures": [],
     "nodes": [
       {
         "node_memory_total_bytes": 33269903360,

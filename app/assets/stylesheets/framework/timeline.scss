@@ -27,7 +27,13 @@
 
 .timeline-entry {
   color: $gl-text-color;
-  background-color: $white;
+
+  // [dark-theme]: only give background color to actual notes
+  // in the timeline, the note form textarea has a background
+  // of it's own
+  &:not(.note-form) {
+    background-color: $white;
+  }
 
   .timeline-entry-inner {
     position: relative;

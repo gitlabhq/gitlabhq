@@ -1103,25 +1103,25 @@
             },
             {
               "name": "SEVERITY_ASC",
-              "description": "Severity by ascending order",
+              "description": "Severity from less critical to more critical",
               "isDeprecated": false,
               "deprecationReason": null
             },
             {
               "name": "SEVERITY_DESC",
-              "description": "Severity by descending order",
+              "description": "Severity from more critical to less critical",
               "isDeprecated": false,
               "deprecationReason": null
             },
             {
               "name": "STATUS_ASC",
-              "description": "Status by ascending order",
+              "description": "Status by order: Ignored > Resolved > Acknowledged > Triggered",
               "isDeprecated": false,
               "deprecationReason": null
             },
             {
               "name": "STATUS_DESC",
-              "description": "Status by descending order",
+              "description": "Status by order: Triggered > Acknowledged > Resolved > Ignored",
               "isDeprecated": false,
               "deprecationReason": null
             }

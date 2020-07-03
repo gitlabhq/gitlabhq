@@ -30,6 +30,7 @@ RSpec.describe MergeRequests::Conflicts::ListService do
     it 'returns a falsey value when one of the MR branches is missing' do
       merge_request = create_merge_request('conflict-resolvable')
       merge_request.project.repository.rm_branch(merge_request.author, 'conflict-resolvable')
+      merge_request.clear_memoized_source_branch_exists
 
       expect(conflicts_service(merge_request).can_be_resolved_in_ui?).to be_falsey
     end

@@ -347,6 +347,20 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
         expect(subject[:grafana_link_enabled]).to eq(Gitlab::CurrentSettings.grafana_enabled?)
       end
 
+      context 'with embedded Prometheus' do
+        it 'returns true when embedded Prometheus is enabled' do
+          allow(Gitlab::Prometheus::Internal).to receive(:prometheus_enabled?).and_return(true)
+
+          expect(subject[:prometheus_enabled]).to eq(true)
+        end
+
+        it 'returns false when embedded Prometheus is disabled' do
+          allow(Gitlab::Prometheus::Internal).to receive(:prometheus_enabled?).and_return(false)
+
+          expect(subject[:prometheus_enabled]).to eq(false)
+        end
+      end
+
       context 'with embedded grafana' do
         it 'returns true when embedded grafana is enabled' do
           stub_application_setting(grafana_enabled: true)

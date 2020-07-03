@@ -1217,6 +1217,59 @@ RSpec.describe MergeRequest do
     end
   end
 
+  describe "#source_branch_exists?" do
+    let(:merge_request) { subject }
+    let(:repository) { merge_request.source_project.repository }
+
+    context 'when memoize_source_branch_merge_request feature is enabled' do
+      before do
+        stub_feature_flags(memoize_source_branch_merge_request: true)
+      end
+
+      context 'when the source project is set' do
+        it 'memoizes the value and returns the result' do
+          expect(repository).to receive(:branch_exists?).once.with(merge_request.source_branch).and_return(true)
+
+          2.times { expect(merge_request.source_branch_exists?).to eq(true) }
+        end
+      end
+
+      context 'when the source project is not set' do
+        before do
+          merge_request.source_project = nil
+        end
+
+        it 'returns false' do
+          expect(merge_request.source_branch_exists?).to eq(false)
+        end
+      end
+    end
+
+    context 'when memoize_source_branch_merge_request feature is disabled' do
+      before do
+        stub_feature_flags(memoize_source_branch_merge_request: false)
+      end
+
+      context 'when the source project is set' do
+        it 'does not memoize the value and returns the result' do
+          expect(repository).to receive(:branch_exists?).twice.with(merge_request.source_branch).and_return(true)
+
+          2.times { expect(merge_request.source_branch_exists?).to eq(true) }
+        end
+      end
+
+      context 'when the source project is not set' do
+        before do
+          merge_request.source_project = nil
+        end
+
+        it 'returns false' do
+          expect(merge_request.source_branch_exists?).to eq(false)
+        end
+      end
+    end
+  end
+
   describe '#default_merge_commit_message' do
     it 'includes merge information as the title' do
       request = build(:merge_request, source_branch: 'source', target_branch: 'target')

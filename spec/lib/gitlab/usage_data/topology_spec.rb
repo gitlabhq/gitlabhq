@@ -2,11 +2,11 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::UsageDataConcerns::Topology do
+RSpec.describe Gitlab::UsageData::Topology do
   include UsageDataHelpers
 
   describe '#topology_usage_data' do
-    subject { Class.new.extend(described_class).topology_usage_data }
+    subject { described_class.new.topology_usage_data }
 
     before do
       # this pins down time shifts when benchmarking durations
@@ -34,6 +34,7 @@ RSpec.describe Gitlab::UsageDataConcerns::Topology do
           expect(subject[:topology]).to eq({
             duration_s: 0,
             application_requests_per_hour: 36,
+            failures: [],
             nodes: [
               {
                 node_memory_total_bytes: 512,
@@ -76,7 +77,7 @@ RSpec.describe Gitlab::UsageDataConcerns::Topology do
       end
 
       context 'and some node memory metrics are missing' do
-        it 'removes the respective entries' do
+        it 'removes the respective entries and includes the failures' do
           expect_prometheus_api_to(
             receive_app_request_volume_query(result: []),
             receive_node_memory_query(result: []),
@@ -89,6 +90,12 @@ RSpec.describe Gitlab::UsageDataConcerns::Topology do
 
           expect(subject[:topology]).to eq({
             duration_s: 0,
+            failures: [
+              { 'app_requests' => 'empty_result' },
+              { 'node_memory' => 'empty_result' },
+              { 'service_rss' => 'empty_result' },
+              { 'service_uss' => 'empty_result' }
+            ],
             nodes: [
               {
                 node_cpus: 16,
@@ -123,31 +130,50 @@ RSpec.describe Gitlab::UsageDataConcerns::Topology do
         end
       end
 
-      context 'and no results are found' do
-        it 'does not report anything' do
-          expect_prometheus_api_to receive(:query).at_least(:once).and_return({})
+      context 'and an error is raised when querying Prometheus' do
+        it 'returns empty result with failures' do
+          expect_prometheus_api_to receive(:query)
+            .at_least(:once)
+            .and_raise(Gitlab::PrometheusClient::ConnectionError)
 
           expect(subject[:topology]).to eq({
             duration_s: 0,
+            failures: [
+              { 'app_requests' => 'Gitlab::PrometheusClient::ConnectionError' },
+              { 'node_memory' => 'Gitlab::PrometheusClient::ConnectionError' },
+              { 'node_cpus' => 'Gitlab::PrometheusClient::ConnectionError' },
+              { 'service_rss' => 'Gitlab::PrometheusClient::ConnectionError' },
+              { 'service_uss' => 'Gitlab::PrometheusClient::ConnectionError' },
+              { 'service_pss' => 'Gitlab::PrometheusClient::ConnectionError' },
+              { 'service_process_count' => 'Gitlab::PrometheusClient::ConnectionError' }
+            ],
             nodes: []
           })
-        end
-      end
-
-      context 'and a connection error is raised' do
-        it 'does not report anything' do
-          expect_prometheus_api_to receive(:query).and_raise('Connection failed')
-
-          expect(subject[:topology]).to eq({ duration_s: 0 })
         end
       end
     end
 
     context 'when embedded Prometheus server is disabled' do
-      it 'does not report anything' do
+      it 'returns empty result with no failures' do
         expect(Gitlab::Prometheus::Internal).to receive(:prometheus_enabled?).and_return(false)
 
-        expect(subject[:topology]).to eq({ duration_s: 0 })
+        expect(subject[:topology]).to eq({
+          duration_s: 0,
+          failures: []
+        })
+      end
+    end
+
+    context 'when top-level function raises error' do
+      it 'returns empty result with generic failure' do
+        allow(Gitlab::Prometheus::Internal).to receive(:prometheus_enabled?).and_raise(RuntimeError)
+
+        expect(subject[:topology]).to eq({
+          duration_s: 0,
+          failures: [
+            { 'other' => 'RuntimeError' }
+          ]
+        })
       end
     end
   end

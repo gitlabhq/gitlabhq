@@ -18,7 +18,6 @@ module Gitlab
     class << self
       include Gitlab::Utils::UsageData
       include Gitlab::Utils::StrongMemoize
-      include Gitlab::UsageDataConcerns::Topology
 
       def data(force_refresh: false)
         Rails.cache.fetch('usage_data', force: force_refresh, expires_in: 2.weeks) do
@@ -210,6 +209,7 @@ module Gitlab
           ldap_enabled: alt_usage_data(fallback: nil) { Gitlab.config.ldap.enabled },
           mattermost_enabled: alt_usage_data(fallback: nil) { Gitlab.config.mattermost.enabled },
           omniauth_enabled: alt_usage_data(fallback: nil) { Gitlab::Auth.omniauth_enabled? },
+          prometheus_enabled: alt_usage_data(fallback: nil) { Gitlab::Prometheus::Internal.prometheus_enabled? },
           prometheus_metrics_enabled: alt_usage_data(fallback: nil) { Gitlab::Metrics.prometheus_metrics_enabled? },
           reply_by_email_enabled: alt_usage_data(fallback: nil) { Gitlab::IncomingEmail.enabled? },
           signup_enabled: alt_usage_data(fallback: nil) { Gitlab::CurrentSettings.allow_signup? },
@@ -301,6 +301,10 @@ module Gitlab
             packages: object_store_config('packages')
           }
         }
+      end
+
+      def topology_usage_data
+        Gitlab::UsageData::Topology.new.topology_usage_data
       end
 
       def ingress_modsecurity_usage

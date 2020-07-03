@@ -2238,6 +2238,9 @@ msgstr ""
 msgid "Allow users to request access (if visibility is public or internal)"
 msgstr ""
 
+msgid "Allowed"
+msgstr ""
+
 msgid "Allowed Geo IP"
 msgstr ""
 
@@ -7439,6 +7442,9 @@ msgid "Deleting the license failed. You are not permitted to perform this action
 msgstr ""
 
 msgid "Deletion pending. This project will be removed on %{date}. Repository and other project resources are read-only."
+msgstr ""
+
+msgid "Denied"
 msgstr ""
 
 msgid "Denied authorization of chat nickname %{user_name}."
@@ -13466,6 +13472,9 @@ msgstr ""
 msgid "Licenses|%{remainingComponentsCount} more"
 msgstr ""
 
+msgid "Licenses|Acceptable license to be used in the project"
+msgstr ""
+
 msgid "Licenses|Component"
 msgstr ""
 
@@ -13476,6 +13485,9 @@ msgid "Licenses|Detected in Project"
 msgstr ""
 
 msgid "Licenses|Detected licenses that are out-of-compliance with the project's assigned policies"
+msgstr ""
+
+msgid "Licenses|Disallow Merge request if detected and will instruct the developer to remove"
 msgstr ""
 
 msgid "Licenses|Displays licenses detected in the project, based on the %{linkStart}latest successful%{linkEnd} scan"
@@ -16869,9 +16881,6 @@ msgstr ""
 msgid "Please type %{phrase_code} to proceed or close this modal to cancel."
 msgstr ""
 
-msgid "Please upgrade PostgreSQL to version 9.6 or greater. The status of the replication cannot be determined reliably with the current version."
-msgstr ""
-
 msgid "Please use this form to report to the admin users who create spam issues, comments or behave inappropriately."
 msgstr ""
 
@@ -17250,7 +17259,7 @@ msgstr ""
 msgid "Profiles|Full name"
 msgstr ""
 
-msgid "Profiles|Give your individual key a title"
+msgid "Profiles|Give your individual key a title. This will be publically visible."
 msgstr ""
 
 msgid "Profiles|Include private contributions on my profile"

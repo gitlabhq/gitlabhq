@@ -110,14 +110,14 @@ RSpec.describe 'getting Alert Management Alerts' do
         it_behaves_like 'a working graphql query'
 
         it 'sorts in the correct order' do
-          expect(iids).to eq [resolved_alert.iid.to_s, triggered_alert.iid.to_s]
+          expect(iids).to eq [triggered_alert.iid.to_s, resolved_alert.iid.to_s]
         end
 
         context 'ascending order' do
           let(:params) { 'sort: SEVERITY_ASC' }
 
           it 'sorts in the correct order' do
-            expect(iids).to eq [triggered_alert.iid.to_s, resolved_alert.iid.to_s]
+            expect(iids).to eq [resolved_alert.iid.to_s, triggered_alert.iid.to_s]
           end
         end
       end

@@ -75,8 +75,28 @@ FactoryBot.define do
       without_ended_at
     end
 
-    trait :low_severity do
+    trait :critical do
+      severity { 'critical' }
+    end
+
+    trait :high do
+      severity { 'high' }
+    end
+
+    trait :medium do
+      severity { 'medium' }
+    end
+
+    trait :low do
       severity { 'low' }
+    end
+
+    trait :info do
+      severity { 'info' }
+    end
+
+    trait :unknown do
+      severity { 'unknown' }
     end
 
     trait :prometheus do
@@ -91,7 +111,7 @@ FactoryBot.define do
       with_monitoring_tool
       with_host
       with_description
-      low_severity
+      low
     end
   end
 end

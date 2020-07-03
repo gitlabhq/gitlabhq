@@ -3,7 +3,6 @@
 class Dashboard::ProjectsController < Dashboard::ApplicationController
   include ParamsBackwardCompatibility
   include RendersMemberAccess
-  include OnboardingExperimentHelper
   include SortingHelper
   include SortingPreference
   include FiltersEvents

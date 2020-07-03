@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 module Gitlab
-  module UsageDataConcerns
-    module Topology
+  class UsageData
+    class Topology
       include Gitlab::Utils::UsageData
 
       JOB_TO_SERVICE_NAME = {
@@ -16,11 +16,20 @@ module Gitlab
         'node' => 'node-exporter'
       }.freeze
 
-      def topology_usage_data
-        topology_data, duration = measure_duration do
-          alt_usage_data(fallback: {}) { topology_fetch_all_data }
+      CollectionFailure = Struct.new(:query, :error) do
+        def to_h
+          { query => error }
         end
-        { topology: topology_data.merge(duration_s: duration) }
+      end
+
+      def topology_usage_data
+        @failures = []
+        topology_data, duration = measure_duration { topology_fetch_all_data }
+        {
+          topology: topology_data
+                      .merge(duration_s: duration)
+                      .merge(failures: @failures.map(&:to_h))
+        }
       end
 
       private
@@ -32,10 +41,17 @@ module Gitlab
             nodes: topology_node_data(client)
           }.compact
         end
+      rescue => e
+        @failures << CollectionFailure.new('other', e.class.to_s)
+
+        {}
       end
 
       def topology_app_requests_per_hour(client)
-        result = client.query(one_week_average('gitlab_usage_ping:ops:rate5m')).first
+        result = query_safely('gitlab_usage_ping:ops:rate5m', 'app_requests', fallback: nil) do |query|
+          client.query(one_week_average(query)).first
+        end
+
         return unless result
 
         # the metric is recorded as a per-second rate
@@ -62,11 +78,15 @@ module Gitlab
       end
 
       def topology_node_memory(client)
-        aggregate_by_instance(client, 'gitlab_usage_ping:node_memory_total_bytes:avg')
+        query_safely('gitlab_usage_ping:node_memory_total_bytes:avg', 'node_memory', fallback: {}) do |query|
+          aggregate_by_instance(client, query)
+        end
       end
 
       def topology_node_cpus(client)
-        aggregate_by_instance(client, 'gitlab_usage_ping:node_cpus:count')
+        query_safely('gitlab_usage_ping:node_cpus:count', 'node_cpus', fallback: {}) do |query|
+          aggregate_by_instance(client, query)
+        end
       end
 
       def topology_all_service_memory(client)
@@ -78,19 +98,39 @@ module Gitlab
       end
 
       def topology_service_memory_rss(client)
-        aggregate_by_labels(client, 'gitlab_usage_ping:node_service_process_resident_memory_bytes:avg')
+        query_safely(
+          'gitlab_usage_ping:node_service_process_resident_memory_bytes:avg', 'service_rss', fallback: []
+        ) { |query| aggregate_by_labels(client, query) }
       end
 
       def topology_service_memory_uss(client)
-        aggregate_by_labels(client, 'gitlab_usage_ping:node_service_process_unique_memory_bytes:avg')
+        query_safely(
+          'gitlab_usage_ping:node_service_process_unique_memory_bytes:avg', 'service_uss', fallback: []
+        ) { |query| aggregate_by_labels(client, query) }
       end
 
       def topology_service_memory_pss(client)
-        aggregate_by_labels(client, 'gitlab_usage_ping:node_service_process_proportional_memory_bytes:avg')
+        query_safely(
+          'gitlab_usage_ping:node_service_process_proportional_memory_bytes:avg', 'service_pss', fallback: []
+        ) { |query| aggregate_by_labels(client, query) }
       end
 
       def topology_all_service_process_count(client)
-        aggregate_by_labels(client, 'gitlab_usage_ping:node_service_process:count')
+        query_safely(
+          'gitlab_usage_ping:node_service_process:count', 'service_process_count', fallback: []
+        ) { |query| aggregate_by_labels(client, query) }
+      end
+
+      def query_safely(query, query_name, fallback:)
+        result = yield query
+
+        return result if result.present?
+
+        @failures << CollectionFailure.new(query_name, 'empty_result')
+        fallback
+      rescue => e
+        @failures << CollectionFailure.new(query_name, e.class.to_s)
+        fallback
       end
 
       def topology_node_services(instance, all_process_counts, all_process_memory)

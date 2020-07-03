@@ -4,6 +4,8 @@ textarea {
 
 input {
   border-radius: $border-radius-base;
+  color: $gl-text-color;
+  background-color: $input-bg;
 }
 
 input[type='text'].danger {

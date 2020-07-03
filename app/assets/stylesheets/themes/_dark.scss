@@ -103,6 +103,8 @@ $input-focus-bg: $gray-100;
 $input-color: $gray-900;
 $input-group-addon-bg: $gray-900;
 
+$card-cap-bg: $gray-50;
+
 $tooltip-bg: $gray-800;
 $tooltip-color: $gray-10;
 
@@ -118,6 +120,11 @@ $issues-today-border: #333a40;
 $yiq-text-dark: $gray-50;
 $yiq-text-light: $gray-950;
 
+// Commit Diff Colors
+$line-added-dark: $green-200;
+$line-removed-dark: $red-200;
+
+// Misc component overrides that should live elsewhere
 .gl-label {
   filter: brightness(0.9) contrast(1.1);
 }

@@ -395,12 +395,12 @@ enum AlertManagementAlertSort {
   EVENT_COUNT_DESC
 
   """
-  Severity by ascending order
+  Severity from less critical to more critical
   """
   SEVERITY_ASC
 
   """
-  Severity by descending order
+  Severity from more critical to less critical
   """
   SEVERITY_DESC
 
@@ -415,12 +415,12 @@ enum AlertManagementAlertSort {
   STARTED_AT_DESC
 
   """
-  Status by ascending order
+  Status by order: Ignored > Resolved > Acknowledged > Triggered
   """
   STATUS_ASC
 
   """
-  Status by descending order
+  Status by order: Triggered > Acknowledged > Resolved > Ignored
   """
   STATUS_DESC
 

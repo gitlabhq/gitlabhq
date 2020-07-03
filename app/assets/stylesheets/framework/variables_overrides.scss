@@ -14,7 +14,7 @@ $btn-line-height: 20px;
 $table-accent-bg: $gray-light;
 $table-border-color: $gray-200;
 $card-border-color: $border-color;
-$card-cap-bg: $gray-light;
+$card-cap-bg: $gray-light !default;
 $success: $green-500;
 $info: $blue-500;
 $warning: $orange-500;
