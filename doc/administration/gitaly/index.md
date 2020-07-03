@@ -388,9 +388,10 @@ Gitaly makes the following assumptions:
   clients, and that Gitaly server can read and write to `/mnt/gitlab/storage2`.
 - Your `gitaly1.internal` and `gitaly2.internal` Gitaly servers can reach each other.
 
-You can't define Gitaly servers with some as a local directory (with `path`) and some as remote
-server (with `gitaly_address`). However, local and remote Gitaly services can be used together. See
-[mixed configuration](#mixed-configuration) for more information.
+You can't define Gitaly servers with some as a local Gitaly server
+(without `gitaly_address`) and some as remote
+server (with `gitaly_address`) unless you setup with special
+[mixed configuration](#mixed-configuration).
 
 **For Omnibus GitLab**
 
@@ -459,13 +460,14 @@ to all Gitaly servers.
 GitLab can reside on the same server as one of many Gitaly servers, but doesn't support
 configuration that mixes local and remote configuration. The following setup is incorrect, because:
 
-- `path` is invalid for some of the Gitaly servers.
 - All addresses must be reachable from the other Gitaly servers.
+- `storage1` will be assigned a Unix socket for `gitaly_address` which is
+  invalid for some of the Gitaly servers.
 
 ```ruby
 git_data_dirs({
   'default' => { 'gitaly_address' => 'tcp://gitaly1.internal:8075' },
-  'storage1' => { 'path' => '/var/opt/gitlab/git-data' },
+  'storage1' => { 'path' => '/mnt/gitlab/git-data' },
   'storage2' => { 'gitaly_address' => 'tcp://gitaly2.internal:8075' },
 })
 ```
@@ -477,10 +479,13 @@ example:
 git_data_dirs({
   'default' => { 'gitaly_address' => 'tcp://gitaly1.internal:8075' },
   # Address of the GitLab server that has Gitaly running on it
-  'storage1' => { 'gitaly_address' => 'tcp://gitlab.internal:8075' },
+  'storage1' => { 'gitaly_address' => 'tcp://gitlab.internal:8075', 'path' => '/mnt/gitlab/git-data' },
   'storage2' => { 'gitaly_address' => 'tcp://gitaly2.internal:8075' },
 })
 ```
+
+`path` can only be included for storage shards on the local Gitaly server.
+If it's excluded, default Git storage directory will be used for that storage shard.
 
 ### Disable Gitaly where not required (optional)
 

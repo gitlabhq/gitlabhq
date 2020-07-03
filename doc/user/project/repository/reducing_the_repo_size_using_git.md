@@ -152,7 +152,7 @@ However, these refs can be accessed from the Git bundle inside a project export.
    trying to remove internal refs, we will rely on the `commit-map` produced by each run to tell us
    which internal refs to remove.
 
-   NOTE:**Note:**
+   NOTE: **Note:**
    `git filter-repo` creates a new `commit-map` file every run, and overwrite the `commit-map` from
    the previous run. You will need this file from **every** run. Do the next step every time you run
    `git filter-repo`.
