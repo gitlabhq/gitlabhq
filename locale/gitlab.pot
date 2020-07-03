@@ -177,6 +177,11 @@ msgid_plural "%d issues"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "%d issue in this group"
+msgid_plural "%d issues in this group"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%d issue selected"
 msgid_plural "%d issues selected"
 msgstr[0] ""
@@ -389,13 +394,10 @@ msgstr ""
 msgid "%{issuableType} will be removed! Are you sure?"
 msgstr ""
 
-msgid "%{issuesCount} issues in this group"
-msgstr ""
-
-msgid "%{issuesSize} issues"
-msgstr ""
-
 msgid "%{issuesSize} issues with a limit of %{maxIssueCount}"
+msgstr ""
+
+msgid "%{issuesSize} with a limit of %{maxIssueCount}"
 msgstr ""
 
 msgid "%{labelStart}Class:%{labelEnd} %{class}"
@@ -1964,6 +1966,9 @@ msgid "AlertManagement|High"
 msgstr ""
 
 msgid "AlertManagement|Info"
+msgstr ""
+
+msgid "AlertManagement|Issue"
 msgstr ""
 
 msgid "AlertManagement|Low"
@@ -4760,6 +4765,9 @@ msgid "Close this %{quick_action_target}"
 msgstr ""
 
 msgid "Closed"
+msgstr ""
+
+msgid "Closed %{epicTimeagoDate}"
 msgstr ""
 
 msgid "Closed issues"
@@ -11015,6 +11023,9 @@ msgstr ""
 msgid "Go to environments"
 msgstr ""
 
+msgid "Go to epic"
+msgstr ""
+
 msgid "Go to file"
 msgstr ""
 
@@ -12705,6 +12716,9 @@ msgid "Issues successfully imported with the label"
 msgstr ""
 
 msgid "Issues with comments, merge requests with diffs and comments, labels, milestones, snippets, and other project entities"
+msgstr ""
+
+msgid "Issues with no epics assigned"
 msgstr ""
 
 msgid "Issues, merge requests, pushes, and comments."
@@ -15830,6 +15844,9 @@ msgid "Open: %{open} • Closed: %{closed}"
 msgstr ""
 
 msgid "Opened"
+msgstr ""
+
+msgid "Opened %{epicTimeagoDate}"
 msgstr ""
 
 msgid "Opened MRs"
@@ -20247,7 +20264,7 @@ msgstr ""
 msgid "SecurityReports|Scan details"
 msgstr ""
 
-msgid "SecurityReports|Scanner type"
+msgid "SecurityReports|Scanner"
 msgstr ""
 
 msgid "SecurityReports|Security Dashboard"
@@ -25609,10 +25626,10 @@ msgstr ""
 msgid "Vulnerability|Project"
 msgstr ""
 
-msgid "Vulnerability|Scanner Provider"
+msgid "Vulnerability|Scanner"
 msgstr ""
 
-msgid "Vulnerability|Scanner Type"
+msgid "Vulnerability|Scanner Provider"
 msgstr ""
 
 msgid "Vulnerability|Severity"
@@ -26843,7 +26860,7 @@ msgstr ""
 msgid "ciReport|All projects"
 msgstr ""
 
-msgid "ciReport|All scanner types"
+msgid "ciReport|All scanners"
 msgstr ""
 
 msgid "ciReport|All severities"

@@ -181,8 +181,8 @@ pdf:
   script: xelatex mycv.tex
   artifacts:
     paths:
-    - ./mycv.pdf
-    - ./output/
+      - ./mycv.pdf
+      - ./output/
     expire_in: 1 week
 ```
 

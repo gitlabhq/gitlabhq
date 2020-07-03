@@ -22,7 +22,7 @@ export default {
   },
   methods: {
     onUpdate(event) {
-      this.$emit('onUpdate', this.name, event.target.value);
+      this.$emit('input', event.target.value);
     },
   },
 };

@@ -44,7 +44,9 @@ module API
       def find_merge_requests(args = {})
         args = declared_params.merge(args)
         args[:milestone_title] = args.delete(:milestone)
+        args[:not][:milestone_title] = args[:not]&.delete(:milestone)
         args[:label_name] = args.delete(:labels)
+        args[:not][:label_name] = args[:not]&.delete(:labels)
         args[:scope] = args[:scope].underscore if args[:scope]
 
         merge_requests = MergeRequestsFinder.new(current_user, args).execute

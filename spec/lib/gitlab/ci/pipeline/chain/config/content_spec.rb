@@ -6,7 +6,8 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Config::Content do
   let(:project) { create(:project, ci_config_path: ci_config_path) }
   let(:pipeline) { build(:ci_pipeline, project: project) }
   let(:content) { nil }
-  let(:command) { Gitlab::Ci::Pipeline::Chain::Command.new(project: project, content: content) }
+  let(:source) { :push }
+  let(:command) { Gitlab::Ci::Pipeline::Chain::Command.new(project: project, content: content, source: source) }
 
   subject { described_class.new(pipeline, command) }
 
@@ -143,6 +144,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Config::Content do
     end
 
     context 'when config is passed as a parameter' do
+      let(:source) { :ondemand_dast_scan }
       let(:ci_config_path) { nil }
       let(:content) do
         <<~EOY

@@ -59,7 +59,7 @@ describe('Custom variable component', () => {
       .vm.$emit('click');
 
     return wrapper.vm.$nextTick(() => {
-      expect(wrapper.vm.$emit).toHaveBeenCalledWith('onUpdate', 'env', 'canary');
+      expect(wrapper.vm.$emit).toHaveBeenCalledWith('input', 'canary');
     });
   });
 });

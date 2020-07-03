@@ -90,6 +90,10 @@ module Gitlab
             metrics.pipeline_size_histogram
               .observe({ source: pipeline.source.to_s }, pipeline.total_size)
           end
+
+          def dangling_build?
+            %i[ondemand_dast_scan webide].include?(source)
+          end
         end
       end
     end

@@ -6,7 +6,8 @@
   .row
     .col-sm-6
       .gl-mb-2
-        %strong= link_to truncate(milestone.title, length: 100), milestone_path(milestone)
+        %strong{ data: { qa_selector: "milestone_link", qa_milestone_title: milestone.title } }
+          = link_to truncate(milestone.title, length: 100), milestone_path(milestone)
         - if @group
           = " - #{milestone_type}"
 

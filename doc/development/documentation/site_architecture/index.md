@@ -152,9 +152,9 @@ Suppose we have the `content/_data/versions.yaml` file with the content:
 
 ```yaml
 versions:
-- 10.6
-- 10.5
-- 10.4
+  - 10.6
+  - 10.5
+  - 10.4
 ```
 
 We can then loop over the `versions` array with something like:

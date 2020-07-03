@@ -105,6 +105,7 @@ RSpec.describe Notify do
         it 'contains a link to issue author' do
           is_expected.to have_body_text(issue.author_name)
           is_expected.to have_body_text 'created an issue'
+          is_expected.to have_link(issue.to_reference, href: project_issue_url(issue.project, issue))
         end
 
         it 'contains a link to the issue' do
@@ -467,6 +468,7 @@ RSpec.describe Notify do
             is_expected.to have_body_text(status)
             is_expected.to have_body_text(current_user_sanitized)
             is_expected.to have_body_text(project_merge_request_path(project, merge_request))
+            is_expected.to have_link(merge_request.to_reference, href: project_merge_request_url(merge_request.target_project, merge_request))
           end
         end
       end
@@ -497,6 +499,7 @@ RSpec.describe Notify do
             is_expected.to have_referable_subject(merge_request, reply: true)
             is_expected.to have_body_text('merged')
             is_expected.to have_body_text(project_merge_request_path(project, merge_request))
+            is_expected.to have_link(merge_request.to_reference, href: project_merge_request_url(merge_request.target_project, merge_request))
           end
         end
       end
@@ -534,6 +537,7 @@ RSpec.describe Notify do
             is_expected.to have_referable_subject(merge_request, reply: true)
             is_expected.to have_body_text(project_merge_request_path(project, merge_request))
             is_expected.to have_body_text('due to conflict.')
+            is_expected.to have_link(merge_request.to_reference, href: project_merge_request_url(merge_request.target_project, merge_request))
           end
         end
       end
@@ -567,6 +571,7 @@ RSpec.describe Notify do
             is_expected.to have_referable_subject(merge_request, reply: true)
             is_expected.to have_body_text("#{push_user.name} pushed new commits")
             is_expected.to have_body_text(project_merge_request_path(project, merge_request))
+            is_expected.to have_link(merge_request.to_reference, href: project_merge_request_url(merge_request.target_project, merge_request))
           end
         end
       end

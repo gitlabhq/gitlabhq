@@ -35,12 +35,6 @@ export const setupStoreWithDashboard = store => {
   );
 };
 
-export const setupStoreWithVariable = store => {
-  store.commit(`monitoringDashboard/${types.SET_VARIABLES}`, {
-    label1: 'pod',
-  });
-};
-
 export const setupStoreWithLinks = store => {
   store.commit(`monitoringDashboard/${types.RECEIVE_METRICS_DASHBOARD_SUCCESS}`, {
     ...metricsDashboardPayload,

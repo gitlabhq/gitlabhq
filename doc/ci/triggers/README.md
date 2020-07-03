@@ -62,9 +62,9 @@ and it creates a dependent pipeline relation visible on the
 build_docs:
   stage: deploy
   script:
-  - curl --request POST --form "token=$CI_JOB_TOKEN" --form ref=master https://gitlab.example.com/api/v4/projects/9/trigger/pipeline
+    - curl --request POST --form "token=$CI_JOB_TOKEN" --form ref=master https://gitlab.example.com/api/v4/projects/9/trigger/pipeline
   only:
-  - tags
+    - tags
 ```
 
 Pipelines triggered that way also expose a special variable:
@@ -86,11 +86,11 @@ build_submodule:
   image: debian
   stage: test
   script:
-  - apt update && apt install -y unzip
-  - curl --location --output artifacts.zip "https://gitlab.example.com/api/v4/projects/1/jobs/artifacts/master/download?job=test&job_token=$CI_JOB_TOKEN"
-  - unzip artifacts.zip
+    - apt update && apt install -y unzip
+    - curl --location --output artifacts.zip "https://gitlab.example.com/api/v4/projects/1/jobs/artifacts/master/download?job=test&job_token=$CI_JOB_TOKEN"
+    - unzip artifacts.zip
   only:
-  - tags
+    - tags
 ```
 
 This allows you to use that for multi-project pipelines and download artifacts
@@ -179,9 +179,9 @@ need to add in project A's `.gitlab-ci.yml`:
 build_docs:
   stage: deploy
   script:
-  - "curl --request POST --form token=TOKEN --form ref=master https://gitlab.example.com/api/v4/projects/9/trigger/pipeline"
+    - "curl --request POST --form token=TOKEN --form ref=master https://gitlab.example.com/api/v4/projects/9/trigger/pipeline"
   only:
-  - tags
+    - tags
 ```
 
 This means that whenever a new tag is pushed on project A, the job will run and the
@@ -235,24 +235,24 @@ variable is non-zero, `make upload` is run.
 
 ```yaml
 stages:
-- test
-- build
-- package
+  - test
+  - build
+  - package
 
 run_tests:
   stage: test
   script:
-  - make test
+    - make test
 
 build_package:
   stage: build
   script:
-  - make build
+    - make build
 
 upload_package:
   stage: package
   script:
-  - if [ -n "${UPLOAD_TO_S3}" ]; then make upload; fi
+    - if [ -n "${UPLOAD_TO_S3}" ]; then make upload; fi
 ```
 
 You can then trigger a rebuild while you pass the `UPLOAD_TO_S3` variable

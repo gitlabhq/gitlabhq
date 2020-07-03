@@ -62,5 +62,21 @@ RSpec.describe Gitlab::Danger::SidekiqQueues do
 
       expect(sidekiq_queues.changed_queue_names).to contain_exactly(:post_receive, :process_commit)
     end
+
+    it 'ignores removed queues' do
+      old_queues = {
+        merge: { name: :merge, urgency: :low },
+        post_receive: { name: :post_receive, urgency: :high }
+      }
+
+      new_queues = {
+        post_receive: { name: :post_receive, urgency: :low }
+      }
+
+      allow(sidekiq_queues).to receive(:old_queues).and_return(old_queues)
+      allow(sidekiq_queues).to receive(:new_queues).and_return(new_queues)
+
+      expect(sidekiq_queues.changed_queue_names).to contain_exactly(:post_receive)
+    end
   end
 end

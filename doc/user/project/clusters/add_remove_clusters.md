@@ -227,9 +227,9 @@ To add a Kubernetes cluster to your project, group, or instance:
            kind: ClusterRole
            name: cluster-admin
          subjects:
-         - kind: ServiceAccount
-           name: gitlab-admin
-           namespace: kube-system
+           - kind: ServiceAccount
+             name: gitlab-admin
+             namespace: kube-system
          ```
 
       1. Apply the service account and cluster role binding to your cluster:

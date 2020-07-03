@@ -5,7 +5,7 @@ import * as types from '~/monitoring/stores/mutation_types';
 import state from '~/monitoring/stores/state';
 import { metricStates } from '~/monitoring/constants';
 
-import { deploymentData, dashboardGitResponse } from '../mock_data';
+import { deploymentData, dashboardGitResponse, storeTextVariables } from '../mock_data';
 import { metricsDashboardPayload } from '../fixture_data';
 
 describe('Monitoring mutations', () => {
@@ -427,30 +427,12 @@ describe('Monitoring mutations', () => {
     });
   });
 
-  describe('SET_VARIABLES', () => {
-    it('stores an empty variables array when no custom variables are given', () => {
-      mutations[types.SET_VARIABLES](stateCopy, {});
-
-      expect(stateCopy.variables).toEqual({});
-    });
-
-    it('stores variables in the key key_value format in the array', () => {
-      mutations[types.SET_VARIABLES](stateCopy, { pod: 'POD', stage: 'main ops' });
-
-      expect(stateCopy.variables).toEqual({ pod: 'POD', stage: 'main ops' });
-    });
-  });
-
   describe('UPDATE_VARIABLE_VALUE', () => {
-    afterEach(() => {
-      mutations[types.SET_VARIABLES](stateCopy, {});
-    });
-
     it('updates only the value of the variable in variables', () => {
-      mutations[types.SET_VARIABLES](stateCopy, { environment: { value: 'prod', type: 'text' } });
-      mutations[types.UPDATE_VARIABLE_VALUE](stateCopy, { key: 'environment', value: 'new prod' });
+      stateCopy.variables = storeTextVariables;
+      mutations[types.UPDATE_VARIABLE_VALUE](stateCopy, { name: 'textSimple', value: 'New Value' });
 
-      expect(stateCopy.variables).toEqual({ environment: { value: 'new prod', type: 'text' } });
+      expect(stateCopy.variables[0].value).toEqual('New Value');
     });
   });
 

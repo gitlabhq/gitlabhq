@@ -1,0 +1,5 @@
+---
+title: Add 'not' params to MergeRequests API endpoint
+merge_request: 35391
+author:
+type: added

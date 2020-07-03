@@ -118,14 +118,14 @@ is so `cp` doesn't also copy `public/` to itself in an infinite loop:
 ```yaml
 pages:
   script:
-  - mkdir .public
-  - cp -r * .public
-  - mv .public public
+    - mkdir .public
+    - cp -r * .public
+    - mv .public public
   artifacts:
     paths:
-    - public
+      - public
   only:
-  - master
+    - master
 ```
 
 ### `.gitlab-ci.yml` for a static site generator
@@ -161,13 +161,13 @@ image: ruby:2.6
 
 pages:
   script:
-  - gem install jekyll
-  - jekyll build -d public/
+    - gem install jekyll
+    - jekyll build -d public/
   artifacts:
     paths:
-    - public
+      - public
   only:
-  - pages
+    - pages
 ```
 
 See an example that has different files in the [`master` branch](https://gitlab.com/pages/jekyll-branched/tree/master)

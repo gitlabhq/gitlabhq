@@ -164,7 +164,7 @@ export default {
     ]),
     ...mapGetters('monitoringDashboard', ['selectedDashboard', 'getMetricStates']),
     shouldShowVariablesSection() {
-      return Object.keys(this.variables).length > 0;
+      return Boolean(this.variables.length);
     },
     shouldShowLinksSection() {
       return Object.keys(this.links).length > 0;

@@ -143,24 +143,24 @@ You must do the following:
        labels:
          rbac.authorization.k8s.io/aggregate-to-edit: "true"
      rules:
-     - apiGroups:
-       - serving.knative.dev
-       resources:
-       - configurations
-       - configurationgenerations
-       - routes
-       - revisions
-       - revisionuids
-       - autoscalers
-       - services
-       verbs:
-       - get
-       - list
-       - create
-       - update
-       - delete
-       - patch
-       - watch
+       - apiGroups:
+           - serving.knative.dev
+         resources:
+           - configurations
+           - configurationgenerations
+           - routes
+           - revisions
+           - revisionuids
+           - autoscalers
+           - services
+         verbs:
+           - get
+           - list
+           - create
+           - update
+           - delete
+           - patch
+           - watch
      ```
 
      Then run the following command:

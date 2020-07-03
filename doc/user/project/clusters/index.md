@@ -99,8 +99,8 @@ And the following environments are set in
 
 ```yaml
 stages:
-- test
-- deploy
+  - test
+  - deploy
 
 test:
   stage: test

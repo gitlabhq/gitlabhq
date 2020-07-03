@@ -261,4 +261,18 @@ RSpec.describe ::SystemNotes::MergeRequestsService do
       expect(subject.commit_id).to eq(commit_sha)
     end
   end
+
+  describe '#approve_mr' do
+    subject { described_class.new(noteable: noteable, project: project, author: author).approve_mr }
+
+    it_behaves_like 'a system note' do
+      let(:action) { 'approved' }
+    end
+
+    context 'when merge request approved' do
+      it 'sets the note text' do
+        expect(subject.note).to eq "approved this merge request"
+      end
+    end
+  end
 end

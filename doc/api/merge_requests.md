@@ -64,6 +64,7 @@ Parameters:
 | `search`                        | string         | no       | Search merge requests against their `title` and `description`                                                          |
 | `in`                            | string         | no       | Modify the scope of the `search` attribute. `title`, `description`, or a string joining them with comma. Default is `title,description` |
 | `wip`                           | string         | no       | Filter merge requests against their `wip` status. `yes` to return *only* WIP merge requests, `no` to return *non* WIP merge requests |
+| `not`                           | Hash           | no       | Return merge requests that do not match the parameters supplied. Accepts: `labels`, `milestone`, `author_id`, `author_username`, `assignee_id`, `assignee_username`, `my_reaction_emoji` |
 
 NOTE: **Note:**
 [Starting in GitLab 13.0](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/31890),

@@ -127,8 +127,8 @@ And the following environments are set in [`.gitlab-ci.yml`](../../../ci/yaml/RE
 
 ```yaml
 stages:
-- test
-- deploy
+  - test
+  - deploy
 
 test:
   stage: test

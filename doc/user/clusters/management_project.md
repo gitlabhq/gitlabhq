@@ -97,7 +97,7 @@ Development, Staging, and Production cluster respectively.
 
 ```yaml
 stages:
-- deploy
+  - deploy
 
 configure development cluster:
   stage: deploy

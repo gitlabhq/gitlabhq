@@ -627,81 +627,79 @@ export const mockLinks = [
   },
 ];
 
-const templatingVariableTypes = {
+export const templatingVariablesExamples = {
   text: {
-    simple: 'Simple text',
-    advanced: {
-      label: 'Variable 4',
+    textSimple: 'My default value',
+    textAdvanced: {
+      label: 'Advanced text variable',
       type: 'text',
       options: {
-        default_value: 'default',
+        default_value: 'A default value',
       },
     },
   },
   custom: {
-    simple: ['value1', 'value2', 'value3'],
-    advanced: {
-      normal: {
-        label: 'Advanced Var',
-        type: 'custom',
-        options: {
-          values: [
-            { value: 'value1', text: 'Var 1 Option 1' },
-            {
-              value: 'value2',
-              text: 'Var 1 Option 2',
-              default: true,
-            },
-          ],
-        },
+    customSimple: ['value1', 'value2', 'value3'],
+    customAdvanced: {
+      label: 'Advanced Var',
+      type: 'custom',
+      options: {
+        values: [
+          { value: 'value1', text: 'Var 1 Option 1' },
+          {
+            value: 'value2',
+            text: 'Var 1 Option 2',
+            default: true,
+          },
+        ],
       },
-      withoutOpts: {
-        type: 'custom',
-        options: {},
+    },
+    customAdvancedWithoutOpts: {
+      type: 'custom',
+      options: {},
+    },
+    customAdvancedWithoutLabel: {
+      type: 'custom',
+      options: {
+        values: [
+          { value: 'value1', text: 'Var 1 Option 1' },
+          {
+            value: 'value2',
+            text: 'Var 1 Option 2',
+            default: true,
+          },
+        ],
       },
-      withoutLabel: {
-        type: 'custom',
-        options: {
-          values: [
-            { value: 'value1', text: 'Var 1 Option 1' },
-            {
-              value: 'value2',
-              text: 'Var 1 Option 2',
-              default: true,
-            },
-          ],
-        },
+    },
+    customAdvancedWithoutType: {
+      label: 'Variable 2',
+      options: {
+        values: [
+          { value: 'value1', text: 'Var 1 Option 1' },
+          {
+            value: 'value2',
+            text: 'Var 1 Option 2',
+            default: true,
+          },
+        ],
       },
-      withoutType: {
-        label: 'Variable 2',
-        options: {
-          values: [
-            { value: 'value1', text: 'Var 1 Option 1' },
-            {
-              value: 'value2',
-              text: 'Var 1 Option 2',
-              default: true,
-            },
-          ],
-        },
-      },
-      withoutOptText: {
-        label: 'Options without text',
-        type: 'custom',
-        options: {
-          values: [
-            { value: 'value1' },
-            {
-              value: 'value2',
-              default: true,
-            },
-          ],
-        },
+    },
+    customAdvancedWithoutOptText: {
+      label: 'Options without text',
+      type: 'custom',
+      options: {
+        values: [
+          { value: 'value1' },
+          {
+            value: 'value2',
+            default: true,
+          },
+        ],
       },
     },
   },
   metricLabelValues: {
-    simple: {
+    metricLabelValuesSimple: {
       label: 'Metric Label Values',
       type: 'metric_label_values',
       options: {
@@ -713,205 +711,92 @@ const templatingVariableTypes = {
   },
 };
 
-const generateMockTemplatingData = data => {
-  const vars = data
-    ? {
-        variables: {
-          ...data,
-        },
-      }
-    : {};
-  return {
-    dashboard: {
-      templating: vars,
+export const storeTextVariables = [
+  {
+    type: 'text',
+    name: 'textSimple',
+    label: 'textSimple',
+    value: 'My default value',
+  },
+  {
+    type: 'text',
+    name: 'textAdvanced',
+    label: 'Advanced text variable',
+    value: 'A default value',
+  },
+];
+
+export const storeCustomVariables = [
+  {
+    type: 'custom',
+    name: 'customSimple',
+    label: 'customSimple',
+    options: {
+      values: [
+        { default: false, text: 'value1', value: 'value1' },
+        { default: false, text: 'value2', value: 'value2' },
+        { default: false, text: 'value3', value: 'value3' },
+      ],
     },
-  };
-};
-
-const responseForSimpleTextVariable = {
-  simpleText: {
-    label: 'simpleText',
-    type: 'text',
-    value: 'Simple text',
-  },
-};
-
-const responseForAdvTextVariable = {
-  advText: {
-    label: 'Variable 4',
-    type: 'text',
-    value: 'default',
-  },
-};
-
-const responseForSimpleCustomVariable = {
-  simpleCustom: {
-    label: 'simpleCustom',
     value: 'value1',
-    options: {
-      values: [
-        {
-          default: false,
-          text: 'value1',
-          value: 'value1',
-        },
-        {
-          default: false,
-          text: 'value2',
-          value: 'value2',
-        },
-        {
-          default: false,
-          text: 'value3',
-          value: 'value3',
-        },
-      ],
-    },
+  },
+  {
     type: 'custom',
-  },
-};
-
-const responseForAdvancedCustomVariableWithoutOptions = {
-  advCustomWithoutOpts: {
-    label: 'advCustomWithoutOpts',
-    options: {
-      values: [],
-    },
-    type: 'custom',
-  },
-};
-
-const responseForAdvancedCustomVariableWithoutLabel = {
-  advCustomWithoutLabel: {
-    label: 'advCustomWithoutLabel',
-    value: 'value2',
-    options: {
-      values: [
-        {
-          default: false,
-          text: 'Var 1 Option 1',
-          value: 'value1',
-        },
-        {
-          default: true,
-          text: 'Var 1 Option 2',
-          value: 'value2',
-        },
-      ],
-    },
-    type: 'custom',
-  },
-};
-
-const responseForAdvancedCustomVariableWithoutOptText = {
-  advCustomWithoutOptText: {
-    label: 'Options without text',
-    value: 'value2',
-    options: {
-      values: [
-        {
-          default: false,
-          text: 'value1',
-          value: 'value1',
-        },
-        {
-          default: true,
-          text: 'value2',
-          value: 'value2',
-        },
-      ],
-    },
-    type: 'custom',
-  },
-};
-
-const responseForMetricLabelValues = {
-  simple: {
-    label: 'Metric Label Values',
-    type: 'metric_label_values',
-    value: null,
-    options: {
-      prometheusEndpointPath: '/series',
-      label: 'backend',
-      values: [],
-    },
-  },
-};
-
-const responseForAdvancedCustomVariable = {
-  ...responseForSimpleCustomVariable,
-  advCustomNormal: {
+    name: 'customAdvanced',
     label: 'Advanced Var',
+    options: {
+      values: [
+        { default: false, text: 'Var 1 Option 1', value: 'value1' },
+        { default: true, text: 'Var 1 Option 2', value: 'value2' },
+      ],
+    },
+    value: 'value2',
+  },
+  {
+    type: 'custom',
+    name: 'customAdvancedWithoutOpts',
+    label: 'customAdvancedWithoutOpts',
+    options: { values: [] },
+    value: null,
+  },
+  {
+    type: 'custom',
+    name: 'customAdvancedWithoutLabel',
+    label: 'customAdvancedWithoutLabel',
     value: 'value2',
     options: {
       values: [
-        {
-          default: false,
-          text: 'Var 1 Option 1',
-          value: 'value1',
-        },
-        {
-          default: true,
-          text: 'Var 1 Option 2',
-          value: 'value2',
-        },
+        { default: false, text: 'Var 1 Option 1', value: 'value1' },
+        { default: true, text: 'Var 1 Option 2', value: 'value2' },
       ],
     },
-    type: 'custom',
   },
-};
+  {
+    type: 'custom',
+    name: 'customAdvancedWithoutOptText',
+    label: 'Options without text',
+    options: {
+      values: [
+        { default: false, text: 'value1', value: 'value1' },
+        { default: true, text: 'value2', value: 'value2' },
+      ],
+    },
+    value: 'value2',
+  },
+];
 
-const responsesForAllVariableTypes = {
-  ...responseForSimpleTextVariable,
-  ...responseForAdvTextVariable,
-  ...responseForSimpleCustomVariable,
-  ...responseForAdvancedCustomVariable,
-};
+export const storeMetricLabelValuesVariables = [
+  {
+    type: 'metric_label_values',
+    name: 'metricLabelValuesSimple',
+    label: 'Metric Label Values',
+    options: { prometheusEndpointPath: '/series', label: 'backend', values: [] },
+    value: null,
+  },
+];
 
-export const mockTemplatingData = {
-  emptyTemplatingProp: generateMockTemplatingData(),
-  emptyVariablesProp: generateMockTemplatingData({}),
-  simpleText: generateMockTemplatingData({ simpleText: templatingVariableTypes.text.simple }),
-  advText: generateMockTemplatingData({ advText: templatingVariableTypes.text.advanced }),
-  simpleCustom: generateMockTemplatingData({ simpleCustom: templatingVariableTypes.custom.simple }),
-  advCustomWithoutOpts: generateMockTemplatingData({
-    advCustomWithoutOpts: templatingVariableTypes.custom.advanced.withoutOpts,
-  }),
-  advCustomWithoutType: generateMockTemplatingData({
-    advCustomWithoutType: templatingVariableTypes.custom.advanced.withoutType,
-  }),
-  advCustomWithoutLabel: generateMockTemplatingData({
-    advCustomWithoutLabel: templatingVariableTypes.custom.advanced.withoutLabel,
-  }),
-  advCustomWithoutOptText: generateMockTemplatingData({
-    advCustomWithoutOptText: templatingVariableTypes.custom.advanced.withoutOptText,
-  }),
-  simpleAndAdv: generateMockTemplatingData({
-    simpleCustom: templatingVariableTypes.custom.simple,
-    advCustomNormal: templatingVariableTypes.custom.advanced.normal,
-  }),
-  metricLabelValues: generateMockTemplatingData({
-    simple: templatingVariableTypes.metricLabelValues.simple,
-  }),
-  allVariableTypes: generateMockTemplatingData({
-    simpleText: templatingVariableTypes.text.simple,
-    advText: templatingVariableTypes.text.advanced,
-    simpleCustom: templatingVariableTypes.custom.simple,
-    advCustomNormal: templatingVariableTypes.custom.advanced.normal,
-  }),
-};
-
-export const mockTemplatingDataResponses = {
-  emptyTemplatingProp: {},
-  emptyVariablesProp: {},
-  simpleText: responseForSimpleTextVariable,
-  advText: responseForAdvTextVariable,
-  simpleCustom: responseForSimpleCustomVariable,
-  advCustomWithoutOpts: responseForAdvancedCustomVariableWithoutOptions,
-  advCustomWithoutType: {},
-  advCustomWithoutLabel: responseForAdvancedCustomVariableWithoutLabel,
-  advCustomWithoutOptText: responseForAdvancedCustomVariableWithoutOptText,
-  simpleAndAdv: responseForAdvancedCustomVariable,
-  allVariableTypes: responsesForAllVariableTypes,
-  metricLabelValues: responseForMetricLabelValues,
-};
+export const storeVariables = [
+  ...storeTextVariables,
+  ...storeCustomVariables,
+  ...storeMetricLabelValuesVariables,
+];

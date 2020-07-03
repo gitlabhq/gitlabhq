@@ -28,23 +28,34 @@ RSpec.describe Ci::CreatePipelineService do
   end
 
   describe '#execute' do
-    subject { service.execute(:web, content: content) }
+    context 'when source is a dangling build' do
+      subject { service.execute(:ondemand_dast_scan, content: content) }
 
-    context 'parameter config content' do
-      it 'creates a pipeline' do
-        expect(subject).to be_persisted
+      context 'parameter config content' do
+        it 'creates a pipeline' do
+          expect(subject).to be_persisted
+        end
+
+        it 'creates builds with the correct names' do
+          expect(subject.builds.pluck(:name)).to match_array %w[dast]
+        end
+
+        it 'creates stages with the correct names' do
+          expect(subject.stages.pluck(:name)).to match_array %w[dast]
+        end
+
+        it 'sets the correct config source' do
+          expect(subject.config_source).to eq 'parameter_source'
+        end
       end
+    end
 
-      it 'creates builds with the correct names' do
-        expect(subject.builds.pluck(:name)).to match_array %w[dast]
-      end
+    context 'when source is not a dangling build' do
+      subject { service.execute(:web, content: content) }
 
-      it 'creates stages with the correct names' do
-        expect(subject.stages.pluck(:name)).to match_array %w[dast]
-      end
-
-      it 'sets the correct config source' do
-        expect(subject.config_source).to eq 'parameter_source'
+      it 'raises an exception' do
+        klass = Gitlab::Ci::Pipeline::Chain::Config::Content::Parameter::UnsupportedSourceError
+        expect { subject }.to raise_error(klass)
       end
     end
   end

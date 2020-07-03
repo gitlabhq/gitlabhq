@@ -3,29 +3,31 @@ import {
   mergeURLVariables,
   optionsFromSeriesData,
 } from '~/monitoring/stores/variable_mapping';
+import {
+  templatingVariablesExamples,
+  storeTextVariables,
+  storeCustomVariables,
+  storeMetricLabelValuesVariables,
+} from '../mock_data';
 import * as urlUtils from '~/lib/utils/url_utility';
-import { mockTemplatingData, mockTemplatingDataResponses } from '../mock_data';
 
 describe('Monitoring variable mapping', () => {
   describe('parseTemplatingVariables', () => {
     it.each`
-      case                                                                            | input                                         | expected
-      ${'Returns empty object for no dashboard input'}                                | ${{}}                                         | ${{}}
-      ${'Returns empty object for empty dashboard input'}                             | ${{ dashboard: {} }}                          | ${{}}
-      ${'Returns empty object for empty templating prop'}                             | ${mockTemplatingData.emptyTemplatingProp}     | ${{}}
-      ${'Returns empty object for empty variables prop'}                              | ${mockTemplatingData.emptyVariablesProp}      | ${{}}
-      ${'Returns parsed object for simple text variable'}                             | ${mockTemplatingData.simpleText}              | ${mockTemplatingDataResponses.simpleText}
-      ${'Returns parsed object for advanced text variable'}                           | ${mockTemplatingData.advText}                 | ${mockTemplatingDataResponses.advText}
-      ${'Returns parsed object for simple custom variable'}                           | ${mockTemplatingData.simpleCustom}            | ${mockTemplatingDataResponses.simpleCustom}
-      ${'Returns parsed object for advanced custom variable without options'}         | ${mockTemplatingData.advCustomWithoutOpts}    | ${mockTemplatingDataResponses.advCustomWithoutOpts}
-      ${'Returns parsed object for advanced custom variable for option without text'} | ${mockTemplatingData.advCustomWithoutOptText} | ${mockTemplatingDataResponses.advCustomWithoutOptText}
-      ${'Returns parsed object for advanced custom variable without type'}            | ${mockTemplatingData.advCustomWithoutType}    | ${{}}
-      ${'Returns parsed object for advanced custom variable without label'}           | ${mockTemplatingData.advCustomWithoutLabel}   | ${mockTemplatingDataResponses.advCustomWithoutLabel}
-      ${'Returns parsed object for simple and advanced custom variables'}             | ${mockTemplatingData.simpleAndAdv}            | ${mockTemplatingDataResponses.simpleAndAdv}
-      ${'Returns parsed object for metricLabelValues'}                                | ${mockTemplatingData.metricLabelValues}       | ${mockTemplatingDataResponses.metricLabelValues}
-      ${'Returns parsed object for all variable types'}                               | ${mockTemplatingData.allVariableTypes}        | ${mockTemplatingDataResponses.allVariableTypes}
-    `('$case', ({ input, expected }) => {
-      expect(parseTemplatingVariables(input?.dashboard?.templating)).toEqual(expected);
+      case                                 | input
+      ${'For undefined templating object'} | ${undefined}
+      ${'For empty templating object'}     | ${{}}
+    `('$case, returns an empty array', ({ input }) => {
+      expect(parseTemplatingVariables(input)).toEqual([]);
+    });
+
+    it.each`
+      case                                                        | input                                            | output
+      ${'Returns parsed object for text variables'}               | ${templatingVariablesExamples.text}              | ${storeTextVariables}
+      ${'Returns parsed object for custom variables'}             | ${templatingVariablesExamples.custom}            | ${storeCustomVariables}
+      ${'Returns parsed object for metric label value variables'} | ${templatingVariablesExamples.metricLabelValues} | ${storeMetricLabelValuesVariables}
+    `('$case, returns an empty array', ({ input, output }) => {
+      expect(parseTemplatingVariables(input)).toEqual(output);
     });
   });
 
@@ -41,7 +43,7 @@ describe('Monitoring variable mapping', () => {
     it('returns empty object if variables are not defined in yml or URL', () => {
       urlUtils.queryToObject.mockReturnValueOnce({});
 
-      expect(mergeURLVariables({})).toEqual({});
+      expect(mergeURLVariables([])).toEqual([]);
     });
 
     it('returns empty object if variables are defined in URL but not in yml', () => {
@@ -50,18 +52,24 @@ describe('Monitoring variable mapping', () => {
         'var-instance': 'localhost',
       });
 
-      expect(mergeURLVariables({})).toEqual({});
+      expect(mergeURLVariables([])).toEqual([]);
     });
 
     it('returns yml variables if variables defined in yml but not in the URL', () => {
       urlUtils.queryToObject.mockReturnValueOnce({});
 
-      const params = {
-        env: 'one',
-        instance: 'localhost',
-      };
+      const variables = [
+        {
+          name: 'env',
+          value: 'one',
+        },
+        {
+          name: 'instance',
+          value: 'localhost',
+        },
+      ];
 
-      expect(mergeURLVariables(params)).toEqual(params);
+      expect(mergeURLVariables(variables)).toEqual(variables);
     });
 
     it('returns yml variables if variables defined in URL do not match with yml variables', () => {
@@ -69,13 +77,19 @@ describe('Monitoring variable mapping', () => {
         'var-env': 'one',
         'var-instance': 'localhost',
       };
-      const ymlParams = {
-        pod: { value: 'one' },
-        service: { value: 'database' },
-      };
+      const variables = [
+        {
+          name: 'env',
+          value: 'one',
+        },
+        {
+          name: 'service',
+          value: 'database',
+        },
+      ];
       urlUtils.queryToObject.mockReturnValueOnce(urlParams);
 
-      expect(mergeURLVariables(ymlParams)).toEqual(ymlParams);
+      expect(mergeURLVariables(variables)).toEqual(variables);
     });
 
     it('returns merged yml and URL variables if there is some match', () => {
@@ -83,19 +97,29 @@ describe('Monitoring variable mapping', () => {
         'var-env': 'one',
         'var-instance': 'localhost:8080',
       };
-      const ymlParams = {
-        instance: { value: 'localhost' },
-        service: { value: 'database' },
-      };
-
-      const merged = {
-        instance: { value: 'localhost:8080' },
-        service: { value: 'database' },
-      };
+      const variables = [
+        {
+          name: 'instance',
+          value: 'localhost',
+        },
+        {
+          name: 'service',
+          value: 'database',
+        },
+      ];
 
       urlUtils.queryToObject.mockReturnValueOnce(urlParams);
 
-      expect(mergeURLVariables(ymlParams)).toEqual(merged);
+      expect(mergeURLVariables(variables)).toEqual([
+        {
+          name: 'instance',
+          value: 'localhost:8080',
+        },
+        {
+          name: 'service',
+          value: 'database',
+        },
+      ]);
     });
   });
 

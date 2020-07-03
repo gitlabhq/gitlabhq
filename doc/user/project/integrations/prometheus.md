@@ -290,17 +290,17 @@ For example:
    panel_groups:
      - group: 'Group Title'
        panels:
-       - type: area-chart
-         title: "Chart Title"
-         y_label: "Y-Axis"
-         y_axis:
-           format: number
-           precision: 0
-         metrics:
-         - id: my_metric_id
-           query_range: 'http_requests_total'
-           label: "Instance: {{instance}}, method: {{method}}"
-           unit: "count"
+         - type: area-chart
+           title: "Chart Title"
+           y_label: "Y-Axis"
+           y_axis:
+             format: number
+             precision: 0
+           metrics:
+             - id: my_metric_id
+               query_range: 'http_requests_total'
+               label: "Instance: {{instance}}, method: {{method}}"
+               unit: "count"
    ```
 
    The above sample dashboard would display a single area chart. Each file should
@@ -641,25 +641,24 @@ To add a stacked column panel type to a dashboard, look at the following sample 
 dashboard: 'Dashboard title'
 priority: 1
 panel_groups:
-- group: 'Group Title'
-  priority: 5
-  panels:
-  - type: 'stacked-column'
-    title: "Stacked column"
-    y_label: "y label"
-    x_label: 'x label'
-    metrics:
-      - id: memory_1
-        query_range: 'memory_query'
-        label: "memory query 1"
-        unit: "count"
-        series_name: 'group 1'
-      - id: memory_2
-        query_range: 'memory_query_2'
-        label: "memory query 2"
-        unit: "count"
-        series_name: 'group 2'
-
+  - group: 'Group Title'
+    priority: 5
+    panels:
+      - type: 'stacked-column'
+        title: "Stacked column"
+        y_label: "y label"
+        x_label: 'x label'
+        metrics:
+          - id: memory_1
+            query_range: 'memory_query'
+            label: "memory query 1"
+            unit: "count"
+            series_name: 'group 1'
+          - id: memory_2
+            query_range: 'memory_query_2'
+            label: "memory query 2"
+            unit: "count"
+            series_name: 'group 2'
 ```
 
 ![stacked column panel type](img/prometheus_dashboard_stacked_column_panel_type_v12_8.png)
@@ -681,10 +680,10 @@ panel_groups:
       - title: "Single Stat"
         type: "single-stat"
         metrics:
-        - id: 10
-          query: 'max(go_memstats_alloc_bytes{job="prometheus"})'
-          unit: MB
-          label: "Total"
+          - id: 10
+            query: 'max(go_memstats_alloc_bytes{job="prometheus"})'
+            unit: MB
+            label: "Total"
 ```
 
 Note the following properties:
@@ -711,10 +710,10 @@ panel_groups:
         type: "single-stat"
         max_value: 100
         metrics:
-        - id: 10
-          query: 'max(go_memstats_alloc_bytes{job="prometheus"})'
-          unit: '%'
-          label: "Total"
+          - id: 10
+            query: 'max(go_memstats_alloc_bytes{job="prometheus"})'
+            unit: '%'
+            label: "Total"
 ```
 
 For example, if you have a query value of `53.6`, adding `%` as the unit results in a single stat value of `53.6%`, but if the maximum expected value of the query is `120`, the value would be `44.6%`. Adding the `max_value` causes the correct percentage value to display.
@@ -733,10 +732,10 @@ panel_groups:
       - title: "Heatmap"
         type: "heatmap"
         metrics:
-        - id: 10
-          query: 'sum(rate(nginx_upstream_responses_total{upstream=~"%{kube_namespace}-%{ci_environment_slug}-.*"}[60m])) by (status_code)'
-          unit: req/sec
-          label: "Status code"
+          - id: 10
+            query: 'sum(rate(nginx_upstream_responses_total{upstream=~"%{kube_namespace}-%{ci_environment_slug}-.*"}[60m])) by (status_code)'
+            unit: req/sec
+            label: "Status code"
 ```
 
 Note the following properties:
@@ -846,11 +845,11 @@ templating:
       type: custom
       options:
         values:
-        - value: 'value option 1'        # The value that will replace the variable in queries.
-          text: 'Option 1'               # (Optional) Text that will appear in the UI dropdown.
-        - value: 'value_option_2'
-          text: 'Option 2'
-          default: true                  # (Optional) This option should be the default value of this variable.
+          - value: 'value option 1'        # The value that will replace the variable in queries.
+            text: 'Option 1'               # (Optional) Text that will appear in the UI dropdown.
+          - value: 'value_option_2'
+            text: 'Option 2'
+            default: true                  # (Optional) This option should be the default value of this variable.
 ```
 
 ##### `metric_label_values` variable type
@@ -1030,10 +1029,10 @@ To send GitLab alert notifications, copy the *URL* and *Authorization Key* into 
 receivers:
   name: gitlab
   webhook_configs:
-  - http_config:
-      bearer_token: 9e1cbfcd546896a9ea8be557caf13a76
-    send_resolved: true
-    url: http://192.168.178.31:3001/root/manual_prometheus/prometheus/alerts/notify.json
+    - http_config:
+        bearer_token: 9e1cbfcd546896a9ea8be557caf13a76
+      send_resolved: true
+      url: http://192.168.178.31:3001/root/manual_prometheus/prometheus/alerts/notify.json
   ...
 ```
 

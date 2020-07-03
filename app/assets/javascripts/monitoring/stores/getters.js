@@ -133,8 +133,8 @@ export const linksWithMetadata = state => {
 };
 
 /**
- * Maps an variables object to an array along with stripping
- * the variable prefix.
+ * Maps a variables array to an object for replacement in
+ * prometheus queries.
  *
  * This method outputs an object in the below format
  *
@@ -147,14 +147,17 @@ export const linksWithMetadata = state => {
  * user-defined variables coming through the URL and differentiate
  * from other variables used for Prometheus API endpoint.
  *
- * @param {Object} variables - Custom variables provided by the user
- * @returns {Array} The custom variables array to be send to the API
+ * @param {Object} state - State containing variables provided by the user
+ * @returns {Array} The custom variables object to be send to the API
  * in the format of {variables[key1]=value1, variables[key2]=value2}
  */
 
 export const getCustomVariablesParams = state =>
-  Object.keys(state.variables).reduce((acc, variable) => {
-    acc[addPrefixToCustomVariableParams(variable)] = state.variables[variable]?.value;
+  state.variables.reduce((acc, variable) => {
+    const { name, value } = variable;
+    if (value !== null) {
+      acc[addPrefixToCustomVariableParams(name)] = value;
+    }
     return acc;
   }, {});
 

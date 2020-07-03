@@ -33,7 +33,7 @@ pdf:
   script: xelatex mycv.tex
   artifacts:
     paths:
-    - mycv.pdf
+      - mycv.pdf
     expire_in: 1 week
 ```
 
@@ -87,8 +87,8 @@ Below is an example of collecting a JUnit XML file from Ruby's RSpec test tool:
 rspec:
   stage: test
   script:
-  - bundle install
-  - rspec --format RspecJunitFormatter --out rspec.xml
+    - bundle install
+    - rspec --format RspecJunitFormatter --out rspec.xml
   artifacts:
     reports:
       junit: rspec.xml

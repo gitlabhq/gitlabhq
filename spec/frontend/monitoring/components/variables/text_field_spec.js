@@ -40,7 +40,7 @@ describe('Text variable component', () => {
     findInput().trigger('keyup.enter');
 
     return wrapper.vm.$nextTick(() => {
-      expect(wrapper.vm.$emit).toHaveBeenCalledWith('onUpdate', 'pod', 'prod-pod');
+      expect(wrapper.vm.$emit).toHaveBeenCalledWith('input', 'prod-pod');
     });
   });
 
@@ -53,7 +53,7 @@ describe('Text variable component', () => {
     findInput().trigger('blur');
 
     return wrapper.vm.$nextTick(() => {
-      expect(wrapper.vm.$emit).toHaveBeenCalledWith('onUpdate', 'pod', 'canary-pod');
+      expect(wrapper.vm.$emit).toHaveBeenCalledWith('input', 'canary-pod');
     });
   });
 });

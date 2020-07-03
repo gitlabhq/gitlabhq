@@ -14,7 +14,7 @@ module Gitlab
       def changed_queue_names
         @changed_queue_names ||=
           (new_queues.values_at(*old_queues.keys) - old_queues.values)
-            .map { |queue| queue[:name] }
+            .compact.map { |queue| queue[:name] }
       end
 
       private

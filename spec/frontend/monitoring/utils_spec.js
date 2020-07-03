@@ -429,14 +429,41 @@ describe('monitoring/utils', () => {
 
   describe('convertVariablesForURL', () => {
     it.each`
-      input                               | expected
-      ${undefined}                        | ${{}}
-      ${null}                             | ${{}}
-      ${{}}                               | ${{}}
-      ${{ env: { value: 'prod' } }}       | ${{ 'var-env': 'prod' }}
-      ${{ 'var-env': { value: 'prod' } }} | ${{ 'var-var-env': 'prod' }}
+      input                                                               | expected
+      ${[]}                                                               | ${{}}
+      ${[{ name: 'env', value: 'prod' }]}                                 | ${{ 'var-env': 'prod' }}
+      ${[{ name: 'env1', value: 'prod' }, { name: 'env2', value: null }]} | ${{ 'var-env1': 'prod' }}
+      ${[{ name: 'var-env', value: 'prod' }]}                             | ${{ 'var-var-env': 'prod' }}
     `('convertVariablesForURL returns $expected with input $input', ({ input, expected }) => {
       expect(monitoringUtils.convertVariablesForURL(input)).toEqual(expected);
     });
+  });
+
+  describe('setCustomVariablesFromUrl', () => {
+    beforeEach(() => {
+      jest.spyOn(urlUtils, 'updateHistory');
+    });
+
+    afterEach(() => {
+      urlUtils.updateHistory.mockRestore();
+    });
+
+    it.each`
+      input                                                               | urlParams
+      ${[]}                                                               | ${''}
+      ${[{ name: 'env', value: 'prod' }]}                                 | ${'?var-env=prod'}
+      ${[{ name: 'env1', value: 'prod' }, { name: 'env2', value: null }]} | ${'?var-env=prod&var-env1=prod'}
+    `(
+      'setCustomVariablesFromUrl updates history with query "$urlParams" with input $input',
+      ({ input, urlParams }) => {
+        monitoringUtils.setCustomVariablesFromUrl(input);
+
+        expect(urlUtils.updateHistory).toHaveBeenCalledTimes(1);
+        expect(urlUtils.updateHistory).toHaveBeenCalledWith({
+          url: `http://localhost/${urlParams}`,
+          title: '',
+        });
+      },
+    );
   });
 });

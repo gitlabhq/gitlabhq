@@ -150,6 +150,19 @@ module SystemNotes
 
       create_note(summary)
     end
+
+    # Called when the merge request is approved by user
+    #
+    # Example Note text:
+    #
+    #   "approved this merge request"
+    #
+    # Returns the created Note object
+    def approve_mr
+      body = "approved this merge request"
+
+      create_note(NoteSummary.new(noteable, project, author, body, action: 'approved'))
+    end
   end
 end
 

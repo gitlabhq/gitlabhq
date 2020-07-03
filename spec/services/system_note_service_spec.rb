@@ -661,4 +661,14 @@ RSpec.describe SystemNoteService do
       described_class.design_discussion_added(discussion_note)
     end
   end
+
+  describe '.approve_mr' do
+    it 'calls MergeRequestsService' do
+      expect_next_instance_of(::SystemNotes::MergeRequestsService) do |service|
+        expect(service).to receive(:approve_mr)
+      end
+
+      described_class.approve_mr(noteable, author)
+    end
+  end
 end

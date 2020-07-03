@@ -34,7 +34,7 @@ export default {
   },
   methods: {
     onUpdate(value) {
-      this.$emit('onUpdate', this.name, value);
+      this.$emit('input', value);
     },
   },
 };

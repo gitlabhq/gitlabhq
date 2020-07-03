@@ -337,9 +337,9 @@ Windows Shared Runners:
 ```yaml
 .shared_windows_runners:
   tags:
-  - shared-windows
-  - windows
-  - windows-1809
+    - shared-windows
+    - windows
+    - windows-1809
 
 stages:
   - build
@@ -352,17 +352,17 @@ before_script:
 
 build:
   extends:
-  - .shared_windows_runners
+    - .shared_windows_runners
   stage: build
   script:
-  - echo "running scripts in the build job"
+    - echo "running scripts in the build job"
 
 test:
   extends:
-  - .shared_windows_runners
+    - .shared_windows_runners
   stage: test
   script:
-  - echo "running scripts in the test job"
+    - echo "running scripts in the test job"
 ```
 
 #### Limitations and known issues

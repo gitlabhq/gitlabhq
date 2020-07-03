@@ -85,6 +85,13 @@ export default {
       sortable: true,
     },
     {
+      key: 'issue',
+      label: s__('AlertManagement|Issue'),
+      thClass: 'gl-w-12 gl-pointer-events-none',
+      tdClass,
+      sortable: false,
+    },
+    {
       key: 'assignees',
       label: s__('AlertManagement|Assignees'),
       thClass: 'gl-w-eighth gl-pointer-events-none',
@@ -278,6 +285,9 @@ export default {
         ? assignees.nodes[0]?.username
         : s__('AlertManagement|Unassigned');
     },
+    getIssueLink(item) {
+      return joinPaths('/', this.projectPath, '-', 'issues', item.issueIid);
+    },
     handlePageChange(page) {
       const { startCursor, endCursor } = this.alerts.pageInfo;
 
@@ -400,6 +410,13 @@ export default {
 
         <template #cell(title)="{ item }">
           <div class="gl-max-w-full text-truncate" :title="item.title">{{ item.title }}</div>
+        </template>
+
+        <template #cell(issue)="{ item }">
+          <gl-link v-if="item.issueIid" data-testid="issueField" :href="getIssueLink(item)">
+            #{{ item.issueIid }}
+          </gl-link>
+          <div v-else data-testid="issueField">{{ s__('AlertManagement|None') }}</div>
         </template>
 
         <template #cell(assignees)="{ item }">

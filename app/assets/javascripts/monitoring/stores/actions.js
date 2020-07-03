@@ -77,10 +77,6 @@ export const setTimeRange = ({ commit }, timeRange) => {
   commit(types.SET_TIME_RANGE, timeRange);
 };
 
-export const setVariables = ({ commit }, variables) => {
-  commit(types.SET_VARIABLES, variables);
-};
-
 export const filterEnvironments = ({ commit, dispatch }, searchTerm) => {
   commit(types.SET_ENVIRONMENTS_FILTER, searchTerm);
   dispatch('fetchEnvironmentsData');
@@ -235,7 +231,7 @@ export const fetchPrometheusMetric = (
     queryParams.step = metric.step;
   }
 
-  if (Object.keys(state.variables).length > 0) {
+  if (state.variables.length > 0) {
     queryParams = {
       ...queryParams,
       ...getters.getCustomVariablesParams,
@@ -480,7 +476,7 @@ export const fetchVariableMetricLabelValues = ({ state, commit }, { defaultQuery
   const { start_time, end_time } = defaultQueryParams;
   const optionsRequests = [];
 
-  Object.entries(state.variables).forEach(([key, variable]) => {
+  state.variables.forEach(variable => {
     if (variable.type === VARIABLE_TYPES.metric_label_values) {
       const { prometheusEndpointPath, label } = variable.options;
 
@@ -496,7 +492,7 @@ export const fetchVariableMetricLabelValues = ({ state, commit }, { defaultQuery
         .catch(() => {
           createFlash(
             sprintf(s__('Metrics|There was an error getting options for variable "%{name}".'), {
-              name: key,
+              name: variable.name,
             }),
           );
         });

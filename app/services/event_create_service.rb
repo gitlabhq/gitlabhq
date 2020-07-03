@@ -138,6 +138,10 @@ class EventCreateService
     event
   end
 
+  def approve_mr(merge_request, current_user)
+    create_record_event(merge_request, current_user, :approved)
+  end
+
   private
 
   def existing_wiki_event(wiki_page_meta, action)

@@ -87,6 +87,18 @@ RSpec.describe EventCreateService do
         expect { service.reopen_mr(merge_request, merge_request.author) }.to change { ResourceStateEvent.count }
       end
     end
+
+    describe '#approve_mr' do
+      let(:merge_request) { create(:merge_request) }
+
+      it { expect(service.approve_mr(merge_request, user)).to be_truthy }
+
+      it 'creates new event' do
+        service.approve_mr(merge_request, user)
+
+        change { Event.approved_action.where(target: merge_request).count }.by(1)
+      end
+    end
   end
 
   describe 'Milestone' do

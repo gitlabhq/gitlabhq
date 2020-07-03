@@ -348,17 +348,17 @@ For example, these three jobs will be in a group named `build ruby`:
 build ruby 1/3:
   stage: build
   script:
-  - echo "ruby1"
+    - echo "ruby1"
 
 build ruby 2/3:
   stage: build
   script:
-  - echo "ruby2"
+    - echo "ruby2"
 
 build ruby 3/3:
   stage: build
   script:
-  - echo "ruby3"
+    - echo "ruby3"
 ```
 
 In the pipeline, the result is a group named `build ruby` with three jobs:

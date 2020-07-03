@@ -26,10 +26,9 @@ import {
   setMetricResult,
   setupStoreWithData,
   setupStoreWithDataForPanelCount,
-  setupStoreWithVariable,
   setupStoreWithLinks,
 } from '../store_utils';
-import { environmentData, dashboardGitResponse } from '../mock_data';
+import { environmentData, dashboardGitResponse, storeVariables } from '../mock_data';
 import {
   metricsDashboardViewModel,
   metricsDashboardPanelCount,
@@ -604,8 +603,7 @@ describe('Dashboard', () => {
     beforeEach(() => {
       createShallowWrapper({ hasMetrics: true });
       setupStoreWithData(store);
-      setupStoreWithVariable(store);
-
+      store.state.monitoringDashboard.variables = storeVariables;
       return wrapper.vm.$nextTick();
     });
 

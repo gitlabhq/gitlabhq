@@ -61,10 +61,10 @@ content:
 ```yaml
 ---
 applications:
-- name: gitlab-hello-world
-  random-route: true
-  memory: 1G
-  path: target/demo-0.0.1-SNAPSHOT.jar
+  - name: gitlab-hello-world
+    random-route: true
+    memory: 1G
+    path: target/demo-0.0.1-SNAPSHOT.jar
 ```
 
 ## Configure GitLab CI/CD to deploy your application
@@ -96,11 +96,11 @@ build:
 production:
   stage: deploy
   script:
-  - curl --location "https://cli.run.pivotal.io/stable?release=linux64-binary&source=github" | tar zx
-  - ./cf login -u $CF_USERNAME -p $CF_PASSWORD -a api.run.pivotal.io
-  - ./cf push
+    - curl --location "https://cli.run.pivotal.io/stable?release=linux64-binary&source=github" | tar zx
+    - ./cf login -u $CF_USERNAME -p $CF_PASSWORD -a api.run.pivotal.io
+    - ./cf push
   only:
-  - master
+    - master
 ```
 
 We've used the `java:8` [Docker

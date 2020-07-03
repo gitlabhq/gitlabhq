@@ -900,27 +900,79 @@ export default {
 </template>
 ```
 
-#### For JS code that is EE only, like props, computed properties, methods, etc, we will keep the current approach
+#### For JS code that is EE only, like props, computed properties, methods, etc
 
-- Since we [can't async load a mixin](https://github.com/vuejs/vue-loader/issues/418#issuecomment-254032223) we will use the [`ee_else_ce`](../development/ee_features.md#javascript-code-in-assetsjavascripts) alias we already have for webpack.
-  - This means all the EE specific props, computed properties, methods, etc that are EE only should be in a mixin in the `ee/` folder and we need to create a CE counterpart of the mixin
+- Please do not use mixins unless ABSOLUTELY NECESSARY. Please try to find an alternative pattern.
 
-##### Example
+##### Reccomended alternative approach (named/scoped slots)
 
-```javascript
-import mixin from 'ee_else_ce/path/mixin';
+- We can use slots and/or scoped slots to achieve the same thing as we did with mixins. If you only need an EE component there is no need to create the CE component.
 
-{
-    mixins: [mixin]
+1. First, we have a CE component that can render a slot incase we need EE template and functionality to be decorated on top of the CE base.
+
+```vue
+// ./ce/my_component.vue
+
+<script>
+export default {
+  props: {
+    tooltipDefaultText: {
+      type: String,
+    },
+  },
+  computed: {
+    tooltipText() {
+      return this.tooltipDefaultText || "5 issues please";
+    }
+  },
 }
+</script>
+
+<template>
+  <span v-gl-tooltip :title="tooltipText" class="ce-text">Community Edition Only Text</span>
+  <slot name="ee-specific-component">
+</template>
 ```
 
-- Computed Properties/methods and getters only used in the child import still need a counterpart in CE
+1. Next, we render the EE component, and inside of the EE component we render the CE component and add additional content in the slot.
 
-- For store modules, we will need a CE counterpart too.
-- You can see an MR with an example [here](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/9762)
+```vue
+// ./ee/my_component.vue
 
-#### `template` tag
+<script>
+export default {
+  computed: {
+    tooltipText() {
+      if (this.weight) {
+        return "5 issues with weight 10";
+      }
+    }
+  },
+  methods: {
+    submit() {
+      // do something.
+    }
+  },
+}
+</script>
+
+<template>
+  <my-component :tooltipDefaultText="tooltipText">
+    <template #ee-specific-component>
+      <span class="some-ee-specific">EE Specific Value</span>
+      <button @click="submit">Click Me</button>
+    </template>
+  </my-component>
+</template>
+```
+
+1. Finally, wherever the component is needed we can require it like so
+
+`import MyComponent from 'ee_else_ce/path/my_component'.vue`
+
+- this way the correct component will be included for either the ce or ee implementation
+
+**For EE components that need different results for the same computed values, we can pass in props to the CE wrapper as seen in the example.**
 
 - **EE Child components**
   - Since we are using the async loading to check which component to load, we'd still use the component's name, check [this example](#child-component-only-used-in-ee).

@@ -101,9 +101,9 @@ with GitLab Pages:
 ```yaml
 pages:
   script:
-  - gem install bundler
-  - bundle install
-  - bundle exec jekyll build
+    - gem install bundler
+    - bundle install
+    - bundle exec jekyll build
 ```
 
 ## Specify the `public` directory for output
@@ -116,9 +116,9 @@ Jekyll uses destination (`-d`) to specify an output directory for the built webs
 ```yaml
 pages:
   script:
-  - gem install bundler
-  - bundle install
-  - bundle exec jekyll build -d public
+    - gem install bundler
+    - bundle install
+    - bundle exec jekyll build -d public
 ```
 
 ## Specify the `public` directory for artifacts
@@ -130,12 +130,12 @@ in the `public` directory:
 ```yaml
 pages:
   script:
-  - gem install bundler
-  - bundle install
-  - bundle exec jekyll build -d public
+    - gem install bundler
+    - bundle install
+    - bundle exec jekyll build -d public
   artifacts:
     paths:
-    - public
+      - public
 ```
 
 Paste this into `.gitlab-ci.yml` file, so it now looks like this:
@@ -145,12 +145,12 @@ image: ruby:2.7
 
 pages:
   script:
-  - gem install bundler
-  - bundle install
-  - bundle exec jekyll build -d public
+    - gem install bundler
+    - bundle install
+    - bundle exec jekyll build -d public
   artifacts:
     paths:
-    - public
+      - public
 ```
 
 Now save and commit the `.gitlab-ci.yml` file. You can watch the pipeline run
@@ -181,12 +181,12 @@ workflow:
 
 pages:
   script:
-  - gem install bundler
-  - bundle install
-  - bundle exec jekyll build -d public
+    - gem install bundler
+    - bundle install
+    - bundle exec jekyll build -d public
   artifacts:
     paths:
-    - public
+      - public
 ```
 
 Then configure the pipeline to run the job for the master branch only.
@@ -200,12 +200,12 @@ workflow:
 
 pages:
   script:
-  - gem install bundler
-  - bundle install
-  - bundle exec jekyll build -d public
+    - gem install bundler
+    - bundle install
+    - bundle exec jekyll build -d public
   artifacts:
     paths:
-    - public
+      - public
   rules:
     - if: '$CI_COMMIT_BRANCH == "master"'
 ```
@@ -232,12 +232,12 @@ workflow:
 pages:
   stage: deploy
   script:
-  - gem install bundler
-  - bundle install
-  - bundle exec jekyll build -d public
+    - gem install bundler
+    - bundle install
+    - bundle exec jekyll build -d public
   artifacts:
     paths:
-    - public
+      - public
   rules:
     - if: '$CI_COMMIT_BRANCH == "master"'
 ```
@@ -255,24 +255,24 @@ workflow:
 pages:
   stage: deploy
   script:
-  - gem install bundler
-  - bundle install
-  - bundle exec jekyll build -d public
+    - gem install bundler
+    - bundle install
+    - bundle exec jekyll build -d public
   artifacts:
     paths:
-    - public
+      - public
   rules:
     - if: '$CI_COMMIT_BRANCH == "master"'
 
 test:
   stage: test
   script:
-  - gem install bundler
-  - bundle install
-  - bundle exec jekyll build -d test
+    - gem install bundler
+    - bundle install
+    - bundle exec jekyll build -d test
   artifacts:
     paths:
-    - test
+      - test
   rules:
     - if: '$CI_COMMIT_BRANCH != "master"'
 ```
@@ -310,20 +310,20 @@ before_script:
 pages:
   stage: deploy
   script:
-  - bundle exec jekyll build -d public
+    - bundle exec jekyll build -d public
   artifacts:
     paths:
-    - public
+      - public
   rules:
     - if: '$CI_COMMIT_BRANCH == "master"'
 
 test:
   stage: test
   script:
-  - bundle exec jekyll build -d test
+    - bundle exec jekyll build -d test
   artifacts:
     paths:
-    - test
+      - test
   rules:
     - if: '$CI_COMMIT_BRANCH != "master"'
 ```
@@ -345,7 +345,7 @@ workflow:
 
 cache:
   paths:
-  - vendor/
+    - vendor/
 
 before_script:
   - gem install bundler
@@ -354,20 +354,20 @@ before_script:
 pages:
   stage: deploy
   script:
-  - bundle exec jekyll build -d public
+    - bundle exec jekyll build -d public
   artifacts:
     paths:
-    - public
+      - public
   rules:
     - if: '$CI_COMMIT_BRANCH == "master"'
 
 test:
   stage: test
   script:
-  - bundle exec jekyll build -d test
+    - bundle exec jekyll build -d test
   artifacts:
     paths:
-    - test
+      - test
   rules:
     - if: '$CI_COMMIT_BRANCH != "master"'
 ```

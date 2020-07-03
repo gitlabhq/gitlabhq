@@ -226,14 +226,14 @@ image: node:latest
 cache:
   key: ${CI_COMMIT_REF_SLUG}
   paths:
-  - .npm/
+    - .npm/
 
 before_script:
   - npm ci --cache .npm --prefer-offline
 
 test_async:
   script:
-  - node ./specs/start.js ./specs/async.spec.js
+    - node ./specs/start.js ./specs/async.spec.js
 ```
 
 ### Caching PHP dependencies
@@ -253,16 +253,16 @@ image: php:7.2
 cache:
   key: ${CI_COMMIT_REF_SLUG}
   paths:
-  - vendor/
+    - vendor/
 
 before_script:
-# Install and run Composer
-- curl --show-error --silent https://getcomposer.org/installer | php
-- php composer.phar install
+  # Install and run Composer
+  - curl --show-error --silent https://getcomposer.org/installer | php
+  - php composer.phar install
 
 test:
   script:
-  - vendor/bin/phpunit --configuration phpunit.xml --coverage-text --colors=never
+    - vendor/bin/phpunit --configuration phpunit.xml --coverage-text --colors=never
 ```
 
 ### Caching Python dependencies
@@ -301,9 +301,9 @@ before_script:
 
 test:
   script:
-  - python setup.py test
-  - pip install flake8
-  - flake8 .
+    - python setup.py test
+    - pip install flake8
+    - flake8 .
 ```
 
 ### Caching Ruby dependencies
@@ -330,7 +330,7 @@ before_script:
 
 rspec:
   script:
-  - rspec spec
+    - rspec spec
 ```
 
 ### Caching Go dependencies
@@ -354,7 +354,7 @@ test:
   image: golang:1.13
   extends: .go-cache
   script:
-  - go test ./... -v -short
+    - go test ./... -v -short
 ```
 
 ## Availability of the cache
@@ -391,28 +391,28 @@ stages:
 
 ```yaml
 stages:
-- build
-- test
+  - build
+  - test
 
 before_script:
-- echo "Hello"
+  - echo "Hello"
 
 job A:
   stage: build
   script:
-  - mkdir vendor/
-  - echo "build" > vendor/hello.txt
+    - mkdir vendor/
+    - echo "build" > vendor/hello.txt
   cache:
     key: build-cache
     paths:
-    - vendor/
+      - vendor/
   after_script:
-  - echo "World"
+    - echo "World"
 
 job B:
   stage: test
   script:
-  - cat vendor/hello.txt
+    - cat vendor/hello.txt
   cache:
     key: build-cache
 ```
@@ -483,8 +483,8 @@ cache when the pipeline is run for a second time.
 
 ```yaml
 stages:
-- build
-- test
+  - build
+  - test
 
 job A:
   stage: build
@@ -492,7 +492,7 @@ job A:
   cache:
     key: same-key
     paths:
-    - public/
+      - public/
 
 job B:
   stage: test
@@ -500,7 +500,7 @@ job B:
   cache:
     key: same-key
     paths:
-    - vendor/
+      - vendor/
 ```
 
 1. `job A` runs.
@@ -520,8 +520,8 @@ will be different):
 
 ```yaml
 stages:
-- build
-- test
+  - build
+  - test
 
 job A:
   stage: build
@@ -529,7 +529,7 @@ job A:
   cache:
     key: keyA
     paths:
-    - vendor/
+      - vendor/
 
 job B:
   stage: test
@@ -537,7 +537,7 @@ job B:
   cache:
     key: keyB
     paths:
-    - vendor/
+      - vendor/
 ```
 
 In that case, even if the `key` is different (no fear of overwriting), you

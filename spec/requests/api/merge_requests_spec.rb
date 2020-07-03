@@ -425,6 +425,73 @@ RSpec.describe API::MergeRequests do
         end
       end
 
+      context 'NOT params' do
+        let(:merge_request2) do
+          create(
+            :merge_request,
+            :simple,
+            milestone: milestone,
+            author: user,
+            assignees: [user],
+            merge_request_context_commits: [merge_request_context_commit],
+            source_project: project,
+            target_project: project,
+            source_branch: 'what',
+            title: "What",
+            created_at: base_time
+          )
+        end
+
+        before do
+          create(:label_link, label: label, target: merge_request)
+          create(:label_link, label: label2, target: merge_request2)
+        end
+
+        it 'returns merge requests without any of the labels given', :aggregate_failures do
+          get api(endpoint_path, user), params: { not: { labels: ["#{label.title}, #{label2.title}"] } }
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response).to be_an(Array)
+          expect(json_response.length).to eq(3)
+          json_response.each do |mr|
+            expect(mr['labels']).not_to include(label2.title, label.title)
+          end
+        end
+
+        it 'returns merge requests without any of the milestones given', :aggregate_failures do
+          get api(endpoint_path, user), params: { not: { milestone: milestone.title } }
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response).to be_an(Array)
+          expect(json_response.length).to eq(4)
+          json_response.each do |mr|
+            expect(mr['milestone']).not_to eq(milestone.title)
+          end
+        end
+
+        it 'returns merge requests without the author given', :aggregate_failures do
+          get api(endpoint_path, user), params: { not: { author_id: user2.id } }
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response).to be_an(Array)
+          expect(json_response.length).to eq(5)
+          json_response.each do |mr|
+            expect(mr['author']['id']).not_to eq(user2.id)
+          end
+        end
+
+        it 'returns merge requests without the assignee given', :aggregate_failures do
+          get api(endpoint_path, user), params: { not: { assignee_id: user2.id } }
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response).to be_an(Array)
+          expect(json_response.length).to eq(5)
+          json_response.each do |mr|
+            expect(mr['assignee']['id']).not_to eq(user2.id)
+          end
+        end
+      end
+
       context 'source_branch param' do
         it 'returns merge requests with the given source branch' do
           get api(endpoint_path, user), params: { source_branch: merge_request_closed.source_branch, state: 'all' }

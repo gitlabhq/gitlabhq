@@ -85,6 +85,7 @@ Each alert contains the following metrics:
 - **Start time** - How long ago the alert fired. This field uses the standard GitLab pattern of `X time ago`, but is supported by a granular date/time tooltip depending on the user's locale.
 - **Alert description** - The description of the alert, which attempts to capture the most meaningful data.
 - **Event count** - The number of times that an alert has fired.
+- **Issue** - A link to the incident issue that has been created for the alert.
 - **Status** - The [current status](#alert-management-statuses) of the alert.
 
 ### Alert Management list sorting

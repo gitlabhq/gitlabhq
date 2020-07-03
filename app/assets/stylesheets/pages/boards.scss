@@ -82,7 +82,6 @@
   }
 
   .board-title-caret {
-    cursor: pointer;
     border-radius: $border-radius-default;
     line-height: $gl-spacing-scale-5;
     height: $gl-spacing-scale-5;
@@ -109,7 +108,6 @@
     .board-title {
       flex-direction: column;
       height: 100%;
-      padding: $gl-padding-8 0;
     }
 
     .board-title-caret {
@@ -203,8 +201,7 @@
   flex-grow: 1;
 }
 
-.board-delete {
-  color: $gray-darkest;
+.board-delete.gl-button {
   background-color: transparent;
   outline: 0;
 
@@ -581,5 +578,29 @@
 
 .board-epics-swimlanes {
   overflow-x: auto;
-  min-height: 600px;
+  min-height: calc(100vh - #{$issue-board-list-difference-xs});
+
+  @include media-breakpoint-only(sm) {
+    min-height: calc(100vh - #{$issue-board-list-difference-sm});
+  }
+
+  @include media-breakpoint-up(md) {
+    min-height: calc(100vh - #{$issue-board-list-difference-md});
+  }
+
+  .with-performance-bar & {
+    min-height: calc(100vh - #{$issue-board-list-difference-xs} - #{$performance-bar-height});
+
+    @include media-breakpoint-only(sm) {
+      min-height: calc(100vh - #{$issue-board-list-difference-sm} - #{$performance-bar-height});
+    }
+
+    @include media-breakpoint-up(md) {
+      min-height: calc(100vh - #{$issue-board-list-difference-md} - #{$performance-bar-height});
+    }
+  }
+}
+
+.board-header-collapsed-info-icon:hover {
+  color: $gray-900;
 }

@@ -6,11 +6,23 @@ module QA
       module Milestone
         class Index < Page::Base
           view 'app/views/projects/milestones/index.html.haml' do
-            element :new_project_milestone
+            element :new_project_milestone_link
           end
 
-          def click_new_milestone
-            click_element :new_project_milestone
+          view 'app/views/shared/milestones/_milestone.html.haml' do
+            element :milestone_link
+          end
+
+          def click_new_milestone_link
+            click_element :new_project_milestone_link
+          end
+
+          def has_milestone?(milestone)
+            has_element? :milestone_link, milestone_title: milestone.title
+          end
+
+          def click_milestone(milestone)
+            click_element :milestone_link, milestone_title: milestone.title
           end
         end
       end

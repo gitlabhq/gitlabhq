@@ -250,14 +250,14 @@ image: node:latest
 cache:
   key: $CI_COMMIT_REF_SLUG
   paths:
-  - .npm/
+    - .npm/
 
 before_script:
   - npm ci --cache .npm --prefer-offline
 
 test_async:
   script:
-  - node ./specs/start.js ./specs/async.spec.js
+    - node ./specs/start.js ./specs/async.spec.js
 ```
 
 ## Contexts and variables

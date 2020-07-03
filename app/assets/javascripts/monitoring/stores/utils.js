@@ -289,7 +289,7 @@ export const mapToDashboardViewModel = ({
 }) => {
   return {
     dashboard,
-    variables: mergeURLVariables(parseTemplatingVariables(templating)),
+    variables: mergeURLVariables(parseTemplatingVariables(templating.variables)),
     links: links.map(mapLinksToViewModel),
     panelGroups: panel_groups.map(mapToPanelGroupViewModel),
   };
@@ -453,10 +453,10 @@ export const normalizeQueryResponseData = data => {
  *
  * This is currently only used by getters/getCustomVariablesParams
  *
- * @param {String} key Variable key that needs to be prefixed
+ * @param {String} name Variable key that needs to be prefixed
  * @returns {String}
  */
-export const addPrefixToCustomVariableParams = key => `variables[${key}]`;
+export const addPrefixToCustomVariableParams = name => `variables[${name}]`;
 
 /**
  * Normalize custom dashboard paths. This method helps support

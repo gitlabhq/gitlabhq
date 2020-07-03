@@ -50,6 +50,14 @@ module QA
             end
           end
 
+          def go_to_milestones
+            hover_issues do
+              within_submenu do
+                click_element(:milestones_link)
+              end
+            end
+          end
+
           private
 
           def hover_issues

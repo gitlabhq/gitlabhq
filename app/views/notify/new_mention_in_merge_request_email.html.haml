@@ -1,4 +1,4 @@
 %p
-  You have been mentioned in Merge Request #{@merge_request.to_reference}
+  You have been mentioned in Merge Request #{merge_request_reference_link(@merge_request)}
 
 = render template: 'notify/new_merge_request_email'

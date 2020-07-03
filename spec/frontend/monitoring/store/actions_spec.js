@@ -44,7 +44,6 @@ import {
   deploymentData,
   environmentData,
   annotationsData,
-  mockTemplatingData,
   dashboardGitResponse,
   mockDashboardsErrorResponse,
 } from '../mock_data';
@@ -303,32 +302,6 @@ describe('Monitoring store actions', () => {
         metricsDashboardResponse.dashboard,
       );
       expect(dispatch).toHaveBeenCalledWith('fetchDashboardData');
-    });
-
-    it('stores templating variables', () => {
-      const response = {
-        ...metricsDashboardResponse.dashboard,
-        ...mockTemplatingData.allVariableTypes.dashboard,
-      };
-
-      receiveMetricsDashboardSuccess(
-        { state, commit, dispatch },
-        {
-          response: {
-            ...metricsDashboardResponse,
-            dashboard: {
-              ...metricsDashboardResponse.dashboard,
-              ...mockTemplatingData.allVariableTypes.dashboard,
-            },
-          },
-        },
-      );
-
-      expect(commit).toHaveBeenCalledWith(
-        types.RECEIVE_METRICS_DASHBOARD_SUCCESS,
-
-        response,
-      );
     });
 
     it('sets the dashboards loaded from the repository', () => {
@@ -1144,11 +1117,13 @@ describe('Monitoring store actions', () => {
   describe('fetchVariableMetricLabelValues', () => {
     const variable = {
       type: 'metric_label_values',
+      name: 'label1',
       options: {
-        prometheusEndpointPath: '/series',
+        prometheusEndpointPath: '/series?match[]=metric_name',
         label: 'job',
       },
     };
+
     const defaultQueryParams = {
       start_time: '2019-08-06T12:40:02.184Z',
       end_time: '2019-08-06T20:40:02.184Z',
@@ -1158,9 +1133,7 @@ describe('Monitoring store actions', () => {
       state = {
         ...state,
         timeRange: defaultTimeRange,
-        variables: {
-          label1: variable,
-        },
+        variables: [variable],
       };
     });
 
@@ -1176,7 +1149,7 @@ describe('Monitoring store actions', () => {
         },
       ];
 
-      mock.onGet('/series').reply(200, {
+      mock.onGet('/series?match[]=metric_name').reply(200, {
         status: 'success',
         data,
       });
@@ -1196,7 +1169,7 @@ describe('Monitoring store actions', () => {
     });
 
     it('should notify the user that dynamic options were not loaded', () => {
-      mock.onGet('/series').reply(500);
+      mock.onGet('/series?match[]=metric_name').reply(500);
 
       return testAction(fetchVariableMetricLabelValues, { defaultQueryParams }, state, [], []).then(
         () => {

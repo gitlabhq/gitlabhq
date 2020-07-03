@@ -8,7 +8,7 @@ import {
   environmentData,
   metricsResult,
   dashboardGitResponse,
-  mockTemplatingDataResponses,
+  storeVariables,
   mockLinks,
 } from '../mock_data';
 import {
@@ -344,19 +344,21 @@ describe('Monitoring store Getters', () => {
     });
 
     it('transforms the variables object to an array in the [variable, variable_value] format for all variable types', () => {
-      mutations[types.SET_VARIABLES](state, mockTemplatingDataResponses.allVariableTypes);
+      state.variables = storeVariables;
       const variablesArray = getters.getCustomVariablesParams(state);
 
       expect(variablesArray).toEqual({
-        'variables[advCustomNormal]': 'value2',
-        'variables[advText]': 'default',
-        'variables[simpleCustom]': 'value1',
-        'variables[simpleText]': 'Simple text',
+        'variables[textSimple]': 'My default value',
+        'variables[textAdvanced]': 'A default value',
+        'variables[customSimple]': 'value1',
+        'variables[customAdvanced]': 'value2',
+        'variables[customAdvancedWithoutLabel]': 'value2',
+        'variables[customAdvancedWithoutOptText]': 'value2',
       });
     });
 
     it('transforms the variables object to an empty array when no keys are present', () => {
-      mutations[types.SET_VARIABLES](state, {});
+      state.variables = [];
       const variablesArray = getters.getCustomVariablesParams(state);
 
       expect(variablesArray).toEqual({});

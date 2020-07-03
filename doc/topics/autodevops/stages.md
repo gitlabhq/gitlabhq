@@ -469,16 +469,16 @@ workers:
   sidekiq:
     replicaCount: 1
     command:
-    - /bin/herokuish
-    - procfile
-    - exec
-    - sidekiq
+      - /bin/herokuish
+      - procfile
+      - exec
+      - sidekiq
     preStopCommand:
-    - /bin/herokuish
-    - procfile
-    - exec
-    - sidekiqctl
-    - quiet
+      - /bin/herokuish
+      - procfile
+      - exec
+      - sidekiqctl
+      - quiet
     terminationGracePeriodSeconds: 60
 ```
 
@@ -524,12 +524,12 @@ networkPolicy:
       matchLabels:
         app.gitlab.com/env: staging
     ingress:
-    - from:
-      - podSelector:
-          matchLabels: {}
-      - namespaceSelector:
-          matchLabels:
-            app.gitlab.com/managed_by: gitlab
+      - from:
+        - podSelector:
+            matchLabels: {}
+        - namespaceSelector:
+            matchLabels:
+              app.gitlab.com/managed_by: gitlab
 ```
 
 For more information on installing Network Policies, see

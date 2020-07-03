@@ -94,7 +94,7 @@ deploy_staging:
     name: staging
     url: https://staging.example.com
   only:
-  - master
+    - master
 ```
 
 We have defined three [stages](../yaml/README.md#stages):
@@ -259,7 +259,7 @@ deploy_staging:
     name: staging
     url: https://staging.example.com
   only:
-  - master
+    - master
 
 deploy_prod:
   stage: deploy
@@ -270,7 +270,7 @@ deploy_prod:
     url: https://example.com
   when: manual
   only:
-  - master
+    - master
 ```
 
 The `when: manual` action:
@@ -402,7 +402,7 @@ deploy:
     kubernetes:
       namespace: production
   only:
-  - master
+    - master
 ```
 
 When deploying to a Kubernetes cluster using GitLab's Kubernetes integration,
@@ -483,7 +483,7 @@ deploy_staging:
     name: staging
     url: https://staging.example.com
   only:
-  - master
+    - master
 
 deploy_prod:
   stage: deploy
@@ -494,7 +494,7 @@ deploy_prod:
     url: https://example.com
   when: manual
   only:
-  - master
+    - master
 ```
 
 A more realistic example would also include copying files to a location where a

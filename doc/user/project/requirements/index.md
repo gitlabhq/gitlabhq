@@ -162,9 +162,9 @@ requirements, add a rule which checks `CI_HAS_OPEN_REQUIREMENTS` CI variable.
 ```yaml
 requirements_confirmation:
   rules:
-  - if: "$CI_HAS_OPEN_REQUIREMENTS" == "true"
-    when: manual
-  - when: never
+    - if: "$CI_HAS_OPEN_REQUIREMENTS" == "true"
+      when: manual
+    - when: never
   allow_failure: false
   script:
     - mkdir tmp

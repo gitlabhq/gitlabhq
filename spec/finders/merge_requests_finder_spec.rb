@@ -53,6 +53,21 @@ RSpec.describe MergeRequestsFinder do
         expect(merge_requests).to be_empty
       end
 
+      context 'filtering by not author ID' do
+        let(:params) { { not: { author_id: user2.id } } }
+
+        before do
+          merge_request2.update!(author: user2)
+          merge_request3.update!(author: user2)
+        end
+
+        it 'returns merge requests not created by that user' do
+          merge_requests = described_class.new(user, params).execute
+
+          expect(merge_requests).to contain_exactly(merge_request1, merge_request4, merge_request5)
+        end
+      end
+
       it 'filters by projects' do
         params = { projects: [project2.id, project3.id] }
 
@@ -258,6 +273,11 @@ RSpec.describe MergeRequestsFinder do
           let(:expected_issuables) { [merge_request1, merge_request2] }
         end
 
+        it_behaves_like 'assignee NOT ID filter' do
+          let(:params) { { not: { assignee_id: user.id } } }
+          let(:expected_issuables) { [merge_request3, merge_request4, merge_request5] }
+        end
+
         it_behaves_like 'assignee username filter' do
           before do
             project2.add_developer(user3)
@@ -267,6 +287,15 @@ RSpec.describe MergeRequestsFinder do
           let_it_be(:user3) { create(:user) }
           let(:params) { { assignee_username: [user2.username, user3.username] } }
           let(:expected_issuables) { [merge_request3] }
+        end
+
+        it_behaves_like 'assignee NOT username filter' do
+          before do
+            merge_request2.assignees = [user2]
+          end
+
+          let(:params) { { not: { assignee_username: [user.username, user2.username] } } }
+          let(:expected_issuables) { [merge_request4, merge_request5] }
         end
 
         it_behaves_like 'no assignee filter' do
@@ -293,6 +322,16 @@ RSpec.describe MergeRequestsFinder do
             merge_requests = described_class.new(user, params).execute
 
             expect(merge_requests).to contain_exactly(merge_request2, merge_request3)
+          end
+
+          context 'using NOT' do
+            let(:params) { { not: { milestone_title: group_milestone.title } } }
+
+            it 'returns MRs not assigned to that group milestone' do
+              merge_requests = described_class.new(user, params).execute
+
+              expect(merge_requests).to contain_exactly(merge_request1, merge_request4, merge_request5)
+            end
           end
         end
       end

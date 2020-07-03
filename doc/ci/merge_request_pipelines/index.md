@@ -65,19 +65,19 @@ build:
   stage: build
   script: ./build
   only:
-  - master
+    - master
 
 test:
   stage: test
   script: ./test
   only:
-  - merge_requests
+    - merge_requests
 
 deploy:
   stage: deploy
   script: ./deploy
   only:
-  - master
+    - master
 ```
 
 #### Excluding certain jobs

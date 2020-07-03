@@ -6,8 +6,7 @@ import TextField from '~/monitoring/components/variables/text_field.vue';
 import { updateHistory, mergeUrlParams } from '~/lib/utils/url_utility';
 import { createStore } from '~/monitoring/stores';
 import { convertVariablesForURL } from '~/monitoring/utils';
-import * as types from '~/monitoring/stores/mutation_types';
-import { mockTemplatingDataResponses } from '../mock_data';
+import { storeVariables } from '../mock_data';
 
 jest.mock('~/lib/utils/url_utility', () => ({
   updateHistory: jest.fn(),
@@ -17,12 +16,6 @@ jest.mock('~/lib/utils/url_utility', () => ({
 describe('Metrics dashboard/variables section component', () => {
   let store;
   let wrapper;
-  const sampleVariables = {
-    label1: mockTemplatingDataResponses.simpleText.simpleText,
-    label2: mockTemplatingDataResponses.advText.advText,
-    label3: mockTemplatingDataResponses.simpleCustom.simpleCustom,
-    label4: mockTemplatingDataResponses.metricLabelValues.simple,
-  };
 
   const createShallowWrapper = () => {
     wrapper = shallowMount(VariablesSection, {
@@ -48,22 +41,23 @@ describe('Metrics dashboard/variables section component', () => {
 
   describe('when variables are set', () => {
     beforeEach(() => {
+      store.state.monitoringDashboard.variables = storeVariables;
       createShallowWrapper();
-      store.commit(`monitoringDashboard/${types.SET_VARIABLES}`, sampleVariables);
+
       return wrapper.vm.$nextTick;
     });
 
     it('shows the variables section', () => {
       const allInputs = findTextInputs().length + findCustomInputs().length;
 
-      expect(allInputs).toBe(Object.keys(sampleVariables).length);
+      expect(allInputs).toBe(storeVariables.length);
     });
 
     it('shows the right custom variable inputs', () => {
       const customInputs = findCustomInputs();
 
-      expect(customInputs.at(0).props('name')).toBe('label3');
-      expect(customInputs.at(1).props('name')).toBe('label4');
+      expect(customInputs.at(0).props('name')).toBe('customSimple');
+      expect(customInputs.at(1).props('name')).toBe('customAdvanced');
     });
   });
 
@@ -77,7 +71,7 @@ describe('Metrics dashboard/variables section component', () => {
             namespaced: true,
             state: {
               showEmptyState: false,
-              variables: sampleVariables,
+              variables: storeVariables,
             },
             actions: {
               updateVariablesAndFetchData,
@@ -92,12 +86,12 @@ describe('Metrics dashboard/variables section component', () => {
     it('merges the url params and refreshes the dashboard when a text-based variables inputs are updated', () => {
       const firstInput = findTextInputs().at(0);
 
-      firstInput.vm.$emit('onUpdate', 'label1', 'test');
+      firstInput.vm.$emit('input', 'test');
 
       return wrapper.vm.$nextTick(() => {
         expect(updateVariablesAndFetchData).toHaveBeenCalled();
         expect(mergeUrlParams).toHaveBeenCalledWith(
-          convertVariablesForURL(sampleVariables),
+          convertVariablesForURL(storeVariables),
           window.location.href,
         );
         expect(updateHistory).toHaveBeenCalled();
@@ -107,12 +101,12 @@ describe('Metrics dashboard/variables section component', () => {
     it('merges the url params and refreshes the dashboard when a custom-based variables inputs are updated', () => {
       const firstInput = findCustomInputs().at(0);
 
-      firstInput.vm.$emit('onUpdate', 'label1', 'test');
+      firstInput.vm.$emit('input', 'test');
 
       return wrapper.vm.$nextTick(() => {
         expect(updateVariablesAndFetchData).toHaveBeenCalled();
         expect(mergeUrlParams).toHaveBeenCalledWith(
-          convertVariablesForURL(sampleVariables),
+          convertVariablesForURL(storeVariables),
           window.location.href,
         );
         expect(updateHistory).toHaveBeenCalled();
@@ -122,7 +116,7 @@ describe('Metrics dashboard/variables section component', () => {
     it('does not merge the url params and refreshes the dashboard if the value entered is not different that is what currently stored', () => {
       const firstInput = findTextInputs().at(0);
 
-      firstInput.vm.$emit('onUpdate', 'label1', 'Simple text');
+      firstInput.vm.$emit('input', 'My default value');
 
       expect(updateVariablesAndFetchData).not.toHaveBeenCalled();
       expect(mergeUrlParams).not.toHaveBeenCalled();

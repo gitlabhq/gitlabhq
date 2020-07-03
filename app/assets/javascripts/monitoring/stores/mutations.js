@@ -203,14 +203,13 @@ export default {
     state.expandedPanel.group = group;
     state.expandedPanel.panel = panel;
   },
-  [types.SET_VARIABLES](state, variables) {
-    state.variables = variables;
-  },
-  [types.UPDATE_VARIABLE_VALUE](state, { key, value }) {
-    Object.assign(state.variables[key], {
-      ...state.variables[key],
-      value,
-    });
+  [types.UPDATE_VARIABLE_VALUE](state, { name, value }) {
+    const variable = state.variables.find(v => v.name === name);
+    if (variable) {
+      Object.assign(variable, {
+        value,
+      });
+    }
   },
   [types.UPDATE_VARIABLE_METRIC_LABEL_VALUES](state, { variable, label, data = [] }) {
     const values = optionsFromSeriesData({ label, data });

@@ -22,7 +22,7 @@ describe('mapToDashboardViewModel', () => {
       dashboard: '',
       panelGroups: [],
       links: [],
-      variables: {},
+      variables: [],
     });
   });
 
@@ -52,7 +52,7 @@ describe('mapToDashboardViewModel', () => {
     expect(mapToDashboardViewModel(response)).toEqual({
       dashboard: 'Dashboard Name',
       links: [],
-      variables: {},
+      variables: [],
       panelGroups: [
         {
           group: 'Group 1',
@@ -424,22 +424,20 @@ describe('mapToDashboardViewModel', () => {
 
       urlUtils.queryToObject.mockReturnValueOnce();
 
-      expect(mapToDashboardViewModel(response)).toMatchObject({
-        dashboard: 'Dashboard Name',
-        links: [],
-        variables: {
-          pod: {
-            label: 'pod',
-            type: 'text',
-            value: 'kubernetes',
-          },
-          pod_2: {
-            label: 'pod_2',
-            type: 'text',
-            value: 'kubernetes-2',
-          },
+      expect(mapToDashboardViewModel(response).variables).toEqual([
+        {
+          name: 'pod',
+          label: 'pod',
+          type: 'text',
+          value: 'kubernetes',
         },
-      });
+        {
+          name: 'pod_2',
+          label: 'pod_2',
+          type: 'text',
+          value: 'kubernetes-2',
+        },
+      ]);
     });
 
     it('sets variables as-is from yml file if URL has no matching variables', () => {
@@ -458,22 +456,20 @@ describe('mapToDashboardViewModel', () => {
         'var-environment': 'POD',
       });
 
-      expect(mapToDashboardViewModel(response)).toMatchObject({
-        dashboard: 'Dashboard Name',
-        links: [],
-        variables: {
-          pod: {
-            label: 'pod',
-            type: 'text',
-            value: 'kubernetes',
-          },
-          pod_2: {
-            label: 'pod_2',
-            type: 'text',
-            value: 'kubernetes-2',
-          },
+      expect(mapToDashboardViewModel(response).variables).toEqual([
+        {
+          label: 'pod',
+          name: 'pod',
+          type: 'text',
+          value: 'kubernetes',
         },
-      });
+        {
+          label: 'pod_2',
+          name: 'pod_2',
+          type: 'text',
+          value: 'kubernetes-2',
+        },
+      ]);
     });
 
     it('merges variables from URL with the ones from yml file', () => {
@@ -494,22 +490,20 @@ describe('mapToDashboardViewModel', () => {
         'var-pod_2': 'POD2',
       });
 
-      expect(mapToDashboardViewModel(response)).toMatchObject({
-        dashboard: 'Dashboard Name',
-        links: [],
-        variables: {
-          pod: {
-            label: 'pod',
-            type: 'text',
-            value: 'POD1',
-          },
-          pod_2: {
-            label: 'pod_2',
-            type: 'text',
-            value: 'POD2',
-          },
+      expect(mapToDashboardViewModel(response).variables).toEqual([
+        {
+          label: 'pod',
+          name: 'pod',
+          type: 'text',
+          value: 'POD1',
         },
-      });
+        {
+          label: 'pod_2',
+          name: 'pod_2',
+          type: 'text',
+          value: 'POD2',
+        },
+      ]);
     });
   });
 });

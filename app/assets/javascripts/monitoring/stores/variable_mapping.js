@@ -46,7 +46,7 @@ const textAdvancedVariableParser = advTextVar => ({
  * @param {Object} custom variable option
  * @returns {Object} normalized custom variable options
  */
-const normalizeVariableValues = ({ default: defaultOpt = false, text, value }) => ({
+const normalizeVariableValues = ({ default: defaultOpt = false, text, value = null }) => ({
   default: defaultOpt,
   text: text || value,
   value,
@@ -68,10 +68,10 @@ const customAdvancedVariableParser = advVariable => {
   return {
     type: VARIABLE_TYPES.custom,
     label: advVariable.label,
-    value: defaultValue?.value,
     options: {
       values,
     },
+    value: defaultValue?.value || null,
   };
 };
 
@@ -100,27 +100,24 @@ const customSimpleVariableParser = simpleVar => {
   const values = (simpleVar || []).map(parseSimpleCustomValues);
   return {
     type: VARIABLE_TYPES.custom,
-    value: values[0].value,
     label: null,
+    value: values[0].value || null,
     options: {
       values: values.map(normalizeVariableValues),
     },
   };
 };
 
-const metricLabelValuesVariableParser = variable => {
-  const { label, options = {} } = variable;
-  return {
-    type: VARIABLE_TYPES.metric_label_values,
-    value: null,
-    label,
-    options: {
-      prometheusEndpointPath: options.prometheus_endpoint_path || '',
-      label: options.label || null,
-      values: [], // values are initially empty
-    },
-  };
-};
+const metricLabelValuesVariableParser = ({ label, options = {} }) => ({
+  type: VARIABLE_TYPES.metric_label_values,
+  label,
+  value: null,
+  options: {
+    prometheusEndpointPath: options.prometheus_endpoint_path || '',
+    label: options.label || null,
+    values: [], // values are initially empty
+  },
+});
 
 /**
  * Utility method to determine if a custom variable is
@@ -161,29 +158,26 @@ const getVariableParser = variable => {
  * for the user to edit. The values from input elements are relayed to
  * backend and eventually Prometheus API.
  *
- * This method currently is not used anywhere. Once the issue
- * https://gitlab.com/gitlab-org/gitlab/-/issues/214536 is completed,
- * this method will have been used by the monitoring dashboard.
- *
- * @param {Object} templating templating variables from the dashboard yml file
- * @returns {Object} a map of processed templating variables
+ * @param {Object} templating variables from the dashboard yml file
+ * @returns {array} An array of variables to display as inputs
  */
-export const parseTemplatingVariables = ({ variables = {} } = {}) =>
-  Object.entries(variables).reduce((acc, [key, variable]) => {
+export const parseTemplatingVariables = (ymlVariables = {}) =>
+  Object.entries(ymlVariables).reduce((acc, [name, ymlVariable]) => {
     // get the parser
-    const parser = getVariableParser(variable);
+    const parser = getVariableParser(ymlVariable);
     // parse the variable
-    const parsedVar = parser(variable);
+    const variable = parser(ymlVariable);
     // for simple custom variable label is null and it should be
     // replace with key instead
-    if (parsedVar) {
-      acc[key] = {
-        ...parsedVar,
-        label: parsedVar.label || key,
-      };
+    if (variable) {
+      acc.push({
+        ...variable,
+        name,
+        label: variable.label || name,
+      });
     }
     return acc;
-  }, {});
+  }, []);
 
 /**
  * Custom variables are defined in the dashboard yml file
@@ -201,23 +195,18 @@ export const parseTemplatingVariables = ({ variables = {} } = {}) =>
  * This method can be improved further. See the below issue
  * https://gitlab.com/gitlab-org/gitlab/-/issues/217713
  *
- * @param {Object} varsFromYML template variables from yml file
+ * @param {array} parsedYmlVariables - template variables from yml file
  * @returns {Object}
  */
-export const mergeURLVariables = (varsFromYML = {}) => {
+export const mergeURLVariables = (parsedYmlVariables = []) => {
   const varsFromURL = templatingVariablesFromUrl();
-  const variables = {};
-  Object.keys(varsFromYML).forEach(key => {
-    if (Object.prototype.hasOwnProperty.call(varsFromURL, key)) {
-      variables[key] = {
-        ...varsFromYML[key],
-        value: varsFromURL[key],
-      };
-    } else {
-      variables[key] = varsFromYML[key];
+  parsedYmlVariables.forEach(variable => {
+    const { name } = variable;
+    if (Object.prototype.hasOwnProperty.call(varsFromURL, name)) {
+      Object.assign(variable, { value: varsFromURL[name] });
     }
   });
-  return variables;
+  return parsedYmlVariables;
 };
 
 /**

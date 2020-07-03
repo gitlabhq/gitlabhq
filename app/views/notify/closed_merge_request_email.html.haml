@@ -1,2 +1,3 @@
 %p
-  Merge Request #{@merge_request.to_reference} was closed by #{sanitize_name(@updated_by.name)}
+  Merge Request #{merge_request_reference_link(@merge_request)}
+  was closed by #{sanitize_name(@updated_by.name)}

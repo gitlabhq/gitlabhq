@@ -47,7 +47,7 @@ export default () => ({
    * User-defined custom variables are passed
    * via the dashboard yml file.
    */
-  variables: {},
+  variables: [],
   /**
    * User-defined custom links are passed
    * via the dashboard yml file.

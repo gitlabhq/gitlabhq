@@ -367,8 +367,9 @@ Example response:
     "package_files_count": 10,
     "package_files_checksummed_count": 10,
     "package_files_checksum_failed_count": 0,
-    "package_files_synced_count": 10,
-    "package_files_failed_count": 5
+    "package_files_registry_count": 10,
+    "package_files_synced_count": 6,
+    "package_files_failed_count": 3
   },
   {
     "geo_node_id": 2,
@@ -440,8 +441,9 @@ Example response:
     "package_files_count": 10,
     "package_files_checksummed_count": 10,
     "package_files_checksum_failed_count": 0,
-    "package_files_synced_count": 10,
-    "package_files_failed_count": 5
+    "package_files_registry_count": 10,
+    "package_files_synced_count": 6,
+    "package_files_failed_count": 3
   }
 ]
 ```
