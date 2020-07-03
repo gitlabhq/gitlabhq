@@ -667,6 +667,11 @@ To install applications using GitLab CI/CD:
      - template: Managed-Cluster-Applications.gitlab-ci.yml
    ```
 
+   NOTE: **Note:**
+   The job provided by this template connects to the cluster using tools provided
+   in a custom Docker image. It requires that you have a runner registered with the Docker,
+   Kubernetes, or Docker Machine executor.
+
 1. Add a `.gitlab/managed-apps/config.yaml` file to define which
   applications you would like to install. Define the `installed` key as
   `true` to install the application and `false` to uninstall the

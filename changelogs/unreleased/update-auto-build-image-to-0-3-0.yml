@@ -1,0 +1,5 @@
+---
+title: Add custom Dockerfile paths to Auto DevOps Build stage with DOCKERFILE_PATH
+merge_request: 35662
+author: thklein
+type: added

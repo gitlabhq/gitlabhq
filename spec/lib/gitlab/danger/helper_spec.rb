@@ -369,6 +369,69 @@ RSpec.describe Gitlab::Danger::Helper do
     end
   end
 
+  describe '#cherry_pick_mr?' do
+    it 'returns false when `gitlab_helper` is unavailable' do
+      expect(helper).to receive(:gitlab_helper).and_return(nil)
+
+      expect(helper).not_to be_cherry_pick_mr
+    end
+
+    context 'when MR title does not mention a cherry-pick' do
+      it 'returns false' do
+        expect(fake_gitlab).to receive(:mr_json)
+          .and_return('title' => 'Add feature xyz')
+
+        expect(helper).not_to be_cherry_pick_mr
+      end
+    end
+
+    context 'when MR title mentions a cherry-pick' do
+      [
+        'Cherry Pick !1234',
+        'cherry-pick !1234',
+        'CherryPick !1234'
+      ].each do |mr_title|
+        it 'returns true' do
+          expect(fake_gitlab).to receive(:mr_json)
+            .and_return('title' => mr_title)
+
+          expect(helper).to be_cherry_pick_mr
+        end
+      end
+    end
+  end
+
+  describe '#stable_branch?' do
+    it 'returns false when `gitlab_helper` is unavailable' do
+      expect(helper).to receive(:gitlab_helper).and_return(nil)
+
+      expect(helper).not_to be_stable_branch
+    end
+
+    context 'when MR target branch is not a stable branch' do
+      it 'returns false' do
+        expect(fake_gitlab).to receive(:mr_json)
+          .and_return('target_branch' => 'my-feature-branch')
+
+        expect(helper).not_to be_stable_branch
+      end
+    end
+
+    context 'when MR target branch is a stable branch' do
+      %w[
+        13-1-stable-ee
+        13-1-stable-ee-patch-1
+      ].each do |target_branch|
+        it 'returns true' do
+          expect(fake_gitlab).to receive(:mr_json)
+            .and_return('target_branch' => target_branch)
+
+          expect(helper).to be_stable_branch
+        end
+      end
+    end
+  end
+
   describe '#mr_has_label?' do
     it 'returns false when `gitlab_helper` is unavailable' do
       expect(helper).to receive(:gitlab_helper).and_return(nil)

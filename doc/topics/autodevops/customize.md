@@ -41,10 +41,15 @@ If your goal is to use only a single custom buildpack, you should provide the pr
 
 ## Custom `Dockerfile`
 
+> Support for `DOCKERFILE_PATH` was [added in GitLab 13.2](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/35662)
+
 If your project has a `Dockerfile` in the root of the project repository, Auto DevOps
 builds a Docker image based on the Dockerfile, rather than using buildpacks.
 This can be much faster and result in smaller images, especially if your
 Dockerfile is based on [Alpine](https://hub.docker.com/_/alpine/).
+
+If you set the `DOCKERFILE_PATH` CI variable, Auto Build looks for a Dockerfile there
+instead.
 
 ## Passing arguments to `docker build`
 
@@ -311,6 +316,7 @@ applications.
 | `CANARY_ENABLED`                        | From GitLab 11.0, used to define a [deploy policy for canary environments](#deploy-policy-for-canary-environments-premium). |
 | `CANARY_PRODUCTION_REPLICAS`            | Number of canary replicas to deploy for [Canary Deployments](../../user/project/canary_deployments.md) in the production environment. Takes precedence over `CANARY_REPLICAS`. Defaults to 1. |
 | `CANARY_REPLICAS`                       | Number of canary replicas to deploy for [Canary Deployments](../../user/project/canary_deployments.md). Defaults to 1. |
+| `DOCKERFILE_PATH`                       | From GitLab 13.2, allows overriding the [default Dockerfile path for the build stage](#custom-dockerfile) |
 | `HELM_RELEASE_NAME`                     | From GitLab 12.1, allows the `helm` release name to be overridden. Can be used to assign unique release names when deploying multiple projects to a single namespace. |
 | `HELM_UPGRADE_VALUES_FILE`              | From GitLab 12.6, allows the `helm upgrade` values file to be overridden. Defaults to `.gitlab/auto-deploy-values.yaml`. |
 | `HELM_UPGRADE_EXTRA_ARGS`               | From GitLab 11.11, allows extra arguments in `helm` commands when deploying the application. Note that using quotes won't prevent word splitting. |

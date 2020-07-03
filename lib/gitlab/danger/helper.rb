@@ -196,6 +196,18 @@ module Gitlab
         gitlab_helper.mr_json['web_url'].include?('/gitlab-org/security/')
       end
 
+      def cherry_pick_mr?
+        return false unless gitlab_helper
+
+        /cherry[\s-]*pick/i.match?(gitlab_helper.mr_json['title'])
+      end
+
+      def stable_branch?
+        return false unless gitlab_helper
+
+        /\A\d+-\d+-stable-ee/i.match?(gitlab_helper.mr_json['target_branch'])
+      end
+
       def mr_has_labels?(*labels)
         return false unless gitlab_helper
 
