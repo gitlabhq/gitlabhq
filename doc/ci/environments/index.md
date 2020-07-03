@@ -305,11 +305,6 @@ declaring their names dynamically in `.gitlab-ci.yml`.
 
 Dynamic environments are a fundamental part of [Review apps](../review_apps/index.md).
 
-### Configuring incremental rollouts
-
-Learn how to release production changes to only a portion of your Kubernetes pods with
-[incremental rollouts](../environments/incremental_rollouts.md).
-
 #### Allowed variables
 
 The `name` and `url` parameters for dynamic environments can use most available CI/CD variables,
@@ -421,6 +416,11 @@ Kubernetes configuration is not supported for Kubernetes clusters
 that are [managed by GitLab](../../user/project/clusters/index.md#gitlab-managed-clusters).
 To follow progress on support for GitLab-managed clusters, see the
 [relevant issue](https://gitlab.com/gitlab-org/gitlab/-/issues/38054).
+
+#### Configuring incremental rollouts
+
+Learn how to release production changes to only a portion of your Kubernetes pods with
+[incremental rollouts](../environments/incremental_rollouts.md).
 
 ### Deployment safety
 
@@ -739,6 +739,12 @@ To enable this feature, you need to specify the [`environment:auto_stop_in`](../
 You can specify a human-friendly date as the value, such as `1 hour and 30 minutes` or `1 day`.
 `auto_stop_in` uses the same format of [`artifacts:expire_in` docs](../yaml/README.md#artifactsexpire_in).
 
+NOTE: **Note:**
+Due to the resource limitation, a background worker for stopping environments only
+runs once every hour. This means environments will not be stopped at the exact
+timestamp as the specified period, but will be stopped when the hourly cron worker
+detects expired environments.
+
 ##### Auto-stop example
 
 In the following example, there is a basic review app setup that creates a new environment
@@ -778,15 +784,9 @@ and the environment will be active until it's stopped manually.
 
 ![Environment auto stop](../img/environment_auto_stop_v12_8.png)
 
-NOTE: **NOTE**
-Due to the resource limitation, a background worker for stopping environments only
-runs once every hour. This means environments will not be stopped at the exact
-timestamp as the specified period, but will be stopped when the hourly cron worker
-detects expired environments.
-
 #### Delete a stopped environment
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/22629) in GitLab 12.9.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/20620) in GitLab 12.10.
 
 You can delete [stopped environments](#stopping-an-environment) in one of two
 ways: through the GitLab UI or through the API.

@@ -2430,7 +2430,8 @@ review_app:
   stage: deploy
   script: make deploy-app
   environment:
-    name: review
+    name: review/$CI_COMMIT_REF_NAME
+    url: https://$CI_ENVIRONMENT_SLUG.example.com
     on_stop: stop_review_app
 
 stop_review_app:
@@ -2440,7 +2441,7 @@ stop_review_app:
   script: make delete-app
   when: manual
   environment:
-    name: review
+    name: review/$CI_COMMIT_REF_NAME
     action: stop
 ```
 
