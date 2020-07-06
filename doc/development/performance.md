@@ -254,6 +254,13 @@ These results can also be placed into a PostgreSQL database by setting the
 `RSPEC_PROFILING_POSTGRES_URL` variable. This is used to profile the test suite
 when running in the CI environment.
 
+We store these results also when running CI jobs on the default branch on
+`gitlab.com`. Statistics of these profiling data are [available
+online](https://gitlab-org.gitlab.io/rspec_profiling_stats/). For example,
+you can find which tests take longest to run or which execute the most
+queries. This can be handy for optimizing our tests or identifying performance
+issues in our code.
+
 ## Memory profiling
 
 One of the reasons of the increased memory footprint could be Ruby memory fragmentation.

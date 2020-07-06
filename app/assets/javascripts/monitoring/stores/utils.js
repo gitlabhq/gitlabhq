@@ -173,6 +173,7 @@ const mapPanelToViewModel = ({
   x_label,
   y_label,
   y_axis = {},
+  field,
   metrics = [],
   links = [],
   max_value,
@@ -193,6 +194,7 @@ const mapPanelToViewModel = ({
     y_label: yAxis.name, // Changing y_label to yLabel is pending https://gitlab.com/gitlab-org/gitlab/issues/207198
     yAxis,
     xAxis,
+    field,
     maxValue: max_value,
     links: links.map(mapLinksToViewModel),
     metrics: mapToMetricsViewModel(metrics),

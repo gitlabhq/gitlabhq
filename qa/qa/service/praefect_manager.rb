@@ -13,6 +13,10 @@ module QA
         @secondary_node = @second_node
       end
 
+      def enable_writes
+        shell "docker exec praefect bash -c '/opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml enable-writes -virtual-storage default'"
+      end
+
       def stop_primary_node
         shell "docker stop #{@primary_node}"
         @secondary_node, @primary_node = @primary_node, @secondary_node

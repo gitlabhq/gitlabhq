@@ -1,8 +1,9 @@
 # frozen_string_literal: true
 
-require_relative '../gitlab/popen' unless defined?(Gitlab::Popen)
+require_relative '../../../lib/gitlab/popen' unless defined?(Gitlab::Popen)
+require_relative '../../../lib/gitlab/json' unless defined?(Gitlab::JSON)
 
-module Quality
+module Tooling
   class KubernetesClient
     RESOURCE_LIST = 'ingress,svc,pdb,hpa,deploy,statefulset,job,pod,secret,configmap,pvc,secret,clusterrole,clusterrolebinding,role,rolebinding,sa,crd'
     CommandFailedError = Class.new(StandardError)

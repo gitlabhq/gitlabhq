@@ -139,13 +139,13 @@ module Gitlab
         %r{\Arubocop/cop/migration(/|\.rb)} => :database,
 
         %r{\A(\.gitlab-ci\.yml\z|\.gitlab\/ci)} => :engineering_productivity,
+        %r{\A\.codeclimate\.yml\z} => :engineering_productivity,
         %r{\A\.overcommit\.yml\.example\z} => :engineering_productivity,
-        %r{\Atooling/overcommit/} => :engineering_productivity,
-        %r{\A.editorconfig\z} => :engineering_productivity,
+        %r{\A\.editorconfig\z} => :engineering_productivity,
         %r{Dangerfile\z} => :engineering_productivity,
         %r{\A(ee/)?(danger/|lib/gitlab/danger/)} => :engineering_productivity,
         %r{\A(ee/)?scripts/} => :engineering_productivity,
-        %r{\A\.codeclimate\.yml\z} => :engineering_productivity,
+        %r{\Atooling/} => :engineering_productivity,
 
         %r{\A(ee/)?app/(?!assets|views)[^/]+} => :backend,
         %r{\A(ee/)?(bin|config|generator_templates|lib|rubocop)/} => :backend,

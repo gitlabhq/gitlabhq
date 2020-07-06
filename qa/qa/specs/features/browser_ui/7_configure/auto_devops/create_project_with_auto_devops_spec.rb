@@ -3,7 +3,7 @@
 require 'pathname'
 
 module QA
-  context 'Configure' do
+  RSpec.describe 'Configure' do
     let(:project) do
       Resource::Project.fabricate_via_api! do |project|
         project.name = Runtime::Env.auto_devops_project_name || 'autodevops-project'

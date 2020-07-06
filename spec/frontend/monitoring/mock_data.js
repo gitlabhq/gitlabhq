@@ -359,6 +359,11 @@ export const singleStatMetricsResult = {
   ],
 };
 
+export const singleStatMetricsWithFieldResult = {
+  ...singleStatMetricsResult,
+  field: 'job',
+};
+
 export const graphDataPrometheusQueryRangeMultiTrack = {
   title: 'Super Chart A3',
   type: 'heatmap',

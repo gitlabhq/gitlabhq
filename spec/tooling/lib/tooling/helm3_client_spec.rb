@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
+require_relative '../../../../tooling/lib/tooling/helm3_client'
 
-RSpec.describe Quality::Helm3Client do
+RSpec.describe Tooling::Helm3Client do
   let(:namespace) { 'review-apps' }
   let(:release_name) { 'my-release' }
   let(:raw_helm_list_page1) do

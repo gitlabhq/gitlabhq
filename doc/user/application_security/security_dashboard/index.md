@@ -74,7 +74,7 @@ You can also dismiss vulnerabilities in the table:
 1. Select the checkbox for each vulnerability you want to dismiss.
 1. In the menu that appears, select the reason for dismissal and click **Dismiss Selected**.
 
-![Project Security Dashboard](img/project_security_dashboard_v13_2_noNav.png)
+![Project Security Dashboard](img/project_security_dashboard_v13_2.png)
 
 ## Group Security Dashboard
 

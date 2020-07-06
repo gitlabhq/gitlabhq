@@ -10,6 +10,7 @@ describe('MRWidgetSuggestPipeline', () => {
   let trackingSpy;
 
   const mockTrackingOnWrapper = () => {
+    unmockTracking();
     trackingSpy = mockTracking('_category_', wrapper.element, jest.spyOn);
   };
 

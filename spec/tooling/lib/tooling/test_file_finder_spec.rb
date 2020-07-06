@@ -3,7 +3,7 @@
 require_relative '../../../../tooling/lib/tooling/test_file_finder'
 
 RSpec.describe Tooling::TestFileFinder do
-  subject { Tooling::TestFileFinder.new(file) }
+  subject { described_class.new(file) }
 
   describe '#test_files' do
     context 'when given non .rb files' do

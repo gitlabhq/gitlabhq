@@ -843,10 +843,10 @@
     eslint-plugin-vue "^6.2.1"
     vue-eslint-parser "^7.0.0"
 
-"@gitlab/svgs@1.148.0":
-  version "1.148.0"
-  resolved "https://registry.yarnpkg.com/@gitlab/svgs/-/svgs-1.148.0.tgz#cb3fd68249d7e97d0c578bf443459a32370a6dba"
-  integrity sha512-5GJtUNjCBzEdfi1J3jZPr7UUsvZ1KYnzK3VkMPmp+t2GNWHtdqBmi3Y6WKTOWJo8qFIAJO0tIs6w7XMMCIUBCg==
+"@gitlab/svgs@1.150.0":
+  version "1.150.0"
+  resolved "https://registry.yarnpkg.com/@gitlab/svgs/-/svgs-1.150.0.tgz#7dbbdf1b50c4409adf30d23710bbe4515608e245"
+  integrity sha512-jfD1EiawNlBM1XNEz7hriPJg2UOX6zE2/lKMIocSpkg9R58VGyIr+oyWOTn2AfknrepsLfnTiGJNveLdRYcy4w==
 
 "@gitlab/ui@17.16.0":
   version "17.16.0"

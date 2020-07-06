@@ -10,7 +10,7 @@ module QA
           end
         end
         let(:initial_file) { 'pushed_to_primary.txt' }
-        let(:final_file) { 'pushed_to_secondary.txt' }
+        let(:final_file) { 'committed_to_primary.txt' }
         let(:praefect_manager) { Service::PraefectManager.new }
 
         before do
@@ -41,11 +41,13 @@ module QA
             expect(show).to have_file(initial_file)
           end
 
+          praefect_manager.enable_writes
+
           Resource::Repository::Commit.fabricate_via_api! do |commit|
             commit.project = project
             commit.add_files([
               {
-                file_path: 'committed_to_primary.txt',
+                file_path: final_file,
                 content: 'This should exist on both nodes too'
               }
             ])

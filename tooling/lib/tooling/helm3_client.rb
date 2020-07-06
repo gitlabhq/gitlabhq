@@ -1,9 +1,11 @@
 # frozen_string_literal: true
 
 require 'time'
-require_relative '../gitlab/popen' unless defined?(Gitlab::Popen)
+require 'json'
+require_relative '../../../lib/gitlab/popen' unless defined?(Gitlab::Popen)
+require_relative '../../../lib/gitlab/json' unless defined?(Gitlab::Json)
 
-module Quality
+module Tooling
   class Helm3Client
     CommandFailedError = Class.new(StandardError)
 
@@ -65,12 +67,12 @@ module Quality
         %(--output json),
         *args
       ]
-      releases = JSON.parse(run_command(command))
+      releases = Gitlab::Json.parse(run_command(command))
 
       releases.map do |release|
         Release.new(*release.values_at(*RELEASE_JSON_ATTRIBUTES))
       end
-    rescue JSON::ParserError => ex
+    rescue ::JSON::ParserError => ex
       puts "Ignoring this JSON parsing error: #{ex}" # rubocop:disable Rails/Output
       []
     end

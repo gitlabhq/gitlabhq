@@ -752,6 +752,9 @@ msgstr ""
 msgid "(external source)"
 msgstr ""
 
+msgid "(line: %{startLine})"
+msgstr ""
+
 msgid "(removed)"
 msgstr ""
 
@@ -25675,6 +25678,9 @@ msgid "Vulnerability|Evidence"
 msgstr ""
 
 msgid "Vulnerability|File"
+msgstr ""
+
+msgid "Vulnerability|Identifier"
 msgstr ""
 
 msgid "Vulnerability|Identifiers"

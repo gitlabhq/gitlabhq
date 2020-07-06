@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
+require_relative '../../../../tooling/lib/tooling/kubernetes_client'
 
-RSpec.describe Quality::KubernetesClient do
+RSpec.describe Tooling::KubernetesClient do
   let(:namespace) { 'review-apps' }
   let(:release_name) { 'my-release' }
   let(:pod_for_release) { "pod-my-release-abcd" }

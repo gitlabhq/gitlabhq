@@ -1,6 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
 import SingleStatChart from '~/monitoring/components/charts/single_stat.vue';
-import { singleStatMetricsResult } from '../../mock_data';
+import { singleStatMetricsResult, singleStatMetricsWithFieldResult } from '../../mock_data';
 
 describe('Single Stat Chart component', () => {
   let singleStatChart;
@@ -65,6 +65,31 @@ describe('Single Stat Chart component', () => {
         });
 
         expect(singleStatChart.vm.statValue).toContain('NaN');
+      });
+
+      describe('field attribute', () => {
+        it('displays a label value instead of metric value when field attribute is used', () => {
+          singleStatChart.setProps({
+            graphData: singleStatMetricsWithFieldResult,
+          });
+
+          return singleStatChart.vm.$nextTick(() => {
+            expect(singleStatChart.vm.statValue).toContain('prometheus');
+          });
+        });
+
+        it('displays No data to display if field attribute is not present', () => {
+          singleStatChart.setProps({
+            graphData: {
+              ...singleStatMetricsWithFieldResult,
+              field: 'this-does-not-exist',
+            },
+          });
+
+          return singleStatChart.vm.$nextTick(() => {
+            expect(singleStatChart.vm.statValue).toContain('No data to display');
+          });
+        });
       });
     });
   });
