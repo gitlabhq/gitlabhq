@@ -34499,6 +34499,20 @@
               "deprecationReason": null
             },
             {
+              "name": "scannedResourcesCsvPath",
+              "description": "Path to download all the scanned resources in CSV format",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "vulnerabilitiesCount",
               "description": "Total number of vulnerabilities",
               "args": [

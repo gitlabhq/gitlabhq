@@ -1168,6 +1168,34 @@ describe('Dashboard', () => {
     });
   });
 
+  describe('keyboard shortcuts', () => {
+    const currentDashboard = dashboardGitResponse[1].path;
+    const panelRef = 'dashboard-panel-response-metrics-aws-elb-4-1'; // skip expanded panel
+
+    // While the recommendation in the documentation is to test
+    // with a data-testid attribute, I want to make sure that
+    // the dashboard panels have a ref attribute set.
+    const getDashboardPanel = () => wrapper.find({ ref: panelRef });
+
+    beforeEach(() => {
+      setupStoreWithData(store);
+      store.commit(`monitoringDashboard/${types.SET_INITIAL_STATE}`, {
+        currentDashboard,
+      });
+      createShallowWrapper({ hasMetrics: true });
+
+      wrapper.setData({ hoveredPanel: panelRef });
+
+      return wrapper.vm.$nextTick();
+    });
+
+    it('contains a ref attribute inside a DashboardPanel component', () => {
+      const dashboardPanel = getDashboardPanel();
+
+      expect(dashboardPanel.exists()).toBe(true);
+    });
+  });
+
   describe('add custom metrics', () => {
     const findAddMetricButton = () => wrapper.find(DashboardHeader).find({ ref: 'addMetricBtn' });
 

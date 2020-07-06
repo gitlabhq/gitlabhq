@@ -11800,6 +11800,11 @@ type SecurityReportSummarySection {
   scannedResourcesCount: Int
 
   """
+  Path to download all the scanned resources in CSV format
+  """
+  scannedResourcesCsvPath: String
+
+  """
   Total number of vulnerabilities
   """
   vulnerabilitiesCount: Int

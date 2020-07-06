@@ -2,6 +2,7 @@
 import { mapState } from 'vuex';
 import { pickBy } from 'lodash';
 import invalidUrl from '~/lib/utils/invalid_url';
+import { relativePathToAbsolute, getBaseURL, visitUrl, isSafeURL } from '~/lib/utils/url_utility';
 import {
   GlResizeObserverDirective,
   GlIcon,
@@ -29,7 +30,6 @@ import MonitorStackedColumnChart from './charts/stacked_column.vue';
 import TrackEventDirective from '~/vue_shared/directives/track_event';
 import AlertWidget from './alert_widget.vue';
 import { timeRangeToUrl, downloadCSVOptions, generateLinkToChartOptions } from '../utils';
-import { isSafeURL } from '~/lib/utils/url_utility';
 
 const events = {
   timeRangeZoom: 'timerangezoom',
@@ -244,6 +244,9 @@ export default {
         this.hasMetricsInDb
       );
     },
+    alertModalId() {
+      return `alert-modal-${this.graphData.id}`;
+    },
   },
   mounted() {
     this.refreshTitleTooltip();
@@ -282,6 +285,11 @@ export default {
     onExpand() {
       this.$emit(events.expand);
     },
+    onExpandFromKeyboardShortcut() {
+      if (this.isContextualMenuShown) {
+        this.onExpand();
+      }
+    },
     setAlerts(alertPath, alertAttributes) {
       if (alertAttributes) {
         this.$set(this.allAlerts, alertPath, alertAttributes);
@@ -291,6 +299,34 @@ export default {
     },
     safeUrl(url) {
       return isSafeURL(url) ? url : '#';
+    },
+    showAlertModal() {
+      this.$root.$emit('bv::show::modal', this.alertModalId);
+    },
+    showAlertModalFromKeyboardShortcut() {
+      if (this.isContextualMenuShown) {
+        this.showAlertModal();
+      }
+    },
+    visitLogsPage() {
+      if (this.logsPathWithTimeRange) {
+        visitUrl(relativePathToAbsolute(this.logsPathWithTimeRange, getBaseURL()));
+      }
+    },
+    visitLogsPageFromKeyboardShortcut() {
+      if (this.isContextualMenuShown) {
+        this.visitLogsPage();
+      }
+    },
+    downloadCsvFromKeyboardShortcut() {
+      if (this.csvText && this.isContextualMenuShown) {
+        this.$refs.downloadCsvLink.$el.firstChild.click();
+      }
+    },
+    copyChartLinkFromKeyboardShotcut() {
+      if (this.clipboardText && this.isContextualMenuShown) {
+        this.$refs.copyChartLink.$el.firstChild.click();
+      }
     },
   },
   panelTypes,
@@ -313,7 +349,7 @@ export default {
       <alert-widget
         v-if="isContextualMenuShown && alertWidgetAvailable"
         class="mx-1"
-        :modal-id="`alert-modal-${graphData.id}`"
+        :modal-id="alertModalId"
         :alerts-endpoint="alertsEndpoint"
         :relevant-queries="graphData.metrics"
         :alerts-to-manage="getGraphAlerts(graphData.metrics)"
@@ -328,7 +364,7 @@ export default {
         ref="contextualMenu"
         data-qa-selector="prometheus_graph_widgets"
       >
-        <div class="d-flex align-items-center">
+        <div data-testid="dropdown-wrapper" class="d-flex align-items-center">
           <gl-dropdown
             v-gl-tooltip
             toggle-class="shadow-none border-0"
@@ -383,7 +419,7 @@ export default {
             </gl-dropdown-item>
             <gl-dropdown-item
               v-if="alertWidgetAvailable"
-              v-gl-modal="`alert-modal-${graphData.id}`"
+              v-gl-modal="alertModalId"
               data-qa-selector="alert_widget_menu_item"
             >
               {{ __('Alerts') }}

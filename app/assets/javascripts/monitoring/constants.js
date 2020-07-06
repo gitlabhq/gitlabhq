@@ -251,3 +251,17 @@ export const VARIABLE_TYPES = {
  * before passing the data to the backend.
  */
 export const VARIABLE_PREFIX = 'var-';
+
+/**
+ * All of the actions inside each panel dropdown can be accessed
+ * via keyboard shortcuts than can be activated via mouse hovers
+ * and or focus via tabs.
+ */
+
+export const keyboardShortcutKeys = {
+  EXPAND: 'e',
+  VISIT_LOGS: 'l',
+  SHOW_ALERT: 'a',
+  DOWNLOAD_CSV: 'd',
+  CHART_COPY: 'c',
+};

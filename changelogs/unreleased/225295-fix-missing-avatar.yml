@@ -1,0 +1,5 @@
+---
+title: Fix missing avatar in MR widget
+merge_request: 36034
+author:
+type: fixed

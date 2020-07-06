@@ -1,39 +1,61 @@
-import Vue from 'vue';
-import mountComponent from 'helpers/vue_mount_component_helper';
+import { shallowMount } from '@vue/test-utils';
 import MrWidgetAuthor from '~/vue_merge_request_widget/components/mr_widget_author.vue';
 
+window.gl = window.gl || {};
+
 describe('MrWidgetAuthor', () => {
-  let vm;
+  let wrapper;
+  let oldWindowGl;
+  const mockAuthor = {
+    name: 'Administrator',
+    username: 'root',
+    webUrl: 'http://localhost:3000/root',
+    avatarUrl: 'http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon',
+  };
 
   beforeEach(() => {
-    const Component = Vue.extend(MrWidgetAuthor);
-
-    vm = mountComponent(Component, {
-      author: {
-        name: 'Administrator',
-        username: 'root',
-        webUrl: 'http://localhost:3000/root',
-        avatarUrl:
-          'http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon',
+    oldWindowGl = window.gl;
+    window.gl = {
+      mrWidgetData: {
+        defaultAvatarUrl: 'no_avatar.png',
+      },
+    };
+    wrapper = shallowMount(MrWidgetAuthor, {
+      propsData: {
+        author: mockAuthor,
       },
     });
   });
 
   afterEach(() => {
-    vm.$destroy();
+    wrapper.destroy();
+    window.gl = oldWindowGl;
   });
 
   it('renders link with the author web url', () => {
-    expect(vm.$el.getAttribute('href')).toEqual('http://localhost:3000/root');
+    expect(wrapper.attributes('href')).toBe('http://localhost:3000/root');
   });
 
   it('renders image with avatar url', () => {
-    expect(vm.$el.querySelector('img').getAttribute('src')).toEqual(
+    expect(wrapper.find('img').attributes('src')).toBe(
       'http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon',
     );
   });
 
+  it('renders image with default avatar url when no avatarUrl is present in author', async () => {
+    wrapper.setProps({
+      author: {
+        ...mockAuthor,
+        avatarUrl: null,
+      },
+    });
+
+    await wrapper.vm.$nextTick();
+
+    expect(wrapper.find('img').attributes('src')).toBe('no_avatar.png');
+  });
+
   it('renders author name', () => {
-    expect(vm.$el.textContent.trim()).toEqual('Administrator');
+    expect(wrapper.find('span').text()).toBe('Administrator');
   });
 });

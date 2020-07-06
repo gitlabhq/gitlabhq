@@ -44,10 +44,10 @@ see the details and the URL(s) affected.
 ![DAST Widget Clicked](img/dast_single_v13_0.png)
 
 [Dynamic Application Security Testing (DAST)](https://en.wikipedia.org/wiki/Dynamic_Application_Security_Testing)
-uses the popular open source tool [OWASP ZAProxy](https://github.com/zaproxy/zaproxy)
+uses the popular open source tool [OWASP Zed Attack Proxy](https://www.zaproxy.org/)
 to perform an analysis on your running web application.
 
-By default, DAST executes [ZAP Baseline Scan](https://github.com/zaproxy/zaproxy/wiki/ZAP-Baseline-Scan)
+By default, DAST executes [ZAP Baseline Scan](https://www.zaproxy.org/docs/docker/baseline-scan/)
 and performs passive scanning only. It won't actively attack your application.
 However, DAST can be [configured](#full-scan)
 to also perform an *active scan*: attack your application and produce a more extensive security report.
@@ -598,6 +598,44 @@ The DAST job should now use local copies of the DAST analyzers to scan your code
 security reports without requiring internet access.
 
 Alternatively, you can use the variable `SECURE_ANALYZERS_PREFIX` to override the base registry address of the `dast` image.
+
+## On-Demand Scans
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/218465) in GitLab 13.2.
+> - It's deployed behind a feature flag, disabled by default.
+> - It's disabled on GitLab.com.
+> - It's able to be enabled or disabled per-project.
+> - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-on-demand-scans).
+
+Passive DAST scans may be run on demand against a target website, outside the DevOps lifecycle. These scans will
+always be associated with the default or `master` branch of your project and the results can be seen in the project dashboard.
+
+![DAST On-Demand Scan](img/dast_on_demand_v13_2.png)
+
+### Enable or disable On-Demand Scans
+
+On-Demand Scans is under development and not ready for production use. It is
+deployed behind a feature flag that is **disabled by default**.
+[GitLab administrators with access to the GitLab Rails console](../../../administration/feature_flags.md)
+can enable it for your instance. On-Demand Scans can be enabled or disabled per-project
+
+To enable it:
+
+```ruby
+# Instance-wide
+Feature.enable(:security_on_demand_scans_feature_flag)
+# or by project
+Feature.enable(:security_on_demand_scans_feature_flag, Project.find(<project id>))
+```
+
+To disable it:
+
+```ruby
+# Instance-wide
+Feature.disable(:security_on_demand_scans_feature_flag)
+# or by project
+Feature.disable(:security_on_demand_scans_feature_flag, Project.find(<project id>))
+```
 
 ## Reports
 

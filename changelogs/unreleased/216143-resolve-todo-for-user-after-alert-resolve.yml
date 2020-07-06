@@ -1,0 +1,5 @@
+---
+title: Resolve user's todo when an alert is resolved
+merge_request: 35700
+author:
+type: added

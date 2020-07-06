@@ -227,7 +227,8 @@ RSpec.describe API::Repositories do
   end
 
   describe "GET /projects/:id/repository/archive(.:format)?:sha" do
-    let(:route) { "/projects/#{project.id}/repository/archive" }
+    let(:project_id) { CGI.escape(project.full_path) }
+    let(:route) { "/projects/#{project_id}/repository/archive" }
 
     before do
       allow(::Gitlab::ApplicationRateLimiter).to receive(:throttled?).and_return(false)
@@ -246,7 +247,7 @@ RSpec.describe API::Repositories do
       end
 
       it 'returns the repository archive archive.zip' do
-        get api("/projects/#{project.id}/repository/archive.zip", user)
+        get api("/projects/#{project_id}/repository/archive.zip", user)
 
         expect(response).to have_gitlab_http_status(:ok)
 
@@ -257,7 +258,7 @@ RSpec.describe API::Repositories do
       end
 
       it 'returns the repository archive archive.tar.bz2' do
-        get api("/projects/#{project.id}/repository/archive.tar.bz2", user)
+        get api("/projects/#{project_id}/repository/archive.tar.bz2", user)
 
         expect(response).to have_gitlab_http_status(:ok)
 
@@ -277,7 +278,7 @@ RSpec.describe API::Repositories do
       it 'rate limits user when thresholds hit' do
         allow(::Gitlab::ApplicationRateLimiter).to receive(:throttled?).and_return(true)
 
-        get api("/projects/#{project.id}/repository/archive.tar.bz2", user)
+        get api("/projects/#{project_id}/repository/archive.tar.bz2", user)
 
         expect(response).to have_gitlab_http_status(:too_many_requests)
       end
@@ -298,6 +299,13 @@ RSpec.describe API::Repositories do
     context 'when unauthenticated', 'and project is public' do
       it_behaves_like 'repository archive' do
         let(:project) { create(:project, :public, :repository) }
+        let(:current_user) { nil }
+      end
+    end
+
+    context 'when unauthenticated and project path has dots' do
+      it_behaves_like 'repository archive' do
+        let(:project) { create(:project, :public, :repository, path: 'path.with.dot') }
         let(:current_user) { nil }
       end
     end

@@ -18,6 +18,7 @@ module AlertManagement
       return error_invalid_status unless status_key
 
       if alert.update(status_event: status_event)
+        resolve_todos if resolved?
         success
       else
         error(alert.errors.full_messages.to_sentence)
@@ -28,10 +29,14 @@ module AlertManagement
 
     attr_reader :alert, :user, :status
 
-    delegate :project, to: :alert
+    delegate :project, :resolved?, to: :alert
 
     def allowed?
       user.can?(:update_alert_management_alert, project)
+    end
+
+    def resolve_todos
+      TodoService.new.resolve_todos_for_target(alert, user)
     end
 
     def status_key

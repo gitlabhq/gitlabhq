@@ -8,6 +8,7 @@ export default () => {
   if (gl.mrWidget) return;
 
   gl.mrWidgetData.gitlabLogo = gon.gitlab_logo;
+  gl.mrWidgetData.defaultAvatarUrl = gon.default_avatar_url;
 
   const vm = new Vue(MrWidgetOptions);
 

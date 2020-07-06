@@ -25,7 +25,7 @@ RSpec.describe AlertManagement::UpdateAlertStatusService do
       end
     end
 
-    let(:new_status) { Types::AlertManagement::StatusEnum.values['ACKNOWLEDGED'].value }
+    let(:new_status) { AlertManagement::Alert::STATUSES[:acknowledged] }
     let(:can_update) { true }
 
     subject(:response) { service.execute }
@@ -43,6 +43,23 @@ RSpec.describe AlertManagement::UpdateAlertStatusService do
 
     it 'updates the status' do
       expect { response }.to change { alert.acknowledged? }.to(true)
+    end
+
+    context 'resolving status' do
+      let(:new_status) { AlertManagement::Alert::STATUSES[:resolved] }
+
+      it 'updates the status' do
+        expect { response }.to change { alert.resolved? }.to(true)
+      end
+
+      context 'user has a pending todo' do
+        let(:user) { create(:user) }
+        let!(:todo) { create(:todo, :pending, target: alert, user: user, project: alert.project) }
+
+        it 'resolves the todo' do
+          expect { response }.to change { todo.reload.state }.from('pending').to('done')
+        end
+      end
     end
 
     context 'when user has no permissions' do

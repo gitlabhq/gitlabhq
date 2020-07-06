@@ -1341,7 +1341,7 @@ docker build:
   script: docker build -t my-image:$CI_COMMIT_REF_SLUG .
   rules:
     - changes:
-      - Dockerfile
+        - Dockerfile
       when: manual
       allow_failure: true
 ```
@@ -1367,7 +1367,7 @@ job:
   script: docker build -t my-image:$CI_COMMIT_REF_SLUG .
   rules:
     - exists:
-      - Dockerfile
+        - Dockerfile
 ```
 
 You can also use glob patterns to match multiple files in any directory within
@@ -1380,7 +1380,7 @@ job:
   script: bundle exec rspec
   rules:
     - exists:
-      - spec/**.rb
+        - spec/**.rb
 ```
 
 NOTE: **Note:**
@@ -1427,8 +1427,8 @@ docker build:
   rules:
     - if: '$VAR == "string value"'
       changes: # Will include the job and set to when:manual if any of the follow paths match a modified file.
-      - Dockerfile
-      - docker/scripts/*
+        - Dockerfile
+        - docker/scripts/*
       when: manual
   # - when: never would be redundant here, this is implied any time rules are listed.
 ```

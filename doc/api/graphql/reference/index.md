@@ -1701,6 +1701,7 @@ Represents a section of a summary of a security report
 | Name  | Type  | Description |
 | ---   |  ---- | ----------  |
 | `scannedResourcesCount` | Int | Total number of scanned resources |
+| `scannedResourcesCsvPath` | String | Path to download all the scanned resources in CSV format |
 | `vulnerabilitiesCount` | Int | Total number of vulnerabilities |
 
 ## SentryDetailedError

@@ -27,7 +27,7 @@ export default {
       return this.author.webUrl || this.author.web_url;
     },
     avatarUrl() {
-      return this.author.avatarUrl || this.author.avatar_url;
+      return this.author.avatarUrl || this.author.avatar_url || gl.mrWidgetData.defaultAvatarUrl;
     },
   },
 };
@@ -40,6 +40,6 @@ export default {
     class="author-link inline"
   >
     <img :src="avatarUrl" class="avatar avatar-inline s16" />
-    <span v-if="showAuthorName" class="author"> {{ author.name }} </span>
+    <span v-if="showAuthorName" class="author">{{ author.name }}</span>
   </a>
 </template>

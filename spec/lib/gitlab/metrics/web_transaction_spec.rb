@@ -93,23 +93,23 @@ RSpec.describe Gitlab::Metrics::WebTransaction do
 
     context 'when request goes to ActionController' do
       let(:request) { double(:request, format: double(:format, ref: :html)) }
+      let(:controller_class) { double(:controller_class, name: 'TestController') }
 
       before do
-        klass = double(:klass, name: 'TestController')
-        controller = double(:controller, class: klass, action_name: 'show', request: request)
+        controller = double(:controller, class: controller_class, action_name: 'show', request: request)
 
         env['action_controller.instance'] = controller
       end
 
       it 'tags a transaction with the name and action of a controller' do
-        expect(transaction.labels).to eq({ controller: 'TestController', action: 'show' })
+        expect(transaction.labels).to eq({ controller: 'TestController', action: 'show', feature_category: '' })
       end
 
       context 'when the request content type is not :html' do
         let(:request) { double(:request, format: double(:format, ref: :json)) }
 
         it 'appends the mime type to the transaction action' do
-          expect(transaction.labels).to eq({ controller: 'TestController', action: 'show.json' })
+          expect(transaction.labels).to eq({ controller: 'TestController', action: 'show.json', feature_category: '' })
         end
       end
 
@@ -117,7 +117,14 @@ RSpec.describe Gitlab::Metrics::WebTransaction do
         let(:request) { double(:request, format: double(:format, ref: 'http://example.com')) }
 
         it 'does not append the MIME type to the transaction action' do
-          expect(transaction.labels).to eq({ controller: 'TestController', action: 'show' })
+          expect(transaction.labels).to eq({ controller: 'TestController', action: 'show', feature_category: '' })
+        end
+      end
+
+      context 'when the feature category is known' do
+        it 'includes it in the feature category label' do
+          expect(controller_class).to receive(:feature_category_for_action).with('show').and_return(:source_code_management)
+          expect(transaction.labels).to eq({ controller: 'TestController', action: 'show', feature_category: "source_code_management" })
         end
       end
     end
