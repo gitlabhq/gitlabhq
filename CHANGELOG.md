@@ -44,6 +44,10 @@ entry.
 - Periodically recompute project authorizations. !34071
 
 
+## 13.0.9 (2020-07-06)
+
+- No changes.
+
 ## 13.0.8 (2020-07-01)
 
 ### Security (18 changes)
