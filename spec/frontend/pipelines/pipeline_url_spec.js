@@ -8,101 +8,133 @@ $.fn.popover = () => {};
 describe('Pipeline Url Component', () => {
   let wrapper;
 
+  const findPipelineUrlLink = () => wrapper.find('[data-testid="pipeline-url-link"]');
+  const findScheduledTag = () => wrapper.find('[data-testid="pipeline-url-scheduled"]');
+  const findLatestTag = () => wrapper.find('[data-testid="pipeline-url-latest"]');
+  const findYamlTag = () => wrapper.find('[data-testid="pipeline-url-yaml"]');
+  const findFailureTag = () => wrapper.find('[data-testid="pipeline-url-failure"]');
+  const findAutoDevopsTag = () => wrapper.find('[data-testid="pipeline-url-autodevops"]');
+  const findStuckTag = () => wrapper.find('[data-testid="pipeline-url-stuck"]');
+  const findDetachedTag = () => wrapper.find('[data-testid="pipeline-url-detached"]');
+
+  const defaultProps = {
+    pipeline: {
+      id: 1,
+      path: 'foo',
+      flags: {},
+    },
+    autoDevopsHelpPath: 'foo',
+    pipelineScheduleUrl: 'foo',
+  };
+
   const createComponent = props => {
     wrapper = shallowMount(PipelineUrlComponent, {
-      propsData: props,
+      propsData: { ...defaultProps, ...props },
     });
   };
 
   afterEach(() => {
     wrapper.destroy();
+    wrapper = null;
   });
 
   it('should render a table cell', () => {
-    createComponent({
-      pipeline: {
-        id: 1,
-        path: 'foo',
-        flags: {},
-      },
-      autoDevopsHelpPath: 'foo',
-    });
+    createComponent();
 
     expect(wrapper.attributes('class')).toContain('table-section');
   });
 
   it('should render a link the provided path and id', () => {
-    createComponent({
-      pipeline: {
-        id: 1,
-        path: 'foo',
-        flags: {},
-      },
-      autoDevopsHelpPath: 'foo',
-    });
+    createComponent();
 
-    expect(wrapper.find('.js-pipeline-url-link').attributes('href')).toBe('foo');
+    expect(findPipelineUrlLink().attributes('href')).toBe('foo');
 
-    expect(wrapper.find('.js-pipeline-url-link span').text()).toBe('#1');
+    expect(findPipelineUrlLink().text()).toBe('#1');
   });
 
-  it('should render latest, yaml invalid, merge request, and stuck flags when provided', () => {
+  it('should render the stuck tag when flag is provided', () => {
     createComponent({
       pipeline: {
-        id: 1,
-        path: 'foo',
         flags: {
-          latest: true,
-          yaml_errors: true,
           stuck: true,
-          merge_request_pipeline: true,
-          detached_merge_request_pipeline: true,
         },
       },
-      autoDevopsHelpPath: 'foo',
     });
 
-    expect(wrapper.find('.js-pipeline-url-latest').text()).toContain('latest');
-
-    expect(wrapper.find('.js-pipeline-url-yaml').text()).toContain('yaml invalid');
-
-    expect(wrapper.find('.js-pipeline-url-stuck').text()).toContain('stuck');
-
-    expect(wrapper.find('.js-pipeline-url-detached').text()).toContain('detached');
+    expect(findStuckTag().text()).toContain('stuck');
   });
 
-  it('should render a badge for autodevops', () => {
+  it('should render latest tag when flag is provided', () => {
     createComponent({
       pipeline: {
-        id: 1,
-        path: 'foo',
         flags: {
           latest: true,
+        },
+      },
+    });
+
+    expect(findLatestTag().text()).toContain('latest');
+  });
+
+  it('should render a yaml badge when it is invalid', () => {
+    createComponent({
+      pipeline: {
+        flags: {
           yaml_errors: true,
-          stuck: true,
+        },
+      },
+    });
+
+    expect(findYamlTag().text()).toContain('yaml invalid');
+  });
+
+  it('should render an autodevops badge when flag is provided', () => {
+    createComponent({
+      pipeline: {
+        flags: {
           auto_devops: true,
         },
       },
-      autoDevopsHelpPath: 'foo',
     });
 
-    expect(trimText(wrapper.find('.js-pipeline-url-autodevops').text())).toEqual('Auto DevOps');
+    expect(trimText(findAutoDevopsTag().text())).toBe('Auto DevOps');
+  });
+
+  it('should render a detached badge when flag is provided', () => {
+    createComponent({
+      pipeline: {
+        flags: {
+          detached_merge_request_pipeline: true,
+        },
+      },
+    });
+
+    expect(findDetachedTag().text()).toContain('detached');
   });
 
   it('should render error badge when pipeline has a failure reason set', () => {
     createComponent({
       pipeline: {
-        id: 1,
-        path: 'foo',
         flags: {
           failure_reason: true,
         },
         failure_reason: 'some reason',
       },
-      autoDevopsHelpPath: 'foo',
     });
 
-    expect(wrapper.find('.js-pipeline-url-failure').text()).toContain('error');
-    expect(wrapper.find('.js-pipeline-url-failure').attributes('title')).toContain('some reason');
+    expect(findFailureTag().text()).toContain('error');
+    expect(findFailureTag().attributes('title')).toContain('some reason');
+  });
+
+  it('should render scheduled badge when pipeline was triggered by a schedule', () => {
+    createComponent({
+      pipeline: {
+        flags: {},
+        source: 'schedule',
+      },
+    });
+
+    expect(findScheduledTag().exists()).toBe(true);
+    expect(findScheduledTag().text()).toContain('Scheduled');
   });
 });

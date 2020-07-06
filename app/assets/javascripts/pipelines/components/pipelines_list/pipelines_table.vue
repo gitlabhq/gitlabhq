@@ -22,6 +22,11 @@ export default {
       type: Array,
       required: true,
     },
+    pipelineScheduleUrl: {
+      type: String,
+      required: false,
+      default: '',
+    },
     updateGraphDropdown: {
       type: Boolean,
       required: false,
@@ -91,6 +96,7 @@ export default {
       v-for="model in pipelines"
       :key="model.id"
       :pipeline="model"
+      :pipeline-schedule-url="pipelineScheduleUrl"
       :update-graph-dropdown="updateGraphDropdown"
       :auto-devops-help-path="autoDevopsHelpPath"
       :view-type="viewType"

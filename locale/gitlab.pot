@@ -4656,6 +4656,9 @@ msgstr ""
 msgid "ClassificationLabelUnavailable|is unavailable: %{reason}"
 msgstr ""
 
+msgid "Cleanup policy for tags"
+msgstr ""
+
 msgid "Clear"
 msgstr ""
 
@@ -6131,9 +6134,6 @@ msgstr ""
 msgid "Container Registry"
 msgstr ""
 
-msgid "Container Registry tag expiration policy"
-msgstr ""
-
 msgid "Container Scanning"
 msgstr ""
 
@@ -6168,7 +6168,7 @@ msgstr ""
 msgid "ContainerRegistry|%{title} was successfully scheduled for deletion"
 msgstr ""
 
-msgid "ContainerRegistry|Automatically remove extra images that aren't designed to be kept."
+msgid "ContainerRegistry|%{toggleStatus} - Tags matching the patterns defined below will be scheduled for deletion"
 msgstr ""
 
 msgid "ContainerRegistry|Build an image"
@@ -6177,10 +6177,16 @@ msgstr ""
 msgid "ContainerRegistry|CLI Commands"
 msgstr ""
 
-msgid "ContainerRegistry|Container Registry"
+msgid "ContainerRegistry|Cleanup policy for tags is disabled"
 msgstr ""
 
-msgid "ContainerRegistry|Container Registry tag expiration and retention policy is disabled"
+msgid "ContainerRegistry|Cleanup policy successfully saved."
+msgstr ""
+
+msgid "ContainerRegistry|Cleanup policy:"
+msgstr ""
+
+msgid "ContainerRegistry|Container Registry"
 msgstr ""
 
 msgid "ContainerRegistry|Copy build command"
@@ -6198,9 +6204,6 @@ msgstr ""
 msgid "ContainerRegistry|Docker connection error"
 msgstr ""
 
-msgid "ContainerRegistry|Docker tag expiration policy is %{toggleStatus}"
-msgstr ""
-
 msgid "ContainerRegistry|Expiration interval:"
 msgstr ""
 
@@ -6210,13 +6213,7 @@ msgstr ""
 msgid "ContainerRegistry|Expiration policy is disabled"
 msgstr ""
 
-msgid "ContainerRegistry|Expiration policy successfully saved."
-msgstr ""
-
 msgid "ContainerRegistry|Expiration policy will run in %{time}"
-msgstr ""
-
-msgid "ContainerRegistry|Expiration policy:"
 msgstr ""
 
 msgid "ContainerRegistry|Expiration schedule:"
@@ -6237,9 +6234,6 @@ msgstr ""
 msgid "ContainerRegistry|Image tags"
 msgstr ""
 
-msgid "ContainerRegistry|Keep and protect the images that matter most."
-msgstr ""
-
 msgid "ContainerRegistry|Login"
 msgstr ""
 
@@ -6249,19 +6243,10 @@ msgstr ""
 msgid "ContainerRegistry|Number of tags to retain:"
 msgstr ""
 
-msgid "ContainerRegistry|Please contact your administrator."
-msgstr ""
-
 msgid "ContainerRegistry|Published %{timeInfo}"
 msgstr ""
 
 msgid "ContainerRegistry|Push an image"
-msgstr ""
-
-msgid "ContainerRegistry|Regular expressions such as %{codeStart}.*-master%{codeEnd} or %{codeStart}release-.*%{codeEnd} are supported"
-msgstr ""
-
-msgid "ContainerRegistry|Regular expressions such as %{codeStart}.*-test%{codeEnd} or %{codeStart}dev-.*%{codeEnd} are supported. To select all tags, use %{codeStart}.*%{codeEnd}"
 msgstr ""
 
 msgid "ContainerRegistry|Remember to run %{docLinkStart}garbage collection%{docLinkEnd} to remove the stale data from storage."
@@ -6275,7 +6260,10 @@ msgid_plural "ContainerRegistry|Remove tags"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "ContainerRegistry|Something went wrong while fetching the expiration policy."
+msgid "ContainerRegistry|Set cleanup policy"
+msgstr ""
+
+msgid "ContainerRegistry|Something went wrong while fetching the cleanup policy."
 msgstr ""
 
 msgid "ContainerRegistry|Something went wrong while fetching the repository list."
@@ -6293,16 +6281,13 @@ msgstr ""
 msgid "ContainerRegistry|Something went wrong while scheduling %{title} for deletion. Please try again."
 msgstr ""
 
-msgid "ContainerRegistry|Something went wrong while updating the expiration policy."
+msgid "ContainerRegistry|Something went wrong while updating the cleanup policy."
 msgstr ""
 
 msgid "ContainerRegistry|Sorry, your filter produced no results."
 msgstr ""
 
 msgid "ContainerRegistry|Tag expiration policy"
-msgstr ""
-
-msgid "ContainerRegistry|Tag expiration policy is designed to:"
 msgstr ""
 
 msgid "ContainerRegistry|Tag successfully marked for deletion."
@@ -6315,9 +6300,6 @@ msgid "ContainerRegistry|Tags with names matching this regex pattern will %{ital
 msgstr ""
 
 msgid "ContainerRegistry|Tags with names matching this regex pattern will %{italicStart}expire:%{italicEnd}"
-msgstr ""
-
-msgid "ContainerRegistry|The Container Registry tag expiration and retention policies for this project have not been enabled."
 msgstr ""
 
 msgid "ContainerRegistry|The last tag related to this image was recently removed. This empty image and any associated data will be automatically removed as part of the regular Garbage Collection process. If you have any questions, contact your administrator."
@@ -6341,10 +6323,19 @@ msgstr ""
 msgid "ContainerRegistry|This image repository is scheduled for deletion"
 msgstr ""
 
+msgid "ContainerRegistry|This project's cleanup policy for tags is not enabled."
+msgstr ""
+
 msgid "ContainerRegistry|To widen your search, change or remove the filters above."
 msgstr ""
 
 msgid "ContainerRegistry|We are having trouble connecting to the Registry, which could be due to an issue with your project name or path. %{docLinkStart}More information%{docLinkEnd}"
+msgstr ""
+
+msgid "ContainerRegistry|Wildcards such as %{codeStart}.*-master%{codeEnd} or %{codeStart}release-.*%{codeEnd} are supported"
+msgstr ""
+
+msgid "ContainerRegistry|Wildcards such as %{codeStart}.*-test%{codeEnd} or %{codeStart}dev-.*%{codeEnd} are supported. To select all tags, use %{codeStart}.*%{codeEnd}"
 msgstr ""
 
 msgid "ContainerRegistry|With the Container Registry, every project can have its own space to store its Docker images. %{docLinkStart}More Information%{docLinkEnd}"
@@ -9418,9 +9409,6 @@ msgstr ""
 msgid "Expiration not enforced"
 msgstr ""
 
-msgid "Expiration policy for the Container Registry is a perfect solution for keeping the Registry space down while still enjoying the full power of GitLab CI/CD."
-msgstr ""
-
 msgid "Expired"
 msgstr ""
 
@@ -11747,6 +11735,9 @@ msgid "Health Check"
 msgstr ""
 
 msgid "Health information can be retrieved from the following endpoints. More information is available"
+msgstr ""
+
+msgid "Health status"
 msgstr ""
 
 msgid "HealthCheck|Access token is"
@@ -15391,6 +15382,9 @@ msgstr ""
 msgid "No start date"
 msgstr ""
 
+msgid "No status"
+msgstr ""
+
 msgid "No template"
 msgstr ""
 
@@ -16780,6 +16774,9 @@ msgid "Please choose a group URL with no special characters."
 msgstr ""
 
 msgid "Please complete your profile with email address"
+msgstr ""
+
+msgid "Please contact your administrator."
 msgstr ""
 
 msgid "Please convert %{linkStart}them to Git%{linkEnd}, and go through the %{linkToImportFlow} again."
@@ -19848,13 +19845,13 @@ msgstr ""
 msgid "Save comment"
 msgstr ""
 
-msgid "Save expiration policy"
-msgstr ""
-
 msgid "Save password"
 msgstr ""
 
 msgid "Save pipeline schedule"
+msgstr ""
+
+msgid "Save space and find tags in the Container Registry more easily. Enable the cleanup policy to remove stale tags and keep only the ones you need."
 msgstr ""
 
 msgid "Save template"
@@ -21139,6 +21136,9 @@ msgid "SignUp|Name is too long (maximum is %{max_length} characters)."
 msgstr ""
 
 msgid "SignUp|Username is too long (maximum is %{max_length} characters)."
+msgstr ""
+
+msgid "SignUp|Username is too short (minimum is %{min_length} characters)."
 msgstr ""
 
 msgid "Signed in"
@@ -23629,6 +23629,9 @@ msgstr ""
 msgid "This pipeline was triggered by a parent pipeline"
 msgstr ""
 
+msgid "This pipeline was triggered by a schedule."
+msgstr ""
+
 msgid "This project"
 msgstr ""
 
@@ -25639,6 +25642,9 @@ msgid "Vulnerability|%{scannerName} (version %{scannerVersion})"
 msgstr ""
 
 msgid "Vulnerability|Class"
+msgstr ""
+
+msgid "Vulnerability|Comments"
 msgstr ""
 
 msgid "Vulnerability|Crash Address"

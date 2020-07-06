@@ -4,7 +4,7 @@ import MockAdapter from 'axios-mock-adapter';
 import { GlDropdownItem } from '@gitlab/ui';
 import SidebarAssignee from '~/alert_management/components/sidebar/sidebar_assignee.vue';
 import SidebarAssignees from '~/alert_management/components/sidebar/sidebar_assignees.vue';
-import AlertSetAssignees from '~/alert_management/graphql/mutations/alert_set_assignees.graphql';
+import AlertSetAssignees from '~/alert_management/graphql/mutations/alert_set_assignees.mutation.graphql';
 import mockAlerts from '../mocks/alerts.json';
 
 const mockAlert = mockAlerts[0];

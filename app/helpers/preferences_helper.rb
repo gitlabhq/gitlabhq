@@ -70,7 +70,10 @@ module PreferencesHelper
   end
 
   def language_choices
-    Gitlab::I18n::AVAILABLE_LANGUAGES.map(&:reverse).sort
+    options_for_select(
+      Gitlab::I18n::AVAILABLE_LANGUAGES.map(&:reverse).sort,
+      current_user.preferred_language
+    )
   end
 
   private

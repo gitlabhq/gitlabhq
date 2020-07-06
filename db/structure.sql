@@ -13087,7 +13087,9 @@ CREATE TABLE public.namespaces (
     default_branch_protection smallint,
     unlock_membership_to_ldap boolean,
     max_personal_access_token_lifetime integer,
-    push_rule_id bigint
+    push_rule_id bigint,
+    shared_runners_enabled boolean DEFAULT true NOT NULL,
+    allow_descendants_override_disabled_shared_runners boolean DEFAULT false NOT NULL
 );
 
 CREATE SEQUENCE public.namespaces_id_seq
@@ -23372,6 +23374,7 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200424043515
 20200424050250
 20200424101920
+20200424102023
 20200424135319
 20200427064130
 20200428134356

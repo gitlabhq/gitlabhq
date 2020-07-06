@@ -19,7 +19,7 @@ import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import highlightCurrentUser from '~/behaviors/markdown/highlight_current_user';
 import initUserPopovers from '~/user_popovers';
 import { ALERTS_SEVERITY_LABELS, trackAlertsDetailsViewsOptions } from '../constants';
-import createIssueMutation from '../graphql/mutations/create_issue_from_alert.graphql';
+import createIssueMutation from '../graphql/mutations/create_issue_from_alert.mutation.graphql';
 import toggleSidebarStatusMutation from '../graphql/mutations/toggle_sidebar_status.mutation.graphql';
 import { visitUrl, joinPaths } from '~/lib/utils/url_utility';
 import Tracking from '~/tracking';

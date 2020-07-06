@@ -54,7 +54,7 @@ export default {
       <div class="folder-toggle-wrap d-flex align-items-center">
         <item-caret :is-group-open="isOpen" />
       </div>
-      <div class="group-text flex-grow title namespace-title prepend-left-default">
+      <div class="group-text flex-grow title namespace-title gl-ml-3">
         {{ envName }}
       </div>
     </div>

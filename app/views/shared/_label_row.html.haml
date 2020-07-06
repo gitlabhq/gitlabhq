@@ -6,7 +6,7 @@
 .label-name
   = render_label(label, tooltip: false)
 .label-description
-  .append-right-default.prepend-left-default
+  .label-description-wrapper
     - if label.description.present?
       .description-text
         = markdown_field(label, :description)

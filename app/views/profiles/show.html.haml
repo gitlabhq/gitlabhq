@@ -31,7 +31,7 @@
       %h5.gl-mt-0= s_("Profiles|Upload new avatar")
       .prepend-top-5.append-bottom-10
         %button.btn.js-choose-user-avatar-button{ type: 'button' }= s_("Profiles|Choose file...")
-        %span.avatar-file-name.prepend-left-default.js-avatar-filename= s_("Profiles|No file chosen")
+        %span.avatar-file-name.gl-ml-3.js-avatar-filename= s_("Profiles|No file chosen")
         = f.file_field_without_bootstrap :avatar, class: 'js-user-avatar-input hidden', accept: 'image/*'
       .form-text.text-muted= s_("Profiles|The maximum file size allowed is 200KB.")
       - if @user.avatar?

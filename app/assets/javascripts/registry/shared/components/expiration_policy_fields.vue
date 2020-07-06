@@ -168,7 +168,7 @@ export default {
           v-model="enabled"
           :disabled="isLoading"
         />
-        <span class="mb-2 ml-1 lh-2">
+        <span class="mb-2 ml-2 lh-2">
           <gl-sprintf :message="$options.i18n.enableToggleDescription">
             <template #toggleStatus>
               <strong>{{ policyEnabledText }}</strong>

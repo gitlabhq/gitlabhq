@@ -26,9 +26,9 @@ export default {
       :img-src="user.avatar_url"
       :img-size="26"
       :tooltip-text="user.name"
-      class="prepend-left-default js-pipeline-url-user"
+      class="gl-ml-3 js-pipeline-url-user"
     />
-    <span v-else class="prepend-left-default js-pipeline-url-api api">
+    <span v-else class="gl-ml-3 js-pipeline-url-api api">
       {{ s__('Pipelines|API') }}
     </span>
   </div>

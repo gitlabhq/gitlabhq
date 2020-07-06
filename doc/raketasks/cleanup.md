@@ -64,7 +64,11 @@ $ sudo gitlab-rake gitlab:cleanup:orphan_lfs_files
 I, [2020-01-08T20:51:17.148765 #43765]  INFO -- : Removed unreferenced LFS files: 12
 ```
 
-## Remove garbage from filesystem
+## Clean up project upload files
+
+Clean up project upload files if they don't exist in GitLab database.
+
+### Clean up project upload files from filesystem
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/20863) in GitLab 11.2.
 
@@ -100,11 +104,11 @@ I, [2018-07-27T12:08:33.755624 #89817]  INFO -- : Did fix /opt/gitlab/embedded/s
 I, [2018-07-27T12:08:33.760257 #89817]  INFO -- : Did move to lost and found /opt/gitlab/embedded/service/gitlab-rails/public/uploads/foo/bar/1dd6f0f7eefd2acc4c2233f89a0f7b0b/image.png -> /opt/gitlab/embedded/service/gitlab-rails/public/uploads/-/project-lost-found/foo/bar/1dd6f0f7eefd2acc4c2233f89a0f7b0b/image.png
 ```
 
-## Remove garbage from object storage
+### Clean up project upload files from object storage
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/20918) in GitLab 11.2.
 
-Remove object store upload files if they don't exist in GitLab database.
+Move object store upload files to a lost and found directory if they don't exist in GitLab database.
 
 ```shell
 # omnibus-gitlab

@@ -345,6 +345,8 @@ module QA
         autoload :Edit, 'qa/page/project/wiki/edit'
         autoload :Show, 'qa/page/project/wiki/show'
         autoload :GitAccess, 'qa/page/project/wiki/git_access'
+        autoload :Sidebar, 'qa/page/project/wiki/sidebar'
+        autoload :List, 'qa/page/project/wiki/list'
       end
 
       module WebIDE

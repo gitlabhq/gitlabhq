@@ -110,9 +110,13 @@ module IssuableActions
 
   def bulk_update
     result = Issuable::BulkUpdateService.new(parent, current_user, bulk_update_params).execute(resource_name)
-    quantity = result[:count]
 
-    render json: { notice: "#{quantity} #{resource_name.pluralize(quantity)} updated" }
+    if result.success?
+      quantity = result.payload[:count]
+      render json: { notice: "#{quantity} #{resource_name.pluralize(quantity)} updated" }
+    elsif result.error?
+      render json: { errors: result.message }, status: result.http_status
+    end
   end
 
   # rubocop:disable CodeReuse/ActiveRecord

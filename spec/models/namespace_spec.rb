@@ -65,6 +65,36 @@ RSpec.describe Namespace do
         it { expect(group).to be_valid }
       end
     end
+
+    describe '1 char path length' do
+      it 'does not allow to create one' do
+        namespace = build(:namespace, path: 'j')
+
+        expect(namespace).not_to be_valid
+        expect(namespace.errors[:path].first).to eq('is too short (minimum is 2 characters)')
+      end
+
+      it 'does not allow to update one' do
+        namespace = create(:namespace)
+        namespace.update(path: 'j')
+
+        expect(namespace).not_to be_valid
+        expect(namespace.errors[:path].first).to eq('is too short (minimum is 2 characters)')
+      end
+
+      it 'allows updating other attributes for existing record' do
+        namespace = build(:namespace, path: 'j')
+        namespace.save(validate: false)
+        namespace.reload
+
+        expect(namespace.path).to eq('j')
+
+        namespace.update(name: 'something new')
+
+        expect(namespace).to be_valid
+        expect(namespace.name).to eq('something new')
+      end
+    end
   end
 
   describe 'delegate' do

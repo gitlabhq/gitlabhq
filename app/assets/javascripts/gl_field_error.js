@@ -114,7 +114,7 @@ export default class GlFieldError {
     this.state.empty = currentValue === '';
     this.state.submitted = true;
     this.renderValidity();
-    this.form.focusOnFirstInvalid.apply(this.form);
+    this.form.focusInvalid.apply(this.form);
 
     // For UX, wait til after first invalid submission to check each keyup
     this.inputElement

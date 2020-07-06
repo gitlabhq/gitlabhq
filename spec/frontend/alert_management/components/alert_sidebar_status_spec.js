@@ -2,7 +2,7 @@ import { mount } from '@vue/test-utils';
 import { GlDropdownItem, GlLoadingIcon } from '@gitlab/ui';
 import { trackAlertStatusUpdateOptions } from '~/alert_management/constants';
 import AlertSidebarStatus from '~/alert_management/components/sidebar/sidebar_status.vue';
-import updateAlertStatus from '~/alert_management/graphql/mutations/update_alert_status.graphql';
+import updateAlertStatus from '~/alert_management/graphql/mutations/update_alert_status.mutation.graphql';
 import Tracking from '~/tracking';
 import mockAlerts from '../mocks/alerts.json';
 

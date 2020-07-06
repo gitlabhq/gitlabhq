@@ -21,7 +21,7 @@ import {
   trackAlertListViewsOptions,
   trackAlertStatusUpdateOptions,
 } from '~/alert_management/constants';
-import updateAlertStatus from '~/alert_management/graphql/mutations/update_alert_status.graphql';
+import updateAlertStatus from '~/alert_management/graphql/mutations/update_alert_status.mutation.graphql';
 import mockAlerts from '../mocks/alerts.json';
 import Tracking from '~/tracking';
 

@@ -126,7 +126,7 @@ export default {
       <div class="add-border ci-status-icon ci-status-icon-failed ci-error js-ci-error">
         <icon :size="24" name="status_failed_borderless" />
       </div>
-      <div class="media-body prepend-left-default" v-html="errorText"></div>
+      <div class="media-body gl-ml-3" v-html="errorText"></div>
     </template>
     <template v-else-if="hasPipeline">
       <a :href="status.details_path" class="align-self-start append-right-default">

@@ -2,7 +2,7 @@ import { shallowMount } from '@vue/test-utils';
 import { GlSprintf } from '@gitlab/ui';
 import component from '~/registry/shared/components/expiration_policy_fields.vue';
 
-import { NAME_REGEX_LENGTH } from '~/registry/shared/constants';
+import { NAME_REGEX_LENGTH, ENABLED_TEXT, DISABLED_TEXT } from '~/registry/shared/constants';
 import { formOptions } from '../mock_data';
 
 describe('Expiration Policy Form', () => {
@@ -169,13 +169,13 @@ describe('Expiration Policy Form', () => {
     it('toggleDescriptionText show disabled when settings.enabled is false', () => {
       mountComponent();
       const toggleHelpText = findFormGroup('toggle').find('span');
-      expect(toggleHelpText.html()).toContain('disabled');
+      expect(toggleHelpText.html()).toContain(DISABLED_TEXT);
     });
 
     it('toggleDescriptionText show enabled when settings.enabled is true', () => {
       mountComponent({ value: { enabled: true } });
       const toggleHelpText = findFormGroup('toggle').find('span');
-      expect(toggleHelpText.html()).toContain('enabled');
+      expect(toggleHelpText.html()).toContain(ENABLED_TEXT);
     });
   });
 });

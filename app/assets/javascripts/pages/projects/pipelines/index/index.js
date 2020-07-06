@@ -40,6 +40,7 @@ document.addEventListener(
           props: {
             store: this.store,
             endpoint: this.dataset.endpoint,
+            pipelineScheduleUrl: this.dataset.pipelineScheduleUrl,
             helpPagePath: this.dataset.helpPagePath,
             emptyStateSvgPath: this.dataset.emptyStateSvgPath,
             errorStateSvgPath: this.dataset.errorStateSvgPath,

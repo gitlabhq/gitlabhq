@@ -11,18 +11,40 @@ module Issuable
     end
 
     def execute(type)
-      model_class = type.classify.constantize
-      update_class = type.classify.pluralize.constantize::UpdateService
-
       ids = params.delete(:issuable_ids).split(",")
-      items = find_issuables(parent, model_class, ids)
+      set_update_params(type)
+      items = update_issuables(type, ids)
 
+      response_success(payload: { count: items.count })
+    rescue ArgumentError => e
+      response_error(e.message, 422)
+    end
+
+    private
+
+    def set_update_params(type)
       params.slice!(*permitted_attrs(type))
       params.delete_if { |k, v| v.blank? }
 
       if params[:assignee_ids] == [IssuableFinder::Params::NONE.to_s]
         params[:assignee_ids] = []
       end
+    end
+
+    def permitted_attrs(type)
+      attrs = %i(state_event milestone_id add_label_ids remove_label_ids subscription_event)
+
+      if type == 'issue' || type == 'merge_request'
+        attrs.push(:assignee_ids)
+      else
+        attrs.push(:assignee_id)
+      end
+    end
+
+    def update_issuables(type, ids)
+      model_class = type.classify.constantize
+      update_class = type.classify.pluralize.constantize::UpdateService
+      items = find_issuables(parent, model_class, ids)
 
       items.each do |issuable|
         next unless can?(current_user, :"update_#{type}", issuable)
@@ -30,26 +52,7 @@ module Issuable
         update_class.new(issuable.issuing_parent, current_user, params).execute(issuable)
       end
 
-      {
-        count:    items.count,
-        success:  !items.count.zero?
-      }
-    end
-
-    private
-
-    def permitted_attrs(type)
-      attrs = %i(state_event milestone_id add_label_ids remove_label_ids subscription_event)
-
-      issuable_specific_attrs(type, attrs)
-    end
-
-    def issuable_specific_attrs(type, attrs)
-      if type == 'issue' || type == 'merge_request'
-        attrs.push(:assignee_ids)
-      else
-        attrs.push(:assignee_id)
-      end
+      items
     end
 
     def find_issuables(parent, model_class, ids)
@@ -58,6 +61,14 @@ module Issuable
       elsif parent.is_a?(Group)
         model_class.id_in(ids).of_projects(parent.all_projects)
       end
+    end
+
+    def response_success(message: nil, payload: nil)
+      ServiceResponse.success(message: message, payload: payload)
+    end
+
+    def response_error(message, http_status)
+      ServiceResponse.error(message: message, http_status: http_status)
     end
   end
 end

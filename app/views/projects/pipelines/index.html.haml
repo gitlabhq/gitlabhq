@@ -7,6 +7,7 @@
   params: params.to_json,
   "help-page-path" => help_page_path('ci/quick_start/README'),
   "help-auto-devops-path" => help_page_path('topics/autodevops/index.md'),
+  "pipeline-schedule-url" => pipeline_schedules_path(@project),
   "empty-state-svg-path" => image_path('illustrations/pipelines_empty.svg'),
   "error-state-svg-path" => image_path('illustrations/pipelines_failed.svg'),
   "no-pipelines-svg-path" => image_path('illustrations/pipelines_pending.svg'),

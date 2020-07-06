@@ -120,13 +120,6 @@ RSpec.describe PreferencesHelper do
     end
   end
 
-  describe '#language_choices' do
-    it 'returns an array of all available languages' do
-      expect(helper.language_choices).to be_an(Array)
-      expect(helper.language_choices.map(&:first)).to eq(Gitlab::I18n::AVAILABLE_LANGUAGES.values.sort)
-    end
-  end
-
   def stub_user(messages = {})
     if messages.empty?
       allow(helper).to receive(:current_user).and_return(nil)

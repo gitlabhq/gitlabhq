@@ -162,6 +162,7 @@ export default {
       autocomplete="new-password"
       :placeholder="placeholder"
       :required="passwordRequired"
+      :data-qa-selector="`${fieldId}_field`"
     />
     <gl-form-input
       v-else
@@ -170,6 +171,7 @@ export default {
       :type="type"
       :placeholder="placeholder"
       :required="required"
+      :data-qa-selector="`${fieldId}_field`"
     />
   </gl-form-group>
 </template>

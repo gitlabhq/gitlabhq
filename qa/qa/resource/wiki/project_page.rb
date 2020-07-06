@@ -34,7 +34,7 @@ module QA
         rescue ResourceURLMissingError
           # TODO
           # workaround
-          project.web_url.concat("/-/wikis/#{slug}")
+          "#{project.web_url}/-/wikis/#{slug}"
         end
 
         def api_get_path

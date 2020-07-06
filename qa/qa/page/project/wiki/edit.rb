@@ -4,7 +4,9 @@ module QA
   module Page
     module Project
       module Wiki
-        class Edit < Page::Base
+        class Edit < Base
+          include Wiki::Sidebar
+
           view 'app/views/shared/wikis/_form.html.haml' do
             element :wiki_title_textbox
             element :wiki_content_textarea

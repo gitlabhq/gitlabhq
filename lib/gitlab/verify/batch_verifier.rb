@@ -71,9 +71,8 @@ module Gitlab
       # It's already set to Logger::INFO, but acts as if it is set to
       # Logger::DEBUG, and this fixes it...
       def fix_google_api_logger
-        if Object.const_defined?('Google::Apis')
-          Google::Apis.logger.level = Logger::INFO
-        end
+        require 'google/apis'
+        Google::Apis.logger.level = Logger::INFO
       end
 
       # This should return an ActiveRecord::Relation suitable for calling #in_batches on

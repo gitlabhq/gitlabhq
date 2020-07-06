@@ -2,24 +2,6 @@
 
 exports[`Registry Settings App renders 1`] = `
 <div>
-  <p>
-    
-    Tag expiration policy is designed to:
-  
-  </p>
-   
-  <ul>
-    <li>
-      Keep and protect the images that matter most.
-    </li>
-     
-    <li>
-      
-      Automatically remove extra images that aren't designed to be kept.
-    
-    </li>
-  </ul>
-   
   <settings-form-stub />
 </div>
 `;

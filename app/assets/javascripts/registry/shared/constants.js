@@ -1,25 +1,25 @@
 import { s__, __ } from '~/locale';
 
 export const FETCH_SETTINGS_ERROR_MESSAGE = s__(
-  'ContainerRegistry|Something went wrong while fetching the expiration policy.',
+  'ContainerRegistry|Something went wrong while fetching the cleanup policy.',
 );
 
 export const UPDATE_SETTINGS_ERROR_MESSAGE = s__(
-  'ContainerRegistry|Something went wrong while updating the expiration policy.',
+  'ContainerRegistry|Something went wrong while updating the cleanup policy.',
 );
 
 export const UPDATE_SETTINGS_SUCCESS_MESSAGE = s__(
-  'ContainerRegistry|Expiration policy successfully saved.',
+  'ContainerRegistry|Cleanup policy successfully saved.',
 );
 
 export const NAME_REGEX_LENGTH = 255;
 
-export const ENABLED_TEXT = __('enabled');
-export const DISABLED_TEXT = __('disabled');
+export const ENABLED_TEXT = __('Enabled');
+export const DISABLED_TEXT = __('Disabled');
 
-export const ENABLE_TOGGLE_LABEL = s__('ContainerRegistry|Expiration policy:');
+export const ENABLE_TOGGLE_LABEL = s__('ContainerRegistry|Cleanup policy:');
 export const ENABLE_TOGGLE_DESCRIPTION = s__(
-  'ContainerRegistry|Docker tag expiration policy is %{toggleStatus}',
+  'ContainerRegistry|%{toggleStatus} - Tags matching the patterns defined below will be scheduled for deletion',
 );
 
 export const TEXT_AREA_INVALID_FEEDBACK = s__(
@@ -34,12 +34,12 @@ export const NAME_REGEX_LABEL = s__(
 );
 export const NAME_REGEX_PLACEHOLDER = '.*';
 export const NAME_REGEX_DESCRIPTION = s__(
-  'ContainerRegistry|Regular expressions such as %{codeStart}.*-test%{codeEnd} or %{codeStart}dev-.*%{codeEnd} are supported. To select all tags, use %{codeStart}.*%{codeEnd}',
+  'ContainerRegistry|Wildcards such as %{codeStart}.*-test%{codeEnd} or %{codeStart}dev-.*%{codeEnd} are supported. To select all tags, use %{codeStart}.*%{codeEnd}',
 );
 export const NAME_REGEX_KEEP_LABEL = s__(
   'ContainerRegistry|Tags with names matching this regex pattern will %{italicStart}be preserved:%{italicEnd}',
 );
 export const NAME_REGEX_KEEP_PLACEHOLDER = '';
 export const NAME_REGEX_KEEP_DESCRIPTION = s__(
-  'ContainerRegistry|Regular expressions such as %{codeStart}.*-master%{codeEnd} or %{codeStart}release-.*%{codeEnd} are supported',
+  'ContainerRegistry|Wildcards such as %{codeStart}.*-master%{codeEnd} or %{codeStart}release-.*%{codeEnd} are supported',
 );

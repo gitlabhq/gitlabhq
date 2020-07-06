@@ -134,6 +134,11 @@
   }
 }
 
+.label-description-wrapper {
+  margin-right: 8px;
+  margin-left: 8px;
+}
+
 .prioritized-labels {
   margin-bottom: 30px;
 
@@ -385,7 +390,7 @@
       order: 3;
       width: 100%;
 
-      > .append-right-default.prepend-left-default {
+      > .label-description-wrapper {
         margin-left: 0;
         margin-right: 0;
       }

@@ -12,6 +12,14 @@ RSpec.describe PipelineUpdateWorker do
 
         described_class.new.perform(pipeline.id)
       end
+
+      include_examples 'an idempotent worker' do
+        let(:job_args) { [pipeline.id] }
+
+        it 'sets pipeline status to skipped' do
+          expect { subject }.to change { pipeline.reload.status }.from('pending').to('skipped')
+        end
+      end
     end
 
     context 'when pipeline does not exist' do

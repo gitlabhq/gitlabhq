@@ -18,8 +18,8 @@ RSpec.describe Issuable::BulkUpdateService do
     it 'succeeds' do
       result = bulk_update(issuables, milestone_id: milestone.id)
 
-      expect(result[:success]).to be_truthy
-      expect(result[:count]).to eq(issuables.count)
+      expect(result.success?).to be_truthy
+      expect(result.payload[:count]).to eq(issuables.count)
     end
 
     it 'updates the issuables milestone' do
@@ -121,8 +121,8 @@ RSpec.describe Issuable::BulkUpdateService do
       it 'succeeds and returns the correct number of issues updated' do
         result = bulk_update(issues, state_event: 'close')
 
-        expect(result[:success]).to be_truthy
-        expect(result[:count]).to eq(issues.count)
+        expect(result.success?).to be_truthy
+        expect(result.payload[:count]).to eq(issues.count)
       end
 
       it 'closes all the issues passed' do
@@ -139,8 +139,8 @@ RSpec.describe Issuable::BulkUpdateService do
       it 'succeeds and returns the correct number of issues updated' do
         result = bulk_update(issues, state_event: 'reopen')
 
-        expect(result[:success]).to be_truthy
-        expect(result[:count]).to eq(issues.count)
+        expect(result.success?).to be_truthy
+        expect(result.payload[:count]).to eq(issues.count)
       end
 
       it 'reopens all the issues passed' do
@@ -161,8 +161,8 @@ RSpec.describe Issuable::BulkUpdateService do
 
           result = bulk_update(merge_request, assignee_ids: [user.id, new_assignee.id])
 
-          expect(result[:success]).to be_truthy
-          expect(result[:count]).to eq(1)
+          expect(result.success?).to be_truthy
+          expect(result.payload[:count]).to eq(1)
         end
 
         it 'updates the assignee to the user ID passed' do
@@ -199,8 +199,8 @@ RSpec.describe Issuable::BulkUpdateService do
 
           result = bulk_update(issue, assignee_ids: [new_assignee.id])
 
-          expect(result[:success]).to be_truthy
-          expect(result[:count]).to eq(1)
+          expect(result.success?).to be_truthy
+          expect(result.payload[:count]).to eq(1)
         end
 
         it 'updates the assignee to the user ID passed' do
@@ -273,8 +273,8 @@ RSpec.describe Issuable::BulkUpdateService do
         issue2 = create(:issue, project: create(:project))
         result = bulk_update([issue1, issue2], assignee_ids: [user.id])
 
-        expect(result[:success]).to be_truthy
-        expect(result[:count]).to eq(1)
+        expect(result.success?).to be_truthy
+        expect(result.payload[:count]).to eq(1)
 
         expect(issue1.reload.assignees).to eq([user])
         expect(issue2.reload.assignees).to be_empty
@@ -332,8 +332,8 @@ RSpec.describe Issuable::BulkUpdateService do
         milestone = create(:milestone, group: group)
         result = bulk_update([issue1, issue2, issue3], milestone_id: milestone.id)
 
-        expect(result[:success]).to be_truthy
-        expect(result[:count]).to eq(2)
+        expect(result.success?).to be_truthy
+        expect(result.payload[:count]).to eq(2)
 
         expect(issue1.reload.milestone).to eq(milestone)
         expect(issue2.reload.milestone).to be_nil

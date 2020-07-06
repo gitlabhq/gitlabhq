@@ -2,12 +2,13 @@
 import { mapActions, mapState, mapGetters } from 'vuex';
 import { GlCard, GlDeprecatedButton, GlLoadingIcon } from '@gitlab/ui';
 import Tracking from '~/tracking';
+import { mapComputed } from '~/vuex_shared/bindings';
 import {
   UPDATE_SETTINGS_ERROR_MESSAGE,
   UPDATE_SETTINGS_SUCCESS_MESSAGE,
 } from '../../shared/constants';
-import { mapComputed } from '~/vuex_shared/bindings';
 import ExpirationPolicyFields from '../../shared/components/expiration_policy_fields.vue';
+import { SET_CLEANUP_POLICY_BUTTON, CLEANUP_POLICY_CARD_HEADER } from '../constants';
 
 export default {
   components: {
@@ -20,6 +21,10 @@ export default {
   labelsConfig: {
     cols: 3,
     align: 'right',
+  },
+  i18n: {
+    CLEANUP_POLICY_CARD_HEADER,
+    SET_CLEANUP_POLICY_BUTTON,
   },
   data() {
     return {
@@ -60,7 +65,7 @@ export default {
   <form ref="form-element" @submit.prevent="submit" @reset.prevent="reset">
     <gl-card>
       <template #header>
-        {{ s__('ContainerRegistry|Tag expiration policy') }}
+        {{ $options.i18n.CLEANUP_POLICY_CARD_HEADER }}
       </template>
       <template #default>
         <expiration-policy-fields
@@ -88,7 +93,7 @@ export default {
             variant="success"
             class="d-flex justify-content-center align-items-center js-no-auto-disable"
           >
-            {{ __('Save expiration policy') }}
+            {{ $options.i18n.SET_CLEANUP_POLICY_BUTTON }}
             <gl-loading-icon v-if="isLoading" class="ml-2" />
           </gl-deprecated-button>
         </div>

@@ -3,7 +3,7 @@ import { GlDropdown, GlDropdownItem, GlButton } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import Tracking from '~/tracking';
 import { trackAlertStatusUpdateOptions } from '../constants';
-import updateAlertStatus from '../graphql/mutations/update_alert_status.graphql';
+import updateAlertStatus from '../graphql/mutations/update_alert_status.mutation.graphql';
 
 export default {
   statuses: {

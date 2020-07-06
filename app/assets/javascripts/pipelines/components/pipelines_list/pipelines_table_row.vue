@@ -35,6 +35,11 @@ export default {
       type: Object,
       required: true,
     },
+    pipelineScheduleUrl: {
+      type: String,
+      required: false,
+      default: '',
+    },
     updateGraphDropdown: {
       type: Boolean,
       required: false,
@@ -274,7 +279,11 @@ export default {
       </div>
     </div>
 
-    <pipeline-url :pipeline="pipeline" :auto-devops-help-path="autoDevopsHelpPath" />
+    <pipeline-url
+      :pipeline="pipeline"
+      :pipeline-schedule-url="pipelineScheduleUrl"
+      :auto-devops-help-path="autoDevopsHelpPath"
+    />
     <pipeline-triggerer :pipeline="pipeline" />
 
     <div class="table-section section-wrap section-20">

@@ -4,12 +4,9 @@ module QA
   module Page
     module Project
       module Wiki
-        class Show < Page::Base
+        class Show < Base
+          include Wiki::Sidebar
           include Component::LazyLoader
-
-          view 'app/views/shared/wikis/_sidebar.html.haml' do
-            element :clone_repository_link
-          end
 
           view 'app/views/shared/wikis/show.html.haml' do
             element :wiki_page_title
@@ -52,14 +49,6 @@ module QA
 
           def click_edit
             click_element(:edit_page_button)
-          end
-
-          def click_clone_repository
-            click_element(:clone_repository_link)
-          end
-
-          def wiki_text
-            find_element(:wiki_page_content).text
           end
 
           def has_title?(title)

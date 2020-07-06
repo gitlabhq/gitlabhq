@@ -2935,6 +2935,7 @@ test:
 
 Note the following:
 
+- Artifacts do not display in the merge request UI when using variables to define the `artifacts:paths`.
 - A maximum of 10 job artifacts per merge request can be exposed.
 - Glob patterns are unsupported.
 - If a directory is specified, the link will be to the job [artifacts browser](../pipelines/job_artifacts.md#browsing-artifacts) if there is more than

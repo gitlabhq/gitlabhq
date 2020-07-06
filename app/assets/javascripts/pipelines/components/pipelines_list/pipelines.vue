@@ -42,6 +42,11 @@ export default {
       type: String,
       required: true,
     },
+    pipelineScheduleUrl: {
+      type: String,
+      required: false,
+      default: '',
+    },
     helpPagePath: {
       type: String,
       required: true,
@@ -340,6 +345,7 @@ export default {
       <div v-else-if="stateToRender === $options.stateMap.tableList" class="table-holder">
         <pipelines-table-component
           :pipelines="state.pipelines"
+          :pipeline-schedule-url="pipelineScheduleUrl"
           :update-graph-dropdown="updateGraphDropdown"
           :auto-devops-help-path="autoDevopsPath"
           :view-type="viewType"

@@ -7,6 +7,7 @@ export const FILTER_PIPELINES_SEARCH_DELAY = 200;
 export const ANY_TRIGGER_AUTHOR = 'Any';
 export const SUPPORTED_FILTER_PARAMETERS = ['username', 'ref', 'status'];
 export const FILTER_TAG_IDENTIFIER = 'tag';
+export const SCHEDULE_ORIGIN = 'schedule';
 
 export const TestStatus = {
   FAILED: 'failed',
