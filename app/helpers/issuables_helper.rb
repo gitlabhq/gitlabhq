@@ -385,6 +385,14 @@ module IssuablesHelper
     end
   end
 
+  def issuable_squash_option?(issuable, project)
+    if issuable.persisted?
+      issuable.squash
+    else
+      project.squash_enabled_by_default?
+    end
+  end
+
   private
 
   def sidebar_gutter_collapsed?

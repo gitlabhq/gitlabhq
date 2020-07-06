@@ -1,0 +1,42 @@
+- form = local_assigns.fetch(:form)
+
+= form.fields_for :project_setting do |settings|
+  .form-group
+    %b= s_('ProjectSettings|Squash commits when merging')
+    %p.text-secondary
+      = s_('ProjectSettings|Set the default behavior and availability of this option in merge requests. Changes made are also applied to existing merge requests.')
+      = link_to "What is squashing?",
+        help_page_path('user/project/merge_requests/squash_and_merge.md'),
+        target: '_blank'
+
+    .form-check.gl-mb-2
+      = settings.radio_button :squash_option, :never, class: "form-check-input"
+      = label_tag :project_project_setting_attributes_squash_option_never, class: 'form-check-label' do
+        .gl-font-weight-bold
+          = s_('ProjectSettings|Do not allow')
+        .text-secondary
+          = s_('ProjectSettings|Squashing is never performed and the checkbox is hidden.')
+
+    .form-check.gl-mb-2
+      = settings.radio_button :squash_option, :default_off, class: "form-check-input"
+      = label_tag :project_project_setting_attributes_squash_option_default_off, class: 'form-check-label' do
+        .gl-font-weight-bold
+          = s_('ProjectSettings|Allow')
+        .text-secondary
+          = s_('ProjectSettings|Checkbox is visible and unselected by default.')
+
+    .form-check.gl-mb-2
+      = settings.radio_button :squash_option, :default_on, class: "form-check-input"
+      = label_tag :project_project_setting_attributes_squash_option_default_on, class: 'form-check-label' do
+        .gl-font-weight-bold
+          = s_('ProjectSettings|Encourage')
+        .text-secondary
+          = s_('ProjectSettings|Checkbox is visible and selected by default.')
+
+    .form-check.gl-mb-2
+      = settings.radio_button :squash_option, :always, class: "form-check-input"
+      = label_tag :project_project_setting_attributes_squash_option_always, class: 'form-check-label' do
+        .gl-font-weight-bold
+          = s_('ProjectSettings|Require')
+        .text-secondary
+          = s_('ProjectSettings|Squashing is always performed. Checkbox is visible and selected, and users cannot change it.')

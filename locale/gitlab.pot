@@ -17745,6 +17745,9 @@ msgstr ""
 msgid "ProjectSettings|All discussions must be resolved"
 msgstr ""
 
+msgid "ProjectSettings|Allow"
+msgstr ""
+
 msgid "ProjectSettings|Allow users to make copies of your repository to a new project"
 msgstr ""
 
@@ -17758,6 +17761,12 @@ msgid "ProjectSettings|Badges"
 msgstr ""
 
 msgid "ProjectSettings|Build, test, and deploy your changes"
+msgstr ""
+
+msgid "ProjectSettings|Checkbox is visible and selected by default."
+msgstr ""
+
+msgid "ProjectSettings|Checkbox is visible and unselected by default."
 msgstr ""
 
 msgid "ProjectSettings|Choose your merge method, merge options, merge checks, and merge suggestions."
@@ -17778,10 +17787,16 @@ msgstr ""
 msgid "ProjectSettings|Disable email notifications"
 msgstr ""
 
+msgid "ProjectSettings|Do not allow"
+msgstr ""
+
 msgid "ProjectSettings|Enable 'Delete source branch' option by default"
 msgstr ""
 
 msgid "ProjectSettings|Enable merge trains and pipelines for merged results"
+msgstr ""
+
+msgid "ProjectSettings|Encourage"
 msgstr ""
 
 msgid "ProjectSettings|Every merge creates a merge commit"
@@ -17898,6 +17913,12 @@ msgstr ""
 msgid "ProjectSettings|Repository"
 msgstr ""
 
+msgid "ProjectSettings|Require"
+msgstr ""
+
+msgid "ProjectSettings|Set the default behavior and availability of this option in merge requests. Changes made are also applied to existing merge requests."
+msgstr ""
+
 msgid "ProjectSettings|Share code pastes with others out of Git repository"
 msgstr ""
 
@@ -17911,6 +17932,15 @@ msgid "ProjectSettings|Skipped pipelines are considered successful"
 msgstr ""
 
 msgid "ProjectSettings|Snippets"
+msgstr ""
+
+msgid "ProjectSettings|Squash commits when merging"
+msgstr ""
+
+msgid "ProjectSettings|Squashing is always performed. Checkbox is visible and selected, and users cannot change it."
+msgstr ""
+
+msgid "ProjectSettings|Squashing is never performed and the checkbox is hidden."
 msgstr ""
 
 msgid "ProjectSettings|Submit changes to be merged upstream"
