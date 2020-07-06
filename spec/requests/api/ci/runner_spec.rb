@@ -1592,8 +1592,105 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
         job.run!
       end
 
+      shared_examples_for 'rejecting artifacts that are too large' do
+        let(:filesize) { 100.megabytes.to_i }
+        let(:sample_max_size) { (filesize / 1.megabyte) - 10 } # Set max size to be smaller than file size to trigger error
+
+        shared_examples_for 'failed request' do
+          it 'responds with payload too large error' do
+            send_request
+
+            expect(response).to have_gitlab_http_status(:payload_too_large)
+          end
+        end
+
+        context 'based on plan limit setting' do
+          let(:application_max_size) { sample_max_size + 100 }
+          let(:limit_name) { "#{Ci::JobArtifact::PLAN_LIMIT_PREFIX}archive" }
+
+          before do
+            create(:plan_limits, :default_plan, limit_name => sample_max_size)
+            stub_application_setting(max_artifacts_size: application_max_size)
+          end
+
+          context 'and feature flag ci_max_artifact_size_per_type is enabled' do
+            before do
+              stub_feature_flags(ci_max_artifact_size_per_type: true)
+            end
+
+            it_behaves_like 'failed request'
+          end
+
+          context 'and feature flag ci_max_artifact_size_per_type is disabled' do
+            before do
+              stub_feature_flags(ci_max_artifact_size_per_type: false)
+            end
+
+            it 'bases of project closest setting' do
+              send_request
+
+              expect(response).to have_gitlab_http_status(success_code)
+            end
+          end
+        end
+
+        context 'based on application setting' do
+          before do
+            stub_application_setting(max_artifacts_size: sample_max_size)
+          end
+
+          it_behaves_like 'failed request'
+        end
+
+        context 'based on root namespace setting' do
+          let(:application_max_size) { sample_max_size + 10 }
+
+          before do
+            stub_application_setting(max_artifacts_size: application_max_size)
+            root_namespace.update!(max_artifacts_size: sample_max_size)
+          end
+
+          it_behaves_like 'failed request'
+        end
+
+        context 'based on child namespace setting' do
+          let(:application_max_size) { sample_max_size + 10 }
+          let(:root_namespace_max_size) { sample_max_size + 10 }
+
+          before do
+            stub_application_setting(max_artifacts_size: application_max_size)
+            root_namespace.update!(max_artifacts_size: root_namespace_max_size)
+            namespace.update!(max_artifacts_size: sample_max_size)
+          end
+
+          it_behaves_like 'failed request'
+        end
+
+        context 'based on project setting' do
+          let(:application_max_size) { sample_max_size + 10 }
+          let(:root_namespace_max_size) { sample_max_size + 10 }
+          let(:child_namespace_max_size) { sample_max_size + 10 }
+
+          before do
+            stub_application_setting(max_artifacts_size: application_max_size)
+            root_namespace.update!(max_artifacts_size: root_namespace_max_size)
+            namespace.update!(max_artifacts_size: child_namespace_max_size)
+            project.update!(max_artifacts_size: sample_max_size)
+          end
+
+          it_behaves_like 'failed request'
+        end
+      end
+
       describe 'POST /api/v4/jobs/:id/artifacts/authorize' do
         context 'when using token as parameter' do
+          context 'and the artifact is too large' do
+            it_behaves_like 'rejecting artifacts that are too large' do
+              let(:success_code) { :ok }
+              let(:send_request) { authorize_artifacts_with_token_in_params(filesize: filesize) }
+            end
+          end
+
           context 'posting artifacts to running job' do
             subject do
               authorize_artifacts_with_token_in_params
@@ -1649,56 +1746,6 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
 
                 it_behaves_like 'authorizes local file'
               end
-            end
-          end
-
-          context 'when artifact is too large' do
-            let(:sample_max_size) { 100 }
-
-            shared_examples_for 'rejecting too large artifacts' do
-              it 'fails to post' do
-                authorize_artifacts_with_token_in_params(filesize: sample_max_size.megabytes.to_i)
-
-                expect(response).to have_gitlab_http_status(:payload_too_large)
-              end
-            end
-
-            context 'based on application setting' do
-              before do
-                stub_application_setting(max_artifacts_size: sample_max_size)
-              end
-
-              it_behaves_like 'rejecting too large artifacts'
-            end
-
-            context 'based on root namespace setting' do
-              before do
-                stub_application_setting(max_artifacts_size: 200)
-                root_namespace.update!(max_artifacts_size: sample_max_size)
-              end
-
-              it_behaves_like 'rejecting too large artifacts'
-            end
-
-            context 'based on child namespace setting' do
-              before do
-                stub_application_setting(max_artifacts_size: 200)
-                root_namespace.update!(max_artifacts_size: 200)
-                namespace.update!(max_artifacts_size: sample_max_size)
-              end
-
-              it_behaves_like 'rejecting too large artifacts'
-            end
-
-            context 'based on project setting' do
-              before do
-                stub_application_setting(max_artifacts_size: 200)
-                root_namespace.update!(max_artifacts_size: 200)
-                namespace.update!(max_artifacts_size: 200)
-                project.update!(max_artifacts_size: sample_max_size)
-              end
-
-              it_behaves_like 'rejecting too large artifacts'
             end
           end
         end
@@ -1757,12 +1804,6 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
             expect(json_response['ProcessLsif']).to be_truthy
           end
 
-          it 'fails to authorize too large artifact' do
-            authorize_artifacts_with_token_in_headers(artifact_type: :lsif, filesize: 30.megabytes)
-
-            expect(response).to have_gitlab_http_status(:payload_too_large)
-          end
-
           context 'code_navigation feature flag is disabled' do
             it 'does not add ProcessLsif header' do
               stub_feature_flags(code_navigation: false)
@@ -1797,6 +1838,32 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
 
         it 'updates runner info' do
           expect { upload_artifacts(file_upload, headers_with_token) }.to change { runner.reload.contacted_at }
+        end
+
+        context 'when the artifact is too large' do
+          it_behaves_like 'rejecting artifacts that are too large' do
+            # This filesize validation also happens in non remote stored files,
+            # it's just that it's hard to stub the filesize in other cases to be
+            # more than a megabyte.
+            let!(:fog_connection) do
+              stub_artifacts_object_storage(direct_upload: true)
+            end
+            let(:object) do
+              fog_connection.directories.new(key: 'artifacts').files.create(
+                key: 'tmp/uploads/12312300',
+                body: 'content'
+              )
+            end
+            let(:file_upload) { fog_to_uploaded_file(object) }
+            let(:send_request) do
+              upload_artifacts(file_upload, headers_with_token, 'file.remote_id' => '12312300')
+            end
+            let(:success_code) { :created }
+
+            before do
+              allow(object).to receive(:content_length).and_return(filesize)
+            end
+          end
         end
 
         context 'when artifacts are being stored inside of tmp path' do
@@ -1874,16 +1941,6 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
 
                 expect(response).to have_gitlab_http_status(:forbidden)
               end
-            end
-          end
-
-          context 'when artifacts file is too large' do
-            it 'fails to post too large artifact' do
-              stub_application_setting(max_artifacts_size: 0)
-
-              upload_artifacts(file_upload, headers_with_token)
-
-              expect(response).to have_gitlab_http_status(:payload_too_large)
             end
           end
 

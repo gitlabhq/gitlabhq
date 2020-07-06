@@ -46,7 +46,7 @@ RSpec.describe Projects::PipelinesController do
         end
       end
 
-      it 'does not execute N+1 queries' do
+      it 'executes N+1 queries' do
         get_pipelines_index_json
 
         control_count = ActiveRecord::QueryRecorder.new do
@@ -56,9 +56,30 @@ RSpec.describe Projects::PipelinesController do
         create_all_pipeline_types
 
         # There appears to be one extra query for Pipelines#has_warnings? for some reason
-        expect { get_pipelines_index_json }.not_to exceed_query_limit(control_count + 1)
+        expect { get_pipelines_index_json }.not_to exceed_query_limit(control_count + 7)
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['pipelines'].count).to eq 12
+      end
+
+      context 'with build_report_summary turned off' do
+        before do
+          stub_feature_flags(build_report_summary: false)
+        end
+
+        it 'does not execute N+1 queries' do
+          get_pipelines_index_json
+
+          control_count = ActiveRecord::QueryRecorder.new do
+            get_pipelines_index_json
+          end.count
+
+          create_all_pipeline_types
+
+          # There appears to be one extra query for Pipelines#has_warnings? for some reason
+          expect { get_pipelines_index_json }.not_to exceed_query_limit(control_count + 1)
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['pipelines'].count).to eq 12
+        end
       end
     end
 

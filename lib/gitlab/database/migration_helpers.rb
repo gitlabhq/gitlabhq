@@ -477,7 +477,7 @@ module Gitlab
       #        type is used.
       # batch_column_name - option is for tables without primary key, in this
       #        case another unique integer column can be used. Example: :user_id
-      def rename_column_concurrently(table, old, new, type: nil, batch_column_name: :id)
+      def rename_column_concurrently(table, old, new, type: nil, type_cast_function: nil, batch_column_name: :id)
         unless column_exists?(table, batch_column_name)
           raise "Column #{batch_column_name} does not exist on #{table}"
         end
@@ -488,7 +488,7 @@ module Gitlab
 
         check_trigger_permissions!(table)
 
-        create_column_from(table, old, new, type: type, batch_column_name: batch_column_name)
+        create_column_from(table, old, new, type: type, batch_column_name: batch_column_name, type_cast_function: type_cast_function)
 
         install_rename_triggers(table, old, new)
       end
@@ -536,10 +536,10 @@ module Gitlab
       # table - The table containing the column.
       # column - The name of the column to change.
       # new_type - The new column type.
-      def change_column_type_concurrently(table, column, new_type)
+      def change_column_type_concurrently(table, column, new_type, type_cast_function: nil)
         temp_column = "#{column}_for_type_change"
 
-        rename_column_concurrently(table, column, temp_column, type: new_type)
+        rename_column_concurrently(table, column, temp_column, type: new_type, type_cast_function: type_cast_function)
       end
 
       # Performs cleanup of a concurrent type change.
@@ -1268,7 +1268,7 @@ into similar problems in the future (e.g. when new tables are created).
         "ON DELETE #{on_delete.upcase}"
       end
 
-      def create_column_from(table, old, new, type: nil, batch_column_name: :id)
+      def create_column_from(table, old, new, type: nil, batch_column_name: :id, type_cast_function: nil)
         old_col = column_for(table, old)
         new_type = type || old_col.type
 
@@ -1282,7 +1282,13 @@ into similar problems in the future (e.g. when new tables are created).
         # necessary since we copy over old values further down.
         change_column_default(table, new, old_col.default) unless old_col.default.nil?
 
-        update_column_in_batches(table, new, Arel::Table.new(table)[old], batch_column_name: batch_column_name)
+        old_value = Arel::Table.new(table)[old]
+
+        if type_cast_function.present?
+          old_value = Arel::Nodes::NamedFunction.new(type_cast_function, [old_value])
+        end
+
+        update_column_in_batches(table, new, old_value, batch_column_name: batch_column_name)
 
         add_not_null_constraint(table, new) unless old_col.null
 

@@ -189,26 +189,6 @@ RSpec.describe ProjectStatistics do
           statistics.refresh!
         end
       end
-
-      context 'when snippets_size is updated' do
-        it 'schedules the aggregation worker' do
-          expect(Namespaces::ScheduleAggregationWorker)
-            .to receive(:perform_async)
-
-          statistics.refresh!(only: [:snippets_size])
-        end
-
-        context 'when feature flag :namespace_snippets_size_stat is disabled' do
-          it 'does not schedules an aggregation worker' do
-            stub_feature_flags(namespace_snippets_size_stat: false)
-
-            expect(Namespaces::ScheduleAggregationWorker)
-              .not_to receive(:perform_async)
-
-            statistics.refresh!(only: [:snippets_size])
-          end
-        end
-      end
     end
 
     context 'when the column is not namespace relatable' do

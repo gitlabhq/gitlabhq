@@ -501,4 +501,100 @@ RSpec.describe Ci::JobArtifact do
       end
     end
   end
+
+  describe '.file_types' do
+    context 'all file types have corresponding limit' do
+      let_it_be(:plan_limits) { create(:plan_limits) }
+
+      where(:file_type) do
+        described_class.file_types.keys
+      end
+
+      with_them do
+        let(:limit_name) { "#{described_class::PLAN_LIMIT_PREFIX}#{file_type}" }
+
+        it { expect(plan_limits.attributes).to include(limit_name), file_type_limit_failure_message(file_type, limit_name) }
+      end
+    end
+  end
+
+  describe '.max_artifact_size' do
+    let(:build) { create(:ci_build) }
+
+    subject(:max_size) { described_class.max_artifact_size(type: artifact_type, project: build.project) }
+
+    context 'when file type is supported' do
+      let(:project_closest_setting) { 1024 }
+      let(:artifact_type) { 'junit' }
+
+      before do
+        stub_feature_flags(ci_max_artifact_size_per_type: flag_enabled)
+        allow(build.project).to receive(:closest_setting).with(:max_artifacts_size).and_return(project_closest_setting)
+      end
+
+      shared_examples_for 'basing off the project closest setting' do
+        it { is_expected.to eq(project_closest_setting.megabytes.to_i) }
+      end
+
+      shared_examples_for 'basing off the plan limit' do
+        it { is_expected.to eq(max_size_for_type.megabytes.to_i) }
+      end
+
+      context 'and feature flag for custom max size per type is enabled' do
+        let(:flag_enabled) { true }
+        let(:limit_name) { "#{described_class::PLAN_LIMIT_PREFIX}#{artifact_type}" }
+
+        let!(:plan_limits) { create(:plan_limits, :default_plan) }
+
+        context 'and plan limit is disabled for the given artifact type' do
+          before do
+            plan_limits.update!(limit_name => 0)
+          end
+
+          it_behaves_like 'basing off the project closest setting'
+
+          context 'and project closest setting results to zero' do
+            let(:project_closest_setting) { 0 }
+
+            it { is_expected.to eq(0) }
+          end
+        end
+
+        context 'and plan limit is enabled for the given artifact type' do
+          before do
+            plan_limits.update!(limit_name => max_size_for_type)
+          end
+
+          context 'and plan limit is smaller than project setting' do
+            let(:max_size_for_type) { project_closest_setting - 1 }
+
+            it_behaves_like 'basing off the plan limit'
+          end
+
+          context 'and plan limit is smaller than project setting' do
+            let(:max_size_for_type) { project_closest_setting + 1 }
+
+            it_behaves_like 'basing off the project closest setting'
+          end
+        end
+      end
+
+      context 'and feature flag for custom max size per type is disabled' do
+        let(:flag_enabled) { false }
+
+        it_behaves_like 'basing off the project closest setting'
+      end
+    end
+  end
+
+  def file_type_limit_failure_message(type, limit_name)
+    <<~MSG
+      The artifact type `#{type}` is missing its counterpart plan limit which is expected to be named `#{limit_name}`.
+
+      Please refer to https://docs.gitlab.com/ee/development/application_limits.html on how to add new plan limit columns.
+
+      Take note that while existing max size plan limits default to 0, succeeding new limits are recommended to have
+      non-zero default values.
+    MSG
+  end
 end

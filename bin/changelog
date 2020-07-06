@@ -8,16 +8,6 @@
 require 'optparse'
 require 'yaml'
 
-Options = Struct.new(
-  :amend,
-  :author,
-  :dry_run,
-  :force,
-  :merge_request,
-  :title,
-  :type,
-  :ee
-)
 INVALID_TYPE = -1
 
 module ChangelogHelpers
@@ -39,6 +29,17 @@ end
 
 class ChangelogOptionParser
   extend ChangelogHelpers
+
+  Options = Struct.new(
+    :amend,
+    :author,
+    :dry_run,
+    :force,
+    :merge_request,
+    :title,
+    :type,
+    :ee
+  )
 
   Type = Struct.new(:name, :description)
   TYPES = [

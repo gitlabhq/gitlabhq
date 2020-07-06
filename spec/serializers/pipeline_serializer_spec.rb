@@ -155,10 +155,24 @@ RSpec.describe PipelineSerializer do
 
         it 'verifies number of queries', :request_store do
           recorded = ActiveRecord::QueryRecorder.new { subject }
-          expected_queries = Gitlab.ee? ? 43 : 40
+          expected_queries = Gitlab.ee? ? 46 : 43
 
           expect(recorded.count).to be_within(2).of(expected_queries)
           expect(recorded.cached_count).to eq(0)
+        end
+
+        context 'with the :build_report_summary flag turned off' do
+          before do
+            stub_feature_flags(build_report_summary: false)
+          end
+
+          it 'verifies number of queries', :request_store do
+            recorded = ActiveRecord::QueryRecorder.new { subject }
+            expected_queries = Gitlab.ee? ? 43 : 40
+
+            expect(recorded.count).to be_within(2).of(expected_queries)
+            expect(recorded.cached_count).to eq(0)
+          end
         end
       end
 
@@ -176,10 +190,24 @@ RSpec.describe PipelineSerializer do
           # pipeline. With the same ref this check is cached but if refs are
           # different then there is an extra query per ref
           # https://gitlab.com/gitlab-org/gitlab-foss/issues/46368
-          expected_queries = Gitlab.ee? ? 46 : 43
+          expected_queries = Gitlab.ee? ? 49 : 46
 
           expect(recorded.count).to be_within(2).of(expected_queries)
           expect(recorded.cached_count).to eq(0)
+        end
+
+        context 'with the :build_report_summary flag turned off' do
+          before do
+            stub_feature_flags(build_report_summary: false)
+          end
+
+          it 'verifies number of queries', :request_store do
+            recorded = ActiveRecord::QueryRecorder.new { subject }
+            expected_queries = Gitlab.ee? ? 46 : 43
+
+            expect(recorded.count).to be_within(2).of(expected_queries)
+            expect(recorded.cached_count).to eq(0)
+          end
         end
       end
 

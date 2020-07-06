@@ -1,23 +1,36 @@
 # frozen_string_literal: true
 
 class PlanLimits < ApplicationRecord
+  LimitUndefinedError = Class.new(StandardError)
+
   belongs_to :plan
 
-  def exceeded?(limit_name, object)
-    return false unless enabled?(limit_name)
+  def exceeded?(limit_name, subject, alternate_limit: 0)
+    limit = limit_for(limit_name, alternate_limit: alternate_limit)
+    return false unless limit
 
-    if object.is_a?(Integer)
-      object >= read_attribute(limit_name)
-    else
-      # object.count >= limit value is slower than checking
+    case subject
+    when Integer
+      subject >= limit
+    when ActiveRecord::Relation
+      # We intentionally not accept just plain ApplicationRecord classes to
+      # enforce the subject to be scoped down to a relation first.
+      #
+      # subject.count >= limit value is slower than checking
       # if a record exists at the limit value - 1 position.
-      object.offset(read_attribute(limit_name) - 1).exists?
+      subject.offset(limit - 1).exists?
+    else
+      raise ArgumentError, "#{subject.class} is not supported as a limit value"
     end
   end
 
-  private
+  def limit_for(limit_name, alternate_limit: 0)
+    limit = read_attribute(limit_name)
+    raise LimitUndefinedError, "The limit `#{limit_name}` is undefined" if limit.nil?
 
-  def enabled?(limit_name)
-    read_attribute(limit_name) > 0
+    alternate_limit = alternate_limit.call if alternate_limit.respond_to?(:call)
+
+    limits = [limit, alternate_limit]
+    limits.map(&:to_i).select(&:positive?).min
   end
 end

@@ -690,17 +690,41 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
           model.rename_column_concurrently(:users, :old, :new)
         end
 
+        context 'with existing records and type casting' do
+          let(:trigger_name) { model.rename_trigger_name(:users, :id, :new) }
+          let(:user) { create(:user) }
+
+          it 'copies the value to the new column using the type_cast_function', :aggregate_failures do
+            expect(model).to receive(:copy_indexes).with(:users, :id, :new)
+            expect(model).to receive(:add_not_null_constraint).with(:users, :new)
+            expect(model).to receive(:execute).with("UPDATE \"users\" SET \"new\" = cast_to_jsonb_with_default(\"users\".\"id\") WHERE \"users\".\"id\" >= #{user.id}")
+            expect(model).to receive(:execute).with("DROP TRIGGER IF EXISTS #{trigger_name}\nON \"users\"\n")
+            expect(model).to receive(:execute).with("CREATE TRIGGER #{trigger_name}\nBEFORE INSERT OR UPDATE\nON \"users\"\nFOR EACH ROW\nEXECUTE PROCEDURE #{trigger_name}()\n")
+            expect(model).to receive(:execute).with("CREATE OR REPLACE FUNCTION #{trigger_name}()\nRETURNS trigger AS\n$BODY$\nBEGIN\n  NEW.\"new\" := NEW.\"id\";\n  RETURN NEW;\nEND;\n$BODY$\nLANGUAGE 'plpgsql'\nVOLATILE\n")
+
+            model.rename_column_concurrently(:users, :id, :new, type_cast_function: 'cast_to_jsonb_with_default')
+          end
+        end
+
         it 'passes the batch_column_name' do
           expect(model).to receive(:column_exists?).with(:users, :other_batch_column).and_return(true)
           expect(model).to receive(:check_trigger_permissions!).and_return(true)
 
           expect(model).to receive(:create_column_from).with(
-            :users, :old, :new, type: nil, batch_column_name: :other_batch_column
+            :users, :old, :new, type: nil, batch_column_name: :other_batch_column, type_cast_function: nil
           ).and_return(true)
 
           expect(model).to receive(:install_rename_triggers).and_return(true)
 
           model.rename_column_concurrently(:users, :old, :new, batch_column_name: :other_batch_column)
+        end
+
+        it 'passes the type_cast_function' do
+          expect(model).to receive(:create_column_from).with(
+            :users, :old, :new, type: nil, batch_column_name: :id, type_cast_function: 'JSON'
+          ).and_return(true)
+
+          model.rename_column_concurrently(:users, :old, :new, type_cast_function: 'JSON')
         end
 
         it 'raises an error with invalid batch_column_name' do
@@ -866,9 +890,18 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
   describe '#change_column_type_concurrently' do
     it 'changes the column type' do
       expect(model).to receive(:rename_column_concurrently)
-        .with('users', 'username', 'username_for_type_change', type: :text)
+        .with('users', 'username', 'username_for_type_change', type: :text, type_cast_function: nil)
 
       model.change_column_type_concurrently('users', 'username', :text)
+    end
+
+    context 'with type cast' do
+      it 'changes the column type with casting the value to the new type' do
+        expect(model).to receive(:rename_column_concurrently)
+          .with('users', 'username', 'username_for_type_change', type: :text, type_cast_function: 'JSON')
+
+        model.change_column_type_concurrently('users', 'username', :text, type_cast_function: 'JSON')
+      end
     end
   end
 

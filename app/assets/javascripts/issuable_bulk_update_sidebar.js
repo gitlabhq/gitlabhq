@@ -7,8 +7,6 @@ import MilestoneSelect from './milestone_select';
 import issueStatusSelect from './issue_status_select';
 import subscriptionSelect from './subscription_select';
 import LabelsSelect from './labels_select';
-import HealthStatusSelect from 'ee_else_ce/vue_shared/components/sidebar/health_status_select/health_status_bundle';
-
 import issueableEventHub from './issuables_list/eventhub';
 
 const HIDDEN_CLASS = 'hidden';
@@ -66,8 +64,12 @@ export default class IssuableBulkUpdateSidebar {
     issueStatusSelect();
     subscriptionSelect();
 
-    if (HealthStatusSelect) {
-      HealthStatusSelect();
+    if (IS_EE) {
+      import('ee/vue_shared/components/sidebar/health_status_select/health_status_bundle')
+        .then(({ default: HealthStatusSelect }) => {
+          HealthStatusSelect();
+        })
+        .catch(() => {});
     }
   }
 

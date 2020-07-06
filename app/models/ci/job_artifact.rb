@@ -100,6 +100,8 @@ module Ci
 
     TYPE_AND_FORMAT_PAIRS = INTERNAL_TYPES.merge(REPORT_TYPES).freeze
 
+    PLAN_LIMIT_PREFIX = 'ci_max_artifact_size_'
+
     # This is required since we cannot add a default to the database
     # https://gitlab.com/gitlab-org/gitlab/-/issues/215418
     attribute :locked, :boolean, default: false
@@ -287,6 +289,21 @@ module Ci
 
     def self.archived_trace_exists_for?(job_id)
       where(job_id: job_id).trace.take&.file&.file&.exists?
+    end
+
+    def self.max_artifact_size(type:, project:)
+      max_size = if Feature.enabled?(:ci_max_artifact_size_per_type, project, default_enabled: false)
+                   limit_name = "#{PLAN_LIMIT_PREFIX}#{type}"
+
+                   project.actual_limits.limit_for(
+                     limit_name,
+                     alternate_limit: -> { project.closest_setting(:max_artifacts_size) }
+                   )
+                 else
+                   project.closest_setting(:max_artifacts_size)
+                 end
+
+      max_size&.megabytes.to_i
     end
 
     private

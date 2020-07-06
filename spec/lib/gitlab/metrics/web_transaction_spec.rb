@@ -70,6 +70,9 @@ RSpec.describe Gitlab::Metrics::WebTransaction do
   end
 
   describe '#labels' do
+    let(:request) { double(:request, format: double(:format, ref: :html)) }
+    let(:controller_class) { double(:controller_class, name: 'TestController') }
+
     context 'when request goes to Grape endpoint' do
       before do
         route = double(:route, request_method: 'GET', path: '/:version/projects/:id/archive(.:format)')
@@ -77,8 +80,9 @@ RSpec.describe Gitlab::Metrics::WebTransaction do
 
         env['api.endpoint'] = endpoint
       end
+
       it 'provides labels with the method and path of the route in the grape endpoint' do
-        expect(transaction.labels).to eq({ controller: 'Grape', action: 'GET /projects/:id/archive' })
+        expect(transaction.labels).to eq({ controller: 'Grape', action: 'GET /projects/:id/archive', feature_category: '' })
       end
 
       it 'does not provide labels if route infos are missing' do
@@ -92,9 +96,6 @@ RSpec.describe Gitlab::Metrics::WebTransaction do
     end
 
     context 'when request goes to ActionController' do
-      let(:request) { double(:request, format: double(:format, ref: :html)) }
-      let(:controller_class) { double(:controller_class, name: 'TestController') }
-
       before do
         controller = double(:controller, class: controller_class, action_name: 'show', request: request)
 
@@ -127,6 +128,19 @@ RSpec.describe Gitlab::Metrics::WebTransaction do
           expect(transaction.labels).to eq({ controller: 'TestController', action: 'show', feature_category: "source_code_management" })
         end
       end
+    end
+
+    it 'returns the same labels for API and controller requests' do
+      route = double(:route, request_method: 'GET', path: '/:version/projects/:id/archive(.:format)')
+      endpoint = double(:endpoint, route: route)
+      api_env = { 'api.endpoint' => endpoint }
+      api_labels = described_class.new(api_env).labels
+
+      controller = double(:controller, class: controller_class, action_name: 'show', request: request)
+      controller_env = { 'action_controller.instance' => controller }
+      controller_labels = described_class.new(controller_env).labels
+
+      expect(api_labels.keys).to contain_exactly(*controller_labels.keys)
     end
 
     it 'returns no labels when no route information is present in env' do

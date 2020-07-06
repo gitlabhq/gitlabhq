@@ -261,5 +261,29 @@ RSpec.describe PipelineEntity do
         end
       end
     end
+
+    context 'when pipeline has build report results' do
+      let(:pipeline) { create(:ci_pipeline, :with_report_results, project: project, user: user) }
+
+      context 'when feature is enabled' do
+        before do
+          stub_feature_flags(build_report_summary: true)
+        end
+
+        it 'exposes tests total count' do
+          expect(subject[:tests_total_count]).to eq(2)
+        end
+      end
+
+      context 'when feature is disabled' do
+        before do
+          stub_feature_flags(build_report_summary: false)
+        end
+
+        it 'do not expose tests total count' do
+          expect(subject).not_to include(:tests_total_count)
+        end
+      end
+    end
   end
 end

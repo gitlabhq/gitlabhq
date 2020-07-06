@@ -14,7 +14,6 @@ class ProjectStatistics < ApplicationRecord
   COLUMNS_TO_REFRESH = [:repository_size, :wiki_size, :lfs_objects_size, :commit_count, :snippets_size].freeze
   INCREMENTABLE_COLUMNS = { build_artifacts_size: %i[storage_size], packages_size: %i[storage_size] }.freeze
   NAMESPACE_RELATABLE_COLUMNS = [:repository_size, :wiki_size, :lfs_objects_size].freeze
-  FLAGGED_NAMESPACE_RELATABLE_COLUMNS = [*NAMESPACE_RELATABLE_COLUMNS, :snippets_size].freeze
 
   scope :for_project_ids, ->(project_ids) { where(project_id: project_ids) }
 
@@ -32,7 +31,7 @@ class ProjectStatistics < ApplicationRecord
       end
     end
 
-    if only.empty? || only.any? { |column| namespace_relatable_columns.include?(column) }
+    if only.empty? || only.any? { |column| NAMESPACE_RELATABLE_COLUMNS.include?(column) }
       schedule_namespace_aggregation_worker
     end
 
@@ -110,10 +109,6 @@ class ProjectStatistics < ApplicationRecord
     run_after_commit do
       Namespaces::ScheduleAggregationWorker.perform_async(project.namespace_id)
     end
-  end
-
-  def namespace_relatable_columns
-    Feature.enabled?(:namespace_snippets_size_stat) ? FLAGGED_NAMESPACE_RELATABLE_COLUMNS : NAMESPACE_RELATABLE_COLUMNS
   end
 end
 

@@ -13762,7 +13762,31 @@ CREATE TABLE public.plan_limits (
     ci_pipeline_schedules integer DEFAULT 10 NOT NULL,
     offset_pagination_limit integer DEFAULT 50000 NOT NULL,
     ci_instance_level_variables integer DEFAULT 25 NOT NULL,
-    storage_size_limit integer DEFAULT 0 NOT NULL
+    storage_size_limit integer DEFAULT 0 NOT NULL,
+    ci_max_artifact_size_lsif integer DEFAULT 20 NOT NULL,
+    ci_max_artifact_size_archive integer DEFAULT 0 NOT NULL,
+    ci_max_artifact_size_metadata integer DEFAULT 0 NOT NULL,
+    ci_max_artifact_size_trace integer DEFAULT 0 NOT NULL,
+    ci_max_artifact_size_junit integer DEFAULT 0 NOT NULL,
+    ci_max_artifact_size_sast integer DEFAULT 0 NOT NULL,
+    ci_max_artifact_size_dependency_scanning integer DEFAULT 0 NOT NULL,
+    ci_max_artifact_size_container_scanning integer DEFAULT 0 NOT NULL,
+    ci_max_artifact_size_dast integer DEFAULT 0 NOT NULL,
+    ci_max_artifact_size_codequality integer DEFAULT 0 NOT NULL,
+    ci_max_artifact_size_license_management integer DEFAULT 0 NOT NULL,
+    ci_max_artifact_size_license_scanning integer DEFAULT 0 NOT NULL,
+    ci_max_artifact_size_performance integer DEFAULT 0 NOT NULL,
+    ci_max_artifact_size_metrics integer DEFAULT 0 NOT NULL,
+    ci_max_artifact_size_metrics_referee integer DEFAULT 0 NOT NULL,
+    ci_max_artifact_size_network_referee integer DEFAULT 0 NOT NULL,
+    ci_max_artifact_size_dotenv integer DEFAULT 0 NOT NULL,
+    ci_max_artifact_size_cobertura integer DEFAULT 0 NOT NULL,
+    ci_max_artifact_size_terraform integer DEFAULT 0 NOT NULL,
+    ci_max_artifact_size_accessibility integer DEFAULT 0 NOT NULL,
+    ci_max_artifact_size_cluster_applications integer DEFAULT 0 NOT NULL,
+    ci_max_artifact_size_secret_detection integer DEFAULT 0 NOT NULL,
+    ci_max_artifact_size_requirements integer DEFAULT 0 NOT NULL,
+    ci_max_artifact_size_coverage_fuzzing integer DEFAULT 0 NOT NULL
 );
 
 CREATE SEQUENCE public.plan_limits_id_seq
@@ -23510,6 +23534,7 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200615193524
 20200615232735
 20200615234047
+20200616124338
 20200616145031
 20200617000757
 20200617001001
@@ -23546,5 +23571,6 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200626130220
 20200702123805
 20200703154822
+20200706005325
 \.
 

@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Ci::CreateJobArtifactsService do
   let_it_be(:project) { create(:project) }
-  let(:service) { described_class.new(project) }
+  let(:service) { described_class.new(job) }
   let(:job) { create(:ci_build, project: project) }
   let(:artifacts_sha256) { '0' * 64 }
   let(:metadata_file) { nil }
@@ -17,7 +17,7 @@ RSpec.describe Ci::CreateJobArtifactsService do
     {
       'artifact_type' => 'archive',
       'artifact_format' => 'zip'
-    }
+    }.with_indifferent_access
   end
 
   def file_to_upload(path, params = {})
@@ -28,7 +28,7 @@ RSpec.describe Ci::CreateJobArtifactsService do
   end
 
   describe '#execute' do
-    subject { service.execute(job, artifacts_file, params, metadata_file: metadata_file) }
+    subject { service.execute(artifacts_file, params, metadata_file: metadata_file) }
 
     context 'locking' do
       let(:old_job) { create(:ci_build, pipeline: create(:ci_pipeline, project: job.project, ref: job.ref)) }
@@ -150,7 +150,7 @@ RSpec.describe Ci::CreateJobArtifactsService do
         {
           'artifact_type' => 'dotenv',
           'artifact_format' => 'gzip'
-        }
+        }.with_indifferent_access
       end
 
       it 'calls parse service' do
@@ -186,7 +186,7 @@ RSpec.describe Ci::CreateJobArtifactsService do
         {
           'artifact_type' => 'cluster_applications',
           'artifact_format' => 'gzip'
-        }
+        }.with_indifferent_access
       end
 
       it 'calls cluster applications parse service' do

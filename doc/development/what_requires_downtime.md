@@ -202,6 +202,21 @@ end
 
 And that's it, we're done!
 
+### Casting data to a new type
+
+Some type changes require casting data to a new type. For example when changing from `text` to `jsonb`.
+In this case, use the `type_cast_function` option.
+Make sure there is no bad data and the cast will always succeed. You can also provide a custom function that handles
+casting errors.
+
+Example migration:
+
+```ruby
+  def up
+    change_column_type_concurrently :users, :settings, :jsonb, type_cast_function: 'jsonb'
+  end
+```
+
 ## Changing The Schema For Large Tables
 
 While `change_column_type_concurrently` and `rename_column_concurrently` can be

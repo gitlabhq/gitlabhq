@@ -78,8 +78,6 @@
   - 1
 - - detect_repository_languages
   - 1
-- - elastic_batch_project_indexer
-  - 1
 - - elastic_commit_indexer
   - 1
 - - elastic_delete_project

@@ -123,6 +123,7 @@ exports[`Expiration Policy Form renders 1`] = `
     <gl-form-textarea-stub
       disabled="true"
       id="expiration-policy-name-matching"
+      noresize="true"
       placeholder=".*"
       trim=""
       value=""
@@ -139,6 +140,7 @@ exports[`Expiration Policy Form renders 1`] = `
     <gl-form-textarea-stub
       disabled="true"
       id="expiration-policy-keep-name"
+      noresize="true"
       placeholder=""
       trim=""
       value=""
