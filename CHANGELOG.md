@@ -2,6 +2,10 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 13.1.3 (2020-07-06)
+
+- No changes.
+
 ## 13.1.2 (2020-07-01)
 
 ### Security (18 changes)
@@ -39,6 +43,10 @@ entry.
 
 - Periodically recompute project authorizations. !34071
 
+
+## 13.0.9 (2020-07-06)
+
+- No changes.
 
 ## 13.0.8 (2020-07-01)
 
@@ -693,6 +701,10 @@ entry.
 - Update asciidoctor-plantuml gem to v0.0.12. !32376
 - Use visitUrl in Alert management. !32414
 
+
+## 12.10.14 (2020-07-06)
+
+- No changes.
 
 ## 12.10.13 (2020-07-01)
 
