@@ -21,7 +21,7 @@ For example, if you remove a user from the SCIM app, SCIM removes that same user
 ## Configuring your Identity Provider
 
 1. Navigate to the group and click **Settings > SAML SSO**.
-1. Configure your SAML server using the **Assertion consumer service URL**, **Identifier**, and **GitLab single sign on URL**. Alternatively GitLab provides [metadata XML configuration](#metadata-configuration). See [specific identity provider documentation](#providers) for more details.
+1. Configure your SAML server using the **Assertion consumer service URL**, **Identifier**, and **GitLab single sign-on URL**. Alternatively GitLab provides [metadata XML configuration](#metadata-configuration). See [specific identity provider documentation](#providers) for more details.
 1. Configure the SAML response to include a NameID that uniquely identifies each user.
 1. Configure [required assertions](group_managed_accounts.md#assertions) if using [Group Managed Accounts](group_managed_accounts.md).
 1. Once the identity provider is set up, move on to [configuring GitLab](#configuring-gitlab).
@@ -61,7 +61,7 @@ GitLab provides metadata XML that can be used to configure your Identity Provide
 Once you've set up your identity provider to work with GitLab, you'll need to configure GitLab to use it for authentication:
 
 1. Navigate to the group's **Settings > SAML SSO**.
-1. Find the SSO URL from your Identity Provider and enter it the **Identity provider single sign on URL** field.
+1. Find the SSO URL from your Identity Provider and enter it the **Identity provider single sign-on URL** field.
 1. Find and enter the fingerprint for the SAML token signing certificate in the **Certificate** field.
 1. Click the **Enable SAML authentication for this group** toggle switch.
 1. Click the **Save changes** button.
@@ -76,7 +76,7 @@ Please note that the certificate [fingerprint algorithm](#additional-providers-a
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/5291) in GitLab 11.8.
 - [Improved](https://gitlab.com/gitlab-org/gitlab/-/issues/9255) in GitLab 11.11 with ongoing enforcement in the GitLab UI.
 
-With this option enabled, users must go through your group's GitLab single sign on URL. They may also be added via SCIM, if configured. Users cannot be added manually, and may only access project/group resources via the UI by signing in through the SSO URL.
+With this option enabled, users must go through your group's GitLab single sign-on URL. They may also be added via SCIM, if configured. Users cannot be added manually, and may only access project/group resources via the UI by signing in through the SSO URL.
 
 However, users will not be prompted to sign in through SSO on each visit. GitLab will check whether a user has authenticated through SSO, and will only prompt the user to sign in via SSO if the session has expired.
 
@@ -108,8 +108,8 @@ For a demo of the Azure SAML setup including SCIM, see [SCIM Provisioning on Azu
 |--------------|----------------|
 | Identifier   | Identifier (Entity ID) |
 | Assertion consumer service URL | Reply URL (Assertion Consumer Service URL) |
-| GitLab single sign on URL | Sign on URL |
-| Identity provider single sign on URL | Login URL |
+| GitLab single sign-on URL | Sign on URL |
+| Identity provider single sign-on URL | Login URL |
 | Certificate fingerprint | Thumbprint |
 
 We recommend:
@@ -125,11 +125,11 @@ For a demo of the Okta SAML setup including SCIM, see [Demo: Okta Group SAML & S
 | GitLab Setting | Okta Field |
 |--------------|----------------|
 | Identifier | Audience URI |
-| Assertion consumer service URL | Single sign on URL |
-| GitLab single sign on URL | Login page URL (under **Application Login Page** settings) |
-| Identity provider single sign on URL | Identity Provider Single Sign-On URL |
+| Assertion consumer service URL | Single sign-on URL |
+| GitLab single sign-on URL | Login page URL (under **Application Login Page** settings) |
+| Identity provider single sign-on URL | Identity Provider Single Sign-On URL |
 
-Under Okta's **Single sign on URL** field, check the option **Use this for Recipient URL and Destination URL**.
+Under Okta's **Single sign-on URL** field, check the option **Use this for Recipient URL and Destination URL**.
 
 We recommend:
 
@@ -147,8 +147,8 @@ For GitLab.com, use a generic SAML Test Connector such as the SAML Test Connecto
 | Assertion consumer service URL | Recipient |
 | Assertion consumer service URL | ACS (Consumer) URL |
 | Assertion consumer service URL (escaped version) | ACS (Consumer) URL Validator |
-| GitLab single sign on URL | Login URL |
-| Identity provider single sign on URL | SAML 2.0 Endpoint |
+| GitLab single sign-on URL | Login URL |
+| Identity provider single sign-on URL | SAML 2.0 Endpoint |
 
 Recommended `NameID` value: `OneLogin ID`.
 
@@ -200,7 +200,7 @@ When a user tries to sign in with Group SSO, they will need an account that's co
 To link SAML to your existing GitLab.com account:
 
 1. Sign in to your GitLab.com account.
-1. Locate and visit the **GitLab single sign on URL** for the group you are signing in to. A group Admin can find this on the group's **Settings > SAML SSO** page. If the sign-in URL is configured, users can connect to the GitLab app from the Identity Provider.
+1. Locate and visit the **GitLab single sign-on URL** for the group you are signing in to. A group Admin can find this on the group's **Settings > SAML SSO** page. If the sign-in URL is configured, users can connect to the GitLab app from the Identity Provider.
 1. Click **Authorize**.
 1. Enter your credentials on the Identity Provider if prompted.
 1. You will be redirected back to GitLab.com and should now have access to the group. In the future, you can use SAML to sign in to GitLab.com.
@@ -358,9 +358,9 @@ Ensure that the user who is trying to link their GitLab account has been added a
 
 ### Stuck in a login "loop"
 
-Ensure that the **GitLab single sign on URL** has been configured as "Login URL" (or similarly named field) in the identity provider's SAML app.
+Ensure that the **GitLab single sign-on URL** has been configured as "Login URL" (or similarly named field) in the identity provider's SAML app.
 
-Alternatively, when users need to [link SAML to their existing GitLab.com account](#linking-saml-to-your-existing-gitlabcom-account), provide the **GitLab single sign on URL** and instruct users not to use the SAML app on first sign in.
+Alternatively, when users need to [link SAML to their existing GitLab.com account](#linking-saml-to-your-existing-gitlabcom-account), provide the **GitLab single sign-on URL** and instruct users not to use the SAML app on first sign in.
 
 ### The NameID has changed
 

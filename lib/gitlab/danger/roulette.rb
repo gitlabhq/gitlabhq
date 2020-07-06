@@ -6,7 +6,6 @@ module Gitlab
   module Danger
     module Roulette
       ROULETTE_DATA_URL = 'https://gitlab-org.gitlab.io/gitlab-roulette/roulette.json'
-      OPTIONAL_CATEGORIES = [:qa, :test].freeze
 
       Spin = Struct.new(:category, :reviewer, :maintainer, :optional_role)
 
@@ -119,11 +118,7 @@ module Gitlab
         reviewer = spin_for_person(reviewers + traintainers + traintainers, random: random)
         maintainer = spin_for_person(maintainers, random: random)
 
-        Spin.new(category, reviewer, maintainer).tap do |spin|
-          if OPTIONAL_CATEGORIES.include?(category)
-            spin.optional_role = :maintainer
-          end
-        end
+        Spin.new(category, reviewer, maintainer)
       end
     end
   end

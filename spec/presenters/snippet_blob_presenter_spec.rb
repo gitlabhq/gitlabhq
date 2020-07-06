@@ -109,22 +109,38 @@ RSpec.describe SnippetBlobPresenter do
   end
 
   describe '#raw_path' do
-    subject { described_class.new(snippet.blob).raw_path }
+    let_it_be(:project)          { create(:project) }
+    let_it_be(:user)             { create(:user) }
+    let_it_be(:personal_snippet) { create(:personal_snippet, :repository, author: user) }
+    let_it_be(:project_snippet)  { create(:project_snippet, :repository, project: project, author: user) }
 
-    context 'with ProjectSnippet' do
-      let!(:project) { create(:project) }
-      let(:snippet) { create(:project_snippet, project: project) }
-
-      it 'returns the raw path' do
-        expect(subject).to eq "/#{snippet.project.full_path}/snippets/#{snippet.id}/raw"
-      end
+    before do
+      project.add_developer(user)
     end
 
-    context 'with PersonalSnippet' do
-      let(:snippet) { create(:personal_snippet) }
+    subject { described_class.new(snippet.blobs.first, current_user: user).raw_path }
 
-      it 'returns the raw path' do
-        expect(subject).to eq "/snippets/#{snippet.id}/raw"
+    it_behaves_like 'snippet blob raw path'
+
+    context 'with snippet_multiple_files feature disabled' do
+      before do
+        stub_feature_flags(snippet_multiple_files: false)
+      end
+
+      context 'with ProjectSnippet' do
+        let(:snippet) { project_snippet }
+
+        it 'returns the raw path' do
+          expect(subject).to eq "/#{snippet.project.full_path}/snippets/#{snippet.id}/raw"
+        end
+      end
+
+      context 'with PersonalSnippet' do
+        let(:snippet) { personal_snippet }
+
+        it 'returns the raw path' do
+          expect(subject).to eq "/snippets/#{snippet.id}/raw"
+        end
       end
     end
   end

@@ -70,9 +70,6 @@ RSpec.describe Gitlab::Metrics::WebTransaction do
   end
 
   describe '#labels' do
-    let(:request) { double(:request, format: double(:format, ref: :html)) }
-    let(:controller_class) { double(:controller_class, name: 'TestController') }
-
     context 'when request goes to Grape endpoint' do
       before do
         route = double(:route, request_method: 'GET', path: '/:version/projects/:id/archive(.:format)')
@@ -80,9 +77,8 @@ RSpec.describe Gitlab::Metrics::WebTransaction do
 
         env['api.endpoint'] = endpoint
       end
-
       it 'provides labels with the method and path of the route in the grape endpoint' do
-        expect(transaction.labels).to eq({ controller: 'Grape', action: 'GET /projects/:id/archive', feature_category: '' })
+        expect(transaction.labels).to eq({ controller: 'Grape', action: 'GET /projects/:id/archive' })
       end
 
       it 'does not provide labels if route infos are missing' do
@@ -96,21 +92,24 @@ RSpec.describe Gitlab::Metrics::WebTransaction do
     end
 
     context 'when request goes to ActionController' do
+      let(:request) { double(:request, format: double(:format, ref: :html)) }
+
       before do
-        controller = double(:controller, class: controller_class, action_name: 'show', request: request)
+        klass = double(:klass, name: 'TestController')
+        controller = double(:controller, class: klass, action_name: 'show', request: request)
 
         env['action_controller.instance'] = controller
       end
 
       it 'tags a transaction with the name and action of a controller' do
-        expect(transaction.labels).to eq({ controller: 'TestController', action: 'show', feature_category: '' })
+        expect(transaction.labels).to eq({ controller: 'TestController', action: 'show' })
       end
 
       context 'when the request content type is not :html' do
         let(:request) { double(:request, format: double(:format, ref: :json)) }
 
         it 'appends the mime type to the transaction action' do
-          expect(transaction.labels).to eq({ controller: 'TestController', action: 'show.json', feature_category: '' })
+          expect(transaction.labels).to eq({ controller: 'TestController', action: 'show.json' })
         end
       end
 
@@ -118,29 +117,9 @@ RSpec.describe Gitlab::Metrics::WebTransaction do
         let(:request) { double(:request, format: double(:format, ref: 'http://example.com')) }
 
         it 'does not append the MIME type to the transaction action' do
-          expect(transaction.labels).to eq({ controller: 'TestController', action: 'show', feature_category: '' })
+          expect(transaction.labels).to eq({ controller: 'TestController', action: 'show' })
         end
       end
-
-      context 'when the feature category is known' do
-        it 'includes it in the feature category label' do
-          expect(controller_class).to receive(:feature_category_for_action).with('show').and_return(:source_code_management)
-          expect(transaction.labels).to eq({ controller: 'TestController', action: 'show', feature_category: "source_code_management" })
-        end
-      end
-    end
-
-    it 'returns the same labels for API and controller requests' do
-      route = double(:route, request_method: 'GET', path: '/:version/projects/:id/archive(.:format)')
-      endpoint = double(:endpoint, route: route)
-      api_env = { 'api.endpoint' => endpoint }
-      api_labels = described_class.new(api_env).labels
-
-      controller = double(:controller, class: controller_class, action_name: 'show', request: request)
-      controller_env = { 'action_controller.instance' => controller }
-      controller_labels = described_class.new(controller_env).labels
-
-      expect(api_labels.keys).to contain_exactly(*controller_labels.keys)
     end
 
     it 'returns no labels when no route information is present in env' do

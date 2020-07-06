@@ -70,7 +70,16 @@ RSpec.describe Namespace::RootStorageStatistics, type: :model do
       end
     end
 
+    shared_examples 'does not include personal snippets' do
+      specify do
+        expect(root_storage_statistics).not_to receive(:from_personal_snippets)
+
+        root_storage_statistics.recalculate!
+      end
+    end
+
     it_behaves_like 'data refresh'
+    it_behaves_like 'does not include personal snippets'
 
     context 'with subgroups' do
       let(:subgroup1) { create(:group, parent: namespace)}
@@ -80,12 +89,45 @@ RSpec.describe Namespace::RootStorageStatistics, type: :model do
       let(:project2) { create(:project, namespace: subgroup2) }
 
       it_behaves_like 'data refresh'
+      it_behaves_like 'does not include personal snippets'
     end
 
     context 'with a personal namespace' do
-      let(:namespace) { create(:user).namespace }
+      let_it_be(:user) { create(:user) }
+      let(:namespace) { user.namespace }
 
       it_behaves_like 'data refresh'
+
+      context 'when user has personal snippets' do
+        let(:total_project_snippets_size) { stat1.snippets_size + stat2.snippets_size }
+
+        it 'aggregates personal and project snippets size' do
+          # This is just a a snippet authored by other user
+          # to ensure we only pick snippets from the namespace
+          # user
+          create(:personal_snippet, :repository).statistics.refresh!
+
+          snippets = create_list(:personal_snippet, 3, :repository, author: user)
+          snippets.each { |s| s.statistics.refresh! }
+
+          total_personal_snippets_size = snippets.map { |s| s.statistics.repository_size }.sum
+
+          root_storage_statistics.recalculate!
+
+          expect(root_storage_statistics.snippets_size).to eq(total_personal_snippets_size + total_project_snippets_size)
+        end
+
+        context 'when personal snippets do not have statistics' do
+          it 'does not raise any error' do
+            snippets = create_list(:personal_snippet, 2, :repository, author: user)
+            snippets.last.statistics.refresh!
+
+            root_storage_statistics.recalculate!
+
+            expect(root_storage_statistics.snippets_size).to eq(total_project_snippets_size + snippets.last.statistics.repository_size)
+          end
+        end
+      end
     end
   end
 end

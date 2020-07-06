@@ -156,6 +156,7 @@ module API
       mount ::API::Groups
       mount ::API::GroupContainerRepositories
       mount ::API::GroupVariables
+      mount ::API::ImportBitbucketServer
       mount ::API::ImportGithub
       mount ::API::Issues
       mount ::API::JobArtifacts

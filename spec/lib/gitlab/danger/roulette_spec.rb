@@ -155,8 +155,8 @@ RSpec.describe Gitlab::Danger::Roulette do
     context 'when change contains QA category' do
       let(:categories) { [:qa] }
 
-      it 'assigns QA reviewer and sets optional QA maintainer' do
-        expect(spins).to contain_exactly(matching_spin(:qa, reviewer: software_engineer_in_test, optional: :maintainer))
+      it 'assigns QA reviewer' do
+        expect(spins).to contain_exactly(matching_spin(:qa, reviewer: software_engineer_in_test))
       end
     end
 
@@ -171,8 +171,8 @@ RSpec.describe Gitlab::Danger::Roulette do
     context 'when change contains test category' do
       let(:categories) { [:test] }
 
-      it 'assigns corresponding SET and sets optional test maintainer' do
-        expect(spins).to contain_exactly(matching_spin(:test, reviewer: software_engineer_in_test, optional: :maintainer))
+      it 'assigns corresponding SET' do
+        expect(spins).to contain_exactly(matching_spin(:test, reviewer: software_engineer_in_test))
       end
     end
   end

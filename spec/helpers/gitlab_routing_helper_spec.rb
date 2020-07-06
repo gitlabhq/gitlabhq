@@ -181,6 +181,23 @@ RSpec.describe GitlabRoutingHelper do
       end
     end
 
+    describe '#gitlab_raw_snippet_blob_path' do
+      let(:ref) { 'test-ref' }
+
+      it_behaves_like 'snippet blob raw path' do
+        subject { gitlab_raw_snippet_blob_path(blob, ref) }
+      end
+
+      context 'without a ref' do
+        let(:blob) { personal_snippet.blobs.first }
+        let(:ref) { blob.repository.root_ref }
+
+        it 'uses the root ref' do
+          expect(gitlab_raw_snippet_blob_path(blob)).to eq("/-/snippets/#{personal_snippet.id}/raw/#{ref}/#{blob.path}")
+        end
+      end
+    end
+
     describe '#gitlab_raw_snippet_url' do
       it 'returns the raw personal snippet url' do
         expect(gitlab_raw_snippet_url(personal_snippet)).to eq("http://test.host/snippets/#{personal_snippet.id}/raw")

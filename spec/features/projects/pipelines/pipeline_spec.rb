@@ -383,8 +383,8 @@ RSpec.describe 'Pipeline', :js do
       context 'without test reports' do
         let(:pipeline) { create(:ci_pipeline, project: project) }
 
-        it 'shows nothing' do
-          expect(page.find('.js-test-report-badge-counter', visible: :all).text).to eq("")
+        it 'shows zero' do
+          expect(page.find('.js-test-report-badge-counter', visible: :all).text).to eq("0")
         end
       end
     end

@@ -39,6 +39,10 @@ MARKDOWN
 OPTIONAL_REVIEW_TEMPLATE = "%{role} review is optional for %{category}".freeze
 NOT_AVAILABLE_TEMPLATE = 'No %{role} available'.freeze
 
+def mr_author
+  roulette.team.find { |person| person.username == gitlab.mr_author }
+end
+
 def note_for_category_role(spin, role)
   if spin.optional_role == role
     return OPTIONAL_REVIEW_TEMPLATE % { role: role.capitalize, category: helper.label_for_category(spin.category) }
@@ -68,7 +72,16 @@ if changes.any?
   branch_name = gitlab.mr_json['source_branch']
 
   roulette_spins = roulette.spin(project, categories, branch_name)
-  rows = roulette_spins.map { |spin| markdown_row_for_spin(spin) }
+  rows = roulette_spins.map do |spin|
+    # MR includes QA changes, but also other changes, and author isn't an SET
+    if spin.category == :qa && categories.size > 1 && !mr_author.reviewer?(project, spin.category, [])
+      spin.optional_role = :maintainer
+    end
+
+    spin.optional_role = :maintainer if spin.category == :test
+
+    markdown_row_for_spin(spin)
+  end
 
   unknown = changes.fetch(:unknown, [])
 

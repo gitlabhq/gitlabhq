@@ -41,7 +41,7 @@ The following quick actions are applicable to descriptions, discussions and thre
 | `/create_merge_request <branch name>` | ✓     |               |      | Create a new merge request starting from the current issue.                                                                      |
 | `/done`                               | ✓     | ✓             | ✓    | Mark To-Do as done.                                                                                                              |
 | `/due <date>`                         | ✓     |               |      | Set due date. Examples of valid `<date>` include `in 2 days`, `this Friday` and `December 31st`.                                 |
-| `/duplicate <#issue>`                 | ✓     |               |      | Mark this issue as a duplicate of another issue and mark them as related. **(STARTER)**                                          |
+| `/duplicate <#issue>`                 | ✓     |               |      | Close this issue and mark as a duplicate of another issue. **(CORE)** Also, mark both as related. **(STARTER)**                                          |
 | `/epic <epic>`                        | ✓     |               |      | Add to epic `<epic>`. The `<epic>` value should be in the format of `&epic`, `group&epic`, or a URL to an epic. **(PREMIUM)**  |
 | `/estimate <<W>w <DD>d <hh>h <mm>m>`  | ✓     | ✓             |      | Set time estimate. For example, `/estimate 1w 3d 2h 14m`.                                                                        |
 | `/iteration *iteration:iteration`     | ✓     |               |      | Set iteration ([Introduced in GitLab 13.1](https://gitlab.com/gitlab-org/gitlab/-/issues/196795)) **(STARTER)** |

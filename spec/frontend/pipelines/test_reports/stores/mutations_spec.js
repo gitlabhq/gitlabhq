@@ -18,15 +18,6 @@ describe('Mutations TestReports Store', () => {
     mockState = defaultState;
   });
 
-  describe('set endpoint', () => {
-    it('should set endpoint', () => {
-      const expectedState = { ...mockState, endpoint: 'foo' };
-      mutations[types.SET_ENDPOINT](mockState, 'foo');
-
-      expect(mockState.endpoint).toEqual(expectedState.endpoint);
-    });
-  });
-
   describe('set reports', () => {
     it('should set testReports', () => {
       const expectedState = { ...mockState, testReports };
@@ -42,6 +33,15 @@ describe('Mutations TestReports Store', () => {
       mutations[types.SET_SELECTED_SUITE](mockState, selectedSuite);
 
       expect(mockState.selectedSuite).toEqual(selectedSuite);
+    });
+  });
+
+  describe('set summary', () => {
+    it('should set summary', () => {
+      const summary = { total_count: 1 };
+      mutations[types.SET_SUMMARY](mockState, summary);
+
+      expect(mockState.summary).toEqual(summary);
     });
   });
 

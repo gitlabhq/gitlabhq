@@ -1,10 +1,13 @@
 import Vuex from 'vuex';
-import { shallowMount } from '@vue/test-utils';
+import { shallowMount, createLocalVue } from '@vue/test-utils';
 import { getJSONFixture } from 'helpers/fixtures';
 import SuiteTable from '~/pipelines/components/test_reports/test_suite_table.vue';
 import * as getters from '~/pipelines/stores/test_reports/getters';
 import { TestStatus } from '~/pipelines/constants';
 import skippedTestCases from './mock_data';
+
+const localVue = createLocalVue();
+localVue.use(Vuex);
 
 describe('Test reports suite table', () => {
   let wrapper;
@@ -32,6 +35,7 @@ describe('Test reports suite table', () => {
 
     wrapper = shallowMount(SuiteTable, {
       store,
+      localVue,
     });
   };
 

@@ -325,9 +325,19 @@ tenses, words, and phrases:
 - Avoid using the word *currently* when talking about the product or its
   features. The documentation describes the product as it is, and not as it
   will be at some indeterminate point in the future.
+- Avoid the using the word *scalability* with increasing GitLab's performance
+  for additional users. Using the words *scale* or *scaling* in other cases is
+  acceptable, but references to increasing GitLab's performance for additional
+  users should direct readers to the GitLab
+  [reference architectures](../../administration/reference_architectures/index.md)
+  page.
+- Avoid all forms of the phrases *high availability* and *HA*, and instead
+  direct readers to the GitLab [reference architectures](../../administration/reference_architectures/index.md)
+  for information about configuring GitLab to have the performance needed for
+  additional users over time.
 - Don't use profanity or obscenities. Doing so may negatively affect other
   users and contributors, which is contrary to GitLab's value of
-  [diversity and inclusion](https://about.gitlab.com/handbook/values/#diversity-inclusion).
+  [Diversity, Inclusion, and Belonging](https://about.gitlab.com/handbook/values/#diversity-inclusion).
 - Avoid the use of [racially-insensitive terminology or phrases](https://www.marketplace.org/2020/06/17/tech-companies-update-language-to-avoid-offensive-terms/). For example:
   - Use *primary* and *secondary* for database and server relationships.
   - Use *allowlist* and *denylist* to describe access control lists.
@@ -1311,20 +1321,20 @@ The following are styles to follow when describing UI elements on a screen:
 
 ### Verbs for UI elements
 
-The following are recommended verbs for specific uses.
+The following are recommended verbs for specific uses with UI elements:
 
-| Recommended | Used for                   | Alternatives               |
-|:------------|:---------------------------|:---------------------------|
-| "click"     | buttons, links, menu items | "hit", "press", "select"   |
-| "check"     | checkboxes                 | "enable", "click", "press" |
-| "select"    | dropdowns                  | "pick"                     |
-| "expand"    | expandable sections        | "open"                     |
+| Recommended         | Used for                   | Replaces                   |
+|:--------------------|:---------------------------|:---------------------------|
+| *click*             | buttons, links, menu items | "hit", "press", "select"   |
+| *select* or *clear* | checkboxes                 | "enable", "click", "press" |
+| *select*            | dropdowns                  | "pick"                     |
+| *expand*            | expandable sections        | "open"                     |
 
 ### Other Verbs
 
-| Recommended | Used for                        | Alternatives       |
-|:------------|:--------------------------------|:-------------------|
-| "go"        | making a browser go to location | "navigate", "open" |
+| Recommended | Used for                        | Replaces              |
+|:------------|:--------------------------------|:----------------------|
+| *go to*     | making a browser go to location | "navigate to", "open" |
 
 ## GitLab versions and tiers
 
@@ -1597,6 +1607,9 @@ can facilitate this by making sure the troubleshooting content addresses:
 1. The problem the user needs to solve.
 1. How the user can confirm they have the problem.
 1. Steps the user can take towards resolution of the problem.
+
+If the contents of each category can be summarized in one line and a list of steps aren't required, consider setting up a
+[table](#tables) with headers of *Problem* \| *Cause* \| *Solution* (or *Workaround* if the fix is temporary), or *Error message* \| *Solution*.
 
 ## Feature flags
 

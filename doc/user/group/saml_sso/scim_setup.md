@@ -163,7 +163,7 @@ As long as [Group SAML](index.md) has been configured, prior to turning on sync,
 - By following these steps:
 
   1. Sign in to GitLab.com if needed.
-  1. Click on the GitLab app in the identity provider's dashboard or visit the **GitLab single sign on URL**.
+  1. Click on the GitLab app in the identity provider's dashboard or visit the **GitLab single sign-on URL**.
   1. Click on the **Authorize** button.
 
 New users and existing users on subsequent visits can access the group through the identify provider's dashboard or by visiting links directly.

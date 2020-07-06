@@ -4,7 +4,6 @@ import { GlLoadingIcon } from '@gitlab/ui';
 import TestSuiteTable from './test_suite_table.vue';
 import TestSummary from './test_summary.vue';
 import TestSummaryTable from './test_summary_table.vue';
-import store from '~/pipelines/stores/test_reports';
 
 export default {
   name: 'TestReports',
@@ -14,7 +13,6 @@ export default {
     TestSummary,
     TestSummaryTable,
   },
-  store,
   computed: {
     ...mapState(['isLoading', 'selectedSuite', 'testReports']),
     showSuite() {
@@ -25,8 +23,11 @@ export default {
       return testSuites.length > 0;
     },
   },
+  created() {
+    this.fetchSummary();
+  },
   methods: {
-    ...mapActions(['setSelectedSuite', 'removeSelectedSuite']),
+    ...mapActions(['fetchSummary', 'setSelectedSuite', 'removeSelectedSuite']),
     summaryBackClick() {
       this.removeSelectedSuite();
     },

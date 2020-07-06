@@ -1,8 +1,11 @@
 import Vuex from 'vuex';
-import { shallowMount } from '@vue/test-utils';
+import { shallowMount, createLocalVue } from '@vue/test-utils';
 import { getJSONFixture } from 'helpers/fixtures';
 import TestReports from '~/pipelines/components/test_reports/test_reports.vue';
 import * as actions from '~/pipelines/stores/test_reports/actions';
+
+const localVue = createLocalVue();
+localVue.use(Vuex);
 
 describe('Test reports app', () => {
   let wrapper;
@@ -22,11 +25,15 @@ describe('Test reports app', () => {
         testReports,
         ...state,
       },
-      actions,
+      actions: {
+        ...actions,
+        fetchSummary: () => {},
+      },
     });
 
     wrapper = shallowMount(TestReports, {
       store,
+      localVue,
     });
   };
 

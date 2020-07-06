@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class SnippetBlobPresenter < BlobPresenter
+  include GitlabRoutingHelper
+
   def rich_data
     return if blob.binary?
     return unless blob.rich_viewer
@@ -15,14 +17,16 @@ class SnippetBlobPresenter < BlobPresenter
   end
 
   def raw_path
-    if snippet.is_a?(ProjectSnippet)
-      raw_project_snippet_path(snippet.project, snippet)
-    else
-      raw_snippet_path(snippet)
-    end
+    return gitlab_raw_snippet_blob_path(blob) if snippet_multiple_files?
+
+    gitlab_raw_snippet_path(snippet)
   end
 
   private
+
+  def snippet_multiple_files?
+    blob.container.repository_exists? && Feature.enabled?(:snippet_multiple_files, current_user)
+  end
 
   def snippet
     blob.container

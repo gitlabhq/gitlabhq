@@ -45,13 +45,6 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
 
   around_action :allow_gitaly_ref_name_caching, only: [:index, :show, :discussions]
 
-  feature_category :source_code_management,
-                   unless: -> (action) { action.ends_with?("_reports") }
-  feature_category :code_testing,
-                   only: [:test_reports, :coverage_reports, :terraform_reports]
-  feature_category :accessibility_testing,
-                   only: [:accessibility_reports]
-
   def index
     @merge_requests = @issuables
 

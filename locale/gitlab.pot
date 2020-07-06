@@ -409,6 +409,9 @@ msgstr ""
 msgid "%{labelStart}File:%{labelEnd} %{file}"
 msgstr ""
 
+msgid "%{labelStart}Headers:%{labelEnd} %{headers}"
+msgstr ""
+
 msgid "%{labelStart}Image:%{labelEnd} %{image}"
 msgstr ""
 
@@ -425,6 +428,12 @@ msgid "%{labelStart}Scanner:%{labelEnd} %{scanner}"
 msgstr ""
 
 msgid "%{labelStart}Severity:%{labelEnd} %{severity}"
+msgstr ""
+
+msgid "%{labelStart}Status:%{labelEnd} %{status}"
+msgstr ""
+
+msgid "%{labelStart}URL:%{labelEnd} %{url}"
 msgstr ""
 
 msgid "%{label_for_message} unavailable"
@@ -10813,6 +10822,9 @@ msgstr ""
 msgid "GitLab commit"
 msgstr ""
 
+msgid "GitLab export"
+msgstr ""
+
 msgid "GitLab for Slack"
 msgstr ""
 
@@ -10837,13 +10849,16 @@ msgstr ""
 msgid "GitLab restart is required to apply changes."
 msgstr ""
 
-msgid "GitLab single sign on URL"
+msgid "GitLab single sign-on URL"
 msgstr ""
 
 msgid "GitLab uses %{jaeger_link} to monitor distributed systems."
 msgstr ""
 
 msgid "GitLab will run a background job that will produce pseudonymized CSVs of the GitLab database that will be uploaded to your configured object storage directory."
+msgstr ""
+
+msgid "GitLab.com"
 msgstr ""
 
 msgid "GitLab.com import"
@@ -11386,7 +11401,7 @@ msgstr ""
 msgid "GroupSAML|Identity"
 msgstr ""
 
-msgid "GroupSAML|Identity provider single sign on URL"
+msgid "GroupSAML|Identity provider single sign-on URL"
 msgstr ""
 
 msgid "GroupSAML|Make sure you save this token — you won't be able to access it again."
@@ -22626,6 +22641,9 @@ msgstr ""
 msgid "TestReports|There are no tests to show."
 msgstr ""
 
+msgid "TestReports|There was an error fetching the summary."
+msgstr ""
+
 msgid "TestReports|There was an error fetching the test reports."
 msgstr ""
 
@@ -25678,6 +25696,12 @@ msgid "Vulnerability|Namespace"
 msgstr ""
 
 msgid "Vulnerability|Project"
+msgstr ""
+
+msgid "Vulnerability|Request"
+msgstr ""
+
+msgid "Vulnerability|Response"
 msgstr ""
 
 msgid "Vulnerability|Scanner"

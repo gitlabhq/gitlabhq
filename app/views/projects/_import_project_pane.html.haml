@@ -9,7 +9,8 @@
       - if gitlab_project_import_enabled?
         .import_gitlab_project.has-tooltip{ data: { container: 'body' } }
           = link_to new_import_gitlab_project_path, class: 'btn btn_import_gitlab_project project-submit', **tracking_attrs(track_label, 'click_button', 'gitlab_export') do
-            = icon('gitlab', text: 'GitLab export')
+            = sprite_icon('tanuki')
+            = _("GitLab export")
 
       - if github_import_enabled?
         %div
@@ -32,7 +33,8 @@
         %div
           = link_to status_import_gitlab_path, class: "btn import_gitlab #{'how_to_import_link' unless gitlab_import_configured?}",
           **tracking_attrs(track_label, 'click_button', 'gitlab_com') do
-            = icon('gitlab', text: 'GitLab.com')
+            = sprite_icon('tanuki')
+            = _("GitLab.com")
           - unless gitlab_import_configured?
             = render 'projects/gitlab_import_modal'
 

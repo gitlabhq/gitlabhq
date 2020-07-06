@@ -2,7 +2,6 @@
 import { mapGetters } from 'vuex';
 import { s__ } from '~/locale';
 import { GlIcon, GlTooltipDirective } from '@gitlab/ui';
-import store from '~/pipelines/stores/test_reports';
 import SmartVirtualList from '~/vue_shared/components/smart_virtual_list.vue';
 
 export default {
@@ -14,7 +13,6 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  store,
   props: {
     heading: {
       type: String,

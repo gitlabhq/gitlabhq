@@ -149,7 +149,9 @@ It can contain only lowercase letters (`a-z`), numbers (`0-9`), or underscores (
 
 ![Setting custom Service Desk email address](img/service_desk_custom_email_address_v13_0.png)
 
-For example, suppose you add the following to your configuration:
+You can add the following snippets to your configuration.
+
+Example for installations from source:
 
 ```yaml
 service_desk_email:
@@ -165,6 +167,32 @@ service_desk_email:
   mailbox: "inbox"
   idle_timeout: 60
   expunge_deleted: true
+```
+
+Example for Omnibus GitLab installations:
+
+```ruby
+gitlab_rails['service_desk_email_enabled'] = true
+
+gitlab_rails['service_desk_email_address'] = "project_contact+%{key}@gmail.com"
+
+gitlab_rails['service_desk_email_email'] = "project_support@gmail.com"
+
+gitlab_rails['service_desk_email_password'] = "[REDACTED]"
+
+gitlab_rails['service_desk_email_mailbox_name'] = "inbox"
+
+gitlab_rails['service_desk_email_idle_timeout'] = 60
+
+gitlab_rails['service_desk_email_log_file'] = "/var/log/gitlab/mailroom/mail_room_json.log"
+
+gitlab_rails['service_desk_email_host'] = "imap.gmail.com"
+
+gitlab_rails['service_desk_email_port'] = 993
+
+gitlab_rails['service_desk_email_ssl'] = true
+
+gitlab_rails['service_desk_email_start_tls'] = false
 ```
 
 In this case, suppose the `mygroup/myproject` project Service Desk settings has the project name

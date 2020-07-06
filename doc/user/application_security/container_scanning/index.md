@@ -141,7 +141,7 @@ enables verbose output from Clair by setting the `CLAIR_OUTPUT` environment vari
 
 ```yaml
 include:
-  template: Container-Scanning.gitlab-ci.yml
+  - template: Container-Scanning.gitlab-ci.yml
 
 variables:
   CLAIR_OUTPUT: High
@@ -184,7 +184,7 @@ specify any additional keys. For example:
 
 ```yaml
 include:
-  template: Container-Scanning.gitlab-ci.yml
+  - template: Container-Scanning.gitlab-ci.yml
 
 container_scanning:
   variables:
@@ -196,15 +196,15 @@ GitLab 13.0 and later doesn't support [`only` and `except`](../../../ci/yaml/REA
 When overriding the template, you must use [`rules`](../../../ci/yaml/README.md#rules)
 instead.
 
-### Vulnerability whitelisting
+### Vulnerability allowlisting
 
-To whitelist specific vulnerabilities, follow these steps:
+To allowlist specific vulnerabilities, follow these steps:
 
 1. Set `GIT_STRATEGY: fetch` in your `.gitlab-ci.yml` file by following the instructions in
    [overriding the Container Scanning template](#overriding-the-container-scanning-template).
-1. Define the whitelisted vulnerabilities in a YAML file named `clair-whitelist.yml`. This must use
-   the format described in the [whitelist example file](https://github.com/arminc/clair-scanner/blob/v12/example-whitelist.yaml).
-1. Add the `clair-whitelist.yml` file to your project's Git repository.
+1. Define the allowlisted vulnerabilities in a YAML file named `vulnerability-allowlist.yml`. This must use
+   the format described in the [allowlist example file](https://gitlab.com/gitlab-org/security-products/analyzers/klar/-/raw/master/testdata/vulnerability-allowlist.yml).
+1. Add the `vulnerability-allowlist.yml` file to your project's Git repository.
 
 ### Running Container Scanning in an offline environment
 

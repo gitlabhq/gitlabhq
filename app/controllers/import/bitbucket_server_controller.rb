@@ -34,26 +34,18 @@ class Import::BitbucketServerController < Import::BaseController
       return render json: { errors: _("Project %{project_repo} could not be found") % { project_repo: "#{@project_key}/#{@repo_slug}" } }, status: :unprocessable_entity
     end
 
-    project_name = params[:new_name].presence || repo.name
-    namespace_path = params[:new_namespace].presence || current_user.username
-    target_namespace = find_or_create_namespace(namespace_path, current_user)
+    result = Import::BitbucketServerService.new(client, current_user, params).execute(credentials)
 
-    if current_user.can?(:create_projects, target_namespace)
-      project = Gitlab::BitbucketServerImport::ProjectCreator.new(@project_key, @repo_slug, repo, project_name, target_namespace, current_user, credentials).execute
-
-      if project.persisted?
-        render json: ProjectSerializer.new.represent(project, serializer: :import)
-      else
-        render json: { errors: project_save_error(project) }, status: :unprocessable_entity
-      end
+    if result[:status] == :success
+      render json: ProjectSerializer.new.represent(result[:project], serializer: :import)
     else
-      render json: { errors: _('This namespace has already been taken! Please choose another one.') }, status: :unprocessable_entity
+      render json: { errors: result[:message] }, status: result[:http_status]
     end
   end
 
   def configure
     session[personal_access_token_key] = params[:personal_access_token]
-    session[bitbucket_server_username_key] = params[:bitbucket_username]
+    session[bitbucket_server_username_key] = params[:bitbucket_server_username]
     session[bitbucket_server_url_key] = params[:bitbucket_server_url]
 
     redirect_to status_import_bitbucket_server_path
@@ -127,8 +119,8 @@ class Import::BitbucketServerController < Import::BaseController
   end
 
   def validate_import_params
-    @project_key = params[:project]
-    @repo_slug = params[:repository]
+    @project_key = params[:bitbucketServerProject]
+    @repo_slug = params[:bitbucketServerRepo]
 
     return render_validation_error('Missing project key') unless @project_key.present? && @repo_slug.present?
     return render_validation_error('Missing repository slug') unless @repo_slug.present?
