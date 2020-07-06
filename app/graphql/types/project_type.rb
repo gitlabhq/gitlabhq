@@ -153,6 +153,10 @@ module Types
           description: 'Environments of the project',
           resolver: Resolvers::EnvironmentsResolver
 
+    field :sast_ci_configuration, ::Types::CiConfiguration::Sast::Type, null: true,
+      description: 'SAST CI configuration for the project',
+      resolver: ::Resolvers::CiConfiguration::SastResolver
+
     field :issue,
           Types::IssueType,
           null: true,

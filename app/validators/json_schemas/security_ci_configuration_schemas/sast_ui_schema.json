@@ -1,0 +1,158 @@
+{
+    "global": [
+        {
+            "field" : "SECURE_ANALYZERS_PREFIX",
+            "label" : "Image prefix",
+            "type": "string",
+            "default_value": "registry.gitlab.com/gitlab-org/security-products/analyzers",
+            "value": ""
+        },
+        {
+            "field" : "SAST_EXCLUDED_PATHS",
+            "label" : "Excluded Paths",
+            "type": "string",
+            "default_value": "spec, test, tests, tmp",
+            "value": ""
+        },
+        {
+            "field" : "SECURE_ANALYZER_IMAGE_TAG",
+            "label" : "Image tag",
+            "type": "string",
+            "options": [],
+            "default_value": "2",
+            "value": ""
+        },
+        {
+            "field" : "SAST_DISABLED",
+            "label" : "Disable SAST",
+            "type": "options",
+            "options": [
+                {
+                    "value" :"true",
+                    "label" : "true (disables SAST)"
+                },
+                {
+                    "value":"false",
+                    "label":"false (enables SAST)"
+                }
+            ],
+            "default_value": "false",
+            "value": ""
+        }
+    ],
+    "pipeline": [
+        {
+            "field" : "stage",
+            "label" : "Stage",
+            "type": "dropdown",
+            "options": [
+                {
+                    "value" :"test",
+                    "label" : "test"
+                },
+                {
+                    "value":"build",
+                    "label":"build"
+                }
+            ],
+            "default_value": "test",
+            "value": ""
+        },
+        {
+            "field" : "allow_failure",
+            "label" : "Allow Failure",
+            "type": "options",
+            "options": [
+                {
+                    "value" :"true",
+                    "label" : "Allows pipeline failure"
+                },
+                {
+                    "value": "false",
+                    "label": "Does not allow pipeline failure"
+                }
+            ],
+            "default_value": "true",
+            "value": ""
+        },
+        {
+            "field" : "rules",
+            "label" : "Rules",
+            "type": "multiline",
+            "default_value": "",
+            "value": ""
+        }
+    ],
+    "analyzers": [
+        {
+            "name": "brakeman",
+            "label": "Brakeman",
+            "enabled" : true
+        },
+        {
+            "name": "bandit",
+            "label": "Bandit",
+            "enabled" : true
+        },
+        {
+            "name": "eslint",
+            "label": "ESLint",
+            "enabled" : true
+        },
+        {
+            "name": "flawfinder",
+            "label": "Flawfinder",
+            "enabled" : true
+        },
+        {
+            "name": "kubesec",
+            "label": "kubesec",
+            "enabled" : true
+        },
+        {
+            "name": "nodejsscan",
+            "label": "Node.js Scan",
+            "enabled" : true
+        },
+        {
+            "name": "gosec",
+            "label": "Golang Security Checker",
+            "enabled" : true
+        },
+        {
+            "name": "phpcs-security-audit",
+            "label": "PHP Security Audit",
+            "enabled" : true
+        },
+        {
+            "name": "pmd-apex",
+            "label": "PMD APEX",
+            "enabled" : true
+        },
+        {
+            "name": "security-code-scan",
+            "label": "Security Code Scan",
+            "enabled" : true
+        },
+        {
+            "name": "sobelow",
+            "label": "Sobelow",
+            "enabled" : true
+        },
+        {
+            "name": "spotbugs",
+            "label": "Spotbugs",
+            "enabled" : true
+        },
+        {
+            "name": "tslint",
+            "label": "TSLint",
+            "enabled" : true
+        },
+        {
+            "name": "secrets",
+            "label": "Secrets",
+            "enabled" : true
+        }
+    ]
+}

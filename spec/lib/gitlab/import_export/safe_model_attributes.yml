@@ -705,6 +705,7 @@ ProjectCiCdSetting:
 - group_runners_enabled
 ProjectSetting:
 - allow_merge_on_skipped_pipeline
+- has_confluence
 ProtectedEnvironment:
 - id
 - project_id

@@ -9637,6 +9637,11 @@ type Project {
   ): RequirementConnection
 
   """
+  SAST CI configuration for the project
+  """
+  sastCiConfiguration: SastCiConfiguration
+
+  """
   Detailed version of a Sentry error on the project
   """
   sentryDetailedError(
@@ -11388,6 +11393,291 @@ type RunDASTScanPayload {
   URL of the pipeline that was created.
   """
   pipelineUrl: String
+}
+
+"""
+Represents a CI configuration of SAST
+"""
+type SastCiConfiguration {
+  """
+  List of analyzers entities attached to SAST configuration.
+  """
+  analyzers(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+  ): SastCiConfigurationAnalyzersEntityConnection
+
+  """
+  List of global entities related to SAST configuration.
+  """
+  global(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+  ): SastCiConfigurationEntityConnection
+
+  """
+  List of pipeline entities related to SAST configuration.
+  """
+  pipeline(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+  ): SastCiConfigurationEntityConnection
+}
+
+"""
+Represents an analyzer entity in SAST CI configuration
+"""
+type SastCiConfigurationAnalyzersEntity {
+  """
+  Analyzer description that is displayed on the form.
+  """
+  description: String
+
+  """
+  Indicates whether an analyzer is enabled.
+  """
+  enabled: Boolean
+
+  """
+  Analyzer label used in the config UI.
+  """
+  label: String
+
+  """
+  Name of the analyzer.
+  """
+  name: String
+}
+
+"""
+The connection type for SastCiConfigurationAnalyzersEntity.
+"""
+type SastCiConfigurationAnalyzersEntityConnection {
+  """
+  A list of edges.
+  """
+  edges: [SastCiConfigurationAnalyzersEntityEdge]
+
+  """
+  A list of nodes.
+  """
+  nodes: [SastCiConfigurationAnalyzersEntity]
+
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: PageInfo!
+}
+
+"""
+An edge in a connection.
+"""
+type SastCiConfigurationAnalyzersEntityEdge {
+  """
+  A cursor for use in pagination.
+  """
+  cursor: String!
+
+  """
+  The item at the end of the edge.
+  """
+  node: SastCiConfigurationAnalyzersEntity
+}
+
+"""
+Represents an entity in SAST CI configuration
+"""
+type SastCiConfigurationEntity {
+  """
+  Default value that is used if value is empty.
+  """
+  defaultValue: String
+
+  """
+  Entity description that is displayed on the form.
+  """
+  description: String
+
+  """
+  CI keyword of entity.
+  """
+  field: String
+
+  """
+  Label for entity used in the form.
+  """
+  label: String
+
+  """
+  Different possible values of the field.
+  """
+  options(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+  ): SastCiConfigurationOptionsEntityConnection
+
+  """
+  Type of the field value.
+  """
+  type: String
+
+  """
+  Current value of the entity.
+  """
+  value: String
+}
+
+"""
+The connection type for SastCiConfigurationEntity.
+"""
+type SastCiConfigurationEntityConnection {
+  """
+  A list of edges.
+  """
+  edges: [SastCiConfigurationEntityEdge]
+
+  """
+  A list of nodes.
+  """
+  nodes: [SastCiConfigurationEntity]
+
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: PageInfo!
+}
+
+"""
+An edge in a connection.
+"""
+type SastCiConfigurationEntityEdge {
+  """
+  A cursor for use in pagination.
+  """
+  cursor: String!
+
+  """
+  The item at the end of the edge.
+  """
+  node: SastCiConfigurationEntity
+}
+
+"""
+Represents an entity for options in SAST CI configuration
+"""
+type SastCiConfigurationOptionsEntity {
+  """
+  Label of option entity.
+  """
+  label: String
+
+  """
+  Value of option entity.
+  """
+  value: String
+}
+
+"""
+The connection type for SastCiConfigurationOptionsEntity.
+"""
+type SastCiConfigurationOptionsEntityConnection {
+  """
+  A list of edges.
+  """
+  edges: [SastCiConfigurationOptionsEntityEdge]
+
+  """
+  A list of nodes.
+  """
+  nodes: [SastCiConfigurationOptionsEntity]
+
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: PageInfo!
+}
+
+"""
+An edge in a connection.
+"""
+type SastCiConfigurationOptionsEntityEdge {
+  """
+  A cursor for use in pagination.
+  """
+  cursor: String!
+
+  """
+  The item at the end of the edge.
+  """
+  node: SastCiConfigurationOptionsEntity
 }
 
 """

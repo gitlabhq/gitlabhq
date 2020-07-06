@@ -14191,6 +14191,7 @@ CREATE TABLE public.project_settings (
     show_default_award_emojis boolean DEFAULT true,
     allow_merge_on_skipped_pipeline boolean,
     squash_option smallint DEFAULT 3,
+    has_confluence boolean DEFAULT false NOT NULL,
     CONSTRAINT check_bde223416c CHECK ((show_default_award_emojis IS NOT NULL))
 );
 
@@ -23517,6 +23518,7 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200618105638
 20200618134223
 20200618134723
+20200619000316
 20200619154527
 20200619154528
 20200622040750
