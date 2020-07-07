@@ -158,7 +158,13 @@ module ApplicationSettingImplementation
         snowplow_iglu_registry_url: nil,
         custom_http_clone_url_root: nil,
         productivity_analytics_start_date: Time.current,
-        snippet_size_limit: 50.megabytes
+        snippet_size_limit: 50.megabytes,
+        project_import_limit: 6,
+        project_export_limit: 6,
+        project_download_export_limit: 1,
+        group_import_limit: 6,
+        group_export_limit: 6,
+        group_download_export_limit: 1
       }
     end
 

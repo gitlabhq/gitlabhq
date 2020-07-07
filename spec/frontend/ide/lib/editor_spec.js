@@ -199,6 +199,14 @@ describe('Multi-file editor library', () => {
     });
   });
 
+  describe('schemas', () => {
+    it('registers custom schemas defined with Monaco', () => {
+      expect(monacoLanguages.yaml.yamlDefaults.diagnosticsOptions).toMatchObject({
+        schemas: [{ fileMatch: ['*.gitlab-ci.yml'] }],
+      });
+    });
+  });
+
   describe('replaceSelectedText', () => {
     let model;
     let editor;

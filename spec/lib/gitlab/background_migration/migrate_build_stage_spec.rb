@@ -2,7 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::BackgroundMigration::MigrateBuildStage, schema: 20180212101928 do
+RSpec.describe Gitlab::BackgroundMigration::MigrateBuildStage do
+  let(:namespaces) { table(:namespaces) }
   let(:projects) { table(:projects) }
   let(:pipelines) { table(:ci_pipelines) }
   let(:stages) { table(:ci_stages) }
@@ -22,7 +23,8 @@ RSpec.describe Gitlab::BackgroundMigration::MigrateBuildStage, schema: 201802121
   end
 
   before do
-    projects.create!(id: 123, name: 'gitlab', path: 'gitlab-ce')
+    namespace = namespaces.create!(name: 'gitlab-org', path: 'gitlab-org')
+    projects.create!(id: 123, name: 'gitlab', path: 'gitlab-ce', namespace_id: namespace.id)
     pipelines.create!(id: 1, project_id: 123, ref: 'master', sha: 'adf43c3a')
 
     jobs.create!(id: 1, commit_id: 1, project_id: 123,

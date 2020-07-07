@@ -5,7 +5,7 @@ module Gitlab
     include Gitlab::Utils::StrongMemoize
     include Gitlab::Routing
 
-    LATEST_COMMITS_LIMIT = 10
+    LATEST_COMMITS_LIMIT = 2
 
     def initialize(project, commit_sha)
       @project = project

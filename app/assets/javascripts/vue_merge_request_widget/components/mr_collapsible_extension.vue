@@ -59,7 +59,7 @@ export default {
 
       <template v-else>
         <button
-          class="btn-blank btn s32 square append-right-default"
+          class="btn-blank btn s32 square gl-mr-3"
           type="button"
           :aria-label="ariaLabel"
           :disabled="isLoading"

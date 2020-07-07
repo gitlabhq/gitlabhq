@@ -71,7 +71,7 @@ describe('Suggestion Diff component', () => {
 
   it('renders correct tooltip message for apply button', () => {
     createComponent();
-    expect(wrapper.vm.tooltipMessage).toBe('This also resolves the discussion');
+    expect(wrapper.vm.tooltipMessage).toBe('This also resolves this thread');
   });
 
   describe('when apply suggestion is clicked', () => {
@@ -227,11 +227,10 @@ describe('Suggestion Diff component', () => {
       createComponent({ canApply: false });
     });
 
-    it('disables apply suggestion and add to batch buttons', () => {
+    it('disables apply suggestion and hides add to batch button', () => {
       expect(findApplyButton().exists()).toBe(true);
-      expect(findAddToBatchButton().exists()).toBe(true);
+      expect(findAddToBatchButton().exists()).toBe(false);
       expect(findApplyButton().attributes('disabled')).toBe('true');
-      expect(findAddToBatchButton().attributes('disabled')).toBe('true');
     });
 
     it('renders correct tooltip message for apply button', () => {

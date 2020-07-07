@@ -2,7 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::BackgroundMigration::RemoveRestrictedTodos, schema: 20180704204006 do
+RSpec.describe Gitlab::BackgroundMigration::RemoveRestrictedTodos do
+  let(:namespaces)             { table(:namespaces) }
   let(:projects)               { table(:projects) }
   let(:users)                  { table(:users) }
   let(:todos)                  { table(:todos) }
@@ -18,8 +19,9 @@ RSpec.describe Gitlab::BackgroundMigration::RemoveRestrictedTodos, schema: 20180
     users.create(id: 2, email: 'reporter@example.com', projects_limit: 10)
     users.create(id: 3, email: 'guest@example.com', projects_limit: 10)
 
-    projects.create!(id: 1, name: 'project-1', path: 'project-1', visibility_level: 0, namespace_id: 1)
-    projects.create!(id: 2, name: 'project-2', path: 'project-2', visibility_level: 0, namespace_id: 1)
+    namespace = namespaces.create(name: 'gitlab-org', path: 'gitlab-org')
+    projects.create!(id: 1, name: 'project-1', path: 'project-1', visibility_level: 0, namespace_id: namespace.id)
+    projects.create!(id: 2, name: 'project-2', path: 'project-2', visibility_level: 0, namespace_id: namespace.id)
 
     issues.create(id: 1, project_id: 1)
     issues.create(id: 2, project_id: 2)
@@ -92,7 +94,7 @@ RSpec.describe Gitlab::BackgroundMigration::RemoveRestrictedTodos, schema: 20180
 
       context 'when issues are restricted to project members' do
         before do
-          project_features.create(issues_access_level: 10, project_id: 2)
+          project_features.create(issues_access_level: 10, pages_access_level: 10, project_id: 2)
         end
 
         it 'removes non members issue todos' do
@@ -102,7 +104,7 @@ RSpec.describe Gitlab::BackgroundMigration::RemoveRestrictedTodos, schema: 20180
 
       context 'when merge requests are restricted to project members' do
         before do
-          project_features.create(merge_requests_access_level: 10, project_id: 2)
+          project_features.create(merge_requests_access_level: 10, pages_access_level: 10, project_id: 2)
         end
 
         it 'removes non members issue todos' do
@@ -112,7 +114,7 @@ RSpec.describe Gitlab::BackgroundMigration::RemoveRestrictedTodos, schema: 20180
 
       context 'when repository and merge requests are restricted to project members' do
         before do
-          project_features.create(repository_access_level: 10, merge_requests_access_level: 10, project_id: 2)
+          project_features.create(repository_access_level: 10, merge_requests_access_level: 10, pages_access_level: 10, project_id: 2)
         end
 
         it 'removes non members commit and merge requests todos' do

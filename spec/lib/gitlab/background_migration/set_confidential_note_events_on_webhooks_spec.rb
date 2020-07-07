@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::BackgroundMigration::SetConfidentialNoteEventsOnWebhooks, schema: 20180104131052 do
+RSpec.describe Gitlab::BackgroundMigration::SetConfidentialNoteEventsOnWebhooks do
   let(:web_hooks) { table(:web_hooks) }
 
   describe '#perform' do

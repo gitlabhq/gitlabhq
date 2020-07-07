@@ -10,7 +10,8 @@ RSpec::Matchers.define :be_scheduled_delayed_migration do |delay, *expected|
 
   failure_message do |migration|
     "Migration `#{migration}` with args `#{expected.inspect}` " \
-      'not scheduled in expected time!'
+      "not scheduled in expected time! Expected any of `#{BackgroundMigrationWorker.jobs.map { |j| j['args'] }}` to be `#{[migration, expected]}` " \
+      "and any of `#{BackgroundMigrationWorker.jobs.map { |j| j['at'].to_i }}` to be `#{delay.to_i + Time.now.to_i}` (`#{delay.to_i}` + `#{Time.now.to_i}`)."
   end
 end
 

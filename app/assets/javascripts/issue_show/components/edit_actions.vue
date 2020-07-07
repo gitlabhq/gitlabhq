@@ -81,7 +81,7 @@ export default {
       v-if="shouldShowDeleteButton"
       :class="{ disabled: deleteLoading }"
       :disabled="deleteLoading"
-      class="btn btn-danger float-right append-right-default qa-delete-button"
+      class="btn btn-danger float-right gl-mr-3 qa-delete-button"
       type="button"
       @click="deleteIssuable"
     >

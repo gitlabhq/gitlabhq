@@ -580,13 +580,14 @@ Make sure the IdP provides a claim containing the user's email address, using cl
 If after signing in into your SAML server you are redirected back to the sign in page and
 no error is displayed, check your `production.log` file. It will most likely contain the
 message `Can't verify CSRF token authenticity`. This means that there is an error during
-the SAML request, but this error never reaches GitLab due to the CSRF check.
+the SAML request, but in GitLab 11.7 and earlier this error never reaches GitLab due to
+the CSRF check.
 
 To bypass this you can add `skip_before_action :verify_authenticity_token` to the
 `omniauth_callbacks_controller.rb` file immediately after the `class` line and
-comment out the `protect_from_forgery` line using a `#` then restart Unicorn. This
-will allow the error to hit GitLab, where it can then be seen in the usual logs,
-or as a flash message on the login screen.
+comment out the `protect_from_forgery` line using a `#`. Restart Unicorn for this
+change to take effect. This will allow the error to hit GitLab, where it can then
+be seen in the usual logs, or as a flash message on the login screen.
 
 That file is located in `/opt/gitlab/embedded/service/gitlab-rails/app/controllers`
 for Omnibus installations and by default in `/home/git/gitlab/app/controllers` for

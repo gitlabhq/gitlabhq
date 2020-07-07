@@ -19,8 +19,8 @@ GitLab uses [Semantic Versioning](https://semver.org/) for its releases:
 
 For example, for GitLab version 12.10.6:
 
-- `12` represents the major version. The major release was 12.0.0, but often referred to as 12.0.
-- `10` represents the minor version. The minor release was 12.10.0, but often referred to as 12.10.
+- `12` represents the major version. The major release was 12.0.0 but often referred to as 12.0.
+- `10` represents the minor version. The minor release was 12.10.0 but often referred to as 12.10.
 - `6` represents the patch number.
 
 Any part of the version number can increment into multiple digits, for example, 13.10.11.
@@ -37,7 +37,7 @@ The following table describes the version types and their release cadence:
 
 We encourage everyone to run the [latest stable release](https://about.gitlab.com/releases/categories/releases/)
 to ensure that you can easily upgrade to the most secure and feature-rich GitLab experience.
-In order to make sure you can easily run the most recent stable release, we are working
+To make sure you can easily run the most recent stable release, we are working
 hard to keep the update process simple and reliable.
 
 If you are unable to follow our monthly release cycle, there are a couple of
@@ -79,7 +79,7 @@ We cannot guarantee that upgrading between major versions will be seamless.
 We suggest upgrading to the latest available *minor* version within
 your major version before proceeding to the next major version.
 Doing this will address any backward-incompatible changes or deprecations
-to help ensure a successful upgrade to next major release.
+to help ensure a successful upgrade to the next major release.
 
 It's also important to ensure that any background migrations have been fully completed
 before upgrading to a new major version. To see the current size of the `background_migration` queue,
@@ -110,14 +110,13 @@ Please see the table below for some examples:
 | `13.2.0`                | `11.5.0`      | `11.5.0` -> `11.11.8` -> `12.0.12` -> `12.10.6` -> `13.0.0` -> `13.2.0` | Four intermediate versions are required: the final `11.11`, `12.0`, and `12.10` releases, plus `13.0`. |
 | `13.0.1`              | `11.10.8`      | `11.10.5` -> `11.11.8` -> `12.0.12` -> `12.10.6` -> `13.0.1` | Three intermediate versions are required: `11.11`, `12.0`, and `12.10`. |
 | `12.10.6`             | `11.3.4`       | `11.3.4` -> `11.11.8` -> `12.0.12` -> `12.10.6`             |  Two intermediate versions are required: `11.11` and `12.0` |
-| `12.9.5.`             | `10.4.5`       | `10.4.5` -> `10.8.7` -> `11.11.8` -> `12.0.12` -> `12.9.5`   | Three intermediate versions are required: `10.8`, `11.11`, and `12.0`, then `12.9.5` |
+| `12.9.5`             | `10.4.5`       | `10.4.5` -> `10.8.7` -> `11.11.8` -> `12.0.12` -> `12.9.5`   | Three intermediate versions are required: `10.8`, `11.11`, and `12.0`, then `12.9.5` |
 | `12.2.5`              | `9.2.6`        | `9.2.6` -> `9.5.10` -> `10.8.7` -> `11.11.8` -> `12.0.12` -> `12.2.5` | Four intermediate versions are required: `9.5`, `10.8`, `11.11`, `12.0`, then `12.2`. |
 | `11.3.4`              | `8.13.4`       | `8.13.4` -> `8.17.7` -> `9.5.10` -> `10.8.7` -> `11.3.4` | `8.17.7` is the last version in version 8, `9.5.10` is the last version in version 9, `10.8.7` is the last version in version 10. |
 
 ### Upgrades from versions earlier than 8.12
 
-- `8.11.x` and earlier: you might have to upgrade to `8.12.0` specifically before you can
-  upgrade to `8.17.7`. This was [reported in an issue](https://gitlab.com/gitlab-org/gitlab/-/issues/207259).
+- `8.11.x` and earlier: you might have to upgrade to `8.12.0` specifically before you can upgrade to `8.17.7`. This was [reported in an issue](https://gitlab.com/gitlab-org/gitlab/-/issues/207259).
 - [CI changes prior to version 8.0](https://docs.gitlab.com/omnibus/update/README.html#updating-gitlab-ci-from-prior-540-to-version-714-via-omnibus-gitlab)
   when it was merged into GitLab.
 
@@ -155,11 +154,11 @@ and support cost.
 1. Supporting parallel version discourages incremental upgrades which over time accumulate in
 complexity and create upgrade challenges for all users. GitLab has a dedicated team ensuring that
 incremental upgrades (and installations) are as simple as possible.
-1. The number of changes created in the GitLab application is high, which contributes to backporting complexity to older releases. In number of cases, backporting has to go through the same
+1. The number of changes created in the GitLab application is high, which contributes to backporting complexity to older releases. In several cases, backporting has to go through the same
 review process a new change goes through.
-1. Ensuring that tests pass on older release is a considerable challenge in some cases, and as such is very time consuming.
+1. Ensuring that tests pass on the older release is a considerable challenge in some cases, and as such is very time-consuming.
 
-Including new features in patch releases is not possible as that would break [Semantic Versioning](https://semver.org/).
+Including new features in a patch release is not possible as that would break [Semantic Versioning](https://semver.org/).
 Breaking [Semantic Versioning](https://semver.org/) has the following consequences for users that
 have to adhere to various internal requirements (for example, org. compliance, verifying new features, and similar):
 
@@ -169,7 +168,7 @@ have to adhere to various internal requirements (for example, org. compliance, v
 
 In cases where a strategic user has a requirement to test a feature before it is
 officially released, we can offer to create a Release Candidate (RC) version that will
-include the specific feature. This should be needed only in extreme cases, and can be requested for
+include the specific feature. This should be needed only in extreme cases and can be requested for
 consideration by raising an issue in the [release/tasks](https://gitlab.com/gitlab-org/release/tasks/-/issues/new?issuable_template=Backporting-request) issue tracker.
 It is important to note that the Release Candidate will also contain other features and changes as
 it is not possible to easily isolate a specific feature (similar reasons as noted above). The
@@ -179,7 +178,7 @@ accessible.
 ### Backporting to older releases
 
 Backporting to more than one stable release is reserved for [security releases](#security-releases).
-In some cases however, we may need to backport *a bug fix* to more than one stable
+In some cases, however, we may need to backport *a bug fix* to more than one stable
 release, depending on the severity of the bug.
 
 The decision on whether backporting a change will be performed is done at the discretion of the
@@ -220,12 +219,11 @@ This decision is made on a case-by-case basis.
 Check [our release posts](https://about.gitlab.com/releases/categories/releases/).
 
 Each month, we publish either a major or minor release of GitLab. At the end
-of those release posts there are three sections to look for: Deprecations, Removals, and Important notes on upgrading. These will include:
+of those release posts, there are three sections to look for: Deprecations, Removals, and Important notes on upgrading. These will include:
 
 - Steps you need to perform as part of an upgrade.
   For example [8.12](https://about.gitlab.com/releases/2016/09/22/gitlab-8-12-released/#upgrade-barometer)
-  required the Elasticsearch index to be recreated. Any older version of GitLab upgrading to 8.12 or higher
-  would require this.
+  required the Elasticsearch index to be recreated. Any older version of GitLab upgrading to 8.12 or higher would require this.
 - Changes to the versions of software we support such as
   [ceasing support for IE11 in GitLab 13](https://about.gitlab.com/releases/2020/03/22/gitlab-12-9-released/#ending-support-for-internet-explorer-11).
 

@@ -25,6 +25,6 @@ RSpec.describe ActiveRecord::Schema, schema: :latest do
   it 'the schema_migrations table contains all schema versions' do
     versions = ActiveRecord::Base.connection.execute('SELECT version FROM schema_migrations ORDER BY version').map { |m| Integer(m['version']) }
 
-    expect(versions).to eq(all_migrations)
+    expect(versions).to match_array(all_migrations)
   end
 end

@@ -53,13 +53,8 @@ export default {
     },
     tooltipMessage() {
       return this.canApply
-        ? __('This also resolves the discussion')
+        ? __('This also resolves this thread')
         : __("Can't apply as this line has changed or the suggestion already matches its content.");
-    },
-    tooltipMessageBatch() {
-      return !this.canBeBatched
-        ? __("Suggestions that change line count can't be added to batches, yet.")
-        : this.tooltipMessage;
     },
     isDisableButton() {
       return this.isApplying || !this.canApply;
@@ -129,15 +124,14 @@ export default {
       </gl-deprecated-button>
     </div>
     <div v-else class="d-flex align-items-center">
-      <span v-if="canBeBatched" v-gl-tooltip.viewport="tooltipMessageBatch" tabindex="0">
-        <gl-deprecated-button
-          class="btn-inverted js-add-to-batch-btn btn-grouped"
-          :disabled="isDisableButton"
-          @click="addSuggestionToBatch"
-        >
-          {{ __('Add suggestion to batch') }}
-        </gl-deprecated-button>
-      </span>
+      <gl-deprecated-button
+        v-if="canBeBatched && !isDisableButton"
+        class="btn-inverted js-add-to-batch-btn btn-grouped"
+        :disabled="isDisableButton"
+        @click="addSuggestionToBatch"
+      >
+        {{ __('Add suggestion to batch') }}
+      </gl-deprecated-button>
       <span v-gl-tooltip.viewport="tooltipMessage" tabindex="0">
         <gl-deprecated-button
           class="btn-inverted js-apply-btn btn-grouped"

@@ -13,7 +13,7 @@ export default {
     <div class="svg-content svg-80">
       <img :src="committedStateSvgPath" :alt="s__('IDE|Successful commit')" />
     </div>
-    <div class="append-right-default gl-ml-3">
+    <div class="gl-mr-3 gl-ml-3">
       <div class="text-content text-center">
         <h4>{{ __('All changes are committed') }}</h4>
         <p v-html="lastCommitMsg"></p>

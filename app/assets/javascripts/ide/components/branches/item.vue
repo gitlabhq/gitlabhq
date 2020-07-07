@@ -33,7 +33,7 @@ export default {
 
 <template>
   <a :href="branchHref" class="btn-link d-flex align-items-center">
-    <span class="d-flex append-right-default ide-search-list-current-icon">
+    <span class="d-flex gl-mr-3 ide-search-list-current-icon">
       <icon v-if="isActive" :size="18" name="mobile-issue-close" />
     </span>
     <span>

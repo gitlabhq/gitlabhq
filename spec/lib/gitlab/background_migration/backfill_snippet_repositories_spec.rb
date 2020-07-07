@@ -9,7 +9,6 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillSnippetRepositories, :migrat
   let(:snippet_repositories) { table(:snippet_repositories) }
 
   let(:user_state) { 'active' }
-  let(:ghost) { false }
   let(:user_type) { nil }
   let(:user_name) { 'Test' }
 
@@ -20,7 +19,6 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillSnippetRepositories, :migrat
                  username: 'test',
                  name: user_name,
                  state: user_state,
-                 ghost: ghost,
                  last_activity_on: 1.minute.ago,
                  user_type: user_type,
                  confirmed_at: 1.day.ago)
@@ -113,8 +111,7 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillSnippetRepositories, :migrat
         end
 
         context 'when user is a ghost' do
-          let(:ghost) { true }
-          let(:user_type) { 'ghost' }
+          let(:user_type) { HasUserType::USER_TYPES[:ghost] }
 
           it_behaves_like 'migration_bot user commits files'
         end
@@ -255,7 +252,6 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillSnippetRepositories, :migrat
                      username: 'test2',
                      name: 'Test2',
                      state: user_state,
-                     ghost: ghost,
                      last_activity_on: 1.minute.ago,
                      user_type: user_type,
                      confirmed_at: 1.day.ago)

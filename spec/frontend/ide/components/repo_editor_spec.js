@@ -637,6 +637,8 @@ describe('RepoEditor', () => {
           // set cursor to line 2, column 1
           vm.editor.instance.setSelection(new Range(2, 1, 2, 1));
           vm.editor.instance.focus();
+
+          jest.spyOn(vm.editor.instance, 'hasTextFocus').mockReturnValue(true);
         });
       });
 

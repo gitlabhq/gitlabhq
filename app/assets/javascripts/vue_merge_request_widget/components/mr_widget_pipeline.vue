@@ -129,7 +129,7 @@ export default {
       <div class="media-body gl-ml-3" v-html="errorText"></div>
     </template>
     <template v-else-if="hasPipeline">
-      <a :href="status.details_path" class="align-self-start append-right-default">
+      <a :href="status.details_path" class="align-self-start gl-mr-3">
         <ci-icon :status="status" :size="24" :borderless="true" class="add-border" />
       </a>
       <div class="ci-widget-container d-flex">

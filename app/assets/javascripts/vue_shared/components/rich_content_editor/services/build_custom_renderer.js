@@ -1,10 +1,11 @@
 import renderKramdownList from './renderers/render_kramdown_list';
 import renderKramdownText from './renderers/render_kramdown_text';
-import renderIdentifierText from './renderers/render_identifier_text';
+import renderIdentifierParagraph from './renderers/render_identifier_paragraph';
 import renderEmbeddedRubyText from './renderers/render_embedded_ruby_text';
 
 const listRenderers = [renderKramdownList];
-const textRenderers = [renderKramdownText, renderIdentifierText, renderEmbeddedRubyText];
+const paragraphRenderers = [renderIdentifierParagraph];
+const textRenderers = [renderKramdownText, renderEmbeddedRubyText];
 
 const executeRenderer = (renderers, node, context) => {
   const availableRenderer = renderers.find(renderer => renderer.canRender(node, context));
@@ -22,12 +23,17 @@ const buildCustomRendererFunctions = (customRenderers, defaults) => {
   return Object.fromEntries(customEntries);
 };
 
-const buildCustomHTMLRenderer = (customRenderers = { list: [], text: [] }) => {
+const buildCustomHTMLRenderer = (customRenderers = { list: [], paragraph: [], text: [] }) => {
   const defaults = {
     list(node, context) {
       const allListRenderers = [...customRenderers.list, ...listRenderers];
 
       return executeRenderer(allListRenderers, node, context);
+    },
+    paragraph(node, context) {
+      const allParagraphRenderers = [...customRenderers.list, ...paragraphRenderers];
+
+      return executeRenderer(allParagraphRenderers, node, context);
     },
     text(node, context) {
       const allTextRenderers = [...customRenderers.text, ...textRenderers];

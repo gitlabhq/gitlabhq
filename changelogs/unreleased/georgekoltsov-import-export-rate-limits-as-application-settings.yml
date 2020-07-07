@@ -1,0 +1,5 @@
+---
+title: Convert Import/Export rate limits to configurable application settings
+merge_request: 35728
+author:
+type: added

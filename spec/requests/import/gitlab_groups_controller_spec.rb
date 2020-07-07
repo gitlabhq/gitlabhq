@@ -16,6 +16,8 @@ RSpec.describe Import::GitlabGroupsController do
       expect(import_export).to receive(:storage_path).and_return(import_path)
     end
 
+    allow(Gitlab::ApplicationRateLimiter).to receive(:throttled?).and_return(false)
+
     stub_uploads_object_storage(ImportExportUploader)
   end
 

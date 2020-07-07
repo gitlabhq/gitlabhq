@@ -941,7 +941,7 @@ RSpec.describe GroupsController do
 
         allow(Gitlab::ApplicationRateLimiter)
           .to receive(:increment)
-          .and_return(Gitlab::ApplicationRateLimiter.rate_limits[:group_export][:threshold] + 1)
+          .and_return(Gitlab::ApplicationRateLimiter.rate_limits[:group_export][:threshold].call + 1)
       end
 
       it 'throttles the endpoint' do
@@ -1015,7 +1015,7 @@ RSpec.describe GroupsController do
 
         allow(Gitlab::ApplicationRateLimiter)
           .to receive(:increment)
-          .and_return(Gitlab::ApplicationRateLimiter.rate_limits[:group_download_export][:threshold] + 1)
+          .and_return(Gitlab::ApplicationRateLimiter.rate_limits[:group_download_export][:threshold].call + 1)
       end
 
       it 'throttles the endpoint' do

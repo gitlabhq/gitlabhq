@@ -501,11 +501,6 @@ production: &base
     geo_registry_sync_worker:
       cron: "*/1 * * * *"
 
-    # GitLab Geo migrated local files clean up worker
-    # NOTE: This will only take effect if Geo is enabled (secondary nodes only)
-    geo_migrated_local_files_clean_up_worker:
-      cron: "15 */6 * * *"
-
     # Export pseudonymized data in CSV format for analysis
     pseudonymizer_worker:
       cron: "0 * * * *"
@@ -514,7 +509,7 @@ production: &base
     # NOTE: This will only take effect if elasticsearch is enabled.
     elastic_index_bulk_cron_worker:
       cron: "*/1 * * * *"
-      
+
     # Elasticsearch bulk updater for initial updates.
     # NOTE: This will only take effect if elasticsearch is enabled.
     elastic_index_initial_bulk_cron_worker:

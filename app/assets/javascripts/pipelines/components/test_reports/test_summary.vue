@@ -72,7 +72,7 @@ export default {
         <gl-deprecated-button
           v-if="showBack"
           size="sm"
-          class="append-right-default js-back-button"
+          class="gl-mr-3 js-back-button"
           @click="onBackClick"
         >
           <icon name="angle-left" />

@@ -33,6 +33,7 @@ describe('IssuableListRootApp', () => {
           isFinishedAlertShowing,
           isInProgressAlertShowing,
           jiraImport: {
+            importedIssuesCount: 1,
             isInProgress,
             isFinished,
             label,
@@ -77,7 +78,7 @@ describe('IssuableListRootApp', () => {
 
     describe('shows an alert', () => {
       it('tells the user the Jira import has finished', () => {
-        expect(findAlert().text()).toBe('Issues successfully imported with the label');
+        expect(findAlert().text()).toBe('1 issue successfully imported with the label');
       });
 
       it('contains the label title associated with the Jira import', () => {

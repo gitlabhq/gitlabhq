@@ -57,4 +57,15 @@
   .settings-content
     = render 'issue_limits'
 
+%section.settings.as-import-export-limits.no-animate#js-import-export-limits-settings{ class: ('expanded' if expanded_by_default?) }
+  .settings-header
+    %h4
+      = _('Import/Export Rate Limits')
+    %button.btn.btn-default.js-settings-toggle{ type: 'button' }
+      = expanded_by_default? ? _('Collapse') : _('Expand')
+    %p
+      = _('Configure limits for Project/Group Import/Export.')
+  .settings-content
+    = render 'import_export_limits'
+
 = render_if_exists 'admin/application_settings/ee_network_settings'

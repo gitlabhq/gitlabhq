@@ -5,7 +5,7 @@ const webpack = require('webpack');
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
 const StatsWriterPlugin = require('webpack-stats-plugin').StatsWriterPlugin;
 const CompressionPlugin = require('compression-webpack-plugin');
-const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin');
+const MonacoWebpackPlugin = require('./plugins/monaco_webpack');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const vendorDllHash = require('./helpers/vendor_dll_hash');
@@ -241,7 +241,7 @@ module.exports = {
       },
       {
         test: /\.(eot|ttf|woff|woff2)$/,
-        include: /node_modules\/katex\/dist\/fonts/,
+        include: /node_modules\/(katex\/dist\/fonts|monaco-editor)/,
         loader: 'file-loader',
         options: {
           name: '[name].[contenthash:8].[ext]',

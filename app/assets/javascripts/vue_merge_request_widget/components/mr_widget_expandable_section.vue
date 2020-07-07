@@ -46,7 +46,7 @@ export default {
   <div>
     <div class="mr-widget-body gl-display-flex">
       <span
-        class="gl-display-flex gl-align-items-center gl-justify-content-center append-right-default gl-align-self-start gl-mt-1"
+        class="gl-display-flex gl-align-items-center gl-justify-content-center gl-mr-3 gl-align-self-start gl-mt-1"
       >
         <gl-icon :name="iconName" :size="24" />
       </span>

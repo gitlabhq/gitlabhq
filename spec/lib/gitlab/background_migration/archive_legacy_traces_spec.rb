@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::BackgroundMigration::ArchiveLegacyTraces, schema: 20180529152628 do
+RSpec.describe Gitlab::BackgroundMigration::ArchiveLegacyTraces do
   include TraceHelpers
 
   let(:namespaces) { table(:namespaces) }

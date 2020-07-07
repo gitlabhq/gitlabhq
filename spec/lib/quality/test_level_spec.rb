@@ -28,7 +28,7 @@ RSpec.describe Quality::TestLevel do
     context 'when level is migration' do
       it 'returns a pattern' do
         expect(subject.pattern(:migration))
-          .to eq("spec/{migrations}{,/**/}*_spec.rb")
+          .to eq("spec/{migrations,lib/gitlab/background_migration,lib/ee/gitlab/background_migration}{,/**/}*_spec.rb")
       end
     end
 
@@ -96,7 +96,7 @@ RSpec.describe Quality::TestLevel do
     context 'when level is migration' do
       it 'returns a regexp' do
         expect(subject.regexp(:migration))
-          .to eq(%r{spec/(migrations)})
+          .to eq(%r{spec/(migrations|lib/gitlab/background_migration|lib/ee/gitlab/background_migration)})
       end
     end
 

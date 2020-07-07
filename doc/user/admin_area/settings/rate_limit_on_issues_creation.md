@@ -11,7 +11,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 This setting allows you to rate limit the requests to the issue creation endpoint.
 It defaults to 300 requests per minute.
-You can change it in **Admin Area > Settings > Network > Performance Optimization**.
+You can change it in **Admin Area > Settings > Network > Issues Rate Limits**.
 
 For example, requests using the
 [Projects::IssuesController#create](https://gitlab.com/gitlab-org/gitlab/raw/master/app/controllers/projects/issues_controller.rb)

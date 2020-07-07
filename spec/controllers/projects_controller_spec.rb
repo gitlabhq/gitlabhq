@@ -1197,7 +1197,7 @@ RSpec.describe ProjectsController do
       before do
         allow(Gitlab::ApplicationRateLimiter)
           .to receive(:increment)
-          .and_return(Gitlab::ApplicationRateLimiter.rate_limits["project_#{action}".to_sym][:threshold] + 1)
+          .and_return(Gitlab::ApplicationRateLimiter.rate_limits["project_#{action}".to_sym][:threshold].call + 1)
       end
 
       it 'prevents requesting project export' do
@@ -1264,7 +1264,7 @@ RSpec.describe ProjectsController do
           before do
             allow(Gitlab::ApplicationRateLimiter)
               .to receive(:increment)
-              .and_return(Gitlab::ApplicationRateLimiter.rate_limits[:project_download_export][:threshold] + 1)
+              .and_return(Gitlab::ApplicationRateLimiter.rate_limits[:project_download_export][:threshold].call + 1)
           end
 
           it 'prevents requesting project export' do

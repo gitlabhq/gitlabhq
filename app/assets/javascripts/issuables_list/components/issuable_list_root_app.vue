@@ -1,5 +1,7 @@
 <script>
 import { GlAlert, GlLabel } from '@gitlab/ui';
+import { last } from 'lodash';
+import { n__ } from '~/locale';
 import getIssuesListDetailsQuery from '../queries/get_issues_list_details.query.graphql';
 import {
   calculateJiraImportLabel,
@@ -47,6 +49,7 @@ export default {
         };
       },
       update: ({ project }) => ({
+        importedIssuesCount: last(project.jiraImports.nodes)?.importedIssuesCount,
         isInProgress: isInProgress(project.jiraImportStatus),
         isFinished: isFinished(project.jiraImportStatus),
         label: calculateJiraImportLabel(
@@ -60,6 +63,13 @@ export default {
     },
   },
   computed: {
+    finishedMessage() {
+      return n__(
+        '%d issue successfully imported with the label',
+        '%d issues successfully imported with the label',
+        this.jiraImport.importedIssuesCount,
+      );
+    },
     labelTarget() {
       return `${this.issuesPath}?label_name[]=${encodeURIComponent(this.jiraImport.label.title)}`;
     },
@@ -87,7 +97,7 @@ export default {
       {{ __('Import in progress. Refresh page to see newly added issues.') }}
     </gl-alert>
     <gl-alert v-if="shouldShowFinishedAlert" variant="success" @dismiss="hideFinishedAlert">
-      {{ __('Issues successfully imported with the label') }}
+      {{ finishedMessage }}
       <gl-label
         :background-color="jiraImport.label.color"
         scoped

@@ -93,8 +93,14 @@ module Quality
 
     private
 
+    def migration_and_background_migration_folders
+      TEST_LEVEL_FOLDERS.fetch(:migration) + TEST_LEVEL_FOLDERS.fetch(:background_migration)
+    end
+
     def folders_pattern(level)
       case level
+      when :migration
+        "{#{migration_and_background_migration_folders.join(',')}}"
       # Geo specs aren't in a specific folder, but they all have the :geo tag, so we must search for them globally
       when :all, :geo
         '**'
@@ -105,6 +111,8 @@ module Quality
 
     def folders_regex(level)
       case level
+      when :migration
+        "(#{migration_and_background_migration_folders.join('|')})"
       # Geo specs aren't in a specific folder, but they all have the :geo tag, so we must search for them globally
       when :all, :geo
         ''

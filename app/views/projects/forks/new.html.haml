@@ -9,7 +9,7 @@
   .col-lg-9
     - if @namespaces.present?
       .fork-thumbnail-container.js-fork-content
-        %h5.gl-mt-0.gl-mb-0.gl-ml-3.append-right-default
+        %h5.gl-mt-0.gl-mb-0.gl-ml-3.gl-mr-3
           = _("Select a namespace to fork the project")
         - @namespaces.each do |namespace|
           = render 'fork_button', namespace: namespace

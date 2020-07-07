@@ -192,6 +192,11 @@ msgid_plural "%d issues selected"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "%d issue successfully imported with the label"
+msgid_plural "%d issues successfully imported with the label"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%d layer"
 msgid_plural "%d layers"
 msgstr[0] ""
@@ -6080,6 +6085,9 @@ msgid "Configure existing installation"
 msgstr ""
 
 msgid "Configure limit for issues created per minute by web and API requests."
+msgstr ""
+
+msgid "Configure limits for Project/Group Import/Export."
 msgstr ""
 
 msgid "Configure limits for web and API requests."
@@ -12226,6 +12234,9 @@ msgstr ""
 msgid "Import timed out. Import took longer than %{import_jobs_expiration} seconds"
 msgstr ""
 
+msgid "Import/Export Rate Limits"
+msgstr ""
+
 msgid "Import/Export illustration"
 msgstr ""
 
@@ -12754,9 +12765,6 @@ msgid "Issues closed"
 msgstr ""
 
 msgid "Issues referenced by merge requests and commits within the default branch will be closed automatically"
-msgstr ""
-
-msgid "Issues successfully imported with the label"
 msgstr ""
 
 msgid "Issues with comments, merge requests with diffs and comments, labels, milestones, snippets, and other project entities"
@@ -13987,6 +13995,24 @@ msgid "MattermostService|This service allows users to perform common operations 
 msgstr ""
 
 msgid "Maven Metadata"
+msgstr ""
+
+msgid "Max Group Export Download requests per minute per user"
+msgstr ""
+
+msgid "Max Group Export requests per minute per user"
+msgstr ""
+
+msgid "Max Group Import requests per minute per user"
+msgstr ""
+
+msgid "Max Project Export Download requests per minute per user"
+msgstr ""
+
+msgid "Max Project Export requests per minute per user"
+msgstr ""
+
+msgid "Max Project Import requests per minute per user"
 msgstr ""
 
 msgid "Max access level"
@@ -19505,6 +19531,9 @@ msgstr ""
 msgid "Required approvals (%{approvals_given} given, you've approved)"
 msgstr ""
 
+msgid "Required in this project."
+msgstr ""
+
 msgid "Requirement"
 msgstr ""
 
@@ -22379,9 +22408,6 @@ msgstr ""
 msgid "Suggestions must all be on the same branch."
 msgstr ""
 
-msgid "Suggestions that change line count can't be added to batches, yet."
-msgstr ""
-
 msgid "Suggestions:"
 msgstr ""
 
@@ -23397,7 +23423,7 @@ msgstr ""
 msgid "This also resolves all related threads"
 msgstr ""
 
-msgid "This also resolves the discussion"
+msgid "This also resolves this thread"
 msgstr ""
 
 msgid "This application was created by %{link_to_owner}."

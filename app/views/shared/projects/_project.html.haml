@@ -58,10 +58,10 @@
               = render_if_exists 'compliance_management/compliance_framework/compliance_framework_badge', project: project
 
         - if show_last_commit_as_description
-          .description.d-none.d-sm-block.append-right-default
+          .description.d-none.d-sm-block.gl-mr-3
             = link_to_markdown(project.commit.title, project_commit_path(project, project.commit), class: "commit-row-message")
         - elsif project.description.present?
-          .description.d-none.d-sm-block.append-right-default
+          .description.d-none.d-sm-block.gl-mr-3
             = markdown_field(project, :description)
 
       .controls.d-flex.flex-sm-column.align-items-center.align-items-sm-end.flex-wrap.flex-shrink-0.text-secondary{ class: css_controls_class.join(" ") }

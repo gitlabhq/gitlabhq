@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::BackgroundMigration::BackfillProjectFullpathInRepoConfig, schema: 20181010133639 do
+RSpec.describe Gitlab::BackgroundMigration::BackfillProjectFullpathInRepoConfig do
   let(:namespaces) { table(:namespaces) }
   let(:projects) { table(:projects) }
   let(:group) { namespaces.create!(name: 'foo', path: 'foo') }

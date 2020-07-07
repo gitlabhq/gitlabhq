@@ -118,8 +118,8 @@
   - "{,ee/}spec/**/*.rb"
 
 .db-patterns: &db-patterns
-  - "{,ee/}{db}/**/*"
-  - "{,ee}/spec/{db,migrations}/**/*"
+  - "{,ee/}{,spec/}{db,migrations}/**/*"
+  - "{,ee/}{,spec/}lib/{,ee/}gitlab/background_migration/**/*"
 
 .backstage-patterns: &backstage-patterns
   - "Dangerfile"

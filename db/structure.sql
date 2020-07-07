@@ -9145,6 +9145,12 @@ CREATE TABLE public.application_settings (
     compliance_frameworks smallint[] DEFAULT '{}'::smallint[] NOT NULL,
     notify_on_unknown_sign_in boolean DEFAULT true NOT NULL,
     default_branch_name text,
+    project_import_limit integer DEFAULT 6 NOT NULL,
+    project_export_limit integer DEFAULT 6 NOT NULL,
+    project_download_export_limit integer DEFAULT 1 NOT NULL,
+    group_import_limit integer DEFAULT 6 NOT NULL,
+    group_export_limit integer DEFAULT 6 NOT NULL,
+    group_download_export_limit integer DEFAULT 1 NOT NULL,
     CONSTRAINT check_51700b31b5 CHECK ((char_length(default_branch_name) <= 255)),
     CONSTRAINT check_d03919528d CHECK ((char_length(container_registry_vendor) <= 255)),
     CONSTRAINT check_d820146492 CHECK ((char_length(spam_check_endpoint_url) <= 255)),
@@ -13014,7 +13020,8 @@ CREATE TABLE public.namespace_aggregation_schedules (
 CREATE TABLE public.namespace_limits (
     additional_purchased_storage_size bigint DEFAULT 0 NOT NULL,
     additional_purchased_storage_ends_on date,
-    namespace_id integer NOT NULL
+    namespace_id integer NOT NULL,
+    temporary_storage_increase_ends_on date
 );
 
 CREATE TABLE public.namespace_root_storage_statistics (
@@ -22523,7 +22530,6 @@ COPY "schema_migrations" (version) FROM STDIN;
 20190220150130
 20190222051615
 20190225152525
-20190225160300
 20190225160301
 20190228192410
 20190301081611
@@ -23576,9 +23582,11 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200626060151
 20200626130220
 20200630110826
+20200701093859
 20200702123805
 20200703154822
 20200704143633
 20200706005325
+20200706170536
 \.
 
