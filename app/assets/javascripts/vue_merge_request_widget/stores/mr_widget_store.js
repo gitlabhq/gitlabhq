@@ -22,7 +22,10 @@ export default class MergeRequestStore {
     const pipelineStatus = data.pipeline ? data.pipeline.details.status : null;
 
     this.squash = data.squash;
+    this.squashIsEnabledByDefault = data.squash_enabled_by_default;
+    this.squashIsReadonly = data.squash_readonly;
     this.enableSquashBeforeMerge = this.enableSquashBeforeMerge || true;
+    this.squashIsSelected = data.squash_readonly ? data.squash_on_merge : data.squash;
 
     this.iid = data.iid;
     this.title = data.title;

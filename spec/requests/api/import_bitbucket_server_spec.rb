@@ -198,6 +198,10 @@ RSpec.describe API::ImportBitbucketServer do
         end
       end
 
+      after do
+        Grape::Endpoint.before_each nil
+      end
+
       it 'raises a connection error' do
         post api("/import/bitbucket_server", user), params: {
           bitbucket_server_url: base_uri,

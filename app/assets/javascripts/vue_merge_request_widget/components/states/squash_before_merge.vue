@@ -30,7 +30,7 @@ export default {
 
 <template>
   <div class="inline">
-    <label>
+    <label :class="{ 'gl-text-gray-600': isDisabled }" data-testid="squashLabel">
       <input
         :checked="value"
         :disabled="isDisabled"

@@ -1,0 +1,5 @@
+---
+title: Remove count for pending/running/finished pipelines in tabs
+merge_request: 35693
+author:
+type: changed

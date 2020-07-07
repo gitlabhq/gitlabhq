@@ -19,6 +19,9 @@ class Projects::PipelinesController < Projects::ApplicationController
   end
   before_action :ensure_pipeline, only: [:show]
 
+  # Will be removed with https://gitlab.com/gitlab-org/gitlab/-/issues/225596
+  before_action :redirect_for_legacy_scope_filter, only: [:index], if: -> { request.format.html? }
+
   around_action :allow_gitaly_ref_name_caching, only: [:index, :show]
 
   track_unique_visits :charts, target_id: 'p_analytics_pipelines'
@@ -34,9 +37,6 @@ class Projects::PipelinesController < Projects::ApplicationController
       .page(params[:page])
       .per(30)
 
-    @running_count = limited_pipelines_count(project, 'running')
-    @pending_count = limited_pipelines_count(project, 'pending')
-    @finished_count = limited_pipelines_count(project, 'finished')
     @pipelines_count = limited_pipelines_count(project)
 
     respond_to do |format|
@@ -47,10 +47,7 @@ class Projects::PipelinesController < Projects::ApplicationController
         render json: {
           pipelines: serialize_pipelines,
           count: {
-            all: @pipelines_count,
-            running: @running_count,
-            pending: @pending_count,
-            finished: @finished_count
+            all: @pipelines_count
           }
         }
       end
@@ -227,6 +224,12 @@ class Projects::PipelinesController < Projects::ApplicationController
 
   def ensure_pipeline
     render_404 unless pipeline
+  end
+
+  def redirect_for_legacy_scope_filter
+    return unless %w[running pending].include?(params[:scope])
+
+    redirect_to url_for(safe_params.except(:scope).merge(status: safe_params[:scope])), status: :moved_permanently
   end
 
   # rubocop: disable CodeReuse/ActiveRecord

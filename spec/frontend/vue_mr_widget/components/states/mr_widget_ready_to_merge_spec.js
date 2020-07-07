@@ -34,6 +34,9 @@ const createTestMr = customConfig => {
     ciStatus: null,
     sha: '12345678',
     squash: false,
+    squashIsEnabledByDefault: false,
+    squashIsReadonly: false,
+    squashIsSelected: false,
     commitMessage,
     squashCommitMessage,
     commitMessageWithDescription,
@@ -694,6 +697,37 @@ describe('ReadyToMerge', () => {
 
         expect(findCheckboxElement().exists()).toBeFalsy();
       });
+
+      describe('squash options', () => {
+        it.each`
+          squashState           | state           | prop            | expectation
+          ${'squashIsReadonly'} | ${'enabled'}    | ${'isDisabled'} | ${false}
+          ${'squashIsSelected'} | ${'selected'}   | ${'value'}      | ${false}
+          ${'squashIsSelected'} | ${'unselected'} | ${'value'}      | ${false}
+        `(
+          'is $state when squashIsReadonly returns $expectation ',
+          ({ squashState, prop, expectation }) => {
+            createLocalComponent({
+              mr: { commitsCount: 2, enableSquashBeforeMerge: true, [squashState]: expectation },
+            });
+
+            expect(findCheckboxElement().props(prop)).toBe(expectation);
+          },
+        );
+
+        it('is not rendered for "Do not allow" option', () => {
+          createLocalComponent({
+            mr: {
+              commitsCount: 2,
+              enableSquashBeforeMerge: true,
+              squashIsReadonly: true,
+              squashIsSelected: false,
+            },
+          });
+
+          expect(findCheckboxElement().exists()).toBe(false);
+        });
+      });
     });
 
     describe('commits count collapsible header', () => {
@@ -709,7 +743,7 @@ describe('ReadyToMerge', () => {
             mr: {
               ffOnlyEnabled: true,
               enableSquashBeforeMerge: true,
-              squash: true,
+              squashIsSelected: true,
               commitsCount: 2,
             },
           });
@@ -803,7 +837,7 @@ describe('ReadyToMerge', () => {
           createLocalComponent({
             mr: {
               ffOnlyEnabled: true,
-              squash: true,
+              squashIsSelected: true,
               enableSquashBeforeMerge: true,
               commitsCount: 2,
             },
@@ -824,7 +858,7 @@ describe('ReadyToMerge', () => {
         createLocalComponent({
           mr: {
             commitsCount: 2,
-            squash: true,
+            squashIsSelected: true,
             enableSquashBeforeMerge: true,
           },
         });
@@ -854,7 +888,7 @@ describe('ReadyToMerge', () => {
         createLocalComponent({
           mr: {
             commitsCount: 2,
-            squash: true,
+            squashIsSelected: true,
             enableSquashBeforeMerge: true,
           },
         });
@@ -872,7 +906,7 @@ describe('ReadyToMerge', () => {
 
       it('should  be rendered if squash is enabled and there is more than 1 commit', () => {
         createLocalComponent({
-          mr: { enableSquashBeforeMerge: true, squash: true, commitsCount: 2 },
+          mr: { enableSquashBeforeMerge: true, squashIsSelected: true, commitsCount: 2 },
         });
 
         expect(findCommitDropdownElement().exists()).toBeTruthy();

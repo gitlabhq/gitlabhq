@@ -37,9 +37,6 @@ RSpec.describe Projects::PipelinesController do
         expect(json_response).to include('pipelines')
         expect(json_response['pipelines'].count).to eq 6
         expect(json_response['count']['all']).to eq '6'
-        expect(json_response['count']['running']).to eq '2'
-        expect(json_response['count']['pending']).to eq '1'
-        expect(json_response['count']['finished']).to eq '3'
 
         json_response.dig('pipelines', 0, 'details', 'stages').tap do |stages|
           expect(stages.count).to eq 3
@@ -122,13 +119,15 @@ RSpec.describe Projects::PipelinesController do
       end
     end
 
-    context 'filter by scope' do
-      it 'returns matched pipelines' do
-        get_pipelines_index_json(scope: 'running')
+    context 'when user tries to access legacy scope via URL' do
+      it 'redirects to all pipelines with that status instead' do
+        get_pipelines_index_html(scope: 'running')
 
-        check_pipeline_response(returned: 2, all: 6, running: 2, pending: 1, finished: 3)
+        expect(response).to redirect_to(project_pipelines_path(project, status: 'running', format: :html))
       end
+    end
 
+    context 'filter by scope' do
       context 'scope is branches or tags' do
         before do
           create(:ci_pipeline, :failed, project: project, ref: 'v1.0.0', tag: true)
@@ -140,7 +139,7 @@ RSpec.describe Projects::PipelinesController do
           it 'returns matched pipelines' do
             get_pipelines_index_json(scope: 'branches')
 
-            check_pipeline_response(returned: 2, all: 9, running: 2, pending: 1, finished: 6)
+            check_pipeline_response(returned: 2, all: 9)
           end
         end
 
@@ -148,7 +147,7 @@ RSpec.describe Projects::PipelinesController do
           it 'returns matched pipelines' do
             get_pipelines_index_json(scope: 'tags')
 
-            check_pipeline_response(returned: 1, all: 9, running: 2, pending: 1, finished: 6)
+            check_pipeline_response(returned: 1, all: 9)
           end
         end
       end
@@ -161,7 +160,7 @@ RSpec.describe Projects::PipelinesController do
         it 'returns matched pipelines' do
           get_pipelines_index_json(username: user.username)
 
-          check_pipeline_response(returned: 1, all: 1, running: 1, pending: 0, finished: 0)
+          check_pipeline_response(returned: 1, all: 1)
         end
       end
 
@@ -169,7 +168,7 @@ RSpec.describe Projects::PipelinesController do
         it 'returns empty' do
           get_pipelines_index_json(username: 'invalid-username')
 
-          check_pipeline_response(returned: 0, all: 0, running: 0, pending: 0, finished: 0)
+          check_pipeline_response(returned: 0, all: 0)
         end
       end
     end
@@ -181,7 +180,7 @@ RSpec.describe Projects::PipelinesController do
         it 'returns matched pipelines' do
           get_pipelines_index_json(ref: 'branch-1')
 
-          check_pipeline_response(returned: 1, all: 1, running: 1, pending: 0, finished: 0)
+          check_pipeline_response(returned: 1, all: 1)
         end
       end
 
@@ -189,7 +188,7 @@ RSpec.describe Projects::PipelinesController do
         it 'returns empty list' do
           get_pipelines_index_json(ref: 'invalid-ref')
 
-          check_pipeline_response(returned: 0, all: 0, running: 0, pending: 0, finished: 0)
+          check_pipeline_response(returned: 0, all: 0)
         end
       end
     end
@@ -199,15 +198,7 @@ RSpec.describe Projects::PipelinesController do
         it 'returns matched pipelines' do
           get_pipelines_index_json(status: 'success')
 
-          check_pipeline_response(returned: 1, all: 1, running: 0, pending: 0, finished: 1)
-        end
-
-        context 'when filter by unrelated scope' do
-          it 'returns empty list' do
-            get_pipelines_index_json(status: 'success', scope: 'running')
-
-            check_pipeline_response(returned: 0, all: 1, running: 0, pending: 0, finished: 1)
-          end
+          check_pipeline_response(returned: 1, all: 1)
         end
       end
 
@@ -215,7 +206,7 @@ RSpec.describe Projects::PipelinesController do
         it 'returns empty list' do
           get_pipelines_index_json(status: 'manual')
 
-          check_pipeline_response(returned: 0, all: 0, running: 0, pending: 0, finished: 0)
+          check_pipeline_response(returned: 0, all: 0)
         end
       end
 
@@ -223,9 +214,17 @@ RSpec.describe Projects::PipelinesController do
         it 'returns all list' do
           get_pipelines_index_json(status: 'invalid-status')
 
-          check_pipeline_response(returned: 6, all: 6, running: 2, pending: 1, finished: 3)
+          check_pipeline_response(returned: 6, all: 6)
         end
       end
+    end
+
+    def get_pipelines_index_html(params = {})
+      get :index, params: {
+                    namespace_id: project.namespace,
+                    project_id: project
+                  }.merge(params),
+                  format: :html
     end
 
     def get_pipelines_index_json(params = {})
@@ -284,15 +283,12 @@ RSpec.describe Projects::PipelinesController do
       )
     end
 
-    def check_pipeline_response(returned:, all:, running:, pending:, finished:)
+    def check_pipeline_response(returned:, all:)
       aggregate_failures do
         expect(response).to match_response_schema('pipeline')
 
         expect(json_response['pipelines'].count).to eq returned
         expect(json_response['count']['all'].to_i).to eq all
-        expect(json_response['count']['running'].to_i).to eq running
-        expect(json_response['count']['pending'].to_i).to eq pending
-        expect(json_response['count']['finished'].to_i).to eq finished
       end
     end
   end

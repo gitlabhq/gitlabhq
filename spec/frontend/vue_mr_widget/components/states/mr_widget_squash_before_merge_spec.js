@@ -63,6 +63,27 @@ describe('Squash before merge component', () => {
     });
   });
 
+  describe('label', () => {
+    const findLabel = () => wrapper.find('[data-testid="squashLabel"]');
+
+    describe.each`
+      isDisabled | expectation
+      ${true}    | ${'grays out text if it is true'}
+      ${false}   | ${'does not gray out text if it is false'}
+    `('isDisabled prop', ({ isDisabled, expectation }) => {
+      beforeEach(() => {
+        createComponent({
+          value: false,
+          isDisabled,
+        });
+      });
+
+      it(expectation, () => {
+        expect(findLabel().classes('gl-text-gray-600')).toBe(isDisabled);
+      });
+    });
+  });
+
   describe('about link', () => {
     it('is not rendered if no help path is passed', () => {
       createComponent({

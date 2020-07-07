@@ -2,7 +2,7 @@
 
 module Gitlab
   module BackgroundMigration
-    # Base class for cleaning up concurrent schema changes.
+    # Base class for background migration for rename/type changes.
     class CleanupConcurrentSchemaChange
       include Database::MigrationHelpers
 
@@ -10,7 +10,7 @@ module Gitlab
       # old_column - The name of the old (to drop) column.
       # new_column - The name of the new column.
       def perform(table, old_column, new_column)
-        return unless column_exists?(table, new_column)
+        return unless column_exists?(table, new_column) && column_exists?(table, old_column)
 
         rows_to_migrate = define_model_for(table)
           .where(new_column => nil)
@@ -26,6 +26,10 @@ module Gitlab
         else
           cleanup_concurrent_schema_change(table, old_column, new_column)
         end
+      end
+
+      def cleanup_concurrent_schema_change(_table, _old_column, _new_column)
+        raise NotImplementedError
       end
 
       # These methods are necessary so we can re-use the migration helpers in

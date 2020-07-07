@@ -26,6 +26,10 @@ RSpec.describe API::ImportGithub do
       end
     end
 
+    after do
+      Grape::Endpoint.before_each nil
+    end
+
     it 'rejects requests when Github Importer is disabled' do
       stub_application_setting(import_sources: nil)
 
