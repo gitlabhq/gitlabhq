@@ -14,6 +14,7 @@ module Projects
           @jira_service = project.jira_service
           @page = params[:page].presence || 1
           @params = params
+          @params = @params.reverse_merge(map_sort_values(@params.delete(:sort)))
         end
 
         def execute
@@ -44,6 +45,15 @@ module Projects
           end
         end
         # rubocop: enable CodeReuse/ServiceClass
+
+        def map_sort_values(sort)
+          case sort
+          when 'created_date'
+            { sort: 'created', sort_direction: 'DESC' }
+          else
+            { sort: ::Jira::JqlBuilderService::DEFAULT_SORT, sort_direction: ::Jira::JqlBuilderService::DEFAULT_SORT_DIRECTION }
+          end
+        end
       end
     end
   end

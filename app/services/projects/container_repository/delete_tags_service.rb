@@ -3,6 +3,8 @@
 module Projects
   module ContainerRepository
     class DeleteTagsService < BaseService
+      LOG_DATA_BASE = { service_class: self.to_s }.freeze
+
       def execute(container_repository)
         return error('access denied') unless can?(current_user, :destroy_container_image, project)
 
@@ -51,10 +53,27 @@ module Projects
 
       def smart_delete(container_repository, tag_names)
         fast_delete_enabled = Feature.enabled?(:container_registry_fast_tag_delete, default_enabled: true)
-        if fast_delete_enabled && container_repository.client.supports_tag_delete?
-          fast_delete(container_repository, tag_names)
+        response = if fast_delete_enabled && container_repository.client.supports_tag_delete?
+                     fast_delete(container_repository, tag_names)
+                   else
+                     slow_delete(container_repository, tag_names)
+                   end
+
+        response.tap { |r| log_response(r, container_repository) }
+      end
+
+      def log_response(response, container_repository)
+        log_data = LOG_DATA_BASE.merge(
+          container_repository_id: container_repository.id,
+          message: 'deleted tags'
+        )
+
+        if response[:status] == :success
+          log_data[:deleted_tags_count] = response[:deleted].size
+          log_info(log_data)
         else
-          slow_delete(container_repository, tag_names)
+          log_data[:message] = response[:message]
+          log_error(log_data)
         end
       end
 

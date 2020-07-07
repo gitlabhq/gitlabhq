@@ -1,4 +1,5 @@
 - @content_class = "limit-container-width" unless fluid_layout
+- default_branch_name = Gitlab::CurrentSettings.default_branch_name.presence || "master"
 - breadcrumb_title _("Details")
 - page_title _("Details")
 
@@ -47,7 +48,7 @@
               git commit -m "add README"
             - if @project.can_current_user_push_to_default_branch?
               %span><
-                git push -u origin master
+                git push -u origin #{ default_branch_name }
 
         %fieldset
           %h5= _('Push an existing folder')
@@ -60,7 +61,7 @@
               git commit -m "Initial commit"
             - if @project.can_current_user_push_to_default_branch?
               %span><
-                git push -u origin master
+                git push -u origin #{ default_branch_name }
 
         %fieldset
           %h5= _('Push an existing Git repository')

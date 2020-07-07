@@ -509,7 +509,7 @@ before this feature was deployed to production (February 2020).
 Support for pre-existing projects on GitLab.com
 [is planned](https://gitlab.com/gitlab-org/gitlab/-/issues/196124).
 For self-managed instances, cleanup policies may be enabled by an admin in the
-[CI/CD Package Registry settings](./../../admin_area/settings/index.md#cicd).
+[GitLab application settings](../../../api/settings.md#change-application-settings) by setting `container_expiration_policies_enable_historic_entries` to true.
 Note the inherent [risks involved](./index.md#use-with-external-container-registries).
 
 The cleanup policy algorithm starts by collecting all the tags for a given repository in a list,

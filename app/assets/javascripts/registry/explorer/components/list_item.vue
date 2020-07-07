@@ -79,7 +79,7 @@ export default {
               :selected="isDetailsShown"
               icon="ellipsis_h"
               size="small"
-              class="gl-ml-2"
+              class="gl-ml-2 gl-display-none gl-display-sm-block"
               @click="toggleDetails"
             />
           </div>

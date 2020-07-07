@@ -2,6 +2,9 @@
 
 RSpec.shared_examples "installing applications for a cluster" do |managed_apps_local_tiller|
   before do
+    # Reduce interval from 10 seconds which is too long for an automated test
+    stub_const("#{Clusters::ClustersController}::STATUS_POLLING_INTERVAL", 500)
+
     stub_feature_flags(managed_apps_local_tiller: managed_apps_local_tiller)
 
     visit cluster_path
@@ -107,10 +110,6 @@ RSpec.shared_examples "installing applications for a cluster" do |managed_apps_l
         end
 
         describe 'when user clicks install button' do
-          def domainname_form_value
-            page.find('.js-knative-domainname').value
-          end
-
           before do
             allow(ClusterInstallAppWorker).to receive(:perform_async)
             allow(ClusterWaitForIngressIpAddressWorker).to receive(:perform_in)
@@ -135,7 +134,7 @@ RSpec.shared_examples "installing applications for a cluster" do |managed_apps_l
 
           it 'shows status transition' do
             page.within('.js-cluster-application-row-knative') do
-              expect(domainname_form_value).to eq('domain.example.org')
+              expect(page).to have_field('Knative Domain Name:', with: 'domain.example.org')
               expect(page).to have_css('.js-cluster-application-uninstall-button', exact_text: 'Uninstall')
             end
 
@@ -147,7 +146,7 @@ RSpec.shared_examples "installing applications for a cluster" do |managed_apps_l
             page.within('.js-cluster-application-row-knative') do
               expect(ClusterPatchAppWorker).to receive(:perform_async)
 
-              expect(domainname_form_value).to eq('domain.example.org')
+              expect(page).to have_field('Knative Domain Name:', with: 'domain.example.org')
 
               page.find('.js-knative-domainname').set("new.domain.example.org")
 
@@ -155,7 +154,7 @@ RSpec.shared_examples "installing applications for a cluster" do |managed_apps_l
 
               wait_for_requests
 
-              expect(domainname_form_value).to eq('new.domain.example.org')
+              expect(page).to have_field('Knative Domain Name:', with: 'new.domain.example.org')
             end
           end
         end
@@ -173,6 +172,8 @@ RSpec.shared_examples "installing applications for a cluster" do |managed_apps_l
         page.within('.js-cluster-application-row-cert_manager') do
           click_button 'Install'
         end
+
+        wait_for_requests
       end
 
       it 'shows status transition' do

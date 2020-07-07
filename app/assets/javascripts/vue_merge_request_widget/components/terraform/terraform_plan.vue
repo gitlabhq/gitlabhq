@@ -1,5 +1,5 @@
 <script>
-import { __ } from '~/locale';
+import { s__ } from '~/locale';
 import { GlIcon, GlLink, GlSprintf } from '@gitlab/ui';
 
 export default {
@@ -30,23 +30,23 @@ export default {
     },
     reportChangeText() {
       if (this.validPlanValues) {
-        return __(
+        return s__(
           'Terraform|Reported Resource Changes: %{addNum} to add, %{changeNum} to change, %{deleteNum} to delete',
         );
       }
 
-      return __('Terraform|Generating the report caused an error.');
+      return s__('Terraform|Generating the report caused an error.');
     },
     reportHeaderText() {
       if (this.validPlanValues) {
         return this.plan.job_name
-          ? __('Terraform|The Terraform report %{name} was generated in your pipelines.')
-          : __('Terraform|A Terraform report was generated in your pipelines.');
+          ? s__('Terraform|The Terraform report %{name} was generated in your pipelines.')
+          : s__('Terraform|A Terraform report was generated in your pipelines.');
       }
 
       return this.plan.job_name
-        ? __('Terraform|The Terraform report %{name} failed to generate.')
-        : __('Terraform|A Terraform report failed to generate.');
+        ? s__('Terraform|The Terraform report %{name} failed to generate.')
+        : s__('Terraform|A Terraform report failed to generate.');
     },
     validPlanValues() {
       return this.addNum + this.changeNum + this.deleteNum >= 0;

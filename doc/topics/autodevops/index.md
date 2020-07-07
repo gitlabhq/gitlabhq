@@ -104,7 +104,7 @@ knowledge of the following:
 - [GitLab Runner](https://docs.gitlab.com/runner/)
 - [Prometheus](https://prometheus.io/docs/introduction/overview/)
 
-Auto DevOps provides great defaults for all the stages; you can, however,
+Auto DevOps provides great defaults for all the stages and makes use of [CI templates](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/gitlab/ci/templates); you can, however,
 [customize](customize.md) almost everything to your needs.
 
 For an overview on the creation of Auto DevOps, read more
@@ -113,6 +113,10 @@ For an overview on the creation of Auto DevOps, read more
 NOTE: **Note**
 Kubernetes clusters can [be used without](../../user/project/clusters/index.md)
 Auto DevOps.
+
+## Kubernetes requirements
+
+See [Auto DevOps requirements for Kubernetes](requirements.md#auto-devops-requirements-for-kubernetes).
 
 ## Auto DevOps base domain
 
@@ -162,6 +166,10 @@ set the Auto DevOps base domain to `1.2.3.4.nip.io`.
 
 After completing setup, all requests hit the load balancer, which routes requests
 to the Kubernetes pods running your application.
+
+### AWS ECS
+
+See [Auto DevOps requirements for Amazon ECS](requirements.md#auto-devops-requirements-for-amazon-ecs).
 
 ## Enabling/Disabling Auto DevOps
 

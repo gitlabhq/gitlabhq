@@ -161,7 +161,7 @@ is now available.
 
 If you want to do more advanced tasks, you can update your `.gitlab-ci.yml` file
 with [any of the available settings](../../../../ci/yaml/README.md). You can check
-your CI syntax with the [GitLab CI/CD Lint Tool](https://gitlab.com/ci/lint).
+your CI syntax with the [GitLab CI/CD Lint Tool](../../../../ci/yaml/README.md#validate-the-gitlab-ciyml).
 
 The following topics show other examples of other options you can add to your CI/CD file.
 

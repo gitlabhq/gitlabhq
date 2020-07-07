@@ -18,6 +18,7 @@ exceptions:
   - ARN
   - ASCII
   - AWS
+  - CLI
   - CNAME
   - CPU
   - CSS
@@ -34,9 +35,10 @@ exceptions:
   - HTTP
   - HTTPS
   - IAM
+  - IBM
   - IDE
   - IRC
-  - IBM
+  - ISO
   - JSON
   - LDAP
   - LDAPS

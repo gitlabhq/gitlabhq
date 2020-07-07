@@ -754,6 +754,8 @@ When a query returns too many data points, the heatmap data bucket dimensions te
 
 ### Templating variables for metrics dashboards
 
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/214539) in GitLab 13.0.
+
 Templating variables can be used to make your metrics dashboard more versatile.
 
 #### Templating variable types

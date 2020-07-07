@@ -8,17 +8,10 @@
 extends: existence
 message: 'Avoid using future tense: "%s"'
 ignorecase: true
-level: suggestion
+level: warning
 link: https://docs.gitlab.com/ee/development/documentation/styleguide.html#language-to-avoid
-tokens:
-  - going to be
-  - going to
-  - he'll
-  - she'll
-  - they'll
-  - we'll
-  - will be
-  - will have
-  - will # Leave this word after the two-word 'will' variants as a catchall
-  - won't
-  - you'll
+raw:
+   - "(going to( |\n|[[:punct:]])[a-zA-Z]*|"
+   - "will( |\n|[[:punct:]])[a-zA-Z]*|"
+   - "won't( |\n|[[:punct:]])[a-zA-Z]*|"
+   - "[a-zA-Z]*'ll( |\n|[[:punct:]])[a-zA-Z]*)"

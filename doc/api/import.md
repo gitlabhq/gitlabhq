@@ -45,7 +45,6 @@ POST /import/bitbucket_server
 
 | Attribute  | Type    | Required | Description         |
 |------------|---------|----------|---------------------|
-
 | `bitbucket_server_url` | string | yes | Bitbucket Server URL |
 | `bitbucket_server_username` | string | yes | Bitbucket Server Username |
 | `personal_access_token` | string | yes | Bitbucket Server personal access token/password |

@@ -75,6 +75,30 @@ RSpec.describe Projects::Integrations::Jira::IssuesFinder do
           expect(service.total_count).to eq 375
           expect(issues.map(&:key)).to eq(%w[TEST-1 TEST-2])
         end
+
+        context 'when sort by created_date' do
+          let(:params) { { sort: 'created_date' } }
+
+          it 'maps sort correctly' do
+            expect(::Jira::JqlBuilderService).to receive(:new)
+              .with(jira_service.project_key, { sort: 'created', sort_direction: 'DESC' })
+              .and_call_original
+
+            subject
+          end
+        end
+
+        context 'when sort by unknown_sort' do
+          let(:params) { { sort: 'unknown_sort' } }
+
+          it 'maps sort to default' do
+            expect(::Jira::JqlBuilderService).to receive(:new)
+              .with(jira_service.project_key, { sort: 'created', sort_direction: 'DESC' })
+              .and_call_original
+
+            subject
+          end
+        end
       end
     end
   end

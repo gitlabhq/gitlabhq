@@ -29,7 +29,7 @@ describe('EmptyTagsState component', () => {
 
   it('contains gl-empty-state', () => {
     mountComponent();
-    expect(findEmptyState().exist()).toBe(true);
+    expect(findEmptyState().exists()).toBe(true);
   });
 
   it('has the correct props', () => {

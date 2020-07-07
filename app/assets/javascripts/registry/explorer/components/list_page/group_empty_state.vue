@@ -18,10 +18,9 @@ export default {
   <gl-empty-state
     :title="s__('ContainerRegistry|There are no container images available in this group')"
     :svg-path="config.noContainersImage"
-    class="container-message"
   >
     <template #description>
-      <p class="js-no-container-images-text">
+      <p>
         <gl-sprintf
           :message="
             s__(

@@ -1,4 +1,5 @@
 import RealDeleteModal from '~/registry/explorer/components/details_page/delete_modal.vue';
+import RealListItem from '~/registry/explorer/components/list_item.vue';
 
 export const GlModal = {
   template: '<div><slot name="modal-title"></slot><slot></slot><slot name="modal-ok"></slot></div>',
@@ -28,4 +29,14 @@ export const DeleteModal = {
 export const GlSkeletonLoader = {
   template: `<div><slot></slot></div>`,
   props: ['width', 'height'],
+};
+
+export const ListItem = {
+  ...RealListItem,
+  data() {
+    return {
+      detailsSlots: [],
+      isDetailsShown: true,
+    };
+  },
 };

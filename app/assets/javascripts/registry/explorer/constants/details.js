@@ -16,8 +16,15 @@ export const DELETE_TAGS_SUCCESS_MESSAGE = s__(
 );
 
 export const TAGS_LIST_TITLE = s__('ContainerRegistry|Image tags');
-export const SHORT_REVISION_LABEL = s__('ContainerRegistry|Image ID: %{imageId}');
+export const DIGEST_LABEL = s__('ContainerRegistry|Digest: %{imageId}');
 export const CREATED_AT_LABEL = s__('ContainerRegistry|Published %{timeInfo}');
+export const PUBLISHED_DETAILS_ROW_TEXT = s__(
+  'ContainerRegistry|Published to the %{repositoryPath} image repository at %{time} on %{date}',
+);
+export const MANIFEST_DETAILS_ROW_TEST = s__('ContainerRegistry|Manifest digest: %{digest}');
+export const CONFIGURATION_DETAILS_ROW_TEST = s__(
+  'ContainerRegistry|Configuration digest: %{digest}',
+);
 
 export const REMOVE_TAG_BUTTON_TITLE = s__('ContainerRegistry|Remove tag');
 export const REMOVE_TAGS_BUTTON_TITLE = s__('ContainerRegistry|Delete selected');
