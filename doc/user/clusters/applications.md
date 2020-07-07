@@ -988,23 +988,21 @@ Major upgrades might require additional setup steps, please consult
 the official [upgrade guide](https://docs.cilium.io/en/stable/install/upgrade/) for more
 information.
 
-By default, Cilium will drop all disallowed packets upon policy
-deployment. The audit mode is scheduled for release in
-[Cilium 1.8](https://github.com/cilium/cilium/pull/9970). In the audit
-mode, disallowed packets will not be dropped, and audit
-notifications will be generated instead. GitLab provides alternative Docker
-images for Cilium with the audit patch included. You can switch to the
-custom build and enable the audit mode by adding the following to
+By default, Cilium drops all disallowed packets upon policy
+deployment. In
+[auditmode](https://docs.cilium.io/en/v1.8/gettingstarted/policy-creation/?highlight=policy-audit#enable-policy-audit-mode),
+however, Cilium doesn't drop disallowed packets. You can use
+`policy-verdict` log to observe policy-related decisions. You can
+enable audit mode by adding the following to
 `.gitlab/managed-apps/cilium/values.yaml`:
 
 ```yaml
-global:
-  registry: registry.gitlab.com/gitlab-org/defend/cilium
+config:
   policyAuditMode: true
 
 agent:
   monitor:
-    eventTypes: ["drop", "audit"]
+    eventTypes: ["drop", "policy-verdict"]
 ```
 
 The Cilium monitor log for traffic is logged out by the
@@ -1026,22 +1024,24 @@ The [Hubble](https://github.com/cilium/hubble) monitoring daemon is
 enabled by default and it's set to collect per namespace flow
 metrics. This metrics are accessible on the [Threat Monitoring](../application_security/threat_monitoring/index.md)
 dashboard. You can disable Hubble by adding the following to
-`.gitlab/managed-apps/config.yaml`:
+`.gitlab/managed-apps/cilium/values.yaml`:
 
 ```yaml
-cilium:
-  installed: true
+global:
   hubble:
-    installed: false
+    enabled: false
 ```
 
 You can also adjust Helm values for Hubble via
-`.gitlab/managed-apps/cilium/hubble-values.yaml`:
+`.gitlab/managed-apps/cilium/values.yaml`:
 
 ```yaml
-metrics:
-  enabled:
-    - 'flow:sourceContext=namespace;destinationContext=namespace'
+global:
+  hubble:
+    enabled: true
+    metrics:
+      enabled:
+      - 'flow:sourceContext=namespace;destinationContext=namespace'
 ```
 
 NOTE: **Note:**

@@ -2,18 +2,35 @@ import {
   generateToolbarItem,
   addCustomEventListener,
   removeCustomEventListener,
+  registerHTMLToMarkdownRenderer,
   addImage,
   getMarkdown,
 } from '~/vue_shared/components/rich_content_editor/services/editor_service';
+import buildHTMLToMarkdownRenderer from '~/vue_shared/components/rich_content_editor/services/build_html_to_markdown_renderer';
+
+jest.mock('~/vue_shared/components/rich_content_editor/services/build_html_to_markdown_renderer');
 
 describe('Editor Service', () => {
-  const mockInstance = {
-    eventManager: { addEventType: jest.fn(), removeEventHandler: jest.fn(), listen: jest.fn() },
-    editor: { exec: jest.fn() },
-    invoke: jest.fn(),
-  };
-  const event = 'someCustomEvent';
-  const handler = jest.fn();
+  let mockInstance;
+  let event;
+  let handler;
+
+  beforeEach(() => {
+    mockInstance = {
+      eventManager: { addEventType: jest.fn(), removeEventHandler: jest.fn(), listen: jest.fn() },
+      editor: { exec: jest.fn() },
+      invoke: jest.fn(),
+      toMarkOptions: {
+        renderer: {
+          constructor: {
+            factory: jest.fn(),
+          },
+        },
+      },
+    };
+    event = 'someCustomEvent';
+    handler = jest.fn();
+  });
 
   describe('generateToolbarItem', () => {
     const config = {
@@ -72,6 +89,35 @@ describe('Editor Service', () => {
       getMarkdown(mockInstance);
 
       expect(mockInstance.invoke).toHaveBeenCalledWith('getMarkdown');
+    });
+  });
+
+  describe('registerHTMLToMarkdownRenderer', () => {
+    let baseRenderer;
+    const htmlToMarkdownRenderer = {};
+    const extendedRenderer = {};
+
+    beforeEach(() => {
+      baseRenderer = mockInstance.toMarkOptions.renderer;
+      buildHTMLToMarkdownRenderer.mockReturnValueOnce(htmlToMarkdownRenderer);
+      baseRenderer.constructor.factory.mockReturnValueOnce(extendedRenderer);
+
+      registerHTMLToMarkdownRenderer(mockInstance);
+    });
+
+    it('builds a new instance of the HTML to Markdown renderer', () => {
+      expect(buildHTMLToMarkdownRenderer).toHaveBeenCalledWith(baseRenderer);
+    });
+
+    it('extends base renderer with the HTML to Markdown renderer', () => {
+      expect(baseRenderer.constructor.factory).toHaveBeenCalledWith(
+        baseRenderer,
+        htmlToMarkdownRenderer,
+      );
+    });
+
+    it('replaces the default renderer with extended renderer', () => {
+      expect(mockInstance.toMarkOptions.renderer).toBe(extendedRenderer);
     });
   });
 });

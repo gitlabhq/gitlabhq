@@ -54,6 +54,14 @@ describe('tags list row', () => {
       expect(findCheckbox().exists()).toBe(true);
     });
 
+    it("does not exist when the row can't be deleted", () => {
+      const customTag = { ...tag, destroy_path: '' };
+
+      mountComponent({ ...defaultProps, tag: customTag });
+
+      expect(findCheckbox().exists()).toBe(false);
+    });
+
     it('is wired to the selected prop', () => {
       mountComponent({ ...defaultProps, selected: true });
 

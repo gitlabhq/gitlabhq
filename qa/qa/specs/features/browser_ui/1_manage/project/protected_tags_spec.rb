@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  context 'Manage' do
+  RSpec.describe 'Manage' do
     describe 'Repository tags' do
       let(:project) do
         Resource::Project.fabricate_via_api! do |project|

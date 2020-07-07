@@ -12,6 +12,7 @@ import {
 } from './constants';
 
 import {
+  registerHTMLToMarkdownRenderer,
   addCustomEventListener,
   removeCustomEventListener,
   addImage,
@@ -87,6 +88,7 @@ export default {
     onLoad(editorApi) {
       this.editorApi = editorApi;
 
+      registerHTMLToMarkdownRenderer(editorApi);
       addCustomEventListener(
         this.editorApi,
         CUSTOM_EVENTS.openAddImageModal,

@@ -11,7 +11,7 @@ description: 'Learn how to use and administer GitLab, the most scalable Git-base
 
 # GitLab Docs
 
-Welcome to [GitLab](https://about.gitlab.com/) Documentation.
+Welcome to [GitLab](https://about.gitlab.com/) documentation.
 
 Here you can access the complete documentation for GitLab, the single application for the
 [entire DevOps lifecycle](#the-entire-devops-lifecycle).
@@ -20,30 +20,32 @@ Here you can access the complete documentation for GitLab, the single applicatio
 
 No matter how you use GitLab, we have documentation for you.
 
-| Essential Documentation                                                                                                                    | Essential Documentation                                                                                                    |
-|:-------------------------------------------------------------------------------------------------------------------------------------------|:---------------------------------------------------------------------------------------------------------------------------|
-| [**User Documentation**](user/index.md)<br/>Discover features and concepts for GitLab users.                                               | [**Administrator documentation**](administration/index.md)<br/>Everything GitLab self-managed administrators need to know. |
-| [**Contributing to GitLab**](#contributing-to-gitlab)<br/>At GitLab, everyone can contribute!                                              | [**New to Git and GitLab?**](#new-to-git-and-gitlab)<br/>We have the resources to get you started.                         |
-| [**Building an integration with GitLab?**](#building-an-integration-with-gitlab)<br/>Consult our automation and integration documentation. | [**Coming to GitLab from another platform?**](#coming-to-gitlab-from-another-platform)<br/>Consult our handy guides.       |
-| [**Install GitLab**](https://about.gitlab.com/install/)<br/>Installation options for different platforms.                                  | [**Customers**](subscriptions/index.md)<br/>Information for new and existing customers.                                    |
-| [**Update GitLab**](update/README.md)<br/>Update your GitLab self-managed instance to the latest version.                                  | [**Reference Architectures**](administration/reference_architectures/index.md)<br/>GitLab's reference architectures       |
-| [**GitLab Releases**](https://about.gitlab.com/releases/)<br/>What's new in GitLab.                                                        |                                                                                                                            |
+| Essential documentation                                                                                                              | Essential documentation                                                                                                    |
+|:-------------------------------------------------------------------------------------------------------------------------------------|:---------------------------------------------------------------------------------------------------------------------------|
+| [**User Documentation**](user/index.md)<br/>Discover features and concepts for GitLab users.                                         | [**Administrator documentation**](administration/index.md)<br/>Everything GitLab self-managed administrators need to know. |
+| [**Contributing to GitLab**](#contributing-to-gitlab)<br/>At GitLab, everyone can contribute!                                        | [**New to Git and GitLab?**](#new-to-git-and-gitlab)<br/>We have the resources to get you started.                         |
+| [**Build an integration with GitLab?**](#build-an-integration-with-gitlab)<br/>Consult our automation and integration documentation. | [**Coming to GitLab from another platform?**](#coming-to-gitlab-from-another-platform)<br/>Consult our handy guides.       |
+| [**Install GitLab**](https://about.gitlab.com/install/)<br/>Installation options for different platforms.                            | [**Customers**](subscriptions/index.md)<br/>Information for new and existing customers.                                    |
+| [**Update GitLab**](update/README.md)<br/>Update your GitLab self-managed instance to the latest version.                            | [**Reference Architectures**](administration/reference_architectures/index.md)<br/>GitLab's reference architectures        |
+| [**GitLab Releases**](https://about.gitlab.com/releases/)<br/>What's new in GitLab.                                                  |                                                                                                                            |
 
-## Popular Documentation
+## Popular topics
 
-Have a look at some of our most popular documentation resources:
+Have a look at some of our most popular topics:
 
-| Popular Topic                                                   | Description                                                      |
-|:----------------------------------------------------------------|:-----------------------------------------------------------------|
-| [Configuring `.gitlab-ci.yml`](ci/yaml/README.md)               | Complete syntax documentation for configuring your CI pipelines. |
-| [GitLab CI/CD examples](ci/examples/README.md)                  | Get up to speed quickly with common CI/CD scenarios.             |
-| [GitLab Container Registry](user/packages/container_registry/index.md) | Host Docker images within GitLab.                         |
-| [GitLab Pages](user/project/pages/index.md)                     | Host static websites for your projects with GitLab.              |
-| [GitLab.com settings](user/gitlab_com/index.md)                 | Settings for GitLab.com.                                         |
-| [Kubernetes integration](user/project/clusters/index.md)        | Use GitLab with Kubernetes.                                      |
-| [SSH authentication](ssh/README.md)                             | Secure your network communications.                              |
-| [Using Docker images](ci/docker/using_docker_images.md)         | Build and test your applications with Docker.                    |
-| [GraphQL](api/graphql/index.md)                                 | Explore GitLab's GraphQL API.                                    |
+| Popular topic                                                                                              | Description                                                                |
+|:-----------------------------------------------------------------------------------------------------------|:---------------------------------------------------------------------------|
+| [Two-factor authentication](user/profile/account/two_factor_authentication.md)                             | Improve the security of your GitLab account.                               |
+| [GitLab groups](user/group/index.md)                                                                       | Manage projects together.                                                  |
+| [GitLab CI/CD pipeline configuration reference](ci/yaml/README.md)                                         | Available configuration options for `.gitlab-ci.yml` files.                |
+| [Activate GitLab EE with a license](user/admin_area/license.md) **(STARTER ONLY)**                         | Activate GitLab Enterprise Edition functionality with a license.           |
+| [Back up and restore GitLab](raketasks/backup_restore.md) **(CORE ONLY)**                                  | Rake tasks for backing up and restoring GitLab self-managed instances.     |
+| [GitLab release and maintenance policy](policy/maintenance.md)                                             | Policies for version naming and cadence, and also upgrade recommendations. |
+| [Elasticsearch integration](integration/elasticsearch.md) **(STARTER ONLY)**                               | Integrate Elasticsearch with GitLab to enable advanced searching.          |
+| [Omnibus GitLab database settings](https://docs.gitlab.com/omnibus/settings/database.html) **(CORE ONLY)** | Database settings for Omnibus GitLab self-managed instances.               |
+| [Omnibus GitLab NGINX settings](https://docs.gitlab.com/omnibus/settings/nginx.html) **(CORE ONLY)**       | NGINX settings for Omnibus GitLab self-managed instances.                  |
+| [Omnibus GitLab SSL configuration](https://docs.gitlab.com/omnibus/settings/ssl.html) **(CORE ONLY)**      | SSL settings for Omnibus GitLab self-managed instances.                    |
+| [GitLab.com settings](user/gitlab_com/index.md)                                                            | Settings used for GitLab.com.                                              |
 
 ## The entire DevOps Lifecycle
 
@@ -62,7 +64,7 @@ than ever.
 
 The following sections provide links to documentation for each DevOps stage:
 
-| DevOps Stage            | Documentation for                                           |
+| DevOps stage            | Documentation for                                           |
 |:------------------------|:------------------------------------------------------------|
 | [Manage](#manage)       | Statistics and analytics features.                          |
 | [Plan](#plan)           | Project planning and management features.                   |
@@ -86,7 +88,7 @@ GitLab provides statistics and insight into ways you can maximize the value of G
 
 The following documentation relates to the DevOps **Manage** stage:
 
-| Manage Topics                                                                         | Description                                                                                                                                                                                                                  |
+| Manage topics                                                                         | Description                                                                                                                                                                                                                  |
 |:--------------------------------------------------------------------------------------|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | [Authentication and<br/>Authorization](administration/auth/README.md) **(CORE ONLY)** | Supported authentication and authorization providers.                                                                                                                                                                        |
 | [GitLab Value Stream Analytics](user/project/cycle_analytics.md)                      | Measure the time it takes to go from an [idea to production](https://about.gitlab.com/blog/2016/08/05/continuous-integration-delivery-and-deployment-with-gitlab/#from-idea-to-production-with-gitlab) for each project you have. |
@@ -107,7 +109,7 @@ management tools.
 
 The following documentation relates to the DevOps **Plan** stage:
 
-| Plan Topics                                                                                                                                                                                                                                                        | Description                                                                                                                                      |
+| Plan topics                                                                                                                                                                                                                                                        | Description                                                                                                                                      |
 |:-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:-------------------------------------------------------------------------------------------------------------------------------------------------|
 | [Burndown Charts](user/project/milestones/burndown_charts.md) **(STARTER)**                                                                                                                                                                                        | Watch your project's progress throughout a specific milestone.                                                                                   |
 | [Discussions](user/discussions/index.md)                                                                                                                                                                                                                           | Threads, comments, and resolvable threads in issues, commits, and merge requests.                                                           |
@@ -144,7 +146,7 @@ The following documentation relates to the DevOps **Create** stage:
 
 #### Projects and Groups
 
-| Create Topics - Projects and Groups                                                                                                                                                              | Description                                                                                      |
+| Create topics - Projects and Groups                                                                                                                                                              | Description                                                                                      |
 |:-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:-------------------------------------------------------------------------------------------------|
 | [Advanced global search](user/search/advanced_global_search.md) **(STARTER)**                                                                                                                    | Leverage Elasticsearch for faster, more advanced code search across your entire GitLab instance. |
 | [Advanced syntax search](user/search/advanced_search_syntax.md) **(STARTER)**                                                                                                                    | Use advanced queries for more targeted search results.                                           |
@@ -169,7 +171,7 @@ The following documentation relates to the DevOps **Create** stage:
 
 #### Repositories
 
-| Create Topics - Repositories                                                                                                                                                                                                                                                                                | Description                                                                     |
+| Create topics - Repositories                                                                                                                                                                                                                                                                                | Description                                                                     |
 |:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:--------------------------------------------------------------------------------|
 | [Branches](user/project/repository/branches/index.md) and the [default branch](user/project/repository/branches/index.md#default-branch)                                                                                                                                                                    | How to use branches in GitLab.                                                  |
 | [Commits](user/project/repository/index.md#commits) and [signing commits](user/project/repository/gpg_signed_commits/index.md)                                                                                                                                                                              | Work with commits, and use GPG to sign your commits.                            |
@@ -192,7 +194,7 @@ The following documentation relates to the DevOps **Create** stage:
 
 #### Merge Requests
 
-| Create Topics - Merge Requests                                                                                                              | Description                                                                                                                           |
+| Create topics - Merge Requests                                                                                                              | Description                                                                                                                           |
 |:--------------------------------------------------------------------------------------------------------------------------------------------|:--------------------------------------------------------------------------------------------------------------------------------------|
 | [Checking out merge requests locally](user/project/merge_requests/reviewing_and_managing_merge_requests.md#checkout-merge-requests-locally) | Tips for working with merge requests locally.                                                                                         |
 | [Cherry-picking](user/project/merge_requests/cherry_pick_changes.md)                                                                        | Use GitLab for cherry-picking changes.                                                                                                |
@@ -208,7 +210,7 @@ The following documentation relates to the DevOps **Create** stage:
 
 #### Integration and Automation
 
-| Create Topics - Integration and Automation                                    | Description                                                                                                            |
+| Create topics - Integration and Automation                                    | Description                                                                                                            |
 |:------------------------------------------------------------------------------|:-----------------------------------------------------------------------------------------------------------------------|
 | [GitLab API](api/README.md)                                                   | Integrate GitLab via a simple and powerful API.                                                                        |
 | [GitLab Integration](integration/README.md)                                   | Integrate with multiple third-party services with GitLab to allow external issue trackers and external authentication. |
@@ -235,7 +237,7 @@ scales to run your tests faster.
 
 The following documentation relates to the DevOps **Verify** stage:
 
-| Verify Topics                                                                     | Description                                                                                             |
+| Verify topics                                                                     | Description                                                                                             |
 |:----------------------------------------------------------------------------------|:--------------------------------------------------------------------------------------------------------|
 | [Code Quality reports](user/project/merge_requests/code_quality.md) **(STARTER)** | Analyze source code quality.                                                                            |
 | [GitLab CI/CD](ci/README.md)                                                      | Explore the features and capabilities of Continuous Integration with GitLab.                            |
@@ -258,7 +260,7 @@ packages, which can be easily consumed as a dependency in downstream projects.
 
 The following documentation relates to the DevOps **Package** stage:
 
-| Package Topics                                                  | Description                                            |
+| Package topics                                                  | Description                                            |
 |:----------------------------------------------------------------|:-------------------------------------------------------|
 | [Container Registry](user/packages/container_registry/index.md)   | The GitLab Container Registry enables every project in GitLab to have its own space to store [Docker](https://www.docker.com/) images. |
 | [Dependency Proxy](user/packages/dependency_proxy/index.md) **(PREMIUM)** | The GitLab Dependency Proxy sets up a local proxy for frequently used upstream images/packages. |
@@ -280,7 +282,7 @@ confidently and securely with GitLab’s built-in Continuous Delivery and Deploy
 
 The following documentation relates to the DevOps **Release** stage:
 
-| Release Topics                                                                                                                      | Description                                                                                                                           |
+| Release topics                                                                                                                      | Description                                                                                                                           |
 |:------------------------------------------------------------------------------------------------------------------------------------|:--------------------------------------------------------------------------------------------------------------------------------------|
 | [Auto Deploy](topics/autodevops/stages.md#auto-deploy)                                                                               | Configure GitLab for the deployment of your application.                                                                              |
 | [Canary Deployments](user/project/canary_deployments.md) **(PREMIUM)**                                                              | Employ a popular CI strategy where a small portion of the fleet is updated to the new version first.                                  |
@@ -306,7 +308,7 @@ configuration. Then customize everything from buildpacks to CI/CD.
 
 The following documentation relates to the DevOps **Configure** stage:
 
-| Configure Topics                                                                                                                   | Description                                                               |
+| Configure topics                                                                                                                   | Description                                                               |
 |:-----------------------------------------------------------------------------------------------------------------------------------|:--------------------------------------------------------------------------|
 | [Auto DevOps](topics/autodevops/index.md)                                                                                          | Automatically employ a complete DevOps lifecycle.                         |
 | [Create Kubernetes clusters](user/project/clusters/add_remove_clusters.md#create-new-cluster)                                      | Use Kubernetes and GitLab.                                                |
@@ -335,7 +337,7 @@ instant how code changes impact your production environment.
 
 The following documentation relates to the DevOps **Monitor** stage:
 
-| Monitor Topics                                                                                  | Description                                                                                                                              |
+| Monitor topics                                                                                  | Description                                                                                                                              |
 |:------------------------------------------------------------------------------------------------|:-----------------------------------------------------------------------------------------------------------------------------------------|
 | [GitLab Performance Monitoring](administration/monitoring/performance/index.md) **(CORE ONLY)** | Use Prometheus and Grafana to monitor the performance of your GitLab instance.                 |
 | [GitLab Prometheus](administration/monitoring/prometheus/index.md) **(CORE ONLY)**              | Configure the bundled Prometheus to collect various metrics from your GitLab instance.                                                   |
@@ -360,7 +362,7 @@ high-level view on projects and groups, and start remediation processes when nee
 
 The following documentation relates to the DevOps **Secure** stage:
 
-| Secure Topics                                                                                         | Description                                                            |
+| Secure topics                                                                                         | Description                                                            |
 |:------------------------------------------------------------------------------------------------------|:-----------------------------------------------------------------------|
 | [Compliance Dashboard](user/compliance/compliance_dashboard/index.md) **(ULTIMATE)**        | View the most recent Merge Request activity in a group.                |
 | [Container Scanning](user/application_security/container_scanning/index.md) **(ULTIMATE)**            | Use Clair to scan Docker images for known vulnerabilities.             |
@@ -442,7 +444,7 @@ If you are coming to GitLab from another platform, you'll find the following inf
   </a>
 </div>
 
-## Building an integration with GitLab
+## Build an integration with GitLab
 
 There are many ways to integrate with GitLab, including:
 

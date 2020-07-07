@@ -1,4 +1,4 @@
-# Backing up and restoring GitLab **(CORE ONLY)**
+# Back up and restore GitLab **(CORE ONLY)**
 
 GitLab provides Rake tasks for backing up and restoring GitLab instances.
 

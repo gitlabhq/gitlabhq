@@ -46,7 +46,9 @@ exceptions:
   - NFS
   - NGINX
   - NOTE
+  - NPM
   - ONLY
+  - PDF
   - PGP
   - PHP
   - POST
@@ -63,6 +65,7 @@ exceptions:
   - SSH
   - SSL
   - SSO
+  - SVN
   - TCP
   - TIP
   - TLS

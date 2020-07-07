@@ -225,6 +225,7 @@ LDAP
 ldapsearch
 Leiningen
 Libravatar
+liveness
 Lograge
 Logstash
 lookahead

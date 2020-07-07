@@ -1,0 +1,5 @@
+---
+title: Remove onNewIssueResponse logic from list model
+merge_request: 32245
+author: nuwe1
+type: other

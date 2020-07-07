@@ -3,7 +3,7 @@
 require 'airborne'
 
 module QA
-  context 'Manage' do
+  RSpec.describe 'Manage' do
     describe 'Users API' do
       before(:context) do
         @api_client = Runtime::API::Client.new(:gitlab)

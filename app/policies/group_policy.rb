@@ -103,6 +103,7 @@ class GroupPolicy < BasePolicy
     enable :admin_list
     enable :admin_issue
     enable :read_metrics_dashboard_annotation
+    enable :read_prometheus
   end
 
   rule { maintainer }.policy do

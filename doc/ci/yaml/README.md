@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference
 ---
 
-# GitLab CI/CD Pipeline Configuration Reference
+# GitLab CI/CD pipeline configuration reference
 
 GitLab CI/CD [pipelines](../pipelines/index.md) are configured using a YAML file called `.gitlab-ci.yml` within each project.
 

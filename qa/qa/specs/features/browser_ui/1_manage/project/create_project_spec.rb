@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  context 'Manage', :smoke do
+  RSpec.describe 'Manage', :smoke do
     describe 'Project creation' do
       it 'user creates a new project' do
         Flow::Login.sign_in

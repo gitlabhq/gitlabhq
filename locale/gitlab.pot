@@ -25172,6 +25172,18 @@ msgstr ""
 msgid "User was successfully updated."
 msgstr ""
 
+msgid "UserLists|Define a set of users to be used within feature flag strategies"
+msgstr ""
+
+msgid "UserLists|There are no users"
+msgstr ""
+
+msgid "UserLists|User ID"
+msgstr ""
+
+msgid "UserLists|User IDs"
+msgstr ""
+
 msgid "UserList|Delete %{name}?"
 msgstr ""
 

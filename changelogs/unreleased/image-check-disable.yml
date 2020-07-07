@@ -1,0 +1,4 @@
+title: Conditionally render Docker row checkbox
+merge_request: 36000
+author: gfyoung
+type: fixed

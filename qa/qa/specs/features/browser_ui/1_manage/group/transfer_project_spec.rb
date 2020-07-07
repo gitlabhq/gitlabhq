@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  context 'Manage' do
+  RSpec.describe 'Manage' do
     describe 'Project transfer between groups' do
       it 'user transfers a project between groups' do
         Flow::Login.sign_in

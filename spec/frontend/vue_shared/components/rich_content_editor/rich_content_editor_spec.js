@@ -13,6 +13,7 @@ import {
   addCustomEventListener,
   removeCustomEventListener,
   addImage,
+  registerHTMLToMarkdownRenderer,
 } from '~/vue_shared/components/rich_content_editor/services/editor_service';
 
 jest.mock('~/vue_shared/components/rich_content_editor/services/editor_service', () => ({
@@ -20,6 +21,7 @@ jest.mock('~/vue_shared/components/rich_content_editor/services/editor_service',
   addCustomEventListener: jest.fn(),
   removeCustomEventListener: jest.fn(),
   addImage: jest.fn(),
+  registerHTMLToMarkdownRenderer: jest.fn(),
 }));
 
 describe('Rich Content Editor', () => {
@@ -86,15 +88,23 @@ describe('Rich Content Editor', () => {
   });
 
   describe('when editor is loaded', () => {
-    it('adds the CUSTOM_EVENTS.openAddImageModal custom event listener', () => {
-      const mockEditorApi = { eventManager: { addEventType: jest.fn(), listen: jest.fn() } };
-      findEditor().vm.$emit('load', mockEditorApi);
+    let mockEditorApi;
 
+    beforeEach(() => {
+      mockEditorApi = { eventManager: { addEventType: jest.fn(), listen: jest.fn() } };
+      findEditor().vm.$emit('load', mockEditorApi);
+    });
+
+    it('adds the CUSTOM_EVENTS.openAddImageModal custom event listener', () => {
       expect(addCustomEventListener).toHaveBeenCalledWith(
         mockEditorApi,
         CUSTOM_EVENTS.openAddImageModal,
         wrapper.vm.onOpenAddImageModal,
       );
+    });
+
+    it('registers HTML to markdown renderer', () => {
+      expect(registerHTMLToMarkdownRenderer).toHaveBeenCalledWith(mockEditorApi);
     });
   });
 

@@ -2,7 +2,7 @@
 type: concepts
 ---
 
-# GitLab Release and Maintenance Policy
+# GitLab release and maintenance policy
 
 GitLab has strict policies governing version naming, as well as release pace for major, minor,
 patch, and security releases. New releases are usually announced on the [GitLab blog](https://about.gitlab.com/releases/categories/releases/).

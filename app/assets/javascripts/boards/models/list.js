@@ -119,16 +119,12 @@ class List {
   }
 
   moveMultipleIssues({ issues, oldIndicies, newIndex, moveBeforeId, moveAfterId }) {
-    oldIndicies.reverse().forEach(index => {
-      this.issues.splice(index, 1);
-    });
-    this.issues.splice(newIndex, 0, ...issues);
-
     boardsStore
-      .moveMultipleIssues({
-        ids: issues.map(issue => issue.id),
-        fromListId: null,
-        toListId: null,
+      .moveListMultipleIssues({
+        list: this,
+        issues,
+        oldIndicies,
+        newIndex,
         moveBeforeId,
         moveAfterId,
       })
@@ -170,12 +166,7 @@ class List {
   }
 
   onNewIssueResponse(issue, data) {
-    issue.refreshData(data);
-
-    if (this.issuesSize > 1) {
-      const moveBeforeId = this.issues[1].id;
-      boardsStore.moveIssue(issue.id, null, null, null, moveBeforeId);
-    }
+    boardsStore.onNewListIssueResponse(this, issue, data);
   }
 }
 

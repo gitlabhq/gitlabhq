@@ -64,7 +64,12 @@ export default {
 <template>
   <list-item v-bind="$attrs" :selected="selected">
     <template #left-action>
-      <gl-form-checkbox class="gl-m-0" :checked="selected" @change="$emit('select')" />
+      <gl-form-checkbox
+        v-if="Boolean(tag.destroy_path)"
+        class="gl-m-0"
+        :checked="selected"
+        @change="$emit('select')"
+      />
     </template>
     <template #left-primary>
       <div class="gl-display-flex gl-align-items-center">
