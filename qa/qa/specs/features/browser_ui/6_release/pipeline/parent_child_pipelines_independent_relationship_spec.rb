@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Release', :docker do
+  RSpec.describe 'Release', :docker, :runner, :reliable do
     describe 'Parent-child pipelines independent relationship' do
       let!(:project) do
         Resource::Project.fabricate_via_api! do |project|

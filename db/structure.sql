@@ -11104,6 +11104,7 @@ CREATE TABLE public.elastic_reindexing_tasks (
     index_name_to text,
     elastic_task text,
     error_message text,
+    documents_count_target integer,
     CONSTRAINT check_04151aca42 CHECK ((char_length(index_name_from) <= 255)),
     CONSTRAINT check_7f64acda8e CHECK ((char_length(error_message) <= 255)),
     CONSTRAINT check_85ebff7124 CHECK ((char_length(index_name_to) <= 255)),
@@ -23569,6 +23570,7 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200625190458
 20200626060151
 20200626130220
+20200630110826
 20200702123805
 20200703154822
 20200706005325

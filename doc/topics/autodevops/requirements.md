@@ -112,9 +112,9 @@ Variable. To do so, follow these steps:
    section.
 
 1. Specify which AWS platform to target during the Auto DevOps deployment
-   by adding the `AUTO_DEVOPS_PLATFORM_TARGET` variable.
-
-1. Give this variable the value `ECS` before saving it.
+   by adding the `AUTO_DEVOPS_PLATFORM_TARGET` variable with one of the following values:
+   - `FARGATE` if the service you're targeting must be of launch type FARGATE.
+   - `ECS` if you're not enforcing any launch type check when deploying to ECS.
 
 When you trigger a pipeline, if Auto DevOps is enabled and if you've correctly
 [entered AWS credentials as environment variables](../../ci/cloud_deployment/index.md#deploy-your-application-to-the-aws-elastic-container-service-ecs),

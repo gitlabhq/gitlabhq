@@ -355,6 +355,142 @@ application server, or a Gitaly node.
 
 **The steps above must be completed for each Praefect node!**
 
+## Enabling TLS support
+
+> [Introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/1698) in GitLab 13.2.
+
+Praefect supports TLS encryption. To communicate with a Praefect instance that listens
+for secure connections, you must:
+
+- Use a `tls://` URL scheme in the `gitaly_address` of the corresponding storage entry
+  in the GitLab configuration.
+- Bring your own certificates because this isn't provided automatically. The certificate
+  corresponding to each Praefect server must be installed on that Praefect server.
+
+Additionally the certificate, or its certificate authority, must be installed on all Gitaly servers
+and on all Praefect clients that communicate with it following the procedure described in
+[GitLab custom certificate configuration](https://docs.gitlab.com/omnibus/settings/ssl.html#install-custom-public-certificates) (and repeated below).
+
+Note the following:
+
+- The certificate must specify the address you use to access the Praefect server. If
+  addressing the Praefect server by:
+
+  - Hostname, you can either use the Common Name field for this, or add it as a Subject
+    Alternative Name.
+  - IP address, you must add it as a Subject Alternative Name to the certificate.
+
+- You can configure Praefect servers with both an unencrypted listening address
+  `listen_addr` and an encrypted listening address `tls_listen_addr` at the same time.
+  This allows you to do a gradual transition from unencrypted to encrypted traffic, if
+  necessary.
+
+To configure Praefect with TLS:
+
+**For Omnibus GitLab**
+
+1. Create certificates for Praefect servers.
+1. On the Praefect servers, create the `/etc/gitlab/ssl` directory and copy your key
+   and certificate there:
+
+   ```shell
+   sudo mkdir -p /etc/gitlab/ssl
+   sudo chmod 755 /etc/gitlab/ssl
+   sudo cp key.pem cert.pem /etc/gitlab/ssl/
+   sudo chmod 644 key.pem cert.pem
+   ```
+
+1. Edit `/etc/gitlab/gitlab.rb` and add:
+
+   ```ruby
+   praefect['tls_listen_addr'] = "0.0.0.0:3305"
+   praefect['certificate_path'] = "/etc/gitlab/ssl/cert.pem"
+   praefect['key_path'] = "/etc/gitlab/ssl/key.pem"
+   ```
+
+1. Save the file and [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
+1. On the Praefect clients (including each Gitaly server), copy the certificates,
+   or their certificate authority, into `/etc/gitlab/trusted-certs`:
+
+   ```shell
+   sudo cp cert.pem /etc/gitlab/trusted-certs/
+   ```
+
+1. On the Praefect clients (except Gitaly servers), edit `git_data_dirs` in
+   `/etc/gitlab/gitlab.rb` as follows:
+
+   ```ruby
+   git_data_dirs({
+     'default' => { 'gitaly_address' => 'tls://praefect1.internal:3305' },
+     'storage1' => { 'gitaly_address' => 'tls://praefect2.internal:3305' },
+   })
+   ```
+
+1. Save the file and [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
+
+**For installations from source**
+
+1. Create certificates for Praefect servers.
+1. On the Praefect servers, create the `/etc/gitlab/ssl` directory and copy your key and certificate
+   there:
+
+   ```shell
+   sudo mkdir -p /etc/gitlab/ssl
+   sudo chmod 755 /etc/gitlab/ssl
+   sudo cp key.pem cert.pem /etc/gitlab/ssl/
+   sudo chmod 644 key.pem cert.pem
+   ```
+
+1. On the Praefect clients (including each Gitaly server), copy the certificates,
+   or their certificate authority, into the system trusted certificates:
+
+   ```shell
+   sudo cp cert.pem /usr/local/share/ca-certificates/praefect.crt
+   sudo update-ca-certificates
+   ```
+
+1. On the Praefect clients (except Gitaly servers), edit `storages` in
+   `/home/git/gitlab/config/gitlab.yml` as follows:
+
+   ```yaml
+   gitlab:
+     repositories:
+       storages:
+         default:
+           gitaly_address: tls://praefect1.internal:3305
+           path: /some/dummy/path
+         storage1:
+           gitaly_address: tls://praefect2.internal:3305
+           path: /some/dummy/path
+   ```
+
+   NOTE: **Note:**
+   `/some/dummy/path` should be set to a local folder that exists, however no
+   data will be stored in this folder. This will no longer be necessary after
+   [this issue](https://gitlab.com/gitlab-org/gitaly/-/issues/1282) is resolved.
+
+1. Save the file and [restart GitLab](../restart_gitlab.md#installations-from-source).
+1. Copy all Praefect server certificates, or their certificate authority, to the system
+   trusted certificates on each Gitaly server so the Praefect server will trust the
+   certificate when called by Gitaly servers:
+
+   ```shell
+   sudo cp cert.pem /usr/local/share/ca-certificates/praefect.crt
+   sudo update-ca-certificates
+   ```
+
+1. Edit `/home/git/praefect/config.toml` and add:
+
+   ```toml
+   tls_listen_addr = '0.0.0.0:3305'
+
+   [tls]
+   certificate_path = '/etc/gitlab/ssl/cert.pem'
+   key_path = '/etc/gitlab/ssl/key.pem'
+   ```
+
+1. Save the file and [restart GitLab](../restart_gitlab.md#installations-from-source).
+
 ### Gitaly
 
 NOTE: **Note:** Complete these steps for **each** Gitaly node.

@@ -96,16 +96,63 @@ RSpec.describe Gitlab::Database do
       expect(described_class.postgresql_minimum_supported_version?).to eq(false)
     end
 
-    it 'returns true when using PostgreSQL 9.6' do
+    it 'returns false when using PostgreSQL 9.6' do
       allow(described_class).to receive(:version).and_return('9.6')
+
+      expect(described_class.postgresql_minimum_supported_version?).to eq(false)
+    end
+
+    it 'returns false when using PostgreSQL 10' do
+      allow(described_class).to receive(:version).and_return('10')
+
+      expect(described_class.postgresql_minimum_supported_version?).to eq(false)
+    end
+
+    it 'returns true when using PostgreSQL 11 or newer' do
+      allow(described_class).to receive(:version).and_return('11.0')
 
       expect(described_class.postgresql_minimum_supported_version?).to eq(true)
     end
+  end
 
-    it 'returns true when using PostgreSQL 10 or newer' do
-      allow(described_class).to receive(:version).and_return('10')
+  describe '.check_postgres_version_and_print_warning' do
+    subject { described_class.check_postgres_version_and_print_warning }
 
-      expect(described_class.postgresql_minimum_supported_version?).to eq(true)
+    it 'prints a warning if not compliant with minimum postgres version' do
+      allow(described_class).to receive(:postgresql_minimum_supported_version?).and_return(false)
+
+      expect(Kernel).to receive(:warn).with(/You are using PostgreSQL/)
+
+      subject
+    end
+
+    it 'doesnt print a warning if compliant with minimum postgres version' do
+      allow(described_class).to receive(:postgresql_minimum_supported_version?).and_return(true)
+
+      expect(Kernel).not_to receive(:warn).with(/You are using PostgreSQL/)
+
+      subject
+    end
+
+    it 'doesnt print a warning in Rails runner environment' do
+      allow(described_class).to receive(:postgresql_minimum_supported_version?).and_return(false)
+      allow(Gitlab::Runtime).to receive(:rails_runner?).and_return(true)
+
+      expect(Kernel).not_to receive(:warn).with(/You are using PostgreSQL/)
+
+      subject
+    end
+
+    it 'ignores ActiveRecord errors' do
+      allow(described_class).to receive(:postgresql_minimum_supported_version?).and_raise(ActiveRecord::ActiveRecordError)
+
+      expect { subject }.not_to raise_error
+    end
+
+    it 'ignores Postgres errors' do
+      allow(described_class).to receive(:postgresql_minimum_supported_version?).and_raise(PG::Error)
+
+      expect { subject }.not_to raise_error
     end
   end
 

@@ -14,6 +14,6 @@ class AddPartialIndexOnLockedStateIdToMergeRequests < ActiveRecord::Migration[6.
   end
 
   def down
-    remove_concurrent_index_by_name :merge_requests, name: INDEX_NAME
+    remove_concurrent_index_by_name :merge_requests, INDEX_NAME
   end
 end

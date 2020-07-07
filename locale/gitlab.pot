@@ -3154,6 +3154,12 @@ msgstr ""
 msgid "At least one of group_id or project_id must be specified"
 msgstr ""
 
+msgid "At least one of your Personal Access Tokens is expired, but expiration enforcement is disabled. %{generate_new}"
+msgstr ""
+
+msgid "At least one of your Personal Access Tokens will expire soon, but expiration enforcement is disabled. %{generate_new}"
+msgstr ""
+
 msgid "At risk"
 msgstr ""
 
@@ -8122,6 +8128,9 @@ msgstr ""
 msgid "Documentation for popular identity providers"
 msgstr ""
 
+msgid "Documents reindexed: %{processed_documents} (%{percentage}%%)"
+msgstr ""
+
 msgid "Doing"
 msgstr ""
 
@@ -8362,7 +8371,16 @@ msgstr ""
 msgid "Elasticsearch integration. Elasticsearch AWS IAM."
 msgstr ""
 
+msgid "Elasticsearch reindexing is already in progress"
+msgstr ""
+
+msgid "Elasticsearch reindexing triggered"
+msgstr ""
+
 msgid "Elasticsearch returned status code: %{status_code}"
+msgstr ""
+
+msgid "Elasticsearch zero-downtime reindexing"
 msgstr ""
 
 msgid "Elastic|None. Select namespaces to index."
@@ -9214,6 +9232,9 @@ msgstr ""
 msgid "Error with Akismet. Please check the logs for more info."
 msgstr ""
 
+msgid "Error: %{error_message}"
+msgstr ""
+
 msgid "ErrorTracking|Active"
 msgstr ""
 
@@ -9407,6 +9428,9 @@ msgid "Expand sidebar"
 msgstr ""
 
 msgid "Expand up"
+msgstr ""
+
+msgid "Expected documents: %{expected_documents}"
 msgstr ""
 
 msgid "Experienced"
@@ -10346,6 +10370,9 @@ msgid "Generate key"
 msgstr ""
 
 msgid "Generate new export"
+msgstr ""
+
+msgid "Generate new token"
 msgstr ""
 
 msgid "GenericReports|Report"
@@ -18869,6 +18896,9 @@ msgstr ""
 msgid "Regulate approvals by authors/committers, based on compliance frameworks. Can be changed only at the instance level."
 msgstr ""
 
+msgid "Reindexing status"
+msgstr ""
+
 msgid "Rejected (closed)"
 msgstr ""
 
@@ -21882,6 +21912,9 @@ msgstr ""
 msgid "State your message to activate"
 msgstr ""
 
+msgid "State: %{last_reindexing_task_state}"
+msgstr ""
+
 msgid "Static Application Security Testing (SAST)"
 msgstr ""
 
@@ -22507,6 +22540,9 @@ msgid "Target branch"
 msgstr ""
 
 msgid "Target-Branch"
+msgstr ""
+
+msgid "Task ID: %{elastic_task}"
 msgstr ""
 
 msgid "Team"
@@ -23432,6 +23468,9 @@ msgid "This feature is currently in beta. We invite you to %{linkStart}give feed
 msgstr ""
 
 msgid "This feature requires local storage to be enabled"
+msgstr ""
+
+msgid "This feature should be used with an index that was created after 13.0"
 msgstr ""
 
 msgid "This field is required."
@@ -24402,6 +24441,9 @@ msgid "Trials|You won't get a free trial right now but you can always resume thi
 msgstr ""
 
 msgid "Trigger"
+msgstr ""
+
+msgid "Trigger cluster reindexing"
 msgstr ""
 
 msgid "Trigger pipelines for mirror updates"

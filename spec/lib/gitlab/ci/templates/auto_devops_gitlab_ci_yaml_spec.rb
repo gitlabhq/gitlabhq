@@ -37,6 +37,7 @@ RSpec.describe 'Auto-DevOps.gitlab-ci.yml' do
 
     context 'when the project is set for deployment to AWS' do
       let(:platform_value) { 'ECS' }
+      let(:review_prod_build_names) { build_names.select {|n| n.include?('review') || n.include?('production')} }
 
       before do
         create(:ci_variable, project: project, key: 'AUTO_DEVOPS_PLATFORM_TARGET', value: platform_value)
@@ -67,8 +68,15 @@ RSpec.describe 'Auto-DevOps.gitlab-ci.yml' do
       end
 
       it 'creates an ECS deployment job for production only' do
-        expect(build_names).not_to include('review_ecs')
-        expect(build_names).to include('production_ecs')
+        expect(review_prod_build_names).to contain_exactly('production_ecs')
+      end
+
+      context 'with FARGATE as a launch type' do
+        let(:platform_value) { 'FARGATE' }
+
+        it 'creates a FARGATE deployment job for production only' do
+          expect(review_prod_build_names).to contain_exactly('production_fargate')
+        end
       end
 
       context 'and we are not on the default branch' do
@@ -79,15 +87,22 @@ RSpec.describe 'Auto-DevOps.gitlab-ci.yml' do
           project.repository.create_branch(pipeline_branch)
         end
 
-        it_behaves_like 'no ECS job when AUTO_DEVOPS_PLATFORM_TARGET is not present' do
-          let(:job_name) { 'review_ecs' }
+        %w(review_ecs review_fargate).each do |job|
+          it_behaves_like 'no ECS job when AUTO_DEVOPS_PLATFORM_TARGET is not present' do
+            let(:job_name) { job }
+          end
         end
 
         it 'creates an ECS deployment job for review only' do
-          expect(build_names).to include('review_ecs')
-          expect(build_names).not_to include('production_ecs')
-          expect(build_names).not_to include('review')
-          expect(build_names).not_to include('production')
+          expect(review_prod_build_names).to contain_exactly('review_ecs')
+        end
+
+        context 'with FARGATE as a launch type' do
+          let(:platform_value) { 'FARGATE' }
+
+          it 'creates an FARGATE deployment job for review only' do
+            expect(review_prod_build_names).to contain_exactly('review_fargate')
+          end
         end
       end
 
