@@ -75,6 +75,42 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
           )
         end
       end
+
+      context 'for manage' do
+        it 'includes accurate usage_activity_by_stage data' do
+          stub_config(
+            omniauth:
+              { providers: omniauth_providers }
+          )
+
+          for_defined_days_back do
+            user = create(:user)
+            create(:event, author: user)
+            create(:group_member, user: user)
+          end
+
+          expect(described_class.uncached_data[:usage_activity_by_stage][:manage]).to include(
+            events: 2,
+            groups: 2,
+            users_created: Gitlab.ee? ? 6 : 5,
+            omniauth_providers: ['google_oauth2']
+          )
+          expect(described_class.uncached_data[:usage_activity_by_stage_monthly][:manage]).to include(
+            events: 1,
+            groups: 1,
+            users_created: Gitlab.ee? ? 4 : 3,
+            omniauth_providers: ['google_oauth2']
+          )
+        end
+
+        def omniauth_providers
+          [
+            OpenStruct.new(name: 'google_oauth2'),
+            OpenStruct.new(name: 'ldapmain'),
+            OpenStruct.new(name: 'group_saml')
+          ]
+        end
+      end
     end
 
     context 'for create' do

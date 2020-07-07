@@ -55,7 +55,7 @@ POST /import/bitbucket_server
 
 ```shell
 curl --request POST \
-  --url https://gitlab.example.com/api/v4/import/bitbucket/server \
+  --url https://gitlab.example.com/api/v4/import/bitbucket_server \
   --header "content-type: application/json" \
   --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" \
   --data '{

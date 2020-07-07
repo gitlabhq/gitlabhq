@@ -6,6 +6,7 @@ module Gitlab
   module Danger
     module Roulette
       ROULETTE_DATA_URL = 'https://gitlab-org.gitlab.io/gitlab-roulette/roulette.json'
+      HOURS_WHEN_PERSON_CAN_BE_PICKED = (6..14).freeze
 
       Spin = Struct.new(:category, :reviewer, :maintainer, :optional_role)
 
@@ -13,7 +14,7 @@ module Gitlab
       # for each change category that a Merge Request contains.
       #
       # @return [Array<Spin>]
-      def spin(project, categories, branch_name)
+      def spin(project, categories, branch_name, timezone_experiment: false)
         team =
           begin
             project_team(project)
@@ -25,7 +26,7 @@ module Gitlab
         canonical_branch_name = canonical_branch_name(branch_name)
 
         spin_per_category = categories.each_with_object({}) do |category, memo|
-          memo[category] = spin_for_category(team, project, category, canonical_branch_name)
+          memo[category] = spin_for_category(team, project, category, canonical_branch_name, timezone_experiment: timezone_experiment)
         end
 
         spin_per_category.map do |category, spin|
@@ -79,9 +80,14 @@ module Gitlab
       # Known issue: If someone is rejected due to OOO, and then becomes not OOO, the
       # selection will change on next spin
       # @param [Array<Teammate>] people
-      def spin_for_person(people, random:)
-        people.shuffle(random: random)
-          .find(&method(:valid_person?))
+      def spin_for_person(people, random:, timezone_experiment: false)
+        shuffled_people = people.shuffle(random: random)
+
+        if timezone_experiment
+          shuffled_people.find(&method(:valid_person_with_timezone?))
+        else
+          shuffled_people.find(&method(:valid_person?))
+        end
       end
 
       private
@@ -89,7 +95,13 @@ module Gitlab
       # @param [Teammate] person
       # @return [Boolean]
       def valid_person?(person)
-        !mr_author?(person) && person.available && person.has_capacity
+        !mr_author?(person) && person.available
+      end
+
+      # @param [Teammate] person
+      # @return [Boolean]
+      def valid_person_with_timezone?(person)
+        valid_person?(person) && HOURS_WHEN_PERSON_CAN_BE_PICKED.cover?(person.local_hour)
       end
 
       # @param [Teammate] person
@@ -104,7 +116,7 @@ module Gitlab
         end
       end
 
-      def spin_for_category(team, project, category, branch_name)
+      def spin_for_category(team, project, category, branch_name, timezone_experiment: false)
         reviewers, traintainers, maintainers =
           %i[reviewer traintainer maintainer].map do |role|
             spin_role_for_category(team, role, project, category)
@@ -115,8 +127,8 @@ module Gitlab
 
         # Make traintainers have triple the chance to be picked as a reviewer
         random = new_random(branch_name)
-        reviewer = spin_for_person(reviewers + traintainers + traintainers, random: random)
-        maintainer = spin_for_person(maintainers, random: random)
+        reviewer = spin_for_person(reviewers + traintainers + traintainers, random: random, timezone_experiment: timezone_experiment)
+        maintainer = spin_for_person(maintainers, random: random, timezone_experiment: timezone_experiment)
 
         Spin.new(category, reviewer, maintainer)
       end

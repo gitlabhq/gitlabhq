@@ -3,7 +3,7 @@
 module Gitlab
   module Danger
     class Teammate
-      attr_reader :username, :name, :markdown_name, :role, :projects, :available, :has_capacity
+      attr_reader :username, :name, :role, :projects, :available, :tz_offset_hours
 
       # The options data are produced by https://gitlab.com/gitlab-org/gitlab-roulette/-/blob/master/lib/team_member.rb
       def initialize(options = {})
@@ -13,7 +13,7 @@ module Gitlab
         @role = options['role']
         @projects = options['projects']
         @available = options['available']
-        @has_capacity = options['has_capacity']
+        @tz_offset_hours = options['tz_offset_hours']
       end
 
       def in_project?(name)
@@ -34,7 +34,47 @@ module Gitlab
         has_capability?(project, category, :maintainer, labels)
       end
 
+      def markdown_name(timezone_experiment: false, author: nil)
+        return @markdown_name unless timezone_experiment
+
+        "#{@markdown_name} (#{utc_offset_text(author)})"
+      end
+
+      def local_hour
+        (Time.now.utc + tz_offset_hours * 3600).hour
+      end
+
+      protected
+
+      def floored_offset_hours
+        floored_offset = tz_offset_hours.floor(0)
+
+        floored_offset == tz_offset_hours ? floored_offset : tz_offset_hours
+      end
+
       private
+
+      def utc_offset_text(author = nil)
+        offset_text =
+          if floored_offset_hours >= 0
+            "UTC+#{floored_offset_hours}"
+          else
+            "UTC#{floored_offset_hours}"
+          end
+
+        return offset_text unless author
+
+        "#{offset_text}, #{offset_diff_compared_to_author(author)}"
+      end
+
+      def offset_diff_compared_to_author(author)
+        diff = floored_offset_hours - author.floored_offset_hours
+        return "same timezone as `@#{author.username}`" if diff.zero?
+
+        ahead_or_behind = diff < 0 ? 'behind' : 'ahead'
+
+        "#{diff.abs} hours #{ahead_or_behind} `@#{author.username}`"
+      end
 
       def has_capability?(project, category, kind, labels)
         case category

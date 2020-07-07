@@ -19443,8 +19443,6 @@ CREATE INDEX index_merge_request_diffs_on_merge_request_id_and_id ON public.merg
 
 CREATE INDEX index_merge_request_diffs_on_merge_request_id_and_id_partial ON public.merge_request_diffs USING btree (merge_request_id, id) WHERE ((NOT stored_externally) OR (stored_externally IS NULL));
 
-CREATE INDEX index_merge_request_metrics ON public.merge_request_metrics USING btree (merge_request_id);
-
 CREATE INDEX index_merge_request_metrics_on_first_deployed_to_production_at ON public.merge_request_metrics USING btree (first_deployed_to_production_at);
 
 CREATE INDEX index_merge_request_metrics_on_latest_closed_at ON public.merge_request_metrics USING btree (latest_closed_at) WHERE (latest_closed_at IS NOT NULL);
@@ -23588,5 +23586,6 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200704143633
 20200706005325
 20200706170536
+20200707071941
 \.
 

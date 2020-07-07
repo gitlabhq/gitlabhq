@@ -493,6 +493,8 @@ class MergeRequestDiff < ApplicationRecord
     self.stored_externally = true
 
     rows
+  ensure
+    tempfile&.unlink
   end
 
   def create_merge_request_diff_files(rows)
@@ -503,19 +505,17 @@ class MergeRequestDiff < ApplicationRecord
   end
 
   def build_external_diff_tempfile(rows)
-    pos = 0
+    Tempfile.open(external_diff.filename) do |file|
+      rows.each do |row|
+        data = row.delete(:diff)
+        row[:external_diff_offset] = file.pos
+        row[:external_diff_size] = data.bytesize
 
-    segments = rows.map do |row|
-      segment = row.delete(:diff)
+        file.write(data)
+      end
 
-      row[:external_diff_offset] = pos
-      row[:external_diff_size] = segment.bytesize
-      pos += segment.bytesize
-
-      segment
+      file
     end
-
-    CarrierWaveStringFile.new(segments.join(''), external_diff.filename)
   end
 
   def build_merge_request_diff_files(diffs)

@@ -1,0 +1,33 @@
+# Read more about this feature https://docs.gitlab.com/ee/user/application_security/coverage_fuzzing
+
+variables:
+  # Which branch we want to run full fledged long running fuzzing jobs.
+  # All others will run fuzzing regression
+  COVERAGE_FUZZING_BRANCH: "$CI_DEFAULT_BRANCH"
+  # This is using semantic version and will always download latest v1 gitlab-cov-fuzz release
+  COVERAGE_FUZZING_VERSION: v1
+  # This is for users who have an offline environment and will have to replicate gitlab-cov-fuzz release binaries
+  # to their own servers
+  COVERAGE_FUZZING_URL_PREFIX: "https://gitlab.com/gitlab-org/security-products/analyzers/gitlab-cov-fuzz/-/raw"
+
+.fuzz_base:
+  stage: fuzz
+  allow_failure: true
+  before_script:
+    - if [ -x "$(command -v apt-get)" ] ; then apt-get update && apt-get install -y wget; fi
+    - wget -O gitlab-cov-fuzz "${COVERAGE_FUZZING_URL_PREFIX}"/"${COVERAGE_FUZZING_VERSION}"/binaries/gitlab-cov-fuzz_Linux_x86_64
+    - chmod a+x gitlab-cov-fuzz
+    - export REGRESSION=true
+    - if [[ $CI_COMMIT_BRANCH = $COVERAGE_FUZZING_BRANCH ]]; then REGRESSION=false; fi;
+  artifacts:
+    paths:
+      - corpus
+      - crashes
+    reports:
+      coverage_fuzzing: gl-coverage-fuzzing-report.json
+    when: always
+  rules:
+    - if: $COVERAGE_FUZZING_DISABLED
+      when: never
+    - if: $GITLAB_FEATURES =~ /\bcoverage_fuzzing\b/
+    - if: $CI_RUNNER_EXECUTABLE_ARCH == "linux"

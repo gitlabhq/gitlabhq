@@ -12,17 +12,19 @@ MARKDOWN
 
 CATEGORY_TABLE_HEADER = <<MARKDOWN
 
-To spread load more evenly across eligible reviewers, Danger has randomly picked
-a candidate for each review slot. Feel free to
+To spread load more evenly across eligible reviewers, Danger has picked a candidate for each
+review slot, based on their timezone. Feel free to
 [override these selections](https://about.gitlab.com/handbook/engineering/projects/#gitlab)
 if you think someone else would be better-suited, or the chosen person is unavailable.
 
 To read more on how to use the reviewer roulette, please take a look at the
 [Engineering workflow](https://about.gitlab.com/handbook/engineering/workflow/#basics)
 and [code review guidelines](https://docs.gitlab.com/ee/development/code_review.html).
+Please consider assigning a reviewer or maintainer who is a
+[domain expert](https://about.gitlab.com/handbook/engineering/projects/#gitlab) in the area of the merge request.
 
 Once you've decided who will review this merge request, mention them as you
-normally would! Danger does not (yet?) automatically notify them for you.
+normally would! Danger does not automatically notify them for you.
 
 | Category | Reviewer | Maintainer |
 | -------- | -------- | ---------- |
@@ -38,6 +40,7 @@ MARKDOWN
 
 OPTIONAL_REVIEW_TEMPLATE = "%{role} review is optional for %{category}".freeze
 NOT_AVAILABLE_TEMPLATE = 'No %{role} available'.freeze
+TIMEZONE_EXPERIMENT = true
 
 def mr_author
   roulette.team.find { |person| person.username == gitlab.mr_author }
@@ -48,7 +51,7 @@ def note_for_category_role(spin, role)
     return OPTIONAL_REVIEW_TEMPLATE % { role: role.capitalize, category: helper.label_for_category(spin.category) }
   end
 
-  spin.public_send(role)&.markdown_name || NOT_AVAILABLE_TEMPLATE % { role: role } # rubocop:disable GitlabSecurity/PublicSend
+  spin.public_send(role)&.markdown_name(timezone_experiment: TIMEZONE_EXPERIMENT, author: mr_author) || NOT_AVAILABLE_TEMPLATE % { role: role } # rubocop:disable GitlabSecurity/PublicSend
 end
 
 def markdown_row_for_spin(spin)
@@ -73,7 +76,9 @@ if changes.any?
   project = helper.project_name
   branch_name = gitlab.mr_json['source_branch']
 
-  roulette_spins = roulette.spin(project, categories, branch_name)
+  markdown(MESSAGE)
+
+  roulette_spins = roulette.spin(project, categories, branch_name, timezone_experiment: TIMEZONE_EXPERIMENT)
   rows = roulette_spins.map do |spin|
     # MR includes QA changes, but also other changes, and author isn't an SET
     if spin.category == :qa && categories.size > 1 && !mr_author.reviewer?(project, spin.category, [])
@@ -85,9 +90,8 @@ if changes.any?
     markdown_row_for_spin(spin)
   end
 
-  unknown = changes.fetch(:unknown, [])
-
-  markdown(MESSAGE)
   markdown(CATEGORY_TABLE_HEADER + rows.join("\n")) unless rows.empty?
+
+  unknown = changes.fetch(:unknown, [])
   markdown(UNKNOWN_FILES_MESSAGE + helper.markdown_list(unknown)) unless unknown.empty?
 end

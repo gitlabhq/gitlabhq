@@ -47,6 +47,14 @@ You can customize the payload by sending the following parameters. All fields ot
 | `severity` | String | The severity of the alert. Must be one of `critical`, `high`, `medium`, `low`, `info`, `unknown`. Default is `critical`. |
 | `fingerprint` | String or Array | The unique identifier of the alert. This can be used to group occurrences of the same alert. |
 
+You can also add custom fields to the alert's payload. The values of extra parameters
+are not limited to primitive types, such as strings or numbers, but can be a nested
+JSON object. For example:
+
+```json
+{ "foo": { "bar": { "baz": 42 } } }
+```
+
 TIP: **Payload size:**
 Ensure your requests are smaller than the [payload application limits](../../../administration/instance_limits.md#generic-alert-json-payloads).
 
@@ -73,6 +81,11 @@ Example payload:
   "monitoring_tool": "value",
   "hosts": "value",
   "severity": "high",
-  "fingerprint": "d19381d4e8ebca87b55cda6e8eee7385"
+  "fingerprint": "d19381d4e8ebca87b55cda6e8eee7385",
+  "foo": {
+    "bar": {
+      "baz": 42
+    }
+  }
 }
 ```

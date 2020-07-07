@@ -11,7 +11,7 @@ import {
   uneditableCloseToken,
   uneditableCloseTokens,
   uneditableTokens,
-} from '../../mock_data';
+} from './mock_data';
 
 describe('Build Uneditable Token renderer helper', () => {
   describe('buildUneditableOpenTokens', () => {

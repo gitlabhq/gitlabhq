@@ -9,19 +9,17 @@ Set the title to: `Description of the original issue`
 ## Prior to starting the security release work
 
 - [ ] Read the [security process for developers] if you are not familiar with it.
-- [ ] Mark this [issue as related] to the Security Release tracking issue. You can find it on the topic of the `#releases` Slack channel.
-- [ ] Run `scripts/security-harness` in your local repository to prevent accidentally pushing to any remote besides `gitlab.com/gitlab-org/security`.
+- [ ] Mark this [issue as related] to the Security Release Tracking Issue. You can find it on the topic of the `#releases` Slack channel.
 - Fill out the [Links section](#links):
   - [ ] Next to **Issue on GitLab**, add a link to the `gitlab-org/gitlab` issue that describes the security vulnerability.
-  - [ ] Next to **Security Release tracking issue**, add a link to the security release issue that will include this security issue.
 
 ## Development
 
+- [ ] Run `scripts/security-harness` in your local repository to prevent accidentally pushing to any remote besides `gitlab.com/gitlab-org/security`.
 - [ ] Create a new branch prefixing it with `security-`.
 - [ ] Create a merge request targeting `master` on `gitlab.com/gitlab-org/security` and use the [Security Release merge request template].
-- [ ] Follow the same [code review process]: Assign to a reviewer, then to a maintainer.
 
-After your merge request has been approved according to our [approval guidelines], you're ready to prepare the backports
+After your merge request has been approved according to our [approval guidelines] and by a team member of the AppSec team, you're ready to prepare the backports
 
 ## Backports
 
@@ -49,7 +47,6 @@ After your merge request has been approved according to our [approval guidelines
 | Description | Link |
 | -------- | -------- |
 | Issue on [GitLab](https://gitlab.com/gitlab-org/gitlab/issues) | #TODO  |
-| Security Release tracking issue | #TODO  |
 
 ### Details
 

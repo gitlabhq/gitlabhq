@@ -4,7 +4,9 @@ import {
   buildUneditableCloseToken,
 } from '~/vue_shared/components/rich_content_editor/services/renderers/build_uneditable_token';
 
-import { kramdownListNode, normalListNode } from '../../mock_data';
+import { buildMockListNode, normalListNode } from './mock_data';
+
+const kramdownListNode = buildMockListNode('TOC');
 
 describe('Render Kramdown List renderer', () => {
   describe('canRender', () => {

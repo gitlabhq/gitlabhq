@@ -1,5 +1,0 @@
----
-title: Remove tempfile from external diff creation
-merge_request: 35750
-author:
-type: performance

@@ -2,14 +2,27 @@
 
 require 'fast_spec_helper'
 
+require 'timecop'
 require 'rspec-parameterized'
 
 require 'gitlab/danger/teammate'
 
 RSpec.describe Gitlab::Danger::Teammate do
+  using RSpec::Parameterized::TableSyntax
+
   subject { described_class.new(options.stringify_keys) }
 
-  let(:options) { { username: 'luigi', projects: projects, role: role } }
+  let(:tz_offset_hours) { 2.0 }
+  let(:options) do
+    {
+      username: 'luigi',
+      projects: projects,
+      role: role,
+      markdown_name: '[Luigi](https://gitlab.com/luigi) (`@luigi`)',
+      tz_offset_hours: tz_offset_hours
+    }
+  end
+  let(:capabilities) { ['reviewer backend'] }
   let(:projects) { { project => capabilities } }
   let(:role) { 'Engineer, Manage' }
   let(:labels) { [] }
@@ -112,6 +125,73 @@ RSpec.describe Gitlab::Danger::Teammate do
 
     it '#maintainer? supports one role per project' do
       expect(subject.maintainer?(project, :frontend, labels)).to be_falsey
+    end
+  end
+
+  describe '#local_hour' do
+    around do |example|
+      Timecop.freeze(Time.utc(2020, 6, 23, 10)) { example.run }
+    end
+
+    context 'when author is given' do
+      where(:tz_offset_hours, :expected_local_hour) do
+        -12 | 22
+        -10 | 0
+        2 | 12
+        4 | 14
+        12 | 22
+      end
+
+      with_them do
+        it 'returns the correct local_hour' do
+          expect(subject.local_hour).to eq(expected_local_hour)
+        end
+      end
+    end
+  end
+
+  describe '#markdown_name' do
+    context 'when timezone_experiment == false' do
+      it 'returns markdown name as-is' do
+        expect(subject.markdown_name).to eq(options[:markdown_name])
+        expect(subject.markdown_name(timezone_experiment: false)).to eq(options[:markdown_name])
+      end
+    end
+
+    context 'when timezone_experiment == true' do
+      it 'returns markdown name with timezone info' do
+        expect(subject.markdown_name(timezone_experiment: true)).to eq("#{options[:markdown_name]} (UTC+2)")
+      end
+
+      context 'when offset is 1.5' do
+        let(:tz_offset_hours) { 1.5 }
+
+        it 'returns markdown name with timezone info, not truncated' do
+          expect(subject.markdown_name(timezone_experiment: true)).to eq("#{options[:markdown_name]} (UTC+1.5)")
+        end
+      end
+
+      context 'when author is given' do
+        where(:tz_offset_hours, :author_offset, :diff_text) do
+          -12 | -10 | "2 hours behind `@mario`"
+          -10 | -12 | "2 hours ahead `@mario`"
+          -10 | 2 | "12 hours behind `@mario`"
+          2 | 4 | "2 hours behind `@mario`"
+          4 | 2 | "2 hours ahead `@mario`"
+          2 | 2 | "same timezone as `@mario`"
+        end
+
+        with_them do
+          it 'returns markdown name with timezone info' do
+            author = described_class.new(options.merge(username: 'mario', tz_offset_hours: author_offset).stringify_keys)
+
+            floored_offset_hours = subject.__send__(:floored_offset_hours)
+            utc_offset = floored_offset_hours >= 0 ? "+#{floored_offset_hours}" : floored_offset_hours
+
+            expect(subject.markdown_name(timezone_experiment: true, author: author)).to eq("#{options[:markdown_name]} (UTC#{utc_offset}, #{diff_text})")
+          end
+        end
+      end
     end
   end
 end

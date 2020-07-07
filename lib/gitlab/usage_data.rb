@@ -420,9 +420,8 @@ module Gitlab
         distinct_count(
           query,
           :author_id,
-          batch_size: 5_000, # Based on query performance, this is the optimal batch size.
-          start: User.minimum(:id),
-          finish: User.maximum(:id)
+          start: user_minimum_id,
+          finish: user_maximum_id
         )
       end
       # rubocop: enable CodeReuse/ActiveRecord
@@ -486,9 +485,16 @@ module Gitlab
       end
 
       # Omitted because no user, creator or author associated: `campaigns_imported_from_github`, `ldap_group_links`
+      # rubocop: disable CodeReuse/ActiveRecord
       def usage_activity_by_stage_manage(time_period)
-        {}
+        {
+          events: distinct_count(::Event.where(time_period), :author_id),
+          groups: distinct_count(::GroupMember.where(time_period), :user_id),
+          users_created: count(::User.where(time_period), start: user_minimum_id, finish: user_maximum_id),
+          omniauth_providers: filtered_omniauth_provider_names.reject { |name| name == 'group_saml' }
+        }
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       # rubocop: disable CodeReuse/ActiveRecord
       def usage_activity_by_stage_monitor(time_period)
@@ -596,6 +602,18 @@ module Gitlab
         distinct_count(clusters.where(time_period), :user_id)
       end
       # rubocop: enable CodeReuse/ActiveRecord
+
+      def omniauth_provider_names
+        ::Gitlab.config.omniauth.providers.map(&:name)
+      end
+
+      # LDAP provider names are set by customers and could include
+      # sensitive info (server names, etc). LDAP providers normally
+      # don't appear in omniauth providers but filter to ensure
+      # no internal details leak via usage ping.
+      def filtered_omniauth_provider_names
+        omniauth_provider_names.reject { |name| name.starts_with?('ldap') }
+      end
     end
   end
 end

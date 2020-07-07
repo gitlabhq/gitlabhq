@@ -1,7 +1,9 @@
 import renderer from '~/vue_shared/components/rich_content_editor/services/renderers/render_embedded_ruby_text';
 import { buildUneditableTokens } from '~/vue_shared/components/rich_content_editor/services/renderers/build_uneditable_token';
 
-import { embeddedRubyTextNode, normalTextNode } from '../../mock_data';
+import { buildMockTextNode, normalTextNode } from './mock_data';
+
+const embeddedRubyTextNode = buildMockTextNode('<%= partial("some/path") %>');
 
 describe('Render Embedded Ruby Text renderer', () => {
   describe('canRender', () => {
