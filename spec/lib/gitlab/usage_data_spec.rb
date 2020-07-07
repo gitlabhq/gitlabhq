@@ -93,6 +93,28 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
       end
     end
 
+    context 'for monitor' do
+      it 'includes accurate usage_activity_by_stage data' do
+        for_defined_days_back do
+          user    = create(:user, dashboard: 'operations')
+          cluster = create(:cluster, user: user)
+          create(:project, creator: user)
+          create(:clusters_applications_prometheus, :installed, cluster: cluster)
+        end
+
+        expect(described_class.uncached_data[:usage_activity_by_stage][:monitor]).to include(
+          clusters: 2,
+          clusters_applications_prometheus: 2,
+          operations_dashboard_default_dashboard: 2
+        )
+        expect(described_class.uncached_data[:usage_activity_by_stage_monthly][:monitor]).to include(
+          clusters: 1,
+          clusters_applications_prometheus: 1,
+          operations_dashboard_default_dashboard: 1
+        )
+      end
+    end
+
     it 'ensures recorded_at is set before any other usage data calculation' do
       %i(alt_usage_data redis_usage_data distinct_count count).each do |method|
         expect(described_class).not_to receive(method)

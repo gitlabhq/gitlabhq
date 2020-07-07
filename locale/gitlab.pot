@@ -1301,6 +1301,9 @@ msgstr ""
 msgid "Add"
 msgstr ""
 
+msgid "Add \"%{value}\" to allowlist"
+msgstr ""
+
 msgid "Add %d issue"
 msgid_plural "Add %d issues"
 msgstr[0] ""
@@ -9373,9 +9376,6 @@ msgstr ""
 msgid "Exactly one of %{attributes} is required"
 msgstr ""
 
-msgid "Example: <code>acme.com,acme.co.in,acme.uk</code>."
-msgstr ""
-
 msgid "Example: @sub\\.company\\.com$"
 msgstr ""
 
@@ -14918,7 +14918,7 @@ msgstr ""
 msgid "MrDeploymentActions|Stop environment"
 msgstr ""
 
-msgid "Multiple domains are supported with comma delimiters."
+msgid "Multiple domains are supported."
 msgstr ""
 
 msgid "Multiple issue boards"
@@ -19639,7 +19639,7 @@ msgstr ""
 msgid "Restrict access by IP address"
 msgstr ""
 
-msgid "Restrict membership by email"
+msgid "Restrict membership by email domain"
 msgstr ""
 
 msgid "Restricts sign-ups for email addresses that match the given regex. See the %{supported_syntax_link_start}supported syntax%{supported_syntax_link_end} for more information."

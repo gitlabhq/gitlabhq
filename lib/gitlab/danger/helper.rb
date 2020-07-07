@@ -102,8 +102,8 @@ module Gitlab
       }.freeze
       # First-match win, so be sure to put more specific regex at the top...
       CATEGORIES = {
-        %r{\Adoc/} => :none, # To reinstate roulette for documentation, set to `:docs`.
-        %r{\A(CONTRIBUTING|LICENSE|MAINTENANCE|PHILOSOPHY|PROCESS|README)(\.md)?\z} => :none, # To reinstate roulette for documentation, set to `:docs`.
+        %r{\Adoc/} => :docs,
+        %r{\A(CONTRIBUTING|LICENSE|MAINTENANCE|PHILOSOPHY|PROCESS|README)(\.md)?\z} => :docs,
 
         %r{\A(ee/)?app/(assets|views)/} => :frontend,
         %r{\A(ee/)?public/} => :frontend,

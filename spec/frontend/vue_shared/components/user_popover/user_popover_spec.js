@@ -4,7 +4,6 @@ import UserPopover from '~/vue_shared/components/user_popover/user_popover.vue';
 import Icon from '~/vue_shared/components/icon.vue';
 
 const DEFAULT_PROPS = {
-  loaded: true,
   user: {
     username: 'root',
     name: 'Administrator',
@@ -12,6 +11,7 @@ const DEFAULT_PROPS = {
     bio: null,
     workInformation: null,
     status: null,
+    loaded: true,
   },
 };
 
@@ -46,28 +46,21 @@ describe('User Popover Component', () => {
     });
   };
 
-  describe('Empty', () => {
-    beforeEach(() => {
-      createWrapper(
-        {},
-        {
-          propsData: {
-            target: findTarget(),
-            user: {
-              name: null,
-              username: null,
-              location: null,
-              bio: null,
-              workInformation: null,
-              status: null,
-            },
-          },
+  describe('when user is loading', () => {
+    it('displays skeleton loaders', () => {
+      createWrapper({
+        user: {
+          name: null,
+          username: null,
+          location: null,
+          bio: null,
+          workInformation: null,
+          status: null,
+          loaded: false,
         },
-      );
-    });
+      });
 
-    it('should return skeleton loaders', () => {
-      expect(wrapper.find(GlSkeletonLoading).exists()).toBe(true);
+      expect(wrapper.findAll(GlSkeletonLoading)).toHaveLength(4);
     });
   });
 

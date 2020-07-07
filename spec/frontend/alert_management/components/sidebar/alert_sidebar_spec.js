@@ -3,7 +3,7 @@ import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import AlertSidebar from '~/alert_management/components/alert_sidebar.vue';
 import SidebarAssignees from '~/alert_management/components/sidebar/sidebar_assignees.vue';
-import mockAlerts from '../mocks/alerts.json';
+import mockAlerts from '../../mocks/alerts.json';
 
 const mockAlert = mockAlerts[0];
 

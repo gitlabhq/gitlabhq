@@ -22,6 +22,7 @@ class ApplicationController < ActionController::Base
   include Impersonation
   include Gitlab::Logging::CloudflareHelper
   include Gitlab::Utils::StrongMemoize
+  include ControllerWithFeatureCategory
 
   before_action :authenticate_user!, except: [:route_not_found]
   before_action :enforce_terms!, if: :should_enforce_terms?

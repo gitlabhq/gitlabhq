@@ -12,6 +12,8 @@ RSpec.describe MergeRequest do
   subject { create(:merge_request) }
 
   describe 'associations' do
+    subject { build_stubbed(:merge_request) }
+
     it { is_expected.to belong_to(:target_project).class_name('Project') }
     it { is_expected.to belong_to(:source_project).class_name('Project') }
     it { is_expected.to belong_to(:merge_user).class_name("User") }

@@ -12,7 +12,7 @@ RSpec.describe AlertManagement::AlertPresenter do
     }
   end
   let_it_be(:alert) do
-    create(:alert_management_alert, :with_host, :with_service, :with_monitoring_tool, project: project, payload: generic_payload)
+    create(:alert_management_alert, :with_description, :with_host, :with_service, :with_monitoring_tool, project: project, payload: generic_payload)
   end
 
   subject(:presenter) { described_class.new(alert) }
@@ -29,7 +29,8 @@ RSpec.describe AlertManagement::AlertPresenter do
           **Severity:** #{presenter.severity}#{markdown_line_break}
           **Service:** #{alert.service}#{markdown_line_break}
           **Monitoring tool:** #{alert.monitoring_tool}#{markdown_line_break}
-          **Hosts:** #{alert.hosts.join(' ')}
+          **Hosts:** #{alert.hosts.join(' ')}#{markdown_line_break}
+          **Description:** #{alert.description}
 
           #### Alert Details
 

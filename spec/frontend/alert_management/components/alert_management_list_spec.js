@@ -207,6 +207,15 @@ describe('AlertManagementList', () => {
       expect(findStatusDropdown().exists()).toBe(true);
     });
 
+    it('does not display a dropdown status header', () => {
+      mountComponent({
+        props: { alertManagementEnabled: true, userCanEnableAlertManagement: true },
+        data: { alerts: { list: mockAlerts }, alertsCount, errored: false },
+        loading: false,
+      });
+      expect(findStatusDropdown().contains('.dropdown-title')).toBe(false);
+    });
+
     it('shows correct severity icons', () => {
       mountComponent({
         props: { alertManagementEnabled: true, userCanEnableAlertManagement: true },

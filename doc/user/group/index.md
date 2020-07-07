@@ -554,7 +554,7 @@ Some domains cannot be restricted. These are the most popular public email domai
 To enable this feature:
 
 1. Navigate to the group's **Settings > General** page.
-1. Expand the **Permissions, LFS, 2FA** section, and enter the domain names into **Restrict membership by email** field. You can enter multiple domains by separating each domain with a comma (,).
+1. Expand the **Permissions, LFS, 2FA** section, and enter the domain names into **Restrict membership by email** field.
 1. Click **Save changes**.
 
 This will enable the domain-checking for all new users added to the group from this moment on.

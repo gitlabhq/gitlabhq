@@ -62,6 +62,8 @@ changes = helper.changes_by_category
 
 # Ignore any files that are known but uncategorized. Prompt for any unknown files
 changes.delete(:none)
+# To reinstate roulette for documentation, remove this line.
+changes.delete(:docs)
 categories = changes.keys - [:unknown]
 
 # Ensure to spin for database reviewer/maintainer when ~database is applied (e.g. to review SQL queries)

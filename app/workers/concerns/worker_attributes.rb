@@ -2,6 +2,7 @@
 
 module WorkerAttributes
   extend ActiveSupport::Concern
+  include Gitlab::ClassAttributes
 
   # Resource boundaries that workers can declare through the
   # `resource_boundary` attribute
@@ -30,24 +31,24 @@ module WorkerAttributes
   }.stringify_keys.freeze
 
   class_methods do
-    def feature_category(value)
+    def feature_category(value, *extras)
       raise "Invalid category. Use `feature_category_not_owned!` to mark a worker as not owned" if value == :not_owned
 
-      worker_attributes[:feature_category] = value
+      class_attributes[:feature_category] = value
     end
 
     # Special case: mark this work as not associated with a feature category
     # this should be used for cross-cutting concerns, such as mailer workers.
     def feature_category_not_owned!
-      worker_attributes[:feature_category] = :not_owned
+      class_attributes[:feature_category] = :not_owned
     end
 
     def get_feature_category
-      get_worker_attribute(:feature_category)
+      get_class_attribute(:feature_category)
     end
 
     def feature_category_not_owned?
-      get_worker_attribute(:feature_category) == :not_owned
+      get_feature_category == :not_owned
     end
 
     # This should be set to :high for jobs that need to be run
@@ -61,11 +62,11 @@ module WorkerAttributes
     def urgency(urgency)
       raise "Invalid urgency: #{urgency}" unless VALID_URGENCIES.include?(urgency)
 
-      worker_attributes[:urgency] = urgency
+      class_attributes[:urgency] = urgency
     end
 
     def get_urgency
-      worker_attributes[:urgency] || :low
+      class_attributes[:urgency] || :low
     end
 
     # Set this attribute on a job when it will call to services outside of the
@@ -73,85 +74,64 @@ module WorkerAttributes
     # doc/development/sidekiq_style_guide.md#Jobs-with-External-Dependencies for
     # details
     def worker_has_external_dependencies!
-      worker_attributes[:external_dependencies] = true
+      class_attributes[:external_dependencies] = true
     end
 
     # Returns a truthy value if the worker has external dependencies.
     # See doc/development/sidekiq_style_guide.md#Jobs-with-External-Dependencies
     # for details
     def worker_has_external_dependencies?
-      worker_attributes[:external_dependencies]
+      class_attributes[:external_dependencies]
     end
 
     def worker_resource_boundary(boundary)
       raise "Invalid boundary" unless VALID_RESOURCE_BOUNDARIES.include? boundary
 
-      worker_attributes[:resource_boundary] = boundary
+      class_attributes[:resource_boundary] = boundary
     end
 
     def get_worker_resource_boundary
-      worker_attributes[:resource_boundary] || :unknown
+      class_attributes[:resource_boundary] || :unknown
     end
 
     def idempotent!
-      worker_attributes[:idempotent] = true
+      class_attributes[:idempotent] = true
     end
 
     def idempotent?
-      worker_attributes[:idempotent]
+      class_attributes[:idempotent]
     end
 
     def weight(value)
-      worker_attributes[:weight] = value
+      class_attributes[:weight] = value
     end
 
     def get_weight
-      worker_attributes[:weight] ||
+      class_attributes[:weight] ||
         NAMESPACE_WEIGHTS[queue_namespace] ||
         1
     end
 
     def tags(*values)
-      worker_attributes[:tags] = values
+      class_attributes[:tags] = values
     end
 
     def get_tags
-      Array(worker_attributes[:tags])
+      Array(class_attributes[:tags])
     end
 
     def deduplicate(strategy, options = {})
-      worker_attributes[:deduplication_strategy] = strategy
-      worker_attributes[:deduplication_options] = options
+      class_attributes[:deduplication_strategy] = strategy
+      class_attributes[:deduplication_options] = options
     end
 
     def get_deduplicate_strategy
-      worker_attributes[:deduplication_strategy] ||
+      class_attributes[:deduplication_strategy] ||
         Gitlab::SidekiqMiddleware::DuplicateJobs::DuplicateJob::DEFAULT_STRATEGY
     end
 
     def get_deduplication_options
-      worker_attributes[:deduplication_options] || {}
-    end
-
-    protected
-
-    # Returns a worker attribute declared on this class or its parent class.
-    # This approach allows declared attributes to be inherited by
-    # child classes.
-    def get_worker_attribute(name)
-      worker_attributes[name] || superclass_worker_attributes(name)
-    end
-
-    private
-
-    def worker_attributes
-      @attributes ||= {}
-    end
-
-    def superclass_worker_attributes(name)
-      return unless superclass.include? WorkerAttributes
-
-      superclass.get_worker_attribute(name)
+      class_attributes[:deduplication_options] || {}
     end
   end
 end

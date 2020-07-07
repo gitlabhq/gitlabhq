@@ -1,6 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
 import SystemNote from '~/alert_management/components/system_notes/system_note.vue';
-import mockAlerts from '../mocks/alerts.json';
+import mockAlerts from '../../mocks/alerts.json';
 
 const mockAlert = mockAlerts[1];
 

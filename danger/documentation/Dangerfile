@@ -1,27 +1,33 @@
 # frozen_string_literal: true
 
+def gitlab_danger
+  @gitlab_danger ||= GitlabDanger.new(helper.gitlab_helper)
+end
+
 docs_paths_to_review = helper.changes_by_category[:docs]
 
-unless docs_paths_to_review.empty?
-  message 'This merge request adds or changes files that require a review ' \
-    'from the Technical Writing team.'
+return if docs_paths_to_review.empty?
 
-  if GitlabDanger.new(helper.gitlab_helper).ci?
-    markdown(<<~MARKDOWN)
-      ## Documentation review
+message 'This merge request adds or changes files that require a review ' \
+  'from the Technical Writing team.'
 
-      The following files require a review from a technical writer:
+return unless gitlab_danger.ci?
 
-      * #{docs_paths_to_review.map { |path| "`#{path}`" }.join("\n* ")}
+markdown(<<~MARKDOWN)
+  ## Documentation review
 
-      The review does not need to block merging this merge request. See the:
+  The following files require a review from a technical writer:
 
-      - [DevOps stages](https://about.gitlab.com/handbook/product/categories/#devops-stages) for the appropriate technical writer for this review.
-      - [Documentation workflows](https://docs.gitlab.com/ee/development/documentation/workflow.html) for information on when to assign a merge request for review.
-    MARKDOWN
+  * #{docs_paths_to_review.map { |path| "`#{path}`" }.join("\n* ")}
 
-    unless gitlab.mr_labels.include?('documentation')
-      warn 'This merge request is missing the ~documentation label.'
-    end
-  end
+  The review does not need to block merging this merge request. See the:
+
+  - [Technical Writers assignments](https://about.gitlab.com/handbook/engineering/technical-writing/#designated-technical-writers) for the appropriate technical writer for this review.
+  - [Documentation workflows](https://docs.gitlab.com/ee/development/documentation/workflow.html) for information on when to assign a merge request for review.
+MARKDOWN
+
+unless gitlab.mr_labels.include?('documentation')
+  gitlab.api.update_merge_request(gitlab.mr_json['project_id'],
+                                  gitlab.mr_json['iid'],
+                                  labels: (gitlab.mr_labels + ['documentation']).join(','))
 end

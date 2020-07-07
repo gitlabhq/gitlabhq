@@ -1,0 +1,5 @@
+---
+title: Fix rendering alert issue description field.
+merge_request: 35862
+author:
+type: fixed

@@ -490,9 +490,17 @@ module Gitlab
         {}
       end
 
+      # rubocop: disable CodeReuse/ActiveRecord
       def usage_activity_by_stage_monitor(time_period)
-        {}
+        {
+          clusters: distinct_count(::Clusters::Cluster.where(time_period), :user_id),
+          clusters_applications_prometheus: cluster_applications_user_distinct_count(::Clusters::Applications::Prometheus, time_period),
+          operations_dashboard_default_dashboard: count(::User.active.with_dashboard('operations').where(time_period),
+                                                        start: user_minimum_id,
+                                                        finish: user_maximum_id)
+        }
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       def usage_activity_by_stage_package(time_period)
         {}
