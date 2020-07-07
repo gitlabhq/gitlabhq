@@ -136,6 +136,7 @@ class UpdateRoutesForLostAndFoundGroupAndOrphanedProjects < ActiveRecord::Migrat
     # to ensure the Active Record's knowledge of the table structure is current
     Namespace.reset_column_information
     Route.reset_column_information
+    User.reset_column_information
 
     # Find the ghost user, its namespace and the "lost and found" group
     ghost_user = User.ghost
@@ -157,6 +158,15 @@ class UpdateRoutesForLostAndFoundGroupAndOrphanedProjects < ActiveRecord::Migrat
       'projects inside it. The contents may be deleted with a future update. '\
       'More info: gitlab.com/gitlab-org/gitlab/-/issues/198603'
     lost_and_found_group.save!
+
+    # make sure that the ghost namespace has a unique path
+    ghost_namespace.generate_unique_path
+
+    if ghost_namespace.path_changed?
+      ghost_namespace.save!
+      # If the path changed, also update the Ghost User's username to match the new path.
+      ghost_user.update!(username: ghost_namespace.path)
+    end
 
     # Update the routes for the Ghost user, the "lost and found" group
     # and all the orphaned projects

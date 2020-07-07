@@ -52,7 +52,7 @@ class AuditEvent < ApplicationRecord
   private
 
   def default_author_value
-    ::Gitlab::Audit::NullAuthor.for(author_id, details[:author_name])
+    ::Gitlab::Audit::NullAuthor.for(author_id, (self[:author_name] || details[:author_name]))
   end
 end
 

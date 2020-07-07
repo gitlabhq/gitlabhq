@@ -55,7 +55,7 @@ export default {
           )
         }}
         <gl-link ref="accessibility-issue-learn-more" :href="learnMoreUrl" target="_blank">{{
-          s__('AccessibilityReport|Learn More')
+          s__('AccessibilityReport|Learn more')
         }}</gl-link>
       </div>
       {{ sprintf(s__('AccessibilityReport|Message: %{message}'), { message: issue.message }) }}

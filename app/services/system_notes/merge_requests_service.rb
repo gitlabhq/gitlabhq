@@ -163,7 +163,11 @@ module SystemNotes
 
       create_note(NoteSummary.new(noteable, project, author, body, action: 'approved'))
     end
+
+    def unapprove_mr
+      body = "unapproved this merge request"
+
+      create_note(NoteSummary.new(noteable, project, author, body, action: 'unapproved'))
+    end
   end
 end
-
-SystemNotes::MergeRequestsService.prepend_if_ee('::EE::SystemNotes::MergeRequestsService')

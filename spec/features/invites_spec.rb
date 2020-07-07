@@ -2,8 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Invites' do
-  let(:user) { create(:user) }
+RSpec.describe 'Invites', :aggregate_failures do
+  let(:user) { create(:user, email: 'user@example.com') }
   let(:owner) { create(:user, name: 'John Doe') }
   let(:group) { create(:group, name: 'Owned') }
   let(:project) { create(:project, :repository, namespace: group) }
@@ -11,7 +11,7 @@ RSpec.describe 'Invites' do
 
   before do
     project.add_maintainer(owner)
-    group.add_user(owner, Gitlab::Access::OWNER)
+    group.add_owner(owner)
     group.add_developer('user@example.com', owner)
     group_invite.generate_invite_token!
   end
@@ -23,12 +23,12 @@ RSpec.describe 'Invites' do
   end
 
   def fill_in_sign_up_form(new_user)
-    fill_in 'new_user_name',                with: new_user.name
-    fill_in 'new_user_username',            with: new_user.username
-    fill_in 'new_user_email',               with: new_user.email
-    fill_in 'new_user_email_confirmation',  with: new_user.email
-    fill_in 'new_user_password',            with: new_user.password
-    click_button "Register"
+    fill_in 'new_user_name', with: new_user.name
+    fill_in 'new_user_username', with: new_user.username
+    fill_in 'new_user_email', with: new_user.email
+    fill_in 'new_user_email_confirmation', with: new_user.email
+    fill_in 'new_user_password', with: new_user.password
+    click_button 'Register'
   end
 
   def fill_in_sign_in_form(user)
@@ -48,19 +48,15 @@ RSpec.describe 'Invites' do
       expect(page).to have_content('To accept this invitation, sign in')
     end
 
-    it 'sign in and redirects to invitation page' do
+    it 'sign in, grants access and redirects to group page' do
       fill_in_sign_in_form(user)
 
-      expect(current_path).to eq(invite_path(group_invite.raw_invite_token))
-      expect(page).to have_content(
-        'You have been invited by John Doe to join group Owned as Developer.'
-      )
-      expect(page).to have_link('Accept invitation')
-      expect(page).to have_link('Decline')
+      expect(current_path).to eq(group_path(group))
+      expect(page).to have_content('You have been granted Developer access to group Owned.')
     end
   end
 
-  context 'when signed in as an exists member' do
+  context 'when signed in as an existing member' do
     before do
       sign_in(owner)
     end
@@ -71,165 +67,165 @@ RSpec.describe 'Invites' do
     end
   end
 
-  describe 'accepting the invitation' do
-    before do
-      sign_in(user)
-      visit invite_path(group_invite.raw_invite_token)
-    end
-
-    it 'grants access and redirects to group page' do
-      page.click_link 'Accept invitation'
-      expect(current_path).to eq(group_path(group))
-      expect(page).to have_content(
-        'You have been granted Developer access to group Owned.'
-      )
-    end
-  end
-
-  describe 'declining the application' do
-    context 'when signed in' do
-      before do
-        sign_in(user)
-        visit invite_path(group_invite.raw_invite_token)
-      end
-
-      it 'declines application and redirects to dashboard' do
-        page.click_link 'Decline'
-        expect(current_path).to eq(dashboard_projects_path)
-        expect(page).to have_content(
-          'You have declined the invitation to join group Owned.'
-        )
-      end
-    end
-
-    context 'when signed out' do
-      before do
-        visit decline_invite_path(group_invite.raw_invite_token)
-      end
-
-      it 'declines application and redirects to sign in page' do
-        expect(current_path).to eq(new_user_session_path)
-        expect(page).to have_content(
-          'You have declined the invitation to join group Owned.'
-        )
-      end
-    end
-  end
-
-  describe 'invite an user using their email address' do
+  context 'when inviting a user using their email address' do
     let(:new_user) { build_stubbed(:user) }
     let(:invite_email) { new_user.email }
     let(:group_invite) { create(:group_member, :invited, group: group, invite_email: invite_email) }
     let!(:project_invite) { create(:project_member, :invited, project: project, invite_email: invite_email) }
 
-    before do
-      stub_application_setting(send_user_confirmation_email: send_email_confirmation)
-      visit invite_path(group_invite.raw_invite_token)
-    end
-
-    context 'email confirmation disabled' do
-      let(:send_email_confirmation) { false }
-
-      it 'signs up and redirects to the dashboard page with all the projects/groups invitations automatically accepted' do
-        fill_in_sign_up_form(new_user)
-
-        expect(current_path).to eq(dashboard_projects_path)
-        expect(page).to have_content(project.full_name)
-
-        visit group_path(group)
-
-        expect(page).to have_content(group.full_name)
+    context 'when user has not signed in yet' do
+      before do
+        stub_application_setting(send_user_confirmation_email: send_email_confirmation)
+        visit invite_path(group_invite.raw_invite_token)
       end
 
-      context 'the user sign-up using a different email address' do
-        let(:invite_email) { build_stubbed(:user).email }
+      context 'email confirmation disabled' do
+        let(:send_email_confirmation) { false }
 
-        it 'signs up and redirects to the invitation page' do
+        it 'signs up and redirects to the dashboard page with all the projects/groups invitations automatically accepted' do
           fill_in_sign_up_form(new_user)
 
-          expect(current_path).to eq(invite_path(group_invite.raw_invite_token))
-        end
-      end
-    end
-
-    context 'email confirmation enabled' do
-      let(:send_email_confirmation) { true }
-
-      context 'when soft email confirmation is not enabled' do
-        before do
-          allow(User).to receive(:allow_unconfirmed_access_for).and_return 0
-        end
-
-        it 'signs up and redirects to root page with all the project/groups invitation automatically accepted' do
-          fill_in_sign_up_form(new_user)
-          confirm_email(new_user)
-          fill_in_sign_in_form(new_user)
-
-          expect(current_path).to eq(root_path)
+          expect(current_path).to eq(dashboard_projects_path)
           expect(page).to have_content(project.full_name)
 
           visit group_path(group)
 
           expect(page).to have_content(group.full_name)
         end
-      end
 
-      context 'when soft email confirmation is enabled' do
-        before do
-          allow(User).to receive(:allow_unconfirmed_access_for).and_return 2.days
-        end
+        context 'the user sign-up using a different email address' do
+          let(:invite_email) { build_stubbed(:user).email }
 
-        it 'signs up and redirects to root page with all the project/groups invitation automatically accepted' do
-          fill_in_sign_up_form(new_user)
-          confirm_email(new_user)
+          it 'signs up and redirects to the invitation page' do
+            fill_in_sign_up_form(new_user)
 
-          expect(current_path).to eq(root_path)
-          expect(page).to have_content(project.full_name)
-
-          visit group_path(group)
-
-          expect(page).to have_content(group.full_name)
+            expect(current_path).to eq(invite_path(group_invite.raw_invite_token))
+          end
         end
       end
 
-      it "doesn't accept invitations until the user confirms their email" do
-        fill_in_sign_up_form(new_user)
-        sign_in(owner)
-
-        visit project_project_members_path(project)
-        expect(page).to have_content 'Invited'
-      end
-
-      context 'the user sign-up using a different email address' do
-        let(:invite_email) { build_stubbed(:user).email }
+      context 'email confirmation enabled' do
+        let(:send_email_confirmation) { true }
 
         context 'when soft email confirmation is not enabled' do
           before do
-            stub_feature_flags(soft_email_confirmation: false)
             allow(User).to receive(:allow_unconfirmed_access_for).and_return 0
           end
 
-          it 'signs up and redirects to the invitation page' do
+          it 'signs up and redirects to root page with all the project/groups invitation automatically accepted' do
             fill_in_sign_up_form(new_user)
             confirm_email(new_user)
             fill_in_sign_in_form(new_user)
 
-            expect(current_path).to eq(invite_path(group_invite.raw_invite_token))
+            expect(current_path).to eq(root_path)
+            expect(page).to have_content(project.full_name)
+
+            visit group_path(group)
+
+            expect(page).to have_content(group.full_name)
           end
         end
 
         context 'when soft email confirmation is enabled' do
           before do
-            stub_feature_flags(soft_email_confirmation: true)
             allow(User).to receive(:allow_unconfirmed_access_for).and_return 2.days
           end
 
-          it 'signs up and redirects to the invitation page' do
+          it 'signs up and redirects to root page with all the project/groups invitation automatically accepted' do
             fill_in_sign_up_form(new_user)
+            confirm_email(new_user)
 
-            expect(current_path).to eq(invite_path(group_invite.raw_invite_token))
+            expect(current_path).to eq(root_path)
+            expect(page).to have_content(project.full_name)
+
+            visit group_path(group)
+
+            expect(page).to have_content(group.full_name)
           end
         end
+
+        it "doesn't accept invitations until the user confirms their email" do
+          fill_in_sign_up_form(new_user)
+          sign_in(owner)
+
+          visit project_project_members_path(project)
+          expect(page).to have_content 'Invited'
+        end
+
+        context 'the user sign-up using a different email address' do
+          let(:invite_email) { build_stubbed(:user).email }
+
+          context 'when soft email confirmation is not enabled' do
+            before do
+              stub_feature_flags(soft_email_confirmation: false)
+              allow(User).to receive(:allow_unconfirmed_access_for).and_return 0
+            end
+
+            it 'signs up and redirects to the invitation page' do
+              fill_in_sign_up_form(new_user)
+              confirm_email(new_user)
+              fill_in_sign_in_form(new_user)
+
+              expect(current_path).to eq(invite_path(group_invite.raw_invite_token))
+            end
+          end
+
+          context 'when soft email confirmation is enabled' do
+            before do
+              stub_feature_flags(soft_email_confirmation: true)
+              allow(User).to receive(:allow_unconfirmed_access_for).and_return 2.days
+            end
+
+            it 'signs up and redirects to the invitation page' do
+              fill_in_sign_up_form(new_user)
+
+              expect(current_path).to eq(invite_path(group_invite.raw_invite_token))
+            end
+          end
+        end
+      end
+    end
+
+    context 'when declining the invitation' do
+      let(:send_email_confirmation) { true }
+
+      context 'when signed in' do
+        before do
+          sign_in(user)
+          visit invite_path(group_invite.raw_invite_token)
+        end
+
+        it 'declines application and redirects to dashboard' do
+          page.click_link 'Decline'
+          expect(current_path).to eq(dashboard_projects_path)
+          expect(page).to have_content('You have declined the invitation to join group Owned.')
+        end
+      end
+
+      context 'when signed out' do
+        before do
+          visit decline_invite_path(group_invite.raw_invite_token)
+        end
+
+        it 'declines application and redirects to sign in page' do
+          expect(current_path).to eq(new_user_session_path)
+          expect(page).to have_content('You have declined the invitation to join group Owned.')
+        end
+      end
+    end
+
+    context 'when accepting the invitation' do
+      let(:send_email_confirmation) { true }
+
+      before do
+        sign_in(user)
+        visit invite_path(group_invite.raw_invite_token)
+      end
+
+      it 'grants access and redirects to group page' do
+        page.click_link 'Accept invitation'
+        expect(current_path).to eq(group_path(group))
+        expect(page).to have_content('You have been granted Owner access to group Owned.')
       end
     end
   end

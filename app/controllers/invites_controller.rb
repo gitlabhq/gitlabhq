@@ -1,12 +1,17 @@
 # frozen_string_literal: true
 
 class InvitesController < ApplicationController
+  include Gitlab::Utils::StrongMemoize
+
   before_action :member
   skip_before_action :authenticate_user!, only: :decline
+
+  helper_method :member?, :current_user_matches_invite?
 
   respond_to :html
 
   def show
+    accept if skip_invitation_prompt?
   end
 
   def accept
@@ -37,6 +42,20 @@ class InvitesController < ApplicationController
   end
 
   private
+
+  def skip_invitation_prompt?
+    !member? && current_user_matches_invite?
+  end
+
+  def current_user_matches_invite?
+    @member.invite_email == current_user.email
+  end
+
+  def member?
+    strong_memoize(:is_member) do
+      @member.source.users.include?(current_user)
+    end
+  end
 
   def member
     return @member if defined?(@member)

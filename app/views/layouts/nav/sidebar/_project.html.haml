@@ -80,7 +80,7 @@
             = render_if_exists 'projects/sidebar/repository_locked_files'
 
       - if project_nav_tab? :issues
-        = nav_link(controller: @project.issues_enabled? ? [:issues, :labels, :milestones, :boards] : :issues) do
+        = nav_link(controller: @project.issues_enabled? ? ['projects/issues', :labels, :milestones, :boards] : 'projects/issues') do
           = link_to project_issues_path(@project), class: 'shortcuts-issues qa-issues-item' do
             .nav-icon-container
               = sprite_icon('issues')
@@ -91,7 +91,7 @@
                 = number_with_delimiter(@project.open_issues_count(current_user))
 
           %ul.sidebar-sub-level-items
-            = nav_link(controller: :issues, action: :index, html_options: { class: "fly-out-top-item" } ) do
+            = nav_link(controller: 'projects/issues', action: :index, html_options: { class: "fly-out-top-item" } ) do
               = link_to project_issues_path(@project) do
                 %strong.fly-out-top-item-name
                   = _('Issues')
@@ -120,19 +120,23 @@
               = link_to project_milestones_path(@project), title: _('Milestones'), class: 'qa-milestones-link' do
                 %span
                   = _('Milestones')
-      - if project_nav_tab? :external_issue_tracker
-        = nav_link do
-          - issue_tracker = @project.external_issue_tracker
-          = link_to issue_tracker.issue_tracker_path, class: 'shortcuts-external_tracker' do
-            .nav-icon-container
-              = sprite_icon('external-link')
-            %span.nav-item-name
-              = issue_tracker.title
-          %ul.sidebar-sub-level-items.is-fly-out-only
-            = nav_link(html_options: { class: "fly-out-top-item" } ) do
-              = link_to issue_tracker.issue_tracker_path do
-                %strong.fly-out-top-item-name
-                  = issue_tracker.title
+
+      - if project_nav_tab?(:external_issue_tracker)
+        - issue_tracker = @project.external_issue_tracker
+        - if issue_tracker.is_a?(JiraService) && project_jira_issues_integration?
+          = render_if_exists 'layouts/nav/sidebar/project_jira_issues_link', issue_tracker: issue_tracker
+        - else
+          = nav_link do
+            = link_to issue_tracker.issue_tracker_path, target: '_blank', rel: 'noopener noreferrer', class: 'shortcuts-external_tracker' do
+              .nav-icon-container
+                = sprite_icon('external-link')
+              %span.nav-item-name
+                = issue_tracker.title
+            %ul.sidebar-sub-level-items.is-fly-out-only
+              = nav_link(html_options: { class: "fly-out-top-item" } ) do
+                = link_to issue_tracker.issue_tracker_path, target: '_blank', rel: 'noopener noreferrer' do
+                  %strong.fly-out-top-item-name
+                    = issue_tracker.title
 
       - if (project_nav_tab? :labels) && !@project.issues_enabled?
         = nav_link(controller: [:labels]) do

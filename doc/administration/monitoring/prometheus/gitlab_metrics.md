@@ -251,6 +251,19 @@ When Puma is used instead of Unicorn, the following metrics are available:
 | `puma_idle_threads`               | Gauge   | 12.0  | Number of spawned threads which are not processing a request |
 | `puma_killer_terminations_total`  | Gauge   | 12.0  | Number of workers terminated by PumaWorkerKiller |
 
+## Redis metrics
+
+These client metrics are meant to complement Redis server metrics.
+These metrics are broken down per [Redis
+instance](https://docs.gitlab.com/omnibus/settings/redis.html#running-with-multiple-redis-instances).
+These metrics all have a `storage` label which indicates the Redis
+instance (`cache`, `shared_state` etc.).
+
+| Metric                            | Type    | Since | Description |
+|:--------------------------------- |:------- |:----- |:----------- |
+| `redis_client_exceptions_total`                    | Counter   | 13.2  | Number of Redis client exceptions, broken down by exception class |
+| `redis_client_requests_total`                    | Counter   | 13.2  | Number of Redis client requests |
+
 ## Metrics shared directory
 
 GitLab's Prometheus client requires a directory to store metrics data shared between multi-process services.

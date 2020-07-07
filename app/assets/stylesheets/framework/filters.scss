@@ -26,6 +26,12 @@
     margin-right: 6px;
   }
 
+  .bulk-update {
+    .filter-item {
+      margin-right: 0;
+    }
+  }
+
   .sort-filter {
     display: inline-block;
     float: right;

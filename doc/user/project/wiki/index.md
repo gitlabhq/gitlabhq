@@ -134,11 +134,23 @@ The changes of a wiki page over time are recorded in the wiki's Git repository,
 and you can view them by clicking the **Page history** button.
 
 From the history page you can see the revision of the page (Git commit SHA), its
-author, the commit message, when it was last updated, and the page markup format.
+author, the commit message, and when it was last updated.
 To see how a previous version of the page looked like, click on a revision
-number.
+number in the **Page version** column.
 
 ![Wiki page history](img/wiki_page_history.png)
+
+### Viewing the changes between page versions
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15242) in GitLab 13.2.
+
+Similar to versioned diff file views, you can see the changes made in a given Wiki page version:
+
+1. Navigate to the Wiki page you're interested in.
+1. Click on **Page history** to see all page versions.
+1. Click on the commit message in the **Changes** column for the version you're interested in:
+
+   ![Wiki page changes](img/wiki_page_diffs_v13_2.png)
 
 ## Wiki activity records
 

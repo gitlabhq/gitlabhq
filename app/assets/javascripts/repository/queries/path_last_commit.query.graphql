@@ -1,4 +1,4 @@
-query pathLastCommit($projectPath: ID!, $path: String, $ref: String!) {
+query PathLastCommit($projectPath: ID!, $path: String, $ref: String!) {
   project(fullPath: $projectPath) {
     repository {
       tree(path: $path, ref: $ref) {
@@ -8,14 +8,14 @@ query pathLastCommit($projectPath: ID!, $path: String, $ref: String!) {
           titleHtml
           description
           message
-          webUrl
+          webPath
           authoredDate
           authorName
           authorGravatar
           author {
             name
             avatarUrl
-            webUrl
+            webPath
           }
           signatureHtml
           pipelines(ref: $ref, first: 1) {

@@ -9366,7 +9366,9 @@ CREATE TABLE public.audit_events (
     details text,
     created_at timestamp without time zone,
     updated_at timestamp without time zone,
-    ip_address inet
+    ip_address inet,
+    author_name text,
+    CONSTRAINT check_83ff8406e2 CHECK ((char_length(author_name) <= 255))
 );
 
 CREATE SEQUENCE public.audit_events_id_seq
@@ -23561,6 +23563,7 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200622235737
 20200623000148
 20200623000320
+20200623090030
 20200623121135
 20200623141544
 20200623170000

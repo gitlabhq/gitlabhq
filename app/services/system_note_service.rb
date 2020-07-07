@@ -288,6 +288,10 @@ module SystemNoteService
     merge_requests_service(noteable, noteable.project, user).approve_mr
   end
 
+  def unapprove_mr(noteable, user)
+    merge_requests_service(noteable, noteable.project, user).unapprove_mr
+  end
+
   private
 
   def merge_requests_service(noteable, project, author)

@@ -1,7 +1,7 @@
 <script>
 import { escape } from 'lodash';
 import SplitButton from '~/vue_shared/components/split_button.vue';
-import { GlModal, GlDeprecatedButton, GlFormInput } from '@gitlab/ui';
+import { GlModal, GlButton, GlDeprecatedButton, GlFormInput } from '@gitlab/ui';
 import { s__, sprintf } from '~/locale';
 import csrf from '~/lib/utils/csrf';
 
@@ -27,6 +27,7 @@ export default {
   components: {
     SplitButton,
     GlModal,
+    GlButton,
     GlDeprecatedButton,
     GlFormInput,
   },
@@ -38,6 +39,10 @@ export default {
     clusterName: {
       type: String,
       required: true,
+    },
+    hasManagementProject: {
+      type: Boolean,
+      required: false,
     },
   },
   data() {
@@ -90,6 +95,9 @@ export default {
     canSubmit() {
       return this.enteredClusterName === this.clusterName;
     },
+    canCleanupResources() {
+      return !this.hasManagementProject;
+    },
   },
   methods: {
     handleClickRemoveCluster(cleanup = false) {
@@ -112,12 +120,21 @@ export default {
 <template>
   <div>
     <split-button
+      v-if="canCleanupResources"
       :action-items="$options.splitButtonActionItems"
       menu-class="dropdown-menu-large"
       variant="danger"
       @remove-cluster="handleClickRemoveCluster(false)"
       @remove-cluster-and-cleanup="handleClickRemoveCluster(true)"
     />
+    <gl-button
+      v-else
+      variant="danger"
+      data-testid="btnRemove"
+      @click="handleClickRemoveCluster(false)"
+    >
+      {{ s__('ClusterIntegration|Remove integration') }}
+    </gl-button>
     <gl-modal
       ref="modal"
       size="lg"

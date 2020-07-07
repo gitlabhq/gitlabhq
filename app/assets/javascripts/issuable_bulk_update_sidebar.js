@@ -71,6 +71,14 @@ export default class IssuableBulkUpdateSidebar {
         })
         .catch(() => {});
     }
+
+    if (IS_EE) {
+      import('ee/vue_shared/components/sidebar/epics_select/epics_select_bundle')
+        .then(({ default: EpicSelect }) => {
+          EpicSelect();
+        })
+        .catch(() => {});
+    }
   }
 
   setupBulkUpdateActions() {

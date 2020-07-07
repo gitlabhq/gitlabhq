@@ -24,6 +24,7 @@
 #     created_before: datetime
 #     updated_after: datetime
 #     updated_before: datetime
+#     confidential: boolean
 #
 class IssuesFinder < IssuableFinder
   CONFIDENTIAL_ACCESS_LEVEL = Gitlab::Access::REPORTER

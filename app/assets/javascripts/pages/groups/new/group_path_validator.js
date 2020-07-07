@@ -12,6 +12,7 @@ const successMessageSelector = '.validation-success';
 const pendingMessageSelector = '.validation-pending';
 const unavailableMessageSelector = '.validation-error';
 const suggestionsMessageSelector = '.gl-path-suggestions';
+const inputGroupSelector = '.input-group';
 
 export default class GroupPathValidator extends InputValidator {
   constructor(opts = {}) {
@@ -39,7 +40,7 @@ export default class GroupPathValidator extends InputValidator {
   static validateGroupPathInput(inputDomElement) {
     const groupPath = inputDomElement.value;
 
-    if (inputDomElement.checkValidity() && groupPath.length > 0) {
+    if (inputDomElement.checkValidity() && groupPath.length > 1) {
       GroupPathValidator.setMessageVisibility(inputDomElement, pendingMessageSelector);
 
       fetchGroupPathAvailability(groupPath)
@@ -69,9 +70,10 @@ export default class GroupPathValidator extends InputValidator {
   }
 
   static setMessageVisibility(inputDomElement, messageSelector, isVisible = true) {
-    const messageElement = inputDomElement.parentElement.parentElement.querySelector(
-      messageSelector,
-    );
+    const messageElement = inputDomElement
+      .closest(inputGroupSelector)
+      .parentElement.querySelector(messageSelector);
+
     messageElement.classList.toggle('hide', !isVisible);
   }
 

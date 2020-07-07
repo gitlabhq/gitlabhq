@@ -30,6 +30,7 @@
   }
 
   &.status-box-issue-closed,
+  &.status-box-alert-resolved,
   &.status-box-mr-merged {
     background-color: $blue-500;
   }

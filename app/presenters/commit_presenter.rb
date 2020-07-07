@@ -21,6 +21,10 @@ class CommitPresenter < Gitlab::View::Presenter::Delegated
     url_builder.build(commit)
   end
 
+  def web_path
+    url_builder.build(commit, only_path: true)
+  end
+
   def signature_html
     return unless commit.has_signature?
 

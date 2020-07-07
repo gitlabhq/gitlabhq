@@ -1,0 +1,5 @@
+---
+title: Hide cleanup button for clusters with management project
+merge_request: 35576
+author:
+type: changed

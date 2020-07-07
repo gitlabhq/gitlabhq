@@ -3,9 +3,9 @@ import createFlash from '~/flash';
 import { __ } from '../../locale';
 import FileTable from './table/index.vue';
 import getRefMixin from '../mixins/get_ref';
-import getFiles from '../queries/getFiles.query.graphql';
-import getProjectPath from '../queries/getProjectPath.query.graphql';
-import getVueFileListLfsBadge from '../queries/getVueFileListLfsBadge.query.graphql';
+import filesQuery from '../queries/files.query.graphql';
+import projectPathQuery from '../queries/project_path.query.graphql';
+import vueFileListLfsBadgeQuery from '../queries/vue_file_list_lfs_badge.query.graphql';
 import FilePreview from './preview/index.vue';
 import { readmeFile } from '../utils/readme';
 
@@ -19,10 +19,10 @@ export default {
   mixins: [getRefMixin],
   apollo: {
     projectPath: {
-      query: getProjectPath,
+      query: projectPathQuery,
     },
     vueFileListLfsBadge: {
-      query: getVueFileListLfsBadge,
+      query: vueFileListLfsBadgeQuery,
     },
   },
   props: {
@@ -75,7 +75,7 @@ export default {
 
       return this.$apollo
         .query({
-          query: getFiles,
+          query: filesQuery,
           variables: {
             projectPath: this.projectPath,
             ref: this.ref,

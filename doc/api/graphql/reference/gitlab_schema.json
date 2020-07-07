@@ -2129,6 +2129,20 @@
               "deprecationReason": null
             },
             {
+              "name": "webPath",
+              "description": "Web path of the blob",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "webUrl",
               "description": "Web URL of the blob",
               "args": [
@@ -3286,6 +3300,24 @@
                 "kind": "SCALAR",
                 "name": "String",
                 "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "webPath",
+              "description": "Web path of the commit",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
               },
               "isDeprecated": false,
               "deprecationReason": null
@@ -38753,8 +38785,34 @@
               "deprecationReason": null
             },
             {
+              "name": "todos",
+              "description": "Updated todos",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "OBJECT",
+                      "name": "Todo",
+                      "ofType": null
+                    }
+                  }
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "updatedIds",
-              "description": "The ids of the updated todo items",
+              "description": "The ids of the updated todo items. Deprecated in 13.2: Use todos",
               "args": [
 
               ],
@@ -38775,8 +38833,8 @@
                   }
                 }
               },
-              "isDeprecated": false,
-              "deprecationReason": null
+              "isDeprecated": true,
+              "deprecationReason": "Use todos. Deprecated in 13.2"
             }
           ],
           "inputFields": null,
@@ -38988,8 +39046,34 @@
               "deprecationReason": null
             },
             {
+              "name": "todos",
+              "description": "Updated todos",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "OBJECT",
+                      "name": "Todo",
+                      "ofType": null
+                    }
+                  }
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "updatedIds",
-              "description": "Ids of the updated todos",
+              "description": "Ids of the updated todos. Deprecated in 13.2: Use todos",
               "args": [
 
               ],
@@ -39010,8 +39094,8 @@
                   }
                 }
               },
-              "isDeprecated": false,
-              "deprecationReason": null
+              "isDeprecated": true,
+              "deprecationReason": "Use todos. Deprecated in 13.2"
             }
           ],
           "inputFields": null,
@@ -39462,6 +39546,20 @@
                   "name": "EntryType",
                   "ofType": null
                 }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "webPath",
+              "description": "Web path for the tree entry (directory)",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
               },
               "isDeprecated": false,
               "deprecationReason": null
@@ -41868,6 +41966,24 @@
             {
               "name": "username",
               "description": "Username of the user. Unique within this instance of GitLab",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "webPath",
+              "description": "Web path of the user",
               "args": [
 
               ],

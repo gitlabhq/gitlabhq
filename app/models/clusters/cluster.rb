@@ -228,7 +228,9 @@ module Clusters
     def calculate_reactive_cache
       return unless enabled?
 
-      { connection_status: retrieve_connection_status, nodes: retrieve_nodes }
+      gitlab_kubernetes_nodes = Gitlab::Kubernetes::Node.new(self)
+
+      { connection_status: retrieve_connection_status, nodes: gitlab_kubernetes_nodes.all.presence }
     end
 
     def persisted_applications
@@ -381,54 +383,6 @@ module Clusters
     def retrieve_connection_status
       result = ::Gitlab::Kubernetes::KubeClient.graceful_request(id) { kubeclient.core_client.discover }
       result[:status]
-    end
-
-    def retrieve_nodes
-      result = ::Gitlab::Kubernetes::KubeClient.graceful_request(id) { kubeclient.get_nodes }
-
-      return unless result[:response]
-
-      cluster_nodes = result[:response]
-
-      result = ::Gitlab::Kubernetes::KubeClient.graceful_request(id) { kubeclient.metrics_client.get_nodes }
-      nodes_metrics = result[:response].to_a
-
-      cluster_nodes.inject([]) do |memo, node|
-        sliced_node = filter_relevant_node_attributes(node)
-
-        matched_node_metric = nodes_metrics.find { |node_metric| node_metric.metadata.name == node.metadata.name }
-
-        sliced_node_metrics = matched_node_metric ? filter_relevant_node_metrics_attributes(matched_node_metric) : {}
-
-        memo << sliced_node.merge(sliced_node_metrics)
-      end
-    end
-
-    def filter_relevant_node_attributes(node)
-      {
-        'metadata' => {
-          'name' => node.metadata.name
-        },
-        'status' => {
-          'capacity' => {
-            'cpu' => node.status.capacity.cpu,
-            'memory' => node.status.capacity.memory
-          },
-          'allocatable' => {
-            'cpu' => node.status.allocatable.cpu,
-            'memory' => node.status.allocatable.memory
-          }
-        }
-      }
-    end
-
-    def filter_relevant_node_metrics_attributes(node_metrics)
-      {
-        'usage' => {
-          'cpu' => node_metrics.usage.cpu,
-          'memory' => node_metrics.usage.memory
-        }
-      }
     end
 
     # To keep backward compatibility with AUTO_DEVOPS_DOMAIN

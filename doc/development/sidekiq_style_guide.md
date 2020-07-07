@@ -640,7 +640,6 @@ There are two options for safely adding new arguments to Sidekiq workers:
 
 1. Set up a [multi-step deployment](#multi-step-deployment) in which the new argument is first added to the worker
 1. Use a [parameter hash](#parameter-hash) for additional arguments. This is perhaps the most flexible option.
-1. Use a parameter hash for additional arguments. This is perhaps the most flexible option.
 
 ##### Multi-step deployment
 

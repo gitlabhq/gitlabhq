@@ -62,8 +62,8 @@ RSpec.describe UpdateRoutesForLostAndFoundGroupAndOrphanedProjects, :migration d
       source_type: 'Project',
       path: 'orphaned_project',
       name: 'orphaned_project',
-      created_at: Time.zone.now,
-      updated_at: Time.zone.now
+      created_at: Time.current,
+      updated_at: Time.current
     )
 
     # Create another user named ghost which is not the Ghost User
@@ -90,10 +90,10 @@ RSpec.describe UpdateRoutesForLostAndFoundGroupAndOrphanedProjects, :migration d
     routes.create!(
       source_id: fake_ghost_user_namespace.id,
       source_type: 'Namespace',
-      path: 'Ghost User',
-      name: 'ghost1',
-      created_at: Time.zone.now,
-      updated_at: Time.zone.now
+      path: 'ghost1',
+      name: 'Ghost User',
+      created_at: Time.current,
+      updated_at: Time.current
     )
 
     fake_lost_and_found_group = namespaces.create!(
@@ -109,8 +109,8 @@ RSpec.describe UpdateRoutesForLostAndFoundGroupAndOrphanedProjects, :migration d
       source_type: 'Namespace',
       path: described_class::User::LOST_AND_FOUND_GROUP, # same path as the lost-and-found group
       name: 'Lost and Found',
-      created_at: Time.zone.now,
-      updated_at: Time.zone.now
+      created_at: Time.current,
+      updated_at: Time.current
     )
 
     members.create!(
@@ -135,17 +135,58 @@ RSpec.describe UpdateRoutesForLostAndFoundGroupAndOrphanedProjects, :migration d
       source_type: 'Project',
       path: "#{described_class::User::LOST_AND_FOUND_GROUP}/normal_project",
       name: 'Lost and Found / normal_project',
-      created_at: Time.zone.now,
-      updated_at: Time.zone.now
+      created_at: Time.current,
+      updated_at: Time.current
+    )
+
+    # Add a project whose route conflicts with the ghost username
+    # and should force the data migration to pick a new Ghost username and path
+    ghost_project = projects.create!(
+      name: 'Ghost Project',
+      path: 'ghost',
+      visibility_level: 20,
+      archived: false,
+      namespace_id: fake_lost_and_found_group.id
+    )
+
+    routes.create!(
+      source_id: ghost_project.id,
+      source_type: 'Project',
+      path: 'ghost',
+      name: 'Ghost Project',
+      created_at: Time.current,
+      updated_at: Time.current
     )
   end
 
+  it 'fixes the ghost user username and namespace path' do
+    ghost_user = users.find_by(user_type: described_class::User::USER_TYPE_GHOST)
+    ghost_namespace = namespaces.find_by(owner_id: ghost_user.id)
+
+    expect(ghost_user.username).to eq('ghost')
+    expect(ghost_namespace.path).to eq('ghost')
+
+    disable_migrations_output { migrate! }
+
+    ghost_user = users.find_by(user_type: described_class::User::USER_TYPE_GHOST)
+    ghost_namespace = namespaces.find_by(owner_id: ghost_user.id)
+    ghost_namespace_route = routes.find_by(source_id: ghost_namespace.id, source_type: 'Namespace')
+
+    expect(ghost_user.username).to eq('ghost2')
+    expect(ghost_namespace.path).to eq('ghost2')
+    expect(ghost_namespace_route.path).to eq('ghost2')
+  end
+
   it 'creates the route for the ghost user namespace' do
-    expect(routes.where(path: 'ghost').count).to eq(0)
+    expect(routes.where(path: 'ghost').count).to eq(1)
+    expect(routes.where(path: 'ghost1').count).to eq(1)
+    expect(routes.where(path: 'ghost2').count).to eq(0)
 
     disable_migrations_output { migrate! }
 
     expect(routes.where(path: 'ghost').count).to eq(1)
+    expect(routes.where(path: 'ghost1').count).to eq(1)
+    expect(routes.where(path: 'ghost2').count).to eq(1)
   end
 
   it 'fixes the path for the lost-and-found group by generating a unique one' do

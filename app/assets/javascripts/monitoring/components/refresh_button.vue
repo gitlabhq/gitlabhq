@@ -1,0 +1,163 @@
+<script>
+import { n__, __ } from '~/locale';
+import { mapActions } from 'vuex';
+
+import {
+  GlButtonGroup,
+  GlButton,
+  GlNewDropdown,
+  GlNewDropdownItem,
+  GlNewDropdownDivider,
+  GlTooltipDirective,
+} from '@gitlab/ui';
+
+const makeInterval = (length = 0, unit = 's') => {
+  const shortLabel = `${length}${unit}`;
+  switch (unit) {
+    case 'd':
+      return {
+        interval: length * 24 * 60 * 60 * 1000,
+        shortLabel,
+        label: n__('%d day', '%d days', length),
+      };
+    case 'h':
+      return {
+        interval: length * 60 * 60 * 1000,
+        shortLabel,
+        label: n__('%d hour', '%d hours', length),
+      };
+    case 'm':
+      return {
+        interval: length * 60 * 1000,
+        shortLabel,
+        label: n__('%d minute', '%d minutes', length),
+      };
+    case 's':
+    default:
+      return {
+        interval: length * 1000,
+        shortLabel,
+        label: n__('%d second', '%d seconds', length),
+      };
+  }
+};
+
+export default {
+  components: {
+    GlButtonGroup,
+    GlButton,
+    GlNewDropdown,
+    GlNewDropdownItem,
+    GlNewDropdownDivider,
+  },
+  directives: {
+    GlTooltip: GlTooltipDirective,
+  },
+  data() {
+    return {
+      refreshInterval: null,
+      timeoutId: null,
+    };
+  },
+  computed: {
+    dropdownText() {
+      return this.refreshInterval?.shortLabel ?? __('Off');
+    },
+  },
+  watch: {
+    refreshInterval() {
+      if (this.refreshInterval !== null) {
+        this.startAutoRefresh();
+      } else {
+        this.stopAutoRefresh();
+      }
+    },
+  },
+  destroyed() {
+    this.stopAutoRefresh();
+  },
+  methods: {
+    ...mapActions('monitoringDashboard', ['fetchDashboardData']),
+
+    refresh() {
+      this.fetchDashboardData();
+    },
+    startAutoRefresh() {
+      const schedule = () => {
+        if (this.refreshInterval) {
+          this.timeoutId = setTimeout(this.startAutoRefresh, this.refreshInterval.interval);
+        }
+      };
+
+      this.stopAutoRefresh();
+      if (document.hidden) {
+        // Inactive tab? Skip fetch and schedule again
+        schedule();
+      } else {
+        // Active tab! Fetch data and then schedule when settled
+        // eslint-disable-next-line promise/catch-or-return
+        this.fetchDashboardData().finally(schedule);
+      }
+    },
+    stopAutoRefresh() {
+      clearTimeout(this.timeoutId);
+      this.timeoutId = null;
+    },
+
+    setRefreshInterval(option) {
+      this.refreshInterval = option;
+    },
+    removeRefreshInterval() {
+      this.refreshInterval = null;
+    },
+    isChecked(option) {
+      if (this.refreshInterval) {
+        return option.interval === this.refreshInterval.interval;
+      }
+      return false;
+    },
+  },
+
+  refreshIntervals: [
+    makeInterval(5),
+    makeInterval(10),
+    makeInterval(30),
+    makeInterval(5, 'm'),
+    makeInterval(30, 'm'),
+    makeInterval(1, 'h'),
+    makeInterval(2, 'h'),
+    makeInterval(12, 'h'),
+    makeInterval(1, 'd'),
+  ],
+};
+</script>
+
+<template>
+  <gl-button-group>
+    <gl-button
+      v-gl-tooltip
+      class="gl-flex-grow-1"
+      variant="default"
+      :title="s__('Metrics|Refresh dashboard')"
+      icon="retry"
+      @click="refresh"
+    />
+    <gl-new-dropdown v-gl-tooltip :title="s__('Metrics|Set refresh rate')" :text="dropdownText">
+      <gl-new-dropdown-item
+        :is-check-item="true"
+        :is-checked="refreshInterval === null"
+        @click="removeRefreshInterval()"
+        >{{ __('Off') }}</gl-new-dropdown-item
+      >
+      <gl-new-dropdown-divider />
+      <gl-new-dropdown-item
+        v-for="(option, i) in $options.refreshIntervals"
+        :key="i"
+        :is-check-item="true"
+        :is-checked="isChecked(option)"
+        @click="setRefreshInterval(option)"
+        >{{ option.label }}</gl-new-dropdown-item
+      >
+    </gl-new-dropdown>
+  </gl-button-group>
+</template>

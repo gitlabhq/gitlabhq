@@ -1111,13 +1111,23 @@ RSpec.describe Clusters::Cluster, :use_clean_rails_memory_store_caching do
 
     context 'cluster is enabled' do
       let(:cluster) { create(:cluster, :provided_by_user, :group) }
+      let(:gl_k8s_node_double) { double(Gitlab::Kubernetes::Node) }
+      let(:expected_nodes) { nil }
 
       before do
-        stub_kubeclient_nodes_and_nodes_metrics(cluster.platform.api_url)
+        stub_kubeclient_discover(cluster.platform.api_url)
+        allow(Gitlab::Kubernetes::Node).to receive(:new).with(cluster).and_return(gl_k8s_node_double)
+        allow(gl_k8s_node_double).to receive(:all).and_return([])
       end
 
       context 'connection to the cluster is successful' do
-        it { is_expected.to eq(connection_status: :connected, nodes: [kube_node.merge(kube_node_metrics)]) }
+        before do
+          allow(gl_k8s_node_double).to receive(:all).and_return(expected_nodes)
+        end
+
+        let(:expected_nodes) { [kube_node.merge(kube_node_metrics)] }
+
+        it { is_expected.to eq(connection_status: :connected, nodes: expected_nodes) }
       end
 
       context 'cluster cannot be reached' do
@@ -1126,7 +1136,7 @@ RSpec.describe Clusters::Cluster, :use_clean_rails_memory_store_caching do
             .and_raise(SocketError)
         end
 
-        it { is_expected.to eq(connection_status: :unreachable, nodes: nil) }
+        it { is_expected.to eq(connection_status: :unreachable, nodes: expected_nodes) }
       end
 
       context 'cluster cannot be authenticated to' do
@@ -1135,7 +1145,7 @@ RSpec.describe Clusters::Cluster, :use_clean_rails_memory_store_caching do
             .and_raise(OpenSSL::X509::CertificateError.new("Certificate error"))
         end
 
-        it { is_expected.to eq(connection_status: :authentication_failure, nodes: nil) }
+        it { is_expected.to eq(connection_status: :authentication_failure, nodes: expected_nodes) }
       end
 
       describe 'Kubeclient::HttpError' do
@@ -1147,18 +1157,18 @@ RSpec.describe Clusters::Cluster, :use_clean_rails_memory_store_caching do
             .and_raise(Kubeclient::HttpError.new(error_code, error_message, nil))
         end
 
-        it { is_expected.to eq(connection_status: :authentication_failure, nodes: nil) }
+        it { is_expected.to eq(connection_status: :authentication_failure, nodes: expected_nodes) }
 
         context 'generic timeout' do
           let(:error_message) { 'Timed out connecting to server'}
 
-          it { is_expected.to eq(connection_status: :unreachable, nodes: nil) }
+          it { is_expected.to eq(connection_status: :unreachable, nodes: expected_nodes) }
         end
 
         context 'gateway timeout' do
           let(:error_message) { '504 Gateway Timeout for GET https://kubernetes.example.com/api/v1'}
 
-          it { is_expected.to eq(connection_status: :unreachable, nodes: nil) }
+          it { is_expected.to eq(connection_status: :unreachable, nodes: expected_nodes) }
         end
       end
 
@@ -1168,12 +1178,12 @@ RSpec.describe Clusters::Cluster, :use_clean_rails_memory_store_caching do
             .and_raise(StandardError)
         end
 
-        it { is_expected.to eq(connection_status: :unknown_failure, nodes: nil) }
+        it { is_expected.to eq(connection_status: :unknown_failure, nodes: expected_nodes) }
 
         it 'notifies Sentry' do
           expect(Gitlab::ErrorTracking).to receive(:track_exception)
             .with(instance_of(StandardError), hash_including(cluster_id: cluster.id))
-            .twice
+            .once
 
           subject
         end

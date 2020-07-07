@@ -40,4 +40,6 @@
     %p
       = s_("ClusterIntegration|Remove this Kubernetes cluster's configuration from this project. This will not delete your actual Kubernetes cluster.")
 
-    #js-cluster-remove-actions{ data: { cluster_path: clusterable.cluster_path(@cluster), cluster_name: @cluster.name } }
+    #js-cluster-remove-actions{ data: { cluster_path: clusterable.cluster_path(@cluster),
+      cluster_name: @cluster.name,
+      has_management_project: @cluster.management_project_id? } }

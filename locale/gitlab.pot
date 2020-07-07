@@ -167,6 +167,11 @@ msgid_plural "%d groups selected"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "%d hour"
+msgid_plural "%d hours"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%d inaccessible merge request"
 msgid_plural "%d inaccessible merge requests"
 msgstr[0] ""
@@ -1244,7 +1249,7 @@ msgstr ""
 msgid "AccessTokens|reset it"
 msgstr ""
 
-msgid "AccessibilityReport|Learn More"
+msgid "AccessibilityReport|Learn more"
 msgstr ""
 
 msgid "AccessibilityReport|Message: %{message}"
@@ -8986,6 +8991,9 @@ msgstr ""
 msgid "Epic events"
 msgstr ""
 
+msgid "Epic not found for given params"
+msgstr ""
+
 msgid "Epics"
 msgstr ""
 
@@ -12874,7 +12882,13 @@ msgstr ""
 msgid "JiraService|If different from Web URL"
 msgstr ""
 
+msgid "JiraService|Issue List"
+msgstr ""
+
 msgid "JiraService|Jira API URL"
+msgstr ""
+
+msgid "JiraService|Jira Issues"
 msgstr ""
 
 msgid "JiraService|Jira comments will be created when an issue gets referenced in a commit."
@@ -12884,6 +12898,9 @@ msgid "JiraService|Jira comments will be created when an issue gets referenced i
 msgstr ""
 
 msgid "JiraService|Jira issue tracker"
+msgstr ""
+
+msgid "JiraService|Open Jira"
 msgstr ""
 
 msgid "JiraService|Password or API token"
@@ -13279,9 +13296,6 @@ msgid "Lead Time"
 msgstr ""
 
 msgid "Learn GitLab"
-msgstr ""
-
-msgid "Learn More"
 msgstr ""
 
 msgid "Learn how to %{link_start}contribute to the built-in templates%{link_end}"
@@ -14505,6 +14519,9 @@ msgstr ""
 msgid "Metrics|Select a value"
 msgstr ""
 
+msgid "Metrics|Set refresh rate"
+msgstr ""
+
 msgid "Metrics|Star dashboard"
 msgstr ""
 
@@ -15713,6 +15730,9 @@ msgid "October"
 msgstr ""
 
 msgid "OfSearchInADropdown|Filter"
+msgstr ""
+
+msgid "Off"
 msgstr ""
 
 msgid "Oh no!"
@@ -20294,7 +20314,7 @@ msgstr ""
 msgid "SecurityReports|Issue Created"
 msgstr ""
 
-msgid "SecurityReports|Learn More"
+msgid "SecurityReports|Learn more"
 msgstr ""
 
 msgid "SecurityReports|Learn more about setting up your dashboard"
@@ -20517,6 +20537,9 @@ msgid "Select branch/tag"
 msgstr ""
 
 msgid "Select due date"
+msgstr ""
+
+msgid "Select epic"
 msgstr ""
 
 msgid "Select file"

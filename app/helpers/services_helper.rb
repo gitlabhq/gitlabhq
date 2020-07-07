@@ -131,6 +131,10 @@ module ServicesHelper
     integration.configurable_events.present?
   end
 
+  def project_jira_issues_integration?
+    false
+  end
+
   extend self
 end
 

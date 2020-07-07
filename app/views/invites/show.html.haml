@@ -20,21 +20,19 @@
       = link_to group.name, group_url(group)
   as #{@member.human_access}.
 
-- is_member = @member.source.users.include?(current_user)
-
-- if is_member
+- if member?
   %p
     - member_source = @member.source.is_a?(Group) ? _("group") : _("project")
     = _("However, you are already a member of this %{member_source}. Sign in using a different account to accept the invitation.") % { member_source: member_source }
 
-- if @member.invite_email != current_user.email
+- if !current_user_matches_invite?
   %p
     - mail_to_invite_email = mail_to(@member.invite_email)
     - mail_to_current_user = mail_to(current_user.email)
     - link_to_current_user = link_to(current_user.to_reference, user_url(current_user))
     = _("Note that this invitation was sent to %{mail_to_invite_email}, but you are signed in as %{link_to_current_user} with email %{mail_to_current_user}.").html_safe % { mail_to_invite_email: mail_to_invite_email, mail_to_current_user: mail_to_current_user, link_to_current_user: link_to_current_user }
 
-- unless is_member
+- unless member?
   .actions
     = link_to _("Accept invitation"), accept_invite_url(@token), method: :post, class: "btn btn-success"
     = link_to _("Decline"), decline_invite_url(@token), method: :post, class: "btn btn-danger prepend-left-10"

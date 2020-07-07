@@ -2,7 +2,7 @@
 import { GlSkeletonLoading } from '@gitlab/ui';
 import { sprintf, __ } from '../../../locale';
 import getRefMixin from '../../mixins/get_ref';
-import getProjectPath from '../../queries/getProjectPath.query.graphql';
+import projectPathQuery from '../../queries/project_path.query.graphql';
 import TableHeader from './header.vue';
 import TableRow from './row.vue';
 import ParentRow from './parent_row.vue';
@@ -17,7 +17,7 @@ export default {
   mixins: [getRefMixin],
   apollo: {
     projectPath: {
-      query: getProjectPath,
+      query: projectPathQuery,
     },
   },
   props: {
@@ -96,7 +96,7 @@ export default {
               :name="entry.name"
               :path="entry.flatPath"
               :type="entry.type"
-              :url="entry.webUrl"
+              :url="entry.webUrl || entry.webPath"
               :submodule-tree-url="entry.treeUrl"
               :lfs-oid="entry.lfsOid"
               :loading-path="loadingPath"

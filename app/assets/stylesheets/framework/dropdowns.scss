@@ -1089,3 +1089,11 @@ header.header-content .dropdown-menu.frequent-items-dropdown-menu {
     }
   }
 }
+
+.bulk-update {
+  .dropdown-toggle-text {
+    &.is-default {
+      color: $gl-text-color;
+    }
+  }
+}

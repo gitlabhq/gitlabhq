@@ -1,6 +1,6 @@
 #import "ee_else_ce/repository/queries/commit.fragment.graphql"
 
-query getCommit($fileName: String!, $type: String!, $path: String!) {
+query Commit($fileName: String!, $type: String!, $path: String!) {
   commit(path: $path, fileName: $fileName, type: $type) @client {
     ...TreeEntryCommit
   }

@@ -163,4 +163,63 @@ RSpec.describe TodosHelper do
       expect(design_option).to include(text: 'Design')
     end
   end
+
+  describe '#todo_target_state_pill' do
+    subject { helper.todo_target_state_pill(todo) }
+
+    shared_examples 'a rendered state pill' do |attr|
+      it 'returns expected html' do
+        aggregate_failures do
+          expect(subject).to have_css(".status-box-#{attr[:type]}-#{attr[:state].dasherize}")
+          expect(subject).to have_content(attr[:state].capitalize)
+        end
+      end
+    end
+
+    shared_examples 'no state pill' do
+      specify { expect(subject).to eq(nil) }
+    end
+
+    context 'merge request todo' do
+      let(:todo) { create(:todo, target: create(:merge_request)) }
+
+      it_behaves_like 'no state pill'
+
+      context 'merged MR' do
+        before do
+          todo.target.update!(state: 'merged')
+        end
+
+        it_behaves_like 'a rendered state pill', type: 'mr', state: 'merged'
+      end
+    end
+
+    context 'issue todo' do
+      let(:todo) { create(:todo, target: issue) }
+
+      it_behaves_like 'no state pill'
+
+      context 'closed issue' do
+        before do
+          todo.target.update!(state: 'closed')
+        end
+
+        it_behaves_like 'a rendered state pill', type: 'issue', state: 'closed'
+      end
+    end
+
+    context 'alert todo' do
+      let(:todo) { alert_todo }
+
+      it_behaves_like 'no state pill'
+
+      context 'resolved alert' do
+        before do
+          todo.target.resolve!
+        end
+
+        it_behaves_like 'a rendered state pill', type: 'alert', state: 'resolved'
+      end
+    end
+  end
 end

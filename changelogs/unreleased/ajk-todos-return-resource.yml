@@ -1,0 +1,5 @@
+---
+title: Todo Mutations should return the mutated todos
+merge_request: 35998
+author:
+type: added

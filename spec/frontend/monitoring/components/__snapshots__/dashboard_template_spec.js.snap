@@ -84,17 +84,7 @@ exports[`Dashboard template matches the default snapshot 1`] = `
     <div
       class="mb-2 pr-2 d-flex d-sm-block"
     >
-      <gl-deprecated-button-stub
-        class="flex-grow-1"
-        size="md"
-        title="Refresh dashboard"
-        variant="default"
-      >
-        <icon-stub
-          name="retry"
-          size="16"
-        />
-      </gl-deprecated-button-stub>
+      <refresh-button-stub />
     </div>
      
     <div

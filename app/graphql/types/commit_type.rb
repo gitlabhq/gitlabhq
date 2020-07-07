@@ -23,6 +23,8 @@ module Types
           description: 'Timestamp of when the commit was authored'
     field :web_url, type: GraphQL::STRING_TYPE, null: false,
           description: 'Web URL of the commit'
+    field :web_path, type: GraphQL::STRING_TYPE, null: false,
+          description: 'Web path of the commit'
     field :signature_html, type: GraphQL::STRING_TYPE, null: true, calls_gitaly: true,
           description: 'Rendered HTML of the commit signature'
     field :author_name, type: GraphQL::STRING_TYPE, null: true,

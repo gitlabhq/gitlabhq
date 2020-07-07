@@ -87,6 +87,7 @@ export default {
         issuable_ids: this.form.find('input[name="update[issuable_ids]"]').val(),
         subscription_event: this.form.find('input[name="update[subscription_event]"]').val(),
         health_status: this.form.find('input[name="update[health_status]"]').val(),
+        epic_id: this.form.find('input[name="update[epic_id]"]').val(),
         add_label_ids: [],
         remove_label_ids: [],
       },

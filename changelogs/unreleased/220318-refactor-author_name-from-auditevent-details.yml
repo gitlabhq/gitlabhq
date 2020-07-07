@@ -1,0 +1,5 @@
+---
+title: Add parallel persistence for author_name on AuditEvent
+merge_request: 35130
+author:
+type: changed

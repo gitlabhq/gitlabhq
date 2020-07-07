@@ -61,6 +61,7 @@ class AuditEventService
   def base_payload
     {
       author_id: @author.id,
+      author_name: @author.name,
       entity_id: @entity.id,
       entity_type: @entity.class.name
     }

@@ -10,6 +10,7 @@ import { metricStates } from '~/monitoring/constants';
 import Dashboard from '~/monitoring/components/dashboard.vue';
 
 import DashboardHeader from '~/monitoring/components/dashboard_header.vue';
+import RefreshButton from '~/monitoring/components/refresh_button.vue';
 import DateTimePicker from '~/vue_shared/components/date_time_picker/date_time_picker.vue';
 import CustomMetricsFormFields from '~/custom_metrics/components/custom_metrics_form_fields.vue';
 import DashboardsDropdown from '~/monitoring/components/dashboards_dropdown.vue';
@@ -592,10 +593,9 @@ describe('Dashboard', () => {
     setupStoreWithData(store);
 
     return wrapper.vm.$nextTick().then(() => {
-      const refreshBtn = wrapper.find(DashboardHeader).findAll({ ref: 'refreshDashboardBtn' });
+      const refreshBtn = wrapper.find(DashboardHeader).find(RefreshButton);
 
-      expect(refreshBtn).toHaveLength(1);
-      expect(refreshBtn.is(GlDeprecatedButton)).toBe(true);
+      expect(refreshBtn.exists()).toBe(true);
     });
   });
 

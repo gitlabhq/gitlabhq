@@ -18,7 +18,7 @@ class SystemNoteMetadata < ApplicationRecord
     designs_added designs_modified designs_removed designs_discussion_added
     title time_tracking branch milestone discussion task moved
     opened closed merged duplicate locked unlocked outdated
-    tag due_date pinned_embed cherry_pick health_status approved
+    tag due_date pinned_embed cherry_pick health_status approved unapproved
   ].freeze
 
   validates :note, presence: true

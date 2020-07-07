@@ -1,6 +1,6 @@
 #import "ee_else_ce/repository/queries/commit.fragment.graphql"
 
-query getCommits {
+query Commits {
   commits @client {
     ...TreeEntryCommit
   }

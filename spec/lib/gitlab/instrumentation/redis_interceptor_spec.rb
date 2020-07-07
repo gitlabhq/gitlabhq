@@ -42,4 +42,26 @@ RSpec.describe Gitlab::Instrumentation::RedisInterceptor, :clean_gitlab_redis_sh
       end
     end
   end
+
+  describe 'counting' do
+    let(:instrumentation_class) { Gitlab::Redis::SharedState.instrumentation_class }
+
+    it 'counts successful requests' do
+      expect(instrumentation_class).to receive(:count_request).and_call_original
+
+      Gitlab::Redis::SharedState.with { |redis| redis.call(:get, 'foobar') }
+    end
+
+    it 'counts exceptions' do
+      expect(instrumentation_class).to receive(:count_exception)
+        .with(instance_of(Redis::CommandError)).and_call_original
+      expect(instrumentation_class).to receive(:count_request).and_call_original
+
+      expect do
+        Gitlab::Redis::SharedState.with do |redis|
+          redis.call(:auth, 'foo', 'bar')
+        end
+      end.to raise_exception(Redis::CommandError)
+    end
+  end
 end

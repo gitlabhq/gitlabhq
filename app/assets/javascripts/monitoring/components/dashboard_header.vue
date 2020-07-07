@@ -22,6 +22,7 @@ import Icon from '~/vue_shared/components/icon.vue';
 import DateTimePicker from '~/vue_shared/components/date_time_picker/date_time_picker.vue';
 
 import DashboardsDropdown from './dashboards_dropdown.vue';
+import RefreshButton from './refresh_button.vue';
 
 import TrackEventDirective from '~/vue_shared/directives/track_event';
 import { getAddMetricTrackingOptions, timeRangeToUrl } from '../utils';
@@ -44,6 +45,7 @@ export default {
 
     DateTimePicker,
     DashboardsDropdown,
+    RefreshButton,
   },
   directives: {
     GlModal: GlModalDirective,
@@ -129,11 +131,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions('monitoringDashboard', [
-      'filterEnvironments',
-      'fetchDashboardData',
-      'toggleStarredValue',
-    ]),
+    ...mapActions('monitoringDashboard', ['filterEnvironments', 'toggleStarredValue']),
     selectDashboard(dashboard) {
       const params = {
         dashboard: encodeURIComponent(dashboard.path),
@@ -148,9 +146,6 @@ export default {
     },
     onDateTimePickerInvalid() {
       this.$emit('dateTimePickerInvalid');
-    },
-    refreshDashboard() {
-      this.fetchDashboardData();
     },
 
     toggleRearrangingPanels() {
@@ -252,16 +247,7 @@ export default {
     </div>
 
     <div class="mb-2 pr-2 d-flex d-sm-block">
-      <gl-deprecated-button
-        ref="refreshDashboardBtn"
-        v-gl-tooltip
-        class="flex-grow-1"
-        variant="default"
-        :title="s__('Metrics|Refresh dashboard')"
-        @click="refreshDashboard"
-      >
-        <icon name="retry" />
-      </gl-deprecated-button>
+      <refresh-button />
     </div>
 
     <div class="flex-grow-1"></div>

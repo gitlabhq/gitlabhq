@@ -6,11 +6,14 @@ module Gitlab
   module Instrumentation
     module RedisInterceptor
       def call(*args, &block)
+        instrumentation_class.count_request
+        instrumentation_class.redis_cluster_validate!(args.first)
         start = Time.now
 
-        instrumentation_class.redis_cluster_validate!(args.first)
-
         super(*args, &block)
+      rescue ::Redis::BaseError => ex
+        instrumentation_class.count_exception(ex)
+        raise ex
       ensure
         duration = (Time.now - start)
 
