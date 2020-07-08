@@ -458,9 +458,6 @@ The UI interface for Instance-level CI/CD variables is under development but rea
 It is deployed behind a feature flag that is **enabled by default**.
 [GitLab administrators with access to the GitLab Rails console](../../administration/feature_flags.md) can opt to disable it for your instance.
 
-NOTE: **Note:**
-This feature will not work if the [instance-level CI/CD variables API feature flag is disabled](../../api/instance_level_ci_variables.md#enable-or-disable-instance-level-cicd-variables-core-only).
-
 To disable it:
 
 ```ruby

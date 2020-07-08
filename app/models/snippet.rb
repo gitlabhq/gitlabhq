@@ -44,7 +44,9 @@ class Snippet < ApplicationRecord
   has_many :notes, as: :noteable, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :user_mentions, class_name: "SnippetUserMention", dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
   has_one :snippet_repository, inverse_of: :snippet
-  has_one :statistics, class_name: 'SnippetStatistics'
+
+  # We need to add the `dependent` in order to call the after_destroy callback
+  has_one :statistics, class_name: 'SnippetStatistics', dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
 
   delegate :name, :email, to: :author, prefix: true, allow_nil: true
 

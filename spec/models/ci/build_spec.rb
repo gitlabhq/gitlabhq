@@ -3301,17 +3301,6 @@ RSpec.describe Ci::Build do
         expect(build.scoped_variables_hash).not_to include('MY_VAR': 'my value 1')
       end
     end
-
-    context 'when CI instance variables are disabled' do
-      before do
-        create(:ci_instance_variable, key: 'MY_VAR', value: 'my value 1')
-        stub_feature_flags(ci_instance_level_variables: false)
-      end
-
-      it 'does not include instance level variables' do
-        expect(build.scoped_variables_hash).not_to include('MY_VAR': 'my value 1')
-      end
-    end
   end
 
   describe '#any_unmet_prerequisites?' do

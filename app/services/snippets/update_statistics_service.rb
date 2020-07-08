@@ -16,11 +16,6 @@ module Snippets
       snippet.repository.expire_statistics_caches
       statistics.refresh!
 
-      # Update project statistics if the snippet is a Project one
-      if snippet.project_id
-        ProjectCacheWorker.perform_async(snippet.project_id, [], [:snippets_size])
-      end
-
       ServiceResponse.success(message: 'Snippet statistics successfully updated.')
     end
 

@@ -106,11 +106,24 @@ RSpec.describe Snippets::DestroyService do
         it_behaves_like 'a successful destroy'
         it_behaves_like 'deletes the snippet repository'
 
-        it 'schedules a project cache update for snippet_size' do
-          expect(ProjectCacheWorker).to receive(:perform_async)
-                                          .with(snippet.project_id, [], [:snippets_size])
+        context 'project statistics' do
+          before do
+            snippet.statistics.refresh!
+          end
 
-          subject
+          it 'updates stats after deletion' do
+            expect(project.reload.statistics.snippets_size).not_to be_zero
+
+            subject
+
+            expect(project.reload.statistics.snippets_size).to be_zero
+          end
+
+          it 'schedules a namespace statistics update' do
+            expect(Namespaces::ScheduleAggregationWorker).to receive(:perform_async).with(project.namespace_id).once
+
+            subject
+          end
         end
       end
 
@@ -130,8 +143,8 @@ RSpec.describe Snippets::DestroyService do
         it_behaves_like 'a successful destroy'
         it_behaves_like 'deletes the snippet repository'
 
-        it 'does not schedule a project cache update' do
-          expect(ProjectCacheWorker).not_to receive(:perform_async)
+        it 'schedules a namespace statistics update' do
+          expect(Namespaces::ScheduleAggregationWorker).to receive(:perform_async).with(author.namespace_id)
 
           subject
         end

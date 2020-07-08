@@ -15,21 +15,6 @@ RSpec.describe Ci::InstanceVariable do
     subject { build(:ci_instance_variable) }
   end
 
-  context 'with instance level variable feature flag disabled' do
-    let(:plan_limits) { create(:plan_limits, :default_plan) }
-
-    before do
-      stub_feature_flags(ci_instance_level_variables_limit: false)
-      plan_limits.update(described_class.limit_name => 1)
-      create(:ci_instance_variable)
-    end
-
-    it 'can create new models exceeding the plan limits', :aggregate_failures do
-      expect { subject.save }.to change { described_class.count }
-      expect(subject.errors[:base]).to be_empty
-    end
-  end
-
   describe '.unprotected' do
     subject { described_class.unprotected }
 

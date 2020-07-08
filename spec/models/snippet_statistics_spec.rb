@@ -86,4 +86,64 @@ RSpec.describe SnippetStatistics do
       subject
     end
   end
+
+  context 'with a PersonalSnippet' do
+    let!(:snippet) { create(:personal_snippet, :repository) }
+
+    shared_examples 'personal snippet statistics updates' do
+      it 'schedules a namespace statistics worker' do
+        expect(Namespaces::ScheduleAggregationWorker)
+          .to receive(:perform_async).once
+
+        statistics.save!
+      end
+
+      it 'does not try to update project stats' do
+        expect(statistics).not_to receive(:schedule_update_project_statistic)
+
+        statistics.save!
+      end
+    end
+
+    context 'when creating' do
+      let(:statistics) { build(:snippet_statistics, snippet_id: snippet.id, with_data: true) }
+
+      before do
+        snippet.statistics.delete
+      end
+
+      it_behaves_like 'personal snippet statistics updates'
+    end
+
+    context 'when updating' do
+      let(:statistics) { snippet.statistics }
+
+      before do
+        snippet.statistics.repository_size = 123
+      end
+
+      it_behaves_like 'personal snippet statistics updates'
+    end
+  end
+
+  context 'with a ProjectSnippet' do
+    let!(:snippet) { create(:project_snippet) }
+
+    it_behaves_like 'UpdateProjectStatistics' do
+      subject { build(:snippet_statistics, snippet: snippet, id: snippet.id, with_data: true) }
+
+      before do
+        # The shared examples requires the snippet statistics not to be present
+        snippet.statistics.delete
+        snippet.reload
+      end
+    end
+
+    it 'does not call personal snippet callbacks' do
+      expect(snippet.statistics).not_to receive(:update_author_root_storage_statistics)
+      expect(snippet.statistics).to receive(:schedule_update_project_statistic)
+
+      snippet.statistics.update!(repository_size: 123)
+    end
+  end
 end

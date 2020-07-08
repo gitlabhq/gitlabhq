@@ -17,7 +17,7 @@ module OperationsHelper
 
   def alerts_settings_data
     {
-      'prometheus_activated' => prometheus_service.activated?.to_s,
+      'prometheus_activated' => prometheus_service.manual_configuration?.to_s,
       'activated' => alerts_service.activated?.to_s,
       'prometheus_form_path' => scoped_integration_path(prometheus_service),
       'form_path' => scoped_integration_path(alerts_service),

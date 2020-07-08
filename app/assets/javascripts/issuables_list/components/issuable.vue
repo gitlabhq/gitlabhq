@@ -7,6 +7,7 @@
 // TODO: need to move this component to graphql - https://gitlab.com/gitlab-org/gitlab/-/issues/221246
 import { escape, isNumber } from 'lodash';
 import { GlLink, GlTooltipDirective as GlTooltip, GlSprintf, GlLabel, GlIcon } from '@gitlab/ui';
+import jiraLogo from '@gitlab/svgs/dist/illustrations/logos/jira.svg';
 import {
   dateInWords,
   formatDate,
@@ -25,6 +26,7 @@ import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 export default {
   i18n: {
     openedAgo: __('opened %{timeAgoString} by %{user}'),
+    openedAgoJira: __('opened %{timeAgoString} by %{user} in Jira'),
   },
   components: {
     IssueAssignees,
@@ -60,6 +62,11 @@ export default {
       },
     },
   },
+  data() {
+    return {
+      jiraLogo,
+    };
+  },
   computed: {
     milestoneLink() {
       const { title } = this.issuable.milestone;
@@ -86,6 +93,9 @@ export default {
     },
     isClosed() {
       return this.issuable.state === 'closed';
+    },
+    isJiraIssue() {
+      return this.issuable.external_tracker === 'jira';
     },
     issueCreatedToday() {
       return getDayDifference(new Date(this.issuable.created_at), new Date()) < 1;
@@ -223,7 +233,18 @@ export default {
               :title="$options.confidentialTooltipText"
               :aria-label="$options.confidentialTooltipText"
             ></i>
-            <gl-link :href="issuable.web_url">{{ issuable.title }}</gl-link>
+            <gl-link
+              :href="issuable.web_url"
+              :target="isJiraIssue ? '_blank' : null"
+              data-testid="issuable-title"
+            >
+              {{ issuable.title }}
+              <gl-icon
+                v-if="isJiraIssue"
+                name="external-link"
+                class="gl-vertical-align-text-bottom"
+              />
+            </gl-link>
           </span>
           <span v-if="issuable.has_tasks" class="ml-1 task-status d-none d-sm-inline-block">
             {{ issuable.task_status }}
@@ -231,11 +252,21 @@ export default {
         </div>
 
         <div class="issuable-info">
-          <span class="js-ref-path">{{ referencePath }}</span>
+          <span class="js-ref-path">
+            <span
+              v-if="isJiraIssue"
+              class="svg-container jira-logo-container"
+              data-testid="jira-logo"
+              v-html="jiraLogo"
+            ></span>
+            {{ referencePath }}
+          </span>
 
           <span data-testid="openedByMessage" class="d-none d-sm-inline-block mr-1">
             &middot;
-            <gl-sprintf :message="$options.i18n.openedAgo">
+            <gl-sprintf
+              :message="isJiraIssue ? $options.i18n.openedAgoJira : $options.i18n.openedAgo"
+            >
               <template #timeAgoString>
                 <span>{{ issuableCreatedAt }}</span>
               </template>
@@ -302,6 +333,7 @@ export default {
       <!-- Issuable meta -->
       <div class="flex-shrink-0 d-flex flex-column align-items-end justify-content-center">
         <div class="controls d-flex">
+          <span v-if="isJiraIssue">&nbsp;</span>
           <span v-if="isClosed" class="issuable-status">{{ __('CLOSED') }}</span>
 
           <issue-assignees
@@ -326,6 +358,7 @@ export default {
           </template>
 
           <gl-link
+            v-if="!isJiraIssue"
             v-gl-tooltip
             class="ml-2 js-notes"
             :href="`${issuable.web_url}#notes`"

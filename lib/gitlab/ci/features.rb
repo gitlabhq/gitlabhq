@@ -18,10 +18,6 @@ module Gitlab
         ::Feature.enabled?(:ci_job_heartbeats_runner, project, default_enabled: true)
       end
 
-      def self.instance_level_variables_limit_enabled?
-        ::Feature.enabled?(:ci_instance_level_variables_limit, default_enabled: true)
-      end
-
       def self.pipeline_fixed_notifications?
         ::Feature.enabled?(:ci_pipeline_fixed_notifications, default_enabled: true)
       end
@@ -49,6 +45,11 @@ module Gitlab
       # Remove in https://gitlab.com/gitlab-org/gitlab/-/issues/224199
       def self.store_pipeline_messages?(project)
         ::Feature.enabled?(:ci_store_pipeline_messages, project, default_enabled: true)
+      end
+
+      # Remove in https://gitlab.com/gitlab-org/gitlab/-/issues/227052
+      def self.variables_api_filter_environment_scope?
+        ::Feature.enabled?(:ci_variables_api_filter_environment_scope, default_enabled: false)
       end
     end
   end

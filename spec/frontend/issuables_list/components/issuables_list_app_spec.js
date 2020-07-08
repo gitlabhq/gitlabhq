@@ -454,43 +454,73 @@ describe('Issuables list component', () => {
   describe('when paginates', () => {
     const newPage = 3;
 
-    beforeEach(() => {
-      window.history.pushState = jest.fn();
-      setupApiMock(() => [
-        200,
-        MOCK_ISSUES.slice(0, PAGE_SIZE),
-        {
-          'x-total': 100,
-          'x-page': 2,
-        },
-      ]);
+    describe('when total-items is defined in response headers', () => {
+      beforeEach(() => {
+        window.history.pushState = jest.fn();
+        setupApiMock(() => [
+          200,
+          MOCK_ISSUES.slice(0, PAGE_SIZE),
+          {
+            'x-total': 100,
+            'x-page': 2,
+          },
+        ]);
 
-      factory();
+        factory();
 
-      return waitForPromises();
+        return waitForPromises();
+      });
+
+      afterEach(() => {
+        // reset to original value
+        window.history.pushState.mockRestore();
+      });
+
+      it('calls window.history.pushState one time', () => {
+        // Trigger pagination
+        wrapper.find(GlPagination).vm.$emit('input', newPage);
+
+        expect(window.history.pushState).toHaveBeenCalledTimes(1);
+      });
+
+      it('sets params in the url', () => {
+        // Trigger pagination
+        wrapper.find(GlPagination).vm.$emit('input', newPage);
+
+        expect(window.history.pushState).toHaveBeenCalledWith(
+          {},
+          '',
+          `${TEST_LOCATION}?state=opened&order_by=priority&sort=asc&page=${newPage}`,
+        );
+      });
     });
 
-    afterEach(() => {
-      // reset to original value
-      window.history.pushState.mockRestore();
-    });
+    describe('when total-items is not defined in the headers', () => {
+      const page = 2;
+      const prevPage = page - 1;
+      const nextPage = page + 1;
 
-    it('calls window.history.pushState one time', () => {
-      // Trigger pagination
-      wrapper.find(GlPagination).vm.$emit('input', newPage);
+      beforeEach(() => {
+        setupApiMock(() => [
+          200,
+          MOCK_ISSUES.slice(0, PAGE_SIZE),
+          {
+            'x-page': page,
+          },
+        ]);
 
-      expect(window.history.pushState).toHaveBeenCalledTimes(1);
-    });
+        factory();
 
-    it('sets params in the url', () => {
-      // Trigger pagination
-      wrapper.find(GlPagination).vm.$emit('input', newPage);
+        return waitForPromises();
+      });
 
-      expect(window.history.pushState).toHaveBeenCalledWith(
-        {},
-        '',
-        `${TEST_LOCATION}?state=opened&order_by=priority&sort=asc&page=${newPage}`,
-      );
+      it('finds the correct props applied to GlPagination', () => {
+        expect(wrapper.find(GlPagination).props()).toMatchObject({
+          nextPage,
+          prevPage,
+          value: page,
+        });
+      });
     });
   });
 });

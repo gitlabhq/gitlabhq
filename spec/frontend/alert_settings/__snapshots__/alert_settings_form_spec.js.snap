@@ -1,7 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`AlertsSettingsForm prometheus is active renders a valid "select" 1`] = `"<gl-form-select-stub options=\\"[object Object],[object Object]\\" data-testid=\\"alert-settings-select\\" value=\\"prometheus\\"></gl-form-select-stub>"`;
-
 exports[`AlertsSettingsForm with default values renders the initial template 1`] = `
 "<div>
   <!---->
@@ -20,29 +18,20 @@ exports[`AlertsSettingsForm with default values renders the initial template 1`]
     </gl-form-group-stub>
     <!---->
     <gl-form-group-stub label=\\"Webhook URL\\" label-for=\\"url\\" label-class=\\"label-bold\\">
-      <div class=\\"input-group\\">
-        <gl-form-input-stub id=\\"url\\" readonly=\\"true\\" value=\\"/alerts/notify.json\\"></gl-form-input-stub> <span class=\\"input-group-append\\"><clipboard-button-stub text=\\"/alerts/notify.json\\" title=\\"Copy\\" tooltipplacement=\\"top\\" cssclass=\\"btn-default\\"></clipboard-button-stub></span>
-      </div> <span class=\\"gl-text-gray-400\\">
+      <gl-form-input-group-stub value=\\"/alerts/notify.json\\" predefinedoptions=\\"[object Object]\\" id=\\"url\\" readonly=\\"true\\"></gl-form-input-group-stub> <span class=\\"gl-text-gray-400\\">
 
       </span>
     </gl-form-group-stub>
     <gl-form-group-stub label=\\"Authorization key\\" label-for=\\"authorization-key\\" label-class=\\"label-bold\\">
-      <div class=\\"input-group\\">
-        <gl-form-input-stub id=\\"authorization-key\\" readonly=\\"true\\" value=\\"abcedfg123\\"></gl-form-input-stub> <span class=\\"input-group-append\\"><clipboard-button-stub text=\\"abcedfg123\\" title=\\"Copy\\" tooltipplacement=\\"top\\" cssclass=\\"btn-default\\"></clipboard-button-stub></span>
-      </div>
+      <gl-form-input-group-stub value=\\"abcedfg123\\" predefinedoptions=\\"[object Object]\\" id=\\"authorization-key\\" readonly=\\"true\\" class=\\"gl-mb-2\\"></gl-form-input-group-stub>
       <gl-button-stub category=\\"tertiary\\" variant=\\"default\\" size=\\"medium\\" icon=\\"\\" class=\\"gl-mt-3\\" role=\\"button\\" tabindex=\\"0\\">Reset key</gl-button-stub>
       <gl-modal-stub modalid=\\"authKeyModal\\" titletag=\\"h4\\" modalclass=\\"\\" size=\\"md\\" title=\\"Reset key\\" ok-title=\\"Reset key\\" ok-variant=\\"danger\\">
         Resetting the authorization key for this project will require updating the authorization key in every alert source it is enabled in.
       </gl-modal-stub>
     </gl-form-group-stub>
-    <div class=\\"footer-block row-content-block gl-display-flex gl-justify-content-space-between d-none\\">
-      <gl-button-stub category=\\"primary\\" variant=\\"success\\" size=\\"medium\\" icon=\\"\\" type=\\"submit\\">
-        Save and test changes
-      </gl-button-stub>
-      <gl-button-stub category=\\"primary\\" variant=\\"default\\" size=\\"medium\\" icon=\\"\\" type=\\"reset\\">
-        Cancel
-      </gl-button-stub>
-    </div>
+    <!---->
+    <gl-button-stub category=\\"tertiary\\" variant=\\"default\\" size=\\"medium\\" icon=\\"\\" disabled=\\"true\\">Test alert payload</gl-button-stub>
+    <!---->
   </gl-form-stub>
 </div>"
 `;

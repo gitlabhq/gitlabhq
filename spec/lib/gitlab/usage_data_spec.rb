@@ -17,6 +17,14 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
         expect(described_class.uncached_data).to include(:usage_activity_by_stage_monthly)
       end
 
+      it 'clears memoized values' do
+        %i(issue_minimum_id issue_maximum_id user_minimum_id user_maximum_id unique_visit_service).each do |key|
+          expect(described_class).to receive(:clear_memoization).with(key)
+        end
+
+        described_class.uncached_data
+      end
+
       context 'for configure' do
         it 'includes accurate usage_activity_by_stage data' do
           for_defined_days_back do
@@ -147,6 +155,30 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
           clusters: 1,
           clusters_applications_prometheus: 1,
           operations_dashboard_default_dashboard: 1
+        )
+      end
+    end
+
+    context 'for release' do
+      it 'includes accurate usage_activity_by_stage data' do
+        for_defined_days_back do
+          user = create(:user)
+          create(:deployment, :failed, user: user)
+          create(:release, author: user)
+          create(:deployment, :success, user: user)
+        end
+
+        expect(described_class.uncached_data[:usage_activity_by_stage][:release]).to include(
+          deployments: 2,
+          failed_deployments: 2,
+          releases: 2,
+          successful_deployments: 2
+        )
+        expect(described_class.uncached_data[:usage_activity_by_stage_monthly][:release]).to include(
+          deployments: 1,
+          failed_deployments: 1,
+          releases: 1,
+          successful_deployments: 1
         )
       end
     end

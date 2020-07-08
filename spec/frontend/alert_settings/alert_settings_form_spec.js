@@ -36,8 +36,12 @@ describe('AlertsSettingsForm', () => {
     props = defaultProps,
     { methods } = {},
     alertIntegrationsDropdown = false,
+    data,
   ) => {
     wrapper = shallowMount(AlertsSettingsForm, {
+      data() {
+        return { ...data };
+      },
       propsData: {
         ...defaultProps,
         ...props,
@@ -52,6 +56,7 @@ describe('AlertsSettingsForm', () => {
   };
 
   const findSelect = () => wrapper.find('[data-testid="alert-settings-select"]');
+  const findJsonInput = () => wrapper.find('#alert-json');
   const findUrl = () => wrapper.find('#url');
   const findAuthorizationKey = () => wrapper.find('#authorization-key');
   const findApiUrl = () => wrapper.find('#api-url');
@@ -115,13 +120,13 @@ describe('AlertsSettingsForm', () => {
 
   describe('activate toggle', () => {
     it('triggers toggleActivated method', () => {
-      const toggleActivated = jest.fn();
-      const methods = { toggleActivated };
+      const toggleService = jest.fn();
+      const methods = { toggleService };
       createComponent(defaultProps, { methods });
 
       wrapper.find(ToggleButton).vm.$emit('change', true);
 
-      expect(toggleActivated).toHaveBeenCalled();
+      expect(toggleService).toHaveBeenCalled();
     });
 
     describe('error is encountered', () => {
@@ -149,7 +154,7 @@ describe('AlertsSettingsForm', () => {
     });
 
     it('renders a valid "select"', () => {
-      expect(findSelect().html()).toMatchSnapshot();
+      expect(findSelect().exists()).toBe(true);
     });
 
     it('shows the API URL input', () => {
@@ -160,9 +165,53 @@ describe('AlertsSettingsForm', () => {
       expect(findUrl().exists()).toBe(true);
       expect(findUrl().attributes('value')).toBe(PROMETHEUS_URL);
     });
+  });
 
-    it('should not show a footer block', () => {
-      expect(wrapper.find('.footer-block').classes('d-none')).toBe(true);
+  describe('trigger test alert', () => {
+    beforeEach(() => {
+      createComponent({ generic: { ...defaultProps.generic, initialActivated: true } }, {}, true);
+    });
+
+    it('should enable the JSON input', () => {
+      expect(findJsonInput().exists()).toBe(true);
+      expect(findJsonInput().props('value')).toBe(null);
+    });
+
+    it('should validate JSON input', () => {
+      createComponent({ generic: { ...defaultProps.generic } }, {}, true, {
+        testAlertJson: '{ "value": "test" }',
+      });
+
+      findJsonInput().vm.$emit('change');
+      return wrapper.vm.$nextTick().then(() => {
+        expect(findJsonInput().attributes('state')).toBe('true');
+      });
+    });
+
+    describe('alert service is toggled', () => {
+      it('should show a info alert if successful', () => {
+        const formPath = 'some/path';
+        const toggleService = true;
+        mockAxios.onPut(formPath).replyOnce(200);
+
+        createComponent({ generic: { ...defaultProps.generic, formPath } });
+
+        return wrapper.vm.toggleGenericActivated(toggleService).then(() => {
+          expect(wrapper.find(GlAlert).attributes('variant')).toBe('info');
+        });
+      });
+
+      it('should show a error alert if failed', () => {
+        const formPath = 'some/path';
+        const toggleService = true;
+        mockAxios.onPut(formPath).replyOnce(404);
+
+        createComponent({ generic: { ...defaultProps.generic, formPath } });
+
+        return wrapper.vm.toggleGenericActivated(toggleService).then(() => {
+          expect(wrapper.find(GlAlert).attributes('variant')).toBe('danger');
+        });
+      });
     });
   });
 });

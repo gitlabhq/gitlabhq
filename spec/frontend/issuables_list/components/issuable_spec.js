@@ -91,6 +91,8 @@ describe('Issuable component', () => {
   const findBulkCheckbox = () => wrapper.find('input.selected-issuable');
   const findScopedLabels = () => findLabels().filter(w => isScopedLabel({ title: w.text() }));
   const findUnscopedLabels = () => findLabels().filter(w => !isScopedLabel({ title: w.text() }));
+  const findIssuableTitle = () => wrapper.find('[data-testid="issuable-title"]');
+  const containsJiraLogo = () => wrapper.contains('[data-testid="jira-logo"]');
 
   describe('when mounted', () => {
     it('initializes user popovers', () => {
@@ -214,6 +216,22 @@ describe('Issuable component', () => {
 
     it('renders the confidential icon', () => {
       expect(findConfidentialIcon().exists()).toBe(true);
+    });
+  });
+
+  describe('with Jira issuable', () => {
+    beforeEach(() => {
+      issuable.external_tracker = 'jira';
+
+      factory({ issuable });
+    });
+
+    it('renders the Jira icon', () => {
+      expect(containsJiraLogo()).toBe(true);
+    });
+
+    it('opens issuable in a new tab', () => {
+      expect(findIssuableTitle().props('target')).toBe('_blank');
     });
   });
 

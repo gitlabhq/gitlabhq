@@ -1,6 +1,6 @@
 <script>
 import { mapActions, mapGetters, mapState } from 'vuex';
-import { GlDeprecatedButton, GlLoadingIcon } from '@gitlab/ui';
+import { GlButton, GlLoadingIcon } from '@gitlab/ui';
 import { __ } from '~/locale';
 import { modalTypes } from '../constants';
 import FindFile from '~/vue_shared/components/file_finder/index.vue';
@@ -24,7 +24,7 @@ export default {
     FindFile,
     ErrorMessage,
     CommitEditorHeader,
-    GlDeprecatedButton,
+    GlButton,
     GlLoadingIcon,
     RightPane,
   },
@@ -121,15 +121,16 @@ export default {
                         )
                       }}
                     </p>
-                    <gl-deprecated-button
+                    <gl-button
                       variant="success"
+                      category="primary"
                       :title="__('New file')"
                       :aria-label="__('New file')"
                       data-qa-selector="first_file_button"
                       @click="createNewFile()"
                     >
                       {{ __('New file') }}
-                    </gl-deprecated-button>
+                    </gl-button>
                   </template>
                   <gl-loading-icon v-else-if="!currentTree || currentTree.loading" size="md" />
                   <p v-else>

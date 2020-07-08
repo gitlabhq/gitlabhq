@@ -1,10 +1,7 @@
 # Instance-level CI/CD variables API
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/14108) in GitLab 13.0
-> - It's deployed behind a feature flag, enabled by default.
-> - It's enabled on GitLab.com.
-> - It's recommended for production use.
-> - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#enable-or-disable-instance-level-cicd-variables-core-only). **(CORE ONLY)**
+> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/218249) in GitLab 13.2.
 
 ## List all instance variables
 
@@ -139,23 +136,4 @@ DELETE /admin/ci/variables/:key
 
 ```shell
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/admin/ci/variables/VARIABLE_1"
-```
-
-### Enable or disable instance-level CI/CD variables **(CORE ONLY)**
-
-Instance-level CI/CD variables is under development but ready for production use.
-It is deployed behind a feature flag that is **enabled by default**.
-[GitLab administrators with access to the GitLab Rails console](../administration/feature_flags.md)
-can opt to disable it for your instance.
-
-To disable it:
-
-```ruby
-Feature.disable(:ci_instance_level_variables)
-```
-
-To enable it:
-
-```ruby
-Feature.enable(:ci_instance_level_variables)
 ```

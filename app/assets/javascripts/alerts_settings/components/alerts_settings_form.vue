@@ -5,18 +5,21 @@ import {
   GlForm,
   GlFormGroup,
   GlFormInput,
+  GlFormInputGroup,
+  GlFormTextarea,
   GlLink,
   GlModal,
   GlModalDirective,
   GlSprintf,
   GlFormSelect,
 } from '@gitlab/ui';
+import { debounce } from 'lodash';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import ToggleButton from '~/vue_shared/components/toggle_button.vue';
 import csrf from '~/lib/utils/csrf';
 import service from '../services';
-import { i18n, serviceOptions } from '../constants';
+import { i18n, serviceOptions, JSON_VALIDATE_DELAY } from '../constants';
 
 export default {
   i18n,
@@ -27,7 +30,9 @@ export default {
     GlForm,
     GlFormGroup,
     GlFormInput,
+    GlFormInputGroup,
     GlFormSelect,
+    GlFormTextarea,
     GlLink,
     GlModal,
     GlSprintf,
@@ -73,6 +78,11 @@ export default {
         feedbackMessage: null,
         isFeedbackDismissed: false,
       },
+      testAlert: {
+        json: null,
+        error: null,
+      },
+      canSaveForm: false,
     };
   },
   computed: {
@@ -109,12 +119,32 @@ export default {
     showFeedbackMsg() {
       return this.feedback.feedbackMessage && !this.isFeedbackDismissed;
     },
+    showAlertSave() {
+      return (
+        this.feedback.feedbackMessage === this.$options.i18n.testAlertFailed &&
+        !this.isFeedbackDismissed
+      );
+    },
     prometheusInfo() {
       return !this.isGeneric ? this.$options.i18n.prometheusInfo : '';
     },
     prometheusFeatureEnabled() {
       return !this.isGeneric && this.glFeatures.alertIntegrationsDropdown;
     },
+    jsonIsValid() {
+      return this.testAlert.error === null;
+    },
+    canTestAlert() {
+      return this.selectedService.active && this.testAlert.json !== null;
+    },
+    canSaveConfig() {
+      return !this.loading && this.canSaveForm;
+    },
+  },
+  watch: {
+    'testAlert.json': debounce(function debouncedJsonValidate() {
+      this.validateJson();
+    }, JSON_VALIDATE_DELAY),
   },
   created() {
     if (this.glFeatures.alertIntegrationsDropdown) {
@@ -126,6 +156,9 @@ export default {
     }
   },
   methods: {
+    clearJson() {
+      this.testAlert.json = null;
+    },
     dismissFeedback() {
       this.feedback = { ...this.feedback, feedbackMessage: null };
       this.isFeedbackDismissed = false;
@@ -135,6 +168,7 @@ export default {
         .updateGenericKey({ endpoint: this.generic.formPath, params: { service: { token: '' } } })
         .then(({ data: { token } }) => {
           this.authorizationKey.generic = token;
+          this.setFeedback({ feedbackMessage: this.$options.i18n.authKeyRest, variant: 'success' });
         })
         .catch(() => {
           this.setFeedback({ feedbackMessage: this.$options.i18n.errorKeyMsg, variant: 'danger' });
@@ -145,10 +179,23 @@ export default {
         .updatePrometheusKey({ endpoint: this.prometheus.prometheusResetKeyPath })
         .then(({ data: { token } }) => {
           this.authorizationKey.prometheus = token;
+          this.setFeedback({ feedbackMessage: this.$options.i18n.authKeyRest, variant: 'success' });
         })
         .catch(() => {
           this.setFeedback({ feedbackMessage: this.$options.i18n.errorKeyMsg, variant: 'danger' });
         });
+    },
+    toggleService(value) {
+      this.canSaveForm = true;
+      if (!this.glFeatures.alertIntegrationsDropdown) {
+        this.toggleActivated(value);
+      }
+
+      if (this.isGeneric) {
+        this.activated.generic = value;
+      } else {
+        this.activated.prometheus = value;
+      }
     },
     toggleActivated(value) {
       return this.isGeneric
@@ -164,15 +211,14 @@ export default {
         })
         .then(() => {
           this.activated.generic = value;
-
-          if (value) {
-            this.setFeedback({
-              feedbackMessage: this.$options.i18n.endPointActivated,
-              variant: 'success',
-            });
-          }
+          this.toggleSuccess(value);
         })
-        .catch(() => {})
+        .catch(() => {
+          this.setFeedback({
+            feedbackMessage: this.$options.i18n.errorMsg,
+            variant: 'danger',
+          });
+        })
         .finally(() => {
           this.loading = false;
         });
@@ -191,12 +237,7 @@ export default {
         })
         .then(() => {
           this.activated.prometheus = value;
-          if (value) {
-            this.setFeedback({
-              feedbackMessage: this.$options.i18n.endPointActivated,
-              variant: 'success',
-            });
-          }
+          this.toggleSuccess(value);
         })
         .catch(() => {
           this.setFeedback({
@@ -208,16 +249,61 @@ export default {
           this.loading = false;
         });
     },
+    toggleSuccess(value) {
+      if (value) {
+        this.setFeedback({
+          feedbackMessage: this.$options.i18n.endPointActivated,
+          variant: 'info',
+        });
+      } else {
+        this.setFeedback({
+          feedbackMessage: this.$options.i18n.changesSaved,
+          variant: 'info',
+        });
+      }
+    },
     setFeedback({ feedbackMessage, variant }) {
       this.feedback = { feedbackMessage, variant };
     },
-    onSubmit(evt) {
-      // TODO: Add form submit as part of https://gitlab.com/gitlab-org/gitlab/-/issues/215356
-      evt.preventDefault();
+    validateJson() {
+      this.testAlert.error = null;
+      try {
+        JSON.parse(this.testAlert.json);
+      } catch (e) {
+        this.testAlert.error = JSON.stringify(e.message);
+      }
     },
-    onReset(evt) {
-      // TODO: Add form reset as part of https://gitlab.com/gitlab-org/gitlab/-/issues/215356
-      evt.preventDefault();
+    validateTestAlert() {
+      this.loading = true;
+      this.validateJson();
+      return service
+        .updateTestAlert({
+          endpoint: this.selectedService.url,
+          data: this.testAlert.json,
+          authKey: this.selectedService.authKey,
+        })
+        .then(() => {
+          this.setFeedback({
+            feedbackMessage: this.$options.i18n.testAlertSuccess,
+            variant: 'success',
+          });
+        })
+        .catch(() => {
+          this.setFeedback({
+            feedbackMessage: this.$options.i18n.testAlertFailed,
+            variant: 'danger',
+          });
+        })
+        .finally(() => {
+          this.loading = false;
+        });
+    },
+    onSubmit() {
+      this.toggleActivated(this.selectedService.active);
+    },
+    onReset() {
+      this.testAlert.json = null;
+      this.dismissFeedback();
     },
   },
 };
@@ -227,6 +313,15 @@ export default {
   <div>
     <gl-alert v-if="showFeedbackMsg" :variant="feedback.variant" @dismiss="dismissFeedback">
       {{ feedback.feedbackMessage }}
+      <gl-button
+        v-if="showAlertSave"
+        variant="danger"
+        category="primary"
+        class="gl-display-block gl-mt-3"
+        @click="toggleActivated(selectedService.active)"
+      >
+        {{ __('Save anyway') }}
+      </gl-button>
     </gl-alert>
     <div data-testid="alert-settings-description" class="gl-mt-5">
       <p v-for="section in sections" :key="section.text">
@@ -237,7 +332,7 @@ export default {
         </gl-sprintf>
       </p>
     </div>
-    <gl-form @submit="onSubmit" @reset="onReset">
+    <gl-form @submit.prevent="onSubmit" @reset.prevent="onReset">
       <gl-form-group
         v-if="glFeatures.alertIntegrationsDropdown"
         :label="$options.i18n.integrationsLabel"
@@ -248,6 +343,7 @@ export default {
           v-model="selectedEndpoint"
           :options="options"
           data-testid="alert-settings-select"
+          @change="clearJson"
         />
         <span class="gl-text-gray-400">
           <gl-sprintf :message="$options.i18n.integrationsInfo">
@@ -272,7 +368,7 @@ export default {
           :disabled-input="loading"
           :is-loading="loading"
           :value="selectedService.active"
-          @change="toggleActivated"
+          @change="toggleService"
         />
       </gl-form-group>
       <gl-form-group
@@ -293,12 +389,15 @@ export default {
         </span>
       </gl-form-group>
       <gl-form-group :label="$options.i18n.urlLabel" label-for="url" label-class="label-bold">
-        <div class="input-group">
-          <gl-form-input id="url" :readonly="true" :value="selectedService.url" />
-          <span class="input-group-append">
-            <clipboard-button :text="selectedService.url" :title="$options.i18n.copyToClipboard" />
-          </span>
-        </div>
+        <gl-form-input-group id="url" :readonly="true" :value="selectedService.url">
+          <template #append>
+            <clipboard-button
+              :text="selectedService.url"
+              :title="$options.i18n.copyToClipboard"
+              class="gl-m-0!"
+            />
+          </template>
+        </gl-form-input-group>
         <span class="gl-text-gray-400">
           {{ prometheusInfo }}
         </span>
@@ -308,15 +407,20 @@ export default {
         label-for="authorization-key"
         label-class="label-bold"
       >
-        <div class="input-group">
-          <gl-form-input id="authorization-key" :readonly="true" :value="selectedService.authKey" />
-          <span class="input-group-append">
+        <gl-form-input-group
+          id="authorization-key"
+          class="gl-mb-2"
+          :readonly="true"
+          :value="selectedService.authKey"
+        >
+          <template #append>
             <clipboard-button
               :text="selectedService.authKey"
               :title="$options.i18n.copyToClipboard"
+              class="gl-m-0!"
             />
-          </span>
-        </div>
+          </template>
+        </gl-form-input-group>
         <gl-button v-gl-modal.authKeyModal class="gl-mt-3">{{ $options.i18n.resetKey }}</gl-button>
         <gl-modal
           modal-id="authKeyModal"
@@ -328,11 +432,32 @@ export default {
           {{ $options.i18n.restKeyInfo }}
         </gl-modal>
       </gl-form-group>
-      <div
-        class="footer-block row-content-block gl-display-flex gl-justify-content-space-between d-none"
+      <gl-form-group
+        v-if="glFeatures.alertIntegrationsDropdown"
+        :label="$options.i18n.alertJson"
+        label-for="alert-json"
+        label-class="label-bold"
+        :invalid-feedback="testAlert.error"
       >
-        <gl-button type="submit" variant="success" category="primary">
-          {{ __('Save and test changes') }}
+        <gl-form-textarea
+          id="alert-json"
+          v-model.trim="testAlert.json"
+          :disabled="!selectedService.active"
+          :state="jsonIsValid"
+          :placeholder="$options.i18n.alertJsonPlaceholder"
+          rows="6"
+          max-rows="10"
+        />
+      </gl-form-group>
+      <gl-button :disabled="!canTestAlert" @click="validateTestAlert">{{
+        $options.i18n.testAlertInfo
+      }}</gl-button>
+      <div
+        v-if="glFeatures.alertIntegrationsDropdown"
+        class="footer-block row-content-block gl-display-flex gl-justify-content-space-between"
+      >
+        <gl-button type="submit" variant="success" category="primary" :disabled="!canSaveConfig">
+          {{ __('Save changes') }}
         </gl-button>
         <gl-button type="reset" variant="default" category="primary">
           {{ __('Cancel') }}

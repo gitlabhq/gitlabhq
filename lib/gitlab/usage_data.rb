@@ -520,9 +520,16 @@ module Gitlab
       end
 
       # Omitted because no user, creator or author associated: `environments`, `feature_flags`, `in_review_folder`, `pages_domains`
+      # rubocop: disable CodeReuse/ActiveRecord
       def usage_activity_by_stage_release(time_period)
-        {}
+        {
+          deployments: distinct_count(::Deployment.where(time_period), :user_id),
+          failed_deployments: distinct_count(::Deployment.failed.where(time_period), :user_id),
+          releases: distinct_count(::Release.where(time_period), :author_id),
+          successful_deployments: distinct_count(::Deployment.success.where(time_period), :user_id)
+        }
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       # Omitted because no user, creator or author associated: `ci_runners`
       def usage_activity_by_stage_verify(time_period)
@@ -588,6 +595,8 @@ module Gitlab
       end
 
       def clear_memoized
+        clear_memoization(:issue_minimum_id)
+        clear_memoization(:issue_maximum_id)
         clear_memoization(:user_minimum_id)
         clear_memoization(:user_maximum_id)
         clear_memoization(:unique_visit_service)

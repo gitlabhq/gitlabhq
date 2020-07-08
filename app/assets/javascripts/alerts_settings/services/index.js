@@ -1,3 +1,4 @@
+/* eslint-disable @gitlab/require-i18n-strings */
 import axios from '~/lib/utils/axios_utils';
 
 export default {
@@ -21,6 +22,14 @@ export default {
     return axios.post(endpoint, data, {
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
+      },
+    });
+  },
+  updateTestAlert({ endpoint, data, authKey }) {
+    return axios.post(endpoint, data, {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${authKey}`,
       },
     });
   },

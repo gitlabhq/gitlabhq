@@ -45,7 +45,9 @@ RSpec.describe OperationsHelper do
     end
 
     context 'with external Prometheus configured' do
-      let_it_be(:prometheus_service, reload: true) { create(:prometheus_service, project: project) }
+      let_it_be(:prometheus_service, reload: true) do
+        create(:prometheus_service, project: project)
+      end
 
       context 'with external Prometheus enabled' do
         it 'returns the correct values' do
@@ -57,16 +59,31 @@ RSpec.describe OperationsHelper do
       end
 
       context 'with external Prometheus disabled' do
+        shared_examples 'Prometheus is disabled' do
+          it 'returns the correct values' do
+            expect(subject).to include(
+              'prometheus_activated' => 'false',
+              'prometheus_api_url' => prometheus_service.api_url
+            )
+          end
+        end
+
+        let(:cluster_managed) { false }
+
         before do
-          # Prometheus services uses manual_configuration as an alias for active, beware
+          allow(prometheus_service)
+            .to receive(:prometheus_available?)
+            .and_return(cluster_managed)
+
           prometheus_service.update!(manual_configuration: false)
         end
 
-        it 'returns the correct values' do
-          expect(subject).to include(
-            'prometheus_activated' => 'false',
-            'prometheus_api_url' => prometheus_service.api_url
-          )
+        include_examples 'Prometheus is disabled'
+
+        context 'when cluster managed' do
+          let(:cluster_managed) { true }
+
+          include_examples 'Prometheus is disabled'
         end
       end
 

@@ -17,17 +17,6 @@ RSpec.describe Snippets::UpdateStatisticsService do
         subject
       end
 
-      it 'schedules project cache worker based on type' do
-        if snippet.project_id
-          expect(ProjectCacheWorker).to receive(:perform_async)
-                                          .with(snippet.project_id, [], [:snippets_size])
-        else
-          expect(ProjectCacheWorker).not_to receive(:perform_async)
-        end
-
-        subject
-      end
-
       context 'when snippet statistics does not exist' do
         it 'creates snippet statistics' do
           snippet.statistics.delete
@@ -64,6 +53,13 @@ RSpec.describe Snippets::UpdateStatisticsService do
           expect(subject).to be_error
         end
       end
+
+      it 'schedules a namespace storage statistics update' do
+        expect(Namespaces::ScheduleAggregationWorker)
+            .to receive(:perform_async).once
+
+        subject
+      end
     end
 
     context 'with PersonalSnippet' do
@@ -74,8 +70,17 @@ RSpec.describe Snippets::UpdateStatisticsService do
 
     context 'with ProjectSnippet' do
       let!(:snippet) { create(:project_snippet, :repository) }
+      let(:project_statistics) { snippet.project.statistics }
 
       it_behaves_like 'updates statistics'
+
+      it 'updates projects statistics "snippets_size"' do
+        expect(project_statistics.snippets_size).to be_zero
+
+        subject
+
+        expect(snippet.reload.statistics.repository_size).to eq project_statistics.reload.snippets_size
+      end
     end
   end
 end

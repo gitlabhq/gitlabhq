@@ -1,0 +1,5 @@
+---
+title: Add environment_scope filter to ci-variables API
+merge_request: 34490
+author:
+type: fixed

@@ -16,9 +16,6 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
-msgid "  AlertSettings|URL cannot be blank and must start with http or https"
-msgstr ""
-
 msgid " %{start} to %{end}"
 msgstr ""
 
@@ -2086,13 +2083,22 @@ msgstr ""
 msgid "AlertSettings|Add URL and auth key to your Prometheus config file"
 msgstr ""
 
+msgid "AlertSettings|Alert test payload"
+msgstr ""
+
 msgid "AlertSettings|Alerts endpoint successfully activated."
 msgstr ""
 
 msgid "AlertSettings|Authorization key"
 msgstr ""
 
+msgid "AlertSettings|Authorization key has been successfully reset"
+msgstr ""
+
 msgid "AlertSettings|Copy"
+msgstr ""
+
+msgid "AlertSettings|Enter test alert JSON...."
 msgstr ""
 
 msgid "AlertSettings|External Prometheus"
@@ -2119,6 +2125,15 @@ msgstr ""
 msgid "AlertSettings|Review your external service's documentation to learn where to provide this information to your external service, and the %{linkStart}GitLab documentation%{linkEnd} to learn more about configuring your endpoint."
 msgstr ""
 
+msgid "AlertSettings|Test alert payload"
+msgstr ""
+
+msgid "AlertSettings|Test alert sent successfully. If you have made other changes, please save them now."
+msgstr ""
+
+msgid "AlertSettings|Test failed. Do you still want to save your changes anyway?"
+msgstr ""
+
 msgid "AlertSettings|There was an error updating the the alert settings. Please refresh the page to try again."
 msgstr ""
 
@@ -2128,6 +2143,9 @@ msgstr ""
 msgid "AlertSettings|There was an error while trying to reset the key. Please refresh the page to try again."
 msgstr ""
 
+msgid "AlertSettings|URL cannot be blank and must start with http or https"
+msgstr ""
+
 msgid "AlertSettings|Webhook URL"
 msgstr ""
 
@@ -2135,6 +2153,9 @@ msgid "AlertSettings|You can now set up alert endpoints for manually configured 
 msgstr ""
 
 msgid "AlertSettings|You must provide this URL and authorization key to authorize an external service to send alerts to GitLab. You can provide this URL and key to multiple services. After configuring an external service, alerts from your service will display on the GitLab %{linkStart}Alerts%{linkEnd} page."
+msgstr ""
+
+msgid "AlertSettings|Your changes were successfully updated."
 msgstr ""
 
 msgid "AlertSettings|http://prometheus.example.com/"
@@ -19939,9 +19960,6 @@ msgstr ""
 msgid "Save Changes"
 msgstr ""
 
-msgid "Save and test changes"
-msgstr ""
-
 msgid "Save anyway"
 msgstr ""
 
@@ -27939,6 +27957,9 @@ msgid "open issue"
 msgstr ""
 
 msgid "opened %{timeAgoString} by %{user}"
+msgstr ""
+
+msgid "opened %{timeAgoString} by %{user} in Jira"
 msgstr ""
 
 msgid "opened %{timeAgo}"
