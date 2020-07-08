@@ -2129,20 +2129,6 @@
               "deprecationReason": null
             },
             {
-              "name": "webPath",
-              "description": "Web path of the blob",
-              "args": [
-
-              ],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
               "name": "webUrl",
               "description": "Web URL of the blob",
               "args": [
@@ -3300,24 +3286,6 @@
                 "kind": "SCALAR",
                 "name": "String",
                 "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "webPath",
-              "description": "Web path of the commit",
-              "args": [
-
-              ],
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                }
               },
               "isDeprecated": false,
               "deprecationReason": null
@@ -24634,6 +24602,20 @@
               "deprecationReason": null
             },
             {
+              "name": "systemNoteIconName",
+              "description": "Name of the icon corresponding to a system note",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "updatedAt",
               "description": "Timestamp of the note's last activity",
               "args": [
@@ -39551,20 +39533,6 @@
               "deprecationReason": null
             },
             {
-              "name": "webPath",
-              "description": "Web path for the tree entry (directory)",
-              "args": [
-
-              ],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
               "name": "webUrl",
               "description": "Web URL for the tree entry (directory)",
               "args": [
@@ -41966,24 +41934,6 @@
             {
               "name": "username",
               "description": "Username of the user. Unique within this instance of GitLab",
-              "args": [
-
-              ],
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                }
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "webPath",
-              "description": "Web path of the user",
               "args": [
 
               ],

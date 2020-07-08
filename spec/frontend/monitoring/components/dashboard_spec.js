@@ -1237,7 +1237,7 @@ describe('Dashboard', () => {
 
       it('uses modal for custom metrics form', () => {
         expect(wrapper.find(GlModal).exists()).toBe(true);
-        expect(wrapper.find(GlModal).attributes().modalid).toBe('add-metric');
+        expect(wrapper.find(GlModal).attributes().modalid).toBe('addMetric');
       });
       it('adding new metric is tracked', done => {
         const submitButton = wrapper

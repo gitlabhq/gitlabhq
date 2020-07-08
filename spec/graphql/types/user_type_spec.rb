@@ -16,7 +16,6 @@ RSpec.describe GitlabSchema.types['User'] do
       username
       avatarUrl
       webUrl
-      webPath
       todos
       state
       authoredMergeRequests

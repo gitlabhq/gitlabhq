@@ -1,3 +1,7 @@
+// The backend actually uses "hide_whitespace" while the frontend
+// uses "show whitspace" so these values are opposite what you might expect
+export const NO_SHOW_WHITESPACE = '1';
+export const SHOW_WHITESPACE = '0';
 export const INLINE_DIFF_VIEW_TYPE = 'inline';
 export const PARALLEL_DIFF_VIEW_TYPE = 'parallel';
 export const MATCH_LINE_TYPE = 'match';
@@ -20,6 +24,7 @@ export const LINE_SIDE_LEFT = 'left-side';
 export const LINE_SIDE_RIGHT = 'right-side';
 
 export const DIFF_VIEW_COOKIE_NAME = 'diff_view';
+export const DIFF_WHITESPACE_COOKIE_NAME = 'diff_whitespace';
 export const LINE_HOVER_CLASS_NAME = 'is-over';
 export const LINE_UNFOLD_CLASS_NAME = 'unfold js-unfold';
 export const CONTEXT_LINE_CLASS_NAME = 'diff-expanded';
@@ -35,7 +40,6 @@ export const MR_TREE_SHOW_KEY = 'mr_tree_show';
 
 export const TREE_TYPE = 'tree';
 export const TREE_LIST_STORAGE_KEY = 'mr_diff_tree_list';
-export const WHITESPACE_STORAGE_KEY = 'mr_show_whitespace';
 export const TREE_LIST_WIDTH_STORAGE_KEY = 'mr_tree_list_width';
 
 export const INITIAL_TREE_WIDTH = 320;

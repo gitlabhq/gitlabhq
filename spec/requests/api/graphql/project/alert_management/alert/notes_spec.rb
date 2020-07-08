@@ -9,8 +9,8 @@ RSpec.describe 'getting Alert Management Alert Notes' do
   let_it_be(:current_user) { create(:user) }
   let_it_be(:first_alert) { create(:alert_management_alert, project: project, assignees: [current_user]) }
   let_it_be(:second_alert) { create(:alert_management_alert, project: project) }
-  let_it_be(:first_system_note) { create(:note_on_alert, noteable: first_alert, project: project) }
-  let_it_be(:second_system_note) { create(:note_on_alert, noteable: first_alert, project: project) }
+  let_it_be(:first_system_note) { create(:note_on_alert, :with_system_note_metadata, noteable: first_alert, project: project) }
+  let_it_be(:second_system_note) { create(:note_on_alert, :with_system_note_metadata, noteable: first_alert, project: project) }
 
   let(:params) { {} }
 
@@ -21,6 +21,8 @@ RSpec.describe 'getting Alert Management Alert Notes' do
         notes {
           nodes {
             id
+            body
+            systemNoteIconName
           }
         }
       }
@@ -44,7 +46,17 @@ RSpec.describe 'getting Alert Management Alert Notes' do
     project.add_developer(current_user)
   end
 
-  it 'returns the notes ordered by createdAt' do
+  it 'includes expected data' do
+    post_graphql(query, current_user: current_user)
+
+    expect(first_notes_result.first).to include(
+      'id' => first_system_note.to_global_id.to_s,
+      'systemNoteIconName' => 'git-merge',
+      'body' => first_system_note.note
+    )
+  end
+
+  it 'returns the notes ordered by createdAt with sufficient content' do
     post_graphql(query, current_user: current_user)
 
     expect(first_notes_result.length).to eq(2)
@@ -63,5 +75,19 @@ RSpec.describe 'getting Alert Management Alert Notes' do
 
     expect { post_graphql(query, current_user: current_user) }.not_to exceed_query_limit(base_count)
     expect(alerts_result.length).to eq(3)
+  end
+
+  context 'for non-system notes' do
+    let_it_be(:user_note) { create(:note_on_alert, noteable: second_alert, project: project) }
+
+    it 'includes expected data' do
+      post_graphql(query, current_user: current_user)
+
+      expect(second_notes_result.first).to include(
+        'id' => user_note.to_global_id.to_s,
+        'systemNoteIconName' => nil,
+        'body' => user_note.note
+      )
+    end
   end
 end

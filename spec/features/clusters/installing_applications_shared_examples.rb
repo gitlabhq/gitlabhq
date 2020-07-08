@@ -168,32 +168,54 @@ RSpec.shared_examples "installing applications for a cluster" do |managed_apps_l
         allow(ClusterWaitForIngressIpAddressWorker).to receive(:perform_async)
 
         create(:clusters_applications_helm, :installed, cluster: cluster) unless managed_apps_local_tiller
-
-        page.within('.js-cluster-application-row-cert_manager') do
-          click_button 'Install'
-        end
-
-        wait_for_requests
       end
 
       it 'shows status transition' do
         page.within('.js-cluster-application-row-cert_manager') do
+          click_button 'Install'
+          wait_for_requests
+
           expect(page).to have_field('Issuer Email', with: cluster.user.email)
           expect(page).to have_css('.js-cluster-application-install-button', exact_text: 'Installing')
 
-          page.find('.js-email').set("new_email@example.org")
           Clusters::Cluster.last.application_cert_manager.make_installing!
 
-          expect(page).to have_field('Issuer Email', with: 'new_email@example.org')
+          expect(page).to have_field('Issuer Email', with: cluster.user.email)
           expect(page).to have_css('.js-cluster-application-install-button', exact_text: 'Installing')
 
           Clusters::Cluster.last.application_cert_manager.make_installed!
 
-          expect(page).to have_field('Issuer Email', with: 'new_email@example.org')
+          expect(page).to have_field('Issuer Email', with: cluster.user.email)
           expect(page).to have_css('.js-cluster-application-uninstall-button', exact_text: 'Uninstall')
         end
 
         expect(page).to have_content('Cert-Manager was successfully installed on your Kubernetes cluster')
+      end
+
+      it 'installs with custom email' do
+        custom_email = 'new_email@example.org'
+
+        page.within('.js-cluster-application-row-cert_manager') do
+          # Wait for the polling to finish
+          wait_for_requests
+
+          page.find('.js-email').set(custom_email)
+          click_button 'Install'
+          wait_for_requests
+
+          expect(page).to have_field('Issuer Email', with: custom_email)
+          expect(page).to have_css('.js-cluster-application-install-button', exact_text: 'Installing')
+
+          Clusters::Cluster.last.application_cert_manager.make_installing!
+
+          expect(page).to have_field('Issuer Email', with: custom_email)
+          expect(page).to have_css('.js-cluster-application-install-button', exact_text: 'Installing')
+
+          Clusters::Cluster.last.application_cert_manager.make_installed!
+
+          expect(page).to have_field('Issuer Email', with: custom_email)
+          expect(page).to have_css('.js-cluster-application-uninstall-button', exact_text: 'Uninstall')
+        end
       end
     end
 

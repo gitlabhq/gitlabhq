@@ -24,7 +24,7 @@ export default {
       return { ...author, id: id?.split('/').pop() };
     },
     iconHtml() {
-      return spriteIcon('user');
+      return spriteIcon(this.note?.systemNoteIconName);
     },
   },
 };

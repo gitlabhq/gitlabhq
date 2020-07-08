@@ -22,8 +22,6 @@ module Types
           description: "URL of the user's avatar"
     field :web_url, GraphQL::STRING_TYPE, null: false,
           description: 'Web URL of the user'
-    field :web_path, GraphQL::STRING_TYPE, null: false,
-          description: 'Web path of the user'
     field :todos, Types::TodoType.connection_type, null: false,
           resolver: Resolvers::TodoResolver,
           description: 'Todos of the user'

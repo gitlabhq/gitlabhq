@@ -12,7 +12,7 @@ import { escapeFileUrl } from '~/lib/utils/url_utility';
 import TimeagoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import FileIcon from '~/vue_shared/components/file_icon.vue';
 import getRefMixin from '../../mixins/get_ref';
-import commitQuery from '../../queries/commit.query.graphql';
+import getCommit from '../../queries/getCommit.query.graphql';
 
 export default {
   components: {
@@ -29,7 +29,7 @@ export default {
   },
   apollo: {
     commit: {
-      query: commitQuery,
+      query: getCommit,
       variables() {
         return {
           fileName: this.name,

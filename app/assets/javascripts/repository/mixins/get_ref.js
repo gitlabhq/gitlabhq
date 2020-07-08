@@ -1,9 +1,9 @@
-import refQuery from '../queries/ref.query.graphql';
+import getRef from '../queries/getRef.query.graphql';
 
 export default {
   apollo: {
     ref: {
-      query: refQuery,
+      query: getRef,
       manual: true,
       result({ data, loading }) {
         if (!loading) {

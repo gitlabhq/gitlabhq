@@ -3,15 +3,15 @@ import $ from 'jquery';
 import '~/behaviors/markdown/render_gfm';
 import { GlLink, GlLoadingIcon } from '@gitlab/ui';
 import { handleLocationHash } from '~/lib/utils/common_utils';
-import readmeQery from '../../queries/readme.query.graphql';
+import getReadmeQuery from '../../queries/getReadme.query.graphql';
 
 export default {
   apollo: {
     readme: {
-      query: readmeQery,
+      query: getReadmeQuery,
       variables() {
         return {
-          url: this.blob.webPath,
+          url: this.blob.webUrl,
         };
       },
       loadingKey: 'loading',
@@ -51,7 +51,7 @@ export default {
     <div class="js-file-title file-title-flex-parent">
       <div class="file-header-content">
         <i aria-hidden="true" class="fa fa-file-text-o fa-fw"></i>
-        <gl-link :href="blob.webPath">
+        <gl-link :href="blob.webUrl">
           <strong>{{ blob.name }}</strong>
         </gl-link>
       </div>

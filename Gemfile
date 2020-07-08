@@ -164,6 +164,8 @@ gem 'diff_match_patch', '~> 0.1.0'
 
 # Application server
 gem 'rack', '~> 2.0.9'
+# https://github.com/sharpstone/rack-timeout/blob/master/README.md#rails-apps-manually
+gem 'rack-timeout', '~> 0.5.1', require: 'rack/timeout/base'
 
 group :unicorn do
   gem 'unicorn', '~> 5.5'
@@ -173,7 +175,6 @@ end
 group :puma do
   gem 'gitlab-puma', '~> 4.3.3.gitlab.2', require: false
   gem 'gitlab-puma_worker_killer', '~> 0.1.1.gitlab.1', require: false
-  gem 'rack-timeout', require: false
 end
 
 # State machine

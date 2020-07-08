@@ -8,8 +8,8 @@ import TimeagoTooltip from '../../vue_shared/components/time_ago_tooltip.vue';
 import CiIcon from '../../vue_shared/components/ci_icon.vue';
 import ClipboardButton from '../../vue_shared/components/clipboard_button.vue';
 import getRefMixin from '../mixins/get_ref';
-import projectPathQuery from '../queries/project_path.query.graphql';
-import pathLastCommitQuery from '../queries/path_last_commit.query.graphql';
+import getProjectPath from '../queries/getProjectPath.query.graphql';
+import pathLastCommit from '../queries/pathLastCommit.query.graphql';
 
 export default {
   components: {
@@ -28,10 +28,10 @@ export default {
   mixins: [getRefMixin],
   apollo: {
     projectPath: {
-      query: projectPathQuery,
+      query: getProjectPath,
     },
     commit: {
-      query: pathLastCommitQuery,
+      query: pathLastCommit,
       variables() {
         return {
           projectPath: this.projectPath,
@@ -102,7 +102,7 @@ export default {
     <template v-else-if="commit">
       <user-avatar-link
         v-if="commit.author"
-        :link-href="commit.author.webPath"
+        :link-href="commit.author.webUrl"
         :img-src="commit.author.avatarUrl"
         :img-size="40"
         class="avatar-cell"
@@ -118,7 +118,7 @@ export default {
       <div class="commit-detail flex-list">
         <div class="commit-content qa-commit-content">
           <gl-link
-            :href="commit.webPath"
+            :href="commit.webUrl"
             :class="{ 'font-italic': !commit.message }"
             class="commit-row-message item-title"
             v-html="commit.titleHtml"
@@ -135,7 +135,7 @@ export default {
           <div class="committer">
             <gl-link
               v-if="commit.author"
-              :href="commit.author.webPath"
+              :href="commit.author.webUrl"
               class="commit-author-link js-user-link"
             >
               {{ commit.author.name }}

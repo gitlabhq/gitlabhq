@@ -1,19 +1,14 @@
 <script>
 import { mapState, mapActions, mapGetters } from 'vuex';
 import {
-  GlAlert,
   GlIcon,
   GlDropdown,
   GlDropdownItem,
   GlDropdownHeader,
   GlDropdownDivider,
   GlSearchBoxByType,
-  GlModal,
-  GlLoadingIcon,
   GlModalDirective,
 } from '@gitlab/ui';
-import { s__ } from '~/locale';
-import DuplicateDashboardForm from './duplicate_dashboard_form.vue';
 
 const events = {
   selectDashboard: 'selectDashboard',
@@ -21,16 +16,12 @@ const events = {
 
 export default {
   components: {
-    GlAlert,
     GlIcon,
     GlDropdown,
     GlDropdownItem,
     GlDropdownHeader,
     GlDropdownDivider,
     GlSearchBoxByType,
-    GlModal,
-    GlLoadingIcon,
-    DuplicateDashboardForm,
   },
   directives: {
     GlModal: GlModalDirective,
@@ -40,12 +31,13 @@ export default {
       type: String,
       required: true,
     },
+    modalId: {
+      type: String,
+      required: true,
+    },
   },
   data() {
     return {
-      alert: null,
-      loading: false,
-      form: {},
       searchTerm: '',
     };
   },
@@ -76,10 +68,6 @@ export default {
     nonStarredDashboards() {
       return this.filteredDashboards.filter(({ starred }) => !starred);
     },
-
-    okButtonText() {
-      return this.loading ? s__('Metrics|Duplicating...') : s__('Metrics|Duplicate');
-    },
   },
   methods: {
     ...mapActions('monitoringDashboard', ['duplicateSystemDashboard']),
@@ -88,37 +76,6 @@ export default {
     },
     selectDashboard(dashboard) {
       this.$emit(events.selectDashboard, dashboard);
-    },
-    ok(bvModalEvt) {
-      // Prevent modal from hiding in case submit fails
-      bvModalEvt.preventDefault();
-
-      this.loading = true;
-      this.alert = null;
-      this.duplicateSystemDashboard(this.form)
-        .then(createdDashboard => {
-          this.loading = false;
-          this.alert = null;
-
-          // Trigger hide modal as submit is successful
-          this.$refs.duplicateDashboardModal.hide();
-
-          // Dashboards in the default branch become available immediately.
-          // Not so in other branches, so we refresh the current dashboard
-          const dashboard =
-            this.form.branch === this.defaultBranch ? createdDashboard : this.selectedDashboard;
-          this.$emit(events.selectDashboard, dashboard);
-        })
-        .catch(error => {
-          this.loading = false;
-          this.alert = error;
-        });
-    },
-    hide() {
-      this.alert = null;
-    },
-    formChange(form) {
-      this.form = form;
     },
   },
 };
@@ -178,32 +135,14 @@ export default {
         {{ __('No matching results') }}
       </div>
 
+      <!-- 
+           This Duplicate Dashboard item will be removed from the dashboards dropdown 
+           in https://gitlab.com/gitlab-org/gitlab/-/issues/223223
+      -->
       <template v-if="isSystemDashboard">
         <gl-dropdown-divider />
 
-        <gl-modal
-          ref="duplicateDashboardModal"
-          modal-id="duplicateDashboardModal"
-          :title="s__('Metrics|Duplicate dashboard')"
-          ok-variant="success"
-          @ok="ok"
-          @hide="hide"
-        >
-          <gl-alert v-if="alert" class="mb-3" variant="danger" @dismiss="alert = null">
-            {{ alert }}
-          </gl-alert>
-          <duplicate-dashboard-form
-            :dashboard="selectedDashboard"
-            :default-branch="defaultBranch"
-            @change="formChange"
-          />
-          <template #modal-ok>
-            <gl-loading-icon v-if="loading" inline color="light" />
-            {{ okButtonText }}
-          </template>
-        </gl-modal>
-
-        <gl-dropdown-item ref="duplicateDashboardItem" v-gl-modal="'duplicateDashboardModal'">
+        <gl-dropdown-item v-gl-modal="modalId" data-testid="duplicateDashboardItem">
           {{ s__('Metrics|Duplicate dashboard') }}
         </gl-dropdown-item>
       </template>

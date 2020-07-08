@@ -15,6 +15,8 @@ import {
   TREE_TYPE,
   INLINE_DIFF_VIEW_TYPE,
   PARALLEL_DIFF_VIEW_TYPE,
+  SHOW_WHITESPACE,
+  NO_SHOW_WHITESPACE,
 } from '../constants';
 
 export function findDiffFile(files, match, matchKey = 'file_hash') {
@@ -700,4 +702,11 @@ export const allDiscussionWrappersExpanded = diff => {
   });
 
   return discussionsExpanded;
+};
+
+export const getDefaultWhitespace = (queryString, cookie) => {
+  // Querystring should override stored cookie value
+  if (queryString) return queryString === SHOW_WHITESPACE;
+  if (cookie === NO_SHOW_WHITESPACE) return false;
+  return true;
 };

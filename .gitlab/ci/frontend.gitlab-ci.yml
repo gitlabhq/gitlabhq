@@ -222,6 +222,7 @@ coverage-frontend:
     - run_timed_command "retry yarn install --frozen-lockfile"
   script:
     - run_timed_command "yarn node scripts/frontend/merge_coverage_frontend.js"
+  coverage: '/^Statements\s*:\s*?(\d+(?:\.\d+)?)%/'
   artifacts:
     name: coverage-frontend
     expire_in: 31d

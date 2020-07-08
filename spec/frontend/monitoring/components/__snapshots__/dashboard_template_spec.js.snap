@@ -13,16 +13,22 @@ exports[`Dashboard template matches the default snapshot 1`] = `
     class="prometheus-graphs-header d-sm-flex flex-sm-wrap pt-2 pr-1 pb-0 pl-2 border-bottom bg-gray-light"
   >
     <div
-      class="mb-2 pr-2 d-flex d-sm-block"
+      class="mb-2 mr-2 d-flex d-sm-block"
     >
       <dashboards-dropdown-stub
         class="flex-grow-1"
         data-qa-selector="dashboards_filter_dropdown"
         defaultbranch="master"
         id="monitor-dashboards-dropdown"
+        modalid="duplicateDashboard"
         toggle-class="dropdown-menu-toggle"
       />
     </div>
+     
+    <span
+      aria-hidden="true"
+      class="gl-pl-3 border-left gl-mb-3 d-none d-sm-block"
+    />
      
     <div
       class="mb-2 pr-2 d-flex d-sm-block"
@@ -121,7 +127,14 @@ exports[`Dashboard template matches the default snapshot 1`] = `
       <!---->
        
       <!---->
+       
+      <!---->
     </div>
+     
+    <duplicate-dashboard-modal-stub
+      defaultbranch="master"
+      modalid="duplicateDashboard"
+    />
   </div>
    
   <!---->

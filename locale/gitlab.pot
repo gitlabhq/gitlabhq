@@ -3240,18 +3240,6 @@ msgstr ""
 msgid "Audit Log"
 msgstr ""
 
-msgid "AuditEvents|(removed)"
-msgstr ""
-
-msgid "AuditEvents|Action"
-msgstr ""
-
-msgid "AuditEvents|At"
-msgstr ""
-
-msgid "AuditEvents|Target"
-msgstr ""
-
 msgid "AuditLogs|(removed)"
 msgstr ""
 
@@ -6831,6 +6819,9 @@ msgid "Create new file or directory"
 msgstr ""
 
 msgid "Create new label"
+msgstr ""
+
+msgid "Create new value stream"
 msgstr ""
 
 msgid "Create new..."
@@ -14506,13 +14497,25 @@ msgstr ""
 msgid "Metrics|Avg"
 msgstr ""
 
+msgid "Metrics|Cancel"
+msgstr ""
+
 msgid "Metrics|Check out the CI/CD documentation on deploying to an environment"
 msgstr ""
 
 msgid "Metrics|Create custom dashboard %{fileName}"
 msgstr ""
 
+msgid "Metrics|Create dashboard"
+msgstr ""
+
 msgid "Metrics|Create metric"
+msgstr ""
+
+msgid "Metrics|Create new dashboard"
+msgstr ""
+
+msgid "Metrics|Create your dashboard configuration file"
 msgstr ""
 
 msgid "Metrics|Current"
@@ -14525,6 +14528,9 @@ msgid "Metrics|Delete metric?"
 msgstr ""
 
 msgid "Metrics|Duplicate"
+msgstr ""
+
+msgid "Metrics|Duplicate current dashboard"
 msgstr ""
 
 msgid "Metrics|Duplicate dashboard"
@@ -14575,6 +14581,9 @@ msgid "Metrics|Must be a valid PromQL query."
 msgstr ""
 
 msgid "Metrics|New metric"
+msgstr ""
+
+msgid "Metrics|Open repository"
 msgstr ""
 
 msgid "Metrics|PromQL query is valid"
@@ -14631,6 +14640,9 @@ msgstr ""
 msgid "Metrics|There was an error while retrieving metrics. %{message}"
 msgstr ""
 
+msgid "Metrics|To create a new dashboard, add a new YAML file to %{codeStart}.gitlab/dashboards%{codeEnd} at the root of this project."
+msgstr ""
+
 msgid "Metrics|Unexpected deployment data response from prometheus endpoint"
 msgstr ""
 
@@ -14650,6 +14662,9 @@ msgid "Metrics|Validating query"
 msgstr ""
 
 msgid "Metrics|Values"
+msgstr ""
+
+msgid "Metrics|View documentation"
 msgstr ""
 
 msgid "Metrics|View logs"

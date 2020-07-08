@@ -19,6 +19,7 @@ RSpec.describe GitlabSchema.types['Note'] do
       resolved_at
       resolved_by
       system
+      system_note_icon_name
       updated_at
       user_permissions
     ]

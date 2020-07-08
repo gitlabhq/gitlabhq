@@ -458,7 +458,13 @@ For Omnibus GitLab packages:
    gitlab_rails['backup_upload_connection'] = {
      'provider' => 'Google',
      'google_storage_access_key_id' => 'Access Key',
-     'google_storage_secret_access_key' => 'Secret'
+     'google_storage_secret_access_key' => 'Secret',
+
+     ## If you have CNAME buckets (foo.example.com), you might run into SSL issues
+     ## when uploading backups ("hostname foo.example.com.storage.googleapis.com
+     ## does not match the server certificate"). In that case, uncomnent the following
+     ## setting. See: https://github.com/fog/fog/issues/2834
+     #'path_style' => true
    }
    gitlab_rails['backup_upload_remote_directory'] = 'my.google.bucket'
    ```

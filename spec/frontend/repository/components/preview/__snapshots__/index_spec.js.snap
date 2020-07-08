@@ -16,7 +16,7 @@ exports[`Repository file preview component renders file HTML 1`] = `
       />
        
       <gl-link-stub
-        href="/test.md"
+        href="http://test.com"
       >
         <strong>
           README.md

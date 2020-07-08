@@ -8,7 +8,7 @@ fragment TreeEntry on Entry {
   type
 }
 
-query Files(
+query getFiles(
   $projectPath: ID!
   $path: String
   $ref: String!
@@ -22,7 +22,7 @@ query Files(
           edges {
             node {
               ...TreeEntry
-              webPath
+              webUrl
             }
           }
           pageInfo {
@@ -45,7 +45,7 @@ query Files(
           edges {
             node {
               ...TreeEntry
-              webPath
+              webUrl
               lfsOid
             }
           }

@@ -805,3 +805,13 @@ export const storeVariables = [
   ...storeCustomVariables,
   ...storeMetricLabelValuesVariables,
 ];
+
+export const dashboardHeaderProps = {
+  defaultBranch: 'master',
+  addDashboardDocumentationPath: 'https://path/to/docs',
+  isRearrangingPanels: false,
+  selectedTimeRange: {
+    start: '2020-01-01T00:00:00.000Z',
+    end: '2020-01-01T01:00:00.000Z',
+  },
+};

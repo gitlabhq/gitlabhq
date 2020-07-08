@@ -12,13 +12,11 @@ function createCommitData(data = {}) {
     titleHtml: 'Commit title',
     message: 'Commit message',
     webUrl: 'https://test.com/commit/123',
-    webPath: '/commit/123',
     authoredDate: '2019-01-01',
     author: {
       name: 'Test',
       avatarUrl: 'https://test.com',
       webUrl: 'https://test.com/test',
-      webPath: '/test',
     },
     pipeline: {
       detailedStatus: {

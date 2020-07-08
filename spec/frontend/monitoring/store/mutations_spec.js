@@ -386,6 +386,7 @@ describe('Monitoring mutations', () => {
       });
     });
   });
+
   describe('SET_ALL_DASHBOARDS', () => {
     it('stores `undefined` dashboards as an empty array', () => {
       mutations[types.SET_ALL_DASHBOARDS](stateCopy, undefined);

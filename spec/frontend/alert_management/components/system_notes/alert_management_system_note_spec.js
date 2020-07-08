@@ -28,7 +28,11 @@ describe('Alert Details System Note', () => {
     });
 
     it('renders the correct system note', () => {
-      expect(wrapper.find('.note-wrapper').attributes('id')).toBe('note_1628');
+      const noteId = wrapper.find('.note-wrapper').attributes('id');
+      const iconRoute = wrapper.find('use').attributes('href');
+
+      expect(noteId).toBe('note_1628');
+      expect(iconRoute.includes('user')).toBe(true);
     });
   });
 });

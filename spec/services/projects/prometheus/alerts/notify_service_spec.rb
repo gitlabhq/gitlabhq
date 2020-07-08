@@ -36,48 +36,8 @@ RSpec.describe Projects::Prometheus::Alerts::NotifyService do
     end
   end
 
-  shared_examples 'processes incident issues' do |amount|
-    let(:create_incident_service) { spy }
-
-    it 'processes issues' do
-      expect(IncidentManagement::ProcessPrometheusAlertWorker)
-        .to receive(:perform_async)
-        .with(project.id, kind_of(Hash))
-        .exactly(amount).times
-
-      Sidekiq::Testing.inline! do
-        expect(subject).to be_success
-      end
-    end
-  end
-
-  shared_examples 'does not process incident issues' do
-    it 'does not process issues' do
-      expect(IncidentManagement::ProcessPrometheusAlertWorker)
-        .not_to receive(:perform_async)
-
-      expect(subject).to be_success
-    end
-  end
-
-  shared_examples 'persists events' do
-    let(:create_events_service) { spy }
-
-    it 'persists events' do
-      expect(Projects::Prometheus::Alerts::CreateEventsService)
-        .to receive(:new)
-        .and_return(create_events_service)
-
-      expect(create_events_service)
-        .to receive(:execute)
-
-      expect(subject).to be_success
-    end
-  end
-
   shared_examples 'notifies alerts' do
     it_behaves_like 'sends notification email'
-    it_behaves_like 'persists events'
   end
 
   shared_examples 'no notifications' do |http_status:|
@@ -257,8 +217,6 @@ RSpec.describe Projects::Prometheus::Alerts::NotifyService do
       context 'when incident_management_setting does not exist' do
         let!(:setting) { nil }
 
-        it_behaves_like 'persists events'
-
         it 'does not send notification email', :sidekiq_might_not_need_inline do
           expect_any_instance_of(NotificationService)
             .not_to receive(:async)
@@ -275,8 +233,6 @@ RSpec.describe Projects::Prometheus::Alerts::NotifyService do
         let!(:setting) do
           create(:project_incident_management_setting, send_email: false, project: project)
         end
-
-        it_behaves_like 'persists events'
 
         it 'does not send notification' do
           expect(NotificationService).not_to receive(:new)
@@ -311,45 +267,6 @@ RSpec.describe Projects::Prometheus::Alerts::NotifyService do
         end
       end
     end
-
-    context 'process incident issues' do
-      before do
-        create(:prometheus_service, project: project)
-        create(:project_alerting_setting, project: project, token: token)
-      end
-
-      context 'with create_issue setting enabled' do
-        before do
-          setting.update!(create_issue: true)
-        end
-
-        it_behaves_like 'processes incident issues', 2
-
-        context 'multiple firing alerts' do
-          let(:payload_raw) do
-            prometheus_alert_payload(firing: [alert_firing, alert_firing], resolved: [])
-          end
-
-          it_behaves_like 'processes incident issues', 2
-        end
-
-        context 'without firing alerts' do
-          let(:payload_raw) do
-            prometheus_alert_payload(firing: [], resolved: [alert_resolved])
-          end
-
-          it_behaves_like 'processes incident issues', 1
-        end
-      end
-
-      context 'with create_issue setting disabled' do
-        before do
-          setting.update!(create_issue: false)
-        end
-
-        it_behaves_like 'does not process incident issues'
-      end
-    end
   end
 
   context 'with invalid payload' do
@@ -377,13 +294,6 @@ RSpec.describe Projects::Prometheus::Alerts::NotifyService do
       it 'does not process Prometheus alerts' do
         expect(AlertManagement::ProcessPrometheusAlertService)
           .not_to receive(:new)
-
-        subject
-      end
-
-      it 'does not process issues' do
-        expect(IncidentManagement::ProcessPrometheusAlertWorker)
-          .not_to receive(:perform_async)
 
         subject
       end

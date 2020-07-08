@@ -1,4 +1,4 @@
-query Ref {
+query getRef {
   ref @client
   escapedRef @client
 }

@@ -8,6 +8,9 @@ import {
   GlDropdownItem,
   GlDropdownHeader,
   GlDropdownDivider,
+  GlNewDropdown,
+  GlNewDropdownDivider,
+  GlNewDropdownItem,
   GlModal,
   GlLoadingIcon,
   GlSearchBoxByType,
@@ -23,6 +26,8 @@ import DateTimePicker from '~/vue_shared/components/date_time_picker/date_time_p
 
 import DashboardsDropdown from './dashboards_dropdown.vue';
 import RefreshButton from './refresh_button.vue';
+import CreateDashboardModal from './create_dashboard_modal.vue';
+import DuplicateDashboardModal from './duplicate_dashboard_modal.vue';
 
 import TrackEventDirective from '~/vue_shared/directives/track_event';
 import { getAddMetricTrackingOptions, timeRangeToUrl } from '../utils';
@@ -39,6 +44,9 @@ export default {
     GlDropdownItem,
     GlDropdownHeader,
     GlDropdownDivider,
+    GlNewDropdown,
+    GlNewDropdownDivider,
+    GlNewDropdownItem,
     GlSearchBoxByType,
     GlModal,
     CustomMetricsFormFields,
@@ -46,6 +54,8 @@ export default {
     DateTimePicker,
     DashboardsDropdown,
     RefreshButton,
+    DuplicateDashboardModal,
+    CreateDashboardModal,
   },
   directives: {
     GlModal: GlModalDirective,
@@ -95,6 +105,10 @@ export default {
       type: Object,
       required: true,
     },
+    addDashboardDocumentationPath: {
+      type: String,
+      required: true,
+    },
   },
   data() {
     return {
@@ -108,8 +122,12 @@ export default {
       'isUpdatingStarredValue',
       'showEmptyState',
       'dashboardTimezone',
+      'projectPath',
     ]),
     ...mapGetters('monitoringDashboard', ['selectedDashboard', 'filteredEnvironments']),
+    isSystemDashboard() {
+      return this.selectedDashboard?.system_dashboard;
+    },
     shouldShowEnvironmentsDropdownNoMatchedMsg() {
       return !this.environmentsLoading && this.filteredEnvironments.length === 0;
     },
@@ -129,6 +147,9 @@ export default {
     displayUtc() {
       return this.dashboardTimezone === timezones.UTC;
     },
+    shouldShowActionsMenu() {
+      return Boolean(this.projectPath);
+    },
   },
   methods: {
     ...mapActions('monitoringDashboard', ['filterEnvironments', 'toggleStarredValue']),
@@ -136,6 +157,7 @@ export default {
       const params = {
         dashboard: encodeURIComponent(dashboard.path),
       };
+
       redirectTo(mergeUrlParams(params, window.location.href));
     },
     debouncedEnvironmentsSearch: debounce(function environmentsSearchOnInput(searchTerm) {
@@ -162,13 +184,15 @@ export default {
       this.$refs.customMetricsForm.submit();
     },
   },
-  addMetric: {
-    title: s__('Metrics|Add metric'),
-    modalId: 'add-metric',
+  modalIds: {
+    addMetric: 'addMetric',
+    createDashboard: 'createDashboard',
+    duplicateDashboard: 'duplicateDashboard',
   },
   i18n: {
     starDashboard: s__('Metrics|Star dashboard'),
     unstarDashboard: s__('Metrics|Unstar dashboard'),
+    addMetric: s__('Metrics|Add metric'),
   },
   timeRanges,
 };
@@ -176,16 +200,19 @@ export default {
 
 <template>
   <div ref="prometheusGraphsHeader">
-    <div class="mb-2 pr-2 d-flex d-sm-block">
+    <div class="mb-2 mr-2 d-flex d-sm-block">
       <dashboards-dropdown
         id="monitor-dashboards-dropdown"
         data-qa-selector="dashboards_filter_dropdown"
         class="flex-grow-1"
         toggle-class="dropdown-menu-toggle"
         :default-branch="defaultBranch"
+        :modal-id="$options.modalIds.duplicateDashboard"
         @selectDashboard="selectDashboard"
       />
     </div>
+
+    <span aria-hidden="true" class="gl-pl-3 border-left gl-mb-3 d-none d-sm-block"></span>
 
     <div class="mb-2 pr-2 d-flex d-sm-block">
       <gl-dropdown
@@ -290,17 +317,17 @@ export default {
       <div v-if="addingMetricsAvailable" class="mb-2 mr-2 d-flex d-sm-block">
         <gl-deprecated-button
           ref="addMetricBtn"
-          v-gl-modal="$options.addMetric.modalId"
+          v-gl-modal="$options.modalIds.addMetric"
           variant="outline-success"
           data-qa-selector="add_metric_button"
           class="flex-grow-1"
         >
-          {{ $options.addMetric.title }}
+          {{ $options.i18n.addMetric }}
         </gl-deprecated-button>
         <gl-modal
           ref="addMetricModal"
-          :modal-id="$options.addMetric.modalId"
-          :title="$options.addMetric.title"
+          :modal-id="$options.modalIds.addMetric"
+          :title="$options.i18n.addMetric"
         >
           <form ref="customMetricsForm" :action="customMetricsPath" method="post">
             <custom-metrics-form-fields
@@ -353,6 +380,50 @@ export default {
           {{ __('View full dashboard') }} <icon name="external-link" />
         </gl-deprecated-button>
       </div>
+
+      <template v-if="shouldShowActionsMenu">
+        <span aria-hidden="true" class="gl-pl-3 border-left gl-mb-3 d-none d-sm-block"></span>
+
+        <div class="gl-mb-3 gl-mr-3 d-flex d-sm-block">
+          <gl-new-dropdown
+            v-gl-tooltip
+            right
+            class="gl-flex-grow-1"
+            data-testid="actions-menu"
+            :title="s__('Metrics|Create dashboard')"
+            :icon="'plus-square'"
+          >
+            <gl-new-dropdown-item
+              v-gl-modal="$options.modalIds.createDashboard"
+              data-testid="action-create-dashboard"
+              >{{ s__('Metrics|Create new dashboard') }}</gl-new-dropdown-item
+            >
+
+            <create-dashboard-modal
+              data-testid="create-dashboard-modal"
+              :add-dashboard-documentation-path="addDashboardDocumentationPath"
+              :modal-id="$options.modalIds.createDashboard"
+              :project-path="projectPath"
+            />
+
+            <template v-if="isSystemDashboard">
+              <gl-new-dropdown-divider />
+              <gl-new-dropdown-item
+                ref="duplicateDashboardItem"
+                v-gl-modal="$options.modalIds.duplicateDashboard"
+                data-testid="action-duplicate-dashboard"
+              >
+                {{ s__('Metrics|Duplicate current dashboard') }}
+              </gl-new-dropdown-item>
+            </template>
+          </gl-new-dropdown>
+        </div>
+      </template>
     </div>
+    <duplicate-dashboard-modal
+      :default-branch="defaultBranch"
+      :modal-id="$options.modalIds.duplicateDashboard"
+      @dashboardDuplicated="selectDashboard"
+    />
   </div>
 </template>

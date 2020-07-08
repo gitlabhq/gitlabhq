@@ -18,10 +18,6 @@ class BlobPresenter < Gitlab::View::Presenter::Delegated
     Gitlab::Routing.url_helpers.project_blob_url(blob.repository.project, File.join(blob.commit_id, blob.path))
   end
 
-  def web_path
-    Gitlab::Routing.url_helpers.project_blob_path(blob.repository.project, File.join(blob.commit_id, blob.path))
-  end
-
   private
 
   def load_all_blob_data

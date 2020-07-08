@@ -6,6 +6,8 @@ import {
   INLINE_DIFF_VIEW_TYPE,
   PARALLEL_DIFF_VIEW_TYPE,
   DIFFS_PER_PAGE,
+  DIFF_WHITESPACE_COOKIE_NAME,
+  SHOW_WHITESPACE,
 } from '~/diffs/constants';
 import {
   setBaseConfig,
@@ -1187,10 +1189,10 @@ describe('DiffsStoreActions', () => {
       );
     });
 
-    it('sets localStorage', () => {
+    it('sets cookie', () => {
       setShowWhitespace({ commit() {} }, { showWhitespace: true });
 
-      expect(localStorage.setItem).toHaveBeenCalledWith('mr_show_whitespace', true);
+      expect(Cookies.get(DIFF_WHITESPACE_COOKIE_NAME)).toEqual(SHOW_WHITESPACE);
     });
 
     it('calls history pushState', () => {

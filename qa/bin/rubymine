@@ -1,0 +1,9 @@
+#!/usr/bin/env ruby
+
+require_relative '../qa'
+
+ARGV.unshift('Test::Instance::All', ENV['GITLAB_URL'], '--')
+
+QA::Scenario
+    .const_get(ARGV.shift)
+    .launch!(ARGV)

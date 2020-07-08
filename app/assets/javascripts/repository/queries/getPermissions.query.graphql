@@ -1,4 +1,4 @@
-query Permissions($projectPath: ID!) {
+query getPermissions($projectPath: ID!) {
   project(fullPath: $projectPath) {
     userPermissions {
       pushCode

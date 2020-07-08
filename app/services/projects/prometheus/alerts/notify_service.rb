@@ -23,9 +23,7 @@ module Projects
           return unauthorized unless valid_alert_manager_token?(token)
 
           process_prometheus_alerts
-          persist_events
           send_alert_email if send_email?
-          process_incident_issues if process_issues?
 
           ServiceResponse.success
         end
@@ -132,23 +130,12 @@ module Projects
             .prometheus_alerts_fired(project, firings)
         end
 
-        def process_incident_issues
-          alerts.each do |alert|
-            IncidentManagement::ProcessPrometheusAlertWorker
-              .perform_async(project.id, alert.to_h)
-          end
-        end
-
         def process_prometheus_alerts
           alerts.each do |alert|
             AlertManagement::ProcessPrometheusAlertService
               .new(project, nil, alert.to_h)
               .execute
           end
-        end
-
-        def persist_events
-          CreateEventsService.new(project, nil, params).execute
         end
 
         def bad_request
