@@ -224,18 +224,18 @@ module Gitlab
         end
       end
 
-      def init_from_gitaly(diff)
-        @diff = diff.respond_to?(:patch) ? encode!(diff.patch) : ''
-        @new_path = encode!(diff.to_path.dup)
-        @old_path = encode!(diff.from_path.dup)
-        @a_mode = diff.old_mode.to_s(8)
-        @b_mode = diff.new_mode.to_s(8)
-        @new_file = diff.from_id == BLANK_SHA
-        @renamed_file = diff.from_path != diff.to_path
-        @deleted_file = diff.to_id == BLANK_SHA
-        @too_large = diff.too_large if diff.respond_to?(:too_large)
+      def init_from_gitaly(gitaly_diff)
+        @diff = gitaly_diff.respond_to?(:patch) ? encode!(gitaly_diff.patch) : ''
+        @new_path = encode!(gitaly_diff.to_path.dup)
+        @old_path = encode!(gitaly_diff.from_path.dup)
+        @a_mode = gitaly_diff.old_mode.to_s(8)
+        @b_mode = gitaly_diff.new_mode.to_s(8)
+        @new_file = gitaly_diff.from_id == BLANK_SHA
+        @renamed_file = gitaly_diff.from_path != gitaly_diff.to_path
+        @deleted_file = gitaly_diff.to_id == BLANK_SHA
+        @too_large = gitaly_diff.too_large if gitaly_diff.respond_to?(:too_large)
 
-        collapse! if diff.respond_to?(:collapsed) && diff.collapsed
+        collapse! if gitaly_diff.respond_to?(:collapsed) && gitaly_diff.collapsed
       end
 
       def prune_diff_if_eligible

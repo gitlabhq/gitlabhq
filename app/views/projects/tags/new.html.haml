@@ -40,7 +40,7 @@
         - link_start = '<a href="%{url}" rel="noopener noreferrer" target="_blank">'.html_safe
         - releases_page_path = project_releases_path(@project)
         - releases_page_link_start = link_start % { url: releases_page_path }
-        - docs_url = help_page_path('user/project/releases/index.md', anchor: 'creating-a-release')
+        - docs_url = help_page_path('user/project/releases/index.md', anchor: 'create-a-release')
         - docs_link_start = link_start % { url: docs_url }
         - link_end = '</a>'.html_safe
         - replacements = { releases_page_link_start: releases_page_link_start, docs_link_start: docs_link_start, link_end: link_end }

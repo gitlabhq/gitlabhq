@@ -14,17 +14,18 @@ RSpec.describe 'User uploads new design', :js do
   end
 
   context 'design_management_moved flag disabled' do
+    before do
+      enable_design_management(feature_enabled)
+      stub_feature_flags(design_management_moved: false)
+      visit project_issue_path(project, issue)
+
+      click_link 'Designs'
+
+      wait_for_requests
+    end
+
     context "when the feature is available" do
-      before do
-        enable_design_management
-        stub_feature_flags(design_management_moved: false)
-
-        visit project_issue_path(project, issue)
-
-        click_link 'Designs'
-
-        wait_for_requests
-      end
+      let(:feature_enabled) { true }
 
       it 'uploads designs' do
         attach_file(:design_file, logo_fixture, make_visible: true)
@@ -42,14 +43,7 @@ RSpec.describe 'User uploads new design', :js do
     end
 
     context 'when the feature is not available' do
-      before do
-        stub_feature_flags(design_management_moved: false)
-        visit project_issue_path(project, issue)
-
-        click_link 'Designs'
-
-        wait_for_requests
-      end
+      let(:feature_enabled) { false }
 
       it 'shows the message about requirements' do
         expect(page).to have_content("To enable design management, you'll need to meet the requirements.")
@@ -58,12 +52,14 @@ RSpec.describe 'User uploads new design', :js do
   end
 
   context 'design_management_moved flag enabled' do
-    context "when the feature is available" do
-      before do
-        enable_design_management
+    before do
+      enable_design_management(feature_enabled)
+      stub_feature_flags(design_management_moved: true)
+      visit project_issue_path(project, issue)
+    end
 
-        visit project_issue_path(project, issue)
-      end
+    context "when the feature is available" do
+      let(:feature_enabled) { true }
 
       it 'uploads designs', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/225616' do
         attach_file(:design_file, logo_fixture, make_visible: true)
@@ -81,9 +77,7 @@ RSpec.describe 'User uploads new design', :js do
     end
 
     context 'when the feature is not available' do
-      before do
-        visit project_issue_path(project, issue)
-      end
+      let(:feature_enabled) { false }
 
       it 'shows the message about requirements' do
         expect(page).to have_content("To enable design management, you'll need to meet the requirements.")

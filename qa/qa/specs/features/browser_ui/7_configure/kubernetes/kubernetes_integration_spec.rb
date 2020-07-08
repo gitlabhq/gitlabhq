@@ -2,7 +2,7 @@
 
 module QA
   RSpec.describe 'Configure' do
-    describe 'Kubernetes Cluster Integration', :orchestrated, :kubernetes, :requires_admin, :skip_live_env do
+    describe 'Kubernetes Cluster Integration', :orchestrated, :kubernetes, :requires_admin, :skip_live_env, quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/225315', type: :flaky } do
       context 'Project Clusters' do
         let!(:cluster) { Service::KubernetesCluster.new(provider_class: Service::ClusterProvider::K3s).create! }
         let(:project) do

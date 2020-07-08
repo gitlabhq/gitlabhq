@@ -159,8 +159,7 @@ You might want to try this out on an incognito browser window.
 >**Note:**
 Make sure the groups exist and are assigned to the Okta app.
 
-You can take a look of the [SAML documentation](../../integration/saml.md#marking-users-as-external-based-on-saml-groups) on external groups since
-it works the same.
+You can take a look of the [SAML documentation](../../integration/saml.md#saml-groups) on configuring groups.
 
 <!-- ## Troubleshooting
 

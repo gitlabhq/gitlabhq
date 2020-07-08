@@ -10,47 +10,75 @@ type: index, concepts, howto
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/4466) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 10.6.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/24780) to [GitLab Core](https://about.gitlab.com/pricing/) in 11.9.
 
-GitLab ChatOps provides a method to interact with CI/CD jobs through chat services like Slack. Many organizations' discussion, collaboration, and troubleshooting is taking place in chat services these days, and having a method to run CI/CD jobs with output posted back to the channel can significantly augment a team's workflow.
+GitLab ChatOps provides a method to interact with CI/CD jobs through chat services
+like Slack. Many organizations' discussion, collaboration, and troubleshooting takes
+place in chat services. Having a method to run CI/CD jobs with output
+posted back to the channel can significantly augment your team's workflow.
 
-NOTE: **Note:**
-ChatOps is currently in alpha with some important features missing, like access control.
+## How GitLab ChatOps works
 
-## How it works
+GitLab ChatOps is built upon [GitLab CI/CD](../README.md) and
+[Slack Slash Commands](../../user/project/integrations/slack_slash_commands.md).
+ChatOps provides a `run` action for [slash commands](../../integration/slash_commands.md)
+with the following arguments:
 
-GitLab ChatOps is built upon two existing features:
+- A `<job name>` to execute.
+- The `<job arguments>`.
 
-- [GitLab CI/CD](../README.md).
-- [Slack Slash Commands](../../user/project/integrations/slack_slash_commands.md).
+ChatOps passes the following [CI/CD variables](../variables/README.md#predefined-environment-variables)
+to the job:
 
-A new `run` action has been added to the [slash commands](../../integration/slash_commands.md), which takes two arguments: a `<job name>` to execute and the `<job arguments>`. When executed, ChatOps will look up the specified job name and attempt to match it to a corresponding job in [`.gitlab-ci.yml`](../yaml/README.md). If a matching job is found on `master`, a pipeline containing just that job is scheduled. Two additional [CI/CD variables](../variables/README.md#predefined-environment-variables) are passed to the job: `CHAT_INPUT` contains any additional arguments, and `CHAT_CHANNEL` is set to the name of channel the action was triggered in.
+- `CHAT_INPUT` contains any additional arguments.
+- `CHAT_CHANNEL` is set to the name of channel the action was triggered in.
 
-After the job has finished, its output is sent back to Slack provided it has completed within 30 minutes. If a job takes more than 30 minutes to run it must use the Slack API to manually send data back to a channel.
+When executed, ChatOps looks up the specified job name and attempts to match it
+to a corresponding job in [`.gitlab-ci.yml`](../yaml/README.md). If a matching job
+is found on `master`, a pipeline containing only that job is scheduled. After the
+job completes:
 
-[Developer access and above](../../user/permissions.md#project-members-permissions) is required to use the `run` command. If a job should not be able to be triggered from chat, it can be set to `except: [chat]`.
+- If the job completes in *less than 30 minutes*, the ChatOps sends the job's output to Slack.
+- If the job completes in *more than 30 minutes*, the job must use the
+  [Slack API](https://api.slack.com/) to send data to the channel.
 
-## Creating a ChatOps CI job
+To use the `run` command, you must have
+[Developer access or above](../../user/permissions.md#project-members-permissions).
+If a job shouldn't be able to be triggered from chat, you can set the job to `except: [chat]`.
 
-Since ChatOps is built upon GitLab CI/CD, the job has all the same features and functions available. There a few best practices to consider however when creating ChatOps jobs:
+## Best practices for ChatOps CI jobs
 
-- It is strongly recommended to set `only: [chat]` so the job does not run as part of the standard CI pipeline.
-- If the job is set to `when: manual`, the pipeline will be created however the job will wait to be started.
-- It is important to keep in mind that there is limited support for access control. If the user who triggered the slash command is a developer in the project, the job will run. The job itself can utilize existing [CI/CD variables](../variables/README.md#predefined-environment-variables) like `GITLAB_USER_ID` to perform additional rights validation, however these variables can be [overridden](../variables/README.md#priority-of-environment-variables).
+Since ChatOps is built upon GitLab CI/CD, the job has all the same features and
+functions available. Consider these best practices when creating ChatOps jobs:
+
+- GitLab strongly recommends you set `only: [chat]` so the job does not run as part
+  of the standard CI pipeline.
+- If the job is set to `when: manual`, ChatOps creates the pipeline, but the job waits to be started.
+- ChatOps provides limited support for access control. If the user triggering the
+  slash command has [Developer access or above](../../user/permissions.md#project-members-permissions)
+  in the project, the job runs. The job itself can use existing
+  [CI/CD variables](../variables/README.md#predefined-environment-variables) like
+  `GITLAB_USER_ID` to perform additional rights validation, but
+  these variables can be [overridden](../variables/README.md#priority-of-environment-variables).
 
 ### Controlling the ChatOps reply
 
-For jobs with a single command, its output is automatically sent back to the channel as a reply. For example the chat reply of the following job is simply `Hello World.`
+The output for jobs with a single command is sent to the channel as a reply. For
+example, the chat reply of the following job is `Hello World` in the channel:
 
 ```yaml
 hello-world:
   stage: chatops
   only: [chat]
   script:
-    - echo "Hello World."
+    - echo "Hello World"
 ```
 
-Jobs that contain multiple commands, or have a `before_script`, include additional content in the chat reply. In these cases both the commands and their output are included, with the commands wrapped in ANSI colors codes.
+Jobs that contain multiple commands (or `before_script`) return additional
+content in the chat reply. In these cases, both the commands and their output are
+included, with the commands wrapped in ANSI color codes.
 
-To selectively reply with the output of one command, its output must be bounded by the `chat_reply` section. For example, the following job will list the files in the current directory.
+To selectively reply with the output of one command, its output must be bounded by
+the `chat_reply` section. For example, the following job lists the files in the
+current directory:
 
 ```yaml
 ls:
@@ -61,19 +89,19 @@ ls:
     - echo -e "section_start:$( date +%s ):chat_reply\r\033[0K\n$( ls -la )\nsection_end:$( date +%s ):chat_reply\r\033[0K"
 ```
 
-## GitLab ChatOps Examples
+## GitLab ChatOps examples
 
-The GitLab.com team created a repository of [common ChatOps scripts they use to interact with our Production instance of GitLab](https://gitlab.com/gitlab-com/chatops). They are likely useful
-to other administrators of GitLab instances and can serve as inspiration for ChatOps scripts you can write to interact with your own applications.
+The GitLab.com team created a repository of [common ChatOps scripts](https://gitlab.com/gitlab-com/chatops)
+they use to interact with our Production instance of GitLab. Administrators of
+other GitLab instances may find them useful. They can serve as inspiration for ChatOps
+scripts you can write to interact with your own applications.
 
 ## GitLab ChatOps icon
 
-Say Hi to our ChatOps bot.
+The [official GitLab ChatOps icon](img/gitlab-chatops-icon.png) is available for download.
 You can find and download the official GitLab ChatOps icon here.
 
 ![GitLab ChatOps bot icon](img/gitlab-chatops-icon-small.png)
-
-[Download bigger image](img/gitlab-chatops-icon.png)
 
 <!-- ## Troubleshooting
 

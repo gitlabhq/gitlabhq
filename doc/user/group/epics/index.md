@@ -165,6 +165,19 @@ Once you write your comment, you can either:
 - Click **Comment**, and your comment will be published.
 - Click **Start thread**, and you will start a thread within that epic's discussion.
 
+### Activity sort order
+
+> [Introduced](https://https://gitlab.com/gitlab-org/gitlab/-/issues/214364) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.2.
+
+You can reverse the default order and interact with the activity feed sorted by most recent items
+at the top. Your preference is saved via local storage and automatically applied to every issue
+you view.
+
+To change the activity sort order, click the **Oldest first** dropdown menu and select either oldest
+or newest items to be shown first.
+
+![Issue activity sort order dropdown button](img/epic_activity_sort_order_v13_2.png)
+
 ## Award emoji
 
 You can [award an emoji](../../award_emojis.md) to that epic or its comments.
