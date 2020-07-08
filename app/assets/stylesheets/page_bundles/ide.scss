@@ -251,10 +251,6 @@ $ide-commit-header-height: 48px;
     padding-left: $gl-padding;
   }
 }
-
-.ide-status-file {
-  text-align: right;
-}
 // Not great, but this is to deal with our current output
 .multi-file-preview-holder {
   height: 100%;

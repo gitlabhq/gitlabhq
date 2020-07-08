@@ -5,7 +5,7 @@
 # of directly having a repository, like project or snippet.
 #
 # It also includes `Referable`, therefore the method
-# `to_reference` should be overriden in case the object
+# `to_reference` should be overridden in case the object
 # needs any special behavior.
 module HasRepository
   extend ActiveSupport::Concern

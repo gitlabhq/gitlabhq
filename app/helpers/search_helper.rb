@@ -62,7 +62,7 @@ module SearchHelper
     }).html_safe
   end
 
-  # Overriden in EE
+  # Overridden in EE
   def search_blob_title(project, path)
     path
   end

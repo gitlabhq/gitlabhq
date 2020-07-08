@@ -22,7 +22,7 @@ describe('Actions TestReports Store', () => {
     fullReportEndpoint,
     summaryEndpoint,
     testReports: {},
-    selectedSuite: {},
+    selectedSuite: null,
     summary: {},
   };
 
@@ -101,28 +101,28 @@ describe('Actions TestReports Store', () => {
     });
   });
 
-  describe('set selected suite', () => {
-    const selectedSuite = testReports.test_suites[0];
+  describe('set selected suite index', () => {
+    const selectedSuiteIndex = 0;
 
-    it('sets selectedSuite', done => {
+    it('sets selectedSuiteIndex', done => {
       testAction(
-        actions.setSelectedSuite,
-        selectedSuite,
+        actions.setSelectedSuiteIndex,
+        selectedSuiteIndex,
         state,
-        [{ type: types.SET_SELECTED_SUITE, payload: selectedSuite }],
+        [{ type: types.SET_SELECTED_SUITE_INDEX, payload: selectedSuiteIndex }],
         [],
         done,
       );
     });
   });
 
-  describe('remove selected suite', () => {
-    it('sets selectedSuite to {}', done => {
+  describe('remove selected suite index', () => {
+    it('sets selectedSuiteIndex to null', done => {
       testAction(
-        actions.removeSelectedSuite,
+        actions.removeSelectedSuiteIndex,
         {},
         state,
-        [{ type: types.SET_SELECTED_SUITE, payload: {} }],
+        [{ type: types.SET_SELECTED_SUITE_INDEX, payload: null }],
         [],
         done,
       );

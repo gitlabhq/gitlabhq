@@ -28,8 +28,8 @@ RSpec.describe 'issuable list', :js do
     it "counts upvotes, downvotes and notes count for each #{issuable_type.to_s.humanize}" do
       visit_issuable_list(issuable_type)
 
-      expect(first('.fa-thumbs-up').find(:xpath, '..')).to have_content(1)
-      expect(first('.fa-thumbs-down').find(:xpath, '..')).to have_content(1)
+      expect(first('.issuable-upvotes')).to have_content(1)
+      expect(first('.issuable-downvotes')).to have_content(1)
       expect(first('.fa-comments').find(:xpath, '..')).to have_content(2)
     end
 

@@ -6,7 +6,7 @@
 
 // TODO: need to move this component to graphql - https://gitlab.com/gitlab-org/gitlab/-/issues/221246
 import { escape, isNumber } from 'lodash';
-import { GlLink, GlTooltipDirective as GlTooltip, GlSprintf, GlLabel } from '@gitlab/ui';
+import { GlLink, GlTooltipDirective as GlTooltip, GlSprintf, GlLabel, GlIcon } from '@gitlab/ui';
 import {
   dateInWords,
   formatDate,
@@ -18,7 +18,6 @@ import {
 import { sprintf, __ } from '~/locale';
 import initUserPopovers from '~/user_popovers';
 import { mergeUrlParams } from '~/lib/utils/url_utility';
-import Icon from '~/vue_shared/components/icon.vue';
 import IssueAssignees from '~/vue_shared/components/issue/issue_assignees.vue';
 import { isScopedLabel } from '~/lib/utils/common_utils';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
@@ -28,10 +27,10 @@ export default {
     openedAgo: __('opened %{timeAgoString} by %{user}'),
   },
   components: {
-    Icon,
     IssueAssignees,
     GlLink,
     GlLabel,
+    GlIcon,
     GlSprintf,
   },
   directives: {
@@ -153,14 +152,14 @@ export default {
           value: this.issuable.upvotes,
           title: __('Upvotes'),
           class: 'js-upvotes',
-          faicon: 'fa-thumbs-up',
+          icon: 'thumb-up',
         },
         {
           key: 'downvotes',
           value: this.issuable.downvotes,
           title: __('Downvotes'),
           class: 'js-downvotes',
-          faicon: 'fa-thumbs-down',
+          icon: 'thumb-down',
         },
       ];
     },
@@ -294,7 +293,7 @@ export default {
             :title="__('Weight')"
             class="d-none d-sm-inline-block js-weight"
           >
-            <icon name="weight" class="align-text-bottom" />
+            <gl-icon name="weight" class="align-text-bottom" />
             {{ issuable.weight }}
           </span>
         </div>
@@ -318,11 +317,10 @@ export default {
               v-if="meta.value"
               :key="meta.key"
               v-gl-tooltip
-              :class="['d-none d-sm-inline-block ml-2', meta.class]"
+              :class="['d-none d-sm-inline-block ml-2 vertical-align-middle', meta.class]"
               :title="meta.title"
             >
-              <icon v-if="meta.icon" :name="meta.icon" />
-              <i v-else :class="['fa', meta.faicon]"></i>
+              <gl-icon v-if="meta.icon" :name="meta.icon" />
               {{ meta.value }}
             </span>
           </template>

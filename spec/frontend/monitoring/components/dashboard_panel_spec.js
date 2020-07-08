@@ -369,7 +369,7 @@ describe('Dashboard Panel', () => {
       });
     });
 
-    it('it is overriden when a datazoom event is received', () => {
+    it('it is overridden when a datazoom event is received', () => {
       state.logsPath = mockLogsPath;
       state.timeRange = mockTimeRange;
 

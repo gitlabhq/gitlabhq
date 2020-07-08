@@ -2862,6 +2862,9 @@ msgstr ""
 msgid "ApprovalRule|e.g. QA, Security, etc."
 msgstr ""
 
+msgid "Approvals|Section: %section"
+msgstr ""
+
 msgid "Approve"
 msgstr ""
 
@@ -15929,6 +15932,9 @@ msgid "Open errors"
 msgstr ""
 
 msgid "Open in Xcode"
+msgstr ""
+
+msgid "Open in file view"
 msgstr ""
 
 msgid "Open issues"

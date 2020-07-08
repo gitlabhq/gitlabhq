@@ -10,7 +10,7 @@ describe('Mutations TestReports Store', () => {
   const defaultState = {
     endpoint: '',
     testReports: {},
-    selectedSuite: {},
+    selectedSuite: null,
     isLoading: false,
   };
 
@@ -27,12 +27,12 @@ describe('Mutations TestReports Store', () => {
     });
   });
 
-  describe('set selected suite', () => {
-    it('should set selectedSuite', () => {
-      const selectedSuite = testReports.test_suites[0];
-      mutations[types.SET_SELECTED_SUITE](mockState, selectedSuite);
+  describe('set selected suite index', () => {
+    it('should set selectedSuiteIndex', () => {
+      const selectedSuiteIndex = 0;
+      mutations[types.SET_SELECTED_SUITE_INDEX](mockState, selectedSuiteIndex);
 
-      expect(mockState.selectedSuite).toEqual(selectedSuite);
+      expect(mockState.selectedSuiteIndex).toEqual(selectedSuiteIndex);
     });
   });
 

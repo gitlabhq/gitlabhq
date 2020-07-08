@@ -369,10 +369,8 @@ db:rollback geo:
 # EE: Canonical MR pipelines
 rspec foss-impact:
   extends:
-    - .rspec-base
-    - .as-if-foss
+    - .rspec-base-pg11-as-if-foss
     - .rails:rules:ee-mr-only
-    - .use-pg11
   script:
     - install_gitlab_gem
     - run_timed_command "scripts/gitaly-test-build"

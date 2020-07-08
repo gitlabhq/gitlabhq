@@ -9,6 +9,7 @@ import { updateTooltipTitle } from './lib/utils/common_utils';
 import { isInVueNoteablePage } from './lib/utils/dom_utils';
 import flash from './flash';
 import axios from './lib/utils/axios_utils';
+import * as Emoji from '~/emoji';
 
 const animationEndEventString = 'animationend webkitAnimationEnd MSAnimationEnd oAnimationEnd';
 const transitionEndEventString = 'transitionend webkitTransitionEnd oTransitionEnd MSTransitionEnd';
@@ -619,7 +620,7 @@ export class AwardsHandler {
 let awardsHandlerPromise = null;
 export default function loadAwardsHandler(reload = false) {
   if (!awardsHandlerPromise || reload) {
-    awardsHandlerPromise = import(/* webpackChunkName: 'emoji' */ './emoji').then(Emoji => {
+    awardsHandlerPromise = Emoji.initEmojiMap().then(() => {
       const awardsHandler = new AwardsHandler(Emoji);
       awardsHandler.bindEvents();
       return awardsHandler;

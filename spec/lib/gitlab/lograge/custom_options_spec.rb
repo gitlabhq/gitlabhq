@@ -65,14 +65,14 @@ RSpec.describe Gitlab::Lograge::CustomOptions do
       end
     end
 
-    context 'when correlation_id is overriden' do
+    context 'when correlation_id is overridden' do
       let(:correlation_id_key) { Labkit::Correlation::CorrelationId::LOG_KEY }
 
       before do
         event_payload[correlation_id_key] = '123456'
       end
 
-      it 'sets the overriden value' do
+      it 'sets the overridden value' do
         expect(subject[correlation_id_key]).to eq('123456')
       end
     end

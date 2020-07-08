@@ -322,11 +322,8 @@
   rules:
     - <<: *if-not-ee
       when: never
-    - <<: *if-security-merge-request
+    - <<: *if-merge-request  # Always run for MRs since `compile-test-assets as-if-foss` is either needed by `rspec foss-impact` or the `rspec * as-if-foss` jobs.
       changes: *code-backstage-qa-patterns
-    - <<: *if-merge-request-title-as-if-foss
-    - <<: *if-merge-request
-      changes: *ci-patterns
 
 .frontend:rules:default-frontend-jobs:
   rules:

@@ -5,6 +5,7 @@ import SidebarMediator from '~/sidebar/sidebar_mediator';
 import glRegexp from './lib/utils/regexp';
 import AjaxCache from './lib/utils/ajax_cache';
 import { spriteIcon } from './lib/utils/common_utils';
+import * as Emoji from '~/emoji';
 
 function sanitize(str) {
   return str.replace(/<(?:.|\n)*?>/gm, '');
@@ -586,14 +587,12 @@ class GfmAutoComplete {
     if (this.cachedData[at]) {
       this.loadData($input, at, this.cachedData[at]);
     } else if (GfmAutoComplete.atTypeMap[at] === 'emojis') {
-      import(/* webpackChunkName: 'emoji' */ './emoji')
-        .then(({ validEmojiNames, glEmojiTag }) => {
-          this.loadData($input, at, validEmojiNames);
-          GfmAutoComplete.glEmojiTag = glEmojiTag;
+      Emoji.initEmojiMap()
+        .then(() => {
+          this.loadData($input, at, Emoji.getValidEmojiNames());
+          GfmAutoComplete.glEmojiTag = Emoji.glEmojiTag;
         })
-        .catch(() => {
-          this.isLoadingData[at] = false;
-        });
+        .catch(() => {});
     } else if (dataSource) {
       AjaxCache.retrieve(dataSource, true)
         .then(data => {

@@ -2,7 +2,7 @@ export default ({ fullReportEndpoint = '', summaryEndpoint = '' }) => ({
   summaryEndpoint,
   fullReportEndpoint,
   testReports: {},
-  selectedSuite: {},
+  selectedSuiteIndex: null,
   summary: {},
   isLoading: false,
 });

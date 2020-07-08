@@ -195,7 +195,7 @@ RSpec.describe 'Issue Sidebar' do
         end
       end
 
-      context 'creating a project label', :js, :quarantine do
+      context 'creating a project label', :js, quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/27992' do
         before do
           page.within('.block.labels') do
             click_link 'Create project'

@@ -204,7 +204,7 @@ RSpec.describe PersonalAccessToken do
   end
 
   describe '.simple_sorts' do
-    it 'includes overriden keys' do
+    it 'includes overridden keys' do
       expect(described_class.simple_sorts.keys).to include(*%w(expires_at_asc expires_at_desc))
     end
   end

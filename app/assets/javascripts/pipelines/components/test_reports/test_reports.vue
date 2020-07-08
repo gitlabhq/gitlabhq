@@ -1,5 +1,5 @@
 <script>
-import { mapActions, mapState } from 'vuex';
+import { mapActions, mapGetters, mapState } from 'vuex';
 import { GlLoadingIcon } from '@gitlab/ui';
 import TestSuiteTable from './test_suite_table.vue';
 import TestSummary from './test_summary.vue';
@@ -14,9 +14,10 @@ export default {
     TestSummaryTable,
   },
   computed: {
-    ...mapState(['isLoading', 'selectedSuite', 'testReports']),
+    ...mapState(['isLoading', 'selectedSuiteIndex', 'testReports']),
+    ...mapGetters(['getSelectedSuite']),
     showSuite() {
-      return this.selectedSuite.total_count > 0;
+      return this.selectedSuiteIndex !== null;
     },
     showTests() {
       const { test_suites: testSuites = [] } = this.testReports;
@@ -27,12 +28,12 @@ export default {
     this.fetchSummary();
   },
   methods: {
-    ...mapActions(['fetchSummary', 'setSelectedSuite', 'removeSelectedSuite']),
+    ...mapActions(['fetchSummary', 'setSelectedSuiteIndex', 'removeSelectedSuiteIndex']),
     summaryBackClick() {
-      this.removeSelectedSuite();
+      this.removeSelectedSuiteIndex();
     },
-    summaryTableRowClick(suite) {
-      this.setSelectedSuite(suite);
+    summaryTableRowClick(index) {
+      this.setSelectedSuiteIndex(index);
     },
     beforeEnterTransition() {
       document.documentElement.style.overflowX = 'hidden';
@@ -60,7 +61,7 @@ export default {
       @after-leave="afterLeaveTransition"
     >
       <div v-if="showSuite" key="detail" class="w-100 position-absolute slide-enter-to-element">
-        <test-summary :report="selectedSuite" show-back @on-back-click="summaryBackClick" />
+        <test-summary :report="getSelectedSuite" show-back @on-back-click="summaryBackClick" />
 
         <test-suite-table />
       </div>

@@ -792,7 +792,7 @@ RSpec.describe QuickActions::InterpretService do
         let(:issuable) { issue }
       end
 
-      it_behaves_like 'assign command', :quarantine do
+      it_behaves_like 'assign command', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/27989' do
         let(:content) { "/assign @#{developer.username} @#{developer2.username}" }
         let(:issuable) { merge_request }
       end

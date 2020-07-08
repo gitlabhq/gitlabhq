@@ -28,7 +28,10 @@ describe('Test reports suite table', () => {
   const createComponent = (suite = testSuite) => {
     store = new Vuex.Store({
       state: {
-        selectedSuite: suite,
+        testReports: {
+          test_suites: [suite],
+        },
+        selectedSuiteIndex: 0,
       },
       getters,
     });

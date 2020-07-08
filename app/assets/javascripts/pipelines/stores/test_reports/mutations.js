@@ -5,8 +5,8 @@ export default {
     Object.assign(state, { testReports });
   },
 
-  [types.SET_SELECTED_SUITE](state, selectedSuite) {
-    Object.assign(state, { selectedSuite });
+  [types.SET_SELECTED_SUITE_INDEX](state, selectedSuiteIndex) {
+    Object.assign(state, { selectedSuiteIndex });
   },
 
   [types.SET_SUMMARY](state, summary) {

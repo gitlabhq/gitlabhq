@@ -298,7 +298,7 @@ RSpec.describe ReactiveCaching, :use_clean_rails_memory_store_caching do
             expect(read_reactive_cache(instance)).not_to eq(calculation.call)
           end
 
-          context 'when reactive_cache_limit_enabled? is overriden to return false' do
+          context 'when reactive_cache_limit_enabled? is overridden to return false' do
             before do
               allow(instance).to receive(:reactive_cache_limit_enabled?).and_return(false)
             end

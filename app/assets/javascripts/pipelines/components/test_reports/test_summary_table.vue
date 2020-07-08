@@ -27,8 +27,8 @@ export default {
     },
   },
   methods: {
-    tableRowClick(suite) {
-      this.$emit('row-click', suite);
+    tableRowClick(index) {
+      this.$emit('row-click', index);
     },
   },
   maxShownRows: 20,
@@ -82,7 +82,7 @@ export default {
           :class="{
             'gl-responsive-table-row-clickable cursor-pointer': !testSuite.suite_error,
           }"
-          @click="tableRowClick(testSuite)"
+          @click="tableRowClick(index)"
         >
           <div class="table-section section-25">
             <div role="rowheader" class="table-mobile-header font-weight-bold">

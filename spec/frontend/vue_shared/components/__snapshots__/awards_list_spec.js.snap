@@ -18,15 +18,8 @@ exports[`vue_shared/components/awards_list default matches snapshot 1`] = `
       
     
       <gl-emoji
-        data-fallback-src="/assets/emoji/thumbsup-59ec2457ab33e8897261d01a495f6cf5c668d0004807dc541c3b1be5294b1e61.png"
         data-name="thumbsup"
-        data-unicode-version="6.0"
-        title="thumbs up sign"
-      >
-        
-      👍
-    
-      </gl-emoji>
+      />
       
   
     </span>
@@ -51,15 +44,8 @@ exports[`vue_shared/components/awards_list default matches snapshot 1`] = `
       
     
       <gl-emoji
-        data-fallback-src="/assets/emoji/thumbsdown-5954334e2dae5357312b3d629f10a496c728029e02216f8c8b887f9b51561c61.png"
         data-name="thumbsdown"
-        data-unicode-version="6.0"
-        title="thumbs down sign"
-      >
-        
-      👎
-    
-      </gl-emoji>
+      />
       
   
     </span>
@@ -84,15 +70,8 @@ exports[`vue_shared/components/awards_list default matches snapshot 1`] = `
       
     
       <gl-emoji
-        data-fallback-src="/assets/emoji/smile-14905c372d5bf7719bd727c9efae31a03291acec79801652a23710c6848c5d14.png"
         data-name="smile"
-        data-unicode-version="6.0"
-        title="smiling face with open mouth and smiling eyes"
-      >
-        
-      😄
-    
-      </gl-emoji>
+      />
       
   
     </span>
@@ -117,15 +96,8 @@ exports[`vue_shared/components/awards_list default matches snapshot 1`] = `
       
     
       <gl-emoji
-        data-fallback-src="/assets/emoji/ok_hand-d63002dce3cc3655b67b8765b7c28d370edba0e3758b2329b60e0e61c4d8e78d.png"
         data-name="ok_hand"
-        data-unicode-version="6.0"
-        title="ok hand sign"
-      >
-        
-      👌
-    
-      </gl-emoji>
+      />
       
   
     </span>
@@ -150,15 +122,8 @@ exports[`vue_shared/components/awards_list default matches snapshot 1`] = `
       
     
       <gl-emoji
-        data-fallback-src="/assets/emoji/cactus-2c5c4c35f26c7046fdc002b337e0d939729b33a26980e675950f9934c91e40fd.png"
         data-name="cactus"
-        data-unicode-version="6.0"
-        title="cactus"
-      >
-        
-      🌵
-    
-      </gl-emoji>
+      />
       
   
     </span>
@@ -183,15 +148,8 @@ exports[`vue_shared/components/awards_list default matches snapshot 1`] = `
       
     
       <gl-emoji
-        data-fallback-src="/assets/emoji/a-bddbb39e8a1d35d42b7c08e7d47f63988cb4d8614b79f74e70b9c67c221896cc.png"
         data-name="a"
-        data-unicode-version="6.0"
-        title="negative squared latin capital letter a"
-      >
-        
-      🅰
-    
-      </gl-emoji>
+      />
       
   
     </span>
@@ -216,15 +174,8 @@ exports[`vue_shared/components/awards_list default matches snapshot 1`] = `
       
     
       <gl-emoji
-        data-fallback-src="/assets/emoji/b-722f9db9442e7c0fc0d0ac0f5291fbf47c6a0ac4d8abd42e97957da705fb82bf.png"
         data-name="b"
-        data-unicode-version="6.0"
-        title="negative squared latin capital letter b"
-      >
-        
-      🅱
-    
-      </gl-emoji>
+      />
       
   
     </span>

@@ -35,8 +35,10 @@ export const fetchFullReport = ({ state, commit, dispatch }) => {
     });
 };
 
-export const setSelectedSuite = ({ commit }, data) => commit(types.SET_SELECTED_SUITE, data);
-export const removeSelectedSuite = ({ commit }) => commit(types.SET_SELECTED_SUITE, {});
+export const setSelectedSuiteIndex = ({ commit }, data) =>
+  commit(types.SET_SELECTED_SUITE_INDEX, data);
+export const removeSelectedSuiteIndex = ({ commit }) =>
+  commit(types.SET_SELECTED_SUITE_INDEX, null);
 export const toggleLoading = ({ commit }) => commit(types.TOGGLE_LOADING);
 
 // prevent babel-plugin-rewire from generating an invalid default during karma tests

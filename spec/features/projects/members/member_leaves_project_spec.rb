@@ -20,7 +20,7 @@ RSpec.describe 'Projects > Members > Member leaves project' do
     expect(project.users.exists?(user.id)).to be_falsey
   end
 
-  it 'user leaves project by url param', :js, :quarantine do
+  it 'user leaves project by url param', :js, quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/35925' do
     visit project_path(project, leave: 1)
 
     page.accept_confirm

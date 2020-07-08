@@ -23,7 +23,7 @@ RSpec.describe 'Labels Hierarchy', :js do
   end
 
   shared_examples 'assigning labels from sidebar' do
-    it 'can assign all ancestors labels', :quarantine do
+    it 'can assign all ancestors labels', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/27952' do
       [grandparent_group_label, parent_group_label, project_label_1].each do |label|
         page.within('.block.labels') do
           find('.edit-link').click

@@ -55,7 +55,7 @@ RSpec.describe Gitlab::BackgroundMigration::MigrateBuildStage do
                                                       statuses[:pending]]
   end
 
-  it 'recovers from unique constraint violation only twice', :quarantine do
+  it 'recovers from unique constraint violation only twice', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/28128' do
     allow(described_class::Migratable::Stage)
       .to receive(:find_by).and_return(nil)
 

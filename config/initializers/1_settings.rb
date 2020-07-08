@@ -738,12 +738,6 @@ Settings.webpack.dev_server['host']    ||= 'localhost'
 Settings.webpack.dev_server['port']    ||= 3808
 
 #
-# ActionCable settings
-#
-Settings['action_cable'] ||= Settingslogic.new({})
-Settings.action_cable['worker_pool_size'] ||= 4
-
-#
 # Monitoring settings
 #
 Settings['monitoring'] ||= Settingslogic.new({})

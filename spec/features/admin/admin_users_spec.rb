@@ -38,7 +38,7 @@ RSpec.describe "Admin::Users" do
     end
 
     describe "view extra user information" do
-      it 'shows the user popover on hover', :js, :quarantine do
+      it 'shows the user popover on hover', :js, quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/11290' do
         expect(page).not_to have_selector('#__BV_popover_1__')
 
         first_user_link = page.first('.js-user-link')

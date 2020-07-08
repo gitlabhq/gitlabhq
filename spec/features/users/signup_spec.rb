@@ -98,7 +98,7 @@ RSpec.shared_examples 'Signup' do
       expect(page).to have_content("Invalid input, please avoid emojis")
     end
 
-    it 'shows a pending message if the username availability is being fetched', :quarantine do
+    it 'shows a pending message if the username availability is being fetched', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/31484' do
       fill_in 'new_user_username', with: 'new-user'
 
       expect(find('.username > .validation-pending')).not_to have_css '.hide'

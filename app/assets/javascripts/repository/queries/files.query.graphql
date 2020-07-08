@@ -14,7 +14,6 @@ query Files(
   $ref: String!
   $pageSize: Int!
   $nextPageCursor: String
-  $vueLfsEnabled: Boolean = false
 ) {
   project(fullPath: $projectPath) {
     repository {
@@ -47,7 +46,7 @@ query Files(
             node {
               ...TreeEntry
               webPath
-              lfsOid @include(if: $vueLfsEnabled)
+              lfsOid
             }
           }
           pageInfo {
