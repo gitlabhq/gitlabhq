@@ -32,11 +32,10 @@ GitLab can seamlessly deploy and manage Prometheus on a [connected Kubernetes cl
 #### Requirements
 
 - A [connected Kubernetes cluster](../clusters/index.md)
-- Helm Tiller [installed by GitLab](../clusters/index.md#installing-applications)
 
 #### Getting started
 
-Once you have a connected Kubernetes cluster with Helm installed, deploying a managed Prometheus is as easy as a single click.
+Once you have a connected Kubernetes cluster, deploying a managed Prometheus is as easy as a single click.
 
 1. Go to the **Operations > Kubernetes** page to view your connected clusters
 1. Select the cluster you would like to deploy Prometheus to
@@ -51,7 +50,7 @@ After completing the steps above, you will also need deployments in order to vie
 will help you to quickly create a deployment:
 
 1. Navigate to your project's **Operations > Kubernetes** page, and ensure that,
-   in addition to "Prometheus" and "Helm Tiller", you also have "Runner" and "Ingress"
+   in addition to "Prometheus", you also have "Runner" and "Ingress"
    installed. Once "Ingress" is installed, copy its endpoint.
 1. Navigate to your project's **Settings > CI/CD** page. In the Auto DevOps section,
    select a deployment strategy and save your changes.

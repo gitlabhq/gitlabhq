@@ -16,3 +16,5 @@ module IdeHelper
     }
   end
 end
+
+::IdeHelper.prepend_if_ee('::EE::IdeHelper')

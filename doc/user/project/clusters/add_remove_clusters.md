@@ -57,14 +57,10 @@ to manage the newly created cluster.
 NOTE: **Note:**
 Restricted service account for deployment was [introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/51716) in GitLab 11.5.
 
-When you install Helm into your cluster, the `tiller` service account
-is created with `cluster-admin` privileges in the `gitlab-managed-apps`
-namespace.
-
-This service account will be:
-
-- Added to the installed Helm Tiller.
-- Used by Helm to install and run [GitLab managed applications](index.md#installing-applications).
+The first time you install an application into your cluster, the `tiller` service
+account is created with `cluster-admin` privileges in the
+`gitlab-managed-apps` namespace. This service account will be used by Helm to
+install and run [GitLab managed applications](index.md#installing-applications).
 
 Helm will also create additional service accounts and other resources for each
 installed application. Consult the documentation of the Helm charts for each application
@@ -93,8 +89,8 @@ GitLab creates the following resources for RBAC clusters.
 | `gitlab`              | `ServiceAccount`     | `default` namespace                                                                                        | Creating a new cluster |
 | `gitlab-admin`        | `ClusterRoleBinding` | [`cluster-admin`](https://kubernetes.io/docs/reference/access-authn-authz/rbac/#user-facing-roles) roleRef | Creating a new cluster |
 | `gitlab-token`        | `Secret`             | Token for `gitlab` ServiceAccount                                                                          | Creating a new cluster |
-| `tiller`              | `ServiceAccount`     | `gitlab-managed-apps` namespace                                                                            | Installing Helm Tiller |
-| `tiller-admin`        | `ClusterRoleBinding` | `cluster-admin` roleRef                                                                                    | Installing Helm Tiller |
+| `tiller`              | `ServiceAccount`     | `gitlab-managed-apps` namespace                                                                            | Installing Helm charts |
+| `tiller-admin`        | `ClusterRoleBinding` | `cluster-admin` roleRef                                                                                    | Installing Helm charts |
 | Environment namespace | `Namespace`          | Contains all environment-specific resources                                                                | Deploying to a cluster |
 | Environment namespace | `ServiceAccount`     | Uses namespace of environment                                                                              | Deploying to a cluster |
 | Environment namespace | `Secret`             | Token for environment ServiceAccount                                                                       | Deploying to a cluster |
@@ -108,8 +104,8 @@ GitLab creates the following resources for ABAC clusters.
 |:----------------------|:---------------------|:-------------------------------------|:---------------------------|
 | `gitlab`              | `ServiceAccount`     | `default` namespace                         | Creating a new cluster |
 | `gitlab-token`        | `Secret`             | Token for `gitlab` ServiceAccount           | Creating a new cluster |
-| `tiller`              | `ServiceAccount`     | `gitlab-managed-apps` namespace             | Installing Helm Tiller |
-| `tiller-admin`        | `ClusterRoleBinding` | `cluster-admin` roleRef                     | Installing Helm Tiller |
+| `tiller`              | `ServiceAccount`     | `gitlab-managed-apps` namespace             | Installing Helm charts |
+| `tiller-admin`        | `ClusterRoleBinding` | `cluster-admin` roleRef                     | Installing Helm charts |
 | Environment namespace | `Namespace`          | Contains all environment-specific resources | Deploying to a cluster |
 | Environment namespace | `ServiceAccount`     | Uses namespace of environment               | Deploying to a cluster |
 | Environment namespace | `Secret`             | Token for environment ServiceAccount        | Deploying to a cluster |

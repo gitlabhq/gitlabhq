@@ -220,6 +220,18 @@ can configure this manually as follows:
      - alias convert_report="jq -r '([.resource_changes[]?.change.actions?]|flatten)|{\"create\":(map(select(.==\"create\"))|length),\"update\":(map(select(.==\"update\"))|length),\"delete\":(map(select(.==\"delete\"))|length)}'"
    ```
 
+   NOTE: **Note:**
+   In distributions that use Bash (for example, Ubuntu), `alias` statements are not
+   expanded in non-interactive mode. If your pipelines fail with the error
+   `convert_report: command not found`, alias expansion can be activated explicitly
+   by adding a `shopt` command to your script:
+
+   ```yaml
+   before_script:
+     - shopt -s expand_aliases
+     - alias convert_report="jq -r '([.resource_changes[]?.change.actions?]|flatten)|{\"create\":(map(select(.==\"create\"))|length),\"update\":(map(select(.==\"update\"))|length),\"delete\":(map(select(.==\"delete\"))|length)}'"
+   ```
+
 1. Define a `script` that runs `terraform plan` and `terraform show`. These commands
    pipe the output and convert the relevant bits into a store variable `PLAN_JSON`.
    This JSON is used to create a

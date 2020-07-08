@@ -26,3 +26,6 @@
         = label_tag 'merge_request[squash]', class: 'form-check-label' do
           Squash commits when merge request is accepted.
           = link_to icon('question-circle'), help_page_path('user/project/merge_requests/squash_and_merge'), target: '_blank'
+        - if project.squash_always?
+          .gl-text-gray-600
+            = _('Required in this project.')

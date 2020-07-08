@@ -1008,6 +1008,9 @@ msgstr ""
 msgid "A .NET Core console application template, customizable for any .NET Core project"
 msgstr ""
 
+msgid "A CI/CD pipeline must run and be successful before merge."
+msgstr ""
+
 msgid "A GitBook site that uses Netlify for CI/CD instead of GitLab, but still with all the other great GitLab features."
 msgstr ""
 
@@ -16625,9 +16628,6 @@ msgid "Pipelines for last year"
 msgstr ""
 
 msgid "Pipelines for merge requests are configured. A detached pipeline runs in the context of the merge request, and not against the merged result. Learn more in the documentation for Pipelines for Merged Results."
-msgstr ""
-
-msgid "Pipelines must succeed for merge requests to be eligible to merge. Please enable pipelines for this project to continue. For more information, see the %{linkStart}documentation.%{linkEnd}"
 msgstr ""
 
 msgid "Pipelines settings for '%{project_name}' were successfully updated."

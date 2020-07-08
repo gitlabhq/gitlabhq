@@ -337,7 +337,7 @@ module Clusters
     end
 
     def local_tiller_enabled?
-      Feature.enabled?(:managed_apps_local_tiller, clusterable, default_enabled: false)
+      Feature.enabled?(:managed_apps_local_tiller, clusterable, default_enabled: true)
     end
 
     private

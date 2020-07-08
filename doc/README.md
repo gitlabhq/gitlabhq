@@ -314,7 +314,7 @@ The following documentation relates to the DevOps **Configure** stage:
 | [Create Kubernetes clusters](user/project/clusters/add_remove_clusters.md#create-new-cluster)                                      | Use Kubernetes and GitLab.                                                |
 | [Executable Runbooks](user/project/clusters/runbooks/index.md)                                                                     | Documented procedures that explain how to carry out particular processes. |
 | [GitLab ChatOps](ci/chatops/README.md)                                                                                             | Interact with CI/CD jobs through chat services.                           |
-| [Installing Applications](user/project/clusters/index.md#installing-applications)                                                  | Deploy Helm, Ingress, and Prometheus on Kubernetes.                       |
+| [Installing Applications](user/project/clusters/index.md#installing-applications)                                                  | Install Helm charts such as Ingress and Prometheus on Kubernetes.         |
 | [Mattermost slash commands](user/project/integrations/mattermost_slash_commands.md)                                                | Enable and use slash commands from within Mattermost.                     |
 | [Multiple Kubernetes Clusters](user/project/clusters/index.md#multiple-kubernetes-clusters-premium) **(PREMIUM)**                  | Associate more than one Kubernetes clusters to your project.              |
 | [Protected variables](ci/variables/README.md#protect-a-custom-variable)                                                            | Restrict variables to protected branches and tags.                        |

@@ -2,7 +2,7 @@ import { __ } from '~/locale';
 
 export const MERGE_DISABLED_TEXT = __('You can only merge once the items above are resolved.');
 export const PIPELINE_MUST_SUCCEED_CONFLICT_TEXT = __(
-  'Pipelines must succeed for merge requests to be eligible to merge. Please enable pipelines for this project to continue. For more information, see the %{linkStart}documentation.%{linkEnd}',
+  'A CI/CD pipeline must run and be successful before merge.',
 );
 
 export default {

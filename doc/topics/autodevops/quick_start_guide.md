@@ -98,24 +98,10 @@ status on your [GCP dashboard](https://console.cloud.google.com/kubernetes).
 Next, you will install some applications on your cluster that are needed
 to take full advantage of Auto DevOps.
 
-## Install the package manager
-
-After creating your Kubernetes cluster, GitLab's Kubernetes integration provides
-[pre-defined applications](../../user/project/clusters/index.md#installing-applications)
-for you to install. To install them, you must next install Helm Tiller, the
-Kubernetes package manager for Kubernetes, to enable the installation of other applications.
-
-Next to **Helm Tiller**, click **Install**.
-
-![Cluster applications](img/guide_cluster_apps_v12_3.png)
-
-After installation completes, the page reloads, and you can install other
-applications.
-
 ## Install Ingress and Prometheus
 
-After installing **Helm Tiller**, you can install other applications that rely on it,
-including Ingress and Prometheus, which we will install in this quick start guide:
+After your cluster is running, you can install your first applications.
+In this guide, we will install Ingress and Prometheus:
 
 - Ingress - Provides load balancing, SSL termination, and name-based virtual hosting,
   using NGINX behind the scenes.

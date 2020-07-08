@@ -1,0 +1,5 @@
+---
+title: Use local Tiller by default for GitLab-managed apps
+merge_request: 35562
+author:
+type: changed

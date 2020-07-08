@@ -355,16 +355,19 @@ export default {
             </template>
             <template v-else>
               <div class="bold js-resolve-mr-widget-items-message">
-                <gl-sprintf
+                <div
                   v-if="hasPipelineMustSucceedConflict"
-                  :message="pipelineMustSucceedConflictText"
+                  class="gl-display-flex gl-align-items-center"
                 >
-                  <template #link="{ content }">
-                    <gl-link :href="mr.pipelineMustSucceedDocsPath" target="_blank">
-                      {{ content }}
-                    </gl-link>
-                  </template>
-                </gl-sprintf>
+                  <gl-sprintf :message="pipelineMustSucceedConflictText" />
+                  <gl-link
+                    :href="mr.pipelineMustSucceedDocsPath"
+                    target="_blank"
+                    class="gl-display-flex gl-ml-2"
+                  >
+                    <gl-icon name="question" />
+                  </gl-link>
+                </div>
                 <gl-sprintf v-else :message="mergeDisabledText" />
               </div>
             </template>

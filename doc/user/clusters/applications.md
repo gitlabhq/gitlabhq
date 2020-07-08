@@ -32,8 +32,6 @@ To see a list of available applications to install. For a:
 - [Group-level cluster](../group/clusters/index.md), navigate to your group's
   **{cloud-gear}** **Kubernetes** page.
 
-Install Helm first as it's used to install other applications.
-
 NOTE: **Note:**
 As of GitLab 11.6, Helm will be upgraded to the latest version supported
 by GitLab before installing any of the applications.
@@ -71,32 +69,30 @@ can lead to confusion during deployments.
 
 > - Introduced in GitLab 10.2 for project-level clusters.
 > - Introduced in GitLab 11.6 for group-level clusters.
-> - A local Tiller option was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/209736) in GitLab 13.2 behind a feature flag, disabled by default.
+> - A local Tiller option was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/209736) in GitLab 13.2 behind a feature flag, enabled by default.
 > - The feature flag for local Tiller is enabled on GitLab.com.
 
 [Helm](https://helm.sh/docs/) is a package manager for Kubernetes and is
-required to install all the other applications. It is installed in its
-own pod inside the cluster which can run the `helm` CLI in a safe
-environment.
+used to install the GitLab-managed apps. GitLab runs each `helm` command
+in a pod within the `gitlab-managed-apps` namespace inside the cluster.
 
-The [Tiller](https://v2.helm.sh/docs/glossary/#tiller) server used by Helm is
-installed into the `gitlab-managed-apps` namespace, but this is changing to
-instead use a *local Tiller* server. It can be enabled or disabled using the
-`managed_apps_local_tiller` feature flag. When the local Tiller feature is
-enabled, the Helm application does not need to be installed and will not be
-shown in the list of applications.
+As of GitLab 13.2, the integration uses a local
+[Tiller](https://v2.helm.sh/docs/glossary/#tiller) by default. When using a
+local Tiller, the Helm application does not need to be installed and will not
+be shown in the list of applications.
 
 NOTE: **Note:**
-Installing Helm as a GitLab-managed App behind a proxy is not supported,
-but a [workaround](../../topics/autodevops/index.md#installing-helm-behind-a-proxy)
+GitLab's Helm integration does not support installing applications behind a proxy,
+but a [workaround](../../topics/autodevops/index.md#install-applications-behind-a-proxy)
 is available.
 
 ### Enable or disable local Tiller **(CORE ONLY)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/209736) in GitLab 13.2
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/209736) in GitLab 13.2
+> - The option to disable local Tiller is [planned for removal](https://gitlab.com/gitlab-org/gitlab/-/issues/209736) in GitLab 13.3
 
 Local Tiller is under development, but is ready for production use. It is
-deployed behind a feature flag that is **disabled by default**.
+deployed behind a feature flag that is **enabled by default**.
 [GitLab administrators with access to the GitLab Rails console](../../administration/feature_flags.md)
 can enable it for your instance.
 

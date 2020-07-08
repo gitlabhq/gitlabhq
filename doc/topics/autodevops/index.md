@@ -279,8 +279,8 @@ To add a different cluster for each environment:
 1. Navigate to your project's **{cloud-gear}** **Operations > Kubernetes**.
 1. Create the Kubernetes clusters with their respective environment scope, as
    described from the table above.
-1. After creating the clusters, navigate to each cluster and install Helm Tiller
-   and Ingress. Wait for the Ingress IP address to be assigned.
+1. After creating the clusters, navigate to each cluster and install
+   Ingress. Wait for the Ingress IP address to be assigned.
 1. Make sure you've [configured your DNS](#auto-devops-base-domain) with the
    specified Auto DevOps domains.
 1. Navigate to each cluster's page, through **{cloud-gear}** **Operations > Kubernetes**,
@@ -301,9 +301,9 @@ No documented way of using private container registry with Auto DevOps exists.
 We strongly advise using GitLab Container Registry with Auto DevOps to
 simplify configuration and prevent any unforeseen issues.
 
-### Installing Helm behind a proxy
+### Install applications behind a proxy
 
-GitLab does not support installing [Helm as a GitLab-managed App](../../user/clusters/applications.md#helm) when
+GitLab's Helm integration does not support installing applications when
 behind a proxy. Users who want to do so must inject their proxy settings
 into the installation pods at runtime, such as by using a
 [`PodPreset`](https://kubernetes.io/docs/concepts/workloads/pods/podpreset/):

@@ -92,19 +92,13 @@ status on your [GCP dashboard](https://console.cloud.google.com/kubernetes).
 The next step is to install some applications on your cluster that are needed
 to take full advantage of Auto DevOps.
 
-## Installing Helm and Ingress
+## Install Ingress
 
 GitLab's Kubernetes integration comes with some
 [pre-defined applications](../../user/project/clusters/index.md#installing-applications)
 for you to install.
 
 ![Cluster applications](../autodevops/img/guide_cluster_apps_v12_3.png)
-
-The first one to install is Helm Tiller, a package manager for Kubernetes, which
-is needed in order to install the rest of the applications. Go ahead and click
-its **Install** button.
-Once it is installed, the other applications that rely on it will each have their
-**Install** buttons enabled.
 
 For this guide, we need to install Ingress. Ingress provides load balancing,
 SSL termination, and name-based virtual hosting, using NGINX behind

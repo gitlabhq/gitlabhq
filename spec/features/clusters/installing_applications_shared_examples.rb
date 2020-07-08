@@ -177,23 +177,19 @@ RSpec.shared_examples "installing applications for a cluster" do |managed_apps_l
       end
 
       it 'shows status transition' do
-        def email_form_value
-          page.find('.js-email').value
-        end
-
         page.within('.js-cluster-application-row-cert_manager') do
-          expect(email_form_value).to eq(cluster.user.email)
+          expect(page).to have_field('Issuer Email', with: cluster.user.email)
           expect(page).to have_css('.js-cluster-application-install-button', exact_text: 'Installing')
 
           page.find('.js-email').set("new_email@example.org")
           Clusters::Cluster.last.application_cert_manager.make_installing!
 
-          expect(email_form_value).to eq('new_email@example.org')
+          expect(page).to have_field('Issuer Email', with: 'new_email@example.org')
           expect(page).to have_css('.js-cluster-application-install-button', exact_text: 'Installing')
 
           Clusters::Cluster.last.application_cert_manager.make_installed!
 
-          expect(email_form_value).to eq('new_email@example.org')
+          expect(page).to have_field('Issuer Email', with: 'new_email@example.org')
           expect(page).to have_css('.js-cluster-application-uninstall-button', exact_text: 'Uninstall')
         end
 

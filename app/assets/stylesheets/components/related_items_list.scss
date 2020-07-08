@@ -348,6 +348,10 @@ $item-remove-button-space: 42px;
 
 @media only screen and (min-width: 1500px) {
   .card-header {
+    .health-label-short {
+      display: none;
+    }
+
     .health-label-long {
       display: block;
     }
