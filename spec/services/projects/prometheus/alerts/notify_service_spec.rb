@@ -102,6 +102,41 @@ RSpec.describe Projects::Prometheus::Alerts::NotifyService do
     let(:payload_alert_firing) { payload_raw['alerts'].first }
     let(:token) { 'token' }
 
+    context 'with environment specific clusters' do
+      let(:prd_cluster) do
+        cluster
+      end
+
+      let(:stg_cluster) do
+        create(:cluster, :provided_by_user, projects: [project], enabled: true, environment_scope: 'stg/*')
+      end
+
+      let(:stg_environment) do
+        create(:environment, project: project, name: 'stg/1')
+      end
+
+      let(:alert_firing) do
+        create(:prometheus_alert, project: project, environment: stg_environment)
+      end
+
+      before do
+        create(:clusters_applications_prometheus, :installed,
+               cluster: prd_cluster, alert_manager_token: token)
+        create(:clusters_applications_prometheus, :installed,
+               cluster: stg_cluster, alert_manager_token: nil)
+      end
+
+      context 'without token' do
+        let(:token_input) { nil }
+
+        it_behaves_like 'notifies alerts'
+      end
+
+      context 'with token' do
+        it_behaves_like 'no notifications', http_status: :unauthorized
+      end
+    end
+
     context 'with project specific cluster' do
       using RSpec::Parameterized::TableSyntax
 

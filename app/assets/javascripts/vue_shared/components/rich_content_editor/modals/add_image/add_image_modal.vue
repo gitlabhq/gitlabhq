@@ -16,8 +16,15 @@ export default {
     GlTab,
   },
   mixins: [glFeatureFlagMixin()],
+  props: {
+    imageRoot: {
+      type: String,
+      required: true,
+    },
+  },
   data() {
     return {
+      file: null,
       urlError: null,
       imageUrl: null,
       description: null,
@@ -38,6 +45,7 @@ export default {
   },
   methods: {
     show() {
+      this.file = null;
       this.urlError = null;
       this.imageUrl = null;
       this.description = null;
@@ -66,7 +74,9 @@ export default {
         return;
       }
 
-      this.$emit('addImage', { file, altText: altText || file.name });
+      const imageUrl = `${this.imageRoot}${file.name}`;
+
+      this.$emit('addImage', { imageUrl, file, altText: altText || file.name });
     },
     submitURL(event) {
       if (!this.validateUrl()) {

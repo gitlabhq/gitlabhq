@@ -69,11 +69,6 @@ describe('Suggestion Diff component', () => {
     expect(addToBatchBtn.html().includes('Add suggestion to batch')).toBe(true);
   });
 
-  it('renders correct tooltip message for apply button', () => {
-    createComponent();
-    expect(wrapper.vm.tooltipMessage).toBe('This also resolves this thread');
-  });
-
   describe('when apply suggestion is clicked', () => {
     beforeEach(() => {
       createComponent();
@@ -232,11 +227,18 @@ describe('Suggestion Diff component', () => {
       expect(findAddToBatchButton().exists()).toBe(false);
       expect(findApplyButton().attributes('disabled')).toBe('true');
     });
+  });
 
-    it('renders correct tooltip message for apply button', () => {
-      expect(wrapper.vm.tooltipMessage).toBe(
-        "Can't apply as this line has changed or the suggestion already matches its content.",
-      );
+  describe('tooltip message for apply button', () => {
+    it('renders correct tooltip message when button is applicable', () => {
+      createComponent();
+      expect(wrapper.vm.tooltipMessage).toBe('This also resolves this thread');
+    });
+
+    it('renders the inapplicable reason in the tooltip when button is not applicable', () => {
+      const inapplicableReason = 'lorem';
+      createComponent({ canApply: false, inapplicableReason });
+      expect(wrapper.vm.tooltipMessage).toBe(inapplicableReason);
     });
   });
 });

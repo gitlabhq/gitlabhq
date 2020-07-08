@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.shared_context 'valid cluster create params' do
+  let(:clusterable) { Clusters::Instance.new }
   let(:params) do
     {
       name: 'test-cluster',
@@ -11,12 +12,14 @@ RSpec.shared_context 'valid cluster create params' do
         num_nodes: 1,
         machine_type: 'machine_type-a',
         legacy_abac: 'true'
-      }
+      },
+      clusterable: clusterable
     }
   end
 end
 
 RSpec.shared_context 'invalid cluster create params' do
+  let(:clusterable) { Clusters::Instance.new }
   let(:params) do
     {
       name: 'test-cluster',
@@ -26,7 +29,9 @@ RSpec.shared_context 'invalid cluster create params' do
         zone: 'us-central1-a',
         num_nodes: 1,
         machine_type: 'machine_type-a'
-      }
+      },
+      clusterable: clusterable
+
     }
   end
 end

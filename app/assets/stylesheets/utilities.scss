@@ -108,12 +108,3 @@
 .gl-transition-property-stroke {
   transition-property: stroke;
 }
-
-// temporary class till giltab-ui one is merged
-.gl-border-t-2 {
-  border-top-width: $gl-border-size-2;
-}
-
-.gl-border-b-2 {
-  border-bottom-width: $gl-border-size-2;
-}

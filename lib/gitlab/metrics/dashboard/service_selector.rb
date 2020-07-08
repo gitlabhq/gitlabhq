@@ -13,6 +13,8 @@ module Gitlab
           include Gitlab::Utils::StrongMemoize
 
           SERVICES = [
+            ::Metrics::Dashboard::ClusterMetricsEmbedService,
+            ::Metrics::Dashboard::ClusterDashboardService,
             ::Metrics::Dashboard::GitlabAlertEmbedService,
             ::Metrics::Dashboard::CustomMetricEmbedService,
             ::Metrics::Dashboard::GrafanaMetricEmbedService,
@@ -51,5 +53,3 @@ module Gitlab
     end
   end
 end
-
-Gitlab::Metrics::Dashboard::ServiceSelector.prepend_if_ee('EE::Gitlab::Metrics::Dashboard::ServiceSelector')

@@ -73,21 +73,6 @@ RSpec.describe 'Milestones through GroupQuery' do
           submilestone_1.to_global_id.to_s, submilestone_2.to_global_id.to_s
         )
       end
-
-      context 'when group_milestone_descendants is disabled' do
-        before do
-          stub_feature_flags(group_milestone_descendants: false)
-        end
-
-        it 'ignores descendant milestones' do
-          fetch_milestones(user, args)
-
-          expect_array_response(
-            milestone_1.to_global_id.to_s, milestone_2.to_global_id.to_s,
-            milestone_3.to_global_id.to_s, milestone_4.to_global_id.to_s
-          )
-        end
-      end
     end
 
     def fetch_milestones(user = nil, args = {})

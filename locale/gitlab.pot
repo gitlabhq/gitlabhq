@@ -259,6 +259,11 @@ msgid_plural "%d tags"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "%d unassigned issue"
+msgid_plural "%d unassigned issues"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%d unresolved thread"
 msgid_plural "%d unresolved threads"
 msgstr[0] ""
@@ -351,6 +356,9 @@ msgid "%{deployLinkStart}Use a template to deploy to ECS%{deployLinkEnd}, or use
 msgstr ""
 
 msgid "%{description}- Sentry event: %{errorUrl}- First seen: %{firstSeen}- Last seen: %{lastSeen} %{countLabel}: %{count}%{userCountLabel}: %{userCount}"
+msgstr ""
+
+msgid "%{due_date} (Past due)"
 msgstr ""
 
 msgid "%{duration}ms"
@@ -477,6 +485,12 @@ msgid "%{markdownDocsLinkStart}Markdown%{markdownDocsLinkEnd} and %{quickActions
 msgstr ""
 
 msgid "%{mergeLength}/%{usersLength} can merge"
+msgstr ""
+
+msgid "%{milestone_name} (Past due)"
+msgstr ""
+
+msgid "%{milestone} (expired)"
 msgstr ""
 
 msgid "%{mrText}, this issue will be closed automatically."
@@ -4049,9 +4063,6 @@ msgid "Can't apply as %{phrase} changed in a more recent version."
 msgstr ""
 
 msgid "Can't apply as the source branch was deleted."
-msgstr ""
-
-msgid "Can't apply as this line has changed or the suggestion already matches its content."
 msgstr ""
 
 msgid "Can't apply this suggestion."
@@ -12479,9 +12490,6 @@ msgstr ""
 msgid "Instance administrators group already exists"
 msgstr ""
 
-msgid "Instance does not support multiple Kubernetes clusters"
-msgstr ""
-
 msgid "Instance license"
 msgstr ""
 
@@ -12806,7 +12814,7 @@ msgstr ""
 msgid "Issues with comments, merge requests with diffs and comments, labels, milestones, snippets, and other project entities"
 msgstr ""
 
-msgid "Issues with no epics assigned"
+msgid "Issues with no epic assigned"
 msgstr ""
 
 msgid "Issues, merge requests, pushes, and comments."
@@ -19924,6 +19932,9 @@ msgstr ""
 msgid "SAML for %{group_name}"
 msgstr ""
 
+msgid "SAST Configuration"
+msgstr ""
+
 msgid "SHA256"
 msgstr ""
 
@@ -21524,6 +21535,9 @@ msgid "Something went wrong while fetching the packages list."
 msgstr ""
 
 msgid "Something went wrong while initializing the OpenAPI viewer"
+msgstr ""
+
+msgid "Something went wrong while inserting your image. Please try again."
 msgstr ""
 
 msgid "Something went wrong while merging this merge request. Please try again."

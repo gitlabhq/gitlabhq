@@ -266,20 +266,6 @@ RSpec.describe API::GroupClusters do
       end
     end
 
-    context 'when user tries to add multiple clusters' do
-      before do
-        create(:cluster, :provided_by_gcp, :group,
-               groups: [group])
-
-        post api("/groups/#{group.id}/clusters/user", current_user), params: cluster_params
-      end
-
-      it 'responds with 400' do
-        expect(response).to have_gitlab_http_status(:bad_request)
-        expect(json_response['message']['base'].first).to eq(_('Instance does not support multiple Kubernetes clusters'))
-      end
-    end
-
     context 'non-authorized user' do
       before do
         post api("/groups/#{group.id}/clusters/user", developer_user), params: cluster_params
@@ -289,6 +275,42 @@ RSpec.describe API::GroupClusters do
         expect(response).to have_gitlab_http_status(:forbidden)
 
         expect(json_response['message']).to eq('403 Forbidden')
+      end
+    end
+  end
+
+  describe 'PUT /groups/:id/clusters/:cluster_id' do
+    let(:api_url) { 'https://kubernetes.example.com' }
+
+    let(:platform_kubernetes_attributes) do
+      {
+        api_url: api_url,
+        token: 'sample-token'
+      }
+    end
+
+    let(:cluster_params) do
+      {
+        name: 'test-cluster',
+        environment_scope: 'test/*',
+        platform_kubernetes_attributes: platform_kubernetes_attributes
+      }
+    end
+
+    context 'when another cluster exists' do
+      before do
+        create(:cluster, :provided_by_gcp, :group,
+               groups: [group])
+
+        post api("/groups/#{group.id}/clusters/user", current_user), params: cluster_params
+      end
+
+      it 'responds with 201' do
+        expect(response).to have_gitlab_http_status(:created)
+      end
+
+      it 'allows multiple clusters to be associated to group' do
+        expect(group.reload.clusters.count).to eq(2)
       end
     end
   end

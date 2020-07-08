@@ -81,7 +81,6 @@ describe('BoardsSelector', () => {
           assignee_id: null,
           labels: [],
         },
-        milestonePath: `${TEST_HOST}/milestone/path`,
         boardBaseUrl: `${TEST_HOST}/board/base/url`,
         hasMissingBoards: false,
         canAdminBoard: true,

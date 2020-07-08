@@ -65,6 +65,7 @@ module Gitlab
         # service-level data
         by_instance_by_job_by_type_memory = topology_all_service_memory(client)
         by_instance_by_job_process_count = topology_all_service_process_count(client)
+        by_instance_by_job_server_types = topology_all_service_server_types(client)
 
         instances = Set.new(by_instance_mem.keys + by_instance_cpus.keys)
         instances.map do |instance|
@@ -72,20 +73,22 @@ module Gitlab
             node_memory_total_bytes: by_instance_mem[instance],
             node_cpus: by_instance_cpus[instance],
             node_services:
-              topology_node_services(instance, by_instance_by_job_process_count, by_instance_by_job_by_type_memory)
+              topology_node_services(
+                instance, by_instance_by_job_process_count, by_instance_by_job_by_type_memory, by_instance_by_job_server_types
+              )
           }.compact
         end
       end
 
       def topology_node_memory(client)
         query_safely('gitlab_usage_ping:node_memory_total_bytes:avg', 'node_memory', fallback: {}) do |query|
-          aggregate_by_instance(client, query)
+          aggregate_by_instance(client, one_week_average(query))
         end
       end
 
       def topology_node_cpus(client)
         query_safely('gitlab_usage_ping:node_cpus:count', 'node_cpus', fallback: {}) do |query|
-          aggregate_by_instance(client, query)
+          aggregate_by_instance(client, one_week_average(query))
         end
       end
 
@@ -100,24 +103,30 @@ module Gitlab
       def topology_service_memory_rss(client)
         query_safely(
           'gitlab_usage_ping:node_service_process_resident_memory_bytes:avg', 'service_rss', fallback: []
-        ) { |query| aggregate_by_labels(client, query) }
+        ) { |query| aggregate_by_labels(client, one_week_average(query)) }
       end
 
       def topology_service_memory_uss(client)
         query_safely(
           'gitlab_usage_ping:node_service_process_unique_memory_bytes:avg', 'service_uss', fallback: []
-        ) { |query| aggregate_by_labels(client, query) }
+        ) { |query| aggregate_by_labels(client, one_week_average(query)) }
       end
 
       def topology_service_memory_pss(client)
         query_safely(
           'gitlab_usage_ping:node_service_process_proportional_memory_bytes:avg', 'service_pss', fallback: []
-        ) { |query| aggregate_by_labels(client, query) }
+        ) { |query| aggregate_by_labels(client, one_week_average(query)) }
       end
 
       def topology_all_service_process_count(client)
         query_safely(
           'gitlab_usage_ping:node_service_process:count', 'service_process_count', fallback: []
+        ) { |query| aggregate_by_labels(client, one_week_average(query)) }
+      end
+
+      def topology_all_service_server_types(client)
+        query_safely(
+          'gitlab_usage_ping:node_service_app_server_workers:sum', 'service_workers', fallback: []
         ) { |query| aggregate_by_labels(client, query) }
       end
 
@@ -133,11 +142,12 @@ module Gitlab
         fallback
       end
 
-      def topology_node_services(instance, all_process_counts, all_process_memory)
+      def topology_node_services(instance, all_process_counts, all_process_memory, all_server_types)
         # returns all node service data grouped by service name as the key
         instance_service_data =
           topology_instance_service_process_count(instance, all_process_counts)
             .deep_merge(topology_instance_service_memory(instance, all_process_memory))
+            .deep_merge(topology_instance_service_server_types(instance, all_server_types))
 
         # map to list of hashes where service names become values instead, and remove
         # unknown services, since they might not be ours
@@ -173,6 +183,12 @@ module Gitlab
         result
       end
 
+      def topology_instance_service_server_types(instance, all_instance_data)
+        topology_data_for_instance(instance, all_instance_data).to_h do |metric, _value|
+          [metric['job'], { server: metric['server'] }]
+        end
+      end
+
       def topology_data_for_instance(instance, all_instance_data)
         all_instance_data.filter { |metric, _value| metric['instance'] == instance }
       end
@@ -186,12 +202,12 @@ module Gitlab
       end
 
       def aggregate_by_instance(client, query)
-        client.aggregate(one_week_average(query)) { |metric| drop_port(metric['instance']) }
+        client.aggregate(query) { |metric| drop_port(metric['instance']) }
       end
 
       # Will retain a composite key that values are mapped to
       def aggregate_by_labels(client, query)
-        client.aggregate(one_week_average(query)) do |metric|
+        client.aggregate(query) do |metric|
           metric['instance'] = drop_port(metric['instance'])
           metric
         end

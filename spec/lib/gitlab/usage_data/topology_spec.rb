@@ -28,7 +28,8 @@ RSpec.describe Gitlab::UsageData::Topology do
             receive_node_service_memory_rss_query,
             receive_node_service_memory_uss_query,
             receive_node_service_memory_pss_query,
-            receive_node_service_process_count_query
+            receive_node_service_process_count_query,
+            receive_node_service_app_server_workers_query
           )
 
           expect(subject[:topology]).to eq({
@@ -45,7 +46,8 @@ RSpec.describe Gitlab::UsageData::Topology do
                     process_count: 10,
                     process_memory_rss: 300,
                     process_memory_uss: 301,
-                    process_memory_pss: 302
+                    process_memory_pss: 302,
+                    server: 'puma'
                   },
                   {
                     name: 'sidekiq',
@@ -68,6 +70,10 @@ RSpec.describe Gitlab::UsageData::Topology do
                     name: 'redis',
                     process_count: 1,
                     process_memory_rss: 402
+                  },
+                  {
+                    name: 'web',
+                    server: 'unicorn'
                   }
                 ]
               }
@@ -85,7 +91,8 @@ RSpec.describe Gitlab::UsageData::Topology do
             receive_node_service_memory_rss_query(result: []),
             receive_node_service_memory_uss_query(result: []),
             receive_node_service_memory_pss_query,
-            receive_node_service_process_count_query
+            receive_node_service_process_count_query,
+            receive_node_service_app_server_workers_query(result: [])
           )
 
           expect(subject[:topology]).to eq({
@@ -94,7 +101,8 @@ RSpec.describe Gitlab::UsageData::Topology do
               { 'app_requests' => 'empty_result' },
               { 'node_memory' => 'empty_result' },
               { 'service_rss' => 'empty_result' },
-              { 'service_uss' => 'empty_result' }
+              { 'service_uss' => 'empty_result' },
+              { 'service_workers' => 'empty_result' }
             ],
             nodes: [
               {
@@ -145,7 +153,8 @@ RSpec.describe Gitlab::UsageData::Topology do
               { 'service_rss' => 'Gitlab::PrometheusClient::ConnectionError' },
               { 'service_uss' => 'Gitlab::PrometheusClient::ConnectionError' },
               { 'service_pss' => 'Gitlab::PrometheusClient::ConnectionError' },
-              { 'service_process_count' => 'Gitlab::PrometheusClient::ConnectionError' }
+              { 'service_process_count' => 'Gitlab::PrometheusClient::ConnectionError' },
+              { 'service_workers' => 'Gitlab::PrometheusClient::ConnectionError' }
             ],
             nodes: []
           })
@@ -295,6 +304,23 @@ RSpec.describe Gitlab::UsageData::Topology do
         {
           'metric' => { 'instance' => 'instance2:9000', 'job' => 'not-a-gitlab-service' },
           'value' => [1000, '42']
+        }
+      ])
+  end
+
+  def receive_node_service_app_server_workers_query(result: nil)
+    receive(:query)
+      .with(/app_server_workers/, an_instance_of(Hash))
+      .and_return(result || [
+        # instance 1
+        {
+          'metric' => { 'instance' => 'instance1:8080', 'job' => 'gitlab-rails', 'server' => 'puma' },
+          'value' => [1000, '2']
+        },
+        # instance 2
+        {
+          'metric' => { 'instance' => 'instance2:8080', 'job' => 'gitlab-rails', 'server' => 'unicorn' },
+          'value' => [1000, '1']
         }
       ])
   end

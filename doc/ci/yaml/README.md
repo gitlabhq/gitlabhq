@@ -298,6 +298,26 @@ determine whether or not a pipeline is created. It currently accepts a single
 `rules:` key that operates similarly to [`rules:` defined within jobs](#rules),
 enabling dynamic configuration of the pipeline.
 
+If you are new to GitLab CI/CD and `workflow: rules`, you may find the [`workflow:rules` templates](#workflowrules-templates) useful.
+
+To define your own `workflow: rules`, the configuration options currently available are:
+
+- [`if`](#rulesif): Define a rule.
+- [`when`](#when): May be set to `always` or `never` only. If not provided, the default value is `always`​.
+
+The list of `if` rules is evaluated until a single one is matched. If none
+match, the last `when` will be used:
+
+```yaml
+workflow:
+  rules:
+    - if: $CI_COMMIT_REF_NAME =~ /-wip$/
+      when: never
+    - if: $CI_COMMIT_TAG
+      when: never
+    - when: always
+```
+
 #### `workflow:rules` templates
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/217732) in GitLab 13.0.
@@ -333,24 +353,6 @@ It is [included](#include) as follows:
 ```yaml
 include:
   - template: 'Workflows/MergeRequest-Pipelines.gitlab-ci.yml'
-```
-
-If you prefer to define your own rules, the configuration options currently available are:​
-
-- [`if`](#rulesif): Define a rule.
-- [`when`](#when): May be set to `always` or `never` only. If not provided, the default value is `always`​.
-
-The list of `if` rules is evaluated until a single one is matched. If none
-match, the last `when` will be used:
-
-```yaml
-workflow:
-  rules:
-    - if: $CI_COMMIT_REF_NAME =~ /-wip$/
-      when: never
-    - if: $CI_COMMIT_TAG
-      when: never
-    - when: always
 ```
 
 ### `include`

@@ -20,38 +20,6 @@ RSpec.describe Projects::Prometheus::AlertPresenter do
     end
   end
 
-  shared_context 'self-managed prometheus alert with metrics data' do
-    let!(:environment) { create(:environment, project: project, name: 'production') }
-
-    let(:title) { 'title' }
-    let(:y_label) { 'y_label' }
-    let(:query) { 'avg(metric) > 1.0' }
-    let(:embed_content) do
-      {
-        panel_groups: [{
-          panels: [{
-            type: 'line-graph',
-            title: title,
-            y_label: y_label,
-            metrics: [{ query_range: query }]
-          }]
-        }]
-      }
-    end
-
-    before do
-      payload['startsAt'] = starts_at
-      payload['generatorURL'] = "http://host?g0.expr=#{CGI.escape(query)}"
-
-      payload['labels'] ||= {}
-      payload['labels']['gitlab_environment_name'] = 'production'
-
-      payload['annotations'] ||= {}
-      payload['annotations']['title'] = 'title'
-      payload['annotations']['gitlab_y_label'] = 'y_label'
-    end
-  end
-
   describe '#project_full_path' do
     subject { presenter.project_full_path }
 
@@ -214,30 +182,30 @@ RSpec.describe Projects::Prometheus::AlertPresenter do
             Timecop.freeze(starts_at) { example.run }
           end
 
+          before do
+            payload.delete('startsAt')
+          end
+
           it { is_expected.to eq(expected_markdown) }
         end
 
         context 'with a starting time available' do
-          before do
-            payload['startsAt'] = starts_at
-          end
-
           it { is_expected.to eq(expected_markdown) }
         end
       end
 
       context 'for gitlab-managed prometheus alerts' do
-        include_context 'gitlab alert'
+        include_context 'gitlab-managed prometheus alert attributes'
 
-        before do
-          payload['labels'] = { 'gitlab_alert_id' => metric_id }
+        let(:alert) do
+          create(:alerting_alert, project: project, metric_id: prometheus_metric_id, payload: payload)
         end
 
         it_behaves_like 'markdown with metrics embed'
       end
 
       context 'for alerts from a self-managed prometheus' do
-        include_context 'self-managed prometheus alert with metrics data'
+        include_context 'self-managed prometheus alert attributes'
 
         it_behaves_like 'markdown with metrics embed'
 
@@ -369,28 +337,6 @@ RSpec.describe Projects::Prometheus::AlertPresenter do
 
       it { is_expected.to eq(expected_link) }
     end
-
-    describe '#metrics_dashboard_url' do
-      let(:starts_at) { '2018-03-12T09:06:00Z' }
-      let(:expected_url) do
-        metrics_dashboard_project_prometheus_alert_url(
-          project,
-          metric_id,
-          environment_id: gitlab_alert.environment_id,
-          embedded: true,
-          end: '2018-03-12T09:36:00Z',
-          start: '2018-03-12T08:36:00Z'
-        )
-      end
-
-      subject { presenter.metrics_dashboard_url }
-
-      before do
-        payload['startsAt'] = starts_at
-      end
-
-      it { is_expected.to eq(expected_url) }
-    end
   end
 
   context 'without gitlab alert' do
@@ -431,33 +377,29 @@ RSpec.describe Projects::Prometheus::AlertPresenter do
 
       it { is_expected.to eq(expected_link) }
     end
-
-    describe '#metrics_dashboard_url' do
-      subject { presenter.metrics_dashboard_url }
-
-      it { is_expected.to be_nil }
-    end
   end
 
-  context 'with self-managed prometheus alert with metrics data' do
-    include_context 'self-managed prometheus alert with metrics data'
+  describe '#metrics_dashboard_url' do
+    subject { presenter.metrics_dashboard_url }
 
-    describe '#metrics_dashboard_url' do
-      let(:starts_at) { '2018-03-12T09:06:00Z' }
-      let(:expected_url) do
-        metrics_dashboard_project_environment_url(
-          project,
-          environment,
-          embed_json: embed_content.to_json,
-          embedded: true,
-          end: '2018-03-12T09:36:00Z',
-          start: '2018-03-12T08:36:00Z'
-        )
-      end
+    context 'for a non-prometheus alert' do
+      it { is_expected.to be_nil }
+    end
 
-      subject { presenter.metrics_dashboard_url }
+    context 'for a self-managed prometheus alert' do
+      include_context 'self-managed prometheus alert attributes'
 
-      it { is_expected.to eq(expected_url) }
+      let(:prometheus_payload) { payload }
+
+      it { is_expected.to eq(dashboard_url_for_alert) }
+    end
+
+    context 'for a gitlab-managed prometheus alert' do
+      include_context 'gitlab-managed prometheus alert attributes'
+
+      let(:prometheus_payload) { payload }
+
+      it { is_expected.to eq(dashboard_url_for_alert) }
     end
   end
 end

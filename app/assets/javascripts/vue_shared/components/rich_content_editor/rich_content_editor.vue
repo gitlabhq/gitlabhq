@@ -19,8 +19,6 @@ import {
   getMarkdown,
 } from './services/editor_service';
 
-import { getUrl } from './services/image_service';
-
 export default {
   components: {
     ToastEditor: () =>
@@ -53,6 +51,11 @@ export default {
       type: String,
       required: false,
       default: EDITOR_PREVIEW_STYLE,
+    },
+    imageRoot: {
+      type: String,
+      required: true,
+      validator: prop => prop.endsWith('/'),
     },
   },
   data() {
@@ -104,10 +107,8 @@ export default {
       const image = { imageUrl, altText };
 
       if (file) {
-        image.imageUrl = getUrl(file);
-        // TODO - persist images locally (local image repository)
+        this.$emit('uploadImage', { file, imageUrl });
         // TODO - ensure that the actual repo URL for the image is used in Markdown mode
-        // TODO - upload images to the project repository (on submit)
       }
 
       addImage(this.editorInstance, image);
@@ -130,6 +131,6 @@ export default {
       @change="onContentChanged"
       @load="onLoad"
     />
-    <add-image-modal ref="addImageModal" @addImage="onAddImage" />
+    <add-image-modal ref="addImageModal" :image-root="imageRoot" @addImage="onAddImage" />
   </div>
 </template>

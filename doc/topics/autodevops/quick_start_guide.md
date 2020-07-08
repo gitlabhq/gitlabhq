@@ -291,7 +291,7 @@ all within GitLab. Despite its automatic nature, Auto DevOps can also be configu
 and customized to fit your workflow. Here are some helpful resources for further reading:
 
 1. [Auto DevOps](index.md)
-1. [Multiple Kubernetes clusters](index.md#using-multiple-kubernetes-clusters-premium) **(PREMIUM)**
+1. [Multiple Kubernetes clusters](index.md#using-multiple-kubernetes-clusters)
 1. [Incremental rollout to production](customize.md#incremental-rollout-to-production-premium) **(PREMIUM)**
 1. [Disable jobs you don't need with environment variables](customize.md#environment-variables)
 1. [Use a static IP for your cluster](../../user/clusters/applications.md#using-a-static-ip)

@@ -67,11 +67,11 @@ export default {
     onDismissError() {
       this.submitChangesError = null;
     },
-    onSubmit({ content }) {
+    onSubmit({ content, images }) {
       this.content = content;
-      this.submitChanges();
+      this.submitChanges(images);
     },
-    submitChanges() {
+    submitChanges(images) {
       this.isSavingChanges = true;
 
       this.$apollo
@@ -83,6 +83,7 @@ export default {
               username: this.appData.username,
               sourcePath: this.appData.sourcePath,
               content: this.content,
+              images,
             },
           },
         })

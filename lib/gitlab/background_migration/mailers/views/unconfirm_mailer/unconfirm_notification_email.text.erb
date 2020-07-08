@@ -1,0 +1,14 @@
+Dear GitLab user,
+
+As part of our commitment to keeping GitLab secure, we have identified and addressed a vulnerability in GitLab that allowed some users to bypass the email verification process in a recent security release. 
+
+Security release: https://about.gitlab.com/releases/2020/05/27/security-release-13-0-1-released
+
+As a precautionary measure, you will need to re-verify some of your account's email addresses before continuing to use GitLab. Sorry for the inconvenience!
+
+We have already sent the re-verification email with a subject line of "Confirmation instructions" from <%= @verification_from_mail %>. 
+Please feel free to contribute any questions or comments to this issue: https://gitlab.com/gitlab-com/www-gitlab-com/-/issues/7942
+
+If you are not "<%= @user.username %>", please report this to our administrator. Report link: <%= new_abuse_report_url(user_id: @user.id) %>
+
+Thank you for being a GitLab user!

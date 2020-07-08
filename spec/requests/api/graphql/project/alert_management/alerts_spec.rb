@@ -136,28 +136,6 @@ RSpec.describe 'getting Alert Management Alerts' do
           it { expect(alerts.size).to eq(0) }
         end
       end
-
-      context 'with prometheus payload' do
-        let_it_be(:gitlab_alert) { create(:prometheus_alert, project: project) }
-        let_it_be(:metric_id) { gitlab_alert.prometheus_metric_id }
-        let_it_be(:prometheus_payload) { { 'labels' => { 'gitlab_alert_id' => metric_id }, 'startsAt' => '2018-03-12T09:06:00Z' } }
-        let_it_be(:self_managed_alert) { create(:alert_management_alert, :prometheus, project: project, payload: prometheus_payload) }
-
-        let(:expected_url) do
-          Gitlab::Routing.url_helpers.metrics_dashboard_project_prometheus_alert_url(
-            project,
-            metric_id,
-            environment_id: gitlab_alert.environment_id,
-            start: '2018-03-12T08:36:00Z',
-            end: '2018-03-12T09:36:00Z',
-            embedded: true
-          )
-        end
-
-        it 'includes a metrics dashboard url' do
-          expect(first_alert).to include('metricsDashboardUrl' => expected_url)
-        end
-      end
     end
   end
 end

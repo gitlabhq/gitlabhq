@@ -77,6 +77,10 @@ RSpec.describe 'project routing' do
   #                          DELETE /:id(.:format)          projects#destroy
   # preview_markdown_project POST   /:id/preview_markdown(.:format) projects#preview_markdown
   describe ProjectsController, 'routing' do
+    it 'to #index' do
+      expect(get('/projects')).to route_to('projects#index')
+    end
+
     it 'to #create' do
       expect(post('/projects')).to route_to('projects#create')
     end

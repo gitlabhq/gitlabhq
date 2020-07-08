@@ -2,6 +2,7 @@
 
 module Clusters
   class Cluster < ApplicationRecord
+    prepend HasEnvironmentScope
     include Presentable
     include Gitlab::Utils::StrongMemoize
     include FromUnion
@@ -81,6 +82,7 @@ module Clusters
     validate :no_groups, unless: :group_type?
     validate :no_projects, unless: :project_type?
     validate :unique_management_project_environment_scope
+    validate :unique_environment_scope
 
     after_save :clear_reactive_cache!
 
@@ -350,6 +352,12 @@ module Clusters
         .where.not(id: id)
 
       if duplicate_management_clusters.any?
+        errors.add(:environment_scope, 'cannot add duplicated environment scope')
+      end
+    end
+
+    def unique_environment_scope
+      if clusterable.present? && clusterable.clusters.where(environment_scope: environment_scope).where.not(id: id).exists?
         errors.add(:environment_scope, 'cannot add duplicated environment scope')
       end
     end

@@ -38,6 +38,11 @@ export default {
       type: String,
       required: true,
     },
+    inapplicableReason: {
+      type: String,
+      required: false,
+      default: null,
+    },
   },
   data() {
     return {
@@ -52,9 +57,7 @@ export default {
       return this.isApplyingSingle || this.isApplyingBatch;
     },
     tooltipMessage() {
-      return this.canApply
-        ? __('This also resolves this thread')
-        : __("Can't apply as this line has changed or the suggestion already matches its content.");
+      return this.canApply ? __('This also resolves this thread') : this.inapplicableReason;
     },
     isDisableButton() {
       return this.isApplying || !this.canApply;

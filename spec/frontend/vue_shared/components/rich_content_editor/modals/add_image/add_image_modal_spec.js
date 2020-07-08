@@ -6,6 +6,7 @@ import { IMAGE_TABS } from '~/vue_shared/components/rich_content_editor/constant
 
 describe('Add Image Modal', () => {
   let wrapper;
+  const propsData = { imageRoot: 'path/to/root/' };
 
   const findModal = () => wrapper.find(GlModal);
   const findTabs = () => wrapper.find(GlTabs);
@@ -14,7 +15,10 @@ describe('Add Image Modal', () => {
   const findDescriptionInput = () => wrapper.find({ ref: 'descriptionInput' });
 
   beforeEach(() => {
-    wrapper = shallowMount(AddImageModal, { provide: { glFeatures: { sseImageUploads: true } } });
+    wrapper = shallowMount(AddImageModal, {
+      provide: { glFeatures: { sseImageUploads: true } },
+      propsData,
+    });
   });
 
   describe('when content is loaded', () => {
@@ -44,9 +48,10 @@ describe('Add Image Modal', () => {
       it('validates the file', () => {
         const preventDefault = jest.fn();
         const description = 'some description';
+        const file = { name: 'some_file.png' };
 
         wrapper.vm.$refs.uploadImageTab = { validateFile: jest.fn() };
-        wrapper.setData({ description, tabIndex: IMAGE_TABS.UPLOAD_TAB });
+        wrapper.setData({ file, description, tabIndex: IMAGE_TABS.UPLOAD_TAB });
 
         findModal().vm.$emit('ok', { preventDefault });
 

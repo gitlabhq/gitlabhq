@@ -19929,6 +19929,8 @@ CREATE INDEX index_prometheus_metrics_on_group ON public.prometheus_metrics USIN
 
 CREATE UNIQUE INDEX index_prometheus_metrics_on_identifier ON public.prometheus_metrics USING btree (identifier);
 
+CREATE UNIQUE INDEX index_prometheus_metrics_on_identifier_and_project_id ON public.prometheus_metrics USING btree (identifier, project_id);
+
 CREATE INDEX index_prometheus_metrics_on_project_id ON public.prometheus_metrics USING btree (project_id);
 
 CREATE INDEX index_protected_branch_merge_access ON public.protected_branch_merge_access_levels USING btree (protected_branch_id);
@@ -20492,6 +20494,8 @@ CREATE INDEX tmp_index_ci_builds_lock_version ON public.ci_builds USING btree (i
 CREATE INDEX tmp_index_ci_pipelines_lock_version ON public.ci_pipelines USING btree (id) WHERE (lock_version IS NULL);
 
 CREATE INDEX tmp_index_ci_stages_lock_version ON public.ci_stages USING btree (id) WHERE (lock_version IS NULL);
+
+CREATE INDEX tmp_index_for_email_unconfirmation_migration ON public.emails USING btree (id) WHERE (confirmed_at IS NOT NULL);
 
 CREATE UNIQUE INDEX unique_merge_request_metrics_by_merge_request_id ON public.merge_request_metrics USING btree (merge_request_id);
 
@@ -23538,6 +23542,7 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200610130002
 20200613104045
 20200615083635
+20200615111857
 20200615121217
 20200615123055
 20200615193524
@@ -23579,6 +23584,7 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200625190458
 20200626060151
 20200626130220
+20200629192638
 20200630110826
 20200701093859
 20200702123805

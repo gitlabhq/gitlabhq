@@ -101,6 +101,12 @@ RSpec.describe ClustersHelper do
     end
   end
 
+  describe '#has_multiple_clusters?' do
+    subject { helper.has_multiple_clusters? }
+
+    it { is_expected.to be_truthy }
+  end
+
   describe '#cluster_type_label' do
     subject { helper.cluster_type_label(cluster_type) }
 

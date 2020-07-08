@@ -21,7 +21,32 @@ const createBranch = (projectId, branch) =>
     throw new Error(SUBMIT_CHANGES_BRANCH_ERROR);
   });
 
-const commitContent = (projectId, message, branch, sourcePath, content) => {
+const createImageActions = (images, markdown) => {
+  const actions = [];
+
+  if (!markdown) {
+    return actions;
+  }
+
+  images.forEach((imageContent, filePath) => {
+    const imageExistsInMarkdown = path => new RegExp(`!\\[([^[\\]\\n]*)\\](\\(${path})\\)`); // matches the image markdown syntax: ![<any-string-except-newline>](<path>)
+
+    if (imageExistsInMarkdown(filePath).test(markdown)) {
+      actions.push(
+        convertObjectPropsToSnakeCase({
+          encoding: 'base64',
+          action: 'create',
+          content: imageContent,
+          filePath,
+        }),
+      );
+    }
+  });
+
+  return actions;
+};
+
+const commitContent = (projectId, message, branch, sourcePath, content, images) => {
   Tracking.event(document.body.dataset.page, TRACKING_ACTION_CREATE_COMMIT);
 
   return Api.commitMultiple(
@@ -35,6 +60,7 @@ const commitContent = (projectId, message, branch, sourcePath, content) => {
           filePath: sourcePath,
           content,
         }),
+        ...createImageActions(images, content),
       ],
     }),
   ).catch(() => {
@@ -62,7 +88,7 @@ const createMergeRequest = (
   });
 };
 
-const submitContentChanges = ({ username, projectId, sourcePath, content }) => {
+const submitContentChanges = ({ username, projectId, sourcePath, content, images }) => {
   const branch = generateBranchName(username);
   const mergeRequestTitle = sprintf(s__(`StaticSiteEditor|Update %{sourcePath} file`), {
     sourcePath,
@@ -73,7 +99,7 @@ const submitContentChanges = ({ username, projectId, sourcePath, content }) => {
     .then(({ data: { web_url: url } }) => {
       Object.assign(meta, { branch: { label: branch, url } });
 
-      return commitContent(projectId, mergeRequestTitle, branch, sourcePath, content);
+      return commitContent(projectId, mergeRequestTitle, branch, sourcePath, content, images);
     })
     .then(({ data: { short_id: label, web_url: url } }) => {
       Object.assign(meta, { commit: { label, url } });

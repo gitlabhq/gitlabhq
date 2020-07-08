@@ -45,7 +45,8 @@
   }
 }
 
-.boards-list {
+.boards-list,
+.board-swimlanes {
   height: calc(100vh - #{$issue-board-list-difference-xs});
   overflow-x: scroll;
   min-height: 200px;
@@ -576,29 +577,8 @@
   }
 }
 
-.board-epics-swimlanes {
+.board-swimlanes {
   overflow-x: auto;
-  min-height: calc(100vh - #{$issue-board-list-difference-xs});
-
-  @include media-breakpoint-only(sm) {
-    min-height: calc(100vh - #{$issue-board-list-difference-sm});
-  }
-
-  @include media-breakpoint-up(md) {
-    min-height: calc(100vh - #{$issue-board-list-difference-md});
-  }
-
-  .with-performance-bar & {
-    min-height: calc(100vh - #{$issue-board-list-difference-xs} - #{$performance-bar-height});
-
-    @include media-breakpoint-only(sm) {
-      min-height: calc(100vh - #{$issue-board-list-difference-sm} - #{$performance-bar-height});
-    }
-
-    @include media-breakpoint-up(md) {
-      min-height: calc(100vh - #{$issue-board-list-difference-md} - #{$performance-bar-height});
-    }
-  }
 }
 
 .board-header-collapsed-info-icon:hover {

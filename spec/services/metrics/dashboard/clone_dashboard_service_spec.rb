@@ -81,7 +81,18 @@ RSpec.describe Metrics::Dashboard::CloneDashboardService, :use_clean_rails_memor
           allow(::Gitlab::Metrics::Dashboard::Processor).to receive(:new).and_return(double(process: file_content_hash))
         end
 
-        it_behaves_like 'valid dashboard cloning process', ::Metrics::Dashboard::SystemDashboardService::DASHBOARD_PATH, [::Gitlab::Metrics::Dashboard::Stages::CommonMetricsInserter, ::Gitlab::Metrics::Dashboard::Stages::CustomMetricsInserter, ::Gitlab::Metrics::Dashboard::Stages::Sorter]
+        it_behaves_like 'valid dashboard cloning process', ::Metrics::Dashboard::SystemDashboardService::DASHBOARD_PATH,
+                        [
+                          ::Gitlab::Metrics::Dashboard::Stages::CommonMetricsInserter,
+                          ::Gitlab::Metrics::Dashboard::Stages::CustomMetricsInserter,
+                          ::Gitlab::Metrics::Dashboard::Stages::Sorter
+                        ]
+
+        it_behaves_like 'valid dashboard cloning process', ::Metrics::Dashboard::ClusterDashboardService::DASHBOARD_PATH,
+                        [
+                          ::Gitlab::Metrics::Dashboard::Stages::CommonMetricsInserter,
+                          ::Gitlab::Metrics::Dashboard::Stages::Sorter
+                        ]
 
         it_behaves_like 'valid dashboard cloning process',
           ::Metrics::Dashboard::SelfMonitoringDashboardService::DASHBOARD_PATH,

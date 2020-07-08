@@ -1,5 +1,5 @@
 #content
-  = email_default_heading("#{sanitize_name(@resource.user.name)}, you've added an additional email!")
+  = email_default_heading("#{sanitize_name(@resource.user.name)}, confirm your email address now!")
   %p Click the link below to confirm your email address (#{@resource.email})
   #cta
     = link_to 'Confirm your email address', confirmation_url(@resource, confirmation_token: @token)

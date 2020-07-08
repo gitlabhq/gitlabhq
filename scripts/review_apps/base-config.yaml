@@ -137,10 +137,10 @@ postgresql:
     enabled: false
   resources:
     requests:
-      cpu: 347m
+      cpu: 550m
       memory: 250M
     limits:
-      cpu: 520m
+      cpu: 825m
       memory: 375M
 prometheus:
   install: false

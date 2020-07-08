@@ -64,11 +64,12 @@ to:
   (EKS) using GitLab's UI.
 - Add an integration to an existing cluster from any Kubernetes platform.
 
-### Multiple Kubernetes clusters **(PREMIUM)**
+### Multiple Kubernetes clusters
 
-> Introduced in [GitLab Premium](https://about.gitlab.com/pricing/) 10.3.
+> - Introduced in [GitLab Premium](https://about.gitlab.com/pricing/) 10.3
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/35094) to GitLab core in 13.2.
 
-With GitLab Premium, you can associate more than one Kubernetes cluster to your
+You can associate more than one Kubernetes cluster to your
 project. That way you can have different clusters for different environments,
 like dev, staging, production, and so on.
 

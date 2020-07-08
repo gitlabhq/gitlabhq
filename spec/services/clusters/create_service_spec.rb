@@ -53,10 +53,51 @@ RSpec.describe Clusters::CreateService do
       include_context 'valid cluster create params'
       let!(:cluster) { create(:cluster, :provided_by_gcp, :production_environment, projects: [project]) }
 
-      it 'does not create a cluster' do
-        expect(ClusterProvisionWorker).not_to receive(:perform_async)
-        expect { subject }.to raise_error(ArgumentError).and change { Clusters::Cluster.count }.by(0)
+      it 'creates another cluster' do
+        expect(ClusterProvisionWorker).to receive(:perform_async)
+        expect { subject }.to change { Clusters::Cluster.count }.by(1)
       end
+    end
+  end
+
+  context 'when another cluster exists' do
+    let!(:cluster) { create(:cluster, :provided_by_gcp, :production_environment, projects: [project]) }
+
+    context 'when correct params' do
+      let(:params) do
+        {
+          name: 'test-cluster',
+          provider_type: :gcp,
+          provider_gcp_attributes: {
+            gcp_project_id: 'gcp-project',
+            zone: 'us-central1-a',
+            num_nodes: 1,
+            machine_type: 'machine_type-a',
+            legacy_abac: 'true'
+          },
+          clusterable: project
+        }
+      end
+
+      include_examples 'create cluster service success'
+    end
+
+    context 'when invalid params' do
+      let(:params) do
+        {
+          name: 'test-cluster',
+          provider_type: :gcp,
+          provider_gcp_attributes: {
+            gcp_project_id: '!!!!!!!',
+            zone: 'us-central1-a',
+            num_nodes: 1,
+            machine_type: 'machine_type-a'
+          },
+          clusterable: project
+        }
+      end
+
+      include_examples 'create cluster service error'
     end
   end
 

@@ -94,7 +94,8 @@
     margin-bottom: 16px;
   }
 
-  .boards-list {
+  .boards-list,
+  .board-swimlanes {
     height: calc(100vh - #{$header-height + $breadcrumb-min-height + $performance-bar-height + $system-footer-height + $gl-padding-32});
   }
 }

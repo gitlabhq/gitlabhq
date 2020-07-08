@@ -1,0 +1,6 @@
+- autodevops_help_url = help_page_path('topics/autodevops/index.md', anchor: 'using-multiple-kubernetes-clusters')
+- help_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe
+- help_link_end = '</a>'.html_safe
+
+%p
+  = s_('ClusterIntegration|If you are setting up multiple clusters and are using Auto DevOps, %{help_link_start}read this first%{help_link_end}.').html_safe % { help_link_start: help_link_start % { url: autodevops_help_url }, help_link_end: help_link_end }

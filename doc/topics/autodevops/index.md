@@ -248,11 +248,11 @@ TIP: **Tip:**
 Use the [blue-green deployment](../../ci/environments/incremental_rollouts.md#blue-green-deployment) technique
 to minimize downtime and risk.
 
-## Using multiple Kubernetes clusters **(PREMIUM)**
+## Using multiple Kubernetes clusters
 
 When using Auto DevOps, you can deploy different environments to
 different Kubernetes clusters, due to the 1:1 connection
-[existing between them](../../user/project/clusters/index.md#multiple-kubernetes-clusters-premium).
+[existing between them](../../user/project/clusters/index.md#multiple-kubernetes-clusters).
 
 The [Deploy Job template](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Jobs/Deploy.gitlab-ci.yml)
 used by Auto DevOps currently defines 3 environment names:

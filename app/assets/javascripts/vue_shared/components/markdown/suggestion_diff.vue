@@ -68,6 +68,7 @@ export default {
       :is-applying-batch="suggestion.is_applying_batch"
       :batch-suggestions-count="batchSuggestionsCount"
       :help-page-path="helpPagePath"
+      :inapplicable-reason="suggestion.inapplicable_reason"
       @apply="applySuggestion"
       @applyBatch="applySuggestionBatch"
       @addToBatch="addSuggestionToBatch"

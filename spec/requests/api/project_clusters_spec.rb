@@ -40,7 +40,7 @@ RSpec.describe API::ProjectClusters do
         expect(response).to include_pagination_headers
       end
 
-      it 'onlies include authorized clusters' do
+      it 'only includes authorized clusters' do
         cluster_ids = json_response.map { |cluster| cluster['id'] }
 
         expect(response).to have_gitlab_http_status(:ok)
@@ -258,21 +258,6 @@ RSpec.describe API::ProjectClusters do
       end
     end
 
-    context 'when user tries to add multiple clusters' do
-      before do
-        create(:cluster, :provided_by_gcp, :project,
-               projects: [project])
-
-        post api("/projects/#{project.id}/clusters/user", current_user), params: cluster_params
-      end
-
-      it 'responds with 400' do
-        expect(response).to have_gitlab_http_status(:bad_request)
-        expect(json_response['message']['base'].first)
-          .to eq(_('Instance does not support multiple Kubernetes clusters'))
-      end
-    end
-
     context 'non-authorized user' do
       before do
         post api("/projects/#{project.id}/clusters/user", developer_user), params: cluster_params
@@ -281,6 +266,44 @@ RSpec.describe API::ProjectClusters do
       it 'responds with 403' do
         expect(response).to have_gitlab_http_status(:forbidden)
         expect(json_response['message']).to eq('403 Forbidden')
+      end
+    end
+  end
+
+  describe 'POST /projects/:id/clusters/user with multiple clusters' do
+    let(:api_url) { 'https://kubernetes.example.com' }
+    let(:namespace) { project.path }
+
+    let(:platform_kubernetes_attributes) do
+      {
+        api_url: api_url,
+        token: 'sample-token',
+        namespace: namespace
+      }
+    end
+
+    let(:cluster_params) do
+      {
+        name: 'test-cluster',
+        environment_scope: 'production/*',
+        platform_kubernetes_attributes: platform_kubernetes_attributes
+      }
+    end
+
+    context 'when another cluster exists' do
+      before do
+        create(:cluster, :provided_by_gcp, :project,
+               projects: [project])
+
+        post api("/projects/#{project.id}/clusters/user", current_user), params: cluster_params
+      end
+
+      it 'responds with 201' do
+        expect(response).to have_gitlab_http_status(:created)
+      end
+
+      it 'allows multiple clusters to be associated to project' do
+        expect(project.reload.clusters.count).to eq(2)
       end
     end
   end

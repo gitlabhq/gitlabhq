@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe AlertManagement::PrometheusAlertPresenter do
   let_it_be(:project) { create(:project) }
-  let_it_be(:prometheus_payload) do
+  let_it_be(:payload) do
     {
       'annotations' => {
         'title' => 'Alert title',
@@ -15,8 +15,8 @@ RSpec.describe AlertManagement::PrometheusAlertPresenter do
       'generatorURL' => 'http://8d467bd4607a:9090/graph?g0.expr=vector%281%29&g0.tab=1'
     }
   end
-  let_it_be(:alert) do
-    create(:alert_management_alert, :prometheus, project: project, payload: prometheus_payload)
+  let(:alert) do
+    create(:alert_management_alert, :prometheus, project: project, payload: payload)
   end
 
   subject(:presenter) { described_class.new(alert) }
@@ -47,8 +47,22 @@ RSpec.describe AlertManagement::PrometheusAlertPresenter do
   end
 
   describe '#metrics_dashboard_url' do
-    it 'is not defined' do
-      expect(presenter.metrics_dashboard_url).to be_nil
+    subject { presenter.metrics_dashboard_url }
+
+    context 'for a non-prometheus alert' do
+      it { is_expected.to be_nil }
+    end
+
+    context 'for a self-managed prometheus alert' do
+      include_context 'self-managed prometheus alert attributes'
+
+      it { is_expected.to eq(dashboard_url_for_alert) }
+    end
+
+    context 'for a gitlab-managed prometheus alert' do
+      include_context 'gitlab-managed prometheus alert attributes'
+
+      it { is_expected.to eq(dashboard_url_for_alert) }
     end
   end
 end

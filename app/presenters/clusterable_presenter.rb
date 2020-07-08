@@ -13,8 +13,7 @@ class ClusterablePresenter < Gitlab::View::Presenter::Delegated
   end
 
   def can_add_cluster?
-    can?(current_user, :add_cluster, clusterable) &&
-      (has_no_clusters? || multiple_clusters_available?)
+    can?(current_user, :add_cluster, clusterable)
   end
 
   def can_create_cluster?
@@ -80,17 +79,6 @@ class ClusterablePresenter < Gitlab::View::Presenter::Delegated
 
   def learn_more_link
     raise NotImplementedError
-  end
-
-  private
-
-  # Overridden on EE module
-  def multiple_clusters_available?
-    false
-  end
-
-  def has_no_clusters?
-    clusterable.clusters.empty?
   end
 end
 

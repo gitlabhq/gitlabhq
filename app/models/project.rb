@@ -190,6 +190,10 @@ class Project < ApplicationRecord
   has_many :forks, through: :forked_to_members, source: :project, inverse_of: :forked_from_project
   has_many :fork_network_projects, through: :fork_network, source: :projects
 
+  # Packages
+  has_many :packages, class_name: 'Packages::Package'
+  has_many :package_files, through: :packages, class_name: 'Packages::PackageFile'
+
   has_one :import_state, autosave: true, class_name: 'ProjectImportState', inverse_of: :project
   has_one :import_export_upload, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :export_jobs, class_name: 'ProjectExportJob'
@@ -1700,10 +1704,10 @@ class Project < ApplicationRecord
 
   def pages_url
     url = pages_group_url
-    url_path = full_path.partition('/').last.downcase
+    url_path = full_path.partition('/').last
 
     # If the project path is the same as host, we serve it as group page
-    return url if url == "#{Settings.pages.protocol}://#{url_path}"
+    return url if url == "#{Settings.pages.protocol}://#{url_path}".downcase
 
     "#{url}/#{url_path}"
   end
@@ -2420,6 +2424,22 @@ class Project < ApplicationRecord
     false
   end
   alias_method :service_desk_enabled?, :service_desk_enabled
+
+  def root_namespace
+    if namespace.has_parent?
+      namespace.root_ancestor
+    else
+      namespace
+    end
+  end
+
+  def package_already_taken?(package_name)
+    namespace.root_ancestor.all_projects
+      .joins(:packages)
+      .where.not(id: id)
+      .merge(Packages::Package.with_name(package_name))
+      .exists?
+  end
 
   private
 

@@ -65,7 +65,7 @@ RSpec.describe 'User uploads new design', :js do
         visit project_issue_path(project, issue)
       end
 
-      it 'uploads designs' do
+      it 'uploads designs', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/225616' do
         attach_file(:design_file, logo_fixture, make_visible: true)
 
         expect(page).to have_selector('.js-design-list-item', count: 1)

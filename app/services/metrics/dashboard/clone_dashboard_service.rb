@@ -10,29 +10,29 @@ module Metrics
 
       ALLOWED_FILE_TYPE = '.yml'
       USER_DASHBOARDS_DIR = ::Metrics::Dashboard::CustomDashboardService::DASHBOARD_ROOT
+      SEQUENCES = {
+        ::Metrics::Dashboard::SystemDashboardService::DASHBOARD_PATH => [
+          ::Gitlab::Metrics::Dashboard::Stages::CommonMetricsInserter,
+          ::Gitlab::Metrics::Dashboard::Stages::CustomMetricsInserter,
+          ::Gitlab::Metrics::Dashboard::Stages::Sorter
+        ].freeze,
+
+        ::Metrics::Dashboard::SelfMonitoringDashboardService::DASHBOARD_PATH => [
+          ::Gitlab::Metrics::Dashboard::Stages::CustomMetricsInserter
+        ].freeze,
+
+        ::Metrics::Dashboard::ClusterDashboardService::DASHBOARD_PATH => [
+          ::Gitlab::Metrics::Dashboard::Stages::CommonMetricsInserter,
+          ::Gitlab::Metrics::Dashboard::Stages::Sorter
+        ].freeze
+      }.freeze
 
       steps :check_push_authorized,
-        :check_branch_name,
-        :check_file_type,
-        :check_dashboard_template,
-        :create_file,
-        :refresh_repository_method_caches
-
-      class << self
-        def sequences
-          @sequences ||= {
-            ::Metrics::Dashboard::SystemDashboardService::DASHBOARD_PATH => [
-              ::Gitlab::Metrics::Dashboard::Stages::CommonMetricsInserter,
-              ::Gitlab::Metrics::Dashboard::Stages::CustomMetricsInserter,
-              ::Gitlab::Metrics::Dashboard::Stages::Sorter
-            ].freeze,
-
-            ::Metrics::Dashboard::SelfMonitoringDashboardService::DASHBOARD_PATH => [
-              ::Gitlab::Metrics::Dashboard::Stages::CustomMetricsInserter
-            ].freeze
-          }.freeze
-        end
-      end
+            :check_branch_name,
+            :check_file_type,
+            :check_dashboard_template,
+            :create_file,
+            :refresh_repository_method_caches
 
       def execute
         execute_steps
@@ -173,10 +173,8 @@ module Metrics
       end
 
       def sequence
-        self.class.sequences[dashboard_template] || []
+        SEQUENCES[dashboard_template] || []
       end
     end
   end
 end
-
-Metrics::Dashboard::CloneDashboardService.prepend_if_ee('EE::Metrics::Dashboard::CloneDashboardService')

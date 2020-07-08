@@ -11,6 +11,7 @@ class PrometheusMetric < ApplicationRecord
   validates :group, presence: true
   validates :y_label, presence: true
   validates :unit, presence: true
+  validates :identifier, uniqueness: { scope: :project_id }, allow_nil: true
 
   validates :project, presence: true, unless: :common?
   validates :project, absence: true, if: :common?

@@ -11,6 +11,7 @@ RSpec.describe PrometheusMetric do
   it { is_expected.to validate_presence_of(:title) }
   it { is_expected.to validate_presence_of(:query) }
   it { is_expected.to validate_presence_of(:group) }
+  it { is_expected.to validate_uniqueness_of(:identifier).scoped_to(:project_id).allow_nil }
 
   describe 'common metrics' do
     using RSpec::Parameterized::TableSyntax

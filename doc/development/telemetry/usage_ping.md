@@ -701,6 +701,7 @@ appear to be associated to any of the services running, since they all appear to
 | `process_memory_rss`                                      | `topology > nodes > node_services`   | `enablement`  |                  |         | The average Resident Set Size of a service process                         |
 | `process_memory_uss`                                      | `topology > nodes > node_services`   | `enablement`  |                  |         | The average Unique Set Size of a service process                           |
 | `process_memory_pss`                                      | `topology > nodes > node_services`   | `enablement`  |                  |         | The average Proportional Set Size of a service process                     |
+| `server`                                                  | `topology > nodes > node_services`   | `enablement`  |                  |         | The type of web server used (Unicorn or Puma)                              |
 
 ## Example Usage Ping payload
 
@@ -912,7 +913,8 @@ The following is example content of the Usage Ping payload.
             "process_count": 16,
             "process_memory_pss": 233349888,
             "process_memory_rss": 788220927,
-            "process_memory_uss": 195295487
+            "process_memory_uss": 195295487,
+            "server": "puma"
           },
           {
             "name": "sidekiq",

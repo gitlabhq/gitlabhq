@@ -96,16 +96,15 @@ with [domain expertise](#domain-experts).
 1. If your merge request includes documentation changes, it must be **approved
    by a [Technical writer](https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers)**, based on
    the appropriate [product category](https://about.gitlab.com/handbook/product/product-categories/).
-1. If your merge request includes Quality and non-Quality-related changes (*3*), it must be **approved
+1. If your merge request includes end-to-end **and** non-end-to-end changes (*3*), it must be **approved
    by a [Software Engineer in Test](https://about.gitlab.com/handbook/engineering/quality/#individual-contributors)**.
-1. If your merge request includes _only_ Quality-related changes (*3*), it must be **approved
-   by a [Quality maintainer](https://about.gitlab.com/handbook/engineering/projects/#gitlab_maintainers_qa)**.
+1. If your merge request only includes end-to-end changes (*3*) **or** if the MR author is a [Software Engineer in Test](https://about.gitlab.com/handbook/engineering/quality/#individual-contributors), it must be **approved by a [Quality maintainer](https://about.gitlab.com/handbook/engineering/projects/#gitlab_maintainers_qa)**
 
 - (*1*): Please note that specs other than JavaScript specs are considered backend code.
 - (*2*): We encourage you to seek guidance from a database maintainer if your merge
   request is potentially introducing expensive queries. It is most efficient to comment
   on the line of code in question with the SQL queries so they can give their advice.
-- (*3*): Quality-related changes include all files within the `qa` directory.
+- (*3*): End-to-end changes include all files within the `qa` directory.
 
 #### Security requirements
 

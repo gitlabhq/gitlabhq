@@ -1666,6 +1666,14 @@ RSpec.describe Project do
       let(:project_name) { 'Project' }
 
       it { is_expected.to eq("http://group.example.com/project") }
+
+      context 'mixed case path' do
+        before do
+          project.update!(path: 'Project')
+        end
+
+        it { is_expected.to eq("http://group.example.com/Project") }
+      end
     end
   end
 
@@ -2905,28 +2913,73 @@ RSpec.describe Project do
 
     subject { project.deployment_variables(environment: environment, kubernetes_namespace: namespace) }
 
-    before do
-      expect(project).to receive(:deployment_platform).with(environment: environment)
-        .and_return(deployment_platform)
-    end
-
-    context 'when project has no deployment platform' do
-      let(:deployment_platform) { nil }
-
-      it { is_expected.to eq [] }
-    end
-
-    context 'when project has a deployment platform' do
-      let(:platform_variables) { %w(platform variables) }
-      let(:deployment_platform) { double }
-
+    context 'when the deployment platform is stubbed' do
       before do
-        expect(deployment_platform).to receive(:predefined_variables)
-          .with(project: project, environment_name: environment, kubernetes_namespace: namespace)
-          .and_return(platform_variables)
+        expect(project).to receive(:deployment_platform).with(environment: environment)
+          .and_return(deployment_platform)
       end
 
-      it { is_expected.to eq platform_variables }
+      context 'when project has a deployment platform' do
+        let(:platform_variables) { %w(platform variables) }
+        let(:deployment_platform) { double }
+
+        before do
+          expect(deployment_platform).to receive(:predefined_variables)
+            .with(project: project, environment_name: environment, kubernetes_namespace: namespace)
+            .and_return(platform_variables)
+        end
+
+        it { is_expected.to eq platform_variables }
+      end
+
+      context 'when project has no deployment platform' do
+        let(:deployment_platform) { nil }
+
+        it { is_expected.to eq [] }
+      end
+    end
+
+    context 'when project has a deployment platforms' do
+      let(:project) { create(:project) }
+
+      let!(:default_cluster) do
+        create(:cluster,
+                :not_managed,
+                platform_type: :kubernetes,
+                projects: [project],
+                environment_scope: '*',
+                platform_kubernetes: default_cluster_kubernetes)
+      end
+
+      let!(:review_env_cluster) do
+        create(:cluster,
+                :not_managed,
+                platform_type: :kubernetes,
+                projects: [project],
+                environment_scope: 'review/*',
+                platform_kubernetes: review_env_cluster_kubernetes)
+      end
+
+      let(:default_cluster_kubernetes) { create(:cluster_platform_kubernetes, token: 'default-AAA') }
+      let(:review_env_cluster_kubernetes) { create(:cluster_platform_kubernetes, token: 'review-AAA') }
+
+      context 'when environment name is review/name' do
+        let!(:environment) { create(:environment, project: project, name: 'review/name') }
+
+        it 'returns variables from this service' do
+          expect(project.deployment_variables(environment: 'review/name'))
+            .to include(key: 'KUBE_TOKEN', value: 'review-AAA', public: false, masked: true)
+        end
+      end
+
+      context 'when environment name is other' do
+        let!(:environment) { create(:environment, project: project, name: 'staging/name') }
+
+        it 'returns variables from this service' do
+          expect(project.deployment_variables(environment: 'staging/name'))
+            .to include(key: 'KUBE_TOKEN', value: 'default-AAA', public: false, masked: true)
+        end
+      end
     end
   end
 

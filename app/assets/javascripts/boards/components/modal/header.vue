@@ -17,10 +17,6 @@ export default {
       type: Number,
       required: true,
     },
-    milestonePath: {
-      type: String,
-      required: true,
-    },
     labelPath: {
       type: String,
       required: true,

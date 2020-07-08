@@ -72,8 +72,9 @@ module Gitlab
         return "same timezone as `@#{author.username}`" if diff.zero?
 
         ahead_or_behind = diff < 0 ? 'behind' : 'ahead'
+        pluralized_hours = pluralize(diff.abs, 'hour', 'hours')
 
-        "#{diff.abs} hours #{ahead_or_behind} `@#{author.username}`"
+        "#{pluralized_hours} #{ahead_or_behind} `@#{author.username}`"
       end
 
       def has_capability?(project, category, kind, labels)
@@ -94,6 +95,12 @@ module Gitlab
 
       def capabilities(project)
         Array(projects.fetch(project, []))
+      end
+
+      def pluralize(count, singular, plural)
+        word = count == 1 || count.to_s =~ /^1(\.0+)?$/ ? singular : plural
+
+        "#{count || 0} #{word}"
       end
     end
   end

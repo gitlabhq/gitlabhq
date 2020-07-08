@@ -28,12 +28,13 @@ describe('Rich Content Editor', () => {
   let wrapper;
 
   const content = '## Some Markdown';
+  const imageRoot = 'path/to/root/';
   const findEditor = () => wrapper.find({ ref: 'editor' });
   const findAddImageModal = () => wrapper.find(AddImageModal);
 
   beforeEach(() => {
     wrapper = shallowMount(RichContentEditor, {
-      propsData: { content },
+      propsData: { content, imageRoot },
     });
   });
 
