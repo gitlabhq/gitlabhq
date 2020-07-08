@@ -941,6 +941,9 @@ experience some unexpected behavior such as:
 - Stuck jobs.
 - 500 errors.
 
+You can check whether you have undecryptable values in the database using
+the [Secrets Doctor Rake task](../administration/raketasks/doctor.md).
+
 In this case, you are required to reset all the tokens for CI/CD variables
 and Runner Authentication, which is described in more detail below. After
 resetting the tokens, you should be able to visit your project and the jobs

@@ -1,0 +1,5 @@
+---
+title: Fix error 500s creating new projects due to empty weights
+merge_request: 35829
+author:
+type: fixed

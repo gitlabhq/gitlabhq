@@ -1,0 +1,5 @@
+---
+title: Fix path conflict for Ghost on UpdateRoutesForLostAndFoundGroupAndOrphanedProjects
+merge_request: 35425
+author:
+type: fixed

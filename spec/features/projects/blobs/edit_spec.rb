@@ -69,8 +69,6 @@ RSpec.describe 'Editing file blob', :js do
 
     context 'from blob file path' do
       before do
-        stub_feature_flags(code_navigation: false)
-
         visit project_blob_path(project, tree_join(branch, file_path))
       end
 
