@@ -5,32 +5,19 @@ import {
 } from '~/notes/components/multiline_comment_utils';
 
 describe('Multiline comment utilities', () => {
-  describe('getStartLineNumber', () => {
+  describe('get start & end line numbers', () => {
+    const lineRanges = ['old', 'new', null].map(type => ({
+      start: { new_line: 1, old_line: 1, type },
+      end: { new_line: 2, old_line: 2, type },
+    }));
     it.each`
-      lineCode        | type     | result
-      ${'abcdef_1_1'} | ${'old'} | ${'-1'}
-      ${'abcdef_1_1'} | ${'new'} | ${'+1'}
-      ${'abcdef_1_1'} | ${null}  | ${'1'}
-      ${'abcdef'}     | ${'new'} | ${''}
-      ${'abcdef'}     | ${'old'} | ${''}
-      ${'abcdef'}     | ${null}  | ${''}
-    `('returns line number', ({ lineCode, type, result }) => {
-      expect(getStartLineNumber({ start_line_code: lineCode, start_line_type: type })).toEqual(
-        result,
-      );
-    });
-  });
-  describe('getEndLineNumber', () => {
-    it.each`
-      lineCode        | type     | result
-      ${'abcdef_1_1'} | ${'old'} | ${'-1'}
-      ${'abcdef_1_1'} | ${'new'} | ${'+1'}
-      ${'abcdef_1_1'} | ${null}  | ${'1'}
-      ${'abcdef'}     | ${'new'} | ${''}
-      ${'abcdef'}     | ${'old'} | ${''}
-      ${'abcdef'}     | ${null}  | ${''}
-    `('returns line number', ({ lineCode, type, result }) => {
-      expect(getEndLineNumber({ end_line_code: lineCode, end_line_type: type })).toEqual(result);
+      lineRange        | start   | end
+      ${lineRanges[0]} | ${'-1'} | ${'-2'}
+      ${lineRanges[1]} | ${'+1'} | ${'+2'}
+      ${lineRanges[2]} | ${'1'}  | ${'2'}
+    `('returns line numbers `$start` & `$end`', ({ lineRange, start, end }) => {
+      expect(getStartLineNumber(lineRange)).toEqual(start);
+      expect(getEndLineNumber(lineRange)).toEqual(end);
     });
   });
   describe('getSymbol', () => {

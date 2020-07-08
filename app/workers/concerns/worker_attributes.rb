@@ -71,14 +71,14 @@ module WorkerAttributes
 
     # Set this attribute on a job when it will call to services outside of the
     # application, such as 3rd party applications, other k8s clusters etc See
-    # doc/development/sidekiq_style_guide.md#Jobs-with-External-Dependencies for
+    # doc/development/sidekiq_style_guide.md#jobs-with-external-dependencies for
     # details
     def worker_has_external_dependencies!
       class_attributes[:external_dependencies] = true
     end
 
     # Returns a truthy value if the worker has external dependencies.
-    # See doc/development/sidekiq_style_guide.md#Jobs-with-External-Dependencies
+    # See doc/development/sidekiq_style_guide.md#jobs-with-external-dependencies
     # for details
     def worker_has_external_dependencies?
       class_attributes[:external_dependencies]

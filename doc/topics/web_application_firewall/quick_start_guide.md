@@ -17,7 +17,7 @@ These instructions will also work for a self-managed GitLab instance. However, y
 need to ensure your own [Runners are configured](../../ci/runners/README.md) and
 [Google OAuth is enabled](../../integration/google.md).
 
-**Note**: GitLab's Web Application Firewall is deployed with [Ingress](../../user/clusters/applications.md#Ingress),
+**Note**: GitLab's Web Application Firewall is deployed with [Ingress](../../user/clusters/applications.md#ingress),
 so it will be available to your applications no matter how you deploy them to Kubernetes.
 
 ## Configuring your Google account

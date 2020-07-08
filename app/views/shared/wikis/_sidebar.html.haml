@@ -6,7 +6,7 @@
 
       - git_access_url = wiki_path(@wiki, action: :git_access)
       = link_to git_access_url, class: active_nav_link?(path: 'wikis#git_access') ? 'active' : '', data: { qa_selector: 'clone_repository_link' } do
-        = sprite_icon('download', size: 16, css_class: 'append-right-5')
+        = sprite_icon('download', size: 16, css_class: 'gl-mr-2')
         %span= _("Clone repository")
 
     .blocks-container

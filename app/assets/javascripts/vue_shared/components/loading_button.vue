@@ -47,7 +47,7 @@ export default {
         v-if="loading"
         :inline="true"
         :class="{
-          'append-right-5': label,
+          'gl-mr-2': label,
         }"
         class="js-loading-button-icon"
       />

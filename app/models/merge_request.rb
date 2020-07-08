@@ -391,25 +391,27 @@ class MergeRequest < ApplicationRecord
     end
   end
 
-  WIP_REGEX = /\A*(\[WIP\]\s*|WIP:\s*|WIP\s+)+\s*/i.freeze
+  # WIP is deprecated in favor of Draft. Currently both options are supported
+  # https://gitlab.com/gitlab-org/gitlab/-/issues/227426
+  DRAFT_REGEX = /\A*#{Regexp.union(Gitlab::Regex.merge_request_wip, Gitlab::Regex.merge_request_draft)}+\s*/i.freeze
 
   def self.work_in_progress?(title)
-    !!(title =~ WIP_REGEX)
+    !!(title =~ DRAFT_REGEX)
   end
 
   def self.wipless_title(title)
-    title.sub(WIP_REGEX, "")
+    title.sub(DRAFT_REGEX, "")
   end
 
   def self.wip_title(title)
-    work_in_progress?(title) ? title : "WIP: #{title}"
+    work_in_progress?(title) ? title : "Draft: #{title}"
   end
 
   def committers
     @committers ||= commits.committers
   end
 
-  # Verifies if title has changed not taking into account WIP prefix
+  # Verifies if title has changed not taking into account Draft prefix
   # for merge requests.
   def wipless_title_changed(old_title)
     self.class.wipless_title(old_title) != self.wipless_title

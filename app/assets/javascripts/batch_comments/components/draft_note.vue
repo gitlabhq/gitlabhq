@@ -71,8 +71,8 @@ export default {
     <ul class="notes draft-notes">
       <noteable-note
         :note="draft"
-        :diff-lines="diffFile.highlighted_diff_lines"
         :line="line"
+        :discussion-root="true"
         class="draft-note"
         @handleEdit="handleEditing"
         @cancelForm="handleNotEditing"

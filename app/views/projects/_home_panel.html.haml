@@ -27,7 +27,7 @@
               = sprite_icon('tag', size: 16, css_class: 'icon gl-mr-2')
 
               - @project.topics_to_show.each do |topic|
-                - project_topics_classes = "badge badge-pill badge-secondary append-right-5"
+                - project_topics_classes = "badge badge-pill badge-secondary gl-mr-2"
                 - explore_project_topic_path = explore_projects_path(tag: topic)
                 - if topic.length > max_project_topic_length
                   %a{ class: "#{ project_topics_classes } str-truncated-30 has-tooltip", data: { container: "body" }, title: topic, href: explore_project_topic_path }

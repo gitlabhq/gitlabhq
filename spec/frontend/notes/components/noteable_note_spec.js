@@ -46,12 +46,30 @@ describe('issue_note', () => {
     it('should render if has multiline comment', () => {
       const position = {
         line_range: {
-          start_line_code: 'abc_1_1',
-          end_line_code: 'abc_2_2',
+          start: {
+            line_code: 'abc_1_1',
+            type: null,
+            old_line: '1',
+            new_line: '1',
+          },
+          end: {
+            line_code: 'abc_2_2',
+            type: null,
+            old_line: '2',
+            new_line: '2',
+          },
         },
+      };
+      const line = {
+        line_code: 'abc_1_1',
+        type: null,
+        old_line: '1',
+        new_line: '1',
       };
       wrapper.setProps({
         note: { ...note, position },
+        discussionRoot: true,
+        line,
       });
 
       return wrapper.vm.$nextTick().then(() => {
@@ -62,12 +80,30 @@ describe('issue_note', () => {
     it('should not render if has single line comment', () => {
       const position = {
         line_range: {
-          start_line_code: 'abc_1_1',
-          end_line_code: 'abc_1_1',
+          start: {
+            line_code: 'abc_1_1',
+            type: null,
+            old_line: '1',
+            new_line: '1',
+          },
+          end: {
+            line_code: 'abc_1_1',
+            type: null,
+            old_line: '1',
+            new_line: '1',
+          },
         },
+      };
+      const line = {
+        line_code: 'abc_1_1',
+        type: null,
+        old_line: '1',
+        new_line: '1',
       };
       wrapper.setProps({
         note: { ...note, position },
+        discussionRoot: true,
+        line,
       });
 
       return wrapper.vm.$nextTick().then(() => {

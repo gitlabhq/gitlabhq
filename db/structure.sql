@@ -13748,7 +13748,8 @@ CREATE TABLE public.personal_access_tokens (
 '::character varying NOT NULL,
     impersonation boolean DEFAULT false NOT NULL,
     token_digest character varying,
-    expire_notification_delivered boolean DEFAULT false NOT NULL
+    expire_notification_delivered boolean DEFAULT false NOT NULL,
+    last_used_at timestamp with time zone
 );
 
 CREATE SEQUENCE public.personal_access_tokens_id_seq
@@ -23584,6 +23585,7 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200624222443
 20200625045442
 20200625082258
+20200625113337
 20200625190458
 20200626060151
 20200626130220

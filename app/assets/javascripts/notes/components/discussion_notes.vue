@@ -108,6 +108,7 @@ export default {
           :commit="commit"
           :help-page-path="helpPagePath"
           :show-reply-button="userCanReply"
+          :discussion-root="true"
           @handleDeleteNote="$emit('deleteNote')"
           @startReplying="$emit('startReplying')"
         >
@@ -151,6 +152,7 @@ export default {
           :note="componentData(note)"
           :help-page-path="helpPagePath"
           :line="diffLine"
+          :discussion-root="index === 0"
           @handleDeleteNote="$emit('deleteNote')"
         >
           <slot v-if="index === 0" slot="avatar-badge" name="avatar-badge"></slot>

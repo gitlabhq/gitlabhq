@@ -32,7 +32,7 @@ export default {
         class="btn-link btn-blank text-left break-link vulnerability-name-button"
         @click="openModal({ issue })"
       >
-        <div v-if="isNew" class="badge badge-danger append-right-5">{{ s__('New') }}</div>
+        <div v-if="isNew" class="badge badge-danger gl-mr-2">{{ s__('New') }}</div>
         {{ issue.name }}
       </button>
     </div>

@@ -55,7 +55,7 @@ RSpec.describe Jira::Requests::Issues::ListService do
             expect(client).to receive(:get).and_return([])
           end
 
-          it 'returns a paylod with no issues' do
+          it 'returns a payload with no issues' do
             payload = subject.payload
 
             expect(subject.success?).to be_truthy
@@ -75,12 +75,22 @@ RSpec.describe Jira::Requests::Issues::ListService do
             )
           end
 
-          it 'returns a paylod with jira issues' do
+          it 'returns a payload with jira issues' do
             payload = subject.payload
 
             expect(subject.success?).to be_truthy
             expect(payload[:issues].map(&:key)).to eq(%w[TST-1 TST-2])
             expect(payload[:is_last]).to be_falsy
+          end
+        end
+
+        context 'when using pagination parameters' do
+          let(:params) { { page: 3, per_page: 20 } }
+
+          it 'honors page and per_page' do
+            expect(client).to receive(:get).with(include('startAt=40&maxResults=20')).and_return([])
+
+            subject
           end
         end
       end

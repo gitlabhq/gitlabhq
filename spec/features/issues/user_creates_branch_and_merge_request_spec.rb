@@ -71,7 +71,7 @@ RSpec.describe 'User creates branch and merge request on issue page', :js do
           perform_enqueued_jobs do
             select_dropdown_option('create-mr')
 
-            expect(page).to have_content('WIP: Resolve "Cherry-Coloured Funk"')
+            expect(page).to have_content('Draft: Resolve "Cherry-Coloured Funk"')
             expect(current_path).to eq(project_merge_request_path(project, MergeRequest.first))
 
             wait_for_requests
@@ -100,7 +100,7 @@ RSpec.describe 'User creates branch and merge request on issue page', :js do
           perform_enqueued_jobs do
             select_dropdown_option('create-mr', branch_name)
 
-            expect(page).to have_content('WIP: Resolve "Cherry-Coloured Funk"')
+            expect(page).to have_content('Draft: Resolve "Cherry-Coloured Funk"')
             expect(page).to have_content('Request to merge custom-branch-name into')
             expect(current_path).to eq(project_merge_request_path(project, MergeRequest.first))
 

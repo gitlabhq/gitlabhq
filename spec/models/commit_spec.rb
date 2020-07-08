@@ -675,7 +675,10 @@ eos
   end
 
   describe '#work_in_progress?' do
-    ['squash! ', 'fixup! ', 'wip: ', 'WIP: ', '[WIP] '].each do |wip_prefix|
+    [
+      'squash! ', 'fixup! ', 'wip: ', 'WIP: ', '[WIP] ',
+      'draft: ', 'Draft - ', '[Draft] ', '(draft) ', 'Draft: '
+    ].each do |wip_prefix|
       it "detects the '#{wip_prefix}' prefix" do
         commit.message = "#{wip_prefix}#{commit.message}"
 
@@ -685,6 +688,12 @@ eos
 
     it "detects WIP for a commit just saying 'wip'" do
       commit.message = "wip"
+
+      expect(commit).to be_work_in_progress
+    end
+
+    it "detects WIP for a commit just saying 'draft'" do
+      commit.message = "draft"
 
       expect(commit).to be_work_in_progress
     end

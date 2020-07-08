@@ -21,6 +21,7 @@ import {
   getEndLineNumber,
   getLineClasses,
   commentLineOptions,
+  formatLineRange,
 } from './multiline_comment_utils';
 import MultilineCommentForm from './multiline_comment_form.vue';
 
@@ -62,9 +63,14 @@ export default {
       default: false,
     },
     diffLines: {
-      type: Object,
+      type: Array,
       required: false,
       default: null,
+    },
+    discussionRoot: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
   },
   data() {
@@ -73,10 +79,7 @@ export default {
       isDeleting: false,
       isRequesting: false,
       isResolving: false,
-      commentLineStart: {
-        line_code: this.line?.line_code,
-        type: this.line?.type,
-      },
+      commentLineStart: {},
     };
   },
   computed: {
@@ -144,25 +147,42 @@ export default {
       return getEndLineNumber(this.lineRange);
     },
     showMultiLineComment() {
-      return (
-        this.glFeatures.multilineComments &&
-        this.startLineNumber &&
-        this.endLineNumber &&
-        (this.startLineNumber !== this.endLineNumber || this.isEditing)
-      );
+      if (!this.glFeatures.multilineComments) return false;
+      if (this.isEditing) return true;
+
+      return this.line && this.discussionRoot && this.startLineNumber !== this.endLineNumber;
     },
     commentLineOptions() {
-      if (this.diffLines) {
-        return commentLineOptions(this.diffLines, this.line.line_code);
+      if (!this.diffFile || !this.line) return [];
+
+      const sideA = this.line.type === 'new' ? 'right' : 'left';
+      const sideB = sideA === 'left' ? 'right' : 'left';
+      const lines = this.diffFile.highlighted_diff_lines.length
+        ? this.diffFile.highlighted_diff_lines
+        : this.diffFile.parallel_diff_lines.map(l => l[sideA] || l[sideB]);
+      return commentLineOptions(lines, this.commentLineStart, this.line.line_code, sideA);
+    },
+    diffFile() {
+      if (this.commentLineStart.line_code) {
+        const lineCode = this.commentLineStart.line_code.split('_')[0];
+        return this.getDiffFileByHash(lineCode);
       }
 
-      const diffFile = this.diffFile || this.getDiffFileByHash(this.targetNoteHash);
-      if (!diffFile) return null;
-      return commentLineOptions(diffFile.highlighted_diff_lines, this.line.line_code);
+      return null;
     },
   },
-
   created() {
+    const line = this.note.position?.line_range?.start || this.line;
+
+    this.commentLineStart = line
+      ? {
+          line_code: line.line_code,
+          type: line.type,
+          old_line: line.old_line,
+          new_line: line.new_line,
+        }
+      : {};
+
     eventHub.$on('enterEditMode', ({ noteId }) => {
       if (noteId === this.note.id) {
         this.isEditing = true;
@@ -224,13 +244,11 @@ export default {
     formUpdateHandler(noteText, parentElement, callback, resolveDiscussion) {
       const position = {
         ...this.note.position,
-        line_range: {
-          start_line_code: this.commentLineStart?.lineCode,
-          start_line_type: this.commentLineStart?.type,
-          end_line_code: this.line?.line_code,
-          end_line_type: this.line?.type,
-        },
       };
+
+      if (this.commentLineStart && this.line)
+        position.line_range = formatLineRange(this.commentLineStart, this.line);
+
       this.$emit('handleUpdateNote', {
         note: this.note,
         noteText,
@@ -246,7 +264,7 @@ export default {
         note: {
           target_type: this.getNoteableData.targetType,
           target_id: this.note.noteable_id,
-          note: { note: noteText },
+          note: { note: noteText, position: JSON.stringify(position) },
         },
       };
       this.isRequesting = true;
@@ -317,14 +335,17 @@ export default {
   >
     <div v-if="showMultiLineComment" data-testid="multiline-comment">
       <multiline-comment-form
-        v-if="isEditing && commentLineOptions && line"
+        v-if="isEditing && note.position"
         v-model="commentLineStart"
         :line="line"
         :comment-line-options="commentLineOptions"
         :line-range="note.position.line_range"
-        class="gl-mb-3 gl-text-gray-700 gl-border-gray-200 gl-border-b-solid gl-border-b-1 gl-pb-3"
+        class="gl-mb-3 gl-text-gray-700"
       />
-      <div v-else class="gl-mb-3 gl-text-gray-700">
+      <div
+        v-else
+        class="gl-mb-3 gl-text-gray-700 gl-border-gray-200 gl-border-b-solid gl-border-b-1 gl-pb-3"
+      >
         <gl-sprintf :message="__('Comment on lines %{startLine} to %{endLine}')">
           <template #startLine>
             <span :class="getLineClasses(startLineNumber)">{{ startLineNumber }}</span>

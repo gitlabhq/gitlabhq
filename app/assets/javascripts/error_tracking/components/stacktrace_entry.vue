@@ -80,14 +80,9 @@ export default {
     <div ref="header" class="file-title file-title-flex-parent">
       <div class="file-header-content d-flex align-content-center">
         <div v-if="hasCode" class="d-inline-block cursor-pointer" @click="toggle()">
-          <icon :name="collapseIcon" :size="16" aria-hidden="true" class="append-right-5" />
+          <icon :name="collapseIcon" :size="16" aria-hidden="true" class="gl-mr-2" />
         </div>
-        <file-icon
-          :file-name="filePath"
-          :size="18"
-          aria-hidden="true"
-          css-classes="append-right-5"
-        />
+        <file-icon :file-name="filePath" :size="18" aria-hidden="true" css-classes="gl-mr-2" />
         <strong
           v-gl-tooltip
           :title="filePath"

@@ -469,10 +469,12 @@ class Commit
     # We don't want to do anything for `Commit` model, so this is empty.
   end
 
-  WIP_REGEX = /\A\s*(((?i)(\[WIP\]|WIP:|WIP)\s|WIP$))|(fixup!|squash!)\s/.freeze
+  # WIP is deprecated in favor of Draft. Currently both options are supported
+  # https://gitlab.com/gitlab-org/gitlab/-/issues/227426
+  DRAFT_REGEX = /\A\s*#{Regexp.union(Gitlab::Regex.merge_request_wip, Gitlab::Regex.merge_request_draft)}|(fixup!|squash!)\s/.freeze
 
   def work_in_progress?
-    !!(title =~ WIP_REGEX)
+    !!(title =~ DRAFT_REGEX)
   end
 
   def merged_merge_request?(user)

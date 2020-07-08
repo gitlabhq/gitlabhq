@@ -16,6 +16,9 @@
         %tr
           %th= _('Name')
           %th= s_('AccessTokens|Created')
+          %th
+            = _('Last Used')
+            = link_to icon('question-circle'), help_page_path('user/profile/personal_access_tokens.md', anchor: 'token-activity'), target: '_blank'
           %th= _('Expires')
           %th= _('Scopes')
           %th
@@ -24,6 +27,11 @@
           %tr
             %td= token.name
             %td= token.created_at.to_date.to_s(:medium)
+            %td
+              - if token.last_used_at?
+                %span.token-last-used-label= _(time_ago_with_tooltip(token.last_used_at))
+              - else
+                %span.token-never-used-label= _('Never')
             %td
               - if token.expires?
                 - if token.expires_at.past? || token.expires_at.today?

@@ -5,7 +5,7 @@
   - events.each do |event|
     %li
       %span.description
-        = audit_icon(event.details[:with], class: "append-right-5")
+        = audit_icon(event.details[:with], class: "gl-mr-2")
         = _('Signed in with %{authentication} authentication') % { authentication: event.details[:with]}
       %span.float-right= time_ago_with_tooltip(event.created_at)
 

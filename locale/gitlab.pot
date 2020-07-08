@@ -13260,6 +13260,9 @@ msgstr ""
 msgid "Last Seen"
 msgstr ""
 
+msgid "Last Used"
+msgstr ""
+
 msgid "Last accessed on"
 msgstr ""
 

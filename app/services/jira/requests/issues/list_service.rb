@@ -13,15 +13,16 @@ module Jira
 
           @jql = params[:jql].to_s
           @page = params[:page].to_i || 1
+          @per_page = params[:per_page].to_i || PER_PAGE
         end
 
         private
 
-        attr_reader :jql, :page
+        attr_reader :jql, :page, :per_page
 
         override :url
         def url
-          "#{base_api_url}/search?jql=#{CGI.escape(jql)}&startAt=#{start_at}&maxResults=#{PER_PAGE}&fields=*all"
+          "#{base_api_url}/search?jql=#{CGI.escape(jql)}&startAt=#{start_at}&maxResults=#{per_page}&fields=*all"
         end
 
         override :build_service_response
@@ -48,7 +49,7 @@ module Jira
         end
 
         def start_at
-          (page - 1) * PER_PAGE
+          (page - 1) * per_page
         end
       end
     end

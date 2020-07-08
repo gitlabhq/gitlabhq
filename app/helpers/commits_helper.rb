@@ -79,7 +79,7 @@ module CommitsHelper
   # Returns a link formatted as a commit tag link
   def commit_tag_link(url, text)
     link_to(url, class: 'badge badge-gray ref-name') do
-      sprite_icon('tag', size: 12, css_class: 'append-right-5 vertical-align-middle') + "#{text}"
+      sprite_icon('tag', size: 12, css_class: 'gl-mr-2 vertical-align-middle') + "#{text}"
     end
   end
 

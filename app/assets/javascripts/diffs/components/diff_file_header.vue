@@ -163,16 +163,11 @@ export default {
         :name="collapseIcon"
         :size="16"
         aria-hidden="true"
-        class="diff-toggle-caret append-right-5"
+        class="diff-toggle-caret gl-mr-2"
         @click.stop="handleToggleFile"
       />
       <a v-once ref="titleWrapper" class="gl-mr-2" :href="titleLink" @click="handleFileNameClick">
-        <file-icon
-          :file-name="filePath"
-          :size="18"
-          aria-hidden="true"
-          css-classes="append-right-5"
-        />
+        <file-icon :file-name="filePath" :size="18" aria-hidden="true" css-classes="gl-mr-2" />
         <span v-if="isFileRenamed">
           <strong
             v-gl-tooltip
@@ -208,7 +203,7 @@ export default {
         {{ diffFile.a_mode }} → {{ diffFile.b_mode }}
       </small>
 
-      <span v-if="isUsingLfs" class="label label-lfs append-right-5"> {{ __('LFS') }} </span>
+      <span v-if="isUsingLfs" class="label label-lfs gl-mr-2"> {{ __('LFS') }} </span>
     </div>
 
     <div

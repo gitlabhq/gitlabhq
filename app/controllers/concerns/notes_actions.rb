@@ -226,7 +226,7 @@ module NotesActions
   end
 
   def update_note_params
-    params.require(:note).permit(:note)
+    params.require(:note).permit(:note, :position)
   end
 
   def set_polling_interval_header

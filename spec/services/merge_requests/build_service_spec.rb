@@ -189,8 +189,8 @@ RSpec.describe MergeRequests::BuildService do
 
       it_behaves_like 'allows the merge request to be created'
 
-      it 'adds a WIP prefix to the merge request title' do
-        expect(merge_request.title).to eq('WIP: Feature branch')
+      it 'adds a Draft prefix to the merge request title' do
+        expect(merge_request.title).to eq('Draft: Feature branch')
       end
     end
 

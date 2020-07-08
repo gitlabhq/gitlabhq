@@ -76,10 +76,18 @@ module API
             optional :y, type: Integer, desc: 'Y coordinate in the image'
 
             optional :line_range, type: Hash, desc: 'Multi-line start and end' do
-              requires :start_line_code, type: String, desc: 'Start line code for multi-line note'
-              requires :end_line_code, type: String, desc: 'End line code for multi-line note'
-              requires :start_line_type, type: String, desc: 'Start line type for multi-line note'
-              requires :end_line_type, type: String, desc: 'End line type for multi-line note'
+              optional :start, type: Hash do
+                optional :line_code, type: String, desc: 'Start line code for multi-line note'
+                optional :type, type: String, desc: 'Start line type for multi-line note'
+                optional :old_line, type: String, desc: 'Start old_line line number'
+                optional :new_line, type: String, desc: 'Start new_line line number'
+              end
+              optional :end, type: Hash do
+                optional :line_code, type: String, desc: 'End line code for multi-line note'
+                optional :type, type: String, desc: 'End line type for multi-line note'
+                optional :old_line, type: String, desc: 'End old_line line number'
+                optional :new_line, type: String, desc: 'End new_line line number'
+              end
             end
           end
         end

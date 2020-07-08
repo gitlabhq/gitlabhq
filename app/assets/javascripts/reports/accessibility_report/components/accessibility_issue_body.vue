@@ -38,11 +38,7 @@ export default {
 <template>
   <div class="report-block-list-issue-description prepend-top-5 gl-mb-2">
     <div ref="accessibility-issue-description" class="report-block-list-issue-description-text">
-      <div
-        v-if="isNew"
-        ref="accessibility-issue-is-new-badge"
-        class="badge badge-danger append-right-5"
-      >
+      <div v-if="isNew" ref="accessibility-issue-is-new-badge" class="badge badge-danger gl-mr-2">
         {{ s__('AccessibilityReport|New') }}
       </div>
       <div>

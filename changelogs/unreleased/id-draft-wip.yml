@@ -1,0 +1,5 @@
+---
+title: Allow prefixing with Draft to mark MR as WIP
+merge_request: 35940
+author:
+type: added

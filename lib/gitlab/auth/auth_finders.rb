@@ -92,6 +92,8 @@ module Gitlab
 
         validate_access_token!(scopes: [:api])
 
+        ::PersonalAccessTokens::LastUsedService.new(access_token).execute
+
         access_token.user || raise(UnauthorizedError)
       end
 
@@ -99,6 +101,8 @@ module Gitlab
         return unless access_token
 
         validate_access_token!
+
+        ::PersonalAccessTokens::LastUsedService.new(access_token).execute
 
         access_token.user || raise(UnauthorizedError)
       end

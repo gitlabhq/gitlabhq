@@ -163,10 +163,10 @@ RSpec.describe MergeRequests::CreateFromIssueService do
         expect(result[:merge_request].milestone_id).to eq(milestone_id)
       end
 
-      it 'sets the merge request title to: "WIP: Resolves "$issue-title"' do
+      it 'sets the merge request title to: "Draft: Resolves "$issue-title"' do
         result = service.execute
 
-        expect(result[:merge_request].title).to eq("WIP: Resolve \"#{issue.title}\"")
+        expect(result[:merge_request].title).to eq("Draft: Resolve \"#{issue.title}\"")
       end
     end
 
@@ -193,10 +193,10 @@ RSpec.describe MergeRequests::CreateFromIssueService do
 
         it_behaves_like 'a service that creates a merge request from an issue'
 
-        it 'sets the merge request title to: "WIP: $issue-branch-name', :sidekiq_might_not_need_inline do
+        it 'sets the merge request title to: "Draft: $issue-branch-name', :sidekiq_might_not_need_inline do
           result = service.execute
 
-          expect(result[:merge_request].title).to eq("WIP: #{issue.to_branch_name.titleize.humanize}")
+          expect(result[:merge_request].title).to eq("Draft: #{issue.to_branch_name.titleize.humanize}")
         end
       end
     end

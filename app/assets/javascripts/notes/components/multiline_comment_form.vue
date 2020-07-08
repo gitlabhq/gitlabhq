@@ -21,10 +21,23 @@ export default {
   },
   data() {
     return {
-      commentLineStart: {
-        lineCode: this.lineRange ? this.lineRange.start_line_code : this.line.line_code,
-        type: this.lineRange ? this.lineRange.start_line_type : this.line.type,
-      },
+      commentLineStart: {},
+      commentLineEndType: this.lineRange?.end?.line_type || this.line.type,
+    };
+  },
+  computed: {
+    lineNumber() {
+      return this.commentLineOptions[this.commentLineOptions.length - 1].text;
+    },
+  },
+  created() {
+    const line = this.lineRange?.start || this.line;
+
+    this.commentLineStart = {
+      line_code: line.line_code,
+      type: line.type,
+      old_line: line.old_line,
+      new_line: line.new_line,
     };
   },
   methods: {
@@ -33,6 +46,10 @@ export default {
     },
     getLineClasses(line) {
       return getLineClasses(line);
+    },
+    updateCommentLineStart(value) {
+      this.commentLineStart = value;
+      this.$emit('input', value);
     },
   },
 };
@@ -55,12 +72,12 @@ export default {
           :options="commentLineOptions"
           size="sm"
           class="gl-w-auto gl-vertical-align-baseline"
-          @change="$emit('input', $event)"
+          @change="updateCommentLineStart"
         />
       </template>
       <template #end>
         <span :class="getLineClasses(line)">
-          {{ getSymbol(line) + (line.new_line || line.old_line) }}
+          {{ lineNumber }}
         </span>
       </template>
     </gl-sprintf>

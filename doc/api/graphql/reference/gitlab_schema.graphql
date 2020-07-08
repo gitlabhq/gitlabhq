@@ -12879,6 +12879,7 @@ type TestReportEdge {
 State of a test report
 """
 enum TestReportState {
+  FAILED
   PASSED
 }
 

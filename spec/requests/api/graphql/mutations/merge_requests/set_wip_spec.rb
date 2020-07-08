@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Setting WIP status of a merge request' do
+RSpec.describe 'Setting Draft status of a merge request' do
   include GraphqlHelpers
 
   let(:current_user) { create(:user) }
@@ -41,39 +41,39 @@ RSpec.describe 'Setting WIP status of a merge request' do
     expect(graphql_errors).not_to be_empty
   end
 
-  it 'marks the merge request as WIP' do
+  it 'marks the merge request as Draft' do
     post_graphql_mutation(mutation, current_user: current_user)
 
     expect(response).to have_gitlab_http_status(:success)
-    expect(mutation_response['mergeRequest']['title']).to start_with('WIP:')
+    expect(mutation_response['mergeRequest']['title']).to start_with('Draft:')
   end
 
-  it 'does not do anything if the merge request was already marked `WIP`' do
-    merge_request.update!(title: 'wip: hello world')
+  it 'does not do anything if the merge request was already marked `Draft`' do
+    merge_request.update!(title: 'draft: hello world')
 
     post_graphql_mutation(mutation, current_user: current_user)
 
     expect(response).to have_gitlab_http_status(:success)
-    expect(mutation_response['mergeRequest']['title']).to start_with('wip:')
+    expect(mutation_response['mergeRequest']['title']).to start_with('draft:')
   end
 
-  context 'when passing WIP false as input' do
+  context 'when passing Draft false as input' do
     let(:input) { { wip: false } }
 
-    it 'does not do anything if the merge reqeust was not marked wip' do
+    it 'does not do anything if the merge reqeust was not marked draft' do
       post_graphql_mutation(mutation, current_user: current_user)
 
       expect(response).to have_gitlab_http_status(:success)
-      expect(mutation_response['mergeRequest']['title']).not_to start_with(/wip\:/)
+      expect(mutation_response['mergeRequest']['title']).not_to start_with(/draft\:/)
     end
 
-    it 'unmarks the merge request as `WIP`' do
-      merge_request.update!(title: 'wip: hello world')
+    it 'unmarks the merge request as `Draft`' do
+      merge_request.update!(title: 'draft: hello world')
 
       post_graphql_mutation(mutation, current_user: current_user)
 
       expect(response).to have_gitlab_http_status(:success)
-      expect(mutation_response['mergeRequest']['title']).not_to start_with('/wip\:/')
+      expect(mutation_response['mergeRequest']['title']).not_to start_with('/draft\:/')
     end
   end
 end
