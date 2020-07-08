@@ -28,7 +28,7 @@ module Gitlab
           config.processors << ::Gitlab::ErrorTracking::Processor::SidekiqProcessor
           # Sanitize authentication headers
           config.sanitize_http_headers = %w[Authorization Private-Token]
-          config.tags = { program: Gitlab.process_name }
+          config.tags = extra_tags_from_env.merge(program: Gitlab.process_name)
           config.before_send = method(:before_send)
 
           yield config if block_given?
@@ -163,6 +163,15 @@ module Gitlab
           Labkit::Correlation::CorrelationId::LOG_KEY.to_sym => Labkit::Correlation::CorrelationId.current_id,
           locale: I18n.locale
         }
+      end
+
+      # Static tags that are set on application start
+      def extra_tags_from_env
+        Gitlab::Json.parse(ENV.fetch('GITLAB_SENTRY_EXTRA_TAGS', '{}')).to_hash
+      rescue => e
+        Gitlab::AppLogger.debug("GITLAB_SENTRY_EXTRA_TAGS could not be parsed as JSON: #{e.class.name}: #{e.message}")
+
+        {}
       end
 
       # Debugging for https://gitlab.com/gitlab-org/gitlab-foss/issues/57727

@@ -1,0 +1,5 @@
+---
+title: Allow setting extra tags for Sentry exceptions with GITLAB_SENTRY_EXTRA_TAGS
+merge_request: 35965
+author:
+type: changed

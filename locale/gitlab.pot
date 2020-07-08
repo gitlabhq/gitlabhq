@@ -9335,9 +9335,6 @@ msgstr ""
 msgid "Events"
 msgstr ""
 
-msgid "Events in %{group_name}"
-msgstr ""
-
 msgid "Events in %{project_path}"
 msgstr ""
 
@@ -11361,6 +11358,9 @@ msgid "Group was exported"
 msgstr ""
 
 msgid "Group was successfully updated."
+msgstr ""
+
+msgid "Group-level events in %{group_name} (no project-level events)"
 msgstr ""
 
 msgid "Group: %{group_name}"

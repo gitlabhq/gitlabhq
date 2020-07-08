@@ -6,15 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Snowplow Guide
 
-This guide provides a details about how Snowplow works. It includes the following sections:
-
-1. [What is Snowplow](#what-is-snowplow)
-1. [Snowplow schema](#snowplow-schema)
-1. [Enabling Snowplow](#enabling-snowplow)
-1. [Snowplow request flow](#snowplow-request-flow)
-1. [Implementing Snowplow JS (Frontend) tracking](#implementing-snowplow-js-frontend-tracking)
-1. [Implementing Snowplow Ruby (Backend) tracking](#implementing-snowplow-ruby-backend-tracking)
-1. [Developing and testing Snowplow](#developing-and-testing-snowplow)
+This guide provides an overview of how Snowplow works, and implementation details.
 
 For more information about Telemetry, see:
 
@@ -32,21 +24,20 @@ More useful links:
 
 Snowplow is an enterprise-grade marketing and product analytics platform which helps track the way users engage with our website and application.
 
-From [Snowplow's documentation](https://github.com/snowplow/snowplow), Snowplow consists of six loosely-coupled sub-systems:
+[Snowplow](https://github.com/snowplow/snowplow) consists of the following loosely-coupled sub-systems:
 
-- **Trackers** fire Snowplow events. Currently Snowplow has 12 trackers, covering web, mobile, desktop, server and IoT
-- **Collectors** receive Snowplow events from trackers. Currently we have three different event collectors, sinking events either to Amazon S3, Apache Kafka or Amazon Kinesis
-- **Enrich** cleans up the raw Snowplow events, enriches them and puts them into storage. Currently we have a Hadoop-based enrichment process, and a Kinesis- or Kafka-based process
-- **Storage** is where the Snowplow events live. Currently we store the Snowplow events in a flat file structure on S3, and in the Redshift and PostgreSQL databases
-- **Data modeling** is where event-level data is joined with other data sets and aggregated into smaller data sets, and business logic is applied. This produces a clean set of tables which make it easier to perform analysis on the data. We have data models for Redshift and Looker
+- **Trackers** fire Snowplow events. Snowplow has 12 trackers, covering web, mobile, desktop, server, and IoT.
+- **Collectors** receive Snowplow events from trackers. We have three different event collectors, synchronizing events either to Amazon S3, Apache Kafka, or Amazon Kinesis.
+- **Enrich** cleans up the raw Snowplow events, enriches them and puts them into storage. We have an Hadoop-based enrichment process, and a Kinesis-based or Kafka-based process.
+- **Storage** is where the Snowplow events live. We store the Snowplow events in a flat file structure on S3, and in the Redshift and PostgreSQL databases.
+- **Data modeling** is where event-level data is joined with other data sets and aggregated into smaller data sets, and business logic is applied. This produces a clean set of tables which make it easier to perform analysis on the data. We have data models for Redshift and Looker.
 - **Analytics** are performed on the Snowplow events or on the aggregate tables.
 
 ![snowplow_flow](../img/snowplow_flow.png)
-> ![snowplow_flow](../img/snowplow_flow.png)
 
 ## Snowplow schema
 
-We currently have many definitions of Snowplow's schema. We have an active issue to [standardize this schema](https://gitlab.com/gitlab-org/gitlab/-/issues/207930) including the following definitions:
+We have many definitions of Snowplow's schema. We have an active issue to [standardize this schema](https://gitlab.com/gitlab-org/gitlab/-/issues/207930) including the following definitions:
 
 - Frontend and backend taxonomy as listed below
 - [Feature instrumentation taxonomy](https://about.gitlab.com/handbook/product/product-processes/#taxonomy)
@@ -58,8 +49,8 @@ We currently have many definitions of Snowplow's schema. We have an active issue
 
 Tracking can be enabled at:
 
-- The instance level, which will enable tracking on both the frontend and backend layers.
-- User level, though user tracking can be disabled on a per-user basis. GitLab tracking respects the [Do Not Track](https://www.eff.org/issues/do-not-track) standard, so any user who has enabled the Do Not Track option in their browser will also not be tracked from a user level.
+- The instance level, which enables tracking on both the frontend and backend layers.
+- User level, though user tracking can be disabled on a per-user basis. GitLab tracking respects the [Do Not Track](https://www.eff.org/issues/do-not-track) standard, so any user who has enabled the Do Not Track option in their browser is not tracked at a user level.
 
 We utilize Snowplow for the majority of our tracking strategy and it is enabled on GitLab.com. On a self-managed instance, Snowplow can be enabled by navigating to:
 
@@ -69,14 +60,20 @@ We utilize Snowplow for the majority of our tracking strategy and it is enabled 
 The following configuration is required:
 
 | Name          | Value                     |
-| ------------- | ------------------------- |
+|---------------|---------------------------|
 | Collector     | `snowplow.trx.gitlab.net` |
 | Site ID       | `gitlab`                  |
 | Cookie domain | `.gitlab.com`             |
 
 ## Snowplow request flow
 
-The following example shows a basic request/response flow between a Snowplow JS / Ruby Trackers on GitLab.com, [the GitLab.com Snowplow Collector](https://about.gitlab.com/handbook/engineering/infrastructure/library/snowplow/), GitLab's S3 Bucket, GitLab's Snowflake Data Warehouse, and Sisense.:
+The following example shows a basic request/response flow between the following components:
+
+- Snowplow JS / Ruby Trackers on GitLab.com
+- [GitLab.com Snowplow Collector](https://about.gitlab.com/handbook/engineering/infrastructure/library/snowplow/)
+- GitLab's S3 Bucket
+- GitLab's Snowflake Data Warehouse
+- Sisense:
 
 ```mermaid
 sequenceDiagram
@@ -103,15 +100,15 @@ sequenceDiagram
 
 GitLab provides `Tracking`, an interface that wraps the [Snowplow JavaScript Tracker](https://github.com/snowplow/snowplow/wiki/javascript-tracker) for tracking custom events. There are a few ways to utilize tracking, but each generally requires at minimum, a `category` and an `action`. Additional data can be provided that adheres to our [Feature instrumentation taxonomy](https://about.gitlab.com/handbook/product/product-processes/#taxonomy).
 
-| field      | type   | default value              | description |
-|:-----------|:-------|:---------------------------|:------------|
-| `category` | string | document.body.dataset.page | Page or subsection of a page that events are being captured within. |
+| field      | type   | default value              | description                                                                                                                                                                                                    |
+|:-----------|:-------|:---------------------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `category` | string | document.body.dataset.page | Page or subsection of a page that events are being captured within.                                                                                                                                            |
 | `action`   | string | 'generic'                  | Action the user is taking. Clicks should be `click` and activations should be `activate`, so for example, focusing a form field would be `activate_form_input`, and clicking a button would be `click_button`. |
 | `data`     | object | {}                         | Additional data such as `label`, `property`, `value`, and `context` as described [in our Feature Instrumentation taxonomy](https://about.gitlab.com/handbook/product/product-processes/#taxonomy). |
 
 ### Tracking in HAML (or Vue Templates)
 
-When working within HAML (or Vue templates) we can add `data-track-*` attributes to elements of interest. All elements that have a `data-track-event` attribute will automatically have event tracking bound on clicks.
+When working within HAML (or Vue templates) we can add `data-track-*` attributes to elements of interest. All elements that have a `data-track-event` attribute automatically have event tracking bound on clicks.
 
 Below is an example of `data-track-*` attributes assigned to a button:
 
@@ -127,7 +124,7 @@ Below is an example of `data-track-*` attributes assigned to a button:
 />
 ```
 
-Event listeners are bound at the document level to handle click events on or within elements with these data attributes. This allows for them to be properly handled on re-rendering and changes to the DOM, but it's important to know that because of the way these events are bound, click events shouldn't be stopped from propagating up the DOM tree. If for any reason click events are being stopped from propagating, you'll need to implement your own listeners and follow the instructions in [Tracking in raw JavaScript](#tracking-in-raw-javascript).
+Event listeners are bound at the document level to handle click events on or within elements with these data attributes. This allows them to be properly handled on re-rendering and changes to the DOM. Note that because of the way these events are bound, click events should not be stopped from propagating up the DOM tree. If for any reason click events are being stopped from propagating, you need to implement your own listeners and follow the instructions in [Tracking in raw JavaScript](#tracking-in-raw-javascript).
 
 Below is a list of supported `data-track-*` attributes:
 
@@ -136,7 +133,7 @@ Below is a list of supported `data-track-*` attributes:
 | `data-track-event`    | true     | Action the user is taking. Clicks must be prepended with `click` and activations must be prepended with `activate`. For example, focusing a form field would be `activate_form_input` and clicking a button would be `click_button`. |
 | `data-track-label`    | false    | The `label` as described [in our Feature Instrumentation taxonomy](https://about.gitlab.com/handbook/product/product-processes/#taxonomy). |
 | `data-track-property` | false    | The `property` as described [in our Feature Instrumentation taxonomy](https://about.gitlab.com/handbook/product/product-processes/#taxonomy). |
-| `data-track-value`    | false    | The `value` as described [in our Feature Instrumentation taxonomy](https://about.gitlab.com/handbook/product/product-processes/#taxonomy). If omitted, this will be the element's `value` property or an empty string. For checkboxes, the default value will be the element's checked attribute or `false` when unchecked. |
+| `data-track-value`    | false    | The `value` as described [in our Feature Instrumentation taxonomy](https://about.gitlab.com/handbook/product/product-processes/#taxonomy). If omitted, this is the element's `value` property or an empty string. For checkboxes, the default value is the element's checked attribute or `false` when unchecked. |
 | `data-track-context`  | false    | The `context` as described [in our Feature Instrumentation taxonomy](https://about.gitlab.com/handbook/product/product-processes/#taxonomy). |
 
 ### Tracking within Vue components
@@ -148,9 +145,9 @@ import Tracking from '~/tracking';
 const trackingMixin = Tracking.mixin({ label: 'right_sidebar' });
 ```
 
-You can provide default options that will be passed along whenever an event is tracked from within your component. For instance, if all events within a component should be tracked with a given `label`, you can provide one at this time. Available defaults are `category`, `label`, `property`, and `value`. If no category is specified, `document.body.dataset.page` is used as the default.
+You can provide default options that are passed along whenever an event is tracked from within your component. For instance, if all events within a component should be tracked with a given `label`, you can provide one at this time. Available defaults are `category`, `label`, `property`, and `value`. If no category is specified, `document.body.dataset.page` is used as the default.
 
-You can then use the mixin normally in your component with the `mixin`, Vue declaration. The mixin also provides the ability to specify tracking options in `data` or `computed`. These will override any defaults and allows the values to be dynamic from props, or based on state.
+You can then use the mixin normally in your component with the `mixin` Vue declaration. The mixin also provides the ability to specify tracking options in `data` or `computed`. These override any defaults and allow the values to be dynamic from props, or based on state.
 
 ```javascript
 export default {
@@ -240,7 +237,6 @@ describe('MyTracking', () => {
     });
   });
 });
-
 ```
 
 In obsolete Karma tests it's used as below:
@@ -278,13 +274,13 @@ GitLab provides `Gitlab::Tracking`, an interface that wraps the [Snowplow Ruby T
 
 Custom event tracking and instrumentation can be added by directly calling the `GitLab::Tracking.event` class method, which accepts the following arguments:
 
-| argument   | type   | default value              | description |
-|:-----------|:-------|:---------------------------|:------------|
-| `category` | string | 'application'              | Area or aspect of the application. This could be `HealthCheckController` or `Lfs::FileTransformer` for instance. |
-| `action`   | string | 'generic'                  | The action being taken, which can be anything from a controller action like `create` to something like an Active Record callback. |
-| `data`     | object | {}                         | Additional data such as `label`, `property`, `value`, and `context` as described [in our Feature Instrumentation taxonomy](https://about.gitlab.com/handbook/product/product-processes/#taxonomy). These will be set as empty strings if you don't provide them. |
+| argument   | type   | default value | description                                                                                                                                                                                                                                                            |
+|:-----------|:-------|:--------------|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `category` | string | 'application' | Area or aspect of the application. This could be `HealthCheckController` or `Lfs::FileTransformer` for instance.                                                                                                                                                       |
+| `action`   | string | 'generic'     | The action being taken, which can be anything from a controller action like `create` to something like an Active Record callback.                                                                                                                                      |
+| `data`     | object | {}            | Additional data such as `label`, `property`, `value`, and `context` as described [in our Feature Instrumentation taxonomy](https://about.gitlab.com/handbook/product/feature-instrumentation/#taxonomy). These are set as empty strings if you don't provide them. |
 
-Tracking can be viewed as either tracking user behavior, or can be utilized for instrumentation to monitor and visual performance over time in an area or aspect of code.
+Tracking can be viewed as either tracking user behavior, or can be utilized for instrumentation to monitor and visualize performance over time in an area or aspect of code.
 
 For example:
 
@@ -309,27 +305,27 @@ We use the [AsyncEmitter](https://github.com/snowplow/snowplow/wiki/Ruby-Tracker
 
 There are several tools for developing and testing Snowplow Event
 
-| Testing Tool | Frontend Tracking | Backend Tracking | Local Development Environment | Production Environment |
-| ------ | ------ | ------ | ------ | ------ |
-| Snowplow Analytics Debugger Chrome Extension | ✅ | ❌ | ✅ | ✅ |
-| Snowplow Inspector Chrome Extension | ✅ | ❌ | ✅ | ✅ |
-| Snowplow Micro | ✅ | ✅ | ✅ | ❌ |
-| Snowplow Mini | ✅ | ✅ | ❌ | ✅ |
+| Testing Tool                                 | Frontend Tracking  | Backend Tracking    | Local Development Environment | Production Environment |
+|----------------------------------------------|--------------------|---------------------|-------------------------------|------------------------|
+| Snowplow Analytics Debugger Chrome Extension | **{check-circle}** | **{dotted-circle}** | **{check-circle}**            | **{check-circle}**     |
+| Snowplow Inspector Chrome Extension          | **{check-circle}** | **{dotted-circle}** | **{check-circle}**            | **{check-circle}**     |
+| Snowplow Micro                               | **{check-circle}** | **{check-circle}**  | **{check-circle}**            | **{dotted-circle}**    |
+| Snowplow Mini                                | **{check-circle}** | **{check-circle}**  | **{dotted-circle}**           | **{check-circle}**     |
 
 ### Snowplow Analytics Debugger Chrome Extension
 
 Snowplow Analytics Debugger is a browser extension for testing frontend events. This works on production, staging and local development environments.
 
-1. Install [Snowplow Analytics Debugger](https://chrome.google.com/webstore/detail/snowplow-analytics-debugg/jbnlcgeengmijcghameodeaenefieedm)  chrome browser extension
-1. Open Chrome DevTools to the Snowplow Analytics Debugger tab
-1. Learn more at [Igloo Analytics](https://www.iglooanalytics.com/blog/snowplow-analytics-debugger-chrome-extension.html)
+1. Install the [Snowplow Analytics Debugger](https://chrome.google.com/webstore/detail/snowplow-analytics-debugg/jbnlcgeengmijcghameodeaenefieedm) Chrome browser extension.
+1. Open Chrome DevTools to the Snowplow Analytics Debugger tab.
+1. Learn more at [Igloo Analytics](https://www.iglooanalytics.com/blog/snowplow-analytics-debugger-chrome-extension.html).
 
 ### Snowplow Inspector Chrome Extension
 
 Snowplow Inspector Chrome Extension is a browser extension for testing frontend events. This works on production, staging and local development environments.
 
-1. Install [Snowplow Inspector](https://chrome.google.com/webstore/detail/snowplow-inspector/maplkdomeamdlngconidoefjpogkmljm?hl=en)
-1. Open the chrome extension by pressing the Snowplow Inspector icon beside the address bar
+1. Install [Snowplow Inspector](https://chrome.google.com/webstore/detail/snowplow-inspector/maplkdomeamdlngconidoefjpogkmljm?hl=en).
+1. Open the Chrome extension by pressing the Snowplow Inspector icon beside the address bar.
 1. Click around on a webpage with Snowplow and you should see JavaScript events firing in the inspector window.
 
 ### Snowplow Micro
@@ -342,53 +338,59 @@ Snowplow Micro is a Docker-based solution for testing frontend and backend event
 - Look at the [Snowplow Micro repository](https://github.com/snowplow-incubator/snowplow-micro)
 - Watch our [installation guide recording](https://www.youtube.com/watch?v=OX46fo_A0Ag)
 
-1. Install [Snowplow Micro](https://github.com/snowplow-incubator/snowplow-micro)
+1. Install [Snowplow Micro](https://github.com/snowplow-incubator/snowplow-micro):
 
-``` bash
-docker run --mount type=bind,source=$(pwd)/example,destination=/config -p 9090:9090 snowplow/snowplow-micro:latest --collector-config /config/micro.conf --iglu /config/iglu.json
-```
+   ```shell
+   docker run --mount type=bind,source=$(pwd)/example,destination=/config -p 9090:9090 snowplow/snowplow-micro:latest --collector-config /config/micro.conf --iglu /config/iglu.json
+   ```
 
-1. Install snowplow micro by cloning the settings in [this project](https://gitlab.com/a_akgun/snowplow-micro).
+1. Install snowplow micro by cloning the settings in [this project](https://gitlab.com/a_akgun/snowplow-micro):
 
-  ``` bash
-  git clone git@gitlab.com:a_akgun/snowplow-micro.git
-  ./snowplow-micro.sh
-  ```
+   ```shell
+   git clone git@gitlab.com:a_akgun/snowplow-micro.git
+   ./snowplow-micro.sh
+   ```
 
-1. Update port in SQL (needed to set 9090)
+1. Update port in SQL to set `9090`:
 
-  ``` bash
-  gdk psql -d gitlabhq_development
-  update application_settings set snowplow_collector_hostname='localhost:9090', snowplow_enabled=true, snowplow_cookie_domain='.gitlab.com';
-  ```
+   ```shell
+   gdk psql -d gitlabhq_development
+   update application_settings set snowplow_collector_hostname='localhost:9090', snowplow_enabled=true, snowplow_cookie_domain='.gitlab.com';
+   ```
 
 1. Update `app/assets/javascripts/tracking.js` to [remove this line](https://gitlab.com/snippets/1918635):
 
-  ``` javascript
-  forceSecureTracker: true
-  ```
+   ```javascript
+   forceSecureTracker: true
+   ```
 
 1. Update `lib/gitlab/tracking.rb` to [add these lines](https://gitlab.com/snippets/1918635):
 
-  ``` ruby
-  protocol: 'http',
-  port: 9090,
-  ```
+   ```ruby
+   protocol: 'http',
+   port: 9090,
+   ```
 
 1. Update `lib/gitlab/tracking.rb` to [change async emitter from https to http](https://gitlab.com/snippets/1918635):
 
-  ``` ruby
-  SnowplowTracker::AsyncEmitter.new(Gitlab::CurrentSettings.snowplow_collector_hostname, protocol: 'http'),
-  ```
+   ```ruby
+   SnowplowTracker::AsyncEmitter.new(Gitlab::CurrentSettings.snowplow_collector_hostname, protocol: 'http'),
+   ```
 
 1. Enable Snowplow in the admin area, Settings::Integrations::Snowplow to point to:
-  `http://localhost:3000/admin/application_settings/integrations#js-snowplow-settings`
-1. `gdk restart`
-1. Send a test Snowplow event from the Rails console
+   `http://localhost:3000/admin/application_settings/integrations#js-snowplow-settings`.
 
-  ``` ruby
-  Gitlab::Tracking.self_describing_event('iglu:com.gitlab/pageview_context/jsonschema/1-0-0', { page_type: ‘MY_TYPE' }, context: nil )
-  ```
+1. Restart GDK:
+
+   ```shell
+   `gdk restart`
+   ```
+
+1. Send a test Snowplow event from the Rails console:
+
+   ```ruby
+   Gitlab::Tracking.self_describing_event('iglu:com.gitlab/pageview_context/jsonschema/1-0-0', { page_type: ‘MY_TYPE' }, context: nil )
+   ```
 
 ### Snowplow Mini
 
@@ -396,4 +398,4 @@ docker run --mount type=bind,source=$(pwd)/example,destination=/config -p 9090:9
 
 Snowplow Mini can be used for testing frontend and backend events on a production, staging and local development environment.
 
-For GitLab.com, we are currently setting up a [QA and Testing environment](https://gitlab.com/gitlab-org/telemetry/-/issues/266) using Snowplow Mini.
+For GitLab.com, we're setting up a [QA and Testing environment](https://gitlab.com/gitlab-org/telemetry/-/issues/266) using Snowplow Mini.
