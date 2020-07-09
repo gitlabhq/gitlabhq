@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  context 'Non-devops' do
+  RSpec.describe 'Non-devops' do
     describe 'Performance bar display', :requires_admin do
       context 'when logged in as an admin user' do
         # performance metrics: pg, gitaly, redis, rugged (feature flagged), total (not always provided)

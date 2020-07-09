@@ -90,6 +90,8 @@ RSpec.describe MergeRequests::PostMergeService do
           pipeline: pipeline, project: project, environment: review_env_a.name)
         review_job_a2 = create(:ci_build, :with_deployment, :start_review_app,
           pipeline: pipeline, project: project, environment: review_env_a.name)
+        finished_review_job_a = create(:ci_build, :with_deployment, :start_review_app,
+          pipeline: pipeline, project: project, status: :success, environment: review_env_a.name)
         review_job_b1 = create(:ci_build, :with_deployment, :start_review_app,
           pipeline: pipeline, project: project, environment: review_env_b.name)
         review_job_b2 = create(:ci_build, :start_review_app,
@@ -103,6 +105,8 @@ RSpec.describe MergeRequests::PostMergeService do
 
         expect(review_job_a1.reload.canceled?).to be true
         expect(review_job_a2.reload.canceled?).to be true
+        expect(finished_review_job_a.reload.status).to eq "success"
+        expect(finished_review_job_a.reload.canceled?).to be false
         expect(review_job_b1.reload.canceled?).to be true
         expect(review_job_b2.reload.canceled?).to be false
         expect(review_job_c1.reload.canceled?).to be false

@@ -639,9 +639,12 @@
     display: none;
     cursor: pointer;
     pointer-events: all;
-    right: 22px;
-    top: 9px;
+    top: $gl-padding-8;
     font-size: 14px;
+
+    &:not(.gl-icon) {
+      right: 22px;
+    }
   }
 
   &.has-value {

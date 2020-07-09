@@ -99,7 +99,7 @@ Normally, if you specify `simple_tls` it will be on port 636, while `start_tls` 
 would be on port 389. `plain` also operates on port 389. Removed values: `tls` was replaced with `start_tls` and `ssl` was replaced with `simple_tls`.
 
 NOTE: **Note:**
-LDAP users must have an email address set, regardless of whether it is used to log in.
+LDAP users must have an email address set, regardless of whether it is used to sign-in.
 
 ### Example Configurations **(CORE ONLY)**
 
@@ -169,7 +169,7 @@ production:
 
 | Setting | Description | Required | Examples |
 | ------- | ----------- | -------- | -------- |
-| `label` | A human-friendly name for your LDAP server. It will be displayed on your login page. | yes | `'Paris'` or `'Acme, Ltd.'` |
+| `label` | A human-friendly name for your LDAP server. It will be displayed on your sign-in page. | yes | `'Paris'` or `'Acme, Ltd.'` |
 | `host`  | IP address or domain name of your LDAP server. | yes | `'ldap.mydomain.com'` |
 | `port`  | The port to connect with on your LDAP server. Always an integer, not a string. | yes | `389` or `636` (for SSL) |
 | `uid`   | LDAP attribute for username. Should be the attribute, not the value that maps to the `uid`. | yes | `'sAMAccountName'`, `'uid'`, `'userPrincipalName'` |
@@ -179,7 +179,7 @@ production:
 | `verify_certificates` | Enables SSL certificate verification if encryption method is `start_tls` or `simple_tls`. Defaults to true. | no | boolean |
 | `timeout` | Set a timeout, in seconds, for LDAP queries. This helps avoid blocking a request if the LDAP server becomes unresponsive. A value of 0 means there is no timeout. | no | `10` or `30` |
 | `active_directory` | This setting specifies if LDAP server is Active Directory LDAP server. For non-AD servers it skips the AD specific queries. If your LDAP server is not AD, set this to false. | no | boolean |
-| `allow_username_or_email_login` | If enabled, GitLab will ignore everything after the first `@` in the LDAP username submitted by the user on login. If you are using `uid: 'userPrincipalName'` on ActiveDirectory you need to disable this setting, because the userPrincipalName contains an `@`. | no | boolean |
+| `allow_username_or_email_login` | If enabled, GitLab will ignore everything after the first `@` in the LDAP username submitted by the user on sign-in. If you are using `uid: 'userPrincipalName'` on ActiveDirectory you need to disable this setting, because the userPrincipalName contains an `@`. | no | boolean |
 | `block_auto_created_users` | To maintain tight control over the number of active users on your GitLab installation, enable this setting to keep new users blocked until they have been cleared by the admin (default: false). | no | boolean |
 | `base` | Base where we can search for users. | yes | `'ou=people,dc=gitlab,dc=example'` or `'DC=mydomain,DC=com'` |
 | `user_filter` | Filter LDAP users. Format: [RFC 4515](https://tools.ietf.org/search/rfc4515) Note: GitLab does not support `omniauth-ldap`'s custom filter syntax. | no | `'(employeeType=developer)'` or `'(&(objectclass=user)(|(samaccountname=momo)(samaccountname=toto)))'` |
@@ -197,7 +197,7 @@ production:
 
 ### Attribute Configuration Settings **(CORE ONLY)**
 
-LDAP attributes that GitLab will use to create an account for the LDAP user. The specified attribute can either be the attribute name as a string (e.g. `'mail'`), or an array of attribute names to try in order (e.g. `['mail', 'email']`). Note that the user's LDAP login will always be the attribute specified as `uid` above.
+LDAP attributes that GitLab will use to create an account for the LDAP user. The specified attribute can either be the attribute name as a string (e.g. `'mail'`), or an array of attribute names to try in order (e.g. `['mail', 'email']`). Note that the user's LDAP sign-in will always be the attribute specified as `uid` above.
 
 | Setting | Description | Required | Examples |
 | ------- | ----------- | -------- | -------- |
@@ -396,7 +396,7 @@ Be sure to choose a different provider ID made of letters a-z and numbers 0-9.
 This ID will be stored in the database so that GitLab can remember which LDAP
 server a user belongs to.
 
-![Multiple LDAP Servers Login](img/multi_login.gif)
+![Multiple LDAP Servers Sign in](img/multi_login.gif)
 
 Based on the example illustrated on the image above,
 our `gitlab.rb` configuration would look like:
@@ -424,7 +424,7 @@ gitlab_rails['ldap_servers'] = {
   'port' => 636,
   ...
   }
-  
+
 }
 ```
 
@@ -450,7 +450,7 @@ has bit 2 set. See <https://ctovswild.com/2009/09/03/bitmask-searches-in-ldap/>
 for more information.
 
 The user will be set to `ldap_blocked` state in GitLab if the above conditions
-fail. This means the user will not be able to login or push/pull code.
+fail. This means the user will not be able to sign-in or push/pull code.
 
 The process will also update the following user information:
 

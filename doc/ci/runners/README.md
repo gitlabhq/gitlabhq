@@ -37,10 +37,9 @@ multiple projects.
 
 If you are using a self-managed instance of GitLab:
 
-- Your administrator can
-  [install](https://docs.gitlab.com/runner/install/index.html)
-  and [register](https://docs.gitlab.com/runner/register/index.html) shared Runners,
-  and configure them to use the [executor](https://docs.gitlab.com/runner/executors/README.html) you want.
+- Your administrator can install and register shared Runners by going to your project's
+  **Settings > CI / CD**, expanding the **Runners** section, and clicking **Show Runner installation instructions**.
+  These instructions are also available [here](https://docs.gitlab.com/runner/install/index.html).
 - The administrator can also configure a maximum number of shared Runner [pipeline minutes for
   each group](../../user/admin_area/settings/continuous_integration.md#shared-runners-pipeline-minutes-quota-starter-only).
 
@@ -105,11 +104,13 @@ The fair usage algorithm assigns jobs in this order:
 
 #### Enable a shared Runner
 
-On GitLab.com, or after a self-managed GitLab administrator has installed and
-registered them, [shared Runners](#shared-runners) are enabled in all projects by
+On GitLab.com, [shared Runners](#shared-runners) are enabled in all projects by
 default.
 
-However, you can enable or disable shared Runners for individual projects.
+On self-managed instances of GitLab, an administrator must [install](https://docs.gitlab.com/runner/install/index.html)
+and [register](https://docs.gitlab.com/runner/register/index.html) them.
+
+You can also enable or disable shared Runners for individual projects.
 
 To enable or disable a shared Runner:
 

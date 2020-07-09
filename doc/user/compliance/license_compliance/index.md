@@ -385,6 +385,26 @@ You can supply a custom root certificate to complete TLS verification by using t
 specifying a `ca` setting in a [`.bowerrc`](https://bower.io/docs/config/#bowerrc-specification)
 file.
 
+#### Using private Bundler registries
+
+If you have a private Bundler registry you can use the
+[`source`](https://bundler.io/man/gemfile.5.html#GLOBAL-SOURCES)
+setting to specify its location.
+
+For example:
+
+```plaintext
+source "https://gems.example.com"
+```
+
+#### Custom root certificates for Bundler
+
+You can supply a custom root certificate to complete TLS verification by using the
+`ADDITIONAL_CA_CERT_BUNDLE` [environment variable](#available-variables), or by
+specifying a [`BUNDLE_SSL_CA_CERT`](https://bundler.io/v2.0/man/bundle-config.1.html)
+[environment variable](../../../ci/variables/README.md#custom-environment-variables)
+in the job definition.
+
 ### Configuring Conan projects
 
 You can configure [Conan](https://conan.io/) projects by adding a `.conan` directory to your
@@ -594,6 +614,7 @@ your code and generate security reports, without requiring internet access.
 
 Additional configuration may be needed for connecting to
 [private Bower registries](#using-private-bower-registries),
+[private Bundler registries](#using-private-bundler-registries),
 [private Conan registries](#using-private-bower-registries),
 [private Go registries](#using-private-go-registries),
 [private Maven repositories](#using-private-maven-repos),

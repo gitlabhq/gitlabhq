@@ -27,7 +27,7 @@ Could not authenticate you from Ldapmain because "Connection timed out - user sp
 ```
 
 If your configured LDAP provider and/or endpoint is offline or otherwise
-unreachable by GitLab, no LDAP user will be able to authenticate and log in.
+unreachable by GitLab, no LDAP user will be able to authenticate and sign-in.
 GitLab does not cache or store credentials for LDAP users to provide authentication
 during an LDAP outage.
 
@@ -81,7 +81,7 @@ adapter.ldap_search(options)
 For examples of how this is run,
 [review the `Adapter` module](https://gitlab.com/gitlab-org/gitlab/blob/master/ee/lib/ee/gitlab/auth/ldap/adapter.rb).
 
-### User logins
+### User sign-ins
 
 #### No users are found
 
@@ -97,24 +97,24 @@ In this case, you con confirm which of the above is true using
 [ldapsearch](#ldapsearch) with the existing LDAP configuration in your
 `/etc/gitlab/gitlab.rb`.
 
-#### User(s) cannot login
+#### User(s) cannot sign-in
 
-A user can have trouble logging in for any number of reasons. To get started,
+A user can have trouble signing in for any number of reasons. To get started,
 here are some questions to ask yourself:
 
 - Does the user fall under the [configured `base`](index.md#configuration-core-only) in
-  LDAP? The user must fall under this `base` to login.
+  LDAP? The user must fall under this `base` to sign-in.
 - Does the user pass through the [configured `user_filter`](index.md#set-up-ldap-user-filter-core-only)?
   If one is not configured, this question can be ignored. If it is, then the
-  user must also pass through this filter to be allowed to login.
+  user must also pass through this filter to be allowed to sign-in.
   - Refer to our docs on [debugging the `user_filter`](#debug-ldap-user-filter).
 
 If the above are both okay, the next place to look for the problem is
 the logs themselves while reproducing the issue.
 
-- Ask the user to login and let it fail.
+- Ask the user to sign-in and let it fail.
 - [Look through the output](#gitlab-logs) for any errors or other
-  messages about the login. You may see one of the other error messages on
+  messages about the sign-in. You may see one of the other error messages on
   this page, in which case that section can help resolve the issue.
 
 If the logs don't lead to the root of the problem, use the
@@ -125,9 +125,9 @@ It can also be helpful to
 [debug a user sync](#sync-all-users-starter-only) to
 investigate further.
 
-#### Invalid credentials on login
+#### Invalid credentials on sign-in
 
-If that the login credentials used are accurate on LDAP, ensure the following
+If that the sign-in credentials used are accurate on LDAP, ensure the following
 are true for the user in question:
 
 - Make sure the user you are binding with has enough permissions to read the user's
@@ -138,7 +138,7 @@ are true for the user in question:
 
 #### Email has already been taken
 
-A user tries to login with the correct LDAP credentials, is denied access,
+A user tries to sign-in with the correct LDAP credentials, is denied access,
 and the [production.log](../../logs.md#productionlog) shows an error that looks like this:
 
 ```plaintext
@@ -163,7 +163,7 @@ user.username
 This will show you which user has this email address. One of two steps will
 have to be taken here:
 
-- To create a new GitLab user/username for this user when logging in with LDAP,
+- To create a new GitLab user/username for this user when signing in with LDAP,
   remove the secondary email to remove the conflict.
 - To use an existing GitLab user/username for this user to use with LDAP,
   remove this email as a secondary email and make it a primary one so GitLab
@@ -235,7 +235,7 @@ uid: John
 There's a lot here, so let's go over what could be helpful when debugging.
 
 First, GitLab will look for all users that have previously
-logged in with LDAP and iterate on them. Each user's sync will start with
+signed in with LDAP and iterate on them. Each user's sync will start with
 the following line that contains the user's username and email, as they
 exist in GitLab now:
 
@@ -244,7 +244,7 @@ Syncing user John, email@example.com
 ```
 
 If you don't find a particular user's GitLab email in the output, then that
-user hasn't logged in with LDAP yet.
+user hasn't signed in with LDAP yet.
 
 Next, GitLab searches its `identities` table for the existing
 link between this user and the configured LDAP provider(s):
@@ -313,7 +313,7 @@ things to check to debug the situation.
   1. Search for the user
   1. Open the user, by clicking on their name. Do not click 'Edit'.
   1. Navigate to the **Identities** tab. There should be an LDAP identity with
-     an LDAP DN as the 'Identifier'. If not, this user hasn't logged in with
+     an LDAP DN as the 'Identifier'. If not, this user hasn't signed in with
      LDAP yet and must do so first.
 - You've waited an hour or [the configured
   interval](index.md#adjusting-ldap-group-sync-schedule-starter-only) for the group to
@@ -346,7 +346,7 @@ the following are true:
 - A [`group_base` is also configured](index.md#group-sync-starter-only).
 - The configured `admin_group` in the `gitlab.rb` is a CN, rather than a DN or an array.
 - This CN falls under the scope of the configured `group_base`.
-- The members of the `admin_group` have already logged into GitLab with their LDAP
+- The members of the `admin_group` have already signed into GitLab with their LDAP
   credentials. GitLab will only grant this admin access to the users whose
   accounts are already connected to LDAP.
 
@@ -571,7 +571,7 @@ If a user account is blocked or unblocked due to the LDAP configuration, a
 message will be [logged to `application.log`](../../logs.md#applicationlog).
 
 If there is an unexpected error during an LDAP lookup (configuration error,
-timeout), the login is rejected and a message will be [logged to
+timeout), the sign-in is rejected and a message will be [logged to
 `production.log`](../../logs.md#productionlog).
 
 ### ldapsearch

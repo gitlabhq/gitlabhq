@@ -1,7 +1,11 @@
 <script>
 import { __, s__, sprintf } from '~/locale';
+import { GlIcon } from '@gitlab/ui';
 
 export default {
+  components: {
+    GlIcon,
+  },
   props: {
     abilityName: {
       type: String,
@@ -72,6 +76,10 @@ export default {
     data-toggle="dropdown"
   >
     <span class="dropdown-toggle-text"> {{ dropdownToggleText }} </span>
-    <i aria-hidden="true" class="fa fa-chevron-down" data-hidden="true"> </i>
+    <gl-icon
+      name="chevron-down"
+      class="gl-absolute gl-top-3 gl-right-3 gl-text-gray-700"
+      :size="16"
+    />
   </button>
 </template>

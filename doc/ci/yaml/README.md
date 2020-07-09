@@ -1977,7 +1977,10 @@ Feature::enable(:ci_dag_limit_needs)
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/14311) in GitLab v12.6.
 
 When using `needs`, artifact downloads are controlled with `artifacts: true` (default) or `artifacts: false`.
-The `dependencies` keyword should not be used with `needs`, as this is deprecated since GitLab 12.6.
+
+Since GitLab 12.6, you can't combine the [`dependencies`](#dependencies) keyword
+with `needs` to control artifact downloads in jobs. `dependencies` is still valid
+in jobs that do not use `needs`.
 
 In the example below, the `rspec` job will download the `build_job` artifacts, while the
 `rubocop` job won't:

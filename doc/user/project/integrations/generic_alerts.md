@@ -89,3 +89,16 @@ Example payload:
   }
 }
 ```
+
+## Automatic grouping of identical alerts **(PREMIUM)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/214557) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.2.
+
+In GitLab versions 13.2 and greater, GitLab groups alerts based on their payload.
+When an incoming alert contains the same payload as another alert (excluding the
+`start_time` and `hosts` attributes), GitLab groups these alerts together and
+displays a counter on the
+[Alert Management List](../operations/alert_management.md#alert-management-list)
+and details pages.
+
+![Alert Management List](../operations/img/alert_list_v13_1.png)

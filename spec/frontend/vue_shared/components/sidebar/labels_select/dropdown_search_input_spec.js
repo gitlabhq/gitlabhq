@@ -29,13 +29,11 @@ describe('DropdownSearchInputComponent', () => {
     });
 
     it('renders search icon element', () => {
-      expect(vm.$el.querySelector('.fa-search.dropdown-input-search')).not.toBeNull();
+      expect(vm.$el.querySelector('.dropdown-input-search')).not.toBeNull();
     });
 
     it('renders clear search icon element', () => {
-      expect(
-        vm.$el.querySelector('.fa-times.dropdown-input-clear.js-dropdown-input-clear'),
-      ).not.toBeNull();
+      expect(vm.$el.querySelector('.dropdown-input-clear.js-dropdown-input-clear')).not.toBeNull();
     });
   });
 });

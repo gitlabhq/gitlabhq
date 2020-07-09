@@ -667,3 +667,18 @@ sudo cp /etc/resolv.conf /var/opt/gitlab/gitlab-rails/shared/pages/etc
 sudo cp /opt/gitlab/embedded/ssl/certs/cacert.pem /var/opt/gitlab/gitlab-rails/shared/pages/opt/gitlab/embedded/ssl/certs/
 sudo cp /opt/gitlab/embedded/ssl/certs/cacert.pem /var/opt/gitlab/gitlab-rails/shared/pages/etc/ssl/ca-bundle.pem
 ```
+
+### 404 error after transferring project to a different group or user
+
+If you encounter a `404 Not Found` error a Pages site after transferring a project to
+another group or user, you must trigger adomain configuration update for Pages. To do
+so, write something in the `.update` file. The Pages daemon monitors for changes to this
+file, and reloads the configuration when changes occur.
+
+Use this example to fix a `404 Not Found` error after transferring a project with Pages:
+
+```shell
+date > /var/opt/gitlab/gitlab-rails/shared/pages/.update
+```
+
+If you've customized the Pages storage path, adjust the command above to use your custom path.

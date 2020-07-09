@@ -24,7 +24,8 @@ module API
         merge_requests: :with_api_entity_associations,
         projects: :with_api_entity_associations,
         issues: :with_api_entity_associations,
-        milestones: :with_api_entity_associations
+        milestones: :with_api_entity_associations,
+        commits: :with_api_commit_entity_associations
       }.freeze
 
       def search(additional_params = {})
