@@ -35,7 +35,12 @@ RSpec.shared_examples 'Maintainer manages access requests' do
 
     expect_visible_access_request(entity, user)
 
-    accept_confirm { click_on 'Deny access' }
+    # Open modal
+    click_on 'Deny access request'
+
+    expect(page).not_to have_field "Also unassign this user from related issues and merge requests"
+
+    click_on 'Deny access request'
 
     expect_no_visible_access_request(entity, user)
     expect(page).not_to have_content user.name

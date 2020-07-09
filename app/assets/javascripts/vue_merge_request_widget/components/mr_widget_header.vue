@@ -1,4 +1,5 @@
 <script>
+import Mousetrap from 'mousetrap';
 import { escape } from 'lodash';
 import { n__, s__, sprintf } from '~/locale';
 import { mergeUrlParams, webIDEUrl } from '~/lib/utils/url_utility';
@@ -74,6 +75,17 @@ export default {
         : '';
     },
   },
+  mounted() {
+    Mousetrap.bind('b', this.copyBranchName);
+  },
+  beforeDestroy() {
+    Mousetrap.unbind('b');
+  },
+  methods: {
+    copyBranchName() {
+      this.$refs.copyBranchNameButton.$el.click();
+    },
+  },
 };
 </script>
 <template>
@@ -89,6 +101,7 @@ export default {
             class="label-branch label-truncate js-source-branch"
             v-html="mr.sourceBranchLink"
           /><clipboard-button
+            ref="copyBranchNameButton"
             :text="branchNameClipboardData"
             :title="__('Copy branch name')"
             css-class="btn-default btn-transparent btn-clipboard"

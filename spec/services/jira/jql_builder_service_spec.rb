@@ -54,6 +54,30 @@ RSpec.describe Jira::JqlBuilderService do
       end
     end
 
+    context 'with status param' do
+      let(:params) { { status: "\"'try\"some'more\"quote'here\"" } }
+
+      it 'builds jql' do
+        expect(subject).to eq("project = PROJECT_KEY AND status = \"\\\"'try\\\"some'more\\\"quote'here\\\"\" order by created DESC")
+      end
+    end
+
+    context 'with author_username param' do
+      let(:params) { { author_username: "\"'try\"some'more\"quote'here\"" } }
+
+      it 'builds jql' do
+        expect(subject).to eq("project = PROJECT_KEY AND reporter = \"\\\"'try\\\"some'more\\\"quote'here\\\"\" order by created DESC")
+      end
+    end
+
+    context 'with assignee_username param' do
+      let(:params) { { assignee_username: "\"'try\"some'more\"quote'here\"" } }
+
+      it 'builds jql' do
+        expect(subject).to eq("project = PROJECT_KEY AND assignee = \"\\\"'try\\\"some'more\\\"quote'here\\\"\" order by created DESC")
+      end
+    end
+
     context 'with sort params' do
       let(:params) { { sort: 'updated', sort_direction: 'ASC' } }
 

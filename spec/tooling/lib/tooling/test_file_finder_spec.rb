@@ -120,6 +120,22 @@ RSpec.describe Tooling::TestFileFinder do
       end
     end
 
+    context 'when given a haml view' do
+      let(:file) { 'app/views/admin/users/_user.html.haml' }
+
+      it 'returns the matching view spec' do
+        expect(subject.test_files).to contain_exactly('spec/views/admin/users/_user.html.haml_spec.rb')
+      end
+    end
+
+    context 'when given a haml view in ee/' do
+      let(:file) { 'ee/app/views/admin/users/_user.html.haml' }
+
+      it 'returns the matching view spec' do
+        expect(subject.test_files).to contain_exactly('ee/spec/views/admin/users/_user.html.haml_spec.rb')
+      end
+    end
+
     context 'when given a migration file' do
       let(:file) { 'db/migrate/20191023152913_add_default_and_free_plans.rb' }
 

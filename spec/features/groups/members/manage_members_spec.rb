@@ -68,9 +68,12 @@ RSpec.describe 'Groups > Members > Manage members' do
 
     visit group_group_members_path(group)
 
-    accept_confirm do
-      find(:css, '.project-members-page li', text: user2.name).find(:css, 'a.btn-remove').click
-    end
+    # Open modal
+    find(:css, '.project-members-page li', text: user2.name).find(:css, 'button.btn-remove').click
+
+    expect(page).to have_unchecked_field 'Also unassign this user from related issues and merge requests'
+
+    click_on('Remove member')
 
     wait_for_requests
 

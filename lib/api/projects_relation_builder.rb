@@ -8,6 +8,10 @@ module API
       def prepare_relation(projects_relation, options = {})
         projects_relation = preload_relation(projects_relation, options)
         execute_batch_counting(projects_relation)
+        # Call the forks count method on every project, so the BatchLoader would load them all at
+        # once when the entities are rendered
+        projects_relation.each(&:forks_count)
+
         projects_relation
       end
 
@@ -19,16 +23,11 @@ module API
         projects_relation
       end
 
-      def batch_forks_counting(projects_relation)
-        ::Projects::BatchForksCountService.new(forks_counting_projects(projects_relation)).refresh_cache
-      end
-
       def batch_open_issues_counting(projects_relation)
         ::Projects::BatchOpenIssuesCountService.new(projects_relation).refresh_cache
       end
 
       def execute_batch_counting(projects_relation)
-        batch_forks_counting(projects_relation)
         batch_open_issues_counting(projects_relation)
       end
     end

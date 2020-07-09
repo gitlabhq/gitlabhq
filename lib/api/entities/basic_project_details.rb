@@ -33,7 +33,8 @@ module API
         project.avatar_url(only_path: false)
       end
 
-      expose :star_count, :forks_count
+      expose :forks_count
+      expose :star_count
       expose :last_activity_at
       expose :namespace, using: 'API::Entities::NamespaceBasic'
       expose :custom_attributes, using: 'API::Entities::CustomAttribute', if: :with_custom_attributes

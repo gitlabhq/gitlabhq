@@ -7,12 +7,6 @@ module RendersMemberAccess
     groups
   end
 
-  def prepare_projects_for_rendering(projects)
-    preload_max_member_access_for_collection(Project, projects)
-
-    projects
-  end
-
   private
 
   # rubocop: disable CodeReuse/ActiveRecord

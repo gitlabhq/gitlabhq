@@ -1,0 +1,5 @@
+---
+title: Use BatchLoader for Project.forks_count to limit calls to Redis
+merge_request: 35328
+author:
+type: performance

@@ -4,9 +4,9 @@ module Gitlab
   module Ci
     module Reports
       class TestSuite
-        attr_reader :name
-        attr_reader :test_cases
-        attr_reader :total_time
+        attr_accessor :name
+        attr_accessor :test_cases
+        attr_accessor :total_time
         attr_reader :suite_error
 
         def initialize(name = nil)
@@ -68,6 +68,14 @@ module Gitlab
 
         def set_suite_error(msg)
           @suite_error = msg
+        end
+
+        def +(other)
+          self.class.new.tap do |test_suite|
+            test_suite.name = self.name
+            test_suite.test_cases = self.test_cases.deep_merge(other.test_cases)
+            test_suite.total_time = self.total_time + other.total_time
+          end
         end
 
         private

@@ -3,6 +3,7 @@
 - page_title @project.full_name, _("Projects")
 - @content_class = "admin-projects"
 
+.js-remove-member-modal
 %h3.page-title
   Project: #{@project.full_name}
   = link_to edit_project_path(@project), class: "btn btn-nr float-right" do

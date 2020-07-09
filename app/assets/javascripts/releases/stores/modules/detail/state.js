@@ -1,23 +1,27 @@
 export default ({
   projectId,
-  tagName,
-  releasesPagePath,
   markdownDocsPath,
   markdownPreviewPath,
   updateReleaseApiDocsPath,
   releaseAssetsDocsPath,
   manageMilestonesPath,
   newMilestonePath,
+
+  tagName = null,
+  releasesPagePath = null,
+  defaultBranch = null,
 }) => ({
   projectId,
-  tagName,
-  releasesPagePath,
   markdownDocsPath,
   markdownPreviewPath,
   updateReleaseApiDocsPath,
   releaseAssetsDocsPath,
   manageMilestonesPath,
   newMilestonePath,
+
+  tagName,
+  releasesPagePath,
+  defaultBranch,
 
   /** The Release object */
   release: null,

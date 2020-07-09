@@ -15822,6 +15822,24 @@
               "deprecationReason": null
             },
             {
+              "name": "id",
+              "description": "ID of the issue",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "ID",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "iid",
               "description": "Internal ID of the issue",
               "args": [

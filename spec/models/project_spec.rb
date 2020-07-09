@@ -4116,7 +4116,7 @@ RSpec.describe Project do
     it 'returns the number of forks' do
       project = build(:project)
 
-      expect_any_instance_of(Projects::ForksCountService).to receive(:count).and_return(1)
+      expect_any_instance_of(::Projects::BatchForksCountService).to receive(:refresh_cache_and_retrieve_data).and_return({ project => 1 })
 
       expect(project.forks_count).to eq(1)
     end

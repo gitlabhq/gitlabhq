@@ -4,6 +4,7 @@
 - pending_active = params[:search_invited].present?
 - total_count = @members.count + @group.shared_with_group_links.count
 
+.js-remove-member-modal
 .project-members-page.gl-mt-3
   %h4
     = _("Group members")

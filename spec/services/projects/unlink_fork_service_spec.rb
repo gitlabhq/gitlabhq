@@ -53,6 +53,7 @@ RSpec.describe Projects::UnlinkForkService, :use_clean_rails_memory_store_cachin
     expect(source.forks_count).to eq(1)
 
     subject.execute
+    BatchLoader::Executor.clear_current
 
     expect(source.forks_count).to be_zero
   end
@@ -146,6 +147,7 @@ RSpec.describe Projects::UnlinkForkService, :use_clean_rails_memory_store_cachin
       expect(project.forks_count).to eq(2)
 
       subject.execute
+      BatchLoader::Executor.clear_current
 
       expect(project.forks_count).to be_zero
     end
@@ -212,6 +214,7 @@ RSpec.describe Projects::UnlinkForkService, :use_clean_rails_memory_store_cachin
         expect(forked_project.forks_count).to eq(1)
 
         subject.execute
+        BatchLoader::Executor.clear_current
 
         expect(project.forks_count).to eq(1)
         expect(forked_project.forks_count).to eq(0)

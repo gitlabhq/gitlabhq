@@ -26,11 +26,11 @@ class Projects::ReleasesController < Projects::ApplicationController
 
   def show
     return render_404 unless Feature.enabled?(:release_show_page, project, default_enabled: true)
+  end
 
-    respond_to do |format|
-      format.html do
-        render :show
-      end
+  def new
+    unless Feature.enabled?(:new_release_page, project)
+      return redirect_to(new_project_tag_path(@project))
     end
   end
 
@@ -38,21 +38,11 @@ class Projects::ReleasesController < Projects::ApplicationController
     redirect_to link.url
   end
 
-  protected
+  private
 
   def releases
     ReleasesFinder.new(@project, current_user).execute
   end
-
-  def edit
-    respond_to do |format|
-      format.html do
-        render :edit
-      end
-    end
-  end
-
-  private
 
   def authorize_update_release!
     access_denied! unless can?(current_user, :update_release, release)

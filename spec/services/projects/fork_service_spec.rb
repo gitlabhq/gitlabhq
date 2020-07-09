@@ -10,6 +10,7 @@ RSpec.describe Projects::ForkService do
       expect(from_project.forks_count).to be_zero
 
       fork_project(from_project, to_user)
+      BatchLoader::Executor.clear_current
 
       expect(from_project.forks_count).to eq(1)
     end
@@ -405,6 +406,7 @@ RSpec.describe Projects::ForkService do
         expect(fork_from_project.forks_count).to be_zero
 
         subject.execute(fork_to_project)
+        BatchLoader::Executor.clear_current
 
         expect(fork_from_project.forks_count).to eq(1)
       end

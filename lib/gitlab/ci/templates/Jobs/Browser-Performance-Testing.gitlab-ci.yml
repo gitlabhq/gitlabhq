@@ -1,10 +1,14 @@
+# Read more about the feature here: https://docs.gitlab.com/ee/user/project/merge_requests/browser_performance_testing.html
+
 performance:
   stage: performance
   image: docker:19.03.11
   allow_failure: true
   variables:
     DOCKER_TLS_CERTDIR: ""
-    SITESPEED_IMAGE: "sitespeedio/sitespeed.io:11.2.0"
+    SITESPEED_IMAGE: sitespeedio/sitespeed.io
+    SITESPEED_VERSION: 13.3.0
+    SITESPEED_OPTIONS: ''
   services:
     - docker:19.03.11-dind
   script:
@@ -16,22 +20,22 @@ performance:
       fi
     - export CI_ENVIRONMENT_URL=$(cat environment_url.txt)
     - mkdir gitlab-exporter
-    - wget -O gitlab-exporter/index.js https://gitlab.com/gitlab-org/gl-performance/raw/1.0.0/index.js
+    - wget -O gitlab-exporter/index.js https://gitlab.com/gitlab-org/gl-performance/raw/1.0.1/index.js
     - mkdir sitespeed-results
-    - docker pull --quiet ${SITESPEED_IMAGE}
     - |
       if [ -f .gitlab-urls.txt ]
       then
         sed -i -e 's@^@'"$CI_ENVIRONMENT_URL"'@' .gitlab-urls.txt
-        docker run --shm-size=1g --rm -v "$(pwd)":/sitespeed.io ${SITESPEED_IMAGE} --plugins.add ./gitlab-exporter --outputFolder sitespeed-results .gitlab-urls.txt
+        docker run --shm-size=1g --rm -v "$(pwd)":/sitespeed.io $SITESPEED_IMAGE:$SITESPEED_VERSION --plugins.add ./gitlab-exporter --outputFolder sitespeed-results .gitlab-urls.txt $SITESPEED_OPTIONS
       else
-        docker run --shm-size=1g --rm -v "$(pwd)":/sitespeed.io ${SITESPEED_IMAGE} --plugins.add ./gitlab-exporter --outputFolder sitespeed-results "$CI_ENVIRONMENT_URL"
+        docker run --shm-size=1g --rm -v "$(pwd)":/sitespeed.io $SITESPEED_IMAGE:$SITESPEED_VERSION --plugins.add ./gitlab-exporter --outputFolder sitespeed-results "$CI_ENVIRONMENT_URL" $SITESPEED_OPTIONS
       fi
-    - mv sitespeed-results/data/performance.json performance.json
+    - mv sitespeed-results/data/performance.json browser-performance.json
   artifacts:
     paths:
-      - performance.json
       - sitespeed-results/
+    reports:
+      browser_performance: browser-performance.json
   rules:
     - if: '$CI_KUBERNETES_ACTIVE == null || $CI_KUBERNETES_ACTIVE == ""'
       when: never

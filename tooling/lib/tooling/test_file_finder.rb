@@ -72,9 +72,9 @@ module Tooling
       ImpactedTestFile.new do |impact|
         impact.associate(%r{app/(.+)\.rb$}) { |match| "spec/#{match[1]}_spec.rb" }
         impact.associate(%r{(tooling/)?lib/(.+)\.rb$}) { |match| "spec/#{match[1]}lib/#{match[2]}_spec.rb" }
-        impact.associate(%r{config/initializers/(.+).rb$}) { |match| "spec/initializers/#{match[1]}_spec.rb" }
+        impact.associate(%r{config/initializers/(.+)\.rb$}) { |match| "spec/initializers/#{match[1]}_spec.rb" }
         impact.associate('db/structure.sql') { 'spec/db/schema_spec.rb' }
-        impact.associate(%r{db/(?:post_)?migrate/([0-9]+)_(.+).rb$}) do |match|
+        impact.associate(%r{db/(?:post_)?migrate/([0-9]+)_(.+)\.rb$}) do |match|
           [
             "spec/migrations/#{match[2]}_spec.rb",
             "spec/migrations/#{match[1]}_#{match[2]}_spec.rb"
@@ -84,8 +84,9 @@ module Tooling
     end
 
     def either_impact
-      ImpactedTestFile.new(prefix: %r{^(#{EE_PREFIX})?}) do |impact|
-        impact.associate(%r{spec/(.+)_spec.rb$}) { |match| match[0] }
+      ImpactedTestFile.new(prefix: %r{^(?<prefix>#{EE_PREFIX})?}) do |impact|
+        impact.associate(%r{app/views/(?<view>.+)\.haml$}) { |match| "#{match[:prefix]}spec/views/#{match[:view]}.haml_spec.rb" }
+        impact.associate(%r{spec/(.+)_spec\.rb$}) { |match| match[0] }
         impact.associate(%r{spec/factories/.+\.rb$}) { 'spec/factories_spec.rb' }
       end
     end

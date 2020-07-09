@@ -3,6 +3,7 @@
 class UsersController < ApplicationController
   include RoutableActions
   include RendersMemberAccess
+  include RendersProjectsList
   include ControllerWithCrossProjectAccessCheck
   include Gitlab::NoteableMetadata
 

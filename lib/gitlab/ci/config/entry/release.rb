@@ -44,10 +44,10 @@ module Gitlab
             end
             validate do
               next unless config[:ref]
+              next if Commit.reference_valid?(config[:ref])
+              next if Gitlab::GitRefValidator.validate(config[:ref])
 
-              unless Commit.reference_valid?(config[:ref])
-                errors.add(:ref, "must be a valid ref")
-              end
+              errors.add(:ref, "must be a valid ref")
             end
           end
 

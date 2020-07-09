@@ -139,6 +139,41 @@ RSpec.describe Gitlab::Ci::Reports::TestSuite do
     end
   end
 
+  describe '#+' do
+    let(:test_suite_2) { described_class.new('Rspec') }
+
+    subject { test_suite + test_suite_2 }
+
+    context 'when adding multiple suites together' do
+      before do
+        test_suite.add_test_case(test_case_success)
+        test_suite.add_test_case(test_case_failed)
+      end
+
+      it 'returns a new test suite' do
+        expect(subject).to be_an_instance_of(described_class)
+      end
+
+      it 'returns the suite name' do
+        expect(subject.name).to eq('Rspec')
+      end
+
+      it 'returns the sum for total_time' do
+        expect(subject.total_time).to eq(3.33)
+      end
+
+      it 'merges tests cases hash', :aggregate_failures do
+        test_suite_2.add_test_case(create_test_case_java_success)
+
+        failed_keys  = test_suite.test_cases['failed'].keys
+        success_keys = test_suite.test_cases['success'].keys + test_suite_2.test_cases['success'].keys
+
+        expect(subject.test_cases['failed'].keys).to contain_exactly(*failed_keys)
+        expect(subject.test_cases['success'].keys).to contain_exactly(*success_keys)
+      end
+    end
+  end
+
   Gitlab::Ci::Reports::TestCase::STATUS_TYPES.each do |status_type|
     describe "##{status_type}" do
       subject { test_suite.public_send("#{status_type}") }

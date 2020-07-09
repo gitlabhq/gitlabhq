@@ -10,20 +10,16 @@ type: reference, howto
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/3507) in [GitLab Premium](https://about.gitlab.com/pricing/) 10.3.
 
 If your application offers a web interface and you're using
-[GitLab CI/CD](../../../ci/README.md), you can quickly determine the performance
-impact of pending code changes.
+[GitLab CI/CD](../../../ci/README.md), you can quickly determine the rendering performance
+impact of pending code changes in the browser.
 
 ## Overview
 
 GitLab uses [Sitespeed.io](https://www.sitespeed.io), a free and open source
-tool, for measuring the performance of web sites. GitLab has built a simple
-[Sitespeed plugin](https://gitlab.com/gitlab-org/gl-performance) which outputs
-the performance score for each page analyzed in a file called `performance.json`.
-The [Sitespeed.io performance score](https://examples.sitespeed.io/6.0/2017-11-23-23-43-35/help.html)
-is a composite value based on best practices.
-
-GitLab can [show the Performance report](#how-browser-performance-testing-works)
-in the merge request widget area.
+tool, for measuring the rendering performance of web sites. The
+[Sitespeed plugin](https://gitlab.com/gitlab-org/gl-performance) that GitLab built outputs
+the performance score for each page analyzed in a file called `browser-performance.json`
+this data can be shown on Merge Requests.
 
 ## Use cases
 
@@ -41,7 +37,7 @@ Consider the following workflow:
 ## How browser performance testing works
 
 First, define a job in your `.gitlab-ci.yml` file that generates the
-[Performance report artifact](../../../ci/pipelines/job_artifacts.md#artifactsreportsperformance-premium).
+[Browser Performance report artifact](../../../ci/pipelines/job_artifacts.md#artifactsreportsperformance-premium).
 GitLab then checks this report, compares key performance metrics for each page
 between the source and target branches, and shows the information in the merge request.
 
@@ -49,12 +45,13 @@ For an example Performance job, see
 [Configuring Browser Performance Testing](#configuring-browser-performance-testing).
 
 NOTE: **Note:**
-If the Performance report has no data to compare, such as when you add the
-Performance job in your `.gitlab-ci.yml` for the very first time, no information
-displays in the merge request widget area. Consecutive merge requests will have data for
-comparison, and the Performance report will be shown properly.
+If the Browser Performance report has no data to compare, such as when you add the
+Browser Performance job in your `.gitlab-ci.yml` for the very first time,
+the Browser Performance report widget won't show. It must have run at least
+once on the target branch (`master`, for example), before it will display in a
+merge request targeting that branch.
 
-![Performance Widget](img/browser_performance_testing.png)
+![Browser Performance Widget](img/browser_performance_testing.png)
 
 ## Configuring Browser Performance Testing
 
@@ -64,21 +61,7 @@ using Docker-in-Docker.
 
 1. First, set up GitLab Runner with a
    [Docker-in-Docker build](../../../ci/docker/using_docker_build.md#use-docker-in-docker-workflow-with-docker-executor).
-1. After configuring the Runner, add a new job to `.gitlab-ci.yml` that generates
-   the expected report.
-1. Define the `performance` job according to your version of GitLab:
-
-   - For GitLab 12.4 and later - [include](../../../ci/yaml/README.md#includetemplate) the
-     [`Browser-Performance.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Verify/Browser-Performance.gitlab-ci.yml) provided as a part of your GitLab installation.
-   - For GitLab versions earlier than 12.4 - Copy and use the job as defined in the
-     [`Browser-Performance.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Verify/Browser-Performance.gitlab-ci.yml).
-
-   CAUTION: **Caution:**
-   The job definition provided by the template does not support Kubernetes yet.
-   For a complete example of a more complex setup that works in Kubernetes, see
-   [`Browser-Performance-Testing.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Jobs/Browser-Performance-Testing.gitlab-ci.yml).
-
-1. Add the following to your `.gitlab-ci.yml` file:
+1. Configure the default Browser Performance Testing CI job as follows in your `.gitlab-ci.yml` file:
 
    ```yaml
    include:
@@ -89,24 +72,32 @@ using Docker-in-Docker.
        URL: https://example.com
    ```
 
-   CAUTION: **Caution:**
-   The job definition provided by the template is supported in GitLab 11.5 and later versions.
-   It also requires GitLab Runner 11.5 or later. For earlier versions, use the
-   [previous job definitions](#previous-job-definitions).
+NOTE: **Note:**
+For versions before 12.4, see the information for [older GitLab versions](#gitlab-versions-123-and-older).
+If you are using a Kubernetes cluster, use [`template: Jobs/Browser-Performance-Testing.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Jobs/Browser-Performance-Testing.gitlab-ci.yml)
+instead.
 
 The above example creates a `performance` job in your CI/CD pipeline and runs
 sitespeed.io against the webpage you defined in `URL` to gather key metrics.
-The [GitLab plugin for sitespeed.io](https://gitlab.com/gitlab-org/gl-performance)
-is downloaded to save the report as a [Performance report artifact](../../../ci/pipelines/job_artifacts.md#artifactsreportsperformance-premium)
-that you can later download and analyze. Due to implementation limitations, we always
-take the latest Performance artifact available.
 
-The full HTML sitespeed.io report is saved as an artifact, and if
-[GitLab Pages](../pages/index.md) is enabled, it can be viewed directly in your browser.
+The example uses a CI/CD template that is included in all GitLab installations since
+12.4, but it will not work with Kubernetes clusters. If you are using GitLab 12.3
+or older, you must [add the configuration manually](#gitlab-versions-123-and-older)
 
-You can also customize options by setting the `SITESPEED_OPTIONS` variable.
+The template uses the [GitLab plugin for sitespeed.io](https://gitlab.com/gitlab-org/gl-performance),
+and it saves the full HTML sitespeed.io report as a [Browser Performance report artifact](../../../ci/pipelines/job_artifacts.md#artifactsreportsperformance-premium)
+that you can later download and analyze. This implementation always takes the latest
+Browser Performance artifact available. If [GitLab Pages](../pages/index.md) is enabled,
+you can view the report directly in your browser.
+
+You can also customize the jobs with environment variables:
+
+- `SITESPEED_IMAGE`: Configure the Docker image to use for the job (default `sitespeedio/sitespeed.io`), but not the image version.
+- `SITESPEED_VERSION`: Configure the version of the Docker image to use for the job (default `13.3.0`).
+- `SITESPEED_OPTIONS`: Configure any additional sitespeed.io options as required (default `nil`). Refer to the [sitespeed.io documentation](https://www.sitespeed.io/documentation/sitespeed.io/configuration/) for more details.
+
 For example, you can override the number of runs sitespeed.io
-makes on the given URL:
+makes on the given URL, and change the version:
 
 ```yaml
 include:
@@ -114,17 +105,10 @@ include:
 
 performance:
   variables:
-    URL: https://example.com
+    URL: https://www.sitespeed.io/
+    SITESPEED_VERSION: 13.2.0
     SITESPEED_OPTIONS: -n 5
 ```
-
-For further customization options for sitespeed.io, including the ability to provide a
-list of URLs to test, please see the
-[Sitespeed.io Configuration](https://www.sitespeed.io/documentation/sitespeed.io/configuration/)
-documentation.
-
-TIP: **Tip:**
-Key metrics are automatically extracted and shown in the merge request widget.
 
 ### Configuring degradation threshold
 
@@ -152,15 +136,12 @@ The above CI YAML configuration is great for testing against static environments
 be extended for dynamic environments, but a few extra steps are required:
 
 1. The `performance` job should run after the dynamic environment has started.
-1. In the `review` job, persist the hostname and upload it as an artifact so
-   it's available to the `performance` job. The same can be done for static
-   environments like staging and production to unify the code path. You can save it
-   as an artifact with `echo $CI_ENVIRONMENT_URL > environment_url.txt`
-   in your job's `script`.
-1. In the `performance` job, read the previous artifact into an environment
-   variable. In this case, use `$URL` because the sitespeed.io command
-   uses it for the URL parameter. Because Review App URLs are dynamic, define
-   the `URL` variable through `before_script` instead of `variables`.
+1. In the `review` job:
+    1. Generate a URL list file with the dynamic URL.
+    1. Save the file as an artifact, for example with `echo $CI_ENVIRONMENT_URL > environment_url.txt`
+    in your job's `script`.
+    1. Pass the list as the URL environment variable (which can be a URL or a file containing URLs)
+    to the `performance` job.
 1. You can now run the sitespeed.io container against the desired hostname and
    paths.
 
@@ -193,20 +174,47 @@ review:
 performance:
   dependencies:
     - review
-  before_script:
-    - export URL=$(cat environment_url.txt)
+  variables:
+    URL: environment_url.txt
 ```
 
-### Previous job definitions
+### GitLab versions 12.3 and older
 
-CAUTION: **Caution:**
-Before GitLab 11.5, the Performance job and artifact had to be named specifically
-to automatically extract report data and show it in the merge request widget.
-While these old job definitions are still maintained, they have been deprecated
-and may be removed in next major release, GitLab 12.0.
-GitLab recommends you update your current `.gitlab-ci.yml` configuration to reflect that change.
+Browser Performance Testing has gone through several changes since it's introduction.
+In this section we'll detail these changes and how you can run the test based on your
+GitLab version:
 
-For GitLab 11.4 and earlier, the job should look like:
+- In GitLab 12.4 [a job template was made available](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Verify/Browser-Performance.gitlab-ci.yml).
+- In 13.2 the feature was renamed from `Performance` to `Browser Performance` with
+additional template variables. The job name in the template is still `performance`
+for compatibility reasons, but may be renamed to match in a future iteration.
+- For 11.5 to 12.3 no template is available and the job has to be defined manually as follows:
+
+```yaml
+performance:
+  stage: performance
+  image: docker:git
+  variables:
+    URL: https://example.com
+    SITESPEED_VERSION: 13.3.0
+    SITESPEED_OPTIONS: ''
+  services:
+    - docker:stable-dind
+  script:
+    - mkdir gitlab-exporter
+    - wget -O ./gitlab-exporter/index.js https://gitlab.com/gitlab-org/gl-performance/raw/master/index.js
+    - mkdir sitespeed-results
+    - docker run --shm-size=1g --rm -v "$(pwd)":/sitespeed.io sitespeedio/sitespeed.io:$SITESPEED_VERSION --plugins.add ./gitlab-exporter --outputFolder sitespeed-results $URL $SITESPEED_OPTIONS
+    - mv sitespeed-results/data/performance.json performance.json
+  artifacts:
+    paths:
+      - performance.json
+      - sitespeed-results/
+    reports:
+      performance: performance.json
+```
+
+- For 11.4 and earlier the job should be defined as follows:
 
 ```yaml
 performance:
@@ -228,14 +236,5 @@ performance:
       - sitespeed-results/
 ```
 
-<!-- ## Troubleshooting
-
-Include any troubleshooting steps that you can foresee. If you know beforehand what issues
-one might have when setting this up, or when something is changed, or on upgrading, it's
-important to describe those, too. Think of things that may go wrong and include them here.
-This is important to minimize requests for support, and to avoid doc comments with
-questions that you know someone might ask.
-
-Each scenario can be a third-level heading, e.g. `### Getting error message X`.
-If you have none to add when creating a doc, leave this section in place
-but commented out to help encourage others to add to it in the future. -->
+Upgrading to the latest version and using the templates is recommended, to ensure
+you receive the latest updates, including updates to the sitespeed.io versions.

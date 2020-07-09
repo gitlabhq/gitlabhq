@@ -4,6 +4,7 @@ class Explore::ProjectsController < Explore::ApplicationController
   include PageLimiter
   include ParamsBackwardCompatibility
   include RendersMemberAccess
+  include RendersProjectsList
   include SortingHelper
   include SortingPreference
 

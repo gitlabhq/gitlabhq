@@ -15,6 +15,10 @@ module Gitlab
         end
 
         # rubocop: disable CodeReuse/ActiveRecord
+        def build_ids
+          results.pluck(:build_id)
+        end
+
         def total_time
           @total_time ||= results.sum(&:tests_duration)
         end

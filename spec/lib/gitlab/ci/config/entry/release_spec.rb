@@ -117,11 +117,39 @@ RSpec.describe Gitlab::Ci::Config::Entry::Release do
           tag_name: 'v0.06',
           description: "./release_changelog.txt",
           name: "Release $CI_TAG_NAME",
-          ref: 'b3235930aa443112e639f941c69c578912189bdd'
+          ref: ref
         }
       end
 
-      it_behaves_like 'a valid entry'
+      context "when 'ref' is a full commit SHA" do
+        let(:ref) { 'b3235930aa443112e639f941c69c578912189bdd' }
+
+        it_behaves_like 'a valid entry'
+      end
+
+      context "when 'ref' is a short commit SHA" do
+        let(:ref) { 'b3235930'}
+
+        it_behaves_like 'a valid entry'
+      end
+
+      context "when 'ref' is a branch name" do
+        let(:ref) { 'fix/123-branch-name'}
+
+        it_behaves_like 'a valid entry'
+      end
+
+      context "when 'ref' is a semantic versioning tag" do
+        let(:ref) { 'v1.2.3'}
+
+        it_behaves_like 'a valid entry'
+      end
+
+      context "when 'ref' is a semantic versioning tag rc" do
+        let(:ref) { 'v1.2.3-rc'}
+
+        it_behaves_like 'a valid entry'
+      end
     end
 
     context "when value includes 'released_at' keyword" do
@@ -193,25 +221,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Release do
         end
 
         context 'when `ref` is not valid' do
-          let(:config) { { ref: 'ABC123' } }
-
-          it_behaves_like 'reports error', 'release ref must be a valid ref'
-        end
-
-        context 'when `milestones` is not an array of strings' do
-          let(:config) { { milestones: [1, 2, 3] } }
-
-          it_behaves_like 'reports error', 'release milestones should be an array of strings or a string'
-        end
-
-        context 'when `released_at` is not a valid date' do
-          let(:config) { { released_at: 'ABC123' } }
-
-          it_behaves_like 'reports error', 'release released at must be a valid datetime'
-        end
-
-        context 'when `ref` is not valid' do
-          let(:config) { { ref: 'ABC123' } }
+          let(:config) { { ref: 'invalid\branch' } }
 
           it_behaves_like 'reports error', 'release ref must be a valid ref'
         end

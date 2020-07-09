@@ -17,6 +17,16 @@ RSpec.describe Gitlab::Ci::Reports::TestSuiteSummary do
     end
   end
 
+  describe '#build_ids' do
+    subject { test_suite_summary.build_ids }
+
+    context 'when test suite summary has several build report results' do
+      it 'returns the build ids' do
+        expect(subject).to contain_exactly(build_report_result_1.build_id, build_report_result_2.build_id)
+      end
+    end
+  end
+
   describe '#total_time' do
     subject { test_suite_summary.total_time }
 

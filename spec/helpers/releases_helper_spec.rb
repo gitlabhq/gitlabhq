@@ -22,6 +22,7 @@ RSpec.describe ReleasesHelper do
     let(:can_user_create_release) { false }
     let(:common_keys) { [:project_id, :illustration_path, :documentation_path] }
 
+    # rubocop: disable CodeReuse/ActiveRecord
     before do
       helper.instance_variable_set(:@project, project)
       helper.instance_variable_set(:@release, release)
@@ -30,6 +31,7 @@ RSpec.describe ReleasesHelper do
                     .with(user, :create_release, project)
                     .and_return(can_user_create_release)
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     describe '#data_for_releases_page' do
       it 'includes the required data for displaying release blocks' do
@@ -41,7 +43,20 @@ RSpec.describe ReleasesHelper do
 
         it 'includes new_release_path' do
           expect(helper.data_for_releases_page.keys).to contain_exactly(*common_keys, :new_release_path)
-          expect(helper.data_for_releases_page[:new_release_path]).to eq(new_project_tag_path(project))
+        end
+
+        it 'points new_release_path to the "New Release" page' do
+          expect(helper.data_for_releases_page[:new_release_path]).to eq(new_project_release_path(project))
+        end
+
+        context 'when the "new_release_page" feature flag is disabled' do
+          before do
+            stub_feature_flags(new_release_page: false)
+          end
+
+          it 'points new_release_path to the "New Tag" page' do
+            expect(helper.data_for_releases_page[:new_release_path]).to eq(new_project_tag_path(project))
+          end
         end
       end
     end
@@ -57,7 +72,23 @@ RSpec.describe ReleasesHelper do
                   release_assets_docs_path
                   manage_milestones_path
                   new_milestone_path)
-        expect(helper.data_for_edit_release_page.keys).to eq(keys)
+
+        expect(helper.data_for_edit_release_page.keys).to match_array(keys)
+      end
+    end
+
+    describe '#data_for_new_release_page' do
+      it 'has the needed data to display the "new release" page' do
+        keys = %i(project_id
+                  markdown_preview_path
+                  markdown_docs_path
+                  update_release_api_docs_path
+                  release_assets_docs_path
+                  manage_milestones_path
+                  new_milestone_path
+                  default_branch)
+
+        expect(helper.data_for_new_release_page.keys).to match_array(keys)
       end
     end
   end

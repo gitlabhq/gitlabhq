@@ -16,14 +16,19 @@ RSpec.describe 'Projects > Settings > User manages project members' do
     sign_in(user)
   end
 
-  it 'cancels a team member' do
+  it 'cancels a team member', :js do
     visit(project_project_members_path(project))
 
     project_member = project.project_members.find_by(user_id: user_dmitriy.id)
 
     page.within("#project_member_#{project_member.id}") do
-      click_link('Remove user from project')
+      # Open modal
+      click_on('Remove user from project')
     end
+
+    expect(page).to have_unchecked_field 'Also unassign this user from related issues and merge requests'
+
+    click_on('Remove member')
 
     visit(project_project_members_path(project))
 
