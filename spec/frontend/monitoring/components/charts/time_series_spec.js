@@ -9,18 +9,12 @@ import {
   GlChartSeriesLabel,
   GlChartLegend,
 } from '@gitlab/ui/dist/charts';
-import { cloneDeep } from 'lodash';
 import { shallowWrapperContainsSlotText } from 'helpers/vue_test_utils_helper';
-import { createStore } from '~/monitoring/stores';
 import { panelTypes, chartHeight } from '~/monitoring/constants';
 import TimeSeries from '~/monitoring/components/charts/time_series.vue';
-import * as types from '~/monitoring/stores/mutation_types';
-import { deploymentData, mockProjectDir, annotationsData, metricsResult } from '../../mock_data';
-import {
-  metricsDashboardPayload,
-  metricsDashboardViewModel,
-  metricResultStatus,
-} from '../../fixture_data';
+import { deploymentData, mockProjectDir, annotationsData } from '../../mock_data';
+
+import { timeSeriesGraphData } from '../../graph_data';
 
 jest.mock('lodash/throttle', () =>
   // this throttle mock executes immediately
@@ -35,23 +29,21 @@ jest.mock('~/lib/utils/icon_utils', () => ({
 }));
 
 describe('Time series component', () => {
-  let mockGraphData;
-  let store;
+  const defaultGraphData = timeSeriesGraphData();
   let wrapper;
 
   const createWrapper = (
-    { graphData = mockGraphData, ...props } = {},
+    { graphData = defaultGraphData, ...props } = {},
     mountingMethod = shallowMount,
   ) => {
     wrapper = mountingMethod(TimeSeries, {
       propsData: {
         graphData,
-        deploymentData: store.state.monitoringDashboard.deploymentData,
-        annotations: store.state.monitoringDashboard.annotations,
+        deploymentData,
+        annotations: annotationsData,
         projectPath: `${TEST_HOST}${mockProjectDir}`,
         ...props,
       },
-      store,
       stubs: {
         GlPopover: true,
       },
@@ -59,37 +51,21 @@ describe('Time series component', () => {
     });
   };
 
+  beforeEach(() => {
+    setTestTimeout(1000);
+  });
+
+  afterEach(() => {
+    wrapper.destroy();
+  });
+
   describe('With a single time series', () => {
-    beforeEach(() => {
-      setTestTimeout(1000);
-
-      store = createStore();
-
-      store.commit(
-        `monitoringDashboard/${types.RECEIVE_METRICS_DASHBOARD_SUCCESS}`,
-        metricsDashboardPayload,
-      );
-
-      store.commit(`monitoringDashboard/${types.RECEIVE_DEPLOYMENTS_DATA_SUCCESS}`, deploymentData);
-
-      store.commit(
-        `monitoringDashboard/${types.RECEIVE_METRIC_RESULT_SUCCESS}`,
-        metricResultStatus,
-      );
-      // dashboard is a dynamically generated fixture and stored at environment_metrics_dashboard.json
-      [mockGraphData] = store.state.monitoringDashboard.dashboard.panelGroups[1].panels;
-    });
-
     describe('general functions', () => {
       const findChart = () => wrapper.find({ ref: 'chart' });
 
       beforeEach(() => {
         createWrapper({}, mount);
         return wrapper.vm.$nextTick();
-      });
-
-      afterEach(() => {
-        wrapper.destroy();
       });
 
       it('allows user to override legend label texts using props', () => {
@@ -231,19 +207,20 @@ describe('Time series component', () => {
             });
 
             it('formats tooltip content', () => {
-              const name = 'Status Code';
+              const name = 'Metric 1';
               const value = '5.556';
               const dataIndex = 0;
               const seriesLabel = wrapper.find(GlChartSeriesLabel);
 
               expect(seriesLabel.vm.color).toBe('');
+
               expect(shallowWrapperContainsSlotText(seriesLabel, 'default', name)).toBe(true);
               expect(wrapper.vm.tooltip.content).toEqual([
                 { name, value, dataIndex, color: undefined },
               ]);
 
               expect(
-                shallowWrapperContainsSlotText(wrapper.find(GlAreaChart), 'tooltipContent', value),
+                shallowWrapperContainsSlotText(wrapper.find(GlLineChart), 'tooltipContent', value),
               ).toBe(true);
             });
 
@@ -385,10 +362,8 @@ describe('Time series component', () => {
           });
 
           it('utilizes all data points', () => {
-            const { values } = mockGraphData.metrics[0].result[0];
-
             expect(chartData.length).toBe(1);
-            expect(seriesData().data.length).toBe(values.length);
+            expect(seriesData().data.length).toBe(3);
           });
 
           it('creates valid data', () => {
@@ -602,13 +577,9 @@ describe('Time series component', () => {
           it('constructs a label for the chart y-axis', () => {
             const { yAxis } = getChartOptions();
 
-            expect(yAxis[0].name).toBe('Requests / Sec');
+            expect(yAxis[0].name).toBe('Y Axis');
           });
         });
-      });
-
-      afterEach(() => {
-        wrapper.destroy();
       });
     });
 
@@ -630,7 +601,7 @@ describe('Time series component', () => {
 
           beforeEach(() => {
             createWrapper(
-              { graphData: { ...mockGraphData, type: dynamicComponent.chartType } },
+              { graphData: timeSeriesGraphData({ type: dynamicComponent.chartType }) },
               mount,
             );
             return wrapper.vm.$nextTick();
@@ -700,16 +671,10 @@ describe('Time series component', () => {
   describe('with multiple time series', () => {
     describe('General functions', () => {
       beforeEach(() => {
-        store = createStore();
-        const graphData = cloneDeep(metricsDashboardViewModel.panelGroups[0].panels[3]);
-        graphData.metrics.forEach(metric => Object.assign(metric, { result: metricsResult }));
+        const graphData = timeSeriesGraphData({ type: panelTypes.AREA_CHART, multiMetric: true });
 
-        createWrapper({ graphData: { ...graphData, type: 'area-chart' } }, mount);
+        createWrapper({ graphData }, mount);
         return wrapper.vm.$nextTick();
-      });
-
-      afterEach(() => {
-        wrapper.destroy();
       });
 
       describe('Color match', () => {
@@ -752,12 +717,8 @@ describe('Time series component', () => {
     const findLegend = () => wrapper.find(GlChartLegend);
 
     beforeEach(() => {
-      createWrapper(mockGraphData, mount);
+      createWrapper({}, mount);
       return wrapper.vm.$nextTick();
-    });
-
-    afterEach(() => {
-      wrapper.destroy();
     });
 
     it('should render a tabular legend layout by default', () => {

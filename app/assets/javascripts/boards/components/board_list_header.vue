@@ -162,7 +162,7 @@ export default {
       'has-border': list.label && list.label.color,
       'gl-relative': list.isExpanded,
       'gl-h-full': !list.isExpanded,
-      'board-inner gl-rounded-base': isSwimlanesHeader,
+      'board-inner gl-rounded-top-left-base gl-rounded-top-right-base': isSwimlanesHeader,
     }"
     :style="{ borderTopColor: list.label && list.label.color ? list.label.color : null }"
     class="board-header gl-relative"
@@ -184,7 +184,7 @@ export default {
         :aria-label="chevronTooltip"
         :title="chevronTooltip"
         :icon="chevronIcon"
-        class="board-title-caret no-drag gl-cursor-pointer "
+        class="board-title-caret no-drag gl-cursor-pointer"
         variant="link"
         @click="toggleExpanded"
       />

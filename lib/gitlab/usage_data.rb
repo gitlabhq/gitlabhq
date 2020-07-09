@@ -478,11 +478,21 @@ module Gitlab
       end
       # rubocop: enable CodeReuse/ActiveRecord
 
+      # rubocop: disable CodeReuse/ActiveRecord
       def usage_activity_by_stage_create(time_period)
-        {}.tap do |h|
+        {
+          deploy_keys: distinct_count(::DeployKey.where(time_period), :user_id),
+          keys: distinct_count(::Key.regular_keys.where(time_period), :user_id),
+          merge_requests: distinct_count(::MergeRequest.where(time_period), :author_id),
+          projects_with_disable_overriding_approvers_per_merge_request: count(::Project.where(time_period.merge(disable_overriding_approvers_per_merge_request: true))),
+          projects_without_disable_overriding_approvers_per_merge_request: count(::Project.where(time_period.merge(disable_overriding_approvers_per_merge_request: [false, nil]))),
+          remote_mirrors: distinct_count(::Project.with_remote_mirrors.where(time_period), :creator_id),
+          snippets: distinct_count(::Snippet.where(time_period), :author_id)
+        }.tap do |h|
           h[:merge_requests_users] = merge_requests_users(time_period) if time_period.present?
         end
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       # Omitted because no user, creator or author associated: `campaigns_imported_from_github`, `ldap_group_links`
       # rubocop: disable CodeReuse/ActiveRecord

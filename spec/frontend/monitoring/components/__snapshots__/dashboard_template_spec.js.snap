@@ -129,6 +129,10 @@ exports[`Dashboard template matches the default snapshot 1`] = `
       <!---->
        
       <!---->
+       
+      <!---->
+       
+      <!---->
     </div>
      
     <duplicate-dashboard-modal-stub

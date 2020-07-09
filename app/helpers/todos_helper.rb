@@ -22,6 +22,7 @@ module TodosHelper
     when Todo::APPROVAL_REQUIRED then "set #{todo_action_subject(todo)} as an approver for"
     when Todo::UNMERGEABLE then 'Could not merge'
     when Todo::DIRECTLY_ADDRESSED then "directly addressed #{todo_action_subject(todo)} on"
+    when Todo::MERGE_TRAIN_REMOVED then "Removed from Merge Train:"
     end
   end
 
@@ -195,6 +196,10 @@ module TodosHelper
     end
 
     "&middot; #{content}".html_safe
+  end
+
+  def todo_author_display?(todo)
+    !todo.build_failed? && !todo.unmergeable?
   end
 
   private

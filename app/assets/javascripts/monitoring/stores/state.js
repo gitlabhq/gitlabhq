@@ -64,8 +64,16 @@ export default () => ({
 
   // GitLab paths to other pages
   projectPath: null,
+  operationsSettingsPath: '',
   logsPath: invalidUrl,
 
   // static paths
   customDashboardBasePath: '',
+
+  // current user data
+  /**
+   * Flag that denotes if the currently logged user can access
+   * the project Settings -> Operations
+   */
+  canAccessOperationsSettings: false,
 });

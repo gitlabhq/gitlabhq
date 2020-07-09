@@ -1378,6 +1378,62 @@ RSpec.describe Project do
     end
   end
 
+  describe '.service_desk_enabled' do
+    it 'returns the correct project' do
+      project_with_service_desk_enabled = create(:project)
+      project_with_service_desk_disabled = create(:project, :service_desk_disabled)
+
+      expect(described_class.service_desk_enabled).to include(project_with_service_desk_enabled)
+      expect(described_class.service_desk_enabled).not_to include(project_with_service_desk_disabled)
+    end
+  end
+
+  describe '#service_desk_enabled?' do
+    let_it_be(:namespace) { create(:namespace) }
+
+    subject(:project) { build(:project, :private, namespace: namespace, service_desk_enabled: true) }
+
+    before do
+      allow(Gitlab::IncomingEmail).to receive(:enabled?).and_return(true)
+      allow(Gitlab::IncomingEmail).to receive(:supports_wildcard?).and_return(true)
+    end
+
+    it 'is enabled' do
+      expect(project.service_desk_enabled?).to be_truthy
+      expect(project.service_desk_enabled).to be_truthy
+    end
+  end
+
+  describe '#service_desk_address' do
+    let_it_be(:project) { create(:project, service_desk_enabled: true) }
+
+    before do
+      allow(Gitlab::ServiceDesk).to receive(:enabled?).and_return(true)
+      allow(Gitlab.config.incoming_email).to receive(:enabled).and_return(true)
+      allow(Gitlab.config.incoming_email).to receive(:address).and_return("test+%{key}@mail.com")
+    end
+
+    it 'uses project full path as service desk address key' do
+      expect(project.service_desk_address).to eq("test+#{project.full_path_slug}-#{project.project_id}-issue-@mail.com")
+    end
+  end
+
+  describe '.find_by_service_desk_project_key' do
+    it 'returns the correct project' do
+      project1 = create(:project)
+      project2 = create(:project)
+      create(:service_desk_setting, project: project1, project_key: 'key1')
+      create(:service_desk_setting, project: project2, project_key: 'key2')
+
+      expect(Project.find_by_service_desk_project_key('key1')).to eq(project1)
+      expect(Project.find_by_service_desk_project_key('key2')).to eq(project2)
+    end
+
+    it 'returns nil if there is no project with the key' do
+      expect(Project.find_by_service_desk_project_key('some_key')).to be_nil
+    end
+  end
+
   context 'repository storage by default' do
     let(:project) { build(:project) }
 

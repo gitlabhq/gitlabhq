@@ -51,6 +51,8 @@ module API
       expose(:wiki_enabled) { |project, options| project.feature_available?(:wiki, options[:current_user]) }
       expose(:jobs_enabled) { |project, options| project.feature_available?(:builds, options[:current_user]) }
       expose(:snippets_enabled) { |project, options| project.feature_available?(:snippets, options[:current_user]) }
+      expose :service_desk_enabled
+      expose :service_desk_address
 
       expose(:can_create_merge_request_in) do |project, options|
         Ability.allowed?(options[:current_user], :create_merge_request_in, project)

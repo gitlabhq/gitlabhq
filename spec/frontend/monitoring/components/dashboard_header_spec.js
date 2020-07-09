@@ -157,4 +157,52 @@ describe('Dashboard header', () => {
       });
     });
   });
+
+  describe('metrics settings button', () => {
+    const findSettingsButton = () => wrapper.find('[data-testid="metrics-settings-button"]');
+    const url = 'https://path/to/project/settings';
+
+    beforeEach(() => {
+      createShallowWrapper();
+
+      store.state.monitoringDashboard.canAccessOperationsSettings = false;
+      store.state.monitoringDashboard.operationsSettingsPath = '';
+    });
+
+    it('is rendered when the user can access the project settings and path to settings is available', () => {
+      store.state.monitoringDashboard.canAccessOperationsSettings = true;
+      store.state.monitoringDashboard.operationsSettingsPath = url;
+
+      return wrapper.vm.$nextTick(() => {
+        expect(findSettingsButton().exists()).toBe(true);
+      });
+    });
+
+    it('is not rendered when the user can not access the project settings', () => {
+      store.state.monitoringDashboard.canAccessOperationsSettings = false;
+      store.state.monitoringDashboard.operationsSettingsPath = url;
+
+      return wrapper.vm.$nextTick(() => {
+        expect(findSettingsButton().exists()).toBe(false);
+      });
+    });
+
+    it('is not rendered when the path to settings is unavailable', () => {
+      store.state.monitoringDashboard.canAccessOperationsSettings = false;
+      store.state.monitoringDashboard.operationsSettingsPath = '';
+
+      return wrapper.vm.$nextTick(() => {
+        expect(findSettingsButton().exists()).toBe(false);
+      });
+    });
+
+    it('leads to the project settings page', () => {
+      store.state.monitoringDashboard.canAccessOperationsSettings = true;
+      store.state.monitoringDashboard.operationsSettingsPath = url;
+
+      return wrapper.vm.$nextTick(() => {
+        expect(findSettingsButton().attributes('href')).toBe(url);
+      });
+    });
+  });
 });

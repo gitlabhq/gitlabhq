@@ -60,6 +60,12 @@ module Types
     field :merge_requests_ff_only_enabled, GraphQL::BOOLEAN_TYPE, null: true,
           description: 'Indicates if no merge commits should be created and all merges should instead be fast-forwarded, which means that merging is only allowed if the branch could be fast-forwarded.'
 
+    field :service_desk_enabled, GraphQL::BOOLEAN_TYPE, null: true,
+          description: 'Indicates if the project has service desk enabled.'
+
+    field :service_desk_address, GraphQL::STRING_TYPE, null: true,
+          description: 'E-mail address of the service desk.'
+
     field :avatar_url, GraphQL::STRING_TYPE, null: true, calls_gitaly: true,
           description: 'URL to avatar image file of the project',
           resolve: -> (project, args, ctx) do

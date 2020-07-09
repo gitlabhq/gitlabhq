@@ -4,7 +4,7 @@
 
   .todo-item.todo-block.align-self-center
     .todo-title
-      - unless todo.build_failed? || todo.unmergeable?
+      - if todo_author_display?(todo)
         = todo_target_state_pill(todo)
 
         %span.title-item.author-name.bold

@@ -1,0 +1,6 @@
+%section.settings.no-animate.expanded.cluster-health-graphs.qa-cluster-health-section#cluster-health
+  - if @cluster&.application_prometheus_available?
+    #prometheus-graphs{ data: @cluster.health_data(clusterable) }
+
+  - else
+    %p.settings-message.text-center= s_("ClusterIntegration|In order to view the health of your cluster, you must first install Prometheus in the Applications tab.")

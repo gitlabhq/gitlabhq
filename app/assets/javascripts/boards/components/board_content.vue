@@ -77,6 +77,7 @@ export default {
       :can-admin-list="canAdminList"
       :disabled="disabled"
       :board-id="boardId"
+      :group-id="groupId"
     />
   </div>
 </template>

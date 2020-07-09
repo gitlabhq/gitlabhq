@@ -165,7 +165,7 @@ const mapLinksToViewModel = ({ url = null, title = '', type } = {}) => {
  * @param {Object} panel - Metrics panel
  * @returns {Object}
  */
-const mapPanelToViewModel = ({
+export const mapPanelToViewModel = ({
   id = null,
   title = '',
   type,

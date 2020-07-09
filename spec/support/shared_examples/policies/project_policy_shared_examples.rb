@@ -41,6 +41,28 @@ RSpec.shared_examples 'archived project policies' do
   end
 end
 
+RSpec.shared_examples 'project private features with read_all_resources ability' do
+  subject { described_class.new(user, project) }
+
+  before do
+    project.project_feature.update!(
+      repository_access_level: ProjectFeature::PRIVATE,
+      merge_requests_access_level: ProjectFeature::PRIVATE,
+      builds_access_level: ProjectFeature::PRIVATE
+    )
+  end
+
+  [:public, :internal, :private].each do |visibility|
+    context "for #{visibility} projects" do
+      let(:project) { create(:project, visibility, namespace: owner.namespace) }
+
+      it 'allows the download_code ability' do
+        expect_allowed(:download_code)
+      end
+    end
+  end
+end
+
 RSpec.shared_examples 'project policies as anonymous' do
   context 'abilities for public projects' do
     context 'when a project has pending invites' do
@@ -229,6 +251,12 @@ RSpec.shared_examples 'project policies as admin with admin mode' do
 
     it_behaves_like 'archived project policies' do
       let(:regular_abilities) { owner_permissions }
+    end
+  end
+
+  context 'abilities for all project visibility', :enable_admin_mode do
+    it_behaves_like 'project private features with read_all_resources ability' do
+      let(:user) { admin }
     end
   end
 end

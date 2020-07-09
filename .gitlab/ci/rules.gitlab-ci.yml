@@ -340,6 +340,15 @@
     - <<: *if-merge-request
       changes: *ci-patterns
 
+.frontend:rules:eslint-as-if-foss:
+  rules:
+    - <<: *if-not-ee
+      when: never
+    - <<: *if-merge-request-title-as-if-foss
+      when: never
+    - <<: *if-merge-request
+      changes: *frontend-patterns
+
 .frontend:rules:ee-mr-and-master-only:
   rules:
     - <<: *if-not-ee

@@ -113,6 +113,10 @@ module StubConfiguration
     allow(Gitlab.config.rack_attack.git_basic_auth).to receive_messages(to_settings(messages))
   end
 
+  def stub_service_desk_email_setting(messages)
+    allow(::Gitlab.config.service_desk_email).to receive_messages(to_settings(messages))
+  end
+
   private
 
   # Modifies stubbed messages to also stub possible predicate versions

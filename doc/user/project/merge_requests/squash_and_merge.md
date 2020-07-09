@@ -134,7 +134,7 @@ To disable it:
 
 ```ruby
 # Instance-wide
-Feature.enable(:squash_options)
+Feature.disable(:squash_options)
 # or by project
 Feature.disable(:squash_options, Project.find(<project id>))
 ```

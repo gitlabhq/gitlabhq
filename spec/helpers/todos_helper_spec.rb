@@ -222,4 +222,24 @@ RSpec.describe TodosHelper do
       end
     end
   end
+
+  describe '#todo_author_display?' do
+    using RSpec::Parameterized::TableSyntax
+
+    subject { helper.todo_author_display?(alert_todo) }
+
+    where(:action, :result) do
+      Todo::BUILD_FAILED        | false
+      Todo::UNMERGEABLE         | false
+      Todo::ASSIGNED            | true
+    end
+
+    with_them do
+      before do
+        alert_todo.action = action
+      end
+
+      it { is_expected.to eq(result) }
+    end
+  end
 end

@@ -174,6 +174,40 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
             :merge_requests_users
           )
       end
+
+      it 'includes accurate usage_activity_by_stage data' do
+        for_defined_days_back do
+          user = create(:user)
+          project = create(:project, :repository_private,
+                           :test_repo, :remote_mirror, creator: user)
+          create(:merge_request, source_project: project)
+          create(:deploy_key, user: user)
+          create(:key, user: user)
+          create(:project, creator: user, disable_overriding_approvers_per_merge_request: true)
+          create(:project, creator: user, disable_overriding_approvers_per_merge_request: false)
+          create(:remote_mirror, project: project)
+          create(:snippet, author: user)
+        end
+
+        expect(described_class.uncached_data[:usage_activity_by_stage][:create]).to include(
+          deploy_keys: 2,
+          keys: 2,
+          merge_requests: 2,
+          projects_with_disable_overriding_approvers_per_merge_request: 2,
+          projects_without_disable_overriding_approvers_per_merge_request: 4,
+          remote_mirrors: 2,
+          snippets: 2
+        )
+        expect(described_class.uncached_data[:usage_activity_by_stage_monthly][:create]).to include(
+          deploy_keys: 1,
+          keys: 1,
+          merge_requests: 1,
+          projects_with_disable_overriding_approvers_per_merge_request: 1,
+          projects_without_disable_overriding_approvers_per_merge_request: 2,
+          remote_mirrors: 1,
+          snippets: 1
+        )
+      end
     end
 
     context 'for monitor' do

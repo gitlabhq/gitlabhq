@@ -98,6 +98,8 @@ class Issue < ApplicationRecord
 
   scope :counts_by_state, -> { reorder(nil).group(:state_id).count }
 
+  scope :service_desk, -> { where(author: ::User.support_bot) }
+
   # An issue can be uniquely identified by project_id and iid
   # Takes one or more sets of composite IDs, expressed as hash-like records of
   # `{project_id: x, iid: y}`.
@@ -371,6 +373,10 @@ class Issue < ApplicationRecord
       alert_id: alert_management_alert.id,
       alert_errors: alert_management_alert.errors.messages
     )
+  end
+
+  def from_service_desk?
+    author.id == User.support_bot.id
   end
 
   private

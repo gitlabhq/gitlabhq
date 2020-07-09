@@ -14,6 +14,10 @@ export default class LazyLoader {
     scrollContainer.addEventListener('load', () => this.register());
   }
 
+  static supportsNativeLazyLoading() {
+    return 'loading' in HTMLImageElement.prototype;
+  }
+
   static supportsIntersectionObserver() {
     return Boolean(window.IntersectionObserver);
   }
@@ -23,7 +27,9 @@ export default class LazyLoader {
       () => {
         const lazyImages = [].slice.call(document.querySelectorAll('.lazy'));
 
-        if (LazyLoader.supportsIntersectionObserver()) {
+        if (LazyLoader.supportsNativeLazyLoading()) {
+          lazyImages.forEach(img => LazyLoader.loadImage(img));
+        } else if (LazyLoader.supportsIntersectionObserver()) {
           if (this.intersectionObserver) {
             lazyImages.forEach(img => this.intersectionObserver.observe(img));
           }
@@ -72,11 +78,14 @@ export default class LazyLoader {
   }
 
   register() {
-    if (LazyLoader.supportsIntersectionObserver()) {
-      this.startIntersectionObserver();
-    } else {
-      this.startLegacyObserver();
+    if (!LazyLoader.supportsNativeLazyLoading()) {
+      if (LazyLoader.supportsIntersectionObserver()) {
+        this.startIntersectionObserver();
+      } else {
+        this.startLegacyObserver();
+      }
     }
+
     this.startContentObserver();
     this.searchLazyImages();
   }
@@ -148,16 +157,12 @@ export default class LazyLoader {
 
   static loadImage(img) {
     if (img.getAttribute('data-src')) {
+      img.setAttribute('loading', 'lazy');
       let imgUrl = img.getAttribute('data-src');
       // Only adding width + height for avatars for now
       if (imgUrl.indexOf('/avatar/') > -1 && imgUrl.indexOf('?') === -1) {
-        let targetWidth = null;
-        if (img.getAttribute('width')) {
-          targetWidth = img.getAttribute('width');
-        } else {
-          targetWidth = img.width;
-        }
-        if (targetWidth) imgUrl += `?width=${targetWidth}`;
+        const targetWidth = img.getAttribute('width') || img.width;
+        imgUrl += `?width=${targetWidth}`;
       }
       img.setAttribute('src', imgUrl);
       img.removeAttribute('data-src');

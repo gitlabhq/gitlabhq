@@ -2,6 +2,7 @@
 import { debounce } from 'lodash';
 import { mapActions, mapState, mapGetters } from 'vuex';
 import {
+  GlButton,
   GlIcon,
   GlDeprecatedButton,
   GlDropdown,
@@ -37,6 +38,7 @@ import { timezones } from '../format_date';
 export default {
   components: {
     Icon,
+    GlButton,
     GlIcon,
     GlDeprecatedButton,
     GlDropdown,
@@ -123,6 +125,8 @@ export default {
       'showEmptyState',
       'dashboardTimezone',
       'projectPath',
+      'canAccessOperationsSettings',
+      'operationsSettingsPath',
     ]),
     ...mapGetters('monitoringDashboard', ['selectedDashboard', 'filteredEnvironments']),
     isSystemDashboard() {
@@ -149,6 +153,9 @@ export default {
     },
     shouldShowActionsMenu() {
       return Boolean(this.projectPath);
+    },
+    shouldShowSettingsButton() {
+      return this.canAccessOperationsSettings && this.operationsSettingsPath;
     },
   },
   methods: {
@@ -381,44 +388,57 @@ export default {
         </gl-deprecated-button>
       </div>
 
-      <template v-if="shouldShowActionsMenu">
-        <span aria-hidden="true" class="gl-pl-3 border-left gl-mb-3 d-none d-sm-block"></span>
+      <!-- This separator should be displayed only if at least one of the action menu or settings button are displayed  -->
+      <span
+        v-if="shouldShowActionsMenu || shouldShowSettingsButton"
+        aria-hidden="true"
+        class="gl-pl-3 border-left gl-mb-3 d-none d-sm-block"
+      ></span>
 
-        <div class="gl-mb-3 gl-mr-3 d-flex d-sm-block">
-          <gl-new-dropdown
-            v-gl-tooltip
-            right
-            class="gl-flex-grow-1"
-            data-testid="actions-menu"
-            :title="s__('Metrics|Create dashboard')"
-            :icon="'plus-square'"
+      <div v-if="shouldShowActionsMenu" class="gl-mb-3 gl-mr-3 d-flex d-sm-block">
+        <gl-new-dropdown
+          v-gl-tooltip
+          right
+          class="gl-flex-grow-1"
+          data-testid="actions-menu"
+          :title="s__('Metrics|Create dashboard')"
+          :icon="'plus-square'"
+        >
+          <gl-new-dropdown-item
+            v-gl-modal="$options.modalIds.createDashboard"
+            data-testid="action-create-dashboard"
+            >{{ s__('Metrics|Create new dashboard') }}</gl-new-dropdown-item
           >
+
+          <create-dashboard-modal
+            data-testid="create-dashboard-modal"
+            :add-dashboard-documentation-path="addDashboardDocumentationPath"
+            :modal-id="$options.modalIds.createDashboard"
+            :project-path="projectPath"
+          />
+
+          <template v-if="isSystemDashboard">
+            <gl-new-dropdown-divider />
             <gl-new-dropdown-item
-              v-gl-modal="$options.modalIds.createDashboard"
-              data-testid="action-create-dashboard"
-              >{{ s__('Metrics|Create new dashboard') }}</gl-new-dropdown-item
+              ref="duplicateDashboardItem"
+              v-gl-modal="$options.modalIds.duplicateDashboard"
+              data-testid="action-duplicate-dashboard"
             >
+              {{ s__('Metrics|Duplicate current dashboard') }}
+            </gl-new-dropdown-item>
+          </template>
+        </gl-new-dropdown>
+      </div>
 
-            <create-dashboard-modal
-              data-testid="create-dashboard-modal"
-              :add-dashboard-documentation-path="addDashboardDocumentationPath"
-              :modal-id="$options.modalIds.createDashboard"
-              :project-path="projectPath"
-            />
-
-            <template v-if="isSystemDashboard">
-              <gl-new-dropdown-divider />
-              <gl-new-dropdown-item
-                ref="duplicateDashboardItem"
-                v-gl-modal="$options.modalIds.duplicateDashboard"
-                data-testid="action-duplicate-dashboard"
-              >
-                {{ s__('Metrics|Duplicate current dashboard') }}
-              </gl-new-dropdown-item>
-            </template>
-          </gl-new-dropdown>
-        </div>
-      </template>
+      <div v-if="shouldShowSettingsButton" class="mb-2 mr-2 d-flex d-sm-block">
+        <gl-button
+          v-gl-tooltip
+          data-testid="metrics-settings-button"
+          icon="settings"
+          :href="operationsSettingsPath"
+          :title="s__('Metrics|Metrics Settings')"
+        />
+      </div>
     </div>
     <duplicate-dashboard-modal
       :default-branch="defaultBranch"

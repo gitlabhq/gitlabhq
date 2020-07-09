@@ -316,6 +316,14 @@ FactoryBot.define do
     end
   end
 
+  trait :service_desk_disabled do
+    service_desk_enabled { nil }
+  end
+
+  trait(:service_desk_enabled) do
+    service_desk_enabled { true }
+  end
+
   # Project with empty repository
   #
   # This is a case when you just created a project

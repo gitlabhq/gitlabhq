@@ -406,6 +406,22 @@ RSpec.describe Issue do
     end
   end
 
+  describe '#from_service_desk?' do
+    subject { issue.from_service_desk? }
+
+    context 'when issue author is support bot' do
+      let(:issue) { create(:issue, author: ::User.support_bot) }
+
+      it { is_expected.to be_truthy }
+    end
+
+    context 'when issue author is not support bot' do
+      let(:issue) { create(:issue) }
+
+      it { is_expected.to be_falsey }
+    end
+  end
+
   describe '#suggested_branch_name' do
     let(:repository) { double }
 
@@ -999,6 +1015,16 @@ RSpec.describe Issue do
       let(:composite_ids) do
         all_results.map { |issue| { project_id: issue.project_id, iid: issue.iid } }
       end
+    end
+  end
+
+  describe '.service_desk' do
+    it 'returns the service desk issue' do
+      service_desk_issue = create(:issue, author: ::User.support_bot)
+      regular_issue = create(:issue)
+
+      expect(described_class.service_desk).to include(service_desk_issue)
+      expect(described_class.service_desk).not_to include(regular_issue)
     end
   end
 

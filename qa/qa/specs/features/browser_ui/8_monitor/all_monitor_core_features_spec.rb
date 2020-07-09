@@ -64,6 +64,19 @@ module QA
         end
       end
 
+      it 'observes cluster health graph' do
+        Page::Project::Menu.perform(&:go_to_operations_kubernetes)
+
+        Page::Project::Operations::Kubernetes::Index.perform do |cluster_list|
+          cluster_list.click_on_cluster(@cluster)
+        end
+
+        Page::Project::Operations::Kubernetes::Show.perform do |cluster_panel|
+          cluster_panel.open_health
+          cluster_panel.wait_for_cluster_health
+        end
+      end
+
       private
 
       def deploy_project_with_prometheus

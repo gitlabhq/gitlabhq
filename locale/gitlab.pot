@@ -14577,6 +14577,9 @@ msgstr ""
 msgid "Metrics|Max"
 msgstr ""
 
+msgid "Metrics|Metrics Settings"
+msgstr ""
+
 msgid "Metrics|Min"
 msgstr ""
 

@@ -650,7 +650,7 @@ class ProjectPolicy < BasePolicy
     when ProjectFeature::DISABLED
       false
     when ProjectFeature::PRIVATE
-      admin? || team_access_level >= ProjectFeature.required_minimum_access_level(feature)
+      can?(:read_all_resources) || team_access_level >= ProjectFeature.required_minimum_access_level(feature)
     else
       true
     end
