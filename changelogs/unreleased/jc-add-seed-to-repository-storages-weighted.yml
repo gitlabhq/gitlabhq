@@ -1,5 +1,0 @@
----
-title: Fix existing repository_storages_weighted migrations
-merge_request: 35814
-author:
-type: fixed

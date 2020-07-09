@@ -2,6 +2,16 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 13.1.4 (2020-07-09)
+
+### Fixed (4 changes)
+
+- Fix path conflict for Ghost on UpdateRoutesForLostAndFoundGroupAndOrphanedProjects. !35425
+- Fix existing repository_storages_weighted migrations. !35814
+- Fix error 500s creating new projects due to empty weights. !35829
+- Fix gitlab:*:check Rake tasks. !35944
+
+
 ## 13.1.3 (2020-07-06)
 
 - No changes.

@@ -1,5 +1,0 @@
----
-title: Fix gitlab:*:check Rake tasks
-merge_request: 35944
-author:
-type: fixed
