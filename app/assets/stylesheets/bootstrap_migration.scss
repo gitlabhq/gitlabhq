@@ -23,7 +23,7 @@ body,
   // Override default font size used in non-csslab UI
   // Use rem to keep default font-size at 14px on body so 1rem still
   // fits 8px grid, but also allow users to change browser font size
-  font-size: .875rem;
+  font-size: 0.875rem;
 }
 
 legend {
@@ -32,11 +32,12 @@ legend {
 }
 
 button,
-html [type="button"],
-[type="reset"],
-[type="submit"],
-[role="button"] {
+html [type='button'],
+[type='reset'],
+[type='submit'],
+[role='button'] {
   // Override bootstrap reboot
+  /* stylelint-disable-next-line property-no-vendor-prefix */
   -webkit-appearance: inherit;
   cursor: pointer;
 }
@@ -77,7 +78,7 @@ h5,
   font-size: $gl-font-size;
 }
 
-input[type="file"] {
+input[type='file'] {
   // Bootstrap 4 file input height is taller by default
   // which makes them look ugly
   line-height: 1;

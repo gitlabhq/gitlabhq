@@ -4,8 +4,22 @@ import {
   buildUneditableCloseToken,
 } from '~/vue_shared/components/rich_content_editor/services/renderers/build_uneditable_token';
 
-import { buildMockListNode, normalListNode } from './mock_data';
+import { buildMockTextNode } from './mock_data';
 
+const buildMockListNode = literal => {
+  return {
+    firstChild: {
+      firstChild: {
+        firstChild: buildMockTextNode(literal),
+        type: 'paragraph',
+      },
+      type: 'item',
+    },
+    type: 'list',
+  };
+};
+
+const normalListNode = buildMockListNode('Just another bullet point');
 const kramdownListNode = buildMockListNode('TOC');
 
 describe('Render Kramdown List renderer', () => {

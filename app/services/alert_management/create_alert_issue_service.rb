@@ -21,6 +21,8 @@ module AlertManagement
       return error(result.message, issue) if result.error?
       return error(object_errors(alert), issue) unless associate_alert_with_issue(issue)
 
+      SystemNoteService.new_alert_issue(alert, issue, user)
+
       result
     end
 

@@ -136,10 +136,6 @@ describe('Dashboard Panel', () => {
       expect(wrapper.find(MonitorEmptyChart).exists()).toBe(true);
       expect(wrapper.find(MonitorEmptyChart).isVueInstance()).toBe(true);
     });
-
-    it('does not contain a tabindex attribute', () => {
-      expect(wrapper.find(MonitorEmptyChart).contains('[tabindex]')).toBe(false);
-    });
   });
 
   describe('When graphData is null', () => {

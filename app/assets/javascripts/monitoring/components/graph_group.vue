@@ -52,7 +52,7 @@ export default {
 </script>
 
 <template>
-  <div v-if="showPanels" ref="graph-group" class="card prometheus-panel" tabindex="0">
+  <div v-if="showPanels" ref="graph-group" class="card prometheus-panel">
     <div class="card-header d-flex align-items-center">
       <h4 class="flex-grow-1">{{ name }}</h4>
       <a

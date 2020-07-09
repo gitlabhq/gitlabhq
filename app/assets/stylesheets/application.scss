@@ -11,30 +11,30 @@
 // like a table or typography then make changes in the framework/ directory.
 // If you need to add unique style that should affect only one page - use pages/
 // directory.
-@import "@gitlab/at.js/dist/css/jquery.atwho";
-@import "dropzone/dist/basic";
-@import "select2/select2";
+@import '@gitlab/at.js/dist/css/jquery.atwho';
+@import 'dropzone/dist/basic';
+@import 'select2/select2';
 
 // GitLab UI framework
-@import "framework";
+@import 'framework';
 
 // Font icons
-@import "font-awesome";
+@import 'font-awesome';
 
 // Page specific styles (issues, projects etc):
-@import "pages/**/*";
+@import 'pages/**/*';
 
 // Component specific styles, will be moved to gitlab-ui
-@import "components/**/*";
+@import 'components/**/*';
 
 // Vendors specific styles
-@import "vendors/**/*";
+@import 'vendors/**/*';
 
 // Styles for JS behaviors.
-@import "behaviors";
+@import 'behaviors';
 
 // EE-only stylesheets
-@import "application_ee";
+@import 'application_ee';
 
 // CSS util classes
 /**
@@ -42,12 +42,12 @@
   Please check https://unpkg.com/browse/@gitlab/ui/src/scss/utilities.scss
   to see the available utility classes.
 **/
-@import "utilities";
+@import 'utilities';
 
 // Gitlab UI util classes
-@import "@gitlab/ui/src/scss/utilities";
+@import '@gitlab/ui/src/scss/utilities';
 
 /* print styles */
 @media print {
-  @import "print";
+  @import 'print';
 }

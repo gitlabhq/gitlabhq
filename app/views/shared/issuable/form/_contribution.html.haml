@@ -11,7 +11,7 @@
   %label.col-form-label.col-sm-2
     = _('Contribution')
   .col-sm-10
-    .form-check.prepend-top-5
+    .form-check.gl-mt-2
       = form.check_box :allow_collaboration, disabled: !issuable.can_allow_collaboration?(current_user), class: 'form-check-input'
       = form.label :allow_collaboration, class: 'form-check-label' do
         = _('Allow commits from members who can merge to the target branch.')

@@ -99,6 +99,18 @@ RSpec.describe Projects::Integrations::Jira::IssuesFinder do
             subject
           end
         end
+
+        context 'when pagination params used' do
+          let(:params) { { page: '10', per_page: '20' } }
+
+          it 'passes them to JqlBuilderService ' do
+            expect(::Jira::JqlBuilderService).to receive(:new)
+              .with(jira_service.project_key, include({ page: '10', per_page: '20' }))
+              .and_call_original
+
+            subject
+          end
+        end
       end
     end
   end

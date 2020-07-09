@@ -91,6 +91,11 @@ export default {
       required: false,
       default: undefined,
     },
+    shouldEmitToggleEvent: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
 
   data() {
@@ -157,6 +162,9 @@ export default {
   },
   methods: {
     toggleCollapsed() {
+      if (this.shouldEmitToggleEvent) {
+        this.$emit('toggleEvent');
+      }
       this.isCollapsed = !this.isCollapsed;
     },
   },

@@ -9,10 +9,10 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/9566) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.5.
 
 NOTE: **Note**
-This API is behind a [feature flag](../user/project/operations/feature_flags.md#enable-or-disable-feature-flag-strategies).
+This API is behind a [feature flag](../operations/feature_flags.md#enable-or-disable-feature-flag-strategies).
 If this flag is not enabled in your environment, you can use the [legacy feature flags API](feature_flags_legacy.md).
 
-API for accessing resources of [GitLab Feature Flags](../user/project/operations/feature_flags.md).
+API for accessing resources of [GitLab Feature Flags](../operations/feature_flags.md).
 
 Users with Developer or higher [permissions](../user/permissions.md) can access Feature Flag API.
 
@@ -146,7 +146,7 @@ POST /projects/:id/feature_flags
 | `name`              | string           | yes        | The name of the feature flag.                                                          |
 | `version`           | string           | yes        | The version of the feature flag. Must be `new_version_flag`. Omit or set to `legacy_flag` to create a [Legacy Feature Flag](feature_flags_legacy.md). |
 | `description`       | string           | no         | The description of the feature flag.                                                   |
-| `strategies`        | JSON             | no         | The feature flag [strategies](../user/project/operations/feature_flags.md#feature-flag-strategies). |
+| `strategies`        | JSON             | no         | The feature flag [strategies](../operations/feature_flags.md#feature-flag-strategies). |
 | `strategies:name`   | JSON             | no         | The strategy name.                                                                     |
 | `strategies:parameters` | JSON         | no         | The strategy parameters.                                                               |
 | `strategies:scopes` | JSON             | no         | The scopes for the strategy.                                                           |
@@ -204,7 +204,7 @@ PUT /projects/:id/feature_flags/:name
 | `id`                | integer/string   | yes        | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding).       |
 | `name`              | string           | yes        | The name of the feature flag.                                                          |
 | `description`       | string           | no         | The description of the feature flag.                                                   |
-| `strategies`        | JSON             | no         | The feature flag [strategies](../user/project/operations/feature_flags.md#feature-flag-strategies). |
+| `strategies`        | JSON             | no         | The feature flag [strategies](../operations/feature_flags.md#feature-flag-strategies). |
 | `strategies:id`     | JSON             | no         | The feature flag strategy id.                                                          |
 | `strategies:name`   | JSON             | no         | The strategy name.                                                                     |
 | `strategies:parameters` | JSON         | no         | The strategy parameters.                                                               |

@@ -118,23 +118,17 @@ The sort option and order is saved and used wherever you browse epics, including
 
 ## Make an epic confidential
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/213068) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.0 behind a feature flag, disabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/213068) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.0 behind a feature flag, disabled by default.
+> - [Became enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/224513) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.2.
 
 When you're creating an epic, you can make it confidential by selecting the **Make this epic
 confidential** checkbox.
 
-### Enable confidential epics **(PREMIUM ONLY)**
+### Disable confidential epics **(PREMIUM ONLY)**
 
-The confidential epics feature is under development and not ready for production use. It's deployed
-behind a feature flag that is **disabled by default**.
+The confidential epics feature is deployed behind a feature flag that is **enabled by default**.
 [GitLab administrators with access to the GitLab Rails console](../../../administration/feature_flags.md)
-can enable it for your self-managed instance.
-
-To enable it:
-
-```ruby
-Feature.enable(:confidential_epics)
-```
+can disable it for your self-managed instance.
 
 To disable it:
 

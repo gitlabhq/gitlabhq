@@ -339,7 +339,6 @@ export default {
       <h5
         ref="graphTitle"
         class="prometheus-graph-title gl-font-lg font-weight-bold text-truncate gl-mr-3"
-        tabindex="0"
       >
         {{ title }}
       </h5>

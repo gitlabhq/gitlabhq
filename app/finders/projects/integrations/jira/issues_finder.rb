@@ -7,14 +7,19 @@ module Projects
       RequestError = Class.new(StandardError)
 
       class IssuesFinder
-        attr_reader :issues, :total_count
+        attr_reader :issues, :total_count, :per_page
+
+        class << self
+          def valid_params
+            @valid_params ||= %i[page per_page search state]
+          end
+        end
 
         def initialize(project, params = {})
           @project = project
           @jira_service = project.jira_service
-          @page = params[:page].presence || 1
-          @params = params
-          @params = @params.reverse_merge(map_sort_values(@params.delete(:sort)))
+          @params = params.merge(map_sort_values(params[:sort]))
+          set_pagination
         end
 
         def execute
@@ -35,7 +40,9 @@ module Projects
         # rubocop: disable CodeReuse/ServiceClass
         def fetch_issues(project_key)
           jql = ::Jira::JqlBuilderService.new(project_key, params).execute
-          response = ::Jira::Requests::Issues::ListService.new(jira_service, { jql: jql, page: page }).execute
+          response = ::Jira::Requests::Issues::ListService
+                       .new(jira_service, { jql: jql, page: page, per_page: per_page })
+                       .execute
 
           if response.success?
             @total_count = response.payload[:total_count]
@@ -53,6 +60,11 @@ module Projects
           else
             { sort: ::Jira::JqlBuilderService::DEFAULT_SORT, sort_direction: ::Jira::JqlBuilderService::DEFAULT_SORT_DIRECTION }
           end
+        end
+
+        def set_pagination
+          @page = (params[:page].presence || 1).to_i
+          @per_page = (params[:per_page].presence || ::Jira::Requests::Issues::ListService::PER_PAGE).to_i
         end
       end
     end

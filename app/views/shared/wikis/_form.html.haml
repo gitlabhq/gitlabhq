@@ -20,7 +20,7 @@
     .col-sm-12= f.label :title, class: 'control-label-full-width'
     .col-sm-12
       = f.text_field :title, class: 'form-control qa-wiki-title-textbox', value: @page.title, required: true, autofocus: !@page.persisted?, placeholder: s_('Wiki|Page title')
-      %span.d-inline-block.mw-100.prepend-top-5
+      %span.d-inline-block.mw-100.gl-mt-2
         = icon('lightbulb-o')
         - if @page.persisted?
           = s_("WikiEditPageTip|Tip: You can move this page by adding the path to the beginning of the title.")

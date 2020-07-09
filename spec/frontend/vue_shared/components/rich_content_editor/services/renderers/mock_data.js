@@ -8,21 +8,7 @@ export const buildMockTextNode = literal => {
   };
 };
 
-export const buildMockListNode = literal => {
-  return {
-    firstChild: {
-      firstChild: {
-        firstChild: buildMockTextNode(literal),
-        type: 'paragraph',
-      },
-      type: 'item',
-    },
-    type: 'list',
-  };
-};
-
 export const normalTextNode = buildMockTextNode('This is just normal text.');
-export const normalListNode = buildMockListNode('Just another bullet point');
 
 // Token spec helpers
 

@@ -770,7 +770,7 @@ Relative linking enables crosslinks to work:
 
 - in Review Apps, local previews, and `/help`.
 - when working on the docs locally, so you can verify that they work as early as possible in the process.
-- within the GitLab UI when browsing doc files in their respective repositories. For example, the links displayed at <https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/README.md>.
+- within the GitLab UI when browsing doc files in their respective repositories. For example, the links displayed at `https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/README.md`.
 
 To link to internal documentation:
 

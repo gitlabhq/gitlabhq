@@ -11,7 +11,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 CAUTION: **Deprecation**
 This API is deprecated and [scheduled for removal in GitLab 14.0](https://gitlab.com/gitlab-org/gitlab/-/issues/213369). Use [this API](feature_flags.md) instead.
 
-API for accessing resources of [GitLab Feature Flags](../user/project/operations/feature_flags.md).
+API for accessing resources of [GitLab Feature Flags](../operations/feature_flags.md).
 
 Users with Developer or higher [permissions](../user/permissions.md) can access Feature Flag API.
 
@@ -166,7 +166,7 @@ POST /projects/:id/feature_flags
 | `scopes`            | JSON             | no         | The feature flag specs of the feature flag.                                            |
 | `scopes:environment_scope` | string    | no         | The environment spec.                                                                  |
 | `scopes:active`     | boolean          | no         | Whether the spec is active.                                                            |
-| `scopes:strategies` | JSON             | no         | The [strategies](../user/project/operations/feature_flags.md#feature-flag-strategies) of the feature flag spec. |
+| `scopes:strategies` | JSON             | no         | The [strategies](../operations/feature_flags.md#feature-flag-strategies) of the feature flag spec. |
 
 ```shell
 curl https://gitlab.example.com/api/v4/projects/1/feature_flags \

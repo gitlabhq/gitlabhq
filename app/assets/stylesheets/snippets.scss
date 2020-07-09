@@ -1,8 +1,8 @@
-@import "framework/variables";
+@import 'framework/variables';
 
 .gitlab-embed-snippets {
-  @import "highlight/embedded";
-  @import "framework/images";
+  @import 'highlight/embedded';
+  @import 'framework/images';
 
   $border-style: 1px solid $border-color;
 
@@ -15,6 +15,7 @@
 
   .gl-snippet-icon {
     display: inline-block;
+    /* stylelint-disable-next-line function-url-quotes */
     background: url(asset_path('ext_snippet_icons/ext_snippet_icons.png')) no-repeat;
     overflow: hidden;
     text-align: left;

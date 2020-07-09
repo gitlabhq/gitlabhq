@@ -42,14 +42,10 @@ describe('Graph group component', () => {
       });
     });
 
-    it('should contain a tabindex', () => {
-      expect(findGroup().contains('[tabindex]')).toBe(true);
-    });
-
     it('should contain a tab index for the collapse button', () => {
       const groupToggle = findToggleButton();
 
-      expect(groupToggle.contains('[tabindex]')).toBe(true);
+      expect(groupToggle.is('[tabindex]')).toBe(true);
     });
 
     it('should show the open the group when collapseGroup is set to true', () => {

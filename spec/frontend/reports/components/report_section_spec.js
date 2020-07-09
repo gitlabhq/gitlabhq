@@ -1,9 +1,11 @@
 import Vue from 'vue';
+import { shallowMount } from '@vue/test-utils';
 import mountComponent, { mountComponentWithSlots } from 'helpers/vue_mount_component_helper';
 import reportSection from '~/reports/components/report_section.vue';
 
 describe('Report section', () => {
   let vm;
+  let wrapper;
   const ReportSection = Vue.extend(reportSection);
 
   const resolvedIssues = [
@@ -16,22 +18,41 @@ describe('Report section', () => {
     },
   ];
 
+  const defaultProps = {
+    component: '',
+    status: 'SUCCESS',
+    loadingText: 'Loading codeclimate report',
+    errorText: 'foo',
+    successText: 'Code quality improved on 1 point and degraded on 1 point',
+    resolvedIssues,
+    hasIssues: false,
+    alwaysOpen: false,
+  };
+
+  const createComponent = props => {
+    wrapper = shallowMount(reportSection, {
+      propsData: {
+        ...defaultProps,
+        ...props,
+      },
+    });
+    return wrapper;
+  };
+
   afterEach(() => {
-    vm.$destroy();
+    if (vm) {
+      vm.$destroy();
+      vm = null;
+    }
+    if (wrapper) {
+      wrapper.destroy();
+      wrapper = null;
+    }
   });
 
   describe('computed', () => {
     beforeEach(() => {
-      vm = mountComponent(ReportSection, {
-        component: '',
-        status: 'SUCCESS',
-        loadingText: 'Loading codeclimate report',
-        errorText: 'foo',
-        successText: 'Code quality improved on 1 point and degraded on 1 point',
-        resolvedIssues,
-        hasIssues: false,
-        alwaysOpen: false,
-      });
+      vm = mountComponent(ReportSection, defaultProps);
     });
 
     describe('isCollapsible', () => {
@@ -105,12 +126,7 @@ describe('Report section', () => {
   describe('with success status', () => {
     beforeEach(() => {
       vm = mountComponent(ReportSection, {
-        component: '',
-        status: 'SUCCESS',
-        loadingText: 'Loading codeclimate report',
-        errorText: 'foo',
-        successText: 'Code quality improved on 1 point and degraded on 1 point',
-        resolvedIssues,
+        ...defaultProps,
         hasIssues: true,
       });
     });
@@ -160,6 +176,50 @@ describe('Report section', () => {
     });
   });
 
+  describe('snowplow events', () => {
+    it('does emit an event on issue toggle if the shouldEmitToggleEvent prop does exist', done => {
+      createComponent({ hasIssues: true, shouldEmitToggleEvent: true });
+
+      expect(wrapper.emitted().toggleEvent).toBeUndefined();
+
+      wrapper.vm.$el.querySelector('button').click();
+      return wrapper.vm
+        .$nextTick()
+        .then(() => {
+          expect(wrapper.emitted().toggleEvent).toHaveLength(1);
+        })
+        .then(done)
+        .catch(done.fail);
+    });
+
+    it('does not emit an event on issue toggle if the shouldEmitToggleEvent prop does not exist', done => {
+      createComponent({ hasIssues: true });
+
+      expect(wrapper.emitted().toggleEvent).toBeUndefined();
+
+      wrapper.vm.$el.querySelector('button').click();
+      return wrapper.vm
+        .$nextTick()
+        .then(() => {
+          expect(wrapper.emitted().toggleEvent).toBeUndefined();
+        })
+        .then(done)
+        .catch(done.fail);
+    });
+
+    it('does not emit an event if always-open is set to true', done => {
+      createComponent({ alwaysOpen: true, hasIssues: true, shouldEmitToggleEvent: true });
+
+      wrapper.vm
+        .$nextTick()
+        .then(() => {
+          expect(wrapper.emitted().toggleEvent).toBeUndefined();
+        })
+        .then(done)
+        .catch(done.fail);
+    });
+  });
+
   describe('with failed request', () => {
     it('should render error indicator', () => {
       vm = mountComponent(ReportSection, {
@@ -199,7 +259,7 @@ describe('Report section', () => {
   });
 
   describe('Success and Error slots', () => {
-    const createComponent = status => {
+    const createComponentWithSlots = status => {
       vm = mountComponentWithSlots(ReportSection, {
         props: {
           status,
@@ -214,7 +274,7 @@ describe('Report section', () => {
     };
 
     it('only renders success slot when status is "SUCCESS"', () => {
-      createComponent('SUCCESS');
+      createComponentWithSlots('SUCCESS');
 
       expect(vm.$el.textContent.trim()).toContain('This is a success');
       expect(vm.$el.textContent.trim()).not.toContain('This is an error');
@@ -222,7 +282,7 @@ describe('Report section', () => {
     });
 
     it('only renders error slot when status is "ERROR"', () => {
-      createComponent('ERROR');
+      createComponentWithSlots('ERROR');
 
       expect(vm.$el.textContent.trim()).toContain('This is an error');
       expect(vm.$el.textContent.trim()).not.toContain('This is a success');
@@ -230,7 +290,7 @@ describe('Report section', () => {
     });
 
     it('only renders loading slot when status is "LOADING"', () => {
-      createComponent('LOADING');
+      createComponentWithSlots('LOADING');
 
       expect(vm.$el.textContent.trim()).toContain('This is loading');
       expect(vm.$el.textContent.trim()).not.toContain('This is an error');

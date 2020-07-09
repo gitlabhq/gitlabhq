@@ -4,8 +4,18 @@ import {
   buildUneditableCloseToken,
 } from '~/vue_shared/components/rich_content_editor/services/renderers/build_uneditable_token';
 
-import { buildMockParagraphNode, normalParagraphNode } from '../../mock_data';
+import { buildMockTextNode } from './mock_data';
 
+const buildMockParagraphNode = literal => {
+  return {
+    firstChild: buildMockTextNode(literal),
+    type: 'paragraph',
+  };
+};
+
+const normalParagraphNode = buildMockParagraphNode(
+  'This is just normal paragraph. It has multiple sentences.',
+);
 const identifierParagraphNode = buildMockParagraphNode(
   `[another-identifier]: https://example.com "This example has a title" [identifier]: http://example1.com [this link]: http://example2.com`,
 );

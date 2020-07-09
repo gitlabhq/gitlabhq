@@ -1,6 +1,6 @@
 /* https://gist.github.com/qguv/7936275 */
 
-@import "../common";
+@import '../common';
 
 /*
 * Solarized dark colors
@@ -244,13 +244,19 @@ $solarized-dark-il: #2aa198;
   .c1 { color: $solarized-dark-c1; } /* Comment.Single */
   .cs { color: $solarized-dark-cs; } /* Comment.Special */
   .gd { color: $solarized-dark-gd; } /* Generic.Deleted */
-  .ge { color: $solarized-dark-ge; font-style: italic; } /* Generic.Emph */
+  .ge { /* Generic.Emph */
+    color: $solarized-dark-ge;
+    font-style: italic;
+  }
   .gr { color: $solarized-dark-gr; } /* Generic.Error */
   .gh { color: $solarized-dark-gh; } /* Generic.Heading */
   .gi { color: $solarized-dark-gi; } /* Generic.Inserted */
   .go { color: $solarized-dark-go; } /* Generic.Output */
   .gp { color: $solarized-dark-gp; } /* Generic.Prompt */
-  .gs { color: $solarized-dark-gs; font-weight: $gl-font-weight-bold; } /* Generic.Strong */
+  .gs { /* Generic.Strong */
+    color: $solarized-dark-gs;
+    font-weight: $gl-font-weight-bold;
+  }
   .gu { color: $solarized-dark-gu; } /* Generic.Subheading */
   .gt { color: $solarized-dark-gt; } /* Generic.Traceback */
   .kc { color: $solarized-dark-kc; } /* Keyword.Constant */

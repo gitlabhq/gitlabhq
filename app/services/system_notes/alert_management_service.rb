@@ -17,5 +17,21 @@ module SystemNotes
 
       create_note(NoteSummary.new(noteable, project, author, body, action: 'status'))
     end
+
+    # Called when an issue is created based on an AlertManagement::Alert
+    #
+    # alert - AlertManagement::Alert object.
+    # issue - Issue object.
+    #
+    # Example Note text:
+    #
+    #   "created issue #17 for this alert"
+    #
+    # Returns the created Note object
+    def new_alert_issue(alert, issue)
+      body = "created issue #{issue.to_reference(project)} for this alert"
+
+      create_note(NoteSummary.new(noteable, project, author, body, action: 'alert_issue_added'))
+    end
   end
 end

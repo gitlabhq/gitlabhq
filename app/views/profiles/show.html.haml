@@ -29,7 +29,7 @@
         = link_to avatar_icon_for_user(@user, 400), target: '_blank', rel: 'noopener noreferrer' do
           = image_tag avatar_icon_for_user(@user, 160), alt: '', class: 'avatar s160'
       %h5.gl-mt-0= s_("Profiles|Upload new avatar")
-      .prepend-top-5.append-bottom-10
+      .gl-mt-2.append-bottom-10
         %button.btn.js-choose-user-avatar-button{ type: 'button' }= s_("Profiles|Choose file...")
         %span.avatar-file-name.gl-ml-3.js-avatar-filename= s_("Profiles|No file chosen")
         = f.file_field_without_bootstrap :avatar, class: 'js-user-avatar-input hidden', accept: 'image/*'

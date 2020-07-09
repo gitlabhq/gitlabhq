@@ -46,6 +46,10 @@ RSpec.describe AlertManagement::CreateAlertIssueService do
 
         expect(alert.reload.issue_id).to eq(created_issue.id)
       end
+
+      it 'creates a system note' do
+        expect { execute }.to change { alert.reload.notes.count }.by(1)
+      end
     end
 
     shared_examples 'setting an issue attributes' do

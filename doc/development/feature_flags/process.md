@@ -4,7 +4,7 @@
 
 This document only covers feature flags used in the development of GitLab
 itself. Feature flags in deployed user applications can be found at
-[Feature Flags feature documentation](../../user/project/operations/feature_flags.md).
+[Feature Flags feature documentation](../../operations/feature_flags.md).
 
 ## Feature flags in GitLab development
 

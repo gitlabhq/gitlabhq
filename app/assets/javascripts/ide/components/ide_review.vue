@@ -53,7 +53,7 @@ export default {
           @click="updateViewer"
         />
       </div>
-      <div class="prepend-top-5 ide-review-sub-header">
+      <div class="gl-mt-2 ide-review-sub-header">
         <template v-if="showLatestChangesText">
           {{ __('Latest changes') }}
         </template>
