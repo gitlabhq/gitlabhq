@@ -37,7 +37,9 @@ const Api = {
   userStatusPath: '/api/:version/users/:id/status',
   userProjectsPath: '/api/:version/users/:id/projects',
   userPostStatusPath: '/api/:version/user/status',
-  commitPath: '/api/:version/projects/:id/repository/commits',
+  commitPath: '/api/:version/projects/:id/repository/commits/:sha',
+  commitsPath: '/api/:version/projects/:id/repository/commits',
+
   applySuggestionPath: '/api/:version/suggestions/:id/apply',
   applySuggestionBatchPath: '/api/:version/suggestions/batch_apply',
   commitPipelinesPath: '/:project_id/commit/:sha/pipelines',
@@ -319,9 +321,17 @@ const Api = {
       .catch(() => flash(__('Something went wrong while fetching projects')));
   },
 
+  commit(id, sha, params = {}) {
+    const url = Api.buildUrl(this.commitPath)
+      .replace(':id', encodeURIComponent(id))
+      .replace(':sha', encodeURIComponent(sha));
+
+    return axios.get(url, { params });
+  },
+
   commitMultiple(id, data) {
     // see https://docs.gitlab.com/ce/api/commits.html#create-a-commit-with-multiple-files-and-actions
-    const url = Api.buildUrl(Api.commitPath).replace(':id', encodeURIComponent(id));
+    const url = Api.buildUrl(Api.commitsPath).replace(':id', encodeURIComponent(id));
     return axios.post(url, JSON.stringify(data), {
       headers: {
         'Content-Type': 'application/json; charset=utf-8',

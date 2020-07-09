@@ -4,7 +4,7 @@ class ClusterApplicationEntity < Grape::Entity
   expose :name
   expose :status_name, as: :status
   expose :status_reason
-  expose :version
+  expose :version, if: -> (e, _) { e.respond_to?(:version) }
   expose :external_ip, if: -> (e, _) { e.respond_to?(:external_ip) }
   expose :external_hostname, if: -> (e, _) { e.respond_to?(:external_hostname) }
   expose :hostname, if: -> (e, _) { e.respond_to?(:hostname) }

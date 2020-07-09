@@ -412,6 +412,30 @@ describe('Api', () => {
     });
   });
 
+  describe('commit', () => {
+    const projectId = 'user/project';
+    const sha = 'abcd0123';
+    const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/projects/${encodeURIComponent(
+      projectId,
+    )}/repository/commits/${sha}`;
+
+    it('fetches a single commit', () => {
+      mock.onGet(expectedUrl).reply(200, { id: sha });
+
+      return Api.commit(projectId, sha).then(({ data: commit }) => {
+        expect(commit.id).toBe(sha);
+      });
+    });
+
+    it('fetches a single commit without stats', () => {
+      mock.onGet(expectedUrl, { params: { stats: false } }).reply(200, { id: sha });
+
+      return Api.commit(projectId, sha, { stats: false }).then(({ data: commit }) => {
+        expect(commit.id).toBe(sha);
+      });
+    });
+  });
+
   describe('issueTemplate', () => {
     it('fetches an issue template', done => {
       const namespace = 'some namespace';
