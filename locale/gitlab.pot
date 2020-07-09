@@ -23533,6 +23533,9 @@ msgstr ""
 msgid "This content could not be displayed because %{reason}. You can %{options} instead."
 msgstr ""
 
+msgid "This credential has expired"
+msgstr ""
+
 msgid "This date is after the due date, so this epic won't appear in the roadmap."
 msgstr ""
 

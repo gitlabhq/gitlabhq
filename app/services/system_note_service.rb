@@ -292,6 +292,10 @@ module SystemNoteService
     merge_requests_service(noteable, noteable.project, user).unapprove_mr
   end
 
+  def change_alert_status(alert, author)
+    ::SystemNotes::AlertManagementService.new(noteable: alert, project: alert.project, author: author).change_alert_status(alert)
+  end
+
   private
 
   def merge_requests_service(noteable, project, author)

@@ -19,8 +19,8 @@ module Mutations
       private
 
       def update_status(alert, status)
-        ::AlertManagement::UpdateAlertStatusService
-          .new(alert, current_user, status)
+        ::AlertManagement::Alerts::UpdateService
+          .new(alert, current_user, status: status)
           .execute
       end
 

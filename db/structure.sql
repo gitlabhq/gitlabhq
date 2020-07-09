@@ -9413,6 +9413,23 @@ CREATE TABLE public.aws_roles (
     role_external_id character varying(64) NOT NULL
 );
 
+CREATE TABLE public.backup_labels (
+    id integer NOT NULL,
+    title character varying,
+    color character varying,
+    project_id integer,
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone,
+    template boolean DEFAULT false,
+    description character varying,
+    description_html text,
+    type character varying,
+    group_id integer,
+    cached_markdown_version integer,
+    restore_action integer,
+    new_title character varying
+);
+
 CREATE TABLE public.badges (
     id integer NOT NULL,
     link_url character varying NOT NULL,
@@ -17234,6 +17251,9 @@ ALTER TABLE ONLY public.award_emoji
 ALTER TABLE ONLY public.aws_roles
     ADD CONSTRAINT aws_roles_pkey PRIMARY KEY (user_id);
 
+ALTER TABLE ONLY public.backup_labels
+    ADD CONSTRAINT backup_labels_pkey PRIMARY KEY (id);
+
 ALTER TABLE ONLY public.badges
     ADD CONSTRAINT badges_pkey PRIMARY KEY (id);
 
@@ -18368,6 +18388,20 @@ CREATE UNIQUE INDEX any_approver_project_rule_type_unique_index ON public.approv
 
 CREATE UNIQUE INDEX approval_rule_name_index_for_code_owners ON public.approval_merge_request_rules USING btree (merge_request_id, code_owner, name) WHERE ((code_owner = true) AND (section IS NULL));
 
+CREATE UNIQUE INDEX backup_labels_group_id_project_id_title_idx ON public.backup_labels USING btree (group_id, project_id, title);
+
+CREATE INDEX backup_labels_group_id_title_idx ON public.backup_labels USING btree (group_id, title) WHERE (project_id = NULL::integer);
+
+CREATE INDEX backup_labels_project_id_idx ON public.backup_labels USING btree (project_id);
+
+CREATE UNIQUE INDEX backup_labels_project_id_title_idx ON public.backup_labels USING btree (project_id, title) WHERE (group_id = NULL::integer);
+
+CREATE INDEX backup_labels_template_idx ON public.backup_labels USING btree (template) WHERE template;
+
+CREATE INDEX backup_labels_title_idx ON public.backup_labels USING btree (title);
+
+CREATE INDEX backup_labels_type_project_id_idx ON public.backup_labels USING btree (type, project_id);
+
 CREATE INDEX ci_builds_gitlab_monitor_metrics ON public.ci_builds USING btree (status, created_at, project_id) WHERE ((type)::text = 'Ci::Build'::text);
 
 CREATE INDEX code_owner_approval_required ON public.protected_branches USING btree (project_id, code_owner_approval_required) WHERE (code_owner_approval_required = true);
@@ -19374,7 +19408,7 @@ CREATE INDEX index_labels_on_group_id_and_title ON public.labels USING btree (gr
 
 CREATE INDEX index_labels_on_project_id ON public.labels USING btree (project_id);
 
-CREATE INDEX index_labels_on_project_id_and_title ON public.labels USING btree (project_id, title) WHERE (group_id = NULL::integer);
+CREATE UNIQUE INDEX index_labels_on_project_id_and_title_unique ON public.labels USING btree (project_id, title) WHERE (group_id IS NULL);
 
 CREATE INDEX index_labels_on_template ON public.labels USING btree (template) WHERE template;
 
@@ -21016,6 +21050,9 @@ ALTER TABLE ONLY public.vulnerabilities
 ALTER TABLE ONLY public.labels
     ADD CONSTRAINT fk_7de4989a69 FOREIGN KEY (project_id) REFERENCES public.projects(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY public.backup_labels
+    ADD CONSTRAINT fk_7de4989a69 FOREIGN KEY (project_id) REFERENCES public.projects(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY public.merge_requests
     ADD CONSTRAINT fk_7e85395a64 FOREIGN KEY (sprint_id) REFERENCES public.sprints(id) ON DELETE CASCADE;
 
@@ -22222,6 +22259,9 @@ ALTER TABLE ONLY public.serverless_domain_cluster
 ALTER TABLE ONLY public.labels
     ADD CONSTRAINT fk_rails_c1ac5161d8 FOREIGN KEY (group_id) REFERENCES public.namespaces(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY public.backup_labels
+    ADD CONSTRAINT fk_rails_c1ac5161d8 FOREIGN KEY (group_id) REFERENCES public.namespaces(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY public.project_feature_usages
     ADD CONSTRAINT fk_rails_c22a50024b FOREIGN KEY (project_id) REFERENCES public.projects(id) ON DELETE CASCADE;
 
@@ -23208,6 +23248,10 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200304160801
 20200304160823
 20200304211738
+20200305020458
+20200305020459
+20200305082754
+20200305082858
 20200305121159
 20200305151736
 20200305200641

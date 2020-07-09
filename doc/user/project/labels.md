@@ -251,3 +251,16 @@ If you sort by `Priority`, GitLab uses this sort comparison order:
 Ties are broken arbitrarily.
 
 ![Labels sort priority](img/labels_sort_priority.png)
+
+## Troubleshooting
+
+### Some label titles end with `_duplicate<number>`
+
+In specific circumstances it was possible to create labels with duplicate titles in the same
+namespace.
+
+To resolve the duplication, [in GitLab 13.2](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/21384)
+and later, some duplicate labels have `_duplicate<number>` appended to their titles.
+
+You can safely change these labels' titles if you prefer.
+For details of the original problem, see [issue 30390](https://gitlab.com/gitlab-org/gitlab/issues/30390).

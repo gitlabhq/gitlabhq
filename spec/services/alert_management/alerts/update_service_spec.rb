@@ -6,7 +6,7 @@ RSpec.describe AlertManagement::Alerts::UpdateService do
   let_it_be(:user_with_permissions) { create(:user) }
   let_it_be(:other_user_with_permissions) { create(:user) }
   let_it_be(:user_without_permissions) { create(:user) }
-  let_it_be(:alert, reload: true) { create(:alert_management_alert) }
+  let_it_be(:alert, reload: true) { create(:alert_management_alert, :triggered) }
   let_it_be(:project) { alert.project }
 
   let(:current_user) { user_with_permissions }
@@ -26,6 +26,10 @@ RSpec.describe AlertManagement::Alerts::UpdateService do
 
     shared_examples 'does not add a system note' do
       specify { expect { response }.not_to change(Note, :count) }
+    end
+
+    shared_examples 'adds a system note' do
+      specify { expect { response }.to change { alert.reload.notes.count }.by(1) }
     end
 
     shared_examples 'error response' do |message|
@@ -86,10 +90,6 @@ RSpec.describe AlertManagement::Alerts::UpdateService do
         end
       end
 
-      shared_examples 'adds a system note' do
-        specify { expect { response }.to change { alert.reload.notes.count }.by(1) }
-      end
-
       shared_examples 'successful assignment' do
         it_behaves_like 'adds a system note'
         it_behaves_like 'adds a todo'
@@ -141,6 +141,39 @@ RSpec.describe AlertManagement::Alerts::UpdateService do
         let(:expected_assignees) { [user_with_permissions] }
 
         it_behaves_like 'successful assignment'
+      end
+    end
+
+    context 'when a status is included' do
+      let(:params) { { status: new_status } }
+      let(:new_status) { AlertManagement::Alert::STATUSES[:acknowledged] }
+
+      it 'successfully changes the status' do
+        expect { response }.to change { alert.acknowledged? }.to(true)
+        expect(response).to be_success
+        expect(response.payload[:alert]).to eq(alert)
+      end
+
+      it_behaves_like 'adds a system note'
+
+      context 'with unknown status' do
+        let(:new_status) { -1 }
+
+        it_behaves_like 'error response', 'Invalid status'
+      end
+
+      context 'with resolving status' do
+        let(:new_status) { AlertManagement::Alert::STATUSES[:resolved] }
+
+        it 'changes the status' do
+          expect { response }.to change { alert.resolved? }.to(true)
+        end
+
+        it "resolves the current user's related todos" do
+          todo = create(:todo, :pending, target: alert, user: current_user, project: alert.project)
+
+          expect { response }.to change { todo.reload.state }.from('pending').to('done')
+        end
       end
     end
   end

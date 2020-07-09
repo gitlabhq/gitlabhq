@@ -532,9 +532,21 @@ module Gitlab
       # rubocop: enable CodeReuse/ActiveRecord
 
       # Omitted because no user, creator or author associated: `ci_runners`
+      # rubocop: disable CodeReuse/ActiveRecord
       def usage_activity_by_stage_verify(time_period)
-        {}
+        {
+          ci_builds: distinct_count(::Ci::Build.where(time_period), :user_id),
+          ci_external_pipelines: distinct_count(::Ci::Pipeline.external.where(time_period), :user_id, start: user_minimum_id, finish: user_maximum_id),
+          ci_internal_pipelines: distinct_count(::Ci::Pipeline.internal.where(time_period), :user_id, start: user_minimum_id, finish: user_maximum_id),
+          ci_pipeline_config_auto_devops: distinct_count(::Ci::Pipeline.auto_devops_source.where(time_period), :user_id, start: user_minimum_id, finish: user_maximum_id),
+          ci_pipeline_config_repository: distinct_count(::Ci::Pipeline.repository_source.where(time_period), :user_id, start: user_minimum_id, finish: user_maximum_id),
+          ci_pipeline_schedules: distinct_count(::Ci::PipelineSchedule.where(time_period), :owner_id),
+          ci_pipelines: distinct_count(::Ci::Pipeline.where(time_period), :user_id, start: user_minimum_id, finish: user_maximum_id),
+          ci_triggers: distinct_count(::Ci::Trigger.where(time_period), :owner_id),
+          clusters_applications_runner: cluster_applications_user_distinct_count(::Clusters::Applications::Runner, time_period)
+        }
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       # Currently too complicated and to get reliable counts for these stats:
       # container_scanning_jobs, dast_jobs, dependency_scanning_jobs, license_management_jobs, sast_jobs, secret_detection_jobs
