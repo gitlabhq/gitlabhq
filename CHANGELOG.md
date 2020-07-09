@@ -44,6 +44,13 @@ entry.
 - Periodically recompute project authorizations. !34071
 
 
+## 13.0.10 (2020-07-09)
+
+### Fixed (1 change)
+
+- Fix gitlab:*:check Rake tasks. !35944
+
+
 ## 13.0.9 (2020-07-06)
 
 - No changes.
