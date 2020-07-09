@@ -6,7 +6,7 @@ import { objectToQuery } from '~/lib/utils/url_utility';
 import VueDraggable from 'vuedraggable';
 import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
-import { metricStates } from '~/monitoring/constants';
+import { dashboardEmptyStates, metricStates } from '~/monitoring/constants';
 import Dashboard from '~/monitoring/components/dashboard.vue';
 
 import DashboardHeader from '~/monitoring/components/dashboard_header.vue';
@@ -126,13 +126,13 @@ describe('Dashboard', () => {
     });
 
     it('shows up a loading state', () => {
-      store.state.monitoringDashboard.emptyState = 'loading';
+      store.state.monitoringDashboard.emptyState = dashboardEmptyStates.LOADING;
 
       createShallowWrapper({ hasMetrics: true });
 
       return wrapper.vm.$nextTick().then(() => {
         expect(wrapper.find(EmptyState).exists()).toBe(true);
-        expect(wrapper.find(EmptyState).props('selectedState')).toBe('loading');
+        expect(wrapper.find(EmptyState).props('selectedState')).toBe(dashboardEmptyStates.LOADING);
       });
     });
 

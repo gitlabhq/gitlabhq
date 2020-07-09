@@ -18,7 +18,10 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
       end
 
       it 'clears memoized values' do
-        %i(issue_minimum_id issue_maximum_id user_minimum_id user_maximum_id unique_visit_service).each do |key|
+        values = %i(issue_minimum_id issue_maximum_id
+                    user_minimum_id user_maximum_id unique_visit_service
+                    deployment_minimum_id deployment_maximum_id)
+        values.each do |key|
           expect(described_class).to receive(:clear_memoization).with(key)
         end
 

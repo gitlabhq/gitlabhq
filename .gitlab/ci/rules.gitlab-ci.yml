@@ -116,6 +116,8 @@
   - "{,ee/}{app/channels,app/controllers,app/finders,app/graphql,app/helpers,app/mailers,app/models,app/policies,app/presenters,app/serializers,app/services,app/uploaders,app/validators,app/views,app/workers}/**/*"
   - "{,ee/}{bin,cable,config,db,lib}/**/*"
   - "{,ee/}spec/**/*.rb"
+  - ".gitlab-ci.yml"
+  - ".gitlab/ci/**/*"
 
 .db-patterns: &db-patterns
   - "{,ee/}{,spec/}{db,migrations}/**/*"
@@ -554,6 +556,20 @@
     - <<: *if-not-ee
       when: never
     - <<: *if-master-schedule-2-hourly
+
+.rails:rules:master-schedule-nightly--code-backstage:
+  rules:
+    - <<: *if-master-schedule-nightly
+    - <<: *if-merge-request
+      changes: [".gitlab/ci/rails.gitlab-ci.yml"]
+
+.rails:rules:master-schedule-nightly--code-backstage-ee-only:
+  rules:
+    - <<: *if-not-ee
+      when: never
+    - <<: *if-master-schedule-nightly
+    - <<: *if-merge-request
+      changes: [".gitlab/ci/rails.gitlab-ci.yml"]
 
 ##################
 # Releases rules #

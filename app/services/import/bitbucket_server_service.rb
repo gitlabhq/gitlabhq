@@ -59,11 +59,11 @@ module Import
     end
 
     def repo_slug
-      @repo_slug ||= params[:bitbucket_server_repo] || params[:bitbucketServerRepo]
+      @repo_slug ||= params[:bitbucket_server_repo]
     end
 
     def project_key
-      @project_key ||= params[:bitbucket_server_project] || params[:bitbucketServerProject]
+      @project_key ||= params[:bitbucket_server_project]
     end
 
     def url

@@ -25,6 +25,7 @@ RSpec.describe Gitlab::UsageData::Topology do
             receive_app_request_volume_query,
             receive_node_memory_query,
             receive_node_cpu_count_query,
+            receive_node_uname_info_query,
             receive_node_service_memory_rss_query,
             receive_node_service_memory_uss_query,
             receive_node_service_memory_pss_query,
@@ -40,6 +41,11 @@ RSpec.describe Gitlab::UsageData::Topology do
               {
                 node_memory_total_bytes: 512,
                 node_cpus: 8,
+                node_uname_info: {
+                  machine: 'x86_64',
+                  sysname: 'Linux',
+                  release: '4.19.76-linuxkit'
+                },
                 node_services: [
                   {
                     name: 'web',
@@ -59,6 +65,11 @@ RSpec.describe Gitlab::UsageData::Topology do
               {
                 node_memory_total_bytes: 1024,
                 node_cpus: 16,
+                node_uname_info: {
+                  machine: 'x86_64',
+                  sysname: 'Linux',
+                  release: '4.15.0-101-generic'
+                },
                 node_services: [
                   {
                     name: 'sidekiq',
@@ -88,6 +99,7 @@ RSpec.describe Gitlab::UsageData::Topology do
             receive_app_request_volume_query(result: []),
             receive_node_memory_query(result: []),
             receive_node_cpu_count_query,
+            receive_node_uname_info_query,
             receive_node_service_memory_rss_query(result: []),
             receive_node_service_memory_uss_query(result: []),
             receive_node_service_memory_pss_query,
@@ -107,6 +119,11 @@ RSpec.describe Gitlab::UsageData::Topology do
             nodes: [
               {
                 node_cpus: 16,
+                node_uname_info: {
+                  machine: 'x86_64',
+                  release: '4.15.0-101-generic',
+                  sysname: 'Linux'
+                },
                 node_services: [
                   {
                     name: 'sidekiq',
@@ -121,6 +138,11 @@ RSpec.describe Gitlab::UsageData::Topology do
               },
               {
                 node_cpus: 8,
+                node_uname_info: {
+                  machine: 'x86_64',
+                  release: '4.19.76-linuxkit',
+                  sysname: 'Linux'
+                },
                 node_services: [
                   {
                     name: 'web',
@@ -150,6 +172,7 @@ RSpec.describe Gitlab::UsageData::Topology do
               { 'app_requests' => 'Gitlab::PrometheusClient::ConnectionError' },
               { 'node_memory' => 'Gitlab::PrometheusClient::ConnectionError' },
               { 'node_cpus' => 'Gitlab::PrometheusClient::ConnectionError' },
+              { 'node_uname_info' => 'Gitlab::PrometheusClient::ConnectionError' },
               { 'service_rss' => 'Gitlab::PrometheusClient::ConnectionError' },
               { 'service_uss' => 'Gitlab::PrometheusClient::ConnectionError' },
               { 'service_pss' => 'Gitlab::PrometheusClient::ConnectionError' },
@@ -224,6 +247,39 @@ RSpec.describe Gitlab::UsageData::Topology do
         {
           'metric' => { 'instance' => 'instance1:8080' },
           'value' => [1000, '8']
+        }
+      ])
+  end
+
+  def receive_node_uname_info_query(result: nil)
+    receive(:query)
+      .with('node_uname_info')
+      .and_return(result || [
+        {
+          "metric" => {
+            "__name__" => "node_uname_info",
+            "domainname" => "(none)",
+            "instance" => "instance1:9100",
+            "job" => "node_exporter",
+            "machine" => "x86_64",
+            "nodename" => "instance1",
+            "release" => "4.19.76-linuxkit",
+            "sysname" => "Linux"
+          },
+          "value" => [1592463033.359, "1"]
+        },
+        {
+          "metric" => {
+            "__name__" => "node_uname_info",
+            "domainname" => "(none)",
+            "instance" => "instance2:9100",
+            "job" => "node_exporter",
+            "machine" => "x86_64",
+            "nodename" => "instance2",
+            "release" => "4.15.0-101-generic",
+            "sysname" => "Linux"
+          },
+          "value" => [1592463033.359, "1"]
         }
       ])
   end

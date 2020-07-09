@@ -6,6 +6,7 @@ RSpec.describe Import::BitbucketServerController do
   let(:user) { create(:user) }
   let(:project_key) { 'test-project' }
   let(:repo_slug) { 'some-repo' }
+  let(:repo_id) { "#{project_key}/#{repo_slug}" }
   let(:client) { instance_double(BitbucketServer::Client) }
 
   def assign_session_tokens
@@ -46,7 +47,7 @@ RSpec.describe Import::BitbucketServerController do
         .to receive(:new).with(project_key, repo_slug, anything, project_name, user.namespace, user, anything)
         .and_return(double(execute: project))
 
-      post :create, params: { bitbucketServerProject: project_key, bitbucketServerRepo: repo_slug }, format: :json
+      post :create, params: { repo_id: repo_id }, format: :json
 
       expect(response).to have_gitlab_http_status(:ok)
     end
@@ -59,20 +60,20 @@ RSpec.describe Import::BitbucketServerController do
           .to receive(:new).with(project_key, repo_slug, anything, project_name, user.namespace, user, anything)
           .and_return(double(execute: project))
 
-        post :create, params: { bitbucketServerProject: project_key, bitbucketServerRepo: repo_slug, format: :json }
+        post :create, params: { repo_id: repo_id }, format: :json
 
         expect(response).to have_gitlab_http_status(:ok)
       end
     end
 
     it 'returns an error when an invalid project key is used' do
-      post :create, params: { bitbucket_server_project: 'some&project' }
+      post :create, params: { repo_id: 'some&project/repo' }
 
       expect(response).to have_gitlab_http_status(:unprocessable_entity)
     end
 
     it 'returns an error when an invalid repository slug is used' do
-      post :create, params: { bitbucket_server_project: 'some-project', bitbucket_server_repo: 'try*this' }
+      post :create, params: { repo_id: 'some-project/try*this' }
 
       expect(response).to have_gitlab_http_status(:unprocessable_entity)
     end
@@ -80,7 +81,7 @@ RSpec.describe Import::BitbucketServerController do
     it 'returns an error when the project cannot be found' do
       allow(client).to receive(:repo).with(project_key, repo_slug).and_return(nil)
 
-      post :create, params: { bitbucket_server_project: project_key, bitbucket_server_repo: repo_slug }, format: :json
+      post :create, params: { repo_id: repo_id }, format: :json
 
       expect(response).to have_gitlab_http_status(:unprocessable_entity)
     end
@@ -90,15 +91,15 @@ RSpec.describe Import::BitbucketServerController do
         .to receive(:new).with(project_key, repo_slug, anything, project_name, user.namespace, user, anything)
         .and_return(double(execute: build(:project)))
 
-      post :create, params: { bitbucket_server_project: project_key, bitbucket_server_repo: repo_slug }, format: :json
+      post :create, params: { repo_id: repo_id }, format: :json
 
       expect(response).to have_gitlab_http_status(:unprocessable_entity)
     end
 
     it "returns an error when the server can't be contacted" do
-      allow(client).to receive(:repo).with(project_key, repo_slug).and_return([nil, nil])
+      allow(client).to receive(:repo).with(project_key, repo_slug).and_raise(::BitbucketServer::Connection::ConnectionError)
 
-      post :create, params: { bitbucket_server_project: project_key, bitbucket_server_repo: repo_slug }, format: :json
+      post :create, params: { repo_id: repo_id }, format: :json
 
       expect(response).to have_gitlab_http_status(:unprocessable_entity)
     end

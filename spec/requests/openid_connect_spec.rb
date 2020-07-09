@@ -146,8 +146,16 @@ RSpec.describe 'OpenID Connect requests' do
         expect(@payload['auth_time']).to eq user.current_sign_in_at.to_i
       end
 
+      it 'has public email in email claim' do
+        expect(@payload['email']).to eq(user.public_email)
+      end
+
+      it 'has true in email_verified claim' do
+        expect(@payload['email_verified']).to eq(true)
+      end
+
       it 'does not include any unknown properties' do
-        expect(@payload.keys).to eq %w[iss sub aud exp iat auth_time sub_legacy]
+        expect(@payload.keys).to eq %w[iss sub aud exp iat auth_time sub_legacy email email_verified]
       end
     end
 
@@ -209,6 +217,21 @@ RSpec.describe 'OpenID Connect requests' do
 
       it 'has true in email_verified claim' do
         expect(json_response['email_verified']).to eq(true)
+      end
+    end
+
+    context 'ID token payload' do
+      before do
+        request_access_token!
+        @payload = JSON::JWT.decode(json_response['id_token'], :skip_verification)
+      end
+
+      it 'has private email in email claim' do
+        expect(@payload['email']).to eq(user.email)
+      end
+
+      it 'has true in email_verified claim' do
+        expect(@payload['email_verified']).to eq(true)
       end
     end
   end

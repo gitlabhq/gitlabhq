@@ -8,13 +8,11 @@ import initReadMore from '~/read_more';
 import leaveByUrl from '~/namespaces/leave_by_url';
 import Star from '../../../star';
 import notificationsDropdown from '../../../notifications_dropdown';
-import initNamespaceStorageLimitAlert from '~/namespace_storage_limit_alert';
 import { showLearnGitLabProjectPopover } from '~/onboarding_issues';
 import initTree from 'ee_else_ce/repository';
 
 document.addEventListener('DOMContentLoaded', () => {
   initReadMore();
-  initNamespaceStorageLimitAlert();
   new Star(); // eslint-disable-line no-new
   notificationsDropdown();
   new ShortcutsNavigation(); // eslint-disable-line no-new

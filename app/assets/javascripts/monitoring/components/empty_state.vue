@@ -1,6 +1,7 @@
 <script>
 import { GlEmptyState } from '@gitlab/ui';
 import { __ } from '~/locale';
+import { dashboardEmptyStates } from '../constants';
 
 export default {
   components: {
@@ -54,7 +55,7 @@ export default {
   data() {
     return {
       states: {
-        gettingStarted: {
+        [dashboardEmptyStates.GETTING_STARTED]: {
           svgUrl: this.emptyGettingStartedSvgPath,
           title: __('Get started with performance monitoring'),
           description: __(`Stay updated about the performance and health
@@ -64,7 +65,7 @@ export default {
           secondaryButtonText: __('Configure existing installation'),
           secondaryButtonPath: this.settingsPath,
         },
-        loading: {
+        [dashboardEmptyStates.LOADING]: {
           svgUrl: this.emptyLoadingSvgPath,
           title: __('Waiting for performance data'),
           description: __(`Creating graphs uses the data from the Prometheus server.
@@ -74,7 +75,7 @@ export default {
           secondaryButtonText: '',
           secondaryButtonPath: '',
         },
-        noData: {
+        [dashboardEmptyStates.NO_DATA]: {
           svgUrl: this.emptyNoDataSvgPath,
           title: __('No data found'),
           description: __(`You are connected to the Prometheus server, but there is currently
@@ -84,7 +85,7 @@ export default {
           secondaryButtonText: '',
           secondaryButtonPath: '',
         },
-        unableToConnect: {
+        [dashboardEmptyStates.UNABLE_TO_CONNECT]: {
           svgUrl: this.emptyUnableToConnectSvgPath,
           title: __('Unable to connect to Prometheus server'),
           description: __(

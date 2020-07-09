@@ -55,7 +55,7 @@
                 = project.human_import_status_name
 
         - @repos.each do |repo|
-          %tr{ id: "repo_#{repo.project_key}___#{repo.slug}", data: { bitbucket_server_project: repo.project_key, bitbucket_server_repo: repo.slug } }
+          %tr{ data: { id: "#{repo.project_key}/#{repo.slug}" } }
             %td
               = sanitize(link_to(repo.browse_url, repo.browse_url, target: '_blank', rel: 'noopener noreferrer'), attributes: %w(href target rel))
             %td.import-target

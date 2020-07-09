@@ -38,6 +38,10 @@ export default {
       type: Number,
       required: true,
     },
+    milestonePath: {
+      type: String,
+      required: true,
+    },
     labelPath: {
       type: String,
       required: true,
@@ -145,7 +149,11 @@ export default {
     class="add-issues-modal d-flex position-fixed position-top-0 position-bottom-0 position-left-0 position-right-0 h-100"
   >
     <div class="add-issues-container d-flex flex-column m-auto rounded">
-      <modal-header :project-id="projectId" :label-path="labelPath" />
+      <modal-header
+        :project-id="projectId"
+        :milestone-path="milestonePath"
+        :label-path="labelPath"
+      />
       <modal-list
         v-if="!loading && showList && !filterLoading"
         :issue-link-base="issueLinkBase"

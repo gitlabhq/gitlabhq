@@ -107,12 +107,7 @@ RSpec.describe API::Snippets do
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(response.media_type).to eq 'text/plain'
-    end
-
-    it 'forces attachment content disposition' do
-      get api("/snippets/#{snippet.id}/raw", author)
-
-      expect(headers['Content-Disposition']).to match(/^attachment/)
+      expect(headers['Content-Disposition']).to match(/^inline/)
     end
 
     it 'returns 404 for invalid snippet id' do
@@ -142,6 +137,14 @@ RSpec.describe API::Snippets do
       let_it_be(:snippet_with_empty_repo) { create(:personal_snippet, :empty_repo, :private, author: author) }
 
       subject { get api("/snippets/#{snippet.id}/raw", snippet.author) }
+    end
+  end
+
+  describe 'GET /snippets/:id/files/:ref/:file_path/raw' do
+    let_it_be(:snippet) { create(:personal_snippet, :repository, :private) }
+
+    it_behaves_like 'raw snippet files' do
+      let(:api_path) { "/snippets/#{snippet_id}/files/#{ref}/#{file_path}/raw" }
     end
   end
 

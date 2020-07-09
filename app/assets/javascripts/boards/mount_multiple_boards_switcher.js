@@ -27,7 +27,7 @@ export default () => {
         hasMissingBoards: parseBoolean(dataset.hasMissingBoards),
         canAdminBoard: parseBoolean(dataset.canAdminBoard),
         multipleIssueBoardsAvailable: parseBoolean(dataset.multipleIssueBoardsAvailable),
-        projectId: dataset.projectId ? Number(dataset.projectId) : 0,
+        projectId: Number(dataset.projectId),
         groupId: Number(dataset.groupId),
         scopedIssueBoardFeatureEnabled: parseBoolean(dataset.scopedIssueBoardFeatureEnabled),
         weights: JSON.parse(dataset.weights),

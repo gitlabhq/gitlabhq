@@ -37,10 +37,10 @@ Doorkeeper::OpenidConnect.configure do
       # public email address (if present)
       # This allows existing solutions built for GitLab's old behavior to keep
       # working without modification.
-      o.claim(:email) do |user, scopes|
+      o.claim(:email, response: [:id_token, :user_info]) do |user, scopes|
         scopes.exists?(:email) ? user.email : user.public_email
       end
-      o.claim(:email_verified) do |user, scopes|
+      o.claim(:email_verified, response: [:id_token, :user_info]) do |user, scopes|
         if scopes.exists?(:email)
           user.primary_email_verified?
         elsif user.public_email?

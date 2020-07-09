@@ -84,9 +84,9 @@ module Gitlab
             auto_devops_enabled: count(::ProjectAutoDevops.enabled),
             auto_devops_disabled: count(::ProjectAutoDevops.disabled),
             deploy_keys: count(DeployKey),
-            deployments: count(Deployment),
-            successful_deployments: count(Deployment.success),
-            failed_deployments: count(Deployment.failed),
+            deployments: deployment_count(Deployment),
+            successful_deployments: deployment_count(Deployment.success),
+            failed_deployments: deployment_count(Deployment.failed),
             environments: count(::Environment),
             clusters: count(::Clusters::Cluster),
             clusters_enabled: count(::Clusters::Cluster.enabled),
@@ -169,9 +169,9 @@ module Gitlab
       def system_usage_data_monthly
         {
           counts_monthly: {
-            deployments: count(Deployment.where(last_28_days_time_period)),
-            successful_deployments: count(Deployment.success.where(last_28_days_time_period)),
-            failed_deployments: count(Deployment.failed.where(last_28_days_time_period)),
+            deployments: deployment_count(Deployment.where(last_28_days_time_period)),
+            successful_deployments: deployment_count(Deployment.success.where(last_28_days_time_period)),
+            failed_deployments: deployment_count(Deployment.failed.where(last_28_days_time_period)),
             personal_snippets: count(PersonalSnippet.where(last_28_days_time_period)),
             project_snippets: count(ProjectSnippet.where(last_28_days_time_period))
           }.tap do |data|
@@ -616,12 +616,26 @@ module Gitlab
         end
       end
 
+      def deployment_minimum_id
+        strong_memoize(:deployment_minimum_id) do
+          ::Deployment.minimum(:id)
+        end
+      end
+
+      def deployment_maximum_id
+        strong_memoize(:deployment_maximum_id) do
+          ::Deployment.maximum(:id)
+        end
+      end
+
       def clear_memoized
         clear_memoization(:issue_minimum_id)
         clear_memoization(:issue_maximum_id)
         clear_memoization(:user_minimum_id)
         clear_memoization(:user_maximum_id)
         clear_memoization(:unique_visit_service)
+        clear_memoization(:deployment_minimum_id)
+        clear_memoization(:deployment_maximum_id)
       end
 
       # rubocop: disable CodeReuse/ActiveRecord
@@ -644,6 +658,10 @@ module Gitlab
       # no internal details leak via usage ping.
       def filtered_omniauth_provider_names
         omniauth_provider_names.reject { |name| name.starts_with?('ldap') }
+      end
+
+      def deployment_count(relation)
+        count relation, start: deployment_minimum_id, finish: deployment_maximum_id
       end
     end
   end

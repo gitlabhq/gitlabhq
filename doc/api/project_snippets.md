@@ -183,6 +183,28 @@ curl "https://gitlab.com/api/v4/projects/:id/snippets/:snippet_id/raw" \
      --header "PRIVATE-TOKEN: <your_access_token>"
 ```
 
+## Snippet repository file content
+
+Returns the raw file content as plain text.
+
+```plaintext
+GET /projects/:id/snippets/:snippet_id/files/:ref/:file_path/raw
+```
+
+Parameters:
+
+- `id` (required) - The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user
+- `snippet_id` (required) - The ID of a project's snippet
+- `ref` (required) - The name of a branch, tag or commit e.g. master
+- `file_path` (required) - The URL-encoded path to the file, e.g. snippet%2Erb
+
+Example request:
+
+```shell
+curl "https://gitlab.com/api/v4/projects/1/snippets/2/files/master/snippet%2Erb/raw" \
+     --header "PRIVATE-TOKEN: <your_access_token>"
+```
+
 ## Get user agent details
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/29508) in GitLab 9.4.

@@ -358,9 +358,6 @@ msgstr ""
 msgid "%{description}- Sentry event: %{errorUrl}- First seen: %{firstSeen}- Last seen: %{lastSeen} %{countLabel}: %{count}%{userCountLabel}: %{userCount}"
 msgstr ""
 
-msgid "%{due_date} (Past due)"
-msgstr ""
-
 msgid "%{duration}ms"
 msgstr ""
 
@@ -485,12 +482,6 @@ msgid "%{markdownDocsLinkStart}Markdown%{markdownDocsLinkEnd} and %{quickActions
 msgstr ""
 
 msgid "%{mergeLength}/%{usersLength} can merge"
-msgstr ""
-
-msgid "%{milestone_name} (Past due)"
-msgstr ""
-
-msgid "%{milestone} (expired)"
 msgstr ""
 
 msgid "%{mrText}, this issue will be closed automatically."
@@ -6262,6 +6253,9 @@ msgid "ContainerRegistry|Copy push command"
 msgstr ""
 
 msgid "ContainerRegistry|Delete selected"
+msgstr ""
+
+msgid "ContainerRegistry|Deletion disabled due to missing or insufficient permissions."
 msgstr ""
 
 msgid "ContainerRegistry|Digest: %{imageId}"
@@ -13461,6 +13455,9 @@ msgstr ""
 msgid "LicenseCompliance|%{docLinkStart}License Approvals%{docLinkEnd} are inactive"
 msgstr ""
 
+msgid "LicenseCompliance|Acceptable license to be used in the project"
+msgstr ""
+
 msgid "LicenseCompliance|Add a license"
 msgstr ""
 
@@ -13480,6 +13477,9 @@ msgid "LicenseCompliance|Denied"
 msgstr ""
 
 msgid "LicenseCompliance|Deny"
+msgstr ""
+
+msgid "LicenseCompliance|Disallow merge request if detected and will instruct developer to remove"
 msgstr ""
 
 msgid "LicenseCompliance|Learn more about %{linkStart}License Approvals%{linkEnd}"

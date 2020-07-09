@@ -15,6 +15,7 @@ Parameters:
 
 | Attribute      | Type           | Required | Description                                                                  |
 |:---------------|:---------------|:---------|:-----------------------------------------------------------------------------|
+| `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
 | `dashboard_path` | string        | yes      | URL-encoded path to file defining the dashboard which should be marked as favorite.   |
 
 ```shell
@@ -45,6 +46,7 @@ Parameters:
 
 | Attribute      | Type           | Required | Description                                                                  |
 |:---------------|:---------------|:---------|:-----------------------------------------------------------------------------|
+| `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
 | `dashboard_path` | string        | no      | URL-encoded path to file defining the dashboard which should no longer be marked as favorite. When not supplied all dashboards within given projects will be removed from favorites.   |
 
 ```shell

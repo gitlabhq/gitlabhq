@@ -54,7 +54,6 @@ Example Response:
     "state": "active",
     "updated_at": "2013-10-02T09:24:18Z",
     "created_at": "2013-10-02T09:24:18Z",
-    "expired": false,
     "web_url": "https://gitlab.com/groups/gitlab-org/-/milestones/42"
   }
 ]

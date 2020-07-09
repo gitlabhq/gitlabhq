@@ -666,12 +666,6 @@ Style/RedundantFreeze:
 Style/RedundantInterpolation:
   Enabled: false
 
-# Offense count: 6
-# Cop supports --auto-correct.
-Style/RedundantParentheses:
-  Exclude:
-    - 'ee/app/models/ee/merge_request.rb'
-
 # Offense count: 33
 # Cop supports --auto-correct.
 # Configuration parameters: AllowMultipleReturnValues.

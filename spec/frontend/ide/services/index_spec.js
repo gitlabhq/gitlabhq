@@ -2,7 +2,7 @@ import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import services from '~/ide/services';
 import Api from '~/api';
-import gqClient from '~/ide/services/gql';
+import { query } from '~/ide/services/gql';
 import { escapeFileUrl } from '~/lib/utils/url_utility';
 import getUserPermissions from '~/ide/queries/getUserPermissions.query.graphql';
 import { projectData } from '../mock_data';
@@ -207,12 +207,12 @@ describe('IDE services', () => {
         },
       };
       Api.project.mockReturnValue(Promise.resolve({ data: { ...projectData } }));
-      gqClient.query.mockReturnValue(Promise.resolve({ data: { project: gqlProjectData } }));
+      query.mockReturnValue(Promise.resolve({ data: { project: gqlProjectData } }));
 
       return services.getProjectData(TEST_NAMESPACE, TEST_PROJECT).then(response => {
         expect(response).toEqual({ data: { ...projectData, ...gqlProjectData } });
         expect(Api.project).toHaveBeenCalledWith(TEST_PROJECT_ID);
-        expect(gqClient.query).toHaveBeenCalledWith({
+        expect(query).toHaveBeenCalledWith({
           query: getUserPermissions,
           variables: {
             projectPath: TEST_PROJECT_ID,

@@ -155,12 +155,20 @@ module API
       end
       get ":id/raw" do
         snippet = snippets.find_by_id(params.delete(:id))
-        break not_found!('Snippet') unless snippet
+        not_found!('Snippet') unless snippet
 
-        env['api.format'] = :txt
-        content_type 'text/plain'
-        header['Content-Disposition'] = 'attachment'
         present content_for(snippet)
+      end
+
+      desc 'Get raw snippet file contents from the repository'
+      params do
+        use :raw_file_params
+      end
+      get ":id/files/:ref/:file_path/raw", requirements: { file_path: API::NO_SLASH_URL_PART_REGEX } do
+        snippet = snippets.find_by_id(params.delete(:id))
+        not_found!('Snippet') unless snippet&.repo_exists?
+
+        present file_content_for(snippet)
       end
 
       desc 'Get the user agent details for a snippet' do

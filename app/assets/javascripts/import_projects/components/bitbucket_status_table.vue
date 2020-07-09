@@ -28,7 +28,7 @@ export default {
 };
 </script>
 <template>
-  <import-projects-table provider-title="providerTitle">
+  <import-projects-table :provider-title="providerTitle">
     <template #actions>
       <slot name="actions"></slot>
     </template>

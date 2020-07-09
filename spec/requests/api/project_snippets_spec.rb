@@ -474,4 +474,12 @@ RSpec.describe API::ProjectSnippets do
       subject { get api("/projects/#{snippet.project.id}/snippets/#{snippet.id}/raw", snippet.author) }
     end
   end
+
+  describe 'GET /projects/:project_id/snippets/:id/files/:ref/:file_path/raw' do
+    let_it_be(:snippet) { create(:project_snippet, :repository, author: admin, project: project) }
+
+    it_behaves_like 'raw snippet files' do
+      let(:api_path) { "/projects/#{snippet.project.id}/snippets/#{snippet_id}/files/#{ref}/#{file_path}/raw" }
+    end
+  end
 end

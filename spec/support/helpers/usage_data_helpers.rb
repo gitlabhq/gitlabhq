@@ -228,6 +228,7 @@ module UsageDataHelpers
   def allow_prometheus_queries
     allow_next_instance_of(Gitlab::PrometheusClient) do |client|
       allow(client).to receive(:aggregate).and_return({})
+      allow(client).to receive(:query).and_return({})
     end
   end
 

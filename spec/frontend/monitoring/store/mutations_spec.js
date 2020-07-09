@@ -3,7 +3,7 @@ import httpStatusCodes from '~/lib/utils/http_status';
 import mutations from '~/monitoring/stores/mutations';
 import * as types from '~/monitoring/stores/mutation_types';
 import state from '~/monitoring/stores/state';
-import { metricStates } from '~/monitoring/constants';
+import { dashboardEmptyStates, metricStates } from '~/monitoring/constants';
 
 import { deploymentData, dashboardGitResponse, storeTextVariables } from '../mock_data';
 import { metricsDashboardPayload } from '../fixture_data';
@@ -15,6 +15,15 @@ describe('Monitoring mutations', () => {
     stateCopy = state();
   });
 
+  describe('REQUEST_METRICS_DASHBOARD', () => {
+    it('sets an empty loading state', () => {
+      mutations[types.REQUEST_METRICS_DASHBOARD](stateCopy);
+
+      expect(stateCopy.emptyState).toBe(dashboardEmptyStates.LOADING);
+      expect(stateCopy.showEmptyState).toBe(true);
+    });
+  });
+
   describe('RECEIVE_METRICS_DASHBOARD_SUCCESS', () => {
     let payload;
     const getGroups = () => stateCopy.dashboard.panelGroups;
@@ -22,6 +31,18 @@ describe('Monitoring mutations', () => {
     beforeEach(() => {
       stateCopy.dashboard.panelGroups = [];
       payload = metricsDashboardPayload;
+    });
+    it('sets an empty noData state when the dashboard is empty', () => {
+      const emptyDashboardPayload = {
+        ...payload,
+        panel_groups: [],
+      };
+
+      mutations[types.RECEIVE_METRICS_DASHBOARD_SUCCESS](stateCopy, emptyDashboardPayload);
+      const groups = getGroups();
+
+      expect(groups).toEqual([]);
+      expect(stateCopy.emptyState).toBe(dashboardEmptyStates.NO_DATA);
     });
     it('adds a key to the group', () => {
       mutations[types.RECEIVE_METRICS_DASHBOARD_SUCCESS](stateCopy, payload);
@@ -69,6 +90,22 @@ describe('Monitoring mutations', () => {
       expect(groups[2].panels[0].metrics[0].metricId).toEqual(
         'NO_DB_response_metrics_nginx_ingress_16_throughput_status_code',
       );
+    });
+  });
+
+  describe('RECEIVE_METRICS_DASHBOARD_FAILURE', () => {
+    it('sets an empty noData state when an empty error occurs', () => {
+      mutations[types.RECEIVE_METRICS_DASHBOARD_FAILURE](stateCopy);
+
+      expect(stateCopy.emptyState).toBe(dashboardEmptyStates.NO_DATA);
+      expect(stateCopy.showEmptyState).toBe(true);
+    });
+
+    it('sets an empty unableToConnect state when an error occurs', () => {
+      mutations[types.RECEIVE_METRICS_DASHBOARD_FAILURE](stateCopy, 'myerror');
+
+      expect(stateCopy.emptyState).toBe(dashboardEmptyStates.UNABLE_TO_CONNECT);
+      expect(stateCopy.showEmptyState).toBe(true);
     });
   });
 
@@ -283,6 +320,7 @@ describe('Monitoring mutations', () => {
         });
 
         expect(stateCopy.showEmptyState).toBe(false);
+        expect(stateCopy.emptyState).toBe(null);
       });
 
       it('adds results to the store', () => {

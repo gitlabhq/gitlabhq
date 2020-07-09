@@ -1,5 +1,12 @@
 export const PROMETHEUS_TIMEOUT = 120000; // TWO_MINUTES
 
+export const dashboardEmptyStates = {
+  GETTING_STARTED: 'gettingStarted',
+  LOADING: 'loading',
+  NO_DATA: 'noData',
+  UNABLE_TO_CONNECT: 'unableToConnect',
+};
+
 /**
  * States and error states in Prometheus Queries (PromQL) for metrics
  */

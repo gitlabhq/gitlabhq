@@ -52,8 +52,6 @@ RSpec.describe GroupsController do
         expect(assigns(:events).map(&:id)).to contain_exactly(event.id)
       end
     end
-
-    it_behaves_like 'namespace storage limit alert'
   end
 
   describe 'GET #show' do

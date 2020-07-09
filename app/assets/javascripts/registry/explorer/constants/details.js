@@ -45,7 +45,7 @@ export const ADMIN_GARBAGE_COLLECTION_TIP = s__(
 );
 
 export const REMOVE_TAG_BUTTON_DISABLE_TOOLTIP = s__(
-  'ContainerRegistry|Missing or insufficient permission, delete button disabled',
+  'ContainerRegistry|Deletion disabled due to missing or insufficient permissions.',
 );
 
 // Parameters

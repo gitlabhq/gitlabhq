@@ -385,36 +385,58 @@ Widgets should now be replicated by Geo!
    end
    ```
 
-1. Add fields `widget_count`, `widget_checksummed_count`, `widget_checksum_failed_count`,
-   `widget_synced_count` and `widget_failed_count`
-   to `GeoNodeStatus#RESOURCE_STATUS_FIELDS` array in `ee/app/models/geo_node_status.rb`.
-1. Add the same fields to `GeoNodeStatus#PROMETHEUS_METRICS` hash in
-   `ee/app/models/geo_node_status.rb`.
-1. Add the same fields to `Sidekiq metrics` table in
-   `doc/administration/monitoring/prometheus/gitlab_metrics.md`.
-1. Add the same fields to `GET /geo_nodes/status` example response in `doc/api/geo_nodes.md`.
-1. Modify `GeoNodeStatus#load_verification_data` to make sure the fields mantioned above
-   are set:
-
-   ```ruby
-     self.widget_count = Geo::WidgetReplicator.model.count
-     self.widget_checksummed_count = Geo::WidgetReplicator.checksummed.count
-     self.widget_checksum_failed_count = Geo::WidgetReplicator.checksum_failed.count
-     self.widget_synced_count = Geo::WidgetReplicator.synced_count
-     self.widget_failed_count = Geo::WidgetReplicator.failed_count
-   ```
-
-1. Make sure `Widget` model has `checksummed` and `checksum_failed` scopes.
-1. Update `ee/spec/fixtures/api/schemas/public_api/v4/geo_node_status.json` with new fields.
-1. Update `GeoNodeStatus#PROMETHEUS_METRICS` hash in `ee/app/models/geo_node_status.rb` with new fields.
-1. Update `Sidekiq metrics` table in `doc/administration/monitoring/prometheus/gitlab_metrics.md` with new fields.
-1. Update `GET /geo_nodes/status` example response in `doc/api/geo_nodes.md` with new fields.
-1. Update `ee/spec/models/geo_node_status_spec.rb` and `ee/spec/factories/geo_node_statuses.rb` with new fields.
-
 To do: Add verification on secondaries. This should be done as part of
 [Geo: Self Service Framework - First Implementation for Package File verification](https://gitlab.com/groups/gitlab-org/-/epics/1817)
 
 Widgets should now be verified by Geo!
+
+#### Metrics
+
+Metrics are gathered by `Geo::MetricsUpdateWorker`, persisted in
+`GeoNodeStatus` for display in the UI, and sent to Prometheus.
+
+1. Add fields `widget_count`, `widget_checksummed_count`,
+   `widget_checksum_failed_count`, `widget_synced_count`,
+   `widget_failed_count`, and `widget_registry_count` to
+   `GeoNodeStatus#RESOURCE_STATUS_FIELDS` array in
+   `ee/app/models/geo_node_status.rb`.
+1. Add the same fields to `GeoNodeStatus#PROMETHEUS_METRICS` hash in
+   `ee/app/models/geo_node_status.rb`.
+1. Add the same fields to `Sidekiq metrics` table in
+   `doc/administration/monitoring/prometheus/gitlab_metrics.md`.
+1. Add the same fields to `GET /geo_nodes/status` example response in
+   `doc/api/geo_nodes.md`.
+1. Add the same fields to `ee/spec/models/geo_node_status_spec.rb` and
+   `ee/spec/factories/geo_node_statuses.rb`.
+1. Set `widget_count` in `GeoNodeStatus#load_data_from_current_node`:
+
+   ```ruby
+   self.widget_count = Geo::WidgetReplicator.primary_total_count
+   ```
+
+1. Add `GeoNodeStatus#load_widgets_data` to set `widget_synced_count`,
+   `widget_failed_count`, and `widget_registry_count`:
+
+   ```ruby
+   def load_widget_data
+     self.widget_synced_count = Geo::WidgetReplicator.synced_count
+     self.widget_failed_count = Geo::WidgetReplicator.failed_count
+     self.widget_registry_count = Geo::WidgetReplicator.registry_count
+   end
+   ```
+
+1. Call `GeoNodeStatus#load_widgets_data` in
+   `GeoNodeStatus#load_secondary_data`.
+
+1. Set `widget_checksummed_count` and `widget_checksum_failed_count` in
+   `GeoNodeStatus#load_verification_data`:
+
+   ```ruby
+   self.widget_checksummed_count = Geo::WidgetReplicator.checksummed_count   self.widget_checksum_failed_count = Geo::WidgetReplicator.checksum_failed_count
+   ```
+
+Widget replication and verification metrics should now be available in the API,
+the Admin Area UI, and Prometheus!
 
 #### GraphQL API
 

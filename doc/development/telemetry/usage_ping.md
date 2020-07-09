@@ -708,6 +708,7 @@ appear to be associated to any of the services running, since they all appear to
 | `nodes`                                                   | `topology`                           | `enablement`  |                  |         | The list of server nodes on which GitLab components are running            |
 | `node_memory_total_bytes`                                 | `topology > nodes`                   | `enablement`  |                  |         | The total available memory of this node                                    |
 | `node_cpus`                                               | `topology > nodes`                   | `enablement`  |                  |         | The number of CPU cores of this node                                       |
+| `node_uname_info`                                         | `topology > nodes`                   | `enablement`  |                  |         | The basic hardware architecture and OS release information on this node    |
 | `node_services`                                           | `topology > nodes`                   | `enablement`  |                  |         | The list of GitLab services running on this node                           |
 | `name`                                                    | `topology > nodes > node_services`   | `enablement`  |                  |         | The name of the GitLab service running on this node                        |
 | `process_count`                                           | `topology > nodes > node_services`   | `enablement`  |                  |         | The number of processes running for this service                           |
@@ -920,6 +921,11 @@ The following is example content of the Usage Ping payload.
       {
         "node_memory_total_bytes": 33269903360,
         "node_cpus": 16,
+        "node_uname_info": {
+          "machine": "x86_64",
+          "sysname": "Linux",
+          "release": "4.19.76-linuxkit"
+        },
         "node_services": [
           {
             "name": "web",

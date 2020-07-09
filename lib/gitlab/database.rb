@@ -99,10 +99,6 @@ module Gitlab
       version.to_f < 10
     end
 
-    def self.replication_slots_supported?
-      version.to_f >= 9.4
-    end
-
     def self.postgresql_minimum_supported_version?
       version.to_f >= MINIMUM_POSTGRES_VERSION
     end

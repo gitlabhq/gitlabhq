@@ -7,6 +7,7 @@ class Import::BitbucketServerController < Import::BaseController
 
   before_action :verify_bitbucket_server_import_enabled
   before_action :bitbucket_auth, except: [:new, :configure]
+  before_action :normalize_import_params, only: [:create]
   before_action :validate_import_params, only: [:create]
 
   rescue_from BitbucketServer::Connection::ConnectionError, with: :bitbucket_connection_error
@@ -118,9 +119,15 @@ class Import::BitbucketServerController < Import::BaseController
     @bitbucket_repos ||= client.repos(page_offset: page_offset, limit: limit_per_page, filter: sanitized_filter_param).to_a
   end
 
+  def normalize_import_params
+    project_key, repo_slug = params[:repo_id].split('/')
+    params[:bitbucket_server_project] = project_key
+    params[:bitbucket_server_repo] = repo_slug
+  end
+
   def validate_import_params
-    @project_key = params[:bitbucketServerProject]
-    @repo_slug = params[:bitbucketServerRepo]
+    @project_key = params[:bitbucket_server_project]
+    @repo_slug = params[:bitbucket_server_repo]
 
     return render_validation_error('Missing project key') unless @project_key.present? && @repo_slug.present?
     return render_validation_error('Missing repository slug') unless @repo_slug.present?

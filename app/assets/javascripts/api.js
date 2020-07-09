@@ -9,7 +9,6 @@ const Api = {
   groupsPath: '/api/:version/groups.json',
   groupPath: '/api/:version/groups/:id',
   groupMembersPath: '/api/:version/groups/:id/members',
-  groupMilestonesPath: '/api/:version/groups/:id/milestones',
   subgroupsPath: '/api/:version/groups/:id/subgroups',
   namespacesPath: '/api/:version/namespaces.json',
   groupProjectsPath: '/api/:version/groups/:id/projects.json',
@@ -99,14 +98,6 @@ const Api = {
   groupLabels(namespace) {
     const url = Api.buildUrl(Api.groupLabelsPath).replace(':namespace_path', namespace);
     return axios.get(url).then(({ data }) => data);
-  },
-
-  groupMilestones(groupId, params = {}) {
-    const url = Api.buildUrl(Api.groupMilestonesPath).replace(':id', encodeURIComponent(groupId));
-
-    return axios.get(url, {
-      params,
-    });
   },
 
   // Return namespaces list. Filtered by query
@@ -273,12 +264,10 @@ const Api = {
     });
   },
 
-  projectMilestones(id, params = {}) {
+  projectMilestones(id) {
     const url = Api.buildUrl(Api.projectMilestonesPath).replace(':id', encodeURIComponent(id));
 
-    return axios.get(url, {
-      params,
-    });
+    return axios.get(url);
   },
 
   mergeRequests(params = {}) {

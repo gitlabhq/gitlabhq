@@ -1,4 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
+import { dashboardEmptyStates } from '~/monitoring/constants';
 import EmptyState from '~/monitoring/components/empty_state.vue';
 
 function createComponent(props) {
@@ -20,7 +21,7 @@ function createComponent(props) {
 describe('EmptyState', () => {
   it('shows gettingStarted state', () => {
     const wrapper = createComponent({
-      selectedState: 'gettingStarted',
+      selectedState: dashboardEmptyStates.GETTING_STARTED,
     });
 
     expect(wrapper.element).toMatchSnapshot();
@@ -28,7 +29,7 @@ describe('EmptyState', () => {
 
   it('shows loading state', () => {
     const wrapper = createComponent({
-      selectedState: 'loading',
+      selectedState: dashboardEmptyStates.LOADING,
     });
 
     expect(wrapper.element).toMatchSnapshot();
@@ -36,7 +37,15 @@ describe('EmptyState', () => {
 
   it('shows unableToConnect state', () => {
     const wrapper = createComponent({
-      selectedState: 'unableToConnect',
+      selectedState: dashboardEmptyStates.UNABLE_TO_CONNECT,
+    });
+
+    expect(wrapper.element).toMatchSnapshot();
+  });
+
+  it('shows noData state', () => {
+    const wrapper = createComponent({
+      selectedState: dashboardEmptyStates.NO_DATA,
     });
 
     expect(wrapper.element).toMatchSnapshot();

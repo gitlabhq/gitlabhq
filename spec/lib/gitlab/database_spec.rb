@@ -156,20 +156,6 @@ RSpec.describe Gitlab::Database do
     end
   end
 
-  describe '.replication_slots_supported?' do
-    it 'returns false when using PostgreSQL 9.3' do
-      allow(described_class).to receive(:version).and_return('9.3.1')
-
-      expect(described_class.replication_slots_supported?).to eq(false)
-    end
-
-    it 'returns true when using PostgreSQL 9.4.0 or newer' do
-      allow(described_class).to receive(:version).and_return('9.4.0')
-
-      expect(described_class.replication_slots_supported?).to eq(true)
-    end
-  end
-
   describe '.pg_wal_lsn_diff' do
     it 'returns old name when using PostgreSQL 9.6' do
       allow(described_class).to receive(:version).and_return('9.6')

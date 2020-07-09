@@ -62,6 +62,7 @@ module Gitlab
         # node-level data
         by_instance_mem = topology_node_memory(client)
         by_instance_cpus = topology_node_cpus(client)
+        by_instance_uname_info = topology_node_uname_info(client)
         # service-level data
         by_instance_by_job_by_type_memory = topology_all_service_memory(client)
         by_instance_by_job_process_count = topology_all_service_process_count(client)
@@ -72,6 +73,7 @@ module Gitlab
           {
             node_memory_total_bytes: by_instance_mem[instance],
             node_cpus: by_instance_cpus[instance],
+            node_uname_info: by_instance_uname_info[instance],
             node_services:
               topology_node_services(
                 instance, by_instance_by_job_process_count, by_instance_by_job_by_type_memory, by_instance_by_job_server_types
@@ -92,6 +94,14 @@ module Gitlab
         end
       end
 
+      def topology_node_uname_info(client)
+        node_uname_info = query_safely('node_uname_info', 'node_uname_info', fallback: []) do |query|
+          client.query(query)
+        end
+
+        map_instance_labels(node_uname_info, %w(machine sysname release))
+      end
+
       def topology_all_service_memory(client)
         {
           rss: topology_service_memory_rss(client),
@@ -102,31 +112,31 @@ module Gitlab
 
       def topology_service_memory_rss(client)
         query_safely(
-          'gitlab_usage_ping:node_service_process_resident_memory_bytes:avg', 'service_rss', fallback: []
+          'gitlab_usage_ping:node_service_process_resident_memory_bytes:avg', 'service_rss', fallback: {}
         ) { |query| aggregate_by_labels(client, one_week_average(query)) }
       end
 
       def topology_service_memory_uss(client)
         query_safely(
-          'gitlab_usage_ping:node_service_process_unique_memory_bytes:avg', 'service_uss', fallback: []
+          'gitlab_usage_ping:node_service_process_unique_memory_bytes:avg', 'service_uss', fallback: {}
         ) { |query| aggregate_by_labels(client, one_week_average(query)) }
       end
 
       def topology_service_memory_pss(client)
         query_safely(
-          'gitlab_usage_ping:node_service_process_proportional_memory_bytes:avg', 'service_pss', fallback: []
+          'gitlab_usage_ping:node_service_process_proportional_memory_bytes:avg', 'service_pss', fallback: {}
         ) { |query| aggregate_by_labels(client, one_week_average(query)) }
       end
 
       def topology_all_service_process_count(client)
         query_safely(
-          'gitlab_usage_ping:node_service_process:count', 'service_process_count', fallback: []
+          'gitlab_usage_ping:node_service_process:count', 'service_process_count', fallback: {}
         ) { |query| aggregate_by_labels(client, one_week_average(query)) }
       end
 
       def topology_all_service_server_types(client)
         query_safely(
-          'gitlab_usage_ping:node_service_app_server_workers:sum', 'service_workers', fallback: []
+          'gitlab_usage_ping:node_service_app_server_workers:sum', 'service_workers', fallback: {}
         ) { |query| aggregate_by_labels(client, query) }
       end
 
@@ -210,6 +220,16 @@ module Gitlab
         client.aggregate(query) do |metric|
           metric['instance'] = drop_port(metric['instance'])
           metric
+        end
+      end
+
+      # Given query result vector, map instance to a hash of target labels key/value.
+      # @return [Hash] mapping instance to a hash of target labels key/value, or the empty hash if input empty vector
+      def map_instance_labels(query_result_vector, target_labels)
+        query_result_vector.to_h do |result|
+          key = drop_port(result['metric']['instance'])
+          value = result['metric'].slice(*target_labels).symbolize_keys
+          [key, value]
         end
       end
     end

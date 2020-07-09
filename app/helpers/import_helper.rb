@@ -19,7 +19,11 @@ module ImportHelper
   end
 
   def provider_project_link_url(provider_url, full_path)
-    Gitlab::Utils.append_path(provider_url, full_path)
+    if Gitlab::Utils.parse_url(full_path)&.absolute?
+      full_path
+    else
+      Gitlab::Utils.append_path(provider_url, full_path)
+    end
   end
 
   def import_will_timeout_message(_ci_cd_only)

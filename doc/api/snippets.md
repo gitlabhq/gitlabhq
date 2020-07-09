@@ -150,6 +150,34 @@ Example response:
 Hello World snippet
 ```
 
+## Snippet repository file content
+
+Returns the raw file content as plain text.
+
+```plaintext
+GET /snippets/:id/files/:ref/:file_path/raw
+```
+
+Parameters:
+
+| Attribute   | Type    | Required | Description                                                        |
+|:------------|:--------|:---------|:-------------------------------------------------------------------|
+| `id`        | integer | yes      | ID of snippet to retrieve                                          |
+| `ref`       | string  | yes      | Reference to a tag, branch or commit                               |
+| `file_path` | string  | yes      | URL-encoded path to the file                                       |
+
+Example request:
+
+```shell
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/snippets/1/files/master/snippet%2Erb/raw"
+```
+
+Example response:
+
+```plaintext
+Hello World snippet
+```
+
 ## Create new snippet
 
 Create a new snippet.

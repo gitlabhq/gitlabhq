@@ -1,0 +1,5 @@
+---
+title: Optimize deployment counters for last 28 days
+merge_request: 35892
+author:
+type: performance

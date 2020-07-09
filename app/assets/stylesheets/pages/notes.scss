@@ -255,10 +255,6 @@ $note-form-margin-left: 72px;
       }
 
       &.is-loading {
-        .fa-smile-o {
-          display: none;
-        }
-
         .fa-spinner {
           display: inline-block;
         }
