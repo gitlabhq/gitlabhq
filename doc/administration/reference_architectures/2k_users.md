@@ -12,16 +12,16 @@ For a full list of reference architectures, see
 > - **High Availability:** False
 > - **Test requests per second (RPS) rates:** API: 40 RPS, Web: 4 RPS, Git: 4 RPS
 
-| Service                                                      | Nodes     | Configuration                   | GCP           | AWS                   | Azure          |
-|--------------------------------------------------------------|-----------|---------------------------------|---------------|-----------------------|----------------|
-| Load balancer                                                | 1         | 2 vCPU, 1.8GB memory            | n1-highcpu-2  | c5.large              | F2s v2         |
-| Object storage                                               | n/a       | n/a                             | n/a           | n/a                   | n/a            |
-| NFS server (optional, not recommended)                       | 1         | 4 vCPU, 3.6GB memory            | n1-highcpu-4  | c5.xlarge             | F4s v2         |
-| PostgreSQL                                                   | 1         | 2 vCPU, 7.5GB memory            | n1-standard-2 | m5.large              | D2s v3         |
-| Redis                                                        | 1         | 1 vCPU, 3.75GB memory           | n1-standard-1 | m5.large              | D2s v3         |
-| Gitaly                                                       | 1         | 4 vCPU, 15GB memory             | n1-standard-4 | m5.xlarge             | D4s v3         |
-| GitLab Rails                                                 | 2         | 8 vCPU, 7.2GB memory            | n1-highcpu-8  | c5.2xlarge            | F8s v2         |
-| Monitoring node                                              | 1         | 2 vCPU, 1.8GB memory            | n1-highcpu-2  | c5.large              | F2s v2         |
+| Service                                  | Nodes  | Configuration           | GCP             | AWS            | Azure     |
+|------------------------------------------|--------|-------------------------|-----------------|----------------|-----------|
+| Load balancer                            | 1      | 2 vCPU, 1.8GB memory    | `n1-highcpu-2`  | `c5.large`     | `F2s v2`  |
+| PostgreSQL                               | 1      | 2 vCPU, 7.5GB memory    | `n1-standard-2` | `m5.large`     | `D2s v3`  |
+| Redis                                    | 1      | 1 vCPU, 3.75GB memory   | `n1-standard-1` | `m5.large`     | `D2s v3`  |
+| Gitaly                                   | 1      | 4 vCPU, 15GB memory     | `n1-standard-4` | `m5.xlarge`    | `D4s v3`  |
+| GitLab Rails                             | 2      | 8 vCPU, 7.2GB memory    | `n1-highcpu-8`  | `c5.2xlarge`   | `F8s v2`  |
+| Monitoring node                          | 1      | 2 vCPU, 1.8GB memory    | `n1-highcpu-2`  | `c5.large`     | `F2s v2`  |
+| Object storage                           | n/a    | n/a                     | n/a             | n/a            | n/a       |
+| NFS server (optional, not recommended)   | 1      | 4 vCPU, 3.6GB memory    | `n1-highcpu-4`  | `c5.xlarge`    | `F4s v2`  |
 
 The Google Cloud Platform (GCP) architectures were built and tested using the
 [Intel Xeon E5 v3 (Haswell)](https://cloud.google.com/compute/docs/cpu-platforms)
@@ -41,12 +41,6 @@ To set up GitLab and its components to accommodate up to 2,000 users:
 
 1. [Configure the external load balancing node](#configure-the-load-balancer)
    to handle the load balancing of the two GitLab application services nodes.
-1. [Configure the object storage](#configure-the-object-storage) used for
-   shared data objects.
-1. [Configure NFS](#configure-nfs-optional) (optional, and not recommended)
-   to have shared disk storage service as an alternative to Gitaly or object
-   storage. You can skip this step if you're not using GitLab Pages (which
-   requires NFS).
 1. [Configure PostgreSQL](#configure-postgresql), the database for GitLab.
 1. [Configure Redis](#configure-redis).
 1. [Configure Gitaly](#configure-gitaly), which provides access to the Git
@@ -56,6 +50,12 @@ To set up GitLab and its components to accommodate up to 2,000 users:
    requests (which include UI, API, and Git over HTTP/SSH).
 1. [Configure Prometheus](#configure-prometheus) to monitor your GitLab
    environment.
+1. [Configure the object storage](#configure-the-object-storage) used for
+   shared data objects.
+1. [Configure NFS](#configure-nfs-optional) (optional, and not recommended)
+   to have shared disk storage service as an alternative to Gitaly or object
+   storage. You can skip this step if you're not using GitLab Pages (which
+   requires NFS).
 
 ## Configure the load balancer
 
@@ -163,73 +163,6 @@ Configure DNS for an alternate SSH hostname, such as `altssh.gitlab.example.com`
 | LB Port | Backend Port | Protocol |
 | ------- | ------------ | -------- |
 | 443     | 22           | TCP      |
-
-<div align="right">
-  <a type="button" class="btn btn-default" href="#setup-components">
-    Back to setup components <i class="fa fa-angle-double-up" aria-hidden="true"></i>
-  </a>
-</div>
-
-## Configure the object storage
-
-GitLab supports using an object storage service for holding several types of
-data, and is recommended over [NFS](#configure-nfs-optional). In general,
-object storage services are better for larger environments, as object storage
-is typically much more performant, reliable, and scalable.
-
-Object storage options that GitLab has either tested or is aware of customers
-using, includes:
-
-- SaaS/Cloud solutions (such as [Amazon S3](https://aws.amazon.com/s3/) or
-  [Google Cloud Storage](https://cloud.google.com/storage)).
-- On-premises hardware and appliances, from various storage vendors.
-- MinIO ([Deployment guide](https://docs.gitlab.com/charts/advanced/external-object-storage/minio.html)).
-
-To configure GitLab to use object storage, refer to the following guides based
-on the features you intend to use:
-
-1. [Object storage for backups](../../raketasks/backup_restore.md#uploading-backups-to-a-remote-cloud-storage).
-1. [Object storage for job artifacts](../job_artifacts.md#using-object-storage)
-   including [incremental logging](../job_logs.md#new-incremental-logging-architecture).
-1. [Object storage for LFS objects](../lfs/index.md#storing-lfs-objects-in-remote-object-storage).
-1. [Object storage for uploads](../uploads.md#using-object-storage-core-only).
-1. [Object storage for merge request diffs](../merge_request_diffs.md#using-object-storage).
-1. [Object storage for Container Registry](../packages/container_registry.md#container-registry-storage-driver) (optional feature).
-1. [Object storage for Mattermost](https://docs.mattermost.com/administration/config-settings.html#file-storage) (optional feature).
-1. [Object storage for packages](../packages/index.md#using-object-storage) (optional feature). **(PREMIUM ONLY)**
-1. [Object storage for Dependency Proxy](../packages/dependency_proxy.md#using-object-storage) (optional feature). **(PREMIUM ONLY)**
-1. [Object storage for Pseudonymizer](../pseudonymizer.md#configuration) (optional feature). **(ULTIMATE ONLY)**
-1. [Object storage for autoscale Runner caching](https://docs.gitlab.com/runner/configuration/autoscale.html#distributed-runners-caching) (optional, for improved performance).
-1. [Object storage for Terraform state files](../terraform_state.md#using-object-storage-core-only).
-
-Using separate buckets for each data type is the recommended approach for GitLab.
-
-A limitation of our configuration is that each use of object storage is
-separately configured. We have an [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/23345)
-for improving this, which would allow for one bucket with separate folders.
-
-Using a single bucket when GitLab is deployed with the Helm chart causes
-restoring from a backup to
-[not function properly](https://docs.gitlab.com/charts/advanced/external-object-storage/#lfs-artifacts-uploads-packages-external-diffs-pseudonymizer).
-Although you may not be using a Helm deployment right now, if you migrate
-GitLab to a Helm deployment later, GitLab would still work, but you may not
-realize backups aren't working correctly until a critical requirement for
-functioning backups is encountered.
-
-<div align="right">
-  <a type="button" class="btn btn-default" href="#setup-components">
-    Back to setup components <i class="fa fa-angle-double-up" aria-hidden="true"></i>
-  </a>
-</div>
-
-## Configure NFS (optional)
-
-For improved performance, [object storage](#configure-the-object-storage),
-along with [Gitaly](#configure-gitaly), are recommended over using NFS whenever
-possible. However, if you intend to use GitLab Pages,
-[you must use NFS](troubleshooting.md#gitlab-pages-requires-nfs).
-
-For information about configuring NFS, see the [NFS documentation page](../high_availability/nfs.md).
 
 <div align="right">
   <a type="button" class="btn btn-default" href="#setup-components">
@@ -852,6 +785,73 @@ running [Prometheus](../monitoring/prometheus/index.md) and
 1. Save the file and [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
 1. In the GitLab UI, set `admin/application_settings/metrics_and_profiling` > Metrics - Grafana to `/-/grafana` to
 `http[s]://<MONITOR NODE>/-/grafana`
+
+<div align="right">
+  <a type="button" class="btn btn-default" href="#setup-components">
+    Back to setup components <i class="fa fa-angle-double-up" aria-hidden="true"></i>
+  </a>
+</div>
+
+## Configure the object storage
+
+GitLab supports using an object storage service for holding several types of
+data, and is recommended over [NFS](#configure-nfs-optional). In general,
+object storage services are better for larger environments, as object storage
+is typically much more performant, reliable, and scalable.
+
+Object storage options that GitLab has either tested or is aware of customers
+using, includes:
+
+- SaaS/Cloud solutions (such as [Amazon S3](https://aws.amazon.com/s3/) or
+  [Google Cloud Storage](https://cloud.google.com/storage)).
+- On-premises hardware and appliances, from various storage vendors.
+- MinIO ([Deployment guide](https://docs.gitlab.com/charts/advanced/external-object-storage/minio.html)).
+
+To configure GitLab to use object storage, refer to the following guides based
+on the features you intend to use:
+
+1. [Object storage for backups](../../raketasks/backup_restore.md#uploading-backups-to-a-remote-cloud-storage).
+1. [Object storage for job artifacts](../job_artifacts.md#using-object-storage)
+   including [incremental logging](../job_logs.md#new-incremental-logging-architecture).
+1. [Object storage for LFS objects](../lfs/index.md#storing-lfs-objects-in-remote-object-storage).
+1. [Object storage for uploads](../uploads.md#using-object-storage-core-only).
+1. [Object storage for merge request diffs](../merge_request_diffs.md#using-object-storage).
+1. [Object storage for Container Registry](../packages/container_registry.md#container-registry-storage-driver) (optional feature).
+1. [Object storage for Mattermost](https://docs.mattermost.com/administration/config-settings.html#file-storage) (optional feature).
+1. [Object storage for packages](../packages/index.md#using-object-storage) (optional feature). **(PREMIUM ONLY)**
+1. [Object storage for Dependency Proxy](../packages/dependency_proxy.md#using-object-storage) (optional feature). **(PREMIUM ONLY)**
+1. [Object storage for Pseudonymizer](../pseudonymizer.md#configuration) (optional feature). **(ULTIMATE ONLY)**
+1. [Object storage for autoscale Runner caching](https://docs.gitlab.com/runner/configuration/autoscale.html#distributed-runners-caching) (optional, for improved performance).
+1. [Object storage for Terraform state files](../terraform_state.md#using-object-storage-core-only).
+
+Using separate buckets for each data type is the recommended approach for GitLab.
+
+A limitation of our configuration is that each use of object storage is
+separately configured. We have an [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/23345)
+for improving this, which would allow for one bucket with separate folders.
+
+Using a single bucket when GitLab is deployed with the Helm chart causes
+restoring from a backup to
+[not function properly](https://docs.gitlab.com/charts/advanced/external-object-storage/#lfs-artifacts-uploads-packages-external-diffs-pseudonymizer).
+Although you may not be using a Helm deployment right now, if you migrate
+GitLab to a Helm deployment later, GitLab would still work, but you may not
+realize backups aren't working correctly until a critical requirement for
+functioning backups is encountered.
+
+<div align="right">
+  <a type="button" class="btn btn-default" href="#setup-components">
+    Back to setup components <i class="fa fa-angle-double-up" aria-hidden="true"></i>
+  </a>
+</div>
+
+## Configure NFS (optional)
+
+For improved performance, [object storage](#configure-the-object-storage),
+along with [Gitaly](#configure-gitaly), are recommended over using NFS whenever
+possible. However, if you intend to use GitLab Pages,
+[you must use NFS](troubleshooting.md#gitlab-pages-requires-nfs).
+
+For information about configuring NFS, see the [NFS documentation page](../high_availability/nfs.md).
 
 <div align="right">
   <a type="button" class="btn btn-default" href="#setup-components">

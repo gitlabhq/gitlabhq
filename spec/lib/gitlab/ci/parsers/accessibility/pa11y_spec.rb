@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
+require 'spec_helper'
 
 RSpec.describe Gitlab::Ci::Parsers::Accessibility::Pa11y do
   describe '#parse!' do
@@ -108,7 +108,7 @@ RSpec.describe Gitlab::Ci::Parsers::Accessibility::Pa11y do
       it "sets error_message" do
         expect { subject }.not_to raise_error
 
-        expect(accessibility_report.error_message).to include('Pa11y parsing failed')
+        expect(accessibility_report.error_message).to include('JSON parsing failed')
         expect(accessibility_report.errors_count).to eq(0)
         expect(accessibility_report.passes_count).to eq(0)
         expect(accessibility_report.scans_count).to eq(0)

@@ -5,6 +5,7 @@ fragment AlertDetailItem on AlertManagementAlert {
   ...AlertListItem
   createdAt
   monitoringTool
+  metricsDashboardUrl
   service
   description
   updatedAt
@@ -15,4 +16,5 @@ fragment AlertDetailItem on AlertManagementAlert {
       ...AlertNote
     }
   }
+
 }

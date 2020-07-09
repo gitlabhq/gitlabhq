@@ -3,6 +3,7 @@
 class AuditEvent < ApplicationRecord
   include CreatedAtFilterable
   include IgnorableColumns
+  include BulkInsertSafe
 
   ignore_column :updated_at, remove_with: '13.4', remove_after: '2020-09-22'
 

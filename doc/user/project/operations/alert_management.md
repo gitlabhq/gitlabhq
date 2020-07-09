@@ -197,6 +197,31 @@ giving you a linear timeline of the alert's investigation and assignment history
 
 ![Alert Management Details View System Notes](img/alert_detail_system_notes_v13_1.png)
 
+### View an Alert's metrics data
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/217768) in GitLab 13.2.
+
+To view the metrics for an alert:
+
+   1. Sign in as a user with Developer or higher [permissions](../../permissions.md).
+   1. Navigate to **{cloud-gear}** **Operations > Alerts**.
+   1. Click the alert you want to view.
+   1. Below the title of the alert, click the **Metrics** tab.
+
+![Alert Management Metrics View](img/alert_detail_metrics_v13_2.png)
+
+For GitLab-managed Prometheus instances, metrics data is automatically available
+for the alert, making it easy to see surrounding behavior. See
+[Managed Prometheus instances](../integrations/prometheus.md#managed-prometheus-instances)
+for information on setting up alerts.
+
+For externally-managed Prometheus instances, you can configure your alerting rules to
+display a chart in the alert. See
+[Embedding metrics based on alerts in incident issues](../integrations/prometheus.md#embedding-metrics-based-on-alerts-in-incident-issues)
+for information on how to appropriately configure your alerting rules. See
+[External Prometheus instances](../integrations/prometheus.md#external-prometheus-instances)
+for information on setting up alerts for your self-managed Prometheus instance.
+
 ## Use cases for assigning alerts
 
 Consider a team formed by different sections of monitoring, collaborating on a

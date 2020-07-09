@@ -243,6 +243,38 @@ Prometheus alert payloads sent to the `notify.json` endpoint are limited to 1 MB
 
 Alert payloads sent to the `notify.json` endpoint are limited to 1 MB in size.
 
+### Metrics dashboard YAML files
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/34834) in GitLab 13.2.
+
+The memory occupied by a parsed metrics dashboard YAML file cannot exceed 1 MB.
+
+The maximum depth of each YAML file is limited to 100. The maximum depth of a YAML
+file is the amount of nesting of its most nested key. Each hash and array on the
+path of the most nested key counts towards its depth. For example, the depth of the
+most nested key in the following YAML is 7:
+
+```yaml
+dashboard: 'Test dashboard'
+links:
+- title: Link 1
+  url: https://gitlab.com
+panel_groups:
+- group: Group A
+  priority: 1
+  panels:
+  - title: "Super Chart A1"
+    type: "area-chart"
+    y_label: "y_label"
+    weight: 1
+    max_value: 1
+    metrics:
+    - id: metric_a1
+      query_range: 'query'
+      unit: unit
+      label: Legend Label
+```
+
 ## Environment data on Deploy Boards
 
 [Deploy Boards](../user/project/deploy_boards.md) load information from Kubernetes about

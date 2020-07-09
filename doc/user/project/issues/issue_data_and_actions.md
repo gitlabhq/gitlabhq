@@ -88,7 +88,7 @@ An issue can be assigned to:
 
 - Yourself.
 - Another person.
-- [Many people](#multiple-assignees-STARTER). **(STARTER)**
+- [Many people](#multiple-assignees-starter). **(STARTER)**
 
 The assignee(s) can be changed as often as needed. The idea is that the assignees are
 responsible for that issue until it's reassigned to someone else to take it from there.

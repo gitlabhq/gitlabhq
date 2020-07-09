@@ -19,7 +19,7 @@ Parameters:
 | `statistics`             | boolean           | no       | Include group statistics (admins only) |
 | `with_custom_attributes` | boolean           | no       | Include [custom attributes](custom_attributes.md) in response (admins only) |
 | `owned`                  | boolean           | no       | Limit to groups explicitly owned by the current user |
-| `min_access_level`       | integer           | no       | Limit to groups where current user has at least this [access level](members.md) |
+| `min_access_level`       | integer           | no       | Limit to groups where current user has at least this [access level](members.md#valid-access-levels) |
 | `top_level_only`         | boolean           | no       | Limit to top level groups, excluding all subgroups |
 
 ```plaintext
@@ -131,7 +131,7 @@ Parameters:
 | `statistics`             | boolean           | no       | Include group statistics (admins only) |
 | `with_custom_attributes` | boolean           | no       | Include [custom attributes](custom_attributes.md) in response (admins only) |
 | `owned`                  | boolean           | no       | Limit to groups explicitly owned by the current user |
-| `min_access_level`       | integer           | no       | Limit to groups where current user has at least this [access level](members.md) |
+| `min_access_level`       | integer           | no       | Limit to groups where current user has at least this [access level](members.md#valid-access-levels) |
 
 ```plaintext
 GET /groups/:id/subgroups
@@ -194,7 +194,7 @@ Parameters:
 | `with_merge_requests_enabled` | boolean        | no       | Limit by projects with merge requests feature enabled. Default is `false` |
 | `with_shared`                 | boolean        | no       | Include projects shared to this group. Default is `true` |
 | `include_subgroups`           | boolean        | no       | Include projects in subgroups of this group. Default is `false`   |
-| `min_access_level`            | integer        | no       | Limit to projects where current user has at least this [access level](members.md) |
+| `min_access_level`            | integer        | no       | Limit to projects where current user has at least this [access level](members.md#valid-access-levels) |
 | `with_custom_attributes`      | boolean        | no       | Include [custom attributes](custom_attributes.md) in response (admins only) |
 | `with_security_reports`       | boolean        | no       | **(ULTIMATE)** Return only projects that have security reports artifacts present in any of their builds. This means "projects with security reports enabled". Default is `false` |
 
@@ -269,7 +269,7 @@ Parameters:
 | `starred`                     | boolean        | no       | Limit by projects starred by the current user |
 | `with_issues_enabled`         | boolean        | no       | Limit by projects with issues feature enabled. Default is `false` |
 | `with_merge_requests_enabled` | boolean        | no       | Limit by projects with merge requests feature enabled. Default is `false` |
-| `min_access_level`            | integer        | no       | Limit to projects where current user has at least this [access level](members.md) |
+| `min_access_level`            | integer        | no       | Limit to projects where current user has at least this [access level](members.md#valid-access-levels) |
 | `with_custom_attributes`      | boolean        | no       | Include [custom attributes](custom_attributes.md) in response (admins only) |
 
 Example response:
@@ -1052,7 +1052,7 @@ POST /groups/:id/ldap_group_links
 | `id`      | integer/string | yes      | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) |
 | `cn`      | string         | no       | The CN of an LDAP group |
 | `filter`  | string         | no       | The LDAP filter for the group |
-| `group_access` | integer   | yes      | Minimum access level for members of the LDAP group |
+| `group_access` | integer   | yes      | Minimum [access level](members.md#valid-access-levels) for members of the LDAP group |
 | `provider` | string        | yes      | LDAP provider for the LDAP group link |
 
 NOTE: **Note:**
@@ -1141,7 +1141,7 @@ POST /groups/:id/share
 | --------- | -------------- | -------- | ----------- |
 | `id`      | integer/string | yes      | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) |
 | `group_id` | integer | yes | The ID of the group to share with |
-| `group_access` | integer | yes | The [permissions level](members.md) to grant the group |
+| `group_access` | integer | yes | The [access level](members.md#valid-access-levels) to grant the group |
 | `expires_at` | string | no | Share expiration date in ISO 8601 format: 2016-09-26 |
 
 ### Delete link sharing group with another group

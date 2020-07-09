@@ -25,7 +25,7 @@ To add or import a user, you can follow the
 
 ## Principles behind permissions
 
-See our [product handbook on permissions](https://about.gitlab.com/handbook/product/#permissions-in-gitlab)
+See our [product handbook on permissions](https://about.gitlab.com/handbook/product/gitlab-the-product/#permissions-in-gitlab).
 
 ## Instance-wide user permissions
 

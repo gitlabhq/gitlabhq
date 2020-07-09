@@ -43,7 +43,7 @@ review-build-cng:
     HOST_SUFFIX: "${CI_ENVIRONMENT_SLUG}"
     REVIEW_APPS_DOMAIN: "temp.gitlab-review.app"  # FIXME: using temporary domain
     DOMAIN: "-${CI_ENVIRONMENT_SLUG}.${REVIEW_APPS_DOMAIN}"
-    GITLAB_HELM_CHART_REF: "master"
+    GITLAB_HELM_CHART_REF: "v4.1.3"
   environment:
     name: review/${CI_COMMIT_REF_NAME}
     url: https://gitlab-${CI_ENVIRONMENT_SLUG}.${REVIEW_APPS_DOMAIN}

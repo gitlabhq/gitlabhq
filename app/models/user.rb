@@ -642,6 +642,7 @@ class User < ApplicationRecord
       unique_internal(where(user_type: :alert_bot), 'alert-bot', email_pattern) do |u|
         u.bio = 'The GitLab alert bot'
         u.name = 'GitLab Alert Bot'
+        u.avatar = bot_avatar(image: 'alert-bot.png')
       end
     end
 
@@ -661,6 +662,7 @@ class User < ApplicationRecord
       unique_internal(where(user_type: :support_bot), 'support-bot', email_pattern) do |u|
         u.bio = 'The GitLab support bot used for Service Desk'
         u.name = 'GitLab Support Bot'
+        u.avatar = bot_avatar(image: 'support-bot.png')
       end
     end
 

@@ -638,7 +638,7 @@ That concludes the configuration changes for our GitLab instance. Next, we'll cr
 
 On the EC2 dashboard:
 
-1. Select the `GitLab` instance we [created earlier](#install-gitLab).
+1. Select the `GitLab` instance we [created earlier](#install-gitlab).
 1. Click on **Actions**, scroll down to **Image** and click **Create Image**.
 1. Give your image a name and description (we'll use `GitLab-Source` for both).
 1. Leave everything else as default and click **Create Image**

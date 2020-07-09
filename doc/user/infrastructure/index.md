@@ -257,7 +257,7 @@ can configure this manually as follows:
 
 1. Running the pipeline displays the widget in the merge request, like this:
 
-   ![MR Terraform widget](img/terraform_plan_widget_v13_2.png)
+   ![Merge Request Terraform widget](img/terraform_plan_widget_v13_2.png)
 
 1. Clicking the **View Full Log** button in the widget takes you directly to the
    plan output present in the pipeline logs:

@@ -13,7 +13,7 @@ For more details, see [Bulk editing issues and merge requests at the project lev
 If you want to update attributes across multiple issues, epics, or merge requests in a group, you
 can do it by bulk editing them, that is, editing them together.
 
-![Bulk editing](img/bulk-editing.png)
+![Bulk editing](img/bulk-editing_v13_2.png)
 
 ## Bulk edit issues at the group level
 
@@ -24,8 +24,12 @@ You need a permission level of [Reporter or higher](../../permissions.md) to man
 
 When bulk editing issues in a group, you can edit the following attributes:
 
+- Epic ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/210470) in
+   [GitLab Premium](https://about.gitlab.com/pricing/) 13.2.) **(PREMIUM)**
 - Milestone
 - Labels
+- Health status ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/218395) in
+   [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.2.) **(ULTIMATE)**
 
 To update multiple project issues at the same time:
 

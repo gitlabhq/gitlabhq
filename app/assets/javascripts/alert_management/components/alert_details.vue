@@ -26,6 +26,7 @@ import Tracking from '~/tracking';
 import { toggleContainerClasses } from '~/lib/utils/dom_utils';
 import SystemNote from './system_notes/system_note.vue';
 import AlertSidebar from './alert_sidebar.vue';
+import AlertMetrics from './alert_metrics.vue';
 
 const containerEl = document.querySelector('.page-with-contextual-sidebar');
 
@@ -36,6 +37,7 @@ export default {
     ),
     fullAlertDetailsTitle: s__('AlertManagement|Alert details'),
     overviewTitle: s__('AlertManagement|Overview'),
+    metricsTitle: s__('AlertManagement|Metrics'),
     reportedAt: s__('AlertManagement|Reported %{when}'),
     reportedAtWithTool: s__('AlertManagement|Reported %{when} by %{tool}'),
   },
@@ -53,6 +55,7 @@ export default {
     TimeAgoTooltip,
     AlertSidebar,
     SystemNote,
+    AlertMetrics,
   },
   inject: {
     projectPath: {
@@ -328,6 +331,9 @@ export default {
               <gl-loading-icon size="lg" color="dark" class="mt-3" />
             </template>
           </gl-table>
+        </gl-tab>
+        <gl-tab data-testId="metricsTab" :title="$options.i18n.metricsTitle">
+          <alert-metrics :dashboard-url="alert.metricsDashboardUrl" />
         </gl-tab>
       </gl-tabs>
       <alert-sidebar

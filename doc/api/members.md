@@ -1,6 +1,6 @@
 # Group and project members API
 
-**Valid access levels**
+## Valid access levels
 
 The access levels are defined in the `Gitlab::Access` module. Currently, these levels are recognized:
 

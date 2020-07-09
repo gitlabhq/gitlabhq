@@ -1998,6 +1998,12 @@ msgstr ""
 msgid "AlertManagement|Medium"
 msgstr ""
 
+msgid "AlertManagement|Metrics"
+msgstr ""
+
+msgid "AlertManagement|Metrics weren't available in the alerts payload."
+msgstr ""
+
 msgid "AlertManagement|More information"
 msgstr ""
 
@@ -9883,7 +9889,7 @@ msgstr ""
 msgid "FeatureFlags|Edit list"
 msgstr ""
 
-msgid "FeatureFlags|Enable features for specific users and specific environments by defining feature flag strategies. By default, features are available to all users in all environments."
+msgid "FeatureFlags|Enable features for specific users and specific environments by defining feature flag strategies."
 msgstr ""
 
 msgid "FeatureFlags|Environment Spec"
@@ -10658,6 +10664,24 @@ msgid "Geo|All projects are being scheduled for resync"
 msgstr ""
 
 msgid "Geo|All projects are being scheduled for reverify"
+msgstr ""
+
+msgid "Geo|Allowed Geo IP can't be blank"
+msgstr ""
+
+msgid "Geo|Allowed Geo IP should be between 1 and 255 characters"
+msgstr ""
+
+msgid "Geo|Allowed Geo IP should contain valid IP addresses"
+msgstr ""
+
+msgid "Geo|Connection timeout can't be blank"
+msgstr ""
+
+msgid "Geo|Connection timeout must be a number"
+msgstr ""
+
+msgid "Geo|Connection timeout should be between 1-120"
 msgstr ""
 
 msgid "Geo|Could not remove tracking entry for an existing project."
@@ -23417,6 +23441,9 @@ msgid "There was an error syncing the %{replicableType}"
 msgstr ""
 
 msgid "There was an error trying to validate your query"
+msgstr ""
+
+msgid "There was an error updating the Geo Settings"
 msgstr ""
 
 msgid "There was an error updating the dashboard, branch name is invalid."

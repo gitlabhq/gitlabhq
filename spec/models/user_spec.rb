@@ -4781,9 +4781,21 @@ RSpec.describe User do
       end
     end
 
+    shared_examples 'bot user avatars' do |bot_type, avatar_filename|
+      it 'sets the custom avatar for the created bot' do
+        bot_user = described_class.public_send(bot_type)
+
+        expect(bot_user.avatar.url).to be_present
+        expect(bot_user.avatar.filename).to eq(avatar_filename)
+      end
+    end
+
     it_behaves_like 'bot users', :alert_bot
     it_behaves_like 'bot users', :support_bot
     it_behaves_like 'bot users', :migration_bot
     it_behaves_like 'bot users', :ghost
+
+    it_behaves_like 'bot user avatars', :alert_bot, 'alert-bot.png'
+    it_behaves_like 'bot user avatars', :support_bot, 'support-bot.png'
   end
 end
