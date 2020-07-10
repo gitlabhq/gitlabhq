@@ -235,6 +235,31 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
       end
     end
 
+    context 'for plan' do
+      it 'includes accurate usage_activity_by_stage data' do
+        for_defined_days_back do
+          user = create(:user)
+          project = create(:project, creator: user)
+          issue = create(:issue, project: project, author: user)
+          create(:note, project: project, noteable: issue, author: user)
+          create(:todo, project: project, target: issue, author: user)
+        end
+
+        expect(described_class.uncached_data[:usage_activity_by_stage][:plan]).to include(
+          issues: 2,
+          notes: 2,
+          projects: 2,
+          todos: 2
+        )
+        expect(described_class.uncached_data[:usage_activity_by_stage_monthly][:plan]).to include(
+          issues: 1,
+          notes: 1,
+          projects: 1,
+          todos: 1
+        )
+      end
+    end
+
     context 'for release' do
       it 'includes accurate usage_activity_by_stage data' do
         for_defined_days_back do

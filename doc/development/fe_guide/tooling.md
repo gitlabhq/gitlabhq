@@ -4,6 +4,44 @@
 
 We use ESLint to encapsulate and enforce frontend code standards. Our configuration may be found in the [`gitlab-eslint-config`](https://gitlab.com/gitlab-org/gitlab-eslint-config) project.
 
+### Yarn Script
+
+This section describes yarn scripts that are available to validate and apply automatic fixes to files using ESLint.
+
+To check all currently staged files (based on `git diff`) with ESLint, run the following script:
+
+```shell
+yarn eslint-staged
+```
+
+_A list of problems found will be logged to the console._
+
+To apply automatic ESLint fixes to all currently staged files (based on `git diff`), run the following script:
+
+```shell
+yarn eslint-staged-fix
+```
+
+_If manual changes are required, a list of changes will be sent to the console._
+
+To check **all** files in the repository with ESLint, run the following script:
+
+```shell
+yarn eslint
+```
+
+_A list of problems found will be logged to the console._
+
+To apply automatic ESLint fixes to **all** files in the repository, run the following script:
+
+```shell
+yarn eslint-fix
+```
+
+_If manual changes are required, a list of changes will be sent to the console._
+
+**Caution:** Limit use to global rule updates. Otherwise, the changes can lead to huge Merge Requests.
+
 ### Disabling ESLint in new files
 
 Do not disable ESLint when creating new files. Existing files may have existing rules

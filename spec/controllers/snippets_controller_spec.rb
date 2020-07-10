@@ -6,6 +6,8 @@ RSpec.describe SnippetsController do
   let_it_be(:user) { create(:user) }
 
   describe 'GET #index' do
+    let(:base_params) { { username: user.username } }
+
     context 'when username parameter is present' do
       it_behaves_like 'paginated collection' do
         let(:collection) { Snippet.all }
@@ -37,6 +39,10 @@ RSpec.describe SnippetsController do
 
         expect(response).to redirect_to(dashboard_snippets_path)
       end
+    end
+
+    it_behaves_like 'snippets sort order' do
+      let(:params) { base_params }
     end
   end
 

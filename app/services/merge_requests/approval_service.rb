@@ -3,18 +3,26 @@
 module MergeRequests
   class ApprovalService < MergeRequests::BaseService
     def execute(merge_request)
+      return unless can_be_approved?(merge_request)
+
       approval = merge_request.approvals.new(user: current_user)
 
-      return unless save_approval(approval)
+      return success unless save_approval(approval)
 
       reset_approvals_cache(merge_request)
       create_event(merge_request)
       create_approval_note(merge_request)
       mark_pending_todos_as_done(merge_request)
       execute_approval_hooks(merge_request, current_user)
+
+      success
     end
 
     private
+
+    def can_be_approved?(merge_request)
+      current_user.can?(:approve_merge_request, merge_request)
+    end
 
     def reset_approvals_cache(merge_request)
       merge_request.approvals.reset

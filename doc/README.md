@@ -138,7 +138,7 @@ The following documentation relates to the DevOps **Plan** stage:
 Consolidate source code into a single [distributed version control system](https://en.wikipedia.org/wiki/Distributed_version_control)
 that’s easily managed and controlled without disrupting your workflow.
 
-GitLab’s Git repositories come complete with branching tools and access
+GitLab repositories come complete with branching tools and access
 controls, providing a scalable, single source of truth for collaborating
 on projects and code.
 

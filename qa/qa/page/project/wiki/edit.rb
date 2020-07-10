@@ -15,6 +15,10 @@ module QA
             element :create_page_button
           end
 
+          view 'app/assets/javascripts/pages/shared/wikis/components/delete_wiki_modal.vue' do
+            element :delete_button
+          end
+
           def set_title(title)
             fill_element :wiki_title_textbox, title
           end
@@ -33,6 +37,11 @@ module QA
 
           def click_create_page
             click_element :create_page_button
+          end
+
+          def delete_page
+            click_element :delete_button, Page::Modal::DeleteWiki
+            Page::Modal::DeleteWiki.perform(&:confirm_deletion)
           end
         end
       end

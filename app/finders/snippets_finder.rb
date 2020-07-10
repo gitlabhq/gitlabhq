@@ -43,7 +43,7 @@ class SnippetsFinder < UnionFinder
   include Gitlab::Utils::StrongMemoize
 
   attr_accessor :current_user, :params
-  delegate :explore, :only_personal, :only_project, :scope, to: :params
+  delegate :explore, :only_personal, :only_project, :scope, :sort, to: :params
 
   def initialize(current_user = nil, params = {})
     @current_user = current_user
@@ -69,7 +69,9 @@ class SnippetsFinder < UnionFinder
 
     items = init_collection
     items = by_ids(items)
-    items.with_optional_visibility(visibility_from_scope).fresh
+    items = items.with_optional_visibility(visibility_from_scope)
+
+    items.order_by(sort_param)
   end
 
   private
@@ -201,6 +203,10 @@ class SnippetsFinder < UnionFinder
 
       params[:project].is_a?(Project) ? params[:project] : Project.find_by_id(params[:project])
     end
+  end
+
+  def sort_param
+    sort.presence || 'id_desc'
   end
 end
 

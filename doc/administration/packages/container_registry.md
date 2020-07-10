@@ -927,7 +927,7 @@ larger images, or images that take longer than 5 minutes to push, users may
 encounter this error.
 
 Administrators can increase the token duration in **Admin area > Settings >
-Container Registry > Authorization token duration (minutes)**.
+CI/CD > Container Registry > Authorization token duration (minutes)**.
 
 ### AWS S3 with the GitLab registry error when pushing large images
 

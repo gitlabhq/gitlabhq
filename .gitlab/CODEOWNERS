@@ -13,6 +13,7 @@
 /doc/development/ @marcia @mjang1
 /doc/development/documentation/ @mikelewis
 /doc/ci @marcel.amirault @sselhorn
+/doc/operations @aqualls @eread
 /doc/user/clusters @aqualls
 /doc/user/infrastructure @aqualls
 /doc/user/project/clusters @aqualls

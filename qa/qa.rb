@@ -474,6 +474,10 @@ module QA
         autoload :Templates, 'qa/page/component/project/templates'
       end
     end
+
+    module Modal
+      autoload :DeleteWiki, 'qa/page/modal/delete_wiki'
+    end
   end
 
   ##

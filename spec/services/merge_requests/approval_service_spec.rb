@@ -11,6 +11,10 @@ RSpec.describe MergeRequests::ApprovalService do
 
     subject(:service) { described_class.new(project, user) }
 
+    before do
+      project.add_developer(user)
+    end
+
     context 'with invalid approval' do
       before do
         allow(merge_request.approvals).to receive(:new).and_return(double(save: false))
@@ -54,6 +58,16 @@ RSpec.describe MergeRequests::ApprovalService do
 
           service.execute(merge_request)
         end
+      end
+    end
+
+    context 'user cannot update the merge request' do
+      before do
+        project.add_guest(user)
+      end
+
+      it 'does not update approvals' do
+        expect { service.execute(merge_request) }.not_to change { merge_request.approvals.size }
       end
     end
   end

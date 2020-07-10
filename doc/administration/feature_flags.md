@@ -109,6 +109,24 @@ For example, to enable the [`:junit_pipeline_view`](../ci/junit_test_reports.md#
 Feature.enable(:junit_pipeline_view, Project.find(1234))
 ```
 
+`Feature.enable` and `Feature.disable` always return `nil`, this is not an indication that the command failed:
+
+```ruby
+irb(main):001:0> Feature.enable(:release_evidence_collection)
+=> nil
+```
+
+To check if a flag is enabled or disabled you can use `Feature.enabled?` or `Feature.disabled?`:
+
+```ruby
+Feature.enable(:release_evidence_collection)
+=> nil
+Feature.enabled?(:release_evidence_collection)
+=> true
+Feature.disabled?(:release_evidence_collection)
+=> false
+```
+
 When the feature is ready, GitLab will remove the feature flag, the option for
 enabling and disabling it will no longer exist, and the feature will become
 available in all instances.

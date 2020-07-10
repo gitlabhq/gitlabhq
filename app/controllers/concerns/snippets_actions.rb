@@ -8,6 +8,7 @@ module SnippetsActions
   include PaginatedCollection
   include Gitlab::NoteableMetadata
   include Snippets::SendBlob
+  include SnippetsSort
 
   included do
     skip_before_action :verify_authenticity_token,

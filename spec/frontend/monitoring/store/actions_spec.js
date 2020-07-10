@@ -948,6 +948,25 @@ describe('Monitoring store actions', () => {
       );
     });
 
+    it('dispatches receiveDashboardValidationWarningsSuccess with false payload when the response is empty ', () => {
+      mockMutate.mockResolvedValue({
+        data: {
+          project: null,
+        },
+      });
+
+      return testAction(
+        fetchDashboardValidationWarnings,
+        null,
+        state,
+        [],
+        [{ type: 'receiveDashboardValidationWarningsSuccess', payload: false }],
+        () => {
+          expect(mockMutate).toHaveBeenCalledWith(mutationVariables);
+        },
+      );
+    });
+
     it('dispatches receiveDashboardValidationWarningsFailure if the warnings API call fails', () => {
       mockMutate.mockRejectedValue({});
 

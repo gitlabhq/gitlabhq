@@ -24,6 +24,7 @@ RSpec.describe MergeRequestPolicy do
   mr_perms = %i[create_merge_request_in
                 create_merge_request_from
                 read_merge_request
+                approve_merge_request
                 create_note].freeze
 
   shared_examples_for 'a denied user' do

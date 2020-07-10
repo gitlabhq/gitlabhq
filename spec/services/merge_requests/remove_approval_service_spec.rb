@@ -33,5 +33,14 @@ RSpec.describe MergeRequests::RemoveApprovalService do
         execute!
       end
     end
+
+    context 'with a user who has not approved' do
+      it 'does not create an unapproval note and triggers web hook' do
+        expect(service).not_to receive(:execute_hooks)
+        expect(SystemNoteService).not_to receive(:unapprove_mr)
+
+        execute!
+      end
+    end
   end
 end

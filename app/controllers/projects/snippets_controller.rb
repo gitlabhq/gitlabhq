@@ -19,7 +19,7 @@ class Projects::SnippetsController < Projects::Snippets::ApplicationController
       .new(current_user, project: @project)
       .execute
 
-    @snippets = SnippetsFinder.new(current_user, project: @project, scope: params[:scope])
+    @snippets = SnippetsFinder.new(current_user, project: @project, scope: params[:scope], sort: sort_param)
       .execute
       .page(params[:page])
       .inc_author

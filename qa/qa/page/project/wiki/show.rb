@@ -58,6 +58,10 @@ module QA
           def has_content?(content)
             has_element?(:wiki_page_content, content)
           end
+
+          def has_no_page?
+            has_element? :create_first_page_link
+          end
         end
       end
     end

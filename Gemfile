@@ -244,7 +244,9 @@ gem 'slack-messenger', '~> 2.3.3'
 gem 'hangouts-chat', '~> 0.0.5'
 
 # Asana integration
-gem 'asana', '~> 0.9'
+# asana 0.10.1 needs faraday 1.0
+# https://gitlab.com/gitlab-org/gitlab/-/issues/224296
+gem 'asana', '0.10.0'
 
 # FogBugz integration
 gem 'ruby-fogbugz', '~> 0.2.1'

@@ -22,6 +22,8 @@ module QA
           Page::Project::Menu.perform(&:click_issues)
 
           Page::Project::Issue::Index.perform do |issues_page|
+            expect(issues_page).to have_content("2 issues successfully imported")
+
             issues_page.click_issue_link(jira_issue_title)
           end
         end

@@ -525,9 +525,16 @@ module Gitlab
       # Omitted because no user, creator or author associated: `boards`, `labels`, `milestones`, `uploads`
       # Omitted because too expensive: `epics_deepest_relationship_level`
       # Omitted because of encrypted properties: `projects_jira_cloud_active`, `projects_jira_server_active`
+      # rubocop: disable CodeReuse/ActiveRecord
       def usage_activity_by_stage_plan(time_period)
-        {}
+        {
+          issues: distinct_count(::Issue.where(time_period), :author_id),
+          notes: distinct_count(::Note.where(time_period), :author_id),
+          projects: distinct_count(::Project.where(time_period), :creator_id),
+          todos: distinct_count(::Todo.where(time_period), :author_id)
+        }
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       # Omitted because no user, creator or author associated: `environments`, `feature_flags`, `in_review_folder`, `pages_domains`
       # rubocop: disable CodeReuse/ActiveRecord

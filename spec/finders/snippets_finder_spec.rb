@@ -295,6 +295,22 @@ RSpec.describe SnippetsFinder do
         expect(finder.execute).to be_empty
       end
     end
+
+    context 'no sort param is provided' do
+      it 'returns snippets sorted by id' do
+        snippets = described_class.new(admin).execute
+
+        expect(snippets.ids).to eq(Snippet.order_id_desc.ids)
+      end
+    end
+
+    context 'sort param is provided' do
+      it 'returns snippets sorted by sort param' do
+        snippets = described_class.new(admin, sort: 'updated_desc').execute
+
+        expect(snippets.ids).to eq(Snippet.order_updated_desc.ids)
+      end
+    end
   end
 
   it_behaves_like 'snippet visibility'

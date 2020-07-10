@@ -59,7 +59,7 @@ Panels in a panel group are laid out in rows consisting of two panels per row. A
 | `title` | string | yes | Heading for the panel. |
 | `y_label` | string | no, but highly encouraged | Y-Axis label for the panel. |
 | `y_axis` | string | no | Y-Axis configuration for the panel. |
-| `max_value` | number | no | Denominator value used for calculating [percentile based results](../../../user/project/integrations/prometheus.md#percentile-based-results) |
+| `max_value` | number | no | Denominator value used for calculating [percentile based results](panel_types.md#percentile-based-results) |
 | `weight` | number | no, defaults to order in file | Order to appear within the grouping. Lower number means higher priority, which will be higher on the page. Numbers do not need to be consecutive. |
 | `metrics` | array | yes | The metrics which should be displayed in the panel. Any number of metrics can be displayed when `type` is `area-chart` or `line-chart`, whereas only 3 can be displayed when `type` is `anomaly-chart`. |
 | `links` | array | no | Add links to display on the chart's [context menu](index.md#chart-context-menu). |
