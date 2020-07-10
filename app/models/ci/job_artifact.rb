@@ -35,6 +35,7 @@ module Ci
       license_scanning: 'gl-license-scanning-report.json',
       performance: 'performance.json',
       browser_performance: 'browser-performance.json',
+      load_performance: 'load-performance.json',
       metrics: 'metrics.txt',
       lsif: 'lsif.json',
       dotenv: '.env',
@@ -75,6 +76,7 @@ module Ci
       license_scanning: :raw,
       performance: :raw,
       browser_performance: :raw,
+      load_performance: :raw,
       terraform: :raw,
       requirements: :raw,
       coverage_fuzzing: :raw
@@ -96,6 +98,7 @@ module Ci
       metrics
       performance
       browser_performance
+      load_performance
       sast
       secret_detection
       requirements
@@ -196,7 +199,8 @@ module Ci
       secret_detection: 21, ## EE-specific
       requirements: 22, ## EE-specific
       coverage_fuzzing: 23, ## EE-specific
-      browser_performance: 24 ## EE-specific
+      browser_performance: 24, ## EE-specific
+      load_performance: 25 ## EE-specific
     }
 
     enum file_format: {

@@ -1,0 +1,29 @@
+{
+  "type": "object",
+  "required": ["packages", "provider-includes", "providers-url"],
+  "properties": {
+    "packages": {
+      "type": "array",
+      "items": { "type": "integer" }
+    },
+    "providers-url": {
+      "type": "string"
+    },
+    "provider-includes": {
+      "type": "object",
+      "required": ["p/%hash%.json"],
+      "properties": {
+        "p/%hash%.json": {
+          "type": "object",
+          "required": ["sha256"],
+          "properties": {
+            "sha256": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    }
+  },
+  "additionalProperties": false
+}

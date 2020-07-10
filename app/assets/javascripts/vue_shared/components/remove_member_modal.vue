@@ -62,6 +62,7 @@ export default {
     :action-cancel="$options.actionCancel"
     :action-primary="actionPrimary"
     :title="actionText"
+    data-qa-selector="remove_member_modal_content"
     @primary="submitForm"
   >
     <form ref="form" :action="modalData.memberPath" method="post">

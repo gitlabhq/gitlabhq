@@ -1,0 +1,19 @@
+{
+  "type": "object",
+  "required": [
+    "version",
+    "created_at",
+    "pipeline"
+  ],
+  "properties": {
+    "version": {
+      "type": "string"
+    },
+    "created_at": {
+      "type": "string"
+    },
+    "pipeline": {
+      "$ref": "../pipeline.json"
+    }
+  }
+}

@@ -46,6 +46,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Reports do
         :performance | 'performance.json'
         :browser_performance | 'browser-performance.json'
         :browser_performance | 'performance.json'
+        :load_performance | 'load-performance.json'
         :lsif | 'lsif.json'
         :dotenv | 'build.dotenv'
         :cobertura | 'cobertura-coverage.xml'

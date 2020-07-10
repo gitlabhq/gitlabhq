@@ -364,7 +364,8 @@ The following table lists variables used to disable jobs.
 | `DAST_DISABLED`                         | From GitLab 11.0, used to disable the `dast` job. If the variable is present, the job won't be created. |
 | `DEPENDENCY_SCANNING_DISABLED`          | From GitLab 11.0, used to disable the `dependency_scanning` job. If the variable is present, the job won't be created. |
 | `LICENSE_MANAGEMENT_DISABLED`           | From GitLab 11.0, used to disable the `license_management` job. If the variable is present, the job won't be created. |
-| `PERFORMANCE_DISABLED`                  | From GitLab 11.0, used to disable the `performance` job. If the variable is present, the job won't be created. |
+| `PERFORMANCE_DISABLED`                  | From GitLab 11.0, used to disable the browser `performance` job. If the variable is present, the job won't be created. |
+| `LOAD_PERFORMANCE_DISABLED`             | From GitLab 13.2, used to disable the `load_performance` job. If the variable is present, the job won't be created. |
 | `REVIEW_DISABLED`                       | From GitLab 11.0, used to disable the `review` and the manual `review:stop` job. If the variable is present, these jobs won't be created. |
 | `SAST_DISABLED`                         | From GitLab 11.0, used to disable the `sast` job. If the variable is present, the job won't be created. |
 | `TEST_DISABLED`                         | From GitLab 11.0, used to disable the `test` job. If the variable is present, the job won't be created. |

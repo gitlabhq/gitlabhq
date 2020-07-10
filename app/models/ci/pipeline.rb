@@ -447,6 +447,10 @@ module Ci
       end
     end
 
+    def triggered_pipelines_with_preloads
+      triggered_pipelines.preload(:source_job)
+    end
+
     def legacy_stages
       if ::Gitlab::Ci::Features.composite_status?(project)
         legacy_stages_using_composite_status

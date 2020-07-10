@@ -157,20 +157,30 @@ RSpec.describe PipelineDetailsEntity do
 
     context 'when pipeline triggered other pipeline' do
       let(:pipeline) { create(:ci_empty_pipeline) }
-      let(:build) { create(:ci_build, pipeline: pipeline) }
+      let(:build) { create(:ci_build, name: 'child', stage: 'test', pipeline: pipeline) }
+      let(:bridge) { create(:ci_bridge, name: 'cross-project', stage: 'build', pipeline: pipeline) }
+      let(:child_pipeline) { create(:ci_pipeline, project: pipeline.project) }
+      let(:cross_project_pipeline) { create(:ci_pipeline) }
 
       before do
-        create(:ci_sources_pipeline, source_job: build)
-        create(:ci_sources_pipeline, source_job: build)
+        create(:ci_sources_pipeline, source_job: build, pipeline: child_pipeline)
+        create(:ci_sources_pipeline, source_job: bridge, pipeline: cross_project_pipeline)
       end
 
-      it 'contains an information about depedent pipeline' do
+      it 'contains an information about dependent pipeline', :aggregate_failures do
         expect(subject[:triggered]).to be_a(Array)
         expect(subject[:triggered].length).to eq(2)
         expect(subject[:triggered].first[:path]).not_to be_nil
         expect(subject[:triggered].first[:details]).not_to be_nil
         expect(subject[:triggered].first[:details][:status]).not_to be_nil
         expect(subject[:triggered].first[:project]).not_to be_nil
+
+        source_jobs = subject[:triggered]
+          .index_by { |pipeline| pipeline[:id] }
+          .transform_values { |pipeline| pipeline.fetch(:source_job) }
+
+        expect(source_jobs[cross_project_pipeline.id][:name]).to eq('cross-project')
+        expect(source_jobs[child_pipeline.id][:name]).to eq('child')
       end
     end
   end

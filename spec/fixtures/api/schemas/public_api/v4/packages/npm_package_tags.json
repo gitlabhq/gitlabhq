@@ -1,0 +1,7 @@
+{
+  "type": "object",
+  "properties" : {
+    "$tag": { "type": "string" },
+    "$version": { "type": "string" }
+    }
+}

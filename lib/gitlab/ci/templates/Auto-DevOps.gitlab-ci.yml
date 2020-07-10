@@ -12,6 +12,7 @@
 # * code_quality: CODE_QUALITY_DISABLED
 # * license_management: LICENSE_MANAGEMENT_DISABLED
 # * performance: PERFORMANCE_DISABLED
+# * load_performance: LOAD_PERFORMANCE_DISABLED
 # * sast: SAST_DISABLED
 # * secret_detection: SECRET_DETECTION_DISABLED
 # * dependency_scanning: DEPENDENCY_SCANNING_DISABLED

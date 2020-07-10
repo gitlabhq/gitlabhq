@@ -211,6 +211,33 @@ RSpec.describe PipelineSerializer do
         end
       end
 
+      context 'with triggered pipelines' do
+        let(:ref) { 'feature' }
+
+        before do
+          pipeline_1 = create(:ci_pipeline)
+          build_1 = create(:ci_build, pipeline: pipeline_1)
+          create(:ci_sources_pipeline, source_job: build_1)
+
+          pipeline_2 = create(:ci_pipeline)
+          build_2 = create(:ci_build, pipeline: pipeline_2)
+          create(:ci_sources_pipeline, source_job: build_2)
+        end
+
+        it 'verifies number of queries', :request_store do
+          recorded = ActiveRecord::QueryRecorder.new { subject }
+
+          # 99 queries by default + 2 related to preloading
+          # :source_pipeline and :source_job
+          # Existing numbers are high and require performance optimization
+          # https://gitlab.com/gitlab-org/gitlab/-/issues/225156
+          expected_queries = Gitlab.ee? ? 101 : 92
+
+          expect(recorded.count).to be_within(2).of(expected_queries)
+          expect(recorded.cached_count).to eq(0)
+        end
+      end
+
       def create_pipeline(status)
         create(:ci_empty_pipeline,
                project: project,

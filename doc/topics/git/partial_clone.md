@@ -84,7 +84,7 @@ Updating files: 100% (28/28), done.
 
 $ cd www-gitlab-com
 
-$ git sparse-checkout init --cone
+$ git sparse-checkout init --clone
 
 $ git sparse-checkout add data
 remote: Enumerating objects: 301, done.

@@ -1,0 +1,29 @@
+load_performance:
+  stage: performance
+  image: docker:19.03.11
+  allow_failure: true
+  variables:
+    DOCKER_TLS_CERTDIR: ""
+    K6_IMAGE: loadimpact/k6
+    K6_VERSION: 0.26.2
+    K6_TEST_FILE: github.com/loadimpact/k6/samples/http_get.js
+    K6_OPTIONS: ''
+  services:
+    - docker:19.03.11-dind
+  script:
+    - |
+      if ! docker info &>/dev/null; then
+        if [ -z "$DOCKER_HOST" -a "$KUBERNETES_PORT" ]; then
+          export DOCKER_HOST='tcp://localhost:2375'
+        fi
+      fi
+    - docker run --rm -v "$(pwd)":/k6 -w /k6 $K6_IMAGE:$K6_VERSION run $K6_TEST_FILE --summary-export=load-performance.json $K6_OPTIONS
+  artifacts:
+    reports:
+      load_performance: load-performance.json
+  rules:
+    - if: '$CI_KUBERNETES_ACTIVE == null || $CI_KUBERNETES_ACTIVE == ""'
+      when: never
+    - if: '$LOAD_PERFORMANCE_DISABLED'
+      when: never
+    - if: '$CI_COMMIT_TAG || $CI_COMMIT_BRANCH'

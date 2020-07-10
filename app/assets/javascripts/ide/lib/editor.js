@@ -45,7 +45,10 @@ export default class Editor {
 
     setupThemes();
     registerLanguages(...languages);
-    registerSchemas(...schemas);
+
+    if (gon.features?.schemaLinting) {
+      registerSchemas(...schemas);
+    }
 
     this.debouncedUpdate = debounce(() => {
       this.updateDimensions();

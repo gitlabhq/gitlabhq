@@ -1,0 +1,13 @@
+{
+  "type": "array",
+  "items": {
+    "type": "object",
+    "required" : ["id", "package_id", "file_name"],
+    "properties" : {
+      "id": { "type": "integer" },
+      "package_id": { "type": "integer" },
+      "file_name": { "type": "string" },
+      "file_sha1": { "type": "string" }
+    }
+  }
+}

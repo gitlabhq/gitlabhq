@@ -15,7 +15,7 @@ module OperationsHelper
     end
   end
 
-  def alerts_settings_data
+  def alerts_settings_data(disabled: false)
     {
       'prometheus_activated' => prometheus_service.manual_configuration?.to_s,
       'activated' => alerts_service.activated?.to_s,
@@ -28,7 +28,8 @@ module OperationsHelper
       'prometheus_url' => notify_project_prometheus_alerts_url(@project, format: :json),
       'url' => alerts_service.url,
       'alerts_setup_url' => help_page_path('user/project/integrations/generic_alerts.md', anchor: 'setting-up-generic-alerts'),
-      'alerts_usage_url' => project_alert_management_index_path(@project)
+      'alerts_usage_url' => project_alert_management_index_path(@project),
+      'disabled' => disabled.to_s
     }
   end
 end

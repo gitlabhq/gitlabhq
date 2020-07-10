@@ -378,55 +378,10 @@ We use the following approach to determine whether a worker is CPU-bound:
 - Note that these values should not be used over small sample sizes, but
   rather over fairly large aggregates.
 
-## Feature Categorization
+## Feature category
 
-Each Sidekiq worker, or one of its ancestor classes, must declare a
-`feature_category` attribute. This attribute maps each worker to a feature
-category. This is done for error budgeting, alert routing, and team attribution
-for Sidekiq workers.
-
-The declaration uses the `feature_category` class method, as shown below.
-
-```ruby
-class SomeScheduledTaskWorker
-  include ApplicationWorker
-
-  # Declares that this worker is part of the
-  # `continuous_integration` feature category
-  feature_category :continuous_integration
-
-  # ...
-end
-```
-
-The list of value values can be found in the file `config/feature_categories.yml`.
-This file is, in turn generated from the [`stages.yml` from the GitLab Company Handbook
-source](https://gitlab.com/gitlab-com/www-gitlab-com/blob/master/data/stages.yml).
-
-### Updating `config/feature_categories.yml`
-
-Occasionally new features will be added to GitLab stages. When this occurs, you
-can automatically update `config/feature_categories.yml` by running
-`scripts/update-feature-categories`. This script will fetch and parse
-[`stages.yml`](https://gitlab.com/gitlab-com/www-gitlab-com/blob/master/data/stages.yml)
-and generate a new version of the file, which needs to be checked into source control.
-
-### Excluding Sidekiq workers from feature categorization
-
-A few Sidekiq workers, that are used across all features, cannot be mapped to a
-single category. These should be declared as such using the `feature_category_not_owned!`
- declaration, as shown below:
-
-```ruby
-class SomeCrossCuttingConcernWorker
-  include ApplicationWorker
-
-  # Declares that this worker does not map to a feature category
-  feature_category_not_owned!
-
-  # ...
-end
-```
+All Sidekiq workers must define a known [feature
+category](feature_categorization/index.md#sidekiq-workers).
 
 ## Job weights
 

@@ -28,9 +28,12 @@ module SystemCheck
       private
 
       def try_connect_imap
-        imap = Net::IMAP.new(config[:host], port: config[:port], ssl: config[:ssl])
-        imap.starttls if config[:start_tls]
-        imap.login(config[:email], config[:password])
+        config.each do |mailbox|
+          $stdout.puts "Checking #{mailbox[:email]}"
+          imap = Net::IMAP.new(mailbox[:host], port: mailbox[:port], ssl: mailbox[:ssl])
+          imap.starttls if mailbox[:start_tls]
+          imap.login(mailbox[:email], mailbox[:password])
+        end
         true
       rescue => error
         @error = error
@@ -51,7 +54,7 @@ module SystemCheck
         erb.filename = mail_room_config_path
         config_file = YAML.load(erb.result)
 
-        config_file.dig(:mailboxes, 0)
+        config_file[:mailboxes]
       end
     end
   end

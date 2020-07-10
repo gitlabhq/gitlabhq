@@ -9,6 +9,7 @@ description: "The static site editor enables users to edit content on static web
 > - WYSIWYG editor [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/214559) in GitLab 13.0.
 > - Support for adding images through the WYSIWYG editor [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/216640) in GitLab 13.1.
 > - Markdown front matter hidden on the WYSIWYG editor [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/216834) in GitLab 13.1.
+> - Support for `*.md.erb` files [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/223171) in GitLab 13.2.
 
 DANGER: **Danger:**
 In GitLab 13.0, we [introduced breaking changes](https://gitlab.com/gitlab-org/gitlab/-/issues/213282)
@@ -100,5 +101,4 @@ company and a new feature has been added to the company product.
 
 ## Limitations
 
-- Currently, the Static Site Editor only works for files ending in `.md`. For example, it will not work for a file `index.html.md.erb` while it works for `index.html.md`.
 - The Static Site Editor still cannot be quickly added to existing Middleman sites. Follow this [epic](https://gitlab.com/groups/gitlab-org/-/epics/2784) for updates.
