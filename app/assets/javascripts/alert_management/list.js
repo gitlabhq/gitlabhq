@@ -3,7 +3,7 @@ import VueApollo from 'vue-apollo';
 import createDefaultClient from '~/lib/graphql';
 import { defaultDataIdFromObject } from 'apollo-cache-inmemory';
 import { parseBoolean } from '~/lib/utils/common_utils';
-import AlertManagementList from './components/alert_management_list.vue';
+import AlertManagementList from './components/alert_management_list_wrapper.vue';
 
 Vue.use(VueApollo);
 

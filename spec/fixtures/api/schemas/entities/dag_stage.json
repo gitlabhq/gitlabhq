@@ -1,0 +1,11 @@
+{
+  "type": "object",
+  "required": ["name", "groups"],
+  "properties": {
+    "name": { "type": "string" },
+    "groups": {
+      "type": "array",
+      "items": { "$ref": "dag_job_group.json" }
+    }
+  }
+}

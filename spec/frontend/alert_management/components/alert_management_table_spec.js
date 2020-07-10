@@ -1,6 +1,5 @@
 import { mount } from '@vue/test-utils';
 import {
-  GlEmptyState,
   GlTable,
   GlAlert,
   GlLoadingIcon,
@@ -15,12 +14,8 @@ import {
 } from '@gitlab/ui';
 import { visitUrl } from '~/lib/utils/url_utility';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
-import AlertManagementList from '~/alert_management/components/alert_management_list.vue';
-import {
-  ALERTS_STATUS_TABS,
-  trackAlertListViewsOptions,
-  trackAlertStatusUpdateOptions,
-} from '~/alert_management/constants';
+import AlertManagementTable from '~/alert_management/components/alert_management_table.vue';
+import { ALERTS_STATUS_TABS, trackAlertStatusUpdateOptions } from '~/alert_management/constants';
 import updateAlertStatus from '~/alert_management/graphql/mutations/update_alert_status.mutation.graphql';
 import mockAlerts from '../mocks/alerts.json';
 import Tracking from '~/tracking';
@@ -30,7 +25,7 @@ jest.mock('~/lib/utils/url_utility', () => ({
   joinPaths: jest.requireActual('~/lib/utils/url_utility').joinPaths,
 }));
 
-describe('AlertManagementList', () => {
+describe('AlertManagementTable', () => {
   let wrapper;
 
   const findAlertsTable = () => wrapper.find(GlTable);
@@ -66,12 +61,10 @@ describe('AlertManagementList', () => {
     loading = false,
     stubs = {},
   } = {}) {
-    wrapper = mount(AlertManagementList, {
+    wrapper = mount(AlertManagementTable, {
       propsData: {
         projectPath: 'gitlab-org/gitlab',
-        enableAlertManagementPath: '/link',
         populatingAlertsHelpUrl: '/help/help-page.md#populating-alert-data',
-        emptyAlertSvgPath: 'illustration/path',
         ...props,
       },
       data() {
@@ -93,19 +86,13 @@ describe('AlertManagementList', () => {
   }
 
   beforeEach(() => {
-    mountComponent();
+    mountComponent({ data: { alerts: mockAlerts, alertsCount } });
   });
 
   afterEach(() => {
     if (wrapper) {
       wrapper.destroy();
     }
-  });
-
-  describe('Empty state', () => {
-    it('shows empty state', () => {
-      expect(wrapper.find(GlEmptyState).exists()).toBe(true);
-    });
   });
 
   describe('Status Filter Tabs', () => {
@@ -448,11 +435,6 @@ describe('AlertManagementList', () => {
         data: { alerts: { list: mockAlerts }, alertsCount },
         loading: false,
       });
-    });
-
-    it('should track alert list page views', () => {
-      const { category, action } = trackAlertListViewsOptions;
-      expect(Tracking.event).toHaveBeenCalledWith(category, action);
     });
 
     it('should track alert status updates', () => {

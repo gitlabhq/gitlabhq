@@ -13,5 +13,9 @@ RSpec.describe Ci::DagPipelineSerializer do
       expect(subject[:stages]).to be_present
       expect(subject[:stages].size).to eq 1
     end
+
+    it 'matches schema' do
+      expect(subject.to_json).to match_schema('entities/dag_pipeline')
+    end
   end
 end

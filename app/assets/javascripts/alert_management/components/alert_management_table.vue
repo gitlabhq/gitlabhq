@@ -1,7 +1,5 @@
 <script>
 import {
-  GlEmptyState,
-  GlDeprecatedButton,
   GlLoadingIcon,
   GlTable,
   GlAlert,
@@ -108,11 +106,9 @@ export default {
   severityLabels: ALERTS_SEVERITY_LABELS,
   statusTabs: ALERTS_STATUS_TABS,
   components: {
-    GlEmptyState,
     GlLoadingIcon,
     GlTable,
     GlAlert,
-    GlDeprecatedButton,
     TimeAgo,
     GlIcon,
     GlLink,
@@ -129,23 +125,7 @@ export default {
       type: String,
       required: true,
     },
-    alertManagementEnabled: {
-      type: Boolean,
-      required: true,
-    },
-    enableAlertManagementPath: {
-      type: String,
-      required: true,
-    },
     populatingAlertsHelpUrl: {
-      type: String,
-      required: true,
-    },
-    userCanEnableAlertManagement: {
-      type: Boolean,
-      required: true,
-    },
-    emptyAlertSvgPath: {
       type: String,
       required: true,
     },
@@ -323,7 +303,7 @@ export default {
 </script>
 <template>
   <div>
-    <div v-if="alertManagementEnabled" class="alert-management-list">
+    <div class="alert-management-list">
       <gl-alert v-if="showNoAlertsMsg" @dismiss="isAlertDismissed = true">
         <gl-sprintf :message="$options.i18n.noAlertsMsg">
           <template #link="{ content }">
@@ -453,32 +433,5 @@ export default {
         @input="handlePageChange"
       />
     </div>
-    <gl-empty-state
-      v-else
-      :title="s__('AlertManagement|Surface alerts in GitLab')"
-      :svg-path="emptyAlertSvgPath"
-    >
-      <template #description>
-        <div class="d-block">
-          <span>{{
-            s__(
-              'AlertManagement|Display alerts from all your monitoring tools directly within GitLab. Streamline the investigation of your alerts and the escalation of alerts to incidents.',
-            )
-          }}</span>
-          <a href="/help/user/project/operations/alert_management.html" target="_blank">
-            {{ s__('AlertManagement|More information') }}
-          </a>
-        </div>
-        <div v-if="userCanEnableAlertManagement" class="d-block center pt-4">
-          <gl-deprecated-button
-            category="primary"
-            variant="success"
-            :href="enableAlertManagementPath"
-          >
-            {{ s__('AlertManagement|Authorize external service') }}
-          </gl-deprecated-button>
-        </div>
-      </template>
-    </gl-empty-state>
   </div>
 </template>

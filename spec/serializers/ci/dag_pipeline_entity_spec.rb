@@ -11,12 +11,20 @@ RSpec.describe Ci::DagPipelineEntity do
   describe '#as_json' do
     subject { entity.as_json }
 
+    RSpec.shared_examples "matches schema" do
+      it 'matches schema' do
+        expect(subject.to_json).to match_schema('entities/dag_pipeline')
+      end
+    end
+
     context 'when pipeline is empty' do
       it 'contains stages' do
         expect(subject).to include(:stages)
 
         expect(subject[:stages]).to be_empty
       end
+
+      it_behaves_like "matches schema"
     end
 
     context 'when pipeline has jobs' do
@@ -30,6 +38,8 @@ RSpec.describe Ci::DagPipelineEntity do
         expect(stages.size).to eq 3
         expect(stages.map { |s| s[:name] }).to contain_exactly('build', 'test', 'deploy')
       end
+
+      it_behaves_like "matches schema"
     end
 
     context 'when pipeline has parallel jobs, DAG needs and GenericCommitStatus' do
@@ -138,6 +148,8 @@ RSpec.describe Ci::DagPipelineEntity do
         expect(subject.fetch(:stages)[2].fetch(:name)).to eq 'deploy'
         expect(subject.fetch(:stages)[2]).to eq expected_result.fetch(:stages)[2]
       end
+
+      it_behaves_like "matches schema"
     end
   end
 end

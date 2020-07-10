@@ -1,0 +1,11 @@
+{
+  "type": "object",
+  "required": ["stages"],
+  "properties": {
+    "stages": {
+      "type": "array",
+      "items": { "$ref": "dag_stage.json" }
+    }
+  },
+  "additionalProperties": false
+}

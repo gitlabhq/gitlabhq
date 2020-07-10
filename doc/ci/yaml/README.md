@@ -3550,7 +3550,7 @@ is enabled.
 
 When enabled, a pipeline on the same branch will be canceled when:
 
-- it's made redundant by a newer pipeline run.
+- It's made redundant by a newer pipeline run.
 - Either all jobs are set as interruptible, or any uninterruptible jobs haven't started.
 
 Pending jobs are always considered interruptible.

@@ -522,11 +522,6 @@ class Project < ApplicationRecord
       .where(project_pages_metadata: { project_id: nil })
   end
 
-  scope :with_api_entity_associations, -> {
-    preload(:project_feature, :route, :tags,
-            group: [:ip_restrictions, :saml_provider], namespace: [:route, :owner])
-  }
-
   scope :with_api_commit_entity_associations, -> {
     preload(:project_feature, :route, namespace: [:route, :owner])
   }
@@ -544,6 +539,10 @@ class Project < ApplicationRecord
 
   # Used by Projects::CleanupService to hold a map of rewritten object IDs
   mount_uploader :bfg_object_map, AttachmentUploader
+
+  def self.with_api_entity_associations
+    preload(:project_feature, :route, :tags, :group, namespace: [:route, :owner])
+  end
 
   def self.with_web_entity_associations
     preload(:project_feature, :route, :creator, :group, namespace: [:route, :owner])

@@ -71,6 +71,19 @@ Omnibus:
 
 1. Run `sudo gitlab-ctl reconfigure` to compile the configuration.
 
+The next step is to tell all the other nodes where the monitoring node is:
+
+1. Edit `/etc/gitlab/gitlab.rb`, and add, or find and uncomment the following line:
+
+   ```ruby
+   gitlab_rails['prometheus_address'] = '10.0.0.1:9090'
+   ```
+
+   Where `10.0.0.1:9090` is the IP address and port of the Prometheus node.
+
+1. Save the file and [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to
+   take effect.
+
 ## Migrating to Service Discovery
 
 Once monitoring using Service Discovery is enabled with `consul['monitoring_service_discovery'] =  true`,

@@ -27,5 +27,9 @@ RSpec.describe Ci::DagStageEntity do
       expect(job_group[:size]).to eq 1
       expect(job_group[:jobs]).not_to be_empty
     end
+
+    it "matches schema" do
+      expect(subject.to_json).to match_schema('entities/dag_stage')
+    end
   end
 end

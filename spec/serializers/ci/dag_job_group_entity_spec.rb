@@ -31,6 +31,10 @@ RSpec.describe Ci::DagJobGroupEntity do
         expect(exposed_jobs.size).to eq 1
         expect(exposed_jobs.first.fetch(:name)).to eq 'test'
       end
+
+      it 'matches schema' do
+        expect(subject.to_json).to match_schema('entities/dag_job_group')
+      end
     end
 
     context 'when group contains multiple parallel jobs' do
@@ -52,6 +56,10 @@ RSpec.describe Ci::DagJobGroupEntity do
         expect(exposed_jobs.size).to eq 2
         expect(exposed_jobs.first.fetch(:name)).to eq 'test 1/2'
         expect(exposed_jobs.last.fetch(:name)).to eq 'test 2/2'
+      end
+
+      it 'matches schema' do
+        expect(subject.to_json).to match_schema('entities/dag_job_group')
       end
     end
   end
