@@ -51,3 +51,4 @@ stop_dast_environment:
     - if: $CI_COMMIT_BRANCH &&
           $CI_KUBERNETES_ACTIVE &&
           $GITLAB_FEATURES =~ /\bdast\b/
+      when: always

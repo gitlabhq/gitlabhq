@@ -168,6 +168,7 @@ module API
       mount ::API::Members
       mount ::API::MergeRequestDiffs
       mount ::API::MergeRequests
+      mount ::API::MergeRequestApprovals
       mount ::API::Metrics::Dashboard::Annotations
       mount ::API::Metrics::UserStarredDashboards
       mount ::API::Namespaces

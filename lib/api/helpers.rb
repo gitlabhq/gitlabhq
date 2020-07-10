@@ -368,6 +368,12 @@ module API
       render_api_error!(message.join(' '), 404)
     end
 
+    def check_sha_param!(params, merge_request)
+      if params[:sha] && merge_request.diff_head_sha != params[:sha]
+        render_api_error!("SHA does not match HEAD of source branch: #{merge_request.diff_head_sha}", 409)
+      end
+    end
+
     def unauthorized!
       render_api_error!('401 Unauthorized', 401)
     end

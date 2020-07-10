@@ -41,7 +41,7 @@ module Notes
 
       @interpret_service = QuickActions::InterpretService.new(project, current_user, options)
 
-      @interpret_service.execute(note.note, note.noteable)
+      interpret_service.execute(note.note, note.noteable)
     end
 
     # Applies updates extracted to note#noteable

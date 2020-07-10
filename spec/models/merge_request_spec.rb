@@ -197,6 +197,8 @@ RSpec.describe MergeRequest do
   end
 
   describe 'validation' do
+    subject { build_stubbed(:merge_request) }
+
     it { is_expected.to validate_presence_of(:target_branch) }
     it { is_expected.to validate_presence_of(:source_branch) }
 

@@ -209,6 +209,11 @@ module QA
       autoload :Show, 'qa/page/group/show'
       autoload :Menu, 'qa/page/group/menu'
 
+      module Milestone
+        autoload :Index, 'qa/page/group/milestone/index'
+        autoload :New, 'qa/page/group/milestone/new'
+      end
+
       module SubMenus
         autoload :Common, 'qa/page/group/sub_menus/common'
         autoload :Members, 'qa/page/group/sub_menus/members'
@@ -217,6 +222,12 @@ module QA
       module Settings
         autoload :General, 'qa/page/group/settings/general'
       end
+    end
+
+    module Milestone
+      autoload :Index, 'qa/page/milestone/index'
+      autoload :New, 'qa/page/milestone/new'
+      autoload :Show, 'qa/page/milestone/show'
     end
 
     module File
@@ -320,7 +331,6 @@ module QA
       module Milestone
         autoload :New, 'qa/page/project/milestone/new'
         autoload :Index, 'qa/page/project/milestone/index'
-        autoload :Show, 'qa/page/project/milestone/show'
       end
 
       module Operations

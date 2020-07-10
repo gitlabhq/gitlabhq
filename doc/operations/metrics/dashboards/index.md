@@ -56,7 +56,7 @@ The options are:
 - [Expand panel](#expand-panel)
 - [View logs](#view-logs-ultimate)
 - [Download CSV](#downloading-data-as-csv)
-- [Copy link to chart](../../../user/project/integrations/prometheus.md#embedding-gitlab-managed-kubernetes-metrics)
+- [Copy link to chart](../embed.md#embedding-gitlab-managed-kubernetes-metrics)
 - [Alerts](../../../user/project/integrations/prometheus.md#setting-up-alerts-for-prometheus-metrics)
 
 ### View and edit the source file of a custom dashboard

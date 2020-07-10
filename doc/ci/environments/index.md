@@ -867,7 +867,7 @@ versions of the app, all without leaving GitLab.
 
 #### Embedding metrics in GitLab Flavored Markdown
 
-Metric charts can be embedded within GitLab Flavored Markdown. See [Embedding Metrics within GitLab Flavored Markdown](../../user/project/integrations/prometheus.md#embedding-metric-charts-within-gitlab-flavored-markdown) for more details.
+Metric charts can be embedded within GitLab Flavored Markdown. See [Embedding Metrics within GitLab Flavored Markdown](../../operations/metrics/embed.md) for more details.
 
 ### Web terminals
 

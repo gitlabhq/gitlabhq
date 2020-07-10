@@ -1,0 +1,5 @@
+---
+title: Add background_migration_jobs table to trace background migrations
+merge_request: 35913
+author:
+type: added

@@ -9413,6 +9413,25 @@ CREATE TABLE public.aws_roles (
     role_external_id character varying(64) NOT NULL
 );
 
+CREATE TABLE public.background_migration_jobs (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    status smallint DEFAULT 0 NOT NULL,
+    class_name text NOT NULL,
+    arguments jsonb NOT NULL,
+    CONSTRAINT check_b0de0a5852 CHECK ((char_length(class_name) <= 200))
+);
+
+CREATE SEQUENCE public.background_migration_jobs_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE public.background_migration_jobs_id_seq OWNED BY public.background_migration_jobs.id;
+
 CREATE TABLE public.backup_labels (
     id integer NOT NULL,
     title character varying,
@@ -9815,26 +9834,6 @@ CREATE SEQUENCE public.ci_daily_build_group_report_results_id_seq
     CACHE 1;
 
 ALTER SEQUENCE public.ci_daily_build_group_report_results_id_seq OWNED BY public.ci_daily_build_group_report_results.id;
-
-CREATE TABLE public.ci_daily_report_results (
-    id bigint NOT NULL,
-    date date NOT NULL,
-    project_id bigint NOT NULL,
-    last_pipeline_id bigint NOT NULL,
-    value double precision NOT NULL,
-    param_type bigint NOT NULL,
-    ref_path character varying NOT NULL,
-    title character varying NOT NULL
-);
-
-CREATE SEQUENCE public.ci_daily_report_results_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-ALTER SEQUENCE public.ci_daily_report_results_id_seq OWNED BY public.ci_daily_report_results.id;
 
 CREATE TABLE public.ci_freeze_periods (
     id bigint NOT NULL,
@@ -16370,6 +16369,8 @@ ALTER TABLE ONLY public.audit_events ALTER COLUMN id SET DEFAULT nextval('public
 
 ALTER TABLE ONLY public.award_emoji ALTER COLUMN id SET DEFAULT nextval('public.award_emoji_id_seq'::regclass);
 
+ALTER TABLE ONLY public.background_migration_jobs ALTER COLUMN id SET DEFAULT nextval('public.background_migration_jobs_id_seq'::regclass);
+
 ALTER TABLE ONLY public.badges ALTER COLUMN id SET DEFAULT nextval('public.badges_id_seq'::regclass);
 
 ALTER TABLE ONLY public.board_assignees ALTER COLUMN id SET DEFAULT nextval('public.board_assignees_id_seq'::regclass);
@@ -16405,8 +16406,6 @@ ALTER TABLE ONLY public.ci_builds_metadata ALTER COLUMN id SET DEFAULT nextval('
 ALTER TABLE ONLY public.ci_builds_runner_session ALTER COLUMN id SET DEFAULT nextval('public.ci_builds_runner_session_id_seq'::regclass);
 
 ALTER TABLE ONLY public.ci_daily_build_group_report_results ALTER COLUMN id SET DEFAULT nextval('public.ci_daily_build_group_report_results_id_seq'::regclass);
-
-ALTER TABLE ONLY public.ci_daily_report_results ALTER COLUMN id SET DEFAULT nextval('public.ci_daily_report_results_id_seq'::regclass);
 
 ALTER TABLE ONLY public.ci_freeze_periods ALTER COLUMN id SET DEFAULT nextval('public.ci_freeze_periods_id_seq'::regclass);
 
@@ -17255,6 +17254,9 @@ ALTER TABLE ONLY public.award_emoji
 ALTER TABLE ONLY public.aws_roles
     ADD CONSTRAINT aws_roles_pkey PRIMARY KEY (user_id);
 
+ALTER TABLE ONLY public.background_migration_jobs
+    ADD CONSTRAINT background_migration_jobs_pkey PRIMARY KEY (id);
+
 ALTER TABLE ONLY public.backup_labels
     ADD CONSTRAINT backup_labels_pkey PRIMARY KEY (id);
 
@@ -17317,9 +17319,6 @@ ALTER TABLE ONLY public.ci_builds_runner_session
 
 ALTER TABLE ONLY public.ci_daily_build_group_report_results
     ADD CONSTRAINT ci_daily_build_group_report_results_pkey PRIMARY KEY (id);
-
-ALTER TABLE ONLY public.ci_daily_report_results
-    ADD CONSTRAINT ci_daily_report_results_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY public.ci_freeze_periods
     ADD CONSTRAINT ci_freeze_periods_pkey PRIMARY KEY (id);
@@ -18620,6 +18619,10 @@ CREATE UNIQUE INDEX index_aws_roles_on_role_external_id ON public.aws_roles USIN
 
 CREATE UNIQUE INDEX index_aws_roles_on_user_id ON public.aws_roles USING btree (user_id);
 
+CREATE INDEX index_background_migration_jobs_on_class_name_and_arguments ON public.background_migration_jobs USING btree (class_name, arguments);
+
+CREATE INDEX index_background_migration_jobs_on_class_name_and_status_and_id ON public.background_migration_jobs USING btree (class_name, status, id);
+
 CREATE INDEX index_badges_on_group_id ON public.badges USING btree (group_id);
 
 CREATE INDEX index_badges_on_project_id ON public.badges USING btree (project_id);
@@ -18739,8 +18742,6 @@ CREATE INDEX index_ci_builds_project_id_and_status_for_live_jobs_partial2 ON pub
 CREATE UNIQUE INDEX index_ci_builds_runner_session_on_build_id ON public.ci_builds_runner_session USING btree (build_id);
 
 CREATE INDEX index_ci_daily_build_group_report_results_on_last_pipeline_id ON public.ci_daily_build_group_report_results USING btree (last_pipeline_id);
-
-CREATE INDEX index_ci_daily_report_results_on_last_pipeline_id ON public.ci_daily_report_results USING btree (last_pipeline_id);
 
 CREATE INDEX index_ci_freeze_periods_on_project_id ON public.ci_freeze_periods USING btree (project_id);
 
@@ -18957,8 +18958,6 @@ CREATE INDEX index_container_repository_on_name_trigram ON public.container_repo
 CREATE UNIQUE INDEX index_custom_emoji_on_namespace_id_and_name ON public.custom_emoji USING btree (namespace_id, name);
 
 CREATE UNIQUE INDEX index_daily_build_group_report_results_unique_columns ON public.ci_daily_build_group_report_results USING btree (project_id, ref_path, date, group_name);
-
-CREATE UNIQUE INDEX index_daily_report_results_unique_columns ON public.ci_daily_report_results USING btree (project_id, ref_path, param_type, date, title);
 
 CREATE INDEX index_dependency_proxy_blobs_on_group_id_and_file_name ON public.dependency_proxy_blobs USING btree (group_id, file_name);
 
@@ -22317,9 +22316,6 @@ ALTER TABLE ONLY public.gpg_signatures
 ALTER TABLE ONLY public.board_group_recent_visits
     ADD CONSTRAINT fk_rails_ca04c38720 FOREIGN KEY (board_id) REFERENCES public.boards(id) ON DELETE CASCADE;
 
-ALTER TABLE ONLY public.ci_daily_report_results
-    ADD CONSTRAINT fk_rails_cc5caec7d9 FOREIGN KEY (last_pipeline_id) REFERENCES public.ci_pipelines(id) ON DELETE CASCADE;
-
 ALTER TABLE ONLY public.issues_self_managed_prometheus_alert_events
     ADD CONSTRAINT fk_rails_cc5d88bbb0 FOREIGN KEY (issue_id) REFERENCES public.issues(id) ON DELETE CASCADE;
 
@@ -22439,9 +22435,6 @@ ALTER TABLE ONLY public.alert_management_alert_user_mentions
 
 ALTER TABLE ONLY public.snippet_statistics
     ADD CONSTRAINT fk_rails_ebc283ccf1 FOREIGN KEY (snippet_id) REFERENCES public.snippets(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY public.ci_daily_report_results
-    ADD CONSTRAINT fk_rails_ebc2931b90 FOREIGN KEY (project_id) REFERENCES public.projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY public.cluster_providers_aws
     ADD CONSTRAINT fk_rails_ed1fdfaeb2 FOREIGN KEY (created_by_user_id) REFERENCES public.users(id) ON DELETE SET NULL;
@@ -23641,11 +23634,14 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200630091656
 20200630110826
 20200701093859
+20200701205710
 20200702123805
+20200703121557
 20200703154822
 20200704143633
 20200704161600
 20200706005325
+20200706154619
 20200706170536
 20200707071941
 20200707094341

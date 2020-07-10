@@ -64,6 +64,10 @@ module Gitlab
         # delay_interval - The duration between each job's scheduled time (must respond to `to_f`)
         # batch_size - The maximum number of rows per job
         # other_arguments - Other arguments to send to the job
+        # track_jobs - When this flag is set, creates a record in the background_migration_jobs table for each job that
+        # is scheduled to be run. These records can be used to trace execution of the background job, but there is no
+        # builtin support to manage that automatically at this time. You should only set this flag if you are aware of
+        # how it works, and intend to manually cleanup the database records in your background job.
         #
         # *Returns the final migration delay*
         #
@@ -83,7 +87,7 @@ module Gitlab
         #         # do something
         #       end
         #     end
-        def queue_background_migration_jobs_by_range_at_intervals(model_class, job_class_name, delay_interval, batch_size: BACKGROUND_MIGRATION_BATCH_SIZE, other_job_arguments: [], initial_delay: 0)
+        def queue_background_migration_jobs_by_range_at_intervals(model_class, job_class_name, delay_interval, batch_size: BACKGROUND_MIGRATION_BATCH_SIZE, other_job_arguments: [], initial_delay: 0, track_jobs: false)
           raise "#{model_class} does not have an ID to use for batch ranges" unless model_class.column_names.include?('id')
 
           # To not overload the worker too much we enforce a minimum interval both
@@ -101,7 +105,10 @@ module Gitlab
             # the same time, which is not helpful in most cases where we wish to
             # spread the work over time.
             final_delay = initial_delay + delay_interval * index
-            migrate_in(final_delay, job_class_name, [start_id, end_id] + other_job_arguments)
+            full_job_arguments = [start_id, end_id] + other_job_arguments
+
+            track_in_database(job_class_name, full_job_arguments) if track_jobs
+            migrate_in(final_delay, job_class_name, full_job_arguments)
           end
 
           final_delay
@@ -137,6 +144,12 @@ module Gitlab
 
         def with_migration_context(&block)
           Gitlab::ApplicationContext.with_context(caller_id: self.class.to_s, &block)
+        end
+
+        private
+
+        def track_in_database(class_name, arguments)
+          Gitlab::Database::BackgroundMigrationJob.create!(class_name: class_name, arguments: arguments)
         end
       end
     end

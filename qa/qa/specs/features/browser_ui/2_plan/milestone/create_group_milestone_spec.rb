@@ -2,11 +2,11 @@
 
 module QA
   RSpec.describe 'Plan' do
-    describe 'Project milestone' do
+    describe 'Group milestone' do
       include Support::Dates
 
-      let(:title) { 'Project milestone' }
-      let(:description) { 'This issue tests out project milestones.' }
+      let(:title) { 'Group milestone' }
+      let(:description) { 'This milestone tests out group milestones.' }
       let(:start_date) { current_date_yyyy_mm_dd }
       let(:due_date) { next_month_yyyy_mm_dd }
 
@@ -14,19 +14,19 @@ module QA
         Flow::Login.sign_in
       end
 
-      it 'creates a project milestone' do
-        project_milestone = Resource::ProjectMilestone.fabricate_via_browser_ui! do |milestone|
+      it 'creates a group milestone' do
+        group_milestone = Resource::GroupMilestone.fabricate_via_browser_ui! do |milestone|
           milestone.title = title
           milestone.description = description
           milestone.start_date = start_date
           milestone.due_date = due_date
         end
 
-        Page::Project::Menu.perform(&:go_to_milestones)
-        Page::Project::Milestone::Index.perform do |milestone_list|
-          expect(milestone_list).to have_milestone(project_milestone)
+        Page::Group::Menu.perform(&:go_to_milestones)
+        Page::Group::Milestone::Index.perform do |milestone_list|
+          expect(milestone_list).to have_milestone(group_milestone)
 
-          milestone_list.click_milestone(project_milestone)
+          milestone_list.click_milestone(group_milestone)
         end
 
         Page::Milestone::Show.perform do |milestone|

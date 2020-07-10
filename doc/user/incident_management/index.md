@@ -34,7 +34,7 @@ to create issues when alerts are triggered:
 1. Click **Save changes**.
 
 Appropriately configured alerts include an
-[embedded chart](../project/integrations/prometheus.md#embedding-metrics-based-on-alerts-in-incident-issues)
+[embedded chart](../../operations/metrics/embed.md#embedding-metrics-based-on-alerts-in-incident-issues)
 for the query corresponding to the alert. You can also configure GitLab to
 [close issues](../project/integrations/prometheus.md#taking-action-on-incidents-ultimate)
 when you receive notification that the alert is resolved.
@@ -71,11 +71,11 @@ You can embed metrics anywhere [GitLab Markdown](../markdown.md) is used, such a
 comments on issues, and merge requests. Embedding metrics helps you share them
 when discussing incidents or performance issues. You can output the dashboard directly
 into any issue, merge request, epic, or any other Markdown text field in GitLab
-by [copying and pasting the link to the metrics dashboard](../project/integrations/prometheus.md#embedding-gitlab-managed-kubernetes-metrics).
+by [copying and pasting the link to the metrics dashboard](../../operations/metrics/embed.md#embedding-gitlab-managed-kubernetes-metrics).
 
 You can embed both
-[GitLab-hosted metrics](../project/integrations/prometheus.md#embedding-metric-charts-within-gitlab-flavored-markdown) and
-[Grafana metrics](../project/integrations/prometheus.md#embedding-grafana-charts)
+[GitLab-hosted metrics](../../operations/metrics/embed.md) and
+[Grafana metrics](../../operations/metrics/embed_grafana.md)
 in incidents and issue templates.
 
 ### Context menu

@@ -1,0 +1,5 @@
+---
+title: Add migration to drop unused daily report results table
+merge_request: 36102
+author:
+type: other

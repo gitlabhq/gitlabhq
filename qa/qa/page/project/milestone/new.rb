@@ -4,7 +4,7 @@ module QA
   module Page
     module Project
       module Milestone
-        class New < Page::Base
+        class New < Page::Milestone::New
           view 'app/views/projects/milestones/_form.html.haml' do
             element :create_milestone_button
             element :milestone_description_field

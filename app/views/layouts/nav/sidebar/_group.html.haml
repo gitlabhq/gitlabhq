@@ -81,7 +81,7 @@
 
             - if group_sidebar_link?(:milestones)
               = nav_link(path: 'milestones#index') do
-                = link_to group_milestones_path(@group), title: _('Milestones') do
+                = link_to group_milestones_path(@group), title: _('Milestones'), data: { qa_selector: 'group_milestones_link' } do
                   %span
                     = _('Milestones')
 

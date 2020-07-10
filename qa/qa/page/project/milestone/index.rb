@@ -4,7 +4,7 @@ module QA
   module Page
     module Project
       module Milestone
-        class Index < Page::Base
+        class Index < Page::Milestone::Index
           view 'app/views/projects/milestones/index.html.haml' do
             element :new_project_milestone_link
           end

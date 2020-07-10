@@ -258,7 +258,8 @@ module Gitlab
             MIGRATION_CLASS_NAME,
             BATCH_INTERVAL,
             batch_size: BATCH_SIZE,
-            other_job_arguments: [source_table_name.to_s, partitioned_table_name, source_key])
+            other_job_arguments: [source_table_name.to_s, partitioned_table_name, source_key],
+            track_jobs: true)
         end
       end
     end
