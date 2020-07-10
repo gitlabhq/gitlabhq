@@ -1,5 +1,0 @@
----
-title: Add oj gem for faster JSON
-merge_request: 35527
-author:
-type: performance

@@ -85,7 +85,8 @@
         - if @user.bio.present?
           .cover-desc.cgray
             %p.profile-user-bio
-              = @user.bio
+              = markdown(@user.bio_html)
+
 
     - unless profile_tabs.empty?
       .scrolling-tabs-container

@@ -75,7 +75,7 @@ export default {
           <div class="gl-text-gray-700">
             <div v-if="user.bio" class="gl-display-flex gl-mb-2">
               <icon name="profile" class="gl-text-gray-600 gl-flex-shrink-0" />
-              <span ref="bio" class="gl-ml-2">{{ user.bio }}</span>
+              <span ref="bio" class="ml-1" v-html="user.bioHtml"></span>
             </div>
             <div v-if="user.workInformation" class="gl-display-flex gl-mb-2">
               <icon name="work" class="gl-text-gray-600 gl-flex-shrink-0" />

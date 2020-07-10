@@ -69,6 +69,8 @@ class User < ApplicationRecord
 
   MINIMUM_INACTIVE_DAYS = 180
 
+  ignore_column :bio, remove_with: '13.4', remove_after: '2020-09-22'
+
   # Override Devise::Models::Trackable#update_tracked_fields!
   # to limit database writes to at most once every hour
   # rubocop: disable CodeReuse/ServiceClass
@@ -193,7 +195,6 @@ class User < ApplicationRecord
   validates :notification_email, devise_email: true, if: ->(user) { user.notification_email != user.email }
   validates :public_email, presence: true, uniqueness: true, devise_email: true, allow_blank: true
   validates :commit_email, devise_email: true, allow_nil: true, if: ->(user) { user.commit_email != user.email }
-  validates :bio, length: { maximum: 255 }, allow_blank: true
   validates :projects_limit,
     presence: true,
     numericality: { greater_than_or_equal_to: 0, less_than_or_equal_to: Gitlab::Database::MAX_INT_VALUE }
@@ -228,7 +229,6 @@ class User < ApplicationRecord
   before_save :check_for_verified_email, if: ->(user) { user.email_changed? && !user.new_record? }
   before_validation :ensure_namespace_correct
   before_save :ensure_namespace_correct # in case validation is skipped
-  before_save :ensure_bio_is_assigned_to_user_details, if: :bio_changed?
   after_validation :set_username_errors
   after_update :username_changed_hook, if: :saved_change_to_username?
   after_destroy :post_destroy_hook
@@ -280,6 +280,7 @@ class User < ApplicationRecord
 
   delegate :path, to: :namespace, allow_nil: true, prefix: true
   delegate :job_title, :job_title=, to: :user_detail, allow_nil: true
+  delegate :bio, :bio=, :bio_html, to: :user_detail, allow_nil: true
 
   accepts_nested_attributes_for :user_preference, update_only: true
   accepts_nested_attributes_for :user_detail, update_only: true
@@ -1270,13 +1271,6 @@ class User < ApplicationRecord
     else
       build_namespace(path: username, name: name)
     end
-  end
-
-  # Temporary, will be removed when bio is fully migrated
-  def ensure_bio_is_assigned_to_user_details
-    return if Feature.disabled?(:migrate_bio_to_user_details, default_enabled: true)
-
-    user_detail.bio = bio.to_s[0...255] # bio can be NULL in users, but cannot be NULL in user_details
   end
 
   def set_username_errors

@@ -26,7 +26,7 @@ RSpec.describe 'User edit profile' do
     fill_in 'user_twitter', with: 'testtwitter'
     fill_in 'user_website_url', with: 'testurl'
     fill_in 'user_location', with: 'Ukraine'
-    fill_in 'user_bio', with: 'I <3 GitLab'
+    fill_in 'user_bio', with: 'I <3 GitLab :tada:'
     fill_in 'user_job_title', with: 'Frontend Engineer'
     fill_in 'user_organization', with: 'GitLab'
     submit_settings
@@ -36,7 +36,8 @@ RSpec.describe 'User edit profile' do
       linkedin: 'testlinkedin',
       twitter: 'testtwitter',
       website_url: 'testurl',
-      bio: 'I <3 GitLab',
+      bio: 'I <3 GitLab :tada:',
+      bio_html: '<p data-sourcepos="1:1-1:18" dir="auto">I &lt;3 GitLab <gl-emoji title="party popper" data-name="tada" data-unicode-version="6.0">🎉</gl-emoji></p>',
       job_title: 'Frontend Engineer',
       organization: 'GitLab'
     )

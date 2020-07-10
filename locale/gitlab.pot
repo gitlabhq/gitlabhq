@@ -10453,9 +10453,6 @@ msgstr ""
 msgid "Geo Settings"
 msgstr ""
 
-msgid "Geo allows you to replicate your GitLab instance to other geographical locations."
-msgstr ""
-
 msgid "Geo nodes are paused using a command run on the node"
 msgstr ""
 
@@ -13733,9 +13730,6 @@ msgid "List Your Gitea Repositories"
 msgstr ""
 
 msgid "List available repositories"
-msgstr ""
-
-msgid "List of IPs and CIDRs of allowed secondary nodes. Comma-separated, e.g. \"1.1.1.1, 2.2.2.0/24\""
 msgstr ""
 
 msgid "List settings"
@@ -22905,9 +22899,6 @@ msgid "The X509 Certificate to use when mutual TLS is required to communicate wi
 msgstr ""
 
 msgid "The above settings apply to all projects with the selected compliance framework(s)."
-msgstr ""
-
-msgid "The amount of seconds after which a request to get a secondary node status will time out."
 msgstr ""
 
 msgid "The application will be used where the client secret can be kept confidential. Native mobile apps and Single Page Apps are considered non-confidential."

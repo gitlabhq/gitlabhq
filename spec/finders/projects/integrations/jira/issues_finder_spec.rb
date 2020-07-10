@@ -76,27 +76,45 @@ RSpec.describe Projects::Integrations::Jira::IssuesFinder do
           expect(issues.map(&:key)).to eq(%w[TEST-1 TEST-2])
         end
 
-        context 'when sort by created_date' do
-          let(:params) { { sort: 'created_date' } }
+        context 'when sorting' do
+          shared_examples 'maps sort values' do
+            it do
+              expect(::Jira::JqlBuilderService).to receive(:new)
+                .with(jira_service.project_key, expected_sort_values)
+                .and_call_original
 
-          it 'maps sort correctly' do
-            expect(::Jira::JqlBuilderService).to receive(:new)
-              .with(jira_service.project_key, { sort: 'created', sort_direction: 'DESC' })
-              .and_call_original
-
-            subject
+              subject
+            end
           end
-        end
 
-        context 'when sort by unknown_sort' do
-          let(:params) { { sort: 'unknown_sort' } }
+          it_behaves_like 'maps sort values' do
+            let(:params) { { sort: 'created_date' } }
+            let(:expected_sort_values) { { sort: 'created', sort_direction: 'DESC' } }
+          end
 
-          it 'maps sort to default' do
-            expect(::Jira::JqlBuilderService).to receive(:new)
-              .with(jira_service.project_key, { sort: 'created', sort_direction: 'DESC' })
-              .and_call_original
+          it_behaves_like 'maps sort values' do
+            let(:params) { { sort: 'created_desc' } }
+            let(:expected_sort_values) { { sort: 'created', sort_direction: 'DESC' } }
+          end
 
-            subject
+          it_behaves_like 'maps sort values' do
+            let(:params) { { sort: 'created_asc' } }
+            let(:expected_sort_values) { { sort: 'created', sort_direction: 'ASC' } }
+          end
+
+          it_behaves_like 'maps sort values' do
+            let(:params) { { sort: 'updated_desc' } }
+            let(:expected_sort_values) { { sort: 'updated', sort_direction: 'DESC' } }
+          end
+
+          it_behaves_like 'maps sort values' do
+            let(:params) { { sort: 'updated_asc' } }
+            let(:expected_sort_values) { { sort: 'updated', sort_direction: 'ASC' } }
+          end
+
+          it_behaves_like 'maps sort values' do
+            let(:params) { { sort: 'unknown_sort' } }
+            let(:expected_sort_values) { { sort: 'created', sort_direction: 'DESC' } }
           end
         end
 

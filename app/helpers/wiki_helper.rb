@@ -128,4 +128,13 @@ module WikiHelper
       raise NotImplementedError, "Unknown wiki container type #{wiki.container.class.name}"
     end
   end
+
+  def wiki_page_tracking_context(page)
+    {
+      'wiki-format'               => page.format,
+      'wiki-title-size'           => page.title.bytesize,
+      'wiki-content-size'         => page.raw_content.bytesize,
+      'wiki-directory-nest-level' => page.path.scan('/').count
+    }
+  end
 end

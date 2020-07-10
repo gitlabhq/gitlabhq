@@ -117,6 +117,8 @@ module API
         users = users.preload(:identities, :u2f_registrations) if entity == Entities::UserWithAdmin
         users, options = with_custom_attributes(users, { with: entity, current_user: current_user })
 
+        users = users.preload(:user_detail)
+
         present paginate(users), options
       end
       # rubocop: enable CodeReuse/ActiveRecord

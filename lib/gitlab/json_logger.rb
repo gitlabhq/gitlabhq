@@ -19,7 +19,7 @@ module Gitlab
         data.merge!(message)
       end
 
-      Gitlab::Json.dump(data) + "\n"
+      data.to_json + "\n"
     end
   end
 end

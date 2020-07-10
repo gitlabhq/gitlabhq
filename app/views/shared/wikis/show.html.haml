@@ -21,7 +21,7 @@
     = (s_("WikiHistoricalPage|You can view the %{most_recent_link} or browse the %{history_link}.") % { most_recent_link: most_recent_link, history_link: history_link }).html_safe
 
 .gl-mt-3.gl-mb-3
-  .md{ data: { qa_selector: 'wiki_page_content' } }
+  .js-wiki-page-content.md{ data: { qa_selector: 'wiki_page_content', tracking_context: wiki_page_tracking_context(@page).to_json } }
     = render_wiki_content(@page)
 
 = render 'shared/wikis/sidebar'

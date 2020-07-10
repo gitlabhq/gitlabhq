@@ -55,8 +55,14 @@ module Projects
 
         def map_sort_values(sort)
           case sort
-          when 'created_date'
+          when 'created_date', 'created_desc'
             { sort: 'created', sort_direction: 'DESC' }
+          when 'created_asc'
+            { sort: 'created', sort_direction: 'ASC' }
+          when 'updated_desc'
+            { sort: 'updated', sort_direction: 'DESC' }
+          when 'updated_asc'
+            { sort: 'updated', sort_direction: 'ASC' }
           else
             { sort: ::Jira::JqlBuilderService::DEFAULT_SORT, sort_direction: ::Jira::JqlBuilderService::DEFAULT_SORT_DIRECTION }
           end

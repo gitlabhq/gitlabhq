@@ -687,7 +687,6 @@ GEM
     octokit (4.15.0)
       faraday (>= 0.9)
       sawyer (~> 0.8.0, >= 0.5.3)
-    oj (3.10.6)
     omniauth (1.9.0)
       hashie (>= 3.4.6, < 3.7.0)
       rack (>= 1.6.2, < 3)
@@ -1313,7 +1312,6 @@ DEPENDENCIES
   mimemagic (~> 0.3.2)
   mini_magick
   minitest (~> 5.11.0)
-  multi_json (~> 1.14.1)
   nakayoshi_fork (~> 0.0.4)
   net-ldap
   net-ntp
@@ -1321,7 +1319,6 @@ DEPENDENCIES
   nokogiri (~> 1.10.9)
   oauth2 (~> 1.4)
   octokit (~> 4.15)
-  oj (~> 3.10.6)
   omniauth (~> 1.8)
   omniauth-auth0 (~> 2.0.0)
   omniauth-authentiq (~> 0.3.3)

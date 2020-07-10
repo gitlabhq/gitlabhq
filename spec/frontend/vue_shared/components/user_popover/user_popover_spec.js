@@ -83,9 +83,10 @@ describe('User Popover Component', () => {
   describe('job data', () => {
     const findWorkInformation = () => wrapper.find({ ref: 'workInformation' });
     const findBio = () => wrapper.find({ ref: 'bio' });
+    const bio = 'My super interesting bio';
 
     it('should show only bio if work information is not available', () => {
-      const user = { ...DEFAULT_PROPS.user, bio: 'My super interesting bio' };
+      const user = { ...DEFAULT_PROPS.user, bio, bioHtml: bio };
 
       createWrapper({ user });
 
@@ -107,7 +108,8 @@ describe('User Popover Component', () => {
     it('should display bio and work information in separate lines', () => {
       const user = {
         ...DEFAULT_PROPS.user,
-        bio: 'My super interesting bio',
+        bio,
+        bioHtml: bio,
         workInformation: 'Frontend Engineer at GitLab',
       };
 
@@ -120,12 +122,13 @@ describe('User Popover Component', () => {
     it('should not encode special characters in bio', () => {
       const user = {
         ...DEFAULT_PROPS.user,
-        bio: 'I like <html> & CSS',
+        bio: 'I like CSS',
+        bioHtml: 'I like <b>CSS</b>',
       };
 
       createWrapper({ user });
 
-      expect(findBio().text()).toBe('I like <html> & CSS');
+      expect(findBio().html()).toContain('I like <b>CSS</b>');
     });
 
     it('shows icon for bio', () => {

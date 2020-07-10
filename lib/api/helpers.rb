@@ -410,8 +410,12 @@ module API
 
     def render_validation_error!(model)
       if model.errors.any?
-        render_api_error!(model.errors.messages || '400 Bad Request', 400)
+        render_api_error!(model_error_messages(model) || '400 Bad Request', 400)
       end
+    end
+
+    def model_error_messages(model)
+      model.errors.messages
     end
 
     def render_spam_error!
