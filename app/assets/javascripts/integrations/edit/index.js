@@ -15,13 +15,22 @@ export default el => {
     return result;
   }
 
-  const { type, commentDetail, triggerEvents, fields, ...booleanAttributes } = el.dataset;
+  const {
+    type,
+    commentDetail,
+    projectKey,
+    editProjectPath,
+    triggerEvents,
+    fields,
+    ...booleanAttributes
+  } = el.dataset;
   const {
     showActive,
     activated,
     commitEvents,
     mergeRequestEvents,
     enableComments,
+    enableJiraIssues,
   } = parseBooleanInData(booleanAttributes);
 
   return new Vue({
@@ -39,6 +48,11 @@ export default el => {
             initialTriggerMergeRequest: mergeRequestEvents,
             initialEnableComments: enableComments,
             initialCommentDetail: commentDetail,
+          },
+          jiraIssuesProps: {
+            initialEnableJiraIssues: enableJiraIssues,
+            initialProjectKey: projectKey,
+            editProjectPath,
           },
           triggerEvents: JSON.parse(triggerEvents),
           fields: JSON.parse(fields),

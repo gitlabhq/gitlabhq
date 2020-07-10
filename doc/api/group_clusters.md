@@ -22,7 +22,7 @@ Parameters:
 Example request:
 
 ```shell
-curl --header 'Private-Token: <your_access_token>' "https://gitlab.example.com/api/v4/groups/26/clusters"
+curl --header "Private-Token: <your_access_token>" "https://gitlab.example.com/api/v4/groups/26/clusters"
 ```
 
 Example response:
@@ -238,7 +238,7 @@ through the ["Add existing cluster to group"](#add-existing-cluster-to-group) en
 Example request:
 
 ```shell
-curl --header 'Private-Token: <your_access_token>' "https://gitlab.example.com/api/v4/groups/26/clusters/24" \
+curl --header "Private-Token: <your_access_token>" "https://gitlab.example.com/api/v4/groups/26/clusters/24" \
 -H "Content-Type:application/json" \
 --request PUT --data '{"name":"new-cluster-name","domain":"new-domain.com","api_url":"https://new-api-url.com"}'
 ```

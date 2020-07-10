@@ -84,7 +84,7 @@ Once the webhook is setup, you can
 You can add custom metrics in the self monitoring project by:
 
 1. [Duplicating](../../../user/project/integrations/prometheus.md#duplicating-a-gitlab-defined-dashboard) the default dashboard.
-1. [Editing](../../../user/project/integrations/prometheus.md#view-and-edit-the-source-file-of-a-custom-dashboard) the newly created dashboard file and configuring it with [dashboard YAML properties](../../../user/project/integrations/prometheus.md#dashboard-yaml-properties).
+1. [Editing](../../../operations/metrics/dashboards/index.md#view-and-edit-the-source-file-of-a-custom-dashboard) the newly created dashboard file and configuring it with [dashboard YAML properties](../../../operations/metrics/dashboards/yaml.md).
 
 ## Troubleshooting
 

@@ -86,7 +86,7 @@ above the upper right corner of the panel. The options are:
 
 - [View logs](#view-logs-from-metrics-panel).
 - **Download CSV** - Data from embedded charts can be
-  [downloaded as CSV](../project/integrations/prometheus.md#downloading-data-as-csv).
+  [downloaded as CSV](../../operations/metrics/dashboards/index.md#downloading-data-as-csv).
 
 #### View logs from metrics panel
 
@@ -94,7 +94,7 @@ above the upper right corner of the panel. The options are:
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/25455) to [GitLab Core](https://about.gitlab.com/pricing/) 12.9.
 
 Viewing logs from a metrics panel can be useful if you're triaging an application
-incident and need to [explore logs](../project/integrations/prometheus.md#view-logs-ultimate)
+incident and need to [explore logs](../../operations/metrics/dashboards/index.md#view-logs-ultimate)
 from across your application. These logs help you understand what is affecting
 your application's performance and resolve any problems.
 

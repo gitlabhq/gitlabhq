@@ -269,7 +269,7 @@ Configure Error Tracking to discover and view [Sentry errors within GitLab](../o
 
 ### Jaeger tracing **(ULTIMATE)**
 
-Add the URL of a Jaeger server to allow your users to [easily access the Jaeger UI from within GitLab](../operations/tracing.md).
+Add the URL of a Jaeger server to allow your users to [easily access the Jaeger UI from within GitLab](../../../operations/tracing.md).
 
 ### Status Page
 

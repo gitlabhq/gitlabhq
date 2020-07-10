@@ -2,6 +2,7 @@ import { shallowMount } from '@vue/test-utils';
 import IntegrationForm from '~/integrations/edit/components/integration_form.vue';
 import ActiveToggle from '~/integrations/edit/components/active_toggle.vue';
 import JiraTriggerFields from '~/integrations/edit/components/jira_trigger_fields.vue';
+import JiraIssuesFields from '~/integrations/edit/components/jira_issues_fields.vue';
 import TriggerFields from '~/integrations/edit/components/trigger_fields.vue';
 import DynamicField from '~/integrations/edit/components/dynamic_field.vue';
 
@@ -18,15 +19,19 @@ describe('IntegrationForm', () => {
       initialTriggerMergeRequest: false,
       initialEnableComments: false,
     },
+    jiraIssuesProps: {},
     type: '',
   };
 
-  const createComponent = props => {
+  const createComponent = (props, featureFlags = {}) => {
     wrapper = shallowMount(IntegrationForm, {
       propsData: { ...defaultProps, ...props },
       stubs: {
         ActiveToggle,
         JiraTriggerFields,
+      },
+      provide: {
+        glFeatures: featureFlags,
       },
     });
   };
@@ -40,6 +45,7 @@ describe('IntegrationForm', () => {
 
   const findActiveToggle = () => wrapper.find(ActiveToggle);
   const findJiraTriggerFields = () => wrapper.find(JiraTriggerFields);
+  const findJiraIssuesFields = () => wrapper.find(JiraIssuesFields);
   const findTriggerFields = () => wrapper.find(TriggerFields);
 
   describe('template', () => {
@@ -62,22 +68,40 @@ describe('IntegrationForm', () => {
     });
 
     describe('type is "slack"', () => {
-      it('does not render JiraTriggerFields', () => {
-        createComponent({
-          type: 'slack',
-        });
+      beforeEach(() => {
+        createComponent({ type: 'slack' });
+      });
 
+      it('does not render JiraTriggerFields', () => {
         expect(findJiraTriggerFields().exists()).toBe(false);
+      });
+
+      it('does not render JiraIssuesFields', () => {
+        expect(findJiraIssuesFields().exists()).toBe(false);
       });
     });
 
     describe('type is "jira"', () => {
       it('renders JiraTriggerFields', () => {
-        createComponent({
-          type: 'jira',
-        });
+        createComponent({ type: 'jira' });
 
         expect(findJiraTriggerFields().exists()).toBe(true);
+      });
+
+      describe('featureFlag jiraIntegration is false', () => {
+        it('does not render JiraIssuesFields', () => {
+          createComponent({ type: 'jira' }, { jiraIntegration: false });
+
+          expect(findJiraIssuesFields().exists()).toBe(false);
+        });
+      });
+
+      describe('featureFlag jiraIntegration is true', () => {
+        it('renders JiraIssuesFields', () => {
+          createComponent({ type: 'jira' }, { jiraIntegration: true });
+
+          expect(findJiraIssuesFields().exists()).toBe(true);
+        });
       });
     });
 

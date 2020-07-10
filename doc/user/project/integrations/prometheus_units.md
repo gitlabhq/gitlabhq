@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/201999) in GitLab 12.9.
 
 You can select units to format your charts by adding `format` to your
-[axis configuration](prometheus.md#dashboard-yaml-properties).
+[axis configuration](../../../operations/metrics/dashboards/yaml.md).
 
 ## Internationalization and localization
 

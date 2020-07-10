@@ -62,47 +62,6 @@ will help you to quickly create a deployment:
 
 ![Monitoring Dashboard](img/prometheus_monitoring_dashboard_v13_1.png)
 
-#### Using the Metrics Dashboard
-
-##### Select an environment
-
-The **Environment** dropdown box above the dashboard displays the list of all [environments](#monitoring-cicd-environments).
-It enables you to search as you type through all environments and select the one you're looking for.
-
-![Monitoring Dashboard Environments](img/prometheus_dashboard_environments_v12_8.png)
-
-##### Select a dashboard
-
-The **dashboard** dropdown box above the dashboard displays the list of all dashboards available for the project.
-It enables you to search as you type through all dashboards and select the one you're looking for.
-
-![Monitoring Dashboard select](img/prometheus_dashboard_select_v_13_0.png)
-
-##### Mark a dashboard as favorite
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/214582) in GitLab 13.0.
-
-When viewing a dashboard, click the empty **Star dashboard** **{star-o}** button to mark a
-dashboard as a favorite. Starred dashboards display a solid star **{star}** button,
-and appear at the top of the dashboard select list.
-
-To remove dashboard from the favorites list, click the solid **Unstar Dashboard** **{star}** button.
-
-![Monitoring Dashboard favorite state toggle](img/toggle_metrics_user_starred_dashboard_v13_0.png)
-
-##### Manage the metrics dashboard settings
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/223204) in GitLab 13.2.
-
-To manage the settings for your metrics dashboard:
-
-1. Sign in as a user with project Maintainer or Admin
-   [permissions](../../permissions.md#project-members-permissions).
-1. Navigate to your dashboard at **{cloud-gear}** **Operations > Metrics**.
-1. In the top-right corner of your dashboard, click **{settings}** **Metrics Settings**:
-
-   ![Monitoring Dashboard actions menu with create new item](img/metrics_settings_button_v13_2.png)
-
 #### About managed Prometheus deployments
 
 Prometheus is deployed into the `gitlab-managed-apps` namespace, using the [official Helm chart](https://github.com/helm/charts/tree/master/stable/prometheus). Prometheus is only accessible within the cluster, with GitLab communicating through the [Kubernetes API](https://kubernetes.io/docs/concepts/overview/kubernetes-api/).
@@ -236,7 +195,7 @@ For example, if the dashboard time range is set to 8 hours, the value of
 
 ##### User-defined variables
 
-[Variables can be defined](#templating-templating-properties) in a custom dashboard YAML file.
+[Variables can be defined](../../../operations/metrics/dashboards/yaml.md#templating-templating-properties) in a custom dashboard YAML file.
 
 ##### Using variables
 
@@ -375,15 +334,15 @@ and files with invalid syntax display **Metrics Dashboard YAML definition is inv
 
 When **Metrics Dashboard YAML definition is invalid** at least one of the following messages is displayed:
 
-1. `dashboard: can't be blank` [learn more](#dashboard-top-level-properties)
-1. `panel_groups: should be an array of panel_groups objects` [learn more](#dashboard-top-level-properties)
-1. `group: can't be blank` [learn more](#panel-group-panel_groups-properties)
-1. `panels: should be an array of panels objects` [learn more](#panel-group-panel_groups-properties)
-1. `title: can't be blank` [learn more](#panel-panels-properties)
-1. `metrics: should be an array of metrics objects` [learn more](#panel-panels-properties)
-1. `query: can't be blank` [learn more](#metrics-metrics-properties)
-1. `query_range: can't be blank` [learn more](#metrics-metrics-properties)
-1. `unit: can't be blank` [learn more](#metrics-metrics-properties)
+1. `dashboard: can't be blank` [learn more](../../../operations/metrics/dashboards/yaml.md#dashboard-top-level-properties)
+1. `panel_groups: should be an array of panel_groups objects` [learn more](../../../operations/metrics/dashboards/yaml.md#dashboard-top-level-properties)
+1. `group: can't be blank` [learn more](../../../operations/metrics/dashboards/yaml.md#panel-group-panel_groups-properties)
+1. `panels: should be an array of panels objects` [learn more](../../../operations/metrics/dashboards/yaml.md#panel-group-panel_groups-properties)
+1. `title: can't be blank` [learn more](../../../operations/metrics/dashboards/yaml.md#panel-panels-properties)
+1. `metrics: should be an array of metrics objects` [learn more](../../../operations/metrics/dashboards/yaml.md#panel-panels-properties)
+1. `query: can't be blank` [learn more](../../../operations/metrics/dashboards/yaml.md#metrics-metrics-properties)
+1. `query_range: can't be blank` [learn more](../../../operations/metrics/dashboards/yaml.md#metrics-metrics-properties)
+1. `unit: can't be blank` [learn more](../../../operations/metrics/dashboards/yaml.md#metrics-metrics-properties)
 1. `YAML syntax: The parsed YAML is too big`
 
    This is displayed when the YAML file is larger than 1 MB.
@@ -393,131 +352,6 @@ When **Metrics Dashboard YAML definition is invalid** at least one of the follow
    This is displayed when the YAML file is empty or does not contain valid YAML.
 
 Metrics Dashboard YAML definition validation information is also available as a [GraphQL API field](../../../api/graphql/reference/index.md#metricsdashboard)
-
-#### Dashboard YAML properties
-
-Dashboards have several components:
-
-- Templating variables.
-- Panel groups, which consist of panels.
-- Panels, which support one or more metrics.
-
-The following tables outline the details of expected properties.
-
-##### **Dashboard (top-level) properties**
-
-| Property | Type | Required | Description |
-| ------ | ------ | ------ | ------ |
-| `dashboard` | string | yes | Heading for the dashboard. Only one dashboard should be defined per file. |
-| `panel_groups` | array | yes | The panel groups which should be on the dashboard. |
-| `templating` | hash | no | Top level key under which templating related options can be added. |
-| `links` | array | no | Add links to display on the dashboard. |
-
-##### **Templating (`templating`) properties**
-
-| Property | Type | Required | Description |
-| -------- | ---- | -------- | ----------- |
-| `variables` | hash | yes | Variables can be defined here. |
-
-Read the documentation on [templating](#templating-variables-for-metrics-dashboards).
-
-##### **Links (`links`) properties**
-
-| Property | Type | Required | Description |
-| -------- | ---- | -------- | ----------- |
-| `url` | string | yes | The address of the link. |
-| `title` | string | no | Display title for the link. |
-| `type` | string | no | Type of the link. Specifies the link type, can be: `grafana` |
-
-Read the documentation on [links](#add-related-links-to-custom-dashboards).
-
-##### **Panel group (`panel_groups`) properties**
-
-| Property | Type | Required | Description |
-| ------ | ------ | ------ | ------ |
-| `group` | string | required | Heading for the panel group. |
-| `priority` | number | optional, defaults to order in file | Order to appear on the dashboard. Higher number means higher priority, which will be higher on the page. Numbers do not need to be consecutive. |
-| `panels` | array | required | The panels which should be in the panel group. |
-
-Panels in a panel group are laid out in rows consisting of two panels per row. An exception to this rule are single panels on a row: these panels will take the full width of their containing row.
-
-##### **Panel (`panels`) properties**
-
-| Property | Type | Required | Description |
-| ------ | ------ | ------ | ------- |
-| `type` | enum | no, defaults to `area-chart` | Specifies the chart type to use, can be: `area-chart`, `line-chart` or `anomaly-chart`. |
-| `title` | string | yes | Heading for the panel. |
-| `y_label` | string | no, but highly encouraged | Y-Axis label for the panel. |
-| `y_axis` | string | no | Y-Axis configuration for the panel. |
-| `max_value` | number | no | Denominator value used for calculating [percentile based results](#percentile-based-results) |
-| `weight` | number | no, defaults to order in file | Order to appear within the grouping. Lower number means higher priority, which will be higher on the page. Numbers do not need to be consecutive. |
-| `metrics` | array | yes | The metrics which should be displayed in the panel. Any number of metrics can be displayed when `type` is `area-chart` or `line-chart`, whereas only 3 can be displayed when `type` is `anomaly-chart`. |
-| `links` | array | no | Add links to display on the chart's [context menu](#chart-context-menu). |
-
-##### **Axis (`panels[].y_axis`) properties**
-
-| Property    | Type   | Required                      | Description                                                          |
-| ----------- | ------ | ----------------------------- | -------------------------------------------------------------------- |
-| `name`      | string | no, but highly encouraged     | Y-Axis label for the panel. Replaces `y_label` if set.               |
-| `format`    | string | no, defaults to `engineering` | Unit format used. See the [full list of units](prometheus_units.md). |
-| `precision` | number | no, defaults to `2`           | Number of decimal places to display in the number.                                          |                        |
-
-##### **Metrics (`metrics`) properties**
-
-| Property | Type | Required | Description |
-| ------ | ------ | ------ | ------ |
-| `id` | string | no | Used for associating dashboard metrics with database records. Must be unique across dashboard configuration files. Required for [alerting](#setting-up-alerts-for-prometheus-metrics) (support not yet enabled, see [relevant issue](https://gitlab.com/gitlab-org/gitlab/-/issues/27980)). |
-| `unit` | string | yes | Defines the unit of the query's return data. |
-| `label` | string | no, but highly encouraged | Defines the legend-label for the query. Should be unique within the panel's metrics. Can contain time series labels as interpolated variables. |
-| `query` | string | yes if `query_range` is not defined | Defines the Prometheus query to be used to populate the chart/panel. If defined, the `query` endpoint of the [Prometheus API](https://prometheus.io/docs/prometheus/latest/querying/api/) will be utilized. |
-| `query_range` | string | yes if `query` is not defined | Defines the Prometheus query to be used to populate the chart/panel. If defined, the `query_range` endpoint of the [Prometheus API](https://prometheus.io/docs/prometheus/latest/querying/api/) will be utilized. |
-| `step` | number | no, value is calculated if not defined | Defines query resolution step width in float number of seconds. Metrics on the same panel should use the same `step` value. |
-
-##### Dynamic labels
-
-Dynamic labels are useful when multiple time series are returned from a Prometheus query.
-
-When a static label is used and a query returns multiple time series, then all the legend items will be labeled the same, which makes identifying each time series difficult:
-
-```yaml
-metrics:
-  - id: my_metric_id
-    query_range: 'http_requests_total'
-    label: "Time Series"
-    unit: "count"
-```
-
-This may render a legend like this:
-
-![repeated legend label chart](img/prometheus_dashboard_repeated_label.png)
-
-For labels to be more explicit, using variables that reflect time series labels is a good practice. The variables will be replaced by the values of the time series labels when the legend is rendered:
-
-```yaml
-metrics:
-  - id: my_metric_id
-    query_range: 'http_requests_total'
-    label: "Instance: {{instance}}, method: {{method}}"
-    unit: "count"
-```
-
-The resulting rendered legend will look like this:
-
-![legend with label variables](img/prometheus_dashboard_label_variables.png)
-
-There is also a shorthand value for dynamic dashboard labels that make use of only one time series label:
-
-```yaml
-metrics:
-  - id: my_metric_id
-    query_range: 'http_requests_total'
-    label: "Method"
-    unit: "count"
-```
-
-This works by lowercasing the value of `label` and, if there are more words separated by spaces, replacing those spaces with an underscore (`_`). The transformed value is then checked against the labels of the time series returned by the Prometheus query. If a time series label is found that is equal to the transformed value, then the label value will be used and rendered in the legend like this:
-
-![legend with label shorthand variable](img/prometheus_dashboard_label_variable_shorthand.png)
 
 #### Panel types for dashboards
 
@@ -784,7 +618,7 @@ Templating variables can be used to make your metrics dashboard more versatile.
 #### Templating variable types
 
 `templating` is a top-level key in the
-[dashboard YAML](#dashboard-top-level-properties).
+[dashboard YAML](../../../operations/metrics/dashboards/yaml.md#dashboard-top-level-properties).
 Define your variables in the `variables` key, under `templating`. The value of
 the `variables` key should be a hash, and each key under `variables`
 defines a templating variable on the dashboard, and may contain alphanumeric and underscore characters.
@@ -909,8 +743,8 @@ dashboard by adding **Related links** to your dashboard's YAML file. Related lin
 open in the same tab as the dashboard. Related links can be displayed in the
 following locations on your dashboard:
 
-- At the top of your dashboard as the top level [`links` dashboard property](#dashboard-top-level-properties).
-- In charts context menus as the [`links` property of a panel](#panel-panels-properties).
+- At the top of your dashboard as the top level [`links` dashboard property](../../../operations/metrics/dashboards/yaml.md#dashboard-top-level-properties).
+- In charts context menus as the [`links` property of a panel](../../../operations/metrics/dashboards/yaml.md#panel-panels-properties).
 
 Related links can contain the following attributes:
 
@@ -940,85 +774,6 @@ links:
     url: https://play.grafana.org/d/000000012/grafana-play-home?orgId=1
     type: grafana
 ```
-
-### View and edit the source file of a custom dashboard
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/34779) in GitLab 12.5.
-
-When viewing a custom dashboard of a project, you can view the original
-`.yml` file by clicking on the **Edit dashboard** button.
-
-### Chart Context Menu
-
-From each of the panels in the dashboard, you can access the context menu by clicking the **{ellipsis_v}** **More actions** dropdown box above the upper right corner of the panel to take actions related to the chart's data.
-
-![Context Menu](img/panel_context_menu_v13_0.png)
-
-The options are:
-
-- [Expand panel](#expand-panel)
-- [View logs](#view-logs-ultimate)
-- [Download CSV](#downloading-data-as-csv)
-- [Copy link to chart](#embedding-gitlab-managed-kubernetes-metrics)
-- [Alerts](#setting-up-alerts-for-prometheus-metrics)
-
-### Dashboard Annotations
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/211330) in GitLab 12.10 (enabled by feature flag `metrics_dashboard_annotations`).
-> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/215224) in GitLab 13.0.
-
-You can use **Metrics Dashboard Annotations** to mark any important events on
-every metrics dashboard by adding annotations to it. While viewing a dashboard,
-annotation entries assigned to the selected time range will be automatically
-fetched and displayed on every chart within that dashboard. On mouse hover, each
-annotation presents additional details, including the exact time of an event and
-its description.
-
-You can create annotations by making requests to the
-[Metrics dashboard annotations API](../../../api/metrics_dashboard_annotations.md)
-
-![Annotations UI](img/metrics_dashboard_annotations_ui_v13.0.png)
-
-#### Retention policy
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/211433) in GitLab 13.01.
-
-To avoid excessive storage space consumption by stale annotations, records attached
-to time periods older than two weeks are removed daily. This recurring background
-job runs at 1:00 a.m. local server time.
-
-### Expand panel
-
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3100) in GitLab 13.0.
-
-To view a larger version of a visualization, expand the panel by clicking the
-**{ellipsis_v}** **More actions** icon and selecting **Expand panel**.
-
-To return to the metrics dashboard, click the **Back** button in your
-browser, or pressing the <kbd>Esc</kbd> key.
-
-### View Logs **(ULTIMATE)**
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/122013) in GitLab 12.8.
-
-If you have [Logs](../clusters/kubernetes_pod_logs.md) enabled,
-you can navigate from the charts in the dashboard to view Logs by
-clicking on the context menu in the upper-right corner.
-
-If you use the **Timeline zoom** function at the bottom of the chart, logs will narrow down to the time range you selected.
-
-### Timeline zoom and URL sharing
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/198910) in GitLab 12.8.
-
-You can use the **Timeline zoom** function at the bottom of a chart to zoom in
-on a date and time of your choice. When you click and drag the sliders to select
-a different beginning or end date of data to display, GitLab adds your selected start
-and end times to the URL, enabling you to share specific timeframes more easily.
-
-### Downloading data as CSV
-
-Data from Prometheus charts on the metrics dashboard can be downloaded as CSV.
 
 ### Setting up alerts for Prometheus metrics
 
@@ -1167,7 +922,7 @@ Metric charts may also be hidden:
 
 ![Show Hide](img/hide_embedded_metrics_v12_10.png)
 
-You can open the link directly into your browser for a [detailed view of the data](#expand-panel).
+You can open the link directly into your browser for a [detailed view of the data](../../../operations/metrics/dashboards/index.md#expand-panel).
 
 ### Embedding metrics in issue templates
 

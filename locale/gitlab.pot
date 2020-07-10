@@ -12943,6 +12943,12 @@ msgstr ""
 msgid "JiraService|%{user_link} mentioned this issue in %{entity_link} of %{project_link}%{branch}:{quote}%{entity_message}{quote}"
 msgstr ""
 
+msgid "JiraService|Displaying Jira issues while leaving the GitLab issue functionality enabled might be confusing. Consider %{linkStart}disabling GitLab issues%{linkEnd} if they won’t otherwise be used."
+msgstr ""
+
+msgid "JiraService|Enable Jira issues"
+msgstr ""
+
 msgid "JiraService|Events for %{noteable_model_name} are disabled."
 msgstr ""
 
@@ -12967,6 +12973,9 @@ msgstr ""
 msgid "JiraService|Jira issue tracker"
 msgstr ""
 
+msgid "JiraService|Jira project key"
+msgstr ""
+
 msgid "JiraService|Open Jira"
 msgstr ""
 
@@ -12988,7 +12997,19 @@ msgstr ""
 msgid "JiraService|Username or Email"
 msgstr ""
 
+msgid "JiraService|View Jira issues in GitLab"
+msgstr ""
+
+msgid "JiraService|Warning: All GitLab users that have access to this GitLab project will be able to view all issues from the Jira project specified below."
+msgstr ""
+
 msgid "JiraService|Web URL"
+msgstr ""
+
+msgid "JiraService|Work on Jira issues without leaving GitLab. Adds a Jira menu to access your list of issues and view any issue as read-only."
+msgstr ""
+
+msgid "JiraService|e.g. AB"
 msgstr ""
 
 msgid "JiraService|transition ids can have only numbers which can be split with , or ;"

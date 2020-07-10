@@ -1,6 +1,8 @@
 <script>
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import ActiveToggle from './active_toggle.vue';
 import JiraTriggerFields from './jira_trigger_fields.vue';
+import JiraIssuesFields from './jira_issues_fields.vue';
 import TriggerFields from './trigger_fields.vue';
 import DynamicField from './dynamic_field.vue';
 
@@ -9,9 +11,11 @@ export default {
   components: {
     ActiveToggle,
     JiraTriggerFields,
+    JiraIssuesFields,
     TriggerFields,
     DynamicField,
   },
+  mixins: [glFeatureFlagsMixin()],
   props: {
     activeToggleProps: {
       type: Object,
@@ -22,6 +26,10 @@ export default {
       required: true,
     },
     triggerFieldsProps: {
+      type: Object,
+      required: true,
+    },
+    jiraIssuesProps: {
       type: Object,
       required: true,
     },
@@ -44,6 +52,9 @@ export default {
     isJira() {
       return this.type === 'jira';
     },
+    showJiraIssuesFields() {
+      return this.isJira && this.glFeatures.jiraIntegration;
+    },
   },
 };
 </script>
@@ -54,5 +65,6 @@ export default {
     <jira-trigger-fields v-if="isJira" v-bind="triggerFieldsProps" />
     <trigger-fields v-else-if="triggerEvents.length" :events="triggerEvents" :type="type" />
     <dynamic-field v-for="field in fields" :key="field.name" v-bind="field" />
+    <jira-issues-fields v-if="showJiraIssuesFields" v-bind="jiraIssuesProps" />
   </div>
 </template>
