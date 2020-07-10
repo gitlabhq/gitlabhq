@@ -93,7 +93,6 @@ module API
         if params[:view] == 'simple'
           options[:with] = Entities::MergeRequestSimple
         else
-          options[:issuable_metadata] = Gitlab::IssuableMetadata.new(current_user, merge_requests).data
           options[:skip_merge_status_recheck] = !declared_params[:with_merge_status_recheck]
         end
 

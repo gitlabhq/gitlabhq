@@ -287,6 +287,8 @@ class Namespace < ApplicationRecord
   end
 
   def root_ancestor
+    return self if persisted? && parent_id.nil?
+
     strong_memoize(:root_ancestor) do
       self_and_ancestors.reorder(nil).find_by(parent_id: nil)
     end

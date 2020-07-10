@@ -1,0 +1,5 @@
+---
+title: Resolve N+1 in Search API projects scope
+merge_request: 35833
+author:
+type: performance

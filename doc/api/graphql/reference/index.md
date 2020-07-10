@@ -946,6 +946,7 @@ Represents an iteration object.
 | `description` | String | Description of the iteration |
 | `dueDate` | Time | Timestamp of the iteration due date |
 | `id` | ID! | ID of the iteration |
+| `iid` | ID! | Internal ID of the iteration |
 | `startDate` | Time | Timestamp of the iteration start date |
 | `state` | IterationState! | State of the iteration |
 | `title` | String! | Title of the iteration |

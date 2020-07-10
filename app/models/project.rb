@@ -524,7 +524,7 @@ class Project < ApplicationRecord
 
   scope :with_api_entity_associations, -> {
     preload(:project_feature, :route, :tags,
-            group: :ip_restrictions, namespace: [:route, :owner])
+            group: [:ip_restrictions, :saml_provider], namespace: [:route, :owner])
   }
 
   scope :with_api_commit_entity_associations, -> {
@@ -599,6 +599,14 @@ class Project < ApplicationRecord
       # This has to be added to include features whose value is nil in the db
       visible << nil
       with_feature_access_level(feature, visible)
+    end
+  end
+
+  def self.projects_user_can(projects, user, action)
+    projects = where(id: projects)
+
+    DeclarativePolicy.user_scope do
+      projects.select { |project| Ability.allowed?(user, action, project) }
     end
   end
 

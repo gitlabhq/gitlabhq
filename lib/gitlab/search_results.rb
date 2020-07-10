@@ -27,6 +27,7 @@ module Gitlab
     end
 
     def objects(scope, page: nil, per_page: DEFAULT_PER_PAGE, without_count: true, preload_method: nil)
+      should_preload = preload_method.present?
       collection = case scope
                    when 'projects'
                      projects
@@ -39,9 +40,11 @@ module Gitlab
                    when 'users'
                      users
                    else
+                     should_preload = false
                      Kaminari.paginate_array([])
                    end
 
+      collection = collection.public_send(preload_method) if should_preload # rubocop:disable GitlabSecurity/PublicSend
       collection = collection.page(page).per(per_page)
 
       without_count ? collection.without_count : collection

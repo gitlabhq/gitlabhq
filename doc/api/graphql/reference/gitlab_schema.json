@@ -14101,6 +14101,16 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "iid",
+                  "description": "The internal ID of the Iteration to look up",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "ID",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "after",
                   "description": "Returns the elements in the list that come after the specified cursor.",
                   "type": {
@@ -17314,6 +17324,24 @@
             {
               "name": "id",
               "description": "ID of the iteration",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "ID",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "iid",
+              "description": "Internal ID of the iteration",
               "args": [
 
               ],
