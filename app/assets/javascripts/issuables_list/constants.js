@@ -1,3 +1,5 @@
+import { __ } from '~/locale';
+
 // Maps sort order as it appears in the URL query to API `order_by` and `sort` params.
 const PRIORITY = 'priority';
 const ASC = 'asc';
@@ -31,3 +33,22 @@ export const sortOrderMap = {
   weight_desc: { order_by: WEIGHT, sort: DESC },
   weight: { order_by: WEIGHT, sort: ASC },
 };
+
+export const availableSortOptionsJira = [
+  {
+    id: 1,
+    title: __('Created date'),
+    sortDirection: {
+      descending: 'created_desc',
+      ascending: 'created_asc',
+    },
+  },
+  {
+    id: 2,
+    title: __('Last updated'),
+    sortDirection: {
+      descending: 'updated_desc',
+      ascending: 'updated_asc',
+    },
+  },
+];

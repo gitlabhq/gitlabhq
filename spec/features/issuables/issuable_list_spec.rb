@@ -30,7 +30,7 @@ RSpec.describe 'issuable list', :js do
 
       expect(first('.issuable-upvotes')).to have_content(1)
       expect(first('.issuable-downvotes')).to have_content(1)
-      expect(first('.fa-comments').find(:xpath, '..')).to have_content(2)
+      expect(first('.issuable-comments')).to have_content(2)
     end
 
     it 'sorts labels alphabetically' do

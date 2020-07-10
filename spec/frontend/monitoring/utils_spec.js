@@ -460,7 +460,7 @@ describe('monitoring/utils', () => {
 
         expect(urlUtils.updateHistory).toHaveBeenCalledTimes(1);
         expect(urlUtils.updateHistory).toHaveBeenCalledWith({
-          url: `http://localhost/${urlParams}`,
+          url: `${TEST_HOST}/${urlParams}`,
           title: '',
         });
       },

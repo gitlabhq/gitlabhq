@@ -72,6 +72,7 @@ RSpec.describe 'GPG signed commits' do
 
     it 'unverified signature' do
       visit project_commit_path(project, GpgHelpers::SIGNED_COMMIT_SHA)
+      wait_for_all_requests
 
       page.find('.gpg-status-box', text: 'Unverified').click
 
@@ -85,6 +86,7 @@ RSpec.describe 'GPG signed commits' do
       user_2_key
 
       visit project_commit_path(project, GpgHelpers::DIFFERING_EMAIL_SHA)
+      wait_for_all_requests
 
       page.find('.gpg-status-box', text: 'Unverified').click
 
@@ -100,6 +102,7 @@ RSpec.describe 'GPG signed commits' do
       user_2_key
 
       visit project_commit_path(project, GpgHelpers::SIGNED_COMMIT_SHA)
+      wait_for_all_requests
 
       page.find('.gpg-status-box', text: 'Unverified').click
 
@@ -115,6 +118,7 @@ RSpec.describe 'GPG signed commits' do
       user_1_key
 
       visit project_commit_path(project, GpgHelpers::SIGNED_AND_AUTHORED_SHA)
+      wait_for_all_requests
 
       page.find('.gpg-status-box', text: 'Verified').click
 
@@ -130,6 +134,7 @@ RSpec.describe 'GPG signed commits' do
       user_1_key
 
       visit project_commit_path(project, GpgHelpers::SIGNED_AND_AUTHORED_SHA)
+      wait_for_all_requests
 
       # wait for the signature to get generated
       expect(page).to have_selector('.gpg-status-box', text: 'Verified')
@@ -137,6 +142,7 @@ RSpec.describe 'GPG signed commits' do
       user_1.destroy!
 
       refresh
+      wait_for_all_requests
 
       page.find('.gpg-status-box', text: 'Verified').click
 
@@ -153,6 +159,7 @@ RSpec.describe 'GPG signed commits' do
     shared_examples 'a commit with a signature' do
       before do
         visit project_tree_path(project, 'signed-commits')
+        wait_for_all_requests
       end
 
       it 'displays commit signature' do

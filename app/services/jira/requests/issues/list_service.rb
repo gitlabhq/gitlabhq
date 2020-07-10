@@ -12,8 +12,8 @@ module Jira
           super(jira_service, params)
 
           @jql = params[:jql].to_s
-          @page = params[:page].to_i || 1
-          @per_page = params[:per_page].to_i || PER_PAGE
+          @page = (params[:page] || 1).to_i
+          @per_page = (params[:per_page] || PER_PAGE).to_i
         end
 
         private

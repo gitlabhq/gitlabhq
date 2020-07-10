@@ -365,7 +365,7 @@ export default {
             :title="__('Comments')"
             :class="{ 'no-comments': hasNoComments }"
           >
-            <i class="fa fa-comments"></i>
+            <gl-icon name="comments" class="gl-vertical-align-text-bottom" />
             {{ userNotesCount }}
           </gl-link>
         </div>

@@ -1,0 +1,5 @@
+---
+title: Fix comment loading error in issues and merge requests
+merge_request: 36043
+author:
+type: fixed

@@ -175,14 +175,6 @@ RSpec.describe Gitlab::ImportExport::FastHashSerializer do
     expect(subject['merge_requests'].first['resource_label_events']).not_to be_empty
   end
 
-  it 'saves the correct service type' do
-    expect(subject['services'].first['type']).to eq('CustomIssueTrackerService')
-  end
-
-  it 'saves the properties for a service' do
-    expect(subject['services'].first['properties']).to eq('one' => 'value')
-  end
-
   it 'has project feature' do
     project_feature = subject['project_feature']
     expect(project_feature).not_to be_empty

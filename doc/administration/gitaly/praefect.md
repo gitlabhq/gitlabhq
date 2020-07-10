@@ -35,8 +35,7 @@ The availability objectives for Gitaly clusters are:
   Writes are replicated asynchronously. Any writes that have not been replicated
   to the newly promoted primary are lost.
 
-  [Strong Consistency](https://gitlab.com/groups/gitlab-org/-/epics/1189) is
-  planned to improve this to "no loss".
+  [Strong consistency](#strong-consistency) can be used to improve this to "no loss".
 
 - **Recovery Time Objective (RTO):** Less than 10 seconds.
 
@@ -876,6 +875,35 @@ Prometheus counter metric. It has two labels:
 - `storage`.
 
 They reflect configuration defined for this instance of Praefect.
+
+## Strong consistency
+
+> Introduced in GitLab 13.1 in [alpha](https://about.gitlab.com/handbook/product/#alpha-beta-ga), disabled by default.
+
+Praefect guarantees eventual consistency by replicating all writes to secondary nodes
+after the write to the primary Gitaly node has happened.
+
+Praefect can instead provide strong consistency by creating a transaction and writing
+changes to all Gitaly nodes at once. Strong consistency is currently in
+[alpha](https://about.gitlab.com/handbook/product/#alpha-beta-ga) and not enabled by
+default. For more information, see the
+[strong consistency epic](https://gitlab.com/groups/gitlab-org/-/epics/1189).
+
+To enable strong consistency:
+
+- In GitLab 13.2 and later, enable the `:gitaly_reference_transactions` feature flag.
+- In GitLab 13.1, enable the `:gitaly_reference_transactions` and `:gitaly_hooks_rpc`
+  feature flags.
+
+Enabling feature flags requires [access to the Rails console](../feature_flags.md#start-the-gitlab-rails-console).
+In the Rails console, enable or disable the flags as required. For example:
+
+```ruby
+Feature.enable(:gitaly_reference_transactions)
+```
+
+To monitor strong consistency, use the `gitaly_praefect_transactions_total` and
+`gitaly_praefect_transactions_delay_seconds` Prometheus counter metrics.
 
 ## Automatic failover and leader election
 

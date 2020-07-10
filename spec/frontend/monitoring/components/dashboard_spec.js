@@ -36,6 +36,7 @@ import {
   dashboardProps,
 } from '../fixture_data';
 import createFlash from '~/flash';
+import { TEST_HOST } from 'helpers/test_constants';
 
 jest.mock('~/flash');
 
@@ -448,7 +449,7 @@ describe('Dashboard', () => {
           path: 'dashboard&copy.yml',
         });
         expect(window.location.assign).toHaveBeenCalledWith(
-          'http://localhost/?dashboard=dashboard%2526copy.yml',
+          `${TEST_HOST}/?dashboard=dashboard%2526copy.yml`,
         );
       });
     });

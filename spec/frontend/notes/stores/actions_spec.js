@@ -274,9 +274,54 @@ describe('Actions Notes Store', () => {
     });
   });
 
+  describe('fetchData', () => {
+    describe('given there are no notes', () => {
+      const lastFetchedAt = '13579';
+
+      beforeEach(() => {
+        axiosMock
+          .onGet(notesDataMock.notesPath)
+          .replyOnce(200, { notes: [], last_fetched_at: lastFetchedAt });
+      });
+
+      it('should commit SET_LAST_FETCHED_AT', () =>
+        testAction(
+          actions.fetchData,
+          undefined,
+          { notesData: notesDataMock },
+          [{ type: 'SET_LAST_FETCHED_AT', payload: lastFetchedAt }],
+          [],
+        ));
+    });
+
+    describe('given there are notes', () => {
+      const lastFetchedAt = '12358';
+
+      beforeEach(() => {
+        axiosMock
+          .onGet(notesDataMock.notesPath)
+          .replyOnce(200, { notes: discussionMock.notes, last_fetched_at: lastFetchedAt });
+      });
+
+      it('should dispatch updateOrCreateNotes, startTaskList and commit SET_LAST_FETCHED_AT', () =>
+        testAction(
+          actions.fetchData,
+          undefined,
+          { notesData: notesDataMock },
+          [{ type: 'SET_LAST_FETCHED_AT', payload: lastFetchedAt }],
+          [
+            { type: 'updateOrCreateNotes', payload: discussionMock.notes },
+            { type: 'startTaskList' },
+          ],
+        ));
+    });
+  });
+
   describe('poll', () => {
     beforeEach(done => {
-      jest.spyOn(axios, 'get');
+      axiosMock
+        .onGet(notesDataMock.notesPath)
+        .reply(200, { notes: [], last_fetched_at: '123456' }, { 'poll-interval': '1000' });
 
       store
         .dispatch('setNotesData', notesDataMock)
@@ -285,15 +330,10 @@ describe('Actions Notes Store', () => {
     });
 
     it('calls service with last fetched state', done => {
-      axiosMock
-        .onAny()
-        .reply(200, { notes: [], last_fetched_at: '123456' }, { 'poll-interval': '1000' });
-
       store
         .dispatch('poll')
         .then(() => new Promise(resolve => requestAnimationFrame(resolve)))
         .then(() => {
-          expect(axios.get).toHaveBeenCalled();
           expect(store.state.lastFetchedAt).toBe('123456');
 
           jest.advanceTimersByTime(1500);
@@ -305,8 +345,9 @@ describe('Actions Notes Store', () => {
             }),
         )
         .then(() => {
-          expect(axios.get.mock.calls.length).toBe(2);
-          expect(axios.get.mock.calls[axios.get.mock.calls.length - 1][1].headers).toEqual({
+          const expectedGetRequests = 2;
+          expect(axiosMock.history.get.length).toBe(expectedGetRequests);
+          expect(axiosMock.history.get[expectedGetRequests - 1].headers).toMatchObject({
             'X-Last-Fetched-At': '123456',
           });
         })

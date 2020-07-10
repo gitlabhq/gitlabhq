@@ -1,4 +1,4 @@
-import { s__ } from '~/locale';
+import { s__, __ } from '~/locale';
 
 //  Translations strings
 export const DETAILS_PAGE_TITLE = s__('ContainerRegistry|%{imageName} tags');
@@ -48,6 +48,12 @@ export const REMOVE_TAG_BUTTON_DISABLE_TOOLTIP = s__(
   'ContainerRegistry|Deletion disabled due to missing or insufficient permissions.',
 );
 
+export const MISSING_MANIFEST_WARNING_TOOLTIP = s__(
+  'ContainerRegistry|Invalid tag: missing manifest digest',
+);
+
+export const NOT_AVAILABLE_TEXT = __('N/A');
+export const NOT_AVAILABLE_SIZE = __('0 bytes');
 // Parameters
 
 export const DEFAULT_PAGE = 1;

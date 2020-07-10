@@ -80,13 +80,13 @@ The following table shows which languages, package managers and frameworks are s
 | Groovy ([Ant](https://ant.apache.org/), [Gradle](https://gradle.org/), [Maven](https://maven.apache.org/) and [SBT](https://www.scala-sbt.org/)) | [SpotBugs](https://spotbugs.github.io/) with the [find-sec-bugs](https://find-sec-bugs.github.io/) plugin | 11.3 (Gradle) & 11.9 (Ant, Maven, SBT) |
 | Helm Charts                                                                 | [Kubesec](https://github.com/controlplaneio/kubesec)                                   | 13.1                         |
 | Java ([Ant](https://ant.apache.org/), [Gradle](https://gradle.org/), [Maven](https://maven.apache.org/) and [SBT](https://www.scala-sbt.org/)) | [SpotBugs](https://spotbugs.github.io/) with the [find-sec-bugs](https://find-sec-bugs.github.io/) plugin | 10.6 (Maven), 10.8 (Gradle) & 11.9 (Ant, SBT) |
-| JavaScript                                                                  | [ESLint security plugin](https://github.com/nodesecurity/eslint-plugin-security)       | 11.8                         |
+| JavaScript                                                                  | [ESLint security plugin](https://github.com/nodesecurity/eslint-plugin-security)       | 11.8, moved to [GitLab Core](https://about.gitlab.com/pricing/) in 13.2  |
 | Kubernetes manifests                                                        | [Kubesec](https://github.com/controlplaneio/kubesec)                                   | 12.6                         |
 | Node.js                                                                     | [NodeJsScan](https://github.com/ajinabraham/NodeJsScan)                                | 11.1                         |
 | PHP                                                                         | [phpcs-security-audit](https://github.com/FloeDesignTechnologies/phpcs-security-audit) | 10.8                         |
 | Python ([pip](https://pip.pypa.io/en/stable/))                              | [bandit](https://github.com/PyCQA/bandit)                                              | 10.3                         |
 | React                                                                       | [ESLint react plugin](https://github.com/yannickcr/eslint-plugin-react)                | 12.5                         |
-| Ruby on Rails                                                               | [brakeman](https://brakemanscanner.org)                                                | 10.3, moved to Core in 13.1  |
+| Ruby on Rails                                                               | [brakeman](https://brakemanscanner.org)                                                | 10.3, moved to [GitLab Core](https://about.gitlab.com/pricing/) in 13.1  |
 | Scala ([Ant](https://ant.apache.org/), [Gradle](https://gradle.org/), [Maven](https://maven.apache.org/) and [SBT](https://www.scala-sbt.org/)) | [SpotBugs](https://spotbugs.github.io/) with the [find-sec-bugs](https://find-sec-bugs.github.io/) plugin | 11.0 (SBT) & 11.9 (Ant, Gradle, Maven) |
 | TypeScript                                                                  | [`tslint-config-security`](https://github.com/webschik/tslint-config-security/) | 11.9 |
 
@@ -97,9 +97,12 @@ The Java analyzers can also be used for variants like the
 
 ### Making SAST analyzers available to all GitLab tiers
 
-All open source (OSS) analyzers are in the process of being reviewed and potentially moved to GitLab Core tier. Progress can be
+All open source (OSS) analyzers are in the process of being reviewed and potentially moved to the GitLab Core tier. Progress can be
 tracked in the corresponding
 [epic](https://gitlab.com/groups/gitlab-org/-/epics/2098).
+
+Please note that support for [Docker-in-Docker](#enabling-docker-in-docker)
+will not be extended to the GitLab Core tier.
 
 #### Summary of features per tier
 

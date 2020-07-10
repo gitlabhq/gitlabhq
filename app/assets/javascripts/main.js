@@ -33,7 +33,7 @@ import initFrequentItemDropdowns from './frequent_items';
 import initBreadcrumbs from './breadcrumb';
 import initUsagePingConsent from './usage_ping_consent';
 import initPerformanceBar from './performance_bar';
-import initGlobalSearchInput from './global_search_input';
+import initSearchAutocomplete from './search_autocomplete';
 import GlFieldErrors from './gl_field_errors';
 import initUserPopovers from './user_popovers';
 import initBroadcastNotifications from './broadcast_notification';
@@ -113,7 +113,7 @@ function deferredInitialisation() {
   initFrequentItemDropdowns();
   initPersistentUserCallouts();
 
-  if (document.querySelector('.search')) initGlobalSearchInput();
+  if (document.querySelector('.search')) initSearchAutocomplete();
 
   addSelectOnFocusBehaviour('.js-select-on-focus');
 

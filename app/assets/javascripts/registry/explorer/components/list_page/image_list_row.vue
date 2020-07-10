@@ -88,7 +88,7 @@ export default {
         v-if="item.failedDelete"
         v-gl-tooltip="{ title: $options.i18n.ASYNC_DELETE_IMAGE_ERROR_MESSAGE }"
         name="warning"
-        class="text-warning"
+        class="gl-text-orange-500"
       />
     </template>
     <template #left-secondary>

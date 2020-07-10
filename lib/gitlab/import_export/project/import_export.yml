@@ -89,7 +89,6 @@ tree:
     - :triggers
     - :pipeline_schedules
     - :container_expiration_policy
-    - :services
     - protected_branches:
       - :merge_access_levels
       - :push_access_levels
@@ -261,12 +260,6 @@ excluded_attributes:
   runners:
     - :token
     - :token_encrypted
-  services:
-    - :description
-    - :inherit_from_id
-    - :instance
-    - :template
-    - :title
   error_tracking_setting:
     - :encrypted_token
     - :encrypted_token_iv
@@ -354,8 +347,6 @@ methods:
   label:
     - :type
   statuses:
-    - :type
-  services:
     - :type
   merge_request_diff_files:
     - :utf8_diff

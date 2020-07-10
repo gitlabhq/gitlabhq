@@ -93,6 +93,16 @@ RSpec.describe Jira::Requests::Issues::ListService do
             subject
           end
         end
+
+        context 'without pagination parameters' do
+          let(:params) { {} }
+
+          it 'uses the default options' do
+            expect(client).to receive(:get).with(include('startAt=0&maxResults=100'))
+
+            subject
+          end
+        end
       end
     end
   end

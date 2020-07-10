@@ -291,10 +291,6 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer do
           expect(@project.auto_devops.deploy_strategy).to eq('continuous')
         end
 
-        it 'restores the correct service' do
-          expect(CustomIssueTrackerService.first).not_to be_nil
-        end
-
         it 'restores zoom meetings' do
           meetings = @project.issues.first.zoom_meetings
 
@@ -553,8 +549,7 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer do
             labels: 2,
             label_with_priorities: 'A project label',
             milestones: 1,
-            first_issue_labels: 1,
-            services: 1
+            first_issue_labels: 1
         end
 
         context 'when there is an existing build with build token' do
@@ -637,7 +632,6 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer do
           label_with_priorities: 'A project label',
           milestones: 1,
           first_issue_labels: 1,
-          services: 1,
           import_failures: 1
 
         it 'records the failures in the database' do
@@ -755,18 +749,6 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer do
         before do
           setup_import_export_config('light')
           setup_reader(reader)
-        end
-
-        it 'does not import any templated services' do
-          expect(restored_project_json).to eq(true)
-
-          expect(project.services.where(template: true).count).to eq(0)
-        end
-
-        it 'does not import any instance services' do
-          expect(restored_project_json).to eq(true)
-
-          expect(project.services.where(instance: true).count).to eq(0)
         end
 
         it 'imports labels' do
@@ -972,7 +954,6 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer do
           label_with_priorities: nil,
           milestones: 1,
           first_issue_labels: 0,
-          services: 0,
           import_failures: 1
 
         it 'records the failures in the database' do

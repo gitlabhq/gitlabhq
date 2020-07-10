@@ -13,7 +13,6 @@ describe('Blob Header Default Actions', () => {
   let wrapper;
   let btnGroup;
   let buttons;
-  const hrefPrefix = 'http://localhost';
 
   function createComponent(propsData = {}) {
     wrapper = mount(BlobHeaderActions, {
@@ -47,11 +46,11 @@ describe('Blob Header Default Actions', () => {
     });
 
     it('correct href attribute on RAW button', () => {
-      expect(buttons.at(1).vm.$el.href).toBe(`${hrefPrefix}${Blob.rawPath}`);
+      expect(buttons.at(1).attributes('href')).toBe(Blob.rawPath);
     });
 
     it('correct href attribute on Download button', () => {
-      expect(buttons.at(2).vm.$el.href).toBe(`${hrefPrefix}${Blob.rawPath}?inline=false`);
+      expect(buttons.at(2).attributes('href')).toBe(`${Blob.rawPath}?inline=false`);
     });
 
     it('does not render "Copy file contents" button as disables if the viewer is Simple', () => {

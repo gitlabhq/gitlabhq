@@ -402,9 +402,8 @@ export const saveNote = ({ commit, dispatch }, noteData) => {
 };
 
 const pollSuccessCallBack = (resp, commit, state, getters, dispatch) => {
-  if (resp.notes && resp.notes.length) {
-    updateOrCreateNotes({ commit, state, getters, dispatch }, resp.notes);
-
+  if (resp.notes?.length) {
+    dispatch('updateOrCreateNotes', resp.notes);
     dispatch('startTaskList');
   }
 
@@ -424,12 +423,12 @@ const getFetchDataParams = state => {
   return { endpoint, options };
 };
 
-export const fetchData = ({ commit, state, getters }) => {
+export const fetchData = ({ commit, state, getters, dispatch }) => {
   const { endpoint, options } = getFetchDataParams(state);
 
   axios
     .get(endpoint, options)
-    .then(({ data }) => pollSuccessCallBack(data, commit, state, getters))
+    .then(({ data }) => pollSuccessCallBack(data, commit, state, getters, dispatch))
     .catch(() => Flash(__('Something went wrong while fetching latest comments.')));
 };
 
@@ -449,7 +448,7 @@ export const poll = ({ commit, state, getters, dispatch }) => {
   if (!Visibility.hidden()) {
     eTagPoll.makeRequest();
   } else {
-    fetchData({ commit, state, getters });
+    dispatch('fetchData');
   }
 
   Visibility.change(() => {
