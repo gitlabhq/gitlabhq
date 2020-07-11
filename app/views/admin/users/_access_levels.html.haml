@@ -1,5 +1,6 @@
 %fieldset
-  %legend Access
+  %legend
+    = s_('AdminUsers|Access')
   .form-group.row
     .col-sm-2.col-form-label
       = f.label :projects_limit
@@ -7,43 +8,43 @@
       = f.number_field :projects_limit, min: 0, max: Gitlab::Database::MAX_INT_VALUE, class: 'form-control'
 
   .form-group.row
-    .col-sm-2.col-form-label
+    .col-sm-2.col-form-label.gl-pt-0
       = f.label :can_create_group
     .col-sm-10
       = f.check_box :can_create_group
 
   .form-group.row
-    .col-sm-2.col-form-label
+    .col-sm-2.col-form-label.gl-pt-0
       = f.label :access_level
     .col-sm-10
       - editing_current_user = (current_user == @user)
 
       = f.radio_button :access_level, :regular, disabled: editing_current_user
       = f.label :access_level_regular, class: 'font-weight-bold' do
-        Regular
+        = s_('AdminUsers|Regular')
       %p.light
-        Regular users have access to their groups and projects
+        = s_('AdminUsers|Regular users have access to their groups and projects')
 
       = render_if_exists 'admin/users/auditor_access_level_radio', f: f, disabled: editing_current_user
 
       = f.radio_button :access_level, :admin, disabled: editing_current_user
       = f.label :access_level_admin, class: 'font-weight-bold' do
-        Admin
+        = s_('AdminUsers|Admin')
       %p.light
-        Administrators have access to all groups, projects and users and can manage all features in this installation
+        = s_('AdminUsers|Administrators have access to all groups, projects and users and can manage all features in this installation')
       - if editing_current_user
         %p.light
-          You cannot remove your own admin rights.
+          = s_('AdminUsers|You cannot remove your own admin rights.')
 
   .form-group.row
-    .col-sm-2.col-form-label
+    .col-sm-2.col-form-label.gl-pt-0
       = f.label :external
     .hidden{ data: user_internal_regex_data }
-    .col-sm-10
+    .col-sm-10.gl-display-flex.gl-align-items-baseline
       = f.check_box :external do
-        External
-      %p.light
-        External users cannot see internal or private projects unless access is explicitly granted. Also, external users cannot create projects, groups, or personal snippets.
+        = s_('AdminUsers|External')
+      %p.light.gl-pl-2
+        = s_('AdminUsers|External users cannot see internal or private projects unless access is explicitly granted. Also, external users cannot create projects, groups, or personal snippets.')
       %row.hidden#warning_external_automatically_set.hidden
         .badge.badge-warning.text-white
-          = _('Automatically marked as default internal user')
+          = s_('AdminUsers|Automatically marked as default internal user')

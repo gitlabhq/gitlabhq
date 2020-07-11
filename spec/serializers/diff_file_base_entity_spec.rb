@@ -40,10 +40,6 @@ RSpec.describe DiffFileBaseEntity do
     let(:options) { { request: EntityRequest.new(current_user: create(:user)), merge_request: merge_request } }
     let(:params) { {} }
 
-    before do
-      stub_feature_flags(web_ide_default: false)
-    end
-
     shared_examples 'a diff file edit path to the source branch' do
       it do
         expect(entity[:edit_path]).to eq(Gitlab::Routing.url_helpers.project_edit_blob_path(project, File.join(merge_request.source_branch, diff_file.new_path), params))

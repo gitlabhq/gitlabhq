@@ -1,3 +1,4 @@
+import { has } from 'lodash';
 import { isInIssuePage, isInMRPage, isInEpicPage } from './common_utils';
 
 export const addClassIfElementExists = (element, className) => {
@@ -25,3 +26,24 @@ export const toggleContainerClasses = (containerEl, classList) => {
     });
   }
 };
+
+/**
+ * Return a object mapping element dataset names to booleans.
+ *
+ * This is useful for data- attributes whose presense represent
+ * a truthiness, no matter the value of the attribute. The absense of the
+ * attribute represents  falsiness.
+ *
+ * This can be useful when Rails-provided boolean-like values are passed
+ * directly to the HAML template, rather than cast to a string.
+ *
+ * @param {HTMLElement} element - The DOM element to inspect
+ * @param {string[]} names - The dataset (i.e., camelCase) names to inspect
+ * @returns {Object.<string, boolean>}
+ */
+export const parseBooleanDataAttributes = ({ dataset }, names) =>
+  names.reduce((acc, name) => {
+    acc[name] = has(dataset, name);
+
+    return acc;
+  }, {});

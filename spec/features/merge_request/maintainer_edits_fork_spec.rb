@@ -20,7 +20,7 @@ RSpec.describe 'a maintainer edits files on a source-branch of an MR from a fork
   end
 
   before do
-    stub_feature_flags(web_ide_default: false, single_mr_diff_view: false)
+    stub_feature_flags(single_mr_diff_view: false)
 
     target_project.add_maintainer(user)
     sign_in(user)

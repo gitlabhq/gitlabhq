@@ -57,7 +57,6 @@ linters:
       - "app/views/admin/spam_logs/_spam_log.html.haml"
       - "app/views/admin/spam_logs/index.html.haml"
       - "app/views/admin/system_info/show.html.haml"
-      - "app/views/admin/users/_access_levels.html.haml"
       - "app/views/admin/users/_form.html.haml"
       - "app/views/admin/users/_head.html.haml"
       - "app/views/admin/users/_profile.html.haml"

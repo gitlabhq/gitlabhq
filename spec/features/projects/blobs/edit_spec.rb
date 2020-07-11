@@ -11,10 +11,6 @@ RSpec.describe 'Editing file blob', :js do
   let(:file_path) { project.repository.ls_files(project.repository.root_ref)[1] }
   let(:readme_file_path) { 'README.md' }
 
-  before do
-    stub_feature_flags(web_ide_default: false)
-  end
-
   context 'as a developer' do
     let(:user) { create(:user) }
     let(:role) { :developer }
