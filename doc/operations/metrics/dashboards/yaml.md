@@ -39,7 +39,7 @@ Read the documentation on [templating](templating_variables.md).
 | `title` | string | no | Display title for the link. |
 | `type` | string | no | Type of the link. Specifies the link type, can be: `grafana` |
 
-Read the documentation on [links](../../../user/project/integrations/prometheus.md#add-related-links-to-custom-dashboards).
+Read the documentation on [links](index.md#add-related-links-to-custom-dashboards).
 
 ## **Panel group (`panel_groups`) properties**
 
@@ -76,7 +76,7 @@ Panels in a panel group are laid out in rows consisting of two panels per row. A
 
 | Property | Type | Required | Description |
 | ------ | ------ | ------ | ------ |
-| `id` | string | no | Used for associating dashboard metrics with database records. Must be unique across dashboard configuration files. Required for [alerting](../../../user/project/integrations/prometheus.md#setting-up-alerts-for-prometheus-metrics) (support not yet enabled, see [relevant issue](https://gitlab.com/gitlab-org/gitlab/-/issues/27980)). |
+| `id` | string | no | Used for associating dashboard metrics with database records. Must be unique across dashboard configuration files. Required for [alerting](../index.md#setting-up-alerts-for-prometheus-metrics) (support not yet enabled, see [relevant issue](https://gitlab.com/gitlab-org/gitlab/-/issues/27980)). |
 | `unit` | string | yes | Defines the unit of the query's return data. |
 | `label` | string | no, but highly encouraged | Defines the legend-label for the query. Should be unique within the panel's metrics. Can contain time series labels as interpolated variables. |
 | `query` | string | yes if `query_range` is not defined | Defines the Prometheus query to be used to populate the chart/panel. If defined, the `query` endpoint of the [Prometheus API](https://prometheus.io/docs/prometheus/latest/querying/api/) will be utilized. |
@@ -128,3 +128,39 @@ metrics:
 This works by lowercasing the value of `label` and, if there are more words separated by spaces, replacing those spaces with an underscore (`_`). The transformed value is then checked against the labels of the time series returned by the Prometheus query. If a time series label is found that is equal to the transformed value, then the label value will be used and rendered in the legend like this:
 
 ![legend with label shorthand variable](../../../user/project/integrations/img/prometheus_dashboard_label_variable_shorthand.png)
+
+## Dashboard YAML syntax validation
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/33202) in GitLab 13.1.
+
+To confirm your dashboard definition contains valid YAML syntax:
+
+1. Navigate to **{doc-text}** **Repository > Files**.
+1. Navigate to your dashboard file in your repository.
+1. Review the information pane about the file, displayed above the file contents.
+
+Files with valid syntax display **Metrics Dashboard YAML definition is valid**,
+and files with invalid syntax display **Metrics Dashboard YAML definition is invalid**.
+
+![Metrics Dashboard_YAML_syntax_validation](../../../user/project/integrations/img/prometheus_dashboard_yaml_validation_v13_1.png)
+
+When **Metrics Dashboard YAML definition is invalid** at least one of the following messages is displayed:
+
+1. `dashboard: can't be blank` [learn more](../../../operations/metrics/dashboards/yaml.md#dashboard-top-level-properties)
+1. `panel_groups: should be an array of panel_groups objects` [learn more](../../../operations/metrics/dashboards/yaml.md#dashboard-top-level-properties)
+1. `group: can't be blank` [learn more](../../../operations/metrics/dashboards/yaml.md#panel-group-panel_groups-properties)
+1. `panels: should be an array of panels objects` [learn more](../../../operations/metrics/dashboards/yaml.md#panel-group-panel_groups-properties)
+1. `title: can't be blank` [learn more](../../../operations/metrics/dashboards/yaml.md#panel-panels-properties)
+1. `metrics: should be an array of metrics objects` [learn more](../../../operations/metrics/dashboards/yaml.md#panel-panels-properties)
+1. `query: can't be blank` [learn more](../../../operations/metrics/dashboards/yaml.md#metrics-metrics-properties)
+1. `query_range: can't be blank` [learn more](../../../operations/metrics/dashboards/yaml.md#metrics-metrics-properties)
+1. `unit: can't be blank` [learn more](../../../operations/metrics/dashboards/yaml.md#metrics-metrics-properties)
+1. `YAML syntax: The parsed YAML is too big`
+
+   This is displayed when the YAML file is larger than 1 MB.
+
+1. `YAML syntax: Invalid configuration format`
+
+   This is displayed when the YAML file is empty or does not contain valid YAML.
+
+Metrics Dashboard YAML definition validation information is also available as a [GraphQL API field](../../../api/graphql/reference/index.md#metricsdashboard)
