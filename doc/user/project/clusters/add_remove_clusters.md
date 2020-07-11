@@ -153,11 +153,6 @@ Amazon Elastic Kubernetes Service (EKS) at the project, group, or instance level
 
 If you have an existing Kubernetes cluster, you can add it to a project, group, or instance.
 
-For more information, see information for adding an:
-
-- [Existing Kubernetes cluster](#existing-kubernetes-cluster), including GKE clusters.
-- [Existing EKS cluster](add_eks_clusters.md#existing-eks-cluster).
-
 NOTE: **Note:**
 Kubernetes integration is not supported for arm64 clusters. See the issue
 [Helm Tiller fails to install on arm64 cluster](https://gitlab.com/gitlab-org/gitlab/-/issues/29838) for details.

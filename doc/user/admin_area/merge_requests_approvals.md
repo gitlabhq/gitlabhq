@@ -58,13 +58,13 @@ Maintainer role and above can modify these.
 
 This feature comes with two feature flags which are disabled by default.
 
-- The configuration in Admin area is controlled via `admin_merge_request_approval_settings`
-- The application of these rules is controlled via `project_merge_request_approval_settings`
+- The configuration in Admin area is controlled via `admin_compliance_merge_request_approval_settings`.
+- The application of these rules is controlled via `project_compliance_merge_request_approval_settings`.
 
 These feature flags can be managed by feature flag [API endpoint](../../api/features.md#set-or-create-a-feature) or
 by [GitLab administrators with access to the GitLab Rails console](../../administration/feature_flags.md) with the following commands:
 
 ```ruby
-Feature.enable(:admin_merge_request_approval_settings)
-Feature.enable(:project_merge_request_approval_settings)
+Feature.enable(:admin_compliance_merge_request_approval_settings)
+Feature.enable(:project_compliance_merge_request_approval_settings)
 ```

@@ -57,7 +57,7 @@ module Spam
       rescue *Gitlab::HTTP::HTTP_ERRORS => e
         # @TODO: log error via try_post https://gitlab.com/gitlab-org/gitlab/-/issues/219223
         Gitlab::ErrorTracking.log_exception(e)
-        return
+        nil
       rescue
         # @TODO log
         ALLOW

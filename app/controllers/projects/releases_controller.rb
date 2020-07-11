@@ -30,7 +30,7 @@ class Projects::ReleasesController < Projects::ApplicationController
 
   def new
     unless Feature.enabled?(:new_release_page, project)
-      return redirect_to(new_project_tag_path(@project))
+      redirect_to(new_project_tag_path(@project))
     end
   end
 

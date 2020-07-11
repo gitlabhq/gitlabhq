@@ -20,9 +20,9 @@ class Projects::TreeController < Projects::ApplicationController
 
     if tree.entries.empty?
       if @repository.blob_at(@commit.id, @path)
-        return redirect_to project_blob_path(@project, File.join(@ref, @path))
+        redirect_to project_blob_path(@project, File.join(@ref, @path))
       elsif @path.present?
-        return redirect_to_tree_root_for_missing_path(@project, @ref, @path)
+        redirect_to_tree_root_for_missing_path(@project, @ref, @path)
       end
     end
   end

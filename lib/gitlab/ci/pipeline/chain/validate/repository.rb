@@ -18,7 +18,7 @@ module Gitlab
               end
 
               if @command.ambiguous_ref?
-                return error('Ref is ambiguous')
+                error('Ref is ambiguous')
               end
             end
 

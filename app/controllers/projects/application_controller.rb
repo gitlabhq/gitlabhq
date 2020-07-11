@@ -42,7 +42,7 @@ class Projects::ApplicationController < ApplicationController
 
   def authorize_action!(action)
     unless can?(current_user, action, project)
-      return access_denied!
+      access_denied!
     end
   end
 

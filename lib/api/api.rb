@@ -133,6 +133,8 @@ module API
       mount ::API::Boards
       mount ::API::Branches
       mount ::API::BroadcastMessages
+      mount ::API::Ci::Pipelines
+      mount ::API::Ci::PipelineSchedules
       mount ::API::Ci::Runner
       mount ::API::Ci::Runners
       mount ::API::Commits
@@ -179,8 +181,6 @@ module API
       mount ::API::NotificationSettings
       mount ::API::Pages
       mount ::API::PagesDomains
-      mount ::API::Pipelines
-      mount ::API::PipelineSchedules
       mount ::API::ProjectClusters
       mount ::API::ProjectContainerRepositories
       mount ::API::ProjectEvents

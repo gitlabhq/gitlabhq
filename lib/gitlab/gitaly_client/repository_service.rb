@@ -201,9 +201,9 @@ module Gitlab
         response = GitalyClient.call(@storage, :repository_service, :fsck, request, timeout: GitalyClient.long_timeout)
 
         if response.error.empty?
-          return "", 0
+          ["", 0]
         else
-          return response.error.b, 1
+          [response.error.b, 1]
         end
       end
 

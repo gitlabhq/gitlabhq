@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::PipelineSchedules do
+RSpec.describe API::Ci::PipelineSchedules do
   let_it_be(:developer) { create(:user) }
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project, :repository, public_builds: false) }
@@ -24,7 +24,7 @@ RSpec.describe API::PipelineSchedules do
           .each do |pipeline_schedule|
           create(:user).tap do |user|
             project.add_developer(user)
-            pipeline_schedule.update(owner: user)
+            pipeline_schedule.update!(owner: user)
           end
           pipeline_schedule.pipelines << build(:ci_pipeline, project: project)
         end

@@ -56,7 +56,7 @@ module Gitlab
     #   * Maximum length is 63 bytes
     #   * First/Last Character is not a hyphen
     def slugify(str)
-      return str.downcase
+      str.downcase
         .gsub(/[^a-z0-9]/, '-')[0..62]
         .gsub(/(\A-+|-+\z)/, '')
     end

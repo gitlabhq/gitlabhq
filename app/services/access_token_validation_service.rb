@@ -17,21 +17,21 @@ class AccessTokenValidationService
 
   def validate(scopes: [])
     if token.expired?
-      return EXPIRED
+      EXPIRED
 
     elsif token.revoked?
-      return REVOKED
+      REVOKED
 
     elsif !self.include_any_scope?(scopes)
-      return INSUFFICIENT_SCOPE
+      INSUFFICIENT_SCOPE
 
     elsif token.respond_to?(:impersonation) &&
         token.impersonation &&
         !Gitlab.config.gitlab.impersonation_enabled
-      return IMPERSONATION_DISABLED
+      IMPERSONATION_DISABLED
 
     else
-      return VALID
+      VALID
     end
   end
 

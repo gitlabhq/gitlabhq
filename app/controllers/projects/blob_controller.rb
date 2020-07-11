@@ -129,7 +129,7 @@ class Projects::BlobController < Projects::ApplicationController
         end
       end
 
-      return redirect_to_tree_root_for_missing_path(@project, @ref, @path)
+      redirect_to_tree_root_for_missing_path(@project, @ref, @path)
     end
   end
 

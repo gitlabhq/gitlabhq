@@ -17,7 +17,6 @@ class DeleteMergedBranchesWorker # rubocop:disable Scalability/IdempotentWorker
     begin
       ::Branches::DeleteMergedService.new(project, user).execute
     rescue Gitlab::Access::AccessDeniedError
-      return
     end
   end
 end

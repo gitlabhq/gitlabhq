@@ -101,7 +101,7 @@ module Gitlab
 
         if project
           # If a project is found and the user has access, we return the full project path
-          return project.full_path, project.default_branch
+          [project.full_path, project.default_branch]
         else
           # If not, we return the first two components as if it were a simple `namespace/project` path,
           # so that we don't reveal the existence of a nested project the user doesn't have access to.
@@ -112,7 +112,7 @@ module Gitlab
           # `go get gitlab.com/group/subgroup/project/subpackage` will not work for private projects.
           # `go get gitlab.com/group/subgroup/project.git/subpackage` will work, since Go is smart enough
           # to figure that out. `import 'gitlab.com/...'` behaves the same as `go get`.
-          return simple_project_path, 'master'
+          [simple_project_path, 'master']
         end
       end
 

@@ -29,7 +29,7 @@ The following tables outline the details of expected properties.
 | -------- | ---- | -------- | ----------- |
 | `variables` | hash | yes | Variables can be defined here. |
 
-Read the documentation on [templating](../../../user/project/integrations/prometheus.md#templating-variables-for-metrics-dashboards).
+Read the documentation on [templating](templating_variables.md).
 
 ## **Links (`links`) properties**
 

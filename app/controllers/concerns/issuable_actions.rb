@@ -197,13 +197,13 @@ module IssuableActions
 
   def authorize_destroy_issuable!
     unless can?(current_user, :"destroy_#{issuable.to_ability_name}", issuable)
-      return access_denied!
+      access_denied!
     end
   end
 
   def authorize_admin_issuable!
     unless can?(current_user, :"admin_#{resource_name}", parent)
-      return access_denied!
+      access_denied!
     end
   end
 
