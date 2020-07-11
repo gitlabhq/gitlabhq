@@ -3124,8 +3124,10 @@ job:
 ```
 
 NOTE: **Note:**
-For artifacts created in [GitLab 13.1](https://gitlab.com/gitlab-org/gitlab/-/issues/16267)
-and later, the latest artifact for a ref is always kept, regardless of the expiry time.
+Since [GitLab 13.0](https://gitlab.com/gitlab-org/gitlab/-/issues/16267), the latest
+artifacts for refs can be locked against deletion, and kept regardless of the expiry time. This feature is disabled
+by default and is not ready for production use. It can be enabled for testing by
+enabling the `:keep_latest_artifact_for_ref` and `:destroy_only_unlocked_expired_artifacts` [feature flags](../../administration/feature_flags.md).
 
 #### `artifacts:reports`
 
