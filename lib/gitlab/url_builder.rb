@@ -85,9 +85,11 @@ module Gitlab
       def wiki_url(wiki, **options)
         return wiki_page_url(wiki, Wiki::HOMEPAGE, **options) unless options[:action]
 
-        options[:controller] = 'projects/wikis'
-        options[:namespace_id] = wiki.container.namespace
-        options[:project_id] = wiki.container
+        if wiki.container.is_a?(Project)
+          options[:controller] = 'projects/wikis'
+          options[:namespace_id] = wiki.container.namespace
+          options[:project_id] = wiki.container
+        end
 
         instance.url_for(**options)
       end

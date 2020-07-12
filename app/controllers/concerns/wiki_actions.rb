@@ -2,6 +2,7 @@
 
 module WikiActions
   include DiffHelper
+  include PreviewMarkdown
   include SendsBlob
   include Gitlab::Utils::StrongMemoize
   extend ActiveSupport::Concern

@@ -174,6 +174,10 @@ module DiffHelper
     end
   end
 
+  def apply_diff_view_cookie!
+    set_secure_cookie(:diff_view, params.delete(:view), type: CookiesHelper::COOKIE_TYPE_PERMANENT) if params[:view].present?
+  end
+
   private
 
   def diff_btn(title, name, selected)

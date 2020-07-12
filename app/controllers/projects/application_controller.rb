@@ -81,10 +81,6 @@ class Projects::ApplicationController < ApplicationController
     end
   end
 
-  def apply_diff_view_cookie!
-    set_secure_cookie(:diff_view, params.delete(:view), type: COOKIE_TYPE_PERMANENT) if params[:view].present?
-  end
-
   def require_pages_enabled!
     not_found unless @project.pages_available?
   end

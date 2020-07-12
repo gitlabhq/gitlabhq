@@ -9,6 +9,7 @@ class Projects::BlobController < Projects::ApplicationController
   include ActionView::Helpers::SanitizeHelper
   include RedirectsForMissingPathOnTree
   include SourcegraphDecorator
+  include DiffHelper
 
   prepend_before_action :authenticate_user!, only: [:edit]
 
