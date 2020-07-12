@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  context 'Plan', :smoke, :reliable do
+  RSpec.describe 'Plan', :smoke, :reliable do
     describe 'mention' do
       before do
         Flow::Login.sign_in

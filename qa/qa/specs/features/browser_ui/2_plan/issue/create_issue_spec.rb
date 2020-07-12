@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  context 'Plan', :smoke do
+  RSpec.describe 'Plan', :smoke do
     describe 'Issue creation' do
       let(:closed_issue) { Resource::Issue.fabricate_via_api! }
 

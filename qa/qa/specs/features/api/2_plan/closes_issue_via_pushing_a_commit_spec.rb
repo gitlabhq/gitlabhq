@@ -3,7 +3,7 @@
 require 'airborne'
 
 module QA
-  context 'Plan' do
+  RSpec.describe 'Plan' do
     include Support::Api
 
     describe 'Issue' do
