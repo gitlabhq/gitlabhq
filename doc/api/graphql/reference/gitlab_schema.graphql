@@ -5304,6 +5304,11 @@ type Group {
   subgroupCreationLevel: String
 
   """
+  Date until the temporary storage increase is active
+  """
+  temporaryStorageIncreaseEndsOn: Time
+
+  """
   Time logged in issues by group members
   """
   timelogs(
@@ -8203,6 +8208,11 @@ type Namespace {
   Total storage limit of the root namespace in bytes
   """
   storageSizeLimit: Float
+
+  """
+  Date until the temporary storage increase is active
+  """
+  temporaryStorageIncreaseEndsOn: Time
 
   """
   Visibility of the namespace

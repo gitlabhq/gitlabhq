@@ -12,7 +12,9 @@ exports[`AlertsSettingsForm with default values renders the initial template 1`]
     </p>
   </div>
   <gl-form-stub>
-    <!---->
+    <gl-form-group-stub label=\\"Integrations\\" label-for=\\"integrations\\" label-class=\\"label-bold\\">
+      <gl-form-select-stub options=\\"[object Object],[object Object]\\" data-testid=\\"alert-settings-select\\" value=\\"generic\\"></gl-form-select-stub> <span class=\\"gl-text-gray-400\\"><gl-sprintf-stub message=\\"Learn more about our %{linkStart}upcoming integrations%{linkEnd}\\"></gl-sprintf-stub></span>
+    </gl-form-group-stub>
     <gl-form-group-stub label=\\"Active\\" label-for=\\"activated\\" label-class=\\"label-bold\\">
       <toggle-button-stub id=\\"activated\\"></toggle-button-stub>
     </gl-form-group-stub>
@@ -29,9 +31,18 @@ exports[`AlertsSettingsForm with default values renders the initial template 1`]
         Resetting the authorization key for this project will require updating the authorization key in every alert source it is enabled in.
       </gl-modal-stub>
     </gl-form-group-stub>
-    <!---->
+    <gl-form-group-stub label=\\"Alert test payload\\" label-for=\\"alert-json\\" label-class=\\"label-bold\\">
+      <gl-form-textarea-stub noresize=\\"true\\" id=\\"alert-json\\" disabled=\\"true\\" state=\\"true\\" placeholder=\\"Enter test alert JSON....\\" rows=\\"6\\" max-rows=\\"10\\"></gl-form-textarea-stub>
+    </gl-form-group-stub>
     <gl-button-stub category=\\"tertiary\\" variant=\\"default\\" size=\\"medium\\" icon=\\"\\" disabled=\\"true\\">Test alert payload</gl-button-stub>
-    <!---->
+    <div class=\\"footer-block row-content-block gl-display-flex gl-justify-content-space-between\\">
+      <gl-button-stub category=\\"primary\\" variant=\\"success\\" size=\\"medium\\" icon=\\"\\" disabled=\\"true\\" type=\\"submit\\">
+        Save changes
+      </gl-button-stub>
+      <gl-button-stub category=\\"primary\\" variant=\\"default\\" size=\\"medium\\" icon=\\"\\" type=\\"reset\\">
+        Cancel
+      </gl-button-stub>
+    </div>
   </gl-form-stub>
 </div>"
 `;

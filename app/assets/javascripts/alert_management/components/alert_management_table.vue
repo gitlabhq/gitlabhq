@@ -44,6 +44,8 @@ const initialPaginationState = {
   lastPageSize: null,
 };
 
+const TWELVE_HOURS_IN_MS = 12 * 60 * 60 * 1000;
+
 export default {
   i18n: {
     noAlertsMsg: s__(
@@ -149,9 +151,20 @@ export default {
       update(data) {
         const { alertManagementAlerts: { nodes: list = [], pageInfo = {} } = {} } =
           data.project || {};
+        const now = new Date();
+
+        const listWithData = list.map(alert => {
+          const then = new Date(alert.startedAt);
+          const diff = now - then;
+
+          return {
+            ...alert,
+            isNew: diff < TWELVE_HOURS_IN_MS,
+          };
+        });
 
         return {
-          list,
+          list: listWithData,
           pageInfo,
         };
       },
@@ -206,9 +219,6 @@ export default {
     },
     hasAlerts() {
       return this.alerts?.list?.length;
-    },
-    tbodyTrClass() {
-      return !this.loading && this.hasAlerts ? bodyTrClass : '';
     },
     showPaginationControls() {
       return Boolean(this.prevPage || this.nextPage);
@@ -289,6 +299,12 @@ export default {
     },
     resetPagination() {
       this.pagination = initialPaginationState;
+    },
+    tbodyTrClass(item) {
+      return {
+        [bodyTrClass]: !this.loading && this.hasAlerts,
+        'new-alert': item?.isNew,
+      };
     },
     handleAlertError(errorMessage) {
       this.errored = true;

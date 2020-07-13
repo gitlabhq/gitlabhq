@@ -6,7 +6,7 @@ RSpec.describe ProjectsController do
   include ExternalAuthorizationServiceHelpers
   include ProjectForksHelper
 
-  let(:project) { create(:project) }
+  let(:project) { create(:project, service_desk_enabled: false) }
   let(:public_project) { create(:project, :public) }
   let(:user) { create(:user) }
   let(:jpg) { fixture_file_upload('spec/fixtures/rails_sample.jpg', 'image/jpg') }
@@ -1394,6 +1394,27 @@ RSpec.describe ProjectsController do
         expect(response).to have_gitlab_http_status(:not_found)
       end
     end
+  end
+
+  it 'updates Service Desk attributes' do
+    project.add_maintainer(user)
+    sign_in(user)
+    allow(Gitlab::IncomingEmail).to receive(:enabled?) { true }
+    allow(Gitlab::IncomingEmail).to receive(:supports_wildcard?) { true }
+    params = {
+      service_desk_enabled: true
+    }
+
+    put :update,
+        params: {
+          namespace_id: project.namespace,
+          id: project,
+          project: params
+        }
+    project.reload
+
+    expect(response).to have_gitlab_http_status(:found)
+    expect(project.service_desk_enabled).to eq(true)
   end
 
   def project_moved_message(redirect_route, project)

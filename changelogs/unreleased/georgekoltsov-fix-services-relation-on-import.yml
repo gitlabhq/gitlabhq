@@ -1,0 +1,5 @@
+---
+title: Exclude services relation from Project Import/Export
+merge_request: 36569
+author:
+type: fixed

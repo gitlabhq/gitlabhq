@@ -13,7 +13,7 @@ module QA
           ##
           # TODO, phase-out CSS classes added in Ruby helpers.
           #
-          view 'app/helpers/runners_helper.rb' do
+          view 'app/helpers/ci/runners_helper.rb' do
             # rubocop:disable Lint/InterpolationCheck
             element :runner_status, 'runner-status-#{status}' # rubocop:disable QA/ElementWithPattern
             # rubocop:enable Lint/InterpolationCheck

@@ -32,12 +32,7 @@ describe('AlertsSettingsForm', () => {
   let wrapper;
   let mockAxios;
 
-  const createComponent = (
-    props = defaultProps,
-    { methods } = {},
-    alertIntegrationsDropdown = false,
-    data,
-  ) => {
+  const createComponent = (props = defaultProps, { methods } = {}, data) => {
     wrapper = shallowMount(AlertsSettingsForm, {
       data() {
         return { ...data };
@@ -47,11 +42,6 @@ describe('AlertsSettingsForm', () => {
         ...props,
       },
       methods,
-      provide: {
-        glFeatures: {
-          alertIntegrationsDropdown,
-        },
-      },
     });
   };
 

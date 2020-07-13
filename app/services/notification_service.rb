@@ -294,6 +294,7 @@ class NotificationService
     return true if note.system_note_with_references?
 
     send_new_note_notifications(note)
+    send_service_desk_notification(note)
   end
 
   def send_new_note_notifications(note)
@@ -303,6 +304,21 @@ class NotificationService
     recipients.each do |recipient|
       mailer.send(notify_method, recipient.user.id, note.id, recipient.reason).deliver_later
     end
+  end
+
+  def send_service_desk_notification(note)
+    return unless Gitlab::ServiceDesk.supported?
+    return unless note.noteable_type == 'Issue'
+
+    issue = note.noteable
+    support_bot = User.support_bot
+
+    return unless issue.service_desk_reply_to.present?
+    return unless issue.project.service_desk_enabled?
+    return if note.author == support_bot
+    return unless issue.subscribed?(support_bot, issue.project)
+
+    mailer.service_desk_new_note_email(issue.id, note.id).deliver_later
   end
 
   # Notify users when a new release is created

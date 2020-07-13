@@ -16,10 +16,8 @@ describe('IssuableListRootApp', () => {
   const findAlertLabel = () => wrapper.find(GlAlert).find(GlLabel);
 
   const mountComponent = ({
-    isFinishedAlertShowing = false,
-    isInProgressAlertShowing = false,
-    isInProgress = false,
-    isFinished = false,
+    shouldShowFinishedAlert = false,
+    shouldShowInProgressAlert = false,
   } = {}) =>
     shallowMount(IssuableListRootApp, {
       propsData: {
@@ -30,13 +28,11 @@ describe('IssuableListRootApp', () => {
       },
       data() {
         return {
-          isFinishedAlertShowing,
-          isInProgressAlertShowing,
           jiraImport: {
             importedIssuesCount: 1,
-            isInProgress,
-            isFinished,
             label,
+            shouldShowFinishedAlert,
+            shouldShowInProgressAlert,
           },
         };
       },
@@ -58,8 +54,7 @@ describe('IssuableListRootApp', () => {
   describe('when Jira import is in progress', () => {
     it('shows an alert that tells the user a Jira import is in progress', () => {
       wrapper = mountComponent({
-        isInProgressAlertShowing: true,
-        isInProgress: true,
+        shouldShowInProgressAlert: true,
       });
 
       expect(findAlert().text()).toBe(
@@ -71,8 +66,7 @@ describe('IssuableListRootApp', () => {
   describe('when Jira import has finished', () => {
     beforeEach(() => {
       wrapper = mountComponent({
-        isFinishedAlertShowing: true,
-        isFinished: true,
+        shouldShowFinishedAlert: true,
       });
     });
 
@@ -106,8 +100,7 @@ describe('IssuableListRootApp', () => {
   describe('alert message', () => {
     it('is hidden when dismissed', () => {
       wrapper = mountComponent({
-        isInProgressAlertShowing: true,
-        isInProgress: true,
+        shouldShowInProgressAlert: true,
       });
 
       expect(wrapper.contains(GlAlert)).toBe(true);

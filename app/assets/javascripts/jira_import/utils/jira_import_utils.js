@@ -1,4 +1,5 @@
 import { last } from 'lodash';
+import { JIRA_IMPORT_SUCCESS_ALERT_HIDE_MAP_KEY } from '~/issuables_list/constants';
 
 export const IMPORT_STATE = {
   FAILED: 'failed',
@@ -67,4 +68,37 @@ export const calculateJiraImportLabel = (jiraImports, labels) => {
     color: calculateJiraImportLabelColor(title, labels),
     title,
   };
+};
+
+/**
+ * Calculates whether the Jira import success alert should be shown.
+ *
+ * @param {string} labelTitle - Jira import label, for checking localStorage
+ * @param {string} importStatus - Jira import status
+ * @returns {boolean} - A boolean indicating whether to show the success alert
+ */
+export const shouldShowFinishedAlert = (labelTitle, importStatus) => {
+  const finishedAlertHideMap =
+    JSON.parse(localStorage.getItem(JIRA_IMPORT_SUCCESS_ALERT_HIDE_MAP_KEY)) || {};
+
+  const shouldHide = finishedAlertHideMap[labelTitle];
+
+  return !shouldHide && isFinished(importStatus);
+};
+
+/**
+ * Updates the localStorage map to permanently hide the Jira import success alert
+ *
+ * @param {string} labelTitle - Jira import label, for checking localStorage
+ */
+export const setFinishedAlertHideMap = labelTitle => {
+  const finishedAlertHideMap =
+    JSON.parse(localStorage.getItem(JIRA_IMPORT_SUCCESS_ALERT_HIDE_MAP_KEY)) || {};
+
+  finishedAlertHideMap[labelTitle] = true;
+
+  localStorage.setItem(
+    JIRA_IMPORT_SUCCESS_ALERT_HIDE_MAP_KEY,
+    JSON.stringify(finishedAlertHideMap),
+  );
 };

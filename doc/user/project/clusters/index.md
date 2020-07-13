@@ -364,9 +364,10 @@ Automatically detect and monitor Kubernetes metrics. Automatic monitoring of
 
 [Read more about Kubernetes monitoring](../integrations/prometheus_library/kubernetes.md)
 
-### Visualizing cluster health **(ULTIMATE)**
+### Visualizing cluster health
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/4701) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 10.6.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/4701) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 10.6.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/208224) to GitLab core in 13.2.
 
 When [Prometheus is deployed](#installing-applications), GitLab will automatically monitor the cluster's health. At the top of the cluster settings page, CPU and Memory utilization is displayed, along with the total amount available. Keeping an eye on cluster resources can be important, if the cluster runs out of memory pods may be shutdown or fail to start.
 

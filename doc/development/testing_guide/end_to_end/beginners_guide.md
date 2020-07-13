@@ -80,13 +80,21 @@ file `basic_login_spec.rb`.
 
 ### The outer `context` block
 
-Specs have an outer `context` indicating the DevOps stage.
+See the [`RSpec.describe` outer block](#the-outer-rspecdescribe-block)
+
+CAUTION: **Deprecation notice:**
+The outer `context` [was deprecated](https://gitlab.com/gitlab-org/quality/team-tasks/-/issues/550) in `13.2`
+in adherance to RSpec 4.0 specifications. Use `RSpec.describe` instead.
+
+### The outer `RSpec.describe` block
+
+Specs have an outer `RSpec.describe` indicating the DevOps stage.
 
 ```ruby
 # frozen_string_literal: true
 
 module QA
-  context 'Manage' do
+  RSpec.describe 'Manage' do
 
   end
 end
@@ -94,13 +102,13 @@ end
 
 ### The `describe` block
 
-Inside of our outer `context`, describe the feature to test. In this case, `Login`.
+Inside of our outer `RSpec.describe`, describe the feature to test. In this case, `Login`.
 
 ```ruby
 # frozen_string_literal: true
 
 module QA
-  context 'Manage' do
+  RSpec.describe 'Manage' do
     describe 'Login' do
 
     end
@@ -115,7 +123,7 @@ writing end-to-end tests is to write test case descriptions as `it` blocks:
 
 ```ruby
 module QA
-  context 'Manage' do
+  RSpec.describe 'Manage' do
     describe 'Login' do
       it 'can login' do
 
@@ -139,7 +147,7 @@ Begin by logging in.
 # frozen_string_literal: true
 
 module QA
-  context 'Manage' do
+  RSpec.describe 'Manage' do
     describe 'Login' do
       it 'can login' do
         Flow::Login.sign_in
@@ -162,7 +170,7 @@ should answer the question "What do we test?"
 # frozen_string_literal: true
 
 module QA
-  context 'Manage' do
+  RSpec.describe 'Manage' do
     describe 'Login' do
       it 'can login' do
         Flow::Login.sign_in
@@ -210,7 +218,7 @@ a call to `sign_in`.
 # frozen_string_literal: true
 
 module QA
-  context 'Manage' do
+  RSpec.describe 'Manage' do
     describe 'Login' do
       before do
         Flow::Login.sign_in
@@ -247,7 +255,7 @@ stage, so [create a file](#identify-the-devops-stage) in
 # frozen_string_literal: true
 
 module QA
-  context 'Plan' do
+  RSpec.describe 'Plan' do
     describe 'Issues' do
       let(:issue) do
         Resource::Issue.fabricate_via_api! do |issue|

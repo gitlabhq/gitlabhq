@@ -343,6 +343,79 @@ RSpec.describe NotificationService, :mailer do
         end
       end
 
+      context 'on service desk issue' do
+        before do
+          allow(Notify).to receive(:service_desk_new_note_email)
+                             .with(Integer, Integer).and_return(mailer)
+
+          allow(::Gitlab::IncomingEmail).to receive(:enabled?) { true }
+          allow(::Gitlab::IncomingEmail).to receive(:supports_wildcard?) { true }
+        end
+
+        let(:subject) { NotificationService.new }
+        let(:mailer) { double(deliver_later: true) }
+
+        def should_email!
+          expect(Notify).to receive(:service_desk_new_note_email)
+            .with(issue.id, note.id)
+        end
+
+        def should_not_email!
+          expect(Notify).not_to receive(:service_desk_new_note_email)
+        end
+
+        def execute!
+          subject.new_note(note)
+        end
+
+        def self.it_should_email!
+          it 'sends the email' do
+            should_email!
+            execute!
+          end
+        end
+
+        def self.it_should_not_email!
+          it 'doesn\'t send the email' do
+            should_not_email!
+            execute!
+          end
+        end
+
+        let(:issue) { create(:issue, author: User.support_bot) }
+        let(:project) { issue.project }
+        let(:note) { create(:note, noteable: issue, project: project) }
+
+        context 'a non-service-desk issue' do
+          it_should_not_email!
+        end
+
+        context 'a service-desk issue' do
+          before do
+            issue.update!(service_desk_reply_to: 'service.desk@example.com')
+            project.update!(service_desk_enabled: true)
+          end
+
+          it_should_email!
+
+          context 'where the project has disabled the feature' do
+            before do
+              project.update(service_desk_enabled: false)
+            end
+
+            it_should_not_email!
+          end
+
+          context 'when the support bot has unsubscribed' do
+            before do
+              issue.unsubscribe(User.support_bot, project)
+            end
+
+            it_should_not_email!
+          end
+        end
+      end
+
       describe 'new note on issue in project that belongs to a group' do
         before do
           note.project.namespace_id = group.id

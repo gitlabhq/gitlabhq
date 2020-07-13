@@ -5,8 +5,9 @@ import { n__ } from '~/locale';
 import getIssuesListDetailsQuery from '../queries/get_issues_list_details.query.graphql';
 import {
   calculateJiraImportLabel,
-  isFinished,
   isInProgress,
+  setFinishedAlertHideMap,
+  shouldShowFinishedAlert,
 } from '~/jira_import/utils/jira_import_utils';
 
 export default {
@@ -35,8 +36,6 @@ export default {
   },
   data() {
     return {
-      isFinishedAlertShowing: true,
-      isInProgressAlertShowing: true,
       jiraImport: {},
     };
   },
@@ -48,15 +47,18 @@ export default {
           fullPath: this.projectPath,
         };
       },
-      update: ({ project }) => ({
-        importedIssuesCount: last(project.jiraImports.nodes)?.importedIssuesCount,
-        isInProgress: isInProgress(project.jiraImportStatus),
-        isFinished: isFinished(project.jiraImportStatus),
-        label: calculateJiraImportLabel(
+      update: ({ project }) => {
+        const label = calculateJiraImportLabel(
           project.jiraImports.nodes,
           project.issues.nodes.flatMap(({ labels }) => labels.nodes),
-        ),
-      }),
+        );
+        return {
+          importedIssuesCount: last(project.jiraImports.nodes)?.importedIssuesCount,
+          label,
+          shouldShowFinishedAlert: shouldShowFinishedAlert(label.title, project.jiraImportStatus),
+          shouldShowInProgressAlert: isInProgress(project.jiraImportStatus),
+        };
+      },
       skip() {
         return !this.isJiraConfigured || !this.canEdit;
       },
@@ -73,19 +75,14 @@ export default {
     labelTarget() {
       return `${this.issuesPath}?label_name[]=${encodeURIComponent(this.jiraImport.label.title)}`;
     },
-    shouldShowFinishedAlert() {
-      return this.isFinishedAlertShowing && this.jiraImport.isFinished;
-    },
-    shouldShowInProgressAlert() {
-      return this.isInProgressAlertShowing && this.jiraImport.isInProgress;
-    },
   },
   methods: {
     hideFinishedAlert() {
-      this.isFinishedAlertShowing = false;
+      setFinishedAlertHideMap(this.jiraImport.label.title);
+      this.jiraImport.shouldShowFinishedAlert = false;
     },
     hideInProgressAlert() {
-      this.isInProgressAlertShowing = false;
+      this.jiraImport.shouldShowInProgressAlert = false;
     },
   },
 };
@@ -93,10 +90,15 @@ export default {
 
 <template>
   <div class="issuable-list-root">
-    <gl-alert v-if="shouldShowInProgressAlert" @dismiss="hideInProgressAlert">
+    <gl-alert v-if="jiraImport.shouldShowInProgressAlert" @dismiss="hideInProgressAlert">
       {{ __('Import in progress. Refresh page to see newly added issues.') }}
     </gl-alert>
-    <gl-alert v-if="shouldShowFinishedAlert" variant="success" @dismiss="hideFinishedAlert">
+
+    <gl-alert
+      v-if="jiraImport.shouldShowFinishedAlert"
+      variant="success"
+      @dismiss="hideFinishedAlert"
+    >
       {{ finishedMessage }}
       <gl-label
         :background-color="jiraImport.label.color"

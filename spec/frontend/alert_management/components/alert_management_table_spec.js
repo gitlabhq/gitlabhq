@@ -349,6 +349,40 @@ describe('AlertManagementTable', () => {
         });
         expect(findDateFields().exists()).toBe(false);
       });
+
+      describe('New Alert indicator', () => {
+        const oldAlert = mockAlerts[0];
+
+        const newAlert = { ...oldAlert, isNew: true };
+
+        it('should highlight the row when alert is new', () => {
+          mountComponent({
+            props: { alertManagementEnabled: true, userCanEnableAlertManagement: true },
+            data: { alerts: { list: [newAlert] }, alertsCount, errored: false },
+            loading: false,
+          });
+
+          expect(
+            findAlerts()
+              .at(0)
+              .classes(),
+          ).toContain('new-alert');
+        });
+
+        it('should not highlight the row when alert is not new', () => {
+          mountComponent({
+            props: { alertManagementEnabled: true, userCanEnableAlertManagement: true },
+            data: { alerts: { list: [oldAlert] }, alertsCount, errored: false },
+            loading: false,
+          });
+
+          expect(
+            findAlerts()
+              .at(0)
+              .classes(),
+          ).not.toContain('new-alert');
+        });
+      });
     });
   });
 

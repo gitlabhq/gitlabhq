@@ -230,7 +230,10 @@ On the EC2 dashboard, look for Load Balancer in the left navigation bar:
 1. Click the **Create Load Balancer** button.
    1. Choose the **Classic Load Balancer**.
    1. Give it a name (we'll use `gitlab-loadbalancer`) and for the **Create LB Inside** option, select `gitlab-vpc` from the dropdown menu.
-   1. In the **Listeners** section, set HTTP port 80, HTTPS port 443, and TCP port 22 for both load balancer and instance protocols and ports.
+   1. In the **Listeners** section, set the following listeners:
+        - HTTP port 80 for both load balancer and instance protocol and ports
+        - TCP port 22 for both load balancer and instance protocols and ports
+        - HTTPS port 443 for load balancer protocol and ports, forwarding to HTTP port 80 on the instance (we will configure GitLab to listen on port 80 [later in the guide](#add-support-for-proxied-ssl))
    1. In the **Select Subnets** section, select both public subnets from the list so that the load balancer can route traffic to both availability zones.
 1. We'll add a security group for our load balancer to act as a firewall to control what traffic is allowed through. Click **Assign Security Groups** and select **Create a new security group**, give it a name
    (we'll use `gitlab-loadbalancer-sec-group`) and description, and allow both HTTP and HTTPS traffic
@@ -244,8 +247,7 @@ On the EC2 dashboard, look for Load Balancer in the left navigation bar:
    1. For **Ping Path**, enter `/users/sign_in`. (We use `/users/sign_in` as it's a public endpoint that does
    not require authorization.)
    1. Keep the default **Advanced Details** or adjust them according to your needs.
-1. Click **Add EC2 Instances** but, as we don't have any instances to add yet, come back
-to your load balancer after creating your GitLab instances and add them.
+1. Click **Add EC2 Instances** - don't add anything as we will create an Auto Scaling Group later to manage instances for us.
 1. Click **Add Tags** and add any tags you need.
 1. Click **Review and Create**, review all your settings, and click **Create** if you're happy.
 
@@ -794,14 +796,14 @@ to request additional material:
   Activate all GitLab Enterprise Edition functionality with a license.
 - [Pricing](https://about.gitlab.com/pricing/): Pricing for the different tiers.
 
-<!-- ## Troubleshooting
+## Troubleshooting
 
-Include any troubleshooting steps that you can foresee. If you know beforehand what issues
-one might have when setting this up, or when something is changed, or on upgrading, it's
-important to describe those, too. Think of things that may go wrong and include them here.
-This is important to minimize requests for support and to avoid doc comments with
-questions that you know someone might ask.
+### Instances are failing health checks
 
-Each scenario can be a third-level heading, e.g. `### Getting error message X`.
-If you have none to add when creating a doc, leave this section in place
-but commented out to help encourage others to add to it in the future. -->
+If your instances are failing the load balancer's health checks, verify that they are returning a status `200` from the health check endpoint we configured earlier. Any other status, including redirects (e.g. status `302`) will cause the health check to fail.
+
+You may have to set a password on the `root` user to prevent automatic redirects on the sign-in endpoint before health checks will pass.
+
+### "The change you requested was rejected (422)"
+
+If you see this page when trying to set a password via the web interface, make sure `external_url` in `gitlab.rb` matches the domain you are making a request from, and run `sudo gitlab-ctl reconfigure` after making any changes to it.

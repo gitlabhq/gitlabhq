@@ -303,6 +303,11 @@ Performance/Detect:
 RSpec/ContextWording:
   Enabled: false
 
+# Offense count: 626
+# Cop supports --auto-correct.
+RSpec/EmptyLineAfterLetBlock:
+  Enabled: false
+
 # Offense count: 1121
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle.

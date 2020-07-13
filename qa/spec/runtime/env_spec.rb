@@ -341,7 +341,7 @@ describe QA::Runtime::Env do
     end
   end
 
-  describe '.dot_com?' do
+  describe '.address_matches?' do
     it 'returns true when url has .com' do
       QA::Runtime::Scenario.define(:gitlab_address, "https://staging.gitlab.com")
 
@@ -351,7 +351,45 @@ describe QA::Runtime::Env do
     it 'returns false when url does not have .com' do
       QA::Runtime::Scenario.define(:gitlab_address, "https://gitlab.test")
 
-      expect(described_class.dot_com?).to be_falsy
+      expect(described_class.dot_com?).to be_falsey
+    end
+
+    context 'with arguments' do
+      it 'returns true when :subdomain is set' do
+        QA::Runtime::Scenario.define(:gitlab_address, "https://staging.gitlab.com")
+
+        expect(described_class.dot_com?(subdomain: :staging)).to be_truthy
+      end
+
+      it 'matches multiple subdomains' do
+        QA::Runtime::Scenario.define(:gitlab_address, "https://staging.gitlab.com")
+
+        expect(described_class.address_matches?(subdomain: [:release, :staging])).to be_truthy
+        expect(described_class.address_matches?(:production, subdomain: [:release, :staging])).to be_truthy
+      end
+
+      it 'matches :production' do
+        QA::Runtime::Scenario.define(:gitlab_address, "https://gitlab.com/")
+
+        expect(described_class.address_matches?(:production)).to be_truthy
+      end
+
+      it 'doesnt match with mismatching switches' do
+        QA::Runtime::Scenario.define(:gitlab_address, 'https://gitlab.test')
+
+        aggregate_failures do
+          expect(described_class.address_matches?(tld: '.net')).to be_falsey
+          expect(described_class.address_matches?(:production)).to be_falsey
+          expect(described_class.address_matches?(subdomain: [:staging])).to be_falsey
+          expect(described_class.address_matches?(domain: 'example')).to be_falsey
+        end
+      end
+    end
+
+    it 'returns false for mismatching' do
+      QA::Runtime::Scenario.define(:gitlab_address, "https://staging.gitlab.com")
+
+      expect(described_class.address_matches?(:production)).to be_falsey
     end
   end
 end

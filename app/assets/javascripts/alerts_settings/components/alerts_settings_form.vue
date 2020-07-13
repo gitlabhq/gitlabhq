@@ -14,7 +14,6 @@ import {
   GlFormSelect,
 } from '@gitlab/ui';
 import { debounce } from 'lodash';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import ToggleButton from '~/vue_shared/components/toggle_button.vue';
 import csrf from '~/lib/utils/csrf';
@@ -42,7 +41,6 @@ export default {
   directives: {
     'gl-modal': GlModalDirective,
   },
-  mixins: [glFeatureFlagsMixin()],
   props: {
     prometheus: {
       type: Object,
@@ -129,7 +127,7 @@ export default {
       return !this.isGeneric ? this.$options.i18n.prometheusInfo : '';
     },
     prometheusFeatureEnabled() {
-      return !this.isGeneric && this.glFeatures.alertIntegrationsDropdown;
+      return !this.isGeneric;
     },
     jsonIsValid() {
       return this.testAlert.error === null;
@@ -147,13 +145,9 @@ export default {
     }, JSON_VALIDATE_DELAY),
   },
   created() {
-    if (this.glFeatures.alertIntegrationsDropdown) {
-      this.selectedEndpoint = this.prometheus.prometheusIsActivated
-        ? this.options[1].value
-        : this.options[0].value;
-    } else {
-      this.selectedEndpoint = this.options[0].value;
-    }
+    this.selectedEndpoint = this.prometheus.prometheusIsActivated
+      ? this.options[1].value
+      : this.options[0].value;
   },
   methods: {
     clearJson() {
@@ -187,9 +181,6 @@ export default {
     },
     toggleService(value) {
       this.canSaveForm = true;
-      if (!this.glFeatures.alertIntegrationsDropdown) {
-        this.toggleActivated(value);
-      }
 
       if (this.isGeneric) {
         this.activated.generic = value;
@@ -334,7 +325,6 @@ export default {
     </div>
     <gl-form @submit.prevent="onSubmit" @reset.prevent="onReset">
       <gl-form-group
-        v-if="glFeatures.alertIntegrationsDropdown"
         :label="$options.i18n.integrationsLabel"
         label-for="integrations"
         label-class="label-bold"
@@ -433,7 +423,6 @@ export default {
         </gl-modal>
       </gl-form-group>
       <gl-form-group
-        v-if="glFeatures.alertIntegrationsDropdown"
         :label="$options.i18n.alertJson"
         label-for="alert-json"
         label-class="label-bold"
@@ -452,10 +441,7 @@ export default {
       <gl-button :disabled="!canTestAlert" @click="validateTestAlert">{{
         $options.i18n.testAlertInfo
       }}</gl-button>
-      <div
-        v-if="glFeatures.alertIntegrationsDropdown"
-        class="footer-block row-content-block gl-display-flex gl-justify-content-space-between"
-      >
+      <div class="footer-block row-content-block gl-display-flex gl-justify-content-space-between">
         <gl-button type="submit" variant="success" category="primary" :disabled="!canSaveConfig">
           {{ __('Save changes') }}
         </gl-button>

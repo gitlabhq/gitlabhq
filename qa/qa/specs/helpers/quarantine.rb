@@ -18,6 +18,10 @@ module QA
 
             config.before do |example|
               Quarantine.skip_or_run_quarantined_tests_or_contexts(config.inclusion_filter.rules, example)
+
+              if example.metadata.key?(:only)
+                skip('Test is not compatible with this environment') unless Runtime::Env.dot_com?(example.metadata[:only])
+              end
             end
           end
         end

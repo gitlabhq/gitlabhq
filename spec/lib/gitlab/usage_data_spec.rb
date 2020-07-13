@@ -87,6 +87,56 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
         end
       end
 
+      context 'for create' do
+        it 'include usage_activity_by_stage data' do
+          expect(described_class.uncached_data[:usage_activity_by_stage][:create])
+            .not_to include(
+              :merge_requests_users
+            )
+        end
+
+        it 'includes monthly usage_activity_by_stage data' do
+          expect(described_class.uncached_data[:usage_activity_by_stage_monthly][:create])
+            .to include(
+              :merge_requests_users
+            )
+        end
+
+        it 'includes accurate usage_activity_by_stage data' do
+          for_defined_days_back do
+            user = create(:user)
+            project = create(:project, :repository_private,
+                             :test_repo, :remote_mirror, creator: user)
+            create(:merge_request, source_project: project)
+            create(:deploy_key, user: user)
+            create(:key, user: user)
+            create(:project, creator: user, disable_overriding_approvers_per_merge_request: true)
+            create(:project, creator: user, disable_overriding_approvers_per_merge_request: false)
+            create(:remote_mirror, project: project)
+            create(:snippet, author: user)
+          end
+
+          expect(described_class.uncached_data[:usage_activity_by_stage][:create]).to include(
+            deploy_keys: 2,
+            keys: 2,
+            merge_requests: 2,
+            projects_with_disable_overriding_approvers_per_merge_request: 2,
+            projects_without_disable_overriding_approvers_per_merge_request: 4,
+            remote_mirrors: 2,
+            snippets: 2
+          )
+          expect(described_class.uncached_data[:usage_activity_by_stage_monthly][:create]).to include(
+            deploy_keys: 1,
+            keys: 1,
+            merge_requests: 1,
+            projects_with_disable_overriding_approvers_per_merge_request: 1,
+            projects_without_disable_overriding_approvers_per_merge_request: 2,
+            remote_mirrors: 1,
+            snippets: 1
+          )
+        end
+      end
+
       context 'for manage' do
         it 'includes accurate usage_activity_by_stage data' do
           stub_config(
@@ -120,6 +170,77 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
             OpenStruct.new(name: 'ldapmain'),
             OpenStruct.new(name: 'group_saml')
           ]
+        end
+      end
+
+      context 'for monitor' do
+        it 'includes accurate usage_activity_by_stage data' do
+          for_defined_days_back do
+            user    = create(:user, dashboard: 'operations')
+            cluster = create(:cluster, user: user)
+            create(:project, creator: user)
+            create(:clusters_applications_prometheus, :installed, cluster: cluster)
+          end
+
+          expect(described_class.uncached_data[:usage_activity_by_stage][:monitor]).to include(
+            clusters: 2,
+            clusters_applications_prometheus: 2,
+            operations_dashboard_default_dashboard: 2
+          )
+          expect(described_class.uncached_data[:usage_activity_by_stage_monthly][:monitor]).to include(
+            clusters: 1,
+            clusters_applications_prometheus: 1,
+            operations_dashboard_default_dashboard: 1
+          )
+        end
+      end
+
+      context 'for plan' do
+        it 'includes accurate usage_activity_by_stage data' do
+          for_defined_days_back do
+            user = create(:user)
+            project = create(:project, creator: user)
+            issue = create(:issue, project: project, author: user)
+            create(:note, project: project, noteable: issue, author: user)
+            create(:todo, project: project, target: issue, author: user)
+          end
+
+          expect(described_class.uncached_data[:usage_activity_by_stage][:plan]).to include(
+            issues: 2,
+            notes: 2,
+            projects: 2,
+            todos: 2
+          )
+          expect(described_class.uncached_data[:usage_activity_by_stage_monthly][:plan]).to include(
+            issues: 1,
+            notes: 1,
+            projects: 1,
+            todos: 1
+          )
+        end
+      end
+
+      context 'for release' do
+        it 'includes accurate usage_activity_by_stage data' do
+          for_defined_days_back do
+            user = create(:user)
+            create(:deployment, :failed, user: user)
+            create(:release, author: user)
+            create(:deployment, :success, user: user)
+          end
+
+          expect(described_class.uncached_data[:usage_activity_by_stage][:release]).to include(
+            deployments: 2,
+            failed_deployments: 2,
+            releases: 2,
+            successful_deployments: 2
+          )
+          expect(described_class.uncached_data[:usage_activity_by_stage_monthly][:release]).to include(
+            deployments: 1,
+            failed_deployments: 1,
+            releases: 1,
+            successful_deployments: 1
+          )
         end
       end
 
@@ -160,127 +281,6 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
             clusters_applications_runner: 1
           )
         end
-      end
-    end
-
-    context 'for create' do
-      it 'include usage_activity_by_stage data' do
-        expect(described_class.uncached_data[:usage_activity_by_stage][:create])
-          .not_to include(
-            :merge_requests_users
-          )
-      end
-
-      it 'includes monthly usage_activity_by_stage data' do
-        expect(described_class.uncached_data[:usage_activity_by_stage_monthly][:create])
-          .to include(
-            :merge_requests_users
-          )
-      end
-
-      it 'includes accurate usage_activity_by_stage data' do
-        for_defined_days_back do
-          user = create(:user)
-          project = create(:project, :repository_private,
-                           :test_repo, :remote_mirror, creator: user)
-          create(:merge_request, source_project: project)
-          create(:deploy_key, user: user)
-          create(:key, user: user)
-          create(:project, creator: user, disable_overriding_approvers_per_merge_request: true)
-          create(:project, creator: user, disable_overriding_approvers_per_merge_request: false)
-          create(:remote_mirror, project: project)
-          create(:snippet, author: user)
-        end
-
-        expect(described_class.uncached_data[:usage_activity_by_stage][:create]).to include(
-          deploy_keys: 2,
-          keys: 2,
-          merge_requests: 2,
-          projects_with_disable_overriding_approvers_per_merge_request: 2,
-          projects_without_disable_overriding_approvers_per_merge_request: 4,
-          remote_mirrors: 2,
-          snippets: 2
-        )
-        expect(described_class.uncached_data[:usage_activity_by_stage_monthly][:create]).to include(
-          deploy_keys: 1,
-          keys: 1,
-          merge_requests: 1,
-          projects_with_disable_overriding_approvers_per_merge_request: 1,
-          projects_without_disable_overriding_approvers_per_merge_request: 2,
-          remote_mirrors: 1,
-          snippets: 1
-        )
-      end
-    end
-
-    context 'for monitor' do
-      it 'includes accurate usage_activity_by_stage data' do
-        for_defined_days_back do
-          user    = create(:user, dashboard: 'operations')
-          cluster = create(:cluster, user: user)
-          create(:project, creator: user)
-          create(:clusters_applications_prometheus, :installed, cluster: cluster)
-        end
-
-        expect(described_class.uncached_data[:usage_activity_by_stage][:monitor]).to include(
-          clusters: 2,
-          clusters_applications_prometheus: 2,
-          operations_dashboard_default_dashboard: 2
-        )
-        expect(described_class.uncached_data[:usage_activity_by_stage_monthly][:monitor]).to include(
-          clusters: 1,
-          clusters_applications_prometheus: 1,
-          operations_dashboard_default_dashboard: 1
-        )
-      end
-    end
-
-    context 'for plan' do
-      it 'includes accurate usage_activity_by_stage data' do
-        for_defined_days_back do
-          user = create(:user)
-          project = create(:project, creator: user)
-          issue = create(:issue, project: project, author: user)
-          create(:note, project: project, noteable: issue, author: user)
-          create(:todo, project: project, target: issue, author: user)
-        end
-
-        expect(described_class.uncached_data[:usage_activity_by_stage][:plan]).to include(
-          issues: 2,
-          notes: 2,
-          projects: 2,
-          todos: 2
-        )
-        expect(described_class.uncached_data[:usage_activity_by_stage_monthly][:plan]).to include(
-          issues: 1,
-          notes: 1,
-          projects: 1,
-          todos: 1
-        )
-      end
-    end
-
-    context 'for release' do
-      it 'includes accurate usage_activity_by_stage data' do
-        for_defined_days_back do
-          user = create(:user)
-          create(:deployment, :failed, user: user)
-          create(:release, author: user)
-          create(:deployment, :success, user: user)
-        end
-
-        expect(described_class.uncached_data[:usage_activity_by_stage][:release]).to include(
-          deployments: 2,
-          failed_deployments: 2,
-          releases: 2,
-          successful_deployments: 2
-        )
-        expect(described_class.uncached_data[:usage_activity_by_stage_monthly][:release]).to include(
-          deployments: 1,
-          failed_deployments: 1,
-          releases: 1,
-          successful_deployments: 1
-        )
       end
     end
 

@@ -127,3 +127,15 @@ To further customize the issue, you can add labels, mentions, or any other suppo
 Since [version 12.2](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/63373), GitLab will tag each incident issue with the `incident` label automatically. If the label does not yet exist, it will be created automatically as well.
 
 If the metric exceeds the threshold of the alert for over 5 minutes, an email will be sent to all [Maintainers and Owners](../../user/permissions.md#project-members-permissions) of the project.
+
+## Keyboard shortcuts for charts
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/202146) in GitLab 13.2.
+
+You can use keyboard shortcuts to interact more quickly with your currently-focused chartpanel. To activate keyboard shortcuts, use keyboard tabs to highlight the**{ellipsis_v}** **More actions** dropdown menu, or hover over the dropdown menuwith your mouse, then press the key corresponding to your desired action:
+
+- **Expand panel** - <kbd>e</kbd>
+- **View logs** - <kbd>l</kbd> (lowercase 'L')
+- **Download CSV** - <kbd>d</kbd>
+- **Copy link to chart** - <kbd>c</kbd>
+- **Alerts** - <kbd>a</kbd>

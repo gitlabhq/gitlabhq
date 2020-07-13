@@ -1,0 +1,5 @@
+---
+title: Add a Rake task to fix incorrectly-recorded external diffs
+merge_request: 36353
+author:
+type: fixed

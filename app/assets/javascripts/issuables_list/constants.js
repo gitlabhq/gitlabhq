@@ -52,3 +52,5 @@ export const availableSortOptionsJira = [
     },
   },
 ];
+
+export const JIRA_IMPORT_SUCCESS_ALERT_HIDE_MAP_KEY = 'jira-import-success-alert-hide-map';

@@ -38,6 +38,7 @@ class ProjectsController < Projects::ApplicationController
   before_action only: [:new, :create] do
     frontend_experimentation_tracking_data(:new_create_project_ui, 'click_tab')
     push_frontend_feature_flag(:new_create_project_ui) if experiment_enabled?(:new_create_project_ui)
+    push_frontend_feature_flag(:service_desk_custom_address, @project)
   end
 
   layout :determine_layout
@@ -391,6 +392,7 @@ class ProjectsController < Projects::ApplicationController
       :initialize_with_readme,
       :autoclose_referenced_issues,
       :suggestion_commit_message,
+      :service_desk_enabled,
 
       project_feature_attributes: %i[
         builds_access_level

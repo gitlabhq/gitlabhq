@@ -14596,6 +14596,20 @@
               "deprecationReason": null
             },
             {
+              "name": "temporaryStorageIncreaseEndsOn",
+              "description": "Date until the temporary storage increase is active",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Time",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "timelogs",
               "description": "Time logged in issues by group members",
               "args": [
@@ -24432,6 +24446,20 @@
               "type": {
                 "kind": "SCALAR",
                 "name": "Float",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "temporaryStorageIncreaseEndsOn",
+              "description": "Date until the temporary storage increase is active",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Time",
                 "ofType": null
               },
               "isDeprecated": false,

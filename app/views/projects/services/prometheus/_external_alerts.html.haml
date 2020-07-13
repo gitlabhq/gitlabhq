@@ -5,4 +5,4 @@
 - authorization_key = @project.alerting_setting.try(:token)
 - learn_more_url = help_page_path('user/project/integrations/prometheus', anchor: 'external-prometheus-instances')
 
-#js-settings-prometheus-alerts{ data: { notify_url: notify_url, authorization_key: authorization_key, change_key_url: reset_alerting_token_project_settings_operations_path(@project), learn_more_url: learn_more_url, disabled: Feature.enabled?(:alert_integrations_dropdown, @service.project) && @service.manual_configuration? } }
+#js-settings-prometheus-alerts{ data: { notify_url: notify_url, authorization_key: authorization_key, change_key_url: reset_alerting_token_project_settings_operations_path(@project), learn_more_url: learn_more_url, disabled: true } }

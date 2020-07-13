@@ -1,4 +1,8 @@
 .alert-management-list {
+  .new-alert {
+    background-color: $issues-today-bg;
+  }
+
   // these styles need to be deleted once GlTable component looks in GitLab same as in @gitlab/ui
   table {
     color: $gray-700;

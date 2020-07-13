@@ -11,11 +11,11 @@ class Projects::IssuesController < Projects::ApplicationController
   include RecordUserLastActivity
 
   def issue_except_actions
-    %i[index calendar new create bulk_update import_csv export_csv]
+    %i[index calendar new create bulk_update import_csv export_csv service_desk]
   end
 
   def set_issuables_index_only_actions
-    %i[index calendar]
+    %i[index calendar service_desk]
   end
 
   prepend_before_action(only: [:index]) { authenticate_sessionless_user!(:rss) }
@@ -223,6 +223,11 @@ class Projects::IssuesController < Projects::ApplicationController
     redirect_to project_issues_path(project)
   end
 
+  def service_desk
+    @issues = @issuables # rubocop:disable Gitlab/ModuleWithInstanceVariables
+    @users.push(User.support_bot) # rubocop:disable Gitlab/ModuleWithInstanceVariables
+  end
+
   protected
 
   def sorting_field
@@ -320,6 +325,17 @@ class Projects::IssuesController < Projects::ApplicationController
 
   private
 
+  def finder_options
+    options = super
+
+    return options unless service_desk?
+
+    options.reject! { |key| key == 'author_username' || key == 'author_id' }
+    options[:author_id] = User.support_bot
+
+    options
+  end
+
   def branch_link(branch)
     project_compare_path(project, from: project.default_branch, to: branch[:name])
   end
@@ -336,6 +352,10 @@ class Projects::IssuesController < Projects::ApplicationController
 
   def rate_limiter
     ::Gitlab::ApplicationRateLimiter
+  end
+
+  def service_desk?
+    action_name == 'service_desk'
   end
 end
 
