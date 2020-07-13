@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe VariableEntity do
+RSpec.describe Ci::VariableEntity do
   let(:variable) { create(:ci_variable) }
   let(:entity) { described_class.new(variable) }
 

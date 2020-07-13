@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe GroupVariableEntity do
+RSpec.describe Ci::GroupVariableEntity do
   let(:variable) { create(:ci_group_variable) }
   let(:entity) { described_class.new(variable) }
 

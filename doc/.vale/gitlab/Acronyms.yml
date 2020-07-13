@@ -21,6 +21,7 @@ exceptions:
   - CLI
   - CNAME
   - CPU
+  - CORE
   - CSS
   - CSV
   - DNS

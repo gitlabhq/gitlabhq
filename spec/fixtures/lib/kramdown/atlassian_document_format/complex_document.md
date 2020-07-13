@@ -165,37 +165,40 @@ Col 3 Row 3
 
 <del>Strikethrough</del>
 
-    export function makeIssue({ parentIssue, project, users }) {
-       
-      const issueType = pickRandom(project.issueTypes)
-    
-      let data = {
-        fields: {
-          summary: faker.lorem.sentence(),
-          issuetype: {
-            id: issueType.id
-          },
-          project: {
-            id: project.id
-          },
-          reporter: {
-            id: pickRandom(users)
-          }
-        }
+```javascript
+export function makeIssue({ parentIssue, project, users }) {
+   
+  const issueType = pickRandom(project.issueTypes)
+
+  let data = {
+    fields: {
+      summary: faker.lorem.sentence(),
+      issuetype: {
+        id: issueType.id
+      },
+      project: {
+        id: project.id
+      },
+      reporter: {
+        id: pickRandom(users)
       }
-    
-      if (issueType.subtask) {
-        data = {
-          parent: {
-            key: parentIssue
-          }
-        }
-      }
-    
-      console.log(data)
-    
-      return data
     }
+  }
+
+  if (issueType.subtask) {
+    data = {
+      parent: {
+        key: parentIssue
+      }
+    }
+  }
+
+  console.log(data)
+
+  return data
+}
+```
+
 
 ![jira-10050-field-description](adf-media://79411c6b-50e0-477f-b4ed-ac3a5887750c)
 

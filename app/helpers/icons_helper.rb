@@ -53,6 +53,15 @@ module IconsHelper
     content_tag(:svg, content_tag(:use, "", { "xlink:href" => "#{sprite_icon_path}##{icon_name}" } ), class: css_classes.empty? ? nil : css_classes.join(' '))
   end
 
+  def loading_icon(container: false, color: 'orange', size: 'sm', css_class: nil)
+    css_classes = ['gl-spinner', "gl-spinner-#{color}", "gl-spinner-#{size}"]
+    css_classes << "#{css_class}" unless css_class.blank?
+
+    spinner = content_tag(:span, "", { class: css_classes.join(' '), aria: { label: _('Loading') } })
+
+    container == true ? content_tag(:div, spinner, { class: 'gl-spinner-container' }) : spinner
+  end
+
   def external_snippet_icon(name)
     content_tag(:span, "", class: "gl-snippet-icon gl-snippet-icon-#{name}")
   end

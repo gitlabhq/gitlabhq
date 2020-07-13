@@ -12,6 +12,46 @@ module Kramdown
     # Note: this is only an initial implementation.  Currently don't
     # strip out IALs or other specific kramdown syntax.
     class Commonmark < ::Kramdown::Converter::Kramdown
+      # replaces the ^ used in kramdown.  This forces the current
+      # block to end, so that a different list or codeblock can be
+      # started. https://kramdown.gettalong.org/syntax.html#eob-marker
+      END_OF_BLOCK = '<!-- -->'
+
+      def convert(el, opts = { indent: 0 })
+        res = super
+
+        if [:ul, :dl, :ol, :codeblock].include?(el.type) && opts[:next] &&
+          ([el.type, :codeblock].include?(opts[:next].type) ||
+            (opts[:next].type == :blank && opts[:nnext] &&
+              [el.type, :codeblock].include?(opts[:nnext].type)))
+          # replace the end of block character
+          res.sub!(/\^\n\n\z/m, "#{END_OF_BLOCK}\n\n")
+        end
+
+        res
+      end
+
+      def convert_codeblock(el, _opts)
+        # Although tildes are supported in CommonMark, backticks are more common
+        "```#{el.options[:lang]}\n" +
+          el.value.split(/\n/).map {|l| l.empty? ? "" : "#{l}" }.join("\n") +
+          "\n```\n\n"
+      end
+
+      def convert_li(el, opts)
+        res = super
+
+        if el.children.first && el.children.first.type == :p && !el.children.first.options[:transparent]
+          if el.children.size == 1 && @stack.last.children.last == el &&
+            (@stack.last.children.any? {|c| c.children.first.type != :p } || @stack.last.children.size == 1)
+            # replace the end of block character
+            res.sub!(/\^\n\z/m, "#{END_OF_BLOCK}\n")
+          end
+        end
+
+        res
+      end
+
       def convert_table(el, opts)
         return super unless @options[:html_tables]
 

@@ -39,22 +39,27 @@ RSpec.describe AlertManagement::ProcessPrometheusAlertService do
 
       context 'when Prometheus alert status is firing' do
         context 'when alert with the same fingerprint already exists' do
-          let!(:alert) { create(:alert_management_alert, :resolved, project: project, fingerprint: parsed_alert.gitlab_fingerprint) }
+          let!(:alert) { create(:alert_management_alert, project: project, fingerprint: parsed_alert.gitlab_fingerprint) }
 
-          it 'increases alert events count' do
-            expect { execute }.to change { alert.reload.events }.by(1)
+          it_behaves_like 'adds an alert management alert event'
+
+          context 'existing alert is resolved' do
+            let!(:alert) { create(:alert_management_alert, :resolved, project: project, fingerprint: parsed_alert.gitlab_fingerprint) }
+
+            it_behaves_like 'creates an alert management alert'
           end
 
-          context 'when status can be changed' do
-            it 'changes status to triggered' do
-              expect { execute }.to change { alert.reload.triggered? }.to(true)
-            end
+          context 'existing alert is ignored' do
+            let!(:alert) { create(:alert_management_alert, :ignored, project: project, fingerprint: parsed_alert.gitlab_fingerprint) }
+
+            it_behaves_like 'adds an alert management alert event'
           end
 
-          it 'does not executes the alert service hooks' do
-            expect(alert).not_to receive(:execute_services)
+          context 'two existing alerts, one resolved one open' do
+            let!(:resolved_alert) { create(:alert_management_alert, :resolved, project: project, fingerprint: parsed_alert.gitlab_fingerprint) }
+            let!(:alert) { create(:alert_management_alert, project: project, fingerprint: parsed_alert.gitlab_fingerprint) }
 
-            subject
+            it_behaves_like 'adds an alert management alert event'
           end
 
           context 'when status change did not succeed' do
@@ -73,23 +78,11 @@ RSpec.describe AlertManagement::ProcessPrometheusAlertService do
               execute
             end
           end
-
-          it { is_expected.to be_success }
         end
 
         context 'when alert does not exist' do
           context 'when alert can be created' do
-            it 'creates a new alert' do
-              expect { execute }.to change { AlertManagement::Alert.where(project: project).count }.by(1)
-            end
-
-            it 'executes the alert service hooks' do
-              slack_service = create(:service, type: 'SlackService', project: project, alert_events: true, active: true)
-
-              subject
-
-              expect(ProjectServiceWorker).to have_received(:perform_async).with(slack_service.id, an_instance_of(Hash))
-            end
+            it_behaves_like 'creates an alert management alert'
           end
 
           context 'when alert cannot be created' do

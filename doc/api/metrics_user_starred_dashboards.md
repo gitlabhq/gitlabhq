@@ -1,3 +1,10 @@
+---
+stage: Monitor
+group: APM
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+type: concepts, howto
+---
+
 # User-starred metrics dashboards API
 
 The starred dashboard feature makes navigating to frequently-used dashboards easier

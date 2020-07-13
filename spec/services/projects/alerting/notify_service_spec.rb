@@ -64,12 +64,6 @@ RSpec.describe Projects::Alerting::NotifyService do
     end
   end
 
-  shared_examples 'NotifyService does not create alert' do
-    it 'does not create alert' do
-      expect { subject }.not_to change(AlertManagement::Alert, :count)
-    end
-  end
-
   describe '#execute' do
     let(:token) { 'invalid-token' }
     let(:starts_at) { Time.current.change(usec: 0) }
@@ -107,62 +101,64 @@ RSpec.describe Projects::Alerting::NotifyService do
         end
 
         context 'with valid payload' do
+          shared_examples 'assigns the alert properties' do
+            it 'ensure that created alert has all data properly assigned' do
+              subject
+
+              expect(last_alert_attributes).to match(
+                project_id: project.id,
+                title: payload_raw.fetch(:title),
+                started_at: Time.zone.parse(payload_raw.fetch(:start_time)),
+                severity: payload_raw.fetch(:severity),
+                status: AlertManagement::Alert::STATUSES[:triggered],
+                events: 1,
+                hosts: payload_raw.fetch(:hosts),
+                payload: payload_raw.with_indifferent_access,
+                issue_id: nil,
+                description: payload_raw.fetch(:description),
+                monitoring_tool: payload_raw.fetch(:monitoring_tool),
+                service: payload_raw.fetch(:service),
+                fingerprint: Digest::SHA1.hexdigest(fingerprint),
+                ended_at: nil,
+                prometheus_alert_id: nil,
+                environment_id: nil
+              )
+            end
+          end
+
           let(:last_alert_attributes) do
             AlertManagement::Alert.last.attributes
               .except('id', 'iid', 'created_at', 'updated_at')
               .with_indifferent_access
           end
 
-          it 'creates AlertManagement::Alert' do
-            expect { subject }.to change(AlertManagement::Alert, :count).by(1)
-          end
-
-          it 'created alert has all data properly assigned' do
-            subject
-
-            expect(last_alert_attributes).to match(
-              project_id: project.id,
-              title: payload_raw.fetch(:title),
-              started_at: Time.zone.parse(payload_raw.fetch(:start_time)),
-              severity: payload_raw.fetch(:severity),
-              status: AlertManagement::Alert::STATUSES[:triggered],
-              events: 1,
-              hosts: payload_raw.fetch(:hosts),
-              payload: payload_raw.with_indifferent_access,
-              issue_id: nil,
-              description: payload_raw.fetch(:description),
-              monitoring_tool: payload_raw.fetch(:monitoring_tool),
-              service: payload_raw.fetch(:service),
-              fingerprint: Digest::SHA1.hexdigest(fingerprint),
-              ended_at: nil,
-              prometheus_alert_id: nil,
-              environment_id: nil
-            )
-          end
-
-          it 'executes the alert service hooks' do
-            slack_service = create(:service, type: 'SlackService', project: project, alert_events: true, active: true)
-            subject
-
-            expect(ProjectServiceWorker).to have_received(:perform_async).with(slack_service.id, an_instance_of(Hash))
-          end
+          it_behaves_like 'creates an alert management alert'
+          it_behaves_like 'assigns the alert properties'
 
           context 'existing alert with same fingerprint' do
             let(:fingerprint_sha) { Digest::SHA1.hexdigest(fingerprint) }
-            let!(:existing_alert) { create(:alert_management_alert, project: project, fingerprint: fingerprint_sha) }
+            let!(:alert) { create(:alert_management_alert, project: project, fingerprint: fingerprint_sha) }
 
-            it 'does not create AlertManagement::Alert' do
-              expect { subject }.not_to change(AlertManagement::Alert, :count)
+            it_behaves_like 'adds an alert management alert event'
+
+            context 'existing alert is resolved' do
+              let!(:alert) { create(:alert_management_alert, :resolved, project: project, fingerprint: fingerprint_sha) }
+
+              it_behaves_like 'creates an alert management alert'
+              it_behaves_like 'assigns the alert properties'
             end
 
-            it 'increments the existing alert count' do
-              expect { subject }.to change { existing_alert.reload.events }.from(1).to(2)
+            context 'existing alert is ignored' do
+              let!(:alert) { create(:alert_management_alert, :ignored, project: project, fingerprint: fingerprint_sha) }
+
+              it_behaves_like 'adds an alert management alert event'
             end
 
-            it 'does not executes the alert service hooks' do
-              subject
+            context 'two existing alerts, one resolved one open' do
+              let!(:resolved_existing_alert) { create(:alert_management_alert, :resolved, project: project, fingerprint: fingerprint_sha) }
+              let!(:alert) { create(:alert_management_alert, project: project, fingerprint: fingerprint_sha) }
 
-              expect(ProjectServiceWorker).not_to have_received(:perform_async)
+              it_behaves_like 'adds an alert management alert event'
             end
           end
 
@@ -174,9 +170,7 @@ RSpec.describe Projects::Alerting::NotifyService do
               }
             end
 
-            it 'creates AlertManagement::Alert' do
-              expect { subject }.to change(AlertManagement::Alert, :count).by(1)
-            end
+            it_behaves_like 'creates an alert management alert'
 
             it 'created alert has all data properly assigned' do
               subject
@@ -218,19 +212,19 @@ RSpec.describe Projects::Alerting::NotifyService do
             end
 
             it_behaves_like 'does not process incident issues due to error', http_status: :bad_request
-            it_behaves_like 'NotifyService does not create alert'
+            it_behaves_like 'does not an create alert management alert'
           end
 
           context 'when alert already exists' do
             let(:fingerprint_sha) { Digest::SHA1.hexdigest(fingerprint) }
-            let!(:existing_alert) { create(:alert_management_alert, project: project, fingerprint: fingerprint_sha) }
+            let!(:alert) { create(:alert_management_alert, project: project, fingerprint: fingerprint_sha) }
 
             context 'when existing alert does not have an associated issue' do
               it_behaves_like 'processes incident issues'
             end
 
             context 'when existing alert has an associated issue' do
-              let!(:existing_alert) { create(:alert_management_alert, :with_issue, project: project, fingerprint: fingerprint_sha) }
+              let!(:alert) { create(:alert_management_alert, :with_issue, project: project, fingerprint: fingerprint_sha) }
 
               it_behaves_like 'does not process incident issues'
             end
@@ -246,14 +240,14 @@ RSpec.describe Projects::Alerting::NotifyService do
 
       context 'with invalid token' do
         it_behaves_like 'does not process incident issues due to error', http_status: :unauthorized
-        it_behaves_like 'NotifyService does not create alert'
+        it_behaves_like 'does not an create alert management alert'
       end
 
       context 'with deactivated Alerts Service' do
         let!(:alerts_service) { create(:alerts_service, :inactive, project: project) }
 
         it_behaves_like 'does not process incident issues due to error', http_status: :forbidden
-        it_behaves_like 'NotifyService does not create alert'
+        it_behaves_like 'does not an create alert management alert'
       end
     end
   end

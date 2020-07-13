@@ -6,7 +6,7 @@ class Projects::VariablesController < Projects::ApplicationController
   def show
     respond_to do |format|
       format.json do
-        render status: :ok, json: { variables: VariableSerializer.new.represent(@project.variables) }
+        render status: :ok, json: { variables: ::Ci::VariableSerializer.new.represent(@project.variables) }
       end
     end
   end
@@ -26,7 +26,7 @@ class Projects::VariablesController < Projects::ApplicationController
   private
 
   def render_variables
-    render status: :ok, json: { variables: VariableSerializer.new.represent(@project.variables) }
+    render status: :ok, json: { variables: ::Ci::VariableSerializer.new.represent(@project.variables) }
   end
 
   def render_error

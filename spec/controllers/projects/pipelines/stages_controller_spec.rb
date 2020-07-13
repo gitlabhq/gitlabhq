@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::StagesController do
+RSpec.describe Projects::Pipelines::StagesController do
   let(:user) { create(:user) }
   let(:project) { create(:project, :repository) }
 
@@ -60,7 +60,7 @@ RSpec.describe Projects::StagesController do
       post :play_manual, params: {
         namespace_id: project.namespace,
         project_id: project,
-        id: pipeline.id,
+        pipeline_id: pipeline.id,
         stage_name: stage_name
       }, format: :json
     end

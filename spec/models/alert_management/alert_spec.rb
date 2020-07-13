@@ -235,6 +235,14 @@ RSpec.describe AlertManagement::Alert do
 
       it { is_expected.to contain_exactly(acknowledged_alert, triggered_alert) }
     end
+
+    describe '.not_resolved' do
+      subject { described_class.not_resolved }
+
+      let!(:acknowledged_alert) { create(:alert_management_alert, :acknowledged, project: project) }
+
+      it { is_expected.to contain_exactly(acknowledged_alert, triggered_alert, ignored_alert) }
+    end
   end
 
   describe '.last_prometheus_alert_by_project_id' do

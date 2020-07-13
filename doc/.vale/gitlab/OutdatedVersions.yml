@@ -11,11 +11,11 @@ level: warning
 nonword: true
 ignorecase: true
 tokens:
-  - "GitLab 2."
-  - "GitLab 3."
-  - "GitLab 4."
-  - "GitLab 5."
-  - "GitLab 6."
-  - "GitLab 7."
-  - "GitLab 8."
-  - "GitLab 9."
+  - "GitLab (v)?2."
+  - "GitLab (v)?3."
+  - "GitLab (v)?4."
+  - "GitLab (v)?5."
+  - "GitLab (v)?6."
+  - "GitLab (v)?7."
+  - "GitLab (v)?8."
+  - "GitLab (v)?9."

@@ -101,4 +101,6 @@ displays a counter on the
 [Alert Management List](../operations/alert_management.md#alert-management-list)
 and details pages.
 
+If the existing alert is already `resolved`, then a new alert will be created instead.
+
 ![Alert Management List](../operations/img/alert_list_v13_1.png)

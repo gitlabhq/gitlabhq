@@ -71,6 +71,11 @@ msgstr ""
 msgid "\"%{path}\" did not exist on \"%{ref}\""
 msgstr ""
 
+msgid "%d Scanned URL"
+msgid_plural "%d Scanned URLs"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%d URL scanned"
 msgid_plural "%d URLs scanned"
 msgstr[0] ""
@@ -8303,6 +8308,9 @@ msgid "Download artifacts"
 msgstr ""
 
 msgid "Download as"
+msgstr ""
+
+msgid "Download as CSV"
 msgstr ""
 
 msgid "Download asset"
@@ -24513,6 +24521,9 @@ msgid "To start serving your jobs you can either add specific Runners to your pr
 msgstr ""
 
 msgid "To this GitLab instance"
+msgstr ""
+
+msgid "To view all %{scannedResourcesCount} scanned URLs, please download the CSV file"
 msgstr ""
 
 msgid "To view the roadmap, add a start or due date to one of your epics in this group or its subgroups. In the months view, only epics in the past month, current month, and next 5 months are shown."

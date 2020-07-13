@@ -2,6 +2,7 @@ import { createLocalVue, shallowMount } from '@vue/test-utils';
 import Vuex from 'vuex';
 import { createStore } from '~/mr_notes/stores';
 import NoChanges from '~/diffs/components/no_changes.vue';
+import { GlButton } from '@gitlab/ui';
 
 describe('Diff no changes empty state', () => {
   let vm;
@@ -36,5 +37,12 @@ describe('Diff no changes empty state', () => {
     });
 
     expect(vm.contains('script')).toBe(false);
+  });
+
+  describe('Renders', () => {
+    it('Show create commit button', () => {
+      createComponent();
+      expect(vm.find(GlButton).exists()).toBe(true);
+    });
   });
 });

@@ -963,8 +963,8 @@ a corresponding cluster type. The default value is blank. You can
 check the recommended variables for each cluster type in the official
 documentation:
 
-- [Google GKE](https://cilium.readthedocs.io/en/stable/gettingstarted/k8s-install-gke/#prepare-deploy-cilium)
-- [AWS EKS](https://cilium.readthedocs.io/en/stable/gettingstarted/k8s-install-eks/#prepare-deploy-cilium)
+- [Google GKE](https://docs.cilium.io/en/stable/gettingstarted/k8s-install-gke/#deploy-cilium)
+- [AWS EKS](https://docs.cilium.io/en/stable/gettingstarted/k8s-install-eks/#deploy-cilium)
 
 You can customize Cilium's Helm variables by defining the
 `.gitlab/managed-apps/cilium/values.yaml` file in your cluster
@@ -974,9 +974,9 @@ for the available configuration options.
 
 CAUTION: **Caution:**
 Installation and removal of the Cilium requires a **manual**
-[restart](https://cilium.readthedocs.io/en/stable/gettingstarted/k8s-install-gke/#restart-remaining-pods)
+[restart](https://docs.cilium.io/en/stable/gettingstarted/k8s-install-gke/#restart-unmanaged-pods)
 of all affected pods in all namespaces to ensure that they are
-[managed](https://cilium.readthedocs.io/en/stable/troubleshooting/#ensure-pod-is-managed-by-cilium)
+[managed](https://docs.cilium.io/en/stable/troubleshooting/#ensure-pod-is-managed-by-cilium)
 by the correct networking plugin.
 
 NOTE: **Note:**

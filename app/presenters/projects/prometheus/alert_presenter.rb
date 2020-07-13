@@ -6,7 +6,7 @@ module Projects
       RESERVED_ANNOTATIONS = %w(gitlab_incident_markdown gitlab_y_label title).freeze
       GENERIC_ALERT_SUMMARY_ANNOTATIONS = %w(monitoring_tool service hosts).freeze
       MARKDOWN_LINE_BREAK = "  \n".freeze
-      INCIDENT_LABEL_NAME = IncidentManagement::CreateIncidentLabelService::LABEL_PROPERTIES[:title].freeze
+      INCIDENT_LABEL_NAME = ::IncidentManagement::CreateIncidentLabelService::LABEL_PROPERTIES[:title].freeze
       METRIC_TIME_WINDOW = 30.minutes
 
       def full_title

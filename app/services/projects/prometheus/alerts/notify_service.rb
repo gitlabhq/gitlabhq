@@ -5,7 +5,7 @@ module Projects
     module Alerts
       class NotifyService < BaseService
         include Gitlab::Utils::StrongMemoize
-        include IncidentManagement::Settings
+        include ::IncidentManagement::Settings
 
         # This set of keys identifies a payload as a valid Prometheus
         # payload and thus processable by this service. See also

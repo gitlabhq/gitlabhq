@@ -1,3 +1,10 @@
+---
+stage: Release
+group: Release Management
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+type: concepts, howto
+---
+
 # Protected environments API **(PREMIUM)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30595) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.8.

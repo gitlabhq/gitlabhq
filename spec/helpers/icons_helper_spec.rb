@@ -235,4 +235,25 @@ RSpec.describe IconsHelper do
         .to eq("<span class=\"gl-snippet-icon gl-snippet-icon-download\"></span>")
     end
   end
+
+  describe 'loading_icon' do
+    it 'returns span with gl-spinner class and default configuration' do
+      expect(loading_icon.to_s)
+        .to eq '<span class="gl-spinner gl-spinner-orange gl-spinner-sm" aria-label="Loading"></span>'
+    end
+
+    context 'when css_class is provided' do
+      it 'appends css_class to gl-spinner element' do
+        expect(loading_icon(css_class: 'gl-mr-2').to_s)
+          .to eq '<span class="gl-spinner gl-spinner-orange gl-spinner-sm gl-mr-2" aria-label="Loading"></span>'
+      end
+    end
+
+    context 'when container is true' do
+      it 'creates a container that has the gl-spinner-container class selector' do
+        expect(loading_icon(container: true).to_s)
+        .to eq '<div class="gl-spinner-container"><span class="gl-spinner gl-spinner-orange gl-spinner-sm" aria-label="Loading"></span></div>'
+      end
+    end
+  end
 end

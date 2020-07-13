@@ -18,7 +18,7 @@ module Gitlab
           def action_path
             pipeline = subject.pipeline
 
-            project_stage_play_manual_path(pipeline.project, pipeline, subject.name)
+            project_pipeline_stage_play_manual_path(pipeline.project, pipeline, subject.name)
           end
 
           def action_method
