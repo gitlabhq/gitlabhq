@@ -13,6 +13,7 @@ module Jira
       @search = params[:search]
       @labels = params[:labels]
       @status = params[:status]
+      @state  = params[:state]
       @reporter = params[:author_username]
       @assignee = params[:assignee_username]
       @sort = params[:sort] || DEFAULT_SORT
@@ -28,7 +29,7 @@ module Jira
 
     private
 
-    attr_reader :jira_project_key, :sort, :sort_direction, :search, :labels, :status, :reporter, :assignee
+    attr_reader :jira_project_key, :sort, :sort_direction, :search, :labels, :status, :reporter, :assignee, :state
 
     def jql_filters
       [
@@ -37,6 +38,7 @@ module Jira
         by_status,
         by_reporter,
         by_assignee,
+        by_open_and_closed,
         by_summary_and_description
       ].compact.join(' AND ')
     end
@@ -78,6 +80,17 @@ module Jira
       return if assignee.blank?
 
       %Q[assignee = "#{escape_quotes(assignee)}"]
+    end
+
+    def by_open_and_closed
+      return if state.blank?
+
+      case state
+      when 'opened'
+        %q[statusCategory != Done]
+      when 'closed'
+        %q[statusCategory = Done]
+      end
     end
 
     def escape_quotes(param)

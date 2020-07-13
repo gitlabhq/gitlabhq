@@ -910,6 +910,14 @@ RSpec.describe API::Users, :do_not_mock_admin_mode do
       expect(user.reload.bio).to eq('')
     end
 
+    it 'updates user with nil bio' do
+      put api("/users/#{user.id}", admin), params: { bio: nil }
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response['bio']).to eq('')
+      expect(user.reload.bio).to eq('')
+    end
+
     it "updates user with new password and forces reset on next login" do
       put api("/users/#{user.id}", admin), params: { password: '12345678' }
 

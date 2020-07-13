@@ -9,6 +9,8 @@ class UserDetail < ApplicationRecord
   validates :job_title, length: { maximum: 200 }
   validates :bio, length: { maximum: 255 }, allow_blank: true
 
+  before_save :prevent_nil_bio
+
   cache_markdown_field :bio
 
   def bio_html
@@ -21,5 +23,11 @@ class UserDetail < ApplicationRecord
   override :invalidated_markdown_cache?
   def invalidated_markdown_cache?
     self.class.column_names.include?('bio_html') && super
+  end
+
+  private
+
+  def prevent_nil_bio
+    self.bio = '' if bio_changed? && bio.nil?
   end
 end

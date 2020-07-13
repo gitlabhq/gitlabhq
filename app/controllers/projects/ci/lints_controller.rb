@@ -14,7 +14,7 @@ class Projects::Ci::LintsController < Projects::ApplicationController
     @errors = result.errors
 
     if result.valid?
-      @config_processor = result.content
+      @config_processor = result.config
       @stages = @config_processor.stages
       @builds = @config_processor.builds
       @jobs = @config_processor.jobs

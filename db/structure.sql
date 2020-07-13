@@ -18505,8 +18505,6 @@ CREATE INDEX index_alert_management_alerts_on_environment_id ON public.alert_man
 
 CREATE INDEX index_alert_management_alerts_on_issue_id ON public.alert_management_alerts USING btree (issue_id);
 
-CREATE UNIQUE INDEX index_alert_management_alerts_on_project_id_and_fingerprint ON public.alert_management_alerts USING btree (project_id, fingerprint);
-
 CREATE UNIQUE INDEX index_alert_management_alerts_on_project_id_and_iid ON public.alert_management_alerts USING btree (project_id, iid);
 
 CREATE INDEX index_alert_management_alerts_on_prometheus_alert_id ON public.alert_management_alerts USING btree (prometheus_alert_id) WHERE (prometheus_alert_id IS NOT NULL);
@@ -18608,8 +18606,6 @@ CREATE INDEX index_approvers_on_target_id_and_target_type ON public.approvers US
 CREATE INDEX index_approvers_on_user_id ON public.approvers USING btree (user_id);
 
 CREATE INDEX index_audit_events_on_entity_id_entity_type_id_desc_author_id ON public.audit_events USING btree (entity_id, entity_type, id DESC, author_id);
-
-CREATE INDEX index_audit_events_on_ruby_object_in_details ON public.audit_events USING btree (id) WHERE (details ~~ '%ruby/object%'::text);
 
 CREATE INDEX index_award_emoji_on_awardable_type_and_awardable_id ON public.award_emoji USING btree (awardable_type, awardable_id);
 
@@ -19754,6 +19750,8 @@ CREATE INDEX index_pages_domains_on_verified_at ON public.pages_domains USING bt
 CREATE INDEX index_pages_domains_on_verified_at_and_enabled_until ON public.pages_domains USING btree (verified_at, enabled_until);
 
 CREATE INDEX index_pages_domains_on_wildcard ON public.pages_domains USING btree (wildcard);
+
+CREATE UNIQUE INDEX index_partial_am_alerts_on_project_id_and_fingerprint ON public.alert_management_alerts USING btree (project_id, fingerprint) WHERE (status <> 2);
 
 CREATE UNIQUE INDEX index_partitioned_foreign_keys_unique_index ON public.partitioned_foreign_keys USING btree (to_table, from_table, from_column);
 
@@ -23641,10 +23639,12 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200704143633
 20200704161600
 20200706005325
+20200706035141
 20200706154619
 20200706170536
 20200707071941
 20200707094341
 20200707095849
+20200710102846
 \.
 

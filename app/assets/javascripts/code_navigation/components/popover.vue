@@ -31,6 +31,9 @@ export default {
     };
   },
   computed: {
+    isCurrentDefinition() {
+      return this.data.definitionLineNumber - 1 === this.position.lineIndex;
+    },
     positionStyles() {
       return {
         left: `${this.position.x - this.offsetLeft}px`,
@@ -43,7 +46,7 @@ export default {
       }
 
       if (this.isDefinitionCurrentBlob) {
-        return `#${this.data.definition_path.split('#').pop()}`;
+        return `#L${this.data.definitionLineNumber}`;
       }
 
       return `${this.definitionPathPrefix}/${this.data.definition_path}`;
@@ -79,19 +82,29 @@ export default {
     class="popover code-navigation-popover popover-font-size-normal gl-popover bs-popover-bottom show"
   >
     <div :style="{ left: `${offsetLeft}px` }" class="arrow"></div>
-    <div v-for="(hover, index) in data.hover" :key="index" class="border-bottom">
-      <pre
-        v-if="hover.language"
-        ref="code-output"
-        :class="$options.colorScheme"
-        class="border-0 bg-transparent m-0 code highlight"
-      ><doc-line v-for="(tokens, tokenIndex) in hover.tokens" :key="tokenIndex" :language="hover.language" :tokens="tokens"/></pre>
-      <p v-else ref="doc-output" class="p-3 m-0">
-        {{ hover.value }}
-      </p>
+    <div class="overflow-auto code-navigation-popover-container">
+      <div
+        v-for="(hover, index) in data.hover"
+        :key="index"
+        :class="{ 'border-bottom': index !== data.hover.length - 1 }"
+      >
+        <pre
+          v-if="hover.language"
+          ref="code-output"
+          :class="$options.colorScheme"
+          class="border-0 bg-transparent m-0 code highlight text-wrap"
+        ><doc-line v-for="(tokens, tokenIndex) in hover.tokens" :key="tokenIndex" :language="hover.language" :tokens="tokens"/></pre>
+        <p v-else ref="doc-output" class="p-3 m-0 gl-font-base">
+          {{ hover.value }}
+        </p>
+      </div>
     </div>
-    <div v-if="definitionPath" class="popover-body">
+    <div v-if="definitionPath || isCurrentDefinition" class="popover-body border-top">
+      <span v-if="isCurrentDefinition" class="gl-font-weight-bold gl-font-base">
+        {{ s__('CodeIntelligence|This is the definition') }}
+      </span>
       <gl-button
+        v-else
         :href="definitionPath"
         :target="isDefinitionCurrentBlob ? null : '_blank'"
         class="w-100"

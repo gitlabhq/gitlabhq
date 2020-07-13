@@ -82,6 +82,10 @@ module Gitlab
                 @entries.delete(:except) unless except_defined? # rubocop:disable Gitlab/ModuleWithInstanceVariables
               end
 
+              if has_rules? && !has_workflow_rules && Gitlab::Ci::Features.raise_job_rules_without_workflow_rules_warning?
+                add_warning('uses `rules` without defining `workflow:rules`')
+              end
+
               # inherit root variables
               @root_variables_value = deps&.variables_value # rubocop:disable Gitlab/ModuleWithInstanceVariables
 

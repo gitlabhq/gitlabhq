@@ -16,6 +16,7 @@ module Gitlab
           @config = config
           @metadata = metadata
           @entries = {}
+          @warnings = []
 
           yield(self) if block_given?
 
@@ -58,6 +59,14 @@ module Gitlab
 
         def errors
           []
+        end
+
+        def warnings
+          @warnings + descendants.flat_map(&:warnings)
+        end
+
+        def add_warning(message)
+          @warnings << "#{location} #{message}"
         end
 
         def value

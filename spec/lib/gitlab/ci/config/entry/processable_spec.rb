@@ -231,6 +231,12 @@ RSpec.describe Gitlab::Ci::Config::Entry::Processable do
     end
 
     context 'when workflow rules is used' do
+      let(:workflow) { double('workflow', 'has_rules?' => true) }
+
+      before do
+        entry.compose!(deps)
+      end
+
       context 'when rules are used' do
         let(:config) { { script: 'ls', cache: { key: 'test' }, rules: [] } }
 
@@ -239,11 +245,11 @@ RSpec.describe Gitlab::Ci::Config::Entry::Processable do
         end
       end
 
-      context 'when rules are not used' do
+      context 'when rules are not used and only is defined' do
         let(:config) { { script: 'ls', cache: { key: 'test' }, only: [] } }
 
-        it 'does not define only' do
-          expect(entry).not_to be_only_defined
+        it 'keeps only entry' do
+          expect(entry).to be_only_defined
         end
       end
     end

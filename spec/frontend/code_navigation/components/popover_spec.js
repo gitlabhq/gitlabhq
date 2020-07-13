@@ -26,7 +26,8 @@ const MOCK_CODE_DATA = Object.freeze({
       ],
     },
   ],
-  definition_path: 'test.js#L20',
+  definition_path: 'test.js',
+  definitionLineNumber: 20,
 });
 
 const MOCK_DOCS_DATA = Object.freeze({

@@ -167,7 +167,7 @@ RSpec.describe Gitlab::Danger::Helper do
 
   describe '#categories_for_file' do
     where(:path, :expected_categories) do
-      'doc/foo'         | [:docs]
+      'doc/foo.md'      | [:docs]
       'CONTRIBUTING.md' | [:docs]
       'LICENSE'         | [:docs]
       'MAINTENANCE.md'  | [:docs]

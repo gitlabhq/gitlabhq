@@ -81,17 +81,28 @@ module Gitlab
           self
         end
 
-        def count_request
+        def instance_count_request
           @request_counter ||= Gitlab::Metrics.counter(:gitlab_redis_client_requests_total, 'Client side Redis request count, per Redis server')
           @request_counter.increment({ storage: storage_key })
         end
 
-        def count_exception(ex)
+        def instance_count_exception(ex)
           # This metric is meant to give a client side view of how the Redis
           # server is doing. Redis itself does not expose error counts. This
           # metric can be used for Redis alerting and service health monitoring.
           @exception_counter ||= Gitlab::Metrics.counter(:gitlab_redis_client_exceptions_total, 'Client side Redis exception count, per Redis server, per exception class')
           @exception_counter.increment({ storage: storage_key, exception: ex.class.to_s })
+        end
+
+        def instance_observe_duration(duration)
+          @request_latency_histogram ||= Gitlab::Metrics.histogram(
+            :gitlab_redis_client_requests_duration_seconds,
+            'Client side Redis request latency, per Redis server, excluding blocking commands',
+            {},
+            [0.001, 0.005, 0.01]
+          )
+
+          @request_latency_histogram.observe({ storage: storage_key }, duration)
         end
 
         private

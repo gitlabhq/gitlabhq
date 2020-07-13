@@ -15,14 +15,18 @@ module Labels
     def execute
       return unless old_group.present?
 
+      # rubocop: disable CodeReuse/ActiveRecord
+      link_ids = group_labels_applied_to_issues.pluck("label_links.id") +
+                 group_labels_applied_to_merge_requests.pluck("label_links.id")
+      # rubocop: disable CodeReuse/ActiveRecord
+
       Label.transaction do
         labels_to_transfer.find_each do |label|
           new_label_id = find_or_create_label!(label)
 
           next if new_label_id == label.id
 
-          update_label_links(group_labels_applied_to_issues, old_label_id: label.id, new_label_id: new_label_id)
-          update_label_links(group_labels_applied_to_merge_requests, old_label_id: label.id, new_label_id: new_label_id)
+          update_label_links(link_ids, old_label_id: label.id, new_label_id: new_label_id)
           update_label_priorities(old_label_id: label.id, new_label_id: new_label_id)
         end
       end
@@ -46,7 +50,7 @@ module Labels
 
     # rubocop: disable CodeReuse/ActiveRecord
     def group_labels_applied_to_issues
-      Label.joins(:issues)
+      @group_labels_applied_to_issues ||= Label.joins(:issues)
         .where(
           issues: { project_id: project.id },
           labels: { type: 'GroupLabel', group_id: old_group.self_and_ancestors }
@@ -56,7 +60,7 @@ module Labels
 
     # rubocop: disable CodeReuse/ActiveRecord
     def group_labels_applied_to_merge_requests
-      Label.joins(:merge_requests)
+      @group_labels_applied_to_merge_requests ||= Label.joins(:merge_requests)
         .where(
           merge_requests: { target_project_id: project.id },
           labels: { type: 'GroupLabel', group_id: old_group.self_and_ancestors }
@@ -72,14 +76,7 @@ module Labels
     end
 
     # rubocop: disable CodeReuse/ActiveRecord
-    def update_label_links(labels, old_label_id:, new_label_id:)
-      # use 'labels' relation to get label_link ids only of issues/MRs
-      # in the project being transferred.
-      # IDs are fetched in a separate query because MySQL doesn't
-      # allow referring of 'label_links' table in UPDATE query:
-      # https://gitlab.com/gitlab-org/gitlab-foss/-/jobs/62435068
-      link_ids = labels.pluck('label_links.id')
-
+    def update_label_links(link_ids, old_label_id:, new_label_id:)
       LabelLink.where(id: link_ids, label_id: old_label_id)
         .update_all(label_id: new_label_id)
     end

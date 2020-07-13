@@ -47,21 +47,68 @@ RSpec.describe Gitlab::Instrumentation::RedisInterceptor, :clean_gitlab_redis_sh
     let(:instrumentation_class) { Gitlab::Redis::SharedState.instrumentation_class }
 
     it 'counts successful requests' do
-      expect(instrumentation_class).to receive(:count_request).and_call_original
+      expect(instrumentation_class).to receive(:instance_count_request).and_call_original
 
       Gitlab::Redis::SharedState.with { |redis| redis.call(:get, 'foobar') }
     end
 
     it 'counts exceptions' do
-      expect(instrumentation_class).to receive(:count_exception)
+      expect(instrumentation_class).to receive(:instance_count_exception)
         .with(instance_of(Redis::CommandError)).and_call_original
-      expect(instrumentation_class).to receive(:count_request).and_call_original
+      expect(instrumentation_class).to receive(:instance_count_request).and_call_original
 
       expect do
         Gitlab::Redis::SharedState.with do |redis|
           redis.call(:auth, 'foo', 'bar')
         end
       end.to raise_exception(Redis::CommandError)
+    end
+  end
+
+  describe 'latency' do
+    let(:instrumentation_class) { Gitlab::Redis::SharedState.instrumentation_class }
+
+    describe 'commands in the apdex' do
+      where(:command) do
+        [
+          [[:get, 'foobar']],
+          [%w[GET foobar]]
+        ]
+      end
+
+      with_them do
+        it 'measures requests we want in the apdex' do
+          expect(instrumentation_class).to receive(:instance_observe_duration).with(a_value > 0)
+            .and_call_original
+
+          Gitlab::Redis::SharedState.with { |redis| redis.call(*command) }
+        end
+      end
+    end
+
+    describe 'commands not in the apdex' do
+      where(:command) do
+        [
+          [%w[brpop foobar 0.01]],
+          [%w[blpop foobar 0.01]],
+          [%w[brpoplpush foobar bazqux 0.01]],
+          [%w[bzpopmin foobar 0.01]],
+          [%w[bzpopmax foobar 0.01]],
+          [%w[xread block 1 streams mystream 0-0]],
+          [%w[xreadgroup group mygroup myconsumer block 1 streams foobar 0-0]]
+        ]
+      end
+
+      with_them do
+        it 'skips requests we do not want in the apdex' do
+          expect(instrumentation_class).not_to receive(:instance_observe_duration)
+
+          begin
+            Gitlab::Redis::SharedState.with { |redis| redis.call(*command) }
+          rescue Gitlab::Instrumentation::RedisClusterValidator::CrossSlotError, ::Redis::CommandError
+          end
+        end
+      end
     end
   end
 end

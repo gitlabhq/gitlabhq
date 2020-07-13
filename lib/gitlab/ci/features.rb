@@ -47,6 +47,12 @@ module Gitlab
       def self.variables_api_filter_environment_scope?
         ::Feature.enabled?(:ci_variables_api_filter_environment_scope, default_enabled: false)
       end
+
+      # This FF is only used for development purpose to test that warnings can be
+      # raised and propagated to the UI.
+      def self.raise_job_rules_without_workflow_rules_warning?
+        ::Feature.enabled?(:ci_raise_job_rules_without_workflow_rules_warning)
+      end
     end
   end
 end

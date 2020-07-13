@@ -4140,6 +4140,9 @@ msgstr ""
 msgid "Cannot have multiple Jira imports running at the same time"
 msgstr ""
 
+msgid "Cannot have multiple unresolved alerts"
+msgstr ""
+
 msgid "Cannot import because issues are not available in this project."
 msgstr ""
 
@@ -5839,6 +5842,9 @@ msgid "Code owner approval is required"
 msgstr ""
 
 msgid "Code owners"
+msgstr ""
+
+msgid "CodeIntelligence|This is the definition"
 msgstr ""
 
 msgid "CodeOwner|Pattern"
@@ -22982,6 +22988,9 @@ msgid_plural "The %{type} contains the following errors:"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "The .gitlab-ci.yml has been successfully created."
+msgstr ""
+
 msgid "The Advanced Global Search in GitLab is a powerful search service that saves you time. Instead of creating duplicate code and wasting time, you can now search for code within other teams that can help your own project."
 msgstr ""
 
@@ -23564,6 +23573,9 @@ msgid "There was an error when subscribing to this label."
 msgstr ""
 
 msgid "There was an error when unsubscribing from this label."
+msgstr ""
+
+msgid "There was an error while fetching configuration data."
 msgstr ""
 
 msgid "There was an error while fetching value stream analytics data."

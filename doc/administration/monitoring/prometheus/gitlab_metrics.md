@@ -264,6 +264,7 @@ instance (`cache`, `shared_state` etc.).
 |:--------------------------------- |:------- |:----- |:----------- |
 | `gitlab_redis_client_exceptions_total`                    | Counter   | 13.2  | Number of Redis client exceptions, broken down by exception class |
 | `gitlab_redis_client_requests_total`                    | Counter   | 13.2  | Number of Redis client requests |
+| `gitlab_redis_client_requests_duration_seconds`                    | Histogram   | 13.2  | Redis request latency, excluding blocking commands |
 
 ## Metrics shared directory
 

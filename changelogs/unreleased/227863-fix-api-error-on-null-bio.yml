@@ -1,0 +1,5 @@
+---
+title: Fix API errors when null value is given for the bio
+merge_request: 36650
+author:
+type: fixed

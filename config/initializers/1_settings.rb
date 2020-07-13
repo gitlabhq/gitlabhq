@@ -500,6 +500,9 @@ Settings.cron_jobs['users_create_statistics_worker']['job_class'] = 'Users::Crea
 Settings.cron_jobs['authorized_project_update_periodic_recalculate_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['authorized_project_update_periodic_recalculate_worker']['cron'] ||= '45 1 * * 6'
 Settings.cron_jobs['authorized_project_update_periodic_recalculate_worker']['job_class'] = 'AuthorizedProjectUpdate::PeriodicRecalculateWorker'
+Settings.cron_jobs['update_container_registry_info_worker'] ||= Settingslogic.new({})
+Settings.cron_jobs['update_container_registry_info_worker']['cron'] ||= '0 0 * * *'
+Settings.cron_jobs['update_container_registry_info_worker']['job_class'] = 'UpdateContainerRegistryInfoWorker'
 
 Gitlab.ee do
   Settings.cron_jobs['adjourned_group_deletion_worker'] ||= Settingslogic.new({})

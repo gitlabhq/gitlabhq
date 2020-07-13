@@ -5,19 +5,26 @@ require 'redis'
 module Gitlab
   module Instrumentation
     module RedisInterceptor
+      APDEX_EXCLUDE = %w[brpop blpop brpoplpush bzpopmin bzpopmax xread xreadgroup].freeze
+
       def call(*args, &block)
-        instrumentation_class.count_request
+        start = Time.now # must come first so that 'start' is always defined
+        instrumentation_class.instance_count_request
         instrumentation_class.redis_cluster_validate!(args.first)
-        start = Time.now
 
         super(*args, &block)
       rescue ::Redis::BaseError => ex
-        instrumentation_class.count_exception(ex)
+        instrumentation_class.instance_count_exception(ex)
         raise ex
       ensure
-        duration = (Time.now - start)
+        duration = Time.now - start
+
+        unless APDEX_EXCLUDE.include?(command_from_args(args))
+          instrumentation_class.instance_observe_duration(duration)
+        end
 
         if ::RequestStore.active?
+          # These metrics measure total Redis usage per Rails request / job.
           instrumentation_class.increment_request_count
           instrumentation_class.add_duration(duration)
           instrumentation_class.add_call_details(duration, args)
@@ -82,6 +89,12 @@ module Gitlab
       #
       def instrumentation_class
         @options[:instrumentation_class] # rubocop:disable Gitlab/ModuleWithInstanceVariables
+      end
+
+      def command_from_args(args)
+        command = args[0]
+        command = command[0] if command.is_a?(Array)
+        command.to_s.downcase
       end
     end
   end

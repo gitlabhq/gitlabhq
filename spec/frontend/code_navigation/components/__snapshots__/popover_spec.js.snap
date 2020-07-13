@@ -11,43 +11,47 @@ exports[`Code navigation popover component renders popover 1`] = `
   />
    
   <div
-    class="border-bottom"
+    class="overflow-auto code-navigation-popover-container"
   >
-    <pre
-      class="border-0 bg-transparent m-0 code highlight"
+    <div
+      class=""
     >
-      <span
-        class="line"
-        lang="javascript"
+      <pre
+        class="border-0 bg-transparent m-0 code highlight text-wrap"
       >
         <span
-          class="k"
+          class="line"
+          lang="javascript"
         >
-          function
+          <span
+            class="k"
+          >
+            function
+          </span>
+          <span>
+             main() {
+          </span>
         </span>
-        <span>
-           main() {
+        <span
+          class="line"
+          lang="javascript"
+        >
+          <span>
+            }
+          </span>
         </span>
-      </span>
-      <span
-        class="line"
-        lang="javascript"
-      >
-        <span>
-          }
-        </span>
-      </span>
-    </pre>
+      </pre>
+    </div>
   </div>
    
   <div
-    class="popover-body"
+    class="popover-body border-top"
   >
     <gl-button-stub
       category="tertiary"
       class="w-100"
       data-testid="go-to-definition-btn"
-      href="http://gitlab.com/test.js#L20"
+      href="http://gitlab.com/test.js"
       icon=""
       size="medium"
       target="_blank"

@@ -6,7 +6,7 @@ module BlobViewer
 
     included do
       self.type = :rich
-      self.switcher_icon = 'file-text-o'
+      self.switcher_icon = 'doc-text'
       self.switcher_title = 'rendered file'
     end
   end

@@ -85,5 +85,29 @@ RSpec.describe Jira::JqlBuilderService do
         expect(subject).to eq('project = PROJECT_KEY order by updated ASC')
       end
     end
+
+    context 'with opened state param' do
+      let(:params) { { state: 'opened' } }
+
+      it 'builds jql' do
+        expect(subject).to eq('project = PROJECT_KEY AND statusCategory != Done order by created DESC')
+      end
+    end
+
+    context 'with closed state param' do
+      let(:params) { { state: 'closed' } }
+
+      it 'builds jql' do
+        expect(subject).to eq('project = PROJECT_KEY AND statusCategory = Done order by created DESC')
+      end
+    end
+
+    context 'with any other state param' do
+      let(:params) { { state: 'all' } }
+
+      it 'builds jql' do
+        expect(subject).to eq('project = PROJECT_KEY order by created DESC')
+      end
+    end
   end
 end

@@ -1,5 +1,6 @@
 import { __, s__ } from '~/locale';
 import $ from 'jquery';
+import timezoneMock from 'timezone-mock';
 import '~/commons/bootstrap';
 import * as datetimeUtility from '~/lib/utils/datetime_utility';
 
@@ -85,6 +86,31 @@ describe('Date time utils', () => {
       expect(() => {
         datetimeUtility.formatDate('2016-07-23 00:00:00 UTC');
       }).toThrow(new Error('Invalid date'));
+    });
+
+    describe('convert local timezone to UTC with utc parameter', () => {
+      const midnightUTC = '2020-07-09';
+      const format = 'mmm d, yyyy';
+
+      beforeEach(() => {
+        timezoneMock.register('US/Pacific');
+      });
+
+      afterEach(() => {
+        timezoneMock.unregister();
+      });
+
+      it('defaults to false', () => {
+        const formattedDate = datetimeUtility.formatDate(midnightUTC, format);
+
+        expect(formattedDate).toBe('Jul 8, 2020');
+      });
+
+      it('converts local time to UTC if utc flag is true', () => {
+        const formattedDate = datetimeUtility.formatDate(midnightUTC, format, true);
+
+        expect(formattedDate).toBe('Jul 9, 2020');
+      });
     });
   });
 

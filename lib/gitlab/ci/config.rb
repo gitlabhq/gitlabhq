@@ -39,6 +39,10 @@ module Gitlab
         @root.errors
       end
 
+      def warnings
+        @root.warnings
+      end
+
       def to_hash
         @config
       end

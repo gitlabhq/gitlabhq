@@ -36,7 +36,7 @@ describe('setCurrentHoverElement', () => {
 describe('addInteractionClass', () => {
   beforeEach(() => {
     setFixtures(
-      '<div data-path="index.js"><div class="blob-content"><div id="LC1"><span>console</span><span>.</span><span>log</span></div><div id="LC2"><span>function</span></div></div></div>',
+      '<div data-path="index.js"><div class="blob-content"><div id="LC1" class="line"><span>console</span><span>.</span><span>log</span></div><div id="LC2" class="line"><span>function</span></div></div></div>',
     );
   });
 

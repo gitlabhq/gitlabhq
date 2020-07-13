@@ -105,6 +105,21 @@ module Gitlab
 
         private
 
+        def package_allowed_paths
+          packages_config = ::Gitlab.config.packages
+          return [] unless allow_packages_storage_path?(packages_config)
+
+          [::Packages::PackageFileUploader.workhorse_upload_path]
+        end
+
+        def allow_packages_storage_path?(packages_config)
+          return false unless packages_config.enabled
+          return false unless packages_config['storage_path']
+          return false if packages_config.object_store.enabled && packages_config.object_store.direct_upload
+
+          true
+        end
+
         def allowed_paths
           [
             ::FileUploader.root,
@@ -112,7 +127,7 @@ module Gitlab
             JobArtifactUploader.workhorse_upload_path,
             LfsObjectUploader.workhorse_upload_path,
             File.join(Rails.root, 'public/uploads/tmp')
-          ]
+          ] + package_allowed_paths
         end
       end
 
@@ -135,5 +150,3 @@ module Gitlab
     end
   end
 end
-
-::Gitlab::Middleware::Multipart::Handler.prepend_if_ee('EE::Gitlab::Middleware::Multipart::Handler')

@@ -89,8 +89,8 @@ GET /users
     "web_url": "http://localhost:3000/john_smith",
     "created_at": "2012-05-23T08:00:58Z",
     "is_admin": false,
-    "bio": null,
-    "bio_html": null,
+    "bio": "",
+    "bio_html": "",
     "location": null,
     "skype": "",
     "linkedin": "",
@@ -129,8 +129,8 @@ GET /users
     "web_url": "http://localhost:3000/jack_smith",
     "created_at": "2012-05-23T08:01:01Z",
     "is_admin": false,
-    "bio": null,
-    "bio_html": null,
+    "bio": "",
+    "bio_html": "",
     "location": null,
     "skype": "",
     "linkedin": "",
@@ -247,8 +247,8 @@ Parameters:
   "avatar_url": "http://localhost:3000/uploads/user/avatar/1/cd8.jpeg",
   "web_url": "http://localhost:3000/john_smith",
   "created_at": "2012-05-23T08:00:58Z",
-  "bio": null,
-  "bio_html": null,
+  "bio": "",
+  "bio_html": "",
   "location": null,
   "public_email": "john@example.com",
   "skype": "",
@@ -283,8 +283,8 @@ Example Responses:
   "web_url": "http://localhost:3000/john_smith",
   "created_at": "2012-05-23T08:00:58Z",
   "is_admin": false,
-  "bio": null,
-  "bio_html": null,
+  "bio": "",
+  "bio_html": "",
   "location": null,
   "public_email": "john@example.com",
   "skype": "",
@@ -371,6 +371,9 @@ over `password`. In addition, `reset_password` and
 
 NOTE: **Note:**
 From [GitLab 12.1](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/29888/), `private_profile` will default to `false`.
+
+NOTE: **Note:**
+From [GitLab 13.2](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/35604), `bio` will default to `""` instead of `null`.
 
 ```plaintext
 POST /users
@@ -503,8 +506,8 @@ GET /user
   "avatar_url": "http://localhost:3000/uploads/user/avatar/1/index.jpg",
   "web_url": "http://localhost:3000/john_smith",
   "created_at": "2012-05-23T08:00:58Z",
-  "bio": null,
-  "bio_html": null,
+  "bio": "",
+  "bio_html": "",
   "location": null,
   "public_email": "john@example.com",
   "skype": "",
@@ -553,8 +556,8 @@ GET /user
   "web_url": "http://localhost:3000/john_smith",
   "created_at": "2012-05-23T08:00:58Z",
   "is_admin": false,
-  "bio": null,
-  "bio_html": null,
+  "bio": "",
+  "bio_html": "",
   "location": null,
   "public_email": "john@example.com",
   "skype": "",

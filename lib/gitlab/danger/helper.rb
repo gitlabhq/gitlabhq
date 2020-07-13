@@ -102,7 +102,7 @@ module Gitlab
       }.freeze
       # First-match win, so be sure to put more specific regex at the top...
       CATEGORIES = {
-        %r{\Adoc/} => :docs,
+        %r{\Adoc/.*(\.(md|png|gif|jpg))\z} => :docs,
         %r{\A(CONTRIBUTING|LICENSE|MAINTENANCE|PHILOSOPHY|PROCESS|README)(\.md)?\z} => :docs,
 
         %r{\A(ee/)?app/(assets|views)/} => :frontend,

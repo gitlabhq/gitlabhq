@@ -265,6 +265,10 @@ For an example of how to set up a location-aware Git remote URL with AWS Route53
 
 For more information on removing a Geo node, see [Removing **secondary** Geo nodes](remove_geo_node.md).
 
+## Disable Geo
+
+To find out how to disable Geo, see [Disabling Geo](disable_geo.md).
+
 ## Current limitations
 
 CAUTION: **Caution:**

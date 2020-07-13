@@ -19,6 +19,10 @@ module Gitlab
             # https://gitlab.com/gitlab-org/gitlab/-/issues/220823
             pipeline.errors.add(:base, message)
           end
+
+          def warning(message)
+            pipeline.add_warning_message(message)
+          end
         end
       end
     end

@@ -55,8 +55,12 @@ module AlertManagement
     validates :severity,        presence: true
     validates :status,          presence: true
     validates :started_at,      presence: true
-    validates :fingerprint,     uniqueness: { scope: :project }, allow_blank: true
-    validate  :hosts_length
+    validates :fingerprint,     allow_blank: true, uniqueness: {
+      scope: :project,
+      conditions: -> { where.not(status: STATUSES[:resolved]) },
+      message: -> (object, data) { _('Cannot have multiple unresolved alerts') }
+    }, unless: :resolved?
+    validate :hosts_length
 
     enum severity: {
       critical: 0,

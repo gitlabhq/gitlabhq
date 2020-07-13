@@ -83,21 +83,50 @@ RSpec.describe AlertManagement::Alert do
     end
 
     describe 'fingerprint' do
+      let_it_be(:project) { create(:project) }
       let_it_be(:fingerprint) { 'fingerprint' }
-      let_it_be(:existing_alert) { create(:alert_management_alert, fingerprint: fingerprint) }
       let(:new_alert) { build(:alert_management_alert, fingerprint: fingerprint, project: project) }
 
       subject { new_alert }
 
       context 'adding an alert with the same fingerprint' do
-        context 'same project' do
-          let(:project) { existing_alert.project }
+        context 'same project, various states' do
+          using RSpec::Parameterized::TableSyntax
 
-          it { is_expected.not_to be_valid }
+          # We are only validating uniqueness for non-resolved alerts
+          where(:existing_status, :new_status, :valid) do
+            :resolved      | :triggered    | true
+            :resolved      | :acknowledged | true
+            :resolved      | :ignored      | true
+            :resolved      | :resolved     | true
+            :triggered     | :triggered    | false
+            :triggered     | :acknowledged | false
+            :triggered     | :ignored      | false
+            :triggered     | :resolved     | true
+            :acknowledged  | :triggered    | false
+            :acknowledged  | :acknowledged | false
+            :acknowledged  | :ignored      | false
+            :acknowledged  | :resolved     | true
+            :ignored       | :triggered    | false
+            :ignored       | :acknowledged | false
+            :ignored       | :ignored      | false
+            :ignored       | :resolved     | true
+          end
+
+          with_them do
+            let!(:existing_alert) { create(:alert_management_alert, existing_status, fingerprint: fingerprint, project: project) }
+            let(:new_alert) { build(:alert_management_alert, new_status, fingerprint: fingerprint, project: project) }
+
+            if params[:valid]
+              it { is_expected.to be_valid }
+            else
+              it { is_expected.to be_invalid }
+            end
+          end
         end
 
         context 'different project' do
-          let(:project) { create(:project) }
+          let!(:existing_alert) { create(:alert_management_alert, fingerprint: fingerprint) }
 
           it { is_expected.to be_valid }
         end

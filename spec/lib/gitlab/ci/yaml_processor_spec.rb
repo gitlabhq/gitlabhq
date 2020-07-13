@@ -435,6 +435,153 @@ module Gitlab
         end
       end
 
+      describe '#warnings' do
+        before do
+          stub_feature_flags(ci_raise_job_rules_without_workflow_rules_warning: true)
+        end
+
+        context 'when a warning is raised in a given entry' do
+          let(:config) do
+            <<-EOYML
+              rspec:
+                script: rspec
+                rules:
+                  - if: '$VAR == "value"'
+            EOYML
+          end
+
+          it 'is propagated all the way up to the processor' do
+            expect(subject.warnings).to contain_exactly('jobs:rspec uses `rules` without defining `workflow:rules`')
+          end
+        end
+
+        context 'when a warning is raised together with errors' do
+          let(:config) do
+            <<-EOYML
+              rspec:
+                script: rspec
+                rules:
+                  - if: '$VAR == "value"'
+              invalid:
+                script: echo
+                artifacts:
+                  - wrong_key: value
+            EOYML
+          end
+
+          it 'is propagated all the way up into the raised exception' do
+            expect { subject }.to raise_error do |error|
+              expect(error).to be_a(described_class::ValidationError)
+              expect(error.message).to eq('jobs:invalid:artifacts config should be a hash')
+              expect(error.warnings).to contain_exactly('jobs:rspec uses `rules` without defining `workflow:rules`')
+            end
+          end
+        end
+
+        context 'when error is raised before composing the config' do
+          let(:config) do
+            <<-EOYML
+              include: unknown/file.yml
+              rspec:
+                script: rspec
+                rules:
+                  - if: '$VAR == "value"'
+            EOYML
+          end
+
+          it 'raises an exception with empty warnings array' do
+            expect { subject }.to raise_error do |error|
+              expect(error).to be_a(described_class::ValidationError)
+              expect(error.message).to eq('Local file `unknown/file.yml` does not have project!')
+              expect(error.warnings).to be_empty
+            end
+          end
+        end
+
+        context 'when error is raised after composing the config with warnings' do
+          shared_examples 'has warnings and expected error' do |error_message|
+            it 'raises an exception including warnings' do
+              expect { subject }.to raise_error do |error|
+                expect(error).to be_a(described_class::ValidationError)
+                expect(error.message).to match(error_message)
+                expect(error.warnings).to be_present
+              end
+            end
+          end
+
+          context 'when stage does not exist' do
+            let(:config) do
+              <<-EOYML
+                rspec:
+                  stage: custom_stage
+                  script: rspec
+                  rules:
+                    - if: '$VAR == "value"'
+              EOYML
+            end
+
+            it_behaves_like 'has warnings and expected error', /rspec job: chosen stage does not exist/
+          end
+
+          context 'job dependency does not exist' do
+            let(:config) do
+              <<-EOYML
+                build:
+                  stage: build
+                  script: echo
+                  rules:
+                    - if: '$VAR == "value"'
+                test:
+                  stage: test
+                  script: echo
+                  needs: [unknown_job]
+              EOYML
+            end
+
+            it_behaves_like 'has warnings and expected error', /test job: undefined need: unknown_job/
+          end
+
+          context 'job dependency defined in later stage' do
+            let(:config) do
+              <<-EOYML
+                build:
+                  stage: build
+                  script: echo
+                  needs: [test]
+                  rules:
+                    - if: '$VAR == "value"'
+                test:
+                  stage: test
+                  script: echo
+              EOYML
+            end
+
+            it_behaves_like 'has warnings and expected error', /build job: need test is not defined in prior stages/
+          end
+        end
+
+        context 'when feature flag is disabled' do
+          before do
+            stub_feature_flags(ci_raise_job_rules_without_workflow_rules_warning: false)
+          end
+
+          context 'job rules used without workflow rules' do
+            let(:config) do
+              <<-EOYML
+                rspec:
+                  script: rspec
+                  rules:
+                    - if: '$VAR == "value"'
+              EOYML
+            end
+
+            it 'does not raise the warning' do
+              expect(subject.warnings).to be_empty
+            end
+          end
+        end
+      end
+
       describe 'only / except policies validations' do
         context 'when `only` has an invalid value' do
           let(:config) { { rspec: { script: "rspec", type: "test", only: only } } }
@@ -2517,7 +2664,7 @@ module Gitlab
           it 'returns errors and empty configuration' do
             expect(subject.valid?).to eq(false)
             expect(subject.errors).to eq(['Invalid configuration format'])
-            expect(subject.content).to be_blank
+            expect(subject.config).to be_blank
           end
         end
 
@@ -2527,7 +2674,7 @@ module Gitlab
           it 'returns errors and empty configuration' do
             expect(subject.valid?).to eq(false)
             expect(subject.errors).to eq(['jobs:rspec:tags config should be an array of strings'])
-            expect(subject.content).to be_blank
+            expect(subject.config).to be_blank
           end
         end
 
@@ -2539,7 +2686,7 @@ module Gitlab
             expect(subject.errors).to contain_exactly(
               'jobs:rspec config contains unknown keys: bad_tags',
               'jobs:rspec rules should be an array of hashes')
-            expect(subject.content).to be_blank
+            expect(subject.config).to be_blank
           end
         end
 
@@ -2549,7 +2696,7 @@ module Gitlab
           it 'returns errors and empty configuration' do
             expect(subject.valid?).to eq(false)
             expect(subject.errors).to eq(['Please provide content of .gitlab-ci.yml'])
-            expect(subject.content).to be_blank
+            expect(subject.config).to be_blank
           end
         end
 
@@ -2559,7 +2706,7 @@ module Gitlab
           it 'returns errors and empty configuration' do
             expect(subject.valid?).to eq(false)
             expect(subject.errors).to eq(['Unknown alias: bad_alias'])
-            expect(subject.content).to be_blank
+            expect(subject.config).to be_blank
           end
         end
 
@@ -2569,7 +2716,7 @@ module Gitlab
           it 'returns errors and empty configuration' do
             expect(subject.valid?).to eq(true)
             expect(subject.errors).to be_empty
-            expect(subject.content).to be_present
+            expect(subject.config).to be_present
           end
         end
       end
