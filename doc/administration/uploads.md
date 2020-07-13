@@ -57,6 +57,8 @@ This configuration relies on valid AWS credentials to be configured already.
 
 [Read more about using object storage with GitLab](object_storage.md).
 
+NOTE: **Note** We recommend using the [consolidated object storage settings](object_storage.md#consolidated-object-storage-configuration). The following instructions apply to the original config format.
+
 ## Object Storage Settings
 
 For source installations the following settings are nested under `uploads:` and then `object_store:`. On Omnibus GitLab installs they are prefixed by `uploads_object_store_`.
@@ -70,22 +72,9 @@ For source installations the following settings are nested under `uploads:` and 
 | `proxy_download` | Set to true to enable proxying all files served. Option allows to reduce egress traffic as this allows clients to download directly from remote storage instead of proxying all data | `false` |
 | `connection` | Various connection options described below | |
 
-### S3-compatible connection settings
+### Connection settings
 
-The connection settings match those provided by [Fog](https://github.com/fog), and are as follows:
-
-| Setting | Description | Default |
-|---------|-------------|---------|
-| `provider` | Always `AWS` for compatible hosts | `AWS` |
-| `aws_access_key_id` | AWS credentials, or compatible | |
-| `aws_secret_access_key` | AWS credentials, or compatible | |
-| `aws_signature_version` | AWS signature version to use. `2` or `4` are valid options. Digital Ocean Spaces and other providers may need `2`. | `4` |
-| `enable_signature_v4_streaming` | Set to true to enable HTTP chunked transfers with [AWS v4 signatures](https://docs.aws.amazon.com/AmazonS3/latest/API/sigv4-streaming.html). Oracle Cloud S3 needs this to be `false`. | `true` |
-| `region` | AWS region | us-east-1 |
-| `host` | S3 compatible host for when not using AWS, e.g. `localhost` or `storage.example.com` | `s3.amazonaws.com` |
-| `endpoint` | Can be used when configuring an S3 compatible service such as [MinIO](https://min.io), by entering a URL such as `http://127.0.0.1:9000` | (optional) |
-| `path_style` | Set to `true` to use `host/bucket_name/object` style paths instead of `bucket_name.host/object`. Leave as `false` for AWS S3. | `false` |
-| `use_iam_profile` | Set to `true` to use IAM profile instead of access keys | false
+See [the available connection settings for different providers](object_storage.md#connection-settings).
 
 **In Omnibus installations:**
 
@@ -143,35 +132,7 @@ _The uploads are stored by default in
 1. Save the file and [restart GitLab](restart_gitlab.md#installations-from-source) for the changes to take effect.
 1. Migrate any existing local uploads to the object storage using [`gitlab:uploads:migrate` Rake task](raketasks/uploads/migrate.md).
 
-### Oracle Cloud S3 connection settings
-
-Note that Oracle Cloud S3 must be sure to use the following settings:
-
-| Setting | Value |
-|---------|-------|
-| `enable_signature_v4_streaming` | `false` |
-| `path_style` | `true` |
-
-If `enable_signature_v4_streaming` is set to `true`, you may see the
-following error:
-
-```plaintext
-STREAMING-AWS4-HMAC-SHA256-PAYLOAD is not supported
-```
-
-### OpenStack compatible connection settings
-
-The connection settings match those provided by [Fog](https://github.com/fog), and are as follows:
-
-| Setting | Description | Default |
-|---------|-------------|---------|
-| `provider` | Always `OpenStack` for compatible hosts | `OpenStack` |
-| `openstack_username` | OpenStack username | |
-| `openstack_api_key` | OpenStack API key  | |
-| `openstack_temp_url_key` | OpenStack key for generating temporary URLs | |
-| `openstack_auth_url` | OpenStack authentication endpoint | |
-| `openstack_region` | OpenStack region | |
-| `openstack_tenant` | OpenStack tenant ID |
+### OpenStack example
 
 **In Omnibus installations:**
 

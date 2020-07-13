@@ -8,7 +8,7 @@ class UnconfirmWrongfullyVerifiedEmails < ActiveRecord::Migration[6.0]
   disable_ddl_transaction!
 
   INTERVAL = 5.minutes.to_i
-  BATCH_SIZE = 1000
+  BATCH_SIZE = 500
   MIGRATION = 'WrongfullyConfirmedEmailUnconfirmer'
   EMAIL_INDEX_NAME = 'tmp_index_for_email_unconfirmation_migration'
 

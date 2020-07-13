@@ -71,7 +71,7 @@ module Gitlab
       def update_user_records(user_ids)
         UserModel
           .where(id: user_ids)
-          .update_all("confirmed_at = NULL, confirmation_sent_at = NOW(), confirmation_token=md5(users.id::varchar || users.created_at || users.encrypted_password || '#{Integer(Time.now.to_i)}')")
+          .update_all("confirmed_at = NULL, confirmation_sent_at = NOW(), unconfirmed_email = NULL, confirmation_token=md5(users.id::varchar || users.created_at || users.encrypted_password || '#{Integer(Time.now.to_i)}')")
       end
 
       def email_query_for_update(start_id, stop_id)
@@ -81,15 +81,15 @@ module Gitlab
       end
 
       def send_emails(email_records)
-        email_records.each do |email|
-          DeviseMailer.confirmation_instructions(email, email.confirmation_token).deliver_later
-        end
-
         user_records = email_records.map(&:user).uniq
 
         user_records.each do |user|
-          DeviseMailer.confirmation_instructions(user, user.confirmation_token).deliver_later
           Gitlab::BackgroundMigration::Mailers::UnconfirmMailer.unconfirm_notification_email(user).deliver_later
+          DeviseMailer.confirmation_instructions(user, user.confirmation_token).deliver_later(wait: 1.minute)
+        end
+
+        email_records.each do |email|
+          DeviseMailer.confirmation_instructions(email, email.confirmation_token).deliver_later(wait: 1.minute)
         end
       end
     end

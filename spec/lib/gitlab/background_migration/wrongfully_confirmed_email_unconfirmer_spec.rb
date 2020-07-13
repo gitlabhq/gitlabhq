@@ -10,7 +10,7 @@ RSpec.describe Gitlab::BackgroundMigration::WrongfullyConfirmedEmailUnconfirmer,
   let(:one_year_ago) { 1.year.ago }
 
   let!(:user_needs_migration_1) { users.create!(name: 'user1', email: 'test1@test.com', state: 'active', projects_limit: 1, confirmed_at: confirmed_at_2_days_ago, confirmation_sent_at: one_year_ago) }
-  let!(:user_needs_migration_2) { users.create!(name: 'user2', email: 'test2@test.com', state: 'active', projects_limit: 1, confirmed_at: confirmed_at_3_days_ago, confirmation_sent_at: one_year_ago) }
+  let!(:user_needs_migration_2) { users.create!(name: 'user2', email: 'test2@test.com', unconfirmed_email: 'unconfirmed@test.com', state: 'active', projects_limit: 1, confirmed_at: confirmed_at_3_days_ago, confirmation_sent_at: one_year_ago) }
   let!(:user_does_not_need_migration) { users.create!(name: 'user3', email: 'test3@test.com', state: 'active', projects_limit: 1) }
   let!(:inactive_user) { users.create!(name: 'user4', email: 'test4@test.com', state: 'blocked', projects_limit: 1, confirmed_at: confirmed_at_3_days_ago, confirmation_sent_at: one_year_ago) }
   let!(:alert_bot_user) { users.create!(name: 'user5', email: 'test5@test.com', state: 'active', user_type: 2, projects_limit: 1, confirmed_at: confirmed_at_3_days_ago, confirmation_sent_at: one_year_ago) }
@@ -46,6 +46,13 @@ RSpec.describe Gitlab::BackgroundMigration::WrongfullyConfirmedEmailUnconfirmer,
 
     expect(bad_email_3_inactive_user.reload.confirmation_sent_at).to be_within(1.second).of(one_year_ago)
     expect(bad_email_4_bot_user.reload.confirmation_sent_at).to be_within(1.second).of(one_year_ago)
+  end
+
+  it 'clears the `unconfirmed_email` field' do
+    subject
+
+    user_needs_migration_2.reload
+    expect(user_needs_migration_2.unconfirmed_email).to be_nil
   end
 
   it 'does not change irrelevant user records' do

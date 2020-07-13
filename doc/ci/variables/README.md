@@ -227,7 +227,8 @@ To protect a variable:
 1. Select the **Protect variable** check box.
 1. Click **Update variable**.
 
-The variable is available for all subsequent pipelines.
+The variable is available for all subsequent pipelines. Protected variables can only
+be updated or viewed by project members with [maintainer permissions](../../user/permissions.md#project-members-permissions).
 
 ### Custom variables validated by GitLab
 
