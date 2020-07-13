@@ -7,6 +7,9 @@ module Jira
         extend ::Gitlab::Utils::Override
 
         PER_PAGE = 100
+        DEFAULT_FIELDS = %w[assignee created creator id issuetype key
+                            labels priority project reporter resolutiondate
+                            status statuscategorychangeddate summary updated].join(',').freeze
 
         def initialize(jira_service, params = {})
           super(jira_service, params)
@@ -22,7 +25,7 @@ module Jira
 
         override :url
         def url
-          "#{base_api_url}/search?jql=#{CGI.escape(jql)}&startAt=#{start_at}&maxResults=#{per_page}&fields=*all"
+          "#{base_api_url}/search?jql=#{CGI.escape(jql)}&startAt=#{start_at}&maxResults=#{per_page}&fields=#{DEFAULT_FIELDS}"
         end
 
         override :build_service_response

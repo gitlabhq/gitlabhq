@@ -296,14 +296,16 @@ An approval is optional when a security report:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13067) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.3.
 
-To enable License Approvals, a [project approval rule](../project/merge_requests/merge_request_approvals.md#multiple-approval-rules-premium)
-must be created with the case-sensitive name `License-Check`. This approval group must be set
-with the number of approvals required greater than zero.
+`License-Check` is an approval rule you can enable to allow an individual or group to approve a
+merge request that contains a `denied` license.
 
-Once this group is added to your project, the approval rule is enabled for all Merge Requests. To
-configure how this rule behaves, you can choose which licenses to `allow` or `deny` in the
-[project policies for License Compliance](../compliance/license_compliance/index.md#policies)
-section.
+You can enable `License-Check` one of two ways:
+
+- Create a [project approval rule](../project/merge_requests/merge_request_approvals.md#multiple-approval-rules-premium)
+  with the case-sensitive name `License-Check`.
+- Create an approval group in the [project policies section for License Compliance](../compliance/license_compliance/index.md#policies).
+  You must set this approval group's number of approvals required to greater than zero. Once you
+  enable this group in your project, the approval rule is enabled for all merge requests.
 
 Any code changes cause the approvals required to reset.
 

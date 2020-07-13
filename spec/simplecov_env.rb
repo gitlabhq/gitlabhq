@@ -47,7 +47,7 @@ module SimpleCovEnv
   def configure_profile
     SimpleCov.configure do
       load_profile 'test_frameworks'
-      track_files '{app,config,danger,db,haml_lint,lib,qa,rubocop,scripts,tooling}/**/*.rb'
+      track_files '{app,config/initializers,config/initializers_before_autoloader,db/post_migrate,haml_lint,lib,rubocop,tooling}/**/*.rb'
 
       add_filter '/vendor/ruby/'
       add_filter '/app/controllers/sherlock/'
@@ -73,8 +73,7 @@ module SimpleCovEnv
       add_group 'Initializers', %w[config/initializers config/initializers_before_autoloader] # Matches EE files as well
       add_group 'Migrations',   %w[db/migrate db/optional_migrations db/post_migrate] # Matches EE files as well
       add_group 'Libraries',    %w[/lib /ee/lib]
-      add_group 'Tooling',      %w[/danger /haml_lint /rubocop /scripts /tooling]
-      add_group 'QA',           '/qa'
+      add_group 'Tooling',      %w[/haml_lint /rubocop /tooling]
 
       merge_timeout 365.days
     end

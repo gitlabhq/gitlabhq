@@ -3,8 +3,10 @@ import mountAlertsSettings from '~/alerts_settings';
 import mountOperationSettings from '~/operation_settings';
 import mountGrafanaIntegration from '~/grafana_integration';
 import initSettingsPanels from '~/settings_panels';
+import initIncidentsSettings from '~/incidents_settings';
 
 document.addEventListener('DOMContentLoaded', () => {
+  initIncidentsSettings();
   mountErrorTrackingForm();
   mountOperationSettings();
   mountGrafanaIntegration();

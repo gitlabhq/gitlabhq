@@ -15,11 +15,11 @@ import {
   mockNamespace,
   mockNamespacedData,
   mockTimeRange,
-  singleStatMetricsResult,
   graphDataPrometheusQueryRangeMultiTrack,
   barMockData,
 } from '../mock_data';
 import { dashboardProps, graphData, graphDataEmpty } from '../fixture_data';
+import { singleStatGraphData } from '../graph_data';
 
 import { panelTypes } from '~/monitoring/constants';
 
@@ -232,7 +232,7 @@ describe('Dashboard Panel', () => {
         data                                       | component                    | hasCtxMenu
         ${dataWithType(panelTypes.AREA_CHART)}     | ${MonitorTimeSeriesChart}    | ${true}
         ${dataWithType(panelTypes.LINE_CHART)}     | ${MonitorTimeSeriesChart}    | ${true}
-        ${singleStatMetricsResult}                 | ${MonitorSingleStatChart}    | ${true}
+        ${singleStatGraphData()}                   | ${MonitorSingleStatChart}    | ${true}
         ${anomalyMockGraphData}                    | ${MonitorAnomalyChart}       | ${false}
         ${dataWithType(panelTypes.COLUMN)}         | ${MonitorColumnChart}        | ${false}
         ${dataWithType(panelTypes.STACKED_COLUMN)} | ${MonitorStackedColumnChart} | ${false}

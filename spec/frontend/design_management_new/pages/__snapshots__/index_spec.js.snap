@@ -2,6 +2,7 @@
 
 exports[`Design management index page designs does not render toolbar when there is no permission 1`] = `
 <div
+  class="gl-mt-2"
   data-testid="designs-root"
 >
   <!---->
@@ -12,18 +13,24 @@ exports[`Design management index page designs does not render toolbar when there
     <ol
       class="list-unstyled row"
     >
+      <!---->
+       
       <li
-        class="col-md-6 col-lg-4 mb-3"
+        class="gl-flex-direction-column col-md-6 col-lg-3 gl-mb-3"
+        data-testid="design-dropzone-wrapper"
       >
         <design-dropzone-stub
-          class="design-list-item"
+          class="design-list-item design-list-item-new"
+          hasdesigns="true"
         />
       </li>
        
       <li
-        class="col-md-6 col-lg-4 mb-3"
+        class="col-md-6 col-lg-3 gl-mb-3"
       >
-        <design-dropzone-stub>
+        <design-dropzone-stub
+          hasdesigns="true"
+        >
           <design-stub
             event="NONE"
             filename="design-1-name"
@@ -36,9 +43,11 @@ exports[`Design management index page designs does not render toolbar when there
         <!---->
       </li>
       <li
-        class="col-md-6 col-lg-4 mb-3"
+        class="col-md-6 col-lg-3 gl-mb-3"
       >
-        <design-dropzone-stub>
+        <design-dropzone-stub
+          hasdesigns="true"
+        >
           <design-stub
             event="NONE"
             filename="design-2-name"
@@ -51,9 +60,11 @@ exports[`Design management index page designs does not render toolbar when there
         <!---->
       </li>
       <li
-        class="col-md-6 col-lg-4 mb-3"
+        class="col-md-6 col-lg-3 gl-mb-3"
       >
-        <design-dropzone-stub>
+        <design-dropzone-stub
+          hasdesigns="true"
+        >
           <design-stub
             event="NONE"
             filename="design-3-name"
@@ -76,31 +87,44 @@ exports[`Design management index page designs does not render toolbar when there
 
 exports[`Design management index page designs renders designs list and header with upload button 1`] = `
 <div
+  class="gl-mt-2"
   data-testid="designs-root"
 >
   <header
     class="row-content-block border-top-0 p-2 d-flex"
   >
     <div
-      class="d-flex justify-content-between align-items-center w-100"
+      class="gl-display-flex gl-justify-content-space-between gl-align-items-center gl-w-full"
     >
-      <design-version-dropdown-stub />
+      <div>
+        <span
+          class="gl-font-weight-bold gl-mr-3"
+        >
+          Designs
+        </span>
+         
+        <design-version-dropdown-stub />
+      </div>
        
       <div
-        class="qa-selector-toolbar d-flex"
+        class="qa-selector-toolbar gl-display-flex"
       >
-        <gl-deprecated-button-stub
-          class="mr-2 js-select-all"
-          size="md"
+        <gl-button-stub
+          category="tertiary"
+          class="gl-mr-2 js-select-all"
+          icon=""
+          size="small"
           variant="link"
         >
           Select all
-        </gl-deprecated-button-stub>
+        
+        </gl-button-stub>
          
         <div>
           <delete-button-stub
-            buttonclass="btn-danger btn-inverted mr-2"
-            buttonvariant=""
+            buttonclass="gl-mr-4"
+            buttonsize="small"
+            buttonvariant="danger"
           >
             
             Delete selected
@@ -120,18 +144,24 @@ exports[`Design management index page designs renders designs list and header wi
     <ol
       class="list-unstyled row"
     >
+      <!---->
+       
       <li
-        class="col-md-6 col-lg-4 mb-3"
+        class="gl-flex-direction-column col-md-6 col-lg-3 gl-mb-3"
+        data-testid="design-dropzone-wrapper"
       >
         <design-dropzone-stub
-          class="design-list-item"
+          class="design-list-item design-list-item-new"
+          hasdesigns="true"
         />
       </li>
        
       <li
-        class="col-md-6 col-lg-4 mb-3"
+        class="col-md-6 col-lg-3 gl-mb-3"
       >
-        <design-dropzone-stub>
+        <design-dropzone-stub
+          hasdesigns="true"
+        >
           <design-stub
             event="NONE"
             filename="design-1-name"
@@ -147,9 +177,11 @@ exports[`Design management index page designs renders designs list and header wi
         />
       </li>
       <li
-        class="col-md-6 col-lg-4 mb-3"
+        class="col-md-6 col-lg-3 gl-mb-3"
       >
-        <design-dropzone-stub>
+        <design-dropzone-stub
+          hasdesigns="true"
+        >
           <design-stub
             event="NONE"
             filename="design-2-name"
@@ -165,9 +197,11 @@ exports[`Design management index page designs renders designs list and header wi
         />
       </li>
       <li
-        class="col-md-6 col-lg-4 mb-3"
+        class="col-md-6 col-lg-3 gl-mb-3"
       >
-        <design-dropzone-stub>
+        <design-dropzone-stub
+          hasdesigns="true"
+        >
           <design-stub
             event="NONE"
             filename="design-3-name"
@@ -193,6 +227,7 @@ exports[`Design management index page designs renders designs list and header wi
 
 exports[`Design management index page designs renders error 1`] = `
 <div
+  class="gl-mt-2"
   data-testid="designs-root"
 >
   <!---->
@@ -223,6 +258,7 @@ exports[`Design management index page designs renders error 1`] = `
 
 exports[`Design management index page designs renders loading icon 1`] = `
 <div
+  class="gl-mt-2"
   data-testid="designs-root"
 >
   <!---->
@@ -243,8 +279,9 @@ exports[`Design management index page designs renders loading icon 1`] = `
 </div>
 `;
 
-exports[`Design management index page when has no designs renders empty text 1`] = `
+exports[`Design management index page when has no designs renders design dropzone 1`] = `
 <div
+  class="gl-mt-2"
   data-testid="designs-root"
 >
   <!---->
@@ -255,11 +292,18 @@ exports[`Design management index page when has no designs renders empty text 1`]
     <ol
       class="list-unstyled row"
     >
+      <span
+        class="gl-font-weight-bold gl-font-weight-bold gl-ml-5 gl-mb-4"
+      >
+        Designs
+      </span>
+       
       <li
-        class="col-md-6 col-lg-4 mb-3"
+        class="col-12"
+        data-testid="design-dropzone-wrapper"
       >
         <design-dropzone-stub
-          class="design-list-item"
+          class=""
         />
       </li>
        

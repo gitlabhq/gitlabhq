@@ -334,36 +334,6 @@ export const metricsResult = [
   },
 ];
 
-export const singleStatMetricsResult = {
-  title: 'Super Chart A2',
-  type: 'single-stat',
-  weight: 2,
-  metrics: [
-    {
-      id: 'metric_a1',
-      metricId: '2',
-      query: 'max(go_memstats_alloc_bytes{job="prometheus"}) by (job) /1024/1024',
-      unit: 'MB',
-      label: 'Total Consumption',
-      metric_id: 2,
-      prometheus_endpoint_path:
-        '/root/kubernetes-gke-project/environments/35/prometheus/api/v1/query?query=max%28go_memstats_alloc_bytes%7Bjob%3D%22prometheus%22%7D%29+by+%28job%29+%2F1024%2F1024',
-      result: [
-        {
-          metric: { job: 'prometheus' },
-          value: ['2019-06-26T21:03:20.881Z', 91],
-          values: [['2019-06-26T21:03:20.881Z', 91]],
-        },
-      ],
-    },
-  ],
-};
-
-export const singleStatMetricsWithFieldResult = {
-  ...singleStatMetricsResult,
-  field: 'job',
-};
-
 export const graphDataPrometheusQueryRangeMultiTrack = {
   title: 'Super Chart A3',
   type: 'heatmap',

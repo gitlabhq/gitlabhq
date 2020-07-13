@@ -50,6 +50,7 @@ exports[`Design management toolbar component renders design and updated data 1`]
    
   <delete-button-stub
     buttonclass=""
+    buttonsize="medium"
     buttonvariant="danger"
     hasselecteddesigns="true"
   >

@@ -40,6 +40,9 @@
 .if-merge-request-title-update-caches: &if-merge-request-title-update-caches
   if: '$CI_MERGE_REQUEST_TITLE =~ /UPDATE CACHE/'
 
+.if-merge-request-title-run-all-rspec: &if-merge-request-title-run-all-rspec
+  if: '$CI_MERGE_REQUEST_TITLE =~ /RUN ALL RSPEC/'
+
 .if-security-merge-request: &if-security-merge-request
   if: '$CI_PROJECT_NAMESPACE == "gitlab-org/security" && $CI_MERGE_REQUEST_IID'
 
@@ -440,22 +443,27 @@
 .rails:rules:ee-and-foss-migration:
   rules:
     - changes: *db-patterns
+    - <<: *if-merge-request-title-run-all-rspec
 
 .rails:rules:ee-and-foss-unit:
   rules:
     - changes: *backend-patterns
+    - <<: *if-merge-request-title-run-all-rspec
 
 .rails:rules:ee-and-foss-integration:
   rules:
     - changes: *backend-patterns
+    - <<: *if-merge-request-title-run-all-rspec
 
 .rails:rules:ee-and-foss-system:
   rules:
     - changes: *code-backstage-patterns
+    - <<: *if-merge-request-title-run-all-rspec
 
 .rails:rules:ee-and-foss-fast_spec_helper:
   rules:
     - changes: ["config/**/*"]
+    - <<: *if-merge-request-title-run-all-rspec
 
 .rails:rules:default-refs-code-backstage-qa:
   rules:
@@ -467,24 +475,28 @@
     - <<: *if-not-ee
       when: never
     - changes: *db-patterns
+    - <<: *if-merge-request-title-run-all-rspec
 
 .rails:rules:ee-only-unit:
   rules:
     - <<: *if-not-ee
       when: never
     - changes: *backend-patterns
+    - <<: *if-merge-request-title-run-all-rspec
 
 .rails:rules:ee-only-integration:
   rules:
     - <<: *if-not-ee
       when: never
     - changes: *backend-patterns
+    - <<: *if-merge-request-title-run-all-rspec
 
 .rails:rules:ee-only-system:
   rules:
     - <<: *if-not-ee
       when: never
     - changes: *code-backstage-patterns
+    - <<: *if-merge-request-title-run-all-rspec
 
 .rails:rules:as-if-foss-migration:
   rules:
@@ -530,6 +542,7 @@
   rules:
     - <<: *if-not-ee
       when: never
+    - <<: *if-merge-request-title-run-all-rspec
     - <<: *if-merge-request
       changes: *code-backstage-patterns
     - <<: *if-master-refs
@@ -556,6 +569,7 @@
     - <<: *if-not-ee
       when: never
     - <<: *if-master-schedule-2-hourly
+    - <<: *if-merge-request-title-run-all-rspec
 
 .rails:rules:master-schedule-nightly--code-backstage:
   rules:

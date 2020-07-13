@@ -45,15 +45,12 @@ RSpec.describe 'Projects > Settings > For a forked project', :js do
 
       it 'updates form values' do
         check(create_issue)
-        template_select = find_field('Issue template')
-        template_select.find(:xpath, 'option[2]').select_option
         uncheck(send_email)
 
         save_form
         click_expand_incident_management_button
 
         expect(find_field(create_issue)).to be_checked
-        expect(page).to have_select('Issue template', selected: 'bug')
         expect(find_field(send_email)).not_to be_checked
       end
 
@@ -64,7 +61,7 @@ RSpec.describe 'Projects > Settings > For a forked project', :js do
       end
 
       def save_form
-        page.within "#edit_project_#{project.id}" do
+        page.within ".qa-incident-management-settings" do
           click_on 'Save changes'
         end
       end

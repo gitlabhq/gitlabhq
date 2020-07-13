@@ -7,7 +7,7 @@ module QA
         class Operations < Page::Base
           include QA::Page::Settings::Common
 
-          view 'app/views/projects/settings/operations/_incidents.html.haml' do
+          view 'app/assets/javascripts/incidents_settings/components/incidents_settings_tabs.vue' do
             element :incidents_settings_content
           end
 

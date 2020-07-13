@@ -1,0 +1,5 @@
+---
+title: Move alert integrations setting to Vue
+merge_request: 36110
+author:
+type: changed

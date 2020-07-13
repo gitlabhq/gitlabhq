@@ -935,11 +935,10 @@ table.code {
   }
 }
 
-.files:not([data-can-create-note='true']) .frame {
+.files:not([data-can-create-note]) .frame {
   cursor: auto;
 }
 
-.frame,
 .frame.click-to-comment,
 .btn-transparent.image-diff-overlay-add-comment {
   position: relative;

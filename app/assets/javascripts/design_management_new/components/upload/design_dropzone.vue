@@ -12,6 +12,12 @@ export default {
     GlLink,
     GlSprintf,
   },
+  props: {
+    hasDesigns: {
+      type: Boolean,
+      required: true,
+    },
+  },
   data() {
     return {
       dragCounter: 0,
@@ -76,28 +82,29 @@ export default {
   >
     <slot>
       <button
-        class="card design-dropzone-card design-dropzone-border w-100 h-100 d-flex-center p-3"
+        class="card design-dropzone-card design-dropzone-border w-100 h-100 gl-align-items-center gl-justify-content-center gl-p-3"
         @click="openFileUpload"
       >
-        <div class="d-flex-center flex-column text-center">
-          <gl-icon name="doc-new" :size="48" class="mb-4" />
-          <p>
-            <gl-sprintf
-              :message="
-                __(
-                  '%{lineOneStart}Drag and drop to upload your designs%{lineOneEnd} or %{linkStart}click to upload%{linkEnd}.',
-                )
-              "
-            >
-              <template #lineOne="{ content }"
-                ><span class="d-block">{{ content }}</span>
-              </template>
-
-              <template #link="{ content }">
-                <gl-link class="h-100 w-100" @click.stop="openFileUpload">{{ content }}</gl-link>
-              </template>
-            </gl-sprintf>
-          </p>
+        <div
+          :class="{ 'gl-flex-direction-column': hasDesigns }"
+          class="gl-display-flex gl-align-items-center gl-justify-content-center gl-text-center"
+          data-testid="dropzone-area"
+        >
+          <gl-icon name="upload" :size="24" :class="hasDesigns ? 'gl-mb-2' : 'gl-mr-4'" />
+          <gl-sprintf
+            :message="
+              __(
+                '%{contentStart}Drop files to attach, or %{contentEnd}%{linkStart}browse%{linkEnd}',
+              )
+            "
+          >
+            <template #content="{ content }">
+              <span class="gl-font-weight-bold">{{ content }}&nbsp;</span>
+            </template>
+            <template #link="{ content }">
+              <gl-link @click.stop="openFileUpload">{{ content }}</gl-link>
+            </template>
+          </gl-sprintf>
         </div>
       </button>
 
@@ -117,7 +124,7 @@ export default {
         class="card design-dropzone-border design-dropzone-overlay w-100 h-100 position-absolute d-flex-center p-3 bg-white"
       >
         <div v-show="!isDragDataValid" class="mw-50 text-center">
-          <h3>{{ __('Oh no!') }}</h3>
+          <h3 :class="{ 'gl-font-base gl-display-inline': !hasDesigns }">{{ __('Oh no!') }}</h3>
           <span>{{
             __(
               'You are trying to upload something other than an image. Please upload a .png, .jpg, .jpeg, .gif, .bmp, .tiff or .ico.',
@@ -125,7 +132,7 @@ export default {
           }}</span>
         </div>
         <div v-show="isDragDataValid" class="mw-50 text-center">
-          <h3>{{ __('Incoming!') }}</h3>
+          <h3 :class="{ 'gl-font-base gl-display-inline': !hasDesigns }">{{ __('Incoming!') }}</h3>
           <span>{{ __('Drop your designs to start your upload.') }}</span>
         </div>
       </div>

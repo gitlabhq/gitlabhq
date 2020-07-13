@@ -1,13 +1,9 @@
 import * as monitoringUtils from '~/monitoring/utils';
 import * as urlUtils from '~/lib/utils/url_utility';
 import { TEST_HOST } from 'jest/helpers/test_constants';
-import {
-  mockProjectDir,
-  singleStatMetricsResult,
-  anomalyMockGraphData,
-  barMockData,
-} from './mock_data';
+import { mockProjectDir, anomalyMockGraphData, barMockData } from './mock_data';
 import { metricsDashboardViewModel, graphData } from './fixture_data';
+import { singleStatGraphData } from './graph_data';
 
 const mockPath = `${TEST_HOST}${mockProjectDir}/-/environments/29/metrics`;
 
@@ -82,7 +78,7 @@ describe('monitoring/utils', () => {
     it('validates data with the query format', () => {
       const validGraphData = monitoringUtils.graphDataValidatorForValues(
         true,
-        singleStatMetricsResult,
+        singleStatGraphData(),
       );
 
       expect(validGraphData).toBe(true);
@@ -105,7 +101,7 @@ describe('monitoring/utils', () => {
     let threeMetrics;
     let fourMetrics;
     beforeEach(() => {
-      oneMetric = singleStatMetricsResult;
+      oneMetric = singleStatGraphData();
       threeMetrics = anomalyMockGraphData;
 
       const metrics = [...threeMetrics.metrics];

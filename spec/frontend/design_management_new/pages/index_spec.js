@@ -68,6 +68,8 @@ describe('Design management index page', () => {
   const findToolbar = () => wrapper.find('.qa-selector-toolbar');
   const findDeleteButton = () => wrapper.find(DeleteButton);
   const findDropzone = () => wrapper.findAll(DesignDropzone).at(0);
+  const dropzoneClasses = () => findDropzone().classes();
+  const findDropzoneWrapper = () => wrapper.find('[data-testid="design-dropzone-wrapper"]');
   const findFirstDropzoneWithDesign = () => wrapper.findAll(DesignDropzone).at(1);
 
   function createComponent({
@@ -151,6 +153,22 @@ describe('Design management index page', () => {
 
       expect(wrapper.element).toMatchSnapshot();
     });
+
+    it('has correct classes applied to design dropzone', () => {
+      createComponent({ designs: mockDesigns, allVersions: [mockVersion] });
+      expect(dropzoneClasses()).toContain('design-list-item');
+      expect(dropzoneClasses()).toContain('design-list-item-new');
+    });
+
+    it('has correct classes applied to dropzone wrapper', () => {
+      createComponent({ designs: mockDesigns, allVersions: [mockVersion] });
+      expect(findDropzoneWrapper().classes()).toEqual([
+        'gl-flex-direction-column',
+        'col-md-6',
+        'col-lg-3',
+        'gl-mb-3',
+      ]);
+    });
   });
 
   describe('when has no designs', () => {
@@ -158,10 +176,19 @@ describe('Design management index page', () => {
       createComponent();
     });
 
-    it('renders empty text', () =>
+    it('renders design dropzone', () =>
       wrapper.vm.$nextTick().then(() => {
         expect(wrapper.element).toMatchSnapshot();
       }));
+
+    it('has correct classes applied to design dropzone', () => {
+      expect(dropzoneClasses()).not.toContain('design-list-item');
+      expect(dropzoneClasses()).not.toContain('design-list-item-new');
+    });
+
+    it('has correct classes applied to dropzone wrapper', () => {
+      expect(findDropzoneWrapper().classes()).toEqual(['col-12']);
+    });
 
     it('does not render a toolbar with buttons', () =>
       wrapper.vm.$nextTick().then(() => {
@@ -227,12 +254,18 @@ describe('Design management index page', () => {
         },
       };
 
-      return wrapper.vm.$nextTick().then(() => {
-        findDropzone().vm.$emit('change', [{ name: 'test' }]);
-        expect(mutate).toHaveBeenCalledWith(mutationVariables);
-        expect(wrapper.vm.filesToBeSaved).toEqual([{ name: 'test' }]);
-        expect(wrapper.vm.isSaving).toBeTruthy();
-      });
+      return wrapper.vm
+        .$nextTick()
+        .then(() => {
+          findDropzone().vm.$emit('change', [{ name: 'test' }]);
+          expect(mutate).toHaveBeenCalledWith(mutationVariables);
+          expect(wrapper.vm.filesToBeSaved).toEqual([{ name: 'test' }]);
+          expect(wrapper.vm.isSaving).toBeTruthy();
+        })
+        .then(() => {
+          expect(dropzoneClasses()).toContain('design-list-item');
+          expect(dropzoneClasses()).toContain('design-list-item-new');
+        });
     });
 
     it('sets isSaving', () => {
@@ -380,8 +413,7 @@ describe('Design management index page', () => {
 
     it('renders toolbar buttons', () => {
       expect(findToolbar().exists()).toBe(true);
-      expect(findToolbar().classes()).toContain('d-flex');
-      expect(findToolbar().classes()).not.toContain('d-none');
+      expect(findToolbar().isVisible()).toBe(true);
     });
 
     it('adds two designs to selected designs when their checkboxes are checked', () => {
@@ -440,7 +472,7 @@ describe('Design management index page', () => {
 
   it('on latest version when has no designs toolbar buttons are invisible', () => {
     createComponent({ designs: [], allVersions: [mockVersion] });
-    expect(findToolbar().classes()).toContain('d-none');
+    expect(findToolbar().isVisible()).toBe(false);
   });
 
   describe('on non-latest version', () => {

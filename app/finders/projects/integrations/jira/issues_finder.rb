@@ -11,7 +11,9 @@ module Projects
 
         class << self
           def valid_params
-            @valid_params ||= %i[page per_page search state]
+            @valid_params ||= %i[page per_page search state status author_username assignee_username]
+            # to permit array params you need to init them to an empty array
+            @valid_params << { labels: [] }
           end
         end
 

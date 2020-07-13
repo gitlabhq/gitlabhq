@@ -27,7 +27,7 @@ RSpec.describe Spam::SpamVerdictService do
 
     before do
       allow(service).to receive(:akismet_verdict).and_return(nil)
-      allow(service).to receive(:spam_verdict_verdict).and_return(nil)
+      allow(service).to receive(:external_verdict).and_return(nil)
     end
 
     context 'if all services return nil' do
@@ -62,7 +62,7 @@ RSpec.describe Spam::SpamVerdictService do
       context 'and they are supported' do
         before do
           allow(service).to receive(:akismet_verdict).and_return(DISALLOW)
-          allow(service).to receive(:spam_verdict).and_return(BLOCK_USER)
+          allow(service).to receive(:external_verdict).and_return(BLOCK_USER)
         end
 
         it 'renders the more restrictive verdict' do
@@ -73,7 +73,7 @@ RSpec.describe Spam::SpamVerdictService do
       context 'and one is supported' do
         before do
           allow(service).to receive(:akismet_verdict).and_return('nonsense')
-          allow(service).to receive(:spam_verdict).and_return(BLOCK_USER)
+          allow(service).to receive(:external_verdict).and_return(BLOCK_USER)
         end
 
         it 'renders the more restrictive verdict' do
@@ -84,7 +84,7 @@ RSpec.describe Spam::SpamVerdictService do
       context 'and none are supported' do
         before do
           allow(service).to receive(:akismet_verdict).and_return('nonsense')
-          allow(service).to receive(:spam_verdict).and_return('rubbish')
+          allow(service).to receive(:external_verdict).and_return('rubbish')
         end
 
         it 'renders the more restrictive verdict' do
@@ -149,8 +149,8 @@ RSpec.describe Spam::SpamVerdictService do
     end
   end
 
-  describe '#spam_verdict' do
-    subject { service.send(:spam_verdict) }
+  describe '#external_verdict' do
+    subject { service.send(:external_verdict) }
 
     context 'if a Spam Check endpoint enabled and set to a URL' do
       let(:spam_check_body) { {} }

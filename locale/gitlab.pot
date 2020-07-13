@@ -299,6 +299,9 @@ msgstr ""
 msgid "%{containerScanningLinkStart}Container Scanning%{containerScanningLinkEnd} and/or %{dependencyScanningLinkStart}Dependency Scanning%{dependencyScanningLinkEnd} must be enabled. %{securityBotLinkStart}GitLab-Security-Bot%{securityBotLinkEnd} will be the author of the auto-created merge request. %{moreInfoLinkStart}More information%{moreInfoLinkEnd}."
 msgstr ""
 
+msgid "%{contentStart}Drop files to attach, or %{contentEnd}%{linkStart}browse%{linkEnd}"
+msgstr ""
+
 msgid "%{cores} cores"
 msgstr ""
 
@@ -1289,7 +1292,7 @@ msgstr ""
 msgid "Account: %{account}"
 msgstr ""
 
-msgid "Action to take when receiving an alert."
+msgid "Action to take when receiving an alert. %{docsLink}"
 msgstr ""
 
 msgid "Actions"
@@ -7958,6 +7961,9 @@ msgstr ""
 msgid "DesignManagement|Deselect all"
 msgstr ""
 
+msgid "DesignManagement|Designs"
+msgstr ""
+
 msgid "DesignManagement|Discard comment"
 msgstr ""
 
@@ -8000,7 +8006,7 @@ msgstr ""
 msgid "DesignManagement|The maximum number of designs allowed to be uploaded is %{upload_limit}. Please try again."
 msgstr ""
 
-msgid "DesignManagement|To enable design management, you'll need to  %{requirements_link_start}meet the requirements%{requirements_link_end}. If you need help, reach out to our %{support_link_start}support team%{support_link_end} for assistance."
+msgid "DesignManagement|To enable design management, you'll need to %{requirements_link_start}meet the requirements%{requirements_link_end}. If you need help, reach out to our %{support_link_start}support team%{support_link_end} for assistance."
 msgstr ""
 
 msgid "DesignManagement|Unresolve thread"
@@ -12407,7 +12413,19 @@ msgstr ""
 msgid "Incident Management Limits"
 msgstr ""
 
-msgid "Incidents"
+msgid "IncidentSettings|Alert integration"
+msgstr ""
+
+msgid "IncidentSettings|Grafana integration"
+msgstr ""
+
+msgid "IncidentSettings|Incidents"
+msgstr ""
+
+msgid "IncidentSettings|PagerDuty integration"
+msgstr ""
+
+msgid "IncidentSettings|Set up integrations with external tools to help better manage incidents."
 msgstr ""
 
 msgid "Include a Terms of Service agreement and Privacy Policy that all users must accept."
@@ -15065,6 +15083,9 @@ msgstr ""
 msgid "More information is available|here"
 msgstr ""
 
+msgid "More information."
+msgstr ""
+
 msgid "More than %{number_commits_distance} commits different with %{default_branch}"
 msgstr ""
 
@@ -15632,6 +15653,9 @@ msgid "No status"
 msgstr ""
 
 msgid "No template"
+msgstr ""
+
+msgid "No template selected"
 msgstr ""
 
 msgid "No test coverage"
@@ -25418,7 +25442,22 @@ msgstr ""
 msgid "User was successfully updated."
 msgstr ""
 
+msgid "UserLists|Add"
+msgstr ""
+
+msgid "UserLists|Add Users"
+msgstr ""
+
+msgid "UserLists|Add users"
+msgstr ""
+
+msgid "UserLists|Cancel"
+msgstr ""
+
 msgid "UserLists|Define a set of users to be used within feature flag strategies"
+msgstr ""
+
+msgid "UserLists|Enter a comma separated list of user IDs. These IDs should be the users of the system in which the feature flag is set, not GitLab IDs"
 msgstr ""
 
 msgid "UserLists|There are no users"

@@ -387,6 +387,11 @@ We follow the [PostgreSQL versions shipped with Omnibus GitLab](https://docs.git
 Consult [GitLab tests in the Continuous Integration (CI) context](testing_guide/ci.md)
 for more information.
 
+We have dedicated jobs for each [testing level](testing_guide/testing_levels.md) and each job runs depending on the
+changes made in your merge request.
+If you want to force all the RSpec jobs to run regardless of your changes, you can include `RUN ALL RSPEC` in your merge
+request title.
+
 ### Review app jobs
 
 Consult the [Review Apps](testing_guide/review_apps.md) dedicated page for more information.

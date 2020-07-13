@@ -14,7 +14,7 @@ module Spam
     end
 
     def execute
-      external_spam_check_result = spam_verdict
+      external_spam_check_result = external_verdict
       akismet_result = akismet_verdict
 
       # filter out anything we don't recognise, including nils.
@@ -38,7 +38,7 @@ module Spam
       end
     end
 
-    def spam_verdict
+    def external_verdict
       return unless Gitlab::CurrentSettings.spam_check_endpoint_enabled
       return if endpoint_url.blank?
 

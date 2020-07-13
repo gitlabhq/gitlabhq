@@ -1,14 +1,23 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Design management design version dropdown component renders design version dropdown button 1`] = `
-<gl-dropdown-stub
+<gl-new-dropdown-stub
+  category="tertiary"
   class="design-version-dropdown"
+  headertext=""
   issueiid=""
   projectpath=""
+  size="small"
   text="Showing Latest Version"
-  variant="link"
+  variant="default"
 >
-  <gl-dropdown-item-stub>
+  <gl-new-dropdown-item-stub
+    avatarurl=""
+    iconcolor=""
+    iconname=""
+    iconrightname=""
+    secondarytext=""
+  >
     <router-link-stub
       class="d-flex js-version-link"
       to="[object Object]"
@@ -31,8 +40,14 @@ exports[`Design management design version dropdown component renders design vers
         class="fa fa-check pull-right"
       />
     </router-link-stub>
-  </gl-dropdown-item-stub>
-  <gl-dropdown-item-stub>
+  </gl-new-dropdown-item-stub>
+  <gl-new-dropdown-item-stub
+    avatarurl=""
+    iconcolor=""
+    iconname=""
+    iconrightname=""
+    secondarytext=""
+  >
     <router-link-stub
       class="d-flex js-version-link"
       to="[object Object]"
@@ -51,19 +66,28 @@ exports[`Design management design version dropdown component renders design vers
        
       <!---->
     </router-link-stub>
-  </gl-dropdown-item-stub>
-</gl-dropdown-stub>
+  </gl-new-dropdown-item-stub>
+</gl-new-dropdown-stub>
 `;
 
 exports[`Design management design version dropdown component renders design version list 1`] = `
-<gl-dropdown-stub
+<gl-new-dropdown-stub
+  category="tertiary"
   class="design-version-dropdown"
+  headertext=""
   issueiid=""
   projectpath=""
+  size="small"
   text="Showing Latest Version"
-  variant="link"
+  variant="default"
 >
-  <gl-dropdown-item-stub>
+  <gl-new-dropdown-item-stub
+    avatarurl=""
+    iconcolor=""
+    iconname=""
+    iconrightname=""
+    secondarytext=""
+  >
     <router-link-stub
       class="d-flex js-version-link"
       to="[object Object]"
@@ -86,8 +110,14 @@ exports[`Design management design version dropdown component renders design vers
         class="fa fa-check pull-right"
       />
     </router-link-stub>
-  </gl-dropdown-item-stub>
-  <gl-dropdown-item-stub>
+  </gl-new-dropdown-item-stub>
+  <gl-new-dropdown-item-stub
+    avatarurl=""
+    iconcolor=""
+    iconname=""
+    iconrightname=""
+    secondarytext=""
+  >
     <router-link-stub
       class="d-flex js-version-link"
       to="[object Object]"
@@ -106,6 +136,6 @@ exports[`Design management design version dropdown component renders design vers
        
       <!---->
     </router-link-stub>
-  </gl-dropdown-item-stub>
-</gl-dropdown-stub>
+  </gl-new-dropdown-item-stub>
+</gl-new-dropdown-stub>
 `;

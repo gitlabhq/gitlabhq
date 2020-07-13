@@ -4,8 +4,10 @@ exports[`Design management upload button component renders inverted upload desig
 <div
   isinverted="true"
 >
-  <gl-deprecated-button-stub
-    size="md"
+  <gl-button-stub
+    category="tertiary"
+    icon=""
+    size="small"
     title="Adding a design with the same filename replaces the file in a new version."
     variant="success"
   >
@@ -13,7 +15,7 @@ exports[`Design management upload button component renders inverted upload desig
     Upload designs
     
     <!---->
-  </gl-deprecated-button-stub>
+  </gl-button-stub>
    
   <input
     accept="image/*"
@@ -27,9 +29,11 @@ exports[`Design management upload button component renders inverted upload desig
 
 exports[`Design management upload button component renders loading icon 1`] = `
 <div>
-  <gl-deprecated-button-stub
+  <gl-button-stub
+    category="tertiary"
     disabled="true"
-    size="md"
+    icon=""
+    size="small"
     title="Adding a design with the same filename replaces the file in a new version."
     variant="success"
   >
@@ -43,7 +47,7 @@ exports[`Design management upload button component renders loading icon 1`] = `
       label="Loading"
       size="sm"
     />
-  </gl-deprecated-button-stub>
+  </gl-button-stub>
    
   <input
     accept="image/*"
@@ -57,8 +61,10 @@ exports[`Design management upload button component renders loading icon 1`] = `
 
 exports[`Design management upload button component renders upload design button 1`] = `
 <div>
-  <gl-deprecated-button-stub
-    size="md"
+  <gl-button-stub
+    category="tertiary"
+    icon=""
+    size="small"
     title="Adding a design with the same filename replaces the file in a new version."
     variant="success"
   >
@@ -66,7 +72,7 @@ exports[`Design management upload button component renders upload design button 
     Upload designs
     
     <!---->
-  </gl-deprecated-button-stub>
+  </gl-button-stub>
    
   <input
     accept="image/*"

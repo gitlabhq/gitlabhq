@@ -41,6 +41,16 @@ module API
       end
     end
 
+    def job_token_authentication?
+      initial_current_user && @current_authenticated_job.present? # rubocop:disable Gitlab/ModuleWithInstanceVariables
+    end
+
+    # Returns the job associated with the token provided for
+    # authentication, if any
+    def current_authenticated_job
+      @current_authenticated_job
+    end
+
     # rubocop:disable Gitlab/ModuleWithInstanceVariables
     # We can't rewrite this with StrongMemoize because `sudo!` would
     # actually write to `@current_user`, and `sudo?` would immediately

@@ -5,22 +5,21 @@ exports[`Design management dropzone component when dragging renders correct temp
   class="w-100 position-relative"
 >
   <button
-    class="card design-dropzone-card design-dropzone-border w-100 h-100 d-flex-center p-3"
+    class="card design-dropzone-card design-dropzone-border w-100 h-100 gl-align-items-center gl-justify-content-center gl-p-3"
   >
     <div
-      class="d-flex-center flex-column text-center"
+      class="gl-display-flex gl-align-items-center gl-justify-content-center gl-text-center gl-flex-direction-column"
+      data-testid="dropzone-area"
     >
       <gl-icon-stub
-        class="mb-4"
-        name="doc-new"
-        size="48"
+        class="gl-mb-2"
+        name="upload"
+        size="24"
       />
        
-      <p>
-        <gl-sprintf-stub
-          message="%{lineOneStart}Drag and drop to upload your designs%{lineOneEnd} or %{linkStart}click to upload%{linkEnd}."
-        />
-      </p>
+      <gl-sprintf-stub
+        message="%{contentStart}Drop files to attach, or %{contentEnd}%{linkStart}browse%{linkEnd}"
+      />
     </div>
   </button>
    
@@ -43,7 +42,9 @@ exports[`Design management dropzone component when dragging renders correct temp
         class="mw-50 text-center"
         style="display: none;"
       >
-        <h3>
+        <h3
+          class=""
+        >
           Oh no!
         </h3>
          
@@ -56,7 +57,9 @@ exports[`Design management dropzone component when dragging renders correct temp
         class="mw-50 text-center"
         style=""
       >
-        <h3>
+        <h3
+          class=""
+        >
           Incoming!
         </h3>
          
@@ -74,22 +77,21 @@ exports[`Design management dropzone component when dragging renders correct temp
   class="w-100 position-relative"
 >
   <button
-    class="card design-dropzone-card design-dropzone-border w-100 h-100 d-flex-center p-3"
+    class="card design-dropzone-card design-dropzone-border w-100 h-100 gl-align-items-center gl-justify-content-center gl-p-3"
   >
     <div
-      class="d-flex-center flex-column text-center"
+      class="gl-display-flex gl-align-items-center gl-justify-content-center gl-text-center gl-flex-direction-column"
+      data-testid="dropzone-area"
     >
       <gl-icon-stub
-        class="mb-4"
-        name="doc-new"
-        size="48"
+        class="gl-mb-2"
+        name="upload"
+        size="24"
       />
        
-      <p>
-        <gl-sprintf-stub
-          message="%{lineOneStart}Drag and drop to upload your designs%{lineOneEnd} or %{linkStart}click to upload%{linkEnd}."
-        />
-      </p>
+      <gl-sprintf-stub
+        message="%{contentStart}Drop files to attach, or %{contentEnd}%{linkStart}browse%{linkEnd}"
+      />
     </div>
   </button>
    
@@ -112,7 +114,9 @@ exports[`Design management dropzone component when dragging renders correct temp
         class="mw-50 text-center"
         style="display: none;"
       >
-        <h3>
+        <h3
+          class=""
+        >
           Oh no!
         </h3>
          
@@ -125,7 +129,9 @@ exports[`Design management dropzone component when dragging renders correct temp
         class="mw-50 text-center"
         style=""
       >
-        <h3>
+        <h3
+          class=""
+        >
           Incoming!
         </h3>
          
@@ -143,22 +149,21 @@ exports[`Design management dropzone component when dragging renders correct temp
   class="w-100 position-relative"
 >
   <button
-    class="card design-dropzone-card design-dropzone-border w-100 h-100 d-flex-center p-3"
+    class="card design-dropzone-card design-dropzone-border w-100 h-100 gl-align-items-center gl-justify-content-center gl-p-3"
   >
     <div
-      class="d-flex-center flex-column text-center"
+      class="gl-display-flex gl-align-items-center gl-justify-content-center gl-text-center gl-flex-direction-column"
+      data-testid="dropzone-area"
     >
       <gl-icon-stub
-        class="mb-4"
-        name="doc-new"
-        size="48"
+        class="gl-mb-2"
+        name="upload"
+        size="24"
       />
        
-      <p>
-        <gl-sprintf-stub
-          message="%{lineOneStart}Drag and drop to upload your designs%{lineOneEnd} or %{linkStart}click to upload%{linkEnd}."
-        />
-      </p>
+      <gl-sprintf-stub
+        message="%{contentStart}Drop files to attach, or %{contentEnd}%{linkStart}browse%{linkEnd}"
+      />
     </div>
   </button>
    
@@ -180,7 +185,9 @@ exports[`Design management dropzone component when dragging renders correct temp
       <div
         class="mw-50 text-center"
       >
-        <h3>
+        <h3
+          class=""
+        >
           Oh no!
         </h3>
          
@@ -193,7 +200,9 @@ exports[`Design management dropzone component when dragging renders correct temp
         class="mw-50 text-center"
         style="display: none;"
       >
-        <h3>
+        <h3
+          class=""
+        >
           Incoming!
         </h3>
          
@@ -211,22 +220,21 @@ exports[`Design management dropzone component when dragging renders correct temp
   class="w-100 position-relative"
 >
   <button
-    class="card design-dropzone-card design-dropzone-border w-100 h-100 d-flex-center p-3"
+    class="card design-dropzone-card design-dropzone-border w-100 h-100 gl-align-items-center gl-justify-content-center gl-p-3"
   >
     <div
-      class="d-flex-center flex-column text-center"
+      class="gl-display-flex gl-align-items-center gl-justify-content-center gl-text-center gl-flex-direction-column"
+      data-testid="dropzone-area"
     >
       <gl-icon-stub
-        class="mb-4"
-        name="doc-new"
-        size="48"
+        class="gl-mb-2"
+        name="upload"
+        size="24"
       />
        
-      <p>
-        <gl-sprintf-stub
-          message="%{lineOneStart}Drag and drop to upload your designs%{lineOneEnd} or %{linkStart}click to upload%{linkEnd}."
-        />
-      </p>
+      <gl-sprintf-stub
+        message="%{contentStart}Drop files to attach, or %{contentEnd}%{linkStart}browse%{linkEnd}"
+      />
     </div>
   </button>
    
@@ -248,7 +256,9 @@ exports[`Design management dropzone component when dragging renders correct temp
       <div
         class="mw-50 text-center"
       >
-        <h3>
+        <h3
+          class=""
+        >
           Oh no!
         </h3>
          
@@ -261,7 +271,9 @@ exports[`Design management dropzone component when dragging renders correct temp
         class="mw-50 text-center"
         style="display: none;"
       >
-        <h3>
+        <h3
+          class=""
+        >
           Incoming!
         </h3>
          
@@ -279,22 +291,21 @@ exports[`Design management dropzone component when dragging renders correct temp
   class="w-100 position-relative"
 >
   <button
-    class="card design-dropzone-card design-dropzone-border w-100 h-100 d-flex-center p-3"
+    class="card design-dropzone-card design-dropzone-border w-100 h-100 gl-align-items-center gl-justify-content-center gl-p-3"
   >
     <div
-      class="d-flex-center flex-column text-center"
+      class="gl-display-flex gl-align-items-center gl-justify-content-center gl-text-center gl-flex-direction-column"
+      data-testid="dropzone-area"
     >
       <gl-icon-stub
-        class="mb-4"
-        name="doc-new"
-        size="48"
+        class="gl-mb-2"
+        name="upload"
+        size="24"
       />
        
-      <p>
-        <gl-sprintf-stub
-          message="%{lineOneStart}Drag and drop to upload your designs%{lineOneEnd} or %{linkStart}click to upload%{linkEnd}."
-        />
-      </p>
+      <gl-sprintf-stub
+        message="%{contentStart}Drop files to attach, or %{contentEnd}%{linkStart}browse%{linkEnd}"
+      />
     </div>
   </button>
    
@@ -316,7 +327,9 @@ exports[`Design management dropzone component when dragging renders correct temp
       <div
         class="mw-50 text-center"
       >
-        <h3>
+        <h3
+          class=""
+        >
           Oh no!
         </h3>
          
@@ -329,7 +342,9 @@ exports[`Design management dropzone component when dragging renders correct temp
         class="mw-50 text-center"
         style="display: none;"
       >
-        <h3>
+        <h3
+          class=""
+        >
           Incoming!
         </h3>
          
@@ -347,22 +362,21 @@ exports[`Design management dropzone component when no slot provided renders defa
   class="w-100 position-relative"
 >
   <button
-    class="card design-dropzone-card design-dropzone-border w-100 h-100 d-flex-center p-3"
+    class="card design-dropzone-card design-dropzone-border w-100 h-100 gl-align-items-center gl-justify-content-center gl-p-3"
   >
     <div
-      class="d-flex-center flex-column text-center"
+      class="gl-display-flex gl-align-items-center gl-justify-content-center gl-text-center gl-flex-direction-column"
+      data-testid="dropzone-area"
     >
       <gl-icon-stub
-        class="mb-4"
-        name="doc-new"
-        size="48"
+        class="gl-mb-2"
+        name="upload"
+        size="24"
       />
        
-      <p>
-        <gl-sprintf-stub
-          message="%{lineOneStart}Drag and drop to upload your designs%{lineOneEnd} or %{linkStart}click to upload%{linkEnd}."
-        />
-      </p>
+      <gl-sprintf-stub
+        message="%{contentStart}Drop files to attach, or %{contentEnd}%{linkStart}browse%{linkEnd}"
+      />
     </div>
   </button>
    
@@ -384,7 +398,9 @@ exports[`Design management dropzone component when no slot provided renders defa
       <div
         class="mw-50 text-center"
       >
-        <h3>
+        <h3
+          class=""
+        >
           Oh no!
         </h3>
          
@@ -397,7 +413,9 @@ exports[`Design management dropzone component when no slot provided renders defa
         class="mw-50 text-center"
         style="display: none;"
       >
-        <h3>
+        <h3
+          class=""
+        >
           Incoming!
         </h3>
          
@@ -428,7 +446,9 @@ exports[`Design management dropzone component when slot provided renders dropzon
       <div
         class="mw-50 text-center"
       >
-        <h3>
+        <h3
+          class=""
+        >
           Oh no!
         </h3>
          
@@ -441,7 +461,9 @@ exports[`Design management dropzone component when slot provided renders dropzon
         class="mw-50 text-center"
         style="display: none;"
       >
-        <h3>
+        <h3
+          class=""
+        >
           Incoming!
         </h3>
          

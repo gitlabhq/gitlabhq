@@ -103,6 +103,12 @@ RSpec.describe Jira::Requests::Issues::ListService do
             subject
           end
         end
+
+        it 'requests for default fields' do
+          expect(client).to receive(:get).with(include("fields=#{described_class::DEFAULT_FIELDS}")).and_return([])
+
+          subject
+        end
       end
     end
   end
