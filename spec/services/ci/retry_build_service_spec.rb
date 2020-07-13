@@ -278,28 +278,6 @@ RSpec.describe Ci::RetryBuildService do
           expect(new_build.metadata.expanded_environment_name).to eq('production')
         end
       end
-
-      context 'when scheduling_type of build is nil' do
-        before do
-          build.update_columns(scheduling_type: nil)
-        end
-
-        context 'when build has not needs' do
-          it 'sets scheduling_type as :stage' do
-            expect(new_build.scheduling_type).to eq('stage')
-          end
-        end
-
-        context 'when build has needs' do
-          before do
-            create(:ci_build_need, build: build)
-          end
-
-          it 'sets scheduling_type as :dag' do
-            expect(new_build.scheduling_type).to eq('dag')
-          end
-        end
-      end
     end
 
     context 'when user does not have ability to execute build' do

@@ -34,10 +34,6 @@ module Ci
 
       attributes[:user] = current_user
 
-      # TODO: we can probably remove this logic
-      # see: https://gitlab.com/gitlab-org/gitlab/-/issues/217930
-      attributes[:scheduling_type] ||= build.find_legacy_scheduling_type
-
       Ci::Build.transaction do
         # mark all other builds of that name as retried
         build.pipeline.builds.latest

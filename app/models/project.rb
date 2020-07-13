@@ -65,6 +65,7 @@ class Project < ApplicationRecord
 
   cache_markdown_field :description, pipeline: :description
 
+  default_value_for :packages_enabled, true
   default_value_for :archived, false
   default_value_for :resolve_outdated_diff_discussions, false
   default_value_for :container_registry_enabled, gitlab_config_features.container_registry
@@ -446,6 +447,7 @@ class Project < ApplicationRecord
   # Sometimes queries (e.g. using CTEs) require explicit disambiguation with table name
   scope :projects_order_id_desc, -> { reorder(self.arel_table['id'].desc) }
 
+  scope :with_packages, -> { joins(:packages) }
   scope :in_namespace, ->(namespace_ids) { where(namespace_id: namespace_ids) }
   scope :personal, ->(user) { where(namespace_id: user.namespace_id) }
   scope :joined, ->(user) { where('namespace_id != ?', user.namespace_id) }
@@ -863,6 +865,15 @@ class Project < ApplicationRecord
   def design_repository
     strong_memoize(:design_repository) do
       DesignManagement::Repository.new(self)
+    end
+  end
+
+  # Because we use default_value_for we need to be sure
+  # packages_enabled= method does exist even if we rollback migration.
+  # Otherwise many tests from spec/migrations will fail.
+  def packages_enabled=(value)
+    if has_attribute?(:packages_enabled)
+      write_attribute(:packages_enabled, value)
     end
   end
 

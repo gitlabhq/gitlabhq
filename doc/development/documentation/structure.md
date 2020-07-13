@@ -20,7 +20,7 @@ Every feature or use case document should include the following content in the f
 with exceptions and details noted below and in the template included on this page.
 
 - **Title**: Top-level heading with the feature name, or a use case name, which would start with
-  a verb, like Configuring, Enabling, and so on.
+  a verb, like "Configure", "Enable", and so on.
 - **Introduction**: A couple sentences about the subject matter and what's to be found
 on this page. Describe what the feature or topic is, what it does, and in what context it should
 be used. There is no need to add a title called "Introduction" or "Overview," because people rarely
@@ -53,7 +53,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 ---
 
 # Feature Name or Use Case Name **[TIER]** (1)
-<!--If writing about a use case, drop the tier, and start with a verb, e.g. 'Configuring', 'Implementing', + the goal/scenario-->
+<!--If writing about a use case, drop the tier, and start with a verb, e.g. "Configure", "Implement", + the goal/scenario-->
 
 <!--For pages on newly introduced features, add the following line. If only some aspects of the feature have been introduced, specify what parts of the feature.-->
 > [Introduced](link_to_issue_or_mr) in GitLab (Tier) X.Y (2).
@@ -102,12 +102,12 @@ Larger instruction sets may have subsections covering specific phases of the pro
 Where appropriate, provide examples of code or configuration files to better clarify intended usage.
 
 - Write a step-by-step guide, with no gaps between the steps.
-- Include example code or configurations as part of the relevant step. Use appropriate markdown to [wrap code blocks with syntax highlighting](../../user/markdown.md#colored-code-and-syntax-highlighting).
+- Include example code or configurations as part of the relevant step. Use appropriate Markdown to [wrap code blocks with syntax highlighting](../../user/markdown.md#colored-code-and-syntax-highlighting).
 - Start with an h2 (`##`), break complex steps into small steps using
 subheadings h3 > h4 > h5 > h6. _Never skip a hierarchy level, such
 as h2 > h4_, as it will break the TOC and may affect the breadcrumbs.
 - Use short and descriptive headings (up to ~50 chars). You can use one
-single heading like `## Configuring X` for instructions when the feature
+single heading like `## Configure X` for instructions when the feature
 is simple and the document is short.
 
 <!-- ## Troubleshooting

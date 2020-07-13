@@ -84,6 +84,7 @@ FactoryBot.define do
       create(:clusters_applications_knative, :installed, cluster: gcp_cluster)
       create(:clusters_applications_elastic_stack, :installed, cluster: gcp_cluster)
       create(:clusters_applications_jupyter, :installed, cluster: gcp_cluster)
+      create(:clusters_applications_cilium, :installed, cluster: gcp_cluster)
 
       create(:grafana_integration, project: projects[0], enabled: true)
       create(:grafana_integration, project: projects[1], enabled: true)

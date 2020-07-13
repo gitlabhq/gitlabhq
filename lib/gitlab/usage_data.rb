@@ -109,6 +109,7 @@ module Gitlab
             clusters_applications_knative: count(::Clusters::Applications::Knative.available),
             clusters_applications_elastic_stack: count(::Clusters::Applications::ElasticStack.available),
             clusters_applications_jupyter: count(::Clusters::Applications::Jupyter.available),
+            clusters_applications_cilium: count(::Clusters::Applications::Cilium.available),
             clusters_management_project: count(::Clusters::Cluster.with_management_project),
             in_review_folder: count(::Environment.in_review_folder),
             grafana_integrated_projects: count(GrafanaIntegration.enabled),

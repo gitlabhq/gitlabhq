@@ -1,0 +1,5 @@
+---
+title: Add installed state metrics for Cilium cluster application
+merge_request: 35808
+author:
+type: added

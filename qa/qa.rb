@@ -365,6 +365,7 @@ module QA
 
       module Snippet
         autoload :New, 'qa/page/project/snippet/new'
+        autoload :Show, 'qa/page/project/snippet/show'
       end
     end
 
@@ -462,6 +463,8 @@ module QA
       autoload :CustomMetric, 'qa/page/component/custom_metric'
       autoload :DesignManagement, 'qa/page/component/design_management'
       autoload :ProjectSelector, 'qa/page/component/project_selector'
+      autoload :Snippet, 'qa/page/component/snippet'
+      autoload :NewSnippet, 'qa/page/component/new_snippet'
 
       module Issuable
         autoload :Common, 'qa/page/component/issuable/common'

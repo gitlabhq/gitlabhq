@@ -7318,6 +7318,15 @@ msgstr ""
 msgid "Dashboard|Unable to add %{invalidProjects}. This dashboard is available for public projects, and private projects in groups with a Silver plan."
 msgstr ""
 
+msgid "DastProfiles|Manage profiles"
+msgstr ""
+
+msgid "DastProfiles|New Site Profile"
+msgstr ""
+
+msgid "DastProfiles|New site profile"
+msgstr ""
+
 msgid "Data is still calculating..."
 msgstr ""
 
