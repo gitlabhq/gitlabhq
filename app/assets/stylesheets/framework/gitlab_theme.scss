@@ -342,7 +342,7 @@ body {
         .navbar-toggler,
         .navbar-toggler:hover {
           color: $gray-700;
-          border-left: 1px solid $gray-200;
+          border-left: 1px solid $gray-100;
         }
       }
     }
@@ -360,7 +360,7 @@ body {
 
       .search-input-wrap {
         .search-icon {
-          fill: $gray-200;
+          fill: $gray-100;
         }
 
         .search-input {

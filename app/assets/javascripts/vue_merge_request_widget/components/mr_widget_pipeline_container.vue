@@ -82,7 +82,8 @@ export default {
       :pipeline-must-succeed="mr.onlyAllowMergeIfPipelineSucceeds"
       :source-branch="branch"
       :source-branch-link="branchLink"
-      :troubleshooting-docs-path="mr.troubleshootingDocsPath"
+      :mr-troubleshooting-docs-path="mr.mrTroubleshootingDocsPath"
+      :ci-troubleshooting-docs-path="mr.ciTroubleshootingDocsPath"
     />
     <template #footer>
       <div v-if="mr.exposedArtifactsPath" class="js-exposed-artifacts">

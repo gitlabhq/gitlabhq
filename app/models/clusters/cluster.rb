@@ -344,6 +344,10 @@ module Clusters
       Feature.enabled?(:managed_apps_local_tiller, clusterable, default_enabled: true)
     end
 
+    def prometheus_adapter
+      application_prometheus
+    end
+
     private
 
     def unique_management_project_environment_scope

@@ -64,6 +64,10 @@ class ClusterablePresenter < Gitlab::View::Presenter::Delegated
     raise NotImplementedError
   end
 
+  def metrics_dashboard_path(cluster)
+    raise NotImplementedError
+  end
+
   # Will be overridden in EE
   def environments_cluster_path(cluster)
     nil

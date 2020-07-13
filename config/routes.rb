@@ -190,7 +190,6 @@ Rails.application.routes.draw do
       member do
         Gitlab.ee do
           get :metrics, format: :json
-          get :metrics_dashboard
           get :environments, format: :json
         end
 
@@ -200,6 +199,7 @@ Rails.application.routes.draw do
           delete '/:application', to: 'clusters/applications#destroy', as: :uninstall_applications
         end
 
+        get :metrics_dashboard
         get :'/prometheus/api/v1/*proxy_path', to: 'clusters#prometheus_proxy', as: :prometheus_api
         get :cluster_status, format: :json
         delete :clear_cache

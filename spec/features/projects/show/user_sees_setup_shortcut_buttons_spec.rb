@@ -63,6 +63,23 @@ RSpec.describe 'Projects > Show > User sees setup shortcut buttons' do
           expect(page).to have_link('Add LICENSE', href: presenter.add_license_path)
         end
       end
+
+      context 'Gitlab::CurrentSettings.default_branch_name is available' do
+        before do
+          expect(Gitlab::CurrentSettings)
+            .to receive(:default_branch_name)
+            .at_least(:once)
+            .and_return('example_branch')
+
+          visit project_path(project)
+        end
+
+        it '"New file" button linked to new file page' do
+          page.within('.project-buttons') do
+            expect(page).to have_link('New file', href: project_new_blob_path(project, 'example_branch'))
+          end
+        end
+      end
     end
   end
 

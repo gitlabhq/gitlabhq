@@ -4,9 +4,9 @@ mutation updateAlertStatus($projectPath: ID!, $status: AlertManagementStatus!, $
   updateAlertStatus(input: { iid: $iid, status: $status, projectPath: $projectPath }) {
     errors
     alert {
-      iid,
-      status,
-      endedAt,
+      iid
+      status
+      endedAt
       notes {
         nodes {
           ...AlertNote

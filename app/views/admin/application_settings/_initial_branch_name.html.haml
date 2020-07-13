@@ -1,0 +1,12 @@
+= form_for @application_setting, url: general_admin_application_settings_path(anchor: 'js-default-branch-name'), html: { class: 'fieldset-form' } do |f|
+  = form_errors(@application_setting)
+
+  - fallback_branch_name = '<code>master</code>'
+
+  %fieldset
+    .form-group
+      = f.label :default_branch_name, _('Default initial branch name'), class: 'label-light'
+      = f.text_field :default_branch_name, placeholder: 'master', class: 'form-control'
+      %span.form-text.text-muted
+        = (_("Changes affect new repositories only. If not specified, Git's default name %{branch_name_default} will be used.") % { branch_name_default: fallback_branch_name } ).html_safe
+  = f.submit _('Save changes'), class: 'gl-button btn-success'

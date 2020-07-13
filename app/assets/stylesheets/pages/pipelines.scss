@@ -816,7 +816,7 @@
 
   &.ci-status-icon-created,
   &.ci-status-icon-skipped {
-    @include mini-pipeline-graph-color($white, $gray-200, $gray-300, $gray-500, $gray-600, $gray-700);
+    @include mini-pipeline-graph-color($white, $gray-100, $gray-300, $gray-500, $gray-600, $gray-700);
   }
 }
 

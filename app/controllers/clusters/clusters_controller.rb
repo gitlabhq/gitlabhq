@@ -3,6 +3,7 @@
 class Clusters::ClustersController < Clusters::BaseController
   include RoutableActions
   include Metrics::Dashboard::PrometheusApiProxy
+  include MetricsDashboard
 
   before_action :cluster, only: [:cluster_status, :show, :update, :destroy, :clear_cache]
   before_action :generate_gcp_authorize_url, only: [:new]

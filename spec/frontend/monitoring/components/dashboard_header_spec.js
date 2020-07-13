@@ -4,7 +4,11 @@ import DashboardHeader from '~/monitoring/components/dashboard_header.vue';
 import DuplicateDashboardModal from '~/monitoring/components/duplicate_dashboard_modal.vue';
 import CreateDashboardModal from '~/monitoring/components/create_dashboard_modal.vue';
 import { setupAllDashboards } from '../store_utils';
-import { dashboardGitResponse, dashboardHeaderProps } from '../mock_data';
+import {
+  dashboardGitResponse,
+  selfMonitoringDashboardGitResponse,
+  dashboardHeaderProps,
+} from '../mock_data';
 import { redirectTo, mergeUrlParams } from '~/lib/utils/url_utility';
 
 jest.mock('~/lib/utils/url_utility', () => ({
@@ -95,28 +99,47 @@ describe('Dashboard header', () => {
       });
     });
 
-    describe('when the selected dashboard is the system dashboard', () => {
-      it('contains a "Create New" menu item and a "Duplicate Dashboard" menu item', () => {
-        store.state.monitoringDashboard.projectPath = 'https://path/to/project';
-        setupAllDashboards(store);
+    const duplicableCases = [
+      null, // When no path is specified, it uses the default dashboard path.
+      dashboardGitResponse[0].path,
+      dashboardGitResponse[2].path,
+      selfMonitoringDashboardGitResponse[0].path,
+    ];
 
-        return wrapper.vm.$nextTick().then(() => {
-          expect(findCreateDashboardMenuItem().exists()).toBe(true);
-          expect(findCreateDashboardDuplicateItem().exists()).toBe(true);
+    describe.each(duplicableCases)(
+      'when the selected dashboard can be duplicated',
+      dashboardPath => {
+        it('contains a "Create New" menu item and a "Duplicate Dashboard" menu item', () => {
+          store.state.monitoringDashboard.projectPath = 'https://path/to/project';
+          setupAllDashboards(store, dashboardPath);
+
+          return wrapper.vm.$nextTick().then(() => {
+            expect(findCreateDashboardMenuItem().exists()).toBe(true);
+            expect(findCreateDashboardDuplicateItem().exists()).toBe(true);
+          });
         });
-      });
-    });
+      },
+    );
 
-    describe('when the selected dashboard is not the system dashboard', () => {
-      it('contains a "Create New" menu item and no "Duplicate Dashboard" menu item', () => {
-        store.state.monitoringDashboard.projectPath = 'https://path/to/project';
+    const nonDuplicableCases = [
+      dashboardGitResponse[1].path,
+      selfMonitoringDashboardGitResponse[1].path,
+    ];
 
-        return wrapper.vm.$nextTick().then(() => {
-          expect(findCreateDashboardMenuItem().exists()).toBe(true);
-          expect(findCreateDashboardDuplicateItem().exists()).toBe(false);
+    describe.each(nonDuplicableCases)(
+      'when the selected dashboard cannot be duplicated',
+      dashboardPath => {
+        it('contains a "Create New" menu item and no "Duplicate Dashboard" menu item', () => {
+          store.state.monitoringDashboard.projectPath = 'https://path/to/project';
+          setupAllDashboards(store, dashboardPath);
+
+          return wrapper.vm.$nextTick().then(() => {
+            expect(findCreateDashboardMenuItem().exists()).toBe(true);
+            expect(findCreateDashboardDuplicateItem().exists()).toBe(false);
+          });
         });
-      });
-    });
+      },
+    );
   });
 
   describe('actions menu modals', () => {

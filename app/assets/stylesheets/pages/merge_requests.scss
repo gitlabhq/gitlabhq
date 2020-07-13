@@ -64,7 +64,7 @@ $mr-widget-min-height: 69px;
   background-color: $gray-light;
 
   &.clickable:hover {
-    background-color: $gl-gray-200;
+    background-color: $gl-gray-100;
     cursor: pointer;
   }
 }
@@ -75,7 +75,7 @@ $mr-widget-min-height: 69px;
 
   &::before {
     content: '';
-    border-left: 1px solid $gray-200;
+    border-left: 1px solid $gray-100;
     position: absolute;
     left: 28px;
     top: -17px;

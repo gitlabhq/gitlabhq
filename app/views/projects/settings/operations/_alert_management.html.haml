@@ -1,6 +1,7 @@
 - return unless can?(current_user, :admin_operations, @project)
+- expanded = expanded_by_default?
 
-%section.settings.no-animate.js-alert-management-settings
+%section.settings.no-animate#js-alert-management-settings{ class: ('expanded' if expanded) }
   .settings-header
     %h3{ :class => "h4" }
       = _('Alerts')

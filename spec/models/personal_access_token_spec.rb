@@ -165,6 +165,7 @@ RSpec.describe PersonalAccessToken do
       let_it_be(:revoked_token) { create(:personal_access_token, revoked: true) }
       let_it_be(:valid_token_and_notified) { create(:personal_access_token, expires_at: 2.days.from_now, expire_notification_delivered: true) }
       let_it_be(:valid_token) { create(:personal_access_token, expires_at: 2.days.from_now) }
+      let_it_be(:long_expiry_token) { create(:personal_access_token, expires_at: '999999-12-31'.to_date) }
 
       context 'in one day' do
         it "doesn't have any tokens" do

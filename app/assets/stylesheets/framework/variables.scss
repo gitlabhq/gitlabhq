@@ -164,7 +164,7 @@ $red-950: #4d0a00 !default;
 $gray-10: #fafafa !default;
 $gray-50: #f0f0f0 !default;
 $gray-100: #dbdbdb !default;
-$gray-200: #dfdfdf !default;
+$gray-200: #bfbfbf !default;
 $gray-300: #ccc !default;
 $gray-400: #bababa !default;
 $gray-500: #a7a7a7 !default;
@@ -333,7 +333,7 @@ $border-gray-normal-dashed: darken($gray-normal, $darken-border-dashed-factor);
 /*
  * UI elements
  */
-$border-color: $gray-200;
+$border-color: $gray-100;
 $shadow-color: $t-gray-a-08;
 $well-expand-item: #e8f2f7;
 $well-inner-border: #eef0f2;
@@ -867,7 +867,7 @@ $priority-label-empty-state-width: 114px;
 Popovers
 */
 $popover-max-width: 384px;
-$popover-box-shadow: 0 2px 3px 1px $gray-200;
+$popover-box-shadow: 0 2px 3px 1px $gray-100;
 
 /*
 Issues Analytics

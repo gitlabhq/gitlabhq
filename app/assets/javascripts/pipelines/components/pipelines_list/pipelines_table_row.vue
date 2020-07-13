@@ -309,7 +309,8 @@ export default {
           <div
             v-for="(stage, index) in pipeline.details.stages"
             :key="index"
-            class="stage-container dropdown js-mini-pipeline-graph"
+            class="stage-container dropdown"
+            data-testid="widget-mini-pipeline-graph"
           >
             <pipeline-stage
               :type="$options.pipelinesTable"

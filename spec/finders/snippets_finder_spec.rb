@@ -283,6 +283,12 @@ RSpec.describe SnippetsFinder do
       it 'returns only personal snippets when the user cannot read cross project' do
         expect(described_class.new(user).execute).to contain_exactly(private_personal_snippet, internal_personal_snippet, public_personal_snippet)
       end
+
+      context 'when only project snippets are required' do
+        it 'returns no records' do
+          expect(described_class.new(user, only_project: true).execute).to be_empty
+        end
+      end
     end
 
     context 'when project snippets are disabled' do

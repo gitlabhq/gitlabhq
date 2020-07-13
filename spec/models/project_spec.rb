@@ -4863,6 +4863,36 @@ RSpec.describe Project do
     end
   end
 
+  describe "#default_branch" do
+    context "with an empty repository" do
+      let_it_be(:project) { create(:project_empty_repo) }
+
+      context "Gitlab::CurrentSettings.default_branch_name is unavailable" do
+        before do
+          expect(Gitlab::CurrentSettings)
+            .to receive(:default_branch_name)
+            .and_return(nil)
+        end
+
+        it "returns that value" do
+          expect(project.default_branch).to be_nil
+        end
+      end
+
+      context "Gitlab::CurrentSettings.default_branch_name is available" do
+        before do
+          expect(Gitlab::CurrentSettings)
+            .to receive(:default_branch_name)
+            .and_return('example_branch')
+        end
+
+        it "returns that value" do
+          expect(project.default_branch).to eq("example_branch")
+        end
+      end
+    end
+  end
+
   describe '#to_ability_name' do
     it 'returns project' do
       project = build(:project_empty_repo)

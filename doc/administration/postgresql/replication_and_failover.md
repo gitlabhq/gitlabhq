@@ -1250,24 +1250,27 @@ with:
 sudo gitlab-ctl stop patroni
 ```
 
-### Failover procedure for Patroni
+### Manual failover procedure for Patroni
 
-With Patroni, you have two slightly different options: failover and switchover. Essentially, failover allows you to
-perform a manual failover when there are no healthy nodes, while switchover only works when the cluster is healthy and
-allows you to schedule a switchover (it can happen immediately). For further details, see
-[Patroni documentation on this subject](https://patroni.readthedocs.io/en/latest/rest_api.html#switchover-and-failover-endpoints).
+While Patroni supports automatic failover, you also have the ability to perform
+a manual one, where you have two slightly different options:
 
-To schedule a switchover:
+- **Failover**: allows you to perform a manual failover when there are no healthy nodes.
+  You can perform this action in any PostgreSQL node:
 
-```shell
-sudo gitlab-ctl patroni switchover
-```
+  ```shell
+  sudo gitlab-ctl patroni failover
+  ```
 
-For manual failover:
+- **Switchover**: only works when the cluster is healthy and allows you to schedule a switchover (it can happen immediately).
+  You can perform this action in any PostgreSQL node:
 
-```shell
-sudo gitlab-ctl patroni failover
-```
+  ```shell
+  sudo gitlab-ctl patroni switchover
+  ```
+
+For further details on this subject, see the
+[Patroni documentation](https://patroni.readthedocs.io/en/latest/rest_api.html#switchover-and-failover-endpoints).
 
 ### Recovering the Patroni cluster
 

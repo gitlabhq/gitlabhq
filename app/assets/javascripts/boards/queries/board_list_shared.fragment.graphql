@@ -1,15 +1,15 @@
 fragment BoardListShared on BoardList {
-  id,
-  title,
-  position,
-  listType,
-  collapsed,
+  id
+  title
+  position
+  listType
+  collapsed
   label {
-    id,
-    title,
-    color,
-    textColor,
-    description,
+    id
+    title
+    color
+    textColor
+    description
     descriptionHtml
   }
 }

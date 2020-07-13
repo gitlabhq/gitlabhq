@@ -546,28 +546,20 @@ RSpec.describe Projects::EnvironmentsController do
   end
 
   describe 'GET #metrics_dashboard' do
-    shared_examples_for 'correctly formatted response' do |status_code|
-      it 'returns a json object with the correct keys' do
-        get :metrics_dashboard, params: environment_params(dashboard_params)
+    let(:metrics_dashboard_req_params) { environment_params(dashboard_params) }
 
-        # Exlcude `all_dashboards` to handle separately.
-        found_keys = json_response.keys - ['all_dashboards']
-
-        expect(response).to have_gitlab_http_status(status_code)
-        expect(found_keys).to contain_exactly(*expected_keys)
+    shared_examples_for '200 response' do
+      it_behaves_like 'GET #metrics_dashboard correctly formatted response' do
+        let(:expected_keys) { %w(dashboard status metrics_data) }
+        let(:status_code) { :ok }
       end
     end
 
-    shared_examples_for '200 response' do
-      let(:expected_keys) { %w(dashboard status metrics_data) }
-
-      it_behaves_like 'correctly formatted response', :ok
-    end
-
     shared_examples_for 'error response' do |status_code|
-      let(:expected_keys) { %w(message status) }
-
-      it_behaves_like 'correctly formatted response', status_code
+      it_behaves_like 'GET #metrics_dashboard correctly formatted response' do
+        let(:expected_keys) { %w(message status) }
+        let(:status_code) { status_code }
+      end
     end
 
     shared_examples_for 'includes all dashboards' do
@@ -581,29 +573,14 @@ RSpec.describe Projects::EnvironmentsController do
     end
 
     shared_examples_for 'the default dashboard' do
-      it_behaves_like '200 response'
       it_behaves_like 'includes all dashboards'
-
-      it 'is the default dashboard' do
-        get :metrics_dashboard, params: environment_params(dashboard_params)
-
-        expect(json_response['dashboard']['dashboard']).to eq('Environment metrics')
-      end
+      it_behaves_like 'GET #metrics_dashboard for dashboard', 'Environment metrics'
     end
 
     shared_examples_for 'the specified dashboard' do |expected_dashboard|
-      it_behaves_like '200 response'
       it_behaves_like 'includes all dashboards'
 
-      it 'has the correct name' do
-        get :metrics_dashboard, params: environment_params(dashboard_params)
-
-        dashboard_name = json_response['dashboard']['dashboard']
-
-        # 'Environment metrics' is the default dashboard.
-        expect(dashboard_name).not_to eq('Environment metrics')
-        expect(dashboard_name).to eq(expected_dashboard)
-      end
+      it_behaves_like 'GET #metrics_dashboard for dashboard', expected_dashboard
 
       context 'when the dashboard cannot not be processed' do
         before do

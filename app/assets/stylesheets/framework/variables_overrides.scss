@@ -5,14 +5,14 @@
 
 $secondary: $gray-light;
 $input-disabled-bg: $gray-light;
-$input-border-color: $gray-200;
+$input-border-color: $gray-100;
 $input-color: $gl-text-color;
 $input-font-size: $gl-font-size;
 $font-family-sans-serif: $regular-font;
 $font-family-monospace: $monospace-font;
 $btn-line-height: 20px;
 $table-accent-bg: $gray-light;
-$table-border-color: $gray-200;
+$table-border-color: $gray-100;
 $card-border-color: $border-color;
 $card-cap-bg: $gray-light !default;
 $success: $green-500;
@@ -21,7 +21,7 @@ $warning: $orange-500;
 $danger: $red-500;
 $zindex-modal-backdrop: 1040;
 $nav-divider-margin-y: ($grid-size / 2);
-$dropdown-divider-bg: $gray-200;
+$dropdown-divider-bg: $gray-100;
 $dropdown-item-padding-y: 8px;
 $dropdown-item-padding-x: 12px;
 $popover-max-width: 300px;

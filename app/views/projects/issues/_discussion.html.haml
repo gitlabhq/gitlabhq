@@ -7,7 +7,7 @@
 
 %section.issuable-discussion.js-vue-notes-event
   #js-vue-notes{ data: { notes_data: notes_data(@issue).to_json,
-    noteable_data: serialize_issuable(@issue, with_blocking_issues: Feature.enabled?(:prevent_closing_blocked_issues, @issue.project)),
+    noteable_data: serialize_issuable(@issue, with_blocking_issues: true),
     noteable_type: 'Issue',
     target_type: 'issue',
     current_user_data: UserSerializer.new.represent(current_user, {only_path: true}, CurrentUserEntity).to_json } }

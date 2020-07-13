@@ -16,5 +16,4 @@ fragment AlertDetailItem on AlertManagementAlert {
       ...AlertNote
     }
   }
-
 }

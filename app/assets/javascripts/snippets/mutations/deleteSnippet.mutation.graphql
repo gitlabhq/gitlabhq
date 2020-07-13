@@ -1,5 +1,5 @@
 mutation DeleteSnippet($id: ID!) {
-  destroySnippet(input: {id: $id}) {
+  destroySnippet(input: { id: $id }) {
     errors
   }
 }

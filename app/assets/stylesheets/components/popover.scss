@@ -1,6 +1,6 @@
 .popover {
   max-width: $popover-max-width;
-  border: 1px solid $gray-200;
+  border: 1px solid $gray-100;
   box-shadow: $popover-box-shadow;
   font-size: $gl-font-size-small;
 
@@ -50,7 +50,7 @@
   *  due to the box-shadow include in our custom styles.
   */
   > .arrow::before {
-    border-top-color: $gray-200;
+    border-top-color: $gray-100;
     bottom: 1px;
   }
 
@@ -61,7 +61,7 @@
 
 .bs-popover-bottom {
   > .arrow::before {
-    border-bottom-color: $gray-200;
+    border-bottom-color: $gray-100;
   }
 
   > .popover-header::before {
@@ -70,11 +70,11 @@
 }
 
 .bs-popover-right > .arrow::before {
-  border-right-color: $gray-200;
+  border-right-color: $gray-100;
 }
 
 .bs-popover-left > .arrow::before {
-  border-left-color: $gray-200;
+  border-left-color: $gray-100;
 }
 
 .popover-header {

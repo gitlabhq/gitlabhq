@@ -1,34 +1,34 @@
 #import "../fragments/list_item.fragment.graphql"
 
 query getAlerts(
-    $searchTerm: String,
-    $projectPath: ID!,
-    $statuses: [AlertManagementStatus!],
-    $sort: AlertManagementAlertSort,
-    $firstPageSize: Int,
-    $lastPageSize: Int,
-    $prevPageCursor: String = ""
-    $nextPageCursor: String = ""
+  $searchTerm: String
+  $projectPath: ID!
+  $statuses: [AlertManagementStatus!]
+  $sort: AlertManagementAlertSort
+  $firstPageSize: Int
+  $lastPageSize: Int
+  $prevPageCursor: String = ""
+  $nextPageCursor: String = ""
 ) {
-    project(fullPath: $projectPath, ) {
-        alertManagementAlerts(
-            search: $searchTerm,
-            statuses: $statuses,
-            sort: $sort,
-            first: $firstPageSize
-            last: $lastPageSize,
-            after: $nextPageCursor,
-            before: $prevPageCursor
-        )  {
-            nodes {
-                ...AlertListItem
-            },
-            pageInfo {
-                hasNextPage
-                endCursor
-                hasPreviousPage
-                startCursor
-            }
-        }
+  project(fullPath: $projectPath) {
+    alertManagementAlerts(
+      search: $searchTerm
+      statuses: $statuses
+      sort: $sort
+      first: $firstPageSize
+      last: $lastPageSize
+      after: $nextPageCursor
+      before: $prevPageCursor
+    ) {
+      nodes {
+        ...AlertListItem
+      }
+      pageInfo {
+        hasNextPage
+        endCursor
+        hasPreviousPage
+        startCursor
+      }
     }
+  }
 }

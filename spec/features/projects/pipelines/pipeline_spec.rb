@@ -111,7 +111,7 @@ RSpec.describe 'Pipeline', :js do
       end
 
       context 'when there is one related merge request' do
-        before do
+        let!(:merge_request) do
           create(:merge_request,
             source_project: project,
             source_branch: pipeline.ref)
@@ -123,7 +123,7 @@ RSpec.describe 'Pipeline', :js do
           within '.related-merge-requests' do
             expect(page).to have_content('1 related merge request: ')
             expect(page).to have_selector('.js-truncated-mr-list')
-            expect(page).to have_link('!1 My title 1')
+            expect(page).to have_link("#{merge_request.to_reference} #{merge_request.title}")
 
             expect(page).not_to have_selector('.js-full-mr-list')
             expect(page).not_to have_selector('.text-expander')
@@ -132,9 +132,16 @@ RSpec.describe 'Pipeline', :js do
       end
 
       context 'when there are two related merge requests' do
-        before do
-          create(:merge_request, source_project: project, source_branch: pipeline.ref)
-          create(:merge_request, source_project: project, source_branch: pipeline.ref, target_branch: 'fix')
+        let!(:merge_request1) do
+          create(:merge_request,
+            source_project: project,
+            source_branch: pipeline.ref)
+        end
+        let!(:merge_request2) do
+          create(:merge_request,
+            source_project: project,
+            source_branch: pipeline.ref,
+            target_branch: 'fix')
         end
 
         it 'links to the most recent related merge request' do
@@ -142,7 +149,7 @@ RSpec.describe 'Pipeline', :js do
 
           within '.related-merge-requests' do
             expect(page).to have_content('2 related merge requests: ')
-            expect(page).to have_link('!2 My title 3')
+            expect(page).to have_link("#{merge_request2.to_reference} #{merge_request2.title}")
             expect(page).to have_selector('.text-expander')
             expect(page).to have_selector('.js-full-mr-list', visible: false)
           end

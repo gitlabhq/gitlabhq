@@ -1,8 +1,10 @@
+import renderHtml from './renderers/render_html';
 import renderKramdownList from './renderers/render_kramdown_list';
 import renderKramdownText from './renderers/render_kramdown_text';
 import renderIdentifierParagraph from './renderers/render_identifier_paragraph';
 import renderEmbeddedRubyText from './renderers/render_embedded_ruby_text';
 
+const htmlRenderers = [renderHtml];
 const listRenderers = [renderKramdownList];
 const paragraphRenderers = [renderIdentifierParagraph];
 const textRenderers = [renderKramdownText, renderEmbeddedRubyText];
@@ -23,8 +25,15 @@ const buildCustomRendererFunctions = (customRenderers, defaults) => {
   return Object.fromEntries(customEntries);
 };
 
-const buildCustomHTMLRenderer = (customRenderers = { list: [], paragraph: [], text: [] }) => {
+const buildCustomHTMLRenderer = (
+  customRenderers = { htmlBlock: [], list: [], paragraph: [], text: [] },
+) => {
   const defaults = {
+    htmlBlock(node, context) {
+      const allHtmlRenderers = [...customRenderers.list, ...htmlRenderers];
+
+      return executeRenderer(allHtmlRenderers, node, context);
+    },
     list(node, context) {
       const allListRenderers = [...customRenderers.list, ...listRenderers];
 

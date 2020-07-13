@@ -4266,6 +4266,9 @@ msgstr ""
 msgid "Changes"
 msgstr ""
 
+msgid "Changes affect new repositories only. If not specified, Git's default name %{branch_name_default} will be used."
+msgstr ""
+
 msgid "Changes are shown as if the <b>source</b> revision was being merged into the <b>target</b> revision."
 msgstr ""
 
@@ -7421,6 +7424,9 @@ msgid "Default first day of the week"
 msgstr ""
 
 msgid "Default first day of the week in calendars and date pickers."
+msgstr ""
+
+msgid "Default initial branch name"
 msgstr ""
 
 msgid "Default issue template"
@@ -13795,6 +13801,9 @@ msgstr ""
 msgid "Link title is required"
 msgstr ""
 
+msgid "Link to go to GitLab pipeline documentation"
+msgstr ""
+
 msgid "Linked emails (%{email_count})"
 msgstr ""
 
@@ -16878,6 +16887,9 @@ msgstr ""
 msgid "Pipeline|Canceled"
 msgstr ""
 
+msgid "Pipeline|Checking pipeline status."
+msgstr ""
+
 msgid "Pipeline|Commit"
 msgstr ""
 
@@ -16915,9 +16927,6 @@ msgid "Pipeline|Merge train pipeline"
 msgstr ""
 
 msgid "Pipeline|Merged result pipeline"
-msgstr ""
-
-msgid "Pipeline|No pipeline has been run for this commit."
 msgstr ""
 
 msgid "Pipeline|Passed"
@@ -21105,6 +21114,9 @@ msgid "Set target branch to %{branch_name}."
 msgstr ""
 
 msgid "Set the default expiration time for each job's artifacts. 0 for unlimited. The default unit is in seconds, but you can define an alternative. For example: <code>4 mins 2 sec</code>, <code>2h42min</code>."
+msgstr ""
+
+msgid "Set the default name of the initial branch when creating new repositories through the user interface."
 msgstr ""
 
 msgid "Set the due date to %{due_date}."

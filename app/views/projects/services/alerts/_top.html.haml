@@ -5,4 +5,4 @@
       .gl-alert-body
         = _('You can now manage alert endpoint configuration in the Alerts section on the Operations settings page. Fields on this page have been deprecated.')
       .gl-alert-actions
-        = link_to _('Visit settings page'), project_settings_operations_path(@project), class: 'btn gl-alert-action btn-info new-gl-button'
+        = link_to _('Visit settings page'), project_settings_operations_path(@project, anchor: 'js-alert-management-settings'), class: 'btn gl-alert-action btn-info new-gl-button'

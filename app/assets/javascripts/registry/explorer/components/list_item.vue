@@ -40,7 +40,7 @@ export default {
         'gl-border-b-1': !this.last,
         'gl-border-b-2': this.last,
         'disabled-content': this.disabled,
-        'gl-border-gray-200': !this.selected,
+        'gl-border-gray-100': !this.selected,
         'gl-bg-blue-50 gl-border-blue-200': this.selected,
       };
     },
@@ -109,14 +109,14 @@ export default {
       <div class="gl-w-7"></div>
       <div
         v-if="isDetailsShown"
-        class="gl-display-flex gl-flex-direction-column gl-flex-fill-1 gl-bg-gray-10 gl-rounded-base gl-inset-border-1-gray-200 gl-mb-3"
+        class="gl-display-flex gl-flex-direction-column gl-flex-fill-1 gl-bg-gray-10 gl-rounded-base gl-inset-border-1-gray-100 gl-mb-3"
       >
         <div
           v-for="(row, detailIndex) in detailsSlots"
           :key="detailIndex"
           class="gl-px-5 gl-py-2"
           :class="{
-            'gl-border-gray-200 gl-border-t-solid gl-border-t-1': detailIndex !== 0,
+            'gl-border-gray-100 gl-border-t-solid gl-border-t-1': detailIndex !== 0,
           }"
         >
           <slot :name="row"></slot>

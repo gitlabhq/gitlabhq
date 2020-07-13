@@ -44,8 +44,8 @@ export default {
   computed: {
     ...mapState('monitoringDashboard', ['allDashboards']),
     ...mapGetters('monitoringDashboard', ['selectedDashboard']),
-    isSystemDashboard() {
-      return this.selectedDashboard?.system_dashboard;
+    isOutOfTheBoxDashboard() {
+      return this.selectedDashboard?.out_of_the_box_dashboard;
     },
     selectedDashboardText() {
       return this.selectedDashboard?.display_name;
@@ -139,7 +139,7 @@ export default {
            This Duplicate Dashboard item will be removed from the dashboards dropdown 
            in https://gitlab.com/gitlab-org/gitlab/-/issues/223223
       -->
-      <template v-if="isSystemDashboard">
+      <template v-if="isOutOfTheBoxDashboard">
         <gl-dropdown-divider />
 
         <gl-dropdown-item v-gl-modal="modalId" data-testid="duplicateDashboardItem">

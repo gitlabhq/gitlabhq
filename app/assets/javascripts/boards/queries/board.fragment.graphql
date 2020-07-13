@@ -1,4 +1,4 @@
 fragment BoardFragment on Board {
-  id,
+  id
   name
 }

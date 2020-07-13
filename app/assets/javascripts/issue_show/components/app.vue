@@ -420,7 +420,7 @@ export default {
         <transition name="issuable-header-slide">
           <div
             v-if="shouldShowStickyHeader"
-            class="issue-sticky-header gl-fixed gl-z-index-3 gl-bg-white gl-border-1 gl-border-b-solid gl-border-b-gray-200 gl-py-3"
+            class="issue-sticky-header gl-fixed gl-z-index-3 gl-bg-white gl-border-1 gl-border-b-solid gl-border-b-gray-100 gl-py-3"
             data-testid="issue-sticky-header"
           >
             <div

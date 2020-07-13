@@ -141,7 +141,7 @@ describe('list item', () => {
       expect(wrapper.classes()).toEqual(
         expect.arrayContaining(['gl-bg-blue-50', 'gl-border-blue-200']),
       );
-      expect(wrapper.classes()).toEqual(expect.not.arrayContaining(['gl-border-gray-200']));
+      expect(wrapper.classes()).toEqual(expect.not.arrayContaining(['gl-border-gray-100']));
     });
 
     it('when false applies the default border', () => {
@@ -150,7 +150,7 @@ describe('list item', () => {
       expect(wrapper.classes()).toEqual(
         expect.not.arrayContaining(['gl-bg-blue-50', 'gl-border-blue-200']),
       );
-      expect(wrapper.classes()).toEqual(expect.arrayContaining(['gl-border-gray-200']));
+      expect(wrapper.classes()).toEqual(expect.arrayContaining(['gl-border-gray-100']));
     });
   });
 });

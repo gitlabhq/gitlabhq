@@ -38,14 +38,6 @@ RSpec.describe 'Merge request > User sees pipelines', :js do
         expect(page).to have_selector('.stage-cell')
       end
 
-      it 'pipeline sha does not equal last commit sha' do
-        pipeline.update_attribute(:sha, '19e2e9b4ef76b422ce1154af39a91323ccc57434')
-        visit project_merge_request_path(project, merge_request)
-        wait_for_requests
-
-        expect(page.find('.ci-widget')).to have_text("Could not retrieve the pipeline status. For troubleshooting steps, read the documentation.")
-      end
-
       context 'with a detached merge request pipeline' do
         let(:merge_request) { create(:merge_request, :with_detached_merge_request_pipeline) }
 

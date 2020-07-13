@@ -171,6 +171,16 @@ RSpec.describe Admin::ClustersController do
     end
   end
 
+  it_behaves_like 'GET #metrics_dashboard for dashboard', 'Cluster health' do
+    let(:cluster) { create(:cluster, :instance, :provided_by_gcp) }
+
+    let(:metrics_dashboard_req_params) do
+      {
+        id: cluster.id
+      }
+    end
+  end
+
   describe 'GET #prometheus_proxy' do
     let(:user) { admin }
     let(:proxyable) do

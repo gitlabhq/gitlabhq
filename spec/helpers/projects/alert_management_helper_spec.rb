@@ -12,7 +12,7 @@ RSpec.describe Projects::AlertManagementHelper do
 
   describe '#alert_management_data' do
     let(:user_can_enable_alert_management) { true }
-    let(:setting_path) { edit_project_service_path(project, AlertsService) }
+    let(:setting_path) { project_settings_operations_path(project, anchor: 'js-alert-management-settings') }
 
     subject(:data) { helper.alert_management_data(current_user, project) }
 

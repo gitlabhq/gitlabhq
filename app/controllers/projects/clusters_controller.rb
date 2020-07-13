@@ -23,6 +23,13 @@ class Projects::ClustersController < Clusters::ClustersController
   def repository
     @repository ||= project.repository
   end
-end
 
-Projects::ClustersController.prepend_if_ee('EE::Projects::ClustersController')
+  def metrics_dashboard_params
+    params.permit(:embedded, :group, :title, :y_label).merge(
+      {
+        cluster: cluster,
+        cluster_type: :project
+      }
+    )
+  end
+end

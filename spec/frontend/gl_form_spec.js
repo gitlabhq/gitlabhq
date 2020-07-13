@@ -111,5 +111,21 @@ describe('GLForm', () => {
         expect(autosize.destroy).not.toHaveBeenCalled();
       });
     });
+
+    describe('supportsQuickActions', () => {
+      it('should return false if textarea does not support quick actions', () => {
+        const glForm = new GLForm(testContext.form, false);
+
+        expect(glForm.supportsQuickActions).toEqual(false);
+      });
+
+      it('should return true if textarea supports quick actions', () => {
+        testContext.textarea.attr('data-supports-quick-actions', true);
+
+        const glForm = new GLForm(testContext.form, false);
+
+        expect(glForm.supportsQuickActions).toEqual(true);
+      });
+    });
   });
 });

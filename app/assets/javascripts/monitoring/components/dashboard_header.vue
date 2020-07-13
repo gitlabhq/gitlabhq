@@ -129,8 +129,8 @@ export default {
       'operationsSettingsPath',
     ]),
     ...mapGetters('monitoringDashboard', ['selectedDashboard', 'filteredEnvironments']),
-    isSystemDashboard() {
-      return this.selectedDashboard?.system_dashboard;
+    isOutOfTheBoxDashboard() {
+      return this.selectedDashboard?.out_of_the_box_dashboard;
     },
     shouldShowEnvironmentsDropdownNoMatchedMsg() {
       return !this.environmentsLoading && this.filteredEnvironments.length === 0;
@@ -417,7 +417,7 @@ export default {
             :project-path="projectPath"
           />
 
-          <template v-if="isSystemDashboard">
+          <template v-if="isOutOfTheBoxDashboard">
             <gl-new-dropdown-divider />
             <gl-new-dropdown-item
               ref="duplicateDashboardItem"

@@ -1,0 +1,5 @@
+---
+title: Backfill missing routes for Bot users
+merge_request: 35960
+author:
+type: fixed

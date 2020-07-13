@@ -106,4 +106,8 @@ export default class GLForm {
         .removeClass('is-focused');
     });
   }
+
+  get supportsQuickActions() {
+    return Boolean(this.textarea.data('supports-quick-actions'));
+  }
 }

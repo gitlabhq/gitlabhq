@@ -192,6 +192,17 @@ RSpec.describe Groups::ClustersController do
     end
   end
 
+  it_behaves_like 'GET #metrics_dashboard for dashboard', 'Cluster health' do
+    let(:cluster) { create(:cluster, :provided_by_gcp, cluster_type: :group_type, groups: [group]) }
+
+    let(:metrics_dashboard_req_params) do
+      {
+        id: cluster.id,
+        group_id: group.name
+      }
+    end
+  end
+
   describe 'GET #prometheus_proxy' do
     let(:proxyable) do
       create(:cluster, :provided_by_gcp, cluster_type: :group_type, groups: [group])

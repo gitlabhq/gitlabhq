@@ -77,6 +77,10 @@ module Banzai
           Route.new(
             ::Gitlab::Metrics::Dashboard::Url.grafana_regex,
             :read_project
+          ),
+          Route.new(
+            ::Gitlab::Metrics::Dashboard::Url.clusters_regex,
+            :read_cluster
           )
         ]
       end

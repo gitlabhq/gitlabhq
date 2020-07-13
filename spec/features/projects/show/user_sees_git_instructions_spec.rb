@@ -67,6 +67,7 @@ RSpec.describe 'Projects > Show > User sees Git instructions' do
       before do
         expect(Gitlab::CurrentSettings)
           .to receive(:default_branch_name)
+          .at_least(:once)
           .and_return('example_branch')
 
         sign_in(project.owner)

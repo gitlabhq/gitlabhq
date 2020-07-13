@@ -1,0 +1,5 @@
+---
+title: Add generic message when no pipeline in MR
+merge_request: 35980
+author:
+type: fixed

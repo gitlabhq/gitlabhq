@@ -3,7 +3,7 @@ import { GlDropdownItem, GlIcon } from '@gitlab/ui';
 
 import DashboardsDropdown from '~/monitoring/components/dashboards_dropdown.vue';
 
-import { dashboardGitResponse } from '../mock_data';
+import { dashboardGitResponse, selfMonitoringDashboardGitResponse } from '../mock_data';
 
 const defaultBranch = 'master';
 const modalId = 'duplicateDashboardModalId';
@@ -150,12 +150,18 @@ describe('DashboardsDropdown', () => {
     });
   });
 
-  describe('when the selected dashboard can be duplicated', () => {
+  const duplicableCases = [
+    dashboardGitResponse[0],
+    dashboardGitResponse[2],
+    selfMonitoringDashboardGitResponse[0],
+  ];
+
+  describe.each(duplicableCases)('when the selected dashboard can be duplicated', dashboard => {
     let duplicateDashboardAction;
     let modalDirective;
 
     beforeEach(() => {
-      [mockSelectedDashboard] = dashboardGitResponse;
+      mockSelectedDashboard = dashboard;
       modalDirective = jest.fn();
       duplicateDashboardAction = jest.fn().mockResolvedValue();
 
@@ -205,20 +211,25 @@ describe('DashboardsDropdown', () => {
     });
   });
 
-  describe('when the selected dashboard can not be duplicated', () => {
-    beforeEach(() => {
-      [, mockSelectedDashboard] = dashboardGitResponse;
+  const nonDuplicableCases = [dashboardGitResponse[1], selfMonitoringDashboardGitResponse[1]];
 
-      wrapper = createComponent();
-    });
+  describe.each(nonDuplicableCases)(
+    'when the selected dashboard can not be duplicated',
+    dashboard => {
+      beforeEach(() => {
+        mockSelectedDashboard = dashboard;
 
-    it('displays a dropdown list item for each dashboard, but no list item for "duplicate dashboard"', () => {
-      const item = wrapper.findAll('[data-testid="duplicateDashboardItem"]');
+        wrapper = createComponent();
+      });
 
-      expect(findItems()).toHaveLength(dashboardGitResponse.length);
-      expect(item.length).toBe(0);
-    });
-  });
+      it('displays a dropdown list item for each dashboard, but no list item for "duplicate dashboard"', () => {
+        const item = wrapper.findAll('[data-testid="duplicateDashboardItem"]');
+
+        expect(findItems()).toHaveLength(dashboardGitResponse.length);
+        expect(item.length).toBe(0);
+      });
+    },
+  );
 
   describe('when a dashboard gets selected by the user', () => {
     beforeEach(() => {

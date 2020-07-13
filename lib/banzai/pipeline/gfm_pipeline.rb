@@ -48,7 +48,8 @@ module Banzai
       def self.metrics_filters
         [
           Filter::InlineMetricsFilter,
-          Filter::InlineGrafanaMetricsFilter
+          Filter::InlineGrafanaMetricsFilter,
+          Filter::InlineClusterMetricsFilter
         ]
       end
 

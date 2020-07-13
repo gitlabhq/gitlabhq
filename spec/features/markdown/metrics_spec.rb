@@ -2,8 +2,9 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Metrics rendering', :js, :use_clean_rails_memory_store_caching, :sidekiq_inline do
+RSpec.describe 'Metrics rendering', :js, :kubeclient, :use_clean_rails_memory_store_caching, :sidekiq_inline do
   include PrometheusHelpers
+  include KubernetesHelpers
   include GrafanaApiHelpers
   include MetricsDashboardUrlHelpers
 
@@ -163,6 +164,41 @@ RSpec.describe 'Metrics rendering', :js, :use_clean_rails_memory_store_caching, 
 
       expect(page).to have_css('div.prometheus-graph')
       expect(page).to have_text(title)
+    end
+  end
+
+  context 'for GitLab embedded cluster health metrics' do
+    before do
+      project.add_maintainer(user)
+      import_common_metrics
+      stub_any_prometheus_request_with_response
+
+      allow(Prometheus::ProxyService).to receive(:new).and_call_original
+
+      create(:clusters_applications_prometheus, :installed, cluster: cluster)
+      stub_kubeclient_discover(cluster.platform.api_url)
+      stub_prometheus_request(/prometheus-prometheus-server/, body: prometheus_values_body)
+      stub_prometheus_request(/prometheus\/api\/v1/, body: prometheus_values_body)
+    end
+
+    let_it_be(:cluster) { create(:cluster, :provided_by_gcp, :project, projects: [project], user: user) }
+    let(:params) { [project.namespace.path, project.path, cluster.id] }
+    let(:query_params) { { group: 'Cluster Health', title: 'CPU Usage', y_label: 'CPU (cores)' } }
+    let(:metrics_url) { urls.namespace_project_cluster_url(*params, **query_params) }
+    let(:description) { "# Summary \n[](#{metrics_url})" }
+
+    it 'shows embedded metrics' do
+      visit project_issue_path(project, issue)
+
+      expect(page).to have_css('div.prometheus-graph')
+      expect(page).to have_text(query_params[:title])
+      expect(page).to have_text(query_params[:y_label])
+      expect(page).not_to have_text(metrics_url)
+
+      expect(Prometheus::ProxyService)
+        .to have_received(:new)
+              .with(cluster, 'GET', 'query_range', hash_including('start', 'end', 'step'))
+              .at_least(:once)
     end
   end
 
