@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  context 'Create' do
+  RSpec.describe 'Create' do
     describe 'Files management' do
       it 'user creates, edits and deletes a file via the Web' do
         Runtime::Browser.visit(:gitlab, Page::Main::Login)

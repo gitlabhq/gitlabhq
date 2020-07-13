@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  context 'Create' do
+  RSpec.describe 'Create' do
     describe 'Web IDE file templates' do
       include Runtime::Fixtures
 

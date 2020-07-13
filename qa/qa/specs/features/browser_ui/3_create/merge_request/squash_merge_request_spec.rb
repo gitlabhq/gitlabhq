@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  context 'Create' do
+  RSpec.describe 'Create' do
     describe 'Merge request squashing' do
       it 'user squashes commits while merging' do
         Flow::Login.sign_in

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  context 'Create' do
+  RSpec.describe 'Create' do
     context 'Wiki' do
       describe 'testing wiki content creation inside a project' do
         let(:new_wiki_title) { "just_another_wiki_page" }

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  context 'Create' do
+  RSpec.describe 'Create' do
     describe 'SSH keys support' do
       let(:key_title) { "key for ssh tests #{Time.now.to_f}" }
 

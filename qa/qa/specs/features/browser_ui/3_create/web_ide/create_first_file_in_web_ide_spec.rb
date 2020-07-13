@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  context 'Create' do
+  RSpec.describe 'Create' do
     describe 'First file using Web IDE' do
       let(:project) do
         Resource::Project.fabricate_via_api! do |project|

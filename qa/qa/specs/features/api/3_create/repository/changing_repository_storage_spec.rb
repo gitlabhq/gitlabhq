@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  context 'Create' do
+  RSpec.describe 'Create' do
     describe 'Changing Gitaly repository storage', :requires_admin do
       shared_examples 'repository storage move' do
         it 'confirms a `finished` status after moving project repository storage' do

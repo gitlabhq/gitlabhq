@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  context 'Create' do
+  RSpec.describe 'Create' do
     describe 'Git push over HTTP', :ldap_no_tls do
       it 'user using a personal access token pushes code to the repository' do
         Flow::Login.sign_in

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  context 'Create' do
+  RSpec.describe 'Create' do
     describe 'Git clone over HTTP', :ldap_no_tls do
       before(:all) do
         @project = Resource::Project.fabricate_via_api! do |scenario|

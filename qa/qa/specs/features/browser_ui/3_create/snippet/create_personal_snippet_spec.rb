@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  context 'Create', :smoke do
+  RSpec.describe 'Create', :smoke do
     describe 'Personal snippet creation' do
       it 'User creates a personal snippet' do
         Flow::Login.sign_in

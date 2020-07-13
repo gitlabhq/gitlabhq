@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  context 'Create' do
+  RSpec.describe 'Create' do
     describe 'Protected branch support', :ldap_no_tls do
       let(:branch_name) { 'protected-branch' }
       let(:commit_message) { 'Protected push commit message' }

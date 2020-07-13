@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  context 'Create' do
+  RSpec.describe 'Create' do
     context 'Gitaly' do
       describe 'High Availability', :orchestrated, :gitaly_ha do
         let(:project) do

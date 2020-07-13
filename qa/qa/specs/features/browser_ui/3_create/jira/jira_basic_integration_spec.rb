@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  context 'Create' do
+  RSpec.describe 'Create' do
     include Support::Api
 
     describe 'Jira integration', :jira, :orchestrated, :requires_admin do

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  context 'Create' do
+  RSpec.describe 'Create' do
     describe 'Create, list, and delete branches via web' do
       master_branch = 'master'
       second_branch = 'second-branch'

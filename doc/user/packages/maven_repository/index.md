@@ -23,7 +23,7 @@ After the Packages feature is enabled, the Maven Repository will be available fo
 all new projects by default. To enable it for existing projects, or if you want
 to disable it:
 
-1. Navigate to your project's **Settings > General > Permissions**.
+1. Navigate to your project's **Settings > General > Visibility, project features, permissions**.
 1. Find the Packages feature and enable or disable it.
 1. Click on **Save changes** for the changes to take effect.
 

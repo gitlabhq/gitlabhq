@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  context 'Create' do # to be converted to a smoke test once proved to be stable
+  RSpec.describe 'Create' do # to be converted to a smoke test once proved to be stable
     describe 'Project snippet creation' do
       it 'User creates a project snippet' do
         Flow::Login.sign_in

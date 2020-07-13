@@ -5,7 +5,7 @@ require 'securerandom'
 require 'digest'
 
 module QA
-  context 'Create' do
+  RSpec.describe 'Create' do
     describe 'Compare archives of different user projects with the same name and check they\'re different' do
       include Support::Api
 
