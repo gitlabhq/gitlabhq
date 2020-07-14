@@ -128,7 +128,7 @@ class JiraService < IssueTrackerService
   end
 
   def new_issue_url
-    "#{url}/secure/CreateIssue.jspa"
+    "#{url}/secure/CreateIssue!default.jspa"
   end
 
   alias_method :original_url, :url

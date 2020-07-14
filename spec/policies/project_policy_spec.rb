@@ -46,6 +46,7 @@ RSpec.describe ProjectPolicy do
       resolve_note create_container_image update_container_image destroy_container_image daily_statistics
       create_environment update_environment create_deployment update_deployment create_release update_release
       create_metrics_dashboard_annotation delete_metrics_dashboard_annotation update_metrics_dashboard_annotation
+      read_terraform_state
     ]
   end
 

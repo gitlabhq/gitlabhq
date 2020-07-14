@@ -20,6 +20,7 @@ Telemetry Guide:
   1. [Our tracking tools](#our-tracking-tools)
   1. [What data can be tracked](#what-data-can-be-tracked)
   1. [Telemetry systems overview](#telemetry-systems-overview)
+  1. [Snowflake data warehouse](#snowflake-data-warehouse)
 
 [Usage Ping Guide](usage_ping.md)
 
@@ -169,3 +170,19 @@ The differences between GitLab.com and self-managed are summarized below:
 | Self-Managed | **{dotted-circle}**(1) | **{dotted-circle}**(1)  | **{check-circle}** | **{dotted-circle}** | **{dotted-circle}** |
 
 Note (1): Snowplow JS and Snowplow Ruby are available on self-managed, however, the Snowplow Collector endpoint is set to a self-managed Snowplow Collector which GitLab Inc does not have access to.
+
+## Snowflake data warehouse
+
+The Snowflake data warehouse is where we keep all of GitLab Inc's data.
+
+### Data sources
+
+There are several data sources available in Snowflake and Sisense each representing a different view of the data along the transformation pipeline.
+
+| Source | Description | Access |
+| ------ | ------ | ------ |
+| raw | These tables are the raw data source | Access via Snowflake |
+| analytics_staging | These tables have undergone little to no data transformation, meaning they're basically clones of the raw data source |  Access via Snowflake or Sisense  |
+| analytics | These tables have typically undergone more data transformation. They will typically end in `_xf` to represent the fact that they are transformed | Access via Snowflake or Sisense  |
+
+If you are a Product Manager interested in the raw data, you will likely focus on the `analytics` and `analytics_staging` sources. The raw source is limited to the data and infrastructure teams. For more information, please see [Data For Product Managers: What's the difference between analytics_staging and analytics?](https://about.gitlab.com/handbook/business-ops/data-team/programs/data-for-product-managers/#whats-the-difference-between-analytics_staging-and-analytics)

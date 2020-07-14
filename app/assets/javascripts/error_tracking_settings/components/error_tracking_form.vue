@@ -59,14 +59,14 @@ export default {
         </div>
         <div class="col-4 col-md-3 gl-pl-0">
           <loading-button
-            class="js-error-tracking-connect prepend-left-5 d-inline-flex"
+            class="js-error-tracking-connect gl-ml-2 d-inline-flex"
             :label="isLoadingProjects ? __('Connecting') : __('Connect')"
             :loading="isLoadingProjects"
             @click="fetchProjects"
           />
           <icon
             v-show="connectSuccessful"
-            class="js-error-tracking-connect-success prepend-left-5 text-success align-middle"
+            class="js-error-tracking-connect-success gl-ml-2 text-success align-middle"
             :aria-label="__('Projects Successfully Retrieved')"
             name="check-circle"
           />

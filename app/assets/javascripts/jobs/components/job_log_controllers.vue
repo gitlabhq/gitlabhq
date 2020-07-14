@@ -77,7 +77,7 @@ export default {
         <gl-link
           v-if="rawPath"
           :href="rawPath"
-          class="js-raw-link text-plain text-underline prepend-left-5"
+          class="js-raw-link text-plain text-underline gl-ml-2"
           >{{ s__('Job|Complete Raw') }}</gl-link
         >
       </template>

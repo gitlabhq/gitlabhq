@@ -76,7 +76,7 @@ export default {
         data-container="body"
         data-placement="right"
         name="file-modified"
-        class="prepend-left-5 ide-file-modified"
+        class="gl-ml-2 ide-file-modified"
       />
     </span>
     <changed-file-icon

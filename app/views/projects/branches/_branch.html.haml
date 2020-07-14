@@ -8,13 +8,13 @@
       = link_to project_tree_path(@project, branch.name), class: 'item-title str-truncated-100 ref-name gl-ml-3 qa-branch-name' do
         = branch.name
       - if branch.name == @repository.root_ref
-        %span.badge.badge-primary.prepend-left-5 default
+        %span.badge.badge-primary.gl-ml-2 default
       - elsif merged
-        %span.badge.badge-info.has-tooltip.prepend-left-5{ title: s_('Branches|Merged into %{default_branch}') % { default_branch: @repository.root_ref } }
+        %span.badge.badge-info.has-tooltip.gl-ml-2{ title: s_('Branches|Merged into %{default_branch}') % { default_branch: @repository.root_ref } }
           = s_('Branches|merged')
 
       - if protected_branch?(@project, branch)
-        %span.badge.badge-success.prepend-left-5
+        %span.badge.badge-success.gl-ml-2
           = s_('Branches|protected')
 
       = render_if_exists 'projects/branches/diverged_from_upstream', branch: branch

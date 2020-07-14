@@ -4,7 +4,7 @@
   Showing
   %button.diff-stats-summary-toggler.js-diff-stats-dropdown{ type: "button", data: { toggle: "dropdown", display: "static" } }<
     = pluralize(diff_files.size, "changed file")
-    = icon("caret-down", class: "prepend-left-5")
+    = icon("caret-down", class: "gl-ml-2")
   %span.diff-stats-additions-deletions-expanded#diff-stats
     with
     %strong.cgreen= pluralize(sum_added_lines, 'addition')

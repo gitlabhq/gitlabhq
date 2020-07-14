@@ -11,7 +11,7 @@ module API
 
       before do
         authenticate!
-        authorize! :admin_terraform_state, user_project
+        authorize! :read_terraform_state, user_project
       end
 
       params do
@@ -46,6 +46,8 @@ module API
           desc 'Add a new terraform state or update an existing one'
           route_setting :authentication, basic_auth_personal_access_token: true, job_token_allowed: :basic_auth
           post do
+            authorize! :admin_terraform_state, user_project
+
             data = request.body.read
             no_content! if data.empty?
 
@@ -59,6 +61,8 @@ module API
           desc 'Delete a terraform state of a certain name'
           route_setting :authentication, basic_auth_personal_access_token: true, job_token_allowed: :basic_auth
           delete do
+            authorize! :admin_terraform_state, user_project
+
             remote_state_handler.handle_with_lock do |state|
               state.destroy!
               status :ok
@@ -77,6 +81,8 @@ module API
             requires :Path, type: String, desc: 'Terraform path'
           end
           post '/lock' do
+            authorize! :admin_terraform_state, user_project
+
             status_code = :ok
             lock_info = {
               'Operation' => params[:Operation],
@@ -108,6 +114,8 @@ module API
             optional :ID, type: String, limit: 255, desc: 'Terraform state lock ID'
           end
           delete '/lock' do
+            authorize! :admin_terraform_state, user_project
+
             remote_state_handler.unlock!
             status :ok
           rescue ::Terraform::RemoteStateHandler::StateLockedError

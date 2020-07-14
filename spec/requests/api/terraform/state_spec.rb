@@ -59,10 +59,11 @@ RSpec.describe API::Terraform::State do
       context 'with developer permissions' do
         let(:current_user) { developer }
 
-        it 'returns forbidden if the user cannot access the state' do
+        it 'returns terraform state belonging to a project of given state name' do
           request
 
-          expect(response).to have_gitlab_http_status(:forbidden)
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response.body).to eq(state.file.read)
         end
       end
     end
@@ -94,10 +95,11 @@ RSpec.describe API::Terraform::State do
       context 'with developer permissions' do
         let(:job) { create(:ci_build, project: project, user: developer) }
 
-        it 'returns forbidden if the user cannot access the state' do
+        it 'returns terraform state belonging to a project of given state name' do
           request
 
-          expect(response).to have_gitlab_http_status(:forbidden)
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response.body).to eq(state.file.read)
         end
       end
     end
@@ -235,9 +237,43 @@ RSpec.describe API::Terraform::State do
 
       expect(response).to have_gitlab_http_status(:ok)
     end
+
+    context 'state is already locked' do
+      before do
+        state.update!(lock_xid: 'locked', locked_by_user: current_user)
+      end
+
+      it 'returns an error' do
+        request
+
+        expect(response).to have_gitlab_http_status(:conflict)
+      end
+    end
+
+    context 'user does not have permission to lock the state' do
+      let(:current_user) { developer }
+
+      it 'returns an error' do
+        request
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+      end
+    end
   end
 
   describe 'DELETE /projects/:id/terraform/state/:name/lock' do
+    let(:params) do
+      {
+        ID: lock_id,
+        Version: '0.1',
+        Operation: 'OperationTypePlan',
+        Info: '',
+        Who: "#{current_user.username}",
+        Created: Time.now.utc.iso8601(6),
+        Path: ''
+      }
+    end
+
     before do
       state.lock_xid = '123-456'
       state.save!
@@ -246,7 +282,7 @@ RSpec.describe API::Terraform::State do
     subject(:request) { delete api("#{state_path}/lock"), headers: auth_header, params: params }
 
     context 'with the correct lock id' do
-      let(:params) { { ID: '123-456' } }
+      let(:lock_id) { '123-456' }
 
       it 'removes the terraform state lock' do
         request
@@ -266,7 +302,7 @@ RSpec.describe API::Terraform::State do
     end
 
     context 'with an incorrect lock id' do
-      let(:params) { { ID: '456-789' } }
+      let(:lock_id) { '456-789' }
 
       it 'returns an error' do
         request
@@ -276,12 +312,23 @@ RSpec.describe API::Terraform::State do
     end
 
     context 'with a longer than 255 character lock id' do
-      let(:params) { { ID: '0' * 256 } }
+      let(:lock_id) { '0' * 256 }
 
       it 'returns an error' do
         request
 
         expect(response).to have_gitlab_http_status(:bad_request)
+      end
+    end
+
+    context 'user does not have permission to unlock the state' do
+      let(:lock_id) { '123-456' }
+      let(:current_user) { developer }
+
+      it 'returns an error' do
+        request
+
+        expect(response).to have_gitlab_http_status(:forbidden)
       end
     end
   end

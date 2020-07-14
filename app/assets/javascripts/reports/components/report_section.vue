@@ -179,7 +179,7 @@ export default {
           <div>
             {{ headerText }}
             <slot :name="slotName"></slot>
-            <popover v-if="hasPopover" :options="popoverOptions" class="prepend-left-5" />
+            <popover v-if="hasPopover" :options="popoverOptions" class="gl-ml-2" />
           </div>
           <slot name="subHeading"></slot>
         </div>

@@ -30,7 +30,7 @@ export function membersBeforeSave(members) {
     const imgAvatar = `<img src="${member.avatar_url}" alt="${member.username}" class="avatar ${rectAvatarClass} avatar-inline center s26"/>`;
     const txtAvatar = `<div class="avatar ${rectAvatarClass} center avatar-inline s26">${autoCompleteAvatar}</div>`;
     const avatarIcon = member.mentionsDisabled
-      ? spriteIcon('notifications-off', 's16 vertical-align-middle prepend-left-5')
+      ? spriteIcon('notifications-off', 's16 vertical-align-middle gl-ml-2')
       : '';
 
     return {

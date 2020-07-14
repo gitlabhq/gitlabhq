@@ -6871,6 +6871,9 @@ msgstr ""
 msgid "Create new file or directory"
 msgstr ""
 
+msgid "Create new issue in Jira"
+msgstr ""
+
 msgid "Create new label"
 msgstr ""
 
@@ -24064,9 +24067,6 @@ msgid "This user will be the author of all events in the activity feed that are 
 msgstr ""
 
 msgid "This variable can not be masked."
-msgstr ""
-
-msgid "This variable does not match the expected pattern."
 msgstr ""
 
 msgid "This will help us personalize your onboarding experience."

@@ -724,7 +724,7 @@ RSpec.describe JiraService do
 
     describe '#new_issue_url' do
       it 'handles trailing slashes' do
-        expect(service.new_issue_url).to eq('http://jira.test.com/path/secure/CreateIssue.jspa')
+        expect(service.new_issue_url).to eq('http://jira.test.com/path/secure/CreateIssue!default.jspa')
       end
     end
   end

@@ -36,7 +36,6 @@ graphs/dashboards.
 GitLab provides built-in tools to help improve performance and availability:
 
 - [Profiling](profiling.md).
-  - [Sherlock](profiling.md#sherlock).
 - [Distributed Tracing](distributed_tracing.md)
 - [GitLab Performance Monitoring](../administration/monitoring/performance/index.md).
 - [Request Profiling](../administration/monitoring/performance/request_profiling.md).
@@ -108,16 +107,24 @@ In short:
 ## Profiling
 
 By collecting snapshots of process state at regular intervals, profiling allows
-you to see where time is spent in a process. The [StackProf](https://github.com/tmm1/stackprof)
-gem is included in GitLab's development environment, allowing you to investigate
-the behavior of suspect code in detail.
+you to see where time is spent in a process. The
+[Stackprof](https://github.com/tmm1/stackprof) gem is included in GitLab,
+allowing you to profile which code is running on CPU in detail.
 
-It's important to note that profiling an application *alters its performance*,
-and will generally be done *in an unrepresentative environment*. In particular,
-a method is not necessarily troublesome just because it's executed many times,
-or takes a long time to execute. Profiles are tools you can use to better
-understand what is happening in an application - using that information wisely
-is up to you!
+It's important to note that profiling an application *alters its performance*.
+Different profiling strategies have different overheads. Stackprof is a sampling
+profiler. It will sample stack traces from running threads at a configurable
+frequency (e.g. 100hz, that is 100 stacks per second). This type of profiling
+has quite a low (albeit non-zero) overhead and is generally considered to be
+safe for production.
+
+### Development
+
+A profiler can be a very useful tool during development, even if it does run *in
+an unrepresentative environment*. In particular, a method is not necessarily
+troublesome just because it's executed many times, or takes a long time to
+execute. Profiles are tools you can use to better understand what is happening
+in an application - using that information wisely is up to you!
 
 Keeping that in mind, to create a profile, identify (or create) a spec that
 exercises the troublesome code path, then run it using the `bin/rspec-stackprof`
@@ -211,11 +218,56 @@ application code, these profiles can be used to investigate slow tests as well.
 However, for smaller runs (like this example), this means that the cost of
 setting up the test suite will tend to dominate.
 
-It's also possible to modify the application code in-place to output profiles
-whenever a particular code path is triggered without going through the test
-suite first. See the
-[StackProf documentation](https://github.com/tmm1/stackprof/blob/master/README.md)
-for details.
+### Production
+
+Stackprof can also be used to profile production workloads.
+
+In order to enable production profiling for Ruby processes, you can set the `STACKPROF_ENABLED` environment variable to `true`.
+
+The following configuration options can be configured:
+
+- `STACKPROF_ENABLED`: Enables stackprof signal handler on SIGUSR2 signal.
+  Defaults to `false`.
+- `STACKPROF_INTERVAL_US`: Sampling interval in microseconds. Defaults to
+  `10000` μs (100hz).
+- `STACKPROF_FILE_PREFIX`: File path prefix where profiles are stored. Defaults
+  to `$TMPDIR` (often corresponds to `/tmp`).
+- `STACKPROF_TIMEOUT_S`: Profiling timeout in seconds. Profiling will
+  automatically stop after this time has elapsed. Defaults to `30`.
+- `STACKPROF_RAW`: Whether to collect raw samples or only aggregates. Raw
+  samples are needed to generate flamegraphs, but they do have a higher memory
+  and disk overhead. Defaults to `true`.
+
+Once enabled, profiling can be triggered by sending a `SIGUSR2` signal to the
+Ruby process. The process will begin sampling stacks. Profiling can be stopped
+by sending another `SIGUSR2`. Alternatively, it will automatically stop after
+the timeout.
+
+Once profiling stops, the profile is written out to disk at
+`$STACKPROF_FILE_PREFIX/stackprof.$PID.$RAND.profile`. It can then be inspected
+further via the `stackprof` command line tool, as described in the previous
+section.
+
+Currently supported profiling targets are:
+
+- Puma worker
+- Sidekiq
+
+NOTE: **Note:** The Puma master process is not supported. Neither is Unicorn.
+Sending SIGUSR2 to either of those will trigger restarts. In the case of Puma,
+take care to only send the signal to Puma workers.
+
+This can be done via `pkill -USR2 puma:`. The `:` disambiguates between `puma
+4.3.3.gitlab.2 ...` (the master process) from `puma: cluster worker 0: ...` (the
+worker processes), selecting the latter.
+
+Production profiles can be especially noisy. It can be helpful to visualize them
+as a [flamegraph](https://github.com/brendangregg/FlameGraph). This can be done
+via:
+
+```shell
+bundle exec stackprof --stackcollapse /tmp/stackprof.55769.c6c3906452.profile | flamegraph.pl > flamegraph.svg
+```
 
 ## RSpec profiling
 

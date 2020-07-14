@@ -341,6 +341,7 @@ class ProjectPolicy < BasePolicy
     enable :update_alert_management_alert
     enable :create_design
     enable :destroy_design
+    enable :read_terraform_state
   end
 
   rule { can?(:developer_access) & user_confirmed? }.policy do

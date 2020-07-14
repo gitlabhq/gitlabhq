@@ -142,6 +142,8 @@ The following table depicts the various user permission levels in a project.
 | Manage clusters                                   |         |            |             | ✓        | ✓      |
 | Manage Project Operations                         |         |            |             | ✓        | ✓      |
 | View Pods logs                                    |         |            |             | ✓        | ✓      |
+| Read Terraform state                              |         |            | ✓           | ✓        | ✓      |
+| Manage Terraform state                            |         |            |             | ✓        | ✓      |
 | Manage license policy **(ULTIMATE)**              |         |            |             | ✓        | ✓      |
 | Edit comments (posted by any user)                |         |            |             | ✓        | ✓      |
 | Manage Error Tracking                             |         |            |             | ✓        | ✓      |

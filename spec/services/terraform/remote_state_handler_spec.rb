@@ -4,7 +4,10 @@ require 'spec_helper'
 
 RSpec.describe Terraform::RemoteStateHandler do
   let_it_be(:project) { create(:project) }
-  let_it_be(:user) { create(:user) }
+  let_it_be(:developer) { create(:user, developer_projects: [project]) }
+  let_it_be(:maintainer) { create(:user, maintainer_projects: [project]) }
+
+  let_it_be(:user) { maintainer }
 
   describe '#find_with_lock' do
     context 'without a state name' do
@@ -34,33 +37,6 @@ RSpec.describe Terraform::RemoteStateHandler do
     end
   end
 
-  describe '#create_or_find!' do
-    it 'requires passing a state name' do
-      handler = described_class.new(project, user)
-
-      expect { handler.create_or_find! }.to raise_error(ArgumentError)
-    end
-
-    it 'allows to create states with same name in different projects' do
-      project_b =  create(:project)
-
-      state_a = described_class.new(project, user, name: 'my-state').create_or_find!
-      state_b = described_class.new(project_b, user, name: 'my-state').create_or_find!
-
-      expect(state_a).to be_persisted
-      expect(state_b).to be_persisted
-      expect(state_a.id).not_to eq state_b.id
-    end
-
-    it 'loads the same state upon subsequent call in the project scope' do
-      state_a = described_class.new(project, user, name: 'my-state').create_or_find!
-      state_b = described_class.new(project, user, name: 'my-state').create_or_find!
-
-      expect(state_a).to be_persisted
-      expect(state_a.id).to eq state_b.id
-    end
-  end
-
   context 'when state locking is not being used' do
     subject { described_class.new(project, user, name: 'my-state') }
 
@@ -74,7 +50,7 @@ RSpec.describe Terraform::RemoteStateHandler do
       end
 
       it 'returns the state object itself' do
-        state = subject.create_or_find!
+        state = subject.handle_with_lock
 
         expect(state.name).to eq 'my-state'
       end
@@ -89,10 +65,9 @@ RSpec.describe Terraform::RemoteStateHandler do
 
   context 'when using locking' do
     describe '#handle_with_lock' do
-      it 'handles a locked state using exclusive read lock' do
-        handler = described_class
-          .new(project, user, name: 'new-state', lock_id: 'abc-abc')
+      subject(:handler) { described_class.new(project, user, name: 'new-state', lock_id: 'abc-abc') }
 
+      it 'handles a locked state using exclusive read lock' do
         handler.lock!
 
         state = handler.handle_with_lock do |state|
@@ -101,20 +76,35 @@ RSpec.describe Terraform::RemoteStateHandler do
 
         expect(state.name).to eq 'new-name'
       end
-    end
 
-    it 'raises exception if lock has not been acquired before' do
-      handler = described_class
-        .new(project, user, name: 'new-state', lock_id: 'abc-abc')
+      it 'raises exception if lock has not been acquired before' do
+        expect { handler.handle_with_lock }
+          .to raise_error(described_class::StateLockedError)
+      end
 
-      expect { handler.handle_with_lock }
-        .to raise_error(described_class::StateLockedError)
+      context 'user does not have permission to modify state' do
+        let(:user) { developer }
+
+        it 'raises an exception' do
+          expect { handler.handle_with_lock }
+            .to raise_error(described_class::UnauthorizedError)
+        end
+      end
     end
 
     describe '#lock!' do
-      it 'allows to lock state if it does not exist yet' do
-        handler = described_class.new(project, user, name: 'new-state', lock_id: 'abc-abc')
+      let(:lock_id) { 'abc-abc' }
 
+      subject(:handler) do
+        described_class.new(
+          project,
+          user,
+          name: 'new-state',
+          lock_id: lock_id
+        )
+      end
+
+      it 'allows to lock state if it does not exist yet' do
         state = handler.lock!
 
         expect(state).to be_persisted
@@ -122,21 +112,60 @@ RSpec.describe Terraform::RemoteStateHandler do
       end
 
       it 'allows to lock state if it exists and is not locked' do
-        state = described_class.new(project, user, name: 'new-state').create_or_find!
-        handler = described_class.new(project, user, name: 'new-state', lock_id: 'abc-abc')
+        state = create(:terraform_state, project: project, name: 'new-state')
 
         handler.lock!
 
-        expect(state.reload.lock_xid).to eq 'abc-abc'
+        expect(state.reload.lock_xid).to eq lock_id
         expect(state).to be_locked
       end
 
       it 'raises an exception when trying to unlocked state locked by someone else' do
-        described_class.new(project, user, name: 'new-state', lock_id: 'abc-abc').lock!
-
-        handler = described_class.new(project, user, name: 'new-state', lock_id: '12a-23f')
+        described_class.new(project, user, name: 'new-state', lock_id: '12a-23f').lock!
 
         expect { handler.lock! }.to raise_error(described_class::StateLockedError)
+      end
+    end
+
+    describe '#unlock!' do
+      let(:lock_id) { 'abc-abc' }
+
+      subject(:handler) do
+        described_class.new(
+          project,
+          user,
+          name: 'new-state',
+          lock_id: lock_id
+        )
+      end
+
+      before do
+        create(:terraform_state, :locked, project: project, name: 'new-state', lock_xid: 'abc-abc')
+      end
+
+      it 'unlocks the state' do
+        state = handler.unlock!
+
+        expect(state.lock_xid).to be_nil
+      end
+
+      context 'with no lock ID (force-unlock)' do
+        let(:lock_id) { }
+
+        it 'unlocks the state' do
+          state = handler.unlock!
+
+          expect(state.lock_xid).to be_nil
+        end
+      end
+
+      context 'with different lock ID' do
+        let(:lock_id) { 'other' }
+
+        it 'raises an exception' do
+          expect { handler.unlock! }
+            .to raise_error(described_class::StateLockedError)
+        end
       end
     end
   end
