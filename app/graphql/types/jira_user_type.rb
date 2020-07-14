@@ -13,7 +13,11 @@ module Types
     field :jira_email, GraphQL::STRING_TYPE, null: true,
           description: 'Email of the Jira user, returned only for users with public emails'
     field :gitlab_id, GraphQL::INT_TYPE, null: true,
-          description: 'Id of the matched GitLab user'
+          description: 'ID of the matched GitLab user'
+    field :gitlab_username, GraphQL::STRING_TYPE, null: true,
+          description: 'Username of the matched GitLab user'
+    field :gitlab_name, GraphQL::STRING_TYPE, null: true,
+          description: 'Name of the matched GitLab user'
   end
   # rubocop: enable Graphql/AuthorizeTypes
 end

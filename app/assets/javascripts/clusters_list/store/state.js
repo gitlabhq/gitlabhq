@@ -1,4 +1,5 @@
 export default (initialState = {}) => ({
+  ancestorHelperPath: initialState.ancestorHelpPath,
   endpoint: initialState.endpoint,
   hasAncestorClusters: false,
   clusters: [],

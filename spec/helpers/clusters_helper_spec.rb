@@ -60,18 +60,24 @@ RSpec.describe ClustersHelper do
   end
 
   describe '#js_clusters_list_data' do
-    it 'displays endpoint path and images' do
-      js_data = helper.js_clusters_list_data('/path')
+    subject { helper.js_clusters_list_data('/path') }
 
-      expect(js_data[:endpoint]).to eq('/path')
+    it 'displays endpoint path' do
+      expect(subject[:endpoint]).to eq('/path')
+    end
 
-      expect(js_data.dig(:img_tags, :aws, :path)).to match(%r(/illustrations/logos/amazon_eks|svg))
-      expect(js_data.dig(:img_tags, :default, :path)).to match(%r(/illustrations/logos/kubernetes|svg))
-      expect(js_data.dig(:img_tags, :gcp, :path)).to match(%r(/illustrations/logos/google_gke|svg))
+    it 'generates svg image data', :aggregate_failures do
+      expect(subject.dig(:img_tags, :aws, :path)).to match(%r(/illustrations/logos/amazon_eks|svg))
+      expect(subject.dig(:img_tags, :default, :path)).to match(%r(/illustrations/logos/kubernetes|svg))
+      expect(subject.dig(:img_tags, :gcp, :path)).to match(%r(/illustrations/logos/google_gke|svg))
 
-      expect(js_data.dig(:img_tags, :aws, :text)).to eq('Amazon EKS')
-      expect(js_data.dig(:img_tags, :default, :text)).to eq('Kubernetes Cluster')
-      expect(js_data.dig(:img_tags, :gcp, :text)).to eq('Google GKE')
+      expect(subject.dig(:img_tags, :aws, :text)).to eq('Amazon EKS')
+      expect(subject.dig(:img_tags, :default, :text)).to eq('Kubernetes Cluster')
+      expect(subject.dig(:img_tags, :gcp, :text)).to eq('Google GKE')
+    end
+
+    it 'displays and ancestor_help_path' do
+      expect(subject[:ancestor_help_path]).to eq('/help/user/group/clusters/index#cluster-precedence')
     end
   end
 

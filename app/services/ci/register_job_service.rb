@@ -11,7 +11,7 @@ module Ci
     METRICS_SHARD_TAG_PREFIX = 'metrics_shard::'.freeze
     DEFAULT_METRICS_SHARD = 'default'.freeze
 
-    Result = Struct.new(:build, :valid?)
+    Result = Struct.new(:build, :build_json, :valid?)
 
     def initialize(runner)
       @runner = runner
@@ -59,7 +59,7 @@ module Ci
       end
 
       register_failure
-      Result.new(nil, valid)
+      Result.new(nil, nil, valid)
     end
     # rubocop: enable CodeReuse/ActiveRecord
 
@@ -71,7 +71,7 @@ module Ci
       # In case when 2 runners try to assign the same build, second runner will be declined
       # with StateMachines::InvalidTransition or StaleObjectError when doing run! or save method.
       if assign_runner!(build, params)
-        Result.new(build, true)
+        present_build!(build)
       end
     rescue StateMachines::InvalidTransition, ActiveRecord::StaleObjectError
       # We are looping to find another build that is not conflicting
@@ -83,13 +83,24 @@ module Ci
       # In case we hit the concurrency-access lock,
       # we still have to return 409 in the end,
       # to make sure that this is properly handled by runner.
-      Result.new(nil, false)
+      Result.new(nil, nil, false)
     rescue => ex
+      # If an error (e.g. GRPC::DeadlineExceeded) occurred constructing
+      # the result, consider this as a failure to be retried.
       scheduler_failure!(build)
       track_exception_for_build(ex, build)
 
       # skip, and move to next one
       nil
+    end
+
+    # Force variables evaluation to occur now
+    def present_build!(build)
+      # We need to use the presenter here because Gitaly calls in the presenter
+      # may fail, and we need to ensure the response has been generated.
+      presented_build = ::Ci::BuildRunnerPresenter.new(build) # rubocop:disable CodeReuse/Presenter
+      build_json = ::API::Entities::JobRequest::Response.new(presented_build).to_json
+      Result.new(build, build_json, true)
     end
 
     def assign_runner!(build, params)

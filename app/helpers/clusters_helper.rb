@@ -18,6 +18,7 @@ module ClustersHelper
 
   def js_clusters_list_data(path = nil)
     {
+      ancestor_help_path: help_page_path('user/group/clusters/index', anchor: 'cluster-precedence'),
       endpoint: path,
       img_tags: {
         aws: { path: image_path('illustrations/logos/amazon_eks.svg'), text: s_('ClusterIntegration|Amazon EKS') },

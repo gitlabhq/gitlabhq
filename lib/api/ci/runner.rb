@@ -108,6 +108,20 @@ module API
           end
           optional :job_age, type: Integer, desc: %q(Job should be older than passed age in seconds to be ran on runner)
         end
+
+        # Since we serialize the build output ourselves to ensure Gitaly
+        # gRPC calls succeed, we need a custom Grape format to handle
+        # this:
+        # 1. Grape will ordinarily call `JSON.dump` when Content-Type is set
+        # to application/json. To avoid this, we need to define a custom type in
+        # `content_type` and a custom formatter to go with it.
+        # 2. Grape will parse the request input with the parser defined for
+        # `content_type`. If no such parser exists, it will be treated as text. We
+        # reuse the existing JSON parser to preserve the previous behavior.
+        content_type :build_json, 'application/json'
+        formatter :build_json, ->(object, _) { object }
+        parser :build_json, ::Grape::Parser::Json
+
         post '/request' do
           authenticate_runner!
 
@@ -128,9 +142,10 @@ module API
           result = ::Ci::RegisterJobService.new(current_runner).execute(runner_params)
 
           if result.valid?
-            if result.build
+            if result.build_json
               Gitlab::Metrics.add_event(:build_found)
-              present ::Ci::BuildRunnerPresenter.new(result.build), with: Entities::JobRequest::Response
+              env['api.format'] = :build_json
+              body result.build_json
             else
               Gitlab::Metrics.add_event(:build_not_found)
               header 'X-GitLab-Last-Update', new_update

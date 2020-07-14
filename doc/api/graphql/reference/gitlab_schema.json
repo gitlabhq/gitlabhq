@@ -18439,13 +18439,41 @@
           "fields": [
             {
               "name": "gitlabId",
-              "description": "Id of the matched GitLab user",
+              "description": "ID of the matched GitLab user",
               "args": [
 
               ],
               "type": {
                 "kind": "SCALAR",
                 "name": "Int",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "gitlabName",
+              "description": "Name of the matched GitLab user",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "gitlabUsername",
+              "description": "Username of the matched GitLab user",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
                 "ofType": null
               },
               "isDeprecated": false,

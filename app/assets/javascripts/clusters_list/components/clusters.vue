@@ -9,6 +9,7 @@ import {
   GlSprintf,
   GlTable,
 } from '@gitlab/ui';
+import AncestorNotice from './ancestor_notice.vue';
 import tooltip from '~/vue_shared/directives/tooltip';
 import { CLUSTER_TYPES, STATUSES } from '../constants';
 import { __, sprintf } from '~/locale';
@@ -17,6 +18,7 @@ export default {
   nodeMemoryText: __('%{totalMemory} (%{freeSpacePercentage}%{percentSymbol} free)'),
   nodeCpuText: __('%{totalCpu} (%{freeSpacePercentage}%{percentSymbol} free)'),
   components: {
+    AncestorNotice,
     GlBadge,
     GlLink,
     GlLoadingIcon,
@@ -195,6 +197,8 @@ export default {
   <gl-loading-icon v-if="loadingClusters" size="md" class="gl-mt-3" />
 
   <section v-else>
+    <ancestor-notice />
+
     <gl-table :items="clusters" :fields="fields" stacked="md" class="qa-clusters-table">
       <template #cell(name)="{ item }">
         <div :class="[contentAlignClasses, 'js-status']">

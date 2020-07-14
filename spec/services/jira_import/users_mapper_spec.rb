@@ -29,9 +29,9 @@ RSpec.describe JiraImport::UsersMapper do
       # mapping is tracked in https://gitlab.com/gitlab-org/gitlab/-/issues/219023
       let(:mapped_users) do
         [
-          { jira_account_id: 'abcd', jira_display_name: 'user1', jira_email: nil, gitlab_id: nil },
-          { jira_account_id: 'efg', jira_display_name: nil, jira_email: nil, gitlab_id: nil },
-          { jira_account_id: 'hij', jira_display_name: 'user3', jira_email: 'user3@example.com', gitlab_id: nil }
+          { jira_account_id: 'abcd', jira_display_name: 'user1', jira_email: nil, gitlab_id: nil, gitlab_username: nil, gitlab_name: nil },
+          { jira_account_id: 'efg', jira_display_name: nil, jira_email: nil, gitlab_id: nil, gitlab_username: nil, gitlab_name: nil },
+          { jira_account_id: 'hij', jira_display_name: 'user3', jira_email: 'user3@example.com', gitlab_id: nil, gitlab_username: nil, gitlab_name: nil }
         ]
       end
 

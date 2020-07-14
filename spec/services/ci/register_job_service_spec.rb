@@ -109,12 +109,14 @@ module Ci
         end
 
         context 'shared runner' do
-          let(:build) { execute(shared_runner) }
+          let(:response) { described_class.new(shared_runner).execute }
+          let(:build) { response.build }
 
           it { expect(build).to be_kind_of(Build) }
           it { expect(build).to be_valid }
           it { expect(build).to be_running }
           it { expect(build.runner).to eq(shared_runner) }
+          it { expect(Gitlab::Json.parse(response.build_json)['id']).to eq(build.id) }
         end
 
         context 'specific runner' do

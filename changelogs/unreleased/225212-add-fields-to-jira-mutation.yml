@@ -1,0 +1,5 @@
+---
+title: Add GitLab username and name to the import users from Jira mutation response
+merge_request: 35542
+author:
+type: changed

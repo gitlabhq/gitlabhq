@@ -6656,9 +6656,19 @@ type JiraService implements Service {
 
 type JiraUser {
   """
-  Id of the matched GitLab user
+  ID of the matched GitLab user
   """
   gitlabId: Int
+
+  """
+  Name of the matched GitLab user
+  """
+  gitlabName: String
+
+  """
+  Username of the matched GitLab user
+  """
+  gitlabUsername: String
 
   """
   Account id of the Jira user

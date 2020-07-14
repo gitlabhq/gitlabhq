@@ -518,6 +518,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
             request_job info: { platform: :darwin }
 
             expect(response).to have_gitlab_http_status(:created)
+            expect(response.headers['Content-Type']).to eq('application/json')
             expect(response.headers).not_to have_key('X-GitLab-Last-Update')
             expect(runner.reload.platform).to eq('darwin')
             expect(json_response['id']).to eq(job.id)
@@ -566,6 +567,24 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
 
                 expect(response).to have_gitlab_http_status(:created)
                 expect(json_response['git_info']['refspecs']).to include("+refs/tags/#{job.ref}:refs/tags/#{job.ref}")
+              end
+            end
+
+            context 'when a Gitaly exception is thrown during response' do
+              before do
+                allow_next_instance_of(Ci::BuildRunnerPresenter) do |instance|
+                  allow(instance).to receive(:artifacts).and_raise(GRPC::DeadlineExceeded)
+                end
+              end
+
+              it 'fails the job as a scheduler failure' do
+                request_job
+
+                expect(response).to have_gitlab_http_status(:no_content)
+                expect(job.reload.failed?).to be_truthy
+                expect(job.failure_reason).to eq('scheduler_failure')
+                expect(job.runner_id).to eq(runner.id)
+                expect(job.runner_session).to be_nil
               end
             end
 
@@ -1090,7 +1109,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
 
         def request_job(token = runner.token, **params)
           new_params = params.merge(token: token, last_update: last_update)
-          post api('/jobs/request'), params: new_params, headers: { 'User-Agent' => user_agent }
+          post api('/jobs/request'), params: new_params.to_json, headers: { 'User-Agent' => user_agent, 'Content-Type': 'application/json' }
         end
       end
 

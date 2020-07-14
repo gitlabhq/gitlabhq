@@ -119,6 +119,49 @@ For `<project>.git` you'll need to
 [translate your project name into the hashed storage format](repository_storage_types.md#translating-hashed-storage-paths)
 that GitLab uses.
 
+## Environment Variables
+
+The following set of environment variables are available to server hooks.
+
+### GitLab Environment Variables
+
+| Envirnment Variable | purpose                                                 |
+|---------------------|---------------------------------------------------------|
+| GL_ID               | GitLab identifier eg: user-2234 that initiated the push |
+| GL_PROJECT_PATH (available starting 13.2)     | GitLab project path                                     |
+| GL_PROTOCOL (available starting 13.2)        | Protocol used with push                                 |
+| GL_REPOSITORY       | project-<id> where id of the project                    |
+| GL_USERNAME         | GitLab username that initiated the push                 |
+
+Pre-receive and post-receive server hooks can also access the following Git environment variables.
+
+| Environment variable               | Description                                                                                                                                                            |
+|:-----------------------------------|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `GIT_ALTERNATE_OBJECT_DIRECTORIES` | Alternate object directories in the quarantine environment. See [Git `receive-pack` documentation](https://git-scm.com/docs/git-receive-pack#_quarantine_environment). |
+| `GIT_OBJECT_DIRECTORY`             | GitLab project path in the quarantine environment. See [Git `receive-pack` documentation](https://git-scm.com/docs/git-receive-pack#_quarantine_environment).          |
+| `GIT_PUSH_OPTION_COUNT`            | Number of push options. See [Git `pre-receive` documentation](https://git-scm.com/docs/githooks#pre-receive).                                                          |
+| `GIT_PUSH_OPTION_<i>`              | Value of push options where `i` is from `0` to `GIT_PUSH_OPTION_COUNT - 1`. See [Git `pre-receive` documentation](https://git-scm.com/docs/githooks#pre-receive).      |
+
+NOTE: **Note:**
+While other environment variables can be passed to server hooks, your application
+should not rely on them as they can change.
+
+## Transition to Go
+
+> Introduced in GitLab 13.2 using feature flags.
+
+The following server hooks have been reimplemented in Go:
+
+- `pre-receive`, with the Go implementation used by default. To use the Ruby
+   implementation instead, [disable](../operations/feature_flags.md#enable-or-disable-feature-flag-strategies)
+   the `:gitaly_go_preceive_hook` feature flag.
+- `update`, with the Go implementation used by default. To use the Ruby implementation
+   instead, [disable](../operations/feature_flags.md#enable-or-disable-feature-flag-strategies)
+   the `:gitaly_go_update_hook` feature flag.
+- `post-receive`, however the Ruby implementation is used by default. To use the Go
+  implementation instead, [enabled](../operations/feature_flags.md#enable-or-disable-feature-flag-strategies)
+  the `:gitaly_go_postreceive_hook` feature flag.
+
 ## Custom error messages
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/5073) in GitLab 8.10.

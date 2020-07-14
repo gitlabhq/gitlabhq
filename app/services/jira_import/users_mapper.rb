@@ -14,9 +14,8 @@ module JiraImport
         {
           jira_account_id: jira_user['accountId'],
           jira_display_name: jira_user['displayName'],
-          jira_email: jira_user['emailAddress'],
-          gitlab_id: match_user(jira_user)
-        }
+          jira_email: jira_user['emailAddress']
+        }.merge(match_user(jira_user))
       end
     end
 
@@ -25,7 +24,7 @@ module JiraImport
     # TODO: Matching user by email and displayName will be done as the part
     # of follow-up issue: https://gitlab.com/gitlab-org/gitlab/-/issues/219023
     def match_user(jira_user)
-      nil
+      { gitlab_id: nil, gitlab_username: nil, gitlab_name: nil }
     end
   end
 end

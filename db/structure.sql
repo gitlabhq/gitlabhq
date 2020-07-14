@@ -20025,7 +20025,7 @@ CREATE INDEX index_prometheus_metrics_on_common ON public.prometheus_metrics USI
 
 CREATE INDEX index_prometheus_metrics_on_group ON public.prometheus_metrics USING btree ("group");
 
-CREATE UNIQUE INDEX index_prometheus_metrics_on_identifier ON public.prometheus_metrics USING btree (identifier);
+CREATE UNIQUE INDEX index_prometheus_metrics_on_identifier_and_null_project ON public.prometheus_metrics USING btree (identifier) WHERE (project_id IS NULL);
 
 CREATE UNIQUE INDEX index_prometheus_metrics_on_identifier_and_project_id ON public.prometheus_metrics USING btree (identifier, project_id);
 
@@ -23718,6 +23718,7 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200701093859
 20200701205710
 20200702123805
+20200702201039
 20200703064117
 20200703121557
 20200703154822
