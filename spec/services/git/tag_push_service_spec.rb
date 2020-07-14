@@ -10,9 +10,11 @@ RSpec.describe Git::TagPushService do
   let(:project) { create(:project, :repository) }
   let(:service) { described_class.new(project, user, change: { oldrev: oldrev, newrev: newrev, ref: ref }) }
 
-  let(:oldrev) { Gitlab::Git::BLANK_SHA }
+  let(:blankrev) { Gitlab::Git::BLANK_SHA }
+  let(:oldrev) { blankrev }
   let(:newrev) { "8a2a6eb295bb170b34c24c76c49ed0e9b2eaf34b" } # gitlab-test: git rev-parse refs/tags/v1.1.0
-  let(:ref) { 'refs/tags/v1.1.0' }
+  let(:tag)   { 'v1.1.0' }
+  let(:ref) { "refs/tags/#{tag}" }
 
   describe "Push tags" do
     subject do
@@ -53,6 +55,37 @@ RSpec.describe Git::TagPushService do
 
       it 'does nothing' do
         expect(::Git::BranchHooksService).not_to receive(:new)
+
+        service.execute
+      end
+    end
+  end
+
+  describe 'artifacts' do
+    context 'create tag' do
+      let(:oldrev) { blankrev }
+
+      it 'does nothing' do
+        expect(::Ci::RefDeleteUnlockArtifactsWorker).not_to receive(:perform_async)
+
+        service.execute
+      end
+    end
+
+    context 'update tag' do
+      it 'does nothing' do
+        expect(::Ci::RefDeleteUnlockArtifactsWorker).not_to receive(:perform_async)
+
+        service.execute
+      end
+    end
+
+    context 'delete tag' do
+      let(:newrev) { blankrev }
+
+      it 'unlocks artifacts' do
+        expect(::Ci::RefDeleteUnlockArtifactsWorker)
+          .to receive(:perform_async).with(project.id, user.id, "refs/tags/#{tag}")
 
         service.execute
       end

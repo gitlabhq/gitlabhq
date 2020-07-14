@@ -113,6 +113,8 @@ module Ci
     # extend this `Hash` with new values.
     enum failure_reason: ::Ci::PipelineEnums.failure_reasons
 
+    enum locked: { unlocked: 0, artifacts_locked: 1 }
+
     state_machine :status, initial: :created do
       event :enqueue do
         transition [:created, :manual, :waiting_for_resource, :preparing, :skipped, :scheduled] => :pending
@@ -247,6 +249,14 @@ module Ci
 
         pipeline.run_after_commit { AutoDevops::DisableWorker.perform_async(pipeline.id) }
       end
+
+      after_transition any => [:success] do |pipeline|
+        next unless Gitlab::Ci::Features.keep_latest_artifacts_for_ref_enabled?(pipeline.project)
+
+        pipeline.run_after_commit do
+          Ci::PipelineSuccessUnlockArtifactsWorker.perform_async(pipeline.id)
+        end
+      end
     end
 
     scope :internal, -> { where(source: internal_sources) }
@@ -260,6 +270,12 @@ module Ci
     scope :for_id, -> (id) { where(id: id) }
     scope :for_iid, -> (iid) { where(iid: iid) }
     scope :created_after, -> (time) { where('ci_pipelines.created_at > ?', time) }
+    scope :created_before_id, -> (id) { where('ci_pipelines.id < ?', id) }
+    scope :before_pipeline, -> (pipeline) { created_before_id(pipeline.id).outside_pipeline_family(pipeline) }
+
+    scope :outside_pipeline_family, ->(pipeline) do
+      where.not(id: pipeline.same_family_pipeline_ids)
+    end
 
     scope :with_reports, -> (reports_scope) do
       where('EXISTS (?)', ::Ci::Build.latest.with_reports(reports_scope).where('ci_pipelines.id=ci_builds.commit_id').select(1))
@@ -801,12 +817,16 @@ module Ci
     end
 
     # If pipeline is a child of another pipeline, include the parent
-    # and the siblings, otherwise return only itself.
+    # and the siblings, otherwise return only itself and children.
     def same_family_pipeline_ids
       if (parent = parent_pipeline)
-        [parent.id] + parent.child_pipelines.pluck(:id)
+        Ci::Pipeline.where(id: parent.id)
+          .or(Ci::Pipeline.where(id: parent.child_pipelines.select(:id)))
+          .select(:id)
       else
-        [self.id]
+        Ci::Pipeline.where(id: self.id)
+          .or(Ci::Pipeline.where(id: self.child_pipelines.select(:id)))
+          .select(:id)
       end
     end
 
@@ -895,6 +915,10 @@ module Ci
           build.collect_terraform_reports!(terraform_reports)
         end
       end
+    end
+
+    def has_archive_artifacts?
+      complete? && builds.latest.with_existing_job_artifacts(Ci::JobArtifact.archive.or(Ci::JobArtifact.metadata)).exists?
     end
 
     def has_exposed_artifacts?

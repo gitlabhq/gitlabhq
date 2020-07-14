@@ -98,6 +98,15 @@ export default {
         {},
       );
     },
+    tokenTitles() {
+      return this.tokens.reduce(
+        (tokenSymbols, token) => ({
+          ...tokenSymbols,
+          [token.type]: token.title,
+        }),
+        {},
+      );
+    },
     sortDirectionIcon() {
       return this.selectedSortDirection === SortDirection.ascending
         ? 'sort-lowest'
@@ -112,11 +121,10 @@ export default {
   watch: {
     /**
      * GlFilteredSearch currently doesn't emit any event when
-     * search field is cleared, but we still want our parent
-     * component to know that filters were cleared and do
-     * necessary data refetch, so this watcher is basically
-     * a dirty hack/workaround to identify if filter input
-     * was cleared. :(
+     * tokens are manually removed from search field so we'd
+     * never know when user actually clears all the tokens.
+     * This watcher listens for updates to `filterValue` on
+     * such instances. :(
      */
     filterValue(value) {
       const [firstVal] = value;
@@ -188,25 +196,16 @@ export default {
           : SortDirection.ascending;
       this.$emit('onSort', this.selectedSortOption.sortDirection[this.selectedSortDirection]);
     },
+    handleClearHistory() {
+      const resultantSearches = this.recentSearchesStore.setRecentSearches([]);
+      this.recentSearchesService.save(resultantSearches);
+    },
     handleFilterSubmit(filters) {
       if (this.recentSearchesStorageKey) {
         this.recentSearchesPromise
           .then(() => {
             if (filters.length) {
-              const searchTokens = filters.map(filter => {
-                // check filter was plain text search
-                if (typeof filter === 'string') {
-                  return filter;
-                }
-                // filter was a token.
-                return `${filter.type}:${filter.value.operator}${this.tokenSymbols[filter.type]}${
-                  filter.value.data
-                }`;
-              });
-
-              const resultantSearches = this.recentSearchesStore.addRecentSearch(
-                searchTokens.join(' '),
-              );
+              const resultantSearches = this.recentSearchesStore.addRecentSearch(filters);
               this.recentSearchesService.save(resultantSearches);
             }
           })
@@ -228,8 +227,23 @@ export default {
       :available-tokens="tokens"
       :history-items="getRecentSearches()"
       class="flex-grow-1"
+      @history-item-selected="$emit('onFilter', filters)"
+      @clear-history="handleClearHistory"
       @submit="handleFilterSubmit"
-    />
+      @clear="$emit('onFilter', [])"
+    >
+      <template #history-item="{ historyItem }">
+        <template v-for="token in historyItem">
+          <span v-if="typeof token === 'string'" :key="token" class="gl-px-1">"{{ token }}"</span>
+          <span v-else :key="`${token.type}-${token.value.data}`" class="gl-px-1">
+            <span v-if="tokenTitles[token.type]"
+              >{{ tokenTitles[token.type] }} :{{ token.value.operator }}</span
+            >
+            <strong>{{ tokenSymbols[token.type] }}{{ token.value.data }}</strong>
+          </span>
+        </template>
+      </template>
+    </gl-filtered-search>
     <gl-button-group class="sort-dropdown-container d-flex">
       <gl-dropdown :text="selectedSortOption.title" :right="true" class="w-100">
         <gl-dropdown-item

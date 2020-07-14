@@ -22,8 +22,13 @@ RSpec.describe IconsHelper do
 
   describe 'sprite_icon_path' do
     it 'returns relative path' do
-      expect(sprite_icon_path)
-        .to eq icons_path
+      expect(sprite_icon_path).to eq(icons_path)
+    end
+
+    it 'only calls image_path once when called multiple times' do
+      expect(ActionController::Base.helpers).to receive(:image_path).once.and_call_original
+
+      2.times { sprite_icon_path }
     end
 
     context 'when an asset_host is set in the config it will return an absolute local URL' do

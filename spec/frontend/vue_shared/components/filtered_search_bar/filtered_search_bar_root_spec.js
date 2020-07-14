@@ -13,7 +13,7 @@ import { SortDirection } from '~/vue_shared/components/filtered_search_bar/const
 import RecentSearchesStore from '~/filtered_search/stores/recent_searches_store';
 import RecentSearchesService from '~/filtered_search/services/recent_searches_service';
 
-import { mockAvailableTokens, mockSortOptions } from './mock_data';
+import { mockAvailableTokens, mockSortOptions, mockHistoryItems } from './mock_data';
 
 const createComponent = ({
   namespace = 'gitlab-org/gitlab-test',
@@ -53,8 +53,14 @@ describe('FilteredSearchBarRoot', () => {
 
   describe('computed', () => {
     describe('tokenSymbols', () => {
-      it('returns array of map containing type and symbols from `tokens` prop', () => {
+      it('returns a map containing type and symbols from `tokens` prop', () => {
         expect(wrapper.vm.tokenSymbols).toEqual({ author_username: '@' });
+      });
+    });
+
+    describe('tokenTitles', () => {
+      it('returns a map containing type and title from `tokens` prop', () => {
+        expect(wrapper.vm.tokenTitles).toEqual({ author_username: 'Author' });
       });
     });
 
@@ -172,6 +178,19 @@ describe('FilteredSearchBarRoot', () => {
       });
     });
 
+    describe('handleClearHistory', () => {
+      it('clears search history from recent searches store', () => {
+        jest.spyOn(wrapper.vm.recentSearchesStore, 'setRecentSearches').mockReturnValue([]);
+        jest.spyOn(wrapper.vm.recentSearchesService, 'save');
+
+        wrapper.vm.handleClearHistory();
+
+        expect(wrapper.vm.recentSearchesStore.setRecentSearches).toHaveBeenCalledWith([]);
+        expect(wrapper.vm.recentSearchesService.save).toHaveBeenCalledWith([]);
+        expect(wrapper.vm.getRecentSearches()).toEqual([]);
+      });
+    });
+
     describe('handleFilterSubmit', () => {
       const mockFilters = [
         {
@@ -186,14 +205,11 @@ describe('FilteredSearchBarRoot', () => {
 
       it('calls `recentSearchesStore.addRecentSearch` with serialized value of provided `filters` param', () => {
         jest.spyOn(wrapper.vm.recentSearchesStore, 'addRecentSearch');
-        // jest.spyOn(wrapper.vm.recentSearchesService, 'save');
 
         wrapper.vm.handleFilterSubmit(mockFilters);
 
         return wrapper.vm.recentSearchesPromise.then(() => {
-          expect(wrapper.vm.recentSearchesStore.addRecentSearch).toHaveBeenCalledWith(
-            'author_username:=@root foo',
-          );
+          expect(wrapper.vm.recentSearchesStore.addRecentSearch).toHaveBeenCalledWith(mockFilters);
         });
       });
 
@@ -203,9 +219,7 @@ describe('FilteredSearchBarRoot', () => {
         wrapper.vm.handleFilterSubmit(mockFilters);
 
         return wrapper.vm.recentSearchesPromise.then(() => {
-          expect(wrapper.vm.recentSearchesService.save).toHaveBeenCalledWith([
-            'author_username:=@root foo',
-          ]);
+          expect(wrapper.vm.recentSearchesService.save).toHaveBeenCalledWith([mockFilters]);
         });
       });
 
@@ -224,6 +238,8 @@ describe('FilteredSearchBarRoot', () => {
         selectedSortDirection: SortDirection.descending,
       });
 
+      wrapper.vm.recentSearchesStore.setRecentSearches(mockHistoryItems);
+
       return wrapper.vm.$nextTick();
     });
 
@@ -232,6 +248,7 @@ describe('FilteredSearchBarRoot', () => {
 
       expect(glFilteredSearchEl.props('placeholder')).toBe('Filter requirements');
       expect(glFilteredSearchEl.props('availableTokens')).toEqual(mockAvailableTokens);
+      expect(glFilteredSearchEl.props('historyItems')).toEqual(mockHistoryItems);
     });
 
     it('renders sort dropdown component', () => {

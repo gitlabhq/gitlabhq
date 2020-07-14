@@ -444,8 +444,8 @@ RSpec.describe ProjectsHelper do
   end
 
   describe '#get_project_nav_tabs' do
+    let_it_be(:user) { create(:user) }
     let(:project) { create(:project) }
-    let(:user)    { create(:user) }
 
     before do
       allow(helper).to receive(:can?) { true }
@@ -500,6 +500,20 @@ RSpec.describe ProjectsHelper do
         expect(project.external_wiki).to be_nil
         is_expected.not_to include(:external_wiki)
       end
+    end
+
+    context 'when project has confluence enabled' do
+      before do
+        allow(project).to receive(:has_confluence?).and_return(true)
+      end
+
+      it { is_expected.to include(:confluence) }
+      it { is_expected.not_to include(:wiki) }
+    end
+
+    context 'when project does not have confluence enabled' do
+      it { is_expected.not_to include(:confluence) }
+      it { is_expected.to include(:wiki) }
     end
   end
 

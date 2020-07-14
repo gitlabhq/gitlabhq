@@ -36,9 +36,9 @@ RSpec.describe API::Jobs do
   end
 
   let_it_be(:pipeline, reload: true) do
-    create(:ci_empty_pipeline, project: project,
-                               sha: project.commit.id,
-                               ref: project.default_branch)
+    create(:ci_pipeline, project: project,
+                         sha: project.commit.id,
+                         ref: project.default_branch)
   end
 
   let!(:job) do

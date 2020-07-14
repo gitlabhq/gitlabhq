@@ -89,6 +89,12 @@ FactoryBot.define do
     end
   end
 
+  factory :confluence_service do
+    project
+    active { true }
+    confluence_url { 'https://example.atlassian.net/wiki' }
+  end
+
   factory :bugzilla_service do
     project
     active { true }

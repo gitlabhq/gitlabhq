@@ -23,7 +23,7 @@ export const ENABLE_TOGGLE_DESCRIPTION = s__(
 );
 
 export const TEXT_AREA_INVALID_FEEDBACK = s__(
-  'ContainerRegistry|The value of this input should be less than 255 characters',
+  'ContainerRegistry|The value of this input should be less than 256 characters',
 );
 
 export const EXPIRATION_INTERVAL_LABEL = s__('ContainerRegistry|Expiration interval:');

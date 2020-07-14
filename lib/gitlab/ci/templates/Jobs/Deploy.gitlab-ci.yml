@@ -1,5 +1,6 @@
 .auto-deploy:
   image: "registry.gitlab.com/gitlab-org/cluster-integration/auto-deploy-image:v0.17.0"
+  dependencies: []
 
 include:
   - template: Jobs/Deploy/ECS.gitlab-ci.yml
@@ -42,7 +43,6 @@ stop_review:
   environment:
     name: review/$CI_COMMIT_REF_NAME
     action: stop
-  dependencies: []
   allow_failure: true
   rules:
     - if: '$CI_KUBERNETES_ACTIVE == null || $CI_KUBERNETES_ACTIVE == ""'

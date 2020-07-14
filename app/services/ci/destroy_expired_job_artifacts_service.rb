@@ -28,7 +28,7 @@ module Ci
     private
 
     def destroy_batch
-      artifact_batch = if Feature.enabled?(:keep_latest_artifact_for_ref)
+      artifact_batch = if Gitlab::Ci::Features.destroy_only_unlocked_expired_artifacts_enabled?
                          Ci::JobArtifact.expired(BATCH_SIZE).unlocked
                        else
                          Ci::JobArtifact.expired(BATCH_SIZE)

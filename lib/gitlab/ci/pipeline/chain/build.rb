@@ -20,7 +20,11 @@ module Gitlab
               pipeline_schedule: @command.schedule,
               merge_request: @command.merge_request,
               external_pull_request: @command.external_pull_request,
-              variables_attributes: Array(@command.variables_attributes)
+              variables_attributes: Array(@command.variables_attributes),
+              # This should be removed and set on the database column default
+              # level when the keep_latest_artifacts_for_ref feature flag is
+              # removed.
+              locked: ::Gitlab::Ci::Features.keep_latest_artifacts_for_ref_enabled?(@command.project) ? :artifacts_locked : :unlocked
             )
           end
 

@@ -1,9 +1,9 @@
 import * as monitoringUtils from '~/monitoring/utils';
 import * as urlUtils from '~/lib/utils/url_utility';
 import { TEST_HOST } from 'jest/helpers/test_constants';
-import { mockProjectDir, anomalyMockGraphData, barMockData } from './mock_data';
+import { mockProjectDir, barMockData } from './mock_data';
+import { singleStatGraphData, anomalyGraphData } from './graph_data';
 import { metricsDashboardViewModel, graphData } from './fixture_data';
-import { singleStatGraphData } from './graph_data';
 
 const mockPath = `${TEST_HOST}${mockProjectDir}/-/environments/29/metrics`;
 
@@ -102,12 +102,12 @@ describe('monitoring/utils', () => {
     let fourMetrics;
     beforeEach(() => {
       oneMetric = singleStatGraphData();
-      threeMetrics = anomalyMockGraphData;
+      threeMetrics = anomalyGraphData();
 
       const metrics = [...threeMetrics.metrics];
       metrics.push(threeMetrics.metrics[0]);
       fourMetrics = {
-        ...anomalyMockGraphData,
+        ...anomalyGraphData(),
         metrics,
       };
     });

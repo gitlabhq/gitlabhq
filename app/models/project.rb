@@ -169,6 +169,7 @@ class Project < ApplicationRecord
   has_one :custom_issue_tracker_service
   has_one :bugzilla_service
   has_one :gitlab_issue_tracker_service, inverse_of: :project
+  has_one :confluence_service
   has_one :external_wiki_service
   has_one :prometheus_service, inverse_of: :project
   has_one :mock_ci_service
@@ -1286,6 +1287,11 @@ class Project < ApplicationRecord
     update_column(:has_external_wiki, services.external_wikis.any?) if Gitlab::Database.read_write?
   end
 
+  def has_confluence?
+    ConfluenceService.feature_enabled?(self) && # rubocop:disable CodeReuse/ServiceClass
+      project_setting.has_confluence?
+  end
+
   def find_or_initialize_services
     available_services_names = Service.available_services_names - disabled_services
 
@@ -1295,7 +1301,11 @@ class Project < ApplicationRecord
   end
 
   def disabled_services
-    []
+    strong_memoize(:disabled_services) do
+      [].tap do |disabled_services|
+        disabled_services.push(ConfluenceService.to_param) unless ConfluenceService.feature_enabled?(self) # rubocop:disable CodeReuse/ServiceClass
+      end
+    end
   end
 
   def find_or_initialize_service(name)

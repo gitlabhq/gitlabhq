@@ -11,7 +11,7 @@ export const mapComputedToEvent = (list, root) => {
         return this[root][e];
       },
       set(value) {
-        this.$emit('input', { ...this[root], [e]: value });
+        this.$emit('input', { newValue: { ...this[root], [e]: value }, modified: e });
       },
     };
   });

@@ -14,7 +14,7 @@ RSpec.describe Ci::DestroyExpiredJobArtifactsService, :clean_gitlab_redis_shared
     context 'when artifact is expired' do
       context 'when artifact is not locked' do
         before do
-          artifact.update!(locked: false)
+          artifact.job.pipeline.unlocked!
         end
 
         it 'destroys job artifact' do
@@ -24,7 +24,7 @@ RSpec.describe Ci::DestroyExpiredJobArtifactsService, :clean_gitlab_redis_shared
 
       context 'when artifact is locked' do
         before do
-          artifact.update!(locked: true)
+          artifact.job.pipeline.artifacts_locked!
         end
 
         it 'does not destroy job artifact' do

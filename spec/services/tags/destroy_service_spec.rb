@@ -11,9 +11,19 @@ RSpec.describe Tags::DestroyService do
   describe '#execute' do
     subject { service.execute(tag_name) }
 
+    before do
+      allow(Ci::RefDeleteUnlockArtifactsWorker).to receive(:perform_async)
+    end
+
     it 'removes the tag' do
       expect(repository).to receive(:before_remove_tag)
       expect(service).to receive(:success)
+
+      service.execute('v1.1.0')
+    end
+
+    it 'calls the RefDeleteUnlockArtifactsWorker' do
+      expect(Ci::RefDeleteUnlockArtifactsWorker).to receive(:perform_async).with(project.id, user.id, 'refs/tags/v1.1.0')
 
       service.execute('v1.1.0')
     end

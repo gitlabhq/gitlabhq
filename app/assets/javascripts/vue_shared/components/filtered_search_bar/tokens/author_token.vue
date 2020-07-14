@@ -46,6 +46,16 @@ export default {
       return this.authors.find(author => author.username.toLowerCase() === this.currentValue);
     },
   },
+  watch: {
+    active: {
+      immediate: true,
+      handler(newValue) {
+        if (!newValue && !this.authors.length) {
+          this.fetchAuthorBySearchTerm(this.value.data);
+        }
+      },
+    },
+  },
   methods: {
     fetchAuthorBySearchTerm(searchTerm) {
       const fetchPromise = this.config.fetchPath
@@ -89,9 +99,9 @@ export default {
       <span>{{ activeAuthor ? activeAuthor.name : inputValue }}</span>
     </template>
     <template #suggestions>
-      <gl-filtered-search-suggestion :value="$options.anyAuthor">{{
-        __('Any')
-      }}</gl-filtered-search-suggestion>
+      <gl-filtered-search-suggestion :value="$options.anyAuthor">
+        {{ __('Any') }}
+      </gl-filtered-search-suggestion>
       <gl-dropdown-divider />
       <gl-loading-icon v-if="loading" />
       <template v-else>

@@ -12,7 +12,7 @@ class Service < ApplicationRecord
   ignore_columns %i[title description], remove_with: '13.4', remove_after: '2020-09-22'
 
   SERVICE_NAMES = %w[
-    alerts asana assembla bamboo bugzilla buildkite campfire custom_issue_tracker discord
+    alerts asana assembla bamboo bugzilla buildkite campfire confluence custom_issue_tracker discord
     drone_ci emails_on_push external_wiki flowdock hangouts_chat hipchat irker jira
     mattermost mattermost_slash_commands microsoft_teams packagist pipelines_email
     pivotaltracker prometheus pushover redmine slack slack_slash_commands teamcity unify_circuit webex_teams youtrack

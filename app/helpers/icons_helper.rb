@@ -28,10 +28,12 @@ module IconsHelper
   end
 
   def sprite_icon_path
-    # SVG Sprites currently don't work across domains, so in the case of a CDN
-    # we have to set the current path deliberately to prevent addition of asset_host
-    sprite_base_url = Gitlab.config.gitlab.url if ActionController::Base.asset_host
-    ActionController::Base.helpers.image_path('icons.svg', host: sprite_base_url)
+    @sprite_icon_path ||= begin
+      # SVG Sprites currently don't work across domains, so in the case of a CDN
+      # we have to set the current path deliberately to prevent addition of asset_host
+      sprite_base_url = Gitlab.config.gitlab.url if ActionController::Base.asset_host
+      ActionController::Base.helpers.image_path('icons.svg', host: sprite_base_url)
+    end
   end
 
   def sprite_file_icons_path

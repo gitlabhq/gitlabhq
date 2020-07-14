@@ -219,6 +219,50 @@ RSpec.describe Ci::Pipeline, :mailer do
     end
   end
 
+  describe '.outside_pipeline_family' do
+    subject(:outside_pipeline_family) { described_class.outside_pipeline_family(upstream_pipeline) }
+
+    let(:upstream_pipeline) { create(:ci_pipeline, project: project) }
+    let(:child_pipeline) { create(:ci_pipeline, project: project) }
+
+    let!(:other_pipeline) { create(:ci_pipeline, project: project) }
+
+    before do
+      create(:ci_sources_pipeline,
+             source_job: create(:ci_build, pipeline: upstream_pipeline),
+             source_project: project,
+             pipeline: child_pipeline,
+             project: project)
+    end
+
+    it 'only returns pipelines outside pipeline family' do
+      expect(outside_pipeline_family).to contain_exactly(other_pipeline)
+    end
+  end
+
+  describe '.before_pipeline' do
+    subject(:before_pipeline) { described_class.before_pipeline(child_pipeline) }
+
+    let!(:older_other_pipeline) { create(:ci_pipeline, project: project) }
+
+    let!(:upstream_pipeline) { create(:ci_pipeline, project: project) }
+    let!(:child_pipeline) { create(:ci_pipeline, project: project) }
+
+    let!(:other_pipeline) { create(:ci_pipeline, project: project) }
+
+    before do
+      create(:ci_sources_pipeline,
+             source_job: create(:ci_build, pipeline: upstream_pipeline),
+             source_project: project,
+             pipeline: child_pipeline,
+             project: project)
+    end
+
+    it 'only returns older pipelines outside pipeline family' do
+      expect(before_pipeline).to contain_exactly(older_other_pipeline)
+    end
+  end
+
   describe '#merge_request?' do
     let(:pipeline) { create(:ci_pipeline, merge_request: merge_request) }
     let(:merge_request) { create(:merge_request) }
@@ -2635,6 +2679,55 @@ RSpec.describe Ci::Pipeline, :mailer do
     end
   end
 
+  describe '#same_family_pipeline_ids' do
+    subject(:same_family_pipeline_ids) { pipeline.same_family_pipeline_ids }
+
+    context 'when pipeline is not child nor parent' do
+      it 'returns just the pipeline id' do
+        expect(same_family_pipeline_ids).to contain_exactly(pipeline)
+      end
+    end
+
+    context 'when pipeline is child' do
+      let(:parent) { create(:ci_pipeline, project: pipeline.project) }
+      let(:sibling) { create(:ci_pipeline, project: pipeline.project) }
+
+      before do
+        create(:ci_sources_pipeline,
+               source_job: create(:ci_build, pipeline: parent),
+               source_project: parent.project,
+               pipeline: pipeline,
+               project: pipeline.project)
+
+        create(:ci_sources_pipeline,
+               source_job: create(:ci_build, pipeline: parent),
+               source_project: parent.project,
+               pipeline: sibling,
+               project: sibling.project)
+      end
+
+      it 'returns parent sibling and self ids' do
+        expect(same_family_pipeline_ids).to contain_exactly(parent, pipeline, sibling)
+      end
+    end
+
+    context 'when pipeline is parent' do
+      let(:child) { create(:ci_pipeline, project: pipeline.project) }
+
+      before do
+        create(:ci_sources_pipeline,
+               source_job: create(:ci_build, pipeline: pipeline),
+               source_project: pipeline.project,
+               pipeline: child,
+               project: child.project)
+      end
+
+      it 'returns self and child ids' do
+        expect(same_family_pipeline_ids).to contain_exactly(pipeline, child)
+      end
+    end
+  end
+
   describe '#stuck?' do
     before do
       create(:ci_build, :pending, pipeline: pipeline)
@@ -3176,6 +3269,32 @@ RSpec.describe Ci::Pipeline, :mailer do
           expect(AutoDevops::DisableWorker).not_to receive(:perform_async)
 
           pipeline.drop
+        end
+      end
+    end
+
+    context 'when transitioning to success' do
+      context 'when feature is enabled' do
+        before do
+          stub_feature_flags(keep_latest_artifacts_for_ref: true)
+        end
+
+        it 'calls the PipelineSuccessUnlockArtifactsWorker' do
+          expect(Ci::PipelineSuccessUnlockArtifactsWorker).to receive(:perform_async).with(pipeline.id)
+
+          pipeline.succeed!
+        end
+      end
+
+      context 'when feature is disabled' do
+        before do
+          stub_feature_flags(keep_latest_artifacts_for_ref: false)
+        end
+
+        it 'does not call the PipelineSuccessUnlockArtifactsWorker' do
+          expect(Ci::PipelineSuccessUnlockArtifactsWorker).not_to receive(:perform_async)
+
+          pipeline.succeed!
         end
       end
     end

@@ -11,11 +11,12 @@ import { mockAuthorToken, mockAuthors } from '../mock_data';
 
 jest.mock('~/flash');
 
-const createComponent = ({ config = mockAuthorToken, value = { data: '' } } = {}) =>
+const createComponent = ({ config = mockAuthorToken, value = { data: '' }, active = false } = {}) =>
   mount(AuthorToken, {
     propsData: {
       config,
       value,
+      active,
     },
     provide: {
       portalName: 'fake target',
@@ -51,29 +52,23 @@ describe('AuthorToken', () => {
   describe('computed', () => {
     describe('currentValue', () => {
       it('returns lowercase string for `value.data`', () => {
-        wrapper.setProps({
-          value: { data: 'FOO' },
-        });
+        wrapper = createComponent({ value: { data: 'FOO' } });
 
-        return wrapper.vm.$nextTick(() => {
-          expect(wrapper.vm.currentValue).toBe('foo');
-        });
+        expect(wrapper.vm.currentValue).toBe('foo');
       });
     });
 
     describe('activeAuthor', () => {
-      it('returns object for currently present `value.data`', () => {
+      it('returns object for currently present `value.data`', async () => {
+        wrapper = createComponent({ value: { data: mockAuthors[0].username } });
+
         wrapper.setData({
           authors: mockAuthors,
         });
 
-        wrapper.setProps({
-          value: { data: mockAuthors[0].username },
-        });
+        await wrapper.vm.$nextTick();
 
-        return wrapper.vm.$nextTick(() => {
-          expect(wrapper.vm.activeAuthor).toEqual(mockAuthors[0]);
-        });
+        expect(wrapper.vm.activeAuthor).toEqual(mockAuthors[0]);
       });
     });
   });

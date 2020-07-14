@@ -3,7 +3,9 @@ import renderKramdownList from './renderers/render_kramdown_list';
 import renderKramdownText from './renderers/render_kramdown_text';
 import renderIdentifierParagraph from './renderers/render_identifier_paragraph';
 import renderEmbeddedRubyText from './renderers/render_embedded_ruby_text';
+import renderFontAwesomeHtmlInline from './renderers/render_font_awesome_html_inline';
 
+const htmlInlineRenderers = [renderFontAwesomeHtmlInline];
 const htmlRenderers = [renderHtml];
 const listRenderers = [renderKramdownList];
 const paragraphRenderers = [renderIdentifierParagraph];
@@ -26,13 +28,18 @@ const buildCustomRendererFunctions = (customRenderers, defaults) => {
 };
 
 const buildCustomHTMLRenderer = (
-  customRenderers = { htmlBlock: [], list: [], paragraph: [], text: [] },
+  customRenderers = { htmlBlock: [], htmlInline: [], list: [], paragraph: [], text: [] },
 ) => {
   const defaults = {
     htmlBlock(node, context) {
       const allHtmlRenderers = [...customRenderers.list, ...htmlRenderers];
 
       return executeRenderer(allHtmlRenderers, node, context);
+    },
+    htmlInline(node, context) {
+      const allHtmlInlineRenderers = [...customRenderers.htmlInline, ...htmlInlineRenderers];
+
+      return executeRenderer(allHtmlInlineRenderers, node, context);
     },
     list(node, context) {
       const allListRenderers = [...customRenderers.list, ...listRenderers];

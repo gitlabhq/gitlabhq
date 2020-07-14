@@ -61,7 +61,7 @@ class Projects::ServicesController < Projects::ApplicationController
       return { error: true, message: _('Validations failed.'), service_response: @service.errors.full_messages.join(','), test_failed: false }
     end
 
-    result = Integrations::Test::ProjectService.new(@service, current_user, params[:event]).execute
+    result = ::Integrations::Test::ProjectService.new(@service, current_user, params[:event]).execute
 
     unless result[:success]
       return { error: true, message: _('Test failed.'), service_response: result[:message].to_s, test_failed: true }

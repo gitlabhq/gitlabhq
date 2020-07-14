@@ -19,6 +19,7 @@ module Branches
       end
 
       if repository.rm_branch(current_user, branch_name)
+        unlock_artifacts(branch_name)
         ServiceResponse.success(message: 'Branch was deleted')
       else
         ServiceResponse.error(
@@ -27,6 +28,12 @@ module Branches
       end
     rescue Gitlab::Git::PreReceiveError => ex
       ServiceResponse.error(message: ex.message, http_status: 400)
+    end
+
+    private
+
+    def unlock_artifacts(branch_name)
+      Ci::RefDeleteUnlockArtifactsWorker.perform_async(project.id, current_user.id, "#{::Gitlab::Git::BRANCH_REF_PREFIX}#{branch_name}")
     end
   end
 end

@@ -79,11 +79,13 @@ export const getFileData = (
   return service
     .getFileData(url)
     .then(({ data }) => {
-      setPageTitleForFile(state, file);
-
       if (data) commit(types.SET_FILE_DATA, { data, file });
       if (openFile) commit(types.TOGGLE_FILE_OPEN, path);
-      if (makeFileActive) dispatch('setFileActive', path);
+
+      if (makeFileActive) {
+        setPageTitleForFile(state, file);
+        dispatch('setFileActive', path);
+      }
     })
     .catch(() => {
       dispatch('setErrorMessage', {

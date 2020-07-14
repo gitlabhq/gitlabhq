@@ -635,6 +635,37 @@ RSpec.describe Git::BranchPushService, services: true do
     end
   end
 
+  describe 'artifacts' do
+    context 'create branch' do
+      let(:oldrev) { blankrev }
+
+      it 'does nothing' do
+        expect(::Ci::RefDeleteUnlockArtifactsWorker).not_to receive(:perform_async)
+
+        execute_service(project, user, oldrev: oldrev, newrev: newrev, ref: ref)
+      end
+    end
+
+    context 'update branch' do
+      it 'does nothing' do
+        expect(::Ci::RefDeleteUnlockArtifactsWorker).not_to receive(:perform_async)
+
+        execute_service(project, user, oldrev: oldrev, newrev: newrev, ref: ref)
+      end
+    end
+
+    context 'delete branch' do
+      let(:newrev) { blankrev }
+
+      it 'unlocks artifacts' do
+        expect(::Ci::RefDeleteUnlockArtifactsWorker)
+          .to receive(:perform_async).with(project.id, user.id, "refs/heads/#{branch}")
+
+        execute_service(project, user, oldrev: oldrev, newrev: newrev, ref: ref)
+      end
+    end
+  end
+
   describe 'Hooks' do
     context 'run on a branch' do
       it 'delegates to Git::BranchHooksService' do

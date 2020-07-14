@@ -6199,6 +6199,24 @@ msgstr ""
 msgid "Confirmation required"
 msgstr ""
 
+msgid "Confluence"
+msgstr ""
+
+msgid "ConfluenceService|Confluence Workspace"
+msgstr ""
+
+msgid "ConfluenceService|Connect a Confluence Cloud Workspace to your GitLab project"
+msgstr ""
+
+msgid "ConfluenceService|Enabling the Confluence Workspace will disable the default GitLab Wiki. Your GitLab Wiki data will be saved and you can always re-enable it later by turning off this integration"
+msgstr ""
+
+msgid "ConfluenceService|The URL of the Confluence Workspace"
+msgstr ""
+
+msgid "ConfluenceService|Your GitLab Wiki can be accessed here: %{wiki_link}. To re-enable your GitLab Wiki, disable this integration"
+msgstr ""
+
 msgid "Congratulations! You have enabled Two-factor Authentication!"
 msgstr ""
 
@@ -6433,7 +6451,7 @@ msgstr ""
 msgid "ContainerRegistry|The last tag related to this image was recently removed. This empty image and any associated data will be automatically removed as part of the regular Garbage Collection process. If you have any questions, contact your administrator."
 msgstr ""
 
-msgid "ContainerRegistry|The value of this input should be less than 255 characters"
+msgid "ContainerRegistry|The value of this input should be less than 256 characters"
 msgstr ""
 
 msgid "ContainerRegistry|There are no container images available in this group"
@@ -20549,6 +20567,9 @@ msgstr ""
 msgid "SecurityReports|Add projects"
 msgstr ""
 
+msgid "SecurityReports|Add projects to your group"
+msgstr ""
+
 msgid "SecurityReports|Comment added to '%{vulnerabilityName}'"
 msgstr ""
 
@@ -20621,7 +20642,7 @@ msgstr ""
 msgid "SecurityReports|More information"
 msgstr ""
 
-msgid "SecurityReports|No vulnerabilities found for dashboard"
+msgid "SecurityReports|No vulnerabilities found"
 msgstr ""
 
 msgid "SecurityReports|No vulnerabilities found for this group"
@@ -20672,10 +20693,16 @@ msgstr ""
 msgid "SecurityReports|Severity"
 msgstr ""
 
+msgid "SecurityReports|Sorry, your filter produced no results"
+msgstr ""
+
 msgid "SecurityReports|Status"
 msgstr ""
 
 msgid "SecurityReports|The rating \"unknown\" indicates that the underlying scanner doesn’t contain or provide a severity rating."
+msgstr ""
+
+msgid "SecurityReports|The security dashboard displays the latest security findings for projects you wish to monitor. Add projects to your group to view their vulnerabilities here."
 msgstr ""
 
 msgid "SecurityReports|The security dashboard displays the latest security findings for projects you wish to monitor. Select \"Edit dashboard\" to add and remove projects."
@@ -20711,6 +20738,9 @@ msgstr ""
 msgid "SecurityReports|There was an error while generating the report."
 msgstr ""
 
+msgid "SecurityReports|To widen your search, change or remove filters above"
+msgstr ""
+
 msgid "SecurityReports|Unable to add %{invalidProjectsMessage}"
 msgstr ""
 
@@ -20729,7 +20759,7 @@ msgstr ""
 msgid "SecurityReports|While it's rare to have no vulnerabilities for your project, it can happen. In any event, we ask that you double check your settings to make sure you've set up your dashboard correctly."
 msgstr ""
 
-msgid "SecurityReports|While it's rare to have no vulnerabilities, it can happen. In any event, we ask that you please double check your settings to make sure you've set up your dashboard correctly."
+msgid "SecurityReports|While it's rare to have no vulnerabilities, it can happen. In any event, we ask that you double check your settings to make sure you've set up your dashboard correctly."
 msgstr ""
 
 msgid "SecurityReports|Won't fix / Accept risk"

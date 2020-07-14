@@ -7,9 +7,12 @@ module Ci
     include UpdateProjectStatistics
     include UsageStatistics
     include Sortable
+    include IgnorableColumns
     extend Gitlab::Ci::Model
 
     NotSupportedAdapterError = Class.new(StandardError)
+
+    ignore_columns :locked, remove_after: '2020-07-22', remove_with: '13.4'
 
     TEST_REPORT_FILE_TYPES = %w[junit].freeze
     COVERAGE_REPORT_FILE_TYPES = %w[cobertura].freeze
@@ -108,10 +111,6 @@ module Ci
 
     PLAN_LIMIT_PREFIX = 'ci_max_artifact_size_'
 
-    # This is required since we cannot add a default to the database
-    # https://gitlab.com/gitlab-org/gitlab/-/issues/215418
-    attribute :locked, :boolean, default: false
-
     belongs_to :project
     belongs_to :job, class_name: "Ci::Build", foreign_key: :job_id
 
@@ -130,7 +129,6 @@ module Ci
     scope :with_files_stored_locally, -> { where(file_store: ::JobArtifactUploader::Store::LOCAL) }
     scope :with_files_stored_remotely, -> { where(file_store: ::JobArtifactUploader::Store::REMOTE) }
     scope :for_sha, ->(sha, project_id) { joins(job: :pipeline).where(ci_pipelines: { sha: sha, project_id: project_id }) }
-    scope :for_ref, ->(ref, project_id) { joins(job: :pipeline).where(ci_pipelines: { ref: ref, project_id: project_id }) }
     scope :for_job_name, ->(name) { joins(:job).where(ci_builds: { name: name }) }
 
     scope :with_file_types, -> (file_types) do
@@ -167,8 +165,7 @@ module Ci
 
     scope :expired, -> (limit) { where('expire_at < ?', Time.current).limit(limit) }
     scope :downloadable, -> { where(file_type: DOWNLOADABLE_TYPES) }
-    scope :locked, -> { where(locked: true) }
-    scope :unlocked, -> { where(locked: [false, nil]) }
+    scope :unlocked, -> { joins(job: :pipeline).merge(::Ci::Pipeline.unlocked).order(expire_at: :desc) }
 
     scope :scoped_project, -> { where('ci_job_artifacts.project_id = projects.id') }
 

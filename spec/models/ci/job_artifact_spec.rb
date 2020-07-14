@@ -174,18 +174,6 @@ RSpec.describe Ci::JobArtifact do
     end
   end
 
-  describe '.for_ref' do
-    let(:first_pipeline) { create(:ci_pipeline, ref: 'first_ref') }
-    let(:second_pipeline) { create(:ci_pipeline, ref: 'second_ref', project: first_pipeline.project) }
-    let!(:first_artifact) { create(:ci_job_artifact, job: create(:ci_build, pipeline: first_pipeline)) }
-    let!(:second_artifact) { create(:ci_job_artifact, job: create(:ci_build, pipeline: second_pipeline)) }
-
-    it 'returns job artifacts for a given pipeline ref' do
-      expect(described_class.for_ref(first_pipeline.ref, first_pipeline.project.id)).to eq([first_artifact])
-      expect(described_class.for_ref(second_pipeline.ref, first_pipeline.project.id)).to eq([second_artifact])
-    end
-  end
-
   describe '.for_job_name' do
     it 'returns job artifacts for a given job name' do
       first_job = create(:ci_build, name: 'first')

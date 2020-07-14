@@ -1117,14 +1117,8 @@ class MergeRequest < ApplicationRecord
   end
 
   def source_branch_exists?
-    if Feature.enabled?(:memoize_source_branch_merge_request, project)
-      strong_memoize(:source_branch_exists) do
-        next false unless self.source_project
-
-        self.source_project.repository.branch_exists?(self.source_branch)
-      end
-    else
-      return false unless self.source_project
+    strong_memoize(:source_branch_exists) do
+      next false unless self.source_project
 
       self.source_project.repository.branch_exists?(self.source_branch)
     end

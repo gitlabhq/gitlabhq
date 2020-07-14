@@ -1,0 +1,5 @@
+---
+title: Fix error message when saving an integration and testing the settings.
+merge_request: 36700
+author:
+type: fixed

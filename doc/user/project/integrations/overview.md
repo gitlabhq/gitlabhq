@@ -28,6 +28,7 @@ Click on the service links to see further configuration instructions and details
 | Buildkite | Continuous integration and deployments | Yes |
 | [Bugzilla](bugzilla.md) | Bugzilla issue tracker | No |
 | Campfire | Simple web-based real-time group chat | No |
+| Confluence | Replaces the link to the internal wiki with a link to a Confluence Cloud Workspace. Service is behind a feature flag, disabled by default ([see details](../../../api/services.md#enable-or-disable-the-confluence-service-core-only)). | No |
 | Custom Issue Tracker | Custom issue tracker | No |
 | [Discord Notifications](discord_notifications.md) | Receive event notifications in Discord | No |
 | Drone CI | Continuous Integration platform built on Docker, written in Go | Yes |

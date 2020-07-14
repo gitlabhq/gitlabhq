@@ -124,3 +124,41 @@ export const singleStatGraphData = (panelOptions = {}, dataOptions = {}) => {
     ...panelOptions,
   });
 };
+
+/**
+ * Generate mock graph data according to options
+ *
+ * @param {Object} panelOptions - Panel options as in YML.
+ * @param {Object} dataOptions
+ * @param {Array} dataOptions.values - Metric values
+ * @param {Array} dataOptions.upper - Upper boundary values
+ * @param {Array} dataOptions.lower - Lower boundary values
+ */
+export const anomalyGraphData = (panelOptions = {}, dataOptions = {}) => {
+  const { values, upper, lower } = dataOptions;
+
+  return mapPanelToViewModel({
+    title: 'Anomaly Panel',
+    type: panelTypes.ANOMALY_CHART,
+    x_label: 'X Axis',
+    y_label: 'Y Axis',
+    metrics: [
+      {
+        label: `Metric`,
+        state: metricStates.OK,
+        result: matrixSingleResult({ values }),
+      },
+      {
+        label: `Upper boundary`,
+        state: metricStates.OK,
+        result: matrixSingleResult({ values: upper }),
+      },
+      {
+        label: `Lower boundary`,
+        state: metricStates.OK,
+        result: matrixSingleResult({ values: lower }),
+      },
+    ],
+    ...panelOptions,
+  });
+};

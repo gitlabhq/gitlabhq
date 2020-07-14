@@ -158,6 +158,8 @@ module Gitlab
     # Webpack dev server configuration is handled in initializers/static_files.rb
     config.webpack.dev_server.enabled = false
 
+    config.action_mailer.delivery_job = "ActionMailer::MailDeliveryJob"
+
     # Enable the asset pipeline
     config.assets.enabled = true
 

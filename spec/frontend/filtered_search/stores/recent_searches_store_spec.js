@@ -44,6 +44,15 @@ describe('RecentSearchesStore', () => {
       expect(store.state.recentSearches).toEqual(['baz', 'qux']);
     });
 
+    it('handles non-string values', () => {
+      store.setRecentSearches(['foo  ', { foo: 'bar' }, { foo: 'bar' }, ['foobar']]);
+
+      // 1. String values will be trimmed of leading/trailing spaces
+      // 2. Comparison will account for objects to remove duplicates
+      // 3. Old behaviour of handling string values stays as it is.
+      expect(store.state.recentSearches).toEqual(['foo', { foo: 'bar' }, ['foobar']]);
+    });
+
     it('only keeps track of 5 items', () => {
       store.setRecentSearches(['1', '2', '3', '4', '5', '6', '7']);
 

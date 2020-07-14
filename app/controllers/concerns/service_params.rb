@@ -22,6 +22,7 @@ module ServiceParams
     :comment_on_event_enabled,
     :comment_detail,
     :confidential_issues_events,
+    :confluence_url,
     :default_irc_uri,
     :device,
     :disable_diffs,

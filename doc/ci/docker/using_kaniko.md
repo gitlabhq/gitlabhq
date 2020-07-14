@@ -90,7 +90,7 @@ store:
     - |
       echo "-----BEGIN CERTIFICATE-----
       ...
-      -----END CERTIFICATE-----" >> /kaniko/ssl/certs/ca-certificates.crt
+      -----END CERTIFICATE-----" >> /kaniko/ssl/certs/additional-ca-cert-bundle.crt
 ```
 
 ## Video walkthrough of a working example

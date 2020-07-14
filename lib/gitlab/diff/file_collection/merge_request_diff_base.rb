@@ -29,13 +29,13 @@ module Gitlab
         override :write_cache
         def write_cache
           highlight_cache.write_if_empty
-          diff_stats_cache&.write_if_empty(diff_stats_collection)
+          diff_stats_cache.write_if_empty(diff_stats_collection)
         end
 
         override :clear_cache
         def clear_cache
           highlight_cache.clear
-          diff_stats_cache&.clear
+          diff_stats_cache.clear
         end
 
         def real_size
@@ -52,9 +52,7 @@ module Gitlab
 
         def diff_stats_cache
           strong_memoize(:diff_stats_cache) do
-            if Feature.enabled?(:cache_diff_stats_merge_request, project)
-              Gitlab::Diff::StatsCache.new(cachable_key: @merge_request_diff.cache_key)
-            end
+            Gitlab::Diff::StatsCache.new(cachable_key: @merge_request_diff.cache_key)
           end
         end
 
@@ -63,7 +61,7 @@ module Gitlab
           strong_memoize(:diff_stats) do
             next unless fetch_diff_stats?
 
-            diff_stats_cache&.read || super
+            diff_stats_cache.read || super
           end
         end
       end

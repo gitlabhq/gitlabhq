@@ -53,6 +53,14 @@ module Gitlab
       def self.raise_job_rules_without_workflow_rules_warning?
         ::Feature.enabled?(:ci_raise_job_rules_without_workflow_rules_warning)
       end
+
+      def self.keep_latest_artifacts_for_ref_enabled?(project)
+        ::Feature.enabled?(:keep_latest_artifacts_for_ref, project, default_enabled: false)
+      end
+
+      def self.destroy_only_unlocked_expired_artifacts_enabled?
+        ::Feature.enabled?(:destroy_only_unlocked_expired_artifacts, default_enabled: false)
+      end
     end
   end
 end
