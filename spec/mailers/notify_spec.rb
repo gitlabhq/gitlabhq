@@ -1253,6 +1253,78 @@ RSpec.describe Notify do
         it_behaves_like 'appearance header and footer not enabled'
       end
     end
+
+    context 'for service desk issues' do
+      before do
+        issue.update!(service_desk_reply_to: 'service.desk@example.com')
+      end
+
+      def expect_sender(username)
+        sender = subject.header[:from].addrs[0]
+        expect(sender.display_name).to eq(username)
+        expect(sender.address).to eq(gitlab_sender)
+      end
+
+      describe 'thank you email' do
+        subject { described_class.service_desk_thank_you_email(issue.id) }
+
+        it_behaves_like 'an unsubscribeable thread'
+
+        it 'has the correct recipient' do
+          is_expected.to deliver_to('service.desk@example.com')
+        end
+
+        it 'has the correct subject and body' do
+          aggregate_failures do
+            is_expected.to have_referable_subject(issue, include_project: false, reply: true)
+            is_expected.to have_body_text("Thank you for your support request! We are tracking your request as ticket #{issue.to_reference}, and will respond as soon as we can.")
+          end
+        end
+
+        it 'uses service bot name by default' do
+          expect_sender(User.support_bot.name)
+        end
+
+        context 'when custom outgoing name is set' do
+          let_it_be(:settings) { create(:service_desk_setting, project: project, outgoing_name: 'some custom name') }
+
+          it 'uses custom name in "from" header' do
+            expect_sender('some custom name')
+          end
+        end
+
+        context 'when custom outgoing name is empty' do
+          let_it_be(:settings) { create(:service_desk_setting, project: project, outgoing_name: '') }
+
+          it 'uses service bot name' do
+            expect_sender(User.support_bot.name)
+          end
+        end
+      end
+
+      describe 'new note email' do
+        let_it_be(:first_note) { create(:discussion_note_on_issue, note: 'Hello world') }
+
+        subject { described_class.service_desk_new_note_email(issue.id, first_note.id) }
+
+        it_behaves_like 'an unsubscribeable thread'
+
+        it 'has the correct recipient' do
+          is_expected.to deliver_to('service.desk@example.com')
+        end
+
+        it 'uses author\'s name in "from" header' do
+          expect_sender(first_note.author.name)
+        end
+
+        it 'has the correct subject and body' do
+          aggregate_failures do
+            is_expected.to have_referable_subject(issue, include_project: false, reply: true)
+            is_expected.to have_body_text(first_note.note)
+          end
+        end
+      end
+    end
   end
 
   context 'for a group' do

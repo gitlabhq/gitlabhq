@@ -33,12 +33,40 @@ RSpec.describe Gitlab::Email::Handler do
     it 'returns nil if provided email is nil' do
       expect(described_class.for(nil, '')).to be_nil
     end
+
+    context 'new issue email' do
+      def handler_for(fixture, mail_key)
+        described_class.for(fixture_file(fixture), mail_key)
+      end
+
+      before do
+        stub_incoming_email_setting(enabled: true, address: "incoming+%{key}@appmail.adventuretime.ooo")
+        stub_config_setting(host: 'localhost')
+      end
+
+      let!(:user) { create(:user, email: 'jake@adventuretime.ooo', incoming_email_token: 'auth_token') }
+
+      context 'a Service Desk email' do
+        it 'uses the Service Desk handler' do
+          expect(handler_for('emails/service_desk.eml', 'some/project')).to be_instance_of(Gitlab::Email::Handler::ServiceDeskHandler)
+        end
+      end
+
+      it 'return new issue handler' do
+        expect(handler_for('emails/valid_new_issue.eml', 'some/project+auth_token')).to be_instance_of(Gitlab::Email::Handler::CreateIssueHandler)
+      end
+    end
   end
 
   describe 'regexps are set properly' do
     let(:addresses) do
-      %W(sent_notification_key#{Gitlab::IncomingEmail::UNSUBSCRIBE_SUFFIX} sent_notification_key path-to-project-123-user_email_token-merge-request path-to-project-123-user_email_token-issue) +
-        %W(sent_notification_key#{Gitlab::IncomingEmail::UNSUBSCRIBE_SUFFIX_LEGACY} sent_notification_key path/to/project+merge-request+user_email_token path/to/project+user_email_token)
+      %W(sent_notification_key#{Gitlab::IncomingEmail::UNSUBSCRIBE_SUFFIX} sent_notification_key path-to-project-123-user_email_token-merge-request) +
+        %W(sent_notification_key#{Gitlab::IncomingEmail::UNSUBSCRIBE_SUFFIX_LEGACY} sent_notification_key path-to-project-123-user_email_token-issue) +
+        %w(path/to/project+user_email_token path/to/project+merge-request+user_email_token some/project)
+    end
+
+    before do
+      allow(Gitlab::ServiceDesk).to receive(:supported?).and_return(true)
     end
 
     it 'picks each handler at least once' do
@@ -46,23 +74,17 @@ RSpec.describe Gitlab::Email::Handler do
         described_class.for(email, address).class
       end
 
-      expect(matched_handlers.uniq).to match_array(ce_handlers)
+      expect(matched_handlers.uniq).to match_array(Gitlab::Email::Handler.handlers)
     end
 
     it 'can pick exactly one handler for each address' do
       addresses.each do |address|
-        matched_handlers = ce_handlers.select do |handler|
+        matched_handlers = Gitlab::Email::Handler.handlers.select do |handler|
           handler.new(email, address).can_handle?
         end
 
         expect(matched_handlers.count).to eq(1), "#{address} matches #{matched_handlers.count} handlers: #{matched_handlers}"
       end
-    end
-  end
-
-  def ce_handlers
-    @ce_handlers ||= Gitlab::Email::Handler.handlers.reject do |handler|
-      handler.name.start_with?('Gitlab::Email::Handler::EE::')
     end
   end
 end

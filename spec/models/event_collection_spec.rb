@@ -44,22 +44,10 @@ RSpec.describe EventCollection do
         expect(events).to match_array(most_recent_20_events)
       end
 
-      context 'the wiki_events feature flag is disabled' do
-        before do
-          stub_feature_flags(wiki_events: false)
-        end
+      it 'includes the wiki page events when using to_a' do
+        events = described_class.new(projects).to_a
 
-        it 'omits the wiki page events when using to_a' do
-          events = described_class.new(projects).to_a
-
-          expect(events).not_to include(wiki_page_event)
-        end
-
-        it 'omits the wiki page events when using all_project_events' do
-          events = described_class.new(projects).all_project_events
-
-          expect(events).not_to include(wiki_page_event)
-        end
+        expect(events).to include(wiki_page_event)
       end
 
       context 'the design_activity_events feature flag is disabled' do
@@ -87,22 +75,10 @@ RSpec.describe EventCollection do
         expect(collection.all_project_events).to include(design_event)
       end
 
-      context 'the wiki_events feature flag is enabled' do
-        before do
-          stub_feature_flags(wiki_events: true)
-        end
+      it 'includes the wiki page events when using all_project_events' do
+        events = described_class.new(projects).all_project_events
 
-        it 'includes the wiki page events when using to_a' do
-          events = described_class.new(projects).to_a
-
-          expect(events).to include(wiki_page_event)
-        end
-
-        it 'includes the wiki page events when using all_project_events' do
-          events = described_class.new(projects).all_project_events
-
-          expect(events).to include(wiki_page_event)
-        end
+        expect(events).to include(wiki_page_event)
       end
 
       it 'applies a limit to the number of events' do

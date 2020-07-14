@@ -242,4 +242,70 @@ RSpec.describe Gitlab::Email::Handler::CreateNoteHandler do
 
     it_behaves_like 'a reply to existing comment'
   end
+
+  context 'when the service desk' do
+    let(:project) { create(:project, :public, service_desk_enabled: true) }
+    let(:support_bot) { User.support_bot }
+    let(:noteable) { create(:issue, project: project, author: support_bot, title: 'service desk issue') }
+    let(:note) { create(:note, project: project, noteable: noteable) }
+    let(:email_raw) { fixture_file('emails/valid_reply_with_quick_actions.eml') }
+
+    let!(:sent_notification) do
+      SentNotification.record_note(note, support_bot.id, mail_key)
+    end
+
+    context 'is enabled' do
+      before do
+        allow(Gitlab::ServiceDesk).to receive(:enabled?).with(project: project).and_return(true)
+        project.project_feature.update!(issues_access_level: issues_access_level)
+      end
+
+      context 'when issues are enabled for everyone' do
+        let(:issues_access_level) { ProjectFeature::ENABLED }
+
+        it 'creates a comment' do
+          expect { receiver.execute }.to change { noteable.notes.count }.by(1)
+        end
+
+        context 'when quick actions are present' do
+          it 'encloses quick actions with code span markdown' do
+            receiver.execute
+            noteable.reload
+
+            note = Note.last
+            expect(note.note).to include("Jake out\n\n`/close`\n`/title test`")
+            expect(noteable.title).to eq('service desk issue')
+            expect(noteable).to be_opened
+          end
+        end
+      end
+
+      context 'when issues are protected members only' do
+        let(:issues_access_level) { ProjectFeature::PRIVATE }
+
+        it 'creates a comment' do
+          expect { receiver.execute }.to change { noteable.notes.count }.by(1)
+        end
+      end
+
+      context 'when issues are disabled' do
+        let(:issues_access_level) { ProjectFeature::DISABLED }
+
+        it 'does not create a comment' do
+          expect { receiver.execute }.to raise_error(Gitlab::Email::UserNotAuthorizedError)
+        end
+      end
+    end
+
+    context 'is disabled' do
+      before do
+        allow(Gitlab::ServiceDesk).to receive(:enabled?).and_return(false)
+        allow(Gitlab::ServiceDesk).to receive(:enabled?).with(project: project).and_return(false)
+      end
+
+      it 'does not create a comment' do
+        expect { receiver.execute }.to raise_error(Gitlab::Email::ProjectNotFound)
+      end
+    end
+  end
 end

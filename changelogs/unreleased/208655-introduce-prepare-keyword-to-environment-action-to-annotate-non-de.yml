@@ -1,0 +1,5 @@
+---
+title: Introduce prepare environment action to annotate non-deployment jobs
+merge_request: 35642
+author:
+type: added

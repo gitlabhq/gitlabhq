@@ -120,8 +120,6 @@ class EventCreateService
   #
   # @return a tuple of event and either :found or :created
   def wiki_event(wiki_page_meta, author, action)
-    return unless Feature.enabled?(:wiki_events)
-
     raise IllegalActionError, action unless Event::WIKI_ACTIONS.include?(action)
 
     if duplicate = existing_wiki_event(wiki_page_meta, action)

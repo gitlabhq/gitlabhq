@@ -44,8 +44,6 @@ module WikiPages
     end
 
     def create_wiki_event(page)
-      return unless ::Feature.enabled?(:wiki_events)
-
       response = WikiPages::EventCreateService.new(current_user).execute(slug_for_page(page), page, event_action)
 
       log_error(response.message) if response.error?

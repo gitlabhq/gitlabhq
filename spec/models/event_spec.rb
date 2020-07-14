@@ -661,15 +661,6 @@ RSpec.describe Event do
       end
     end
 
-    describe '.not_wiki_page' do
-      it 'does not contain the wiki page events' do
-        non_wiki_events = events.reject(&:wiki_page?)
-
-        expect(events).not_to match_array(non_wiki_events)
-        expect(described_class.not_wiki_page).to match_array(non_wiki_events)
-      end
-    end
-
     describe '.for_wiki_meta' do
       it 'finds events for a given wiki page metadata object' do
         event = events.select(&:wiki_page?).first

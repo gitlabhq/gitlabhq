@@ -90,6 +90,22 @@ Example payload:
 }
 ```
 
+## Triggering test alerts
+
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3066) in GitLab Core in 13.2.
+
+After a [project maintainer or owner](#setting-up-generic-alerts)
+[configures generic alerts](#setting-up-generic-alerts), you can trigger a
+test alert to confirm your integration works properly.
+
+1. Sign in as a user with Developer or greater [permissions](../../../user/permissions.md).
+1. Navigate to **{settings}** **Settings > Operations** in your project.
+1. Click **Alerts endpoint** to expand the section.
+1. Enter a sample payload in **Alert test payload** (valid JSON is required).
+1. Click **Test alert payload**.
+
+GitLab displays an error or success message, depending on the outcome of your test.
+
 ## Automatic grouping of identical alerts **(PREMIUM)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/214557) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.2.

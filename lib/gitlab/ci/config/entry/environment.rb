@@ -44,7 +44,7 @@ module Gitlab
 
               validates :action,
                         type: String,
-                        inclusion: { in: %w[start stop], message: 'should be start or stop' },
+                        inclusion: { in: %w[start stop prepare], message: 'should be start, stop or prepare' },
                         allow_nil: true
 
               validates :on_stop, type: String, allow_nil: true

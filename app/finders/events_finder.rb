@@ -54,15 +54,8 @@ class EventsFinder
     if current_user && scope == 'all'
       EventCollection.new(current_user.authorized_projects).all_project_events
     else
-      # EventCollection is responsible for applying the feature flag
-      apply_feature_flags(source.events)
+      source.events
     end
-  end
-
-  def apply_feature_flags(events)
-    return events if ::Feature.enabled?(:wiki_events)
-
-    events.not_wiki_page
   end
 
   # rubocop: disable CodeReuse/ActiveRecord

@@ -102,6 +102,19 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Deployment do
       end
     end
 
+    context 'when job has environment attribute with prepare action' do
+      let(:attributes) do
+        {
+          environment: 'production',
+          options: { environment: { name: 'production', action: 'prepare' } }
+        }
+      end
+
+      it 'returns nothing' do
+        is_expected.to be_nil
+      end
+    end
+
     context 'when job does not have environment attribute' do
       let(:attributes) { { name: 'test' } }
 

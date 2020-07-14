@@ -1,11 +1,8 @@
 # frozen_string_literal: true
 
 require 'fast_spec_helper'
-require 'support/helpers/fixture_helpers'
 
 RSpec.describe Sentry::PaginationParser do
-  include FixtureHelpers
-
   describe '.parse' do
     subject { described_class.parse(headers) }
 

@@ -200,16 +200,6 @@ RSpec.describe EventCreateService do
 
           expect(duplicate).to eq(event)
         end
-
-        context 'the feature is disabled' do
-          before do
-            stub_feature_flags(wiki_events: false)
-          end
-
-          it 'does not create the event' do
-            expect { event }.not_to change(Event, :count)
-          end
-        end
       end
     end
 

@@ -84,7 +84,6 @@ class Event < ApplicationRecord
   scope :for_design, -> { where(target_type: 'DesignManagement::Design') }
 
   # Needed to implement feature flag: can be removed when feature flag is removed
-  scope :not_wiki_page, -> { where('target_type IS NULL or target_type <> ?', 'WikiPage::Meta') }
   scope :not_design, -> { where('target_type IS NULL or target_type <> ?', 'DesignManagement::Design') }
 
   scope :with_associations, -> do

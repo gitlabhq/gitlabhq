@@ -10,6 +10,7 @@ class ClusterSerializer < BaseSerializer
         :cluster_type,
         :enabled,
         :environment_scope,
+        :gitlab_managed_apps_logs_path,
         :name,
         :nodes,
         :path,

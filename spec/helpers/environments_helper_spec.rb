@@ -114,4 +114,18 @@ RSpec.describe EnvironmentsHelper do
       expect(subject).to eq(true)
     end
   end
+
+  describe '#environment_logs_data' do
+    it 'returns logs data' do
+      expected_data = {
+        "environment-name": environment.name,
+        "environments-path": project_environments_path(project, format: :json),
+        "environment-id": environment.id,
+        "cluster-applications-documentation-path" => help_page_path('user/clusters/applications.md', anchor: 'elastic-stack'),
+        "clusters-path": project_clusters_path(project, format: :json)
+      }
+
+      expect(helper.environment_logs_data(project, environment)).to eq(expected_data)
+    end
+  end
 end

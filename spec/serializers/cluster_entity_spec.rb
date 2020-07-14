@@ -3,8 +3,13 @@
 require 'spec_helper'
 
 RSpec.describe ClusterEntity do
+  include Gitlab::Routing.url_helpers
+
   describe '#as_json' do
-    subject { described_class.new(cluster).as_json }
+    let(:user) { nil }
+    let(:request) { EntityRequest.new({ current_user: user }) }
+
+    subject { described_class.new(cluster, request: request).as_json }
 
     context 'when provider type is gcp' do
       let(:cluster) { create(:cluster, :instance, provider_type: :gcp, provider_gcp: provider) }
@@ -40,7 +45,7 @@ RSpec.describe ClusterEntity do
     context 'when no application has been installed' do
       let(:cluster) { create(:cluster, :instance) }
 
-      subject { described_class.new(cluster).as_json[:applications]}
+      subject { described_class.new(cluster, request: request).as_json[:applications]}
 
       it 'contains helm as not_installable' do
         expect(subject).not_to be_empty
@@ -48,6 +53,29 @@ RSpec.describe ClusterEntity do
         helm = subject[0]
         expect(helm[:name]).to eq('helm')
         expect(helm[:status]).to eq(:not_installable)
+      end
+    end
+
+    context 'gitlab_managed_apps_logs_path' do
+      let(:cluster) { create(:cluster, :project) }
+      let(:user) { create(:user) }
+
+      subject { described_class.new(cluster, request: request).as_json }
+
+      before do
+        allow_next_instance_of(Clusters::ClusterPresenter) do |presenter|
+          allow(presenter).to receive(:show_path).and_return(nil)
+        end
+      end
+
+      it 'return projects log explorer path' do
+        log_explorer_path = project_logs_path(cluster.project, cluster_id: cluster.id)
+
+        expect_next_instance_of(Clusters::ClusterPresenter, cluster, current_user: user) do |presenter|
+          expect(presenter).to receive(:gitlab_managed_apps_logs_path).and_return(log_explorer_path)
+        end
+
+        expect(subject[:gitlab_managed_apps_logs_path]).to eq(log_explorer_path)
       end
     end
   end

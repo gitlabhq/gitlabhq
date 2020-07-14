@@ -52,15 +52,12 @@ class EventFilter
   private
 
   def apply_feature_flags(events)
-    events = events.not_wiki_page unless Feature.enabled?(:wiki_events)
     events = events.not_design unless can_view_design_activity?
 
     events
   end
 
   def wiki_events(events)
-    return events unless Feature.enabled?(:wiki_events)
-
     events.for_wiki_page
   end
 

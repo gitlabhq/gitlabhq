@@ -1,0 +1,24 @@
+%html{ lang: "en" }
+  %head
+    %meta{ content: "text/html; charset=utf-8", "http-equiv" => "Content-Type" }
+    -# haml-lint:disable NoPlainNodes
+    %title
+      GitLab
+    -# haml-lint:enable NoPlainNodes
+    = stylesheet_link_tag 'notify'
+    = yield :head
+  %body
+    .content
+      = yield
+    .footer{ style: "margin-top: 10px;" }
+    %p
+      &mdash;
+      %br
+      = link_to "Unsubscribe", @unsubscribe_url
+
+      -# EE-specific start
+      - if Gitlab::CurrentSettings.email_additional_text.present?
+        %br
+        %br
+          = Gitlab::Utils.nlbr(Gitlab::CurrentSettings.email_additional_text)
+      -# EE-specific end

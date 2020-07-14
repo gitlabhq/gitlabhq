@@ -15,7 +15,7 @@
       = render_if_exists 'events/epics_filter'
     - if comments_visible?
       = event_filter_link EventFilter::COMMENTS, _('Comments'), s_('EventFilterBy|Filter by comments')
-    - if Feature.enabled?(:wiki_events) && (@project.nil? || @project.has_wiki?)
+    - if @project.nil? || @project.has_wiki?
       = event_filter_link EventFilter::WIKI, _('Wiki'), s_('EventFilterBy|Filter by wiki')
     - if event_filter_visible(:designs)
       = event_filter_link EventFilter::DESIGNS, _('Designs'), s_('EventFilterBy|Filter by designs')

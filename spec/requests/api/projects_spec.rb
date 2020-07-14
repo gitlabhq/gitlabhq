@@ -1928,6 +1928,13 @@ RSpec.describe API::Projects do
         end
       end
     end
+
+    it 'exposes service desk attributes' do
+      get api("/projects/#{project.id}", user)
+
+      expect(json_response).to have_key 'service_desk_enabled'
+      expect(json_response).to have_key 'service_desk_address'
+    end
   end
 
   describe 'GET /projects/:id/users' do

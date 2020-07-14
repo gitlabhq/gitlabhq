@@ -23,7 +23,7 @@ module Git
     end
 
     def can_process_wiki_events?
-      Feature.enabled?(:wiki_events) && Feature.enabled?(:wiki_events_on_git_push, project)
+      Feature.enabled?(:wiki_events_on_git_push, project)
     end
 
     def push_changes

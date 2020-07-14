@@ -2,6 +2,7 @@
 
 module Clusters
   class ClusterPresenter < Gitlab::View::Presenter::Delegated
+    include ::Gitlab::Utils::StrongMemoize
     include ActionView::Helpers::SanitizeHelper
     include ActionView::Helpers::UrlHelper
     include IconsHelper
@@ -60,6 +61,12 @@ module Clusters
       end
     end
 
+    def gitlab_managed_apps_logs_path
+      return unless logs_project && can_read_cluster?
+
+      project_logs_path(logs_project, cluster_id: cluster.id)
+    end
+
     def read_only_kubernetes_platform_fields?
       !cluster.provided_by_user?
     end
@@ -83,6 +90,16 @@ module Clusters
 
     def image_path(path)
       ActionController::Base.helpers.image_path(path)
+    end
+
+    # currently log explorer is only available in the scope of the project
+    # for group and instance level cluster selected project does not affects
+    # fetching logs from gitlab managed apps namespace, therefore any project
+    # available to user will be sufficient.
+    def logs_project
+      strong_memoize(:logs_project) do
+        cluster.all_projects.first
+      end
     end
 
     def clusterable

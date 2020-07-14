@@ -24,6 +24,8 @@ file path fragments to start seeing results.
 
 ## Syntax highlighting
 
+> Support for `.gitlab.ci.yml` validation [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/218472) in GitLab 13.2.
+
 As expected from an IDE, syntax highlighting for many languages within
 the Web IDE will make your direct editing even easier.
 
@@ -35,6 +37,13 @@ The Web IDE currently provides:
 - IntelliSense and validation support (displaying errors and warnings, providing
   smart completions, formatting, and outlining) for some languages. For example:
   TypeScript, JavaScript, CSS, LESS, SCSS, JSON, and HTML.
+- Validation support for certain JSON and YAML files using schemas based on the
+  [JSON Schema Store](https://www.schemastore.org/json/). This feature
+  is only supported for the `.gitlab-ci.yml` file.
+
+  NOTE: **Note:** Validation support based on schemas is hidden behind
+  the feature flag `:schema_linting` on self-managed installations. To enable the
+  feature, you can [turn on the feature flag in Rails console](../../../administration/feature_flags.md#how-to-enable-and-disable-features-behind-flags).
 
 Because the Web IDE is based on the [Monaco Editor](https://microsoft.github.io/monaco-editor/),
 you can find a more complete list of supported languages in the

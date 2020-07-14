@@ -37,14 +37,4 @@ RSpec.shared_examples 'WikiPages::DestroyService#execute' do |container_type|
 
     expect { service.execute(nil) }.not_to change { counter.read(:delete) }
   end
-
-  context 'the feature is disabled' do
-    before do
-      stub_feature_flags(wiki_events: false)
-    end
-
-    it 'does not record the activity' do
-      expect { service.execute(page) }.not_to change(Event, :count)
-    end
-  end
 end

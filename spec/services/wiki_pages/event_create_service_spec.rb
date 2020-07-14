@@ -14,21 +14,6 @@ RSpec.describe WikiPages::EventCreateService do
     let(:action) { :created }
     let(:response) { subject.execute(slug, page, action) }
 
-    context 'feature flag is not enabled' do
-      before do
-        stub_feature_flags(wiki_events: false)
-      end
-
-      it 'does not error' do
-        expect(response).to be_success
-          .and have_attributes(message: /No event created/)
-      end
-
-      it 'does not create an event' do
-        expect { response }.not_to change(Event, :count)
-      end
-    end
-
     context 'the user is nil' do
       subject { described_class.new(nil) }
 

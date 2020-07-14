@@ -36,7 +36,8 @@ module EnvironmentsHelper
       "environment-name": environment.name,
       "environments-path": project_environments_path(project, format: :json),
       "environment-id": environment.id,
-      "cluster-applications-documentation-path" => help_page_path('user/clusters/applications.md', anchor: 'elastic-stack')
+      "cluster-applications-documentation-path" => help_page_path('user/clusters/applications.md', anchor: 'elastic-stack'),
+      "clusters-path": project_clusters_path(project, format: :json)
     }
   end
 
