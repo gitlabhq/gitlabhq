@@ -966,7 +966,7 @@ Virtual storage: default
 
 Currently `dataloss` only considers a repository up to date if it has been directly replicated to from the previous write-enabled primary. While reconciling from an up to date secondary can recover the data, this is not visible in the data loss report. This is due for improvement via [Gitaly#2866](https://gitlab.com/gitlab-org/gitaly/-/issues/2866).
 
-NOTE: **NOTE** `dataloss` is still in beta and the output format is subject to change.
+NOTE: **Note:** `dataloss` is still in beta and the output format is subject to change.
 
 ### Checking repository checksums
 

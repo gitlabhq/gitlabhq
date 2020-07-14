@@ -170,7 +170,7 @@ You can filter the selection dropdown by writing part of the namespace or projec
 
 ![limit namespace filter](img/limit_namespace_filter.png)
 
-NOTE: **Note**:
+NOTE: **Note:**
 If no namespaces or projects are selected, no Elasticsearch indexing will take place.
 
 CAUTION: **Warning**:

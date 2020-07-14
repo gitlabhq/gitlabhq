@@ -18,7 +18,7 @@ Though these instructions use [AWS Route53](https://aws.amazon.com/route53/),
 other services such as [Cloudflare](https://www.cloudflare.com/) could be used
 as well.
 
-NOTE: **Note**
+NOTE: **Note:**
 You can also use a load balancer to distribute web UI or API traffic to
 [multiple Geo **secondary** nodes](../../../user/admin_area/geo_nodes.md#multiple-secondary-nodes-behind-a-load-balancer).
 Importantly, the **primary** node cannot yet be included. See the feature request

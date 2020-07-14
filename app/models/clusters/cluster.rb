@@ -133,6 +133,7 @@ module Clusters
 
     scope :with_enabled_modsecurity, -> { joins(:application_ingress).merge(::Clusters::Applications::Ingress.modsecurity_enabled) }
     scope :with_available_elasticstack, -> { joins(:application_elastic_stack).merge(::Clusters::Applications::ElasticStack.available) }
+    scope :with_available_cilium, -> { joins(:application_cilium).merge(::Clusters::Applications::Cilium.available) }
     scope :distinct_with_deployed_environments, -> { joins(:environments).merge(::Deployment.success).distinct }
     scope :preload_elasticstack, -> { preload(:application_elastic_stack) }
     scope :preload_environments, -> { preload(:environments) }

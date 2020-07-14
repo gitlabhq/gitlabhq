@@ -5100,6 +5100,11 @@ type Group {
     iid: ID
 
     """
+    Whether to include ancestor Iterations. Defaults to true
+    """
+    includeAncestors: Boolean
+
+    """
     Returns the last _n_ elements from the list.
     """
     last: Int

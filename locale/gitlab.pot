@@ -2480,6 +2480,12 @@ msgstr ""
 msgid "An error occurred while enabling Service Desk."
 msgstr ""
 
+msgid "An error occurred while fetching branches.  Retry the search."
+msgstr ""
+
+msgid "An error occurred while fetching commits.  Retry the search."
+msgstr ""
+
 msgid "An error occurred while fetching coverage reports."
 msgstr ""
 
@@ -2508,6 +2514,9 @@ msgid "An error occurred while fetching projects autocomplete."
 msgstr ""
 
 msgid "An error occurred while fetching sidebar data"
+msgstr ""
+
+msgid "An error occurred while fetching tags. Retry the search."
 msgstr ""
 
 msgid "An error occurred while fetching terraform reports."
@@ -7456,6 +7465,9 @@ msgid "Default: Directly import the Google Code email address or username"
 msgstr ""
 
 msgid "Default: Map a FogBugz account ID to a full name"
+msgstr ""
+
+msgid "DefaultBranchLabel|default"
 msgstr ""
 
 msgid "Define a custom pattern with cron syntax"
@@ -13628,6 +13640,11 @@ msgstr ""
 msgid "LicenseCompliance|License Approvals"
 msgstr ""
 
+msgid "LicenseCompliance|License Compliance detected %d license and policy violation for the source branch only"
+msgid_plural "LicenseCompliance|License Compliance detected %d licenses and policy violations for the source branch only"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "LicenseCompliance|License Compliance detected %d license and policy violation for the source branch only; approval required"
 msgid_plural "LicenseCompliance|License Compliance detected %d licenses and policy violations for the source branch only; approval required"
 msgstr[0] ""
@@ -13640,6 +13657,11 @@ msgstr[1] ""
 
 msgid "LicenseCompliance|License Compliance detected %d new license"
 msgid_plural "LicenseCompliance|License Compliance detected %d new licenses"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "LicenseCompliance|License Compliance detected %d new license and policy violation"
+msgid_plural "LicenseCompliance|License Compliance detected %d new licenses and policy violations"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -15618,6 +15640,9 @@ msgstr ""
 msgid "No matching results"
 msgstr ""
 
+msgid "No matching results for \"%{query}\""
+msgstr ""
+
 msgid "No merge requests found"
 msgstr ""
 
@@ -15652,6 +15677,9 @@ msgid "No prioritized labels with such name or description"
 msgstr ""
 
 msgid "No public groups"
+msgstr ""
+
+msgid "No ref selected"
 msgstr ""
 
 msgid "No related merge requests found."
@@ -20270,6 +20298,9 @@ msgstr ""
 msgid "Search branches and tags"
 msgstr ""
 
+msgid "Search by Git revision"
+msgstr ""
+
 msgid "Search by author"
 msgstr ""
 
@@ -24652,6 +24683,9 @@ msgstr ""
 msgid "Total: %{total}"
 msgstr ""
 
+msgid "TotalRefCountIndicator|1000+"
+msgstr ""
+
 msgid "Trace"
 msgstr ""
 
@@ -28147,6 +28181,9 @@ msgid "mrWidget|You can delete the source branch now"
 msgstr ""
 
 msgid "mrWidget|You can merge this merge request manually using the"
+msgstr ""
+
+msgid "mrWidget|You can only merge once the denied license is removed"
 msgstr ""
 
 msgid "mrWidget|Your password"

@@ -253,7 +253,7 @@ gitlab_rails['object_store']['connection'] = {
 
 #### OpenStack-compatible connection settings
 
-NOTE: **Note** This is not compatible with the consolidated object storage form.
+NOTE: **Note:** This is not compatible with the consolidated object storage form.
 OpenStack Swift is only supported with the storage-specific form. See the
 [S3 settings](#s3-compatible-connection-settings) if you want to use the consolidated form.
 
@@ -274,7 +274,7 @@ Here are the valid connection settings below for the Swift API, provided by
 
 #### Rackspace Cloud Files
 
-NOTE: **Note** This is not compatible with the consolidated object
+NOTE: **Note:** This is not compatible with the consolidated object
 storage form. Rackspace Cloud is only supported with the storage-specific form.
 
 Here are the valid connection parameters for Rackspace Cloud, provided by
@@ -408,7 +408,7 @@ additional complexity and unnecessary redundancy. Since both GitLab
 Rails and Workhorse components need access to object storage, the
 consolidated form avoids excessive duplication of credentials.
 
-NOTE: **Note** The consolidated object storage configuration is **only** used if all
+NOTE: **Note:** The consolidated object storage configuration is **only** used if all
 lines from the original form is omitted. To move to the consolidated form, remove the original configuration (for example, `artifacts_object_store_enabled`, `uploads_object_store_connection`, and so on.)
 
 ## Storage-specific configuration

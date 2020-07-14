@@ -274,7 +274,7 @@ secondary domain, like changing Git remotes and API URLs.
    external_url 'https://<new_external_url>'
    ```
 
-   NOTE: **Note**
+   NOTE: **Note:**
    Changing `external_url` won't prevent access via the old secondary URL, as
    long as the secondary DNS records are still intact.
 

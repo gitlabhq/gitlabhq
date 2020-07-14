@@ -730,6 +730,8 @@ appear to be associated to any of the services running, since they all appear to
 | `process_memory_uss`                                      | `topology > nodes > node_services`   | `enablement`  |                  |         | The average Unique Set Size of a service process                           |
 | `process_memory_pss`                                      | `topology > nodes > node_services`   | `enablement`  |                  |         | The average Proportional Set Size of a service process                     |
 | `server`                                                  | `topology > nodes > node_services`   | `enablement`  |                  |         | The type of web server used (Unicorn or Puma)                              |
+| `network_policy_forwards`                                 | `counts`                             | `defend`      |                  | EE      | Cumulative count of forwarded packets by Container Network                 |
+| `network_policy_drops`                                    | `counts`                             | `defend`      |                  | EE      | Cumulative count of dropped packets by Container Network                   |
 
 ## Example Usage Ping payload
 

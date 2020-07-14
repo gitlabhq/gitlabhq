@@ -574,6 +574,12 @@ Gitlab.ee do
   Settings.cron_jobs['web_application_firewall_metrics_worker'] ||= Settingslogic.new({})
   Settings.cron_jobs['web_application_firewall_metrics_worker']['cron'] ||= '0 1 * * 0'
   Settings.cron_jobs['web_application_firewall_metrics_worker']['job_class'] = 'IngressModsecurityCounterMetricsWorker'
+  Settings.cron_jobs['users_create_statistics_worker'] ||= Settingslogic.new({})
+  Settings.cron_jobs['users_create_statistics_worker']['cron'] ||= '2 15 * * *'
+  Settings.cron_jobs['users_create_statistics_worker']['job_class'] = 'Users::CreateStatisticsWorker'
+  Settings.cron_jobs['network_policy_metrics_worker'] ||= Settingslogic.new({})
+  Settings.cron_jobs['network_policy_metrics_worker']['cron'] ||= '0 3 * * 0'
+  Settings.cron_jobs['network_policy_metrics_worker']['job_class'] = 'NetworkPolicyMetricsWorker'
 end
 
 #

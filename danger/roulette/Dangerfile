@@ -81,7 +81,7 @@ if changes.any?
   roulette_spins = roulette.spin(project, categories, branch_name, timezone_experiment: TIMEZONE_EXPERIMENT)
   rows = roulette_spins.map do |spin|
     # MR includes QA changes, but also other changes, and author isn't an SET
-    if spin.category == :qa && categories.size > 1 && !mr_author.reviewer?(project, spin.category, [])
+    if spin.category == :qa && categories.size > 1 && mr_author && !mr_author.reviewer?(project, spin.category, [])
       spin.optional_role = :maintainer
     end
 
