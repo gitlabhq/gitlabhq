@@ -201,6 +201,72 @@ By following this pattern we guarantee:
 1. All data in the application follows the same lifecycle pattern
 1. Unit tests are easier
 
+#### Updating complex state
+
+Sometimes, especially when the state is complex, is really hard to traverse the state to precisely update what the mutation needs to update.
+Ideally a `vuex` state should be as normalized/decoupled as possible but this is not always the case.
+
+It's important to remember that the code is much easier to read and maintain when the `portion of the mutated state` is selected and mutated in the mutation itself.
+
+Given this state:
+
+```javascript
+   export default () => ({
+    items: [
+      {
+        id: 1,
+        name: 'my_issue',
+        closed: false,
+      },
+      {
+        id: 2,
+        name: 'another_issue',
+        closed: false,
+      }
+    ]
+});
+```
+
+It may be tempting to write a mutation like so:
+
+```javascript
+// Bad
+export default {
+  [types.MARK_AS_CLOSED](state, item) {
+    Object.assign(item, {closed: true})
+  }
+}
+```
+
+While this approach works it has several dependencies:
+
+- Correct selection of `item` in the component/action.
+- The `item` property is already declared in the `closed` state.
+  - A new `confidential` property would not be reactive.
+- Noting that `item` is referenced by `items`
+
+A mutation written like this is harder to maintain and more error prone. We should rather write a mutation like this:
+
+```javascript
+// Good
+export default {
+  [types.MARK_AS_CLOSED](state, itemId) {
+    const item = state.items.find(i => i.id == itemId);
+    Vue.set(item, 'closed', true)
+
+    state.items.splice(index, 1, item)
+  }
+}
+```
+
+This approach is better because:
+
+- It selects and updates the state in the mutation, which is more maintainable.
+- It has no external dependencies, if the correct `itemId` is passed the state is correctly updated.
+- It does not have reactivity caveats, as we generate a new `item` to avoid coupling to the initial state.
+
+A mutation written like this is easier to maintain. In addition, we avoid errors due to the limitation of the reactivity system.
+
 ### `getters.js`
 
 Sometimes we may need to get derived state based on store state, like filtering for a specific prop.

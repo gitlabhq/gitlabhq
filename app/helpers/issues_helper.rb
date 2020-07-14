@@ -41,7 +41,7 @@ module IssuesHelper
   end
 
   def confidential_icon(issue)
-    icon('eye-slash') if issue.confidential?
+    sprite_icon('eye-slash', size: 16, css_class: 'gl-vertical-align-text-bottom') if issue.confidential?
   end
 
   def award_user_list(awards, current_user, limit: 10)

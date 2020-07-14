@@ -12,7 +12,7 @@ what environments to run tests against using the `only` metadata.
 | `domain` | Set the domain matcher | `String` |
 | `production` | Match against production | `Static` |
 
-WARNING: **Be advised:**
+CAUTION: **Caution:**
 You cannot specify `:production` and `{ <switch>: 'value' }` simultaneously.  
 These options are mutually exclusive. If you want to specify production, you
 can control the `tld` and `domain` independently.

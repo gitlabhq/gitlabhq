@@ -90,28 +90,42 @@ RSpec.describe Gitlab::Database do
   end
 
   describe '.postgresql_minimum_supported_version?' do
-    it 'returns false when using PostgreSQL 9.5' do
-      allow(described_class).to receive(:version).and_return('9.5')
-
-      expect(described_class.postgresql_minimum_supported_version?).to eq(false)
-    end
-
-    it 'returns false when using PostgreSQL 9.6' do
-      allow(described_class).to receive(:version).and_return('9.6')
-
-      expect(described_class.postgresql_minimum_supported_version?).to eq(false)
-    end
-
     it 'returns false when using PostgreSQL 10' do
       allow(described_class).to receive(:version).and_return('10')
 
       expect(described_class.postgresql_minimum_supported_version?).to eq(false)
     end
 
-    it 'returns true when using PostgreSQL 11 or newer' do
-      allow(described_class).to receive(:version).and_return('11.0')
+    it 'returns true when using PostgreSQL 11' do
+      allow(described_class).to receive(:version).and_return('11')
 
       expect(described_class.postgresql_minimum_supported_version?).to eq(true)
+    end
+
+    it 'returns true when using PostgreSQL 12' do
+      allow(described_class).to receive(:version).and_return('12')
+
+      expect(described_class.postgresql_minimum_supported_version?).to eq(true)
+    end
+  end
+
+  describe '.postgresql_upcoming_deprecation?' do
+    it 'returns true when database version is lower than the upcoming minimum' do
+      allow(described_class).to receive(:version).and_return('11')
+
+      expect(described_class.postgresql_upcoming_deprecation?).to eq(true)
+    end
+
+    it 'returns false when database version equals the upcoming minimum' do
+      allow(described_class).to receive(:version).and_return('12')
+
+      expect(described_class.postgresql_upcoming_deprecation?).to eq(false)
+    end
+
+    it 'returns false when database version is greater the upcoming minimum' do
+      allow(described_class).to receive(:version).and_return('13')
+
+      expect(described_class.postgresql_upcoming_deprecation?).to eq(false)
     end
   end
 

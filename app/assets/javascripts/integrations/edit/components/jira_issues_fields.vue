@@ -119,10 +119,12 @@ export default {
     <template v-if="showJiraIssuesIntegration">
       <gl-form-group
         :label="s__('JiraService|Jira project key')"
+        label-for="service_project_key"
         :invalid-feedback="__('This field is required.')"
         :state="validProjectKey"
       >
         <gl-form-input
+          id="service_project_key"
           v-model="projectKey"
           name="service[project_key]"
           :placeholder="s__('JiraService|e.g. AB')"

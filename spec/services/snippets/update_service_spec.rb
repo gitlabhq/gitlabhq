@@ -537,10 +537,18 @@ RSpec.describe Snippets::UpdateService do
             it_behaves_like 'returns an error', 'Snippet files have invalid data'
           end
 
-          context 'when file_path is not present' do
-            let(:snippet_files) { [{ action: :create, content: content }] }
+          context 'when file_path is not present or empty' do
+            let(:snippet_files) { [{ action: :create, content: content }, { action: :create, file_path: '', content: content }] }
 
-            it_behaves_like 'returns an error', 'Snippet files have invalid data'
+            it 'generates the file path for the files' do
+              expect(blob('snippetfile1.txt')).to be_nil
+              expect(blob('snippetfile2.txt')).to be_nil
+
+              expect(subject).to be_success
+
+              expect(blob('snippetfile1.txt').data).to eq content
+              expect(blob('snippetfile2.txt').data).to eq content
+            end
           end
 
           context 'when file_path already exists in the repository' do

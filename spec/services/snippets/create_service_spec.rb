@@ -177,10 +177,8 @@ RSpec.describe Snippets::CreateService do
         end
 
         it 'returns a generic error' do
-          response = subject
-
-          expect(response).to be_error
-          expect(response.payload[:snippet].errors[:repository]).to eq ['Error creating the snippet']
+          expect(subject).to be_error
+          expect(snippet.errors[:repository]).to eq ['Error creating the snippet']
         end
       end
 
@@ -250,7 +248,7 @@ RSpec.describe Snippets::CreateService do
       end
 
       it 'commit the files to the repository' do
-        subject
+        expect(subject).to be_success
 
         blob = snippet.repository.blob_at('master', file_path)
 
@@ -261,10 +259,7 @@ RSpec.describe Snippets::CreateService do
         let(:extra_opts) { { content: 'foo', file_name: 'path' } }
 
         it 'a validation error is raised' do
-          response = subject
-          snippet = response.payload[:snippet]
-
-          expect(response).to be_error
+          expect(subject).to be_error
           expect(snippet.errors.full_messages_for(:content)).to eq ['Content and snippet files cannot be used together']
           expect(snippet.errors.full_messages_for(:file_name)).to eq ['File name and snippet files cannot be used together']
           expect(snippet.repository.exists?).to be_falsey
@@ -275,10 +270,7 @@ RSpec.describe Snippets::CreateService do
         let(:snippet_files) { [{ action: 'invalid_action', file_path: 'snippet_file_path.rb', content: 'snippet_content' }] }
 
         it 'a validation error is raised' do
-          response = subject
-          snippet = response.payload[:snippet]
-
-          expect(response).to be_error
+          expect(subject).to be_error
           expect(snippet.errors.full_messages_for(:snippet_files)).to eq ['Snippet files have invalid data']
           expect(snippet.repository.exists?).to be_falsey
         end
@@ -288,12 +280,19 @@ RSpec.describe Snippets::CreateService do
         let(:snippet_files) { [{ action: 'delete', file_path: 'snippet_file_path.rb' }] }
 
         it 'a validation error is raised' do
-          response = subject
-          snippet = response.payload[:snippet]
-
-          expect(response).to be_error
+          expect(subject).to be_error
           expect(snippet.errors.full_messages_for(:snippet_files)).to eq ['Snippet files have invalid data']
           expect(snippet.repository.exists?).to be_falsey
+        end
+      end
+
+      context 'when "create" operation does not have file_path or is empty' do
+        let(:snippet_files) { [{ action: 'create', content: content }, { action: 'create', content: content, file_path: '' }] }
+
+        it 'generates the file path for the files' do
+          expect(subject).to be_success
+          expect(snippet.repository.blob_at('master', 'snippetfile1.txt').data).to eq content
+          expect(snippet.repository.blob_at('master', 'snippetfile2.txt').data).to eq content
         end
       end
     end

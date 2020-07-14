@@ -230,13 +230,15 @@ export default {
       <div class="flex-grow-1">
         <div class="title">
           <span class="issue-title-text">
-            <i
+            <gl-icon
               v-if="issuable.confidential"
               v-gl-tooltip
-              class="fa fa-eye-slash"
+              name="eye-slash"
+              class="gl-vertical-align-text-bottom"
+              :size="16"
               :title="$options.confidentialTooltipText"
               :aria-label="$options.confidentialTooltipText"
-            ></i>
+            />
             <gl-link
               :href="issuable.web_url"
               :target="isJiraIssue ? '_blank' : null"

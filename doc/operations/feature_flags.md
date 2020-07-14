@@ -61,7 +61,7 @@ for. The rollout strategy will have no effect if the environment spec is disable
 It can be set to:
 
 - All users
-- [Percent rollout (logged in users)](#percent-rollout-logged-in-users)
+- [Percent of users](#percent-of-users)
   - Optionally, you can click the **Include additional user IDs** checkbox and add a list
     of specific users IDs to enable the feature for.
 - [User IDs](#user-ids)
@@ -82,9 +82,9 @@ for granular feature flag controls. GitLab Feature Flags can have multiple strat
 and the supported strategies are:
 
 - [All users](#all-users)
-- [Percent rollout (logged in users)](#percent-rollout-logged-in-users)
+- [Percent of Users](#percent-of-users)
 - [User IDs](#user-ids)
-- [List](#list)
+- [User List](#user-list)
 
 Strategies can be added to feature flags when [creating a feature flag](#create-a-feature-flag),
 or by editing an existing feature flag after creation by navigating to **Operations > Feature Flags**
@@ -95,7 +95,7 @@ and clicking **{pencil}** (edit).
 Enables the feature for all users. It uses the [`default`](https://unleash.github.io/docs/activation_strategy#default)
 Unleash activation strategy.
 
-### Percent rollout (logged in users)
+### Percent of Users
 
 Enables the feature for a percentage of authenticated users. It uses the
 [`gradualRolloutUserId`](https://unleash.github.io/docs/activation_strategy#gradualrolloutuserid)
@@ -130,7 +130,7 @@ CAUTION: **Caution:**
 The Unleash client **must** be given a user ID for the feature to be enabled for
 target users. See the [Ruby example](#ruby-application-example) below.
 
-### List
+### User List
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/35930) in GitLab 13.1.
 
@@ -165,6 +165,7 @@ to disable a feature flag for a specific environment:
 1. Navigate to your project's **Operations > Feature Flags**.
 1. For the feature flag you want to disable, click the Pencil icon.
 1. To disable the flag:
+
    - In GitLab 13.0 and earlier: Slide the Status toggle for the environment. Or, to delete the
      environment spec, on the right, click the **Remove (X)** icon.
    - In GitLab 13.1 and later: For each strategy it applies to, under **Environments**, delete the environment.

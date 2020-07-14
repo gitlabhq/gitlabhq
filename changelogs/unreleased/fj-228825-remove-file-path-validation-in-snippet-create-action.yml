@@ -1,0 +1,5 @@
+---
+title: Remove file_path validation in snippet create action
+merge_request: 36809
+author:
+type: changed

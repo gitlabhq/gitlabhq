@@ -29,8 +29,8 @@ RSpec.describe SnippetInputAction do
       :move    | 'foobar'  | ''       | 'foo1'   | nil                | true  | nil
       :create  | 'foobar'  | nil      | 'foobar' | nil                | false | :content
       :create  | 'foobar'  | ''       | 'foobar' | nil                | false | :content
-      :create  | nil       | 'foobar' | 'foobar' | nil                | false | :file_path
-      :create  | ''        | 'foobar' | 'foobar' | nil                | false | :file_path
+      :create  | nil       | 'foobar' | 'foobar' | nil                | true  | nil
+      :create  | ''        | 'foobar' | 'foobar' | nil                | true  | nil
       :update  | 'foobar'  | nil      | 'foobar' | nil                | false | :content
       :update  | 'foobar'  | ''       | 'foobar' | nil                | false | :content
       :update  | 'other'   | 'foobar' | 'foobar' | nil                | false | :file_path

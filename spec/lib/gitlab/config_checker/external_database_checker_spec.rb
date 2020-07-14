@@ -6,51 +6,54 @@ RSpec.describe Gitlab::ConfigChecker::ExternalDatabaseChecker do
   describe '#check' do
     subject { described_class.check }
 
-    context 'database version is not deprecated' do
+    let_it_be(:deprecation_warning) { "Please upgrade" }
+    let_it_be(:upcoming_deprecation_warning) { "Please consider upgrading" }
+
+    context 'when database meets minimum version and there is no upcoming deprecation' do
       before do
-        allow(described_class).to receive(:db_version_deprecated?).and_return(false)
+        allow(Gitlab::Database).to receive(:postgresql_minimum_supported_version?).and_return(true)
+        allow(Gitlab::Database).to receive(:postgresql_upcoming_deprecation?).and_return(false)
       end
 
       it { is_expected.to be_empty }
     end
 
-    context 'database version is deprecated' do
+    context 'when database does not meet minimum version and there is no upcoming deprecation' do
       before do
-        allow(described_class).to receive(:db_version_deprecated?).and_return(true)
+        allow(Gitlab::Database).to receive(:postgresql_minimum_supported_version?).and_return(false)
+        allow(Gitlab::Database).to receive(:postgresql_upcoming_deprecation?).and_return(false)
       end
 
-      let(:notice_deprecated_database) do
-        {
-          type: 'warning',
-            message: _('Note that PostgreSQL 11 will become the minimum required PostgreSQL version in GitLab 13.0 (May 2020). '\
-                     'PostgreSQL 9.6 and PostgreSQL 10 will no longer be supported in GitLab 13.0. '\
-                     'Please consider upgrading your PostgreSQL version (%{db_version}) soon.') % { db_version: Gitlab::Database.version.to_s }
-        }
-      end
-
-      it 'reports deprecated database notices' do
-        is_expected.to contain_exactly(notice_deprecated_database)
+      it 'only returns notice about deprecated database version' do
+        is_expected.to include(a_hash_including(message: include(deprecation_warning)))
+        is_expected.not_to include(a_hash_including(message: include(upcoming_deprecation_warning)))
       end
     end
-  end
 
-  describe '#db_version_deprecated' do
-    subject { described_class.db_version_deprecated? }
-
-    context 'database version is not deprecated' do
+    context 'when database meets minimum version and there is an upcoming deprecation' do
       before do
-        allow(Gitlab::Database).to receive(:version).and_return(11)
+        allow(Gitlab::Database).to receive(:postgresql_minimum_supported_version?).and_return(true)
+        allow(Gitlab::Database).to receive(:postgresql_upcoming_deprecation?).and_return(true)
       end
 
-      it { is_expected.to be false }
+      it 'only returns notice about an upcoming deprecation' do
+        is_expected.to include(a_hash_including(message: include(upcoming_deprecation_warning)))
+        is_expected.not_to include(a_hash_including(message: include(deprecation_warning)))
+      end
     end
 
-    context 'database version is deprecated' do
+    context 'when database does not meet minimum version and there is an upcoming deprecation' do
       before do
-        allow(Gitlab::Database).to receive(:version).and_return(10)
+        allow(Gitlab::Database).to receive(:postgresql_minimum_supported_version?).and_return(false)
+        allow(Gitlab::Database).to receive(:postgresql_upcoming_deprecation?).and_return(true)
       end
 
-      it { is_expected.to be true }
+      it 'returns notice about deprecated database version and an upcoming deprecation' do
+        is_expected.to include(
+          a_hash_including(message: include(deprecation_warning)),
+          a_hash_including(message: include(upcoming_deprecation_warning))
+        )
+      end
     end
   end
 end

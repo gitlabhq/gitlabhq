@@ -362,7 +362,7 @@
 
       - if project_nav_tab? :settings
         = nav_link(path: sidebar_settings_paths) do
-          = link_to edit_project_path(@project), class: 'shortcuts-tree' do
+          = link_to edit_project_path(@project) do
             .nav-icon-container
               = sprite_icon('settings')
             %span.nav-item-name.qa-settings-item#js-onboarding-settings-link
