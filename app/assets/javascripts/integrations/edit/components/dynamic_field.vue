@@ -106,10 +106,11 @@ export default {
       return {
         id: this.fieldId,
         name: this.fieldName,
+        state: this.valid,
       };
     },
     valid() {
-      return !this.required || !isEmpty(this.model) || !this.validated;
+      return !this.required || !isEmpty(this.model) || this.isNonEmptyPassword || !this.validated;
     },
   },
   created() {

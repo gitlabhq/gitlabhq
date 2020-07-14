@@ -14,7 +14,7 @@ export default {
     TestSummaryTable,
   },
   computed: {
-    ...mapState(['isLoading', 'selectedSuiteIndex', 'testReports']),
+    ...mapState(['hasFullReport', 'isLoading', 'selectedSuiteIndex', 'testReports']),
     ...mapGetters(['getSelectedSuite']),
     showSuite() {
       return this.selectedSuiteIndex !== null;
@@ -28,12 +28,22 @@ export default {
     this.fetchSummary();
   },
   methods: {
-    ...mapActions(['fetchSummary', 'setSelectedSuiteIndex', 'removeSelectedSuiteIndex']),
+    ...mapActions([
+      'fetchFullReport',
+      'fetchSummary',
+      'setSelectedSuiteIndex',
+      'removeSelectedSuiteIndex',
+    ]),
     summaryBackClick() {
       this.removeSelectedSuiteIndex();
     },
     summaryTableRowClick(index) {
       this.setSelectedSuiteIndex(index);
+
+      // Fetch the full report when the user clicks to see more details
+      if (!this.hasFullReport) {
+        this.fetchFullReport();
+      }
     },
     beforeEnterTransition() {
       document.documentElement.style.overflowX = 'hidden';

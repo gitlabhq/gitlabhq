@@ -125,7 +125,7 @@ module Analytics
       def label_available_for_group?(label_id)
         LabelsFinder.new(nil, { group_id: group.id, include_ancestor_groups: true, only_group_labels: true })
           .execute(skip_authorization: true)
-          .by_ids(label_id)
+          .id_in(label_id)
           .exists?
       end
     end

@@ -147,3 +147,7 @@ ul.wiki-pages-list.content-list {
     }
   }
 }
+
+.empty-state-wiki .text-content {
+  max-width: 490px; // Widen to allow for the Confluence button
+}

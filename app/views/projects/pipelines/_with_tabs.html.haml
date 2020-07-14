@@ -24,7 +24,7 @@
       %li.js-tests-tab-link
         = link_to test_report_project_pipeline_path(@project, @pipeline), data: { target: '#js-tab-tests', action: 'test_report', toggle: 'tab' }, class: 'test-tab' do
           = s_('TestReports|Tests')
-          %span.badge.badge-pill.js-test-report-badge-counter
+          %span.badge.badge-pill.js-test-report-badge-counter= Feature.enabled?(:build_report_summary, @project) ? @pipeline.test_report_summary.total_count : ''
     = render_if_exists "projects/pipelines/tabs_holder", pipeline: @pipeline, project: @project
 
 .tab-content
@@ -86,5 +86,7 @@
       #js-pipeline-dag-vue{ data: { pipeline_data_path: dag_project_pipeline_path(@project, @pipeline), empty_svg_path: image_path('illustrations/empty-state/empty-dag-md.svg'), dag_doc_path: help_page_path('ci/yaml/README.md', anchor: 'needs')} }
 
   #js-tab-tests.tab-pane
-    #js-pipeline-tests-detail{ data: { full_report_endpoint: test_report_project_pipeline_path(@project, @pipeline, format: :json), count_endpoint: test_reports_count_project_pipeline_path(@project, @pipeline, format: :json) } }
+    #js-pipeline-tests-detail{ data: { full_report_endpoint: test_report_project_pipeline_path(@project, @pipeline, format: :json),
+      summary_endpoint: Feature.enabled?(:build_report_summary, @project) ? summary_project_pipeline_tests_path(@project, @pipeline, format: :json) : '',
+      count_endpoint: test_reports_count_project_pipeline_path(@project, @pipeline, format: :json) } }
   = render_if_exists "projects/pipelines/tabs_content", pipeline: @pipeline, project: @project

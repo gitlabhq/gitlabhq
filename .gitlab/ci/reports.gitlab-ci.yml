@@ -59,6 +59,7 @@ code_quality:
     SAST_ANALYZER_IMAGE_TAG: 2
     SAST_BRAKEMAN_LEVEL: 2  # GitLab-specific
     SAST_EXCLUDED_PATHS: qa,spec,doc,ee/spec  # GitLab-specific
+    SAST_DISABLE_BABEL: "true"
   script:
     - /analyzer run
 
@@ -72,11 +73,10 @@ eslint-sast:
   image:
     name: "$SAST_ANALYZER_IMAGE_PREFIX/eslint:$SAST_ANALYZER_IMAGE_TAG"
 
-# Temporary disabled as it's constantly failing. See https://gitlab.com/gitlab-org/gitlab/-/issues/213769.
-# nodejs-scan-sast:
-#   extends: .sast
-#   image:
-#     name: "$SAST_ANALYZER_IMAGE_PREFIX/nodejs-scan:$SAST_ANALYZER_IMAGE_TAG"
+nodejs-scan-sast:
+  extends: .sast
+  image:
+    name: "$SAST_ANALYZER_IMAGE_PREFIX/nodejs-scan:$SAST_ANALYZER_IMAGE_TAG"
 
 secrets-sast:
   extends: .sast

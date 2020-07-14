@@ -32,6 +32,8 @@ period in hours.
 
 ## Email notification for unknown sign-ins
 
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/218457) in GitLab 13.2.
+
 When enabled, GitLab notifies users of sign-ins from unknown IP addresses or devices. For more information,
 see [Email notification for unknown sign-ins](../../profile/unknown_sign_in_notification.md).
 

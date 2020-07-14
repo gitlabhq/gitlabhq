@@ -177,6 +177,14 @@ Dashboard regardless of how often the default branch is updated.
 
 That way, reports are created even if no code change happens.
 
+CAUTION: **Warning:**
+Running Dependency Scanning from a scheduled pipeline might result in false negatives if your
+project doesn't have a lock file and isn't configured for Continuous Delivery. A lock file is a file
+that lists all transient dependencies and keeps track of their exact versions. The false negative
+can occur because the dependency version resolved during the scan might differ from the ones
+resolved when your project was built and released, in a previous pipeline. Java projects can't have
+lock files. Python projects can have lock files, but GitLab Secure tools don't support them.
+
 ## Security scans using Auto DevOps
 
 When using [Auto DevOps](../../../topics/autodevops/index.md), use

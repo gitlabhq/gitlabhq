@@ -187,6 +187,10 @@ export default {
       return isScopedLabel({ title: name }) && this.scopedLabelsAvailable;
     },
     labelHref({ name }) {
+      if (this.isJiraIssue) {
+        return this.issuableLink({ 'labels[]': name });
+      }
+
       return this.issuableLink({ 'label_name[]': name });
     },
     onSelect(ev) {

@@ -194,6 +194,28 @@ RSpec.describe Gitlab::Danger::Roulette do
           end
         end
       end
+
+      context 'when change includes a category with timezone disabled' do
+        let(:categories) { [:backend] }
+
+        before do
+          stub_const("#{described_class}::INCLUDE_TIMEZONE_FOR_CATEGORY", backend: false)
+        end
+
+        it 'assigns backend reviewer and maintainer' do
+          expect(spins).to contain_exactly(matching_spin(:backend, reviewer: engineering_productivity_reviewer, maintainer: backend_maintainer))
+        end
+
+        context 'when teammate is not in a good timezone' do
+          before do
+            backend_maintainer[:tz_offset_hours] = 5.0
+          end
+
+          it 'assigns backend reviewer and maintainer' do
+            expect(spins).to contain_exactly(matching_spin(:backend, reviewer: engineering_productivity_reviewer, maintainer: backend_maintainer))
+          end
+        end
+      end
     end
   end
 

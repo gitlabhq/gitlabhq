@@ -193,7 +193,7 @@ If enabling, check that your project does not have a `.gitlab-ci.yml`, or if one
    and choose the [deployment strategy](#deployment-strategy).
 1. Click **Save changes** for the changes to take effect.
 
-After enabling the feature, an Auto DevOps pipeline is triggered on the default branch.
+After enabling the feature, an Auto DevOps pipeline is triggered on the `master` branch.
 
 ### At the group level
 

@@ -902,6 +902,8 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://git
 
 ## Reorder an issue
 
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/211864) as a [community contribution](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/35349) in GitLab 13.2.
+
 Reorders an issue, you can see the results when sorting issues manually
 
 ```plaintext

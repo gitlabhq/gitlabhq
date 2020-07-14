@@ -19,6 +19,7 @@ export default el => {
     type,
     commentDetail,
     projectKey,
+    upgradePlanPath,
     editProjectPath,
     triggerEvents,
     fields,
@@ -30,6 +31,7 @@ export default el => {
     commitEvents,
     mergeRequestEvents,
     enableComments,
+    showJiraIssuesIntegration,
     enableJiraIssues,
   } = parseBooleanInData(booleanAttributes);
 
@@ -50,8 +52,10 @@ export default el => {
             initialCommentDetail: commentDetail,
           },
           jiraIssuesProps: {
+            showJiraIssuesIntegration,
             initialEnableJiraIssues: enableJiraIssues,
             initialProjectKey: projectKey,
+            upgradePlanPath,
             editProjectPath,
           },
           triggerEvents: JSON.parse(triggerEvents),

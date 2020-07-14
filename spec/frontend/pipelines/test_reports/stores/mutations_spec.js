@@ -12,10 +12,11 @@ describe('Mutations TestReports Store', () => {
     testReports: {},
     selectedSuite: null,
     isLoading: false,
+    hasFullReport: false,
   };
 
   beforeEach(() => {
-    mockState = defaultState;
+    mockState = { ...defaultState };
   });
 
   describe('set reports', () => {
@@ -24,6 +25,7 @@ describe('Mutations TestReports Store', () => {
       mutations[types.SET_REPORTS](mockState, testReports);
 
       expect(mockState.testReports).toEqual(expectedState.testReports);
+      expect(mockState.hasFullReport).toBe(true);
     });
   });
 
@@ -41,7 +43,7 @@ describe('Mutations TestReports Store', () => {
       const summary = { total_count: 1 };
       mutations[types.SET_SUMMARY](mockState, summary);
 
-      expect(mockState.summary).toEqual(summary);
+      expect(mockState.testReports).toEqual(summary);
     });
   });
 

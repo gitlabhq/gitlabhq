@@ -34,7 +34,7 @@ module Labels
       return [] if ids.empty?
 
       # rubocop:disable CodeReuse/ActiveRecord
-      existing_ids = available_labels.by_ids(ids).pluck(:id)
+      existing_ids = available_labels.id_in(ids).pluck(:id)
       # rubocop:enable CodeReuse/ActiveRecord
       ids.map(&:to_i) & existing_ids
     end

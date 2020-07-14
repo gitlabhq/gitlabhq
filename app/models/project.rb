@@ -2469,6 +2469,7 @@ class Project < ApplicationRecord
   def service_desk_enabled
     Gitlab::ServiceDesk.enabled?(project: self)
   end
+
   alias_method :service_desk_enabled?, :service_desk_enabled
 
   def service_desk_address

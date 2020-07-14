@@ -2,7 +2,8 @@ import Vuex from 'vuex';
 import { shallowMount, createLocalVue } from '@vue/test-utils';
 import { getJSONFixture } from 'helpers/fixtures';
 import TestReports from '~/pipelines/components/test_reports/test_reports.vue';
-import * as actions from '~/pipelines/stores/test_reports/actions';
+import TestSummary from '~/pipelines/components/test_reports/test_summary.vue';
+import TestSummaryTable from '~/pipelines/components/test_reports/test_summary_table.vue';
 import * as getters from '~/pipelines/stores/test_reports/getters';
 
 const localVue = createLocalVue();
@@ -17,19 +18,25 @@ describe('Test reports app', () => {
   const loadingSpinner = () => wrapper.find('.js-loading-spinner');
   const testsDetail = () => wrapper.find('.js-tests-detail');
   const noTestsToShow = () => wrapper.find('.js-no-tests-to-show');
+  const testSummary = () => wrapper.find(TestSummary);
+  const testSummaryTable = () => wrapper.find(TestSummaryTable);
+
+  const actionSpies = {
+    fetchFullReport: jest.fn(),
+    fetchSummary: jest.fn(),
+    setSelectedSuiteIndex: jest.fn(),
+    removeSelectedSuiteIndex: jest.fn(),
+  };
 
   const createComponent = (state = {}) => {
     store = new Vuex.Store({
       state: {
         isLoading: false,
-        selectedSuite: {},
+        selectedSuiteIndex: null,
         testReports,
         ...state,
       },
-      actions: {
-        ...actions,
-        fetchSummary: () => {},
-      },
+      actions: actionSpies,
       getters,
     });
 
@@ -41,6 +48,16 @@ describe('Test reports app', () => {
 
   afterEach(() => {
     wrapper.destroy();
+  });
+
+  describe('when component is created', () => {
+    beforeEach(() => {
+      createComponent();
+    });
+
+    it('should call fetchSummary', () => {
+      expect(actionSpies.fetchSummary).toHaveBeenCalled();
+    });
   });
 
   describe('when loading', () => {
@@ -70,6 +87,43 @@ describe('Test reports app', () => {
     it('sets testReports and shows tests', () => {
       expect(wrapper.vm.testReports).toBeTruthy();
       expect(wrapper.vm.showTests).toBeTruthy();
+    });
+  });
+
+  describe('when a suite is clicked', () => {
+    describe('when the full test report has already been received', () => {
+      beforeEach(() => {
+        createComponent({ hasFullReport: true });
+        testSummaryTable().vm.$emit('row-click', 0);
+      });
+
+      it('should only call setSelectedSuiteIndex', () => {
+        expect(actionSpies.setSelectedSuiteIndex).toHaveBeenCalled();
+        expect(actionSpies.fetchFullReport).not.toHaveBeenCalled();
+      });
+    });
+
+    describe('when the full test report has not been received', () => {
+      beforeEach(() => {
+        createComponent({ hasFullReport: false });
+        testSummaryTable().vm.$emit('row-click', 0);
+      });
+
+      it('should call setSelectedSuiteIndex and fetchFullReport', () => {
+        expect(actionSpies.setSelectedSuiteIndex).toHaveBeenCalled();
+        expect(actionSpies.fetchFullReport).toHaveBeenCalled();
+      });
+    });
+  });
+
+  describe('when clicking back to summary', () => {
+    beforeEach(() => {
+      createComponent({ selectedSuiteIndex: 0 });
+      testSummary().vm.$emit('on-back-click');
+    });
+
+    it('should call removeSelectedSuiteIndex', () => {
+      expect(actionSpies.removeSelectedSuiteIndex).toHaveBeenCalled();
     });
   });
 });

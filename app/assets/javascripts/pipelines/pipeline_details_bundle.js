@@ -122,13 +122,17 @@ const createTestDetails = () => {
   }
 
   const el = document.querySelector('#js-pipeline-tests-detail');
-  const { fullReportEndpoint, countEndpoint } = el?.dataset || {};
+  const { fullReportEndpoint, summaryEndpoint, countEndpoint } = el?.dataset || {};
 
   const testReportsStore = createTestReportsStore({
     fullReportEndpoint,
-    summaryEndpoint: countEndpoint,
+    summaryEndpoint: summaryEndpoint || countEndpoint,
+    useBuildSummaryReport: window.gon?.features?.buildReportSummary,
   });
-  createPipelinesTabs(testReportsStore);
+
+  if (!window.gon?.features?.buildReportSummary) {
+    createPipelinesTabs(testReportsStore);
+  }
 
   // eslint-disable-next-line no-new
   new Vue({

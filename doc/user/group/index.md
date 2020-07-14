@@ -543,7 +543,7 @@ underlying projects, issues, etc, by IP address. This can help ensure that
 particular content doesn't leave the premises, while not blocking off access to
 the entire instance.
 
-Add one or more allowed IP subnets using CIDR notation in comma separated format to the group settings and anyone
+Add one or more allowed IP subnets using CIDR notation to the group settings and anyone
 coming from a different IP address won't be able to access the restricted
 content.
 
@@ -555,6 +555,12 @@ Restriction currently applies to:
 
 To avoid accidental lock-out, admins and group owners are able to access
 the group regardless of the IP restriction.
+
+To enable this feature:
+
+1. Navigate to the group’s **Settings > General** page.
+1. Expand the **Permissions, LFS, 2FA** section, and enter IP address ranges into **Allow access to the following IP addresses** field.
+1. Click **Save changes**.
 
 #### Allowed domain restriction **(PREMIUM)**
 

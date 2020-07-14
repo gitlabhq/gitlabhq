@@ -95,10 +95,13 @@ module WikiHelper
   def wiki_empty_state_messages(wiki)
     case wiki.container
     when Project
+      writable_body = s_("WikiEmpty|A wiki is where you can store all the details about your project. This can include why you've created it, its principles, how to use it, and so on.")
+      writable_body += s_("WikiEmpty| Have a Confluence wiki already? Use that instead.") if show_enable_confluence_integration?(wiki.container)
+
       {
         writable: {
           title: s_('WikiEmpty|The wiki lets you write documentation for your project'),
-          body: s_("WikiEmpty|A wiki is where you can store all the details about your project. This can include why you've created it, its principles, how to use it, and so on.")
+          body: writable_body
         },
         issuable: {
           title: s_('WikiEmpty|This project has no wiki pages'),
@@ -136,5 +139,11 @@ module WikiHelper
       'wiki-content-size'         => page.raw_content.bytesize,
       'wiki-directory-nest-level' => page.path.scan('/').count
     }
+  end
+
+  def show_enable_confluence_integration?(container)
+    container.is_a?(Project) &&
+      current_user&.can?(:admin_project, container) &&
+      !container.has_confluence?
   end
 end

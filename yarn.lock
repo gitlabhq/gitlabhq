@@ -2827,11 +2827,6 @@ class-utils@^0.3.5:
     isobject "^3.0.0"
     static-extend "^0.1.1"
 
-classlist-polyfill@^1.2.0:
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/classlist-polyfill/-/classlist-polyfill-1.2.0.tgz#935bc2dfd9458a876b279617514638bcaa964a2e"
-  integrity sha1-k1vC39lFiodrJ5YXUUY4vKqWSi4=
-
 clean-css@^4.1.6, clean-css@^4.2.1:
   version "4.2.1"
   resolved "https://registry.yarnpkg.com/clean-css/-/clean-css-4.2.1.tgz#2d411ef76b8569b6d0c84068dabe85b0aa5e5c17"
@@ -5164,11 +5159,6 @@ format@^0.2.2:
   version "0.2.2"
   resolved "https://registry.yarnpkg.com/format/-/format-0.2.2.tgz#d6170107e9efdc4ed30c9dc39016df942b5cb58b"
   integrity sha1-1hcBB+nv3E7TDJ3DkBbflCtctYs=
-
-formdata-polyfill@^3.0.19:
-  version "3.0.19"
-  resolved "https://registry.yarnpkg.com/formdata-polyfill/-/formdata-polyfill-3.0.19.tgz#72f517db3a646a5dd8c31af0edf111fd8f1e4cee"
-  integrity sha512-nRSp8nniopIOCLZOUE2omwnUvmRH6VEdKm52rLTne8XBsW7hMMBUiOjuxUPoBsiK0CatKmxArh+Svt2s7R66JQ==
 
 forwarded@~0.1.2:
   version "0.1.2"
@@ -11206,11 +11196,6 @@ svg-tags@^1.0.0:
   resolved "https://registry.yarnpkg.com/svg-tags/-/svg-tags-1.0.0.tgz#58f71cee3bd519b59d4b2a843b6c7de64ac04764"
   integrity sha1-WPcc7jvVGbWdSyqEO2x95krAR2Q=
 
-svg4everybody@2.1.9:
-  version "2.1.9"
-  resolved "https://registry.yarnpkg.com/svg4everybody/-/svg4everybody-2.1.9.tgz#5bd9f6defc133859a044646d4743fabc28db7e2d"
-  integrity sha1-W9n23vwTOFmgRGRtR0P6vCjbfi0=
-
 swagger-ui-dist@^3.26.2:
   version "3.26.2"
   resolved "https://registry.yarnpkg.com/swagger-ui-dist/-/swagger-ui-dist-3.26.2.tgz#22c700906c8911b1c9956da6c3fca371dba6219f"
@@ -11735,11 +11720,6 @@ underscore@~1.8.3:
   version "1.8.3"
   resolved "https://registry.yarnpkg.com/underscore/-/underscore-1.8.3.tgz#4f3fb53b106e6097fcf9cb4109f2a5e9bdfa5022"
   integrity sha1-Tz+1OxBuYJf8+ctBCfKl6b36UCI=
-
-unfetch@^4.1.0:
-  version "4.1.0"
-  resolved "https://registry.yarnpkg.com/unfetch/-/unfetch-4.1.0.tgz#6ec2dd0de887e58a4dee83a050ded80ffc4137db"
-  integrity sha512-crP/n3eAPUJxZXM9T80/yv0YhkTEx2K1D3h7D1AJM6fzsWZrxdyRuLN0JH/dkZh1LNH8LxCnBzoPFCPbb2iGpg==
 
 unherit@^1.0.4:
   version "1.1.1"

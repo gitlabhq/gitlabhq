@@ -199,6 +199,7 @@ Note the following properties:
 | Property | Type | Required | Description |
 | ------ | ------ | ------ | ------ |
 | type | string | yes | Type of panel to be rendered. For single stat panel types, set to `single-stat` |
+| field | string | no | Panels display the value of a metric. For a panel to display the value of a label instead, put the name of the label in this key. |
 | query | string | yes | For single stat panel types, you must use an [instant query](https://prometheus.io/docs/prometheus/latest/querying/api/#instant-queries) |
 
 ![single stat panel type](../../../user/project/integrations/img/prometheus_dashboard_single_stat_panel_type.png)

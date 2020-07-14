@@ -189,5 +189,39 @@ describe('DynamicField', () => {
         });
       });
     });
+
+    describe('validations', () => {
+      describe('password field', () => {
+        beforeEach(() => {
+          createComponent({
+            type: 'password',
+            required: true,
+            value: null,
+          });
+
+          wrapper.vm.validated = true;
+        });
+
+        describe('without value', () => {
+          it('requires validation', () => {
+            expect(wrapper.vm.valid).toBe(false);
+            expect(findGlFormGroup().classes('is-invalid')).toBe(true);
+            expect(findGlFormInput().classes('is-invalid')).toBe(true);
+          });
+        });
+
+        describe('with value', () => {
+          beforeEach(() => {
+            wrapper.setProps({ value: 'true' });
+          });
+
+          it('does not require validation', () => {
+            expect(wrapper.vm.valid).toBe(true);
+            expect(findGlFormGroup().classes('is-valid')).toBe(true);
+            expect(findGlFormInput().classes('is-valid')).toBe(true);
+          });
+        });
+      });
+    });
   });
 });

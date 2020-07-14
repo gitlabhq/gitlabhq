@@ -8,6 +8,10 @@ module Gitlab
       ROULETTE_DATA_URL = 'https://gitlab-org.gitlab.io/gitlab-roulette/roulette.json'
       HOURS_WHEN_PERSON_CAN_BE_PICKED = (6..14).freeze
 
+      INCLUDE_TIMEZONE_FOR_CATEGORY = {
+        database: false
+      }.freeze
+
       Spin = Struct.new(:category, :reviewer, :maintainer, :optional_role)
 
       # Assigns GitLab team members to be reviewer and maintainer
@@ -26,7 +30,9 @@ module Gitlab
         canonical_branch_name = canonical_branch_name(branch_name)
 
         spin_per_category = categories.each_with_object({}) do |category, memo|
-          memo[category] = spin_for_category(team, project, category, canonical_branch_name, timezone_experiment: timezone_experiment)
+          including_timezone = INCLUDE_TIMEZONE_FOR_CATEGORY.fetch(category, timezone_experiment)
+
+          memo[category] = spin_for_category(team, project, category, canonical_branch_name, timezone_experiment: including_timezone)
         end
 
         spin_per_category.map do |category, spin|

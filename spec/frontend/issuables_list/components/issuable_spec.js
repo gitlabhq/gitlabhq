@@ -333,6 +333,33 @@ describe('Issuable component', () => {
     });
   });
 
+  describe('with labels for Jira issuable', () => {
+    beforeEach(() => {
+      issuable.labels = [...testLabels];
+      issuable.external_tracker = 'jira';
+
+      factory({ issuable });
+    });
+
+    it('renders labels', () => {
+      factory({ issuable });
+
+      const labels = findLabels().wrappers.map(label => ({
+        href: label.props('target'),
+        text: label.text(),
+        tooltip: label.attributes('description'),
+      }));
+
+      const expected = testLabels.map(label => ({
+        href: mergeUrlParams({ 'labels[]': label.name }, TEST_BASE_URL),
+        text: label.name,
+        tooltip: label.description,
+      }));
+
+      expect(labels).toEqual(expected);
+    });
+  });
+
   describe.each`
     weight
     ${0}

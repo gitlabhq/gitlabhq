@@ -11,6 +11,10 @@
     %p.text-left
       = messages.dig(:writable, :body)
     = create_link
+    - if show_enable_confluence_integration?(@wiki.container)
+      = link_to s_('WikiEmpty|Enable the Confluence Wiki integration'),
+          edit_project_service_path(@project, :confluence),
+          class: 'btn', title: s_('WikiEmpty|Enable the Confluence Wiki integration')
 
 - elsif @project && can?(current_user, :read_issue, @project)
   - issues_link = link_to s_('WikiEmptyIssueMessage|issue tracker'), project_issues_path(@project)
