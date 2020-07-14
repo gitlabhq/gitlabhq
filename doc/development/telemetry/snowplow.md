@@ -70,7 +70,7 @@ The following configuration is required:
 The following example shows a basic request/response flow between the following components:
 
 - Snowplow JS / Ruby Trackers on GitLab.com
-- [GitLab.com Snowplow Collector](https://about.gitlab.com/handbook/engineering/infrastructure/library/snowplow/)
+- [GitLab.com Snowplow Collector](https://gitlab.com/gitlab-com/gl-infra/readiness/-/blob/master/library/snowplow/index.md)
 - GitLab's S3 Bucket
 - GitLab's Snowflake Data Warehouse
 - Sisense:

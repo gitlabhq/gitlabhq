@@ -1,0 +1,5 @@
+---
+title: Add DOCKERFILE_PATH to Auto DevOps workflow:rules
+merge_request: 36475
+author:
+type: fixed

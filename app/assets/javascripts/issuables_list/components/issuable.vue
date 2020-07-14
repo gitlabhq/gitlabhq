@@ -323,6 +323,7 @@ export default {
             v-gl-tooltip
             :title="__('Weight')"
             class="d-none d-sm-inline-block js-weight"
+            data-testid="weight"
           >
             <gl-icon name="weight" class="align-text-bottom" />
             {{ issuable.weight }}

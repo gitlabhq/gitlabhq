@@ -7,6 +7,19 @@ module Gitlab
   module Metrics
     module Dashboard
       class Finder
+        # Dashboards that should not be part of the list of all dashboards
+        # displayed on the metrics dashboard page.
+        PREDEFINED_DASHBOARD_EXCLUSION_LIST = [
+          # This dashboard is only useful in the self monitoring project.
+          ::Metrics::Dashboard::SelfMonitoringDashboardService,
+
+          # This dashboard is displayed on the K8s cluster settings health page.
+          ::Metrics::Dashboard::ClusterDashboardService,
+
+          # This dashboard is not yet ready for the world.
+          ::Metrics::Dashboard::PodDashboardService
+        ].freeze
+
         class << self
           # Returns a formatted dashboard packed with DB info.
           # @param project [Project]
@@ -67,11 +80,31 @@ module Gitlab
           def find_all_paths_from_source(project)
             Gitlab::Metrics::Dashboard::Cache.delete_all!
 
-            default_dashboard_path(project)
-            .+ project_service.all_dashboard_paths(project)
+            user_facing_dashboard_services(project).flat_map do |service|
+              service.all_dashboard_paths(project)
+            end
           end
 
           private
+
+          def user_facing_dashboard_services(project)
+            predefined_dashboard_services_for(project) + [project_service]
+          end
+
+          def predefined_dashboard_services_for(project)
+            # Only list the self monitoring dashboard on the self monitoring project,
+            # since it is the only dashboard (at time of writing) that shows data
+            # about GitLab itself.
+            if project.self_monitoring?
+              return [self_monitoring_service]
+            end
+
+            predefined_dashboard_services
+          end
+
+          def predefined_dashboard_services
+            ::Metrics::Dashboard::PredefinedDashboardService.descendants - PREDEFINED_DASHBOARD_EXCLUSION_LIST
+          end
 
           def system_service
             ::Metrics::Dashboard::SystemDashboardService
@@ -83,14 +116,6 @@ module Gitlab
 
           def self_monitoring_service
             ::Metrics::Dashboard::SelfMonitoringDashboardService
-          end
-
-          def default_dashboard_path(project)
-            if project.self_monitoring?
-              self_monitoring_service.all_dashboard_paths(project)
-            else
-              system_service.all_dashboard_paths(project)
-            end
           end
 
           def service_for(options)

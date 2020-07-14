@@ -1,0 +1,5 @@
+---
+title: Update eslint secure analyzer to analyze jsx
+merge_request: 36505
+author:
+type: changed

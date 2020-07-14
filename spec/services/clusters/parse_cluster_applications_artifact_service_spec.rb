@@ -120,90 +120,9 @@ RSpec.describe Clusters::ParseClusterApplicationsArtifactService do
           end
         end
 
-        context 'release is missing' do
-          let(:fixture) { 'spec/fixtures/helm/helm_list_v2_prometheus_missing.json.gz' }
-          let(:file) { fixture_file_upload(Rails.root.join(fixture)) }
-          let(:artifact) { create(:ci_job_artifact, :cluster_applications, job: job, file: file) }
-
-          context 'application does not exist' do
-            it 'does not create or destroy an application' do
-              expect do
-                described_class.new(job, user).execute(artifact)
-              end.not_to change(Clusters::Applications::Prometheus, :count)
-            end
-          end
-
-          context 'application exists' do
-            before do
-              create(:clusters_applications_prometheus, :installed, cluster: cluster)
-            end
-
-            it 'marks the application as uninstalled' do
-              described_class.new(job, user).execute(artifact)
-
-              cluster.application_prometheus.reload
-              expect(cluster.application_prometheus).to be_uninstalled
-            end
-          end
-        end
-
-        context 'release is deployed' do
-          let(:fixture) { 'spec/fixtures/helm/helm_list_v2_prometheus_deployed.json.gz' }
-          let(:file) { fixture_file_upload(Rails.root.join(fixture)) }
-          let(:artifact) { create(:ci_job_artifact, :cluster_applications, job: job, file: file) }
-
-          context 'application does not exist' do
-            it 'creates an application and marks it as installed' do
-              expect do
-                described_class.new(job, user).execute(artifact)
-              end.to change(Clusters::Applications::Prometheus, :count)
-
-              expect(cluster.application_prometheus).to be_persisted
-              expect(cluster.application_prometheus).to be_installed
-            end
-          end
-
-          context 'application exists' do
-            before do
-              create(:clusters_applications_prometheus, :errored, cluster: cluster)
-            end
-
-            it 'marks the application as installed' do
-              described_class.new(job, user).execute(artifact)
-
-              expect(cluster.application_prometheus).to be_installed
-            end
-          end
-        end
-
-        context 'release is failed' do
-          let(:fixture) { 'spec/fixtures/helm/helm_list_v2_prometheus_failed.json.gz' }
-          let(:file) { fixture_file_upload(Rails.root.join(fixture)) }
-          let(:artifact) { create(:ci_job_artifact, :cluster_applications, job: job, file: file) }
-
-          context 'application does not exist' do
-            it 'creates an application and marks it as errored' do
-              expect do
-                described_class.new(job, user).execute(artifact)
-              end.to change(Clusters::Applications::Prometheus, :count)
-
-              expect(cluster.application_prometheus).to be_persisted
-              expect(cluster.application_prometheus).to be_errored
-              expect(cluster.application_prometheus.status_reason).to eq('Helm release failed to install')
-            end
-          end
-
-          context 'application exists' do
-            before do
-              create(:clusters_applications_prometheus, :installed, cluster: cluster)
-            end
-
-            it 'marks the application as errored' do
-              described_class.new(job, user).execute(artifact)
-
-              expect(cluster.application_prometheus).to be_errored
-              expect(cluster.application_prometheus.status_reason).to eq('Helm release failed to install')
-            end
+        Clusters::ParseClusterApplicationsArtifactService::RELEASE_NAMES.each do |release_name|
+          context release_name do
+            include_examples 'parse cluster applications artifact', release_name
           end
         end
       end

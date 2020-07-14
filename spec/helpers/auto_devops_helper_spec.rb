@@ -93,6 +93,12 @@ RSpec.describe AutoDevopsHelper do
     end
   end
 
+  describe '#auto_devops_settings_path' do
+    it 'returns auto devops settings path' do
+      expect(helper.auto_devops_settings_path(project)).to eql(project_settings_ci_cd_path(project, anchor: 'autodevops-settings'))
+    end
+  end
+
   describe '#badge_for_auto_devops_scope' do
     subject { helper.badge_for_auto_devops_scope(receiver) }
 

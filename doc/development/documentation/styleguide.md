@@ -1455,7 +1455,7 @@ lines with an inserted line break. Splitting product or feature names across
 lines makes searching for these items more difficult, and can cause problems if
 names change.
 
-For example, the followng Markdown content is *not* formatted correctly:
+For example, the following Markdown content is *not* formatted correctly:
 
 ```markdown
 When entering a product or feature name that includes a space (such as GitLab

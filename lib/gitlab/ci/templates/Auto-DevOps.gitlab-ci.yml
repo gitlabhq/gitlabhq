@@ -75,7 +75,7 @@ stages:
 
 workflow:
   rules:
-    - if: '$BUILDPACK_URL || $AUTO_DEVOPS_EXPLICITLY_ENABLED == "1"'
+    - if: '$BUILDPACK_URL || $AUTO_DEVOPS_EXPLICITLY_ENABLED == "1" || $DOCKERFILE_PATH'
 
     - exists:
         - Dockerfile

@@ -205,6 +205,7 @@ RSpec.describe 'Auto-DevOps.gitlab-ci.yml' do
       'Buildpack'       | { 'README.md' => '' }                   | { 'BUILDPACK_URL' => 'http://example.com' } | %w(build test) | %w()
       'Explicit set'    | { 'README.md' => '' }                   | { 'AUTO_DEVOPS_EXPLICITLY_ENABLED' => '1' } | %w(build test) | %w()
       'Explicit unset'  | { 'README.md' => '' }                   | { 'AUTO_DEVOPS_EXPLICITLY_ENABLED' => '0' } | %w()           | %w(build test)
+      'DOCKERFILE_PATH' | { 'README.md' => '' }                   | { 'DOCKERFILE_PATH' => 'Docker.file' }      | %w(build test) | %w()
       'Dockerfile'      | { 'Dockerfile' => '' }                  | {}                                          | %w(build test) | %w()
       'Clojure'         | { 'project.clj' => '' }                 | {}                                          | %w(build test) | %w()
       'Go modules'      | { 'go.mod' => '' }                      | {}                                          | %w(build test) | %w()

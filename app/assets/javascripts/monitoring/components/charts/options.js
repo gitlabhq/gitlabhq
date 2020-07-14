@@ -76,11 +76,14 @@ export const getYAxisOptions = ({
   };
 };
 
-export const getTimeAxisOptions = ({ timezone = timezones.LOCAL } = {}) => ({
+export const getTimeAxisOptions = ({
+  timezone = timezones.LOCAL,
+  format = formats.shortDateTime,
+} = {}) => ({
   name: __('Time'),
   type: axisTypes.time,
   axisLabel: {
-    formatter: date => formatDate(date, { format: formats.shortTime, timezone }),
+    formatter: date => formatDate(date, { format, timezone }),
   },
   axisPointer: {
     snap: false,

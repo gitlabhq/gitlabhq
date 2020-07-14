@@ -1697,6 +1697,10 @@ class User < ApplicationRecord
     impersonator.present?
   end
 
+  def created_recently?
+    created_at > Devise.confirm_within.ago
+  end
+
   protected
 
   # override, from Devise::Validatable

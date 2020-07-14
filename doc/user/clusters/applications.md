@@ -1556,3 +1556,16 @@ The number and size of nodes might not have enough IP addresses to run or instal
 
 For reference, all the AWS instance IP limits are found
 [in this AWS repository on GitHub](https://github.com/aws/amazon-vpc-cni-k8s/blob/master/pkg/awsutils/vpc_ip_resource_limit.go) (search for `InstanceENIsAvailable`).
+
+### Unable to install Prometheus
+
+Installing Prometheus is failing with the following error:
+
+```shell
+# kubectl -n gitlab-managed-apps logs install-prometheus
+...
+Error: Could not get apiVersions from Kubernetes: unable to retrieve the complete list of server APIs: admission.certmanager.k8s.io/v1beta1: the server is currently unable to handle the request
+```
+
+This is a bug that was introduced in Helm `2.15` and fixed in `3.0.2`. As a workaround, you'll need
+to make sure that [`cert-manager`](#cert-manager) is installed successfully prior to installing Prometheus.
