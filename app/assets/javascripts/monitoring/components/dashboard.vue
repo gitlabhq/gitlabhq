@@ -161,7 +161,6 @@ export default {
     ...mapState('monitoringDashboard', [
       'dashboard',
       'emptyState',
-      'showEmptyState',
       'expandedPanel',
       'variables',
       'links',
@@ -169,6 +168,9 @@ export default {
       'hasDashboardValidationWarnings',
     ]),
     ...mapGetters('monitoringDashboard', ['selectedDashboard', 'getMetricStates']),
+    shouldShowEmptyState() {
+      return Boolean(this.emptyState);
+    },
     shouldShowVariablesSection() {
       return Boolean(this.variables.length);
     },
@@ -276,6 +278,14 @@ export default {
         return states[0];
       }
       return null;
+    },
+    /**
+     * Return true if the entire group is loading.
+     * @param {String} groupKey - Identifier for group
+     * @returns {boolean}
+     */
+    isGroupLoading(groupKey) {
+      return this.groupSingleEmptyState(groupKey) === metricStates.LOADING;
     },
     /**
      * A group should be not collapsed if any metric is loaded (OK)
@@ -412,9 +422,9 @@ export default {
       @dateTimePickerInvalid="onDateTimePickerInvalid"
       @setRearrangingPanels="onSetRearrangingPanels"
     />
-    <variables-section v-if="shouldShowVariablesSection && !showEmptyState" />
-    <links-section v-if="shouldShowLinksSection && !showEmptyState" />
-    <div v-if="!showEmptyState">
+    <template v-if="!shouldShowEmptyState">
+      <variables-section v-if="shouldShowVariablesSection" />
+      <links-section v-if="shouldShowLinksSection" />
       <dashboard-panel
         v-show="expandedPanel.panel"
         ref="expandedPanel"
@@ -449,6 +459,7 @@ export default {
           :key="`${groupData.group}.${groupData.priority}`"
           :name="groupData.group"
           :show-panels="showPanels"
+          :is-loading="isGroupLoading(groupData.key)"
           :collapse-group="collapseGroup(groupData.key)"
         >
           <vue-draggable
@@ -506,7 +517,7 @@ export default {
           </div>
         </graph-group>
       </div>
-    </div>
+    </template>
     <empty-state
       v-else
       :selected-state="emptyState"

@@ -91,6 +91,7 @@ describe('Grouped test reports app', () => {
         const fullTestReportLink = findFullTestReportLink();
 
         expect(fullTestReportLink.exists()).toBe(true);
+        expect(pipelinePath).not.toBe('');
         expect(fullTestReportLink.attributes('href')).toBe(`${pipelinePath}/test_report`);
       });
     });

@@ -19,7 +19,7 @@
           = link_to _('Disable two-factor authentication'), profile_two_factor_auth_path,
                 method: :delete,
                 data: { confirm: _('Are you sure? This will invalidate your registered applications and U2F devices.') },
-                class: 'btn btn-danger append-right-10'
+                class: 'btn btn-danger gl-mr-3'
           = form_tag codes_profile_two_factor_auth_path, {style: 'display: inline-block', method: :post} do |f|
             = submit_tag _('Regenerate recovery codes'), class: 'btn'
 

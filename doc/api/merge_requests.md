@@ -6,7 +6,7 @@ CAUTION: **Deprecation**
 > `reference` attribute in response is deprecated in favour of `references`.
 > Introduced [GitLab 12.6](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20354)
 
-NOTE: **Note**
+NOTE: **Note:**
 > `references.relative` is relative to the group / project that the merge request is being requested. When merge request is fetched from its project
 > `relative` format would be the same as `short` format and when requested across groups / projects it is expected to be the same as `full` format.
 

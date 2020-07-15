@@ -110,7 +110,7 @@ Auto DevOps provides great defaults for all the stages and makes use of [CI temp
 For an overview on the creation of Auto DevOps, read more
 [in this blog post](https://about.gitlab.com/blog/2017/06/29/whats-next-for-gitlab-ci/).
 
-NOTE: **Note**
+NOTE: **Note:**
 Kubernetes clusters can [be used without](../../user/project/clusters/index.md)
 Auto DevOps.
 

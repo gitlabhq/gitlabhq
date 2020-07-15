@@ -29,7 +29,7 @@ describe('Metrics dashboard/variables section component', () => {
   beforeEach(() => {
     store = createStore();
 
-    store.state.monitoringDashboard.showEmptyState = false;
+    store.state.monitoringDashboard.emptyState = null;
   });
 
   it('does not show the variables section', () => {
@@ -70,7 +70,7 @@ describe('Metrics dashboard/variables section component', () => {
           monitoringDashboard: {
             namespaced: true,
             state: {
-              showEmptyState: false,
+              emptyState: null,
               variables: storeVariables,
             },
             actions: {

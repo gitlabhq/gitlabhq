@@ -141,10 +141,6 @@ exports[`Dashboard template matches the default snapshot 1`] = `
     />
   </div>
    
-  <!---->
-   
-  <!---->
-   
   <empty-state-stub
     clusterspath="/monitoring/monitor-project/-/clusters"
     documentationpath="/help/administration/monitoring/prometheus/index.md"

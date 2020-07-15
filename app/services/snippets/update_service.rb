@@ -37,9 +37,9 @@ module Snippets
       # is implemented.
       # Once we can perform different operations through this service
       # we won't need to keep track of the `content` and `file_name` fields
-      if snippet_files.any?
-        params[:content] = snippet_files[0].content if snippet_files[0].content
-        params[:file_name] = snippet_files[0].file_path
+      if snippet_actions.any?
+        params[:content] = snippet_actions[0].content if snippet_actions[0].content
+        params[:file_name] = snippet_actions[0].file_path
       end
 
       snippet.assign_attributes(params)
@@ -109,7 +109,7 @@ module Snippets
     end
 
     def committable_attributes?
-      (params.stringify_keys.keys & COMMITTABLE_ATTRIBUTES).present? || snippet_files.any?
+      (params.stringify_keys.keys & COMMITTABLE_ATTRIBUTES).present? || snippet_actions.any?
     end
 
     def build_actions_from_params(snippet)

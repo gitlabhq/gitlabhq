@@ -143,7 +143,7 @@ describe('Dashboard', () => {
       setupStoreWithData(store);
 
       return wrapper.vm.$nextTick().then(() => {
-        expect(wrapper.vm.showEmptyState).toEqual(false);
+        expect(wrapper.vm.emptyState).toBeNull();
         expect(wrapper.findAll('.prometheus-panel')).toHaveLength(0);
       });
     });
@@ -455,6 +455,33 @@ describe('Dashboard', () => {
     });
   });
 
+  describe('when all panels in the first group are loading', () => {
+    const findGroupAt = i => wrapper.findAll(GraphGroup).at(i);
+
+    beforeEach(() => {
+      setupStoreWithDashboard(store);
+
+      const { panels } = store.state.monitoringDashboard.dashboard.panelGroups[0];
+      panels.forEach(({ metrics }) => {
+        store.commit(`monitoringDashboard/${types.REQUEST_METRIC_RESULT}`, {
+          metricId: metrics[0].metricId,
+        });
+      });
+
+      createShallowWrapper();
+
+      return wrapper.vm.$nextTick();
+    });
+
+    it('a loading icon appears in the first group', () => {
+      expect(findGroupAt(0).props('isLoading')).toBe(true);
+    });
+
+    it('a loading icon does not appear in the second group', () => {
+      expect(findGroupAt(1).props('isLoading')).toBe(false);
+    });
+  });
+
   describe('when all requests have been commited by the store', () => {
     beforeEach(() => {
       store.commit(`monitoringDashboard/${types.SET_INITIAL_STATE}`, {
@@ -475,6 +502,16 @@ describe('Dashboard', () => {
           const href = anchorEl.attributes('href');
           expect(href).toBe(environmentData[index].metrics_path);
         }
+      });
+    });
+
+    it('it does not show loading icons in any group', () => {
+      setupStoreWithData(store);
+
+      wrapper.vm.$nextTick(() => {
+        wrapper.findAll(GraphGroup).wrappers.forEach(groupWrapper => {
+          expect(groupWrapper.props('isLoading')).toBe(false);
+        });
       });
     });
 

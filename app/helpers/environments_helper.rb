@@ -24,7 +24,7 @@ module EnvironmentsHelper
   def metrics_data(project, environment)
     metrics_data = {}
     metrics_data.merge!(project_metrics_data(project)) if project
-    metrics_data.merge!(environment_metrics_data(environment)) if environment
+    metrics_data.merge!(environment_metrics_data(environment, project)) if environment
     metrics_data.merge!(project_and_environment_metrics_data(project, environment)) if project && environment
     metrics_data.merge!(static_metrics_data)
 
@@ -66,16 +66,27 @@ module EnvironmentsHelper
     }
   end
 
-  def environment_metrics_data(environment)
+  def environment_metrics_data(environment, project = nil)
     return {} unless environment
 
     {
-      'metrics-dashboard-base-path' => environment_metrics_path(environment),
+      'metrics-dashboard-base-path' => metrics_dashboard_base_path(environment, project),
       'current-environment-name'    => environment.name,
       'has-metrics'                 => "#{environment.has_metrics?}",
       'prometheus-status'           => "#{environment.prometheus_status}",
       'environment-state'           => "#{environment.state}"
     }
+  end
+
+  def metrics_dashboard_base_path(environment, project)
+    # This is needed to support our transition from environment scoped metric paths to project scoped.
+    if project
+      path = project_metrics_dashboard_path(project)
+
+      return path if request.path.include?(path)
+    end
+
+    environment_metrics_path(environment)
   end
 
   def project_and_environment_metrics_data(project, environment)

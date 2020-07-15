@@ -1692,6 +1692,11 @@ input CreateDiffNoteInput {
   clientMutationId: String
 
   """
+  The confidentiality flag of a note. Default is false.
+  """
+  confidential: Boolean
+
+  """
   The global id of the resource to add a note to
   """
   noteableId: ID!
@@ -1817,6 +1822,11 @@ input CreateImageDiffNoteInput {
   clientMutationId: String
 
   """
+  The confidentiality flag of a note. Default is false.
+  """
+  confidential: Boolean
+
+  """
   The global id of the resource to add a note to
   """
   noteableId: ID!
@@ -1915,6 +1925,11 @@ input CreateNoteInput {
   A unique identifier for the client performing the mutation.
   """
   clientMutationId: String
+
+  """
+  The confidentiality flag of a note. Default is false.
+  """
+  confidential: Boolean
 
   """
   The global id of the discussion this note is in reply to

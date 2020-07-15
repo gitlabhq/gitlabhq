@@ -73,7 +73,7 @@ be used for merge request approvals:
 - As [merge request eligible approvers](merge_requests/merge_request_approvals.md#code-owners-as-eligible-approvers).
 - As required approvers for [protected branches](protected_branches.md#protected-branches-approval-by-code-owners-premium). **(PREMIUM)**
 
-NOTE: **Note**:
+NOTE: **Note:**
 Developer or higher [permissions](../permissions.md) are required in order to
 approve a merge request.
 

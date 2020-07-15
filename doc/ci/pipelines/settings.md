@@ -36,7 +36,7 @@ in `.gitlab-ci.yml`.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/28919) in GitLab 12.0.
 
-NOTE: **Note**:
+NOTE: **Note:**
 As of GitLab 12.0, newly created projects will automatically have a default
 `git depth` value of `50`.
 

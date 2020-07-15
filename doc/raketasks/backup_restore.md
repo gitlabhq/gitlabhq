@@ -67,7 +67,7 @@ Use this command if you've installed GitLab with the Omnibus package:
 sudo gitlab-backup create
 ```
 
-NOTE: **Note**
+NOTE: **Note:**
 For GitLab 12.1 and earlier, use `gitlab-rake gitlab:backup:create`.
 
 Use this if you've installed GitLab from source:
@@ -82,7 +82,7 @@ If you are running GitLab within a Docker container, you can run the backup from
 docker exec -t <container name> gitlab-backup create
 ```
 
-NOTE: **Note**
+NOTE: **Note:**
 For GitLab 12.1 and earlier, use `gitlab-rake gitlab:backup:create`.
 
 If you are using the [GitLab Helm chart](https://gitlab.com/gitlab-org/charts/gitlab) on a
@@ -198,7 +198,7 @@ To use the `copy` strategy instead of the default streaming strategy, specify
 sudo gitlab-backup create STRATEGY=copy
 ```
 
-NOTE: **Note**
+NOTE: **Note:**
 For GitLab 12.1 and earlier, use `gitlab-rake gitlab:backup:create`.
 
 #### Backup filename
@@ -213,7 +213,7 @@ By default a backup file is created according to the specification in [the Backu
 sudo gitlab-backup create BACKUP=dump
 ```
 
-NOTE: **Note**
+NOTE: **Note:**
 For GitLab 12.1 and earlier, use `gitlab-rake gitlab:backup:create`.
 
 The resulting file will then be `dump_gitlab_backup.tar`. This is useful for systems that make use of rsync and incremental backups, and will result in considerably faster transfer speeds.
@@ -228,7 +228,7 @@ Note that the `--rsyncable` option in `gzip` is not guaranteed to be available o
 sudo gitlab-backup create BACKUP=dump GZIP_RSYNCABLE=yes
 ```
 
-NOTE: **Note**
+NOTE: **Note:**
 For GitLab 12.1 and earlier, use `gitlab-rake gitlab:backup:create`.
 
 #### Excluding specific directories from the backup
@@ -256,7 +256,7 @@ For Omnibus GitLab packages:
 sudo gitlab-backup create SKIP=db,uploads
 ```
 
-NOTE: **Note**
+NOTE: **Note:**
 For GitLab 12.1 and earlier, use `gitlab-rake gitlab:backup:create`.
 
 For installations from source:
@@ -497,7 +497,7 @@ sudo gitlab-backup create DIRECTORY=daily
 sudo gitlab-backup create DIRECTORY=weekly
 ```
 
-NOTE: **Note**
+NOTE: **Note:**
 For GitLab 12.1 and earlier, use `gitlab-rake gitlab:backup:create`.
 
 #### Uploading to locally mounted shares
@@ -603,7 +603,7 @@ For Omnibus GitLab packages:
    0 2 * * * /opt/gitlab/bin/gitlab-backup create CRON=1
    ```
 
-   NOTE: **Note**
+   NOTE: **Note:**
    For GitLab 12.1 and earlier, use `gitlab-rake gitlab:backup:create`.
 
 For installations from source:
@@ -804,7 +804,7 @@ restore:
 sudo gitlab-backup restore BACKUP=11493107454_2018_04_25_10.6.4-ce
 ```
 
-NOTE: **Note**
+NOTE: **Note:**
 For GitLab 12.1 and earlier, use `gitlab-rake gitlab:backup:restore`.
 
 CAUTION: **Warning:**
@@ -826,7 +826,7 @@ If there is a GitLab version mismatch between your backup tar file and the insta
 version of GitLab, the restore command will abort with an error. Install the
 [correct GitLab version](https://packages.gitlab.com/gitlab/) and try again.
 
-NOTE: **Note**
+NOTE: **Note:**
 There is currently a [known issue](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/3470) for restore not working
 with `pgbouncer`. In order to workaround the issue, the Rails node will need to bypass `pgbouncer` and connect
 directly to the primary database node. This can be done by setting `gitlab_rails['db_host']` and `gitlab_rails['port']`
@@ -852,7 +852,7 @@ For Docker installations, the restore task can be run from host:
 docker exec -it <name of container> gitlab-backup restore
 ```
 
-NOTE: **Note**
+NOTE: **Note:**
 For GitLab 12.1 and earlier, use `gitlab-rake gitlab:backup:restore`.
 
 CAUTION: **Warning:**
@@ -881,7 +881,7 @@ export your project or group from there:
 1. After importing only the project(s) or group(s) that you wanted is complete,
    you may delete the new, temporary GitLab instance.
 
-NOTE: **Note**
+NOTE: **Note:**
 A feature request to provide direct restore of individual projects or groups
 is being discussed in [issue #17517](https://gitlab.com/gitlab-org/gitlab/-/issues/17517).
 

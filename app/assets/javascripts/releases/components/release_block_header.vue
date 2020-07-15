@@ -56,7 +56,7 @@ export default {
       v-gl-tooltip
       category="primary"
       variant="default"
-      class="append-right-10 js-edit-button ml-2 pb-2"
+      class="gl-mr-3 js-edit-button ml-2 pb-2"
       :title="__('Edit this release')"
       :href="editLink"
     >

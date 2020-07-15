@@ -85,7 +85,7 @@ Next, you will create a package for that recipe by running `conan create` provid
 conan create . my-org+my-group+my-project/beta
 ```
 
-NOTE: **Note**
+NOTE: **Note:**
 Current [naming restrictions](#package-recipe-naming-convention) require you to name the `user` value as the `+` separated path of your project on GitLab.
 
 The example above would create a package belonging to this project: `https://gitlab.com/my-org/my-group/my-project` with a channel of `beta`.
@@ -129,12 +129,12 @@ Once you have a personal access token and have [set your Conan remote](#adding-t
 conan user <gitlab_username or deploy_token_username> -r gitlab -p <personal_access_token or deploy_token>
 ```
 
-Note: **Note**
+NOTE: **Note:**
 If you named your remote something other than `gitlab`, your remote name should be used in this command instead of `gitlab`.
 
 From now on, when you run commands using `--remote=gitlab`, your username and password will automatically be included in the requests.
 
-Note: **Note**
+NOTE: **Note:**
 The personal access token is not stored locally at any moment. Conan uses JWT, so when you run this command, Conan will request an expirable token from GitLab using your token. The JWT does expire on a regular basis, so you will need to re-enter your personal access token when that happens.
 
 Alternatively, you could explicitly include your credentials in any given command.
@@ -152,7 +152,7 @@ If you'd like Conan to always use GitLab as the registry for your package, you c
 conan remote add_ref Hello/0.1@my-group+my-project/beta gitlab
 ```
 
-NOTE: **Note**
+NOTE: **Note:**
 The package recipe does include the version, so setting the default remote for `Hello/0.1@user/channel` will not work for `Hello/0.2@user/channel`.
 This functionality is best suited for when you want to consume or install packages from the GitLab registry without having to specify a remote.
 

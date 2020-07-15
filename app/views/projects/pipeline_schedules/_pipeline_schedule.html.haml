@@ -27,8 +27,8 @@
     %td
       .float-right.btn-group
         - if can?(current_user, :play_pipeline_schedule, pipeline_schedule)
-          = link_to play_pipeline_schedule_path(pipeline_schedule), method: :post, title: s_('Play'), class: 'btn' do
-            = icon('play')
+          = link_to play_pipeline_schedule_path(pipeline_schedule), method: :post, title: s_('Play'), class: 'btn btn-svg gl-display-flex gl-align-items-center gl-justify-content-center' do
+            = sprite_icon('play')
         - if can?(current_user, :take_ownership_pipeline_schedule, pipeline_schedule)
           = link_to take_ownership_pipeline_schedule_path(pipeline_schedule), method: :post, title: s_('PipelineSchedules|Take ownership'), class: 'btn' do
             = s_('PipelineSchedules|Take ownership')

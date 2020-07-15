@@ -233,7 +233,7 @@ export default {
 </script>
 
 <template>
-  <div class="boards-switcher js-boards-selector append-right-10">
+  <div class="boards-switcher js-boards-selector gl-mr-3">
     <span class="boards-selector-wrapper js-boards-selector-wrapper">
       <gl-dropdown
         data-qa-selector="boards_dropdown"

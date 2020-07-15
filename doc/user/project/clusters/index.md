@@ -224,7 +224,7 @@ Auto Monitoring) you will need the Kubernetes project integration enabled.
 
 [Read more about Auto DevOps](../../../topics/autodevops/index.md)
 
-NOTE: **Note**
+NOTE: **Note:**
 Kubernetes clusters can be used without Auto DevOps.
 
 ## Deploying to a Kubernetes cluster

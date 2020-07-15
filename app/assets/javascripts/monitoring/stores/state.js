@@ -21,8 +21,13 @@ export default () => ({
 
   // Dashboard data
   hasDashboardValidationWarnings: false,
+
+  /**
+   * {?String} If set, dashboard should display a global
+   * empty state, there is no way to interact (yet)
+   * with the dashboard.
+   */
   emptyState: dashboardEmptyStates.GETTING_STARTED,
-  showEmptyState: true,
   showErrorBanner: true,
   isUpdatingStarredValue: false,
   dashboard: {

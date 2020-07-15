@@ -149,7 +149,7 @@ released.
 
 #### TLS enabled
 
-NOTE: **Note**
+NOTE: **Note:**
 Requires GitLab Runner 11.11 or later, but is not supported if GitLab
 Runner is installed using the [Helm
 chart](https://docs.gitlab.com/runner/install/kubernetes.html). See the

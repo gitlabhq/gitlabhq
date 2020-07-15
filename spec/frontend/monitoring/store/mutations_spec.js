@@ -20,7 +20,6 @@ describe('Monitoring mutations', () => {
       mutations[types.REQUEST_METRICS_DASHBOARD](stateCopy);
 
       expect(stateCopy.emptyState).toBe(dashboardEmptyStates.LOADING);
-      expect(stateCopy.showEmptyState).toBe(true);
     });
   });
 
@@ -98,14 +97,12 @@ describe('Monitoring mutations', () => {
       mutations[types.RECEIVE_METRICS_DASHBOARD_FAILURE](stateCopy);
 
       expect(stateCopy.emptyState).toBe(dashboardEmptyStates.NO_DATA);
-      expect(stateCopy.showEmptyState).toBe(true);
     });
 
     it('sets an empty unableToConnect state when an error occurs', () => {
       mutations[types.RECEIVE_METRICS_DASHBOARD_FAILURE](stateCopy, 'myerror');
 
       expect(stateCopy.emptyState).toBe(dashboardEmptyStates.UNABLE_TO_CONNECT);
-      expect(stateCopy.showEmptyState).toBe(true);
     });
   });
 
@@ -292,13 +289,10 @@ describe('Monitoring mutations', () => {
         mutations[types.RECEIVE_METRICS_DASHBOARD_SUCCESS](stateCopy, dashboard);
       });
       it('stores a loading state on a metric', () => {
-        expect(stateCopy.showEmptyState).toBe(true);
-
         mutations[types.REQUEST_METRIC_RESULT](stateCopy, {
           metricId,
         });
 
-        expect(stateCopy.showEmptyState).toBe(true);
         expect(getMetric()).toEqual(
           expect.objectContaining({
             loading: true,
@@ -310,17 +304,6 @@ describe('Monitoring mutations', () => {
     describe('RECEIVE_METRIC_RESULT_SUCCESS', () => {
       beforeEach(() => {
         mutations[types.RECEIVE_METRICS_DASHBOARD_SUCCESS](stateCopy, dashboard);
-      });
-      it('clears empty state', () => {
-        expect(stateCopy.showEmptyState).toBe(true);
-
-        mutations[types.RECEIVE_METRIC_RESULT_SUCCESS](stateCopy, {
-          metricId,
-          data,
-        });
-
-        expect(stateCopy.showEmptyState).toBe(false);
-        expect(stateCopy.emptyState).toBe(null);
       });
 
       it('adds results to the store', () => {
@@ -344,16 +327,6 @@ describe('Monitoring mutations', () => {
     describe('RECEIVE_METRIC_RESULT_FAILURE', () => {
       beforeEach(() => {
         mutations[types.RECEIVE_METRICS_DASHBOARD_SUCCESS](stateCopy, dashboard);
-      });
-      it('maintains the loading state when a metric fails', () => {
-        expect(stateCopy.showEmptyState).toBe(true);
-
-        mutations[types.RECEIVE_METRIC_RESULT_FAILURE](stateCopy, {
-          metricId,
-          error: 'an error',
-        });
-
-        expect(stateCopy.showEmptyState).toBe(true);
       });
 
       it('stores a timeout error in a metric', () => {

@@ -15,7 +15,7 @@ describe('Links Section component', () => {
   const setState = links => {
     store.state.monitoringDashboard = {
       ...store.state.monitoringDashboard,
-      showEmptyState: false,
+      emptyState: null,
       links,
     };
   };

@@ -545,7 +545,7 @@ Here are some common pitfalls and how to overcome them:
   
   If you see `"Kaminari::PaginatableArray"` you are using Elasticsearch.
 
-  NOTE: **Note**:
+  NOTE: **Note:**
   The above instructions are used to verify that GitLab is using Elasticsearch only when indexing all namespaces. This is not to be used for scenarios that only index a [subset of namespaces](#limiting-namespaces-and-projects).
 
 - **I updated GitLab and now I can't find anything**
@@ -568,7 +568,7 @@ Here are some common pitfalls and how to overcome them:
   pp s.search_objects.to_a
   ```
 
-  NOTE: **Note**:
+  NOTE: **Note:**
   The above instructions are not to be used for scenarios that only index a [subset of namespaces](#limiting-namespaces-and-projects).
 
   See [Elasticsearch Index Scopes](#elasticsearch-index-scopes) for more information on searching for specific types of data.

@@ -100,7 +100,7 @@ To make cloning your project faster, rewrite branches and tags to remove unwante
 
 1. Manually run [project housekeeping](../../../administration/housekeeping.md#manual-housekeeping)
 
-NOTE: **Note**
+NOTE: **Note:**
 Project statistics are cached for performance. You may need to wait 5-10 minutes
 to see a reduction in storage utilization.
 

@@ -39,11 +39,11 @@
                 %span.project-name<
                   = project.name
 
-          %span.metadata-info.visibility-icon.append-right-10.gl-mt-3.text-secondary.has-tooltip{ data: { container: 'body', placement: 'top' }, title: visibility_icon_description(project) }
+          %span.metadata-info.visibility-icon.gl-mr-3.gl-mt-3.text-secondary.has-tooltip{ data: { container: 'body', placement: 'top' }, title: visibility_icon_description(project) }
             = visibility_level_icon(project.visibility_level, fw: true)
 
           - if explore_projects_tab? && project_license_name(project)
-            %span.metadata-info.d-inline-flex.align-items-center.append-right-10.gl-mt-3
+            %span.metadata-info.d-inline-flex.align-items-center.gl-mr-3.gl-mt-3
               = sprite_icon('scale', size: 14, css_class: 'gl-mr-2')
               = project_license_name(project)
 

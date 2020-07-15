@@ -419,7 +419,7 @@ export default {
             </gl-alert>
             <div class="note-form-actions">
               <div
-                class="btn-group append-right-10 comment-type-dropdown js-comment-type-dropdown droplab-dropdown"
+                class="btn-group gl-mr-3 comment-type-dropdown js-comment-type-dropdown droplab-dropdown"
               >
                 <button
                   :disabled="isSubmitButtonDisabled"

@@ -6,15 +6,15 @@ module Snippets
 
     CreateRepositoryError = Class.new(StandardError)
 
-    attr_reader :uploaded_assets, :snippet_files
+    attr_reader :uploaded_assets, :snippet_actions
 
     def initialize(project, user = nil, params = {})
       super
 
       @uploaded_assets = Array(@params.delete(:files).presence)
 
-      input_actions = Array(@params.delete(:snippet_files).presence)
-      @snippet_files = SnippetInputActionCollection.new(input_actions, allowed_actions: restricted_files_actions)
+      input_actions = Array(@params.delete(:snippet_actions).presence)
+      @snippet_actions = SnippetInputActionCollection.new(input_actions, allowed_actions: restricted_files_actions)
 
       filter_spam_check_params
     end
@@ -32,18 +32,18 @@ module Snippets
     end
 
     def valid_params?
-      return true if snippet_files.empty?
+      return true if snippet_actions.empty?
 
-      (params.keys & [:content, :file_name]).none? && snippet_files.valid?
+      (params.keys & [:content, :file_name]).none? && snippet_actions.valid?
     end
 
     def invalid_params_error(snippet)
-      if snippet_files.valid?
+      if snippet_actions.valid?
         [:content, :file_name].each do |key|
           snippet.errors.add(key, 'and snippet files cannot be used together') if params.key?(key)
         end
       else
-        snippet.errors.add(:snippet_files, 'have invalid data')
+        snippet.errors.add(:snippet_actions, 'have invalid data')
       end
 
       snippet_error_response(snippet, 403)
@@ -75,7 +75,7 @@ module Snippets
     end
 
     def files_to_commit(snippet)
-      snippet_files.to_commit_actions.presence || build_actions_from_params(snippet)
+      snippet_actions.to_commit_actions.presence || build_actions_from_params(snippet)
     end
 
     def build_actions_from_params(snippet)

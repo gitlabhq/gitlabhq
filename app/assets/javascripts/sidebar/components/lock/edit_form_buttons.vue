@@ -41,7 +41,7 @@ export default {
 
 <template>
   <div class="sidebar-item-warning-message-actions">
-    <button type="button" class="btn btn-default append-right-10" @click="closeForm">
+    <button type="button" class="btn btn-default gl-mr-3" @click="closeForm">
       {{ __('Cancel') }}
     </button>
 

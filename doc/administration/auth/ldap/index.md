@@ -53,7 +53,7 @@ are already logged in or are using Git over SSH will still be able to access
 GitLab for up to one hour. Manually block the user in the GitLab Admin Area to
 immediately block all access.
 
-NOTE: **Note**:
+NOTE: **Note:**
 GitLab Enterprise Edition Starter supports a
 [configurable sync time](#adjusting-ldap-user-sync-schedule-starter-only).
 

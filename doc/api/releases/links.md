@@ -138,7 +138,7 @@ PUT /projects/:id/releases/:tag_name/assets/links/:link_id
 | `url`         | string         | no | The URL of the link. |
 | `link_type`        | string         | no       | The type of the link: `other`, `runbook`, `image`, `package`. Defaults to `other`. |
 
-NOTE: **NOTE**
+NOTE: **Note:**
 You have to specify at least one of `name` or `url`
 
 Example request:

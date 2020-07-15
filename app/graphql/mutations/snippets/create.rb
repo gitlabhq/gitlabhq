@@ -85,9 +85,9 @@ module Mutations
 
       def create_params(args)
         args.tap do |create_args|
-          # We need to rename `files` into `snippet_files` because
+          # We need to rename `files` into `snippet_actions` because
           # it's the expected key param
-          create_args[:snippet_files] = create_args.delete(:files)&.map(&:to_h)
+          create_args[:snippet_actions] = create_args.delete(:files)&.map(&:to_h)
 
           # We need to rename `uploaded_files` into `files` because
           # it's the expected key param

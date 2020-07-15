@@ -8,13 +8,13 @@
       = sprite_icon('fork', size: 12)
       = ref
     - if current_action?(:edit) || current_action?(:update)
-      %span.pull-left.append-right-10
+      %span.pull-left.gl-mr-3
       = text_field_tag 'file_path', (params[:file_path] || @path),
         class: 'form-control new-file-path js-file-path-name-input'
       = render 'template_selectors'
 
     - if current_action?(:new) || current_action?(:create)
-      %span.pull-left.append-right-10
+      %span.pull-left.gl-mr-3
         \/
       = text_field_tag 'file_name', params[:file_name], placeholder: "File name",
         required: true, class: 'form-control new-file-name js-file-path-name-input', value: params[:file_name] || (should_suggest_gitlab_ci_yml? ? '.gitlab-ci.yml' : '')

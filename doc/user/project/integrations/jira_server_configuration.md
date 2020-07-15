@@ -6,7 +6,7 @@ need to integrate with GitLab.
 As an example, we'll create a user named `gitlab` and add it to a new group
 named `gitlab-developers`.
 
-NOTE: **Note**
+NOTE: **Note:**
 It is important that the Jira user created for the integration is given 'write'
 access to your Jira projects. This is covered in the process below.
 

@@ -302,22 +302,22 @@ RSpec.describe Snippets::UpdateService do
       end
     end
 
-    shared_examples 'when snippet_files param is present' do
+    shared_examples 'when snippet_actions param is present' do
       let(:file_path) { 'CHANGELOG' }
       let(:content) { 'snippet_content' }
       let(:new_title) { 'New title' }
-      let(:snippet_files) { [{ action: 'update', previous_path: file_path, file_path: file_path, content: content }] }
+      let(:snippet_actions) { [{ action: 'update', previous_path: file_path, file_path: file_path, content: content }] }
       let(:base_opts) do
         {
           title: new_title,
-          snippet_files: snippet_files
+          snippet_actions: snippet_actions
         }
       end
 
       it 'updates a snippet with the provided attributes' do
         file_path = 'foo'
-        snippet_files[0][:action] = 'move'
-        snippet_files[0][:file_path] = file_path
+        snippet_actions[0][:action] = 'move'
+        snippet_actions[0][:file_path] = file_path
 
         response = subject
         snippet = response.payload[:snippet]
@@ -350,7 +350,7 @@ RSpec.describe Snippets::UpdateService do
       end
 
       context 'when snippet_file content is not present' do
-        let(:snippet_files) { [{ action: :move, previous_path: file_path, file_path: 'new_file_path' }] }
+        let(:snippet_actions) { [{ action: :move, previous_path: file_path, file_path: 'new_file_path' }] }
 
         it 'does not update snippet content' do
           content = snippet.content
@@ -361,15 +361,15 @@ RSpec.describe Snippets::UpdateService do
         end
       end
 
-      context 'when snippet_files param is invalid' do
-        let(:snippet_files) { [{ action: 'invalid_action' }] }
+      context 'when snippet_actions param is invalid' do
+        let(:snippet_actions) { [{ action: 'invalid_action' }] }
 
         it 'raises a validation error' do
           response = subject
           snippet = response.payload[:snippet]
 
           expect(response).to be_error
-          expect(snippet.errors.full_messages_for(:snippet_files)).to eq ['Snippet files have invalid data']
+          expect(snippet.errors.full_messages_for(:snippet_actions)).to eq ['Snippet actions have invalid data']
         end
       end
 
@@ -391,7 +391,7 @@ RSpec.describe Snippets::UpdateService do
 
       context 'commit actions' do
         let(:new_path) { 'created_new_file' }
-        let(:base_opts) { { snippet_files: snippet_files } }
+        let(:base_opts) { { snippet_actions: snippet_actions } }
 
         shared_examples 'returns an error' do |error_msg|
           specify do
@@ -403,7 +403,7 @@ RSpec.describe Snippets::UpdateService do
         end
 
         context 'update action' do
-          let(:snippet_files) { [{ action: :update, file_path: file_path, content: content }] }
+          let(:snippet_actions) { [{ action: :update, file_path: file_path, content: content }] }
 
           it 'updates the file content' do
             expect(subject).to be_success
@@ -414,7 +414,7 @@ RSpec.describe Snippets::UpdateService do
           end
 
           context 'when previous_path is present' do
-            let(:snippet_files) { [{ action: :update, previous_path: file_path, file_path: file_path, content: content }] }
+            let(:snippet_actions) { [{ action: :update, previous_path: file_path, file_path: file_path, content: content }] }
 
             it 'updates the file content' do
               expect(subject).to be_success
@@ -426,13 +426,13 @@ RSpec.describe Snippets::UpdateService do
           end
 
           context 'when content is not present' do
-            let(:snippet_files) { [{ action: :update, file_path: file_path }] }
+            let(:snippet_actions) { [{ action: :update, file_path: file_path }] }
 
-            it_behaves_like 'returns an error', 'Snippet files have invalid data'
+            it_behaves_like 'returns an error', 'Snippet actions have invalid data'
           end
 
           context 'when file_path does not exist' do
-            let(:snippet_files) { [{ action: :update, file_path: 'makeup_name', content: content }] }
+            let(:snippet_actions) { [{ action: :update, file_path: 'makeup_name', content: content }] }
 
             it_behaves_like 'returns an error', 'Repository Error updating the snippet'
           end
@@ -440,13 +440,13 @@ RSpec.describe Snippets::UpdateService do
 
         context 'move action' do
           context 'when file_path and previous_path are the same' do
-            let(:snippet_files) { [{ action: :move, previous_path: file_path, file_path: file_path }] }
+            let(:snippet_actions) { [{ action: :move, previous_path: file_path, file_path: file_path }] }
 
-            it_behaves_like 'returns an error', 'Snippet files have invalid data'
+            it_behaves_like 'returns an error', 'Snippet actions have invalid data'
           end
 
           context 'when file_path and previous_path are different' do
-            let(:snippet_files) { [{ action: :move, previous_path: file_path, file_path: new_path }] }
+            let(:snippet_actions) { [{ action: :move, previous_path: file_path, file_path: new_path }] }
 
             it 'renames the file' do
               old_blob = blob(file_path)
@@ -461,13 +461,13 @@ RSpec.describe Snippets::UpdateService do
           end
 
           context 'when previous_path does not exist' do
-            let(:snippet_files) { [{ action: :move, previous_path: 'makeup_name', file_path: new_path }] }
+            let(:snippet_actions) { [{ action: :move, previous_path: 'makeup_name', file_path: new_path }] }
 
             it_behaves_like 'returns an error', 'Repository Error updating the snippet'
           end
 
           context 'when user wants to rename the file and update content' do
-            let(:snippet_files) { [{ action: :move, previous_path: file_path, file_path: new_path, content: content }] }
+            let(:snippet_actions) { [{ action: :move, previous_path: file_path, file_path: new_path, content: content }] }
 
             it 'performs both operations' do
               expect(subject).to be_success
@@ -481,7 +481,7 @@ RSpec.describe Snippets::UpdateService do
         end
 
         context 'delete action' do
-          let(:snippet_files) { [{ action: :delete, file_path: file_path }] }
+          let(:snippet_actions) { [{ action: :delete, file_path: file_path }] }
 
           shared_examples 'deletes the file' do
             specify do
@@ -496,32 +496,32 @@ RSpec.describe Snippets::UpdateService do
           it_behaves_like 'deletes the file'
 
           context 'when previous_path is present and same as file_path' do
-            let(:snippet_files) { [{ action: :delete, previous_path: file_path, file_path: file_path }] }
+            let(:snippet_actions) { [{ action: :delete, previous_path: file_path, file_path: file_path }] }
 
             it_behaves_like 'deletes the file'
           end
 
           context 'when previous_path is present and is different from file_path' do
-            let(:snippet_files) { [{ action: :delete, previous_path: 'foo', file_path: file_path }] }
+            let(:snippet_actions) { [{ action: :delete, previous_path: 'foo', file_path: file_path }] }
 
             it_behaves_like 'deletes the file'
           end
 
           context 'when content is present' do
-            let(:snippet_files) { [{ action: :delete, file_path: file_path, content: 'foo' }] }
+            let(:snippet_actions) { [{ action: :delete, file_path: file_path, content: 'foo' }] }
 
             it_behaves_like 'deletes the file'
           end
 
           context 'when file_path does not exist' do
-            let(:snippet_files) { [{ action: :delete, file_path: 'makeup_name' }] }
+            let(:snippet_actions) { [{ action: :delete, file_path: 'makeup_name' }] }
 
             it_behaves_like 'returns an error', 'Repository Error updating the snippet'
           end
         end
 
         context 'create action' do
-          let(:snippet_files) { [{ action: :create, file_path: new_path, content: content }] }
+          let(:snippet_actions) { [{ action: :create, file_path: new_path, content: content }] }
 
           it 'creates the file' do
             expect(subject).to be_success
@@ -532,13 +532,13 @@ RSpec.describe Snippets::UpdateService do
           end
 
           context 'when content is not present' do
-            let(:snippet_files) { [{ action: :create, file_path: new_path }] }
+            let(:snippet_actions) { [{ action: :create, file_path: new_path }] }
 
-            it_behaves_like 'returns an error', 'Snippet files have invalid data'
+            it_behaves_like 'returns an error', 'Snippet actions have invalid data'
           end
 
           context 'when file_path is not present or empty' do
-            let(:snippet_files) { [{ action: :create, content: content }, { action: :create, file_path: '', content: content }] }
+            let(:snippet_actions) { [{ action: :create, content: content }, { action: :create, file_path: '', content: content }] }
 
             it 'generates the file path for the files' do
               expect(blob('snippetfile1.txt')).to be_nil
@@ -552,13 +552,13 @@ RSpec.describe Snippets::UpdateService do
           end
 
           context 'when file_path already exists in the repository' do
-            let(:snippet_files) { [{ action: :create, file_path: file_path, content: content }] }
+            let(:snippet_actions) { [{ action: :create, file_path: file_path, content: content }] }
 
             it_behaves_like 'returns an error', 'Repository Error updating the snippet'
           end
 
           context 'when previous_path is present' do
-            let(:snippet_files) { [{ action: :create, previous_path: 'foo', file_path: new_path, content: content }] }
+            let(:snippet_actions) { [{ action: :create, previous_path: 'foo', file_path: new_path, content: content }] }
 
             it 'creates the file' do
               expect(subject).to be_success
@@ -577,7 +577,7 @@ RSpec.describe Snippets::UpdateService do
           let(:move_previous_path) { 'VERSION' }
           let(:move_file_path) { 'VERSION_new' }
 
-          let(:snippet_files) do
+          let(:snippet_actions) do
             [
               { action: :create, file_path: create_file_path, content: content },
               { action: :update, file_path: update_file_path, content: content },
@@ -678,7 +678,7 @@ RSpec.describe Snippets::UpdateService do
       it_behaves_like 'updates repository content'
       it_behaves_like 'commit operation fails'
       it_behaves_like 'committable attributes'
-      it_behaves_like 'when snippet_files param is present'
+      it_behaves_like 'when snippet_actions param is present'
       it_behaves_like 'only file_name is present'
       it_behaves_like 'only content is present'
       it_behaves_like 'snippets spam check is performed' do
@@ -705,7 +705,7 @@ RSpec.describe Snippets::UpdateService do
       it_behaves_like 'updates repository content'
       it_behaves_like 'commit operation fails'
       it_behaves_like 'committable attributes'
-      it_behaves_like 'when snippet_files param is present'
+      it_behaves_like 'when snippet_actions param is present'
       it_behaves_like 'only file_name is present'
       it_behaves_like 'only content is present'
       it_behaves_like 'snippets spam check is performed' do

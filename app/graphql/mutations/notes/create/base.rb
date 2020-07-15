@@ -18,6 +18,11 @@ module Mutations
                   required: true,
                   description: copy_field_description(Types::Notes::NoteType, :body)
 
+        argument :confidential,
+                  GraphQL::BOOLEAN_TYPE,
+                  required: false,
+                  description: 'The confidentiality flag of a note. Default is false.'
+
         def resolve(args)
           noteable = authorized_find!(id: args[:noteable_id])
 
@@ -40,7 +45,8 @@ module Mutations
         def create_note_params(noteable, args)
           {
             noteable: noteable,
-            note: args[:body]
+            note: args[:body],
+            confidential: args[:confidential]
           }
         end
       end

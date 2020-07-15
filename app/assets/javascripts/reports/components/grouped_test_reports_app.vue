@@ -114,7 +114,12 @@ export default {
     class="mr-widget-section grouped-security-reports mr-report"
   >
     <template v-if="showViewFullReport" #actionButtons>
-      <gl-button :href="testTabURL" icon="external-link" data-testid="group-test-reports-full-link">
+      <gl-button
+        :href="testTabURL"
+        icon="external-link"
+        data-testid="group-test-reports-full-link"
+        class="gl-mr-3"
+      >
         {{ s__('ciReport|View full report') }}
       </gl-button>
     </template>

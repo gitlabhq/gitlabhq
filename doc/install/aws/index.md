@@ -7,7 +7,7 @@ type: howto
 This page offers a walkthrough of a common configuration
 for GitLab on AWS. You should customize it to accommodate your needs.
 
-NOTE: **Note**
+NOTE: **Note:**
 For organizations with 1,000 users or less, the recommended AWS installation method is to launch an EC2 single box [Omnibus Installation](https://about.gitlab.com/install/) and implement a snapshot strategy for backing up the data. See the [1,000 user reference architecture](../../administration/reference_architectures/1k_users.md) for more.
 
 ## Introduction
@@ -739,7 +739,7 @@ To back up GitLab:
    sudo gitlab-backup create
    ```
 
-NOTE: **Note**
+NOTE: **Note:**
 For GitLab 12.1 and earlier, use `gitlab-rake gitlab:backup:create`.
 
 ### Restoring GitLab from a backup
@@ -760,7 +760,7 @@ released, you can update your GitLab instance:
    sudo gitlab-backup create
    ```
 
-NOTE: **Note**
+NOTE: **Note:**
 For GitLab 12.1 and earlier, use `gitlab-rake gitlab:backup:create`.
 
 1. Update the repositories and install GitLab:

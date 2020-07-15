@@ -59,7 +59,6 @@ export default {
    */
   [types.REQUEST_METRICS_DASHBOARD](state) {
     state.emptyState = dashboardEmptyStates.LOADING;
-    state.showEmptyState = true;
   },
   [types.RECEIVE_METRICS_DASHBOARD_SUCCESS](state, dashboardYML) {
     const { dashboard, panelGroups, variables, links } = mapToDashboardViewModel(dashboardYML);
@@ -72,13 +71,14 @@ export default {
 
     if (!state.dashboard.panelGroups.length) {
       state.emptyState = dashboardEmptyStates.NO_DATA;
+    } else {
+      state.emptyState = null;
     }
   },
   [types.RECEIVE_METRICS_DASHBOARD_FAILURE](state, error) {
     state.emptyState = error
       ? dashboardEmptyStates.UNABLE_TO_CONNECT
       : dashboardEmptyStates.NO_DATA;
-    state.showEmptyState = true;
   },
 
   [types.REQUEST_DASHBOARD_STARRING](state) {
@@ -152,9 +152,6 @@ export default {
     const metric = findMetricInDashboard(metricId, state.dashboard);
     metric.loading = false;
 
-    state.showEmptyState = false;
-    state.emptyState = null;
-
     if (!data.result || data.result.length === 0) {
       metric.state = metricStates.NO_DATA;
       metric.result = null;
@@ -184,12 +181,7 @@ export default {
     state.timeRange = timeRange;
   },
   [types.SET_GETTING_STARTED_EMPTY_STATE](state) {
-    state.showEmptyState = true;
     state.emptyState = dashboardEmptyStates.GETTING_STARTED;
-  },
-  [types.SET_NO_DATA_EMPTY_STATE](state) {
-    state.showEmptyState = true;
-    state.emptyState = dashboardEmptyStates.NO_DATA;
   },
   [types.SET_ALL_DASHBOARDS](state, dashboards) {
     state.allDashboards = dashboards || [];

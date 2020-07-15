@@ -69,7 +69,7 @@
         = link_to 'Delete', polymorphic_path([@project.namespace.becomes(Namespace), @project, issuable], params: { destroy_confirm: true }), data: { confirm: "#{issuable.human_class_name} will be removed! Are you sure?" }, method: :delete, class: 'btn btn-danger btn-grouped'
       = link_to 'Cancel', polymorphic_path([@project.namespace.becomes(Namespace), @project, issuable]), class: 'btn btn-grouped btn-cancel'
 
-  %span.append-right-10
+  %span.gl-mr-3
     - if issuable.new_record?
       = form.submit "Submit #{issuable.class.model_name.human.downcase}", class: 'btn btn-success qa-issuable-create-button'
     - else

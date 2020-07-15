@@ -25,9 +25,6 @@ module Gitlab
           # redis-rb passes an array (e.g. [[:get, key]])
           return unless args.length == 1
 
-          # TODO: Add information about current Redis client
-          # being instrumented.
-          # https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/316.
           detail_store << {
             cmd: args.first,
             duration: duration,

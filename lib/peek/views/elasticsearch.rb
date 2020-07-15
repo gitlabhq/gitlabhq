@@ -40,7 +40,7 @@ module Peek
       end
 
       def format_call_details(call)
-        super.merge(request: "#{call[:method]} #{call[:path]}")
+        super.merge(request: "#{call[:method]} #{call[:path]}?#{call[:params].to_query}")
       end
     end
   end

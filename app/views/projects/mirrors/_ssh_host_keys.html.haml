@@ -3,7 +3,7 @@
 - verified_at = mirror.ssh_known_hosts_verified_at
 
 .form-group.js-ssh-host-keys-section{ class: ('collapse' unless mirror.ssh_mirror_url?) }
-  %button.btn.btn-inverted.btn-secondary.inline.js-detect-host-keys.append-right-10{ type: 'button', data: { qa_selector: 'detect_host_keys' } }
+  %button.btn.btn-inverted.btn-secondary.inline.js-detect-host-keys.gl-mr-3{ type: 'button', data: { qa_selector: 'detect_host_keys' } }
     .js-spinner.d-none.spinner.mr-1
     = _('Detect host keys')
   .fingerprint-ssh-info.js-fingerprint-ssh-info.prepend-top-10.append-bottom-10{ class: ('collapse' unless mirror.ssh_mirror_url?) }

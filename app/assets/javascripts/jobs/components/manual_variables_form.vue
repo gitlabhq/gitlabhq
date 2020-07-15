@@ -112,7 +112,7 @@ export default {
       <div v-for="variable in variables" :key="variable.id" class="gl-responsive-table-row">
         <div class="table-section section-50">
           <div class="table-mobile-header" role="rowheader">{{ s__('Pipeline|Key') }}</div>
-          <div class="table-mobile-content append-right-10">
+          <div class="table-mobile-content gl-mr-3">
             <input
               :ref="`${$options.inputTypes.key}-${variable.id}`"
               v-model="variable.key"
@@ -124,7 +124,7 @@ export default {
 
         <div class="table-section section-50">
           <div class="table-mobile-header" role="rowheader">{{ s__('Pipeline|Value') }}</div>
-          <div class="table-mobile-content append-right-10">
+          <div class="table-mobile-content gl-mr-3">
             <input
               :ref="`${$options.inputTypes.value}-${variable.id}`"
               v-model="variable.secret_value"
@@ -149,7 +149,7 @@ export default {
       <div class="gl-responsive-table-row">
         <div class="table-section section-50">
           <div class="table-mobile-header" role="rowheader">{{ s__('Pipeline|Key') }}</div>
-          <div class="table-mobile-content append-right-10">
+          <div class="table-mobile-content gl-mr-3">
             <input
               ref="inputKey"
               v-model="key"
@@ -161,7 +161,7 @@ export default {
 
         <div class="table-section section-50">
           <div class="table-mobile-header" role="rowheader">{{ s__('Pipeline|Value') }}</div>
-          <div class="table-mobile-content append-right-10">
+          <div class="table-mobile-content gl-mr-3">
             <input
               ref="inputSecretValue"
               v-model="secretValue"

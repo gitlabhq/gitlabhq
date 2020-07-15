@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 module IncidentManagement
   module Settings
+    include Gitlab::Utils::StrongMemoize
+
     def incident_management_setting
       strong_memoize(:incident_management_setting) do
         project.incident_management_setting ||

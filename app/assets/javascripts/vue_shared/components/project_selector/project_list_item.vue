@@ -56,7 +56,7 @@ export default {
     @click="onClick"
   >
     <icon
-      class="prepend-left-10 append-right-10 flex-shrink-0 position-top-0 js-selected-icon"
+      class="prepend-left-10 gl-mr-3 flex-shrink-0 position-top-0 js-selected-icon"
       :class="{ 'js-selected visible': selected, 'js-unselected invisible': !selected }"
       name="mobile-issue-close"
     />

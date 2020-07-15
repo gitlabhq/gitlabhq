@@ -37,13 +37,13 @@ module Snippets
       end
     end
 
-    # If the snippet_files param is present
+    # If the snippet_actions param is present
     # we need to fill content and file_name from
     # the model
     def create_params
-      return params if snippet_files.empty?
+      return params if snippet_actions.empty?
 
-      params.merge(content: snippet_files[0].content, file_name: snippet_files[0].file_path)
+      params.merge(content: snippet_actions[0].content, file_name: snippet_actions[0].file_path)
     end
 
     def save_and_commit

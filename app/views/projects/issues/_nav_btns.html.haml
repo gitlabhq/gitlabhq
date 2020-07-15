@@ -14,7 +14,7 @@
       = render 'projects/issues/import_csv/button'
 
   - if @can_bulk_update
-    = button_tag _("Edit issues"), class: "btn btn-default append-right-10 js-bulk-update-toggle"
+    = button_tag _("Edit issues"), class: "btn btn-default gl-mr-3 js-bulk-update-toggle"
   - if show_new_issue_link?(@project)
     = link_to _("New issue"), new_project_issue_path(@project,
                                                   issue: { assignee_id: finder.assignee.try(:id),

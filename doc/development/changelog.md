@@ -42,10 +42,9 @@ the `author` field. GitLab team members **should not**.
   Example: "Fixed a typo on the search results page."
 - Any docs-only changes **should not** have a changelog entry.
 - Any change behind a feature flag **should not** have a changelog entry - unless
-  the feature flag has been defaulted to true. The entry should be added
-  [in the merge request removing the feature flags](feature_flags/development.md).
-  If the change includes a database migration (regular, post, or data migration),
-  there should be a changelog entry for the migration change.
+  the feature flag has been defaulted to true.
+- A change that [removes a feature flag](feature_flags/development.md) **should** have a changelog entry -
+  only if the feature flag did not default to true already.
 - A fix for a regression introduced and then fixed in the same release (i.e.,
   fixing a bug introduced during a monthly release candidate) **should not**
   have a changelog entry.

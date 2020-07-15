@@ -410,7 +410,7 @@ export default {
           </button>
           <button
             v-if="discussion.resolvable"
-            class="btn btn-nr btn-default append-right-10 js-comment-resolve-button"
+            class="btn btn-nr btn-default gl-mr-3 js-comment-resolve-button"
             @click.prevent="handleUpdate(true)"
           >
             {{ resolveButtonTitle }}

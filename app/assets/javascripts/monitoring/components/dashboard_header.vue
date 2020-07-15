@@ -119,10 +119,10 @@ export default {
   },
   computed: {
     ...mapState('monitoringDashboard', [
+      'emptyState',
       'environmentsLoading',
       'currentEnvironmentName',
       'isUpdatingStarredValue',
-      'showEmptyState',
       'dashboardTimezone',
       'projectPath',
       'canAccessOperationsSettings',
@@ -132,13 +132,16 @@ export default {
     isOutOfTheBoxDashboard() {
       return this.selectedDashboard?.out_of_the_box_dashboard;
     },
+    shouldShowEmptyState() {
+      return Boolean(this.emptyState);
+    },
     shouldShowEnvironmentsDropdownNoMatchedMsg() {
       return !this.environmentsLoading && this.filteredEnvironments.length === 0;
     },
     addingMetricsAvailable() {
       return (
         this.customMetricsAvailable &&
-        !this.showEmptyState &&
+        !this.shouldShowEmptyState &&
         // Custom metrics only avaialble on system dashboards because
         // they are stored in the database. This can be improved. See:
         // https://gitlab.com/gitlab-org/gitlab/-/issues/28241
@@ -146,7 +149,7 @@ export default {
       );
     },
     showRearrangePanelsBtn() {
-      return !this.showEmptyState && this.rearrangePanelsAvailable;
+      return !this.shouldShowEmptyState && this.rearrangePanelsAvailable;
     },
     displayUtc() {
       return this.dashboardTimezone === timezones.UTC;

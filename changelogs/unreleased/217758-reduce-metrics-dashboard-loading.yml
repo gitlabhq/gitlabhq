@@ -1,0 +1,6 @@
+---
+title: Replace initial dashboard loading state with a loading spinner, show dashboard
+  skeleton earlier with smaller loading indicators
+merge_request: 36399
+author:
+type: changed

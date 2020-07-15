@@ -62,7 +62,7 @@ To change it at the:
   1. Change the value of **maximum artifacts size (in MB)**.
   1. Click **Save changes** for the changes to take effect.
 
-NOTE: **Note**
+NOTE: **Note:**
 The setting at all levels is only available to GitLab administrators.
 
 ## Default artifacts expiration **(CORE ONLY)**
@@ -80,7 +80,7 @@ This setting is set per job and can be overridden in
 [`.gitlab-ci.yml`](../../../ci/yaml/README.md#artifactsexpire_in).
 To disable the expiration, set it to `0`. The default unit is in seconds.
 
-NOTE: **Note**
+NOTE: **Note:**
 Any changes to this setting will apply to new artifacts only. The expiration time will not
 be updated for artifacts created before this setting was changed.
 The administrator may need to manually search for and expire previously-created

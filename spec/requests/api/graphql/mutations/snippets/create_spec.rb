@@ -174,7 +174,7 @@ RSpec.describe 'Creating a Snippet' do
       context 'when action is invalid' do
         let(:file_1) { { filePath: 'example_file1' }}
 
-        it_behaves_like 'a mutation that returns errors in the response', errors: ['Snippet files have invalid data']
+        it_behaves_like 'a mutation that returns errors in the response', errors: ['Snippet actions have invalid data']
         it_behaves_like 'does not create snippet'
       end
     end

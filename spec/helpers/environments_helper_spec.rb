@@ -95,6 +95,30 @@ RSpec.describe EnvironmentsHelper do
 
       it { is_expected.to include('environment-state' => 'stopped') }
     end
+
+    context 'when request is from project scoped metrics path' do
+      let(:request) { double('request', path: path) }
+
+      before do
+        allow(helper).to receive(:request).and_return(request)
+      end
+
+      context '/:namespace/:project/-/metrics' do
+        let(:path) { project_metrics_dashboard_path(project) }
+
+        it 'uses correct path for metrics-dashboard-base-path' do
+          expect(metrics_data['metrics-dashboard-base-path']).to eq(project_metrics_dashboard_path(project))
+        end
+      end
+
+      context '/:namespace/:project/-/metrics/some_custom_dashboard.yml' do
+        let(:path) { "#{project_metrics_dashboard_path(project)}/some_custom_dashboard.yml" }
+
+        it 'uses correct path for metrics-dashboard-base-path' do
+          expect(metrics_data['metrics-dashboard-base-path']).to eq(project_metrics_dashboard_path(project))
+        end
+      end
+    end
   end
 
   describe '#custom_metrics_available?' do

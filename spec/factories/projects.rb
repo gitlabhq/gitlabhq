@@ -382,4 +382,11 @@ FactoryBot.define do
       )
     end
   end
+
+  factory :project_with_design, parent: :project do
+    after(:create) do |project|
+      issue = create(:issue, project: project)
+      create(:design, project: project, issue: issue)
+    end
+  end
 end

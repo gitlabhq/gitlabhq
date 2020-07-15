@@ -228,15 +228,15 @@ RSpec.describe Snippets::CreateService do
       end
     end
 
-    shared_examples 'when snippet_files param is present' do
+    shared_examples 'when snippet_actions param is present' do
       let(:file_path) { 'snippet_file_path.rb' }
       let(:content) { 'snippet_content' }
-      let(:snippet_files) { [{ action: 'create', file_path: file_path, content: content }] }
+      let(:snippet_actions) { [{ action: 'create', file_path: file_path, content: content }] }
       let(:base_opts) do
         {
           title: 'Test snippet',
           visibility_level: Gitlab::VisibilityLevel::PRIVATE,
-          snippet_files: snippet_files
+          snippet_actions: snippet_actions
         }
       end
 
@@ -266,28 +266,28 @@ RSpec.describe Snippets::CreateService do
         end
       end
 
-      context 'when snippet_files param is invalid' do
-        let(:snippet_files) { [{ action: 'invalid_action', file_path: 'snippet_file_path.rb', content: 'snippet_content' }] }
+      context 'when snippet_actions param is invalid' do
+        let(:snippet_actions) { [{ action: 'invalid_action', file_path: 'snippet_file_path.rb', content: 'snippet_content' }] }
 
         it 'a validation error is raised' do
           expect(subject).to be_error
-          expect(snippet.errors.full_messages_for(:snippet_files)).to eq ['Snippet files have invalid data']
+          expect(snippet.errors.full_messages_for(:snippet_actions)).to eq ['Snippet actions have invalid data']
           expect(snippet.repository.exists?).to be_falsey
         end
       end
 
-      context 'when snippet_files contain an action different from "create"' do
-        let(:snippet_files) { [{ action: 'delete', file_path: 'snippet_file_path.rb' }] }
+      context 'when snippet_actions contain an action different from "create"' do
+        let(:snippet_actions) { [{ action: 'delete', file_path: 'snippet_file_path.rb' }] }
 
         it 'a validation error is raised' do
           expect(subject).to be_error
-          expect(snippet.errors.full_messages_for(:snippet_files)).to eq ['Snippet files have invalid data']
+          expect(snippet.errors.full_messages_for(:snippet_actions)).to eq ['Snippet actions have invalid data']
           expect(snippet.repository.exists?).to be_falsey
         end
       end
 
       context 'when "create" operation does not have file_path or is empty' do
-        let(:snippet_files) { [{ action: 'create', content: content }, { action: 'create', content: content, file_path: '' }] }
+        let(:snippet_actions) { [{ action: 'create', content: content }, { action: 'create', content: content, file_path: '' }] }
 
         it 'generates the file path for the files' do
           expect(subject).to be_success
@@ -311,7 +311,7 @@ RSpec.describe Snippets::CreateService do
       it_behaves_like 'an error service response when save fails'
       it_behaves_like 'creates repository and files'
       it_behaves_like 'after_save callback to store_mentions', ProjectSnippet
-      it_behaves_like 'when snippet_files param is present'
+      it_behaves_like 'when snippet_actions param is present'
 
       context 'when uploaded files are passed to the service' do
         let(:extra_opts) { { files: ['foo'] } }
@@ -338,7 +338,7 @@ RSpec.describe Snippets::CreateService do
       it_behaves_like 'an error service response when save fails'
       it_behaves_like 'creates repository and files'
       it_behaves_like 'after_save callback to store_mentions', PersonalSnippet
-      it_behaves_like 'when snippet_files param is present'
+      it_behaves_like 'when snippet_actions param is present'
 
       context 'when the snippet description contains files' do
         include FileMoverHelpers

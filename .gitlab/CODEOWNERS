@@ -50,11 +50,6 @@
 /ee/app/models/project_alias.rb @patrickbajao
 /ee/lib/api/project_aliases.rb @patrickbajao
 
-# Code Owners
-#
-/ee/lib/gitlab/code_owners/ @reprazent @kerrizor @garyh
-/doc/user/project/code_owners.md @reprazent @kerrizor @garyh
-
 # Quality owned files
 /qa/ @gl-quality
 
@@ -78,3 +73,9 @@ Dangerfile @gl-quality/eng-prod
 /lib/gitlab/usage_data.rb @gitlab-org/growth/telemetry
 /lib/gitlab/cycle_analytics/usage_data.rb @gitlab-org/growth/telemetry
 /lib/gitlab/usage_data_counters/ @gitlab-org/growth/telemetry
+
+[Code Owners]
+/ee/lib/gitlab/code_owners.rb @reprazent @kerrizor @garyh
+/ee/lib/gitlab/code_owners/ @reprazent @kerrizor @garyh
+/ee/spec/lib/gitlab/code_owners/ @reprazent @kerrizor @garyh
+/doc/user/project/code_owners.md @reprazent @kerrizor @garyh
