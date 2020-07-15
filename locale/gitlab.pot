@@ -757,9 +757,6 @@ msgid_plural "(%d closed)"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "(%{linkStart}Cron syntax%{linkEnd})"
-msgstr ""
-
 msgid "(%{mrCount} merged)"
 msgstr ""
 
@@ -4596,6 +4593,9 @@ msgid "Choose between <code>clone</code> or <code>fetch</code> to get the recent
 msgstr ""
 
 msgid "Choose file…"
+msgstr ""
+
+msgid "Choose labels"
 msgstr ""
 
 msgid "Choose the top-level group for your repository imports."
@@ -8529,6 +8529,9 @@ msgstr ""
 msgid "Edit files in the editor and commit changes here"
 msgstr ""
 
+msgid "Edit fork in Web IDE"
+msgstr ""
+
 msgid "Edit group: %{group_name}"
 msgstr ""
 
@@ -9222,7 +9225,13 @@ msgstr ""
 msgid "Epics|Are you sure you want to remove %{bStart}%{targetIssueTitle}%{bEnd} from %{bStart}%{parentEpicTitle}%{bEnd}?"
 msgstr ""
 
+msgid "Epics|Enter a title for your epic"
+msgstr ""
+
 msgid "Epics|How can I solve this?"
+msgstr ""
+
+msgid "Epics|Leave empty to inherit from milestone dates"
 msgstr ""
 
 msgid "Epics|More information"
@@ -9264,10 +9273,16 @@ msgstr ""
 msgid "Epics|These dates affect how your epics appear in the roadmap. Dates from milestones come from the milestones assigned to issues in the epic. You can also set fixed dates or remove them entirely."
 msgstr ""
 
+msgid "Epics|This epic and any containing child epics are confidential and should only be visible to team members with at least Reporter access."
+msgstr ""
+
 msgid "Epics|This will also remove any descendents of %{bStart}%{targetEpicTitle}%{bEnd} from %{bStart}%{parentEpicTitle}%{bEnd}. Are you sure?"
 msgstr ""
 
 msgid "Epics|To schedule your epic's %{epicDateType} date based on milestones, assign a milestone with a %{epicDateType} date to any issue in the epic."
+msgstr ""
+
+msgid "Epics|Unable to save epic. Please try again"
 msgstr ""
 
 msgid "Epics|due"
@@ -15416,6 +15431,9 @@ msgstr ""
 msgid "New Environment"
 msgstr ""
 
+msgid "New Epic"
+msgstr ""
+
 msgid "New File"
 msgstr ""
 
@@ -16881,6 +16899,9 @@ msgstr ""
 msgid "PipelineCharts|Total:"
 msgstr ""
 
+msgid "PipelineScheduleIntervalPattern|Custom (%{linkStart}Cron syntax%{linkEnd})"
+msgstr ""
+
 msgid "PipelineSchedules|Activated"
 msgstr ""
 
@@ -16909,9 +16930,6 @@ msgid "PipelineSchedules|Target"
 msgstr ""
 
 msgid "PipelineSchedules|Variables"
-msgstr ""
-
-msgid "PipelineSheduleIntervalPattern|Custom"
 msgstr ""
 
 msgid "PipelineStatusTooltip|Pipeline: %{ciStatus}"
@@ -20958,6 +20976,9 @@ msgid "Select groups to replicate"
 msgstr ""
 
 msgid "Select health status"
+msgstr ""
+
+msgid "Select label"
 msgstr ""
 
 msgid "Select labels"

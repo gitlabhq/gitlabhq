@@ -422,7 +422,7 @@ supported by consolidated configuration form, refer to the following guides:
 | [Job artifacts](job_artifacts.md#using-object-storage) and [incremental logging](job_logs.md#new-incremental-logging-architecture) | Yes |
 | [LFS objects](lfs/index.md#storing-lfs-objects-in-remote-object-storage) | Yes |
 | [Uploads](uploads.md#using-object-storage-core-only) | Yes |
-| [Container Registry](packages/container_registry.md#container-registry-storage-driver) (optional feature) | No |
+| [Container Registry](packages/container_registry.md#use-object-storage) (optional feature) | No |
 | [Merge request diffs](merge_request_diffs.md#using-object-storage) | Yes |
 | [Mattermost](https://docs.mattermost.com/administration/config-settings.html#file-storage)| No |
 | [Packages](packages/index.md#using-object-storage) (optional feature) **(PREMIUM ONLY)** | Yes |

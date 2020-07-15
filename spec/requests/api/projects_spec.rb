@@ -2679,6 +2679,26 @@ RSpec.describe API::Projects do
         end
       end
     end
+
+    context 'when updating service desk' do
+      subject { put(api("/projects/#{project.id}", user), params: { service_desk_enabled: true }) }
+
+      before do
+        project.update!(service_desk_enabled: false)
+
+        allow(::Gitlab::IncomingEmail).to receive(:enabled?).and_return(true)
+      end
+
+      it 'returns 200' do
+        subject
+
+        expect(response).to have_gitlab_http_status(:ok)
+      end
+
+      it 'enables the service_desk' do
+        expect { subject }.to change { project.reload.service_desk_enabled }.to(true)
+      end
+    end
   end
 
   describe 'POST /projects/:id/archive' do

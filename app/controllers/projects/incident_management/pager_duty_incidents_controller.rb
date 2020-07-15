@@ -11,11 +11,7 @@ module Projects
       prepend_before_action :project_without_auth
 
       def create
-        result = ServiceResponse.success(http_status: :accepted)
-
-        unless Feature.enabled?(:pagerduty_webhook, @project)
-          result = ServiceResponse.error(message: 'Unauthorized', http_status: :unauthorized)
-        end
+        result = webhook_processor.execute(params[:token])
 
         head result.http_status
       end
@@ -25,6 +21,14 @@ module Projects
       def project_without_auth
         @project ||= Project
           .find_by_full_path("#{params[:namespace_id]}/#{params[:project_id]}")
+      end
+
+      def webhook_processor
+        ::IncidentManagement::PagerDuty::ProcessWebhookService.new(project, nil, payload)
+      end
+
+      def payload
+        @payload ||= params.permit![:pager_duty_incident].to_h
       end
     end
   end

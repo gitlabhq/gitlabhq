@@ -1,6 +1,7 @@
 import renderBlockHtml from './renderers/render_html_block';
 import renderKramdownList from './renderers/render_kramdown_list';
 import renderKramdownText from './renderers/render_kramdown_text';
+import renderIdentifierInstanceText from './renderers/render_identifier_instance_text';
 import renderIdentifierParagraph from './renderers/render_identifier_paragraph';
 import renderEmbeddedRubyText from './renderers/render_embedded_ruby_text';
 import renderFontAwesomeHtmlInline from './renderers/render_font_awesome_html_inline';
@@ -9,7 +10,7 @@ const htmlInlineRenderers = [renderFontAwesomeHtmlInline];
 const htmlBlockRenderers = [renderBlockHtml];
 const listRenderers = [renderKramdownList];
 const paragraphRenderers = [renderIdentifierParagraph];
-const textRenderers = [renderKramdownText, renderEmbeddedRubyText];
+const textRenderers = [renderKramdownText, renderEmbeddedRubyText, renderIdentifierInstanceText];
 
 const executeRenderer = (renderers, node, context) => {
   const availableRenderer = renderers.find(renderer => renderer.canRender(node, context));

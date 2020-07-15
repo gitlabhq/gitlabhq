@@ -62,6 +62,7 @@ if Gitlab::Utils.to_boolean(ENV['STACKPROF_ENABLED'].to_s)
           )
 
           StackProf.start(
+            mode: :cpu,
             raw: Gitlab::Utils.to_boolean(ENV['STACKPROF_RAW'] || 'true'),
             interval: ENV['STACKPROF_INTERVAL_US']&.to_i || 10_000
           )

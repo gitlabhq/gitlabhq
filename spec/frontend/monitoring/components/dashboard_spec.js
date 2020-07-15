@@ -433,6 +433,10 @@ describe('Dashboard', () => {
       const findDashboardDropdown = () => wrapper.find(DashboardHeader).find(DashboardsDropdown);
 
       beforeEach(() => {
+        store.commit(`monitoringDashboard/${types.SET_INITIAL_STATE}`, {
+          projectPath: TEST_HOST,
+        });
+
         delete window.location;
         window.location = { ...windowLocation, assign: jest.fn() };
         createMountedWrapper();
@@ -446,10 +450,11 @@ describe('Dashboard', () => {
 
       it('encodes dashboard param', () => {
         findDashboardDropdown().vm.$emit('selectDashboard', {
-          path: 'dashboard&copy.yml',
+          path: '.gitlab/dashboards/dashboard&copy.yml',
+          display_name: 'dashboard&copy.yml',
         });
         expect(window.location.assign).toHaveBeenCalledWith(
-          `${TEST_HOST}/?dashboard=dashboard%2526copy.yml`,
+          `${TEST_HOST}/-/metrics/dashboard%26copy.yml`,
         );
       });
     });
@@ -486,6 +491,8 @@ describe('Dashboard', () => {
     beforeEach(() => {
       store.commit(`monitoringDashboard/${types.SET_INITIAL_STATE}`, {
         currentEnvironmentName: 'production',
+        currentDashboard: dashboardGitResponse[0].path,
+        projectPath: TEST_HOST,
       });
       createMountedWrapper({ hasMetrics: true });
       setupStoreWithData(store);
@@ -498,9 +505,12 @@ describe('Dashboard', () => {
 
       findAllEnvironmentsDropdownItems().wrappers.forEach((itemWrapper, index) => {
         const anchorEl = itemWrapper.find('a');
-        if (anchorEl.exists() && environmentData[index].metrics_path) {
+        if (anchorEl.exists()) {
           const href = anchorEl.attributes('href');
-          expect(href).toBe(environmentData[index].metrics_path);
+          const currentDashboard = encodeURIComponent(dashboardGitResponse[0].path);
+          const environmentId = encodeURIComponent(environmentData[index].id);
+          const url = `${TEST_HOST}/-/metrics/${currentDashboard}?environment=${environmentId}`;
+          expect(href).toBe(url);
         }
       });
     });

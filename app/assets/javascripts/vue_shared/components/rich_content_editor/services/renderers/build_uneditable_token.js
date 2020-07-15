@@ -32,6 +32,8 @@ export const buildUneditableCloseTokens = (token, tagType = TAG_TYPES.block) => 
 
 // Complete helpers (open plus close)
 
+export const buildTextToken = content => buildToken('text', null, { content });
+
 export const buildUneditableTokens = token => {
   return [...buildUneditableOpenTokens(token), buildUneditableCloseToken()];
 };

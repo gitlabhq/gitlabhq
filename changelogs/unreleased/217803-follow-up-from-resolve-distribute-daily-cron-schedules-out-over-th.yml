@@ -1,0 +1,5 @@
+---
+title: Fix UI quirks with pipeline schedule cron options
+merge_request: 36471
+author:
+type: changed

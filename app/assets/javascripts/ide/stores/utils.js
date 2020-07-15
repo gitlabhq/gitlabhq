@@ -25,13 +25,6 @@ export const dataStructure = () => ({
   changed: false,
   staged: false,
   lastCommitSha: '',
-  lastCommit: {
-    id: '',
-    url: '',
-    message: '',
-    updatedAt: '',
-    author: '',
-  },
   rawPath: '',
   binary: false,
   raw: '',

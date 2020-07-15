@@ -127,6 +127,7 @@ export default {
       'projectPath',
       'canAccessOperationsSettings',
       'operationsSettingsPath',
+      'currentDashboard',
     ]),
     ...mapGetters('monitoringDashboard', ['selectedDashboard', 'filteredEnvironments']),
     isOutOfTheBoxDashboard() {
@@ -164,11 +165,14 @@ export default {
   methods: {
     ...mapActions('monitoringDashboard', ['filterEnvironments', 'toggleStarredValue']),
     selectDashboard(dashboard) {
-      const params = {
-        dashboard: encodeURIComponent(dashboard.path),
-      };
-
-      redirectTo(mergeUrlParams(params, window.location.href));
+      // Once the sidebar See metrics link is updated to the new URL,
+      // this sort of hardcoding will not be necessary.
+      // https://gitlab.com/gitlab-org/gitlab/-/issues/229277
+      const baseURL = `${this.projectPath}/-/metrics`;
+      const dashboardPath = encodeURIComponent(
+        dashboard.out_of_the_box_dashboard ? dashboard.path : dashboard.display_name,
+      );
+      redirectTo(`${baseURL}/${dashboardPath}`);
     },
     debouncedEnvironmentsSearch: debounce(function environmentsSearchOnInput(searchTerm) {
       this.filterEnvironments(searchTerm);
@@ -192,6 +196,17 @@ export default {
     getAddMetricTrackingOptions,
     submitCustomMetricsForm() {
       this.$refs.customMetricsForm.submit();
+    },
+    getEnvironmentPath(environment) {
+      // Once the sidebar See metrics link is updated to the new URL,
+      // this sort of hardcoding will not be necessary.
+      // https://gitlab.com/gitlab-org/gitlab/-/issues/229277
+      const baseURL = `${this.projectPath}/-/metrics`;
+      const dashboardPath = encodeURIComponent(this.currentDashboard || '');
+      // The environment_metrics_spec.rb requires the URL to not have
+      // slashes. Hence, this additional check.
+      const url = dashboardPath ? `${baseURL}/${dashboardPath}` : baseURL;
+      return mergeUrlParams({ environment }, url);
     },
   },
   modalIds: {
@@ -255,7 +270,7 @@ export default {
               :key="environment.id"
               :active="environment.name === currentEnvironmentName"
               active-class="is-active"
-              :href="environment.metrics_path"
+              :href="getEnvironmentPath(environment.id)"
               >{{ environment.name }}</gl-dropdown-item
             >
           </div>

@@ -1028,6 +1028,10 @@ class MergeRequest < ApplicationRecord
     target_project != source_project
   end
 
+  def for_same_project?
+    target_project == source_project
+  end
+
   # If the merge request closes any issues, save this information in the
   # `MergeRequestsClosingIssues` model. This is a performance optimization.
   # Calculating this information for a number of merge requests requires
@@ -1293,7 +1297,7 @@ class MergeRequest < ApplicationRecord
 
   def all_pipelines
     strong_memoize(:all_pipelines) do
-      Ci::PipelinesForMergeRequestFinder.new(self).all
+      Ci::PipelinesForMergeRequestFinder.new(self, nil).all
     end
   end
 

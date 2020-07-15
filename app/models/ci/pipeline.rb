@@ -269,6 +269,7 @@ module Ci
     scope :for_ref, -> (ref) { where(ref: ref) }
     scope :for_id, -> (id) { where(id: id) }
     scope :for_iid, -> (iid) { where(iid: iid) }
+    scope :for_project, -> (project) { where(project: project) }
     scope :created_after, -> (time) { where('ci_pipelines.created_at > ?', time) }
     scope :created_before_id, -> (id) { where('ci_pipelines.id < ?', id) }
     scope :before_pipeline, -> (pipeline) { created_before_id(pipeline.id).outside_pipeline_family(pipeline) }
@@ -287,6 +288,15 @@ module Ci
                  .with_status(:running, :success, :failed)
                  .not_interruptible
       )
+    end
+
+    # Returns the pipelines that associated with the given merge request.
+    # In general, please use `Ci::PipelinesForMergeRequestFinder` instead,
+    # for checking permission of the actor.
+    scope :triggered_by_merge_request, -> (merge_request) do
+      ci_sources.where(source: :merge_request_event,
+                       merge_request: merge_request,
+                       project: [merge_request.source_project, merge_request.target_project])
     end
 
     # Returns the pipelines in descending order (= newest first), optionally

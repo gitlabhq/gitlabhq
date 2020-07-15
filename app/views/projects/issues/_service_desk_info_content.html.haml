@@ -1,0 +1,39 @@
+- is_empty_state = @issues.blank?
+- service_desk_enabled = @project.service_desk_enabled?
+
+- callout_selector = is_empty_state ? 'empty-state' : 'non-empty-state media'
+- svg_path = !is_empty_state ? 'shared/empty_states/icons/service_desk_callout.svg' : 'shared/empty_states/icons/service_desk_empty_state.svg'
+- can_edit_project_settings = can?(current_user, :admin_project, @project)
+- title_text = _("Use Service Desk to connect with your users (e.g. to offer customer support) through email right inside GitLab")
+
+- if Gitlab::ServiceDesk.supported?
+  %div{ class: "#{callout_selector}" }
+    .svg-content
+      = render svg_path
+
+    %div{ class: is_empty_state ? "text-content" : "prepend-top-10 gl-ml-3" }
+      - if is_empty_state
+        %h4= title_text
+      - else
+        %h5= title_text
+
+      - if can_edit_project_settings && service_desk_enabled
+        %p
+          = _("Have your users email")
+          %code= @project.service_desk_address
+
+      %span= _("Those emails automatically become issues (with the comments becoming the email conversation) listed here.")
+      = link_to _('Read more'), help_page_path('user/project/service_desk')
+
+      - if can_edit_project_settings && !service_desk_enabled
+        %div{ class: is_empty_state ? "text-center" : "prepend-top-10" }
+          = link_to _("Turn on Service Desk"), edit_project_path(@project), class: 'btn btn-success'
+- else
+  .empty-state
+    .svg-content
+      = render 'shared/empty_states/icons/service_desk_setup.svg'
+    .text-content
+      %h4= _('Service Desk is enabled but not yet active')
+      %p
+        = _("You must set up incoming email before it becomes active.")
+        = link_to _('More information'), help_page_path('administration/incoming_email', anchor: 'set-it-up')

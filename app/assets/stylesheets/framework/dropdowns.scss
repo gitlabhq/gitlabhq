@@ -1089,6 +1089,10 @@ header.header-content .dropdown-menu.frequent-items-dropdown-menu {
     .dropdown-label-color-preview {
       border: 1px solid $gray-100;
       border-right: 0;
+
+      &[style] {
+        border-color: transparent;
+      }
     }
   }
 }

@@ -41,7 +41,7 @@ describe('CI variable list mutations', () => {
         variable_type: 'Variable',
         key: '',
         secret_value: '',
-        protected: false,
+        protected_variable: false,
         masked: false,
         environment_scope: 'All (default)',
       };
@@ -85,7 +85,7 @@ describe('CI variable list mutations', () => {
     it('should set protected value to true', () => {
       mutations[types.SET_VARIABLE_PROTECTED](stateCopy);
 
-      expect(stateCopy.variable.protected).toBe(true);
+      expect(stateCopy.variable.protected_variable).toBe(true);
     });
   });
 

@@ -1,0 +1,5 @@
+---
+title: 'Fix the default metrics dashboard to work on K8s versions 1.12 to 1.16'
+merge_request: 36863
+author:
+type: fixed

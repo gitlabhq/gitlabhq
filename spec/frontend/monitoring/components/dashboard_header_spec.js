@@ -9,7 +9,7 @@ import {
   selfMonitoringDashboardGitResponse,
   dashboardHeaderProps,
 } from '../mock_data';
-import { redirectTo, mergeUrlParams } from '~/lib/utils/url_utility';
+import { redirectTo } from '~/lib/utils/url_utility';
 
 jest.mock('~/lib/utils/url_utility', () => ({
   redirectTo: jest.fn(),
@@ -46,6 +46,9 @@ describe('Dashboard header', () => {
   });
 
   describe('when a dashboard has been duplicated in the duplicate dashboard modal', () => {
+    beforeEach(() => {
+      store.state.monitoringDashboard.projectPath = 'root/sandbox';
+    });
     /**
      * The duplicate dashboard modal gets called both by a menu item from the
      * dashboards dropdown and by an item from the actions menu.
@@ -58,12 +61,10 @@ describe('Dashboard header', () => {
       window.location = new URL('https://localhost');
 
       const newDashboard = dashboardGitResponse[1];
-      const params = {
-        dashboard: encodeURIComponent(newDashboard.path),
-      };
-      const newDashboardUrl = mergeUrlParams(params, window.location.href);
 
       createShallowWrapper();
+
+      const newDashboardUrl = 'root/sandbox/-/metrics/dashboard.yml';
       findDuplicateDashboardModal().vm.$emit('dashboardDuplicated', newDashboard);
 
       return wrapper.vm.$nextTick().then(() => {

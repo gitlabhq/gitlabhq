@@ -97,6 +97,10 @@ export const clearExpandedPanel = ({ commit }) => {
   });
 };
 
+export const setCurrentDashboard = ({ commit }, { currentDashboard }) => {
+  commit(types.SET_CURRENT_DASHBOARD, currentDashboard);
+};
+
 // All Data
 
 /**

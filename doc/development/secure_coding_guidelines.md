@@ -213,7 +213,7 @@ the mitigations for a new feature.
 
 #### Feature-specific Mitigations
 
-For situations in which an allowlist or GitLab:HTTP cannot be used, it will be necessary to implement mitigations directly in the feature. It is best to validate the destination IP addresses themselves, not just domain names, as DNS can be controlled by the attacker. Below are a list of mitigations that should be implemented.
+For situtions in which an allowlist or GitLab:HTTP cannot be used, it will be necessary to implement mitigations directly in the feature. It is best to validate the destination IP addresses themselves, not just domain names, as DNS can be controlled by the attacker. Below are a list of mitigations that should be implemented.
 
 **Important Note:** There are many tricks to bypass common SSRF validations. If feature-specific mitigations are necessary, they should be reviewed by the AppSec team, or a developer who has worked on SSRF mitigations previously.
 
@@ -278,6 +278,7 @@ For any and all input fields, ensure to define expectations on the type/format o
   - Validate the [input size limits](https://youtu.be/2VFavqfDS6w?t=7582).
   - Validate the input using an [allowlist approach](https://youtu.be/2VFavqfDS6w?t=7816) to only allow characters through which you are expecting to receive for the field.
     - Input which fails validation should be **rejected**, and not sanitized.
+- When adding redirects or links to a user-controlled URL, ensure that the scheme is HTTP or HTTPS. Allowing other schemes like `javascript://` can lead to XSS and other security issues.
 
 Note that denylists should be avoided, as it is near impossible to block all [variations of XSS](https://owasp.org/www-community/xss-filter-evasion-cheatsheet).
 
@@ -292,40 +293,60 @@ Once you've [determined when and where](#setting-expectations) the user submitte
 
 ### Additional info
 
-#### Mitigating XSS in Rails
+#### XSS mitigation and prevention in Rails
+
+By default, Rails automatically escapes strings when they are inserted into HTML templates. Avoid the
+methods used to keep Rails from escaping strings, especially those related to user-controlled values.
+Specifically, the following options are dangerous because they mark strings as trusted and safe:
+
+| Method               | Avoid these options           |
+|----------------------|-------------------------------|
+| HAML templates       | `html_safe`, `raw`, `!=`      |
+| Embedded Ruby (ERB)  | `html_safe`, `raw`, `<%== %>` |
+In case you want to sanitize user-controlled values against XSS vulnerabilities, you can use
+[`ActionView::Helpers::SanitizeHelper`](https://api.rubyonrails.org/classes/ActionView/Helpers/SanitizeHelper.html).
+Calling `link_to` and `redirect_to` with user-controlled parameters can also lead to cross-site scripting.
+
+Do also sanitize and validate URL schemes.
+
+References:
 
 - [XSS Defense in Rails](https://youtu.be/2VFavqfDS6w?t=2442)
 - [XSS Defense with HAML](https://youtu.be/2VFavqfDS6w?t=2796)
 - [Validating Untrusted URLs in Ruby](https://youtu.be/2VFavqfDS6w?t=3936)
 - [RoR Model Validators](https://youtu.be/2VFavqfDS6w?t=7636)
 
+#### XSS mitigation and prevention in JavaScript and Vue
+
+- When updating the content of an HTML element using JavaScript, mark user-controlled values as `textContent` or `nodeValue` instead of `innerHTML`.
+- Avoid using `v-html` with user-controlled data, use [`v-safe-html`](https://gitlab-org.gitlab.io/gitlab-ui/?path=/story/directives-safe-html-directive--default) instead.
+- Consider using [`gl-sprintf`](../../ee/development/i18n/externalization.md#interpolation) to interpolate translated strings securely.
+- Avoid `__()` with translations that contain user-controlled values.
+- When working with `postMessage`, ensure the `origin` of the message is allowlisted.
+- Consider using the [Safe Link Directive](https://gitlab-org.gitlab.io/gitlab-ui/?path=/story/directives-safe-link-directive--default) to generate secure hyperlinks by default.
+
 #### GitLab specific libraries for mitigating XSS
 
 ##### Vue
 
 - [isSafeURL](https://gitlab.com/gitlab-org/gitlab/-/blob/v12.7.5-ee/app/assets/javascripts/lib/utils/url_utility.js#L190-207)
+- [GlSprintf](https://gitlab-org.gitlab.io/gitlab-ui/?path=/story/utilities-sprintf--default)
 
 #### Content Security Policy
 
 - [Content Security Policy](https://www.youtube.com/watch?v=2VFavqfDS6w&t=12991s)
 - [Use nonce-based Content Security Policy for inline JavaScript](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/65330)
 
-#### Free form input fields
-
-##### Sanitization
-
-- [HTML Sanitization](https://youtu.be/2VFavqfDS6w?t=5075)
-- [DOMPurify](https://youtu.be/2VFavqfDS6w?t=5381)
-
-##### `iframe` sandboxes
-
-- [iframe sandboxing](https://youtu.be/2VFavqfDS6w?t=7043)
+#### Free form input field
 
 ### Select examples of past XSS issues affecting GitLab
 
-- [Stored XSS in user status](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/55320)
+- [Stored XSS in user status](https://gitlab.com/gitlab-org/gitlab-foss/issues/55320)
+- [XSS vulnerability on custom project templates form](https://gitlab.com/gitlab-org/gitlab/issues/197302)
+- [Stored XSS in branch names](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/55320)
+- [Stored XSS in merge request pages](https://gitlab.com/gitlab-org/gitlab/-/issues/35096)
 
-### Developer Training
+### Internal Developer Training
 
 - [Introduction to XSS](https://www.youtube.com/watch?v=PXR8PTojHmc&t=7785s)
 - [Reflected XSS](https://youtu.be/2VFavqfDS6w?t=603s)
@@ -347,3 +368,29 @@ Once you've [determined when and where](#setting-expectations) the user submitte
 - [RoR model validators](https://youtu.be/2VFavqfDS6w?t=7636)
 - [Allowlist input validation](https://youtu.be/2VFavqfDS6w?t=7816)
 - [Content Security Policy](https://www.youtube.com/watch?v=2VFavqfDS6w&t=12991s)
+
+## Path Traversal guidelines
+
+### Description
+
+Path Traversal vulnerabilities grant attackers access to arbitrary directories and files on the server that is executing an application, including data, code or credentials.
+
+### Impact
+
+Path Traversal attacks can lead to multiple critical and high severity issues, like arbitrary file read, remote code execution or information disclosure.
+
+### When to consider
+
+When working with user-controlled filenames/paths and filesystem APIs.
+
+### Mitigation and prevention
+
+In order to prevent Path Traversal vulnerabilities, user-controlled filenames or paths should be validated before being processed.
+
+- Comparing user input against an allowlist of allowed values or verifying that it only contains allowed characters.
+- After validating the user supplied input, it should be appended to the base directory and the path should be canonicalized using the filesystem API.
+
+#### GitLab specific validations
+
+- [`Gitlab::Utils.check_path_traversal`](https://gitlab.com/gitlab-org/security/gitlab/-/blob/master/lib/gitlab/utils.rb#L12-24) can be used to validate user input against Path Traversal vulnerabilities. Remember to add further validation when setting the `allowed_absolute` option to `true`.
+- [`file_path` API validator](https://gitlab.com/gitlab-org/security/gitlab/-/blob/master/lib/api/validations/validators/file_path.rb) to validate user input when working with the Grape gem.

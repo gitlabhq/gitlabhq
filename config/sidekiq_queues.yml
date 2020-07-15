@@ -272,6 +272,8 @@
   - 1
 - - upload_checksum
   - 1
+- - vulnerabilities_statistics_adjustment
+  - 1
 - - vulnerability_exports_export
   - 1
 - - vulnerability_exports_export_deletion

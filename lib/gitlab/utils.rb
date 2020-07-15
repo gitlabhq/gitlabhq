@@ -178,5 +178,15 @@ module Gitlab
         .group_by(&:first)
         .transform_values { |kvs| kvs.map(&:last) }
     end
+
+    # This sort is stable (see https://en.wikipedia.org/wiki/Sorting_algorithm#Stability)
+    # contrary to the bare Ruby sort_by method. Using just sort_by leads to
+    # instability across different platforms (e.g., x86_64-linux and x86_64-darwin18)
+    # which in turn leads to different sorting results for the equal elements across
+    # these platforms.
+    # This method uses a list item's original index position to break ties.
+    def stable_sort_by(list)
+      list.sort_by.with_index { |x, idx| [yield(x), idx] }
+    end
   end
 end

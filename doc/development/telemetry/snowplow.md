@@ -16,9 +16,9 @@ For more information about Telemetry, see:
 More useful links:
 
 - [Telemetry Direction](https://about.gitlab.com/direction/telemetry/)
-- [Data Analysis Process](https://about.gitlab.com/handbook/business-ops/data-team/#-data-analysis-process)
-- [Data for Product Managers](https://about.gitlab.com/handbook/business-ops/data-team/data-programs/data-for-product-managers/)
-- [Data Infrastructure](https://about.gitlab.com/handbook/business-ops/data-team/data-platform/data-infrastructure/)
+- [Data Analysis Process](https://about.gitlab.com/handbook/business-ops/data-team/#data-analysis-process/)
+- [Data for Product Managers](https://about.gitlab.com/handbook/business-ops/data-team/programs/data-for-product-managers/)
+- [Data Infrastructure](https://about.gitlab.com/handbook/business-ops/data-team/platform/infrastructure/)
 
 ## What is Snowplow
 

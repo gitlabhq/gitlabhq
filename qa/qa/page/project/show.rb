@@ -56,7 +56,7 @@ module QA
           element :new_file_option
         end
 
-        view 'app/assets/javascripts/repository/index.js' do
+        view 'app/assets/javascripts/repository/components/web_ide_link.vue' do
           element :web_ide_button
         end
 

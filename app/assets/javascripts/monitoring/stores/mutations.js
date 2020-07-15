@@ -97,6 +97,10 @@ export default {
     state.isUpdatingStarredValue = false;
   },
 
+  [types.SET_CURRENT_DASHBOARD](state, currentDashboard) {
+    state.currentDashboard = currentDashboard;
+  },
+
   /**
    * Deployments and environments
    */

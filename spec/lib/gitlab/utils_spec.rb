@@ -358,4 +358,40 @@ RSpec.describe Gitlab::Utils do
       })
     end
   end
+
+  describe '.stable_sort_by' do
+    subject(:sorted_list) { described_class.stable_sort_by(list) { |obj| obj[:priority] } }
+
+    context 'when items have the same priority' do
+      let(:list) do
+        [
+          { name: 'obj 1', priority: 1 },
+          { name: 'obj 2', priority: 1 },
+          { name: 'obj 3', priority: 1 }
+        ]
+      end
+
+      it 'does not change order in cases of ties' do
+        expect(sorted_list).to eq(list)
+      end
+    end
+
+    context 'when items have different priorities' do
+      let(:list) do
+        [
+          { name: 'obj 1', priority: 2 },
+          { name: 'obj 2', priority: 1 },
+          { name: 'obj 3', priority: 3 }
+        ]
+      end
+
+      it 'sorts items like the regular sort_by' do
+        expect(sorted_list).to eq([
+          { name: 'obj 2', priority: 1 },
+          { name: 'obj 1', priority: 2 },
+          { name: 'obj 3', priority: 3 }
+        ])
+      end
+    end
+  end
 end

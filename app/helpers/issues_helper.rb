@@ -132,7 +132,10 @@ module IssuesHelper
   end
 
   def show_moved_service_desk_issue_warning?(issue)
-    false
+    return false unless issue.moved_from
+    return false unless issue.from_service_desk?
+
+    issue.moved_from.project.service_desk_enabled? && !issue.project.service_desk_enabled?
   end
 end
 

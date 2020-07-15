@@ -1,0 +1,13 @@
+.user-callout.promotion-callout.js-service-desk-callout#promote_service_desk{ data: { uid: 'promote_service_desk_dismissed' } }
+  .bordered-box.content-block
+    %button.btn.btn-default.close.js-close-callout{ type: 'button', 'aria-label' => 'Dismiss Service Desk promotion' }
+      = icon('times', class: 'dismiss-icon', 'aria-hidden' => 'true')
+    .svg-container
+      = custom_icon('icon_service_desk')
+    .user-callout-copy
+      -# haml-lint:disable NoPlainNodes
+      %h4
+        Improve customer support with GitLab Service Desk.
+      %p
+        GitLab Service Desk is a simple way to allow people to create issues in your GitLab instance without needing their own user account. It provides a unique email address for end users to create issues in a project, and replies can be sent either through the GitLab interface or by email. End users will only see the thread through email.
+        = link_to 'Read more', help_page_path('user/project/service_desk.md'), target: '_blank'

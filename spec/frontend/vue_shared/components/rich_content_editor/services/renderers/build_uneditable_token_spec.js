@@ -1,4 +1,5 @@
 import {
+  buildTextToken,
   buildUneditableOpenTokens,
   buildUneditableCloseToken,
   buildUneditableCloseTokens,
@@ -19,6 +20,13 @@ import {
 } from './mock_data';
 
 describe('Build Uneditable Token renderer helper', () => {
+  describe('buildTextToken', () => {
+    it('returns an object literal representing a text token', () => {
+      const text = originToken.content;
+      expect(buildTextToken(text)).toStrictEqual(originToken);
+    });
+  });
+
   describe('buildUneditableOpenTokens', () => {
     it('returns a 2-item array of tokens with the originToken appended to an open token', () => {
       const result = buildUneditableOpenTokens(originToken);

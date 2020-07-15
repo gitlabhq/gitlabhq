@@ -750,10 +750,6 @@ module ProjectsHelper
 
     ::Feature.enabled?(:resource_access_token, project)
   end
-
-  def render_service_desk_menu?
-    false
-  end
 end
 
 ProjectsHelper.prepend_if_ee('EE::ProjectsHelper')

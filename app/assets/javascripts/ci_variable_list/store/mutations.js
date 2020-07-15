@@ -74,7 +74,7 @@ export default {
       variable_type: displayText.variableText,
       key: '',
       secret_value: '',
-      protected: false,
+      protected_variable: false,
       masked: false,
       environment_scope: displayText.allEnvironmentsText,
     };
@@ -103,7 +103,7 @@ export default {
   },
 
   [types.SET_VARIABLE_PROTECTED](state) {
-    state.variable.protected = true;
+    state.variable.protected_variable = true;
   },
 
   [types.UPDATE_VARIABLE_KEY](state, key) {

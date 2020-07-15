@@ -102,10 +102,6 @@ module MergeRequests
       MergeRequests::CreatePipelineService.new(project, user).execute(merge_request)
     end
 
-    def can_use_merge_request_ref?(merge_request)
-      !merge_request.for_fork?
-    end
-
     def abort_auto_merge(merge_request, reason)
       AutoMergeService.new(project, current_user).abort(merge_request, reason)
     end

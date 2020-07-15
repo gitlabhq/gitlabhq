@@ -29,6 +29,7 @@ const buildMockUneditableCloseToken = type => {
 
 export const originToken = {
   type: 'text',
+  tagName: null,
   content: '{:.no_toc .hidden-md .hidden-lg}',
 };
 export const uneditableCloseToken = buildMockUneditableCloseToken('div');

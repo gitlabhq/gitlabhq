@@ -10,6 +10,7 @@ import { metricsResult } from './mock_data';
 export const metricsDashboardResponse = getJSONFixture(
   'metrics_dashboard/environment_metrics_dashboard.json',
 );
+
 export const metricsDashboardPayload = metricsDashboardResponse.dashboard;
 
 const datasetState = stateAndPropsFromDataset(
@@ -22,7 +23,15 @@ const datasetState = stateAndPropsFromDataset(
   ),
 );
 
-export const dashboardProps = datasetState.dataProps;
+// new properties like addDashboardDocumentationPath prop and alertsEndpoint
+// was recently added to dashboard.vue component this needs to be
+// added to fixtures data
+// https://gitlab.com/gitlab-org/gitlab/-/issues/229256
+export const dashboardProps = {
+  ...datasetState.dataProps,
+  addDashboardDocumentationPath: 'https://path/to/docs',
+  alertsEndpoint: null,
+};
 
 export const metricsDashboardViewModel = mapToDashboardViewModel(metricsDashboardPayload);
 

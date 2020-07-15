@@ -18,7 +18,7 @@ Registry on the **primary** node, you can use the same storage for a **secondary
 Docker Registry as well. For more information, read the
 [Load balancing considerations](https://docs.docker.com/registry/deploying/#load-balancing-considerations)
 when deploying the Registry, and how to set up the storage driver for GitLab's
-integrated [Container Registry](../../packages/container_registry.md#container-registry-storage-driver).
+integrated [Container Registry](../../packages/container_registry.md#use-object-storage).
 
 ## Replicating Docker Registry
 
