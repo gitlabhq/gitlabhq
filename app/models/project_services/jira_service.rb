@@ -440,3 +440,5 @@ class JiraService < IssueTrackerService
     end
   end
 end
+
+JiraService.prepend_if_ee('EE::JiraService')

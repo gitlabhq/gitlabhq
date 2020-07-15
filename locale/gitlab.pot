@@ -304,9 +304,6 @@ msgstr ""
 msgid "%{containerScanningLinkStart}Container Scanning%{containerScanningLinkEnd} and/or %{dependencyScanningLinkStart}Dependency Scanning%{dependencyScanningLinkEnd} must be enabled. %{securityBotLinkStart}GitLab-Security-Bot%{securityBotLinkEnd} will be the author of the auto-created merge request. %{moreInfoLinkStart}More information%{moreInfoLinkEnd}."
 msgstr ""
 
-msgid "%{contentStart}Drop files to attach, or %{contentEnd}%{linkStart}browse%{linkEnd}"
-msgstr ""
-
 msgid "%{cores} cores"
 msgstr ""
 
@@ -8409,6 +8406,9 @@ msgstr ""
 msgid "Downvotes"
 msgstr ""
 
+msgid "Drop or %{linkStart}upload%{linkEnd} Designs to attach"
+msgstr ""
+
 msgid "Drop your designs to start your upload."
 msgstr ""
 
@@ -10410,9 +10410,6 @@ msgstr ""
 msgid "Footer message"
 msgstr ""
 
-msgid "For each Jira issue successfully imported, we'll create a new GitLab issue with the following data:"
-msgstr ""
-
 msgid "For internal projects, any logged in user can view pipelines and access job details (output logs and artifacts)"
 msgstr ""
 
@@ -11080,6 +11077,9 @@ msgid "GitLab restart is required to apply changes."
 msgstr ""
 
 msgid "GitLab single sign-on URL"
+msgstr ""
+
+msgid "GitLab username"
 msgstr ""
 
 msgid "GitLab uses %{jaeger_link} to monitor distributed systems."
@@ -13065,6 +13065,9 @@ msgstr ""
 msgid "Jira Issues"
 msgstr ""
 
+msgid "Jira display name"
+msgstr ""
+
 msgid "Jira import is already running."
 msgstr ""
 
@@ -13078,6 +13081,12 @@ msgid "Jira project: %{importProject}"
 msgstr ""
 
 msgid "Jira service not configured."
+msgstr ""
+
+msgid "Jira users have been matched with similar GitLab users. This can be overwritten by selecting a GitLab user from the dropdown in the \"GitLab username\" column. If it wasn't possible to match a Jira user with a GitLab user, the dropdown defaults to the user conducting the import."
+msgstr ""
+
+msgid "Jira-GitLab user mapping template"
 msgstr ""
 
 msgid "JiraService| on branch %{branch_link}"
@@ -19630,9 +19639,6 @@ msgstr ""
 msgid "Reported %{timeAgo} by %{reportedBy}"
 msgstr ""
 
-msgid "Reporter"
-msgstr ""
-
 msgid "Reporting"
 msgstr ""
 
@@ -23138,6 +23144,9 @@ msgstr ""
 msgid "The Git LFS objects will <strong>not</strong> be synced."
 msgstr ""
 
+msgid "The GitLab user to which the Jira user %{jiraDisplayName} will be mapped"
+msgstr ""
+
 msgid "The Issue Tracker is the place to add things that need to be improved or solved in a project"
 msgstr ""
 
@@ -23669,6 +23678,9 @@ msgid "There was an error resetting group pipeline minutes."
 msgstr ""
 
 msgid "There was an error resetting user pipeline minutes."
+msgstr ""
+
+msgid "There was an error retrieving the Jira users."
 msgstr ""
 
 msgid "There was an error saving this Geo Node."
@@ -26594,6 +26606,9 @@ msgstr ""
 msgid "Will be created"
 msgstr ""
 
+msgid "Will be mapped to"
+msgstr ""
+
 msgid "Will deploy to"
 msgstr ""
 
@@ -27957,12 +27972,6 @@ msgid "it is too large"
 msgstr ""
 
 msgid "jigsaw is not defined"
-msgstr ""
-
-msgid "jira.issue.description.content"
-msgstr ""
-
-msgid "jira.issue.summary"
 msgstr ""
 
 msgid "latest"

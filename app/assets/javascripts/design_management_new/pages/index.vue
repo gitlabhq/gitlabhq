@@ -267,7 +267,7 @@ export default {
 </script>
 
 <template>
-  <div data-testid="designs-root" class="gl-mt-2">
+  <div data-testid="designs-root" class="gl-mt-5">
     <header v-if="showToolbar" class="row-content-block border-top-0 p-2 d-flex">
       <div class="gl-display-flex gl-justify-content-space-between gl-align-items-center gl-w-full">
         <div>

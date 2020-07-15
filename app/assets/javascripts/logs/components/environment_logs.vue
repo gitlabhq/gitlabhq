@@ -202,7 +202,7 @@ export default {
 
       <log-control-buttons
         ref="scrollButtons"
-        class="flex-grow-0 pr-2 mb-2 controllers"
+        class="flex-grow-0 pr-2 mb-2 controllers gl-display-inline-flex"
         :scroll-down-button-disabled="scrollDownButtonDisabled"
         @refresh="refreshPodLogs()"
         @scrollDown="scrollDown"

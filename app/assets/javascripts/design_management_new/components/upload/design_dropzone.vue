@@ -91,20 +91,15 @@ export default {
           data-testid="dropzone-area"
         >
           <gl-icon name="upload" :size="24" :class="hasDesigns ? 'gl-mb-2' : 'gl-mr-4'" />
-          <gl-sprintf
-            :message="
-              __(
-                '%{contentStart}Drop files to attach, or %{contentEnd}%{linkStart}browse%{linkEnd}',
-              )
-            "
-          >
-            <template #content="{ content }">
-              <span class="gl-font-weight-bold">{{ content }}&nbsp;</span>
-            </template>
-            <template #link="{ content }">
-              <gl-link @click.stop="openFileUpload">{{ content }}</gl-link>
-            </template>
-          </gl-sprintf>
+          <p class="gl-font-weight-bold gl-mb-0">
+            <gl-sprintf :message="__('Drop or %{linkStart}upload%{linkEnd} Designs to attach')">
+              <template #link="{ content }">
+                <gl-link class="gl-font-weight-normal" @click.stop="openFileUpload">
+                  {{ content }}
+                </gl-link>
+              </template>
+            </gl-sprintf>
+          </p>
         </div>
       </button>
 

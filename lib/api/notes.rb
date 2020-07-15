@@ -68,6 +68,7 @@ module API
         params do
           requires :noteable_id, type: Integer, desc: 'The ID of the noteable'
           requires :body, type: String, desc: 'The content of a note'
+          optional :confidential, type: Boolean, desc: 'Confidentiality note flag, default is false'
           optional :created_at, type: String, desc: 'The creation date of the note'
         end
         post ":id/#{noteables_str}/:noteable_id/notes" do
@@ -77,6 +78,7 @@ module API
             note: params[:body],
             noteable_type: noteables_str.classify,
             noteable_id: noteable.id,
+            confidential: params[:confidential],
             created_at: params[:created_at]
           }
 

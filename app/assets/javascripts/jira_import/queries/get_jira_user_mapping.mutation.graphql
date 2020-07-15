@@ -1,0 +1,11 @@
+mutation($input: JiraImportUsersInput!) {
+  jiraImportUsers(input: $input) {
+    jiraUsers {
+      jiraAccountId
+      jiraDisplayName
+      jiraEmail
+      gitlabId
+    }
+    errors
+  }
+}

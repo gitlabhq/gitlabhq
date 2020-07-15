@@ -3,6 +3,7 @@ import { GlAlert, GlLoadingIcon, GlSprintf } from '@gitlab/ui';
 import { last } from 'lodash';
 import { __ } from '~/locale';
 import getJiraImportDetailsQuery from '../queries/get_jira_import_details.query.graphql';
+import getJiraUserMappingMutation from '../queries/get_jira_user_mapping.mutation.graphql';
 import initiateJiraImportMutation from '../queries/initiate_jira_import.mutation.graphql';
 import { addInProgressImportToStore } from '../utils/cache_update';
 import { isInProgress, extractJiraProjectsOptions } from '../utils/jira_import_utils';
@@ -37,6 +38,10 @@ export default {
       type: String,
       required: true,
     },
+    projectId: {
+      type: String,
+      required: true,
+    },
     projectPath: {
       type: String,
       required: true,
@@ -48,10 +53,12 @@ export default {
   },
   data() {
     return {
+      isSubmitting: false,
       jiraImportDetails: {},
+      selectedProject: undefined,
+      userMappings: [],
       errorMessage: '',
       showAlert: false,
-      selectedProject: undefined,
     };
   },
   apollo: {
@@ -89,16 +96,43 @@ export default {
         : 'jira-import::KEY-1';
     },
   },
+  mounted() {
+    if (this.isJiraConfigured) {
+      this.$apollo
+        .mutate({
+          mutation: getJiraUserMappingMutation,
+          variables: {
+            input: {
+              projectPath: this.projectPath,
+              startAt: 1,
+            },
+          },
+        })
+        .then(({ data }) => {
+          if (data.jiraImportUsers.errors.length) {
+            this.setAlertMessage(data.jiraImportUsers.errors.join('. '));
+          } else {
+            this.userMappings = data.jiraImportUsers.jiraUsers;
+          }
+        })
+        .catch(() => this.setAlertMessage(__('There was an error retrieving the Jira users.')));
+    }
+  },
   methods: {
     initiateJiraImport(project) {
+      this.isSubmitting = true;
+
       this.$apollo
         .mutate({
           mutation: initiateJiraImportMutation,
           variables: {
             input: {
-              projectPath: this.projectPath,
               jiraProjectKey: project,
-              usersMapping: [],
+              projectPath: this.projectPath,
+              usersMapping: this.userMappings.map(({ gitlabId, jiraAccountId }) => ({
+                gitlabId,
+                jiraAccountId,
+              })),
             },
           },
           update: (store, { data }) =>
@@ -111,7 +145,21 @@ export default {
             this.selectedProject = undefined;
           }
         })
-        .catch(() => this.setAlertMessage(__('There was an error importing the Jira project.')));
+        .catch(() => this.setAlertMessage(__('There was an error importing the Jira project.')))
+        .finally(() => {
+          this.isSubmitting = false;
+        });
+    },
+    updateMapping(jiraAccountId, gitlabId, gitlabUsername) {
+      this.userMappings = this.userMappings.map(userMapping =>
+        userMapping.jiraAccountId === jiraAccountId
+          ? {
+              ...userMapping,
+              gitlabId,
+              gitlabUsername,
+            }
+          : userMapping,
+      );
     },
     setAlertMessage(message) {
       this.errorMessage = message;
@@ -156,9 +204,13 @@ export default {
       v-else
       v-model="selectedProject"
       :import-label="importLabel"
+      :is-submitting="isSubmitting"
       :issues-path="issuesPath"
       :jira-projects="jiraImportDetails.projects"
+      :project-id="projectId"
+      :user-mappings="userMappings"
       @initiateJiraImport="initiateJiraImport"
+      @updateMapping="updateMapping"
     />
   </div>
 </template>

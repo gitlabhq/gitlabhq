@@ -510,6 +510,29 @@ license_scanning:
     GOFLAGS: '-insecure'
 ```
 
+#### Using private NuGet registries
+
+If you have a private NuGet registry you can add it as a source
+by adding it to the [`packageSources`](https://docs.microsoft.com/en-us/nuget/reference/nuget-config-file#package-source-sections)
+section of a [`nuget.config`](https://docs.microsoft.com/en-us/nuget/reference/nuget-config-file) file.
+
+For example:
+
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<configuration>
+  <packageSources>
+    <clear />
+    <add key="custom" value="https://nuget.example.com/v3/index.json" />
+  </packageSources>
+</configuration>
+```
+
+#### Custom root certificates for NuGet
+
+You can supply a custom root certificate to complete TLS verification by using the
+`ADDITIONAL_CA_CERT_BUNDLE` [environment variable](#available-variables).
+
 ### Migration from `license_management` to `license_scanning`
 
 In GitLab 12.8 a new name for `license_management` job was introduced. This change was made to improve clarity around the purpose of the scan, which is to scan and collect the types of licenses present in a projects dependencies.

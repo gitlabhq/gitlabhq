@@ -92,7 +92,7 @@ module StubObjectStorage
   def stub_terraform_state_object_storage(uploader = described_class, **params)
     stub_object_storage_uploader(config: Gitlab.config.terraform_state.object_store,
                                  uploader: uploader,
-                                 remote_directory: 'terraform_state',
+                                 remote_directory: 'terraform',
                                  **params)
   end
 

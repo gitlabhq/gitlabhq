@@ -360,7 +360,7 @@ production: &base
     # storage_path: shared/terraform_state
     object_store:
       enabled: false
-      remote_directory: terraform_state # The bucket name
+      remote_directory: terraform # The bucket name
       connection:
         provider: AWS
         aws_access_key_id: AWS_ACCESS_KEY_ID
@@ -1253,7 +1253,7 @@ test:
     storage_path: tmp/tests/terraform_state
     object_store:
       enabled: false
-      remote_directory: terraform_state
+      remote_directory: terraform
       connection:
         provider: AWS # Only AWS supported at the moment
         aws_access_key_id: AWS_ACCESS_KEY_ID

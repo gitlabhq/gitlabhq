@@ -490,7 +490,10 @@ module Gitlab
           remote_mirrors: distinct_count(::Project.with_remote_mirrors.where(time_period), :creator_id),
           snippets: distinct_count(::Snippet.where(time_period), :author_id)
         }.tap do |h|
-          h[:merge_requests_users] = merge_requests_users(time_period) if time_period.present?
+          if time_period.present?
+            h[:merge_requests_users] = merge_requests_users(time_period)
+            h.merge!(action_monthly_active_users(time_period))
+          end
         end
       end
       # rubocop: enable CodeReuse/ActiveRecord
@@ -580,6 +583,42 @@ module Gitlab
         results['analytics_unique_visits_for_any_target'] = redis_usage_data { unique_visit_service.weekly_unique_visits_for_any_target }
 
         { analytics_unique_visits: results }
+      end
+
+      def action_monthly_active_users(time_period)
+        return {} unless Feature.enabled?(Gitlab::UsageDataCounters::TrackUniqueActions::FEATURE_FLAG)
+
+        counter = Gitlab::UsageDataCounters::TrackUniqueActions
+
+        project_count = redis_usage_data do
+          counter.count_unique_events(
+            event_action: Gitlab::UsageDataCounters::TrackUniqueActions::PUSH_ACTION,
+            date_from: time_period[:created_at].first,
+            date_to: time_period[:created_at].last
+          )
+        end
+
+        design_count = redis_usage_data do
+          counter.count_unique_events(
+            event_action: Gitlab::UsageDataCounters::TrackUniqueActions::DESIGN_ACTION,
+            date_from: time_period[:created_at].first,
+            date_to: time_period[:created_at].last
+          )
+        end
+
+        wiki_count = redis_usage_data do
+          counter.count_unique_events(
+            event_action: Gitlab::UsageDataCounters::TrackUniqueActions::WIKI_ACTION,
+            date_from: time_period[:created_at].first,
+            date_to: time_period[:created_at].last
+          )
+        end
+
+        {
+          action_monthly_active_users_project_repo: project_count,
+          action_monthly_active_users_design_management: design_count,
+          action_monthly_active_users_wiki_repo: wiki_count
+        }
       end
 
       private

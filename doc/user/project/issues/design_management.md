@@ -60,20 +60,25 @@ and [PDFs](https://gitlab.com/gitlab-org/gitlab/-/issues/32811) is planned for a
 - Only the latest version of the designs can be deleted.
 - Deleted designs cannot be recovered but you can see them on previous designs versions.
 
-## The Design Management page
+## The Design Management section
 
-Navigate to the **Design Management** page from any issue by clicking the **Designs** tab:
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/223193) in GitLab 13.2, Designs are displayed directly on the issue description rather than on a separate tab.
 
-![Designs tab](img/design_management_v12_3.png)
+You can find to the **Design Management** section in the issue description:
+
+![Designs section](img/design_management_v13_2.png)
 
 ## Adding designs
 
-To upload design images, click the **Upload Designs** button and select images to upload.
+To upload Design images, drag files from your computer and drop them in the Design Management section,
+or click **upload** to select images from your file browser:
+
+![Designs empty state](img/design_management_upload_v13.2.png)
 
 [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/34353) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.9,
 you can drag and drop designs onto the dedicated drop zone to upload them.
 
-![Drag and drop design uploads](img/design_drag_and_drop_uploads_v12_9.png)
+![Drag and drop design uploads](img/design_drag_and_drop_uploads_v13_2.png)
 
 [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/202634)
 in GitLab 12.10, you can also copy images from your file system and

@@ -7,7 +7,7 @@ RSpec.describe Notes::CreateService do
   let_it_be(:issue) { create(:issue, project: project) }
   let_it_be(:user) { create(:user) }
   let(:opts) do
-    { note: 'Awesome comment', noteable_type: 'Issue', noteable_id: issue.id }
+    { note: 'Awesome comment', noteable_type: 'Issue', noteable_id: issue.id, confidential: true }
   end
 
   describe '#execute' do

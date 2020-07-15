@@ -7,6 +7,7 @@ export default [
     name: DESIGNS_ROUTE_NAME,
     path: '/',
     component: Home,
+    alias: '/designs',
   },
   {
     name: DESIGN_ROUTE_NAME,
@@ -16,7 +17,7 @@ export default [
       {
         params: { id },
       },
-      from,
+      _,
       next,
     ) {
       if (typeof id === 'string') {

@@ -1,10 +1,10 @@
 - if @project.design_management_enabled?
-  - if Feature.enabled?(:design_management_moved, @project)
+  - if Feature.enabled?(:design_management_moved, @project, default_enabled: true)
     .js-design-management-new{ data: { project_path: @project.full_path, issue_iid: @issue.iid, issue_path: project_issue_path(@project, @issue) } }
   - else
     .js-design-management{ data: { project_path: @project.full_path, issue_iid: @issue.iid, issue_path: project_issue_path(@project, @issue) } }
 - else
-  - if Feature.enabled?(:design_management_moved, @project)
+  - if Feature.enabled?(:design_management_moved, @project, default_enabled: true)
     .row.empty-state.design-dropzone-border.gl-mt-5
       .text-content.center.gl-font-weight-bold
         - requirements_link_url = help_page_path('user/project/issues/design_management', anchor: 'requirements')

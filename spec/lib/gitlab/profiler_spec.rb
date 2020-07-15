@@ -229,7 +229,6 @@ RSpec.describe Gitlab::Profiler do
             .map { |(total)| total.to_f }
 
         expect(total_times).to eq(total_times.sort.reverse)
-        expect(total_times).not_to eq(total_times.uniq)
       end
     end
 

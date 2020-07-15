@@ -1,11 +1,9 @@
 <script>
-import { GlDeprecatedButton, GlTooltipDirective } from '@gitlab/ui';
-import Icon from '~/vue_shared/components/icon.vue';
+import { GlButton, GlTooltipDirective } from '@gitlab/ui';
 
 export default {
   components: {
-    Icon,
-    GlDeprecatedButton,
+    GlButton,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -51,14 +49,16 @@ export default {
       :title="__('Scroll to top')"
       aria-labelledby="scroll-to-top"
     >
-      <gl-deprecated-button
+      <gl-button
         id="scroll-to-top"
-        class="btn-blank js-scroll-to-top"
+        class="js-scroll-to-top gl-mr-2 btn-blank"
         :aria-label="__('Scroll to top')"
         :disabled="scrollUpButtonDisabled"
+        icon="scroll_up"
+        category="primary"
+        variant="default"
         @click="handleScrollUp()"
-        ><icon name="scroll_up"
-      /></gl-deprecated-button>
+      />
     </div>
     <div
       v-if="scrollDownAvailable"
@@ -68,25 +68,28 @@ export default {
       :title="__('Scroll to bottom')"
       aria-labelledby="scroll-to-bottom"
     >
-      <gl-deprecated-button
+      <gl-button
         id="scroll-to-bottom"
-        class="btn-blank js-scroll-to-bottom"
+        class="js-scroll-to-bottom gl-mr-2 btn-blank"
         :aria-label="__('Scroll to bottom')"
         :v-if="scrollDownAvailable"
         :disabled="scrollDownButtonDisabled"
+        icon="scroll_down"
+        category="primary"
+        variant="default"
         @click="handleScrollDown()"
-        ><icon name="scroll_down"
-      /></gl-deprecated-button>
+      />
     </div>
-    <gl-deprecated-button
+    <gl-button
       id="refresh-log"
       v-gl-tooltip
-      class="ml-1 px-2 js-refresh-log"
+      class="js-refresh-log"
       :title="__('Refresh')"
       :aria-label="__('Refresh')"
+      icon="retry"
+      category="primary"
+      variant="default"
       @click="handleRefreshClick"
-    >
-      <icon name="retry" />
-    </gl-deprecated-button>
+    />
   </div>
 </template>

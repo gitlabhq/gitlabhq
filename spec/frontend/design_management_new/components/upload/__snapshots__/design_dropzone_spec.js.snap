@@ -17,9 +17,13 @@ exports[`Design management dropzone component when dragging renders correct temp
         size="24"
       />
        
-      <gl-sprintf-stub
-        message="%{contentStart}Drop files to attach, or %{contentEnd}%{linkStart}browse%{linkEnd}"
-      />
+      <p
+        class="gl-font-weight-bold gl-mb-0"
+      >
+        <gl-sprintf-stub
+          message="Drop or %{linkStart}upload%{linkEnd} Designs to attach"
+        />
+      </p>
     </div>
   </button>
    
@@ -89,9 +93,13 @@ exports[`Design management dropzone component when dragging renders correct temp
         size="24"
       />
        
-      <gl-sprintf-stub
-        message="%{contentStart}Drop files to attach, or %{contentEnd}%{linkStart}browse%{linkEnd}"
-      />
+      <p
+        class="gl-font-weight-bold gl-mb-0"
+      >
+        <gl-sprintf-stub
+          message="Drop or %{linkStart}upload%{linkEnd} Designs to attach"
+        />
+      </p>
     </div>
   </button>
    
@@ -161,9 +169,13 @@ exports[`Design management dropzone component when dragging renders correct temp
         size="24"
       />
        
-      <gl-sprintf-stub
-        message="%{contentStart}Drop files to attach, or %{contentEnd}%{linkStart}browse%{linkEnd}"
-      />
+      <p
+        class="gl-font-weight-bold gl-mb-0"
+      >
+        <gl-sprintf-stub
+          message="Drop or %{linkStart}upload%{linkEnd} Designs to attach"
+        />
+      </p>
     </div>
   </button>
    
@@ -232,9 +244,13 @@ exports[`Design management dropzone component when dragging renders correct temp
         size="24"
       />
        
-      <gl-sprintf-stub
-        message="%{contentStart}Drop files to attach, or %{contentEnd}%{linkStart}browse%{linkEnd}"
-      />
+      <p
+        class="gl-font-weight-bold gl-mb-0"
+      >
+        <gl-sprintf-stub
+          message="Drop or %{linkStart}upload%{linkEnd} Designs to attach"
+        />
+      </p>
     </div>
   </button>
    
@@ -303,9 +319,13 @@ exports[`Design management dropzone component when dragging renders correct temp
         size="24"
       />
        
-      <gl-sprintf-stub
-        message="%{contentStart}Drop files to attach, or %{contentEnd}%{linkStart}browse%{linkEnd}"
-      />
+      <p
+        class="gl-font-weight-bold gl-mb-0"
+      >
+        <gl-sprintf-stub
+          message="Drop or %{linkStart}upload%{linkEnd} Designs to attach"
+        />
+      </p>
     </div>
   </button>
    
@@ -374,9 +394,13 @@ exports[`Design management dropzone component when no slot provided renders defa
         size="24"
       />
        
-      <gl-sprintf-stub
-        message="%{contentStart}Drop files to attach, or %{contentEnd}%{linkStart}browse%{linkEnd}"
-      />
+      <p
+        class="gl-font-weight-bold gl-mb-0"
+      >
+        <gl-sprintf-stub
+          message="Drop or %{linkStart}upload%{linkEnd} Designs to attach"
+        />
+      </p>
     </div>
   </button>
    
