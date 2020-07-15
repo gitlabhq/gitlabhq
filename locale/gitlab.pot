@@ -5879,6 +5879,9 @@ msgstr ""
 msgid "CodeIntelligence|This is the definition"
 msgstr ""
 
+msgid "CodeNavigation|No references found"
+msgstr ""
+
 msgid "CodeOwner|Pattern"
 msgstr ""
 
@@ -7380,13 +7383,28 @@ msgstr ""
 msgid "Dashboard|Unable to add %{invalidProjects}. This dashboard is available for public projects, and private projects in groups with a Silver plan."
 msgstr ""
 
+msgid "DastProfiles|Could not create the site profile. Please try again."
+msgstr ""
+
+msgid "DastProfiles|Do you want to discard this site profile?"
+msgstr ""
+
 msgid "DastProfiles|Manage profiles"
 msgstr ""
 
-msgid "DastProfiles|New Site Profile"
+msgid "DastProfiles|New site profile"
 msgstr ""
 
-msgid "DastProfiles|New site profile"
+msgid "DastProfiles|Please enter a valid URL format, ex: http://www.example.com/home"
+msgstr ""
+
+msgid "DastProfiles|Profile name"
+msgstr ""
+
+msgid "DastProfiles|Save profile"
+msgstr ""
+
+msgid "DastProfiles|Target URL"
 msgstr ""
 
 msgid "Data is still calculating..."
@@ -7507,6 +7525,9 @@ msgid "Define custom rules for what constitutes spam, independent of Akismet"
 msgstr ""
 
 msgid "Define environments in the deploy stage(s) in <code>.gitlab-ci.yml</code> to track deployments here."
+msgstr ""
+
+msgid "Definition"
 msgstr ""
 
 msgid "Delayed Project Deletion (%{adjourned_deletion})"
@@ -8162,6 +8183,9 @@ msgid "Disabled"
 msgstr ""
 
 msgid "Disabled mirrors can only be enabled by instance owners. It is recommended that you delete them."
+msgstr ""
+
+msgid "Discard"
 msgstr ""
 
 msgid "Discard all changes"
@@ -19177,6 +19201,9 @@ msgid "Reduce this project’s visibility?"
 msgstr ""
 
 msgid "Reference:"
+msgstr ""
+
+msgid "References"
 msgstr ""
 
 msgid "Refresh"

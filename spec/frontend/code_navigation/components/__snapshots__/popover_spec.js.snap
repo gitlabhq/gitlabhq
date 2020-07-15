@@ -10,57 +10,81 @@ exports[`Code navigation popover component renders popover 1`] = `
     style="left: 0px;"
   />
    
-  <div
-    class="overflow-auto code-navigation-popover-container"
+  <gl-tabs-stub
+    contentclass="gl-py-0"
+    nav-class="gl-hidden"
+    theme="indigo"
   >
-    <div
-      class=""
+    <gl-tab-stub
+      title="Definition"
     >
-      <pre
-        class="border-0 bg-transparent m-0 code highlight text-wrap"
+      <div
+        class="overflow-auto code-navigation-popover-container"
       >
-        <span
-          class="line"
-          lang="javascript"
+        <div
+          class=""
         >
-          <span
-            class="k"
+          <pre
+            class="border-0 bg-transparent m-0 code highlight text-wrap"
           >
-            function
-          </span>
-          <span>
-             main() {
-          </span>
-        </span>
-        <span
-          class="line"
-          lang="javascript"
+            <span
+              class="line"
+              lang="javascript"
+            >
+              <span
+                class="k"
+              >
+                function
+              </span>
+              <span>
+                 main() {
+              </span>
+            </span>
+            <span
+              class="line"
+              lang="javascript"
+            >
+              <span>
+                }
+              </span>
+            </span>
+          </pre>
+        </div>
+      </div>
+       
+      <div
+        class="popover-body border-top"
+      >
+        <gl-button-stub
+          category="tertiary"
+          class="w-100"
+          data-testid="go-to-definition-btn"
+          href="http://gitlab.com/test.js"
+          icon=""
+          size="medium"
+          target="_blank"
+          variant="default"
         >
-          <span>
-            }
-          </span>
-        </span>
-      </pre>
-    </div>
-  </div>
-   
-  <div
-    class="popover-body border-top"
-  >
-    <gl-button-stub
-      category="tertiary"
-      class="w-100"
-      data-testid="go-to-definition-btn"
-      href="http://gitlab.com/test.js"
-      icon=""
-      size="medium"
-      target="_blank"
-      variant="default"
+          
+          Go to definition
+        
+        </gl-button-stub>
+      </div>
+    </gl-tab-stub>
+     
+    <gl-tab-stub
+      class="py-2"
+      data-testid="references-tab"
     >
+       
+      <p
+        class="gl-my-4 gl-px-4"
+      >
+        
+        No references found
       
-      Go to definition
-    
-    </gl-button-stub>
-  </div>
+      </p>
+    </gl-tab-stub>
+  </gl-tabs-stub>
 </div>
 `;

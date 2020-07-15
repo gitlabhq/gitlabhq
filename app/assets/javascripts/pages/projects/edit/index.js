@@ -7,11 +7,13 @@ import dirtySubmitFactory from '~/dirty_submit/dirty_submit_factory';
 import initFilePickers from '~/file_pickers';
 import initProjectLoadingSpinner from '../shared/save_project_loader';
 import initProjectPermissionsSettings from '../shared/permissions';
+import initProjectRemoveModal from '~/projects/project_remove_modal';
 
 document.addEventListener('DOMContentLoaded', () => {
   initFilePickers();
   initConfirmDangerModal();
   initSettingsPanels();
+  initProjectRemoveModal();
   mountBadgeSettings(PROJECT_BADGE);
 
   initProjectLoadingSpinner();

@@ -86,6 +86,18 @@ class MergeRequestPollCachedWidgetEntity < IssuableEntity
     presenter(merge_request).squash_on_merge?
   end
 
+  expose :api_approvals_path do |merge_request|
+    presenter(merge_request).api_approvals_path
+  end
+
+  expose :api_approve_path do |merge_request|
+    presenter(merge_request).api_approve_path
+  end
+
+  expose :api_unapprove_path do |merge_request|
+    presenter(merge_request).api_unapprove_path
+  end
+
   private
 
   delegate :current_user, to: :request

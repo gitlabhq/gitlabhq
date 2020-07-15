@@ -68,8 +68,16 @@ To ensure only admin users can delete projects:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/32935) in GitLab 12.6.
 
-By default, a project or group marked for removal will be permanently removed after 7 days.
-This period may be changed, and setting this period to 0 will enable immediate removal
+By default, a project marked for deletion will be permanently removed with immediate effect.
+By default, a group marked for deletion will be permanently removed after 7 days.
+
+CAUTION: **Warning:**
+The default behavior of [Delayed Project deletion](https://gitlab.com/gitlab-org/gitlab/-/issues/32935) in GitLab 12.6 was changed to
+[Immediate deletion](https://gitlab.com/gitlab-org/gitlab/-/issues/220382) in GitLab 13.2.
+
+Projects within a group can be deleted after a delayed period, by [configuring in Group Settings](../../group/index.md#enabling-delayed-project-removal-premium).
+
+The default period is 7 days, and can be changed. Setting this period to 0 will enable immediate removal
 of projects or groups.
 
 To change this period:

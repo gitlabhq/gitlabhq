@@ -157,6 +157,10 @@ class MergeRequestPollWidgetEntity < Grape::Entity
     presenter(merge_request).squash_on_merge?
   end
 
+  expose :approvals_widget_type do |merge_request|
+    presenter(merge_request).approvals_widget_type
+  end
+
   private
 
   delegate :current_user, to: :request

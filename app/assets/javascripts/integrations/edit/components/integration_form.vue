@@ -53,7 +53,7 @@ export default {
       return this.type === 'jira';
     },
     showJiraIssuesFields() {
-      return this.isJira && this.glFeatures.jiraIntegration;
+      return this.isJira && this.glFeatures.jiraIssuesIntegration;
     },
   },
 };

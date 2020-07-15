@@ -4,7 +4,6 @@ THROUGHPUT_LABELS = [
   'Community contribution',
   'security',
   'bug',
-  'backstage', # To be removed by https://gitlab.com/gitlab-org/gitlab/-/issues/222360.
   'feature',
   'feature::addition',
   'feature::maintenance',

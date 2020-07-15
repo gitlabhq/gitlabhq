@@ -1,0 +1,126 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Project remove modal initialized matches the snapshot 1`] = `
+<form
+  action="some/path"
+  method="post"
+>
+  <input
+    name="_method"
+    type="hidden"
+    value="delete"
+  />
+   
+  <input
+    name="authenticity_token"
+    type="hidden"
+  />
+   
+  <b-button-stub
+    class="[object Object]"
+    event="click"
+    role="button"
+    routertag="a"
+    size="md"
+    tabindex="0"
+    tag="button"
+    type="button"
+    variant="danger"
+  >
+    <!---->
+     
+    <!---->
+      
+    <span
+      class="gl-button-text"
+    >
+      Remove project
+    </span>
+  </b-button-stub>
+   
+  <b-modal-stub
+    canceltitle="Cancel"
+    cancelvariant="secondary"
+    footerclass="bg-gray-light gl-p-5"
+    headerclosecontent="&times;"
+    headercloselabel="Close"
+    id="remove-project-modal"
+    ignoreenforcefocusselector=""
+    lazy="true"
+    modalclass="gl-modal,"
+    oktitle="OK"
+    okvariant="danger"
+    size="sm"
+    title=""
+    titletag="h4"
+  >
+      
+    <div>
+      <p
+        class="gl-text-red-500 gl-font-weight-bold"
+      >
+        This can lead to data loss.
+      </p>
+       
+      <p
+        class="gl-mb-0"
+      >
+        This action can lead to data loss. To prevent accidental actions we ask you to confirm your intention.
+      </p>
+       
+      <p>
+        <gl-sprintf-stub
+          message="Please type %{phrase_code} to proceed or close this modal to cancel."
+        />
+      </p>
+       
+      <gl-form-input-stub
+        id="confirm_name_input"
+        name="confirm_name_input"
+        type="text"
+      />
+    </div>
+     
+    <template />
+     
+    <template>
+      Confirmation required
+    </template>
+     
+    <template />
+     
+    <template />
+     
+    <template />
+     
+    <template>
+      <div
+        class="gl-w-full gl-display-flex gl-just-content-start gl-m-0"
+      >
+        <b-button-stub
+          class="[object Object]"
+          disabled="true"
+          event="click"
+          routertag="a"
+          size="md"
+          tag="button"
+          type="button"
+          variant="danger"
+        >
+          <!---->
+           
+          <!---->
+            
+          <span
+            class="gl-button-text"
+          >
+            
+          Confirm
+        
+          </span>
+        </b-button-stub>
+      </div>
+    </template>
+  </b-modal-stub>
+</form>
+`;

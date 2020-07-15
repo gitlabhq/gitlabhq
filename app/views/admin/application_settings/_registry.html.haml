@@ -10,7 +10,7 @@
         = f.check_box :container_expiration_policies_enable_historic_entries, class: 'form-check-input'
         = f.label :container_expiration_policies_enable_historic_entries, class: 'form-check-label' do
           = _("Enable container expiration and retention policies for projects created earlier than GitLab 12.7.")
-          = link_to icon('question-circle'), help_page_path('user/packages/container_registry/index', anchor: 'expiration-policy')
+          = link_to icon('question-circle'), help_page_path('user/packages/container_registry/index', anchor: 'cleanup-policy')
         .form-text.text-muted
           = _("Existing projects will be able to use expiration policies. Avoid enabling this if an external Container Registry is being used, as there is a performance risk if many images exist on one project.")
           = link_to icon('question-circle'), help_page_path('user/packages/container_registry/index', anchor: 'use-with-external-container-registries')

@@ -69,7 +69,7 @@ Panels in a panel group are laid out in rows consisting of two panels per row. A
 | Property    | Type   | Required                      | Description                                                          |
 | ----------- | ------ | ----------------------------- | -------------------------------------------------------------------- |
 | `name`      | string | no, but highly encouraged     | Y-Axis label for the panel. Replaces `y_label` if set.               |
-| `format`    | string | no, defaults to `engineering` | Unit format used. See the [full list of units](../../../user/project/integrations/prometheus_units.md). |
+| `format`    | string | no, defaults to `engineering` | Unit format used. See the [full list of units](yaml_number_format.md). |
 | `precision` | number | no, defaults to `2`           | Number of decimal places to display in the number.                                          |                        |
 
 ## **Metrics (`metrics`) properties**

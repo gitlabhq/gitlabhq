@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 NO_SPECS_LABELS = [
-  'backstage', # To be removed by https://gitlab.com/gitlab-org/gitlab/-/issues/222360.
   'tooling',
   'tooling::pipelines',
   'tooling::workflow',

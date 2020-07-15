@@ -132,7 +132,7 @@ If the metric exceeds the threshold of the alert for over 5 minutes, an email wi
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/202146) in GitLab 13.2.
 
-You can use keyboard shortcuts to interact more quickly with your currently-focused chartpanel. To activate keyboard shortcuts, use keyboard tabs to highlight the**{ellipsis_v}** **More actions** dropdown menu, or hover over the dropdown menuwith your mouse, then press the key corresponding to your desired action:
+You can use keyboard shortcuts to interact more quickly with your currently-focused chartpanel. To activate keyboard shortcuts, use keyboard tabs to highlight the**{ellipsis_v}** **More actions** dropdown menu, or hover over the dropdown menu with your mouse, then press the key corresponding to your desired action:
 
 - **Expand panel** - <kbd>e</kbd>
 - **View logs** - <kbd>l</kbd> (lowercase 'L')

@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: howto
 ---
 
-# Geo Troubleshooting **(PREMIUM ONLY)**
+# Troubleshooting Geo **(PREMIUM ONLY)**
 
 Setting up Geo requires careful attention to details and sometimes it's easy to
 miss a step.

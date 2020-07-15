@@ -99,14 +99,24 @@ Installing and configuring Prometheus to monitor applications is fairly straight
 
 The actual configuration of Prometheus integration within GitLab is very simple.
 All you will need is the domain name or IP address of the Prometheus server you'd like
-to integrate with.
+to integrate with. If the Prometheus resource is secured with Google's Identity-Aware Proxy (IAP),
+additional information like Client ID and Service Account credentials can be passed which
+GitLab can use to access the resource. More information about authentication from a
+service account can be found at Google's documentation for
+[Authenticating from a service account](https://cloud.google.com/iap/docs/authentication-howto#authenticating_from_a_service_account).
 
-1. Navigate to the [Integrations page](overview.md#accessing-integrations).
+1. Navigate to the [Integrations page](overview.md#accessing-integrations) at
+   **{settings}** **Settings > Integrations**.
 1. Click the **Prometheus** service.
-1. Provide the domain name or IP address of your server, for example `http://prometheus.example.com/` or `http://192.0.2.1/`.
+1. For **API URL**, provide the domain name or IP address of your server, such as
+   `http://prometheus.example.com/` or `http://192.0.2.1/`.
+1. (Optional) In **Google IAP Audience Client ID**, provide the Client ID of the
+   Prometheus OAuth Client secured with Google IAP.
+1. (Optional) In **Google IAP Service Account JSON**, provide the contents of the
+   Service Account credentials file that is authorized to access the Prometheus resource.
 1. Click **Save changes**.
 
-![Configure Prometheus Service](img/prometheus_service_configuration.png)
+![Configure Prometheus Service](img/prometheus_manual_configuration_v13_2.png)
 
 #### Thanos configuration in GitLab
 

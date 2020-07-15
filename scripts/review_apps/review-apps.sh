@@ -291,6 +291,17 @@ function base_config_changed() {
   curl "${CI_API_V4_URL}/projects/${CI_MERGE_REQUEST_PROJECT_ID}/merge_requests/${CI_MERGE_REQUEST_IID}/changes" | jq '.changes | any(.old_path == "scripts/review_apps/base-config.yaml")'
 }
 
+function parse_gitaly_image_tag() {
+  local gitaly_version="${GITALY_VERSION}"
+
+  # returns sha if gitaly_version uses a sha
+  if [[ ${#gitaly_version} -eq 40 ]]; then
+    echo "${gitaly_version}"
+  else
+    echo "v${gitaly_version}"
+  fi
+}
+
 function deploy() {
   local namespace="${KUBE_NAMESPACE}"
   local release="${CI_ENVIRONMENT_SLUG}"
@@ -306,6 +317,7 @@ function deploy() {
   gitlab_webservice_image_repository="${IMAGE_REPOSITORY}/gitlab-webservice-ee"
   gitlab_task_runner_image_repository="${IMAGE_REPOSITORY}/gitlab-task-runner-ee"
   gitlab_gitaly_image_repository="${IMAGE_REPOSITORY}/gitaly"
+  gitaly_image_tag=$(parse_gitaly_image_tag)
   gitlab_shell_image_repository="${IMAGE_REPOSITORY}/gitlab-shell"
   gitlab_workhorse_image_repository="${IMAGE_REPOSITORY}/gitlab-workhorse-ee"
 
@@ -327,7 +339,7 @@ HELM_CMD=$(cat << EOF
     --set gitlab.migrations.image.repository="${gitlab_migrations_image_repository}" \
     --set gitlab.migrations.image.tag="${CI_COMMIT_REF_SLUG}" \
     --set gitlab.gitaly.image.repository="${gitlab_gitaly_image_repository}" \
-    --set gitlab.gitaly.image.tag="v${GITALY_VERSION}" \
+    --set gitlab.gitaly.image.tag="${gitaly_image_tag}" \
     --set gitlab.gitlab-shell.image.repository="${gitlab_shell_image_repository}" \
     --set gitlab.gitlab-shell.image.tag="v${GITLAB_SHELL_VERSION}" \
     --set gitlab.sidekiq.annotations.commit="${CI_COMMIT_SHORT_SHA}" \

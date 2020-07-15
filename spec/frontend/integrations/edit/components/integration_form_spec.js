@@ -88,17 +88,17 @@ describe('IntegrationForm', () => {
         expect(findJiraTriggerFields().exists()).toBe(true);
       });
 
-      describe('featureFlag jiraIntegration is false', () => {
+      describe('featureFlag jiraIssuesIntegration is false', () => {
         it('does not render JiraIssuesFields', () => {
-          createComponent({ type: 'jira' }, { jiraIntegration: false });
+          createComponent({ type: 'jira' }, { jiraIssuesIntegration: false });
 
           expect(findJiraIssuesFields().exists()).toBe(false);
         });
       });
 
-      describe('featureFlag jiraIntegration is true', () => {
+      describe('featureFlag jiraIssuesIntegration is true', () => {
         it('renders JiraIssuesFields', () => {
-          createComponent({ type: 'jira' }, { jiraIntegration: true });
+          createComponent({ type: 'jira' }, { jiraIssuesIntegration: true });
 
           expect(findJiraIssuesFields().exists()).toBe(true);
         });

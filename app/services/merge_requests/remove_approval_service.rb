@@ -4,7 +4,7 @@ module MergeRequests
   class RemoveApprovalService < MergeRequests::BaseService
     # rubocop: disable CodeReuse/ActiveRecord
     def execute(merge_request)
-      return unless approved_by_user?(merge_request)
+      return unless merge_request.has_approved?(current_user)
 
       # paranoid protection against running wrong deletes
       return unless merge_request.id && current_user.id
@@ -23,10 +23,6 @@ module MergeRequests
     # rubocop: enable CodeReuse/ActiveRecord
 
     private
-
-    def approved_by_user?(merge_request)
-      merge_request.approved_by_users.include?(current_user)
-    end
 
     def reset_approvals_cache(merge_request)
       merge_request.approvals.reset

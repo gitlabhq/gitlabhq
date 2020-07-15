@@ -293,10 +293,10 @@ export default {
       this.filters = filters;
     },
     refetchIssuables() {
-      const ignored = ['utf8', 'state'];
+      const ignored = ['utf8'];
       const params = omit(this.filters, ignored);
 
-      historyPushState(setUrlParams(params, window.location.href, true));
+      historyPushState(setUrlParams(params, window.location.href, true, true));
       this.fetchIssuables();
     },
     handleFilter(filters) {

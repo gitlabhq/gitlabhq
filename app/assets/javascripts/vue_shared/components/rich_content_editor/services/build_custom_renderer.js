@@ -1,4 +1,4 @@
-import renderHtml from './renderers/render_html';
+import renderBlockHtml from './renderers/render_html_block';
 import renderKramdownList from './renderers/render_kramdown_list';
 import renderKramdownText from './renderers/render_kramdown_text';
 import renderIdentifierParagraph from './renderers/render_identifier_paragraph';
@@ -6,7 +6,7 @@ import renderEmbeddedRubyText from './renderers/render_embedded_ruby_text';
 import renderFontAwesomeHtmlInline from './renderers/render_font_awesome_html_inline';
 
 const htmlInlineRenderers = [renderFontAwesomeHtmlInline];
-const htmlRenderers = [renderHtml];
+const htmlBlockRenderers = [renderBlockHtml];
 const listRenderers = [renderKramdownList];
 const paragraphRenderers = [renderIdentifierParagraph];
 const textRenderers = [renderKramdownText, renderEmbeddedRubyText];
@@ -32,9 +32,9 @@ const buildCustomHTMLRenderer = (
 ) => {
   const defaults = {
     htmlBlock(node, context) {
-      const allHtmlRenderers = [...customRenderers.list, ...htmlRenderers];
+      const allHtmlBlockRenderers = [...customRenderers.htmlBlock, ...htmlBlockRenderers];
 
-      return executeRenderer(allHtmlRenderers, node, context);
+      return executeRenderer(allHtmlBlockRenderers, node, context);
     },
     htmlInline(node, context) {
       const allHtmlInlineRenderers = [...customRenderers.htmlInline, ...htmlInlineRenderers];
@@ -47,7 +47,7 @@ const buildCustomHTMLRenderer = (
       return executeRenderer(allListRenderers, node, context);
     },
     paragraph(node, context) {
-      const allParagraphRenderers = [...customRenderers.list, ...paragraphRenderers];
+      const allParagraphRenderers = [...customRenderers.paragraph, ...paragraphRenderers];
 
       return executeRenderer(allParagraphRenderers, node, context);
     },

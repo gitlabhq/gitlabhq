@@ -1,13 +1,11 @@
 # frozen_string_literal: true
 
 require 'fast_spec_helper'
-require 'rspec-parameterized'
 require_relative 'danger_spec_helper'
 
 require 'gitlab/danger/changelog'
 
 RSpec.describe Gitlab::Danger::Changelog do
-  using RSpec::Parameterized::TableSyntax
   include DangerSpecHelper
 
   let(:added_files) { nil }
@@ -26,34 +24,36 @@ RSpec.describe Gitlab::Danger::Changelog do
   subject(:changelog) { fake_danger.new(git: fake_git, gitlab: fake_gitlab, helper: fake_helper) }
 
   describe '#needed?' do
+    let(:category_with_changelog) { :backend }
+    let(:label_with_changelog) { 'frontend' }
+    let(:category_without_changelog) { Gitlab::Danger::Changelog::NO_CHANGELOG_CATEGORIES.first }
+    let(:label_without_changelog) { Gitlab::Danger::Changelog::NO_CHANGELOG_LABELS.first }
+
     subject { changelog.needed? }
 
-    where(:categories, :labels) do
-      { backend: nil }                             | %w[backend backstage]
-      { frontend: nil, docs: nil }                 | ['ci-build']
-      { engineering_productivity: nil, none: nil } | ['meta']
-    end
+    context 'when MR contains only categories requiring no changelog' do
+      let(:changes_by_category) { { category_without_changelog => nil } }
+      let(:mr_labels) { [] }
 
-    with_them do
-      let(:changes_by_category) { categories }
-      let(:mr_labels) { labels }
-
-      it "is falsy when categories and labels require no changelog" do
+      it 'is falsey' do
         is_expected.to be_falsy
       end
     end
 
-    where(:categories, :labels) do
-      { frontend: nil, docs: nil }                 | ['database::review pending', 'feature']
-      { backend: nil }                             | ['backend', 'technical debt']
-      { engineering_productivity: nil, none: nil } | ['frontend']
+    context 'when MR contains a label that require no changelog' do
+      let(:changes_by_category) { { category_with_changelog => nil } }
+      let(:mr_labels) { [label_with_changelog, label_without_changelog] }
+
+      it 'is falsey' do
+        is_expected.to be_falsy
+      end
     end
 
-    with_them do
-      let(:changes_by_category) { categories }
-      let(:mr_labels) { labels }
+    context 'when MR contains a category that require changelog and a category that require no changelog' do
+      let(:changes_by_category) { { category_with_changelog => nil, category_without_changelog => nil } }
+      let(:mr_labels) { [] }
 
-      it "is truthy when categories and labels require a changelog" do
+      it 'is truthy' do
         is_expected.to be_truthy
       end
     end

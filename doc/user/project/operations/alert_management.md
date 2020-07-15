@@ -22,6 +22,30 @@ Enabling any of these methods will allow the Alerts list to display. After confi
 alerts, visit **{cloud-gear}** **Operations > Alerts** in your project's sidebar
 to [view the list](#alert-management-list) of alerts.
 
+### Opsgenie integration **(PREMIUM)**
+
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3066) in [GitLab Premium](https://about.gitlab.com/pricing/)  13.2.
+
+A new way of monitoring Alerts via a GitLab integration is with
+[Opsgenie](https://www.atlassian.com/software/opsgenie).
+
+NOTE: **Note:**
+If you enable the Opsgenie integration, you cannot have other GitLab alert services,
+such as [Generic Alerts](../integrations/generic_alerts.md) or
+Prometheus alerts, active at the same time.
+
+To enable Opsgenie integration:
+
+1. Sign in as a user with Maintainer or Owner [permissions](../../permissions.md).
+1. Navigate to **{cloud-gear}** **Operations > Alerts**.
+1. In the **Integrations** select box, select Opsgenie.
+1. Click the **Active** toggle.
+1. In the **API URL**, enter the base URL for your Opsgenie integration, such
+   as `https://app.opsgenie.com/alert/list`.
+1. Click **Save changes**.
+
+After enabling the integration, navigate to the Alerts list page at **{cloud-gear}** **Operations > Alerts**, and click **View alerts in Opsgenie**.
+
 ### Enable a Generic Alerts endpoint
 
 GitLab provides the Generic Alerts endpoint so you can accept alerts from a third-party
